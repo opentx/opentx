@@ -442,7 +442,7 @@ bool getSwitch(int8_t swtch, bool nc, uint8_t level)
 //#define CS_EGREATER  12
 //#define CS_ELESS     13
 
-#if defined (PCBV3)
+#if defined (PCBV3) && !defined (PCBV4)
 // The ugly scanned keys thing should be gone for PCBV4+. In the meantime ...
 uint8_t keyDown()
 {
@@ -459,7 +459,11 @@ uint8_t keyDown()
 #else
 inline uint8_t keyDown()
 {
+#if defined (PCBV4)
+  return (~PINL) & 0x3F;
+#else
   return (~PINB) & 0x7E;
+#endif
 }
 #endif
 
@@ -831,9 +835,10 @@ void getADC_filt()
 void getADC_osmp()
 {
   uint16_t temp_ana[8] = {0};
-  for (uint8_t adc_input=0;adc_input<8;adc_input++){
+  for (uint8_t adc_input=0;adc_input<8;adc_input++)
+  {
+    ADMUX=adc_input|ADC_VREF_TYPE; // TODO now it is done only one time before the loop, is it good?
     for (uint8_t i=0; i<4;i++) {  // Going from 10bits to 11 bits.  Addition = n.  Loop 4^n times
-      ADMUX=adc_input|ADC_VREF_TYPE;
       // Start the AD conversion
       ADCSRA|=0x40;
       // Wait for the AD conversion to complete
@@ -847,7 +852,8 @@ void getADC_osmp()
 
 void getADC_single()
 {
-    for (uint8_t adc_input=0;adc_input<8;adc_input++){
+  for (uint8_t adc_input=0;adc_input<8;adc_input++)
+  {
       ADMUX=adc_input|ADC_VREF_TYPE;
       // Start the AD conversion
       ADCSRA|=0x40;
@@ -871,11 +877,16 @@ void getADC_bandgap()
                  // See http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=847208#847208
   // In the end, simply using a longer delay (presumably to account for the higher
   // impedance Vbg internal source) solved the problem. NOTE: Does NOT adversely affect PPM_out latency.
+#if defined (PCBV4)
+  ADCSRB &= ~(1<<MUX5);
+#endif
   ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.1V reference
   _delay_us(300); // this somewhat costly delay is the only remedy for stable results on the Atmega2560/1 chips
   ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // again becasue first one is usually inaccurate
   BandGap=ADCW;
-
+#if defined (PCBV4)
+  ADCSRB |= (1<<MUX5);
+#endif
 #endif
 }
 
@@ -1460,7 +1471,7 @@ void perOut(int16_t *chanOut)
   } */
 
   //========== LIMITS ===============
-  for(uint8_t i=0;i<NUM_CHNOUT;i++) {
+  for (uint8_t i=0;i<NUM_CHNOUT;i++) {
       // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*100
       // later we multiply by the limit (up to 100) and then we need to normalize
       // at the end chans[i] = chans[i]/100 =>  -1024..1024
@@ -1577,6 +1588,9 @@ void perMain()
   else
     BACKLIGHT_OFF;
 
+  ////////////////
+  // G: TODO This shouldn't be in perMain(). It should be in the same place
+  // all the other ADC samples happen
   static int16_t p1valprev;
   p1valdiff = (p1val-calibratedStick[6])/32;
   if(p1valdiff) {
@@ -1584,6 +1598,7 @@ void perMain()
       p1val = calibratedStick[6];
   }
   p1valprev = calibratedStick[6];
+  /////////////////
 
   g_menuStack[g_menuStackPtr](evt);
   refreshDiplay();
@@ -1630,8 +1645,8 @@ Gruvin:
 
         g_vbat100mV = (ab*16 + (ab*g_eeGeneral.vBatCalib)/8)/BandGap;
 #else
-	int32_t instant_vbat = anaIn(7);
-	instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
+        int32_t instant_vbat = anaIn(7);
+        instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
         if (g_vbat100mV == 0 || g_menuStack[0] != menuMainView) g_vbat100mV = instant_vbat;
         g_vbat100mV = (instant_vbat + g_vbat100mV*7) / 8;
 #endif
@@ -1645,7 +1660,6 @@ Gruvin:
 
       }
       break;
-
 
 
     case 3:
@@ -1688,18 +1702,26 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
     ;
   uint16_t dt=TCNT1;//-OCR1A;
 
+//vinceofdrink@gmail harwared ppm
+//Orginal bitbang for PPM
+#ifndef DPPMPB7_HARDWARE
   if(pulsePol)
   {
     PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
     pulsePol = 0;
   }else{
-    PORTB &= ~(1<<OUT_B_PPM); // GCC optimisation should result in a single CLI instruction
+    PORTB &= ~(1<<OUT_B_PPM); // GCC optimisation should result in a single CBI instruction
     pulsePol = 1;
   }
   g_tmr1Latency_max = max(dt,g_tmr1Latency_max);    // max has leap, therefore vary in length
   g_tmr1Latency_min = min(dt,g_tmr1Latency_min);    // min has leap, therefore vary in length
-
+#endif
   OCR1A  = *pulsePtr++;
+
+//vinceofdrink@gmail harwared ppm
+#if defined (DPPMPB7_HARDWARE)
+OCR1C=OCR1A;            //just copy the value of the OCR1A to OCR1C to test PPM out without to much change in the code not optimum but will not alter ppm precision
+#endif
 
   if( *pulsePtr == 0) {
     //currpulse=0;
@@ -1713,7 +1735,9 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
     TIMSK &= ~(1<<OCIE1A); //stop reentrance
 #endif
     sei();
+
     setupPulses();
+
     cli();
 #if defined (PCBV3)
     TIMSK1 |= (1<<OCIE1A);
@@ -1774,7 +1798,6 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 #endif
   sei();
-
 
 #if defined (PCBSTD) && defined (BEEPSPKR)
   // gruvin: Begin Tone Generator
@@ -2085,34 +2108,42 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 #ifndef SIMU
 int main(void)
 {
-  // Set up I/O port data diretions and initial states
+  // Set up I/O port data directions and initial states
+  DDRA = 0xff;  PORTA = 0x00; // LCD data
 
-  DDRA = 0xff;  PORTA = 0x00;
-#if defined (PCBV3)
+#if defined (PCBV4)
+  DDRB = 0b10010111;  PORTB = 0b01101000; // 7:SPKR, 6:IDL2_S|PPM,  5:TrainSW,  SDCARD[4:CS 3:MISO 2:MOSI 1:SCK], 0:PPM_OUT|IDL2_SW
+  DDRC = 0x3f;  PORTC = 0xc0; // 7:AilDR, 6:EleDR, LCD[5,4,3,2,1[, 0:BackLight
+  DDRD = 0x01;  PORTD = 0xfe; // 7/6:Spare3/4, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
+  DDRE = 0b00001010;  PORTE = 0b11110101; // 7:PPM_IN, 6: RENC1_B, 5:RENC1_A, 4:USB_DNEG, 3:BUZZER, 2:USB_DPOS, 1:TELEM_TX, 0:TELEM_RX
+  DDRF = 0x00;  PORTF = 0x00; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
+  DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
+  DDRH = 0x00;  PORTH = 0xff; // 7:0 Spare port -- all inputer for now [Bit 2:VIB_OPTION -- setting to input for now]
+  DDRJ = 0x00;  PORTJ = 0xff; // 7-0:Trim switch inputs
+  DDRK = 0x00;  PORTK = 0x00; // anain. No pull-ups!
+  DDRL = 0x00;  PORTL = 0xff; // 7-6:Spare6/5 (inputs), 5-0: User Button inputs
+#else
+#  if defined (PCBV3)
   DDRB = 0x97;  PORTB = 0x1e; // 7:AUDIO, SD_CARD[6:SDA 5:SCL 4:CS 3:MISO 2:MOSI 1:SCK], 0:PPM_OUT
   DDRC = 0x3f;  PORTC = 0xc0; // PC0 used for LCD back light control
   DDRD = 0x0F;  PORTD = 0xff; // 7:4=inputs (keys/trims, pull-ups on), 3:0=outputs (keyscan row select)
-#else
+#  else
   DDRB = 0x81;  PORTB = 0x7e; //pullups keys+nc
   DDRC = 0x3e;  PORTC = 0xc1; //pullups nc
   DDRD = 0x00;  PORTD = 0xff; //pullups keys
-#endif
+#  endif
   DDRE = (1<<OUT_E_BUZZER);  PORTE = 0xff-(1<<OUT_E_BUZZER); //pullups + buzzer 0
   DDRF = 0x00;  PORTF = 0x00; //anain
   DDRG = 0x10;  PORTG = 0xff; //pullups + SIM_CTL=1 = phonejack = ppm_in
+#endif
 
   lcd_init();
 
-#ifdef JETI
-  JETI_Init();
-#endif
-
-#if defined (FRSKY)
-  FRSKY_Init();
-#endif
-
   ADMUX=ADC_VREF_TYPE;
   ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
+#if defined (PCBV4)
+  ADCSRB=(1<<MUX5);
+#endif
 
   /**** Set up timer/counter 0 ****/
 #if defined (PCBV3)
@@ -2177,6 +2208,15 @@ int main(void)
   g_menuStack[1] = menuProcModelSelect;
 
   lcdSetRefVolt(25);
+
+#if defined (FRSKY)
+  FRSKY_Init();
+#endif
+
+#ifdef JETI
+  JETI_Init();
+#endif
+
   eeReadAll();
 
   uint8_t cModel = g_eeGeneral.currModel;
@@ -2193,6 +2233,11 @@ int main(void)
 
   clearKeyEvents(); //make sure no keys are down before proceeding
 
+  //addon Vinceofdrink@gmail (hardware ppm)
+  #if defined (DPPMPB7_HARDWARE)
+    TCCR1A |=(1<<COM1C0); // (COM1C1=0 and COM1C0=1 in TCCR1A)  toogle the state of PB7  on each TCNT1=OCR1C
+  #endif
+
   setupPulses();
 
   wdt_enable(WDTO_500MS);
@@ -2203,6 +2248,8 @@ int main(void)
   g_LightOffCounter = g_eeGeneral.lightAutoOff*500; //turn on light for x seconds - no need to press key Issue 152
 
   if(cModel!=g_eeGeneral.currModel) eeDirty(EE_GENERAL); // if model was quick-selected, make sure it sticks
+
+
 
 #if defined (PCBV3)
   TIMSK1 |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
@@ -2225,7 +2272,7 @@ int main(void)
   g_unixTime = mktime(&utm);
 #endif
 
-  while(1) {
+  while(1){
     uint16_t t0 = getTmr16KHz();
     getADC[g_eeGeneral.filterInput]();
     getADC_bandgap() ;
@@ -2241,3 +2288,4 @@ int main(void)
   }
 }
 #endif
+

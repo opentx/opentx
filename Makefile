@@ -29,7 +29,8 @@
 
 #gruvin: PCB version -- OVERRIDES the following settings if not STD
 # Values: STD, V3, V4
-PCB = V3
+PCB = V4
+#NOTE!: V4 adds to V3, such that both PCBV3 and PCBV4 get defined
 
 # Following options for PCB=STD only (ignored otherwise) ...
 
@@ -96,7 +97,7 @@ TARGET = gruvin9x
 OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = gruvin9x.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp templates.cpp 
+CPPSRC = gruvin9x.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp 
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -168,6 +169,11 @@ ifeq ($(PCB), STD)
 # STD PCB, so ...
 
   CPPDEFS += -DPCBSTD
+# If Hardware PPM mode ( PB0<->BP7) switch the Backlight output with the original PPM to use hardware facility to generate precise PPM (hardware mods)
+# G: TODO This prevents HARDPPM being used with FRSKY. HARDPPM needs its own option XXX
+  ifeq ($(EXT), HARDPPM)
+   CPPDEFS += -DPPMPB7_HARDWARE
+  endif
 
 # If JETI-Support is enabled
   ifeq ($(EXT), JETI)
@@ -210,7 +216,7 @@ else
     CPPDEFS += -DPCBV3 -DFRSKY -DBEEPSPKR
   endif
   ifeq ($(PCB), V4)
-    CPPDEFS += -DPCBV4 -DFRSKY -DBEEPSPKR
+    CPPDEFS += -DPCBV3 -DPCBV4 -DFRSKY -DBEEPSPKR
   endif
 endif
 
@@ -231,6 +237,7 @@ endif
 
 ifeq ($(TEMPLATES), YES)
  CPPDEFS += -DTEMPLATES
+ CPPSRC += templates.cpp
 endif
 
 
@@ -845,6 +852,6 @@ gtest_main.a : gtest-all.o gtest_main.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-gtests: $(CPPSRC) gtests.cpp simpgmspace.cpp gtest_main.a
+gtests: $(CPPSRC) gtests.cpp simpgmspace.cpp *.h gtest_main.a
 	g++ $(CPPSRC) gtests.cpp simpgmspace.cpp $(CPPFLAGS) -I$(GTEST_DIR) $(ARCH) -o gtests -lpthread -MD -DSIMU gtest_main.a 
 	
