@@ -231,6 +231,31 @@ void Key::input(bool val, EnumKeys enuk)
 bool keyState(EnumKeys enuk)
 {
   if(enuk < (int)DIM(keys))  return keys[enuk].state() ? 1 : 0;
+
+#if defined (PCBV4)
+  switch(enuk){
+    case SW_ElevDR : return PINC & (1<<INP_C_ElevDR);
+
+    case SW_AileDR : return PINC & (1<<INP_C_AileDR);
+
+    case SW_RuddDR : return PING & (1<<INP_G_RuddDR);
+      //     INP_G_ID1 INP_B_ID2
+      // id0    0        1
+      // id1    1        1
+      // id2    1        0
+    case SW_ID0    : return !(PING & (1<<INP_G_ID1));
+    case SW_ID1    : return (PING & (1<<INP_G_ID1))&& (PINB & (1<<INP_B_ID2));
+    case SW_ID2    : return !(PINB & (1<<INP_B_ID2));
+
+    case SW_Gear   : return PING & (1<<INP_G_Gear);
+
+    case SW_ThrCt  : return PING & (1<<INP_G_ThrCt);
+
+    case SW_Trainer: return PINB & (1<<INP_B_Trainer);
+
+    default:;
+  }
+#else
   switch(enuk){
     case SW_ElevDR : return PINE & (1<<INP_E_ElevDR);
     
@@ -260,6 +285,7 @@ bool keyState(EnumKeys enuk)
     case SW_Trainer: return PINE & (1<<INP_E_Trainer);
     default:;
   }
+#endif // defined (PCBV4)
   return 0;
 }
 
@@ -294,7 +320,7 @@ void per10ms()
     g_tmr10ms++;
     g_blinkTmr10ms++;
 
-#if defined (PCBV3)
+#if defined (PCBV3) && !defined (PCBV4)
     /* Update gloabal Date/Time every 100 per10ms cycles */
     if (++g_ms100 == 100)
     {
@@ -306,8 +332,8 @@ void per10ms()
 /**** BEGIN KEY STATE READ ****/
   uint8_t enuk = KEY_MENU;
 
+// User buttons ...
 #if defined (PCBV3)
-
   /* Original keys were connected to PORTB as follows:
 
      Bit  Key
@@ -321,6 +347,15 @@ void per10ms()
       0   other use
   */
 
+#  if defined (PCBV4)
+  uint8_t tin = ~PINL;
+  uint8_t in;
+  in = (tin & 0x0f) << 3;
+  in |= (tin & 0x30) >> 3;
+
+#  else
+
+// Gruvin's PCBv2.14/v3 key scanning ...
 #define KEY_Y0 1 // EXIT / MENU
 #define KEY_Y1 2 // LEFT / RIGHT / UP / DOWN
 #define KEY_Y2 4 // LV_Trim_Up / Down / LH_Trim_Up / Down 
@@ -338,6 +373,8 @@ void per10ms()
 
   in = keyDown(); // in gruvin9x.cpp
 
+#  endif // PCBV4
+
 #else
   uint8_t in = ~PINB;
 #endif
@@ -348,8 +385,22 @@ void per10ms()
     keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
     ++enuk;
   }
+// End User buttons
 
+// Trim switches ...
 #if defined (PCBV3)
+#  if defined (PCBV4)
+  static  prog_uchar  APM crossTrim[]={
+    1<<INP_J_TRM_LH_DWN,
+    1<<INP_J_TRM_LH_UP,
+    1<<INP_J_TRM_LV_DWN,
+    1<<INP_J_TRM_LV_UP,
+    1<<INP_J_TRM_RV_DWN,
+    1<<INP_J_TRM_RV_UP,
+    1<<INP_J_TRM_RH_DWN,
+    1<<INP_J_TRM_RH_UP
+  };
+#  else
   static  prog_uchar  APM crossTrim[]={
     1<<TRIM_M_RV_DWN,
     1<<TRIM_M_RV_UP,
@@ -360,7 +411,10 @@ void per10ms()
     1<<TRIM_M_LV_DWN,
     1<<TRIM_M_LV_UP
   };
-#else
+#  endif
+
+#else // stock original board ...
+
   static  prog_uchar  APM crossTrim[]={
     1<<INP_D_TRM_LH_DWN,  // bit 7
     1<<INP_D_TRM_LH_UP,
@@ -375,6 +429,9 @@ void per10ms()
 
 #if defined (PCBV3)
 
+#  if defined (PCBV4)
+  in = ~PINJ;
+#  else
   PORTD = ~KEY_Y2; // select Y2 row. (Bits 3:0 LVD / LVU / LHU / LHD)
   _delay_us(1);
   in = ~PIND & 0xf0; // mask out outputs
@@ -384,20 +441,21 @@ void per10ms()
   in |= ((~PIND & 0xf0) >> 4); 
 
   PORTD = 0xFF;
+#  endif
 
 #else
 
   in = ~PIND;
 
 // Legacy support for USART1 free hardware mod [DEPRECATED]
-#if defined(USART1FREED)
+#  if defined(USART1FREED)
   // mask out original INP_D_TRM_LV_UP and INP_D_TRM_LV_DWN bits
   in &= ~((1<<INP_D_TRM_LV_UP) | (1<<INP_D_TRM_LV_DWN));
 
   // merge in the two new switch port values
   in |= (~PINC & (1<<INP_C_TRM_LV_UP)) ? (1<<INP_D_TRM_LV_UP) : 0;
   in |= (~PING & (1<<INP_G_TRM_LV_DWN)) ? (1<<INP_D_TRM_LV_DWN) : 0;
-#endif
+#  endif
 #endif
 
   for(int i=0; i<8; i++)
@@ -406,14 +464,20 @@ void per10ms()
     keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
     ++enuk;
   }
+// End Trim Switches
 
 /**** END KEY STATE READ ****/
 
 #if defined (FRSKY)
-  // Used to detect presence of valid FrSky telemetry packets inside the 
-  // last <FRSKY_TIMEOUT10ms> 10ms intervals
-  if ( FrskyAlarmSendState )
-    FRSKY10mspoll() ;
+
+  // TODO why sending only every 50ms
+  // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
+  static uint8_t FrskyDelay = 5;
+  if (FrskyAlarmSendState && (--FrskyDelay == 0))
+  {
+    FrskyDelay = 5; // 50ms
+    FRSKY10mspoll();
+  }
   
   if (frskyStreaming > 0)
     frskyStreaming--;

@@ -1,3 +1,24 @@
+/*
+ * Authors (alphabetical order)
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
+ *
+ * gruvin9x is based on code named er9x by
+ * Author - Erez Raviv <erezraviv@gmail.com>, which is in turn
+ * was based on the original (and ongoing) project by Thomas Husterer,
+ * th9x -- http://code.google.com/p/th9x/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ */
+
 /*----------------------------------------------------------------------------/
 /  FatFs - FAT file system module  R0.08a                 (C)ChaN, 2010
 /-----------------------------------------------------------------------------/
@@ -3517,6 +3538,34 @@ FRESULT f_mkfs (
 }
 
 #endif /* _USE_MKFS && !_FS_READONLY */
+
+#if _USE_LFN == 3 /* LFN with a working buffer on the heap */
+/*------------------------------------------------------------------------*/
+/* Allocate a memory block                                                */
+/*------------------------------------------------------------------------*/
+/* If a NULL is returned, the file function fails with FR_NOT_ENOUGH_CORE.
+   */
+
+void* ff_memalloc ( /* Returns pointer to the allocated memory block */
+      UINT size   /* Number of bytes to allocate */
+    )
+{
+    return malloc(size);
+}
+
+
+/*------------------------------------------------------------------------*/
+/* Free a memory block                                                    */
+/*------------------------------------------------------------------------*/
+
+void ff_memfree(
+      void* mblock  /* Pointer to the memory block to free */
+    )
+{
+    free(mblock);
+}
+
+#endif
 
 
 

@@ -323,6 +323,13 @@ void setupPulses()
       setupPulsesTracerCtp1009();
       break;
   }
+#if defined (DPPMPB7_HARDWARE)
+
+  	//Don't know if its usefull for the other encoding type or if they have polarity option cannot test those
+  //Force an ouput compare to match the ppm polarity
+      if(PINB&(1<<7) && g_model.pulsePol)
+   	   TCCR1C |=(1<<FOC1C);
+#endif
 }
 
 //inline int16_t reduceRange(int16_t x)  // for in case we want to have room for subtrims

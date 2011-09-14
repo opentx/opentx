@@ -74,6 +74,7 @@
 
 extern RlcFile theFile;  //used for any file operation
 
+// G: The following comments relate to the original stock PCB only
 //
 //                  elev                        thr
 //                   LV                         RV
@@ -85,8 +86,6 @@ extern RlcFile theFile;  //used for any file operation
 //                   |                          |
 //                 3 v                        5 v
 //
-
-
 //PORTA  7      6       5       4       3       2       1       0
 //       O      O       O       O       O       O       O       O
 //       ------------------------ LCD_DAT -----------------------
@@ -116,20 +115,6 @@ extern RlcFile theFile;  //used for any file operation
 //                            SIM_CTL  ID1      NC      RF_POW RuddDR
 
 #define PORTA_LCD_DAT  PORTA
-
-#if defined (PCBV3)
-#define OUT_C_LIGHT   0
-#else
-#define OUT_B_LIGHT   7
-#endif
-
-#define INP_B_KEY_LFT 6
-#define INP_B_KEY_RGT 5
-#define INP_B_KEY_UP  4
-#define INP_B_KEY_DWN 3
-#define INP_B_KEY_EXT 2
-#define INP_B_KEY_MEN 1
-#define OUT_B_PPM 0
 #define PORTC_LCD_CTRL PORTC
 #define OUT_C_LCD_E     5
 #define OUT_C_LCD_RnW   4
@@ -137,39 +122,137 @@ extern RlcFile theFile;  //used for any file operation
 #define OUT_C_LCD_RES   2
 #define OUT_C_LCD_CS1   1
 
-#define INP_D_TRM_LH_UP   7
-#define INP_D_TRM_LH_DWN  6
-#define INP_D_TRM_RV_DWN  5
-#define INP_D_TRM_RV_UP   4
-#define INP_D_TRM_LV_DWN  3
-#define INP_D_TRM_LV_UP   2
-#define INP_D_TRM_RH_DWN  1
-#define INP_D_TRM_RH_UP   0
+extern uint16_t DEBUG1;
+extern uint16_t DEBUG2;
+
+#if defined (PCBV4)
+#  define INP_P_KEY_DWN 0
+#  define INP_P_KEY_UP  1
+#  define INP_P_KEY_RGT 2
+#  define INP_P_KEY_LFT 3
+#  define INP_P_KEY_MEN 4
+#  define INP_P_KEY_EXT 5
+// v4.1 will have hardware PPM. Won't make code change until v4.0 beta board is hardware patched
+
+#  define INP_J_TRM_LH_DWN  0
+#  define INP_J_TRM_LH_UP   1
+#  define INP_J_TRM_LV_DWN  2
+#  define INP_J_TRM_LV_UP   3
+#  define INP_J_TRM_RV_DWN  4
+#  define INP_J_TRM_RV_UP   5
+#  define INP_J_TRM_RH_DWN  6
+#  define INP_J_TRM_RH_UP   7
+
+#  define INP_E_PPM_IN      7
+#  define INP_E_ROT_ENC_1_B 6
+#  define INP_E_ROT_ENC_1_A 5
+#  define INP_E_USB_D_PLS   4
+#  define OUT_E_BUZZER      3
+#  define INP_E_USB_D_NEG   2
+#  define INP_E_TELEM_RX    1
+#  define OUT_E_TELEM_TX    0
+
+#  define INP_D_SPARE3         7
+#  define INP_D_SPARE4         6
+#  define INP_D_ROT_ENC_2_PUSH 5
+#  define INP_D_ROT_ENC_1_PUSH 4
+#  define OUT_D_ROT_ENC_2_B    3
+#  define INP_D_ROT_ENC_2_A    2
+#  define INP_D_I2C_SCL        1
+#  define INP_D_I2C_SDA        0
+
+#  define INP_G_Gear     5
+#  define INP_G_ThrCt    2
+#  define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
+#  define INP_G_ID1      3
+#  define INP_G_RF_POW   1
+#  define INP_G_RuddDR   0
+
+#  define INP_C_AileDR   7
+#  define INP_C_ElevDR   6
+#  define OUT_C_LIGHT    0
+
+#    define OUT_B_Speaker 7
+#    define INP_B_Trainer 5
+
+//vinceofdrink@gmail hardwared ppm
+//Orginal bitbang port for PPM
+//G: The v4.1 board will have H/W PPM as standard. All v4.0 beta boards must be hacked likewise, but not yet.
+#  ifndef DPPMPB7_HARDWARE
+#    define INP_B_ID2     6
+#    define OUT_B_PPM     0
+#  else
+#    define OUT_B_PPM     6 // will be switched via internal MCU Timer/PWM hardware
+#    define INP_B_ID2     0
+#  endif
+
+
+#else // boards prior to v4 ...
+
+
+#  define INP_B_KEY_LFT 6
+#  define INP_B_KEY_RGT 5
+#  define INP_B_KEY_UP  4
+#  define INP_B_KEY_DWN 3
+#  define INP_B_KEY_EXT 2
+#  define INP_B_KEY_MEN 1
+//vinceofdrink@gmail harwared ppm
+//Orginal bitbang port for PPM
+#  ifndef DPPMPB7_HARDWARE
+#    define OUT_B_PPM 0
+#  else
+#    define     OUT_B_PPM 7 // will not be used
+#  endif
+
+#  define INP_D_TRM_LH_UP   7
+#  define INP_D_TRM_LH_DWN  6
+#  define INP_D_TRM_RV_DWN  5
+#  define INP_D_TRM_RV_UP   4
+#  define INP_D_TRM_LV_DWN  3
+#  define INP_D_TRM_LV_UP   2
+#  define INP_D_TRM_RH_DWN  1
+#  define INP_D_TRM_RH_UP   0
+
+#  if defined (PCBV3)
+#    define OUT_C_LIGHT   0
+#  else
+#    ifndef DPPMPB7_HARDWARE
+#      define OUT_B_LIGHT   7
+#    else
+#      define OUT_B_LIGHT   0
+#    endif
+#  endif
+
+#  define INP_E_PPM_IN  7
+#  define INP_E_ID2     6
+#  define INP_E_Trainer 5
+#  define INP_E_Gear    4
+#  define OUT_E_BUZZER  3
+#  define INP_E_ElevDR  2
+#  define INP_E_AileDR  1
+#  define INP_E_ThrCt   0
+
+#  if defined(JETI) || defined(FRSKY)
+#    undef INP_E_ThrCt
+#    undef INP_E_AileDR
+#    define INP_C_ThrCt   6
+#    define INP_C_AileDR  7
+#  endif
+
+#  define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
+#  define INP_G_ID1      3
+#  define INP_G_RF_POW   1
+#  define INP_G_RuddDR   0
 
 // Legacy support for USART1 hardware mod [DEPRECATED]
+// G: This board will be retired before much longer. But I still need it for now.
 #if defined(USART1FREED)
 // do not undef the original INP_D_TRM_LV_DWN/UP as we need them later
-  #define INP_C_TRM_LV_UP 0
+  #define INP_C_TRM_LV_UP  0
   #define INP_G_TRM_LV_DWN 2
 #endif
 
-#define INP_E_PPM_IN  7
-#define INP_E_ID2     6
-#define INP_E_Trainer 5
-#define INP_E_Gear    4
-#define OUT_E_BUZZER  3
-#define INP_E_ElevDR  2
-
-
-#define INP_E_AileDR  1
-#define INP_E_ThrCt   0
-
-#if defined(JETI) || defined(FRSKY)
-  #undef INP_E_ThrCt
-  #undef INP_E_AileDR
-  #define INP_C_ThrCt   6
-  #define INP_C_AileDR  7
-#endif
+#endif // defined (PCBV4)
 
 #if defined (BEEPSPKR)
 #define BEEP_KEY_TIME 5
@@ -177,11 +260,6 @@ extern RlcFile theFile;  //used for any file operation
 #define BEEP_KEY_UP_FREQ 55
 #define BEEP_KEY_DOWN_FREQ 45
 #endif
-
-#define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
-#define INP_G_ID1      3
-#define INP_G_RF_POW   1
-#define INP_G_RuddDR   0
 
 #define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
 
@@ -247,7 +325,7 @@ enum EnumKeys {
 #define CSWITCH_STR  "----   v>ofs  v<ofs  |v|>ofs|v|<ofsAND    OR     XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 #define CSW_LEN_FUNC 7
 
-#define FSWITCH_STR  "----          ""Trainer       ""Instant Trim  ""Trims2Offsets ""Telemetry View"
+#define FSWITCH_STR  "----          ""Trainer       ""Instant Trim  ""Telemetry View"
 #define FSW_LEN_FUNC 14
 
 #define SWASH_TYPE_STR   "---   ""120   ""120X  ""140   ""90    "
@@ -672,6 +750,12 @@ inline bool isFunctionActive(uint8_t func)
 {
   return active_functions & (1 << (func-1));
 }
+
+#if defined (PCBV3)
+extern char g_logFilename[21]; // pers.cpp::resetTelemetry()
+extern FATFS FATFS_Obj; // pers.cpp::resetTelemetry()
+extern FIL g_oLogFile; // pers.cpp::resetTelemetry()
+#endif
 
 
 #endif // gruvin9x_h

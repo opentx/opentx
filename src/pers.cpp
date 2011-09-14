@@ -191,8 +191,6 @@ uint8_t Translate()
         if (trimSw) {
           g_model.funcSw[0].swtch = trimSw;
           g_model.funcSw[0].func = FUNC_INSTANT_TRIM;
-          g_model.funcSw[1].swtch = trimSw;
-          g_model.funcSw[1].func = FUNC_TRIMS_2_OFS;
         }
         memcpy(&g_model.phaseData[0].trim[0], &trims[0], 4);
         theFile.writeRlc(FILE_MODEL(id), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
@@ -233,10 +231,24 @@ bool eeLoadGeneral()
   return false;
 }
 
+#ifndef TEMPLATES
+inline void applyDefaultTemplate()
+{
+  for (int i=0; i<NUM_STICKS; i++) {
+    MixData *md = mixaddress(i);
+    md->destCh = i+1;
+    md->weight = 100;
+    md->srcRaw = i+1;
+  }
+
+  STORE_MODELVARS;
+}
+#endif
+
 void modelDefault(uint8_t id)
 {
   memset(&g_model, 0, sizeof(g_model));
-  applyTemplate(0); //default 4 channel template
+  applyDefaultTemplate();
 }
 
 uint16_t eeLoadModelName(uint8_t id, char *name)

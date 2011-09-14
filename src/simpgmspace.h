@@ -81,5 +81,6 @@ void eeprom_read_block (void *pointer_ram,
                    const void *pointer_eeprom,
                         size_t size);
 
+#undef offsetof
 #define offsetof(st, m) ((size_t) ( (char *)&((st *)(0))->m - (char *)0 ))
 #define wdt_reset()

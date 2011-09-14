@@ -88,7 +88,7 @@ void eeprom_read_block (void *pointer_ram,
     fclose(fp);
   }
   else {
-    memcpy(pointer_ram, &eeprom[(int)pointer_eeprom], size);
+    memcpy(pointer_ram, &eeprom[(uint64_t)pointer_eeprom], size);
   }
 }
 
