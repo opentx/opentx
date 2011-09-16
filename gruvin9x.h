@@ -325,7 +325,7 @@ enum EnumKeys {
 #define CSWITCH_STR  "----   v>ofs  v<ofs  |v|>ofs|v|<ofsAND    OR     XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 #define CSW_LEN_FUNC 7
 
-#define FSWITCH_STR  "----          ""Trainer       ""Instant Trim  ""Telemetry View"
+#define FSWITCH_STR  "----          ""Trainer       ""Trainer RUD   ""Trainer ELE   ""Trainer THR   ""Trainer AIL   ""Instant Trim  ""Telemetry View"
 #define FSW_LEN_FUNC 14
 
 #define SWASH_TYPE_STR   "---   ""120   ""120X  ""140   ""90    "

@@ -1169,7 +1169,7 @@ uint8_t evalSticks()
 
 
     if (i < NUM_STICKS) { //only do this for sticks
-      if (!s_noStickInputs && isFunctionActive(FUNC_TRAINER)) {
+      if (!s_noStickInputs && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+i))) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[i];
         if (td->mode) {

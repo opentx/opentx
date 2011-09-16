@@ -153,9 +153,13 @@ typedef struct t_SafetySwData { // Safety Switches data
 } __attribute__((packed)) SafetySwData;
 
 #define FUNC_TRAINER        1
-#define FUNC_INSTANT_TRIM   2
-#define FUNC_VIEW_TELEMETRY 3
-#define FUNC_LAST           3
+#define FUNC_TRAINER_RUD    2
+#define FUNC_TRAINER_ELE    3
+#define FUNC_TRAINER_THR    4
+#define FUNC_TRAINER_AIL    5
+#define FUNC_INSTANT_TRIM   6
+#define FUNC_VIEW_TELEMETRY 7
+#define FUNC_LAST           7
 
 typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
