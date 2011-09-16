@@ -30,8 +30,6 @@
 #define FWNUM       5
 #define FH          8
 
-#define OUTDEZ_SPEED 0
-
 /* lcd common flags */
 #define BLINK         0x01
 

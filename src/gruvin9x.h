@@ -126,22 +126,24 @@ extern uint16_t DEBUG1;
 extern uint16_t DEBUG2;
 
 #if defined (PCBV4)
-#  define INP_P_KEY_DWN 0
-#  define INP_P_KEY_UP  1
-#  define INP_P_KEY_RGT 2
-#  define INP_P_KEY_LFT 3
-#  define INP_P_KEY_MEN 4
-#  define INP_P_KEY_EXT 5
-// v4.1 will have hardware PPM. Won't make code change until v4.0 beta board is hardware patched
 
-#  define INP_J_TRM_LH_DWN  0
-#  define INP_J_TRM_LH_UP   1
-#  define INP_J_TRM_LV_DWN  2
-#  define INP_J_TRM_LV_UP   3
-#  define INP_J_TRM_RV_DWN  4
-#  define INP_J_TRM_RV_UP   5
-#  define INP_J_TRM_RH_DWN  6
+#  define INP_P_SPARE6    7
+#  define INP_P_SPARE5    6
+#  define INP_P_KEY_EXT   5
+#  define INP_P_KEY_MEN   4
+#  define INP_P_KEY_LFT   3
+#  define INP_P_KEY_RGT   2
+#  define INP_P_KEY_UP    1
+#  define INP_P_KEY_DWN   0
+
 #  define INP_J_TRM_RH_UP   7
+#  define INP_J_TRM_RH_DWN  6
+#  define INP_J_TRM_RV_UP   5
+#  define INP_J_TRM_RV_DWN  4
+#  define INP_J_TRM_LV_UP   3
+#  define INP_J_TRM_LV_DWN  2
+#  define INP_J_TRM_LH_UP   1
+#  define INP_J_TRM_LH_DWN  0
 
 #  define INP_E_PPM_IN      7
 #  define INP_E_ROT_ENC_1_B 6
@@ -172,19 +174,10 @@ extern uint16_t DEBUG2;
 #  define INP_C_ElevDR   6
 #  define OUT_C_LIGHT    0
 
-#    define OUT_B_Speaker 7
-#    define INP_B_Trainer 5
-
-//vinceofdrink@gmail hardwared ppm
-//Orginal bitbang port for PPM
-//G: The v4.1 board will have H/W PPM as standard. All v4.0 beta boards must be hacked likewise, but not yet.
-#  ifndef DPPMPB7_HARDWARE
-#    define INP_B_ID2     6
-#    define OUT_B_PPM     0
-#  else
-#    define OUT_B_PPM     6 // will be switched via internal MCU Timer/PWM hardware
-#    define INP_B_ID2     0
-#  endif
+#  define OUT_B_Speaker  7
+#  define OUT_B_PPM      6 // will be switched by TCNT1==OCR1B in hardware
+#  define INP_B_Trainer  5
+#  define INP_B_ID2      0
 
 
 #else // boards prior to v4 ...
@@ -201,7 +194,7 @@ extern uint16_t DEBUG2;
 #  ifndef DPPMPB7_HARDWARE
 #    define OUT_B_PPM 0
 #  else
-#    define     OUT_B_PPM 7 // will not be used
+#    define	OUT_B_PPM 7 // will not be used
 #  endif
 
 #  define INP_D_TRM_LH_UP   7

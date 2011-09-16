@@ -91,9 +91,6 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const char c, uint8_t mode)
       }   
       q++;
     }   
-#if OUTDEZ_SPEED != 0
-    lcd_lastPos = x + 2*FW;
-#endif
   }
   else {
     uint8_t condense=0;
@@ -112,10 +109,6 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const char c, uint8_t mode)
         if(p<DISPLAY_END) *p++ = inv ? ~b : b;
     }
     if(p<DISPLAY_END) *p++ = inv ? ~0 : 0;
-
-#if OUTDEZ_SPEED != 0
-    lcd_lastPos = x + FW;
-#endif
   }
 }
 
@@ -160,9 +153,7 @@ void lcd_putsAtt(uint8_t x,uint8_t y,const prog_char * s,uint8_t mode)
     x+=FW;
     if(mode&DBLSIZE) x+=FW;
   }
-#if OUTDEZ_SPEED == 0
   lcd_lastPos = x;
-#endif
 }
 
 void lcd_puts_P(uint8_t x,uint8_t y,const prog_char * s)
@@ -204,103 +195,6 @@ USAGE:
 
   LEADING0 means pad 0 to the left of sig. digits up to 'len' total characters
 */
-
-#if OUTDEZ_SPEED != 0
-void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t len)
-{
-  assert(len <= 5);
-
-  char digits[5]; // sig. digits buffered in reverse order
-  int8_t lastDigit = 4;
-  int8_t mode = MODE(flags);
-
-  bool neg = false;
-  if (flags & UNSIGN) { flags -= UNSIGN; }
-  else if (val < 0) { neg=true; val=-val; }
-
-  bool dblsize = (flags & DBLSIZE);
-
-  // Buffer characters and determine the significant digit count
-  for (int8_t i=4; i>=0; i--)
-  {
-    if (val) lastDigit = i;
-    digits[i] = ((uint16_t)val % 10) + '0';
-    val = (uint16_t)val / 10;
-  }
-
-  switch(mode)
-  {
-    case MODE(LEADING0):
-      lastDigit = 5-len;
-      break;
-    default:
-      if (4-lastDigit < mode)
-        lastDigit = 4 - mode;
-      break;
-  }
-
-  lcd_lastPos = x;
-  if (~flags & LEFT) // determine correct x-coord starting point for decimal aligned
-  {
-    // Starting point for regular unsigned, non-decimal number
-    lcd_lastPos -= (5-lastDigit) * (dblsize ? 2*FWNUM : FWNUM) + (dblsize ? 1 : 0);
-    if (mode>0 && !dblsize) lcd_lastPos -= dblsize ? 3 : 2;
-    if (neg) lcd_lastPos -= dblsize ? 2*FW : FW;
-  }
-
-  if (neg) lcd_putcAtt(lcd_lastPos, y, '-', flags); // apply sign when required
-
-  uint8_t xn = 0;
-  uint8_t ln = 2;
-
-  for (int8_t i=lastDigit; i<5; i++)
-  {
-    lcd_putcAtt(lcd_lastPos-1, y, digits[i], flags);
-
-    if (dblsize) {
-      lcd_lastPos--;
-    }
-
-    // Draw decimal point
-
-    // Use direct screen writes to save flash, function calls, stack, cpu load
-
-#if OUTDEZ_SPEED == 2
-    bool inv = (flags & INVERS) ? true : (flags & BLINK ? BLINK_ON_PHASE : false);
-#endif
-
-    if (mode>0 && 4-i==mode) // .. then draw a d'point
-    {
-      if (dblsize)
-      {
-        xn = lcd_lastPos-1;
-        if (digits[i+1]=='2' || digits[i+1]=='3' || digits[i+1]=='1') ln++;
-        if (digits[i]=='2' || digits[i]=='4') {
-          if (digits[i+1]=='4') xn++;
-          else { xn--; ln++; }
-        }
-      }
-      else
-      {
-#if OUTDEZ_SPEED == 2
-        displayBuf[ y * (DISPLAY_W/8) + lcd_lastPos ] = (inv ? 0x40 ^ 0xff : 0x40);
-#else
-        lcd_plot(lcd_lastPos, y+6);
-        if (flags & INVERS || (flags & BLINK && BLINK_ON_PHASE))
-          lcd_vline(lcd_lastPos, y, 8);
-#endif
-        lcd_lastPos += 2;
-      }
-    }
-  }
-
-  if (xn) {
-    lcd_hline(xn, y+2*FH-3, ln);
-    lcd_hline(xn, y+2*FH-2, ln);
-  }
-}
-
-#else
 
 void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t len)
 {
@@ -378,8 +272,6 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
   // TODO we could change the '-' to have one pixel removed at its left
   if (neg) { lcd_putcAtt(x, y, '-', flags); lcd_plot(x, y+3); }
 }
-#endif
-
 
 void lcd_mask(uint8_t *p, uint8_t mask, uint8_t att)
 {
@@ -483,16 +375,11 @@ void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
 
   lcd_outdezNAtt(x, y, tme/60, att|LEADING0|LEFT, 2);
   lcd_putcAtt(lcd_lastPos-((att & DBLSIZE) ? 1 : 0), y, ':', att&att2);
-#if OUTDEZ_SPEED != 0
-  lcd_outdezNAtt(lcd_lastPos-((att & DBLSIZE) ? 5 : 0), y, tme%60, att2|LEADING0|LEFT, 2);
-#else
   lcd_outdezNAtt(lcd_lastPos+FW, y, tme%60, att2|LEADING0|LEFT, 2);
-#endif
 }
 
 void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att)
 {
-// 215.94us vs 257.31us
   lcd_outdezAtt(x, y, (int16_t)volts, att|PREC1|UNSIGN);
   if (~att & NO_UNIT) lcd_putcAtt(lcd_lastPos, y, 'v', att);
 }
