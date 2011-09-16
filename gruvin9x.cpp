@@ -305,16 +305,29 @@ uint8_t getFlightPhase()
   return 0;
 }
 
-uint8_t getTrimFlightPhase(uint8_t idx, int8_t phase)
+int16_t getTrimValue(uint8_t phase, uint8_t idx)
+{
+  PhaseData *p = phaseaddress(phase);
+  return (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
+}
+
+void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
+{
+  PhaseData *p = phaseaddress(phase);
+  p->trim[idx] = (int8_t)(trim >> 2);
+  p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
+  STORE_MODELVARS;
+}
+
+uint8_t getTrimFlightPhase(uint8_t idx, int8_t phase) // TODO uint8_t phase?
 {
   if (phase == -1) phase = getFlightPhase();
 
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     if (phase == 0) return 0;
-    int8_t trim = g_model.phaseData[phase].trim[idx];
-    if (trim > TRIM_MAX) return 0;
-    if (trim >= TRIM_MIN) return phase;
-    uint8_t result = 129 + trim;
+    int16_t trim = getTrimValue(phase, idx);
+    if (trim <= TRIM_EXTENDED_MAX) return phase;
+    uint8_t result = trim-TRIM_EXTENDED_MAX-1;
     if (result >= phase) result++;
     phase = result;
   }
@@ -411,27 +424,19 @@ bool getSwitch(int8_t swtch, bool nc, uint8_t level)
   break;
   case (CS_EQUAL):
       return (x==y);
-      break;
   case (CS_NEQUAL):
       return (x!=y);
-      break;
   case (CS_GREATER):
       return (x>y);
-      break;
   case (CS_LESS):
       return (x<y);
-      break;
   case (CS_EGREATER):
       return (x>=y);
-      break;
   case (CS_ELESS):
       return (x<=y);
-      break;
   default:
       return false;
-      break;
   }
-
 }
 
 
@@ -675,30 +680,6 @@ void alert(const prog_char * s, bool defaults)
   }
 }
 
-void incSubtrim(uint8_t idx, int16_t inc)
-{
-  for (int8_t i=0; i<MAX_PHASES; i++) {
-    PhaseData *phase = phaseaddress(i);
-    int16_t trim = phase->trim[idx];
-    if (trim >= TRIM_MIN && trim <= TRIM_MAX) {
-      int16_t newtrim = trim - inc;
-      if (newtrim < TRIM_MIN) {
-        newtrim = TRIM_MIN;
-      }
-      if (newtrim > TRIM_MAX) {
-        newtrim = TRIM_MAX;
-      }
-      phase->trim[idx] = newtrim;
-    }
-  }
-  int16_t subtrim = g_model.subtrim[idx] + inc;
-  if (subtrim > SUBTRIM_MAX)
-    subtrim = SUBTRIM_MAX;
-  if (subtrim < SUBTRIM_MIN)
-    subtrim = SUBTRIM_MIN;
-  g_model.subtrim[idx] = subtrim;
-}
-
 uint8_t checkTrim(uint8_t event)
 {
   int8_t  k = (event & EVT_KEY_MASK) - TRM_BASE;
@@ -708,38 +689,33 @@ uint8_t checkTrim(uint8_t event)
     //LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = k/2;
     uint8_t phase = getTrimFlightPhase(idx);
-    int8_t  t = g_model.phaseData[phase].trim[idx];
-    int16_t before = g_model.subtrim[idx] + t;
+    int16_t before = getTrimValue(phase, idx);
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
     bool thro = (((2-(g_eeGeneral.stickMode&1)) == idx) && g_model.thrTrim);
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
-    int16_t trim = (k&1) ? t + v : t - v;   // positive = k&1
-    int16_t after = g_model.subtrim[idx] + trim;
+    int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 
     bool beepTrim = false;
-    for (int8_t mark=TRIM_MIN; mark!=-6; mark+=TRIM_MAX) { // because (int8_t)125+125==-6
+    for (int16_t mark=TRIM_MIN; mark<=TRIM_MAX; mark+=TRIM_MAX) {
       if ((mark!=0 || !thro) && ((mark!=TRIM_MIN && after>=mark && before<mark) || (mark!=TRIM_MAX && after<=mark && before>mark))) {
-        trim = mark - g_model.subtrim[idx];
+        after = mark;
         beepTrim = true;
       }
     }
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
-      if (!g_model.extendedTrims) trim = t;
+      if (!g_model.extendedTrims) after = before;
       beepTrim = true; // no repetition, it could be dangerous
     }
 
-    if (trim < TRIM_MIN) {
-      incSubtrim(idx, trim-TRIM_MIN);
-      trim = TRIM_MIN;
+    if (after < TRIM_EXTENDED_MIN) {
+      after = TRIM_EXTENDED_MIN;
     }
-    else if (trim > TRIM_MAX) {
-      incSubtrim(idx, trim-TRIM_MAX);
-      trim = TRIM_MAX;
+    if (after > TRIM_EXTENDED_MAX) {
+      after = TRIM_EXTENDED_MAX;
     }
 
-    g_model.phaseData[phase].trim[idx] = (int8_t)trim;
-    STORE_MODELVARS;
+    setTrimValue(phase, idx, after);
 
 #if defined (BEEPSPKR)
     // toneFreq higher/lower according to trim position
@@ -1147,7 +1123,7 @@ inline void evalTrims()
     // do trim -> throttle trim if applicable
     int16_t v = anas[i];
     int32_t vv = 2*RESX;
-    int16_t trim = g_model.subtrim[i] + g_model.phaseData[getTrimFlightPhase(i)].trim[i];
+    int16_t trim = getTrimValue(getTrimFlightPhase(i), i);
     if (IS_THROTTLE(i) && g_model.thrTrim) {
       vv = (g_eeGeneral.throttleReversed) ?
                 ((int32_t)trim+TRIM_MIN)*(RESX+v)/(2*RESX) :
@@ -2060,17 +2036,14 @@ void instantTrim()
       evalSticks();
       s_noStickInputs = false;
       int16_t trim = (anas[i] + trims[i]) / 2;
-      trim -= g_model.subtrim[i];
       // printf("anas[%d]=%d, trims[%d]=%d, trim=%d, subtrim=%d => trim=%d\n", i, anas[i], i, trims[i], g_model.phaseData[phase].trim[i], g_model.subtrim[i], trim);
-      if (trim < TRIM_MIN) {
-        incSubtrim(i, trim-TRIM_MIN);
-        trim = TRIM_MIN;
+      if (trim < TRIM_EXTENDED_MIN) {
+        trim = TRIM_EXTENDED_MIN;
       }
-      if (trim > TRIM_MAX) {
-        incSubtrim(i, trim-TRIM_MAX);
-        trim = TRIM_MAX;
+      if (trim > TRIM_EXTENDED_MAX) {
+        trim = TRIM_EXTENDED_MAX;
       }
-      g_model.phaseData[phase].trim[i] = (int8_t)trim;
+      setTrimValue(phase, i, trim);
     }
   }
 
@@ -2092,11 +2065,10 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   // reset all trims, except throttle
   for (uint8_t i=0; i<4; i++) {
     if (!IS_THROTTLE(i)) {
-      g_model.subtrim[i] = 0;
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
-        int8_t trim = g_model.phaseData[phase].trim[i];
-        if (trim >= TRIM_MIN && trim <= TRIM_MAX)
-          g_model.phaseData[phase].trim[i] = 0;
+        int16_t trim = getTrimValue(phase, i);
+        if (trim <= TRIM_EXTENDED_MAX)
+          setTrimValue(phase, i, 0);
       }
     }
   }

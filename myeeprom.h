@@ -193,9 +193,12 @@ typedef struct t_SwashRingData { // Swash Ring data
 } __attribute__((packed)) SwashRingData;
 
 typedef struct t_PhaseData {
+#define TRIM_EXTENDED_MAX 500
+#define TRIM_EXTENDED_MIN (-TRIM_EXTENDED_MAX)
 #define TRIM_MAX 125
 #define TRIM_MIN (-TRIM_MAX)
   int8_t trim[4];     // -125..125 => trim value, 127 => use trim of phase 0, -128, -127, -126 => use trim of phases 1|2|3|4 instead
+  int8_t trim_ext:8;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
@@ -246,9 +249,6 @@ typedef struct t_ModelData {
   FuncSwData    funcSw[NUM_FSW];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
-#define SUBTRIM_MAX (1024-TRIM_MAX)
-#define SUBTRIM_MIN (-SUBTRIM_MAX)
-  int16_t   subtrim[NUM_STICKS];
   FrSkyData     frsky;
 } __attribute__((packed)) ModelData;
 
