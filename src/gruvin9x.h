@@ -495,6 +495,8 @@ bool    getSwitch(int8_t swtch, bool nc, uint8_t level=0);
 
 uint8_t getFlightPhase();
 uint8_t getTrimFlightPhase(uint8_t idx, int8_t phase=-1);
+extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
+extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumAbs;  //laufzeit in 1/16 sec

@@ -186,13 +186,14 @@ uint8_t Translate()
             g_model.frsky.channels[i].barMax = 0;
           }
         }
-        memset(&g_model.phaseData[0], 0, sizeof(g_model.phaseData) + sizeof(g_model.subtrim));
+        memset(&g_model.phaseData[0], 0, sizeof(g_model.phaseData));
         memset(&g_model.funcSw[0], 0, sizeof(g_model.funcSw));
         if (trimSw) {
           g_model.funcSw[0].swtch = trimSw;
           g_model.funcSw[0].func = FUNC_INSTANT_TRIM;
         }
-        memcpy(&g_model.phaseData[0].trim[0], &trims[0], 4);
+        for (uint8_t i=0; i<NUM_STICKS; i++)
+          setTrimValue(0, i, trims[i]);
         theFile.writeRlc(FILE_MODEL(id), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
       }
     }
