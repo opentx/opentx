@@ -47,7 +47,7 @@ int8_t EeFsck();
 void EeFsFormat();
 uint16_t EeFsGetFree();
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
 extern volatile size_t eeprom_buffer_size;
 #endif
 
@@ -82,7 +82,7 @@ class EFile
 
 #define ERR_NONE 0
 #define ERR_FULL 1
-#ifndef ASYNC_WRITE
+#ifndef EEPROM_ASYNC_WRITE
 #define ERR_TMO  2
 #endif
 extern uint8_t  s_write_err;    // error reasons
@@ -96,7 +96,7 @@ class RlcFile: public EFile
   uint8_t  m_bRlc;      // control byte for run length decoder
   uint8_t  m_zeroes;
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   uint8_t m_flags;
 #define WRITE_FIRST_LINK  0x01
 #define WRITE_NEXT_LINK_1 0x02
@@ -123,7 +123,7 @@ public:
   void openRlc(uint8_t i_fileId);
 
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   void create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write);
   inline bool isWriting() { return m_write_step != 0; }
   void write(uint8_t*buf, uint8_t i_len);

@@ -302,7 +302,7 @@ bool eeDuplicateModel(uint8_t id)
   EFile theFile2;
   theFile2.openRd(FILE_MODEL(id));
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   theFile.create(FILE_MODEL(i), FILE_TYP_MODEL, true);
 #else
   theFile.create(FILE_MODEL(i), FILE_TYP_MODEL, 600);
@@ -334,7 +334,7 @@ void eeReadAll()
     generalDefault();
     //alert(PSTR("default ok"));
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
     theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL,(uint8_t*)&g_eeGeneral,sizeof(EEGeneral), true);
 #else
     uint16_t sz = theFile.writeRlc(FILE_GENERAL,FILE_TYP_GENERAL,(uint8_t*)&g_eeGeneral,sizeof(EEGeneral), 200);
@@ -343,7 +343,7 @@ void eeReadAll()
 
     modelDefault(0);
     //alert(PSTR("modef ok"));
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
     theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
 #else
     theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model),200);
@@ -356,14 +356,14 @@ void eeReadAll()
 
 
 uint8_t  s_eeDirtyMsk;
-#ifndef ASYNC_WRITE
+#ifndef EEPROM_ASYNC_WRITE
 static uint16_t s_eeDirtyTime10ms;
 #define WRITE_DELAY_10MS 100
 #endif
 void eeDirty(uint8_t msk)
 {
   s_eeDirtyMsk |= msk;
-#ifndef ASYNC_WRITE
+#ifndef EEPROM_ASYNC_WRITE
   if (msk)
     s_eeDirtyTime10ms  = get_tmr10ms();
 #endif
@@ -371,7 +371,7 @@ void eeDirty(uint8_t msk)
 
 void eeCheck(bool immediately)
 {
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   if (immediately) {
     theFile.flush();
   }

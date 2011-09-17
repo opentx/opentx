@@ -24,7 +24,7 @@
 #include "string.h"
 
 uint8_t  s_write_err = 0;    // error reasons
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
 uint8_t  s_sync_write = false;
 #endif
 
@@ -90,7 +90,7 @@ uint16_t EeFsGetFree()
   return ret;
 }
 
-// #ifndef ASYNC_WRITE TODO because duplicate code
+// #ifndef EEPROM_ASYNC_WRITE TODO because duplicate code
 static void EeFsFree(uint8_t blk){///free one or more blocks
   uint8_t i = blk;
   while( EeFsGetLink(i)) i = EeFsGetLink(i);
@@ -100,7 +100,7 @@ static void EeFsFree(uint8_t blk){///free one or more blocks
 }
 // #endif
 
-#ifndef ASYNC_WRITE
+#ifndef EEPROM_ASYNC_WRITE
 static uint8_t EeFsAlloc(){ ///alloc one block from freelist
   uint8_t ret=eeFs.freeList;
   if(ret){
@@ -114,7 +114,7 @@ static uint8_t EeFsAlloc(){ ///alloc one block from freelist
 
 int8_t EeFsck()
 {
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = true;
 #endif
 
@@ -156,7 +156,7 @@ int8_t EeFsck()
     }
   }
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = false;
 #endif
   return ret;
@@ -164,7 +164,7 @@ int8_t EeFsck()
 
 void EeFsFormat()
 {
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = true;
 #endif
   if(sizeof(eeFs) != RESV){
@@ -180,7 +180,7 @@ void EeFsFormat()
   EeFsSetLink(BLOCKS-1, 0);
   eeFs.freeList = FIRSTBLK;
   EeFsFlush();
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = false;
 #endif
 }
@@ -211,7 +211,7 @@ void EFile::swap(uint8_t i_fileId1, uint8_t i_fileId2)
 
 void EFile::rm(uint8_t i_fileId)
 {
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = true;
 #endif
   uint8_t i = eeFs.files[i_fileId].startBlk;
@@ -219,7 +219,7 @@ void EFile::rm(uint8_t i_fileId)
   EeFsFlush(); //chained out
 
   if(i) EeFsFree( i ); //chain in
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = false;
 #endif
 }
@@ -312,7 +312,7 @@ uint16_t RlcFile::readRlc(uint8_t*buf,uint16_t i_len)
   return i;
 }
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
 
 void RlcFile::write1(uint8_t b)
 {
@@ -452,7 +452,7 @@ uint8_t RlcFile::write(uint8_t*buf, uint8_t i_len)
 #endif
 
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
 
 void RlcFile::create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write)
 {
@@ -663,7 +663,7 @@ void RlcFile::close()
 
   if(m_currBlk && ( fri = EeFsGetLink(m_currBlk)))    EeFsSetLink(m_currBlk, 0);
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   eeFs.files[FILE_TMP].size     = m_pos;
   EFile::swap(m_fileId, FILE_TMP);
 #else
@@ -673,7 +673,7 @@ void RlcFile::close()
 
   if(fri) EeFsFree( fri );  //chain in
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   m_write_step = 0;
   s_sync_write = false;
 #endif
