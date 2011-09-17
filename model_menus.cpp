@@ -156,11 +156,11 @@ void menuProcModelSelect(uint8_t event) // TODO lignes sur tout du long
       break;
   }
   if(sel_editMode && subOld!=sub){
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
     s_sync_write = true;
 #endif
     EFile::swap(FILE_MODEL(subOld),FILE_MODEL(sub));
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
     s_sync_write = false;
 #endif
   }

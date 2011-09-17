@@ -23,7 +23,7 @@
 
 #ifndef SIMU
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
 
 uint16_t eeprom_pointer;
 const char* eeprom_buffer_data;

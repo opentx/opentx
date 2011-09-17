@@ -1519,7 +1519,7 @@ void perMain()
   }
   sei();
 
-#ifdef ASYNC_WRITE
+#ifdef EEPROM_ASYNC_WRITE
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
@@ -1548,7 +1548,7 @@ void perMain()
   if (trimsCheckTimer > 0)
     trimsCheckTimer -= 1;
 
-#ifndef ASYNC_WRITE
+#ifndef EEPROM_ASYNC_WRITE
   eeCheck();
 #endif
 
