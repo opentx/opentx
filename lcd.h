@@ -62,7 +62,7 @@
 
 /* other flags */
 #define NO_UNIT       UNSIGN
-#define SHRT_TM_MODE  0x10
+#define SHRT_TM_MODE  LEFT
 
 
 extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];

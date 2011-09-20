@@ -60,7 +60,7 @@ USART1 = FREED
 # Values = STD, MOD1
 PPMIN =  STD
 
-BATT voltage algorithm. Values = BANDGAP, UNSTABLE_BANDGAP 
+# BATT voltage algorithm. Values = BANDGAP, UNSTABLE_BANDGAP 
 BATT = BANDGAP
 
 # Decimals display in the main view (PPM calibration, 

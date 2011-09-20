@@ -320,7 +320,7 @@ void per10ms()
     g_tmr10ms++;
     g_blinkTmr10ms++;
 
-#if defined (PCBV3) && !defined (PCBV4)
+#if defined (PCBV3)
     /* Update gloabal Date/Time every 100 per10ms cycles */
     if (++g_ms100 == 100)
     {
@@ -470,7 +470,6 @@ void per10ms()
 
 #if defined (FRSKY)
 
-  // TODO why sending only every 50ms
   // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
   static uint8_t FrskyDelay = 5;
   if (FrskyAlarmSendState && (--FrskyDelay == 0))
