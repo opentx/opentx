@@ -99,7 +99,7 @@ void menuProcStatistic2(uint8_t event)
   lcd_outdez8(15*FW , 5*FH, g_time_per10/2 );
 #ifndef SIMU
   lcd_puts_P( 0*FW,  6*FH, PSTR("Free Stack min    b"));
-  lcd_outdezAtt(18*FW-1,  6*FH, stack_free() ) ;
+  lcd_outdezAtt(18*FW-1,  6*FH, stack_free(), UNSIGN) ;
 #endif
   lcd_puts_P( 3*FW,  7*FH, PSTR("[MENU] to reset"));
 }

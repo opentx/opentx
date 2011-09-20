@@ -2009,20 +2009,6 @@ uint16_t DEBUG1 = 0;
 uint16_t DEBUG2 = 0;
 #endif
 
-extern unsigned char __bss_end ;
-
-unsigned int stack_free()
-{
-  unsigned char *p ;
-
-  p = &__bss_end + 1 ;
-  while ( *p == 0x55 )
-  {
-    p+= 1 ;
-  }
-  return p - &__bss_end ;
-}
-
 #endif
 
 
@@ -2078,6 +2064,21 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 }
 
 #ifndef SIMU
+
+extern unsigned char __bss_end ;
+
+uint16_t stack_free()
+{
+  unsigned char *p ;
+
+  p = &__bss_end + 1 ;
+  while ( *p == 0x55 )
+  {
+    p+= 1 ;
+  }
+  return p - &__bss_end ;
+}
+
 int main(void)
 {
   // Set up I/O port data directions and initial states
@@ -2173,6 +2174,21 @@ int main(void)
 #else
   ETIMSK |= (1<<TICIE3);
 #endif
+
+  // Init Stack while interrupts are disabled
+#define STACKPTR     _SFR_IO16(0x3D)
+  {
+    unsigned char *p ;
+    unsigned char *q ;
+
+    p = (unsigned char *) STACKPTR ;
+    q = &__bss_end ;
+    p -= 2 ;
+    while ( p > q )
+    {
+      *p-- = 0x55 ;
+    }
+  }
 
   sei(); // interrupts needed for eeReadAll function (soon).
 

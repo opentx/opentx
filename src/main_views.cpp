@@ -40,7 +40,7 @@ uint8_t tabViews[] = {
   3, /*e_inputs*/
   1, /*e_timer2*/
 #ifdef FRSKY
-  2, /*e_telemetry*/
+  4, /*e_telemetry*/
 #endif
 };
 
@@ -152,7 +152,7 @@ void menuMainView(uint8_t event)
   if (!instantTrimSwLock && trimSw) instantTrim();
   instantTrimSwLock = trimSw;
 
-  if (view == e_telemetry+ALTERNATE) {
+  if (view_base == e_telemetry && view > ALTERNATE) {
     putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
     putsVBat(14*FW,0,att);
@@ -276,7 +276,7 @@ void menuMainView(uint8_t event)
         }
       }
       displayCount = (displayCount+1) % 50;
-      if (view & ALTERNATE) {
+      if (view == e_telemetry+ALTERNATE) {
         if (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio) {
           x0 = 0;
           for (int i=0; i<2; i++) {
@@ -340,6 +340,117 @@ void menuMainView(uint8_t event)
         lcd_outdezAtt(15 * FW - 2, 7*FH, frskyRSSI[1].min, 0);
         lcd_outdezAtt(17 * FW - 2, 7*FH, frskyRSSI[1].max, LEFT);
       }
+#ifdef FRSKY_HUB
+      else if (g_eeGeneral.view == e_telemetry+2*ALTERNATE) { // if on second alternate telemetry view
+        // date
+        lcd_outdezNAtt(1*FW, 1*FH, frskyHubData.year+2000, LEFT, 4);
+        lcd_putc(lcd_lastPos, 1*FH, '-');
+        lcd_outdezNAtt(lcd_lastPos+FW, 1*FH, frskyHubData.month, LEFT|LEADING0, 2);
+        lcd_putc(lcd_lastPos, 1*FH, '-');
+        lcd_outdezNAtt(lcd_lastPos+FW, 1*FH, frskyHubData.day, LEFT|LEADING0, 2);
+
+        // time
+        lcd_outdezNAtt(FW*10+8, 1*FH, frskyHubData.hour, LEFT|LEADING0, 2);
+        lcd_putc(lcd_lastPos, 1*FH, ':');
+        lcd_outdezNAtt(lcd_lastPos+FW, 1*FH, frskyHubData.min, LEFT|LEADING0, 2);
+        lcd_putc(lcd_lastPos, 1*FH, ':');
+        lcd_outdezNAtt(lcd_lastPos+FW, 1*FH, frskyHubData.sec, LEFT|LEADING0, 2);
+
+        // Longitude
+        lcd_outdezAtt(FW*3-2, 3*FH,  frskyHubData.gpsLongitude_bp / 100, 0); // ddd before '.'
+        lcd_putc(lcd_lastPos, 3*FH, '@');
+        uint8_t mn = frskyHubData.gpsLongitude_bp % 100;
+        lcd_outdezNAtt(lcd_lastPos+FW, 3*FH, mn, LEFT|LEADING0, 2); // mm before '.'
+        lcd_plot(lcd_lastPos, 4*FH-2, 0); // small decimal point
+        lcd_outdezNAtt(lcd_lastPos+2, 3*FH, frskyHubData.gpsLongitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+        lcd_putc(lcd_lastPos+1, 3*FH, frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
+
+        // Latitude
+        lcd_outdezAtt(lcd_lastPos+3*FW+3, 3*FH,  frskyHubData.gpsLatitude_bp / 100, 0); // ddd before '.'
+        lcd_putc(lcd_lastPos, 3*FH, '@');
+        mn = frskyHubData.gpsLatitude_bp % 100;
+        lcd_outdezNAtt(lcd_lastPos+FW, 3*FH, mn, LEFT|LEADING0, 2); // mm before '.'
+        lcd_plot(lcd_lastPos, 4*FH-2, 0); // small decimal point
+        lcd_outdezNAtt(lcd_lastPos+2, 3*FH, frskyHubData.gpsLatitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+        lcd_putc(lcd_lastPos+1, 3*FH, frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
+
+        // Course / Heading
+        lcd_puts_P(5, 5*FH, PSTR("Hdg:"));
+        lcd_outdezNAtt(lcd_lastPos, 5*FH, frskyHubData.gpsCourse_bp, LEFT|LEADING0, 3); // before '.'
+        lcd_plot(lcd_lastPos, 6*FH-2, 0); // small decimal point
+        lcd_outdezAtt(lcd_lastPos+2, 5*FH, frskyHubData.gpsCourse_ap, LEFT); // after '.'
+        lcd_putc(lcd_lastPos, 5*FH, '@');
+
+        // Speed
+        lcd_puts_P(76, 5*FH, PSTR("Spd:"));
+        lcd_outdezAtt(lcd_lastPos, 5*FH, frskyHubData.gpsSpeed_bp, LEFT); // before '.'
+        lcd_plot(lcd_lastPos, 6*FH-2, 0); // small decimal point
+        lcd_outdezAtt(lcd_lastPos+2, 5*FH, frskyHubData.gpsSpeed_ap, LEFT|UNSIGN); // after '.'
+
+        // Altitude
+        lcd_puts_P(7*FW, 7*FH, PSTR("Alt:"));
+        lcd_outdezNAtt(lcd_lastPos, 7*FH, frskyHubData.gpsAltitude_bp, LEFT|LEADING0, 3); // before '.'
+        lcd_plot(lcd_lastPos, 8*FH-2, 0); // small decimal point
+        lcd_outdezAtt(lcd_lastPos+2, 7*FH, frskyHubData.gpsAltitude_ap, LEFT|UNSIGN); // after '.'
+        lcd_putc(lcd_lastPos, 7*FH, 'm');
+      }
+      else if (g_eeGeneral.view == e_telemetry+3*ALTERNATE) { // if on second alternate telemetry view
+
+        uint8_t y = 2*FH;
+
+        // Temperature 1
+        lcd_puts_P(0, y, PSTR("Temp1:"));
+        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.temperature1, LEFT);
+        lcd_puts_P(lcd_lastPos, y, PSTR("@C"));
+        y += FH;
+
+        // Temperature 2
+        lcd_puts_P(0, y, PSTR("Temp2:"));
+        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.temperature2, LEFT);
+        lcd_puts_P(lcd_lastPos, y, PSTR("@C"));
+
+        y += 2*FH;
+
+        // RPM
+        lcd_puts_P(0, y, PSTR("RPM:"));
+        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.rpm, LEFT);
+        y += FH;
+
+        // Fuel
+        lcd_puts_P(0, y, PSTR("Fuel:"));
+        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.fuelLevel, LEFT);
+        lcd_putc(lcd_lastPos, y, '%');
+        y += FH;
+
+        // Volts
+        lcd_puts_P(0, y, PSTR("Volts:"));
+        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.volts, LEFT);
+        lcd_putc(lcd_lastPos, y, 'V');
+
+        y = 2*FH;
+        // Altitude (barometric)
+        lcd_puts_P(12*FW, y, PSTR("Alt:"));
+        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.baroAltitude, LEFT|UNSIGN);
+        lcd_putc(lcd_lastPos, y, 'm');
+
+        y += 2*FH;
+
+        // Acceleromter
+        lcd_puts_P(11*FW, y, PSTR("Accel"));
+        y += FH;
+        lcd_puts_P(11*FW, y, PSTR("x="));
+        lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelX * 100 / 256, PREC2);
+        lcd_putc(lcd_lastPos, y, 'g');
+        y += FH;
+        lcd_puts_P(11*FW, y, PSTR("y="));
+        lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelY * 100 / 256, PREC2);
+        lcd_putc(lcd_lastPos, y, 'g');
+        y += FH;
+        lcd_puts_P(11*FW, y, PSTR("z="));
+        lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelZ * 100 / 256, PREC2);
+        lcd_putc(lcd_lastPos, y, 'g');
+      }
+#endif
       else {
         y0 = 5*FH;
         //lcd_puts_P(2*FW-3, y0, PSTR("Tele:"));

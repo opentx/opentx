@@ -192,6 +192,48 @@ TEST(EEPROM, rm) {
   EXPECT_EQ(sz, 0);
 }
 
+extern void processFrskyPacket(uint8_t *packet);
+
+TEST(FrSky, gpsNfuel) {
+  uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x14, 0x2c, 0x00, 0x5e, 0x1c, 0x03 };
+  uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x13, 0x38, 0x0c, 0x5e, 0x1b };
+  uint8_t pkt3[] = { 0xfd, 0x07, 0x00, 0xc9, 0x06, 0x5e, 0x23, 0x4e, 0x00, 0x5e };
+  uint8_t pkt4[] = { 0xfd, 0x07, 0x00, 0x12, 0xef, 0x2e, 0x5e, 0x1a, 0x98, 0x26 };
+  uint8_t pkt5[] = { 0xfd, 0x07, 0x00, 0x5e, 0x22, 0x45, 0x00, 0x5e, 0x11, 0x02 };
+  uint8_t pkt6[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x19, 0x93, 0x00, 0x5e, 0x04 };
+  uint8_t pkt7[] = { 0xfd, 0x03, 0x00, 0x64, 0x00, 0x5e };
+  processFrskyPacket(pkt1);
+  processFrskyPacket(pkt2);
+  processFrskyPacket(pkt3);
+  processFrskyPacket(pkt4);
+  processFrskyPacket(pkt5);
+  processFrskyPacket(pkt6);
+  processFrskyPacket(pkt7);
+  EXPECT_EQ(frskyHubData.gpsCourse_bp, 44);
+  EXPECT_EQ(frskyHubData.gpsCourse_ap, 03);
+  EXPECT_EQ(frskyHubData.gpsLongitude_bp / 100, 120);
+  EXPECT_EQ(frskyHubData.gpsLongitude_bp % 100, 15);
+  EXPECT_EQ(frskyHubData.gpsLongitude_ap, 0x2698);
+  EXPECT_EQ(frskyHubData.gpsLatitudeNS, 'N');
+  EXPECT_EQ(frskyHubData.gpsLongitudeEW, 'E');
+  EXPECT_EQ(frskyHubData.fuelLevel, 100);
+}
+
+TEST(FrSky, dateNtime) {
+  uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x15, 0x0f, 0x07, 0x5e, 0x16, 0x0b };
+  uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x17, 0x06, 0x12, 0x5e, 0x18 };
+  uint8_t pkt3[] = { 0xfd, 0x03, 0x00, 0x32, 0x00, 0x5e };
+  processFrskyPacket(pkt1);
+  processFrskyPacket(pkt2);
+  processFrskyPacket(pkt3);
+  EXPECT_EQ(frskyHubData.day, 15);
+  EXPECT_EQ(frskyHubData.month, 07);
+  EXPECT_EQ(frskyHubData.year, 11);
+  EXPECT_EQ(frskyHubData.hour, 06);
+  EXPECT_EQ(frskyHubData.min, 18);
+  EXPECT_EQ(frskyHubData.sec, 50);
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
