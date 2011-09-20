@@ -64,7 +64,7 @@ void eeWriteBlockCmp(const void *i_pointer_ram, void *i_pointer_eeprom, size_t s
 
   eeprom_pointer = (uint16_t)i_pointer_eeprom;
   eeprom_buffer_data = (const char*)i_pointer_ram;
-  eeprom_buffer_size = size;
+  eeprom_buffer_size = size+1;
 
 #if defined (PCBV3)
   EECR |= (1<<EERIE);
