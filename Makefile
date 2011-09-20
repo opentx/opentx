@@ -182,7 +182,7 @@ ifeq ($(PCB), STD)
 
 # If FRSKY-Support is enabled
   ifeq ($(EXT), FRSKY)
-   CPPDEFS += -DFRSKY
+   CPPDEFS += -DFRSKY -DFRSKY_HUB
   endif
 
 # gruvin: If buzzer speaker replacment supported 
