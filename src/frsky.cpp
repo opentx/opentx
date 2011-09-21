@@ -308,10 +308,9 @@ ISR(USART0_RX_vect)
 }
 
 /*
-   USART0 (transmit) Data Register Emtpy ISR
-   Usef to transmit FrSky data packets, which are buffered in frskyTXBuffer. 
+   USART0 Transmit Data Register Emtpy ISR
+   Used to transmit FrSky data packets
 */
-
 ISR(USART0_UDRE_vect)
 {
   if (frskyTxBufferCount > 0) {
@@ -395,23 +394,9 @@ inline void FRSKY_EnableTXD(void)
 
 inline void FRSKY_EnableRXD(void)
 {
-
   UCSR0B |= (1 << RXEN0);  // enable RX
   UCSR0B |= (1 << RXCIE0); // enable Interrupt
 }
-
-#if 0
-void FRSKY_DisableTXD(void)
-{
-  UCSR0B &= ~((1 << TXEN0) | (1 << UDRIE0)); // disable TX pin and interrupt
-}
-
-void FRSKY_DisableRXD(void)
-{
-  UCSR0B &= ~(1 << RXEN0);  // disable RX
-  UCSR0B &= ~(1 << RXCIE0); // disable Interrupt
-}
-#endif
 
 void FRSKY_Init(void)
 {
@@ -431,7 +416,7 @@ void FRSKY_Init(void)
   UBRR0L = UBRRL_VALUE;
   UCSR0A &= ~(1 << U2X0); // disable double speed operation.
 
-  // set 8 N1
+  // set 8N1
   UCSR0B = 0 | (0 << RXCIE0) | (0 << TXCIE0) | (0 << UDRIE0) | (0 << RXEN0) | (0 << TXEN0) | (0 << UCSZ02);
   UCSR0C = 0 | (1 << UCSZ01) | (1 << UCSZ00);
 
