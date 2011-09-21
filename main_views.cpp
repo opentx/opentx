@@ -39,8 +39,10 @@ uint8_t tabViews[] = {
   1, /*e_outputBars*/
   3, /*e_inputs*/
   1, /*e_timer2*/
-#ifdef FRSKY
+#if defined(FRSKY_HUB)
   4, /*e_telemetry*/
+#elif defined(FRSKY)
+  2, /*e_telemetry*/
 #endif
 };
 
@@ -168,8 +170,8 @@ void menuMainView(uint8_t event)
 
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0) | DBLSIZE;
     putsModelName(2*FW-2, 0*FH, g_model.name, g_eeGeneral.currModel, DBLSIZE);
-    putsVBat(6*FW+1, 2*FH, att|NO_UNIT);
-    lcd_putc(6*FW+2, 3*FH, 'V');
+    putsVBat(6*FW-1, 2*FH, att|NO_UNIT);
+    lcd_putc(6*FW, 3*FH, 'V');
 
     if (s_timerState != TMR_OFF) {
       uint8_t att = DBLSIZE | (s_timerState==TMR_BEEPING ? BLINK : 0);
@@ -342,14 +344,14 @@ void menuMainView(uint8_t event)
       }
 #ifdef FRSKY_HUB
       else if (g_eeGeneral.view == e_telemetry+2*ALTERNATE) { // if on second alternate telemetry view
-        // date
+        // Date
         lcd_outdezNAtt(1*FW, 1*FH, frskyHubData.year+2000, LEFT, 4);
         lcd_putc(lcd_lastPos, 1*FH, '-');
         lcd_outdezNAtt(lcd_lastPos+FW, 1*FH, frskyHubData.month, LEFT|LEADING0, 2);
         lcd_putc(lcd_lastPos, 1*FH, '-');
         lcd_outdezNAtt(lcd_lastPos+FW, 1*FH, frskyHubData.day, LEFT|LEADING0, 2);
 
-        // time
+        // Time
         lcd_outdezNAtt(FW*10+8, 1*FH, frskyHubData.hour, LEFT|LEADING0, 2);
         lcd_putc(lcd_lastPos, 1*FH, ':');
         lcd_outdezNAtt(lcd_lastPos+FW, 1*FH, frskyHubData.min, LEFT|LEADING0, 2);
@@ -505,7 +507,7 @@ void menuMainView(uint8_t event)
         for( x = -5, y = 4 ; y < 7 ; x += 5, y += 1 )
         {
             len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l ;  // calculate once per loop
-            V_BAR(SCREEN_WIDTH/2+x,SCREEN_HEIGHT-10, len )
+            V_BAR(SCREEN_WIDTH/2+x,SCREEN_HEIGHT-8, len )
         }
     }
 
