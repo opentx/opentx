@@ -346,7 +346,7 @@ void menuProcTime(uint8_t event)
 
 void menuProcTrainer(uint8_t event)
 {
-  MENU("TRAINER", menuTabDiag, e_Trainer, 7, {0, 2, 2, 2, 2/*, 0, 0*/});
+  MENU("TRAINER", menuTabDiag, e_Trainer, 7, {0, 2, 2, 2, 2, 0/*, 0*/});
 
   int8_t  sub    = m_posVert;
   uint8_t subSub = m_posHorz;

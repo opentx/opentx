@@ -30,7 +30,7 @@
 volatile unsigned char pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff;
 unsigned char portb, dummyport;
 const char *eepromFile = "eeprom.bin";
-volatile size_t eeprom_buffer_size = 0;
+volatile int8_t eeprom_buffer_size = 0;
 
 uint8_t eeprom[EESIZE];
 

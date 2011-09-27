@@ -571,12 +571,13 @@ void RlcFile::nextRlcWriteStep()
 
 void RlcFile::flush()
 {
-  while (eeprom_buffer_size > 0);
+  while (eeprom_buffer_size > 0) wdt_reset();
+
   s_sync_write = true;
-  while (theFile.m_write_len && !s_write_err)
-    theFile.nextWriteStep();
-  while (theFile.isWriting() && !s_write_err)
-    theFile.nextRlcWriteStep();
+  while (m_write_len && !s_write_err)
+    nextWriteStep();
+  while (isWriting() && !s_write_err)
+    nextRlcWriteStep();
   s_sync_write = false;
 }
 
