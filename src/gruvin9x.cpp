@@ -632,8 +632,7 @@ void checkQuickSelect()
         lcd_clear();
         lcd_putsAtt(64-7*FW,0*FH,PSTR("LOADING"),DBLSIZE);
 
-        for(uint8_t i=0;i<sizeof(g_model.name);i++)
-            lcd_putcAtt(FW*2+i*2*FW-i-2, 3*FH, g_model.name[i],DBLSIZE);
+        putsModelName(2*FW, 3*FH, g_model.name, j, DBLSIZE);
 
         refreshDiplay();
         lcdSetRefVolt(g_eeGeneral.contrast);
@@ -677,6 +676,8 @@ void alert(const prog_char * s, bool defaults)
         BACKLIGHT_ON;
       else
         BACKLIGHT_OFF;
+
+    wdt_reset();
   }
 }
 
@@ -1579,6 +1580,15 @@ void perMain()
   g_menuStack[g_menuStackPtr](evt);
   refreshDiplay();
 
+#if defined (PCBV4)
+  // PPM signal on phono-jack. In or out? ...
+  if(checkSlaveMode()) {
+    PORTG |= (1<<OUT_G_SIM_CTL); // 1=ppm out
+  }
+  else{
+    PORTG &=  ~(1<<OUT_G_SIM_CTL); // 0=ppm in
+  }
+#else
   // PPM signal on phono-jack. In or out? ...
   if(checkSlaveMode()) {
     PORTG &= ~(1<<OUT_G_SIM_CTL); // 0=ppm out
@@ -1586,6 +1596,7 @@ void perMain()
   else{
     PORTG |=  (1<<OUT_G_SIM_CTL); // 1=ppm-in
   }
+#endif
 
   switch( get_tmr10ms() & 0x1f ) { //alle 10ms*32
 
@@ -1828,7 +1839,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
         }
     }
 
-#if defined (PCBV3)
+#if defined (PCBV3) && defined (BEEPSPKR)
     // G: use timer0 WGM mode tone generator for beeps
     if(beepOn)
     {
@@ -1869,7 +1880,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
       PORTE &= ~(1<<OUT_E_BUZZER);
     }
 #endif // BEEPSPKR
-#endif // PCBV3
+#endif // PCBV3 && BEEPSPKR
 
     per10ms();
 
@@ -1905,25 +1916,25 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 // count delta values thus can range from about 1600 to 4400 counts (800us to 2200us),
 // corresponding to a PPM signal in the range 0.8ms to 2.2ms (1.5ms at center).
 // (The timer is free-running and is thus not reset to zero at each capture interval.)
-ISR(TIMER3_CAPT_vect, ISR_NOBLOCK) //capture ppm in 16MHz / 8 = 2MHz
+ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with ISR_NOBLOCK
 {
   static uint16_t lastCapt;
 
   uint16_t capture=ICR3;
 
-  cli(); // gruvin: are these global int disables really needed? Consult data sheet.
+  // Prevent rentrance for this IRQ only
 #if defined (PCBV3)
   TIMSK3 &= ~(1<<ICIE3);
 #else
   ETIMSK &= ~(1<<TICIE3);
 #endif
-  sei();
+  sei(); // enable other interrupts
 
   uint16_t val = (capture - lastCapt) / 2;
 
-  // G: We prcoess g_ppmInsright here to make servo movement as smooth as possible
+  // G: We prcoess g_ppmIns immediately here, to make servo movement as smooth as possible
   //    while under trainee control
-  if (val>4000 && val < 16000) // G: Priorotise reset pulse. (Needed when less than 8 incoming pulses)
+  if (val>4000 && val < 16000) // G: Prioritize reset pulse. (Needed when less than 8 incoming pulses)
     ppmInState = 1; // triggered
   else
   {
@@ -1941,13 +1952,12 @@ ISR(TIMER3_CAPT_vect, ISR_NOBLOCK) //capture ppm in 16MHz / 8 = 2MHz
 
   lastCapt = capture;
 
-  cli();
+  cli(); // disable other interrupts for stack pops before this function's RETI
 #if defined (PCBV3)
   TIMSK3 |= (1<<ICIE3);
 #else
   ETIMSK |= (1<<TICIE3);
 #endif
-  sei();
 }
 
 #if defined (PCBV3)
@@ -2085,9 +2095,9 @@ int main(void)
   DDRA = 0xff;  PORTA = 0x00; // LCD data
 
 #if defined (PCBV4)
-  DDRB = 0b10010111;  PORTB = 0b01101000; // 7:SPKR, 6:IDL2_S|PPM,  5:TrainSW,  SDCARD[4:CS 3:MISO 2:MOSI 1:SCK], 0:PPM_OUT|IDL2_SW
+  DDRB = 0b11000111;  PORTB = 0b00111001; // 7:SPKR, 6:PPM_OUT,  5:TrainSW,  4:IDL2_SW, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
   DDRC = 0x3f;  PORTC = 0xc0; // 7:AilDR, 6:EleDR, LCD[5,4,3,2,1[, 0:BackLight
-  DDRD = 0x01;  PORTD = 0xfe; // 7/6:Spare3/4, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
+  DDRD = 0x00;  PORTD = 0xfc; // 7/6:Spare3/4, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
   DDRE = 0b00001010;  PORTE = 0b11110101; // 7:PPM_IN, 6: RENC1_B, 5:RENC1_A, 4:USB_DNEG, 3:BUZZER, 2:USB_DPOS, 1:TELEM_TX, 0:TELEM_RX
   DDRF = 0x00;  PORTF = 0x00; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
   DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
@@ -2161,16 +2171,16 @@ int main(void)
   // not here ... TIMSK1 |= (1<<OCIE1A); ... enable immediately before mainloop
 
   // TCNT3 (2MHz) used for PPM_IN pulse width capture
-#if defined (PPMIN_MOD1) || defined (PCBV3)
+#if defined (PPMIN_MOD1) || (defined (PCBV3) && !defined (PCBV4)) 
   // Noise Canceller enabled, pos. edge, clock at 16MHz / 8 (2MHz)
   TCCR3B  = (1<<ICNC3) | (1<<ICES3) | (0b010 << CS30);
 #else
-  // Noise Canceller enabled, neg. edge, clock at 16MHz / 8 (2MHz)
+  // Noise Canceller enabled, neg. edge, clock at 16MHz / 8 (2MHz) (Correct for PCB V4.x+ also)
   TCCR3B  = (1<<ICNC3) | (0b010 << CS30);
 #endif
 
 #if defined (PCBV3)
-  TIMSK3 |= (1<<ICIE3);         // Enable capture event interrupt
+  TIMSK3 |= (1<<ICIE3);         // Enable Timer 3 (PPM_IN) capture event interrupt
 #else
   ETIMSK |= (1<<TICIE3);
 #endif

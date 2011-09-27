@@ -175,7 +175,7 @@ extern uint16_t DEBUG2;
 #  define OUT_B_Speaker  7
 #  define OUT_B_PPM      6 // will be switched by TCNT1==OCR1B in hardware
 #  define INP_B_Trainer  5
-#  define INP_B_ID2      0
+#  define INP_B_ID2      4
 
 
 #else // boards prior to v4 ...
@@ -572,6 +572,9 @@ template<class t> inline int8_t sgn(t a){ return a>0 ? 1 : (a < 0 ? -1 : 0); }
 /// eeCheck ins EEPROM zurueckgeschrieben.
 void eeWriteBlockCmp(const void *i_pointer_ram, void *i_pointer_eeprom, size_t size);
 void eeDirty(uint8_t msk);
+#ifdef EEPROM_ASYNC_WRITE
+inline void eeFlush() { theFile.flush(); }
+#endif
 void eeCheck(bool immediately=false);
 //void eeWriteGeneral();
 void eeReadAll();
@@ -684,7 +687,7 @@ inline void _beep(uint8_t b) {
 }
 
 extern uint8_t toneFreq;
-#if defined (PCBV3)
+#if defined (PCBV3) && defined(BEEPSPKR)
 inline void _beepSpkr(uint8_t d, uint8_t f)
 {
   g_beepCnt=d;
@@ -749,7 +752,6 @@ extern char g_logFilename[21]; // pers.cpp::resetTelemetry()
 extern FATFS FATFS_Obj; // pers.cpp::resetTelemetry()
 extern FIL g_oLogFile; // pers.cpp::resetTelemetry()
 #endif
-
 
 #endif // gruvin9x_h
 /*eof*/

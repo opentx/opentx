@@ -48,7 +48,7 @@ void EeFsFormat();
 uint16_t EeFsGetFree();
 
 #ifdef EEPROM_ASYNC_WRITE
-extern volatile size_t eeprom_buffer_size;
+extern volatile int8_t eeprom_buffer_size;
 #endif
 
 class EFile

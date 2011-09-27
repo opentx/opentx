@@ -65,6 +65,7 @@ MixData* setDest(uint8_t dch)
 void clearMixes()
 {
     memset(g_model.mixData,0,sizeof(g_model.mixData)); //clear all mixes
+    STORE_MODELVARS;
 }
 
 void clearCurves()
