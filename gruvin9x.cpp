@@ -523,7 +523,7 @@ void doSplash()
     }
 }
 
-void checkMem()
+void checkLowEEPROM()
 {
   if(g_eeGeneral.disableMemoryWarning) return;
   if(EeFsGetFree() < 200)
@@ -845,25 +845,33 @@ void getADC_bandgap()
 {
 #if defined(PCBSTD)
   ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
-  _delay_us(5); // short delay to stablise reference voltage
+  _delay_us(10); // short delay to stablise reference voltage
   ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // grab a sample
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // again becasue first one is usually inaccurate
+  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // grab a sample
   BandGap=ADCW;
-#else
-  //BandGap=225; // gruvin: 1.1V internal Vref doesn't seem to work on the ATmega2561. :/ Weird.
-                 // See http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=847208#847208
-  // In the end, simply using a longer delay (presumably to account for the higher
-  // impedance Vbg internal source) solved the problem. NOTE: Does NOT adversely affect PPM_out latency.
-#if defined (PCBV4)
+#elif defined (PCBV4)
+  // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
   ADCSRB &= ~(1<<MUX5);
-#endif
-  ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.1V reference
-  _delay_us(300); // this somewhat costly delay is the only remedy for stable results on the Atmega2560/1 chips
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // again becasue first one is usually inaccurate
+
+  ADMUX=0x03|ADC_VREF_TYPE; // Switch MUX to internal 1.1V reference
+  _delay_us(10); // tiny bit of stablisation time needed to allow capture-hold capacitor to charge
+  // For times over-sample with no divide, x2 to end at a half averaged, x8. DON'T ASK mmmkay? :P This is how I want it.
+  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
   BandGap=ADCW;
-#if defined (PCBV4)
+  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
+  BandGap+=ADCW;
+  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
+  BandGap+=ADCW;
+  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
+  BandGap+=ADCW;
+  BandGap *= 2;
+
   ADCSRB |= (1<<MUX5);
-#endif
+#else
+  ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.1V reference
+ _delay_us(400); // this somewhat costly delay is the only remedy for stable results on the Atmega2560/1 chips
+  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // take sample
+  BandGap=ADCW;
 #endif
 }
 
@@ -2218,16 +2226,19 @@ int main(void)
   eeReadAll();
 
   uint8_t cModel = g_eeGeneral.currModel;
-  checkQuickSelect();
 
-  doSplash();
-  checkMem();
+  if (~MCUCSR & (1 << WDRF)) {
+    checkQuickSelect();
 
-  getADC_single();
-  checkTHR();
+    doSplash();
+    checkLowEEPROM();
 
-  checkSwitches();
-  checkAlarm();
+    getADC_single();
+    checkTHR();
+
+    checkSwitches();
+    checkAlarm();
+  }
 
   clearKeyEvents(); //make sure no keys are down before proceeding
 
