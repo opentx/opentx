@@ -36,8 +36,8 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#define EEPROM_ER9X_VER  4
-#define EEPROM_ER9X_r751 9
+#define EEPROM_ER9X_MIN  4
+#define EEPROM_ER9X_MAX  9
 
 #define EEPROM_VER_r584  3
 #define EEPROM_VER_r751  5

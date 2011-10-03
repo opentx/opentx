@@ -57,8 +57,8 @@ void generalDefault()
 #ifdef TRANSLATIONS
 uint8_t Translate()
 {
-  if (g_eeGeneral.myVers == EEPROM_VER_r584 || g_eeGeneral.myVers == EEPROM_ER9X_VER) {
-    alert(g_eeGeneral.myVers == EEPROM_VER_r584 ? PSTR("EEprom Data v3") : PSTR("EEprom Data Er9x v4"), true);
+  if (g_eeGeneral.myVers == EEPROM_VER_r584 || (g_eeGeneral.myVers >= EEPROM_ER9X_MIN && g_eeGeneral.myVers <= EEPROM_ER9X_MAX)) {
+    alert(g_eeGeneral.myVers == EEPROM_VER_r584 ? PSTR("EEprom Data v3") : PSTR("EEprom Data Er9x"), true);
     message(PSTR("EEPROM Converting"));
     theFile.readRlc1((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
     memset(&g_eeGeneral.frskyRssiAlarms, 0 , sizeof(g_eeGeneral.frskyRssiAlarms));
@@ -107,12 +107,10 @@ uint8_t Translate()
         g_model.trimInc = v3->trimInc;
         g_model.spare1 = 0;
         g_model.pulsePol = v3->pulsePol;
-        if (g_eeGeneral.myVers == EEPROM_ER9X_VER) {
-          g_model.extendedLimits = v4->extendedLimits;
-        }
-        else {
+        if (g_eeGeneral.myVers == EEPROM_VER_r584)
           g_model.extendedLimits = 0;
-        }
+        else
+          g_model.extendedLimits = v4->extendedLimits;
         g_model.extendedTrims = 0;
         g_model.spare2 = 0;
         g_model.ppmDelay = v3->ppmDelay;
@@ -194,11 +192,11 @@ uint8_t Translate()
         }
         for (uint8_t i=0; i<NUM_STICKS; i++)
           setTrimValue(0, i, trims[i]);
-        theFile.writeRlc(FILE_MODEL(id), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
+        theFile.writeRlc(FILE_MODEL(id), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), 200);
       }
     }
     g_eeGeneral.myVers = EEPROM_VER;
-    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), true);
+    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), 200);
     return sizeof(EEGeneral);
   }
 
