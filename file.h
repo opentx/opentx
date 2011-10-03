@@ -39,7 +39,7 @@
 /// fileId of general file
 #define FILE_GENERAL   0
 /// convert model number 0..MAX_MODELS-1  int fileId
-#define FILE_MODEL(n) (1+n)
+#define FILE_MODEL(n) (1+(n))
 #define FILE_TMP      (1+16)
 
 bool EeFsOpen();
