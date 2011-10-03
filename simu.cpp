@@ -356,7 +356,7 @@ void *init_function(void *) {
   g_menuStack[0] = menuMainView;
   g_menuStack[1] = menuProcModelSelect;
   eeReadAll(); //load general setup and selected model
-  checkMem();  //enough eeprom free?
+  checkLowEEPROM(); //enough eeprom free?
   checkTHR();
   checkSwitches(); //must be last
   state = 2;
