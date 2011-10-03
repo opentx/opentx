@@ -615,37 +615,6 @@ void checkSwitches()
   }
 }
 
-void checkQuickSelect()
-{
-    uint8_t i = keyDown(); //check for keystate
-    uint8_t j;
-    for(j=1; j<8; j++)
-        if(i & (1<<j)) break;
-    j--;
-
-    if(j<6) {
-        if(!eeModelExists(j)) return;
-
-        eeLoadModel(g_eeGeneral.currModel = j);
-        eeDirty(EE_GENERAL);
-
-        lcd_clear();
-        lcd_putsAtt(64-7*FW,0*FH,PSTR("LOADING"),DBLSIZE);
-
-        putsModelName(2*FW, 3*FH, g_model.name, j, DBLSIZE);
-
-        refreshDiplay();
-        lcdSetRefVolt(g_eeGeneral.contrast);
-
-        if(g_eeGeneral.lightSw || g_eeGeneral.lightAutoOff) // if lightswitch is defined or auto off
-            BACKLIGHT_ON;
-        else
-            BACKLIGHT_OFF;
-
-        clearKeyEvents(); // wait for user to release key
-    }
-}
-
 uint8_t  g_beepCnt;
 uint8_t  g_beepVal[5];
 
@@ -2228,8 +2197,6 @@ int main(void)
   uint8_t cModel = g_eeGeneral.currModel;
 
   if (~MCUCSR & (1 << WDRF)) {
-    checkQuickSelect();
-
     doSplash();
     checkLowEEPROM();
 

@@ -524,7 +524,7 @@ const prog_char *get_switches_string() ;
 uint16_t getTmr16KHz();
 unsigned int stack_free();
 
-void checkMem();
+void checkLowEEPROM();
 void checkTHR();
 void checkSwitches();
 
@@ -663,7 +663,7 @@ extern uint16_t           pulses2MHz[120];
 extern int16_t            g_ppmIns[8];
 extern int16_t            g_chans512[NUM_CHNOUT];
 extern volatile uint8_t   tick10ms;
-extern uint16_t            BandGap;
+extern uint16_t           BandGap;
 
 extern uint16_t expou(uint16_t x, uint16_t k);
 extern int16_t expo(int16_t x, int16_t k);
