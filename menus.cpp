@@ -195,7 +195,7 @@ bool check(uint8_t event, uint8_t curr, MenuFuncP *menuTab, uint8_t menuTabSize,
       break;
     case EVT_KEY_LONG(KEY_EXIT):
       s_editMode = false;
-      popMenu(false);
+      popMenu();
       break;
     case EVT_KEY_BREAK(KEY_EXIT):
       if(s_editMode) {
@@ -264,10 +264,10 @@ uint8_t g_menuStackPtr = 0;
 uint8_t m_posVert;
 uint8_t m_posHorz;
 
-void popMenu(bool uppermost)
+void popMenu()
 {
   if (g_menuStackPtr>0) {
-    g_menuStackPtr = uppermost ? 0 : g_menuStackPtr-1;
+    g_menuStackPtr = g_menuStackPtr-1;
     beepKey();
     m_posHorz = g_menuPos[g_menuStackPtr] & 0x0F;
     m_posVert = g_menuPos[g_menuStackPtr] >> 4;
