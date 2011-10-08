@@ -38,7 +38,7 @@ PCB = V4
 # For this option you need to modify your hardware!
 # More information at [insertURLhere]
 # Values = STD, JETI, FRSKY
-EXT = FRSKY
+EXT = STD
 
 # Enable heli menu
 # Values = YES, NO
@@ -50,11 +50,12 @@ TEMPLATES = YES
 
 # gruvin: BEEPER. Values = BUZZER, BUZZER_MOD or SPEAKER
 # (without a mod, BUZZER can make PPM jack output switch from output to input at random)
+# SPEAKER mode actually works on the stock radio, using the stock beeper. Sort of sound OK(ish).
 BEEPER = SPEAKER
 
 # gruvin: Legacy support freeing of USART1 TX/RX pins [DEPRECATED]
 # OPTIONS STD or FREED
-USART1 = FREED
+USART1 = STD
 
 # gruvin: PCM-in circuit mod for JR/Spektrum (and others) compatability
 # Values = STD, MOD1
@@ -217,11 +218,19 @@ ifeq ($(PCB), STD)
 
 else
 # not PCB=STD, so ...
+  CPPSRC += frsky.cpp
+  CPPDEFS += -DPCBV3 -DFRSKY -DFRSKY_HUB
   ifeq ($(PCB), V3)
-    CPPDEFS += -DPCBV3 -DFRSKY -DBEEPSPKR
+    CPPDEFS += -DBEEPSPKR
   endif
   ifeq ($(PCB), V4)
-    CPPDEFS += -DPCBV3 -DPCBV4 -DFRSKY -DBEEPSPKR
+    CPPDEFS += -DPCBV4 
+#   Temporary hack to get stock beeper working for testing, etc ... make BEEPER=BUZZER_MOD
+    ifeq ($(BEEPER), BUZZER_MOD)
+      CPPDEFS += -DBUZZER_MOD
+    else
+      CPPDEFS += -DBEEPSPKR
+    endif
   endif
 endif
 
@@ -293,7 +302,6 @@ CPPFLAGS += -O$(OPT)
 #CPPFLAGS += -fshort-enums
 #CPPFLAGS += -fno-exceptions
 #CPPFLAGS += -fno-unit-at-a-time
-CPPFLAGS += -fno-inline-small-functions
 CPPFLAGS += -Wall
 CPPFLAGS += -Wno-strict-aliasing
 #CPPFLAGS += -Wstrict-prototypes
@@ -304,6 +312,7 @@ CPPFLAGS += -Wno-strict-aliasing
 CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 #CPPFLAGS += $(CSTANDARD)
 
+AVRGCCFLAGS = -fno-inline-small-functions
 
 
 #---------------- Assembler Options ----------------
@@ -378,11 +387,11 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 # Type: avrdude -c ?
 # to get a full listing.
 #
-AVRDUDE_PROGRAMMER = usbtiny
+AVRDUDE_PROGRAMMER = avrispmkII
 
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = /dev/ttyUSB01
+AVRDUDE_PORT = usb
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex:a
 AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).bin:a
@@ -406,12 +415,14 @@ AVRDUDE_NO_VERIFY = -V
 #AVRDUDE_VERBOSE = -v -v
 
 #AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
-AVRDUDE_FLAGS = -B 1 -p $(MCU)  -c $(AVRDUDE_PROGRAMMER)
-AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
+AVRDUDE_FLAGS = -B0.25 -p $(MCU) -c $(AVRDUDE_PROGRAMMER) -P $(AVRDUDE_PORT)
+#AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
 AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 
-
+ifeq ($(ERAZE), NO)
+  AVRDUDE_FLAGS += -D
+endif
 
 #---------------- Debugging Options ----------------
 
@@ -501,7 +512,7 @@ GENDEPFLAGS = -MD -MP -MF .dep/$(@F).d
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
 ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) $(GENDEPFLAGS)
-ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS)
+ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) $(AVRGCCFLAGS)
 ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 SUB_VER = ${shell sh -c "grep \"SUB_VERS\" gruvin9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}

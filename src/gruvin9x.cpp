@@ -721,19 +721,6 @@ uint8_t checkTrim(uint8_t event)
 }
 
 #ifndef SIMU
-class AutoLock
-{
-  uint8_t m_saveFlags;
-public:
-  AutoLock(){
-    m_saveFlags = SREG;
-    cli();
-  };
-  ~AutoLock(){
-    if(m_saveFlags & (1<<SREG_I)) sei();
-    //SREG = m_saveFlags;// & (1<<SREG_I)) sei();
-  };
-};
 
 // #define STARTADCONV (ADCSRA  = (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2) | (1<<ADSC) | (1 << ADIE))
 // G: Note that the above would have set the ADC prescaler to 128, equating to
@@ -748,7 +735,6 @@ uint16_t anaIn(uint8_t chan)
   //                        Google Translate (German): // if table already, then it must also be worthwhile
   static prog_char APM crossAna[]={3,1,2,0,4,5,6,7};
   volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
-  AutoLock autoLock;
   return *p;
 }
 
@@ -1485,17 +1471,17 @@ void perMain()
 
   perOut(next_chans512);
 
-  cli();
-  if (fading_out_timer) {
-    for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+    cli();
+    if (fading_out_timer) {
       g_chans512[i] = last_chans512[i] + (next_chans512[i] - last_chans512[i]) / fading_out_timer;
+      fading_out_timer--;
     }
-    fading_out_timer--;
+    else {
+      g_chans512[i] = next_chans512[i];
+    }
+    sei();
   }
-  else {
-    memcpy(g_chans512, next_chans512, sizeof(g_chans512));
-  }
-  sei();
 
 #ifdef EEPROM_ASYNC_WRITE
   if (!eeprom_buffer_size) {
@@ -1511,7 +1497,7 @@ void perMain()
   evalFunctions();
 
   if (s_noHi) s_noHi--;
-  if (g_eeGeneral.inactivityTimer && g_vbat100mV>49) {
+  if (g_eeGeneral.inactivityTimer && g_vbat100mV>50) {
     inacCounter++;
     uint16_t tsum = 0;
     for(uint8_t i=0;i<4;i++) tsum += anaIn(i)/64;  // reduce sensitivity
@@ -1617,7 +1603,7 @@ Gruvin:
 
         static uint8_t s_batCheck;
         s_batCheck+=32;
-        if(s_batCheck==0 && g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>49) {
+        if(s_batCheck==0 && g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
           beepErr();
           if (g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
         }
@@ -2196,7 +2182,11 @@ int main(void)
 
   uint8_t cModel = g_eeGeneral.currModel;
 
+#if defined (PCBV3)
+  if (~MCUSR & (1 << WDRF)) {
+#else
   if (~MCUCSR & (1 << WDRF)) {
+#endif
     doSplash();
     checkLowEEPROM();
 

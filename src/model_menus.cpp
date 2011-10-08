@@ -90,104 +90,6 @@ MenuFuncP_PROGMEM APM menuTabModel[] = {
 #endif
 };
 
-void menuProcModelSelect(uint8_t event) // TODO lignes sur tout du long
-{
-  TITLE("MODELSEL");
-  int8_t subOld  = m_posVert;
-  if (!check_submenu_simple(event, MAX_MODELS-1)) return;
-
-#ifdef EEPROM_ASYNC_WRITE
-  // flush eeprom write so that it's possible to load model names
-  eeFlush();
-#endif
-
-  lcd_puts_P(     9*FW, 0, PSTR("free"));
-  lcd_outdezAtt(  17*FW, 0, EeFsGetFree(),0);
-
-  DisplayScreenIndex(e_ModelSelect, DIM(menuTabModel), INVERS);
-
-  int8_t  sub    = m_posVert;
-  static uint8_t sel_editMode;
-  
-  switch(event)
-  {
-    //case  EVT_KEY_FIRST(KEY_MENU):
-    case  EVT_KEY_FIRST(KEY_EXIT):
-      if(sel_editMode){
-        sel_editMode = false;
-        beepKey();
-        killEvents(event);
-        eeCheck(true); // force writing of current model data before this is changed
-        eeLoadModel(g_eeGeneral.currModel = m_posVert);
-        STORE_GENERALVARS;
-        break;
-      }
-      //fallthrough
-    case  EVT_KEY_FIRST(KEY_LEFT):
-    case  EVT_KEY_FIRST(KEY_RIGHT):
-      if(g_eeGeneral.currModel != m_posVert)
-      {
-        killEvents(event);
-        g_eeGeneral.currModel = m_posVert;
-        eeCheck(true); // force writing of current model data before this is changed
-        eeLoadModel(g_eeGeneral.currModel);
-        STORE_GENERALVARS;
-        beepWarn1();
-      }
-      //case EXIT handled in checkExit
-      if(event==EVT_KEY_FIRST(KEY_LEFT))  chainMenu(menuTabModel[DIM(menuTabModel)-1]);
-      if(event==EVT_KEY_FIRST(KEY_RIGHT)) chainMenu(menuProcModel);
-      return;
-    case  EVT_KEY_FIRST(KEY_MENU):
-      sel_editMode = true;
-      beepKey();
-      break;
-    case  EVT_KEY_LONG(KEY_MENU):
-      if(sel_editMode){
-        // message(PSTR("Duplicating model"));
-        eeCheck(true); // force writing of current model data before this is changed
-        if (eeDuplicateModel(sub)) {
-          beepKey();
-          sel_editMode = false;
-        }
-        else {
-          beepWarn();
-        }
-      }
-      break;
-
-    case EVT_ENTRY:
-      sel_editMode = false;
-      m_posVert = sub = g_eeGeneral.currModel;
-      break;
-  }
-  if(sel_editMode && subOld!=sub){
-    eeCheck(true); // force writing of current model data before this is changed
-#ifdef EEPROM_ASYNC_WRITE
-    s_sync_write = true;
-#endif
-    EFile::swap(FILE_MODEL(subOld),FILE_MODEL(sub));
-#ifdef EEPROM_ASYNC_WRITE
-    s_sync_write = false;
-#endif
-  }
-
-  if(sub-s_pgOfs < 1)        s_pgOfs = max(0,sub-1);
-  else if(sub-s_pgOfs >4 )  s_pgOfs = min(MAX_MODELS-6,sub-4);
-  for(uint8_t i=0; i<6; i++){
-    uint8_t y=(i+2)*FH;
-    uint8_t k=i+s_pgOfs;
-    lcd_outdezNAtt(  3*FW, y, k+1, LEADING0+((sub==k) ? INVERS : 0), 2);
-    if(k==g_eeGeneral.currModel) lcd_putc(1,  y,'*');
-    char name[sizeof(g_model.name)];
-    uint16_t size = eeLoadModelName(k, name);
-    if (size) {
-      putsModelName(4*FW, y, name, k, ((sub==k) ? (sel_editMode ? INVERS : 0 ) : 0));
-      lcd_outdezAtt(20*FW, y, size, ((sub==k) ? (sel_editMode ? INVERS : 0 ) : 0));
-    }
-  }
-}
-
 const prog_char * s_warning = 0;
 const prog_char * s_warning_info;
 uint8_t           s_warning_info_len;
@@ -214,24 +116,203 @@ void displayWarning(uint8_t event)
 
 void displayConfirmation(uint8_t event)
 {
-  if (s_warning) {
-    s_confirmation = false;
-    lcd_filled_rect(10, 16, 108, 40, WHITE);
-    lcd_rect(10, 16, 108, 40);
-    lcd_puts_P(16, 3*FH, s_warning);
-    if (s_warning_info)
-      lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
-    lcd_puts_P(16, 5*FH, PSTR("[MENU]    [EXIT]"));
+  s_confirmation = false;
+  lcd_filled_rect(10, 16, 108, 40, WHITE);
+  lcd_rect(10, 16, 108, 40);
+  lcd_puts_P(16, 3*FH, s_warning);
+  if (s_warning_info)
+    lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
+  lcd_puts_P(16, 5*FH, PSTR("[MENU]    [EXIT]"));
 
-    switch(event) {
-      case EVT_KEY_FIRST(KEY_MENU):
-        s_confirmation = true;
-        // no break
-      case EVT_KEY_FIRST(KEY_EXIT):
-        killEvents(event);
-        s_warning = 0;
+  switch(event) {
+    case EVT_KEY_FIRST(KEY_MENU):
+      s_confirmation = true;
+      // no break
+    case EVT_KEY_FIRST(KEY_EXIT):
+      killEvents(event);
+      s_warning = 0;
+      break;
+  }
+}
+
+#define COPY_MODE 1
+#define MOVE_MODE 2
+static uint8_t s_copyMode = 0;
+static int8_t s_copySrcRow;
+static int8_t s_copyTgtOfs;
+
+void menuProcModelSelect(uint8_t event)
+{
+  char name[sizeof(g_model.name)];
+
+  TITLE("MODELSEL");
+
+#ifdef EEPROM_ASYNC_WRITE
+    // flush eeprom write
+    eeFlush();
+#endif
+
+  if (s_confirmation) {
+    EFile::rm(FILE_MODEL(m_posVert)); // delete file
+    s_confirmation = 0;
+    s_copyMode = 0;
+  }
+
+  uint8_t _event = (s_warning ? 0 : event);
+  uint8_t __event = _event;
+
+  if (s_copyMode || !EFile::exists(FILE_MODEL(g_eeGeneral.currModel))) {
+    if ((_event & 0x1f) == KEY_EXIT)
+      __event -= KEY_EXIT;
+  }
+
+  int8_t oldSub = m_posVert;
+  if (!check_submenu_simple(__event, MAX_MODELS-1)) return;
+  int8_t sub = m_posVert;
+
+  lcd_puts_P(     9*FW, 0, PSTR("free"));
+  lcd_outdezAtt(  17*FW, 0, EeFsGetFree(),0);
+
+  DisplayScreenIndex(e_ModelSelect, DIM(menuTabModel), INVERS);
+
+  switch(_event)
+  {
+      case EVT_ENTRY:
+        m_posVert = sub = g_eeGeneral.currModel;
+        s_copyMode = 0;
+        s_copyTgtOfs = 0;
+        s_copySrcRow = -1;
         break;
+      case EVT_KEY_LONG(KEY_EXIT):
+        if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && EFile::exists(FILE_MODEL(sub))) {
+          s_warning = PSTR("DELETE MODEL");
+          killEvents(_event);
+          break;
+        }
+        // no break
+      case EVT_KEY_BREAK(KEY_EXIT):
+        if (s_copyTgtOfs || s_copySrcRow >= 0) {
+          eeCheck(true); // force writing of current model data before this is changed
+          do {
+            if (s_copyTgtOfs < 0) {
+              s_copyTgtOfs++;
+              m_posVert = (MAX_MODELS+m_posVert-1) % MAX_MODELS;
+            }
+            else {
+              s_copyTgtOfs--;
+              m_posVert = (m_posVert+1) % MAX_MODELS;
+            }
+            EFile::swap(FILE_MODEL(sub), FILE_MODEL(m_posVert));
+            if (m_posVert == g_eeGeneral.currModel) {
+              g_eeGeneral.currModel = sub;
+              STORE_GENERALVARS;
+            }
+            else if (sub == g_eeGeneral.currModel) {
+              g_eeGeneral.currModel = m_posVert;
+              STORE_GENERALVARS;
+            }
+            sub = m_posVert;
+          } while (s_copyTgtOfs != 0);
+
+          if (s_copySrcRow >= 0) {
+            EFile::rm(FILE_MODEL(sub));
+            sub = m_posVert = s_copySrcRow;
+          }
+        }
+        s_copyMode = 0;
+        killEvents(_event);
+        break;
+      case EVT_KEY_BREAK(KEY_MENU):
+        if (EFile::exists(FILE_MODEL(sub)) && !s_copyTgtOfs) {
+          s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
+          s_copySrcRow = -1;
+          break;
+        }
+        // no break
+      case EVT_KEY_LONG(KEY_MENU):
+        if (s_copyTgtOfs) {
+          s_copyTgtOfs = 0;
+        }
+        else {
+          eeCheck(true); // force writing of current model data before this is changed
+          eeLoadModel(sub);
+          if (g_eeGeneral.currModel != sub) {
+            g_eeGeneral.currModel = sub;
+            STORE_GENERALVARS;
+          }
+        }
+        s_copyMode = 0;
+        killEvents(_event);
+        break;
+      case EVT_KEY_FIRST(KEY_LEFT):
+      case EVT_KEY_FIRST(KEY_RIGHT):
+        if (sub == g_eeGeneral.currModel) {
+          if (!EFile::exists(FILE_MODEL(sub))) {
+            eeCheck(true); // force writing of current model data before this is changed
+            eeLoadModel(sub);
+          }
+          chainMenu(_event == EVT_KEY_FIRST(KEY_RIGHT) ? menuProcModel : menuTabModel[DIM(menuTabModel)-1]);
+          return;
+        }
+        beepWarn();
+        break;
+      case EVT_KEY_FIRST(KEY_UP):
+      case EVT_KEY_FIRST(KEY_DOWN):
+        if (s_copyMode) {
+          eeCheck(true);
+          int8_t next_ofs = (_event == EVT_KEY_FIRST(KEY_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
+          if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
+            s_copySrcRow = sub+next_ofs;
+            // insert a model (in the first empty slot above / below)
+            m_posVert = eeDuplicateModel(s_copySrcRow, _event==EVT_KEY_FIRST(KEY_DOWN));
+            if (m_posVert == (uint8_t)-1) {
+              m_posVert = sub;
+            }
+            next_ofs = 0;
+            sub = m_posVert;
+          }
+          else {
+            // only swap the model with its neighbor
+            EFile::swap(FILE_MODEL(oldSub), FILE_MODEL(sub));
+            if (oldSub == g_eeGeneral.currModel) {
+              g_eeGeneral.currModel = sub;
+              STORE_GENERALVARS;
+            }
+            else if (sub == g_eeGeneral.currModel) {
+              g_eeGeneral.currModel = oldSub;
+              STORE_GENERALVARS;
+            }
+          }
+          s_copyTgtOfs = next_ofs;
+        }
+        break;
+  }
+
+  if (sub-s_pgOfs < 1) s_pgOfs = max(0, sub-1);
+  else if (sub-s_pgOfs > 5)  s_pgOfs = min(MAX_MODELS-7, sub-4);
+  for (uint8_t i=0; i<7; i++) {
+    uint8_t y=(i+1)*FH;
+    uint8_t k=i+s_pgOfs;
+    lcd_outdezNAtt(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
+    if (EFile::exists(FILE_MODEL(k))) {
+      uint16_t size = eeLoadModelName(k, name);
+      putsModelName(4*FW, y, name, k, 0);
+      lcd_outdezAtt(20*FW, y, size, 0);
     }
+    if (k==g_eeGeneral.currModel) lcd_putc(1, y, '*');
+    if (s_copyMode && k==sub) {
+      if (s_copyMode == COPY_MODE)
+        lcd_putc(20*FW+2, y, '+');
+      lcd_rect(8, y-1, DISPLAY_W-1-7, 9);
+      lcd_filled_rect(9, y, DISPLAY_W-1-9, 7);
+    }
+  }
+
+  if (s_warning) {
+    eeLoadModelName(sub, name);
+    s_warning_info = name;
+    s_warning_info_len = sizeof(g_model.name);
+    displayConfirmation(event);
   }
 }
 
@@ -271,36 +352,9 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 }
 
 #define PARAM_OFS (9*FW)
-void menuProcModel(uint8_t _event)
+void menuProcModel(uint8_t event)
 {
-  uint8_t event = (s_warning ? 0 : _event);
-
-  if (s_confirmation) {
-    uint8_t i = g_eeGeneral.currModel;
-
-#ifdef EEPROM_ASYNC_WRITE
-    // flush eeprom write
-    eeFlush();
-#endif
-    EFile::rm(FILE_MODEL(i)); // delete file
-
-    while (!EFile::exists(FILE_MODEL(i))) {
-      i--;
-      if (i>MAX_MODELS) i=MAX_MODELS-1;
-      if (i==g_eeGeneral.currModel) {
-        i=0;
-        break;
-      }
-    }
-    g_eeGeneral.currModel = i;
-    STORE_GENERALVARS;
-    eeLoadModel(i); // load default values
-    s_confirmation = 0;
-    chainMenu(menuProcModelSelect);
-    return;
-  }
-
-  MENU("SETUP", menuTabModel, e_Model, 11, {0,sizeof(g_model.name)-1,3,3,0,0,0,1,6,3/*, 0*/});
+  MENU("SETUP", menuTabModel, e_Model, 10, {0,sizeof(g_model.name)-1,3,3,0,0,0,1,6,3});
 
   uint8_t  sub    = m_posVert;
   uint8_t y = 1*FH;
@@ -430,21 +484,7 @@ void menuProcModel(uint8_t _event)
             break;
       }
     if((y+=FH)>7*FH) return;
-  }subN++;
-
-  if(s_pgOfs<subN) {
-    lcd_putsAtt(0*FW, y, PSTR("DELETE MODEL   [MENU]"),s_noHi ? 0 : (sub==subN?INVERS:0));
-    if(sub==subN && event==EVT_KEY_LONG(KEY_MENU)) {
-      s_editMode = false;
-      s_noHi = NO_HI_LEN;
-      killEvents(event);
-      s_warning = PSTR("DELETE MODEL");
-      s_warning_info = g_model.name;
-      s_warning_info_len = sizeof(g_model.name);
-    }
   }
-
-  displayConfirmation(_event);
 }
 
 static uint8_t s_currIdx;
@@ -452,7 +492,6 @@ static uint8_t s_currIdx;
 void menuProcPhaseOne(uint8_t event)
 {
   SUBMENU("EDIT FLIGHT PHASE", (s_currIdx==0 ? 3 : 5), {6, 0, 3/*, 0, 0*/});
-  // TODO if last MENU/SUBMENU numbers are 0 they may be skipped
 
   int8_t sub = m_posVert;
   PhaseData *phase = phaseaddress(s_currIdx);
@@ -1076,13 +1115,8 @@ void menuProcMixOne(uint8_t event)
 }
 
 static uint8_t s_maxLines = 8;
-static int8_t s_copyTgtOfs;
 static uint8_t s_copySrcIdx;
 static uint8_t s_copySrcCh;
-static uint8_t s_copySrcRow;
-#define COPY_MODE 1
-#define MOVE_MODE 2
-static uint8_t s_copyMode = 0;
 
 #define FIRST 0x10
 void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, uint8_t cur, uint8_t event)

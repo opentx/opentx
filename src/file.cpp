@@ -203,10 +203,18 @@ bool EFile::exists(uint8_t i_fileId)
 
 void EFile::swap(uint8_t i_fileId1, uint8_t i_fileId2)
 {
+#ifdef EEPROM_ASYNC_WRITE
+  s_sync_write = true;
+#endif
+
   DirEnt            tmp = eeFs.files[i_fileId1];
   eeFs.files[i_fileId1] = eeFs.files[i_fileId2];
   eeFs.files[i_fileId2] = tmp;
   EeFsFlush();
+
+#ifdef EEPROM_ASYNC_WRITE
+  s_sync_write = false;
+#endif
 }
 
 void EFile::rm(uint8_t i_fileId)
