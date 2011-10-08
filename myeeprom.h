@@ -41,7 +41,7 @@
 
 #define EEPROM_VER_r584  3
 #define EEPROM_VER_r751  5
-#define EEPROM_VER       106 // TODO make it 201
+#define EEPROM_VER       201
 
 typedef struct t_TrainerMix {
   uint8_t srcChn:6; // 0-7 = ch1-8

@@ -53,9 +53,11 @@ void menuMainView(uint8_t event)
 
   uint8_t view = (switchView == 255 ? g_eeGeneral.view : switchView);
 
+#ifdef FRSKY
   bool telemViewSw = isFunctionActive(FUNC_VIEW_TELEMETRY);
   if (switchView == 255 && telemViewSw) { view = switchView = e_telemetry + ALTERNATE; }
   if (switchView != 255 && !telemViewSw) { view = g_eeGeneral.view; switchView = 255; }
+#endif
 
   uint8_t view_base = view & 0x0f;
 
@@ -154,6 +156,7 @@ void menuMainView(uint8_t event)
   if (!instantTrimSwLock && trimSw) instantTrim();
   instantTrimSwLock = trimSw;
 
+#ifdef FRSKY
   if (view_base == e_telemetry && view > ALTERNATE) {
     putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
@@ -164,7 +167,9 @@ void menuMainView(uint8_t event)
     }
     lcd_filled_rect(0, 0, DISPLAY_W, 8);
   }
-  else {
+  else
+#endif
+  {
     uint8_t phase = getFlightPhase();
     lcd_putsnAtt(6*FW+2, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 

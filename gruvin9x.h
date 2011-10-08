@@ -576,13 +576,11 @@ void eeDirty(uint8_t msk);
 inline void eeFlush() { theFile.flush(); }
 #endif
 void eeCheck(bool immediately=false);
-//void eeWriteGeneral();
 void eeReadAll();
 bool eeModelExists(uint8_t id);
 uint16_t eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
-//void eeSaveModel(uint8_t id);
-bool eeDuplicateModel(uint8_t id);
+int8_t eeDuplicateModel(uint8_t id, bool down=true);
 
 ///number of real input channels (1-9) plus virtual input channels X1-X4
 #define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+2/*MAX/FULL*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT+NUM_TELEMETRY)

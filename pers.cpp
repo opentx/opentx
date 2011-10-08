@@ -57,6 +57,12 @@ void generalDefault()
 #ifdef TRANSLATIONS
 uint8_t Translate()
 {
+  if (g_eeGeneral.myVers == 0) {
+    if (theFile.readRlc1((uint8_t*)&g_eeGeneral, 1) != 1)
+      return 0;
+    theFile.openRlc(FILE_GENERAL);
+  }
+
   if (g_eeGeneral.myVers == EEPROM_VER_r584 || (g_eeGeneral.myVers >= EEPROM_ER9X_MIN && g_eeGeneral.myVers <= EEPROM_ER9X_MAX)) {
     alert(g_eeGeneral.myVers == EEPROM_VER_r584 ? PSTR("EEprom Data v3") : PSTR("EEprom Data Er9x"), true);
     message(PSTR("EEPROM Converting"));
@@ -68,6 +74,9 @@ uint8_t Translate()
         g_eeGeneral.lightSw += 6;
       if (g_eeGeneral.lightSw == -MAX_SWITCH+6)
         g_eeGeneral.lightSw -= 6;
+    }
+    else {
+      g_eeGeneral.inactivityTimer += 10;
     }
     g_eeGeneral.view = 0; // will not translate the view index
     EEPROM_V3::EEGeneral *old = (EEPROM_V3::EEGeneral *)&g_eeGeneral;
@@ -211,7 +220,7 @@ bool eeLoadGeneral()
   uint8_t sz = 0;
 
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1) {
-    theFile.openRlc(FILE_GENERAL);
+    theFile.openRlc(FILE_GENERAL); // TODO include this openRlc inside readRlc
     if (g_eeGeneral.myVers == EEPROM_VER) {
       sz = theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
     }
@@ -288,14 +297,14 @@ void eeLoadModel(uint8_t id)
   }
 }
 
-bool eeDuplicateModel(uint8_t id)
+int8_t eeDuplicateModel(uint8_t id, bool down)
 {
-  uint8_t i;
-  for( i=id+1; i<MAX_MODELS; i++)
-  {
-    if(! EFile::exists(FILE_MODEL(i))) break;
+  int8_t i = id;
+  for (;;) {
+    i = (MAX_MODELS + (down ? i+1 : i-1)) % MAX_MODELS;
+    if (!EFile::exists(FILE_MODEL(i))) break;
+    if (i == id) return -1; // no free space in directory left
   }
-  if(i==MAX_MODELS) return false; // no free space in directory left
 
   EFile theFile2;
   theFile2.openRd(FILE_MODEL(id));
@@ -315,8 +324,9 @@ bool eeDuplicateModel(uint8_t id)
     }
   }
   theFile.close();
-  return true;
+  return i;
 }
+
 void eeReadAll()
 {
   if(!EeFsOpen() ||
