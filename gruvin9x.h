@@ -522,7 +522,7 @@ extern uint16_t s_traceCnt;
 const prog_char *get_switches_string() ;
 
 uint16_t getTmr16KHz();
-unsigned int stack_free();
+uint16_t stack_free();
 
 void checkLowEEPROM();
 void checkTHR();

@@ -286,6 +286,7 @@ void eeLoadModel(uint8_t id)
     if (sz != sizeof(ModelData)) {
       // alert("Error Loading Model");
       modelDefault(id);
+      eeCheck(true);
     }
 
     resetTimer1();
