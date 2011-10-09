@@ -132,6 +132,9 @@ uint8_t Translate()
           memmove(&g_model.mixData[i], &v3->mixData[i], sizeof(MixData)); // MixData size changed!
           g_model.mixData[i].mixWarn = g_model.mixData[i].phase;
           g_model.mixData[i].phase = 0;
+          if (g_eeGeneral.myVers == EEPROM_VER_r584 && g_model.mixData[i].srcRaw > MIX_FULL) {
+            g_model.mixData[i].srcRaw += 3; /* because of [CYC1:CYC3] inserted after MIX_FULL */
+          }
         }
         assert((char *)&g_model.limitData[0] < (char *)&v3->limitData[0]);
         memmove(&g_model.limitData[0], &v3->limitData[0], sizeof(LimitData)*NUM_CHNOUT);
