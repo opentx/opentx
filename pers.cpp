@@ -142,13 +142,14 @@ uint8_t Translate()
         EEPROM_V4::ExpoData expo4[4];
         memcpy(&expo4[0], &v4->expoData[0], sizeof(expo4));
         memset(&g_model.expoData[0], 0, sizeof(expo4));
+        // expos conversion
         uint8_t e = 0;
         for (uint8_t ch=0; ch<4 && e<MAX_EXPOS; ch++) {
           for (int8_t dr=2; dr>=0 && e<MAX_EXPOS; dr--) {
-            if ((dr==2 && !expo4[ch].drSw1) ||
-                (dr==1 && !expo4[ch].drSw2) ||
-                (dr==0 && !expo4[ch].expo[0][0][0] && !expo4[ch].expo[0][0][1] && !expo4[ch].expo[0][1][0] && !expo4[ch].expo[2][1][1])) continue;
-            g_model.expoData[e].swtch = (dr == 0 ? expo4[ch].drSw1 : (dr == 1 ? expo4[ch].drSw2 : 0));
+            if ((dr==2 && !expo4[ch].drSw2) ||
+                (dr==1 && !expo4[ch].drSw1) ||
+                (dr==0 && !expo4[ch].expo[0][0][0] && !expo4[ch].expo[0][0][1] && !expo4[ch].expo[0][1][0] && !expo4[ch].expo[0][1][1])) continue;
+            g_model.expoData[e].swtch = (dr == 2 ? expo4[ch].drSw2 : (dr == 1 ? expo4[ch].drSw1 : 0));
             g_model.expoData[e].chn = ch;
             g_model.expoData[e].expo = expo4[ch].expo[dr][0][0];
             g_model.expoData[e].weight = 100 + expo4[ch].expo[dr][1][0];
