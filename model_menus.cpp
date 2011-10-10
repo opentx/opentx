@@ -329,14 +329,19 @@ void menuProcModelSelect(uint8_t event)
 
 void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active, uint8_t & cur)
 {
-  if (active && s_editMode) {
-    switch(event) {
-      case EVT_KEY_BREAK(KEY_LEFT):
-        if (cur>0) cur--;
-        break;
-      case EVT_KEY_BREAK(KEY_RIGHT):
-        if (cur<size-1) cur++;
-        break;
+  if (active) {
+    if (s_editMode) {
+      switch(event) {
+        case EVT_KEY_BREAK(KEY_LEFT):
+          if (cur>0) cur--;
+          break;
+        case EVT_KEY_BREAK(KEY_RIGHT):
+          if (cur<size-1) cur++;
+          break;
+      }
+    }
+    else {
+      cur = m_posHorz = 0;
     }
   }
 
