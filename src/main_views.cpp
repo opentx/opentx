@@ -50,6 +50,7 @@ void menuMainView(uint8_t event)
 {
   static uint8_t switchView = 255;
   static bool instantTrimSwLock;
+  static bool trim2OfsSwLock;
 
   uint8_t view = (switchView == 255 ? g_eeGeneral.view : switchView);
 
@@ -149,12 +150,17 @@ void menuMainView(uint8_t event)
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
       instantTrimSwLock = true;
+      trim2OfsSwLock = true;
       break;
   }
 
   bool trimSw = isFunctionActive(FUNC_INSTANT_TRIM);
   if (!instantTrimSwLock && trimSw) instantTrim();
   instantTrimSwLock = trimSw;
+  
+  trimSw = isFunctionActive(FUNC_TRIMS_2_OFS);
+  if (!trim2OfsSwLock && trimSw) moveTrimsToOffsets();
+  trim2OfsSwLock = trimSw;
 
 #ifdef FRSKY
   if (view_base == e_telemetry && view > ALTERNATE) {

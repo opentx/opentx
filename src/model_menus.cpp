@@ -1114,29 +1114,29 @@ static uint8_t s_copySrcIdx;
 static uint8_t s_copySrcCh;
 
 #define FIRST 0x10
-void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, uint8_t cur, uint8_t event)
+inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, uint8_t cur, uint8_t event)
 {
   uint8_t y = (row-s_pgOfs)*FH;
   MixData *md = mixaddress(mix);
   if (idx > 0)
     lcd_putsnAtt(FW, y, PSTR("+=*=:=")+md->mltpx*2, 2, 0);
 
-  putsChnRaw(4*FW, y, md->srcRaw, 0);
+  putsChnRaw(4*FW+2, y, md->srcRaw, 0);
 
   uint8_t attr = ((s_copyMode || cur != row) ? 0 : INVERS);
-  lcd_outdezAtt(11*FW, y, md->weight, attr);
+  lcd_outdezAtt(11*FW+7, y, md->weight, attr);
   if (attr != 0)
     CHECK_INCDEC_MODELVAR(event, md->weight, -125, 125);
 
-  if (md->curve) lcd_putsnAtt(12*FW, y, PSTR(CURV_STR)+md->curve*3, 3, 0);
-  if (md->swtch) putsSwitches(16*FW+FW/2, y, md->swtch, 0);
+  if (md->curve) lcd_putsnAtt(12*FW+7, y, PSTR(CURV_STR)+md->curve*3, 3, 0);
+  if (md->swtch) putsSwitches(16*FW+6, y, md->swtch, 0);
 
   char cs = ' ';
   if (md->speedDown || md->speedUp)
     cs = 'S';
   if ((md->delayUp || md->delayDown))
     cs = (cs =='S' ? '*' : 'D');
-  lcd_putcAtt(20*FW+1, y, cs, 0);
+  lcd_putcAtt(20*FW+3, y, cs, 0);
 
   if (s_copyMode) {
     if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && mix == (s_copySrcIdx + (s_copyTgtOfs<0))) {
@@ -1151,7 +1151,7 @@ void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, uint8_t
   }
 }
 
-void displayExpoLine(uint8_t row, uint8_t expo, uint8_t ch, uint8_t idx, uint8_t cur, uint8_t event)
+inline void displayExpoLine(uint8_t row, uint8_t expo, uint8_t ch, uint8_t idx, uint8_t cur, uint8_t event)
 {
   uint8_t y = (row-s_pgOfs)*FH;
   ExpoData *ed = expoaddress(expo);
