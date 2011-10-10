@@ -254,31 +254,17 @@ extern uint16_t DEBUG2;
 
 #define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
 
-const uint8_t modn12x3[4][4]= {
-  {1, 2, 3, 4},
-  {1, 3, 2, 4},
-  {4, 2, 3, 1},
-  {4, 3, 2, 1} };
-
-//R=1
-//E=2
-//T=3
-//A=4
-
-const uint8_t chout_ar[24][4] = { //First number is 0..23 -> template setup,  Second is relevant channel out
-{1,2,3,4},{1,2,4,3},{1,3,2,4},{1,3,4,2},{1,4,2,3},{1,4,3,2},
-{2,1,3,4},{2,1,4,3},{2,3,1,4},{2,3,4,1},{2,4,1,3},{2,4,3,1},
-{3,1,2,4},{3,1,4,2},{3,2,1,4},{3,2,4,1},{3,4,1,2},{3,4,2,1},
-{4,1,2,3},{4,1,3,2},{4,2,1,3},{4,2,3,1},{4,3,1,2},{4,3,2,1}    };
+extern const prog_uint8_t APM chout_ar[24][4];
+extern const prog_uint8_t APM modn12x3[4][4];
 
 //convert from mode 1 to mode g_eeGeneral.stickMode
 //NOTICE!  =>  1..4 -> 1..4
-#define CONVERT_MODE(x)  (((x)<=4) ? modn12x3[g_eeGeneral.stickMode][((x)-1)] : (x))
-#define CHANNEL_ORDER(x) (chout_ar[g_eeGeneral.templateSetup][(x)-1])
-#define THR_STICK       (2-(g_eeGeneral.stickMode&1))
-#define ELE_STICK       (1+(g_eeGeneral.stickMode&1))
-#define AIL_STICK       ((g_eeGeneral.stickMode&2) ? 0 : 3)
-#define RUD_STICK       ((g_eeGeneral.stickMode&2) ? 3 : 0)
+#define CONVERT_MODE(x)  (((x)<=4) ? pgm_read_byte(modn12x3+g_eeGeneral.stickMode*4+(x)-1) : (x))
+#define CHANNEL_ORDER(x) pgm_read_byte(chout_ar+g_eeGeneral.templateSetup*4+(x)-1)
+#define THR_STICK        (2-(g_eeGeneral.stickMode&1))
+#define ELE_STICK        (1+(g_eeGeneral.stickMode&1))
+#define AIL_STICK        ((g_eeGeneral.stickMode&2) ? 0 : 3)
+#define RUD_STICK        ((g_eeGeneral.stickMode&2) ? 3 : 0)
 
 enum EnumKeys {
   KEY_MENU ,
