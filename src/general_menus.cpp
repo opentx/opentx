@@ -488,65 +488,84 @@ void menuProcDiagAna(uint8_t event)
 
 }
 
+const prog_char APM menuWhenDone[] = " [MENU] WHEN DONE " ;
+
 void menuProcDiagCalib(uint8_t event)
 {
-  SIMPLE_MENU("CALIBRATION", menuTabDiag, e_Calib, 4);
+  SIMPLE_MENU("CALIBRATION", menuTabDiag, e_Calib, 1);
 
-  int8_t  sub    = m_posVert ;
   static int16_t midVals[7];
   static int16_t loVals[7];
   static int16_t hiVals[7];
+  static uint8_t idxState;
 
-  for(uint8_t i=0; i<7; i++) { //get low and high vals for sticks and trims
+  for (uint8_t i=0; i<7; i++) { //get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
-    loVals[i] = min(vt,loVals[i]);
-    hiVals[i] = max(vt,hiVals[i]);
+    loVals[i] = min(vt, loVals[i]);
+    hiVals[i] = max(vt, hiVals[i]);
     //if(i>=4) midVals[i] = (loVals[i] + hiVals[i])/2;
   }
+
+  s_noScroll = idxState; // make sure we don't scroll while calibrating
 
   switch(event)
   {
     case EVT_ENTRY:
-      for(uint8_t i=0; i<7; i++) loVals[i] = 15000;
+      idxState = 0;
       break;
-    case EVT_KEY_BREAK(KEY_DOWN): // !! achtung sub schon umgesetzt
-      switch(sub)
-      {
-        case 2: //get mid
-          for(uint8_t i=0; i<7; i++)midVals[i] = anaIn(i);
-          beepKey();
-          break;
-        case 3:
-          for(uint8_t i=0; i<7; i++)
-            if(abs(loVals[i]-hiVals[i])>50) {
-              g_eeGeneral.calibMid[i]  = midVals[i];
-              int16_t v = midVals[i] - loVals[i];
-              g_eeGeneral.calibSpanNeg[i] = v - v/64;
-              v = hiVals[i] - midVals[i];
-              g_eeGeneral.calibSpanPos[i] = v - v/64;
-            }
-          int16_t sum=0;
-          for(uint8_t i=0; i<12;i++) sum+=g_eeGeneral.calibMid[i];
-          g_eeGeneral.chkSum = sum;
-          eeDirty(EE_GENERAL); //eeWriteGeneral();
-          beepKey();
-          break;
+
+    case EVT_KEY_BREAK(KEY_MENU):
+      idxState++;
+      if (idxState==3) {
+        STORE_GENERALVARS;
+        idxState = 0;
       }
       break;
   }
-  for(uint8_t i=1; i<4; i++)
-  {
-    uint8_t y=i*FH+FH;
-    lcd_putsnAtt( 0, y,PSTR("SetMid SetSpanDone   ")+7*(i-1),7,
-                    sub==i ? INVERS : 0);
-  }
-  for(uint8_t i=0; i<7; i++)
-  {
-    uint8_t y=i*FH;
-    lcd_puts_P( 11*FW,   y+1*FH, PSTR("<    >"));
-    lcd_outhex4( 8*FW-3, y+1*FH, sub==2 ? loVals[i]  : g_eeGeneral.calibSpanNeg[i]);
-    lcd_outhex4(12*FW,   y+1*FH, sub==1 ? anaIn(i) : (sub==2 ? midVals[i] : g_eeGeneral.calibMid[i]));
-    lcd_outhex4(17*FW,   y+1*FH, sub==2 ? hiVals[i]  : g_eeGeneral.calibSpanPos[i]);
+
+
+  switch (idxState) {
+    case 0:
+      // START CALIBRATION
+      // [MENU]
+      lcd_putsnAtt(2*FW, 3*FH, PSTR(" [MENU] TO START  "), 18, 0);
+      break;
+
+    case 1:
+      // SET MIDPOINT
+      // [MENU]
+      lcd_putsnAtt(2*FW, 2*FH, PSTR("   SET MIDPOINT   "), 18, s_noScroll ? INVERS : 0);
+      lcd_putsnAtt(2*FW, 3*FH, menuWhenDone, 18, 0);
+
+      for (uint8_t i=0; i<7; i++) {
+        loVals[i] = 15000;
+        hiVals[i] = -15000;
+        midVals[i] = anaIn(i);
+      }
+      break;
+
+    case 2:
+      // MOVE STICKS/POTS
+      // [MENU]
+      lcd_putsnAtt(2*FW, 2*FH, PSTR(" MOVE STICKS/POTS "), 18, s_noScroll ? INVERS : 0);
+      lcd_putsnAtt(2*FW, 3*FH, menuWhenDone, 18, 0);
+
+      for (uint8_t i=0; i<7; i++) {
+        if (abs(loVals[i]-hiVals[i])>50) {
+          g_eeGeneral.calibMid[i] = midVals[i];
+          int16_t v = midVals[i] - loVals[i];
+          g_eeGeneral.calibSpanNeg[i] = v - v/64;
+          v = hiVals[i] - midVals[i];
+          g_eeGeneral.calibSpanPos[i] = v - v/64;
+        }
+      }
+
+      int16_t sum = 0;
+      for (uint8_t i=0; i<12; i++)
+        sum += g_eeGeneral.calibMid[i];
+      g_eeGeneral.chkSum = sum;
+      break;
   }
 
+  doMainScreenGrphics();
 }

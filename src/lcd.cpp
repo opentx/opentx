@@ -389,14 +389,26 @@ void putsVBat(uint8_t x, uint8_t y, uint8_t att)
   putsVolts(x, y, g_vbat100mV, att);
 }
 
+void putsStrIdx(uint8_t x, uint8_t y, const prog_char *str, uint8_t idx, uint8_t att)
+{
+  lcd_putsAtt(x, y, str, att);
+  lcd_outdezNAtt(lcd_lastPos, y, idx, att|LEFT, 2);
+}
+
 void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx==0)
-    lcd_putsnAtt(x,y,PSTR("----"),4,att);
-  else if(idx<=4)
-    lcd_putsnAtt(x,y,modi12x3+g_eeGeneral.stickMode*16+4*(idx-1),4,att);
-  else if(idx<=NUM_XCHNRAW)
-    lcd_putsnAtt(x,y,PSTR("P1  P2  P3  MAX FULLCYC1CYC2CYC3PPM1PPM2PPM3PPM4PPM5PPM6PPM7PPM8CH1 CH2 CH3 CH4 CH5 CH6 CH7 CH8 CH9 CH10CH11CH12CH13CH14CH15CH16"TELEMETRY_CHANNELS)+4*(idx-5),4,att);
+    lcd_putsnAtt(x, y, PSTR("----"), 4, att);
+  else if (idx<=NUM_STICKS)
+    lcd_putsnAtt(x, y, modi12x3+g_eeGeneral.stickMode*16+4*(idx-1), 4, att);
+  else if (idx<=NUM_STICKS+NUM_POTS+2+3)
+    lcd_putsnAtt(x,y,PSTR("P1  P2  P3  MAX FULLCYC1CYC2CYC3")+4*(idx-5), 4, att);
+  else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM)
+    putsStrIdx(x,y,PSTR("PPM"), idx - (NUM_STICKS+NUM_POTS+2+3), att);
+  else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT)
+    putsStrIdx(x, y, PSTR("CH"), idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM), att);
+  else if (idx<=NUM_XCHNRAW)
+    lcd_putsnAtt(x, y, PSTR(TELEMETRY_CHANNELS)+TELEMETRY_STRLEN*(idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT)), TELEMETRY_STRLEN, att);
 }
 
 void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
@@ -415,31 +427,39 @@ void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
   uint8_t len = sizeof(g_model.name);
   while (len>0 && !name[len-1]) --len;
   if (len==0) {
-    lcd_putsAtt(x, y, PSTR("MODEL"/*MODEL*/), att);
-    lcd_outdezNAtt(lcd_lastPos, y, id+1, att|LEADING0|LEFT, 2);
+    putsStrIdx(x, y, PSTR("MODEL"), id+1, att|LEADING0);
   }
   else {
     lcd_putsnAtt(x, y, name, sizeof(g_model.name), ZCHAR|att);
   }
 }
 
-void putsSwitches(uint8_t x,uint8_t y,int8_t idx,uint8_t att)
+#define SWITCHES_STR "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
+void putsSwitches(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
   switch(idx){
     case  0:          lcd_putsAtt(x,y,PSTR("---"),att);return;
     case  MAX_SWITCH: lcd_putsAtt(x,y,PSTR("ON "),att);return;
     case -MAX_SWITCH: lcd_putsAtt(x,y,PSTR("OFF"),att);return;
   }
-  if (idx<0) lcd_putcAtt(x-FW, y, '!', att);
-  lcd_putsnAtt(x,y,get_switches_string()+3*(abs(idx)-1),3,att);
+  if (idx<0) lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
+  lcd_putsnAtt(x, y, PSTR(SWITCHES_STR)+3*(abs(idx)-1), 3, att);
 }
 
 void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
   if (idx==0) { lcd_putsAtt(x,y,PSTR("---"),att); return; }
-  if (idx < 0) { lcd_putcAtt(x-FW, y, '!', att); idx = -idx; }
-  lcd_putsAtt(x, y, PSTR("FP"), att);
-  lcd_putcAtt(x+2*FW, y, '0'+idx-1, att);
+  if (idx < 0) { lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/); idx = -idx; }
+  putsStrIdx(x, y, PSTR("FP"), idx, att);
+}
+
+#define CURV_STR "---x>0x<0|x|f>0f<0|f|"
+void putsCurve(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
+{
+  if (idx < CURVE_BASE)
+    lcd_putsnAtt(x, y, PSTR(CURV_STR)+3*idx, 3, att);
+  else
+    putsStrIdx(x, y, PSTR("c"), idx-CURVE_BASE+1, att);
 }
 
 void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)

@@ -46,6 +46,39 @@ uint8_t tabViews[] = {
 #endif
 };
 
+#define BOX_WIDTH     23
+#define BAR_HEIGHT    (BOX_WIDTH-1l)
+#define MARKER_WIDTH  5
+#define SCREEN_WIDTH  128
+#define SCREEN_HEIGHT 64
+#define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
+#define LBOX_CENTERX  (  SCREEN_WIDTH/4 + 10)
+#define LBOX_CENTERY  (SCREEN_HEIGHT-9-BOX_WIDTH/2)
+#define RBOX_CENTERX  (3*SCREEN_WIDTH/4 - 10)
+#define RBOX_CENTERY  (SCREEN_HEIGHT-9-BOX_WIDTH/2)
+
+void doMainScreenGrphics()
+{
+  lcd_square(LBOX_CENTERX-BOX_WIDTH/2, LBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
+  lcd_square(RBOX_CENTERX-BOX_WIDTH/2, RBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
+
+  DO_CROSS(LBOX_CENTERX,LBOX_CENTERY,3)
+  DO_CROSS(RBOX_CENTERX,RBOX_CENTERY,3)
+
+  lcd_square(LBOX_CENTERX+(calibratedStick[0]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, LBOX_CENTERY-(calibratedStick[1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH);
+  lcd_square(RBOX_CENTERX+(calibratedStick[3]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, RBOX_CENTERY-(calibratedStick[2]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH);
+
+  // Optimization by Mike Blandford
+  {
+    uint8_t x, y, len ;  // declare temporary variables
+    for( x = -5, y = 4 ; y < 7 ; x += 5, y += 1 )
+    {
+      len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+      V_BAR(SCREEN_WIDTH/2+x,SCREEN_HEIGHT-8, len)
+    }
+  }
+}
+
 void menuMainView(uint8_t event)
 {
   static uint8_t switchView = 255;
@@ -492,43 +525,13 @@ void menuMainView(uint8_t event)
   }
 #endif
   else if (view_base<e_timer2) {
-    #define BOX_WIDTH     23
-    #define BAR_HEIGHT    (BOX_WIDTH-1l)
-    #define MARKER_WIDTH  5
-    #define SCREEN_WIDTH  128
-    #define SCREEN_HEIGHT 64
-    #define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
-    #define LBOX_CENTERX  (  SCREEN_WIDTH/4 + 10)
-    #define LBOX_CENTERY  (SCREEN_HEIGHT-9-BOX_WIDTH/2)
-    #define RBOX_CENTERX  (3*SCREEN_WIDTH/4 - 10)
-    #define RBOX_CENTERY  (SCREEN_HEIGHT-9-BOX_WIDTH/2)
-
-    lcd_square(LBOX_CENTERX-BOX_WIDTH/2, LBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
-    lcd_square(RBOX_CENTERX-BOX_WIDTH/2, RBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
-
-    DO_CROSS(LBOX_CENTERX,LBOX_CENTERY,3)
-    DO_CROSS(RBOX_CENTERX,RBOX_CENTERY,3)
-
-    lcd_square(LBOX_CENTERX+(calibratedStick[0]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, LBOX_CENTERY-(calibratedStick[1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH);
-    lcd_square(RBOX_CENTERX+(calibratedStick[3]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, RBOX_CENTERY-(calibratedStick[2]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH);
-
-    // Optimization by Mike Blandford
-    {
-        uint8_t x, y, len ;         // declare temporary variables
-        for( x = -5, y = 4 ; y < 7 ; x += 5, y += 1 )
-        {
-            len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l ;  // calculate once per loop
-            V_BAR(SCREEN_WIDTH/2+x,SCREEN_HEIGHT-8, len )
-        }
-    }
-
-    int8_t a = (view == e_inputs) ? 0 : 3+(view/ALTERNATE)*6;
-    int8_t b = (view == e_inputs) ? 6 : 6+(view/ALTERNATE)*6;
-    for(int8_t i=a; i<(a+3); i++) lcd_putsnAtt(2*FW-2 ,(i-a)*FH+4*FH,get_switches_string()+3*i,3,getSwitch(i+1, 0) ? INVERS : 0);
-    for(int8_t i=b; i<(b+3); i++) lcd_putsnAtt(17*FW-1,(i-b)*FH+4*FH,get_switches_string()+3*i,3,getSwitch(i+1, 0) ? INVERS : 0);
+    doMainScreenGrphics();
+    int8_t a = (view == e_inputs) ? 1 : 4+(view/ALTERNATE)*6;
+    int8_t b = (view == e_inputs) ? 7 : 7+(view/ALTERNATE)*6;
+    for(int8_t i=a; i<(a+3); i++) putsSwitches(2*FW-2,  (i-a)*FH+4*FH, i, getSwitch(i, 0) ? INVERS : 0);
+    for(int8_t i=b; i<(b+3); i++) putsSwitches(17*FW-1, (i-b)*FH+4*FH, i, getSwitch(i, 0) ? INVERS : 0);
   }
-  else  // timer2
-  {
+  else { // timer2
     putsTime(33+FW+2, FH*5, timer2, DBLSIZE, DBLSIZE);
   }
 }

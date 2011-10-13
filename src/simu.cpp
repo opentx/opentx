@@ -119,9 +119,9 @@ Gruvin9xSim::Gruvin9xSim(FXApp* a)
         break;
       default:;
     }
-    sliders[i]->setRange(0+i*50,1023);
+    sliders[i]->setRange(-1024, 1024);
     sliders[i]->setTickDelta(7);
-    sliders[i]->setValue(i==1 ? 200 : 512+i*25);
+    sliders[i]->setValue(0);
   }
   arrow[0]= new FXArrowButton(hf10,this,1000,ARROW_LEFT);
   arrow[1]= new FXArrowButton(hf10,this,1000,ARROW_UP);

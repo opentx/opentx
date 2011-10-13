@@ -67,17 +67,17 @@ const prog_char APM s_charTab[] = "_-.,";
 //E=2
 //T=3
 //A=4
-const prog_uint8_t APM chout_ar[24][4] = { //First number is 0..23 -> template setup,  Second is relevant channel out
-{1,2,3,4},{1,2,4,3},{1,3,2,4},{1,3,4,2},{1,4,2,3},{1,4,3,2},
-{2,1,3,4},{2,1,4,3},{2,3,1,4},{2,3,4,1},{2,4,1,3},{2,4,3,1},
-{3,1,2,4},{3,1,4,2},{3,2,1,4},{3,2,4,1},{3,4,1,2},{3,4,2,1},
-{4,1,2,3},{4,1,3,2},{4,2,1,3},{4,2,3,1},{4,3,1,2},{4,3,2,1}    };
+const prog_uint8_t APM chout_ar[] = { //First number is 0..23 -> template setup,  Second is relevant channel out
+                                      1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
+                                      2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
+                                      3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
+                                      4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1    };
 
-const prog_uint8_t APM modn12x3[4][4]= {
-  {1, 2, 3, 4},
-  {1, 3, 2, 4},
-  {4, 2, 3, 1},
-  {4, 3, 2, 1} };
+const prog_uint8_t APM modn12x3[]= {
+    1, 2, 3, 4,
+    1, 3, 2, 4,
+    4, 2, 3, 1,
+    4, 3, 2, 1 };
 
 #ifdef TRANSLATIONS
 int8_t char2idx(char c)
@@ -293,11 +293,6 @@ void applyExpos(int16_t *anas)
       }
     }
   }
-}
-
-const prog_char *get_switches_string()
-{
-  return PSTR(SWITCHES_STR);
 }
 
 static bool s_noStickInputs = false;
@@ -1142,10 +1137,14 @@ uint8_t evalSticks()
     // normalization [0..2048] -> [-1024..1024]
 
     int16_t v = anaIn(i);
+
+#ifndef SIMU
     v -= g_eeGeneral.calibMid[i];
     v  =  v * (int32_t)RESX /  (max((int16_t)100,(v>0 ?
                                      g_eeGeneral.calibSpanPos[i] :
                                      g_eeGeneral.calibSpanNeg[i])));
+#endif
+
     if(v <= -RESX) v = -RESX;
     if(v >=  RESX) v =  RESX;
     calibratedStick[i] = v; //for show in expo

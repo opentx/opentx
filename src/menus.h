@@ -47,6 +47,7 @@ void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 
 extern uint8_t s_pgOfs;
 extern uint8_t s_noHi;
+extern uint8_t s_noScroll;
 
 // extern int16_t expo(int16_t x, int16_t k);
 
@@ -68,6 +69,7 @@ inline MenuFuncP lastPopMenu()
   return g_menuStack[g_menuStackPtr+1];
 }
 
+void doMainScreenGrphics();
 void menuMainView(uint8_t event);
 void menuProcSetup(uint8_t event);
 void menuProcModelSelect(uint8_t event);
