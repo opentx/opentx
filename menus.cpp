@@ -29,6 +29,7 @@ int16_t ex_chans[NUM_CHNOUT];          // Outputs + intermidiates
 uint8_t s_pgOfs;
 uint8_t s_editMode;
 uint8_t s_noHi;
+uint8_t s_noScroll;
 
 int16_t g_chans512[NUM_CHNOUT];
 
@@ -160,9 +161,10 @@ bool check_submenu_simple(uint8_t event, uint8_t maxrow)
 bool check(uint8_t event, uint8_t curr, MenuFuncP *menuTab, uint8_t menuTabSize, prog_uint8_t *horTab, uint8_t horTabMax, uint8_t maxrow)
 {
   if (menuTab) {
-    uint8_t attr = m_posVert==0 ? INVERS : 0;
+    uint8_t attr = 0;
 
-    if (m_posVert==0) {
+    if (m_posVert==0 && !s_noScroll) {
+      attr = INVERS;
       switch(event)
       {
         case EVT_KEY_FIRST(KEY_LEFT):
@@ -179,6 +181,7 @@ bool check(uint8_t event, uint8_t curr, MenuFuncP *menuTab, uint8_t menuTabSize,
           return false;
       }
     }
+    s_noScroll = 0;
     DisplayScreenIndex(curr, menuTabSize, attr);
   }
 
@@ -269,8 +272,8 @@ void popMenu()
   if (g_menuStackPtr>0) {
     g_menuStackPtr = g_menuStackPtr-1;
     beepKey();
-    m_posHorz = g_menuPos[g_menuStackPtr] & 0x0F;
-    m_posVert = g_menuPos[g_menuStackPtr] >> 4;
+    m_posHorz = 0;
+    m_posVert = g_menuPos[g_menuStackPtr];
     (*g_menuStack[g_menuStackPtr])(EVT_ENTRY_UP);
   }
   else {
@@ -287,7 +290,7 @@ void chainMenu(MenuFuncP newMenu)
 
 void pushMenu(MenuFuncP newMenu)
 {
-  g_menuPos[g_menuStackPtr] = (m_posVert << 4) + m_posHorz;
+  g_menuPos[g_menuStackPtr] = m_posVert;
 
   g_menuStackPtr++;
   if(g_menuStackPtr >= DIM(g_menuStack))
@@ -323,13 +326,6 @@ void setupPulses()
       setupPulsesTracerCtp1009();
       break;
   }
-#if defined (DPPMPB7_HARDWARE)
-
-  	//Don't know if its usefull for the other encoding type or if they have polarity option cannot test those
-  //Force an ouput compare to match the ppm polarity
-      if(PINB&(1<<7) && g_model.pulsePol)
-   	   TCCR1C |=(1<<FOC1C);
-#endif
 }
 
 //inline int16_t reduceRange(int16_t x)  // for in case we want to have room for subtrims

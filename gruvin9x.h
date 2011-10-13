@@ -254,13 +254,13 @@ extern uint16_t DEBUG2;
 
 #define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
 
-extern const prog_uint8_t APM chout_ar[24][4];
-extern const prog_uint8_t APM modn12x3[4][4];
+extern const prog_uint8_t APM chout_ar[24*4];
+extern const prog_uint8_t APM modn12x3[4*4];
 
 //convert from mode 1 to mode g_eeGeneral.stickMode
 //NOTICE!  =>  1..4 -> 1..4
-#define CONVERT_MODE(x)  (((x)<=4) ? pgm_read_byte(modn12x3+g_eeGeneral.stickMode*4+(x)-1) : (x))
-#define CHANNEL_ORDER(x) pgm_read_byte(chout_ar+g_eeGeneral.templateSetup*4+(x)-1)
+#define CONVERT_MODE(x)  (((x)<=4) ? pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + (x)-1) : (x) )
+#define CHANNEL_ORDER(x) pgm_read_byte(chout_ar + 4*g_eeGeneral.templateSetup + (x)-1)
 #define THR_STICK        (2-(g_eeGeneral.stickMode&1))
 #define ELE_STICK        (1+(g_eeGeneral.stickMode&1))
 #define AIL_STICK        ((g_eeGeneral.stickMode&2) ? 0 : 3)
@@ -294,9 +294,6 @@ enum EnumKeys {
   SW_Trainer
 };
 
-#define SWITCHES_STR "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
-
-#define CURV_STR "---x>0x<0|x|f>0f<0|f|c1 c2 c3 c4 c5 c6 c7 c8 c9 c10c11c12c13c14c15c16"
 #define CURVE_BASE 7
 
 #define CSWITCH_STR  "----   v>ofs  v<ofs  |v|>ofs|v|<ofsAND    OR     XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
@@ -350,11 +347,13 @@ enum EnumKeys {
 #define CHOUT_BASE      (PPM_BASE+NUM_PPM)
 
 #ifdef FRSKY
-#define NUM_TELEMETRY 2
-#define TELEMETRY_CHANNELS "AD1 AD2 "
+#define NUM_TELEMETRY      2
+#define TELEMETRY_CHANNELS "AD1AD2"
+#define TELEMETRY_STRLEN   3
 #else
-#define NUM_TELEMETRY 0
+#define NUM_TELEMETRY      0
 #define TELEMETRY_CHANNELS ""
+#define TELEMETRY_STRLEN   0
 #endif
 
 #define DSW_THR  1
@@ -504,8 +503,6 @@ extern uint16_t g_time_per10;
 extern uint8_t s_traceBuf[MAXTRACE];
 extern uint16_t s_traceWr;
 extern uint16_t s_traceCnt;
-
-const prog_char *get_switches_string() ;
 
 uint16_t getTmr16KHz();
 uint16_t stack_free();

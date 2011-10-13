@@ -1,5 +1,5 @@
 /*
- * Authors (alpahbetical order)
+ * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  *
