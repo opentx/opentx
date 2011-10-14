@@ -229,14 +229,14 @@ void menuProcModelSelect(uint8_t event)
         killEvents(_event);
         break;
       case EVT_KEY_BREAK(KEY_MENU):
-        if (s_copyTgtOfs) {
-          s_copyTgtOfs = 0;
+        if (s_copyTgtOfs || s_copySrcRow >= 0) {
           s_copyMode = 0;
         }
         else if (EFile::exists(FILE_MODEL(sub))) {
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
-          s_copySrcRow = -1;
         }
+        s_copySrcRow = -1;
+        s_copyTgtOfs = 0;
         break;
       case EVT_KEY_LONG(KEY_MENU):
         if (s_copyTgtOfs) {
@@ -267,11 +267,16 @@ void menuProcModelSelect(uint8_t event)
           eeCheck(true);
           int8_t next_ofs = (_event == EVT_KEY_FIRST(KEY_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
           if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
-            s_copySrcRow = sub+next_ofs;
+            s_copySrcRow = oldSub;
             // insert a model (in the first empty slot above / below)
             m_posVert = eeDuplicateModel(s_copySrcRow, _event==EVT_KEY_FIRST(KEY_DOWN));
             if (m_posVert == (uint8_t)-1) {
-              m_posVert = sub;
+              // no free room for duplicating the model
+              beepWarn();
+              m_posVert = oldSub;
+              s_copyMode = 0;
+              s_copyTgtOfs = 0;
+              s_copySrcRow = -1;
             }
             next_ofs = 0;
             sub = m_posVert;
