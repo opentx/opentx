@@ -683,7 +683,7 @@ void menuProcCurveOne(uint8_t event)
 #define XD X0-2
   bool    cv9 = s_curveChan >= MAX_CURVE5;
 
-  SUBMENU("CURVE", 2+(cv9 ? 9 : 5), { 9/*,0 repeated...*/});
+  SUBMENU("CURVE", 2+(cv9 ? 9 : 5), { 9, 0/*repeated...*/});
   lcd_outdezAtt(6*FW, 0, s_curveChan+1, INVERS);
 
   int8_t *crv = cv9 ? g_model.curves9[s_curveChan-MAX_CURVE5] : g_model.curves5[s_curveChan];
