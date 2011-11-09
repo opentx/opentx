@@ -420,8 +420,6 @@ extern char idx2char(int8_t idx);
 
 /// stoppt alle events von dieser taste bis eine kurze Zeit abgelaufen ist
 void pauseEvents(uint8_t enuk);
-/// liefert die Zahl der schnellen Wiederholungen dieser Taste
-uint8_t getEventDbl(uint8_t event);
 /// stoppt alle events von dieser taste bis diese wieder losgelassen wird
 void    killEvents(uint8_t enuk);
 /// liefert den Wert einer beliebigen Taste KEY_MENU..SW_Trainer
