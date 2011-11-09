@@ -302,13 +302,6 @@ void killEvents(uint8_t event)
   if(event < (int)DIM(keys))  keys[event].killEvents();
 }
 
-uint8_t getEventDbl(uint8_t event)
-{
-  event=event & EVT_KEY_MASK;
-  if(event < (int)DIM(keys))  return keys[event].getDbl();
-  return 0;
-}
-
 //uint16_t g_anaIns[8];
 volatile uint16_t g_tmr10ms;
 volatile uint8_t  g_blinkTmr10ms;
