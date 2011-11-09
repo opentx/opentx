@@ -67,7 +67,7 @@ uint8_t Translate()
     alert(g_eeGeneral.myVers == EEPROM_VER_r584 ? PSTR("EEprom Data v3") : PSTR("EEprom Data Er9x"), true);
     message(PSTR("EEPROM Converting"));
     theFile.readRlc1((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
-    memset(&g_eeGeneral.frskyRssiAlarms, 0 , sizeof(g_eeGeneral.frskyRssiAlarms));
+    memset(&g_eeGeneral.frskyRssiAlarms, 0, sizeof(g_eeGeneral.frskyRssiAlarms));
     if (g_eeGeneral.myVers == EEPROM_VER_r584) {
       // previous version had only 6 custom switches, OFF and ON values have to be shifted 6
       if (g_eeGeneral.lightSw == MAX_SWITCH-6)
