@@ -278,15 +278,15 @@ void applyExpos(int16_t *anas)
       }
     }
     if (getSwitch(ed.swtch, 1)) {
-      cur_chn = ed.chn;
-      int16_t v = anas2[cur_chn];
+      int16_t v = anas2[ed.chn];
       if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
+        cur_chn = ed.chn;
         int16_t k = ed.expo;
         if (IS_THROTTLE(cur_chn) && g_model.thrExpo)
           v = 2*expo((v+RESX)/2, k);
         else
           v = expo(v, k);
-        if (ed.curve) v = applyCurve(v, ed.curve, 0);
+        if (ed.curve) v = applyCurve(v, ed.curve > 10 ? ed.curve + 4 : ed.curve, 0);
         v = ((int32_t)v * ed.weight) / 100;
         if (IS_THROTTLE(cur_chn) && g_model.thrExpo) v -= RESX;
         anas[cur_chn] = v;
