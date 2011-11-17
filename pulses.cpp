@@ -127,7 +127,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 //uint16_t PPM_gap = 300 * 2; //Stoplen *2
 //uint16_t PPM_frame ;
 
-void setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
+inline void __attribute__ ((always_inline)) setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
 {
 #define PPM_CENTER 1200*2
     int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;   //range of 0.7..1.7msec
@@ -158,7 +158,7 @@ void setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
 
 #ifdef PXX
 
-void setupPulsesPXX()
+inline void __attribute__ ((always_inline)) setupPulsesPXX()
 {
 
 }
@@ -197,13 +197,13 @@ normal:
 
  */
 
-inline void _send_1(uint16_t v)
+inline void __attribute__ ((always_inline)) _send_1(uint16_t v)
 {
   *pulses2MHzWPtr++ = v;
 }
 
 #define BITLEN_DSM2 (8*2) //125000 Baud
-void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
+inline void __attribute__ ((always_inline)) sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 {
     bool    lev = 0;
     uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
@@ -222,7 +222,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 }
 
 
-void setupPulsesDsm2(uint8_t chns)
+inline void __attribute__ ((always_inline)) setupPulsesDsm2(uint8_t chns)
 {
     static uint8_t dsmDat[2+6*2]={0x80,0,  0x00,0xAA,  0x05,0xFF,  0x09,0xFF,  0x0D,0xFF,  0x13,0x54,  0x14,0xAA};
 
@@ -283,7 +283,7 @@ void send2BitsSilv(uint8_t val)
 //<= 500us Probleme
 //>= 650us Probleme
 //periode orig: 450ms
-void setupPulsesSilver()
+inline void __attribute__ ((always_inline)) setupPulsesSilver()
 {
   int8_t chan=1; //chan 1=C 2=B 0=A?
 
@@ -377,7 +377,8 @@ void sendByteTra(uint8_t val)
 {
   for(uint8_t i=0; i<8; i++, val>>=1) sendBitTra(val&1);
 }
-void setupPulsesTracerCtp1009()
+
+inline void __attribute__ ((always_inline)) setupPulsesTracerCtp1009()
 {
   static bool phase;
   if( (phase=!phase) ){
