@@ -275,7 +275,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
 
 void lcd_mask(uint8_t *p, uint8_t mask, uint8_t att)
 {
-  assert(p < DISPLAY_END);
+  assert(p >= displayBuf && p < DISPLAY_END);
 
   if (att & BLACK)
     *p |= mask;
@@ -326,13 +326,13 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat)
   uint8_t *p  = &displayBuf[ y / 8 * DISPLAY_W + x ];
   y = y % 8;
   if (y) {
-    assert(p < DISPLAY_END);
+    assert(p >= displayBuf && p < DISPLAY_END);
     *p ^= ~(BITMASK(y)-1) & pat;
     p += DISPLAY_W;
     h -= 8-y;
   }
   while (h>0) {
-    assert(p < DISPLAY_END);
+    assert(p >= displayBuf && p < DISPLAY_END);
     *p ^= pat;
     p += DISPLAY_W;
     h -= 8;
@@ -340,7 +340,7 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat)
   h = (h+8) % 8;
   if (h) {
     p -= DISPLAY_W;
-    assert(p < DISPLAY_END);
+    assert(p >= displayBuf && p < DISPLAY_END);
     *p ^= ~(BITMASK(h)-1) & pat;
   }
 }
@@ -360,10 +360,11 @@ void lcd_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t pat, uint8_t a
   }
 }
 
-void lcd_filled_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t att)
+void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t att)
 {
-  for (uint8_t i=y; i<y+h; i++)
-    lcd_hline(x, i, w, att);
+  for (int8_t i=y; i<y+h; i++) {
+    if (i>=0 && i<64) lcd_hline(x, i, w, att);
+  }
 }
 
 void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)

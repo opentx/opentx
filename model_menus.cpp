@@ -67,6 +67,7 @@ void menuProcTelemetry(uint8_t event);
 #ifdef TEMPLATES
 void menuProcTemplates(uint8_t event);
 #endif
+void menuProcExpoOne(uint8_t event);
 
 MenuFuncP_PROGMEM APM menuTabModel[] = {
   menuProcModelSelect,
@@ -678,99 +679,137 @@ void menuProcHeli(uint8_t event)
 
 static uint8_t s_curveChan;
 
+typedef int16_t (*FnFuncP) (int16_t x);
+
+int16_t expoFn(int16_t x)
+{
+  ExpoData *ed = expoaddress(s_currIdx);
+  int16_t anas[NUM_STICKS] = {0};
+  anas[ed->chn] = x;
+  applyExpos(anas);
+  return anas[ed->chn];
+}
+
+int16_t curveFn(int16_t x)
+{
+  return intpol(x, s_curveChan);
+}
+
+void DrawCurve(FnFuncP fn)
+{
+  lcd_vlineStip(X0, 0, DISPLAY_H, 0xee);
+  lcd_hlineStip(X0-WCHART, Y0, WCHART*2, 0xee);
+
+  for (int8_t xv=-WCHART+1; xv<WCHART; xv++) {
+    uint16_t yv = (RESX + fn(xv * (RESX/WCHART))) / 2;
+    yv = (DISPLAY_H-1) - yv * (DISPLAY_H-1) / RESX;
+    lcd_plot(X0+xv, yv, BLACK);
+  }
+}
+
 void menuProcCurveOne(uint8_t event)
 {
-#define XD X0-2
-  bool    cv9 = s_curveChan >= MAX_CURVE5;
+  uint8_t points;
+  int8_t *crv;
+  static int8_t dfltCrv;
+  static uint8_t autoThrStep;
 
-  SUBMENU("CURVE", 2+(cv9 ? 9 : 5), { 9, 0/*repeated...*/});
-  lcd_outdezAtt(6*FW, 0, s_curveChan+1, INVERS);
+  TITLE("CURVE");
+  lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
 
-  int8_t *crv = cv9 ? g_model.curves9[s_curveChan-MAX_CURVE5] : g_model.curves5[s_curveChan];
+  if (s_curveChan >= MAX_CURVE5) {
+    points = 9;
+    crv = g_model.curves9[s_curveChan-MAX_CURVE5];
+  }
+  else {
+    points = 5;
+    crv = g_model.curves5[s_curveChan];
+  }
 
-  int8_t  sub    = m_posVert-1;
-  int8_t  subSub = m_posHorz;
-
-  switch(event){
+  switch(event) {
+    case EVT_ENTRY:
+      dfltCrv = 0;
+      autoThrStep = 0;
+      break;
+    case EVT_KEY_FIRST(KEY_MENU):
+      if (!s_editMode) {
+        switch (m_posHorz) {
+          case 0:
+            s_editMode = true;
+            break;
+          case 1:
+            if (++dfltCrv > 4)
+              dfltCrv = -4;
+            for (uint8_t i=0; i<points; i++)
+              crv[i] = (i-(points/2)) * dfltCrv * 50 / (points-1);
+            break;
+          case 2:
+            crv[0] = -100; crv[points-1] = 100;
+            autoThrStep = 1; // the lowest point first
+            // s_autoThrValue =
+            break;
+        }
+      }
+      break;
     case EVT_KEY_FIRST(KEY_EXIT):
-      if(subSub!=0) {
-        subSub = m_posHorz = 0;
-        killEvents(event);
+      killEvents(event);
+      if (autoThrStep) {
+        autoThrStep = 0;
+      }
+      else if (s_editMode) {
+        m_posHorz = 0;
+        s_editMode = false;
+      }
+      else {
+        popMenu();
       }
       break;
     case EVT_KEY_REPT(KEY_LEFT):
     case EVT_KEY_FIRST(KEY_LEFT):
-      if (s_editMode && subSub>0) m_posHorz--;
+      if (!autoThrStep && m_posHorz>0) m_posHorz--;
       break;
     case EVT_KEY_REPT(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_RIGHT):
-      if(s_editMode && subSub<(cv9 ? 9 : 5)) m_posHorz++;
+      if (!autoThrStep && m_posHorz<(s_editMode ? points-1 : ((g_menuStack[g_menuStackPtr-1] == menuProcExpoOne && IS_THROTTLE(expoaddress(s_currIdx)->chn)) ? 2 : 1))) m_posHorz++;
       break;
   }
 
-  s_editMode = m_posHorz;
-
-  for (uint8_t i = 0; i < 5; i++) {
-    uint8_t y = i * FH + 16;
-    uint8_t attr = sub == i ? INVERS : 0;
-    lcd_outdezAtt(4 * FW, y, crv[i], attr);
-  }
-  if(cv9)
-    for (uint8_t i = 0; i < 4; i++) {
-      uint8_t y = i * FH + 16;
-      uint8_t attr = sub == i + 5 ? INVERS : 0;
-      lcd_outdezAtt(8 * FW, y, crv[i + 5], attr);
+  for (uint8_t i = 0; i < points; i++) {
+    uint8_t x, y;
+    if (i>4) {
+      x = 8*FW; y = (i-4) * FH;
     }
-  lcd_putsAtt( 2*FW, 1*FH,PSTR("EDIT->"),((sub == -1) && (subSub == 0)) ? INVERS : 0);
-  lcd_putsAtt( 2*FW, 7*FH,PSTR("PRESET"),sub == (cv9 ? 9 : 5) ? INVERS : 0);
-
-  static int8_t dfltCrv;
-  if((sub<(cv9 ? 9 : 5)) && (sub>-1))  CHECK_INCDEC_MODELVAR( event, crv[sub], -100,100);
-  else  if(sub>0){ //make sure we're not on "EDIT"
-    dfltCrv = checkIncDec(event, dfltCrv, -4, 4, EE_MODEL);
-    if (checkIncDec_Ret) {
-      if(cv9) for (uint8_t i = 0; i < 9; i++) crv[i] = (i-4)*dfltCrv* 100 / 16;
-      else    for (uint8_t i = 0; i < 5; i++) crv[i] = (i-2)*dfltCrv* 100 /  8;
+    else {
+      x = 4*FW; y = (i+1) * FH;
     }
+    uint8_t attr = (s_editMode && m_posHorz == i) ? INVERS : 0;
+    lcd_outdezAtt(x, y, crv[i], attr);
   }
 
-  if(s_editMode)
-  {
-    for(uint8_t i=0; i<(cv9 ? 9 : 5); i++)
-    {
-      uint8_t xx = XD-1-WCHART+i*WCHART/(cv9 ? 4 : 2);
-      uint8_t yy = Y0-crv[i]*WCHART/100;
+  lcd_puts_P(0*FW, 7*FH, PSTR("MODE"));
+  lcd_putsnAtt(5*FW-2, 7*FH, PSTR("EDIT ""PRSET""A.THR")+5*(!s_editMode)*m_posHorz, 5, s_editMode || autoThrStep ? 0 : INVERS);
 
+  if (s_editMode || autoThrStep) {
+    for (uint8_t i=0; i<points; i++) {
+      uint8_t xx = X0-1-WCHART+i*WCHART/(points/2);
+      uint8_t yy = (DISPLAY_H-1) - (100 + crv[i]) * (DISPLAY_H-1) / 200;
 
-      if(subSub==(i+1))
-      {
-        if((yy-2)<WCHART*2) lcd_hline( xx-1, yy-2, 5); //do selection square
-        if((yy-1)<WCHART*2) lcd_hline( xx-1, yy-1, 5);
-        if(yy<WCHART*2)     lcd_hline( xx-1, yy  , 5);
-        if((yy+1)<WCHART*2) lcd_hline( xx-1, yy+1, 5);
-        if((yy+2)<WCHART*2) lcd_hline( xx-1, yy+2, 5);
-
-        if(p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP))
-           CHECK_INCDEC_MODELVAR( event, crv[i], -100,100);  // edit on up/down
+      if (autoThrStep) {
+        if (autoThrStep==i+1)
+          lcd_filled_rect(xx-1, yy-2, 5, 5); // do selection square
       }
-      else
-      {
-          if((yy-1)<WCHART*2) lcd_hline( xx, yy-1, 3); // do markup square
-          if(yy<WCHART*2)     lcd_hline( xx, yy  , 3);
-          if((yy+1)<WCHART*2) lcd_hline( xx, yy+1, 3);
+      else if (m_posHorz==i) {
+        lcd_filled_rect(xx-1, yy-2, 5, 5); // do selection square
+        if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP))
+          CHECK_INCDEC_MODELVAR( event, crv[i], -100,100);  // edit on up/down
+      }
+      else {
+        lcd_filled_rect(xx, yy-1, 3, 3); // do markup square
       }
     }
   }
 
-  for (uint8_t xv = 0; xv < WCHART * 2; xv++) {
-    uint16_t yv = intpol(xv * (RESXu / WCHART) - RESXu, s_curveChan) / (RESXu
-                                                                      / WCHART);
-    lcd_plot(XD + xv - WCHART, Y0 - yv);
-    if ((xv & 3) == 0) {
-      lcd_plot(XD + xv - WCHART, Y0 + 0);
-    }
-  }
-  lcd_vline(XD, Y0 - WCHART, WCHART * 2);
+  DrawCurve(curveFn);
 }
 
 uint8_t getExpoMixCount(uint8_t expo)
@@ -1001,19 +1040,10 @@ void menuProcExpoOne(uint8_t event)
     y+=FH;
   }
 
-  lcd_vlineStip(X0, 0, DISPLAY_H, 0xee);
-  lcd_hlineStip(X0-WCHART, Y0, WCHART*2, 0xee);
-
-  int16_t anas[NUM_STICKS] = {0};
-  for(int8_t xv=-WCHART; xv<WCHART; xv++) {
-    anas[ed->chn] = xv*(RESX/WCHART);
-    applyExpos(anas);
-    uint16_t yv = (RESX + anas[ed->chn]) / 2;
-    yv = (DISPLAY_H-1) - yv * (DISPLAY_H-1) / RESX;
-    lcd_plot(X0+xv, yv, BLACK);
-  }
+  DrawCurve(expoFn);
 
   int16_t x512  = calibratedStick[ed->chn];
+  int16_t anas[NUM_STICKS] = {0};
   anas[ed->chn] = x512;
   applyExpos(anas);
   int16_t y512  = anas[ed->chn];
@@ -1123,7 +1153,6 @@ static uint8_t s_maxLines = 8;
 static uint8_t s_copySrcIdx;
 static uint8_t s_copySrcCh;
 
-#define FIRST 0x10
 inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, uint8_t cur, uint8_t event)
 {
   uint8_t y = (row-s_pgOfs)*FH;
@@ -1173,7 +1202,7 @@ inline void displayExpoLine(uint8_t row, uint8_t expo, uint8_t ch, uint8_t idx, 
   lcd_outdezAtt(9*FW+1, y, ed->expo, 0);
   putsFlightPhase(10*FW, y, ed->negPhase ? -ed->phase : +ed->phase);
   putsSwitches(13*FW+4, y, ed->swtch, 0); // normal switches
-  if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 127 : 126);//'|' : (stkVal[i] ? '<' : '>'),0);*/
+  if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
   if (ed->curve) putsCurve(18*FW+2, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0));
 
   if (s_copyMode) {
@@ -1394,31 +1423,25 @@ void menuProcLimits(uint8_t event)
 
   static bool swVal[NUM_CHNOUT];
 
-  uint8_t y = 0;
-  uint8_t k = 0;
-  int8_t  sub    = m_posVert - 1;
+  int8_t sub = m_posVert - 1;
 
-  switch(event)
-  {
-    case EVT_KEY_LONG(KEY_MENU):
-      if(sub>=0 && sub<NUM_CHNOUT) {
-          int16_t v = g_chans512[sub - s_pgOfs];
-          LimitData *ld = limitaddress(sub);
-          switch (m_posHorz) {
-          case 0:
-              ld->offset = (ld->revert) ? -v : v;
-              STORE_MODELVARS;
-              break;
-          }
+  for (uint8_t i=0; i<7; i++) {
+    uint8_t y = (i+1)*FH;
+    uint8_t k = i+s_pgOfs;
+
+    if (k==NUM_CHNOUT) {
+      //last line available - add the "copy trim menu" line
+      uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
+      lcd_putsAtt(3*FW, y, PSTR("COPY TRIM [MENU]"), s_noHi ? 0 : attr);
+      if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
+        s_noHi = NO_HI_LEN;
+        killEvents(event);
+        moveTrimsToOffsets(); // if highlighted and menu pressed - copy trims
       }
-      break;
-  }
+      return;
+    }
 
-  for(uint8_t i=0; i<7; i++){
-    y=(i+1)*FH;
-    k=i+s_pgOfs;
-    if(k==NUM_CHNOUT) break;
-    LimitData *ld = limitaddress( k ) ;
+    LimitData *ld = limitaddress(k) ;
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
     if((g_chans512[k] - v) >  50) swVal[k] = (true==ld->revert);// Switch to raw inputs?  - remove trim!
     if((g_chans512[k] - v) < -50) swVal[k] = (false==ld->revert);
@@ -1433,6 +1456,12 @@ void menuProcLimits(uint8_t event)
           lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
           if (active) {
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL);
+          }
+          else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
+            int16_t zero = g_chans512[k];
+            ld->offset = (ld->revert) ? -zero : zero;
+            s_editMode = false;
+            STORE_MODELVARS;
           }
           break;
         case 1:
@@ -1466,16 +1495,6 @@ void menuProcLimits(uint8_t event)
       }
     }
   }
-  if(k==NUM_CHNOUT){
-    //last line available - add the "copy trim menu" line
-    uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
-    lcd_putsAtt(3*FW,y,PSTR("COPY TRIM [MENU]"),s_noHi ? 0 : attr);
-    if(attr && event==EVT_KEY_LONG(KEY_MENU)) {
-      s_noHi = NO_HI_LEN;
-      killEvents(event);
-      moveTrimsToOffsets(); // if highlighted and menu pressed - copy trims
-    }
-  }
 }
 
 void menuProcCurvesAll(uint8_t event)
@@ -1505,17 +1524,15 @@ void menuProcCurvesAll(uint8_t event)
     if(cv9 && (yd>6)) break;
     if(yd>7) break;
     if(!m) m = attr;
-    lcd_putsAtt(   FW*0, y,PSTR("CV"),attr);
-    lcd_outdezAtt( (k<9) ? FW*3 : FW*4-1, y,k+1 ,attr);
-
+    putsStrIdx(0, y, PSTR("CV"), k+1, attr);
     int8_t *crv = cv9 ? g_model.curves9[k-MAX_CURVE5] : g_model.curves5[k];
     for (uint8_t j = 0; j < (5); j++) {
-      lcd_outdezAtt( j*(3*FW+3) + 7*FW, y, crv[j], 0);
+      lcd_outdezAtt( j*(3*FW+3) + 7*FW + 2, y, crv[j], 0);
     }
     y += FH;yd++;
     if(cv9){
       for (uint8_t j = 0; j < 4; j++) {
-        lcd_outdezAtt( j*(3*FW+3) + 7*FW, y, crv[j+5], 0);
+        lcd_outdezAtt( j*(3*FW+3) + 7*FW + 2, y, crv[j+5], 0);
       }
       y += FH;yd++;
     }
@@ -1541,8 +1558,8 @@ void menuProcCustomSwitches(uint8_t event)
 
     //write SW names here
     lcd_putsnAtt( 0*FW , y, PSTR("SW"),2,0);
-    lcd_putc(  2*FW , y, k + (k>8 ? 'A'-9: '1'));
-    lcd_putsnAtt( 4*FW , y, PSTR(CSWITCH_STR)+CSW_LEN_FUNC*cs.func,CSW_LEN_FUNC,m_posHorz==0 ? attr : 0);
+    lcd_putc(  2*FW, y, k + (k>8 ? 'A'-9: '1'));
+    lcd_putsnAtt( 4*FW - 1, y, PSTR(CSWITCH_STR)+CSW_LEN_FUNC*cs.func,CSW_LEN_FUNC,m_posHorz==0 ? attr : 0);
 
     uint8_t cstate = CS_STATE(cs.func);
 

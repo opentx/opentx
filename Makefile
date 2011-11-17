@@ -72,6 +72,22 @@ DECIMALS = NO
 # Values = YES, NO
 TRANSLATIONS = YES
 
+# DISPLAY_USER_DATA to display on screen data from FrSky module (testing/demo purpose)
+# Values = YES, NO
+DISPLAY_USER_DATA = NO
+
+# PXX (FrSky PCM) protocol
+PXX = NO
+
+# DSM2 (Spektrum) protocol
+DSM2 = YES
+
+# Silver protocol
+SILVER = NO
+
+# CTP-1009 protocol
+CTP1009 = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # MCU name
@@ -98,14 +114,10 @@ TARGET = gruvin9x
 OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = gruvin9x.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp 
+CPPSRC = gruvin9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp 
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
-endif
-
-ifeq ($(EXT), FRSKY)
- CPPSRC += frsky.cpp
 endif
 
 # Disk IO support (PCB V2+ only)
@@ -166,10 +178,13 @@ CPPDEFS = -DF_CPU=$(F_CPU)UL
 # NOTE: PCB version now overrides all the earlier individual settings
 #       These individual settings work only for PCB=STD
 
+CPPDEFS += -DEEPROM_ASYNC_WRITE
+
 ifeq ($(PCB), STD)
 # STD PCB, so ...
 
-  CPPDEFS += -DPCBSTD -DEEPROM_ASYNC_WRITE
+  CPPDEFS += -DPCBSTD
+  
 # If Hardware PPM mode ( PB0<->BP7) switch the Backlight output with the original PPM to use hardware facility to generate precise PPM (hardware mods)
 # G: TODO This prevents HARDPPM being used with FRSKY. HARDPPM needs its own option XXX
   ifeq ($(EXT), HARDPPM)
@@ -184,11 +199,13 @@ ifeq ($(PCB), STD)
 # If FRSKY-Support is enabled
   ifeq ($(EXT), FRSKY)
    CPPDEFS += -DFRSKY -DFRSKY_HUB
+   CPPSRC += frsky.cpp
   endif
   
 # If FRSKY-Support is enabled
   ifeq ($(EXT), FRSKY_NOHUB)
    CPPDEFS += -DFRSKY
+   CPPSRC += frsky.cpp
   endif
 
 # gruvin: If buzzer speaker replacment supported 
@@ -254,6 +271,25 @@ ifeq ($(TEMPLATES), YES)
  CPPSRC += templates.cpp
 endif
 
+ifeq ($(DISPLAY_USER_DATA), YES)
+ CPPDEFS += -DDISPLAY_USER_DATA
+endif
+
+ifeq ($(PXX), YES)
+  CPPDEFS += -DPXX
+endif
+
+ifeq ($(DSM2), YES)
+  CPPDEFS += -DDSM2
+endif
+
+ifeq ($(SILVER), YES)
+  CPPDEFS += -DSILVER
+endif
+
+ifeq ($(CTP1009), YES)
+  CPPDEFS += -DCTP1009
+endif
 
 #---------------- Compiler Options C ----------------
 #  -g*:          generate debugging information
@@ -661,7 +697,10 @@ else
 endif
 
 simu: $(CPPSRC) Makefile simu.cpp $(CPPSRC) simpgmspace.cpp *.h *.lbm eeprom.bin
-	g++ simu.cpp $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -o simu $(FOXINC) $(FOXLIB) -MD -DSIMU
+	g++ simu.cpp $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB)
+
+gruvin9x.so: $(CPPSRC) Makefile export.cpp $(CPPSRC) simpgmspace.cpp *.h *.lbm
+	g++ export.cpp $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -g -MD -DSIMU -shared -fPIC -Wl,-soname,$@ -o $@ 
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048

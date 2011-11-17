@@ -55,6 +55,8 @@ uint8_t toneOn = false;
 
 bool warble = false;
 
+uint8_t heartbeat;
+
 const prog_char APM modi12x3[]=
   "RUD ELE THR AIL "
   "RUD THR ELE AIL "
@@ -295,8 +297,8 @@ void applyExpos(int16_t *anas)
   }
 }
 
-static bool s_noStickInputs = false;
-inline int16_t getValue(uint8_t i)
+bool s_noStickInputs = false;
+inline int16_t __attribute__ ((always_inline)) getValue(uint8_t i)
 {
     if(i<NUM_STICKS+NUM_POTS) return (s_noStickInputs ? 0 : calibratedStick[i]);
     else if(i<MIX_FULL/*srcRaw is shifted +1!*/) return 1024; //FULL/MAX
@@ -307,6 +309,118 @@ inline int16_t getValue(uint8_t i)
     else if(i<CHOUT_BASE+NUM_CHNOUT+NUM_TELEMETRY) return frskyTelemetry[i-CHOUT_BASE-NUM_CHNOUT].value;
 #endif
     else return 0;
+}
+
+volatile uint16_t s_last_switch_used;
+volatile uint16_t s_last_switch_value;
+bool __getSwitch(int8_t swtch)
+{
+  bool result;
+
+  if (swtch == 0)
+    return s_last_switch_used & (1<<15);
+
+  uint8_t cs_idx = abs(swtch);
+
+  if (cs_idx == MAX_SWITCH) {
+    result = true;
+  }
+  else if (cs_idx < MAX_SWITCH-NUM_CSW) {
+    result = keyState((EnumKeys)(SW_BASE+cs_idx-1));
+  }
+  else {
+    cs_idx -= MAX_SWITCH-NUM_CSW;
+    volatile CustomSwData &cs = g_model.customSw[cs_idx];
+    if (cs.func == CS_OFF) return false;
+
+    uint8_t s = CS_STATE(cs.func);
+    if (s == CS_VBOOL) {
+      uint16_t mask = (1 << cs_idx);
+      if (s_last_switch_used & mask) {
+        result = (s_last_switch_value & mask);
+      }
+      else {
+        s_last_switch_used |= mask;
+        bool res1 = __getSwitch(cs.v1);
+        bool res2 = __getSwitch(cs.v2);
+        switch (cs.func) {
+          case CS_AND:
+            result = (res1 && res2);
+            break;
+          case CS_OR:
+            result = (res1 || res2);
+            break;
+          // case CS_XOR:
+          default:
+            result = (res1 ^ res2);
+            break;
+        }
+      }
+      if (result)
+        s_last_switch_value |= (1<<cs_idx);
+      else
+        s_last_switch_value &= ~(1<<cs_idx);
+    }
+    else {
+      int16_t x = getValue(cs.v1-1);
+      int16_t y;
+      if (s == CS_VOFS) {
+#ifdef FRSKY
+        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT)
+          y = 125+cs.v2;
+        else
+#endif
+          y = calc100toRESX(cs.v2);
+
+        switch (cs.func) {
+          case CS_VPOS:
+            result = (x>y);
+            break;
+          case CS_VNEG:
+            result = (x<y);
+            break;
+          case CS_APOS:
+            result = (abs(x)>y);
+            break;
+          // case CS_ANEG:
+          default:
+            result = (abs(x)<y);
+        }
+      }
+      else {
+        y = getValue(cs.v2-1);
+
+        switch (cs.func) {
+          case CS_EQUAL:
+            result = (x==y);
+            break;
+          case CS_NEQUAL:
+            result = (x!=y);
+            break;
+          case CS_GREATER:
+            result = (x>y);
+            break;
+          case CS_LESS:
+            result = (x<y);
+            break;
+          case CS_EGREATER:
+            result = (x>=y);
+            break;
+          // case CS_ELESS:
+          default:
+            result = (x<=y);
+        }
+      }
+    }
+  }
+
+  return swtch > 0 ? result : !result;
+}
+
+bool getSwitch(int8_t swtch, bool nc)
+{
+  s_last_switch_used = (nc<<15);
+  return __getSwitch(swtch);
 }
 
 uint8_t getFlightPhase()
@@ -348,119 +462,6 @@ uint8_t getTrimFlightPhase(uint8_t idx, int8_t phase) // TODO uint8_t phase?
   }
   return 0;
 }
-
-bool getSwitch(int8_t swtch, bool nc, uint8_t level)
-{
-  if(level>5) return false; //prevent recursive loop going too deep
-
-  switch(swtch){
-    case  0:            return  nc;
-    case  MAX_SWITCH: return  true;
-    case -MAX_SWITCH: return  false;
-  }
-
-  uint8_t dir = swtch>0;
-  if(abs(swtch)<(MAX_SWITCH-NUM_CSW)) {
-    if(!dir) return ! keyState((EnumKeys)(SW_BASE-swtch-1));
-    return            keyState((EnumKeys)(SW_BASE+swtch-1));
-  }
-
-  //custom switch, Issue 78
-  //use putsChnRaw
-  //input -> 1..4 -> sticks,  5..8 pots
-  //MAX,FULL - disregard
-  //ppm
-  CustomSwData &cs = g_model.customSw[abs(swtch)-(MAX_SWITCH-NUM_CSW)];
-  if(!cs.func) return false;
-
-
-  int8_t a = cs.v1;
-  int8_t b = cs.v2;
-  int16_t x = 0;
-  int16_t y = 0;
-
-  // init values only if needed
-  uint8_t s = CS_STATE(cs.func);
-  if(s == CS_VOFS)
-  {
-      x = getValue(cs.v1-1);
-#ifdef FRSKY
-      if (cs.v1 > CHOUT_BASE+NUM_CHNOUT)
-        y = 125+cs.v2;
-      else
-#endif
-        y = calc100toRESX(cs.v2);
-  }
-  else if(s == CS_VCOMP)
-  {
-      x = getValue(cs.v1-1);
-      y = getValue(cs.v2-1);
-  }
-
-  switch (cs.func) {
-  case (CS_VPOS):
-      return swtch>0 ? (x>y) : !(x>y);
-      break;
-  case (CS_VNEG):
-      return swtch>0 ? (x<y) : !(x<y);
-      break;
-  case (CS_APOS):
-      {
-        bool res = (abs(x)>y) ;
-        return swtch>0 ? res : !res ;
-      }
-      break;
-  case (CS_ANEG):
-      {
-        bool res = (abs(x)<y) ;
-        return swtch>0 ? res : !res ;
-      }
-      break;
-
-  case (CS_AND):
-  case (CS_OR):
-  case (CS_XOR):
-  {
-    bool res1 = getSwitch(a,0,level+1) ;
-    bool res2 = getSwitch(b,0,level+1) ;
-    if ( cs.func == CS_AND )
-    {
-      return res1 && res2 ;
-    }
-    else if ( cs.func == CS_OR )
-    {
-      return res1 || res2 ;
-    }
-    else  // CS_XOR
-    {
-      return res1 ^ res2 ;
-    }
-  }
-  break;
-  case (CS_EQUAL):
-      return (x==y);
-  case (CS_NEQUAL):
-      return (x!=y);
-  case (CS_GREATER):
-      return (x>y);
-  case (CS_LESS):
-      return (x<y);
-  case (CS_EGREATER):
-      return (x>=y);
-  case (CS_ELESS):
-      return (x<=y);
-  default:
-      return false;
-  }
-}
-
-
-//#define CS_EQUAL     8
-//#define CS_NEQUAL    9
-//#define CS_GREATER   10
-//#define CS_LESS      11
-//#define CS_EGREATER  12
-//#define CS_ELESS     13
 
 #if defined (PCBV3) && !defined (PCBV4)
 // The ugly scanned keys thing should be gone for PCBV4+. In the meantime ...
@@ -1084,7 +1085,6 @@ uint16_t isqrt32(uint32_t n)
 
 // static variables used in perOut - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-uint16_t pulses2MHz[120] = {0};
 int16_t  anas [NUM_XCHNRAW] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
@@ -1654,70 +1654,6 @@ uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
 
 #ifndef SIMU
 
-#define HEART_TIMER2Mhz 1;
-#define HEART_TIMER10ms 2;
-
-uint8_t heartbeat;
-
-
-ISR(TIMER1_COMPA_vect) //2MHz pulse generation
-{
-  static uint8_t   pulsePol;
-  static uint16_t *pulsePtr = pulses2MHz;
-
-  // TODO understand what Bryan did here
-  uint8_t i = 0;
-  while((TCNT1L < 10) && (++i < 50))  // Timer does not read too fast, so i
-    ;
-  uint16_t dt=TCNT1;//-OCR1A;
-
-//vinceofdrink@gmail harwared ppm
-//Orginal bitbang for PPM
-#ifndef DPPMPB7_HARDWARE
-  if(pulsePol)
-  {
-    PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
-    pulsePol = 0;
-  }else{
-    PORTB &= ~(1<<OUT_B_PPM); // GCC optimisation should result in a single CBI instruction
-    pulsePol = 1;
-  }
-  g_tmr1Latency_max = max(dt,g_tmr1Latency_max);    // max has leap, therefore vary in length
-  g_tmr1Latency_min = min(dt,g_tmr1Latency_min);    // min has leap, therefore vary in length
-#endif
-  OCR1A  = *pulsePtr++;
-
-//vinceofdrink@gmail harwared ppm
-#if defined (DPPMPB7_HARDWARE)
-OCR1C=OCR1A;            //just copy the value of the OCR1A to OCR1C to test PPM out without to much change in the code not optimum but will not alter ppm precision
-#endif
-
-  if( *pulsePtr == 0) {
-    //currpulse=0;
-    pulsePtr = pulses2MHz;
-    pulsePol = g_model.pulsePol;//0;
-
-    cli();
-#if defined (PCBV3)
-    TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
-#else
-    TIMSK &= ~(1<<OCIE1A); //stop reentrance
-#endif
-    sei();
-
-    setupPulses();
-
-    cli();
-#if defined (PCBV3)
-    TIMSK1 |= (1<<OCIE1A);
-#else
-    TIMSK |= (1<<OCIE1A);
-#endif
-    sei();
-  }
-  heartbeat |= HEART_TIMER2Mhz;
-}
-
 volatile uint8_t g_tmr16KHz; //continuous timer 16ms (16MHz/1024/256) -- 8-bit counter overflow
 #if defined (PCBV3)
 ISR(TIMER2_OVF_vect)
@@ -1753,9 +1689,9 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 {
   cli();
+#if defined (PCBV3)
   static uint8_t accuracyWarble = 4; // becasue 16M / 1024 / 100 = 156.25. So bump every 4.
   uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
-#if defined (PCBV3)
   TIMSK2 &= ~(1<<OCIE2A); //stop reentrance
   OCR2A += bump;
 #else
@@ -1763,6 +1699,8 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #if defined (BEEPSPKR)
   OCR0 += 2; // run much faster, to generate speaker tones
 #else
+  static uint8_t accuracyWarble = 4; // becasue 16M / 1024 / 100 = 156.25. So bump every 4.
+  uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
   OCR0 += bump;
 #endif
 #endif
@@ -2055,6 +1993,32 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   beepWarn1();
 }
 
+#if defined (PCBV4)
+// Rotary encoder interrupts
+uint8_t volatile g_rotenc1, g_rotenc2 = 0;
+ISR(INT2_vect)
+{
+  uint8_t input = PIND & 0b00001100;
+  if (input == 0 || input == 0b00001100) g_rotenc1--;
+}
+ISR(INT3_vect)
+{
+  uint8_t input = PIND & 0b00001100;
+  if (input == 0 || input == 0b00001100) g_rotenc1++;
+}
+
+ISR(INT5_vect)
+{
+  uint8_t input = PINE & 0b01100000;
+  if (input == 0 || input == 0b01100000) g_rotenc2++;
+}
+ISR(INT6_vect)
+{
+  uint8_t input = PINE & 0b01100000;
+  if (input == 0 || input == 0b01100000) g_rotenc2--;
+}
+#endif
+
 #ifndef SIMU
 
 extern unsigned char __bss_end ;
@@ -2077,13 +2041,13 @@ int main(void)
   DDRA = 0xff;  PORTA = 0x00; // LCD data
 
 #if defined (PCBV4)
-  DDRB = 0b11000111;  PORTB = 0b00111001; // 7:SPKR, 6:PPM_OUT,  5:TrainSW,  4:IDL2_SW, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
-  DDRC = 0x3f;  PORTC = 0xc0; // 7:AilDR, 6:EleDR, LCD[5,4,3,2,1[, 0:BackLight
-  DDRD = 0x00;  PORTD = 0xfc; // 7/6:Spare3/4, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
+  DDRB = 0b11000111;  PORTB = 0b00111111; // 7:SPKR, 6:PPM_OUT,  5:TrainSW,  4:IDL2_SW, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
+  DDRC = 0x3f;  PORTC = 0xc0; // 7:AilDR, 6:EleDR, LCD[5,4,3,2,1], 0:BackLight
+  DDRD = 0x00;  PORTD = 0b11111100; // 7/6:Spare3/4, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
   DDRE = 0b00001010;  PORTE = 0b11110101; // 7:PPM_IN, 6: RENC1_B, 5:RENC1_A, 4:USB_DNEG, 3:BUZZER, 2:USB_DPOS, 1:TELEM_TX, 0:TELEM_RX
   DDRF = 0x00;  PORTF = 0x00; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
   DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
-  DDRH = 0x00;  PORTH = 0xff; // 7:0 Spare port -- all inputer for now [Bit 2:VIB_OPTION -- setting to input for now]
+  DDRH = 0x00;  PORTH = 0xff; // 7:0 Spare port -- all inputs for now [Bit 2:VIB_OPTION -- setting to input for now]
   DDRJ = 0x00;  PORTJ = 0xff; // 7-0:Trim switch inputs
   DDRK = 0x00;  PORTK = 0x00; // anain. No pull-ups!
   DDRL = 0x00;  PORTL = 0xff; // 7-6:Spare6/5 (inputs), 5-0: User Button inputs
@@ -2218,29 +2182,12 @@ int main(void)
 
   clearKeyEvents(); //make sure no keys are down before proceeding
 
-  //addon Vinceofdrink@gmail (hardware ppm)
-  #if defined (DPPMPB7_HARDWARE)
-    TCCR1A |=(1<<COM1C0); // (COM1C1=0 and COM1C0=1 in TCCR1A)  toogle the state of PB7  on each TCNT1=OCR1C
-  #endif
-
-  setupPulses();
-
-  wdt_enable(WDTO_500MS);
-
   perOut(g_chans512);
 
   lcdSetRefVolt(g_eeGeneral.contrast);
   g_LightOffCounter = g_eeGeneral.lightAutoOff*500; //turn on light for x seconds - no need to press key Issue 152
 
   if(cModel!=g_eeGeneral.currModel) eeDirty(EE_GENERAL); // if model was quick-selected, make sure it sticks
-
-
-
-#if defined (PCBV3)
-  TIMSK1 |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
-#else
-  TIMSK |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
-#endif
 
 #if defined (PCBV3)
 // Initialise global unix timestamp with current time from RTC chip on SD card interface
@@ -2256,6 +2203,54 @@ int main(void)
   utm.tm_wday = rtc.wday - 1;
   g_unixTime = mktime(&utm);
 #endif
+
+#if defined (PCBV4)
+  /***************************************************/
+  /* Rotary encoder interrupt set-up (V4 board only) */
+
+  // All external interrupts initialise to disabled. But maybe not after 
+  // a WDT or BOD event? So to be safe ...
+  EIMSK = 0; // disable ALL external interrupts.
+
+  // encoder 1
+  EICRB = (1<<ISC60) | (1<<ISC50); // 01 = interrupt on any edge
+  EIFR = (3<<INTF5); // clear the int. flag in case it got set when changing modes
+
+  // encoder 2
+  EICRA = (1<<ISC30) | (1<<ISC20); // do the same for encoder 1
+  EIFR = (3<<INTF2);
+
+  EIMSK = (3<<INT5) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
+  /***************************************************/
+#endif
+
+/***********************************************************/
+/*** Keep this code block directly before the main loop ****/
+  
+  setupPulses();
+
+#if defined (PCBV4)
+    OCR1B = 0xffff; /* Prevent any PPM_PUT pin toggle before the TCNT1 interrupt 
+                       fires for the first time and sets up the pulse period. */
+    // TCCR1A |= (1<<COM1B0); // (COM1B1=0 and COM1B0=1 in TCCR1A)  toogle the state of PB6(OC1B) on each TCNT1==OCR1B
+    TCCR1A = (3<<COM1B0); // Connect OC1B to PPM_OUT pin (SET the state of PB6(OC1B) on next TCNT1==OCR1B)
+#else
+//addon Vinceofdrink@gmail (hardware ppm)
+#  if defined (DPPMPB7_HARDWARE)
+    OCR1C = 0xffff; // See comment for PCBV4, above
+    TCCR1A |= (1<<COM1C0); // (COM1C1=0 and COM1C0=1 in TCCR1A)  toogle the state of PB7(OC1C) on each TCNT1==OCR1C
+#  endif
+#endif
+
+#if defined (PCBV3)
+  TIMSK1 |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
+#else
+  TIMSK |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
+#endif
+
+  wdt_enable(WDTO_500MS);
+/*** Keep this code block directly before the main loop ****/
+/***********************************************************/
 
   while(1){
     uint16_t t0 = getTmr16KHz();

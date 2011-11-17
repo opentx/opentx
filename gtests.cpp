@@ -234,6 +234,22 @@ TEST(FrSky, dateNtime) {
   EXPECT_EQ(frskyHubData.sec, 50);
 }
 
+TEST(getSwitch, undefCSW) {
+  memset(&g_model, 0, sizeof(g_model));
+  EXPECT_EQ(getSwitch(MAX_SWITCH-NUM_CSW, 0), false);
+  EXPECT_EQ(getSwitch(-(MAX_SWITCH-NUM_CSW), 0), false);
+}
+
+TEST(getSwitch, circularCSW) {
+  memset(&g_model, 0, sizeof(g_model));
+  g_model.customSw[0] = { MAX_SWITCH-NUM_CSW, MAX_SWITCH-NUM_CSW, CS_OR };
+  g_model.customSw[1] = { MAX_SWITCH-NUM_CSW, MAX_SWITCH-NUM_CSW, CS_AND };
+  EXPECT_EQ(getSwitch(MAX_SWITCH-NUM_CSW, 0), false);
+  EXPECT_EQ(getSwitch(-(MAX_SWITCH-NUM_CSW), 0), true);
+  EXPECT_EQ(getSwitch(1+MAX_SWITCH-NUM_CSW, 0), false);
+  EXPECT_EQ(getSwitch(-(1+MAX_SWITCH-NUM_CSW), 0), true);
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

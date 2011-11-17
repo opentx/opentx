@@ -81,6 +81,8 @@ extern void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode=0);
 extern void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode=0, uint8_t len=0);
 extern void lcd_outdez8(uint8_t x, uint8_t y, int8_t val);
 
+extern void putsStrIdx(uint8_t x, uint8_t y, const prog_char *str, uint8_t idx, uint8_t att=0);
+
 extern void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att);
 extern void putsSwitches(uint8_t x, uint8_t y, int8_t swtch, uint8_t att=0);
 extern void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
@@ -107,7 +109,7 @@ extern void lcd_vline(uint8_t x, int8_t y, int8_t h);
 extern void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat);
 
 extern void lcd_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t pat=0xff, uint8_t att=0);
-extern void lcd_filled_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t att=0);
+extern void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t att=0);
 inline void lcd_square(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0) { lcd_rect(x, y, w, w, 0xff, att); }
 
 #define DO_CROSS(xx,yy,ww)          \
