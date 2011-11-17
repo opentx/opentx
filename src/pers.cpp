@@ -114,7 +114,6 @@ uint8_t Translate()
         g_model.thrTrim = v3->thrTrim;
         g_model.thrExpo = v3->thrExpo;
         g_model.trimInc = v3->trimInc;
-        g_model.spare1 = 0;
         g_model.pulsePol = v3->pulsePol;
         if (g_eeGeneral.myVers == EEPROM_VER_r584)
           g_model.extendedLimits = 0;
