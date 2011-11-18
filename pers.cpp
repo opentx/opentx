@@ -204,6 +204,7 @@ uint8_t Translate()
         }
         for (uint8_t i=0; i<NUM_STICKS; i++)
           setTrimValue(0, i, trims[i]);
+        g_model.ppmFrameLength = 0;
         theFile.writeRlc(FILE_MODEL(id), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), 200);
       }
     }

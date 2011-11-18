@@ -139,11 +139,11 @@ inline void __attribute__ ((always_inline)) setupPulsesPPM() // changed 10/05/20
     // G: Found the following reference at th9x. The below code does not seem
     // to produce quite exactly this, to my eye. *shrug*
     //   http://www.aerodesign.de/peter/2000/PCM/frame_ppm.gif
-    uint16_t *ptr = pulses2MHz ; // TODO check this saves flash
+    uint16_t *ptr = pulses2MHzWPtr;
     uint8_t p = 8+(g_model.ppmNCH*2); // channels count
     uint16_t q = (g_model.ppmDelay*50+300)*2; //Stoplen *2
     uint16_t rest = 22500u*2-q; //Minimum Framelen=22.5 ms
-    // TODO in er9x this line replaces the next one: rest += (int16_t(g_model.ppmFrameLength))*1000;
+    rest += (int16_t(g_model.ppmFrameLength))*1000;
     if(p>9) rest=p*(1720u*2 + q) + 4000u*2; //for more than 9 channels, frame must be longer
     for (uint8_t i=0; i<p; i++) {
       int16_t v = max(min(g_chans512[i], PPM_range), -PPM_range) + PPM_CENTER;

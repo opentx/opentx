@@ -757,51 +757,46 @@ uint16_t anaIn(uint8_t chan)
 #define ADC_VREF_TYPE 0x40 // AVCC with external capacitor at AREF pin
 void getADC_filt()
 {
-  static uint16_t t_ana[3][8];
-  for (uint8_t adc_input=0;adc_input<8;adc_input++)
-  {
+  static uint16_t t_ana[2][8];
+  for (uint8_t adc_input=0; adc_input<8; adc_input++) {
       ADMUX=adc_input|ADC_VREF_TYPE;
       // Start the AD conversion
       ADCSRA|=0x40;
+
+    // Do this while waiting
+    s_anaFilt[adc_input] = (s_anaFilt[adc_input]/2 + t_ana[1][adc_input]) & 0xFFFE; //gain of 2 on last conversion - clear last bit
+    t_ana[1][adc_input]  = (t_ana[1][adc_input] + t_ana[0][adc_input]) >> 1;
+
       // Wait for the AD conversion to complete
       while ((ADCSRA & 0x10)==0);
       ADCSRA|=0x10;
 
-      s_anaFilt[adc_input] = (s_anaFilt[adc_input]/2 + t_ana[1][adc_input]) & 0xFFFE; //gain of 2 on last conversion - clear last bit
-      //t_ana[2][adc_input]  =  (t_ana[2][adc_input]  + t_ana[1][adc_input]) >> 1;
-      t_ana[1][adc_input]  = (t_ana[1][adc_input]  + t_ana[0][adc_input]) >> 1;
       t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADCW               ) >> 1;
   }
 }
-/*
-  s_anaFilt[chan] = (s_anaFilt[chan] + sss_ana[chan]) >> 1;
-  sss_ana[chan] = (sss_ana[chan] + ss_ana[chan]) >> 1;
-  ss_ana[chan] = (ss_ana[chan] + s_ana[chan]) >> 1;
-  s_ana[chan] = (ADC + s_ana[chan]) >> 1;
-  */
 
 void getADC_osmp()
 {
-  uint16_t temp_ana[8] = {0};
-  for (uint8_t adc_input=0;adc_input<8;adc_input++)
-  {
-    ADMUX=adc_input|ADC_VREF_TYPE; // TODO now it is done only one time before the loop, is it good?
+  uint16_t temp_ana;
+
+  for (uint8_t adc_input=0; adc_input<8; adc_input++) {
+    temp_ana = 0;
+    ADMUX = adc_input|ADC_VREF_TYPE;
     for (uint8_t i=0; i<4;i++) {  // Going from 10bits to 11 bits.  Addition = n.  Loop 4^n times
       // Start the AD conversion
       ADCSRA|=0x40;
       // Wait for the AD conversion to complete
       while ((ADCSRA & 0x10)==0);
       ADCSRA|=0x10;
-      temp_ana[adc_input] += ADCW;
+      temp_ana += ADCW;
     }
-    s_anaFilt[adc_input] = temp_ana[adc_input] / 2; // divide by 2^n to normalize result.
+    s_anaFilt[adc_input] = temp_ana / 2; // divide by 2^n to normalize result.
   }
 }
 
 void getADC_single()
 {
-  for (uint8_t adc_input=0;adc_input<8;adc_input++)
-  {
+  for (uint8_t adc_input=0; adc_input<8; adc_input++) {
       ADMUX=adc_input|ADC_VREF_TYPE;
       // Start the AD conversion
       ADCSRA|=0x40;
@@ -812,13 +807,20 @@ void getADC_single()
     }
 }
 
+getADCp getADC[3] = {
+  getADC_single,
+  getADC_osmp,
+  getADC_filt
+};
+
 void getADC_bandgap()
 {
 #if defined(PCBSTD)
   ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
-  _delay_us(10); // short delay to stablise reference voltage
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // grab a sample
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // grab a sample
+  _delay_us(5); // short delay to stablise reference voltage
+  ADCSRA|=0x40;
+  while ((ADCSRA & 0x10)==0);
+  ADCSRA|=0x10; // grab a sample
   BandGap=ADCW;
 #elif defined (PCBV4)
   // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
@@ -846,11 +848,6 @@ void getADC_bandgap()
 #endif
 }
 
-getADCp getADC[3] = {
-  getADC_single,
-  getADC_osmp,
-  getADC_filt
-};
 #else
 uint16_t BandGap = 225;
 #endif
@@ -1104,9 +1101,9 @@ inline void evalTrims()
     int32_t vv = 2*RESX;
     int16_t trim = getTrimValue(getTrimFlightPhase(i), i);
     if (IS_THROTTLE(i) && g_model.thrTrim) {
-      vv = (g_eeGeneral.throttleReversed) ?
-                ((int32_t)trim+TRIM_MIN)*(RESX+v)/(2*RESX) :
-                ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
+      if (g_eeGeneral.throttleReversed)
+        trim = -trim;
+      vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
     }
     else if (trimsCheckTimer > 0) {
       trim = 0;
@@ -1147,6 +1144,10 @@ uint8_t evalSticks()
 
     if(v <= -RESX) v = -RESX;
     if(v >=  RESX) v =  RESX;
+
+    if (g_eeGeneral.throttleReversed && i==THR_STICK)
+      v = -v;
+
     calibratedStick[i] = v; //for show in expo
     if(!(v/16)) anaCenter |= 1<<(CONVERT_MODE((i+1))-1);
 
@@ -1367,13 +1368,15 @@ void perOut(int16_t *chanOut)
           if(diff) sDelay[i] = (diff<0 ? md->delayUp :  md->delayDown) * 100;
         }
 
-        if(sDelay[i]){ // perform delay
-            if(tick10ms) sDelay[i]--;
-            v = act[i]/DEL_MULT;
+        if (sDelay[i]) { // perform delay
+          if(tick10ms) sDelay[i]--;
+          if (sDelay[i] != 0) {
+            v = act[i]/DEL_MULT; // Stay in old position until delay over
             diff = 0;
+          }
         }
 
-        if(diff && (md->speedUp || md->speedDown)){
+        if (diff && (md->speedUp || md->speedDown)) {
           //rate = steps/sec => 32*1024/100*md->speedUp/Down
           //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
           //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 sincde it's asymmetrical
@@ -1386,6 +1389,9 @@ void perOut(int16_t *chanOut)
 
           if(((diff>0) && (v<(act[i]/DEL_MULT))) || ((diff<0) && (v>(act[i]/DEL_MULT)))) act[i]=(int32_t)v*DEL_MULT; //deal with overflow
           v = act[i]/DEL_MULT;
+        }
+        else if (diff) {
+          act[i]=(int32_t)v*DEL_MULT;
         }
       }
 
