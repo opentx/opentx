@@ -373,10 +373,10 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
   }
 }
 
-#define PARAM_OFS (9*FW)
+#define PARAM_OFS (9*FW+2)
 void menuProcModel(uint8_t event)
 {
-  MENU("SETUP", menuTabModel, e_Model, 10, {0,sizeof(g_model.name)-1,3,3,0,0,0,1,6,3});
+  MENU("SETUP", menuTabModel, e_Model, (g_model.protocol ? 10 : 11), {0,sizeof(g_model.name)-1,3,3,0,0,0,1,6,2,1});
 
   uint8_t  sub    = m_posVert;
   uint8_t y = 1*FH;
@@ -468,7 +468,7 @@ void menuProcModel(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_puts_P(    0,    y, PSTR("Beep Ctr"));
-    for(uint8_t i=0;i<7;i++) lcd_putsnAtt((9+i)*FW, y, PSTR("RETA123")+i,1, ((m_posHorz==i) && (sub==subN)) ? BLINK : ((g_model.beepANACenter & (1<<i)) ? INVERS : 0 ) );
+    for(uint8_t i=0;i<7;i++) lcd_putsnAtt(PARAM_OFS+i*FW, y, PSTR("RETA123")+i,1, ((m_posHorz==i) && (sub==subN)) ? BLINK : ((g_model.beepANACenter & (1<<i)) ? INVERS : 0 ) );
     if(sub==subN){
       if((event==EVT_KEY_FIRST(KEY_MENU)) || p1valdiff) {
         killEvents(event);
@@ -481,17 +481,20 @@ void menuProcModel(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(    0,    y, PSTR("Proto"));
-    lcd_putsnAtt(  6*FW, y, PSTR(PROT_STR)+PROT_STR_LEN*g_model.protocol,PROT_STR_LEN,
+    lcd_puts_P(0, y, PSTR("Proto"));
+    lcd_putsnAtt(PARAM_OFS, y, PSTR(PROT_STR)+PROT_STR_LEN*g_model.protocol,PROT_STR_LEN,
                   (sub==subN && m_posHorz==0 ? (s_editMode ? BLINK : INVERS):0));
     if(!g_model.protocol) {
-      lcd_putsnAtt(10*FW-2, y, PSTR("4CH 6CH 8CH 10CH12CH14CH16CH")+4*(g_model.ppmNCH+2),4,(sub==subN && m_posHorz==1  ? (s_editMode ? BLINK : INVERS):0));
-      lcd_putsAtt(17*FW-2, y, PSTR("u"),0);
-      lcd_outdezAtt(17*FW-2, y, (g_model.ppmDelay*50)+300, (sub==subN && m_posHorz==2 ? (s_editMode ? BLINK : INVERS):0));
-      lcd_putsnAtt(19*FW-4, y, PSTR("POSNEG")+3*g_model.pulsePol,3,(sub==subN && m_posHorz==3 ? (s_editMode ? BLINK : INVERS):0));
+      lcd_putsnAtt(PARAM_OFS+4*FW, y, PSTR("4CH 6CH 8CH 10CH12CH14CH16CH")+4*(g_model.ppmNCH+2),4,(sub==subN && m_posHorz==1  ? (s_editMode ? BLINK : INVERS):0));
+      lcd_putsAtt(PARAM_OFS+11*FW, y, PSTR("u"),0);
+      lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, (sub==subN && m_posHorz==2 ? (s_editMode ? BLINK : INVERS):0));
     }
-    if(sub==subN && (s_editMode || p1valdiff))
-      switch (m_posHorz){
+    else if (sub==subN) {
+      m_posHorz = 0;
+      CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROT_MAX);
+    }
+    if(sub==subN && (s_editMode || p1valdiff)) {
+      switch (m_posHorz) {
         case 0:
             CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROT_MAX);
             break;
@@ -501,11 +504,31 @@ void menuProcModel(uint8_t event)
         case 2:
             CHECK_INCDEC_MODELVAR(event,g_model.ppmDelay,-4,10);
             break;
-        case 3:
+      }
+    }
+    if((y+=FH)>7*FH) return;
+  }subN++;
+
+  if(s_pgOfs<subN) {
+    if (!g_model.protocol) {
+      lcd_puts_P(0, y, PSTR("PPM frame"));
+      lcd_puts_P(PARAM_OFS+3*FW, y, PSTR("ms"));
+      lcd_outdezAtt(PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((sub==subN && m_posHorz==0) ? INVERS:0) | PREC1|LEFT);
+      lcd_putsnAtt(PARAM_OFS+6*FW, y, PSTR("POSNEG")+3*g_model.pulsePol,3,(sub==subN && m_posHorz==1 ? (s_editMode ? BLINK : INVERS):0));
+      if(sub==subN && (s_editMode || p1valdiff)) {
+        switch (m_posHorz) {
+          case 0:
+            CHECK_INCDEC_MODELVAR(event, g_model.ppmFrameLength, -20, 20);
+            break;
+          case 1:
             CHECK_INCDEC_MODELVAR(event,g_model.pulsePol,0,1);
             break;
+        }
       }
-    if((y+=FH)>7*FH) return;
+    }
+    else {
+
+    }
   }
 }
 

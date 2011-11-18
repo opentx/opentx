@@ -253,7 +253,8 @@ typedef struct t_ModelData {
   FuncSwData    funcSw[NUM_FSW];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
-  FrSkyData     frsky;
+  FrSkyData frsky;
+  int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
 } __attribute__((packed)) ModelData;
 
 extern EEGeneral g_eeGeneral;
