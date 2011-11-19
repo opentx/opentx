@@ -224,6 +224,7 @@ void menuProcModelSelect(uint8_t event)
           if (s_copySrcRow >= 0) {
             EFile::rm(FILE_MODEL(sub));
             sub = m_posVert = s_copySrcRow;
+            s_copySrcRow = -1;
           }
         }
         s_copyMode = 0;
