@@ -451,7 +451,7 @@ void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
   if (idx==0) { lcd_putsAtt(x,y,PSTR("---"),att); return; }
   if (idx < 0) { lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/); idx = -idx; }
-  putsStrIdx(x, y, PSTR("FP"), idx, att);
+  putsStrIdx(x, y, PSTR("FP"), idx-1, att);
 }
 
 #define CURV_STR "---x>0x<0|x|f>0f<0|f|"

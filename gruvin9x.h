@@ -29,6 +29,7 @@
 #include <string.h>
 
 #if defined(PCBV3)
+#include "ff.h"
 #include "time.h"
 #endif
 
@@ -291,7 +292,9 @@ enum EnumKeys {
   SW_ID2    ,
   SW_AileDR ,
   SW_Gear   ,
-  SW_Trainer
+  SW_Trainer,
+  SW_RE1,
+  SW_RE2
 };
 
 #define CURVE_BASE 7
@@ -451,10 +454,6 @@ void    per10ms();
 /// Erzeugt periodisch alle Outputs ausser Bildschirmausgaben.
 void zeroVariables();
 
-#define NO_TRAINER 0x01
-#define NO_INPUT   0x02
-extern void perOut(int16_t *chanOut, uint8_t att);
-
 ///   Liefert den Zustand des Switches 'swtch'. Die Numerierung erfolgt ab 1
 ///   (1=SW_ON, 2=SW_ThrCt, 10=SW_Trainer). 0 Bedeutet not conected.
 ///   Negative Werte  erzeugen invertierte Ergebnisse.
@@ -474,7 +473,7 @@ bool    getSwitch(int8_t swtch, bool nc);
 ///
 
 uint8_t getFlightPhase();
-uint8_t getTrimFlightPhase(uint8_t idx, int8_t phase=-1);
+uint8_t getTrimFlightPhase(uint8_t idx, uint8_t phase);
 extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
 extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
@@ -498,8 +497,8 @@ extern uint8_t Timer2_running ;
 extern uint16_t timer2 ;
 void resetTimer2() ;
 
-extern uint16_t g_tmr1Latency_max;
-extern uint16_t g_tmr1Latency_min;
+extern uint8_t g_tmr1Latency_max;
+extern uint8_t g_tmr1Latency_min;
 extern uint16_t g_timeMain;
 extern uint16_t g_time_per10;
 
@@ -560,15 +559,13 @@ template<class t> inline t limit(t mi, t x, t ma){ return min(max(mi,x),ma); }
 /// eeCheck ins EEPROM zurueckgeschrieben.
 void eeWriteBlockCmp(const void *i_pointer_ram, void *i_pointer_eeprom, size_t size);
 void eeDirty(uint8_t msk);
-#ifdef EEPROM_ASYNC_WRITE
 inline void eeFlush() { theFile.flush(); }
-#endif
 void eeCheck(bool immediately=false);
 void eeReadAll();
 bool eeModelExists(uint8_t id);
 uint16_t eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
-int8_t eeDuplicateModel(uint8_t id, bool down=true);
+int8_t eeFindEmptyModel(uint8_t id, bool down);
 
 ///number of real input channels (1-9) plus virtual input channels X1-X4
 #define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+2/*MAX/FULL*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT+NUM_TELEMETRY)
@@ -651,7 +648,7 @@ extern uint16_t expou(uint16_t x, uint16_t k);
 extern int16_t expo(int16_t x, int16_t k);
 extern int16_t intpol(int16_t, uint8_t);
 extern int16_t applyCurve(int16_t, uint8_t, uint8_t srcRaw);
-extern void applyExpos(int16_t *anas);
+extern void applyExpos(int16_t *anas, uint8_t phase=255);
 
 extern uint16_t anaIn(uint8_t chan);
 extern int16_t calibratedStick[7];
@@ -729,10 +726,20 @@ inline bool isFunctionActive(uint8_t func)
   return active_functions & (1 << (func-1));
 }
 
+#ifdef DISPLAY_USER_DATA
+#define TELEM_SCREEN_BUFFER_SIZE 21
+extern char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE]; // text buffer for frsky telem. user data experiments
+#endif
+
 #if defined (PCBV3)
 extern char g_logFilename[21]; // pers.cpp::resetTelemetry()
 extern FATFS FATFS_Obj; // pers.cpp::resetTelemetry()
 extern FIL g_oLogFile; // pers.cpp::resetTelemetry()
+#endif
+
+#if defined (PCBV4)
+// Global rotary encoder registers -- 8-bit, 0-255
+extern volatile uint8_t g_rotenc[2];
 #endif
 
 #endif // gruvin9x_h

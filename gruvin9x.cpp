@@ -43,8 +43,8 @@ mode4 ail thr ele rud
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
-uint16_t g_tmr1Latency_max;
-uint16_t g_tmr1Latency_min = 0x7ff;
+uint8_t g_tmr1Latency_max;
+uint8_t g_tmr1Latency_min;
 uint16_t g_timeMain;
 uint16_t g_time_per10;
 
@@ -256,12 +256,13 @@ int16_t  Expo::expo(int16_t x)
 #endif
 
 
-void applyExpos(int16_t *anas)
+void applyExpos(int16_t *anas, uint8_t phase)
 {
   static int16_t anas2[4]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 
-  uint8_t phase = getFlightPhase();
+  if (phase == 255)
+    phase = getFlightPhase();
 
   int8_t cur_chn = -1;
   for (uint8_t i=0; i<DIM(g_model.expoData); i++) {
@@ -448,10 +449,8 @@ void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
   STORE_MODELVARS;
 }
 
-uint8_t getTrimFlightPhase(uint8_t idx, int8_t phase) // TODO uint8_t phase?
+uint8_t getTrimFlightPhase(uint8_t idx, uint8_t phase)
 {
-  if (phase == -1) phase = getFlightPhase();
-
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     if (phase == 0) return 0;
     int16_t trim = getTrimValue(phase, idx);
@@ -674,7 +673,7 @@ uint8_t checkTrim(uint8_t event)
   if (k>=0 && k<8) { // && (event & _MSK_KEY_REPT))
     //LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = k/2;
-    uint8_t phase = getTrimFlightPhase(idx);
+    uint8_t phase = getTrimFlightPhase(idx, getFlightPhase());
     int16_t before = getTrimValue(phase, idx);
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
     bool thro = (((2-(g_eeGeneral.stickMode&1)) == idx) && g_model.thrTrim);
@@ -817,7 +816,7 @@ void getADC_bandgap()
 {
 #if defined(PCBSTD)
   ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
-  _delay_us(5); // short delay to stablise reference voltage
+  _delay_us(5); // short delay to stabilise reference voltage
   ADCSRA|=0x40;
   while ((ADCSRA & 0x10)==0);
   ADCSRA|=0x10; // grab a sample
@@ -1093,13 +1092,13 @@ int32_t  act   [MAX_MIXERS] = {0};
 uint8_t  swOn  [MAX_MIXERS] = {0};
 uint8_t mixWarning;
 
-inline void evalTrims()
+inline void evalTrims(uint8_t phase)
 {
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
     int16_t v = anas[i];
     int32_t vv = 2*RESX;
-    int16_t trim = getTrimValue(getTrimFlightPhase(i), i);
+    int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
     if (IS_THROTTLE(i) && g_model.thrTrim) {
       if (g_eeGeneral.throttleReversed)
         trim = -trim;
@@ -1113,7 +1112,7 @@ inline void evalTrims()
   }
 }
 
-uint8_t evalSticks()
+uint8_t evalSticks(uint8_t phase)
 {
 #ifdef HELI
   uint16_t d = 0;
@@ -1178,10 +1177,10 @@ uint8_t evalSticks()
   }
 
   /* EXPOs */
-  applyExpos(anas);
+  applyExpos(anas, phase);
 
   /* TRIMs */
-  evalTrims();
+  evalTrims(phase);
 
   return anaCenter;
 }
@@ -1204,10 +1203,9 @@ void evalFunctions()
   }
 }
 
-void perOut(int16_t *chanOut)
+void perOut(int16_t *chanOut, uint8_t phase)
 {
-  uint8_t phase = getFlightPhase();
-  uint8_t anaCenter = evalSticks();
+  uint8_t anaCenter = evalSticks(phase);
 
   //===========BEEP CENTER================
   anaCenter &= g_model.beepANACenter;
@@ -1348,10 +1346,6 @@ void perOut(int16_t *chanOut)
       {
 #define DEL_MULT 256
 
-        //if(init) {
-          //act[i]=(int32_t)v*DEL_MULT;
-          //swTog = false;
-        //}
         int16_t diff = v-act[i]/DEL_MULT;
 
         if(swTog) {
@@ -1472,53 +1466,113 @@ void perOut(int16_t *chanOut)
   }
 }
 
+#ifdef DISPLAY_USER_DATA
+char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
+#endif
+
 void perMain()
 {
   static uint16_t lastTMR;
   tick10ms = (get_tmr10ms() != lastTMR);
   lastTMR = get_tmr10ms();
 
-  int16_t last_chans512[NUM_CHNOUT];
-  int16_t next_chans512[NUM_CHNOUT];
-
-  static uint8_t last_phase = 0;
+#define MAX_ACT 0xffff
+  static uint16_t fp_act[MAX_PHASES] = {0};
+  static uint8_t s_fade_flight_phases = 0;
+  static uint8_t s_last_phase = 255;
   uint8_t phase = getFlightPhase();
 
-  static uint8_t fading_out_timer = 0;
-  if (last_phase != phase) {
-    fading_out_timer = 10 * max(g_model.phaseData[last_phase].fadeOut, g_model.phaseData[phase].fadeIn);
-    last_phase = phase;
+  if (s_last_phase != phase) {
+    if (s_last_phase == 255) {
+      fp_act[phase] = MAX_ACT;
+  }
+    else {
+      if (g_model.phaseData[s_last_phase].fadeOut) {
+        s_fade_flight_phases |= (1<<s_last_phase);
+      }
+      else {
+        fp_act[s_last_phase] = 0;
+        s_fade_flight_phases &= ~(1<<s_last_phase);
+      }
+      if (g_model.phaseData[phase].fadeIn) {
+        s_fade_flight_phases |= (1<<phase);
+      }
+      else {
+        fp_act[phase] = MAX_ACT;
+        s_fade_flight_phases &= ~(1<<phase);
+      }
+    }
+    s_last_phase = phase;
+    // printf("s_fade_flight_phases=%d\n", s_fade_flight_phases); fflush(stdout);
   }
 
-  if (fading_out_timer) {
-    memcpy(last_chans512, g_chans512, sizeof(g_chans512));
-  }
+  int16_t next_chans512[NUM_CHNOUT];
 
-  perOut(next_chans512);
+  if (s_fade_flight_phases) {
+    int32_t sum_chans512[NUM_CHNOUT] = {0};
+    int32_t weight = 0;
+    for (uint8_t p=0; p<MAX_PHASES; p++) {
+      if (s_fade_flight_phases & (1<<p)) {
+        perOut(next_chans512, p);
+        // printf("perOut(%d - %d)=>%d\n", p, fp_act[p], next_chans512[2]);
+        for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+          sum_chans512[i] += (int32_t)next_chans512[i] * fp_act[p];
+        }
+        weight += fp_act[p];
+      }
+    }
+    // printf("sum=%d, weight=%d ", sum_chans512[2], weight); fflush(stdout);
+    assert(weight);
+    for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+      next_chans512[i] = ((int32_t)sum_chans512[i] / weight);
+    }
+    // printf("output = %d\n", next_chans512[2]); fflush(stdout);
+    }
+    else {
+      perOut(next_chans512, phase);
+    }
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     cli();
-    if (fading_out_timer) {
-      g_chans512[i] = last_chans512[i] + (next_chans512[i] - last_chans512[i]) / fading_out_timer;
-      fading_out_timer--;
-    }
-    else {
-      g_chans512[i] = next_chans512[i];
-    }
+    g_chans512[i] = next_chans512[i];
     sei();
   }
 
-#ifdef EEPROM_ASYNC_WRITE
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
     else if (s_eeDirtyMsk)
       eeCheck();
   }
-#endif
 
   if(!tick10ms) return; //make sure the rest happen only every 10ms.
 
+  if (s_fade_flight_phases) {
+    for (uint8_t p=0; p<MAX_PHASES; p++) {
+      // printf("f_act[%d]=%d\n", p, fp_act[p]);
+      if (s_fade_flight_phases & (1<<p)) {
+        if (p == phase) {
+          uint16_t delta = (MAX_ACT / 100) / g_model.phaseData[p].fadeIn;
+          if (MAX_ACT - fp_act[p] > delta)
+            fp_act[p] += delta;
+          else {
+            fp_act[p] = MAX_ACT;
+            s_fade_flight_phases -= (1<<p);
+          }
+        }
+        else {
+          uint16_t delta = (MAX_ACT / 100) / g_model.phaseData[p].fadeOut;
+          if (fp_act[p] > delta)
+            fp_act[p] -= delta;
+          else {
+            fp_act[p] = 0;
+            s_fade_flight_phases -= (1<<p);
+          }
+        }
+      }
+    }
+  }
+  
   evalFunctions();
 
   if (s_noHi) s_noHi--;
@@ -1537,8 +1591,96 @@ void perMain()
   if (trimsCheckTimer > 0)
     trimsCheckTimer -= 1;
 
-#ifndef EEPROM_ASYNC_WRITE
-  eeCheck();
+#if defined (FRSKY)
+
+/***** TEST CODE - Fr-Sky SD/MMC card / User Data experiments *****/
+
+#if defined (PCBV3)
+
+  /* Use light switch (on) to open telemtry test log file */
+  static FRESULT result;
+
+  static int8_t testLogOpen = 0;
+
+  if(getSwitch(g_eeGeneral.lightSw,0))
+  {
+    // while(1); // Test WDT
+    if ((testLogOpen==0) // if we know we haven't started logging ...
+        || ((testLogOpen==1) && !g_oLogFile.fs)) //  ... or we thought we had, but the file got closed
+    {
+      result = f_mount(0, &FATFS_Obj);
+      if (result!=FR_OK)
+      {
+        testLogOpen = -1;
+        beepAgain = result - 1;
+        beepKey();
+      }
+      else
+      {
+        // create new log file using filename set up in pers.cpp::resetTelemetry()
+        result = f_open(&g_oLogFile, g_logFilename, FA_OPEN_ALWAYS | FA_WRITE);
+        if (result!=FR_OK)
+        {
+          testLogOpen = -2;
+          beepAgain = result - 1;
+          beepKey();
+        }
+        else
+        {
+          f_lseek(&g_oLogFile, g_oLogFile.fsize); // append
+
+          testLogOpen = 1;
+          beepWarn2();
+        }
+      }
+    }
+  } 
+  else
+  {
+    if (testLogOpen==1)
+    {
+      f_close(&g_oLogFile);
+      beepWarn2();
+    }
+    testLogOpen = 0;
+  }
+
+
+#ifdef DISPLAY_USER_DATA
+    ////////////////
+  // Write raw user data into on-screen display line buffer
+
+  char userDataRxBuffer[21]; // Temp buffer used to collect fr-sky user data
+
+  // retrieve bytes from user data buffer and insert into display string,
+  // scrolling at the 21 character mark (edge of screen)
+  uint8_t numbytes = frskyGetUserData(userDataRxBuffer, 21); // Get as many bytes as we can
+
+  static uint8_t displayBufferIndex;
+  for (uint8_t byt=0; byt < numbytes; byt++) 
+  {
+    displayBufferIndex++;
+    if (displayBufferIndex > 20)
+    {
+      for (int xx=0; xx<20; xx++) // scroll one char left
+        userDataDisplayBuf[xx] = userDataDisplayBuf[xx+1];
+      displayBufferIndex = 20;
+    }
+    userDataDisplayBuf[displayBufferIndex] = userDataRxBuffer[byt];
+
+    // Write the raw byte out to log file, if open
+    if (testLogOpen && (g_oLogFile.fs != 0))
+      f_putc(userDataRxBuffer[byt], &g_oLogFile);
+
+  }
+  ////////////////
+#endif
+
+/***** END TEST CODE - Fr-Sky User Data experiments *****/
+
+// PCBV3
+#endif
+// FRSKY
 #endif
 
   lcd_clear();
@@ -1950,22 +2092,23 @@ uint16_t DEBUG2 = 0;
 
 void instantTrim()
 {
+  uint8_t phase = getFlightPhase();
+
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (!IS_THROTTLE(i)) {
       // don't instant trim the throttle stick
-      uint8_t phase = getTrimFlightPhase(i);
+      uint8_t trim_phase = getTrimFlightPhase(i, phase);
       s_noStickInputs = true;
-      evalSticks();
+      evalSticks(phase);
       s_noStickInputs = false;
       int16_t trim = (anas[i] + trims[i]) / 2;
-      // printf("anas[%d]=%d, trims[%d]=%d, trim=%d, subtrim=%d => trim=%d\n", i, anas[i], i, trims[i], g_model.phaseData[phase].trim[i], g_model.subtrim[i], trim);
       if (trim < TRIM_EXTENDED_MIN) {
         trim = TRIM_EXTENDED_MIN;
       }
       if (trim > TRIM_EXTENDED_MAX) {
         trim = TRIM_EXTENDED_MAX;
       }
-      setTrimValue(phase, i, trim);
+      setTrimValue(trim_phase, i, trim);
     }
   }
 
@@ -1978,7 +2121,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   int16_t zero_chans512[NUM_CHNOUT];
 
   s_noStickInputs = true;
-  perOut(zero_chans512); // do output loop - zero input sticks
+  perOut(zero_chans512, getFlightPhase()); // do output loop - zero input sticks
   s_noStickInputs = false;
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
@@ -2001,27 +2144,27 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 
 #if defined (PCBV4)
 // Rotary encoder interrupts
-uint8_t volatile g_rotenc1, g_rotenc2 = 0;
+volatile uint8_t g_rotenc[2] = {0};
 ISR(INT2_vect)
 {
   uint8_t input = PIND & 0b00001100;
-  if (input == 0 || input == 0b00001100) g_rotenc1--;
+  if (input == 0 || input == 0b00001100) g_rotenc[0]--;
 }
 ISR(INT3_vect)
 {
   uint8_t input = PIND & 0b00001100;
-  if (input == 0 || input == 0b00001100) g_rotenc1++;
+  if (input == 0 || input == 0b00001100) g_rotenc[0]++;
 }
 
 ISR(INT5_vect)
 {
   uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) g_rotenc2++;
+  if (input == 0 || input == 0b01100000) g_rotenc[1]++;
 }
 ISR(INT6_vect)
 {
   uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) g_rotenc2--;
+  if (input == 0 || input == 0b01100000) g_rotenc[1]--;
 }
 #endif
 
@@ -2188,7 +2331,7 @@ int main(void)
 
   clearKeyEvents(); //make sure no keys are down before proceeding
 
-  perOut(g_chans512);
+  perOut(g_chans512, getFlightPhase());
 
   lcdSetRefVolt(g_eeGeneral.contrast);
   g_LightOffCounter = g_eeGeneral.lightAutoOff*500; //turn on light for x seconds - no need to press key Issue 152

@@ -80,7 +80,7 @@ DISPLAY_USER_DATA = NO
 PXX = NO
 
 # DSM2 (Spektrum) protocol
-DSM2 = YES
+DSM2 = NO
 
 # Silver protocol
 SILVER = NO
@@ -177,8 +177,6 @@ CPPDEFS = -DF_CPU=$(F_CPU)UL
 
 # NOTE: PCB version now overrides all the earlier individual settings
 #       These individual settings work only for PCB=STD
-
-CPPDEFS += -DEEPROM_ASYNC_WRITE
 
 ifeq ($(PCB), STD)
 # STD PCB, so ...

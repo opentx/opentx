@@ -148,10 +148,8 @@ void menuProcModelSelect(uint8_t event)
 
   TITLE("MODELSEL");
 
-#ifdef EEPROM_ASYNC_WRITE
-    // flush eeprom write
-    eeFlush();
-#endif
+  // flush eeprom write
+  eeFlush();
 
   if (s_confirmation) {
     EFile::rm(FILE_MODEL(m_posVert)); // delete file
@@ -180,7 +178,7 @@ void menuProcModelSelect(uint8_t event)
   {
       case EVT_ENTRY:
         m_posVert = sub = g_eeGeneral.currModel;
-        s_copyMode = 0;
+        s_copyMode = 0; // TODO only this one?
         s_copyTgtOfs = 0;
         s_copySrcRow = -1;
         break;
@@ -192,68 +190,58 @@ void menuProcModelSelect(uint8_t event)
         }
         // no break
       case EVT_KEY_BREAK(KEY_EXIT):
-        if (s_copyTgtOfs || s_copySrcRow >= 0) {
-          eeCheck(true); // force writing of current model data before this is changed
-          do {
-            if (s_copyTgtOfs < 0) {
-              s_copyTgtOfs++;
-              m_posVert = (MAX_MODELS+m_posVert-1) % MAX_MODELS;
-            }
-            else {
-              s_copyTgtOfs--;
-              m_posVert = (m_posVert+1) % MAX_MODELS;
-            }
-#ifdef EEPROM_ASYNC_WRITE
-            s_sync_write = true;
-#endif
-            EFile::swap(FILE_MODEL(sub), FILE_MODEL(m_posVert));
-#ifdef EEPROM_ASYNC_WRITE
-            s_sync_write = false;
-#endif
-            if (m_posVert == g_eeGeneral.currModel) {
-              g_eeGeneral.currModel = sub;
-              STORE_GENERALVARS;
-            }
-            else if (sub == g_eeGeneral.currModel) {
-              g_eeGeneral.currModel = m_posVert;
-              STORE_GENERALVARS;
-            }
-            sub = m_posVert;
-          } while (s_copyTgtOfs != 0);
-
-          if (s_copySrcRow >= 0) {
-            EFile::rm(FILE_MODEL(sub));
-            sub = m_posVert = s_copySrcRow;
-            s_copySrcRow = -1;
-          }
+        if (s_copyMode) {
+          sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (16+sub+s_copyTgtOfs) % 16 : s_copySrcRow; // TODO reset s_copySrcRow?
+          s_copyMode = 0; // TODO only this one?
+          s_copySrcRow = -1;
+          s_copyTgtOfs = 0;
+          killEvents(_event);
         }
-        s_copyMode = 0;
-        killEvents(_event);
-        break;
-      case EVT_KEY_BREAK(KEY_MENU):
-        if (s_copyTgtOfs || s_copySrcRow >= 0) {
-          s_copyMode = 0;
-        }
-        else if (EFile::exists(FILE_MODEL(sub))) {
-          s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
-        }
-        s_copySrcRow = -1;
-        s_copyTgtOfs = 0;
         break;
       case EVT_KEY_LONG(KEY_MENU):
-        if (s_copyTgtOfs) {
+      case EVT_KEY_BREAK(KEY_MENU):
+        if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
+          eeCheck(true); // force writing of current model data before this is changed
+
+          uint8_t cur = (16 + sub + s_copyTgtOfs) % 16;
+
+          if (s_copyMode == COPY_MODE) {
+            if (!theFile.copy(FILE_MODEL(cur), FILE_MODEL(s_copySrcRow)))
+              cur = sub;
+          }
+
+          s_copySrcRow = g_eeGeneral.currModel; // to update the currModel value
+          while (sub != cur) {
+            uint8_t src = cur;
+            cur = (s_copyTgtOfs > 0 ? cur+15 : cur+1) % 16;
+            EFile::swap(FILE_MODEL(src), FILE_MODEL(cur));
+            if (src == s_copySrcRow)
+              s_copySrcRow = cur;
+            else if (cur == s_copySrcRow)
+              s_copySrcRow = src;
+          }
+
+          if (s_copySrcRow != g_eeGeneral.currModel) {
+            g_eeGeneral.currModel = s_copySrcRow;
+            STORE_GENERALVARS;
+          }
+
+          s_copyMode = 0; // TODO only this one?
+          s_copySrcRow = -1;
           s_copyTgtOfs = 0;
-          s_copyMode = 0;
         }
-        else {
+        else if (_event == EVT_KEY_LONG(KEY_MENU)) {
           eeCheck(true); // force writing of current model data before this is changed
           if (g_eeGeneral.currModel != sub) {
             g_eeGeneral.currModel = sub;
             STORE_GENERALVARS;
+            eeLoadModel(sub);
           }
-          eeLoadModel(sub);
+          killEvents(event);
         }
-        killEvents(_event);
+        else if (EFile::exists(FILE_MODEL(sub))) {
+          s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
+        }
         break;
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
@@ -266,40 +254,24 @@ void menuProcModelSelect(uint8_t event)
       case EVT_KEY_FIRST(KEY_UP):
       case EVT_KEY_FIRST(KEY_DOWN):
         if (s_copyMode) {
-          eeCheck(true);
           int8_t next_ofs = (_event == EVT_KEY_FIRST(KEY_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
+          if (next_ofs == 16 || next_ofs == -16)
+            next_ofs = 0;
+
           if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
             s_copySrcRow = oldSub;
-            // insert a model (in the first empty slot above / below)
-            m_posVert = eeDuplicateModel(s_copySrcRow, _event==EVT_KEY_FIRST(KEY_DOWN));
+            // find a hole (in the first empty slot above / below)
+            m_posVert = eeFindEmptyModel(s_copySrcRow, _event==EVT_KEY_FIRST(KEY_DOWN));
             if (m_posVert == (uint8_t)-1) {
               // no free room for duplicating the model
               beepWarn();
               m_posVert = oldSub;
-              s_copyMode = 0;
+              s_copyMode = 0; // TODO only this one?
               s_copyTgtOfs = 0;
               s_copySrcRow = -1;
             }
             next_ofs = 0;
             sub = m_posVert;
-          }
-          else {
-            // only swap the model with its neighbor
-#ifdef EEPROM_ASYNC_WRITE
-            s_sync_write = true;
-#endif
-            EFile::swap(FILE_MODEL(oldSub), FILE_MODEL(sub));
-#ifdef EEPROM_ASYNC_WRITE
-            s_sync_write = false;
-#endif
-            if (oldSub == g_eeGeneral.currModel) {
-              g_eeGeneral.currModel = sub;
-              STORE_GENERALVARS;
-            }
-            else if (sub == g_eeGeneral.currModel) {
-              g_eeGeneral.currModel = oldSub;
-              STORE_GENERALVARS;
-            }
           }
           s_copyTgtOfs = next_ofs;
         }
@@ -308,21 +280,42 @@ void menuProcModelSelect(uint8_t event)
 
   if (sub-s_pgOfs < 1) s_pgOfs = max(0, sub-1);
   else if (sub-s_pgOfs > 5)  s_pgOfs = min(MAX_MODELS-7, sub-4);
+
+  // printf("copy_mode=%d s_copySrcRow=%d s_copyTgtOfs=%d sub=%d\n", s_copyMode, s_copySrcRow, s_copyTgtOfs, sub); fflush(stdout);
+
   for (uint8_t i=0; i<7; i++) {
     uint8_t y=(i+1)*FH;
     uint8_t k=i+s_pgOfs;
     lcd_outdezNAtt(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
+
+    if (s_copyMode == MOVE_MODE || (s_copyMode == COPY_MODE && s_copySrcRow >= 0)) {
+      if (k == sub) {
+        if (s_copyMode == COPY_MODE) {
+          k = s_copySrcRow;
+          lcd_putc(20*FW+2, y, '+');
+        }
+        else {
+          k = sub + s_copyTgtOfs;
+        }
+      }
+      else if (s_copyTgtOfs < 0 && ((k < sub && k >= sub+s_copyTgtOfs) || (k-16 < sub && k-16 >= sub+s_copyTgtOfs)))
+        k += 1;
+      else if (s_copyTgtOfs > 0 && ((k > sub && k <= sub+s_copyTgtOfs) || (k+16 > sub && k+16 <= sub+s_copyTgtOfs)))
+        k += 15;
+    }
+
+    k %= 16;
+
     if (EFile::exists(FILE_MODEL(k))) {
       uint16_t size = eeLoadModelName(k, name);
       putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, size, 0);
+      if (k==g_eeGeneral.currModel && (s_copySrcRow<0 || i+s_pgOfs!=sub)) lcd_putc(1, y, '*');
     }
-    if (k==g_eeGeneral.currModel) lcd_putc(1, y, '*');
-    if (s_copyMode && k==sub) {
-      if (s_copyMode == COPY_MODE)
-        lcd_putc(20*FW+2, y, '+');
-      lcd_rect(8, y-1, DISPLAY_W-1-7, 9, s_copyMode == COPY_MODE ? 0xff : 0x55);
+
+    if (s_copyMode && sub==i+s_pgOfs) {
       lcd_filled_rect(9, y, DISPLAY_W-1-9, 7);
+      lcd_rect(8, y-1, DISPLAY_W-1-7, 9, s_copyMode == COPY_MODE ? 0xff : 0x55);
     }
   }
 

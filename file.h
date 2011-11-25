@@ -29,12 +29,15 @@
 // bs=32   64 blocks    verlust link: 64  16files:16*16 256     sum 320
 //
 #if defined(PCBV3)
-#define EESIZE   4096
-#define BS       32
+// 4096 - 16 bytes to give 255 blocks, since we can't address 256 block in an 8-bit register
+#define EESIZE   4080
 #else
 #define EESIZE   2048
-#define BS       16
 #endif
+#define BS       16
+
+#define FILE_TYP_GENERAL 1
+#define FILE_TYP_MODEL   2
 
 /// fileId of general file
 #define FILE_GENERAL   0
@@ -47,9 +50,7 @@ int8_t EeFsck();
 void EeFsFormat();
 uint16_t EeFsGetFree();
 
-#ifdef EEPROM_ASYNC_WRITE
 extern volatile int8_t eeprom_buffer_size;
-#endif
 
 class EFile
 {
@@ -82,9 +83,6 @@ class EFile
 
 #define ERR_NONE 0
 #define ERR_FULL 1
-#ifndef EEPROM_ASYNC_WRITE
-#define ERR_TMO  2
-#endif
 extern uint8_t  s_write_err;    // error reasons
 extern uint8_t  s_sync_write;
 
@@ -96,7 +94,6 @@ class RlcFile: public EFile
   uint8_t  m_bRlc;      // control byte for run length decoder
   uint8_t  m_zeroes;
 
-#ifdef EEPROM_ASYNC_WRITE
   uint8_t m_flags;
 #define WRITE_FIRST_LINK  0x01
 #define WRITE_NEXT_LINK_1 0x02
@@ -104,8 +101,8 @@ class RlcFile: public EFile
 #define WRITE_START_STEP               0x10
 #define WRITE_FREE_UNUSED_BLOCKS_STEP1 0x20
 #define WRITE_FREE_UNUSED_BLOCKS_STEP2 0x30
-#define WRITE_FLUSH_STEP               0x40
-#define WRITE_SWAP_STEP                0x50
+#define WRITE_FINAL_DIRENT_STEP        0x40
+#define WRITE_TMP_DIRENT_STEP          0x50
   uint8_t m_write_step;
 
   uint16_t m_rlc_len;
@@ -114,17 +111,16 @@ class RlcFile: public EFile
   uint8_t m_write1_byte;
   uint8_t m_write_len;
   uint8_t * m_write_buf;
-#else
-  uint16_t m_stopTime10ms; // maximum point of time for writing
-#endif
 
 public:
 
   void openRlc(uint8_t i_fileId);
 
-
-#ifdef EEPROM_ASYNC_WRITE
   void create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write);
+
+  ///copy contents of i_fileSrc to i_fileDst
+  bool copy(uint8_t i_fileDst, uint8_t i_fileSrc);
+
   inline bool isWriting() { return m_write_step != 0; }
   void write(uint8_t*buf, uint8_t i_len);
   void write1(uint8_t b);
@@ -132,26 +128,6 @@ public:
   void nextRlcWriteStep();
   void writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_len, uint8_t sync_write);
   void flush();
-#else
-  /// create a new file with given fileId,
-  /// !!! if this file already exists, then all blocks are reused
-  /// and all contents will be overwritten.
-  /// after writing close has to be called
-
-  void create(uint8_t i_fileId, uint8_t typ, uint16_t maxTme10ms);
-
-  uint8_t write(uint8_t*buf, uint8_t i_len);
-  uint8_t write1(uint8_t b);
-  ///open file, write to file and close it.
-  ///If file existed before, then contents is overwritten.
-  ///If file was larger before, then unused blocks are freed
-  uint16_t writeRlc(uint8_t i_fileId, uint8_t typ,uint8_t*buf,uint16_t i_len, uint8_t maxTme10ms);
-#endif
-
-  /*
-   * close file and truncate the blockchain if to long.
-   */
-  void close();
 
   ///read from opened file and decode rlc-coded data
 #ifdef TRANSLATIONS

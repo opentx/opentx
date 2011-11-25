@@ -140,7 +140,7 @@ TEST(EEPROM, eeCheckImmediately) {
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, eeDuplicateModel) {
+TEST(EEPROM, copy) {
   eepromFile = NULL; // in memory
 
   uint8_t buf[1000];
@@ -151,7 +151,7 @@ TEST(EEPROM, eeDuplicateModel) {
 
   theFile.writeRlc(5, 6, buf, 300, true);
 
-  eeDuplicateModel(4);
+  theFile.copy(6, 5);
 
   theFile.openRd(6);
   uint16_t sz=0;
@@ -248,6 +248,13 @@ TEST(getSwitch, circularCSW) {
   EXPECT_EQ(getSwitch(-(MAX_SWITCH-NUM_CSW), 0), true);
   EXPECT_EQ(getSwitch(1+MAX_SWITCH-NUM_CSW, 0), false);
   EXPECT_EQ(getSwitch(-(1+MAX_SWITCH-NUM_CSW), 0), true);
+}
+
+TEST(getSwitch, nullSW) {
+  memset(&g_model, 0, sizeof(g_model));
+  EXPECT_EQ(getSwitch(0, 0), false);
+  EXPECT_EQ(getSwitch(0, true), true);
+  EXPECT_EQ(getSwitch(0, 0), false);
 }
 
 int main(int argc, char **argv) {

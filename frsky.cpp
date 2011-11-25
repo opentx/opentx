@@ -20,6 +20,8 @@
 
 #include "gruvin9x.h"
 #include "frsky.h"
+#include "ff.h" // TODO
+// #include <stdlib.h> // TODO
 
 // Enumerate FrSky packet codes
 #define LINKPKT         0xfe
@@ -75,6 +77,23 @@ void frskyPushValue(uint8_t *&ptr, uint8_t value)
     *ptr++ = value;
   }
 }
+
+#ifdef DISPLAY_USER_DATA
+/*
+  Copies all available bytes (up to max bufsize) from frskyUserData circular 
+  buffer into supplied *buffer. Returns number of bytes copied (or zero)
+*/
+uint8_t frskyGetUserData(char *buffer, uint8_t bufSize)
+{
+  uint8_t i = 0;
+  while (!frskyUserData.isEmpty())
+  {
+    buffer[i] = frskyUserData.get();
+    i++;
+  }
+  return i;
+}
+#endif
 
 #ifdef FRSKY_HUB
 int8_t parseTelemHubIndex(uint8_t index)
@@ -133,7 +152,7 @@ void parseTelemHubByte(uint8_t byte)
   ((uint8_t*)&frskyHubData)[structPos+1] = byte;
   state = TS_IDLE;
 }
-#endif
+#endif  
 
 /*
    Called from somewhere in the main loop or a low priority interrupt
@@ -465,11 +484,102 @@ void FrskyData::set(uint8_t value)
      max = value;
    if (!min || min > value)
      min = value;
- }
+}
+
+// TODO not here!
+#if defined (PCBV3)
+char g_logFilename[21]; //  "/G9XLOGS/M00_000.TXT\0" max required length = 21
+// These global so we can close any open file from anywhere
+FATFS FATFS_Obj;
+FIL g_oLogFile;
+#endif
 
 void resetTelemetry()
 {
   memset(frskyTelemetry, 0, sizeof(frskyTelemetry));
   memset(frskyRSSI, 0, sizeof(frskyRSSI));
+
+#if defined (PCBV3)
+
+  // Determine and set log file filename
+  
+  FRESULT result;
+
+  // close any file left open. E.G. Changing models with log switch still on.
+  if (g_oLogFile.fs) f_close(&g_oLogFile); 
+
+  strcpy(g_logFilename, "/G9XLOGS/M00_000.TXT");
+
+  uint8_t num = g_eeGeneral.currModel + 1;
+  char *n = &g_logFilename[11];
+  *n = (char)((num % 10) + '0');
+  *(--n) = (char)((num / 10) + '0');
+
+  result = f_mount(0, &FATFS_Obj);
+  if (result!=FR_OK)
+  {
+    strcpy(g_logFilename, "FILE SYSTEM ERROR");
+  }
+  else
+  {
+    // Skip over any existing log files ... _000, _001, etc. (or find first gap in numbering)
+    while (1)
+    {
+      result = f_open(&g_oLogFile, g_logFilename, FA_OPEN_EXISTING | FA_READ);
+
+      if (result == FR_OK)
+      {
+        f_close(&g_oLogFile);
+
+        // bump log file counter (file extension)
+        n = &g_logFilename[15];
+        if (++*n > '9')
+        {
+          *n='0';
+          n--;
+          if (++*n > '9')
+          {
+            *n='0';
+            n--;
+            if (++*n > '9')
+            {
+              *n='0';
+              break; // Wow. We looped back around past 999 to 000! abort loop
+            }
+          }
+        }
+      }
+      else if (result == FR_NO_PATH)
+      {
+        if (f_mkdir("/G9XLOGS") != FR_OK)
+        {
+          result = FR_NO_PATH;
+          break;
+        }
+        else
+          continue;
+      }
+      else
+        break;
+    }
+
+    switch (result)
+    {
+      case FR_NO_PATH:
+        strcpy(g_logFilename, "Check /G9XLOGS folder");
+        break;
+      case FR_NOT_READY:
+        strcpy(g_logFilename, "DATA CARD NOT PRESENT");
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  // g_logFilename should now be set appropriately.
+
+#endif
+
 }
 
