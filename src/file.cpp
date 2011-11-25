@@ -24,9 +24,7 @@
 #include "string.h"
 
 uint8_t  s_write_err = 0;    // error reasons
-#ifdef EEPROM_ASYNC_WRITE
 uint8_t  s_sync_write = false;
-#endif
 
 #define RESV     64  //reserv for eeprom header with directory (eeFs)
 #define FIRSTBLK (RESV/BS)
@@ -48,32 +46,48 @@ struct EeFs{
 }__attribute__((packed)) eeFs;
 
 
-static uint8_t EeFsRead(uint8_t blk,uint8_t ofs){
+static uint8_t EeFsRead(uint8_t blk,uint8_t ofs)
+{
   uint8_t ret;
   eeprom_read_block(&ret,(const void*)(blk*BS+ofs),1);
   return ret;
 }
-static void EeFsWrite(uint8_t blk,uint8_t ofs,uint8_t val){
+
+static void EeFsWrite(uint8_t blk, uint8_t ofs, uint8_t val)
+{
   eeWriteBlockCmp(&val, (void*)(blk*BS+ofs), 1);
 }
 
-static uint8_t EeFsGetLink(uint8_t blk){
+static uint8_t EeFsGetLink(uint8_t blk)
+{
   return EeFsRead( blk,0);
 }
-static void EeFsSetLink(uint8_t blk,uint8_t val){
+
+static void EeFsSetLink(uint8_t blk,uint8_t val)
+{
   EeFsWrite( blk,0,val);
 }
-static uint8_t EeFsGetDat(uint8_t blk,uint8_t ofs){
+
+static uint8_t EeFsGetDat(uint8_t blk,uint8_t ofs)
+{
   return EeFsRead( blk,ofs+1);
 }
-static void EeFsSetDat(uint8_t blk,uint8_t ofs,uint8_t*buf,uint8_t len){
-  //EeFsWrite( blk,ofs+1,val);
+
+static void EeFsSetDat(uint8_t blk,uint8_t ofs,uint8_t*buf,uint8_t len)
+{
   eeWriteBlockCmp(buf, (void*)(blk*BS+ofs+1), len);
 }
+
 static void EeFsFlushFreelist()
 {
   eeWriteBlockCmp(&eeFs.freeList,&((EeFs*)0)->freeList ,sizeof(eeFs.freeList));
 }
+
+static void EeFsFlushDirEnt(uint8_t i_fileId)
+{
+  eeWriteBlockCmp(&eeFs.files[i_fileId], &((EeFs*)0)->files[i_fileId], sizeof(DirEnt));
+}
+
 static void EeFsFlush()
 {
   eeWriteBlockCmp(&eeFs, 0,sizeof(eeFs));
@@ -90,7 +104,6 @@ uint16_t EeFsGetFree()
   return ret;
 }
 
-// #ifndef EEPROM_ASYNC_WRITE TODO because duplicate code
 static void EeFsFree(uint8_t blk){///free one or more blocks
   uint8_t i = blk;
   while( EeFsGetLink(i)) i = EeFsGetLink(i);
@@ -98,25 +111,10 @@ static void EeFsFree(uint8_t blk){///free one or more blocks
   eeFs.freeList = blk; //chain in front
   EeFsFlushFreelist();
 }
-// #endif
-
-#ifndef EEPROM_ASYNC_WRITE
-static uint8_t EeFsAlloc(){ ///alloc one block from freelist
-  uint8_t ret=eeFs.freeList;
-  if(ret){
-    eeFs.freeList = EeFsGetLink(ret);
-    EeFsFlushFreelist();
-    EeFsSetLink(ret,0);
-  }
-  return ret;
-}
-#endif
 
 int8_t EeFsck()
 {
-#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = true;
-#endif
 
   uint8_t *bufp;
   static uint8_t buffer[BLOCKS];
@@ -129,45 +127,45 @@ int8_t EeFsck()
     uint8_t *startP = i==MAXFILES ? &eeFs.freeList : &eeFs.files[i].startBlk;
     uint8_t lastBlk = 0;
     blk = *startP;
-    while(blk){
-      if( (   blk <  FIRSTBLK ) //goto err_1; //bad blk index
-          || (blk >= BLOCKS   ) //goto err_2; //bad blk index
-          || (bufp[blk]       ))//goto err_3; //blk double usage
+    while (blk) {
+      if (blk < FIRSTBLK || // bad blk index
+          blk >= BLOCKS  || // bad blk index
+          bufp[blk])        // blk double usage
       {
-        if(lastBlk){
-          EeFsSetLink(lastBlk,0);
-        }else{
-          *startP = 0; //interrupt chain at startpos
+        if (lastBlk) {
+          EeFsSetLink(lastBlk, 0);
+        }
+        else {
+          *startP = 0; // interrupt chain at startpos
           EeFsFlush();
         }
-        blk=0; //abort
-      }else{
+        blk = 0; // abort
+      }
+      else {
         bufp[blk] = i+1;
         lastBlk   = blk;
         blk       = EeFsGetLink(blk);
       }
     }
   }
-  for(blk = FIRSTBLK; blk < BLOCKS; blk++){
-    if(bufp[blk]==0) {       //goto err_4; //unused block
-      EeFsSetLink(blk,eeFs.freeList);
-      eeFs.freeList = blk; //chain in front
+  for (blk=FIRSTBLK; blk<BLOCKS; blk++) {
+    if (!bufp[blk]) { // unused block
+      EeFsSetLink(blk, eeFs.freeList);
+      eeFs.freeList = blk; // chain in front
       EeFsFlushFreelist();
     }
   }
 
-#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = false;
-#endif
+
   return ret;
 }
 
 void EeFsFormat()
 {
-#ifdef EEPROM_ASYNC_WRITE
   s_sync_write = true;
-#endif
-  if(sizeof(eeFs) != RESV){
+
+  if (sizeof(eeFs) != RESV){
     extern void eeprom_RESV_mismatch();
     eeprom_RESV_mismatch();
   }
@@ -180,14 +178,14 @@ void EeFsFormat()
   EeFsSetLink(BLOCKS-1, 0);
   eeFs.freeList = FIRSTBLK;
   EeFsFlush();
-#ifdef EEPROM_ASYNC_WRITE
+
   s_sync_write = false;
-#endif
 }
 
 bool EeFsOpen()
 {
   eeprom_read_block(&eeFs,0,sizeof(eeFs));
+
 #ifdef SIMU
   if(eeFs.version != EEFS_VERS)    printf("bad eeFs.version\n");
   if(eeFs.mySize  != sizeof(eeFs)) printf("bad eeFs.mySize\n");
@@ -202,39 +200,41 @@ bool EFile::exists(uint8_t i_fileId)
 }
 
 /*
- * swap two files in eeprom
- * called in sync AND async mode as it is a single write operation
+ * Swap two files in eeprom
  */
 void EFile::swap(uint8_t i_fileId1, uint8_t i_fileId2)
 {
   DirEnt            tmp = eeFs.files[i_fileId1];
   eeFs.files[i_fileId1] = eeFs.files[i_fileId2];
   eeFs.files[i_fileId2] = tmp;
-  EeFsFlush();
+  s_sync_write = true;
+  EeFsFlushDirEnt(i_fileId1);
+  EeFsFlushDirEnt(i_fileId2);
+  s_sync_write = false;
 }
 
 void EFile::rm(uint8_t i_fileId)
 {
-#ifdef EEPROM_ASYNC_WRITE
-  s_sync_write = true;
-#endif
   uint8_t i = eeFs.files[i_fileId].startBlk;
   memset(&eeFs.files[i_fileId], 0, sizeof(eeFs.files[i_fileId]));
-  EeFsFlush(); //chained out
-
-  if(i) EeFsFree( i ); //chain in
-#ifdef EEPROM_ASYNC_WRITE
+  s_sync_write = true;
+  EeFsFlushDirEnt(i_fileId);
+  if (i) EeFsFree(i); //chain in
   s_sync_write = false;
-#endif
+
 }
 
-uint16_t EFile::size(){
+uint16_t EFile::size()
+{
   return eeFs.files[m_fileId].size;
 }
 
-
-// G: Open file ID for reading. Return the file's type
-void EFile::openRd(uint8_t i_fileId){
+/*
+ * Open file i_fileId for reading.
+ * Return the file's type
+ */
+void EFile::openRd(uint8_t i_fileId)
+{
   m_fileId = i_fileId;
   m_pos      = 0;
   m_currBlk  = eeFs.files[m_fileId].startBlk;
@@ -249,7 +249,8 @@ void RlcFile::openRlc(uint8_t i_fileId)
   m_bRlc     = 0;
 }
 
-uint8_t EFile::read(uint8_t*buf,uint16_t i_len){
+uint8_t EFile::read(uint8_t*buf,uint16_t i_len)
+{
   uint16_t len = eeFs.files[m_fileId].size - m_pos;
   if(len < i_len) i_len = len;
   len = i_len;
@@ -267,7 +268,9 @@ uint8_t EFile::read(uint8_t*buf,uint16_t i_len){
   return i_len - len;
 }
 
-// G: Read runlength (RLE) compressed bytes into buf.
+/*
+ * Read runlength (RLE) compressed bytes into buf.
+ */
 #ifdef TRANSLATIONS
 uint16_t RlcFile::readRlc12(uint8_t*buf,uint16_t i_len, bool rlc2)
 #else
@@ -316,8 +319,6 @@ uint16_t RlcFile::readRlc(uint8_t*buf,uint16_t i_len)
   return i;
 }
 
-#ifdef EEPROM_ASYNC_WRITE
-
 void RlcFile::write1(uint8_t b)
 {
   m_write1_byte = b;
@@ -336,18 +337,18 @@ void RlcFile::write(uint8_t *buf, uint8_t i_len)
 
 void RlcFile::nextWriteStep()
 {
-  if(!m_currBlk && m_pos==0)
-  {
+  if(!m_currBlk && m_pos==0) {
     eeFs.files[FILE_TMP].startBlk = m_currBlk = eeFs.freeList;
     if (m_currBlk) {
       eeFs.freeList = EeFsGetLink(m_currBlk);
-      m_write_step = WRITE_START_STEP + WRITE_FIRST_LINK;
+      m_write_step |= WRITE_FIRST_LINK;
       EeFsFlushFreelist();
       return;
     }
   }
-  if (m_write_step == WRITE_START_STEP + WRITE_FIRST_LINK) {
-    m_write_step = WRITE_START_STEP;
+
+  if ((m_write_step & 0x0f) == WRITE_FIRST_LINK) {
+    m_write_step -= WRITE_FIRST_LINK;
     EeFsSetLink(m_currBlk, 0);
     return;
   }
@@ -405,59 +406,6 @@ void RlcFile::nextWriteStep()
     nextRlcWriteStep();
 }
 
-#else
-
-uint8_t RlcFile::write1(uint8_t b)
-{
-  return write(&b,1);
-}
-
-uint8_t RlcFile::write(uint8_t*buf, uint8_t i_len)
-{
-  uint8_t len=i_len;
-  if(!m_currBlk && m_pos==0)
-  {
-    eeFs.files[m_fileId].startBlk = m_currBlk = EeFsAlloc();
-  }
-  while(len)
-  {
-#ifndef SIMU
-    if( (int16_t)(m_stopTime10ms - get_tmr10ms()) < 0)
-    {
-      s_write_err = ERR_TMO;
-      break;
-    }
-#endif
-    if(!m_currBlk) {
-      s_write_err = ERR_FULL;
-      break;
-    }
-    if(m_ofs>=(BS-1)){
-      m_ofs=0;
-      if( ! EeFsGetLink(m_currBlk) ){
-        EeFsSetLink(m_currBlk, EeFsAlloc());
-      }
-      m_currBlk = EeFsGetLink(m_currBlk);
-    }
-    if(!m_currBlk) {
-      s_write_err = ERR_FULL;
-      break;
-    }
-    uint8_t l = BS-1-m_ofs; if(l>len) l=len;
-    EeFsSetDat(m_currBlk, m_ofs, buf, l);
-    buf   +=l;
-    m_ofs +=l;
-    len   -=l;
-  }
-  m_pos += i_len - len;
-  return   i_len - len;
-}
-
-#endif
-
-
-#ifdef EEPROM_ASYNC_WRITE
-
 void RlcFile::create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write)
 {
   // all write operations will be executed on FILE_TMP
@@ -466,6 +414,41 @@ void RlcFile::create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write)
   eeFs.files[FILE_TMP].size     = 0;
   m_fileId = i_fileId;
   s_sync_write = sync_write;
+}
+
+/*
+ * Copy file src to dst
+ */
+bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
+{
+  EFile theFile2;
+  theFile2.openRd(i_fileSrc);
+
+  create(i_fileDst, FILE_TYP_MODEL/*optimization, only model files are copied. should be eeFs.files[i_fileSrc].typ*/, true);
+  uint8_t buf[15];
+  uint8_t len;
+  while ((len=theFile2.read(buf, 15)))
+  {
+    write(buf, len);
+    if (errno() != 0) {
+      s_sync_write = false;
+      return false;
+    }
+  }
+
+  uint8_t fri=0;
+  if (m_currBlk && (fri=EeFsGetLink(m_currBlk)))
+    EeFsSetLink(m_currBlk, 0);
+
+  eeFs.files[FILE_TMP].size = m_pos;
+  EFile::swap(m_fileId, FILE_TMP);
+
+  if (fri) EeFsFree(fri);  //chain in
+
+  assert(!m_write_step);
+
+  s_sync_write = false;
+  return true;
 }
 
 void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t*buf, uint16_t i_len, uint8_t sync_write)
@@ -541,7 +524,7 @@ void RlcFile::nextRlcWriteStep()
      case WRITE_START_STEP:
      {
        uint8_t fri=0;
-       eeFs.files[FILE_TMP].size = m_pos;
+
        if (m_currBlk && ( fri = EeFsGetLink(m_currBlk))) {
          uint8_t prev_freeList = eeFs.freeList;
          eeFs.freeList = fri;
@@ -552,9 +535,19 @@ void RlcFile::nextRlcWriteStep()
        }
      }
 
-     case WRITE_FLUSH_STEP: // TODO could be avoided
-       m_write_step = WRITE_SWAP_STEP;
-       EeFsFlush(); //chained out
+     case WRITE_FINAL_DIRENT_STEP:
+       m_currBlk = eeFs.files[FILE_TMP].startBlk;
+       eeFs.files[FILE_TMP].startBlk = eeFs.files[m_fileId].startBlk;
+       eeFs.files[m_fileId].startBlk = m_currBlk;
+       eeFs.files[m_fileId].size = m_pos;
+       eeFs.files[m_fileId].typ = eeFs.files[FILE_TMP].typ;
+       m_write_step = WRITE_TMP_DIRENT_STEP;
+       EeFsFlushDirEnt(m_fileId);
+       return;
+
+     case WRITE_TMP_DIRENT_STEP:
+       m_write_step = 0;
+       EeFsFlushDirEnt(FILE_TMP);
        return;
 
      case WRITE_FREE_UNUSED_BLOCKS_STEP1:
@@ -563,13 +556,9 @@ void RlcFile::nextRlcWriteStep()
        return;
 
      case WRITE_FREE_UNUSED_BLOCKS_STEP2:
-       m_write_step = WRITE_FLUSH_STEP;
+       m_write_step = WRITE_FINAL_DIRENT_STEP;
        EeFsFlushFreelist();
        return;
-
-     case WRITE_SWAP_STEP:
-       m_write_step = 0;
-       EFile::swap(m_fileId, FILE_TMP);
    }
 }
 
@@ -583,105 +572,6 @@ void RlcFile::flush()
   while (isWriting() && !s_write_err)
     nextRlcWriteStep();
   s_sync_write = false;
-}
-
-#else
-
-void RlcFile::create(uint8_t i_fileId, uint8_t typ, uint16_t maxTme10ms)
-{
-  openRlc(i_fileId); //internal use
-  eeFs.files[i_fileId].typ      = typ;
-  eeFs.files[i_fileId].size     = 0;
-  m_stopTime10ms = get_tmr10ms() + maxTme10ms;
-}
-
-// G: Write runlength (RLE) compressed bytes 
-uint16_t RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ,uint8_t*buf,uint16_t i_len, uint8_t maxTme10ms){
-
-  create(i_fileId,typ,maxTme10ms);
-  bool    run0   = buf[0] == 0;
-  uint8_t cnt    = 1;
-  uint8_t cnt0   = 0;
-  uint16_t i     = 0;
-  if(i_len==0) goto close;
-  
-  //RLE compression:
-  //rb = read byte
-  //if (rb | 0x80) write rb & 0x7F zeros
-  //else write rb bytes
-  for( i=1; 1 ; i++) // !! laeuft ein byte zu weit !!
-  {
-    bool cur0 = buf[i] == 0;
-    if(cur0 != run0 || cnt==0x3f || (cnt0 && cnt==0xf)|| i==i_len){
-      if(run0){
-	assert(cnt0==0);
-	if(cnt<8 && i!=i_len)
-	  cnt0 = cnt; //aufbew fuer spaeter
-	else {
-	  if( write1(cnt|0x40)!=1)                goto error;//-cnt&0x3f
-	}
-      }else{
-	if(cnt0){
-	  if( write1(0x80 | (cnt0<<4) | cnt)!=1)  goto error;//-cnt0xx-cnt
-	  cnt0 = 0;
-	}else{
-	  if( write1(cnt) !=1)                    goto error;//-cnt
-	}
-        uint8_t ret=write(&buf[i-cnt],cnt);
-        if( ret !=cnt) { cnt-=ret;                goto error;}//-cnt
-      }
-      cnt=0;
-      if(i==i_len) break;
-      run0 = cur0;
-    }
-    cnt++;
-  }
-  if(0){
-    error:
-    i-=cnt+cnt0;
-#ifdef SIMU
-    switch(s_write_err){
-      default:
-      case ERR_NONE:
-        assert(!"missing errno");
-        break;  
-      case ERR_FULL:
-        printf("ERROR filesystem overflow! written: %d missing: %d\n",i,i_len-i);
-        break;  
-      case ERR_TMO:
-        printf("ERROR filesystem write timeout %d 0ms\n",(int16_t)(m_stopTime10ms - g_tmr10ms));
-        break;  
-    }
-#endif
-  }
-  close:
-    close();
-  return i;
-}
-
-#endif
-
-// G: Close file and truncate at this blk. Add any remaining blocks to freeList chain
-void RlcFile::close()
-{
-  uint8_t fri=0;
-
-  if(m_currBlk && ( fri = EeFsGetLink(m_currBlk)))    EeFsSetLink(m_currBlk, 0);
-
-#ifdef EEPROM_ASYNC_WRITE
-  eeFs.files[FILE_TMP].size     = m_pos;
-  EFile::swap(m_fileId, FILE_TMP);
-#else
-  eeFs.files[m_fileId].size     = m_pos;
-  EeFsFlush(); //chained out
-#endif
-
-  if(fri) EeFsFree( fri );  //chain in
-
-#ifdef EEPROM_ASYNC_WRITE
-  m_write_step = 0;
-  s_sync_write = false;
-#endif
 }
 
 

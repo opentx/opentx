@@ -29,9 +29,6 @@
 
 RlcFile theFile;  //used for any file operation
 
-#define FILE_TYP_GENERAL 1
-#define FILE_TYP_MODEL   2
-
 void generalDefault()
 {
   memset(&g_eeGeneral,0,sizeof(g_eeGeneral));
@@ -49,9 +46,7 @@ void generalDefault()
     g_eeGeneral.calibSpanNeg[i] = 0x180;
     g_eeGeneral.calibSpanPos[i] = 0x180;
   }
-  int16_t sum=0;
-  for(int i=0; i<12;i++) sum+=g_eeGeneral.calibMid[i];
-  g_eeGeneral.chkSum = sum;
+  g_eeGeneral.chkSum = (0x200 * 7) + (0x180 * 5);
 }
 
 #ifdef TRANSLATIONS
@@ -287,6 +282,13 @@ void eeLoadModel(uint8_t id)
     theFile.openRlc(FILE_MODEL(id));
     uint16_t sz = theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
 
+#ifdef SIMU
+    if (sz > 0 && sz != sizeof(g_model)) {
+      printf("Model data read=%d bytes vs %d bytes\n", sz, sizeof(ModelData));
+      fflush(stdout);
+    }
+#endif
+
     if (sz != sizeof(ModelData)) {
       // alert("Error Loading Model");
       modelDefault(id);
@@ -302,7 +304,7 @@ void eeLoadModel(uint8_t id)
   }
 }
 
-int8_t eeDuplicateModel(uint8_t id, bool down)
+int8_t eeFindEmptyModel(uint8_t id, bool down)
 {
   int8_t i = id;
   for (;;) {
@@ -310,25 +312,6 @@ int8_t eeDuplicateModel(uint8_t id, bool down)
     if (!EFile::exists(FILE_MODEL(i))) break;
     if (i == id) return -1; // no free space in directory left
   }
-
-  EFile theFile2;
-  theFile2.openRd(FILE_MODEL(id));
-
-#ifdef EEPROM_ASYNC_WRITE
-  theFile.create(FILE_MODEL(i), FILE_TYP_MODEL, true);
-#else
-  theFile.create(FILE_MODEL(i), FILE_TYP_MODEL, 600);
-#endif
-  uint8_t buf[15];
-  uint8_t len;
-  while((len=theFile2.read(buf, 15)))
-  {
-    theFile.write(buf, len);
-    if (errno() != 0) {
-      return false;
-    }
-  }
-  theFile.close();
   return i;
 }
 
@@ -346,20 +329,11 @@ void eeReadAll()
     generalDefault();
     //alert(PSTR("default ok"));
 
-#ifdef EEPROM_ASYNC_WRITE
     theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL,(uint8_t*)&g_eeGeneral,sizeof(EEGeneral), true);
-#else
-    uint16_t sz = theFile.writeRlc(FILE_GENERAL,FILE_TYP_GENERAL,(uint8_t*)&g_eeGeneral,sizeof(EEGeneral), 200);
-    if(sz!=sizeof(EEGeneral)) alert(PSTR("genwrite error"));
-#endif
 
     modelDefault(0);
     //alert(PSTR("modef ok"));
-#ifdef EEPROM_ASYNC_WRITE
     theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
-#else
-    theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model),200);
-#endif
     //alert(PSTR("modwrite ok"));
   }
 
@@ -368,22 +342,13 @@ void eeReadAll()
 
 
 uint8_t  s_eeDirtyMsk;
-#ifndef EEPROM_ASYNC_WRITE
-static uint16_t s_eeDirtyTime10ms;
-#define WRITE_DELAY_10MS 100
-#endif
 void eeDirty(uint8_t msk)
 {
   s_eeDirtyMsk |= msk;
-#ifndef EEPROM_ASYNC_WRITE
-  if (msk)
-    s_eeDirtyTime10ms  = get_tmr10ms();
-#endif
 }
 
 void eeCheck(bool immediately)
 {
-#ifdef EEPROM_ASYNC_WRITE
   if (immediately) {
     eeFlush();
   }
@@ -396,41 +361,4 @@ void eeCheck(bool immediately)
     s_eeDirtyMsk = 0;
     theFile.writeRlc(FILE_MODEL(g_eeGeneral.currModel), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), immediately);
   }
-#else
-  uint8_t msk  = s_eeDirtyMsk;
-  if (!msk) return;
-  if( !immediately && ((get_tmr10ms() - s_eeDirtyTime10ms) < WRITE_DELAY_10MS)) return;
-  s_eeDirtyMsk = 0;
-
-  if(msk & EE_GENERAL){
-    if(theFile.writeRlc(FILE_TMP, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral,
-                        sizeof(EEGeneral),20) == sizeof(EEGeneral))
-    {
-      EFile::swap(FILE_GENERAL,FILE_TMP);
-    }else{
-      if(errno()==ERR_TMO){
-        s_eeDirtyMsk |= EE_GENERAL; //try again
-        s_eeDirtyTime10ms = get_tmr10ms() - WRITE_DELAY_10MS;
-      }else{
-        alert(PSTR("EEPROM overflow"));
-      }
-    }
-    //first finish GENERAL, then MODEL !!avoid Toggle effect
-  }
-  if(msk & EE_MODEL){
-    if(theFile.writeRlc(FILE_TMP, FILE_TYP_MODEL, (uint8_t*)&g_model,
-                        sizeof(g_model),20) == sizeof(g_model))
-    {
-      EFile::swap(FILE_MODEL(g_eeGeneral.currModel),FILE_TMP);
-    }else{
-      if(errno()==ERR_TMO){
-        s_eeDirtyMsk |= EE_MODEL; //try again
-        s_eeDirtyTime10ms = get_tmr10ms() - WRITE_DELAY_10MS;
-      }else{
-        alert(PSTR("EEPROM overflow"));
-      }
-    }
-  }
-  //beepWarn1();
-#endif
 }

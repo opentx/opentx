@@ -23,8 +23,6 @@
 
 #ifndef SIMU
 
-#ifdef EEPROM_ASYNC_WRITE
-
 uint16_t eeprom_pointer;
 const char* eeprom_buffer_data;
 volatile int8_t eeprom_buffer_size = 0;
@@ -76,50 +74,6 @@ void eeWriteBlockCmp(const void *i_pointer_ram, void *i_pointer_eeprom, size_t s
     while (eeprom_buffer_size > 0) wdt_reset();
   }
 }
-
-#else
-
-///opt/cross/avr/include/avr/eeprom.h
-static inline void __attribute__ ((always_inline))
-eeprom_write_byte_cmp (uint8_t dat, uint16_t pointer_eeprom)
-{
-  //see /home/thus/work/avr/avrsdk4/avr-libc-1.4.4/libc/misc/eeprom.S:98 143
-#if defined (PCBV3)
-  while(EECR & (1<<EEPE))
-#else
-  while(EECR & (1<<EEWE))
-#endif
-    ;
-  EEAR  = pointer_eeprom;
-
-  EECR |= 1<<EERE;
-  if(dat == EEDR) return;
-
-  EEDR  = dat;
-  uint8_t flags=SREG;
-  cli();
-#if defined (PCBV3)
-  EECR |= 1<<EEMPE;
-  EECR |= 1<<EEPE;
-#else
-  EECR |= 1<<EEMWE;
-  EECR |= 1<<EEWE;
-#endif
-  SREG = flags;
-  sei();
-}
-
-void eeWriteBlockCmp(const void *i_pointer_ram, void *i_pointer_eeprom, size_t size)
-{
-  const char* pointer_ram = (const char*)i_pointer_ram;
-  uint16_t    pointer_eeprom = (uint16_t)i_pointer_eeprom;
-  while(size){
-    eeprom_write_byte_cmp(*pointer_ram++,pointer_eeprom++);
-    size--;
-  }
-}
-
-#endif
 
 #endif
 
@@ -254,6 +208,10 @@ bool keyState(EnumKeys enuk)
     case SW_ThrCt  : return PING & (1<<INP_G_ThrCt);
 
     case SW_Trainer: return PINB & (1<<INP_B_Trainer);
+
+    case SW_RE1: return (~PIND & 0b00100000);
+
+    case SW_RE2: return (~PIND & 0b00010000);
 
     default:;
   }
