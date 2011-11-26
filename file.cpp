@@ -581,7 +581,7 @@ void RlcFile::DisplayProgressBar()
     lcd_filled_rect(2, 1, 125, 5, WHITE);
     lcd_filled_rect(3, 2, 123-len, 3);
 #elif defined (PROGRESS_CIRCLE)
-    uint8_t len = 200 - (s_eeDirtyMsk ? 200 : min((uint8_t)200, (uint8_t)(m_rlc_len / 4 + eeprom_buffer_size)));
+    uint8_t len = 200 - (s_eeDirtyMsk ? 200 : min((uint8_t)200, (uint8_t)((m_rlc_len / 4) + (eeprom_buffer_size / 3))));
     uint8_t x = 17*FW-3;
     lcd_hline(x+1, 1, len >= 50 ? 3 : len / 16);
     if (len >= 50) lcd_vline(x+4, 2, len >= 100 ? 3 : (len-50) / 17);
