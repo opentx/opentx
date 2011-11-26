@@ -572,12 +572,23 @@ void RlcFile::flush()
   s_sync_write = false;
 }
 
+#define PROGRESS_CIRCLE
 void RlcFile::DisplayProgressBar()
 {
   if (s_eeDirtyMsk || m_rlc_len || eeprom_buffer_size) {
+#if defined (PROGRESS_BAR)
     uint8_t len = (s_eeDirtyMsk ? 123 : min((uint8_t)123, (uint8_t)((m_rlc_len) / 5 + eeprom_buffer_size)));
     lcd_filled_rect(2, 1, 125, 5, WHITE);
     lcd_filled_rect(3, 2, 123-len, 3);
+#elif defined (PROGRESS_CIRCLE)
+    uint8_t len = 200 - (s_eeDirtyMsk ? 200 : min((uint8_t)200, (uint8_t)(m_rlc_len / 4 + eeprom_buffer_size)));
+    uint8_t x = 17*FW-3;
+    lcd_hline(x+1, 1, len >= 50 ? 3 : len / 16);
+    if (len >= 50) lcd_vline(x+4, 2, len >= 100 ? 3 : (len-50) / 17);
+    if (len >= 100) lcd_hline(x+4, 1+4, len >= 150 ? -3 : -((len-100) / 17));
+    if (len >= 150) lcd_vline(x, 5, -((len-133) / 17));
+#elif defined (PROGRESS_FIXED_CIRCLE)
+    lcd_square(17*FW-3, 1, 5);
+#endif
   }
 }
-
