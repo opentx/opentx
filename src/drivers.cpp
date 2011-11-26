@@ -21,11 +21,15 @@
 
 #include "gruvin9x.h"
 
-#ifndef SIMU
-
 uint16_t eeprom_pointer;
 const char* eeprom_buffer_data;
 volatile int8_t eeprom_buffer_size = 0;
+
+#ifdef SIMU
+
+extern void eeprom_write_byte();
+
+#else
 
 inline void eeprom_write_byte()
 {
@@ -56,15 +60,19 @@ ISR(EE_READY_vect)
   }
 }
 
-void eeWriteBlockCmp(const void *i_pointer_ram, void *i_pointer_eeprom, size_t size)
+#endif
+
+void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size)
 {
   assert(!eeprom_buffer_size);
 
-  eeprom_pointer = (uint16_t)i_pointer_eeprom;
+  eeprom_pointer = i_pointer_eeprom;
   eeprom_buffer_data = (const char*)i_pointer_ram;
   eeprom_buffer_size = size+1;
 
-#if defined (PCBV3)
+#ifdef SIMU
+  sem_post(&eeprom_write_sem);
+#elif defined (PCBV3)
   EECR |= (1<<EERIE);
 #else
   EECR |= (1<<EERIE);
@@ -74,9 +82,6 @@ void eeWriteBlockCmp(const void *i_pointer_ram, void *i_pointer_eeprom, size_t s
     while (eeprom_buffer_size > 0) wdt_reset();
   }
 }
-
-#endif
-
 
 static uint8_t s_evt;
 void putEvent(uint8_t evt)

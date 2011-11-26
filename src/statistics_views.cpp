@@ -73,7 +73,7 @@ void menuProcStatistic2(uint8_t event)
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_MENU):
-      g_tmr1Latency_min = 0x7ff;
+      g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
       g_timeMain    = 0;
 //      g_time_per10 = 0;

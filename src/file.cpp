@@ -46,51 +46,48 @@ struct EeFs{
 }__attribute__((packed)) eeFs;
 
 
-static uint8_t EeFsRead(uint8_t blk,uint8_t ofs)
+static uint8_t EeFsRead(uint8_t blk, uint8_t ofs)
 {
   uint8_t ret;
-  eeprom_read_block(&ret,(const void*)(blk*BS+ofs),1);
+  eeprom_read_block(&ret, (const void*)(blk*BS+ofs), 1);
   return ret;
-}
-
-static void EeFsWrite(uint8_t blk, uint8_t ofs, uint8_t val)
-{
-  eeWriteBlockCmp(&val, (void*)(blk*BS+ofs), 1);
 }
 
 static uint8_t EeFsGetLink(uint8_t blk)
 {
-  return EeFsRead( blk,0);
+  return EeFsRead(blk, 0);
 }
 
-static void EeFsSetLink(uint8_t blk,uint8_t val)
+static void EeFsSetLink(uint8_t blk, uint8_t val)
 {
-  EeFsWrite( blk,0,val);
+  static uint8_t s_link; // we write asynchronously, then nothing on the stack!
+  s_link = val;
+  eeWriteBlockCmp(&s_link, (blk*BS), 1);
 }
 
 static uint8_t EeFsGetDat(uint8_t blk,uint8_t ofs)
 {
-  return EeFsRead( blk,ofs+1);
+  return EeFsRead(blk, ofs+1);
 }
 
 static void EeFsSetDat(uint8_t blk,uint8_t ofs,uint8_t*buf,uint8_t len)
 {
-  eeWriteBlockCmp(buf, (void*)(blk*BS+ofs+1), len);
+  eeWriteBlockCmp(buf, blk*BS+ofs+1, len);
 }
 
 static void EeFsFlushFreelist()
 {
-  eeWriteBlockCmp(&eeFs.freeList,&((EeFs*)0)->freeList ,sizeof(eeFs.freeList));
+  eeWriteBlockCmp(&eeFs.freeList, offsetof(EeFs, freeList), sizeof(eeFs.freeList));
 }
 
 static void EeFsFlushDirEnt(uint8_t i_fileId)
 {
-  eeWriteBlockCmp(&eeFs.files[i_fileId], &((EeFs*)0)->files[i_fileId], sizeof(DirEnt));
+  eeWriteBlockCmp(&eeFs.files[i_fileId], offsetof(EeFs, files) + sizeof(DirEnt)*i_fileId, sizeof(DirEnt));
 }
 
 static void EeFsFlush()
 {
-  eeWriteBlockCmp(&eeFs, 0,sizeof(eeFs));
+  eeWriteBlockCmp(&eeFs, 0, sizeof(eeFs));
 }
 
 uint16_t EeFsGetFree()
@@ -337,7 +334,7 @@ void RlcFile::write(uint8_t *buf, uint8_t i_len)
 
 void RlcFile::nextWriteStep()
 {
-  if(!m_currBlk && m_pos==0) {
+  if (!m_currBlk && m_pos==0) {
     eeFs.files[FILE_TMP].startBlk = m_currBlk = eeFs.freeList;
     if (m_currBlk) {
       eeFs.freeList = EeFsGetLink(m_currBlk);
@@ -574,4 +571,12 @@ void RlcFile::flush()
   s_sync_write = false;
 }
 
+void RlcFile::DisplayProgressBar()
+{
+  if (s_eeDirtyMsk || m_rlc_len || eeprom_buffer_size) {
+    uint8_t len = (s_eeDirtyMsk ? 123 : min((uint8_t)123, (uint8_t)((m_rlc_len) / 5 + eeprom_buffer_size)));
+    lcd_filled_rect(2, 1, 125, 5, WHITE);
+    lcd_filled_rect(3, 2, 123-len, 3);
+  }
+}
 

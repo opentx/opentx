@@ -34,9 +34,7 @@
 #endif
 
 #ifdef SIMU
-  #include "simpgmspace.h"
-  #define APM
-  #include "stdio.h"
+#include "simpgmspace.h"
 #else
 ///opt/cross/avr/include/avr/pgmspace.h
 #include <stddef.h>
@@ -557,7 +555,7 @@ template<class t> inline t limit(t mi, t x, t ma){ return min(max(mi,x),ma); }
 
 /// Markiert einen EEPROM-Bereich als dirty. der Bereich wird dann in
 /// eeCheck ins EEPROM zurueckgeschrieben.
-void eeWriteBlockCmp(const void *i_pointer_ram, void *i_pointer_eeprom, size_t size);
+void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size);
 void eeDirty(uint8_t msk);
 inline void eeFlush() { theFile.flush(); }
 void eeCheck(bool immediately=false);

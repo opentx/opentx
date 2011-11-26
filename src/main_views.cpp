@@ -534,4 +534,6 @@ void menuMainView(uint8_t event)
   else { // timer2
     putsTime(33+FW+2, FH*5, timer2, DBLSIZE, DBLSIZE);
   }
+
+  // TODO here it's too intrusive: theFile.DisplayProgressBar();
 }
