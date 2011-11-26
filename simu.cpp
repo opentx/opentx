@@ -363,7 +363,6 @@ void *init_function(void *) {
   return 0;
 }
 
-#include <pthread.h>
 long Gruvin9xSim::onChore(FXObject*,FXSelector,void*)
 {
   pthread_t pid;
@@ -396,7 +395,9 @@ int main(int argc,char **argv)
   if(argc>=2){
     eepromFile = argv[1];
   }
-  printf("eeprom = %s\n",eepromFile);
+  printf("eeprom = %s\n", eepromFile);
+
+  InitEepromThread();
 
   // Each FOX GUI program needs one, and only one, application object.
   // The application objects coordinates some common stuff shared between

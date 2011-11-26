@@ -72,7 +72,7 @@ TEST(outdezNAtt, test_unsigned) {
   EXPECT_EQ(memcmp(refBuf, displayBuf, sizeof(displayBuf)), 0) << "Unsigned numbers will be bad displayed";
 }
 
-TEST(EEPROM, test1) {
+TEST(EEPROM, 1000_random_writes) {
   eepromFile = NULL; // in memory
   RlcFile f;
   uint8_t buf[1000];
@@ -80,7 +80,7 @@ TEST(EEPROM, test1) {
 
   EeFsFormat();
 
-  for(int i=0; i<10000; i++) {
+  for(int i=0; i<1000; i++) {
     int size = rand()%800;
     for(int j=0; j<size; j++) {
       buf[j] = rand() < (RAND_MAX/10000*i) ? 0 : (j&0xff);
@@ -258,6 +258,7 @@ TEST(getSwitch, nullSW) {
 }
 
 int main(int argc, char **argv) {
+  InitEepromThread();
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

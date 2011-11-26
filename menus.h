@@ -19,11 +19,6 @@
  *
  */
 
-/*
-   Insert obligatories here
-
-   */
-
 #ifndef menus_h
 #define menus_h
 
@@ -48,8 +43,6 @@ void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 extern uint8_t s_pgOfs;
 extern uint8_t s_noHi;
 extern uint8_t s_noScroll;
-
-// extern int16_t expo(int16_t x, int16_t k);
 
 void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, uint8_t mode);
 void menu_lcd_HYPHINV(uint8_t x, uint8_t y, uint8_t value, uint8_t mode);

@@ -97,15 +97,27 @@ uint8_t           s_warning_info_len;
 // uint8_t s_warning_info_att not needed now
 uint8_t           s_confirmation = 0;
 
+void displayBox()
+{
+  lcd_filled_rect(10, 16, 108, 40, WHITE);
+  lcd_rect(10, 16, 108, 40);
+  lcd_puts_P(16, 3*FH, s_warning);
+  // could be a place for a s_warning_info
+}
+
+void displayPopup(const prog_char * pstr)
+{
+  s_warning = pstr;
+  displayBox();
+  s_warning = 0;
+  refreshDiplay();
+}
+
 void displayWarning(uint8_t event)
 {
   if (s_warning) {
-    lcd_filled_rect(10, 16, 108, 40, WHITE);
-    lcd_rect(10, 16, 108, 40);
-    lcd_puts_P(16, 3*FH, s_warning);
-    // could be a place for a s_warning_info
+    displayBox();
     lcd_puts_P(16, 5*FH, PSTR("[EXIT]"));
-
     switch(event) {
       case EVT_KEY_FIRST(KEY_EXIT):
         killEvents(event);
@@ -118,9 +130,7 @@ void displayWarning(uint8_t event)
 void displayConfirmation(uint8_t event)
 {
   s_confirmation = false;
-  lcd_filled_rect(10, 16, 108, 40, WHITE);
-  lcd_rect(10, 16, 108, 40);
-  lcd_puts_P(16, 3*FH, s_warning);
+  displayBox();
   if (s_warning_info)
     lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
   lcd_puts_P(16, 5*FH, PSTR("[MENU]    [EXIT]"));
@@ -201,6 +211,7 @@ void menuProcModelSelect(uint8_t event)
       case EVT_KEY_LONG(KEY_MENU):
       case EVT_KEY_BREAK(KEY_MENU):
         if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
+          displayPopup(s_copyMode==COPY_MODE ? PSTR("Copying model...") : PSTR("Moving model..."));
           eeCheck(true); // force writing of current model data before this is changed
 
           uint8_t cur = (16 + sub + s_copyTgtOfs) % 16;
@@ -231,6 +242,7 @@ void menuProcModelSelect(uint8_t event)
           s_copyTgtOfs = 0;
         }
         else if (_event == EVT_KEY_LONG(KEY_MENU)) {
+          displayPopup(PSTR("Loading model..."));
           eeCheck(true); // force writing of current model data before this is changed
           if (g_eeGeneral.currModel != sub) {
             g_eeGeneral.currModel = sub;
@@ -238,6 +250,7 @@ void menuProcModelSelect(uint8_t event)
             eeLoadModel(sub);
           }
           killEvents(event);
+          return;
         }
         else if (EFile::exists(FILE_MODEL(sub))) {
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
@@ -370,12 +383,11 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 #define PARAM_OFS (9*FW+2)
 void menuProcModel(uint8_t event)
 {
+  lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
   MENU("SETUP", menuTabModel, e_Model, (g_model.protocol ? 10 : 11), {0,sizeof(g_model.name)-1,3,3,0,0,0,1,6,2,1});
 
   uint8_t  sub    = m_posVert;
   uint8_t y = 1*FH;
-
-  lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
 
   uint8_t subN = 1;
   if(s_pgOfs<subN) {
@@ -530,12 +542,12 @@ static uint8_t s_currIdx;
 
 void menuProcPhaseOne(uint8_t event)
 {
-  SUBMENU("EDIT FLIGHT PHASE", (s_currIdx==0 ? 3 : 5), {6, 0, 3/*, 0, 0*/});
+  PhaseData *phase = phaseaddress(s_currIdx);
+  putsFlightPhase(13*FW, 0, s_currIdx+1, 0);
+
+  SUBMENU("FLIGHT PHASE", (s_currIdx==0 ? 3 : 5), {6, 0, 3/*, 0, 0*/});
 
   int8_t sub = m_posVert;
-  PhaseData *phase = phaseaddress(s_currIdx);
-
-  putsFlightPhase(18*FW, 0, s_currIdx+1, 0);
 
   for (uint8_t i=0, k=0, y=2*FH; i<5; i++, k++, y+=FH) {
     if (s_currIdx == 0 && i==1) i = 3;
@@ -733,6 +745,7 @@ void menuProcCurveOne(uint8_t event)
 
   TITLE("CURVE");
   lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
+  theFile.DisplayProgressBar();
 
   if (s_curveChan >= MAX_CURVE5) {
     points = 9;
@@ -1041,11 +1054,10 @@ inline void editExpoVals(uint8_t event, uint8_t which, bool edit, uint8_t y, uin
 
 void menuProcExpoOne(uint8_t event)
 {
-  SIMPLE_SUBMENU("DR/EXPO", 6);
-
   ExpoData *ed = expoaddress(s_currIdx);
+  putsChnRaw(7*FW+FW/2,0,ed->chn+1,0);
 
-  putsChnRaw(lcd_lastPos+FW/2,0,ed->chn+1,0);
+  SIMPLE_SUBMENU("DR/EXPO", 6);
 
   int8_t  sub = m_posVert;
 
@@ -1077,10 +1089,11 @@ void menuProcExpoOne(uint8_t event)
 
 void menuProcMixOne(uint8_t event)
 {
-  SIMPLE_SUBMENU_NOTITLE(13);
   TITLEP(s_currCh ? PSTR("INSERT MIX ") : PSTR("EDIT MIX "));
   MixData *md2 = mixaddress(s_currIdx) ;
   putsChn(lcd_lastPos+1*FW,0,md2->destCh,0);
+  SIMPLE_SUBMENU_NOTITLE(13);
+
   int8_t  sub    = m_posVert;
 
   for(uint8_t k=0; k<7; k++)
@@ -1245,8 +1258,10 @@ void menuProcExpoMix(uint8_t expo, uint8_t __event)
       event -= KEY_EXIT;
   }
 
-  SIMPLE_MENU_NOTITLE(menuTabModel, expo ? e_ExposAll : e_MixAll, s_maxLines);
   TITLEP(expo ? PSTR("DR/EXPO") : PSTR("MIXER"));
+  lcd_outdezAtt(lcd_lastPos+2*FW+FW/2, 0, getExpoMixCount(expo));
+  lcd_puts_P(lcd_lastPos, 0, expo ? PSTR("/14") : PSTR("/32"));
+  SIMPLE_MENU_NOTITLE(menuTabModel, expo ? e_ExposAll : e_MixAll, s_maxLines);
 
   uint8_t sub = m_posVert;
 
@@ -1350,9 +1365,6 @@ void menuProcExpoMix(uint8_t expo, uint8_t __event)
       }
       break;
   }
-
-  lcd_outdezAtt(lcd_lastPos+2*FW+FW/2, 0, getExpoMixCount(expo));
-  lcd_puts_P(lcd_lastPos, 0, expo ? PSTR("/14") : PSTR("/32"));
 
   s_currCh = 0;
   uint8_t cur = 1;

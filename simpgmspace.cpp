@@ -30,51 +30,52 @@
 volatile unsigned char pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff;
 unsigned char portb, dummyport;
 const char *eepromFile = "eeprom.bin";
-volatile int8_t eeprom_buffer_size = 0;
 
+extern uint16_t eeprom_pointer;
+extern const char* eeprom_buffer_data;
 uint8_t eeprom[EESIZE];
+sem_t eeprom_write_sem;
+pthread_t write_thread_pid = 0;
 
-void eeWriteBlockCmp(const void *i_pointer_ram, void *pointer_eeprom, size_t size)
+void *eeprom_write_function(void *)
 {
-#if 0
-  printf(" eeWriteBlockCmp(%d %d)", size, (int)pointer_eeprom);
-  for(uint8_t i=0; i<size; i++)
-    printf(" %02X", ((const char*)i_pointer_ram)[i]);
-  printf("\n");fflush(stdout);
-#endif
+  while (!sem_wait(&eeprom_write_sem)) {
 
-  if (eepromFile) {
-    FILE *fp = fopen(eepromFile, "r+");
-    long ofs = (long) pointer_eeprom;
-    const char* pointer_ram= (const char*)i_pointer_ram;
-    //printf("eeWr p=%10p blk%3d ofs=%2d l=%d",pointer_ram,
-    //       (int)pointer_eeprom/16,
-    //       (int)pointer_eeprom%16,
-    //       (int)size);
-    while(size) {
-      if(fseek(fp, ofs , SEEK_SET)==-1) perror("error in seek");
-      char buf[1];
-      if (fread(buf, 1, 1, fp) != 1) perror("error in read");
-
-      if (buf[0] != pointer_ram[0]){
-        //printf("X");
-        g_tmr10ms++;
-        if(fseek(fp, ofs , SEEK_SET)==-1) perror("error in seek");
-        fwrite(pointer_ram, 1, 1,fp);
-      }
-      else{
-        //printf(".");
-      }
-
-      size--;
-      ofs++;
-      (const char*)pointer_ram++;
+    FILE *fp = NULL;
+    
+    if (eepromFile) {
+      fp = fopen(eepromFile, "r+");
+      assert(fp);
     }
-    fclose(fp);
+
+    while (--eeprom_buffer_size) {
+      assert(eeprom_buffer_size > 0);
+      if (fp) {
+        if (fseek(fp, eeprom_pointer, SEEK_SET) == -1)
+          perror("error in fseek");
+        if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
+          perror("error in fwrite");
+        usleep(5000/*5ms*/);
+      }
+      else {
+        memcpy(&eeprom[eeprom_pointer], eeprom_buffer_data, 1);
+      }
+      eeprom_pointer++;
+      eeprom_buffer_data++;
+      
+      if (fp && eeprom_buffer_size == 1) {
+        fclose(fp);
+      }
+    }
   }
-  else {
-    memcpy(&eeprom[(int64_t)pointer_eeprom], i_pointer_ram, size);
-  }
+
+  return 0;
+}
+
+void InitEepromThread()
+{
+  sem_init(&eeprom_write_sem, 0, 0);
+  assert(!pthread_create(&write_thread_pid, NULL, &eeprom_write_function, NULL));
 }
 
 void eeprom_read_block (void *pointer_ram,
