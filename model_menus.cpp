@@ -745,7 +745,7 @@ void menuProcCurveOne(uint8_t event)
 
   TITLE("CURVE");
   lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
-  theFile.DisplayProgressBar();
+  theFile.DisplayProgressBar(20*FW+1);
 
   if (s_curveChan >= MAX_CURVE5) {
     points = 9;
@@ -1658,7 +1658,7 @@ void menuProcCustomSwitches(uint8_t event)
 
 void menuProcFunctionSwitches(uint8_t event)
 {
-  MENU("FUNCTION SWITCHES", menuTabModel, e_FunctionSwitches, NUM_FSW+1, {0, 1/*repeated*/});
+  MENU("FUNC SWITCHES", menuTabModel, e_FunctionSwitches, NUM_FSW+1, {0, 1/*repeated*/});
 
   uint8_t y = 0;
   uint8_t k = 0;

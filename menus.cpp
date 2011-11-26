@@ -185,7 +185,7 @@ bool check(uint8_t event, uint8_t curr, MenuFuncP *menuTab, uint8_t menuTabSize,
     DisplayScreenIndex(curr, menuTabSize, attr);
   }
 
-  theFile.DisplayProgressBar();
+  theFile.DisplayProgressBar(menuTab ? lcd_lastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
 
   uint8_t maxcol = MAXCOL(m_posVert);
   switch(event)

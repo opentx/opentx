@@ -143,7 +143,7 @@ public:
   uint16_t readRlc(uint8_t*buf, uint16_t i_len); // TODO should be like writeRlc?
 #endif
 
-  void DisplayProgressBar();
+  void DisplayProgressBar(uint8_t x);
 };
 
 #endif
