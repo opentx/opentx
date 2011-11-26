@@ -357,7 +357,8 @@ void RlcFile::nextWriteStep()
     }
     if (m_ofs >= (BS-1)) {
       m_ofs = 0;
-      if (!EeFsGetLink(m_currBlk)) {
+      uint8_t nextBlk = EeFsGetLink(m_currBlk);
+      if (!nextBlk) {
         if (!eeFs.freeList) {
           s_write_err = ERR_FULL;
           break;
@@ -366,7 +367,7 @@ void RlcFile::nextWriteStep()
         EeFsSetLink(m_currBlk, eeFs.freeList);
         return;
       }
-      m_currBlk = EeFsGetLink(m_currBlk);
+      m_currBlk = nextBlk;
     }
     switch (m_write_step & 0x0f) {
       case WRITE_NEXT_LINK_1:
