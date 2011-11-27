@@ -457,6 +457,7 @@ void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t*buf, uint16_t i_le
   m_rlc_buf = buf;
   m_rlc_len = i_len;
   m_cur_rlc_len = 0;
+  m_ratio = (typ == FILE_TYP_MODEL ? 60 : 7);
 
   do {
     nextRlcWriteStep();
@@ -572,7 +573,7 @@ void RlcFile::flush()
   s_sync_write = false;
 }
 
-#define PROGRESS_VERTICAL_BAR
+#define PROGRESS_CIRCLE
 void RlcFile::DisplayProgressBar(uint8_t x)
 {
   if (s_eeDirtyMsk || m_rlc_len || eeprom_buffer_size) {
@@ -582,11 +583,11 @@ void RlcFile::DisplayProgressBar(uint8_t x)
     lcd_filled_rect(3, 2, 123-len, 3);
 #elif defined (PROGRESS_CIRCLE)
     lcd_filled_rect(x-1, 0, 7, 7, WHITE);
-    uint8_t len = 200 - (s_eeDirtyMsk ? 200 : min((uint8_t)200, (uint8_t)((m_rlc_len / 4) + (eeprom_buffer_size / 3))));
-    lcd_hline(x+1, 1, len >= 50 ? 3 : len / 14);
-    if (len >= 50) lcd_vline(x+4, 2, len >= 100 ? 3 : (len-50) / 17);
-    if (len >= 100) lcd_hline(x+4, 1+4, len >= 150 ? -3 : -((len-100) / 17));
-    if (len >= 150) lcd_vline(x, 5, -((len-133) / 17));
+    uint8_t len = s_eeDirtyMsk ? 1 : limit(1, 12 - (uint8_t)(m_rlc_len/m_ratio), 12);
+    lcd_hline(x+1, 1, min((uint8_t)3, len));
+    if (len >= 3) lcd_vline(x+4, 2, min(3, len-3));
+    if (len >= 6) lcd_hline(x+4, 1+4, -min(3, len-6));
+    if (len >= 9) lcd_vline(x, 5, -min(3, len-9));
 #elif defined (PROGRESS_VERTICAL_BAR)
     uint8_t len = 6 - (s_eeDirtyMsk ? 5 : min((uint8_t)5, (uint8_t)((m_rlc_len / 100) + (eeprom_buffer_size / 10))));
     lcd_filled_rect(x+1, 0, 5, FH, WHITE);

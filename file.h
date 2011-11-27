@@ -110,6 +110,7 @@ class RlcFile: public EFile
   uint8_t m_write1_byte;
   uint8_t m_write_len;
   uint8_t * m_write_buf;
+  uint8_t m_ratio;
 
 public:
 
