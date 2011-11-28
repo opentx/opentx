@@ -29,6 +29,11 @@ uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 #include "font_dblsize.lbm"
 #define font_10x16_x20_x7f (font_dblsize+3)
 
+#ifdef SIMU
+bool lcd_refresh = true;
+uint8_t lcd_buf[DISPLAY_W*DISPLAY_H/8];
+#endif
+
 void lcd_clear()
 {
   memset(displayBuf, 0, sizeof(displayBuf));
@@ -557,8 +562,12 @@ void lcdSetRefVolt(uint8_t val)
   lcdSendCtl(val);
 }
 
-void refreshDiplay()
+void refreshDisplay()
 {
+#ifdef SIMU
+  memcpy(lcd_buf, displayBuf, sizeof(displayBuf));
+  lcd_refresh = true;
+#else
   uint8_t *p=displayBuf;
   for(uint8_t y=0; y < 8; y++) {
     lcdSendCtl(0x04);
@@ -578,4 +587,5 @@ void refreshDiplay()
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
   }
+#endif
 }

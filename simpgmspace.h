@@ -19,6 +19,9 @@
  *
  */
 
+#ifndef simpgmspace_h
+#define simpgmspace_h
+
 #include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -90,3 +93,5 @@ void eeprom_read_block (void *pointer_ram,
 #undef offsetof
 #define offsetof(st, m) ((size_t) ( (char *)&((st *)(0))->m - (char *)0 ))
 #define wdt_reset()
+
+#endif

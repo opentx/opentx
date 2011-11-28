@@ -504,7 +504,7 @@ void doSplash()
 
       lcd_clear();
       lcd_img(0, 0, s9xsplash,0,0);
-      refreshDiplay();
+      refreshDisplay();
       lcdSetRefVolt(g_eeGeneral.contrast);
       clearKeyEvents();
 
@@ -554,7 +554,7 @@ void alertMessages( const prog_char * s, const prog_char * t )
   lcd_puts_P(0,4*FH,s);
   lcd_puts_P(0,5*FH,t);
   lcd_puts_P(0,6*FH,  PSTR("Press any key to skip") ) ;
-  refreshDiplay();
+  refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
 
   clearKeyEvents();
@@ -638,7 +638,7 @@ void message(const prog_char * s)
   lcd_clear();
   lcd_putsAtt(64-5*FW,0*FH,PSTR("MESSAGE"),DBLSIZE);
   lcd_puts_P(0,4*FW,s);
-  refreshDiplay();
+  refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
@@ -648,7 +648,7 @@ void alert(const prog_char * s, bool defaults)
   lcd_putsAtt(64-5*FW,0*FH,PSTR("ALERT"),DBLSIZE);
   lcd_puts_P(0,4*FH,s);
   lcd_puts_P(64-6*FW,7*FH,PSTR("press any Key"));
-  refreshDiplay();
+  refreshDisplay();
   lcdSetRefVolt(defaults ? 25 : g_eeGeneral.contrast);
   beepErr();
   clearKeyEvents();
@@ -1708,7 +1708,7 @@ void perMain()
   /////////////////
 
   g_menuStack[g_menuStackPtr](evt);
-  refreshDiplay();
+  refreshDisplay();
 
 #if defined (PCBV4)
   // PPM signal on phono-jack. In or out? ...
@@ -2125,7 +2125,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   s_noStickInputs = false;
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
-    g_model.limitData[i].offset = max(min(zero_chans512[i], (int16_t)1000), (int16_t)-1000); // make sure the offset doesn't go haywire
+    g_model.limitData[i].offset = limit((int16_t)-1000, zero_chans512[i], (int16_t)1000); // make sure the offset doesn't go haywire
 
   // reset all trims, except throttle
   for (uint8_t i=0; i<4; i++) {

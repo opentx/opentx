@@ -24,7 +24,6 @@
 #include "FXPNGImage.h"
 #include <unistd.h>
 #include "simpgmspace.h"
-#include "lcd.h"
 #include "fxkeys.h"
 #include "gruvin9x.h"
 #include "menus.h"
@@ -46,7 +45,6 @@ public:
   Gruvin9xSim(FXApp* a);
   long onKeypress(FXObject*,FXSelector,void*);
   long onArrowPress(FXObject*,FXSelector,void*);
-  long onChore(FXObject*,FXSelector,void*);
   long onTimeout(FXObject*,FXSelector,void*);
   void makeSnapshot(const FXDrawable* drawable);
   void doEvents();
@@ -71,7 +69,6 @@ public:
 FXDEFMAP(Gruvin9xSim) Gruvin9xSimMap[]={
 
   //________Message_Type_________ID_____________________Message_Handler_______
-  FXMAPFUNC(SEL_CHORE,     1,    Gruvin9xSim::onChore),
   FXMAPFUNC(SEL_TIMEOUT,   2,    Gruvin9xSim::onTimeout),
   FXMAPFUNC(SEL_COMMAND,   1000,    Gruvin9xSim::onArrowPress),
   FXMAPFUNC(SEL_KEYPRESS,  0,    Gruvin9xSim::onKeypress),
@@ -237,35 +234,38 @@ long Gruvin9xSim::onTimeout(FXObject*,FXSelector,void*)
   }
 
   per10ms();
-  getApp()->addChore(this,1);
+  refreshDiplay();
   getApp()->addTimeout(this,2,10);
   return 0;
 }
 
 void Gruvin9xSim::refreshDiplay()
 {
-  if(portb & 1<<OUT_B_LIGHT)  bmf->setOffColor(FXRGB(150,200,152));
-  else                        bmf->setOffColor(FXRGB(200,200,200));
+  if (lcd_refresh) {
+    lcd_refresh = false;
+    if(portb & 1<<OUT_B_LIGHT)  bmf->setOffColor(FXRGB(150,200,152));
+    else                        bmf->setOffColor(FXRGB(200,200,200));
 
-  for(int x=0;x<W;x++){
-    for(int y=0;y<H;y++)
-    {
-      int o2 = x/4 + y*W*2*2/8;
-      if( displayBuf[x+(y/8)*W] & (1<<(y%8))) {
-        buf2[o2]      |=   3<<(x%4*2);
-        buf2[o2+W2/8] |=   3<<(x%4*2);
-      }
-      else {
-        buf2[o2]      &= ~(3<<(x%4*2));
-        buf2[o2+W2/8] &= ~(3<<(x%4*2));
-        //buf2[x2/8+y2*W2/8] &= ~(3<<(x%8));
+    for(int x=0;x<W;x++){
+      for(int y=0;y<H;y++)
+      {
+        int o2 = x/4 + y*W*2*2/8;
+        if( lcd_buf[x+(y/8)*W] & (1<<(y%8))) {
+          buf2[o2]      |=   3<<(x%4*2);
+          buf2[o2+W2/8] |=   3<<(x%4*2);
+        }
+        else {
+          buf2[o2]      &= ~(3<<(x%4*2));
+          buf2[o2+W2/8] &= ~(3<<(x%4*2));
+          //buf2[x2/8+y2*W2/8] &= ~(3<<(x%8));
+        }
       }
     }
+
+    bmp->setData (buf2,0);
+    bmp->render();
+    bmf->setBitmap( bmp );
   }
-     
-  bmp->setData (buf2,0);
-  bmp->render(); 
-  bmf->setBitmap( bmp );  
 
   if(hasFocus()) {
     static FXuint keys1[]={
@@ -351,34 +351,22 @@ void Gruvin9xSim::refreshDiplay()
   }
 }
 
-int state = 0;
-void *init_function(void *) {
+void *main_thread(void *)
+{
   g_menuStack[0] = menuMainView;
   g_menuStack[1] = menuProcModelSelect;
+
   eeReadAll(); //load general setup and selected model
-  checkLowEEPROM(); //enough eeprom free?
+  doSplash();
+  checkLowEEPROM();
   checkTHR();
-  checkSwitches(); //must be last
-  state = 2;
-  return 0;
-}
+  checkSwitches();
+  checkAlarm();
 
-long Gruvin9xSim::onChore(FXObject*,FXSelector,void*)
-{
-  pthread_t pid;
-
-  refreshDiplay();
-
-  switch (state) {
-    case 0:
-      state = 1;
-      pthread_create(&pid, NULL, &init_function, NULL);
-      break;
-    case 2:
-      perMain();
-      break;
+  while(1) {
+    perMain();
+    usleep(1000);
   }
-
   return 0;
 }
 
@@ -396,8 +384,6 @@ int main(int argc,char **argv)
     eepromFile = argv[1];
   }
   printf("eeprom = %s\n", eepromFile);
-
-  InitEepromThread();
 
   // Each FOX GUI program needs one, and only one, application object.
   // The application objects coordinates some common stuff shared between
@@ -430,6 +416,11 @@ int main(int argc,char **argv)
 #else
   th9xSim->show(); // Otherwise the main window gets centred across my two monitors, split down the middle.
 #endif
+
+  InitEepromThread();
+
+  pthread_t pid;
+  pthread_create(&pid, NULL, &main_thread, NULL);
 
   return application.run();
 }

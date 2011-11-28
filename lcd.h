@@ -129,11 +129,15 @@ extern void lcdSetRefVolt(unsigned char val);
 extern void lcd_init();
 extern void lcd_clear();
 
-extern void refreshDiplay();
+extern void refreshDisplay();
 
 #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #define BLINK_SYNC      g_blinkTmr10ms = (3<<5)
 
+#ifdef SIMU
+extern bool lcd_refresh;
+extern uint8_t lcd_buf[DISPLAY_W*DISPLAY_H/8];
+#endif
 
 #endif
 /*eof*/

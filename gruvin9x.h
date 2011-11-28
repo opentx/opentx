@@ -508,9 +508,11 @@ extern uint16_t s_traceCnt;
 uint16_t getTmr16KHz();
 uint16_t stack_free();
 
+void doSplash();
 void checkLowEEPROM();
 void checkTHR();
 void checkSwitches();
+void checkAlarm();
 
 #define GETADC_SING = 0
 #define GETADC_OSMP = 1
@@ -547,11 +549,11 @@ extern uint8_t  s_eeDirtyMsk;
 /// liefert Betrag des Arguments
 template<class t> inline t __attribute__ ((always_inline)) abs(t a){ return a>0?a:-a; }
 /// liefert das Minimum der Argumente
-template<class t> inline t min(t a, t b){ return a<b?a:b; }
+template<class t> inline t __attribute__ ((always_inline)) min(t a, t b){ return a<b?a:b; }
 /// liefert das Maximum der Argumente
-template<class t> inline t max(t a, t b){ return a>b?a:b; }
-template<class t> inline int8_t sgn(t a){ return a>0 ? 1 : (a < 0 ? -1 : 0); }
-template<class t> inline t limit(t mi, t x, t ma){ return min(max(mi,x),ma); }
+template<class t> inline t __attribute__ ((always_inline)) max(t a, t b){ return a>b?a:b; }
+template<class t> inline int8_t __attribute__ ((always_inline)) sgn(t a){ return a>0 ? 1 : (a < 0 ? -1 : 0); }
+template<class t> inline t __attribute__ ((always_inline)) limit(t mi, t x, t ma){ return min(max(mi,x),ma); }
 
 /// Markiert einen EEPROM-Bereich als dirty. der Bereich wird dann in
 /// eeCheck ins EEPROM zurueckgeschrieben.

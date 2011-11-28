@@ -21,8 +21,6 @@
 
 #include "gruvin9x.h"
 
-#ifndef SIMU
-
 #ifdef CTP1009
 uint16_t pulses2MHz[50] = {0};
 #else
@@ -37,6 +35,8 @@ uint16_t *pulses2MHzWPtr = pulses2MHz;
 #define CTRL_REP_1CMD -3
 #define CTRL_REP_2CMD -6
 
+#ifndef SIMU
+
 ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 {
   static uint8_t   pulsePol; // TODO strange, it's always 0 at first, shouldn't it be initialized properly in setupPulses?
@@ -44,8 +44,6 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
   // Latency -- how far further on from interrupt trigger has the timer counted?
   // (or -- how long did it take to get to this function)
   uint8_t dt = TCNT1L;
-  if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
-  if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
 
   // vinceofdrink@gmail harwared ppm
   // Orginal bitbang for PPM
@@ -83,6 +81,9 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
                       // much change in the code not optimum but will not alter ppm precision
 #endif
 
+  if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
+  if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
+
   ++pulses2MHzRPtr;
 
   if (pulses2MHzRPtr == pulses2MHzWPtr) {
@@ -91,7 +92,6 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
     //    channel = 0 ;
     //    PulseTotal = 0 ;
 
-    // cli(); // TODO I remove this cli, we are in a blocking interrupt
 #if defined (PCBV3)
     TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
 #else
@@ -114,10 +114,12 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 #else
     TIMSK |= (1<<OCIE1A);
 #endif
-    // sei(); TODO I remove this sei
+    sei();
   }
   heartbeat |= HEART_TIMER2Mhz;
 }
+
+#endif
 
 //inline int16_t reduceRange(int16_t x)  // for in case we want to have room for subtrims
 //{
@@ -146,7 +148,7 @@ inline void __attribute__ ((always_inline)) setupPulsesPPM() // changed 10/05/20
     rest += (int16_t(g_model.ppmFrameLength))*1000;
     if(p>9) rest=p*(1720u*2 + q) + 4000u*2; //for more than 9 channels, frame must be longer
     for (uint8_t i=0; i<p; i++) {
-      int16_t v = max(min(g_chans512[i], PPM_range), -PPM_range) + PPM_CENTER;
+      int16_t v = limit(-PPM_range, g_chans512[i], PPM_range) + PPM_CENTER;
       rest -= (v+q);
       *ptr++ = q;
       *ptr++ = v - q + 600; /* as Pat MacKenzie suggests */
@@ -441,5 +443,4 @@ void setupPulses()
 #endif
   }
 }
-#endif
 
