@@ -110,7 +110,7 @@ void displayPopup(const prog_char * pstr)
   s_warning = pstr;
   displayBox();
   s_warning = 0;
-  refreshDiplay();
+  refreshDisplay();
 }
 
 void displayWarning(uint8_t event)
@@ -240,6 +240,7 @@ void menuProcModelSelect(uint8_t event)
           s_copyMode = 0; // TODO only this one?
           s_copySrcRow = -1;
           s_copyTgtOfs = 0;
+          return;
         }
         else if (_event == EVT_KEY_LONG(KEY_MENU)) {
           displayPopup(PSTR("Loading model..."));
@@ -249,6 +250,7 @@ void menuProcModelSelect(uint8_t event)
             STORE_GENERALVARS;
             eeLoadModel(sub);
           }
+          s_copyMode = 0;
           killEvents(event);
           return;
         }
@@ -497,9 +499,8 @@ void menuProcModel(uint8_t event)
     }
     else if (sub==subN) {
       m_posHorz = 0;
-      CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROT_MAX);
     }
-    if(sub==subN && (s_editMode || p1valdiff)) {
+    if (sub==subN && (s_editMode || p1valdiff || !g_model.protocol)) {
       switch (m_posHorz) {
         case 0:
             CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROT_MAX);

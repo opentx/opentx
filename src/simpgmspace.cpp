@@ -35,7 +35,7 @@ extern uint16_t eeprom_pointer;
 extern const char* eeprom_buffer_data;
 uint8_t eeprom[EESIZE];
 sem_t eeprom_write_sem;
-pthread_t write_thread_pid = 0;
+pthread_t eeprom_thread_pid = 0;
 
 void *eeprom_write_function(void *)
 {
@@ -75,7 +75,7 @@ void *eeprom_write_function(void *)
 void InitEepromThread()
 {
   sem_init(&eeprom_write_sem, 0, 0);
-  assert(!pthread_create(&write_thread_pid, NULL, &eeprom_write_function, NULL));
+  assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
 }
 
 void eeprom_read_block (void *pointer_ram,
