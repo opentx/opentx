@@ -107,7 +107,6 @@ uint8_t Translate()
         g_model.protocol = v3->protocol;
         g_model.ppmNCH = v3->ppmNCH;
         g_model.thrTrim = v3->thrTrim;
-        g_model.thrExpo = v3->thrExpo;
         g_model.trimInc = v3->trimInc;
         g_model.pulsePol = v3->pulsePol;
         if (g_eeGeneral.myVers == EEPROM_VER_r584)
