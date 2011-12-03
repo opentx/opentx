@@ -148,7 +148,7 @@ inline void __attribute__ ((always_inline)) setupPulsesPPM() // changed 10/05/20
     rest += (int16_t(g_model.ppmFrameLength))*1000;
     if(p>9) rest=p*(1720u*2 + q) + 4000u*2; //for more than 9 channels, frame must be longer
     for (uint8_t i=0; i<p; i++) {
-      int16_t v = limit(-PPM_range, g_chans512[i], PPM_range) + PPM_CENTER;
+      int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + PPM_CENTER;
       rest -= (v+q);
       *ptr++ = q;
       *ptr++ = v - q + 600; /* as Pat MacKenzie suggests */
