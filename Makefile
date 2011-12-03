@@ -48,6 +48,19 @@ HELI = NO
 # Values = YES, NO
 TEMPLATES = YES
 
+# Enable navigation with Pots / Rotary encoders
+# Values = NO
+#          POT1 (only POT1 available for fields modification),
+#          POT2 (menus scroll),
+#          POT3 (cursor down/up),
+#          POTS (POT1, POT2, POT3),
+#          RE1  (Rotary encoder 1, on V3/V4 boards)
+ifeq ($(PCB), V4)
+NAVIGATION = RE1
+else
+NAVIGATION = POTS
+endif
+
 # gruvin: BEEPER. Values = BUZZER, BUZZER_MOD or SPEAKER
 # (without a mod, BUZZER can make PPM jack output switch from output to input at random)
 # SPEAKER mode actually works on the stock radio, using the stock beeper. Sort of sound OK(ish).
@@ -122,7 +135,7 @@ endif
 
 # Disk IO support (PCB V2+ only)
 ifneq ($(PCB), STD)
-  CPPSRC += time.cpp
+  CPPSRC += gtime.cpp
   CPPSRC += rtc.cpp
   CPPSRC += ff.cpp
   CPPSRC += diskio.cpp
@@ -178,6 +191,21 @@ CPPDEFS = -DF_CPU=$(F_CPU)UL
 # NOTE: PCB version now overrides all the earlier individual settings
 #       These individual settings work only for PCB=STD
 
+# If POT1/POTS/RE1 is used for fields modification
+ifeq ($(NAVIGATION), POT1)
+ CPPDEFS += -DNAVIGATION_POT1
+endif
+ifeq ($(NAVIGATION), POT2)
+ CPPDEFS += -DNAVIGATION_POT2
+endif
+ifeq ($(NAVIGATION), POT3)
+ CPPDEFS += -DNAVIGATION_POT3
+endif
+ifeq ($(NAVIGATION), POTS)
+ CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
+endif
+
+
 ifeq ($(PCB), STD)
 # STD PCB, so ...
 
@@ -220,7 +248,7 @@ ifeq ($(PCB), STD)
   ifeq ($(BATT), UNSTABLE_BANDGAP)
    CPPDEFS += -DBATT_UNSTABLE_BANDGAP
   endif
-
+  
 # gruvin: Legacy support for hardware mod freeing USART1 [DEPRECATED]
   ifeq ($(USART1), FREED)
     CPPDEFS += -DUSART1FREED
@@ -232,6 +260,11 @@ ifeq ($(PCB), STD)
   endif
 
 else
+
+  ifeq ($(NAVIGATION), RE1)
+    CPPDEFS += -DNAVIGATION_RE1
+  endif
+
 # not PCB=STD, so ...
   CPPSRC += frsky.cpp
   CPPDEFS += -DPCBV3 -DFRSKY -DFRSKY_HUB

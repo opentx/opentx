@@ -69,18 +69,23 @@ void menuProcModelSelect(uint8_t event);
 void menuProcStatistic(uint8_t event);
 void menuProcStatistic2(uint8_t event);
 
+#if defined(NAVIGATION_POT1) || defined(NAVIGATION_RE1)
 extern int16_t p1valdiff;
+#else
+#define p1valdiff 0
+#endif
+
 extern int8_t  checkIncDec_Ret;  // global helper vars
-extern uint8_t s_editMode;    // global editmode
+extern int8_t s_editMode;        // global editmode
 
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags);
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 
-#define CHECK_INCDEC_MODELVAR( event, var, min, max)     \
+#define CHECK_INCDEC_MODELVAR( event, var, min, max) \
   var = checkIncDecModel(event,var,min,max)
 
-#define CHECK_INCDEC_GENVAR( event, var, min, max)     \
+#define CHECK_INCDEC_GENVAR( event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
 
 // Menus related stuff ...

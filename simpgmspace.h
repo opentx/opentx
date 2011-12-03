@@ -39,6 +39,9 @@ typedef const int8_t prog_int8_t;
 
 extern sem_t eeprom_write_sem;
 
+#define loop_until_bit_is_set( port, bitnum) \
+  while ( 0/*! ( (port) & (1 << (bitnum)) )*/ ) ;
+
 #define PROGMEM
 #define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
 #define pgm_read_word(address_short) (*(uint16_t*)(address_short))
@@ -70,6 +73,8 @@ extern sem_t eeprom_write_sem;
 #define PIND  ~pind
 #define PINE  ~pine
 #define PING  ~ping
+#define PINJ  ~pinj
+#define PINL  ~pinl
 #define EEMEM
 
 #define UCSR0B dummyport
@@ -79,8 +84,38 @@ extern sem_t eeprom_write_sem;
 #define DDE0 dummyport
 #define PORTE0 dummyport
 #define RXCIE0 dummyport
+#define OCR0A dummyport
 
-extern volatile unsigned char pinb,pinc,pind,pine,ping;
+#define SPDR dummyport
+#define SPSR dummyport
+#define SPIF dummyport
+#define SPCR dummyport
+
+#define OUT_B_LIGHT   7
+#define INP_E_ElevDR  2
+#define INP_E_Trainer 5
+#define INP_E_Gear    4
+#define INP_C_ThrCt   6
+#define INP_C_AileDR  7
+#define INP_E_ID2     6
+
+#define INP_B_KEY_LFT 6
+#define INP_B_KEY_RGT 5
+#define INP_B_KEY_UP  4
+#define INP_B_KEY_DWN 3
+#define INP_B_KEY_EXT 2
+#define INP_B_KEY_MEN 1
+
+#define INP_P_SPARE6    7
+#define INP_P_SPARE5    6
+#define INP_P_KEY_EXT   5
+#define INP_P_KEY_MEN   4
+#define INP_P_KEY_LFT   3
+#define INP_P_KEY_RGT   2
+#define INP_P_KEY_UP    1
+#define INP_P_KEY_DWN   0
+
+extern volatile unsigned char pinb,pinc,pind,pine,ping,pinj,pinl;
 extern unsigned char portb,dummyport;
 
 void InitEepromThread();

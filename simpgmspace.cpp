@@ -27,7 +27,7 @@
 #include "gruvin9x.h"
 #include "menus.h"
 
-volatile unsigned char pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff;
+volatile unsigned char pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinj=0xff, pinl=0;
 unsigned char portb, dummyport;
 const char *eepromFile = "eeprom.bin";
 

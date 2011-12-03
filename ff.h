@@ -42,8 +42,9 @@
 extern "C" {
 #endif
 
+#include "inttypes.h"
 #include "integer.h"	/* Basic integer types */
-#include "ffconf.h"		/* FatFs configuration options */
+#include "ffconf.h"	/* FatFs configuration options */
 
 #if _FATFS != _FFCONF
 #error Wrong configuration file (ffconf.h).
@@ -473,7 +474,7 @@ TCHAR* f_gets (TCHAR*, int, FIL*);					/* Get a string from the file */
 
 /* RTC function */
 #if !_FS_READONLY
-extern DWORD get_fattime (void); /* Returns 32-bit packed date and time */
+extern uint32_t get_fattime (void); /* Returns 32-bit packed date and time */
 #endif
 
 /* Unicode support functions */

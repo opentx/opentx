@@ -30,7 +30,7 @@
 
 #if defined(PCBV3)
 #include "ff.h"
-#include "time.h"
+#include "gtime.h"
 #endif
 
 #ifdef SIMU
@@ -280,6 +280,10 @@ enum EnumKeys {
   TRM_RV_UP   ,
   TRM_RH_DWN  ,
   TRM_RH_UP   ,
+#ifdef PCBV4
+  BTN_RE1,
+  BTN_RE2,
+#endif
   //SW_NC     ,
   //SW_ON     ,
   SW_ThrCt  ,
@@ -291,8 +295,8 @@ enum EnumKeys {
   SW_AileDR ,
   SW_Gear   ,
   SW_Trainer,
-  SW_RE1,
-  SW_RE2
+  NUM_KEYS = SW_ThrCt
+
 };
 
 #define CURVE_BASE 7
@@ -376,7 +380,6 @@ enum EnumKeys {
 #define THRCHK_DEADBAND 16
 #define SPLASH_TIMEOUT  (4*100)  //400 msec - 4 seconds
 
-#define NUM_KEYS TRM_RH_UP+1
 #define TRM_BASE TRM_LH_DWN
 
 //#define _MSK_KEY_FIRST (_MSK_KEY_REPT|0x20)
@@ -732,7 +735,7 @@ extern char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE]; // text buffer for frs
 #endif
 
 #if defined (PCBV3)
-extern char g_logFilename[21]; // pers.cpp::resetTelemetry()
+extern char g_logFilename[22]; // pers.cpp::resetTelemetry()
 extern FATFS FATFS_Obj; // pers.cpp::resetTelemetry()
 extern FIL g_oLogFile; // pers.cpp::resetTelemetry()
 #endif

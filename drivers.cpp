@@ -121,7 +121,6 @@ public:
   uint8_t getDbl()   { return m_dblcnt;                     }
 };
 
-
 Key keys[NUM_KEYS];
 void Key::input(bool val, EnumKeys enuk)
 {
@@ -214,10 +213,6 @@ bool keyState(EnumKeys enuk)
 
     case SW_Trainer: return PINB & (1<<INP_B_Trainer);
 
-    case SW_RE1: return (~PIND & 0b00100000);
-
-    case SW_RE2: return (~PIND & 0b00010000);
-
     default:;
   }
 #else
@@ -306,6 +301,10 @@ void per10ms()
   */
 
 #  if defined (PCBV4)
+
+  keys[BTN_RE1].input(~PIND & 0b00100000, BTN_RE1);
+  keys[BTN_RE2].input(~PIND & 0b00010000, BTN_RE2);
+
   uint8_t tin = ~PINL;
   uint8_t in;
   in = (tin & 0x0f) << 3;
@@ -343,6 +342,7 @@ void per10ms()
     keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
     ++enuk;
   }
+
 // End User buttons
 
 // Trim switches ...

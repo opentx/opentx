@@ -256,8 +256,8 @@ void menuProcTime(uint8_t event)
 
   int8_t  sub    = m_posVert - 1; // vertical position (1 = page counter, top/right)
   uint8_t subSub = m_posHorz;     // horizontal position
-  static struct tm t;
-  struct tm *at = &t;
+  static struct gtm t;
+  struct gtm *at = &t;
 
   switch(event)
   {
@@ -266,7 +266,7 @@ void menuProcTime(uint8_t event)
       killEvents(event);
       break;
     case EVT_KEY_FIRST(KEY_MENU):
-      if (sub >= 0 && !s_editMode) // set the date and time into RTC chip
+      if (sub >= 0 && s_editMode<=0) // set the date and time into RTC chip
       {
         g_ms100 = 0; // start of next second begins now
         g_unixTime = mktime(&t); // update local timestamp and get wday calculated
@@ -286,7 +286,7 @@ void menuProcTime(uint8_t event)
       break;
   }
 
-  if (!s_editMode) filltm(&g_unixTime, &t);
+  if (s_editMode<=0) filltm(&g_unixTime, &t);
 
   lcd_putc(FW*10+2, FH*2, '-'); lcd_putc(FW*13, FH*2, '-');
   lcd_putc(FW*10+1, FH*4, ':'); lcd_putc(FW*13-1, FH*4, ':');
@@ -299,7 +299,7 @@ void menuProcTime(uint8_t event)
 
     for(uint8_t j=0; j<3;j++) // 3 settings each for date and time (YMD and HMS)
     {
-      uint8_t attr = (sub==i && subSub==j) ? (s_editMode ? BLINK : INVERS) : 0;
+      uint8_t attr = (sub==i && subSub==j) ? (s_editMode>0 ? BLINK : INVERS) : 0;
       switch(i)
       {
         case 0: // DATE
@@ -307,15 +307,15 @@ void menuProcTime(uint8_t event)
           {
             case 0:
               lcd_outdezAtt(FW*10+2, y, at->tm_year+1900, attr);
-              if(attr && (s_editMode || p1valdiff)) at->tm_year = checkIncDec( event, at->tm_year, 110, 200, 0);
+              if(attr && (s_editMode>0 || p1valdiff)) at->tm_year = checkIncDec( event, at->tm_year, 110, 200, 0);
               break;
             case 1:
               lcd_outdezNAtt(FW*13, y, at->tm_mon+1, attr|LEADING0, 2);
-              if(attr && (s_editMode || p1valdiff)) at->tm_mon = checkIncDec( event, at->tm_mon, 0, 11, 0);
+              if(attr && (s_editMode>0 || p1valdiff)) at->tm_mon = checkIncDec( event, at->tm_mon, 0, 11, 0);
               break;
             case 2:
               lcd_outdezNAtt(FW*16-2, y, at->tm_mday, attr|LEADING0, 2);
-              if(attr && (s_editMode || p1valdiff)) at->tm_mday = checkIncDec( event, at->tm_mday, 1, 31, 0);
+              if(attr && (s_editMode>0 || p1valdiff)) at->tm_mday = checkIncDec( event, at->tm_mday, 1, 31, 0);
               break;
           }
           break;
@@ -325,15 +325,15 @@ void menuProcTime(uint8_t event)
           {
             case 0:
               lcd_outdezNAtt(FW*10+1, y, at->tm_hour, attr|LEADING0, 2);
-              if(attr && (s_editMode || p1valdiff)) at->tm_hour = checkIncDec( event, at->tm_hour, 0, 23, 0);
+              if(attr && (s_editMode>0 || p1valdiff)) at->tm_hour = checkIncDec( event, at->tm_hour, 0, 23, 0);
               break;
             case 1:
               lcd_outdezNAtt(FW*13-1, y, at->tm_min, attr|LEADING0, 2);
-              if(attr && (s_editMode || p1valdiff)) at->tm_min = checkIncDec( event, at->tm_min, 0, 59, 0);
+              if(attr && (s_editMode>0 || p1valdiff)) at->tm_min = checkIncDec( event, at->tm_min, 0, 59, 0);
               break;
             case 2:
               lcd_outdezNAtt(FW*16-2, y, at->tm_sec, attr|LEADING0, 2);
-              if(attr && (s_editMode || p1valdiff)) at->tm_sec = checkIncDec( event, at->tm_sec, 0, 59, 0);
+              if(attr && (s_editMode>0 || p1valdiff)) at->tm_sec = checkIncDec( event, at->tm_sec, 0, 59, 0);
               break;
           }
           break;
@@ -363,7 +363,7 @@ void menuProcTrainer(uint8_t event)
 
   sub--;
   y = 2*FH;
-  blink = s_editMode ? BLINK : INVERS ;
+  blink = (s_editMode>0) ? BLINK : INVERS ;
 
   for (uint8_t i=0; i<4; i++) {
     uint8_t chan = pgm_read_byte(chout_ar+g_eeGeneral.templateSetup*4+i); // G: Issue 30.
@@ -374,17 +374,17 @@ void menuProcTrainer(uint8_t event)
 
     edit = (sub==i && subSub==0);
     lcd_putsnAtt(4*FW, y, PSTR("off += :=")+3*td->mode, 3, edit ? blink : 0);
-    if (edit && s_editMode)
+    if (edit && s_editMode>0)
       CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
 
     edit = (sub==i && subSub==1);
     lcd_outdezAtt(11*FW, y, td->studWeight, edit ? blink : 0);
-    if (edit && s_editMode)
+    if (edit && s_editMode>0)
       CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
 
     edit = (sub==i && subSub==2);
     lcd_putsnAtt(12*FW, y, PSTR("ch1ch2ch3ch4")+3*td->srcChn, 3, edit ? blink : 0);
-    if (edit && s_editMode)
+    if (edit && s_editMode>0)
       CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
 
     edit = (sub==i && subSub==3);
@@ -455,7 +455,7 @@ void menuProcDiagKeys(uint8_t event)
   for(uint8_t i=0; i<2; i++) {
     uint8_t y = i*FH + FH;
     lcd_putsn_P(14*FW, y, PSTR("RE1RE2")+3*i, 3);
-    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(SW_RE1+i)) ? INVERS : 0));
+    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_RE1+i)) ? INVERS : 0));
   }
 #endif
 

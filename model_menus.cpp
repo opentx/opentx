@@ -345,7 +345,7 @@ void menuProcModelSelect(uint8_t event)
 void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active, uint8_t & cur)
 {
   if (active) {
-    if (s_editMode) {
+    if (s_editMode>0) {
       switch(event) {
         case EVT_KEY_BREAK(KEY_LEFT):
           if (cur>0) cur--;
@@ -360,8 +360,8 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
     }
   }
 
-  lcd_putsnAtt(x, y, name, size, ZCHAR | (active ? (s_editMode ? 0 : INVERS) : 0));
-  if (active && s_editMode) {
+  lcd_putsnAtt(x, y, name, size, ZCHAR | (active ? ((s_editMode>0) ? 0 : INVERS) : 0));
+  if (active && s_editMode>0) {
     char c = name[cur];
     char v = c;
     if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
@@ -402,12 +402,12 @@ void menuProcModel(uint8_t event)
   for (uint8_t i=0; i<2; i++, timer=&g_model.timer2) {
     if (s_pgOfs<subN) {
       lcd_putsnAtt(0*FW, y, PSTR("Timer1Timer2")+6*i, 6, 0);
-      putsTmrMode(PARAM_OFS, y, timer->mode, sub==subN && m_posHorz==0 ? (s_editMode ? BLINK : INVERS) : 0);
+      putsTmrMode(PARAM_OFS, y, timer->mode, sub==subN && m_posHorz==0 ? ((s_editMode>0) ? BLINK : INVERS) : 0);
       putsTime(14*FW-3, y, timer->val,
-          (sub==subN && m_posHorz==1 ? (s_editMode ? BLINK : INVERS):0),
-          (sub==subN && m_posHorz==2 ? (s_editMode ? BLINK : INVERS):0) );
-      lcd_putsnAtt(19*FW, y, PSTR("\x7e\x7f")+1-timer->dir,1,sub==subN && m_posHorz==3 ? (s_editMode ? BLINK : INVERS) : 0);
-      if (sub==subN && (s_editMode || p1valdiff)) {
+          (sub==subN && m_posHorz==1 ? ((s_editMode>0) ? BLINK : INVERS):0),
+          (sub==subN && m_posHorz==2 ? ((s_editMode>0) ? BLINK : INVERS):0) );
+      lcd_putsnAtt(19*FW, y, PSTR("\x7e\x7f")+1-timer->dir,1,sub==subN && m_posHorz==3 ? ((s_editMode>0) ? BLINK : INVERS) : 0);
+      if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
          case 0:
            CHECK_INCDEC_MODELVAR(event, timer->mode, -(13+2*MAX_SWITCH),(13+2*MAX_SWITCH));
@@ -461,7 +461,7 @@ void menuProcModel(uint8_t event)
     lcd_puts_P(    0,    y, PSTR("T-Trim"));
     menu_lcd_onoff(PARAM_OFS, y, g_model.thrTrim, sub==subN && m_posHorz==0) ;
     lcd_putsnAtt(PARAM_OFS+4*FW, y, PSTR("LinearExp   ")+6*g_model.thrExpo,6,(sub==subN && m_posHorz==1) ? INVERS : 0);
-    if (sub==subN && (s_editMode || p1valdiff)) {
+    if (sub==subN && (s_editMode>0 || p1valdiff)) {
       switch (m_posHorz) {
         case 0:
           CHECK_INCDEC_MODELVAR(event,g_model.thrTrim,0,1);
@@ -480,7 +480,7 @@ void menuProcModel(uint8_t event)
     if(sub==subN){
       if((event==EVT_KEY_FIRST(KEY_MENU)) || p1valdiff) {
         killEvents(event);
-        s_editMode = false;
+        s_editMode = 0;
         g_model.beepANACenter ^= (1<<m_posHorz);
         STORE_MODELVARS;
       }
@@ -491,16 +491,16 @@ void menuProcModel(uint8_t event)
   if(s_pgOfs<subN) {
     lcd_puts_P(0, y, PSTR("Proto"));
     lcd_putsnAtt(PARAM_OFS, y, PSTR(PROT_STR)+PROT_STR_LEN*g_model.protocol,PROT_STR_LEN,
-                  (sub==subN && m_posHorz==0 ? (s_editMode ? BLINK : INVERS):0));
+                  (sub==subN && m_posHorz==0 ? (s_editMode>0 ? BLINK : INVERS):0));
     if(!g_model.protocol) {
-      lcd_putsnAtt(PARAM_OFS+4*FW, y, PSTR("4CH 6CH 8CH 10CH12CH14CH16CH")+4*(g_model.ppmNCH+2),4,(sub==subN && m_posHorz==1  ? (s_editMode ? BLINK : INVERS):0));
+      lcd_putsnAtt(PARAM_OFS+4*FW, y, PSTR("4CH 6CH 8CH 10CH12CH14CH16CH")+4*(g_model.ppmNCH+2),4,(sub==subN && m_posHorz==1  ? ((s_editMode>0) ? BLINK : INVERS):0));
       lcd_putsAtt(PARAM_OFS+11*FW, y, PSTR("u"),0);
-      lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, (sub==subN && m_posHorz==2 ? (s_editMode ? BLINK : INVERS):0));
+      lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, (sub==subN && m_posHorz==2 ? ((s_editMode>0) ? BLINK : INVERS):0));
     }
     else if (sub==subN) {
       m_posHorz = 0;
     }
-    if (sub==subN && (s_editMode || p1valdiff || !g_model.protocol)) {
+    if (sub==subN && (s_editMode>0 || p1valdiff || !g_model.protocol)) {
       switch (m_posHorz) {
         case 0:
             CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROT_MAX);
@@ -521,8 +521,8 @@ void menuProcModel(uint8_t event)
       lcd_puts_P(0, y, PSTR("PPM frame"));
       lcd_puts_P(PARAM_OFS+3*FW, y, PSTR("ms"));
       lcd_outdezAtt(PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((sub==subN && m_posHorz==0) ? INVERS:0) | PREC1|LEFT);
-      lcd_putsnAtt(PARAM_OFS+6*FW, y, PSTR("POSNEG")+3*g_model.pulsePol,3,(sub==subN && m_posHorz==1 ? (s_editMode ? BLINK : INVERS):0));
-      if(sub==subN && (s_editMode || p1valdiff)) {
+      lcd_putsnAtt(PARAM_OFS+6*FW, y, PSTR("POSNEG")+3*g_model.pulsePol,3,(sub==subN && m_posHorz==1 ? ((s_editMode>0) ? BLINK : INVERS):0));
+      if(sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
           case 0:
             CHECK_INCDEC_MODELVAR(event, g_model.ppmFrameLength, -20, 20);
@@ -570,13 +570,13 @@ void menuProcPhaseOne(uint8_t event)
           if (v > TRIM_EXTENDED_MAX) {
             uint8_t p = v - TRIM_EXTENDED_MAX - 1;
             if (p >= s_currIdx) p++;
-            lcd_putcAtt((10+t)*FW, y, '0'+p, (attr && m_posHorz==t) ? (s_editMode ? BLINK : INVERS) : 0);
+            lcd_putcAtt((10+t)*FW, y, '0'+p, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK : INVERS) : 0);
           }
           else {
             v = TRIM_EXTENDED_MAX;
-            putsChnLetter((10+t)*FW, y, t+1, (attr && m_posHorz==t) ? (s_editMode ? BLINK : INVERS) : 0);
+            putsChnLetter((10+t)*FW, y, t+1, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK : INVERS) : 0);
           }
-          if (attr && m_posHorz==t && (s_editMode || p1valdiff)) {
+          if (attr && m_posHorz==t && ((s_editMode>0) || p1valdiff)) {
             v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX+MAX_PHASES-1, EE_MODEL);
             if (checkIncDec_Ret) {
               if (v == TRIM_EXTENDED_MAX) v = 0;
@@ -763,10 +763,10 @@ void menuProcCurveOne(uint8_t event)
       autoThrStep = 0;
       break;
     case EVT_KEY_FIRST(KEY_MENU):
-      if (!s_editMode) {
+      if (s_editMode<=0) {
         switch (m_posHorz) {
           case 0:
-            s_editMode = true;
+            s_editMode = 1;
             break;
           case 1:
             if (++dfltCrv > 4)
@@ -787,9 +787,9 @@ void menuProcCurveOne(uint8_t event)
       if (autoThrStep) {
         autoThrStep = 0;
       }
-      else if (s_editMode) {
+      else if (s_editMode>0) {
         m_posHorz = 0;
-        s_editMode = false;
+        s_editMode = 0;
       }
       else {
         popMenu();
@@ -801,7 +801,7 @@ void menuProcCurveOne(uint8_t event)
       break;
     case EVT_KEY_REPT(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_RIGHT):
-      if (!autoThrStep && m_posHorz<(s_editMode ? points-1 : ((g_menuStack[g_menuStackPtr-1] == menuProcExpoOne && IS_THROTTLE(expoaddress(s_currIdx)->chn)) ? 2 : 1))) m_posHorz++;
+      if (!autoThrStep && m_posHorz<((s_editMode>0) ? points-1 : ((g_menuStack[g_menuStackPtr-1] == menuProcExpoOne && IS_THROTTLE(expoaddress(s_currIdx)->chn)) ? 2 : 1))) m_posHorz++;
       break;
   }
 
@@ -813,14 +813,14 @@ void menuProcCurveOne(uint8_t event)
     else {
       x = 4*FW; y = (i+1) * FH;
     }
-    uint8_t attr = (s_editMode && m_posHorz == i) ? INVERS : 0;
+    uint8_t attr = (s_editMode>0 && m_posHorz==i) ? INVERS : 0;
     lcd_outdezAtt(x, y, crv[i], attr);
   }
 
   lcd_puts_P(0*FW, 7*FH, PSTR("MODE"));
-  lcd_putsnAtt(5*FW-2, 7*FH, PSTR("EDIT ""PRSET""A.THR")+5*(!s_editMode)*m_posHorz, 5, s_editMode || autoThrStep ? 0 : INVERS);
+  lcd_putsnAtt(5*FW-2, 7*FH, PSTR("EDIT ""PRSET""A.THR")+5*(s_editMode<=0)*m_posHorz, 5, s_editMode>0 || autoThrStep ? 0 : INVERS);
 
-  if (s_editMode || autoThrStep) {
+  if (s_editMode>0 || autoThrStep) {
     for (uint8_t i=0; i<points; i++) {
       uint8_t xx = X0-1-WCHART+i*WCHART/(points/2);
       uint8_t yy = (DISPLAY_H-1) - (100 + crv[i]) * (DISPLAY_H-1) / 200;
@@ -1478,8 +1478,8 @@ void menuProcLimits(uint8_t event)
     putsChn(0,y,k+1,0);
     lcd_putcAtt(12*FW+FW/2, y, (swVal[k] ? 127 : 126),0); //'<' : '>'
     for (uint8_t j=0; j<4; j++) {
-      uint8_t attr = ((sub==k && m_posHorz==j) ? (s_editMode ? BLINK : INVERS) : 0);
-      uint8_t active = (attr && (s_editMode || p1valdiff)) ;
+      uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK : INVERS) : 0);
+      uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
       switch(j)
       {
         case 0:
@@ -1490,7 +1490,7 @@ void menuProcLimits(uint8_t event)
           else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
             int16_t zero = g_chans512[k];
             ld->offset = (ld->revert) ? -zero : zero;
-            s_editMode = false;
+            s_editMode = 0;
             STORE_MODELVARS;
           }
           break;
@@ -1583,7 +1583,7 @@ void menuProcCustomSwitches(uint8_t event)
     y=(i+1)*FH;
     k=i+s_pgOfs;
     if(k==NUM_CSW) break;
-    uint8_t attr = (sub==k ? (s_editMode ? BLINK : INVERS)  : 0);
+    uint8_t attr = (sub==k ? ((s_editMode>0) ? BLINK : INVERS)  : 0);
     CustomSwData &cs = g_model.customSw[k];
 
     //write SW names here
@@ -1614,7 +1614,7 @@ void menuProcCustomSwitches(uint8_t event)
         putsChnRaw(    17*FW, y, cs.v2  ,m_posHorz==2 ? attr : 0);
     }
 
-    if((s_editMode || p1valdiff) && attr)
+    if((s_editMode>0 || p1valdiff) && attr)
       switch (m_posHorz) {
         case 0:
           CHECK_INCDEC_MODELVAR( event, cs.func, 0,CS_MAXF);
@@ -1671,8 +1671,8 @@ void menuProcFunctionSwitches(uint8_t event)
     if(k==NUM_CHNOUT) break;
     FuncSwData *sd = &g_model.funcSw[k];
     for (uint8_t j=0; j<2; j++) {
-      uint8_t attr = ((sub==k && m_posHorz==j) ? (s_editMode ? BLINK : INVERS) : 0);
-      uint8_t active = (attr && (s_editMode || p1valdiff));
+      uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK : INVERS) : 0);
+      uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
           putsSwitches(1*FW, y, sd->swtch, attr);
@@ -1710,8 +1710,8 @@ void menuProcSafetySwitches(uint8_t event)
     SafetySwData *sd = &g_model.safetySw[k];
     putsChn(0,y,k+1,0);
     for(uint8_t j=0; j<=2;j++){
-      uint8_t attr = ((m_posVert-1==k && m_posHorz==j) ? (s_editMode ? BLINK : INVERS) : 0);
-      uint8_t active = (attr && (s_editMode || p1valdiff));
+      uint8_t attr = ((m_posVert-1==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK : INVERS) : 0);
+      uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch(j)
       {
         case 0:
@@ -1745,11 +1745,11 @@ void menuProcTelemetry(uint8_t event)
     case EVT_KEY_BREAK(KEY_UP):
     case EVT_KEY_BREAK(KEY_LEFT):
     case EVT_KEY_BREAK(KEY_RIGHT):
-      if(s_editMode) // only fr-sky alarm fields have an edit mode
+      if (s_editMode>0) // only fr-sky alarm fields have an edit mode
         FRSKY_setModelAlarms(); // update Fr-Sky module when edit mode exited
   }
 
-  blink = s_editMode ? BLINK : INVERS ;
+  blink = (s_editMode>0) ? BLINK : INVERS ;
   uint8_t subN = 1;
   uint8_t t;
   int16_t val;
@@ -1767,7 +1767,7 @@ void menuProcTelemetry(uint8_t event)
       lcd_putsAtt(4, y, PSTR("Max"), 0);
       putsTelemetry(8*FW, y, g_model.frsky.channels[i].ratio, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
       lcd_putsnAtt(lcd_lastPos, y, PSTR("v-")+g_model.frsky.channels[i].type, 1, (sub==subN && m_posHorz==1 ? blink:0));
-      if (sub==subN && (s_editMode || p1valdiff)) {
+      if (sub==subN && (s_editMode>0 || p1valdiff)) {
         if (m_posHorz == 0)
           g_model.frsky.channels[i].ratio = checkIncDec(event, g_model.frsky.channels[i].ratio, 0, 255, EE_MODEL);
         else
@@ -1792,8 +1792,8 @@ void menuProcTelemetry(uint8_t event)
       putsTelemetry(8*FW, y, val, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==0 ? blink:0)|LEFT);
       val = ((int16_t)g_model.frsky.channels[i].barMax+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
       putsTelemetry(13*FW, y, val, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==1 ? blink:0)|LEFT);
-      if(sub==subN && m_posHorz==0 && (s_editMode || p1valdiff)) g_model.frsky.channels[i].barMin = checkIncDec(event, g_model.frsky.channels[i].barMin, 0, 255, EE_MODEL);
-      if(sub==subN && m_posHorz==1 && (s_editMode || p1valdiff)) g_model.frsky.channels[i].barMax = checkIncDec(event, g_model.frsky.channels[i].barMax, 0, 255, EE_MODEL);
+      if(sub==subN && m_posHorz==0 && (s_editMode>0 || p1valdiff)) g_model.frsky.channels[i].barMin = checkIncDec(event, g_model.frsky.channels[i].barMin, 0, 255, EE_MODEL);
+      if(sub==subN && m_posHorz==1 && (s_editMode>0 || p1valdiff)) g_model.frsky.channels[i].barMax = checkIncDec(event, g_model.frsky.channels[i].barMax, 0, 255, EE_MODEL);
     }
     subN++;
 
@@ -1806,7 +1806,7 @@ void menuProcTelemetry(uint8_t event)
         uint8_t alarmValue = ((uint16_t)g_model.frsky.channels[i].alarms_value[j] * g_model.frsky.channels[i].ratio) / 255;
         putsTelemetry(14*FW, y, alarmValue, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==2 ? blink:0) | LEFT);
 
-        if(sub==subN && (s_editMode || p1valdiff)) {
+        if(sub==subN && (s_editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
            case 0:
              t = ALARM_LEVEL(i, j);
