@@ -488,7 +488,7 @@ void FrskyData::set(uint8_t value)
 
 // TODO not here!
 #if defined (PCBV3)
-char g_logFilename[21]; //  "/G9XLOGS/M00_000.TXT\0" max required length = 21
+char g_logFilename[22]; //  "/G9XLOGS/M00_000.TXT\0" max required length = 21
 // These global so we can close any open file from anywhere
 FATFS FATFS_Obj;
 FIL g_oLogFile;

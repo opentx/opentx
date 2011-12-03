@@ -439,14 +439,14 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
   if (m_currBlk && (fri=EeFsGetLink(m_currBlk)))
     EeFsSetLink(m_currBlk, 0);
 
+  if (fri) EeFsFree(fri);  //chain in
+
   eeFs.files[FILE_TMP].size = m_pos;
   EFile::swap(m_fileId, FILE_TMP);
 
-  if (fri) EeFsFree(fri);  //chain in
-
   assert(!m_write_step);
 
-  s_sync_write = false;
+  // s_sync_write is set to false in swap();
   return true;
 }
 

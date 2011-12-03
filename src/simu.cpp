@@ -269,21 +269,25 @@ void Gruvin9xSim::refreshDiplay()
 
   if(hasFocus()) {
     static FXuint keys1[]={
-      KEY_Return,    INP_B_KEY_MEN,
-      KEY_Page_Up,   INP_B_KEY_MEN,
-      KEY_KP_1,      INP_B_KEY_MEN,
-      KEY_Page_Down, INP_B_KEY_EXT,
-      KEY_BackSpace, INP_B_KEY_EXT,
-      KEY_KP_0,      INP_B_KEY_EXT,
-      KEY_Down,      INP_B_KEY_DWN,
-      KEY_Up,        INP_B_KEY_UP,
-      KEY_Right,     INP_B_KEY_RGT,
-      KEY_Left,      INP_B_KEY_LFT
+      KEY_Return,    INP_B_KEY_MEN, INP_P_KEY_MEN,
+      KEY_Page_Up,   INP_B_KEY_MEN, INP_P_KEY_MEN,
+      KEY_KP_1,      INP_B_KEY_MEN, INP_P_KEY_MEN,
+      KEY_Page_Down, INP_B_KEY_EXT, INP_P_KEY_EXT,
+      KEY_BackSpace, INP_B_KEY_EXT, INP_P_KEY_EXT,
+      KEY_KP_0,      INP_B_KEY_EXT, INP_P_KEY_EXT,
+      KEY_Down,      INP_B_KEY_DWN, INP_P_KEY_DWN,
+      KEY_Up,        INP_B_KEY_UP,  INP_P_KEY_UP,
+      KEY_Right,     INP_B_KEY_RGT, INP_P_KEY_RGT,
+      KEY_Left,      INP_B_KEY_LFT, INP_P_KEY_LFT
     };
 
     pinb &= ~ 0x7e;
-    for(unsigned i=0; i<DIM(keys1);i+=2){
-      if(getApp()->getKeyState(keys1[i])) pinb |= (1<<keys1[i+1]);
+    pinl &= ~ 0x3f; // for v4
+    for(unsigned i=0; i<DIM(keys1);i+=3) {
+      if (getApp()->getKeyState(keys1[i])) {
+        pinb |= (1<<keys1[i+1]);
+        pinl |= (1<<keys1[i+2]);
+      }
     }
 
 #ifdef __APPLE__

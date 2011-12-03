@@ -25,11 +25,6 @@
 
 // MM/SD card Disk IO Support
 #if defined (PCBV3)
-#include "integer.h"
-#include "time.h"
-#include "rtc.h"
-#include "ff.h"
-#include "diskio.h"
 time_t g_unixTime; // Global date/time register, incremented each second in per10ms()
 #endif
 
@@ -816,7 +811,7 @@ void getADC_bandgap()
 {
 #if defined(PCBSTD)
   ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
-  _delay_us(5); // short delay to stabilise reference voltage
+  _delay_us(7); // short delay to stabilise reference voltage
   ADCSRA|=0x40;
   while ((ADCSRA & 0x10)==0);
   ADCSRA|=0x10; // grab a sample
@@ -864,7 +859,6 @@ uint16_t g_LightOffCounter;
 uint8_t beepAgain = 0;
 uint8_t beepAgainOrig = 0;
 uint8_t beepOn = false;
-int16_t p1val;
 
 inline bool checkSlaveMode()
 {
@@ -1695,18 +1689,6 @@ void perMain()
   else
     BACKLIGHT_OFF;
 
-  ////////////////
-  // G: TODO This shouldn't be in perMain(). It should be in the same place
-  // all the other ADC samples happen
-  static int16_t p1valprev;
-  p1valdiff = (p1val-calibratedStick[6])/32;
-  if(p1valdiff) {
-      p1valdiff = (p1valprev-calibratedStick[6])/2;
-      p1val = calibratedStick[6];
-  }
-  p1valprev = calibratedStick[6];
-  /////////////////
-
   g_menuStack[g_menuStackPtr](evt);
   refreshDisplay();
 
@@ -2028,30 +2010,6 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
 #endif
 }
 
-#if defined (PCBV3)
-/*---------------------------------------------------------*/
-/* User Provided Date/Time Function for FatFs module       */
-/*---------------------------------------------------------*/
-/* This is a real time clock service to be called from     */
-/* FatFs module. Any valid time must be returned even if   */
-/* the system does not support a real time clock.          */
-/* This is not required in read-only configuration.        */
-
-uint32_t get_fattime(void)
-{
-  struct tm t;
-  filltm(&g_unixTime, &t); // create a struct tm date/time structure from global unix time stamp
-
-  /* Pack date and time into a DWORD variable */
-  return    ((DWORD)(t.tm_year - 80) << 25)
-    | ((uint32_t)(t.tm_mon+1) << 21)
-    | ((uint32_t)t.tm_mday << 16)
-    | ((uint32_t)t.tm_hour << 11)
-    | ((uint32_t)t.tm_min << 5)
-    | ((uint32_t)t.tm_sec >> 1);
-}
-#endif
-
 extern uint16_t g_timeMain;
 
 /*
@@ -2089,6 +2047,29 @@ uint16_t DEBUG2 = 0;
 
 #endif
 
+#if defined (PCBV3)
+/*---------------------------------------------------------*/
+/* User Provided Date/Time Function for FatFs module       */
+/*---------------------------------------------------------*/
+/* This is a real time clock service to be called from     */
+/* FatFs module. Any valid time must be returned even if   */
+/* the system does not support a real time clock.          */
+/* This is not required in read-only configuration.        */
+
+uint32_t get_fattime(void) // TODO why not in ff.cpp?
+{
+  struct gtm t;
+  filltm(&g_unixTime, &t); // create a struct tm date/time structure from global unix time stamp
+
+  /* Pack date and time into a DWORD variable */
+  return    ((DWORD)(t.tm_year - 80) << 25)
+    | ((uint32_t)(t.tm_mon+1) << 21)
+    | ((uint32_t)t.tm_mday << 16)
+    | ((uint32_t)t.tm_hour << 11)
+    | ((uint32_t)t.tm_min << 5)
+    | ((uint32_t)t.tm_sec >> 1);
+}
+#endif
 
 void instantTrim()
 {
@@ -2145,6 +2126,11 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 #if defined (PCBV4)
 // Rotary encoder interrupts
 volatile uint8_t g_rotenc[2] = {0};
+#endif
+
+#ifndef SIMU
+
+#if defined (PCBV4)
 ISR(INT2_vect)
 {
   uint8_t input = PIND & 0b00001100;
@@ -2167,8 +2153,6 @@ ISR(INT6_vect)
   if (input == 0 || input == 0b01100000) g_rotenc[1]--;
 }
 #endif
-
-#ifndef SIMU
 
 extern unsigned char __bss_end ;
 
@@ -2295,12 +2279,12 @@ int main(void)
     }
   }
 
-  sei(); // interrupts needed for eeReadAll function (soon).
-
   g_menuStack[0] = menuMainView;
   g_menuStack[1] = menuProcModelSelect;
 
   lcdSetRefVolt(25);
+
+  sei(); // interrupts needed for FRSKY_Init and eeReadAll.
 
 #if defined (FRSKY)
   FRSKY_Init();
@@ -2341,7 +2325,7 @@ int main(void)
 #if defined (PCBV3)
 // Initialise global unix timestamp with current time from RTC chip on SD card interface
   RTC rtc;
-  struct tm utm;
+  struct gtm utm;
   rtc_gettime(&rtc);
   utm.tm_year = rtc.year - 1900;
   utm.tm_mon =  rtc.month - 1;
