@@ -730,9 +730,6 @@ endif
 simu: $(CPPSRC) Makefile simu.cpp $(CPPSRC) simpgmspace.cpp *.h *.lbm eeprom.bin
 	g++ simu.cpp $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB)
 
-gruvin9x.so: $(CPPSRC) Makefile export.cpp $(CPPSRC) simpgmspace.cpp *.h *.lbm
-	g++ export.cpp $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -g -MD -DSIMU -shared -fPIC -Wl,-soname,$@ -o $@ 
-
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
 

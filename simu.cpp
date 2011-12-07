@@ -143,7 +143,6 @@ Gruvin9xSim::Gruvin9xSim(FXApp* a)
   bmf = new FXBitmapFrame(this,bmp,0,0,0,0,0,0,0,0,0);
   bmf->setOnColor(FXRGB(0,0,0));
 
-  //getApp()->addChore(this,1);
   getApp()->addTimeout(this,2,100);
 }
 
@@ -187,7 +186,6 @@ void Gruvin9xSim::makeSnapshot(const FXDrawable* drawable)
 }
 void Gruvin9xSim::doEvents()
 {
-  //getApp()->addChore(this,1);
   getApp()->runOneEvent(false);
 }
 
@@ -355,25 +353,6 @@ void Gruvin9xSim::refreshDiplay()
   }
 }
 
-void *main_thread(void *)
-{
-  g_menuStack[0] = menuMainView;
-  g_menuStack[1] = menuProcModelSelect;
-
-  eeReadAll(); //load general setup and selected model
-  doSplash();
-  checkLowEEPROM();
-  checkTHR();
-  checkSwitches();
-  checkAlarm();
-
-  while(1) {
-    perMain();
-    usleep(1000);
-  }
-  return 0;
-}
-
 Gruvin9xSim *th9xSim;
 void doFxEvents()
 {
@@ -387,7 +366,6 @@ int main(int argc,char **argv)
   if(argc>=2){
     eepromFile = argv[1];
   }
-  printf("eeprom = %s\n", eepromFile);
 
   // Each FOX GUI program needs one, and only one, application object.
   // The application objects coordinates some common stuff shared between
@@ -421,10 +399,8 @@ int main(int argc,char **argv)
   th9xSim->show(); // Otherwise the main window gets centred across my two monitors, split down the middle.
 #endif
 
-  InitEepromThread();
-
-  pthread_t pid;
-  pthread_create(&pid, NULL, &main_thread, NULL);
+  StartEepromThread();
+  StartMainThread();
 
   return application.run();
 }

@@ -29,17 +29,20 @@
 
 volatile unsigned char pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinj=0xff, pinl=0;
 unsigned char portb, dummyport;
-const char *eepromFile = "eeprom.bin";
+const char *eepromFile;
 
 extern uint16_t eeprom_pointer;
 extern const char* eeprom_buffer_data;
 uint8_t eeprom[EESIZE];
 sem_t eeprom_write_sem;
-pthread_t eeprom_thread_pid = 0;
 
+bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
 {
   while (!sem_wait(&eeprom_write_sem)) {
+
+    if (!eeprom_thread_running)
+      return NULL;
 
     FILE *fp = NULL;
     
@@ -72,10 +75,54 @@ void *eeprom_write_function(void *)
   return 0;
 }
 
-void InitEepromThread()
+bool main_thread_running = true;
+void *main_thread(void *)
 {
+  g_menuStack[0] = menuMainView;
+  g_menuStack[1] = menuProcModelSelect;
+
+  eeReadAll(); //load general setup and selected model
+  doSplash();
+  checkLowEEPROM();
+  checkTHR();
+  checkSwitches();
+  checkAlarm();
+
+  while (main_thread_running) {
+    perMain();
+    usleep(1000);
+  }
+  return NULL;
+}
+
+pthread_t main_thread_pid;
+void StartMainThread()
+{
+  main_thread_running = true;
+  pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
+}
+
+void StopMainThread()
+{
+  main_thread_running = false;
+  pthread_join(main_thread_pid, NULL);
+}
+
+pthread_t eeprom_thread_pid;
+void StartEepromThread(const char *filename)
+{
+  eepromFile = filename;
   sem_init(&eeprom_write_sem, 0, 0);
+  eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
+}
+
+
+void StopEepromThread()
+{
+  eeprom_thread_running = false;
+  sem_post(&eeprom_write_sem);
+  pthread_join(eeprom_thread_pid, NULL);
 }
 
 void eeprom_read_block (void *pointer_ram,
@@ -84,7 +131,8 @@ void eeprom_read_block (void *pointer_ram,
 {
   if (eepromFile) {
     FILE *fp=fopen(eepromFile, "r");
-    if(fseek(fp, (long) pointer_eeprom, SEEK_SET)==-1) perror("error in seek");
+    if (!fp) { perror("error in fopen"); return; }
+    if (fseek(fp, (long) pointer_eeprom, SEEK_SET)==-1) perror("error in seek");
     if (fread(pointer_ram, size, 1, fp) <= 0) perror("error in read");
     fclose(fp);
   }

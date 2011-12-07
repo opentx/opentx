@@ -28,6 +28,9 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+#undef min
+#undef max
+
 #define APM
 
 typedef unsigned char prog_uchar;
@@ -91,6 +94,12 @@ extern sem_t eeprom_write_sem;
 #define SPIF dummyport
 #define SPCR dummyport
 
+#define TIMSK  dummyport
+#define TIMSK1 dummyport
+
+#define UDR0 dummyport
+#define OCIE1A dummyport
+
 #define OUT_B_LIGHT   7
 #define INP_E_ElevDR  2
 #define INP_E_Trainer 5
@@ -118,7 +127,8 @@ extern sem_t eeprom_write_sem;
 extern volatile unsigned char pinb,pinc,pind,pine,ping,pinj,pinl;
 extern unsigned char portb,dummyport;
 
-void InitEepromThread();
+void StartMainThread();
+void StartEepromThread(const char *filename="eeprom.bin");
 
 extern const char *eepromFile;
 void eeprom_read_block (void *pointer_ram,

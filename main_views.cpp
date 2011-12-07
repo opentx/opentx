@@ -21,6 +21,7 @@
 
 #include "menus.h"
 
+#undef ALTERNATE
 #define ALTERNATE 0x10
 
 enum MainViews {

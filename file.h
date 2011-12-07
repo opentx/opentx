@@ -87,7 +87,7 @@ extern uint8_t  s_write_err;    // error reasons
 extern uint8_t  s_sync_write;
 
 ///deliver current errno, this is reset in open
-inline uint8_t errno() { return s_write_err; }
+inline uint8_t write_errno() { return s_write_err; }
 
 class RlcFile: public EFile
 {
