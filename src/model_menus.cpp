@@ -382,6 +382,7 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
   }
 }
 
+#undef PARAM_OFS
 #define PARAM_OFS (9*FW+2)
 void menuProcModel(uint8_t event)
 {

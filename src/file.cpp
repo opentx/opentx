@@ -185,8 +185,8 @@ bool EeFsOpen()
   eeprom_read_block(&eeFs,0,sizeof(eeFs));
 
 #ifdef SIMU
-  if(eeFs.version != EEFS_VERS)    printf("bad eeFs.version\n");
-  if(eeFs.mySize  != sizeof(eeFs)) printf("bad eeFs.mySize\n");
+  if(eeFs.version != EEFS_VERS)    perror("bad eeFs.version\n");
+  if(eeFs.mySize  != sizeof(eeFs)) perror("bad eeFs.mySize\n");
 #endif  
 
   return eeFs.version == EEFS_VERS && eeFs.mySize == sizeof(eeFs);
@@ -429,7 +429,7 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
   while ((len=theFile2.read(buf, 15)))
   {
     write(buf, len);
-    if (errno() != 0) {
+    if (write_errno() != 0) {
       s_sync_write = false;
       return false;
     }

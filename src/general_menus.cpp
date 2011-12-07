@@ -59,6 +59,7 @@ MenuFuncP_PROGMEM APM menuTabDiag[] = {
 void menuProcSetup(uint8_t event)
 {
 #define COUNT_ITEMS 19
+#undef PARAM_OFS
 #define PARAM_OFS   17*FW
 
   SIMPLE_MENU("RADIO SETUP", menuTabDiag, e_Setup, COUNT_ITEMS+1);
