@@ -75,18 +75,21 @@ void *eeprom_write_function(void *)
   return 0;
 }
 
-bool main_thread_running = true;
+uint8_t main_thread_running = 0;
 void *main_thread(void *)
 {
   g_menuStack[0] = menuMainView;
   g_menuStack[1] = menuProcModelSelect;
 
   eeReadAll(); //load general setup and selected model
-  doSplash();
-  checkLowEEPROM();
-  checkTHR();
-  checkSwitches();
-  checkAlarm();
+
+  if (main_thread_running == 1) {
+    doSplash();
+    checkLowEEPROM();
+    checkTHR();
+    checkSwitches();
+    checkAlarm();
+  }
 
   while (main_thread_running) {
     perMain();
@@ -96,15 +99,15 @@ void *main_thread(void *)
 }
 
 pthread_t main_thread_pid;
-void StartMainThread()
+void StartMainThread(bool tests)
 {
-  main_thread_running = true;
+  main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
 }
 
 void StopMainThread()
 {
-  main_thread_running = false;
+  main_thread_running = 0;
   pthread_join(main_thread_pid, NULL);
 }
 

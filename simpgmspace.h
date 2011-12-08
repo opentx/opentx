@@ -89,6 +89,10 @@ extern sem_t eeprom_write_sem;
 #define RXCIE0 dummyport
 #define OCR0A dummyport
 
+#define OCR1B dummyport
+#define TCCR1A dummyport
+#define COM1B0 dummyport
+
 #define SPDR dummyport
 #define SPSR dummyport
 #define SPIF dummyport
@@ -126,8 +130,9 @@ extern sem_t eeprom_write_sem;
 
 extern volatile unsigned char pinb,pinc,pind,pine,ping,pinj,pinl;
 extern unsigned char portb,dummyport;
+extern uint8_t main_thread_running;
 
-void StartMainThread();
+void StartMainThread(bool tests=true);
 void StartEepromThread(const char *filename="eeprom.bin");
 
 extern const char *eepromFile;
