@@ -235,7 +235,7 @@ void menuMainView(uint8_t event)
       xm = x[i];
 
       uint8_t att = 0;
-      int16_t val = getTrimValue(getTrimFlightPhase(i, phase), i);;
+      int16_t val = getTrimValue(getTrimFlightPhase(i, phase), i);
 
       if (val < -125 || val > 125)
         att = BLINK;
