@@ -577,7 +577,9 @@ void checkTHR()
   //loop until all switches are reset
   while (1)
   {
-#ifndef SIMU
+#ifdef SIMU
+      if (!main_thread_running) return;
+#else
       getADC_single();
 #endif
       int16_t v = anaIn(thrchn);
