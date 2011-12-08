@@ -1490,7 +1490,7 @@ void perMain()
   if (s_last_phase != phase) {
     if (s_last_phase == 255) {
       fp_act[phase] = MAX_ACT;
-  }
+    }
     else {
       if (g_model.phaseData[s_last_phase].fadeOut) {
         s_fade_flight_phases |= (1<<s_last_phase);
@@ -1519,6 +1519,7 @@ void perMain()
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {
         perOut(next_chans512, p);
+        perOut(next_chans512, p); // TODO temporary fix for issue 80. I think th9x has a better algorithm for dealing with it!
         // printf("perOut(%d - %d)=>%d\n", p, fp_act[p], next_chans512[2]);
         for (uint8_t i=0; i<NUM_CHNOUT; i++) {
           sum_chans512[i] += (int32_t)next_chans512[i] * fp_act[p];
