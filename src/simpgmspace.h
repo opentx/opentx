@@ -89,7 +89,7 @@ extern sem_t eeprom_write_sem;
 #define RXCIE0 dummyport
 #define OCR0A dummyport
 
-#define OCR1B dummyport
+#define OCR1B dummyport16
 #define TCCR1A dummyport
 #define COM1B0 dummyport
 
@@ -129,7 +129,8 @@ extern sem_t eeprom_write_sem;
 #define INP_P_KEY_DWN   0
 
 extern volatile unsigned char pinb,pinc,pind,pine,ping,pinj,pinl;
-extern unsigned char portb,dummyport;
+extern uint8_t portb, dummyport;
+extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
 
 void StartMainThread(bool tests=true);

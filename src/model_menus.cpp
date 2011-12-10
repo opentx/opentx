@@ -484,14 +484,14 @@ void menuProcModel(uint8_t event)
     lcd_putsnAtt(PARAM_OFS, y, PSTR(PROT_STR)+PROT_STR_LEN*g_model.protocol,PROT_STR_LEN,
                   (sub==subN && m_posHorz==0 ? (s_editMode>0 ? BLINK : INVERS):0));
     if(!g_model.protocol) {
-      lcd_putsnAtt(PARAM_OFS+4*FW, y, PSTR("4CH 6CH 8CH 10CH12CH14CH16CH")+4*(g_model.ppmNCH+2),4,(sub==subN && m_posHorz==1  ? ((s_editMode>0) ? BLINK : INVERS):0));
+      lcd_putsnAtt(PARAM_OFS+4*FW, y, PSTR("4CH 6CH 8CH 10CH12CH14CH16CH")+4*(g_model.ppmNCH+2), 4, ((sub==subN && m_posHorz==1) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
       lcd_putsAtt(PARAM_OFS+11*FW, y, PSTR("u"),0);
-      lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, (sub==subN && m_posHorz==2 ? ((s_editMode>0) ? BLINK : INVERS):0));
+      lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, ((sub==subN && m_posHorz==2) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
     }
     else if (sub==subN) {
       m_posHorz = 0;
     }
-    if (sub==subN && (s_editMode>0 || p1valdiff || !g_model.protocol)) {
+    if (sub==subN && (s_editMode>0 || p1valdiff || g_model.protocol) ) {
       switch (m_posHorz) {
         case 0:
             CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROT_MAX);
@@ -511,8 +511,8 @@ void menuProcModel(uint8_t event)
     if (!g_model.protocol) {
       lcd_puts_P(0, y, PSTR("PPM frame"));
       lcd_puts_P(PARAM_OFS+3*FW, y, PSTR("ms"));
-      lcd_outdezAtt(PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((sub==subN && m_posHorz==0) ? INVERS:0) | PREC1|LEFT);
-      lcd_putsnAtt(PARAM_OFS+6*FW, y, PSTR("POSNEG")+3*g_model.pulsePol,3,(sub==subN && m_posHorz==1 ? ((s_editMode>0) ? BLINK : INVERS):0));
+      lcd_outdezAtt(PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((sub==subN && m_posHorz==0) ? (s_editMode>0 ? BLINK : INVERS) : 0) | PREC1|LEFT);
+      lcd_putsnAtt(PARAM_OFS+6*FW, y, PSTR("POSNEG")+3*g_model.pulsePol, 3, (sub==subN && m_posHorz==1) ? INVERS : 0);
       if(sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
           case 0:
