@@ -27,8 +27,9 @@
 #include "gruvin9x.h"
 #include "menus.h"
 
-volatile unsigned char pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinj=0xff, pinl=0;
-unsigned char portb, dummyport;
+volatile uint8_t pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinj=0xff, pinl=0;
+uint8_t portb, dummyport;
+uint16_t dummyport16;
 const char *eepromFile;
 
 extern uint16_t eeprom_pointer;
