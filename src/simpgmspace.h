@@ -59,11 +59,12 @@ extern sem_t eeprom_write_sem;
 
 #define PORTA dummyport
 #define PORTB portb
-#define PORTC dummyport
+#define PORTC portc
 #define PORTD dummyport
 #define PORTE dummyport
 #define PORTF dummyport
 #define PORTG dummyport
+#define PORTH dummyport
 #define DDRA  dummyport
 #define DDRB  dummyport
 #define DDRC  dummyport
@@ -76,6 +77,7 @@ extern sem_t eeprom_write_sem;
 #define PIND  ~pind
 #define PINE  ~pine
 #define PING  ~ping
+#define PINH  ~pinh
 #define PINJ  ~pinj
 #define PINL  ~pinl
 #define EEMEM
@@ -88,7 +90,7 @@ extern sem_t eeprom_write_sem;
 #define PORTE0 dummyport
 #define RXCIE0 dummyport
 #define OCR0A dummyport
-
+#define OCR4A dummyport
 #define OCR1B dummyport16
 #define TCCR1A dummyport
 #define COM1B0 dummyport
@@ -128,10 +130,12 @@ extern sem_t eeprom_write_sem;
 #define INP_P_KEY_UP    1
 #define INP_P_KEY_DWN   0
 
-extern volatile unsigned char pinb,pinc,pind,pine,ping,pinj,pinl;
-extern uint8_t portb, dummyport;
+extern volatile unsigned char pinb,pinc,pind,pine,ping,pinh,pinj,pinl;
+extern uint8_t portb, portc, dummyport;
 extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
+
+extern void setSwitch(int8_t swtch);
 
 void StartMainThread(bool tests=true);
 void StartEepromThread(const char *filename="eeprom.bin");

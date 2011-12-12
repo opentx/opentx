@@ -27,8 +27,8 @@
 #include "gruvin9x.h"
 #include "menus.h"
 
-volatile uint8_t pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinj=0xff, pinl=0;
-uint8_t portb, dummyport;
+volatile uint8_t pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
+uint8_t portb, portc, dummyport;
 uint16_t dummyport16;
 const char *eepromFile;
 
@@ -36,6 +36,22 @@ extern uint16_t eeprom_pointer;
 extern const char* eeprom_buffer_data;
 uint8_t eeprom[EESIZE];
 sem_t eeprom_write_sem;
+
+void setSwitch(int8_t swtch)
+{
+  switch (swtch) {
+    case DSW_ID0:
+      ping |=  (1<<INP_G_ID1);  pine &= ~(1<<INP_E_ID2);
+      break;
+    case DSW_ID1:
+      ping &= ~(1<<INP_G_ID1);  pine &= ~(1<<INP_E_ID2);
+      break;
+    case DSW_ID2:
+      ping &= ~(1<<INP_G_ID1);  pine |=  (1<<INP_E_ID2);
+    default:
+      break;
+  }
+}
 
 bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
@@ -120,7 +136,6 @@ void StartEepromThread(const char *filename)
   eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
 }
-
 
 void StopEepromThread()
 {
