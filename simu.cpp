@@ -346,9 +346,9 @@ void Gruvin9xSim::refreshDiplay()
       k5st = ks;
     }
     switch(id){
-      case 0: ping |=  (1<<INP_G_ID1);  pine &= ~(1<<INP_E_ID2); break;
-      case 1: ping &= ~(1<<INP_G_ID1);  pine &= ~(1<<INP_E_ID2); break;
-      case 2: ping &= ~(1<<INP_G_ID1);  pine |=  (1<<INP_E_ID2); break;
+      case 0: setSwitch(DSW_ID0); break;
+      case 1: setSwitch(DSW_ID1); break;
+      case 2: setSwitch(DSW_ID2); break;
     }
   }
 }

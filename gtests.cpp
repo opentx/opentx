@@ -257,8 +257,17 @@ TEST(getSwitch, nullSW) {
   EXPECT_EQ(getSwitch(0, 0), false);
 }
 
+TEST(phases, nullFadeOut_posFadeIn) {
+  memset(&g_model, 0, sizeof(g_model));
+  g_model.phaseData[1].swtch = DSW_ID1;
+  g_model.phaseData[1].fadeIn = 15;
+  perMain();
+  setSwitch(DSW_ID1);
+  perMain();
+}
+
 int main(int argc, char **argv) {
-  InitEepromThread();
+  StartEepromThread(NULL);
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
