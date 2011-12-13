@@ -20,14 +20,14 @@
  */
 
 #include "lcd.h"
+#include "font.lbm"
+#include "font_dblsize.lbm"
+
+#define font_5x8_x20_x7f (font+2)
+#define font_10x16_x20_x7f (font_dblsize+2)
 
 uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 #define DISPLAY_END (displayBuf+sizeof(displayBuf))
-#include "font.lbm"
-#define font_5x8_x20_x7f (font+3)
-
-#include "font_dblsize.lbm"
-#define font_10x16_x20_x7f (font_dblsize+3)
 
 #ifdef SIMU
 bool lcd_refresh = true;
@@ -39,17 +39,16 @@ void lcd_clear()
   memset(displayBuf, 0, sizeof(displayBuf));
 }
 
-void lcd_img(uint8_t i_x,uint8_t i_y,const prog_uchar * imgdat,uint8_t idx,uint8_t mode)
+void lcd_img(uint8_t x, uint8_t y, const prog_uchar * img, uint8_t idx, uint8_t mode)
 {
-  const prog_uchar  *q = imgdat;
+  const prog_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);
   uint8_t hb   = (pgm_read_byte(q++)+7)/8;
-  uint8_t sze1 = pgm_read_byte(q++);
-  q += idx*sze1;
   bool    inv  = (mode & INVERS) ? true : (mode & BLINK ? BLINK_ON_PHASE : false);
-  for(uint8_t yb = 0; yb < hb; yb++){
-    uint8_t   *p = &displayBuf[ (i_y / 8 + yb) * DISPLAY_W + i_x ];
-    for(uint8_t x=0; x < w; x++){
+  q += idx*w*hb;
+  for (uint8_t yb = 0; yb < hb; yb++) {
+    uint8_t *p = &displayBuf[ (y / 8 + yb) * DISPLAY_W + x ];
+    for (uint8_t i=0; i<w; i++){
       uint8_t b = pgm_read_byte(q++);
       *p++ = inv ? ~b : b;
     }
