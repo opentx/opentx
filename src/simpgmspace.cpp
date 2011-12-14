@@ -28,7 +28,7 @@
 #include "menus.h"
 
 volatile uint8_t pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
-uint8_t portb, portc, dummyport;
+uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
 const char *eepromFile;
 
@@ -93,26 +93,39 @@ void *eeprom_write_function(void *)
 }
 
 uint8_t main_thread_running = 0;
+char * main_thread_error = NULL;
 void *main_thread(void *)
 {
-  g_menuStack[0] = menuMainView;
-  g_menuStack[1] = menuProcModelSelect;
+#ifdef SIMU_EXCEPTIONS
+  signal(SIGFPE, sig);
+  signal(SIGSEGV, sig);
 
-  eeReadAll(); //load general setup and selected model
+  try {
+#endif
+    g_menuStack[0] = menuMainView;
+    g_menuStack[1] = menuProcModelSelect;
 
-  if (main_thread_running == 1) {
-    doSplash();
-    checkLowEEPROM();
-    checkTHR();
-    checkSwitches();
-    checkAlarm();
+    eeReadAll(); //load general setup and selected model
+
+    if (main_thread_running == 1) {
+      doSplash();
+      checkLowEEPROM();
+      checkTHR();
+      checkSwitches();
+      checkAlarm();
+    }
+
+    while (main_thread_running) {
+      perMain();
+      usleep(1000);
+    }
+    return NULL;
+#ifdef SIMU_EXCEPTIONS
   }
-
-  while (main_thread_running) {
-    perMain();
-    usleep(1000);
+  catch (...) {
+    main_thread_running = 0;
   }
-  return NULL;
+#endif
 }
 
 pthread_t main_thread_pid;
