@@ -22,7 +22,40 @@
 #ifndef simpgmspace_h
 #define simpgmspace_h
 
+#ifdef SIMU_EXCEPTIONS
+extern char * main_thread_error;
+#include <stdlib.h>
+#include <stdio.h>
+#include <signal.h>
+#ifdef WIN32
+#define write_backtrace(output)
+#else
+#include <execinfo.h>
+inline void write_backtrace(char *output)
+{
+
+  void *buf[16];
+  char **s;
+  int n = backtrace(buf,16);
+  s = backtrace_symbols(buf, n);
+  if (s) {
+    for(int i=0; i<n; i++)
+      sprintf(output+strlen(output), "%02i: %s\n",i,s[i]);
+  }
+}
+#endif
+void sig(int sgn)
+{
+  main_thread_error = (char *)malloc(2048);
+  sprintf(main_thread_error,"Signal %d caught\n", sgn);
+  write_backtrace(main_thread_error);
+  throw std::exception();
+}
+#define assert(x) do { if (!(x)) { main_thread_error = (char *)malloc(2048); sprintf(main_thread_error, "Assert failed, %s:%d: %s\n", __FILE__, __LINE__, #x); write_backtrace(main_thread_error); throw std::exception(); } } while(0)
+#else
 #include <assert.h>
+#endif
+
 #include <inttypes.h>
 #include <stdio.h>
 #include <pthread.h>
@@ -64,7 +97,7 @@ extern sem_t eeprom_write_sem;
 #define PORTE dummyport
 #define PORTF dummyport
 #define PORTG dummyport
-#define PORTH dummyport
+#define PORTH porth
 #define DDRA  dummyport
 #define DDRB  dummyport
 #define DDRC  dummyport
@@ -131,7 +164,7 @@ extern sem_t eeprom_write_sem;
 #define INP_P_KEY_DWN   0
 
 extern volatile unsigned char pinb,pinc,pind,pine,ping,pinh,pinj,pinl;
-extern uint8_t portb, portc, dummyport;
+extern uint8_t portb, portc, porth, dummyport;
 extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
 
