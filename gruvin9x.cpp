@@ -537,9 +537,6 @@ void doSplash()
 
 void checkLowEEPROM()
 {
-  int i = 1;
-  int a = (i+1) / (i-1);
-
   if(g_eeGeneral.disableMemoryWarning) return;
   if(EeFsGetFree() < 200)
   {
