@@ -19,8 +19,14 @@
  *
  */
 
+#ifndef __GNUC__
+#include <windows.h>
+#define sleep(x) Sleep(x)
+#else
 #include <unistd.h>
-#include <time.h>
+#define sleep(x) usleep(1000*x)
+#endif
+
 #include <ctype.h>
 #include "simpgmspace.h"
 #include "lcd.h"
@@ -75,7 +81,7 @@ void *eeprom_write_function(void *)
           perror("error in fseek");
         if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
           perror("error in fwrite");
-        usleep(5000/*5ms*/);
+        sleep(5/*ms*/);
       }
       else {
         memcpy(&eeprom[eeprom_pointer], eeprom_buffer_data, 1);
@@ -117,15 +123,16 @@ void *main_thread(void *)
 
     while (main_thread_running) {
       perMain();
-      usleep(1000);
+      sleep(1/*ms*/);
     }
-    return NULL;
 #ifdef SIMU_EXCEPTIONS
   }
   catch (...) {
     main_thread_running = 0;
   }
 #endif
+
+  return NULL;
 }
 
 pthread_t main_thread_pid;

@@ -32,19 +32,19 @@ uint8_t  s_sync_write = false;
 #define BLOCKS   (EESIZE/BS)
 
 #define EEFS_VERS 4
-struct DirEnt{
+PACK(struct DirEnt{
   uint8_t  startBlk;
   uint16_t size:12;
   uint16_t typ:4;
-}__attribute__((packed));
+});
 #define MAXFILES (1+MAX_MODELS+3)
-struct EeFs{
+PACK(struct EeFs{
   uint8_t  version;
   uint8_t  mySize;
   uint8_t  freeList;
   uint8_t  bs;
   DirEnt   files[MAXFILES];
-}__attribute__((packed)) eeFs;
+}) eeFs;
 
 
 static uint8_t EeFsRead(uint8_t blk, uint8_t ofs)
@@ -163,10 +163,6 @@ void EeFsFormat()
 {
   s_sync_write = true;
 
-  if (sizeof(eeFs) != RESV){
-    extern void eeprom_RESV_mismatch();
-    eeprom_RESV_mismatch();
-  }
   memset(&eeFs,0, sizeof(eeFs));
   eeFs.version  = EEFS_VERS;
   eeFs.mySize   = sizeof(eeFs);

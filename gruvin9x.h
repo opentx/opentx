@@ -549,14 +549,18 @@ extern uint8_t  s_eeDirtyMsk;
 /// liefert Dimension eines Arrays
 #define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
 
+#ifndef FORCEINLINE
+#define FORCEINLINE inline __attribute__ ((always_inline))
+#endif
+
 /// liefert Betrag des Arguments
-template<class t> inline t __attribute__ ((always_inline)) abs(t a){ return a>0?a:-a; }
+template<class t> FORCEINLINE t abs(t a){ return a>0?a:-a; }
 /// liefert das Minimum der Argumente
-template<class t> inline t __attribute__ ((always_inline)) min(t a, t b){ return a<b?a:b; }
+template<class t> FORCEINLINE t min(t a, t b){ return a<b?a:b; }
 /// liefert das Maximum der Argumente
-template<class t> inline t __attribute__ ((always_inline)) max(t a, t b){ return a>b?a:b; }
-template<class t> inline int8_t __attribute__ ((always_inline)) sgn(t a){ return a>0 ? 1 : (a < 0 ? -1 : 0); }
-template<class t> inline t __attribute__ ((always_inline)) limit(t mi, t x, t ma){ return min(max(mi,x),ma); }
+template<class t> FORCEINLINE t max(t a, t b){ return a>b?a:b; }
+template<class t> FORCEINLINE t sgn(t a){ return a>0 ? 1 : (a < 0 ? -1 : 0); }
+template<class t> FORCEINLINE t limit(t mi, t x, t ma){ return min(max(mi,x),ma); }
 
 /// Markiert einen EEPROM-Bereich als dirty. der Bereich wird dann in
 /// eeCheck ins EEPROM zurueckgeschrieben.

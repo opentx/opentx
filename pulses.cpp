@@ -129,7 +129,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 //uint16_t PPM_gap = 300 * 2; //Stoplen *2
 //uint16_t PPM_frame ;
 
-inline void __attribute__ ((always_inline)) setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
+FORCEINLINE void setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
 {
 #define PPM_CENTER 1200*2
     int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;   //range of 0.7..1.7msec

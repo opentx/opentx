@@ -43,23 +43,27 @@
 #define EEPROM_VER_r751  5
 #define EEPROM_VER       201
 
-typedef struct t_TrainerMix {
+#ifndef PACK
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
+
+PACK(typedef struct t_TrainerMix {
   uint8_t srcChn:6; // 0-7 = ch1-8
   uint8_t mode:2;   // off,add-mode,subst-mode
   int8_t  studWeight;
-} __attribute__((packed)) TrainerMix; //
+}) TrainerMix; //
 
-typedef struct t_TrainerData {
+PACK(typedef struct t_TrainerData {
   int16_t        calib[4];
   TrainerMix     mix[4];
-} __attribute__((packed)) TrainerData;
+}) TrainerData;
 
-typedef struct t_FrSkyRSSIAlarm {
+PACK(typedef struct t_FrSkyRSSIAlarm {
   uint8_t       level:2;
   int8_t        value:6;
-} __attribute__((packed)) FrSkyRSSIAlarm;
+}) FrSkyRSSIAlarm;
 
-typedef struct t_EEGeneral {
+PACK(typedef struct t_EEGeneral {
   uint8_t   myVers;
   int16_t   calibMid[7];
   int16_t   calibSpanNeg[7];
@@ -91,11 +95,11 @@ typedef struct t_EEGeneral {
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
   FrSkyRSSIAlarm frskyRssiAlarms[2];
-} __attribute__((packed)) EEGeneral;
+}) EEGeneral;
 
 // eeprom modelspec
 
-typedef struct t_ExpoData {
+PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t chn:2;
   uint8_t curve:4;        // 0=no curve, 1-6=std curves, 7-10=CV1-CV4, 11-15=CV9-CV13
@@ -104,18 +108,15 @@ typedef struct t_ExpoData {
   uint8_t negPhase:1;
   uint8_t weight:7;
   int8_t  expo;
-} __attribute__((packed)) ExpoData;
+}) ExpoData;
 
-typedef struct t_LimitData {
+PACK(typedef struct t_LimitData {
   int8_t  min;
   int8_t  max;
   bool    revert;
   int16_t  offset;
-} __attribute__((packed)) LimitData;
+}) LimitData;
 
-typedef struct t_MixData {
-  uint8_t destCh:5;          // 0, 1..NUM_CHNOUT
-  uint8_t mixWarn:3;         // mixer warning
 #define MIX_P1    5
 #define MIX_P2    6
 #define MIX_P3    7
@@ -124,6 +125,14 @@ typedef struct t_MixData {
 #define MIX_CYC1  10
 #define MIX_CYC2  11
 #define MIX_CYC3  12
+
+#define MLTPX_ADD  0
+#define MLTPX_MUL  1
+#define MLTPX_REP  2
+
+PACK(typedef struct t_MixData {
+  uint8_t destCh:5;          // 0, 1..NUM_CHNOUT
+  uint8_t mixWarn:3;         // mixer warning
   uint8_t srcRaw;            //
   int8_t  weight;
   int8_t  swtch;
@@ -133,24 +142,21 @@ typedef struct t_MixData {
   uint8_t speedUp:4;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
   uint8_t speedDown:4;       // 0 nichts
   uint8_t carryTrim:1;
-#define MLTPX_ADD  0
-#define MLTPX_MUL  1
-#define MLTPX_REP  2
   uint8_t mltpx:3;           // multiplex method 0=+ 1=* 2=replace
   int8_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
   int8_t  sOffset;
-} __attribute__((packed)) MixData;
+}) MixData;
 
-typedef struct t_CustomSwData { // Custom Switches data
+PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
-} __attribute__((packed)) CustomSwData;
+}) CustomSwData;
 
-typedef struct t_SafetySwData { // Safety Switches data
+PACK(typedef struct t_SafetySwData { // Safety Switches data
   int8_t  swtch;
   int8_t  val;
-} __attribute__((packed)) SafetySwData;
+}) SafetySwData;
 
 #define FUNC_TRAINER        1
 #define FUNC_TRAINER_RUD    2
@@ -162,12 +168,12 @@ typedef struct t_SafetySwData { // Safety Switches data
 #define FUNC_VIEW_TELEMETRY 8
 #define FUNC_LAST           8
 
-typedef struct t_FuncSwData { // Function Switches data
+PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
   uint8_t func;
-} __attribute__((packed)) FuncSwData;
+}) FuncSwData;
 
-typedef struct t_FrSkyChannelData {
+PACK(typedef struct t_FrSkyChannelData {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
   uint8_t   type:4;             // channel unit (0=volts, ...)
   int8_t    offset:4;           // calibration offset. Signed 0.1V steps. EG. -4 to substract 0.4V
@@ -177,13 +183,13 @@ typedef struct t_FrSkyChannelData {
   uint8_t   spare:2;
   int8_t    barMin;             // minimum for bar display
   uint8_t   barMax;             // ditto for max display (would usually = ratio)
-} __attribute__((packed)) FrSkyChannelData;
+}) FrSkyChannelData;
 
-typedef struct t_FrSkyData {
+PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
-} __attribute__((packed)) FrSkyData;
+}) FrSkyData;
 
-typedef struct t_SwashRingData { // Swash Ring data
+PACK(typedef struct t_SwashRingData { // Swash Ring data
   uint8_t   invertELE:1;
   uint8_t   invertAIL:1;
   uint8_t   invertCOL:1;
@@ -195,20 +201,21 @@ typedef struct t_SwashRingData { // Swash Ring data
   uint8_t lim;   // 0 mean off 100 full deflection
   uint8_t chX; // 2 channels to limit
   uint8_t chY; // 2 channels to limit */
-} __attribute__((packed)) SwashRingData;
+}) SwashRingData;
 
-typedef struct t_PhaseData {
 #define TRIM_EXTENDED_MAX 500
 #define TRIM_EXTENDED_MIN (-TRIM_EXTENDED_MAX)
 #define TRIM_MAX 125
 #define TRIM_MIN (-TRIM_MAX)
+
+PACK(typedef struct t_PhaseData {
   int8_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
   int8_t trim_ext:8;  // 2 less significant extra bits per trim (10bits trims)
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
-} __attribute__((packed)) PhaseData;
+}) PhaseData;
 
 #define MAX_MODELS 16
 #define MAX_PHASES 5
@@ -221,14 +228,14 @@ typedef struct t_PhaseData {
 #define NUM_CSW      12 // number of custom switches
 #define NUM_FSW      12 // number of functions assigned to switches
 
-typedef struct t_TimerData {
+PACK(typedef struct t_TimerData {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t  val:14;
   uint8_t   persistent:1;
   uint8_t   dir:1;             // 0=>Count Down, 1=>Count Up
-} __attribute__((packed)) TimerData;
+}) TimerData;
 
-typedef struct t_ModelData {
+PACK(typedef struct t_ModelData {
   char      name[10];             // 10 must be first for eeLoadModelName
   TimerData timer1;               // TODO timers array
   uint8_t   protocol:3;
@@ -255,7 +262,7 @@ typedef struct t_ModelData {
   PhaseData phaseData[MAX_PHASES];
   FrSkyData frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
-} __attribute__((packed)) ModelData;
+}) ModelData;
 
 extern EEGeneral g_eeGeneral;
 extern ModelData g_model;
