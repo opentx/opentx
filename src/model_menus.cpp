@@ -168,15 +168,15 @@ void menuProcModelSelect(uint8_t event)
   }
 
   uint8_t _event = (s_warning ? 0 : event);
-  uint8_t __event = _event;
+  uint8_t _event_ = _event;
 
   if (s_copyMode || !EFile::exists(FILE_MODEL(g_eeGeneral.currModel))) {
     if ((_event & 0x1f) == KEY_EXIT)
-      __event -= KEY_EXIT;
+      _event_ -= KEY_EXIT;
   }
 
   int8_t oldSub = m_posVert;
-  if (!check_submenu_simple(__event, MAX_MODELS-1)) return;
+  if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
   int8_t sub = m_posVert;
 
   lcd_puts_P(     9*FW, 0, PSTR("free"));
@@ -1239,9 +1239,9 @@ inline void displayExpoLine(uint8_t row, uint8_t expo, uint8_t ch, uint8_t idx, 
   }
 }
 
-void menuProcExpoMix(uint8_t expo, uint8_t __event)
+void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 {
-  uint8_t _event = (s_warning ? 0 : __event);
+  uint8_t _event = (s_warning ? 0 : _event_);
   uint8_t event = _event;
   uint8_t key = (event & 0x1f);
 
@@ -1425,7 +1425,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t __event)
   }
   s_maxLines = cur;
   if (sub >= s_maxLines-1) m_posVert = s_maxLines-1;
-  displayWarning(__event);
+  displayWarning(_event_);
 }
 
 void menuProcExposAll(uint8_t event)

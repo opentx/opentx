@@ -27,7 +27,7 @@ extern char * main_thread_error;
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
-#ifdef WIN32
+#if defined(WIN32) || !defined(__GNUC__)
 #define write_backtrace(output)
 #else
 #include <execinfo.h>

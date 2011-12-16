@@ -21,8 +21,7 @@
 
 #include "menus.h"
 
-#undef ALTERNATE
-#define ALTERNATE 0x10
+#define ALTERNATE_VIEW 0x10
 
 enum MainViews {
   e_outputValues,
@@ -90,7 +89,7 @@ void menuMainView(uint8_t event)
 
 #ifdef FRSKY
   bool telemViewSw = isFunctionActive(FUNC_VIEW_TELEMETRY);
-  if (switchView == 255 && telemViewSw) { view = switchView = e_telemetry + ALTERNATE; }
+  if (switchView == 255 && telemViewSw) { view = switchView = e_telemetry + ALTERNATE_VIEW; }
   if (switchView != 255 && !telemViewSw) { view = g_eeGeneral.view; switchView = 255; }
 #endif
 
@@ -111,7 +110,7 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
       if (switchView != 255) break;
-      g_eeGeneral.view = (view + (event == EVT_KEY_BREAK(KEY_RIGHT) ? ALTERNATE : tabViews[view_base]*ALTERNATE-ALTERNATE)) % (tabViews[view_base]*ALTERNATE);
+      g_eeGeneral.view = (view + (event == EVT_KEY_BREAK(KEY_RIGHT) ? ALTERNATE_VIEW : tabViews[view_base]*ALTERNATE_VIEW-ALTERNATE_VIEW)) % (tabViews[view_base]*ALTERNATE_VIEW);
       eeDirty(EE_GENERAL);
       beepKey();
       break;
@@ -197,7 +196,7 @@ void menuMainView(uint8_t event)
   trim2OfsSwLock = trimSw;
 
 #ifdef FRSKY
-  if (view_base == e_telemetry && view > ALTERNATE) {
+  if (view_base == e_telemetry && view > ALTERNATE_VIEW) {
     putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
     putsVBat(14*FW,0,att);
@@ -323,7 +322,7 @@ void menuMainView(uint8_t event)
         }
       }
       displayCount = (displayCount+1) % 50;
-      if (view == e_telemetry+ALTERNATE) {
+      if (view == e_telemetry+ALTERNATE_VIEW) {
         if (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio) {
           x0 = 0;
           for (int i=0; i<2; i++) {
@@ -388,7 +387,7 @@ void menuMainView(uint8_t event)
         lcd_outdezAtt(17 * FW - 2, 7*FH, frskyRSSI[1].max, LEFT);
       }
 #ifdef FRSKY_HUB
-      else if (g_eeGeneral.view == e_telemetry+2*ALTERNATE) { // if on second alternate telemetry view
+      else if (g_eeGeneral.view == e_telemetry+2*ALTERNATE_VIEW) { // if on second alternate telemetry view
         // Date
         lcd_outdezNAtt(1*FW, 1*FH, frskyHubData.year+2000, LEFT, 4);
         lcd_putc(lcd_lastPos, 1*FH, '-');
@@ -441,7 +440,7 @@ void menuMainView(uint8_t event)
         lcd_outdezAtt(lcd_lastPos+2, 7*FH, frskyHubData.gpsAltitude_ap, LEFT|UNSIGN); // after '.'
         lcd_putc(lcd_lastPos, 7*FH, 'm');
       }
-      else if (g_eeGeneral.view == e_telemetry+3*ALTERNATE) { // if on second alternate telemetry view
+      else if (g_eeGeneral.view == e_telemetry+3*ALTERNATE_VIEW) { // if on second alternate telemetry view
 
         uint8_t y = 2*FH;
 
@@ -527,8 +526,8 @@ void menuMainView(uint8_t event)
 #endif
   else if (view_base<e_timer2) {
     doMainScreenGrphics();
-    int8_t a = (view == e_inputs) ? 1 : 4+(view/ALTERNATE)*6;
-    int8_t b = (view == e_inputs) ? 7 : 7+(view/ALTERNATE)*6;
+    int8_t a = (view == e_inputs) ? 1 : 4+(view/ALTERNATE_VIEW)*6;
+    int8_t b = (view == e_inputs) ? 7 : 7+(view/ALTERNATE_VIEW)*6;
     for(int8_t i=a; i<(a+3); i++) putsSwitches(2*FW-2,  (i-a)*FH+4*FH, i, getSwitch(i, 0) ? INVERS : 0);
     for(int8_t i=b; i<(b+3); i++) putsSwitches(17*FW-1, (i-b)*FH+4*FH, i, getSwitch(i, 0) ? INVERS : 0);
   }
