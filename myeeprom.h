@@ -231,8 +231,8 @@ PACK(typedef struct t_PhaseData {
 PACK(typedef struct t_TimerData {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t  val:14;
-  uint8_t   persistent:1;
-  uint8_t   dir:1;             // 0=>Count Down, 1=>Count Up
+  uint16_t  persistent:1;
+  uint16_t  dir:1;           // 0=>Count Down, 1=>Count Up
 }) TimerData;
 
 PACK(typedef struct t_ModelData {
