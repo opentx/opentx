@@ -283,7 +283,7 @@ void eeLoadModel(uint8_t id)
 
 #ifdef SIMU
     if (sz > 0 && sz != sizeof(g_model)) {
-      printf("Model data read=%d bytes vs %d bytes\n", sz, sizeof(ModelData));
+      printf("Model data read=%d bytes vs %u bytes\n", sz, sizeof(ModelData));
     }
 #endif
 

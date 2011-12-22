@@ -425,7 +425,7 @@ void menuProcModel(uint8_t event)
            int8_t sec = timer->val%60;
            sec -= checkIncDecModel(event, sec+2, 1, 62)-2;
            timer->val -= sec ;
-           if ((int16_t)timer->val < 0) timer->val=0;
+           if (((int16_t)timer->val) < 0) timer->val=0;
            break;
          }
          case 3:
