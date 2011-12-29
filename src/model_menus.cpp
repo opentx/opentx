@@ -409,29 +409,31 @@ void menuProcModel(uint8_t event)
           (sub==subN && m_posHorz==2 ? ((s_editMode>0) ? BLINK : INVERS):0) );
       lcd_putsnAtt(19*FW, y, PSTR("\x7e\x7f")+1-timer->dir,1,sub==subN && m_posHorz==3 ? ((s_editMode>0) ? BLINK : INVERS) : 0);
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
+        uint16_t timer_val = timer->val;
         switch (m_posHorz) {
          case 0:
            CHECK_INCDEC_MODELVAR(event, timer->mode, -(13+2*MAX_SWITCH),(13+2*MAX_SWITCH));
            break;
          case 1:
          {
-           int8_t min = timer->val/60;
+           int8_t min = timer_val/60;
            CHECK_INCDEC_MODELVAR(event, min, 0, 59);
-           timer->val = timer->val%60 + min*60;
+           timer_val = timer_val%60 + min*60;
            break;
          }
          case 2:
          {
-           int8_t sec = timer->val%60;
+           int8_t sec = timer_val%60;
            sec -= checkIncDecModel(event, sec+2, 1, 62)-2;
-           timer->val -= sec ;
-           if (((int16_t)timer->val) < 0) timer->val=0;
+           timer_val -= sec ;
+           if ((int16_t)timer_val < 0) timer_val=0;
            break;
          }
          case 3:
            CHECK_INCDEC_MODELVAR(event, timer->dir, 0, 1);
            break;
         }
+        timer->val = timer_val;
       }
       if ((y+=FH)>7*FH) return;
     } subN++;
