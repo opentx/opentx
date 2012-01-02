@@ -435,9 +435,11 @@ void per10ms()
     FrskyDelay = 5; // 50ms
     FRSKY10mspoll();
   }
-  
-  if (frskyStreaming > 0)
+
+#ifndef SIMU
+  if (frskyStreaming > 0) {
     frskyStreaming--;
+  }
   else if (g_eeGeneral.enableTelemetryAlarm && (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio)) {
 #if defined (BEEPSPKR)
     if (!(g_tmr10ms % 30)) beepWarn2Spkr((g_tmr10ms % 60) ? 25 : 20);
@@ -449,6 +451,7 @@ void per10ms()
     }
 #endif
   }
+#endif
 #endif
 
   // These moved here from perOut() [gruvin9x.cpp] to improve beep trigger reliability.
