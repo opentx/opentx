@@ -37,7 +37,7 @@ enum MainViews {
 uint8_t tabViews[] = {
   1, /*e_outputValues*/
   1, /*e_outputBars*/
-  3, /*e_inputs*/
+  2, /*e_inputs*/
   1, /*e_timer2*/
 #if defined(FRSKY_HUB)
   4, /*e_telemetry*/
@@ -294,6 +294,7 @@ void menuMainView(uint8_t event)
 
           lcd_hlineStip(x0-WBAR2,y0,WBAR2*2+1,0x55);
           lcd_vline(x0,y0-2,5);
+          // TODO optim
           if(val>0){
             x0+=1;
           }else{
@@ -524,12 +525,28 @@ void menuMainView(uint8_t event)
     }
   }
 #endif
-  else if (view_base<e_timer2) {
-    doMainScreenGrphics();
-    int8_t a = (view == e_inputs) ? 1 : 4+(view/ALTERNATE_VIEW)*6;
-    int8_t b = (view == e_inputs) ? 7 : 7+(view/ALTERNATE_VIEW)*6;
-    for(int8_t i=a; i<(a+3); i++) putsSwitches(2*FW-2,  (i-a)*FH+4*FH, i, getSwitch(i, 0) ? INVERS : 0);
-    for(int8_t i=b; i<(b+3); i++) putsSwitches(17*FW-1, (i-b)*FH+4*FH, i, getSwitch(i, 0) ? INVERS : 0);
+  else if (view_base == e_inputs) {
+    if (view == e_inputs) {
+      // hardware inputs
+      doMainScreenGrphics();
+      for (uint8_t i=0; i<6; i++) {
+        int8_t sw1 = (i<3 ? 1+i : 4+i);
+        int8_t sw2 = (sw1 == 9 ? (getSwitch(4, 0) ? 4 : (getSwitch(5, 0) ? 5 : 6)) : sw1);
+        putsSwitches(i<3 ? 2*FW-2: 17*FW-1, (i%3)*FH+4*FH, sw2, getSwitch(sw1, 0) ? INVERS : 0);
+      }
+    }
+    else {
+      // virtual inputs
+      for (uint8_t i=0; i<8; i++) {
+        int16_t val = g_chans512[8+i];
+        int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
+        V_BAR(SCREEN_WIDTH/2-5*4+2+i*5, SCREEN_HEIGHT-8, len)
+      }
+      for (uint8_t i=0; i<12; i++) {
+        if ((i%6) < 3) lcd_puts_P(i<6 ? 2*FW-2 : 16*FW-2, (i%3)*FH+4*FH, PSTR("SW"));
+        lcd_putcAtt((i<6 ? 2*FW-2 : 16*FW-2) + 2 * FW + ((i%6) < 3 ? 0 : FW), (i%3)*FH+4*FH, i<9 ? '1'+i : 'A'+i-9, getSwitch(10+i, 0) ? INVERS : 0);
+      }
+    }
   }
   else { // timer2
     putsTime(33+FW+2, FH*5, timer2, DBLSIZE, DBLSIZE);
