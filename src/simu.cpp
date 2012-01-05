@@ -399,6 +399,8 @@ int main(int argc,char **argv)
   th9xSim->show(); // Otherwise the main window gets centred across my two monitors, split down the middle.
 #endif
 
+  frskyStreaming = 1;
+
   StartEepromThread();
   StartMainThread();
 
