@@ -41,6 +41,8 @@ uint8_t tabViews[] = {
   1, /*e_timer2*/
 #if defined(FRSKY_HUB)
   4, /*e_telemetry*/
+#elif defined(WS_HOW_HIGH)
+  3, /*e_telemetry*/
 #elif defined(FRSKY)
   2, /*e_telemetry*/
 #endif
@@ -110,6 +112,15 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
       if (switchView != 255) break;
+#if defined(FRSKY)
+#if defined(FRSKY_HUB) && defined(WS_HOW_HIGH)
+      tabViews[e_telemetry] = (g_model.frsky.usrProto == 0 ? 2 : (g_model.frsky.usrProto == 1 ? 4 : 3));
+#elif defined(FRSKY_HUB)
+      tabViews[e_telemetry] = (g_model.frsky.usrProto == 1 ? 4 : 2);
+#elif defined(WS_HOW_HIGH)
+      tabViews[e_telemetry] = (g_model.frsky.usrProto == 2 ? 3 : 2);
+#endif
+#endif
       g_eeGeneral.view = (view + (event == EVT_KEY_BREAK(KEY_RIGHT) ? ALTERNATE_VIEW : tabViews[view_base]*ALTERNATE_VIEW-ALTERNATE_VIEW)) % (tabViews[view_base]*ALTERNATE_VIEW);
       eeDirty(EE_GENERAL);
       beepKey();
@@ -196,7 +207,7 @@ void menuMainView(uint8_t event)
   trim2OfsSwLock = trimSw;
 
 #ifdef FRSKY
-  if (view_base == e_telemetry && view > ALTERNATE_VIEW) {
+  if (view_base == e_telemetry && frskyStreaming && view > ALTERNATE_VIEW) {
     putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
     putsVBat(14*FW,0,att);
@@ -272,7 +283,7 @@ void menuMainView(uint8_t event)
       uint8_t x0,y0;
       int16_t val = g_chans512[i];
       //val += g_model.limitData[i].revert ? g_model.limitData[i].offset : -g_model.limitData[i].offset;
-      switch(view_base)
+      switch(view_base) // TODO optim with if (view_base == e_e_outputValues) ... else ...
       {
         case e_outputValues:
           x0 = (i%4*9+3)*FW/2;
@@ -306,8 +317,31 @@ void menuMainView(uint8_t event)
       }
     }
   }
-#ifdef FRSKY
-  else if(view_base == e_telemetry) {
+  else if (view_base == e_inputs) {
+    if (view == e_inputs) {
+      // hardware inputs
+      doMainScreenGrphics();
+      for (uint8_t i=0; i<6; i++) {
+        int8_t sw1 = (i<3 ? 1+i : 4+i);
+        int8_t sw2 = (sw1 == 9 ? (getSwitch(4, 0) ? 4 : (getSwitch(5, 0) ? 5 : 6)) : sw1);
+        putsSwitches(i<3 ? 2*FW-2: 17*FW-1, (i%3)*FH+4*FH, sw2, getSwitch(sw1, 0) ? INVERS : 0);
+      }
+    }
+    else {
+      // virtual inputs
+      for (uint8_t i=0; i<8; i++) {
+        int16_t val = g_chans512[8+i];
+        int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
+        V_BAR(SCREEN_WIDTH/2-5*4+2+i*5, SCREEN_HEIGHT-8, len)
+      }
+      for (uint8_t i=0; i<12; i++) {
+        if ((i%6) < 3) lcd_puts_P(i<6 ? 2*FW-2 : 16*FW-2, (i%3)*FH+4*FH, PSTR("SW"));
+        lcd_putcAtt((i<6 ? 2*FW-2 : 16*FW-2) + 2 * FW + ((i%6) < 3 ? 0 : FW), (i%3)*FH+4*FH, i<9 ? '1'+i : 'A'+i-9, getSwitch(10+i, 0) ? INVERS : 0);
+      }
+    }
+  }
+#if defined(FRSKY)
+  else if (view_base == e_telemetry) {
     static uint8_t displayCount = 0;
     static uint8_t staticTelemetry[2];
     static uint8_t staticRSSI[2];
@@ -329,7 +363,7 @@ void menuMainView(uint8_t event)
           for (int i=0; i<2; i++) {
             if (g_model.frsky.channels[i].ratio) {
               blink = (alarmRaised[i] ? INVERS : 0);
-              lcd_puts_P(x0, 3*FH, PSTR("A ="));
+              lcd_puts_P(x0, 3*FH, PSTR("A :"));
               lcd_putc(x0+FW, 3*FH, '1'+i);
               x0 += 3*FW;
               val = ((uint16_t)staticTelemetry[i]+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
@@ -378,17 +412,25 @@ void menuMainView(uint8_t event)
         }
 #endif
 
-        lcd_puts_P(0, 6*FH, PSTR("Rx="));
+        lcd_puts_P(0, 6*FH, PSTR("Rx:"));
         lcd_outdezAtt(3 * FW, 5*FH+2, staticRSSI[0], DBLSIZE|LEFT);
         lcd_outdezAtt(4 * FW, 7*FH, frskyRSSI[0].min, 0);
         lcd_outdezAtt(6 * FW, 7*FH, frskyRSSI[0].max, LEFT);
-        lcd_puts_P(11 * FW - 2, 6*FH, PSTR("Tx="));
+        lcd_puts_P(11 * FW - 2, 6*FH, PSTR("Tx:"));
         lcd_outdezAtt(14 * FW - 2, 5*FH+2, staticRSSI[1], DBLSIZE|LEFT);
         lcd_outdezAtt(15 * FW - 2, 7*FH, frskyRSSI[1].min, 0);
         lcd_outdezAtt(17 * FW - 2, 7*FH, frskyRSSI[1].max, LEFT);
       }
+#ifdef WS_HOW_HIGH
+      else if (g_model.frsky.usrProto == PROTO_WS_HOW_HIGH && view == e_telemetry+2*ALTERNATE_VIEW) {
+        lcd_puts_P(0, 4*FH, PSTR("Alt:"));
+        uint16_t value = frskyHubData.baroAltitude;
+        lcd_outdezAtt(4*FW, 3*FH, (value * 32) / 105, DBLSIZE|LEFT);
+        lcd_putc(lcd_lastPos, 4*FH, 'm') ;
+      }
+#endif
 #ifdef FRSKY_HUB
-      else if (g_eeGeneral.view == e_telemetry+2*ALTERNATE_VIEW) { // if on second alternate telemetry view
+      else if (g_model.frsky.usrProto == PROTO_FRSKY_HUB && view == e_telemetry+2*ALTERNATE_VIEW) {
         // Date
         lcd_outdezNAtt(1*FW, 1*FH, frskyHubData.year+2000, LEFT, 4);
         lcd_putc(lcd_lastPos, 1*FH, '-');
@@ -441,8 +483,7 @@ void menuMainView(uint8_t event)
         lcd_outdezAtt(lcd_lastPos+2, 7*FH, frskyHubData.gpsAltitude_ap, LEFT|UNSIGN); // after '.'
         lcd_putc(lcd_lastPos, 7*FH, 'm');
       }
-      else if (g_eeGeneral.view == e_telemetry+3*ALTERNATE_VIEW) { // if on second alternate telemetry view
-
+      else if (g_model.frsky.usrProto == PROTO_FRSKY_HUB && view == e_telemetry+3*ALTERNATE_VIEW) {
         uint8_t y = 2*FH;
 
         // Temperature 1
@@ -485,15 +526,15 @@ void menuMainView(uint8_t event)
         // Acceleromter
         lcd_puts_P(11*FW, y, PSTR("Accel"));
         y += FH;
-        lcd_puts_P(11*FW, y, PSTR("x="));
+        lcd_puts_P(11*FW, y, PSTR("x:"));
         lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelX * 100 / 256, PREC2);
         lcd_putc(lcd_lastPos, y, 'g');
         y += FH;
-        lcd_puts_P(11*FW, y, PSTR("y="));
+        lcd_puts_P(11*FW, y, PSTR("y:"));
         lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelY * 100 / 256, PREC2);
         lcd_putc(lcd_lastPos, y, 'g');
         y += FH;
-        lcd_puts_P(11*FW, y, PSTR("z="));
+        lcd_puts_P(11*FW, y, PSTR("z:"));
         lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelZ * 100 / 256, PREC2);
         lcd_putc(lcd_lastPos, y, 'g');
       }
@@ -505,7 +546,7 @@ void menuMainView(uint8_t event)
         for (int i=0; i<2; i++) {
           if (g_model.frsky.channels[i].ratio) {
             blink = (alarmRaised[i] ? INVERS+BLINK : 0)|LEFT;
-            lcd_puts_P(x0, y0, PSTR("A ="));
+            lcd_puts_P(x0, y0, PSTR("A :"));
             lcd_putc(x0+FW, y0, '1'+i);
             val = ((int16_t)staticTelemetry[i]+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
             putsTelemetry(x0+3*FW, y0, val, g_model.frsky.channels[i].type, blink);
@@ -514,9 +555,9 @@ void menuMainView(uint8_t event)
         }
         y0+=FH;
         //lcd_puts_P(2*FW-3, y0, PSTR("RSSI:"));
-        lcd_puts_P(4*FW-3, y0, PSTR("Rx="));
+        lcd_puts_P(4*FW-3, y0, PSTR("Rx:"));
         lcd_outdezAtt(7*FW-3, y0, staticRSSI[0], LEFT);
-        lcd_puts_P(13*FW-3, y0, PSTR("Tx="));
+        lcd_puts_P(13*FW-3, y0, PSTR("Tx:"));
         lcd_outdezAtt(16*FW-3, y0, staticRSSI[1], LEFT);
       }
     }
@@ -525,29 +566,6 @@ void menuMainView(uint8_t event)
     }
   }
 #endif
-  else if (view_base == e_inputs) {
-    if (view == e_inputs) {
-      // hardware inputs
-      doMainScreenGrphics();
-      for (uint8_t i=0; i<6; i++) {
-        int8_t sw1 = (i<3 ? 1+i : 4+i);
-        int8_t sw2 = (sw1 == 9 ? (getSwitch(4, 0) ? 4 : (getSwitch(5, 0) ? 5 : 6)) : sw1);
-        putsSwitches(i<3 ? 2*FW-2: 17*FW-1, (i%3)*FH+4*FH, sw2, getSwitch(sw1, 0) ? INVERS : 0);
-      }
-    }
-    else {
-      // virtual inputs
-      for (uint8_t i=0; i<8; i++) {
-        int16_t val = g_chans512[8+i];
-        int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
-        V_BAR(SCREEN_WIDTH/2-5*4+2+i*5, SCREEN_HEIGHT-8, len)
-      }
-      for (uint8_t i=0; i<12; i++) {
-        if ((i%6) < 3) lcd_puts_P(i<6 ? 2*FW-2 : 16*FW-2, (i%3)*FH+4*FH, PSTR("SW"));
-        lcd_putcAtt((i<6 ? 2*FW-2 : 16*FW-2) + 2 * FW + ((i%6) < 3 ? 0 : FW), (i%3)*FH+4*FH, i<9 ? '1'+i : 'A'+i-9, getSwitch(10+i, 0) ? INVERS : 0);
-      }
-    }
-  }
   else { // timer2
     putsTime(33+FW+2, FH*5, timer2, DBLSIZE, DBLSIZE);
   }

@@ -1,8 +1,11 @@
 /*
- * Author - Bertrand Songis <bsongis@gmail.com>
+ * Authors (alphabetical order)
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  *
- * frsky.cpp original authors - Bryan J.Rentoul (Gruvin) <gruvin@gmail.com> and Philip Moss Adapted from jeti.cpp code by Karl
- * Szmutny <shadow@privy.de>* 
+ * Original contributors
+ * - Philip Moss Adapted first frsky functions from jeti.cpp code by 
+ * - Karl Szmutny <shadow@privy.de> 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -17,6 +20,9 @@
 
 #ifndef FRSKY_H
 #define FRSKY_H
+
+#define FRSKY_RX_PACKET_SIZE 19
+#define FRSKY_TX_PACKET_SIZE 12
 
 #include <inttypes.h>
 
@@ -40,7 +46,7 @@ struct FrskyData {
   void set(uint8_t value);
 };
 
-#ifdef FRSKY_HUB
+#if defined(FRSKY_HUB)
 struct FrskyHubData {
   int16_t  gpsAltitude_bp;   // before punct
   int16_t  temperature1;     // -20 .. 250 deg. celcius
@@ -70,12 +76,17 @@ struct FrskyHubData {
   int16_t  accelY;           // 1/256th gram (-8g ~ +8g)
   int16_t  accelZ;           // 1/256th gram (-8g ~ +8g)
 };
-
-extern struct FrskyHubData frskyHubData;
+extern FrskyHubData frskyHubData;
+#elif defined(WS_HOW_HIGH)
+struct FrskyHubData {
+  uint16_t baroAltitude;     // 0..9,999 meters
+};
+extern FrskyHubData frskyHubData;
 #endif
 
 // Global Fr-Sky telemetry data variables
 extern uint8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
+extern uint8_t frskyUsrStreaming;
 
 #define SEND_MODEL_ALARMS 4
 #define SEND_RSSI_ALARMS  (SEND_MODEL_ALARMS + 2)

@@ -185,8 +185,12 @@ PACK(typedef struct t_FrSkyChannelData {
   uint8_t   barMax;             // ditto for max display (would usually = ratio)
 }) FrSkyChannelData;
 
+#define PROTO_FRSKY_HUB   1
+#define PROTO_WS_HOW_HIGH 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
+  uint8_t usrProto:2;  // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint8_t spare:6;
 }) FrSkyData;
 
 PACK(typedef struct t_SwashRingData { // Swash Ring data

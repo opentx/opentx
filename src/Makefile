@@ -89,6 +89,14 @@ TRANSLATIONS = YES
 # Values = YES, NO
 DISPLAY_USER_DATA = NO
 
+# FrSky Hub 
+# Values = YES, NO
+FRSKY_HUB = YES
+
+# WS HowHigh 
+# Values = YES, NO
+WS_HOW_HIGH = YES
+
 # PXX (FrSky PCM) protocol
 PXX = NO
 
@@ -100,6 +108,9 @@ SILVER = NO
 
 # CTP-1009 protocol
 CTP1009 = NO
+
+# SOMO-14D module
+SOMO = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -207,78 +218,87 @@ endif
 
 
 ifeq ($(PCB), STD)
-# STD PCB, so ...
+  # STD PCB, so ...
 
   CPPDEFS += -DPCBSTD
   
-# If Hardware PPM mode ( PB0<->BP7) switch the Backlight output with the original PPM to use hardware facility to generate precise PPM (hardware mods)
-# G: TODO This prevents HARDPPM being used with FRSKY. HARDPPM needs its own option XXX
+  # If Hardware PPM mode ( PB0<->BP7) switch the Backlight output with the original PPM to use hardware facility to generate precise PPM (hardware mods)
+  # G: TODO This prevents HARDPPM being used with FRSKY. HARDPPM needs its own option XXX
   ifeq ($(EXT), HARDPPM)
    CPPDEFS += -DPPMPB7_HARDWARE
   endif
 
-# If JETI-Support is enabled
+  # If JETI-Support is enabled
   ifeq ($(EXT), JETI)
+   MODS += J
    CPPDEFS += -DJETI
   endif
 
-# If FRSKY-Support is enabled
+  # If FRSKY-Support is enabled
   ifeq ($(EXT), FRSKY)
-   CPPDEFS += -DFRSKY -DFRSKY_HUB
-   CPPSRC += frsky.cpp
-  endif
-  
-# If FRSKY-Support is enabled
-  ifeq ($(EXT), FRSKY_NOHUB)
+   MODS += F
    CPPDEFS += -DFRSKY
    CPPSRC += frsky.cpp
+   # If FRSKY-Hub is enabled
+   ifeq ($(FRSKY_HUB), YES)
+     CPPDEFS += -DFRSKY_HUB
+   endif
+   # If WS HowHigh is enabled
+   ifeq ($(WS_HOW_HIGH), YES)
+     CPPDEFS += -DWS_HOW_HIGH
+   endif
   endif
 
-# gruvin: If buzzer speaker replacment supported 
+  # gruvin: If buzzer speaker replacment supported 
   ifeq ($(BEEPER), SPEAKER)
    CPPDEFS += -DBEEPSPKR
   endif
   
-# If buzzer modified (no interference with PPM jack)
+  # If buzzer modified (no interference with PPM jack)
   ifeq ($(BEEPER), BUZZER_MOD)
    CPPDEFS += -DBUZZER_MOD
   endif
 
-# If BandGap is not rock solid
+  # If BandGap is not rock solid
   ifeq ($(BATT), UNSTABLE_BANDGAP)
    CPPDEFS += -DBATT_UNSTABLE_BANDGAP
   endif
   
-# gruvin: Legacy support for hardware mod freeing USART1 [DEPRECATED]
+  # gruvin: Legacy support for hardware mod freeing USART1 [DEPRECATED]
   ifeq ($(USART1), FREED)
     CPPDEFS += -DUSART1FREED
   endif
 
-# gruvin: PCM-in circuit mod for JR/Spektrum (and others) compatability
+  # gruvin: PCM-in circuit mod for JR/Spektrum (and others) compatability
   ifeq ($(PPMIN), MOD1)
     CPPDEFS += -DPPMIN_MOD1
   endif
 
 else
+  # not PCB=STD, so ...
 
   ifeq ($(NAVIGATION), RE1)
     CPPDEFS += -DNAVIGATION_RE1
   endif
 
-# not PCB=STD, so ...
   CPPSRC += frsky.cpp
-  CPPDEFS += -DPCBV3 -DFRSKY -DFRSKY_HUB
+  CPPDEFS += -DPCBV3 -DFRSKY -DFRSKY_HUB -DWS_HOW_HIGH
   ifeq ($(PCB), V3)
     CPPDEFS += -DBEEPSPKR
   endif
   ifeq ($(PCB), V4)
     CPPDEFS += -DPCBV4 
-#   Temporary hack to get stock beeper working for testing, etc ... make BEEPER=BUZZER_MOD
+    # Temporary hack to get stock beeper working for testing, etc ... make BEEPER=BUZZER_MOD
+    # TODO should not be needed / tested here in V4  
     ifeq ($(BEEPER), BUZZER_MOD)
       CPPDEFS += -DBUZZER_MOD
     else
       CPPDEFS += -DBEEPSPKR
     endif
+  endif
+  ifeq ($(SOMO), YES)
+    CPPSRC += somo14d.cpp
+    CPPDEFS += -DSOMO
   endif
 endif
 
@@ -294,6 +314,7 @@ ifeq ($(TRANSLATIONS), YES)
 endif
 
 ifeq ($(HELI), YES)
+ MODS += H
  CPPDEFS += -DHELI
 endif
 
@@ -618,6 +639,7 @@ stamp:
 	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> stamp-gruvin9x.h
 	@echo "#define TAG_VERS $(SUB_VER)-$(THEUSER)" >> stamp-gruvin9x.h
 	@echo "#define SVN_VERS \"$(BUILD_DIR)-r$(REV)\"" >> stamp-gruvin9x.h
+	@echo "#define MOD_VERS \"$(MODS)\"" >> stamp-gruvin9x.h
 	@echo "#define BUILD_NUM $(BUILD_NUM)" >> stamp-gruvin9x.h
 	@cat stamp-gruvin9x.h
  
