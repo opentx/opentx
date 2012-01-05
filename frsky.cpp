@@ -21,7 +21,6 @@
 #include "gruvin9x.h"
 #include "frsky.h"
 #include "ff.h" // TODO
-// #include <stdlib.h> // TODO
 
 // Enumerate FrSky packet codes
 #define LINKPKT         0xfe
@@ -38,14 +37,12 @@
 #define BYTESTUFF       0x7d
 #define STUFF_MASK      0x20
 
-#define FRSKY_RX_PACKET_SIZE 19
-#define FRSKY_TX_PACKET_SIZE 12
-
 uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
 uint8_t frskyTxBufferCount = 0;
 uint8_t FrskyRxBufferReady = 0;
 uint8_t frskyStreaming = 0;
+uint8_t frskyUsrStreaming = 0;
 
 FrskyData frskyTelemetry[2];
 FrskyData frskyRSSI[2];
@@ -58,8 +55,8 @@ struct FrskyAlarm {
 
 struct FrskyAlarm frskyAlarms[4];
 
-#ifdef FRSKY_HUB
-struct FrskyHubData frskyHubData;
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+FrskyHubData frskyHubData;
 #endif
 
 void frskyPushValue(uint8_t *&ptr, uint8_t value)
@@ -152,6 +149,17 @@ void parseTelemHubByte(uint8_t byte)
   ((uint8_t*)&frskyHubData)[structPos+1] = byte;
   state = TS_IDLE;
 }
+#endif
+
+#ifdef WS_HOW_HIGH
+void parseTelemWSHowHighByte(uint8_t byte)
+{
+  if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10))  // At least 100mS passed since last data received
+    ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude)] = byte;
+  else
+    ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude)+1] = byte;
+  frskyUsrStreaming = FRSKY_TIMEOUT10ms*3; // reset counter
+}
 #endif  
 
 /*
@@ -191,15 +199,21 @@ void processFrskyPacket(uint8_t *packet)
       frskyRSSI[1].set(packet[4] / 2);
       break;
 
+#if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
     case USRPKT: // User Data packet
-#ifdef FRSKY_HUB
       uint8_t numBytes = 3 + (packet[1] & 0x07); // sanitize in case of data corruption leading to buffer overflow
       for (uint8_t i=3; i<numBytes; i++) {
-        parseTelemHubByte(packet[i]);
-      }
-      // TODO frskyUsrStreaming = FRSKY_TIMEOUT10ms*3; // reset counter only if valid frsky packets are being detected
+#if defined(FRSKY_HUB)
+        if (g_model.frsky.usrProto == 1) // FrSky Hub
+          parseTelemHubByte(packet[i]);
 #endif
+#if defined(WS_HOW_HIGH)
+        if (g_model.frsky.usrProto == 2) // WS How High
+          parseTelemWSHowHighByte(packet[i]);
+#endif
+      }
       break;
+#endif
   }
 
   FrskyRxBufferReady = 0;
