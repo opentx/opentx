@@ -103,8 +103,8 @@ extern void putsTelemetry(uint8_t x, uint8_t y, uint8_t val, uint8_t unit, uint8
 #endif
 
 extern void lcd_plot(unsigned char x, unsigned char y, uint8_t att=0);
-extern void lcd_hline(unsigned char x, unsigned char y, int8_t w, uint8_t att=0);
-extern void lcd_hlineStip(int8_t x, uint8_t y, int8_t w, uint8_t pat, uint8_t att=0);
+extern void lcd_hline(unsigned char x, unsigned char y, uint8_t w, uint8_t att=0);
+extern void lcd_hlineStip(int8_t x, uint8_t y, uint8_t w, uint8_t pat, uint8_t att=0);
 extern void lcd_vline(uint8_t x, int8_t y, int8_t h);
 extern void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat);
 
