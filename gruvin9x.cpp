@@ -297,8 +297,12 @@ FORCEINLINE int16_t getValue(uint8_t i)
     else if(i<PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-PPM_BASE] - g_eeGeneral.trainer.calib[i-PPM_BASE])*2;
     else if(i<PPM_BASE+NUM_PPM) return g_ppmIns[i-PPM_BASE]*2;
     else if(i<CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CHOUT_BASE];
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) return s_timerVal[i-CHOUT_BASE-NUM_CHNOUT];
 #ifdef FRSKY
-    else if(i<CHOUT_BASE+NUM_CHNOUT+NUM_TELEMETRY) return frskyTelemetry[i-CHOUT_BASE-NUM_CHNOUT].value;
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude + baroAltitudeOffset;
+#endif
 #endif
     else return 0;
 }
@@ -358,10 +362,18 @@ bool __getSwitch(int8_t swtch)
       int16_t y;
       if (s == CS_VOFS) {
 #ifdef FRSKY
-        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT)
-          y = 125+cs.v2;
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
+          y = (128+cs.v2) * 4;
         else
 #endif
+        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
+          y = 128+cs.v2;
+        else
+#endif
+        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT)
+          y = 98+cs.v2;
+        else
           y = calc100toRESX(cs.v2);
 
         switch (cs.func) {
