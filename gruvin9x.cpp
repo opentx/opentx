@@ -1594,7 +1594,7 @@ void perMain()
   doLogs();
 #endif
 
-#if defined(FRSKY) and defined(DISPLAY_USER_DATA)
+#if defined(FRSKY) && defined(DISPLAY_USER_DATA)
   char userDataRxBuffer[21]; // Temp buffer used to collect fr-sky user data
 
   // retrieve bytes from user data buffer and insert into display string,
