@@ -1590,35 +1590,47 @@ void menuProcCustomSwitches(uint8_t event)
     if(cstate == CS_VOFS)
     {
         putsChnRaw(12*FW, y, cs.v1, m_posHorz==1 ? attr : 0);
+
 #if defined(FRSKY)
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+        if (cs.v1 > NUM_XCHNRAW-1) {
+          lcd_outdezAtt(20*FW, y, (128+cs.v2) * 4, m_posHorz==2 ? attr : 0);
+          v2_min = -128; v2_max = 127;
+        }
+        else
+#endif
         if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY) {
           putsTelemetryChannel(20*FW, y, cs.v1+NUM_TELEMETRY-NUM_XCHNRAW-1, 128+cs.v2, m_posHorz==2 ? attr : 0);
           v2_min = -128; v2_max = 127;
         }
         else
 #endif
-        {
-          lcd_outdezAtt( 20*FW, y, cs.v2  ,m_posHorz==2 ? attr : 0);
+        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY-MAX_TIMERS) {
+          putsTime(17*FW, y, 98+cs.v2, m_posHorz==2 ? attr : 0, m_posHorz==2 ? attr : 0); // TODO optim
+          v2_min = -128; v2_max = 127;
+        }
+        else {
+          lcd_outdezAtt(20*FW, y, cs.v2, m_posHorz==2 ? attr : 0);
           v2_min = -125; v2_max = 125;
         }
     }
     else if(cstate == CS_VBOOL)
     {
-        putsSwitches(13*FW, y, cs.v1  ,m_posHorz==1 ? attr : 0);
-        putsSwitches(17*FW, y, cs.v2  ,m_posHorz==2 ? attr : 0);
+        putsSwitches(13*FW, y, cs.v1, m_posHorz==1 ? attr : 0);
+        putsSwitches(17*FW, y, cs.v2, m_posHorz==2 ? attr : 0);
         v1_min = -MAX_SWITCH; v1_max = MAX_SWITCH;
         v2_min = -MAX_SWITCH; v2_max = MAX_SWITCH;
     }
     else // cstate == CS_COMP
     {
-        putsChnRaw(    12*FW, y, cs.v1  ,m_posHorz==1 ? attr : 0);
-        putsChnRaw(    17*FW, y, cs.v2  ,m_posHorz==2 ? attr : 0);
+        putsChnRaw(12*FW, y, cs.v1, m_posHorz==1 ? attr : 0);
+        putsChnRaw(17*FW, y, cs.v2, m_posHorz==2 ? attr : 0);
     }
 
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (m_posHorz) {
         case 0:
-          CHECK_INCDEC_MODELVAR( event, cs.func, 0,CS_MAXF);
+          CHECK_INCDEC_MODELVAR(event, cs.func, 0,CS_MAXF);
           if (cstate != CS_STATE(cs.func)) {
             cs.v1 = 0;
             cs.v2 = 0;
@@ -1628,7 +1640,7 @@ void menuProcCustomSwitches(uint8_t event)
           CHECK_INCDEC_MODELVAR(event, cs.v1, v1_min, v1_max);
           break;
         case 2:
-          CHECK_INCDEC_MODELVAR( event, cs.v2, v2_min, v2_max);
+          CHECK_INCDEC_MODELVAR(event, cs.v2, v2_min, v2_max);
           break;
       }
     }

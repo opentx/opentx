@@ -356,15 +356,19 @@ enum EnumKeys {
 #define NUM_PPM         8
 #define CHOUT_BASE      (PPM_BASE+NUM_PPM)
 
-#ifdef FRSKY
+#if defined(FRSKY)
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+#define NUM_TELEMETRY      3
+#define TELEMETRY_CHANNELS "AD1AD2ALT"
+#else
 #define NUM_TELEMETRY      2
 #define TELEMETRY_CHANNELS "AD1AD2"
-#define TELEMETRY_STRLEN   3
+#endif
 #else
 #define NUM_TELEMETRY      0
 #define TELEMETRY_CHANNELS ""
-#define TELEMETRY_STRLEN   0
 #endif
+#define TELEMETRY_STRLEN   3
 
 #define DSW_THR  1
 #define DSW_RUD  2
@@ -581,7 +585,7 @@ void eeLoadModel(uint8_t id);
 int8_t eeFindEmptyModel(uint8_t id, bool down);
 
 ///number of real input channels (1-9) plus virtual input channels X1-X4
-#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+2/*MAX/FULL*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT+NUM_TELEMETRY)
+#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+2/*MAX/FULL*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT+MAX_TIMERS+NUM_TELEMETRY)
 ///number of real output channels (CH1-CH8) plus virtual output channels X1-X4
 #define NUM_XCHNOUT (NUM_CHNOUT) //(NUM_CHNOUT)//+NUM_VIRT)
 

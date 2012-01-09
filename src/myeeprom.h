@@ -227,6 +227,7 @@ PACK(typedef struct t_PhaseData {
 }) PhaseData;
 
 #define MAX_MODELS 16
+#define MAX_TIMERS 2
 #define MAX_PHASES 5
 #define MAX_MIXERS 32
 #define MAX_EXPOS  14

@@ -414,8 +414,12 @@ void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
     putsStrIdx(x,y,PSTR("PPM"), idx - (NUM_STICKS+NUM_POTS+2+3), att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT)
     putsStrIdx(x, y, PSTR("CH"), idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM), att);
+  else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT+MAX_TIMERS)
+    putsStrIdx(x, y, PSTR("TMR"), idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT), att);
+#ifdef FRSKY
   else if (idx<=NUM_XCHNRAW)
-    lcd_putsnAtt(x, y, PSTR(TELEMETRY_CHANNELS)+TELEMETRY_STRLEN*(idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT)), TELEMETRY_STRLEN, att);
+    lcd_putsnAtt(x, y, PSTR(TELEMETRY_CHANNELS)+TELEMETRY_STRLEN*(idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+MAX_TIMERS+NUM_CHNOUT)), TELEMETRY_STRLEN, att);
+#endif
 }
 
 void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
