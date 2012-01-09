@@ -23,16 +23,12 @@
 #define g9x_time_h
 
 #include <inttypes.h>
+#include <limits.h>
 
+#undef CHAR_BIT
 #define CHAR_BIT 8
-#define INT_MAX 32767
-#define INT_MIN -32767
-#define LONG_MAX 0x7FFFFFFFL
-#define LONG_MIN ((long) 0x80000000L)
-#define UINT_MAX 0xFFFFU/0xFFFFFFFFUL
-#define ULONG_MAX 0xFFFFFFFFUL
 
-typedef long int time_t;
+typedef long int gtime_t;
 
 struct gtm
 {
@@ -48,8 +44,8 @@ struct gtm
 
 extern const unsigned short int __mon_yday[2][13];
 
-extern time_t mktime(struct gtm *tp);
-extern time_t filltm(time_t *t, struct gtm *tp);
+extern gtime_t mktime(struct gtm *tp);
+extern gtime_t filltm(gtime_t *t, struct gtm *tp);
 
 #endif
 

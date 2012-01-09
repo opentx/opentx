@@ -97,6 +97,10 @@ FRSKY_HUB = YES
 # Values = YES, NO
 WS_HOW_HIGH = YES
 
+# SDCARD Logs
+# Values = YES, NO
+LOGS = YES
+
 # PXX (FrSky PCM) protocol
 PXX = NO
 
@@ -216,6 +220,7 @@ ifeq ($(NAVIGATION), POTS)
  CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
 endif
 
+MODS = 
 
 ifeq ($(PCB), STD)
   # STD PCB, so ...
@@ -286,8 +291,13 @@ else
   ifeq ($(PCB), V3)
     CPPDEFS += -DBEEPSPKR
   endif
+  ifeq ($(LOGS), YES)
+    CPPSRC += logs.cpp
+    CPPDEFS += -DLOGS
+    MODS += L
+  endif
   ifeq ($(PCB), V4)
-    CPPDEFS += -DPCBV4 
+    CPPDEFS += -DPCBV4
     # Temporary hack to get stock beeper working for testing, etc ... make BEEPER=BUZZER_MOD
     # TODO should not be needed / tested here in V4  
     ifeq ($(BEEPER), BUZZER_MOD)

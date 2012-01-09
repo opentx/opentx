@@ -123,6 +123,9 @@ void *main_thread(void *)
 
     while (main_thread_running) {
       perMain();
+
+      frskyHubData.baroAltitude = 500;
+
       sleep(1/*ms*/);
     }
 #ifdef SIMU_EXCEPTIONS

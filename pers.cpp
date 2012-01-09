@@ -300,6 +300,9 @@ void eeLoadModel(uint8_t id)
     resetTelemetry();
     FRSKY_setModelAlarms();
 #endif
+#ifdef LOGS
+    startLogs();
+#endif
   }
 }
 

@@ -76,12 +76,18 @@ struct FrskyHubData {
   int16_t  accelY;           // 1/256th gram (-8g ~ +8g)
   int16_t  accelZ;           // 1/256th gram (-8g ~ +8g)
 };
-extern FrskyHubData frskyHubData;
+
 #elif defined(WS_HOW_HIGH)
+
 struct FrskyHubData {
   uint16_t baroAltitude;     // 0..9,999 meters
 };
+
+#endif
+
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 extern FrskyHubData frskyHubData;
+extern int16_t baroAltitudeOffset;
 #endif
 
 // Global Fr-Sky telemetry data variables

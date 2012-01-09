@@ -387,7 +387,7 @@ void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
 
 void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att)
 {
-  lcd_outdezAtt(x, y, (int16_t)volts, att|PREC1|UNSIGN);
+  lcd_outdezAtt(x, y, (int16_t)volts, att | ((att&PREC2)==PREC2 ? 0 : PREC1));
   if (~att & NO_UNIT) lcd_putcAtt(lcd_lastPos, y, 'v', att);
 }
 
@@ -492,7 +492,17 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
 
 #ifdef FRSKY
 // TODO move this into frsky.cpp
-void putsTelemetry(uint8_t x, uint8_t y, uint8_t val, uint8_t unit, uint8_t att)
+void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, uint8_t val, uint8_t att)
+{
+  int16_t converted_value = ((int16_t)val+g_model.frsky.channels[channel].offset)*g_model.frsky.channels[channel].ratio / 255;
+  if (g_model.frsky.channels[channel].type == 0 && converted_value < 100) {
+    att |= PREC2;
+    converted_value = ((int16_t)val+g_model.frsky.channels[channel].offset)*g_model.frsky.channels[channel].ratio*10 / 255;
+  }
+  putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
+}
+
+void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
 {
   if (unit == 0/*v*/) {
     putsVolts(x, y, val, att);

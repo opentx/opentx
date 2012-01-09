@@ -99,7 +99,8 @@ extern void putsTime(uint8_t x,uint8_t y, int16_t tme, uint8_t att, uint8_t att2
 
 #ifdef FRSKY
 // TODO move this into frsky.h
-extern void putsTelemetry(uint8_t x, uint8_t y, uint8_t val, uint8_t unit, uint8_t att);
+void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, uint8_t val, uint8_t att);
+void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
 #endif
 
 extern void lcd_plot(unsigned char x, unsigned char y, uint8_t att=0);

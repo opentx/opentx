@@ -25,7 +25,7 @@
 
 // MM/SD card Disk IO Support
 #if defined (PCBV3)
-time_t g_unixTime; // Global date/time register, incremented each second in per10ms()
+gtime_t g_unixTime; // Global date/time register, incremented each second in per10ms()
 #endif
 
 /*
@@ -1194,7 +1194,7 @@ uint16_t active_functions = 0; // current max = 16 functions
 
 void evalFunctions()
 {
-  assert(sizeof(active_functions)*8 >= FUNC_LAST);
+  assert(sizeof(active_functions)*8 > FUNC_MAX);
 
   for (uint8_t i=0; i<NUM_FSW; i++) {
     FuncSwData *sd = &g_model.funcSw[i];
@@ -1590,65 +1590,11 @@ void perMain()
   if (trimsCheckTimer > 0)
     trimsCheckTimer -= 1;
 
-#if defined (FRSKY)
+#if defined (LOGS)
+  doLogs();
+#endif
 
-/***** TEST CODE - Fr-Sky SD/MMC card / User Data experiments *****/
-
-#if defined (PCBV3)
-
-  /* Use light switch (on) to open telemtry test log file */
-  static FRESULT result;
-
-  static int8_t testLogOpen = 0;
-
-  if(getSwitch(g_eeGeneral.lightSw,0))
-  {
-    // while(1); // Test WDT
-    if ((testLogOpen==0) // if we know we haven't started logging ...
-        || ((testLogOpen==1) && !g_oLogFile.fs)) //  ... or we thought we had, but the file got closed
-    {
-      result = f_mount(0, &FATFS_Obj);
-      if (result!=FR_OK)
-      {
-        testLogOpen = -1;
-        beepAgain = result - 1;
-        beepKey();
-      }
-      else
-      {
-        // create new log file using filename set up in pers.cpp::resetTelemetry()
-        result = f_open(&g_oLogFile, g_logFilename, FA_OPEN_ALWAYS | FA_WRITE);
-        if (result!=FR_OK)
-        {
-          testLogOpen = -2;
-          beepAgain = result - 1;
-          beepKey();
-        }
-        else
-        {
-          f_lseek(&g_oLogFile, g_oLogFile.fsize); // append
-
-          testLogOpen = 1;
-          beepWarn2();
-        }
-      }
-    }
-  } 
-  else
-  {
-    if (testLogOpen==1)
-    {
-      f_close(&g_oLogFile);
-      beepWarn2();
-    }
-    testLogOpen = 0;
-  }
-
-
-#ifdef DISPLAY_USER_DATA
-    ////////////////
-  // Write raw user data into on-screen display line buffer
-
+#if defined(FRSKY) and defined(DISPLAY_USER_DATA)
   char userDataRxBuffer[21]; // Temp buffer used to collect fr-sky user data
 
   // retrieve bytes from user data buffer and insert into display string,
@@ -1672,14 +1618,6 @@ void perMain()
       f_putc(userDataRxBuffer[byt], &g_oLogFile);
 
   }
-  ////////////////
-#endif
-
-/***** END TEST CODE - Fr-Sky User Data experiments *****/
-
-// PCBV3
-#endif
-// FRSKY
 #endif
 
   lcd_clear();
