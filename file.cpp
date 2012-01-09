@@ -1,6 +1,7 @@
 /*
- *
- * gruvin9x Author Bryan J.Rentoul (Gruvin) <gruvin@gmail.com>
+ * Authors (alphabetical order)
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  *
  * gruvin9x is based on code named er9x by
  * Author - Erez Raviv <erezraviv@gmail.com>, which is in turn
