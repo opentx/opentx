@@ -73,17 +73,17 @@
 	: ~ (~ (t) 0 << (sizeof (t) * CHAR_BIT - 1))))
 
 #ifndef TIME_T_MIN
-# define TIME_T_MIN TYPE_MINIMUM (time_t)
+# define TIME_T_MIN TYPE_MINIMUM (gtime_t)
 #endif
 #ifndef TIME_T_MAX
-# define TIME_T_MAX TYPE_MAXIMUM (time_t)
+# define TIME_T_MAX TYPE_MAXIMUM (gtime_t)
 #endif
 #define TIME_T_MIDPOINT (SHR (TIME_T_MIN + TIME_T_MAX, 1) + 1)
 
 /* Verify a requirement at compile-time (unlike assert, which is runtime).  */
 #define verify(name, assertion) struct name { char a[(assertion) ? 1 : -1]; }
 
-verify (time_t_is_integer, TYPE_IS_INTEGER (time_t));
+verify (gtime_t_is_integer, TYPE_IS_INTEGER (gtime_t));
 verify (twos_complement_arithmetic, TYPE_TWOS_COMPLEMENT (int));
 /* The code also assumes that signed integer overflow silently wraps
    around, but this assumption can't be stated without causing a
@@ -95,7 +95,6 @@ verify (base_year_is_a_multiple_of_100, TM_YEAR_BASE % 100 == 0);
 
 #define	SECS_PER_HOUR	3600ul
 #define	SECS_PER_DAY	86400ul
-#define EOVERFLOW 0
 
 /* Return 1 if YEAR + TM_YEAR_BASE is a leap year.  */
 static inline int
@@ -123,7 +122,7 @@ const unsigned short int __mon_yday[2][13] =
    Return nonzero if successful.  */
 int
 __offtime (
-     time_t *t,
+     gtime_t *t,
      long int offset,
      struct gtm *tp)
 {
@@ -138,7 +137,7 @@ __offtime (
       rem += SECS_PER_DAY;
       --days;
     }
-  while (rem >= SECS_PER_DAY)
+  while (rem >= (long int)SECS_PER_DAY)
     {
       rem -= SECS_PER_DAY;
       ++days;
@@ -185,9 +184,9 @@ __offtime (
 }
 
 /* time_r function implementations */
-// G: No time zones in our implementation so just do the converion from time_t to struct tm
+// G: No time zones in our implementation so just do the converion from gtime_t to struct tm
 struct gtm *
-__localtime_r (time_t * t, struct gtm * tp)
+__localtime_r (gtime_t * t, struct gtm * tp)
 {
   __offtime(t, 0, tp);
   return tp;
@@ -205,7 +204,7 @@ __localtime_r (time_t * t, struct gtm * tp)
    The result may overflow.  It is the caller's responsibility to
    detect overflow.  */
 
-static inline time_t
+static inline gtime_t
 ydhms_diff (long int year1, long int yday1, int hour1, int min1, int sec1,
 	    int year0, int yday0, int hour0, int min0, int sec0)
 {
@@ -223,34 +222,34 @@ ydhms_diff (long int year1, long int yday1, int hour1, int min1, int sec1,
   int b400 = SHR (b100, 2);
   int intervening_leap_days = (a4 - b4) - (a100 - b100) + (a400 - b400);
 
-  /* Compute the desired time in time_t precision.  Overflow might
+  /* Compute the desired time in gtime_t precision.  Overflow might
      occur here.  */
-  time_t tyear1 = year1;
-  time_t years = tyear1 - year0;
-  time_t days = 365 * years + yday1 - yday0 + intervening_leap_days;
-  time_t hours = 24 * days + hour1 - hour0;
-  time_t minutes = 60 * hours + min1 - min0;
-  time_t seconds = 60 * minutes + sec1 - sec0;
+  gtime_t tyear1 = year1;
+  gtime_t years = tyear1 - year0;
+  gtime_t days = 365 * years + yday1 - yday0 + intervening_leap_days;
+  gtime_t hours = 24 * days + hour1 - hour0;
+  gtime_t minutes = 60 * hours + min1 - min0;
+  gtime_t seconds = 60 * minutes + sec1 - sec0;
   return seconds;
 }
 
-/* Return a time_t value corresponding to (YEAR-YDAY HOUR:MIN:SEC),
+/* Return a gtime_t value corresponding to (YEAR-YDAY HOUR:MIN:SEC),
    assuming that *T corresponds to *TP and that no clock adjustments
    occurred between *TP and the desired time.
    If TP is null, return a value not equal to *T; this avoids false matches.
    If overflow occurs, yield the minimal or maximal value, except do not
    yield a value equal to *T.  */
-static time_t
+static gtime_t
 guess_time_tm (long int year, long int yday, int hour, int min, int sec,
-	       time_t *t, struct gtm *tp)
+	       gtime_t *t, struct gtm *tp)
 {
   if (tp)
     {
-      time_t d = ydhms_diff (year, yday, hour, min, sec,
+      gtime_t d = ydhms_diff (year, yday, hour, min, sec,
 			     tp->tm_year, tp->tm_yday,
 			     tp->tm_hour, tp->tm_min, tp->tm_sec);
-      time_t t1 = *t + d;
-      if ((t1 < *t) == (TYPE_SIGNED (time_t) ? d < 0 : TIME_T_MAX / 2 < d))
+      gtime_t t1 = *t + d;
+      if ((t1 < *t) == (TYPE_SIGNED (gtime_t) ? d < 0 : TIME_T_MAX / 2 < d))
 	return t1;
     }
 
@@ -268,22 +267,22 @@ guess_time_tm (long int year, long int yday, int hour, int min, int sec,
    If *T is out of range for conversion, adjust it so that
    it is the nearest in-range value and then convert that.  */
 static struct gtm *
-ranged_convert (struct gtm *(*convert) (time_t *, struct gtm *),
-		time_t *t, struct gtm *tp)
+ranged_convert (struct gtm *(*convert) (gtime_t *, struct gtm *),
+		gtime_t *t, struct gtm *tp)
 {
   struct gtm *r = convert (t, tp);
 
   if (!r && *t)
     {
-      time_t bad = *t;
-      time_t ok = 0;
+      gtime_t bad = *t;
+      gtime_t ok = 0;
 
-      /* BAD is a known unconvertible time_t, and OK is a known good one.
+      /* BAD is a known unconvertible gtime_t, and OK is a known good one.
 	 Use binary search to narrow the range between BAD and OK until
 	 they differ by 1.  */
       while (bad != ok + (bad < 0 ? -1 : 1))
 	{
-	  time_t mid = *t = (bad < 0
+	  gtime_t mid = *t = (bad < 0
 			     ? bad + ((ok - bad) >> 1)
 			     : ok + ((bad - ok) >> 1));
 	  r = convert (t, tp);
@@ -305,18 +304,18 @@ ranged_convert (struct gtm *(*convert) (time_t *, struct gtm *),
   return r;
 }
 
-/* Convert *TP to a time_t value, inverting
+/* Convert *TP to a gtime_t value, inverting
    the monotonic and mostly-unit-linear conversion function CONVERT.
    Use *OFFSET to keep track of a guess at the offset of the result,
    compared to what the result would be for UTC without leap seconds.
    If *OFFSET's guess is correct, only one CONVERT call is needed.
    This function is external because it is used also by timegm.c.  */
-time_t
+gtime_t
 __mktime_internal (struct gtm *tp,
-		   struct gtm *(*convert) (time_t *, struct gtm *),
-		   time_t *offset)
+		   struct gtm *(*convert) (gtime_t *, struct gtm *),
+		   gtime_t *offset)
 {
-  time_t t, gt, t0, t1, t2;
+  gtime_t t, gt, t0, t1, t2;
   struct gtm tm;
 
   /* The maximum number of probes (calls to CONVERT) should be enough
@@ -343,7 +342,7 @@ __mktime_internal (struct gtm *tp,
 
   /* The other values need not be in range:
      the remaining code handles minor overflows correctly,
-     assuming int and time_t arithmetic wraps around.
+     assuming int and gtime_t arithmetic wraps around.
      Major overflows are caught at the end.  */
 
   /* Calculate day of year from year, month, and day of month.
@@ -354,7 +353,7 @@ __mktime_internal (struct gtm *tp,
   long int lmday = mday;
   long int yday = mon_yday + lmday;
 
-  time_t guessed_offset = *offset;
+  gtime_t guessed_offset = *offset;
 
   int sec_requested = sec;
 
@@ -378,7 +377,7 @@ __mktime_internal (struct gtm *tp,
 
   if (TIME_T_MAX / INT_MAX / 366 / 24 / 60 / 60 < 3)
     {
-      /* time_t isn't large enough to rule out overflows, so check
+      /* gtime_t isn't large enough to rule out overflows, so check
 	 for major overflows.  A gross check suffices, since if t0
 	 has overflowed, it is off by a multiple of TIME_T_MAX -
 	 TIME_T_MIN + 1.  So ignore any component of the difference
@@ -414,16 +413,16 @@ __mktime_internal (struct gtm *tp,
 	 gives a positive value of 715827882.  Setting a variable
 	 first then doing math on it seems to work.
 	 (ghazi@caip.rutgers.edu) */
-      time_t time_t_max = TIME_T_MAX;
-      time_t time_t_min = TIME_T_MIN;
-      time_t overflow_threshold =
+      gtime_t time_t_max = TIME_T_MAX;
+      gtime_t time_t_min = TIME_T_MIN;
+      gtime_t overflow_threshold =
 	(time_t_max / 3 - time_t_min / 3) >> ALOG2_SECONDS_PER_BIENNIUM;
 
       if (overflow_threshold < abs_diff)
 	{
 	  /* Overflow occurred.  Try repairing it; this might work if
 	     the time zone offset is enough to undo the overflow.  */
-	  time_t repaired_t0 = -1 - t0;
+	  gtime_t repaired_t0 = -1 - t0;
 	  approx_biennia = SHR (repaired_t0, ALOG2_SECONDS_PER_BIENNIUM);
 	  diff = approx_biennia - approx_requested_biennia;
 	  abs_diff = diff < 0 ? - diff : diff;
@@ -467,18 +466,18 @@ __mktime_internal (struct gtm *tp,
   return t;
 }
 
-/* Convert *TP to a time_t value.  */
-time_t
+/* Convert *TP to a gtime_t value.  */
+gtime_t
 mktime (struct gtm *tp)
 {
  // no time zone stuff. Just do the math ;)
-  static time_t localtime_offset;
+  static gtime_t localtime_offset;
   return __mktime_internal (tp, __localtime_r, &localtime_offset);
 }
 
-/* Fill a (struct tm) TP* from a given time_t time stamp */
-time_t
-filltm(time_t *t, struct gtm *tp)
+/* Fill a (struct tm) TP* from a given gtime_t time stamp */
+gtime_t
+filltm(gtime_t *t, struct gtm *tp)
 {
   return __offtime(t, 0, tp);
 }

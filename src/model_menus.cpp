@@ -1585,21 +1585,29 @@ void menuProcCustomSwitches(uint8_t event)
     lcd_putsnAtt( 4*FW - 1, y, PSTR(CSWITCH_STR)+CSW_LEN_FUNC*cs.func,CSW_LEN_FUNC,m_posHorz==0 ? attr : 0);
 
     uint8_t cstate = CS_STATE(cs.func);
+    int8_t v1_min=0, v1_max=NUM_XCHNRAW, v2_min=0, v2_max=NUM_XCHNRAW;
 
     if(cstate == CS_VOFS)
     {
-        putsChnRaw(    12*FW, y, cs.v1  ,m_posHorz==1 ? attr : 0);
+        putsChnRaw(12*FW, y, cs.v1, m_posHorz==1 ? attr : 0);
 #if defined(FRSKY)
-        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY)
-          lcd_outdezAtt( 20*FW, y, 125+cs.v2  ,m_posHorz==2 ? attr : 0);
+        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY) {
+          putsTelemetryChannel(20*FW, y, cs.v1+NUM_TELEMETRY-NUM_XCHNRAW-1, 128+cs.v2, m_posHorz==2 ? attr : 0);
+          v2_min = -128; v2_max = 127;
+        }
         else
 #endif
-        lcd_outdezAtt( 20*FW, y, cs.v2  ,m_posHorz==2 ? attr : 0);
+        {
+          lcd_outdezAtt( 20*FW, y, cs.v2  ,m_posHorz==2 ? attr : 0);
+          v2_min = -125; v2_max = 125;
+        }
     }
     else if(cstate == CS_VBOOL)
     {
         putsSwitches(13*FW, y, cs.v1  ,m_posHorz==1 ? attr : 0);
         putsSwitches(17*FW, y, cs.v2  ,m_posHorz==2 ? attr : 0);
+        v1_min = -MAX_SWITCH; v1_max = MAX_SWITCH;
+        v2_min = -MAX_SWITCH; v2_max = MAX_SWITCH;
     }
     else // cstate == CS_COMP
     {
@@ -1607,46 +1615,23 @@ void menuProcCustomSwitches(uint8_t event)
         putsChnRaw(    17*FW, y, cs.v2  ,m_posHorz==2 ? attr : 0);
     }
 
-    if((s_editMode>0 || p1valdiff) && attr)
+    if ((s_editMode>0 || p1valdiff) && attr) {
       switch (m_posHorz) {
         case 0:
           CHECK_INCDEC_MODELVAR( event, cs.func, 0,CS_MAXF);
-          if(cstate != CS_STATE(cs.func))
-          {
-              cs.v1  = 0;
-              cs.v2 = 0;
+          if (cstate != CS_STATE(cs.func)) {
+            cs.v1 = 0;
+            cs.v2 = 0;
           }
           break;
         case 1:
-          switch (cstate) {
-          case (CS_VOFS):
-              CHECK_INCDEC_MODELVAR( event, cs.v1, 0,NUM_XCHNRAW);
-              break;
-          case (CS_VBOOL):
-              CHECK_INCDEC_MODELVAR( event, cs.v1, -MAX_SWITCH,MAX_SWITCH);
-              break;
-          case (CS_VCOMP):
-              CHECK_INCDEC_MODELVAR( event, cs.v1, 0,NUM_XCHNRAW);
-              break;
-          default:
-              break;
-          }
+          CHECK_INCDEC_MODELVAR(event, cs.v1, v1_min, v1_max);
           break;
         case 2:
-          switch (cstate) {
-          case (CS_VOFS):
-              CHECK_INCDEC_MODELVAR( event, cs.v2, -125,125);
-              break;
-          case (CS_VBOOL):
-              CHECK_INCDEC_MODELVAR( event, cs.v2, -MAX_SWITCH,MAX_SWITCH);
-              break;
-          case (CS_VCOMP):
-              CHECK_INCDEC_MODELVAR( event, cs.v2, 0,NUM_XCHNRAW);
-              break;
-          default:
-              break;
-          }
+          CHECK_INCDEC_MODELVAR( event, cs.v2, v2_min, v2_max);
+          break;
       }
+    }
   }
 }
 
@@ -1677,7 +1662,7 @@ void menuProcFunctionSwitches(uint8_t event)
           if (sd->swtch) {
             lcd_putsnAtt(5*FW, y, PSTR(FSWITCH_STR)+FSW_LEN_FUNC*sd->func, FSW_LEN_FUNC, attr);
             if (active) {
-              CHECK_INCDEC_MODELVAR( event, sd->func, 0, FUNC_LAST);
+              CHECK_INCDEC_MODELVAR( event, sd->func, 0, FUNC_MAX-1);
             }
           }
           else if (attr) {
@@ -1749,7 +1734,6 @@ void menuProcTelemetry(uint8_t event)
   blink = (s_editMode>0) ? BLINK : INVERS ;
   uint8_t subN = 1;
   uint8_t t;
-  int16_t val;
 
   for (int i=0; i<2; i++) {
     if(s_pgOfs<subN) {
@@ -1762,7 +1746,7 @@ void menuProcTelemetry(uint8_t event)
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
       lcd_putsAtt(4, y, PSTR("Max"), 0);
-      putsTelemetry(8*FW, y, g_model.frsky.channels[i].ratio, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
+      putsTelemetryValue(8*FW, y, g_model.frsky.channels[i].ratio, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
       lcd_putsnAtt(lcd_lastPos, y, PSTR("v-")+g_model.frsky.channels[i].type, 1, (sub==subN && m_posHorz==1 ? blink:0));
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         if (m_posHorz == 0)
@@ -1776,8 +1760,7 @@ void menuProcTelemetry(uint8_t event)
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
       lcd_putsAtt(4, y, PSTR("Calib"), 0);
-      val = ((int16_t)frskyTelemetry[i].value+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
-      putsTelemetry(8*FW, y, val, g_model.frsky.channels[i].type, (sub==subN ? blink:0)|LEFT);
+      putsTelemetryChannel(8*FW, y, i, frskyTelemetry[i].value, (sub==subN ? blink:0)|LEFT);
       if(sub==subN) CHECK_INCDEC_MODELVAR(event, g_model.frsky.channels[i].offset, -127, 127);
     }
     subN++;
@@ -1785,10 +1768,8 @@ void menuProcTelemetry(uint8_t event)
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
       lcd_puts_P(4, y, PSTR("Bar"));
-      val = ((int16_t)g_model.frsky.channels[i].barMin+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
-      putsTelemetry(8*FW, y, val, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==0 ? blink:0)|LEFT);
-      val = ((int16_t)g_model.frsky.channels[i].barMax+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
-      putsTelemetry(13*FW, y, val, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==1 ? blink:0)|LEFT);
+      putsTelemetryChannel(8*FW, y, i, g_model.frsky.channels[i].barMin, (sub==subN && m_posHorz==0 ? blink:0)|LEFT);
+      putsTelemetryChannel(13*FW, y, i, g_model.frsky.channels[i].barMax, (sub==subN && m_posHorz==1 ? blink:0)|LEFT);
       if(sub==subN && m_posHorz==0 && (s_editMode>0 || p1valdiff)) g_model.frsky.channels[i].barMin = checkIncDec(event, g_model.frsky.channels[i].barMin, 0, 255, EE_MODEL);
       if(sub==subN && m_posHorz==1 && (s_editMode>0 || p1valdiff)) g_model.frsky.channels[i].barMax = checkIncDec(event, g_model.frsky.channels[i].barMax, 0, 255, EE_MODEL);
     }
@@ -1800,8 +1781,7 @@ void menuProcTelemetry(uint8_t event)
         lcd_putsAtt(4, y, PSTR("Alarm"), 0);
         lcd_putsnAtt(8*FW, y, PSTR("---YelOrgRed")+3*ALARM_LEVEL(i, j),3,(sub==subN && m_posHorz==0 ? blink:0));
         lcd_putsnAtt(12*FW, y, PSTR("<>")+ALARM_GREATER(i, j),1,(sub==subN && m_posHorz==1 ? blink:0));
-        uint8_t alarmValue = ((uint16_t)g_model.frsky.channels[i].alarms_value[j] * g_model.frsky.channels[i].ratio) / 255;
-        putsTelemetry(14*FW, y, alarmValue, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==2 ? blink:0) | LEFT);
+        putsTelemetryChannel(14*FW, y, i, g_model.frsky.channels[i].alarms_value[j], (sub==subN && m_posHorz==2 ? blink:0) | LEFT);
 
         if(sub==subN && (s_editMode>0 || p1valdiff)) {
           switch (m_posHorz) {

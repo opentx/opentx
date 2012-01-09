@@ -81,20 +81,20 @@ void doMainScreenGrphics()
   }
 }
 
+void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
+{
+  lcd_puts_P(x, y, PSTR("Alt:"));
+  uint16_t value = frskyHubData.baroAltitude + baroAltitudeOffset;
+  lcd_outdezAtt(lcd_lastPos, (flags & DBLSIZE) ? y-FH : y, value, flags|LEFT|UNSIGN);
+  lcd_putc(lcd_lastPos, y, 'm') ;
+}
+
 void menuMainView(uint8_t event)
 {
-  static uint8_t switchView = 255;
   static bool instantTrimSwLock;
   static bool trim2OfsSwLock;
 
-  uint8_t view = (switchView == 255 ? g_eeGeneral.view : switchView);
-
-#ifdef FRSKY
-  bool telemViewSw = isFunctionActive(FUNC_VIEW_TELEMETRY);
-  if (switchView == 255 && telemViewSw) { view = switchView = e_telemetry + ALTERNATE_VIEW; }
-  if (switchView != 255 && !telemViewSw) { view = g_eeGeneral.view; switchView = 255; }
-#endif
-
+  uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 
   switch(event)
@@ -111,7 +111,6 @@ void menuMainView(uint8_t event)
       break;
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
-      if (switchView != 255) break;
 #if defined(FRSKY)
 #if defined(FRSKY_HUB) && defined(WS_HOW_HIGH)
       tabViews[e_telemetry] = (g_model.frsky.usrProto == 0 ? 2 : (g_model.frsky.usrProto == 1 ? 4 : 3));
@@ -134,14 +133,12 @@ void menuMainView(uint8_t event)
       killEvents(event);
       break;
     case EVT_KEY_BREAK(KEY_UP):
-      if (switchView != 255) break;
       g_eeGeneral.view = view+1;
       if(g_eeGeneral.view>=MAX_VIEWS) g_eeGeneral.view=0;
       eeDirty(EE_GENERAL);
       beepKey();
       break;
     case EVT_KEY_BREAK(KEY_DOWN):
-      if (switchView != 255) break;
       if(view>0)
         g_eeGeneral.view = view - 1;
       else
@@ -165,21 +162,19 @@ void menuMainView(uint8_t event)
     case EVT_KEY_FIRST(KEY_EXIT):
       if(s_timerState==TMR_BEEPING) {
         s_timerState = TMR_STOPPED;
-        beepKey();
       }
       else if (view == e_timer2) {
        resetTimer2();
-       beepKey();
       }
 #ifdef FRSKY
-      else if (view == e_telemetry) {
+      else if (view_base == e_telemetry) {
         resetTelemetry();
-        beepKey();
       }
 #endif
       else {
         resetTimer1();
       }
+      beepKey();
       break;
     case EVT_KEY_LONG(KEY_EXIT):
       resetTimer1();
@@ -348,7 +343,7 @@ void menuMainView(uint8_t event)
     static bool alarmRaised[2];
 
     if (frskyStreaming) {
-      uint8_t y0, x0, val, blink;
+      uint8_t y0, x0, blink;
       if (!displayCount) {
         for (int i=0; i<2; i++) {
           staticTelemetry[i] = frskyTelemetry[i].value;
@@ -366,12 +361,9 @@ void menuMainView(uint8_t event)
               lcd_puts_P(x0, 3*FH, PSTR("A :"));
               lcd_putc(x0+FW, 3*FH, '1'+i);
               x0 += 3*FW;
-              val = ((uint16_t)staticTelemetry[i]+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
-              putsTelemetry(x0, 2*FH, val, g_model.frsky.channels[i].type, blink|DBLSIZE|LEFT);
-              val = ((int16_t)frskyTelemetry[i].min+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
-              putsTelemetry(x0+FW, 4*FH, val, g_model.frsky.channels[i].type, 0);
-              val = ((int16_t)frskyTelemetry[i].max+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
-              putsTelemetry(x0+3*FW, 4*FH, val, g_model.frsky.channels[i].type, LEFT);
+              putsTelemetryChannel(x0, 2*FH, i, staticTelemetry[i], blink|DBLSIZE|LEFT);
+              putsTelemetryChannel(x0+FW, 4*FH, i, frskyTelemetry[i].min, 0);
+              putsTelemetryChannel(x0+3*FW, 4*FH, i, frskyTelemetry[i].max, LEFT);
               x0 = 11*FW-2;
             }
           }
@@ -423,10 +415,7 @@ void menuMainView(uint8_t event)
       }
 #ifdef WS_HOW_HIGH
       else if (g_model.frsky.usrProto == PROTO_WS_HOW_HIGH && view == e_telemetry+2*ALTERNATE_VIEW) {
-        lcd_puts_P(0, 4*FH, PSTR("Alt:"));
-        uint16_t value = frskyHubData.baroAltitude;
-        lcd_outdezAtt(4*FW, 3*FH, (value * 32) / 105, DBLSIZE|LEFT);
-        lcd_putc(lcd_lastPos, 4*FH, 'm') ;
+        displayAltitudeLine(0, 4*FH, DBLSIZE);
       }
 #endif
 #ifdef FRSKY_HUB
@@ -514,13 +503,10 @@ void menuMainView(uint8_t event)
         lcd_puts_P(0, y, PSTR("Volts:"));
         lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.volts, LEFT);
         lcd_putc(lcd_lastPos, y, 'V');
-
         y = 2*FH;
-        // Altitude (barometric)
-        lcd_puts_P(12*FW, y, PSTR("Alt:"));
-        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.baroAltitude, LEFT|UNSIGN);
-        lcd_putc(lcd_lastPos, y, 'm');
 
+        // Altitude (barometric)
+        displayAltitudeLine(12*FW, y, 0);
         y += 2*FH;
 
         // Acceleromter
@@ -548,8 +534,7 @@ void menuMainView(uint8_t event)
             blink = (alarmRaised[i] ? INVERS+BLINK : 0)|LEFT;
             lcd_puts_P(x0, y0, PSTR("A :"));
             lcd_putc(x0+FW, y0, '1'+i);
-            val = ((int16_t)staticTelemetry[i]+g_model.frsky.channels[i].offset)*g_model.frsky.channels[i].ratio / 255;
-            putsTelemetry(x0+3*FW, y0, val, g_model.frsky.channels[i].type, blink);
+            putsTelemetryChannel(x0+3*FW, y0, i, staticTelemetry[i], blink);
             x0 = 13*FW-3;
           }
         }

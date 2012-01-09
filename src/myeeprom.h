@@ -158,15 +158,20 @@ PACK(typedef struct t_SafetySwData { // Safety Switches data
   int8_t  val;
 }) SafetySwData;
 
-#define FUNC_TRAINER        1
-#define FUNC_TRAINER_RUD    2
-#define FUNC_TRAINER_ELE    3
-#define FUNC_TRAINER_THR    4
-#define FUNC_TRAINER_AIL    5
-#define FUNC_INSTANT_TRIM   6
-#define FUNC_TRIMS_2_OFS    7
-#define FUNC_VIEW_TELEMETRY 8
-#define FUNC_LAST           8
+enum Functions {
+  FUNC_NONE,
+  FUNC_TRAINER,
+  FUNC_TRAINER_RUD,
+  FUNC_TRAINER_ELE,
+  FUNC_TRAINER_THR,
+  FUNC_TRAINER_AIL,
+  FUNC_INSTANT_TRIM,
+  FUNC_TRIMS_2_OFS,
+#ifdef LOGS
+  FUNC_LOGS,
+#endif
+  FUNC_MAX
+};
 
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
@@ -180,8 +185,8 @@ PACK(typedef struct t_FrSkyChannelData {
   uint8_t   alarms_value[2];    // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc. 
   uint8_t   alarms_level:4;
   uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
-  uint8_t   spare:2;
-  int8_t    barMin;             // minimum for bar display
+  uint8_t   multiplier:2;       // 0=no multiplier, 1=*2 multiplier
+  uint8_t   barMin;             // minimum for bar display
   uint8_t   barMax;             // ditto for max display (would usually = ratio)
 }) FrSkyChannelData;
 

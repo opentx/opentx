@@ -296,9 +296,19 @@ void Gruvin9xSim::refreshDiplay()
 #else
     static FXuint keys2[]={KEY_F8, KEY_F7, KEY_F4, KEY_F3, KEY_F6, KEY_F5, KEY_F1, KEY_F2  };
 #endif
+#ifdef PCBV4
+    pinj = 0;
+#else
     pind  = 0;
+#endif
     for(unsigned i=0; i<DIM(keys2);i++){
-      if(getApp()->getKeyState(keys2[i])) pind |= (1<<i);
+      if(getApp()->getKeyState(keys2[i])) {
+#ifdef PCBV4
+        pinj |= (1<<i);
+#else
+        pind |= (1<<i);
+#endif
+      }
     }
 
     struct SwitchKey {

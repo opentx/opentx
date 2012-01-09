@@ -304,7 +304,12 @@ enum EnumKeys {
 #define CSWITCH_STR  "----   v>ofs  v<ofs  |v|>ofs|v|<ofsAND    OR     XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 #define CSW_LEN_FUNC 7
 
-#define FSWITCH_STR  "----          ""Trainer       ""Trainer RUD   ""Trainer ELE   ""Trainer THR   ""Trainer AIL   ""Instant Trim  ""Trims2Offsets ""Telemetry View"
+#ifdef LOGS
+#define LOGS_STR "SDCARD Logs   "
+#else
+#define LOGS_STR
+#endif
+#define FSWITCH_STR  "----          ""Trainer       ""Trainer RUD   ""Trainer ELE   ""Trainer THR   ""Trainer AIL   ""Instant Trim  ""Trims2Offsets "LOGS_STR
 #define FSW_LEN_FUNC 14
 
 #define SWASH_TYPE_STR   "---   ""120   ""120X  ""140   ""90    "
@@ -553,6 +558,7 @@ extern uint8_t  s_eeDirtyMsk;
 #define FORCEINLINE inline __attribute__ ((always_inline))
 #endif
 
+
 /// liefert Betrag des Arguments
 template<class t> FORCEINLINE t abs(t a){ return a>0?a:-a; }
 /// liefert das Minimum der Argumente
@@ -608,13 +614,12 @@ extern inline uint16_t get_tmr10ms()
 
 #define TMR_VAROFS  16
 
-#define SUB_MODE_V     1
-#define SUB_MODE_H     2
-#define SUB_MODE_H_DBL 3
-
 void setupPulses();
 
-void initTemplates();
+#ifdef LOGS
+extern void startLogs();
+extern void doLogs();
+#endif
 
 #include "lcd.h"
 extern const char stamp1[];
@@ -714,7 +719,7 @@ inline void _beepSpkr(uint8_t d, uint8_t f)
 #if defined (PCBV3)
 #include "rtc.h"
 extern void disk_timerproc(void);
-extern time_t g_unixTime; // global unix timestamp -- hold current time in seconds since 1970-01-01 00:00:00 
+extern gtime_t g_unixTime; // global unix timestamp -- hold current time in seconds since 1970-01-01 00:00:00
 extern uint8_t g_ms100; // defined in drivers.cpp
 #endif
 
