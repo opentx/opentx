@@ -488,12 +488,11 @@ extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
 extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
 extern uint16_t s_timeCumTot;
-extern uint16_t s_timeCumAbs;  //laufzeit in 1/16 sec
-extern uint16_t s_timeCumSw;  //laufzeit in 1/16 sec
 extern uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec
 extern uint16_t s_timeCum16ThrP; //gewichtete laufzeit in 1/16 sec
-extern uint8_t  s_timerState;
+extern uint8_t  s_timerState[2];
 extern int16_t  s_timerVal[2];
+extern uint8_t  s_timerVal_10ms[2];
 
 extern uint8_t trimsCheckTimer;
 
@@ -501,11 +500,7 @@ extern uint8_t trimsCheckTimer;
 #define TMR_RUNNING 1
 #define TMR_BEEPING 2
 #define TMR_STOPPED 3
-void resetTimer1();
-
-extern uint8_t Timer2_running ;
-extern uint16_t timer2 ;
-void resetTimer2() ;
+void resetTimer(uint8_t idx);
 
 extern uint8_t g_tmr1Latency_max;
 extern uint8_t g_tmr1Latency_min;
@@ -515,7 +510,7 @@ extern uint16_t g_time_per10;
 #define MAXTRACE 120
 extern uint8_t s_traceBuf[MAXTRACE];
 extern uint16_t s_traceWr;
-extern uint16_t s_traceCnt;
+extern int8_t s_traceCnt;
 
 uint16_t getTmr16KHz();
 uint16_t stack_free();

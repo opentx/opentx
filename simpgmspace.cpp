@@ -124,7 +124,9 @@ void *main_thread(void *)
     while (main_thread_running) {
       perMain();
 
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
       frskyHubData.baroAltitude = 500;
+#endif
 
       sleep(1/*ms*/);
     }

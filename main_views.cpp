@@ -81,6 +81,7 @@ void doMainScreenGrphics()
   }
 }
 
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
 {
   lcd_puts_P(x, y, PSTR("Alt:"));
@@ -88,6 +89,7 @@ void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
   lcd_outdezAtt(lcd_lastPos, (flags & DBLSIZE) ? y-FH : y, value, flags|LEFT|UNSIGN);
   lcd_putc(lcd_lastPos, y, 'm') ;
 }
+#endif
 
 void menuMainView(uint8_t event)
 {
@@ -101,7 +103,7 @@ void menuMainView(uint8_t event)
   {
     case EVT_KEY_BREAK(KEY_MENU):
       if (view_base == e_timer2) {
-        Timer2_running = !Timer2_running;
+        // TODO Timer2_running = !Timer2_running;
         beepKey();
       }
     break;
@@ -160,11 +162,11 @@ void menuMainView(uint8_t event)
       killEvents(event);
       break;
     case EVT_KEY_FIRST(KEY_EXIT):
-      if(s_timerState==TMR_BEEPING) {
-        s_timerState = TMR_STOPPED;
+      if(s_timerState[0]==TMR_BEEPING) {
+        s_timerState[0] = TMR_STOPPED;
       }
       else if (view == e_timer2) {
-       resetTimer2();
+       resetTimer(1);
       }
 #ifdef FRSKY
       else if (view_base == e_telemetry) {
@@ -172,13 +174,13 @@ void menuMainView(uint8_t event)
       }
 #endif
       else {
-        resetTimer1();
+        resetTimer(0);
       }
       beepKey();
       break;
     case EVT_KEY_LONG(KEY_EXIT):
-      resetTimer1();
-      resetTimer2();
+      resetTimer(0);
+      resetTimer(1);
 #ifdef FRSKY
       resetTelemetry();
 #endif
@@ -206,8 +208,8 @@ void menuMainView(uint8_t event)
     putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
     putsVBat(14*FW,0,att);
-    if(s_timerState != TMR_OFF){
-      att = (s_timerState==TMR_BEEPING ? BLINK : 0);
+    if (g_model.timer1.mode) {
+      att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
       putsTime(17*FW, 0, s_timerVal[0], att, att);
     }
     lcd_filled_rect(0, 0, DISPLAY_W, 8);
@@ -223,9 +225,9 @@ void menuMainView(uint8_t event)
     putsVBat(6*FW-1, 2*FH, att|NO_UNIT);
     lcd_putc(6*FW, 3*FH, 'V');
 
-    if (s_timerState != TMR_OFF) {
-      uint8_t att = DBLSIZE | (s_timerState==TMR_BEEPING ? BLINK : 0);
-      putsTime(12*FW+3, FH*2, s_timerVal[0], att,att);
+    if (g_model.timer1.mode) {
+      uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
+      putsTime(12*FW+3, FH*2, s_timerVal[0], att, att);
       putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timer1.mode, SHRT_TM_MODE);
     }
 
@@ -552,7 +554,9 @@ void menuMainView(uint8_t event)
   }
 #endif
   else { // timer2
-    putsTime(33+FW+2, FH*5, timer2, DBLSIZE, DBLSIZE);
+    putsTime(33+FW+2, FH*5, s_timerVal[1], DBLSIZE, DBLSIZE);
+    putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timer2.mode, SHRT_TM_MODE);
+    // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 
   theFile.DisplayProgressBar(20*FW+1);
