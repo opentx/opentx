@@ -102,8 +102,6 @@ uint8_t Translate()
           g_model.name[i] = char2idx(g_model.name[i]);
         g_model.timer1.mode = v3->tmrMode;
         g_model.timer1.val = v3->tmrVal;
-        g_model.timer1.persistent = 0;
-        g_model.timer1.dir = v3->tmrDir;
         g_model.protocol = v3->protocol;
         g_model.ppmNCH = v3->ppmNCH;
         g_model.thrTrim = v3->thrTrim;
@@ -119,8 +117,6 @@ uint8_t Translate()
         g_model.beepANACenter = v3->beepANACenter;
         g_model.timer2.mode = 0;
         g_model.timer2.val = 0;
-        g_model.timer2.persistent = 0;
-        g_model.timer2.dir = 0;
         for (uint8_t i=0; i<MAX_MIXERS; i++) {
           memmove(&g_model.mixData[i], &v3->mixData[i], sizeof(MixData)); // MixData size changed!
           g_model.mixData[i].mixWarn = g_model.mixData[i].phase;
@@ -294,8 +290,9 @@ void eeLoadModel(uint8_t id)
       eeCheck(true);
     }
 
-    resetTimer1();
-    resetTimer2();
+    // TODO optim: resetAll()
+    resetTimer(0);
+    resetTimer(1);
 #ifdef FRSKY
     resetTelemetry();
     FRSKY_setModelAlarms();

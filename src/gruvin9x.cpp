@@ -20,7 +20,11 @@
  */
 
 #include "gruvin9x.h"
+
+prog_uchar APM spsMarker[] = { "SPS" };
 #include "s9xsplash.lbm"
+prog_uchar APM speMarker[] = { "SPE" };
+
 #include "menus.h"
 
 // MM/SD card Disk IO Support
@@ -480,7 +484,7 @@ uint8_t keyDown()
   return (in);
 }
 #else
-inline uint8_t keyDown()
+FORCEINLINE uint8_t keyDown()
 {
 #if defined (PCBV4)
   return (~PINL) & 0x3F;
@@ -883,7 +887,7 @@ uint8_t beepAgain = 0;
 uint8_t beepAgainOrig = 0;
 uint8_t beepOn = false;
 
-inline bool checkSlaveMode()
+FORCEINLINE bool checkSlaveMode()
 {
   // no power -> only phone jack = slave mode
 
@@ -906,177 +910,179 @@ inline bool checkSlaveMode()
 }
 
 uint16_t s_timeCumTot;
-uint16_t s_timeCumAbs;  //laufzeit in 1/16 sec
-uint16_t s_timeCumSw;  //laufzeit in 1/16 sec
-uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec
-uint16_t s_timeCum16ThrP; //gewichtete laufzeit in 1/16 sec
-
-uint8_t  s_timerState;
+uint16_t s_timeCumThr;    // THR in 1/16 sec
+uint16_t s_timeCum16ThrP; // THR% in 1/16 sec
+uint8_t  s_timerState[2];
 int16_t  s_timerVal[2];
-uint8_t  Timer1_pre = 0 ;
-
-uint8_t  Timer2_running = 0 ;
-uint8_t  Timer2_pre = 0 ;
-uint16_t timer2 = 0 ;
+uint8_t  s_timerVal_10ms[2] = {0, 0};
 
 uint8_t  trimsCheckTimer = 0;
 
-void resetTimer1()
+void resetTimer(uint8_t idx)
 {
-  s_timerState = TMR_OFF; // is changed to RUNNING dep from mode
-  s_timeCumAbs=0;
-  s_timeCumThr=0;
-  s_timeCumSw=0;
-  s_timeCum16ThrP=0;
-  Timer1_pre = 0 ;
+  s_timerState[idx] = TMR_OFF; // is changed to RUNNING dep from mode
+  s_timerVal[idx] = (idx == 0 ? g_model.timer1.val : g_model.timer2.val);
+  s_timerVal_10ms[idx] = 0 ;
 }
 
-void resetTimer2()
+FORCEINLINE void incTimers()
 {
-  Timer2_pre = 0 ;
-  timer2 = 0 ;
-}
+  static uint8_t lastSwPos[2] = {0, 0};
+  static uint16_t s_cnt[2] = {0, 0};
+  static uint16_t s_sum[2] = {0, 0};
+  static uint8_t sw_toggled[2] = {false, false};
+  static uint16_t s_time_cum_16[2] = {0, 0};
 
-inline void incTimers()
-{
   TimerData *timer = &g_model.timer1;
 
-  for (uint8_t i=0; i<1; i++, timer=&g_model.timer2) {
+  for (uint8_t i=0; i<2; i++, timer=&g_model.timer2) {
     int8_t tm = timer->mode;
+
+    if (!tm)
+      continue;
+
+    if (s_timerState[i] == TMR_OFF) {
+      s_timerState[i] = TMR_RUNNING;
+      s_cnt[i] = 0;
+      s_sum[i] = 0;
+      s_time_cum_16[i] = 0;
+    }
+
     uint8_t atm = abs(tm);
 
     // value for time described in timer->mode
     // OFFABSRUsRU%ELsEL%THsTH%ALsAL%P1P1%P2P2%P3P3%
-    uint16_t val = 0;
+    int16_t val = 0;
     if (atm>1 && atm<TMR_VAROFS) {
       val = calibratedStick[CONVERT_MODE(atm/2)-1];
       val = (tm<0 ? RESX-val : val+RESX ) / (RESX/16);
+      s_cnt[i]++;
+      s_sum[i]+=val;
     }
 
-    static uint16_t s_time;
-    static uint16_t s_cnt;
-    static uint16_t s_sum;
-    static uint8_t sw_toggled[2] = {false, false};
-
     if (atm>=(TMR_VAROFS+MAX_SWITCH-1)){ // toggeled switch
-      static uint8_t lastSwPos[2] = {0, 0};
-      if(!(sw_toggled[i] | s_sum | s_cnt | s_time | lastSwPos[i])) lastSwPos[i] = tm < 0;  // if initializing then init the lastSwPos
+      if(!(sw_toggled[i] | s_sum[i] | s_cnt[i] | lastSwPos[i])) lastSwPos[i] = tm < 0;  // if initializing then init the lastSwPos
       uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1-1) : tm+(TMR_VAROFS+MAX_SWITCH-1-1), 0);
       if (swPos && !lastSwPos[i]) sw_toggled[i] = !sw_toggled[i];  // if switch is flipped first time -> change counter state
       lastSwPos[i] = swPos;
     }
 
-    s_cnt++;
-    s_sum+=val;
+    if ( (s_timerVal_10ms[i] += 1 ) >= 100 ) {
+      s_timerVal_10ms[i] -= 100 ;
 
-    if ( (Timer1_pre += 1 ) >= 100 ) {
-      Timer1_pre -= 100 ;
-      s_time += 100;
-      val     = s_sum/s_cnt;
-      s_sum  -= val*s_cnt; //rest
-      s_cnt   = 0;
+      if (timer->val) s_timerVal[0] = timer->val - s_timerVal[0];
 
-      if (atm<TMR_VAROFS)
-        sw_toggled[i] = false; // not switch - sw timer off
-      else if (atm<(TMR_VAROFS+MAX_SWITCH-1))
+      if (atm==TMRMODE_ABS) {
+        s_timerVal[i]++;
+      }
+      else if (atm<TMR_VAROFS) {
+        if (atm&1) {
+          if (s_cnt[i]) {
+            val       = s_sum[i]/s_cnt[i];
+            s_sum[i] -= val*s_cnt[i]; //rest
+            s_cnt[i]  = 0;
+            s_time_cum_16[i] += val/2;
+            if (s_time_cum_16[i] >= 16) {
+              s_timerVal[i] ++;
+              s_time_cum_16[i] -= 16;
+            }
+          }
+        }
+        else if (val) {
+          s_timerVal[i]++;
+        }
+      }
+      else if (atm<(TMR_VAROFS+MAX_SWITCH-1)) {
         sw_toggled[i] = getSwitch((tm>0 ? tm-(TMR_VAROFS-1) : tm+(TMR_VAROFS-1)), 0); // normal switch
+      }
 
-      s_timeCumTot               += 1;
-      s_timeCumAbs               += 1;
-      if(val) s_timeCumThr       += 1;
-      if(sw_toggled) s_timeCumSw += 1;
-      s_timeCum16ThrP            += val/2;
-
-      s_timerVal[i] = timer->val;
-      if (atm==TMRMODE_NONE) s_timerState = TMR_OFF;
-      else if (atm==TMRMODE_ABS) s_timerVal[i] -= s_timeCumAbs;
-      else if(atm<TMR_VAROFS) s_timerVal[i] -= (atm&1) ? s_timeCum16ThrP/16 : s_timeCumThr;// stick% : stick
-      else s_timerVal[i] -= s_timeCumSw; //switch
-
-      switch(s_timerState)
+      switch(s_timerState[i])
       {
-        case TMR_OFF:
-          if (tm != TMRMODE_NONE) s_timerState=TMR_RUNNING;
-          break;
         case TMR_RUNNING:
-          if (s_timerVal[i]<=0 && timer->val) s_timerState=TMR_BEEPING;
+          if (timer->val && s_timerVal[i]>=timer->val) s_timerState[i]=TMR_BEEPING;
           break;
         case TMR_BEEPING:
-          if (s_timerVal[i] <= -MAX_ALERT_TIME)   s_timerState=TMR_STOPPED;
-          if (timer->val == 0)             s_timerState=TMR_RUNNING;
-          break;
-        case TMR_STOPPED:
+          if (s_timerVal[i] >= timer->val + MAX_ALERT_TIME) s_timerState[i]=TMR_STOPPED;
           break;
       }
 
-      static int16_t last_tmr;
-
-      if (last_tmr != s_timerVal[i])  //beep only if seconds advance
-      {
-          if(s_timerState==TMR_RUNNING)
-          {
-              if(g_eeGeneral.preBeep && timer->val) // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
-              {
-                  if(s_timerVal[i]==30) {beepAgain=2; beepWarn2();} //beep three times
-                  if(s_timerVal[i]==20) {beepAgain=1; beepWarn2();} //beep two times
-                  if(s_timerVal[i]==10)  beepWarn2();
-                  if(s_timerVal[i]<= 3)  beepWarn2();
-
-                  if(g_eeGeneral.flashBeep && (s_timerVal[i]==30 || s_timerVal[i]==20 || s_timerVal[i]==10 || s_timerVal[i]<=3))
-                      g_LightOffCounter = FLASH_DURATION;
-              }
-
-              if(g_eeGeneral.minuteBeep && (((timer->dir ? timer->val-s_timerVal[i] : s_timerVal[i])%60)==0)) //short beep every minute
-              {
-                  beepWarn2();
-                  if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
-              }
-          }
-          else if(s_timerState==TMR_BEEPING)
-          {
-              beepWarn();
-              if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
-          }
-      }
-      last_tmr = s_timerVal[i];
-      if(timer->dir) s_timerVal[i] = timer->val-s_timerVal[i]; //if counting backwards - display backwards
+      if (timer->val) s_timerVal[0] = timer->val - s_timerVal[0]; //if counting backwards - display backwards
     }
   }
 
-  if (Timer2_running) {
-    if ( (Timer2_pre += 1 ) >= 100 ) {
-      Timer2_pre -= 100 ;
-      timer2 += 1 ;
-    }
+  static int16_t last_tmr;
+  if (last_tmr != s_timerVal[0]) { // beep only if seconds advance
+      if (s_timerState[0] == TMR_RUNNING) {
+          if (g_eeGeneral.preBeep && g_model.timer1.val) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
+              if(s_timerVal[0]==30) {beepAgain=2; beepWarn2();} //beep three times
+              if(s_timerVal[0]==20) {beepAgain=1; beepWarn2();} //beep two times
+              if(s_timerVal[0]==10)  beepWarn2();
+              if(s_timerVal[0]<= 3)  beepWarn2();
+
+              if(g_eeGeneral.flashBeep && (s_timerVal[0]==30 || s_timerVal[0]==20 || s_timerVal[0]==10 || s_timerVal[0]<=3))
+                  g_LightOffCounter = FLASH_DURATION;
+          }
+
+          if (g_eeGeneral.minuteBeep && (((timer->val ? timer->val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
+              beepWarn2();
+              if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
+          }
+      }
+      else if(s_timerState[0] == TMR_BEEPING)
+      {
+          beepWarn();
+          if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
+      }
+      last_tmr = s_timerVal[0];
   }
 }
 
 uint8_t s_traceBuf[MAXTRACE];
 uint16_t s_traceWr;
-uint16_t s_traceCnt;
-inline void trace()   // called in perOut - once envery 0.01sec
+int8_t s_traceCnt;
+FORCEINLINE void thrTrace()   // called in perOut - once envery 0.01sec
 {
-  incTimers();
-
-  uint16_t val = calibratedStick[CONVERT_MODE(3)-1]; // get throttle channel value
+  int16_t val = calibratedStick[CONVERT_MODE(3)-1]; // get throttle channel value
   val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
   val /= (RESX/16); // calibrate it
 
-  static uint16_t s_time;
-  static uint16_t s_cnt;
-  static uint16_t s_sum;
-  s_cnt++;
-  s_sum+=val;
-  if((get_tmr10ms()-s_time)<1000) //10 sec
-    return;
-  s_time= get_tmr10ms();
-  val   = s_sum/s_cnt;
-  s_sum = 0;
-  s_cnt = 0;
+  static uint16_t s_time_tot;
+  static uint16_t s_time_trace;
+  static uint8_t  s_cnt_1s;
+  static uint16_t s_sum_1s;
+  static uint16_t s_cnt_10s;
+  static uint16_t s_sum_10s;
 
-  s_traceCnt++;
+  s_cnt_1s ++;
+  s_sum_1s +=val;
+
+  uint16_t tmr10ms = get_tmr10ms();
+  if (tmr10ms - s_time_tot < 100)    // 1sec
+    return;
+
+  s_time_tot += 100;
+  s_timeCumTot += 1;
+
+  val = s_sum_1s / s_cnt_1s;
+  s_timeCum16ThrP += val/2;
+  if (val) s_timeCumThr += 1;
+
+  s_cnt_10s += s_cnt_1s;
+  s_sum_10s += s_sum_1s;
+  s_cnt_1s = 0;
+  s_sum_1s = 0;
+
+  if (tmr10ms - s_time_trace < 1000) // 10sec
+    return;
+
+  s_time_trace += 1000;
+  val   = s_sum_10s/s_cnt_10s;
+  s_sum_10s = 0;
+  s_cnt_10s = 0;
+
   s_traceBuf[s_traceWr++] = val;
-  if(s_traceWr>=MAXTRACE) s_traceWr=0;
+  if (s_traceWr >= MAXTRACE) s_traceWr=0;
+  if (s_traceCnt >= 0) s_traceCnt++;
 }
 
 #ifdef HELI
@@ -1109,7 +1115,7 @@ int32_t  act   [MAX_MIXERS] = {0};
 uint8_t  swOn  [MAX_MIXERS] = {0};
 uint8_t mixWarning;
 
-inline void evalTrims(uint8_t phase)
+FORCEINLINE void evalTrims(uint8_t phase)
 {
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
@@ -1312,7 +1318,10 @@ void perOut(int16_t *chanOut, uint8_t phase)
   
   for (uint8_t i=CHOUT_BASE; i<NUM_XCHNRAW; i++) anas[i] = chans[i-CHOUT_BASE]; // other mixes previous outputs
 
-  if(tick10ms) trace(); //trace thr 0..32  (/32)
+  if (tick10ms) {
+    incTimers();
+    thrTrace();     // trace thr 0..32  (/32)
+  }
 
   memset(chans,0,sizeof(chans));        // All outputs to 0
 
