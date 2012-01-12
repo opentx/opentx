@@ -999,10 +999,10 @@ FORCEINLINE void incTimers()
       switch(s_timerState[i])
       {
         case TMR_RUNNING:
-          if (timer->val && s_timerVal[i]>=timer->val) s_timerState[i]=TMR_BEEPING;
+          if (timer->val && s_timerVal[i]>=(int16_t)timer->val) s_timerState[i]=TMR_BEEPING;
           break;
         case TMR_BEEPING:
-          if (s_timerVal[i] >= timer->val + MAX_ALERT_TIME) s_timerState[i]=TMR_STOPPED;
+          if (s_timerVal[i] >= (int16_t)timer->val + MAX_ALERT_TIME) s_timerState[i]=TMR_STOPPED;
           break;
       }
 
