@@ -22,6 +22,14 @@
 #ifndef simpgmspace_h
 #define simpgmspace_h
 
+#ifndef __GNUC__
+#include <windows.h>
+#define sleep(x) Sleep(x)
+#else
+#include <unistd.h>
+#define sleep(x) usleep(1000*x)
+#endif
+
 #ifdef SIMU_EXCEPTIONS
 extern char * main_thread_error;
 #include <stdlib.h>

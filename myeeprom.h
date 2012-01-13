@@ -41,7 +41,7 @@
 
 #define EEPROM_VER_r584  3
 #define EEPROM_VER_r751  5
-#define EEPROM_VER       201
+#define EEPROM_VER       202
 
 #ifndef PACK
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
@@ -238,6 +238,11 @@ PACK(typedef struct t_PhaseData {
 #define NUM_CSW      12 // number of custom switches
 #define NUM_FSW      12 // number of functions assigned to switches
 
+#define TMRMODE_NONE     0
+#define TMRMODE_ABS      1
+#define TMRMODE_THR      2
+#define TMRMODE_THR_REL  3
+#define TMRMODE_THR_TRG  4
 PACK(typedef struct t_TimerData {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t  val;
@@ -270,6 +275,7 @@ PACK(typedef struct t_ModelData {
   PhaseData phaseData[MAX_PHASES];
   FrSkyData frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
+  uint8_t   thrTraceSrc;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

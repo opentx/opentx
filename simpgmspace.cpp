@@ -19,14 +19,6 @@
  *
  */
 
-#ifndef __GNUC__
-#include <windows.h>
-#define sleep(x) Sleep(x)
-#else
-#include <unistd.h>
-#define sleep(x) usleep(1000*x)
-#endif
-
 #include <ctype.h>
 #include "simpgmspace.h"
 #include "lcd.h"

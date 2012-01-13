@@ -404,14 +404,14 @@ void menuProcModel(uint8_t event)
     if (s_pgOfs<subN) {
       lcd_putsnAtt(0*FW, y, PSTR("Timer1Timer2")+6*i, 6, 0);
       putsTmrMode(PARAM_OFS, y, timer->mode, sub==subN && m_posHorz==0 ? ((s_editMode>0) ? BLINK : INVERS) : 0);
-      putsTime(14*FW-3, y, timer->val,
+      putsTime(14*FW, y, timer->val,
           (sub==subN && m_posHorz==1 ? ((s_editMode>0) ? BLINK : INVERS):0),
           (sub==subN && m_posHorz==2 ? ((s_editMode>0) ? BLINK : INVERS):0) );
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         uint16_t timer_val = timer->val;
         switch (m_posHorz) {
          case 0:
-           CHECK_INCDEC_MODELVAR(event, timer->mode, -(13+2*MAX_SWITCH),(13+2*MAX_SWITCH));
+           CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(MAX_PSWITCH+NUM_CSW));
            break;
          case 1:
          {
@@ -453,6 +453,16 @@ void menuProcModel(uint8_t event)
     lcd_puts_P(    0,    y, PSTR("Trim Inc"));
     lcd_putsnAtt(  PARAM_OFS, y, PSTR("Exp   ExFineFine  MediumCoarse")+6*g_model.trimInc,6,(sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_MODELVAR(event,g_model.trimInc,0,4);
+    if((y+=FH)>7*FH) return;
+  }subN++;
+
+  if(s_pgOfs<subN) {
+    lcd_puts_P(    0,    y, PSTR("T-Trace"));
+    int8_t idx = 3;
+    if (g_model.thrTraceSrc > NUM_POTS) idx = NUM_STICKS+2+3+NUM_PPM+g_model.thrTraceSrc;
+    else if (g_model.thrTraceSrc > 0) idx = NUM_STICKS+g_model.thrTraceSrc;
+    putsChnRaw(PARAM_OFS, y, idx, (sub==subN ? INVERS:0));
+    if (sub==subN) CHECK_INCDEC_MODELVAR(event, g_model.thrTraceSrc, 0, NUM_POTS+NUM_CHNOUT);
     if((y+=FH)>7*FH) return;
   }subN++;
 
@@ -1588,8 +1598,15 @@ void menuProcCustomSwitches(uint8_t event)
         putsChnRaw(12*FW, y, cs.v1, m_posHorz==1 ? attr : 0);
 
 #if defined(FRSKY)
+#if defined(FRSKY_HUB)
+        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY+3) {
+          lcd_outdezAtt(20*FW, y, (128+cs.v2) * 50, m_posHorz==2 ? attr : 0);
+          v2_min = -128; v2_max = 127;
+        }
+        else
+#endif
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-        if (cs.v1 > NUM_XCHNRAW-1) {
+        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY+2) {
           lcd_outdezAtt(20*FW, y, (128+cs.v2) * 4, m_posHorz==2 ? attr : 0);
           v2_min = -128; v2_max = 127;
         }
@@ -1633,8 +1650,19 @@ void menuProcCustomSwitches(uint8_t event)
           }
           break;
         case 1:
+        {
+          int8_t v1 = cs.v1;
           CHECK_INCDEC_MODELVAR(event, cs.v1, v1_min, v1_max);
+          if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+1 && v1 < cs.v1) cs.v2 = -98;
+#ifdef FRSKY
+          if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+3 && v1 < cs.v1) cs.v2 = -128;
+#endif
+          if (cs.v1 == CHOUT_BASE+NUM_CHNOUT && v1 > cs.v1) cs.v2 = 0;
+#ifdef FRSKY
+          if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+2 && v1 > cs.v1) cs.v2 = -98;
+#endif
           break;
+        }
         case 2:
           CHECK_INCDEC_MODELVAR(event, cs.v2, v2_min, v2_max);
           break;

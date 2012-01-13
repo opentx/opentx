@@ -236,12 +236,12 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P( 1*FW, y, PSTR("Mode"));//sub==3?INVERS:0);
+    lcd_puts_P( 1*FW, y, PSTR("Mode"));
     if(y<7*FH) {for(uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks,i,0); }
     if((y+=FH)>7*FH) return;
 
     lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,sub==subN?INVERS:0);
-    for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y,i+1,0);//sub==3?INVERS:0);
+    for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, CONVERT_MODE(i+1),0);
 
     if(sub==subN) CHECK_INCDEC_GENVAR(event,g_eeGeneral.stickMode,0,3);
     if((y+=FH)>7*FH) return;

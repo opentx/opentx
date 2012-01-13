@@ -357,7 +357,10 @@ enum EnumKeys {
 #define CHOUT_BASE      (PPM_BASE+NUM_PPM)
 
 #if defined(FRSKY)
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+#if defined(FRSKY_HUB)
+#define NUM_TELEMETRY      4
+#define TELEMETRY_CHANNELS "AD1AD2ALTRPM"
+#elif defined(WS_HOW_HIGH)
 #define NUM_TELEMETRY      3
 #define TELEMETRY_CHANNELS "AD1AD2ALT"
 #else
@@ -409,10 +412,6 @@ enum EnumKeys {
 #define HEART_TIMER2Mhz  1
 #define HEART_TIMER10ms  2
 
-#define TMRMODE_NONE     0
-#define TMRMODE_ABS      1
-#define TMRMODE_THR      2
-#define TMRMODE_THR_REL  3
 #define MAX_ALERT_TIME   60
 
 #define PROTO_PPM        0
@@ -611,7 +610,7 @@ extern inline uint16_t get_tmr10ms()
   return time ;
 }
 
-#define TMR_VAROFS  16
+#define TMR_VAROFS  5
 
 void setupPulses();
 

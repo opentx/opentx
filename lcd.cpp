@@ -407,7 +407,7 @@ void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
   if (idx==0)
     lcd_putsnAtt(x, y, PSTR("----"), 4, att);
   else if (idx<=NUM_STICKS)
-    lcd_putsnAtt(x, y, modi12x3+g_eeGeneral.stickMode*16+4*(idx-1), 4, att);
+    lcd_putsnAtt(x, y, modi12x3+4*(idx-1), 4, att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3)
     lcd_putsnAtt(x,y,PSTR("P1  P2  P3  MAX FULLCYC1CYC2CYC3")+4*(idx-5), 4, att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM)
@@ -476,22 +476,21 @@ void putsCurve(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
 {
   if (mode < 0) {
-    mode = -mode;
+    mode = TMR_VAROFS - mode - 1;
     lcd_putcAtt(x-1*FW, y, '!', att);
   }
-
-  if (mode < TMR_VAROFS) {
-    lcd_putsnAtt(x, y, PSTR("OFFABSRUsRU%ELsEL%THsTH%ALsAL%P1 P1%P2 P2%P3 P3%")+3*mode, 3, att);
+  else if (mode < TMR_VAROFS) {
+    lcd_putsnAtt(x, y, PSTR("OFFABSTHsTH%THt")+3*mode, 3, att);
     return;
   }
 
   if (mode < TMR_VAROFS+MAX_SWITCH-1) { // normal on-off
     putsSwitches(x, y, mode-(TMR_VAROFS-1), att);
-    return;
   }
-
-  putsSwitches(x, y, mode-(TMR_VAROFS+MAX_SWITCH-1-1), att); // momentary on-off
-  if (~att & SHRT_TM_MODE) lcd_putcAtt(x+3*FW, y, 'm', att);
+  else {
+    putsSwitches(x, y, mode-(TMR_VAROFS+MAX_SWITCH-2), att); // momentary on-off
+    if (~att & SHRT_TM_MODE) lcd_putcAtt(x+3*FW, y, 'm', att);
+  }
 }
 
 #ifdef FRSKY

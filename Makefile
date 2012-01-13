@@ -81,10 +81,6 @@ BATT = BANDGAP
 # Values = YES, NO
 DECIMALS = NO
 
-# TRANSLATIONS from previous EEPROM formats 
-# Values = YES, NO
-TRANSLATIONS = YES
-
 # DISPLAY_USER_DATA to display on screen data from FrSky module (testing/demo purpose)
 # Values = YES, NO
 DISPLAY_USER_DATA = NO
@@ -317,10 +313,6 @@ endif
 
 ifeq ($(DECIMALS), YES)
   CPPDEFS += -DDECIMALS_DISPLAYED
-endif
-
-ifeq ($(TRANSLATIONS), YES)
-  CPPDEFS += -DTRANSLATIONS
 endif
 
 ifeq ($(HELI), YES)
