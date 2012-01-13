@@ -56,6 +56,7 @@ bool warble = false;
 
 uint8_t heartbeat;
 
+// TODO reduce this tab
 const prog_char APM modi12x3[]=
   "RUD ELE THR AIL "
   "RUD THR ELE AIL "
@@ -307,6 +308,9 @@ FORCEINLINE int16_t getValue(uint8_t i)
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
     else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude + baroAltitudeOffset;
 #endif
+#if defined(FRSKY_HUB)
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
+#endif
 #endif
     else return 0;
 }
@@ -366,15 +370,24 @@ bool __getSwitch(int8_t swtch)
       int16_t y;
       if (s == CS_VOFS) {
 #ifdef FRSKY
+#if defined(FRSKY_HUB)
+        // RPMs
+        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3)
+          y = (128+cs.v2) * 25;
+        else
+#endif
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+        // ALT
         if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
           y = (128+cs.v2) * 4;
         else
 #endif
+        // Volts
         if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
           y = 128+cs.v2;
         else
 #endif
+        // Timers
         if (cs.v1 > CHOUT_BASE+NUM_CHNOUT)
           y = 98+cs.v2;
         else
@@ -497,7 +510,7 @@ FORCEINLINE uint8_t keyDown()
 void clearKeyEvents()
 {
 #ifdef SIMU
-    while (keyDown() && main_thread_running);
+    while (keyDown() && main_thread_running) sleep(1/*ms*/);
 #else
     while (keyDown());  // loop until all keys are up
 #endif
@@ -534,6 +547,7 @@ void doSplash()
       {
 #ifdef SIMU
         if (!main_thread_running) return;
+        sleep(1/*ms*/);
 #else
         getADC_filt();
 #endif
@@ -595,6 +609,7 @@ void checkTHR()
   {
 #ifdef SIMU
       if (!main_thread_running) return;
+      sleep(1/*ms*/);
 #else
       getADC_single();
 #endif
@@ -632,6 +647,7 @@ void checkSwitches()
   {
 #ifdef SIMU
     if (!main_thread_running) return;
+    sleep(1/*ms*/);
 #endif
 
     uint8_t i;
@@ -675,6 +691,7 @@ void alert(const prog_char * s, bool defaults)
   {
 #ifdef SIMU
     if (!main_thread_running) return;
+    sleep(1/*ms*/);
 #endif
     if(keyDown())   return;  //wait for key release
 
@@ -925,7 +942,7 @@ void resetTimer(uint8_t idx)
   s_timerVal_10ms[idx] = 0 ;
 }
 
-FORCEINLINE void incTimers()
+FORCEINLINE void incTimers(int16_t val)
 {
   static uint8_t lastSwPos[2] = {0, 0};
   static uint16_t s_cnt[2] = {0, 0};
@@ -948,14 +965,11 @@ FORCEINLINE void incTimers()
       s_time_cum_16[i] = 0;
     }
 
-    uint8_t atm = abs(tm);
+    uint8_t atm = (tm >= 0 ? tm : TMR_VAROFS-tm-1);
 
     // value for time described in timer->mode
-    // OFFABSRUsRU%ELsEL%THsTH%ALsAL%P1P1%P2P2%P3P3%
-    int16_t val = 0;
-    if (atm>1 && atm<TMR_VAROFS) {
-      val = calibratedStick[CONVERT_MODE(atm/2)-1];
-      val = (tm<0 ? RESX-val : val+RESX ) / (RESX/16);
+    // OFFABSTHsTH%THt
+    if (atm == TMRMODE_THR_REL) {
       s_cnt[i]++;
       s_sum[i]+=val;
     }
@@ -975,25 +989,30 @@ FORCEINLINE void incTimers()
       if (atm==TMRMODE_ABS) {
         s_timerVal[i]++;
       }
-      else if (atm<TMR_VAROFS) {
-        if (atm&1) {
-          if (s_cnt[i]) {
-            val       = s_sum[i]/s_cnt[i];
-            s_sum[i] -= val*s_cnt[i]; //rest
-            s_cnt[i]  = 0;
-            s_time_cum_16[i] += val/2;
-            if (s_time_cum_16[i] >= 16) {
-              s_timerVal[i] ++;
-              s_time_cum_16[i] -= 16;
-            }
+      else if (atm==TMRMODE_THR) {
+        if (val) s_timerVal[i]++;
+      }
+      else if (atm==TMRMODE_THR_REL) {
+        if (s_cnt[i]) {
+          val       = s_sum[i]/s_cnt[i];
+          s_sum[i] -= val*s_cnt[i]; //rest
+          s_cnt[i]  = 0;
+          s_time_cum_16[i] += val/2;
+          if (s_time_cum_16[i] >= 16) {
+            s_timerVal[i] ++;
+            s_time_cum_16[i] -= 16;
           }
         }
-        else if (val) {
-          s_timerVal[i]++;
-        }
       }
-      else if (atm<(TMR_VAROFS+MAX_SWITCH-1)) {
-        sw_toggled[i] = getSwitch((tm>0 ? tm-(TMR_VAROFS-1) : tm+(TMR_VAROFS-1)), 0); // normal switch
+      else if (atm==TMRMODE_THR_TRG) {
+        if (val || s_timerVal[i] > 0)
+          s_timerVal[i]++;
+      }
+      else {
+        if (atm<(TMR_VAROFS+MAX_SWITCH-1))
+          sw_toggled[i] = getSwitch((tm>0 ? tm-(TMR_VAROFS-1) : tm+(TMR_VAROFS-1)), 0); // normal switch
+        if (sw_toggled[i])
+          s_timerVal[i]++;
       }
 
       switch(s_timerState[i])
@@ -1040,12 +1059,8 @@ FORCEINLINE void incTimers()
 uint8_t s_traceBuf[MAXTRACE];
 uint16_t s_traceWr;
 int8_t s_traceCnt;
-FORCEINLINE void thrTrace()   // called in perOut - once envery 0.01sec
+FORCEINLINE void thrTrace(int16_t val)   // called in perOut - once envery 0.01sec
 {
-  int16_t val = calibratedStick[CONVERT_MODE(3)-1]; // get throttle channel value
-  val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
-  val /= (RESX/16); // calibrate it
-
   static uint16_t s_time_tot;
   static uint16_t s_time_trace;
   static uint8_t  s_cnt_1s;
@@ -1154,7 +1169,7 @@ uint8_t evalSticks(uint8_t phase)
   for(uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
 
     // normalization [0..2048] -> [-1024..1024]
-
+    uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i+1) - 1 : i);
     int16_t v = anaIn(i);
 
 #ifndef SIMU
@@ -1167,17 +1182,17 @@ uint8_t evalSticks(uint8_t phase)
     if(v <= -RESX) v = -RESX;
     if(v >=  RESX) v =  RESX;
 
-    if (g_eeGeneral.throttleReversed && i==THR_STICK)
+    if (g_eeGeneral.throttleReversed && ch==2/*TODO THR_STICK*/)
       v = -v;
 
-    calibratedStick[i] = v; //for show in expo
-    if(!(v/16)) anaCenter |= 1<<(CONVERT_MODE((i+1))-1);
+    calibratedStick[ch] = v; //for show in expo
+    if(!(v/16)) anaCenter |= 1<<ch;
 
 
-    if (i < NUM_STICKS) { //only do this for sticks
-      if (!s_noStickInputs && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+i))) {
+    if (ch < NUM_STICKS) { //only do this for sticks
+      if (!s_noStickInputs && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
         // trainer mode
-        TrainerMix* td = &g_eeGeneral.trainer.mix[i];
+        TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
           uint8_t chStud = td->srcChn;
           int32_t vStud  = (g_ppmIns[chStud]- g_eeGeneral.trainer.calib[chStud]);
@@ -1191,12 +1206,12 @@ uint8_t evalSticks(uint8_t phase)
       }
 
 #ifdef HELI
-      if(d && (i==ELE_STICK || i==AIL_STICK))
+      if(d && (ch==1/*TODO ELE_STICK*/ || ch==3/*TODO AIL_STICK*/))
         v = int32_t(v)*g_model.swashR.value*RESX/(int32_t(d)*100);
 #endif
 
     }
-    anas[i] = v; //set values for mixer
+    anas[ch] = v; //set values for mixer
   }
 
   /* EXPOs */
@@ -1319,11 +1334,27 @@ void perOut(int16_t *chanOut, uint8_t phase)
   for (uint8_t i=CHOUT_BASE; i<NUM_XCHNRAW; i++) anas[i] = chans[i-CHOUT_BASE]; // other mixes previous outputs
 
   if (tick10ms) {
-    incTimers();
-    thrTrace();     // trace thr 0..32  (/32)
+    int16_t val;
+
+    if (g_model.thrTraceSrc == 0) {
+      val = calibratedStick[2/*TODO THR_STICK*/]; // get throttle channel value
+      val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
+    }
+    else if (g_model.thrTraceSrc > NUM_POTS) {
+      val = RESX + g_chans512[g_model.thrTraceSrc-NUM_POTS-1];
+    }
+    else {
+      val = calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1];
+    }
+
+    val /= (RESX/16); // calibrate it
+
+    incTimers(val);
+
+    thrTrace(val);     // trace thr 0..32  (/32)
   }
 
-  memset(chans,0,sizeof(chans));        // All outputs to 0
+  memset(chans, 0, sizeof(chans));        // All outputs to 0
 
     //========== MIXER LOOP ===============
     mixWarning = 0;
