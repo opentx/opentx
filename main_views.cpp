@@ -239,7 +239,7 @@ void menuMainView(uint8_t event)
       static uint8_t x[4]    = {128*1/4+2, 4, 128-4, 128*3/4-2};
       static uint8_t vert[4] = {0,1,1,0};
       uint8_t xm, ym;
-      xm = x[i];
+      xm = x[CONVERT_MODE(i+1)-1];
 
       uint8_t att = 0;
       int16_t val = getTrimValue(getTrimFlightPhase(i, phase), i);
