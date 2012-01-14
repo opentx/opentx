@@ -56,7 +56,7 @@ bool warble = false;
 
 uint8_t heartbeat;
 
-// TODO reduce this tab
+// TODO reduce these tabs
 const prog_char APM modi12x3[]=
   "RUD ELE THR AIL "
   "RUD THR ELE AIL "
@@ -81,20 +81,6 @@ const prog_uint8_t APM modn12x3[]= {
     4, 2, 3, 1,
     4, 3, 2, 1 };
 
-#ifdef TRANSLATIONS
-int8_t char2idx(char c)
-{
-  if (c==' ') return 0;
-  if (c>='A' && c<='Z') return 1+c-'A';
-  if (c>='a' && c<='z') return -1-c+'a';
-  if (c>='0' && c<='9') return 27+c-'0';
-  for (int8_t i=0;;i++) {
-    char cc = pgm_read_byte(s_charTab+i);
-    if(cc==c) return 37+i;
-    if(cc==0) return 0;
-  }
-}
-#endif
 
 char idx2char(int8_t idx)
 {
@@ -711,7 +697,7 @@ uint8_t checkTrim(uint8_t event)
 
   if (k>=0 && k<8) { // && (event & _MSK_KEY_REPT))
     //LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
-    uint8_t idx = k/2;
+    uint8_t idx = CONVERT_MODE(1+k/2) - 1;
     uint8_t phase = getTrimFlightPhase(idx, getFlightPhase());
     int16_t before = getTrimValue(phase, idx);
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
@@ -984,7 +970,7 @@ FORCEINLINE void incTimers(int16_t val)
     if ( (s_timerVal_10ms[i] += 1 ) >= 100 ) {
       s_timerVal_10ms[i] -= 100 ;
 
-      if (timer->val) s_timerVal[0] = timer->val - s_timerVal[0];
+      if (timer->val) s_timerVal[i] = timer->val - s_timerVal[i];
 
       if (atm==TMRMODE_ABS) {
         s_timerVal[i]++;
@@ -1025,7 +1011,7 @@ FORCEINLINE void incTimers(int16_t val)
           break;
       }
 
-      if (timer->val) s_timerVal[0] = timer->val - s_timerVal[0]; //if counting backwards - display backwards
+      if (timer->val) s_timerVal[i] = timer->val - s_timerVal[i]; //if counting backwards - display backwards
     }
   }
 

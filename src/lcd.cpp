@@ -497,10 +497,13 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
 // TODO move this into frsky.cpp
 void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, uint8_t val, uint8_t att)
 {
-  int16_t converted_value = ((int16_t)val+g_model.frsky.channels[channel].offset)*g_model.frsky.channels[channel].ratio / 255;
-  if (g_model.frsky.channels[channel].type == 0 && converted_value < 100) {
+  // TODO optimize this, avoid int32_t
+  int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * g_model.frsky.channels[channel].ratio * 2 / 51;
+  if (g_model.frsky.channels[channel].type == 0 && converted_value < 1000) {
     att |= PREC2;
-    converted_value = ((int16_t)val+g_model.frsky.channels[channel].offset)*g_model.frsky.channels[channel].ratio*10 / 255;
+  }
+  else {
+    converted_value /= 10;
   }
   putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
 }
