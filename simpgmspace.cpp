@@ -106,7 +106,9 @@ void *main_thread(void *)
     eeReadAll(); //load general setup and selected model
 
     if (main_thread_running == 1) {
+#ifdef SPLASH
       doSplash();
+#endif
       checkLowEEPROM();
       checkTHR();
       checkSwitches();
