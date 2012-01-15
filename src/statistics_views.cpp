@@ -40,9 +40,9 @@ void menuProcStatistic(uint8_t event)
   lcd_puts_P( 17*FW, FH*1, PSTR("TM2"));
   putsTime(   12*FW, FH*1, s_timerVal[1], 0, 0);
 
-  lcd_puts_P(  1*FW, FH*2, PSTR("STK"));
+  lcd_puts_P(  1*FW, FH*2, PSTR("THR"));
   putsTime(    5*FW, FH*2, s_timeCumThr, 0, 0);
-  lcd_puts_P( 17*FW, FH*2, PSTR("ST%"));
+  lcd_puts_P( 17*FW, FH*2, PSTR("TH%"));
   putsTime(   12*FW, FH*2, s_timeCum16ThrP/16, 0, 0);
 
   lcd_puts_P( 17*FW, FH*0, PSTR("TOT"));
