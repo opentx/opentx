@@ -1028,7 +1028,7 @@ FORCEINLINE void incTimers(int16_t val)
                   g_LightOffCounter = FLASH_DURATION;
           }
 
-          if (g_eeGeneral.minuteBeep && (((timer->val ? timer->val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
+          if (g_eeGeneral.minuteBeep && (((g_model.timer1.val ? g_model.timer1.val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
               beepWarn2();
               if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
           }
