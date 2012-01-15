@@ -514,7 +514,10 @@ extern int8_t s_traceCnt;
 uint16_t getTmr16KHz();
 uint16_t stack_free();
 
+#ifdef SPLASH
 void doSplash();
+#endif
+
 void checkLowEEPROM();
 void checkTHR();
 void checkSwitches();

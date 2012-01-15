@@ -58,8 +58,13 @@ MenuFuncP_PROGMEM APM menuTabDiag[] = {
 
 void menuProcSetup(uint8_t event)
 {
+#ifdef SPLASH
 #define COUNT_ITEMS 19
-#undef PARAM_OFS
+#else
+#define COUNT_ITEMS 18
+#endif
+
+#undef  PARAM_OFS
 #define PARAM_OFS   17*FW
 
   SIMPLE_MENU("RADIO SETUP", menuTabDiag, e_Setup, COUNT_ITEMS+1);
@@ -158,6 +163,7 @@ void menuProcSetup(uint8_t event)
     if((y+=FH)>7*FH) return;
   }subN++;
 
+#ifdef SPLASH
   if(s_pgOfs<subN) {
       uint8_t b = 1-g_eeGeneral.disableSplashScreen;
       lcd_puts_P(0, y,PSTR("Splash screen"));
@@ -169,6 +175,7 @@ void menuProcSetup(uint8_t event)
       }
       if((y+=FH)>7*FH) return;
   }subN++;
+#endif
 
   if(s_pgOfs<subN) {
       uint8_t b = 1-g_eeGeneral.disableThrottleWarning;

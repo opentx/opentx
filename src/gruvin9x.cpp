@@ -21,9 +21,11 @@
 
 #include "gruvin9x.h"
 
+#ifdef SPLASH
 prog_uchar APM spsMarker[] = { "SPS" };
 #include "s9xsplash.lbm"
 prog_uchar APM speMarker[] = { "SPE" };
+#endif
 
 #include "menus.h"
 
@@ -503,6 +505,7 @@ void clearKeyEvents()
     putEvent(0);
 }
 
+#ifdef SPLASH
 void doSplash()
 {
     if(!g_eeGeneral.disableSplashScreen)
@@ -550,6 +553,7 @@ void doSplash()
       }
     }
 }
+#endif
 
 void checkLowEEPROM()
 {
@@ -2284,7 +2288,11 @@ int main(void)
 #else
   if (~MCUCSR & (1 << WDRF)) {
 #endif
+
+#ifdef SPLASH
     doSplash();
+#endif
+
     checkLowEEPROM();
 
     getADC_single();
