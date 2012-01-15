@@ -257,7 +257,8 @@ void menuMainView(uint8_t event)
       if (vert[i]) {
         ym = 31;
         lcd_vline(xm, ym-TL, TL*2);
-        if(((g_eeGeneral.stickMode&1) != (i&1)) || !(g_model.thrTrim)){
+        if (i!=2 || !g_model.thrTrim) {
+          // TODO square?
           lcd_vline(xm-1, ym-1,  3);
           lcd_vline(xm+1, ym-1,  3);
         }
