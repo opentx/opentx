@@ -117,6 +117,10 @@ PACK(typedef struct t_LimitData {
   int16_t offset;
 }) LimitData;
 
+#define SRC_RUD   1
+#define SRC_ELE   2
+#define SRC_THR   3
+#define SRC_AIL   4
 #define MIX_P1    5
 #define MIX_P2    6
 #define MIX_P3    7
