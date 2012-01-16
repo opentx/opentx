@@ -71,7 +71,7 @@ inline void applyDefaultTemplate()
     MixData *md = mixaddress(i);
     md->destCh = i+1;
     md->weight = 100;
-    md->srcRaw = i+1;
+    md->srcRaw = CHANNEL_ORDER(i+1);
   }
 
   STORE_MODELVARS;
