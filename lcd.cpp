@@ -430,7 +430,7 @@ void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 
 void putsChnLetter(uint8_t x, uint8_t y, uint8_t idx, uint8_t attr)
 {
-  lcd_putsnAtt(x, y, PSTR("RETA")+CHANNEL_ORDER(idx)-1, 1, attr);
+  lcd_putsnAtt(x, y, PSTR("RETA")+idx-1, 1, attr);
 }
 
 void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
