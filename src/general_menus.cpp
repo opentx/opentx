@@ -79,7 +79,7 @@ void menuProcSetup(uint8_t event)
   uint8_t subN = 1;
   if(s_pgOfs<subN) {
     lcd_puts_P(0, y,PSTR("Beeper"));
-    lcd_putsnAtt(PARAM_OFS - FW, y, PSTR("Quiet""NoKey""Norm ""Long ""xLong")+5*g_eeGeneral.beeperVal,5,(sub==subN ? INVERS:0));
+    lcd_putsnAtt(PARAM_OFS - FW, y, STR_BEEPER+LEN_BEEPER*g_eeGeneral.beeperVal, LEN_BEEPER, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperVal, 0, 4);
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -111,7 +111,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_puts_P(0, y,PSTR("Filter ADC"));
-    lcd_putsnAtt(PARAM_OFS, y, PSTR("SINGOSMPFILT")+4*g_eeGeneral.filterInput,4,(sub==subN ? INVERS:0));
+    lcd_putsnAtt(PARAM_OFS, y, STR_ADCFILTER+LEN_ADCFILTER*g_eeGeneral.filterInput, LEN_ADCFILTER, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.filterInput, 0, 2);
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -124,41 +124,42 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Minute beep"));
+    lcd_puts_P(0, y, PSTR("Minute beep"));
     menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.minuteBeep, sub==subN ) ;
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.minuteBeep, 0, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Beep countdown"));
+    lcd_puts_P(0, y, PSTR("Beep countdown"));
     menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.preBeep, sub==subN ) ;
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.preBeep, 0, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-      lcd_puts_P(0, y,PSTR("Flash on beep"));
+      lcd_puts_P(0, y, PSTR("Flash on beep"));
       menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.flashBeep, sub==subN ) ;
       if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.flashBeep, 0, 1);
       if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Light switch"));
+    lcd_puts_P(0, y, PSTR("Light switch"));
     putsSwitches(PARAM_OFS,y,g_eeGeneral.lightSw,sub==subN ? INVERS : 0);
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightSw, -MAX_SWITCH, MAX_SWITCH);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Light off after"));
+    lcd_puts_P(0, y, PSTR("Light off after"));
     if(g_eeGeneral.lightAutoOff) {
       lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.lightAutoOff*5,LEFT|(sub==subN ? INVERS : 0));
       lcd_putc(lcd_lastPos, y, 's');
     }
-    else
-      lcd_putsnAtt(PARAM_OFS, y, PSTR("OFF"),3,(sub==subN ? INVERS:0));
+    else {
+      lcd_putsnAtt(PARAM_OFS, y, STR_OFFON, LEN_OFFON,(sub==subN ? INVERS:0));
+    }
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -190,16 +191,15 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-      lcd_puts_P(0, y,PSTR("Switch Warning"));
-      lcd_putsnAtt(PARAM_OFS, y, PSTR("Down""OFF ""Up  ")+4*(1+g_eeGeneral.switchWarning),4,(sub==subN ? INVERS:0));
-      if(sub==subN)
-        CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchWarning, -1, 1);
+      lcd_puts_P(0, y, PSTR("Switch Warning"));
+      lcd_putsnAtt(PARAM_OFS, y, STR_WARNSW+LEN_WARNSW*(1+g_eeGeneral.switchWarning), LEN_WARNSW, (sub==subN ? INVERS:0));
+      if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchWarning, -1, 1);
       if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
       uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-      lcd_puts_P(0, y,PSTR("Memory Warning"));
+      lcd_puts_P(0, y, PSTR("Memory Warning"));
       menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
       if(sub==subN)
       {
@@ -303,7 +303,7 @@ void menuProcTime(uint8_t event)
   {
     uint8_t y=(i*2+2)*FH;
 
-    lcd_putsnAtt(0, y, PSTR("DATE:""TIME:")+i*5, 5, 0);
+    lcd_putsnAtt(0, y, STR_DATETIME+LEN_DATETIME*i, LEN_DATETIME, 0);
 
     for(uint8_t j=0; j<3;j++) // 3 settings each for date and time (YMD and HMS)
     {
@@ -381,7 +381,7 @@ void menuProcTrainer(uint8_t event)
     putsChnRaw(0, y, chan, 0);
 
     edit = (sub==i && subSub==0);
-    lcd_putsnAtt(4*FW, y, PSTR("off += :=")+3*td->mode, 3, edit ? blink : 0);
+    lcd_putsnAtt(4*FW, y, STR_TRNMODE+LEN_TRNMODE*td->mode, LEN_TRNMODE, edit ? blink : 0);
     if (edit && s_editMode>0)
       CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
 
@@ -391,7 +391,7 @@ void menuProcTrainer(uint8_t event)
       CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
 
     edit = (sub==i && subSub==2);
-    lcd_putsnAtt(12*FW, y, PSTR("ch1ch2ch3ch4")+3*td->srcChn, 3, edit ? blink : 0);
+    lcd_putsnAtt(12*FW, y, STR_TRNCHN+LEN_TRNCHN*td->srcChn, LEN_TRNCHN, edit ? blink : 0);
     if (edit && s_editMode>0)
       CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
 
@@ -506,7 +506,7 @@ void menuProcDiagAna(uint8_t event)
 
 }
 
-const prog_char APM menuWhenDone[] = " [MENU] WHEN DONE " ;
+const prog_char APM menuWhenDone[] = " [MENU] WHEN DONE ";
 
 void menuProcDiagCalib(uint8_t event)
 {
@@ -546,13 +546,13 @@ void menuProcDiagCalib(uint8_t event)
     case 0:
       // START CALIBRATION
       // [MENU]
-      lcd_putsnAtt(2*FW, 3*FH, PSTR(" [MENU] TO START  "), 18, 0);
+      lcd_putsAtt(2*FW, 3*FH, PSTR(" [MENU] TO START  "), 0);
       break;
 
     case 1:
       // SET MIDPOINT
       // [MENU]
-      lcd_putsnAtt(2*FW, 2*FH, PSTR("   SET MIDPOINT   "), 18, s_noScroll ? INVERS : 0);
+      lcd_putsAtt(2*FW, 2*FH, PSTR("   SET MIDPOINT   "), s_noScroll ? INVERS : 0);
       lcd_putsnAtt(2*FW, 3*FH, menuWhenDone, 18, 0);
 
       for (uint8_t i=0; i<7; i++) {
@@ -565,8 +565,8 @@ void menuProcDiagCalib(uint8_t event)
     case 2:
       // MOVE STICKS/POTS
       // [MENU]
-      lcd_putsnAtt(2*FW, 2*FH, PSTR(" MOVE STICKS/POTS "), 18, s_noScroll ? INVERS : 0);
-      lcd_putsnAtt(2*FW, 3*FH, menuWhenDone, 18, 0);
+      lcd_putsAtt(2*FW, 2*FH, PSTR(" MOVE STICKS/POTS "), s_noScroll ? INVERS : 0);
+      lcd_putsAtt(2*FW, 3*FH, menuWhenDone, 0);
 
       for (uint8_t i=0; i<7; i++) {
         if (abs(loVals[i]-hiVals[i])>50) {

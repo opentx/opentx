@@ -33,14 +33,15 @@ uint8_t s_noScroll;
 
 int16_t g_chans512[NUM_CHNOUT]; // TODO not here!
 
+// TODO does it save flash now?
 void menu_lcd_onoff( uint8_t x,uint8_t y, uint8_t value, uint8_t mode )
 {
-  lcd_putsnAtt( x, y, PSTR("OFFON ")+3*value,3,mode ? INVERS:0) ;
+  lcd_putsnAtt(x, y, STR_OFFON+LEN_OFFON*value, LEN_OFFON, mode ? INVERS:0) ;
 }
 
 void menu_lcd_HYPHINV( uint8_t x,uint8_t y, uint8_t value, uint8_t mode )
 {
-  lcd_putsnAtt( x, y, PSTR("---INV")+3*value,3,mode ? INVERS:0) ;
+  lcd_putsnAtt( x, y, STR_MMMINV+LEN_MMMINV*value, LEN_MMMINV, mode ? INVERS:0) ;
 }
 
 void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)

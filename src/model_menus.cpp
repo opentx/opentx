@@ -117,7 +117,7 @@ void displayWarning(uint8_t event)
 {
   if (s_warning) {
     displayBox();
-    lcd_puts_P(16, 5*FH, PSTR("[EXIT]"));
+    lcd_puts_P(16, 5*FH, STR_POPUPS+10);
     switch(event) {
       case EVT_KEY_FIRST(KEY_EXIT):
         killEvents(event);
@@ -133,7 +133,7 @@ void displayConfirmation(uint8_t event)
   displayBox();
   if (s_warning_info)
     lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
-  lcd_puts_P(16, 5*FH, PSTR("[MENU]    [EXIT]"));
+  lcd_puts_P(16, 5*FH, STR_POPUPS);
 
   switch(event) {
     case EVT_KEY_FIRST(KEY_MENU):
@@ -492,7 +492,7 @@ void menuProcModel(uint8_t event)
     lcd_putsnAtt(PARAM_OFS, y, PSTR(PROT_STR)+PROT_STR_LEN*g_model.protocol,PROT_STR_LEN,
                   (sub==subN && m_posHorz==0 ? (s_editMode>0 ? BLINK : INVERS):0));
     if(!g_model.protocol) {
-      lcd_putsnAtt(PARAM_OFS+4*FW, y, PSTR("4CH 6CH 8CH 10CH12CH14CH16CH")+4*(g_model.ppmNCH+2), 4, ((sub==subN && m_posHorz==1) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
+      lcd_putsnAtt(PARAM_OFS+4*FW, y, STR_NCHANNELS+LEN_NCHANNELS*(g_model.ppmNCH+2), LEN_NCHANNELS, ((sub==subN && m_posHorz==1) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
       lcd_putsAtt(PARAM_OFS+11*FW, y, PSTR("u"),0);
       lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, ((sub==subN && m_posHorz==2) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
     }
