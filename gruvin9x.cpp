@@ -705,7 +705,7 @@ uint8_t checkTrim(uint8_t event)
     uint8_t phase = getTrimFlightPhase(idx, getFlightPhase());
     int16_t before = getTrimValue(phase, idx);
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
-    bool thro = (((2-(g_eeGeneral.stickMode&1)) == idx) && g_model.thrTrim);
+    bool thro = (idx==2/*TODO constant*/ && g_model.thrTrim);
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 
@@ -1127,7 +1127,7 @@ FORCEINLINE void evalTrims(uint8_t phase)
     int16_t v = anas[i];
     int32_t vv = 2*RESX;
     int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
-    if (IS_THROTTLE(i) && g_model.thrTrim) {
+    if (i==2/*TODO constant*/ && g_model.thrTrim) {
       if (g_eeGeneral.throttleReversed)
         trim = -trim;
       vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
