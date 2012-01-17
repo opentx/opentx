@@ -29,7 +29,7 @@
 
 #gruvin: PCB version -- OVERRIDES the following settings if not STD
 # Values: STD, V3, V4
-PCB = V4
+PCB = STD
 #NOTE!: V4 adds to V3, such that both PCBV3 and PCBV4 get defined
 
 # Following options for PCB=STD only (ignored otherwise) ...
@@ -64,7 +64,7 @@ endif
 # gruvin: BEEPER. Values = BUZZER, BUZZER_MOD or SPEAKER
 # (without a mod, BUZZER can make PPM jack output switch from output to input at random)
 # SPEAKER mode actually works on the stock radio, using the stock beeper. Sort of sound OK(ish).
-BEEPER = SPEAKER
+BEEPER = BUZZER
 
 # gruvin: Legacy support freeing of USART1 TX/RX pins [DEPRECATED]
 # OPTIONS STD or FREED
@@ -82,7 +82,7 @@ BATT = BANDGAP
 
 # Decimals display in the main view (PPM calibration, 
 # Values = YES, NO
-DECIMALS = NO
+DECIMALS = YES
 
 # DISPLAY_USER_DATA to display on screen data from FrSky module (testing/demo purpose)
 # Values = YES, NO
