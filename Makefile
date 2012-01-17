@@ -115,6 +115,10 @@ CTP1009 = NO
 # SOMO-14D module
 SOMO = NO
 
+# TRANSLATIONS
+# Values = en, 
+TRANSLATIONS = EN
+
 #------- END BUILD OPTIONS ---------------------------
 
 # MCU name
@@ -141,7 +145,7 @@ TARGET = gruvin9x
 OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = gruvin9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp 
+CPPSRC = gruvin9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp o9xstrings.cpp
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -182,7 +186,7 @@ DEBUG = dwarf-2
 #     Each directory must be seperated by a space.
 #     Use forward slashes for directory separators.
 #     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS =
+EXTRAINCDIRS = translations
 
 
 # Compiler flag to set the C Standard level.
@@ -204,6 +208,8 @@ CPPDEFS = -DF_CPU=$(F_CPU)UL
 
 # NOTE: PCB version now overrides all the earlier individual settings
 #       These individual settings work only for PCB=STD
+
+CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
 
 # If POT1/POTS/RE1 is used for fields modification
 ifeq ($(NAVIGATION), POT1)
@@ -642,6 +648,8 @@ lib: $(LIBNAME)
 # Build stamp-file
 stamp:
 	@echo
+	@echo $(CPPSRC)
+	
 	@echo "Generate Version-stamp:"
 	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-gruvin9x.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-gruvin9x.h
