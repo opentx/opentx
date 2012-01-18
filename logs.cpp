@@ -18,7 +18,7 @@
  *
  */
 
-#include "gruvin9x.h"
+#include "open9x.h"
 #include "ff.h"
 
 // "/G9XLOGS/M00_000.TXT\0" max required length = 21

@@ -23,7 +23,7 @@
 #define menus_h
 
 #include <inttypes.h>
-#include "gruvin9x.h"
+#include "open9x.h"
 
 #define IS_THROTTLE(x)  (((2-(g_eeGeneral.stickMode&1)) == x) && (x<4))
 

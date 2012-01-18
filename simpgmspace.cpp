@@ -22,7 +22,7 @@
 #include <ctype.h>
 #include "simpgmspace.h"
 #include "lcd.h"
-#include "gruvin9x.h"
+#include "open9x.h"
 #include "menus.h"
 
 volatile uint8_t pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;

@@ -46,7 +46,7 @@
  *
  */
 
-#include "gruvin9x.h"
+#include "open9x.h"
 #include "templates.h"
 
 const char stn1[] APM =  "Simple 4-CH";

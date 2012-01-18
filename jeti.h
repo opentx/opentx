@@ -19,7 +19,7 @@
 #define jeti_h
 
 
-#include "gruvin9x.h"
+#include "open9x.h"
 
 #define JETI_KEY_LEFT		0x70
 #define JETI_KEY_RIGHT		0xe0

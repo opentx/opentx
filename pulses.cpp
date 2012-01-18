@@ -19,7 +19,7 @@
  *
  */
 
-#include "gruvin9x.h"
+#include "open9x.h"
 
 #ifdef CTP1009
 uint16_t pulses2MHz[50] = {0};
