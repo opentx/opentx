@@ -19,7 +19,7 @@
  *
  */
 
-#include "gruvin9x.h"
+#include "open9x.h"
 #include "templates.h"
 
 RlcFile theFile;  //used for any file operation

@@ -139,13 +139,13 @@ F_CPU = 16000000
 FORMAT = ihex
 
 # Target file name (without extension).
-TARGET = gruvin9x
+TARGET = open9x
 
 # Object files directory
 OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = gruvin9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp o9xstrings.cpp
+CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp o9xstrings.cpp
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -572,7 +572,6 @@ REMOVEDIR = rm -rf
 COPY = cp
 WINSHELL = cmd
 
-# th9x/gruvin9x-specific
 XBM2LBM = ruby ../util/xbm2lbm.rb
 AREV = $(shell sh -c "cat .svn/entries | sed -n '4p'")
 REV = $(shell echo $$(( $(AREV) + 1 )))
@@ -618,8 +617,8 @@ ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) $(GENDEPFLAGS)
 ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) $(AVRGCCFLAGS)
 ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
-SUB_VER = ${shell sh -c "grep \"SUB_VERS\" gruvin9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
-ABUILD_NUM = ${shell sh -c "grep \"BUILD_NUM\" stamp-gruvin9x.h | egrep -o \"[[:digit:]]+\""}
+SUB_VER = ${shell sh -c "grep \"SUB_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
+ABUILD_NUM = ${shell sh -c "grep \"BUILD_NUM\" stamp-open9x.h | egrep -o \"[[:digit:]]+\""}
 BUILD_NUM = $(shell echo $$(( $(ABUILD_NUM) + 1 )))
 BUILD_DIR = $(shell pwd | awk -F'/' '{print $$((NF-1))}')
 ifeq "$(USER)" "bryan"
@@ -651,14 +650,14 @@ stamp:
 	@echo $(CPPSRC)
 	
 	@echo "Generate Version-stamp:"
-	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-gruvin9x.h
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-gruvin9x.h
-	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> stamp-gruvin9x.h
-	@echo "#define TAG_VERS $(SUB_VER)-$(THEUSER)" >> stamp-gruvin9x.h
-	@echo "#define SVN_VERS \"$(BUILD_DIR)-r$(REV)\"" >> stamp-gruvin9x.h
-	@echo "#define MOD_VERS \"$(MODS)\"" >> stamp-gruvin9x.h
-	@echo "#define BUILD_NUM $(BUILD_NUM)" >> stamp-gruvin9x.h
-	@cat stamp-gruvin9x.h
+	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-open9x.h
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-open9x.h
+	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> stamp-open9x.h
+	@echo "#define TAG_VERS $(SUB_VER)-$(THEUSER)" >> stamp-open9x.h
+	@echo "#define SVN_VERS \"$(BUILD_DIR)-r$(REV)\"" >> stamp-open9x.h
+	@echo "#define MOD_VERS \"$(MODS)\"" >> stamp-open9x.h
+	@echo "#define BUILD_NUM $(BUILD_NUM)" >> stamp-open9x.h
+	@cat stamp-open9x.h
  
 font.lbm: font_6x1.xbm
 	@echo

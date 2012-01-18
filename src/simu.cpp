@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include "simpgmspace.h"
 #include "fxkeys.h"
-#include "gruvin9x.h"
+#include "open9x.h"
 #include "menus.h"
 #include <time.h>
 #include <ctype.h>

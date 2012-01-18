@@ -19,7 +19,7 @@
  *
  */
 
-#include "gruvin9x.h"
+#include "open9x.h"
 
 #ifdef SPLASH
 prog_uchar APM spsMarker[] = { "SPS" };

@@ -20,7 +20,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "gruvin9x.h"
+#include "open9x.h"
 
 uint16_t anaIn(uint8_t chan)
 {

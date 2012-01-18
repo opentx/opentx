@@ -19,7 +19,7 @@
  *
  */
 
-#include "gruvin9x.h"
+#include "open9x.h"
 
 uint16_t eeprom_pointer;
 const char* eeprom_buffer_data;

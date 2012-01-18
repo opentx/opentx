@@ -18,7 +18,7 @@
  *
  */
 
-#include "gruvin9x.h"
+#include "open9x.h"
 
 // Enumerate FrSky packet codes
 #define LINKPKT         0xfe
