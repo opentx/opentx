@@ -28,17 +28,23 @@ const prog_char APM STR_OPEN9X[] =
     TR_VMLTPX2
     TR_VCSWFUNC
     TR_VFSWFUNC
+#ifdef FRSKY
     TR_VTELEMUNIT
     TR_VALARM
     TR_VALARMFN
     TR_VTELPROTO
+    TR_TELEMCHNS
+#endif
+#ifdef TEMPLATES
     TR_VTEMPLATES
+#endif
+#ifdef HELI
     TR_VSWASHTYPE
+#endif
     TR_VKEYS
     TR_VSWITCHES
     TR_VSRCRAW
     TR_VTMRMODES
-    TR_TELEMCHNS
 #if defined(PCBV3)
     TR_RE1RE2
     TR_DATETIME
@@ -70,12 +76,14 @@ const prog_char APM STR_FADEIN[] = TR_FADEIN;
 const prog_char APM STR_FADEOUT[] = TR_FADEOUT;
 const prog_char APM STR_DEFAULT[] = TR_DEFAULT;
 const prog_char APM STR_CHECKTRIMS[] = TR_CHECKTRIMS;
+#ifdef HELI
 const prog_char APM STR_SWASHTYPE[] = TR_SWASHTYPE;
 const prog_char APM STR_COLLECTIVE[] = TR_COLLECTIVE;
 const prog_char APM STR_SWASHRING[] = TR_SWASHRING;
 const prog_char APM STR_ELEDIRECTION[] = TR_ELEDIRECTION;
 const prog_char APM STR_AILDIRECTION[] = TR_AILDIRECTION;
 const prog_char APM STR_COLDIRECTION[] = TR_COLDIRECTION;
+#endif
 const prog_char APM STR_MODE[] = TR_MODE;
 const prog_char APM STR_NOFREEEXPO[] = TR_NOFREEEXPO;
 const prog_char APM STR_NOFREEMIXER[] = TR_NOFREEMIXER;
