@@ -69,8 +69,6 @@
 #define CURVE5(x) ((x)-1)
 #define CURVE9(x) (MAX_CURVE5+(x)-1)
 
-#define TEMPLATES_STR "Simple 4-CH ""T-Cut       ""V-Tail      ""Elevon\\Delta""eCCPM       ""Heli Setup  ""Servo Test  "
-#define TEMPLATES_LEN 12
 #define NUM_TEMPLATES 7
 
 void clearMixes();

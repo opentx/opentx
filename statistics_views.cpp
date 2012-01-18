@@ -23,11 +23,11 @@
 
 void menuProcStatistic(uint8_t event)
 {
-  TITLE("STAT");
+  TITLE(STR_MENUSTAT);
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_UP):
-      chainMenu(menuProcStatistic2);
+      chainMenu(menuProcDebug);
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -35,17 +35,17 @@ void menuProcStatistic(uint8_t event)
       break;
   }
 
-  lcd_puts_P(  1*FW, FH*1, PSTR("TM1"));
+  lcd_puts_P(  1*FW, FH*1, STR_TM1);
   putsTime(    5*FW, FH*1, s_timerVal[0], 0, 0);
-  lcd_puts_P( 17*FW, FH*1, PSTR("TM2"));
+  lcd_puts_P( 17*FW, FH*1, STR_TM2);
   putsTime(   12*FW, FH*1, s_timerVal[1], 0, 0);
 
-  lcd_puts_P(  1*FW, FH*2, PSTR("THR"));
+  lcd_puts_P(  1*FW, FH*2, STR_THR);
   putsTime(    5*FW, FH*2, s_timeCumThr, 0, 0);
-  lcd_puts_P( 17*FW, FH*2, PSTR("TH%"));
+  lcd_puts_P( 17*FW, FH*2, STR_TH);
   putsTime(   12*FW, FH*2, s_timeCum16ThrP/16, 0, 0);
 
-  lcd_puts_P( 17*FW, FH*0, PSTR("TOT"));
+  lcd_puts_P( 17*FW, FH*0, STR_TOT);
   putsTime(   12*FW, FH*0, s_timeCumTot, 0, 0);
 
   uint16_t traceRd = s_traceCnt>MAXTRACE ? s_traceWr : 0;
@@ -67,9 +67,10 @@ void menuProcStatistic(uint8_t event)
   }
 }
 
-void menuProcStatistic2(uint8_t event)
+// TODO ifdef DEBUG
+void menuProcDebug(uint8_t event)
 {
-  TITLE("STAT2");
+  TITLE(STR_MENUDEBUG);
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_MENU):
@@ -87,19 +88,19 @@ void menuProcStatistic2(uint8_t event)
       chainMenu(menuMainView);
       break;
   }
-  lcd_puts_P( 0*FW,  1*FH, PSTR("tmr1Lat max    us"));
+  lcd_puts_P( 0*FW,  1*FH, STR_TMR1LATMAXUS);
   lcd_outdez8(15*FW , 1*FH, g_tmr1Latency_max/2 );
-  lcd_puts_P( 0*FW,  2*FH, PSTR("tmr1Lat min    us"));
+  lcd_puts_P( 0*FW,  2*FH, STR_TMR1LATMINUS);
   lcd_outdez8(15*FW , 2*FH, g_tmr1Latency_min/2 );
-  lcd_puts_P( 0*FW,  3*FH, PSTR("tmr1 Jitter    us"));
+  lcd_puts_P( 0*FW,  3*FH, STR_TMR1JITTERUS);
   lcd_outdez8(15*FW , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
-  lcd_puts_P( 0*FW,  4*FH, PSTR("tmain max      ms"));
+  lcd_puts_P( 0*FW,  4*FH, STR_TMAINMAXMS);
   lcd_outdezAtt(15*FW, 4*FH, (g_timeMain*100)/16, PREC2);
-  lcd_puts_P( 0*FW,  5*FH, PSTR("t10ms          us"));
+  lcd_puts_P( 0*FW,  5*FH, STR_T10MSUS);
   lcd_outdez8(15*FW , 5*FH, g_time_per10/2 );
 #ifndef SIMU
-  lcd_puts_P( 0*FW,  6*FH, PSTR("Free Stack min    b"));
+  lcd_puts_P( 0*FW,  6*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(18*FW-1,  6*FH, stack_free(), UNSIGN) ;
 #endif
-  lcd_puts_P( 3*FW,  7*FH, PSTR("[MENU] to reset"));
+  lcd_puts_P( 3*FW,  7*FH, STR_MENUTORESET);
 }

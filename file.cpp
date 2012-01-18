@@ -393,7 +393,7 @@ void RlcFile::nextWriteStep()
   }
 
   if (s_write_err == ERR_FULL) {
-    alert(PSTR("EEPROM overflow"));
+    alert(STR_EEPROMOVERFLOW);
     m_write_step = 0;
     m_write_len = 0;
   }

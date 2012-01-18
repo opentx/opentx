@@ -45,7 +45,6 @@ extern uint8_t s_noHi;
 extern uint8_t s_noScroll;
 
 void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, uint8_t mode);
-void menu_lcd_HYPHINV(uint8_t x, uint8_t y, uint8_t value, uint8_t mode);
 
 extern MenuFuncP g_menuStack[5];
 extern uint8_t g_menuStackPtr;
@@ -67,7 +66,7 @@ void menuMainView(uint8_t event);
 void menuProcSetup(uint8_t event);
 void menuProcModelSelect(uint8_t event);
 void menuProcStatistic(uint8_t event);
-void menuProcStatistic2(uint8_t event);
+void menuProcDebug(uint8_t event);
 
 #if defined(NAVIGATION_POT1) || defined(NAVIGATION_RE1)
 extern int16_t p1valdiff;
@@ -99,7 +98,7 @@ bool check_submenu_simple(uint8_t event, uint8_t maxrow);
 typedef PROGMEM void (*MenuFuncP_PROGMEM)(uint8_t event);
 
 #define TITLEP(pstr) lcd_putsAtt(0,0,pstr,INVERS)
-#define TITLE(str)   TITLEP(PSTR(str))
+#define TITLE(str)   TITLEP(str)
 
 #define MENU(title, tab, menu, lines_count, ...) \
 TITLE(title); \

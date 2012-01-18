@@ -145,7 +145,7 @@ void lcd_putsnAtt(uint8_t x,uint8_t y,const prog_char * s,uint8_t len,uint8_t mo
 }
 void lcd_putsn_P(uint8_t x,uint8_t y,const prog_char * s,uint8_t len)
 {
-  lcd_putsnAtt( x,y,s,len,0);
+  lcd_putsnAtt(x, y, s, len, 0);
 }
 
 void lcd_putsAtt(uint8_t x,uint8_t y,const prog_char * s,uint8_t mode)
@@ -405,20 +405,18 @@ void putsStrIdx(uint8_t x, uint8_t y, const prog_char *str, uint8_t idx, uint8_t
 void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx==0)
-    lcd_putsnAtt(x, y, PSTR("----"), 4, att);
-  else if (idx<=NUM_STICKS)
-    lcd_putsnAtt(x, y, modi12x3+4*(idx-1), 4, att);
+    lcd_putsnAtt(x, y, STR_MMMINV, LEN_MMMINV, att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3)
-    lcd_putsnAtt(x,y,PSTR("P1  P2  P3  MAX FULLCYC1CYC2CYC3")+4*(idx-5), 4, att);
+    lcd_putsnAtt(x, y, STR_VSRCRAW+LEN_VSRCRAW*(idx-1), LEN_VSRCRAW, att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM)
-    putsStrIdx(x,y,PSTR("PPM"), idx - (NUM_STICKS+NUM_POTS+2+3), att);
+    putsStrIdx(x, y, STR_PPM, idx - (NUM_STICKS+NUM_POTS+2+3), att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT)
-    putsStrIdx(x, y, PSTR("CH"), idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM), att);
+    putsStrIdx(x, y, STR_CH, idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM), att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT+MAX_TIMERS)
-    putsStrIdx(x, y, PSTR("TMR"), idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT), att);
+    putsStrIdx(x, y, STR_TMR, idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT), att);
 #ifdef FRSKY
-  else if (idx<=NUM_XCHNRAW)
-    lcd_putsnAtt(x, y, PSTR(TELEMETRY_CHANNELS)+TELEMETRY_STRLEN*(idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+MAX_TIMERS+NUM_CHNOUT)), TELEMETRY_STRLEN, att);
+  else /*if (idx<=NUM_XCHNRAW)*/
+    lcd_putsnAtt(x, y, STR_TELEMCHNS+LEN_TELEMCHNS*(idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+MAX_TIMERS+NUM_CHNOUT)), LEN_TELEMCHNS, att);
 #endif
 }
 
@@ -430,7 +428,7 @@ void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 
 void putsChnLetter(uint8_t x, uint8_t y, uint8_t idx, uint8_t attr)
 {
-  lcd_putsnAtt(x, y, PSTR("RETA")+idx-1, 1, attr);
+  lcd_putsnAtt(x, y, STR_RETA123+idx-1, 1, attr);
 }
 
 void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
@@ -438,37 +436,35 @@ void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
   uint8_t len = sizeof(g_model.name);
   while (len>0 && !name[len-1]) --len;
   if (len==0) {
-    putsStrIdx(x, y, PSTR("MODEL"), id+1, att|LEADING0);
+    putsStrIdx(x, y, STR_MODEL, id+1, att|LEADING0);
   }
   else {
     lcd_putsnAtt(x, y, name, sizeof(g_model.name), ZCHAR|att);
   }
 }
 
-#define SWITCHES_STR "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
 void putsSwitches(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
   switch(idx){
-    case  0:          lcd_putsAtt(x,y,PSTR("---"),att);return;
-    case  MAX_SWITCH: lcd_putsAtt(x,y,PSTR("ON "),att);return;
-    case -MAX_SWITCH: lcd_putsAtt(x,y,PSTR("OFF"),att);return;
+    case  0:          lcd_putsnAtt(x, y, STR_MMMINV, LEN_MMMINV, att);return;
+    case  MAX_SWITCH: lcd_putsnAtt(x, y, STR_ONOFF, LEN_OFFON, att);return;
+    case -MAX_SWITCH: lcd_putsnAtt(x, y, STR_OFFON, LEN_OFFON, att);return;
   }
   if (idx<0) lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
-  lcd_putsnAtt(x, y, PSTR(SWITCHES_STR)+3*(abs(idx)-1), 3, att);
+  lcd_putsnAtt(x, y, STR_VSWITCHES+LEN_VSWITCHES*(abs(idx)-1), LEN_VSWITCHES, att);
 }
 
 void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
-  if (idx==0) { lcd_putsAtt(x,y,PSTR("---"),att); return; }
+  if (idx==0) { lcd_putsnAtt(x, y, STR_MMMINV, LEN_MMMINV, att); return; }
   if (idx < 0) { lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/); idx = -idx; }
-  putsStrIdx(x, y, PSTR("FP"), idx-1, att);
+  putsStrIdx(x, y, STR_FP, idx-1, att);
 }
 
-#define CURV_STR "---x>0x<0|x|f>0f<0|f|"
 void putsCurve(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx < CURVE_BASE)
-    lcd_putsnAtt(x, y, PSTR(CURV_STR)+3*idx, 3, att);
+    lcd_putsnAtt(x, y, STR_VCURVEFUNC+LEN_VCURVEFUNC*idx, LEN_VCURVEFUNC, att);
   else
     putsStrIdx(x, y, PSTR("c"), idx-CURVE_BASE+1, att);
 }
@@ -480,7 +476,7 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
     lcd_putcAtt(x-1*FW, y, '!', att);
   }
   else if (mode < TMR_VAROFS) {
-    lcd_putsnAtt(x, y, PSTR("OFFABSTHsTH%THt")+3*mode, 3, att);
+    lcd_putsnAtt(x, y, STR_VTMRMODES+LEN_VTMRMODES*mode, LEN_VTMRMODES, att);
     return;
   }
 

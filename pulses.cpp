@@ -405,7 +405,7 @@ inline void __attribute__ ((always_inline)) setupPulsesTracerCtp1009()
     sendByteTra( (chk>>4) | (chk<<4) );
     _send_hilo( 7000*2, 2000*2 );
   }
-  if((pulses2MHzWPtr-pulses2MHz) >= (signed)DIM(pulses2MHz)) alert(PSTR("pulse tab overflow"));
+  if((pulses2MHzWPtr-pulses2MHz) >= (signed)DIM(pulses2MHz)) alert(STR_PULSETABOVERFLOW);
 }
 
 #endif

@@ -59,12 +59,6 @@ bool warble = false;
 uint8_t heartbeat;
 
 // TODO reduce these tabs
-const prog_char APM modi12x3[]=
-  "RUD ELE THR AIL "
-  "RUD THR ELE AIL "
-  "AIL ELE THR RUD "
-  "AIL THR ELE RUD ";
-
 const prog_char APM s_charTab[] = "_-.,";
 
 //R=1
@@ -560,17 +554,17 @@ void checkLowEEPROM()
   if(g_eeGeneral.disableMemoryWarning) return;
   if(EeFsGetFree() < 200)
   {
-    alert(PSTR("EEPROM low mem"));
+    alert(STR_EEPROMLOWMEM);
   }
 }
 
 void alertMessages( const prog_char * s, const prog_char * t )
 {
   lcd_clear();
-  lcd_putsAtt(64-5*FW,0*FH,PSTR("ALERT"),DBLSIZE);
+  lcd_putsAtt(64-5*FW,0*FH,STR_ALERT,DBLSIZE);
   lcd_puts_P(0,4*FH,s);
   lcd_puts_P(0,5*FH,t);
-  lcd_puts_P(0,6*FH,  PSTR("Press any key to skip") ) ;
+  lcd_puts_P(0,6*FH,  STR_PRESSANYKEYTOSKIP ) ;
   refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
 
@@ -592,7 +586,7 @@ void checkTHR()
   if(v<=lowLim) return;
 
   // first - display warning
-  alertMessages( PSTR("Throttle not idle"), PSTR("Reset throttle") ) ;
+  alertMessages( STR_THROTTLENOTIDLE, STR_RESETTHROTTLE ) ;
 
   //loop until all switches are reset
   while (1)
@@ -620,7 +614,7 @@ void checkTHR()
 void checkAlarm() // added by Gohst
 {
   if(g_eeGeneral.disableAlarmWarning) return;
-  if(!g_eeGeneral.beeperVal) alert(PSTR("Alarms Disabled"));
+  if(!g_eeGeneral.beeperVal) alert(STR_ALARMSDISABLED);
 }
 
 void checkSwitches()
@@ -628,7 +622,7 @@ void checkSwitches()
   if(!g_eeGeneral.switchWarning) return; // if warning is on
 
   // first - display warning
-  alertMessages( PSTR("Switches not off"), PSTR("Please reset them") ) ;
+  alertMessages( STR_SWITCHESNOTOFF, STR_PLEASERESETTHEM ) ;
 
   bool state = (g_eeGeneral.switchWarning > 0);
 
@@ -661,7 +655,7 @@ uint8_t  g_beepVal[5];
 void message(const prog_char * s)
 {
   lcd_clear();
-  lcd_putsAtt(64-5*FW,0*FH,PSTR("MESSAGE"),DBLSIZE);
+  lcd_putsAtt(64-5*FW,0*FH,STR_MESSAGE,DBLSIZE);
   lcd_puts_P(0,4*FW,s);
   refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
@@ -670,9 +664,9 @@ void message(const prog_char * s)
 void alert(const prog_char * s, bool defaults)
 {
   lcd_clear();
-  lcd_putsAtt(64-5*FW,0*FH,PSTR("ALERT"),DBLSIZE);
+  lcd_putsAtt(64-5*FW,0*FH,STR_ALERT,DBLSIZE);
   lcd_puts_P(0,4*FH,s);
-  lcd_puts_P(64-6*FW,7*FH,PSTR("press any Key"));
+  lcd_puts_P(64-6*FW,7*FH,STR_PRESSANYKEY);
   refreshDisplay();
   lcdSetRefVolt(defaults ? 25 : g_eeGeneral.contrast);
   beepErr();
