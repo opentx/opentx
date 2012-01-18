@@ -67,7 +67,7 @@ void menuProcSetup(uint8_t event)
 #undef  PARAM_OFS
 #define PARAM_OFS   17*FW
 
-  SIMPLE_MENU("RADIO SETUP", menuTabDiag, e_Setup, COUNT_ITEMS+1);
+  SIMPLE_MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, COUNT_ITEMS+1);
 
   int8_t  sub    = m_posVert;
 
@@ -78,14 +78,14 @@ void menuProcSetup(uint8_t event)
 
   uint8_t subN = 1;
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Beeper"));
-    lcd_putsnAtt(PARAM_OFS - FW, y, STR_BEEPER+LEN_BEEPER*g_eeGeneral.beeperVal, LEN_BEEPER, (sub==subN ? INVERS:0));
+    lcd_puts_P(0, y, STR_BEEPER);
+    lcd_putsnAtt(PARAM_OFS - FW, y, STR_VBEEPER+LEN_VBEEPER*g_eeGeneral.beeperVal, LEN_VBEEPER, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperVal, 0, 4);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Contrast"));
+    lcd_puts_P(0, y, STR_CONTRAST);
     lcd_outdezAtt(PARAM_OFS,y,g_eeGeneral.contrast,(sub==subN ? INVERS : 0)|LEFT);
     if(sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
@@ -95,14 +95,14 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Battery warning"));
+    lcd_puts_P(0, y,STR_BATTERYWARNING);
     putsVolts(PARAM_OFS, y, g_eeGeneral.vBatWarn, (sub==subN ? INVERS : 0)|LEFT);
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Inactivity alarm"));
+    lcd_puts_P(0, y,STR_INACTIVITYALARM);
     lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.inactivityTimer, (sub==subN ? INVERS : 0)|LEFT);
     lcd_putc(lcd_lastPos, y, 'm');
     if(sub==subN) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
@@ -110,49 +110,49 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Filter ADC"));
+    lcd_puts_P(0, y,STR_FILTERADC);
     lcd_putsnAtt(PARAM_OFS, y, STR_ADCFILTER+LEN_ADCFILTER*g_eeGeneral.filterInput, LEN_ADCFILTER, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.filterInput, 0, 2);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y,PSTR("Throttle reverse"));
+    lcd_puts_P(0, y,STR_THROTTLEREVERSE);
     menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.throttleReversed, sub==subN ) ;
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.throttleReversed, 0, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y, PSTR("Minute beep"));
+    lcd_puts_P(0, y, STR_MINUTEBEEP);
     menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.minuteBeep, sub==subN ) ;
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.minuteBeep, 0, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y, PSTR("Beep countdown"));
+    lcd_puts_P(0, y, STR_BEEPCOUNTDOWN);
     menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.preBeep, sub==subN ) ;
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.preBeep, 0, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-      lcd_puts_P(0, y, PSTR("Flash on beep"));
+      lcd_puts_P(0, y, STR_FLASHONBEEP);
       menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.flashBeep, sub==subN ) ;
       if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.flashBeep, 0, 1);
       if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y, PSTR("Light switch"));
+    lcd_puts_P(0, y, STR_LIGHTSWITCH);
     putsSwitches(PARAM_OFS,y,g_eeGeneral.lightSw,sub==subN ? INVERS : 0);
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightSw, -MAX_SWITCH, MAX_SWITCH);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P(0, y, PSTR("Light off after"));
+    lcd_puts_P(0, y, STR_LIGHTOFFAFTER);
     if(g_eeGeneral.lightAutoOff) {
       lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.lightAutoOff*5,LEFT|(sub==subN ? INVERS : 0));
       lcd_putc(lcd_lastPos, y, 's');
@@ -167,7 +167,7 @@ void menuProcSetup(uint8_t event)
 #ifdef SPLASH
   if(s_pgOfs<subN) {
       uint8_t b = 1-g_eeGeneral.disableSplashScreen;
-      lcd_puts_P(0, y,PSTR("Splash screen"));
+      lcd_puts_P(0, y,STR_SPLASHSCREEN);
       menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
       if(sub==subN)
       {
@@ -180,7 +180,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
       uint8_t b = 1-g_eeGeneral.disableThrottleWarning;
-      lcd_puts_P(0, y,PSTR("Throttle Warning"));
+      lcd_puts_P(0, y,STR_THROTTLEWARNING);
       menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
       if(sub==subN)
       {
@@ -191,7 +191,7 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-      lcd_puts_P(0, y, PSTR("Switch Warning"));
+      lcd_puts_P(0, y, STR_SWITCHWARNING);
       lcd_putsnAtt(PARAM_OFS, y, STR_WARNSW+LEN_WARNSW*(1+g_eeGeneral.switchWarning), LEN_WARNSW, (sub==subN ? INVERS:0));
       if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchWarning, -1, 1);
       if((y+=FH)>7*FH) return;
@@ -199,7 +199,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
       uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-      lcd_puts_P(0, y, PSTR("Memory Warning"));
+      lcd_puts_P(0, y, STR_MEMORYWARNING);
       menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
       if(sub==subN)
       {
@@ -211,7 +211,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
       uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-      lcd_puts_P(0, y,PSTR("Alarm Warning"));
+      lcd_puts_P(0, y,STR_ALARMWARNING);
       menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
       if(sub==subN)
       {
@@ -223,7 +223,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
       uint8_t b = g_eeGeneral.enableTelemetryAlarm;
-      lcd_puts_P(0, y,PSTR("NO DATA Alarm"));
+      lcd_puts_P(0, y,STR_NODATAALARM);
       menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
       if(sub==subN)
       {
@@ -235,7 +235,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
       uint8_t attr = sub==subN?INVERS:0;
-      lcd_puts_P(0, y,PSTR("Rx Channel Ord"));//   RAET->AETR
+      lcd_puts_P(0, y,STR_RXCHANNELORD);//   RAET->AETR
       for (uint8_t i=1; i<=4; i++)
         putsChnLetter((16+i)*FW, y, CHANNEL_ORDER(i), attr);
       if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
@@ -243,7 +243,7 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts_P( 1*FW, y, PSTR("Mode"));
+    lcd_puts_P( 1*FW, y, STR_MODE2); // TODO STR_MODE would save flash
     if(y<7*FH) {for(uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks,i,0); }
     if((y+=FH)>7*FH) return;
 
@@ -260,7 +260,7 @@ void menuProcSetup(uint8_t event)
 // SD card interface contains Real-Time-Clock chip
 void menuProcTime(uint8_t event)
 {
-  MENU("DATE AND TIME", menuTabDiag, e_FrskyTime, 3, {0, 2/*, 2*/});
+  MENU(STR_MENUDATEANDTIME, menuTabDiag, e_FrskyTime, 3, {0, 2/*, 2*/});
 
   int8_t  sub    = m_posVert - 1; // vertical position (1 = page counter, top/right)
   uint8_t subSub = m_posHorz;     // horizontal position
@@ -354,7 +354,7 @@ void menuProcTime(uint8_t event)
 
 void menuProcTrainer(uint8_t event)
 {
-  MENU("TRAINER", menuTabDiag, e_Trainer, 7, {0, 2, 2, 2, 2, 0/*, 0*/});
+  MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, 7, {0, 2, 2, 2, 2, 0/*, 0*/});
 
   int8_t  sub    = m_posVert;
   uint8_t subSub = m_posHorz;
@@ -363,11 +363,11 @@ void menuProcTrainer(uint8_t event)
   uint8_t blink ;
 
   if (SLAVE_MODE) { // i am the slave
-    lcd_puts_P(7*FW, 3*FH, PSTR("Slave"));
+    lcd_puts_P(7*FW, 3*FH, STR_SLAVE);
     return;
   }
 
-  lcd_puts_P(3*FW, 1*FH, PSTR("mode   % src"));
+  lcd_puts_P(3*FW, 1*FH, STR_MODESRC);
 
   sub--;
   y = 2*FH;
@@ -400,13 +400,13 @@ void menuProcTrainer(uint8_t event)
     y += FH;
   }
 
-  lcd_puts_P(0*FW, y, PSTR("Multiplier"));
+  lcd_puts_P(0*FW, y, STR_MULTIPLIER);
   lcd_outdezAtt(13*FW, y, g_eeGeneral.PPM_Multiplier+10, (sub==4 ? INVERS : 0)|PREC1);
   if(sub==4) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
   y += FH;
 
   edit = (sub==5);
-  lcd_putsAtt(0*FW, y, PSTR("Cal"), edit ? INVERS : 0);
+  lcd_putsAtt(0*FW, y, STR_CAL, edit ? INVERS : 0);
   for (uint8_t i=0; i<4; i++) {
     uint8_t x = (i*8+16)*FW/2;
 #if defined (DECIMALS_DISPLAYED)
@@ -427,20 +427,20 @@ void menuProcTrainer(uint8_t event)
 
 void menuProcDiagVers(uint8_t event)
 {
-  SIMPLE_MENU("VERSION", menuTabDiag, e_Vers, 1);
+  SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
 
   lcd_puts_P(0, 2*FH,stamp4 );
   lcd_puts_P(0, 3*FH,stamp1 );
   lcd_puts_P(0, 4*FH,stamp5 );
   lcd_puts_P(0, 5*FH,stamp2 );
   lcd_puts_P(0, 6*FH,stamp3 );
-  lcd_puts_P(0, 7*FH,PSTR("EEPROM v"));
+  lcd_puts_P(0, 7*FH,STR_EEPROMV);
   lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
 }
 
 void menuProcDiagKeys(uint8_t event)
 {
-  SIMPLE_MENU("DIAG", menuTabDiag, e_Keys, 1);
+  SIMPLE_MENU(STR_MENUDIAG, menuTabDiag, e_Keys, 1);
 
   for(uint8_t i=0; i<9; i++)
   {
@@ -455,19 +455,19 @@ void menuProcDiagKeys(uint8_t event)
   {
     uint8_t y=(5-i)*FH+2*FH;
     bool t=keyState((EnumKeys)(KEY_MENU+i));
-    lcd_putsn_P(0, y, PSTR(" Menu Exit Down   UpRight Left")+5*i, 5);
+    lcd_putsn_P(0, y, STR_VKEYS+LEN_VKEYS*i, LEN_VKEYS);
     lcd_putcAtt(5*FW+2, y, t+'0', t);
   }
 
 #if defined (PCBV4)
   for(uint8_t i=0; i<2; i++) {
     uint8_t y = i*FH + FH;
-    lcd_putsn_P(14*FW, y, PSTR("RE1RE2")+3*i, 3);
+    lcd_putsn_P(14*FW, y, STR_RE1RE2+LEN_RE1RE2*i, LEN_RE1RE2);
     lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_RE1+i)) ? INVERS : 0));
   }
 #endif
 
-  lcd_putsn_P(14*FW, 3*FH, PSTR("Trim- +"), 7);
+  lcd_puts_P(14*FW, 3*FH, STR_VTRIM);
   for(uint8_t i=0; i<4; i++)
   {
     uint8_t y=i*FH+FH*4;
@@ -481,15 +481,15 @@ void menuProcDiagKeys(uint8_t event)
 
 void menuProcDiagAna(uint8_t event)
 {
-  SIMPLE_MENU("ANA", menuTabDiag, e_Ana, 2);
+  SIMPLE_MENU(STR_MENUANA, menuTabDiag, e_Ana, 2);
 
   int8_t  sub    = m_posVert ;
 
   for(uint8_t i=0; i<8; i++)
   {
     uint8_t y=i*FH;
-    lcd_putsn_P( 4*FW, y,PSTR("A1A2A3A4A5A6A7A8")+2*i,2);
-    lcd_outhex4( 8*FW, y,anaIn(i));
+    putsStrIdx(4*FW, y, PSTR("A"), i+1);
+    lcd_outhex4( 8*FW, y, anaIn(i));
     if(i<7)
       lcd_outdez8(17*FW, y, (int32_t)calibratedStick[i]*100/1024);
     else
@@ -498,7 +498,7 @@ void menuProcDiagAna(uint8_t event)
   // lcd_outdezAtt( 21*FW, 3*FH, g_eeGeneral.vBatCalib, 0) ;
   // lcd_outdezAtt( 21*FW, 4*FH, abRunningAvg, 0) ;
   // Display raw BandGap result (debug)
-  lcd_putsn_P( 19*FW, 5*FH,PSTR("BG"),2) ;
+  lcd_puts_P( 19*FW, 5*FH, STR_BG) ;
   lcd_outdezAtt(21*FW, 6*FH, BandGap, 0);
   lcd_outdezAtt(21*FW, 7*FH, anaIn(7)*35/512, PREC1);
 
@@ -506,11 +506,9 @@ void menuProcDiagAna(uint8_t event)
 
 }
 
-const prog_char APM menuWhenDone[] = " [MENU] WHEN DONE ";
-
 void menuProcDiagCalib(uint8_t event)
 {
-  SIMPLE_MENU("CALIBRATION", menuTabDiag, e_Calib, 1);
+  SIMPLE_MENU(STR_MENUCALIBRATION, menuTabDiag, e_Calib, 1);
 
   static int16_t midVals[7];
   static int16_t loVals[7];
@@ -546,14 +544,14 @@ void menuProcDiagCalib(uint8_t event)
     case 0:
       // START CALIBRATION
       // [MENU]
-      lcd_putsAtt(2*FW, 3*FH, PSTR(" [MENU] TO START  "), 0);
+      lcd_puts_P(2*FW, 3*FH, STR_MENUTOSTART);
       break;
 
     case 1:
       // SET MIDPOINT
       // [MENU]
-      lcd_putsAtt(2*FW, 2*FH, PSTR("   SET MIDPOINT   "), s_noScroll ? INVERS : 0);
-      lcd_putsnAtt(2*FW, 3*FH, menuWhenDone, 18, 0);
+      lcd_putsAtt(2*FW, 2*FH, STR_SETMIDPOINT, s_noScroll ? INVERS : 0);
+      lcd_puts_P(2*FW, 3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<7; i++) {
         loVals[i] = 15000;
@@ -565,8 +563,8 @@ void menuProcDiagCalib(uint8_t event)
     case 2:
       // MOVE STICKS/POTS
       // [MENU]
-      lcd_putsAtt(2*FW, 2*FH, PSTR(" MOVE STICKS/POTS "), s_noScroll ? INVERS : 0);
-      lcd_putsAtt(2*FW, 3*FH, menuWhenDone, 0);
+      lcd_putsAtt(2*FW, 2*FH, STR_MOVESTICKSPOTS, s_noScroll ? INVERS : 0);
+      lcd_puts_P(2*FW, 3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<7; i++) {
         if (abs(loVals[i]-hiVals[i])>50) {

@@ -84,7 +84,7 @@ void doMainScreenGrphics()
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
 {
-  lcd_puts_P(x, y, PSTR("Alt:"));
+  lcd_puts_P(x, y, STR_ALT);
   uint16_t value = frskyHubData.baroAltitude + baroAltitudeOffset;
   lcd_outdezAtt(lcd_lastPos, (flags & DBLSIZE) ? y-FH : y, value, flags|LEFT|UNSIGN);
   lcd_putc(lcd_lastPos, y, 'm') ;
@@ -157,7 +157,7 @@ void menuMainView(uint8_t event)
       JETI_EnableRXD(); // enable JETI-Telemetry reception
       chainMenu(menuProcJeti);
 #else
-      chainMenu(menuProcStatistic2);
+      chainMenu(menuProcDebug);
 #endif
       killEvents(event);
       break;
@@ -333,7 +333,7 @@ void menuMainView(uint8_t event)
         V_BAR(SCREEN_WIDTH/2-5*4+2+i*5, SCREEN_HEIGHT-8, len)
       }
       for (uint8_t i=0; i<12; i++) {
-        if ((i%6) < 3) lcd_puts_P(i<6 ? 2*FW-2 : 16*FW-2, (i%3)*FH+4*FH, PSTR("SW"));
+        if ((i%6) < 3) lcd_puts_P(i<6 ? 2*FW-2 : 16*FW-2, (i%3)*FH+4*FH, STR_SW);
         lcd_putcAtt((i<6 ? 2*FW-2 : 16*FW-2) + 2 * FW + ((i%6) < 3 ? 0 : FW), (i%3)*FH+4*FH, i<9 ? '1'+i : 'A'+i-9, getSwitch(10+i, 0) ? INVERS : 0);
       }
     }
@@ -376,7 +376,7 @@ void menuMainView(uint8_t event)
         // Display RX Batt Volts only if a valid channel (A1/A2) has been selected
         if (g_eeFrsky.rxVoltsChannel >0)
         {
-          y+=FH; lcd_puts_P(2*FW, y, PSTR("Rx Batt:"));
+          y+=FH; lcd_puts_P(2*FW, y, STR_RXBATT);
           // Rx batt voltage bar frame
 
           // Minimum voltage
@@ -407,11 +407,11 @@ void menuMainView(uint8_t event)
         }
 #endif
 
-        lcd_puts_P(0, 6*FH, PSTR("Rx:"));
+        lcd_puts_P(0, 6*FH, STR_RX);
         lcd_outdezAtt(3 * FW, 5*FH+2, staticRSSI[0], DBLSIZE|LEFT);
         lcd_outdezAtt(4 * FW, 7*FH, frskyRSSI[0].min, 0);
         lcd_outdezAtt(6 * FW, 7*FH, frskyRSSI[0].max, LEFT);
-        lcd_puts_P(11 * FW - 2, 6*FH, PSTR("Tx:"));
+        lcd_puts_P(11 * FW - 2, 6*FH, STR_TX);
         lcd_outdezAtt(14 * FW - 2, 5*FH+2, staticRSSI[1], DBLSIZE|LEFT);
         lcd_outdezAtt(15 * FW - 2, 7*FH, frskyRSSI[1].min, 0);
         lcd_outdezAtt(17 * FW - 2, 7*FH, frskyRSSI[1].max, LEFT);
@@ -456,20 +456,20 @@ void menuMainView(uint8_t event)
         lcd_putc(lcd_lastPos+1, 3*FH, frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
 
         // Course / Heading
-        lcd_puts_P(5, 5*FH, PSTR("Hdg:"));
+        lcd_puts_P(5, 5*FH, STR_HDG);
         lcd_outdezNAtt(lcd_lastPos, 5*FH, frskyHubData.gpsCourse_bp, LEFT|LEADING0, 3); // before '.'
         lcd_plot(lcd_lastPos, 6*FH-2, 0); // small decimal point
         lcd_outdezAtt(lcd_lastPos+2, 5*FH, frskyHubData.gpsCourse_ap, LEFT); // after '.'
         lcd_putc(lcd_lastPos, 5*FH, '@');
 
         // Speed
-        lcd_puts_P(76, 5*FH, PSTR("Spd:"));
+        lcd_puts_P(76, 5*FH, STR_SPD);
         lcd_outdezAtt(lcd_lastPos, 5*FH, frskyHubData.gpsSpeed_bp, LEFT); // before '.'
         lcd_plot(lcd_lastPos, 6*FH-2, 0); // small decimal point
         lcd_outdezAtt(lcd_lastPos+2, 5*FH, frskyHubData.gpsSpeed_ap, LEFT|UNSIGN); // after '.'
 
         // Altitude
-        lcd_puts_P(7*FW, 7*FH, PSTR("Alt:"));
+        lcd_puts_P(7*FW, 7*FH, STR_ALT);
         lcd_outdezNAtt(lcd_lastPos, 7*FH, frskyHubData.gpsAltitude_bp, LEFT|LEADING0, 3); // before '.'
         lcd_plot(lcd_lastPos, 8*FH-2, 0); // small decimal point
         lcd_outdezAtt(lcd_lastPos+2, 7*FH, frskyHubData.gpsAltitude_ap, LEFT|UNSIGN); // after '.'
@@ -479,31 +479,31 @@ void menuMainView(uint8_t event)
         uint8_t y = 2*FH;
 
         // Temperature 1
-        lcd_puts_P(0, y, PSTR("Temp1:"));
+        lcd_puts_P(0, y, STR_TEMP1);
         lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.temperature1, LEFT);
         lcd_puts_P(lcd_lastPos, y, PSTR("@C"));
         y += FH;
 
         // Temperature 2
-        lcd_puts_P(0, y, PSTR("Temp2:"));
+        lcd_puts_P(0, y, STR_TEMP2);
         lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.temperature2, LEFT);
         lcd_puts_P(lcd_lastPos, y, PSTR("@C"));
 
         y += 2*FH;
 
         // RPM
-        lcd_puts_P(0, y, PSTR("RPM:"));
+        lcd_puts_P(0, y, STR_RPM);
         lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.rpm, LEFT);
         y += FH;
 
         // Fuel
-        lcd_puts_P(0, y, PSTR("Fuel:"));
+        lcd_puts_P(0, y, STR_FUEL);
         lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.fuelLevel, LEFT);
         lcd_putc(lcd_lastPos, y, '%');
         y += FH;
 
         // Volts
-        lcd_puts_P(0, y, PSTR("Volts:"));
+        lcd_puts_P(0, y, STR_VOLTS);
         lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.volts, LEFT);
         lcd_putc(lcd_lastPos, y, 'V');
         y = 2*FH;
@@ -513,7 +513,7 @@ void menuMainView(uint8_t event)
         y += 2*FH;
 
         // Acceleromter
-        lcd_puts_P(11*FW, y, PSTR("Accel"));
+        lcd_puts_P(11*FW, y, STR_ACCEL);
         y += FH;
         lcd_puts_P(11*FW, y, PSTR("x:"));
         lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelX * 100 / 256, PREC2);
@@ -530,7 +530,7 @@ void menuMainView(uint8_t event)
 #endif
       else {
         y0 = 5*FH;
-        //lcd_puts_P(2*FW-3, y0, PSTR("Tele:"));
+        //lcd_puts_P(2*FW-3, y0, STR_TELE);
         x0 = 4*FW-3;
         for (int i=0; i<2; i++) {
           if (g_model.frsky.channels[i].ratio) {
@@ -542,15 +542,15 @@ void menuMainView(uint8_t event)
           }
         }
         y0+=FH;
-        //lcd_puts_P(2*FW-3, y0, PSTR("RSSI:"));
-        lcd_puts_P(4*FW-3, y0, PSTR("Rx:"));
+        //lcd_puts_P(2*FW-3, y0, STR_RSSI);
+        lcd_puts_P(4*FW-3, y0, STR_RX);
         lcd_outdezAtt(7*FW-3, y0, staticRSSI[0], LEFT);
-        lcd_puts_P(13*FW-3, y0, PSTR("Tx:"));
+        lcd_puts_P(13*FW-3, y0, STR_TX);
         lcd_outdezAtt(16*FW-3, y0, staticRSSI[1], LEFT);
       }
     }
     else {
-      lcd_putsAtt(22, 40, PSTR("NO DATA"), DBLSIZE);
+      lcd_putsAtt(22, 40, STR_NODATA, DBLSIZE);
     }
   }
 #endif
