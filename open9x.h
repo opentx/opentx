@@ -22,8 +22,8 @@
 #ifndef gruvin9x_h
 #define gruvin9x_h
 
-#define VERS     2
-#define SUB_VERS 0
+#define MAJ_VERS 2
+#define MIN_VERS 0
 
 #include <inttypes.h>
 #include <string.h>

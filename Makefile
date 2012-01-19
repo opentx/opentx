@@ -229,8 +229,6 @@ ifneq ($(SPLASH), NO)
  CPPDEFS += -DSPLASH
 endif
 
-MODS = 
-
 ifeq ($(PCB), STD)
   # STD PCB, so ...
 
@@ -329,7 +327,7 @@ ifeq ($(DECIMALS), YES)
 endif
 
 ifeq ($(HELI), YES)
- MODS += H
+ MODS+=H
  CPPDEFS += -DHELI
 endif
 
@@ -621,7 +619,8 @@ ALL_CFLAGS = -mmcu=$(MCU) -I. $(CFLAGS) $(GENDEPFLAGS)
 ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) $(AVRGCCFLAGS)
 ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
-SUB_VER = ${shell sh -c "grep \"SUB_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
+MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
+MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
 ABUILD_NUM = ${shell sh -c "grep \"BUILD_NUM\" stamp-open9x.h | egrep -o \"[[:digit:]]+\""}
 BUILD_NUM = $(shell echo $$(( $(ABUILD_NUM) + 1 )))
 BUILD_DIR = $(shell pwd | awk -F'/' '{print $$((NF-1))}')
@@ -657,10 +656,9 @@ stamp:
 	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-open9x.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-open9x.h
 	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> stamp-open9x.h
-	@echo "#define TAG_VERS $(SUB_VER)-$(THEUSER)" >> stamp-open9x.h
-	@echo "#define SVN_VERS \"$(BUILD_DIR)-r$(REV)\"" >> stamp-open9x.h
-	@echo "#define MOD_VERS \"$(MODS)\"" >> stamp-open9x.h
-	@echo "#define BUILD_NUM $(BUILD_NUM)" >> stamp-open9x.h
+	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)-$(THEUSER)\"" >> stamp-open9x.h
+	@echo "#define SVN_STR  \"$(BUILD_DIR)-r$(REV)\"" >> stamp-open9x.h
+	@echo "#define MOD_STR  \"$(MODS)\"" >> stamp-open9x.h
 	@cat stamp-open9x.h
  
 font.lbm: font_6x1.xbm
