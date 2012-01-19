@@ -100,6 +100,8 @@ extern uint8_t FrskyAlarmSendState;
 
 extern FrskyData frskyTelemetry[2];
 extern FrskyData frskyRSSI[2];
+extern uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
+extern uint8_t frskyTxBufferCount;
 
 void FRSKY_Init(void);
 void FRSKY10mspoll(void);

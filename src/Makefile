@@ -346,8 +346,12 @@ ifeq ($(PXX), YES)
   CPPDEFS += -DPXX
 endif
 
-ifeq ($(DSM2), YES)
-  CPPDEFS += -DDSM2
+ifeq ($(DSM2), SERIAL)
+  CPPDEFS += -DDSM2 -DDSM2_SERIAL
+endif
+
+ifeq ($(DSM2), PPM)
+  CPPDEFS += -DDSM2 -DDSM2_PPM
 endif
 
 ifeq ($(SILVER), YES)

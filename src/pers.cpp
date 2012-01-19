@@ -123,14 +123,39 @@ void eeLoadModel(uint8_t id)
     // TODO optim: resetAll()
     resetTimer(0);
     resetTimer(1);
-#ifdef FRSKY
-    resetTelemetry();
-    FRSKY_setModelAlarms();
-#endif
+    resetProto();
 #ifdef LOGS
     startLogs();
 #endif
   }
+}
+
+void resetProto() // TODO inline this if !DSM2_SERIAL
+{
+#if defined(DSM2_SERIAL)
+  if (g_model.protocol == PROTO_DSM2) {
+    cli();
+#if defined(FRSKY)
+    DSM2_Init();
+#endif
+    sei();
+  }
+  else {
+    cli();
+#if defined(FRSKY)
+    FRSKY_Init();
+#else
+    DSM2_Done();
+#endif
+    sei();
+#if defined(FRSKY)
+    FRSKY_setModelAlarms();
+#endif
+  }
+#elif defined(FRSKY)
+  resetTelemetry();
+  FRSKY_setModelAlarms();
+#endif
 }
 
 int8_t eeFindEmptyModel(uint8_t id, bool down)

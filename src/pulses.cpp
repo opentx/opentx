@@ -21,6 +21,48 @@
 
 #include "open9x.h"
 
+#ifdef DSM2_SERIAL
+inline void DSM2_EnableTXD(void)
+{
+  UCSR0B |= (1 << TXEN0); // enable TX
+  UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt
+}
+#endif
+
+void startPulses()
+{
+#ifndef SIMU
+  setupPulses();
+
+#ifdef DSM2_SERIAL
+  if (g_model.protocol == PROTO_DSM2) {
+    DSM2_EnableTXD();
+    OCR1A = 40000;
+  }
+  else
+#endif
+
+  {
+#if defined (PCBV4)
+    OCR1B = 0xffff; /* Prevent any PPM_PUT pin toggle before the TCNT1 interrupt
+                      fires for the first time and sets up the pulse period. */
+    // TCCR1A |= (1<<COM1B0); // (COM1B1=0 and COM1B0=1 in TCCR1A)  toogle the state of PB6(OC1B) on each TCNT1==OCR1B
+    TCCR1A = (3<<COM1B0); // Connect OC1B to PPM_OUT pin (SET the state of PB6(OC1B) on next TCNT1==OCR1B)
+#elif defined (DPPMPB7_HARDWARE) // addon Vinceofdrink@gmail (hardware ppm)
+    OCR1C = 0xffff; // See comment for PCBV4, above
+    TCCR1A |= (1<<COM1C0); // (COM1C1=0 and COM1C0=1 in TCCR1A)  toogle the state of PB7(OC1C) on each TCNT1==OCR1C
+#endif
+  }
+
+#if defined (PCBV3)
+  TIMSK1 |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
+#else
+  TIMSK |= (1<<OCIE1A);  // Pulse generator enable immediately before mainloop
+#endif
+
+#endif // SIMU
+}
+
 #ifdef CTP1009
 uint16_t pulses2MHz[50] = {0};
 #else
@@ -39,83 +81,94 @@ uint16_t *pulses2MHzWPtr = pulses2MHz;
 
 ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 {
-  static uint8_t   pulsePol; // TODO strange, it's always 0 at first, shouldn't it be initialized properly in setupPulses?
+  static uint8_t pulsePol; // TODO strange, it's always 0 at first, shouldn't it be initialized properly in setupPulses?
 
   // Latency -- how far further on from interrupt trigger has the timer counted?
   // (or -- how long did it take to get to this function)
   uint8_t dt = TCNT1L;
-
-  // vinceofdrink@gmail harwared ppm
-  // Orginal bitbang for PPM
-#if !defined (DPPMPB7_HARDWARE) && !defined (PCBV4)
-  if (pulsePol) {
-    PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
-    pulsePol = 0;
-  }
-  else {
-    PORTB &= ~(1<<OUT_B_PPM);
-    pulsePol = 1;
-  }
-#endif
-
-  OCR1A = *pulses2MHzRPtr; // Schedule next interrupt vector (to this handler)
-
-#if defined (PCBV4)
-  OCR1B = *pulses2MHzRPtr; /* G: Using timer in CTC mode, restricted to using OCR1A for interrupt triggering.
-                          So we actually have to handle the OCR1B register separately in this way. */
-
-  // We cannot read the status of the PPM_OUT pin when OC1B is connected to it on the ATmega2560.
-  // So the only way to set polarity is to manually control set/reset mode in COM1B0/1
-  if (pulsePol) {
-    TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B) on next TCNT1==OCR1B
-    pulsePol = 0;
-  }
-  else {
-    TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B) on next TCNT1==OCR1B
-    pulsePol = 1;
-  }
-
-  //vinceofdrink@gmail harwared ppm
-#elif defined (DPPMPB7_HARDWARE)
-  OCR1C = *pulses2MHzRPtr;  // just copy the value of the OCR1A to OCR1C to test PPM out without too
-                      // much change in the code not optimum but will not alter ppm precision
-#endif
-
-  if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
-  if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
-
-  ++pulses2MHzRPtr;
-
-  if (pulses2MHzRPtr == pulses2MHzWPtr) {
-    //currpulse=0;
-    pulsePol = g_model.pulsePol;//0;
-    //    channel = 0 ;
-    //    PulseTotal = 0 ;
-
-#if defined (PCBV3)
-    TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
-#else
-    TIMSK &= ~(1<<OCIE1A); //stop reentrance
-#endif
+  
+#ifdef DSM2_SERIAL
+  if (g_model.protocol == PROTO_DSM2) {
+    OCR1A = 40000;
     sei();
     setupPulses();
+    cli();
+    UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt
+  }
+  else
+#endif
+  {
+    // vinceofdrink@gmail harwared ppm
+    // Orginal bitbang for PPM
+#if !defined (DPPMPB7_HARDWARE) && !defined (PCBV4)
+    if (pulsePol) {
+      PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
+      pulsePol = 0;
+    }
+    else {
+      PORTB &= ~(1<<OUT_B_PPM);
+      pulsePol = 1;
+    }
+#endif
+
+    OCR1A = *pulses2MHzRPtr; // Schedule next interrupt vector (to this handler)
+
+#if defined (PCBV4)
+    OCR1B = *pulses2MHzRPtr; /* G: Using timer in CTC mode, restricted to using OCR1A for interrupt triggering.
+                                So we actually have to handle the OCR1B register separately in this way. */
+
+    // We cannot read the status of the PPM_OUT pin when OC1B is connected to it on the ATmega2560.
+    // So the only way to set polarity is to manually control set/reset mode in COM1B0/1
+    if (pulsePol) {
+      TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B) on next TCNT1==OCR1B
+      pulsePol = 0;
+    }
+    else {
+      TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B) on next TCNT1==OCR1B
+      pulsePol = 1;
+    }
+
+    //vinceofdrink@gmail harwared ppm
+#elif defined (DPPMPB7_HARDWARE)
+    OCR1C = *pulses2MHzRPtr;  // just copy the value of the OCR1A to OCR1C to test PPM out without too
+                              // much change in the code not optimum but will not alter ppm precision
+#endif
+  
+    if (++pulses2MHzRPtr == pulses2MHzWPtr) {
+      //currpulse=0;
+      pulsePol = g_model.pulsePol;//0;
+      //    channel = 0 ;
+      //    PulseTotal = 0 ;
+
+#if defined (PCBV3)
+      TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
+#else
+      TIMSK &= ~(1<<OCIE1A); //stop reentrance
+#endif
+      sei();
+      setupPulses();
 
 #if !defined (PCBV3) && defined (DPPMPB7_HARDWARE)
-    // G: NOTE: This strategy does not work on the '2560 becasue you can't
-    //          read the PPM out pin when connected to OC1B. Vincent says
-    //          it works on the '64A. I haven't personally tested it.
-    if (PINB & (1<<OUT_B_PPM) && g_model.pulsePol)
-      TCCR1C=(1<<FOC1C);
+      // G: NOTE: This strategy does not work on the '2560 becasue you can't
+      //          read the PPM out pin when connected to OC1B. Vincent says
+      //          it works on the '64A. I haven't personally tested it.
+      if (PINB & (1<<OUT_B_PPM) && g_model.pulsePol)
+        TCCR1C=(1<<FOC1C);
 #endif
 
-    cli();
+      cli();
 #if defined (PCBV3)
-    TIMSK1 |= (1<<OCIE1A);
+      TIMSK1 |= (1<<OCIE1A);
 #else
-    TIMSK |= (1<<OCIE1A);
+      TIMSK |= (1<<OCIE1A);
 #endif
-    sei();
+      sei();
+    }
   }
+  
+  if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
+  if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
+    
   heartbeat |= HEART_TIMER2Mhz;
 }
 
@@ -167,7 +220,7 @@ inline void __attribute__ ((always_inline)) setupPulsesPXX()
 
 #endif
 
-#ifdef DSM2
+#ifdef DSM2_SERIAL
 
 // DSM2 protocol pulled from th9x - Thanks thus!!!
 
@@ -199,55 +252,56 @@ normal:
 
  */
 
-inline void __attribute__ ((always_inline)) _send_1(uint16_t v)
+#define DSM2_CHANS 6
+
+inline void __attribute__ ((always_inline)) setupPulsesDsm2()
 {
-  *pulses2MHzWPtr++ = v;
+  if (isFunctionActive(FUNC_LOGS)) {*pulses2MHzWPtr++ = 0x80;}
+  //elseif (somerangetestvariable) {*pulses2MHzWPtr++ = 0x20;}
+  else *pulses2MHzWPtr++ = 0x00;
+  *pulses2MHzWPtr++ = g_eeGeneral.currModel;
+    for (uint8_t i=0; i<DSM2_CHANS; i++) {
+    uint16_t pulse = limit(0, (g_chans512[i]>>1)+512, 1023);
+      *pulses2MHzWPtr++ = (i<<2) | ((pulse>>8)&0x03);
+      *pulses2MHzWPtr++ = pulse & 0xff;
+  }
 }
 
-#define BITLEN_DSM2 (8*2) //125000 Baud
-inline void __attribute__ ((always_inline)) sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
+void DSM2_Done()
 {
-    bool    lev = 0;
-    uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
-    for( uint8_t i=0; i<=8; i++){ //8Bits + Stop=1
-        bool nlev = b & 1; //lsb first
-        if(lev == nlev){
-            len += BITLEN_DSM2;
-        }else{
-            _send_1(len-1);
-            len = BITLEN_DSM2;
-            lev = nlev;
-        }
-        b = (b>>1) | 0x80; //shift in stop bit
-    }
-    _send_1(len + 10*BITLEN_DSM2 -1); //some more space-time for security
+  UCSR0B &= ~((1 << TXEN0) | (1 << UDRIE0)); // disable TX pin and interrupt
 }
 
-
-inline void __attribute__ ((always_inline)) setupPulsesDsm2(uint8_t chns)
+void DSM2_Init(void)
 {
-    static uint8_t dsmDat[2+6*2]={0x80,0,  0x00,0xAA,  0x05,0xFF,  0x09,0xFF,  0x0D,0xFF,  0x13,0x54,  0x14,0xAA};
+#ifndef SIMU
 
-    static uint8_t state = 0;
+  DDRE &= ~(1 << DDE0);    // set RXD0 pin as input
+  PORTE &= ~(1 << PORTE0); // disable pullup on RXD0 pin
 
-    if(state==0){
+#undef BAUD
+#define BAUD 125000
 
-        if((dsmDat[0] == 0) || ! keyState(SW_Trainer) ){ //init - bind!
-            dsmDat[0]=0; dsmDat[1]=0;  //DSM2_Header = 0,0;
-            for(uint8_t i=0; i<chns; i++){
-                uint16_t pulse = limit(0, g_chans512[i]+512,1023);
-                dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
-                dsmDat[3+2*i] = pulse & 0xff;
-            }
-        }
-    }
-    sendByteDsm2(dsmDat[state++]);
-    sendByteDsm2(dsmDat[state++]);
-    if(state >= 2+chns*2){
-        pulses2MHzWPtr--; //remove last stopbits and
-        _send_1(20000u*2 -1); //prolong them
-        state=0;
-    }
+#include <util/setbaud.h>
+
+  UBRR0H = UBRRH_VALUE;
+  UBRR0L = UBRRL_VALUE;
+  UCSR0A &= ~(1 << U2X0); // disable double speed operation.
+
+  // set 8N1
+  UCSR0B = 0 | (0 << RXCIE0) | (0 << TXCIE0) | (0 << UDRIE0) | (0 << RXEN0) | (0 << TXEN0) | (0 << UCSZ02);
+  UCSR0C = 0 | (1 << UCSZ01) | (1 << UCSZ00);
+
+  while (UCSR0A & (1 << RXC0)) UDR0; // flush receive buffer
+
+  pulses2MHzWPtr = pulses2MHz;
+  pulses2MHzRPtr = pulses2MHz;
+  setupPulsesDsm2();
+
+  // These should be running right from power up on a FrSky enabled '9X.
+  DSM2_EnableTXD(); // enable FrSky-Telemetry reception
+
+#endif // SIMU
 }
 
 #endif
@@ -416,9 +470,6 @@ void setupPulses()
   pulses2MHzRPtr = pulses2MHz;
 
   switch(g_model.protocol) {
-    case PROTO_PPM:
-      setupPulsesPPM();
-      break;
 #ifdef SILVER
     case PROTO_SILV_A:
     case PROTO_SILV_B:
@@ -436,11 +487,13 @@ void setupPulses()
       setupPulsesPXX();
       break;
 #endif
-#ifdef DSM2
+#ifdef DSM2_SERIAL
     case PROTO_DSM2:
-      setupPulsesDsm2(6);
+      setupPulsesDsm2();
       break;
 #endif
+    default:
+      setupPulsesPPM();
+      break;
   }
 }
-
