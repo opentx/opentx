@@ -242,13 +242,13 @@ ifeq ($(PCB), STD)
 
   # If JETI-Support is enabled
   ifeq ($(EXT), JETI)
-   MODS += J
+   MODS +=J
    CPPDEFS += -DJETI
   endif
 
   # If FRSKY-Support is enabled
   ifeq ($(EXT), FRSKY)
-   MODS += F
+   MODS +=F
    CPPDEFS += -DFRSKY
    CPPSRC += frsky.cpp
    # If FRSKY-Hub is enabled
@@ -301,7 +301,7 @@ else
   ifeq ($(LOGS), YES)
     CPPSRC += logs.cpp
     CPPDEFS += -DLOGS
-    MODS += L
+    MODS +=L
   endif
   ifeq ($(PCB), V4)
     CPPDEFS += -DPCBV4
@@ -327,7 +327,7 @@ ifeq ($(DECIMALS), YES)
 endif
 
 ifeq ($(HELI), YES)
- MODS+=H
+ MODS +=H
  CPPDEFS += -DHELI
 endif
 
