@@ -21,6 +21,10 @@
 
 #include "open9x.h"
 
+#if defined(DSM2_PPM) || defined(PXX)
+uint8_t s_current_protocol = 255;
+#endif
+
 #ifdef DSM2_SERIAL
 inline void DSM2_EnableTXD(void)
 {
@@ -43,18 +47,18 @@ void startPulses()
 #endif
 
   {
-#if defined (PCBV4)
+#if defined(PCBV4)
     OCR1B = 0xffff; /* Prevent any PPM_PUT pin toggle before the TCNT1 interrupt
                       fires for the first time and sets up the pulse period. */
     // TCCR1A |= (1<<COM1B0); // (COM1B1=0 and COM1B0=1 in TCCR1A)  toogle the state of PB6(OC1B) on each TCNT1==OCR1B
     TCCR1A = (3<<COM1B0); // Connect OC1B to PPM_OUT pin (SET the state of PB6(OC1B) on next TCNT1==OCR1B)
-#elif defined (DPPMPB7_HARDWARE) // addon Vinceofdrink@gmail (hardware ppm)
+#elif defined(DPPMPB7_HARDWARE) // addon Vinceofdrink@gmail (hardware ppm)
     OCR1C = 0xffff; // See comment for PCBV4, above
     TCCR1A |= (1<<COM1C0); // (COM1C1=0 and COM1C0=1 in TCCR1A)  toogle the state of PB7(OC1C) on each TCNT1==OCR1C
 #endif
   }
 
-#if defined (PCBV3)
+#if defined(PCBV3)
   TIMSK1 |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
 #else
   TIMSK |= (1<<OCIE1A);  // Pulse generator enable immediately before mainloop
@@ -100,7 +104,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
   {
     // vinceofdrink@gmail harwared ppm
     // Orginal bitbang for PPM
-#if !defined (DPPMPB7_HARDWARE) && !defined (PCBV4)
+#if !defined(DPPMPB7_HARDWARE) && !defined(PCBV4)
     if (pulsePol) {
       PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
       pulsePol = 0;
@@ -113,7 +117,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
     OCR1A = *pulses2MHzRPtr; // Schedule next interrupt vector (to this handler)
 
-#if defined (PCBV4)
+#if defined(PCBV4)
     OCR1B = *pulses2MHzRPtr; /* G: Using timer in CTC mode, restricted to using OCR1A for interrupt triggering.
                                 So we actually have to handle the OCR1B register separately in this way. */
 
@@ -129,26 +133,26 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
     }
 
     //vinceofdrink@gmail harwared ppm
-#elif defined (DPPMPB7_HARDWARE)
+#elif defined(DPPMPB7_HARDWARE)
     OCR1C = *pulses2MHzRPtr;  // just copy the value of the OCR1A to OCR1C to test PPM out without too
                               // much change in the code not optimum but will not alter ppm precision
 #endif
   
     if (++pulses2MHzRPtr == pulses2MHzWPtr) {
-      //currpulse=0;
-      pulsePol = g_model.pulsePol;//0;
-      //    channel = 0 ;
-      //    PulseTotal = 0 ;
 
-#if defined (PCBV3)
+      pulsePol = g_model.pulsePol;
+
+#if defined(PCBV3)
       TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
 #else
       TIMSK &= ~(1<<OCIE1A); //stop reentrance
 #endif
+
       sei();
+
       setupPulses();
 
-#if !defined (PCBV3) && defined (DPPMPB7_HARDWARE)
+#if !defined(PCBV3) && defined(DPPMPB7_HARDWARE)
       // G: NOTE: This strategy does not work on the '2560 becasue you can't
       //          read the PPM out pin when connected to OC1B. Vincent says
       //          it works on the '64A. I haven't personally tested it.
@@ -157,7 +161,8 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 #endif
 
       cli();
-#if defined (PCBV3)
+
+#if defined(PCBV3)
       TIMSK1 |= (1<<OCIE1A);
 #else
       TIMSK |= (1<<OCIE1A);
@@ -173,14 +178,6 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 }
 
 #endif
-
-//inline int16_t reduceRange(int16_t x)  // for in case we want to have room for subtrims
-//{
-//    return x-(x/4);  //512+128 =? 640,  640 - 640/4  == 640 * 3/4 => 480 (just below 500msec - it can still reach 500 with offset)
-//}
-//int16_t PPM_range = 512*2;   //range of 0.7..1.7msec
-//uint16_t PPM_gap = 300 * 2; //Stoplen *2
-//uint16_t PPM_frame ;
 
 FORCEINLINE void setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
 {
@@ -249,21 +246,18 @@ normal:
   DSM2_Channel[i*2]   = (byte)(i<<2) | highByte(pulse);
   DSM2_Channel[i*2+1] = lowByte(pulse);
 
-
  */
 
 #define DSM2_CHANS 6
 
-inline void __attribute__ ((always_inline)) setupPulsesDsm2()
+FORCEINLINE void setupPulsesDsm2()
 {
-  if (isFunctionActive(FUNC_LOGS)) {*pulses2MHzWPtr++ = 0x80;}
-  //elseif (somerangetestvariable) {*pulses2MHzWPtr++ = 0x20;}
-  else *pulses2MHzWPtr++ = 0x00;
+  *pulses2MHzWPtr++ = (isFunctionActive(FUNC_MODELMATCH) ? 0x80 : 0x00);
   *pulses2MHzWPtr++ = g_eeGeneral.currModel;
-    for (uint8_t i=0; i<DSM2_CHANS; i++) {
+  for (uint8_t i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, (g_chans512[i]>>1)+512, 1023);
-      *pulses2MHzWPtr++ = (i<<2) | ((pulse>>8)&0x03);
-      *pulses2MHzWPtr++ = pulse & 0xff;
+    *pulses2MHzWPtr++ = (i<<2) | ((pulse>>8)&0x03);
+    *pulses2MHzWPtr++ = pulse & 0xff;
   }
 }
 
@@ -302,6 +296,52 @@ void DSM2_Init(void)
   DSM2_EnableTXD(); // enable FrSky-Telemetry reception
 
 #endif // SIMU
+}
+#endif
+
+#if defined(DSM2_PPM)
+static uint8_t *Dsm2_pulsePtr = (uint8_t *)pulses2MHz;
+void setupPulsesDsm2(uint8_t chns)
+{
+  static uint8_t dsmDat[2+6*2]= {0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
+  uint8_t counter;
+
+  // If more channels needed make sure the pulses union/array is large enough
+  if (dsmDat[0] & BadData) //first time through, setup header
+  {
+    switch(g_model.ppmNCH)
+    {
+      case LPXDSM2:
+        dsmDat[0]= 0x80;
+        break;
+      case DSM2only:
+        dsmDat[0]=0x90;
+        break;
+      default:
+        dsmDat[0]=0x98; //dsmx, bind mode
+        break;
+    }
+  }
+  if ((dsmDat[0]&BindBit)&&(!keyState(SW_Trainer))) dsmDat[0]&=~BindBit; //clear bind bit if trainer not pulled
+  if ((!(dsmDat[0]&BindBit))&&getSwitch(MAX_DRSWITCH-1,0,0)) dsmDat[0]|=RangeCheckBit; //range check function
+
+  else dsmDat[0]&=~RangeCheckBit;
+  dsmDat[1]=g_eeGeneral.currModel+1; //DSM2 Header second byte for model match
+  for(uint8_t i=0; i<chns; i++)
+  {
+    uint16_t pulse = limit(0, (g_chans512[i]>>1)+512,1023);
+    dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
+    dsmDat[3+2*i] = pulse & 0xff;
+  }
+
+  for ( counter = 0; counter < 14; counter += 1 )
+  {
+    sendByteDsm2(dsmDat[counter]);
+  }
+  pulses2MHzptr-=1; //remove last stopbits and
+  _send_1( 255 ); //prolong them
+  _send_1(0); //end of pulse stream
+  Dsm2_pulsePtr = pulses2MHz.pbyte;
 }
 
 #endif
@@ -466,6 +506,45 @@ inline void __attribute__ ((always_inline)) setupPulsesTracerCtp1009()
 
 void setupPulses()
 {
+#if defined(DSM2_PPM) || defined(PXX)
+  if (s_current_protocol != g_model.protocol) {
+    s_current_protocol = g_model.protocol;
+    // switch mode here
+    switch (g_model.protocol) {
+#if defined(DSM2_PPM)
+      case PROTO_DSM2:
+        TCCR1B = 0; // Stop counter
+        OCR1B = 200; // 100 uS
+        TCNT1 = 300; // Past the OCR1B value
+        ICR1 = 44000; // Next frame starts in 22 mS
+        TIMSK &= ~0x3C; // All interrupts off
+        TIFR = 0x3C; // Clear all pending interrupts
+        TIMSK |= 0x28; // Enable CAPT and COMPB
+        TCCR1A = (0 << WGM10);
+        TCCR1B = (3 << WGM12) | (2 << CS10); // CTC ICR, 16MHz / 8
+        break;
+#endif
+
+#if defined(PXX)
+      case PROTO_PXX:
+        // do nothing, not yet implemented
+        break;
+#endif
+
+      default:
+        TCCR1B = 0; // Stop counter
+        OCR1A = 40000; // Next frame starts in 20 mS
+        TCNT1 = 0;
+        TIMSK &= ~0x3C; // All interrupts off
+        TIFR = 0x3C; // Clear all pending interrupts
+        TIMSK |= 0x10; // Enable COMPA
+        TCCR1A = (0 << WGM10);
+        TCCR1B = (1 << WGM12) | (2 << CS10); // CTC OCRA, 16MHz / 8
+        break;
+    }
+  }
+#endif
+
   pulses2MHzWPtr = pulses2MHz;
   pulses2MHzRPtr = pulses2MHz;
 
@@ -497,3 +576,28 @@ void setupPulses()
       break;
   }
 }
+
+#if defined(DSM2_PPM) || defined(PXX)
+ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
+{
+  uint8_t x ;
+  PORTB ^= (1<<OUT_B_PPM);
+  x = *Dsm2_pulsePtr++;      // Byte size
+  ICR1 = x ;
+  if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up
+  heartbeat |= HEART_TIMER2Mhz;
+}
+
+ISR(TIMER1_COMPB_vect) // DSM2 end of frame
+{
+  ICR1 = 41536 ; // next frame starts in 22ms 41536 = 2*(22000 - 14*11*8)
+  if (OCR1B < 255) {
+    OCR1B = 39000;  // delay setup pulses by 19.5ms to reduce system latency
+  }
+  else {
+    OCR1B = 200;
+    sei();
+    setupPulses();
+  }
+}
+#endif
