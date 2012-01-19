@@ -2026,6 +2026,54 @@ uint16_t DEBUG2 = 0;
 
 #endif
 
+/*
+   USART0 Transmit Data Register Emtpy ISR
+   Used to transmit FrSky data packets and DSM2 protocol
+*/
+
+#if defined (FRSKY)
+FORCEINLINE void FRSKY_USART0_vect()
+{
+  if (frskyTxBufferCount > 0) {
+    UDR0 = frskyTxBuffer[--frskyTxBufferCount];
+  }
+  else {
+    UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
+  }
+}
+#endif
+
+#if defined (DSM2_SERIAL)
+FORCEINLINE void DSM2_USART0_vect()
+{
+  UDR0 = *pulses2MHzRPtr;
+
+  if (++pulses2MHzRPtr == pulses2MHzWPtr) {
+    UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
+  }
+}
+#endif
+
+#ifndef SIMU
+#if defined (FRSKY) or defined(DSM2_SERIAL)
+ISR(USART0_UDRE_vect)
+{
+#if defined (FRSKY) and defined (DSM2_SERIAL)
+  if (g_model.protocol == PROTO_DSM2) {
+    DSM2_USART0_vect();
+  }
+  else {
+    FRSKY_USART0_vect();
+  }
+#elif defined (FRSKY)
+  FRSKY_USART0_vect();
+#else
+  DSM2_USART0_vect();
+#endif
+}
+#endif
+#endif
+
 #if defined (PCBV3)
 /*---------------------------------------------------------*/
 /* User Provided Date/Time Function for FatFs module       */
@@ -2159,10 +2207,10 @@ int main(void)
   DDRE = 0b00001010;  PORTE = 0b11110101; // 7:PPM_IN, 6: RENC1_B, 5:RENC1_A, 4:USB_DNEG, 3:BUZZER, 2:USB_DPOS, 1:TELEM_TX, 0:TELEM_RX
   DDRF = 0x00;  PORTF = 0x00; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
   DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
-  DDRH = 0x00;  PORTH = 0xff; // 7:0 Spare port -- all inputs for now [Bit 2:VIB_OPTION -- setting to input for now]
+  DDRH = 0b00110000;  PORTH = 0b11011111; // 7:0 Spare port [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK] [2:VIB_OPTION -- setting to input for now]
   DDRJ = 0x00;  PORTJ = 0xff; // 7-0:Trim switch inputs
   DDRK = 0x00;  PORTK = 0x00; // anain. No pull-ups!
-  DDRL = 0x00;  PORTL = 0xff; // 7-6:Spare6/5 (inputs), 5-0: User Button inputs
+  DDRL = 0x80;  PORTL = 0x7f; // 7: Hold_PWR_On (1=On, default Off), 6:Jack_Presence_TTL, 5-0: User Button inputs
 #else
 #  if defined (PCBV3)
   DDRB = 0x97;  PORTB = 0x1e; // 7:AUDIO, SD_CARD[6:SDA 5:SCL 4:CS 3:MISO 2:MOSI 1:SCK], 0:PPM_OUT
@@ -2265,8 +2313,12 @@ int main(void)
 
   sei(); // interrupts needed for FRSKY_Init and eeReadAll.
 
-#if defined (FRSKY)
+#if defined (FRSKY) and !defined (DSM2_SERIAL)
   FRSKY_Init();
+#endif
+
+#if defined (DSM2_SERIAL) and !defined (FRSKY)
+  DSM2_Init();
 #endif
 
 #ifdef JETI
@@ -2340,29 +2392,7 @@ int main(void)
   /***************************************************/
 #endif
 
-/***********************************************************/
-/*** Keep this code block directly before the main loop ****/
-  
-  setupPulses();
-
-#if defined (PCBV4)
-    OCR1B = 0xffff; /* Prevent any PPM_PUT pin toggle before the TCNT1 interrupt 
-                       fires for the first time and sets up the pulse period. */
-    // TCCR1A |= (1<<COM1B0); // (COM1B1=0 and COM1B0=1 in TCCR1A)  toogle the state of PB6(OC1B) on each TCNT1==OCR1B
-    TCCR1A = (3<<COM1B0); // Connect OC1B to PPM_OUT pin (SET the state of PB6(OC1B) on next TCNT1==OCR1B)
-#else
-//addon Vinceofdrink@gmail (hardware ppm)
-#  if defined (DPPMPB7_HARDWARE)
-    OCR1C = 0xffff; // See comment for PCBV4, above
-    TCCR1A |= (1<<COM1C0); // (COM1C1=0 and COM1C0=1 in TCCR1A)  toogle the state of PB7(OC1C) on each TCNT1==OCR1C
-#  endif
-#endif
-
-#if defined (PCBV3)
-  TIMSK1 |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
-#else
-  TIMSK |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
-#endif
+  startPulses();
 
   wdt_enable(WDTO_500MS);
 /*** Keep this code block directly before the main loop ****/

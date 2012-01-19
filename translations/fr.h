@@ -15,7 +15,7 @@
 #define TR_ADCFILTER     "SING""OSMP""FILT"
 
 #define LEN_WARNSW       4
-#define TR_WARNSW        "Down""OFF ""Up  "
+#define TR_WARNSW        "Bas ""OFF ""Haut"
 
 #define LEN_TRNMODE      3
 #define TR_TRNMODE       "off"" +="" :="
@@ -42,10 +42,10 @@
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
 #define LEN_CURVMODES    5
-#define TR_CURVMODES     "EDIT ""PRSET""A.THR"
+#define TR_CURVMODES     "EDIT ""PRSET""A.GAZ"
 
 #define LEN_EXPLABELS    6
-#define TR_EXPLABELS     "Weight""Expo  ""Phase ""Swtch ""When  ""Curve ""      "
+#define TR_EXPLABELS     "Weight""Expo  ""Phase ""Inter ""When  ""Courbe""      "
 
 #define LEN_VMLTPX       8
 #define TR_VMLTPX        "Add     ""Multiply""Replace "
@@ -54,7 +54,7 @@
 #define TR_VMLTPX2       "+=""*="":="
 
 #define LEN_VCSWFUNC     7
-#define TR_VCSWFUNC      "----   ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
+#define TR_VCSWFUNC      "----   ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""ET     ""OU     ""XOU    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
 #define LEN_VFSWFUNC     14
 #if defined(DSM2)
@@ -67,7 +67,7 @@
 #else
 #define TR_SDCLOGGS
 #endif
-#define TR_VFSWFUNC      "----          ""Trainer       ""Trainer RUD   ""Trainer ELE   ""Trainer THR   ""Trainer AIL   ""Instant Trim  ""Trims2Offsets "TR_MODELMATCH TR_SDCLOGGS
+#define TR_VFSWFUNC      "----          ""Ecolage       ""Ecolage DER   ""Ecolage PRF   ""Ecolage GAZ   ""Ecolage AIL   ""Instant Trim  ""Trims2Offsets "TR_MODELMATCH TR_SDCLOGGS
 
 #define LEN_VTELEMUNIT   1
 #define TR_VTELEMUNIT    "v""-"
@@ -98,13 +98,13 @@
 #define TR_RE1RE2        "RE1""RE2"
 
 #define LEN_VSWITCHES    3
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
+#define TR_VSWITCHES     "GAZ""DER""PRF""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
 
 #define LEN_VSRCRAW      4
-#define TR_VSRCRAW       "RUD ""ELE ""THR ""AIL ""P1  ""P2  ""P3  ""MAX ""FULL""CYC1""CYC2""CYC3"
+#define TR_VSRCRAW       "DER ""PRF ""GAZ ""AIL ""P1  ""P2  ""P3  ""MAX ""FULL""CYC1""CYC2""CYC3"
 
 #define LEN_VTMRMODES    3
-#define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
+#define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
 
 #define LEN_TELEMCHNS    3
 #if defined(FRSKY_HUB)
@@ -118,12 +118,12 @@
 // ZERO TERMINATED STRINGS
 #define TR_POPUPS       "[MENU]    [EXIT]"
 #define TR_MENUWHENDONE " [MENU] WHEN DONE"
-#define TR_FREE         "free"
-#define TR_DELETEMODEL  "DELETE MODEL"
+#define TR_FREE         "libre"
+#define TR_DELETEMODEL  "SUPPRIMER MODELE"
 #define TR_COPYINGMODEL "Copying model..."
 #define TR_MOVINGMODEL  "Moving model..."
-#define TR_LOADINGMODEL "Loading model..."
-#define TR_NAME         "Name"
+#define TR_LOADINGMODEL " Chargement..."
+#define TR_NAME         "Nom"
 #define TR_TIMER        "Timer"
 #define TR_ELIMITS      "E.Limits"
 #define TR_ETRIMS       "E.Trims"
@@ -134,7 +134,7 @@
 #define TR_PROTO        "Proto"
 #define TR_PPMFRAME     "PPM frame"
 #define TR_MS           "ms"
-#define TR_SWITCH       "Switch"
+#define TR_SWITCH       "Inter"
 #define TR_TRIMS        "Trims"
 #define TR_FADEIN       "Fade In"
 #define TR_FADEOUT      "Fade Out"
@@ -143,7 +143,7 @@
 #define TR_SWASHTYPE    "Swash Type"
 #define TR_COLLECTIVE   "Collective"
 #define TR_SWASHRING    "Swash Ring"
-#define TR_ELEDIRECTION "ELE Direction"
+#define TR_ELEDIRECTION "PRF Direction"
 #define TR_AILDIRECTION "AIL Direction"
 #define TR_COLDIRECTION "COL Direction"
 #define TR_MODE         "MODE"
@@ -155,8 +155,8 @@
 #define TR_WEIGHT       "Weight"
 #define TR_OFFSET       "Offset"
 #define TR_TRIM         "Trim"
-#define TR_CURVES       "Curves"
-#define TR_FPHASE       "F.Phase"
+#define TR_CURVES       "Courbe"
+#define TR_FPHASE       "P.Vol"
 #define TR_WARNING      "Warning"
 #define TR_OFF          "OFF"
 #define TR_MULTPX       "Multpx"
@@ -195,7 +195,7 @@
 #define TR_NODATAALARM  "NO DATA Alarm"
 #define TR_RXCHANNELORD "Rx Channel Ord"
 #define TR_MODE2        "Mode"
-#define TR_SLAVE        "Slave"
+#define TR_SLAVE        "Esclave"
 #define TR_MODESRC      "mode   % src"
 #define TR_MULTIPLIER   "Multiplier"
 #define TR_CAL          "Cal"
@@ -222,7 +222,7 @@
 #define TR_NODATA       "NO DATA"
 #define TR_TM1          "TM1"
 #define TR_TM2          "TM2"
-#define TR_THR          "THR"
+#define TR_THR          "GAZ"
 #define TR_TH           "TH%"
 #define TR_TOT          "TOT"
 #define TR_TMR1LATMAXUS "tmr1Lat max    us"
@@ -236,13 +236,13 @@
 #define TR_CH           "CH"
 #define TR_TMR          "TMR"
 #define TR_MODEL        "MODEL"
-#define TR_FP           "FP"
+#define TR_FP           "PV"
 #define TR_EEPROMLOWMEM "EEPROM low mem"
 #define TR_ALERT        "ALERT"
-#define TR_PRESSANYKEYTOSKIP "Press any key to skip"
+#define TR_PRESSANYKEYTOSKIP "Appuyez sur une touche"
 #define TR_THROTTLENOTIDLE "Throttle not idle"
 #define TR_RESETTHROTTLE "Reset throttle"
-#define TR_ALARMSDISABLED "Alarms Disabled"
+#define TR_ALARMSDISABLED "Alarmes Desactivees"
 #define TR_SWITCHESNOTOFF "Switches not off"
 #define TR_PLEASERESETTHEM "Please reset them"
 #define TR_MESSAGE      "MESSAGE"
@@ -253,8 +253,8 @@
 #define TR_PULSETABOVERFLOW "PULSES OVERFLOW"
 
 #define TR_MENURADIOSETUP "RADIO SETUP"
-#define TR_MENUDATEANDTIME "DATE AND TIME"
-#define TR_MENUTRAINER  "TRAINER"
+#define TR_MENUDATEANDTIME "DATE ET HEURE"
+#define TR_MENUTRAINER  "ECOLAGE"
 #define TR_MENUVERSION  "VERSION"
 #define TR_MENUDIAG     "DIAG"
 #define TR_MENUANA      "ANA"
@@ -262,18 +262,18 @@
 #define TR_MENUSERROR   "MENUS OVERFLOW"
 #define TR_MENUMODELSEL "MODELSEL"
 #define TR_MENUSETUP    "SETUP"
-#define TR_MENUFLIGHTPHASE "FLIGHT PHASE"
-#define TR_MENUFLIGHTPHASES "FLIGHT PHASES"
+#define TR_MENUFLIGHTPHASE "PHASE DE VOL"
+#define TR_MENUFLIGHTPHASES "PHASES DE VOL"
 #define TR_MENUHELISETUP "HELI SETUP"
 #define TR_MENUDREXPO   "DR/EXPO"
-#define TR_MENULIMITS   "LIMITS"
-#define TR_MENUCURVES   "CURVES"
-#define TR_MENUCURVE    "CURVE"
-#define TR_MENUCUSTOMSWITCHES "CUSTOM SWITCHES"
+#define TR_MENULIMITS   "LIMITES"
+#define TR_MENUCURVES   "COURBES"
+#define TR_MENUCURVE    "COURBE"
+#define TR_MENUCUSTOMSWITCHES "INTERS PERS"
 #define TR_MENUFUNCSWITCHES "FUNC SWITCHES"
-#define TR_MENUSAFETYSWITCHES "SAFETY SWITCHES"
-#define TR_MENUTELEMETRY "TELEMETRY"
-#define TR_MENUTEMPLATES "TEMPLATES"
+#define TR_MENUSAFETYSWITCHES "INTERS SECURITE"
+#define TR_MENUTELEMETRY "TELEMETRIE"
+#define TR_MENUTEMPLATES "GABARITS"
 #define TR_MENUSTAT      "STAT"
 #define TR_MENUDEBUG     "DEBUG"
 

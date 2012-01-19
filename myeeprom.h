@@ -171,6 +171,9 @@ enum Functions {
   FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
   FUNC_TRIMS_2_OFS,
+#if defined(DSM2)
+  FUNC_MODELMATCH,
+#endif
 #ifdef LOGS
   FUNC_LOGS,
 #endif

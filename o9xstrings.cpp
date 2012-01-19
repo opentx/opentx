@@ -1,12 +1,5 @@
 #include "open9x.h"
 
-#ifdef TRANSLATIONS_FR
-#include "translations/fr.h"
-#else
-#endif
-
-#include "translations/en.h"
-
 // The non-0-terminated-strings
 const prog_char APM STR_OPEN9X[] =
     TR_OFFON

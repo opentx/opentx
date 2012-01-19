@@ -69,6 +69,20 @@
 
 #include "file.h"
 
+#include "lcd.h"
+#include "myeeprom.h"
+
+#ifdef JETI
+// Jeti-DUPLEX Telemetry
+extern uint16_t jeti_keys;
+#include "jeti.h"
+#endif
+
+#if defined (FRSKY)
+// FrSky Telemetry
+#include "frsky.h"
+#endif
+
 extern RlcFile theFile;  //used for any file operation
 
 // G: The following comments relate to the original stock PCB only
@@ -176,6 +190,11 @@ extern uint16_t DEBUG2;
 #  define INP_B_Trainer  5
 #  define INP_B_ID2      4
 
+#ifdef SOMO
+#  define OUT_H_14DCLK   4
+#  define OUT_H_14DDATA  5
+#  define OUT_H_14DBUSY  6
+#endif
 
 #else // boards prior to v4 ...
 
@@ -343,22 +362,15 @@ enum EnumKeys {
 #define NUM_PPM         8
 #define CHOUT_BASE      (PPM_BASE+NUM_PPM)
 
-#if defined(FRSKY)
 #if defined(FRSKY_HUB)
 #define NUM_TELEMETRY      4
-#define TELEMETRY_CHANNELS "AD1AD2ALTRPM"
 #elif defined(WS_HOW_HIGH)
 #define NUM_TELEMETRY      3
-#define TELEMETRY_CHANNELS "AD1AD2ALT"
-#else
+#elif defined(FRSKY)
 #define NUM_TELEMETRY      2
-#define TELEMETRY_CHANNELS "AD1AD2"
-#endif
 #else
 #define NUM_TELEMETRY      0
-#define TELEMETRY_CHANNELS ""
 #endif
-#define TELEMETRY_STRLEN   3
 
 #define DSW_THR  1
 #define DSW_RUD  2
@@ -544,15 +556,14 @@ extern uint8_t  s_eeDirtyMsk;
 #define FORCEINLINE inline __attribute__ ((always_inline))
 #endif
 
-
 /// liefert Betrag des Arguments
-template<class t> FORCEINLINE t abs(t a){ return a>0?a:-a; }
+template<class t> FORCEINLINE t abs(t a) { return a>0?a:-a; }
 /// liefert das Minimum der Argumente
-template<class t> FORCEINLINE t min(t a, t b){ return a<b?a:b; }
+template<class t> FORCEINLINE t min(t a, t b) { return a<b?a:b; }
 /// liefert das Maximum der Argumente
-template<class t> FORCEINLINE t max(t a, t b){ return a>b?a:b; }
-template<class t> FORCEINLINE t sgn(t a){ return a>0 ? 1 : (a < 0 ? -1 : 0); }
-template<class t> FORCEINLINE t limit(t mi, t x, t ma){ return min(max(mi,x),ma); }
+template<class t> FORCEINLINE t max(t a, t b) { return a>b?a:b; }
+template<class t> FORCEINLINE t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
+template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
 
 /// Markiert einen EEPROM-Bereich als dirty. der Bereich wird dann in
 /// eeCheck ins EEPROM zurueckgeschrieben.
@@ -600,31 +611,27 @@ extern inline uint16_t get_tmr10ms()
 
 #define TMR_VAROFS  5
 
+void startPulses();
 void setupPulses();
+void DSM2_Init();
+void DSM2_Done();
+void resetProto();
 
 #ifdef LOGS
 extern void startLogs();
 extern void doLogs();
 #endif
 
-#include "lcd.h"
+// TODO needed?
+extern uint16_t *pulses2MHzRPtr;
+extern uint16_t *pulses2MHzWPtr;
+
 extern const char stamp1[];
 extern const char stamp2[];
 extern const char stamp3[];
 extern const char stamp4[];
 extern const char stamp5[];
-#include "myeeprom.h"
-
-#ifdef JETI
-// Jeti-DUPLEX Telemetry
-extern uint16_t jeti_keys;
-#include "jeti.h"
-#endif
-
-#if defined (FRSKY)
-// FrSky Telemetry
-#include "frsky.h"
-#endif
+extern const char stamp6[];
 
 #ifndef BATT_UNSTABLE_BANDGAP
 extern uint16_t           abRunningAvg;
@@ -636,6 +643,7 @@ extern volatile uint16_t  g_tmr10ms;
 extern volatile uint8_t   g_blinkTmr10ms;
 extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
+// TODO needed?
 extern const PROGMEM char modi12x3[];
 
 #include "o9xstrings.h"

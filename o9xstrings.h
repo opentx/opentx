@@ -1,12 +1,13 @@
 #ifndef o9xstrings_h
 #define o9xstrings_h
 
-#ifdef TRANSLATIONS_FR
+#if defined(TRANSLATIONS_FR)
 #include "translations/fr.h"
+#elif defined(TRANSLATIONS_IT)
+#include "translations/it.h"
 #else
-#endif
-
 #include "translations/en.h"
+#endif
 
 #define PSIZE(x) ( sizeof(x) - 1 )
 

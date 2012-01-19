@@ -339,19 +339,6 @@ ISR(USART0_RX_vect)
   UCSR0B |= (1 << RXCIE0); // enable Interrupt
 }
 
-/*
-   USART0 Transmit Data Register Emtpy ISR
-   Used to transmit FrSky data packets
-*/
-ISR(USART0_UDRE_vect)
-{
-  if (frskyTxBufferCount > 0) {
-    UDR0 = frskyTxBuffer[--frskyTxBufferCount];
-  }
-  else {
-    UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
-  }
-}
 #endif
 
 /******************************************/
