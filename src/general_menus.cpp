@@ -429,11 +429,10 @@ void menuProcDiagVers(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
 
-  lcd_puts_P(0, 2*FH,stamp4 );
-  lcd_puts_P(0, 3*FH,stamp1 );
-  lcd_puts_P(0, 4*FH,stamp5 );
-  lcd_puts_P(0, 5*FH,stamp2 );
-  lcd_puts_P(0, 6*FH,stamp3 );
+  lcd_puts_P(0, 2*FH,stamp1 );
+  lcd_puts_P(0, 3*FH,stamp2 );
+  lcd_puts_P(0, 4*FH,stamp3 );
+  lcd_puts_P(0, 5*FH,stamp4 );
   lcd_puts_P(0, 7*FH,STR_EEPROMV);
   lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
 }
