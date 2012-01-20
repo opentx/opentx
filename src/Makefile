@@ -257,6 +257,7 @@ ifeq ($(PCB), STD)
    endif
    # If WS HowHigh is enabled
    ifeq ($(WS_HOW_HIGH), YES)
+     MODS:=${MODS}W
      CPPDEFS += -DWS_HOW_HIGH
    endif
   endif
@@ -341,14 +342,17 @@ ifeq ($(DISPLAY_USER_DATA), YES)
 endif
 
 ifeq ($(PXX), YES)
+  MODS:=${MODS}X
   CPPDEFS += -DPXX
 endif
 
 ifeq ($(DSM2), SERIAL)
+  MODS:=${MODS}D
   CPPDEFS += -DDSM2 -DDSM2_SERIAL
 endif
 
 ifeq ($(DSM2), PPM)
+  MODS:=${MODS}D
   CPPDEFS += -DDSM2 -DDSM2_PPM
 endif
 
