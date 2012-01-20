@@ -94,7 +94,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 #ifdef DSM2_SERIAL
   if (g_model.protocol == PROTO_DSM2) {
     OCR1A = 40000;
-    sei();
+    // sei will be called inside setupPulses()
     setupPulses();
     cli();
     UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt
@@ -142,17 +142,18 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
       pulsePol = g_model.pulsePol;
 
+// TODO does it exist PCBV3? If no, replace PCBV3 by PCBV4 everywhere
 #if defined(PCBV3)
       TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
 #else
       TIMSK &= ~(1<<OCIE1A); //stop reentrance
 #endif
 
-      sei();
+      // sei will be called inside setupPulses()
 
       setupPulses();
 
-#if !defined(PCBV3) && defined(DPPMPB7_HARDWARE)
+#if defined(DPPMPB7_HARDWARE)
       // G: NOTE: This strategy does not work on the '2560 becasue you can't
       //          read the PPM out pin when connected to OC1B. Vincent says
       //          it works on the '64A. I haven't personally tested it.
@@ -196,15 +197,14 @@ FORCEINLINE void setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
     uint16_t q = (g_model.ppmDelay*50+300)*2; //Stoplen *2
     uint16_t rest = 22500u*2-q; //Minimum Framelen=22.5 ms
     rest += (int16_t(g_model.ppmFrameLength))*1000;
-    if(p>9) rest=p*(1720u*2 + q) + 4000u*2; //for more than 9 channels, frame must be longer
     for (uint8_t i=0; i<p; i++) {
       int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + PPM_CENTER;
       rest -= (v+q);
-      *ptr++ = q;
       *ptr++ = v - q + 600; /* as Pat MacKenzie suggests */
+      *ptr++ = q;
     }
-    *ptr = q;
-    *(ptr+1) = rest;
+    *ptr = rest;
+    *(ptr+1) = q;
     pulses2MHzWPtr = ptr+2;
 }
 
@@ -563,15 +563,18 @@ void setupPulses()
 #endif
 #ifdef PXX
     case PROTO_PXX:
+      sei();
       setupPulsesPXX();
       break;
 #endif
 #ifdef DSM2_SERIAL
     case PROTO_DSM2:
+      sei();
       setupPulsesDsm2();
       break;
 #endif
     default:
+      // no sei here
       setupPulsesPPM();
       break;
   }
@@ -596,7 +599,7 @@ ISR(TIMER1_COMPB_vect) // DSM2 end of frame
   }
   else {
     OCR1B = 200;
-    sei();
+    // sei will be called inside setupPulses()
     setupPulses();
   }
 }
