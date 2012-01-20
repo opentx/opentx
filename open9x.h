@@ -622,16 +622,14 @@ extern void startLogs();
 extern void doLogs();
 #endif
 
-// TODO needed?
-extern uint16_t *pulses2MHzRPtr;
-extern uint16_t *pulses2MHzWPtr;
+extern uint8_t *pulses2MHzRPtr;
+extern uint8_t *pulses2MHzWPtr;
 
 extern const char stamp1[];
 extern const char stamp2[];
 extern const char stamp3[];
 extern const char stamp4[];
 extern const char stamp5[];
-extern const char stamp6[];
 
 #ifndef BATT_UNSTABLE_BANDGAP
 extern uint16_t           abRunningAvg;
