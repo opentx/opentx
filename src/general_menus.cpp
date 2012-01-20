@@ -373,7 +373,7 @@ void menuProcTrainer(uint8_t event)
   y = 2*FH;
   blink = (s_editMode>0) ? BLINK : INVERS ;
 
-  for (uint8_t i=0; i<4; i++) {
+  for (uint8_t i=0; i<NUM_STICKS; i++) {
     uint8_t chan = pgm_read_byte(chout_ar+g_eeGeneral.templateSetup*4+i); // G: Issue 30.
 
     volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
