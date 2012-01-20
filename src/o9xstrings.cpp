@@ -38,6 +38,9 @@ const prog_char APM STR_OPEN9X[] =
     TR_VSWITCHES
     TR_VSRCRAW
     TR_VTMRMODES
+#if defined(DSM2)
+    TR_DSM2MODE
+#endif
 #if defined(PCBV3)
     TR_RE1RE2
     TR_DATETIME

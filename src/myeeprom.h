@@ -255,6 +255,12 @@ PACK(typedef struct t_TimerData {
   uint16_t  val;
 }) TimerData;
 
+#ifdef DSM2
+#define LPXDSM2          0
+#define DSM2only         1
+#define DSM2_DSMX        2
+#endif
+
 PACK(typedef struct t_ModelData {
   char      name[10];             // 10 must be first for eeLoadModelName
   TimerData timer1;               // TODO timers array

@@ -21,6 +21,15 @@
 
 #include "open9x.h"
 
+#ifdef DSM2
+#define DSM2_CHANS     6
+#define BIND_BIT       0x80
+#define RANGECHECK_BIT 0x20
+#define FRANCE_BIT     0x10
+#define DSMX_BIT       0x08
+#define BAD_DATA       0x47
+#endif
+
 #if defined(DSM2_PPM) || defined(PXX)
 uint8_t s_current_protocol = 255;
 #endif
@@ -248,11 +257,9 @@ normal:
 
  */
 
-#define DSM2_CHANS 6
-
 FORCEINLINE void setupPulsesDsm2()
 {
-  *pulses2MHzWPtr++ = (isFunctionActive(FUNC_MODELMATCH) ? 0x80 : 0x00);
+  *pulses2MHzWPtr++ = (isFunctionActive(FUNC_MODELMATCH) ? BIND_BIT : 0x00);
   *pulses2MHzWPtr++ = g_eeGeneral.currModel;
   for (uint8_t i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, (g_chans512[i]>>1)+512, 1023);
@@ -300,34 +307,59 @@ void DSM2_Init(void)
 #endif
 
 #if defined(DSM2_PPM)
-static uint8_t *Dsm2_pulsePtr = (uint8_t *)pulses2MHz;
-void setupPulsesDsm2(uint8_t chns)
+static uint8_t *pulses2MHzDSM2WPtr = (uint8_t *)pulses2MHz;
+static uint8_t *pulses2MHzDSM2RPtr = (uint8_t *)pulses2MHz;
+inline void _send_1(uint8_t v)
 {
-  static uint8_t dsmDat[2+6*2]= {0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
+  *pulses2MHzDSM2WPtr++ = v;
+}
+
+#define BITLEN_DSM2 (8*2) //125000 Baud
+void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
+{
+    bool    lev = 0;
+    uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
+    for( uint8_t i=0; i<=8; i++){ //8Bits + Stop=1
+        bool nlev = b & 1; //lsb first
+        if(lev == nlev){
+            len += BITLEN_DSM2;
+        }else{
+            _send_1(len -1);
+            len  = BITLEN_DSM2;
+            lev  = nlev;
+        }
+        b = (b>>1) | 0x80; //shift in stop bit
+    }
+    _send_1(len+BITLEN_DSM2-1); // 2 stop bits
+}
+
+void setupPulsesDsm2()
+{
+  static uint8_t dsmDat[2+6*2] = {0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
   uint8_t counter;
 
   // If more channels needed make sure the pulses union/array is large enough
-  if (dsmDat[0] & BadData) //first time through, setup header
+  if (dsmDat[0] & BAD_DATA) // first time through, setup header
   {
     switch(g_model.ppmNCH)
     {
       case LPXDSM2:
-        dsmDat[0]= 0x80;
+        dsmDat[0] = BIND_BIT;
         break;
       case DSM2only:
-        dsmDat[0]=0x90;
+        dsmDat[0] = 0x90;
         break;
       default:
-        dsmDat[0]=0x98; //dsmx, bind mode
+        dsmDat[0] = 0x98; // DSMX bind mode
         break;
     }
   }
-  if ((dsmDat[0]&BindBit)&&(!keyState(SW_Trainer))) dsmDat[0]&=~BindBit; //clear bind bit if trainer not pulled
-  if ((!(dsmDat[0]&BindBit))&&getSwitch(MAX_DRSWITCH-1,0,0)) dsmDat[0]|=RangeCheckBit; //range check function
+  if ((dsmDat[0] & BIND_BIT) && (!isFunctionActive(FUNC_MODELMATCH))) dsmDat[0] &= ~BIND_BIT; //clear bind bit if trainer not pulled
+  // TODO add a function key for that: if ((!(dsmDat[0] & BIND_BIT)) && isFunctionActive(FUNC_RANGECHECK)) dsmDat[0] |= RANGECHECK_BIT; //range check function
 
-  else dsmDat[0]&=~RangeCheckBit;
-  dsmDat[1]=g_eeGeneral.currModel+1; //DSM2 Header second byte for model match
-  for(uint8_t i=0; i<chns; i++)
+  else dsmDat[0] &= ~RANGECHECK_BIT;
+  dsmDat[1] = g_eeGeneral.currModel+1; //DSM2 Header second byte for model match
+  for (uint8_t i=0; i<DSM2_CHANS; i++)
   {
     uint16_t pulse = limit(0, (g_chans512[i]>>1)+512,1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
@@ -338,12 +370,11 @@ void setupPulsesDsm2(uint8_t chns)
   {
     sendByteDsm2(dsmDat[counter]);
   }
-  pulses2MHzptr-=1; //remove last stopbits and
+  pulses2MHzDSM2WPtr -= 1; //remove last stopbits and
   _send_1( 255 ); //prolong them
   _send_1(0); //end of pulse stream
-  Dsm2_pulsePtr = pulses2MHz.pbyte;
+  pulses2MHzDSM2RPtr = (uint8_t *)pulses2MHz;
 }
-
 #endif
 
 #if defined(SILVER) || defined(CTP1009)
@@ -545,6 +576,7 @@ void setupPulses()
   }
 #endif
 
+  // TODO these 2 lines could be avoided when protocol is DSM2 (PPM output)
   pulses2MHzWPtr = pulses2MHz;
   pulses2MHzRPtr = pulses2MHz;
 
@@ -567,7 +599,7 @@ void setupPulses()
       setupPulsesPXX();
       break;
 #endif
-#ifdef DSM2_SERIAL
+#ifdef DSM2
     case PROTO_DSM2:
       sei();
       setupPulsesDsm2();
@@ -585,10 +617,10 @@ ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
 {
   uint8_t x ;
   PORTB ^= (1<<OUT_B_PPM);
-  x = *Dsm2_pulsePtr++;      // Byte size
+  x = *pulses2MHzDSM2RPtr++;      // Byte size
   ICR1 = x ;
   if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up
-  heartbeat |= HEART_TIMER2Mhz;
+  heartbeat |= HEART_TIMER2Mhz; // TODO why not in TIMER1_COMPB_vect (in setupPulses)?
 }
 
 ISR(TIMER1_COMPB_vect) // DSM2 end of frame
