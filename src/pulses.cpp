@@ -77,15 +77,15 @@ void startPulses()
 }
 
 #if defined(DSM2)
-uint16_t pulses2MHz[72] = {0}; // TODO check this length, pulled from er9x, perhaps too big
+uint8_t pulses2MHz[144] = {0}; // TODO check this length, pulled from er9x, perhaps too big
 #elif defined(CTP1009)
-uint16_t pulses2MHz[50] = {0};
+uint8_t pulses2MHz[50*sizeof(uint16_t)] = {0};
 #else
-uint16_t pulses2MHz[40] = {0};
+uint8_t pulses2MHz[40*sizeof(uint16_t)] = {0};
 #endif
 
-uint16_t *pulses2MHzRPtr = pulses2MHz;
-uint16_t *pulses2MHzWPtr = pulses2MHz;
+uint8_t *pulses2MHzRPtr = pulses2MHz;
+uint8_t *pulses2MHzWPtr = pulses2MHz;
 
 #define CTRL_END 0
 #define CTRL_CNT 1
@@ -126,10 +126,10 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
     }
 #endif
 
-    OCR1A = *pulses2MHzRPtr; // Schedule next interrupt vector (to this handler)
+    OCR1A = *((uint16_t*)pulses2MHzRPtr); // Schedule next interrupt vector (to this handler)
 
 #if defined(PCBV4)
-    OCR1B = *pulses2MHzRPtr; /* G: Using timer in CTC mode, restricted to using OCR1A for interrupt triggering.
+    OCR1B = *((uint16_t*)pulses2MHzRPtr); /* G: Using timer in CTC mode, restricted to using OCR1A for interrupt triggering.
                                 So we actually have to handle the OCR1B register separately in this way. */
 
     // We cannot read the status of the PPM_OUT pin when OC1B is connected to it on the ATmega2560.
@@ -145,11 +145,12 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
     //vinceofdrink@gmail harwared ppm
 #elif defined(DPPMPB7_HARDWARE)
-    OCR1C = *pulses2MHzRPtr;  // just copy the value of the OCR1A to OCR1C to test PPM out without too
+    OCR1C = *((uint16_t*)pulses2MHzRPtr);  // just copy the value of the OCR1A to OCR1C to test PPM out without too
                               // much change in the code not optimum but will not alter ppm precision
 #endif
   
-    if (++pulses2MHzRPtr == pulses2MHzWPtr) {
+    pulses2MHzRPtr += sizeof(uint16_t);
+    if (pulses2MHzRPtr == pulses2MHzWPtr) {
 
       pulsePol = g_model.pulsePol;
 
@@ -203,7 +204,7 @@ FORCEINLINE void setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
     // G: Found the following reference at th9x. The below code does not seem
     // to produce quite exactly this, to my eye. *shrug*
     //   http://www.aerodesign.de/peter/2000/PCM/frame_ppm.gif
-    uint16_t *ptr = pulses2MHzWPtr;
+    uint16_t *ptr = (uint16_t *)pulses2MHzWPtr;
     uint8_t p = 8+(g_model.ppmNCH*2); // channels count
     uint16_t q = (g_model.ppmDelay*50+300)*2; //Stoplen *2
     uint16_t rest = 22500u*2-q; //Minimum Framelen=22.5 ms
@@ -216,16 +217,14 @@ FORCEINLINE void setupPulsesPPM() // changed 10/05/2010 by dino Issue 128
     }
     *ptr = rest;
     *(ptr+1) = q;
-    pulses2MHzWPtr = ptr+2;
+    pulses2MHzWPtr = ((uint8_t *)ptr) + (2*sizeof(uint16_t));
 }
 
 #ifdef PXX
-
 inline void __attribute__ ((always_inline)) setupPulsesPXX()
 {
 
 }
-
 #endif
 
 #ifdef DSM2_SERIAL
@@ -261,13 +260,15 @@ normal:
 
 FORCEINLINE void setupPulsesDsm2()
 {
-  *pulses2MHzWPtr++ = (isFunctionActive(FUNC_MODELMATCH) ? BIND_BIT : 0x00);
-  *pulses2MHzWPtr++ = g_eeGeneral.currModel;
+  uint16_t *ptr = (uint16_t *)pulses2MHz;
+  *ptr++ = (isFunctionActive(FUNC_MODELMATCH) ? BIND_BIT : 0x00);
+  *ptr++ = g_eeGeneral.currModel;
   for (uint8_t i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, (g_chans512[i]>>1)+512, 1023);
-    *pulses2MHzWPtr++ = (i<<2) | ((pulse>>8)&0x03);
-    *pulses2MHzWPtr++ = pulse & 0xff;
+    *ptr++ = (i<<2) | ((pulse>>8)&0x03);
+    *ptr++ = pulse & 0xff;
   }
+  pulses2MHzWPtr = (uint8_t *)ptr;
 }
 
 void DSM2_Done()
@@ -297,9 +298,8 @@ void DSM2_Init(void)
 
   while (UCSR0A & (1 << RXC0)) UDR0; // flush receive buffer
 
-  pulses2MHzWPtr = pulses2MHz;
-  pulses2MHzRPtr = pulses2MHz;
   setupPulsesDsm2();
+  pulses2MHzRPtr = pulses2MHz;
 
   // These should be running right from power up on a FrSky enabled '9X.
   DSM2_EnableTXD(); // enable FrSky-Telemetry reception
@@ -309,11 +309,9 @@ void DSM2_Init(void)
 #endif
 
 #if defined(DSM2_PPM)
-static uint8_t *pulses2MHzDSM2WPtr = (uint8_t *)pulses2MHz;
-static uint8_t *pulses2MHzDSM2RPtr = (uint8_t *)pulses2MHz;
 inline void _send_1(uint8_t v)
 {
-  *pulses2MHzDSM2WPtr++ = v;
+  *pulses2MHzWPtr++ = v;
 }
 
 #define BITLEN_DSM2 (8*2) //125000 Baud
@@ -372,18 +370,19 @@ void setupPulsesDsm2()
   {
     sendByteDsm2(dsmDat[counter]);
   }
-  pulses2MHzDSM2WPtr -= 1; //remove last stopbits and
+  pulses2MHzWPtr -= 1; //remove last stopbits and
   _send_1( 255 ); //prolong them
   _send_1(0); //end of pulse stream
-  pulses2MHzDSM2RPtr = (uint8_t *)pulses2MHz;
 }
 #endif
 
 #if defined(SILVER) || defined(CTP1009)
 void _send_hilo(uint16_t hi,uint16_t lo)
 {
-  *pulses2MHzWPtr++=hi;
-  *pulses2MHzWPtr++=lo;
+  uint16_t *ptr = (uint16_t *)pulses2MHzWPtr;
+  *ptr++ = hi;
+  *ptr++ = lo;
+  pulses2MHzWPtr = (uint8_t *)ptr;
 }
 #endif
 
@@ -454,7 +453,7 @@ inline void __attribute__ ((always_inline)) setupPulsesSilver()
   send2BitsSilv(sum); //chk
 
   sendBitSilv(0);
-  pulses2MHzWPtr--;
+  pulses2MHzWPtr -= sizeof(uint16_t);
   send_hilo_silv(50,0); //low-impuls (pegel=1) ueberschreiben
 }
 
@@ -532,7 +531,7 @@ inline void __attribute__ ((always_inline)) setupPulsesTracerCtp1009()
     sendByteTra( (chk>>4) | (chk<<4) );
     _send_hilo( 7000*2, 2000*2 );
   }
-  if((pulses2MHzWPtr-pulses2MHz) >= (signed)DIM(pulses2MHz)) alert(STR_PULSETABOVERFLOW);
+  if((pulses2MHzWPtr-pulses2MHz) >= sizeof(pulses2MHz)) alert(STR_PULSETABOVERFLOW);
 }
 
 #endif
@@ -578,9 +577,7 @@ void setupPulses()
   }
 #endif
 
-  // TODO these 2 lines could be avoided when protocol is DSM2 (PPM output)
   pulses2MHzWPtr = pulses2MHz;
-  pulses2MHzRPtr = pulses2MHz;
 
   switch(g_model.protocol) {
 #ifdef SILVER
@@ -612,6 +609,8 @@ void setupPulses()
       setupPulsesPPM();
       break;
   }
+
+  pulses2MHzRPtr = (uint8_t *)pulses2MHz;
 }
 
 #if defined(DSM2_PPM) || defined(PXX)
@@ -619,7 +618,7 @@ ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
 {
   uint8_t x ;
   PORTB ^= (1<<OUT_B_PPM);
-  x = *pulses2MHzDSM2RPtr++;      // Byte size
+  x = *pulses2MHzRPtr++;      // Byte size
   ICR1 = x ;
   if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up
   heartbeat |= HEART_TIMER2Mhz; // TODO why not in TIMER1_COMPB_vect (in setupPulses)?

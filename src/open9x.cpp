@@ -2048,9 +2048,10 @@ FORCEINLINE void FRSKY_USART0_vect()
 #if defined (DSM2_SERIAL)
 FORCEINLINE void DSM2_USART0_vect()
 {
-  UDR0 = *pulses2MHzRPtr;
+  UDR0 = *((uint16_t*)pulses2MHzRPtr);
 
-  if (++pulses2MHzRPtr == pulses2MHzWPtr) {
+  pulses2MHzRPtr += sizeof(uint16_t);
+  if (pulses2MHzRPtr == pulses2MHzWPtr) {
     UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
   }
 }
