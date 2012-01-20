@@ -76,7 +76,7 @@ void startPulses()
 #endif // SIMU
 }
 
-#if definded(DSM2)
+#if defined(DSM2)
 uint16_t pulses2MHz[72] = {0}; // TODO check this length, pulled from er9x, perhaps too big
 #elif defined(CTP1009)
 uint16_t pulses2MHz[50] = {0};
