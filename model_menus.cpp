@@ -387,7 +387,7 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 void menuProcModel(uint8_t event)
 {
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol ? 10 : 11), {0,sizeof(g_model.name)-1,2,2,0,0,0,0,6,2,1});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM ? 12 : 11), {0,sizeof(g_model.name)-1,2,2,0,0,0,0,0,6,2,1});
 
   uint8_t  sub    = m_posVert;
   uint8_t y = 1*FH;
@@ -491,24 +491,39 @@ void menuProcModel(uint8_t event)
     lcd_puts_P(0, y, STR_PROTO);
     lcd_putsnAtt(PARAM_OFS, y, STR_VPROTOS+LEN_VPROTOS*g_model.protocol, LEN_VPROTOS,
                   (sub==subN && m_posHorz==0 ? (s_editMode>0 ? BLINK : INVERS):0));
-    if(!g_model.protocol) {
+    if (!g_model.protocol) {
       lcd_putsnAtt(PARAM_OFS+4*FW, y, STR_NCHANNELS+LEN_NCHANNELS*(g_model.ppmNCH+2), LEN_NCHANNELS, ((sub==subN && m_posHorz==1) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
       lcd_puts_P(PARAM_OFS+11*FW, y, PSTR("u"));
       lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, ((sub==subN && m_posHorz==2) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
     }
+#ifdef DSM2
+    // TODO optimize that?
+    else if (g_model.protocol == PROTO_DSM2) {
+      if (m_posHorz > 1) m_posHorz = 1;
+      int8_t x;
+      x = g_model.ppmNCH;
+      if ( x < 0 ) x = 0;
+      if ( x > 2 ) x = 2;
+      g_model.ppmNCH = x;
+      lcd_putsnAtt(PARAM_OFS+5*FW, y, STR_DSM2MODE+LEN_DSM2MODE*x, LEN_DSM2MODE, (sub==subN && m_posHorz==1 ? ((s_editMode>0) ? BLINK : INVERS) : 0));
+    }
+#endif
     else if (sub==subN) {
       m_posHorz = 0;
     }
-    if (sub==subN && (s_editMode>0 || p1valdiff || g_model.protocol) ) {
+    if (sub==subN && (s_editMode>0 || p1valdiff || (g_model.protocol!=0 && g_model.protocol!=PROTO_DSM2))) { // TODO avoid DSM2 when not defined
       switch (m_posHorz) {
         case 0:
             CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROT_MAX);
             break;
         case 1:
-            CHECK_INCDEC_MODELVAR(event,g_model.ppmNCH,-2,4);
+            if (g_model.protocol == PROTO_DSM2) // TODO avoid DSM2 when not defined
+              CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, 0, 2);
+            else
+              CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
             break;
         case 2:
-            CHECK_INCDEC_MODELVAR(event,g_model.ppmDelay,-4,10);
+            CHECK_INCDEC_MODELVAR(event, g_model.ppmDelay, -4, 10);
             break;
       }
     }
@@ -516,7 +531,7 @@ void menuProcModel(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    if (!g_model.protocol) {
+    if (g_model.protocol == PROTO_PPM) {
       lcd_puts_P(0, y, STR_PPMFRAME);
       lcd_puts_P(PARAM_OFS+3*FW, y, STR_MS);
       lcd_outdezAtt(PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((sub==subN && m_posHorz==0) ? (s_editMode>0 ? BLINK : INVERS) : 0) | PREC1|LEFT);

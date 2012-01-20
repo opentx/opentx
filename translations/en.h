@@ -115,6 +115,9 @@
 #define TR_TELEMCHNS     "AD1AD2"
 #endif
 
+#define LEN_DSM2MODE     7
+#define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
+
 // ZERO TERMINATED STRINGS
 #define TR_POPUPS       "[MENU]    [EXIT]"
 #define TR_MENUWHENDONE " [MENU] WHEN DONE"
