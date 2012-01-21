@@ -624,7 +624,7 @@ ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) $(AVRGCCFLAGS)
 ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
-MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
+MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
 ABUILD_NUM = ${shell sh -c "grep \"BUILD_NUM\" stamp-open9x.h | egrep -o \"[[:digit:]]+\""}
 BUILD_NUM = $(shell echo $$(( $(ABUILD_NUM) + 1 )))
 BUILD_DIR = $(shell pwd | awk -F'/' '{print $$((NF-1))}')
@@ -638,7 +638,7 @@ endif
 all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
-build: stamp font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm elf hex eep lss sym
+build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm elf hex eep lss sym
 #build: lib
 
 
@@ -652,7 +652,7 @@ lib: $(LIBNAME)
 
 
 # Build stamp-file
-stamp:
+stamp_header:
 	@echo
 	@echo $(CPPSRC)
 	
@@ -664,6 +664,13 @@ stamp:
 	@echo "#define SVN_STR  \"$(BUILD_DIR)-r$(REV)\"" >> stamp-open9x.h
 	@echo "#define MOD_STR  \"$(MODS)\"" >> stamp-open9x.h
 	@cat stamp-open9x.h
+	
+stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x.txt
+	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> stamp-open9x.txt
+	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> stamp-open9x.txt
+	@echo "#define SVN_STR  \"$(BUILD_DIR)-r$(REV)\"" >> stamp-open9x.txt
+	@cat stamp-open9x.txt
  
 font.lbm: font_6x1.xbm
 	@echo
@@ -928,7 +935,7 @@ $(shell mkdir $(OBJDIR) 2>/dev/null)
 # Listing of phony targets.
 .PHONY : all begin finish end sizebefore sizeafter gccversion \
 build elf hex eep lss sym coff extcoff \
-clean clean_list program debug gdb-config stamp
+clean clean_list program debug gdb-config stamp_header
 
 
 #### GOOGLE TESTS 
