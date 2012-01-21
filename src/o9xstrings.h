@@ -52,7 +52,7 @@ extern const PROGMEM char STR_OPEN9X[];
 #endif
 #ifdef HELI
 #define OFS_VSWASHTYPE (OFS_ENDTPLS)
-#define OFS_ENDHELI    (OFS_VSWASHTYPE + PSIZE(TR_VTEMPLATES))
+#define OFS_ENDHELI    (OFS_VSWASHTYPE + PSIZE(TR_VSWASHTYPE))
 #else
 #define OFS_ENDHELI    (OFS_ENDTPLS)
 #endif
