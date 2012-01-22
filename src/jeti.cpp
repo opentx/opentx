@@ -161,6 +161,9 @@ void JETI_put_stop (void)
 }
 
 #include "menus.h"
+
+extern void menuMainView(uint8_t event);
+
 void menuProcJeti(uint8_t event)
 {
   TITLE("JETI");
@@ -171,7 +174,7 @@ void menuProcJeti(uint8_t event)
     //  break;
     case EVT_KEY_FIRST(KEY_EXIT):
       JETI_DisableRXD();
-      chainMenu(menuProc0);
+      chainMenu(menuMainView);
       break;
   }
 
