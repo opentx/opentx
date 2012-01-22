@@ -549,9 +549,15 @@ void setupPulses()
         OCR1B = 200; // 100 uS
         TCNT1 = 300; // Past the OCR1B value
         ICR1 = 44000; // Next frame starts in 22 mS
+#if defined(PCBV3)
+        TIMSK1 &= ~0x3C; // All interrupts off
+        // TODO !!!! TIFR = 0x3C; // Clear all pending interrupts
+        TIMSK1 |= 0x28; // Enable CAPT and COMPB
+#else
         TIMSK &= ~0x3C; // All interrupts off
         TIFR = 0x3C; // Clear all pending interrupts
         TIMSK |= 0x28; // Enable CAPT and COMPB
+#endif
         TCCR1A = (0 << WGM10);
         TCCR1B = (3 << WGM12) | (2 << CS10); // CTC ICR, 16MHz / 8
         break;
@@ -567,9 +573,15 @@ void setupPulses()
         TCCR1B = 0; // Stop counter
         OCR1A = 40000; // Next frame starts in 20 mS
         TCNT1 = 0;
+#if defined(PCBV3)
+        TIMSK1 &= ~0x3C; // All interrupts off
+        // TODO !!! TIFR = 0x3C; // Clear all pending interrupts
+        TIMSK1 |= 0x10; // Enable COMPA
+#else
         TIMSK &= ~0x3C; // All interrupts off
         TIFR = 0x3C; // Clear all pending interrupts
         TIMSK |= 0x10; // Enable COMPA
+#endif
         TCCR1A = (0 << WGM10);
         TCCR1B = (1 << WGM12) | (2 << CS10); // CTC OCRA, 16MHz / 8
         break;
