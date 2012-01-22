@@ -555,7 +555,7 @@ void setupPulses()
         TIMSK1 |= 0x28; // Enable CAPT and COMPB
 #else
         TIMSK &= ~0x3C; // All interrupts off
-        TIFR = 0x3C; // Clear all pending interrupts
+        // TIFR = 0x3C; // Clear all pending interrupts
         TIMSK |= 0x28; // Enable CAPT and COMPB
 #endif
         TCCR1A = (0 << WGM10);
@@ -579,7 +579,7 @@ void setupPulses()
         TIMSK1 |= 0x10; // Enable COMPA
 #else
         TIMSK &= ~0x3C; // All interrupts off
-        TIFR = 0x3C; // Clear all pending interrupts
+        // TIFR = 0x3C; // Clear all pending interrupts
         TIMSK |= 0x10; // Enable COMPA
 #endif
         TCCR1A = (0 << WGM10);
