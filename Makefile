@@ -669,7 +669,7 @@ stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > ../stamp-open9x.txt
 	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> ../stamp-open9x.txt
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> ../stamp-open9x.txt
-	@echo "#define SVN_STR  \"$(BUILD_DIR)-r$(REV)\"" >> ../stamp-open9x.txt
+	@echo "#define SVN_VERS  \"$(BUILD_DIR)-r$(REV)\"" >> ../stamp-open9x.txt
 	@cat ../stamp-open9x.txt
  
 font.lbm: font_6x1.xbm
