@@ -551,11 +551,11 @@ void setupPulses()
         ICR1 = 44000; // Next frame starts in 22 mS
 #if defined(PCBV3)
         TIMSK1 &= ~0x3C; // All interrupts off
-        // TODO !!!! TIFR = 0x3C; // Clear all pending interrupts
+        TIFR1 = 0x2F;
         TIMSK1 |= 0x28; // Enable CAPT and COMPB
 #else
         TIMSK &= ~0x3C; // All interrupts off
-        // TIFR = 0x3C; // Clear all pending interrupts
+        TIFR = 0x3C;
         TIMSK |= 0x28; // Enable CAPT and COMPB
 #endif
         TCCR1A = (0 << WGM10);
@@ -575,11 +575,11 @@ void setupPulses()
         TCNT1 = 0;
 #if defined(PCBV3)
         TIMSK1 &= ~0x3C; // All interrupts off
-        // TODO !!! TIFR = 0x3C; // Clear all pending interrupts
+        TIFR1 = 0x2F;
         TIMSK1 |= 0x10; // Enable COMPA
 #else
         TIMSK &= ~0x3C; // All interrupts off
-        // TIFR = 0x3C; // Clear all pending interrupts
+        TIFR = 0x3C;
         TIMSK |= 0x10; // Enable COMPA
 #endif
         TCCR1A = (0 << WGM10);
