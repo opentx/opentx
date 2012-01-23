@@ -2333,9 +2333,9 @@ int main(void)
   uint8_t cModel = g_eeGeneral.currModel;
 
 #if defined (PCBV3)
-  if (~MCUSR & (1 << WDRF)) {
+   if (MCUSR != (1 << PORF))  {
 #else
-  if (~MCUCSR & (1 << WDRF)) {
+   if (MCUCSR != (1 << PORF))  {
 #endif
 
 #ifdef SPLASH
