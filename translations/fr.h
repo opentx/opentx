@@ -80,8 +80,8 @@
 #define TR_VTELPROTO     "NoneHub "
 #endif
 
-#define LEN_VTEMPLATES   12
-#define TR_VTEMPLATES    "4 Voies simple ""Coupure Gaz       ""Empennage V      ""Elevon\\Delta""eCCPM       ""Conf.Helico  ""Servo Test  "
+#define LEN_VTEMPLATES   14
+#define TR_VTEMPLATES    "4 Voies simple""Coupure Gaz   ""Empennage V   ""Elevon\\Delta  ""eCCPM         ""Conf.Helico   ""Servo Test    "
 
 #define LEN_VSWASHTYPE   6
 #define TR_VSWASHTYPE    "---   ""120   ""120X  ""140   ""90    "
@@ -180,7 +180,7 @@
 #define TR_INACTIVITYALARM "Alarme inactivite"
 #define TR_FILTERADC    "Filtre ADC"
 #define TR_THROTTLEREVERSE "Inversion Gaz"
-#define TR_MINUTEBEE     "Bip t.minutes"
+#define TR_MINUTEBEEP   "Bip t.minutes"
 #define TR_BEEPCOUNTDOWN "Bip  a rebours"
 #define TR_FLASHONBEEP  "Flash quand bip"
 #define TR_LIGHTSWITCH  "Inter eclairage"
