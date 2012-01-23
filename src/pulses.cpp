@@ -722,13 +722,21 @@ ISR(TIMER1_COMPC_vect) // DSM2 or PXX end of frame
 void set_timer3_capture()
 {
 #ifndef SIMU
+#if defined (PCBV3)
+    TIMSK3 &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts // TODO Cam please could you check this line please? Thanks a lot!
+#else
     ETIMSK &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
+#endif
     DDRE &= ~0x80;  PORTE |= 0x80 ;     // Bit 7 input + pullup
 
     TCCR3B = 0 ;                        // Stop counter
     TCCR3A  = 0;
     TCCR3B  = (1<<ICNC3) | (2<<CS30);      //ICNC3 16MHz / 8
+#if defined (PCBV3)
+    TIMSK3 |= (1<<ICIE3);
+#else
     ETIMSK |= (1<<TICIE3);
+#endif
 #endif
 }
 
@@ -736,7 +744,11 @@ void set_timer3_capture()
 void set_timer3_ppm()
 {
 #ifndef SIMU
-    ETIMSK &= ~( 1<<TICIE3) ;   // Stop capture interrupt
+#if defined (PCBV3)
+    TIMSK3 &= ~(1<<ICIE3);
+#else
+    ETIMSK &= ~(1<<TICIE3) ;   // Stop capture interrupt
+#endif
     DDRE |= 0x80;                                       // Bit 7 output
 
     TCCR3B = 0 ;                        // Stop counter
