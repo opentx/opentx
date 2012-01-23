@@ -131,10 +131,21 @@ extern sem_t eeprom_write_sem;
 #define PORTE0 dummyport
 #define RXCIE0 dummyport
 #define OCR0A dummyport
+#define OCR1A dummyport16
+#define OCR3A dummyport16
+#define OCR3B dummyport16
 #define OCR4A dummyport
 #define OCR1B dummyport16
+#define OCR1C dummyport16
 #define TCCR1A dummyport
+#define TCCR1B dummyport
+#define TCCR1C dummyport
 #define COM1B0 dummyport
+
+#define TCNT1 dummyport16
+#define ICR1 dummyport16
+#define TIFR dummyport
+#define ETIFR dummyport
 
 #define SPDR dummyport
 #define SPSR dummyport
@@ -143,9 +154,13 @@ extern sem_t eeprom_write_sem;
 
 #define TIMSK  dummyport
 #define TIMSK1 dummyport
+#define ETIMSK  dummyport
+#define ETIMSK1 dummyport
 
 #define UDR0 dummyport
 #define OCIE1A dummyport
+#define OCIE1B dummyport
+#define OCIE1C dummyport
 
 #define OUT_B_LIGHT   7
 #define INP_E_ElevDR  2
@@ -170,6 +185,10 @@ extern sem_t eeprom_write_sem;
 #define INP_P_KEY_RGT   2
 #define INP_P_KEY_UP    1
 #define INP_P_KEY_DWN   0
+
+#define WGM10   0
+#define WGM12   0
+#define CS10    0
 
 extern volatile unsigned char pinb,pinc,pind,pine,ping,pinh,pinj,pinl;
 extern uint8_t portb, portc, porth, dummyport;

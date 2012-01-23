@@ -387,7 +387,7 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 void menuProcModel(uint8_t event)
 {
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM ? 12 : 11), {0,sizeof(g_model.name)-1,2,2,0,0,0,0,0,6,2,1});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM||g_model.protocol==PROTO_DSM2||g_model.protocol==PROTO_PXX ? 12 : 11), {0,sizeof(g_model.name)-1,2,2,0,0,0,0,0,6,2,1});
 
   uint8_t  sub    = m_posVert;
   uint8_t y = 1*FH;
@@ -491,7 +491,7 @@ void menuProcModel(uint8_t event)
     lcd_puts_P(0, y, STR_PROTO);
     lcd_putsnAtt(PARAM_OFS, y, STR_VPROTOS+LEN_VPROTOS*g_model.protocol, LEN_VPROTOS,
                   (sub==subN && m_posHorz==0 ? (s_editMode>0 ? BLINK : INVERS):0));
-    if (!g_model.protocol) {
+    if (g_model.protocol == PROTO_PPM) {
       lcd_putsnAtt(PARAM_OFS+4*FW, y, STR_NCHANNELS+LEN_NCHANNELS*(g_model.ppmNCH+2), LEN_NCHANNELS, ((sub==subN && m_posHorz==1) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
       lcd_puts_P(PARAM_OFS+11*FW, y, PSTR("u"));
       lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, ((sub==subN && m_posHorz==2) ? ((s_editMode>0) ? BLINK : INVERS) : 0));
@@ -517,9 +517,11 @@ void menuProcModel(uint8_t event)
             CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROT_MAX);
             break;
         case 1:
-            if (g_model.protocol == PROTO_DSM2) // TODO avoid DSM2 when not defined
+#ifdef DSM2
+            if (g_model.protocol == PROTO_DSM2)
               CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, 0, 2);
             else
+#endif
               CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
             break;
         case 2:
@@ -547,9 +549,32 @@ void menuProcModel(uint8_t event)
         }
       }
     }
-    else {
+#if defined(DSM2) || defined(PXX)
+    else if (g_model.protocol == PROTO_DSM2 || g_model.protocol == PROTO_PXX) {
+      lcd_puts_P(0, y, STR_RXNUM);
+      lcd_outdezNAtt(PARAM_OFS-3*FW, y, g_model.modelId, ((sub==subN && m_posHorz==0) ? (s_editMode>0 ? BLINK : INVERS) : 0) | LEADING0|LEFT, 2);
 
+      if (sub==subN && (s_editMode>0 || p1valdiff)) {
+        switch (m_posHorz) {
+          case 0:
+            CHECK_INCDEC_MODELVAR(event, g_model.modelId, 0, 99);
+            break;
+        }
+      }
+
+      if (g_model.protocol == PROTO_PXX) {
+        lcd_putsAtt(PARAM_OFS, y, STR_SYNCMENU, ((sub==subN && m_posHorz==1) ? INVERS : 0));
+        if (sub==subN && m_posHorz==1) {
+          s_editMode = false;
+          if (event==EVT_KEY_LONG(KEY_MENU)) {
+            // send reset code
+            pxxFlag = PXX_SEND_RXNUM;
+            // TODO audioDefevent(AUDIO_WARNING1);
+          }
+        }
+      }
     }
+#endif
   }
 }
 

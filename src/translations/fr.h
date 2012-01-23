@@ -32,8 +32,8 @@
 #define LEN_RETA123      1
 #define TR_RETA123       "RETA123"
 
-#define LEN_VPROTOS      6
-#define TR_VPROTOS       "PPM   ""PXX   ""DSM2  ""SILV_A""SILV_B""SILV_C""TRAC09"
+#define LEN_VPROTOS      5
+#define TR_VPROTOS       "PPM  ""PXX  ""DSM2 ""PPM16"
 
 #define LEN_POSNEG       3
 #define TR_POSNEG        "POS""NEG"
@@ -57,17 +57,12 @@
 #define TR_VCSWFUNC      "----   ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""ET     ""OU     ""XOU    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
 #define LEN_VFSWFUNC     14
-#if defined(DSM2)
-#define TR_MODELMATCH    "ModelMatch    "
-#else
-#define TR_MODELMATCH
-#endif
 #ifdef LOGS
 #define TR_SDCLOGGS      "SDCARD Logs   "
 #else
 #define TR_SDCLOGGS
 #endif
-#define TR_VFSWFUNC      "----          ""Ecolage       ""Ecolage DER   ""Ecolage PRF   ""Ecolage GAZ   ""Ecolage AIL   ""Instant Trim  ""Trims2Offsets "TR_MODELMATCH TR_SDCLOGGS
+#define TR_VFSWFUNC      "----          ""Ecolage       ""Ecolage DER   ""Ecolage PRF   ""Ecolage GAZ   ""Ecolage AIL   ""Instant Trim  ""Trims2Offsets " TR_SDCLOGGS
 
 #define LEN_VTELEMUNIT   1
 #define TR_VTELEMUNIT    "v""-"
@@ -279,4 +274,5 @@
 #define TR_MENUTEMPLATES "GABARITS"
 #define TR_MENUSTAT      "STAT"
 #define TR_MENUDEBUG     "DEBUG"
-
+#define TR_RXNUM         "RxNum"
+#define TR_SYNCMENU      "Sync [MENU]"

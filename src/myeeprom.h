@@ -171,9 +171,6 @@ enum Functions {
   FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
   FUNC_TRIMS_2_OFS,
-#if defined(DSM2)
-  FUNC_MODELMATCH,
-#endif
 #ifdef LOGS
   FUNC_LOGS,
 #endif
@@ -289,6 +286,7 @@ PACK(typedef struct t_ModelData {
   FrSkyData frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
+  uint8_t   modelId;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

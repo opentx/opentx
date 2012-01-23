@@ -285,10 +285,7 @@ extern const PROGMEM char STR_MENUTELEMETRY[];
 extern const PROGMEM char STR_MENUTEMPLATES[];
 extern const PROGMEM char STR_MENUSTAT[];
 extern const PROGMEM char STR_MENUDEBUG[];
-
-
-#ifdef CTP1009
-extern const PROGMEM char STR_PULSETABOVERFLOW[];
-#endif
+extern const PROGMEM char STR_RXNUM[];
+extern const PROGMEM char STR_SYNCMENU[];
 
 #endif
