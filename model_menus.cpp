@@ -562,6 +562,7 @@ void menuProcModel(uint8_t event)
         }
       }
 
+#if defined(PXX)
       if (g_model.protocol == PROTO_PXX) {
         lcd_putsAtt(PARAM_OFS, y, STR_SYNCMENU, ((sub==subN && m_posHorz==1) ? INVERS : 0));
         if (sub==subN && m_posHorz==1) {
@@ -573,6 +574,7 @@ void menuProcModel(uint8_t event)
           }
         }
       }
+#endif
     }
 #endif
   }
