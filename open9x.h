@@ -413,24 +413,26 @@ enum EnumKeys {
 
 #define MAX_ALERT_TIME   60
 
+// TODO enum in myeeprom.h
 #define PROTO_PPM        0
 #define PROTO_PXX        1
 #define PROTO_DSM2       2
-#define PROTO_SILV_A     3
-#define PROTO_SILV_B     4
-#define PROTO_SILV_C     5
-#define PROTO_CTP1009    6
-#define PROT_MAX         6
+#define PROTO_PPM16      3
+#define PROT_MAX         3
 
 extern uint8_t heartbeat;
+
+#if defined(PXX)
+extern uint8_t pxxFlag;
+#endif
+
+#define PXX_SEND_RXNUM     0x01
+#define PXX_SEND_FAILSAFE  0x02 // TODO where is it used?
 
 typedef void (*getADCp)();
 
 #define ZCHAR_MAX 40
 
-#ifdef TRANSLATIONS
-extern int8_t char2idx(char c);
-#endif
 extern char idx2char(int8_t idx);
 
 /// stoppt alle events von dieser taste bis eine kurze Zeit abgelaufen ist

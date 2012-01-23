@@ -103,14 +103,11 @@ LOGS = YES
 # PXX (FrSky PCM) protocol
 PXX = NO
 
+# PPM16
+PPM16 = NO
+
 # DSM2 (Spektrum) protocol
 DSM2 = NO
-
-# Silver protocol
-SILVER = NO
-
-# CTP-1009 protocol
-CTP1009 = NO
 
 # SOMO-14D module
 SOMO = NO
@@ -342,26 +339,19 @@ ifeq ($(DISPLAY_USER_DATA), YES)
 endif
 
 ifeq ($(PXX), YES)
-  MODS:=${MODS}X
   CPPDEFS += -DPXX
 endif
 
+ifeq ($(PPM16), YES)
+  CPPDEFS += -DPPM16
+endif
+
 ifeq ($(DSM2), SERIAL)
-  MODS:=${MODS}D
   CPPDEFS += -DDSM2 -DDSM2_SERIAL
 endif
 
 ifeq ($(DSM2), PPM)
-  MODS:=${MODS}D
   CPPDEFS += -DDSM2 -DDSM2_PPM
-endif
-
-ifeq ($(SILVER), YES)
-  CPPDEFS += -DSILVER
-endif
-
-ifeq ($(CTP1009), YES)
-  CPPDEFS += -DCTP1009
 endif
 
 #---------------- Compiler Options C ----------------
