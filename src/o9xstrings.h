@@ -129,6 +129,7 @@ extern const PROGMEM char STR_OPEN9X[];
 extern const PROGMEM char STR_POPUPS[];
 extern const PROGMEM char STR_MENUWHENDONE[];
 extern const PROGMEM char STR_FREE[];
+#define LEN_FREE PSIZE(TR_FREE)
 extern const PROGMEM char STR_DELETEMODEL[];
 extern const PROGMEM char STR_COPYINGMODEL[];
 extern const PROGMEM char STR_MOVINGMODEL[];
@@ -257,11 +258,11 @@ extern const PROGMEM char STR_SWITCHESNOTOFF[];
 extern const PROGMEM char STR_PLEASERESETTHEM[];
 extern const PROGMEM char STR_MESSAGE[];
 extern const PROGMEM char STR_PRESSANYKEY[];
+#define LEN_PRESSANYKEY PSIZE(TR_PRESSANYKEY)
 extern const PROGMEM char STR_BADEEPROMDATA[];
 extern const PROGMEM char STR_EEPROMFORMATTING[];
 extern const PROGMEM char STR_EEPROMOVERFLOW[];
 extern const PROGMEM char STR_MENUSERROR[];
-
 extern const PROGMEM char STR_MENURADIOSETUP[];
 extern const PROGMEM char STR_MENUDATEANDTIME[];
 extern const PROGMEM char STR_MENUTRAINER[];

@@ -655,7 +655,7 @@ uint8_t  g_beepVal[5];
 void message(const prog_char * s)
 {
   lcd_clear();
-  lcd_putsAtt(64-5*FW,0*FH,STR_MESSAGE,DBLSIZE);
+  lcd_putsAtt(64-5*FW, 0*FH, STR_MESSAGE, DBLSIZE);
   lcd_puts_P(0,4*FW,s);
   refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
@@ -664,9 +664,9 @@ void message(const prog_char * s)
 void alert(const prog_char * s, bool defaults)
 {
   lcd_clear();
-  lcd_putsAtt(64-5*FW,0*FH,STR_ALERT,DBLSIZE);
+  lcd_putsAtt(64-5*FW, 0*FH, STR_ALERT, DBLSIZE);
   lcd_puts_P(0,4*FH,s);
-  lcd_puts_P(64-6*FW,7*FH,STR_PRESSANYKEY);
+  lcd_puts_P(64-LEN_PRESSANYKEY*FW/2, 7*FH, STR_PRESSANYKEY);
   refreshDisplay();
   lcdSetRefVolt(defaults ? 25 : g_eeGeneral.contrast);
   beepErr();
@@ -1249,6 +1249,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
           if(tick10ms) {
               int32_t rate = (int32_t)DEL_MULT*2048*100;
               if(md->weight) rate /= abs(md->weight);
+              // TODO port optim er9x by Mike
               act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)100*md->speedUp)   :  (int32_t)v*DEL_MULT) :
                                   ((md->speedDown>0) ? act[i]-(rate)/((int16_t)100*md->speedDown) :  (int32_t)v*DEL_MULT) ;
           }
@@ -1270,16 +1271,19 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
       //========== MULTIPLEX ===============
       int32_t dv = (int32_t)v*md->weight;
+      int32_t *ptr = &chans[md->destCh-1]; // Save calculating address several times
       switch(md->mltpx){
         case MLTPX_REP:
-          chans[md->destCh-1] = dv;
+          *ptr = dv;
           break;
         case MLTPX_MUL:
-          chans[md->destCh-1] *= dv/100l;
-          chans[md->destCh-1] /= RESXl;
+          dv /= 100;
+          dv *= *ptr;
+          dv /= RESXl;
+          *ptr = dv;
           break;
         default:  // MLTPX_ADD
-          chans[md->destCh-1] += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
+          *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
           break;
         }
     }
@@ -1662,6 +1666,7 @@ void perMain()
   uint8_t evt=getEvent();
   evt = checkTrim(evt);
 
+  // TODO port lightOnStickMove from er9x
   if(g_LightOffCounter) g_LightOffCounter--;
   if(evt) g_LightOffCounter = g_eeGeneral.lightAutoOff*500; // on keypress turn the light on 5*100
 
