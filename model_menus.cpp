@@ -179,7 +179,7 @@ void menuProcModelSelect(uint8_t event)
   if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
   int8_t sub = m_posVert;
 
-  lcd_puts_P(     9*FW, 0, STR_FREE);
+  lcd_puts_P(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   lcd_outdezAtt(  17*FW, 0, EeFsGetFree(),0);
 
   DisplayScreenIndex(e_ModelSelect, DIM(menuTabModel), INVERS);
@@ -549,6 +549,7 @@ void menuProcModel(uint8_t event)
         }
       }
     }
+    // TODO port PPM16 ppmDelay from er9x
 #if defined(DSM2) || defined(PXX)
     else if (g_model.protocol == PROTO_DSM2 || g_model.protocol == PROTO_PXX) {
       lcd_puts_P(0, y, STR_RXNUM);
@@ -627,7 +628,7 @@ void menuProcPhaseOne(uint8_t event)
         }
         break;
       case 3:
-        lcd_puts_P(0, y, STR_FADEIN);
+        lcd_puts_P(0, y, STR_FADEIN); // TODO lcd_puts_left
         lcd_outdezAtt(10*FW, y, phase->fadeIn, attr|LEFT);
         if(attr) CHECK_INCDEC_MODELVAR(event, phase->fadeIn, 0, 15);
         break;
@@ -1062,7 +1063,7 @@ inline void editExpoVals(uint8_t event, uint8_t which, bool edit, uint8_t y, uin
   uint8_t invBlk = edit ? INVERS : 0;
   // if(edit && stopBlink) invBlk = INVERS;
 
-  ExpoData *ed = expoaddress(idt);
+  ExpoData *ed = expoaddress(idt); // TODO volatile
 
   switch(which)
   {
