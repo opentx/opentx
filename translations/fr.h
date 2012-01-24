@@ -87,16 +87,16 @@
 #define TR_VSWASHTYPE    "---   ""120   ""120X  ""140   ""90    "
 
 #define LEN_VKEYS        5
-#define TR_VKEYS         " Menu"" Exit""  Bas""   Up""Droit""Gauch"
+#define TR_VKEYS         " Menu"" Exit""  Bas"" Haut""Droit""Gauch"
 
 #define LEN_RE1RE2       3
 #define TR_RE1RE2        "RE1""RE2"
 
 #define LEN_VSWITCHES    3
-#define TR_VSWITCHES     "GAZ""DER""PRF""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
+#define TR_VSWITCHES     "GAZ""DIR""PRF""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
 
 #define LEN_VSRCRAW      4
-#define TR_VSRCRAW       "DER ""PRF ""GAZ ""AIL ""P1  ""P2  ""P3  ""MAX ""FULL""CYC1""CYC2""CYC3"
+#define TR_VSRCRAW       "DIR ""PRF ""GAZ ""AIL ""P1  ""P2  ""P3  ""MAX ""FULL""CYC1""CYC2""CYC3"
 
 #define LEN_VTMRMODES    3
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
