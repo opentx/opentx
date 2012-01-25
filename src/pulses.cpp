@@ -151,7 +151,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
     pulses2MHzRPtr += sizeof(uint16_t);
     if (*((uint16_t*)pulses2MHzRPtr) == 0) {
 
-      pulsePol = !g_model.pulsePol; // TODO do we need to change polarity?
+      pulsePol = !g_model.pulsePol;
 
 // TODO does it exist PCBV3? If no, replace PCBV3 by PCBV4 everywhere
 #if defined(PCBV3)
