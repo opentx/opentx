@@ -47,7 +47,9 @@ ModelData  g_model;
 uint8_t g_tmr1Latency_max;
 uint8_t g_tmr1Latency_min;
 uint16_t g_timeMain;
+#ifdef DEBUG
 uint16_t g_time_per10;
+#endif
 
 #if defined (PCBSTD) && defined (BEEPSPKR)
 uint8_t toneFreq = BEEP_DEFAULT_FREQ;
@@ -1796,7 +1798,9 @@ uint16_t getTmr16KHz()
   }
 }
 
+#ifdef DEBUG
 extern uint16_t g_time_per10; // instantiated in menus.cpp
+#endif
 
 #if defined (PCBV3)
 ISR(TIMER2_COMPA_vect, ISR_NOBLOCK) //10ms timer
@@ -1846,10 +1850,12 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 
 #endif
 
+#ifdef DEBUG
     // Record start time from TCNT1 to record excution time
     cli();
     uint16_t dt=TCNT1;// TCNT1 (used for PPM out pulse generation) is running at 2MHz
     sei();
+#endif
 
     //cnt >/=0
     //beepon/off
@@ -1925,12 +1931,14 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
     heartbeat |= HEART_TIMER10ms;
-
+    
+#ifdef DEBUG
     // Record per10ms ISR execution time, in us(x2) for STAT2 page
     cli();
     uint16_t dt2 = TCNT1; // capture end time
     sei();
     g_time_per10 = dt2 - dt; // NOTE: These spike to nearly 65535 just now and then. Why? :/
+#endif    
 
 #if defined (PCBSTD) && defined (BEEPSPKR)
   } // end 10ms event

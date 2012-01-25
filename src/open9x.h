@@ -503,7 +503,9 @@ void resetTimer(uint8_t idx);
 extern uint8_t g_tmr1Latency_max;
 extern uint8_t g_tmr1Latency_min;
 extern uint16_t g_timeMain;
+#ifdef DEBUG
 extern uint16_t g_time_per10;
+#endif
 
 #define MAXTRACE 120
 extern uint8_t s_traceBuf[MAXTRACE];
