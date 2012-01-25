@@ -77,7 +77,6 @@ void menuProcDebug(uint8_t event)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
       g_timeMain    = 0;
-//      g_time_per10 = 0;
       beepKey();
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
@@ -96,8 +95,10 @@ void menuProcDebug(uint8_t event)
   lcd_outdez8(15*FW , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
   lcd_puts_P( 0*FW,  4*FH, STR_TMAINMAXMS);
   lcd_outdezAtt(15*FW, 4*FH, (g_timeMain*100)/16, PREC2);
+#ifdef DEBUG
   lcd_puts_P( 0*FW,  5*FH, STR_T10MSUS);
   lcd_outdez8(15*FW , 5*FH, g_time_per10/2 );
+#endif
 #ifndef SIMU
   lcd_puts_P( 0*FW,  6*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(18*FW-1,  6*FH, stack_free(), UNSIGN) ;

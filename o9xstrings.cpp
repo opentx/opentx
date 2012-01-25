@@ -163,7 +163,9 @@ const prog_char APM STR_TMR1LATMAXUS[] = TR_TMR1LATMAXUS;
 const prog_char APM STR_TMR1LATMINUS[] = TR_TMR1LATMINUS;
 const prog_char APM STR_TMR1JITTERUS[] = TR_TMR1JITTERUS;
 const prog_char APM STR_TMAINMAXMS[] = TR_TMAINMAXMS;
+#ifdef DEBUG
 const prog_char APM STR_T10MSUS[] = TR_T10MSUS;
+#endif
 const prog_char APM STR_FREESTACKMINB[] = TR_FREESTACKMINB;
 const prog_char APM STR_MENUTORESET[] = TR_MENUTORESET;
 const prog_char APM STR_PPM[] = TR_PPM;
