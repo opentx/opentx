@@ -95,6 +95,8 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
   FrSkyRSSIAlarm frskyRssiAlarms[2];
+  uint8_t   speakerPitch;
+  uint8_t   hapticStrength;
 }) EEGeneral;
 
 // eeprom modelspec

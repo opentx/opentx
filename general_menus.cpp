@@ -56,33 +56,64 @@ MenuFuncP_PROGMEM APM menuTabDiag[] = {
   menuProcDiagCalib
 };
 
+enum menuProcSetupItems {
+  ITEM_SETUP_BASE=17,
+#ifdef SPLASH
+  ITEM_SETUP_SPLASH,
+#endif
+#ifdef BEEPSPKR
+  ITEM_SETUP_SPEAKER,
+#endif
+#ifdef HAPTIC
+  ITEM_SETUP_HAPTIC,
+#endif
+  ITEM_SETUP_MAX
+};
+
 void menuProcSetup(uint8_t event)
 {
-#ifdef SPLASH
-#define COUNT_ITEMS 19
-#else
-#define COUNT_ITEMS 18
-#endif
-
 #undef  PARAM_OFS
 #define PARAM_OFS   17*FW
 
-  SIMPLE_MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, COUNT_ITEMS+1);
+  SIMPLE_MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1);
 
   int8_t  sub    = m_posVert;
 
   // last 2 lines (radio mode) are non break-able
-  if(s_pgOfs==COUNT_ITEMS-7) s_pgOfs= sub<(COUNT_ITEMS-4) ? COUNT_ITEMS-8 : COUNT_ITEMS-6;
+  // TODO line to be checked
+  if(s_pgOfs==ITEM_SETUP_MAX-7) s_pgOfs= sub<(ITEM_SETUP_MAX-4) ? ITEM_SETUP_MAX-8 : ITEM_SETUP_MAX-6;
 
   uint8_t y = 1*FH;
 
   uint8_t subN = 1;
   if(s_pgOfs<subN) {
     lcd_puts_P(0, y, STR_BEEPER);
-    lcd_putsnAtt(PARAM_OFS - FW, y, STR_VBEEPER+LEN_VBEEPER*g_eeGeneral.beeperVal, LEN_VBEEPER, (sub==subN ? INVERS:0));
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperVal, 0, 4);
+    lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPER+LEN_VBEEPER*g_eeGeneral.beeperVal, LEN_VBEEPER, (sub==subN ? INVERS:0));
+    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperVal, 0, 6);
     if((y+=FH)>7*FH) return;
   }subN++;
+
+#ifdef BEEPSPKR
+  if(s_pgOfs<subN) {
+    lcd_puts_P(0, y, PSTR("Speaker Pitch"));
+    lcd_outdezAtt(PARAM_OFS,y,g_eeGeneral.speakerPitch,(sub==subN ? INVERS : 0)|LEFT);
+    if(sub==subN) {
+      CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 1, 100);
+    }
+    if((y+=FH)>7*FH) return;
+  }subN++;
+#endif
+
+#ifdef HAPTIC
+  if(s_pgOfs<subN) {
+    lcd_puts_P(0, y, PSTR("Haptic Strength"));
+    lcd_outdezAtt(PARAM_OFS,y,g_eeGeneral.hapticStrength,(sub==subN ? INVERS : 0)|LEFT);
+    if(sub==subN) {
+      CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 5);
+    }
+    if((y+=FH)>7*FH) return;
+  }subN++;
+#endif
 
   if(s_pgOfs<subN) {
     lcd_puts_P(0, y, STR_CONTRAST);
@@ -420,7 +451,7 @@ void menuProcTrainer(uint8_t event)
     if (event==EVT_KEY_FIRST(KEY_MENU)){
       memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
       eeDirty(EE_GENERAL);
-      beepKey();
+      AUDIO_KEYPAD_UP();
     }
   }
 }

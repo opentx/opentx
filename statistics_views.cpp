@@ -77,7 +77,7 @@ void menuProcDebug(uint8_t event)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
       g_timeMain    = 0;
-      beepKey();
+      AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuProcStatistic);

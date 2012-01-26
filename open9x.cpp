@@ -56,7 +56,12 @@ uint8_t toneFreq = BEEP_DEFAULT_FREQ;
 uint8_t toneOn = false;
 #endif
 
-bool warble = false;
+bool warble = false; // TODO is it needed with BEEPSPKR?
+
+#ifdef BEEPSPKR
+//new audio object
+audioQueue  audio;
+#endif
 
 uint8_t heartbeat;
 
@@ -651,9 +656,6 @@ void checkSwitches()
   }
 }
 
-uint8_t  g_beepCnt;
-uint8_t  g_beepVal[5];
-
 void message(const prog_char * s)
 {
   lcd_clear();
@@ -671,7 +673,7 @@ void alert(const prog_char * s, bool defaults)
   lcd_puts_P(64-LEN_PRESSANYKEY*FW/2, 7*FH, STR_PRESSANYKEY);
   refreshDisplay();
   lcdSetRefVolt(defaults ? 25 : g_eeGeneral.contrast);
-  beepErr();
+  AUDIO_ERROR();
   clearKeyEvents();
   while(1)
   {
@@ -742,17 +744,17 @@ uint8_t checkTrim(uint8_t event)
       killEvents(event);
       warble = false;
 #if defined (BEEPSPKR)
-      beepWarn2Spkr(after);
+      audio.event(AU_TRIM_MOVE, after);
 #else
-      beepWarn2();
+      AUDIO_WARNING2();
 #endif
     }
     else {
       if (event & _MSK_KEY_REPT) warble = true;
 #if defined (BEEPSPKR)
-      beepTrimSpkr(after);
+      audio.event(AU_TRIM_MOVE, after);
 #else
-      beepWarn1();
+      AUDIO_TRIM();
 #endif
     }
     return 0;
@@ -886,10 +888,6 @@ uint16_t g_vbat100mV = 0;
 volatile uint8_t tick10ms = 0;
 uint16_t g_LightOffCounter;
 
-uint8_t beepAgain = 0;
-uint8_t beepAgainOrig = 0;
-uint8_t beepOn = false;
-
 FORCEINLINE bool checkSlaveMode()
 {
   // no power -> only phone jack = slave mode
@@ -899,7 +897,7 @@ FORCEINLINE bool checkSlaveMode()
 #else
   static bool lastSlaveMode = false;
   static uint8_t checkDelay = 0;
-  if (g_beepCnt || beepAgain || beepOn) {
+  if (IS_AUDIO_BUSY()) {
     checkDelay = 20;
   }
   else if (checkDelay) {
@@ -1085,7 +1083,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
   //===========BEEP CENTER================
   anaCenter &= g_model.beepANACenter;
-  if(((bpanaCenter ^ anaCenter) & anaCenter)) beepWarn1();
+  if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_WARNING1();
   bpanaCenter = anaCenter;
 
   anas[MIX_MAX-1]  = RESX;     // MAX
@@ -1571,22 +1569,22 @@ void perMain()
   if (last_tmr != s_timerVal[0]) { // beep only if seconds advance
     if (s_timerState[0] == TMR_RUNNING) {
       if (g_eeGeneral.preBeep && g_model.timer1.val) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
-        if(s_timerVal[0]==30) {beepAgain=2; beepWarn2();} //beep three times
-        if(s_timerVal[0]==20) {beepAgain=1; beepWarn2();} //beep two times
-        if(s_timerVal[0]==10)  beepWarn2();
-        if(s_timerVal[0]<= 3)  beepWarn2();
+        if(s_timerVal[0]==30) AUDIO_TIMER_30(); //beep three times
+        if(s_timerVal[0]==20) AUDIO_TIMER_20(); //beep two times
+        if(s_timerVal[0]==10) AUDIO_TIMER_10();
+        if(s_timerVal[0]<= 3) AUDIO_TIMER_LT3();
 
         if(g_eeGeneral.flashBeep && (s_timerVal[0]==30 || s_timerVal[0]==20 || s_timerVal[0]==10 || s_timerVal[0]<=3))
           g_LightOffCounter = FLASH_DURATION;
       }
 
       if (g_eeGeneral.minuteBeep && (((g_model.timer1.val ? g_model.timer1.val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
-        beepWarn2();
+        AUDIO_MINUTE_BEEP();
         if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
       }
     }
     else if(s_timerState[0] == TMR_BEEPING) {
-      beepWarn();
+      AUDIO_WARNING1();
       if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
     }
     last_tmr = s_timerVal[0];
@@ -1628,7 +1626,7 @@ void perMain()
       inacCounter=0;
     }
     if(inacCounter>((uint32_t)g_eeGeneral.inactivityTimer*100*60))
-      if((inacCounter&0x3F)==10) beepWarn();
+      if((inacCounter&0x3F)==10) AUDIO_INACTIVITY();
   }
 
   if (trimsCheckTimer > 0)
@@ -1741,31 +1739,13 @@ Gruvin:
         static uint8_t s_batCheck;
         s_batCheck+=32;
         if(s_batCheck==0 && g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
-          beepErr();
+          AUDIO_ERROR();
           if (g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
         }
 
       }
       break;
-
-
-    case 3:
-      {
-        // The various "beep" tone lengths
-        static prog_uint8_t APM beepTab[]= {
-       // 0   1   2   3    4
-          0,  0,  0,  0,   0, //quiet
-          0,  1,  8, 30, 100, //silent
-          1,  1,  8, 30, 100, //normal
-          1,  1, 15, 50, 150, //for motor
-         10, 10, 30, 50, 150, //for motor
-        };
-        memcpy_P(g_beepVal,beepTab+5*g_eeGeneral.beeperVal,5);
-          //g_beepVal = BEEP_VAL;
-      }
-      break;
   }
-
 }
 int16_t g_ppmIns[8];
 uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
@@ -1809,6 +1789,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 {
   cli();
+  
 #if defined (PCBV3)
   static uint8_t accuracyWarble = 4; // becasue 16M / 1024 / 100 = 156.25. So bump every 4.
   uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
@@ -1824,30 +1805,17 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
   OCR0 += bump;
 #endif
 #endif
+
   sei();
+  
+  AUDIO_HEARTBEAT();
 
 #if defined (PCBSTD) && defined (BEEPSPKR)
-  // gruvin: Begin Tone Generator
-  static uint8_t toneCounter;
-
-  if (toneOn)
-  {
-    toneCounter += toneFreq;
-    if ((toneCounter & 0x80) == 0x80)
-      PORTE |=  (1<<OUT_E_BUZZER); // speaker output 'high'
-    else
-      PORTE &=  ~(1<<OUT_E_BUZZER); // speaker output 'low'
-  }
-  else
-      PORTE &=  ~(1<<OUT_E_BUZZER); // speaker output 'low'
-  // gruvin: END Tone Generator
-
   static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
   if (cnt10ms-- == 0) // BEGIN { ... every 10ms ... }
   {
     // Begin 10ms event
     cnt10ms = 77;
-
 #endif
 
 #ifdef DEBUG
@@ -1856,73 +1824,6 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
     uint16_t dt=TCNT1;// TCNT1 (used for PPM out pulse generation) is running at 2MHz
     sei();
 #endif
-
-    //cnt >/=0
-    //beepon/off
-    //beepagain y/n
-    if(g_beepCnt) {
-        if(!beepAgainOrig) {
-            beepAgainOrig = g_beepCnt;
-            beepOn = true;
-        }
-        g_beepCnt--;
-    }
-    else
-    {
-        if(beepAgain && beepAgainOrig) {
-            beepOn = !beepOn;
-            g_beepCnt = beepOn ? beepAgainOrig : 8;
-            if(beepOn) beepAgain--;
-        }
-        else {
-            beepAgainOrig = 0;
-            beepOn = false;
-            warble = false;
-        }
-    }
-
-#if defined (PCBV3) && defined (BEEPSPKR)
-    // G: use timer0 WGM mode tone generator for beeps
-    if(beepOn)
-    {
-      static bool warbleC;
-      warbleC = warble && !warbleC;
-      if(warbleC)
-        TCCR0A  &= ~(0b01<<COM0A0); // tone off
-      else
-        TCCR0A  |= (0b01<<COM0A0);  // tone on
-    }else{
-      TCCR0A  &= ~(0b01<<COM0A0);   // tone off
-    }
-#else
-#if defined (BEEPSPKR)
-    // G: use speaker tone generator for beeps
-    if(beepOn)
-    {
-      static bool warbleC;
-      warbleC = warble && !warbleC;
-      if(warbleC)
-        toneOn = false;
-      else
-        toneOn = true;
-    }else{
-      toneOn = false;
-    }
-
-#else
-    // G: use original external buzzer for beeps
-    if(beepOn){
-    static bool warbleC;
-    warbleC = warble && !warbleC;
-    if(warbleC)
-      PORTE &= ~(1<<OUT_E_BUZZER);//buzzer off
-    else
-      PORTE |=  (1<<OUT_E_BUZZER);//buzzer on
-    }else{
-      PORTE &= ~(1<<OUT_E_BUZZER);
-    }
-#endif // BEEPSPKR
-#endif // PCBV3 && BEEPSPKR
 
     per10ms();
 
@@ -1952,8 +1853,6 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
   sei();
 }
-
-
 
 // Timer3 used for PPM_IN pulse width capture. Counter running at 16MHz / 8 = 2MHz
 // equating to one count every half millisecond. (2 counts = 1ms). Control channel
@@ -2137,7 +2036,7 @@ void instantTrim()
   }
 
   STORE_MODELVARS;
-  beepWarn1();
+  AUDIO_WARNING1();
 }
 
 void moveTrimsToOffsets() // copy state of 3 primary to subtrim
@@ -2163,7 +2062,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   }
 
   STORE_MODELVARS;
-  beepWarn1();
+  AUDIO_WARNING1();
 }
 
 #if defined (PCBV4)
@@ -2239,7 +2138,7 @@ int main(void)
 #  endif
   DDRE = (1<<OUT_E_BUZZER);  PORTE = 0xff-(1<<OUT_E_BUZZER); //pullups + buzzer 0
   DDRF = 0x00;  PORTF = 0x00; //anain
-  DDRG = 0x10;  PORTG = 0xff; //pullups + SIM_CTL=1 = phonejack = ppm_in
+  DDRG = 0x10;  PORTG = 0xfB; //pullups + SIM_CTL=1 = phonejack = ppm_in
 #endif
 
   lcd_init();
