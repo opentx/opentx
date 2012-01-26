@@ -63,19 +63,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   }
   if(event==EVT_KEY_FIRST(kpl) || event== EVT_KEY_REPT(kpl) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event== EVT_KEY_REPT(KEY_UP))) ) {
     newval++;
-#if defined (BEEPSPKR)
-    beepKeySpkr(BEEP_KEY_UP_FREQ);
-#else
-    beepKey();
-#endif
+    AUDIO_KEYPAD_UP();
     kother=kmi;
-  }else if(event==EVT_KEY_FIRST(kmi) || event== EVT_KEY_REPT(kmi) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_DOWN) || event== EVT_KEY_REPT(KEY_DOWN))) ) {
+  }
+  else if(event==EVT_KEY_FIRST(kmi) || event== EVT_KEY_REPT(kmi) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_DOWN) || event== EVT_KEY_REPT(KEY_DOWN))) ) {
     newval--;
-#if defined (BEEPSPKR)
-    beepKeySpkr(BEEP_KEY_DOWN_FREQ);
-#else
-    beepKey();
-#endif
+    AUDIO_KEYPAD_DOWN();
     kother=kpl;
   }
   if((kother != (uint8_t)-1) && keyState((EnumKeys)kother)){
@@ -98,33 +91,21 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   {
     newval = i_max;
     killEvents(event);
-#if defined (BEEPSPKR)
-    beepWarn2Spkr(BEEP_KEY_UP_FREQ);
-#else
-    beepWarn2();
-#endif
+    AUDIO_WARNING2();
   }
   if(newval < i_min)
   {
     newval = i_min;
     killEvents(event);
-#if defined (BEEPSPKR)
-    beepWarn2Spkr(BEEP_KEY_DOWN_FREQ);
-#else
-    beepWarn2();
-#endif
+    AUDIO_WARNING2();
   }
   if(newval != val){
     if(newval==0) {
       pauseEvents(event); // delay before auto-repeat continues
-#if defined (BEEPSPKR)
-      if (newval>val)
-        beepWarn2Spkr(BEEP_KEY_UP_FREQ);
+      if (newval>val) // TODO check if without BEEPSPKR it's optimized!
+        AUDIO_KEYPAD_UP();
       else
-        beepWarn2Spkr(BEEP_KEY_DOWN_FREQ);
-#else
-      beepKey();
-#endif
+        AUDIO_KEYPAD_DOWN();
     }
     eeDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
@@ -318,8 +299,9 @@ bool check(uint8_t event, uint8_t curr, MenuFuncP *menuTab, uint8_t menuTabSize,
         popMenu();  //beeps itself
       }
       else {
-        beepKey();
-        minit();BLINK_SYNC;
+        AUDIO_MENUS();
+        minit();
+        BLINK_SYNC;
       }
       break;
 
@@ -380,7 +362,7 @@ void popMenu()
 {
   if (g_menuStackPtr>0) {
     g_menuStackPtr = g_menuStackPtr-1;
-    beepKey();
+    AUDIO_KEYPAD_UP();
     m_posHorz = 0;
     m_posVert = g_menuPos[g_menuStackPtr];
     (*g_menuStack[g_menuStackPtr])(EVT_ENTRY_UP);
@@ -394,7 +376,7 @@ void chainMenu(MenuFuncP newMenu)
 {
   g_menuStack[g_menuStackPtr] = newMenu;
   (*newMenu)(EVT_ENTRY);
-  beepKey();
+  AUDIO_MENUS();
 }
 
 void pushMenu(MenuFuncP newMenu)
@@ -408,7 +390,7 @@ void pushMenu(MenuFuncP newMenu)
     alert(STR_MENUSERROR);
     return;
   }
-  beepKey();
+  AUDIO_MENUS();
   g_menuStack[g_menuStackPtr] = newMenu;
   (*newMenu)(EVT_ENTRY);
 }

@@ -1,4 +1,3 @@
-#ifndef file_h
 /*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
@@ -20,6 +19,7 @@
  *
  */
 
+#ifndef file_h
 #define file_h
 
 #include <inttypes.h>

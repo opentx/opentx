@@ -101,12 +101,14 @@ void menuMainView(uint8_t event)
 
   switch(event)
   {
+    /* TODO if timer2 is OFF, it's possible to use this timer2 as in er9x...
     case EVT_KEY_BREAK(KEY_MENU):
       if (view_base == e_timer2) {
-        // TODO Timer2_running = !Timer2_running;
-        beepKey();
+        Timer2_running = !Timer2_running;
+        AUDIO_KEYPAD_UP();
       }
     break;
+    */
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
       killEvents(event);
@@ -124,7 +126,7 @@ void menuMainView(uint8_t event)
 #endif
       g_eeGeneral.view = (view + (event == EVT_KEY_BREAK(KEY_RIGHT) ? ALTERNATE_VIEW : tabViews[view_base]*ALTERNATE_VIEW-ALTERNATE_VIEW)) % (tabViews[view_base]*ALTERNATE_VIEW);
       eeDirty(EE_GENERAL);
-      beepKey();
+      AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_LONG(KEY_RIGHT):
       pushMenu(menuProcModelSelect);
@@ -138,7 +140,7 @@ void menuMainView(uint8_t event)
       g_eeGeneral.view = view+1;
       if(g_eeGeneral.view>=MAX_VIEWS) g_eeGeneral.view=0;
       eeDirty(EE_GENERAL);
-      beepKey();
+      AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_BREAK(KEY_DOWN):
       if(view>0)
@@ -146,7 +148,7 @@ void menuMainView(uint8_t event)
       else
         g_eeGeneral.view = MAX_VIEWS-1;
       eeDirty(EE_GENERAL);
-      beepKey();
+      AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_LONG(KEY_UP):
       chainMenu(menuProcStatistic);
@@ -176,7 +178,7 @@ void menuMainView(uint8_t event)
       else {
         resetTimer(0);
       }
-      beepKey();
+      AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_LONG(KEY_EXIT):
       resetTimer(0);
@@ -184,7 +186,7 @@ void menuMainView(uint8_t event)
 #ifdef FRSKY
       resetTelemetry();
 #endif
-      beepKey();
+      AUDIO_KEYPAD_UP();
       break;
     case EVT_ENTRY:
       killEvents(KEY_EXIT);

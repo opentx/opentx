@@ -226,6 +226,13 @@ ifneq ($(SPLASH), NO)
  CPPDEFS += -DSPLASH
 endif
 
+ifeq ($(BEEPER), SPEAKER)
+ CPPDEFS += -DBEEPSPKR
+ CPPSRC += audio.cpp 
+else
+ CPPSRC += beeper.cpp 
+endif
+
 ifeq ($(PCB), STD)
   # STD PCB, so ...
 
@@ -258,11 +265,6 @@ ifeq ($(PCB), STD)
      CPPDEFS += -DWS_HOW_HIGH
    endif
   endif
-
-  # gruvin: If buzzer speaker replacment supported 
-  ifeq ($(BEEPER), SPEAKER)
-   CPPDEFS += -DBEEPSPKR
-  endif
   
   # If buzzer modified (no interference with PPM jack)
   ifeq ($(BEEPER), BUZZER_MOD)
@@ -293,9 +295,6 @@ else
 
   CPPSRC += frsky.cpp
   CPPDEFS += -DPCBV3 -DFRSKY -DFRSKY_HUB -DWS_HOW_HIGH
-  ifeq ($(PCB), V3)
-    CPPDEFS += -DBEEPSPKR
-  endif
   ifeq ($(LOGS), YES)
     CPPSRC += logs.cpp
     CPPDEFS += -DLOGS
@@ -303,13 +302,6 @@ else
   endif
   ifeq ($(PCB), V4)
     CPPDEFS += -DPCBV4
-    # Temporary hack to get stock beeper working for testing, etc ... make BEEPER=BUZZER_MOD
-    # TODO should not be needed / tested here in V4  
-    ifeq ($(BEEPER), BUZZER_MOD)
-      CPPDEFS += -DBUZZER_MOD
-    else
-      CPPDEFS += -DBEEPSPKR
-    endif
   endif
   ifeq ($(SOMO), YES)
     CPPSRC += somo14d.cpp

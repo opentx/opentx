@@ -8,8 +8,8 @@
 #define LEN_NCHANNELS    4
 #define TR_NCHANNELS     "4CH 6CH 8CH 10CH12CH14CH16CH"
 
-#define LEN_VBEEPER       5
-#define TR_VBEEPER        "Quiet""NoKey""Norm ""Long ""xLong"
+#define LEN_VBEEPER       6
+#define TR_VBEEPER        "Quiet ""NoKey ""xShort""Short ""Norm  ""Long  ""xLong "
 
 #define LEN_ADCFILTER    4
 #define TR_ADCFILTER     "SING""OSMP""FILT"

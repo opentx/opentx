@@ -123,7 +123,7 @@ extern RlcFile theFile;  //used for any file operation
 //                                      rud    thro   elev   aile
 //PORTG  7      6       5       4       3       2       1       0
 //       -      -       -       O       i               i       i
-//                            SIM_CTL  ID1      NC      RF_POW RuddDR
+//                            SIM_CTL  ID1      Haptic      RF_POW RuddDR
 
 #define PORTA_LCD_DAT  PORTA
 #define PORTC_LCD_CTRL PORTC
@@ -262,13 +262,6 @@ extern uint16_t DEBUG2;
 #endif
 
 #endif // defined (PCBV4)
-
-#if defined (BEEPSPKR)
-#define BEEP_KEY_TIME 5
-#define BEEP_DEFAULT_FREQ 50
-#define BEEP_KEY_UP_FREQ 55
-#define BEEP_KEY_DOWN_FREQ 45
-#endif
 
 #define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
 
@@ -691,29 +684,6 @@ inline void _beepSpkr(uint8_t d, uint8_t f)
 }
 #endif
 
-#if defined (BEEPSPKR)
-
-#define beepKeySpkr(freq) _beepSpkr(g_beepVal[0],freq)
-#define beepTrimSpkr(freq) _beepSpkr(g_beepVal[0],freq)
-#define beepWarn1Spkr(freq) _beepSpkr(g_beepVal[1],freq)
-#define beepWarn2Spkr(freq) _beepSpkr(g_beepVal[2],freq)
-#define beepKey() _beepSpkr(g_beepVal[0],BEEP_DEFAULT_FREQ)
-#define beepWarn() _beepSpkr(g_beepVal[3],BEEP_DEFAULT_FREQ)
-#define beepWarn1() _beepSpkr(g_beepVal[1],BEEP_DEFAULT_FREQ)
-#define beepWarn2() _beepSpkr(g_beepVal[2],BEEP_DEFAULT_FREQ)
-#define beepErr()  _beepSpkr(g_beepVal[4],BEEP_DEFAULT_FREQ)
-
-#else
-
-/// Erzeugt einen kurzen beep
-#define beepKey()   _beep(g_beepVal[0])
-#define beepWarn() _beep(g_beepVal[3])
-#define beepWarn1() _beep(g_beepVal[1])
-#define beepWarn2() _beep(g_beepVal[2])
-#define beepErr()  _beep(g_beepVal[4])
-
-#endif
-
 // MM/SD card Disk IO Support
 #if defined (PCBV3)
 #include "rtc.h"
@@ -751,6 +721,14 @@ extern FIL g_oLogFile; // pers.cpp::resetTelemetry()
 #if defined (PCBV4)
 // Global rotary encoder registers -- 8-bit, 0-255
 extern volatile uint8_t g_rotenc[2];
+#endif
+
+#ifdef BEEPSPKR
+//audio settungs are external to keep out clutter!
+// TODO what does mean "keep out clutter"?
+#include "audio.h"
+#else
+#include "beeper.h"
 #endif
 
 #endif // gruvin9x_h

@@ -119,8 +119,8 @@ void doLogs()
       if (result != FR_OK)
       {
         g_logState = -result;
-        beepAgain = result - 1;
-        beepKey();
+        // TODO beepAgain = result - 1;
+        AUDIO_KEYPAD_UP();
       }
       else
       {
@@ -129,14 +129,14 @@ void doLogs()
         if (result != FR_OK)
         {
           g_logState = -result;
-          beepAgain = result - 1;
-          beepKey();
+          // TODO beepAgain = result - 1;
+          AUDIO_KEYPAD_UP();
         }
         else
         {
           f_lseek(&g_oLogFile, g_oLogFile.fsize); // append
           g_logState = 1;
-          beepWarn2();
+          AUDIO_WARNING2();
         }
       }
     }
@@ -149,7 +149,7 @@ void doLogs()
   else if (g_logState > 0)
   {
     f_close(&g_oLogFile);
-    beepWarn2();
+    AUDIO_WARNING2();
     g_logState = 0;
   }
 }

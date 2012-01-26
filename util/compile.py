@@ -21,8 +21,8 @@ def generate(hex, arg, options):
     states = [False] * len(options)
     index = 0
     
-    while index >= 0:
-        print states
+    while 1:
+        # print index, states
     
         for language in languages:
             hex_file = hex
@@ -36,15 +36,15 @@ def generate(hex, arg, options):
             print hex_file
             call(["make", "clean"])
             call(make_args)
-            shutil.copyfile("open9x.hex", "../" + hex_file + ".hex")
-            
-        for i in range(index):
-            states[i] = False
-        states[index] = True
+            shutil.copyfile("open9x.hex", "../binaries/" + hex_file + ".hex")
+        
         try:
             index = states.index(False)
         except:
-            index = -1
+            break
+        for i in range(index):
+            states[i] = False
+        states[index] = True
 
 # stock board
 generate("open9x-stock", "PCB=STD", options_stock)

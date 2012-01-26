@@ -444,12 +444,13 @@ void per10ms()
   }
   else if (g_eeGeneral.enableTelemetryAlarm && (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio)) {
 #if defined (BEEPSPKR)
-    if (!(g_tmr10ms % 30)) beepWarn2Spkr((g_tmr10ms % 60) ? 25 : 20);
+    if (!(g_tmr10ms % 30)) {
+      audioDefevent(AU_WARNING1);
+    }
 #else
-    if (!(g_tmr10ms % 30)) 
-    {
+    if (!(g_tmr10ms % 30)) {
       warble = !(g_tmr10ms % 60);
-      beepWarn2();
+      AUDIO_WARNING2();
     }
 #endif
   }
@@ -457,15 +458,7 @@ void per10ms()
 #endif
 
   // These moved here from perOut() [gruvin9x.cpp] to improve beep trigger reliability.
-#if defined (BEEPSPKR)
-  if(mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) beepWarn1Spkr(BEEP_DEFAULT_FREQ+7);
-  if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) 
-      || ((g_tmr10ms&0xFF)== 72)) beepWarn1Spkr(BEEP_DEFAULT_FREQ+9);
-  if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) 
-      || ((g_tmr10ms&0xFF)==144)) beepWarn1Spkr(BEEP_DEFAULT_FREQ+11);
-#else
-  if(mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) beepWarn1();
-  if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) beepWarn1();
-  if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) beepWarn1();
-#endif
+  if(mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) AUDIO_MIX_WARNING_1();
+  if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_1();
+  if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
 }

@@ -264,7 +264,7 @@ void menuProcModelSelect(uint8_t event)
           chainMenu(_event == EVT_KEY_FIRST(KEY_RIGHT) ? menuProcModel : menuTabModel[DIM(menuTabModel)-1]);
           return;
         }
-        beepWarn();
+        AUDIO_WARNING1(); // TODO it was beepWarn();
         break;
       case EVT_KEY_FIRST(KEY_UP):
       case EVT_KEY_FIRST(KEY_DOWN):
@@ -279,7 +279,7 @@ void menuProcModelSelect(uint8_t event)
             m_posVert = eeFindEmptyModel(s_copySrcRow, _event==EVT_KEY_FIRST(KEY_DOWN));
             if (m_posVert == (uint8_t)-1) {
               // no free room for duplicating the model
-              beepWarn();
+              AUDIO_WARNING1();
               m_posVert = oldSub;
               s_copyMode = 0; // TODO only this one?
               s_copyTgtOfs = 0;
@@ -1926,7 +1926,7 @@ void menuProcTemplates(uint8_t event)
         applyTemplate(sub);
       if (sub==NUM_TEMPLATES)
         clearMixes();
-      beepWarn1();
+      AUDIO_WARNING1();
       break;
   }
 
