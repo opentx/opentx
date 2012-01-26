@@ -56,7 +56,7 @@ bool eeLoadGeneral()
     }
   }
 
-  if (sz >= sizeof(EEGeneral)) {
+  if (sz <= sizeof(EEGeneral)) {
     uint16_t sum=0;
     for(int i=0; i<12;i++) sum+=g_eeGeneral.calibMid[i];
     return g_eeGeneral.chkSum == sum;
