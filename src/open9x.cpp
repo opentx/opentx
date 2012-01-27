@@ -51,11 +51,6 @@ uint16_t g_timeMain;
 uint16_t g_time_per10;
 #endif
 
-#if defined (PCBSTD) && defined (AUDIO)
-uint8_t toneFreq = BEEP_DEFAULT_FREQ;
-uint8_t toneOn = false;
-#endif
-
 #ifdef AUDIO
 //new audio object
 audioQueue  audio;

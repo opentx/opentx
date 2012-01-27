@@ -79,13 +79,27 @@ inline void AUDIO_HEARTBEAT()
     if (beepOn) {
       static bool warbleC;
       warbleC = warble && !warbleC;
-      if (warbleC)
-        PORTE &= ~(1<<OUT_E_BUZZER);//buzzer off
-      else
-        PORTE |=  (1<<OUT_E_BUZZER);//buzzer on
+      if (warbleC) {
+#if defined(PCBV4)
+        TCCR0A &= ~(0b01<<COM0A0);
+#else
+        PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
+#endif
+      }
+      else {
+#if defined(PCBV4)
+        TCCR0A |= (0b01<<COM0A0);  // tone on
+#else
+        PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
+#endif
+      }
     }
     else {
-      PORTE &= ~(1<<OUT_E_BUZZER);
+#if defined(PCBV4)
+      TCCR0A &= ~(0b01<<COM0A0);
+#else
+      PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
+#endif
     }
 }
 

@@ -178,14 +178,14 @@ void audioQueue::heartbeat()
         case 0:
           //stock beeper. simply turn port on for x time!
           if (toneTimeLeft > 0) {
-#if defined (PCBV4)
-            TCCR0A &= ~(0b01<<COM0A0);
+#if defined(PCBV4)
+            TCCR0A |= (0b01<<COM0A0);  // tone on
 #else
             PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
 #endif
           }
           else {
-#if defined (PCVV4)
+#if defined(PCBV4)
             TCCR0A &= ~(0b01<<COM0A0);
 #else
             PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
@@ -202,15 +202,14 @@ void audioQueue::heartbeat()
           if (toneTimeLeft > 0) {
             toneCounter += toneFreq;
             if ((toneCounter & 0x80) == 0x80) {
-#if defined (PCBV4)
-              TCCR0A &= ~(0b01<<COM0A0);
+#if defined(PCBV4)
+              TCCR0A |= (0b01<<COM0A0);  // tone on
 #else
               PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
 #endif
-
             }
             else {
-#if defined (PCVV3)
+#if defined(PCBV4)
               TCCR0A &= ~(0b01<<COM0A0);
 #else
               PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
@@ -218,7 +217,7 @@ void audioQueue::heartbeat()
             }
           }
           else {
-#if defined (PCVV3)
+#if defined(PCBV4)
             TCCR0A &= ~(0b01<<COM0A0);
 #else
             PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
@@ -256,7 +255,11 @@ void audioQueue::heartbeat()
 
   }
   else {
+#if defined(PCBV4)
+    TCCR0A &= ~(0b01<<COM0A0);
+#else
     PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
+#endif
     HAPTIC_OFF;
   }
 
