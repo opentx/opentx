@@ -36,7 +36,10 @@ void audioQueue::aqinit()
   queueState = 0;
   toneRepeatCnt = 0;
   inToneRepeat = 0;
+
+#ifdef HAPTIC
   hapticTick = 0;
+#endif
 
 #ifdef FRSKY
   frskySample = 0;
@@ -44,7 +47,6 @@ void audioQueue::aqinit()
 
   heartbeatTimer = 0;
   flushTemp();
-
 }
 
 bool audioQueue::busy()
@@ -86,7 +88,9 @@ void audioQueue::commit(uint8_t toneInterupt)
           queueToneLength[i] = t_queueToneLength;
           queueTonePause[i] = t_queueTonePause;
           queueToneRepeat[i] = t_queueToneRepeat;
+#ifdef HAPTIC
           queueToneHaptic[i] = t_queueToneHaptic;
+#endif
           flushTemp();
           break;
         }
@@ -100,7 +104,9 @@ void audioQueue::commit(uint8_t toneInterupt)
     queueToneLength[0] = t_queueToneLength;
     queueTonePause[0] = t_queueTonePause;
     queueToneRepeat[0] = t_queueToneRepeat;
+#ifdef HAPTIC
     queueToneHaptic[0] = t_queueToneHaptic;
+#endif
 
     flushqueue(1); //purge queue on interrupt events to stop broken audio
     flushTemp();
@@ -116,7 +122,9 @@ void audioQueue::flushqueue(uint8_t startpos)
     queueToneLength[startpos] = 0;
     queueTonePause[startpos] = 0;
     queueToneRepeat[startpos] = 0;
+#ifdef HAPTIC
     queueToneHaptic[startpos] = 0;
+#endif
   }
 }
 
@@ -128,9 +136,13 @@ void audioQueue::flushTemp()
   t_queueToneLength = 0;
   t_queueTonePause = 0;
   t_queueToneRepeat = 0;
+#ifdef HAPTIC
   t_queueToneHaptic = 0;
+#endif
   rateOfChange = 0;
+#ifdef HAPTIC
   toneHaptic = 0;
+#endif
 }
 
 void audioQueue::restack()
@@ -141,7 +153,9 @@ void audioQueue::restack()
     queueToneLength[i] = queueToneLength[i + 1];
     queueTonePause[i] = queueTonePause[i + 1];
     queueToneRepeat[i] = queueToneRepeat[i + 1];
+#ifdef HAPTIC
     queueToneHaptic[i] = queueToneHaptic[i + 1];
+#endif
   }
   flushqueue(AUDIO_QUEUE_LENGTH - 1); //set the last entry to 0 as nothing in stack to add too!
 }
@@ -223,6 +237,7 @@ void audioQueue::heartbeat()
 
     }
 
+#ifdef HAPTIC
     uint8_t hapticStrength = g_eeGeneral.hapticStrength;
     if (toneHaptic == 1) {
       if ((hapticTick <= hapticStrength - 1) && hapticStrength > 0) {
@@ -237,6 +252,7 @@ void audioQueue::heartbeat()
     else {
       HAPTIC_OFF; // haptic output 'low'
     }
+#endif
 
   }
   else {
@@ -246,7 +262,11 @@ void audioQueue::heartbeat()
 
   //step through array checking if we have any tones to play
   //next heartbeat will play whatever we put in queue
-  if ((queueToneStart[0] > 0 || queueToneHaptic[0] == 1) && toneTimeLeft <= 0
+  if ((queueToneStart[0] > 0
+#ifdef HAPTIC
+      || queueToneHaptic[0] == 1
+#endif
+      ) && toneTimeLeft <= 0
       && queueState == 0) {
     if (queueToneEnd[0] > 0 && queueToneEnd[0] != queueToneStart[0]) {
       if (queueToneStart[0] > queueToneEnd[0]) { //tone going down
@@ -267,7 +287,9 @@ void audioQueue::heartbeat()
       toneTimeLeft = z;
       tonePause = queueTonePause[0];
       toneRepeat = queueToneRepeat[0];
+#ifdef HAPTIC
       toneHaptic = queueToneHaptic[0];
+#endif
     }
     else {
       //simple tone handler
@@ -282,7 +304,9 @@ void audioQueue::heartbeat()
       toneTimeLeft = queueToneLength[0];
       tonePause = queueTonePause[0];
       toneRepeat = queueToneRepeat[0];
+#ifdef HAPTIC
       toneHaptic = queueToneHaptic[0];
+#endif
     }
     queueState = 1;
     if (toneRepeat != 0 && inToneRepeat == 0) {
@@ -348,7 +372,9 @@ void audioQueue::playNow(uint8_t tStart, uint8_t tLen, uint8_t tPause,
   t_queueToneStart = tStart;
   t_queueToneLength = tLen;
   t_queueTonePause = tPause;
+#ifdef HAPTIC
   t_queueToneHaptic = tHaptic;
+#endif
   t_queueToneRepeat = tRepeat;
   t_queueToneEnd = tEnd;
   commit(1);
@@ -360,7 +386,9 @@ void audioQueue::playASAP(uint8_t tStart, uint8_t tLen, uint8_t tPause,
   t_queueToneStart = tStart;
   t_queueToneLength = tLen;
   t_queueTonePause = tPause;
+#ifdef HAPTIC
   t_queueToneHaptic = tHaptic;
+#endif
   t_queueToneRepeat = tRepeat;
   t_queueToneEnd = tEnd;
   commit(0);

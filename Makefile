@@ -64,6 +64,10 @@ endif
 # Values = YES, NO 
 AUDIO = YES
 
+# HAPTIC Mods
+# Values = YES, NO 
+HAPTIC = NO
+
 # SPLASH on START
 SPLASH = YES
 
@@ -227,7 +231,10 @@ endif
 
 ifeq ($(AUDIO), YES)
  CPPDEFS += -DAUDIO
- CPPSRC += audio.cpp 
+ CPPSRC += audio.cpp
+ ifeq ($(HAPTIC), YES)
+  CPPDEFS += -DHAPTIC
+ endif
 else
  CPPSRC += beeper.cpp 
 endif
