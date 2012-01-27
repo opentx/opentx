@@ -63,13 +63,10 @@ void startPulses()
                       fires for the first time and sets up the pulse period. */
     // TCCR1A |= (1<<COM1B0); // (COM1B1=0 and COM1B0=1 in TCCR1A)  toogle the state of PB6(OC1B) on each TCNT1==OCR1B
     TCCR1A = (3<<COM1B0); // Connect OC1B to PPM_OUT pin (SET the state of PB6(OC1B) on next TCNT1==OCR1B)
-#elif defined(DPPMPB7_HARDWARE) // addon Vinceofdrink@gmail (hardware ppm)
-    OCR1C = 0xffff; // See comment for PCBV4, above
-    TCCR1A |= (1<<COM1C0); // (COM1C1=0 and COM1C0=1 in TCCR1A)  toogle the state of PB7(OC1C) on each TCNT1==OCR1C
 #endif
   }
 
-#if defined(PCBV3)
+#if defined(PCBV4)
   TIMSK1 |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
 #else
   TIMSK |= (1<<OCIE1A);  // Pulse generator enable immediately before mainloop
@@ -112,9 +109,8 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
   else
 #endif
   {
-    // vinceofdrink@gmail harwared ppm
     // Orginal bitbang for PPM
-#if !defined(DPPMPB7_HARDWARE) && !defined(PCBV4)
+#if !defined(PCBV4)
     if (pulsePol) {
       PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
       pulsePol = 0;
@@ -141,20 +137,14 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
       TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B) on next TCNT1==OCR1B
       pulsePol = 1;
     }
-
-    //vinceofdrink@gmail harwared ppm
-#elif defined(DPPMPB7_HARDWARE)
-    OCR1C = *((uint16_t*)pulses2MHzRPtr);  // just copy the value of the OCR1A to OCR1C to test PPM out without too
-                              // much change in the code not optimum but will not alter ppm precision
 #endif
-  
+
     pulses2MHzRPtr += sizeof(uint16_t);
     if (*((uint16_t*)pulses2MHzRPtr) == 0) {
 
       pulsePol = !g_model.pulsePol;
 
-// TODO does it exist PCBV3? If no, replace PCBV3 by PCBV4 everywhere
-#if defined(PCBV3)
+#if defined(PCBV4)
       TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
 #else
       TIMSK &= ~(1<<OCIE1A); //stop reentrance
@@ -163,14 +153,6 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
       // sei will be called inside setupPulses()
 
       setupPulses();
-
-#if defined(DPPMPB7_HARDWARE)
-      // G: NOTE: This strategy does not work on the '2560 becasue you can't
-      //          read the PPM out pin when connected to OC1B. Vincent says
-      //          it works on the '64A. I haven't personally tested it.
-      if (PINB & (1<<OUT_B_PPM) && g_model.pulsePol)
-        TCCR1C=(1<<FOC1C);
-#endif
 
       // TODO test that it's optimized
       if (1
@@ -184,7 +166,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
         // cli is not needed because for these 2 protocols interrupts are not enabled when entering here
 
-#if defined(PCBV3)
+#if defined(PCBV4)
         TIMSK1 |= (1<<OCIE1A);
 #else
         TIMSK |= (1<<OCIE1A);
@@ -516,7 +498,7 @@ void setupPulsesDsm2()
   }
   if ((dsmDat[0] & BIND_BIT) && (!keyState(SW_Trainer))) dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
   // TODO find a way to do that, FUNC SWITCH: if ((!(dsmDat[0] & BIND_BIT)) && getSwitch(MAX_DRSWITCH-1, 0, 0)) dsmDat[0] |= RANGECHECK_BIT;   // range check function
-  else dsmDat[0] &= ~RANGECHECK_BIT;
+  // else dsmDat[0] &= ~RANGECHECK_BIT;
   dsmDat[1] = g_model.modelId; // DSM2 Header second byte for model match
   for (uint8_t i=0; i<DSM2_CHANS; i++)
   {
@@ -529,7 +511,7 @@ void setupPulsesDsm2()
     sendByteDsm2(dsmDat[counter]);
 
   pulses2MHzWPtr -= 1; //remove last stopbits and
-  _send_1( 255 ); //prolong them
+  _send_1(255); //prolong them
   _send_1(0); //end of pulse stream
 
   pulses2MHzRPtr = pulses2MHz;
@@ -551,7 +533,7 @@ void setupPulses()
         OCR1C = 200;           // 100 uS
         TCNT1 = 300;           // Past the OCR1C value
         ICR1 = 44000;          // Next frame starts in 22 mS
-#if defined(PCBV3)
+#if defined(PCBV4)
         TIMSK1 &= ~0x3C;       // All interrupts off
         TIFR1 = 0x2F;
         TIMSK1 |= 0x28;        // Enable CAPT and COMPB
@@ -608,7 +590,7 @@ void setupPulses()
         TCCR1B = 0;    // Stop counter
         OCR1A = 40000; // Next frame starts in 20 mS
         TCNT1 = 0;
-#if defined(PCBV3)
+#if defined(PCBV4)
         TIMSK1 &= ~0x3C; // All interrupts off
         TIFR1 = 0x2F;
         TIMSK1 |= 0x10; // Enable COMPA
@@ -618,6 +600,8 @@ void setupPulses()
         ETIFR = 0x3F ; // Clear all pending interrupts
         TIMSK |= 0x10; // Enable COMPA
 #endif
+        // TCNT1 2MHz counter (auto-cleared) plus Capture Compare int.
+        //       Used for PPM pulse generator
         TCCR1A = (0 << WGM10);
         TCCR1B = (1 << WGM12) | (2 << CS10); // CTC OCRA, 16MHz / 8
         break;
@@ -699,11 +683,11 @@ ISR(TIMER1_COMPC_vect) // DSM2 or PXX end of frame
 
 #if defined(DSM2_PPM)
     ICR1 = 41536 ; // next frame starts in 22ms 41536 = 2*(22000 - 14*11*8)
-    if (OCR1B < 255) {
-      OCR1B = 39000;  // delay setup pulses by 19.5ms to reduce system latency
+    if (OCR1C < 255) {
+      OCR1C = 39000;  // delay setup pulses by 19.5ms to reduce system latency
     }
     else {
-      OCR1B = 200;
+      OCR1C = 200;
       // sei will be called inside setupPulses()
       setupPulses();
     }
@@ -727,10 +711,11 @@ ISR(TIMER1_COMPC_vect) // DSM2 or PXX end of frame
 
 #endif
 
+
 void set_timer3_capture()
 {
 #ifndef SIMU
-#if defined (PCBV3)
+#if defined (PCBV4)
     TIMSK3 &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts // TODO Cam please could you check this line please? Thanks a lot!
 #else
     ETIMSK &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
@@ -738,9 +723,10 @@ void set_timer3_capture()
     DDRE &= ~0x80;  PORTE |= 0x80 ;     // Bit 7 input + pullup
 
     TCCR3B = 0 ;                        // Stop counter
-    TCCR3A  = 0;
-    TCCR3B  = (1<<ICNC3) | (2<<CS30);      //ICNC3 16MHz / 8
-#if defined (PCBV3)
+    TCCR3A = 0;
+    // Noise Canceller enabled, neg. edge, clock at 16MHz / 8 (2MHz) (Correct for PCB V4.x+ also)
+    TCCR3B  = (1<<ICNC3) | (0b010 << CS30);
+#if defined (PCBV4)
     TIMSK3 |= (1<<ICIE3);
 #else
     ETIMSK |= (1<<TICIE3);
@@ -752,7 +738,7 @@ void set_timer3_capture()
 void set_timer3_ppm()
 {
 #ifndef SIMU
-#if defined (PCBV3)
+#if defined (PCBV4)
     TIMSK3 &= ~(1<<ICIE3);
 #else
     ETIMSK &= ~(1<<TICIE3) ;   // Stop capture interrupt

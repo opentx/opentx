@@ -35,7 +35,7 @@ inline void eeprom_write_byte()
 {
   EEAR = eeprom_pointer;
   EEDR = *eeprom_buffer_data;
-#if defined (PCBV3)
+#if defined (PCBV4)
   EECR |= 1<<EEMPE;
   EECR |= 1<<EEPE;
 #else
@@ -52,7 +52,7 @@ ISR(EE_READY_vect)
     eeprom_write_byte();
   }
   else {
-#if defined (PCBV3)
+#if defined (PCBV4)
     EECR &= ~(1<<EERIE);
 #else
     EECR &= ~(1<<EERIE);
@@ -72,7 +72,7 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 
 #ifdef SIMU
   sem_post(&eeprom_write_sem);
-#elif defined (PCBV3)
+#elif defined (PCBV4)
   EECR |= (1<<EERIE);
 #else
   EECR |= (1<<EERIE);
@@ -190,63 +190,117 @@ void Key::input(bool val, EnumKeys enuk)
 
 bool keyState(EnumKeys enuk)
 {
-  if(enuk < (int)DIM(keys))  return keys[enuk].state() ? 1 : 0;
+  uint8_t result = 0 ;
+
+  if (enuk < (int)DIM(keys))
+    return keys[enuk].state() ? 1 : 0;
 
 #if defined (PCBV4)
   switch(enuk){
-    case SW_ElevDR : return PINC & (1<<INP_C_ElevDR);
+    case SW_ElevDR:
+      result = PINC & (1<<INP_C_ElevDR);
+      break;
     
-    case SW_AileDR : return PINC & (1<<INP_C_AileDR);
+    case SW_AileDR:
+      result = PINC & (1<<INP_C_AileDR);
+      break;
 
-    case SW_RuddDR : return PING & (1<<INP_G_RuddDR);
+    case SW_RuddDR:
+      result = PING & (1<<INP_G_RuddDR);
+      break;
       //     INP_G_ID1 INP_B_ID2
       // id0    0        1
       // id1    1        1
       // id2    1        0
-    case SW_ID0    : return !(PING & (1<<INP_G_ID1));
-    case SW_ID1    : return (PING & (1<<INP_G_ID1))&& (PINB & (1<<INP_B_ID2));
-    case SW_ID2    : return !(PINB & (1<<INP_B_ID2));
+    case SW_ID0:
+      result = !(PING & (1<<INP_G_ID1));
+      break;
 
-    case SW_Gear   : return PING & (1<<INP_G_Gear);
+    case SW_ID1:
+      result = (PING & (1<<INP_G_ID1))&& (PINB & (1<<INP_B_ID2));
+      break;
 
-    case SW_ThrCt  : return PING & (1<<INP_G_ThrCt);
+    case SW_ID2:
+      result = !(PINB & (1<<INP_B_ID2));
+      break;
 
-    case SW_Trainer: return PINB & (1<<INP_B_Trainer);
+    case SW_Gear:
+      result = PING & (1<<INP_G_Gear);
+      break;
 
-    default:;
+    case SW_ThrCt:
+      result = PING & (1<<INP_G_ThrCt);
+      break;
+
+    case SW_Trainer:
+      result = PINB & (1<<INP_B_Trainer);
+      break;
+
+    default:
+      break;
   }
 #else
   switch(enuk){
-    case SW_ElevDR : return PINE & (1<<INP_E_ElevDR);
-    
-#if defined(JETI) || defined(FRSKY)
-    case SW_AileDR : return PINC & (1<<INP_C_AileDR); //shad974: rerouted inputs to free up UART0
+    case SW_ElevDR:
+      result = PINE & (1<<INP_E_ElevDR);
+      break;
+
+#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA)
+    case SW_AileDR:
+      result = PINC & (1<<INP_C_AileDR); //shad974: rerouted inputs to free up UART0
+      break;
 #else
-    case SW_AileDR : return PINE & (1<<INP_E_AileDR);
+    case SW_AileDR:
+      result = PINE & (1<<INP_E_AileDR);
+      break;
 #endif
 
-    case SW_RuddDR : return PING & (1<<INP_G_RuddDR);
+    case SW_RuddDR:
+      result = PING & (1<<INP_G_RuddDR);
+      break;
       //     INP_G_ID1 INP_E_ID2
       // id0    0        1
       // id1    1        1
       // id2    1        0
-    case SW_ID0    : return !(PING & (1<<INP_G_ID1));
-    case SW_ID1    : return (PING & (1<<INP_G_ID1))&& (PINE & (1<<INP_E_ID2));
-    case SW_ID2    : return !(PINE & (1<<INP_E_ID2));
-    case SW_Gear   : return PINE & (1<<INP_E_Gear);
+    case SW_ID0:
+      result = !(PING & (1<<INP_G_ID1));
+      break;
+
+    case SW_ID1:
+      result = (PING & (1<<INP_G_ID1))&& (PINE & (1<<INP_E_ID2));
+      break;
+
+    case SW_ID2:
+      result = !(PINE & (1<<INP_E_ID2));
+      break;
+
+    case SW_Gear:
+      result = PINE & (1<<INP_E_Gear);
+      break;
+
     //case SW_ThrCt  : return PINE & (1<<INP_E_ThrCt);
 
-#if defined(JETI) || defined(FRSKY)
-    case SW_ThrCt  : return PINC & (1<<INP_C_ThrCt); //shad974: rerouted inputs to free up UART0
+#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA)
+    case SW_ThrCt:
+      result = PINC & (1<<INP_C_ThrCt); //shad974: rerouted inputs to free up UART0
+      break;
+
 #else
-    case SW_ThrCt  : return PINE & (1<<INP_E_ThrCt);
+    case SW_ThrCt:
+      result = PINE & (1<<INP_E_ThrCt);
+      break;
 #endif
 
-    case SW_Trainer: return PINE & (1<<INP_E_Trainer);
-    default:;
+    case SW_Trainer:
+      result = PINE & (1<<INP_E_Trainer);
+      break;
+
+    default:
+      break;
   }
 #endif // defined (PCBV4)
-  return 0;
+
+  return result;
 }
 
 void pauseEvents(uint8_t event)
@@ -265,7 +319,7 @@ volatile uint16_t g_tmr10ms;
 volatile uint8_t  g_blinkTmr10ms;
 
 
-#if defined (PCBV3)
+#if defined (PCBV4)
 uint8_t g_ms100 = 0; // global to allow time set function to reset to zero
 #endif
 void per10ms()
@@ -273,7 +327,7 @@ void per10ms()
     g_tmr10ms++;
     g_blinkTmr10ms++;
 
-#if defined (PCBV3)
+#if defined (PCBV4)
     /* Update gloabal Date/Time every 100 per10ms cycles */
     if (++g_ms100 == 100)
     {
@@ -286,7 +340,7 @@ void per10ms()
   uint8_t enuk = KEY_MENU;
 
 // User buttons ...
-#if defined (PCBV3)
+#if defined (PCBV4)
   /* Original keys were connected to PORTB as follows:
 
      Bit  Key
@@ -346,8 +400,7 @@ void per10ms()
 // End User buttons
 
 // Trim switches ...
-#if defined (PCBV3)
-#  if defined (PCBV4)
+#if defined (PCBV4)
   static  prog_uchar  APM crossTrim[]={
     1<<INP_J_TRM_LH_DWN,
     1<<INP_J_TRM_LH_UP,
@@ -358,21 +411,7 @@ void per10ms()
     1<<INP_J_TRM_RH_DWN,
     1<<INP_J_TRM_RH_UP
   };
-#  else
-  static  prog_uchar  APM crossTrim[]={
-    1<<TRIM_M_RV_DWN,
-    1<<TRIM_M_RV_UP,
-    1<<TRIM_M_RH_DWN,
-    1<<TRIM_M_RH_UP,
-    1<<TRIM_M_LH_DWN,
-    1<<TRIM_M_LH_UP,
-    1<<TRIM_M_LV_DWN,
-    1<<TRIM_M_LV_UP
-  };
-#  endif
-
 #else // stock original board ...
-
   static  prog_uchar  APM crossTrim[]={
     1<<INP_D_TRM_LH_DWN,  // bit 7
     1<<INP_D_TRM_LH_UP,
@@ -385,39 +424,13 @@ void per10ms()
   };
 #endif
 
-#if defined (PCBV3)
-
-#  if defined (PCBV4)
+#if defined (PCBV4)
   in = ~PINJ;
-#  else
-  PORTD = ~KEY_Y2; // select Y2 row. (Bits 3:0 LVD / LVU / LHU / LHD)
-  _delay_us(1);
-  in = ~PIND & 0xf0; // mask out outputs
-
-  PORTD = ~KEY_Y3; // select Y3 row. (Bits 3:0 RHU / RHD / RVD / RVU)
-  _delay_us(1);
-  in |= ((~PIND & 0xf0) >> 4); 
-
-  PORTD = 0xFF;
-#  endif
-
 #else
-
   in = ~PIND;
-
-// Legacy support for USART1 free hardware mod [DEPRECATED]
-#  if defined(USART1FREED)
-  // mask out original INP_D_TRM_LV_UP and INP_D_TRM_LV_DWN bits
-  in &= ~((1<<INP_D_TRM_LV_UP) | (1<<INP_D_TRM_LV_DWN));
-
-  // merge in the two new switch port values
-  in |= (~PINC & (1<<INP_C_TRM_LV_UP)) ? (1<<INP_D_TRM_LV_UP) : 0;
-  in |= (~PING & (1<<INP_G_TRM_LV_DWN)) ? (1<<INP_D_TRM_LV_DWN) : 0;
-#  endif
 #endif
 
-  for(int i=0; i<8; i++)
-  {
+  for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
     keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
     ++enuk;
@@ -443,7 +456,7 @@ void per10ms()
     frskyStreaming--;
   }
   else if (g_eeGeneral.enableTelemetryAlarm && (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio)) {
-#if defined (BEEPSPKR)
+#if defined (AUDIO)
     if (!(g_tmr10ms % 30)) {
       audioDefevent(AU_WARNING1);
     }

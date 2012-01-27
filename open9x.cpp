@@ -30,7 +30,7 @@ prog_uchar APM speMarker[] = { "SPE" };
 #include "menus.h"
 
 // MM/SD card Disk IO Support
-#if defined (PCBV3)
+#if defined (PCBV4)
 gtime_t g_unixTime; // Global date/time register, incremented each second in per10ms()
 #endif
 
@@ -51,21 +51,18 @@ uint16_t g_timeMain;
 uint16_t g_time_per10;
 #endif
 
-#if defined (PCBSTD) && defined (BEEPSPKR)
+#if defined (PCBSTD) && defined (AUDIO)
 uint8_t toneFreq = BEEP_DEFAULT_FREQ;
 uint8_t toneOn = false;
 #endif
 
-bool warble = false; // TODO is it needed with BEEPSPKR?
-
-#ifdef BEEPSPKR
+#ifdef AUDIO
 //new audio object
 audioQueue  audio;
 #endif
 
 uint8_t heartbeat;
 
-// TODO reduce these tabs
 const prog_char APM s_charTab[] = "_-.,";
 
 //R=1
@@ -471,21 +468,6 @@ uint8_t getTrimFlightPhase(uint8_t idx, uint8_t phase)
   return 0;
 }
 
-#if defined (PCBV3) && !defined (PCBV4)
-// The ugly scanned keys thing should be gone for PCBV4+. In the meantime ...
-uint8_t keyDown()
-{
-  uint8_t in;
-  PORTD = ~1; // select KEY_Y0 row (Bits 3:2 EXIT:MENU)
-  _delay_us(1);
-  in = (~PIND & 0b11000000) >> 5;
-  PORTD = ~2; // select Y1 row. (Bits 3:0 Left/Right/Up/Down)
-  _delay_us(1);
-  in |= (~PIND & 0xf0) >> 1;
-  PORTD = 0xff;
-  return (in);
-}
-#else
 FORCEINLINE uint8_t keyDown()
 {
 #if defined (PCBV4)
@@ -494,7 +476,6 @@ FORCEINLINE uint8_t keyDown()
   return (~PINB) & 0x7E;
 #endif
 }
-#endif
 
 void clearKeyEvents()
 {
@@ -729,7 +710,7 @@ uint8_t checkTrim(uint8_t event)
 
     setTrimValue(phase, idx, after);
 
-#if defined (BEEPSPKR)
+#if defined (AUDIO)
     // toneFreq higher/lower according to trim position
     // limit the frequency, range -125 to 125 = toneFreq: 19 to 101
     if (after > TRIM_MAX)
@@ -742,18 +723,18 @@ uint8_t checkTrim(uint8_t event)
 
     if (beepTrim) {
       killEvents(event);
-      warble = false;
-#if defined (BEEPSPKR)
+#if defined (AUDIO)
       audio.event(AU_TRIM_MOVE, after);
 #else
+      warble = false;
       AUDIO_WARNING2();
 #endif
     }
     else {
-      if (event & _MSK_KEY_REPT) warble = true;
-#if defined (BEEPSPKR)
+#if defined (AUDIO)
       audio.event(AU_TRIM_MOVE, after);
 #else
+      if (event & _MSK_KEY_REPT) warble = true;
       AUDIO_TRIM();
 #endif
     }
@@ -762,7 +743,11 @@ uint8_t checkTrim(uint8_t event)
   return event;
 }
 
-#ifndef SIMU
+#ifdef SIMU
+
+uint16_t BandGap = 225;
+
+#else
 
 // #define STARTADCONV (ADCSRA  = (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2) | (1<<ADSC) | (1 << ADIE))
 // G: Note that the above would have set the ADC prescaler to 128, equating to
@@ -841,19 +826,7 @@ getADCp getADC[3] = {
 
 void getADC_bandgap()
 {
-#if defined(PCBSTD)
-  ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
-  _delay_us(7); // short delay to stabilise reference voltage
-  ADCSRA|=0x40;
-  while ((ADCSRA & 0x10)==0);
-  ADCSRA|=0x10; // grab a sample
-  BandGap=ADCW;
-#elif defined (PCBV4)
-  // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
-  ADCSRB &= ~(1<<MUX5);
-
-  ADMUX=0x03|ADC_VREF_TYPE; // Switch MUX to internal 1.1V reference
-  _delay_us(10); // tiny bit of stablisation time needed to allow capture-hold capacitor to charge
+#if defined (PCBV4)
   // For times over-sample with no divide, x2 to end at a half averaged, x8. DON'T ASK mmmkay? :P This is how I want it.
   ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
   BandGap=ADCW;
@@ -864,19 +837,19 @@ void getADC_bandgap()
   ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
   BandGap+=ADCW;
   BandGap *= 2;
-
   ADCSRB |= (1<<MUX5);
 #else
-  ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.1V reference
- _delay_us(400); // this somewhat costly delay is the only remedy for stable results on the Atmega2560/1 chips
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // take sample
+  // TODO is the next line needed (because it has been called before perMain)?
+  ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
+  ADCSRA|=0x40;
+  while ((ADCSRA & 0x10)==0);
+  ADCSRA|=0x10; // take sample
   BandGap=ADCW;
 #endif
 }
 
-#else
-uint16_t BandGap = 225;
-#endif
+#endif // SIMU
+
 
 #ifndef BATT_UNSTABLE_BANDGAP
 uint16_t abRunningAvg = 0;
@@ -892,7 +865,7 @@ FORCEINLINE bool checkSlaveMode()
 {
   // no power -> only phone jack = slave mode
 
-#if defined(BUZZER_MOD) || defined(BEEPSPKR)
+#if defined(PCBV4)
   return SLAVE_MODE;
 #else
   static bool lastSlaveMode = false;
@@ -1753,10 +1726,10 @@ uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
 #ifndef SIMU
 
 volatile uint8_t g_tmr16KHz; //continuous timer 16ms (16MHz/1024/256) -- 8-bit counter overflow
-#if defined (PCBV3)
+#if defined (PCBV4)
 ISR(TIMER2_OVF_vect)
 #else
-ISR(TIMER0_OVF_vect)
+ISR(TIMER0_OVF_vect) // TODO now NOBLOCK in er9x
 #endif
 {
   g_tmr16KHz++; // gruvin: Not 16KHz. Overflows occur at 61.035Hz (1/256th of 15.625KHz)
@@ -1769,7 +1742,7 @@ uint16_t getTmr16KHz()
 {
   while(1){
     uint8_t hb  = g_tmr16KHz;
-#if defined (PCBV3)
+#if defined (PCBV4)
     uint8_t lb  = TCNT2;
 #else
     uint8_t lb  = TCNT0;
@@ -1782,7 +1755,7 @@ uint16_t getTmr16KHz()
 extern uint16_t g_time_per10; // instantiated in menus.cpp
 #endif
 
-#if defined (PCBV3)
+#if defined (PCBV4)
 ISR(TIMER2_COMPA_vect, ISR_NOBLOCK) //10ms timer
 #else
 ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
@@ -1790,14 +1763,14 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 {
   cli();
   
-#if defined (PCBV3)
+#if defined (PCBV4)
   static uint8_t accuracyWarble = 4; // becasue 16M / 1024 / 100 = 156.25. So bump every 4.
   uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
   TIMSK2 &= ~(1<<OCIE2A); //stop reentrance
   OCR2A += bump;
 #else
   TIMSK &= ~(1<<OCIE0); //stop reentrance
-#if defined (BEEPSPKR)
+#if defined (AUDIO)
   OCR0 += 2; // run much faster, to generate speaker tones
 #else
   static uint8_t accuracyWarble = 4; // becasue 16M / 1024 / 100 = 156.25. So bump every 4.
@@ -1810,7 +1783,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
   
   AUDIO_HEARTBEAT();
 
-#if defined (PCBSTD) && defined (BEEPSPKR)
+#if defined (PCBSTD) && defined (AUDIO)
   static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
   if (cnt10ms-- == 0) // BEGIN { ... every 10ms ... }
   {
@@ -1827,7 +1800,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 
     per10ms();
 
-#if defined (PCBV3)
+#if defined (PCBV4)
     disk_timerproc();
 #endif
 
@@ -1841,12 +1814,12 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
     g_time_per10 = dt2 - dt; // NOTE: These spike to nearly 65535 just now and then. Why? :/
 #endif    
 
-#if defined (PCBSTD) && defined (BEEPSPKR)
+#if defined (PCBSTD) && defined (AUDIO)
   } // end 10ms event
 #endif
 
   cli();
-#if defined (PCBV3)
+#if defined (PCBV4)
   TIMSK2 |= (1<<OCIE2A);
 #else
   TIMSK |= (1<<OCIE0);
@@ -1866,7 +1839,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   uint16_t capture=ICR3;
 
   // Prevent rentrance for this IRQ only
-#if defined (PCBV3)
+#if defined (PCBV4)
   TIMSK3 &= ~(1<<ICIE3);
 #else
   ETIMSK &= ~(1<<TICIE3);
@@ -1896,7 +1869,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   lastCapt = capture;
 
   cli(); // disable other interrupts for stack pops before this function's RETI
-#if defined (PCBV3)
+#if defined (PCBV4)
   TIMSK3 |= (1<<ICIE3);
 #else
   ETIMSK |= (1<<TICIE3);
@@ -1911,7 +1884,7 @@ extern uint16_t g_timeMain;
 // (reading from the .hex file), since a bug relating to Intel HEX file record
 // interpretation was fixed. However, I leave these commented out, just in case
 // it causes trouble for others.
-#if defined (PCBV3)
+#if defined (PCBV4)
 // See fuses_2561.txt
   FUSES =
   {
@@ -1989,7 +1962,7 @@ ISR(USART0_UDRE_vect)
 #endif
 #endif
 
-#if defined (PCBV3)
+#if defined (PCBV4)
 /*---------------------------------------------------------*/
 /* User Provided Date/Time Function for FatFs module       */
 /*---------------------------------------------------------*/
@@ -2127,18 +2100,12 @@ int main(void)
   DDRK = 0x00;  PORTK = 0x00; // anain. No pull-ups!
   DDRL = 0x80;  PORTL = 0x7f; // 7: Hold_PWR_On (1=On, default Off), 6:Jack_Presence_TTL, 5-0: User Button inputs
 #else
-#  if defined (PCBV3)
-  DDRB = 0x97;  PORTB = 0x1e; // 7:AUDIO, SD_CARD[6:SDA 5:SCL 4:CS 3:MISO 2:MOSI 1:SCK], 0:PPM_OUT
-  DDRC = 0x3f;  PORTC = 0xc0; // PC0 used for LCD back light control
-  DDRD = 0x0F;  PORTD = 0xff; // 7:4=inputs (keys/trims, pull-ups on), 3:0=outputs (keyscan row select)
-#  else
   DDRB = 0x81;  PORTB = 0x7e; //pullups keys+nc
   DDRC = 0x3e;  PORTC = 0xc1; //pullups nc
   DDRD = 0x00;  PORTD = 0xff; //pullups keys
-#  endif
   DDRE = (1<<OUT_E_BUZZER);  PORTE = 0xff-(1<<OUT_E_BUZZER); //pullups + buzzer 0
   DDRF = 0x00;  PORTF = 0x00; //anain
-  DDRG = 0x10;  PORTG = 0xfB; //pullups + SIM_CTL=1 = phonejack = ppm_in
+  DDRG = 0x10;  PORTG = 0xfb; //pullups + SIM_CTL=1 = phonejack = ppm_in
 #endif
 
   lcd_init();
@@ -2150,7 +2117,7 @@ int main(void)
 #endif
 
   /**** Set up timer/counter 0 ****/
-#if defined (PCBV3)
+#if defined (PCBV4)
   /** Move old 64A Timer0 functions to Timer2 and use WGM on OC0(A) (PB7) for spkear tone output **/
 
   // TCNT0  10ms = 16MHz/1024/156(.25) periodic timer (100ms interval)
@@ -2167,7 +2134,7 @@ int main(void)
 
 #else
 
-# if defined (BEEPSPKR)
+# if defined (AUDIO)
   // TCNT0  10ms = 16MHz/1024/2(/78) periodic timer (for speaker tone generation)
   //        Capture ISR 7812.5/second -- runs per-10ms code segment once every 78
   //        cycles (9.984ms). Timer overflows at about 61Hz or once every 16ms.
@@ -2184,26 +2151,6 @@ int main(void)
   TIMSK |= (1<<OCIE0) |  (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
   /********************************/
 
-#endif
-
-  // TCNT1 2MHz counter (auto-cleared) plus Capture Compare int.
-  //       Used for PPM pulse generator
-  TCCR1B = (1 << WGM12) | (2<<CS10); // CTC OCR1A, 16MHz / 8
-  // not here ... TIMSK1 |= (1<<OCIE1A); ... enable immediately before mainloop
-
-  // TCNT3 (2MHz) used for PPM_IN pulse width capture
-#if defined (PPMIN_MOD1) || (defined (PCBV3) && !defined (PCBV4)) 
-  // Noise Canceller enabled, pos. edge, clock at 16MHz / 8 (2MHz)
-  TCCR3B  = (1<<ICNC3) | (1<<ICES3) | (0b010 << CS30);
-#else
-  // Noise Canceller enabled, neg. edge, clock at 16MHz / 8 (2MHz) (Correct for PCB V4.x+ also)
-  TCCR3B  = (1<<ICNC3) | (0b010 << CS30);
-#endif
-
-#if defined (PCBV3)
-  TIMSK3 |= (1<<ICIE3);         // Enable Timer 3 (PPM_IN) capture event interrupt
-#else
-  ETIMSK |= (1<<TICIE3);
 #endif
 
   // Init Stack while interrupts are disabled
@@ -2240,11 +2187,19 @@ int main(void)
   JETI_Init();
 #endif
 
+#ifdef ARDUPILOT
+  ARDUPILOT_Init();
+#endif
+
+#ifdef NMEA
+  NMEA_Init();
+#endif
+
   eeReadAll();
 
   uint8_t cModel = g_eeGeneral.currModel;
 
-#if defined (PCBV3)
+#if defined (PCBV4)
    if (MCUSR != (1 << PORF))  {
 #else
    if (MCUCSR != (1 << PORF))  {
@@ -2272,7 +2227,7 @@ int main(void)
 
   if(cModel!=g_eeGeneral.currModel) eeDirty(EE_GENERAL); // if model was quick-selected, make sure it sticks
 
-#if defined (PCBV3)
+#if defined (PCBV4)
 // Initialise global unix timestamp with current time from RTC chip on SD card interface
   RTC rtc;
   struct gtm utm;
@@ -2315,9 +2270,21 @@ int main(void)
 
   while(1){
     uint16_t t0 = getTmr16KHz();
+
     getADC[g_eeGeneral.filterInput]();
-    getADC_bandgap() ;
+
+#if defined(PCBV4)
+    // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
+    ADCSRB &= ~(1<<MUX5);
+    ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
+#else
+    ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
+#endif
+  
     perMain();
+    
+    // Bandgap has had plenty of time to settle...
+    getADC_bandgap();
 
     if(heartbeat == 0x3)
     {

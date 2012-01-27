@@ -158,6 +158,12 @@ void menuMainView(uint8_t event)
 #if defined(JETI)
       JETI_EnableRXD(); // enable JETI-Telemetry reception
       chainMenu(menuProcJeti);
+#elif defined(ARDUPILOT)
+      ARDUPILOT_EnableRXD(); // enable ArduPilot-Telemetry reception
+      chainMenu(menuProcArduPilot);
+#elif defined(NMEA)
+      NMEA_EnableRXD(); // enable NMEA-Telemetry reception
+      chainMenu(menuProcNMEA);
 #else
       chainMenu(menuProcDebug);
 #endif
