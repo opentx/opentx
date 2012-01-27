@@ -102,7 +102,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   if(newval != val){
     if(newval==0) {
       pauseEvents(event); // delay before auto-repeat continues
-      if (newval>val) // TODO check if without BEEPSPKR it's optimized!
+      if (newval>val) // TODO check if without AUDIO it's optimized!
         AUDIO_KEYPAD_UP();
       else
         AUDIO_KEYPAD_DOWN();

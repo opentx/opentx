@@ -66,7 +66,7 @@ extern const PROGMEM char STR_OPEN9X[];
 #else
 #define OFS_ENDDSM2    (OFS_VTMRMODES + PSIZE(TR_VTMRMODES))
 #endif
-#if defined(PCBV3)
+#if defined(PCBV4)
 #define OFS_RE1RE2     (OFS_ENDDSM2)
 #define OFS_DATETIME   (OFS_RE1RE2 + PSIZE(TR_RE1RE2))
 #endif
@@ -119,7 +119,7 @@ extern const PROGMEM char STR_OPEN9X[];
 #define STR_DSM2MODE   (STR_OPEN9X + OFS_DSM2MODE)
 #endif
 
-#if defined(PCBV3)
+#if defined(PCBV4)
 #define STR_RE1RE2     (STR_OPEN9X + OFS_RE1RE2)
 #define STR_DATETIME   (STR_OPEN9X + OFS_DATETIME)
 #endif

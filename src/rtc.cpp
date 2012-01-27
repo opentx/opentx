@@ -24,26 +24,15 @@
 
 #include "open9x.h"
 
-#if defined (PCBV4)
 #define SCL_LOW()	DDRD |=	0x01		/* SCL = LOW */
 #define SCL_HIGH()	DDRD &=	~0x01		/* SCL = High-Z */
 #define	SCL_VAL		((PIND & 0x01) ? 1 : 0)	/* SCL input level */
 #define SDA_LOW()	DDRD |=	0x02		/* SDA = LOW */
 #define SDA_HIGH()	DDRD &=	~0x02   	/* SDA = High-Z */
 #define	SDA_VAL		((PIND & 0x02) ? 1 : 0)	/* SDA input level */
-#else // PCBV3
-#define SCL_LOW()	DDRB |=	0x20		/* SCL = LOW */
-#define SCL_HIGH()	DDRB &=	~0x20		/* SCL = High-Z */
-#define	SCL_VAL		((PINB & 0x20) ? 1 : 0)	/* SCL input level */
-#define SDA_LOW()	DDRB |=	0x40		/* SDA = LOW */
-#define SDA_HIGH()	DDRB &=	~0x40   	/* SDA = High-Z */
-#define	SDA_VAL		((PINB & 0x40) ? 1 : 0)	/* SDA input level */
-#endif
-
 
 /*-------------------------------------------------*/
 /* I2C bus protocol                                */
-
 
 static
 void iic_delay (void)

@@ -41,7 +41,7 @@ const prog_char APM STR_OPEN9X[] =
 #if defined(DSM2)
     TR_DSM2MODE
 #endif
-#if defined(PCBV3)
+#if defined(PCBV4)
     TR_RE1RE2
     TR_DATETIME
 #endif
@@ -190,7 +190,7 @@ const prog_char APM STR_MENUSERROR[] = TR_MENUSERROR;
 
 const prog_char APM STR_MENURADIOSETUP[] = TR_MENURADIOSETUP;
 
-#ifdef PCBV3
+#ifdef PCBV4
 const prog_char APM STR_MENUDATEANDTIME[] = TR_MENUDATEANDTIME;
 #endif
 

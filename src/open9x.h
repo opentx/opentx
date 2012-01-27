@@ -28,7 +28,7 @@
 #include <inttypes.h>
 #include <string.h>
 
-#if defined(PCBV3)
+#if defined(PCBV4)
 #include "ff.h"
 #include "gtime.h"
 #endif
@@ -81,6 +81,16 @@ extern uint16_t jeti_keys;
 #if defined (FRSKY)
 // FrSky Telemetry
 #include "frsky.h"
+#endif
+
+#ifdef ARDUPILOT
+// ArduPilot Telemetry
+#include "ardupilot.h"
+#endif
+
+#ifdef NMEA
+// NMEA Telemetry
+#include "nmea.h"
 #endif
 
 extern RlcFile theFile;  //used for any file operation
@@ -198,68 +208,44 @@ extern uint16_t DEBUG2;
 
 #else // boards prior to v4 ...
 
+#define OUT_B_LIGHT   7
+#define INP_B_KEY_LFT 6
+#define INP_B_KEY_RGT 5
+#define INP_B_KEY_UP  4
+#define INP_B_KEY_DWN 3
+#define INP_B_KEY_EXT 2
+#define INP_B_KEY_MEN 1
+#define OUT_B_PPM     0
 
-#  define INP_B_KEY_LFT 6
-#  define INP_B_KEY_RGT 5
-#  define INP_B_KEY_UP  4
-#  define INP_B_KEY_DWN 3
-#  define INP_B_KEY_EXT 2
-#  define INP_B_KEY_MEN 1
-//vinceofdrink@gmail harwared ppm
-//Orginal bitbang port for PPM
-#  ifndef DPPMPB7_HARDWARE
-#    define OUT_B_PPM 0
-#  else
-#    define	OUT_B_PPM 7 // will not be used
-#  endif
+#define INP_D_TRM_LH_UP   7
+#define INP_D_TRM_LH_DWN  6
+#define INP_D_TRM_RV_DWN  5
+#define INP_D_TRM_RV_UP   4
+#define INP_D_TRM_LV_DWN  3
+#define INP_D_TRM_LV_UP   2
+#define INP_D_TRM_RH_DWN  1
+#define INP_D_TRM_RH_UP   0
 
-#  define INP_D_TRM_LH_UP   7
-#  define INP_D_TRM_LH_DWN  6
-#  define INP_D_TRM_RV_DWN  5
-#  define INP_D_TRM_RV_UP   4
-#  define INP_D_TRM_LV_DWN  3
-#  define INP_D_TRM_LV_UP   2
-#  define INP_D_TRM_RH_DWN  1
-#  define INP_D_TRM_RH_UP   0
+#define INP_E_PPM_IN  7
+#define INP_E_ID2     6
+#define INP_E_Trainer 5
+#define INP_E_Gear    4
+#define OUT_E_BUZZER  3
+#define INP_E_ElevDR  2
+#define INP_E_AileDR  1
+#define INP_E_ThrCt   0
 
-#  if defined (PCBV3)
-#    define OUT_C_LIGHT   0
-#  else
-#    ifndef DPPMPB7_HARDWARE
-#      define OUT_B_LIGHT   7
-#    else
-#      define OUT_B_LIGHT   0
-#    endif
-#  endif
-
-#  define INP_E_PPM_IN  7
-#  define INP_E_ID2     6
-#  define INP_E_Trainer 5
-#  define INP_E_Gear    4
-#  define OUT_E_BUZZER  3
-#  define INP_E_ElevDR  2
-#  define INP_E_AileDR  1
-#  define INP_E_ThrCt   0
-
-#  if defined(JETI) || defined(FRSKY)
-#    undef INP_E_ThrCt
-#    undef INP_E_AileDR
-#    define INP_C_ThrCt   6
-#    define INP_C_AileDR  7
-#  endif
-
-#  define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
-#  define INP_G_ID1      3
-#  define INP_G_RF_POW   1
-#  define INP_G_RuddDR   0
-
-// Legacy support for USART1 hardware mod [DEPRECATED]
-// G: This board will be retired before much longer. But I still need it for now.
-#if defined(USART1FREED)
-// do not undef the original INP_D_TRM_LV_DWN/UP as we need them later
-  #define INP_C_TRM_LV_UP  0
-  #define INP_G_TRM_LV_DWN 2
+#if (defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA))
+#undef INP_E_ThrCt
+#undef INP_E_AileDR
+#define INP_C_ThrCt   6
+#define INP_C_AileDR  7
 #endif
+
+#define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
+#define INP_G_ID1      3
+#define INP_G_RF_POW   1
+#define INP_G_RuddDR   0
 
 #endif // defined (PCBV4)
 
@@ -439,7 +425,7 @@ bool    keyState(EnumKeys enuk);
 /// EVT_KEY_BREAK(key), EVT_KEY_FIRST(key), EVT_KEY_REPT(key) oder EVT_KEY_LONG(key)
 uint8_t getEvent();
 void putEvent(uint8_t evt);
-#if defined (PCBV3)
+#if defined (PCBV4)
 extern uint8_t keyDown();
 #endif
 
@@ -529,14 +515,12 @@ void getADC_filt();
 #define   EE_GENERAL 0x01
 #define   EE_MODEL   0x02
 
-extern bool warble;
-
 extern uint8_t  s_eeDirtyMsk;
 
 #define STORE_MODELVARS eeDirty(EE_MODEL)
 #define STORE_GENERALVARS eeDirty(EE_GENERAL)
 
-#if defined (PCBV3)
+#if defined (PCBV4)
 #define BACKLIGHT_ON    PORTC |=  (1<<OUT_C_LIGHT)
 #define BACKLIGHT_OFF   PORTC &= ~(1<<OUT_C_LIGHT)
 #else
@@ -670,14 +654,14 @@ inline void _beep(uint8_t b) {
 }
 
 extern uint8_t toneFreq;
-#if defined (PCBV3) && defined(BEEPSPKR)
+#if defined (PCBV4)
 inline void _beepSpkr(uint8_t d, uint8_t f)
 {
   g_beepCnt=d;
   OCR0A = (5000 / f); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
 }
-#elif defined (BEEPSPKR)
-inline void _beepSpkr(uint8_t d, uint8_t f)
+#elif defined (AUDIO)
+inline void _beepSpkr(uint8_t d, uint8_t f) // TODO needed?
 {
   g_beepCnt=d;
   toneFreq=f;
@@ -685,7 +669,7 @@ inline void _beepSpkr(uint8_t d, uint8_t f)
 #endif
 
 // MM/SD card Disk IO Support
-#if defined (PCBV3)
+#if defined (PCBV4)
 #include "rtc.h"
 extern void disk_timerproc(void);
 extern gtime_t g_unixTime; // global unix timestamp -- hold current time in seconds since 1970-01-01 00:00:00
@@ -712,7 +696,7 @@ inline bool isFunctionActive(uint8_t func)
 extern char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE]; // text buffer for frsky telem. user data experiments
 #endif
 
-#if defined (PCBV3)
+#if defined (PCBV4)
 extern char g_logFilename[22]; // pers.cpp::resetTelemetry()
 extern FATFS FATFS_Obj; // pers.cpp::resetTelemetry()
 extern FIL g_oLogFile; // pers.cpp::resetTelemetry()
@@ -723,9 +707,9 @@ extern FIL g_oLogFile; // pers.cpp::resetTelemetry()
 extern volatile uint8_t g_rotenc[2];
 #endif
 
-#ifdef BEEPSPKR
+#if defined(AUDIO)
 //audio settungs are external to keep out clutter!
-// TODO what does mean "keep out clutter"?
+// TODO english learning for me... what does mean "keep out clutter"?
 #include "audio.h"
 #else
 #include "beeper.h"

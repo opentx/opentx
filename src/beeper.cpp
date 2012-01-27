@@ -25,6 +25,7 @@ uint8_t g_beepCnt;
 uint8_t beepAgain = 0;
 uint8_t beepAgainOrig = 0;
 uint8_t beepOn = false;
+bool warble = false;
 
 // The various "beep" tone lengths
 static prog_uint8_t APM beepTab[]= {

@@ -24,7 +24,7 @@
 
 enum EnumTabDiag {
   e_Setup,
-#if defined(PCBV3)
+#if defined(PCBV4)
   e_FrskyTime,
 #endif
   e_Trainer,
@@ -35,7 +35,7 @@ enum EnumTabDiag {
 };
 
 void menuProcSetup(uint8_t event);
-#if defined(PCBV3)
+#if defined(PCBV4)
 void menuProcTime(uint8_t event);
 #endif
 void menuProcTrainer(uint8_t event);
@@ -46,7 +46,7 @@ void menuProcDiagCalib(uint8_t event);
 
 MenuFuncP_PROGMEM APM menuTabDiag[] = {
   menuProcSetup,
-#if defined(PCBV3)
+#if defined(PCBV4)
   menuProcTime,
 #endif
   menuProcTrainer,
@@ -61,7 +61,7 @@ enum menuProcSetupItems {
 #ifdef SPLASH
   ITEM_SETUP_SPLASH,
 #endif
-#ifdef BEEPSPKR
+#ifdef AUDIO
   ITEM_SETUP_SPEAKER,
 #endif
 #ifdef HAPTIC
@@ -93,7 +93,7 @@ void menuProcSetup(uint8_t event)
     if((y+=FH)>7*FH) return;
   }subN++;
 
-#ifdef BEEPSPKR
+#ifdef AUDIO
   if(s_pgOfs<subN) {
     lcd_puts_P(0, y, PSTR("Speaker Pitch"));
     lcd_outdezAtt(PARAM_OFS,y,g_eeGeneral.speakerPitch,(sub==subN ? INVERS : 0)|LEFT);
@@ -287,7 +287,7 @@ void menuProcSetup(uint8_t event)
 }
 
 
-#if defined(PCBV3)
+#if defined(PCBV4)
 // SD card interface contains Real-Time-Clock chip
 void menuProcTime(uint8_t event)
 {

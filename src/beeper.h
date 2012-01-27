@@ -23,10 +23,10 @@
 #define BEEPER_H
 
 extern uint8_t g_beepCnt;
-extern uint8_t g_beepVal[5];
 extern uint8_t beepAgain;
 extern uint8_t beepAgainOrig;
 extern uint8_t beepOn;
+extern bool warble;
 
 extern void beep(uint8_t val);
 

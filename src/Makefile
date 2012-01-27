@@ -28,16 +28,15 @@
 #----------- BUILD OPTIONS ---------------------------
 
 #gruvin: PCB version -- OVERRIDES the following settings if not STD
-# Values: STD, V3, V4
+# Values: STD, V4
 PCB = STD
-#NOTE!: V4 adds to V3, such that both PCBV3 and PCBV4 get defined
 
 # Following options for PCB=STD only (ignored otherwise) ...
 
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
 # More information at [insertURLhere]
-# Values = STD, JETI, FRSKY
+# Values = STD, FRSKY, JETI, NMEA, ARDUPILOT
 EXT = STD
 
 # Enable heli menu
@@ -61,24 +60,16 @@ else
 NAVIGATION = POTS
 endif
 
-# gruvin: BEEPER. Values = BUZZER, BUZZER_MOD or SPEAKER
-# (without a mod, BUZZER can make PPM jack output switch from output to input at random)
-# SPEAKER mode actually works on the stock radio, using the stock beeper. Sort of sound OK(ish).
-BEEPER = BUZZER
-
-# gruvin: Legacy support freeing of USART1 TX/RX pins [DEPRECATED]
-# OPTIONS STD or FREED
-USART1 = STD
-
-# gruvin: PCM-in circuit mod for JR/Spektrum (and others) compatability
-# Values = STD, MOD1
-PPMIN =  STD
+# AUDIO Mods
+# Values = YES, NO 
+AUDIO = YES
 
 # SPLASH on START
 SPLASH = YES
 
-# BATT voltage algorithm. Values = BANDGAP, UNSTABLE_BANDGAP 
-BATT = BANDGAP
+# BATT voltage algorithm.
+# Values = BANDGAP, UNSTABLE_BANDGAP (default for stock board) 
+BATT = UNSTABLE_BANDGAP
 
 # Decimals display in the main view (PPM calibration, 
 # Values = YES, NO
@@ -146,6 +137,14 @@ CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
+endif
+
+ifeq ($(EXT), ARDUPILOT)
+ CPPSRC += ardupilot.cpp
+endif
+
+ifeq ($(EXT), NMEA)
+ CPPSRC += nmea.cpp
 endif
 
 # Disk IO support (PCB V2+ only)
@@ -222,90 +221,74 @@ ifeq ($(NAVIGATION), POTS)
  CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
 endif
 
-ifneq ($(SPLASH), NO)
+ifeq ($(SPLASH), YES)
  CPPDEFS += -DSPLASH
 endif
 
-ifeq ($(BEEPER), SPEAKER)
- CPPDEFS += -DBEEPSPKR
+ifeq ($(AUDIO), YES)
+ CPPDEFS += -DAUDIO
  CPPSRC += audio.cpp 
 else
  CPPSRC += beeper.cpp 
 endif
 
-ifeq ($(PCB), STD)
-  # STD PCB, so ...
+# If ARDUPILOT-Support is enabled
+ifeq ($(EXT), ARDUPILOT)
+  CPPDEFS += -DARDUPILOT
+endif
 
-  CPPDEFS += -DPCBSTD
-  
-  # If Hardware PPM mode ( PB0<->BP7) switch the Backlight output with the original PPM to use hardware facility to generate precise PPM (hardware mods)
-  # G: TODO This prevents HARDPPM being used with FRSKY. HARDPPM needs its own option XXX
-  ifeq ($(EXT), HARDPPM)
-   CPPDEFS += -DPPMPB7_HARDWARE
-  endif
+# If NMEA-Support is enabled
+ifeq ($(EXT), NMEA)
+  CPPDEFS += -DNMEA
+endif
 
-  # If JETI-Support is enabled
-  ifeq ($(EXT), JETI)
-   MODS:=${MODS}J
-   CPPDEFS += -DJETI
-  endif
+# If JETI-Support is enabled
+ifeq ($(EXT), JETI)
+  MODS:=${MODS}J
+  CPPDEFS += -DJETI
+endif
 
-  # If FRSKY-Support is enabled
-  ifeq ($(EXT), FRSKY)
-   MODS:=${MODS}F
-   CPPDEFS += -DFRSKY
-   CPPSRC += frsky.cpp
-   # If FRSKY-Hub is enabled
-   ifeq ($(FRSKY_HUB), YES)
-     CPPDEFS += -DFRSKY_HUB
-   endif
-   # If WS HowHigh is enabled
-   ifeq ($(WS_HOW_HIGH), YES)
-     MODS:=${MODS}W
-     CPPDEFS += -DWS_HOW_HIGH
-   endif
+# If FRSKY-Support is enabled
+ifeq ($(EXT), FRSKY)
+  MODS:=${MODS}F
+  CPPDEFS += -DFRSKY
+  CPPSRC += frsky.cpp
+  # If FRSKY-Hub is enabled
+  ifeq ($(FRSKY_HUB), YES)
+    CPPDEFS += -DFRSKY_HUB
   endif
-  
-  # If buzzer modified (no interference with PPM jack)
-  ifeq ($(BEEPER), BUZZER_MOD)
-   CPPDEFS += -DBUZZER_MOD
+  # If WS HowHigh is enabled
+  ifeq ($(WS_HOW_HIGH), YES)
+    MODS:=${MODS}W
+    CPPDEFS += -DWS_HOW_HIGH
   endif
+endif
 
-  # If BandGap is not rock solid
-  ifeq ($(BATT), UNSTABLE_BANDGAP)
-   CPPDEFS += -DBATT_UNSTABLE_BANDGAP
-  endif
-  
-  # gruvin: Legacy support for hardware mod freeing USART1 [DEPRECATED]
-  ifeq ($(USART1), FREED)
-    CPPDEFS += -DUSART1FREED
-  endif
-
-  # gruvin: PCM-in circuit mod for JR/Spektrum (and others) compatability
-  ifeq ($(PPMIN), MOD1)
-    CPPDEFS += -DPPMIN_MOD1
-  endif
-
-else
-  # not PCB=STD, so ...
+ifeq ($(PCB), V4)
+  # V4 PCB, so ...
+  CPPDEFS += -DPCBV4
 
   ifeq ($(NAVIGATION), RE1)
     CPPDEFS += -DNAVIGATION_RE1
   endif
 
-  CPPSRC += frsky.cpp
-  CPPDEFS += -DPCBV3 -DFRSKY -DFRSKY_HUB -DWS_HOW_HIGH
   ifeq ($(LOGS), YES)
     CPPSRC += logs.cpp
     CPPDEFS += -DLOGS
     MODS:=${MODS}L
   endif
-  ifeq ($(PCB), V4)
-    CPPDEFS += -DPCBV4
-  endif
+
   ifeq ($(SOMO), YES)
     CPPSRC += somo14d.cpp
     CPPDEFS += -DSOMO
+  endif
+else
+  # STD PCB, so ...
+  CPPDEFS += -DPCBSTD
+  
+  # If BandGap is not rock solid
+  ifeq ($(BATT), UNSTABLE_BANDGAP)
+   CPPDEFS += -DBATT_UNSTABLE_BANDGAP
   endif
 endif
 
