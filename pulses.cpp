@@ -172,7 +172,15 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
         TCCR1C=(1<<FOC1C);
 #endif
 
-      if (g_model.protocol == PROTO_PPM || g_model.protocol == PROTO_PPM16) {
+      // TODO test that it's optimized
+      if (1
+#if defined(PXX)
+            && g_model.protocol != PROTO_PXX
+#endif
+#if defined(DSM2_PPM)
+            && g_model.protocol != PROTO_DSM2
+#endif
+      ) {
 
         // cli is not needed because for these 2 protocols interrupts are not enabled when entering here
 
