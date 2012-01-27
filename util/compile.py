@@ -3,16 +3,16 @@
 import os, sys, shutil
 from subprocess import call
 
-options_stock = [("frsky", "EXT=FRSKY"),
-                 ("heli", "HELI=YES"),
-                 ("templates", "TEMPLATES=YES"),
-                 ("speaker", "BEEPER=SPEAKER"),
-#                 ("DSM2", "DSM2=PPM"),
-#                 ("PXX", "PXX=YES"),
+options_stock = [("frsky", "EXT=STD", "EXT=FRSKY"),
+                 ("heli", "HELI=NO", "HELI=YES"),
+                 ("templates", "TEMPLATES=NO", "TEMPLATES=YES"),
+                 ("speaker", "BEEPER=BUZZER", "BEEPER=SPEAKER"),
+#                 ("DSM2", "DSM2="NO", "DSM2=PPM"),
+#                 ("PXX", "PXX=NO", "PXX=YES"),
                  ]
 
-options_v4 = [("heli", "HELI=YES"),
-              ("templates", "TEMPLATES=YES"),
+options_v4 = [("heli", "HELI=NO", "HELI=YES"),
+              ("templates", "TEMPLATES=NO", "TEMPLATES=YES"),
              ]
 
 languages = ["en", "fr"]
@@ -30,6 +30,8 @@ def generate(hex, arg, options):
             for i, option in enumerate(options):
                 if states[len(options) - 1 - i]:
                     hex_file += "-" + option[0]
+                    make_args.append(option[2])
+                else:
                     make_args.append(option[1])
             hex_file += "-" + language
             make_args.append("TRANSLATIONS=" + language.upper())
