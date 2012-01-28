@@ -47,19 +47,15 @@ void generalDefault()
 bool eeLoadGeneral()
 {
   theFile.openRlc(FILE_GENERAL);
-  uint8_t sz = 0;
-
-  if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1) {
+  if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.myVers == EEPROM_VER) {
     theFile.openRlc(FILE_GENERAL); // TODO include this openRlc inside readRlc
-    if (g_eeGeneral.myVers == EEPROM_VER) {
-      sz = theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
+    if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral)) {
+      uint16_t sum=0;
+      for (int i=0; i<12;i++) sum += g_eeGeneral.calibMid[i];
+      if (g_eeGeneral.chkSum == sum) {
+        return true;
+      }
     }
-  }
-
-  if (sz <= sizeof(EEGeneral)) {
-    uint16_t sum=0;
-    for(int i=0; i<12;i++) sum+=g_eeGeneral.calibMid[i];
-    return g_eeGeneral.chkSum == sum;
   }
   return false;
 }
@@ -173,8 +169,7 @@ void eeReadAll()
 {
   if(!EeFsOpen() ||
      EeFsck() < 0 ||
-     !eeLoadGeneral()
-  )
+     !eeLoadGeneral())
   {
     alert(STR_BADEEPROMDATA, true);
     message(STR_EEPROMFORMATTING);
