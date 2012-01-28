@@ -142,10 +142,12 @@ extern sem_t eeprom_write_sem;
 #define TCCR1B dummyport
 #define TCCR1C dummyport
 #define COM1B0 dummyport
+#define COM0A0 dummyport
 
 #define TCNT1 dummyport16
 #define ICR1 dummyport16
 #define TIFR dummyport
+#define TIFR1 dummyport
 #define ETIFR dummyport
 
 #define SPDR dummyport

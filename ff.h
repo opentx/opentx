@@ -474,7 +474,7 @@ TCHAR* f_gets (TCHAR*, int, FIL*);					/* Get a string from the file */
 
 /* RTC function */
 #if !_FS_READONLY
-extern uint32_t get_fattime (void); /* Returns 32-bit packed date and time */
+extern uint32_t o9x_get_fattime (void); /* Returns 32-bit packed date and time */
 #endif
 
 /* Unicode support functions */

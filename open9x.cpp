@@ -1966,7 +1966,7 @@ ISR(USART0_UDRE_vect)
 /* the system does not support a real time clock.          */
 /* This is not required in read-only configuration.        */
 
-uint32_t get_fattime(void) // TODO why not in ff.cpp?
+uint32_t o9x_get_fattime(void) // TODO why not in ff.cpp?
 {
   struct gtm t;
   filltm(&g_unixTime, &t); // create a struct tm date/time structure from global unix time stamp
