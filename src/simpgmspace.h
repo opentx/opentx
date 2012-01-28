@@ -137,6 +137,7 @@ extern sem_t eeprom_write_sem;
 #define OCR4A dummyport
 #define OCR1B dummyport16
 #define OCR1C dummyport16
+#define TCCR0A dummyport
 #define TCCR1A dummyport
 #define TCCR1B dummyport
 #define TCCR1C dummyport
