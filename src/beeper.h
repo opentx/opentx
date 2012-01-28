@@ -81,14 +81,14 @@ inline void AUDIO_HEARTBEAT()
       warbleC = warble && !warbleC;
       if (warbleC) {
 #if defined(PCBV4)
-        TCCR0A &= ~(0b01<<COM0A0);
+        TCCR0A &= ~( 1 << COM0A0);
 #else
         PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
 #endif
       }
       else {
 #if defined(PCBV4)
-        TCCR0A |= (0b01<<COM0A0);  // tone on
+        TCCR0A |= (1 << COM0A0);  // tone on
 #else
         PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
 #endif
@@ -96,7 +96,7 @@ inline void AUDIO_HEARTBEAT()
     }
     else {
 #if defined(PCBV4)
-      TCCR0A &= ~(0b01<<COM0A0);
+      TCCR0A &= ~(1 << COM0A0);
 #else
       PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
 #endif

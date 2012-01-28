@@ -2079,7 +2079,7 @@ FRESULT f_open (
 			}
 		}
 		if (res == FR_OK && (mode & FA_CREATE_ALWAYS)) {	/* Truncate it if overwrite mode */
-			dw = get_fattime();					/* Created time */
+			dw = o9x_get_fattime();					/* Created time */
 			ST_DWORD(dir+DIR_CrtTime, dw);
 			dir[DIR_Attr] = 0;					/* Reset attribute */
 			ST_DWORD(dir+DIR_FileSize, 0);		/* size = 0 */
@@ -2384,7 +2384,7 @@ FRESULT f_sync (
 				dir[DIR_Attr] |= AM_ARC;					/* Set archive bit */
 				ST_DWORD(dir+DIR_FileSize, fp->fsize);		/* Update file size */
 				ST_CLUST(dir, fp->org_clust);				/* Update start cluster */
-				tim = get_fattime();						/* Update updated time */
+				tim = o9x_get_fattime();						/* Update updated time */
 				ST_DWORD(dir+DIR_WrtTime, tim);
 				fp->flag &= ~FA__WRITTEN;
 				fp->fs->wflag = 1;
@@ -3036,7 +3036,7 @@ FRESULT f_mkdir (
 	FRESULT res;
 	DIR dj;
 	BYTE *dir, n;
-	DWORD dsc, dcl, pcl, tim = get_fattime();
+	DWORD dsc, dcl, pcl, tim = o9x_get_fattime();
 	DEF_NAMEBUF;
 
 
@@ -3461,7 +3461,7 @@ FRESULT f_mkfs (
 	ST_WORD(tbl+BPB_SecPerTrk, 63);			/* Number of sectors per track */
 	ST_WORD(tbl+BPB_NumHeads, 255);			/* Number of heads */
 	ST_DWORD(tbl+BPB_HiddSec, b_vol);		/* Hidden sectors */
-	n = get_fattime();						/* Use current time as VSN */
+	n = o9x_get_fattime();						/* Use current time as VSN */
 	if (fmt == FS_FAT32) {
 		ST_DWORD(tbl+BS_VolID32, n);		/* VSN */
 		ST_DWORD(tbl+BPB_FATSz32, n_fat);	/* Number of sectors per FAT */
