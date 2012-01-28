@@ -109,7 +109,7 @@ void menuProcSetup(uint8_t event)
     lcd_puts_P(0, y, PSTR("Haptic Strength"));
     lcd_outdezAtt(PARAM_OFS,y,g_eeGeneral.hapticStrength,(sub==subN ? INVERS : 0)|LEFT);
     if(sub==subN) {
-      CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 5);
+      CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticStrength, 0, 5);
     }
     if((y+=FH)>7*FH) return;
   }subN++;
