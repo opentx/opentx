@@ -150,6 +150,7 @@ void Key::input(bool val, EnumKeys enuk)
       //fallthrough
     case KSTATE_START:
       putEvent(EVT_KEY_FIRST(enuk));
+      inacCounter = 0;
       m_dblcnt++;
       m_state   = KSTATE_RPTDELAY;
       m_cnt     = 0;
