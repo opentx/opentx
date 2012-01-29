@@ -22,11 +22,11 @@
 #define BEEP_KEY_UP_FREQ  (BEEP_DEFAULT_FREQ+5)
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
 
-#define AUDIO_QUEUE_HEARTBEAT_XSHORT (30) //speaker timing [Norm]
-#define AUDIO_QUEUE_HEARTBEAT_SHORT (50) //speaker timing [Norm]
-#define AUDIO_QUEUE_HEARTBEAT_NORM (77) //speaker timing [Norm]
-#define AUDIO_QUEUE_HEARTBEAT_LONG (130) //speaker timing [Long]
-#define AUDIO_QUEUE_HEARTBEAT_XLONG (200) //speaker timing [xLong]
+// #define AUDIO_QUEUE_HEARTBEAT_XSHORT (30) //speaker timing [Norm]
+// #define AUDIO_QUEUE_HEARTBEAT_SHORT (50) //speaker timing [Norm]
+// #define AUDIO_QUEUE_HEARTBEAT_NORM (77) //speaker timing [Norm]
+// #define AUDIO_QUEUE_HEARTBEAT_LONG (130) //speaker timing [Long]
+// #define AUDIO_QUEUE_HEARTBEAT_XLONG (200) //speaker timing [xLong]
 #ifdef HAPTIC
 #define HAPTIC_ON    PORTG |=  (1<<2)
 #define HAPTIC_OFF   PORTG &= ~(1<<2)
@@ -85,41 +85,29 @@
 #define BEEP_LONG (5)
 #define BEEP_XLONG (6)
 
-struct audioQueue {
-
-  //queue temporaries
-  uint8_t t_queueToneStart;
-  uint8_t t_queueToneEnd;
-  uint8_t t_queueToneLength;
-  uint8_t t_queueTonePause;
-  uint8_t t_queueToneRepeat;
-#ifdef HAPTIC
-  uint8_t t_queueToneHaptic;
-#endif
+struct audioQueue
+{
+  uint8_t t_queueRidx;
+  uint8_t t_queueWidx;
 
   //queue general vars
   uint8_t toneFreq;
-  uint8_t toneFreqEnd;
+  int8_t toneFreqIncr;
   uint8_t toneTimeLeft;
-  int8_t rateOfChange;
   uint8_t tonePause;
-  uint8_t queueState;
-  uint8_t toneRepeat;
-  uint8_t toneRepeatCnt;
-  uint8_t inToneRepeat;
+
 #ifdef HAPTIC
   uint8_t toneHaptic;
   uint8_t hapticTick;
 #endif
-  uint8_t heartbeatTimer;
 
 #ifdef FRSKY
   uint8_t frskySample;
 #endif
 
-  //queue arrays
-  uint8_t queueToneStart[AUDIO_QUEUE_LENGTH];
-  uint8_t queueToneEnd[AUDIO_QUEUE_LENGTH];
+  // queue arrays
+  uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
+  int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
   uint8_t queueToneLength[AUDIO_QUEUE_LENGTH];
   uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
   uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
@@ -127,17 +115,16 @@ struct audioQueue {
   uint8_t queueToneHaptic[AUDIO_QUEUE_LENGTH];
 #endif
 
-  //beep length table
-  //    uint8_t beepLenTable[10];
-
   audioQueue();
 
   void aqinit(); // To stop constructor being compiled twice
 
+  inline uint8_t getToneLength(uint8_t tLen);
+
   //only difference between these two functions is that one does the
   //interupt queue (Now) and the other queues for playing ASAP.
-  void playNow(uint8_t tStart,uint8_t tLen,uint8_t tPause,uint8_t tRepeat=0,uint8_t tHaptic=0,uint8_t tEnd=0);
-  void playASAP(uint8_t tStart,uint8_t tLen,uint8_t tPause,uint8_t tRepeat=0,uint8_t tHaptic=0,uint8_t tEnd=0);
+  void playNow(uint8_t tFreq,uint8_t tLen,uint8_t tPause,uint8_t tRepeat=0,uint8_t tHaptic=0,int8_t tFreqIncr=0);
+  void playASAP(uint8_t tFreq,uint8_t tLen,uint8_t tPause,uint8_t tRepeat=0,uint8_t tHaptic=0,int8_t tFreqIncr=0);
 
   bool busy();
 
@@ -148,25 +135,18 @@ struct audioQueue {
   void frskyeventSample(uint8_t e);
 #endif
 
-  void commit(uint8_t toneInterupt);
-
-  //set all temporary buffers to default
-  void flushTemp();
-  void flushqueue(uint8_t startpos);
-
-  void restack();
   //heartbeat is responsibile for issueing the audio tones and general square waves
   // it is essentially the life of the class.
   void heartbeat();
-  bool freeslots(uint8_t slots);
+
+  // TODO bool freeslots(uint8_t slots);
 };
 
 //wrapper function - dirty but results in a space saving!!!
 extern audioQueue audio;
+
 //void audioevent(uint8_t e,uint8_t f=BEEP_DEFAULT_FREQ);
 void audioDefevent(uint8_t e);
-
-void audioError();
 
 #define AUDIO_KEYPAD_UP()   audioDefevent(AU_KEYPAD_UP)
 #define AUDIO_KEYPAD_DOWN() audioDefevent(AU_KEYPAD_DOWN)
