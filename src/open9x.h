@@ -653,21 +653,6 @@ inline void _beep(uint8_t b) {
   g_beepCnt=b;
 }
 
-extern uint8_t toneFreq;
-#if defined (PCBV4)
-inline void _beepSpkr(uint8_t d, uint8_t f)
-{
-  g_beepCnt=d;
-  OCR0A = (5000 / f); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
-}
-#elif defined (AUDIO)
-inline void _beepSpkr(uint8_t d, uint8_t f) // TODO needed?
-{
-  g_beepCnt=d;
-  toneFreq=f;
-}
-#endif
-
 // MM/SD card Disk IO Support
 #if defined (PCBV4)
 #include "rtc.h"
