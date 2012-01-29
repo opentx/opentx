@@ -22,20 +22,13 @@ audioQueue::audioQueue()
 void audioQueue::aqinit()
 {
   //make sure haptic off by default
-
   HAPTIC_OFF;
 
-  //initialize all arrays
-  flushqueue(0);
-
-  //set key vars to 0 to ensure no garbage
-  toneFreq = 0;
-  toneFreqEnd = 0;
-  toneRepeat = 0;
   toneTimeLeft = 0;
-  queueState = 0;
-  toneRepeatCnt = 0;
-  inToneRepeat = 0;
+  tonePause = 0;
+
+  t_queueRidx = 0;
+  t_queueRidx = 0;
 
 #ifdef HAPTIC
   hapticTick = 0;
@@ -45,196 +38,70 @@ void audioQueue::aqinit()
   frskySample = 0;
 #endif    
 
-  heartbeatTimer = 0;
-  flushTemp();
 }
 
 bool audioQueue::busy()
 {
-  if (toneTimeLeft > 0) {
-    return true;
-  }
-  else {
-    return false;
-  }
+  return (toneTimeLeft > 0);
 }
 
+/* TODO to be added when needed
 bool audioQueue::freeslots(uint8_t slots)
 {
-  //find out if enough queue space exists to add the requested routine!
-  for (uint8_t i = AUDIO_QUEUE_LENGTH; i--;) {
-    slots--;
-    if (slots == 0) {
-      break;
-    } //only loop for the number of items indicated in slots
-    if (queueToneStart[i] != 0) {
-      return false;
-      break;
-    }
-  }
-  return true;
+  return AUDIO_QUEUE_LENGTH - ((t_queueWidx + AUDIO_QUEUE_LENGTH - t_queueRidx) % AUDIO_QUEUE_LENGTH) >= slots;
 }
-
-void audioQueue::commit(uint8_t toneInterupt)
-{
-
-  if (toneInterupt == 0) {
-    //queued events
-    if (freeslots(3)) { //do not insert into the queue if less than 3 spare slots! this stops sound collitions from occuring
-      for (uint8_t i = 0; i < AUDIO_QUEUE_LENGTH; i++) {
-        if (queueToneStart[i] == 0) { //add to the first entry that has a start tone of zero (no sound)
-          queueToneStart[i] = t_queueToneStart;
-          queueToneEnd[i] = t_queueToneEnd;
-          queueToneLength[i] = t_queueToneLength;
-          queueTonePause[i] = t_queueTonePause;
-          queueToneRepeat[i] = t_queueToneRepeat;
-#ifdef HAPTIC
-          queueToneHaptic[i] = t_queueToneHaptic;
-#endif
-          flushTemp();
-          break;
-        }
-      }
-    }
-  }
-  else {
-    //interrupt events
-    queueToneStart[0] = t_queueToneStart;
-    queueToneEnd[0] = t_queueToneEnd;
-    queueToneLength[0] = t_queueToneLength;
-    queueTonePause[0] = t_queueTonePause;
-    queueToneRepeat[0] = t_queueToneRepeat;
-#ifdef HAPTIC
-    queueToneHaptic[0] = t_queueToneHaptic;
-#endif
-
-    flushqueue(1); //purge queue on interrupt events to stop broken audio
-    flushTemp();
-  }
-
-}
-
-void audioQueue::flushqueue(uint8_t startpos)
-{
-  for (; startpos < AUDIO_QUEUE_LENGTH; startpos++) {
-    queueToneStart[startpos] = 0;
-    queueToneEnd[startpos] = 0;
-    queueToneLength[startpos] = 0;
-    queueTonePause[startpos] = 0;
-    queueToneRepeat[startpos] = 0;
-#ifdef HAPTIC
-    queueToneHaptic[startpos] = 0;
-#endif
-  }
-}
-
-//set all temporary buffers to default
-void audioQueue::flushTemp()
-{
-  t_queueToneStart = 0;
-  t_queueToneEnd = 0;
-  t_queueToneLength = 0;
-  t_queueTonePause = 0;
-  t_queueToneRepeat = 0;
-#ifdef HAPTIC
-  t_queueToneHaptic = 0;
-#endif
-  rateOfChange = 0;
-#ifdef HAPTIC
-  toneHaptic = 0;
-#endif
-}
-
-void audioQueue::restack()
-{
-  for (uint8_t i = 0; i < AUDIO_QUEUE_LENGTH - 1; i++) {
-    queueToneStart[i] = queueToneStart[i + 1];
-    queueToneEnd[i] = queueToneEnd[i + 1];
-    queueToneLength[i] = queueToneLength[i + 1];
-    queueTonePause[i] = queueTonePause[i + 1];
-    queueToneRepeat[i] = queueToneRepeat[i + 1];
-#ifdef HAPTIC
-    queueToneHaptic[i] = queueToneHaptic[i + 1];
-#endif
-  }
-  flushqueue(AUDIO_QUEUE_LENGTH - 1); //set the last entry to 0 as nothing in stack to add too!
-}
+*/
 
 //heartbeat is responsibile for issueing the audio tones and general square waves
 // it is essentially the life of the class.
 void audioQueue::heartbeat()
 {
+#if defined(PCBSTD)
+  if (toneTimeLeft > 0) {
+    //square wave generator use for speaker mod
+    //simply generates a square wave for toneFreq for
+    //as long as the toneTimeLeft is more than 0
+    static uint8_t toneCounter;
+    toneCounter += toneFreq;
+    if ((toneCounter & 0x80) == 0x80)
+      PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
+    else
+      PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
+  }
 
-  uint8_t z; //direction calulations
-  uint8_t hTimer; //heartbeat timer
+  static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
+  if (cnt10ms-- == 0) // every 10ms ...
+    cnt10ms = 77;
+  else
+    return;
+#endif
 
-  if (queueState == 1) {
-
-    if (g_eeGeneral.beeperVal > 0) {
-      //never do sounds if we are set to go quiet
-#if 0
-      switch (g_eeGeneral.speakerMode) {
-
-        case 0:
-          //stock beeper. simply turn port on for x time!
-          if (toneTimeLeft > 0) {
+  if (toneTimeLeft > 0) {
 #if defined(PCBV4)
-            TCCR0A |= (0b01<<COM0A0);  // tone on
-#else
-            PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
+    OCR0A = (5000 / toneFreq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
+    TCCR0A |= (1<<COM0A0);  // tone on
 #endif
-          }
-          else {
+    toneTimeLeft--; //time gets counted down
+    toneFreq += toneFreqIncr; // -2, 0 or 2
+  }
+  else {
 #if defined(PCBV4)
-            TCCR0A &= ~(0b01<<COM0A0);
+    TCCR0A &= ~(1<<COM0A0);  // tone off
 #else
-            PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
+    PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
 #endif
-          }
-          break;
-
-        case 1:
-#endif
-          //square wave generator use for speaker mod
-          //simply generates a square wave for toneFreq for
-          //as long as the toneTimeLeft is more than 0
-          static uint8_t toneCounter;
-          if (toneTimeLeft > 0) {
-            toneCounter += toneFreq;
-            if ((toneCounter & 0x80) == 0x80) {
-#if defined(PCBV4)
-              TCCR0A |= (0b01<<COM0A0);  // tone on
-#else
-              PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
-#endif
-            }
-            else {
-#if defined(PCBV4)
-              TCCR0A &= ~(0b01<<COM0A0);
-#else
-              PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
-#endif
-            }
-          }
-          else {
-#if defined(PCBV4)
-            TCCR0A &= ~(0b01<<COM0A0);
-#else
-            PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
-#endif
-          }
-#if 0
-          break;
-
-        case 2:
-          //PCMWav
-
-          break;
-
+    if (tonePause-- <= 0) {
+      if (t_queueRidx != t_queueWidx) {
+        toneFreq = queueToneFreq[t_queueRidx];
+        toneTimeLeft = queueToneLength[t_queueRidx];
+        toneFreqIncr = queueToneFreqIncr[t_queueRidx];
+        if (queueToneRepeat[t_queueRidx]--) {
+          t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
+        }
       }
-#endif
-
     }
+  }
+}
 
 #ifdef HAPTIC
     uint8_t hapticStrength = g_eeGeneral.hapticStrength;
@@ -253,154 +120,67 @@ void audioQueue::heartbeat()
     }
 #endif
 
-  }
-  else {
-#if defined(PCBV4)
-    TCCR0A &= ~(0b01<<COM0A0);
-#else
-    PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
-#endif
-    HAPTIC_OFF;
-  }
-
-  //step through array checking if we have any tones to play
-  //next heartbeat will play whatever we put in queue
-  if ((queueToneStart[0] > 0
-#ifdef HAPTIC
-      || queueToneHaptic[0] == 1
-#endif
-      ) && toneTimeLeft <= 0
-      && queueState == 0) {
-    if (queueToneEnd[0] > 0 && queueToneEnd[0] != queueToneStart[0]) {
-      if (queueToneStart[0] > queueToneEnd[0]) { //tone going down
-        z = queueToneStart[0] - queueToneEnd[0];
-        rateOfChange = -2;
-      }
-      else { //tone going up
-        z = queueToneEnd[0] - queueToneStart[0];
-        rateOfChange = 2;
-      }
-      if (queueToneStart[0] > 0) {
-        toneFreq = queueToneStart[0] + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
-      }
-      else {
-        toneFreq = queueToneStart[0]; // done so hapticOnly option can work
-      }
-      toneFreqEnd = queueToneEnd[0] + g_eeGeneral.speakerPitch + BEEP_OFFSET;
-      toneTimeLeft = z;
-      tonePause = queueTonePause[0];
-      toneRepeat = queueToneRepeat[0];
-#ifdef HAPTIC
-      toneHaptic = queueToneHaptic[0];
-#endif
-    }
-    else {
-      //simple tone handler
-      if (queueToneStart[0] > 0) {
-        toneFreq = (queueToneStart[0] + g_eeGeneral.speakerPitch) + BEEP_OFFSET; // add pitch compensator
-      }
-      else {
-        toneFreq = queueToneStart[0];
-      }
-      rateOfChange = 0;
-      toneFreqEnd = 0;
-      toneTimeLeft = queueToneLength[0];
-      tonePause = queueTonePause[0];
-      toneRepeat = queueToneRepeat[0];
-#ifdef HAPTIC
-      toneHaptic = queueToneHaptic[0];
-#endif
-    }
-    queueState = 1;
-    if (toneRepeat != 0 && inToneRepeat == 0) {
-      inToneRepeat = 1;
-      toneRepeatCnt = toneRepeat;
-    }
-
-    if (inToneRepeat == 1) {
-      toneRepeatCnt--;
-      if (toneRepeatCnt <= 0) {
-        inToneRepeat = 0;
-        restack();
-      }
-    }
-    else {
-      restack();
-    }
-
-  }
-
-  hTimer = AUDIO_QUEUE_HEARTBEAT_NORM; // default
+inline uint8_t audioQueue::getToneLength(uint8_t tLen)
+{
+  uint8_t result = tLen; // default
   if (g_eeGeneral.beeperVal == 2) {
-    //xshort
-    hTimer = AUDIO_QUEUE_HEARTBEAT_XSHORT;
+    result /= 2;
   }
   else if (g_eeGeneral.beeperVal == 3) {
-    //short
-    hTimer = AUDIO_QUEUE_HEARTBEAT_SHORT;
+    result = (result * 3) / 2;
   }
   else if (g_eeGeneral.beeperVal == 5) {
     //long
-    hTimer = AUDIO_QUEUE_HEARTBEAT_LONG;
+    result *= 2;
   }
   else if (g_eeGeneral.beeperVal == 6) {
     //xlong
-    hTimer = AUDIO_QUEUE_HEARTBEAT_XLONG;
+    result *= 3;
   }
+  return result;
+}
 
-  heartbeatTimer++;
-  if (heartbeatTimer >= hTimer) {
+void audioQueue::playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
+    uint8_t tRepeat, uint8_t tHaptic, int8_t tFreqIncr)
+{
+  if (g_eeGeneral.beeperVal) {
+    toneFreq = tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
+    toneTimeLeft = getToneLength(tLen);
+    tonePause = tPause;
+  #ifdef HAPTIC
+    t_queueToneHaptic = tHaptic;
+  #endif
+    toneFreqIncr = tFreqIncr;
+    t_queueWidx = t_queueRidx;
 
-    heartbeatTimer = 0;
-
-    if (queueState == 1) {
-      if (toneTimeLeft > 0) {
-        toneFreq += rateOfChange; // -2, 0 or 2
-        toneTimeLeft--; //time gets counted down
-      }
-      if (toneTimeLeft <= 0) {
-        if (tonePause-- <= 0) {
-          queueState = 0;
-        }
-      }
+    if (tRepeat) {
+      playASAP(tFreq, tLen, tPause, tRepeat-1, tHaptic, tFreqIncr);
     }
-
   }
-
 }
 
-void audioQueue::playNow(uint8_t tStart, uint8_t tLen, uint8_t tPause,
-    uint8_t tRepeat, uint8_t tHaptic, uint8_t tEnd)
+void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
+    uint8_t tRepeat, uint8_t tHaptic, int8_t tFreqIncr)
 {
-  t_queueToneStart = tStart;
-  t_queueToneLength = tLen;
-  t_queueTonePause = tPause;
+  if (g_eeGeneral.beeperVal) {
+    queueToneFreq[t_queueWidx] = tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
+    queueToneLength[t_queueWidx] = getToneLength(tLen);
+    queueTonePause[t_queueWidx] = tPause;
 #ifdef HAPTIC
-  t_queueToneHaptic = tHaptic;
+    queueToneHaptic[t_queueWidx] = tHaptic;
 #endif
-  t_queueToneRepeat = tRepeat;
-  t_queueToneEnd = tEnd;
-  commit(1);
-}
+    queueToneRepeat[t_queueWidx] = tRepeat;
+    queueToneFreqIncr[t_queueWidx] = tFreqIncr;
 
-void audioQueue::playASAP(uint8_t tStart, uint8_t tLen, uint8_t tPause,
-    uint8_t tRepeat, uint8_t tHaptic, uint8_t tEnd)
-{
-  t_queueToneStart = tStart;
-  t_queueToneLength = tLen;
-  t_queueTonePause = tPause;
-#ifdef HAPTIC
-  t_queueToneHaptic = tHaptic;
-#endif
-  t_queueToneRepeat = tRepeat;
-  t_queueToneEnd = tEnd;
-  commit(0);
+    t_queueWidx = (t_queueWidx + 1) % AUDIO_QUEUE_LENGTH;
+  }
 }
 
 #ifdef FRSKY
 
 //this is done so the menu selections only plays tone once!
-void audioQueue::frskyeventSample(uint8_t e) {
+void audioQueue::frskyeventSample(uint8_t e)
+{
   if(frskySample != e) {
     aqinit(); //flush the queue
     frskyevent(e);
@@ -408,7 +188,8 @@ void audioQueue::frskyeventSample(uint8_t e) {
   }
 }
 
-void audioQueue::frskyevent(uint8_t e) {
+void audioQueue::frskyevent(uint8_t e)
+{
   // example playASAP(tStart,tLen,tPause,tRepeat,tHaptic,tEnd);
   switch(e) {
     case AU_FRSKY_WARN1:
@@ -615,15 +396,13 @@ void audioQueue::event(uint8_t e, uint8_t f) {
       //low battery in tx
       //case 19:
     case AU_TX_BATTERY_LOW:
-      playASAP(60, 4, 3, 2, 1, 70);
-      playASAP(80, 4, 3, 2, 1, 70);
+      playASAP(60, 4, 3, 2, 1, 2);
+      playASAP(80, 4, 3, 2, 1, -2);
       break;
 
     default:
       break;
-
   }
-
 }
 
 void audioDefevent(uint8_t e) {
