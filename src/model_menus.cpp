@@ -1798,9 +1798,9 @@ void menuProcSafetySwitches(uint8_t event)
 void menuProcTelemetry(uint8_t event)
 {
 #if defined FRSKY_HUB || defined WS_HOW_HIGH
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 14, {0, -1, 1, 0, 1, 2, 2, -1, 1, 0, 1, 2, 2, 0});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 12, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, 0});
 #else
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 13, {0, -1, 1, 0, 1, 2, 2, -1, 1, 0, 1, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 11, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2});
 #endif
 
   int8_t  sub    = m_posVert;
@@ -1850,6 +1850,7 @@ void menuProcTelemetry(uint8_t event)
     }
     subN++;
 
+#if 0
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
       lcd_puts_P(4, y, STR_BAR);
@@ -1859,6 +1860,7 @@ void menuProcTelemetry(uint8_t event)
       if(sub==subN && m_posHorz==1 && (s_editMode>0 || p1valdiff)) g_model.frsky.channels[i].barMax = checkIncDec(event, g_model.frsky.channels[i].barMax, 0, 255, EE_MODEL);
     }
     subN++;
+#endif
 
     for (int j=0; j<2; j++) {
       if(s_pgOfs<subN) {
