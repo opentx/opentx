@@ -124,10 +124,10 @@ inline uint8_t audioQueue::getToneLength(uint8_t tLen)
 {
   uint8_t result = tLen; // default
   if (g_eeGeneral.beeperVal == 2) {
-    result /= 2;
+    result /= 3;
   }
   else if (g_eeGeneral.beeperVal == 3) {
-    result = (result * 3) / 2;
+    result /= 2;
   }
   else if (g_eeGeneral.beeperVal == 5) {
     //long
@@ -408,4 +408,3 @@ void audioQueue::event(uint8_t e, uint8_t f) {
 void audioDefevent(uint8_t e) {
   audio.event(e, BEEP_DEFAULT_FREQ);
 }
-
