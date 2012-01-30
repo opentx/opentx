@@ -52,30 +52,11 @@ bool audioQueue::freeslots(uint8_t slots)
 }
 */
 
-//heartbeat is responsibile for issueing the audio tones and general square waves
+// heartbeat is responsibile for issueing the audio tones and general square waves
 // it is essentially the life of the class.
+// it is called every 10ms
 void audioQueue::heartbeat()
 {
-#if defined(PCBSTD)
-  if (toneTimeLeft > 0) {
-    //square wave generator use for speaker mod
-    //simply generates a square wave for toneFreq for
-    //as long as the toneTimeLeft is more than 0
-    static uint8_t toneCounter;
-    toneCounter += toneFreq;
-    if ((toneCounter & 0x80) == 0x80)
-      PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
-    else
-      PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
-  }
-
-  static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
-  if (cnt10ms-- == 0) // every 10ms ...
-    cnt10ms = 77;
-  else
-    return;
-#endif
-
   if (toneTimeLeft > 0) {
 #if defined(PCBV4)
     OCR0A = (5000 / toneFreq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
