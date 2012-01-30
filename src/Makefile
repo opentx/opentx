@@ -62,7 +62,7 @@ endif
 
 # AUDIO Mods
 # Values = YES, NO 
-AUDIO = YES
+AUDIO = NO
 
 # HAPTIC Mods
 # Values = YES, NO 
@@ -229,16 +229,6 @@ ifeq ($(SPLASH), YES)
  CPPDEFS += -DSPLASH
 endif
 
-ifeq ($(AUDIO), YES)
- CPPDEFS += -DAUDIO
- CPPSRC += audio.cpp
- ifeq ($(HAPTIC), YES)
-  CPPDEFS += -DHAPTIC
- endif
-else
- CPPSRC += beeper.cpp 
-endif
-
 # If ARDUPILOT-Support is enabled
 ifeq ($(EXT), ARDUPILOT)
   CPPDEFS += -DARDUPILOT
@@ -273,7 +263,8 @@ endif
 
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
-  CPPDEFS += -DPCBV4
+  CPPDEFS += -DPCBV4 -DAUDIO
+  CPPSRC += audio.cpp
 
   ifeq ($(NAVIGATION), RE1)
     CPPDEFS += -DNAVIGATION_RE1
@@ -284,7 +275,7 @@ ifeq ($(PCB), V4)
     CPPDEFS += -DLOGS
     MODS:=${MODS}L
   endif
-
+    
   ifeq ($(SOMO), YES)
     CPPSRC += somo14d.cpp
     CPPDEFS += -DSOMO
@@ -292,6 +283,16 @@ ifeq ($(PCB), V4)
 else
   # STD PCB, so ...
   CPPDEFS += -DPCBSTD
+  
+  ifeq ($(AUDIO), YES)
+    CPPDEFS += -DAUDIO
+    CPPSRC += audio.cpp
+    ifeq ($(HAPTIC), YES)
+      CPPDEFS += -DHAPTIC
+    endif
+  else
+    CPPSRC += beeper.cpp 
+  endif
   
   # If BandGap is not rock solid
   ifeq ($(BATT), UNSTABLE_BANDGAP)

@@ -27,29 +27,29 @@ extern uint8_t beepAgain;
 extern uint8_t beepAgainOrig;
 extern uint8_t beepOn;
 extern bool warble;
+extern bool warbleC;
 
 extern void beep(uint8_t val);
 
-#define AUDIO_KEYPAD_UP()   beep(0)
-#define AUDIO_KEYPAD_DOWN() beep(0)
-#define AUDIO_MENUS()       beep(0)
-#define AUDIO_TRIM()        beep(1)
-#define AUDIO_WARNING2()    beep(2)
-#define AUDIO_WARNING1()    beep(3)
-#define AUDIO_ERROR()       beep(4)
-
-#define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
-
-#define AUDIO_TIMER_30()    { beepAgain=2; beep(2); }
-#define AUDIO_TIMER_20()    { beepAgain=1; beep(2); }
-#define AUDIO_TIMER_10()    beep(2)
-#define AUDIO_TIMER_LT3()   beep(2)
-#define AUDIO_MINUTE_BEEP() beep(2)
-#define AUDIO_INACTIVITY()  beep(3)
+#define AUDIO_KEYPAD_UP()     beep(0)
+#define AUDIO_KEYPAD_DOWN()   beep(0)
+#define AUDIO_MENUS()         beep(0)
+#define AUDIO_TRIM()          beep(1)
+#define AUDIO_WARNING2()      beep(2)
+#define AUDIO_WARNING1()      beep(3)
+#define AUDIO_ERROR()         beep(4)
+#define AUDIO_TIMER_30()      { beepAgain=2; beep(2); }
+#define AUDIO_TIMER_20()      { beepAgain=1; beep(2); }
+#define AUDIO_TIMER_10()      beep(2)
+#define AUDIO_TIMER_LT3()     beep(2)
+#define AUDIO_MINUTE_BEEP()   beep(2)
+#define AUDIO_INACTIVITY()    beep(3)
 #define AUDIO_MIX_WARNING_1() beep(1)
 #define AUDIO_MIX_WARNING_3() beep(1)
 
-inline void AUDIO_HEARTBEAT()
+#define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
+
+FORCEINLINE void AUDIO_HEARTBEAT()
 {
     //cnt >/=0
     //beepon/off
@@ -77,7 +77,7 @@ inline void AUDIO_HEARTBEAT()
 
     // G: use original external buzzer for beeps
     if (beepOn) {
-      static bool warbleC;
+      //static bool warbleC;
       warbleC = warble && !warbleC;
       if (warbleC)
         PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
