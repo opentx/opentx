@@ -1120,11 +1120,8 @@ void menuProcExpoOne(uint8_t event)
 
   DrawCurve(expoFn);
 
-  int16_t x512  = calibratedStick[ed->chn];
-  int16_t anas[NUM_STICKS] = {0};
-  anas[ed->chn] = x512;
-  applyExpos(anas);
-  int16_t y512  = anas[ed->chn];
+  int16_t x512 = calibratedStick[ed->chn];
+  int16_t y512 = expoFn(x512);
 
   lcd_outdezAtt(20*FW, 6*FH, x512*25/256, 0);
   lcd_outdezAtt(14*FW, 1*FH, y512*25/256, 0);
