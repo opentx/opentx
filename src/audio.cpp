@@ -14,11 +14,20 @@
 
 #include "open9x.h"
 
+
+#if defined(PCBV4)
+#define SPEAKER_OFF  TCCR0A &= ~(1<<COM0A0)  // tone off
+#define SPEAKER_ON   TCCR0A |= (1<<COM0A0)   // tone on
+#else
+#define SPEAKER_OFF  PORTE &= ~(1 << OUT_E_BUZZER) // speaker output 'low'
+#endif
+
 audioQueue::audioQueue()
 {
   aqinit();
 }
 
+// TODO should not be needed
 void audioQueue::aqinit()
 {
   //make sure haptic off by default
@@ -31,6 +40,7 @@ void audioQueue::aqinit()
   t_queueRidx = 0;
 
 #ifdef HAPTIC
+  toneHaptic = 0;
   hapticTick = 0;
 #endif
 
@@ -60,22 +70,37 @@ void audioQueue::heartbeat()
   if (toneTimeLeft > 0) {
 #if defined(PCBV4)
     OCR0A = (5000 / toneFreq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
-    TCCR0A |= (1<<COM0A0);  // tone on
+    SPEAKER_ON;
 #endif
     toneTimeLeft--; //time gets counted down
-    toneFreq += toneFreqIncr; // -2, 0 or 2
+    toneFreq += toneFreqIncr;
+
+#if defined(HAPTIC)
+    if (toneHaptic){
+      if (hapticTick-- >= 0) {
+        HAPTIC_ON; // haptic output 'high'
+      }
+      else {
+        HAPTIC_OFF; // haptic output 'low'
+        hapticTick = g_eeGeneral.hapticStrength;
+      }
+    }
+#endif
   }
   else {
-#if defined(PCBV4)
-    TCCR0A &= ~(1<<COM0A0);  // tone off
-#else
-    PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
-#endif
+    SPEAKER_OFF;
+    HAPTIC_OFF;
+
     if (tonePause-- <= 0) {
       if (t_queueRidx != t_queueWidx) {
         toneFreq = queueToneFreq[t_queueRidx];
         toneTimeLeft = queueToneLength[t_queueRidx];
         toneFreqIncr = queueToneFreqIncr[t_queueRidx];
+        tonePause = queueTonePause[t_queueRidx];
+#if defined(HAPTIC)
+        toneHaptic = queueToneHaptic[t_queueRidx];
+        hapticTick = 0;
+#endif
         if (queueToneRepeat[t_queueRidx]--) {
           t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
         }
@@ -83,23 +108,6 @@ void audioQueue::heartbeat()
     }
   }
 }
-
-#ifdef HAPTIC
-    uint8_t hapticStrength = g_eeGeneral.hapticStrength;
-    if (toneHaptic == 1) {
-      if ((hapticTick <= hapticStrength - 1) && hapticStrength > 0) {
-        HAPTIC_ON; // haptic output 'high'
-        hapticTick++;
-      }
-      else {
-        HAPTIC_OFF; //haptic output low
-        hapticTick = 0;
-      }
-    }
-    else {
-      HAPTIC_OFF; // haptic output 'low'
-    }
-#endif
 
 inline uint8_t audioQueue::getToneLength(uint8_t tLen)
 {
@@ -128,9 +136,10 @@ void audioQueue::playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     toneFreq = tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     toneTimeLeft = getToneLength(tLen);
     tonePause = tPause;
-  #ifdef HAPTIC
-    t_queueToneHaptic = tHaptic;
-  #endif
+#if defined(HAPTIC)
+    toneHaptic = tHaptic;
+    hapticTick = 0;
+#endif
     toneFreqIncr = tFreqIncr;
     t_queueWidx = t_queueRidx;
 
@@ -147,7 +156,7 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     queueToneFreq[t_queueWidx] = tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     queueToneLength[t_queueWidx] = getToneLength(tLen);
     queueTonePause[t_queueWidx] = tPause;
-#ifdef HAPTIC
+#if defined(HAPTIC)
     queueToneHaptic[t_queueWidx] = tHaptic;
 #endif
     queueToneRepeat[t_queueWidx] = tRepeat;
