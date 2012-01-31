@@ -2088,7 +2088,7 @@ int main(void)
   DDRD = 0x00;  PORTD = 0xff; //pullups keys
   DDRE = (1<<OUT_E_BUZZER);  PORTE = 0xff-(1<<OUT_E_BUZZER); //pullups + buzzer 0
   DDRF = 0x00;  PORTF = 0x00; //anain
-  DDRG = 0x10;  PORTG = 0xfb; //pullups + SIM_CTL=1 = phonejack = ppm_in
+  DDRG = 0x14;  PORTG = 0xfb; //pullups + SIM_CTL=1 = phonejack = ppm_in, Haptic output and off (0)
 #endif
 
   lcd_init();
