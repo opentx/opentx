@@ -1776,7 +1776,23 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 
   sei();
   
-  AUDIO_HEARTBEAT();
+#if defined (PCBSTD) && defined (AUDIO)
+  if (audio.toneTimeLeft > 0) {
+    static uint8_t toneCounter;
+    toneCounter += audio.toneFreq;
+    if ((toneCounter & 0x80) == 0x80)
+      PORTE |= (1 << OUT_E_BUZZER);
+    else
+      PORTE &= ~(1 << OUT_E_BUZZER);
+  }
+
+  static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
+  if (cnt10ms-- == 0) { // BEGIN { ... every 10ms ... }
+    // Begin 10ms event
+    cnt10ms = 77;
+#endif
+
+    AUDIO_HEARTBEAT();
 
 #ifdef DEBUG
     // Record start time from TCNT1 to record excution time
@@ -1799,6 +1815,10 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
     uint16_t dt2 = TCNT1; // capture end time
     sei();
     g_time_per10 = dt2 - dt; // NOTE: These spike to nearly 65535 just now and then. Why? :/
+#endif
+
+#if defined (PCBSTD) && defined (AUDIO)
+  } // end 10ms event
 #endif
 
   cli();
