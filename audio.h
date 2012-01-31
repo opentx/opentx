@@ -22,11 +22,6 @@
 #define BEEP_KEY_UP_FREQ  (BEEP_DEFAULT_FREQ+5)
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
 
-// #define AUDIO_QUEUE_HEARTBEAT_XSHORT (30) //speaker timing [Norm]
-// #define AUDIO_QUEUE_HEARTBEAT_SHORT (50) //speaker timing [Norm]
-// #define AUDIO_QUEUE_HEARTBEAT_NORM (77) //speaker timing [Norm]
-// #define AUDIO_QUEUE_HEARTBEAT_LONG (130) //speaker timing [Long]
-// #define AUDIO_QUEUE_HEARTBEAT_XLONG (200) //speaker timing [xLong]
 #ifdef HAPTIC
 #define HAPTIC_ON    PORTG |=  (1<<2)
 #define HAPTIC_OFF   PORTG &= ~(1<<2)
