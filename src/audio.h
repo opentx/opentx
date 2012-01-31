@@ -161,25 +161,6 @@ void audioDefevent(uint8_t e);
 #define AUDIO_MIX_WARNING_1() audioDefevent(AU_MIX_WARNING_1)
 #define AUDIO_MIX_WARNING_3() audioDefevent(AU_MIX_WARNING_3)
 
-#if defined(PCBSTD)
-#define AUDIO_HEARTBEAT() \
-  if (audio.toneTimeLeft > 0) { \
-    static uint8_t toneCounter; \
-    toneCounter += audio.toneFreq; \
-    if ((toneCounter & 0x80) == 0x80) \
-      PORTE |= (1 << OUT_E_BUZZER); \
-    else \
-      PORTE &= ~(1 << OUT_E_BUZZER); \
-  } \
-  static uint8_t cnt10ms = 77; \
-  if (cnt10ms-- == 0) \
-    cnt10ms = 77; \
-  else \
-    return; \
-  audio.heartbeat()
-#else
-#define AUDIO_HEARTBEAT() \
-  audio.heartbeat()
-#endif
+#define AUDIO_HEARTBEAT()   audio.heartbeat()
 
 #endif // audio_h
