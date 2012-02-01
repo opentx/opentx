@@ -15,6 +15,14 @@
 #ifndef audio_h
 #define audio_h
 
+//#define ISER9X  //enable this define for er9x.  comment out for open9x
+
+#if defined(ISER9X)
+#define HAPTIC
+#define PCBSTD
+#endif
+
+
 // TODO remove them when everything commited in open9x.h!!!
 #if defined(HAPTIC)
 #if defined(PCBV4)
@@ -107,6 +115,32 @@ class audioQueue
     void frskyeventSample(uint8_t e);
 #endif
 
+#if defined(ISER9X)
+inline void driver() {
+  if (toneTimeLeft > 0) {	
+					switch (g_eeGeneral.speakerMode){					
+								case 0:
+						        	//stock beeper. simply turn port on for x time!
+							        if (toneTimeLeft > 0){
+							            PORTE |=  (1<<OUT_E_BUZZER); // speaker output 'high'
+							        } 	
+							        break;	
+							  case 1:
+									    static uint8_t toneCounter;
+									    toneCounter += toneFreq;
+									    if ((toneCounter & 0x80) == 0x80) {
+									      PORTE |= (1 << OUT_E_BUZZER);
+									    } else {
+									      PORTE &= ~(1 << OUT_E_BUZZER);
+									    }							  	
+											break;						  	
+					}		
+	} else {
+			PORTE &=  ~(1<<OUT_E_BUZZER); // speaker output 'low'
+	}								  	     
+}	
+#else 
+
 #if defined(PCBSTD)
     inline void driver() {
       if (toneTimeLeft > 0) {
@@ -117,6 +151,8 @@ class audioQueue
           PORTE &= ~(1 << OUT_E_BUZZER);
       }
     }
+#endif
+
 #endif
 
     // heartbeat is responsibile for issueing the audio tones and general square waves
