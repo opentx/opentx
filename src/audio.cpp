@@ -12,7 +12,8 @@
  *
  */
 
-#include "open9x.h"
+#include "er9x.h"
+
 
 
 #if defined(PCBV4)
@@ -46,7 +47,16 @@ void audioQueue::aqinit()
 
 #ifdef FRSKY
   frskySample = 0;
-#endif    
+#endif   
+
+//flush queue on init!
+for(uint8_t x = 0; x < AUDIO_QUEUE_LENGTH; x++){
+    queueToneFreq[x] = 0;
+    queueToneFreqIncr[x] = 0;
+    queueToneLength[x] = 0;
+    queueTonePause[x] = 0;
+    queueToneRepeat[x] = 0;	
+} 
 
 }
 
@@ -133,6 +143,14 @@ void audioQueue::playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tRepeat, uint8_t tHaptic, int8_t tFreqIncr)
 {
   if (g_eeGeneral.beeperVal) {
+  	
+  	//required or you cannot do haptic only events
+  	if(tFreq == 0){
+  			toneFreq = 0;
+  	} else {	
+    		toneFreq = tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
+		}  	
+  	
     toneFreq = (tFreq ? tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET : 0); // add pitch compensator
     toneTimeLeft = getToneLength(tLen);
     tonePause = tPause;
@@ -153,6 +171,14 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tRepeat, uint8_t tHaptic, int8_t tFreqIncr)
 {
   if (g_eeGeneral.beeperVal) {
+
+		//required or you cannot do haptic only events
+  	if(tFreq == 0){
+  		queueToneFreq[t_queueWidx] = 0;
+  	} else {	
+    	queueToneFreq[t_queueWidx] = tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
+	  }  	
+  	
     queueToneFreq[t_queueWidx] = (tFreq ? tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET : 0); // add pitch compensator
     queueToneLength[t_queueWidx] = getToneLength(tLen);
     queueTonePause[t_queueWidx] = tPause;
@@ -192,9 +218,9 @@ void audioQueue::frskyevent(uint8_t e)
     playASAP(BEEP_DEFAULT_FREQ+30,10,2,2,1,2);
     break;
     case AU_FRSKY_RING:
-    playASAP(BEEP_DEFAULT_FREQ+25,15,2,10,1);
-    playASAP(BEEP_DEFAULT_FREQ+25,15,10,1,1);
-    playASAP(BEEP_DEFAULT_FREQ+25,15,2,10,1);
+    playASAP(BEEP_DEFAULT_FREQ+25,5,2,10,1);
+    playASAP(BEEP_DEFAULT_FREQ+25,5,10,1,1);
+    playASAP(BEEP_DEFAULT_FREQ+25,5,2,10,1);
     break;
     case AU_FRSKY_SCIFI:
     playASAP(80,10,3,2,0,-1);
@@ -217,18 +243,18 @@ void audioQueue::frskyevent(uint8_t e)
     playASAP(110,3,4,2);
     break;
     case AU_FRSKY_CRICKET:
-    playASAP(80,15,10,3,1);
-    playASAP(80,15,20,1,1);
-    playASAP(80,15,10,3,1);
+    playASAP(80,5,10,3,1);
+    playASAP(80,5,20,1,1);
+    playASAP(80,5,10,3,1);
     break;
     case AU_FRSKY_SIREN:
     playASAP(10,20,5,2,1,1);
     break;
     case AU_FRSKY_ALARMC:
-    playASAP(50,15,10,2,1);
-    playASAP(70,15,20,1,1);
-    playASAP(50,15,10,2,1);
-    playASAP(70,10,20,1,1);
+    playASAP(50,4,10,2,1);
+    playASAP(70,8,20,1,1);
+    playASAP(50,8,10,2,1);
+    playASAP(70,4,20,1,1);
     break;
     case AU_FRSKY_RATATA:
     playASAP(BEEP_DEFAULT_FREQ+50,5,10,10,1);
