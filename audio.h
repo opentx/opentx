@@ -17,18 +17,10 @@
 
 //audio
 #define AUDIO_QUEUE_LENGTH (8)  //8 seems to suit most alerts
-#define BEEP_DEFAULT_FREQ (70)
-#define BEEP_OFFSET (10)
-#define BEEP_KEY_UP_FREQ  (BEEP_DEFAULT_FREQ+5)
+#define BEEP_DEFAULT_FREQ  (70)
+#define BEEP_OFFSET        (10)
+#define BEEP_KEY_UP_FREQ   (BEEP_DEFAULT_FREQ+5)
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
-
-#ifdef HAPTIC
-#define HAPTIC_ON    PORTG |=  (1<<2)
-#define HAPTIC_OFF   PORTG &= ~(1<<2)
-#else
-#define HAPTIC_ON
-#define HAPTIC_OFF
-#endif
 
 /* make sure the defines below always go in numeric order */
 #define AU_TADA (0)
@@ -80,67 +72,84 @@
 #define BEEP_LONG (5)
 #define BEEP_XLONG (6)
 
-struct audioQueue
+class audioQueue
 {
-  uint8_t t_queueRidx;
-  uint8_t t_queueWidx;
+  public:
 
-  //queue general vars
-  uint8_t toneFreq;
-  int8_t toneFreqIncr;
-  uint8_t toneTimeLeft;
-  uint8_t tonePause;
+    audioQueue();
 
-#ifdef HAPTIC
-  uint8_t toneHaptic;
-  uint8_t hapticTick;
+    // only difference between these two functions is that one does the
+    // interupt queue (Now) and the other queues for playing ASAP.
+    void playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tRepeat=0, uint8_t tHaptic=0, int8_t tFreqIncr=0);
+
+    void playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tRepeat=0, uint8_t tHaptic=0, int8_t tFreqIncr=0);
+
+    bool busy();
+
+    void event(uint8_t e,uint8_t f=BEEP_DEFAULT_FREQ);
+
+#if defined(FRSKY)
+    void frskyevent(uint8_t e);
+    void frskyeventSample(uint8_t e);
 #endif
+
+#if defined(PCBSTD)
+    inline void driver() {
+      if (toneTimeLeft > 0) {
+        toneCounter += toneFreq;
+        if ((toneCounter & 0x80) == 0x80)
+          PORTE |= (1 << OUT_E_BUZZER);
+        else
+          PORTE &= ~(1 << OUT_E_BUZZER);
+      }
+    }
+#endif
+
+    // heartbeat is responsibile for issueing the audio tones and general square waves
+    // it is essentially the life of the class.
+    void heartbeat();
+
+    // TODO bool freeslots(uint8_t slots);
+
+  protected:
+    void aqinit(); // To stop constructor being compiled twice
+    inline uint8_t getToneLength(uint8_t tLen);
+
+  private:
+
+    uint8_t t_queueRidx;
+    uint8_t t_queueWidx;
+
+    uint8_t toneFreq;
+    int8_t toneFreqIncr;
+    uint8_t toneTimeLeft;
+    uint8_t tonePause;
+
+    // queue arrays
+    uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
+    int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
+    uint8_t queueToneLength[AUDIO_QUEUE_LENGTH];
+    uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
+    uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
 
 #ifdef FRSKY
   uint8_t frskySample;
 #endif
 
-  // queue arrays
-  uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
-  int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
-  uint8_t queueToneLength[AUDIO_QUEUE_LENGTH];
-  uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
-  uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
 #ifdef HAPTIC
+  uint8_t toneHaptic;
+  uint8_t hapticTick;
   uint8_t queueToneHaptic[AUDIO_QUEUE_LENGTH];
 #endif
 
-  audioQueue();
-
-  void aqinit(); // To stop constructor being compiled twice
-
-  inline uint8_t getToneLength(uint8_t tLen);
-
-  //only difference between these two functions is that one does the
-  //interupt queue (Now) and the other queues for playing ASAP.
-  void playNow(uint8_t tFreq,uint8_t tLen,uint8_t tPause,uint8_t tRepeat=0,uint8_t tHaptic=0,int8_t tFreqIncr=0);
-  void playASAP(uint8_t tFreq,uint8_t tLen,uint8_t tPause,uint8_t tRepeat=0,uint8_t tHaptic=0,int8_t tFreqIncr=0);
-
-  bool busy();
-
-  void event(uint8_t e,uint8_t f=BEEP_DEFAULT_FREQ);
-
-#ifdef FRSKY		
-  void frskyevent(uint8_t e);
-  void frskyeventSample(uint8_t e);
+#if defined(PCBSTD)
+  uint8_t toneCounter;
 #endif
-
-  //heartbeat is responsibile for issueing the audio tones and general square waves
-  // it is essentially the life of the class.
-  void heartbeat();
-
-  // TODO bool freeslots(uint8_t slots);
 };
 
 //wrapper function - dirty but results in a space saving!!!
 extern audioQueue audio;
 
-//void audioevent(uint8_t e,uint8_t f=BEEP_DEFAULT_FREQ);
 void audioDefevent(uint8_t e);
 
 #define AUDIO_KEYPAD_UP()   audioDefevent(AU_KEYPAD_UP)
@@ -160,6 +169,10 @@ void audioDefevent(uint8_t e);
 #define AUDIO_INACTIVITY()  audioDefevent(AU_INACTIVITY)
 #define AUDIO_MIX_WARNING_1() audioDefevent(AU_MIX_WARNING_1)
 #define AUDIO_MIX_WARNING_3() audioDefevent(AU_MIX_WARNING_3)
+
+#if defined(PCBSTD)
+#define AUDIO_DRIVER()      audio.driver()
+#endif
 
 #define AUDIO_HEARTBEAT()   audio.heartbeat()
 

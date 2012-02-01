@@ -51,9 +51,6 @@ extern void beep(uint8_t val);
 
 FORCEINLINE void AUDIO_HEARTBEAT()
 {
-    //cnt >/=0
-    //beepon/off
-    //beepagain y/n
     if(g_beepCnt) {
         if(!beepAgainOrig) {
             beepAgainOrig = g_beepCnt;
