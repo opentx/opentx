@@ -96,9 +96,9 @@ void menuProcSetup(uint8_t event)
 #ifdef AUDIO
   if(s_pgOfs<subN) {
     lcd_puts_P(0, y, PSTR("Speaker Pitch"));
-    lcd_outdezAtt(PARAM_OFS,y,g_eeGeneral.speakerPitch,(sub==subN ? INVERS : 0)|LEFT);
-    if(sub==subN) {
-      CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 1, 100);
+    lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.speakerPitch,(sub==subN ? INVERS : 0)|LEFT);
+    if (sub==subN) {
+      CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 100);
     }
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -107,8 +107,8 @@ void menuProcSetup(uint8_t event)
 #ifdef HAPTIC
   if(s_pgOfs<subN) {
     lcd_puts_P(0, y, PSTR("Haptic Strength"));
-    lcd_outdezAtt(PARAM_OFS,y,g_eeGeneral.hapticStrength,(sub==subN ? INVERS : 0)|LEFT);
-    if(sub==subN) {
+    lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.hapticStrength, (sub==subN ? INVERS : 0)|LEFT);
+    if (sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticStrength, 0, 5);
     }
     if((y+=FH)>7*FH) return;
