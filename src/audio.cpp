@@ -42,10 +42,6 @@ void audioQueue::aqinit()
   toneHaptic = 0;
   hapticTick = 0;
 #endif
-
-#ifdef FRSKY
-  frskySample = 0;
-#endif   
 }
 
 bool audioQueue::busy()
@@ -167,17 +163,6 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
 }
 
 #ifdef FRSKY
-
-//this is done so the menu selections only plays tone once!
-void audioQueue::frskyeventSample(uint8_t e)
-{
-  if(frskySample != e) {
-    aqinit(); //flush the queue
-    frskyevent(e);
-    frskySample = e;
-  }
-}
-
 void audioQueue::frskyevent(uint8_t e)
 {
   if (empty()) {
