@@ -19,6 +19,7 @@ const prog_char APM STR_OPEN9X[] =
     TR_EXPLABELS
     TR_VMLTPX
     TR_VMLTPX2
+    TR_VMIXTRIMS
     TR_VCSWFUNC
     TR_VFSWFUNC
 #ifdef FRSKY
@@ -234,4 +235,12 @@ const prog_char APM STR_RXNUM[] = TR_RXNUM;
 
 #if defined(PXX)
 const prog_char APM STR_SYNCMENU[] = TR_SYNCMENU;
+#endif
+
+#if defined(HAPTIC)
+const prog_char APM STR_HAPTICSTRENGTH[] = TR_HAPTICSTRENGTH;
+#endif
+
+#if defined(AUDIO)
+const prog_char APM STR_SPKRPITCH[] = TR_SPKRPITCH;
 #endif

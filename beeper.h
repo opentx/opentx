@@ -28,6 +28,9 @@ extern uint8_t beepAgainOrig;
 extern uint8_t beepOn;
 extern bool warble;
 extern bool warbleC;
+#if defined(HAPTIC)
+extern uint8_t hapticTick;
+#endif
 
 extern void beep(uint8_t val);
 
@@ -72,17 +75,25 @@ FORCEINLINE void AUDIO_HEARTBEAT()
         }
     }
 
-    // G: use original external buzzer for beeps
     if (beepOn) {
-      //static bool warbleC;
       warbleC = warble && !warbleC;
       if (warbleC)
-        PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
+        BUZZER_OFF;
       else
-        PORTE |= (1 << OUT_E_BUZZER); // speaker output 'high'
+        BUZZER_ON;
+#if defined(HAPTIC)
+      if (hapticTick-- > 0) {
+        HAPTIC_ON; // haptic output 'high'
+      }
+      else {
+        HAPTIC_OFF; // haptic output 'low'
+        hapticTick = g_eeGeneral.hapticStrength;
+      }
+#endif
     }
     else {
-      PORTE &= ~(1 << OUT_E_BUZZER); // speaker output 'low'
+      BUZZER_OFF;
+      HAPTIC_OFF;
     }
 }
 

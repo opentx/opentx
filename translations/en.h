@@ -53,16 +53,19 @@
 #define LEN_VMLTPX2      2
 #define TR_VMLTPX2       "+=""*="":="
 
+#define LEN_VMIXTRIMS    6
+#define TR_VMIXTRIMS     "ON    ""OFF   ""Offset"
+
 #define LEN_VCSWFUNC     7
 #define TR_VCSWFUNC      "----   ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
-#define LEN_VFSWFUNC     14
+#define LEN_VFSWFUNC     13
 #ifdef LOGS
-#define TR_SDCLOGGS      "SDCARD Logs   "
+#define TR_SDCLOGGS      "SDCARD Logs  "
 #else
 #define TR_SDCLOGGS
 #endif
-#define TR_VFSWFUNC      "----          ""Trainer       ""Trainer RUD   ""Trainer ELE   ""Trainer THR   ""Trainer AIL   ""Instant Trim  ""Trims2Offsets " TR_SDCLOGGS
+#define TR_VFSWFUNC      "----         ""Trainer      ""Trainer RUD  ""Trainer ELE  ""Trainer THR  ""Trainer AIL  ""Instant Trim ""Trims2Offsets""Play sound   " TR_SDCLOGGS
 
 #define LEN_VTELEMUNIT   1
 #define TR_VTELEMUNIT    "v""-"
@@ -274,3 +277,5 @@
 #define TR_MENUDEBUG     "DEBUG"
 #define TR_RXNUM         "RxNum"
 #define TR_SYNCMENU      "Sync [MENU]"
+#define TR_HAPTICSTRENGTH "Haptic Strength"
+#define TR_SPKRPITCH     "Speaker Pitch"

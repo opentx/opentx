@@ -1165,9 +1165,10 @@ void menuProcMixOne(uint8_t event)
         break;
       case 3:
         // TODO hidden when src is not a STICK as it has no sense
-        lcd_puts_P(  2*FW,y,STR_TRIM);
-        lcd_putsnAtt(FW*10,y, STR_OFFON+LEN_OFFON*(1-md2->carryTrim), LEN_OFFON, attr);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->carryTrim, 0,1);
+        lcd_puts_P(2*FW, y, STR_TRIM);
+        // lcd_putsnAtt(FW*10, y, STR_OFFON+LEN_OFFON*(1-md2->carryTrim), LEN_OFFON, attr);
+        lcd_putsnAtt(FW*10, y, STR_VMIXTRIMS+LEN_VMIXTRIMS*md2->carryTrim, LEN_VMIXTRIMS, attr); // TODO perhaps could be optimized by reusing STR_OFFON
+        if (attr) CHECK_INCDEC_MODELVAR( event, md2->carryTrim, 0, 2);
         break;
       case 4:
         lcd_puts_P(2*FW, y, STR_CURVES);
@@ -1193,7 +1194,7 @@ void menuProcMixOne(uint8_t event)
         if(md2->mixWarn)
           lcd_outdezAtt(FW*10,y,md2->mixWarn,attr|LEFT);
         else
-          lcd_puts_P(  FW*10,y,STR_OFF);
+          lcd_putsAtt(FW*10, y, STR_OFF, attr);
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->mixWarn, 0,3);
         break;
       case 8:
@@ -1637,7 +1638,7 @@ void menuProcCustomSwitches(uint8_t event)
     lcd_putsnAtt(4*FW - 1, y, STR_VCSWFUNC+LEN_VCSWFUNC*cs.func, LEN_VCSWFUNC, m_posHorz==0 ? attr : 0);
 
     uint8_t cstate = CS_STATE(cs.func);
-    int8_t v1_min=0, v1_max=NUM_XCHNRAW, v2_min=0, v2_max=NUM_XCHNRAW;
+    int8_t v1_min=0, v1_max=NUM_XCHNCSW, v2_min=0, v2_max=NUM_XCHNCSW;
 
     if(cstate == CS_VOFS)
     {
@@ -1645,26 +1646,26 @@ void menuProcCustomSwitches(uint8_t event)
 
 #if defined(FRSKY)
 #if defined(FRSKY_HUB)
-        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY+3) {
+        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY+3) {
           lcd_outdezAtt(20*FW, y, (128+cs.v2) * 50, m_posHorz==2 ? attr : 0);
           v2_min = -128; v2_max = 127;
         }
         else
 #endif
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY+2) {
+        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY+2) {
           lcd_outdezAtt(20*FW, y, (128+cs.v2) * 4, m_posHorz==2 ? attr : 0);
           v2_min = -128; v2_max = 127;
         }
         else
 #endif
-        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY) {
-          putsTelemetryChannel(20*FW, y, cs.v1+NUM_TELEMETRY-NUM_XCHNRAW-1, 128+cs.v2, m_posHorz==2 ? attr : 0);
+        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+          putsTelemetryChannel(20*FW, y, cs.v1+NUM_TELEMETRY-NUM_XCHNCSW-1, 128+cs.v2, m_posHorz==2 ? attr : 0);
           v2_min = -128; v2_max = 127;
         }
         else
 #endif
-        if (cs.v1 > NUM_XCHNRAW-NUM_TELEMETRY-MAX_TIMERS) {
+        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY-MAX_TIMERS) {
           putsTime(17*FW, y, 98+cs.v2, m_posHorz==2 ? attr : 0, m_posHorz==2 ? attr : 0); // TODO optim
           v2_min = -128; v2_max = 127;
         }
@@ -1719,7 +1720,7 @@ void menuProcCustomSwitches(uint8_t event)
 
 void menuProcFunctionSwitches(uint8_t event)
 {
-  MENU(STR_MENUFUNCSWITCHES, menuTabModel, e_FunctionSwitches, NUM_FSW+1, {0, 1/*repeated*/});
+  MENU(STR_MENUFUNCSWITCHES, menuTabModel, e_FunctionSwitches, NUM_FSW+1, {0, 2/*repeated*/});
 
   uint8_t y = 0;
   uint8_t k = 0;
@@ -1730,7 +1731,7 @@ void menuProcFunctionSwitches(uint8_t event)
     k=i+s_pgOfs;
     if(k==NUM_CHNOUT) break;
     FuncSwData *sd = &g_model.funcSw[k];
-    for (uint8_t j=0; j<2; j++) {
+    for (uint8_t j=0; j<3; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
@@ -1745,6 +1746,17 @@ void menuProcFunctionSwitches(uint8_t event)
             lcd_putsnAtt(5*FW, y, STR_VFSWFUNC+LEN_VFSWFUNC*sd->func, LEN_VFSWFUNC, attr);
             if (active) {
               CHECK_INCDEC_MODELVAR( event, sd->func, 0, FUNC_MAX-1);
+            }
+          }
+          else if (attr) {
+            m_posHorz = 0;
+          }
+          break;
+        case 2:
+          if (sd->swtch && sd->func == FUNC_PLAY_SOUND) {
+            lcd_outdezAtt(19*FW, y, sd->param, attr);
+            if (active) {
+              CHECK_INCDEC_MODELVAR( event, sd->param, 0, 15);
             }
           }
           else if (attr) {

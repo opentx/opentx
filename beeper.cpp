@@ -27,6 +27,9 @@ uint8_t beepAgainOrig = 0;
 uint8_t beepOn = false;
 bool warble = false;
 bool warbleC;
+#if defined(HAPTIC)
+uint8_t hapticTick = 0;
+#endif
 
 // The various "beep" tone lengths
 static prog_uint8_t APM beepTab[]= {

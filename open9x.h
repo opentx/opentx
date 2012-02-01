@@ -175,7 +175,7 @@ extern uint16_t DEBUG2;
 #  define INP_E_TELEM_RX    1
 #  define OUT_E_TELEM_TX    0
 
-#  define INP_D_SPARE3         7
+#  define INP_D_HAPTIC         7
 #  define INP_D_SPARE4         6
 #  define INP_D_ROT_ENC_2_PUSH 5
 #  define INP_D_ROT_ENC_1_PUSH 4
@@ -244,6 +244,7 @@ extern uint16_t DEBUG2;
 
 #define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
 #define INP_G_ID1      3
+#define INP_G_HAPTIC   2
 #define INP_G_RF_POW   1
 #define INP_G_RuddDR   0
 
@@ -492,6 +493,8 @@ extern uint8_t s_traceBuf[MAXTRACE];
 extern uint16_t s_traceWr;
 extern int8_t s_traceCnt;
 
+extern int8_t *s_trimPtr[NUM_STICKS];
+
 uint16_t getTmr16KHz();
 uint16_t stack_free();
 
@@ -522,11 +525,29 @@ extern uint8_t  s_eeDirtyMsk;
 #define STORE_GENERALVARS eeDirty(EE_GENERAL)
 
 #if defined (PCBV4)
-#define BACKLIGHT_ON    PORTC |=  (1<<OUT_C_LIGHT)
-#define BACKLIGHT_OFF   PORTC &= ~(1<<OUT_C_LIGHT)
+#define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
+#define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
+#define BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
+#define BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
 #else
-#define BACKLIGHT_ON    PORTB |=  (1<<OUT_B_LIGHT)
-#define BACKLIGHT_OFF   PORTB &= ~(1<<OUT_B_LIGHT)
+#define BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
+#define BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
+#endif
+
+#define BUZZER_ON     PORTE |=  (1 << OUT_E_BUZZER)
+#define BUZZER_OFF    PORTE &= ~(1 << OUT_E_BUZZER)
+
+#if defined(HAPTIC)
+#if defined(PCBV4)
+#define HAPTIC_ON     PORTD &= ~(1 << INP_D_HAPTIC)
+#define HAPTIC_OFF    PORTD |=  (1 << INP_D_HAPTIC)
+#else
+#define HAPTIC_ON     PORTG |=  (1 << INP_G_HAPTIC)
+#define HAPTIC_OFF    PORTG &= ~(1 << INP_G_HAPTIC)
+#endif
+#else
+#define HAPTIC_ON
+#define HAPTIC_OFF
 #endif
 
 #define BITMASK(bit) (1<<(bit))
@@ -560,7 +581,9 @@ void eeLoadModel(uint8_t id);
 int8_t eeFindEmptyModel(uint8_t id, bool down);
 
 ///number of real input channels (1-9) plus virtual input channels X1-X4
-#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+2/*MAX/FULL*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT+MAX_TIMERS+NUM_TELEMETRY)
+#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+2/*MAX/FULL*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT)
+#define NUM_XCHNCSW (NUM_XCHNRAW+MAX_TIMERS+NUM_TELEMETRY)
+
 ///number of real output channels (CH1-CH8) plus virtual output channels X1-X4
 #define NUM_XCHNOUT (NUM_CHNOUT) //(NUM_CHNOUT)//+NUM_VIRT)
 

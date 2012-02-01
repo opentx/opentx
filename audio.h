@@ -22,19 +22,9 @@
 #define PCBSTD
 #endif
 
-
-// TODO remove them when everything commited in open9x.h!!!
-#if defined(HAPTIC)
-#if defined(PCBV4)
-#define HAPTIC_OFF  PORTD |=  (1<<7)
-#define HAPTIC_ON   PORTD &= ~(1<<7)
-#else
-#define HAPTIC_OFF  PORTG &= ~(1<<2)
-#define HAPTIC_ON   PORTG |=  (1<<2)
-#endif
-#else
-#define HAPTIC_OFF
-#define HAPTIC_ON
+#if defined(PCBSTD)
+#define SPEAKER_ON   BUZZER_ON
+#define SPEAKER_OFF  BUZZER_OFF
 #endif
 
 //audio
@@ -114,43 +104,41 @@ class audioQueue
 #endif
 
 #if defined(ISER9X)
-inline void driver() {
-  if (toneTimeLeft > 0) {	
-					switch (g_eeGeneral.speakerMode){					
-								case 0:
-						        	//stock beeper. simply turn port on for x time!
-							        if (toneTimeLeft > 0){
-							            PORTE |=  (1<<OUT_E_BUZZER); // speaker output 'high'
-							        } 	
-							        break;	
-							  case 1:
-									    static uint8_t toneCounter;
-									    toneCounter += toneFreq;
-									    if ((toneCounter & 0x80) == 0x80) {
-									      PORTE |= (1 << OUT_E_BUZZER);
-									    } else {
-									      PORTE &= ~(1 << OUT_E_BUZZER);
-									    }							  	
-											break;						  	
-					}		
-	} else {
-			PORTE &=  ~(1<<OUT_E_BUZZER); // speaker output 'low'
-	}								  	     
-}	
-#else 
-
-#if defined(PCBSTD)
+    inline void driver() {
+      if (toneTimeLeft > 0) {
+        switch (g_eeGeneral.speakerMode) {
+          case 0:
+            // stock beeper. simply turn port on for x time!
+            if (toneTimeLeft > 0){
+              PORTE |=  (1<<OUT_E_BUZZER); // speaker output 'high'
+            }
+            break;
+          case 1:
+            static uint8_t toneCounter;
+            toneCounter += toneFreq;
+            if ((toneCounter & 0x80) == 0x80) {
+              PORTE |= (1 << OUT_E_BUZZER);
+            }
+            else {
+              PORTE &= ~(1 << OUT_E_BUZZER);
+            }
+            break;
+        }
+      }
+      else {
+        PORTE &=  ~(1<<OUT_E_BUZZER); // speaker output 'low'
+      }
+    }
+#elif defined(PCBSTD)
     inline void driver() {
       if (toneTimeLeft > 0) {
         toneCounter += toneFreq;
         if ((toneCounter & 0x80) == 0x80)
-          PORTE |= (1 << OUT_E_BUZZER);
+          BUZZER_ON;
         else
-          PORTE &= ~(1 << OUT_E_BUZZER);
+          BUZZER_OFF;
       }
     }
-#endif
-
 #endif
 
     // heartbeat is responsibile for issueing the audio tones and general square waves

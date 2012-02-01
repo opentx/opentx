@@ -34,13 +34,6 @@ prog_uchar APM speMarker[] = { "SPE" };
 gtime_t g_unixTime; // Global date/time register, incremented each second in per10ms()
 #endif
 
-/*
-mode1 rud ele thr ail
-mode2 rud thr ele ail
-mode3 ail ele thr rud
-mode4 ail thr ele rud
-*/
-
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
@@ -70,6 +63,12 @@ const prog_uint8_t APM chout_ar[] = { //First number is 0..23 -> template setup,
                                       3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
                                       4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1    };
 
+/*
+mode1 rud ele thr ail
+mode2 rud thr ele ail
+mode3 ail ele thr rud
+mode4 ail thr ele rud
+*/
 const prog_uint8_t APM modn12x3[]= {
     1, 2, 3, 4,
     1, 3, 2, 4,
@@ -438,15 +437,27 @@ uint8_t getFlightPhase()
 
 int16_t getTrimValue(uint8_t phase, uint8_t idx)
 {
-  PhaseData *p = phaseaddress(phase);
-  return (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
+  int16_t result;
+  if (s_trimPtr[idx]) {
+    result = *s_trimPtr[idx];
+  }
+  else {
+    PhaseData *p = phaseaddress(phase);
+    result = (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
+  }
+  return result;
 }
 
 void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 {
-  PhaseData *p = phaseaddress(phase);
-  p->trim[idx] = (int8_t)(trim >> 2);
-  p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
+  if (s_trimPtr[idx]) {
+    *s_trimPtr[idx] = limit((int16_t)-125, trim, (int16_t)+125);
+  }
+  else {
+    PhaseData *p = phaseaddress(phase);
+    p->trim[idx] = (int8_t)(trim >> 2);
+    p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
+  }
   STORE_MODELVARS;
 }
 
@@ -667,6 +678,8 @@ void alert(const prog_char * s, bool defaults)
     wdt_reset();
   }
 }
+
+int8_t *s_trimPtr[NUM_STICKS] = { NULL, NULL, NULL, NULL };
 
 uint8_t checkTrim(uint8_t event)
 {
@@ -1037,10 +1050,21 @@ void evalFunctions()
     FuncSwData *sd = &g_model.funcSw[i];
     if (sd->swtch && sd->func) {
       uint16_t mask = (1 << (sd->func-1));
-      if (getSwitch(sd->swtch, 0))
+      if (getSwitch(sd->swtch, 0)) {
+        if (sd->func == FUNC_PLAY_SOUND && (~active_functions & mask)) {
+#if defined(AUDIO)
+          audioDefevent(sd->param);
+#else
+          if (g_eeGeneral.beeperVal>0) {
+            _beep(min(1, sd->param*10));
+          }
+#endif
+        }
         active_functions |= mask;
-      else
+      }
+      else {
         active_functions &= (~mask);
+      }
     }
   }
 }
@@ -1135,126 +1159,134 @@ void perOut(int16_t *chanOut, uint8_t phase)
     for (uint8_t i=NUM_CAL_PPM; i<NUM_PPM; i++) anas[i+PPM_BASE] = g_ppmIns[i]*2; // add ppm channels
   }
   
-  for (uint8_t i=CHOUT_BASE; i<NUM_XCHNRAW; i++) anas[i] = chans[i-CHOUT_BASE]; // other mixes previous outputs
+  for (uint8_t i=CHOUT_BASE; i<CHOUT_BASE+NUM_CHNOUT; i++) anas[i] = chans[i-CHOUT_BASE]; // other mixes previous outputs
 
   memset(chans, 0, sizeof(chans));        // All outputs to 0
 
-    //========== MIXER LOOP ===============
-    mixWarning = 0;
-    for(uint8_t i=0;i<MAX_MIXERS;i++){
-      MixData *md = mixaddress( i ) ;
+  s_trimPtr[0] = NULL;
+  s_trimPtr[1] = NULL;
+  s_trimPtr[2] = NULL;
+  s_trimPtr[3] = NULL;
 
-      if((md->destCh==0) || (md->destCh>NUM_CHNOUT)) break;
+  //========== MIXER LOOP ===============
+  mixWarning = 0;
+  for(uint8_t i=0;i<MAX_MIXERS;i++){
+    MixData *md = mixaddress( i ) ;
 
-      if (md->phase != 0) {
-        if (md->phase > 0) {
-          if (phase+1 != md->phase)
-            continue;
-        }
-        else {
-          if (phase+1 == -md->phase)
-            continue;
-        }
-      }
+    if((md->destCh==0) || (md->destCh>NUM_CHNOUT)) break;
 
-      //Notice 0 = NC switch means not used -> always on line
-      int16_t v  = 0;
-      uint8_t swTog;
-
-      //swOn[i]=false;
-      if(!getSwitch(md->swtch,1)){ // switch on?  if no switch selected => on
-        swTog = swOn[i];
-        swOn[i] = false;
-        if(md->srcRaw!=MIX_MAX && md->srcRaw!=MIX_FULL) continue;// if not MAX or FULL - next loop
-        if(md->mltpx==MLTPX_REP) continue; // if switch is off and REPLACE then off
-        v = (md->srcRaw == MIX_FULL ? -RESX : 0); // switch is off and it is either MAX=0 or FULL=-512
+    if (md->phase != 0) {
+      if (md->phase > 0) {
+        if (phase+1 != md->phase)
+          continue;
       }
       else {
-        swTog = !swOn[i];
-        swOn[i] = true;
-        uint8_t k = md->srcRaw-1;
-        v = anas[k]; //Switch is on. MAX=FULL=512 or value.
-        if(k>=CHOUT_BASE && (k<i)) v = chans[k]; // if we've already calculated the value - take it instead // anas[i+CHOUT_BASE] = chans[i]
-        if(md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
+        if (phase+1 == -md->phase)
+          continue;
       }
+    }
 
-      //========== INPUT OFFSET ===============
-      if(md->sOffset) v += calc100toRESX(md->sOffset);
+    //Notice 0 = NC switch means not used -> always on line
+    int16_t v  = 0;
+    uint8_t swTog;
 
-      //========== DELAY and PAUSE ===============
-      if (md->speedUp || md->speedDown || md->delayUp || md->delayDown)  // there are delay values
-      {
+    //swOn[i]=false;
+    if(!getSwitch(md->swtch,1)){ // switch on?  if no switch selected => on
+      swTog = swOn[i];
+      swOn[i] = false;
+      if(md->srcRaw!=MIX_MAX && md->srcRaw!=MIX_FULL) continue;// if not MAX or FULL - next loop
+      if(md->mltpx==MLTPX_REP) continue; // if switch is off and REPLACE then off
+      v = (md->srcRaw == MIX_FULL ? -RESX : 0); // switch is off and it is either MAX=0 or FULL=-512
+    }
+    else {
+      swTog = !swOn[i];
+      swOn[i] = true;
+      uint8_t k = md->srcRaw-1;
+      v = anas[k]; //Switch is on. MAX=FULL=512 or value.
+      if (k>=CHOUT_BASE && (k<i)) v = chans[k]; // if we've already calculated the value - take it instead // anas[i+CHOUT_BASE] = chans[i]
+      if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
+      if (md->carryTrim == 2/*TODO constant*/ && md->srcRaw <= NUM_STICKS) {
+        s_trimPtr[md->srcRaw-1] = &md->sOffset;  // use the value stored here for the trim
+      }
+    }
+
+    //========== INPUT OFFSET ===============
+    if(md->sOffset) v += calc100toRESX(md->sOffset);
+
+    //========== DELAY and PAUSE ===============
+    if (md->speedUp || md->speedDown || md->delayUp || md->delayDown)  // there are delay values
+    {
 #define DEL_MULT 256
 
-        int16_t diff = v-act[i]/DEL_MULT;
+      int16_t diff = v-act[i]/DEL_MULT;
 
-        if(swTog) {
-            //need to know which "v" will give "anas".
-            //curves(v)*weight/100 -> anas
-            // v * weight / 100 = anas => anas*100/weight = v
-          if(md->mltpx==MLTPX_REP)
-          {
-              act[i] = (int32_t)anas[md->destCh-1+CHOUT_BASE]*DEL_MULT;
-              act[i] *=100;
-              if(md->weight) act[i] /= md->weight;
-          }
-          diff = v-act[i]/DEL_MULT;
-          if(diff) sDelay[i] = (diff<0 ? md->delayUp :  md->delayDown) * 100;
+      if(swTog) {
+          //need to know which "v" will give "anas".
+          //curves(v)*weight/100 -> anas
+          // v * weight / 100 = anas => anas*100/weight = v
+        if(md->mltpx==MLTPX_REP)
+        {
+            act[i] = (int32_t)anas[md->destCh-1+CHOUT_BASE]*DEL_MULT;
+            act[i] *=100;
+            if(md->weight) act[i] /= md->weight;
         }
+        diff = v-act[i]/DEL_MULT;
+        if(diff) sDelay[i] = (diff<0 ? md->delayUp :  md->delayDown) * 100;
+      }
 
-        if (sDelay[i]) { // perform delay
-          if(tick10ms) sDelay[i]--;
-          if (sDelay[i] != 0) {
-            v = act[i]/DEL_MULT; // Stay in old position until delay over
-            diff = 0;
-          }
-        }
-
-        if (diff && (md->speedUp || md->speedDown)) {
-          //rate = steps/sec => 32*1024/100*md->speedUp/Down
-          //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
-          //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 sincde it's asymmetrical
-          if(tick10ms) {
-              int32_t rate = (int32_t)DEL_MULT*2048*100;
-              if(md->weight) rate /= abs(md->weight);
-              // TODO port optim er9x by Mike
-              act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)100*md->speedUp)   :  (int32_t)v*DEL_MULT) :
-                                  ((md->speedDown>0) ? act[i]-(rate)/((int16_t)100*md->speedDown) :  (int32_t)v*DEL_MULT) ;
-          }
-
-          if(((diff>0) && (v<(act[i]/DEL_MULT))) || ((diff<0) && (v>(act[i]/DEL_MULT)))) act[i]=(int32_t)v*DEL_MULT; //deal with overflow
-          v = act[i]/DEL_MULT;
-        }
-        else if (diff) {
-          act[i]=(int32_t)v*DEL_MULT;
+      if (sDelay[i]) { // perform delay
+        if(tick10ms) sDelay[i]--;
+        if (sDelay[i] != 0) {
+          v = act[i]/DEL_MULT; // Stay in old position until delay over
+          diff = 0;
         }
       }
 
-      //========== CURVES ===============
-      if (md->curve)
-        v = applyCurve(v, md->curve, md->srcRaw);
-
-      //========== TRIM ===============
-      if((md->carryTrim==0) && (md->srcRaw>0) && (md->srcRaw<=4)) v += trims[md->srcRaw-1];  //  0 = Trim ON  =  Default
-
-      //========== MULTIPLEX ===============
-      int32_t dv = (int32_t)v*md->weight;
-      int32_t *ptr = &chans[md->destCh-1]; // Save calculating address several times
-      switch(md->mltpx){
-        case MLTPX_REP:
-          *ptr = dv;
-          break;
-        case MLTPX_MUL:
-          dv /= 100;
-          dv *= *ptr;
-          dv /= RESXl;
-          *ptr = dv;
-          break;
-        default:  // MLTPX_ADD
-          *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
-          break;
+      if (diff && (md->speedUp || md->speedDown)) {
+        //rate = steps/sec => 32*1024/100*md->speedUp/Down
+        //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
+        //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 sincde it's asymmetrical
+        if(tick10ms) {
+            int32_t rate = (int32_t)DEL_MULT*2048*100;
+            if(md->weight) rate /= abs(md->weight);
+            // TODO port optim er9x by Mike
+            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)100*md->speedUp)   :  (int32_t)v*DEL_MULT) :
+                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)100*md->speedDown) :  (int32_t)v*DEL_MULT) ;
         }
+
+        if(((diff>0) && (v<(act[i]/DEL_MULT))) || ((diff<0) && (v>(act[i]/DEL_MULT)))) act[i]=(int32_t)v*DEL_MULT; //deal with overflow
+        v = act[i]/DEL_MULT;
+      }
+      else if (diff) {
+        act[i]=(int32_t)v*DEL_MULT;
+      }
     }
+
+    //========== CURVES ===============
+    if (md->curve)
+      v = applyCurve(v, md->curve, md->srcRaw);
+
+    //========== TRIM ===============
+    if((md->carryTrim==0) && (md->srcRaw>0) && (md->srcRaw<=4)) v += trims[md->srcRaw-1];  //  0 = Trim ON  =  Default
+
+    //========== MULTIPLEX ===============
+    int32_t dv = (int32_t)v*md->weight;
+    int32_t *ptr = &chans[md->destCh-1]; // Save calculating address several times
+    switch(md->mltpx){
+      case MLTPX_REP:
+        *ptr = dv;
+        break;
+      case MLTPX_MUL:
+        dv /= 100;
+        dv *= *ptr;
+        dv /= RESXl;
+        *ptr = dv;
+        break;
+      default:  // MLTPX_ADD
+        *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
+        break;
+      }
+  }
 
   //========== MIXER WARNING ===============
   // 1,2 or 3 "bips" (short beeps)
@@ -1631,7 +1663,7 @@ void perMain()
 #endif
 
   lcd_clear();
-  uint8_t evt=getEvent();
+  uint8_t evt = getEvent();
   evt = checkTrim(evt);
 
   // TODO port lightOnStickMove from er9x
@@ -1777,15 +1809,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
   sei();
   
 #if defined (PCBSTD) && defined (AUDIO)
-  if (audio.toneTimeLeft > 0) {
-    static uint8_t toneCounter;
-    toneCounter += audio.toneFreq;
-    if ((toneCounter & 0x80) == 0x80)
-      PORTE |= (1 << OUT_E_BUZZER);
-    else
-      PORTE &= ~(1 << OUT_E_BUZZER);
-  }
-
+  AUDIO_DRIVER();
   static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
   if (cnt10ms-- == 0) { // BEGIN { ... every 10ms ... }
     // Begin 10ms event
@@ -2094,7 +2118,7 @@ int main(void)
 #if defined (PCBV4)
   DDRB = 0b11000111;  PORTB = 0b00111111; // 7:SPKR, 6:PPM_OUT,  5:TrainSW,  4:IDL2_SW, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
   DDRC = 0x3f;  PORTC = 0xc0; // 7:AilDR, 6:EleDR, LCD[5,4,3,2,1], 0:BackLight
-  DDRD = 0x00;  PORTD = 0b11111100; // 7/6:Spare3/4, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
+  DDRD = 0x00;  PORTD = 0b11111100; // 7:VIB, 6:LED BL, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
   DDRE = 0b00001010;  PORTE = 0b11110101; // 7:PPM_IN, 6: RENC1_B, 5:RENC1_A, 4:USB_DNEG, 3:BUZZER, 2:USB_DPOS, 1:TELEM_TX, 0:TELEM_RX
   DDRF = 0x00;  PORTF = 0x00; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
   DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
