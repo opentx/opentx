@@ -415,7 +415,7 @@ void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT+MAX_TIMERS)
     putsStrIdx(x, y, STR_TMR, idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT), att);
 #ifdef FRSKY
-  else /*if (idx<=NUM_XCHNRAW)*/
+  else
     lcd_putsnAtt(x, y, STR_TELEMCHNS+LEN_TELEMCHNS*(idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+MAX_TIMERS+NUM_CHNOUT)), LEN_TELEMCHNS, att);
 #endif
 }
