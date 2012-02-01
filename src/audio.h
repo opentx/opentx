@@ -159,7 +159,11 @@ inline void driver() {
     // it is essentially the life of the class.
     void heartbeat();
 
-    // TODO bool freeslots(uint8_t slots);
+    // bool freeslots(uint8_t slots);
+
+    inline bool empty() {
+      return (t_queueRidx == t_queueWidx);
+    }
 
   protected:
     void aqinit(); // To stop constructor being compiled twice
