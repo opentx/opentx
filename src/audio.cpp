@@ -14,13 +14,6 @@
 
 #include "open9x.h"
 
-#if defined(PCBV4)
-#define SPEAKER_OFF  TCCR0A &= ~(1<<COM0A0)  // tone off
-#define SPEAKER_ON   TCCR0A |= (1<<COM0A0)   // tone on
-#else
-#define SPEAKER_OFF  PORTE &= ~(1 << OUT_E_BUZZER) // speaker output 'low'
-#endif
-
 audioQueue::audioQueue()
 {
   aqinit();
@@ -93,7 +86,6 @@ void audioQueue::heartbeat()
         tonePause = queueTonePause[t_queueRidx];
 #if defined(HAPTIC)
         toneHaptic = queueToneHaptic[t_queueRidx];
-        hapticTick = 0;
 #endif
         if (!queueToneRepeat[t_queueRidx]--) {
           t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
@@ -132,7 +124,6 @@ void audioQueue::playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     tonePause = tPause;
 #if defined(HAPTIC)
     toneHaptic = tHaptic;
-    hapticTick = 0;
 #endif
     toneFreqIncr = tFreqIncr;
     t_queueWidx = t_queueRidx;
@@ -237,8 +228,8 @@ void audioQueue::frskyevent(uint8_t e)
 }
 #endif
 
-void audioQueue::event(uint8_t e, uint8_t f) {
-
+void audioQueue::event(uint8_t e, uint8_t f)
+{
   uint8_t beepVal = g_eeGeneral.beeperVal;
 
   switch (e) {

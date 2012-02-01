@@ -36,12 +36,7 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#define EEPROM_ER9X_MIN  4
-#define EEPROM_ER9X_MAX  9
-
-#define EEPROM_VER_r584  3
-#define EEPROM_VER_r751  5
-#define EEPROM_VER       202
+#define EEPROM_VER       203
 
 #ifndef PACK
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
@@ -142,13 +137,13 @@ PACK(typedef struct t_MixData {
   uint8_t srcRaw;            //
   int8_t  weight;
   int8_t  swtch;
-  uint8_t curve;             // 0=symmetrisch, 1=no neg, 2=no pos
+  uint8_t curve;
   uint8_t delayUp:4;
   uint8_t delayDown:4;
   uint8_t speedUp:4;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
   uint8_t speedDown:4;       // 0 nichts
-  uint8_t carryTrim:1;
-  uint8_t mltpx:3;           // multiplex method 0=+ 1=* 2=replace
+  uint8_t carryTrim:2;
+  uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
   int8_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
   int8_t  sOffset;
 }) MixData;
@@ -173,6 +168,7 @@ enum Functions {
   FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
   FUNC_TRIMS_2_OFS,
+  FUNC_PLAY_SOUND,
 #ifdef LOGS
   FUNC_LOGS,
 #endif
@@ -181,19 +177,20 @@ enum Functions {
 
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
-  uint8_t func;
+  uint8_t func:4;
+  uint8_t param:4;
 }) FuncSwData;
 
 PACK(typedef struct t_FrSkyChannelData {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
-  uint8_t   type:4;             // channel unit (0=volts, ...)
-  int8_t    offset:4;           // calibration offset. Signed 0.1V steps. EG. -4 to substract 0.4V
+  uint8_t   type;               // channel unit (0=volts, ...)
   uint8_t   alarms_value[2];    // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc. 
   uint8_t   alarms_level:4;
   uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
   uint8_t   multiplier:2;       // 0=no multiplier, 1=*2 multiplier
-  uint8_t   barMin;             // minimum for bar display
-  uint8_t   barMax;             // ditto for max display (would usually = ratio)
+  uint8_t   barMin:4;           // minimum for bar display
+  uint8_t   barMax:4;           // ditto for max display (would usually = ratio)
+  int8_t    offset;
 }) FrSkyChannelData;
 
 #define PROTO_FRSKY_HUB   1
