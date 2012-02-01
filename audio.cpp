@@ -12,9 +12,7 @@
  *
  */
 
-#include "er9x.h"
-
-
+#include "open9x.h"
 
 #if defined(PCBV4)
 #define SPEAKER_OFF  TCCR0A &= ~(1<<COM0A0)  // tone off
@@ -48,16 +46,6 @@ void audioQueue::aqinit()
 #ifdef FRSKY
   frskySample = 0;
 #endif   
-
-//flush queue on init!
-for(uint8_t x = 0; x < AUDIO_QUEUE_LENGTH; x++){
-    queueToneFreq[x] = 0;
-    queueToneFreqIncr[x] = 0;
-    queueToneLength[x] = 0;
-    queueTonePause[x] = 0;
-    queueToneRepeat[x] = 0;	
-} 
-
 }
 
 bool audioQueue::busy()
@@ -65,12 +53,12 @@ bool audioQueue::busy()
   return (toneTimeLeft > 0);
 }
 
-/* TODO to be added when needed
+#if 0
 bool audioQueue::freeslots(uint8_t slots)
 {
   return AUDIO_QUEUE_LENGTH - ((t_queueWidx + AUDIO_QUEUE_LENGTH - t_queueRidx) % AUDIO_QUEUE_LENGTH) >= slots;
 }
-*/
+#endif
 
 // heartbeat is responsibile for issueing the audio tones and general square waves
 // it is essentially the life of the class.
@@ -143,14 +131,6 @@ void audioQueue::playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tRepeat, uint8_t tHaptic, int8_t tFreqIncr)
 {
   if (g_eeGeneral.beeperVal) {
-  	
-  	//required or you cannot do haptic only events
-  	if(tFreq == 0){
-  			toneFreq = 0;
-  	} else {	
-    		toneFreq = tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
-		}  	
-  	
     toneFreq = (tFreq ? tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET : 0); // add pitch compensator
     toneTimeLeft = getToneLength(tLen);
     tonePause = tPause;
@@ -171,24 +151,18 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tRepeat, uint8_t tHaptic, int8_t tFreqIncr)
 {
   if (g_eeGeneral.beeperVal) {
-
-		//required or you cannot do haptic only events
-  	if(tFreq == 0){
-  		queueToneFreq[t_queueWidx] = 0;
-  	} else {	
-    	queueToneFreq[t_queueWidx] = tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
-	  }  	
-  	
-    queueToneFreq[t_queueWidx] = (tFreq ? tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET : 0); // add pitch compensator
-    queueToneLength[t_queueWidx] = getToneLength(tLen);
-    queueTonePause[t_queueWidx] = tPause;
+    uint8_t next_queueWidx = (t_queueWidx + 1) % AUDIO_QUEUE_LENGTH;
+    if (next_queueWidx != t_queueRidx) {
+      queueToneFreq[t_queueWidx] = (tFreq ? tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET : 0); // add pitch compensator
+      queueToneLength[t_queueWidx] = getToneLength(tLen);
+      queueTonePause[t_queueWidx] = tPause;
 #if defined(HAPTIC)
-    queueToneHaptic[t_queueWidx] = tHaptic;
+      queueToneHaptic[t_queueWidx] = tHaptic;
 #endif
-    queueToneRepeat[t_queueWidx] = tRepeat;
-    queueToneFreqIncr[t_queueWidx] = tFreqIncr;
-
-    t_queueWidx = (t_queueWidx + 1) % AUDIO_QUEUE_LENGTH;
+      queueToneRepeat[t_queueWidx] = tRepeat;
+      queueToneFreqIncr[t_queueWidx] = tFreqIncr;
+      t_queueWidx = next_queueWidx;
+    }
   }
 }
 
@@ -206,75 +180,75 @@ void audioQueue::frskyeventSample(uint8_t e)
 
 void audioQueue::frskyevent(uint8_t e)
 {
-  // example playASAP(tStart,tLen,tPause,tRepeat,tHaptic,tEnd);
-  switch(e) {
-    case AU_FRSKY_WARN1:
-    playASAP(BEEP_DEFAULT_FREQ+20,15,5,2,1);
-    break;
-    case AU_FRSKY_WARN2:
-    playASAP(BEEP_DEFAULT_FREQ+30,15,5,2,1);
-    break;
-    case AU_FRSKY_CHEEP:
-    playASAP(BEEP_DEFAULT_FREQ+30,10,2,2,1,2);
-    break;
-    case AU_FRSKY_RING:
-    playASAP(BEEP_DEFAULT_FREQ+25,5,2,10,1);
-    playASAP(BEEP_DEFAULT_FREQ+25,5,10,1,1);
-    playASAP(BEEP_DEFAULT_FREQ+25,5,2,10,1);
-    break;
-    case AU_FRSKY_SCIFI:
-    playASAP(80,10,3,2,0,-1);
-    playASAP(60,10,3,2,0,1);
-    playASAP(70,10,1,0,2);
-    break;
-    case AU_FRSKY_ROBOT:
-    playASAP(70,5,1,1,1);
-    playASAP(50,15,2,1,1);
-    playASAP(80,15,2,1,1);
-    break;
-    case AU_FRSKY_CHIRP:
-
-    playASAP(BEEP_DEFAULT_FREQ+40,5,1,2,1);
-    playASAP(BEEP_DEFAULT_FREQ+54,5,1,3,1);
-    break;
-    case AU_FRSKY_TADA:
-    playASAP(50,5,5);
-    playASAP(90,5,5);
-    playASAP(110,3,4,2);
-    break;
-    case AU_FRSKY_CRICKET:
-    playASAP(80,5,10,3,1);
-    playASAP(80,5,20,1,1);
-    playASAP(80,5,10,3,1);
-    break;
-    case AU_FRSKY_SIREN:
-    playASAP(10,20,5,2,1,1);
-    break;
-    case AU_FRSKY_ALARMC:
-    playASAP(50,4,10,2,1);
-    playASAP(70,8,20,1,1);
-    playASAP(50,8,10,2,1);
-    playASAP(70,4,20,1,1);
-    break;
-    case AU_FRSKY_RATATA:
-    playASAP(BEEP_DEFAULT_FREQ+50,5,10,10,1);
-    break;
-    case AU_FRSKY_TICK:
-    playASAP(BEEP_DEFAULT_FREQ+50,5,50,2,1);
-    break;
-    case AU_FRSKY_HAPTIC1:
-    playASAP(0,20,10,1,1);
-    break;
-    case AU_FRSKY_HAPTIC2:
-    playASAP(0,20,10,2,1);
-    break;
-    case AU_FRSKY_HAPTIC3:
-    playASAP(0,20,10,3,1);
-    break;
-    default:
-    break;
+  if (empty()) {
+    // example playASAP(tStart,tLen,tPause,tRepeat,tHaptic,tEnd);
+    switch(e) {
+      case AU_FRSKY_WARN1:
+        playASAP(BEEP_DEFAULT_FREQ+20,15,5,2,1);
+        break;
+      case AU_FRSKY_WARN2:
+        playASAP(BEEP_DEFAULT_FREQ+30,15,5,2,1);
+        break;
+      case AU_FRSKY_CHEEP:
+        playASAP(BEEP_DEFAULT_FREQ+30,10,2,2,1,2);
+        break;
+      case AU_FRSKY_RING:
+        playASAP(BEEP_DEFAULT_FREQ+25,5,2,10,1);
+        playASAP(BEEP_DEFAULT_FREQ+25,5,10,1,1);
+        playASAP(BEEP_DEFAULT_FREQ+25,5,2,10,1);
+        break;
+      case AU_FRSKY_SCIFI:
+        playASAP(80,10,3,2,0,-1);
+        playASAP(60,10,3,2,0,1);
+        playASAP(70,10,1,0,2);
+        break;
+      case AU_FRSKY_ROBOT:
+        playASAP(70,5,1,1,1);
+        playASAP(50,15,2,1,1);
+        playASAP(80,15,2,1,1);
+        break;
+      case AU_FRSKY_CHIRP:
+        playASAP(BEEP_DEFAULT_FREQ+40,5,1,2,1);
+        playASAP(BEEP_DEFAULT_FREQ+54,5,1,3,1);
+        break;
+      case AU_FRSKY_TADA:
+        playASAP(50,5,5);
+        playASAP(90,5,5);
+        playASAP(110,3,4,2);
+        break;
+      case AU_FRSKY_CRICKET:
+        playASAP(80,5,10,3,1);
+        playASAP(80,5,20,1,1);
+        playASAP(80,5,10,3,1);
+        break;
+      case AU_FRSKY_SIREN:
+        playASAP(10,20,5,2,1,1);
+        break;
+      case AU_FRSKY_ALARMC:
+        playASAP(50,4,10,2,1);
+        playASAP(70,8,20,1,1);
+        playASAP(50,8,10,2,1);
+        playASAP(70,4,20,1,1);
+        break;
+      case AU_FRSKY_RATATA:
+        playASAP(BEEP_DEFAULT_FREQ+50,5,10,10,1);
+        break;
+      case AU_FRSKY_TICK:
+        playASAP(BEEP_DEFAULT_FREQ+50,5,50,2,1);
+        break;
+      case AU_FRSKY_HAPTIC1:
+        playASAP(0,20,10,1,1);
+        break;
+      case AU_FRSKY_HAPTIC2:
+        playASAP(0,20,10,2,1);
+        break;
+      case AU_FRSKY_HAPTIC3:
+        playASAP(0,20,10,3,1);
+        break;
+      default:
+        break;
+    }
   }
-
 }
 #endif
 
@@ -286,9 +260,11 @@ void audioQueue::event(uint8_t e, uint8_t f) {
     //startup tune
     // case 0:
     case AU_TADA:
-      playASAP(50, 10, 5);
-      playASAP(90, 10, 5);
-      playASAP(110, 5, 4, 2);
+      if (empty()) {
+        playASAP(50, 10, 5);
+        playASAP(90, 10, 5);
+        playASAP(110, 5, 4, 2);
+      }
       break;
 
       //warning one
@@ -411,8 +387,10 @@ void audioQueue::event(uint8_t e, uint8_t f) {
       //low battery in tx
       //case 19:
     case AU_TX_BATTERY_LOW:
-      playASAP(60, 20, 3, 2, 0, 1);
-      playASAP(80, 20, 3, 2, 1, -1);
+      if (empty()) {
+        playASAP(60, 20, 3, 2, 0, 1);
+        playASAP(80, 20, 3, 2, 1, -1);
+      }
       break;
 
     default:
@@ -420,6 +398,7 @@ void audioQueue::event(uint8_t e, uint8_t f) {
   }
 }
 
-void audioDefevent(uint8_t e) {
+void audioDefevent(uint8_t e)
+{
   audio.event(e, BEEP_DEFAULT_FREQ);
 }
