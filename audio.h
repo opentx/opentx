@@ -15,6 +15,20 @@
 #ifndef audio_h
 #define audio_h
 
+// TODO remove them when everything commited in open9x.h!!!
+#if defined(HAPTIC)
+#if defined(PCBV4)
+#define HAPTIC_OFF  PORTD |=  (1<<7)
+#define HAPTIC_ON   PORTD &= ~(1<<7)
+#else
+#define HAPTIC_OFF  PORTG &= ~(1<<2)
+#define HAPTIC_ON   PORTG |=  (1<<2)
+#endif
+#else
+#define HAPTIC_OFF
+#define HAPTIC_ON
+#endif
+
 //audio
 #define AUDIO_QUEUE_LENGTH (8)  //8 seems to suit most alerts
 #define BEEP_DEFAULT_FREQ  (70)
