@@ -101,7 +101,7 @@ void audioQueue::heartbeat()
         toneHaptic = queueToneHaptic[t_queueRidx];
         hapticTick = 0;
 #endif
-        if (queueToneRepeat[t_queueRidx]--) {
+        if (!queueToneRepeat[t_queueRidx]--) {
           t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
         }
       }
