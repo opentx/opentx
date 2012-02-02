@@ -29,7 +29,7 @@ void audioQueue::aqinit()
   tonePause = 0;
 
   t_queueRidx = 0;
-  t_queueRidx = 0;
+  t_queueWidx = 0;
 
 #ifdef HAPTIC
   toneHaptic = 0;
