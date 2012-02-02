@@ -19,12 +19,8 @@ audioQueue::audioQueue()
   aqinit();
 }
 
-// TODO should not be needed
 void audioQueue::aqinit()
 {
-  //make sure haptic off by default
-  HAPTIC_OFF;
-
   toneTimeLeft = 0;
   tonePause = 0;
 
@@ -32,14 +28,8 @@ void audioQueue::aqinit()
   t_queueWidx = 0;
 
 #ifdef HAPTIC
-  toneHaptic = 0;
   hapticTick = 0;
 #endif
-}
-
-bool audioQueue::busy()
-{
-  return (toneTimeLeft > 0);
 }
 
 #if 0
@@ -78,18 +68,19 @@ void audioQueue::heartbeat()
     SPEAKER_OFF;
     HAPTIC_OFF;
 
-    if (tonePause-- <= 0) {
-      if (t_queueRidx != t_queueWidx) {
-        toneFreq = queueToneFreq[t_queueRidx];
-        toneTimeLeft = queueToneLength[t_queueRidx];
-        toneFreqIncr = queueToneFreqIncr[t_queueRidx];
-        tonePause = queueTonePause[t_queueRidx];
+    if (tonePause > 0) {
+      tonePause--;
+    }
+    else if (t_queueRidx != t_queueWidx) {
+      toneFreq = queueToneFreq[t_queueRidx];
+      toneTimeLeft = queueToneLength[t_queueRidx];
+      toneFreqIncr = queueToneFreqIncr[t_queueRidx];
+      tonePause = queueTonePause[t_queueRidx];
 #if defined(HAPTIC)
-        toneHaptic = queueToneHaptic[t_queueRidx];
+      toneHaptic = queueToneHaptic[t_queueRidx];
 #endif
-        if (!queueToneRepeat[t_queueRidx]--) {
-          t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
-        }
+      if (!queueToneRepeat[t_queueRidx]--) {
+        t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
       }
     }
   }
@@ -153,12 +144,107 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
   }
 }
 
-#ifdef FRSKY
-void audioQueue::frskyevent(uint8_t e)
+// TODO check
+#define BEEP_NOKEYS 1
+void audioQueue::event(uint8_t e, uint8_t f)
 {
-  if (empty()) {
-    // example playASAP(tStart,tLen,tPause,tRepeat,tHaptic,tEnd);
-    switch(e) {
+  uint8_t beepVal = g_eeGeneral.beeperVal;
+
+  if (e < AU_FRSKY_FIRST || empty()) {
+    switch (e) {
+      // startup tune
+      case AU_TADA:
+        if (empty()) {
+          playASAP(50, 10, 5);
+          playASAP(90, 10, 5);
+          playASAP(110, 5, 4, 2);
+        }
+        break;
+      // warning one
+      case AU_WARNING1:
+        playNow(BEEP_DEFAULT_FREQ, 10, 1, 0, 1);
+        break;
+      // warning two
+      case AU_WARNING2:
+        playNow(BEEP_DEFAULT_FREQ, 20, 1, 0, 1);
+        break;
+      // warning three
+      case AU_WARNING3:
+        playNow(BEEP_DEFAULT_FREQ, 30, 1, 0, 1);
+        break;
+      // error
+      case AU_ERROR:
+        playNow(BEEP_DEFAULT_FREQ, 40, 1, 0, 1);
+        break;
+      // keypad up (seems to be used when going left/right through system menu options. 0-100 scales etc)
+      case AU_KEYPAD_UP:
+        if (beepVal != BEEP_NOKEYS) {
+          playNow(BEEP_KEY_UP_FREQ, 10, 1);
+        }
+        break;
+      // keypad down (seems to be used when going left/right through system menu options. 0-100 scales etc)
+      case AU_KEYPAD_DOWN:
+        if (beepVal != BEEP_NOKEYS) {
+          playNow(BEEP_KEY_DOWN_FREQ, 10, 1);
+        }
+        break;
+      // trim move
+      case AU_TRIM_MOVE:
+        playNow(f, 6, 1);
+        break;
+      // trim center
+      case AU_TRIM_MIDDLE:
+        playNow(BEEP_DEFAULT_FREQ, 10, 2, 0, 1);
+        break;
+      // menu display (also used by a few generic beeps)
+      case AU_MENUS:
+        if (beepVal != BEEP_NOKEYS) {
+          playNow(BEEP_DEFAULT_FREQ, 10, 2, 0, 0);
+        }
+        break;
+      // pot/stick center
+      case AU_POT_STICK_MIDDLE:
+        playNow(BEEP_DEFAULT_FREQ + 50, 10, 1, 0, 0);
+        break;
+      // mix warning 1
+      case AU_MIX_WARNING_1:
+        playNow(BEEP_DEFAULT_FREQ + 50, 10, 1, 1, 1);
+        break;
+      // mix warning 2
+      case AU_MIX_WARNING_2:
+        playNow(BEEP_DEFAULT_FREQ + 52, 10, 1, 2, 1);
+        break;
+      // mix warning 3
+      case AU_MIX_WARNING_3:
+        playNow(BEEP_DEFAULT_FREQ + 54, 10, 1, 3, 1);
+        break;
+      // time 30 seconds left
+      case AU_TIMER_30:
+        playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 3, 1);
+        break;
+      // time 20 seconds left
+      case AU_TIMER_20:
+        playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 2, 1);
+        break;
+      // time 10 seconds left
+      case AU_TIMER_10:
+        playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 1, 1);
+        break;
+      // time <3 seconds left
+      case AU_TIMER_LT3:
+        playNow(BEEP_DEFAULT_FREQ, 20, 25, 1, 1);
+        break;
+      // inactivity timer alert
+      case AU_INACTIVITY:
+        playNow(70, 10, 2,2);
+        break;
+      // low battery in tx
+      case AU_TX_BATTERY_LOW:
+        if (empty()) {
+          playASAP(60, 20, 3, 2, 0, 1);
+          playASAP(80, 20, 3, 2, 1, -1);
+        }
+        break;
       case AU_FRSKY_WARN1:
         playASAP(BEEP_DEFAULT_FREQ+20,15,5,2,1);
         break;
@@ -224,153 +310,6 @@ void audioQueue::frskyevent(uint8_t e)
       default:
         break;
     }
-  }
-}
-#endif
-
-void audioQueue::event(uint8_t e, uint8_t f)
-{
-  uint8_t beepVal = g_eeGeneral.beeperVal;
-
-  switch (e) {
-    //startup tune
-    // case 0:
-    case AU_TADA:
-      if (empty()) {
-        playASAP(50, 10, 5);
-        playASAP(90, 10, 5);
-        playASAP(110, 5, 4, 2);
-      }
-      break;
-
-      //warning one
-      // case 1:
-    case AU_WARNING1:
-      playNow(BEEP_DEFAULT_FREQ, 10, 1, 0, 1);
-      break;
-
-      //warning two
-      //case 2:
-    case AU_WARNING2:
-      playNow(BEEP_DEFAULT_FREQ, 20, 1, 0, 1);
-      break;
-
-      //warning three
-      //case 3:
-    case AU_WARNING3:
-      playNow(BEEP_DEFAULT_FREQ, 30, 1, 0, 1);
-      break;
-
-      //error
-      //case 4:
-    case AU_ERROR:
-      playNow(BEEP_DEFAULT_FREQ, 40, 1, 0, 1);
-      break;
-
-      //keypad up (seems to be used when going left/right through system menu options. 0-100 scales etc)
-      //case 5:
-    case AU_KEYPAD_UP:
-      if (beepVal != BEEP_NOKEYS) {
-        playNow(BEEP_KEY_UP_FREQ, 10, 1);
-      }
-      break;
-
-      //keypad down (seems to be used when going left/right through system menu options. 0-100 scales etc)
-      //case 6:
-    case AU_KEYPAD_DOWN:
-      if (beepVal != BEEP_NOKEYS) {
-        playNow(BEEP_KEY_DOWN_FREQ, 10, 1);
-      }
-      break;
-
-      //trim sticks move
-      //case 7:
-    case AU_TRIM_MOVE:
-      //if(beepVal != BEEP_NOKEYS){
-      playNow(f, 6, 1);
-      //}
-      break;
-
-      //trim sticks center
-      //case 8:
-    case AU_TRIM_MIDDLE:
-      //if(beepVal != BEEP_NOKEYS){
-      playNow(BEEP_DEFAULT_FREQ, 10, 2, 0, 1);
-      //}
-      break;
-
-      //menu display (also used by a few generic beeps)
-      //case 9:
-    case AU_MENUS:
-      if (beepVal != BEEP_NOKEYS) {
-        playNow(BEEP_DEFAULT_FREQ, 10, 2, 0, 0);
-      }
-      break;
-      //pot/stick center
-      //case 10:
-    case AU_POT_STICK_MIDDLE:
-      playNow(BEEP_DEFAULT_FREQ + 50, 10, 1, 0, 0);
-      break;
-
-      //mix warning 1
-      //case 11:
-    case AU_MIX_WARNING_1:
-      playNow(BEEP_DEFAULT_FREQ + 50, 10, 1, 1, 1);
-      break;
-
-      //mix warning 2
-      //case 12:
-    case AU_MIX_WARNING_2:
-      playNow(BEEP_DEFAULT_FREQ + 52, 10, 1, 2, 1);
-      break;
-
-      //mix warning 3
-      //case 13:
-    case AU_MIX_WARNING_3:
-      playNow(BEEP_DEFAULT_FREQ + 54, 10, 1, 3, 1);
-      break;
-
-      //time 30 seconds left
-      //case 14:
-    case AU_TIMER_30:
-      playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 3, 1);
-      break;
-
-      //time 20 seconds left
-      //case 15:
-    case AU_TIMER_20:
-      playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 2, 1);
-      break;
-
-      //time 10 seconds left
-      //case 16:
-    case AU_TIMER_10:
-      playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 1, 1);
-      break;
-
-      //time <3 seconds left
-      //case 17:
-    case AU_TIMER_LT3:
-      playNow(BEEP_DEFAULT_FREQ, 20, 25, 1, 1);
-      break;
-
-      //inactivity timer alert
-      //case 18:
-    case AU_INACTIVITY:
-      playNow(70, 10, 2,2);
-      break;
-
-      //low battery in tx
-      //case 19:
-    case AU_TX_BATTERY_LOW:
-      if (empty()) {
-        playASAP(60, 20, 3, 2, 0, 1);
-        playASAP(80, 20, 3, 2, 1, -1);
-      }
-      break;
-
-    default:
-      break;
   }
 }
 
