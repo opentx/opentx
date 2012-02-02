@@ -20,7 +20,10 @@
  */
 
 #include "menus.h"
+
+const pm_uchar sticks[] PROGMEM = {
 #include "sticks.lbm"
+};
 
 enum EnumTabDiag {
   e_Setup,
