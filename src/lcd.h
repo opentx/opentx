@@ -70,10 +70,10 @@ extern uint8_t lcd_lastPos;
 extern void lcd_putc(unsigned char x,unsigned char y,const char c);
 extern void lcd_putcAtt(unsigned char x,unsigned char y,const char c,uint8_t mode);
 
-extern void lcd_putsAtt(unsigned char x,unsigned char y,const prog_char * s,uint8_t mode);
-extern void lcd_putsnAtt(unsigned char x,unsigned char y,const prog_char * s,unsigned char len,uint8_t mode);
-extern void lcd_puts_P(unsigned char x,unsigned char y,const prog_char * s);
-extern void lcd_putsn_P(unsigned char x,unsigned char y,const prog_char * s,unsigned char len);
+extern void lcd_putsAtt(unsigned char x,unsigned char y,const pm_char * s,uint8_t mode);
+extern void lcd_putsnAtt(unsigned char x,unsigned char y,const pm_char * s,unsigned char len,uint8_t mode);
+extern void lcd_puts_P(unsigned char x,unsigned char y,const pm_char * s);
+extern void lcd_putsn_P(unsigned char x,unsigned char y,const pm_char * s,unsigned char len);
 
 extern void lcd_outhex4(unsigned char x,unsigned char y,uint16_t val);
 
@@ -81,7 +81,7 @@ extern void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode=0);
 extern void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode=0, uint8_t len=0);
 extern void lcd_outdez8(uint8_t x, uint8_t y, int8_t val);
 
-extern void putsStrIdx(uint8_t x, uint8_t y, const prog_char *str, uint8_t idx, uint8_t att=0);
+extern void putsStrIdx(uint8_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t att=0);
 
 extern void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att);
 extern void putsSwitches(uint8_t x, uint8_t y, int8_t swtch, uint8_t att=0);
@@ -122,7 +122,7 @@ inline void lcd_square(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0) { lcd_rec
     lcd_vline(xx  ,yy-ll,ll); \
     lcd_vline(xx+1,yy-ll,ll);
 
-extern void lcd_img(uint8_t x, uint8_t y, const prog_uchar * img, uint8_t idx, uint8_t mode);
+extern void lcd_img(uint8_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mode);
 extern void lcdSetRefVolt(unsigned char val);
 extern void lcd_init();
 extern void lcd_clear();

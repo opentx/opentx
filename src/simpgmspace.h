@@ -74,12 +74,12 @@ void sig(int sgn)
 
 #define APM
 
-typedef unsigned char prog_uchar;
-typedef const char prog_char;
-typedef const uint16_t prog_uint16_t;
-typedef const uint8_t prog_uint8_t;
-typedef const int16_t prog_int16_t;
-typedef const int8_t prog_int8_t;
+typedef unsigned char pm_uchar;
+typedef const char pm_char;
+typedef const uint16_t pm_uint16_t;
+typedef const uint8_t pm_uint8_t;
+typedef const int16_t pm_int16_t;
+typedef const int8_t pm_int8_t;
 
 extern sem_t eeprom_write_sem;
 

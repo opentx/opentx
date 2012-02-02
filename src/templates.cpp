@@ -49,14 +49,14 @@
 #include "open9x.h"
 #include "templates.h"
 
-const char stn1[] APM =  "Simple 4-CH";
-const char stn2[] APM =  "T-Cut";
-const char stn3[] APM =  "V-Tail";
-const char stn4[] APM =  "Elevon\\Delta";
-const char stn5[] APM =  "eCCPM";
-const char stn6[] APM =  "Heli Setup";
-const char stn7[] APM =  "Servo Test";
-const prog_char* n_Templates[] =
+const pm_char stn1[] PROGMEM =  "Simple 4-CH";
+const pm_char stn2[] PROGMEM =  "T-Cut";
+const pm_char stn3[] PROGMEM =  "V-Tail";
+const pm_char stn4[] PROGMEM =  "Elevon\\Delta";
+const pm_char stn5[] PROGMEM =  "eCCPM";
+const pm_char stn6[] PROGMEM =  "Heli Setup";
+const pm_char stn7[] PROGMEM =  "Servo Test";
+const pm_char * const n_Templates[] PROGMEM =
 {
   stn1,
   stn2,
@@ -92,7 +92,7 @@ void clearCurves()
     memset(g_model.curves9,0,sizeof(g_model.curves9)); //clear all curves
 }
 
-void setCurve(uint8_t c, const prog_int8_t ar[])
+void setCurve(uint8_t c, const pm_int8_t ar[])
 {
     if(c<MAX_CURVE5) //5 pt curve
         for(uint8_t i=0; i<5; i++) g_model.curves5[c][i] = pgm_read_byte(&ar[i]);
@@ -107,11 +107,11 @@ void setSwitch(uint8_t idx, uint8_t func, int8_t v1, int8_t v2)
     g_model.customSw[idx-1].v2   = v2;
 }
 
-const prog_int8_t APM heli_ar1[] = {-100, 20, 50, 70, 90};
-const prog_int8_t APM heli_ar2[] = {90, 70, 50, 70, 90};
-const prog_int8_t APM heli_ar3[] = {-20, -20, 0, 60, 100};
-const prog_int8_t APM heli_ar4[] = {-100, -60, 0, 60, 100};
-const prog_int8_t APM heli_ar5[] = {-100, 0, 0, 0, 100};
+const pm_int8_t heli_ar1[] PROGMEM = {-100, 20, 50, 70, 90};
+const pm_int8_t heli_ar2[] PROGMEM = {90, 70, 50, 70, 90};
+const pm_int8_t heli_ar3[] PROGMEM = {-20, -20, 0, 60, 100};
+const pm_int8_t heli_ar4[] PROGMEM = {-100, -60, 0, 60, 100};
+const pm_int8_t heli_ar5[] PROGMEM = {-100, 0, 0, 0, 100};
 void applyTemplate(uint8_t idx)
 {
     MixData *md = &g_model.mixData[0];

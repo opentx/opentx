@@ -44,7 +44,7 @@ void menuProcDiagKeys(uint8_t event);
 void menuProcDiagAna(uint8_t event);
 void menuProcDiagCalib(uint8_t event);
 
-MenuFuncP_PROGMEM APM menuTabDiag[] = {
+const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcSetup,
 #if defined(PCBV4)
   menuProcTime,
