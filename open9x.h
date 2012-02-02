@@ -52,10 +52,13 @@
 
 //#define __ATTR_PROGMEM__
 #include <avr/pgmspace.h>
+#undef PROGMEM
+#define PROGMEM __attribute__(( section(".progmem.data") ))
+#include "pgmtypes.h"
 #ifdef __cplusplus
 #define APM __attribute__(( section(".progmem.data") ))
 #undef PSTR
-#define PSTR(s) (__extension__({static prog_char APM __c[] = (s);&__c[0];}))
+#define PSTR(s) (__extension__({static const pm_char __c[] PROGMEM = (s);&__c[0];}))
 #endif
 
 #include <avr/eeprom.h>
@@ -252,8 +255,8 @@ extern uint16_t DEBUG2;
 
 #define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
 
-extern const prog_uint8_t APM chout_ar[24*4];
-extern const prog_uint8_t APM modn12x3[4*4];
+extern const pm_uint8_t chout_ar[24*4];
+extern const pm_uint8_t modn12x3[4*4];
 
 //convert from mode 1 to mode g_eeGeneral.stickMode
 //NOTICE!  =>  1..4 -> 1..4
@@ -433,8 +436,8 @@ extern uint8_t keyDown();
 
 /// Gibt Alarm Maske auf lcd aus.
 /// Die Maske wird so lange angezeigt bis eine beliebige Taste gedrueckt wird.
-void alert(const prog_char * s, bool defaults=false);
-void message(const prog_char * s);
+void alert(const pm_char * s, bool defaults=false);
+void message(const pm_char * s);
 /// periodisches Hauptprogramm
 void    perMain();
 /// Bearbeitet alle zeitkritischen Jobs.

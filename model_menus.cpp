@@ -69,7 +69,7 @@ void menuProcTemplates(uint8_t event);
 #endif
 void menuProcExpoOne(uint8_t event);
 
-MenuFuncP_PROGMEM APM menuTabModel[] = {
+const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuProcModelSelect,
   menuProcModel,
 #ifdef HELI
@@ -91,8 +91,8 @@ MenuFuncP_PROGMEM APM menuTabModel[] = {
 #endif
 };
 
-const prog_char * s_warning = 0;
-const prog_char * s_warning_info;
+const pm_char * s_warning = 0;
+const pm_char * s_warning_info;
 uint8_t           s_warning_info_len;
 // uint8_t s_warning_info_att not needed now
 uint8_t           s_confirmation = 0;
@@ -105,7 +105,7 @@ void displayBox()
   // could be a place for a s_warning_info
 }
 
-void displayPopup(const prog_char * pstr)
+void displayPopup(const pm_char * pstr)
 {
   s_warning = pstr;
   displayBox();

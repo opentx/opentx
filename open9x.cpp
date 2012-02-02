@@ -22,9 +22,9 @@
 #include "open9x.h"
 
 #ifdef SPLASH
-prog_uchar APM spsMarker[] = { "SPS" };
+const pm_uchar spsMarker[] PROGMEM = { "SPS" };
 #include "s9xsplash.lbm"
-prog_uchar APM speMarker[] = { "SPE" };
+const pm_uchar speMarker[] PROGMEM = { "SPE" };
 #endif
 
 #include "menus.h"
@@ -51,13 +51,13 @@ audioQueue  audio;
 
 uint8_t heartbeat;
 
-const prog_char APM s_charTab[] = "_-.,";
+const pm_char s_charTab[] PROGMEM = "_-.,";
 
 //R=1
 //E=2
 //T=3
 //A=4
-const prog_uint8_t APM chout_ar[] = { //First number is 0..23 -> template setup,  Second is relevant channel out
+const pm_uint8_t chout_ar[] PROGMEM = { //First number is 0..23 -> template setup,  Second is relevant channel out
                                       1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
                                       2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
                                       3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
@@ -69,7 +69,7 @@ mode2 rud thr ele ail
 mode3 ail ele thr rud
 mode4 ail thr ele rud
 */
-const prog_uint8_t APM modn12x3[]= {
+const pm_uint8_t modn12x3[] PROGMEM = {
     1, 2, 3, 4,
     1, 3, 2, 4,
     4, 2, 3, 1,
@@ -552,7 +552,7 @@ void checkLowEEPROM()
   }
 }
 
-void alertMessages( const prog_char * s, const prog_char * t )
+void alertMessages( const pm_char * s, const pm_char * t )
 {
   lcd_clear();
   lcd_putsAtt(64-5*FW,0*FH,STR_ALERT,DBLSIZE);
@@ -643,7 +643,7 @@ void checkSwitches()
   }
 }
 
-void message(const prog_char * s)
+void message(const pm_char * s)
 {
   lcd_clear();
   lcd_putsAtt(64-5*FW, 0*FH, STR_MESSAGE, DBLSIZE);
@@ -652,7 +652,7 @@ void message(const prog_char * s)
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
-void alert(const prog_char * s, bool defaults)
+void alert(const pm_char * s, bool defaults)
 {
   lcd_clear();
   lcd_putsAtt(64-5*FW, 0*FH, STR_ALERT, DBLSIZE);
@@ -766,9 +766,9 @@ static uint16_t s_anaFilt[8];
 uint16_t anaIn(uint8_t chan)
 {
   //                     ana-in:   3 1 2 0 4 5 6 7
-  //static prog_char APM crossAna[]={4,2,3,1,5,6,7,0}; // wenn schon Tabelle, dann muss sich auch lohnen
+  //static pm_char crossAna[] PROGMEM ={4,2,3,1,5,6,7,0}; // wenn schon Tabelle, dann muss sich auch lohnen
   //                        Google Translate (German): // if table already, then it must also be worthwhile
-  static prog_char APM crossAna[]={3,1,2,0,4,5,6,7};
+  static const pm_char crossAna[] PROGMEM ={3,1,2,0,4,5,6,7};
   volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
   return *p;
 }

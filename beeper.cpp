@@ -32,7 +32,7 @@ uint8_t hapticTick = 0;
 #endif
 
 // The various "beep" tone lengths
-static prog_uint8_t APM beepTab[]= {
+static const pm_uint8_t beepTab[] PROGMEM = {
     // 0   1   2   3    4
     0,  1,  8, 30, 100, //silent
     1,  1,  8, 30, 100, //xShort
