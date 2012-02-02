@@ -35,53 +35,45 @@
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
 
 /* make sure the defines below always go in numeric order */
-#define AU_TADA (0)
-#define AU_WARNING1 (1)
-#define AU_WARNING2 (2)
-#define AU_WARNING3 (3)
-#define AU_ERROR (4)
-#define AU_KEYPAD_UP (5)
-#define AU_KEYPAD_DOWN (6)
-#define AU_TRIM_MOVE (7)
-#define AU_TRIM_MIDDLE (8)
-#define AU_MENUS (9)
-#define AU_POT_STICK_MIDDLE (10)
-#define AU_MIX_WARNING_1 (11)
-#define AU_MIX_WARNING_2 (12)
-#define AU_MIX_WARNING_3 (13)
-#define AU_TIMER_30 (14)
-#define AU_TIMER_20 (15)
-#define AU_TIMER_10 (16)
-#define AU_TIMER_LT3 (17)
-#define AU_INACTIVITY (18)
-#define AU_TX_BATTERY_LOW (19)
-
-#ifdef FRSKY	
-#define AU_FRSKY_WARN1 (0)
-#define AU_FRSKY_WARN2 (1)
-#define AU_FRSKY_CHEEP (2)
-#define AU_FRSKY_RING (3)
-#define AU_FRSKY_SCIFI (4)
-#define AU_FRSKY_ROBOT (5)
-#define AU_FRSKY_CHIRP (6)
-#define AU_FRSKY_TADA (7)
-#define AU_FRSKY_CRICKET (8)
-#define AU_FRSKY_SIREN (9)
-#define AU_FRSKY_ALARMC (10)
-#define AU_FRSKY_RATATA (11)
-#define AU_FRSKY_TICK (12)
-#define AU_FRSKY_HAPTIC1 (13)
-#define AU_FRSKY_HAPTIC2 (14)
-#define AU_FRSKY_HAPTIC3 (15)
-#endif
-
-#define BEEP_QUIET (0)
-#define BEEP_NOKEYS (1)
-#define BEEP_XSHORT (2)
-#define BEEP_SHORT (3)
-#define BEEP_NORMAL (4)
-#define BEEP_LONG (5)
-#define BEEP_XLONG (6)
+enum AUDIO_SOUNDS {
+    AU_TADA,
+    AU_WARNING1,
+    AU_WARNING2,
+    AU_WARNING3,
+    AU_ERROR,
+    AU_KEYPAD_UP,
+    AU_KEYPAD_DOWN,
+    AU_TRIM_MOVE,
+    AU_TRIM_MIDDLE,
+    AU_MENUS,
+    AU_POT_STICK_MIDDLE,
+    AU_MIX_WARNING_1,
+    AU_MIX_WARNING_2,
+    AU_MIX_WARNING_3,
+    AU_TIMER_30,
+    AU_TIMER_20,
+    AU_TIMER_10,
+    AU_TIMER_LT3,
+    AU_INACTIVITY,
+    AU_TX_BATTERY_LOW,
+    AU_FRSKY_FIRST,
+    AU_FRSKY_WARN1 = AU_FRSKY_FIRST,
+    AU_FRSKY_WARN2,
+    AU_FRSKY_CHEEP,
+    AU_FRSKY_RING,
+    AU_FRSKY_SCIFI,
+    AU_FRSKY_ROBOT,
+    AU_FRSKY_CHIRP,
+    AU_FRSKY_TADA,
+    AU_FRSKY_CRICKET,
+    AU_FRSKY_SIREN,
+    AU_FRSKY_ALARMC,
+    AU_FRSKY_RATATA,
+    AU_FRSKY_TICK,
+    AU_FRSKY_HAPTIC1,
+    AU_FRSKY_HAPTIC2,
+    AU_FRSKY_HAPTIC3
+};
 
 class audioQueue
 {
@@ -95,13 +87,9 @@ class audioQueue
 
     void playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tRepeat=0, uint8_t tHaptic=0, int8_t tFreqIncr=0);
 
-    bool busy();
+    inline bool busy() { return (toneTimeLeft > 0); }
 
-    void event(uint8_t e,uint8_t f=BEEP_DEFAULT_FREQ);
-
-#if defined(FRSKY)
-    void frskyevent(uint8_t e);
-#endif
+    void event(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
 #if defined(ISER9X)
     inline void driver() {
@@ -173,13 +161,13 @@ class audioQueue
     uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
 
 #ifdef HAPTIC
-  uint8_t toneHaptic;
-  uint8_t hapticTick;
-  uint8_t queueToneHaptic[AUDIO_QUEUE_LENGTH];
+    uint8_t toneHaptic;
+    uint8_t hapticTick;
+    uint8_t queueToneHaptic[AUDIO_QUEUE_LENGTH];
 #endif
 
 #if defined(PCBSTD)
-  uint8_t toneCounter;
+    uint8_t toneCounter;
 #endif
 };
 
