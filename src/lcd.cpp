@@ -20,8 +20,14 @@
  */
 
 #include "lcd.h"
+
+const pm_uchar font[] PROGMEM = {
 #include "font.lbm"
+};
+
+const pm_uchar font_dblsize[] PROGMEM = {
 #include "font_dblsize.lbm"
+};
 
 #define font_5x8_x20_x7f (font+2)
 #define font_10x16_x20_x7f (font_dblsize+2)

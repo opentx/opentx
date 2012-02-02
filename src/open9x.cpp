@@ -22,9 +22,10 @@
 #include "open9x.h"
 
 #ifdef SPLASH
-const pm_uchar spsMarker[] PROGMEM = { "SPS" };
+const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 #include "s9xsplash.lbm"
-const pm_uchar speMarker[] PROGMEM = { "SPE" };
+	'S','P','E',0};
+const pm_uchar * s9xsplash = splashdata+4;
 #endif
 
 #include "menus.h"
