@@ -48,13 +48,16 @@ struct FrskyData {
 
 #if defined(FRSKY_HUB)
 struct FrskyHubData {
+  // 1 spare
   int16_t  gpsAltitude_bp;   // before punct
   int16_t  temperature1;     // -20 .. 250 deg. celcius
   uint16_t rpm;              // 0..60,000 revs. per minute
   uint16_t fuelLevel;        // 0, 25, 50, 75, 100 percent
   int16_t  temperature2;     // -20 .. 250 deg. celcius
   uint16_t volts;            // 1/500V increments (0..4.2V)
+  // 2 spares
   int16_t  gpsAltitude_ap;   // after punct
+  // 6 spares
   uint16_t baroAltitude;     // 0..9,999 meters
   uint16_t gpsSpeed_bp;      // before punct
   uint16_t gpsLongitude_bp;  // before punct
@@ -70,11 +73,17 @@ struct FrskyHubData {
   uint16_t gpsLongitude_ap;
   uint16_t gpsLatitude_ap;
   uint16_t gpsCourse_ap;
+  // 5 spares
   uint16_t gpsLongitudeEW;   // East/West
   uint16_t gpsLatitudeNS;    // North/South
   int16_t  accelX;           // 1/256th gram (-8g ~ +8g)
   int16_t  accelY;           // 1/256th gram (-8g ~ +8g)
   int16_t  accelZ;           // 1/256th gram (-8g ~ +8g)
+  // 1 spare
+  uint16_t current;
+  // 17 spares
+  uint16_t volts_bp;
+  uint16_t volts_ap;
 };
 
 #elif defined(WS_HOW_HIGH)

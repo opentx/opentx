@@ -94,8 +94,12 @@ uint8_t frskyGetUserData(char *buffer, uint8_t bufSize)
 #ifdef FRSKY_HUB
 int8_t parseTelemHubIndex(uint8_t index)
 {
-  if (index > 0x26)
+  if (index > 0x3b)
     index = 0; // invalid index
+  if (index > 0x39)
+    index -= 17;
+  if (index > 0x27)
+    index -= 1;
   if (index > 0x21)
     index -= 5;
   if (index > 0x0f)

@@ -52,6 +52,8 @@ audioQueue  audio;
 
 uint8_t heartbeat;
 
+int8_t safetyCh[NUM_CHNOUT];
+
 const pm_char s_charTab[] PROGMEM = "_-.,";
 
 //R=1
@@ -1045,19 +1047,25 @@ uint16_t active_functions = 0; // current max = 16 functions
 
 void evalFunctions()
 {
-  assert(sizeof(active_functions)*8 > FUNC_MAX);
+  assert(sizeof(active_functions)*8 > FUNC_MAX-NUM_CHNOUT);
+
+  for (uint8_t i=0; i<NUM_CHNOUT; i++)
+    safetyCh[i] = -128; // not defined
 
   for (uint8_t i=0; i<NUM_FSW; i++) {
     FuncSwData *sd = &g_model.funcSw[i];
-    if (sd->swtch && sd->func) {
-      uint16_t mask = (1 << (sd->func-1));
+    if (sd->swtch) {
+      uint16_t mask = (sd->func >= FUNC_TRAINER ? (1 << (sd->func-FUNC_TRAINER)) : 0);
       if (getSwitch(sd->swtch, 0)) {
-        if (sd->func == FUNC_PLAY_SOUND && (~active_functions & mask)) {
+        if (sd->func < FUNC_TRAINER) {
+          safetyCh[sd->func] = (int8_t)sd->param;
+        }
+        if (sd->func == FUNC_PLAY_SOUND/* && (~active_functions & mask)*/) {
 #if defined(AUDIO)
-          audioDefevent(sd->param);
+          audioDefevent(AU_FRSKY_FIRST+sd->param);
 #else
           if (g_eeGeneral.beeperVal>0) {
-            _beep(min(1, sd->param*10));
+            _beep(10);
           }
 #endif
         }
@@ -1336,8 +1344,8 @@ void perOut(int16_t *chanOut, uint8_t phase)
       if(q<lim_n) q = lim_n;
       if(g_model.limitData[i].revert) q=-q;// finally do the reverse.
 
-      if(g_model.safetySw[i].swtch)  //if safety sw available for channel check and replace val if needed
-          if(getSwitch(g_model.safetySw[i].swtch,0)) q = calc100toRESX(g_model.safetySw[i].val);
+      if (safetyCh[i] != -128)  // if safety channel available for channel check and replace val if needed
+          q = calc100toRESX(safetyCh[i]);
 
       chanOut[i] = q; //copy consistent word to int-level
   }

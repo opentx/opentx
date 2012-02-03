@@ -65,7 +65,7 @@
 #else
 #define TR_SDCLOGGS
 #endif
-#define TR_VFSWFUNC      "----         ""Ecolage      ""Ecolage DIR  ""Ecolage PRF  ""Ecolage GAZ  ""Ecolage AIL  ""Trim instant ""Trims2Offsets""Jouer son    " TR_SDCLOGGS
+#define TR_VFSWFUNC      "Securite \0   ""Ecolage \0    ""Trim instant ""Trims2Offsets""Jouer son    " TR_SDCLOGGS
 
 #define LEN_VTELEMUNIT   1
 #define TR_VTELEMUNIT    "v""-"

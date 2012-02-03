@@ -39,7 +39,6 @@ enum EnumTabModel {
   e_CurvesAll,
   e_CustomSwitches,
   e_FunctionSwitches,
-  e_SafetySwitches,
 #ifdef FRSKY
   e_Telemetry,
 #endif
@@ -60,7 +59,6 @@ void menuProcLimits(uint8_t event);
 void menuProcCurvesAll(uint8_t event);
 void menuProcCustomSwitches(uint8_t event);
 void menuProcFunctionSwitches(uint8_t event);
-void menuProcSafetySwitches(uint8_t event);
 #ifdef FRSKY
 void menuProcTelemetry(uint8_t event);
 #endif
@@ -82,7 +80,6 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuProcCurvesAll,
   menuProcCustomSwitches,
   menuProcFunctionSwitches,
-  menuProcSafetySwitches,
 #ifdef FRSKY
   menuProcTelemetry,
 #endif
@@ -1743,7 +1740,19 @@ void menuProcFunctionSwitches(uint8_t event)
           break;
         case 1:
           if (sd->swtch) {
-            lcd_putsnAtt(5*FW, y, STR_VFSWFUNC+LEN_VFSWFUNC*sd->func, LEN_VFSWFUNC, attr);
+            uint8_t func_displayed;
+            if (sd->func < NUM_CHNOUT) {
+              func_displayed = 0;
+              putsChnRaw(14*FW-2, y, NUM_STICKS+NUM_POTS+2+3+NUM_PPM+sd->func+1, attr);
+            }
+            else if (sd->func < NUM_CHNOUT + NUM_STICKS + 1) {
+              func_displayed = 1;
+              if (sd->func != FUNC_TRAINER)
+                putsChnRaw(13*FW-2, y, sd->func-FUNC_TRAINER, attr);
+            }
+            else
+              func_displayed = 2 + sd->func - NUM_CHNOUT - NUM_STICKS - 1;
+            lcd_putsnAtt(5*FW-2, y, STR_VFSWFUNC+LEN_VFSWFUNC*func_displayed, LEN_VFSWFUNC, attr);
             if (active) {
               CHECK_INCDEC_MODELVAR( event, sd->func, 0, FUNC_MAX-1);
             }
@@ -1753,10 +1762,31 @@ void menuProcFunctionSwitches(uint8_t event)
           }
           break;
         case 2:
-          if (sd->swtch && sd->func == FUNC_PLAY_SOUND) {
-            lcd_outdezAtt(19*FW, y, sd->param, attr);
+          if (sd->swtch) {
+            int16_t val_displayed;
+            int8_t val_min;
+            int8_t val_max;
+            if (sd->func == FUNC_PLAY_SOUND) {
+              val_displayed = sd->param;
+
+#ifdef AUDIO
+              val_min = 0;
+              val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
+#else
+              break;
+#endif
+            }
+            else if (sd->func <= FUNC_SAFETY_CH16) {
+              val_displayed = (int8_t)sd->param;
+              val_min = -125;
+              val_max = 125;
+            }
+            else {
+              break;
+            }
+            lcd_outdezAtt(21*FW, y, val_displayed, attr);
             if (active) {
-              CHECK_INCDEC_MODELVAR( event, sd->param, 0, 15);
+              CHECK_INCDEC_MODELVAR(event, sd->param, val_min, val_max);
             }
           }
           else if (attr) {
@@ -1768,6 +1798,7 @@ void menuProcFunctionSwitches(uint8_t event)
   }
 }
 
+#if 0
 void menuProcSafetySwitches(uint8_t event)
 {
   MENU(STR_MENUSAFETYSWITCHES, menuTabModel, e_SafetySwitches, NUM_CHNOUT+1, {0, 1/*repeated*/});
@@ -1802,6 +1833,7 @@ void menuProcSafetySwitches(uint8_t event)
     }
   }
 }
+#endif
 
 #ifdef FRSKY
 void menuProcTelemetry(uint8_t event)

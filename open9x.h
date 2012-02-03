@@ -475,6 +475,7 @@ extern uint16_t s_timeCum16ThrP; //gewichtete laufzeit in 1/16 sec
 extern uint8_t  s_timerState[2];
 extern int16_t  s_timerVal[2];
 extern uint8_t  s_timerVal_10ms[2];
+extern int8_t safetyCh[NUM_CHNOUT];
 
 extern uint8_t trimsCheckTimer;
 
@@ -700,7 +701,7 @@ extern void moveTrimsToOffsets(); // move state of 3 primary trims to offsets
 extern uint16_t active_functions;
 inline bool isFunctionActive(uint8_t func)
 {
-  return active_functions & (1 << (func-1));
+  return active_functions & (1 << (func-FUNC_TRAINER));
 }
 
 #ifdef DISPLAY_USER_DATA

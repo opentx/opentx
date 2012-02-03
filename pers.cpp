@@ -110,7 +110,7 @@ void eeLoadModel(uint8_t id)
     }
 #endif
 
-    if (sz < 730/*sizeof(last compatible eeprom)*/) {
+    if (sz == 0) {
       // alert("Error Loading Model");
       modelDefault(id);
       eeCheck(true);

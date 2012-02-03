@@ -142,13 +142,16 @@ void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mode
         c = pgm_read_byte(s);
         break;
     }
+    if (!c) break;
     lcd_putcAtt(x,y,c,mode);
     x+=FW;
     if (mode&DBLSIZE) x+=FW-1;
     s++;
     len--;
   }
+  lcd_lastPos = x;
 }
+
 void lcd_putsn_P(uint8_t x,uint8_t y,const pm_char * s,uint8_t len)
 {
   lcd_putsnAtt(x, y, s, len, 0);
@@ -156,14 +159,7 @@ void lcd_putsn_P(uint8_t x,uint8_t y,const pm_char * s,uint8_t len)
 
 void lcd_putsAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t mode)
 {
-  while(1) {
-    char c = (mode & BSS) ? *s++ : pgm_read_byte(s++);
-    if(!c) break;
-    lcd_putcAtt(x,y,c,mode);
-    x+=FW;
-    if(mode&DBLSIZE) x+=FW;
-  }
-  lcd_lastPos = x;
+  lcd_putsnAtt(x, y, s, 255, mode);
 }
 
 void lcd_puts_P(uint8_t x,uint8_t y,const pm_char * s)

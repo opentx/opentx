@@ -65,7 +65,7 @@
 #else
 #define TR_SDCLOGGS
 #endif
-#define TR_VFSWFUNC      "----         ""Trainer      ""Trainer RUD  ""Trainer ELE  ""Trainer THR  ""Trainer AIL  ""Instant Trim ""Trims2Offsets""Play sound   " TR_SDCLOGGS
+#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim ""Trims2Offsets""Play sound   " TR_SDCLOGGS
 
 #define LEN_VTELEMUNIT   1
 #define TR_VTELEMUNIT    "v""-"

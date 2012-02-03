@@ -752,9 +752,9 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 LBITS := $(shell getconf LONG_BIT)
-OS := @$(shell dpkg-architecture -qDEB_BUILD_ARCH_OS)
+OS := $(shell uname -o)
 ifeq ($(LBITS),64)
-  ifneq ($(OS),linux)
+  ifneq ($(OS),GNU/Linux)
        ARCH=-arch x86_64
   endif
 else
