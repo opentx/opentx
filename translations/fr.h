@@ -8,8 +8,8 @@
 #define LEN_NCHANNELS    4
 #define TR_NCHANNELS     "4CH 6CH 8CH 10CH12CH14CH16CH"
 
-#define LEN_VBEEPER       6
-#define TR_VBEEPER        "Quiet ""NoKey ""xShort""Short ""Norm  ""Long  ""xLong "
+#define LEN_VBEEPER      6
+#define TR_VBEEPER       "Quiet ""NoKey ""xShort""Court ""Norm  ""Long  ""xLong "
 
 #define LEN_ADCFILTER    4
 #define TR_ADCFILTER     "SING""OSMP""FILT"
@@ -24,7 +24,7 @@
 #define TR_TRNCHN        "ch1ch2ch3ch4"
 
 #define LEN_DATETIME     5
-#define TR_DATETIME      "DATE:""TIME:"
+#define TR_DATETIME      "DATE:""HEURE"
 
 #define LEN_VTRIMINC     6
 #define TR_VTRIMINC      "Exp   ""ExFin ""Fin   ""Moyen ""Gros  "
@@ -45,7 +45,7 @@
 #define TR_CURVMODES     "EDIT ""PRSET""A.GAZ"
 
 #define LEN_EXPLABELS    6
-#define TR_EXPLABELS     "Taux  ""Expo  ""Phase ""Inter ""Quand ""Courbe""      "
+#define TR_EXPLABELS     "Ratio ""Expo  ""Phase ""Inter ""Mode  ""Courbe""      "
 
 #define LEN_VMLTPX       8
 #define TR_VMLTPX        "Ajouter ""Multiply""Remplace"
@@ -153,7 +153,7 @@
 #define TR_INSERTMIX    "INSERER MIXAGE "
 #define TR_EDITMIX      "EDITER MIXAGE "
 #define TR_SOURCE       "Source"
-#define TR_WEIGHT       "Taux"
+#define TR_WEIGHT       "Ratio"
 #define TR_OFFSET       "Offset"
 #define TR_TRIM         "Trim"
 #define TR_CURVES       "Courbe"
@@ -241,7 +241,7 @@
 #define TR_EEPROMLOWMEM "EEPROM low mem"
 #define TR_ALERT        "ALERTE"
 #define TR_PRESSANYKEYTOSKIP "Appuyez sur touche"
-#define TR_THROTTLENOTIDLE "Gaz pas à zero"
+#define TR_THROTTLENOTIDLE "Gaz pas a zero"
 #define TR_RESETTHROTTLE    "Reinitialisez le"
 #define TR_ALARMSDISABLED   "Alarmes Desactivees"
 #define TR_SWITCHESNOTOFF   "Switches enclenches"
