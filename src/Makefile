@@ -363,9 +363,7 @@ CFLAGS += -Wundef
 CFLAGS += -Wa,-adhlns=$(<:%.c=$(OBJDIR)/%.lst)
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
-
-CFLAGS+= --combine -fwhole-program
-
+CFLAGS += -fwhole-program
 
 #---------------- Compiler Options C++ ----------------
 #  -g*:          generate debugging information
@@ -394,6 +392,14 @@ CPPFLAGS += -Wno-strict-aliasing
 #CPPFLAGS += -Wa,-adhlns=$(<:%.cpp=$(OBJDIR)/%.lst)
 CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 #CPPFLAGS += $(CSTANDARD)
+
+GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
+ifeq ($(GCCVERSIONGTE462),1)
+  CFLAGS += -flto
+  CPPFLAGS += -flto
+else
+  CFLAGS += --combine
+endif
 
 AVRGCCFLAGS = -fno-inline-small-functions
 
@@ -681,8 +687,8 @@ end:
 
 
 # Display size of file.
-HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex
-ELFSIZE = $(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf
+HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).elf
+ELFSIZE = $(SIZE) $(TARGET).elf
 AVRMEM = avr-mem.sh $(TARGET).elf $(MCU)
 
 sizebefore:
@@ -746,10 +752,13 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 LBITS := $(shell getconf LONG_BIT)
+OS := @$(shell dpkg-architecture -qDEB_BUILD_ARCH_OS)
 ifeq ($(LBITS),64)
-   ARCH=-arch x86_64
+  ifneq ($(OS),linux)
+       ARCH=-arch x86_64
+  endif
 else
-   ARCH=
+  ARCH=
 endif
 
 simu: $(CPPSRC) Makefile simu.cpp $(CPPSRC) simpgmspace.cpp *.h *.lbm eeprom.bin
