@@ -37,12 +37,12 @@
 
 int g_snapshot_idx = 0;
 
-class Gruvin9xSim: public FXMainWindow
+class Open9xSim: public FXMainWindow
 {
-  FXDECLARE(Gruvin9xSim)
+  FXDECLARE(Open9xSim)
 public:
-  Gruvin9xSim(){};
-  Gruvin9xSim(FXApp* a);
+  Open9xSim(){};
+  Open9xSim(FXApp* a);
   long onKeypress(FXObject*,FXSelector,void*);
   long onArrowPress(FXObject*,FXSelector,void*);
   long onTimeout(FXObject*,FXSelector,void*);
@@ -66,19 +66,19 @@ public:
   FXToggleButton *togButPpm;
 };
 // Message Map
-FXDEFMAP(Gruvin9xSim) Gruvin9xSimMap[]={
+FXDEFMAP(Open9xSim) Open9xSimMap[]={
 
   //________Message_Type_________ID_____________________Message_Handler_______
-  FXMAPFUNC(SEL_TIMEOUT,   2,    Gruvin9xSim::onTimeout),
-  FXMAPFUNC(SEL_COMMAND,   1000,    Gruvin9xSim::onArrowPress),
-  FXMAPFUNC(SEL_KEYPRESS,  0,    Gruvin9xSim::onKeypress),
+  FXMAPFUNC(SEL_TIMEOUT,   2,    Open9xSim::onTimeout),
+  FXMAPFUNC(SEL_COMMAND,   1000,    Open9xSim::onArrowPress),
+  FXMAPFUNC(SEL_KEYPRESS,  0,    Open9xSim::onKeypress),
   };
 
-FXIMPLEMENT(Gruvin9xSim,FXMainWindow,Gruvin9xSimMap,ARRAYNUMBER(Gruvin9xSimMap))
+FXIMPLEMENT(Open9xSim,FXMainWindow,Open9xSimMap,ARRAYNUMBER(Open9xSimMap))
 
 
-Gruvin9xSim::Gruvin9xSim(FXApp* a)
-:FXMainWindow(a,"Gruvin9xSim",NULL,NULL,DECOR_ALL,20,90,0,0)
+Open9xSim::Open9xSim(FXApp* a)
+:FXMainWindow(a,"Open9xSim",NULL,NULL,DECOR_ALL,20,90,0,0)
 {
 
   firstTime=true;
@@ -146,7 +146,7 @@ Gruvin9xSim::Gruvin9xSim(FXApp* a)
   getApp()->addTimeout(this,2,100);
 }
 
-void Gruvin9xSim::makeSnapshot(const FXDrawable* drawable)
+void Open9xSim::makeSnapshot(const FXDrawable* drawable)
 {
      // Construct and create an FXImage object
      FXPNGImage snapshot(getApp(), NULL, 0, drawable->getWidth(), drawable->getHeight());
@@ -184,12 +184,12 @@ void Gruvin9xSim::makeSnapshot(const FXDrawable* drawable)
        printf("Cannot create snapshot %s\n", buf);
      }
 }
-void Gruvin9xSim::doEvents()
+void Open9xSim::doEvents()
 {
   getApp()->runOneEvent(false);
 }
 
-long Gruvin9xSim::onArrowPress(FXObject*sender,FXSelector sel,void*v)
+long Open9xSim::onArrowPress(FXObject*sender,FXSelector sel,void*v)
 {
   int which,val;
   if(sender==arrow[0]) { which=1; val=0;}
@@ -207,7 +207,7 @@ long Gruvin9xSim::onArrowPress(FXObject*sender,FXSelector sel,void*v)
   }
   return 0;
 }
-long Gruvin9xSim::onKeypress(FXObject*,FXSelector,void*v)
+long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
 {
   FXEvent *evt=(FXEvent*)v;
   // printf("keypress %x\n", evt->code);
@@ -218,7 +218,7 @@ long Gruvin9xSim::onKeypress(FXObject*,FXSelector,void*v)
 }
 
 extern uint16_t       s_trainerLast10ms;
-long Gruvin9xSim::onTimeout(FXObject*,FXSelector,void*)
+long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 {
   if(togButPpm->getState()){
     for(int i=0; i<8; i++){
@@ -237,7 +237,7 @@ long Gruvin9xSim::onTimeout(FXObject*,FXSelector,void*)
   return 0;
 }
 
-void Gruvin9xSim::refreshDiplay()
+void Open9xSim::refreshDiplay()
 {
   if (lcd_refresh) {
     lcd_refresh = false;
@@ -363,7 +363,7 @@ void Gruvin9xSim::refreshDiplay()
   }
 }
 
-Gruvin9xSim *th9xSim;
+Open9xSim *th9xSim;
 void doFxEvents()
 {
   //puts("doFxEvents");
@@ -373,10 +373,6 @@ void doFxEvents()
 
 int main(int argc,char **argv)
 {
-  if(argc>=2){
-    eepromFile = argv[1];
-  }
-
   // Each FOX GUI program needs one, and only one, application object.
   // The application objects coordinates some common stuff shared between
   // all the widgets; for example, it dispatches events, keeps track of
@@ -384,7 +380,7 @@ int main(int argc,char **argv)
   // We pass the "name" of the application, and its "vendor", the name
   // and vendor are used to search the registry database (which stores
   // persistent information e.g. fonts and colors).
-  FXApp application("Gruvin9xSim", "thus");
+  FXApp application("Open9xSim", "thus");
 
   // Here we initialize the application.  We pass the command line arguments
   // because FOX may sometimes need to filter out some of the arguments.
@@ -398,7 +394,7 @@ int main(int argc,char **argv)
   // drag handles, and so on the Window Manager is supposed to give this
   // window.
   //FXMainWindow *main=new FXMainWindow(&application,"Hello",NULL,NULL,DECOR_ALL);
-  th9xSim = new Gruvin9xSim(&application);
+  th9xSim = new Open9xSim(&application);
   application.create();
 
   // Pretty self-explanatory:- this shows the window, and places it in the
@@ -413,7 +409,7 @@ int main(int argc,char **argv)
   frskyStreaming = 1;
 #endif
 
-  StartEepromThread();
+  StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
   StartMainThread();
 
   return application.run();
