@@ -193,8 +193,7 @@ PACK(typedef struct t_FrSkyChannelData {
 #define PROTO_WS_HOW_HIGH 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
-  uint8_t usrProto:2;  // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
-  uint8_t spare:6;
+  uint8_t usrProto;  // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
 }) FrSkyData;
 
 PACK(typedef struct t_SwashRingData { // Swash Ring data
