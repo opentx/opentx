@@ -154,13 +154,9 @@ PACK(typedef struct t_CustomSwData { // Custom Switches data
   uint8_t func;
 }) CustomSwData;
 
-PACK(typedef struct t_SafetySwData { // Safety Switches data
-  int8_t  swtch;
-  int8_t  val;
-}) SafetySwData;
-
 enum Functions {
-  FUNC_NONE,
+  FUNC_SAFETY_CH1,
+  FUNC_SAFETY_CH16=FUNC_SAFETY_CH1+15,
   FUNC_TRAINER,
   FUNC_TRAINER_RUD,
   FUNC_TRAINER_ELE,
@@ -177,8 +173,8 @@ enum Functions {
 
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
-  uint8_t func:4;
-  uint8_t param:4;
+  uint8_t func;
+  uint8_t param;
 }) FuncSwData;
 
 PACK(typedef struct t_FrSkyChannelData {
@@ -239,7 +235,7 @@ PACK(typedef struct t_PhaseData {
 
 #define NUM_CHNOUT   16 // number of real output channels CH1-CH16
 #define NUM_CSW      12 // number of custom switches
-#define NUM_FSW      12 // number of functions assigned to switches
+#define NUM_FSW      16 // number of functions assigned to switches
 
 #define TMRMODE_NONE     0
 #define TMRMODE_ABS      1
@@ -277,9 +273,8 @@ PACK(typedef struct t_ModelData {
   ExpoData  expoData[MAX_EXPOS];
   int8_t    curves5[MAX_CURVE5][5];
   int8_t    curves9[MAX_CURVE9][9];
-  CustomSwData  customSw[NUM_CSW];
-  SafetySwData  safetySw[NUM_CHNOUT];
-  FuncSwData    funcSw[NUM_FSW];
+  CustomSwData customSw[NUM_CSW];
+  FuncSwData   funcSw[NUM_FSW];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
   FrSkyData frsky;

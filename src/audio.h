@@ -72,7 +72,8 @@ enum AUDIO_SOUNDS {
     AU_FRSKY_TICK,
     AU_FRSKY_HAPTIC1,
     AU_FRSKY_HAPTIC2,
-    AU_FRSKY_HAPTIC3
+    AU_FRSKY_HAPTIC3,
+    AU_FRSKY_LAST,
 };
 
 class audioQueue
