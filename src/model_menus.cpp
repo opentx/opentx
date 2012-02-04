@@ -1872,7 +1872,7 @@ void menuProcTelemetry(uint8_t event)
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
       lcd_puts_P(4, y, STR_MAX);
-      putsTelemetryValue(8*FW, y, g_model.frsky.channels[i].ratio, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
+      putsTelemetryChannel(8*FW, y, i, 255, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
       lcd_putsnAtt(lcd_lastPos, y, STR_VTELEMUNIT+LEN_VTELEMUNIT*g_model.frsky.channels[i].type, LEN_VTELEMUNIT, (sub==subN && m_posHorz==1 ? blink:0));
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         if (m_posHorz == 0)
@@ -1885,8 +1885,8 @@ void menuProcTelemetry(uint8_t event)
 
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
-      lcd_puts_P(4, y, STR_CALIB);
-      putsTelemetryChannel(8*FW, y, i, frskyTelemetry[i].value, (sub==subN ? blink:0)|LEFT);
+      lcd_puts_P(4, y, STR_MIN);
+      putsTelemetryChannel(8*FW, y, i, 0, (sub==subN ? blink:0)|LEFT);
       if(sub==subN) CHECK_INCDEC_MODELVAR(event, g_model.frsky.channels[i].offset, -127, 127);
     }
     subN++;
