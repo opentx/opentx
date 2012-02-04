@@ -751,18 +751,8 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-LBITS := $(shell getconf LONG_BIT)
-OS := $(shell uname -o)
-ifeq ($(LBITS),64)
-  ifneq ($(OS),GNU/Linux)
-       ARCH=-arch x86_64
-  endif
-else
-  ARCH=
-endif
-
 simu: $(CPPSRC) Makefile simu.cpp $(CPPSRC) simpgmspace.cpp *.h *.lbm eeprom.bin
-	g++ simu.cpp $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB)
+	g++ simu.cpp $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
