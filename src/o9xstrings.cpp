@@ -22,6 +22,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     TR_VMIXTRIMS
     TR_VCSWFUNC
     TR_VFSWFUNC
+    TR_FUNCSOUNDS
 #ifdef FRSKY
     TR_VTELEMUNIT
     TR_VALARM
@@ -105,8 +106,7 @@ const pm_char STR_COPYTRIMMENU[] PROGMEM = TR_COPYTRIMMENU;
 const pm_char STR_CV[] PROGMEM = TR_CV;
 const pm_char STR_SW[] PROGMEM = TR_SW;
 const pm_char STR_ACHANNEL[] PROGMEM = TR_ACHANNEL;
-const pm_char STR_MAX[] PROGMEM = TR_MAX;
-const pm_char STR_MIN[] PROGMEM = TR_MIN;
+const pm_char STR_RANGE[] PROGMEM = TR_RANGE;
 const pm_char STR_BAR[] PROGMEM = TR_BAR;
 const pm_char STR_ALARM[] PROGMEM = TR_ALARM;
 const pm_char STR_USRPROTO[] PROGMEM = TR_USRPROTO;

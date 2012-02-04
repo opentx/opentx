@@ -298,6 +298,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
       case AU_FRSKY_TICK:
         playASAP(BEEP_DEFAULT_FREQ+50,5,50,2,1);
         break;
+#ifdef HAPTIC
       case AU_FRSKY_HAPTIC1:
         playASAP(0,20,10,1,1);
         break;
@@ -307,6 +308,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
       case AU_FRSKY_HAPTIC3:
         playASAP(0,20,10,3,1);
         break;
+#endif
       default:
         break;
     }
