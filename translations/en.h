@@ -172,7 +172,7 @@
 #define TR_SW           "SW"
 #define TR_ACHANNEL     "A  channel"
 #define TR_MAX          "Max"
-#define TR_CALIB        "Calib"
+#define TR_MIN          "Min"
 #define TR_BAR          "Bar"
 #define TR_ALARM        "Alarm"
 #define TR_USRPROTO     "UsrProto"

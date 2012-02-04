@@ -184,7 +184,7 @@ extern const pm_char STR_CV[];
 extern const pm_char STR_SW[];
 extern const pm_char STR_ACHANNEL[];
 extern const pm_char STR_MAX[];
-extern const pm_char STR_CALIB[];
+extern const pm_char STR_MIN[];
 extern const pm_char STR_BAR[];
 extern const pm_char STR_ALARM[];
 extern const pm_char STR_USRPROTO[];
