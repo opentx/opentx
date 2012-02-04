@@ -8,7 +8,7 @@ options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"),
                  [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
                  [("", "AUDIO=NO"), ("audio", "AUDIO=YES")],
                  [("", "HAPTIC=NO"), ("haptic", "HAPTIC=YES")],
-#                 ("DSM2", "DSM2="NO", "DSM2=PPM"),
+                 [("", "DSM2=NO"), ("DSM2", "DSM2=PPM")],
 #                 ("PXX", "PXX=NO", "PXX=YES"),
                 ]
 
