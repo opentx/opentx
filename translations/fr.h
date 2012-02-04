@@ -67,6 +67,9 @@
 #endif
 #define TR_VFSWFUNC      "Securite \0   ""Ecolage \0    ""Trim instant ""Trims2Offsets""Jouer son    " TR_SDCLOGGS
 
+#define LEN_FUNCSOUNDS   6
+#define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
+
 #define LEN_VTELEMUNIT   1
 #define TR_VTELEMUNIT    "v""-"
 
@@ -171,8 +174,7 @@
 #define TR_CV           "CV"
 #define TR_SW           "SW"
 #define TR_ACHANNEL     "A  voie"
-#define TR_MAX          "Max"
-#define TR_MIN          "Min"
+#define TR_RANGE        "Range"
 #define TR_BAR          "Bar"
 #define TR_ALARM        "Alarme"
 #define TR_USRPROTO     "UsrProto"

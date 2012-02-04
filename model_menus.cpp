@@ -1772,6 +1772,7 @@ void menuProcFunctionSwitches(uint8_t event)
 #ifdef AUDIO
               val_min = 0;
               val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
+              lcd_putsnAtt(15*FW, y, STR_FUNCSOUNDS+LEN_FUNCSOUNDS*val_displayed, LEN_FUNCSOUNDS, attr);
 #else
               break;
 #endif
@@ -1780,11 +1781,12 @@ void menuProcFunctionSwitches(uint8_t event)
               val_displayed = (int8_t)sd->param;
               val_min = -125;
               val_max = 125;
+              lcd_outdezAtt(21*FW, y, val_displayed, attr);
             }
             else {
               break;
             }
-            lcd_outdezAtt(21*FW, y, val_displayed, attr);
+
             if (active) {
               CHECK_INCDEC_MODELVAR(event, sd->param, val_min, val_max);
             }
@@ -1871,8 +1873,8 @@ void menuProcTelemetry(uint8_t event)
 
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
-      lcd_puts_P(4, y, STR_MAX);
-      putsTelemetryChannel(8*FW, y, i, 255, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
+      lcd_puts_P(4, y, STR_RANGE);
+      putsTelemetryValue(8*FW, y, g_model.frsky.channels[i].ratio, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
       lcd_putsnAtt(lcd_lastPos, y, STR_VTELEMUNIT+LEN_VTELEMUNIT*g_model.frsky.channels[i].type, LEN_VTELEMUNIT, (sub==subN && m_posHorz==1 ? blink:0));
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         if (m_posHorz == 0)
@@ -1885,7 +1887,7 @@ void menuProcTelemetry(uint8_t event)
 
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
-      lcd_puts_P(4, y, STR_MIN);
+      lcd_puts_P(4, y, STR_OFFSET);
       putsTelemetryChannel(8*FW, y, i, 0, (sub==subN ? blink:0)|LEFT);
       if(sub==subN) CHECK_INCDEC_MODELVAR(event, g_model.frsky.channels[i].offset, -127, 127);
     }
