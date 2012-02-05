@@ -177,6 +177,17 @@ PACK(typedef struct t_FuncSwData { // Function Switches data
   uint8_t param;
 }) FuncSwData;
 
+enum TelemetryUnit {
+  UNIT_VOLTS,
+  UNIT_RAW,
+  UNIT_KTS,
+  UNIT_KMH,
+  UNIT_MPH,
+  UNIT_METERS,
+  UNIT_DEGREES,
+  UNIT_MAX
+};
+
 PACK(typedef struct t_FrSkyChannelData {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
   uint8_t   type;               // channel unit (0=volts, ...)

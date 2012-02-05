@@ -497,7 +497,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, uint8_t val, ui
 {
   // TODO optimize this, avoid int32_t
   int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * g_model.frsky.channels[channel].ratio * 2 / 51;
-  if (g_model.frsky.channels[channel].type == 0 && converted_value < 1000) {
+  if (g_model.frsky.channels[channel].type == UNIT_VOLTS && converted_value < 1000) {
     att |= PREC2;
   }
   else {
@@ -508,11 +508,13 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, uint8_t val, ui
 
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
 {
-  if (unit == 0/*v*/) {
+  if (unit == UNIT_VOLTS) {
     putsVolts(x, y, val, att);
   }
-  else /* raw or reserved unit */ {
-    lcd_outdezAtt(x, y, val, att);
+  else {
+    lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att); // TODO we could add this test inside lcd_outdezAtt!
+    if (~att & NO_UNIT && unit != UNIT_RAW)
+      lcd_putsnAtt(lcd_lastPos+1, y, STR_VTELEMUNIT+LEN_VTELEMUNIT*unit, LEN_VTELEMUNIT, 0);
   }
 }
 #endif

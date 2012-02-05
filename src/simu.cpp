@@ -173,12 +173,10 @@ void Open9xSim::makeSnapshot(const FXDrawable* drawable)
        sprintf(buf,"snapshot_%02d.png", ++g_snapshot_idx);
      } while (stream.open(buf, FXStreamLoad));
 
-     if (stream.open(buf, FXStreamSave))
-     //if (stream.open("snapshot.png", FXStreamSave))
-     {
+     if (stream.open(buf, FXStreamSave)) {
          snapshot.savePixels(stream);
          stream.close();
-         printf("Snapshot written: %s\n",buf);
+         printf("Snapshot written: %s\n", buf);
      }
      else {
        printf("Cannot create snapshot %s\n", buf);

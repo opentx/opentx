@@ -97,6 +97,7 @@ struct FrskyHubData {
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 extern FrskyHubData frskyHubData;
 extern int16_t baroAltitudeOffset;
+extern uint8_t maxGpsSpeed;
 #endif
 
 // Global Fr-Sky telemetry data variables

@@ -1880,7 +1880,7 @@ void menuProcTelemetry(uint8_t event)
         if (m_posHorz == 0)
           g_model.frsky.channels[i].ratio = checkIncDec(event, g_model.frsky.channels[i].ratio, 0, 255, EE_MODEL);
         else
-          CHECK_INCDEC_MODELVAR(event, g_model.frsky.channels[i].type, 0, 1);
+          CHECK_INCDEC_MODELVAR(event, g_model.frsky.channels[i].type, 0, UNIT_MAX-1);
       }
     }
     subN++;

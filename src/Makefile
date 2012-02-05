@@ -608,11 +608,6 @@ MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
 ABUILD_NUM = ${shell sh -c "grep \"BUILD_NUM\" stamp-open9x.h | egrep -o \"[[:digit:]]+\""}
 BUILD_NUM = $(shell echo $$(( $(ABUILD_NUM) + 1 )))
 BUILD_DIR = $(shell pwd | awk -F'/' '{print $$((NF-1))}')
-ifeq "$(USER)" "bryan"
-  THEUSER=gruvin
-else 
-  THEUSER=$(USER)
-endif
 
 # Default target.
 all: begin gccversion sizebefore build sizeafter end
@@ -640,9 +635,8 @@ stamp_header:
 	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-open9x.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-open9x.h
 	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> stamp-open9x.h
-	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)-$(THEUSER)\"" >> stamp-open9x.h
+	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)-$(MODS)\"" >> stamp-open9x.h
 	@echo "#define SVN_STR  \"$(BUILD_DIR)-r$(REV)\"" >> stamp-open9x.h
-	@echo "#define MOD_STR  \"$(MODS)\"" >> stamp-open9x.h
 	@cat stamp-open9x.h
 	
 stamp:
@@ -687,8 +681,8 @@ end:
 
 
 # Display size of file.
-HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).elf
-ELFSIZE = $(SIZE) $(TARGET).elf
+HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex
+ELFSIZE = $(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf
 AVRMEM = avr-mem.sh $(TARGET).elf $(MCU)
 
 sizebefore:

@@ -65,13 +65,13 @@
 #else
 #define TR_SDCLOGGS
 #endif
-#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim ""Trims2Offsets""Play sound   " TR_SDCLOGGS
+#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim ""Trims2Offsets""Play sound\0  " TR_SDCLOGGS
 
 #define LEN_FUNCSOUNDS   6
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
 
-#define LEN_VTELEMUNIT   1
-#define TR_VTELEMUNIT    "v""-"
+#define LEN_VTELEMUNIT   4
+#define TR_VTELEMUNIT    "v\0  ""-\0  ""kts\0""km/h""M/h\0""m\0  ""@C\0 "
 
 #define LEN_VALARM       3
 #define TR_VALARM        "---""Yel""Org""Red"
