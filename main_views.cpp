@@ -85,9 +85,8 @@ void doMainScreenGrphics()
 void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
 {
   lcd_puts_P(x, y, STR_ALT);
-  uint16_t value = frskyHubData.baroAltitude + baroAltitudeOffset;
-  lcd_outdezAtt(lcd_lastPos, (flags & DBLSIZE) ? y-FH : y, value, flags|LEFT|UNSIGN);
-  lcd_putc(lcd_lastPos, y, 'm') ;
+  int16_t value = frskyHubData.baroAltitude + baroAltitudeOffset;
+  putsTelemetryValue(lcd_lastPos, y, value, UNIT_METERS, flags|LEFT);
 }
 #endif
 
