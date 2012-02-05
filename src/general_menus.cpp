@@ -271,7 +271,7 @@ void menuProcSetup(uint8_t event)
       uint8_t attr = sub==subN?INVERS:0;
       lcd_puts_P(0, y,STR_RXCHANNELORD);//   RAET->AETR
       for (uint8_t i=1; i<=4; i++)
-        putsChnLetter((16+i)*FW, y, CHANNEL_ORDER(i), attr);
+        putsChnLetter((16+i)*FW, y, channel_order(i), attr);
       if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
       if((y+=FH)>7*FH) return;
   }subN++;
@@ -408,7 +408,7 @@ void menuProcTrainer(uint8_t event)
   blink = (s_editMode>0) ? BLINK : INVERS ;
 
   for (uint8_t i=0; i<NUM_STICKS; i++) {
-    uint8_t chan = pgm_read_byte(chout_ar+g_eeGeneral.templateSetup*4+i); // G: Issue 30.
+    uint8_t chan = channel_order(i+1);
 
     volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
