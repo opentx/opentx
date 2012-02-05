@@ -1430,7 +1430,6 @@ void perMain()
 
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
 
-
   uint16_t val;
 
   if (g_model.thrTraceSrc == 0) {
