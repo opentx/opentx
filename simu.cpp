@@ -417,8 +417,10 @@ int main(int argc,char **argv)
 
 uint16_t anaIn(uint8_t chan)
 {
-  if(chan<4)  return th9xSim->sliders[chan]->getValue();
-  return th9xSim->knobs[chan]->getValue();
-  //return 512 -  512*10*chan/100;
-  //return (rand() & 0x1f) + 0x2f8;
+  if (chan == 7)
+    return 1500;
+  else if (chan<4)
+    return th9xSim->sliders[chan]->getValue();
+  else
+    return th9xSim->knobs[chan]->getValue();
 }
