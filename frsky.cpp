@@ -56,6 +56,7 @@ struct FrskyAlarm frskyAlarms[4];
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 FrskyHubData frskyHubData;
 int16_t baroAltitudeOffset = 0;
+uint8_t maxGpsSpeed = 0;
 #endif
 
 void frskyPushValue(uint8_t *&ptr, uint8_t value)
@@ -150,6 +151,9 @@ void parseTelemHubByte(uint8_t byte)
     return;
   }
   ((uint8_t*)&frskyHubData)[structPos+1] = byte;
+  if (structPos == offsetof(FrskyHubData, gpsSpeed_ap)/2 && maxGpsSpeed < frskyHubData.gpsSpeed_ap)
+    maxGpsSpeed = frskyHubData.gpsSpeed_ap;
+
   state = TS_IDLE;
 }
 #endif

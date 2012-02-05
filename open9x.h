@@ -639,7 +639,6 @@ extern const char stamp1[];
 extern const char stamp2[];
 extern const char stamp3[];
 extern const char stamp4[];
-extern const char stamp5[];
 
 #ifndef BATT_UNSTABLE_BANDGAP
 extern uint16_t           abRunningAvg;
