@@ -56,15 +56,16 @@ int8_t safetyCh[NUM_CHNOUT];
 
 const pm_char s_charTab[] PROGMEM = "_-.,";
 
-//R=1
-//E=2
-//T=3
-//A=4
-const pm_uint8_t chout_ar[] PROGMEM = { //First number is 0..23 -> template setup,  Second is relevant channel out
-                                      1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
-                                      2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
-                                      3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
-                                      4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1    };
+const pm_uint8_t bchout_ar[] PROGMEM = {
+    0x1B, 0x1E, 0x27, 0x2D, 0x36, 0x39,
+    0x4B, 0x4E, 0x63, 0x6C, 0x72, 0x78,
+    0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
+    0xC6, 0xC9, 0xD2, 0xD8, 0xE1, 0xE4 };
+
+uint8_t channel_order(uint8_t x)
+{
+  return ( ((pgm_read_byte(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
+}
 
 /*
 mode1 rud ele thr ail
@@ -77,7 +78,6 @@ const pm_uint8_t modn12x3[] PROGMEM = {
     1, 3, 2, 4,
     4, 2, 3, 1,
     4, 3, 2, 1 };
-
 
 char idx2char(int8_t idx)
 {
