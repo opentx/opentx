@@ -426,6 +426,11 @@ void menuMainView(uint8_t event)
 #ifdef WS_HOW_HIGH
       else if (g_model.frsky.usrProto == PROTO_WS_HOW_HIGH && view == e_telemetry+2*ALTERNATE_VIEW) {
         displayAltitudeLine(0, 4*FH, DBLSIZE);
+        lcd_puts_P(1*FW, 7*FH, STR_RX);
+        lcd_outdezAtt(4*FW, 7*FH, staticRSSI[0], LEFT);
+        lcd_puts_P(11*FW, 7*FH, STR_TX);
+        lcd_outdezAtt(14*FW, 7*FH, staticRSSI[1], LEFT);
+        lcd_filled_rect(0, 7*FH, DISPLAY_W, 8);
       }
 #endif
 #ifdef FRSKY_HUB
@@ -495,53 +500,45 @@ void menuMainView(uint8_t event)
         // lcd_outdezAtt(lcd_lastPos+2, 7*FH, frskyHubData.gpsAltitude_ap, LEFT|UNSIGN); // after '.'
       }
       else if (g_model.frsky.usrProto == PROTO_FRSKY_HUB && view == e_telemetry+2*ALTERNATE_VIEW) {
-        uint8_t y = 2*FH;
-
         // Temperature 1
-        lcd_puts_P(0, y, STR_TEMP1);
-        putsTelemetryValue(lcd_lastPos, y, frskyHubData.temperature1, UNIT_DEGREES, LEFT);
-        y += FH;
+        lcd_puts_P(0, 4*FH, STR_TEMP1);
+        putsTelemetryValue(lcd_lastPos, 4*FH, frskyHubData.temperature1, UNIT_DEGREES, DBLSIZE|LEFT);
 
         // Temperature 2
-        lcd_puts_P(0, y, STR_TEMP2);
-        putsTelemetryValue(lcd_lastPos, y, frskyHubData.temperature2, UNIT_DEGREES, LEFT);
-        y += 2*FH;
+        lcd_puts_P(11*FW, 4*FH, STR_TEMP2);
+        putsTelemetryValue(lcd_lastPos, 4*FH, frskyHubData.temperature2, UNIT_DEGREES, DBLSIZE|LEFT);
 
         // RPM
-        lcd_puts_P(0, y, STR_RPM);
-        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.rpm, LEFT);
-        y += FH;
+        lcd_puts_P(0, 2*FH, STR_RPM);
+        lcd_outdezNAtt(lcd_lastPos, 1*FH, frskyHubData.rpm, DBLSIZE|LEFT);
 
         // Fuel
-        lcd_puts_P(0, y, STR_FUEL);
-        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.fuelLevel, LEFT);
-        lcd_putc(lcd_lastPos, y, '%');
-        y += FH;
+        lcd_puts_P(10*FW, 2*FH, STR_FUEL);
+        lcd_outdezNAtt(lcd_lastPos, 1*FH, frskyHubData.fuelLevel, DBLSIZE|LEFT); // TODO putsTelemetry + UNIT_PERCENT
+        lcd_putc(lcd_lastPos, 2*FH, '%');
 
+#if 0
         // Volts
-        lcd_puts_P(0, y, STR_VOLTS);
-        lcd_outdezNAtt(lcd_lastPos, y, frskyHubData.volts, LEFT);
-        lcd_putc(lcd_lastPos, y, 'V');
-        y = 2*FH;
+        lcd_puts_P(10*FW, 7*FH, STR_VOLTS);
+        lcd_outdezNAtt(lcd_lastPos, 6*FH, frskyHubData.volts, DBLSIZE|LEFT); // TODO putsTelemetry?
+        lcd_putc(lcd_lastPos, 7*FH, 'V');
+#endif
 
         // Altitude (barometric)
-        displayAltitudeLine(12*FW, y, 0);
-        y += 2*FH;
+        displayAltitudeLine(0, 6*FH, DBLSIZE);
 
-        // Acceleromter
-        lcd_puts_P(11*FW, y, STR_ACCEL);
-        y += FH;
-        lcd_puts_P(11*FW, y, PSTR("x:"));
-        lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelX * 100 / 256, PREC2);
-        lcd_putc(lcd_lastPos, y, 'g');
-        y += FH;
-        lcd_puts_P(11*FW, y, PSTR("y:"));
-        lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelY * 100 / 256, PREC2);
-        lcd_putc(lcd_lastPos, y, 'g');
-        y += FH;
-        lcd_puts_P(11*FW, y, PSTR("z:"));
-        lcd_outdezNAtt(FW*17, y, (int32_t)frskyHubData.accelZ * 100 / 256, PREC2);
-        lcd_putc(lcd_lastPos, y, 'g');
+        // Accelerometer
+        lcd_puts_P(0, 7*FH, STR_ACCEL);
+        // lcd_puts_P(4*FW, 7*FH, PSTR("x:"));
+        lcd_outdezNAtt(4*FW, 7*FH, (int32_t)frskyHubData.accelX * 100 / 256, LEFT|PREC2);
+        // lcd_putc(lcd_lastPos, 7*FH, 'g');
+        // lcd_puts_P(11*FW, 7*FH, PSTR("y:"));
+        lcd_outdezNAtt(10*FW, 7*FH, (int32_t)frskyHubData.accelY * 100 / 256, LEFT|PREC2);
+        // lcd_putc(lcd_lastPos, 7*FH, 'g');
+        // lcd_puts_P(18*FW, 7*FH, PSTR("z:"));
+        lcd_outdezNAtt(16*FW, 7*FH, (int32_t)frskyHubData.accelZ * 100 / 256, LEFT|PREC2);
+        // lcd_putc(lcd_lastPos, 7*FH, 'g');
+        lcd_filled_rect(0, DATE_LINE, DISPLAY_W, 8);
       }
 #endif
       else {
