@@ -113,6 +113,23 @@ TRANSLATIONS = EN
 
 #------- END BUILD OPTIONS ---------------------------
 
+# Define programs and commands.
+SHELL = sh
+CC = avr-gcc
+OBJCOPY = avr-objcopy
+OBJDUMP = avr-objdump
+SIZE = avr-size
+NM = avr-nm
+AVRDUDE = avrdude
+REMOVE = rm -f
+REMOVEDIR = rm -rf
+COPY = cp
+WINSHELL = cmd
+
+XBM2LBM = ruby ../util/xbm2lbm.rb
+AREV = $(shell sh -c "cat .svn/entries | sed -n '4p'")
+REV = $(shell echo $$(( $(AREV) + 1 )))
+
 # MCU name
 ifeq ($(PCB), STD)
 MCU = atmega64
@@ -539,29 +556,6 @@ DEBUG_PORT = 4242
 #     just set to localhost unless doing some sort of crazy debugging when
 #     avarice is running on a different computer.
 DEBUG_HOST = localhost
-
-
-
-#============================================================================
-
-
-# Define programs and commands.
-SHELL = sh
-CC = avr-gcc
-OBJCOPY = avr-objcopy
-OBJDUMP = avr-objdump
-SIZE = avr-size
-NM = avr-nm
-AVRDUDE = avrdude
-REMOVE = rm -f
-REMOVEDIR = rm -rf
-COPY = cp
-WINSHELL = cmd
-
-XBM2LBM = ruby ../util/xbm2lbm.rb
-AREV = $(shell sh -c "cat .svn/entries | sed -n '4p'")
-REV = $(shell echo $$(( $(AREV) + 1 )))
-
 
 # Define Messages
 # English
