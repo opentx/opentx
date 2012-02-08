@@ -68,7 +68,7 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const char c, uint8_t mode)
   uint8_t *p    = &displayBuf[ y / 8 * DISPLAY_W + x ];
 
   const pm_uchar    *q = &font_5x8_x20_x7f[ + (c-0x20)*5];
-  bool         inv = (mode & INVERS) ? true : (mode & BLINK ? BLINK_ON_PHASE : false);
+  bool inv = (mode & INVERS) ? true : (mode & BLINK ? BLINK_ON_PHASE : false);
   if(mode & DBLSIZE)
   {
     /* each letter consists of ten top bytes followed by
@@ -76,23 +76,20 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const char c, uint8_t mode)
     q = &font_10x16_x20_x7f[(c-0x20)*10 + ((c-0x20)/16)*160];
     for(char i=5; i>=0; i--) {
       if (mode & CONDENSED && i==0) break;
-      /*top byte*/
-      uint8_t b1 = i>0 ? pgm_read_byte(q) : 0;
-      /*bottom byte*/
-      uint8_t b3 = i>0 ? pgm_read_byte(160+q) : 0;
-      /*top byte*/
-      uint8_t b2 = i>0 ? pgm_read_byte(++q) : 0;
-      /*bottom byte*/
-      uint8_t b4 = i>0 ? pgm_read_byte(160+q) : 0;
-
+      uint8_t b1=0, b2=0, b3=0, b4=0;
+      if (i>0) {
+        b1 = pgm_read_byte(q); /*top byte*/
+        b3 = pgm_read_byte(160+q); /*bottom byte*/
+        b2 = pgm_read_byte(++q); /*top byte*/
+        b4 = pgm_read_byte(160+q); /*bottom byte*/
+      }
       if(inv) {
         b1=~b1;
         b2=~b2;
         b3=~b3;
         b4=~b4;
       }   
-
-      if(&p[DISPLAY_W+1] < DISPLAY_END){
+      if(&p[DISPLAY_W+1] < DISPLAY_END) {
         p[0]=b1;
         p[1]=b2;
         p[DISPLAY_W] = b3; 
@@ -110,15 +107,21 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const char c, uint8_t mode)
         condense=1;
     }
 
-    for (char i=5; i!=0; i--) {
-        uint8_t b = pgm_read_byte(q++);
+    uint8_t ym8 = (y % 8);
+    for (char i=5; i>=0; i--) {
+        uint8_t b = (i>0 ? pgm_read_byte(q++) : 0);
+        if (inv) b = ~b;
+        
         if (condense && i==4) {
             /*condense the letter by skipping column 4 */
             continue;
         }
-        if(p<DISPLAY_END) *p++ = inv ? ~b : b;
+        if (p<DISPLAY_END) {
+          *p = (*p & (~(0xff << ym8))) + (b << ym8);
+          if (ym8) { uint8_t *r = p + DISPLAY_W; if (r<DISPLAY_END) *r = (*r & (~(0xff >> (8-ym8)))) + (b >> (8-ym8)); }
+          p++;
+        }
     }
-    if(p<DISPLAY_END) *p++ = inv ? ~0 : 0;
   }
 }
 
@@ -142,10 +145,15 @@ void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mode
         c = pgm_read_byte(s);
         break;
     }
-    if (!c) break;
-    lcd_putcAtt(x,y,c,mode);
-    x+=FW;
-    if (mode&DBLSIZE) x+=FW-1;
+    if (!c || x>DISPLAY_W-6) break;
+    if (c >= 0x20) {
+      lcd_putcAtt(x,y,c,mode);
+      x += FW;
+      if (mode&DBLSIZE) x += FW-1;
+    }
+    else {
+      x += (c*FW);
+    }
     s++;
     len--;
   }
@@ -162,9 +170,14 @@ void lcd_putsAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t mode)
   lcd_putsnAtt(x, y, s, 255, mode);
 }
 
-void lcd_puts_P(uint8_t x,uint8_t y,const pm_char * s)
+void lcd_puts(uint8_t x,uint8_t y,const pm_char * s)
 {
   lcd_putsAtt( x, y, s, 0);
+}
+
+void lcd_putsLeft(uint8_t y, const pm_char * s)
+{
+  lcd_putsAtt(0, y, s, 0);
 }
 
 void lcd_outhex4(uint8_t x,uint8_t y,uint16_t val)
@@ -331,6 +344,9 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat)
   if (y<0) { h+=y; y=0; }
   if (y+h > DISPLAY_H) { h = DISPLAY_H - y; }
 
+  if (pat==DOTTED && !(y%2))
+    pat = ~pat;
+
   uint8_t *p  = &displayBuf[ y / 8 * DISPLAY_W + x ];
   y = y % 8;
   if (y) {
@@ -362,16 +378,18 @@ void lcd_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t pat, uint8_t a
 {
   if (!((att & BLINK) && BLINK_ON_PHASE)) {
     lcd_vlineStip(x, y, h, pat);
-    lcd_hlineStip(x, y+h-1, w, pat);
     lcd_vlineStip(x+w-1, y, h, pat);
+    if (~att & ROUND) { x+=1; w-=2; }
+    lcd_hlineStip(x, y+h-1, w, pat);
     lcd_hlineStip(x, y, w, pat);
   }
 }
 
-void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t att)
+void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t pat, uint8_t att)
 {
   for (int8_t i=y; i<y+h; i++) {
-    if (i>=0 && i<64) lcd_hline(x, i, w, att);
+    if (i>=0 && i<64) lcd_hlineStip(x, i, w, pat, att);
+    if (pat != 0xff) pat = ~pat;
   }
 }
 
@@ -387,6 +405,7 @@ void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
   lcd_outdezNAtt(lcd_lastPos+FW, y, tme%60, att2|LEADING0|LEFT, 2);
 }
 
+// TODO to be optimized with putsTelemetryValue
 void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, att | ((att&PREC2)==PREC2 ? 0 : PREC1));
@@ -493,29 +512,71 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
 
 #ifdef FRSKY
 // TODO move this into frsky.cpp
-void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, uint8_t val, uint8_t att)
+void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)
 {
-  // TODO optimize this, avoid int32_t
-  int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * g_model.frsky.channels[channel].ratio * 2 / 51;
-  if (g_model.frsky.channels[channel].type == UNIT_VOLTS && converted_value < 1000) {
-    att |= PREC2;
+  // TODO enum
+
+  switch (channel) {
+    case 0:
+    case 1:
+      // A1 and A2
+    {
+      // TODO optimize this, avoid int32_t
+      int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * g_model.frsky.channels[channel].ratio * 2 / 51;
+      if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
+        converted_value /= 10;
+      }
+      else {
+        if (converted_value < 1000) {
+          att |= PREC2;
+        }
+        else {
+          converted_value /= 10;
+          att |= PREC1;
+        }
+      }
+      putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
+    }
+    break;
+
+    case 2:
+      // Altitude
+      putsTelemetryValue(x, y, val * 4, UNIT_METERS, att);
+      break;
+
+    case 3:
+      // RPMs
+      lcd_outdezAtt(x, y, (int16_t)val * 50, att);
+      break;
+
+    case 4:
+      // FUEL
+      putsTelemetryValue(x, y, val, UNIT_PERCENT, att);
+      break;
+
+    case 5:
+    case 6:
+      // TEMPERATURE
+      putsTelemetryValue(x, y, val, UNIT_DEGREES, att);
+      break;
+
+    case 7:
+      // SPEED
+      putsTelemetryValue(x, y, val*2, UNIT_KMH, att);
+      break;
+
+    case 8:
+      // CELL
+      putsVolts(x, y, val*2, att);
+      break;
   }
-  else {
-    converted_value /= 10;
-  }
-  putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
 }
 
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
 {
-  if (unit == UNIT_VOLTS) {
-    putsVolts(x, y, val, att);
-  }
-  else {
-    lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att); // TODO we could add this test inside lcd_outdezAtt!
-    if (~att & NO_UNIT && unit != UNIT_RAW)
-      lcd_putsnAtt(lcd_lastPos+1, y, STR_VTELEMUNIT+LEN_VTELEMUNIT*unit, LEN_VTELEMUNIT, 0);
-  }
+  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att); // TODO we could add this test inside lcd_outdezAtt!
+  if (~att & NO_UNIT && unit != UNIT_RAW)
+    lcd_putsnAtt(lcd_lastPos+1, y, STR_VTELEMUNIT+LEN_VTELEMUNIT*unit, LEN_VTELEMUNIT, 0);
 }
 #endif
 

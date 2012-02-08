@@ -37,7 +37,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VFSWFUNC   (OFS_VCSWFUNC + PSIZE(TR_VCSWFUNC))
 #define OFS_FUNCSOUNDS (OFS_VFSWFUNC + PSIZE(TR_VFSWFUNC))
 #ifdef FRSKY
-#define OFS_VTELEMUNIT (OFS_FUNCSOUNDS + PSIZE(TR_FUNCSOUNDS))
+#define OFS_VTELEMBARS (OFS_FUNCSOUNDS + PSIZE(TR_FUNCSOUNDS))
+#define OFS_VTELEMUNIT (OFS_VTELEMBARS + PSIZE(TR_VTELEMBARS))
 #define OFS_VALARM     (OFS_VTELEMUNIT + PSIZE(TR_VTELEMUNIT))
 #define OFS_VALARMFN   (OFS_VALARM + PSIZE(TR_VALARM))
 #define OFS_VTELPROTO  (OFS_VALARMFN + PSIZE(TR_VALARMFN))
@@ -99,6 +100,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_FUNCSOUNDS (STR_OPEN9X + OFS_FUNCSOUNDS)
 
 #ifdef FRSKY
+#define STR_VTELEMBARS (STR_OPEN9X + OFS_VTELEMBARS)
 #define STR_VTELEMUNIT (STR_OPEN9X + OFS_VTELEMUNIT)
 #define STR_VALARM     (STR_OPEN9X + OFS_VALARM)
 #define STR_VALARMFN   (STR_OPEN9X + OFS_VALARMFN)
@@ -131,6 +133,7 @@ extern const pm_char STR_OPEN9X[];
 // The 0-terminated-strings
 
 extern const pm_char STR_POPUPS[];
+#define STR_EXIT (STR_POPUPS + OFS_EXIT)
 extern const pm_char STR_MENUWHENDONE[];
 extern const pm_char STR_FREE[];
 #define LEN_FREE PSIZE(TR_FREE)
@@ -223,19 +226,13 @@ extern const pm_char STR_ALT[];
 extern const pm_char STR_RXBATT[];
 extern const pm_char STR_RX[];
 extern const pm_char STR_TX[];
-extern const pm_char STR_SPD[];
-extern const pm_char STR_TEMP1[];
-extern const pm_char STR_TEMP2[];
-extern const pm_char STR_RPM[];
-extern const pm_char STR_FUEL[];
+extern const pm_char STR_SPDnMAX[];
+extern const pm_char STR_TEMP1nTEMP2[];
+extern const pm_char STR_RPMnFUEL[];
 extern const pm_char STR_ACCEL[];
-extern const pm_char STR_TELE[];
-extern const pm_char STR_RSSI[];
 extern const pm_char STR_NODATA[];
-extern const pm_char STR_TM1[];
-extern const pm_char STR_TM2[];
-extern const pm_char STR_THR[];
-extern const pm_char STR_TH[];
+extern const pm_char STR_TM1TM2[];
+extern const pm_char STR_THRTHP[];
 extern const pm_char STR_TOT[];
 extern const pm_char STR_TMR1LATMAXUS[];
 extern const pm_char STR_TMR1LATMINUS[];

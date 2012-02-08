@@ -24,6 +24,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     TR_VFSWFUNC
     TR_FUNCSOUNDS
 #ifdef FRSKY
+    TR_VTELEMBARS
     TR_VTELEMUNIT
     TR_VALARM
     TR_VALARMFN
@@ -144,19 +145,13 @@ const pm_char STR_ALT[] PROGMEM = TR_ALT;
 const pm_char STR_RXBATT[] PROGMEM = TR_RXBATT;
 const pm_char STR_RX[] PROGMEM = TR_RX;
 const pm_char STR_TX[] PROGMEM = TR_TX;
-const pm_char STR_SPD[] PROGMEM = TR_SPD;
-const pm_char STR_TEMP1[] PROGMEM = TR_TEMP1;
-const pm_char STR_TEMP2[] PROGMEM = TR_TEMP2;
-const pm_char STR_RPM[] PROGMEM = TR_RPM;
-const pm_char STR_FUEL[] PROGMEM = TR_FUEL;
+const pm_char STR_SPDnMAX[] PROGMEM = TR_SPDnMAX;
+const pm_char STR_TEMP1nTEMP2[] PROGMEM = TR_TEMP1nTEMP2;
+const pm_char STR_RPMnFUEL[] PROGMEM = TR_RPMnFUEL;
 const pm_char STR_ACCEL[] PROGMEM = TR_ACCEL;
-const pm_char STR_TELE[] PROGMEM = TR_TELE;
-const pm_char STR_RSSI[] PROGMEM = TR_RSSI;
 const pm_char STR_NODATA[] PROGMEM = TR_NODATA;
-const pm_char STR_TM1[] PROGMEM = TR_TM1;
-const pm_char STR_TM2[] PROGMEM = TR_TM2;
-const pm_char STR_THR[] PROGMEM = TR_THR;
-const pm_char STR_TH[] PROGMEM = TR_TH;
+const pm_char STR_TM1TM2[] PROGMEM = TR_TM1TM2;
+const pm_char STR_THRTHP[] PROGMEM = TR_THRTHP;
 const pm_char STR_TOT[] PROGMEM = TR_TOT;
 const pm_char STR_TMR1LATMAXUS[] PROGMEM = TR_TMR1LATMAXUS;
 const pm_char STR_TMR1LATMINUS[] PROGMEM = TR_TMR1LATMINUS;

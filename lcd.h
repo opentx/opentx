@@ -59,6 +59,7 @@
 /* line, rect, square flags */
 #define BLACK         0x02
 #define WHITE         0x04
+#define ROUND         0x08
 
 /* other flags */
 #define NO_UNIT       UNSIGN
@@ -72,7 +73,8 @@ extern void lcd_putcAtt(unsigned char x,unsigned char y,const char c,uint8_t mod
 
 extern void lcd_putsAtt(unsigned char x,unsigned char y,const pm_char * s,uint8_t mode);
 extern void lcd_putsnAtt(unsigned char x,unsigned char y,const pm_char * s,unsigned char len,uint8_t mode);
-extern void lcd_puts_P(unsigned char x,unsigned char y,const pm_char * s);
+extern void lcd_puts(unsigned char x,unsigned char y,const pm_char * s);
+extern void lcd_putsLeft(unsigned char y, const pm_char * s);
 extern void lcd_putsn_P(unsigned char x,unsigned char y,const pm_char * s,unsigned char len);
 
 extern void lcd_outhex4(unsigned char x,unsigned char y,uint16_t val);
@@ -99,9 +101,12 @@ extern void putsTime(uint8_t x,uint8_t y, int16_t tme, uint8_t att, uint8_t att2
 
 #ifdef FRSKY
 // TODO move this into frsky.h
-void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, uint8_t val, uint8_t att);
+void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att);
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
 #endif
+
+#define SOLID  0xff
+#define DOTTED 0x55
 
 extern void lcd_plot(unsigned char x, unsigned char y, uint8_t att=0);
 extern void lcd_hline(unsigned char x, unsigned char y, uint8_t w, uint8_t att=0);
@@ -109,9 +114,9 @@ extern void lcd_hlineStip(int8_t x, uint8_t y, uint8_t w, uint8_t pat, uint8_t a
 extern void lcd_vline(uint8_t x, int8_t y, int8_t h);
 extern void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat);
 
-extern void lcd_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t pat=0xff, uint8_t att=0);
-extern void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t att=0);
-inline void lcd_square(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0) { lcd_rect(x, y, w, w, 0xff, att); }
+extern void lcd_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
+extern void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
+inline void lcd_square(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0) { lcd_rect(x, y, w, w, SOLID, att); }
 
 #define DO_CROSS(xx,yy,ww)          \
     lcd_vline(xx,yy-ww/2,ww);  \

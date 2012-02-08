@@ -277,8 +277,9 @@ void applyExpos(int16_t *anas, uint8_t phase)
   }
 }
 
+/*TODO evaluate impact FORCEINLINE */
 bool s_noStickInputs = false;
-FORCEINLINE int16_t getValue(uint8_t i)
+int16_t getValue(uint8_t i)
 {
     if(i<NUM_STICKS+NUM_POTS) return (s_noStickInputs ? 0 : calibratedStick[i]);
     else if(i<MIX_FULL/*srcRaw is shifted +1!*/) return 1024; //FULL/MAX
@@ -286,13 +287,18 @@ FORCEINLINE int16_t getValue(uint8_t i)
     else if(i<PPM_BASE+NUM_PPM) return g_ppmIns[i-PPM_BASE]*2;
     else if(i<CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CHOUT_BASE];
     else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) return s_timerVal[i-CHOUT_BASE-NUM_CHNOUT];
-#ifdef FRSKY
+#if defined(FRSKY)
     else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude + baroAltitudeOffset;
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
 #endif
 #if defined(FRSKY_HUB)
     else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+5) return frskyHubData.fuelLevel;
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+6) return frskyHubData.temperature1;
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+7) return frskyHubData.temperature2;
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+8) return frskyHubData.gpsSpeed_ap;
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+9) return frskyHubData.minCellVolts;
 #endif
 #endif
     else return 0;
@@ -354,8 +360,15 @@ bool __getSwitch(int8_t swtch)
       if (s == CS_VOFS) {
 #ifdef FRSKY
 #if defined(FRSKY_HUB)
+        // Fill the threshold array
+        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
+          barsThresholds[cs.v1-CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS-3] = 128 + cs.v2;
+        // TODO CELL?
+        // FUEL, T1, T2, SPEED
+        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4)
+          y = (128+cs.v2);
         // RPMs
-        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3)
+        else if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3)
           y = (128+cs.v2) * 25;
         else
 #endif
@@ -559,9 +572,9 @@ void alertMessages( const pm_char * s, const pm_char * t )
 {
   lcd_clear();
   lcd_putsAtt(64-5*FW,0*FH,STR_ALERT,DBLSIZE);
-  lcd_puts_P(0,4*FH,s);
-  lcd_puts_P(0,5*FH,t);
-  lcd_puts_P(0,6*FH,  STR_PRESSANYKEYTOSKIP ) ;
+  lcd_putsLeft(4*FH,s);
+  lcd_putsLeft(5*FH,t);
+  lcd_putsLeft(6*FH,  STR_PRESSANYKEYTOSKIP ) ;
   refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
 
@@ -650,7 +663,7 @@ void message(const pm_char * s)
 {
   lcd_clear();
   lcd_putsAtt(64-5*FW, 0*FH, STR_MESSAGE, DBLSIZE);
-  lcd_puts_P(0,4*FW,s);
+  lcd_putsLeft(4*FW,s);
   refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
@@ -659,8 +672,8 @@ void alert(const pm_char * s, bool defaults)
 {
   lcd_clear();
   lcd_putsAtt(64-5*FW, 0*FH, STR_ALERT, DBLSIZE);
-  lcd_puts_P(0,4*FH,s);
-  lcd_puts_P(64-LEN_PRESSANYKEY*FW/2, 7*FH, STR_PRESSANYKEY);
+  lcd_putsLeft(4*FH,s);
+  lcd_puts(64-LEN_PRESSANYKEY*FW/2, 7*FH, STR_PRESSANYKEY);
   refreshDisplay();
   lcdSetRefVolt(defaults ? 25 : g_eeGeneral.contrast);
   AUDIO_ERROR();

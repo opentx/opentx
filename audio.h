@@ -143,11 +143,9 @@ class audioQueue
     }
 
   protected:
-    void aqinit(); // To stop constructor being compiled twice
     inline uint8_t getToneLength(uint8_t tLen);
 
   private:
-
     uint8_t t_queueRidx;
     uint8_t t_queueWidx;
 
