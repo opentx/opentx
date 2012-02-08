@@ -494,7 +494,7 @@ void frskyAlarmsRefresh()
 
 void FrskyRSSI::set(uint8_t value)
 {
-   this->value = (((uint16_t)this->value * 7) + value) / 8;
+   this->value = (((uint16_t)this->value * 7) + value + 4) / 8;
    if (!min || min > value)
      min = value;
 }
