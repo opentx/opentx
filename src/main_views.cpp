@@ -498,18 +498,14 @@ void menuMainView(uint8_t event)
 
         // Speed
 #define SPEED_LINE (6*FH)
-        lcd_putsLeft( SPEED_LINE, STR_SPDnMAX);
+        lcd_putsLeft(SPEED_LINE, STR_SPDnMAX);
         putsTelemetryValue(4*FW, SPEED_LINE, frskyHubData.gpsSpeed_bp, UNIT_KTS, LEFT|DBLSIZE); // before '.'
-        // lcd_putcAtt(lcd_lastPos-2, 5*FH, '.', DBLSIZE); // small decimal point
-        // lcd_outdezAtt(lcd_lastPos+FW, 5*FH, frskyHubData.gpsSpeed_ap, LEFT|UNSIGN|DBLSIZE); // after '.'
-        putsTelemetryValue(17*FW, SPEED_LINE, frskyHubData.maxGpsSpeed, UNIT_KTS, LEFT); // before '.'
+        putsTelemetryValue(16*FW, SPEED_LINE, frskyHubData.maxGpsSpeed, UNIT_KTS, LEFT); // before '.'
 
         // Altitude
 #define ALTITUDE_LINE (4*FH-1)
-        lcd_putsLeft( ALTITUDE_LINE, STR_ALT);
+        lcd_putsLeft(ALTITUDE_LINE, STR_ALT);
         putsTelemetryValue(4*FW, ALTITUDE_LINE, frskyHubData.gpsAltitude_bp, UNIT_METERS, LEFT); // before '.'
-        // lcd_plot(lcd_lastPos, 8*FH-2, 0); // small decimal point
-        // lcd_outdezAtt(lcd_lastPos+2, 7*FH, frskyHubData.gpsAltitude_ap, LEFT|UNSIGN); // after '.'
       }
       else if (g_model.frsky.usrProto == PROTO_FRSKY_HUB && view == e_telemetry+3*ALTERNATE_VIEW) {
         // Temperature 1
