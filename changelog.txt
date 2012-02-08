@@ -1,0 +1,62 @@
+******************************************
+CHANGELOG: 08-02-2012  BSS
+Telemetry bars screen
+Add individual cell voltages from FrSky Hub 2.0
+New units for A1/A2
+
+******************************************
+CHANGELOG: 06-02-2012  BSS
+Flash saving
+Telemetry screens redesigned
+
+******************************************
+
+Version 213:
+
+******************************************
+CHANGELOG: 05-02-2012  BSS
+Add GPS speed display, with max speed
+GPS screen redesigned
+
+******************************************
+
+Version 205:
+
+******************************************
+CHANGELOG: 04-02-2012  BSS
+New way of configuring A1 and A2 using Range and Offset
+Named sounds in Func Switches
+Haptic only sounds skipped when HAPTIC option disable
+
+******************************************
+CHANGELOG: 03-02-2012  BSS
+Safety switches screen removed (moved to Func Switches)
+ 
+******************************************
+CHANGELOG: 02-02-2012  BSS
+French translations updated
+AUDIO optimizations
+
+******************************************
+CHANGELOG: 01-02-2012  BSS
+AUDIO and HAPTIC may be enabled separately
+AUDIO bug fixes
+
+******************************************
+CHANGELOG: 31-01-2012  BSS
+HAPTIC now working
+
+******************************************
+CHANGELOG: 29-01-2012  BSS
+Inactivity timer reset on Keys and Trims press
+
+******************************************
+CHANGELOG: 28-01-2012  BSS
+New splash
+
+******************************************
+CHANGELOG: 27-01-2012  BSS
+NMEA and ARDUPILOT ported from er9x
+
+
+ 
