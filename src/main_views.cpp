@@ -389,7 +389,7 @@ void menuMainView(uint8_t event)
             uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)((int16_t)100 * (value - g_model.frsky.bars[i].barMin * 4) / ((63 - g_model.frsky.bars[i].barMax) * 4 - g_model.frsky.bars[i].barMin * 4)), (int16_t)100);
             lcd_filled_rect(26, bars_height+6+1+i*(bars_height+6), width, bars_height, (threshold > value) ? DOTTED : SOLID);
             for (uint8_t j=50; j<125; j+=25)
-              if (j>thresholdX) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
+              if (j>26+thresholdX) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
             if (thresholdX) {
               lcd_vlineStip(26+thresholdX, bars_height+4+i*(bars_height+6), bars_height+3, DOTTED);
               lcd_hline(25+thresholdX, bars_height+4+i*(bars_height+6), 3);
