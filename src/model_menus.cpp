@@ -1947,10 +1947,10 @@ void menuProcTelemetry(uint8_t event)
             CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, 9); // TODO enum
             break;
           case 1:
-            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].barMin, 0, 63-g_model.frsky.bars[j].barMax);
+            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].barMin, 0, 62-g_model.frsky.bars[j].barMax);
             break;
           case 2:
-            g_model.frsky.bars[j].barMax = 63 - checkIncDec(event, 63 - g_model.frsky.bars[j].barMax, g_model.frsky.bars[j].barMin, 63, EE_MODEL);
+            g_model.frsky.bars[j].barMax = 63 - checkIncDec(event, 63 - g_model.frsky.bars[j].barMax, g_model.frsky.bars[j].barMin+1, 63, EE_MODEL);
             break;
         }
       }
