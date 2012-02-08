@@ -40,26 +40,9 @@
 #include <stddef.h>
 #include <avr/io.h>
 #define assert(x)
-//disable whole pgmspace functionality for all avr-gcc because
-//avr-gcc > 4.2.1 does not work anyway
-//http://www.mail-archive.com/gcc-bugs@gcc.gnu.org/msg239240.html
-//http://gcc.gnu.org/bugzilla/show_bug.cgi?id=34734
-//
-//Workarounds:
-//
-//PSTR is fixed below
-//all prog_xx definitions must use APM explicitely
 
-//#define __ATTR_PROGMEM__
 #include <avr/pgmspace.h>
-#undef PROGMEM
-#define PROGMEM __attribute__(( section(".progmem.data") ))
 #include "pgmtypes.h"
-#ifdef __cplusplus
-#define APM __attribute__(( section(".progmem.data") ))
-#undef PSTR
-#define PSTR(s) (__extension__({static const pm_char __c[] PROGMEM = (s);&__c[0];}))
-#endif
 
 #include <avr/eeprom.h>
 #include <avr/sleep.h>
@@ -347,7 +330,7 @@ enum EnumKeys {
 #define CHOUT_BASE      (PPM_BASE+NUM_PPM)
 
 #if defined(FRSKY_HUB)
-#define NUM_TELEMETRY      4
+#define NUM_TELEMETRY      9
 #elif defined(WS_HOW_HIGH)
 #define NUM_TELEMETRY      3
 #elif defined(FRSKY)
@@ -397,12 +380,13 @@ enum EnumKeys {
 
 #define MAX_ALERT_TIME   60
 
-// TODO enum in myeeprom.h
-#define PROTO_PPM        0
-#define PROTO_PXX        1
-#define PROTO_DSM2       2
-#define PROTO_PPM16      3
-#define PROT_MAX         3
+enum Protocols {
+  PROTO_PPM,
+  PROTO_PXX,
+  PROTO_DSM2,
+  PROTO_PPM16,
+  PROTO_MAX
+};
 
 extern uint8_t heartbeat;
 extern uint32_t inacCounter;
@@ -444,26 +428,9 @@ void    perMain();
 /// Bearbeitet alle zeitkritischen Jobs.
 /// wie z.B. einlesen aller Eingaenge, Entprellung, Key-Repeat..
 void    per10ms();
-/// Erzeugt periodisch alle Outputs ausser Bildschirmausgaben.
-void zeroVariables();
 
-///   Liefert den Zustand des Switches 'swtch'. Die Numerierung erfolgt ab 1
-///   (1=SW_ON, 2=SW_ThrCt, 10=SW_Trainer). 0 Bedeutet not conected.
-///   Negative Werte  erzeugen invertierte Ergebnisse.
-///   Die Funktion putsSwitches(..) erzeugt den passenden Ausdruck.
-///
-///   \param swtch
-///     0                : not connected. Liefert den Wert 'nc'
-///     1.. MAX_SWITCH : SW_ON .. SW_Trainer
-///    -1..-MAX_SWITCH : negierte Werte
-///   \param nc Wert, der bei swtch==0 geliefert wird.
+int16_t getValue(uint8_t i);
 bool    getSwitch(int8_t swtch, bool nc);
-/// Zeigt den Namen des Switches 'swtch' im display an
-///   \param x     x-koordinate 0..127
-///   \param y     y-koordinate 0..63 (nur durch 8 teilbar)
-///   \param swtch -MAX_SWITCH ..  MAX_SWITCH
-///   \param att   NO_INV,INVERS,BLINK
-///
 
 uint8_t getFlightPhase();
 uint8_t getTrimFlightPhase(uint8_t idx, uint8_t phase);
@@ -650,7 +617,7 @@ extern volatile uint16_t  g_tmr10ms;
 extern volatile uint8_t   g_blinkTmr10ms;
 extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
-// TODO needed?
+
 extern const PROGMEM char modi12x3[];
 
 #include "o9xstrings.h"

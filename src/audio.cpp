@@ -16,11 +16,6 @@
 
 audioQueue::audioQueue()
 {
-  aqinit();
-}
-
-void audioQueue::aqinit()
-{
   toneTimeLeft = 0;
   tonePause = 0;
 
@@ -236,7 +231,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
         break;
       // inactivity timer alert
       case AU_INACTIVITY:
-        playNow(70, 10, 2,2);
+        playNow(70, 10, 2, 2);
         break;
       // low battery in tx
       case AU_TX_BATTERY_LOW:

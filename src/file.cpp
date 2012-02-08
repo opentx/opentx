@@ -580,10 +580,10 @@ void RlcFile::DisplayProgressBar(uint8_t x)
   if (s_eeDirtyMsk || isWriting() || eeprom_buffer_size) {
 #if defined (PROGRESS_BAR)
     uint8_t len = (s_eeDirtyMsk ? 123 : min((uint8_t)123, (uint8_t)((m_rlc_len) / 5 + eeprom_buffer_size)));
-    lcd_filled_rect(2, 1, 125, 5, WHITE);
+    lcd_filled_rect(2, 1, 125, 5, SOLID, WHITE);
     lcd_filled_rect(3, 2, 123-len, 3);
 #elif defined (PROGRESS_CIRCLE)
-    lcd_filled_rect(x-1, 0, 7, 7, WHITE);
+    lcd_filled_rect(x-1, 0, 7, 7, SOLID, WHITE);
     uint8_t len = s_eeDirtyMsk ? 1 : limit(1, 12 - (uint8_t)(m_rlc_len/m_ratio), 12);
     lcd_hline(x+1, 1, min((uint8_t)3, len));
     if (len >= 3) {
@@ -597,7 +597,7 @@ void RlcFile::DisplayProgressBar(uint8_t x)
     }
 #elif defined (PROGRESS_VERTICAL_BAR)
     uint8_t len = s_eeDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);
-    lcd_filled_rect(x+1, 0, 5, FH, WHITE);
+    lcd_filled_rect(x+1, 0, 5, FH, SOLID, WHITE);
     lcd_filled_rect(x+2, 7-len, 3, len);
 #elif defined (PROGRESS_FIXED_CIRCLE)
     lcd_square(x, 1, 5);

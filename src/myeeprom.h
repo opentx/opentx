@@ -36,7 +36,7 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#define EEPROM_VER       203
+#define EEPROM_VER       204
 
 #ifndef PACK
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
@@ -179,12 +179,14 @@ PACK(typedef struct t_FuncSwData { // Function Switches data
 
 enum TelemetryUnit {
   UNIT_VOLTS,
+  UNIT_AMPS,
   UNIT_RAW,
   UNIT_KTS,
   UNIT_KMH,
   UNIT_MPH,
   UNIT_METERS,
   UNIT_DEGREES,
+  UNIT_PERCENT,
   UNIT_MAX
 };
 
@@ -195,16 +197,40 @@ PACK(typedef struct t_FrSkyChannelData {
   uint8_t   alarms_level:4;
   uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
   uint8_t   multiplier:2;       // 0=no multiplier, 1=*2 multiplier
-  uint8_t   barMin:4;           // minimum for bar display
-  uint8_t   barMax:4;           // ditto for max display (would usually = ratio)
   int8_t    offset;
 }) FrSkyChannelData;
 
+enum BarSource {
+  BAR_NONE,
+  BAR_A1,
+  BAR_A2,
+  BAR_ALT,
+#if defined(FRSKY_HUB)
+  BAR_RPM,
+  BAR_FUEL,
+  BAR_T1,
+  BAR_T2,
+  BAR_SPEED,
+  BAR_CELL,
+#endif
+  BAR_MAX
+};
+
+PACK(typedef struct t_FrSkyBarData {
+  uint16_t   source:4;
+  uint16_t   barMin:6;           // minimum for bar display
+  uint16_t   barMax:6;           // ditto for max display (would usually = ratio)
+}) FrSkyBarData;
+
+#define PROTO_NONE        0
 #define PROTO_FRSKY_HUB   1
 #define PROTO_WS_HOW_HIGH 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
-  uint8_t usrProto;  // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint16_t usrProto:3;            // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint16_t imperial:1;
+  uint16_t spare:4;
+  FrSkyBarData bars[4];
 }) FrSkyData;
 
 PACK(typedef struct t_SwashRingData { // Swash Ring data
@@ -214,11 +240,6 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
   uint8_t   type:5;  
   uint8_t   collectiveSource;
   uint8_t   value;
-
-/* TODO BSS everything is in comments in menus.cpp, how should it be used?
-  uint8_t lim;   // 0 mean off 100 full deflection
-  uint8_t chX; // 2 channels to limit
-  uint8_t chY; // 2 channels to limit */
 }) SwashRingData;
 
 #define TRIM_EXTENDED_MAX 500

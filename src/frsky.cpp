@@ -43,7 +43,7 @@ uint8_t frskyStreaming = 0;
 uint8_t frskyUsrStreaming = 0;
 
 FrskyData frskyTelemetry[2];
-FrskyData frskyRSSI[2];
+FrskyRSSI frskyRSSI[2];
 
 struct FrskyAlarm {
   uint8_t level;    // The alarm's 'urgency' level. 0=disabled, 1=yellow, 2=orange, 3=red
@@ -54,9 +54,8 @@ struct FrskyAlarm {
 struct FrskyAlarm frskyAlarms[4];
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-FrskyHubData frskyHubData;
-int16_t baroAltitudeOffset = 0;
-uint8_t maxGpsSpeed = 0;
+FrskyHubData frskyHubData; // TODO initialization?
+uint8_t barsThresholds[BAR_MAX-3];
 #endif
 
 void frskyPushValue(uint8_t *&ptr, uint8_t value)
@@ -99,14 +98,8 @@ int8_t parseTelemHubIndex(uint8_t index)
     index = 0; // invalid index
   if (index > 0x39)
     index -= 17;
-  if (index > 0x27)
-    index -= 1;
   if (index > 0x21)
     index -= 5;
-  if (index > 0x0f)
-    index -= 6;
-  if (index > 0x08)
-    index -= 2;
   return 2*(index-1);
 }
 
@@ -151,8 +144,22 @@ void parseTelemHubByte(uint8_t byte)
     return;
   }
   ((uint8_t*)&frskyHubData)[structPos+1] = byte;
-  if (structPos == offsetof(FrskyHubData, gpsSpeed_ap)/2 && maxGpsSpeed < frskyHubData.gpsSpeed_ap)
-    maxGpsSpeed = frskyHubData.gpsSpeed_ap;
+  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsSpeed_ap)) {
+    // Speed => Max speed
+    if (frskyHubData.maxGpsSpeed < frskyHubData.gpsSpeed_ap)
+      frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_ap;
+  }
+  if ((uint8_t)structPos == offsetof(FrskyHubData, volts)) {
+    // Voltage => Cell number + Cell voltage
+    uint8_t battnumber = (frskyHubData.volts & 0x00F0) >> 4;
+    if (frskyHubData.cellsCount < battnumber+1) {
+      frskyHubData.cellsCount = battnumber+1;
+    }
+    uint8_t cellVolts = 2*(((frskyHubData.volts & 0xFF00) >> 8) + ((frskyHubData.volts & 0x000F) << 8));
+    frskyHubData.cellVolts[battnumber] = cellVolts;
+    if (!frskyHubData.minCellVolts || cellVolts < frskyHubData.minCellVolts)
+      frskyHubData.minCellVolts = cellVolts;
+  }
 
   state = TS_IDLE;
 }
@@ -485,13 +492,18 @@ void frskyAlarmsRefresh()
 }
 #endif
 
-void FrskyData::set(uint8_t value)
+void FrskyRSSI::set(uint8_t value)
 {
-   this->value = value;
-   if (!max || max < value)
-     max = value;
+   this->value = (((uint16_t)this->value * 7) + value) / 8;
    if (!min || min > value)
      min = value;
+}
+
+void FrskyData::set(uint8_t value)
+{
+  if (!max || max < value)
+    max = value;
+  FrskyRSSI::set(value);
 }
 
 void resetTelemetry()
@@ -499,7 +511,16 @@ void resetTelemetry()
   memset(frskyTelemetry, 0, sizeof(frskyTelemetry));
   memset(frskyRSSI, 0, sizeof(frskyRSSI));
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  baroAltitudeOffset = -frskyHubData.baroAltitude;
+  frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude;
+  frskyHubData.maxGpsSpeed = 0;
+  frskyHubData.cellsCount = 0;
+  frskyHubData.minCellVolts = 0;
+#endif
+
+#ifdef SIMU
+  frskyTelemetry[0].set(120);
+  frskyRSSI[0].set(75);
+  frskyHubData.fuelLevel = 75;
 #endif
 }
 

@@ -442,7 +442,7 @@ void menuProcNMEA1(uint8_t event)
 
 
     title ('1');
-    lcd_puts_P        (   2*FW,   1*FH, PSTR("UTC-Time      Sat"));
+    lcd_puts        (   2*FW,   1*FH, PSTR("UTC-Time      Sat"));
 
     if (rbuf[0][0]) {								// show always if data have been received
 	  lcd_putcAtt   (  19*FW,   1*FH, sbuf[2], 0);				// satellites in view
@@ -457,12 +457,12 @@ void menuProcNMEA1(uint8_t event)
 
     if ((show_timer == 1) && rbuf[0][0])  {					// show the Timer when data have been received
 
-        lcd_puts_P    (   2*FW,   4*FH, PSTR("Timer"));			// display "Timer"
+        lcd_puts    (   2*FW,   4*FH, PSTR("Timer"));			// display "Timer"
         putsTime      (   5*FW,   5*FH, (gpstime-gpstimer), DBLSIZE, DBLSIZE);	// display difference as mm:ss
     }
     else
     {
-        lcd_puts_P      ( 2*FW,   4*FH, PSTR("Date"));			// show the UTC Date	
+        lcd_puts      ( 2*FW,   4*FH, PSTR("Date"));			// show the UTC Date	
 
         if (rbuf[1][0])	{
             lcd_putsnAtt( 2*FW,   5*FH, &rbuf[1][0], 2, APSIZE);		// year
@@ -561,18 +561,18 @@ void menuProcNMEA2(uint8_t event)
     }
     title ('2');
     
-    lcd_puts_P         (   1*FW,   1*FH, PSTR("Altitude Sat   Max"));
+    lcd_puts         (   1*FW,   1*FH, PSTR("Altitude Sat   Max"));
 
 
-    lcd_puts_P         (   16*FW,   3*FH, PSTR("Home"));
-    lcd_puts_P         (   2*FW,   4*FH, PSTR("Lift") );
+    lcd_puts         (   16*FW,   3*FH, PSTR("Home"));
+    lcd_puts         (   2*FW,   4*FH, PSTR("Lift") );
 
-    lcd_puts_P         (   16*FW,   5*FH, PSTR("Beep") );
+    lcd_puts         (   16*FW,   5*FH, PSTR("Beep") );
     if (beep_on==1)
-        lcd_puts_P         (   18*FW,   6*FH, PSTR("ON") );
+        lcd_puts         (   18*FW,   6*FH, PSTR("ON") );
     
     else	
-        lcd_puts_P         (   17*FW,   6*FH, PSTR("OFF") );
+        lcd_puts         (   17*FW,   6*FH, PSTR("OFF") );
 
 
     lcd_outdezNAtt(  20*FW,   4*FH, home_alt, PREC1, 6);		// display home_alt, small characters 
@@ -629,7 +629,7 @@ void menuProcNMEA2(uint8_t event)
 
       	  lcd_outdezNAtt(  10*FW,   5*FH, lift_alt, DBLSIZE|PREC1, 6);	// lift
 	        lcd_putcAtt   (  11*FW,   6*FH, sbuf[0], 0);				// dimension [m/S]
-      	  lcd_puts_P    (  12*FW,   6*FH, PSTR("/S") );
+      	  lcd_puts    (  12*FW,   6*FH, PSTR("/S") );
 		}
     }
     else {
@@ -663,7 +663,7 @@ void menuProcNMEA3(uint8_t event)
     initval (LONG_BUF(1), PACK_RMC, COG);
     initval (SHORT_BUF(2), PACK_GGA, SAT);			// -> sbuf[2]
     title ('3');
-    lcd_puts_P        (   0*FW,   1*FH, PSTR("GrndSpeed[knt]  Sat"));
+    lcd_puts        (   0*FW,   1*FH, PSTR("GrndSpeed[knt]  Sat"));
     if (rbuf[0][0])				// if first position is 00, buffer is empty, taken as false 
     {							// any other value is true
         uint8_t i = 0;
@@ -683,7 +683,7 @@ void menuProcNMEA3(uint8_t event)
 
     lcd_putcAtt   (  19*FW,   1*FH, sbuf[2], 0);			// satellites in view
 
-    lcd_puts_P        (   1*FW,   4*FH, PSTR("Course over ground") );
+    lcd_puts        (   1*FW,   4*FH, PSTR("Course over ground") );
     lcd_putsAtt       (   2*FW,   5*FH, VALSTR(1), APSIZE);		// course over ground
 }
 
@@ -717,7 +717,7 @@ void menuProcNMEA4(uint8_t event)
     initval (SHORT_BUF(2), PACK_GGA, SAT);			// -> sbuf[2]
     // title of the screen
     title ('4');
-    lcd_puts_P        (   3*FW,   1*FH, PSTR("Latitude     Sat"));    // line 1 column 3
+    lcd_puts        (   3*FW,   1*FH, PSTR("Latitude     Sat"));    // line 1 column 3
     // first buffer into line 2 column 2
     if (rbuf[0][0])
     {
@@ -729,7 +729,7 @@ void menuProcNMEA4(uint8_t event)
     }
     else
         lcd_putsAtt   (   2*FW,   2*FH, val_unknown, APSIZE);
-    lcd_puts_P        (   3*FW,   4*FH, PSTR("Longitude"));   // line 4 column 5
+    lcd_puts        (   3*FW,   4*FH, PSTR("Longitude"));   // line 4 column 5
     // second buffer into line 5 column 2
     if (rbuf[0][0])
     {

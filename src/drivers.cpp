@@ -442,6 +442,8 @@ void per10ms()
 
 #if defined (FRSKY)
 
+  // TODO it would be better in frsky.h / .cpp!
+
   // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
   static uint8_t FrskyDelay = 5;
   if (FrskyAlarmSendState && (--FrskyDelay == 0))

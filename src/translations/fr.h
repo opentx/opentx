@@ -57,7 +57,7 @@
 #define TR_VMIXTRIMS     "ON    ""OFF   ""Offset"
 
 #define LEN_VCSWFUNC     7
-#define TR_VCSWFUNC      "----   ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""ET     ""OU     ""XOU    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
+#define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
 #define LEN_VFSWFUNC     13
 #ifdef LOGS
@@ -70,8 +70,11 @@
 #define LEN_FUNCSOUNDS   6
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
 
-#define LEN_VTELEMUNIT   4
-#define TR_VTELEMUNIT    "v\0  ""-\0  ""kts\0""km/h""M/h\0""m\0  ""@C\0 "
+#define LEN_VTELEMBARS   4
+#define TR_VTELEMBARS    "---\0""A1\0 ""A2\0 ""ALT\0""RPM\0""FUEL""T1\0 ""T2\0 ""SPD\0""CELL"
+
+#define LEN_VTELEMUNIT   3
+#define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"
 
 #define LEN_VALARM       3
 #define TR_VALARM        "---""Yel""Org""Red"
@@ -89,8 +92,8 @@
 #define LEN_VTEMPLATES   14
 #define TR_VTEMPLATES    "4 Voies simple""Coupure Gaz   ""Empennage V   ""Elevon\\Delta  ""eCCPM         ""Conf.Helico   ""Servo Test    "
 
-#define LEN_VSWASHTYPE   6
-#define TR_VSWASHTYPE    "---   ""120   ""120X  ""140   ""90    "
+#define LEN_VSWASHTYPE   4
+#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
 
 #define LEN_VKEYS        5
 #define TR_VKEYS         " Menu"" Exit""  Bas"" Haut""Droit""Gauch"
@@ -107,12 +110,14 @@
 #define LEN_VTMRMODES    3
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
 
-#define LEN_TELEMCHNS    3
 #if defined(FRSKY_HUB)
-#define TR_TELEMCHNS     "AD1AD2ALTRPM"
+#define LEN_TELEMCHNS    4
+#define TR_TELEMCHNS     "AD1 AD2 ALT RPM FUELT@1 T@2 SPD\0CELL"
 #elif defined(WS_HOW_HIGH)
+#define LEN_TELEMCHNS    3
 #define TR_TELEMCHNS     "AD1AD2ALT"
 #elif defined(FRSKY)
+#define LEN_TELEMCHNS    3
 #define TR_TELEMCHNS     "AD1AD2"
 #endif
 
@@ -120,8 +125,9 @@
 #define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
 
 // ZERO TERMINATED STRINGS
-#define TR_POPUPS       "[MENU]    [EXIT]"
-#define TR_MENUWHENDONE " [MENU]Quand PRET"
+#define TR_POPUPS       "[MENU]\004[EXIT]"
+#define OFS_EXIT        7
+#define TR_MENUWHENDONE "[MENU]Quand PRET"
 #define TR_FREE         "libre"
 #define TR_DELETEMODEL  "SUPPRIMER MODELE"
 #define TR_COPYINGMODEL "Copie..."
@@ -143,7 +149,7 @@
 #define TR_FADEIN       "Fade In"
 #define TR_FADEOUT      "Fade Out"
 #define TR_DEFAULT      "(defaut)"
-#define TR_CHECKTRIMS   "Verif     Trims"
+#define TR_CHECKTRIMS   "Verif\005Trims"
 #define TR_SWASHTYPE    "Type de Plateau"
 #define TR_COLLECTIVE   "Collectif"
 #define TR_SWASHRING    "Swash Ring"
@@ -173,7 +179,7 @@
 #define TR_COPYTRIMMENU "COPIER TRIM [MENU]"
 #define TR_CV           "CV"
 #define TR_SW           "SW"
-#define TR_ACHANNEL     "A  voie"
+#define TR_ACHANNEL     "A\002voie"
 #define TR_RANGE        "Range"
 #define TR_BAR          "Bar"
 #define TR_ALARM        "Alarme"
@@ -199,40 +205,33 @@
 #define TR_RXCHANNELORD "Ordre Voies Rx"
 #define TR_MODE2        "Mode"
 #define TR_SLAVE        "Esclave"
-#define TR_MODESRC      "mode   % src"
+#define TR_MODESRC      "mode\003% src"
 #define TR_MULTIPLIER   "Multiplieur"
 #define TR_CAL          "Cal"
 #define TR_EEPROMV      "EEPROM v"
 #define TR_VTRIM        "Trim- +"
 #define TR_BG           "BG"
 #define TR_MENUTOSTART  "[MENU]POUR DEBUT"
-#define TR_SETMIDPOINT  "   SET NEUTRE   "
-#define TR_MOVESTICKSPOTS " BOUGER MANCHES/POTS "
+#define TR_SETMIDPOINT  "SET NEUTRE"
+#define TR_MOVESTICKSPOTS "BOUGER MANCHES/POTS "
 #define TR_ALT          "Alt:"
 #define TR_RXBATT       "Rx Batt:"
 #define TR_RX           "Rx:"
 #define TR_TX           "Tx:"
-#define TR_SPD          "Spd:"
-#define TR_TEMP1        "T@1:"
-#define TR_TEMP2        "T@2:"
-#define TR_RPM          "RPM:"
-#define TR_FUEL         "Fuel:"
-#define TR_VOLTS        "Vlts:"
+#define TR_SPDnMAX      "Spd:\006Max:"
+#define TR_TEMP1nTEMP2  "T@1:\007T@2:"
+#define TR_RPMnFUEL     "RPM:\006Fuel:"
 #define TR_ACCEL        "Acc:"
-#define TR_TELE         "Tele:"
-#define TR_RSSI         "RSSI:"
 #define TR_NODATA       "NO DATA"
-#define TR_TM1          "TM1"
-#define TR_TM2          "TM2"
-#define TR_THR          "GAZ"
-#define TR_TH           "TH%"
+#define TR_TM1TM2       "TM1\015TM2"
+#define TR_THRTHP       "THR\015TH%"
 #define TR_TOT          "TOT"
-#define TR_TMR1LATMAXUS "tmr1Lat max    us"
-#define TR_TMR1LATMINUS "tmr1Lat min    us"
-#define TR_TMR1JITTERUS "tmr1 Jitter    us"
-#define TR_TMAINMAXMS   "tmain max      ms"
-#define TR_T10MSUS      "t10ms          us"
-#define TR_FREESTACKMINB "Free Stack min    b"
+#define TR_TMR1LATMAXUS "tmr1Lat max\004us"
+#define TR_TMR1LATMINUS "tmr1Lat min\004us"
+#define TR_TMR1JITTERUS "tmr1 Jitter\004us"
+#define TR_TMAINMAXMS   "tmain max\010ms"
+#define TR_T10MSUS      "t10ms\010us"
+#define TR_FREESTACKMINB "Free Stack min\004b"
 #define TR_MENUTORESET  "[MENU]pour reset"
 #define TR_PPM          "PPM"
 #define TR_CH           "CH"

@@ -39,12 +39,20 @@ enum AlarmLevel {
 #define ALARM_GREATER(channel, alarm) ((g_model.frsky.channels[channel].alarms_greater >> alarm) & 1)
 #define ALARM_LEVEL(channel, alarm) ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
 
-struct FrskyData {
+// TODO change names
+class FrskyRSSI {
+ public:
   uint8_t value;
   uint8_t min;
+  void set(uint8_t value);
+};
+
+class FrskyData: public FrskyRSSI {
+ public:
   uint8_t max;
   void set(uint8_t value);
 };
+
 
 #if defined(FRSKY_HUB)
 struct FrskyHubData {
@@ -55,9 +63,10 @@ struct FrskyHubData {
   uint16_t fuelLevel;        // 0, 25, 50, 75, 100 percent
   int16_t  temperature2;     // -20 .. 250 deg. celcius
   uint16_t volts;            // 1/500V increments (0..4.2V)
-  // 2 spares
+  int16_t  baroAltitudeOffset;  // spare reused
+  uint16_t maxGpsSpeed;         // spare reused
   int16_t  gpsAltitude_ap;   // after punct
-  // 6 spares
+  uint8_t  cellVolts[12];       // 6 spares reused
   uint16_t baroAltitude;     // 0..9,999 meters
   uint16_t gpsSpeed_bp;      // before punct
   uint16_t gpsLongitude_bp;  // before punct
@@ -79,7 +88,8 @@ struct FrskyHubData {
   int16_t  accelX;           // 1/256th gram (-8g ~ +8g)
   int16_t  accelY;           // 1/256th gram (-8g ~ +8g)
   int16_t  accelZ;           // 1/256th gram (-8g ~ +8g)
-  // 1 spare
+  uint8_t  cellsCount;          // 1/2 spare reused
+  uint8_t  minCellVolts;        // 1/2 spare reused
   uint16_t current;
   // 17 spares
   uint16_t volts_bp;
@@ -90,14 +100,14 @@ struct FrskyHubData {
 
 struct FrskyHubData {
   uint16_t baroAltitude;     // 0..9,999 meters
+  int16_t  baroAltitudeOffset;
 };
 
 #endif
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 extern FrskyHubData frskyHubData;
-extern int16_t baroAltitudeOffset;
-extern uint8_t maxGpsSpeed;
+extern uint8_t barsThresholds[BAR_MAX-3];
 #endif
 
 // Global Fr-Sky telemetry data variables
@@ -109,7 +119,7 @@ extern uint8_t frskyUsrStreaming;
 extern uint8_t FrskyAlarmSendState;
 
 extern FrskyData frskyTelemetry[2];
-extern FrskyData frskyRSSI[2];
+extern FrskyRSSI frskyRSSI[2];
 extern uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 extern uint8_t frskyTxBufferCount;
 
