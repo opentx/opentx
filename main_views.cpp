@@ -372,7 +372,7 @@ void menuMainView(uint8_t event)
         // The bars
         uint8_t bars_height = 5;
         for (int8_t i=3; i>=0; i--) {
-          if (g_model.frsky.bars[i].source && (63-g_model.frsky.bars[i].barMax) > g_model.frsky.bars[i].barMin) {
+          if (g_model.frsky.bars[i].source && (51-g_model.frsky.bars[i].barMax) > g_model.frsky.bars[i].barMin) {
             lcd_putsnAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMBARS+LEN_VTELEMBARS*g_model.frsky.bars[i].source, LEN_VTELEMBARS, 0);
             lcd_rect(25, bars_height+6+i*(bars_height+6), 101, bars_height+2);
             int16_t value = getValue(CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+g_model.frsky.bars[i].source-1);
@@ -382,11 +382,11 @@ void menuMainView(uint8_t event)
             else
               threshold = barsThresholds[g_model.frsky.bars[i].source-3];
             if (threshold) {
-              thresholdX = (uint8_t)(int16_t)((int16_t)100 * (threshold - g_model.frsky.bars[i].barMin * 4) / ((63 - g_model.frsky.bars[i].barMax) * 4 - g_model.frsky.bars[i].barMin * 4));
+              thresholdX = (uint8_t)(int16_t)((int16_t)100 * (threshold - g_model.frsky.bars[i].barMin * 4) / ((51 - g_model.frsky.bars[i].barMax) * 5 - g_model.frsky.bars[i].barMin * 4));
               if (thresholdX > 100)
                 thresholdX = 0;
             }
-            uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)((int16_t)100 * (value - g_model.frsky.bars[i].barMin * 4) / ((63 - g_model.frsky.bars[i].barMax) * 4 - g_model.frsky.bars[i].barMin * 4)), (int16_t)100);
+            uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)((int16_t)100 * (value - g_model.frsky.bars[i].barMin * 5) / ((51 - g_model.frsky.bars[i].barMax) * 4 - g_model.frsky.bars[i].barMin * 4)), (int16_t)100);
             lcd_filled_rect(26, bars_height+6+1+i*(bars_height+6), width, bars_height, (threshold > value) ? DOTTED : SOLID);
             for (uint8_t j=50; j<125; j+=25)
               if (j>26+thresholdX) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
