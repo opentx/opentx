@@ -136,11 +136,11 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_LEFT):
 #if defined(FRSKY)
 #if defined(FRSKY_HUB) && defined(WS_HOW_HIGH)
-      tabViews[e_telemetry] = (g_model.frsky.usrProto == 0 ? 2 : (g_model.frsky.usrProto == 1 ? 4 : 3));
+      tabViews[e_telemetry] = (g_model.frsky.usrProto == 0 ? 3 : (g_model.frsky.usrProto == 1 ? 5 : 4));
 #elif defined(FRSKY_HUB)
-      tabViews[e_telemetry] = (g_model.frsky.usrProto == 1 ? 4 : 2);
+      tabViews[e_telemetry] = (g_model.frsky.usrProto == 1 ? 5 : 3);
 #elif defined(WS_HOW_HIGH)
-      tabViews[e_telemetry] = (g_model.frsky.usrProto == 2 ? 3 : 2);
+      tabViews[e_telemetry] = (g_model.frsky.usrProto == 2 ? 4 : 3);
 #endif
 #endif
       g_eeGeneral.view = (view + (event == EVT_KEY_BREAK(KEY_RIGHT) ? ALTERNATE_VIEW : tabViews[view_base]*ALTERNATE_VIEW-ALTERNATE_VIEW)) % (tabViews[view_base]*ALTERNATE_VIEW);
