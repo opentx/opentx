@@ -492,6 +492,8 @@ void frskyAlarmsRefresh()
 }
 #endif
 
+// TODO change names
+// Optimize?
 void FrskyRSSI::set(uint8_t value)
 {
    this->value = (((uint16_t)this->value * 7) + value + 4) / 8;
@@ -501,9 +503,11 @@ void FrskyRSSI::set(uint8_t value)
 
 void FrskyData::set(uint8_t value)
 {
+  this->value = value;
   if (!max || max < value)
     max = value;
-  FrskyRSSI::set(value);
+  if (!min || min > value)
+    min = value;
 }
 
 void resetTelemetry()
