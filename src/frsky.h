@@ -144,6 +144,7 @@ bool FRSKY_alarmRaised(uint8_t idx);
 void resetTelemetry();
 
 #ifdef FRSKY_HUB
+void getGpsPilotCoords();
 uint32_t getGpsDistanceX2();
 uint32_t getGpsDistance();
 #endif

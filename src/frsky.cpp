@@ -158,6 +158,9 @@ void parseTelemHubByte(uint8_t byte)
     if (!frskyHubData.minCellVolts || cellVolts < frskyHubData.minCellVolts)
       frskyHubData.minCellVolts = cellVolts;
   }
+  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsLatitudeNS/*TODO check that it is received at last!*/) && !frskyHubData.pilotLatitude) {
+    getGpsPilotCoords();
+  }
 
   state = TS_IDLE;
 }
@@ -528,12 +531,7 @@ void resetTelemetry()
   frskyHubData.cellsCount = 0;
   frskyHubData.minCellVolts = 0;
   if (frskyHubData.gpsLatitude_ap) {
-    frskyHubData.pilotLatitude = /*((uint32_t)frskyHubData.gpsLatitude_bp << 16) + */(((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
-    frskyHubData.pilotLongitude = /*((uint32_t)frskyHubData.gpsLongitude_bp << 16) + */(((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
-    uint32_t angle2 = (frskyHubData.gpsLatitude_bp*frskyHubData.gpsLatitude_bp) / 10000;
-    uint32_t angle4 = angle2 * angle2;
-    frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
-    // printf("frskyHubData.distFromEarthAxis=%d\n", frskyHubData.distFromEarthAxis); fflush(stdout);
+    getGpsPilotCoords();
   }
 #endif
 
@@ -563,6 +561,16 @@ uint16_t sqrt32(uint32_t n)
       return g;
     g |= c;
   }
+}
+
+void getGpsPilotCoords()
+{
+  frskyHubData.pilotLatitude = /*((uint32_t)frskyHubData.gpsLatitude_bp << 16) + */(((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
+  frskyHubData.pilotLongitude = /*((uint32_t)frskyHubData.gpsLongitude_bp << 16) + */(((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
+  uint32_t angle2 = (frskyHubData.gpsLatitude_bp*frskyHubData.gpsLatitude_bp) / 10000;
+  uint32_t angle4 = angle2 * angle2;
+  frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
+  // printf("frskyHubData.distFromEarthAxis=%d\n", frskyHubData.distFromEarthAxis); fflush(stdout);
 }
 
 uint32_t getGpsDistanceX2()
