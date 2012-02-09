@@ -53,18 +53,19 @@ class FrskyData: public FrskyRSSI {
   void set(uint8_t value);
 };
 
+#define EARTH_RADIUSKM ((uint32_t)6371)
+#define EARTH_RADIUS ((uint32_t)111194)
 
 #if defined(FRSKY_HUB)
 struct FrskyHubData {
-  // 1 spare
+  int16_t  baroAltitudeOffset;  // spare reused
   int16_t  gpsAltitude_bp;   // before punct
   int16_t  temperature1;     // -20 .. 250 deg. celcius
   uint16_t rpm;              // 0..60,000 revs. per minute
   uint16_t fuelLevel;        // 0, 25, 50, 75, 100 percent
   int16_t  temperature2;     // -20 .. 250 deg. celcius
   uint16_t volts;            // 1/500V increments (0..4.2V)
-  int16_t  baroAltitudeOffset;  // spare reused
-  uint16_t maxGpsSpeed;         // spare reused
+  uint32_t distFromEarthAxis;   // 2 spares reused
   int16_t  gpsAltitude_ap;   // after punct
   uint8_t  cellVolts[12];       // 6 spares reused
   uint16_t baroAltitude;     // 0..9,999 meters
@@ -82,7 +83,9 @@ struct FrskyHubData {
   uint16_t gpsLongitude_ap;
   uint16_t gpsLatitude_ap;
   uint16_t gpsCourse_ap;
-  // 5 spares
+  uint32_t pilotLatitude;       // 2 spares reused
+  uint32_t pilotLongitude;      // 2 spares reused
+  uint16_t maxGpsSpeed;         // spare reused
   uint16_t gpsLongitudeEW;   // East/West
   uint16_t gpsLatitudeNS;    // North/South
   int16_t  accelX;           // 1/256th gram (-8g ~ +8g)
@@ -139,6 +142,11 @@ inline void FRSKY_setRSSIAlarms(void)
 bool FRSKY_alarmRaised(uint8_t idx);
 
 void resetTelemetry();
+
+#ifdef FRSKY_HUB
+uint32_t getGpsDistanceX2();
+uint32_t getGpsDistance();
+#endif
 
 #endif
 
