@@ -92,15 +92,13 @@ uint8_t frskyGetUserData(char *buffer, uint8_t bufSize)
 #endif
 
 #ifdef FRSKY_HUB
-int8_t parseTelemHubIndex(uint8_t index)
+int8_t parseTelemHubIndex(int8_t index)
 {
   if (index > 0x3b)
-    index = 0; // invalid index
+    index = -1; // invalid index
   if (index > 0x39)
     index -= 17;
-  if (index > 0x21)
-    index -= 5;
-  return 2*(index-1);
+  return 2*index;
 }
 
 typedef enum {
@@ -516,15 +514,78 @@ void resetTelemetry()
   memset(frskyRSSI, 0, sizeof(frskyRSSI));
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude;
+#endif
+
+#ifdef SIMU
+  frskyHubData.gpsLatitude_bp = 4401;
+  frskyHubData.gpsLatitude_ap = 7710;
+  frskyHubData.gpsLongitude_bp = 1006;
+  frskyHubData.gpsLongitude_ap = 8872;
+#endif
+
+#if defined(FRSKY_HUB)
   frskyHubData.maxGpsSpeed = 0;
   frskyHubData.cellsCount = 0;
   frskyHubData.minCellVolts = 0;
+  if (frskyHubData.gpsLatitude_ap) {
+    frskyHubData.pilotLatitude = /*((uint32_t)frskyHubData.gpsLatitude_bp << 16) + */(((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
+    frskyHubData.pilotLongitude = /*((uint32_t)frskyHubData.gpsLongitude_bp << 16) + */(((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
+    uint32_t angle2 = (frskyHubData.gpsLatitude_bp*frskyHubData.gpsLatitude_bp) / 10000;
+    uint32_t angle4 = angle2 * angle2;
+    frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
+    // printf("frskyHubData.distFromEarthAxis=%d\n", frskyHubData.distFromEarthAxis); fflush(stdout);
+  }
 #endif
 
 #ifdef SIMU
   frskyTelemetry[0].set(120);
   frskyRSSI[0].set(75);
   frskyHubData.fuelLevel = 75;
+  frskyHubData.gpsLatitude_bp = 4401;
+  frskyHubData.gpsLatitude_ap = 7455;
+  frskyHubData.gpsLongitude_bp = 1006;
+  frskyHubData.gpsLongitude_ap = 9533;
 #endif
 }
 
+#ifdef FRSKY_HUB
+
+uint16_t sqrt32(uint32_t n)
+{
+  unsigned int c = 0x8000;
+  unsigned int g = 0x8000;
+
+  for(;;) {
+    if(g*g > n)
+      g ^= c;
+    c >>= 1;
+    if(c == 0)
+      return g;
+    g |= c;
+  }
+}
+
+uint32_t getGpsDistanceX2()
+{
+  uint32_t lat = (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
+  uint32_t lng = (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
+
+  // printf("lat=%d (%d), long=%d (%d)\n", lat, abs(lat - frskyHubData.pilotLatitude), lng, abs(lng - frskyHubData.pilotLongitude));
+
+  uint32_t angle = (lat > frskyHubData.pilotLatitude) ? lat - frskyHubData.pilotLatitude : frskyHubData.pilotLatitude - lat;
+  uint32_t dist1 = EARTH_RADIUS * angle / 1000000;
+
+  angle = (lng > frskyHubData.pilotLongitude) ? lng - frskyHubData.pilotLongitude : frskyHubData.pilotLongitude - lng;
+  uint32_t dist2 = frskyHubData.distFromEarthAxis * angle / 1000000;
+
+  // printf("dist1=%d, dist2=%d\n", dist1, dist2);
+
+  return dist1*dist1+dist2*dist2;
+}
+
+uint32_t getGpsDistance()
+{
+  return sqrt32(getGpsDistanceX2());
+}
+
+#endif

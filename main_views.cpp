@@ -419,7 +419,9 @@ void menuMainView(uint8_t event)
           }
         }
 
+#ifdef FRSKY_HUB
         // Cells voltage
+        // TODO only display used cells!
         lcd_putsLeft( 5*FH-3, PSTR("V1=\004V2=\004V3=")) ;
         lcd_putsLeft( 6*FH-3, PSTR("V4=\004V5=\004V6="));
         {
@@ -436,6 +438,7 @@ void menuMainView(uint8_t event)
             x += 7*FW;
           }
         }
+#endif
 
         displayRssiLine();
       }
@@ -506,6 +509,9 @@ void menuMainView(uint8_t event)
 #define ALTITUDE_LINE (4*FH-1)
         lcd_putsLeft(ALTITUDE_LINE, STR_ALT);
         putsTelemetryValue(4*FW, ALTITUDE_LINE, frskyHubData.gpsAltitude_bp, UNIT_METERS, LEFT); // before '.'
+
+        lcd_puts(12*FW, ALTITUDE_LINE, PSTR("Dst:"));
+        putsTelemetryValue(16*FW, ALTITUDE_LINE, getGpsDistance(), UNIT_METERS, LEFT); // before '.'
       }
       else if (g_model.frsky.usrProto == PROTO_FRSKY_HUB && view == e_telemetry+3*ALTERNATE_VIEW) {
         // Temperature 1
