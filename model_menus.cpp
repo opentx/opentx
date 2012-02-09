@@ -1866,10 +1866,23 @@ void menuProcTelemetry(uint8_t event)
       putsTelemetryChannel(TELEM_COL2, y, i, 255-g_model.frsky.channels[i].offset, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
       lcd_putsnAtt(lcd_lastPos+1, y, STR_VTELEMUNIT+LEN_VTELEMUNIT*g_model.frsky.channels[i].type, LEN_VTELEMUNIT, (sub==subN && m_posHorz==1 ? blink:0));
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
-        if (m_posHorz == 0)
-          g_model.frsky.channels[i].ratio = checkIncDec(event, g_model.frsky.channels[i].ratio, 0, 255, EE_MODEL);
-        else
+        if (m_posHorz == 0) {
+          uint16_t ratio = checkIncDec(event, g_model.frsky.channels[i].ratio, 0, 256, EE_MODEL);
+          if (checkIncDec_Ret) {
+            if (ratio == 127 && g_model.frsky.channels[i].multiplier > 0) {
+              g_model.frsky.channels[i].multiplier--; g_model.frsky.channels[i].ratio = 255;
+            }
+            else if (ratio == 256) {
+              if (g_model.frsky.channels[i].multiplier < 3) { g_model.frsky.channels[i].multiplier++; g_model.frsky.channels[i].ratio = 128; }
+            }
+            else {
+              g_model.frsky.channels[i].ratio = ratio;
+            }
+          }
+        }
+        else {
           CHECK_INCDEC_MODELVAR(event, g_model.frsky.channels[i].type, 0, UNIT_MAX-1);
+        }
       }
     }
     subN++;

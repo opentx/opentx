@@ -522,7 +522,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       // A1 and A2
     {
       // TODO optimize this, avoid int32_t
-      int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * g_model.frsky.channels[channel].ratio * 2 / 51;
+      int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51;
       if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
         converted_value /= 10;
       }
