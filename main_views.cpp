@@ -104,7 +104,7 @@ void displayRssiLine()
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
 {
-  lcd_puts(x, y, STR_ALT);
+  lcd_putsn_P(x, y, STR_ALTnDST, 4);
   int16_t value = frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
   putsTelemetryValue(lcd_lastPos, y, value, UNIT_METERS, flags|LEFT);
 }
@@ -505,12 +505,10 @@ void menuMainView(uint8_t event)
         putsTelemetryValue(4*FW, SPEED_LINE, frskyHubData.gpsSpeed_bp, UNIT_KTS, LEFT|DBLSIZE); // before '.'
         putsTelemetryValue(16*FW, SPEED_LINE, frskyHubData.maxGpsSpeed, UNIT_KTS, LEFT); // before '.'
 
-        // Altitude
+        // GPS altitude and distance
 #define ALTITUDE_LINE (4*FH-1)
-        lcd_putsLeft(ALTITUDE_LINE, STR_ALT);
+        lcd_putsLeft(ALTITUDE_LINE, STR_ALTnDST);
         putsTelemetryValue(4*FW, ALTITUDE_LINE, frskyHubData.gpsAltitude_bp, UNIT_METERS, LEFT); // before '.'
-
-        lcd_puts(12*FW, ALTITUDE_LINE, PSTR("Dst:"));
         putsTelemetryValue(16*FW, ALTITUDE_LINE, getGpsDistance(), UNIT_METERS, LEFT); // before '.'
       }
       else if (g_model.frsky.usrProto == PROTO_FRSKY_HUB && view == e_telemetry+3*ALTERNATE_VIEW) {
