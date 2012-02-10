@@ -142,11 +142,23 @@ void parseTelemHubByte(uint8_t byte)
     return;
   }
   ((uint8_t*)&frskyHubData)[structPos+1] = byte;
+
+  if ((uint8_t)structPos == offsetof(FrskyHubData, baroAltitude) && !frskyHubData.baroAltitudeOffset) {
+    // First received altitude => Altitude offset
+    frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude;
+  }
+
+  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsLatitudeNS/*TODO check that it is received at last!*/) && !frskyHubData.pilotLatitude) {
+    // First received GPS position => Pilot GPS position
+    getGpsPilotPosition();
+  }
+
   if ((uint8_t)structPos == offsetof(FrskyHubData, gpsSpeed_ap)) {
     // Speed => Max speed
     if (frskyHubData.maxGpsSpeed < frskyHubData.gpsSpeed_ap)
       frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_ap;
   }
+
   if ((uint8_t)structPos == offsetof(FrskyHubData, volts)) {
     // Voltage => Cell number + Cell voltage
     uint8_t battnumber = (frskyHubData.volts & 0x00F0) >> 4;
@@ -157,9 +169,6 @@ void parseTelemHubByte(uint8_t byte)
     frskyHubData.cellVolts[battnumber] = cellVolts;
     if (!frskyHubData.minCellVolts || cellVolts < frskyHubData.minCellVolts)
       frskyHubData.minCellVolts = cellVolts;
-  }
-  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsLatitudeNS/*TODO check that it is received at last!*/) && !frskyHubData.pilotLatitude) {
-    getGpsPilotCoords();
   }
 
   state = TS_IDLE;
@@ -515,9 +524,6 @@ void resetTelemetry()
 {
   memset(frskyTelemetry, 0, sizeof(frskyTelemetry));
   memset(frskyRSSI, 0, sizeof(frskyRSSI));
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude;
-#endif
 
 #ifdef SIMU
   frskyHubData.gpsLatitude_bp = 4401;
@@ -526,12 +532,17 @@ void resetTelemetry()
   frskyHubData.gpsLongitude_ap = 8872;
 #endif
 
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+  frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude;
+#endif
+
+
 #if defined(FRSKY_HUB)
   frskyHubData.maxGpsSpeed = 0;
   frskyHubData.cellsCount = 0;
   frskyHubData.minCellVolts = 0;
   if (frskyHubData.gpsLatitude_ap) {
-    getGpsPilotCoords();
+    getGpsPilotPosition();
   }
 #endif
 
@@ -547,7 +558,6 @@ void resetTelemetry()
 }
 
 #ifdef FRSKY_HUB
-
 uint16_t sqrt32(uint32_t n)
 {
   unsigned int c = 0x8000;
@@ -563,7 +573,7 @@ uint16_t sqrt32(uint32_t n)
   }
 }
 
-void getGpsPilotCoords()
+void getGpsPilotPosition()
 {
   frskyHubData.pilotLatitude = /*((uint32_t)frskyHubData.gpsLatitude_bp << 16) + */(((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
   frskyHubData.pilotLongitude = /*((uint32_t)frskyHubData.gpsLongitude_bp << 16) + */(((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
@@ -581,19 +591,21 @@ uint32_t getGpsDistanceX2()
   // printf("lat=%d (%d), long=%d (%d)\n", lat, abs(lat - frskyHubData.pilotLatitude), lng, abs(lng - frskyHubData.pilotLongitude));
 
   uint32_t angle = (lat > frskyHubData.pilotLatitude) ? lat - frskyHubData.pilotLatitude : frskyHubData.pilotLatitude - lat;
-  uint32_t dist1 = EARTH_RADIUS * angle / 1000000;
+  uint32_t dist = EARTH_RADIUS * angle / 1000000;
+  uint32_t result = dist*dist;
 
   angle = (lng > frskyHubData.pilotLongitude) ? lng - frskyHubData.pilotLongitude : frskyHubData.pilotLongitude - lng;
-  uint32_t dist2 = frskyHubData.distFromEarthAxis * angle / 1000000;
+  dist = frskyHubData.distFromEarthAxis * angle / 1000000;
+  result += dist*dist;
 
-  // printf("dist1=%d, dist2=%d\n", dist1, dist2);
+  dist = frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
+  result += dist*dist;
 
-  return dist1*dist1+dist2*dist2;
+  return result;
 }
 
 uint32_t getGpsDistance()
 {
-  return sqrt32(getGpsDistanceX2());
+  return (frskyHubData.pilotLatitude ? sqrt32(getGpsDistanceX2()) : 0);
 }
-
 #endif

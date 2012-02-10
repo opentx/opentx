@@ -214,7 +214,7 @@
 #define TR_MENUTOSTART  "[MENU] TO START"
 #define TR_SETMIDPOINT  "SET MIDPOINT"
 #define TR_MOVESTICKSPOTS "MOVE STICKS/POTS"
-#define TR_ALT          "Alt:"
+#define TR_ALTnDST      "Alt:\010Dst:"
 #define TR_RXBATT       "Rx Batt:"
 #define TR_RX           "Rx:"
 #define TR_TX           "Tx:"

@@ -214,7 +214,7 @@
 #define TR_MENUTOSTART  "[MENU]POUR DEBUT"
 #define TR_SETMIDPOINT  "SET NEUTRE"
 #define TR_MOVESTICKSPOTS "BOUGER MANCHES/POTS "
-#define TR_ALT          "Alt:"
+#define TR_ALTnDST      "Alt:\010Dst:"
 #define TR_RXBATT       "Rx Batt:"
 #define TR_RX           "Rx:"
 #define TR_TX           "Tx:"
