@@ -1,11 +1,23 @@
 /*
  * Authors (alphabetical order)
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
+ * - Erez Raviv
+ * - Jean-Pierre Parisy
+ * - Karl Szmutny <shadow@privy.de>
+ * - Michael Blandford
+ * - Michal Hlavinka
+ * - Philip Moss
+ * - Rob Thomson
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Thomas Husterer
  *
- * gruvin9x is based on code named er9x by
- * Author - Erez Raviv <erezraviv@gmail.com>, which is in turn
- * was based on the original (and ongoing) project by Thomas Husterer,
- * th9x -- http://code.google.com/p/th9x/
+ * open9x is based on code named
+ * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
+ * er9x by Erez Raviv: http://code.google.com/p/er9x/,
+ * and the original (and ongoing) project by
+ * Thomas Husterer, th9x: http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -19,7 +31,7 @@
  */
 
 /*
- I did think about implimenting this with an array for the timing durations
+ Cam: I did think about implimenting this with an array for the timing durations
  like the original bit bang DSM2 code was done but that meant another array 
  on top of the playlist one, therefore more memory waisted, and because 
  the playlist must be executed one after another it would mean putting 
