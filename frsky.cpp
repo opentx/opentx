@@ -165,10 +165,10 @@ void parseTelemHubByte(uint8_t byte)
     getGpsPilotPosition();
   }
 
-  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsSpeed_ap)) {
+  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsSpeed_bp)) {
     // Speed => Max speed
-    if (frskyHubData.maxGpsSpeed < frskyHubData.gpsSpeed_ap)
-      frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_ap;
+    if (frskyHubData.maxGpsSpeed < frskyHubData.gpsSpeed_bp)
+      frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_bp;
   }
 
   if ((uint8_t)structPos == offsetof(FrskyHubData, volts)) {
