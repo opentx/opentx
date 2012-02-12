@@ -589,7 +589,7 @@ void getGpsPilotPosition()
 {
   frskyHubData.pilotLatitude = /*((uint32_t)frskyHubData.gpsLatitude_bp << 16) + */(((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
   frskyHubData.pilotLongitude = /*((uint32_t)frskyHubData.gpsLongitude_bp << 16) + */(((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
-  uint32_t angle2 = (frskyHubData.gpsLatitude_bp*frskyHubData.gpsLatitude_bp) / 10000;
+  uint32_t angle2 = ((uint32_t)frskyHubData.gpsLatitude_bp*(uint32_t)frskyHubData.gpsLatitude_bp) / 10000;
   uint32_t angle4 = angle2 * angle2;
   frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
   // printf("frskyHubData.distFromEarthAxis=%d\n", frskyHubData.distFromEarthAxis); fflush(stdout);
