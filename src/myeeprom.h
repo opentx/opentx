@@ -238,9 +238,10 @@ PACK(typedef struct t_FrSkyBarData {
 #define PROTO_WS_HOW_HIGH 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
-  uint16_t usrProto:3;            // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint16_t usrProto:3; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
   uint16_t imperial:1;
-  uint16_t spare:4;
+  uint16_t blades:1;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint16_t spare:3;
   FrSkyBarData bars[4];
 }) FrSkyData;
 
