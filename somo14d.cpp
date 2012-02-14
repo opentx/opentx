@@ -81,16 +81,18 @@ ISR(TIMER4_COMPA_vect) //Every 0.5ms
     if (i==0 && !busy) {
       if(somo14command) { // Allow a command to be send even if the SOMO is busy, i.e. STOP or PAUSE
         somo14_current=somo14command;
+		busy=1;
       }
       else if (!SOMOBUSY) {
         if (somo14RIdx == somo14WIdx) {
-          // TODO disable the interrupt (and re-enable when a new prompt is pushed)?
+          TIMSK4 &= ~(1<<OCIE4A);
           return BUSY;
         }
         somo14_current = somo14playlist[somo14RIdx];
         somo14RIdx = (somo14RIdx + 1) % QUEUE_LENGTH;
+		busy = 1;
       }
-      busy = 1;
+      
     }
 
     // Start and stop bits
@@ -151,4 +153,5 @@ void somoPushPrompt(uint16_t prompt)
 {
   somo14playlist[somo14WIdx] = prompt;
   somo14WIdx = (somo14WIdx + 1) % QUEUE_LENGTH;
+  TIMSK4 |= (1<<OCIE4A);
 }
