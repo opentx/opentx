@@ -2050,7 +2050,7 @@ void instantTrim()
   uint8_t phase = getFlightPhase();
 
   for (uint8_t i=0; i<NUM_STICKS; i++) {
-    if (!IS_THROTTLE(i)) {
+    if (i!=2/*TODO constant*/) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(i, phase);
       s_noStickInputs = true;
