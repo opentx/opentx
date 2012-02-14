@@ -168,6 +168,7 @@ extern sem_t eeprom_write_sem;
 
 #define TIMSK  dummyport
 #define TIMSK1 dummyport
+#define TIMSK4 dummyport
 #define ETIMSK  dummyport
 #define ETIMSK1 dummyport
 
@@ -175,6 +176,7 @@ extern sem_t eeprom_write_sem;
 #define OCIE1A dummyport
 #define OCIE1B dummyport
 #define OCIE1C dummyport
+#define OCIE4A dummyport
 
 #define OUT_B_LIGHT   7
 #define INP_E_ElevDR  2

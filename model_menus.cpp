@@ -1841,12 +1841,12 @@ void menuProcSafetySwitches(uint8_t event)
 void menuProcTelemetry(uint8_t event)
 {
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 16, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, 0, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 19, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, -1, 0, 0, -1, 2, 2, 2, 2});
 #else
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 15, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 16, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, -1, 2, 2, 2, 2});
 #endif
 
-  int8_t  sub    = m_posVert;
+  int8_t  sub = m_posVert;
   uint8_t blink;
   uint8_t y;
 
@@ -1939,28 +1939,43 @@ void menuProcTelemetry(uint8_t event)
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   if(s_pgOfs<subN) {
     y = (subN-s_pgOfs)*FH;
-    lcd_putsLeft(y, STR_USRPROTO);
-#if defined(WS_HOW_HIGH)
-#define USR_PROTO_MAX  2
-#else
-#define USR_PROTO_MAX 1
-#endif
+    lcd_putsLeft(y, STR_USRDATA);
+  }
+  subN++;
+
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_puts(4, y, STR_PROTO);
     lcd_putsnAtt(TELEM_COL2, y, STR_VTELPROTO+LEN_VTELPROTO*g_model.frsky.usrProto, LEN_VTELPROTO, sub==subN ? INVERS:0);
     if (sub==subN)
-      CHECK_INCDEC_MODELVAR(event, g_model.frsky.usrProto, 0, USR_PROTO_MAX);
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.usrProto, 0, 2);
+  }
+  subN++;
+
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_puts(4, y, STR_BLADES);
+    lcd_outdezAtt(TELEM_COL2+FWNUM, y, 2+g_model.frsky.blades, sub==subN ? INVERS : 0);
+    if (sub==subN)
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.blades, 0, 1);
   }
   subN++;
 #endif
 
-  // Bars setup
+  // Bars
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_putsLeft(y, STR_BARS);
+  }
+  subN++;
+
   for (int j=0; j<4; j++) {
     if (s_pgOfs<subN) {
       y = (subN-s_pgOfs)*FH;
-      putsStrIdx(0*FW, y, PSTR("Bar"), j+1); // TODO lang
-      lcd_putsnAtt(5*FW, y, STR_VTELEMBARS+LEN_VTELEMBARS*g_model.frsky.bars[j].source, LEN_VTELEMBARS, sub==subN && m_posHorz==0 ? blink : 0);
+      lcd_putsnAtt(4, y, STR_VTELEMBARS+LEN_VTELEMBARS*g_model.frsky.bars[j].source, LEN_VTELEMBARS, sub==subN && m_posHorz==0 ? blink : 0);
       if (g_model.frsky.bars[j].source) {
-        putsTelemetryChannel(TELEM_COL2, y, g_model.frsky.bars[j].source-1, g_model.frsky.bars[j].barMin*5, (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
-        putsTelemetryChannel(16*FW-3, y, g_model.frsky.bars[j].source-1, (51-g_model.frsky.bars[j].barMax)*5, (sub==subN && m_posHorz==2 ? blink : 0) | LEFT);
+        putsTelemetryChannel(TELEM_COL2-3*FW, y, g_model.frsky.bars[j].source-1, g_model.frsky.bars[j].barMin*5, (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
+        putsTelemetryChannel(14*FW-3, y, g_model.frsky.bars[j].source-1, (51-g_model.frsky.bars[j].barMax)*5, (sub==subN && m_posHorz==2 ? blink : 0) | LEFT);
       }
       else {
         if (sub == subN) m_posHorz = 0;

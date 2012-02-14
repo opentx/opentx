@@ -532,7 +532,7 @@ void menuMainView(uint8_t event)
 
         // RPM
         lcd_putsLeft(2*FH, STR_RPMnFUEL);
-        lcd_outdezNAtt(4*FW, 1*FH, frskyHubData.rpm, DBLSIZE|LEFT);
+        lcd_outdezNAtt(4*FW, 1*FH, frskyHubData.rpm/(2+g_model.frsky.blades), DBLSIZE|LEFT);
 
         // Fuel
         putsTelemetryValue(15*FW, 2*FH, frskyHubData.fuelLevel, UNIT_PERCENT, DBLSIZE|LEFT);
