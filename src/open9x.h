@@ -706,5 +706,9 @@ extern volatile uint8_t g_rotenc[2];
 #include "beeper.h"
 #endif
 
+#if defined(SOMO)
+#include "somo14d.h"
+#endif
+
 #endif // gruvin9x_h
 /*eof*/
