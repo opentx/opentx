@@ -572,8 +572,8 @@ void resetTelemetry()
 #ifdef FRSKY_HUB
 uint16_t sqrt32(uint32_t n)
 {
-  unsigned int c = 0x8000;
-  unsigned int g = 0x8000;
+  uint16_t c = 0x8000;
+  uint32_t g = 0x8000;
 
   for(;;) {
     if(g*g > n)
@@ -617,7 +617,7 @@ uint32_t getGpsDistanceX2()
   return result;
 }
 
-uint32_t getGpsDistance()
+uint16_t getGpsDistance()
 {
   return (frskyHubData.pilotLatitude ? sqrt32(getGpsDistanceX2()) : 0);
 }
