@@ -176,6 +176,7 @@ enum Functions {
   FUNC_INSTANT_TRIM,
   FUNC_TRIMS_2_OFS,
   FUNC_PLAY_SOUND,
+  FUNC_PLAY_SOMO,
 #ifdef LOGS
   FUNC_LOGS,
 #endif

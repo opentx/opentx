@@ -1762,22 +1762,24 @@ void menuProcFunctionSwitches(uint8_t event)
           break;
         case 2:
           if (sd->swtch) {
-            int16_t val_displayed;
-            int8_t val_min;
-            int8_t val_max;
+            int16_t val_displayed = sd->param;
+            int16_t val_min = 0;
+            int16_t val_max = 255;
             if (sd->func == FUNC_PLAY_SOUND) {
-              val_displayed = sd->param;
-
-#ifdef AUDIO
-              val_min = 0;
+#if defined(AUDIO)
               val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
               lcd_putsnAtt(15*FW, y, STR_FUNCSOUNDS+LEN_FUNCSOUNDS*val_displayed, LEN_FUNCSOUNDS, attr);
 #else
               break;
 #endif
             }
+#if defined(SOMO)
+            else if (sd->func == FUNC_PLAY_SOMO) {
+              lcd_outdezAtt(21*FW, y, val_displayed, attr);
+            }
+#endif
             else if (sd->func <= FUNC_SAFETY_CH16) {
-              val_displayed = (int8_t)sd->param;
+              val_displayed = (int16_t)(int8_t)sd->param;
               val_min = -125;
               val_max = 125;
               lcd_outdezAtt(21*FW, y, val_displayed, attr);
@@ -1787,7 +1789,7 @@ void menuProcFunctionSwitches(uint8_t event)
             }
 
             if (active) {
-              CHECK_INCDEC_MODELVAR(event, sd->param, val_min, val_max);
+              sd->param = checkIncDec(event, val_displayed, val_min, val_max, EE_MODEL);
             }
           }
           else if (attr) {
