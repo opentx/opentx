@@ -158,7 +158,7 @@ void resetTelemetry();
 #ifdef FRSKY_HUB
 void getGpsPilotPosition();
 uint32_t getGpsDistanceX2();
-uint32_t getGpsDistance();
+uint16_t getGpsDistance();
 #endif
 
 #endif
