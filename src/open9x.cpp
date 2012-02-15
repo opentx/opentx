@@ -1084,7 +1084,7 @@ void evalFunctions()
         if (sd->func < FUNC_TRAINER) {
           safetyCh[sd->func] = (int8_t)sd->param;
         }
-        if (sd->func == FUNC_PLAY_SOUND/* && (~active_functions & mask)*/) {
+        if (sd->func == FUNC_PLAY_SOUND) {
 #if defined(AUDIO)
           audioDefevent(AU_FRSKY_FIRST+sd->param);
 #else
@@ -1093,6 +1093,11 @@ void evalFunctions()
           }
 #endif
         }
+#if defined(SOMO)
+        if (sd->func == FUNC_PLAY_SOMO && (~active_functions & mask)) {
+          somoPushPrompt(sd->param);
+        }
+#endif
         active_functions |= mask;
       }
       else {
