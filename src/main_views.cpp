@@ -93,12 +93,6 @@ void doMainScreenGrphics()
 }
 
 #if defined(FRSKY)
-void displayA1A2(uint8_t x, uint8_t y, uint8_t idx)
-{
-  lcd_puts(x, y, PSTR("A :"));
-  lcd_putc(x+FW, y, '1'+idx);
-}
-
 void displayRssiLine()
 {
   lcd_hline(0, 54, 128, 0); // separator
@@ -420,7 +414,7 @@ void menuMainView(uint8_t event)
           for (uint8_t i=0; i<2; i++) {
             if (g_model.frsky.channels[i].ratio) {
               blink = (FRSKY_alarmRaised(i) ? INVERS : 0);
-              displayA1A2(x0, 2*FH, i);
+              putsStrIdx(x0, 2*FH, STR_A, i+1, TWO_DOTS);
               x0 += 3*FW;
               putsTelemetryChannel(x0, 2*FH, i, frskyTelemetry[i].value, blink|DBLSIZE|LEFT);
               putsTelemetryChannel(x0+FW, 3*FH, i, frskyTelemetry[i].min, 0);
@@ -432,25 +426,22 @@ void menuMainView(uint8_t event)
 
 #ifdef FRSKY_HUB
         // Cells voltage
-        // TODO only display used cells!
-        lcd_putsLeft( 5*FH-3, PSTR("V1=\004V2=\004V3=")) ;
-        lcd_putsLeft( 6*FH-3, PSTR("V4=\004V5=\004V6="));
         {
           uint8_t x, y;
-          x = 6*FW;
-          y = 6*FH-3;
+          x = 3*FW;
+          y = 5*FH-3;
           for (uint8_t k=0; k<frskyHubData.cellsCount && k<6; k++) {
-            uint8_t attr = (barsThresholds[6/*TODO constant*/] && frskyHubData.cellVolts[k] < barsThresholds[6/*TODO constant*/]) ? BLINK|PREC2 : PREC2;
+            uint8_t attr = (barsThresholds[6/*TODO constant*/] && frskyHubData.cellVolts[k] < barsThresholds[6/*TODO constant*/]) ? BLINK|PREC2|LEFT : PREC2|LEFT;
             if (k == 3) {
-              x = 6*FW;
-              y = 7*FH-3;
+              x = 3*FW;
+              y = 6*FH-3;
             }
+            putsStrIdx(x-3*FW, y, STR_V, k+1, TWO_DOTS);
             lcd_outdezNAtt(x, y, frskyHubData.cellVolts[k] * 2, attr, 4);
             x += 7*FW;
           }
         }
 #endif
-
         displayRssiLine();
       }
 
@@ -561,7 +552,7 @@ void menuMainView(uint8_t event)
         for (int i=0; i<2; i++) {
           if (g_model.frsky.channels[i].ratio) {
             blink = (FRSKY_alarmRaised(i) ? INVERS+BLINK : 0)|LEFT;
-            displayA1A2(x0, y0, i);
+            putsStrIdx(x0, y0, STR_A, i+1, TWO_DOTS);
             putsTelemetryChannel(x0+3*FW, y0, i, frskyTelemetry[i].value, blink);
             x0 = 12*FW-3;
           }
