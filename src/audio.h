@@ -140,7 +140,7 @@ class audioQueue
     }
 #elif defined(PCBSTD)
     inline void driver() {
-      if (toneTimeLeft > 0) {
+      if (toneFreq && toneTimeLeft > 0) {
         toneCounter += toneFreq;
         if ((toneCounter & 0x80) == 0x80)
           BUZZER_ON;
