@@ -171,7 +171,7 @@ void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mode
   lcd_lastPos = x;
 }
 
-void lcd_putsn_P(uint8_t x,uint8_t y,const pm_char * s,uint8_t len)
+void lcd_putsn(uint8_t x,uint8_t y,const pm_char * s,uint8_t len)
 {
   lcd_putsnAtt(x, y, s, len, 0);
 }

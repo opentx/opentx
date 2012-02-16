@@ -42,6 +42,7 @@
 #define ALRM_REQUEST    0xf8
 #define RSSI1PKT        0xf7
 #define RSSI2PKT        0xf6
+#define RSSI_REQUEST    0xf1
 
 #define START_STOP      0x7e
 #define BYTESTUFF       0x7d
@@ -234,7 +235,6 @@ void processFrskyPacket(uint8_t *packet)
       frskyRSSI[0].set(packet[3]);
       frskyRSSI[1].set(packet[4] / 2);
       break;
-
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
     case USRPKT: // User Data packet
       uint8_t numBytes = 3 + (packet[1] & 0x07); // sanitize in case of data corruption leading to buffer overflow
@@ -403,7 +403,7 @@ void FRSKY10mspoll(void)
   // Now send a packet
   FrskyAlarmSendState -= 1 ;
   uint8_t alarm = 1 - (FrskyAlarmSendState % 2);
-  if (FrskyAlarmSendState < SEND_MODEL_ALARMS) {
+  if (FrskyAlarmSendState < 4) {
     uint8_t channel = 1 - (FrskyAlarmSendState / 2);
     *ptr++ = (g_eeGeneral.beeperMode != -2/*TODO constant*/ ? ALARM_LEVEL(channel, alarm) : alarm_off);
     *ptr++ = ALARM_GREATER(channel, alarm);
@@ -411,15 +411,13 @@ void FRSKY10mspoll(void)
     *ptr++ = (A22PKT + FrskyAlarmSendState); // fc - fb - fa - f9
   }
   else {
-    if (FrskyAlarmSendState == SEND_MODEL_ALARMS)
-      FrskyAlarmSendState = 0;
-    *ptr++ = g_eeGeneral.frskyRssiAlarms[alarm].level;
+    *ptr++ = (g_eeGeneral.beeperMode != -2/*TODO constant*/ ? ((2+alarm+g_model.frskyRssiAlarms[alarm].level) % 4) : alarm_off);
     *ptr++ = 0x00 ;
-    frskyPushValue(ptr, g_eeGeneral.frskyRssiAlarms[alarm].value+50-(10*alarm));
+    frskyPushValue(ptr, 50+g_model.frskyRssiAlarms[alarm].value);
     *ptr++ = (RSSI1PKT-alarm);  // f7 - f6
   }
 
-  *ptr++ = START_STOP;        // Start of packet
+  *ptr++ = START_STOP; // Start of packet
 
   frskyTxBufferCount = ptr - &frskyTxBuffer[0];
   frskyTransmitBuffer();

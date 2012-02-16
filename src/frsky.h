@@ -129,8 +129,7 @@ extern uint8_t barsThresholds[BAR_MAX-3];
 extern uint8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
 extern uint8_t frskyUsrStreaming;
 
-#define SEND_MODEL_ALARMS 4
-#define SEND_RSSI_ALARMS  (SEND_MODEL_ALARMS + 2)
+#define SEND_MODEL_ALARMS 6
 extern uint8_t FrskyAlarmSendState;
 
 extern FrskyData frskyTelemetry[2];
@@ -144,11 +143,6 @@ void FRSKY10mspoll(void);
 inline void FRSKY_setModelAlarms(void)
 {
   FrskyAlarmSendState = SEND_MODEL_ALARMS;
-}
-
-inline void FRSKY_setRSSIAlarms(void)
-{
-  FrskyAlarmSendState = SEND_RSSI_ALARMS;
 }
 
 bool FRSKY_alarmRaised(uint8_t idx);

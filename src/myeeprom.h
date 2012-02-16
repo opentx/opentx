@@ -65,8 +65,8 @@ PACK(typedef struct t_TrainerData {
 }) TrainerData;
 
 PACK(typedef struct t_FrSkyRSSIAlarm {
-  uint8_t       level:2;
-  int8_t        value:6;
+  int8_t    level:2;
+  int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
 PACK(typedef struct t_EEGeneral {
@@ -101,10 +101,10 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   lightAutoOff;
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
-  FrSkyRSSIAlarm frskyRssiAlarms[2];
+  uint8_t   spare2[2];
   int8_t    beeperLength:3;
   uint8_t   hapticStrength:3;
-  uint8_t   spare2:2;
+  uint8_t   spare3:2;
   uint8_t   speakerPitch;
 }) EEGeneral;
 
@@ -328,6 +328,7 @@ PACK(typedef struct t_ModelData {
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
+  FrSkyRSSIAlarm frskyRssiAlarms[2]; // TODO next EEPROM: merge with FrSkyData
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
