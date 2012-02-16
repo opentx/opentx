@@ -114,7 +114,9 @@ inline uint8_t audioQueue::getToneLength(uint8_t tLen)
 }
 
 bool s_beeper;
+#if defined(HAPTIC)
 bool s_haptic;
+#endif
 
 void audioQueue::playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tRepeat, uint8_t tHaptic, int8_t tFreqIncr)
@@ -153,7 +155,9 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
 void audioQueue::event(uint8_t e, uint8_t f)
 {
   s_beeper = (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>AU_MENUS) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR));
+#if defined(HAPTIC)
   s_haptic = (g_eeGeneral.hapticMode>0 || (g_eeGeneral.hapticMode==0 && e>AU_MENUS) || (g_eeGeneral.hapticMode>=-1 && e<=AU_ERROR));
+#endif
 
   if (e < AU_FRSKY_FIRST || empty()) {
     switch (e) {
