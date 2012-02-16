@@ -50,8 +50,9 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_OFFON      0
 #define OFS_MMMINV     (OFS_OFFON + PSIZE(TR_OFFON))
 #define OFS_NCHANNELS  (OFS_MMMINV + PSIZE(TR_MMMINV))
-#define OFS_VBEEPER    (OFS_NCHANNELS + PSIZE(TR_NCHANNELS))
-#define OFS_ADCFILTER  (OFS_VBEEPER + PSIZE(TR_VBEEPER))
+#define OFS_VBEEPMODE  (OFS_NCHANNELS + PSIZE(TR_NCHANNELS))
+#define OFS_VBEEPLEN   (OFS_VBEEPMODE + PSIZE(TR_VBEEPMODE))
+#define OFS_ADCFILTER  (OFS_VBEEPLEN + PSIZE(TR_VBEEPLEN))
 #define OFS_WARNSW     (OFS_ADCFILTER + PSIZE(TR_ADCFILTER))
 #define OFS_TRNMODE    (OFS_WARNSW + PSIZE(TR_WARNSW))
 #define OFS_TRNCHN     (OFS_TRNMODE + PSIZE(TR_TRNMODE))
@@ -110,7 +111,8 @@ extern const pm_char STR_OPEN9X[];
 #define STR_ONOFF      (STR_OPEN9X + OFS_OFFON + LEN_OFFON)
 #define STR_MMMINV     (STR_OPEN9X + OFS_MMMINV)
 #define STR_NCHANNELS  (STR_OPEN9X + OFS_NCHANNELS)
-#define STR_VBEEPER    (STR_OPEN9X + OFS_VBEEPER)
+#define STR_VBEEPMODE  (STR_OPEN9X + OFS_VBEEPMODE)
+#define STR_VBEEPLEN   (STR_OPEN9X + OFS_VBEEPLEN)
 #define STR_ADCFILTER  (STR_OPEN9X + OFS_ADCFILTER)
 #define STR_WARNSW     (STR_OPEN9X + OFS_WARNSW)
 #define STR_TRNMODE    (STR_OPEN9X + OFS_TRNMODE)
@@ -227,7 +229,11 @@ extern const pm_char STR_USRDATA[];
 extern const pm_char STR_BLADES[];
 extern const pm_char STR_BARS[];
 extern const pm_char STR_CLEARMIXMENU[];
-extern const pm_char STR_BEEPER[];
+extern const pm_char STR_BEEPERMODE[];
+extern const pm_char STR_BEEPERLEN[];
+extern const pm_char STR_SPKRPITCH[];
+extern const pm_char STR_HAPTICMODE[];
+extern const pm_char STR_HAPTICSTRENGTH[];
 extern const pm_char STR_CONTRAST[];
 extern const pm_char STR_BATTERYWARNING[];
 extern const pm_char STR_INACTIVITYALARM[];
@@ -320,7 +326,5 @@ extern const pm_char STR_MENUSTAT[];
 extern const pm_char STR_MENUDEBUG[];
 extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
-extern const pm_char STR_HAPTICSTRENGTH[];
-extern const pm_char STR_SPKRPITCH[];
 
 #endif

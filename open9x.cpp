@@ -634,8 +634,8 @@ void checkTHR()
 
 void checkAlarm() // added by Gohst
 {
-  if(g_eeGeneral.disableAlarmWarning) return;
-  if(!g_eeGeneral.beeperVal) alert(STR_ALARMSDISABLED);
+  if (g_eeGeneral.disableAlarmWarning) return;
+  if (g_eeGeneral.beeperMode == -2/*TODO constant*/) alert(STR_ALARMSDISABLED);
 }
 
 void checkSwitches()
@@ -1088,9 +1088,7 @@ void evalFunctions()
 #if defined(AUDIO)
           audioDefevent(AU_FRSKY_FIRST+sd->param);
 #else
-          if (g_eeGeneral.beeperVal>0) {
-            _beep(10);
-          }
+          beep(3);
 #endif
         }
 #if defined(SOMO)

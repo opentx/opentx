@@ -37,7 +37,8 @@ const pm_char STR_OPEN9X[] PROGMEM =
     TR_OFFON
     TR_MMMINV
     TR_NCHANNELS
-    TR_VBEEPER
+    TR_VBEEPMODE
+    TR_VBEEPLEN
     TR_ADCFILTER
     TR_WARNSW
     TR_TRNMODE
@@ -146,7 +147,15 @@ const pm_char STR_USRDATA[] PROGMEM = TR_USRDATA;
 const pm_char STR_BLADES[] PROGMEM = TR_BLADES; // TODO check that it is optimized away when no FRSKY
 const pm_char STR_BARS[] PROGMEM = TR_BARS;
 const pm_char STR_CLEARMIXMENU[] PROGMEM = TR_CLEARMIXMENU;
-const pm_char STR_BEEPER[] PROGMEM = TR_BEEPER;
+const pm_char STR_BEEPERMODE[] PROGMEM = TR_BEEPERMODE;
+const pm_char STR_BEEPERLEN[] PROGMEM = TR_BEEPERLEN;
+#if defined(AUDIO)
+const pm_char STR_SPKRPITCH[] PROGMEM = TR_SPKRPITCH;
+#endif
+#if defined(HAPTIC)
+const pm_char STR_HAPTICMODE[] PROGMEM = TR_HAPTICMODE;
+const pm_char STR_HAPTICSTRENGTH[] PROGMEM = TR_HAPTICSTRENGTH;
+#endif
 const pm_char STR_CONTRAST[] PROGMEM = TR_CONTRAST;
 const pm_char STR_BATTERYWARNING[] PROGMEM = TR_BATTERYWARNING;
 const pm_char STR_INACTIVITYALARM[] PROGMEM = TR_INACTIVITYALARM;
@@ -262,12 +271,4 @@ const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
 
 #if defined(PXX)
 const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
-#endif
-
-#if defined(HAPTIC)
-const pm_char STR_HAPTICSTRENGTH[] PROGMEM = TR_HAPTICSTRENGTH;
-#endif
-
-#if defined(AUDIO)
-const pm_char STR_SPKRPITCH[] PROGMEM = TR_SPKRPITCH;
 #endif
