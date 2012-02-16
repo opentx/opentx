@@ -237,8 +237,8 @@
 #define TR_MOVESTICKSPOTS "MOVE STICKS/POTS"
 #define TR_ALTnDST      "Alt:\010Dst:"
 #define TR_RXBATT       "Rx Batt:"
-#define TR_RX           "Rx:"
-#define TR_TX           "Tx:"
+#define TR_TXnRX        "Tx:\0Rx:"
+#define OFS_RX          4
 #define TR_SPDnMAX      "Spd:\010Max:"
 #define TR_TEMP1nTEMP2  "T@1:\007T@2:"
 #define TR_RPMnFUEL     "RPM:\006Fuel:"

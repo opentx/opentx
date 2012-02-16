@@ -104,7 +104,10 @@ void menuProcSetup(uint8_t event)
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_BEEPERMODE);
     lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE+(LEN_VBEEPMODE*2)+(LEN_VBEEPMODE*g_eeGeneral.beeperMode), LEN_VBEEPMODE, (sub==subN ? INVERS:0));
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperMode, -2, 1);
+    if(sub==subN) {
+      CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperMode, -2, 1);
+      if (checkIncDec_Ret) FRSKY_setModelAlarms();
+    }
     if((y+=FH)>7*FH) return;
   }subN++;
 
@@ -514,14 +517,14 @@ void menuProcDiagKeys(uint8_t event)
   {
     uint8_t y=(5-i)*FH+2*FH;
     bool t=keyState((EnumKeys)(KEY_MENU+i));
-    lcd_putsn_P(0, y, STR_VKEYS+LEN_VKEYS*i, LEN_VKEYS);
+    lcd_putsn(0, y, STR_VKEYS+LEN_VKEYS*i, LEN_VKEYS);
     lcd_putcAtt(5*FW+2, y, t+'0', t);
   }
 
 #if defined (PCBV4)
   for(uint8_t i=0; i<2; i++) {
     uint8_t y = i*FH + FH;
-    lcd_putsn_P(14*FW, y, STR_RE1RE2+LEN_RE1RE2*i, LEN_RE1RE2);
+    lcd_putsn(14*FW, y, STR_RE1RE2+LEN_RE1RE2*i, LEN_RE1RE2);
     lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_RE1+i)) ? INVERS : 0));
   }
 #endif

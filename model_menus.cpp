@@ -1843,9 +1843,9 @@ void menuProcSafetySwitches(uint8_t event)
 void menuProcTelemetry(uint8_t event)
 {
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 19, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, -1, 0, 0, -1, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 22, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, -1, 1, 1, -1, 0, 0, -1, 2, 2, 2, 2});
 #else
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 16, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, -1, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 19, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, -1, 1, 1, -1, 2, 2, 2, 2});
 #endif
 
   int8_t  sub = m_posVert;
@@ -1857,7 +1857,7 @@ void menuProcTelemetry(uint8_t event)
     case EVT_KEY_BREAK(KEY_UP):
     case EVT_KEY_BREAK(KEY_LEFT):
     case EVT_KEY_BREAK(KEY_RIGHT):
-      if (s_editMode>0) // only fr-sky alarm fields have an edit mode
+      if (s_editMode>0 && sub<=13)
         FRSKY_setModelAlarms(); // update Fr-Sky module when edit mode exited
   }
 
@@ -1938,6 +1938,34 @@ void menuProcTelemetry(uint8_t event)
     }
   }
   
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_putsLeft(y, PSTR("RSSI"));
+  }
+  subN++;
+
+  for (int j=0; j<2; j++) {
+    if(s_pgOfs<subN) {
+      y = (subN-s_pgOfs)*FH;
+      lcd_putsn(4, y, STR_TX+j*OFS_RX, OFS_RX-2);
+      lcd_putsnAtt(TELEM_COL2, y, STR_VALARM+LEN_VALARM*((2+j+g_model.frskyRssiAlarms[j].level)%4), LEN_VALARM, (sub==subN && m_posHorz==0 ? blink:0));
+      lcd_putc(TELEM_COL2+4*FW, y, '<');
+      lcd_outdezNAtt(TELEM_COL2+6*FW, y, 50+g_model.frskyRssiAlarms[j].value, LEFT|(sub==subN && m_posHorz==1 ? blink:0), 3);
+
+      if (sub==subN && (s_editMode>0 || p1valdiff)) {
+        switch (m_posHorz) {
+          case 0:
+            CHECK_INCDEC_MODELVAR(event, g_model.frskyRssiAlarms[j].level, -3, 2); // circular (saves flash)
+            break;
+          case 1:
+            CHECK_INCDEC_MODELVAR(event, g_model.frskyRssiAlarms[j].value, -30, 30);
+            break;
+        }
+      }
+    }
+    subN++;
+  }
+
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   if(s_pgOfs<subN) {
     y = (subN-s_pgOfs)*FH;

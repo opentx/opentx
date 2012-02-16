@@ -109,7 +109,7 @@ void displayRssiLine()
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
 {
-  lcd_putsn_P(x, y, STR_ALTnDST, 4);
+  lcd_putsn(x, y, STR_ALTnDST, 4);
   int16_t value = frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
   putsTelemetryValue(lcd_lastPos, y, value, UNIT_METERS, flags|LEFT);
 }
@@ -558,10 +558,10 @@ void menuMainView(uint8_t event)
           }
         }
         y0+=FH;
-        lcd_puts(2*FW-3, y0, STR_RX);
-        lcd_outdezAtt(5*FW-3, y0, frskyRSSI[0].value, LEFT);
-        lcd_puts(12*FW-3, y0, STR_TX);
-        lcd_outdezAtt(15*FW-3, y0, frskyRSSI[1].value, LEFT);
+        lcd_puts(2*FW-3, y0, STR_TX);
+        lcd_outdezAtt(5*FW-3, y0, frskyRSSI[1].value, LEFT);
+        lcd_puts(12*FW-3, y0, STR_RX);
+        lcd_outdezAtt(15*FW-3, y0, frskyRSSI[0].value, LEFT);
       }
     }
     else {
