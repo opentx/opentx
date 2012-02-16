@@ -71,7 +71,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 };
 
 enum menuProcSetupItems {
-  ITEM_SETUP_BASE=17,
+  ITEM_SETUP_BASE=18,
 #ifdef SPLASH
   ITEM_SETUP_SPLASH,
 #endif
@@ -79,7 +79,8 @@ enum menuProcSetupItems {
   ITEM_SETUP_SPEAKER,
 #endif
 #ifdef HAPTIC
-  ITEM_SETUP_HAPTIC,
+  ITEM_SETUP_HAPTIC_MODE,
+  ITEM_SETUP_HAPTIC_STRENGTH,
 #endif
   ITEM_SETUP_MAX
 };
@@ -101,9 +102,16 @@ void menuProcSetup(uint8_t event)
 
   uint8_t subN = 1;
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_BEEPER);
-    lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPER+LEN_VBEEPER*g_eeGeneral.beeperVal, LEN_VBEEPER, (sub==subN ? INVERS:0));
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperVal, 0, 6);
+    lcd_putsLeft( y, STR_BEEPERMODE);
+    lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE+(LEN_VBEEPMODE*2)+(LEN_VBEEPMODE*g_eeGeneral.beeperMode), LEN_VBEEPMODE, (sub==subN ? INVERS:0));
+    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperMode, -2, 1);
+    if((y+=FH)>7*FH) return;
+  }subN++;
+
+  if(s_pgOfs<subN) {
+    lcd_putsLeft( y, STR_BEEPERLEN);
+    lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPLEN+(LEN_VBEEPLEN*2)+(LEN_VBEEPLEN*g_eeGeneral.beeperLength), LEN_VBEEPLEN, (sub==subN ? INVERS:0));
+    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperLength, -2, 2);
     if((y+=FH)>7*FH) return;
   }subN++;
 
@@ -119,6 +127,13 @@ void menuProcSetup(uint8_t event)
 #endif
 
 #ifdef HAPTIC
+  if(s_pgOfs<subN) {
+    lcd_putsLeft( y, STR_HAPTICMODE);
+    lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE+(LEN_VBEEPMODE*2)+(LEN_VBEEPMODE*g_eeGeneral.hapticMode), LEN_VBEEPMODE, (sub==subN ? INVERS:0));
+    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticMode, -2, 1);
+    if((y+=FH)>7*FH) return;
+  }subN++;
+
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_HAPTICSTRENGTH);
     lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.hapticStrength, (sub==subN ? INVERS : 0)|LEFT);

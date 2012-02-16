@@ -287,7 +287,7 @@ void menuProcModelSelect(uint8_t event)
             m_posVert = eeFindEmptyModel(s_copySrcRow, _event==EVT_KEY_FIRST(KEY_DOWN));
             if (m_posVert == (uint8_t)-1) {
               // no free room for duplicating the model
-              AUDIO_WARNING1();
+              AUDIO_ERROR();
               m_posVert = oldSub;
               s_copyMode = 0; // TODO only this one?
               s_copyTgtOfs = 0;

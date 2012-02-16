@@ -8,8 +8,11 @@
 #define LEN_NCHANNELS    4
 #define TR_NCHANNELS     "4CH 6CH 8CH 10CH12CH14CH16CH"
 
-#define LEN_VBEEPER      6
-#define TR_VBEEPER       "Quiet ""NoKey ""xShort""Short ""Norm  ""Long  ""xLong "
+#define LEN_VBEEPMODE    6
+#define TR_VBEEPMODE     "Quiet ""Alarms""NoKey ""Normal"
+
+#define LEN_VBEEPLEN     6
+#define TR_VBEEPLEN      "xShort""Short ""Normal""Long  ""xLong "
 
 #define LEN_ADCFILTER    4
 #define TR_ADCFILTER     "SING""OSMP""FILT"
@@ -194,7 +197,16 @@
 #define TR_BLADES       "Blades"
 #define TR_BARS         "Bars"
 #define TR_CLEARMIXMENU "CLEAR MIXES [MENU]"
-#define TR_BEEPER       "Beeper"
+#ifdef AUDIO
+#define TR_BEEPERMODE   "Speaker Mode"
+#define TR_BEEPERLEN    "Speaker Length"
+#define TR_SPKRPITCH    "Speaker Pitch"
+#else
+#define TR_BEEPERMODE   "Beeper Mode"
+#define TR_BEEPERLEN    "Beeper Length"
+#endif
+#define TR_HAPTICMODE   "Haptic Mode"
+#define TR_HAPTICSTRENGTH "Haptic Strength"
 #define TR_CONTRAST     "Contrast"
 #define TR_BATTERYWARNING "Battery warning"
 #define TR_INACTIVITYALARM "Inactivity alarm"
@@ -286,5 +298,3 @@
 #define TR_MENUDEBUG     "DEBUG"
 #define TR_RXNUM         "RxNum"
 #define TR_SYNCMENU      "Sync [MENU]"
-#define TR_HAPTICSTRENGTH "Haptic Strength"
-#define TR_SPKRPITCH     "Speaker Pitch"
