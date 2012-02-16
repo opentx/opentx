@@ -405,7 +405,7 @@ void FRSKY10mspoll(void)
   uint8_t alarm = 1 - (FrskyAlarmSendState % 2);
   if (FrskyAlarmSendState < SEND_MODEL_ALARMS) {
     uint8_t channel = 1 - (FrskyAlarmSendState / 2);
-    *ptr++ = ALARM_LEVEL(channel, alarm);
+    *ptr++ = (g_eeGeneral.beeperMode != -2/*TODO constant*/ ? ALARM_LEVEL(channel, alarm) : alarm_off);
     *ptr++ = ALARM_GREATER(channel, alarm);
     frskyPushValue(ptr, g_model.frsky.channels[channel].alarms_value[alarm]);
     *ptr++ = (A22PKT + FrskyAlarmSendState); // fc - fb - fa - f9
