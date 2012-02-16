@@ -79,10 +79,19 @@ void menuProcModelSelect(uint8_t event);
 void menuProcStatistic(uint8_t event);
 void menuProcDebug(uint8_t event);
 
-#if defined(NAVIGATION_POT1) || defined(NAVIGATION_RE1)
+#if defined(NAVIGATION_RE1)
+extern int8_t scrollRE;
+extern int16_t p1valdiff;
+#define IS_RE1_EVT_TYPE(event, type) (event==type(BTN_RE1))
+#define IS_RE1_EVT(event) ((event&0x0f)==BTN_RE1)
+#else
+#define IS_RE1_EVT_TYPE(event, type) (0)
+#define IS_RE1_EVT(event) (0)
+#if defined(NAVIGATION_POT1)
 extern int16_t p1valdiff;
 #else
 #define p1valdiff 0
+#endif
 #endif
 
 extern int8_t  checkIncDec_Ret;  // global helper vars

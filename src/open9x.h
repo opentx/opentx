@@ -255,10 +255,11 @@ extern const pm_uint8_t modn12x3[];
 //convert from mode 1 to mode g_eeGeneral.stickMode
 //NOTICE!  =>  1..4 -> 1..4
 #define CONVERT_MODE(x)  (((x)<=4) ? pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + (x)-1) : (x) )
-#define THR_STICK        (2-(g_eeGeneral.stickMode&1))
-#define ELE_STICK        (1+(g_eeGeneral.stickMode&1))
-#define AIL_STICK        ((g_eeGeneral.stickMode&2) ? 0 : 3)
-#define RUD_STICK        ((g_eeGeneral.stickMode&2) ? 3 : 0)
+
+#define RUD_STICK 0
+#define ELE_STICK 1
+#define THR_STICK 2
+#define AIL_STICK 3
 
 extern uint8_t channel_order(uint8_t x);
 

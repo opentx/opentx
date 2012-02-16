@@ -719,7 +719,7 @@ uint8_t checkTrim(uint8_t event)
     uint8_t phase = getTrimFlightPhase(idx, getFlightPhase());
     int16_t before = getTrimValue(phase, idx);
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
-    bool thro = (idx==2/*TODO constant*/ && g_model.thrTrim);
+    bool thro = (idx==THR_STICK && g_model.thrTrim);
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 
@@ -981,7 +981,7 @@ FORCEINLINE void evalTrims(uint8_t phase)
     int16_t v = anas[i];
     int32_t vv = 2*RESX;
     int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
-    if (i==2/*TODO constant*/ && g_model.thrTrim) {
+    if (i==THR_STICK && g_model.thrTrim) {
       if (g_eeGeneral.throttleReversed)
         trim = -trim;
       vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
@@ -1026,7 +1026,7 @@ uint8_t evalSticks(uint8_t phase)
     if(v <= -RESX) v = -RESX;
     if(v >=  RESX) v =  RESX;
 
-    if (g_eeGeneral.throttleReversed && ch==2/*TODO THR_STICK*/)
+    if (g_eeGeneral.throttleReversed && ch==THR_STICK)
       v = -v;
 
     calibratedStick[ch] = v; //for show in expo
@@ -1050,7 +1050,7 @@ uint8_t evalSticks(uint8_t phase)
       }
 
 #ifdef HELI
-      if(d && (ch==1/*TODO ELE_STICK*/ || ch==3/*TODO AIL_STICK*/))
+      if(d && (ch==ELE_STICK || ch==AIL_STICK))
         v = int32_t(v)*g_model.swashR.value*RESX/(int32_t(d)*100);
 #endif
 
@@ -1460,7 +1460,7 @@ void perMain()
   uint16_t val;
 
   if (g_model.thrTraceSrc == 0) {
-    val = calibratedStick[2/*TODO THR_STICK*/]; // get throttle channel value
+    val = calibratedStick[THR_STICK]; // get throttle channel value
     val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
   }
   else if (g_model.thrTraceSrc > NUM_POTS) {
@@ -2053,7 +2053,7 @@ void instantTrim()
   uint8_t phase = getFlightPhase();
 
   for (uint8_t i=0; i<NUM_STICKS; i++) {
-    if (i!=2/*TODO constant*/) {
+    if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(i, phase);
       s_noStickInputs = true;
