@@ -106,7 +106,9 @@ void menuProcSetup(uint8_t event)
     lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE+(LEN_VBEEPMODE*2)+(LEN_VBEEPMODE*g_eeGeneral.beeperMode), LEN_VBEEPMODE, (sub==subN ? INVERS:0));
     if(sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperMode, -2, 1);
+#if defined(FRSKY)
       if (checkIncDec_Ret) FRSKY_setModelAlarms();
+#endif
     }
     if((y+=FH)>7*FH) return;
   }subN++;
