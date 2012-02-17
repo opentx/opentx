@@ -423,7 +423,7 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 void menuProcModel(uint8_t event)
 {
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM||g_model.protocol==PROTO_DSM2||g_model.protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|sizeof(g_model.name)-1,2,2,0,0,0,0,0,6,2,1});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM||g_model.protocol==PROTO_DSM2||g_model.protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,6,2,1});
 
   uint8_t  sub    = m_posVert;
   uint8_t y = 1*FH;
@@ -624,7 +624,7 @@ void menuProcPhaseOne(uint8_t event)
   PhaseData *phase = phaseaddress(s_currIdx);
   putsFlightPhase(13*FW, 0, s_currIdx+1, 0);
 
-  SUBMENU(STR_MENUFLIGHTPHASE, (s_currIdx==0 ? 3 : 5), {ZCHAR|sizeof(phase->name)-1, 0, 3/*, 0, 0*/});
+  SUBMENU(STR_MENUFLIGHTPHASE, (s_currIdx==0 ? 3 : 5), {ZCHAR|(sizeof(phase->name)-1), 0, 3/*, 0, 0*/});
 
   int8_t sub = m_posVert;
 
