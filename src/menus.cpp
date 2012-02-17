@@ -469,7 +469,7 @@ void pushMenu(MenuFuncP newMenu)
 void * s_inflight_value;
 int16_t s_inflight_min;
 int16_t s_inflight_max;
-const pm_char *s_inflight_label
+const pm_char *s_inflight_label;
 uint8_t s_inflight_flags;
 
 void checkInflightIncDec(void *value, int16_t i_min, int16_t i_max, const pm_char *label, uint8_t flags)
