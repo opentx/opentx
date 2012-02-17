@@ -325,5 +325,7 @@ extern const pm_char STR_MENUSTAT[];
 extern const pm_char STR_MENUDEBUG[];
 extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
+extern const pm_char STR_BACK[];
+#define LEN_BACK PSIZE(TR_BACK)
 
 #endif

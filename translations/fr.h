@@ -297,3 +297,4 @@
 #define TR_MENUDEBUG     "DEBUG"
 #define TR_RXNUM         "RxNum"
 #define TR_SYNCMENU      "Sync [MENU]"
+#define TR_BACK          "Back"

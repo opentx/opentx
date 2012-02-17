@@ -185,6 +185,10 @@ void menuProcModelSelect(uint8_t event)
 
   int8_t oldSub = m_posVert;
   if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
+#ifdef NAVIGATION_RE1
+  if (m_posVert < 0) m_posVert = 0;
+#endif
+
   int8_t sub = m_posVert;
 
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
@@ -624,7 +628,7 @@ void menuProcPhaseOne(uint8_t event)
   PhaseData *phase = phaseaddress(s_currIdx);
   putsFlightPhase(13*FW, 0, s_currIdx+1, 0);
 
-  SUBMENU(STR_MENUFLIGHTPHASE, (s_currIdx==0 ? 3 : 5), {ZCHAR|(sizeof(phase->name)-1), 0, 3/*, 0, 0*/});
+  SUBMENU(STR_MENUFLIGHTPHASE, (s_currIdx==0 ? 3 : 5), {ZCHAR|(sizeof(phase->name)-1), 0, 3, 0/*, 0*/});
 
   int8_t sub = m_posVert;
 
@@ -849,8 +853,14 @@ void menuProcCurveOne(uint8_t event)
     case EVT_ENTRY:
       dfltCrv = 0;
       autoThrStep = 0;
+#ifdef NAVIGATION_RE1
+      s_editMode = -1;
+#endif
       break;
     case EVT_KEY_FIRST(KEY_MENU):
+#ifdef NAVIGATION_RE1
+    case EVT_KEY_BREAK(BTN_RE1):
+#endif
       if (s_editMode<=0) {
         switch (m_posHorz) {
           case 0:
@@ -1148,9 +1158,9 @@ void menuProcExpoOne(uint8_t event)
 
   SIMPLE_SUBMENU(STR_MENUDREXPO, 6);
 
-  int8_t  sub = m_posVert;
+  int8_t sub = m_posVert;
 
-  uint8_t  y = FH;
+  uint8_t y = FH;
 
   for (uint8_t i=0; i<7; i++) {
     lcd_putsnAtt(0, y, STR_EXPLABELS+LEN_EXPLABELS*i, LEN_EXPLABELS, 0);
@@ -1180,23 +1190,22 @@ void menuProcMixOne(uint8_t event)
   putsChn(lcd_lastPos+1*FW,0,md2->destCh,0);
   SIMPLE_SUBMENU_NOTITLE(13);
 
-  int8_t  sub    = m_posVert;
+  int8_t  sub = m_posVert;
 
-  for(uint8_t k=0; k<7; k++)
-  {
+  for (uint8_t k=0; k<7; k++) {
     uint8_t y = (k+1) * FH;
     uint8_t i = k + s_pgOfs;
     uint8_t attr = sub==i ? INVERS : 0;
     switch(i) {
       case 0:
-        lcd_puts(  2*FW,y,STR_SOURCE);
-        putsChnRaw(   FW*10,y,md2->srcRaw,attr);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->srcRaw, 1,NUM_XCHNRAW);
+        lcd_puts(2*FW, y, STR_SOURCE);
+        putsChnRaw(FW*10, y, md2->srcRaw, attr);
+        if(attr) CHECK_INCDEC_MODELVAR(event, md2->srcRaw, 1,NUM_XCHNRAW);
         break;
       case 1:
         lcd_puts(  2*FW,y,STR_WEIGHT);
         lcd_outdezAtt(FW*10,y,md2->weight,attr|LEFT);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->weight, -125,125);
+        if(attr) CHECK_INCDEC_MODELVAR(event, md2->weight, -125,125);
         break;
       case 2:
         lcd_puts(  2*FW,y,STR_OFFSET);
@@ -1350,7 +1359,11 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
   lcd_puts(lcd_lastPos, 0, expo ? PSTR("/14") : PSTR("/32"));
   SIMPLE_MENU_NOTITLE(menuTabModel, expo ? e_ExposAll : e_MixAll, s_maxLines);
 
+#ifdef NAVIGATION_RE1
+  int8_t sub = m_posVert;
+#else
   uint8_t sub = m_posVert;
+#endif
 
   switch(_event)
   {
@@ -1394,7 +1407,14 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
         break;
       }
       // no break
+#ifdef NAVIGATION_RE1
+    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_LONG(BTN_RE1):
+      if (sub == 0)
+        break;
+#endif
     case EVT_KEY_LONG(KEY_MENU):
+      killEvents(_event);
       if (s_copyTgtOfs) {
         s_copyMode = 0;
         s_copyTgtOfs = 0;
@@ -1409,7 +1429,6 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
         s_copyMode = 0;
         return;
       }
-      killEvents(_event);
       break;
     case EVT_KEY_LONG(KEY_LEFT):
     case EVT_KEY_LONG(KEY_RIGHT):
@@ -1622,6 +1641,9 @@ void menuProcCurvesAll(uint8_t event)
   switch (event) {
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_MENU):
+#ifdef NAVIGATION_RE1
+    case EVT_KEY_BREAK(BTN_RE1):
+#endif
       if (sub >= 0) {
         s_curveChan = sub;
         pushMenu(menuProcCurveOne);
