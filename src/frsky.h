@@ -95,9 +95,9 @@ struct FrskyHubData {
   uint16_t gpsLongitude_ap;
   uint16_t gpsLatitude_ap;
   uint16_t gpsCourse_ap;
-  uint32_t pilotLatitude;       // 2 spares reused
-  uint32_t pilotLongitude;      // 2 spares reused
-  uint16_t maxGpsSpeed;         // spare reused
+  uint32_t pilotLatitude;    // 2 spares reused
+  uint32_t pilotLongitude;   // 2 spares reused
+  uint16_t baroAltitude_bp;  // spare reused
   uint16_t gpsLongitudeEW;   // East/West
   uint16_t gpsLatitudeNS;    // North/South
   int16_t  accelX;           // 1/256th gram (-8g ~ +8g)
@@ -109,6 +109,7 @@ struct FrskyHubData {
   // 17 spares
   uint16_t volts_bp;
   uint16_t volts_ap;
+  uint16_t maxGpsSpeed;         // spare reused
 };
 
 #elif defined(WS_HOW_HIGH)

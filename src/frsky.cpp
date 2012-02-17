@@ -176,14 +176,16 @@ void parseTelemHubByte(uint8_t byte)
 
   if ((uint8_t)structPos == offsetof(FrskyHubData, volts)) {
     // Voltage => Cell number + Cell voltage
-    uint8_t battnumber = (frskyHubData.volts & 0x00F0) >> 4;
-    if (frskyHubData.cellsCount < battnumber+1) {
-      frskyHubData.cellsCount = battnumber+1;
+    uint8_t battnumber = ((frskyHubData.volts & 0x00F0) >> 4);
+    if (battnumber<12) {
+      if (frskyHubData.cellsCount < battnumber+1) {
+        frskyHubData.cellsCount = battnumber+1;
+      }
+      uint8_t cellVolts = (uint8_t)(((((frskyHubData.volts & 0xFF00) >> 8) + ((frskyHubData.volts & 0x000F) << 8)))/10);
+      frskyHubData.cellVolts[battnumber] = cellVolts;
+      if (!frskyHubData.minCellVolts || cellVolts < frskyHubData.minCellVolts)
+        frskyHubData.minCellVolts = cellVolts;
     }
-    uint8_t cellVolts = (uint8_t)(((((frskyHubData.volts & 0xFF00) >> 8) + ((frskyHubData.volts & 0x000F) << 8)))/10);
-    frskyHubData.cellVolts[battnumber] = cellVolts;
-    if (!frskyHubData.minCellVolts || cellVolts < frskyHubData.minCellVolts)
-      frskyHubData.minCellVolts = cellVolts;
   }
 
   state = TS_IDLE;
