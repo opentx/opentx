@@ -168,8 +168,10 @@ void parseTelemHubByte(uint8_t byte)
 
   if ((uint8_t)structPos == offsetof(FrskyHubData, gpsSpeed_bp)) {
     // Speed => Max speed
-    if (frskyHubData.maxGpsSpeed < frskyHubData.gpsSpeed_bp)
-      frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_bp;
+    if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
+      if (frskyHubData.maxGpsSpeed < frskyHubData.gpsSpeed_bp)
+        frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_bp;
+    }
   }
 
   if ((uint8_t)structPos == offsetof(FrskyHubData, volts)) {
@@ -178,7 +180,7 @@ void parseTelemHubByte(uint8_t byte)
     if (frskyHubData.cellsCount < battnumber+1) {
       frskyHubData.cellsCount = battnumber+1;
     }
-    uint8_t cellVolts = 2*(((frskyHubData.volts & 0xFF00) >> 8) + ((frskyHubData.volts & 0x000F) << 8));
+    uint8_t cellVolts = (uint8_t)(((((frskyHubData.volts & 0xFF00) >> 8) + ((frskyHubData.volts & 0x000F) << 8)))/10);
     frskyHubData.cellVolts[battnumber] = cellVolts;
     if (!frskyHubData.minCellVolts || cellVolts < frskyHubData.minCellVolts)
       frskyHubData.minCellVolts = cellVolts;
@@ -551,7 +553,7 @@ void resetTelemetry()
   frskyHubData.maxGpsSpeed = 0;
   frskyHubData.cellsCount = 0;
   frskyHubData.minCellVolts = 0;
-  if (frskyHubData.gpsLatitude_ap) {
+  if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
     getGpsPilotPosition();
   }
 #endif
@@ -585,34 +587,41 @@ uint16_t sqrt32(uint32_t n)
 
 void getGpsPilotPosition()
 {
-  frskyHubData.pilotLatitude = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
-  frskyHubData.pilotLongitude = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
-  uint32_t lat = ((uint32_t)frskyHubData.gpsLatitude_bp/100)*100+ (((uint32_t)frskyHubData.gpsLatitude_bp % 100)*5)/3;
-  uint32_t angle2 = (lat*lat) / 10000;
-  uint32_t angle4 = angle2 * angle2;
-  frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
+  if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
+    frskyHubData.pilotLatitude = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
+    frskyHubData.pilotLongitude = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
+    uint32_t lat = ((uint32_t)frskyHubData.gpsLatitude_bp/100)*100+ (((uint32_t)frskyHubData.gpsLatitude_bp % 100)*5)/3;
+    uint32_t angle2 = (lat*lat) / 10000;
+    uint32_t angle4 = angle2 * angle2;
+    frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
+  }
   // printf("frskyHubData.distFromEarthAxis=%d\n", frskyHubData.distFromEarthAxis); fflush(stdout);
 }
 
 uint32_t getGpsDistanceX2()
 {
-  uint32_t lat = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
-  uint32_t lng = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
+  if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
+    uint32_t lat = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
+    uint32_t lng = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
+    
+    // printf("lat=%d (%d), long=%d (%d)\n", lat, abs(lat - frskyHubData.pilotLatitude), lng, abs(lng - frskyHubData.pilotLongitude));
+    
+    uint32_t angle = (lat > frskyHubData.pilotLatitude) ? lat - frskyHubData.pilotLatitude : frskyHubData.pilotLatitude - lat;
+    uint32_t dist = EARTH_RADIUS * angle / 1000000;
+    uint32_t result = dist*dist;
 
-  // printf("lat=%d (%d), long=%d (%d)\n", lat, abs(lat - frskyHubData.pilotLatitude), lng, abs(lng - frskyHubData.pilotLongitude));
+    angle = (lng > frskyHubData.pilotLongitude) ? lng - frskyHubData.pilotLongitude : frskyHubData.pilotLongitude - lng;
+    dist = frskyHubData.distFromEarthAxis * angle / 1000000;
+    result += dist*dist;
 
-  uint32_t angle = (lat > frskyHubData.pilotLatitude) ? lat - frskyHubData.pilotLatitude : frskyHubData.pilotLatitude - lat;
-  uint32_t dist = EARTH_RADIUS * angle / 1000000;
-  uint32_t result = dist*dist;
+    dist = frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
+    result += dist*dist;
 
-  angle = (lng > frskyHubData.pilotLongitude) ? lng - frskyHubData.pilotLongitude : frskyHubData.pilotLongitude - lng;
-  dist = frskyHubData.distFromEarthAxis * angle / 1000000;
-  result += dist*dist;
-
-  dist = frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
-  result += dist*dist;
-
-  return result;
+    return result;
+  }
+  else {
+    return 0;
+  }
 }
 
 uint16_t getGpsDistance()
