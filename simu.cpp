@@ -242,7 +242,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 
   per10ms();
   refreshDiplay();
-  getApp()->addTimeout(this,2,10);
+  getApp()->addTimeout(this,2,5);
   return 0;
 }
 
