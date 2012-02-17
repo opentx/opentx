@@ -43,6 +43,7 @@
 
 /* lcd common flags */
 #define BLINK         0x01
+#define SURROUNDED    0x40
 
 /* lcd text flags */
 #define INVERS        0x02
@@ -58,13 +59,9 @@
 /* lcd outdez flags */
 #define UNSIGN        0x08
 #define LEADING0      0x10
-#define SPARE1        0x20
-#define SPARE2        0x30
-#define SPARE3        0x40
-#define PREC1         0x50
-#define PREC2         0x60
-#define PREC3         0x70
-#define MODE(flags)   (-4 + ((int8_t)(flags & 0x70) >> 4))
+#define PREC1         0x20
+#define PREC2         0x30
+#define MODE(flags)   ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
 #define LEFT          0x80 /* align left */
 
 /* line, rect, square flags */

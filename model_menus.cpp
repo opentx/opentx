@@ -1556,8 +1556,6 @@ void menuProcLimits(uint8_t event)
 {
   MENU(STR_MENULIMITS, menuTabModel, e_Limits, NUM_CHNOUT+2, {0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3/*, 0*/});
 
-  static bool swVal[NUM_CHNOUT];
-
   int8_t sub = m_posVert - 1;
 
   for (uint8_t i=0; i<7; i++) {
@@ -1578,10 +1576,15 @@ void menuProcLimits(uint8_t event)
 
     LimitData *ld = limitaddress(k) ;
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
-    if((g_chans512[k] - v) >  50) swVal[k] = (true==ld->revert);// Switch to raw inputs?  - remove trim!
-    if((g_chans512[k] - v) < -50) swVal[k] = (false==ld->revert);
-    putsChn(0,y,k+1,0);
-    lcd_putcAtt(12*FW+FW/2, y, (swVal[k] ? 127 : 126),0); //'<' : '>'
+
+    char swVal = '-';  // '-', '<', '>'
+    if((g_chans512[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
+    if((g_chans512[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
+    putsChn(0, y, k+1, 0);
+    lcd_putcAtt(12*FW+5, y, swVal, 0);
+
+    int8_t limit = (g_model.extendedLimits ? 125 : 100);
+
     for (uint8_t j=0; j<4; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
@@ -1600,24 +1603,19 @@ void menuProcLimits(uint8_t event)
           }
           break;
         case 1:
-          lcd_outdezAtt(  12*FW, y, (int8_t)(ld->min-100),   attr);
+          lcd_outdezAtt(  12*FW, y, (int8_t)(ld->min-100), attr);
           if (active) {
             ld->min -= 100;
-            if(g_model.extendedLimits)
-              CHECK_INCDEC_MODELVAR( event, ld->min, -125,125);
-            else
-              CHECK_INCDEC_MODELVAR( event, ld->min, -100,100);
+            CHECK_INCDEC_MODELVAR( event, ld->min, -limit, limit);
             ld->min += 100;
+            // CHECK_INFLIGHT_INCDEC(ld->min, -125, 125, PSTR("Min Limit"), EE_MODEL);
           }
           break;
         case 2:
-          lcd_outdezAtt( 17*FW, y, (int8_t)(ld->max+100),    attr);
+          lcd_outdezAtt( 17*FW, y, (int8_t)(ld->max+100), attr);
           if (active) {
             ld->max += 100;
-            if(g_model.extendedLimits)
-              CHECK_INCDEC_MODELVAR( event, ld->max, -125,125);
-            else
-              CHECK_INCDEC_MODELVAR( event, ld->max, -100,100);
+            CHECK_INCDEC_MODELVAR( event, ld->max, -limit, limit);
             ld->max -= 100;
           }
           break;
