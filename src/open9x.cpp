@@ -885,13 +885,7 @@ void getADC_bandgap()
 
 #endif // SIMU
 
-
-#ifndef BATT_UNSTABLE_BANDGAP
-uint16_t abRunningAvg = 0;
-uint8_t  g_vbat100mV;
-#else
 uint16_t g_vbat100mV = 0;
-#endif
 
 volatile uint8_t tick10ms = 0;
 uint16_t g_LightOffCounter;
@@ -1735,49 +1729,17 @@ void perMain()
 
     case 2:
       {
-/*
-Gruvin:
-  Interesting fault with new unit. Sample is reading 0x06D0 (around 12.3V) but
-  we're only seeing around 0.2V displayed! (Calibrate = 0)
-
-  Long story short, the higher voltage of the new 8-pack of AA alkaline cells I put in the stock
-  '9X, plus just a tiny bit of calibration applied, were causing an overflow in the 16-bit math,
-  causing a wrap-around to a very small voltage.
-
-  See the wiki (VoltageAveraging) if you're interested in my long-winded analysis.
-*/
-
-#ifndef BATT_UNSTABLE_BANDGAP
-        // initialize to first sample if on first averaging cycle
-        if (abRunningAvg == 0) abRunningAvg = anaIn(7);
-
-        // G: Running average (virtual 7 stored plus current sample) for batt volts to stablise display
-        // Average the raw samples so the calibrartion screen updates instantly
-        int32_t ab = ((abRunningAvg * 7) + anaIn(7)) / 8;
-        abRunningAvg = (uint16_t)ab;
-
-        // Calculation By Mike Blandford
-        // Resistor divide on battery voltage is 5K1 and 2K7 giving a fraction of 2.7/7.8
-        // If battery voltage = 10V then A2D voltage = 3.462V
-        // 11 bit A2D count is 1417 (3.462/5*2048).
-        // 1417*18/256 = 99 (actually 99.6) to represent 9.9 volts.
-        // Erring on the side of low is probably best.
-
-        g_vbat100mV = (ab*16 + (ab*g_eeGeneral.vBatCalib)/8)/BandGap;
-#else
         int32_t instant_vbat = anaIn(7);
         instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
         if (g_vbat100mV == 0 || g_menuStack[0] != menuMainView) g_vbat100mV = instant_vbat;
         g_vbat100mV = (instant_vbat + g_vbat100mV*7) / 8;
-#endif
 
         static uint8_t s_batCheck;
         s_batCheck+=32;
-        if(s_batCheck==0 && g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
+        if (s_batCheck==0 && g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
           AUDIO_ERROR();
           if (g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
         }
-
       }
       break;
   }

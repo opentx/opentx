@@ -421,71 +421,75 @@ void menuProcTrainer(uint8_t event)
 {
   MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, 7, {0, 2, 2, 2, 2, 0/*, 0*/});
 
-  int8_t  sub    = m_posVert;
-  uint8_t subSub = m_posHorz;
   uint8_t y;
   bool    edit;
   uint8_t blink ;
 
   if (SLAVE_MODE) { // i am the slave
     lcd_puts(7*FW, 3*FH, STR_SLAVE);
-    return;
   }
+  else {
+    lcd_puts(3*FW, 1*FH, STR_MODESRC);
 
-  lcd_puts(3*FW, 1*FH, STR_MODESRC);
+    y = 2*FH;
+    blink = (s_editMode>0) ? BLINK : INVERS ;
 
-  sub--;
-  y = 2*FH;
-  blink = (s_editMode>0) ? BLINK : INVERS ;
+    for (uint8_t i=1; i<=NUM_STICKS; i++) {
+      uint8_t chan = channel_order(i);
 
-  for (uint8_t i=0; i<NUM_STICKS; i++) {
-    uint8_t chan = channel_order(i+1);
+      volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-    volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
+      putsChnRaw(0, y, chan, 0);
 
-    putsChnRaw(0, y, chan, 0);
+      for (uint8_t j=0; j<3; j++) {
+        edit = (m_posVert==i && m_posHorz==j);
+        bool incdec = (edit && s_editMode>0);
 
-    edit = (sub==i && subSub==0);
-    lcd_putsnAtt(4*FW, y, STR_TRNMODE+LEN_TRNMODE*td->mode, LEN_TRNMODE, edit ? blink : 0);
-    if (edit && s_editMode>0)
-      CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
+        switch(j) {
+          case 0:
+            lcd_putsnAtt(4*FW, y, STR_TRNMODE+LEN_TRNMODE*td->mode, LEN_TRNMODE, edit ? blink : 0);
+            if (incdec)
+              CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
+            break;
 
-    edit = (sub==i && subSub==1);
-    lcd_outdezAtt(11*FW, y, td->studWeight, edit ? blink : 0);
-    if (edit && s_editMode>0)
-      CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
+          case 1:
+            lcd_outdezAtt(11*FW, y, td->studWeight, edit ? blink : 0);
+            if (incdec)
+              CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
+            break;
 
-    edit = (sub==i && subSub==2);
-    lcd_putsnAtt(12*FW, y, STR_TRNCHN+LEN_TRNCHN*td->srcChn, LEN_TRNCHN, edit ? blink : 0);
-    if (edit && s_editMode>0)
-      CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
+          case 2:
+            lcd_putsnAtt(12*FW, y, STR_TRNCHN+LEN_TRNCHN*td->srcChn, LEN_TRNCHN, edit ? blink : 0);
+            if (incdec)
+              CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
+            break;
+        }
+      }
+      y += FH;
+    }
 
-    edit = (sub==i && subSub==3);
+    edit = (m_posVert==5);
+    lcd_puts(0*FW, 6*FH, STR_MULTIPLIER);
+    lcd_outdezAtt(13*FW, 6*FH, g_eeGeneral.PPM_Multiplier+10, (edit ? INVERS : 0)|PREC1);
+    if (edit) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    y += FH;
-  }
-
-  lcd_puts(0*FW, y, STR_MULTIPLIER);
-  lcd_outdezAtt(13*FW, y, g_eeGeneral.PPM_Multiplier+10, (sub==4 ? INVERS : 0)|PREC1);
-  if(sub==4) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
-  y += FH;
-
-  edit = (sub==5);
-  lcd_putsAtt(0*FW, y, STR_CAL, edit ? INVERS : 0);
-  for (uint8_t i=0; i<4; i++) {
-    uint8_t x = (i*8+16)*FW/2;
+    edit = (m_posVert==6);
+    lcd_putsAtt(0*FW, 7*FH, STR_CAL, edit ? INVERS : 0);
+    for (uint8_t i=0; i<4; i++) {
+      uint8_t x = (i*8+16)*FW/2;
 #if defined (DECIMALS_DISPLAYED)
-    lcd_outdezAtt(x , y, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+      lcd_outdezAtt(x, 7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-    lcd_outdezAtt(x , y, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+      lcd_outdezAtt(x, 7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
-  }
+    }
 
-  if (edit) {
-    if (event==EVT_KEY_FIRST(KEY_MENU)){
-      memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
-      eeDirty(EE_GENERAL);
-      AUDIO_KEYPAD_UP();
+    if (edit) {
+      if (event==EVT_KEY_FIRST(KEY_MENU)){
+        memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
+        eeDirty(EE_GENERAL);
+        AUDIO_KEYPAD_UP();
+      }
     }
   }
 }
@@ -494,11 +498,11 @@ void menuProcDiagVers(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
 
-  lcd_putsLeft( 2*FH,stamp1 );
-  lcd_putsLeft( 3*FH,stamp2 );
-  lcd_putsLeft( 4*FH,stamp3 );
-  lcd_putsLeft( 5*FH,stamp4 );
-  lcd_putsLeft( 7*FH,STR_EEPROMV);
+  lcd_putsLeft(2*FH, stamp1);
+  lcd_putsLeft(3*FH, stamp2);
+  lcd_putsLeft(4*FH, stamp3);
+  lcd_putsLeft(5*FH, stamp4);
+  lcd_putsLeft(7*FH, STR_EEPROMV);
   lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
 }
 
@@ -506,8 +510,7 @@ void menuProcDiagKeys(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUDIAG, menuTabDiag, e_Keys, 1);
 
-  for(uint8_t i=0; i<9; i++)
-  {
+  for(uint8_t i=0; i<9; i++) {
     uint8_t y=i*FH; //+FH;
     if(i>(SW_ID0-SW_BASE_DIAG)) y-=FH; //overwrite ID0
     bool t=keyState((EnumKeys)(SW_BASE_DIAG+i));
@@ -515,8 +518,7 @@ void menuProcDiagKeys(uint8_t event)
     lcd_putcAtt(11*FW+2, y, t+'0', t ? INVERS : 0);
   }
 
-  for(uint8_t i=0; i<6; i++)
-  {
+  for(uint8_t i=0; i<6; i++) {
     uint8_t y=(5-i)*FH+2*FH;
     bool t=keyState((EnumKeys)(KEY_MENU+i));
     lcd_putsn(0, y, STR_VKEYS+LEN_VKEYS*i, LEN_VKEYS);
@@ -532,14 +534,13 @@ void menuProcDiagKeys(uint8_t event)
 #endif
 
   lcd_puts(14*FW, 3*FH, STR_VTRIM);
-  for(uint8_t i=0; i<4; i++)
-  {
+  for(uint8_t i=0; i<4; i++) {
     uint8_t y=i*FH+FH*4;
     lcd_img(14*FW, y, sticks,i,0);
     bool tm=keyState((EnumKeys)(TRM_BASE+2*i));
     bool tp=keyState((EnumKeys)(TRM_BASE+2*i+1));
-    lcd_putcAtt(18*FW,  y, tm+'0',tm ? INVERS : 0);
-    lcd_putcAtt(20*FW,  y, tp+'0',tp ? INVERS : 0);
+    lcd_putcAtt(18*FW, y, tm+'0', tm ? INVERS : 0);
+    lcd_putcAtt(20*FW, y, tp+'0', tp ? INVERS : 0);
   }
 }
 
@@ -547,27 +548,21 @@ void menuProcDiagAna(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUANA, menuTabDiag, e_Ana, 2);
 
-  int8_t  sub    = m_posVert ;
-
-  for(uint8_t i=0; i<8; i++)
-  {
+  for (uint8_t i=0; i<8; i++) {
     uint8_t y=i*FH;
     putsStrIdx(4*FW, y, PSTR("A"), i+1);
     lcd_outhex4( 8*FW, y, anaIn(i));
-    if(i<7)
+    if (i<7)
       lcd_outdez8(17*FW, y, (int32_t)calibratedStick[i]*100/1024);
     else
-      putsVolts(17*FW, y, g_vbat100mV, (sub==1 ? INVERS : 0));
+      putsVolts(17*FW, y, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
   }
-  // lcd_outdezAtt( 21*FW, 3*FH, g_eeGeneral.vBatCalib, 0) ;
-  // lcd_outdezAtt( 21*FW, 4*FH, abRunningAvg, 0) ;
   // Display raw BandGap result (debug)
   lcd_puts( 19*FW, 5*FH, STR_BG) ;
   lcd_outdezAtt(21*FW, 6*FH, BandGap, 0);
   lcd_outdezAtt(21*FW, 7*FH, anaIn(7)*35/512, PREC1);
 
-  if(sub==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
-
+  if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
 }
 
 void menuProcDiagCalib(uint8_t event)

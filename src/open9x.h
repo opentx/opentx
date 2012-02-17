@@ -619,12 +619,7 @@ extern const char stamp2[];
 extern const char stamp3[];
 extern const char stamp4[];
 
-#ifndef BATT_UNSTABLE_BANDGAP
-extern uint16_t           abRunningAvg;
-extern uint8_t            g_vbat100mV;
-#else
 extern uint16_t           g_vbat100mV;
-#endif
 extern volatile uint16_t  g_tmr10ms;
 extern volatile uint8_t   g_blinkTmr10ms;
 extern uint8_t            g_beepCnt;

@@ -71,10 +71,6 @@ HAPTIC = NO
 # SPLASH on START
 SPLASH = YES
 
-# BATT voltage algorithm.
-# Values = BANDGAP, UNSTABLE_BANDGAP (default for stock board) 
-BATT = UNSTABLE_BANDGAP
-
 # Decimals display in the main view (PPM calibration, 
 # Values = YES, NO
 DECIMALS = YES
@@ -311,13 +307,7 @@ else
   else
     CPPSRC += beeper.cpp 
   endif
-  
-  # If BandGap is not rock solid
-  ifeq ($(BATT), UNSTABLE_BANDGAP)
-   CPPDEFS += -DBATT_UNSTABLE_BANDGAP
-  endif
 endif
-
 
 ### Global Build-Option Directives ###
 
