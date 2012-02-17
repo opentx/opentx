@@ -94,7 +94,7 @@ extern int16_t p1valdiff;
 #endif
 #endif
 
-extern int8_t  checkIncDec_Ret;  // global helper vars
+extern int8_t checkIncDec_Ret;  // global helper vars
 extern int8_t s_editMode;        // global editmode
 
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags);
@@ -108,7 +108,11 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecGen(event,var,min,max)
 
 // Menus related stuff ...
+#ifdef NAVIGATION_RE1
+extern int8_t m_posVert;
+#else
 extern uint8_t m_posVert;
+#endif
 extern uint8_t m_posHorz;
 inline void minit(){m_posVert=m_posHorz=0;}
 bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, uint8_t maxrow);

@@ -153,7 +153,11 @@ bool check_submenu_simple(uint8_t event, uint8_t maxrow)
 #define SCROLL_TH      64
 #define SCROLL_POT1_TH 32
 
+#ifdef NAVIGATION_RE1
+#define MAXCOL(row) ((horTab && row > 0) ? pgm_read_byte(horTab+min(row, (int8_t)horTabMax)) : (const uint8_t)0)
+#else
 #define MAXCOL(row) (horTab ? pgm_read_byte(horTab+min(row, horTabMax)) : (const uint8_t)0)
+#endif
 #define INC(val,max) if(val<max) {val++;} else {val=0;}
 #define DEC(val,max) if(val>0  ) {val--;} else {val=max;}
 bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, uint8_t maxrow)
@@ -172,11 +176,10 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
       scrollRE = 0;
     }
   }
-  if (event == EVT_KEY_LONG(BTN_RE1)) {
-    if (!menuTab && !s_editMode) {
-      popMenu();
-      killEvents(event);
-    }
+  if (m_posVert < 0 && (event==EVT_KEY_FIRST(BTN_RE1) || event==EVT_KEY_FIRST(KEY_MENU))) {
+    popMenu();
+    killEvents(event);
+    return false;
   }
   if (event == EVT_KEY_BREAK(BTN_RE1)) {
     if (s_editMode > 0 && (maxcol & ZCHAR)) {
@@ -260,6 +263,11 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
     s_noScroll = 0;
     DisplayScreenIndex(curr, menuTabSize, attr);
   }
+#ifdef NAVIGATION_RE1
+  else if (m_posVert < 0) {
+    lcd_putsAtt(DISPLAY_W-LEN_BACK*FW, 0, STR_BACK, INVERS);
+  }
+#endif
 
   theFile.DisplayProgressBar(menuTab ? lcd_lastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
 
@@ -283,7 +291,8 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
         if (maxcol & ZCHAR) maxcol = 0;
         if (++m_posHorz > maxcol) {
           if (m_posVert < maxrow) {
-            maxcol = MAXCOL(++m_posVert); // TODO not stored into maxcol?
+            ++m_posVert;
+            maxcol = MAXCOL(m_posVert); // TODO not stored into maxcol?
             if (maxcol < 0) m_posVert++;
             m_posHorz = 0;
           }
@@ -296,8 +305,12 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
       else {
         ++scrollRE;
         if (m_posHorz-- == 0) {
-          if (m_posVert-- == 0) {
+          if (m_posVert-- <= 0) {
+#ifdef NAVIGATION_RE1
+            m_posVert = menuTab ? 0 : -1;
+#else
             m_posVert = 0;
+#endif
             m_posHorz = 0;
             scrollRE = 0;
           }
@@ -376,8 +389,11 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
     case EVT_KEY_FIRST(KEY_DOWN): //inc
       if(s_editMode>0)break;
       do {
-        INC(m_posVert,maxrow);
+        INC(m_posVert, maxrow);
       } while(MAXCOL(m_posVert) == (uint8_t)-1);
+#ifdef NAVIGATION_RE1
+      s_editMode = 0;
+#endif
       m_posHorz = min(m_posHorz, MAXCOL(m_posVert));
       BLINK_SYNC;
       break;
@@ -405,7 +421,11 @@ MenuFuncP g_menuStack[5];
 uint8_t g_menuPos[4];
 uint8_t g_menuStackPtr = 0;
 
+#ifdef NAVIGATION_RE1
+int8_t m_posVert;
+#else
 uint8_t m_posVert;
+#endif
 uint8_t m_posHorz;
 
 void popMenu()

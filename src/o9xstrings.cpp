@@ -270,3 +270,7 @@ const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
 #if defined(PXX)
 const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
 #endif
+
+#if defined(NAVIGATION_RE1)
+const pm_char STR_BACK[] PROGMEM = TR_BACK;
+#endif
