@@ -464,3 +464,20 @@ void pushMenu(MenuFuncP newMenu)
   g_menuStack[g_menuStackPtr] = newMenu;
   (*newMenu)(EVT_ENTRY);
 }
+
+#ifdef NAVIGATION_RE1
+void * s_inflight_value;
+int16_t s_inflight_min;
+int16_t s_inflight_max;
+const pm_char *s_inflight_label
+uint8_t s_inflight_flags;
+
+void checkInflightIncDec(void *value, int16_t i_min, int16_t i_max, const pm_char *label, uint8_t flags)
+{
+  s_inflight_value = value;
+  s_inflight_min = i_min;
+  s_inflight_max = i_max;
+  s_inflight_label = label;
+  s_inflight_flags = flags;
+}
+#endif
