@@ -273,4 +273,6 @@ const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
 
 #if defined(NAVIGATION_RE1)
 const pm_char STR_BACK[] PROGMEM = TR_BACK;
+const pm_char STR_MINLIMIT[] PROGMEM = TR_MINLIMIT;
+const pm_char STR_MAXLIMIT[] PROGMEM = TR_MAXLIMIT;
 #endif

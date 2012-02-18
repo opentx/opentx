@@ -107,6 +107,18 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_GENVAR( event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
 
+#ifdef NAVIGATION_RE1
+extern int8_t *s_inflight_value;
+#define INFLIGHT(val) (s_inflight_value==&val ? SURROUNDED : 0)
+void checkInFlightIncDecModel(uint8_t event, int8_t *value, int16_t i_min, int16_t i_max, int8_t i_shift, const pm_char *label);
+#define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, imin, imax, ishift, label) \
+  checkInFlightIncDecModel(event, &var, imin, imax, ishift, label)
+#else
+#define INFLIGHT(val) 0
+#define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, min, max, shift, label) \
+  var = shift+checkIncDecModel(event,var-shift,min,max)
+#endif
+
 // Menus related stuff ...
 #ifdef NAVIGATION_RE1
 extern int8_t m_posVert;
@@ -147,5 +159,9 @@ if (!check_submenu_simple(event,lines_count-1)) return;
 #define SIMPLE_SUBMENU(title, lines_count) \
 TITLE(title); \
 SIMPLE_SUBMENU_NOTITLE(lines_count)
+
+extern const pm_char * s_warning;
+// TODO macro for s_warning
+void displayBox();
 
 #endif

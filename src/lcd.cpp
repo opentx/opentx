@@ -208,9 +208,9 @@ void lcd_outdez8(uint8_t x, uint8_t y, int8_t val)
   lcd_outdezAtt(x, y, val);
 }
 
-void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode)
+void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags)
 {
-  lcd_outdezNAtt(x, y, val, mode);
+  lcd_outdezNAtt(x, y, val, flags);
 }
 
 // TODO use doxygen style comments here
@@ -301,6 +301,14 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
 
   // TODO we could change the '-' to have one pixel removed at its left
   if (neg) { lcd_putcAtt(x, y, '-', flags); lcd_plot(x, y+3); }
+
+#ifdef NAVIGATION_RE1
+  if (flags & SURROUNDED) {
+    xn = lcd_lastPos - x + 2;
+    if (!neg) { x+=FW; xn-=FW; }
+    lcd_rect(x-1, y-1, xn, 9, BLINK_ON_PHASE ? DOTTED : ~DOTTED);
+  }
+#endif
 }
 
 void lcd_mask(uint8_t *p, uint8_t mask, uint8_t att)

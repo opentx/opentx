@@ -225,6 +225,17 @@ void menuMainView(uint8_t event)
       instantTrimSwLock = true;
       trim2OfsSwLock = true;
       break;
+#ifdef NAVIGATION_RE1
+    case EVT_KEY_LONG(BTN_RE1):
+      if (s_inflight_value && !s_warning) {
+        s_warning = s_inflight_label;
+        break;
+      }
+      // no break
+    case EVT_KEY_BREAK(BTN_RE1):
+      s_warning = NULL;
+      break;
+#endif
   }
 
   bool trimSw = isFunctionActive(FUNC_INSTANT_TRIM);
@@ -574,6 +585,12 @@ void menuMainView(uint8_t event)
     putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timer2.mode, SHRT_TM_MODE);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
+
+#ifdef NAVIGATION_RE1
+  if (s_warning) {
+    displayBox();
+  }
+#endif
 
   theFile.DisplayProgressBar(20*FW+1);
 }

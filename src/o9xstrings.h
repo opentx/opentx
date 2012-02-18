@@ -327,5 +327,6 @@ extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
 extern const pm_char STR_BACK[];
 #define LEN_BACK PSIZE(TR_BACK)
-
+extern const pm_char STR_MINLIMIT[];
+extern const pm_char STR_MAXLIMIT[];
 #endif

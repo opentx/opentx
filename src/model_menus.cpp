@@ -99,19 +99,11 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
 #endif
 };
 
-const pm_char * s_warning = 0;
-const pm_char * s_warning_info;
-uint8_t           s_warning_info_len;
-// uint8_t s_warning_info_att not needed now
-uint8_t           s_confirmation = 0;
 
-void displayBox()
-{
-  lcd_filled_rect(10, 16, 108, 40, SOLID, WHITE);
-  lcd_rect(10, 16, 108, 40);
-  lcd_puts(16, 3*FH, s_warning);
-  // could be a place for a s_warning_info
-}
+const pm_char * s_warning_info;
+uint8_t         s_warning_info_len;
+// uint8_t s_warning_info_att not needed now
+uint8_t         s_confirmation = 0;
 
 void displayPopup(const pm_char * pstr)
 {
@@ -1603,20 +1595,15 @@ void menuProcLimits(uint8_t event)
           }
           break;
         case 1:
-          lcd_outdezAtt(  12*FW, y, (int8_t)(ld->min-100), attr);
+          lcd_outdezAtt(12*FW, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
           if (active) {
-            ld->min -= 100;
-            CHECK_INCDEC_MODELVAR( event, ld->min, -limit, limit);
-            ld->min += 100;
-            // CHECK_INFLIGHT_INCDEC(ld->min, -125, 125, PSTR("Min Limit"), EE_MODEL);
+            CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->min, -limit, limit, +100, STR_MINLIMIT);
           }
           break;
         case 2:
-          lcd_outdezAtt( 17*FW, y, (int8_t)(ld->max+100), attr);
+          lcd_outdezAtt(17*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
           if (active) {
-            ld->max += 100;
-            CHECK_INCDEC_MODELVAR( event, ld->max, -limit, limit);
-            ld->max -= 100;
+            CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->max, -limit, limit, -100, STR_MAXLIMIT);
           }
           break;
         case 3:
