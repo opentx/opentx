@@ -546,13 +546,13 @@ void menuMainView(uint8_t event)
 #define ACC_LINE (7*FH+1)
         lcd_putsLeft(ACC_LINE, STR_ACCEL);
         // lcd_puts(4*FW, 7*FH, PSTR("x:"));
-        lcd_outdezNAtt(4*FW, ACC_LINE, (int32_t)frskyHubData.accelX * 100 / 256, LEFT|PREC2);
+        lcd_outdezNAtt(4*FW, ACC_LINE, (int32_t)frskyHubData.accelX/10, LEFT|PREC2);
         // lcd_putc(lcd_lastPos, 7*FH, 'g');
         // lcd_puts(11*FW, 7*FH, PSTR("y:"));
-        lcd_outdezNAtt(10*FW, ACC_LINE, (int32_t)frskyHubData.accelY * 100 / 256, LEFT|PREC2);
+        lcd_outdezNAtt(10*FW, ACC_LINE, (int32_t)frskyHubData.accelY/10, LEFT|PREC2);
         // lcd_putc(lcd_lastPos, 7*FH, 'g');
         // lcd_puts(18*FW, 7*FH, PSTR("z:"));
-        lcd_outdezNAtt(16*FW, ACC_LINE, (int32_t)frskyHubData.accelZ * 100 / 256, LEFT|PREC2);
+        lcd_outdezNAtt(16*FW, ACC_LINE, (int32_t)frskyHubData.accelZ/10, LEFT|PREC2);
         // lcd_putc(lcd_lastPos, 7*FH, 'g');
         lcd_filled_rect(0, ACC_LINE-1, DISPLAY_W, 8);
       }
