@@ -465,19 +465,39 @@ void pushMenu(MenuFuncP newMenu)
   (*newMenu)(EVT_ENTRY);
 }
 
+const pm_char * s_warning = 0;
+void displayBox()
+{
+  lcd_filled_rect(10, 16, 108, 40, SOLID, WHITE);
+  lcd_rect(10, 16, 108, 40);
+  lcd_puts(16, 3*FH, s_warning);
+  // could be a place for a s_warning_info
+}
+
 #ifdef NAVIGATION_RE1
-void * s_inflight_value;
+int8_t *s_inflight_value = NULL;
 int16_t s_inflight_min;
 int16_t s_inflight_max;
+int16_t s_inflight_shift;
 const pm_char *s_inflight_label;
-uint8_t s_inflight_flags;
 
-void checkInflightIncDec(void *value, int16_t i_min, int16_t i_max, const pm_char *label, uint8_t flags)
+void checkInFlightIncDecModel(uint8_t event, int8_t *value, int16_t i_min, int16_t i_max, int8_t i_shift, const pm_char *label)
 {
-  s_inflight_value = value;
-  s_inflight_min = i_min;
-  s_inflight_max = i_max;
-  s_inflight_label = label;
-  s_inflight_flags = flags;
+  *value = i_shift + checkIncDecModel(event, (*value)-i_shift, i_min, i_max);
+
+  if (event == EVT_KEY_LONG(BTN_RE1)) {
+    if (value == s_inflight_value) {
+      s_inflight_value = NULL;
+    }
+    else {
+      s_inflight_value = value;
+      s_inflight_min = i_min;
+      s_inflight_max = i_max;
+      s_inflight_shift = i_shift;
+      s_inflight_label = label;
+    }
+  }
 }
 #endif
+
+
