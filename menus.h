@@ -116,7 +116,7 @@ void checkInFlightIncDecModel(uint8_t event, int8_t *value, int16_t i_min, int16
 #else
 #define INFLIGHT(val) 0
 #define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, min, max, shift, label) \
-  var = shift+checkIncDecModel(event,var-shift,min,max)
+  var = shift+checkIncDecModel(event,var-(shift),min,max)
 #endif
 
 // Menus related stuff ...
