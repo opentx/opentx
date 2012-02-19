@@ -555,9 +555,7 @@ void resetTelemetry()
   frskyHubData.maxGpsSpeed = 0;
   frskyHubData.cellsCount = 0;
   frskyHubData.minCellVolts = 0;
-  if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
-    getGpsPilotPosition();
-  }
+  getGpsPilotPosition();
 #endif
 
 #ifdef SIMU
@@ -592,7 +590,7 @@ void getGpsPilotPosition()
   if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
     frskyHubData.pilotLatitude = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
     frskyHubData.pilotLongitude = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
-    uint32_t lat = ((uint32_t)frskyHubData.gpsLatitude_bp/100)*100+ (((uint32_t)frskyHubData.gpsLatitude_bp % 100)*5)/3;
+    uint32_t lat = ((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 100+ (((uint32_t)frskyHubData.gpsLatitude_bp % 100) * 5) / 3;
     uint32_t angle2 = (lat*lat) / 10000;
     uint32_t angle4 = angle2 * angle2;
     frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
