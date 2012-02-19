@@ -177,7 +177,7 @@ void parseTelemHubByte(uint8_t byte)
   if ((uint8_t)structPos == offsetof(FrskyHubData, volts)) {
     // Voltage => Cell number + Cell voltage
     uint8_t battnumber = ((frskyHubData.volts & 0x00F0) >> 4);
-    if (battnumber<12) {
+    if (battnumber < 12) {
       if (frskyHubData.cellsCount < battnumber+1) {
         frskyHubData.cellsCount = battnumber+1;
       }
