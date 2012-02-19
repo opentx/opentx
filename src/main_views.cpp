@@ -197,6 +197,11 @@ void menuMainView(uint8_t event)
       if(s_timerState[0]==TMR_BEEPING) {
         s_timerState[0] = TMR_STOPPED;
       }
+#ifdef NAVIGATION_RE1
+      else if (s_warning) {
+        s_warning = NULL;
+      }
+#endif
       else if (view == e_timer2) {
        resetTimer(1);
       }
@@ -227,8 +232,10 @@ void menuMainView(uint8_t event)
       break;
 #ifdef NAVIGATION_RE1
     case EVT_KEY_LONG(BTN_RE1):
+      killEvents(event);
       if (s_inflight_value && !s_warning) {
         s_warning = s_inflight_label;
+        s_editMode = 1;
         break;
       }
       // no break
@@ -247,7 +254,7 @@ void menuMainView(uint8_t event)
   trim2OfsSwLock = trimSw;
 
 #ifdef FRSKY
-  if (view_base == e_telemetry && frskyStreaming && view > ALTERNATE_VIEW) {
+  if (view_base == e_telemetry && frskyStreaming >= 0 && view > ALTERNATE_VIEW) {
     putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
     putsVBat(14*FW,0,att);
@@ -381,7 +388,7 @@ void menuMainView(uint8_t event)
   }
 #if defined(FRSKY)
   else if (view_base == e_telemetry) {
-    if (frskyStreaming) {
+    if (frskyStreaming >= 0) {
       uint8_t y0, x0, blink;
 
       if (view == e_telemetry+ALTERNATE_VIEW) {
@@ -587,8 +594,13 @@ void menuMainView(uint8_t event)
   }
 
 #ifdef NAVIGATION_RE1
+  check_rotary_encoder();
   if (s_warning) {
+    if (p1valdiff) {
+      *s_inflight_value = s_inflight_shift + checkIncDecModel(event, (*s_inflight_value)-s_inflight_shift, s_inflight_min, s_inflight_max);
+    }
     displayBox();
+    lcd_outdezAtt(16, 4*FH, (int8_t)(*s_inflight_value-s_inflight_shift), LEFT);
   }
 #endif
 
