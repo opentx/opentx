@@ -150,6 +150,23 @@ bool check_submenu_simple(uint8_t event, uint8_t maxrow)
   return check_simple(event, 0, 0, 0, maxrow);
 }
 
+#ifdef NAVIGATION_RE1
+void check_rotary_encoder()
+{
+  // check rotary encoder 1 if changed -> cursor down/up
+  static int16_t re1valprev;
+  p1valdiff = 0;
+  scrollRE = re1valprev - g_rotenc[0];
+  if (scrollRE) {
+    re1valprev = g_rotenc[0];
+    if (s_editMode > 0) {
+      p1valdiff = -scrollRE;
+      scrollRE = 0;
+    }
+  }
+}
+#endif
+
 #define SCROLL_TH      64
 #define SCROLL_POT1_TH 32
 
@@ -165,17 +182,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
   int8_t maxcol = MAXCOL(m_posVert);
 
 #ifdef NAVIGATION_RE1
-  // check rotary encoder 1 if changed -> cursor down/up
-  static int16_t re1valprev;
-  p1valdiff = 0;
-  scrollRE = re1valprev - g_rotenc[0];
-  if (scrollRE) {
-    re1valprev = g_rotenc[0];
-    if (s_editMode > 0) {
-      p1valdiff = -scrollRE;
-      scrollRE = 0;
-    }
-  }
+  check_rotary_encoder();
   if (m_posVert < 0 && (event==EVT_KEY_FIRST(BTN_RE1) || event==EVT_KEY_FIRST(KEY_MENU))) {
     popMenu();
     killEvents(event);
@@ -444,6 +451,9 @@ void popMenu()
 
 void chainMenu(MenuFuncP newMenu)
 {
+#ifdef NAVIGATION_RE1
+  s_warning = NULL;
+#endif
   g_menuStack[g_menuStackPtr] = newMenu;
   (*newMenu)(EVT_ENTRY);
   AUDIO_MENUS();
@@ -451,6 +461,10 @@ void chainMenu(MenuFuncP newMenu)
 
 void pushMenu(MenuFuncP newMenu)
 {
+#ifdef NAVIGATION_RE1
+  s_warning = NULL;
+#endif
+
   g_menuPos[g_menuStackPtr] = m_posVert;
 
   g_menuStackPtr++;

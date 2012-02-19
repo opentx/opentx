@@ -52,7 +52,7 @@ uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full 
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
 uint8_t frskyTxBufferCount = 0;
 uint8_t FrskyRxBufferReady = 0;
-uint8_t frskyStreaming = 0;
+int8_t frskyStreaming = -1;
 uint8_t frskyUsrStreaming = 0;
 
 FrskyData frskyTelemetry[2];

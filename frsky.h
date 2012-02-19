@@ -128,7 +128,7 @@ extern uint8_t barsThresholds[BAR_MAX-3];
 #endif
 
 // Global Fr-Sky telemetry data variables
-extern uint8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
+extern int8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
 extern uint8_t frskyUsrStreaming;
 
 #define SEND_MODEL_ALARMS 6
