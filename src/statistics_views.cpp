@@ -57,9 +57,9 @@ void menuProcStatistic(uint8_t event)
   lcd_puts( 17*FW, FH*0, STR_TOT);
   putsTime(   12*FW, FH*0, s_timeCumTot, 0, 0);
 
-  uint16_t traceRd = s_traceCnt>MAXTRACE ? s_traceWr : 0;
-  uint8_t x=5;
-  uint8_t y=60;
+  uint8_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
+  const uint8_t x=5;
+  const uint8_t y=60;
   lcd_hline(x-3,y,120+3+3);
   lcd_vline(x,y-32,32+3);
 

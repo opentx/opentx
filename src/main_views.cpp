@@ -32,19 +32,6 @@
 
 #include "menus.h"
 
-#define ALTERNATE_VIEW 0x10
-
-enum MainViews {
-  e_outputValues,
-  e_outputBars,
-  e_inputs,
-  e_timer2,
-#ifdef FRSKY
-  e_telemetry,
-#endif
-  MAX_VIEWS
-};
-
 uint8_t tabViews[] = {
   1, /*e_outputValues*/
   1, /*e_outputBars*/
@@ -110,7 +97,7 @@ void displayRssiLine()
 void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
 {
   lcd_putsn(x, y, STR_ALTnDST, 4);
-  int16_t value = frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
+  int16_t value = frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
   putsTelemetryValue(lcd_lastPos, y, value, UNIT_METERS, flags|LEFT);
 }
 #endif
@@ -141,7 +128,7 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_LEFT):
 #if defined(FRSKY)
 #if defined(FRSKY_HUB) && defined(WS_HOW_HIGH)
-      tabViews[e_telemetry] = (g_model.frsky.usrProto == 0 ? 3 : (g_model.frsky.usrProto == 1 ? 5 : 4));
+      tabViews[e_telemetry] = (g_model.frsky.usrProto == 0 ? 3 : ((g_model.frsky.usrProto == 1 && frskyHubData.gpsFix >= 0) ? 5 : 4));
 #elif defined(FRSKY_HUB)
       tabViews[e_telemetry] = (g_model.frsky.usrProto == 1 ? 5 : 3);
 #elif defined(WS_HOW_HIGH)
@@ -529,7 +516,7 @@ void menuMainView(uint8_t event)
 #define ALTITUDE_LINE (4*FH-1)
         lcd_putsLeft(ALTITUDE_LINE, STR_ALTnDST);
         putsTelemetryValue(4*FW, ALTITUDE_LINE, frskyHubData.gpsAltitude_bp, UNIT_METERS, LEFT); // before '.'
-        putsTelemetryValue(16*FW, ALTITUDE_LINE, getGpsDistance(), UNIT_METERS, LEFT); // before '.'
+        putsTelemetryValue(16*FW, ALTITUDE_LINE, frskyHubData.gpsDistance, UNIT_METERS, LEFT); // before '.'
       }
       else if (g_model.frsky.usrProto == PROTO_FRSKY_HUB && view == e_telemetry+3*ALTERNATE_VIEW) {
         // Temperature 1

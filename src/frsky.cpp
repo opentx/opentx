@@ -105,13 +105,45 @@ uint8_t frskyGetUserData(char *buffer, uint8_t bufSize)
 #endif
 
 #ifdef FRSKY_HUB
-int8_t parseTelemHubIndex(int8_t index)
+inline void getGpsPilotPosition()
+{
+  frskyHubData.pilotLatitude = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
+  frskyHubData.pilotLongitude = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
+  uint32_t lat = ((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 100+ (((uint32_t)frskyHubData.gpsLatitude_bp % 100) * 5) / 3;
+  uint32_t angle2 = (lat*lat) / 10000;
+  uint32_t angle4 = angle2 * angle2;
+  frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
+  // printf("frskyHubData.distFromEarthAxis=%d\n", frskyHubData.distFromEarthAxis); fflush(stdout);
+}
+
+inline void getGpsDistance()
+{
+  uint32_t lat = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
+  uint32_t lng = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
+
+  // printf("lat=%d (%d), long=%d (%d)\n", lat, abs(lat - frskyHubData.pilotLatitude), lng, abs(lng - frskyHubData.pilotLongitude));
+
+  uint32_t angle = (lat > frskyHubData.pilotLatitude) ? lat - frskyHubData.pilotLatitude : frskyHubData.pilotLatitude - lat;
+  uint32_t dist = EARTH_RADIUS * angle / 1000000;
+  uint32_t result = dist*dist;
+
+  angle = (lng > frskyHubData.pilotLongitude) ? lng - frskyHubData.pilotLongitude : frskyHubData.pilotLongitude - lng;
+  dist = frskyHubData.distFromEarthAxis * angle / 1000000;
+  result += dist*dist;
+
+  dist = frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
+  result += dist*dist;
+
+  frskyHubData.gpsDistance = isqrt32(result);
+}
+
+inline int8_t parseTelemHubIndex(uint8_t index)
 {
   if (index > 0x3b)
-    index = -1; // invalid index
+    index = 255; // invalid index
   if (index > 0x39)
     index -= 17;
-  return 2*index;
+  return index*2;
 }
 
 typedef enum {
@@ -125,6 +157,7 @@ typedef enum {
 void parseTelemHubByte(uint8_t byte)
 {
   static int8_t structPos;
+  static uint8_t lowByte;
   static TS_STATE state = TS_IDLE;
 
   if (byte == 0x5e) {
@@ -150,28 +183,55 @@ void parseTelemHubByte(uint8_t byte)
     return;
   }
   if (state == TS_DATA_LOW) {
-    ((uint8_t*)&frskyHubData)[structPos] = byte;
+    lowByte = byte;
     state = TS_DATA_HIGH;
     return;
   }
+
+  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsLatitude_bp)) {
+    if (lowByte || byte)
+      frskyHubData.gpsFix = 1;
+    else if (frskyHubData.gpsFix > 0 && frskyHubData.gpsLatitude_bp > 1)
+      frskyHubData.gpsFix = 0;
+  }
+  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsLongitude_bp)) {
+    if (lowByte || byte)
+      frskyHubData.gpsFix = 1;
+    else if (frskyHubData.gpsFix > 0 && frskyHubData.gpsLongitude_bp > 1)
+      frskyHubData.gpsFix = 0;
+  }
+  
+  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsAltitude_bp) ||
+      ((uint8_t)structPos >= offsetof(FrskyHubData, gpsAltitude_ap) && (uint8_t)structPos <= offsetof(FrskyHubData, gpsLatitudeNS) && (uint8_t)structPos != offsetof(FrskyHubData, baroAltitude_bp) && (uint8_t)structPos != offsetof(FrskyHubData, baroAltitude_ap))) {
+    // If we don't have a fix, we may discard the value
+    if (frskyHubData.gpsFix <= 0) {
+      state = TS_IDLE;
+      return;
+    }
+  }
+  
+  ((uint8_t*)&frskyHubData)[structPos] = lowByte;
   ((uint8_t*)&frskyHubData)[structPos+1] = byte;
 
-  if ((uint8_t)structPos == offsetof(FrskyHubData, baroAltitude) && !frskyHubData.baroAltitudeOffset) {
+  if ((uint8_t)structPos == offsetof(FrskyHubData, baroAltitude_bp) && !frskyHubData.baroAltitudeOffset) {
     // First received altitude => Altitude offset
-    frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude;
+    frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
   }
 
-  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsLatitudeNS/*TODO check that it is received at last!*/) && !frskyHubData.pilotLatitude) {
-    // First received GPS position => Pilot GPS position
-    getGpsPilotPosition();
+  if ((uint8_t)structPos == offsetof(FrskyHubData, gpsAltitude_ap)) {
+    if (!frskyHubData.pilotLatitude && !frskyHubData.pilotLongitude) {
+      // First received GPS position => Pilot GPS position
+      getGpsPilotPosition();
+    }
+    else if (frskyHubData.gpsDistNeeded || g_eeGeneral.view == e_telemetry+4*ALTERNATE_VIEW) {
+      getGpsDistance();
+    }
   }
 
   if ((uint8_t)structPos == offsetof(FrskyHubData, gpsSpeed_bp)) {
     // Speed => Max speed
-    if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
-      if (frskyHubData.maxGpsSpeed < frskyHubData.gpsSpeed_bp)
-        frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_bp;
-    }
+    if (frskyHubData.maxGpsSpeed < frskyHubData.gpsSpeed_bp)
+      frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_bp;
   }
 
   if ((uint8_t)structPos == offsetof(FrskyHubData, volts)) {
@@ -196,9 +256,9 @@ void parseTelemHubByte(uint8_t byte)
 void parseTelemWSHowHighByte(uint8_t byte)
 {
   if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10))  // At least 100mS passed since last data received
-    ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude)] = byte;
+    ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude_bp)] = byte;
   else
-    ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude)+1] = byte;
+    ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude_bp)+1] = byte;
   frskyUsrStreaming = FRSKY_TIMEOUT10ms*3; // reset counter
 }
 #endif  
@@ -238,6 +298,7 @@ void processFrskyPacket(uint8_t *packet)
       frskyTelemetry[1].set(packet[2]);
       frskyRSSI[0].set(packet[3]);
       frskyRSSI[1].set(packet[4] / 2);
+      frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       break;
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
     case USRPKT: // User Data packet
@@ -257,7 +318,6 @@ void processFrskyPacket(uint8_t *packet)
   }
 
   FrskyRxBufferReady = 0;
-  frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
 }
 
 // Receive buffer state machine state defs
@@ -405,7 +465,7 @@ void FRSKY10mspoll(void)
   *ptr++ = 0x00;
 
   // Now send a packet
-  FrskyAlarmSendState -= 1 ;
+  FrskyAlarmSendState -= 1;
   uint8_t alarm = 1 - (FrskyAlarmSendState % 2);
   if (FrskyAlarmSendState < 4) {
     uint8_t channel = 1 - (FrskyAlarmSendState / 2);
@@ -547,7 +607,7 @@ void resetTelemetry()
 #endif
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude;
+  frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
 #endif
 
 
@@ -555,7 +615,13 @@ void resetTelemetry()
   frskyHubData.maxGpsSpeed = 0;
   frskyHubData.cellsCount = 0;
   frskyHubData.minCellVolts = 0;
-  getGpsPilotPosition();
+  frskyHubData.pilotLatitude = 0;
+  frskyHubData.pilotLongitude = 0;
+  frskyHubData.gpsLatitude_bp = 2;
+  frskyHubData.gpsLongitude_bp = 2;
+  frskyHubData.gpsFix = -1;
+  frskyHubData.gpsDistNeeded = 0;
+  frskyHubData.gpsDistance = 0;
 #endif
 
 #ifdef SIMU
@@ -569,63 +635,3 @@ void resetTelemetry()
 #endif
 }
 
-#ifdef FRSKY_HUB
-uint16_t sqrt32(uint32_t n)
-{
-  uint16_t c = 0x8000;
-  uint32_t g = 0x8000;
-
-  for(;;) {
-    if(g*g > n)
-      g ^= c;
-    c >>= 1;
-    if(c == 0)
-      return g;
-    g |= c;
-  }
-}
-
-void getGpsPilotPosition()
-{
-  if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
-    frskyHubData.pilotLatitude = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
-    frskyHubData.pilotLongitude = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
-    uint32_t lat = ((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 100+ (((uint32_t)frskyHubData.gpsLatitude_bp % 100) * 5) / 3;
-    uint32_t angle2 = (lat*lat) / 10000;
-    uint32_t angle4 = angle2 * angle2;
-    frskyHubData.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
-  }
-  // printf("frskyHubData.distFromEarthAxis=%d\n", frskyHubData.distFromEarthAxis); fflush(stdout);
-}
-
-uint32_t getGpsDistanceX2()
-{
-  if (frskyHubData.gpsLatitude_bp && frskyHubData.gpsLongitude_bp) {
-    uint32_t lat = (((uint32_t)frskyHubData.gpsLatitude_bp / 100) * 1000000) + (((frskyHubData.gpsLatitude_bp % 100) * 10000 + frskyHubData.gpsLatitude_ap) * 5) / 3;
-    uint32_t lng = (((uint32_t)frskyHubData.gpsLongitude_bp / 100) * 1000000) + (((frskyHubData.gpsLongitude_bp % 100) * 10000 + frskyHubData.gpsLongitude_ap) * 5) / 3;
-    
-    // printf("lat=%d (%d), long=%d (%d)\n", lat, abs(lat - frskyHubData.pilotLatitude), lng, abs(lng - frskyHubData.pilotLongitude));
-    
-    uint32_t angle = (lat > frskyHubData.pilotLatitude) ? lat - frskyHubData.pilotLatitude : frskyHubData.pilotLatitude - lat;
-    uint32_t dist = EARTH_RADIUS * angle / 1000000;
-    uint32_t result = dist*dist;
-
-    angle = (lng > frskyHubData.pilotLongitude) ? lng - frskyHubData.pilotLongitude : frskyHubData.pilotLongitude - lng;
-    dist = frskyHubData.distFromEarthAxis * angle / 1000000;
-    result += dist*dist;
-
-    dist = frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
-    result += dist*dist;
-
-    return result;
-  }
-  else {
-    return 0;
-  }
-}
-
-uint16_t getGpsDistance()
-{
-  return (frskyHubData.pilotLatitude ? sqrt32(getGpsDistanceX2()) : 0);
-}
-#endif
