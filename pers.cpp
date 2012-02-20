@@ -128,6 +128,7 @@ void eeLoadModel(uint8_t id)
     }
 
     // TODO optim: resetAll()
+    // TODO s_traceCnt to be reset?
     resetTimer(0);
     resetTimer(1);
     resetProto();

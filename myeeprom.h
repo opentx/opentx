@@ -69,6 +69,18 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
+enum MainViews {
+  e_outputValues,
+  e_outputBars,
+  e_inputs,
+  e_timer2,
+#ifdef FRSKY
+  e_telemetry,
+#endif
+  MAX_VIEWS
+};
+
+#define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   myVers;
   int16_t   calibMid[7];

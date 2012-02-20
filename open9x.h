@@ -474,7 +474,7 @@ extern uint16_t g_time_per10;
 
 #define MAXTRACE 120
 extern uint8_t s_traceBuf[MAXTRACE];
-extern uint16_t s_traceWr;
+extern uint8_t s_traceWr;
 extern int8_t s_traceCnt;
 
 extern int8_t *s_trimPtr[NUM_STICKS];
@@ -551,6 +551,8 @@ template<class t> FORCEINLINE t min(t a, t b) { return a<b?a:b; }
 template<class t> FORCEINLINE t max(t a, t b) { return a>b?a:b; }
 template<class t> FORCEINLINE t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
 template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
+
+uint16_t isqrt32(uint32_t n);
 
 /// Markiert einen EEPROM-Bereich als dirty. der Bereich wird dann in
 /// eeCheck ins EEPROM zurueckgeschrieben.

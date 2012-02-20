@@ -301,7 +301,7 @@ int16_t getValue(uint8_t i)
 #if defined(FRSKY)
     else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude + frskyHubData.baroAltitudeOffset;
+    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
 #endif
 #if defined(FRSKY_HUB)
     else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
@@ -935,10 +935,10 @@ static uint8_t sw_toggled[2] = {false, false};
 static uint16_t s_time_cum_16[2] = {0, 0};
 
 uint8_t s_traceBuf[MAXTRACE];
-uint16_t s_traceWr;
+uint8_t s_traceWr;
 int8_t s_traceCnt;
 
-#ifdef HELI
+#if defined(HELI) or defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n)
 {
     uint16_t c = 0x8000;
@@ -1498,7 +1498,7 @@ void perMain()
 
       s_traceBuf[s_traceWr++] = val;
       if (s_traceWr >= MAXTRACE) s_traceWr = 0;
-      if (s_traceCnt >= 0) s_traceCnt++;
+      if (s_traceCnt >= 0) s_traceCnt++; // TODO to be checked
     }
   }
   // Throttle trace end

@@ -70,46 +70,50 @@ class FrskyData: public FrskyRSSI {
 
 #if defined(FRSKY_HUB)
 struct FrskyHubData {
-  int16_t  baroAltitudeOffset;  // spare reused
-  int16_t  gpsAltitude_bp;   // before punct
-  int16_t  temperature1;     // -20 .. 250 deg. celcius
-  uint16_t rpm;              // 0..60,000 revs. per minute
-  uint16_t fuelLevel;        // 0, 25, 50, 75, 100 percent
-  int16_t  temperature2;     // -20 .. 250 deg. celcius
-  uint16_t volts;            // 1/500V increments (0..4.2V)
-  uint32_t distFromEarthAxis;   // 2 spares reused
-  int16_t  gpsAltitude_ap;   // after punct
-  uint8_t  cellVolts[12];       // 6 spares reused
-  uint16_t baroAltitude;     // 0..9,999 meters
-  uint16_t gpsSpeed_bp;      // before punct
-  uint16_t gpsLongitude_bp;  // before punct
-  uint16_t gpsLatitude_bp;   // before punct
-  uint16_t gpsCourse_bp;     // before punct (0..359.99 deg. -- seemingly 2-decimal precision)
-  uint8_t  day;
-  uint8_t  month;
-  uint16_t year;
-  uint8_t  hour;
-  uint8_t  min;
-  uint16_t sec;
-  uint16_t gpsSpeed_ap;
-  uint16_t gpsLongitude_ap;
-  uint16_t gpsLatitude_ap;
-  uint16_t gpsCourse_ap;
-  uint32_t pilotLatitude;       // 2 spares reused
-  uint32_t pilotLongitude;      // 2 spares reused
-  uint16_t baroAltitude_ap;
-  uint16_t gpsLongitudeEW;   // East/West
-  uint16_t gpsLatitudeNS;    // North/South
-  int16_t  accelX;           // 1/256th gram (-8g ~ +8g)
-  int16_t  accelY;           // 1/256th gram (-8g ~ +8g)
-  int16_t  accelZ;           // 1/256th gram (-8g ~ +8g)
-  uint8_t  cellsCount;          // 1/2 spare reused
-  uint8_t  minCellVolts;        // 1/2 spare reused
-  uint16_t current;
+  int16_t  baroAltitudeOffset;//       spare reused
+  int16_t  gpsAltitude_bp;   // 0x01   before punct
+  int16_t  temperature1;     // 0x02   -20 .. 250 deg. celcius
+  uint16_t rpm;              // 0x03   0..60,000 revs. per minute
+  uint16_t fuelLevel;        // 0x04   0, 25, 50, 75, 100 percent
+  int16_t  temperature2;     // 0x05   -20 .. 250 deg. celcius
+  uint16_t volts;            // 0x06   1/500V increments (0..4.2V)
+  uint32_t distFromEarthAxis;//        2 spares reused
+  int16_t  gpsAltitude_ap;   // 0x01+8 after punct
+  uint8_t  cellVolts[12];    //        6 spares reused
+  uint16_t baroAltitude_bp;  // 0x10   0..9,999 meters
+  uint16_t gpsSpeed_bp;      // 0x11   before punct
+  uint16_t gpsLongitude_bp;  // 0x12   before punct
+  uint16_t gpsLatitude_bp;   // 0x13   before punct
+  uint16_t gpsCourse_bp;     // 0x14   before punct (0..359.99 deg. -- seemingly 2-decimal precision)
+  uint8_t  day;              // 0x15
+  uint8_t  month;            // 0x15
+  uint16_t year;             // 0x16
+  uint8_t  hour;             // 0x17
+  uint8_t  min;              // 0x17
+  uint16_t sec;              // 0x18
+  uint16_t gpsSpeed_ap;      // 0x11+8
+  uint16_t gpsLongitude_ap;  // 0x12+8
+  uint16_t gpsLatitude_ap;   // 0x13+8
+  uint16_t gpsCourse_ap;     // 0x14+8
+  uint32_t pilotLatitude;    //        2 spares reused
+  uint32_t pilotLongitude;   //        2 spares reused
+  uint16_t baroAltitude_ap;  // 0x21   after punct
+  uint16_t gpsLongitudeEW;   // 0x1A+8 East/West
+  uint16_t gpsLatitudeNS;    // 0x1B+8 North/South
+  int16_t  accelX;           // 0x24   1/256th gram (-8g ~ +8g)
+  int16_t  accelY;           // 0x25   1/256th gram (-8g ~ +8g)
+  int16_t  accelZ;           // 0x26   1/256th gram (-8g ~ +8g)
+  uint8_t  gpsDistNeeded:1;  //        1bits out of 16bits spare reused
+  int8_t   gpsFix:2;         //        2bits out of 16bits spare reused: -1=never fixed, 0=not fixed now, 1=fixed
+  uint8_t  spare:1;          //
+  uint8_t  cellsCount:4;     //        4bits out of 16bits spare reused
+  uint8_t  minCellVolts;     //        8bits out of 16bits spare reused
+  uint16_t current;          // 0x28   Current
   // 17 spares
-  uint16_t volts_bp;
-  uint16_t volts_ap;
+  uint16_t volts_bp;         // 0x3A
+  uint16_t volts_ap;         // 0x3B
   // end of FrSky Hub data
+  uint16_t gpsDistance;
   uint16_t maxGpsSpeed;
 };
 
@@ -150,12 +154,6 @@ inline void FRSKY_setModelAlarms(void)
 bool FRSKY_alarmRaised(uint8_t idx);
 
 void resetTelemetry();
-
-#ifdef FRSKY_HUB
-void getGpsPilotPosition();
-uint32_t getGpsDistanceX2();
-uint16_t getGpsDistance();
-#endif
 
 #endif
 
