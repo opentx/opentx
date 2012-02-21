@@ -1730,7 +1730,11 @@ void perMain()
     case 2:
       {
         int32_t instant_vbat = anaIn(7);
+#if defined(PCBV4)
+        instant_vbat = (1112*(uint32_t)instant_vbat + (int32_t)instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
+#else
         instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
+#endif
         if (g_vbat100mV == 0 || g_menuStack[0] != menuMainView) g_vbat100mV = instant_vbat;
         g_vbat100mV = (instant_vbat + g_vbat100mV*7) / 8;
 
