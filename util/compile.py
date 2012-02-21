@@ -12,8 +12,11 @@ options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"),
 #                 ("PXX", "PXX=NO", "PXX=YES"),
                 ]
 
-options_v4 = [[("", "HELI=NO"), ("heli", "HELI=YES")],
+options_v4 = [[("", "EXT=FRSKY")],
+              [("", "HELI=NO"), ("heli", "HELI=YES")],
               [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
+              [("", "LOGS=NO"), ("logs", "LOGS=YES")],
+              [("", "SOMO=NO"), ("SOMO", "SOMO=YES")],
              ]
 
 languages = ["en", "fr"]
