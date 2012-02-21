@@ -171,7 +171,7 @@ void check_rotary_encoder()
 #define SCROLL_POT1_TH 32
 
 #ifdef NAVIGATION_RE1
-#define MAXCOL(row) ((horTab && row > 0) ? pgm_read_byte(horTab+min(row, (int8_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row) ((horTab && row >= 0) ? pgm_read_byte(horTab+min(row, (int8_t)horTabMax)) : (const uint8_t)0)
 #else
 #define MAXCOL(row) (horTab ? pgm_read_byte(horTab+min(row, horTabMax)) : (const uint8_t)0)
 #endif
@@ -313,17 +313,13 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
         ++scrollRE;
         if (m_posHorz-- == 0) {
           if (m_posVert-- <= 0) {
-#ifdef NAVIGATION_RE1
             m_posVert = menuTab ? 0 : -1;
-#else
-            m_posVert = 0;
-#endif
             m_posHorz = 0;
             scrollRE = 0;
           }
           else {
             maxcol = MAXCOL(m_posVert);
-            if (maxcol < 0) maxcol = MAXCOL(--m_posVert);
+            if (maxcol < 0) { --m_posVert; maxcol = MAXCOL(m_posVert); }
             m_posHorz = maxcol;
           }
         }
