@@ -552,7 +552,9 @@ template<class t> FORCEINLINE t max(t a, t b) { return a>b?a:b; }
 template<class t> FORCEINLINE t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
 template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
 
+#if defined(HELI) || defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n);
+#endif
 
 /// Markiert einen EEPROM-Bereich als dirty. der Bereich wird dann in
 /// eeCheck ins EEPROM zurueckgeschrieben.
