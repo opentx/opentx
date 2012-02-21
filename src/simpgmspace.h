@@ -104,6 +104,7 @@ extern sem_t eeprom_write_sem;
 #define pgm_read_stringP(adr) ((adr))
 #define PSTR(adr) adr
 #define _delay_us(a)
+#define _delay_ms(a)
 #define cli()
 #define sei()
 #define strcpy_P strcpy
@@ -136,6 +137,7 @@ extern sem_t eeprom_write_sem;
 
 #define UCSR0B dummyport
 #define UDRIE0 dummyport
+#define TXB80 dummyport
 #define TXEN0 dummyport
 #define RXEN0 dummyport
 #define DDE0 dummyport

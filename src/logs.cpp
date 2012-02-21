@@ -33,15 +33,13 @@
 #include "open9x.h"
 #include "ff.h"
 
-// "/G9XLOGS/M00_000.TXT\0" max required length = 21
-char g_logFilename[22];
-
-// These global so we can close any open file from anywhere
-FATFS FATFS_Obj;
+char g_logFilename[21]; // "/O9XLOGS/M00_000.CSV\0" max required length = 21
+FATFS g_FATFS_Obj;
 FIL g_oLogFile;
 int8_t g_logState = 0; // 0=closed, >0=opened, <0=error
+const pm_char * g_logError = NULL;
 
-void startLogs()
+void initLogs()
 {
   // Determine and set log file filename
   FRESULT result;
@@ -50,22 +48,23 @@ void startLogs()
   if (g_oLogFile.fs) f_close(&g_oLogFile);
   g_logState = 0;
 
-  strcpy_P(g_logFilename, PSTR("/G9XLOGS/M00_000.TXT"));
+  strcpy_P(g_logFilename, PSTR(LOG_PATH "M00_000.CSV"));
 
+  // Set log file model number
   uint8_t num = g_eeGeneral.currModel + 1;
-  char *n = &g_logFilename[11];
+  char *n = &g_logFilename[11]; // TODO constant
   *n = (char)((num % 10) + '0');
   *(--n) = (char)((num / 10) + '0');
 
-  result = f_mount(0, &FATFS_Obj);
+  result = f_mount(0, &g_FATFS_Obj);
   if (result!=FR_OK)
   {
-    strcpy_P(g_logFilename, PSTR("FILE SYSTEM ERROR"));
     g_logState = -result;
+    g_logError = PSTR("SDCARD F/S ERROR");
     return;
   }
 
-  // Skip over any existing log files ... _000, _001, etc. (or find first gap in numbering)
+  // Loop, skipping over any existing log files ... _000, _001, etc. until we have a unique file name
   while (1)
   {
     result = f_open(&g_oLogFile, g_logFilename, FA_OPEN_EXISTING | FA_READ);
@@ -97,10 +96,10 @@ void startLogs()
     }
     else if (result == FR_NO_PATH)
     {
-      if (f_mkdir("/G9XLOGS") != FR_OK)
+      if (f_mkdir(LOG_PATH) != FR_OK)
       {
-        strcpy_P(g_logFilename, PSTR("Check /G9XLOGS folder"));
         g_logState = -result;
+        g_logError = PSTR("Check " LOG_PATH " folder");
         return;
       }
     }
@@ -108,9 +107,9 @@ void startLogs()
     {
       g_logState = -result;
       if (result == FR_NOT_READY)
-        strcpy_P(g_logFilename, PSTR("DATA CARD NOT PRESENT"));
+        g_logError = PSTR("NO SDCARD");
       else
-        strcpy_P(g_logFilename, PSTR("DATA CARD ERROR"));
+        g_logError = PSTR("SDCARD ERROR");
       return;
     }
   }
@@ -118,8 +117,7 @@ void startLogs()
   // g_logFilename should now be set appropriately.
 }
 
-// TODO FORCEINLINE this function
-void doLogs()
+void writeLogs()
 {
   FRESULT result;
 
@@ -127,25 +125,32 @@ void doLogs()
   {
     if (g_logState==0)
     {
-      result = f_mount(0, &FATFS_Obj);
+      result = f_mount(0, &g_FATFS_Obj);
       if (result != FR_OK)
       {
         g_logState = -result;
         // TODO beepAgain = result - 1;
-        AUDIO_KEYPAD_UP();
+        AUDIO_WARNING1();
       }
       else
       {
-        // create new log file using filename set up in startLogs()
+        // create new log file using filename set up in initLogs()
         result = f_open(&g_oLogFile, g_logFilename, FA_OPEN_ALWAYS | FA_WRITE);
         if (result != FR_OK)
         {
           g_logState = -result;
-          // TODO beepAgain = result - 1;
+          // TODO beepAgain = result - 1; // TODO FOR DEBUG -- count out error_number beeps
           AUDIO_KEYPAD_UP();
         }
         else
         {
+          if (g_oLogFile.fsize == 0) {
+            // if data type == Hub TODO
+            f_puts("Buffer,RX,TX,A1,A2,Date,Time,Long,Lat,Course,Speed,Alt,BarAlt,"
+                "Temp1,Temp2,RPM,Fuel,Volts,AccelX,AccelY,AccelZ,THR,RUD,ELE,IDL0,IDL1,IDL2,AIL,GEA,TRN\n",
+                &g_oLogFile);
+          }
+          
           f_lseek(&g_oLogFile, g_oLogFile.fsize); // append
           g_logState = 1;
           AUDIO_WARNING2();
@@ -155,7 +160,44 @@ void doLogs()
 
     if (g_logState>0)
     {
-      // TODO here we write logs
+// For now, append 'anything' as a test
+      // if data type == Hub
+      f_printf(&g_oLogFile, "%d,", frskyStreaming);
+      f_printf(&g_oLogFile, "%d,", frskyRSSI[0].value);
+      f_printf(&g_oLogFile, "%d,", frskyRSSI[1].value);
+      f_printf(&g_oLogFile, "%d,", frskyTelemetry[0].value);
+      f_printf(&g_oLogFile, "%d,", frskyTelemetry[1].value);
+      f_printf(&g_oLogFile, "%4d-%02d-%02d,", frskyHubData.year+2000, frskyHubData.month, frskyHubData.day);
+      f_printf(&g_oLogFile, "%02d:%02d:%02d,", frskyHubData.hour, frskyHubData.min, frskyHubData.sec);
+      f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLongitude_bp, frskyHubData.gpsLongitude_ap,
+          frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
+      f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLatitude_bp, frskyHubData.gpsLatitude_ap, 
+          frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
+      f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsCourse_bp, frskyHubData.gpsCourse_ap);
+      f_printf(&g_oLogFile, "%d.%d,", frskyHubData.gpsSpeed_bp, frskyHubData.gpsSpeed_ap);
+      f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsAltitude_bp, frskyHubData.gpsAltitude_ap);
+      f_printf(&g_oLogFile, "%d.%d,", frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset, frskyHubData.baroAltitude_ap);
+      f_printf(&g_oLogFile, "%d,", frskyHubData.temperature1);
+      f_printf(&g_oLogFile, "%d,", frskyHubData.temperature2);
+      f_printf(&g_oLogFile, "%d,", frskyHubData.rpm);
+      f_printf(&g_oLogFile, "%d,", frskyHubData.fuelLevel);
+      f_printf(&g_oLogFile, "%d,", frskyHubData.volts);
+      f_printf(&g_oLogFile, "%d,", frskyHubData.accelX);
+      f_printf(&g_oLogFile, "%d,", frskyHubData.accelY);
+      f_printf(&g_oLogFile, "%d,", frskyHubData.accelZ);
+      f_printf(&g_oLogFile, "%d,", keyState(SW_ThrCt));
+      f_printf(&g_oLogFile, "%d,", keyState(SW_RuddDR));
+      f_printf(&g_oLogFile, "%d,", keyState(SW_ElevDR));
+      f_printf(&g_oLogFile, "%d,", keyState(SW_ID0));
+      f_printf(&g_oLogFile, "%d,", keyState(SW_ID1));
+      f_printf(&g_oLogFile, "%d,", keyState(SW_ID2));
+      f_printf(&g_oLogFile, "%d,", keyState(SW_AileDR));
+      f_printf(&g_oLogFile, "%d,", keyState(SW_Gear));
+      f_printf(&g_oLogFile, "%d\n", keyState(SW_Trainer));
+
+      // Don't close the log file here. We have 'soft off' available on the v4.1 board. Once
+      // that is implemented, it can take care of closing the file, should the radio be
+      // powered off before the FUNC SWITCH is turned off.
     }
   }
   else if (g_logState > 0)

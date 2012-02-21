@@ -139,10 +139,11 @@ inline void getGpsDistance()
 
 inline int8_t parseTelemHubIndex(uint8_t index)
 {
-  if (index > 0x3b)
-    index = 255; // invalid index
-  if (index > 0x39)
+  if (index > 0x39) {
+    if (index > 0x3b)
+      return -1; // invalid index
     index -= 17;
+  }
   return index*2;
 }
 

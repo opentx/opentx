@@ -891,7 +891,7 @@ void menuProcCurveOne(uint8_t event)
       break;
     case EVT_KEY_REPT(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_RIGHT):
-      if (!autoThrStep && m_posHorz<((s_editMode>0) ? points-1 : ((g_menuStack[g_menuStackPtr-1] == menuProcExpoOne && IS_THROTTLE(expoaddress(s_currIdx)->chn)) ? 2 : 1))) m_posHorz++;
+      if (!autoThrStep && m_posHorz<((s_editMode>0) ? points-1 : ((g_menuStack[g_menuStackPtr-1] == menuProcExpoOne && expoaddress(s_currIdx)->chn == THR_STICK) ? 2 : 1))) m_posHorz++;
       break;
   }
 
