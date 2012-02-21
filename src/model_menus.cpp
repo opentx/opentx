@@ -421,7 +421,7 @@ void menuProcModel(uint8_t event)
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
   MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM||g_model.protocol==PROTO_DSM2||g_model.protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,6,2,1});
 
-  uint8_t  sub    = m_posVert;
+  uint8_t  sub = m_posVert;
   uint8_t y = 1*FH;
 
   uint8_t subN = 1;
