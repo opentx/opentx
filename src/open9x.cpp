@@ -938,7 +938,7 @@ uint8_t s_traceBuf[MAXTRACE];
 uint8_t s_traceWr;
 int8_t s_traceCnt;
 
-#if defined(HELI) or defined(FRSKY_HUB)
+#if defined(HELI) || defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n)
 {
     uint16_t c = 0x8000;
