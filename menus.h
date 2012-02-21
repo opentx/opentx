@@ -36,8 +36,6 @@
 #include <inttypes.h>
 #include "open9x.h"
 
-#define IS_THROTTLE(x)  (((2-(g_eeGeneral.stickMode&1)) == x) && (x<4))
-
 #define NO_HI_LEN 25
 
 #define RESX    1024
@@ -110,6 +108,9 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #ifdef NAVIGATION_RE1
 extern int8_t *s_inflight_value;
 extern const pm_char *s_inflight_label;
+extern int16_t s_inflight_min;
+extern int16_t s_inflight_max;
+extern int16_t s_inflight_shift;
 #define INFLIGHT(val) (s_inflight_value==&val ? SURROUNDED : 0)
 void checkInFlightIncDecModel(uint8_t event, int8_t *value, int16_t i_min, int16_t i_max, int8_t i_shift, const pm_char *label);
 #define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, imin, imax, ishift, label) \

@@ -1178,8 +1178,8 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
   if (s_noStickInputs) {
     for (uint8_t i=0; i<NUM_STICKS; i++) {
-      if (!IS_THROTTLE(i)) {
-        anas[i]  = 0;
+      if (i!=THR_STICK) {
+        anas[i] = 0;
       }
     }
     for (uint8_t i=0; i<NUM_PPM; i++) anas[i+PPM_BASE] = 0;
@@ -1662,7 +1662,7 @@ void perMain()
     trimsCheckTimer -= 1;
 
 #if defined (LOGS)
-  doLogs();
+  writeLogs();
 #endif
 
 #if defined(FRSKY) && defined(DISPLAY_USER_DATA)
@@ -2048,8 +2048,8 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     g_model.limitData[i].offset = limit((int16_t)-1000, zero_chans512[i], (int16_t)1000); // make sure the offset doesn't go haywire
 
   // reset all trims, except throttle
-  for (uint8_t i=0; i<4; i++) {
-    if (!IS_THROTTLE(i)) {
+  for (uint8_t i=0; i<NUM_STICKS; i++) {
+    if (i!=THR_STICK) {
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
         int16_t trim = getTrimValue(phase, i);
         if (trim <= TRIM_EXTENDED_MAX)

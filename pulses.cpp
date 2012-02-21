@@ -326,6 +326,21 @@ void putPcmByte( uint8_t byte )
     }
 }
 
+
+void putPcmHead()
+{
+  // send 7E, do not CRC
+  // 01111110
+  putPcmPart( 0xC0 ) ;
+  putPcmPart( 0x80 ) ;
+  putPcmPart( 0x80 ) ;
+  putPcmPart( 0x80 ) ;
+  putPcmPart( 0x80 ) ;
+  putPcmPart( 0x80 ) ;
+  putPcmPart( 0x80 ) ;
+  putPcmPart( 0xC0 ) ;
+}
+
 void setupPulsesPXX()
 {
     uint8_t i ;
@@ -338,7 +353,7 @@ void setupPulsesPXX()
     PcmCrc = 0 ;
     PcmBitCount = PcmByte = 0 ;
     PcmOnesCount = 0 ;
-    putPcmByte( 0x7E ) ;  // sync byte
+    putPcmHead() ;
     putPcmByte( g_model.modelId ) ;     // putPcmByte( g_model.rxnum ) ;  //
     putPcmByte( pxxFlag ) ;     // First byte of flags
     putPcmByte( 0 ) ;     // Second byte of flags
@@ -362,7 +377,7 @@ void setupPulsesPXX()
     chan = PcmCrc ;                     // get the crc
     putPcmByte( chan ) ;                        // Checksum lo
     putPcmByte( chan >> 8 ) ; // Checksum hi
-    putPcmByte( 0x7E ) ;      // sync byte
+    putPcmHead( ) ;
     putPcmFlush() ;
     OCR1C += 40000 ;            // 20mS on
     PORTB |= (1<<OUT_B_PPM);
@@ -433,7 +448,7 @@ void DSM2_Init(void)
 #ifndef SIMU
 
   DDRE &= ~(1 << DDE0);    // set RXD0 pin as input
-  PORTE &= ~(1 << PORTE0); // disable pullup on RXD0 pin
+  PORTE |= (1 << PORTE0);  // enable pullup on RXD0 pin
 
 #undef BAUD
 #define BAUD 125000
@@ -453,7 +468,7 @@ void DSM2_Init(void)
   setupPulsesDsm2();
 
   // These should be running right from power up on a FrSky enabled '9X.
-  DSM2_EnableTXD(); // enable FrSky-Telemetry reception
+  DSM2_EnableTXD(); // enable DSM2 UART transmitter
 
 #endif // SIMU
 }

@@ -37,7 +37,7 @@ uint16_t jeti_keys = JETI_KEY_NOCHANGE;
 uint8_t JetiBuffer[32]; // 32 characters
 uint8_t JetiBufferReady;
 
-
+#ifndef SIMU
 ISR (USART0_RX_vect)
 {
         uint8_t stat;
@@ -76,8 +76,7 @@ ISR (USART0_RX_vect)
         }
 
 }
-
-
+#endif
 
 void JETI_Init (void)
 {
@@ -86,6 +85,8 @@ void JETI_Init (void)
 
    DDRE  &= ~(1 << DDE0);          // set RXD0 pin as input
    PORTE &= ~(1 << PORTE0);        // disable pullup on RXD0 pin
+
+#ifndef SIMU
 
 #undef BAUD
 #define BAUD 9600
@@ -102,6 +103,7 @@ void JETI_Init (void)
    // flush receive buffer
    while ( UCSR0A & (1 << RXC0) ) UDR0;
 
+#endif
 }
 
 

@@ -608,11 +608,6 @@ void DSM2_Init();
 void DSM2_Done();
 void resetProto();
 
-#ifdef LOGS
-extern void startLogs();
-extern void doLogs();
-#endif
-
 extern uint8_t *pulses2MHzRPtr;
 extern uint8_t *pulses2MHzWPtr;
 
@@ -686,12 +681,6 @@ extern char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE]; // text buffer for frs
 #endif
 
 #if defined (PCBV4)
-extern char g_logFilename[22]; // pers.cpp::resetTelemetry()
-extern FATFS FATFS_Obj; // pers.cpp::resetTelemetry()
-extern FIL g_oLogFile; // pers.cpp::resetTelemetry()
-#endif
-
-#if defined (PCBV4)
 // Global rotary encoder registers -- 8-bit, 0-255
 extern volatile uint8_t g_rotenc[2];
 #endif
@@ -702,6 +691,10 @@ extern volatile uint8_t g_rotenc[2];
 #include "audio.h"
 #else
 #include "beeper.h"
+#endif
+
+#ifdef LOGS
+#include "logs.h"
 #endif
 
 #if defined(SOMO)

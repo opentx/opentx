@@ -133,7 +133,7 @@ void eeLoadModel(uint8_t id)
     resetTimer(1);
     resetProto();
 #ifdef LOGS
-    startLogs();
+    initLogs();
 #endif
   }
 }
