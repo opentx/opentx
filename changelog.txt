@@ -1,4 +1,40 @@
 ******************************************
+CHANGELOG: 20-02-2012  BSS
+Last GPS coords displayed even when streaming stops (model lost)
+
+******************************************
+CHANGELOG: 17-02-2012  BSS
+RSSI thresholds on a per model basis
+Flash Saving
+FrSky Hub variometer + cells voltage fix
+
+******************************************
+CHANGELOG: 16-02-2012  BSS
+Beeper mode splitted from Beeper length
+Haptic redesigned
+No FrSky alarms when Tx asked to be quiet
+Flash Saving
+
+******************************************
+CHANGELOG: 14-02-2012  BSS
+Blades count configuration for RPMs
+Instant trim bug fixed for stick modes != RETA
+
+******************************************
+CHANGELOG: 1O-02-2012  BSS
+Copyright updated
+GPS distance and speed bug fixes
+
+******************************************
+
+Version 232:
+
+******************************************
+CHANGELOG: 09-02-2012  BSS
+Multiplier added for telemetry A1/A2 => 204.0v!
+GPS distance added
+
+******************************************
 CHANGELOG: 08-02-2012  BSS
 Telemetry bars screen
 Add individual cell voltages from FrSky Hub 2.0
