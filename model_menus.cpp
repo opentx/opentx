@@ -1991,7 +1991,7 @@ void menuProcTelemetry(uint8_t event)
     lcd_puts(4, y, STR_BLADES);
     lcd_outdezAtt(TELEM_COL2+FWNUM, y, 2+g_model.frsky.blades, sub==subN ? INVERS : 0);
     if (sub==subN)
-      CHECK_INCDEC_MODELVAR(event, g_model.frsky.blades, 0, 1);
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.blades, 0, 2);
   }
   subN++;
 #endif
