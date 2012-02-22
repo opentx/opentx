@@ -1103,19 +1103,21 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 inline void editExpoVals(uint8_t event, uint8_t which, bool edit, uint8_t y, uint8_t idt)
 {
   uint8_t invBlk = edit ? INVERS : 0;
-  // if(edit && stopBlink) invBlk = INVERS;
 
   ExpoData *ed = expoaddress(idt); // TODO volatile
 
   switch(which)
   {
     case 0:
-      lcd_outdezAtt(9*FW+5, y, ed->weight, invBlk);
-      if(edit) CHECK_INCDEC_MODELVAR(event, ed->weight, 0, 100);
+      {
+        PREPARE_INFLIGHT_BITFIELD(&ed->expo - 1);
+        lcd_outdezAtt(9*FW+5, y, ed->weight, invBlk|INFLIGHT(*bitfield));
+        if (edit) CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, ed->weight, 0, 100, 0, STR_DRWEIGHT, 1);
+      }
       break;
     case 1:
-      lcd_outdezAtt(9*FW+5, y, ed->expo, invBlk);
-      if(edit) CHECK_INCDEC_MODELVAR(event, ed->expo, -100, 100);
+      lcd_outdezAtt(9*FW+5, y, ed->expo, invBlk|INFLIGHT(ed->expo));
+      if (edit) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
       break;
     case 2:
       {
@@ -1195,14 +1197,14 @@ void menuProcMixOne(uint8_t event)
         if(attr) CHECK_INCDEC_MODELVAR(event, md2->srcRaw, 1,NUM_XCHNRAW);
         break;
       case 1:
-        lcd_puts(  2*FW,y,STR_WEIGHT);
-        lcd_outdezAtt(FW*10,y,md2->weight,attr|LEFT);
-        if(attr) CHECK_INCDEC_MODELVAR(event, md2->weight, -125,125);
+        lcd_puts(2*FW, y, STR_WEIGHT);
+        lcd_outdezAtt(FW*10, y, md2->weight, attr|LEFT|INFLIGHT(md2->weight));
+        if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, md2->weight, -125, 125, 0, STR_MIXERWEIGHT);
         break;
       case 2:
-        lcd_puts(  2*FW,y,STR_OFFSET);
-        lcd_outdezAtt(FW*10,y,md2->sOffset,attr|LEFT);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->sOffset, -125,125);
+        lcd_puts(2*FW, y, STR_OFFSET);
+        lcd_outdezAtt(FW*10, y, md2->sOffset, attr|LEFT|INFLIGHT(md2->sOffset));
+        if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, md2->sOffset, -125, 125, 0, STR_MIXEROFFSET);
         break;
       case 3:
         // TODO hidden when src is not a STICK as it has no sense
@@ -1346,7 +1348,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
       event -= KEY_EXIT;
   }
 
-  TITLEP(expo ? STR_DREXPO : STR_MIXER);
+  TITLEP(expo ? STR_MENUDREXPO : STR_MIXER);
   lcd_outdezAtt(lcd_lastPos+2*FW+FW/2, 0, getExpoMixCount(expo));
   lcd_puts(lcd_lastPos, 0, expo ? PSTR("/14") : PSTR("/32"));
   SIMPLE_MENU_NOTITLE(menuTabModel, expo ? e_ExposAll : e_MixAll, s_maxLines);

@@ -583,11 +583,13 @@ void menuMainView(uint8_t event)
 #ifdef NAVIGATION_RE1
   check_rotary_encoder();
   if (s_warning) {
+    int8_t value = (((uint8_t)(*s_inflight_value)) >> s_inflight_bitshift) - s_inflight_shift;
     if (p1valdiff) {
-      *s_inflight_value = s_inflight_shift + checkIncDecModel(event, (*s_inflight_value)-s_inflight_shift, s_inflight_min, s_inflight_max);
+      value = checkIncDecModel(event, value, s_inflight_min, s_inflight_max);
+      *s_inflight_value = (((uint8_t)(*s_inflight_value)) & ((1 << s_inflight_bitshift) - 1)) + ((s_inflight_shift + value) << s_inflight_bitshift);
     }
     displayBox();
-    lcd_outdezAtt(16, 4*FH, (int8_t)(*s_inflight_value-s_inflight_shift), LEFT);
+    lcd_outdezAtt(16, 4*FH, value, LEFT);
   }
 #endif
 

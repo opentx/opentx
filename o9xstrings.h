@@ -216,7 +216,6 @@ extern const pm_char STR_DELAYDOWN[];
 extern const pm_char STR_DELAYUP[];
 extern const pm_char STR_SLOWDOWN[];
 extern const pm_char STR_SLOWUP[];
-extern const pm_char STR_DREXPO[];
 extern const pm_char STR_MIXER[];
 extern const pm_char STR_COPYTRIMMENU[];
 extern const pm_char STR_CV[];
@@ -325,8 +324,15 @@ extern const pm_char STR_MENUSTAT[];
 extern const pm_char STR_MENUDEBUG[];
 extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
+#endif
+
+#ifdef NAVIGATION_RE1
 extern const pm_char STR_BACK[];
 #define LEN_BACK PSIZE(TR_BACK)
+extern const pm_char STR_MIXERWEIGHT[];
+extern const pm_char STR_MIXEROFFSET[];
+extern const pm_char STR_DRWEIGHT[];
+extern const pm_char STR_DREXPO[];
 extern const pm_char STR_MINLIMIT[];
 extern const pm_char STR_MAXLIMIT[];
 #endif

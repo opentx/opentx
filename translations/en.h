@@ -48,7 +48,7 @@
 #define TR_CURVMODES     "EDIT ""PRSET""A.THR"
 
 #define LEN_EXPLABELS    6
-#define TR_EXPLABELS     "Weight""Expo  ""Phase ""Swtch ""When  ""Curve ""      "
+#define TR_EXPLABELS     "Weight""Expo  ""Phase ""Swtch ""When  ""Curve ""      " // TODO remove all the trailing spaces
 
 #define LEN_VMLTPX       8
 #define TR_VMLTPX        "Add     ""Multiply""Replace "
@@ -173,7 +173,11 @@
 #define TR_EDITMIX      "EDIT MIX "
 #define TR_SOURCE       "Source"
 #define TR_WEIGHT       "Weight"
+#define TR_MIXERWEIGHT  "Mixer Weight"
 #define TR_OFFSET       "Offset"
+#define TR_MIXEROFFSET  "Mixer Offset"
+#define TR_DRWEIGHT     "DR Weight"
+#define TR_DREXPO       "DR Expo"
 #define TR_TRIM         "Trim"
 #define TR_CURVES       "Curves"
 #define TR_FPHASE       "F.Phase"
@@ -184,7 +188,6 @@
 #define TR_DELAYUP      "Delay Up"
 #define TR_SLOWDOWN     "Slow  Down"
 #define TR_SLOWUP       "Slow  Up"
-#define TR_DREXPO       "DR/EXPO"
 #define TR_MIXER        "MIXER"
 #define TR_COPYTRIMMENU "COPY TRIM [MENU]"
 #define TR_CV           "CV"
@@ -285,7 +288,7 @@
 #define TR_MENUFLIGHTPHASE "FLIGHT PHASE"
 #define TR_MENUFLIGHTPHASES "FLIGHT PHASES"
 #define TR_MENUHELISETUP "HELI SETUP"
-#define TR_MENUDREXPO   "DR/EXPO"
+#define TR_MENUDREXPO   "DR/EXPO" // TODO flash saving this string is 2 times here
 #define TR_MENULIMITS   "LIMITS"
 #define TR_MENUCURVES   "CURVES"
 #define TR_MENUCURVE    "CURVE"

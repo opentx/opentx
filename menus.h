@@ -108,18 +108,25 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #ifdef NAVIGATION_RE1
 extern int8_t *s_inflight_value;
 extern const pm_char *s_inflight_label;
-extern int16_t s_inflight_min;
-extern int16_t s_inflight_max;
-extern int16_t s_inflight_shift;
+extern int8_t s_inflight_min;
+extern int8_t s_inflight_max;
+extern int8_t s_inflight_shift;
+extern uint8_t s_inflight_bitshift;
+#define PREPARE_INFLIGHT_BITFIELD(a) int8_t *bitfield = (a)
 #define INFLIGHT(val) (s_inflight_value==&val ? SURROUNDED : 0)
-void checkInFlightIncDecModel(uint8_t event, int8_t *value, int16_t i_min, int16_t i_max, int8_t i_shift, const pm_char *label);
+void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t i_max, int8_t i_shift, const pm_char *label, uint8_t bitshift=0);
 #define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, imin, imax, ishift, label) \
   checkInFlightIncDecModel(event, &var, imin, imax, ishift, label)
+#define CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, var, imin, imax, ishift, label, bitshift) \
+  checkInFlightIncDecModel(event, bitfield, imin, imax, ishift, label, bitshift);
 void check_rotary_encoder();
 #else
+#define PREPARE_INFLIGHT_BITFIELD(a)
 #define INFLIGHT(val) 0
 #define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, min, max, shift, label) \
   var = shift+checkIncDecModel(event,var-(shift),min,max)
+#define CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, var, min, max, shift, label, bitshift) \
+    var = shift+checkIncDecModel(event,var-(shift),min,max)
 #endif
 
 // Menus related stuff ...

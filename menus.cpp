@@ -486,14 +486,15 @@ void displayBox()
 
 #ifdef NAVIGATION_RE1
 int8_t *s_inflight_value = NULL;
-int16_t s_inflight_min;
-int16_t s_inflight_max;
-int16_t s_inflight_shift;
+int8_t s_inflight_min;
+int8_t s_inflight_max;
+int8_t s_inflight_shift;
+uint8_t s_inflight_bitshift;
 const pm_char *s_inflight_label;
 
-void checkInFlightIncDecModel(uint8_t event, int8_t *value, int16_t i_min, int16_t i_max, int8_t i_shift, const pm_char *label)
+void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t i_max, int8_t i_shift, const pm_char *label, uint8_t bitshift)
 {
-  *value = i_shift + checkIncDecModel(event, (*value)-i_shift, i_min, i_max);
+  *value = (((uint8_t)(*value)) & ((1 << bitshift) - 1)) + ((i_shift + checkIncDecModel(event, (((uint8_t)(*value)) >> bitshift)-i_shift, i_min, i_max)) << bitshift);
 
   if (event == EVT_KEY_LONG(BTN_RE1)) {
     if (value == s_inflight_value) {
@@ -505,6 +506,7 @@ void checkInFlightIncDecModel(uint8_t event, int8_t *value, int16_t i_min, int16
       s_inflight_max = i_max;
       s_inflight_shift = i_shift;
       s_inflight_label = label;
+      s_inflight_bitshift = bitshift;
     }
   }
 }
