@@ -2288,19 +2288,19 @@ int main(void)
 
   EIMSK = (3<<INT5) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
   /***************************************************/
+
+  /*
+   * SOMO set-up (V4 board only)
+   */
+  OCR4A = 0x7d;
+  TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
 #endif
 
-#if defined (PCBV4)
-OCR4A = 0x7d;
-TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
-#endif
   startPulses();
 
   wdt_enable(WDTO_500MS);
-/*** Keep this code block directly before the main loop ****/
-/***********************************************************/
 
-  while(1){
+  while(1) {
     uint16_t t0 = getTmr16KHz();
 
     getADC[g_eeGeneral.filterInput]();
