@@ -56,6 +56,10 @@
 #define FILE_MODEL(n) (1+(n))
 #define FILE_TMP      (1+16)
 
+#define RESV     64  //reserv for eeprom header with directory (eeFs)
+#define FIRSTBLK (RESV/BS)
+#define BLOCKS   (EESIZE/BS)
+
 bool EeFsOpen();
 int8_t EeFsck();
 void EeFsFormat();

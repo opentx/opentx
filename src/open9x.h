@@ -464,6 +464,7 @@ extern uint8_t trimsCheckTimer;
 #define TMR_BEEPING 2
 #define TMR_STOPPED 3
 void resetTimer(uint8_t idx);
+void resetAll();
 
 extern uint8_t g_tmr1Latency_max;
 extern uint8_t g_tmr1Latency_min;
@@ -608,7 +609,6 @@ void startPulses();
 void setupPulses();
 void DSM2_Init();
 void DSM2_Done();
-void resetProto();
 
 extern uint8_t *pulses2MHzRPtr;
 extern uint8_t *pulses2MHzWPtr;
@@ -702,6 +702,23 @@ extern volatile uint8_t g_rotenc[2];
 #if defined(SOMO)
 #include "somo14d.h"
 #endif
+
+// Re-useable byte array to save having multiple buffers
+union ReusableBuffer
+{
+    uint8_t eefs_buffer[BLOCKS];           // used by EeFsck
+
+    char model_name[sizeof(g_model.name)]; // used by menuProcModelSelect
+
+    struct
+    {
+        int16_t midVals[7];
+        int16_t loVals[7];
+        int16_t hiVals[7];
+    } calib;                               // used by menuProcDiagCalib
+};
+
+extern union ReusableBuffer reusableBuffer;
 
 #endif // gruvin9x_h
 /*eof*/

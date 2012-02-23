@@ -65,6 +65,8 @@ uint8_t heartbeat;
 
 int8_t safetyCh[NUM_CHNOUT];
 
+union ReusableBuffer reusableBuffer;
+
 const pm_char s_charTab[] PROGMEM = "_-.,";
 
 const pm_uint8_t bchout_ar[] PROGMEM = {
@@ -926,6 +928,16 @@ void resetTimer(uint8_t idx)
   s_timerState[idx] = TMR_OFF; // is changed to RUNNING dep from mode
   s_timerVal[idx] = (idx == 0 ? g_model.timer1.val : g_model.timer2.val);
   s_timerVal_10ms[idx] = 0 ;
+}
+
+void resetAll()
+{
+  // TODO s_traceCnt to be reset?
+  resetTimer(0);
+  resetTimer(1);
+#ifdef FRSKY
+  resetTelemetry();
+#endif
 }
 
 static uint8_t lastSwPos[2] = {0, 0};

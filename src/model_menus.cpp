@@ -154,8 +154,6 @@ static int8_t s_copyTgtOfs;
 
 void menuProcModelSelect(uint8_t event)
 {
-  char name[sizeof(g_model.name)];
-
   TITLE(STR_MENUMODELSEL);
 
   // flush eeprom write
@@ -343,8 +341,8 @@ void menuProcModelSelect(uint8_t event)
     k %= 16;
 
     if (EFile::exists(FILE_MODEL(k))) {
-      uint16_t size = eeLoadModelName(k, name);
-      putsModelName(4*FW, y, name, k, 0);
+      uint16_t size = eeLoadModelName(k, reusableBuffer.model_name);
+      putsModelName(4*FW, y, reusableBuffer.model_name, k, 0);
       lcd_outdezAtt(20*FW, y, size, 0);
       if (k==g_eeGeneral.currModel && (s_copySrcRow<0 || i+s_pgOfs!=sub)) lcd_putc(1, y, '*');
     }
@@ -356,8 +354,8 @@ void menuProcModelSelect(uint8_t event)
   }
 
   if (s_warning) {
-    eeLoadModelName(sub, name);
-    s_warning_info = name;
+    eeLoadModelName(sub, reusableBuffer.model_name);
+    s_warning_info = reusableBuffer.model_name;
     s_warning_info_len = sizeof(g_model.name);
     displayConfirmation(event);
   }

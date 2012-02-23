@@ -40,10 +40,6 @@
 uint8_t  s_write_err = 0;    // error reasons
 uint8_t  s_sync_write = false;
 
-#define RESV     64  //reserv for eeprom header with directory (eeFs)
-#define FIRSTBLK (RESV/BS)
-#define BLOCKS   (EESIZE/BS)
-
 #define EEFS_VERS 4
 PACK(struct DirEnt{
   uint8_t  startBlk;
@@ -127,9 +123,7 @@ int8_t EeFsck()
 {
   s_sync_write = true;
 
-  uint8_t *bufp;
-  static uint8_t buffer[BLOCKS];
-  bufp = buffer;
+  uint8_t *bufp = reusableBuffer.eefs_buffer;
   memset(bufp,0,BLOCKS);
   uint8_t blk ;
   int8_t ret=0;

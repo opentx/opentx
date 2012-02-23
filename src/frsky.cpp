@@ -31,6 +31,7 @@
  */
 
 #include "open9x.h"
+#include "menus.h"
 
 // Enumerate FrSky packet codes
 #define LINKPKT         0xfe
@@ -224,7 +225,7 @@ void parseTelemHubByte(uint8_t byte)
       // First received GPS position => Pilot GPS position
       getGpsPilotPosition();
     }
-    else if (frskyHubData.gpsDistNeeded || g_eeGeneral.view == e_telemetry+4*ALTERNATE_VIEW) {
+    else if (frskyHubData.gpsDistNeeded || g_menuStack[0] != menuProcFrsky) {
       getGpsDistance();
     }
   }
@@ -636,3 +637,256 @@ void resetTelemetry()
 #endif
 }
 
+#if defined(FRSKY)
+void displayRssiLine()
+{
+  lcd_hline(0, 54, 128, 0); // separator
+  lcd_putsLeft(7*FH+1, STR_TX); lcd_outdezNAtt(4*FW, 7*FH+1, frskyRSSI[1].value, LEADING0, 2);
+  lcd_rect(25, 57, 38, 7);
+  lcd_filled_rect(26, 58, 9*frskyRSSI[1].value/25, 5);
+  lcd_puts(105, 7*FH+1, STR_RX); lcd_outdezNAtt(105+4*FW-1, 7*FH+1, frskyRSSI[0].value, LEADING0, 2);
+  lcd_rect(65, 57, 38, 7);
+  uint8_t v = 9*frskyRSSI[0].value/25;
+  lcd_filled_rect(66+36-v, 58, v, 5);
+}
+#endif
+
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+void displayAltitudeLine(uint8_t x, uint8_t y, uint8_t flags)
+{
+  lcd_putsn(x, y, STR_ALTnDST, 4);
+  int16_t value = frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
+  putsTelemetryValue(lcd_lastPos, y, value, UNIT_METERS, flags|LEFT);
+}
+#endif
+
+enum FrskyViews {
+  e_frsky_bars,
+  e_frsky_a1a2,
+#ifdef WS_HOW_HIGH
+  e_frsky_ws_how_high,
+#endif
+#ifdef FRSKY_HUB
+  e_frsky_hub = e_frsky_a1a2+1,
+  e_frsky_gps
+#endif
+};
+
+#if defined(FRSKY_HUB) && defined(WS_HOW_HIGH)
+#define FRSKY_VIEW_MAX (g_model.frsky.usrProto == 0 ? 1 : ((g_model.frsky.usrProto == 1 && frskyHubData.gpsFix >= 0) ? 3 : 2))
+#elif defined(FRSKY_HUB)
+#define FRSKY_VIEW_MAX (g_model.frsky.usrProto == 0 ? 1 : (frskyHubData.gpsFix >= 0 ? 3 : 2))
+#elif defined(WS_HOW_HIGH)
+#define FRSKY_VIEW_MAX (g_model.frsky.usrProto == 0 ? 1 : 2)
+#endif
+
+void menuProcFrsky(uint8_t event)
+{
+  static uint8_t s_frsky_view = e_frsky_bars;
+
+  switch (event) {
+    case EVT_KEY_BREAK(KEY_UP):
+      if (s_frsky_view-- == 0)
+        s_frsky_view = FRSKY_VIEW_MAX;
+      break;
+
+    case EVT_KEY_BREAK(KEY_DOWN):
+      if (s_frsky_view++ == FRSKY_VIEW_MAX)
+        s_frsky_view = 0;
+      break;
+
+    case EVT_KEY_FIRST(KEY_EXIT):
+      chainMenu(menuMainView);
+      break;
+  }
+
+  // The top black bar
+  putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
+  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
+  putsVBat(14*FW,0,att);
+  if (g_model.timer1.mode) {
+    att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
+    putsTime(17*FW, 0, s_timerVal[0], att, att);
+  }
+  lcd_filled_rect(0, 0, DISPLAY_W, 8);
+
+  if (frskyStreaming >= 0) {
+    if (s_frsky_view == e_frsky_bars) {
+      // The bars
+      uint8_t bars_height = 5;
+      for (int8_t i=3; i>=0; i--) {
+        if (g_model.frsky.bars[i].source && (51-g_model.frsky.bars[i].barMax) > g_model.frsky.bars[i].barMin) {
+          lcd_putsnAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMBARS+LEN_VTELEMBARS*g_model.frsky.bars[i].source, LEN_VTELEMBARS, 0);
+          lcd_rect(25, bars_height+6+i*(bars_height+6), 101, bars_height+2);
+          int16_t value = getValue(CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+g_model.frsky.bars[i].source-1);
+          uint8_t threshold = 0, thresholdX = 0;
+          if (g_model.frsky.bars[i].source <= 2)
+            threshold = g_model.frsky.channels[g_model.frsky.bars[i].source-1].alarms_value[0];
+          else
+            threshold = barsThresholds[g_model.frsky.bars[i].source-3];
+          if (threshold) {
+            thresholdX = (uint8_t)(int16_t)((int16_t)100 * (threshold - g_model.frsky.bars[i].barMin * 4) / ((51 - g_model.frsky.bars[i].barMax) * 5 - g_model.frsky.bars[i].barMin * 4));
+            if (thresholdX > 100)
+              thresholdX = 0;
+          }
+          uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)((int16_t)100 * (value - g_model.frsky.bars[i].barMin * 5) / ((51 - g_model.frsky.bars[i].barMax) * 4 - g_model.frsky.bars[i].barMin * 4)), (int16_t)100);
+          lcd_filled_rect(26, bars_height+6+1+i*(bars_height+6), width, bars_height, (threshold > value) ? DOTTED : SOLID);
+          for (uint8_t j=50; j<125; j+=25)
+            if (j>26+thresholdX) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
+          if (thresholdX) {
+            lcd_vlineStip(26+thresholdX, bars_height+4+i*(bars_height+6), bars_height+3, DOTTED);
+            lcd_hline(25+thresholdX, bars_height+4+i*(bars_height+6), 3);
+          }
+        }
+        else {
+          bars_height += 2;
+        }
+      }
+      displayRssiLine();
+    }
+    else if (s_frsky_view == e_frsky_a1a2) {
+      // Big A1 / A2 with min and max
+      uint8_t x0, blink;
+      if (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio) {
+        x0 = 0;
+        for (uint8_t i=0; i<2; i++) {
+          if (g_model.frsky.channels[i].ratio) {
+            blink = (FRSKY_alarmRaised(i) ? INVERS : 0);
+            putsStrIdx(x0, 2*FH, STR_A, i+1, TWO_DOTS);
+            x0 += 3*FW;
+            putsTelemetryChannel(x0, 2*FH, i, frskyTelemetry[i].value, blink|DBLSIZE|LEFT);
+            putsTelemetryChannel(x0+FW, 3*FH, i, frskyTelemetry[i].min, 0);
+            putsTelemetryChannel(x0+3*FW, 3*FH, i, frskyTelemetry[i].max, LEFT);
+            x0 = 11*FW-2;
+          }
+        }
+      }
+
+#ifdef FRSKY_HUB
+      // Cells voltage
+      {
+        uint8_t x, y;
+        x = 3*FW;
+        y = 5*FH-3;
+        for (uint8_t k=0; k<frskyHubData.cellsCount && k<6; k++) {
+          uint8_t attr = (barsThresholds[6/*TODO constant*/] && frskyHubData.cellVolts[k] < barsThresholds[6/*TODO constant*/]) ? BLINK|PREC2|LEFT : PREC2|LEFT;
+          if (k == 3) {
+            x = 3*FW;
+            y = 6*FH-3;
+          }
+          putsStrIdx(x-3*FW, y, STR_V, k+1, TWO_DOTS);
+          lcd_outdezNAtt(x, y, frskyHubData.cellVolts[k] * 2, attr, 4);
+          x += 7*FW;
+        }
+      }
+#endif
+      displayRssiLine();
+    }
+
+#ifdef WS_HOW_HIGH
+    else if (g_model.frsky.usrProto == PROTO_WS_HOW_HIGH && s_frsky_view == e_frsky_ws_how_high) {
+      displayAltitudeLine(0, 4*FH, DBLSIZE);
+      displayRssiLine();
+    }
+#endif
+
+#ifdef FRSKY_HUB
+    else if (s_frsky_view == e_frsky_hub) {
+      // Temperature 1
+      lcd_putsLeft( 4*FH, STR_TEMP1nTEMP2);
+      putsTelemetryValue(4*FW, 4*FH, frskyHubData.temperature1, UNIT_DEGREES, DBLSIZE|LEFT);
+
+      // Temperature 2
+      putsTelemetryValue(15*FW, 4*FH, frskyHubData.temperature2, UNIT_DEGREES, DBLSIZE|LEFT);
+
+      // RPM
+      lcd_putsLeft(2*FH, STR_RPMnFUEL);
+      lcd_outdezNAtt(4*FW, 1*FH, frskyHubData.rpm/(2+g_model.frsky.blades), DBLSIZE|LEFT);
+
+      // Fuel
+      putsTelemetryValue(15*FW, 2*FH, frskyHubData.fuelLevel, UNIT_PERCENT, DBLSIZE|LEFT);
+
+      // Altitude (barometric)
+      displayAltitudeLine(0, 6*FH, DBLSIZE);
+
+      // Accelerometer
+#define ACC_LINE (7*FH+1)
+      lcd_putsLeft(ACC_LINE, STR_ACCEL);
+      // lcd_puts(4*FW, 7*FH, PSTR("x:"));
+      lcd_outdezNAtt(4*FW, ACC_LINE, (int32_t)frskyHubData.accelX/10, LEFT|PREC2);
+      // lcd_putc(lcd_lastPos, 7*FH, 'g');
+      // lcd_puts(11*FW, 7*FH, PSTR("y:"));
+      lcd_outdezNAtt(10*FW, ACC_LINE, (int32_t)frskyHubData.accelY/10, LEFT|PREC2);
+      // lcd_putc(lcd_lastPos, 7*FH, 'g');
+      // lcd_puts(18*FW, 7*FH, PSTR("z:"));
+      lcd_outdezNAtt(16*FW, ACC_LINE, (int32_t)frskyHubData.accelZ/10, LEFT|PREC2);
+      // lcd_putc(lcd_lastPos, 7*FH, 'g');
+      lcd_filled_rect(0, ACC_LINE-1, DISPLAY_W, 8);
+    }
+    else if (s_frsky_view == e_frsky_gps) {
+#define DATE_LINE (7*FH+1)
+      //lcd_putsLeft( DATE_LINE, PSTR("D/T:"));
+      // Date
+      lcd_outdezNAtt(3*FW, DATE_LINE, frskyHubData.year+2000, LEFT, 4);
+      lcd_putc(7*FW-4, DATE_LINE, '-');
+      lcd_outdezNAtt(8*FW-4, DATE_LINE, frskyHubData.month, LEFT|LEADING0, 2);
+      lcd_putc(10*FW-6, DATE_LINE, '-');
+      lcd_outdezNAtt(11*FW-6, DATE_LINE, frskyHubData.day, LEFT|LEADING0, 2);
+
+      // Time
+      lcd_outdezNAtt(12*FW+5, DATE_LINE, frskyHubData.hour, LEFT|LEADING0, 2);
+      lcd_putc(14*FW+2, DATE_LINE, ':');
+      lcd_outdezNAtt(15*FW+2, DATE_LINE, frskyHubData.min, LEFT|LEADING0, 2);
+      lcd_putc(17*FW-1, DATE_LINE, ':');
+      lcd_outdezNAtt(18*FW-1, DATE_LINE, frskyHubData.sec, LEFT|LEADING0, 2);
+      lcd_filled_rect(0, DATE_LINE-1, DISPLAY_W, 8);
+
+      // Latitude
+#define LAT_LINE (2*FH-4)
+      lcd_putsLeft( LAT_LINE, PSTR("Lat:"));
+      lcd_outdezAtt(lcd_lastPos, LAT_LINE,  frskyHubData.gpsLatitude_bp / 100, LEFT); // ddd before '.'
+      lcd_putc(lcd_lastPos, LAT_LINE, '@');
+      uint8_t mn = frskyHubData.gpsLatitude_bp % 100;
+      lcd_outdezNAtt(lcd_lastPos+FW, LAT_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcd_plot(lcd_lastPos, LAT_LINE+FH-2, 0); // small decimal point
+      lcd_outdezNAtt(lcd_lastPos+2, LAT_LINE, frskyHubData.gpsLatitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+      lcd_putc(lcd_lastPos+1, LAT_LINE, frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
+
+      // Longitude
+#define LONG_LINE (3*FH-3)
+      lcd_putsLeft(LONG_LINE, PSTR("Lon:"));
+      lcd_outdezAtt(lcd_lastPos, LONG_LINE,  frskyHubData.gpsLongitude_bp / 100, LEFT); // ddd before '.'
+      lcd_putc(lcd_lastPos, LONG_LINE, '@');
+      mn = frskyHubData.gpsLongitude_bp % 100;
+      lcd_outdezNAtt(lcd_lastPos+FW, LONG_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcd_plot(lcd_lastPos, LONG_LINE+FH-2, 0); // small decimal point
+      lcd_outdezNAtt(lcd_lastPos+2, LONG_LINE, frskyHubData.gpsLongitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+      lcd_putc(lcd_lastPos+1, LONG_LINE, frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
+
+#if 0
+      // Course / Heading
+      lcd_puts(5, 5*FH, STR_HDG);
+      lcd_outdezNAtt(lcd_lastPos, 5*FH, frskyHubData.gpsCourse_bp, LEFT|LEADING0, 3); // before '.'
+      lcd_plot(lcd_lastPos, 6*FH-2, 0); // small decimal point
+      lcd_outdezAtt(lcd_lastPos+2, 5*FH, frskyHubData.gpsCourse_ap, LEFT); // after '.'
+      lcd_putc(lcd_lastPos, 5*FH, '@');
+#endif
+
+      // Speed
+#define SPEED_LINE (6*FH)
+      lcd_putsLeft(SPEED_LINE, STR_SPDnMAX);
+      putsTelemetryValue(4*FW, SPEED_LINE, frskyHubData.gpsSpeed_bp, UNIT_KTS, LEFT|DBLSIZE); // before '.'
+      putsTelemetryValue(16*FW, SPEED_LINE, frskyHubData.maxGpsSpeed, UNIT_KTS, LEFT); // before '.'
+
+      // GPS altitude and distance
+#define ALTITUDE_LINE (4*FH-1)
+      lcd_putsLeft(ALTITUDE_LINE, STR_ALTnDST);
+      putsTelemetryValue(4*FW, ALTITUDE_LINE, frskyHubData.gpsAltitude_bp, UNIT_METERS, LEFT); // before '.'
+      putsTelemetryValue(16*FW, ALTITUDE_LINE, frskyHubData.gpsDistance, UNIT_METERS, LEFT); // before '.'
+    }
+#endif
+  }
+  else {
+    lcd_putsAtt(22, 40, STR_NODATA, DBLSIZE);
+  }
+}

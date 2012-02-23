@@ -1,6 +1,26 @@
 ******************************************
+CHANGELOG: 23-02-2012  BSS
+PXX updates + optimizations pulled from er9x
+FrSky TELEMETRY menu is now moved to [DOWN long]
+Function added to reach the TELEMETRY screen when a switch is enabled
+Optimizations
+
+******************************************
+CHANGELOG: 22-02-2012  BSS
+Blades count may now be 4
+V4: New mixers/expos fields inflight modifiable through RE1
+
+******************************************
+CHANGELOG: 21-02-2012  BSS
+V4: Logs format ported from gruvin9x 
+
+******************************************
 CHANGELOG: 20-02-2012  BSS
 Last GPS coords displayed even when streaming stops (model lost)
+
+******************************************
+CHANGELOG: 19-02-2012  BSS
+V4: Inflight fields modification through RE1 feature added 
 
 ******************************************
 CHANGELOG: 17-02-2012  BSS
