@@ -61,11 +61,7 @@ void startPulses()
   setupPulses();
 
 #ifdef DSM2_SERIAL
-  if (g_model.protocol == PROTO_DSM2) {
-    DSM2_EnableTXD();
-    OCR1A = 40000;
-  }
-  else
+  if (g_model.protocol != PROTO_DSM2)
 #endif
 
   {
@@ -319,10 +315,10 @@ void putPcmByte( uint8_t byte )
 
     crc( byte ) ;
 
-    for ( i = 0 ; i < 8 ; i += 1 )
+    for (i=0; i<8; i++)
     {
-        putPcmBit( byte & 0x01 ) ;
-        byte >>= 1 ;
+        putPcmBit( byte & 0x80 ) ;
+        byte <<= 1 ;
     }
 }
 
@@ -359,17 +355,9 @@ void setupPulsesPXX()
     putPcmByte( 0 ) ;     // Second byte of flags
     pxxFlag = 0;          // reset flag after send
     for ( i = 0 ; i < 8 ; i += 2 )              // First 8 channels only
-    {                                                                                                                                   // Next 8 channels would have 2048 added
-        chan = g_chans512[i] * 3 / 4 + 1024 ;
-        chan_1 = g_chans512[i+1] * 3 / 4 + 1024 ;
-        if ( chan > 2047 )
-        {
-            chan = 2047 ;
-        }
-        if ( chan_1 > 2047 )
-        {
-            chan_1 = 2047 ;
-        }
+    {
+        chan = g_chans512[i] * 3 / 4 + 2250 ;
+        chan_1 = g_chans512[i+1] * 3 / 4 + 2250 ;
         putPcmByte( chan ) ; // Low byte of channel
         putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
         putPcmByte( chan_1 >> 4 ) ;  // High byte of channel
@@ -464,8 +452,6 @@ void DSM2_Init(void)
   UCSR0C = 0 | (1 << UCSZ01) | (1 << UCSZ00);
 
   while (UCSR0A & (1 << RXC0)) UDR0; // flush receive buffer
-
-  setupPulsesDsm2();
 
   // These should be running right from power up on a FrSky enabled '9X.
   DSM2_EnableTXD(); // enable DSM2 UART transmitter

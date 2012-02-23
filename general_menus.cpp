@@ -569,15 +569,12 @@ void menuProcDiagCalib(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUCALIBRATION, menuTabDiag, e_Calib, 1);
 
-  static int16_t midVals[7];
-  static int16_t loVals[7];
-  static int16_t hiVals[7];
   static uint8_t idxState;
 
   for (uint8_t i=0; i<7; i++) { //get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
-    loVals[i] = min(vt, loVals[i]);
-    hiVals[i] = max(vt, hiVals[i]);
+    reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
+    reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     //if(i>=4) midVals[i] = (loVals[i] + hiVals[i])/2;
   }
 
@@ -611,9 +608,9 @@ void menuProcDiagCalib(uint8_t event)
       lcd_puts(3*FW, 3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<7; i++) {
-        loVals[i] = 15000;
-        hiVals[i] = -15000;
-        midVals[i] = anaIn(i);
+        reusableBuffer.calib.loVals[i] = 15000;
+        reusableBuffer.calib.hiVals[i] = -15000;
+        reusableBuffer.calib.midVals[i] = anaIn(i);
       }
       break;
 
@@ -623,11 +620,11 @@ void menuProcDiagCalib(uint8_t event)
       lcd_puts(3*FW, 3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<7; i++) {
-        if (abs(loVals[i]-hiVals[i])>50) {
-          g_eeGeneral.calibMid[i] = midVals[i];
-          int16_t v = midVals[i] - loVals[i];
+        if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i])>50) {
+          g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
+          int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
           g_eeGeneral.calibSpanNeg[i] = v - v/64;
-          v = hiVals[i] - midVals[i];
+          v = reusableBuffer.calib.hiVals[i] - reusableBuffer.calib.midVals[i];
           g_eeGeneral.calibSpanPos[i] = v - v/64;
         }
       }

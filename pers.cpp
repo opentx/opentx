@@ -108,37 +108,7 @@ bool eeModelExists(uint8_t id)
     return EFile::exists(FILE_MODEL(id));
 }
 
-void eeLoadModel(uint8_t id)
-{
-  if(id<MAX_MODELS)
-  {
-    theFile.openRlc(FILE_MODEL(id));
-    uint16_t sz = theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
-
-#ifdef SIMU
-    if (sz > 0 && sz != sizeof(g_model)) {
-      printf("Model data read=%d bytes vs %d bytes\n", sz, (int)sizeof(ModelData));
-    }
-#endif
-
-    if (sz == 0) {
-      // alert("Error Loading Model");
-      modelDefault(id);
-      eeCheck(true);
-    }
-
-    // TODO optim: resetAll()
-    // TODO s_traceCnt to be reset?
-    resetTimer(0);
-    resetTimer(1);
-    resetProto();
-#ifdef LOGS
-    initLogs();
-#endif
-  }
-}
-
-void resetProto() // TODO inline this if !DSM2_SERIAL
+void resetProto()
 {
 #if defined(DSM2_SERIAL)
   if (g_model.protocol == PROTO_DSM2) {
@@ -161,9 +131,36 @@ void resetProto() // TODO inline this if !DSM2_SERIAL
 #endif
   }
 #elif defined(FRSKY)
-  resetTelemetry();
   FRSKY_setModelAlarms();
 #endif
+}
+
+void eeLoadModel(uint8_t id)
+{
+  if(id<MAX_MODELS)
+  {
+    theFile.openRlc(FILE_MODEL(id));
+    uint16_t sz = theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
+
+#ifdef SIMU
+    if (sz > 0 && sz != sizeof(g_model)) {
+      printf("Model data read=%d bytes vs %d bytes\n", sz, (int)sizeof(ModelData));
+    }
+#endif
+
+    if (sz == 0) {
+      // alert("Error Loading Model");
+      modelDefault(id);
+      eeCheck(true);
+    }
+
+    resetProto();
+    resetAll();
+
+#ifdef LOGS
+    initLogs();
+#endif
+  }
 }
 
 int8_t eeFindEmptyModel(uint8_t id, bool down)

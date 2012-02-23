@@ -74,10 +74,7 @@ enum MainViews {
   e_outputBars,
   e_inputs,
   e_timer2,
-#ifdef FRSKY
-  e_telemetry,
-#endif
-  MAX_VIEWS
+  MAIN_VIEW_MAX = e_timer2
 };
 
 #define ALTERNATE_VIEW 0x10
@@ -191,7 +188,10 @@ enum Functions {
   FUNC_INSTANT_TRIM,
   FUNC_TRIMS_2_OFS,
   FUNC_PLAY_SOUND,
+  FUNC_TELEMETRY_SCREEN,
+#ifdef SOMO
   FUNC_PLAY_SOMO,
+#endif
 #ifdef LOGS
   FUNC_LOGS,
 #endif
