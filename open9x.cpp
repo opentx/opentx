@@ -790,7 +790,11 @@ uint16_t BandGap = 225;
 // G: Note that the above would have set the ADC prescaler to 128, equating to
 // 125KHz sample rate. We now sample at 500KHz, with oversampling and other
 // filtering options to produce 11-bit results.
+#ifdef PCBV4
+uint16_t BandGap = 2040 ;
+#else
 uint16_t BandGap ;
+#endif
 static uint16_t s_anaFilt[8];
 uint16_t anaIn(uint8_t chan)
 {
@@ -1743,7 +1747,7 @@ void perMain()
       {
         int32_t instant_vbat = anaIn(7);
 #if defined(PCBV4)
-        instant_vbat = (1112*(uint32_t)instant_vbat + (int32_t)instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
+        instant_vbat = ((uint32_t)instant_vbat*1112 + (int32_t)instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
 #else
         instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
 #endif
