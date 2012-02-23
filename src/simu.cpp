@@ -427,7 +427,11 @@ int main(int argc,char **argv)
 uint16_t anaIn(uint8_t chan)
 {
   if (chan == 7)
+#ifdef PCBV4
+    return 150;
+#else
     return 1500;
+#endif
   else if (chan<4)
     return th9xSim->sliders[chan]->getValue();
   else
