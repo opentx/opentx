@@ -36,11 +36,7 @@ uint16_t eeprom_pointer;
 const char* eeprom_buffer_data;
 volatile int8_t eeprom_buffer_size = 0;
 
-#ifdef SIMU
-
-extern void eeprom_write_byte();
-
-#else
+#ifndef SIMU
 
 inline void eeprom_write_byte()
 {
