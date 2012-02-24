@@ -73,7 +73,7 @@
 #else
 #define TR_SOMO
 #endif
-#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim ""Trims2Offsets""Play Sound\0  ""Telem. View\0 " TR_SOMO TR_SDCLOGGS
+#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim ""Trims2Offsets""Play Sound\0  " TR_SOMO TR_SDCLOGGS
 
 #define LEN_FUNCSOUNDS   6
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"

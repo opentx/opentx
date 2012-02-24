@@ -73,12 +73,6 @@ void menuMainView(uint8_t event)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 
-#if defined(FRSKY) || defined(JETI) || defined(ARDUPILOT) || defined(NMEA)
-  if (isFunctionActive(FUNC_TELEMETRY_SCREEN)) {
-    event = EVT_KEY_LONG(KEY_DOWN);
-  }
-#endif
-
   switch(event)
   {
     /* TODO if timer2 is OFF, it's possible to use this timer2 as in er9x...
