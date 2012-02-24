@@ -181,11 +181,6 @@ void menuProcModelSelect(uint8_t event)
 
   int8_t sub = m_posVert;
 
-  lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  lcd_outdezAtt(  17*FW, 0, EeFsGetFree(),0);
-
-  DisplayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
-
 #ifdef NAVIGATION_RE1
   if (scrollRE > 0 && s_editMode < 0) {
     chainMenu(menuProcModel);
@@ -311,6 +306,11 @@ void menuProcModelSelect(uint8_t event)
         }
         break;
   }
+
+  lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
+  lcd_outdezAtt(  17*FW, 0, EeFsGetFree(),0);
+
+  DisplayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
 
   if (sub-s_pgOfs < 1) s_pgOfs = max(0, sub-1);
   else if (sub-s_pgOfs > 5)  s_pgOfs = min(MAX_MODELS-7, sub-4);
