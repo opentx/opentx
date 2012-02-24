@@ -1216,7 +1216,8 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
   //========== MIXER LOOP ===============
   mixWarning = 0;
-  for(uint8_t i=0;i<MAX_MIXERS;i++){
+  for(uint8_t i=0; i<MAX_MIXERS; i++) {
+
     MixData *md = mixaddress( i ) ;
 
     if((md->destCh==0) || (md->destCh>NUM_CHNOUT)) break;
@@ -1237,7 +1238,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
     uint8_t swTog;
 
     //swOn[i]=false;
-    if(!getSwitch(md->swtch,1)){ // switch on?  if no switch selected => on
+    if (!getSwitch(md->swtch,1)) { // switch on?  if no switch selected => on
       swTog = swOn[i];
       swOn[i] = false;
       if(md->srcRaw!=MIX_MAX && md->srcRaw!=MIX_FULL) continue;// if not MAX or FULL - next loop
@@ -1291,8 +1292,8 @@ void perOut(int16_t *chanOut, uint8_t phase)
       if (diff && (md->speedUp || md->speedDown)) {
         //rate = steps/sec => 32*1024/100*md->speedUp/Down
         //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
-        //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 sincde it's asymmetrical
-        if(tick10ms) {
+        //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 since it's asymmetrical
+        if (tick10ms) {
             int32_t rate = (int32_t)DEL_MULT*2048*100;
             if(md->weight) rate /= abs(md->weight);
             // TODO port optim er9x by Mike
@@ -1358,7 +1359,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
       // at the end chans[i] = chans[i]/100 =>  -1024..1024
       // interpolate value with min/max so we get smooth motion from center to stop
       // this limits based on v original values and min=-1024, max=1024  RESX=1024
-
+      //printf("chans%d=%d\n", i, chans[i]);fflush(stdout);
       int32_t q = chans[i];// + (int32_t)g_model.limitData[i].offset*100; // offset before limit
 
       chans[i] /= 100; // chans back to -1024..1024
@@ -1404,6 +1405,11 @@ void perMain()
   static uint16_t delta = 0;
   static uint8_t s_fade_flight_phases = 0;
   static uint8_t s_last_phase = 255;
+#ifdef PCBV4
+  static int16_t s_fp_chans[NUM_CHNOUT][MAX_PHASES];
+#else
+  static int8_t s_fp_chans[NUM_CHNOUT][MAX_PHASES];
+#endif
   uint8_t phase = getFlightPhase();
 
   if (s_last_phase != phase) {
@@ -1432,10 +1438,20 @@ void perMain()
     int32_t weight = 0;
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {
-        perOut(next_chans512, p);
-        perOut(next_chans512, p); // TODO temporary fix for issue 80. I think th9x has a better algorithm for dealing with it!
-        // printf("perOut(%d - %d)=>%d\n", p, fp_act[p], next_chans512[2]);
         for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+#ifdef PCBV4
+          chans[i] = ((int32_t)s_fp_chans[i][p]) << 2;
+#else
+          chans[i] = ((int32_t)s_fp_chans[i][p]) << 10;
+#endif
+        }
+        perOut(next_chans512, p);
+        for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+#ifdef PCBV4
+          s_fp_chans[i][p] = chans[i] >> 2;
+#else
+          s_fp_chans[i][p] = chans[i] >> 10;
+#endif
           sum_chans512[i] += (int32_t)next_chans512[i] * fp_act[p];
         }
         weight += fp_act[p];
@@ -1477,7 +1493,7 @@ void perMain()
     val = RESX + g_chans512[g_model.thrTraceSrc-NUM_POTS-1];
   }
   else {
-    val = calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1];
+    val = RESX + calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1];
   }
 
   val /= (RESX/16); // calibrate it
