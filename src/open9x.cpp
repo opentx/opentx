@@ -1401,15 +1401,11 @@ void perMain()
   lastTMR = tmr10ms;
 
 #define MAX_ACT 0xffff
+  static int16_t  s_fp_chans[NUM_CHNOUT];
   static uint16_t fp_act[MAX_PHASES] = {0};
   static uint16_t delta = 0;
   static uint8_t s_fade_flight_phases = 0;
   static uint8_t s_last_phase = 255;
-#ifdef PCBV4
-  static int16_t s_fp_chans[NUM_CHNOUT][MAX_PHASES];
-#else
-  static int8_t s_fp_chans[NUM_CHNOUT][MAX_PHASES];
-#endif
   uint8_t phase = getFlightPhase();
 
   if (s_last_phase != phase) {
@@ -1419,6 +1415,10 @@ void perMain()
     else {
       uint8_t fadeTime = max(g_model.phaseData[s_last_phase].fadeOut, g_model.phaseData[phase].fadeIn);
       if (fadeTime) {
+        if (!s_fade_flight_phases) {
+          for (uint8_t i=0; i<NUM_CHNOUT; i++)
+            s_fp_chans[i] = chans[i];
+        }
         s_fade_flight_phases |= (1<<s_last_phase) + (1<<phase);
         delta = (MAX_ACT / 100) / fadeTime;
       }
@@ -1438,22 +1438,11 @@ void perMain()
     int32_t weight = 0;
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {
-        for (uint8_t i=0; i<NUM_CHNOUT; i++) {
-#ifdef PCBV4
-          chans[i] = ((int32_t)s_fp_chans[i][p]) << 2;
-#else
-          chans[i] = ((int32_t)s_fp_chans[i][p]) << 10;
-#endif
-        }
+        for (uint8_t i=0; i<NUM_CHNOUT; i++)
+          chans[i] = s_fp_chans[i];
         perOut(next_chans512, p);
-        for (uint8_t i=0; i<NUM_CHNOUT; i++) {
-#ifdef PCBV4
-          s_fp_chans[i][p] = chans[i] >> 2;
-#else
-          s_fp_chans[i][p] = chans[i] >> 10;
-#endif
+        for (uint8_t i=0; i<NUM_CHNOUT; i++)
           sum_chans512[i] += (int32_t)next_chans512[i] * fp_act[p];
-        }
         weight += fp_act[p];
       }
     }
@@ -1461,6 +1450,7 @@ void perMain()
     assert(weight);
     for (uint8_t i=0; i<NUM_CHNOUT; i++) {
       next_chans512[i] = ((int32_t)sum_chans512[i] / weight);
+      s_fp_chans[i] = next_chans512[i];
     }
     // printf("output = %d\n", next_chans512[2]); fflush(stdout);
   }
