@@ -33,8 +33,6 @@
 #ifndef lcd_h
 #define lcd_h
 
-#include "open9x.h"
-
 #define DISPLAY_W 128
 #define DISPLAY_H  64
 #define FW          6

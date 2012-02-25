@@ -30,7 +30,7 @@
  *
  */
 
-#include "lcd.h"
+#include "open9x.h"
 
 const pm_uchar font[] PROGMEM = {
 #include "font.lbm"
@@ -380,7 +380,7 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat)
     p += DISPLAY_W;
     h -= 8;
   }
-  h = (h+8) % 8;
+  h = (h+8) % 8; // TODO optim
   if (h) {
     p -= DISPLAY_W;
     assert(p >= displayBuf && p < DISPLAY_END);
