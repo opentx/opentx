@@ -30,7 +30,6 @@
  *
  */
 
-#include "jeti.h"
 #include "open9x.h"
 
 uint16_t jeti_keys = JETI_KEY_NOCHANGE;
