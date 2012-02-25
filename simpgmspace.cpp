@@ -39,7 +39,8 @@
 volatile uint8_t pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
-const char *eepromFile;
+const char *eepromFile = NULL;
+FILE *fp = NULL;
 
 extern uint16_t eeprom_pointer;
 extern const char* eeprom_buffer_data;
@@ -70,15 +71,6 @@ void *eeprom_write_function(void *)
     if (!eeprom_thread_running)
       return NULL;
 
-    FILE *fp = NULL;
-    
-    if (eepromFile) {
-      fp = fopen(eepromFile, "r+");
-      if (!fp)
-        fp = fopen(eepromFile, "w+");
-      assert(fp);
-    }
-
     while (--eeprom_buffer_size) {
       assert(eeprom_buffer_size > 0);
       if (fp) {
@@ -95,7 +87,7 @@ void *eeprom_write_function(void *)
       eeprom_buffer_data++;
       
       if (fp && eeprom_buffer_size == 1) {
-        fclose(fp);
+        fflush(fp);
       }
     }
   }
@@ -164,6 +156,12 @@ pthread_t eeprom_thread_pid;
 void StartEepromThread(const char *filename)
 {
   eepromFile = filename;
+  if (eepromFile) {
+    fp = fopen(eepromFile, "r+");
+    if (!fp)
+      fp = fopen(eepromFile, "w+");
+    if (!fp) perror("error in fopen");
+  }
   sem_init(&eeprom_write_sem, 0, 0);
   eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
@@ -180,12 +178,9 @@ void eeprom_read_block (void *pointer_ram,
     const void *pointer_eeprom,
     size_t size)
 {
-  if (eepromFile) {
-    FILE *fp=fopen(eepromFile, "r");
-    if (!fp) { perror("error in fopen"); return; }
+  if (fp) {
     if (fseek(fp, (long) pointer_eeprom, SEEK_SET)==-1) perror("error in seek");
     if (fread(pointer_ram, size, 1, fp) <= 0) perror("error in read");
-    fclose(fp);
   }
   else {
     memcpy(pointer_ram, &eeprom[(uint64_t)pointer_eeprom], size);
