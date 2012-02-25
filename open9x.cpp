@@ -987,20 +987,25 @@ uint8_t mixWarning;
 FORCEINLINE void evalTrims(uint8_t phase)
 {
   for (uint8_t i=0; i<NUM_STICKS; i++) {
-    // do trim -> throttle trim if applicable
-    int16_t v = anas[i];
-    int32_t vv = 2*RESX;
-    int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
-    if (i==THR_STICK && g_model.thrTrim) {
-      if (g_eeGeneral.throttleReversed)
-        trim = -trim;
-      vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
+    if (s_noStickInputs && i==THR_STICK) {
+      trims[i] = 0;
     }
-    else if (trimsCheckTimer > 0) {
-      trim = 0;
-    }
+    else {
+      // do trim -> throttle trim if applicable
+      int16_t v = anas[i];
+      int32_t vv = 2*RESX;
+      int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
+      if (i==THR_STICK && g_model.thrTrim) {
+        if (g_eeGeneral.throttleReversed)
+          trim = -trim;
+        vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
+      }
+      else if (trimsCheckTimer > 0) {
+        trim = 0;
+      }
 
-    trims[i] = (vv==2*RESX) ? trim*2 : (int16_t)vv*2; // if throttle trim -> trim low end
+      trims[i] = (vv==2*RESX) ? trim*2 : (int16_t)vv*2; // if throttle trim -> trim low end
+    }
   }
 }
 
@@ -1020,7 +1025,7 @@ uint8_t evalSticks(uint8_t phase)
 
   uint8_t anaCenter = 0;
 
-  for(uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
 
     // normalization [0..2048] -> [-1024..1024]
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i+1) - 1 : i);
@@ -1041,7 +1046,6 @@ uint8_t evalSticks(uint8_t phase)
 
     calibratedStick[ch] = v; //for show in expo
     if(!(v/16)) anaCenter |= 1<<ch;
-
 
     if (ch < NUM_STICKS) { //only do this for sticks
       if (!s_noStickInputs && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
@@ -1193,11 +1197,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
 #endif
 
   if (s_noStickInputs) {
-    for (uint8_t i=0; i<NUM_STICKS; i++) {
-      if (i!=THR_STICK) {
-        anas[i] = 0;
-      }
-    }
+    for (uint8_t i=0; i<NUM_STICKS; i++) anas[i] = 0;
     for (uint8_t i=0; i<NUM_PPM; i++) anas[i+PPM_BASE] = 0;
   }
   else {
@@ -2071,7 +2071,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   s_noStickInputs = false;
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
-    g_model.limitData[i].offset = limit((int16_t)-1000, zero_chans512[i], (int16_t)1000); // make sure the offset doesn't go haywire
+    g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)(((int32_t)zero_chans512[i]*125)/128), (int16_t)1000); // make sure the offset doesn't go haywire
 
   // reset all trims, except throttle
   for (uint8_t i=0; i<NUM_STICKS; i++) {
