@@ -1,4 +1,4 @@
-#define DATE_STR "2012-02-21"
-#define TIME_STR "19:07:38"
+#define DATE_STR "2012-02-26"
+#define TIME_STR "00:12:24"
 #define VERS_STR "2.00"
-#define SVN_VERS  "open9x-r267"
+#define SVN_VERS  "open9x-r288"
