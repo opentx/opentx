@@ -699,6 +699,10 @@ void menuProcFrsky(uint8_t event)
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
+
+    case EVT_KEY_FIRST(KEY_MENU):
+      resetTelemetry();
+      break;
   }
 
   // The top black bar
