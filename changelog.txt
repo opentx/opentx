@@ -1,8 +1,23 @@
 ******************************************
+CHANGELOG: 27-02-2012  BSS
+Flash saving (idea from er9x)
+Trims2Offsets function removed
+A "Safety CHxx" function is not applied when it is currently edited
+The Stick Mode needs confirmation before being applied
+
+******************************************
+
+Version 288:
+
+******************************************
+CHANGELOG: 24-02-2012  BSS
+Throttle Trace bug solved when using P1-P3
+New way of dealing with recursive mixers in Flight Phases (with FadeIn / FadeOut)
+
+******************************************
 CHANGELOG: 23-02-2012  BSS
 PXX updates + optimizations pulled from er9x
 FrSky TELEMETRY menu is now moved to [DOWN long]
-Function added to reach the TELEMETRY screen when a switch is enabled
 Optimizations
 
 ******************************************
