@@ -8,6 +8,7 @@
  * - Karl Szmutny <shadow@privy.de>
  * - Michael Blandford
  * - Michal Hlavinka
+ * - Pat Mackenzie
  * - Philip Moss
  * - Rob Thomson
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
