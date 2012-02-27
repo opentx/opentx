@@ -69,7 +69,6 @@ void doMainScreenGrphics()
 void menuMainView(uint8_t event)
 {
   static bool instantTrimSwLock;
-  static bool trim2OfsSwLock;
 
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
@@ -157,7 +156,6 @@ void menuMainView(uint8_t event)
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
       instantTrimSwLock = true;
-      trim2OfsSwLock = true;
       break;
 #ifdef NAVIGATION_RE1
     case EVT_KEY_LONG(BTN_RE1):
@@ -177,10 +175,6 @@ void menuMainView(uint8_t event)
   bool trimSw = isFunctionActive(FUNC_INSTANT_TRIM);
   if (!instantTrimSwLock && trimSw) instantTrim();
   instantTrimSwLock = trimSw;
-  
-  trimSw = isFunctionActive(FUNC_TRIMS_2_OFS);
-  if (!trim2OfsSwLock && trimSw) moveTrimsToOffsets();
-  trim2OfsSwLock = trimSw;
 
   {
     uint8_t phase = getFlightPhase();

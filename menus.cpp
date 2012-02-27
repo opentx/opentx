@@ -47,7 +47,7 @@ int16_t g_chans512[NUM_CHNOUT]; // TODO not here!
 
 void menu_lcd_onoff( uint8_t x,uint8_t y, uint8_t value, uint8_t mode )
 {
-  lcd_putsnAtt(x, y, STR_OFFON+LEN_OFFON*value, LEN_OFFON, mode ? INVERS:0) ;
+  lcd_putsiAtt(x, y, STR_OFFON, value, mode ? INVERS:0) ;
 }
 
 void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)

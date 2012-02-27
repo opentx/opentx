@@ -40,14 +40,8 @@ void generalDefault()
 {
   memset(&g_eeGeneral,0,sizeof(g_eeGeneral));
   g_eeGeneral.myVers   =  EEPROM_VER;
-  g_eeGeneral.currModel=  0;
   g_eeGeneral.contrast = 25;
   g_eeGeneral.vBatWarn = 90;
-#ifdef DEFAULTMODE1
-  g_eeGeneral.stickMode=  0; // default to mode 1
-#else
-  g_eeGeneral.stickMode=  2; // default to mode 2
-#endif
   for (int i = 0; i < 7; ++i) {
     g_eeGeneral.calibMid[i]     = 0x200;
     g_eeGeneral.calibSpanNeg[i] = 0x180;
@@ -196,6 +190,7 @@ void eeReadAll()
     //alert(PSTR("modwrite ok"));
   }
 
+  stickMode = g_eeGeneral.stickMode;
   eeLoadModel(g_eeGeneral.currModel);
 }
 

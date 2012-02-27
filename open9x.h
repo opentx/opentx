@@ -252,9 +252,11 @@ extern uint16_t DEBUG2;
 extern const pm_uint8_t bchout_ar[];
 extern const pm_uint8_t modn12x3[];
 
-//convert from mode 1 to mode g_eeGeneral.stickMode
+extern uint8_t stickMode;
+
+//convert from mode 1 to mode stickMode
 //NOTICE!  =>  1..4 -> 1..4
-#define CONVERT_MODE(x)  (((x)<=4) ? pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + (x)-1) : (x) )
+#define CONVERT_MODE(x)  (((x)<=4) ? pgm_read_byte(modn12x3 + 4*stickMode + (x)-1) : (x) )
 
 #define RUD_STICK 0
 #define ELE_STICK 1
@@ -669,7 +671,6 @@ extern LimitData *limitaddress(uint8_t idx);
 
 extern void incSubtrim(uint8_t idx, int16_t inc);
 extern void instantTrim();
-extern void moveTrimsToOffsets(); // move state of 3 primary trims to offsets
 
 extern uint16_t active_functions;
 inline bool isFunctionActive(uint8_t func)
