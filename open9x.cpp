@@ -763,12 +763,7 @@ uint8_t checkTrim(uint8_t event)
 
     if (beepTrim) {
       killEvents(event);
-#if defined (AUDIO)
-      audio.event(AU_TRIM_MOVE, after);
-#else
-      warble = false;
       AUDIO_WARNING2();
-#endif
     }
     else {
 #if defined (AUDIO)
