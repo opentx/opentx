@@ -64,6 +64,8 @@ audioQueue  audio;
 
 uint8_t heartbeat;
 
+uint8_t stickMode;
+
 int8_t safetyCh[NUM_CHNOUT];
 
 union ReusableBuffer reusableBuffer;
@@ -295,7 +297,7 @@ void applyExpos(int16_t *anas, uint8_t phase)
 bool s_noStickInputs = false;
 int16_t getValue(uint8_t i)
 {
-    if(i<NUM_STICKS+NUM_POTS) return (s_noStickInputs ? 0 : calibratedStick[i]);
+    if(i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
     else if(i<MIX_FULL/*srcRaw is shifted +1!*/) return 1024; //FULL/MAX
     else if(i<PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-PPM_BASE] - g_eeGeneral.trainer.calib[i-PPM_BASE])*2;
     else if(i<PPM_BASE+NUM_PPM) return g_ppmIns[i-PPM_BASE]*2;
@@ -599,7 +601,7 @@ void checkTHR()
 {
   if(g_eeGeneral.disableThrottleWarning) return;
 
-  int thrchn=(2-(g_eeGeneral.stickMode&1));//stickMode=0123 -> thr=2121
+  int thrchn=(2-(stickMode&1));//stickMode=0123 -> thr=2121
 
   int16_t lowLim = THRCHK_DEADBAND + g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanNeg[thrchn];
 
@@ -1096,7 +1098,7 @@ void evalFunctions()
     if (sd->swtch) {
       uint16_t mask = (sd->func >= FUNC_TRAINER ? (1 << (sd->func-FUNC_TRAINER)) : 0);
       if (getSwitch(sd->swtch, 0)) {
-        if (sd->func < FUNC_TRAINER) {
+        if (sd->func < FUNC_TRAINER  && (g_menuStack[0] != menuProcFunctionSwitches || m_posVert != i+1 || m_posHorz > 1)) {
           safetyCh[sd->func] = (int8_t)sd->param;
         }
         if (sd->func == FUNC_PLAY_SOUND) {
@@ -1197,15 +1199,8 @@ void perOut(int16_t *chanOut, uint8_t phase)
   }
 #endif
 
-  if (s_noStickInputs) {
-    for (uint8_t i=0; i<NUM_STICKS; i++) anas[i] = 0;
-    for (uint8_t i=0; i<NUM_PPM; i++) anas[i+PPM_BASE] = 0;
-  }
-  else {
-    for (uint8_t i=0; i<NUM_CAL_PPM; i++)       anas[i+PPM_BASE] = (g_ppmIns[i] - g_eeGeneral.trainer.calib[i])*2; // add ppm channels
-    for (uint8_t i=NUM_CAL_PPM; i<NUM_PPM; i++) anas[i+PPM_BASE] = g_ppmIns[i]*2; // add ppm channels
-  }
-  
+  for (uint8_t i=0; i<NUM_CAL_PPM; i++)       anas[i+PPM_BASE] = (g_ppmIns[i] - g_eeGeneral.trainer.calib[i])*2; // add ppm channels
+  for (uint8_t i=NUM_CAL_PPM; i<NUM_PPM; i++) anas[i+PPM_BASE] = g_ppmIns[i]*2; // add ppm channels
   for (uint8_t i=CHOUT_BASE; i<CHOUT_BASE+NUM_CHNOUT; i++) anas[i] = chans[i-CHOUT_BASE]; // other mixes previous outputs
 
   memset(chans, 0, sizeof(chans));        // All outputs to 0
@@ -2056,32 +2051,6 @@ void instantTrim()
         trim = TRIM_EXTENDED_MAX;
       }
       setTrimValue(trim_phase, i, trim);
-    }
-  }
-
-  STORE_MODELVARS;
-  AUDIO_WARNING1();
-}
-
-void moveTrimsToOffsets() // copy state of 3 primary to subtrim
-{
-  int16_t zero_chans512[NUM_CHNOUT];
-
-  s_noStickInputs = true;
-  perOut(zero_chans512, getFlightPhase()); // do output loop - zero input sticks
-  s_noStickInputs = false;
-
-  for (uint8_t i=0; i<NUM_CHNOUT; i++)
-    g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)(((int32_t)zero_chans512[i]*125)/128), (int16_t)1000); // make sure the offset doesn't go haywire
-
-  // reset all trims, except throttle
-  for (uint8_t i=0; i<NUM_STICKS; i++) {
-    if (i!=THR_STICK) {
-      for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
-        int16_t trim = getTrimValue(phase, i);
-        if (trim <= TRIM_EXTENDED_MAX)
-          setTrimValue(phase, i, 0);
-      }
     }
   }
 

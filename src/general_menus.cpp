@@ -73,15 +73,18 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 
 enum menuProcSetupItems {
   ITEM_SETUP_BASE=18,
-#ifdef SPLASH
-  ITEM_SETUP_SPLASH,
-#endif
 #ifdef AUDIO
   ITEM_SETUP_SPEAKER,
 #endif
 #ifdef HAPTIC
   ITEM_SETUP_HAPTIC_MODE,
   ITEM_SETUP_HAPTIC_STRENGTH,
+#endif
+#ifdef SPLASH
+  ITEM_SETUP_SPLASH,
+#endif
+#ifdef FRSKY
+  ITEM_SETUP_NODATA_ALARM,
 #endif
   ITEM_SETUP_MAX
 };
@@ -91,20 +94,30 @@ void menuProcSetup(uint8_t event)
 #undef  PARAM_OFS
 #define PARAM_OFS   17*FW
 
-  SIMPLE_MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1);
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0,
+#ifdef AUDIO
+      0,
+#endif
+#ifdef HAPTIC
+      0, 0,
+#endif
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+#ifdef SPLASH
+      0,
+#endif
+      0, 0, 0, 0,
+#ifdef FRSKY
+      0,
+#endif
+      0, -1, 1});
 
   int8_t  sub    = m_posVert;
-
-  // last 2 lines (radio mode) are non break-able
-  // TODO line to be checked
-  if(s_pgOfs==ITEM_SETUP_MAX-7) s_pgOfs= sub<(ITEM_SETUP_MAX-4) ? ITEM_SETUP_MAX-8 : ITEM_SETUP_MAX-6;
-
   uint8_t y = 1*FH;
 
   uint8_t subN = 1;
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_BEEPERMODE);
-    lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE+(LEN_VBEEPMODE*2)+(LEN_VBEEPMODE*g_eeGeneral.beeperMode), LEN_VBEEPMODE, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE, 2+g_eeGeneral.beeperMode, (sub==subN ? INVERS:0));
     if(sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperMode, -2, 1);
 #if defined(FRSKY)
@@ -116,7 +129,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_BEEPERLEN);
-    lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPLEN+(LEN_VBEEPLEN*2)+(LEN_VBEEPLEN*g_eeGeneral.beeperLength), LEN_VBEEPLEN, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(PARAM_OFS - 2*FW, y, STR_VBEEPLEN, 2+g_eeGeneral.beeperLength, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperLength, -2, 2);
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -135,7 +148,7 @@ void menuProcSetup(uint8_t event)
 #ifdef HAPTIC
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_HAPTICMODE);
-    lcd_putsnAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE+(LEN_VBEEPMODE*2)+(LEN_VBEEPMODE*g_eeGeneral.hapticMode), LEN_VBEEPMODE, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE, 2+g_eeGeneral.hapticMode, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticMode, -2, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -177,7 +190,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y,STR_FILTERADC);
-    lcd_putsnAtt(PARAM_OFS, y, STR_ADCFILTER+LEN_ADCFILTER*g_eeGeneral.filterInput, LEN_ADCFILTER, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(PARAM_OFS, y, STR_ADCFILTER, g_eeGeneral.filterInput, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.filterInput, 0, 2);
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -224,7 +237,7 @@ void menuProcSetup(uint8_t event)
       lcd_putc(lcd_lastPos, y, 's');
     }
     else {
-      lcd_putsnAtt(PARAM_OFS, y, STR_OFFON, LEN_OFFON,(sub==subN ? INVERS:0));
+      lcd_putsiAtt(PARAM_OFS, y, STR_OFFON, 0,(sub==subN ? INVERS:0));
     }
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
     if((y+=FH)>7*FH) return;
@@ -258,7 +271,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
       lcd_putsLeft( y, STR_SWITCHWARNING);
-      lcd_putsnAtt(PARAM_OFS, y, STR_WARNSW+LEN_WARNSW*(1+g_eeGeneral.switchWarning), LEN_WARNSW, (sub==subN ? INVERS:0));
+      lcd_putsiAtt(PARAM_OFS, y, STR_WARNSW, 1+g_eeGeneral.switchWarning, (sub==subN ? INVERS:0));
       if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchWarning, -1, 1);
       if((y+=FH)>7*FH) return;
   }subN++;
@@ -287,6 +300,7 @@ void menuProcSetup(uint8_t event)
       if((y+=FH)>7*FH) return;
   }subN++;
 
+#ifdef FRSKY
   if(s_pgOfs<subN) {
       uint8_t b = g_eeGeneral.enableTelemetryAlarm;
       lcd_putsLeft( y,STR_NODATAALARM);
@@ -298,6 +312,7 @@ void menuProcSetup(uint8_t event)
       }
       if((y+=FH)>7*FH) return;
   }subN++;
+#endif
 
   if(s_pgOfs<subN) {
       uint8_t attr = sub==subN?INVERS:0;
@@ -309,15 +324,17 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_puts( 1*FW, y, STR_MODE2); // TODO STR_MODE would save flash
-    if(y<7*FH) {for(uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks,i,0); }
+    lcd_puts( 1*FW, y, STR_MODE);
+    for(uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks,i,0);
     if((y+=FH)>7*FH) return;
 
-    lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,sub==subN?INVERS:0);
-    for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, CONVERT_MODE(i+1),0);
+    lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,(sub==subN+1) ? (s_editMode>0 ? BLINK : INVERS) : 0);
+    for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
 
-    if(sub==subN) CHECK_INCDEC_GENVAR(event,g_eeGeneral.stickMode,0,3);
-    if((y+=FH)>7*FH) return;
+    if (sub==subN+1 && s_editMode>0)
+      CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
+    else
+      stickMode = g_eeGeneral.stickMode;
   }
 }
 
@@ -369,7 +386,7 @@ void menuProcTime(uint8_t event)
   {
     uint8_t y=(i*2+2)*FH;
 
-    lcd_putsnAtt(0, y, STR_DATETIME+LEN_DATETIME*i, LEN_DATETIME, 0);
+    lcd_putsiAtt(0, y, STR_DATETIME, i, 0);
 
     for(uint8_t j=0; j<3;j++) // 3 settings each for date and time (YMD and HMS)
     {
@@ -448,7 +465,7 @@ void menuProcTrainer(uint8_t event)
 
         switch(j) {
           case 0:
-            lcd_putsnAtt(4*FW, y, STR_TRNMODE+LEN_TRNMODE*td->mode, LEN_TRNMODE, edit ? blink : 0);
+            lcd_putsiAtt(4*FW, y, STR_TRNMODE, td->mode, edit ? blink : 0);
             if (incdec)
               CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
             break;
@@ -460,7 +477,7 @@ void menuProcTrainer(uint8_t event)
             break;
 
           case 2:
-            lcd_putsnAtt(12*FW, y, STR_TRNCHN+LEN_TRNCHN*td->srcChn, LEN_TRNCHN, edit ? blink : 0);
+            lcd_putsiAtt(12*FW, y, STR_TRNCHN, td->srcChn, edit ? blink : 0);
             if (incdec)
               CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
             break;
@@ -522,14 +539,14 @@ void menuProcDiagKeys(uint8_t event)
   for(uint8_t i=0; i<6; i++) {
     uint8_t y=(5-i)*FH+2*FH;
     bool t=keyState((EnumKeys)(KEY_MENU+i));
-    lcd_putsn(0, y, STR_VKEYS+LEN_VKEYS*i, LEN_VKEYS);
+    lcd_putsiAtt(0, y, STR_VKEYS, i, 0);
     lcd_putcAtt(5*FW+2, y, t+'0', t);
   }
 
 #if defined (PCBV4)
   for(uint8_t i=0; i<2; i++) {
     uint8_t y = i*FH + FH;
-    lcd_putsn(14*FW, y, STR_RE1RE2+LEN_RE1RE2*i, LEN_RE1RE2);
+    lcd_putsiAtt(14*FW, y, STR_RE1RE2, i, 0);
     lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_RE1+i)) ? INVERS : 0));
   }
 #endif

@@ -142,6 +142,13 @@ void lcd_putc(uint8_t x,uint8_t y,const char c)
   lcd_putcAtt(x,y,c,0);
 }
 
+void lcd_putsiAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t idx, uint8_t flags)
+{
+  uint8_t length;
+  length = pgm_read_byte(s++) ;
+  lcd_putsnAtt(x,y,s+length*idx,length,flags);
+}
+
 void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mode)
 {
   while(len!=0) {
@@ -447,9 +454,9 @@ void putsStrIdx(uint8_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t a
 void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx==0)
-    lcd_putsnAtt(x, y, STR_MMMINV, LEN_MMMINV, att);
+    lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3)
-    lcd_putsnAtt(x, y, STR_VSRCRAW+LEN_VSRCRAW*(idx-1), LEN_VSRCRAW, att);
+    lcd_putsiAtt(x, y, STR_VSRCRAW, idx-1, att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM)
     putsStrIdx(x, y, STR_PPM, idx - (NUM_STICKS+NUM_POTS+2+3), att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT)
@@ -458,7 +465,7 @@ void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
     putsStrIdx(x, y, STR_TMR, idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT), att);
 #ifdef FRSKY
   else
-    lcd_putsnAtt(x, y, STR_TELEMCHNS+LEN_TELEMCHNS*(idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+MAX_TIMERS+NUM_CHNOUT)), LEN_TELEMCHNS, att);
+    lcd_putsiAtt(x, y, STR_TELEMCHNS, idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+MAX_TIMERS+NUM_CHNOUT), att);
 #endif
 }
 
@@ -470,7 +477,7 @@ void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 
 void putsChnLetter(uint8_t x, uint8_t y, uint8_t idx, uint8_t attr)
 {
-  lcd_putsnAtt(x, y, STR_RETA123+idx-1, 1, attr);
+  lcd_putsiAtt(x, y, STR_RETA123, idx-1, attr);
 }
 
 void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
@@ -488,17 +495,17 @@ void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
 void putsSwitches(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
   switch(idx){
-    case  0:          lcd_putsnAtt(x, y, STR_MMMINV, LEN_MMMINV, att);return;
-    case  MAX_SWITCH: lcd_putsnAtt(x, y, STR_ONOFF, LEN_OFFON, att);return;
-    case -MAX_SWITCH: lcd_putsnAtt(x, y, STR_OFFON, LEN_OFFON, att);return;
+    case  0:          lcd_putsiAtt(x, y, STR_MMMINV, 0, att);return;
+    case  MAX_SWITCH: lcd_putsiAtt(x, y, STR_OFFON, 1, att);return;
+    case -MAX_SWITCH: lcd_putsiAtt(x, y, STR_OFFON, 0, att);return;
   }
   if (idx<0) lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
-  lcd_putsnAtt(x, y, STR_VSWITCHES+LEN_VSWITCHES*(abs(idx)-1), LEN_VSWITCHES, att);
+  lcd_putsiAtt(x, y, STR_VSWITCHES, abs(idx)-1, att);
 }
 
 void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
-  if (idx==0) { lcd_putsnAtt(x, y, STR_MMMINV, LEN_MMMINV, att); return; }
+  if (idx==0) { lcd_putsiAtt(x, y, STR_MMMINV, 0, att); return; }
   if (idx < 0) { lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/); idx = -idx; }
   putsStrIdx(x, y, STR_FP, idx-1, att);
 }
@@ -506,7 +513,7 @@ void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 void putsCurve(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx < CURVE_BASE)
-    lcd_putsnAtt(x, y, STR_VCURVEFUNC+LEN_VCURVEFUNC*idx, LEN_VCURVEFUNC, att);
+    lcd_putsiAtt(x, y, STR_VCURVEFUNC, idx, att);
   else
     putsStrIdx(x, y, PSTR("c"), idx-CURVE_BASE+1, att);
 }
@@ -518,7 +525,7 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
     lcd_putcAtt(x-1*FW, y, '!', att);
   }
   else if (mode < TMR_VAROFS) {
-    lcd_putsnAtt(x, y, STR_VTMRMODES+LEN_VTMRMODES*mode, LEN_VTMRMODES, att);
+    lcd_putsiAtt(x, y, STR_VTMRMODES, mode, att);
     return;
   }
 
@@ -597,7 +604,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 {
   lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att); // TODO we could add this test inside lcd_outdezAtt!
   if (~att & NO_UNIT && unit != UNIT_RAW)
-    lcd_putsnAtt(lcd_lastPos+1, y, STR_VTELEMUNIT+LEN_VTELEMUNIT*unit, LEN_VTELEMUNIT, 0);
+    lcd_putsiAtt(lcd_lastPos+1, y, STR_VTELEMUNIT, unit, 0);
 }
 #endif
 

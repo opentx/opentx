@@ -1,68 +1,68 @@
 // NON ZERO TERMINATED STRINGS
-#define LEN_OFFON        3
+#define LEN_OFFON        "\003"
 #define TR_OFFON         "OFF""ON "
 
-#define LEN_MMMINV       3
+#define LEN_MMMINV       "\003"
 #define TR_MMMINV        "---""INV"
 
-#define LEN_NCHANNELS    4
+#define LEN_NCHANNELS    "\004"
 #define TR_NCHANNELS     "4CH 6CH 8CH 10CH12CH14CH16CH"
 
-#define LEN_VBEEPMODE    6
-#define TR_VBEEPMODE     "Quiet ""Alarms""NoKey ""Normal"
+#define LEN_VBEEPMODE    "\006"
+#define TR_VBEEPMODE     "Quiet ""Alarms""NoKey ""All   "
 
-#define LEN_VBEEPLEN     6
+#define LEN_VBEEPLEN     "\006"
 #define TR_VBEEPLEN      "xShort""Short ""Normal""Long  ""xLong "
 
-#define LEN_ADCFILTER    4
+#define LEN_ADCFILTER    "\004"
 #define TR_ADCFILTER     "SING""OSMP""FILT"
 
-#define LEN_WARNSW       4
+#define LEN_WARNSW       "\004"
 #define TR_WARNSW        "Down""OFF ""Up  "
 
-#define LEN_TRNMODE      3
+#define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       "off"" +="" :="
 
-#define LEN_TRNCHN       3
+#define LEN_TRNCHN       "\003"
 #define TR_TRNCHN        "ch1ch2ch3ch4"
 
-#define LEN_DATETIME     5
+#define LEN_DATETIME     "\005"
 #define TR_DATETIME      "DATE:""TIME:"
 
-#define LEN_VTRIMINC     6
+#define LEN_VTRIMINC     "\006"
 #define TR_VTRIMINC      "Exp   ""ExFine""Fine  ""Medium""Coarse"
 
-#define LEN_RETA123      1
+#define LEN_RETA123      "\001"
 #define TR_RETA123       "RETA123"
 
-#define LEN_VPROTOS      5
+#define LEN_VPROTOS      "\005"
 #define TR_VPROTOS       "PPM  ""PXX  ""DSM2 ""PPM16"
 
-#define LEN_POSNEG       3
+#define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
 
-#define LEN_VCURVEFUNC   3
+#define LEN_VCURVEFUNC   "\003"
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
-#define LEN_CURVMODES    5
+#define LEN_CURVMODES    "\005"
 #define TR_CURVMODES     "EDIT ""PRSET""A.THR"
 
-#define LEN_EXPLABELS    6
+#define LEN_EXPLABELS    "\006"
 #define TR_EXPLABELS     "Weight""Expo  ""Phase ""Swtch ""When  ""Curve ""      " // TODO remove all the trailing spaces
 
-#define LEN_VMLTPX       8
+#define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Add     ""Multiply""Replace "
 
-#define LEN_VMLTPX2      2
+#define LEN_VMLTPX2      "\002"
 #define TR_VMLTPX2       "+=""*="":="
 
-#define LEN_VMIXTRIMS    6
+#define LEN_VMIXTRIMS    "\006"
 #define TR_VMIXTRIMS     "ON    ""OFF   ""Offset"
 
-#define LEN_VCSWFUNC     7
+#define LEN_VCSWFUNC     "\007"
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
-#define LEN_VFSWFUNC     13
+#define LEN_VFSWFUNC     "\015"
 #ifdef LOGS
 #define TR_SDCLOGGS      "SDCARD Logs  "
 #else
@@ -73,65 +73,65 @@
 #else
 #define TR_SOMO
 #endif
-#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim ""Trims2Offsets""Play Sound\0  " TR_SOMO TR_SDCLOGGS
+#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim ""Play Sound\0  " TR_SOMO TR_SDCLOGGS
 
-#define LEN_FUNCSOUNDS   6
+#define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
 
-#define LEN_VTELEMBARS   4
+#define LEN_VTELEMBARS   "\004"
 #define TR_VTELEMBARS    "---\0""A1\0 ""A2\0 ""ALT\0""RPM\0""FUEL""T1\0 ""T2\0 ""SPD\0""CELL"
 
-#define LEN_VTELEMUNIT   3
+#define LEN_VTELEMUNIT   "\003"
 #define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"
-#define STR_V            (STR_VTELEMUNIT)
-#define STR_A            (STR_VTELEMUNIT+LEN_VTELEMUNIT)
+#define STR_V            (STR_VTELEMUNIT+1)
+#define STR_A            (STR_VTELEMUNIT+4)
 
-#define LEN_VALARM       3
+#define LEN_VALARM       "\003"
 #define TR_VALARM        "---""Yel""Org""Red"
 
-#define LEN_VALARMFN     1
+#define LEN_VALARMFN     "\001"
 #define TR_VALARMFN      "<>"
 
-#define LEN_VTELPROTO    4
+#define LEN_VTELPROTO    "\004"
 #if defined(WS_HOW_HIGH)
 #define TR_VTELPROTO     "NoneHub WSHH"
 #elif defined(FRSKY_HUB)
 #define TR_VTELPROTO     "NoneHub "
 #endif
 
-#define LEN_VTEMPLATES   12
+#define LEN_VTEMPLATES   "\014"
 #define TR_VTEMPLATES    "Simple 4-CH ""T-Cut       ""V-Tail      ""Elevon\\Delta""eCCPM       ""Heli Setup  ""Servo Test  "
 
-#define LEN_VSWASHTYPE   4
+#define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
 
-#define LEN_VKEYS        5
+#define LEN_VKEYS        "\005"
 #define TR_VKEYS         " Menu"" Exit"" Down""   Up""Right"" Left"
 
-#define LEN_RE1RE2       3
+#define LEN_RE1RE2       "\003"
 #define TR_RE1RE2        "RE1""RE2"
 
-#define LEN_VSWITCHES    3
+#define LEN_VSWITCHES    "\003"
 #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
 
-#define LEN_VSRCRAW      4
+#define LEN_VSRCRAW      "\004"
 #define TR_VSRCRAW       "RUD ""ELE ""THR ""AIL ""P1  ""P2  ""P3  ""MAX ""FULL""CYC1""CYC2""CYC3"
 
-#define LEN_VTMRMODES    3
+#define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
 
 #if defined(FRSKY_HUB)
-#define LEN_TELEMCHNS    4
+#define LEN_TELEMCHNS    "\004"
 #define TR_TELEMCHNS     "AD1 AD2 ALT RPM FUELT@1 T@2 SPD\0CELL"
 #elif defined(WS_HOW_HIGH)
-#define LEN_TELEMCHNS    3
+#define LEN_TELEMCHNS    "\003"
 #define TR_TELEMCHNS     "AD1AD2ALT"
 #elif defined(FRSKY)
-#define LEN_TELEMCHNS    3
+#define LEN_TELEMCHNS    "\003"
 #define TR_TELEMCHNS     "AD1AD2"
 #endif
 
-#define LEN_DSM2MODE     7
+#define LEN_DSM2MODE     "\007"
 #define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
 
 // ZERO TERMINATED STRINGS
@@ -166,7 +166,7 @@
 #define TR_ELEDIRECTION "ELE Direction"
 #define TR_AILDIRECTION "AIL Direction"
 #define TR_COLDIRECTION "COL Direction"
-#define TR_MODE         "MODE"
+#define TR_MODE         "Mode"
 #define TR_NOFREEEXPO   "No free expo!"
 #define TR_NOFREEMIXER  "No free mixer!"
 #define TR_INSERTMIX    "INSERT MIX "
@@ -189,7 +189,6 @@
 #define TR_SLOWDOWN     "Slow  Down"
 #define TR_SLOWUP       "Slow  Up"
 #define TR_MIXER        "MIXER"
-#define TR_COPYTRIMMENU "COPY TRIM [MENU]"
 #define TR_CV           "CV"
 #define TR_SW           "SW"
 #define TR_ACHANNEL     "A\002channel"
@@ -227,7 +226,6 @@
 #define TR_ALARMWARNING "Alarm Warning"
 #define TR_NODATAALARM  "NO DATA Alarm"
 #define TR_RXCHANNELORD "Rx Channel Ord"
-#define TR_MODE2        "Mode"
 #define TR_SLAVE        "Slave"
 #define TR_MODESRC      "mode\003% src"
 #define TR_MULTIPLIER   "Multiplier"

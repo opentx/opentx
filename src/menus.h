@@ -78,6 +78,7 @@ void menuProcFrsky(uint8_t event);
 #endif
 void menuProcSetup(uint8_t event);
 void menuProcModelSelect(uint8_t event);
+void menuProcFunctionSwitches(uint8_t event);
 void menuProcStatistic(uint8_t event);
 void menuProcDebug(uint8_t event);
 
