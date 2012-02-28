@@ -1207,7 +1207,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
   //========== MIXER LOOP ===============
   mixWarning = 0;
-  for(uint8_t i=0; i<MAX_MIXERS; i++) {
+  for (uint8_t i=0; i<MAX_MIXERS; i++) {
 
     MixData *md = mixaddress( i ) ;
 

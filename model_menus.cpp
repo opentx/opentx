@@ -1119,27 +1119,27 @@ inline void editExpoVals(uint8_t event, uint8_t which, bool edit, uint8_t y, uin
       if (edit) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
       break;
     case 2:
+      putsCurve(6*FW+5, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0), invBlk);
+      if (invBlk) CHECK_INCDEC_MODELVAR(event, ed->curve, 0, 15);
+      if (invBlk && ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
+        s_curveChan = ed->curve - (ed->curve >= CURVE_BASE+4 ? CURVE_BASE-4 : CURVE_BASE);
+        pushMenu(menuProcCurveOne);
+      }
+      break;
+    case 3:
       {
         int8_t phase = ed->negPhase ? -ed->phase : +ed->phase;
         putsFlightPhase(6*FW+5, y, phase, invBlk);
         if(edit) { phase = checkIncDecModel(event, phase, -MAX_PHASES, MAX_PHASES); ed->negPhase = (phase < 0); ed->phase = abs(phase); }
       }
       break;
-    case 3:
+    case 4:
       putsSwitches(6*FW+5, y, ed->swtch, invBlk);
       if(edit) CHECK_INCDEC_MODELVAR(event, ed->swtch, -MAX_DRSWITCH, MAX_DRSWITCH);
       break;
-    case 4:
+    case 5:
       lcd_putsiAtt(6*FW+5, y, STR_VWHEN, 3-ed->mode, invBlk);
       if(edit) ed->mode = 4 - checkIncDecModel(event, 4-ed->mode, 1, 3);
-      break;
-    case 5:
-      putsCurve(6*FW+5, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0), invBlk);
-      if(invBlk) CHECK_INCDEC_MODELVAR(event, ed->curve, 0, 15);
-      if(invBlk && ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
-        s_curveChan = ed->curve - (ed->curve >= CURVE_BASE+4 ? CURVE_BASE-4 : CURVE_BASE);
-        pushMenu(menuProcCurveOne);
-      }
       break;
   }
 }
@@ -1547,7 +1547,7 @@ void menuProcMixAll(uint8_t event)
 
 void menuProcLimits(uint8_t event)
 {
-  MENU(STR_MENULIMITS, menuTabModel, e_Limits, NUM_CHNOUT+1, {0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3});
+  MENU(STR_MENULIMITS, menuTabModel, e_Limits, NUM_CHNOUT+1, {0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3});
 
   int8_t sub = m_posVert - 1;
 
