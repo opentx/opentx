@@ -635,6 +635,8 @@ void resetTelemetry()
   frskyHubData.gpsLatitude_ap = 7455;
   frskyHubData.gpsLongitude_bp = 1006;
   frskyHubData.gpsLongitude_ap = 9533;
+  frskyHubData.gpsFix = 1;
+  frskyHubData.cellsCount = 6;
 #endif
 }
 

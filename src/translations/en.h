@@ -48,7 +48,7 @@
 #define TR_CURVMODES     "EDIT ""PRSET""A.THR"
 
 #define LEN_EXPLABELS    "\006"
-#define TR_EXPLABELS     "Weight""Expo  ""Phase ""Swtch ""When  ""Curve ""      " // TODO remove all the trailing spaces
+#define TR_EXPLABELS     "Weight""Expo  ""Curve ""Phase ""Swtch ""When  ""      " // TODO remove all the trailing spaces
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Add     ""Multiply""Replace "
@@ -69,11 +69,16 @@
 #define TR_SDCLOGGS
 #endif
 #ifdef SOMO
-#define TR_SOMO          "Play track\0  "
+#define TR_SOMO          "Play Track\0  "
 #else
 #define TR_SOMO
 #endif
-#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim ""Play Sound\0  " TR_SOMO TR_SDCLOGGS
+#ifdef AUDIO
+#define TR_SOUND         "Play Sound\0  "
+#else
+#define TR_SOUND         "Beep\0        "
+#endif
+#define TR_VFSWFUNC      "Security \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO TR_SDCLOGGS
 
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
@@ -294,7 +299,7 @@
 #define TR_MENUFUNCSWITCHES "FUNC SWITCHES"
 #define TR_MENUTELEMETRY "TELEMETRY"
 #define TR_MENUTEMPLATES "TEMPLATES"
-#define TR_MENUSTAT      "STAT"
+#define TR_MENUSTAT      "STATS"
 #define TR_MENUDEBUG     "DEBUG"
 #define TR_RXNUM         "RxNum"
 #define TR_SYNCMENU      "Sync [MENU]"

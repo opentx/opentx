@@ -48,7 +48,7 @@
 #define TR_CURVMODES     "EDIT ""PRSET""A.GAZ"
 
 #define LEN_EXPLABELS    "\006"
-#define TR_EXPLABELS     "Ratio ""Expo  ""Phase ""Inter ""Mode  ""Courbe""      "
+#define TR_EXPLABELS     "Ratio ""Expo  ""Courbe""Phase ""Inter ""Mode  ""      "
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Ajouter ""Multiply""Remplace"
@@ -73,7 +73,12 @@
 #else
 #define TR_SOMO
 #endif
-#define TR_VFSWFUNC      "Securite \0   ""Ecolage \0    ""Trim instant ""Jouer son\0   " TR_SOMO TR_SDCLOGGS
+#ifdef AUDIO
+#define TR_SOUND         "Jouer son\0   "
+#else
+#define TR_SOUND         "Beep\0        "
+#endif
+#define TR_VFSWFUNC      "Securite \0   ""Ecolage \0    ""Trim instant " TR_SOUND TR_SOMO TR_SDCLOGGS
 
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
@@ -223,7 +228,7 @@
 #define TR_SWITCHWARNING "Alerte Inter"
 #define TR_MEMORYWARNING "Alerte Memoire"
 #define TR_ALARMWARNING "Alerte Alarme"
-#define TR_NODATAALARM  "PAS DE DONNEES Alarme"
+#define TR_NODATAALARM  "Alerte Telem."
 #define TR_RXCHANNELORD "Ordre Voies Rx"
 #define TR_MODE         "Mode"
 #define TR_SLAVE        "Esclave"
@@ -294,7 +299,7 @@
 #define TR_MENUFUNCSWITCHES   "INTERS FONCTIONS"
 #define TR_MENUTELEMETRY "TELEMETRIE"
 #define TR_MENUTEMPLATES "GABARITS"
-#define TR_MENUSTAT      "STAT"
+#define TR_MENUSTAT      "STATS"
 #define TR_MENUDEBUG     "DEBUG"
 #define TR_RXNUM         "RxNum"
 #define TR_SYNCMENU      "Sync [MENU]"
