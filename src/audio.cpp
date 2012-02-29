@@ -221,15 +221,15 @@ void audioQueue::event(uint8_t e, uint8_t f)
         break;
       // mix warning 1
       case AU_MIX_WARNING_1:
-        playNow(BEEP_DEFAULT_FREQ + 50, 10, 1, 1, 1);
+        playNow(BEEP_DEFAULT_FREQ + 50, 6, 0, 0, 1);
         break;
       // mix warning 2
       case AU_MIX_WARNING_2:
-        playNow(BEEP_DEFAULT_FREQ + 52, 10, 1, 2, 1);
+        playNow(BEEP_DEFAULT_FREQ + 52, 6, 0, 0, 1);
         break;
       // mix warning 3
       case AU_MIX_WARNING_3:
-        playNow(BEEP_DEFAULT_FREQ + 54, 10, 1, 3, 1);
+        playNow(BEEP_DEFAULT_FREQ + 54, 6, 0, 0, 1);
         break;
       // time 30 seconds left
       case AU_TIMER_30:

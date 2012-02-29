@@ -1326,23 +1326,6 @@ void perOut(int16_t *chanOut, uint8_t phase)
       }
   }
 
-  //========== MIXER WARNING ===============
-  // 1,2 or 3 "bips" (short beeps)
-  //1= 00,08
-  //2= 24,32,40
-  //3= 56,64,72,80
-  // Gruvin:  Sometimes, one or more of these beeps do not fire. That will be because the tmr10ms counter
-  //          may not necessarily be exactly (==) the below figures when queried from inside perOut().
-  //          But we only ever want a beep to fire once, so we have to use anexact counter match (not a range).
-  //          My solution was to make mixWarning global and have the counter checks done inside per10ms();
-  /* {
-    uint16_t tmr10ms ;
-    tmr10ms = get_tmr10ms() ;
-    if(mixWarning & 1) if(((tmr10ms&0xFF)==  0)) beepWarn1();
-    if(mixWarning & 2) if(((tmr10ms&0xFF)== 64) || ((tmr10ms&0xFF)== 72)) beepWarn1();
-    if(mixWarning & 4) if(((tmr10ms&0xFF)==128) || ((tmr10ms&0xFF)==136) || ((tmr10ms&0xFF)==144)) beepWarn1();
-  } */
-
   //========== LIMITS ===============
   for (uint8_t i=0;i<NUM_CHNOUT;i++) {
       // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*100

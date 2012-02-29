@@ -212,6 +212,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_MINUTE_BEEP() audioDefevent(AU_WARNING1)
 #define AUDIO_INACTIVITY()  audioDefevent(AU_INACTIVITY)
 #define AUDIO_MIX_WARNING_1() audioDefevent(AU_MIX_WARNING_1)
+#define AUDIO_MIX_WARNING_2() audioDefevent(AU_MIX_WARNING_2)
 #define AUDIO_MIX_WARNING_3() audioDefevent(AU_MIX_WARNING_3)
 
 #if defined(PCBSTD)

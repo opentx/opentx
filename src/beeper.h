@@ -60,6 +60,7 @@ extern void beep(uint8_t val);
 #define AUDIO_MINUTE_BEEP()   beep(2)
 #define AUDIO_INACTIVITY()    AUDIO_ERROR()
 #define AUDIO_MIX_WARNING_1() beep(1)
+#define AUDIO_MIX_WARNING_2() beep(1)
 #define AUDIO_MIX_WARNING_3() beep(1)
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
