@@ -1043,7 +1043,8 @@ uint8_t evalSticks(uint8_t phase)
       v = -v;
 
     calibratedStick[ch] = v; //for show in expo
-    if(!(v/16)) anaCenter |= 1<<ch;
+    uint8_t tmp = (uint16_t)abs(v) / 16;
+    if (tmp <= 1) anaCenter |= (tmp==0 ? 1<<ch : bpanaCenter & (1<<ch));
 
     if (ch < NUM_STICKS) { //only do this for sticks
       if (!s_noStickInputs && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
@@ -1123,7 +1124,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
   //===========BEEP CENTER================
   anaCenter &= g_model.beepANACenter;
-  if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_WARNING1();
+  if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_STICK_MIDDLE();
   bpanaCenter = anaCenter;
 
   anas[MIX_MAX-1]  = RESX;     // MAX
@@ -2033,7 +2034,7 @@ void instantTrim()
   }
 
   STORE_MODELVARS;
-  AUDIO_WARNING1();
+  AUDIO_WARNING2();
 }
 
 #if defined (PCBV4)

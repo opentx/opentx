@@ -179,15 +179,15 @@ void audioQueue::event(uint8_t e, uint8_t f)
         break;
       // keypad up (seems to be used when going left/right through system menu options. 0-100 scales etc)
       case AU_KEYPAD_UP:
-        playNow(BEEP_KEY_UP_FREQ, 10, 1);
+        playNow(BEEP_KEY_UP_FREQ, 10, 1, 0, 1);
         break;
       // keypad down (seems to be used when going left/right through system menu options. 0-100 scales etc)
       case AU_KEYPAD_DOWN:
-        playNow(BEEP_KEY_DOWN_FREQ, 10, 1);
+        playNow(BEEP_KEY_DOWN_FREQ, 10, 1, 0, 1);
         break;
       // menu display (also used by a few generic beeps)
       case AU_MENUS:
-        playNow(BEEP_DEFAULT_FREQ, 10, 2, 0, 0);
+        playNow(BEEP_DEFAULT_FREQ, 10, 2, 0, 1);
         break;
       // trim move
       case AU_TRIM_MOVE:
