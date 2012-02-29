@@ -58,10 +58,11 @@ extern void beep(uint8_t val);
 #define AUDIO_TIMER_10()      beep(2)
 #define AUDIO_TIMER_LT3()     beep(2)
 #define AUDIO_MINUTE_BEEP()   beep(2)
-#define AUDIO_INACTIVITY()    AUDIO_ERROR()
+#define AUDIO_INACTIVITY()    beep(3)
 #define AUDIO_MIX_WARNING_1() beep(1)
 #define AUDIO_MIX_WARNING_2() beep(1)
 #define AUDIO_MIX_WARNING_3() beep(1)
+#define AUDIO_POT_STICK_MIDDLE() beep(2)
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
 

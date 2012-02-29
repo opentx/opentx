@@ -279,7 +279,7 @@ void menuProcModelSelect(uint8_t event)
           chainMenu(_event == EVT_KEY_FIRST(KEY_RIGHT) ? menuProcModel : menuTabModel[DIM(menuTabModel)-1]);
           return;
         }
-        AUDIO_WARNING1();
+        AUDIO_WARNING2();
         break;
       case EVT_KEY_FIRST(KEY_UP):
       case EVT_KEY_FIRST(KEY_DOWN):
@@ -442,7 +442,7 @@ void menuProcModel(uint8_t event)
         uint16_t timer_val = timer->val;
         switch (m_posHorz) {
          case 0:
-           CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(MAX_PSWITCH+NUM_CSW));
+           CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS+2*(MAX_PSWITCH+NUM_CSW));
            break;
          case 1:
          {
@@ -506,8 +506,9 @@ void menuProcModel(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft(    y, STR_BEEPCTR);
-    for(uint8_t i=0;i<7;i++) lcd_putsiAtt(PARAM_OFS+i*FW, y, STR_RETA123, i, ((m_posHorz==i) && (sub==subN)) ? BLINK : ((g_model.beepANACenter & (1<<i)) ? INVERS : 0 ) );
-    if(sub==subN){
+    for (uint8_t i=0;i<NUM_STICKS+NUM_POTS;i++)
+      lcd_putsiAtt(PARAM_OFS+i*FW, y, STR_RETA123, i, ((m_posHorz==i) && (sub==subN)) ? BLINK : ((g_model.beepANACenter & (1<<i)) ? INVERS : 0 ) );
+    if (sub==subN){
       if((event==EVT_KEY_FIRST(KEY_MENU)) || p1valdiff) {
         killEvents(event);
         s_editMode = 0;
@@ -602,7 +603,6 @@ void menuProcModel(uint8_t event)
           if (event==EVT_KEY_LONG(KEY_MENU)) {
             // send reset code
             pxxFlag = PXX_SEND_RXNUM;
-            // TODO audioDefevent(AUDIO_WARNING1);
           }
         }
       }
@@ -1762,7 +1762,7 @@ void menuProcFunctionSwitches(uint8_t event)
         case 0:
           putsSwitches(1*FW, y, sd->swtch, attr);
           if (active) {
-            CHECK_INCDEC_MODELVAR( event, sd->swtch, -MAX_SWITCH, MAX_SWITCH);
+            CHECK_INCDEC_MODELVAR( event, sd->swtch, -MAX_SWITCH, MAX_SWITCH+1);
           }
           break;
         case 1:
@@ -2039,7 +2039,7 @@ void menuProcTemplates(uint8_t event)
         applyTemplate(sub);
       if (sub==NUM_TEMPLATES)
         clearMixes();
-      AUDIO_WARNING1();
+      AUDIO_WARNING2();
       break;
   }
 

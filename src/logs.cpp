@@ -131,7 +131,7 @@ void writeLogs()
       {
         g_logState = -result;
         // TODO beepAgain = result - 1;
-        AUDIO_WARNING1();
+        AUDIO_WARNING2();
       }
       else
       {
