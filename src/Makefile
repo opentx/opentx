@@ -345,33 +345,6 @@ ifeq ($(DSM2), PPM)
   CPPDEFS += -DDSM2 -DDSM2_PPM
 endif
 
-#---------------- Compiler Options C ----------------
-#  -g*:          generate debugging information
-#  -O*:          optimization level
-#  -f...:        tuning, see GCC manual and avr-libc documentation
-#  -Wall...:     warning level
-#  -Wa,...:      tell GCC to pass this to the assembler.
-#    -adhlns...: create assembler listing
-CFLAGS = -g$(DEBUG)
-CFLAGS += $(CDEFS)
-CFLAGS += -O$(OPT)
-#CFLAGS += -mint8
-#CFLAGS += -mshort-calls
-CFLAGS += -funsigned-char
-CFLAGS += -funsigned-bitfields
-CFLAGS += -fpack-struct
-CFLAGS += -fshort-enums
-#CFLAGS += -fno-unit-at-a-time
-CFLAGS += -Wall
-CFLAGS += -Wstrict-prototypes
-CFLAGS += -Wundef
-#CFLAGS += -Wunreachable-code
-#CFLAGS += -Wsign-compare
-CFLAGS += -Wa,-adhlns=$(<:%.c=$(OBJDIR)/%.lst)
-CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
-CFLAGS += $(CSTANDARD)
-CFLAGS += -fwhole-program
-
 #---------------- Compiler Options C++ ----------------
 #  -g*:          generate debugging information
 #  -O*:          optimization level
@@ -393,7 +366,6 @@ CPPFLAGS += -O$(OPT)
 CPPFLAGS += -Wall
 CPPFLAGS += -Wno-strict-aliasing
 #CPPFLAGS += -Wstrict-prototypes
-#CFLAGS += -Wundef
 #CPPFLAGS += -Wunreachable-code
 #CPPFLAGS += -Wsign-compare
 #CPPFLAGS += -Wa,-adhlns=$(<:%.cpp=$(OBJDIR)/%.lst)
@@ -402,10 +374,7 @@ CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
 ifeq ($(GCCVERSIONGTE462),1)
-  CFLAGS += -flto
   CPPFLAGS += -flto
-else
-  CFLAGS += --combine
 endif
 
 AVRGCCFLAGS = -fno-inline-small-functions
@@ -566,16 +535,6 @@ MSG_COMPILING_CPP = Compiling C++:
 MSG_ASSEMBLING = Assembling:
 MSG_CLEANING = Cleaning project:
 MSG_CREATING_LIBRARY = Creating library:
-
-
-
-
-# Define all object files.
-OBJ = $(SRC:%.c=$(OBJDIR)/%.o) $(CPPSRC:%.cpp=$(OBJDIR)/%.o) $(ASRC:%.S=$(OBJDIR)/%.o)
-
-# Define all listing files.
-LST = $(SRC:%.c=$(OBJDIR)/%.lst) $(CPPSRC:%.cpp=$(OBJDIR)/%.lst) $(ASRC:%.S=$(OBJDIR)/%.lst)
-
 
 # Compiler flags to generate dependency files.
 GENDEPFLAGS = -MD -MP -MF .dep/$(@F).d
@@ -763,8 +722,6 @@ extcoff: $(TARGET).elf
 	@echo $(MSG_EXTENDED_COFF) $(TARGET).cof
 	$(COFFCONVERT) -O coff-ext-avr $< $(TARGET).cof
 
-
-
 # Create final output files (.hex, .eep) from ELF output file.
 %.hex: %.elf
 	@echo
@@ -820,24 +777,12 @@ clean_list :
 	$(REMOVE) *.d
 	$(REMOVEDIR) .dep
 
-
-# Create object files directory
-$(shell mkdir $(OBJDIR) 2>/dev/null)
-
-
 # Include the dependency files.
 -include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
 
-
-# Listing of phony targets.
-.PHONY : all begin finish end sizebefore sizeafter gccversion \
-build elf hex eep lss sym coff extcoff \
-clean clean_list program debug gdb-config stamp_header
-
-
 #### GOOGLE TESTS 
 
-GTEST_DIR = ../gtest-1.6.0/
+GTEST_DIR = ../gtest-1.6.0
 
 # Where to find user code.
 USER_DIR = ./

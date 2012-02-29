@@ -442,7 +442,7 @@ void menuProcModel(uint8_t event)
         uint16_t timer_val = timer->val;
         switch (m_posHorz) {
          case 0:
-           CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS+2*(MAX_PSWITCH+NUM_CSW));
+           CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(MAX_PSWITCH+NUM_CSW));
            break;
          case 1:
          {
@@ -1762,7 +1762,7 @@ void menuProcFunctionSwitches(uint8_t event)
         case 0:
           putsSwitches(1*FW, y, sd->swtch, attr);
           if (active) {
-            CHECK_INCDEC_MODELVAR( event, sd->swtch, -MAX_SWITCH, MAX_SWITCH+1);
+            CHECK_INCDEC_MODELVAR( event, sd->swtch, -MAX_SWITCH, MAX_SWITCH);
           }
           break;
         case 1:
