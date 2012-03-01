@@ -68,9 +68,12 @@
 #define WHITE         0x04
 #define ROUND         0x08
 
+/* switches flags */
+#define SWONLY        0x40 /* means no ON OFF, only switches */
+#define SWCONDENSED   0x80 /* means that THRm will be displayed as THR */
+
 /* other flags */
 #define NO_UNIT       UNSIGN
-#define SHRT_TM_MODE  LEFT
 #define TWO_DOTS      LEFT
 
 extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];

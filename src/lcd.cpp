@@ -494,13 +494,23 @@ void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
 
 void putsSwitches(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
-  switch(idx){
-    case  0:          lcd_putsiAtt(x, y, STR_MMMINV, 0, att);return;
-    case  MAX_SWITCH: lcd_putsiAtt(x, y, STR_OFFON, 1, att);return;
-    case -MAX_SWITCH: lcd_putsiAtt(x, y, STR_OFFON, 0, att);return;
+  if (idx == 0)
+    return lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
+  if (~att & SWONLY) {
+    if (idx == MAX_SWITCH)
+      return lcd_putsiAtt(x, y, STR_OFFON, 1, att);
+    if (idx == -MAX_SWITCH)
+      return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
   }
-  if (idx<0) lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
-  lcd_putsiAtt(x, y, STR_VSWITCHES, abs(idx)-1, att);
+  if (idx<0) {
+    lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
+    idx = -idx;
+  }
+  if (idx >= MAX_SWITCH) {
+    idx -= ((att & SWONLY) ? MAX_SWITCH-1 : MAX_SWITCH);
+    if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, 'm', att);
+  }
+  lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
 
 void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
@@ -529,13 +539,7 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
     return;
   }
 
-  if (mode < TMR_VAROFS+MAX_SWITCH-1) { // normal on-off
-    putsSwitches(x, y, mode-(TMR_VAROFS-1), att);
-  }
-  else {
-    putsSwitches(x, y, mode-(TMR_VAROFS+MAX_SWITCH-2), att); // momentary on-off
-    if (~att & SHRT_TM_MODE) lcd_putcAtt(x+3*FW, y, 'm', att);
-  }
+  putsSwitches(x, y, mode-(TMR_VAROFS-1), att|SWONLY);
 }
 
 #ifdef FRSKY

@@ -70,7 +70,7 @@ class FrskyData: public FrskyRSSI {
 #define EARTH_RADIUS ((uint32_t)111194)
 
 #if defined(FRSKY_HUB)
-struct FrskyHubData {
+PACK(struct FrskyHubData {
   int16_t  baroAltitudeOffset;//       spare reused
   int16_t  gpsAltitude_bp;   // 0x01   before punct
   int16_t  temperature1;     // 0x02   -20 .. 250 deg. celcius
@@ -116,7 +116,7 @@ struct FrskyHubData {
   // end of FrSky Hub data
   uint16_t gpsDistance;
   uint16_t maxGpsSpeed;
-};
+});
 
 #elif defined(WS_HOW_HIGH)
 

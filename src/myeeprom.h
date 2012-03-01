@@ -151,9 +151,33 @@ PACK(typedef struct t_LimitData {
 #define MIX_CYC2  11
 #define MIX_CYC3  12
 
+#define TRIM_ON     0
+#define TRIM_OFF    1
+#define TRIM_OFFSET 2
+
 #define MLTPX_ADD  0
 #define MLTPX_MUL  1
 #define MLTPX_REP  2
+
+/*
+PACK(typedef struct t_MixData {
+  uint8_t destCh:5;          // 0, 1..NUM_CHNOUT
+  uint16_t differential:7;
+  int16_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
+  int8_t  weight;
+  int8_t  swtch:6;
+  uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  int8_t curve:6;
+  uint8_t mixWarn:2;         // mixer warning
+  uint8_t delayUp:4;
+  uint8_t delayDown:4;
+  uint8_t speedUp:4;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
+  uint8_t speedDown:4;       // 0 nichts
+  uint8_t carryTrim:2;
+  uint8_t srcRaw:6;          //
+  int8_t  sOffset;
+}) MixData;
+*/
 
 PACK(typedef struct t_MixData {
   uint8_t destCh:5;          // 0, 1..NUM_CHNOUT

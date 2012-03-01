@@ -1206,11 +1206,9 @@ void menuProcMixOne(uint8_t event)
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, md2->sOffset, -125, 125, 0, STR_MIXEROFFSET);
         break;
       case 3:
-        // TODO hidden when src is not a STICK as it has no sense
         lcd_puts(2*FW, y, STR_TRIM);
-        // lcd_putsnAtt(FW*10, y, STR_OFFON+LEN_OFFON*(1-md2->carryTrim), LEN_OFFON, attr);
-        lcd_putsiAtt(FW*10, y, STR_VMIXTRIMS, md2->carryTrim, attr); // TODO perhaps could be optimized by reusing STR_OFFON
-        if (attr) CHECK_INCDEC_MODELVAR( event, md2->carryTrim, 0, 2);
+        lcd_putsiAtt(FW*10, y, STR_VMIXTRIMS, (md2->srcRaw <= 4) ? md2->carryTrim : 1, attr);
+        if (attr) CHECK_INCDEC_MODELVAR( event, md2->carryTrim, TRIM_ON, TRIM_OFFSET);
         break;
       case 4:
         lcd_puts(2*FW, y, STR_CURVES);
@@ -1760,9 +1758,9 @@ void menuProcFunctionSwitches(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          putsSwitches(1*FW, y, sd->swtch, attr);
+          putsSwitches(3, y, sd->swtch, attr);
           if (active) {
-            CHECK_INCDEC_MODELVAR( event, sd->swtch, -MAX_SWITCH, MAX_SWITCH);
+            CHECK_INCDEC_MODELVAR( event, sd->swtch, -MAX_SWITCH-MAX_PSWITCH-NUM_CSW, MAX_SWITCH+MAX_PSWITCH+NUM_CSW);
           }
           break;
         case 1:
