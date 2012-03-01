@@ -1304,6 +1304,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
       }
       if (md->carryTrim == TRIM_OFFSET) {
         v = md->sOffset;
+        v = calc1000toRESX(v << 3);
         s_trimPtr[md->srcRaw-1] = &md->sOffset;  // use the value stored here for the trim
       }
     }
