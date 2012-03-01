@@ -546,6 +546,10 @@ extern uint8_t  s_eeDirtyMsk;
 #define FORCEINLINE inline __attribute__ ((always_inline))
 #endif
 
+#ifndef NOINLINE
+#define NOINLINE __attribute__ ((noinline))
+#endif
+
 /// liefert Betrag des Arguments
 template<class t> FORCEINLINE t abs(t a) { return a>0?a:-a; }
 /// liefert das Minimum der Argumente

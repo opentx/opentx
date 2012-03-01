@@ -188,7 +188,7 @@ void menuMainView(uint8_t event)
     if (g_model.timer1.mode) {
       uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
       putsTime(12*FW+3, FH*2, s_timerVal[0], att, att);
-      putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timer1.mode, SHRT_TM_MODE);
+      putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timer1.mode, SWCONDENSED);
     }
 
     // trim sliders
@@ -298,7 +298,7 @@ void menuMainView(uint8_t event)
   }
   else { // timer2
     putsTime(33+FW+2, FH*5, s_timerVal[1], DBLSIZE, DBLSIZE);
-    putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timer2.mode, SHRT_TM_MODE);
+    putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timer2.mode, SWCONDENSED);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 

@@ -343,16 +343,74 @@ void processFrskyPacket(uint8_t *packet)
 */
 
 #ifndef SIMU
+
+NOINLINE void processSerialData(uint8_t stat, uint8_t data)
+{
+  static uint8_t numPktBytes = 0;
+  static uint8_t dataState = frskyDataIdle;
+
+  if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0)))
+    { // discard buffer and start fresh on any comms error
+      FrskyRxBufferReady = 0;
+      numPktBytes = 0;
+    }
+    else
+    {
+      if (FrskyRxBufferReady == 0) // can't get more data if the buffer hasn't been cleared
+      {
+        switch (dataState)
+        {
+          case frskyDataStart:
+            if (data == START_STOP) break; // Remain in userDataStart if possible 0x7e,0x7e doublet found.
+
+            if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+              frskyRxBuffer[numPktBytes++] = data;
+            dataState = frskyDataInFrame;
+            break;
+
+          case frskyDataInFrame:
+            if (data == BYTESTUFF)
+            {
+                dataState = frskyDataXOR; // XOR next byte
+                break;
+            }
+            if (data == START_STOP) // end of frame detected
+            {
+              processFrskyPacket(frskyRxBuffer); // FrskyRxBufferReady = 1;
+              dataState = frskyDataIdle;
+              break;
+            }
+            if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+              frskyRxBuffer[numPktBytes++] = data;
+            break;
+
+          case frskyDataXOR:
+            if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+              frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
+            dataState = frskyDataInFrame;
+            break;
+
+          case frskyDataIdle:
+            if (data == START_STOP)
+            {
+              numPktBytes = 0;
+              dataState = frskyDataStart;
+            }
+            break;
+
+        } // switch
+      } // if (FrskyRxBufferReady == 0)
+    }
+}
+
 ISR(USART0_RX_vect)
 {
   uint8_t stat;
   uint8_t data;
   
-  static uint8_t numPktBytes = 0;
-  static uint8_t dataState = frskyDataIdle;
-  
   UCSR0B &= ~(1 << RXCIE0); // disable Interrupt
   sei() ;
+
 
   stat = UCSR0A; // USART control and Status Register 0 A
 
@@ -387,58 +445,8 @@ ISR(USART0_RX_vect)
 
   data = UDR0; // USART data register 0
 
-  if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0)))
-  { // discard buffer and start fresh on any comms error
-    FrskyRxBufferReady = 0;
-    numPktBytes = 0;
-  } 
-  else
-  {
-    if (FrskyRxBufferReady == 0) // can't get more data if the buffer hasn't been cleared
-    {
-      switch (dataState) 
-      {
-        case frskyDataStart:
-          if (data == START_STOP) break; // Remain in userDataStart if possible 0x7e,0x7e doublet found.
+  processSerialData(stat, data);
 
-          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-            frskyRxBuffer[numPktBytes++] = data;
-          dataState = frskyDataInFrame;
-          break;
-
-        case frskyDataInFrame:
-          if (data == BYTESTUFF)
-          { 
-              dataState = frskyDataXOR; // XOR next byte
-              break; 
-          }
-          if (data == START_STOP) // end of frame detected
-          {
-            processFrskyPacket(frskyRxBuffer); // FrskyRxBufferReady = 1;
-            dataState = frskyDataIdle;
-            break;
-          }
-          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-            frskyRxBuffer[numPktBytes++] = data;
-          break;
-
-        case frskyDataXOR:
-          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-            frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
-          dataState = frskyDataInFrame;
-          break;
-
-        case frskyDataIdle:
-          if (data == START_STOP)
-          {
-            numPktBytes = 0;
-            dataState = frskyDataStart;
-          }
-          break;
-
-      } // switch
-    } // if (FrskyRxBufferReady == 0)
-  }
   cli() ;
   UCSR0B |= (1 << RXCIE0); // enable Interrupt
 }

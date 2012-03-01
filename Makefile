@@ -529,16 +529,13 @@ MSG_FLASH = Creating load file for Flash:
 MSG_EEPROM = Creating load file for EEPROM:
 MSG_EXTENDED_LISTING = Creating Extended Listing:
 MSG_SYMBOL_TABLE = Creating Symbol Table:
-MSG_LINKING = Linking:
-MSG_COMPILING = Compiling C:
-MSG_COMPILING_CPP = Compiling C++:
+MSG_COMPILING = Compiling C++:
 MSG_ASSEMBLING = Assembling:
 MSG_CLEANING = Cleaning project:
 MSG_CREATING_LIBRARY = Creating library:
 
 # Compiler flags to generate dependency files.
 GENDEPFLAGS = -MD -MP -MF .dep/$(@F).d
-
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
@@ -554,8 +551,7 @@ BUILD_DIR = $(shell pwd | awk -F'/' '{print $$((NF-1))}')
 all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
-build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm elf hex eep lss sym
-
+build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm allsrc elf remallsrc hex eep lss sym
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -566,8 +562,6 @@ sym: $(TARGET).sym
 # Build stamp-file
 stamp_header:
 	@echo
-	@echo $(CPPSRC)
-	
 	@echo "Generate Version-stamp:"
 	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-open9x.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-open9x.h
@@ -746,14 +740,19 @@ extcoff: $(TARGET).elf
 	@echo $(MSG_SYMBOL_TABLE) $@
 	$(NM) -n $< > $@
 
-# Link: create ELF output file from object files.
-%.elf:
-	@echo
-	@echo $(MSG_LINKING) $@
+# Concatenate all sources files in one big file to optimize size
+allsrc: $(CPPSRC)
 	cat $(CPPSRC) > allsrc.cpp
+	
+remallsrc:
+	$(REMOVE) allsrc.cpp
+    
+# Link: create ELF output file from object files.
+%.elf: allsrc
 	@echo
+	@echo $(MSG_COMPILING) $@
 	$(CC) $(ALL_CPPFLAGS) allsrc.cpp --output $@ $(LDFLAGS)
-
+	
 # Target: clean project.
 clean: begin clean_list end
 
@@ -775,6 +774,7 @@ clean_list :
 	$(REMOVE) $(SRC:.c=.s)
 	$(REMOVE) *.o
 	$(REMOVE) *.d
+	$(REMOVE) allsrc.cpp
 	$(REMOVEDIR) .dep
 
 # Include the dependency files.

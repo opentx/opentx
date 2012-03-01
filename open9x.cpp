@@ -294,7 +294,6 @@ void applyExpos(int16_t *anas, uint8_t phase)
 }
 
 /*TODO evaluate impact FORCEINLINE */
-bool s_noStickInputs = false;
 int16_t getValue(uint8_t i)
 {
     if(i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
@@ -985,28 +984,24 @@ uint8_t mixWarning;
 FORCEINLINE void evalTrims(uint8_t phase)
 {
   for (uint8_t i=0; i<NUM_STICKS; i++) {
-    if (s_noStickInputs && i==THR_STICK) {
-      trims[i] = 0;
+    // do trim -> throttle trim if applicable
+    int16_t v = anas[i];
+    int32_t vv = 2*RESX;
+    int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
+    if (i==THR_STICK && g_model.thrTrim) {
+      if (g_eeGeneral.throttleReversed)
+        trim = -trim;
+      vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
     }
-    else {
-      // do trim -> throttle trim if applicable
-      int16_t v = anas[i];
-      int32_t vv = 2*RESX;
-      int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
-      if (i==THR_STICK && g_model.thrTrim) {
-        if (g_eeGeneral.throttleReversed)
-          trim = -trim;
-        vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
-      }
-      else if (trimsCheckTimer > 0) {
-        trim = 0;
-      }
+    else if (trimsCheckTimer > 0) {
+      trim = 0;
+    }
 
-      trims[i] = (vv==2*RESX) ? trim*2 : (int16_t)vv*2; // if throttle trim -> trim low end
-    }
+    trims[i] = (vv==2*RESX) ? trim*2 : (int16_t)vv*2; // if throttle trim -> trim low end
   }
 }
 
+bool s_noTrainerInput = false;
 uint8_t evalSticks(uint8_t phase)
 {
 #ifdef HELI
@@ -1047,7 +1042,7 @@ uint8_t evalSticks(uint8_t phase)
     if (tmp <= 1) anaCenter |= (tmp==0 ? 1<<ch : bpanaCenter & (1<<ch));
 
     if (ch < NUM_STICKS) { //only do this for sticks
-      if (!s_noStickInputs && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
+      if (!s_noTrainerInput && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -1244,9 +1239,6 @@ void perOut(int16_t *chanOut, uint8_t phase)
       v = anas[k]; //Switch is on. MAX=FULL=512 or value.
       if (k>=CHOUT_BASE && (k<i)) v = chans[k]; // if we've already calculated the value - take it instead // anas[i+CHOUT_BASE] = chans[i]
       if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
-      if (md->carryTrim == 2/*TODO constant*/ && md->srcRaw <= NUM_STICKS) {
-        s_trimPtr[md->srcRaw-1] = &md->sOffset;  // use the value stored here for the trim
-      }
     }
 
     //========== INPUT OFFSET ===============
@@ -1305,8 +1297,16 @@ void perOut(int16_t *chanOut, uint8_t phase)
     if (md->curve)
       v = applyCurve(v, md->curve, md->srcRaw);
 
-    //========== TRIM ===============
-    if((md->carryTrim==0) && (md->srcRaw>0) && (md->srcRaw<=4)) v += trims[md->srcRaw-1];  //  0 = Trim ON  =  Default
+    //========== TRIMS ===============
+    if (md->srcRaw>0 && md->srcRaw<=NUM_STICKS) {
+      if (md->carryTrim == TRIM_ON) {
+        v += trims[md->srcRaw-1];
+      }
+      if (md->carryTrim == TRIM_OFFSET) {
+        v = md->sOffset;
+        s_trimPtr[md->srcRaw-1] = &md->sOffset;  // use the value stored here for the trim
+      }
+    }
 
     //========== MULTIPLEX ===============
     int32_t dv = (int32_t)v*md->weight;
@@ -2019,9 +2019,9 @@ void instantTrim()
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(i, phase);
-      s_noStickInputs = true;
+      s_noTrainerInput = true;
       evalSticks(phase);
-      s_noStickInputs = false;
+      s_noTrainerInput = false;
       int16_t trim = (anas[i] + trims[i]) / 2;
       if (trim < TRIM_EXTENDED_MIN) {
         trim = TRIM_EXTENDED_MIN;
