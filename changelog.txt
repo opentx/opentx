@@ -1,4 +1,26 @@
 ******************************************
+CHANGELOG: 02-03-2012  BSS
+MAX changed to HALF (idea from er9x)
+
+******************************************
+CHANGELOG: 01-03-2012  BSS
+Feature "Use THR trim as a slider" now finished
+[FrSky] Jitter (2us) introduced by last optimization removed
+Trim parameter in Mixer is OFF if the source is not a stick
+
+******************************************
+
+Version 304:
+
+******************************************
+CHANGELOG: 28-02-2012  BSS
+Flash saving (600bytes)
+[FrSky] NO DATA displayed on the status line when nothing received
+Sticks/Pots center beep now more accurate
+Beeps length for center beep and inactivity reduced
+Vibration when MIN/MID/MAX trim position reached  
+
+******************************************
 CHANGELOG: 27-02-2012  BSS
 Flash saving (idea from er9x)
 Trims2Offsets function removed
