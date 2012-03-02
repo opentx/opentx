@@ -120,7 +120,7 @@
 #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
 
 #define LEN_VSRCRAW      "\004"
-#define TR_VSRCRAW       "RUD ""ELE ""THR ""AIL ""P1  ""P2  ""P3  ""MAX ""FULL""CYC1""CYC2""CYC3"
+#define TR_VSRCRAW       "RUD ""ELE ""THR ""AIL ""P1  ""P2  ""P3  ""HALF""FULL""CYC1""CYC2""CYC3"
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
@@ -215,7 +215,7 @@
 #define TR_HAPTICMODE   "Haptic Mode"
 #define TR_HAPTICSTRENGTH "Haptic Strength"
 #define TR_CONTRAST     "Contrast"
-#define TR_BATTERYWARNING "Battery warning"
+#define TR_BATTERYWARNING "Battery Warning"
 #define TR_INACTIVITYALARM "Inactivity alarm"
 #define TR_FILTERADC    "Filter ADC"
 #define TR_THROTTLEREVERSE "Throttle reverse"
