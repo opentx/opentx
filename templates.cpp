@@ -145,7 +145,7 @@ void applyTemplate(uint8_t idx)
 
       // T-Cut
       case (1):
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIX_MAX;  md->weight=-100;  md->swtch=DSW_THR;  md->mltpx=MLTPX_REP;
+        md=setDest(ICC(STK_THR));  md->srcRaw=MIX_HALF;  md->weight=-100;  md->swtch=DSW_THR;  md->mltpx=MLTPX_REP;
         break;
 
       // V-Tail
@@ -192,12 +192,12 @@ void applyTemplate(uint8_t idx)
         md=setDest(ICC(STK_THR));  md->srcRaw=SRC_THR;  md->weight= 100; md->swtch=DSW_ID0; md->curve=CV(1); md->carryTrim=TRIM_OFF;
         md=setDest(ICC(STK_THR));  md->srcRaw=SRC_THR;  md->weight= 100; md->swtch=DSW_ID1; md->curve=CV(2); md->carryTrim=TRIM_OFF;
         md=setDest(ICC(STK_THR));  md->srcRaw=SRC_THR;  md->weight= 110; md->swtch=DSW_ID2; md->curve=CV(2); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIX_MAX;      md->weight=-125; md->swtch=DSW_THR;  md->mltpx=MLTPX_REP; md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR));  md->srcRaw=MIX_HALF;      md->weight=-125; md->swtch=DSW_THR;  md->mltpx=MLTPX_REP; md->carryTrim=TRIM_OFF;
 
         md=setDest(ICC(STK_RUD));  md->srcRaw=SRC_RUD; md->weight=100;
 
-        md=setDest(5);  md->srcRaw=MIX_MAX; md->weight= 50; md->swtch=-DSW_GEA; md->carryTrim=TRIM_OFF;
-        md=setDest(5);  md->srcRaw=MIX_MAX; md->weight=-50; md->swtch= DSW_GEA; md->carryTrim=TRIM_OFF;
+        md=setDest(5);  md->srcRaw=MIX_HALF; md->weight= 50; md->swtch=-DSW_GEA; md->carryTrim=TRIM_OFF;
+        md=setDest(5);  md->srcRaw=MIX_HALF; md->weight=-50; md->swtch= DSW_GEA; md->carryTrim=TRIM_OFF;
         md=setDest(5);  md->srcRaw=STK_P3;  md->weight= 40; md->carryTrim=TRIM_OFF;
 
         md=setDest(6);  md->srcRaw=CH(9);   md->weight= -50;
@@ -223,8 +223,8 @@ void applyTemplate(uint8_t idx)
       case (6):
         md=setDest(15); md->srcRaw=CH(16);   md->weight= 100; md->speedUp = 8; md->speedDown = 8;
         md=setDest(16); md->srcRaw=MIX_FULL; md->weight= 110; md->swtch=DSW_SW1;
-        md=setDest(16); md->srcRaw=MIX_MAX;  md->weight=-110; md->swtch=DSW_SW2; md->mltpx=MLTPX_REP;
-        md=setDest(16); md->srcRaw=MIX_MAX;  md->weight= 110; md->swtch=DSW_SW3; md->mltpx=MLTPX_REP;
+        md=setDest(16); md->srcRaw=MIX_HALF;  md->weight=-110; md->swtch=DSW_SW2; md->mltpx=MLTPX_REP;
+        md=setDest(16); md->srcRaw=MIX_HALF;  md->weight= 110; md->swtch=DSW_SW3; md->mltpx=MLTPX_REP;
 
         setSwitch(1,CS_LESS,CH(15),CH(16));
         setSwitch(2,CS_VPOS,CH(15),   105);
