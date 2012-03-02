@@ -1122,7 +1122,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
   if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_STICK_MIDDLE();
   bpanaCenter = anaCenter;
 
-  anas[MIX_MAX-1]  = RESX;     // MAX
+  anas[MIX_HALF-1] = RESX;     // HALF
   anas[MIX_FULL-1] = RESX;     // FULL
 
 #ifdef HELI
@@ -1228,7 +1228,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
     if (!getSwitch(md->swtch,1)) { // switch on?  if no switch selected => on
       swTog = swOn[i];
       swOn[i] = false;
-      if(md->srcRaw!=MIX_MAX && md->srcRaw!=MIX_FULL) continue;// if not MAX or FULL - next loop
+      if(md->srcRaw!=MIX_HALF && md->srcRaw!=MIX_FULL) continue;// if not MAX or FULL - next loop
       if(md->mltpx==MLTPX_REP) continue; // if switch is off and REPLACE then off
       v = (md->srcRaw == MIX_FULL ? -RESX : 0); // switch is off and it is either MAX=0 or FULL=-512
     }

@@ -145,7 +145,7 @@ PACK(typedef struct t_LimitData {
 #define MIX_P1    5
 #define MIX_P2    6
 #define MIX_P3    7
-#define MIX_MAX   8
+#define MIX_HALF  8
 #define MIX_FULL  9
 #define MIX_CYC1  10
 #define MIX_CYC2  11

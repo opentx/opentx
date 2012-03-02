@@ -120,7 +120,7 @@
 #define TR_VSWITCHES     "GAZ""DIR""PRF""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
 
 #define LEN_VSRCRAW      "\004"
-#define TR_VSRCRAW       "DIR ""PRF ""GAZ ""AIL ""P1  ""P2  ""P3  ""MAX ""FULL""CYC1""CYC2""CYC3"
+#define TR_VSRCRAW       "DIR ""PRF ""GAZ ""AIL ""P1  ""P2  ""P3  ""DEMI""TOUT""CYC1""CYC2""CYC3"
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
@@ -140,7 +140,7 @@
 #define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
 
 // ZERO TERMINATED STRINGS
-#define TR_POPUPS       "[MENU]\004[EXIT]"
+#define TR_POPUPS       "[MENU]\004[QUIT]"
 #define OFS_EXIT        7
 #define TR_MENUWHENDONE "[MENU]Quand PRET"
 #define TR_FREE         "libre"
@@ -201,7 +201,7 @@
 #define TR_ALARM        "Alarme"
 #define TR_USRDATA      "UsrData"
 #define TR_BLADES       "Blades"
-#define TR_BARS         "Bars"
+#define TR_BARS         "Gauges"
 #define TR_CLEARMIXMENU "EFFACER MIXAGES[MENU]"
 #ifdef AUDIO
 #define TR_BEEPERMODE   "Speaker Mode"
@@ -212,10 +212,10 @@
 #define TR_BEEPERLEN    "Beeper Length"
 #endif
 #define TR_HAPTICMODE   "Mode Vibreur"
-#define TR_HAPTICSTRENGTH "Haptic Strength"
+#define TR_HAPTICSTRENGTH "Force Vibreur"
 #define TR_CONTRAST     "Contraste"
 #define TR_BATTERYWARNING "Alarme Batterie"
-#define TR_INACTIVITYALARM "Alarme inactivite"
+#define TR_INACTIVITYALARM "Alarme Inactivite"
 #define TR_FILTERADC    "Filtre ADC"
 #define TR_THROTTLEREVERSE "Inversion Gaz"
 #define TR_MINUTEBEEP   "Bip t.minutes"
