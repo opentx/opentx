@@ -742,7 +742,8 @@ extcoff: $(TARGET).elf
 
 # Concatenate all sources files in one big file to optimize size
 allsrc: $(CPPSRC)
-	cat $(CPPSRC) > allsrc.cpp
+	@echo -n > allsrc.cpp
+	for f in $(CPPSRC); do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 	
 remallsrc:
 	$(REMOVE) allsrc.cpp
