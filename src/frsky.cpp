@@ -610,13 +610,6 @@ void resetTelemetry()
   memset(frskyTelemetry, 0, sizeof(frskyTelemetry));
   memset(frskyRSSI, 0, sizeof(frskyRSSI));
 
-#ifdef SIMU
-  frskyHubData.gpsLatitude_bp = 4401;
-  frskyHubData.gpsLatitude_ap = 7710;
-  frskyHubData.gpsLongitude_bp = 1006;
-  frskyHubData.gpsLongitude_ap = 8872;
-#endif
-
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
 #endif
@@ -639,11 +632,20 @@ void resetTelemetry()
   frskyTelemetry[0].set(120);
   frskyRSSI[0].set(75);
   frskyHubData.fuelLevel = 75;
+
+  frskyHubData.gpsFix = 1;
+  frskyHubData.gpsLatitude_bp = 4401;
+  frskyHubData.gpsLatitude_ap = 7710;
+  frskyHubData.gpsLongitude_bp = 1006;
+  frskyHubData.gpsLongitude_ap = 8872;
+  getGpsPilotPosition();
+
   frskyHubData.gpsLatitude_bp = 4401;
   frskyHubData.gpsLatitude_ap = 7455;
   frskyHubData.gpsLongitude_bp = 1006;
   frskyHubData.gpsLongitude_ap = 9533;
-  frskyHubData.gpsFix = 1;
+  getGpsDistance();
+
   frskyHubData.cellsCount = 6;
 #endif
 }
