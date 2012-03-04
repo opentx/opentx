@@ -1,11 +1,8 @@
 #! /usr/bin/env ruby
 
-
 require 'pp'
 
-
-
-def main(xbm)
+def main(header, xbm)
   base=xbm.sub(/\.xbm/,"")
   cols,rows=1,1
   if base.sub! /_(\d+)x(\d+)/,""
@@ -35,7 +32,9 @@ def main(xbm)
 
   File.open("#{base}.lbm","w"){|f|
     col=0
-    f.printf("%d,%d,\n",w/cols,h/rows)
+    if header == "yes"
+      f.printf("%d,%d,\n",w/cols,h/rows)
+    end
     rows.times{|row|
       (hb/rows).times{|yb| yb
         w.times{|xp|
@@ -48,4 +47,4 @@ def main(xbm)
 end
 
 
-main(ARGV[0])
+main(ARGV[0], ARGV[1])

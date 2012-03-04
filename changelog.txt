@@ -1,12 +1,20 @@
 ******************************************
-CHANGELOG: 02-03-2012  BSS
-MAX changed to HALF (idea from er9x)
+CHANGELOG: 04-03-2012  BSS
+New EEPROM format 205
+Introduction of differential in Mixers
+Introduction of Switches as Mixer Source (FULL now removed)
+Negative curves in Mixers
+Optimizations in Mixer
+Extended chars for localization
+Swedish translations
+Beep length updated
 
 ******************************************
 CHANGELOG: 01-03-2012  BSS
 Feature "Use THR trim as a slider" now finished
 [FrSky] Jitter (2us) introduced by last optimization removed
 Trim parameter in Mixer is OFF if the source is not a stick
+GPS distance fixed
 
 ******************************************
 
