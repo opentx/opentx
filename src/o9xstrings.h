@@ -36,10 +36,16 @@
 
 #if defined(TRANSLATIONS_FR)
 #include "translations/fr.h"
+#define LEN_SPECIAL_CHARS 0
 #elif defined(TRANSLATIONS_IT)
 #include "translations/it.h"
+#define LEN_SPECIAL_CHARS 0
+#elif defined(TRANSLATIONS_SE)
+#include "translations/se.h"
+#define LEN_SPECIAL_CHARS 6
 #else
 #include "translations/en.h"
+#define LEN_SPECIAL_CHARS 0
 #endif
 
 #define PSIZE(x) ( sizeof(x) - 1 )
@@ -205,6 +211,7 @@ extern const pm_char STR_INSERTMIX[];
 extern const pm_char STR_EDITMIX[];
 extern const pm_char STR_SOURCE[];
 extern const pm_char STR_WEIGHT[];
+extern const pm_char STR_DIFFERENTIAL[];
 extern const pm_char STR_OFFSET[];
 extern const pm_char STR_TRIM[];
 extern const pm_char STR_CURVES[];
@@ -334,3 +341,6 @@ extern const pm_char STR_DREXPO[];
 extern const pm_char STR_MINLIMIT[];
 extern const pm_char STR_MAXLIMIT[];
 #endif
+
+extern const pm_uchar font[];
+extern const pm_uchar font_dblsize[];

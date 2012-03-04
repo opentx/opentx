@@ -120,7 +120,7 @@
 #define TR_VSWITCHES     "GAZ""DIR""PRF""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
 
 #define LEN_VSRCRAW      "\004"
-#define TR_VSRCRAW       "DIR ""PRF ""GAZ ""AIL ""P1  ""P2  ""P3  ""DEMI""TOUT""CYC1""CYC2""CYC3"
+#define TR_VSRCRAW       "Dir ""Prf ""Gaz ""Ail ""P1  ""P2  ""P3  ""MAX ""3POS""CYC1""CYC2""CYC3"
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
@@ -178,6 +178,7 @@
 #define TR_SOURCE       "Source"
 #define TR_WEIGHT       "Ratio"
 #define TR_MIXERWEIGHT  "Ratio Mixage"
+#define TR_DIFFERENTIAL "Differ"
 #define TR_OFFSET       "Offset"
 #define TR_MIXEROFFSET  "Offset Mixage"
 #define TR_DRWEIGHT     "Ratio DR"

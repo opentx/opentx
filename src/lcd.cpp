@@ -33,14 +33,6 @@
 
 #include "open9x.h"
 
-const pm_uchar font[] PROGMEM = {
-#include "font.lbm"
-};
-
-const pm_uchar font_dblsize[] PROGMEM = {
-#include "font_dblsize.lbm"
-};
-
 #define font_5x8_x20_x7f (font+2)
 #define font_10x16_x20_x7f (font_dblsize+2)
 
@@ -75,7 +67,7 @@ void lcd_img(uint8_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mo
 
 uint8_t lcd_lastPos;
 
-void lcd_putcAtt(uint8_t x, uint8_t y, const char c, uint8_t mode)
+void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
 {
   uint8_t *p    = &displayBuf[ y / 8 * DISPLAY_W + x ];
 
@@ -85,15 +77,15 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const char c, uint8_t mode)
   {
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
-    q = &font_10x16_x20_x7f[(c-0x20)*10 + ((c-0x20)/16)*160];
+    q = &font_10x16_x20_x7f[((uint16_t)c-0x20)*10 + (((uint16_t)c-0x20)/16)*160];
     for(char i=5; i>=0; i--) {
       if (mode & CONDENSED && i==0) break;
       uint8_t b1=0, b2=0, b3=0, b4=0;
       if (i>0) {
         b1 = pgm_read_byte(q); /*top byte*/
-        b3 = pgm_read_byte(160+q); /*bottom byte*/
+        b3 = pgm_read_byte((uint16_t)160+q); /*bottom byte*/
         b2 = pgm_read_byte(++q); /*top byte*/
-        b4 = pgm_read_byte(160+q); /*bottom byte*/
+        b4 = pgm_read_byte((uint16_t)160+q); /*bottom byte*/
       }
       if(inv) {
         b1=~b1;
@@ -152,7 +144,7 @@ void lcd_putsiAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t idx, uint8_t fla
 void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mode)
 {
   while(len!=0) {
-    char c;
+    unsigned char c;
     switch (mode & (BSS+ZCHAR)) {
       case BSS:
         c = *s;
@@ -465,7 +457,7 @@ void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
     putsStrIdx(x, y, STR_TMR, idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT), att);
 #ifdef FRSKY
   else
-    lcd_putsiAtt(x, y, STR_TELEMCHNS, idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+MAX_TIMERS+NUM_CHNOUT), att);
+    lcd_putsiAtt(x, y, STR_TELEMCHNS, idx-1-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT+MAX_TIMERS), att);
 #endif
 }
 
@@ -473,6 +465,16 @@ void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx > 0 && idx <= NUM_CHNOUT)
     putsChnRaw(x, y, idx+20, att);
+}
+
+void putsMixerSource(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
+{
+  if (idx<=NUM_STICKS+NUM_POTS+2)
+    putsChnRaw(x, y, idx, att);
+  else if (idx<=NUM_STICKS+NUM_POTS+2+MAX_SWITCH)
+    putsSwitches(x, y, idx-NUM_STICKS-NUM_POTS-2, att);
+  else
+    putsChnRaw(x, y, idx-MAX_SWITCH, att);
 }
 
 void putsChnLetter(uint8_t x, uint8_t y, uint8_t idx, uint8_t attr)
@@ -497,17 +499,17 @@ void putsSwitches(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
   if (idx == 0)
     return lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
   if (~att & SWONLY) {
-    if (idx == MAX_SWITCH)
+    if (idx == SWITCH_ON)
       return lcd_putsiAtt(x, y, STR_OFFON, 1, att);
-    if (idx == -MAX_SWITCH)
+    if (idx == SWITCH_OFF)
       return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
   }
   if (idx<0) {
     lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
     idx = -idx;
   }
-  if (idx >= MAX_SWITCH) {
-    idx -= ((att & SWONLY) ? MAX_SWITCH-1 : MAX_SWITCH);
+  if (idx > MAX_SWITCH) {
+    idx -= ((att & SWONLY) ? MAX_SWITCH : MAX_SWITCH+1);
     if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, 'm', att);
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
@@ -520,8 +522,12 @@ void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
   putsStrIdx(x, y, STR_FP, idx-1, att);
 }
 
-void putsCurve(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
+void putsCurve(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
+  if (idx < 0) {
+    lcd_putcAtt(x-1*FW, y, '!', att);
+    idx = -idx + 6;
+  }
   if (idx < CURVE_BASE)
     lcd_putsiAtt(x, y, STR_VCURVEFUNC, idx, att);
   else

@@ -48,7 +48,7 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#define EEPROM_VER       204
+#define EEPROM_VER       205
 
 #ifndef PACK
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
@@ -138,6 +138,7 @@ PACK(typedef struct t_LimitData {
   int16_t offset;
 }) LimitData;
 
+// TODO enum
 #define SRC_RUD   1
 #define SRC_ELE   2
 #define SRC_THR   3
@@ -145,11 +146,29 @@ PACK(typedef struct t_LimitData {
 #define MIX_P1    5
 #define MIX_P2    6
 #define MIX_P3    7
-#define MIX_HALF  8
-#define MIX_FULL  9
-#define MIX_CYC1  10
-#define MIX_CYC2  11
-#define MIX_CYC3  12
+#define MIX_MAX   8
+#define MIX_3POS  9
+#define MIX_THR   10
+#define MIX_RUD   11
+#define MIX_ELE   12
+#define MIX_ID0   13
+#define MIX_ID1   14
+#define MIX_ID2   15
+#define MIX_AIL   16
+#define MIX_GEA   17
+#define MIX_TRN   18
+#define MIX_SW1   19
+#define MIX_SW9   27
+#define MIX_SWA   28
+#define MIX_SWB   29
+#define MIX_SWC   30
+#define MIX_CYC1  31
+#define MIX_CYC2  32
+#define MIX_CYC3  33
+#define MIX_PPM1  34
+#define MIX_PPM8  41
+#define MIX_CH1   42
+#define MIX_CH16  57
 
 #define TRIM_ON     0
 #define TRIM_OFF    1
@@ -159,40 +178,21 @@ PACK(typedef struct t_LimitData {
 #define MLTPX_MUL  1
 #define MLTPX_REP  2
 
-/*
 PACK(typedef struct t_MixData {
-  uint8_t destCh:5;          // 0, 1..NUM_CHNOUT
-  uint16_t differential:7;
-  int16_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
+  uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
+  int8_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
   int8_t  weight;
   int8_t  swtch:6;
   uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  int8_t curve:6;
+  int8_t  curve:6;
   uint8_t mixWarn:2;         // mixer warning
   uint8_t delayUp:4;
   uint8_t delayDown:4;
   uint8_t speedUp:4;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
   uint8_t speedDown:4;       // 0 nichts
-  uint8_t carryTrim:2;
-  uint8_t srcRaw:6;          //
-  int8_t  sOffset;
-}) MixData;
-*/
-
-PACK(typedef struct t_MixData {
-  uint8_t destCh:5;          // 0, 1..NUM_CHNOUT
-  uint8_t mixWarn:3;         // mixer warning
-  uint8_t srcRaw;            //
-  int8_t  weight;
-  int8_t  swtch;
-  uint8_t curve;
-  uint8_t delayUp:4;
-  uint8_t delayDown:4;
-  uint8_t speedUp:4;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
-  uint8_t speedDown:4;       // 0 nichts
-  uint8_t carryTrim:2;
-  uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  int8_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
+  uint16_t srcRaw:7;         //
+  uint16_t differential:7;
+  uint16_t carryTrim:2;
   int8_t  sOffset;
 }) MixData;
 
@@ -282,6 +282,7 @@ PACK(typedef struct t_FrSkyData {
   uint16_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint16_t spare:2;
   FrSkyBarData bars[4];
+  FrSkyRSSIAlarm rssiAlarms[2];
 }) FrSkyData;
 
 PACK(typedef struct t_SwashRingData { // Swash Ring data
@@ -337,7 +338,7 @@ PACK(typedef struct t_TimerData {
 
 PACK(typedef struct t_ModelData {
   char      name[10];             // 10 must be first for eeLoadModelName
-  TimerData timer1;               // TODO timers array
+  TimerData timers[MAX_TIMERS];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -349,7 +350,6 @@ PACK(typedef struct t_ModelData {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  TimerData timer2;
   MixData   mixData[MAX_MIXERS];
   LimitData limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
@@ -363,7 +363,6 @@ PACK(typedef struct t_ModelData {
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
-  FrSkyRSSIAlarm frskyRssiAlarms[2]; // TODO next EEPROM: merge with FrSkyData
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

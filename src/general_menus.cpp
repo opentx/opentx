@@ -94,22 +94,28 @@ void menuProcSetup(uint8_t event)
 #undef  PARAM_OFS
 #define PARAM_OFS   17*FW
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0,
 #ifdef AUDIO
-      0,
+#define AUDIO_ZEROS  0,
+#else
+#define AUDIO_ZEROS
 #endif
 #ifdef HAPTIC
-      0, 0,
+#define HAPTIC_ZEROS 0, 0,
+#else
+#define HAPTIC_ZEROS
 #endif
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 #ifdef SPLASH
-      0,
+#define SPLASH_ZEROS 0,
+#else
+#define SPLASH_ZEROS
 #endif
-      0, 0, 0, 0,
 #ifdef FRSKY
-      0,
+#define FRSKY_ZEROS  0,
+#else
+#define FRSKY_ZEROS
 #endif
-      0, -1, 1});
+
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0, AUDIO_ZEROS HAPTIC_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
   int8_t  sub    = m_posVert;
   uint8_t y = 1*FH;
@@ -226,7 +232,7 @@ void menuProcSetup(uint8_t event)
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_LIGHTSWITCH);
     putsSwitches(PARAM_OFS,y,g_eeGeneral.lightSw,sub==subN ? INVERS : 0);
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightSw, -MAX_SWITCH, MAX_SWITCH);
+    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightSw, SWITCH_OFF, SWITCH_ON);
     if((y+=FH)>7*FH) return;
   }subN++;
 

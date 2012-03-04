@@ -126,6 +126,7 @@ const pm_char STR_INSERTMIX[] PROGMEM = TR_INSERTMIX;
 const pm_char STR_EDITMIX[] PROGMEM = TR_EDITMIX;
 const pm_char STR_SOURCE[] PROGMEM = TR_SOURCE;
 const pm_char STR_WEIGHT[] PROGMEM = TR_WEIGHT;
+const pm_char STR_DIFFERENTIAL[] PROGMEM = TR_DIFFERENTIAL;
 const pm_char STR_OFFSET[] PROGMEM = TR_OFFSET;
 const pm_char STR_TRIM[] PROGMEM = TR_TRIM;
 const pm_char STR_CURVES[] PROGMEM = TR_CURVES;
@@ -280,3 +281,18 @@ const pm_char STR_DREXPO[] PROGMEM = TR_DREXPO;
 const pm_char STR_MINLIMIT[] PROGMEM = TR_MINLIMIT;
 const pm_char STR_MAXLIMIT[] PROGMEM = TR_MAXLIMIT;
 #endif
+
+const pm_uchar font[] PROGMEM = {
+#include "font.lbm"
+#ifdef TRANSLATIONS_SE
+#include "font_se.lbm"
+#endif
+};
+
+const pm_uchar font_dblsize[] PROGMEM = {
+// TODO flash saving with locale extensions
+#include "font_dblsize.lbm"
+#ifdef TRANSLATIONS_SE
+#include "font_dblsize_se.lbm"
+#endif
+};

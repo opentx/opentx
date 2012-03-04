@@ -430,8 +430,8 @@ void menuProcModel(uint8_t event)
     if((y+=FH)>7*FH) return;
   }subN++;
 
-  TimerData *timer = &g_model.timer1;
-  for (uint8_t i=0; i<2; i++, timer=&g_model.timer2) {
+  for (uint8_t i=0; i<2; i++) {
+    TimerData *timer = &g_model.timers[i];
     if (s_pgOfs<subN) {
       putsStrIdx(0*FW, y, STR_TIMER, i+1);
       putsTmrMode(PARAM_OFS, y, timer->mode, sub==subN && m_posHorz==0 ? ((s_editMode>0) ? BLINK : INVERS) : 0);
@@ -938,7 +938,7 @@ uint8_t getExpoMixCount(uint8_t expo)
   uint8_t ch ;
 
   for(int8_t i=(expo ? MAX_EXPOS-1 : MAX_MIXERS-1); i>=0; i--) {
-    ch = (expo ? expoaddress(i)->mode : mixaddress(i)->destCh);
+    ch = (expo ? expoaddress(i)->mode : mixaddress(i)->srcRaw);
     if (ch != 0) {
       count++;
     }
@@ -984,7 +984,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     MixData *mix = mixaddress(idx);
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
     memset(mix,0,sizeof(MixData));
-    mix->destCh = s_currCh;
+    mix->destCh = s_currCh-1;
     mix->srcRaw = s_currCh;
     mix->weight = 100;
   }
@@ -1060,14 +1060,14 @@ bool swapMix(uint8_t &idx, uint8_t up)
   int8_t tgt_idx = (up ? idx-1 : idx+1);
 
   if (tgt_idx < 0) {
-    if (x->destCh == 1)
+    if (x->destCh == 0)
       return false;
     x->destCh--;
     return true;
   }
 
   if (tgt_idx == MAX_MIXERS) {
-    if (x->destCh == NUM_CHNOUT)
+    if (x->destCh == NUM_CHNOUT-1)
       return false;
     x->destCh++;
     return true;
@@ -1076,11 +1076,11 @@ bool swapMix(uint8_t &idx, uint8_t up)
   MixData *y = mixaddress(tgt_idx);
   if(x->destCh != y->destCh) {
     if (up) {
-      if (x->destCh>1) x->destCh--;
+      if (x->destCh>0) x->destCh--;
       else return false;
     }
     else {
-      if (x->destCh<NUM_CHNOUT) x->destCh++;
+      if (x->destCh<NUM_CHNOUT-1) x->destCh++;
       else return false;
     }
     return true;
@@ -1180,8 +1180,8 @@ void menuProcMixOne(uint8_t event)
 {
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
-  putsChn(lcd_lastPos+1*FW,0,md2->destCh,0);
-  SIMPLE_SUBMENU_NOTITLE(13);
+  putsChn(lcd_lastPos+1*FW,0,md2->destCh+1,0);
+  SIMPLE_SUBMENU_NOTITLE(14);
 
   int8_t  sub = m_posVert;
 
@@ -1192,8 +1192,8 @@ void menuProcMixOne(uint8_t event)
     switch(i) {
       case 0:
         lcd_puts(2*FW, y, STR_SOURCE);
-        putsChnRaw(FW*10, y, md2->srcRaw, attr);
-        if(attr) CHECK_INCDEC_MODELVAR(event, md2->srcRaw, 1,NUM_XCHNRAW);
+        putsMixerSource(FW*10, y, md2->srcRaw, attr);
+        if(attr) CHECK_INCDEC_MODELVAR(event, md2->srcRaw, 1, NUM_XCHNMIX); // TODO use enum
         break;
       case 1:
         lcd_puts(2*FW, y, STR_WEIGHT);
@@ -1201,35 +1201,41 @@ void menuProcMixOne(uint8_t event)
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, md2->weight, -125, 125, 0, STR_MIXERWEIGHT);
         break;
       case 2:
+        // TODO INFLIGHT
+        lcd_puts(2*FW, y, STR_DIFFERENTIAL);
+        lcd_outdezAtt(FW*10, y, md2->differential, attr|LEFT);
+        if (attr) CHECK_INCDEC_MODELVAR(event, md2->differential, 0, 100);
+        break;
+      case 3:
         lcd_puts(2*FW, y, STR_OFFSET);
         lcd_outdezAtt(FW*10, y, md2->sOffset, attr|LEFT|INFLIGHT(md2->sOffset));
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, md2->sOffset, -125, 125, 0, STR_MIXEROFFSET);
         break;
-      case 3:
+      case 4:
         lcd_puts(2*FW, y, STR_TRIM);
         lcd_putsiAtt(FW*10, y, STR_VMIXTRIMS, (md2->srcRaw <= 4) ? md2->carryTrim : 1, attr);
         if (attr) CHECK_INCDEC_MODELVAR( event, md2->carryTrim, TRIM_ON, TRIM_OFFSET);
         break;
-      case 4:
+      case 5:
         lcd_puts(2*FW, y, STR_CURVES);
         putsCurve(FW*10, y, md2->curve, attr);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->curve, 0,MAX_CURVE5+MAX_CURVE9+7-1);
-        if(attr && md2->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)){
-          s_curveChan = md2->curve-CURVE_BASE;
+        if(attr) CHECK_INCDEC_MODELVAR( event, md2->curve, -MAX_CURVE5-MAX_CURVE9, MAX_CURVE5+MAX_CURVE9+7-1);
+        if(attr && event==EVT_KEY_FIRST(KEY_MENU) && (md2->curve<0 || md2->curve>=CURVE_BASE)){
+          s_curveChan = (md2->curve<0 ? -md2->curve-1 : md2->curve-CURVE_BASE);
           pushMenu(menuProcCurveOne);
         }
         break;
-      case 5:
+      case 6:
         lcd_puts(  2*FW,y,STR_SWITCH);
         putsSwitches(10*FW,  y,md2->swtch,attr);
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->swtch, -MAX_SWITCH, MAX_SWITCH);
         break;
-      case 6:
+      case 7:
         lcd_puts(  2*FW,y,STR_FPHASE);
         putsFlightPhase(10*FW, y, md2->phase, attr);
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->phase, -MAX_PHASES, MAX_PHASES);
         break;
-      case 7:
+      case 8:
         lcd_puts(  2*FW,y,STR_WARNING);
         if(md2->mixWarn)
           lcd_outdezAtt(FW*10,y,md2->mixWarn,attr|LEFT);
@@ -1237,27 +1243,27 @@ void menuProcMixOne(uint8_t event)
           lcd_putsAtt(FW*10, y, STR_OFF, attr);
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->mixWarn, 0,3);
         break;
-      case 8:
+      case 9:
         lcd_puts(  2*FW,y,STR_MULTPX);
         lcd_putsiAtt(10*FW, y, STR_VMLTPX, md2->mltpx, attr);
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->mltpx, 0, 2);
         break;
-      case 9:
+      case 10:
         lcd_puts(  2*FW,y,STR_DELAYDOWN);
         lcd_outdezAtt(FW*16,y,md2->delayDown,attr);
         if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayDown, 0,15);
         break;
-      case 10:
+      case 11:
         lcd_puts(  2*FW,y,STR_DELAYUP);
         lcd_outdezAtt(FW*16,y,md2->delayUp,attr);
         if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayUp, 0,15);
         break;
-      case 11:
+      case 12:
         lcd_puts(  2*FW,y,STR_SLOWDOWN);
         lcd_outdezAtt(FW*16,y,md2->speedDown,attr);
         if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedDown, 0,15);
         break;
-      case 12:
+      case 13:
         lcd_puts(  2*FW,y,STR_SLOWUP);
         lcd_outdezAtt(FW*16,y,md2->speedUp,attr);
         if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedUp, 0,15);
@@ -1277,7 +1283,7 @@ inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, 
   if (idx > 0)
     lcd_putsiAtt(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
-  putsChnRaw(4*FW+2, y, md->srcRaw, 0);
+  putsMixerSource(4*FW+2, y, md->srcRaw, 0);
 
   uint8_t attr = ((s_copyMode || cur != row) ? 0 : INVERS);
   lcd_outdezAtt(11*FW+7, y, md->weight, attr);
@@ -1393,7 +1399,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
       if (!s_currCh || (s_copyMode && !s_copyTgtOfs)) {
         s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
         s_copySrcIdx = s_currIdx;
-        s_copySrcCh = expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh;
+        s_copySrcCh = expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh+1;
         s_copySrcRow = sub;
         break;
       }
@@ -1425,7 +1431,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
     case EVT_KEY_LONG(KEY_RIGHT):
       if (s_copyMode && !s_copyTgtOfs) {
         if (reachExpoMixCountLimit(expo)) break;
-        s_currCh = (expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh);
+        s_currCh = (expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh+1);
         if (_event == EVT_KEY_LONG(KEY_RIGHT)) s_currIdx++;
         insertExpoMix(expo, s_currIdx);
         pushMenu(expo ? menuProcExpoOne : menuProcMixOne);
@@ -1469,7 +1475,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 
   for (uint8_t ch=1; ch<=(expo ? NUM_STICKS : NUM_CHNOUT); ch++) {
     MixData *md=NULL; ExpoData *ed=NULL;
-    if (expo ? (i<MAX_EXPOS && (ed=expoaddress(i))->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && (md=mixaddress(i))->destCh == ch)) {
+    if (expo ? (i<MAX_EXPOS && (ed=expoaddress(i))->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && (md=mixaddress(i))->destCh+1 == ch)) {
       if (s_pgOfs < cur && cur-s_pgOfs < 8) {
         if (expo)
           putsChnRaw(0, (cur-s_pgOfs)*FH, ch, 0);
@@ -1499,7 +1505,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
             displayMixerLine(cur, i, ch, mixCnt, sub, _event);
         }
         cur++; mixCnt++; i++; md++; ed++;
-      } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && md->destCh == ch));
+      } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && md->destCh+1 == ch));
       if (s_copyMode == MOVE_MODE && s_pgOfs < cur && cur-s_pgOfs < 8 && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
         uint8_t y = (cur-s_pgOfs)*FH;
         lcd_rect(22, y-1, DISPLAY_W-1-21, 9, DOTTED);
@@ -1676,11 +1682,11 @@ void menuProcCustomSwitches(uint8_t event)
 
     if (cstate == CS_VOFS)
     {
-        putsChnRaw(12*FW-2, y, cs.v1, m_posHorz==1 ? attr : 0);
+        putsChnRaw(12*FW-2, y, cs.v1, (m_posHorz==1 ? attr : 0));
 
 #if defined(FRSKY)
-        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY-MAX_TIMERS+2) {
-          putsTelemetryChannel(20*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY-MAX_TIMERS+3), 128+cs.v2, m_posHorz==2 ? attr : 0);
+        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+          putsTelemetryChannel(20*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), 128+cs.v2, m_posHorz==2 ? attr : 0);
           v2_min = -128; v2_max = 127;
         }
         else
@@ -1698,8 +1704,8 @@ void menuProcCustomSwitches(uint8_t event)
     {
         putsSwitches(12*FW-2, y, cs.v1, m_posHorz==1 ? attr : 0);
         putsSwitches(17*FW, y, cs.v2, m_posHorz==2 ? attr : 0);
-        v1_min = -MAX_SWITCH; v1_max = MAX_SWITCH;
-        v2_min = -MAX_SWITCH; v2_max = MAX_SWITCH;
+        v1_min = SWITCH_OFF; v1_max = SWITCH_ON;
+        v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
     }
     else // cstate == CS_COMP
     {
@@ -1723,11 +1729,11 @@ void menuProcCustomSwitches(uint8_t event)
           if (cstate == CS_VOFS) {
             if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+1 && v1 < cs.v1) cs.v2 = -98;
 #ifdef FRSKY
-            if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+3 && v1 < cs.v1) cs.v2 = -128;
+            if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1 && v1 < cs.v1) cs.v2 = -128;
 #endif
             if (cs.v1 == CHOUT_BASE+NUM_CHNOUT && v1 > cs.v1) cs.v2 = 0;
 #ifdef FRSKY
-            if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+2 && v1 > cs.v1) cs.v2 = -98;
+            if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS && v1 > cs.v1) cs.v2 = -98;
 #endif
           }
           break;
@@ -1760,7 +1766,7 @@ void menuProcFunctionSwitches(uint8_t event)
         case 0:
           putsSwitches(3, y, sd->swtch, attr);
           if (active) {
-            CHECK_INCDEC_MODELVAR( event, sd->swtch, -MAX_SWITCH-MAX_PSWITCH-NUM_CSW, MAX_SWITCH+MAX_PSWITCH+NUM_CSW);
+            CHECK_INCDEC_MODELVAR( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH);
           }
           break;
         case 1:
@@ -1832,9 +1838,9 @@ void menuProcFunctionSwitches(uint8_t event)
 void menuProcTelemetry(uint8_t event)
 {
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 22, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, -1, 1, 1, -1, 0, 0, -1, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 22, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 2, 2, 2, 2});
 #else
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 19, {0, -1, 1, 0, 2, 2, -1, 1, 0, 2, 2, -1, 1, 1, -1, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 19, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #endif
 
   int8_t  sub = m_posVert;
@@ -1937,17 +1943,17 @@ void menuProcTelemetry(uint8_t event)
     if(s_pgOfs<subN) {
       y = (subN-s_pgOfs)*FH;
       lcd_putsn(4, y, STR_TX+j*OFS_RX, OFS_RX-2);
-      lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ((2+j+g_model.frskyRssiAlarms[j].level)%4), (sub==subN && m_posHorz==0) ? blink : 0);
+      lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ((2+j+g_model.frsky.rssiAlarms[j].level)%4), (sub==subN && m_posHorz==0) ? blink : 0);
       lcd_putc(TELEM_COL2+4*FW, y, '<');
-      lcd_outdezNAtt(TELEM_COL2+6*FW, y, 50+g_model.frskyRssiAlarms[j].value, LEFT|((sub==subN && m_posHorz==1) ? blink : 0), 3);
+      lcd_outdezNAtt(TELEM_COL2+6*FW, y, 50+g_model.frsky.rssiAlarms[j].value, LEFT|((sub==subN && m_posHorz==1) ? blink : 0), 3);
 
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
           case 0:
-            CHECK_INCDEC_MODELVAR(event, g_model.frskyRssiAlarms[j].level, -3, 2); // circular (saves flash)
+            CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[j].level, -3, 2); // circular (saves flash)
             break;
           case 1:
-            CHECK_INCDEC_MODELVAR(event, g_model.frskyRssiAlarms[j].value, -30, 30);
+            CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[j].value, -30, 30);
             break;
         }
       }

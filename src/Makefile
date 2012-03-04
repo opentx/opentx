@@ -580,22 +580,24 @@ stamp:
 font.lbm: font_6x1.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(XBM2LBM) $<
+	$(XBM2LBM) yes $<
+	$(XBM2LBM) no translations/font_se.xbm
 
 font_dblsize.lbm: font_dblsize.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(XBM2LBM) $<
+	$(XBM2LBM) yes $<
+	$(XBM2LBM) no translations/font_dblsize_se.xbm
 
 sticks.lbm: sticks_4x1.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(XBM2LBM) $<
+	$(XBM2LBM) yes $<
 
 s9xsplash.lbm: s9xsplash.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(XBM2LBM) $<
+	$(XBM2LBM) yes $<
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on

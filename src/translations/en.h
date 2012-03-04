@@ -120,7 +120,7 @@
 #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
 
 #define LEN_VSRCRAW      "\004"
-#define TR_VSRCRAW       "RUD ""ELE ""THR ""AIL ""P1  ""P2  ""P3  ""HALF""FULL""CYC1""CYC2""CYC3"
+#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""P3  ""MAX ""3POS""CYC1""CYC2""CYC3"
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
@@ -179,6 +179,7 @@
 #define TR_SOURCE       "Source"
 #define TR_WEIGHT       "Weight"
 #define TR_MIXERWEIGHT  "Mixer Weight"
+#define TR_DIFFERENTIAL "Differ"
 #define TR_OFFSET       "Offset"
 #define TR_MIXEROFFSET  "Mixer Offset"
 #define TR_DRWEIGHT     "DR Weight"
