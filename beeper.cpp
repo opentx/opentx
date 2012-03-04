@@ -46,11 +46,11 @@ uint8_t hapticTick = 0;
 // The various "beep" tone lengths
 static const pm_uint8_t beepTab[] PROGMEM = {
     // key, trim, warn2, warn1, error
-    1,  1,  8, 30, 100, //xShort
-    1,  1,  8, 30, 100, //short
+    1,  1,  2, 10,  60, //xShort
+    1,  1,  4, 20,  80, //short
     1,  1,  8, 30, 100, //normal
-    1,  1, 15, 50, 150, //long
-    10, 10, 30, 50, 150, //xLong
+    2,  2, 15, 40, 120, //long
+    5,  5, 30, 50, 150, //xLong
 };
 
 void beep(uint8_t val)

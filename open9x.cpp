@@ -104,7 +104,8 @@ char idx2char(int8_t idx)
   }
   if (idx < 27) return 'A' + idx - 1;
   if (idx < 37) return '0' + idx - 27;
-  if (idx <= ZCHAR_MAX) return pgm_read_byte(s_charTab+idx-37);
+  if (idx <= 40) return pgm_read_byte(s_charTab+idx-37);
+  if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
   return ' ';
 }
 
@@ -155,39 +156,32 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
   return erg / 25; // 100*D5/RESX;
 }
 
-int16_t applyCurve(int16_t x, uint8_t idx, uint8_t srcRaw)
+int16_t applyCurve(int16_t x, int8_t idx)
 {
+  /* already tried to have only one return at the end */
   switch(idx) {
-  case 0:
-    return x;
-  case 1:
-    if (srcRaw == MIX_FULL) { //FULL
-      if (x<0 ) x=-RESX;   //x|x>0
-      else x=-RESX+2*x;
-    }
-    else {
-      if (x<0) x=0;   //x|x>0
-    }
-    return x;
-  case 2:
-    if (srcRaw == MIX_FULL) { //FULL
-      if (x>0) x=RESX;   //x|x<0
-      else x=RESX+2*x;
-    }
-    else {
-      if (x>0) x=0;   //x|x<0
-    }
-    return x;
-  case 3:       // x|abs(x)
-    return abs(x);
-  case 4:       //f|f>0
-    return x>0 ? RESX : 0;
-  case 5:       //f|f<0
-    return x<0 ? -RESX : 0;
-  case 6:       //f|abs(f)
-    return x>0 ? RESX : -RESX;
+    case 0:
+      return x;
+    case 1:
+      if (x < 0) x = 0; //x|x>0
+      return x;
+    case 2:
+      if (x > 0) x = 0; //x|x<0
+      return x;
+    case 3: // x|abs(x)
+      return abs(x);
+    case 4: //f|f>0
+      return x > 0 ? RESX : 0;
+    case 5: //f|f<0
+      return x < 0 ? -RESX : 0;
+    case 6: //f|abs(f)
+      return x > 0 ? RESX : -RESX;
   }
-  return intpol(x, idx-7);
+  if (idx < 0) {
+    x = -x;
+    idx = -idx + 6;
+  }
+  return intpol(x, idx - 7);
 }
 
 // expo-funktion:
@@ -285,7 +279,7 @@ void applyExpos(int16_t *anas, uint8_t phase)
         cur_chn = ed.chn;
         int16_t k = ed.expo;
         v = expo(v, k);
-        if (ed.curve) v = applyCurve(v, ed.curve > 10 ? ed.curve + 4 : ed.curve, 0);
+        if (ed.curve) v = applyCurve(v, ed.curve > 10 ? ed.curve + 4 : ed.curve);
         v = ((int32_t)v * ed.weight) / 100;
         anas[cur_chn] = v;
       }
@@ -293,30 +287,44 @@ void applyExpos(int16_t *anas, uint8_t phase)
   }
 }
 
-/*TODO evaluate impact FORCEINLINE */
+/*TODO check the stack used for recursive calls */
+/*TODO use the new MIX_xxx */
+int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain
+#ifdef HELI
+int16_t cyc_anas[3] = {0};
+#endif
 int16_t getValue(uint8_t i)
 {
-    if(i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
-    else if(i<MIX_FULL/*srcRaw is shifted +1!*/) return 1024; //FULL/MAX
-    else if(i<PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-PPM_BASE] - g_eeGeneral.trainer.calib[i-PPM_BASE])*2;
-    else if(i<PPM_BASE+NUM_PPM) return g_ppmIns[i-PPM_BASE]*2;
-    else if(i<CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CHOUT_BASE];
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) return s_timerVal[i-CHOUT_BASE-NUM_CHNOUT];
+  /*srcRaw is shifted +1!*/
+
+  if(i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
+  else if(i<MIX_MAX) return 1024;
+  else if(i<MIX_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
+  else if(i<MIX_3POS+3)
+#ifdef HELI
+    return cyc_anas[i-MIX_3POS];
+#else
+    return 0;
+#endif
+  else if(i<PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-PPM_BASE] - g_eeGeneral.trainer.calib[i-PPM_BASE])*2;
+  else if(i<PPM_BASE+NUM_PPM) return g_ppmIns[i-PPM_BASE]*2;
+  else if(i<CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CHOUT_BASE];
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) return s_timerVal[i-CHOUT_BASE-NUM_CHNOUT-1];
 #if defined(FRSKY)
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
 #endif
 #if defined(FRSKY_HUB)
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+5) return frskyHubData.fuelLevel;
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+6) return frskyHubData.temperature1;
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+7) return frskyHubData.temperature2;
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+8) return frskyHubData.gpsSpeed_ap;
-    else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+9) return frskyHubData.minCellVolts;
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+5) return frskyHubData.fuelLevel;
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+6) return frskyHubData.temperature1;
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+7) return frskyHubData.temperature2;
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+8) return frskyHubData.gpsSpeed_ap;
+  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+9) return frskyHubData.minCellVolts;
 #endif
 #endif
-    else return 0;
+  else return 0;
 }
 
 volatile uint16_t s_last_switch_used;
@@ -330,14 +338,14 @@ bool __getSwitch(int8_t swtch)
 
   uint8_t cs_idx = abs(swtch);
 
-  if (cs_idx == MAX_SWITCH) {
+  if (cs_idx == SWITCH_ON) {
     result = true;
   }
-  else if (cs_idx < MAX_SWITCH-NUM_CSW) {
+  else if (cs_idx <= MAX_PSWITCH) {
     result = keyState((EnumKeys)(SW_BASE+cs_idx-1));
   }
   else {
-    cs_idx -= MAX_SWITCH-NUM_CSW;
+    cs_idx -= MAX_PSWITCH+1;
     volatile CustomSwData &cs = g_model.customSw[cs_idx];
     if (cs.func == CS_OFF) return false;
 
@@ -927,7 +935,7 @@ uint8_t  trimsCheckTimer = 0;
 void resetTimer(uint8_t idx)
 {
   s_timerState[idx] = TMR_OFF; // is changed to RUNNING dep from mode
-  s_timerVal[idx] = (idx == 0 ? g_model.timer1.val : g_model.timer2.val);
+  s_timerVal[idx] = g_model.timers[idx].val;
   s_timerVal_10ms[idx] = 0 ;
 }
 
@@ -970,7 +978,7 @@ uint16_t isqrt32(uint32_t n)
 
 // static variables used in perOut - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-int16_t  anas [NUM_XCHNRAW] = {0};
+int16_t  anas [NUM_STICKS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
 uint32_t inacCounter = 0;
@@ -985,12 +993,12 @@ FORCEINLINE void evalTrims(uint8_t phase)
 {
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
-    int16_t v = anas[i];
     int32_t vv = 2*RESX;
     int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
     if (i==THR_STICK && g_model.thrTrim) {
       if (g_eeGeneral.throttleReversed)
         trim = -trim;
+      int16_t v = anas[i];
       vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
     }
     else if (trimsCheckTimer > 0) {
@@ -1006,12 +1014,12 @@ uint8_t evalSticks(uint8_t phase)
 {
 #ifdef HELI
   uint16_t d = 0;
-  if(g_model.swashR.value) {
+  if (g_model.swashR.value) {
     uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] +
         int32_t(calibratedStick[AIL_STICK])*calibratedStick[AIL_STICK]);
     uint32_t q = int32_t(RESX)*g_model.swashR.value/100;
     q *= q;
-    if(v>q)
+    if (v>q)
       d = isqrt32(v);
   }
 #endif
@@ -1031,8 +1039,8 @@ uint8_t evalSticks(uint8_t phase)
                                      g_eeGeneral.calibSpanNeg[i])));
 #endif
 
-    if(v <= -RESX) v = -RESX;
-    if(v >=  RESX) v =  RESX;
+    if(v < -RESX) v = -RESX;
+    if(v >  RESX) v =  RESX;
 
     if (g_eeGeneral.throttleReversed && ch==THR_STICK)
       v = -v;
@@ -1062,8 +1070,8 @@ uint8_t evalSticks(uint8_t phase)
         v = int32_t(v)*g_model.swashR.value*RESX/(int32_t(d)*100);
 #endif
 
+      anas[ch] = v; //set values for mixer
     }
-    anas[ch] = v; //set values for mixer
   }
 
   /* EXPOs */
@@ -1113,7 +1121,7 @@ void evalFunctions()
   }
 }
 
-void perOut(int16_t *chanOut, uint8_t phase)
+void perOut(uint8_t phase)
 {
   uint8_t anaCenter = evalSticks(phase);
 
@@ -1121,9 +1129,6 @@ void perOut(int16_t *chanOut, uint8_t phase)
   anaCenter &= g_model.beepANACenter;
   if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_STICK_MIDDLE();
   bpanaCenter = anaCenter;
-
-  anas[MIX_HALF-1] = RESX;     // HALF
-  anas[MIX_FULL-1] = RESX;     // FULL
 
 #ifdef HELI
   if(g_model.swashR.value)
@@ -1147,8 +1152,8 @@ void perOut(int16_t *chanOut, uint8_t phase)
       int16_t vp = anas[ELE_STICK]+trims[ELE_STICK];
       int16_t vr = anas[AIL_STICK]+trims[AIL_STICK];
       int16_t vc = 0;
-      if(g_model.swashR.collectiveSource)
-          vc = anas[g_model.swashR.collectiveSource-1];
+      if (g_model.swashR.collectiveSource)
+        vc = getValue(g_model.swashR.collectiveSource-1);
 
       if(g_model.swashR.invertELE) vp = -vp;
       if(g_model.swashR.invertAIL) vr = -vr;
@@ -1159,40 +1164,36 @@ void perOut(int16_t *chanOut, uint8_t phase)
       case (SWASH_TYPE_120):
           vp = REZ_SWASH_Y(vp);
           vr = REZ_SWASH_X(vr);
-          anas[MIX_CYC1-1] = vc - vp;
-          anas[MIX_CYC2-1] = vc + vp/2 + vr;
-          anas[MIX_CYC3-1] = vc + vp/2 - vr;
+          cyc_anas[0] = vc - vp;
+          cyc_anas[1] = vc + vp/2 + vr;
+          cyc_anas[2] = vc + vp/2 - vr;
           break;
       case (SWASH_TYPE_120X):
           vp = REZ_SWASH_X(vp);
           vr = REZ_SWASH_Y(vr);
-          anas[MIX_CYC1-1] = vc - vr;
-          anas[MIX_CYC2-1] = vc + vr/2 + vp;
-          anas[MIX_CYC3-1] = vc + vr/2 - vp;
+          cyc_anas[0] = vc - vr;
+          cyc_anas[1] = vc + vr/2 + vp;
+          cyc_anas[2] = vc + vr/2 - vp;
           break;
       case (SWASH_TYPE_140):
           vp = REZ_SWASH_Y(vp);
           vr = REZ_SWASH_Y(vr);
-          anas[MIX_CYC1-1] = vc - vp;
-          anas[MIX_CYC2-1] = vc + vp + vr;
-          anas[MIX_CYC3-1] = vc + vp - vr;
+          cyc_anas[0] = vc - vp;
+          cyc_anas[1] = vc + vp + vr;
+          cyc_anas[2] = vc + vp - vr;
           break;
       case (SWASH_TYPE_90):
           vp = REZ_SWASH_Y(vp);
           vr = REZ_SWASH_Y(vr);
-          anas[MIX_CYC1-1] = vc - vp;
-          anas[MIX_CYC2-1] = vc + vr;
-          anas[MIX_CYC3-1] = vc - vr;
+          cyc_anas[0] = vc - vp;
+          cyc_anas[1] = vc + vr;
+          cyc_anas[2] = vc - vr;
           break;
       default:
           break;
       }
   }
 #endif
-
-  for (uint8_t i=0; i<NUM_CAL_PPM; i++)       anas[i+PPM_BASE] = (g_ppmIns[i] - g_eeGeneral.trainer.calib[i])*2; // add ppm channels
-  for (uint8_t i=NUM_CAL_PPM; i<NUM_PPM; i++) anas[i+PPM_BASE] = g_ppmIns[i]*2; // add ppm channels
-  for (uint8_t i=CHOUT_BASE; i<CHOUT_BASE+NUM_CHNOUT; i++) anas[i] = chans[i-CHOUT_BASE]; // other mixes previous outputs
 
   memset(chans, 0, sizeof(chans));        // All outputs to 0
 
@@ -1207,7 +1208,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
     MixData *md = mixaddress( i ) ;
 
-    if((md->destCh==0) || (md->destCh>NUM_CHNOUT)) break;
+    if (md->srcRaw==0) break;
 
     if (md->phase != 0) {
       if (md->phase > 0) {
@@ -1225,21 +1226,27 @@ void perOut(int16_t *chanOut, uint8_t phase)
     uint8_t swTog;
 
     //swOn[i]=false;
-    if (!getSwitch(md->swtch,1)) { // switch on?  if no switch selected => on
+    if (!getSwitch(md->swtch, 1)) { // switch on?  (if no switch selected => on)
       swTog = swOn[i];
       swOn[i] = false;
-      if(md->srcRaw!=MIX_HALF && md->srcRaw!=MIX_FULL) continue;// if not MAX or FULL - next loop
-      if(md->mltpx==MLTPX_REP) continue; // if switch is off and REPLACE then off
-      v = (md->srcRaw == MIX_FULL ? -RESX : 0); // switch is off and it is either MAX=0 or FULL=-512
+      continue;
     }
-    else {
-      swTog = !swOn[i];
-      swOn[i] = true;
-      uint8_t k = md->srcRaw-1;
+
+    swTog = !swOn[i];
+    swOn[i] = true;
+    uint8_t k = md->srcRaw-1;
+
+    if (k < NUM_STICKS)
       v = anas[k]; //Switch is on. MAX=FULL=512 or value.
-      if (k>=CHOUT_BASE && (k<i)) v = chans[k]; // if we've already calculated the value - take it instead // anas[i+CHOUT_BASE] = chans[i]
-      if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
+    else if (k>=CHOUT_BASE && k<CHOUT_BASE+NUM_CHNOUT && k-CHOUT_BASE<i) // if we've already calculated the value - take it instead
+      v = chans[k-CHOUT_BASE] / 100;
+    else if (k>=MIX_3POS && k<MIX_3POS+MAX_SWITCH) {
+      v = getSwitch(k-MIX_3POS+1, 0) ? +1024 : -1024;
     }
+    else
+      v = getValue(k < MIX_3POS ? k : k-MAX_SWITCH);
+
+    if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
 
     //========== INPUT OFFSET ===============
     if(md->sOffset) v += calc100toRESX(md->sOffset);
@@ -1257,7 +1264,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
           // v * weight / 100 = anas => anas*100/weight = v
         if(md->mltpx==MLTPX_REP)
         {
-            act[i] = (int32_t)anas[md->destCh-1+CHOUT_BASE]*DEL_MULT;
+            act[i] = (int32_t)ex_chans[md->destCh]*DEL_MULT;
             act[i] *=100;
             if(md->weight) act[i] /= md->weight;
         }
@@ -1295,7 +1302,7 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
     //========== CURVES ===============
     if (md->curve)
-      v = applyCurve(v, md->curve, md->srcRaw);
+      v = applyCurve(v, md->curve);
 
     //========== TRIMS ===============
     if (md->srcRaw>0 && md->srcRaw<=NUM_STICKS) {
@@ -1311,7 +1318,12 @@ void perOut(int16_t *chanOut, uint8_t phase)
 
     //========== MULTIPLEX ===============
     int32_t dv = (int32_t)v*md->weight;
-    int32_t *ptr = &chans[md->destCh-1]; // Save calculating address several times
+
+    uint8_t differential = md->differential;
+    if (differential && dv<0)
+      dv = (dv * (100-differential)) / 100;
+
+    int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
     switch(md->mltpx){
       case MLTPX_REP:
         *ptr = dv;
@@ -1327,48 +1339,13 @@ void perOut(int16_t *chanOut, uint8_t phase)
         break;
       }
   }
-
-  //========== LIMITS ===============
-  for (uint8_t i=0;i<NUM_CHNOUT;i++) {
-      // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*100
-      // later we multiply by the limit (up to 100) and then we need to normalize
-      // at the end chans[i] = chans[i]/100 =>  -1024..1024
-      // interpolate value with min/max so we get smooth motion from center to stop
-      // this limits based on v original values and min=-1024, max=1024  RESX=1024
-      //printf("chans%d=%d\n", i, chans[i]);fflush(stdout);
-      int32_t q = chans[i];// + (int32_t)g_model.limitData[i].offset*100; // offset before limit
-
-      chans[i] /= 100; // chans back to -1024..1024
-      ex_chans[i] = chans[i]; //for getswitch
-
-      int16_t ofs = g_model.limitData[i].offset;
-      int16_t lim_p = 10*(g_model.limitData[i].max+100);
-      int16_t lim_n = 10*(g_model.limitData[i].min-100); //multiply by 10 to get same range as ofs (-1000..1000)
-      if(ofs>lim_p) ofs = lim_p;
-      if(ofs<lim_n) ofs = lim_n;
-
-      if(q) q = (q>0) ?
-                q*((int32_t)lim_p-ofs)/100000 :
-               -q*((int32_t)lim_n-ofs)/100000 ; //div by 100000 -> output = -1024..1024
-
-      q += calc1000toRESX(ofs);
-      lim_p = calc1000toRESX(lim_p);
-      lim_n = calc1000toRESX(lim_n);
-      if(q>lim_p) q = lim_p;
-      if(q<lim_n) q = lim_n;
-      if(g_model.limitData[i].revert) q=-q;// finally do the reverse.
-
-      if (safetyCh[i] != -128)  // if safety channel available for channel check and replace val if needed
-          q = calc100toRESX(safetyCh[i]);
-
-      chanOut[i] = q; //copy consistent word to int-level
-  }
 }
 
 #ifdef DISPLAY_USER_DATA
 char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #endif
 
+int32_t sum_chans512[NUM_CHNOUT] = {0};
 void perMain()
 {
   static uint16_t lastTMR;
@@ -1377,12 +1354,12 @@ void perMain()
   lastTMR = tmr10ms;
 
 #define MAX_ACT 0xffff
-  static int16_t  s_fp_chans[NUM_CHNOUT];
   static uint16_t fp_act[MAX_PHASES] = {0};
   static uint16_t delta = 0;
   static uint8_t s_fade_flight_phases = 0;
   static uint8_t s_last_phase = 255;
   uint8_t phase = getFlightPhase();
+  int32_t weight = 0;
 
   if (s_last_phase != phase) {
     if (s_last_phase == 255) {
@@ -1391,10 +1368,6 @@ void perMain()
     else {
       uint8_t fadeTime = max(g_model.phaseData[s_last_phase].fadeOut, g_model.phaseData[phase].fadeIn);
       if (fadeTime) {
-        if (!s_fade_flight_phases) {
-          for (uint8_t i=0; i<NUM_CHNOUT; i++)
-            s_fp_chans[i] = chans[i];
-        }
         s_fade_flight_phases |= (1<<s_last_phase) + (1<<phase);
         delta = (MAX_ACT / 100) / fadeTime;
       }
@@ -1407,36 +1380,57 @@ void perMain()
     s_last_phase = phase;
   }
 
-  int16_t next_chans512[NUM_CHNOUT];
-
   if (s_fade_flight_phases) {
-    int32_t sum_chans512[NUM_CHNOUT] = {0};
-    int32_t weight = 0;
+    memset(sum_chans512, 0, sizeof(sum_chans512));
+    weight = 0;
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {
+        perOut(p);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
-          chans[i] = s_fp_chans[i];
-        perOut(next_chans512, p);
-        for (uint8_t i=0; i<NUM_CHNOUT; i++)
-          sum_chans512[i] += (int32_t)next_chans512[i] * fp_act[p];
+          sum_chans512[i] += (chans[i] / 16) * fp_act[p];
         weight += fp_act[p];
       }
     }
     // printf("sum=%d, weight=%d ", sum_chans512[2], weight); fflush(stdout);
     assert(weight);
-    for (uint8_t i=0; i<NUM_CHNOUT; i++) {
-      next_chans512[i] = ((int32_t)sum_chans512[i] / weight);
-      s_fp_chans[i] = next_chans512[i];
-    }
-    // printf("output = %d\n", next_chans512[2]); fflush(stdout);
   }
   else {
-    perOut(next_chans512, phase);
+    perOut(phase);
   }
 
-  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+  //========== LIMITS ===============
+  for (uint8_t i=0;i<NUM_CHNOUT;i++) {
+    // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*100
+    // later we multiply by the limit (up to 100) and then we need to normalize
+    // at the end chans[i] = chans[i]/100 =>  -1024..1024
+    // interpolate value with min/max so we get smooth motion from center to stop
+    // this limits based on v original values and min=-1024, max=1024  RESX=1024
+    //printf("chans%d=%d\n", i, chans[i]);fflush(stdout);
+    int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) * 16 : chans[i]);
+    ex_chans[i] = q / 100; // for the next perMain
+
+    int16_t ofs = g_model.limitData[i].offset;
+    int16_t lim_p = 10*(g_model.limitData[i].max+100);
+    int16_t lim_n = 10*(g_model.limitData[i].min-100); //multiply by 10 to get same range as ofs (-1000..1000)
+    if (ofs>lim_p) ofs = lim_p;
+    if(ofs<lim_n) ofs = lim_n;
+
+    if (q) q = (q>0) ?
+        q*((int32_t)lim_p-ofs)/100000 :
+       -q*((int32_t)lim_n-ofs)/100000 ; //div by 100000 -> output = -1024..1024
+
+    q += calc1000toRESX(ofs);
+    lim_p = calc1000toRESX(lim_p);
+    lim_n = calc1000toRESX(lim_n);
+    if(q>lim_p) q = lim_p;
+    if(q<lim_n) q = lim_n;
+    if(g_model.limitData[i].revert) q=-q;// finally do the reverse.
+
+    if (safetyCh[i] != -128)  // if safety channel available for channel check and replace val if needed
+      q = calc100toRESX(safetyCh[i]);
+
     cli();
-    g_chans512[i] = next_chans512[i];
+    g_chans512[i] = q;  //copy consistent word to int-level
     sei();
   }
 
@@ -1502,21 +1496,9 @@ void perMain()
   // Throttle trace end
 
   // Timers start
-  uint8_t i = 0;
-  do {
-    int8_t tm;
-    uint16_t tv;
-    if (i == 0) {
-      tm = g_model.timer1.mode;
-      tv = g_model.timer1.val;
-    }
-    else if (i == 1) {
-      tm = g_model.timer2.mode;
-      tv = g_model.timer2.val;
-    }
-    else {
-      break;
-    }
+  for (uint8_t i=0; i<2; i++) {
+    int8_t tm = g_model.timers[i].mode;
+    uint16_t tv = g_model.timers[i].val;
 
     if (tm) {
       if (s_timerState[i] == TMR_OFF) {
@@ -1535,9 +1517,9 @@ void perMain()
         s_sum[i]+=val;
       }
 
-      if (atm>=(TMR_VAROFS+MAX_SWITCH-1)){ // toggeled switch
+      if (atm>=(TMR_VAROFS+MAX_SWITCH)){ // toggeled switch
         if(!(sw_toggled[i] | s_sum[i] | s_cnt[i] | lastSwPos[i])) lastSwPos[i] = tm < 0;  // if initializing then init the lastSwPos
-        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1-1) : tm+(TMR_VAROFS+MAX_SWITCH-1-1), 0);
+        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+(TMR_VAROFS+MAX_SWITCH-1), 0);
         if (swPos && !lastSwPos[i]) sw_toggled[i] = !sw_toggled[i];  // if switch is flipped first time -> change counter state
         lastSwPos[i] = swPos;
       }
@@ -1570,7 +1552,7 @@ void perMain()
             s_timerVal[i]++;
         }
         else {
-          if (atm<(TMR_VAROFS+MAX_SWITCH-1))
+          if (atm<(TMR_VAROFS+MAX_SWITCH))
             sw_toggled[i] = getSwitch((tm>0 ? tm-(TMR_VAROFS-1) : tm+(TMR_VAROFS-1)), 0); // normal switch
           if (sw_toggled[i])
             s_timerVal[i]++;
@@ -1589,13 +1571,12 @@ void perMain()
         if (tv) s_timerVal[i] = tv - s_timerVal[i]; //if counting backwards - display backwards
       }
     }
-    ++i;
-  } while(1);
+  };
 
   static int16_t last_tmr;
   if (last_tmr != s_timerVal[0]) { // beep only if seconds advance
     if (s_timerState[0] == TMR_RUNNING) {
-      if (g_eeGeneral.preBeep && g_model.timer1.val) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
+      if (g_eeGeneral.preBeep && g_model.timers[0].val) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
         if(s_timerVal[0]==30) AUDIO_TIMER_30(); //beep three times
         if(s_timerVal[0]==20) AUDIO_TIMER_20(); //beep two times
         if(s_timerVal[0]==10) AUDIO_TIMER_10();
@@ -1605,7 +1586,7 @@ void perMain()
           g_LightOffCounter = FLASH_DURATION;
       }
 
-      if (g_eeGeneral.minuteBeep && (((g_model.timer1.val ? g_model.timer1.val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
+      if (g_eeGeneral.minuteBeep && (((g_model.timers[0].val ? g_model.timers[0].val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
         AUDIO_MINUTE_BEEP();
         if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
       }
@@ -2220,7 +2201,7 @@ int main(void)
 
   clearKeyEvents(); //make sure no keys are down before proceeding
 
-  perOut(g_chans512, getFlightPhase());
+  // TODO perMain()? perOut(g_chans512, getFlightPhase()); // TODO is it really needed?
 
   lcdSetRefVolt(g_eeGeneral.contrast);
   g_LightOffCounter = g_eeGeneral.lightAutoOff*500; //turn on light for x seconds - no need to press key Issue 152

@@ -71,7 +71,7 @@ inline void applyDefaultTemplate()
 {
   for (int i=0; i<NUM_STICKS; i++) {
     MixData *md = mixaddress(i);
-    md->destCh = i+1;
+    md->destCh = i;
     md->weight = 100;
     md->srcRaw = channel_order(i+1);
   }

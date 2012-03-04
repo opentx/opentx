@@ -80,7 +80,7 @@ extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 extern uint8_t lcd_lastPos;
 
 extern void lcd_putc(unsigned char x,unsigned char y,const char c);
-extern void lcd_putcAtt(unsigned char x,unsigned char y,const char c,uint8_t mode);
+extern void lcd_putcAtt(unsigned char x,unsigned char y,const unsigned char c,uint8_t mode);
 
 extern void lcd_putsAtt(unsigned char x,unsigned char y,const pm_char * s,uint8_t mode);
 extern void lcd_putsiAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t idx, uint8_t mode);
@@ -99,8 +99,9 @@ extern void putsStrIdx(uint8_t x, uint8_t y, const pm_char *str, uint8_t idx, ui
 
 extern void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att);
 extern void putsSwitches(uint8_t x, uint8_t y, int8_t swtch, uint8_t att=0);
+extern void putsMixerSource(uint8_t x, uint8_t y, uint8_t idx, uint8_t att=0);
 extern void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
-extern void putsCurve(uint8_t x, uint8_t y, uint8_t idx, uint8_t att=0);
+extern void putsCurve(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
 extern void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att);
 
 extern void putsChnRaw(uint8_t x,uint8_t y,uint8_t idx1,uint8_t att);

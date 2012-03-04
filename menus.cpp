@@ -37,7 +37,6 @@
 #include "menus.h"
 
 int16_t calibratedStick[NUM_STICKS+NUM_POTS];
-int16_t ex_chans[NUM_CHNOUT];          // Outputs + intermidiates
 uint8_t s_pgOfs;
 int8_t s_editMode;
 uint8_t s_noHi;

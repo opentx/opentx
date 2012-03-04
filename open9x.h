@@ -328,17 +328,18 @@ enum EnumKeys {
 #define CS_VCOMP      2
 #define CS_STATE(x)   ((x)<CS_AND ? CS_VOFS : ((x)<CS_EQUAL ? CS_VBOOL : CS_VCOMP))
 
-//#define SW_BASE      SW_NC
 #define SW_BASE      SW_ThrCt
 #define SW_BASE_DIAG SW_ThrCt
-//#define SWITCHES_STR "  NC  ON THR RUD ELE ID0 ID1 ID2 AILGEARTRNR"
+
 #define MAX_PSWITCH   (SW_Trainer-SW_ThrCt+1)  // 9 physical switches
-#define MAX_SWITCH    (1+MAX_PSWITCH+NUM_CSW)  // 22(1+9+12) !switches + 0 + 22 switches: 6 bits needed
+#define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
+#define SWITCH_ON     (1+MAX_SWITCH)
+#define SWITCH_OFF    (-SWITCH_ON)
 #define MAX_DRSWITCH  (MAX_PSWITCH+NUM_CSW/2)  // 15(9+6) !switches + 0 + 15 switches: 5 bits needed
 
 #define NUM_STICKS      4
 #define NUM_POTS        3
-#define PPM_BASE        (MIX_FULL+3/*CYC1-CYC3*/) // because srcRaw is shifted +1!
+#define PPM_BASE        (MIX_3POS+3/*CYC1-CYC3*/) // because srcRaw is shifted +1! // TODO use MIX_PPM1
 #define NUM_CAL_PPM     4
 #define NUM_PPM         8
 #define CHOUT_BASE      (PPM_BASE+NUM_PPM)
@@ -352,6 +353,10 @@ enum EnumKeys {
 #else
 #define NUM_TELEMETRY      0
 #endif
+
+#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+1/*MAX*/+1/*ID3*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT)
+#define NUM_XCHNCSW (NUM_XCHNRAW+MAX_TIMERS+NUM_TELEMETRY)
+#define NUM_XCHNMIX (NUM_XCHNCSW+MAX_SWITCH)
 
 #define DSW_THR  1
 #define DSW_RUD  2
@@ -414,7 +419,7 @@ extern uint8_t pxxFlag;
 
 typedef void (*getADCp)();
 
-#define ZCHAR_MAX 40
+#define ZCHAR_MAX (40 + LEN_SPECIAL_CHARS)
 
 extern char idx2char(int8_t idx);
 
@@ -575,13 +580,6 @@ uint16_t eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
 int8_t eeFindEmptyModel(uint8_t id, bool down);
 
-///number of real input channels (1-9) plus virtual input channels X1-X4
-#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+2/*MAX/FULL*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT)
-#define NUM_XCHNCSW (NUM_XCHNRAW+MAX_TIMERS+NUM_TELEMETRY)
-
-///number of real output channels (CH1-CH8) plus virtual output channels X1-X4
-#define NUM_XCHNOUT (NUM_CHNOUT) //(NUM_CHNOUT)//+NUM_VIRT)
-
 extern inline int16_t calc100toRESX(int8_t x)
 {
   // return (int16_t)x*10 + x/4 - x/64;
@@ -642,12 +640,11 @@ extern uint16_t           BandGap;
 extern uint16_t expou(uint16_t x, uint16_t k);
 extern int16_t expo(int16_t x, int16_t k);
 extern int16_t intpol(int16_t, uint8_t);
-extern int16_t applyCurve(int16_t, uint8_t, uint8_t srcRaw);
+extern int16_t applyCurve(int16_t, int8_t);
 extern void applyExpos(int16_t *anas, uint8_t phase=255);
 
 extern uint16_t anaIn(uint8_t chan);
 extern int16_t calibratedStick[7];
-extern int16_t ex_chans[NUM_CHNOUT];
 
 #define FLASH_DURATION 50
 

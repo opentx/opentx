@@ -486,9 +486,9 @@ void FRSKY10mspoll(void)
     *ptr++ = (A22PKT + FrskyAlarmSendState); // fc - fb - fa - f9
   }
   else {
-    *ptr++ = (g_eeGeneral.beeperMode != -2/*TODO constant*/ ? ((2+alarm+g_model.frskyRssiAlarms[alarm].level) % 4) : alarm_off);
+    *ptr++ = (g_eeGeneral.beeperMode != -2/*TODO constant*/ ? ((2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4) : alarm_off);
     *ptr++ = 0x00 ;
-    frskyPushValue(ptr, 50+g_model.frskyRssiAlarms[alarm].value);
+    frskyPushValue(ptr, 50+g_model.frsky.rssiAlarms[alarm].value);
     *ptr++ = (RSSI1PKT-alarm);  // f7 - f6
   }
 
@@ -725,7 +725,7 @@ void menuProcFrsky(uint8_t event)
   putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
   uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
   putsVBat(14*FW,0,att);
-  if (g_model.timer1.mode) {
+  if (g_model.timers[0].mode) {
     att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
     putsTime(17*FW, 0, s_timerVal[0], att, att);
   }
