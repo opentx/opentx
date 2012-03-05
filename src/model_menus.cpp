@@ -1727,13 +1727,13 @@ void menuProcCustomSwitches(uint8_t event)
           int8_t v1 = cs.v1;
           CHECK_INCDEC_MODELVAR(event, cs.v1, v1_min, v1_max);
           if (cstate == CS_VOFS) {
-            if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+1 && v1 < cs.v1) cs.v2 = -98;
+            if (cs.v1 == CSW_CHOUT_BASE+NUM_CHNOUT+1 && v1 < cs.v1) cs.v2 = -98;
 #ifdef FRSKY
-            if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1 && v1 < cs.v1) cs.v2 = -128;
+            if (cs.v1 == CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1 && v1 < cs.v1) cs.v2 = -128;
 #endif
-            if (cs.v1 == CHOUT_BASE+NUM_CHNOUT && v1 > cs.v1) cs.v2 = 0;
+            if (cs.v1 == CSW_CHOUT_BASE+NUM_CHNOUT && v1 > cs.v1) cs.v2 = 0;
 #ifdef FRSKY
-            if (cs.v1 == CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS && v1 > cs.v1) cs.v2 = -98;
+            if (cs.v1 == CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS && v1 > cs.v1) cs.v2 = -98;
 #endif
           }
           break;

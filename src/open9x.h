@@ -339,10 +339,10 @@ enum EnumKeys {
 
 #define NUM_STICKS      4
 #define NUM_POTS        3
-#define PPM_BASE        (MIX_3POS+3/*CYC1-CYC3*/) // because srcRaw is shifted +1! // TODO use MIX_PPM1
+#define CSW_PPM_BASE    (MIX_3POS+3/*CYC1-CYC3*/) // because srcRaw is shifted +1! // TODO use MIX_PPM1
 #define NUM_CAL_PPM     4
 #define NUM_PPM         8
-#define CHOUT_BASE      (PPM_BASE+NUM_PPM)
+#define CSW_CHOUT_BASE  (CSW_PPM_BASE+NUM_PPM)
 
 #if defined(FRSKY_HUB)
 #define NUM_TELEMETRY      9

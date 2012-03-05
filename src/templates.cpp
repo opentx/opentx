@@ -164,12 +164,12 @@ void applyTemplate(uint8_t idx)
         clearCurves();
 
         //Set up Mixes
-        md=setDest(ICC(STK_AIL));  md->srcRaw=CH(9);   md->weight=  50;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=CH(10);  md->weight=-100;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=CH(11);  md->weight= 100; md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_AIL));  md->srcRaw=MIX_CH9;   md->weight=  50;
+        md=setDest(ICC(STK_AIL));  md->srcRaw=MIX_CH10;  md->weight=-100;
+        md=setDest(ICC(STK_AIL));  md->srcRaw=MIX_CH11;  md->weight= 100; md->carryTrim=TRIM_OFF;
 
-        md=setDest(ICC(STK_ELE));  md->srcRaw=CH(9);   md->weight=-100;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=CH(11);  md->weight= 100; md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_ELE));  md->srcRaw=MIX_CH9;   md->weight=-100;
+        md=setDest(ICC(STK_ELE));  md->srcRaw=MIX_CH11;  md->weight= 100; md->carryTrim=TRIM_OFF;
 
         md=setDest(ICC(STK_THR));  md->srcRaw=SRC_THR;  md->weight= 100; md->swtch=DSW_ID0; md->curve=CV(1); md->carryTrim=TRIM_OFF;
         md=setDest(ICC(STK_THR));  md->srcRaw=SRC_THR;  md->weight= 100; md->swtch=DSW_ID1; md->curve=CV(2); md->carryTrim=TRIM_OFF;
@@ -182,12 +182,12 @@ void applyTemplate(uint8_t idx)
         md=setDest(4);  md->srcRaw=MIX_MAX; md->weight=-50; md->swtch= DSW_GEA; md->carryTrim=TRIM_OFF;
         md=setDest(4);  md->srcRaw=STK_P3;  md->weight= 40; md->carryTrim=TRIM_OFF;
 
-        md=setDest(5);  md->srcRaw=CH(9);   md->weight= -50;
-        md=setDest(5);  md->srcRaw=CH(10);  md->weight=-100;
-        md=setDest(5);  md->srcRaw=CH(11);  md->weight=-100; md->carryTrim=TRIM_OFF;
+        md=setDest(5);  md->srcRaw=MIX_CH9;   md->weight= -50;
+        md=setDest(5);  md->srcRaw=MIX_CH10;  md->weight=-100;
+        md=setDest(5);  md->srcRaw=MIX_CH11;  md->weight=-100; md->carryTrim=TRIM_OFF;
 
         md=setDest(8);  md->srcRaw=SRC_ELE;  md->weight= 60;
-        md=setDest(9); md->srcRaw=SRC_AIL;  md->weight=-52;
+        md=setDest(9);  md->srcRaw=SRC_AIL;  md->weight=-52;
         md=setDest(10); md->srcRaw=SRC_THR;  md->weight= 70; md->swtch=DSW_ID0; md->curve=CV(3); md->carryTrim=TRIM_OFF;
         md=setDest(10); md->srcRaw=SRC_THR;  md->weight= 70; md->swtch=DSW_ID1; md->curve=CV(4); md->carryTrim=TRIM_OFF;
         md=setDest(10); md->srcRaw=SRC_THR;  md->weight= 70; md->swtch=DSW_ID2; md->curve=CV(4); md->carryTrim=TRIM_OFF;
@@ -208,9 +208,9 @@ void applyTemplate(uint8_t idx)
         md=setDest(15); md->srcRaw=MIX_MAX;  md->weight=-110; md->swtch=DSW_SW2; md->mltpx=MLTPX_REP;
         md=setDest(15); md->srcRaw=MIX_MAX;  md->weight= 110; md->swtch=DSW_SW3; md->mltpx=MLTPX_REP;
 
-        setSwitch(1,CS_LESS,CH(15),CH(16));
-        setSwitch(2,CS_VPOS,CH(15),   105);
-        setSwitch(3,CS_VNEG,CH(15),  -105);
+        setSwitch(1, CS_LESS, CSW_CHOUT_BASE+15, CSW_CHOUT_BASE+16);
+        setSwitch(2, CS_VPOS, CSW_CHOUT_BASE+15,   105);
+        setSwitch(3, CS_VNEG, CSW_CHOUT_BASE+15,  -105);
         break;
 
 

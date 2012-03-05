@@ -306,22 +306,22 @@ int16_t getValue(uint8_t i)
 #else
     return 0;
 #endif
-  else if(i<PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-PPM_BASE] - g_eeGeneral.trainer.calib[i-PPM_BASE])*2;
-  else if(i<PPM_BASE+NUM_PPM) return g_ppmIns[i-PPM_BASE]*2;
-  else if(i<CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CHOUT_BASE];
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) return s_timerVal[i-CHOUT_BASE-NUM_CHNOUT-1];
+  else if(i<CSW_PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-CSW_PPM_BASE] - g_eeGeneral.trainer.calib[i-CSW_PPM_BASE])*2;
+  else if(i<CSW_PPM_BASE+NUM_PPM) return g_ppmIns[i-CSW_PPM_BASE]*2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CSW_CHOUT_BASE];
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT-1];
 #if defined(FRSKY)
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CSW_CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
 #endif
 #if defined(FRSKY_HUB)
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+5) return frskyHubData.fuelLevel;
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+6) return frskyHubData.temperature1;
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+7) return frskyHubData.temperature2;
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+8) return frskyHubData.gpsSpeed_ap;
-  else if(i<CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+9) return frskyHubData.minCellVolts;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+5) return frskyHubData.fuelLevel;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+6) return frskyHubData.temperature1;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+7) return frskyHubData.temperature2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+8) return frskyHubData.gpsSpeed_ap;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+9) return frskyHubData.minCellVolts;
 #endif
 #endif
   else return 0;
@@ -384,30 +384,30 @@ bool __getSwitch(int8_t swtch)
 #ifdef FRSKY
 #if defined(FRSKY_HUB)
         // Fill the threshold array
-        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
-          barsThresholds[cs.v1-CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS-3] = 128 + cs.v2;
+        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
+          barsThresholds[cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS-3] = 128 + cs.v2;
         // TODO CELL?
         // FUEL, T1, T2, SPEED
-        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4)
+        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4)
           y = (128+cs.v2);
         // RPMs
-        else if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3)
+        else if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3)
           y = (128+cs.v2) * 25;
         else
 #endif
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
         // ALT
-        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
+        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
           y = (128+cs.v2) * 4;
         else
 #endif
         // Volts
-        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
+        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
           y = 128+cs.v2;
         else
 #endif
         // Timers
-        if (cs.v1 > CHOUT_BASE+NUM_CHNOUT)
+        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT)
           y = 98+cs.v2;
         else
           y = calc100toRESX(cs.v2);
@@ -1238,13 +1238,12 @@ void perOut(uint8_t phase)
 
     if (k < NUM_STICKS)
       v = anas[k]; //Switch is on. MAX=FULL=512 or value.
-    else if (k>=CHOUT_BASE && k<CHOUT_BASE+NUM_CHNOUT && k-CHOUT_BASE<i) // if we've already calculated the value - take it instead
-      v = chans[k-CHOUT_BASE] / 100;
-    else if (k>=MIX_3POS && k<MIX_3POS+MAX_SWITCH) {
-      v = getSwitch(k-MIX_3POS+1, 0) ? +1024 : -1024;
-    }
+    else if (k>=MIX_CH1-1 && k<=MIX_CH16-1 && k-MIX_CH1+1<i) // if we've already calculated the value - take it instead
+      v = chans[k-MIX_CH1+1] / 100;
+    else if (k>=MIX_THR-1 && k<=MIX_SWC-1)
+      v = getSwitch(k-MIX_THR+1+1, 0) ? +1024 : -1024;
     else
-      v = getValue(k < MIX_3POS ? k : k-MAX_SWITCH);
+      v = getValue(k <= MIX_3POS ? k : k-MAX_SWITCH);
 
     if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
 

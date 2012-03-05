@@ -168,6 +168,9 @@ PACK(typedef struct t_LimitData {
 #define MIX_PPM1  34
 #define MIX_PPM8  41
 #define MIX_CH1   42
+#define MIX_CH9   50
+#define MIX_CH10  51
+#define MIX_CH11  52
 #define MIX_CH16  57
 
 #define TRIM_ON     0

@@ -741,7 +741,7 @@ void menuProcFrsky(uint8_t event)
         if (g_model.frsky.bars[i].source && (51-g_model.frsky.bars[i].barMax) > g_model.frsky.bars[i].barMin) {
           lcd_putsiAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMBARS, g_model.frsky.bars[i].source, 0);
           lcd_rect(25, bars_height+6+i*(bars_height+6), 101, bars_height+2);
-          int16_t value = getValue(CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+g_model.frsky.bars[i].source-1);
+          int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+g_model.frsky.bars[i].source-1);
           uint8_t threshold = 0, thresholdX = 0;
           if (g_model.frsky.bars[i].source <= 2)
             threshold = g_model.frsky.channels[g_model.frsky.bars[i].source-1].alarms_value[0];

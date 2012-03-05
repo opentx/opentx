@@ -69,7 +69,6 @@
 #define STK_P2   6
 #define STK_P3   7
 
-#define CH(x) (CHOUT_BASE+(x))
 #define CV(x) (CURVE_BASE+(x)-1)
 #define CC(x) (channel_order(x)) //need to invert this to work with dest
 
