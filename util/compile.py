@@ -20,7 +20,7 @@ options_v4 = [[("", "EXT=FRSKY")],
               [("", "SOMO=NO"), ("SOMO", "SOMO=YES")],
              ]
 
-languages = ["en", "fr"]
+languages = ["en", "fr", "se"]
 
 def generate(hex, arg, options):
     result = []
