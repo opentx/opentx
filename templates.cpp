@@ -59,24 +59,6 @@
 #include "open9x.h"
 #include "templates.h"
 
-const pm_char stn1[] PROGMEM =  "Simple 4-CH";
-const pm_char stn2[] PROGMEM =  "T-Cut";
-const pm_char stn3[] PROGMEM =  "V-Tail";
-const pm_char stn4[] PROGMEM =  "Elevon\\Delta";
-const pm_char stn5[] PROGMEM =  "eCCPM";
-const pm_char stn6[] PROGMEM =  "Heli Setup";
-const pm_char stn7[] PROGMEM =  "Servo Test";
-const pm_char * const n_Templates[] PROGMEM =
-{
-  stn1,
-  stn2,
-  stn3,
-  stn4,
-  stn5,
-  stn6,
-  stn7
-};
-
 MixData* setDest(uint8_t dch)
 {
     uint8_t i = 0;
@@ -221,8 +203,8 @@ void applyTemplate(uint8_t idx)
 
       // Servo Test
       case (6):
-        md=setDest(14); md->srcRaw=CH(16);   md->weight= 100; md->speedUp = 8; md->speedDown = 8;
-        md=setDest(15); md->srcRaw=MIX_SW1; md->weight= 110; md->swtch=DSW_SW1;
+        md=setDest(14); md->srcRaw=MIX_CH16;   md->weight= 100; md->speedUp = 8; md->speedDown = 8;
+        md=setDest(15); md->srcRaw=MIX_SW1; md->weight= 110;
         md=setDest(15); md->srcRaw=MIX_MAX;  md->weight=-110; md->swtch=DSW_SW2; md->mltpx=MLTPX_REP;
         md=setDest(15); md->srcRaw=MIX_MAX;  md->weight= 110; md->swtch=DSW_SW3; md->mltpx=MLTPX_REP;
 
