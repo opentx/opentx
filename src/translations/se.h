@@ -42,7 +42,7 @@
 #define TR_POSNEG        "POS""NEG"
 
 #define LEN_VCURVEFUNC   "\003"
-#define TR_VCURVEFUNC    "---""x>0""x<0""\201x\201""f>0""f<0""\201f\201"
+#define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
 #define LEN_CURVMODES    "\005"
 #define TR_CURVMODES     "EDIT ""PRSET""A.THR"
