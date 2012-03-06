@@ -1238,7 +1238,7 @@ void perOut(uint8_t phase)
 
     if (k < NUM_STICKS)
       v = anas[k]; //Switch is on. MAX=FULL=512 or value.
-    else if (k>=MIX_CH1-1 && k<=MIX_CH16-1 && k-MIX_CH1+1<i) // if we've already calculated the value - take it instead
+    else if (k>=MIX_CH1-1 && k<=MIX_CH16-1 && k-MIX_CH1+1<md->destCh) // if we've already calculated the value - take it instead
       v = chans[k-MIX_CH1+1] / 100;
     else if (k>=MIX_THR-1 && k<=MIX_SWC-1)
       v = getSwitch(k-MIX_THR+1+1, 0) ? +1024 : -1024;
