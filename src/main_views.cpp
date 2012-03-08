@@ -180,13 +180,13 @@ void menuMainView(uint8_t event)
     uint8_t phase = getFlightPhase();
     lcd_putsnAtt(6*FW+2, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 
-    uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0) | DBLSIZE;
+    uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | DBLSIZE;
     putsModelName(2*FW-2, 0*FH, g_model.name, g_eeGeneral.currModel, DBLSIZE);
     putsVBat(6*FW-1, 2*FH, att|NO_UNIT);
     lcd_putc(6*FW, 3*FH, 'V');
 
     if (g_model.timers[0].mode) {
-      uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
+      uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
       putsTime(12*FW+3, FH*2, s_timerVal[0], att, att);
       putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timers[0].mode, SWCONDENSED);
     }
@@ -205,7 +205,7 @@ void menuMainView(uint8_t event)
       int16_t val = getTrimValue(getTrimFlightPhase(i, phase), i);
 
       if (val < -125 || val > 125)
-        att = BLINK|ROUND;
+        att = BLINK|INVERS|ROUND;
 
       if (val < -(TL+1)*4)
         val = -(TL+1);

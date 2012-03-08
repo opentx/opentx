@@ -75,7 +75,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VMIXTRIMS  (OFS_VMLTPX2 + sizeof(TR_VMLTPX2))
 #define OFS_VCSWFUNC   (OFS_VMIXTRIMS + sizeof(TR_VMIXTRIMS))
 #define OFS_VFSWFUNC   (OFS_VCSWFUNC + sizeof(TR_VCSWFUNC))
-#define OFS_FUNCSOUNDS (OFS_VFSWFUNC + sizeof(TR_VFSWFUNC))
+#define OFS_VFSWRESET  (OFS_VFSWFUNC + sizeof(TR_VFSWFUNC))
+#define OFS_FUNCSOUNDS (OFS_VFSWRESET + sizeof(TR_VFSWRESET))
 #ifdef FRSKY
 #define OFS_VTELEMBARS (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
 #define OFS_VTELEMUNIT (OFS_VTELEMBARS + sizeof(TR_VTELEMBARS))
@@ -137,6 +138,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VMIXTRIMS  (STR_OPEN9X + OFS_VMIXTRIMS)
 #define STR_VCSWFUNC   (STR_OPEN9X + OFS_VCSWFUNC)
 #define STR_VFSWFUNC   (STR_OPEN9X + OFS_VFSWFUNC)
+#define STR_VFSWRESET  (STR_OPEN9X + OFS_VFSWRESET)
 #define STR_FUNCSOUNDS (STR_OPEN9X + OFS_FUNCSOUNDS)
 
 #ifdef FRSKY
@@ -255,6 +257,7 @@ extern const pm_char STR_SWITCHWARNING[];
 extern const pm_char STR_MEMORYWARNING[];
 extern const pm_char STR_ALARMWARNING[];
 extern const pm_char STR_NODATAALARM[];
+extern const pm_char STR_TIMEZONE[];
 extern const pm_char STR_RXCHANNELORD[];
 extern const pm_char STR_SLAVE[];
 extern const pm_char STR_MODESRC[];

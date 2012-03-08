@@ -107,6 +107,9 @@ SOMO = NO
 # Values = en, 
 TRANSLATIONS = EN
 
+# DEBUG mode
+DEBUG = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -192,7 +195,7 @@ OPT = s
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
 #     AVR Studio 4.10 requires dwarf-2.
 #     AVR [Extended] COFF format requires stabs, plus an avr-objcopy run.
-DEBUG = dwarf-2
+DBGFMT = dwarf-2
 
 
 # List any extra directories to look for include files here.
@@ -278,6 +281,10 @@ ifeq ($(EXT), FRSKY)
   endif
 endif
 
+ifeq ($(DEBUG), YES)
+  CPPDEFS += -DDEBUG
+endif
+
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
   CPPDEFS += -DPCBV4 -DAUDIO
@@ -352,7 +359,7 @@ endif
 #  -Wall...:     warning level
 #  -Wa,...:      tell GCC to pass this to the assembler.
 #    -adhlns...: create assembler listing
-CPPFLAGS = -g$(DEBUG)
+CPPFLAGS = -g$(DBGFMT)
 CPPFLAGS += $(CPPDEFS)
 CPPFLAGS += -O$(OPT)
 #CPPFLAGS += -mint8

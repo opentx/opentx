@@ -78,7 +78,15 @@
 #else
 #define TR_SOUND         "Beep\0        "
 #endif
-#define TR_VFSWFUNC      "Securite \0   ""Ecolage \0    ""Trim instant " TR_SOUND TR_SOMO TR_SDCLOGGS
+#ifdef DEBUG
+#define TR_TEST          "Test\0        "
+#else
+#define TR_TEST
+#endif
+#define TR_VFSWFUNC      "Securite \0   ""Ecolage \0    ""Trim instant " TR_SOUND TR_SOMO "Reset        " TR_SDCLOGGS TR_TEST
+
+#define LEN_VFSWRESET    "\006"
+#define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
 
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
@@ -230,6 +238,7 @@
 #define TR_MEMORYWARNING "Alerte Memoire"
 #define TR_ALARMWARNING "Alerte Alarme"
 #define TR_NODATAALARM  "Alerte Telem."
+#define TR_TIMEZONE     "Fuseau Horaire"
 #define TR_RXCHANNELORD "Ordre Voies Rx"
 #define TR_MODE         "Mode"
 #define TR_SLAVE        "Esclave"

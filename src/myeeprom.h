@@ -98,7 +98,9 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   spare1:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   disableAlarmWarning:1;
-  uint8_t   stickMode;
+  uint8_t   stickMode:2;
+  int8_t    timezone:5;
+  uint8_t   spare:1;
   uint8_t   inactivityTimer;
   uint8_t   throttleReversed:1;
   uint8_t   minuteBeep:1;
@@ -218,12 +220,12 @@ enum Functions {
 #ifdef SOMO
   FUNC_PLAY_SOMO,
 #endif
-  // FUNC_RESET,
+  FUNC_RESET,
 #ifdef LOGS
   FUNC_LOGS,
 #endif
 #ifdef DEBUG
-  // FUNC_TEST,
+  FUNC_TEST,
 #endif
   FUNC_MAX
 };

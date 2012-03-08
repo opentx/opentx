@@ -85,6 +85,7 @@ enum menuProcSetupItems {
 #endif
 #ifdef FRSKY
   ITEM_SETUP_NODATA_ALARM,
+  ITEM_SETUP_TIMEZONE,
 #endif
   ITEM_SETUP_MAX
 };
@@ -110,7 +111,7 @@ void menuProcSetup(uint8_t event)
 #define SPLASH_ZEROS
 #endif
 #ifdef FRSKY
-#define FRSKY_ZEROS  0,
+#define FRSKY_ZEROS  0, 0,
 #else
 #define FRSKY_ZEROS
 #endif
@@ -318,6 +319,14 @@ void menuProcSetup(uint8_t event)
       }
       if((y+=FH)>7*FH) return;
   }subN++;
+
+  if(s_pgOfs<subN) {
+    lcd_putsLeft(y, STR_TIMEZONE);
+    lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.timezone, LEFT|(sub==subN ? INVERS : 0));
+    if (sub==subN)
+      CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
+    if((y+=FH)>7*FH) return;
+    }subN++;
 #endif
 
   if(s_pgOfs<subN) {
@@ -334,7 +343,7 @@ void menuProcSetup(uint8_t event)
     for(uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks,i,0);
     if((y+=FH)>7*FH) return;
 
-    lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,(sub==subN+1) ? (s_editMode>0 ? BLINK : INVERS) : 0);
+    lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,(sub==subN+1) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
 
     if (sub==subN+1 && s_editMode>0)
@@ -396,7 +405,7 @@ void menuProcTime(uint8_t event)
 
     for(uint8_t j=0; j<3;j++) // 3 settings each for date and time (YMD and HMS)
     {
-      uint8_t attr = (sub==i && subSub==j) ? (s_editMode>0 ? BLINK : INVERS) : 0;
+      uint8_t attr = (sub==i && subSub==j) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0;
       switch(i)
       {
         case 0: // DATE
@@ -456,7 +465,7 @@ void menuProcTrainer(uint8_t event)
     lcd_puts(3*FW, 1*FH, STR_MODESRC);
 
     y = 2*FH;
-    blink = (s_editMode>0) ? BLINK : INVERS ;
+    blink = (s_editMode>0) ? BLINK|INVERS : INVERS ;
 
     for (uint8_t i=1; i<=NUM_STICKS; i++) {
       uint8_t chan = channel_order(i);
