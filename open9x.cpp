@@ -1083,6 +1083,16 @@ uint8_t evalSticks(uint8_t phase)
   return anaCenter;
 }
 
+#ifdef DEBUG
+/*
+ * This is a test function for debugging purpose, you may insert there your code and compile with the option DEBUG=YES
+ */
+void testFunc()
+{
+  printf("testFunc\n"); fflush(stdout);
+}
+#endif
+
 uint16_t active_functions = 0; // current max = 16 functions
 
 void evalFunctions()
@@ -1110,6 +1120,27 @@ void evalFunctions()
 #if defined(SOMO)
         if (sd->func == FUNC_PLAY_SOMO && (~active_functions & mask)) {
           somoPushPrompt(sd->param);
+        }
+#endif
+        if (sd->func == FUNC_RESET && (~active_functions & mask)) {
+          switch(sd->param) {
+            case 0:
+            case 1:
+              resetTimer(sd->param);
+              break;
+            case 2:
+              resetAll();
+              break;
+#ifdef FRSKY
+            case 3:
+              resetTelemetry();
+              break;
+#endif
+          }
+        }
+#if defined(DEBUG)
+        if (sd->func == FUNC_TEST && (~active_functions & mask)) {
+          testFunc();
         }
 #endif
         active_functions |= mask;
@@ -1757,10 +1788,6 @@ uint16_t getTmr16KHz()
   }
 }
 
-#ifdef DEBUG
-extern uint16_t g_time_per10; // instantiated in menus.cpp
-#endif
-
 #if defined (PCBV4)
 ISR(TIMER2_COMPA_vect, ISR_NOBLOCK) //10ms timer
 #else
@@ -1911,11 +1938,6 @@ extern uint16_t g_timeMain;
   };
 #endif
 */
-
-#ifdef DEBUG
-uint16_t DEBUG1 = 0;
-uint16_t DEBUG2 = 0;
-#endif
 
 #endif
 

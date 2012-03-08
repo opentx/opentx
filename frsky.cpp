@@ -251,6 +251,10 @@ void parseTelemHubByte(uint8_t byte)
     }
   }
 
+  if ((uint8_t)structPos == offsetof(FrskyHubData, hour)) {
+    frskyHubData.hour = (frskyHubData.hour + g_eeGeneral.timezone + 24) % 24;
+  }
+
   state = TS_IDLE;
 }
 #endif
@@ -664,7 +668,7 @@ void displayRssiLine()
     lcd_filled_rect(66+36-v, 58, v, 5);
   }
   else {
-    lcd_puts(7*FW, 7*FH+1, STR_NODATA);
+    lcd_putsAtt(7*FW, 7*FH+1, STR_NODATA, BLINK);
     lcd_filled_rect(0, DISPLAY_H-8, DISPLAY_W, 8);
   }
 }
@@ -765,6 +769,10 @@ void menuProcFrsky(uint8_t event)
           bars_height += 2;
         }
       }
+      if (bars_height == 13) {
+        // No bars at all!
+        s_frsky_view = ((event == EVT_KEY_BREAK(KEY_UP)) ? FRSKY_VIEW_MAX : e_frsky_a1a2);
+      }
       displayRssiLine();
     }
     else if (s_frsky_view == e_frsky_a1a2) {
@@ -834,35 +842,33 @@ void menuProcFrsky(uint8_t event)
 
       // Accelerometer
 #define ACC_LINE (7*FH+1)
-      lcd_putsLeft(ACC_LINE, STR_ACCEL);
-      // lcd_puts(4*FW, 7*FH, PSTR("x:"));
-      lcd_outdezNAtt(4*FW, ACC_LINE, (int32_t)frskyHubData.accelX/10, LEFT|PREC2);
-      // lcd_putc(lcd_lastPos, 7*FH, 'g');
-      // lcd_puts(11*FW, 7*FH, PSTR("y:"));
-      lcd_outdezNAtt(10*FW, ACC_LINE, (int32_t)frskyHubData.accelY/10, LEFT|PREC2);
-      // lcd_putc(lcd_lastPos, 7*FH, 'g');
-      // lcd_puts(18*FW, 7*FH, PSTR("z:"));
-      lcd_outdezNAtt(16*FW, ACC_LINE, (int32_t)frskyHubData.accelZ/10, LEFT|PREC2);
-      // lcd_putc(lcd_lastPos, 7*FH, 'g');
-      lcd_filled_rect(0, ACC_LINE-1, DISPLAY_W, 8);
+      if (frskyStreaming > 0) {
+        lcd_putsLeft(ACC_LINE, STR_ACCEL);
+        // lcd_puts(4*FW, 7*FH, PSTR("x:"));
+        lcd_outdezNAtt(4*FW, ACC_LINE, (int32_t)frskyHubData.accelX/10, LEFT|PREC2);
+        // lcd_putc(lcd_lastPos, 7*FH, 'g');
+        // lcd_puts(11*FW, 7*FH, PSTR("y:"));
+        lcd_outdezNAtt(10*FW, ACC_LINE, (int32_t)frskyHubData.accelY/10, LEFT|PREC2);
+        // lcd_putc(lcd_lastPos, 7*FH, 'g');
+        // lcd_puts(18*FW, 7*FH, PSTR("z:"));
+        lcd_outdezNAtt(16*FW, ACC_LINE, (int32_t)frskyHubData.accelZ/10, LEFT|PREC2);
+        // lcd_putc(lcd_lastPos, 7*FH, 'g');
+        lcd_filled_rect(0, ACC_LINE-1, DISPLAY_W, 8); // TODO optim function?
+      }
+      else {
+        displayRssiLine();
+      }
     }
     else if (s_frsky_view == e_frsky_gps) {
-#define DATE_LINE (7*FH+1)
-      //lcd_putsLeft( DATE_LINE, PSTR("D/T:"));
-      // Date
-      lcd_outdezNAtt(3*FW, DATE_LINE, frskyHubData.year+2000, LEFT, 4);
-      lcd_putc(7*FW-4, DATE_LINE, '-');
-      lcd_outdezNAtt(8*FW-4, DATE_LINE, frskyHubData.month, LEFT|LEADING0, 2);
-      lcd_putc(10*FW-6, DATE_LINE, '-');
-      lcd_outdezNAtt(11*FW-6, DATE_LINE, frskyHubData.day, LEFT|LEADING0, 2);
-
+      uint8_t att = (frskyStreaming > 0 ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
       // Time
-      lcd_outdezNAtt(12*FW+5, DATE_LINE, frskyHubData.hour, LEFT|LEADING0, 2);
-      lcd_putc(14*FW+2, DATE_LINE, ':');
-      lcd_outdezNAtt(15*FW+2, DATE_LINE, frskyHubData.min, LEFT|LEADING0, 2);
-      lcd_putc(17*FW-1, DATE_LINE, ':');
-      lcd_outdezNAtt(18*FW-1, DATE_LINE, frskyHubData.sec, LEFT|LEADING0, 2);
-      lcd_filled_rect(0, DATE_LINE-1, DISPLAY_W, 8);
+#define TIME_LINE (7*FH+1)
+      lcd_outdezNAtt(6*FW+5, TIME_LINE, frskyHubData.hour, att, 2);
+      lcd_putcAtt(8*FW+2, TIME_LINE, ':', att);
+      lcd_outdezNAtt(9*FW+2, TIME_LINE, frskyHubData.min, att, 2);
+      lcd_putcAtt(11*FW-1, TIME_LINE, ':', att);
+      lcd_outdezNAtt(12*FW-1, TIME_LINE, frskyHubData.sec, att, 2);
+      lcd_filled_rect(0, TIME_LINE-1, DISPLAY_W, 8);
 
       // Latitude
 #define LAT_LINE (2*FH-4)

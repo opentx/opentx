@@ -48,7 +48,7 @@ uint8_t s_current_protocol = 255;
 inline void DSM2_EnableTXD(void)
 {
   UCSR0B |= (1 << TXEN0); // enable TX
-  UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt
+  // UCSR0B |= (1 << UDRIE0); // don't enable UDRE0 interrupt, it will be enabled during next setupPulses
 }
 #endif
 

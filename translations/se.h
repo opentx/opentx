@@ -78,7 +78,15 @@
 #else
 #define TR_SOUND         "Pip \0        "
 #endif
-#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO TR_SDCLOGGS
+#ifdef DEBUG
+#define TR_TEST          "Test\0        "
+#else
+#define TR_TEST
+#endif
+#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO "Reset        " TR_SDCLOGGS TR_TEST
+
+#define LEN_VFSWRESET    "\006"
+#define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
 
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  ""Vibr1 ""Vibr2 ""Vibr3 "
@@ -231,6 +239,7 @@
 #define TR_MEMORYWARNING "Minnesvarning"
 #define TR_ALARMWARNING "Alarmvarning"
 #define TR_NODATAALARM  "NO DATA Varning"
+#define TR_TIMEZONE     "Time Zone"
 #define TR_RXCHANNELORD "Kanalordning RX"
 #define TR_SLAVE        "Slav"
 #define TR_MODESRC      "effekt % k\201lla"
