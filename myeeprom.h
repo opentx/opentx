@@ -218,8 +218,12 @@ enum Functions {
 #ifdef SOMO
   FUNC_PLAY_SOMO,
 #endif
+  // FUNC_RESET,
 #ifdef LOGS
   FUNC_LOGS,
+#endif
+#ifdef DEBUG
+  // FUNC_TEST,
 #endif
   FUNC_MAX
 };
@@ -280,10 +284,10 @@ PACK(typedef struct t_FrSkyBarData {
 #define PROTO_WS_HOW_HIGH 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
-  uint16_t usrProto:3; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
-  uint16_t imperial:1;
-  uint16_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
-  uint16_t spare:2;
+  uint8_t usrProto:3; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint8_t imperial:1;
+  uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t spare:2;
   FrSkyBarData bars[4];
   FrSkyRSSIAlarm rssiAlarms[2];
 }) FrSkyData;
