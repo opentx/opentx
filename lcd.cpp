@@ -276,7 +276,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
   if (flags & LEFT) {
     x += len * fw;
     if (neg)
-      x += FWNUM;
+      x += (flags & DBLSIZE ? 7 : FWNUM);
   }
 
   lcd_lastPos = x;
@@ -314,8 +314,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
     lcd_hline(xn, y+2*FH-2, ln);
   }
 
-  // TODO we could change the '-' to have one pixel removed at its left
-  if (neg) { lcd_putcAtt(x, y, '-', flags); lcd_plot(x, y+3); }
+  if (neg) lcd_putcAtt(x, y, '-', flags);
 
 #ifdef NAVIGATION_RE1
   if (flags & SURROUNDED) {
