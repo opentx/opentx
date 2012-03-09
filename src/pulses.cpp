@@ -729,7 +729,7 @@ void set_timer3_capture()
 {
 #ifndef SIMU
 #if defined (PCBV4)
-    TIMSK3 &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts // TODO Cam please could you check this line please? Thanks a lot!
+    TIMSK3 &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
 #else
     ETIMSK &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
 #endif
