@@ -78,6 +78,13 @@ enum MainViews {
   MAIN_VIEW_MAX = e_timer2
 };
 
+enum BeeperMode {
+  e_mode_quiet = -2,
+  e_mode_alarms,
+  e_mode_nokeys,
+  e_mode_all
+};
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   myVers;
@@ -94,7 +101,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   view;      //index of subview in main scrren
   uint8_t   disableThrottleWarning:1;
   int8_t    switchWarning:2; // -1=down, 0=off, 1=up
-  int8_t    beeperMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  int8_t    beeperMode:2;
   uint8_t   spare1:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   disableAlarmWarning:1;

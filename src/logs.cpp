@@ -177,7 +177,7 @@ void writeLogs()
       f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsCourse_bp, frskyHubData.gpsCourse_ap);
       f_printf(&g_oLogFile, "%d.%d,", frskyHubData.gpsSpeed_bp, frskyHubData.gpsSpeed_ap);
       f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsAltitude_bp, frskyHubData.gpsAltitude_ap);
-      f_printf(&g_oLogFile, "%d.%d,", frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset, frskyHubData.baroAltitude_ap);
+      f_printf(&g_oLogFile, "%d.%d,", frskyHubData.baroAltitude_bp, frskyHubData.baroAltitude_ap);
       f_printf(&g_oLogFile, "%d,", frskyHubData.temperature1);
       f_printf(&g_oLogFile, "%d,", frskyHubData.temperature2);
       f_printf(&g_oLogFile, "%d,", frskyHubData.rpm);

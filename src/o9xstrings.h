@@ -269,11 +269,12 @@ extern const pm_char STR_BG[];
 extern const pm_char STR_MENUTOSTART[];
 extern const pm_char STR_SETMIDPOINT[];
 extern const pm_char STR_MOVESTICKSPOTS[];
-extern const pm_char STR_ALTnDST[];
 extern const pm_char STR_RXBATT[];
 extern const pm_char STR_TX[];
 #define STR_RX (STR_TX+OFS_RX)
-extern const pm_char STR_SPDnMAX[];
+extern const pm_char STR_SPD[];
+extern const pm_char STR_ALT[];
+extern const pm_char STR_DST[];
 extern const pm_char STR_TEMP1nTEMP2[];
 extern const pm_char STR_RPMnFUEL[];
 extern const pm_char STR_ACCEL[];
