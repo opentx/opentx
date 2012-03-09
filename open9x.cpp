@@ -313,7 +313,7 @@ int16_t getValue(uint8_t i)
 #if defined(FRSKY)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CSW_CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp + frskyHubData.baroAltitudeOffset;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp;
 #endif
 #if defined(FRSKY_HUB)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
@@ -1256,27 +1256,29 @@ void perOut(uint8_t phase)
     int16_t v  = 0;
     uint8_t swTog;
 
-    //swOn[i]=false;
-    if (!getSwitch(md->swtch, 1)) { // switch on?  (if no switch selected => on)
+    uint8_t k = md->srcRaw-1;
+    if (getSwitch(md->swtch, 1)) { // switch on?  (if no switch selected => on)
+      swTog = !swOn[i];
+      swOn[i] = true;
+
+      if (k < NUM_STICKS)
+        v = anas[k]; //Switch is on. MAX=FULL=512 or value.
+      else if (k>=MIX_CH1-1 && k<=MIX_CH16-1 && k-MIX_CH1+1<md->destCh) // if we've already calculated the value - take it instead
+        v = chans[k-MIX_CH1+1] / 100;
+      else if (k>=MIX_THR-1 && k<=MIX_SWC-1)
+        v = getSwitch(k-MIX_THR+1+1, 0) ? +1024 : -1024;
+      else
+        v = getValue(k <= MIX_3POS ? k : k-MAX_SWITCH);
+
+      if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
+    }
+    else {
       swTog = swOn[i];
       swOn[i] = false;
-      continue;
+
+      if (md->srcRaw!=MIX_MAX || md->mltpx==MLTPX_REP) continue;
+      v = 0; // switch is off and it is either MAX=0 or FULL=-512
     }
-
-    swTog = !swOn[i];
-    swOn[i] = true;
-    uint8_t k = md->srcRaw-1;
-
-    if (k < NUM_STICKS)
-      v = anas[k]; //Switch is on. MAX=FULL=512 or value.
-    else if (k>=MIX_CH1-1 && k<=MIX_CH16-1 && k-MIX_CH1+1<md->destCh) // if we've already calculated the value - take it instead
-      v = chans[k-MIX_CH1+1] / 100;
-    else if (k>=MIX_THR-1 && k<=MIX_SWC-1)
-      v = getSwitch(k-MIX_THR+1+1, 0) ? +1024 : -1024;
-    else
-      v = getValue(k <= MIX_3POS ? k : k-MAX_SWITCH);
-
-    if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
 
     //========== INPUT OFFSET ===============
     if(md->sOffset) v += calc100toRESX(md->sOffset);

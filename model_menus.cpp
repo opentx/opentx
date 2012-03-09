@@ -2012,7 +2012,7 @@ void menuProcTelemetry(uint8_t event)
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
           case 0:
-            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, 9); // TODO enum
+            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, BAR_MAX-1);
             break;
           case 1:
             CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].barMin, 0, 50-g_model.frsky.bars[j].barMax);
