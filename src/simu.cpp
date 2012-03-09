@@ -227,15 +227,12 @@ long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
   return 0;
 }
 
-extern uint16_t       s_trainerLast10ms;
 long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 {
   if(togButPpm->getState()){
     for(int i=0; i<8; i++){
       g_ppmIns[i]=knobsppm[i]->getValue()-1500;
       if(g_ppmIns[i]<-400){
-        // TODO BSS g_trainerSlaveActiveChns = i;
-        // TODO BSS s_trainerLast10ms    = g_tmr10ms;
 	break;
       }
     }
