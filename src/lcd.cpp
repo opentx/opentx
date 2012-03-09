@@ -299,11 +299,9 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
       }
       else {
         x -= 2;
-        if ((~flags & BLINK) || (!BLINK_ON_PHASE)) {
-          lcd_plot(x+1, y+6);
-          if (flags & INVERS)
-            lcd_vline(x+1, y, 8);
-        }
+        lcd_plot(x+1, y+6);
+        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE))
+          lcd_vline(x+1, y, 8);
       }
     }
     val = ((uint16_t)val) / 10;
