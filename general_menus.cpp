@@ -499,29 +499,30 @@ void menuProcTrainer(uint8_t event)
         }
       }
       y += FH;
-    }
 
-    edit = (m_posVert==5);
-    lcd_puts(0*FW, 6*FH, STR_MULTIPLIER);
-    lcd_outdezAtt(13*FW, 6*FH, g_eeGeneral.PPM_Multiplier+10, (edit ? INVERS : 0)|PREC1);
-    if (edit) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    edit = (m_posVert==6);
-    lcd_putsAtt(0*FW, 7*FH, STR_CAL, edit ? INVERS : 0);
-    for (uint8_t i=0; i<4; i++) {
-      uint8_t x = (i*8+16)*FW/2;
+      edit = (m_posVert==5);
+      lcd_puts(0*FW, 6*FH, STR_MULTIPLIER);
+      lcd_outdezAtt(13*FW, 6*FH, g_eeGeneral.PPM_Multiplier+10, (edit ? INVERS : 0)|PREC1);
+      if (edit) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
+
+      edit = (m_posVert==6);
+      lcd_putsAtt(0*FW, 7*FH, STR_CAL, edit ? INVERS : 0);
+      for (uint8_t i=0; i<4; i++) {
+        uint8_t x = (i*8+16)*FW/2;
 #if defined (DECIMALS_DISPLAYED)
-      lcd_outdezAtt(x, 7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+        lcd_outdezAtt(x, 7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-      lcd_outdezAtt(x, 7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+        lcd_outdezAtt(x, 7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
-    }
+      }
 
-    if (edit) {
-      if (event==EVT_KEY_FIRST(KEY_MENU)){
-        memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
-        eeDirty(EE_GENERAL);
-        AUDIO_KEYPAD_UP();
+      if (edit) {
+        if (event==EVT_KEY_FIRST(KEY_MENU)){
+          memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
+          eeDirty(EE_GENERAL);
+          AUDIO_KEYPAD_UP();
+        }
       }
     }
   }
