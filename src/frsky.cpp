@@ -143,11 +143,7 @@ inline void getGpsDistance()
   dist = frskyHubData.distFromEarthAxis * angle / 1000000;
   result += dist*dist;
 
-  if (frskyHubData.baroAltitudeOffset)
-    dist = abs(frskyHubData.baroAltitude_bp);
-  else
-    dist = abs(frskyHubData.gpsAltitude_bp);
-
+  dist = abs(frskyHubData.baroAltitudeOffset ? frskyHubData.baroAltitude_bp : frskyHubData.gpsAltitude_bp);
   result += dist*dist;
 
   frskyHubData.gpsDistance = isqrt32(result);
