@@ -72,7 +72,7 @@ class FrskyData: public FrskyRSSI {
 #if defined(FRSKY_HUB)
 PACK(struct FrskyHubData {
   int16_t  baroAltitudeOffset;//       spare reused
-  uint16_t  gpsAltitude_bp;  // 0x01   before punct
+  int16_t  gpsAltitude_bp;  // 0x01   before punct
   int16_t  temperature1;     // 0x02   -20 .. 250 deg. celcius
   uint16_t rpm;              // 0x03   0..60,000 revs. per minute
   uint16_t fuelLevel;        // 0x04   0, 25, 50, 75, 100 percent
@@ -81,7 +81,7 @@ PACK(struct FrskyHubData {
   uint32_t distFromEarthAxis;//        2 spares reused
   int16_t  gpsAltitude_ap;   // 0x01+8 after punct
   uint8_t  cellVolts[12];    //        6 spares reused
-  uint16_t baroAltitude_bp;  // 0x10   0..9,999 meters
+  int16_t  baroAltitude_bp;  // 0x10   0..9,999 meters
   uint16_t gpsSpeed_bp;      // 0x11   before punct
   uint16_t gpsLongitude_bp;  // 0x12   before punct
   uint16_t gpsLatitude_bp;   // 0x13   before punct
@@ -118,7 +118,7 @@ PACK(struct FrskyHubData {
   uint16_t maxGpsDistance;
   uint16_t maxGpsSpeed;
   int16_t  gpsAltitudeOffset;
-  uint16_t maxAltitude;
+  int16_t  maxAltitude;
 });
 
 #elif defined(WS_HOW_HIGH)
