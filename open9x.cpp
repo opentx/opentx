@@ -1089,7 +1089,7 @@ uint8_t evalSticks(uint8_t phase)
  */
 void testFunc()
 {
-  printf("testFunc\n"); fflush(stdout);
+  // printf("testFunc\n"); fflush(stdout);
 }
 #endif
 
@@ -1252,67 +1252,80 @@ void perOut(uint8_t phase)
       }
     }
 
+    //========== SWITCH ===============
+    bool sw = getSwitch(md->swtch, 1);
+
+    //========== VALUE ===============
     //Notice 0 = NC switch means not used -> always on line
-    int16_t v  = 0;
-    uint8_t swTog;
-
     uint8_t k = md->srcRaw-1;
-    if (getSwitch(md->swtch, 1)) { // switch on?  (if no switch selected => on)
-      swTog = !swOn[i];
-      swOn[i] = true;
+    int16_t v = 0;
+    if (k < NUM_STICKS)
+      v = anas[k]; //Switch is on. MAX=FULL=512 or value.
+    else if (k>=MIX_CH1-1 && k<=MIX_CH16-1 && k-MIX_CH1+1<md->destCh) // if we've already calculated the value - take it instead
+      v = chans[k-MIX_CH1+1] / 100;
+    else if (k>=MIX_THR-1 && k<=MIX_SWC-1) {
+      v = getSwitch(k-MIX_THR+1+1, 0) ? +1024 : -1024;
+      if (v<0 && !md->swtch && (md->delayDown || md->delayUp))
+        sw = false;
+    }
+    else
+      v = getValue(k <= MIX_3POS ? k : k-MAX_SWITCH);
 
-      if (k < NUM_STICKS)
-        v = anas[k]; //Switch is on. MAX=FULL=512 or value.
-      else if (k>=MIX_CH1-1 && k<=MIX_CH16-1 && k-MIX_CH1+1<md->destCh) // if we've already calculated the value - take it instead
-        v = chans[k-MIX_CH1+1] / 100;
-      else if (k>=MIX_THR-1 && k<=MIX_SWC-1)
-        v = getSwitch(k-MIX_THR+1+1, 0) ? +1024 : -1024;
-      else
-        v = getValue(k <= MIX_3POS ? k : k-MAX_SWITCH);
-
+    //========== DELAYS ===============
+    if (sw) { // switch on?  (if no switch selected => on)
+      if (md->delayUp) {
+        if (!swOn[i]) {
+          swOn[i] = true;
+          sDelay[i] = md->delayUp * 100;
+        }
+        if (sDelay[i]) { // perform delay
+          if(tick10ms) sDelay[i]--;
+          if (!md->swtch) {
+            v = -1024;
+          }
+          else {
+            continue;
+          }
+        }
+      }
+      swOn[i] = true;  // TODO optim
       if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
     }
     else {
-      swTog = swOn[i];
+      if (md->delayDown) {
+        if (swOn[i]) {
+          sDelay[i] = md->delayDown * 100;
+          swOn[i] = false;
+        }
+        if (sDelay[i]) { // perform delay
+          if(tick10ms) sDelay[i]--;
+          if (!md->swtch) v = +1024;
+        }
+        else if (!md->swtch) {
+          v = -1024;
+        }
+      }
       swOn[i] = false;
-
-      if (md->srcRaw!=MIX_MAX || md->mltpx==MLTPX_REP) continue;
-      v = 0; // switch is off and it is either MAX=0 or FULL=-512
+      if (md->speedDown) {
+        if (md->mltpx==MLTPX_REP) continue;
+        if (md->swtch) v = 0;
+      }
+      else if (md->swtch) {
+        continue;
+      }
     }
 
-    //========== INPUT OFFSET ===============
+    //========== OFFSET ===============
     if(md->sOffset) v += calc100toRESX(md->sOffset);
 
-    //========== DELAY and PAUSE ===============
-    if (md->speedUp || md->speedDown || md->delayUp || md->delayDown)  // there are delay values
+    //========== SPEED ===============
+    if (md->speedUp || md->speedDown)  // there are delay values
     {
 #define DEL_MULT 256
 
       int16_t diff = v-act[i]/DEL_MULT;
 
-      if(swTog) {
-          //need to know which "v" will give "anas".
-          //curves(v)*weight/100 -> anas
-          // v * weight / 100 = anas => anas*100/weight = v
-        if(md->mltpx==MLTPX_REP)
-        {
-            act[i] = (int32_t)ex_chans[md->destCh]*DEL_MULT;
-            act[i] *=100;
-            if(md->weight) act[i] /= md->weight;
-        }
-        diff = v-act[i]/DEL_MULT;
-        if(diff) sDelay[i] = (diff<0 ? md->delayUp :  md->delayDown) * 100;
-      }
-
-      if (sDelay[i]) { // perform delay
-        if(tick10ms) sDelay[i]--;
-        if (sDelay[i] != 0) {
-          v = act[i]/DEL_MULT; // Stay in old position until delay over
-          diff = 0;
-        }
-      }
-
-      if (diff && (md->speedUp || md->speedDown)) {
+      if (diff) {
         //rate = steps/sec => 32*1024/100*md->speedUp/Down
         //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
         //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 since it's asymmetrical
@@ -1326,9 +1339,6 @@ void perOut(uint8_t phase)
 
         if(((diff>0) && (v<(act[i]/DEL_MULT))) || ((diff<0) && (v>(act[i]/DEL_MULT)))) act[i]=(int32_t)v*DEL_MULT; //deal with overflow
         v = act[i]/DEL_MULT;
-      }
-      else if (diff) {
-        act[i]=(int32_t)v*DEL_MULT;
       }
     }
 
