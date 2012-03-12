@@ -48,11 +48,6 @@
  * ELE->Flap
  * Flap->ELE
  *
- * =============================================================
- * Assumptions:
- * All primary channels are per modi12x3
- * Each template added to the end of each channel
- *
  */
 
 #ifndef TEMPLATES_H

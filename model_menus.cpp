@@ -985,7 +985,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
     memset(mix,0,sizeof(MixData));
     mix->destCh = s_currCh-1;
-    mix->srcRaw = s_currCh;
+    mix->srcRaw = (s_currCh > 4 ? s_currCh : channel_order(s_currCh));
     mix->weight = 100;
   }
   STORE_MODELVARS;
@@ -1475,7 +1475,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 
   for (uint8_t ch=1; ch<=(expo ? NUM_STICKS : NUM_CHNOUT); ch++) {
     MixData *md=NULL; ExpoData *ed=NULL;
-    if (expo ? (i<MAX_EXPOS && (ed=expoaddress(i))->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && (md=mixaddress(i))->destCh+1 == ch)) {
+    if (expo ? (i<MAX_EXPOS && (ed=expoaddress(i))->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && (md=mixaddress(i))->srcRaw && md->destCh+1 == ch)) {
       if (s_pgOfs < cur && cur-s_pgOfs < 8) {
         if (expo)
           putsChnRaw(0, (cur-s_pgOfs)*FH, ch, 0);
@@ -1505,7 +1505,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
             displayMixerLine(cur, i, ch, mixCnt, sub, _event);
         }
         cur++; mixCnt++; i++; md++; ed++;
-      } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && md->destCh+1 == ch));
+      } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && md->srcRaw && md->destCh+1 == ch));
       if (s_copyMode == MOVE_MODE && s_pgOfs < cur && cur-s_pgOfs < 8 && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
         uint8_t y = (cur-s_pgOfs)*FH;
         lcd_rect(22, y-1, DISPLAY_W-1-21, 9, DOTTED);
