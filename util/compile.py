@@ -64,11 +64,11 @@ def generate_c9x_list(filename, hexes, size):
 
 # stock board
 hexes = generate("open9x-stock", "PCB=STD", options_stock)
-generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "EESIZE_STOCK")
+generate_c9x_list("../../../companion9x/trunk/src/open9x-stock-binaries.cpp", hexes, "EESIZE_STOCK")
 
 # v4 board
 hexes = generate("open9x-v4", "PCB=V4", options_v4)
-generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "EESIZE_V4")
+generate_c9x_list("../../../companion9x/trunk/src/open9x-v4-binaries.cpp", hexes, "EESIZE_V4")
 
 # stamp
 call(["make", "stamp"])
