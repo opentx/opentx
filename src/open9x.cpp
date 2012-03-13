@@ -251,14 +251,14 @@ int16_t  Expo::expo(int16_t x)
 
 void applyExpos(int16_t *anas, uint8_t phase)
 {
-  static int16_t anas2[4]; // values before expo, to ensure same expo base when multiple expo lines are used
+  static int16_t anas2[NUM_STICKS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 
   if (phase == 255)
     phase = getFlightPhase();
 
   int8_t cur_chn = -1;
-  for (uint8_t i=0; i<DIM(g_model.expoData); i++) {
+  for (uint8_t i=0; i<MAX_EXPOS; i++) {
     ExpoData &ed = g_model.expoData[i];
     if (ed.mode==0) break; // end of list
     if (ed.chn == cur_chn)
