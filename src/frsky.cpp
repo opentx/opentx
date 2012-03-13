@@ -274,7 +274,7 @@ void parseTelemHubByte(uint8_t byte)
   }
 
   if ((uint8_t)structPos == offsetof(FrskyHubData, hour)) {
-    frskyHubData.hour = (frskyHubData.hour + g_eeGeneral.timezone + 24) % 24;
+    frskyHubData.hour = ((uint8_t)(frskyHubData.hour + g_eeGeneral.timezone + 24)) % 24;
   }
 
   state = TS_IDLE;
