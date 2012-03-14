@@ -550,9 +550,6 @@ ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) $(AVRGCCFLAGS)
 
 MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
 MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
-ABUILD_NUM = ${shell sh -c "grep \"BUILD_NUM\" stamp-open9x.h | egrep -o \"[[:digit:]]+\""}
-BUILD_NUM = $(shell echo $$(( $(ABUILD_NUM) + 1 )))
-BUILD_DIR = $(shell pwd | awk -F'/' '{print $$((NF-1))}')
 
 # Default target.
 all: begin gccversion sizebefore build sizeafter end
@@ -574,14 +571,14 @@ stamp_header:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-open9x.h
 	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> stamp-open9x.h
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)-$(MODS)\"" >> stamp-open9x.h
-	@echo "#define SVN_STR  \"$(BUILD_DIR)-r$(REV)\"" >> stamp-open9x.h
+	@echo "#define SVN_STR  \"open9x-r$(REV)\"" >> stamp-open9x.h
 	@cat stamp-open9x.h
 	
 stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > ../stamp-open9x.txt
 	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> ../stamp-open9x.txt
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> ../stamp-open9x.txt
-	@echo "#define SVN_VERS  \"$(BUILD_DIR)-r$(REV)\"" >> ../stamp-open9x.txt
+	@echo "#define SVN_VERS  \"open9x-r$(REV)\"" >> ../stamp-open9x.txt
 	@cat ../stamp-open9x.txt
  
 font.lbm: font_6x1.xbm
