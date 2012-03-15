@@ -302,7 +302,7 @@ int16_t getValue(uint8_t i)
   else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
   else if(i<MIXSRC_3POS+3)
 #ifdef HELI
-    return cyc_anas[i-MIX_3POS];
+    return cyc_anas[i-MIXSRC_3POS];
 #else
     return 0;
 #endif
