@@ -311,8 +311,10 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
     val = ((uint16_t)val) / 10;
     x-=fw;
   }
+
   if (xn) {
-    lcd_hline(xn, y+2*FH-3, ln);
+    y &= ~0x07;
+    lcd_hline(xn, (y & ~0x07)+2*FH-3, ln);
     lcd_hline(xn, y+2*FH-2, ln);
   }
 
