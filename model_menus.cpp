@@ -418,7 +418,7 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 void menuProcModel(uint8_t event)
 {
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM||g_model.protocol==PROTO_DSM2||g_model.protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,6,2,1});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM||g_model.protocol==PROTO_FAAST||g_model.protocol==PROTO_DSM2||g_model.protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,6,2,1});
 
   uint8_t  sub = m_posVert;
   uint8_t y = 1*FH;
@@ -523,7 +523,7 @@ void menuProcModel(uint8_t event)
     lcd_putsLeft( y, STR_PROTO);
     lcd_putsiAtt(PARAM_OFS, y, STR_VPROTOS, g_model.protocol,
                   (sub==subN && m_posHorz==0 ? (s_editMode>0 ? BLINK|INVERS : INVERS):0));
-    if (g_model.protocol == PROTO_PPM) {
+    if (g_model.protocol == PROTO_PPM || g_model.protocol == PROTO_FAAST) {
       lcd_putsiAtt(PARAM_OFS+4*FW, y, STR_NCHANNELS, g_model.ppmNCH+2, (sub==subN && m_posHorz==1) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       lcd_puts(PARAM_OFS+11*FW, y, PSTR("u"));
       lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, ((sub==subN && m_posHorz==2) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0));
@@ -543,7 +543,7 @@ void menuProcModel(uint8_t event)
     else if (sub==subN) {
       m_posHorz = 0;
     }
-    if (sub==subN && (s_editMode>0 || p1valdiff || (g_model.protocol!=0/*TODO constant*/ && g_model.protocol!=PROTO_DSM2))) { // TODO avoid DSM2 when not defined
+    if (sub==subN && (s_editMode>0 || p1valdiff || (g_model.protocol!=PROTO_PPM && g_model.protocol!=PROTO_FAAST && g_model.protocol!=PROTO_DSM2))) { // TODO avoid DSM2 when not defined
       switch (m_posHorz) {
         case 0:
             CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROTO_MAX-1);
@@ -565,7 +565,7 @@ void menuProcModel(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    if (g_model.protocol == PROTO_PPM) {
+    if (g_model.protocol == PROTO_PPM || g_model.protocol == PROTO_FAAST) {
       lcd_putsLeft( y, STR_PPMFRAME);
       lcd_puts(PARAM_OFS+3*FW, y, STR_MS);
       lcd_outdezAtt(PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((sub==subN && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | PREC1|LEFT);
@@ -1686,7 +1686,7 @@ void menuProcCustomSwitches(uint8_t event)
 
 #if defined(FRSKY)
         if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-          putsTelemetryChannel(20*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), 128+cs.v2, m_posHorz==2 ? attr : 0);
+          putsTelemetryChannel(20*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), 128+cs.v2), m_posHorz==2 ? attr : 0);
           v2_min = -128; v2_max = 127;
         }
         else
@@ -1842,9 +1842,9 @@ void menuProcFunctionSwitches(uint8_t event)
 void menuProcTelemetry(uint8_t event)
 {
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 22, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 27, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #else
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 19, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 24, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #endif
 
   int8_t  sub = m_posVert;
@@ -1991,6 +1991,36 @@ void menuProcTelemetry(uint8_t event)
   subN++;
 #endif
 
+  // Display
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_putsLeft(y, STR_DISPLAY);
+  }
+  subN++;
+
+  for (uint8_t j=0; j<4; j++) {
+    if (s_pgOfs<subN) {
+      y = (subN-s_pgOfs)*FH;
+      for (uint8_t k=0; k<2; k++) {
+        uint8_t value = getTelemCustomField(j, k);
+        lcd_putsiAtt(k==0?4:TELEM_COL2, y, STR_VTELEMBARS, value, (sub==subN && m_posHorz==k) ? blink : 0);
+        if (sub==subN && m_posHorz==k && (s_editMode>0 || p1valdiff)) {
+          CHECK_INCDEC_MODELVAR(event, value, 0, (j==3 && k==0) ? STATUS_MAX : DISPLAY_MAX);
+          if (checkIncDec_Ret) {
+            uint8_t mask = 1 << (2*j+k);
+            if (value & 1)
+              g_model.frskyLinesXtra |= mask;
+            else
+              g_model.frskyLinesXtra &= ~mask;
+            value >>= 1;
+            g_model.frskyLines[j] = (k==0 ? ((g_model.frskyLines[j] & 0xf0) + value) : (g_model.frskyLines[j] & 0x0f) + (value << 4));
+          }
+        }
+      }
+    }
+    subN++;
+  }
+
   // Bars
   if(s_pgOfs<subN) {
     y = (subN-s_pgOfs)*FH;
@@ -1998,13 +2028,13 @@ void menuProcTelemetry(uint8_t event)
   }
   subN++;
 
-  for (int j=0; j<4; j++) {
+  for (uint8_t j=0; j<4; j++) {
     if (s_pgOfs<subN) {
       y = (subN-s_pgOfs)*FH;
       lcd_putsiAtt(4, y, STR_VTELEMBARS, g_model.frsky.bars[j].source, (sub==subN && m_posHorz==0) ? blink : 0);
       if (g_model.frsky.bars[j].source) {
-        putsTelemetryChannel(TELEM_COL2-3*FW, y, g_model.frsky.bars[j].source-1, g_model.frsky.bars[j].barMin*5, (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
-        putsTelemetryChannel(14*FW-3, y, g_model.frsky.bars[j].source-1, (51-g_model.frsky.bars[j].barMax)*5, (sub==subN && m_posHorz==2 ? blink : 0) | LEFT);
+        putsTelemetryChannel(TELEM_COL2-3*FW, y, g_model.frsky.bars[j].source-1, convertTelemValue(g_model.frsky.bars[j].source-1, g_model.frsky.bars[j].barMin*5), (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
+        putsTelemetryChannel(14*FW-3, y, g_model.frsky.bars[j].source-1, convertTelemValue(g_model.frsky.bars[j].source-1, (51-g_model.frsky.bars[j].barMax)*5), (sub==subN && m_posHorz==2 ? blink : 0) | LEFT);
       }
       else {
         if (sub == subN) m_posHorz = 0;
@@ -2012,7 +2042,7 @@ void menuProcTelemetry(uint8_t event)
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
           case 0:
-            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, BAR_MAX-1);
+            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, BAR_MAX);
             break;
           case 1:
             CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].barMin, 0, 50-g_model.frsky.bars[j].barMax);
@@ -2029,43 +2059,43 @@ void menuProcTelemetry(uint8_t event)
 #endif
 
 #ifdef TEMPLATES
-void menuProcTemplates(uint8_t event)
+// TODO s_noHi needed?
+void menuProcTemplates(uint8_t _event)
 {
-  SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+NUM_TEMPLATES+1);
+  uint8_t event = (s_warning ? 0 : _event);
 
-  uint8_t y = 0;
-  uint8_t k = 0;
-  int8_t  sub    = m_posVert - 1;
+  SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+TMPL_COUNT);
+
+  uint8_t sub = m_posVert - 1;
+
+  if (s_confirmation) {
+    if (sub<TMPL_COUNT)
+      applyTemplate(sub);
+    s_confirmation = 0;
+    AUDIO_WARNING2();
+  }
 
   switch(event)
   {
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_MENU):
+      s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
       killEvents(event);
-      //apply mixes or delete
-      s_noHi = NO_HI_LEN;
-      if (sub>=0 && sub<(int8_t)NUM_TEMPLATES)
-        applyTemplate(sub);
-      if (sub==NUM_TEMPLATES)
-        clearMixes();
-      AUDIO_WARNING2();
+      _event = 0;
       break;
   }
 
-  y=1*FH;
-  for(uint8_t i=0; i<7; i++){
+  uint8_t y = 1*FH;
+  uint8_t k = 0;
+  for (uint8_t i=0; i<7 && k<TMPL_COUNT; i++) {
     k=i+s_pgOfs;
-    if(k==NUM_TEMPLATES) break;
-
-    //write mix names here
-    lcd_outdezNAtt(3*FW, y, k+1, (sub==k ? INVERS : 0)|LEADING0, 2);
-    lcd_putsiAtt(4*FW, y, STR_VTEMPLATES, k, (s_noHi ? 0 : (sub==k ? INVERS  : 0)));
+    lcd_outdezNAtt(3*FW, y, k, (sub==k ? INVERS : 0)|LEADING0, 2);
+    lcd_putsiAtt(4*FW, y, STR_VTEMPLATES, k, (sub==k ? INVERS  : 0));
     y+=FH;
   }
-  if(y>7*FH) return;
 
-  uint8_t attr = s_noHi ? 0 : ((sub==NUM_TEMPLATES) ? INVERS : 0);
-  lcd_putsAtt(  1*FW,y,STR_CLEARMIXMENU,attr);
-  y+=FH;
+  if (s_warning) {
+    displayConfirmation(_event);
+  }
 }
 #endif
 

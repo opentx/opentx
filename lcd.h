@@ -72,8 +72,10 @@
 #define SWONLY        0x40 /* means no ON OFF, only switches */
 #define SWCONDENSED   0x80 /* means that THRm will be displayed as THR */
 
-/* other flags */
+/* telemetry flags */
 #define NO_UNIT       UNSIGN
+
+/* other flags */
 #define TWO_DOTS      LEFT
 
 extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
@@ -111,12 +113,6 @@ extern void putsChnLetter(uint8_t x, uint8_t y, uint8_t idx, uint8_t attr);
 extern void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att);
 extern void putsVBat(uint8_t x, uint8_t y, uint8_t att);
 extern void putsTime(uint8_t x,uint8_t y, int16_t tme, uint8_t att, uint8_t att2);
-
-#ifdef FRSKY
-// TODO move this into frsky.h
-void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att);
-void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
-#endif
 
 #define SOLID  0xff
 #define DOTTED 0x55

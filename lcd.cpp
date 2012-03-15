@@ -250,7 +250,6 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
 
   uint8_t xn = 0;
   uint8_t ln = 2;
-  char c;
 
   if (mode != MODE(LEADING0)) {
     len = 1;
@@ -283,9 +282,13 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
   x -= fw + 1;
 
   for (uint8_t i=1; i<=len; i++) {
-    c = ((uint16_t)val % 10) + '0';
-    if (c=='1' && flags&DBLSIZE && i==len) { x+=2; flags|=CONDENSED; }
-    lcd_putcAtt(x, y, c, flags);
+    char c = ((uint16_t)val % 10) + '0';
+    uint8_t f = flags;
+    if (flags & DBLSIZE) {
+      if (c=='1' && i==len) { x+=2; f|=CONDENSED; }
+      if (val >= 1000) { x+=FWNUM; f&=~DBLSIZE; }
+    }
+    lcd_putcAtt(x, y, c, f);
     if (mode==i) {
       flags &= ~PREC2; // TODO not needed but removes 64bytes, could be improved for sure, check asm
       if (flags & DBLSIZE) {
@@ -304,6 +307,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
           lcd_vline(x+1, y, 8);
       }
     }
+    if ((flags & DBLSIZE) && val >= 1000 && val < 10000) x-=2;
     val = ((uint16_t)val) / 10;
     x-=fw;
   }
@@ -560,76 +564,6 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
   putsSwitches(x, y, mode-(TMR_VAROFS-1), att|SWONLY);
 }
 
-#ifdef FRSKY
-// TODO move this into frsky.cpp
-void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)
-{
-  // TODO enum
-
-  switch (channel) {
-    case 0:
-    case 1:
-      // A1 and A2
-    {
-      // TODO optimize this, avoid int32_t
-      int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51;
-      if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
-        converted_value /= 10;
-      }
-      else {
-        if (converted_value < 1000) {
-          att |= PREC2;
-        }
-        else {
-          converted_value /= 10;
-          att |= PREC1;
-        }
-      }
-      putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
-    }
-    break;
-
-    case 2:
-      // Altitude
-      putsTelemetryValue(x, y, val * 4, UNIT_METERS, att);
-      break;
-
-    case 3:
-      // RPMs
-      lcd_outdezAtt(x, y, (int16_t)val * 50, att);
-      break;
-
-    case 4:
-      // FUEL
-      putsTelemetryValue(x, y, val, UNIT_PERCENT, att);
-      break;
-
-    case 5:
-    case 6:
-      // TEMPERATURE
-      putsTelemetryValue(x, y, val, UNIT_DEGREES, att);
-      break;
-
-    case 7:
-      // SPEED
-      putsTelemetryValue(x, y, val*2, UNIT_KMH, att);
-      break;
-
-    case 8:
-      // CELL
-      putsVolts(x, y, val*2, att);
-      break;
-  }
-}
-
-void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
-{
-  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att); // TODO we could add this test inside lcd_outdezAtt!
-  if (~att & NO_UNIT && unit != UNIT_RAW)
-    lcd_putsiAtt(lcd_lastPos+1, y, STR_VTELEMUNIT, unit, 0);
-}
-#endif
-
 void lcdSendCtl(uint8_t val)
 {
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_CS1);
@@ -648,13 +582,11 @@ void lcdSendCtl(uint8_t val)
   PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
 }
 
-
 #define delay_1us() _delay_us(1)
 void delay_1_5us(int ms)
 {
   for(int i=0; i<ms; i++) delay_1us();
 }
-
 
 void lcd_init()
 {

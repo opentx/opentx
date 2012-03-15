@@ -70,7 +70,17 @@
 #define CURVE5(x) ((x)-1)
 #define CURVE9(x) (MAX_CURVE5+(x)-1)
 
-#define NUM_TEMPLATES 7
+enum Templates {
+  TMPL_CLEAR_MIXES,
+  TMPL_SIMPLE_4CH,
+  TMPL_THR_CUT,
+  TMPL_V_TAIL,
+  TMPL_ELEVON_DELTA,
+  TMPL_ECCPM,
+  TMPL_HELI_SETUP,
+  TMPL_SERVO_TEST,
+  TMPL_COUNT
+};
 
 void clearMixes();
 void clearCurves();
