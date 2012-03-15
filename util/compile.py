@@ -9,7 +9,7 @@ options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"),
                  [("", "AUDIO=NO"), ("audio", "AUDIO=YES")],
                  [("", "HAPTIC=NO"), ("haptic", "HAPTIC=YES")],
                  [("", "DSM2=NO"), ("DSM2", "DSM2=PPM")],
-                 [("", "NAVIGATION=NO")], # , ("navpots", "NAVIGATION=POTS")],
+                 [("", "NAVIGATION=NO"), ("potscroll", "NAVIGATION=POTS")],
 #                 ("PXX", "PXX=NO", "PXX=YES"),
                 ]
 
