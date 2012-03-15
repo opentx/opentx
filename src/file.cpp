@@ -206,9 +206,18 @@ bool EFile::exists(uint8_t i_fileId)
  */
 void EFile::swap(uint8_t i_fileId1, uint8_t i_fileId2)
 {
-  DirEnt            tmp = eeFs.files[i_fileId1];
-  eeFs.files[i_fileId1] = eeFs.files[i_fileId2];
-  eeFs.files[i_fileId2] = tmp;
+  /* This code causes horrible alignment problem with avr-gcc 4.7.0
+   *
+   * DirEnt            tmp = eeFs.files[i_fileId1];
+   * eeFs.files[i_fileId1] = eeFs.files[i_fileId2];
+   * eeFs.files[i_fileId2] = tmp;
+   */
+
+  DirEnt tmp;
+  __builtin_memcpy(&tmp, __builtin_assume_aligned(&eeFs.files[i_fileId1], sizeof(DirEnt)), sizeof(DirEnt));
+  __builtin_memcpy(&eeFs.files[i_fileId1], __builtin_assume_aligned(&eeFs.files[i_fileId2], sizeof(DirEnt)), sizeof(DirEnt));
+  __builtin_memcpy(&eeFs.files[i_fileId2], __builtin_assume_aligned(&tmp, sizeof(DirEnt)), sizeof(DirEnt));
+
   s_sync_write = true;
   EeFsFlushDirEnt(i_fileId1);
   EeFsFlushDirEnt(i_fileId2);
