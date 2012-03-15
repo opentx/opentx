@@ -2207,7 +2207,7 @@ int main(void)
 
   uint8_t cModel = g_eeGeneral.currModel;
 
-  if (g_model.protocol == PROTO_FAAST) startPulses();
+  if (g_model.protocol == PROTO_FAAST || g_model.protocol == PROTO_DSM2) startPulses();
 
 #if defined (PCBV4)
    if (MCUSR != (1 << PORF))  {
@@ -2278,7 +2278,7 @@ int main(void)
   TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
 #endif
 
-  if (g_model.protocol != PROTO_FAAST) startPulses();
+  if (g_model.protocol != PROTO_FAAST && g_model.protocol != PROTO_DSM2) startPulses();
 
   wdt_enable(WDTO_500MS);
 
