@@ -147,40 +147,41 @@ PACK(typedef struct t_LimitData {
   int16_t offset;
 }) LimitData;
 
-// TODO enum
-#define SRC_RUD   1
-#define SRC_ELE   2
-#define SRC_THR   3
-#define SRC_AIL   4
-#define MIX_P1    5
-#define MIX_P2    6
-#define MIX_P3    7
-#define MIX_MAX   8
-#define MIX_3POS  9
-#define MIX_THR   10
-#define MIX_RUD   11
-#define MIX_ELE   12
-#define MIX_ID0   13
-#define MIX_ID1   14
-#define MIX_ID2   15
-#define MIX_AIL   16
-#define MIX_GEA   17
-#define MIX_TRN   18
-#define MIX_SW1   19
-#define MIX_SW9   27
-#define MIX_SWA   28
-#define MIX_SWB   29
-#define MIX_SWC   30
-#define MIX_CYC1  31
-#define MIX_CYC2  32
-#define MIX_CYC3  33
-#define MIX_PPM1  34
-#define MIX_PPM8  41
-#define MIX_CH1   42
-#define MIX_CH9   50
-#define MIX_CH10  51
-#define MIX_CH11  52
-#define MIX_CH16  57
+enum MixSources {
+    MIXSRC_Rud = 1,
+    MIXSRC_Ele,
+    MIXSRC_Thr,
+    MIXSRC_Ail,
+    MIXSRC_P1,
+    MIXSRC_P2,
+    MIXSRC_P3,
+    MIXSRC_MAX ,
+    MIXSRC_3POS,
+    MIXSRC_THR,
+    MIXSRC_RUD,
+    MIXSRC_ELE,
+    MIXSRC_ID0,
+    MIXSRC_ID1,
+    MIXSRC_ID2,
+    MIXSRC_AIL,
+    MIXSRC_GEA,
+    MIXSRC_TRN,
+    MIXSRC_SW1,
+    MIXSRC_SW9 = MIXSRC_SW1 + 8,
+    MIXSRC_SWA,
+    MIXSRC_SWB,
+    MIXSRC_SWC,
+    MIXSRC_CYC1,
+    MIXSRC_CYC2,
+    MIXSRC_CYC3,
+    MIXSRC_PPM1,
+    MIXSRC_PPM8 = MIXSRC_PPM1 + 7,
+    MIXSRC_CH1,
+    MIXSRC_CH9 = MIXSRC_CH1 + 8,
+    MIXSRC_CH10,
+    MIXSRC_CH11,
+    MIXSRC_CH16 = MIXSRC_CH11 + 5
+};
 
 #define TRIM_ON     0
 #define TRIM_OFF    1
@@ -266,20 +267,29 @@ PACK(typedef struct t_FrSkyChannelData {
   int8_t    offset;
 }) FrSkyChannelData;
 
-enum BarSource {
-  BAR_NONE,
-  BAR_A1,
-  BAR_A2,
-  BAR_ALT,
-#if defined(FRSKY_HUB)
-  BAR_RPM,
-  BAR_FUEL,
-  BAR_T1,
-  BAR_T2,
-  BAR_SPEED,
-  BAR_CELL,
-#endif
-  BAR_MAX
+enum TelemetrySource {
+  TELEM_NONE,
+  TELEM_A1,
+  TELEM_A2,
+  TELEM_ALT,
+  TELEM_RPM,
+  TELEM_FUEL,
+  TELEM_T1,
+  TELEM_T2,
+  TELEM_SPEED,
+  TELEM_CELL,
+  TELEM_DIST,
+  TELEM_ACCx,
+  TELEM_ACCy,
+  TELEM_ACCz,
+  TELEM_TM1,
+  TELEM_TM2,
+  TELEM_ACC,
+  TELEM_GPS_TIME,
+
+  BAR_MAX = TELEM_DIST,
+  DISPLAY_MAX = TELEM_TM2,
+  STATUS_MAX = TELEM_GPS_TIME
 };
 
 PACK(typedef struct t_FrSkyBarData {
@@ -288,9 +298,12 @@ PACK(typedef struct t_FrSkyBarData {
   uint16_t   barMax:6;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
 
-#define PROTO_NONE        0
-#define PROTO_FRSKY_HUB   1
-#define PROTO_WS_HOW_HIGH 2
+enum FrskyUsrProtocols {
+  PROTO_NONE,
+  PROTO_FRSKY_HUB,
+  PROTO_WS_HOW_HIGH
+};
+
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:3; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
@@ -346,11 +359,20 @@ PACK(typedef struct t_TimerData {
   uint16_t  val;
 }) TimerData;
 
-#ifdef DSM2
-#define LPXDSM2          0
-#define DSM2only         1
-#define DSM2_DSMX        2
-#endif
+enum Protocols {
+  PROTO_PPM,
+  PROTO_PXX,
+  PROTO_DSM2,
+  PROTO_PPM16,
+  PROTO_FAAST,
+  PROTO_MAX
+};
+
+enum Dsm2Variants {
+  LPXDSM2,
+  DSM2only,
+  DSM2_DSMX
+};
 
 PACK(typedef struct t_ModelData {
   char      name[10];             // 10 must be first for eeLoadModelName
@@ -379,6 +401,8 @@ PACK(typedef struct t_ModelData {
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
+  uint8_t   frskyLines[4];
+  uint8_t   frskyLinesXtra;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

@@ -298,9 +298,9 @@ int16_t getValue(uint8_t i)
   /*srcRaw is shifted +1!*/
 
   if(i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
-  else if(i<MIX_MAX) return 1024;
-  else if(i<MIX_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
-  else if(i<MIX_3POS+3)
+  else if(i<MIXSRC_MAX) return 1024;
+  else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
+  else if(i<MIXSRC_3POS+3)
 #ifdef HELI
     return cyc_anas[i-MIX_3POS];
 #else
@@ -316,12 +316,13 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp;
 #endif
 #if defined(FRSKY_HUB)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return (frskyHubData.rpm / 2);
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return frskyHubData.rpm;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+5) return frskyHubData.fuelLevel;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+6) return frskyHubData.temperature1;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+7) return frskyHubData.temperature2;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+8) return frskyHubData.gpsSpeed_ap;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+9) return frskyHubData.minCellVolts;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+10) return frskyHubData.gpsDistance;
 #endif
 #endif
   else return 0;
@@ -334,7 +335,7 @@ bool __getSwitch(int8_t swtch)
   bool result;
 
   if (swtch == 0)
-    return s_last_switch_used & (1<<15);
+    return s_last_switch_used & ((uint16_t)1<<15);
 
   uint8_t cs_idx = abs(swtch);
 
@@ -381,29 +382,15 @@ bool __getSwitch(int8_t swtch)
       int16_t x = getValue(cs.v1-1);
       int16_t y;
       if (s == CS_VOFS) {
-#ifdef FRSKY
-#if defined(FRSKY_HUB)
-        // Fill the threshold array
-        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
-          barsThresholds[cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS-3] = 128 + cs.v2;
-        // TODO CELL?
-        // FUEL, T1, T2, SPEED
-        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4)
-          y = (128+cs.v2);
-        // RPMs
-        else if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3)
-          y = (128+cs.v2) * 25;
-        else
-#endif
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-        // ALT
-        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2)
-          y = (128+cs.v2) * 4;
-        else
-#endif
-        // Volts
-        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
-          y = 128+cs.v2;
+#if defined(FRSKY)
+        // Telemetry
+        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) {
+          y = convertTelemValue(cs.v1-(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1), 128+cs.v2);
+          if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2/*A1 and A2*/) {
+            // Fill the threshold array
+            barsThresholds[cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS-3] = 128 + cs.v2;
+          }
+        }
         else
 #endif
         // Timers
@@ -459,7 +446,7 @@ bool __getSwitch(int8_t swtch)
 
 bool getSwitch(int8_t swtch, bool nc)
 {
-  s_last_switch_used = (nc<<15);
+  s_last_switch_used = ((uint16_t)nc<<15);
   return __getSwitch(swtch);
 }
 
@@ -616,6 +603,8 @@ void checkTHR()
   getADC_single();   // if thr is down - do not display warning at all
 #endif
   int16_t v = anaIn(thrchn);
+  if (g_eeGeneral.throttleReversed) v = - v;
+
   if(v<=lowLim) return;
 
   // first - display warning
@@ -631,6 +620,7 @@ void checkTHR()
       getADC_single();
 #endif
       int16_t v = anaIn(thrchn);
+      if (g_eeGeneral.throttleReversed) v = - v;
 
       if(v<=lowLim || keyDown()) {
         clearKeyEvents();
@@ -828,7 +818,7 @@ void getADC_filt()
       while ((ADCSRA & 0x10)==0);
       ADCSRA|=0x10;
 
-      t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADCW               ) >> 1;
+      t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADCW) >> 1;
   }
 }
 
@@ -1261,15 +1251,15 @@ void perOut(uint8_t phase)
     int16_t v = 0;
     if (k < NUM_STICKS)
       v = anas[k]; //Switch is on. MAX=FULL=512 or value.
-    else if (k>=MIX_CH1-1 && k<=MIX_CH16-1 && k-MIX_CH1+1<md->destCh) // if we've already calculated the value - take it instead
-      v = chans[k-MIX_CH1+1] / 100;
-    else if (k>=MIX_THR-1 && k<=MIX_SWC-1) {
-      v = getSwitch(k-MIX_THR+1+1, 0) ? +1024 : -1024;
+    else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CH16-1 && k-MIXSRC_CH1+1<md->destCh) // if we've already calculated the value - take it instead
+      v = chans[k-MIXSRC_CH1+1] / 100;
+    else if (k>=MIXSRC_THR-1 && k<=MIXSRC_SWC-1) {
+      v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
       if (v<0 && !md->swtch && (md->delayDown || md->delayUp))
         sw = false;
     }
     else
-      v = getValue(k <= MIX_3POS ? k : k-MAX_SWITCH);
+      v = getValue(k <= MIXSRC_3POS ? k : k-MAX_SWITCH);
 
     //========== DELAYS ===============
     if (sw) { // switch on?  (if no switch selected => on)
@@ -2217,6 +2207,8 @@ int main(void)
 
   uint8_t cModel = g_eeGeneral.currModel;
 
+  if (g_model.protocol == PROTO_FAAST) startPulses();
+
 #if defined (PCBV4)
    if (MCUSR != (1 << PORF))  {
 #else
@@ -2286,7 +2278,7 @@ int main(void)
   TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
 #endif
 
-  startPulses();
+  if (g_model.protocol != PROTO_FAAST) startPulses();
 
   wdt_enable(WDTO_500MS);
 

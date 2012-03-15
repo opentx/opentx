@@ -36,7 +36,7 @@
 #define TR_RETA123       "RETA123"
 
 #define LEN_VPROTOS      "\005"
-#define TR_VPROTOS       "PPM  ""PXX  ""DSM2 ""PPM16"
+#define TR_VPROTOS       "PPM\0 ""PXX\0 ""DSM2\0""PPM16""FUT\0 "
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -92,7 +92,7 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
 
 #define LEN_VTELEMBARS   "\004"
-#define TR_VTELEMBARS    "---\0""A1\0 ""A2\0 ""ALT\0""RPM\0""FUEL""T1\0 ""T2\0 ""SPD\0""CELL"
+#define TR_VTELEMBARS    "---\0""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Cell""Dist""ACCx""ACCy""ACCz""TMR1""TMR2""ACC\0""Time"
 
 #define LEN_VTELEMUNIT   "\003"
 #define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"
@@ -112,8 +112,9 @@
 #define TR_VTELPROTO     "NoneHub "
 #endif
 
-#define LEN_VTEMPLATES   "\014"
-#define TR_VTEMPLATES    "Simple 4-CH ""T-Cut       ""V-Tail      ""Elevon\\Delta""eCCPM       ""Heli Setup  ""Servo Test  "
+#define LEN2_VTEMPLATES  13
+#define LEN_VTEMPLATES   "\015"
+#define TR_VTEMPLATES    "Clear Mixes\0\0""Simple 4-CH \0""T-Cut       \0""V-Tail      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
@@ -212,7 +213,7 @@
 #define TR_USRDATA      "UsrData"
 #define TR_BLADES       "Blades"
 #define TR_BARS         "Bars"
-#define TR_CLEARMIXMENU "CLEAR MIXES [MENU]"
+#define TR_DISPLAY      "Display"
 #ifdef AUDIO
 #define TR_BEEPERMODE   "Speaker Mode"
 #define TR_BEEPERLEN    "Speaker Length"
@@ -254,11 +255,6 @@
 #define TR_RXBATT       "Rx Batt:"
 #define TR_TXnRX        "Tx:\0Rx:"
 #define OFS_RX          4
-#define TR_SPD          "Spd:"
-#define TR_ALT          "Alt:"
-#define TR_DST          "Dst:"
-#define TR_TEMP1nTEMP2  "T@1:\007T@2:"
-#define TR_RPMnFUEL     "RPM:\006Fuel:"
 #define TR_ACCEL        "Acc:"
 #define TR_NODATA       "NO DATA"
 #define TR_TM1TM2       "TM1\015TM2"

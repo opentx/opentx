@@ -336,7 +336,7 @@ enum EnumKeys {
 
 #define NUM_STICKS      4
 #define NUM_POTS        3
-#define CSW_PPM_BASE    (MIX_3POS+3/*CYC1-CYC3*/) // because srcRaw is shifted +1! // TODO use MIX_PPM1
+#define CSW_PPM_BASE    (MIXSRC_3POS+3/*CYC1-CYC3*/) // because srcRaw is shifted +1!
 #define NUM_CAL_PPM     4
 #define NUM_PPM         8
 #define CSW_CHOUT_BASE  (CSW_PPM_BASE+NUM_PPM)
@@ -395,14 +395,6 @@ enum EnumKeys {
 #define HEART_TIMER10ms  2
 
 #define MAX_ALERT_TIME   60
-
-enum Protocols {
-  PROTO_PPM,
-  PROTO_PXX,
-  PROTO_DSM2,
-  PROTO_PPM16,
-  PROTO_MAX
-};
 
 extern uint8_t heartbeat;
 extern uint32_t inacCounter;
@@ -664,6 +656,8 @@ extern PhaseData *phaseaddress(uint8_t idx);
 extern ExpoData *expoaddress(uint8_t idx);
 extern MixData *mixaddress(uint8_t idx);
 extern LimitData *limitaddress(uint8_t idx);
+
+extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 
 extern void incSubtrim(uint8_t idx, int16_t inc);
 extern void instantTrim();

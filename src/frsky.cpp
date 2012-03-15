@@ -78,6 +78,7 @@ enum BarThresholdIdx {
   THLD_T2,
   THLD_SPEED,
   THLD_CELL,
+  THLD_DIST,
   THLD_MAX,
 };
 uint8_t barsThresholds[THLD_MAX];
@@ -227,6 +228,12 @@ void parseTelemHubByte(uint8_t byte)
   
   ((uint8_t*)&frskyHubData)[structPos] = lowByte;
   ((uint8_t*)&frskyHubData)[structPos+1] = byte;
+
+  // TODO switch here ...
+
+  if ((uint8_t)structPos == offsetof(FrskyHubData, rpm)) {
+    frskyHubData.rpm /= (g_model.frsky.blades+2);
+  }
 
   if ((uint8_t)structPos == offsetof(FrskyHubData, baroAltitude_bp)) {
     // First received altitude => Altitude offset
@@ -647,6 +654,7 @@ void resetTelemetry()
   frskyTelemetry[0].set(120);
   frskyRSSI[0].set(75);
   frskyHubData.fuelLevel = 75;
+  frskyHubData.rpm = 12000;
 
   frskyHubData.gpsFix = 1;
   frskyHubData.gpsLatitude_bp = 4401;
@@ -669,20 +677,97 @@ void resetTelemetry()
 #endif
 }
 
-enum FrskyViews {
-  e_frsky_bars,
-  e_frsky_a1a2,
-#ifdef WS_HOW_HIGH
-  e_frsky_ws_how_high,
-#endif
-#ifdef FRSKY_HUB
-  e_frsky_hub = e_frsky_a1a2+1,
-  e_frsky_gps_inflight,
-  e_frsky_gps_position,
-#endif
+int16_t convertTelemValue(uint8_t channel, uint8_t value)
+{
+  // TODO enum
+
+  int16_t result;
+
+  switch (channel) {
+    case 2:
+      // Altitude
+      result = value * 4;
+      break;
+    case 3:
+      // RPMs
+      result = value * 50;
+      break;
+    case 7:
+    case 8:
+      // SPEED
+      result = value * 2;
+      break;
+    case 9:
+      // DIST
+      result = value * 8;
+      break;
+    default:
+      result = value;
+      break;
+  }
+  return result;
+}
+
+void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
+{
+  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att); // TODO we could add this test inside lcd_outdezAtt!
+  if (~att & NO_UNIT && unit != UNIT_RAW)
+    lcd_putsiAtt(lcd_lastPos+1, y, STR_VTELEMUNIT, unit, 0);
+}
+
+const pm_uint8_t bchunit_ar[] = {
+  UNIT_VOLTS,   // A1
+  UNIT_VOLTS,   // A2
+  UNIT_METERS,  // Alt
+  UNIT_RAW,     // Rpm
+  UNIT_PERCENT, // Fuel
+  UNIT_DEGREES, // T1
+  UNIT_DEGREES, // T2
+  UNIT_KMH,     // Speed
+  UNIT_VOLTS,   // Cell
+  UNIT_METERS   // Dist
 };
 
-static uint8_t s_frsky_view = e_frsky_bars;
+void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)
+{
+  switch (channel) {
+    case 0:
+    case 1:
+      // A1 and A2
+    {
+      // TODO optimize this, avoid int32_t
+      int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51;
+      if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
+        converted_value /= 10;
+      }
+      else {
+        if (converted_value < 1000) {
+          att |= PREC2;
+        }
+        else {
+          converted_value /= 10;
+          att |= PREC1;
+        }
+      }
+      putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
+    }
+    break;
+
+    default:
+      putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel), att);
+      break;
+  }
+}
+
+enum FrskyViews {
+  e_frsky_custom,
+  e_frsky_bars,
+  e_frsky_a1a2,
+  e_frsky_gps_position, // TODO rename
+  FRSKY_VIEW_MAX = e_frsky_gps_position
+};
+
+static uint8_t s_frsky_view = e_frsky_custom;
 
 void displayRssiLine()
 {
@@ -702,29 +787,6 @@ void displayRssiLine()
   }
 }
 
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-void displayAltitudeLine(uint8_t y, uint8_t gps)
-{
-  lcd_putsLeft(y, STR_ALT);
-  uint16_t alt;
-  uint8_t att, x;
-  if (gps) {
-    alt = frskyHubData.gpsAltitude_bp;
-    att = DBLSIZE;
-    x = 10*FW+1;
-  }
-  else {
-    alt = frskyHubData.baroAltitude_bp;
-    att = LEFT|DBLSIZE;
-    x = 4*FW;
-  }
-
-  putsTelemetryValue(x, y, alt, UNIT_METERS, att);
-  lcd_putc(14*FW, y, '>');
-  putsTelemetryValue(15*FW, y, frskyHubData.maxAltitude, UNIT_METERS, LEFT);
-}
-#endif
-
 #if defined(FRSKY_HUB)
 void displayGpsTime()
 {
@@ -739,14 +801,12 @@ void displayGpsTime()
 }
 #endif
 
-#if defined(FRSKY_HUB) && defined(WS_HOW_HIGH)
-#define FRSKY_VIEW_MAX (g_model.frsky.usrProto == 0 ? 1 : ((g_model.frsky.usrProto == 1 && frskyHubData.gpsFix >= 0) ? 4 : 2))
-#elif defined(FRSKY_HUB)
-#define FRSKY_VIEW_MAX (g_model.frsky.usrProto == 0 ? 1 : (frskyHubData.gpsFix >= 0 ? 4 : 2))
-#elif defined(WS_HOW_HIGH)
-#define FRSKY_VIEW_MAX (g_model.frsky.usrProto == 0 ? 1 : 2)
-#endif
-
+uint8_t getTelemCustomField(uint8_t line, uint8_t col)
+{
+  uint8_t result = (col==0 ? (g_model.frskyLines[line] & 0x0f) : ((g_model.frskyLines[line] & 0xf0) >> 4)) << 1;
+  result += ((g_model.frskyLinesXtra >> (2*line+col)) & 0x01);
+  return result;
+}
 
 void menuProcFrsky(uint8_t event)
 {
@@ -781,7 +841,42 @@ void menuProcFrsky(uint8_t event)
   lcd_filled_rect(0, 0, DISPLAY_W, 8);
 
   if (frskyStreaming >= 0) {
-    if (s_frsky_view == e_frsky_bars) {
+    if (s_frsky_view == e_frsky_custom) {
+      // The custom view
+      for (uint8_t i=0; i<4; i++) {
+        for (uint8_t j=0; j<2; j++) {
+          uint8_t field = getTelemCustomField(i, j);
+          if (i==3) {
+            lcd_vline(63, 8, 48);
+            if (frskyStreaming > 0) {
+              if (field == TELEM_ACC) {
+                lcd_putsLeft(7*FH+1, STR_ACCEL);
+                lcd_outdezNAtt(4*FW, 7*FH+1, (int32_t)frskyHubData.accelX/10, LEFT|PREC2);
+                lcd_outdezNAtt(10*FW, 7*FH+1, (int32_t)frskyHubData.accelY/10, LEFT|PREC2);
+                lcd_outdezNAtt(16*FW, 7*FH+1, (int32_t)frskyHubData.accelZ/10, LEFT|PREC2);
+                break;
+              }
+              else if (field == TELEM_GPS_TIME) {
+                displayGpsTime();
+                return;
+              }
+            }
+            else {
+              displayRssiLine();
+              return;
+            }
+          }
+          if (field) {
+            // TODO change name STR_VTELEMBARS
+            lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMBARS, field, 0);
+            int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+field-1);
+            putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+          }
+        }
+      }
+      lcd_filled_rect(0, 7*FH, DISPLAY_W, 8); // TODO optim function?
+    }
+    else if (s_frsky_view == e_frsky_bars) {
       // The bars
       uint8_t bars_height = 5;
       for (int8_t i=3; i>=0; i--) {
@@ -789,17 +884,20 @@ void menuProcFrsky(uint8_t event)
           lcd_putsiAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMBARS, g_model.frsky.bars[i].source, 0);
           lcd_rect(25, bars_height+6+i*(bars_height+6), 101, bars_height+2);
           int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+g_model.frsky.bars[i].source-1);
-          uint8_t threshold = 0, thresholdX = 0;
+          uint16_t threshold = 0;
+          uint8_t thresholdX = 0;
           if (g_model.frsky.bars[i].source <= 2)
             threshold = g_model.frsky.channels[g_model.frsky.bars[i].source-1].alarms_value[0];
           else
-            threshold = barsThresholds[g_model.frsky.bars[i].source-3];
+            threshold = convertTelemValue(g_model.frsky.bars[i].source-1, barsThresholds[g_model.frsky.bars[i].source-3]);
+          int16_t barMin = convertTelemValue(g_model.frsky.bars[i].source-1, (g_model.frsky.bars[i].barMin * 5));
+          int16_t barMax = convertTelemValue(g_model.frsky.bars[i].source-1, ((51 - g_model.frsky.bars[i].barMax) * 5));
           if (threshold) {
-            thresholdX = (uint8_t)(int16_t)((int16_t)100 * (threshold - g_model.frsky.bars[i].barMin * 4) / ((51 - g_model.frsky.bars[i].barMax) * 5 - g_model.frsky.bars[i].barMin * 4));
+            thresholdX = (uint8_t)(int16_t)((int16_t)100 * (threshold - barMin) / (barMax - barMin));
             if (thresholdX > 100)
               thresholdX = 0;
           }
-          uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)((int16_t)100 * (value - g_model.frsky.bars[i].barMin * 5) / ((51 - g_model.frsky.bars[i].barMax) * 4 - g_model.frsky.bars[i].barMin * 4)), (int16_t)100);
+          uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)(((int16_t)100 * (value - barMin)) / (barMax - barMin)), (int16_t)100);
           lcd_filled_rect(26, bars_height+6+1+i*(bars_height+6), width, bars_height, (threshold > value) ? DOTTED : SOLID);
           for (uint8_t j=50; j<125; j+=25)
             if (j>26+thresholdX) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
@@ -814,7 +912,7 @@ void menuProcFrsky(uint8_t event)
       }
       if (bars_height == 13) {
         // No bars at all!
-        s_frsky_view = ((event == EVT_KEY_BREAK(KEY_UP)) ? FRSKY_VIEW_MAX : e_frsky_a1a2);
+        s_frsky_view = ((event == EVT_KEY_BREAK(KEY_UP)) ? e_frsky_custom : e_frsky_a1a2);
       }
       displayRssiLine();
     }
@@ -847,73 +945,7 @@ void menuProcFrsky(uint8_t event)
 
       displayRssiLine();
     }
-
-#ifdef WS_HOW_HIGH
-    else if (g_model.frsky.usrProto == PROTO_WS_HOW_HIGH && s_frsky_view == e_frsky_ws_how_high) {
-      displayAltitudeLine(4*FH, 0/*baro*/);
-      displayRssiLine();
-    }
-#endif
-
 #ifdef FRSKY_HUB
-    else if (s_frsky_view == e_frsky_hub) {
-      // Temperature 1
-      lcd_putsLeft( 4*FH, STR_TEMP1nTEMP2);
-      putsTelemetryValue(4*FW, 4*FH, frskyHubData.temperature1, UNIT_DEGREES, DBLSIZE|LEFT);
-
-      // Temperature 2
-      putsTelemetryValue(15*FW, 4*FH, frskyHubData.temperature2, UNIT_DEGREES, DBLSIZE|LEFT);
-
-      // RPM
-      lcd_putsLeft(2*FH, STR_RPMnFUEL);
-      lcd_outdezNAtt(4*FW, 1*FH, frskyHubData.rpm/(2+g_model.frsky.blades), DBLSIZE|LEFT);
-
-      // Fuel
-      putsTelemetryValue(15*FW, 2*FH, frskyHubData.fuelLevel, UNIT_PERCENT, DBLSIZE|LEFT);
-
-      // Altitude (barometric)
-      displayAltitudeLine(6*FH, 0/*baro*/);
-
-      // Accelerometer
-#define ACC_LINE (7*FH+1)
-      if (frskyStreaming > 0) {
-        lcd_putsLeft(ACC_LINE, STR_ACCEL);
-        // lcd_puts(4*FW, 7*FH, PSTR("x:"));
-        lcd_outdezNAtt(4*FW, ACC_LINE, (int32_t)frskyHubData.accelX/10, LEFT|PREC2);
-        // lcd_putc(lcd_lastPos, 7*FH, 'g');
-        // lcd_puts(11*FW, 7*FH, PSTR("y:"));
-        lcd_outdezNAtt(10*FW, ACC_LINE, (int32_t)frskyHubData.accelY/10, LEFT|PREC2);
-        // lcd_putc(lcd_lastPos, 7*FH, 'g');
-        // lcd_puts(18*FW, 7*FH, PSTR("z:"));
-        lcd_outdezNAtt(16*FW, ACC_LINE, (int32_t)frskyHubData.accelZ/10, LEFT|PREC2);
-        // lcd_putc(lcd_lastPos, 7*FH, 'g');
-        lcd_filled_rect(0, ACC_LINE-1, DISPLAY_W, 8); // TODO optim function?
-      }
-      else {
-        displayRssiLine();
-      }
-    }
-    else if (s_frsky_view == e_frsky_gps_inflight) {
-      // GPS speed
-#define SPEED_LINE (2*FH)
-      lcd_putsLeft(SPEED_LINE, STR_SPD);
-      putsTelemetryValue(10*FW+1, SPEED_LINE, frskyHubData.gpsSpeed_bp, UNIT_KTS, DBLSIZE);
-      lcd_putc(14*FW, SPEED_LINE, '>');
-      putsTelemetryValue(15*FW, SPEED_LINE, frskyHubData.maxGpsSpeed, UNIT_KTS, LEFT);
-
-      // GPS altitude
-#define ALTITUDE_LINE (4*FH)
-      displayAltitudeLine(ALTITUDE_LINE, 1/*gps*/);
-
-      // GPS distance
-#define DISTANCE_LINE (6*FH)
-      lcd_putsLeft(DISTANCE_LINE, STR_DST);
-      putsTelemetryValue(10*FW+1, DISTANCE_LINE, frskyHubData.gpsDistance, UNIT_METERS, DBLSIZE);
-      lcd_putc(14*FW, DISTANCE_LINE, '>');
-      putsTelemetryValue(15*FW, DISTANCE_LINE, frskyHubData.maxGpsDistance, UNIT_METERS, LEFT);
-
-      displayGpsTime();
-    }
     else if (s_frsky_view == e_frsky_gps_position) {
       // Latitude
 #define LAT_LINE (2*FH-4)

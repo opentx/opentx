@@ -158,6 +158,11 @@ inline void FRSKY_setModelAlarms(void)
 bool FRSKY_alarmRaised(uint8_t idx);
 
 void resetTelemetry();
+uint8_t getTelemCustomField(uint8_t line, uint8_t col);
+int16_t convertTelemValue(uint8_t channel, uint8_t value);
+
+void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att);
+void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
 
 #endif
 

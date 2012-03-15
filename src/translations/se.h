@@ -36,7 +36,7 @@
 #define TR_RETA123       "RETA123"
 
 #define LEN_VPROTOS      "\005"
-#define TR_VPROTOS       "PPM  ""PXX  ""DSM2 ""PPM16"
+#define TR_VPROTOS       "PPM\0 ""PXX\0 ""DSM2\0""PPM16""FUT\0 "
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -92,7 +92,7 @@
 #define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  ""Vibr1 ""Vibr2 ""Vibr3 "
 
 #define LEN_VTELEMBARS   "\004"
-#define TR_VTELEMBARS    "---\0""A1\0 ""A2\0 ""H\205JD""VARV""TANK""T1\0 ""T2\0 ""FART""BATT"
+#define TR_VTELEMBARS    "---\0""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Cell""Dist""ACCx""ACCy""ACCz""TMR1""TMR2""ACC\0""Time"
 
 #define LEN_VTELEMUNIT   "\003"
 #define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"
@@ -112,8 +112,9 @@
 #define TR_VTELPROTO     "--- Hub "
 #endif
 
-#define LEN_VTEMPLATES   "\014"
-#define TR_VTEMPLATES    "Enkel 4kanal""Gasklippning""V-Stj\201rt    ""Deltavinge  ""eCCPM       ""Helikopter  ""Servotest   "
+#define LEN2_VTEMPLATES  13
+#define LEN_VTEMPLATES   "\015"
+#define TR_VTEMPLATES    "Nolla Mixar\0\0""Enkel 4kanal\0""Gasklippning\0""V-Stj\201rt    \0""Deltavinge  \0""eCCPM       \0""Helikopter  \0""Servotest   \0"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
@@ -212,7 +213,7 @@
 #define TR_USRDATA      "Anv\201ndardata"
 #define TR_BLADES       "Blad"
 #define TR_BARS         "Staplar som visas"
-#define TR_CLEARMIXMENU "NOLLA MIXAR [MENU]"
+#define TR_DISPLAY      "Display"
 #ifdef AUDIO
 #define TR_BEEPERMODE   "H\202gtalare l\201ge"
 #define TR_BEEPERLEN    "H\202gtalare tid"
@@ -254,11 +255,6 @@
 #define TR_RXBATT       "Rx Batt:"
 #define TR_TXnRX        "Tx:\0Rx:"
 #define OFS_RX          4
-#define TR_SPD          "Spd:"
-#define TR_ALT          "Alt:"
-#define TR_DST          "Dst:"
-#define TR_TEMP1nTEMP2  "T@1:\007T@2:"
-#define TR_RPMnFUEL     "RMP:\006Tank:"
 #define TR_ACCEL        "Acc:"
 #define TR_NODATA       "NO DATA"
 #define TR_TM1TM2       "TM1\015TM2"
