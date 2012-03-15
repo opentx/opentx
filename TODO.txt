@@ -1,12 +1,8 @@
 TODO list (no particular order)
 
-- confirmation before applying templates (Gabriel)
-- trims 2 offsets (french forum)
-- optimization for extra dblsize chars (se: 16 used when 6 needed)
-- FAAST option in protocol to enable startPulses before the splash screen (Cam)
+- Trims 2 offsets (french forum)
+- Optimization for extra dblsize chars (se: 16 used when 6 needed)
 - DSM2 channel order (Cam)
 - Variometer (rate as cm/sec)
-- Customizable telemetry views
 - Telemetry value averaging
 - Trace telemetry data
-
