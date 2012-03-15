@@ -5,4 +5,8 @@ TODO list (no particular order)
 - optimization for extra dblsize chars (se: 16 used when 6 needed)
 - FAAST option in protocol to enable startPulses before the splash screen (Cam)
 - DSM2 channel order (Cam)
+- Variometer (rate as cm/sec)
+- Customizable telemetry views
+- Telemetry value averaging
+- Trace telemetry data
 
