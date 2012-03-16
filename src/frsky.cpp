@@ -741,8 +741,6 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 }
 
 const pm_uint8_t bchunit_ar[] = {
-  UNIT_VOLTS,   // A1 // TODO needed?
-  UNIT_VOLTS,   // A2 // TODO needed?
   UNIT_METERS,  // Alt
   UNIT_RAW,     // Rpm
   UNIT_PERCENT, // Fuel
@@ -750,7 +748,6 @@ const pm_uint8_t bchunit_ar[] = {
   UNIT_DEGREES, // T2
   UNIT_KMH,     // Speed
   UNIT_METERS,  // Dist
-  UNIT_VOLTS,   // Cell // TODO needed?
 };
 
 void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)
@@ -783,7 +780,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       break;
 
     default:
-      putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel), att);
+      putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel-2), att);
       break;
   }
 }
@@ -832,8 +829,8 @@ void displayGpsTime()
 
 uint8_t getTelemCustomField(uint8_t line, uint8_t col)
 {
-  uint8_t result = (col==0 ? (g_model.frskyLines[line] & 0x0f) : ((g_model.frskyLines[line] & 0xf0) >> 4)) << 1;
-  result += ((g_model.frskyLinesXtra >> (2*line+col)) & 0x01);
+  uint8_t result = (col==0 ? (g_model.frskyLines[line] & 0x0f) : ((g_model.frskyLines[line] & 0xf0) / 16));
+  result += (((g_model.frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
   return result;
 }
 

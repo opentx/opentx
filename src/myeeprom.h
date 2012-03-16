@@ -300,7 +300,6 @@ enum TelemetrySource {
   TELEM_TM2,
   TELEM_ACC,
   TELEM_GPS_TIME,
-
   TELEM_BAR_MAX = TELEM_CELL,
   TELEM_CSW_MAX = TELEM_CELL,
   TELEM_DISPLAY_MAX = TELEM_TM2,
@@ -417,7 +416,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
   uint8_t   frskyLines[4];
-  uint8_t   frskyLinesXtra;
+  uint16_t  frskyLinesXtra;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
