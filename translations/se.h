@@ -91,8 +91,8 @@
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  ""Vibr1 ""Vibr2 ""Vibr3 "
 
-#define LEN_VTELEMBARS   "\004"
-#define TR_VTELEMBARS    "---\0""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Cell""Dist""ACCx""ACCy""ACCz""TMR1""TMR2""ACC\0""Time"
+#define LEN_VTELEMCHNS   "\004"
+#define TR_VTELEMCHNS    "---\0""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""t1\0 ""t2\0 ""Spd\0""Dist""Cell""Tx\0 ""Rx\0 ""AccX""AccY""AccZ""Hdg\0""a1\0 ""a2\0 ""cell""CELL""ALT\0""RPM\0""T1\0 ""T2\0 ""SPD\0""DIST""Tmr1""Tmr2""ACC\0""Time"
 
 #define LEN_VTELEMUNIT   "\003"
 #define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"

@@ -52,8 +52,14 @@ void doMainScreenGrphics()
   DO_CROSS(LBOX_CENTERX,LBOX_CENTERY,3)
   DO_CROSS(RBOX_CENTERX,RBOX_CENTERY,3)
 
-  lcd_square(LBOX_CENTERX+(calibratedStick[CONVERT_MODE(0+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, LBOX_CENTERY-(calibratedStick[CONVERT_MODE(1+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
-  lcd_square(RBOX_CENTERX+(calibratedStick[CONVERT_MODE(3+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, RBOX_CENTERY-(calibratedStick[CONVERT_MODE(2+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
+  int16_t calibStickVert = calibratedStick[CONVERT_MODE(1+1)-1];
+  if (g_eeGeneral.throttleReversed && CONVERT_MODE(1+1)-1 == THR_STICK)
+    calibStickVert = -calibStickVert;
+  lcd_square(LBOX_CENTERX+(calibratedStick[CONVERT_MODE(0+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, LBOX_CENTERY-(calibStickVert*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
+  calibStickVert = calibratedStick[CONVERT_MODE(2+1)-1];
+  if (g_eeGeneral.throttleReversed && CONVERT_MODE(2+1)-1 == THR_STICK)
+    calibStickVert = -calibStickVert;
+  lcd_square(RBOX_CENTERX+(calibratedStick[CONVERT_MODE(3+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, RBOX_CENTERY-(calibStickVert*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
 
   // Optimization by Mike Blandford
   {
