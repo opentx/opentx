@@ -97,7 +97,7 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""t1\0 ""t2\0 ""Spd\0""Dist""Cell""Tx\0 ""Rx\0 ""AccX""AccY""AccZ""Hdg\0""a1\0 ""a2\0 ""cell""CELL""ALT\0""RPM\0""T1\0 ""T2\0 ""SPD\0""DIST""Tmr1""Tmr2""ACC\0""Time"
+#define TR_VTELEMCHNS    "---\0""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""t1\0 ""t2\0 ""Spd\0""Dist""Cell""Tx\0 ""Rx\0 ""AccX""AccY""AccZ""Hdg\0""a1\0 ""a2\0 ""ALT\0""RPM\0""T1\0 ""T2\0 ""SPD\0""DIST""Tmr1""Tmr2""ACC\0""Time"
 
 #define LEN_VTELEMUNIT   "\003"
 #define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"

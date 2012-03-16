@@ -329,8 +329,6 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_HDG) return frskyHubData.gpsCourse_bp;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MIN_A1) return frskyTelemetry[0].min;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MIN_A2) return frskyTelemetry[1].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MIN_CELL) return frskyHubData.minCellMinVolts;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MAX_CELL) return frskyHubData.minCellMaxVolts;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.maxGpsDistance))-i-(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MAX_DIST-1));
 #endif
 #endif

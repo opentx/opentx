@@ -896,7 +896,6 @@ void menuProcFrsky(uint8_t event)
             }
           }
           if (field) {
-            // TODO change name STR_VTELEMCHNS
             lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
             int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+field-1);
             putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
