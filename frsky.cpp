@@ -740,7 +740,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
     lcd_putsiAtt(lcd_lastPos+1, y, STR_VTELEMUNIT, unit, 0);
 }
 
-const pm_uint8_t bchunit_ar[] = {
+static const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_METERS,  // Alt
   UNIT_RAW,     // Rpm
   UNIT_PERCENT, // Fuel
