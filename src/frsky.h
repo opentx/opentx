@@ -52,7 +52,6 @@ enum AlarmLevel {
 #define ALARM_GREATER(channel, alarm) ((g_model.frsky.channels[channel].alarms_greater >> alarm) & 1)
 #define ALARM_LEVEL(channel, alarm) ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
 
-// TODO change names
 class FrskyRSSI {
  public:
   uint8_t value;
@@ -115,10 +114,16 @@ PACK(struct FrskyHubData {
   uint16_t volts_ap;         // 0x3B
   // end of FrSky Hub data
   uint16_t gpsDistance;
-  uint16_t maxGpsDistance;
-  uint16_t maxGpsSpeed;
   int16_t  gpsAltitudeOffset;
+  uint8_t  minCellMinVolts;
+  uint8_t  minCellMaxVolts;
+  /* order is important starting from here */
   int16_t  maxAltitude;
+  uint16_t maxRpm;
+  int16_t  maxTemperature1;
+  int16_t  maxTemperature2;
+  uint16_t maxGpsSpeed;
+  uint16_t maxGpsDistance;
 });
 
 #elif defined(WS_HOW_HIGH)

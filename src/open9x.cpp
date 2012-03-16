@@ -287,8 +287,6 @@ void applyExpos(int16_t *anas, uint8_t phase)
   }
 }
 
-/*TODO check the stack used for recursive calls */
-/*TODO use the new MIX_xxx */
 int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain
 #ifdef HELI
 int16_t cyc_anas[3] = {0};
@@ -316,13 +314,24 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp;
 #endif
 #if defined(FRSKY_HUB)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+4) return frskyHubData.rpm;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+5) return frskyHubData.fuelLevel;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+6) return frskyHubData.temperature1;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+7) return frskyHubData.temperature2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+8) return frskyHubData.gpsSpeed_ap;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+9) return frskyHubData.minCellVolts;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+10) return frskyHubData.gpsDistance;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_RPM) return frskyHubData.rpm;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_FUEL) return frskyHubData.fuelLevel;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_T1) return frskyHubData.temperature1;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_T2) return frskyHubData.temperature2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_SPEED) return frskyHubData.gpsSpeed_ap;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_DIST) return frskyHubData.gpsDistance;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_CELL) return frskyHubData.minCellVolts;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_RSSI_TX) return frskyRSSI[1].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_RSSI_RX) return frskyRSSI[0].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_ACCx) return frskyHubData.accelX;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_ACCy) return frskyHubData.accelY;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_ACCz) return frskyHubData.accelZ;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_HDG) return frskyHubData.gpsCourse_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MIN_A1) return frskyTelemetry[0].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MIN_A2) return frskyTelemetry[1].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MIN_CELL) return frskyHubData.minCellMinVolts;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MAX_CELL) return frskyHubData.minCellMaxVolts;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.maxGpsDistance))-i-(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MAX_DIST-1));
 #endif
 #endif
   else return 0;
@@ -330,6 +339,7 @@ int16_t getValue(uint8_t i)
 
 volatile uint16_t s_last_switch_used;
 volatile uint16_t s_last_switch_value;
+/* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 bool __getSwitch(int8_t swtch)
 {
   bool result;

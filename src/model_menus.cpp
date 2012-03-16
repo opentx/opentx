@@ -2003,7 +2003,7 @@ void menuProcTelemetry(uint8_t event)
       y = (subN-s_pgOfs)*FH;
       for (uint8_t k=0; k<2; k++) {
         uint8_t value = getTelemCustomField(j, k);
-        lcd_putsiAtt(k==0?4:TELEM_COL2, y, STR_VTELEMBARS, value, (sub==subN && m_posHorz==k) ? blink : 0);
+        lcd_putsiAtt(k==0?4:TELEM_COL2, y, STR_VTELEMCHNS, value, (sub==subN && m_posHorz==k) ? blink : 0);
         if (sub==subN && m_posHorz==k && (s_editMode>0 || p1valdiff)) {
           CHECK_INCDEC_MODELVAR(event, value, 0, (j==3 && k==0) ? STATUS_MAX : DISPLAY_MAX);
           if (checkIncDec_Ret) {
@@ -2031,7 +2031,7 @@ void menuProcTelemetry(uint8_t event)
   for (uint8_t j=0; j<4; j++) {
     if (s_pgOfs<subN) {
       y = (subN-s_pgOfs)*FH;
-      lcd_putsiAtt(4, y, STR_VTELEMBARS, g_model.frsky.bars[j].source, (sub==subN && m_posHorz==0) ? blink : 0);
+      lcd_putsiAtt(4, y, STR_VTELEMCHNS, g_model.frsky.bars[j].source, (sub==subN && m_posHorz==0) ? blink : 0);
       if (g_model.frsky.bars[j].source) {
         putsTelemetryChannel(TELEM_COL2-3*FW, y, g_model.frsky.bars[j].source-1, convertTelemValue(g_model.frsky.bars[j].source-1, g_model.frsky.bars[j].barMin*5), (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
         putsTelemetryChannel(14*FW-3, y, g_model.frsky.bars[j].source-1, convertTelemValue(g_model.frsky.bars[j].source-1, (51-g_model.frsky.bars[j].barMax)*5), (sub==subN && m_posHorz==2 ? blink : 0) | LEFT);

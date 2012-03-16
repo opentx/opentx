@@ -215,6 +215,8 @@ void audioDefevent(uint8_t e);
 #define AUDIO_MIX_WARNING_2() audioDefevent(AU_MIX_WARNING_2)
 #define AUDIO_MIX_WARNING_3() audioDefevent(AU_MIX_WARNING_3)
 #define AUDIO_POT_STICK_MIDDLE() audioDefevent(AU_POT_STICK_MIDDLE)
+#define AUDIO_VARIO_UP()    audioDefevent(AU_KEYPAD_UP)
+#define AUDIO_VARIO_DOWN()  audioDefevent(AU_KEYPAD_DOWN)
 
 #if defined(PCBSTD)
 #define AUDIO_DRIVER()      audio.driver()

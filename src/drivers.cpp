@@ -481,8 +481,39 @@ void per10ms()
 #endif
 #endif
 
-  // These moved here from perOut() [gruvin9x.cpp] to improve beep trigger reliability.
+  // These moved here from perOut() to improve beep trigger reliability.
   if(mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) AUDIO_MIX_WARNING_1();
   if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_2();
   if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
+
+#if defined(FRSKY_HUB) or defined(WS_HOW_HIGH)
+  static uint16_t s_varioTmr = 0;
+
+  if (isFunctionActive(FUNC_VARIO)) {
+#if defined(AUDIO)
+    uint8_t warble = 0;
+#endif
+    int8_t verticalSpeed = frskyHubData.baroAltitude_bp; // TODO to be modified of course!!
+
+    uint16_t interval;
+    if (verticalSpeed == 0) {
+      interval = 300;
+    }
+    else {
+      if (verticalSpeed < 0) {
+        verticalSpeed = -verticalSpeed;
+        warble = 1;
+      }
+      if (verticalSpeed > 100) verticalSpeed = 100;
+      interval = (uint16_t)200 / verticalSpeed;
+    }
+    if (g_tmr10ms - s_varioTmr > interval) {
+      s_varioTmr = g_tmr10ms;
+      if (warble)
+        AUDIO_VARIO_DOWN();
+      else
+        AUDIO_VARIO_UP();
+    }
+  }
+#endif
 }
