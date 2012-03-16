@@ -1687,7 +1687,11 @@ void menuProcCustomSwitches(uint8_t event)
 #if defined(FRSKY)
         if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
           putsTelemetryChannel(20*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), m_posHorz==2 ? attr : 0);
-          v2_min = -128; v2_max = 127;
+          v2_min = -128; v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
+          if (cs.v2 > v2_max) {
+            cs.v2 = v2_max;
+            eeDirty(EE_MODEL);
+          }
         }
         else
 #endif
@@ -2041,6 +2045,10 @@ void menuProcTelemetry(uint8_t event)
         switch (m_posHorz) {
           case 0:
             CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, TELEM_BAR_MAX);
+            if (checkIncDec_Ret) {
+              g_model.frsky.bars[j].barMin = 0;
+              g_model.frsky.bars[j].barMax = 51 - (maxTelemValue(g_model.frsky.bars[j].source) / 5);
+            }
             break;
           case 1:
             CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].barMin, 0, 50-g_model.frsky.bars[j].barMax);

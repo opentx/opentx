@@ -34,7 +34,6 @@
 #ifndef menus_h
 #define menus_h
 
-#include <inttypes.h>
 #include "open9x.h"
 
 #define NO_HI_LEN 25
