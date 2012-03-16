@@ -2007,13 +2007,11 @@ void menuProcTelemetry(uint8_t event)
         if (sub==subN && m_posHorz==k && (s_editMode>0 || p1valdiff)) {
           CHECK_INCDEC_MODELVAR(event, value, 0, (j==3 && k==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX);
           if (checkIncDec_Ret) {
-            uint8_t mask = 1 << (2*j+k);
-            if (value & 1)
-              g_model.frskyLinesXtra |= mask;
-            else
-              g_model.frskyLinesXtra &= ~mask;
-            value >>= 1;
-            g_model.frskyLines[j] = (k==0 ? ((g_model.frskyLines[j] & 0xf0) + value) : (g_model.frskyLines[j] & 0x0f) + (value << 4));
+            g_model.frskyLines[j] = (k==0 ? ((g_model.frskyLines[j] & 0xf0) + (value & 0x0f)) : (g_model.frskyLines[j] & 0x0f) + ((value & 0x0f) << 4));
+            uint16_t mask = 0x3 << (4*j+2*k);
+            g_model.frskyLinesXtra &= ~mask;
+            mask = (value / 16) << (4*j+2*k);
+            g_model.frskyLinesXtra |= mask;
           }
         }
       }
