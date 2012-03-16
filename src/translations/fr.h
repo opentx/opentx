@@ -318,3 +318,6 @@
 #define TR_BACK          "Back"
 #define TR_MINLIMIT      "Min Limit"
 #define TR_MAXLIMIT      "Max Limit"
+#define TR_MINRSSI       "Min Rssi"
+#define TR_LATITUDE      "Latitude"
+#define TR_LONGITUDE     "Longitude"

@@ -341,5 +341,11 @@ extern const pm_char STR_MINLIMIT[];
 extern const pm_char STR_MAXLIMIT[];
 #endif
 
+#ifdef FRSKY_HUB
+extern const pm_char STR_MINRSSI[];
+extern const pm_char STR_LATITUDE[];
+extern const pm_char STR_LONGITUDE[];
+#endif
+
 extern const pm_uchar font[];
 extern const pm_uchar font_dblsize[];
