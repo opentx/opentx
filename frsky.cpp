@@ -872,7 +872,7 @@ void menuProcFrsky(uint8_t event)
       for (uint8_t i=0; i<4; i++) {
         for (uint8_t j=0; j<2; j++) {
           uint8_t field = getTelemCustomField(i, j);
-          if (i==3) {
+          if (i==3 && j==0) {
             lcd_vline(63, 8, 48);
             if (frskyStreaming > 0) {
               if (field == TELEM_ACC) {
