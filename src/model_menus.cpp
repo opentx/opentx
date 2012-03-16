@@ -2005,7 +2005,7 @@ void menuProcTelemetry(uint8_t event)
         uint8_t value = getTelemCustomField(j, k);
         lcd_putsiAtt(k==0?4:TELEM_COL2, y, STR_VTELEMCHNS, value, (sub==subN && m_posHorz==k) ? blink : 0);
         if (sub==subN && m_posHorz==k && (s_editMode>0 || p1valdiff)) {
-          CHECK_INCDEC_MODELVAR(event, value, 0, (j==3 && k==0) ? STATUS_MAX : DISPLAY_MAX);
+          CHECK_INCDEC_MODELVAR(event, value, 0, (j==3 && k==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX);
           if (checkIncDec_Ret) {
             uint8_t mask = 1 << (2*j+k);
             if (value & 1)
@@ -2042,7 +2042,7 @@ void menuProcTelemetry(uint8_t event)
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
           case 0:
-            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, BAR_MAX);
+            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, TELEM_BAR_MAX);
             break;
           case 1:
             CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].barMin, 0, 50-g_model.frsky.bars[j].barMax);

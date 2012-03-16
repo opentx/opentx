@@ -342,7 +342,7 @@ enum EnumKeys {
 #define CSW_CHOUT_BASE  (CSW_PPM_BASE+NUM_PPM)
 
 #if defined(FRSKY_HUB)
-#define NUM_TELEMETRY      9
+#define NUM_TELEMETRY      TELEM_CSW_MAX
 #elif defined(WS_HOW_HIGH)
 #define NUM_TELEMETRY      3
 #elif defined(FRSKY)
