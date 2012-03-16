@@ -139,17 +139,6 @@
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
 
-#if defined(FRSKY_HUB)
-#define LEN_TELEMCHNS    "\004"
-#define TR_TELEMCHNS     "AD1 AD2 ALT RPM FUELT@1 T@2 SPD\0CELL"
-#elif defined(WS_HOW_HIGH)
-#define LEN_TELEMCHNS    "\003"
-#define TR_TELEMCHNS     "AD1AD2ALT"
-#elif defined(FRSKY)
-#define LEN_TELEMCHNS    "\003"
-#define TR_TELEMCHNS     "AD1AD2"
-#endif
-
 #define LEN_DSM2MODE     "\007"
 #define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
 

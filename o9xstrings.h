@@ -83,8 +83,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VALARM     (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
 #define OFS_VALARMFN   (OFS_VALARM + sizeof(TR_VALARM))
 #define OFS_VTELPROTO  (OFS_VALARMFN + sizeof(TR_VALARMFN))
-#define OFS_TELEMCHNS  (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
-#define OFS_ENDTELEM   (OFS_TELEMCHNS + sizeof(TR_TELEMCHNS))
+#define OFS_ENDTELEM   (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
 #else
 #define OFS_ENDTELEM   (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
 #endif

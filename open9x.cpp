@@ -395,7 +395,7 @@ bool __getSwitch(int8_t swtch)
 #if defined(FRSKY)
         // Telemetry
         if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) {
-          y = convertTelemValue(cs.v1-(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1), 128+cs.v2);
+          y = convertTelemValue(cs.v1-(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS), 128+cs.v2);
           if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2/*A1 and A2*/) {
             // Fill the threshold array
             barsThresholds[cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS-3] = 128 + cs.v2;
