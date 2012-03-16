@@ -779,6 +779,12 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);
       break;
 
+    case TELEM_ACCx-1:
+    case TELEM_ACCy-1:
+    case TELEM_ACCz-1:
+      putsTelemetryValue(x, y, val, UNIT_RAW, att|PREC2);
+      break;
+
     default:
       putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel-2), att);
       break;
@@ -893,9 +899,9 @@ void menuProcFrsky(uint8_t event)
             }
           }
           if (field) {
-            lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
             int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+field-1);
             putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+            lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
           }
         }
       }
