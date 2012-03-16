@@ -318,3 +318,6 @@
 #define TR_BACK          "EXIT"
 #define TR_MINLIMIT      "Mininiv\200"
 #define TR_MAXLIMIT      "Maxiniv\200"
+#define TR_MINRSSI       "Min Rssi"
+#define TR_LATITUDE      "Latitude"
+#define TR_LONGITUDE     "Longitude"

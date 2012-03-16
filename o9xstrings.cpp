@@ -282,6 +282,12 @@ const pm_char STR_MINLIMIT[] PROGMEM = TR_MINLIMIT;
 const pm_char STR_MAXLIMIT[] PROGMEM = TR_MAXLIMIT;
 #endif
 
+#if defined(FRSKY_HUB)
+const pm_char STR_MINRSSI[] PROGMEM = TR_MINRSSI;
+const pm_char STR_LATITUDE[] PROGMEM = TR_LATITUDE;
+const pm_char STR_LONGITUDE[] PROGMEM = TR_LONGITUDE;
+#endif
+
 const pm_uchar font[] PROGMEM = {
 #include "font.lbm"
 #ifdef TRANSLATIONS_SE

@@ -966,9 +966,9 @@ void menuProcFrsky(uint8_t event)
 #ifdef FRSKY_HUB
     else if (s_frsky_view == e_frsky_after_flight) {
       // Latitude
-#define LAT_LINE (1*FH)
-      lcd_putsLeft( LAT_LINE, PSTR("Lat"));
-      lcd_outdezAtt(4*FW, LAT_LINE, frskyHubData.gpsLatitude_bp / 100, LEFT); // ddd before '.'
+#define LAT_LINE (1*FH+1)
+      lcd_putsLeft( LAT_LINE, STR_LATITUDE);
+      lcd_outdezAtt(10*FW, LAT_LINE, frskyHubData.gpsLatitude_bp / 100, LEFT); // ddd before '.'
       lcd_putc(lcd_lastPos, LAT_LINE, '@');
       uint8_t mn = frskyHubData.gpsLatitude_bp % 100;
       lcd_outdezNAtt(lcd_lastPos+FW, LAT_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
@@ -977,9 +977,9 @@ void menuProcFrsky(uint8_t event)
       lcd_putc(lcd_lastPos+1, LAT_LINE, frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
 
       // Longitude
-#define LONG_LINE (2*FH)
-      lcd_putsLeft(LONG_LINE, PSTR("Lon"));
-      lcd_outdezAtt(5*FW, LONG_LINE, frskyHubData.gpsLongitude_bp / 100, LEFT); // ddd before '.'
+#define LONG_LINE (2*FH+2)
+      lcd_putsLeft(LONG_LINE, STR_LONGITUDE);
+      lcd_outdezAtt(10*FW, LONG_LINE, frskyHubData.gpsLongitude_bp / 100, LEFT); // ddd before '.'
       lcd_putc(lcd_lastPos, LONG_LINE, '@');
       mn = frskyHubData.gpsLongitude_bp % 100;
       lcd_outdezNAtt(lcd_lastPos+FW, LONG_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
@@ -987,26 +987,17 @@ void menuProcFrsky(uint8_t event)
       lcd_outdezNAtt(lcd_lastPos+2, LONG_LINE, frskyHubData.gpsLongitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
       lcd_putc(lcd_lastPos+1, LONG_LINE, frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
 
-#define COURSE_LINE (3*FH)
-      // Course / Heading
-      lcd_putsLeft(COURSE_LINE, PSTR("Hdg"));
-      lcd_outdezNAtt(5*FW, COURSE_LINE, frskyHubData.gpsCourse_bp, LEFT|LEADING0, 3); // before '.'
-      lcd_plot(lcd_lastPos, COURSE_LINE+6, 0); // small decimal point
-      lcd_outdezAtt(lcd_lastPos+2, COURSE_LINE, frskyHubData.gpsCourse_ap, LEFT); // after '.'
-      lcd_putc(lcd_lastPos, COURSE_LINE, '@');
-
-#define RSSI_LINE (4*FH)
       // Rssi
-      lcd_putsLeft(RSSI_LINE, PSTR("Rssi"));
-      lcd_puts(5*FW, RSSI_LINE, STR_TX);
+#define RSSI_LINE (3*FH+3)
+      lcd_putsLeft(RSSI_LINE, STR_MINRSSI);
+      lcd_puts(10*FW, RSSI_LINE, STR_TX);
       lcd_outdezNAtt(lcd_lastPos, RSSI_LINE, frskyRSSI[1].min, LEFT|LEADING0, 2);
-      lcd_puts(10*FW, RSSI_LINE, STR_RX);
+      lcd_puts(16*FW, RSSI_LINE, STR_RX);
       lcd_outdezNAtt(lcd_lastPos, RSSI_LINE, frskyRSSI[0].min, LEFT|LEADING0, 2);
 
       displayGpsTime();
     }
 #endif
-
   }
   else {
     lcd_putsAtt(22, 40, STR_NODATA, DBLSIZE);
