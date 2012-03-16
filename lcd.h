@@ -73,7 +73,7 @@
 #define SWCONDENSED   0x80 /* means that THRm will be displayed as THR */
 
 /* telemetry flags */
-#define NO_UNIT       UNSIGN
+#define NO_UNIT       0x40
 
 /* other flags */
 #define TWO_DOTS      LEFT
