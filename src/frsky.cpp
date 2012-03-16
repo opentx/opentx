@@ -911,18 +911,21 @@ void menuProcFrsky(uint8_t event)
       // The bars
       uint8_t bars_height = 5;
       for (int8_t i=3; i>=0; i--) {
-        if (g_model.frsky.bars[i].source && (51-g_model.frsky.bars[i].barMax) > g_model.frsky.bars[i].barMin) {
-          lcd_putsiAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMCHNS, g_model.frsky.bars[i].source, 0);
+        uint8_t source = g_model.frsky.bars[i].source;
+        uint8_t bmin = g_model.frsky.bars[i].barMin * 5;
+        uint8_t bmax = (51 - g_model.frsky.bars[i].barMax) * 5;
+        if (source && bmax > bmin) {
+          lcd_putsiAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMCHNS, source, 0);
           lcd_rect(25, bars_height+6+i*(bars_height+6), 101, bars_height+2);
-          uint16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+g_model.frsky.bars[i].source-1);
+          uint16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+source-1);
           uint16_t threshold = 0;
           uint8_t thresholdX = 0;
-          if (g_model.frsky.bars[i].source <= 2)
-            threshold = g_model.frsky.channels[g_model.frsky.bars[i].source-1].alarms_value[0];
+          if (source <= 2)
+            threshold = g_model.frsky.channels[source-1].alarms_value[0];
           else
-            threshold = convertTelemValue(g_model.frsky.bars[i].source, barsThresholds[g_model.frsky.bars[i].source-3]);
-          int16_t barMin = convertTelemValue(g_model.frsky.bars[i].source, (g_model.frsky.bars[i].barMin * 5));
-          int16_t barMax = convertTelemValue(g_model.frsky.bars[i].source, ((51 - g_model.frsky.bars[i].barMax) * 5));
+            threshold = convertTelemValue(source, barsThresholds[source-3]);
+          int16_t barMin = convertTelemValue(source, bmin);
+          int16_t barMax = convertTelemValue(source, bmax);
           if (threshold) {
             thresholdX = (uint8_t)(int16_t)((int16_t)100 * (threshold - barMin) / (barMax - barMin));
             if (thresholdX > 100)
