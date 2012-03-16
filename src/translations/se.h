@@ -63,6 +63,11 @@
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""(v)>ofs""(v)<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
 #define LEN_VFSWFUNC     "\015"
+#if defined(FRSKY_HUB) or defined(WS_HOW_HIGH)
+#define TR_VARIO         "Vario        "
+#else
+#define TR_VARIO
+#endif
 #ifdef LOGS
 #define TR_SDCLOGGS      "SDCARD Logs  "
 #else
@@ -83,7 +88,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO "Reset        " TR_SDCLOGGS TR_TEST
+#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO "Reset\0       " TR_VARIO TR_SDCLOGGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
