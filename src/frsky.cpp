@@ -695,28 +695,35 @@ void resetTelemetry()
 #endif
 }
 
+uint8_t maxTelemValue(uint8_t channel)
+{
+  switch (channel) {
+    case TELEM_FUEL:
+      return 100;
+    default:
+      return 255;
+  }
+}
+
 int16_t convertTelemValue(uint8_t channel, uint8_t value)
 {
-  // TODO enum
-
   int16_t result;
-
   switch (channel) {
-    case 2:
-      // Altitude
+    case TELEM_ALT:
       result = value * 4;
       break;
-    case 3:
-      // RPMs
+    case TELEM_RPM:
       result = value * 50;
       break;
-    case 7:
-    case 8:
-      // SPEED
+    case TELEM_T1:
+    case TELEM_T2:
+      result = (int16_t)value - 30;
+      break;
+    case TELEM_SPEED:
+    case TELEM_CELL:
       result = value * 2;
       break;
-    case 9:
-      // DIST
+    case TELEM_DIST:
       result = value * 8;
       break;
     default:
@@ -734,23 +741,23 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 }
 
 const pm_uint8_t bchunit_ar[] = {
-  UNIT_VOLTS,   // A1
-  UNIT_VOLTS,   // A2
+  UNIT_VOLTS,   // A1 // TODO needed?
+  UNIT_VOLTS,   // A2 // TODO needed?
   UNIT_METERS,  // Alt
   UNIT_RAW,     // Rpm
   UNIT_PERCENT, // Fuel
   UNIT_DEGREES, // T1
   UNIT_DEGREES, // T2
   UNIT_KMH,     // Speed
-  UNIT_VOLTS,   // Cell
-  UNIT_METERS   // Dist
+  UNIT_METERS,  // Dist
+  UNIT_VOLTS,   // Cell // TODO needed?
 };
 
 void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)
 {
   switch (channel) {
-    case 0:
-    case 1:
+    case TELEM_A1-1:
+    case TELEM_A2-1:
       // A1 and A2
     {
       // TODO optimize this, avoid int32_t
@@ -768,8 +775,12 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
         }
       }
       putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
+      break;
     }
-    break;
+
+    case TELEM_CELL-1:
+      putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);
+      break;
 
     default:
       putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel), att);
@@ -907,9 +918,9 @@ void menuProcFrsky(uint8_t event)
           if (g_model.frsky.bars[i].source <= 2)
             threshold = g_model.frsky.channels[g_model.frsky.bars[i].source-1].alarms_value[0];
           else
-            threshold = convertTelemValue(g_model.frsky.bars[i].source-1, barsThresholds[g_model.frsky.bars[i].source-3]);
-          int16_t barMin = convertTelemValue(g_model.frsky.bars[i].source-1, (g_model.frsky.bars[i].barMin * 5));
-          int16_t barMax = convertTelemValue(g_model.frsky.bars[i].source-1, ((51 - g_model.frsky.bars[i].barMax) * 5));
+            threshold = convertTelemValue(g_model.frsky.bars[i].source, barsThresholds[g_model.frsky.bars[i].source-3]);
+          int16_t barMin = convertTelemValue(g_model.frsky.bars[i].source, (g_model.frsky.bars[i].barMin * 5));
+          int16_t barMax = convertTelemValue(g_model.frsky.bars[i].source, ((51 - g_model.frsky.bars[i].barMax) * 5));
           if (threshold) {
             thresholdX = (uint8_t)(int16_t)((int16_t)100 * (threshold - barMin) / (barMax - barMin));
             if (thresholdX > 100)

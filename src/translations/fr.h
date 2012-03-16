@@ -117,9 +117,9 @@
 #define TR_VTELPROTO     "NoneHub "
 #endif
 
-#define LEN2_VTEMPLATES  14
-#define LEN_VTEMPLATES   "\016"
-#define TR_VTEMPLATES    "Suppr Mixages\0""4 Voies simple\0""Coupure Gaz   \0""Empennage V   \0""Elevon\\Delta  \0""eCCPM         \0""Conf. Helico  \0""Servo Test    \0"
+#define LEN2_VTEMPLATES  15
+#define LEN_VTEMPLATES   "\017"
+#define TR_VTEMPLATES    "Suppr Mixages\0\0""4 Voies simple\0""Coupure Gaz   \0""Empennage V   \0""Elevon\\Delta  \0""eCCPM         \0""Conf. Helico  \0""Servo Test    \0"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
@@ -138,17 +138,6 @@
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
-
-#if defined(FRSKY_HUB)
-#define LEN_TELEMCHNS    "\004"
-#define TR_TELEMCHNS     "AD1 AD2 ALT RPM FUELT@1 T@2 SPD\0CELL"
-#elif defined(WS_HOW_HIGH)
-#define LEN_TELEMCHNS    "\003"
-#define TR_TELEMCHNS     "AD1AD2ALT"
-#elif defined(FRSKY)
-#define LEN_TELEMCHNS    "\003"
-#define TR_TELEMCHNS     "AD1AD2"
-#endif
 
 #define LEN_DSM2MODE     "\007"
 #define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
