@@ -63,6 +63,7 @@
 #include <util/delay.h>
 #define pgm_read_adr(address_short) pgm_read_word(address_short)
 #include <avr/wdt.h>
+#define printf printf_not_allowed
 #endif
 
 #include "file.h"
