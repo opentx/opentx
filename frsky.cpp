@@ -69,7 +69,7 @@ struct FrskyAlarm {
 struct FrskyAlarm frskyAlarms[4];
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-FrskyHubData frskyHubData; // TODO initialization?
+FrskyHubData frskyHubData;
 enum BarThresholdIdx {
   THLD_ALT,
   THLD_RPM,
@@ -900,7 +900,10 @@ void menuProcFrsky(uint8_t event)
           }
           if (field) {
             if (field >= TELEM_TM1) {
-              putsTime(j?74:10, 1+FH+2*FH*i, s_timerVal[field-TELEM_TM1], DBLSIZE, DBLSIZE);
+              uint8_t x, att;
+              if (i==3) { x = j?80:20; att = 0; }
+              else { x = j?74:10; att = DBLSIZE; }
+              putsTime(x, 1+FH+2*FH*i, s_timerVal[field-TELEM_TM1], att, att);
             }
             else {
               int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+field-1);
