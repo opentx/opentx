@@ -2102,6 +2102,7 @@ uint16_t stack_free()
 int main(void)
 {
   board_init();
+
   lcd_init();
 
   ADMUX=ADC_VREF_TYPE;
