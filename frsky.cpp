@@ -642,7 +642,10 @@ void frskyAlarmsRefresh()
 
 void FrskyRSSI::set(uint8_t value)
 {
-   this->value = (((uint16_t)this->value * 7) + value + 4) / 8;
+   if (this->value == 0)
+     this->value = value;
+   else
+     this->value = (((uint16_t)this->value * 7) + value + 4) / 8;
    if (!min || value < min)
      min = value;
 }
@@ -753,6 +756,10 @@ static const pm_uint8_t bchunit_ar[] PROGMEM = {
 void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)
 {
   switch (channel) {
+    case TELEM_MIN_A1-1:
+    case TELEM_MIN_A2-1:
+      channel -= TELEM_MIN_A1-1;
+      // no break
     case TELEM_A1-1:
     case TELEM_A2-1:
       // A1 and A2
