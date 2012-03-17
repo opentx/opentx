@@ -53,7 +53,7 @@ TEMPLATES = YES
 #          POT2 (menus scroll),
 #          POT3 (cursor down/up),
 #          POTS (POT1, POT2, POT3),
-#          RE1  (Rotary encoder 1, on V3/V4 boards)
+#          RE1  (Rotary encoder 1, on V4 boards)
 ifeq ($(PCB), V4)
 NAVIGATION = RE1
 else
@@ -132,12 +132,11 @@ REV = $(shell echo $$(( $(AREV) + 1 )))
 # MCU name
 ifeq ($(PCB), STD)
 MCU = atmega64
-endif
-ifeq ($(PCB), V3)
-MCU = atmega2561
+CPPSRC = stockboard.cpp
 endif
 ifeq ($(PCB), V4)
 MCU = atmega2560
+CPPSRC = v4board.cpp
 endif
 
 # Processor frequency.
@@ -153,7 +152,7 @@ TARGET = open9x
 OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp o9xstrings.cpp
+CPPSRC += open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp o9xstrings.cpp
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp

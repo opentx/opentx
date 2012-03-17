@@ -645,7 +645,7 @@ void checkTHR()
 void checkAlarm() // added by Gohst
 {
   if (g_eeGeneral.disableAlarmWarning) return;
-  if (g_eeGeneral.beeperMode == -2/*TODO constant*/) alert(STR_ALARMSDISABLED);
+  if (g_eeGeneral.beeperMode == e_mode_quiet) alert(STR_ALARMSDISABLED);
 }
 
 void checkSwitches()
@@ -2101,29 +2101,7 @@ uint16_t stack_free()
 
 int main(void)
 {
-  // Set up I/O port data directions and initial states
-  DDRA = 0xff;  PORTA = 0x00; // LCD data
-
-#if defined (PCBV4)
-  DDRB = 0b11000111;  PORTB = 0b00111111; // 7:SPKR, 6:PPM_OUT,  5:TrainSW,  4:IDL2_SW, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
-  DDRC = 0x3f;  PORTC = 0xc0; // 7:AilDR, 6:EleDR, LCD[5,4,3,2,1], 0:BackLight
-  DDRD = 0b11000000;  PORTD = 0b11111100; // 7:VIB, 6:LED BL, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
-  DDRE = 0b00001010;  PORTE = 0b11110101; // 7:PPM_IN, 6: RENC1_B, 5:RENC1_A, 4:USB_DNEG, 3:BUZZER, 2:USB_DPOS, 1:TELEM_TX, 0:TELEM_RX
-  DDRF = 0x00;  PORTF = 0x00; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
-  DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
-  DDRH = 0b00110000;  PORTH = 0b11011111; // 7:0 Spare port [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK] [2:VIB_OPTION -- setting to input for now]
-  DDRJ = 0x00;  PORTJ = 0xff; // 7-0:Trim switch inputs
-  DDRK = 0x00;  PORTK = 0x00; // anain. No pull-ups!
-  DDRL = 0x80;  PORTL = 0x7f; // 7: Hold_PWR_On (1=On, default Off), 6:Jack_Presence_TTL, 5-0: User Button inputs
-#else
-  DDRB = 0x81;  PORTB = 0x7e; //pullups keys+nc
-  DDRC = 0x3e;  PORTC = 0xc1; //pullups nc
-  DDRD = 0x00;  PORTD = 0xff; //pullups keys
-  DDRE = (1<<OUT_E_BUZZER);  PORTE = 0xff-(1<<OUT_E_BUZZER); //pullups + buzzer 0
-  DDRF = 0x00;  PORTF = 0x00; //anain
-  DDRG = 0x14;  PORTG = 0xfb; //pullups + SIM_CTL=1 = phonejack = ppm_in, Haptic output and off (0)
-#endif
-
+  board_init();
   lcd_init();
 
   ADMUX=ADC_VREF_TYPE;
@@ -2237,8 +2215,6 @@ int main(void)
   }
 
   clearKeyEvents(); //make sure no keys are down before proceeding
-
-  // TODO perMain()? perOut(g_chans512, getFlightPhase()); // TODO is it really needed?
 
   lcdSetRefVolt(g_eeGeneral.contrast);
   g_LightOffCounter = g_eeGeneral.lightAutoOff*500; //turn on light for x seconds - no need to press key Issue 152

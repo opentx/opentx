@@ -2031,12 +2031,13 @@ void menuProcTelemetry(uint8_t event)
   subN++;
 
   for (uint8_t j=0; j<4; j++) {
+    uint8_t barSource = g_model.frsky.bars[j].source;
     if (s_pgOfs<subN) {
       y = (subN-s_pgOfs)*FH;
-      lcd_putsiAtt(4, y, STR_VTELEMCHNS, g_model.frsky.bars[j].source, (sub==subN && m_posHorz==0) ? blink : 0);
-      if (g_model.frsky.bars[j].source) {
-        putsTelemetryChannel(TELEM_COL2-3*FW, y, g_model.frsky.bars[j].source-1, convertTelemValue(g_model.frsky.bars[j].source, g_model.frsky.bars[j].barMin*5), (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
-        putsTelemetryChannel(14*FW-3, y, g_model.frsky.bars[j].source-1, convertTelemValue(g_model.frsky.bars[j].source, (51-g_model.frsky.bars[j].barMax)*5), (sub==subN && m_posHorz==2 ? blink : 0) | LEFT);
+      lcd_putsiAtt(4, y, STR_VTELEMCHNS, barSource, (sub==subN && m_posHorz==0) ? blink : 0);
+      if (barSource) {
+        putsTelemetryChannel(TELEM_COL2-3*FW, y, barSource-1, convertTelemValue(barSource, g_model.frsky.bars[j].barMin*5), (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
+        putsTelemetryChannel(14*FW-3, y, barSource-1, convertTelemValue(barSource, (51-g_model.frsky.bars[j].barMax)*5), (sub==subN && m_posHorz==2 ? blink : 0) | LEFT);
       }
       else {
         if (sub == subN) m_posHorz = 0;
@@ -2044,17 +2045,18 @@ void menuProcTelemetry(uint8_t event)
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
           case 0:
-            CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].source, 0, TELEM_BAR_MAX);
+            CHECK_INCDEC_MODELVAR(event, barSource, 0, TELEM_BAR_MAX);
             if (checkIncDec_Ret) {
+              g_model.frsky.bars[j].source = barSource;
               g_model.frsky.bars[j].barMin = 0;
-              g_model.frsky.bars[j].barMax = 51 - (maxTelemValue(g_model.frsky.bars[j].source) / 5);
+              g_model.frsky.bars[j].barMax = 51 - (maxTelemValue(barSource) / 5);
             }
             break;
           case 1:
             CHECK_INCDEC_MODELVAR(event, g_model.frsky.bars[j].barMin, 0, 50-g_model.frsky.bars[j].barMax);
             break;
           case 2:
-            g_model.frsky.bars[j].barMax = 51 - checkIncDec(event, 51 - g_model.frsky.bars[j].barMax, g_model.frsky.bars[j].barMin+1, maxTelemValue(g_model.frsky.bars[j].source) / 5, EE_MODEL);
+            g_model.frsky.bars[j].barMax = 51 - checkIncDec(event, 51 - g_model.frsky.bars[j].barMax, g_model.frsky.bars[j].barMin+1, maxTelemValue(barSource) / 5, EE_MODEL);
             break;
         }
       }
