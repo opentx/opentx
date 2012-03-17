@@ -4,5 +4,4 @@ TODO list (no particular order)
 - Optimization for extra dblsize chars (se: 16 used when 6 needed)
 - DSM2 channel order (Cam)
 - Variometer (rate as cm/sec)
-- Telemetry value averaging
 - Trace telemetry data
