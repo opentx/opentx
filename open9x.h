@@ -39,20 +39,25 @@
 
 #include <inttypes.h>
 #include <string.h>
+#include <stddef.h>
 
 #if defined(PCBV4)
 #include "ff.h"
 #include "gtime.h"
 #endif
 
-#ifdef SIMU
+#if defined(SIMU)
 #include "simpgmspace.h"
+#elif defined(PCBARM)
+typedef const unsigned char pm_uchar;
+typedef const char pm_char;
+typedef const uint16_t pm_uint16_t;
+typedef const uint8_t pm_uint8_t;
+typedef const int16_t pm_int16_t;
+typedef const int8_t pm_int8_t;
+#define wdt_reset()
 #else
-///opt/cross/avr/include/avr/pgmspace.h
-#include <stddef.h>
 #include <avr/io.h>
-#define assert(x)
-
 #include <avr/pgmspace.h>
 #include "pgmtypes.h"
 
@@ -63,12 +68,16 @@
 #include <util/delay.h>
 #define pgm_read_adr(address_short) pgm_read_word(address_short)
 #include <avr/wdt.h>
-#define printf printf_not_allowed
 #endif
 
 #include "file.h"
 #include "lcd.h"
 #include "myeeprom.h"
+
+#if not defined(SIMU)
+#define assert(x)
+#define printf printf_not_allowed
+#endif
 
 #ifdef JETI
 // Jeti-DUPLEX Telemetry
@@ -407,8 +416,6 @@ extern uint8_t pxxFlag;
 #define PXX_SEND_RXNUM     0x01
 #define PXX_SEND_FAILSAFE  0x02 // TODO where is it used?
 
-typedef void (*getADCp)();
-
 #define ZCHAR_MAX (40 + LEN_SPECIAL_CHARS)
 
 extern char idx2char(int8_t idx);
@@ -489,6 +496,8 @@ void checkTHR();
 void checkSwitches();
 void checkAlarm();
 
+#define ADC_VREF_TYPE 0x40 // AVCC with external capacitor at AREF pin
+
 #define GETADC_SING = 0
 #define GETADC_OSMP = 1
 #define GETADC_FILT = 2
@@ -496,6 +505,8 @@ void checkAlarm();
 void getADC_single();
 void getADC_osmp();
 void getADC_filt();
+
+typedef void (*getADCp)();
 
 // checkIncDec flags
 #define   EE_GENERAL 0x01
@@ -588,14 +599,19 @@ extern inline int16_t calc1000toRESX(int16_t x)
 
 extern volatile uint16_t g_tmr10ms;
 
+#if defined(PCBARM)
+// This doesn't need protection on this processor
+#define get_tmr10ms() g_tmr10ms
+#else
 extern inline uint16_t get_tmr10ms()
 {
   uint16_t time  ;
   cli();
-  time = g_tmr10ms ;  
+  time = g_tmr10ms ;
   sei();
   return time ;
 }
+#endif
 
 #define TMR_VAROFS  5
 
@@ -683,7 +699,7 @@ extern volatile uint8_t g_rotenc[2];
 //audio settungs are external to keep out clutter!
 // TODO english learning for me... what does mean "keep out clutter"?
 #include "audio.h"
-#else
+#elif not defined(PCBARM)
 #include "beeper.h"
 #endif
 

@@ -28,7 +28,7 @@
 #----------- BUILD OPTIONS ---------------------------
 
 #gruvin: PCB version -- OVERRIDES the following settings if not STD
-# Values: STD, V4
+# Values: STD, V4, ARM
 PCB = STD
 
 # Following options for PCB=STD only (ignored otherwise) ...
@@ -130,13 +130,17 @@ AREV = $(shell sh -c "cat .svn/entries | sed -n '4p'")
 REV = $(shell echo $$(( $(AREV) + 1 )))
 
 # MCU name
+ifeq ($(PCB), ARM)
+ MCU  = cortex-m3
+ BOARDSRC = board_arm.cpp
+endif
 ifeq ($(PCB), STD)
-MCU = atmega64
-CPPSRC = stockboard.cpp
+  MCU = atmega64
+  BOARDSRC = board_stock.cpp
 endif
 ifeq ($(PCB), V4)
-MCU = atmega2560
-CPPSRC = v4board.cpp
+  MCU = atmega2560
+  BOARDSRC = board_gruvin9x.cpp
 endif
 
 # Processor frequency.
@@ -152,7 +156,7 @@ TARGET = open9x
 OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC += open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp o9xstrings.cpp
+CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp o9xstrings.cpp
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -746,9 +750,9 @@ extcoff: $(TARGET).elf
 	$(NM) -n $< > $@
 
 # Concatenate all sources files in one big file to optimize size
-allsrc: $(CPPSRC)
+allsrc: $(BOARDSRC) $(CPPSRC)
 	@echo -n > allsrc.cpp
-	for f in $(CPPSRC); do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
+	for f in $(BOARDSRC) $(CPPSRC); do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 	
 remallsrc:
 	$(REMOVE) allsrc.cpp

@@ -117,6 +117,7 @@ PACK(struct FrskyHubData {
   int16_t  gpsAltitudeOffset;
   uint8_t  minCellMinVolts;
   /* order is important starting from here */
+  int16_t  minAltitude;
   int16_t  maxAltitude;
   uint16_t maxRpm;
   int16_t  maxTemperature1;

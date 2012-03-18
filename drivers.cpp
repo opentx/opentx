@@ -37,7 +37,7 @@ uint16_t eeprom_pointer;
 const char* eeprom_buffer_data;
 volatile int8_t eeprom_buffer_size = 0;
 
-#ifndef SIMU
+#if not defined(SIMU) and not defined(PCBARM)
 
 inline void eeprom_write_byte()
 {
@@ -80,6 +80,8 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 
 #ifdef SIMU
   sem_post(&eeprom_write_sem);
+#elif defined (PCBARM)
+
 #elif defined (PCBV4)
   EECR |= (1<<EERIE);
 #else

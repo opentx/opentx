@@ -285,7 +285,6 @@ extern const pm_char STR_FREESTACKMINB[];
 extern const pm_char STR_MENUTORESET[];
 extern const pm_char STR_PPM[];
 extern const pm_char STR_CH[];
-extern const pm_char STR_TMR[];
 extern const pm_char STR_MODEL[];
 extern const pm_char STR_FP[];
 extern const pm_char STR_EEPROMLOWMEM[];
