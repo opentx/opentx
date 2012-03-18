@@ -263,7 +263,6 @@
 #define TR_MENUTORESET  "[MENU] NOLLAR  "
 #define TR_PPM          "PPM"
 #define TR_CH           "KN"
-#define TR_TMR          "TMR"
 #define TR_MODEL        "MODELL"
 #define TR_FP           "FF"
 #define TR_EEPROMLOWMEM "EEPROM low mem"

@@ -206,7 +206,6 @@ const pm_char STR_FREESTACKMINB[] PROGMEM = TR_FREESTACKMINB;
 const pm_char STR_MENUTORESET[] PROGMEM = TR_MENUTORESET;
 const pm_char STR_PPM[] PROGMEM = TR_PPM;
 const pm_char STR_CH[] PROGMEM = TR_CH;
-const pm_char STR_TMR[] PROGMEM = TR_TMR;
 const pm_char STR_MODEL[] PROGMEM = TR_MODEL;
 const pm_char STR_FP[] PROGMEM = TR_FP;
 const pm_char STR_EEPROMLOWMEM[] PROGMEM = TR_EEPROMLOWMEM;

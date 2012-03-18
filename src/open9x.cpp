@@ -307,29 +307,29 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-CSW_PPM_BASE] - g_eeGeneral.trainer.calib[i-CSW_PPM_BASE])*2;
   else if(i<CSW_PPM_BASE+NUM_PPM) return g_ppmIns[i-CSW_PPM_BASE]*2;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CSW_CHOUT_BASE];
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT-1];
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_TM2) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT];
 #if defined(FRSKY)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2) return frskyTelemetry[i-CSW_CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_A2) return frskyTelemetry[i-CSW_CHOUT_BASE-NUM_CHNOUT-2].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyRSSI[1].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyRSSI[0].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+3) return frskyHubData.baroAltitude_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyHubData.baroAltitude_bp;
 #endif
 #if defined(FRSKY_HUB)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_RPM) return frskyHubData.rpm;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_FUEL) return frskyHubData.fuelLevel;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_T1) return frskyHubData.temperature1;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_T2) return frskyHubData.temperature2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_SPEED) return frskyHubData.gpsSpeed_ap;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_DIST) return frskyHubData.gpsDistance;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_CELL) return (int16_t)frskyHubData.minCellVolts * 2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_RSSI_TX) return frskyRSSI[1].value;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_RSSI_RX) return frskyRSSI[0].value;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_ACCx) return frskyHubData.accelX;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_ACCy) return frskyHubData.accelY;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_ACCz) return frskyHubData.accelZ;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_HDG) return frskyHubData.gpsCourse_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MIN_A1) return frskyTelemetry[0].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MIN_A2) return frskyTelemetry[1].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.maxGpsDistance))-i-(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+TELEM_MAX_DIST-1));
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RPM) return frskyHubData.rpm;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_FUEL) return frskyHubData.fuelLevel;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T1) return frskyHubData.temperature1;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T2) return frskyHubData.temperature2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_SPEED) return frskyHubData.gpsSpeed_ap;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyHubData.gpsDistance;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyHubData.minCellVolts * 2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyHubData.accelX;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyHubData.accelY;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyHubData.accelZ;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_HDG) return frskyHubData.gpsCourse_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyTelemetry[0].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyTelemetry[1].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
 #endif
 #endif
   else return 0;
@@ -392,20 +392,18 @@ bool __getSwitch(int8_t swtch)
       if (s == CS_VOFS) {
 #if defined(FRSKY)
         // Telemetry
-        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS) {
-          y = convertTelemValue(cs.v1-(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS), 128+cs.v2);
-          if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+2/*A1 and A2*/) {
+        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
+          y = convertTelemValue(cs.v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs.v2);
+          if (cs.v1 >= CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) {
             // Fill the threshold array
-            barsThresholds[cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-MAX_TIMERS-3] = 128 + cs.v2;
+            barsThresholds[cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT] = 128 + cs.v2;
           }
         }
         else
 #endif
-        // Timers
-        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT)
-          y = 98+cs.v2;
-        else
+        {
           y = calc100toRESX(cs.v2);
+        }
 
         switch (cs.func) {
           case CS_VPOS:
@@ -809,7 +807,6 @@ uint16_t anaIn(uint8_t chan)
   return *p;
 }
 
-#define ADC_VREF_TYPE 0x40 // AVCC with external capacitor at AREF pin
 void getADC_filt()
 {
   static uint16_t t_ana[2][8];
@@ -2104,49 +2101,6 @@ int main(void)
   board_init();
 
   lcd_init();
-
-  ADMUX=ADC_VREF_TYPE;
-  ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
-#if defined (PCBV4)
-  ADCSRB=(1<<MUX5);
-#endif
-
-  /**** Set up timer/counter 0 ****/
-#if defined (PCBV4)
-  /** Move old 64A Timer0 functions to Timer2 and use WGM on OC0(A) (PB7) for spkear tone output **/
-
-  // TCNT0  10ms = 16MHz/1024/156(.25) periodic timer (100ms interval)
-  //        cycles at 9.984ms but includes 1:4 duty cycle correction to /157 to average at 10.0ms
-  TCCR2B  = (0b111 << CS20); // Norm mode, clk/1024 (differs from ATmega64 chip)
-  OCR2A   = 156;
-  TIMSK2 |= (1<<OCIE2A) |  (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
-
-  // Set up Phase correct Waveform Gen. mode, at clk/64 = 250,000 counts/second
-  // (Higher speed allows for finer control of frquencies in the audio range.)
-  // Used for audio tone generation
-  TCCR0B  = (1<<WGM02) | (0b011 << CS00);
-  TCCR0A  = (0b01<<WGM00);
-
-#else
-
-# if defined (AUDIO)
-  // TCNT0  10ms = 16MHz/1024/2(/78) periodic timer (for speaker tone generation)
-  //        Capture ISR 7812.5/second -- runs per-10ms code segment once every 78
-  //        cycles (9.984ms). Timer overflows at about 61Hz or once every 16ms.
-  TCCR0  = (0b111 << CS00);//  Norm mode, clk/1024
-  OCR0 = 2;
-# else
-  // TCNT0  10ms = 16MHz/1024/156 periodic timer (9.984ms)
-  // (with 1:4 duty at 157 to average 10.0ms)
-  // Timer overflows at about 61Hz or once every 16ms.
-  TCCR0  = (0b111 << CS00);//  Norm mode, clk/1024
-  OCR0 = 156;
-# endif
-
-  TIMSK |= (1<<OCIE0) |  (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
-  /********************************/
-
-#endif
 
   // Init Stack while interrupts are disabled
 #define STACKPTR     _SFR_IO16(0x3D)

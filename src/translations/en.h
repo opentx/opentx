@@ -97,7 +97,7 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""t1\0 ""t2\0 ""Spd\0""Dist""Cell""Tx\0 ""Rx\0 ""AccX""AccY""AccZ""Hdg\0""a1\0 ""a2\0 ""ALT\0""RPM\0""T1\0 ""T2\0 ""SPD\0""DIST""Tmr1""Tmr2""ACC\0""Time"
+#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""Cell""AccX""AccY""AccZ""Hdg\0""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Time"
 
 #define LEN_VTELEMUNIT   "\003"
 #define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"
@@ -263,7 +263,6 @@
 #define TR_MENUTORESET  "[MENU] to reset"
 #define TR_PPM          "PPM"
 #define TR_CH           "CH"
-#define TR_TMR          "TMR"
 #define TR_MODEL        "MODEL"
 #define TR_FP           "FP"
 #define TR_EEPROMLOWMEM "EEPROM low mem"

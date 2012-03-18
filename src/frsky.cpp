@@ -254,6 +254,8 @@ void parseTelemHubByte(uint8_t byte)
       frskyHubData.baroAltitude_bp += frskyHubData.baroAltitudeOffset;
       if (frskyHubData.baroAltitude_bp > frskyHubData.maxAltitude)
         frskyHubData.maxAltitude = frskyHubData.baroAltitude_bp;
+      if (frskyHubData.baroAltitude_bp < frskyHubData.minAltitude)
+        frskyHubData.minAltitude = frskyHubData.baroAltitude_bp;
       break;
 
     case offsetof(FrskyHubData, gpsAltitude_ap):
@@ -262,6 +264,8 @@ void parseTelemHubByte(uint8_t byte)
       frskyHubData.gpsAltitude_bp += frskyHubData.gpsAltitudeOffset;
       if (frskyHubData.gpsAltitude_bp > frskyHubData.maxAltitude)
         frskyHubData.maxAltitude = frskyHubData.gpsAltitude_bp;
+      if (frskyHubData.gpsAltitude_bp < frskyHubData.minAltitude)
+        frskyHubData.minAltitude = frskyHubData.gpsAltitude_bp;
 
       if (!frskyHubData.pilotLatitude && !frskyHubData.pilotLongitude) {
         // First received GPS position => Pilot GPS position
@@ -692,9 +696,12 @@ void resetTelemetry()
 
   frskyHubData.gpsAltitude_bp = 50;
   frskyHubData.baroAltitude_bp = 50;
+  frskyHubData.minAltitude = 10;
   frskyHubData.maxAltitude = 500;
 
   frskyHubData.accelY = 100;
+  frskyHubData.temperature1 = -30;
+  frskyHubData.maxTemperature1 = 100;
 #endif
 }
 
@@ -702,6 +709,8 @@ uint8_t maxTelemValue(uint8_t channel)
 {
   switch (channel) {
     case TELEM_FUEL:
+    case TELEM_RSSI_TX:
+    case TELEM_RSSI_RX:
       return 100;
     default:
       return 255;
@@ -756,12 +765,17 @@ static const pm_uint8_t bchunit_ar[] PROGMEM = {
 void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)
 {
   switch (channel) {
+    case TELEM_TM1-1:
+    case TELEM_TM2-1:
+      putsTime(x-3*FW, y, val, att, att);
+      break;
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
-      channel -= TELEM_MIN_A1-1;
+      channel -= TELEM_MIN_A1-1-MAX_TIMERS;
       // no break
     case TELEM_A1-1:
     case TELEM_A2-1:
+      channel -= MAX_TIMERS;
       // A1 and A2
     {
       // TODO optimize this, avoid int32_t
@@ -792,8 +806,13 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       putsTelemetryValue(x, y, val, UNIT_RAW, att|PREC2);
       break;
 
+    case TELEM_RSSI_TX-1:
+    case TELEM_RSSI_RX-1:
+      putsTelemetryValue(x, y, val, UNIT_RAW, att);
+      break;
+
     default:
-      putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel-2), att);
+      putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel-6), att);
       break;
   }
 }
@@ -906,15 +925,14 @@ void menuProcFrsky(uint8_t event)
             }
           }
           if (field) {
-            if (field >= TELEM_TM1) {
-              uint8_t x, att;
-              if (i==3) { x = j?80:20; att = 0; }
-              else { x = j?74:10; att = DBLSIZE; }
-              putsTime(x, 1+FH+2*FH*i, s_timerVal[field-TELEM_TM1], att, att);
+            int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+field-1);
+            uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+            if (field <= TELEM_TM2) {
+              uint8_t x = (i==3 ? j?80:20 : j?74:10);
+              putsTime(x, 1+FH+2*FH*i, value, att, att);
             }
             else {
-              int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+field-1);
-              putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+              putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
               lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
             }
           }
@@ -932,13 +950,17 @@ void menuProcFrsky(uint8_t event)
         if (source && bmax > bmin) {
           lcd_putsiAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMCHNS, source, 0);
           lcd_rect(25, bars_height+6+i*(bars_height+6), 101, bars_height+2);
-          uint16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+source-1);
+          uint16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+source-1);
           uint16_t threshold = 0;
           uint8_t thresholdX = 0;
-          if (source <= 2)
-            threshold = g_model.frsky.channels[source-1].alarms_value[0];
+          if (source <= TELEM_TM1)
+            threshold = 0;
+          else if (source <= TELEM_A2)
+            threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
+          else if (source <= TELEM_RSSI_RX)
+            threshold = 0;
           else
-            threshold = convertTelemValue(source, barsThresholds[source-3]);
+            threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
           int16_t barMin = convertTelemValue(source, bmin);
           int16_t barMax = convertTelemValue(source, bmax);
           if (threshold) {
@@ -973,9 +995,9 @@ void menuProcFrsky(uint8_t event)
         if (g_model.frsky.channels[i].ratio) {
           blink = (FRSKY_alarmRaised(i) ? INVERS : 0);
           putsStrIdx(0, y, STR_A, i+1, TWO_DOTS);
-          putsTelemetryChannel(3*FW, y, i, frskyTelemetry[i].value, blink|DBLSIZE|LEFT);
-          lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, i, frskyTelemetry[i].min, NO_UNIT);
-          lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, i, frskyTelemetry[i].max, NO_UNIT);
+          putsTelemetryChannel(3*FW, y, i+MAX_TIMERS, frskyTelemetry[i].value, blink|DBLSIZE|LEFT);
+          lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, i+MAX_TIMERS, frskyTelemetry[i].min, NO_UNIT);
+          lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, i+MAX_TIMERS, frskyTelemetry[i].max, NO_UNIT);
           y += 3*FH;
         }
       }

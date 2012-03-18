@@ -263,7 +263,6 @@
 #define TR_MENUTORESET  "[MENU]pour reset"
 #define TR_PPM          "PPM"
 #define TR_CH           "CH"
-#define TR_TMR          "TMR"
 #define TR_MODEL        "MODELE"
 #define TR_FP           "PV"
 #define TR_EEPROMLOWMEM "EEPROM low mem"
