@@ -140,6 +140,7 @@ extern sem_t eeprom_write_sem;
 #define UCSR0B dummyport
 #define UDRIE0 dummyport
 #define TXB80 dummyport
+#define TXCIE0 dummyport
 #define TXEN0 dummyport
 #define RXEN0 dummyport
 #define DDE0 dummyport
@@ -175,6 +176,13 @@ extern sem_t eeprom_write_sem;
 #define TIMSK4 dummyport
 #define ETIMSK  dummyport
 #define ETIMSK1 dummyport
+
+#define UCSZ02 dummyport
+#define UCSR0C dummyport
+#define UCSZ01 dummyport
+#define UCSZ00 dummyport
+#define UCSR0A dummyport
+#define RXC0 dummyport
 
 #define UDR0 dummyport
 #define OCIE1A dummyport

@@ -329,6 +329,23 @@ PACK(typedef struct t_FrSkyData {
   FrSkyRSSIAlarm rssiAlarms[2];
 }) FrSkyData;
 
+#ifdef MAVLINK
+#define ROTARY_TYPE_OFF     0
+#define ROTARY_TYPE_PPM     1
+#define ROTARY_TYPE_MAVLINK 2
+#define NUM_ROTARY_SW       8
+#define MAX_MODES_VAL       16
+PACK(typedef struct t_RotarySwChannelData {
+  uint8_t typeRotary:2;   // see defines ROTARY_TYPE
+  uint8_t numMode:6;      // num mode
+}) RotarySwChannelData;
+
+PACK(typedef struct t_MavlinkData {
+  RotarySwChannelData rotarySw[NUM_ROTARY_SW];
+  int8_t   modesVal[MAX_MODES_VAL];
+}) MavlinkData;
+#endif
+
 PACK(typedef struct t_SwashRingData { // Swash Ring data
   uint8_t   invertELE:1;
   uint8_t   invertAIL:1;
@@ -412,7 +429,11 @@ PACK(typedef struct t_ModelData {
   FuncSwData   funcSw[NUM_FSW];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
+#ifdef MAVLINK
+  MavlinkData mavlink;
+#else
   FrSkyData frsky;
+#endif
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;

@@ -131,6 +131,8 @@ void menuMainView(uint8_t event)
 #elif defined(NMEA)
       NMEA_EnableRXD(); // enable NMEA-Telemetry reception
       chainMenu(menuProcNMEA);
+#elif defined(MAVLINK)
+      chainMenu(menuProcMavlink);
 #else
       chainMenu(menuProcDebug);
 #endif

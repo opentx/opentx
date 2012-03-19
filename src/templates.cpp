@@ -125,10 +125,10 @@ void applyTemplate(uint8_t idx)
       // Simple 4-Ch
       case TMPL_SIMPLE_4CH:
         clearMixes();
-        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_RUD;  md->weight=100;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_ELE;  md->weight=100;
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_THR;  md->weight=100;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_AIL;  md->weight=100;
+        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_Rud;  md->weight=100;
+        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_Ele;  md->weight=100;
+        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_Thr;  md->weight=100;
+        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_Ail;  md->weight=100;
         break;
 
       // T-Cut
@@ -138,30 +138,30 @@ void applyTemplate(uint8_t idx)
 
       // V-Tail
       case TMPL_V_TAIL:
-        md=setDest(ICC(STK_RUD), true);  md->srcRaw=MIXSRC_RUD;  md->weight= 100;
-        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_ELE;  md->weight=-100;
-        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_RUD;  md->weight= 100;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_ELE;  md->weight= 100;
+        md=setDest(ICC(STK_RUD), true);  md->srcRaw=MIXSRC_Rud;  md->weight= 100;
+        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_Ele;  md->weight=-100;
+        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_Rud;  md->weight= 100;
+        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_Ele;  md->weight= 100;
         break;
 
       // Elevon\\Delta
       case TMPL_ELEVON_DELTA:
-        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_ELE;  md->weight= 100;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_AIL;  md->weight= 100;
-        md=setDest(ICC(STK_AIL), true);  md->srcRaw=MIXSRC_ELE;  md->weight= 100;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_AIL;  md->weight=-100;
+        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_Ele;  md->weight= 100;
+        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_Ail;  md->weight= 100;
+        md=setDest(ICC(STK_AIL), true);  md->srcRaw=MIXSRC_Ele;  md->weight= 100;
+        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_Ail;  md->weight=-100;
         break;
 
       // eCCPM
       case TMPL_ECCPM:
-        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_ELE;  md->weight= 72;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_THR;  md->weight= 55;
-        md=setDest(ICC(STK_AIL), true);  md->srcRaw=MIXSRC_ELE;  md->weight=-36;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_AIL;  md->weight= 62;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_THR;  md->weight= 55;
-        md=setDest(5, true);             md->srcRaw=MIXSRC_ELE;  md->weight=-36;
-        md=setDest(5);             md->srcRaw=MIXSRC_AIL;  md->weight=-62;
-        md=setDest(5);             md->srcRaw=MIXSRC_THR;  md->weight= 55;
+        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_Ele;  md->weight= 72;
+        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_Thr;  md->weight= 55;
+        md=setDest(ICC(STK_AIL), true);  md->srcRaw=MIXSRC_Ele;  md->weight=-36;
+        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_Ail;  md->weight= 62;
+        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_Thr;  md->weight= 55;
+        md=setDest(5, true);       md->srcRaw=MIXSRC_Ele;  md->weight=-36;
+        md=setDest(5);             md->srcRaw=MIXSRC_Ail;  md->weight=-62;
+        md=setDest(5);             md->srcRaw=MIXSRC_Thr;  md->weight= 55;
         break;
 
       // Heli Setup
@@ -177,12 +177,12 @@ void applyTemplate(uint8_t idx)
         md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_CH9;   md->weight=-100;
         md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_CH11;  md->weight= 100; md->carryTrim=TRIM_OFF;
 
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_THR;  md->weight= 100; md->swtch=DSW_ID0; md->curve=CV(1); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_THR;  md->weight= 100; md->swtch=DSW_ID1; md->curve=CV(2); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_THR;  md->weight= 110; md->swtch=DSW_ID2; md->curve=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_Thr;  md->weight= 100; md->swtch=DSW_ID0; md->curve=CV(1); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_Thr;  md->weight= 100; md->swtch=DSW_ID1; md->curve=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_Thr;  md->weight= 110; md->swtch=DSW_ID2; md->curve=CV(2); md->carryTrim=TRIM_OFF;
         md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_MAX;      md->weight=-125; md->swtch=DSW_THR;  md->mltpx=MLTPX_REP; md->carryTrim=TRIM_OFF;
 
-        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_RUD; md->weight=100;
+        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_Rud; md->weight=100;
 
         md=setDest(4);  md->srcRaw=MIXSRC_MAX; md->weight= 50; md->swtch=-DSW_GEA; md->carryTrim=TRIM_OFF;
         md=setDest(4);  md->srcRaw=MIXSRC_MAX; md->weight=-50; md->swtch= DSW_GEA; md->carryTrim=TRIM_OFF;
@@ -192,12 +192,12 @@ void applyTemplate(uint8_t idx)
         md=setDest(5);  md->srcRaw=MIXSRC_CH10;  md->weight=-100;
         md=setDest(5);  md->srcRaw=MIXSRC_CH11;  md->weight=-100; md->carryTrim=TRIM_OFF;
 
-        md=setDest(8);  md->srcRaw=MIXSRC_ELE;  md->weight= 60;
-        md=setDest(9);  md->srcRaw=MIXSRC_AIL;  md->weight=-52;
-        md=setDest(10); md->srcRaw=MIXSRC_THR;  md->weight= 70; md->swtch=DSW_ID0; md->curve=CV(3); md->carryTrim=TRIM_OFF;
-        md=setDest(10); md->srcRaw=MIXSRC_THR;  md->weight= 70; md->swtch=DSW_ID1; md->curve=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10); md->srcRaw=MIXSRC_THR;  md->weight= 70; md->swtch=DSW_ID2; md->curve=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10); md->srcRaw=MIXSRC_THR;  md->weight=100; md->swtch=DSW_THR; md->curve=CV(5); md->carryTrim=TRIM_OFF;  md->mltpx=MLTPX_REP;
+        md=setDest(8);  md->srcRaw=MIXSRC_Ele;  md->weight= 60;
+        md=setDest(9);  md->srcRaw=MIXSRC_Ail;  md->weight=-52;
+        md=setDest(10); md->srcRaw=MIXSRC_Thr;  md->weight= 70; md->swtch=DSW_ID0; md->curve=CV(3); md->carryTrim=TRIM_OFF;
+        md=setDest(10); md->srcRaw=MIXSRC_Thr;  md->weight= 70; md->swtch=DSW_ID1; md->curve=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10); md->srcRaw=MIXSRC_Thr;  md->weight= 70; md->swtch=DSW_ID2; md->curve=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10); md->srcRaw=MIXSRC_Thr;  md->weight=100; md->swtch=DSW_THR; md->curve=CV(5); md->carryTrim=TRIM_OFF;  md->mltpx=MLTPX_REP;
 
         //Set up Curves
         setCurve(CURVE5(1), heli_ar1);

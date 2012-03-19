@@ -36,7 +36,7 @@ PCB = STD
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
 # More information at [insertURLhere]
-# Values = STD, FRSKY, JETI, NMEA, ARDUPILOT
+# Values = STD, FRSKY, JETI, NMEA, ARDUPILOT, MAVLINK
 EXT = STD
 
 # Enable heli menu
@@ -266,6 +266,12 @@ endif
 ifeq ($(EXT), JETI)
   MODS:=${MODS}J
   CPPDEFS += -DJETI
+endif
+
+ifeq ($(EXT), MAVLINK)
+ MODS:=${MODS}M
+ CPPDEFS += -DMAVLINK
+ CPPSRC += mavlink.cpp rotarysw.cpp serial.cpp
 endif
 
 # If FRSKY-Support is enabled

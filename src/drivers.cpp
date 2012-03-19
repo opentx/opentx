@@ -256,7 +256,7 @@ bool keyState(EnumKeys enuk)
       result = PINE & (1<<INP_E_ElevDR);
       break;
 
-#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA)
+#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
     case SW_AileDR:
       result = PINC & (1<<INP_C_AileDR); //shad974: rerouted inputs to free up UART0
       break;
@@ -291,7 +291,7 @@ bool keyState(EnumKeys enuk)
 
     //case SW_ThrCt  : return PINE & (1<<INP_E_ThrCt);
 
-#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA)
+#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
     case SW_ThrCt:
       result = PINC & (1<<INP_C_ThrCt); //shad974: rerouted inputs to free up UART0
       break;
@@ -335,23 +335,19 @@ uint8_t g_ms100 = 0; // global to allow time set function to reset to zero
 #endif
 void per10ms()
 {
-    g_tmr10ms++;
-    g_blinkTmr10ms++;
+  g_tmr10ms++;
+  g_blinkTmr10ms++;
 
-#if defined (PCBV4)
-    /* Update gloabal Date/Time every 100 per10ms cycles */
-    if (++g_ms100 == 100)
-    {
-      g_unixTime++; // inc global unix timestamp one second
-      g_ms100 = 0;
-    }
-#endif
-
-/**** BEGIN KEY STATE READ ****/
   uint8_t enuk = KEY_MENU;
 
-// User buttons ...
 #if defined (PCBV4)
+  /* Update gloabal Date/Time every 100 per10ms cycles */
+  if (++g_ms100 == 100)
+  {
+    g_unixTime++; // inc global unix timestamp one second
+    g_ms100 = 0;
+  }
+
   /* Original keys were connected to PORTB as follows:
 
      Bit  Key
@@ -365,8 +361,6 @@ void per10ms()
       0   other use
   */
 
-#  if defined (PCBV4)
-
   keys[BTN_RE1].input(~PIND & 0x20, BTN_RE1);
   keys[BTN_RE2].input(~PIND & 0x10, BTN_RE2);
 
@@ -375,29 +369,8 @@ void per10ms()
   in = (tin & 0x0f) << 3;
   in |= (tin & 0x30) >> 3;
 
-#  else
-
-// Gruvin's PCBv2.14/v3 key scanning ...
-#define KEY_Y0 1 // EXIT / MENU
-#define KEY_Y1 2 // LEFT / RIGHT / UP / DOWN
-#define KEY_Y2 4 // LV_Trim_Up / Down / LH_Trim_Up / Down 
-#define KEY_Y3 8 // RV_Trim_Up / Down / RH_Trim_Up / Down 
-#define TRIM_M_LH_DWN 0 // KEY_X0
-#define TRIM_M_LH_UP  1 // KEY_X1
-#define TRIM_M_LV_DWN 2 // KEY_X2
-#define TRIM_M_LV_UP  3 // KEY_X3
-#define TRIM_M_RV_DWN 4 // KEY_X0
-#define TRIM_M_RV_UP  5 // KEY_X1
-#define TRIM_M_RH_DWN 6 // KEY_X2
-#define TRIM_M_RH_UP  7 // KEY_3X
-
-  uint8_t in, tin;
-
-  in = keyDown(); // in gruvin9x.cpp
-
-#  endif // PCBV4
-
 #else
+  // User buttons ...
   uint8_t in = ~PINB;
 #endif
 
@@ -450,8 +423,13 @@ void per10ms()
 
 /**** END KEY STATE READ ****/
 
+#ifdef MAVLINK
+  check_mavlink() ;
+#endif
+
 #if defined (FRSKY)
 
+  // TODO everything here in check_frsky() ;
   // TODO it would be better in frsky.h / .cpp!
 
   // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
