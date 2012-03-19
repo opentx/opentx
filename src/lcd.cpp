@@ -473,10 +473,8 @@ void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
     putsStrIdx(x, y, STR_PPM, idx - (NUM_STICKS+NUM_POTS+2+3), att);
   else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT)
     putsStrIdx(x, y, STR_CH, idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM), att);
-#ifdef FRSKY
   else
     lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT), att);
-#endif
 }
 
 void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
