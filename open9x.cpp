@@ -548,6 +548,7 @@ void doSplash()
 
 #define INAC_DEVISOR 256   // Bypass splash screen with stick movement
       uint16_t inacSum = 0;
+      // TODO uint16_t inacSum = stickMoveValue();
       for(uint8_t i=0; i<4; i++)
         inacSum += anaIn(i)/INAC_DEVISOR;
 
@@ -566,6 +567,7 @@ void doSplash()
 
         if(keyDown() || (tsum!=inacSum))   return;  //wait for key release
 
+        // TODO check_backlight() ;
         if(getSwitch(g_eeGeneral.lightSw,0) || g_eeGeneral.lightAutoOff)
           BACKLIGHT_ON;
         else
@@ -2142,6 +2144,14 @@ int main(void)
 
 #ifdef NMEA
   NMEA_Init();
+#endif
+
+#ifdef MAVLINK
+  MAVLINK_Init();
+#endif
+
+#ifdef MENU_ROTARY_SW
+  init_rotary_sw();
 #endif
 
   eeReadAll();

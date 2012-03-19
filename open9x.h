@@ -79,27 +79,6 @@ typedef const int8_t pm_int8_t;
 #define printf printf_not_allowed
 #endif
 
-#ifdef JETI
-// Jeti-DUPLEX Telemetry
-extern uint16_t jeti_keys;
-#include "jeti.h"
-#endif
-
-#if defined (FRSKY)
-// FrSky Telemetry
-#include "frsky.h"
-#endif
-
-#ifdef ARDUPILOT
-// ArduPilot Telemetry
-#include "ardupilot.h"
-#endif
-
-#ifdef NMEA
-// NMEA Telemetry
-#include "nmea.h"
-#endif
-
 extern RlcFile theFile;  //used for any file operation
 
 // G: The following comments relate to the original stock PCB only
@@ -354,9 +333,17 @@ enum EnumKeys {
 #if defined(FRSKY_HUB)
 #define NUM_TELEMETRY      TELEM_CSW_MAX
 #elif defined(WS_HOW_HIGH)
-#define NUM_TELEMETRY      3
+#define NUM_TELEMETRY      3 // TODO timers
 #elif defined(FRSKY)
-#define NUM_TELEMETRY      2
+#define NUM_TELEMETRY      2 // TODO timers
+#elif defined(MAVLINK)
+// Number sw position
+#define NUM_TELEMETRY      4
+#define ROTARY_SW_CHANNEL "UP  DOWN"
+// Channel number for rotary switch
+//#define MIX_SW_ROLL_CHAN (CSW_CHOUT_BASE+NUM_CHNOUT+NUM_VIRTUAL) // GVA:Rotary switch
+#define MIX_INC_ROTARY_SW (CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1)
+#define MIX_DEC_ROTARY_SW (CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1)
 #else
 #define NUM_TELEMETRY      0
 #endif
@@ -693,6 +680,33 @@ extern char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE]; // text buffer for frs
 #if defined (PCBV4)
 // Global rotary encoder registers -- 8-bit, 0-255
 extern volatile uint8_t g_rotenc[2];
+#endif
+
+#ifdef JETI
+// Jeti-DUPLEX Telemetry
+extern uint16_t jeti_keys;
+#include "jeti.h"
+#endif
+
+#if defined (FRSKY)
+// FrSky Telemetry
+#include "frsky.h"
+#endif
+
+#ifdef ARDUPILOT
+// ArduPilot Telemetry
+#include "ardupilot.h"
+#endif
+
+#ifdef NMEA
+// NMEA Telemetry
+#include "nmea.h"
+#endif
+
+#ifdef MAVLINK
+// Mavlink Telemetry
+#include "rotarysw.h"
+#include "mavlink.h"
 #endif
 
 #if defined(AUDIO)

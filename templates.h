@@ -89,7 +89,7 @@ void applyTemplate(uint8_t idx);
 #ifdef TEMPLATES
 inline void applyDefaultTemplate()
 {
-  applyTemplate(0);
+  applyTemplate(TMPL_SIMPLE_4CH);
 }
 #endif
 
