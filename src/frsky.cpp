@@ -968,7 +968,7 @@ void menuProcFrsky(uint8_t event)
           int16_t barMin = convertTelemValue(source, bmin);
           int16_t barMax = convertTelemValue(source, bmax);
           if (threshold) {
-            thresholdX = (uint8_t)((int32_t)100 * (threshold - barMin) / (barMax - barMin));
+            thresholdX = (uint8_t)(((int32_t)(threshold - barMin) * (int32_t)100) / (barMax - barMin));
             if (thresholdX > 100)
               thresholdX = 0;
           }
