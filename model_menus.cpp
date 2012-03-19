@@ -1678,16 +1678,16 @@ void menuProcCustomSwitches(uint8_t event)
     lcd_putsiAtt(4*FW - 1, y, STR_VCSWFUNC, cs.func, m_posHorz==0 ? attr : 0);
 
     uint8_t cstate = CS_STATE(cs.func);
-    int8_t v1_min=0, v1_max=NUM_XCHNCSW-MAX_TIMERS/*TODO why*/, v2_min=0, v2_max=NUM_XCHNCSW;
+    int8_t v1_min=0, v1_max=NUM_XCHNCSW, v2_min=0, v2_max=NUM_XCHNCSW;
 
     if (cstate == CS_VOFS)
     {
         putsChnRaw(12*FW-2, y, cs.v1, (m_posHorz==1 ? attr : 0));
 
 #if defined(FRSKY)
-        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY-MAX_TIMERS) {
-          putsTelemetryChannel(20*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY-MAX_TIMERS+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY-MAX_TIMERS), 128+cs.v2), m_posHorz==2 ? attr : 0);
-          v2_min = -128; v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY-MAX_TIMERS)) - 128;
+        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+          putsTelemetryChannel(20*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), m_posHorz==2 ? attr : 0);
+          v2_min = -128; v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
           if (cs.v2 > v2_max) {
             cs.v2 = v2_max;
             eeDirty(EE_MODEL);
@@ -2030,7 +2030,7 @@ void menuProcTelemetry(uint8_t event)
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
           case 0:
-            CHECK_INCDEC_MODELVAR(event, barSource, 0, TELEM_BAR_MAX);
+            CHECK_INCDEC_MODELVAR(event, barSource, 0, g_model.frsky.usrProto ? TELEM_BAR_MAX : TELEM_NOUSR_BAR_MAX);
             if (checkIncDec_Ret) {
               g_model.frsky.bars[j].source = barSource;
               g_model.frsky.bars[j].barMin = 0;

@@ -333,9 +333,9 @@ enum EnumKeys {
 #if defined(FRSKY_HUB)
 #define NUM_TELEMETRY      TELEM_CSW_MAX
 #elif defined(WS_HOW_HIGH)
-#define NUM_TELEMETRY      3 // TODO timers
+#define NUM_TELEMETRY      TELEM_ALT
 #elif defined(FRSKY)
-#define NUM_TELEMETRY      2 // TODO timers
+#define NUM_TELEMETRY      TELEM_RSSI_RX
 #elif defined(MAVLINK)
 // Number sw position
 #define NUM_TELEMETRY      4
@@ -345,11 +345,11 @@ enum EnumKeys {
 #define MIX_INC_ROTARY_SW (CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1)
 #define MIX_DEC_ROTARY_SW (CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1)
 #else
-#define NUM_TELEMETRY      0
+#define NUM_TELEMETRY      TELEM_TM2
 #endif
 
 #define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+1/*MAX*/+1/*ID3*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT)
-#define NUM_XCHNCSW (NUM_XCHNRAW+MAX_TIMERS+NUM_TELEMETRY)
+#define NUM_XCHNCSW (NUM_XCHNRAW+NUM_TELEMETRY)
 #define NUM_XCHNMIX (NUM_XCHNRAW+MAX_SWITCH)
 
 #define DSW_THR  1
