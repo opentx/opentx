@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os, sys, shutil
-from subprocess import call
+import subprocess
 
 options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"), ("ardupilot", "EXT=ARDUPILOT"), ("nmea", "EXT=NMEA")],
                  [("", "HELI=NO"), ("heli", "HELI=YES")],
@@ -25,12 +25,17 @@ languages = ["en", "fr", "se"]
 def generate(hex, arg, options):
     result = []
     states = [0] * len(options)
-    index = 0
+    
+    count = len(languages)
+    for option in options:
+      count *= len(option)
+    current = 0
     
     while 1:
         # print index, states
     
         for language in languages:
+            current += 1
             hex_file = hex
             make_args = ["make", arg]
             for i, option in enumerate(options):
@@ -40,11 +45,34 @@ def generate(hex, arg, options):
                 make_args.append(option[state][1])
             hex_file += "-" + language
             make_args.append("TRANSLATIONS=" + language.upper())
-            print hex_file
-            call(["make", "clean"])
-            call(make_args)
-            shutil.copyfile("open9x.hex", "../binaries/" + hex_file + ".hex")
-            result.append(hex_file)
+            print "[%d/%d]" % (current, count), hex_file
+            subprocess.check_output(["make", "clean"])
+            p = subprocess.Popen(make_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p.wait()
+            stderr = p.stderr.read()
+            if "error" in stderr:
+                print stderr
+                exit()
+            for line in stderr.split("\n"):
+                if "warning" in line:
+                    print "  ", line
+            size = 0
+            for line in p.stdout.readlines():
+                if line.startswith("Program:"):
+                    parts = line.split(" ")
+                    while "" in parts:
+                        parts.remove("")
+                    size = int(parts[1])
+                    if size > 65530:
+                        print "  ", line[:-1], "[NOT RELEASED]"
+                    else:
+                        print "  ", line,
+                if line.startswith("Data:"):
+                    print "  ", line,
+            
+            if size <= 65530:
+                shutil.copyfile("open9x.hex", "../binaries/" + hex_file + ".hex")
+                result.append(hex_file)
         
         for index, state in enumerate(states):
             if state < len(options[len(options) - 1 - index]) - 1:
@@ -71,4 +99,4 @@ hexes = generate("open9x-v4", "PCB=V4", options_v4)
 generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "EESIZE_V4")
 
 # stamp
-call(["make", "stamp"])
+subprocess.check_output(["make", "stamp"])
