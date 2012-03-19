@@ -950,8 +950,8 @@ void menuProcFrsky(uint8_t event)
         if (source && bmax > bmin) {
           lcd_putsiAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMCHNS, source, 0);
           lcd_rect(25, bars_height+6+i*(bars_height+6), 101, bars_height+2);
-          uint16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+source-1);
-          uint16_t threshold = 0;
+          int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+source-1);
+          int16_t threshold = 0;
           uint8_t thresholdX = 0;
           if (source <= TELEM_TM1)
             threshold = 0;
@@ -971,7 +971,7 @@ void menuProcFrsky(uint8_t event)
           uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)(((int16_t)100 * (value - barMin)) / (barMax - barMin)), (int16_t)100);
           lcd_filled_rect(26, bars_height+6+1+i*(bars_height+6), width, bars_height, (threshold > value) ? DOTTED : SOLID);
           for (uint8_t j=50; j<125; j+=25)
-            if (j>26+thresholdX) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
+            if (j>26+thresholdX || j>26+width) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
           if (thresholdX) {
             lcd_vlineStip(26+thresholdX, bars_height+4+i*(bars_height+6), bars_height+3, DOTTED);
             lcd_hline(25+thresholdX, bars_height+4+i*(bars_height+6), 3);
