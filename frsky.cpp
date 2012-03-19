@@ -721,6 +721,10 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
 {
   int16_t result;
   switch (channel) {
+    case TELEM_TM1:
+    case TELEM_TM2:
+      result = value * 3;
+      break;
     case TELEM_ALT:
       result = value * 4;
       break;
@@ -964,11 +968,11 @@ void menuProcFrsky(uint8_t event)
           int16_t barMin = convertTelemValue(source, bmin);
           int16_t barMax = convertTelemValue(source, bmax);
           if (threshold) {
-            thresholdX = (uint8_t)(int16_t)((int16_t)100 * (threshold - barMin) / (barMax - barMin));
+            thresholdX = (uint8_t)((int32_t)100 * (threshold - barMin) / (barMax - barMin));
             if (thresholdX > 100)
               thresholdX = 0;
           }
-          uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)(((int16_t)100 * (value - barMin)) / (barMax - barMin)), (int16_t)100);
+          uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)(((int32_t)100 * (value - barMin)) / (barMax - barMin)), (int16_t)100);
           lcd_filled_rect(26, bars_height+6+1+i*(bars_height+6), width, bars_height, (threshold > value) ? DOTTED : SOLID);
           for (uint8_t j=50; j<125; j+=25)
             if (j>26+thresholdX || j>26+width) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
