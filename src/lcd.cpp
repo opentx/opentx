@@ -432,7 +432,7 @@ void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t pat, uin
 
 void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
 {
-  if (att & LEFT) x+=2*FW;
+  if (att & LEFT) x+=3*FW;
 
   if (tme<0) {
     lcd_putcAtt(x - ((att & DBLSIZE) ? FW+1 : FWNUM), y, '-', att);
