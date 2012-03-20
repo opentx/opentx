@@ -473,7 +473,7 @@ void per10ms()
 #if defined(AUDIO)
     uint8_t warble = 0;
 #endif
-    int8_t verticalSpeed = limit((int16_t)-100, frskyHubData.varioSpeed, (int16_t)+100);
+    int8_t verticalSpeed = limit((int16_t)-100, frskyHubData.varioSpeed/10, (int16_t)+100);
 
     uint16_t interval;
     if (verticalSpeed == 0) {
