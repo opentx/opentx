@@ -758,7 +758,7 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
 
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
 {
-  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att); // TODO we could add this test inside lcd_outdezAtt!
+  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT)); // TODO we could add this test inside lcd_outdezAtt!
   if (~att & NO_UNIT && unit != UNIT_RAW)
     lcd_putsiAtt(lcd_lastPos+1, y, STR_VTELEMUNIT, unit, 0);
 }
