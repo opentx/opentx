@@ -125,7 +125,7 @@ REMOVEDIR = rm -rf
 COPY = cp
 WINSHELL = cmd
 
-XBM2LBM = ruby ../util/xbm2lbm.rb
+IMG2LBM = python ../util/img2lbm.py
 AREV = $(shell sh -c "cat .svn/entries | sed -n '4p'")
 REV = $(shell echo $$(( $(AREV) + 1 )))
 
@@ -593,24 +593,24 @@ stamp:
 font.lbm: font_6x1.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(XBM2LBM) yes $<
-	$(XBM2LBM) no translations/font_se.xbm
+	$(IMG2LBM) $< $@ char
+	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm char
 
 font_dblsize.lbm: font_dblsize.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(XBM2LBM) yes $<
-	$(XBM2LBM) no translations/font_dblsize_se.xbm
+	$(IMG2LBM) $< $@ dblsize
+	$(IMG2LBM) translations/font_dblsize_se.xbm translations/font_dblsize_se.lbm dblsize
 
 sticks.lbm: sticks_4x1.xbm
 	@echo
-	@echo "Convert font from xbm to lbm:"
-	$(XBM2LBM) yes $<
+	@echo "Convert sticks from xbm to lbm:"
+	$(IMG2LBM) $< $@ img 4
 
 s9xsplash.lbm: s9xsplash.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(XBM2LBM) yes $<
+	$(IMG2LBM) $< $@ img
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
