@@ -290,6 +290,7 @@ enum TelemetrySource {
   TELEM_ACCy,
   TELEM_ACCz,
   TELEM_HDG,
+  TELEM_VSPD,
   TELEM_MIN_A1,
   TELEM_MIN_A2,
   TELEM_MIN_ALT,
