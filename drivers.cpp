@@ -473,7 +473,7 @@ void per10ms()
 #if defined(AUDIO)
     uint8_t warble = 0;
 #endif
-    int8_t verticalSpeed = frskyHubData.baroAltitude_bp; // TODO to be modified of course!!
+    int8_t verticalSpeed = limit((int16_t)-100, frskyHubData.varioSpeed, (int16_t)+100);
 
     uint16_t interval;
     if (verticalSpeed == 0) {
@@ -484,8 +484,7 @@ void per10ms()
         verticalSpeed = -verticalSpeed;
         warble = 1;
       }
-      if (verticalSpeed > 100) verticalSpeed = 100;
-      interval = (uint16_t)200 / verticalSpeed;
+      interval = (uint8_t)200 / verticalSpeed;
     }
     if (g_tmr10ms - s_varioTmr > interval) {
       s_varioTmr = g_tmr10ms;

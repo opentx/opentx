@@ -323,5 +323,5 @@ void menuMainView(uint8_t event)
   }
 #endif
 
-  theFile.DisplayProgressBar(20*FW+1);
+  DISPLAY_PROGRESS_BAR(20*FW+1);
 }

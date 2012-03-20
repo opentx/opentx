@@ -525,16 +525,29 @@ void clearKeyEvents()
     putEvent(0);
 }
 
+#define INAC_DEVISOR 256   // Bypass splash screen with stick movement
+uint16_t stickMoveValue()
+{
+  uint16_t sum = 0;
+  for (uint8_t i=0; i<4; i++)
+    sum += anaIn(i)/INAC_DEVISOR;
+  return sum;
+}
+
+void checkBacklight()
+{
+  if (getSwitch(g_eeGeneral.lightSw, 0) || g_eeGeneral.lightAutoOff)
+    BACKLIGHT_ON;
+  else
+    BACKLIGHT_OFF;
+}
+
 #ifdef SPLASH
 void doSplash()
 {
     if(!g_eeGeneral.disableSplashScreen)
     {
-      if(getSwitch(g_eeGeneral.lightSw,0) || g_eeGeneral.lightAutoOff)
-        BACKLIGHT_ON;
-      else
-        BACKLIGHT_OFF;
-
+      checkBacklight() ;
       lcd_clear();
       lcd_img(0, 0, s9xsplash,0,0);
       refreshDisplay();
@@ -546,14 +559,10 @@ void doSplash()
         getADC_filt(); // init ADC array
 #endif
 
-#define INAC_DEVISOR 256   // Bypass splash screen with stick movement
-      uint16_t inacSum = 0;
-      // TODO uint16_t inacSum = stickMoveValue();
-      for(uint8_t i=0; i<4; i++)
-        inacSum += anaIn(i)/INAC_DEVISOR;
+      uint16_t inacSum = stickMoveValue();
 
       uint16_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;  //2sec splash screen
-      while(tgtime != get_tmr10ms())
+      while (tgtime != get_tmr10ms())
       {
 #ifdef SIMU
         if (!main_thread_running) return;
@@ -561,17 +570,11 @@ void doSplash()
 #else
         getADC_filt();
 #endif
-        uint16_t tsum = 0;
-        for(uint8_t i=0; i<4; i++)
-          tsum += anaIn(i)/INAC_DEVISOR;
+        uint16_t tsum = stickMoveValue();
 
         if(keyDown() || (tsum!=inacSum))   return;  //wait for key release
 
-        // TODO check_backlight() ;
-        if(getSwitch(g_eeGeneral.lightSw,0) || g_eeGeneral.lightAutoOff)
-          BACKLIGHT_ON;
-        else
-          BACKLIGHT_OFF;
+        checkBacklight();
       }
     }
 }
@@ -635,10 +638,7 @@ void checkTHR()
         return;
       }
 
-      if(getSwitch(g_eeGeneral.lightSw,0) || g_eeGeneral.lightAutoOff)
-          BACKLIGHT_ON;
-      else
-          BACKLIGHT_OFF;
+      checkBacklight();
   }
 }
 
@@ -673,10 +673,7 @@ void checkSwitches()
     }
     if(i==SW_Trainer || keyDown()) return;
 
-    if(getSwitch(g_eeGeneral.lightSw,0) || g_eeGeneral.lightAutoOff)
-      BACKLIGHT_ON;
-    else
-      BACKLIGHT_OFF;
+    checkBacklight();
   }
 }
 
@@ -707,10 +704,10 @@ void alert(const pm_char * s, bool defaults)
 #endif
     if(keyDown())   return;  //wait for key release
 
-    if(getSwitch(g_eeGeneral.lightSw,0) || g_eeGeneral.lightAutoOff || defaults)
-        BACKLIGHT_ON;
-      else
-        BACKLIGHT_OFF;
+    if (getSwitch(g_eeGeneral.lightSw,0) || g_eeGeneral.lightAutoOff || defaults)
+      BACKLIGHT_ON;
+    else
+      BACKLIGHT_OFF;
 
     wdt_reset();
   }
@@ -1269,10 +1266,12 @@ void perOut(uint8_t phase)
       v = getValue(k <= MIXSRC_3POS ? k : k-MAX_SWITCH);
 
     //========== DELAYS ===============
+    uint8_t swTog;
     if (sw) { // switch on?  (if no switch selected => on)
+      swTog = !swOn[i];
+      swOn[i] = true;
       if (md->delayUp) {
-        if (!swOn[i]) {
-          swOn[i] = true;
+        if (swTog) {
           sDelay[i] = md->delayUp * 100;
         }
         if (sDelay[i]) { // perform delay
@@ -1285,15 +1284,15 @@ void perOut(uint8_t phase)
           }
         }
       }
-      swOn[i] = true;  // TODO optim
       if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
     }
     else {
       bool has_delay = false;
+      swTog = swOn[i];
+      swOn[i] = false;
       if (md->delayDown) {
-        if (swOn[i]) {
+        if (swTog) {
           sDelay[i] = md->delayDown * 100;
-          swOn[i] = false;
         }
         if (sDelay[i]) { // perform delay
           if(tick10ms) sDelay[i]--;
@@ -1304,7 +1303,6 @@ void perOut(uint8_t phase)
           v = -1024;
         }
       }
-      swOn[i] = false;
       if (!has_delay) {
         if (md->speedDown) {
           if (md->mltpx==MLTPX_REP) continue;
@@ -1721,10 +1719,7 @@ void perMain()
   if(g_LightOffCounter) g_LightOffCounter--;
   if(evt) g_LightOffCounter = g_eeGeneral.lightAutoOff*500; // on keypress turn the light on 5*100
 
-  if( getSwitch(g_eeGeneral.lightSw,0) || g_LightOffCounter)
-    BACKLIGHT_ON;
-  else
-    BACKLIGHT_OFF;
+  checkBacklight();
 
   g_menuStack[g_menuStackPtr](evt);
   refreshDisplay();

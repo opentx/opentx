@@ -50,14 +50,21 @@ void generalDefault()
   g_eeGeneral.chkSum = (0x200 * 7) + (0x180 * 5);
 }
 
+uint16_t evalChkSum()
+{
+  uint16_t sum=0;
+  for (int i=0; i<12;i++)
+    sum += g_eeGeneral.calibMid[i];
+  return sum;
+}
+
 bool eeLoadGeneral()
 {
   theFile.openRlc(FILE_GENERAL);
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.myVers == EEPROM_VER) {
     theFile.openRlc(FILE_GENERAL); // TODO include this openRlc inside readRlc
     if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral)) {
-      uint16_t sum=0;
-      for (int i=0; i<12;i++) sum += g_eeGeneral.calibMid[i];
+      uint16_t sum = evalChkSum();
       if (g_eeGeneral.chkSum == sum) {
         return true;
       }
