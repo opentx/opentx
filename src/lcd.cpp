@@ -33,8 +33,8 @@
 
 #include "open9x.h"
 
-#define font_5x8_x20_x7f (font+2)
-#define font_10x16_x20_x7f (font_dblsize+2)
+#define font_5x8_x20_x7f (font)
+#define font_10x16_x20_x7f (font_dblsize)
 
 uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 #define DISPLAY_END (displayBuf+sizeof(displayBuf))
@@ -90,30 +90,23 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
   {
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
-    q = &font_10x16_x20_x7f[((uint16_t)c-0x20)*10 + (((uint16_t)c-0x20)/16)*160];
-    for(char i=5; i>=0; i--) {
-      if (mode & CONDENSED && i==0) break;
-      uint8_t b1=0, b2=0, b3=0, b4=0;
-      if (i>0) {
-        b1 = pgm_read_byte(q); /*top byte*/
-        b3 = pgm_read_byte((uint16_t)160+q); /*bottom byte*/
-        b2 = pgm_read_byte(++q); /*top byte*/
-        b4 = pgm_read_byte((uint16_t)160+q); /*bottom byte*/
+    q = &font_10x16_x20_x7f[((uint16_t)c-0x20)*20];
+    for(char i=11; i>=0; i--) {
+      if (mode & CONDENSED && i<=1) break;
+      uint8_t b1=0, b2=0;
+      if (i>1) {
+        b1 = pgm_read_byte(q++); /*top byte*/
+        b2 = pgm_read_byte(q++); /*top byte*/
       }
       if(inv) {
         b1=~b1;
         b2=~b2;
-        b3=~b3;
-        b4=~b4;
       }   
       if(&p[DISPLAY_W+1] < DISPLAY_END) {
         p[0]=b1;
-        p[1]=b2;
-        p[DISPLAY_W] = b3; 
-        p[DISPLAY_W+1] = b4; 
-        p+=2;
+        p[DISPLAY_W] = b2;
+        p++;
       }   
-      q++;
     }   
   }
   else {
