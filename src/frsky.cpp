@@ -152,16 +152,6 @@ inline void getGpsDistance()
     frskyHubData.maxGpsDistance = frskyHubData.gpsDistance;
 }
 
-inline int8_t parseTelemHubIndex(uint8_t index)
-{
-  if (index > 0x39) {
-    if (index > 0x3b)
-      return -1; // invalid index
-    index -= 17;
-  }
-  return index*2;
-}
-
 typedef enum {
   TS_IDLE = 0,  // waiting for 0x5e frame marker
   TS_DATA_ID,   // waiting for dataID
@@ -192,10 +182,13 @@ void parseTelemHubByte(uint8_t byte)
     return;
   }
   if (state == TS_DATA_ID) {
-    structPos = parseTelemHubIndex(byte);
-    state = TS_DATA_LOW;
-    if (structPos < 0)
+    if (byte > 0x3b) {
       state = TS_IDLE;
+    }
+    else {
+      structPos = byte*2;
+      state = TS_DATA_LOW;
+    }
     return;
   }
   if (state == TS_DATA_LOW) {
@@ -257,6 +250,20 @@ void parseTelemHubByte(uint8_t byte)
       if (frskyHubData.baroAltitude_bp < frskyHubData.minAltitude)
         frskyHubData.minAltitude = frskyHubData.baroAltitude_bp;
       break;
+
+    case offsetof(FrskyHubData, baroAltitude_ap):
+    {
+      uint16_t actVario = frskyHubData.baroAltitude_bp - frskyHubData.lastBaroAltitude_bp;
+      actVario *= 100;
+      actVario += frskyHubData.baroAltitude_ap - frskyHubData.lastBaroAltitude_ap;
+      frskyHubData.varioSpeed = frskyHubData.varioSpeed - frskyHubData.varioQueue[frskyHubData.queuePointer] + actVario;
+      frskyHubData.varioQueue[frskyHubData.queuePointer] = actVario;
+      if (++frskyHubData.queuePointer > 4)
+        frskyHubData.queuePointer=0;
+      frskyHubData.lastBaroAltitude_bp = frskyHubData.baroAltitude_bp;
+      frskyHubData.lastBaroAltitude_ap = frskyHubData.baroAltitude_ap;
+      break;
+    }
 
     case offsetof(FrskyHubData, gpsAltitude_ap):
       if (!frskyHubData.gpsAltitudeOffset)

@@ -126,7 +126,9 @@ class RlcFile: public EFile
   uint8_t m_write1_byte;
   uint8_t m_write_len;
   uint8_t * m_write_buf;
+#if defined (EEPROM_PROGRESS_BAR)
   uint8_t m_ratio;
+#endif
 
 public:
 
@@ -160,8 +162,18 @@ public:
   uint16_t readRlc(uint8_t*buf, uint16_t i_len); // TODO should be like writeRlc?
 #endif
 
+#if defined (EEPROM_PROGRESS_BAR)
   void DisplayProgressBar(uint8_t x);
+#endif
 };
+
+#if defined (EEPROM_PROGRESS_BAR)
+#define DISPLAY_PROGRESS_BAR(x) theFile.DisplayProgressBar(x)
+#else
+#define DISPLAY_PROGRESS_BAR(x)
+#endif
+
+uint16_t evalChkSum();
 
 #endif
 /*eof*/

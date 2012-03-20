@@ -118,7 +118,7 @@ void menuProcSetup(uint8_t event)
 
   MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0, AUDIO_ZEROS HAPTIC_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
-  int8_t  sub    = m_posVert;
+  int8_t  sub = m_posVert;
   uint8_t y = 1*FH;
 
   uint8_t subN = 1;
@@ -663,10 +663,7 @@ void menuProcDiagCalib(uint8_t event)
         }
       }
 
-      int16_t sum = 0;
-      for (uint8_t i=0; i<12; i++)
-        sum += g_eeGeneral.calibMid[i];
-      g_eeGeneral.chkSum = sum;
+      g_eeGeneral.chkSum = evalChkSum();
       break;
   }
 

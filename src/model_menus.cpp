@@ -378,7 +378,7 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
          STORE_MODELVARS;
       }
 
-      switch(event) {
+      switch (event) {
         case EVT_KEY_BREAK(KEY_LEFT):
           if (next>0) next--;
           break;
@@ -395,12 +395,13 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 #endif
         case EVT_KEY_LONG(KEY_LEFT):
         case EVT_KEY_LONG(KEY_RIGHT):
-        if (v>=-26 && v<=26) {
-          v = -v; // toggle case
-          STORE_MODELVARS; // TODO optim if (c!=v) at the end
-          if (event==EVT_KEY_LONG(KEY_LEFT))
-            killEvents(KEY_LEFT);
-        }
+          if (v>=-26 && v<=26) {
+            v = -v; // toggle case
+            STORE_MODELVARS; // TODO optim if (c!=v) at the end
+            if (event==EVT_KEY_LONG(KEY_LEFT))
+              killEvents(KEY_LEFT);
+          }
+          break;
       }
 
       name[cur] = v;
@@ -418,7 +419,9 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 void menuProcModel(uint8_t event)
 {
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, (g_model.protocol==PROTO_PPM||g_model.protocol==PROTO_FAAST||g_model.protocol==PROTO_DSM2||g_model.protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,6,2,1});
+
+  uint8_t protocol = g_model.protocol;
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, (protocol==PROTO_PPM||protocol==PROTO_FAAST||protocol==PROTO_DSM2||protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,6,2,1});
 
   uint8_t  sub = m_posVert;
   uint8_t y = 1*FH;
@@ -428,7 +431,7 @@ void menuProcModel(uint8_t event)
     lcd_puts(0*FW, y, STR_NAME);
     EditName(PARAM_OFS, y, g_model.name, sizeof(g_model.name), event, sub==subN, m_posHorz);
     if((y+=FH)>7*FH) return;
-  }subN++;
+  } subN++;
 
   for (uint8_t i=0; i<2; i++) {
     TimerData *timer = &g_model.timers[i];
@@ -521,21 +524,17 @@ void menuProcModel(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_PROTO);
-    lcd_putsiAtt(PARAM_OFS, y, STR_VPROTOS, g_model.protocol,
+    lcd_putsiAtt(PARAM_OFS, y, STR_VPROTOS, protocol,
                   (sub==subN && m_posHorz==0 ? (s_editMode>0 ? BLINK|INVERS : INVERS):0));
-    if (g_model.protocol == PROTO_PPM || g_model.protocol == PROTO_FAAST) {
+    if (protocol == PROTO_PPM || protocol == PROTO_FAAST) {
       lcd_putsiAtt(PARAM_OFS+4*FW, y, STR_NCHANNELS, g_model.ppmNCH+2, (sub==subN && m_posHorz==1) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       lcd_puts(PARAM_OFS+11*FW, y, PSTR("u"));
       lcd_outdezAtt(PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, ((sub==subN && m_posHorz==2) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0));
     }
 #ifdef DSM2
-    // TODO optimize that?
-    else if (g_model.protocol == PROTO_DSM2) {
+    else if (protocol == PROTO_DSM2) {
       if (m_posHorz > 1) m_posHorz = 1;
-      int8_t x;
-      x = g_model.ppmNCH;
-      if ( x < 0 ) x = 0;
-      if ( x > 2 ) x = 2;
+      int8_t x = limit((int8_t)0, (int8_t)g_model.ppmNCH, (int8_t)2);
       g_model.ppmNCH = x;
       lcd_putsiAtt(PARAM_OFS+5*FW, y, STR_DSM2MODE, x, (sub==subN && m_posHorz==1) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     }
@@ -543,14 +542,14 @@ void menuProcModel(uint8_t event)
     else if (sub==subN) {
       m_posHorz = 0;
     }
-    if (sub==subN && (s_editMode>0 || p1valdiff || (g_model.protocol!=PROTO_PPM && g_model.protocol!=PROTO_FAAST && g_model.protocol!=PROTO_DSM2))) { // TODO avoid DSM2 when not defined
+    if (sub==subN && (s_editMode>0 || p1valdiff || (protocol!=PROTO_PPM && protocol!=PROTO_FAAST && protocol!=PROTO_DSM2))) { // TODO avoid DSM2 when not defined
       switch (m_posHorz) {
         case 0:
-            CHECK_INCDEC_MODELVAR(event,g_model.protocol,0,PROTO_MAX-1);
+            CHECK_INCDEC_MODELVAR(event, g_model.protocol,0, PROTO_MAX-1);
             break;
         case 1:
 #ifdef DSM2
-            if (g_model.protocol == PROTO_DSM2)
+            if (protocol == PROTO_DSM2)
               CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, 0, 2);
             else
 #endif
@@ -565,7 +564,7 @@ void menuProcModel(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    if (g_model.protocol == PROTO_PPM || g_model.protocol == PROTO_FAAST) {
+    if (protocol == PROTO_PPM || protocol == PROTO_FAAST) {
       lcd_putsLeft( y, STR_PPMFRAME);
       lcd_puts(PARAM_OFS+3*FW, y, STR_MS);
       lcd_outdezAtt(PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((sub==subN && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | PREC1|LEFT);
@@ -576,16 +575,16 @@ void menuProcModel(uint8_t event)
             CHECK_INCDEC_MODELVAR(event, g_model.ppmFrameLength, -20, 20);
             break;
           case 1:
-            CHECK_INCDEC_MODELVAR(event,g_model.pulsePol,0,1);
+            CHECK_INCDEC_MODELVAR(event, g_model.pulsePol, 0, 1);
             break;
         }
       }
     }
     // TODO port PPM16 ppmDelay from er9x
 #if defined(DSM2) || defined(PXX)
-    else if (g_model.protocol == PROTO_DSM2 || g_model.protocol == PROTO_PXX) {
+    else if (protocol == PROTO_DSM2 || protocol == PROTO_PXX) {
       lcd_putsLeft( y, STR_RXNUM);
-      lcd_outdezNAtt(PARAM_OFS-(g_model.protocol==PROTO_DSM2 ? 0 : 3*FW), y, g_model.modelId, ((sub==subN && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | LEADING0|LEFT, 2);
+      lcd_outdezNAtt(PARAM_OFS-(protocol==PROTO_DSM2 ? 0 : 3*FW), y, g_model.modelId, ((sub==subN && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | LEADING0|LEFT, 2);
 
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {
@@ -596,7 +595,7 @@ void menuProcModel(uint8_t event)
       }
 
 #if defined(PXX)
-      if (g_model.protocol == PROTO_PXX) {
+      if (protocol == PROTO_PXX) {
         lcd_putsAtt(PARAM_OFS, y, STR_SYNCMENU, ((sub==subN && m_posHorz==1) ? INVERS : 0));
         if (sub==subN && m_posHorz==1) {
           s_editMode = false;
@@ -829,7 +828,7 @@ void menuProcCurveOne(uint8_t event)
 
   TITLE(STR_MENUCURVE);
   lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
-  theFile.DisplayProgressBar(20*FW+1);
+  DISPLAY_PROGRESS_BAR(20*FW+1);
 
   if (s_curveChan >= MAX_CURVE5) {
     points = 9;
