@@ -652,3 +652,103 @@ inline void board_init()
 
   init_spi() ;
 }
+
+inline uint8_t keyDown()
+{
+  return ~read_keys() & 0x7E ;
+}
+
+extern uint32_t keyState(EnumKeys enuk)
+{
+  CPU_UINT xxx = 0 ;
+  if(enuk < (int)DIM(keys))  return keys[enuk].state() ? 1 : 0;
+
+  switch((uint8_t)enuk)
+        {
+#ifdef REVB
+    case SW_ElevDR : xxx = PIOC->PIO_PDSR & 0x80000000 ;        // ELE_DR   PC31
+#else
+    case SW_ElevDR : xxx = PIOA->PIO_PDSR & 0x00000100 ;        // ELE_DR   PA8
+#endif
+    break ;
+
+    case SW_AileDR : xxx = PIOA->PIO_PDSR & 0x00000004 ;        // AIL-DR  PA2
+    break ;
+
+    case SW_RuddDR : xxx = PIOA->PIO_PDSR & 0x00008000 ;        // RUN_DR   PA15
+    break ;
+      //     INP_G_ID1 INP_E_ID2
+      // id0    0        1
+      // id1    1        1
+      // id2    1        0
+    case SW_ID0    : xxx = ~PIOC->PIO_PDSR & 0x00004000 ;       // SW_IDL1     PC14
+    break ;
+    case SW_ID1    : xxx = (PIOC->PIO_PDSR & 0x00004000) ; if ( xxx ) xxx = (PIOC->PIO_PDSR & 0x00000800);
+    break ;
+    case SW_ID2    : xxx = ~PIOC->PIO_PDSR & 0x00000800 ;       // SW_IDL2     PC11
+    break ;
+
+
+                case SW_Gear   : xxx = PIOC->PIO_PDSR & 0x00010000 ;    // SW_GEAR     PC16
+    break ;
+
+#ifdef REVB
+    case SW_ThrCt  : xxx = PIOC->PIO_PDSR & 0x00100000 ;        // SW_TCUT     PC20
+#else
+    case SW_ThrCt  : xxx = PIOA->PIO_PDSR & 0x10000000 ;        // SW_TCUT     PA28
+#endif
+    break ;
+
+    case SW_Trainer: xxx = PIOC->PIO_PDSR & 0x00000100 ;        // SW-TRAIN    PC8
+    break ;
+    default:;
+  }
+
+  if ( xxx )
+  {
+    return 1 ;
+  }
+  return 0;
+}
+
+uint16_t Analog_values[NUMBER_ANALOG] ;
+
+// Read 8 (9 for REVB) ADC channels
+// Documented bug, must do them 1 by 1
+void read_9_adc()
+{
+  register Adc *padc;
+  register uint32_t y;
+  register uint32_t x;
+
+//      PMC->PMC_PCER0 |= 0x20000000L ;         // Enable peripheral clock to ADC
+
+  padc = ADC;
+  y = padc->ADC_ISR; // Clear EOC flags
+  for (y = NUMBER_ANALOG; --y > 0;) {
+    padc->ADC_CR = 2; // Start conversion
+    x = 0;
+    while ((padc->ADC_ISR & 0x01000000) == 0) {
+      // wait for DRDY flag
+      if (++x > 1000000) {
+        break; // Software timeout
+      }
+    }
+    x = padc->ADC_LCDR; // Clear DRSY flag
+  }
+  // Next bit may be done using the PDC
+  Analog_values[0] = ADC->ADC_CDR1;
+  Analog_values[1] = ADC->ADC_CDR2;
+  Analog_values[2] = ADC->ADC_CDR3;
+  Analog_values[3] = ADC->ADC_CDR4;
+  Analog_values[4] = ADC->ADC_CDR5;
+  Analog_values[5] = ADC->ADC_CDR9;
+  Analog_values[6] = ADC->ADC_CDR13;
+  Analog_values[7] = ADC->ADC_CDR14;
+#ifdef REVB
+  Analog_values[8] = ADC->ADC_CDR8 ;
+#endif
+
+// Power save
+//  PMC->PMC_PCER0 &= ~0x20000000L ;            // Disable peripheral clock to ADC
+}

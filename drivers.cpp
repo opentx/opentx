@@ -105,32 +105,6 @@ uint8_t getEvent()
   return evt;
 }
 
-class Key
-{
-#define FILTERBITS      4
-#ifdef SIMU
-#define FFVAL 1
-#else
-#define FFVAL          ((1<<FILTERBITS)-1)
-#endif
-#define KSTATE_OFF      0
-#define KSTATE_RPTDELAY 95 // gruvin: delay state before key repeating starts
-//#define KSTATE_SHORT   96
-#define KSTATE_START    97
-#define KSTATE_PAUSE    98
-#define KSTATE_KILLED   99
-  uint8_t m_vals:FILTERBITS;   // key debounce?  4 = 40ms
-  uint8_t m_dblcnt:2;
-  uint8_t m_cnt;
-  uint8_t m_state;
-public:
-  void input(bool val, EnumKeys enuk);
-  bool state()       { return m_vals==FFVAL;                }
-  void pauseEvents() { m_state = KSTATE_PAUSE;  m_cnt   = 0;}
-  void killEvents()  { m_state = KSTATE_KILLED; m_dblcnt=0; }
-  uint8_t getDbl()   { return m_dblcnt;                     }
-};
-
 Key keys[NUM_KEYS];
 void Key::input(bool val, EnumKeys enuk)
 {
@@ -199,121 +173,6 @@ void Key::input(bool val, EnumKeys enuk)
   }
 }
 
-bool keyState(EnumKeys enuk)
-{
-  uint8_t result = 0 ;
-
-  if (enuk < (int)DIM(keys))
-    return keys[enuk].state() ? 1 : 0;
-
-#if defined (PCBV4)
-  switch(enuk){
-    case SW_ElevDR:
-      result = PINC & (1<<INP_C_ElevDR);
-      break;
-    
-    case SW_AileDR:
-      result = PINC & (1<<INP_C_AileDR);
-      break;
-
-    case SW_RuddDR:
-      result = PING & (1<<INP_G_RuddDR);
-      break;
-      //     INP_G_ID1 INP_B_ID2
-      // id0    0        1
-      // id1    1        1
-      // id2    1        0
-    case SW_ID0:
-      result = !(PING & (1<<INP_G_ID1));
-      break;
-
-    case SW_ID1:
-      result = (PING & (1<<INP_G_ID1))&& (PINB & (1<<INP_B_ID2));
-      break;
-
-    case SW_ID2:
-      result = !(PINB & (1<<INP_B_ID2));
-      break;
-
-    case SW_Gear:
-      result = PING & (1<<INP_G_Gear);
-      break;
-
-    case SW_ThrCt:
-      result = PING & (1<<INP_G_ThrCt);
-      break;
-
-    case SW_Trainer:
-      result = PINB & (1<<INP_B_Trainer);
-      break;
-
-    default:
-      break;
-  }
-#else
-  switch(enuk){
-    case SW_ElevDR:
-      result = PINE & (1<<INP_E_ElevDR);
-      break;
-
-#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
-    case SW_AileDR:
-      result = PINC & (1<<INP_C_AileDR); //shad974: rerouted inputs to free up UART0
-      break;
-#else
-    case SW_AileDR:
-      result = PINE & (1<<INP_E_AileDR);
-      break;
-#endif
-
-    case SW_RuddDR:
-      result = PING & (1<<INP_G_RuddDR);
-      break;
-      //     INP_G_ID1 INP_E_ID2
-      // id0    0        1
-      // id1    1        1
-      // id2    1        0
-    case SW_ID0:
-      result = !(PING & (1<<INP_G_ID1));
-      break;
-
-    case SW_ID1:
-      result = (PING & (1<<INP_G_ID1))&& (PINE & (1<<INP_E_ID2));
-      break;
-
-    case SW_ID2:
-      result = !(PINE & (1<<INP_E_ID2));
-      break;
-
-    case SW_Gear:
-      result = PINE & (1<<INP_E_Gear);
-      break;
-
-    //case SW_ThrCt  : return PINE & (1<<INP_E_ThrCt);
-
-#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
-    case SW_ThrCt:
-      result = PINC & (1<<INP_C_ThrCt); //shad974: rerouted inputs to free up UART0
-      break;
-
-#else
-    case SW_ThrCt:
-      result = PINE & (1<<INP_E_ThrCt);
-      break;
-#endif
-
-    case SW_Trainer:
-      result = PINE & (1<<INP_E_Trainer);
-      break;
-
-    default:
-      break;
-  }
-#endif // defined (PCBV4)
-
-  return result;
-}
-
 void pauseEvents(uint8_t event)
 {
   event=event & EVT_KEY_MASK;
@@ -338,8 +197,6 @@ void per10ms()
   g_tmr10ms++;
   g_blinkTmr10ms++;
 
-  uint8_t enuk = KEY_MENU;
-
 #if defined (PCBV4)
   /* Update gloabal Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100)
@@ -347,81 +204,9 @@ void per10ms()
     g_unixTime++; // inc global unix timestamp one second
     g_ms100 = 0;
   }
-
-  /* Original keys were connected to PORTB as follows:
-
-     Bit  Key
-      7   other use
-      6   LEFT
-      5   RIGHT
-      4   UP
-      3   DOWN
-      2   EXIT
-      1   MENU
-      0   other use
-  */
-
-  keys[BTN_RE1].input(~PIND & 0x20, BTN_RE1);
-  keys[BTN_RE2].input(~PIND & 0x10, BTN_RE2);
-
-  uint8_t tin = ~PINL;
-  uint8_t in;
-  in = (tin & 0x0f) << 3;
-  in |= (tin & 0x30) >> 3;
-
-#else
-  // User buttons ...
-  uint8_t in = ~PINB;
 #endif
 
-  for(int i=1; i<7; i++)
-  {
-    //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
-    keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
-    ++enuk;
-  }
-
-// End User buttons
-
-// Trim switches ...
-#if defined (PCBV4)
-  static const pm_uchar crossTrim[] PROGMEM ={
-    1<<INP_J_TRM_LH_DWN,
-    1<<INP_J_TRM_LH_UP,
-    1<<INP_J_TRM_LV_DWN,
-    1<<INP_J_TRM_LV_UP,
-    1<<INP_J_TRM_RV_DWN,
-    1<<INP_J_TRM_RV_UP,
-    1<<INP_J_TRM_RH_DWN,
-    1<<INP_J_TRM_RH_UP
-  };
-#else // stock original board ...
-  static const pm_uchar crossTrim[] PROGMEM ={
-    1<<INP_D_TRM_LH_DWN,  // bit 7
-    1<<INP_D_TRM_LH_UP,
-    1<<INP_D_TRM_LV_DWN,
-    1<<INP_D_TRM_LV_UP,
-    1<<INP_D_TRM_RV_DWN,
-    1<<INP_D_TRM_RV_UP,
-    1<<INP_D_TRM_RH_DWN,
-    1<<INP_D_TRM_RH_UP    // bit 0
-  };
-#endif
-
-#if defined (PCBV4)
-  in = ~PINJ;
-#else
-  in = ~PIND;
-#endif
-
-  for (int i=0; i<8; i++) {
-    // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
-    ++enuk;
-  }
-// End Trim Switches
-
-/**** END KEY STATE READ ****/
+  readKeysAndTrims();
 
 #ifdef MAVLINK
   check_mavlink() ;

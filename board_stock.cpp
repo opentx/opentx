@@ -65,3 +65,112 @@ inline void board_init()
   TIMSK |= (1<<OCIE0) |  (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
   /********************************/
 }
+
+FORCEINLINE uint8_t keyDown()
+{
+  return (~PINB) & 0x7E;
+}
+
+bool keyState(EnumKeys enuk)
+{
+  uint8_t result = 0 ;
+
+  if (enuk < (int)DIM(keys))
+    return keys[enuk].state() ? 1 : 0;
+
+  switch(enuk){
+    case SW_ElevDR:
+      result = PINE & (1<<INP_E_ElevDR);
+      break;
+
+#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
+    case SW_AileDR:
+      result = PINC & (1<<INP_C_AileDR); //shad974: rerouted inputs to free up UART0
+      break;
+#else
+    case SW_AileDR:
+      result = PINE & (1<<INP_E_AileDR);
+      break;
+#endif
+
+    case SW_RuddDR:
+      result = PING & (1<<INP_G_RuddDR);
+      break;
+      //     INP_G_ID1 INP_E_ID2
+      // id0    0        1
+      // id1    1        1
+      // id2    1        0
+    case SW_ID0:
+      result = !(PING & (1<<INP_G_ID1));
+      break;
+
+    case SW_ID1:
+      result = (PING & (1<<INP_G_ID1))&& (PINE & (1<<INP_E_ID2));
+      break;
+
+    case SW_ID2:
+      result = !(PINE & (1<<INP_E_ID2));
+      break;
+
+    case SW_Gear:
+      result = PINE & (1<<INP_E_Gear);
+      break;
+
+    //case SW_ThrCt  : return PINE & (1<<INP_E_ThrCt);
+
+#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
+    case SW_ThrCt:
+      result = PINC & (1<<INP_C_ThrCt); //shad974: rerouted inputs to free up UART0
+      break;
+
+#else
+    case SW_ThrCt:
+      result = PINE & (1<<INP_E_ThrCt);
+      break;
+#endif
+
+    case SW_Trainer:
+      result = PINE & (1<<INP_E_Trainer);
+      break;
+
+    default:
+      break;
+  }
+
+  return result;
+}
+
+inline void readKeysAndTrims()
+{
+  uint8_t enuk = KEY_MENU;
+
+  // User buttons ...
+  uint8_t in = ~PINB;
+
+  for(int i=1; i<7; i++)
+  {
+    //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
+    keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
+    ++enuk;
+  }
+
+  // Trim switches ...
+  static const pm_uchar crossTrim[] PROGMEM ={
+    1<<INP_D_TRM_LH_DWN,  // bit 7
+    1<<INP_D_TRM_LH_UP,
+    1<<INP_D_TRM_LV_DWN,
+    1<<INP_D_TRM_LV_UP,
+    1<<INP_D_TRM_RV_DWN,
+    1<<INP_D_TRM_RV_UP,
+    1<<INP_D_TRM_RH_DWN,
+    1<<INP_D_TRM_RH_UP    // bit 0
+  };
+
+  in = ~PIND;
+
+  for (int i=0; i<8; i++) {
+    // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
+    keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
+    ++enuk;
+  }
+}
