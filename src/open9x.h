@@ -56,6 +56,14 @@ typedef const uint8_t pm_uint8_t;
 typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 #define wdt_reset()
+#define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
+#define PSTR(adr) adr
+#define PROGMEM
+#define pgm_read_adr(x) *(x)
+#define cli()
+#define sei()
+#define wdt_enable(x)
+extern void board_init();
 #else
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -233,7 +241,11 @@ extern RlcFile theFile;  //used for any file operation
 
 #endif // defined (PCBV4)
 
+#if defined(PCBARM)
+#define SLAVE_MODE 1
+#else
 #define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
+#endif
 
 extern const pm_uint8_t bchout_ar[];
 extern const pm_uint8_t modn12x3[];
@@ -284,6 +296,34 @@ enum EnumKeys {
   NUM_KEYS = SW_ThrCt
 
 };
+
+class Key
+{
+#define FILTERBITS      4
+#ifdef SIMU
+#define FFVAL 1
+#else
+#define FFVAL          ((1<<FILTERBITS)-1)
+#endif
+#define KSTATE_OFF      0
+#define KSTATE_RPTDELAY 95 // gruvin: delay state before key repeating starts
+//#define KSTATE_SHORT   96
+#define KSTATE_START    97
+#define KSTATE_PAUSE    98
+#define KSTATE_KILLED   99
+  uint8_t m_vals:FILTERBITS;   // key debounce?  4 = 40ms
+  uint8_t m_dblcnt:2;
+  uint8_t m_cnt;
+  uint8_t m_state;
+public:
+  void input(bool val, EnumKeys enuk);
+  bool state()       { return m_vals==FFVAL;                }
+  void pauseEvents() { m_state = KSTATE_PAUSE;  m_cnt   = 0;}
+  void killEvents()  { m_state = KSTATE_KILLED; m_dblcnt=0; }
+  uint8_t getDbl()   { return m_dblcnt;                     }
+};
+
+extern Key keys[NUM_KEYS];
 
 #define CURVE_BASE 7
 
@@ -407,20 +447,14 @@ extern uint8_t pxxFlag;
 
 extern char idx2char(int8_t idx);
 
-/// stoppt alle events von dieser taste bis eine kurze Zeit abgelaufen ist
 void pauseEvents(uint8_t enuk);
-/// stoppt alle events von dieser taste bis diese wieder losgelassen wird
-void    killEvents(uint8_t enuk);
-/// liefert den Wert einer beliebigen Taste KEY_MENU..SW_Trainer
-bool    keyState(EnumKeys enuk);
-/// Liefert das naechste Tasten-Event, auch trim-Tasten.
-/// Das Ergebnis hat die Form:
-/// EVT_KEY_BREAK(key), EVT_KEY_FIRST(key), EVT_KEY_REPT(key) oder EVT_KEY_LONG(key)
+void killEvents(uint8_t enuk);
 uint8_t getEvent();
 void putEvent(uint8_t evt);
-#if defined (PCBV4)
-extern uint8_t keyDown();
-#endif
+
+uint8_t keyDown();
+bool keyState(EnumKeys enuk);
+void readKeysAndTrims();
 
 /// Gibt Alarm Maske auf lcd aus.
 /// Die Maske wird so lange angezeigt bis eine beliebige Taste gedrueckt wird.
@@ -493,8 +527,6 @@ void getADC_single();
 void getADC_osmp();
 void getADC_filt();
 
-typedef void (*getADCp)();
-
 // checkIncDec flags
 #define   EE_GENERAL 0x01
 #define   EE_MODEL   0x02
@@ -504,7 +536,18 @@ extern uint8_t  s_eeDirtyMsk;
 #define STORE_MODELVARS eeDirty(EE_MODEL)
 #define STORE_GENERALVARS eeDirty(EE_GENERAL)
 
-#if defined (PCBV4)
+#if defined (PCBARM)
+#include "AT91SAM3S2.h"
+#define BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = 0/*TODO g_eeGeneral.bright*/)
+#define BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
+#ifdef REVB
+#define NUMBER_ANALOG   9
+#else
+#define NUMBER_ANALOG   8
+extern uint16_t Analog_values[NUMBER_ANALOG] ;
+void read_9_adc(void ) ;
+#endif
+#elif defined (PCBV4)
 #define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
 #define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
 #define BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
@@ -713,7 +756,7 @@ extern uint16_t jeti_keys;
 //audio settungs are external to keep out clutter!
 // TODO english learning for me... what does mean "keep out clutter"?
 #include "audio.h"
-#elif not defined(PCBARM)
+#else
 #include "beeper.h"
 #endif
 

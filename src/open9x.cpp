@@ -507,15 +507,6 @@ uint8_t getTrimFlightPhase(uint8_t idx, uint8_t phase)
   return 0;
 }
 
-FORCEINLINE uint8_t keyDown()
-{
-#if defined (PCBV4)
-  return (~PINL) & 0x3F;
-#else
-  return (~PINB) & 0x7E;
-#endif
-}
-
 void clearKeyEvents()
 {
 #ifdef SIMU
@@ -796,17 +787,42 @@ uint16_t BandGap = 2040 ;
 #else
 uint16_t BandGap ;
 #endif
-static uint16_t s_anaFilt[8];
+#if defined(PCBARM) and defined(REVB)
+#define NUMBER_ANALOG   9
+#else
+#define NUMBER_ANALOG   8
+#endif
+static uint16_t s_anaFilt[NUMBER_ANALOG];
 uint16_t anaIn(uint8_t chan)
 {
   //                     ana-in:   3 1 2 0 4 5 6 7
   //static pm_char crossAna[] PROGMEM ={4,2,3,1,5,6,7,0}; // wenn schon Tabelle, dann muss sich auch lohnen
   //                        Google Translate (German): // if table already, then it must also be worthwhile
+#if defined(PCBARM)
+  static const uint8_t crossAna[]={1,5,7,0,4,6,2,3,8};
+#else
   static const pm_char crossAna[] PROGMEM ={3,1,2,0,4,5,6,7};
+#endif
+
   volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
   return *p;
 }
 
+#if defined(PCBARM)
+void getADC_filt()
+{
+        register uint32_t x ;
+        static uint16_t t_ana[2][NUMBER_ANALOG] ;
+
+        read_9_adc() ;
+        for( x = 0 ; x < NUMBER_ANALOG ; x += 1 )
+        {
+                s_anaFilt[x] = s_anaFilt[x]/2 + (t_ana[1][x] >> 2 ) ;
+                t_ana[1][x] = ( t_ana[1][x] + t_ana[0][x] ) >> 1 ;
+                t_ana[0][x] = ( t_ana[0][x] + Analog_values[x] ) >> 1 ;
+        }
+}
+#else
 void getADC_filt()
 {
   static uint16_t t_ana[2][8];
@@ -826,7 +842,33 @@ void getADC_filt()
       t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADCW) >> 1;
   }
 }
+#endif
 
+#if defined(PCBARM)
+void getADC_osmp()
+{
+  register uint32_t x;
+  register uint32_t y;
+  uint16_t temp[NUMBER_ANALOG];
+
+  for( x = 0; x < NUMBER_ANALOG; x += 1 )
+  {
+    temp[x] = 0;
+  }
+  for( y = 0; y < 4; y += 1 )
+  {
+    read_9_adc();
+    for( x = 0; x < NUMBER_ANALOG; x += 1 )
+    {
+      temp[x] += Analog_values[x];
+    }
+  }
+  for( x = 0; x < NUMBER_ANALOG; x += 1 )
+  {
+    s_anaFilt[x] = temp[x] >> 3;
+  }
+}
+#else
 void getADC_osmp()
 {
   uint16_t temp_ana;
@@ -845,7 +887,21 @@ void getADC_osmp()
     s_anaFilt[adc_input] = temp_ana / 2; // divide by 2^n to normalize result.
   }
 }
+#endif
 
+#if defined(PCBARM)
+void getADC_single()
+{
+  register uint32_t x ;
+
+  read_9_adc() ;
+
+  for( x = 0 ; x < NUMBER_ANALOG ; x += 1 )
+  {
+    s_anaFilt[x] = Analog_values[x] >> 1 ;
+  }
+}
+#else
 void getADC_single()
 {
   for (uint8_t adc_input=0; adc_input<8; adc_input++) {
@@ -858,13 +914,9 @@ void getADC_single()
       s_anaFilt[adc_input]= ADCW * 2; // use 11 bit numbers
     }
 }
+#endif
 
-getADCp getADC[3] = {
-  getADC_single,
-  getADC_osmp,
-  getADC_filt
-};
-
+#if not defined(PCBARM)
 void getADC_bandgap()
 {
 #if defined (PCBV4)
@@ -888,6 +940,7 @@ void getADC_bandgap()
   BandGap=ADCW;
 #endif
 }
+#endif
 
 #endif // SIMU
 
@@ -896,6 +949,7 @@ uint16_t g_vbat100mV = 0;
 volatile uint8_t tick10ms = 0;
 uint16_t g_LightOffCounter;
 
+#if not defined(PCBARM)
 FORCEINLINE bool checkSlaveMode()
 {
   // no power -> only phone jack = slave mode
@@ -917,6 +971,7 @@ FORCEINLINE bool checkSlaveMode()
   return lastSlaveMode;
 #endif
 }
+#endif
 
 uint16_t s_timeCumTot;
 uint16_t s_timeCumThr;    // THR in 1/16 sec
@@ -1725,7 +1780,7 @@ void perMain()
   g_menuStack[g_menuStackPtr](evt);
   refreshDisplay();
 
-#if defined (PCBV4)
+#if defined(PCBV4)
   // PPM signal on phono-jack. In or out? ...
   if(checkSlaveMode()) {
     PORTG |= (1<<OUT_G_SIM_CTL); // 1=ppm out
@@ -1733,7 +1788,7 @@ void perMain()
   else{
     PORTG &=  ~(1<<OUT_G_SIM_CTL); // 0=ppm in
   }
-#else
+#elif defined(PCBSTD)
   // PPM signal on phono-jack. In or out? ...
   if(checkSlaveMode()) {
     PORTG &= ~(1<<OUT_G_SIM_CTL); // 0=ppm out
@@ -1769,7 +1824,7 @@ void perMain()
 int16_t g_ppmIns[8];
 uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
 
-#ifndef SIMU
+#if not defined(SIMU) and not defined(PCBARM)
 
 volatile uint8_t g_tmr16KHz; //continuous timer 16ms (16MHz/1024/256) -- 8-bit counter overflow
 #if defined (PCBV4)
@@ -2100,6 +2155,7 @@ int main(void)
 
   lcd_init();
 
+#if not defined(PCBARM)
   // Init Stack while interrupts are disabled
 #define STACKPTR     _SFR_IO16(0x3D)
   {
@@ -2114,6 +2170,7 @@ int main(void)
       *p-- = 0x55 ;
     }
   }
+#endif
 
   g_menuStack[0] = menuMainView;
   g_menuStack[1] = menuProcModelSelect;
@@ -2154,12 +2211,12 @@ int main(void)
 
   uint8_t cModel = g_eeGeneral.currModel;
 
-#if defined (PCBV4)
-   if (MCUSR != (1 << PORF))  {
-#else
-   if (MCUCSR != (1 << PORF))  {
+#if defined(PCBV4)
+   if (MCUSR != (1 << PORF))
+#elif defined(PCBSTD)
+   if (MCUCSR != (1 << PORF))
 #endif
-
+   {
 #ifdef SPLASH
     if (g_model.protocol != PROTO_FAAST && g_model.protocol != PROTO_DSM2)
       doSplash();
@@ -2229,20 +2286,30 @@ int main(void)
   while(1) {
     uint16_t t0 = getTmr16KHz();
 
-    getADC[g_eeGeneral.filterInput]();
+    if (g_eeGeneral.filterInput == 1) {
+      getADC_filt() ;
+    }
+    else if ( g_eeGeneral.filterInput == 2) {
+      getADC_osmp() ;
+    }
+    else {
+      getADC_single() ;
+    }
 
 #if defined(PCBV4)
     // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
     ADCSRB &= ~(1<<MUX5);
     ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
-#else
+#elif defined(PCBSTD)
     ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
 #endif
   
     perMain();
     
     // Bandgap has had plenty of time to settle...
+#if not defined(PCBARM)
     getADC_bandgap();
+#endif
 
     if(heartbeat == 0x3)
     {

@@ -68,6 +68,7 @@ extern void beep(uint8_t val);
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
 
+#if not defined(PCBARM)
 FORCEINLINE void AUDIO_HEARTBEAT()
 {
     if(g_beepCnt) {
@@ -112,5 +113,6 @@ FORCEINLINE void AUDIO_HEARTBEAT()
       HAPTIC_OFF;
     }
 }
+#endif
 
 #endif

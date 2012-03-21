@@ -67,3 +67,116 @@ inline void board_init()
   TCCR0B  = (1<<WGM02) | (0b011 << CS00);
   TCCR0A  = (0b01<<WGM00);
 }
+
+FORCEINLINE uint8_t keyDown()
+{
+  return (~PINL) & 0x3F;
+}
+
+bool keyState(EnumKeys enuk)
+{
+  uint8_t result = 0 ;
+
+  if (enuk < (int)DIM(keys))
+    return keys[enuk].state() ? 1 : 0;
+
+  switch(enuk){
+    case SW_ElevDR:
+      result = PINC & (1<<INP_C_ElevDR);
+      break;
+
+    case SW_AileDR:
+      result = PINC & (1<<INP_C_AileDR);
+      break;
+
+    case SW_RuddDR:
+      result = PING & (1<<INP_G_RuddDR);
+      break;
+      //     INP_G_ID1 INP_B_ID2
+      // id0    0        1
+      // id1    1        1
+      // id2    1        0
+    case SW_ID0:
+      result = !(PING & (1<<INP_G_ID1));
+      break;
+
+    case SW_ID1:
+      result = (PING & (1<<INP_G_ID1))&& (PINB & (1<<INP_B_ID2));
+      break;
+
+    case SW_ID2:
+      result = !(PINB & (1<<INP_B_ID2));
+      break;
+
+    case SW_Gear:
+      result = PING & (1<<INP_G_Gear);
+      break;
+
+    case SW_ThrCt:
+      result = PING & (1<<INP_G_ThrCt);
+      break;
+
+    case SW_Trainer:
+      result = PINB & (1<<INP_B_Trainer);
+      break;
+
+    default:
+      break;
+  }
+
+  return result;
+}
+
+
+void readKeysAndTrims()
+{
+  /* Original keys were connected to PORTB as follows:
+
+     Bit  Key
+      7   other use
+      6   LEFT
+      5   RIGHT
+      4   UP
+      3   DOWN
+      2   EXIT
+      1   MENU
+      0   other use
+  */
+
+  uint8_t enuk = KEY_MENU;
+
+  keys[BTN_RE1].input(~PIND & 0x20, BTN_RE1);
+  keys[BTN_RE2].input(~PIND & 0x10, BTN_RE2);
+
+  uint8_t tin = ~PINL;
+  uint8_t in;
+  in = (tin & 0x0f) << 3;
+  in |= (tin & 0x30) >> 3;
+
+  for(int i=1; i<7; i++)
+  {
+    //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
+    keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
+    ++enuk;
+  }
+
+  // Trim switches ...
+  static const pm_uchar crossTrim[] PROGMEM ={
+    1<<INP_J_TRM_LH_DWN,
+    1<<INP_J_TRM_LH_UP,
+    1<<INP_J_TRM_LV_DWN,
+    1<<INP_J_TRM_LV_UP,
+    1<<INP_J_TRM_RV_DWN,
+    1<<INP_J_TRM_RV_UP,
+    1<<INP_J_TRM_RH_DWN,
+    1<<INP_J_TRM_RH_UP
+  };
+
+  in = ~PINJ;
+
+  for (int i=0; i<8; i++) {
+    // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
+    keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
+    ++enuk;
+  }
+}
