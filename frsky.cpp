@@ -254,14 +254,18 @@ void parseTelemHubByte(uint8_t byte)
     case offsetof(FrskyHubData, baroAltitude_ap):
     {
       int16_t actVario = frskyHubData.baroAltitude_bp - frskyHubData.lastBaroAltitude_bp;
-      actVario *= 100;
-      actVario += frskyHubData.baroAltitude_ap - frskyHubData.lastBaroAltitude_ap;
-      frskyHubData.varioSpeed = frskyHubData.varioSpeed - frskyHubData.varioQueue[frskyHubData.queuePointer] + actVario;
+      frskyHubData.varioAcc2 = frskyHubData.varioAcc2 - frskyHubData.varioQueue[frskyHubData.queuePointer];
       frskyHubData.varioQueue[frskyHubData.queuePointer] = actVario;
-      if (++frskyHubData.queuePointer > 4)
+      uint8_t tmp = frskyHubData.queuePointer + 5;
+      if (tmp >= 10)
+        tmp -= 10;
+      tmp = (uint8_t)frskyHubData.varioQueue[tmp];
+      frskyHubData.varioAcc2 = frskyHubData.varioAcc2 + (int8_t)tmp;
+      frskyHubData.varioAcc1 = frskyHubData.varioAcc1 + actVario - (int8_t)tmp;
+      frskyHubData.varioSpeed = frskyHubData.varioAcc2 - frskyHubData.varioAcc1;
+      if (++frskyHubData.queuePointer >= 10)
         frskyHubData.queuePointer=0;
       frskyHubData.lastBaroAltitude_bp = frskyHubData.baroAltitude_bp;
-      frskyHubData.lastBaroAltitude_ap = frskyHubData.baroAltitude_ap;
       break;
     }
 
