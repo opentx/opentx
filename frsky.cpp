@@ -260,7 +260,7 @@ void parseTelemHubByte(uint8_t byte)
         tmp = (uint8_t)frskyHubData.varioQueue[tmp];
         frskyHubData.varioAcc2 = frskyHubData.varioAcc2 + (int8_t)tmp;
         frskyHubData.varioAcc1 = frskyHubData.varioAcc1 + actVario - (int8_t)tmp;
-        frskyHubData.varioSpeed = frskyHubData.varioAcc2 - frskyHubData.varioAcc1;
+        frskyHubData.varioSpeed = frskyHubData.varioAcc1 - frskyHubData.varioAcc2;
         if (++frskyHubData.queuePointer >= 10)
           frskyHubData.queuePointer = 0;
         frskyHubData.lastBaroAltitude_bp = frskyHubData.baroAltitude_bp;
