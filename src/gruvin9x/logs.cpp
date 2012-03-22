@@ -31,7 +31,7 @@
  *
  */
 
-#include "open9x.h"
+#include "../open9x.h"
 #include "ff.h"
 
 char g_logFilename[21]; // "/O9XLOGS/M00_000.CSV\0" max required length = 21

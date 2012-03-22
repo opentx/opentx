@@ -35,7 +35,7 @@
 /*--------------------------------------------------------------------------*/
 /*  RTC controls                                                            */
 
-#include "open9x.h"
+#include "../open9x.h"
 
 #define SCL_LOW()	DDRD |=	0x01		/* SCL = LOW */
 #define SCL_HIGH()	DDRD &=	~0x01		/* SCL = High-Z */

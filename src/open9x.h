@@ -42,8 +42,8 @@
 #include <stddef.h>
 
 #if defined(PCBV4)
-#include "ff.h"
-#include "gtime.h"
+#include "gruvin9x/ff.h"
+#include "gruvin9x/gtime.h"
 #endif
 
 #if defined(SIMU)
@@ -705,7 +705,7 @@ inline void _beep(uint8_t b) {
 
 // MM/SD card Disk IO Support
 #if defined (PCBV4)
-#include "rtc.h"
+#include "gruvin9x/rtc.h"
 extern void disk_timerproc(void);
 extern gtime_t g_unixTime; // global unix timestamp -- hold current time in seconds since 1970-01-01 00:00:00
 extern uint8_t g_ms100; // defined in drivers.cpp
