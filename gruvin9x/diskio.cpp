@@ -38,7 +38,7 @@
 /* are platform dependent.                                               */
 /*-----------------------------------------------------------------------*/
 
-#include "open9x.h"
+#include "../open9x.h"
 #include "diskio.h"
 
 /* Definitions for MMC/SDC command */
