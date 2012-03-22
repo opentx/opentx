@@ -32,7 +32,7 @@
  */
 
 #include "open9x.h"
-
+#ifndef SIMU
 inline void board_init()
 {
   // Set up I/O port data directions and initial states
@@ -67,6 +67,7 @@ inline void board_init()
   TCCR0B  = (1<<WGM02) | (0b011 << CS00);
   TCCR0A  = (0b01<<WGM00);
 }
+#endif
 
 FORCEINLINE uint8_t keyDown()
 {
