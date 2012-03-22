@@ -68,7 +68,10 @@ inline void board_init()
 }
 #endif
 
-FORCEINLINE uint8_t keyDown()
+#ifndef SIMU
+FORCEINLINE
+#endif
+uint8_t keyDown()
 {
   return (~PINB) & 0x7E;
 }
@@ -142,7 +145,10 @@ bool keyState(EnumKeys enuk)
   return result;
 }
 
-inline void readKeysAndTrims()
+#ifndef SIMU
+FORCEINLINE
+#endif
+void readKeysAndTrims()
 {
   uint8_t enuk = KEY_MENU;
 

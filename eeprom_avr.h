@@ -167,6 +167,10 @@ public:
 #endif
 };
 
+extern RlcFile theFile;  //used for any file operation
+
+inline void eeFlush() { theFile.flush(); }
+
 #if defined (EEPROM_PROGRESS_BAR)
 #define DISPLAY_PROGRESS_BAR(x) theFile.DisplayProgressBar(x)
 #else

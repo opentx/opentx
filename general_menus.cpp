@@ -31,7 +31,7 @@
  *
  */
 
-#include "menus.h"
+#include "open9x.h"
 
 const pm_uchar sticks[] PROGMEM = {
 #include "sticks.lbm"

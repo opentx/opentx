@@ -31,10 +31,7 @@
  *
  */
 
-
 #include "open9x.h"
-#include "templates.h"
-#include "menus.h"
 
 int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 uint8_t s_pgOfs;

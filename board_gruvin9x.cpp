@@ -69,7 +69,10 @@ inline void board_init()
 }
 #endif
 
-FORCEINLINE uint8_t keyDown()
+#ifndef SIMU
+FORCEINLINE
+#endif
+uint8_t keyDown()
 {
   return (~PINL) & 0x3F;
 }
@@ -128,7 +131,9 @@ bool keyState(EnumKeys enuk)
   return result;
 }
 
-
+#ifndef SIMU
+FORCEINLINE
+#endif
 void readKeysAndTrims()
 {
   /* Original keys were connected to PORTB as follows:

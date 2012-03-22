@@ -33,66 +33,6 @@
 
 #include "open9x.h"
 
-uint16_t eeprom_pointer;
-const char* eeprom_buffer_data;
-volatile int8_t eeprom_buffer_size = 0;
-
-#if not defined(SIMU) and not defined(PCBARM)
-
-inline void eeprom_write_byte()
-{
-  EEAR = eeprom_pointer;
-  EEDR = *eeprom_buffer_data;
-#if defined (PCBV4)
-  EECR |= 1<<EEMPE;
-  EECR |= 1<<EEPE;
-#else
-  EECR |= 1<<EEMWE;
-  EECR |= 1<<EEWE;
-#endif
-  eeprom_pointer++;
-  eeprom_buffer_data++;
-}
-
-ISR(EE_READY_vect)
-{
-  if (--eeprom_buffer_size > 0) {
-    eeprom_write_byte();
-  }
-  else {
-#if defined (PCBV4)
-    EECR &= ~(1<<EERIE);
-#else
-    EECR &= ~(1<<EERIE);
-#endif
-  }
-}
-
-#endif
-
-void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size)
-{
-  assert(!eeprom_buffer_size);
-
-  eeprom_pointer = i_pointer_eeprom;
-  eeprom_buffer_data = (const char*)i_pointer_ram;
-  eeprom_buffer_size = size+1;
-
-#ifdef SIMU
-  sem_post(&eeprom_write_sem);
-#elif defined (PCBARM)
-
-#elif defined (PCBV4)
-  EECR |= (1<<EERIE);
-#else
-  EECR |= (1<<EERIE);
-#endif
-
-  if (s_sync_write) {
-    while (eeprom_buffer_size > 0) wdt_reset();
-  }
-}
-
 static uint8_t s_evt;
 void putEvent(uint8_t evt)
 {
@@ -251,7 +191,7 @@ void per10ms()
   if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_2();
   if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
 
-#if defined(FRSKY_HUB) or defined(WS_HOW_HIGH)
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   static uint16_t s_varioTmr = 0;
 
   if (isFunctionActive(FUNC_VARIO)) {

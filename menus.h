@@ -34,8 +34,6 @@
 #ifndef menus_h
 #define menus_h
 
-#include "open9x.h"
-
 #define NO_HI_LEN 25
 
 #define RESX    1024

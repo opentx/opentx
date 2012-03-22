@@ -129,6 +129,75 @@ LimitData *limitaddress(uint8_t idx)
   return &g_model.limitData[idx];
 }
 
+void generalDefault()
+{
+  memset(&g_eeGeneral,0,sizeof(g_eeGeneral));
+  g_eeGeneral.myVers   =  EEPROM_VER;
+  g_eeGeneral.contrast = 25;
+  g_eeGeneral.vBatWarn = 90;
+  for (int i = 0; i < 7; ++i) {
+    g_eeGeneral.calibMid[i]     = 0x200;
+    g_eeGeneral.calibSpanNeg[i] = 0x180;
+    g_eeGeneral.calibSpanPos[i] = 0x180;
+  }
+  g_eeGeneral.chkSum = (0x200 * 7) + (0x180 * 5);
+}
+
+uint16_t evalChkSum()
+{
+  uint16_t sum=0;
+  for (int i=0; i<12;i++)
+    sum += g_eeGeneral.calibMid[i];
+  return sum;
+}
+
+#ifndef TEMPLATES
+inline void applyDefaultTemplate()
+{
+  for (int i=0; i<NUM_STICKS; i++) {
+    MixData *md = mixaddress(i);
+    md->destCh = i;
+    md->weight = 100;
+    md->srcRaw = channel_order(i+1);
+  }
+
+  STORE_MODELVARS;
+}
+#endif
+
+void modelDefault(uint8_t id)
+{
+  memset(&g_model, 0, sizeof(g_model));
+  applyDefaultTemplate();
+}
+
+void resetProto()
+{
+#if defined(DSM2_SERIAL)
+  if (g_model.protocol == PROTO_DSM2) {
+    cli();
+#if defined(FRSKY)
+    DSM2_Init();
+#endif
+    sei();
+  }
+  else {
+    cli();
+#if defined(FRSKY)
+    FRSKY_Init();
+#else
+    DSM2_Done();
+#endif
+    sei();
+#if defined(FRSKY)
+    FRSKY_setModelAlarms();
+#endif
+  }
+#elif defined(FRSKY)
+  FRSKY_setModelAlarms();
+#endif
+}
+
 int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 {
 #define D9 (RESX * 2 / 8)
@@ -572,6 +641,7 @@ void doSplash()
 }
 #endif
 
+#if !defined(PCBARM)
 void checkLowEEPROM()
 {
   if(g_eeGeneral.disableMemoryWarning) return;
@@ -580,6 +650,7 @@ void checkLowEEPROM()
     alert(STR_EEPROMLOWMEM);
   }
 }
+#endif
 
 void alertMessages( const pm_char * s, const pm_char * t )
 {
@@ -949,7 +1020,7 @@ uint16_t g_vbat100mV = 0;
 volatile uint8_t tick10ms = 0;
 uint16_t g_LightOffCounter;
 
-#if not defined(PCBARM)
+#if !defined(PCBARM)
 FORCEINLINE bool checkSlaveMode()
 {
   // no power -> only phone jack = slave mode
@@ -1531,12 +1602,14 @@ void perMain()
     sei();
   }
 
+#if !defined(PCBARM)
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
     else if (s_eeDirtyMsk)
       eeCheck();
   }
+#endif
 
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
 
@@ -1824,7 +1897,7 @@ void perMain()
 int16_t g_ppmIns[8];
 uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
 
-#if not defined(SIMU) and not defined(PCBARM)
+#if !defined(SIMU) && !defined(PCBARM)
 
 volatile uint8_t g_tmr16KHz; //continuous timer 16ms (16MHz/1024/256) -- 8-bit counter overflow
 #if defined (PCBV4)

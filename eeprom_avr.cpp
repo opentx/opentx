@@ -38,6 +38,9 @@
 
 uint8_t  s_write_err = 0;    // error reasons
 uint8_t  s_sync_write = false;
+uint8_t  s_eeDirtyMsk;
+
+RlcFile theFile;  //used for any file operation
 
 #define EEFS_VERS 4
 PACK(struct DirEnt{
@@ -54,6 +57,70 @@ PACK(struct EeFs{
   DirEnt   files[MAXFILES];
 }) eeFs;
 
+void eeDirty(uint8_t msk)
+{
+  s_eeDirtyMsk |= msk;
+}
+
+uint16_t eeprom_pointer;
+const char* eeprom_buffer_data;
+volatile int8_t eeprom_buffer_size = 0;
+
+#if !defined(SIMU)
+
+inline void eeprom_write_byte()
+{
+  EEAR = eeprom_pointer;
+  EEDR = *eeprom_buffer_data;
+#if defined (PCBV4)
+  EECR |= 1<<EEMPE;
+  EECR |= 1<<EEPE;
+#else
+  EECR |= 1<<EEMWE;
+  EECR |= 1<<EEWE;
+#endif
+  eeprom_pointer++;
+  eeprom_buffer_data++;
+}
+
+ISR(EE_READY_vect)
+{
+  if (--eeprom_buffer_size > 0) {
+    eeprom_write_byte();
+  }
+  else {
+#if defined (PCBV4)
+    EECR &= ~(1<<EERIE);
+#else
+    EECR &= ~(1<<EERIE);
+#endif
+  }
+}
+
+#endif
+
+void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size)
+{
+  assert(!eeprom_buffer_size);
+
+  eeprom_pointer = i_pointer_eeprom;
+  eeprom_buffer_data = (const char*)i_pointer_ram;
+  eeprom_buffer_size = size+1;
+
+#ifdef SIMU
+  sem_post(&eeprom_write_sem);
+#elif defined (PCBARM)
+
+#elif defined (PCBV4)
+  EECR |= (1<<EERIE);
+#else
+  EECR |= (1<<EERIE);
+#endif
+
+  if (s_sync_write) {
+    while (eeprom_buffer_size > 0) wdt_reset();
+  }
+}
 
 static uint8_t EeFsRead(uint8_t blk, uint8_t ofs)
 {
@@ -596,3 +663,117 @@ void RlcFile::DisplayProgressBar(uint8_t x)
   }
 }
 #endif
+
+bool eeLoadGeneral()
+{
+  theFile.openRlc(FILE_GENERAL);
+  if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.myVers == EEPROM_VER) {
+    theFile.openRlc(FILE_GENERAL); // TODO include this openRlc inside readRlc
+    if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral)) {
+      uint16_t sum = evalChkSum();
+      if (g_eeGeneral.chkSum == sum) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
+uint16_t eeLoadModelName(uint8_t id, char *name)
+{
+  memset(name, 0, sizeof(g_model.name));
+  if (id<MAX_MODELS) {
+    theFile.openRlc(FILE_MODEL(id));
+    if (theFile.readRlc((uint8_t*)name, sizeof(g_model.name)) == sizeof(g_model.name)) {
+      return theFile.size();
+    }
+  }
+  return 0;
+}
+
+bool eeModelExists(uint8_t id)
+{
+    return EFile::exists(FILE_MODEL(id));
+}
+
+void eeLoadModel(uint8_t id)
+{
+  if(id<MAX_MODELS)
+  {
+    theFile.openRlc(FILE_MODEL(id));
+    uint16_t sz = theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
+
+#ifdef SIMU
+    if (sz > 0 && sz != sizeof(g_model)) {
+      printf("Model data read=%d bytes vs %d bytes\n", sz, (int)sizeof(ModelData));
+    }
+#endif
+
+    if (sz == 0) {
+      // alert("Error Loading Model");
+      modelDefault(id);
+      eeCheck(true);
+    }
+
+    resetProto();
+    resetAll();
+
+#ifdef LOGS
+    initLogs();
+#endif
+  }
+}
+
+int8_t eeFindEmptyModel(uint8_t id, bool down)
+{
+  int8_t i = id;
+  for (;;) {
+    i = (MAX_MODELS + (down ? i+1 : i-1)) % MAX_MODELS;
+    if (!EFile::exists(FILE_MODEL(i))) break;
+    if (i == id) return -1; // no free space in directory left
+  }
+  return i;
+}
+
+void eeReadAll()
+{
+  if(!EeFsOpen() ||
+     EeFsck() < 0 ||
+     !eeLoadGeneral())
+  {
+    alert(STR_BADEEPROMDATA, true);
+    message(STR_EEPROMFORMATTING);
+    EeFsFormat();
+    //alert(PSTR("format ok"));
+    generalDefault();
+    //alert(PSTR("default ok"));
+
+    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL,(uint8_t*)&g_eeGeneral,sizeof(EEGeneral), true);
+
+    modelDefault(0);
+    //alert(PSTR("modef ok"));
+    theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
+    //alert(PSTR("modwrite ok"));
+  }
+
+  stickMode = g_eeGeneral.stickMode;
+  eeLoadModel(g_eeGeneral.currModel);
+}
+
+void eeCheck(bool immediately)
+{
+  if (immediately) {
+    eeFlush();
+  }
+  if (s_eeDirtyMsk & EE_GENERAL) {
+    s_eeDirtyMsk -= EE_GENERAL;
+    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), immediately);
+    if (!immediately) return;
+  }
+  if (s_eeDirtyMsk & EE_MODEL) {
+    s_eeDirtyMsk = 0;
+    theFile.writeRlc(FILE_MODEL(g_eeGeneral.currModel), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), immediately);
+  }
+}
+

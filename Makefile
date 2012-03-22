@@ -126,13 +126,12 @@ COPY = cp
 WINSHELL = cmd
 
 IMG2LBM = python ../util/img2lbm.py
-AREV = $(shell sh -c "cat .svn/entries | sed -n '4p'")
-REV = $(shell echo $$(( $(AREV) + 1 )))
+REV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 
 # MCU name
 ifeq ($(PCB), ARM)
- MCU  = cortex-m3
- BOARDSRC = board_arm.cpp
+  MCU  = cortex-m3
+  BOARDSRC = board_arm.cpp
 endif
 ifeq ($(PCB), STD)
   MCU = atmega64
@@ -156,7 +155,7 @@ TARGET = open9x
 OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp pers.cpp file.cpp lcd.cpp drivers.cpp o9xstrings.cpp
+CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp eeprom_avr.cpp lcd.cpp drivers.cpp o9xstrings.cpp
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -172,10 +171,10 @@ endif
 
 # Disk IO support (PCB V2+ only)
 ifneq ($(PCB), STD)
-  CPPSRC += gtime.cpp
-  CPPSRC += rtc.cpp
-  CPPSRC += ff.cpp
-  CPPSRC += diskio.cpp
+  CPPSRC += gruvin9x/gtime.cpp
+  CPPSRC += gruvin9x/rtc.cpp
+  CPPSRC += gruvin9x/ff.cpp
+  CPPSRC += gruvin9x/diskio.cpp
 endif
 
 # List Assembler source files here.
@@ -205,7 +204,7 @@ DBGFMT = dwarf-2
 #     Each directory must be seperated by a space.
 #     Use forward slashes for directory separators.
 #     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS = translations
+EXTRAINCDIRS = . translations
 
 
 # Compiler flag to set the C Standard level.
@@ -297,6 +296,7 @@ endif
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
   CPPDEFS += -DPCBV4 -DAUDIO
+  EXTRAINCDIRS += gruvin9x
   CPPSRC += audio.cpp
 
   ifeq ($(NAVIGATION), RE1)
@@ -304,13 +304,13 @@ ifeq ($(PCB), V4)
   endif
 
   ifeq ($(LOGS), YES)
-    CPPSRC += logs.cpp
+    CPPSRC += gruvin9x/logs.cpp
     CPPDEFS += -DLOGS
     MODS:=${MODS}L
   endif
     
   ifeq ($(SOMO), YES)
-    CPPSRC += somo14d.cpp
+    CPPSRC += gruvin9x/somo14d.cpp
     CPPDEFS += -DSOMO
   endif
 else
@@ -691,8 +691,8 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-simu: $(CPPSRC) Makefile simu.cpp $(CPPSRC) simpgmspace.cpp *.h *.lbm eeprom.bin
-	g++ simu.cpp $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
+simu: $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
+	g++ simu.cpp $(BOARDSRC) $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048

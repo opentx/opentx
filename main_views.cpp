@@ -31,7 +31,7 @@
  *
  */
 
-#include "menus.h"
+#include "open9x.h"
 
 #define BOX_WIDTH     23
 #define BAR_HEIGHT    (BOX_WIDTH-1l)
