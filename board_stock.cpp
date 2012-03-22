@@ -33,6 +33,7 @@
 
 #include "open9x.h"
 
+#ifndef SIMU
 inline void board_init()
 {
   // Set up I/O port data directions and initial states
@@ -65,6 +66,7 @@ inline void board_init()
   TIMSK |= (1<<OCIE0) |  (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
   /********************************/
 }
+#endif
 
 FORCEINLINE uint8_t keyDown()
 {
