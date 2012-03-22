@@ -790,6 +790,7 @@ clean_list :
 	$(REMOVE) $(SRC:.c=.s)
 	$(REMOVE) *.o
 	$(REMOVE) *.d
+	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
 	$(REMOVEDIR) .dep
 
