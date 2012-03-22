@@ -68,7 +68,7 @@ extern void beep(uint8_t val);
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
 
-#if not defined(PCBARM)
+#if !defined(PCBARM)
 FORCEINLINE void AUDIO_HEARTBEAT()
 {
     if(g_beepCnt) {

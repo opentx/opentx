@@ -52,7 +52,6 @@
  */
 
 #include "open9x.h"
-#include "templates.h"
 
 MixData* setDest(uint8_t dch, bool clear=false)
 {

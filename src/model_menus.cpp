@@ -31,8 +31,7 @@
  *
  */
 
-#include "menus.h"
-#include "templates.h"
+#include "open9x.h"
 
 #define WCHART 32
 #define X0     (128-WCHART-2)
@@ -153,15 +152,20 @@ static uint8_t s_copyMode = 0;
 static int8_t s_copySrcRow;
 static int8_t s_copyTgtOfs;
 
+// TODO add ARM code here...
 void menuProcModelSelect(uint8_t event)
 {
   TITLE(STR_MENUMODELSEL);
 
+#if !defined(PCBARM)
   // flush eeprom write
   eeFlush();
+#endif
 
   if (s_confirmation) {
+#if !defined(PCBARM)
     EFile::rm(FILE_MODEL(m_posVert)); // delete file
+#endif
     s_confirmation = 0;
     s_copyMode = 0;
   }
@@ -169,10 +173,12 @@ void menuProcModelSelect(uint8_t event)
   uint8_t _event = (s_warning ? 0 : event);
   uint8_t _event_ = (IS_RE1_EVT(_event) ? 0 : _event);
 
+#if !defined(PCBARM)
   if (s_copyMode || !EFile::exists(FILE_MODEL(g_eeGeneral.currModel))) {
     if ((_event & 0x1f) == KEY_EXIT)
       _event_ -= KEY_EXIT;
   }
+#endif
 
   int8_t oldSub = m_posVert;
   if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
@@ -199,11 +205,13 @@ void menuProcModelSelect(uint8_t event)
         s_editMode = -1;
         break;
       case EVT_KEY_LONG(KEY_EXIT):
+#if !defined(PCBARM)
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && EFile::exists(FILE_MODEL(sub))) {
           s_warning = STR_DELETEMODEL;
           killEvents(_event);
           break;
         }
+#endif
         // no break
       case EVT_KEY_BREAK(KEY_EXIT):
         if (s_copyMode) {
@@ -229,15 +237,19 @@ void menuProcModelSelect(uint8_t event)
           uint8_t cur = (16 + sub + s_copyTgtOfs) % 16;
 
           if (s_copyMode == COPY_MODE) {
+#if !defined(PCBARM)
             if (!theFile.copy(FILE_MODEL(cur), FILE_MODEL(s_copySrcRow)))
               cur = sub;
+#endif
           }
 
           s_copySrcRow = g_eeGeneral.currModel; // to update the currModel value
           while (sub != cur) {
             uint8_t src = cur;
             cur = (s_copyTgtOfs > 0 ? cur+15 : cur+1) % 16;
+#if !defined(PCBARM)
             EFile::swap(FILE_MODEL(src), FILE_MODEL(cur));
+#endif
             if (src == s_copySrcRow)
               s_copySrcRow = cur;
             else if (cur == s_copySrcRow)
@@ -269,9 +281,11 @@ void menuProcModelSelect(uint8_t event)
           killEvents(event);
           return;
         }
+#if !defined(PCBARM)
         else if (EFile::exists(FILE_MODEL(sub))) {
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
         }
+#endif
         break;
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
@@ -309,7 +323,9 @@ void menuProcModelSelect(uint8_t event)
   }
 
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
+#if !defined(PCBARM)
   lcd_outdezAtt(  17*FW, 0, EeFsGetFree(),0);
+#endif
 
   DisplayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
 
@@ -341,12 +357,14 @@ void menuProcModelSelect(uint8_t event)
 
     k %= 16;
 
+#if !defined(PCBARM)
     if (EFile::exists(FILE_MODEL(k))) {
       uint16_t size = eeLoadModelName(k, reusableBuffer.model_name);
       putsModelName(4*FW, y, reusableBuffer.model_name, k, 0);
       lcd_outdezAtt(20*FW, y, size, 0);
       if (k==g_eeGeneral.currModel && (s_copySrcRow<0 || i+s_pgOfs!=sub)) lcd_putc(1, y, '*');
     }
+#endif
 
     if (s_copyMode && sub==i+s_pgOfs) {
       lcd_filled_rect(9, y, DISPLAY_W-1-9, 7);

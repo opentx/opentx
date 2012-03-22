@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef gruvin9x_h
-#define gruvin9x_h
+#ifndef open9x_h
+#define open9x_h
 
 #define MAJ_VERS 2
 #define MIN_VERS 00
@@ -78,16 +78,24 @@ extern void board_init();
 #include <avr/wdt.h>
 #endif
 
-#include "file.h"
-#include "lcd.h"
 #include "myeeprom.h"
 
-#if not defined(SIMU)
+#if defined(PCBARM)
+#include "eeprom_arm.h"
+#else
+#include "eeprom_avr.h"
+#endif
+
+#include "lcd.h"
+#include "menus.h"
+#ifdef TEMPLATES
+#include "templates.h"
+#endif
+
+#if !defined(SIMU)
 #define assert(x)
 #define printf printf_not_allowed
 #endif
-
-extern RlcFile theFile;  //used for any file operation
 
 // G: The following comments relate to the original stock PCB only
 //
@@ -456,6 +464,8 @@ uint8_t keyDown();
 bool keyState(EnumKeys enuk);
 void readKeysAndTrims();
 
+uint16_t evalChkSum();
+
 /// Gibt Alarm Maske auf lcd aus.
 /// Die Maske wird so lange angezeigt bis eine beliebige Taste gedrueckt wird.
 void alert(const pm_char * s, bool defaults=false);
@@ -603,13 +613,15 @@ uint16_t isqrt32(uint32_t n);
 /// eeCheck ins EEPROM zurueckgeschrieben.
 void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size);
 void eeDirty(uint8_t msk);
-inline void eeFlush() { theFile.flush(); }
 void eeCheck(bool immediately=false);
 void eeReadAll();
 bool eeModelExists(uint8_t id);
 uint16_t eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
 int8_t eeFindEmptyModel(uint8_t id, bool down);
+void generalDefault();
+void modelDefault(uint8_t id);
+void resetProto();
 
 extern inline int16_t calc100toRESX(int8_t x)
 {
@@ -771,7 +783,9 @@ extern uint16_t jeti_keys;
 // Re-useable byte array to save having multiple buffers
 union ReusableBuffer
 {
+#if !defined(PCBARM)
     uint8_t eefs_buffer[BLOCKS];           // used by EeFsck
+#endif
 
     char model_name[sizeof(g_model.name)]; // used by menuProcModelSelect
 

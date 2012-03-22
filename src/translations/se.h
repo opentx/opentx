@@ -63,7 +63,7 @@
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""(v)>ofs""(v)<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
 #define LEN_VFSWFUNC     "\015"
-#if defined(FRSKY_HUB) or defined(WS_HOW_HIGH)
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 #define TR_VARIO         "Vario        "
 #else
 #define TR_VARIO

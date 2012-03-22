@@ -229,7 +229,7 @@ enum Functions {
   FUNC_PLAY_SOMO,
 #endif
   FUNC_RESET,
-#if defined(FRSKY_HUB) or defined(WS_HOW_HIGH)
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   FUNC_VARIO,
 #endif
 #ifdef LOGS
@@ -409,6 +409,12 @@ enum Dsm2Variants {
   DSM2_DSMX
 };
 
+#ifdef MAVLINK
+#define EXTDATA MavlinkData mavlink
+#else
+#define EXTDATA FrSkyData frsky
+#endif
+
 PACK(typedef struct t_ModelData {
   char      name[10];             // 10 must be first for eeLoadModelName
   TimerData timers[MAX_TIMERS];
@@ -432,11 +438,9 @@ PACK(typedef struct t_ModelData {
   FuncSwData   funcSw[NUM_FSW];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
-#ifdef MAVLINK
-  MavlinkData mavlink;
-#else
-  FrSkyData frsky;
-#endif
+
+  EXTDATA;
+
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;

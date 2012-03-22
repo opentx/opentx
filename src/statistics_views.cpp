@@ -31,7 +31,7 @@
  *
  */
 
-#include "menus.h"
+#include "open9x.h"
 
 void menuProcStatistic(uint8_t event)
 {
