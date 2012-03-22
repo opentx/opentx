@@ -22,7 +22,7 @@ options_v4 = [[("", "EXT=FRSKY")],
 
 languages = ["en", "fr", "se"]
 
-def generate(hex, arg, options):
+def generate(hex, arg, options,v4):
     result = []
     states = [0] * len(options)
     
@@ -63,14 +63,14 @@ def generate(hex, arg, options):
                     while "" in parts:
                         parts.remove("")
                     size = int(parts[1])
-                    if size > 65530:
+                    if ((size > 65530 and v4==0) or (size > 262000 and v4==1)):
                         print "  ", line[:-1], "[NOT RELEASED]"
                     else:
                         print "  ", line,
                 if line.startswith("Data:"):
                     print "  ", line,
             
-            if size <= 65530:
+            if ((size <= 65530 and v4==0) or (size <=262000 and v4==1)) :
                 shutil.copyfile("open9x.hex", "../binaries/" + hex_file + ".hex")
                 result.append(hex_file)
         
@@ -91,11 +91,11 @@ def generate_c9x_list(filename, hexes, size):
         f.write('open9x->add_option(new Open9xFirmware("%s", new Open9xInterface(%s), OPEN9X_BIN_URL "%s.hex"));\n' % (hex, size, hex))
 
 # stock board
-hexes = generate("open9x-stock", "PCB=STD", options_stock)
+hexes = generate("open9x-stock", "PCB=STD", options_stock,0)
 generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "EESIZE_STOCK")
 
 # v4 board
-hexes = generate("open9x-v4", "PCB=V4", options_v4)
+hexes = generate("open9x-v4", "PCB=V4", options_v4,1)
 generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "EESIZE_V4")
 
 # stamp
