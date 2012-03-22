@@ -97,7 +97,7 @@
 #define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  ""Vibr1 ""Vibr2 ""Vibr3 "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""t1\0 ""t2\0 ""Spd\0""Dist""Cell""Tx\0 ""Rx\0 ""AccX""AccY""AccZ""Hdg\0""VSpd""a1\0 ""a2\0 ""ALT\0""RPM\0""T1\0 ""T2\0 ""SPD\0""DIST""Tmr1""Tmr2""ACC\0""Time"
+#define TR_VTELEMCHNS    "---\0""A1\0 ""A2\0 ""H\202jd""Varv""Tank""t1\0 ""t2\0 ""Fart""Avst""Batt""Tx\0 ""Rx\0 ""AccX""AccY""AccZ""Hdg\0""VSpd""a1\0 ""a2\0 ""H\205JD""VARV""T1\0 ""T2\0 ""H\205JD""AVST""Tmr1""Tmr2""ACC\0""Tid\0"
 
 #define LEN_VTELEMUNIT   "\003"
 #define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"
@@ -234,7 +234,7 @@
 #define TR_MEMORYWARNING "Minnesvarning"
 #define TR_ALARMWARNING "Alarmvarning"
 #define TR_NODATAALARM  "NO DATA Varning"
-#define TR_TIMEZONE     "Time Zone"
+#define TR_TIMEZONE     "Tidszon"
 #define TR_RXCHANNELORD "Kanalordning RX"
 #define TR_SLAVE        "Slav"
 #define TR_MODESRC      "effekt % k\201lla"
@@ -307,5 +307,5 @@
 #define TR_MINLIMIT      "Mininiv\200"
 #define TR_MAXLIMIT      "Maxiniv\200"
 #define TR_MINRSSI       "Min Rssi"
-#define TR_LATITUDE      "Latitude"
-#define TR_LONGITUDE     "Longitude"
+#define TR_LATITUDE      "Breddgrad"
+#define TR_LONGITUDE     "L\201ngdgrad"
