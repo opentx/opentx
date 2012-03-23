@@ -81,17 +81,17 @@
 extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 extern uint8_t lcd_lastPos;
 
-extern void lcd_putc(unsigned char x,unsigned char y,const char c);
-extern void lcd_putcAtt(unsigned char x,unsigned char y,const unsigned char c,uint8_t mode);
+extern void lcd_putc(uint8_t x,uint8_t y,const unsigned char c);
+extern void lcd_putcAtt(uint8_t x,uint8_t y,const unsigned char c,uint8_t mode);
 
-extern void lcd_putsAtt(unsigned char x,unsigned char y,const pm_char * s,uint8_t mode);
+extern void lcd_putsAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t mode);
 extern void lcd_putsiAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t idx, uint8_t mode);
-extern void lcd_putsnAtt(unsigned char x,unsigned char y,const pm_char * s,unsigned char len,uint8_t mode);
-extern void lcd_puts(unsigned char x,unsigned char y,const pm_char * s);
-extern void lcd_putsLeft(unsigned char y, const pm_char * s);
-extern void lcd_putsn(unsigned char x,unsigned char y,const pm_char * s,unsigned char len);
+extern void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,unsigned char len,uint8_t mode);
+extern void lcd_puts(uint8_t x,uint8_t y,const pm_char * s);
+extern void lcd_putsLeft(uint8_t y, const pm_char * s);
+extern void lcd_putsn(uint8_t x,uint8_t y,const pm_char * s,unsigned char len);
 
-extern void lcd_outhex4(unsigned char x,unsigned char y,uint16_t val);
+extern void lcd_outhex4(uint8_t x,uint8_t y,uint16_t val);
 
 extern void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode=0);
 extern void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode=0, uint8_t len=0);
@@ -117,8 +117,8 @@ extern void putsTime(uint8_t x,uint8_t y, int16_t tme, uint8_t att, uint8_t att2
 #define SOLID  0xff
 #define DOTTED 0x55
 
-extern void lcd_plot(unsigned char x, unsigned char y, uint8_t att=0);
-extern void lcd_hline(unsigned char x, unsigned char y, uint8_t w, uint8_t att=0);
+extern void lcd_plot(uint8_t x, uint8_t y, uint8_t att=0);
+extern void lcd_hline(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0);
 extern void lcd_hlineStip(int8_t x, uint8_t y, uint8_t w, uint8_t pat, uint8_t att=0);
 extern void lcd_vline(uint8_t x, int8_t y, int8_t h);
 extern void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat);

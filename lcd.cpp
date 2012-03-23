@@ -69,9 +69,9 @@ uint8_t lcd_lastPos;
 
 void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
 {
-  uint8_t *p    = &displayBuf[ y / 8 * DISPLAY_W + x ];
+  uint8_t *p = &displayBuf[ y / 8 * DISPLAY_W + x ];
 
-  const pm_uchar    *q = &font_5x8_x20_x7f[ + (c-0x20)*5];
+  const pm_uchar *q = &font_5x8_x20_x7f[ (c-0x20)*5];
 
   bool inv = false;
   if (mode & BLINK) {
@@ -91,7 +91,7 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
     q = &font_10x16_x20_x7f[((uint16_t)c-0x20)*20];
-    for(char i=11; i>=0; i--) {
+    for (int8_t i=11; i>=0; i--) {
       if (mode & CONDENSED && i<=1) break;
       uint8_t b1=0, b2=0;
       if (i>1) {
@@ -118,7 +118,7 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
     }
 
     uint8_t ym8 = (y % 8);
-    for (char i=5; i>=0; i--) {
+    for (int8_t i=5; i>=0; i--) {
         uint8_t b = (i>0 ? pgm_read_byte(q++) : 0);
         if (inv) b = ~b;
         
@@ -135,7 +135,7 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
   }
 }
 
-void lcd_putc(uint8_t x,uint8_t y,const char c)
+void lcd_putc(uint8_t x, uint8_t y, const unsigned char c)
 {
   lcd_putcAtt(x,y,c,0);
 }
@@ -645,7 +645,7 @@ void lcdSendCtl(uint8_t val)
   pioptr->PIO_SODR = LCD_CS1 ;            // Deselect LCD
 }
 
-inline void lcd_init()
+void lcd_init()
 {
   register Pio *pioptr ;
   // /home/thus/txt/datasheets/lcd/KS0713.pdf
