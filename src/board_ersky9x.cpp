@@ -32,6 +32,34 @@
  */
 
 #include "open9x.h"
+#include "AT91SAM3S2.h"
+#include "core_cm3.h"
+
+uint32_t Master_frequency ;
+
+/** Console baudrate 9600. */
+#define CONSOLE_BAUDRATE    9600
+/** Usart Hw interface used by the console (UART0). */
+#define CONSOLE_USART       UART0
+/** Usart Hw ID used by the console (UART0). */
+#define CONSOLE_ID          ID_UART0
+/** Pins description corresponding to Rxd,Txd, (UART pins) */
+#define CONSOLE_PINS        {PINS_UART}
+
+/** Second serial baudrate 9600. */
+#define SECOND_BAUDRATE    9600
+/** Usart Hw interface used by the console (UART0). */
+#define SECOND_USART       USART0
+/** Usart Hw ID used by the console (UART0). */
+#define SECOND_ID          ID_USART0
+/** Pins description corresponding to Rxd,Txd, (UART pins) */
+#define SECOND_PINS        {PINS_USART0}
+
+#define BT_USART       UART1
+#define BT_ID          ID_UART1
+
+#define CPU_INT         int32_t
+#define CPU_UINT        uint32_t
 
 #ifdef REVB
 inline void init_soft_power()
@@ -288,6 +316,36 @@ inline void start_timer0()
   ptc->TC_CHANNEL[0].TC_CCR = 5 ;         // Enable clock and trigger it (may only need trigger)
 }
 
+// TODO where used
+volatile uint32_t Tenms ;
+
+extern "C" void TC2_IRQHandler()
+{
+  register uint32_t dummy;
+        static uint32_t pre_scale ;             // Used to get 10 Hz counter
+
+  /* Clear status bit to acknowledge interrupt */
+  dummy = TC0->TC_CHANNEL[2].TC_SR;
+        (void) dummy ;          // Discard value - prevents compiler warning
+        Tenms |= 1 ;                    // 10 mS has passed
+        /* TODO if ( Buzzer_count )
+        {
+                if ( --Buzzer_count == 0 )
+                {
+                        buzzer_off() ;
+                }
+        } */
+
+        if ( ++pre_scale >= 10 )
+        {
+                // TODO needed? Timer2_count += 1 ;
+                pre_scale = 0 ;
+        }
+  per10ms();
+
+//      heartbeat |= HEART_TIMER10ms;
+}
+
 // Settings for mode register ADC_MR
 // USEQ off - silicon problem, doesn't work
 // TRANSFER = 1
@@ -413,71 +471,6 @@ void init_pwm()
 #endif
 }
 
-inline void start_sound()
-{
-  register Pio *pioptr ;
-
-  start_timer1() ;
-  init_dac() ;
-  init_twi() ;
-
-  pioptr = PIOA ;
-#ifdef REVB
-  pioptr->PIO_CODR = 0x02000000L ;        // Set bit A25 OFF
-  pioptr->PIO_PER = 0x02000000L ;         // Enable bit A25 (Stock buzzer)
-  pioptr->PIO_OER = 0x02000000L ;         // Set bit A25 as output
-#else
-  pioptr->PIO_CODR = 0x00010000L ;        // Set bit A16 OFF
-  pioptr->PIO_PER = 0x00010000L ;         // Enable bit A16 (Stock buzzer)
-  pioptr->PIO_OER = 0x00010000L ;         // Set bit A16 as output
-#endif
-}
-
-// SPI i/f to EEPROM (4Mb)
-// Peripheral ID 21 (0x00200000)
-// Connections:
-// SS   PA11 (peripheral A)
-// MISO PA12 (peripheral A)
-// MOSI PA13 (peripheral A)
-// SCK  PA14 (peripheral A)
-// Set clock to 3 MHz, AT25 device is rated to 70MHz, 18MHz would be better
-inline void init_spi()
-{
-  register Pio *pioptr ;
-  register Spi *spiptr ;
-  register uint32_t timer ;
-  register uint8_t *p ;
-  uint8_t spi_buf[4] ;
-
-  PMC->PMC_PCER0 |= 0x00200000L ;               // Enable peripheral clock to SPI
-  /* Configure PIO */
-  pioptr = PIOA ;
-  pioptr->PIO_ABCDSR[0] &= ~0x00007800 ;        // Peripheral A bits 14,13,12,11
-  pioptr->PIO_ABCDSR[1] &= ~0x00007800 ;        // Peripheral A
-  pioptr->PIO_PDR = 0x00007800 ;                                        // Assign to peripheral
-
-  spiptr = SPI ;
-  timer = ( Master_frequency / 3000000 ) << 8 ;           // Baud rate 3Mb/s
-  spiptr->SPI_MR = 0x14000011 ;                           // 0001 0100 0000 0000 0000 0000 0001 0001 Master
-  spiptr->SPI_CSR[0] = 0x01180009 | timer ;               // 0000 0001 0001 1000 xxxx xxxx 0000 1001
-  NVIC_EnableIRQ(SPI_IRQn) ;
-
-  p = spi_buf ;
-
-//      *p = 0x39 ;             // Unprotect sector command
-//      *(p+1) = 0 ;
-//      *(p+2) = 0 ;
-//      *(p+3) = 0 ;            // 3 bytes address
-
-//      spi_operation( p, spi_buf, 4 ) ;
-
-  eeprom_write_enable() ;
-
-  *p = 1 ;                // Write status register command
-  *(p+1) = 0 ;
-  spi_operation( p, spi_buf, 2 ) ;
-}
-
 // LCD i/o pins
 // LCD_RES     PC27
 // LCD_CS1     PC26
@@ -504,72 +497,11 @@ inline void init_spi()
 #define LCD_CS1   0x04000000L
 #define LCD_RES   0x08000000L
 
-inline void lcd_init()
+extern void start_sound(); // TODO elsewhere
+
+void board_init()
 {
-  register Pio *pioptr ;
-  // /home/thus/txt/datasheets/lcd/KS0713.pdf
-  // ~/txt/flieger/ST7565RV17.pdf  from http://www.glyn.de/content.asp?wdid=132&sid=
-
-#ifdef REVB
-  pioptr = PIOA ;
-  pioptr->PIO_PER = LCD_A0 ;              // Enable bit 7 (LCD-A0)
-  pioptr->PIO_CODR = LCD_A0 ;
-  pioptr->PIO_OER = LCD_A0 ;              // Set bit 7 output
-  pioptr = PIOC ;
-  pioptr->PIO_PER = 0x0C0030FFL ;         // Enable bits 27,26,13,12,7-0
-  pioptr->PIO_CODR = LCD_E | LCD_RnW ;
-  pioptr->PIO_SODR = LCD_RES | LCD_CS1 ;
-  pioptr->PIO_OER = 0x0C0030FFL ;         // Set bits 27,26,13,12,7-0 output
-  pioptr->PIO_OWER = 0x000000FFL ;                // Allow write to ls 8 bits in ODSR
-#else
-  pioptr = PIOC ;
-  pioptr->PIO_PER = 0x0C00B0FFL ;         // Enable bits 27,26,15,13,12,7-0
-  pioptr->PIO_CODR = LCD_E | LCD_RnW | LCD_A0 ;
-  pioptr->PIO_SODR = LCD_RES | LCD_CS1 ;
-  pioptr->PIO_OER = 0x0C00B0FFL ;         // Set bits 27,26,15,13,12,7-0 output
-  pioptr->PIO_OWER = 0x000000FFL ;                // Allow write to ls 8 bits in ODSR
-#endif
-
-  pioptr->PIO_CODR = LCD_RES ;            // Reset LCD
-  TC0->TC_CHANNEL[0].TC_CCR = 5 ; // Enable clock and trigger it (may only need trigger)
-  while ( TC0->TC_CHANNEL[0].TC_CV < 12 )         // 2 uS, Value depends on MCK/2 (used 6MHz)
-  {
-    // Wait
-  }
-  pioptr->PIO_SODR = LCD_RES ;            // Remove LCD reset
-  TC0->TC_CHANNEL[0].TC_CCR = 5 ; // Enable clock and trigger it (may only need trigger)
-  while ( TC0->TC_CHANNEL[0].TC_CV < 9000 )               // 1500 uS, Value depends on MCK/2 (used 6MHz)
-  {
-    // Wait
-  }
-  lcdSendCtl(0xe2); //Initialize the internal functions
-  lcdSendCtl(0xae); //DON = 0: display OFF
-  lcdSendCtl(0xa1); //ADC = 1: reverse direction(SEG132->SEG1)
-  lcdSendCtl(0xA6); //REV = 0: non-reverse display
-  lcdSendCtl(0xA4); //EON = 0: normal display. non-entire
-  lcdSendCtl(0xA2); // Select LCD bias=0
-  lcdSendCtl(0xC0); //SHL = 0: normal direction (COM1->COM64)
-  lcdSendCtl(0x2F); //Control power circuit operation VC=VR=VF=1
-  lcdSendCtl(0x25); //Select int resistance ratio R2 R1 R0 =5
-  lcdSendCtl(0x81); //Set reference voltage Mode
-  lcdSendCtl(0x22); // 24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
-  lcdSendCtl(0xAF); //DON = 1: display ON
- // g_eeGeneral.contrast = 0x22;
-
-#ifdef REVB
-  pioptr->PIO_ODR = 0x0000003AL ;         // Set bits 1, 3, 4, 5 input
-  pioptr->PIO_PUER = 0x0000003AL ;                // Set bits 1, 3, 4, 5 with pullups
-  pioptr->PIO_ODSR = 0 ;                                                  // Drive D0 low
-#else
-  pioptr->PIO_ODR = 0x0000003CL ;         // Set bits 2, 3, 4, 5 input
-  pioptr->PIO_PUER = 0x0000003CL ;                // Set bits 2, 3, 4, 5 with pullups
-  pioptr->PIO_ODSR = 0 ;                                                  // Drive D0 low
-#endif
-}
-
-inline void board_init()
-{
-  register uint32_t goto_usb ;
+  // register uint32_t goto_usb ;
   register Pio *pioptr ;
   // Debug variable
   // uint32_t both_on ;
@@ -650,10 +582,166 @@ inline void board_init()
 
   start_sound() ;
 
-  init_spi() ;
+  // init_spi() ; // TODO in eeprom_arm
 }
 
-inline uint8_t keyDown()
+/*TODO not here...*/
+void eeDirty(uint8_t msk) { }
+void eeCheck(bool immediately) {}
+uint16_t eeLoadModelName(uint8_t id, char *name)
+{
+  memset(name, 0, sizeof(g_model.name));
+  return 0;
+}
+int8_t eeFindEmptyModel(uint8_t id, bool down) { return 0;}
+void eeLoadModel(uint8_t id) {}
+void eeReadAll()
+{
+    generalDefault();
+    modelDefault(0);
+}
+
+uint16_t getTmr2MHz()
+{
+        return TC1->TC_CHANNEL[0].TC_CV ;
+}
+
+// keys:
+// KEY_EXIT    PA31 (PC24)
+// KEY_MENU    PB6 (PB5)
+// KEY_DOWN  LCD5  PC3 (PC5)
+// KEY_UP    LCD6  PC2 (PC1)
+// KEY_RIGHT LCD4  PC4 (PC4)
+// KEY_LEFT  LCD3  PC5 (PC3)
+// Reqd. bit 6 LEFT, 5 RIGHT, 4 UP, 3 DOWN 2 EXIT 1 MENU
+// LCD pins 5 DOWN, 4 RIGHT, 3 LEFT, 1 UP
+uint32_t read_keys()
+{
+        register uint32_t x ;
+        register uint32_t y ;
+
+        x = PIOC->PIO_PDSR << 1 ; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+#ifdef REVB
+        y = x & 0x00000020 ;            // RIGHT
+        if ( x & 0x00000004 )
+        {
+                y |= 0x00000010 ;                       // UP
+        }
+        if ( x & 0x00000010 )
+        {
+                y |= 0x00000040 ;                       // LEFT
+        }
+        if ( x & 0x00000040 )
+        {
+                y |= 0x00000008 ;                       // DOWN
+        }
+#else
+        y = x & 0x00000060 ;
+        if ( x & 0x00000008 )
+        {
+                y |= 0x00000010 ;
+        }
+        if ( x & 0x00000010 )
+        {
+                y |= 0x00000008 ;
+        }
+#endif
+#ifdef REVB
+        if ( PIOC->PIO_PDSR & 0x01000000 )
+#else
+        if ( PIOA->PIO_PDSR & 0x80000000 )
+#endif
+        {
+                y |= 4 ;                // EXIT
+        }
+#ifdef REVB
+        if ( PIOB->PIO_PDSR & 0x000000020 )
+#else
+        if ( PIOB->PIO_PDSR & 0x000000040 )
+#endif
+        {
+                y |= 2 ;                // MENU
+        }
+        return y ;
+}
+
+
+
+uint32_t read_trims()
+{
+        uint32_t trims ;
+
+        trims = 0 ;
+
+// TRIM_LH_DOWN    PA7 (PA23)
+#ifdef REVB
+        if ( ( PIOA->PIO_PDSR & 0x00800000 ) == 0 )
+#else
+        if ( ( PIOA->PIO_PDSR & 0x0080 ) == 0 )
+#endif
+        {
+                trims |= 1 ;
+        }
+
+// TRIM_LH_UP PB4
+        if ( ( PIOB->PIO_PDSR & 0x10 ) == 0 )
+        {
+                trims |= 2 ;
+        }
+
+// TRIM_LV_DOWN  PA27 (PA24)
+#ifdef REVB
+        if ( ( PIOA->PIO_PDSR & 0x01000000 ) == 0 )
+#else
+        if ( ( PIOA->PIO_PDSR & 0x08000000 ) == 0 )
+#endif
+        {
+                trims |= 4 ;
+        }
+
+// TRIM_LV_UP   PC28
+        if ( ( PIOC->PIO_PDSR & 0x10000000 ) == 0 )
+        {
+                trims |= 8 ;
+        }
+
+// TRIM_RV_DOWN   PC10
+        if ( ( PIOC->PIO_PDSR & 0x00000400 ) == 0 )
+        {
+                trims |= 0x10 ;
+        }
+
+// TRIM_RV_UP    PA30 (PA1)
+#ifdef REVB
+        if ( ( PIOA->PIO_PDSR & 0x00000002 ) == 0 )
+#else
+        if ( ( PIOA->PIO_PDSR & 0x40000000 ) == 0 )
+#endif
+        {
+                trims |= 0x20 ;
+        }
+
+// TRIM_RH_DOWN    PA29 (PA0)
+#ifdef REVB
+        if ( ( PIOA->PIO_PDSR & 0x00000001 ) == 0 )
+#else
+        if ( ( PIOA->PIO_PDSR & 0x20000000 ) == 0 )
+#endif
+        {
+                trims |= 0x40 ;
+        }
+
+// TRIM_RH_UP   PC9
+        if ( ( PIOC->PIO_PDSR & 0x00000200 ) == 0 )
+        {
+                trims |= 0x80 ;
+        }
+
+        return trims ;
+}
+
+
+uint8_t keyDown()
 {
   return ~read_keys() & 0x7E ;
 }
@@ -751,4 +839,51 @@ void read_9_adc()
 
 // Power save
 //  PMC->PMC_PCER0 &= ~0x20000000L ;            // Disable peripheral clock to ADC
+}
+
+void readKeysAndTrims()
+{
+register uint32_t i ;
+
+if ( PIOC->PIO_ODSR & 0x00080000 )
+{
+        PIOC->PIO_CODR = 0x00200000L ;  // Set bit C19 OFF
+}
+else
+{
+        PIOC->PIO_SODR = 0x00200000L ;  // Set bit C19 ON
+}
+
+uint8_t enuk = KEY_MENU;
+uint8_t    in = ~read_keys() ;
+for( i=1; i<7; i++)
+{
+//INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
+keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
+++enuk;
+}
+//  static const uint8_t crossTrim[]={
+//    1<<INP_D_TRM_LH_DWN,
+//    1<<INP_D_TRM_LH_UP,
+//    1<<INP_D_TRM_LV_DWN,
+//    1<<INP_D_TRM_LV_UP,
+//    1<<INP_D_TRM_RV_DWN,
+//    1<<INP_D_TRM_RV_UP,
+//    1<<INP_D_TRM_RH_DWN,
+//    1<<INP_D_TRM_RH_UP
+//  };
+in = read_trims() ;
+
+for( i=1; i<256; i<<=1)
+{
+// INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
+keys[enuk].input(in & i,(EnumKeys)enuk);
+++enuk;
+}
+}
+
+void end_ppm_capture()
+{
+        TC1->TC_CHANNEL[0].TC_IDR = TC_IDR0_LDRAS ;
+        NVIC_DisableIRQ(TC3_IRQn) ;
 }

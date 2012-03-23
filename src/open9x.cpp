@@ -1616,8 +1616,8 @@ void perMain()
   uint16_t val;
 
   if (g_model.thrTraceSrc == 0) {
-    val = calibratedStick[THR_STICK]+RESX; // get throttle channel value
-//    val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
+    val = calibratedStick[THR_STICK]; // get throttle channel value
+    val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
   }
   else if (g_model.thrTraceSrc > NUM_POTS) {
     val = RESX + g_chans512[g_model.thrTraceSrc-NUM_POTS-1];
@@ -2208,6 +2208,7 @@ ISR(INT6_vect)
 }
 #endif
 
+#if !defined(PCBARM)
 extern unsigned char __bss_end ;
 
 uint16_t stack_free()
@@ -2222,13 +2223,32 @@ uint16_t stack_free()
   return p - &__bss_end ;
 }
 
+#else
+// TODO in another file...
+extern "C" void sam_boot( void ) ;
+
+void disable_ssc()
+{
+        register Pio *pioptr ;
+        register Ssc *sscptr ;
+
+        // Revert back to pwm output
+        pioptr = PIOA ;
+        pioptr->PIO_PER = 0x00020000L ;                                         // Assign A17 to PIO
+
+        sscptr = SSC ;
+        sscptr->SSC_CR = SSC_CR_TXDIS ;
+
+}
+#endif
+
 int main(void)
 {
   board_init();
 
   lcd_init();
 
-#if not defined(PCBARM)
+#if !defined(PCBARM)
   // Init Stack while interrupts are disabled
 #define STACKPTR     _SFR_IO16(0x3D)
   {
@@ -2295,7 +2315,9 @@ int main(void)
       doSplash();
 #endif
 
+#if !defined(PCBARM)
     checkLowEEPROM();
+#endif
 
     getADC_single();
     checkTHR();
@@ -2352,12 +2374,32 @@ int main(void)
   TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
 #endif
 
+#if !defined(PCBARM)
   startPulses();
+#endif
+
+  // TODO init_main_ppm( 3000, 1 ) ;            // Default for now, initial period 1.5 mS, output on
+
+  // TODO start_ppm_capture() ;
+
+  // FrSky testing serial receive
+  // TODO startPdcUsartReceive() ;
 
   wdt_enable(WDTO_500MS);
 
   while(1) {
+#if defined(PCBARM)
+    register Pio *pioptr = PIOC ;
+    if ( pioptr->PIO_PDSR & 0x02000000 ) {
+      // Detected USB
+      // TODO goto_usb = 1 ;
+      break;
+    }
+
+    uint16_t t0 = getTmr2MHz();
+#else
     uint16_t t0 = getTmr16KHz();
+#endif
 
     if (g_eeGeneral.filterInput == 1) {
       getADC_filt() ;
@@ -2389,9 +2431,38 @@ int main(void)
       wdt_reset();
       heartbeat = 0;
     }
+#if defined(PCBARM)
+    t0 = getTmr2MHz() - t0;
+#else
     t0 = getTmr16KHz() - t0;
+#endif
+
     g_timeMain = max(g_timeMain,t0);
   }
+
+#if defined(PCBARM)
+  lcd_clear() ;
+  lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
+  lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
+  lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
+  refreshDisplay() ;
+
+  // This might be replaced by a software reset
+  // Any interrupts that have been enabled must be disabled here
+  // BEFORE calling sam_boot()
+  // TODO needed for REVB soft_power_off() ;
+  // TODO not started end_ppm_capture() ;
+  // TODO in eeprom_arm ... end_spi() ;
+  end_sound() ;
+  TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
+  NVIC_DisableIRQ(TC2_IRQn) ;
+  // PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
+  // TODO disable_main_ppm() ;
+  // PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
+  // NVIC_DisableIRQ(PWM_IRQn) ;
+  disable_ssc() ;
+  sam_boot() ;
+#endif
 }
 #endif
 

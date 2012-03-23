@@ -49,6 +49,8 @@
 #if defined(SIMU)
 #include "simpgmspace.h"
 #elif defined(PCBARM)
+#include "ersky9x/AT91SAM3S2.h"
+#include "ersky9x/core_cm3.h"
 typedef const unsigned char pm_uchar;
 typedef const char pm_char;
 typedef const uint16_t pm_uint16_t;
@@ -461,7 +463,11 @@ uint8_t getEvent();
 void putEvent(uint8_t evt);
 
 uint8_t keyDown();
+#if defined(PCBARM)
+uint32_t keyState(EnumKeys enuk);
+#else
 bool keyState(EnumKeys enuk);
+#endif
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
@@ -515,7 +521,12 @@ extern int8_t s_traceCnt;
 
 extern int8_t *s_trimPtr[NUM_STICKS];
 
+#if defined(PCBARM)
+uint16_t getTmr2MHz();
+#else
 uint16_t getTmr16KHz();
+#endif
+
 uint16_t stack_free();
 
 #ifdef SPLASH
@@ -697,11 +708,6 @@ extern int16_t calibratedStick[7];
 extern uint8_t  beepAgain;
 extern uint16_t g_LightOffCounter;
 extern uint8_t mixWarning;
-
-/// Erzeugt einen beep der laenge b
-inline void _beep(uint8_t b) {
-  g_beepCnt=b;
-}
 
 // MM/SD card Disk IO Support
 #if defined (PCBV4)

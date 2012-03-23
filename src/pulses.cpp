@@ -33,6 +33,9 @@
 
 #include "open9x.h"
 
+#ifndef PCBARM
+// TODO!!!
+
 #if defined(DSM2)
 #define DSM2_CHANS     6
 #define BIND_BIT       0x80
@@ -829,3 +832,4 @@ void setupPulsesPPM16()
 }
 #endif
 
+#endif

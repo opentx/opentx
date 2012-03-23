@@ -177,18 +177,18 @@ void PIOC_IRQHandler (void) { while(1); }
 void USART0_IRQHandler (void) { while(1); }
 void USART1_IRQHandler (void) { while(1); }
 void MCI_IRQHandler (void) { while(1); }
-void TWI0_IRQHandler (void) { while(1); }
+// void TWI0_IRQHandler (void) { while(1); }
 void TWI1_IRQHandler (void) { while(1); }
 void SPI_IRQHandler (void) { while(1); }
 void SSC_IRQHandler (void) { while(1); }
 void TC0_IRQHandler (void) { while(1); }
 void TC1_IRQHandler (void) { while(1); }
-void TC2_IRQHandler (void) { while(1); }
+// void TC2_IRQHandler (void) { while(1); }
 void TC3_IRQHandler (void) { while(1); }
 void TC4_IRQHandler (void) { while(1); }
 void TC5_IRQHandler (void) { while(1); }
 void ADC_IRQHandler (void) { while(1); }
-void DAC_IRQHandler (void) { while(1); }
+// void DAC_IRQHandler (void) { while(1); }
 void PWM_IRQHandler (void) { while(1); }
 void CRCCU_IRQHandler (void) { while(1); }
 void ACC_IRQHandler (void) { while(1); }
