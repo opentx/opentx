@@ -114,7 +114,6 @@ DEBUG = NO
 
 # Define programs and commands.
 SHELL = sh
-CC = avr-gcc
 OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
 SIZE = avr-size
@@ -129,17 +128,31 @@ IMG2LBM = python ../util/img2lbm.py
 REV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 
 # MCU name
-ifeq ($(PCB), ARM)
-  MCU  = cortex-m3
-  BOARDSRC = board_arm.cpp
-endif
 ifeq ($(PCB), STD)
+  CC = avr-gcc
   MCU = atmega64
   BOARDSRC = board_stock.cpp
+  EEPROMSRC = eeprom_avr.cpp  
+  CPPDEFS = -DF_CPU=$(F_CPU)UL
 endif
 ifeq ($(PCB), V4)
+  CC = avr-gcc
   MCU = atmega2560
   BOARDSRC = board_gruvin9x.cpp
+  EEPROMSRC = eeprom_avr.cpp
+  CPPDEFS = -DF_CPU=$(F_CPU)UL
+endif
+ifeq ($(PCB), ARM)
+  TRGT = arm-none-eabi-
+  CC   = $(TRGT)gcc
+  CP   = $(TRGT)objcopy
+  CLSS = $(TRGT)objdump
+  AS   = $(TRGT)gcc -x assembler-with-cpp
+  BIN  = $(CP) -O ihex 
+  BINX = $(CP) -O binary 
+  MCU  = cortex-m3
+  BOARDSRC = board_ersky9x.cpp
+  CPPDEFS = 
 endif
 
 # Processor frequency.
@@ -155,7 +168,7 @@ TARGET = open9x
 OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp eeprom_avr.cpp lcd.cpp drivers.cpp o9xstrings.cpp
+CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp o9xstrings.cpp
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -169,30 +182,6 @@ ifeq ($(EXT), NMEA)
  CPPSRC += nmea.cpp
 endif
 
-# Disk IO support (PCB V2+ only)
-ifneq ($(PCB), STD)
-  CPPSRC += gruvin9x/gtime.cpp
-  CPPSRC += gruvin9x/rtc.cpp
-  CPPSRC += gruvin9x/ff.cpp
-  CPPSRC += gruvin9x/diskio.cpp
-endif
-
-# List Assembler source files here.
-#     Make them always end in a capital .S.  Files ending in a lowercase .s
-#     will not be considered source files but generated files (assembler
-#     output from the compiler), and will be deleted upon "make clean"!
-#     Even though the DOS/Win* filesystem matches both .s and .S the same,
-#     it will preserve the spelling of the filenames, and gcc itself does
-#     care about how the name is spelled on its command-line.
-ASRC =
-
-
-# Optimization level, can be [0, 1, 2, 3, s].
-#     0 = turn off optimization. s = optimize for size.
-#     (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
-OPT = s
-
-
 # Debugging format.
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
 #     AVR Studio 4.10 requires dwarf-2.
@@ -205,24 +194,6 @@ DBGFMT = dwarf-2
 #     Use forward slashes for directory separators.
 #     For a directory that has spaces, enclose it in quotes.
 EXTRAINCDIRS = . translations
-
-
-# Compiler flag to set the C Standard level.
-#     c89   = "ANSI" C
-#     gnu89 = c89 plus GCC extensions
-#     c99   = ISO C99 standard (not yet fully implemented)
-#     gnu99 = c99 plus GCC extensions
-CSTANDARD = -std=gnu99
-
-
-# Place -D or -U options here for C sources
-CDEFS = -DF_CPU=$(F_CPU)UL
-
-
-# Place -D or -U options here for C++ sources
-CPPDEFS = -DF_CPU=$(F_CPU)UL
-#CPPDEFS += -D__STDC_LIMIT_MACROS
-#CPPDEFS += -D__STDC_CONSTANT_MACROS
 
 # NOTE: PCB version now overrides all the earlier individual settings
 #       These individual settings work only for PCB=STD
@@ -293,11 +264,30 @@ ifeq ($(DEBUG), YES)
   CPPDEFS += -DDEBUG
 endif
 
+ifeq ($(PCB), ARM)
+  # V4 ARM, so ...
+  OPT = 2
+  CPPDEFS += -DPCBARM
+  EXTRAINCDIRS += ersky9x
+  CPPSRC += ersky9x/core_cm3.c
+  CPPSRC += ersky9x/board_lowlevel.c
+  CPPSRC += ersky9x/crt.c
+  CPPSRC += ersky9x/vectors_sam3s.c
+  CPPSRC += ersky9x/sound.cpp
+  CPPSRC += beeper.cpp
+endif
+
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
+  OPT = 2
   CPPDEFS += -DPCBV4 -DAUDIO
   EXTRAINCDIRS += gruvin9x
   CPPSRC += audio.cpp
+  CPPSRC += gruvin9x/gtime.cpp
+  CPPSRC += gruvin9x/rtc.cpp
+  CPPSRC += gruvin9x/ff.cpp
+  CPPSRC += gruvin9x/diskio.cpp
+   
 
   ifeq ($(NAVIGATION), RE1)
     CPPDEFS += -DNAVIGATION_RE1
@@ -313,10 +303,13 @@ ifeq ($(PCB), V4)
     CPPSRC += gruvin9x/somo14d.cpp
     CPPDEFS += -DSOMO
   endif
-else
+endif
+
+ifeq ($(PCB), STD)
   # STD PCB, so ...
+  OPT = s
   CPPDEFS += -DPCBSTD
-  
+   
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio.cpp
@@ -380,20 +373,22 @@ CPPFLAGS += -O$(OPT)
 #CPPFLAGS += -fno-exceptions
 #CPPFLAGS += -fno-unit-at-a-time
 CPPFLAGS += -Wall
+CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
 #CPPFLAGS += -Wstrict-prototypes
 #CPPFLAGS += -Wunreachable-code
 #CPPFLAGS += -Wsign-compare
 #CPPFLAGS += -Wa,-adhlns=$(<:%.cpp=$(OBJDIR)/%.lst)
 CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
-#CPPFLAGS += $(CSTANDARD)
 
-GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
-ifeq ($(GCCVERSIONGTE462),1)
-  CPPFLAGS += -flto
+ifneq ($(PCB), ARM)
+  GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
+  ifeq ($(GCCVERSIONGTE462),1)
+    CPPFLAGS += -flto
+  endif
+  CPPFLAGS += -fno-inline-small-functions
 endif
 
-AVRGCCFLAGS = -fno-inline-small-functions
 
 
 #---------------- Assembler Options ----------------
@@ -555,7 +550,12 @@ GENDEPFLAGS = -MD -MP -MF .dep/$(@F).d
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
-ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) $(AVRGCCFLAGS) -fwhole-program
+
+ifeq ($(PCB), ARM)
+  ALL_CPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -Dat91sam3s4 -DRUN_FROM_FLASH=1 $(CPPFLAGS) $(GENDEPFLAGS)
+else
+  ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
+endif
 
 MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
 MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
@@ -564,9 +564,10 @@ MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
 all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
-build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm allsrc elf remallsrc hex eep lss sym
+build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm allsrc.cpp elf remallsrc bin hex eep lss sym
 
 elf: $(TARGET).elf
+bin: $(TARGET).bin
 hex: $(TARGET).hex
 eep: $(TARGET).eep
 lss: $(TARGET).lss
@@ -631,6 +632,12 @@ HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex
 ELFSIZE = $(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf
 AVRMEM = avr-mem.sh $(TARGET).elf $(MCU)
 
+ifeq ($(PCB), ARM)
+sizebefore:
+	
+sizeafter:
+	
+else
 sizebefore:
 	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_BEFORE); $(ELFSIZE); \
 	$(AVRMEM) 2>/dev/null; echo; fi
@@ -638,8 +645,7 @@ sizebefore:
 sizeafter:
 	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_AFTER); $(ELFSIZE); \
 	$(AVRMEM) 2>/dev/null; echo; fi
-
-
+endif
 
 # Display compiler version information.
 gccversion :
@@ -732,31 +738,65 @@ extcoff: $(TARGET).elf
 	$(COFFCONVERT) -O coff-ext-avr $< $(TARGET).cof
 
 # Create final output files (.hex, .eep) from ELF output file.
+ifeq ($(PCB), ARM)
+%.hex: %.elf
+	@echo
+	@echo $(MSG_FLASH) $@
+	arm-none-eabi-objcopy -O ihex open9x.elf open9x.hex
+else
 %.hex: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
 	$(OBJCOPY) -O $(FORMAT) -R .eeprom $< $@
+endif
 
+ifeq ($(PCB), ARM)
+%.bin: %.elf
+	@echo
+	@echo $(MSG_FLASH) $@
+	arm-none-eabi-objcopy -O binary  open9x.elf open9x.bin
+endif
+
+#arm-none-eabi-gcc -c -mcpu=cortex-m3 -O2 -gdwarf-2 -mthumb -fomit-frame-pointer -Wall -fverbose-asm -Wa,-ahlms=open9x.lst  -Dat91sam3s4 -DRUN_FROM_FLASH=1  -DPCBARM -DDECIMALS_DISPLAYED -DSPLASH -MD -MP -MF .dep/open9x.o.d -fno-exceptions -I . -I./ersky9x  open9x.cpp -o open9x.o
+#arm-none-eabi-gcc  ersky9x/core_cm3.o ersky9x/board_lowlevel.o ersky9x/crt.o ersky9x/vectors_sam3s.o drivers.o ersky9x\sound.o lcd.o menus.o main_views.o statistics_views.o model_menus.o general_menus.o open9x.o beeper.o o9xstrings.o board_ersky9x.o -mcpu=cortex-m3 -mthumb -nostartfiles -Tersky9x/sam3s2c_flash.ld -Wl,-Map=open9x_rom.map,--cref,--no-warn-mismatch    -o open9x_rom.elf
+#arm-none-eabi-objcopy -O ihex  open9x_rom.elf open9x_rom.hex
+#arm-none-eabi-objdump -h -S open9x_rom.elf > open9x_rom.lss
+#arm-none-eabi-objcopy -O binary  open9x_rom.elf open9x_rom.bin
+
+ifeq ($(PCB), ARM)
+%.eep:
+	
+%.sym:
+	
+else
 %.eep: %.elf
 	@echo
 	@echo $(MSG_EEPROM) $@
 	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
 --change-section-lma .eeprom=0 -O $(FORMAT) $< $@
 
-# Create extended listing file from ELF output file.
-%.lss: %.elf
-	@echo
-	@echo $(MSG_EXTENDED_LISTING) $@
-	$(OBJDUMP) -h -S $< > $@
-
 # Create a symbol table from ELF output file.
 %.sym: %.elf
 	@echo
 	@echo $(MSG_SYMBOL_TABLE) $@
 	$(NM) -n $< > $@
+endif
+
+# Create extended listing file from ELF output file.
+ifeq ($(PCB), ARM)
+%.lss: %.elf
+	@echo
+	@echo $(MSG_EXTENDED_LISTING) $@
+	arm-none-eabi-objdump -h -S open9x.elf > open9x.lss
+else
+%.lss: %.elf
+	@echo
+	@echo $(MSG_EXTENDED_LISTING) $@
+	$(OBJDUMP) -h -S $< > $@
+endif
 
 # Concatenate all sources files in one big file to optimize size
-allsrc: $(BOARDSRC) $(CPPSRC)
+allsrc.cpp: $(BOARDSRC) $(CPPSRC)
 	@echo -n > allsrc.cpp
 	for f in $(BOARDSRC) $(CPPSRC); do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 	
@@ -764,10 +804,18 @@ remallsrc:
 	$(REMOVE) allsrc.cpp
     
 # Link: create ELF output file from object files.
-%.elf: allsrc
+ifeq ($(PCB), ARM)
+%.elf: allsrc.cpp
 	@echo
 	@echo $(MSG_COMPILING) $@
-	$(CC) $(ALL_CPPFLAGS) allsrc.cpp --output $@ $(LDFLAGS)
+	$(CC) $(ALL_CPPFLAGS) $< -o allsrc.o
+	arm-none-eabi-gcc allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -Tersky9x/sam3s2c_flash.ld -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
+else
+%.elf: allsrc.cpp
+	@echo
+	@echo $(MSG_COMPILING) $@
+	$(CC) $(ALL_CPPFLAGS) $< --output $@ $(LDFLAGS)
+endif
 	
 # Target: clean project.
 clean: begin clean_list end
