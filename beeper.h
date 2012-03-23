@@ -44,6 +44,17 @@ extern bool warbleC;
 extern uint8_t hapticTick;
 #endif
 
+#if defined(PCBARM)
+#include "ersky9x/sound.h"
+inline void _beep(uint8_t b) {
+  buzzer_sound(b);
+}
+#else
+inline void _beep(uint8_t b) {
+  g_beepCnt = b;
+}
+#endif
+
 extern void beep(uint8_t val);
 
 #define AUDIO_KEYPAD_UP()     beep(0)

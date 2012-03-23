@@ -21,9 +21,7 @@
 #include "inttypes.h"
 #include "string.h"
 
-extern PROGMEM s9xsplash[] ;
-
-
+volatile uint32_t Spi_complete ;
 
 // Logic for storing to EERPOM/loading from EEPROM
 // If main needs to wait for the eeprom, call mainsequence without actioning menus
@@ -265,6 +263,105 @@ void ee32_update_name( uint32_t id, uint8_t *source )
 	}
 }
 
+uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
+{
+        register Spi *spiptr ;
+//      register uint32_t result ;
+        register uint32_t condition ;
+        static uint8_t discard_rx_command[4] ;
+
+//  PMC->PMC_PCER0 |= 0x00200000L ;             // Enable peripheral clock to SPI
+
+        Spi_complete = 0 ;
+        if ( comlen > 4 )
+        {
+                Spi_complete = 1 ;
+                return 0x4FFFF ;
+        }
+        condition = SPI_SR_TXEMPTY ;
+        spiptr = SPI ;
+        spiptr->SPI_CR = 1 ;                            // Enable
+        (void) spiptr->SPI_RDR ;                // Dump any rx data
+        (void) spiptr->SPI_SR ;                 // Clear error flags
+        spiptr->SPI_RPR = (uint32_t)discard_rx_command ;
+        spiptr->SPI_RCR = comlen ;
+        if ( rx )
+        {
+                spiptr->SPI_RNPR = (uint32_t)rx ;
+                spiptr->SPI_RNCR = count ;
+                condition = SPI_SR_RXBUFF ;
+        }
+        spiptr->SPI_TPR = (uint32_t)command ;
+        spiptr->SPI_TCR = comlen ;
+        if ( tx )
+        {
+                spiptr->SPI_TNPR = (uint32_t)tx ;
+        }
+        else
+        {
+                spiptr->SPI_TNPR = (uint32_t)rx ;
+        }
+        spiptr->SPI_TNCR = count ;
+
+        spiptr->SPI_PTCR = SPI_PTCR_RXTEN | SPI_PTCR_TXTEN ;    // Start transfers
+
+        // Wait for things to get started, avoids early interrupt
+        for ( count = 0 ; count < 1000 ; count += 1 )
+        {
+                if ( ( spiptr->SPI_SR & SPI_SR_TXEMPTY ) == 0 )
+                {
+                        break ;
+                }
+        }
+        spiptr->SPI_IER = condition ;
+
+        return 0 ;
+}
+
+uint32_t  eeprom_write_one( uint8_t byte, uint8_t count )
+{
+        register Spi *spiptr ;
+        register uint32_t result ;
+
+        spiptr = SPI ;
+        spiptr->SPI_CR = 1 ;                                                            // Enable
+        (void) spiptr->SPI_RDR ;                // Dump any rx data
+
+        spiptr->SPI_TDR = byte ;
+
+        result = 0 ;
+        while( ( spiptr->SPI_SR & SPI_SR_RDRF ) == 0 )
+        {
+                // wait for received
+                if ( ++result > 10000 )
+                {
+                        break ;
+                }
+        }
+        if ( count == 0 )
+        {
+                spiptr->SPI_CR = 2 ;                                                            // Disable
+                return spiptr->SPI_RDR ;
+        }
+        (void) spiptr->SPI_RDR ;                // Dump the rx data
+        spiptr->SPI_TDR = 0 ;
+        result = 0 ;
+        while( ( spiptr->SPI_SR & SPI_SR_RDRF ) == 0 )
+        {
+                // wait for received
+                if ( ++result > 10000 )
+                {
+                        break ;
+                }
+        }
+        spiptr->SPI_CR = 2 ;                                                            // Disable
+        return spiptr->SPI_RDR ;
+}
+
+void eeprom_write_enable()
+{
+        eeprom_write_one( 6, 0 ) ;
+}
 
 // Read eeprom data starting at random address
 uint32_t read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate )
@@ -435,15 +532,9 @@ bool ee32LoadGeneral()
 		read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size, 0 ) ;
 	}
 
-  for(uint8_t i=0; i<sizeof(g_eeGeneral.ownerName);i++) // makes sure name is valid
-  {
-      uint8_t idx = char2idx(g_eeGeneral.ownerName[i]);
-      g_eeGeneral.ownerName[i] = idx2char(idx);
-  }
-
-  if(g_eeGeneral.myVers<MDVERS)
+  /*if(g_eeGeneral.myVers<MDVERS)
       sysFlags |= sysFLAG_OLD_EEPROM; // if old EEPROM - Raise flag
-
+*/
   g_eeGeneral.myVers   =  MDVERS; // update myvers
 
   uint16_t sum=0;
@@ -537,6 +628,54 @@ void fill_file_index()
 	{
 		File_system[i].block_no = get_current_block_number( i * 2, &File_system[i].size, &File_system[i].sequence_no ) ;
 	}
+}
+
+
+// TODO => eeprom_arm
+
+// SPI i/f to EEPROM (4Mb)
+// Peripheral ID 21 (0x00200000)
+// Connections:
+// SS   PA11 (peripheral A)
+// MISO PA12 (peripheral A)
+// MOSI PA13 (peripheral A)
+// SCK  PA14 (peripheral A)
+// Set clock to 3 MHz, AT25 device is rated to 70MHz, 18MHz would be better
+void init_spi()
+{
+  register Pio *pioptr ;
+  register Spi *spiptr ;
+  register uint32_t timer ;
+  register uint8_t *p ;
+  uint8_t spi_buf[4] ;
+
+  PMC->PMC_PCER0 |= 0x00200000L ;               // Enable peripheral clock to SPI
+  /* Configure PIO */
+  pioptr = PIOA ;
+  pioptr->PIO_ABCDSR[0] &= ~0x00007800 ;        // Peripheral A bits 14,13,12,11
+  pioptr->PIO_ABCDSR[1] &= ~0x00007800 ;        // Peripheral A
+  pioptr->PIO_PDR = 0x00007800 ;                                        // Assign to peripheral
+
+  spiptr = SPI ;
+  timer = ( Master_frequency / 3000000 ) << 8 ;           // Baud rate 3Mb/s
+  spiptr->SPI_MR = 0x14000011 ;                           // 0001 0100 0000 0000 0000 0000 0001 0001 Master
+  spiptr->SPI_CSR[0] = 0x01180009 | timer ;               // 0000 0001 0001 1000 xxxx xxxx 0000 1001
+  NVIC_EnableIRQ(SPI_IRQn) ;
+
+  p = spi_buf ;
+
+//      *p = 0x39 ;             // Unprotect sector command
+//      *(p+1) = 0 ;
+//      *(p+2) = 0 ;
+//      *(p+3) = 0 ;            // 3 bytes address
+
+//      spi_operation( p, spi_buf, 4 ) ;
+
+  eeprom_write_enable() ;
+
+  *p = 1 ;                // Write status register command
+  *(p+1) = 0 ;
+  spi_operation( p, spi_buf, 2 ) ;
 }
 
 void init_ee32()
@@ -1458,5 +1597,5 @@ uint32_t unprotect_eeprom()
 //}
 
 
-
+}
 

@@ -33,31 +33,6 @@
 ****************************************************************************/
 
 
-
-
-/* make sure the defines below always go in numeric order */
-#define AUDIO_TADA (0)
-#define AUDIO_WARNING1 (1)
-#define AUDIO_WARNING2 (2)
-#define AUDIO_WARNING3 (3)
-#define AUDIO_ERROR (4)
-#define AUDIO_KEYPAD_UP (5)
-#define AUDIO_KEYPAD_DOWN (6)
-#define AUDIO_TRIM_MOVE (7)
-#define AUDIO_TRIM_MIDDLE (8)
-#define AUDIO_MENUS (9)
-#define AUDIO_POT_STICK_MIDDLE (10)
-#define AUDIO_MIX_WARNING_1 (11)
-#define AUDIO_MIX_WARNING_2 (12)
-#define AUDIO_MIX_WARNING_3 (13)
-#define AUDIO_TIMER_30 (14)
-#define AUDIO_TIMER_20 (15)
-#define AUDIO_TIMER_10 (16)
-#define AUDIO_TIMER_LT3 (17)
-#define AUDIO_INACTIVITY (18)
-#define AUDIO_TX_BATTERY_LOW (19)
-
-
 #define NUM_VOL_LEVELS	24
 
 extern volatile uint8_t Buzzer_count ;
@@ -72,6 +47,7 @@ extern void start_timer1( void ) ;
 extern void init_dac( void ) ;
 extern "C" void DAC_IRQHandler( void ) ;
 extern void end_sound( void ) ;
+extern void playTone( uint32_t frequency, uint32_t time ) ;
 extern void tone_start( register uint32_t time ) ;
 extern void tone_stop( void ) ;
 extern void init_twi( void ) ;
