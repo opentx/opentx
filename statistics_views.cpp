@@ -108,7 +108,7 @@ void menuProcDebug(uint8_t event)
   lcd_puts( 0*FW,  5*FH, STR_T10MSUS);
   lcd_outdez8(15*FW , 5*FH, g_time_per10/2 );
 #endif
-#ifndef SIMU
+#if !defined(SIMU) && !defined(PCBARM)
   lcd_puts( 0*FW,  6*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(18*FW-1,  6*FH, stack_free(), UNSIGN) ;
 #endif
