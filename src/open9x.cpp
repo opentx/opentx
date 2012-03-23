@@ -1616,8 +1616,8 @@ void perMain()
   uint16_t val;
 
   if (g_model.thrTraceSrc == 0) {
-    val = calibratedStick[THR_STICK]; // get throttle channel value
-    val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
+    val = calibratedStick[THR_STICK]+RESX; // get throttle channel value
+//    val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
   }
   else if (g_model.thrTraceSrc > NUM_POTS) {
     val = RESX + g_chans512[g_model.thrTraceSrc-NUM_POTS-1];
