@@ -114,29 +114,20 @@ DEBUG = NO
 
 # Define programs and commands.
 SHELL = sh
-OBJCOPY = avr-objcopy
-OBJDUMP = avr-objdump
-SIZE = avr-size
-NM = avr-nm
-AVRDUDE = avrdude
-REMOVE = rm -f
-REMOVEDIR = rm -rf
-COPY = cp
-WINSHELL = cmd
 
 IMG2LBM = python ../util/img2lbm.py
 REV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 
 # MCU name
 ifeq ($(PCB), STD)
-  CC = avr-gcc
+  TRGT = avr-
   MCU = atmega64
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp  
   CPPDEFS = -DF_CPU=$(F_CPU)UL
 endif
 ifeq ($(PCB), V4)
-  CC = avr-gcc
+  TRGT = avr-
   MCU = atmega2560
   BOARDSRC = board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
@@ -144,16 +135,24 @@ ifeq ($(PCB), V4)
 endif
 ifeq ($(PCB), ARM)
   TRGT = arm-none-eabi-
-  CC   = $(TRGT)gcc
-  CP   = $(TRGT)objcopy
-  CLSS = $(TRGT)objdump
-  AS   = $(TRGT)gcc -x assembler-with-cpp
-  BIN  = $(CP) -O ihex 
-  BINX = $(CP) -O binary 
   MCU  = cortex-m3
   BOARDSRC = board_ersky9x.cpp
   CPPDEFS = 
 endif
+
+CC      = $(TRGT)gcc
+OBJCOPY = $(TRGT)objcopy
+OBJDUMP = $(TRGT)objdump
+SIZE    = $(TRGT)size
+#AS   = $(TRGT)gcc -x assembler-with-cpp
+#BIN  = $(CP) -O ihex 
+#BINX = $(CP) -O binary 
+#NM = avr-nm
+AVRDUDE = avrdude
+REMOVE = rm -f
+REMOVEDIR = rm -rf
+#COPY = cp
+#WINSHELL = cmd
 
 # Processor frequency.
 F_CPU = 16000000
@@ -564,7 +563,11 @@ MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
 all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
-build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm allsrc.cpp elf remallsrc bin hex eep lss sym
+ifeq ($(PCB), ARM)
+  build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm allsrc.cpp elf remallsrc bin hex lss
+else
+  build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm allsrc.cpp elf remallsrc hex eep lss sym
+endif
 
 elf: $(TARGET).elf
 bin: $(TARGET).bin
@@ -742,7 +745,7 @@ ifeq ($(PCB), ARM)
 %.hex: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
-	arm-none-eabi-objcopy -O ihex open9x.elf open9x.hex
+	 $(OBJCOPY) -O ihex open9x.elf open9x.hex
 else
 %.hex: %.elf
 	@echo
@@ -750,23 +753,11 @@ else
 	$(OBJCOPY) -O $(FORMAT) -R .eeprom $< $@
 endif
 
-ifeq ($(PCB), ARM)
 %.bin: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
-	arm-none-eabi-objcopy -O binary  open9x.elf open9x.bin
-else
-%.bin:
-	
-endif
+	$(OBJCOPY) -O binary  $< $@
 
-
-ifeq ($(PCB), ARM)
-%.eep:
-	
-%.sym:
-	
-else
 %.eep: %.elf
 	@echo
 	@echo $(MSG_EEPROM) $@
@@ -778,20 +769,12 @@ else
 	@echo
 	@echo $(MSG_SYMBOL_TABLE) $@
 	$(NM) -n $< > $@
-endif
 
 # Create extended listing file from ELF output file.
-ifeq ($(PCB), ARM)
-%.lss: %.elf
-	@echo
-	@echo $(MSG_EXTENDED_LISTING) $@
-	arm-none-eabi-objdump -h -S open9x.elf > open9x.lss
-else
 %.lss: %.elf
 	@echo
 	@echo $(MSG_EXTENDED_LISTING) $@
 	$(OBJDUMP) -h -S $< > $@
-endif
 
 # Concatenate all sources files in one big file to optimize size
 allsrc.cpp: $(BOARDSRC) $(CPPSRC)
@@ -807,7 +790,7 @@ ifeq ($(PCB), ARM)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ALL_CPPFLAGS) $< -o allsrc.o
-	arm-none-eabi-gcc allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -Tersky9x/sam3s2c_flash.ld -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
+	$(CC) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -Tersky9x/sam3s2c_flash.ld -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
 else
 %.elf: allsrc.cpp
 	@echo
