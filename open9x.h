@@ -236,7 +236,7 @@ extern void board_init();
 #define INP_E_AileDR  1
 #define INP_E_ThrCt   0
 
-#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA)
+#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
 #undef INP_E_ThrCt
 #undef INP_E_AileDR
 #define INP_C_ThrCt   6
