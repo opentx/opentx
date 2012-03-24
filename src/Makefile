@@ -755,13 +755,11 @@ ifeq ($(PCB), ARM)
 	@echo
 	@echo $(MSG_FLASH) $@
 	arm-none-eabi-objcopy -O binary  open9x.elf open9x.bin
+else
+%.bin:
+	
 endif
 
-#arm-none-eabi-gcc -c -mcpu=cortex-m3 -O2 -gdwarf-2 -mthumb -fomit-frame-pointer -Wall -fverbose-asm -Wa,-ahlms=open9x.lst  -Dat91sam3s4 -DRUN_FROM_FLASH=1  -DPCBARM -DDECIMALS_DISPLAYED -DSPLASH -MD -MP -MF .dep/open9x.o.d -fno-exceptions -I . -I./ersky9x  open9x.cpp -o open9x.o
-#arm-none-eabi-gcc  ersky9x/core_cm3.o ersky9x/board_lowlevel.o ersky9x/crt.o ersky9x/vectors_sam3s.o drivers.o ersky9x\sound.o lcd.o menus.o main_views.o statistics_views.o model_menus.o general_menus.o open9x.o beeper.o o9xstrings.o board_ersky9x.o -mcpu=cortex-m3 -mthumb -nostartfiles -Tersky9x/sam3s2c_flash.ld -Wl,-Map=open9x_rom.map,--cref,--no-warn-mismatch    -o open9x_rom.elf
-#arm-none-eabi-objcopy -O ihex  open9x_rom.elf open9x_rom.hex
-#arm-none-eabi-objdump -h -S open9x_rom.elf > open9x_rom.lss
-#arm-none-eabi-objcopy -O binary  open9x_rom.elf open9x_rom.bin
 
 ifeq ($(PCB), ARM)
 %.eep:
