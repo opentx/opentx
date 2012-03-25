@@ -204,7 +204,7 @@ PACK(typedef struct t_MixData {
   uint8_t speedUp:4;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
   uint8_t speedDown:4;       // 0 nichts
   uint16_t srcRaw:7;         //
-  uint16_t differential:7;
+  int16_t differential:7;
   uint16_t carryTrim:2;
   int8_t  sOffset;
 }) MixData;

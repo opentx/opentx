@@ -1220,8 +1220,8 @@ void menuProcMixOne(uint8_t event)
       case 2:
         // TODO INFLIGHT
         lcd_puts(2*FW, y, STR_DIFFERENTIAL);
-        lcd_outdezAtt(FW*10, y, md2->differential, attr|LEFT);
-        if (attr) CHECK_INCDEC_MODELVAR(event, md2->differential, 0, 100);
+        lcd_outdezAtt(FW*10, y, md2->differential*2, attr|LEFT);
+        if (attr) CHECK_INCDEC_MODELVAR(event, md2->differential, -50, 50);
         break;
       case 3:
         lcd_puts(2*FW, y, STR_OFFSET);

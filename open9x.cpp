@@ -1386,7 +1386,7 @@ void perOut(uint8_t phase)
       v = chans[k-MIXSRC_CH1+1] / 100;
     else if (k>=MIXSRC_THR-1 && k<=MIXSRC_SWC-1) {
       v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
-      if (v<0 && !md->swtch && (md->delayDown || md->delayUp))
+      if (v<0 && !md->swtch)
         sw = false;
     }
     else
@@ -1487,9 +1487,11 @@ void perOut(uint8_t phase)
     //========== MULTIPLEX ===============
     int32_t dv = (int32_t)v*md->weight;
 
-    uint8_t differential = md->differential;
-    if (differential && dv<0)
-      dv = (dv * (100-differential)) / 100;
+    int8_t differential = md->differential;
+    if (differential>0 && dv<0)
+      dv = (dv * (50-differential)) / 50;
+    else if (differential<0 && dv>0)
+      dv = (dv * (50+differential)) / 50;
 
     int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
     switch(md->mltpx){
