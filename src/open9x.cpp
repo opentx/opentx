@@ -2246,9 +2246,9 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
   }
 
-  // reset all trims, except throttle
+  // reset all trims, except throttle (if throttle trim)
   for (uint8_t i=0; i<NUM_STICKS; i++) {
-    if (i!=THR_STICK) {
+    if (i!=THR_STICK || !g_model.thrTrim) {
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
         int16_t trim = getTrimValue(phase, i);
         if (trim <= TRIM_EXTENDED_MAX)
