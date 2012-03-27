@@ -1888,7 +1888,10 @@ void perMain()
   if(g_LightOffCounter) g_LightOffCounter--;
   if(evt) g_LightOffCounter = g_eeGeneral.lightAutoOff*500; // on keypress turn the light on 5*100
 
-  checkBacklight();
+  if (getSwitch(g_eeGeneral.lightSw,0) || g_LightOffCounter)
+    BACKLIGHT_ON;
+  else
+    BACKLIGHT_OFF;
 
   g_menuStack[g_menuStackPtr](evt);
   refreshDisplay();
