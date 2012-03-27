@@ -1034,13 +1034,25 @@ void menuProcFrsky(uint8_t event)
       // Latitude
 #define LAT_LINE (1*FH+1)
       lcd_putsLeft( LAT_LINE, STR_LATITUDE);
-      lcd_outdezAtt(10*FW, LAT_LINE, frskyHubData.gpsLatitude_bp / 100, LEFT); // ddd before '.'
-      lcd_putc(lcd_lastPos, LAT_LINE, '@');
-      uint8_t mn = frskyHubData.gpsLatitude_bp % 100;
-      lcd_outdezNAtt(lcd_lastPos+FW, LAT_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
-      lcd_plot(lcd_lastPos, LAT_LINE+FH-2, 0); // small decimal point
-      lcd_outdezNAtt(lcd_lastPos+2, LAT_LINE, frskyHubData.gpsLatitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
-      lcd_putc(lcd_lastPos+1, LAT_LINE, frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
+        lcd_outdezAtt(10*FW, LAT_LINE, frskyHubData.gpsLatitude_bp / 100, LEFT); // ddd before '.'
+        lcd_putc(lcd_lastPos, LAT_LINE, '@');
+        uint8_t mn = frskyHubData.gpsLatitude_bp % 100;
+      if (g_eeGeneral.gpsFormat==1) {
+        lcd_outdezNAtt(lcd_lastPos+FW, LAT_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
+        lcd_plot(lcd_lastPos, LAT_LINE+FH-2, 0); // small decimal point
+        lcd_outdezNAtt(lcd_lastPos+2, LAT_LINE, frskyHubData.gpsLatitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+        lcd_putc(lcd_lastPos+1, LAT_LINE, frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
+      } else {
+        lcd_putc(lcd_lastPos+FW, LAT_LINE, frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
+        lcd_outdezNAtt(lcd_lastPos+FW+FW, LAT_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
+        lcd_plot(lcd_lastPos, LAT_LINE, 0); // small decimal point
+        uint16_t ss=frskyHubData.gpsLatitude_ap*6;
+        lcd_outdezAtt(lcd_lastPos+2, LAT_LINE, ss / 1000, LEFT); // ''
+        lcd_plot(lcd_lastPos, LAT_LINE+FH-2, 0); // small decimal point
+        lcd_outdezAtt(lcd_lastPos+2, LAT_LINE, ss % 1000, LEFT); // ''
+        lcd_plot(lcd_lastPos, LAT_LINE, 0); // small decimal point
+        lcd_plot(lcd_lastPos+2, LAT_LINE, 0); // small decimal point
+      }
 
       // Longitude
 #define LONG_LINE (2*FH+2)
@@ -1048,11 +1060,22 @@ void menuProcFrsky(uint8_t event)
       lcd_outdezAtt(10*FW, LONG_LINE, frskyHubData.gpsLongitude_bp / 100, LEFT); // ddd before '.'
       lcd_putc(lcd_lastPos, LONG_LINE, '@');
       mn = frskyHubData.gpsLongitude_bp % 100;
-      lcd_outdezNAtt(lcd_lastPos+FW, LONG_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
-      lcd_plot(lcd_lastPos, LONG_LINE+FH-2, 0); // small decimal point
-      lcd_outdezNAtt(lcd_lastPos+2, LONG_LINE, frskyHubData.gpsLongitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
-      lcd_putc(lcd_lastPos+1, LONG_LINE, frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
-
+      if (g_eeGeneral.gpsFormat==1) {
+        lcd_outdezNAtt(lcd_lastPos+FW, LONG_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
+        lcd_plot(lcd_lastPos, LONG_LINE+FH-2, 0); // small decimal point
+        lcd_outdezNAtt(lcd_lastPos+2, LONG_LINE, frskyHubData.gpsLongitude_ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+        lcd_putc(lcd_lastPos+1, LONG_LINE, frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
+      } else {
+        lcd_putc(lcd_lastPos+FW, LONG_LINE, frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
+        lcd_outdezNAtt(lcd_lastPos+FW+FW, LONG_LINE, mn, LEFT|LEADING0, 2); // mm before '.'
+        lcd_plot(lcd_lastPos, LONG_LINE, 0); // small decimal point
+        uint16_t ss=frskyHubData.gpsLongitude_ap*6;
+        lcd_outdezAtt(lcd_lastPos+2, LONG_LINE, ss / 1000, LEFT); // ''
+        lcd_plot(lcd_lastPos, LONG_LINE+FH-2, 0); // small decimal point
+        lcd_outdezAtt(lcd_lastPos+2, LONG_LINE, ss % 1000, LEFT); // ''
+        lcd_plot(lcd_lastPos, LONG_LINE, 0); // small decimal point
+        lcd_plot(lcd_lastPos+2, LONG_LINE, 0); // small decimal point
+      }
       // Rssi
 #define RSSI_LINE (3*FH+3)
       lcd_putsLeft(RSSI_LINE, STR_MINRSSI);
