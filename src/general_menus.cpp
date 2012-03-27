@@ -86,6 +86,7 @@ enum menuProcSetupItems {
 #ifdef FRSKY
   ITEM_SETUP_NODATA_ALARM,
   ITEM_SETUP_TIMEZONE,
+  ITEM_SETUP_GPSCOORD,
 #endif
   ITEM_SETUP_MAX
 };
