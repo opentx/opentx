@@ -305,6 +305,7 @@ extern const pm_char STR_BADEEPROMDATA[];
 extern const pm_char STR_EEPROMFORMATTING[];
 extern const pm_char STR_EEPROMOVERFLOW[];
 extern const pm_char STR_MENUSERROR[];
+extern const pm_char STR_TRIMS2OFFSETS[];
 extern const pm_char STR_MENURADIOSETUP[];
 extern const pm_char STR_MENUDATEANDTIME[];
 extern const pm_char STR_MENUTRAINER[];

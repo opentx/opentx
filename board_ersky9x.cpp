@@ -582,23 +582,7 @@ void board_init()
 
   start_sound() ;
 
-  // init_spi() ; // TODO in eeprom_arm
-}
-
-/*TODO not here...*/
-void eeDirty(uint8_t msk) { }
-void eeCheck(bool immediately) {}
-uint16_t eeLoadModelName(uint8_t id, char *name)
-{
-  memset(name, 0, sizeof(g_model.name));
-  return 0;
-}
-int8_t eeFindEmptyModel(uint8_t id, bool down) { return 0;}
-void eeLoadModel(uint8_t id) {}
-void eeReadAll()
-{
-    generalDefault();
-    modelDefault(0);
+  eeprom_init();
 }
 
 uint16_t getTmr2MHz()

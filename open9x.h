@@ -726,6 +726,7 @@ extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 
 extern void incSubtrim(uint8_t idx, int16_t inc);
 extern void instantTrim();
+extern void moveTrimsToOffsets();
 
 extern uint16_t active_functions;
 inline bool isFunctionActive(uint8_t func)
@@ -791,9 +792,9 @@ union ReusableBuffer
 {
 #if !defined(PCBARM)
     uint8_t eefs_buffer[BLOCKS];           // used by EeFsck
-#endif
 
     char model_name[sizeof(g_model.name)]; // used by menuProcModelSelect
+#endif
 
     struct
     {

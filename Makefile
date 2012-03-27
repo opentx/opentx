@@ -7,16 +7,6 @@
 #
 # make clean = Clean out built project files.
 #
-# make coff = Convert ELF to AVR COFF.
-#
-# make extcoff = Convert ELF to AVR Extended COFF.
-#
-# make program = Download the hex file to the device, using avrdude.
-#                Please customize the avrdude settings below first!
-#
-# make debug = Start either simulavr or avarice as specified for debugging,
-#              with avr-gdb or avr-insight as the front end for debugging.
-#
 # make filename.s = Just compile filename.c into the assembler code only.
 #
 # make filename.i = Create a preprocessed source file for use in submitting
@@ -30,8 +20,6 @@
 #gruvin: PCB version -- OVERRIDES the following settings if not STD
 # Values: STD, V4, ARM
 PCB = STD
-
-# Following options for PCB=STD only (ignored otherwise) ...
 
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
@@ -114,7 +102,6 @@ DEBUG = NO
 
 # Define programs and commands.
 SHELL = sh
-
 IMG2LBM = python ../util/img2lbm.py
 REV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 
@@ -137,6 +124,7 @@ ifeq ($(PCB), ARM)
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
   BOARDSRC = board_ersky9x.cpp
+  EEPROMSRC = eeprom_arm.cpp
   CPPDEFS = 
 endif
 
@@ -144,15 +132,11 @@ CC      = $(TRGT)gcc
 OBJCOPY = $(TRGT)objcopy
 OBJDUMP = $(TRGT)objdump
 SIZE    = $(TRGT)size
-#AS   = $(TRGT)gcc -x assembler-with-cpp
-#BIN  = $(CP) -O ihex 
-#BINX = $(CP) -O binary 
-#NM = avr-nm
+NM      = $(TRGT)nm
+
 AVRDUDE = avrdude
 REMOVE = rm -f
 REMOVEDIR = rm -rf
-#COPY = cp
-#WINSHELL = cmd
 
 # Processor frequency.
 F_CPU = 16000000
@@ -162,9 +146,6 @@ FORMAT = ihex
 
 # Target file name (without extension).
 TARGET = open9x
-
-# Object files directory
-OBJDIR = obj
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp o9xstrings.cpp
@@ -186,7 +167,6 @@ endif
 #     AVR Studio 4.10 requires dwarf-2.
 #     AVR [Extended] COFF format requires stabs, plus an avr-objcopy run.
 DBGFMT = dwarf-2
-
 
 # List any extra directories to look for include files here.
 #     Each directory must be seperated by a space.
@@ -363,21 +343,9 @@ endif
 CPPFLAGS = -g$(DBGFMT)
 CPPFLAGS += $(CPPDEFS)
 CPPFLAGS += -O$(OPT)
-#CPPFLAGS += -mint8
-#CPPFLAGS += -mshort-calls
-#CPPFLAGS += -funsigned-char
-#CPPFLAGS += -funsigned-bitfields
-#CPPFLAGS += -fpack-struct
-#CPPFLAGS += -fshort-enums
-#CPPFLAGS += -fno-exceptions
-#CPPFLAGS += -fno-unit-at-a-time
 CPPFLAGS += -Wall
 CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
-#CPPFLAGS += -Wstrict-prototypes
-#CPPFLAGS += -Wunreachable-code
-#CPPFLAGS += -Wsign-compare
-#CPPFLAGS += -Wa,-adhlns=$(<:%.cpp=$(OBJDIR)/%.lst)
 CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 ifneq ($(PCB), ARM)
@@ -388,46 +356,7 @@ ifneq ($(PCB), ARM)
   CPPFLAGS += -fno-inline-small-functions
 endif
 
-
-
-#---------------- Assembler Options ----------------
-#  -Wa,...:   tell GCC to pass this to the assembler.
-#  -ahlms:    create listing
-#  -gstabs:   have the assembler create line number information; note that
-#             for use in COFF files, additional information about filenames
-#             and function names needs to be present in the assembler source
-#             files -- see avr-libc docs [FIXME: not yet described there]
-ASFLAGS = -Wa,-adhlns=$(<:%.S=$(OBJDIR)/%.lst),-gstabs
-
-
-#---------------- Library Options ----------------
-# Minimalistic printf version
-PRINTF_LIB_MIN = -Wl,-u,vfprintf -lprintf_min
-
-# Floating point printf version (requires MATH_LIB = -lm below)
-PRINTF_LIB_FLOAT = -Wl,-u,vfprintf -lprintf_flt
-
-# If this is left blank, then it will use the Standard printf version.
-PRINTF_LIB =
-#PRINTF_LIB = $(PRINTF_LIB_MIN)
-#PRINTF_LIB = $(PRINTF_LIB_FLOAT)
-
-
-# Minimalistic scanf version
-SCANF_LIB_MIN = -Wl,-u,vfscanf -lscanf_min
-
-# Floating point + %[ scanf version (requires MATH_LIB = -lm below)
-SCANF_LIB_FLOAT = -Wl,-u,vfscanf -lscanf_flt
-
-# If this is left blank, then it will use the Standard scanf version.
-SCANF_LIB =
-#SCANF_LIB = $(SCANF_LIB_MIN)
-#SCANF_LIB = $(SCANF_LIB_FLOAT)
-
-
 MATH_LIB = -lm
-
-
 
 #---------------- External Memory Options ----------------
 
@@ -449,103 +378,21 @@ EXTMEMOPTS =
 #    --cref:    add cross reference to  map file
 LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 LDFLAGS += $(EXTMEMOPTS)
-LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
+LDFLAGS += $(MATH_LIB)
 #LDFLAGS += -T linker_script.x
-
-
-
-#---------------- Programming Options (avrdude) ----------------
-
-# Programming hardware: alf avr910 avrisp bascom bsd
-# dt006 pavr picoweb pony-stk200 sp12 stk200 stk500
-#
-# Type: avrdude -c ?
-# to get a full listing.
-#
-AVRDUDE_PROGRAMMER = avrispmkII
-
-
-# com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = usb
-
-AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex:a
-AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).bin:a
-AVRDUDE_READ_FLASH = -U flash:r:$(TARGET).hex:r
-AVRDUDE_READ_EEPROM = -U eeprom:r:$(TARGET).bin:r
-
-
-
-# Uncomment the following if you want avrdude's erase cycle counter.
-# Note that this counter needs to be initialized first using -Yn,
-# see avrdude manual.
-#AVRDUDE_ERASE_COUNTER = -y
-
-# Uncomment the following if you do /not/ wish a verification to be
-# performed after programming the device.
-AVRDUDE_NO_VERIFY = -V
-
-# Increase verbosity level.  Please use this when submitting bug
-# reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude>
-# to submit bug reports.
-#AVRDUDE_VERBOSE = -v -v
-
-#AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
-AVRDUDE_FLAGS = -B0.25 -p $(MCU) -c $(AVRDUDE_PROGRAMMER) -P $(AVRDUDE_PORT)
-#AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
-AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
-AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
-
-ifeq ($(ERAZE), NO)
-  AVRDUDE_FLAGS += -D
-endif
-
-#---------------- Debugging Options ----------------
-
-# For simulavr only - target MCU frequency.
-DEBUG_MFREQ = $(F_CPU)
-
-# Set the DEBUG_UI to either gdb or insight.
-DEBUG_UI = gdb
-# DEBUG_UI = insight
-
-# Set the debugging back-end to either avarice, simulavr.
-#DEBUG_BACKEND = avarice
-DEBUG_BACKEND = simulavr
-
-# GDB Init Filename.
-GDBINIT_FILE = __avr_gdbinit
-
-# When using avarice settings for the JTAG
-JTAG_DEV = /dev/com1
-
-# Debugging port used to communicate between GDB / avarice / simulavr.
-DEBUG_PORT = 4242
-
-# Debugging host used to communicate between GDB / avarice / simulavr, normally
-#     just set to localhost unless doing some sort of crazy debugging when
-#     avarice is running on a different computer.
-DEBUG_HOST = localhost
 
 # Define Messages
 # English
-MSG_ERRORS_NONE = Errors: none
 MSG_BEGIN = -------- begin --------
 MSG_END = --------  end  --------
 MSG_SIZE_BEFORE = Size before:
 MSG_SIZE_AFTER = Size after:
-MSG_COFF = Converting to AVR COFF:
-MSG_EXTENDED_COFF = Converting to AVR Extended COFF:
 MSG_FLASH = Creating load file for Flash:
 MSG_EEPROM = Creating load file for EEPROM:
 MSG_EXTENDED_LISTING = Creating Extended Listing:
 MSG_SYMBOL_TABLE = Creating Symbol Table:
 MSG_COMPILING = Compiling C++:
-MSG_ASSEMBLING = Assembling:
 MSG_CLEANING = Cleaning project:
-MSG_CREATING_LIBRARY = Creating library:
-
-# Compiler flags to generate dependency files.
-GENDEPFLAGS = -MD -MP -MF .dep/$(@F).d
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
@@ -628,67 +475,22 @@ end:
 	@echo $(MSG_END)
 	@echo
 
-
-
 # Display size of file.
-HEXSIZE = $(SIZE) --target=$(FORMAT) $(TARGET).hex
-ELFSIZE = $(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf
-AVRMEM = avr-mem.sh $(TARGET).elf $(MCU)
-
 ifeq ($(PCB), ARM)
-sizebefore:
-	
-sizeafter:
-	
+  ELFSIZE = $(SIZE) $(TARGET).elf
 else
+  ELFSIZE = $(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf
+endif
+
 sizebefore:
-	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_BEFORE); $(ELFSIZE); \
-	$(AVRMEM) 2>/dev/null; echo; fi
+	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_BEFORE); $(ELFSIZE); fi
 
 sizeafter:
-	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_AFTER); $(ELFSIZE); \
-	$(AVRMEM) 2>/dev/null; echo; fi
-endif
+	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_AFTER); $(ELFSIZE); fi
 
 # Display compiler version information.
 gccversion :
 	@$(CC) --version
-
-
-
-# Program the device.
-wflash: $(TARGET).hex
-	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH)
-
-weeprom: $(TARGET).bin
-	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_EEPROM)
-
-# Write flash and eeprom
-wfe: $(TARGET).hex
-	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH)
-	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_EEPROM)
-
-rflash: $(TARGET).hex
-	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_READ_FLASH)
-
-reeprom: $(TARGET).bin
-	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_READ_EEPROM)
-
-
-# Generate avr-gdb config/init file which does the following:
-#     define the reset signal, load the target file, connect to target, and set
-#     a breakpoint at main().
-gdb-config:
-	@$(REMOVE) $(GDBINIT_FILE)
-	@echo define reset >> $(GDBINIT_FILE)
-	@echo SIGNAL SIGHUP >> $(GDBINIT_FILE)
-	@echo end >> $(GDBINIT_FILE)
-	@echo file $(TARGET).elf >> $(GDBINIT_FILE)
-	@echo target remote $(DEBUG_HOST):$(DEBUG_PORT)  >> $(GDBINIT_FILE)
-ifeq ($(DEBUG_BACKEND),simulavr)
-	@echo load  >> $(GDBINIT_FILE)
-endif
-	@echo break main >> $(GDBINIT_FILE)
 
 # gruvin: added extra include and lib paths to get simu working on my Mac
 FOXINC=-I/usr/local/include/fox-1.6 -I/usr/include/fox-1.6 \
@@ -706,39 +508,6 @@ simu: $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.b
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
 
-debug: gdb-config $(TARGET).elf
-ifeq ($(DEBUG_BACKEND),avarice)
-	@echo Starting AVaRICE - Press enter when "waiting to connect" message displays.
-	@$(WINSHELL) /c start avarice --jtag $(JTAG_DEV) --erase --program --file \
-	  $(TARGET).elf $(DEBUG_HOST):$(DEBUG_PORT)
-	@$(WINSHELL) /c pause
-else
-	@$(WINSHELL) /c start simulavr --gdbserver --device $(MCU) --clock-freq \
-	  $(DEBUG_MFREQ) --port $(DEBUG_PORT)
-endif
-	@$(WINSHELL) /c start avr-$(DEBUG_UI) --command=$(GDBINIT_FILE)
-
-
-
-
-# Convert ELF to COFF for use in debugging / simulating in AVR Studio or VMLAB.
-	COFFCONVERT = $(OBJCOPY) --debugging
-	COFFCONVERT += --change-section-address .data-0x800000
-	COFFCONVERT += --change-section-address .bss-0x800000
-	COFFCONVERT += --change-section-address .noinit-0x800000
-	COFFCONVERT += --change-section-address .eeprom-0x810000
-
-
-coff: $(TARGET).elf
-	@echo
-	@echo $(MSG_COFF) $(TARGET).cof
-	$(COFFCONVERT) -O coff-avr $< $(TARGET).cof
-
-
-extcoff: $(TARGET).elf
-	@echo
-	@echo $(MSG_EXTENDED_COFF) $(TARGET).cof
-	$(COFFCONVERT) -O coff-ext-avr $< $(TARGET).cof
 
 # Create final output files (.hex, .eep) from ELF output file.
 ifeq ($(PCB), ARM)
@@ -810,21 +579,15 @@ clean_list :
 	$(REMOVE) gtest_main.a
 	$(REMOVE) $(TARGET).hex
 	$(REMOVE) $(TARGET).eep
-	$(REMOVE) $(TARGET).cof
 	$(REMOVE) $(TARGET).elf
 	$(REMOVE) $(TARGET).map
 	$(REMOVE) $(TARGET).sym
 	$(REMOVE) $(TARGET).lss
-	$(REMOVEDIR) $(OBJDIR)
 	$(REMOVE) $(SRC:.c=.s)
 	$(REMOVE) *.o
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
-	$(REMOVEDIR) .dep
-
-# Include the dependency files.
--include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
 
 #### GOOGLE TESTS 
 

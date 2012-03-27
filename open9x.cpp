@@ -356,6 +356,32 @@ void applyExpos(int16_t *anas, uint8_t phase)
   }
 }
 
+int16_t applyLimits(uint8_t channel, int32_t value)
+{
+  int16_t ofs = g_model.limitData[channel].offset;
+  int16_t lim_p = 10 * (g_model.limitData[channel].max + 100);
+  int16_t lim_n = 10 * (g_model.limitData[channel].min - 100); //multiply by 10 to get same range as ofs (-1000..1000)
+  if (ofs > lim_p) ofs = lim_p;
+  if (ofs < lim_n) ofs = lim_n;
+
+  if (value) value =
+      (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
+          -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
+
+  // TODO work on an int16_t as soon as possible ...
+  value += calc1000toRESX(ofs);
+  lim_p = calc1000toRESX(lim_p);
+  lim_n = calc1000toRESX(lim_n);
+  if (value > lim_p) value = lim_p;
+  if (value < lim_n) value = lim_n;
+  if (g_model.limitData[channel].revert) value = -value; // finally do the reverse.
+
+  if (safetyCh[channel] != -128) // if safety channel available for channel check and replace val if needed
+    value = calc100toRESX(safetyCh[channel]);
+
+  return value;
+}
+
 int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain
 #ifdef HELI
 int16_t cyc_anas[3] = {0};
@@ -1114,6 +1140,7 @@ FORCEINLINE void evalTrims(uint8_t phase)
 {
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
+    // TODO avoid int32_t vv
     int32_t vv = 2*RESX;
     int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
     if (i==THR_STICK && g_model.thrTrim) {
@@ -1130,9 +1157,19 @@ FORCEINLINE void evalTrims(uint8_t phase)
   }
 }
 
-bool s_noTrainerInput = false;
+enum PerOutMode {
+  e_perout_mode_normal = 0,
+  e_perout_mode_trims,
+  e_perout_mode_zeros,
+  e_instant_trim
+};
+
+uint8_t s_perout_mode = e_perout_mode_normal;
+
 uint8_t evalSticks(uint8_t phase)
 {
+  uint8_t anaCenter = 0;
+
 #ifdef HELI
   uint16_t d = 0;
   if (g_model.swashR.value) {
@@ -1144,8 +1181,6 @@ uint8_t evalSticks(uint8_t phase)
       d = isqrt32(v);
   }
 #endif
-
-  uint8_t anaCenter = 0;
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
 
@@ -1171,7 +1206,7 @@ uint8_t evalSticks(uint8_t phase)
     if (tmp <= 1) anaCenter |= (tmp==0 ? 1<<ch : bpanaCenter & (1<<ch));
 
     if (ch < NUM_STICKS) { //only do this for sticks
-      if (!s_noTrainerInput && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
+      if (s_perout_mode==e_perout_mode_normal && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -1277,30 +1312,31 @@ void perOut(uint8_t phase)
 {
   uint8_t anaCenter = evalSticks(phase);
 
-  //===========BEEP CENTER================
-  anaCenter &= g_model.beepANACenter;
-  if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_STICK_MIDDLE();
-  bpanaCenter = anaCenter;
+  if (s_perout_mode == e_perout_mode_normal) {
+    //===========BEEP CENTER================
+    anaCenter &= g_model.beepANACenter;
+    if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_STICK_MIDDLE();
+    bpanaCenter = anaCenter;
 
 #ifdef HELI
-  if(g_model.swashR.value)
-  {
+    if(g_model.swashR.value)
+    {
       uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
       uint32_t q = (int32_t)RESX*g_model.swashR.value/100;
       q *= q;
       if(v>q)
       {
-          uint16_t d = isqrt32(v);
-          anas[ELE_STICK] = (int32_t)anas[ELE_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
-          anas[AIL_STICK] = (int32_t)anas[AIL_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
+        uint16_t d = isqrt32(v);
+        anas[ELE_STICK] = (int32_t)anas[ELE_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
+        anas[AIL_STICK] = (int32_t)anas[AIL_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
       }
-  }
+    }
 
 #define REZ_SWASH_X(x)  ((x) - (x)/8 - (x)/128 - (x)/512)   //  1024*sin(60) ~= 886
 #define REZ_SWASH_Y(x)  ((x))   //  1024 => 1024
 
-  if(g_model.swashR.type)
-  {
+    if(g_model.swashR.type)
+    {
       int16_t vp = anas[ELE_STICK]+trims[ELE_STICK];
       int16_t vr = anas[AIL_STICK]+trims[AIL_STICK];
       int16_t vc = 0;
@@ -1313,49 +1349,50 @@ void perOut(uint8_t phase)
 
       switch (g_model.swashR.type)
       {
-      case (SWASH_TYPE_120):
+        case (SWASH_TYPE_120):
           vp = REZ_SWASH_Y(vp);
           vr = REZ_SWASH_X(vr);
           cyc_anas[0] = vc - vp;
           cyc_anas[1] = vc + vp/2 + vr;
           cyc_anas[2] = vc + vp/2 - vr;
           break;
-      case (SWASH_TYPE_120X):
+        case (SWASH_TYPE_120X):
           vp = REZ_SWASH_X(vp);
           vr = REZ_SWASH_Y(vr);
           cyc_anas[0] = vc - vr;
           cyc_anas[1] = vc + vr/2 + vp;
           cyc_anas[2] = vc + vr/2 - vp;
           break;
-      case (SWASH_TYPE_140):
+        case (SWASH_TYPE_140):
           vp = REZ_SWASH_Y(vp);
           vr = REZ_SWASH_Y(vr);
           cyc_anas[0] = vc - vp;
           cyc_anas[1] = vc + vp + vr;
           cyc_anas[2] = vc + vp - vr;
           break;
-      case (SWASH_TYPE_90):
+        case (SWASH_TYPE_90):
           vp = REZ_SWASH_Y(vp);
           vr = REZ_SWASH_Y(vr);
           cyc_anas[0] = vc - vp;
           cyc_anas[1] = vc + vr;
           cyc_anas[2] = vc - vr;
           break;
-      default:
+        default:
           break;
       }
-  }
+    }
 #endif
+
+    s_trimPtr[0] = NULL;
+    s_trimPtr[1] = NULL;
+    s_trimPtr[2] = NULL;
+    s_trimPtr[3] = NULL;
+  }
 
   memset(chans, 0, sizeof(chans));        // All outputs to 0
 
-  s_trimPtr[0] = NULL;
-  s_trimPtr[1] = NULL;
-  s_trimPtr[2] = NULL;
-  s_trimPtr[3] = NULL;
-
   //========== MIXER LOOP ===============
-  mixWarning = 0;
+  mixWarning = 0; // TODO should be in a local variable on stack
   for (uint8_t i=0; i<MAX_MIXERS; i++) {
 
     MixData *md = mixaddress( i ) ;
@@ -1380,38 +1417,47 @@ void perOut(uint8_t phase)
     //Notice 0 = NC switch means not used -> always on line
     uint8_t k = md->srcRaw-1;
     int16_t v = 0;
-    if (k < NUM_STICKS)
-      v = anas[k]; //Switch is on. MAX=FULL=512 or value.
-    else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CH16-1 && k-MIXSRC_CH1+1<md->destCh) // if we've already calculated the value - take it instead
-      v = chans[k-MIXSRC_CH1+1] / 100;
-    else if (k>=MIXSRC_THR-1 && k<=MIXSRC_SWC-1) {
-      v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
-      if (v<0 && !md->swtch)
-        sw = false;
+    if (s_perout_mode != e_perout_mode_normal) {
+      if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim))
+        continue;
     }
-    else
-      v = getValue(k <= MIXSRC_3POS ? k : k-MAX_SWITCH);
+    else {
+      if (k < NUM_STICKS)
+        v = anas[k]; //Switch is on. MAX=FULL=512 or value.
+      else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CH16-1 && k-MIXSRC_CH1+1<md->destCh) // if we've already calculated the value - take it instead
+        v = chans[k-MIXSRC_CH1+1] / 100;
+      else if (k>=MIXSRC_THR-1 && k<=MIXSRC_SWC-1) {
+        v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
+        if (v<0 && !md->swtch)
+          sw = false;
+      }
+      else {
+        v = getValue(k <= MIXSRC_3POS ? k : k-MAX_SWITCH);
+      }
+    }
 
     //========== DELAYS ===============
     uint8_t swTog;
     if (sw) { // switch on?  (if no switch selected => on)
       swTog = !swOn[i];
-      swOn[i] = true;
-      if (md->delayUp) {
-        if (swTog) {
-          sDelay[i] = md->delayUp * 100;
-        }
-        if (sDelay[i]) { // perform delay
-          if(tick10ms) sDelay[i]--;
-          if (!md->swtch) {
-            v = -1024;
+      if (s_perout_mode == e_perout_mode_normal) {
+        swOn[i] = true;
+        if (md->delayUp) {
+          if (swTog) {
+            sDelay[i] = md->delayUp * 100;
           }
-          else {
-            continue;
+          if (sDelay[i]) { // perform delay
+            if(tick10ms) sDelay[i]--;
+            if (!md->swtch) {
+              v = -1024;
+            }
+            else {
+              continue;
+            }
           }
         }
+        if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
       }
-      if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
     }
     else {
       bool has_delay = false;
@@ -1445,7 +1491,7 @@ void perOut(uint8_t phase)
     if(md->sOffset) v += calc100toRESX(md->sOffset);
 
     //========== SPEED ===============
-    if (md->speedUp || md->speedDown)  // there are delay values
+    if (s_perout_mode==e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
     {
 #define DEL_MULT 256
 
@@ -1473,11 +1519,12 @@ void perOut(uint8_t phase)
       v = applyCurve(v, md->curve);
 
     //========== TRIMS ===============
+    // TODO use k?
     if (md->srcRaw>0 && md->srcRaw<=NUM_STICKS) {
-      if (md->carryTrim == TRIM_ON) {
+      if (s_perout_mode < e_perout_mode_zeros && md->carryTrim == TRIM_ON) {
         v += trims[md->srcRaw-1];
       }
-      if (md->carryTrim == TRIM_OFFSET) {
+      if (s_perout_mode == e_perout_mode_normal && md->carryTrim == TRIM_OFFSET) {
         v = md->sOffset;
         v = calc1000toRESX(v << 3);
         s_trimPtr[md->srcRaw-1] = &md->sOffset;  // use the value stored here for the trim
@@ -1579,32 +1626,23 @@ void perMain()
     int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) * 16 : chans[i]);
     ex_chans[i] = q / 100; // for the next perMain
 
-    int16_t ofs = g_model.limitData[i].offset;
-    int16_t lim_p = 10*(g_model.limitData[i].max+100);
-    int16_t lim_n = 10*(g_model.limitData[i].min-100); //multiply by 10 to get same range as ofs (-1000..1000)
-    if (ofs>lim_p) ofs = lim_p;
-    if(ofs<lim_n) ofs = lim_n;
-
-    if (q) q = (q>0) ?
-        q*((int32_t)lim_p-ofs)/100000 :
-       -q*((int32_t)lim_n-ofs)/100000 ; //div by 100000 -> output = -1024..1024
-
-    q += calc1000toRESX(ofs);
-    lim_p = calc1000toRESX(lim_p);
-    lim_n = calc1000toRESX(lim_n);
-    if(q>lim_p) q = lim_p;
-    if(q<lim_n) q = lim_n;
-    if(g_model.limitData[i].revert) q=-q;// finally do the reverse.
-
-    if (safetyCh[i] != -128)  // if safety channel available for channel check and replace val if needed
-      q = calc100toRESX(safetyCh[i]);
+    int16_t value = applyLimits(i, q);
 
     cli();
-    g_chans512[i] = q;  //copy consistent word to int-level
+    g_chans512[i] = value;  // copy consistent word to int-level
     sei();
   }
 
-#if !defined(PCBARM)
+// TODO same code here + integrate the timer which could be common
+#if defined(PCBARM)
+  if ( Tenms ) {
+    Tenms = 0 ;
+    if (Eeprom32_process_state != E32_IDLE)
+      ee32_process();
+    else if (s_eeDirtyMsk)
+      eeCheck();
+  }
+#else
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
@@ -2161,9 +2199,9 @@ void instantTrim()
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(i, phase);
-      s_noTrainerInput = true;
+      s_perout_mode = e_instant_trim;
       evalSticks(phase);
-      s_noTrainerInput = false;
+      s_perout_mode = e_perout_mode_normal;
       int16_t trim = (anas[i] + trims[i]) / 2;
       if (trim < TRIM_EXTENDED_MIN) {
         trim = TRIM_EXTENDED_MIN;
@@ -2172,6 +2210,47 @@ void instantTrim()
         trim = TRIM_EXTENDED_MAX;
       }
       setTrimValue(trim_phase, i, trim);
+    }
+  }
+
+  STORE_MODELVARS;
+  AUDIO_WARNING2();
+}
+
+void moveTrimsToOffsets() // copy state of 3 primary to subtrim
+{
+  int16_t zeros[NUM_CHNOUT];
+  uint8_t phase = getFlightPhase();
+
+  s_perout_mode = e_perout_mode_zeros;
+  perOut(phase); // do output loop - zero input sticks and trims
+  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+    zeros[i] = applyLimits(i, chans[i]);
+  }
+
+  s_perout_mode = e_perout_mode_trims;
+  perOut(phase); // do output loop - only trims
+  s_perout_mode = e_perout_mode_normal;
+
+  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+    int16_t output = applyLimits(i, chans[i]);
+    int16_t v = g_model.limitData[i].offset;
+    // TODO flash saving?
+    v += g_model.limitData[i].revert ?
+        (zeros[i] - output) :
+        (output - zeros[i]);
+    // TODO * 125 / 128 ?
+    g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
+  }
+
+  // reset all trims, except throttle
+  for (uint8_t i=0; i<NUM_STICKS; i++) {
+    if (i!=THR_STICK) {
+      for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
+        int16_t trim = getTrimValue(phase, i);
+        if (trim <= TRIM_EXTENDED_MAX)
+          setTrimValue(phase, i, 0);
+      }
     }
   }
 
@@ -2454,7 +2533,7 @@ int main(void)
   // BEFORE calling sam_boot()
   // TODO needed for REVB soft_power_off() ;
   // TODO not started end_ppm_capture() ;
-  // TODO in eeprom_arm ... end_spi() ;
+  end_spi() ; // TODO in eeprom_arm ...
   end_sound() ;
   TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
   NVIC_DisableIRQ(TC2_IRQn) ;

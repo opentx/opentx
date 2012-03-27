@@ -179,7 +179,7 @@ void USART1_IRQHandler (void) { while(1); }
 void MCI_IRQHandler (void) { while(1); }
 // void TWI0_IRQHandler (void) { while(1); }
 void TWI1_IRQHandler (void) { while(1); }
-void SPI_IRQHandler (void) { while(1); }
+// void SPI_IRQHandler (void) { while(1); }
 void SSC_IRQHandler (void) { while(1); }
 void TC0_IRQHandler (void) { while(1); }
 void TC1_IRQHandler (void) { while(1); }
