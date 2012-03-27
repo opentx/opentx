@@ -118,7 +118,7 @@
 #endif
 
 #define LEN_GPSFORMAT     "\004"
-#define TR_GPSFORMAT   "NMEAhms "
+#define TR_GPSFORMAT   "HMS NMEA"
 
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"
