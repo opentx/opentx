@@ -117,6 +117,9 @@
 #define TR_VTELPROTO     "NoneHub "
 #endif
 
+#define LEN_GPSFORMAT     "\004"
+#define TR_GPSFORMAT   "NMEAhms "
+
 #define LEN2_VTEMPLATES  15
 #define LEN_VTEMPLATES   "\017"
 #define TR_VTEMPLATES    "Suppr Mixages\0\0""4 Voies simple\0""Coupure Gaz   \0""Empennage V   \0""Elevon\\Delta  \0""eCCPM         \0""Conf. Helico  \0""Servo Test    \0"
