@@ -111,7 +111,7 @@ void menuProcSetup(uint8_t event)
 #define SPLASH_ZEROS
 #endif
 #ifdef FRSKY
-#define FRSKY_ZEROS  0, 0,
+#define FRSKY_ZEROS  0, 0, 0,
 #else
 #define FRSKY_ZEROS
 #endif
@@ -327,6 +327,13 @@ void menuProcSetup(uint8_t event)
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
     if((y+=FH)>7*FH) return;
     }subN++;
+    
+  if(s_pgOfs<subN) {
+    lcd_putsLeft( y, STR_GPSCOORD);
+    lcd_putsiAtt(PARAM_OFS, y, STR_GPSFORMAT, g_eeGeneral.gpsFormat, (sub==subN ? INVERS:0));
+    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.gpsFormat, 0, 1);
+    if((y+=FH)>7*FH) return;
+  }subN++;   
 #endif
 
   if(s_pgOfs<subN) {

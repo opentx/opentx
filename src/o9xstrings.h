@@ -83,7 +83,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VALARM     (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
 #define OFS_VALARMFN   (OFS_VALARM + sizeof(TR_VALARM))
 #define OFS_VTELPROTO  (OFS_VALARMFN + sizeof(TR_VALARMFN))
-#define OFS_ENDTELEM   (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
+#define OFS_GPSFORMAT   (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
+#define OFS_ENDTELEM   (OFS_GPSFORMAT + sizeof(TR_GPSFORMAT))
 #else
 #define OFS_ENDTELEM   (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
 #endif
@@ -146,6 +147,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VALARM     (STR_OPEN9X + OFS_VALARM)
 #define STR_VALARMFN   (STR_OPEN9X + OFS_VALARMFN)
 #define STR_VTELPROTO  (STR_OPEN9X + OFS_VTELPROTO)
+#define STR_GPSFORMAT  (STR_OPEN9X + OFS_GPSFORMAT)
 #define STR_TELEMCHNS  (STR_OPEN9X + OFS_TELEMCHNS)
 #endif
 
@@ -257,6 +259,7 @@ extern const pm_char STR_MEMORYWARNING[];
 extern const pm_char STR_ALARMWARNING[];
 extern const pm_char STR_NODATAALARM[];
 extern const pm_char STR_TIMEZONE[];
+extern const pm_char STR_GPSCOORD[];
 extern const pm_char STR_RXCHANNELORD[];
 extern const pm_char STR_SLAVE[];
 extern const pm_char STR_MODESRC[];

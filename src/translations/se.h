@@ -117,6 +117,9 @@
 #define TR_VTELPROTO     "--- Hub "
 #endif
 
+#define LEN_GPSFORMAT     "\004"
+#define TR_GPSFORMAT   "NMEAhms "
+
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"
 #define TR_VTEMPLATES    "Nolla Mixar\0\0""Enkel 4kanal\0""Gasklippning\0""V-Stj\201rt    \0""Deltavinge  \0""eCCPM       \0""Helikopter  \0""Servotest   \0"
