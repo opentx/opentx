@@ -312,3 +312,4 @@
 #define TR_MINRSSI       "Min Rssi"
 #define TR_LATITUDE      "Latitude"
 #define TR_LONGITUDE     "Longitude"
+#define TR_GPSCOORD     "Gps Coords"
