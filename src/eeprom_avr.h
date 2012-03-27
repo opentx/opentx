@@ -179,5 +179,9 @@ inline void eeFlush() { theFile.flush(); }
 
 uint16_t evalChkSum();
 
+#define eeDeleteModel(x) EFile::rm(FILE_MODEL(x))
+#define eeCopyModel(dst, src) theFile.copy(FILE_MODEL(dst), FILE_MODEL(src))
+#define eeSwapModels(id1, id2) EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2))
+
 #endif
 /*eof*/

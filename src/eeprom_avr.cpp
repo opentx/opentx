@@ -296,7 +296,6 @@ void EFile::rm(uint8_t i_fileId)
   EeFsFlushDirEnt(i_fileId);
   if (i) EeFsFree(i); //chain in
   s_sync_write = false;
-
 }
 
 uint16_t EFile::size()
@@ -710,7 +709,7 @@ void eeLoadModel(uint8_t id)
     }
 #endif
 
-    if (sz == 0) {
+    if (sz < 256) {
       // alert("Error Loading Model");
       modelDefault(id);
       eeCheck(true);
@@ -723,17 +722,6 @@ void eeLoadModel(uint8_t id)
     initLogs();
 #endif
   }
-}
-
-int8_t eeFindEmptyModel(uint8_t id, bool down)
-{
-  int8_t i = id;
-  for (;;) {
-    i = (MAX_MODELS + (down ? i+1 : i-1)) % MAX_MODELS;
-    if (!EFile::exists(FILE_MODEL(i))) break;
-    if (i == id) return -1; // no free space in directory left
-  }
-  return i;
 }
 
 void eeReadAll()

@@ -107,7 +107,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
   int8_t    timezone:5;
-  uint8_t   spare:1;
+  uint8_t   spare2:1;
   uint8_t   inactivityTimer;
   uint8_t   throttleReversed:1;
   uint8_t   minuteBeep:1;
@@ -120,11 +120,11 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   lightAutoOff;
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
-  uint8_t   spare2[2];
+  uint8_t   spare3[2];
   int8_t    beeperLength:3;
   uint8_t   hapticStrength:3;
   uint8_t   gpsFormat:1;
-  uint8_t   spare3:1;
+  uint8_t   spare4:1;
   uint8_t   speakerPitch;
 }) EEGeneral;
 
