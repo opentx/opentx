@@ -42,28 +42,28 @@ uint16_t anaIn(uint8_t chan)
 TEST(trims, greaterTrimLink)
 {
  memset(&g_model, 0, sizeof(g_model));
- setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
- setTrimValue(3, 0, 32);
- EXPECT_EQ(getTrimValue(getTrimFlightPhase(0, 1), 0), 32);
+ setRawTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
+ setRawTrimValue(3, 0, 32);
+ EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 1), 0), 32);
 }
 
 TEST(trims, chainedTrims)
 {
  memset(&g_model, 0, sizeof(g_model));
- setTrimValue(0, 0, 32);
- setTrimValue(1, 0, TRIM_EXTENDED_MAX+1); // link to FP0 trim
- setTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
- EXPECT_EQ(getTrimValue(getTrimFlightPhase(0, 2), 0), 32);
+ setRawTrimValue(0, 0, 32);
+ setRawTrimValue(1, 0, TRIM_EXTENDED_MAX+1); // link to FP0 trim
+ setRawTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
+ EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
 }
 
 TEST(trims, infiniteChainedTrims)
 {
  memset(&g_model, 0, sizeof(g_model));
- setTrimValue(0, 0, 32);
- setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
- setTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
- setTrimValue(3, 0, TRIM_EXTENDED_MAX+3); // link to FP2 trim
- EXPECT_EQ(getTrimValue(getTrimFlightPhase(0, 2), 0), 32);
+ setRawTrimValue(0, 0, 32);
+ setRawTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
+ setRawTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
+ setRawTrimValue(3, 0, TRIM_EXTENDED_MAX+3); // link to FP2 trim
+ EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
 }
 
 TEST(outdezNAtt, test_unsigned) {

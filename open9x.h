@@ -474,8 +474,9 @@ uint16_t evalChkSum();
 
 /// Gibt Alarm Maske auf lcd aus.
 /// Die Maske wird so lange angezeigt bis eine beliebige Taste gedrueckt wird.
-void alert(const pm_char * s, bool defaults=false);
-void message(const pm_char * s);
+extern void alert(const pm_char * s);
+extern void message(const pm_char *title, const pm_char *s, const pm_char *t, const char *last);
+
 /// periodisches Hauptprogramm
 void    perMain();
 /// Bearbeitet alle zeitkritischen Jobs.
@@ -485,10 +486,11 @@ void    per10ms();
 int16_t getValue(uint8_t i);
 bool    getSwitch(int8_t swtch, bool nc);
 
-uint8_t getFlightPhase();
-uint8_t getTrimFlightPhase(uint8_t idx, uint8_t phase);
+extern uint8_t getFlightPhase();
+extern uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
+extern int16_t getRawTrimValue(uint8_t phase, uint8_t idx);
 extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
-extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
+extern void setRawTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec

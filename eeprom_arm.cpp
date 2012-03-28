@@ -144,7 +144,7 @@ void eeDeleteModel(uint8_t id)
 {
   eeCheck(true);
 
-  memset(ModelNames[id], ' ', sizeof(g_model.name));
+  memset(ModelNames[id], 0, sizeof(g_model.name));
 
   Eeprom32_source_address = (uint8_t *)&g_model ;   // Get data from here
   Eeprom32_data_size = 0 ;                          // This much
@@ -160,7 +160,10 @@ bool eeCopyModel(uint8_t dst, uint8_t src)
   uint16_t size = File_system[src+1].size ;
   read32_eeprom_data( (File_system[src+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, size, 0 ) ;
 
-  memcpy(ModelNames[dst], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+  if (size > sizeof(g_model.name))
+    memcpy(ModelNames[dst], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+  else
+    memset(ModelNames[dst], 0, sizeof(g_model.name));
 
   Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
   Eeprom32_data_size = sizeof(g_model) ;                                  // This much
@@ -173,18 +176,20 @@ bool eeCopyModel(uint8_t dst, uint8_t src)
 void eeSwapModels(uint8_t id1, uint8_t id2)
 {
   // eeCheck(true) should have been called before entering here
-  // id2 must exist
 
   uint16_t id1_size = File_system[id1+1].size;
   uint32_t id1_block_no = File_system[id1+1].block_no;
 
   eeCopyModel(id1, id2);
 
-  // block_no has been shifted now, but we have the size
+  // block_no(id1) has been shifted now, but we have the size
   read32_eeprom_data( (id1_block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, id1_size, 0 ) ;
 
   // TODO flash saving with function above ...
-  memcpy(ModelNames[id2], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+  if (id1_size > sizeof(g_model.name))
+    memcpy(ModelNames[id2], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+  else
+    memset(ModelNames[id2], 0, sizeof(g_model.name));
 
   Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
   Eeprom32_data_size = sizeof(g_model) ;                                  // This much
@@ -509,7 +514,7 @@ void ee32LoadModelName(uint8_t id, char *buf, uint8_t len)
 {
   if (id < MAX_MODELS) {
     id += 1;
-    memset(buf, ' ', len);
+    memset(buf, 0, len);
     if (File_system[id].size > sizeof(g_model.name) ) {
       read32_eeprom_data( ( File_system[id].block_no << 12) + 8, ( uint8_t *)buf, sizeof(g_model.name), 0 ) ;
     }
@@ -518,29 +523,15 @@ void ee32LoadModelName(uint8_t id, char *buf, uint8_t len)
 
 void eeReadAll()
 {
-//      txmit('a') ;
   if (!ee32LoadGeneral() )
-//               !EeFsOpen()  ||
-//     EeFsck() < 0 ||
-//  )
   {
-//      txmit('b') ;
-
-    alert((char const *)"Bad EEprom Data", true);
-    g_eeGeneral.contrast = 25 ;
-    message(PSTR("EEPROM Formatting"));
-//    EeFsFormat();
-   //alert(PSTR("format ok"));
     generalDefault();
-    // alert(PSTR("default ok"));
 
-//    uint16_t sz = theFile.writeRlc(FILE_GENERAL,FILE_TYP_GENERAL,(uint8_t*)&g_eeGeneral,sizeof(EEGeneral),200);
-//    if(sz!=sizeof(EEGeneral)) alert(PSTR("genwrite error"));
+    alert(STR_BADEEPROMDATA);
+    message(STR_MESSAGE, STR_EEPROMFORMATTING, NULL, NULL);
 
     modelDefault(0);
-    //alert(PSTR("modef ok"));
-//    theFile.writeRlc(FILE_MODEL(0),FILE_TYP_MODEL,(uint8_t*)&g_model,sizeof(g_model),200);
-    //alert(PSTR("modwrite ok"));
+
     STORE_GENERALVARS;
     STORE_MODELVARS;
   }
@@ -722,14 +713,17 @@ void ee32_process()
     eeAddress = File_system[Eeprom32_file_index].block_no ^ 1 ;
     eeAddress <<= 12 ;		                                // Block start address
     Eeprom32_address = eeAddress ;				// Where to put new data
+#if 0
     x = Eeprom32_data_size + sizeof( struct t_eeprom_header ) ;	// Size needing to be checked
     p = (uint8_t *) &Eeprom_buffer ;
     read32_eeprom_data( eeAddress, p, x, 1 ) ;
+#endif
     Eeprom32_process_state = E32_READSENDING ;
   }
 
   if ( Eeprom32_process_state == E32_READSENDING )
   {
+#if 0
     if ( Spi_complete )
     {
       uint32_t blank = 1 ;
@@ -747,11 +741,12 @@ void ee32_process()
       // If not blank, sort erasing here
       if ( blank )
       {
-        Eeprom32_state_after_erase = E32_IDLE ;
+        Eeprom32_state_after_erase = E32_IDLE ; // TODO really needed?
         Eeprom32_process_state = E32_WRITESTART ;
       }
       else
       {
+#endif
         eeAddress = Eeprom32_address ;
         eeprom_write_enable() ;
         p = Spi_tx_buf ;
@@ -762,8 +757,8 @@ void ee32_process()
         spi_PDC_action( p, 0, 0, 4, 0 ) ;
         Eeprom32_process_state = E32_ERASESENDING ;
         Eeprom32_state_after_erase = E32_WRITESTART ;
-      }
-    }
+      // }
+   // }
   }
 
   if ( Eeprom32_process_state == E32_WRITESTART )
@@ -825,6 +820,7 @@ void ee32_process()
       }
       else
       {
+#if 0
         // now erase the other block
         File_system[Eeprom32_file_index].block_no ^= 1 ;		// This is now the current block
         eeAddress = Eeprom32_address ^ 0x00001000 ;		// Address of block to erase
@@ -837,6 +833,8 @@ void ee32_process()
         spi_PDC_action( p, 0, 0, 4, 0 ) ;
         Eeprom32_process_state = E32_ERASESENDING ;
         Eeprom32_state_after_erase = E32_IDLE ;
+#endif
+        Eeprom32_process_state = E32_IDLE ;
       }
     }
   }

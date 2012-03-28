@@ -661,21 +661,14 @@ void menuProcPhaseOne(uint8_t event)
       case 2:
         lcd_putsLeft( y, STR_TRIMS);
         for (uint8_t t=0; t<NUM_STICKS; t++) {
-          int16_t v = getTrimValue(s_currIdx, t);
-          if (v > TRIM_EXTENDED_MAX) {
-            uint8_t p = v - TRIM_EXTENDED_MAX - 1;
-            if (p >= s_currIdx) p++;
-            lcd_putcAtt((10+t)*FW, y, '0'+p, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-          }
-          else {
-            v = TRIM_EXTENDED_MAX;
-            putsChnLetter((10+t)*FW, y, t+1, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-          }
+          putsTrimMode((10+t)*FW, y, s_currIdx, t, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
           if (attr && m_posHorz==t && ((s_editMode>0) || p1valdiff)) {
+            int16_t v = getRawTrimValue(s_currIdx, t);
+            if (v < TRIM_EXTENDED_MAX) v = TRIM_EXTENDED_MAX;
             v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX+MAX_PHASES-1, EE_MODEL);
             if (checkIncDec_Ret) {
               if (v == TRIM_EXTENDED_MAX) v = 0;
-              setTrimValue(s_currIdx, t, v);
+              setRawTrimValue(s_currIdx, t, v);
             }
           }
         }
@@ -731,16 +724,7 @@ void menuProcPhasesAll(uint8_t event)
     else {
       putsSwitches(11*FW+FW/2, y, p->swtch, 0);
       for (uint8_t t=0; t<NUM_STICKS; t++) {
-        // TODO duplicated code
-        int16_t v = getTrimValue(i, t);
-        if (v > TRIM_EXTENDED_MAX) {
-          uint8_t c = v - TRIM_EXTENDED_MAX - 1;
-          if (c >= i) c++;
-          lcd_putc((16+t)*FW-FW/2, y, '0'+c);
-        }
-        else {
-          putsChnLetter((16+t)*FW-FW/2, y, t+1, 0);
-        }
+        putsTrimMode((16+t)*FW-FW/2, y, i, t, 0);
       }
     }
     if (p->fadeIn) lcd_putc(20*FW+2, y, 'I');
@@ -1215,7 +1199,7 @@ void menuProcMixOne(uint8_t event)
       case 0:
         lcd_puts(2*FW, y, STR_SOURCE);
         putsMixerSource(FW*10, y, md2->srcRaw, attr);
-        if(attr) CHECK_INCDEC_MODELVAR(event, md2->srcRaw, 1, NUM_XCHNMIX); // TODO use enum
+        if(attr) CHECK_INCDEC_MODELVAR(event, md2->srcRaw, 1, NUM_XCHNMIX);
         break;
       case 1:
         lcd_puts(2*FW, y, STR_WEIGHT);
