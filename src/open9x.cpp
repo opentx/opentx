@@ -131,8 +131,9 @@ LimitData *limitaddress(uint8_t idx)
 
 void generalDefault()
 {
-  memset(&g_eeGeneral,0,sizeof(g_eeGeneral));
-  g_eeGeneral.myVers   =  EEPROM_VER;
+  memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
+  g_eeGeneral.lightSw  = SWITCH_ON;
+  g_eeGeneral.myVers   = EEPROM_VER;
   g_eeGeneral.contrast = 25;
   g_eeGeneral.vBatWarn = 90;
   for (int i = 0; i < 7; ++i) {
@@ -325,20 +326,23 @@ void applyExpos(int16_t *anas, uint8_t phase)
 
   if (phase == 255)
     phase = getFlightPhase();
+  phase++;
 
   int8_t cur_chn = -1;
+
   for (uint8_t i=0; i<MAX_EXPOS; i++) {
     ExpoData &ed = g_model.expoData[i];
+    uint8_t ed_phase = ed.phase;
     if (ed.mode==0) break; // end of list
     if (ed.chn == cur_chn)
       continue;
-    if (ed.phase != 0) {
+    if (ed_phase != 0) {
       if (ed.negPhase) {
-        if (phase+1 == -ed.phase)
+        if (phase == ed_phase)
           continue;
       }
       else {
-        if (phase+1 != ed.phase)
+        if (phase != ed_phase)
           continue;
       }
     }
@@ -348,7 +352,8 @@ void applyExpos(int16_t *anas, uint8_t phase)
         cur_chn = ed.chn;
         int16_t k = ed.expo;
         v = expo(v, k);
-        if (ed.curve) v = applyCurve(v, ed.curve > 10 ? ed.curve + 4 : ed.curve);
+        uint8_t ed_curve = ed.curve;
+        if (ed_curve) v = applyCurve(v, ed_curve > 10 ? ed_curve + 4 : ed_curve);
         v = ((int32_t)v * ed.weight) / 100;
         anas[cur_chn] = v;
       }
@@ -368,18 +373,19 @@ int16_t applyLimits(uint8_t channel, int32_t value)
       (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
           -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
 
-  // TODO work on an int16_t as soon as possible ...
   value += calc1000toRESX(ofs);
   lim_p = calc1000toRESX(lim_p);
   lim_n = calc1000toRESX(lim_n);
   if (value > lim_p) value = lim_p;
   if (value < lim_n) value = lim_n;
-  if (g_model.limitData[channel].revert) value = -value; // finally do the reverse.
 
-  if (safetyCh[channel] != -128) // if safety channel available for channel check and replace val if needed
-    value = calc100toRESX(safetyCh[channel]);
+  ofs = value; // we convert value to a 16bit value and reuse ofs
+  if (g_model.limitData[channel].revert) ofs = -ofs; // finally do the reverse.
 
-  return value;
+  if (safetyCh[channel] != -128) // if safety channel available for channel check
+    ofs = calc100toRESX(safetyCh[channel]);
+
+  return ofs;
 }
 
 int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain
@@ -514,6 +520,7 @@ bool __getSwitch(int8_t swtch)
           // case CS_ANEG:
           default:
             result = (abs(x)<y);
+            break;
         }
       }
       else {
@@ -538,6 +545,7 @@ bool __getSwitch(int8_t swtch)
           // case CS_ELESS:
           default:
             result = (x<=y);
+            break;
         }
       }
     }
@@ -563,7 +571,7 @@ uint8_t getFlightPhase()
   return 0;
 }
 
-int16_t getTrimValue(uint8_t phase, uint8_t idx)
+int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
   int16_t result;
   if (s_trimPtr[idx]) {
@@ -576,7 +584,12 @@ int16_t getTrimValue(uint8_t phase, uint8_t idx)
   return result;
 }
 
-void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
+int16_t getTrimValue(uint8_t phase, uint8_t idx)
+{
+  return getRawTrimValue(getTrimFlightPhase(phase, idx), idx);
+}
+
+void setRawTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 {
   if (s_trimPtr[idx]) {
     *s_trimPtr[idx] = limit((int16_t)-125, trim, (int16_t)+125);
@@ -589,11 +602,11 @@ void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
   STORE_MODELVARS;
 }
 
-uint8_t getTrimFlightPhase(uint8_t idx, uint8_t phase)
+uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
 {
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     if (phase == 0) return 0;
-    int16_t trim = getTrimValue(phase, idx);
+    int16_t trim = getRawTrimValue(phase, idx);
     if (trim <= TRIM_EXTENDED_MAX) return phase;
     uint8_t result = trim-TRIM_EXTENDED_MAX-1;
     if (result >= phase) result++;
@@ -678,19 +691,6 @@ void checkLowEEPROM()
 }
 #endif
 
-void alertMessages( const pm_char * s, const pm_char * t )
-{
-  lcd_clear();
-  lcd_putsAtt(64-5*FW,0*FH,STR_ALERT,DBLSIZE);
-  lcd_putsLeft(4*FH,s);
-  lcd_putsLeft(5*FH,t);
-  lcd_putsLeft(6*FH,  STR_PRESSANYKEYTOSKIP ) ;
-  refreshDisplay();
-  lcdSetRefVolt(g_eeGeneral.contrast);
-
-  clearKeyEvents();
-}
-
 void checkTHR()
 {
   if(g_eeGeneral.disableThrottleWarning) return;
@@ -708,7 +708,7 @@ void checkTHR()
   if(v<=lowLim) return;
 
   // first - display warning
-  alertMessages( STR_THROTTLENOTIDLE, STR_RESETTHROTTLE ) ;
+  message(STR_ALERT, STR_THROTTLENOTIDLE, STR_RESETTHROTTLE, STR_PRESSANYKEYTOSKIP);
 
   //loop until all switches are reset
   while (1)
@@ -742,7 +742,7 @@ void checkSwitches()
   if(!g_eeGeneral.switchWarning) return; // if warning is on
 
   // first - display warning
-  alertMessages( STR_SWITCHESNOTOFF, STR_PLEASERESETTHEM ) ;
+  message(STR_ALERT, STR_SWITCHESNOTOFF, STR_RESETTHROTTLE, STR_PLEASERESETTHEM);
 
   bool state = (g_eeGeneral.switchWarning > 0);
 
@@ -766,25 +766,10 @@ void checkSwitches()
   }
 }
 
-void message(const pm_char * s)
+void alert(const pm_char * s)
 {
-  lcd_clear();
-  lcd_putsAtt(64-5*FW, 0*FH, STR_MESSAGE, DBLSIZE);
-  lcd_putsLeft(4*FW,s);
-  refreshDisplay();
-  lcdSetRefVolt(g_eeGeneral.contrast);
-}
+  message(STR_ALERT, s, 0, STR_PRESSANYKEY);
 
-void alert(const pm_char * s, bool defaults)
-{
-  lcd_clear();
-  lcd_putsAtt(64-5*FW, 0*FH, STR_ALERT, DBLSIZE);
-  lcd_putsLeft(4*FH,s);
-  lcd_puts(64-LEN_PRESSANYKEY*FW/2, 7*FH, STR_PRESSANYKEY);
-  refreshDisplay();
-  lcdSetRefVolt(defaults ? 25 : g_eeGeneral.contrast);
-  AUDIO_ERROR();
-  clearKeyEvents();
   while(1)
   {
 #ifdef SIMU
@@ -793,13 +778,26 @@ void alert(const pm_char * s, bool defaults)
 #endif
     if(keyDown())   return;  //wait for key release
 
-    if (getSwitch(g_eeGeneral.lightSw,0) || g_eeGeneral.lightAutoOff || defaults)
-      BACKLIGHT_ON;
-    else
-      BACKLIGHT_OFF;
+    checkBacklight();
 
     wdt_reset();
   }
+}
+
+void message(const pm_char *title, const pm_char *s, const pm_char *t, const char *last)
+{
+  lcd_clear();
+  lcd_putsAtt(0, 0, title, DBLSIZE);
+  lcd_putsLeft(4*FH, s);
+  if (t)
+    lcd_putsLeft(5*FH, t);
+  if (last) {
+    lcd_putsLeft(7*FH, last);
+    AUDIO_ERROR();
+    clearKeyEvents();
+  }
+  refreshDisplay();
+  lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
 int8_t *s_trimPtr[NUM_STICKS] = { NULL, NULL, NULL, NULL };
@@ -812,8 +810,8 @@ uint8_t checkTrim(uint8_t event)
   if (k>=0 && k<8) { // && (event & _MSK_KEY_REPT))
     //LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
-    uint8_t phase = getTrimFlightPhase(idx, getFlightPhase());
-    int16_t before = getTrimValue(phase, idx);
+    uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
+    int16_t before = getRawTrimValue(phase, idx);
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
     bool thro = (idx==THR_STICK && g_model.thrTrim);
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
@@ -839,7 +837,7 @@ uint8_t checkTrim(uint8_t event)
       after = TRIM_EXTENDED_MAX;
     }
 
-    setTrimValue(phase, idx, after);
+    setRawTrimValue(phase, idx, after);
 
 #if defined (AUDIO)
     // toneFreq higher/lower according to trim position
@@ -1142,7 +1140,7 @@ FORCEINLINE void evalTrims(uint8_t phase)
     // do trim -> throttle trim if applicable
     // TODO avoid int32_t vv
     int32_t vv = 2*RESX;
-    int16_t trim = getTrimValue(getTrimFlightPhase(i, phase), i);
+    int16_t trim = getTrimValue(phase, i);
     if (i==THR_STICK && g_model.thrTrim) {
       if (g_eeGeneral.throttleReversed)
         trim = -trim;
@@ -1266,6 +1264,48 @@ void evalFunctions()
         if (sd->func < FUNC_TRAINER  && (g_menuStack[0] != menuProcFunctionSwitches || m_posVert != i+1 || m_posHorz > 1)) {
           safetyCh[sd->func] = (int8_t)sd->param;
         }
+
+        if (~active_functions & mask) {
+
+          if (sd->func == FUNC_INSTANT_TRIM) {
+            if (g_menuStack[0] == menuMainView
+#if defined(FRSKY)
+                || g_menuStack[0] == menuProcFrsky
+#endif
+                )
+            instantTrim();
+          }
+
+#if defined(SOMO)
+          if (sd->func == FUNC_PLAY_SOMO) {
+            somoPushPrompt(sd->param);
+          }
+#endif
+
+#if defined(DEBUG)
+          if (sd->func == FUNC_TEST) {
+            testFunc();
+          }
+#endif
+
+          if (sd->func == FUNC_RESET) {
+            switch (sd->param) {
+              case 0:
+              case 1:
+                resetTimer(sd->param);
+                break;
+              case 2:
+                resetAll();
+                break;
+#ifdef FRSKY
+                case 3:
+                resetTelemetry();
+                break;
+#endif
+            }
+          }
+        }
+
         if (sd->func == FUNC_PLAY_SOUND) {
 #if defined(AUDIO)
           audioDefevent(AU_FRSKY_FIRST+sd->param);
@@ -1273,32 +1313,6 @@ void evalFunctions()
           beep(3);
 #endif
         }
-#if defined(SOMO)
-        if (sd->func == FUNC_PLAY_SOMO && (~active_functions & mask)) {
-          somoPushPrompt(sd->param);
-        }
-#endif
-        if (sd->func == FUNC_RESET && (~active_functions & mask)) {
-          switch(sd->param) {
-            case 0:
-            case 1:
-              resetTimer(sd->param);
-              break;
-            case 2:
-              resetAll();
-              break;
-#ifdef FRSKY
-            case 3:
-              resetTelemetry();
-              break;
-#endif
-          }
-        }
-#if defined(DEBUG)
-        if (sd->func == FUNC_TEST && (~active_functions & mask)) {
-          testFunc();
-        }
-#endif
         active_functions |= mask;
       }
       else {
@@ -1519,15 +1533,14 @@ void perOut(uint8_t phase)
       v = applyCurve(v, md->curve);
 
     //========== TRIMS ===============
-    // TODO use k?
-    if (md->srcRaw>0 && md->srcRaw<=NUM_STICKS) {
+    if (k < NUM_STICKS) {
       if (s_perout_mode < e_perout_mode_zeros && md->carryTrim == TRIM_ON) {
-        v += trims[md->srcRaw-1];
+        v += trims[k];
       }
       if (s_perout_mode == e_perout_mode_normal && md->carryTrim == TRIM_OFFSET) {
         v = md->sOffset;
         v = calc1000toRESX(v << 3);
-        s_trimPtr[md->srcRaw-1] = &md->sOffset;  // use the value stored here for the trim
+        s_trimPtr[k] = &md->sOffset;  // use the value stored here for the trim
       }
     }
 
@@ -1835,6 +1848,8 @@ void perMain()
   evalFunctions();
 
   if (s_noHi) s_noHi--;
+  if (trimsCheckTimer) trimsCheckTimer --;
+
   if (g_eeGeneral.inactivityTimer && g_vbat100mV>50) {
     inacCounter++;
     uint16_t tsum = 0;
@@ -1846,9 +1861,6 @@ void perMain()
     if(inacCounter>((uint32_t)g_eeGeneral.inactivityTimer*100*60))
       if((inacCounter&0x3F)==10) AUDIO_INACTIVITY();
   }
-
-  if (trimsCheckTimer > 0)
-    trimsCheckTimer -= 1;
 
 #if defined (LOGS)
   writeLogs();
@@ -2201,7 +2213,7 @@ void instantTrim()
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightPhase(i, phase);
+      uint8_t trim_phase = getTrimFlightPhase(phase, i);
       s_perout_mode = e_instant_trim;
       evalSticks(phase);
       s_perout_mode = e_perout_mode_normal;
@@ -2212,7 +2224,7 @@ void instantTrim()
       if (trim > TRIM_EXTENDED_MAX) {
         trim = TRIM_EXTENDED_MAX;
       }
-      setTrimValue(trim_phase, i, trim);
+      setRawTrimValue(trim_phase, i, trim);
     }
   }
 
@@ -2236,12 +2248,10 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   s_perout_mode = e_perout_mode_normal;
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
-    int16_t output = applyLimits(i, chans[i]);
+    int16_t output = applyLimits(i, chans[i]) - zeros[i];
     int16_t v = g_model.limitData[i].offset;
-    // TODO flash saving?
-    v += g_model.limitData[i].revert ?
-        (zeros[i] - output) :
-        (output - zeros[i]);
+    if (g_model.limitData[i].revert) output = -output;
+    v += output;
     // TODO * 125 / 128 ?
     g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
   }
@@ -2249,10 +2259,11 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   // reset all trims, except throttle (if throttle trim)
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK || !g_model.thrTrim) {
+      int16_t original_trim = getTrimValue(phase, i);
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
-        int16_t trim = getTrimValue(phase, i);
+        int16_t trim = getRawTrimValue(phase, i);
         if (trim <= TRIM_EXTENDED_MAX)
-          setTrimValue(phase, i, 0);
+          setRawTrimValue(phase, i, trim - original_trim);
       }
     }
   }

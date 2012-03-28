@@ -270,7 +270,7 @@
 #define TR_FP           "PV"
 #define TR_EEPROMLOWMEM "EEPROM low mem"
 #define TR_ALERT        "ALERTE"
-#define TR_PRESSANYKEYTOSKIP "Appuyez sur touche"
+#define TR_PRESSANYKEYTOSKIP "Touche pour ignorer"
 #define TR_THROTTLENOTIDLE "Gaz pas a zero"
 #define TR_RESETTHROTTLE    "Reinitialisez le"
 #define TR_ALARMSDISABLED   "Alarmes Desactivees"

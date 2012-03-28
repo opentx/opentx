@@ -236,6 +236,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
 {
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
+  bool dblsize = flags & DBLSIZE;
 
   bool neg = false;
   if (flags & UNSIGN) { flags -= UNSIGN; }
@@ -255,7 +256,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
       len = mode + 1;
   }
 
-  if (flags & DBLSIZE) {
+  if (dblsize) {
     fw += FWNUM;
   }
   else {
@@ -268,7 +269,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
   if (flags & LEFT) {
     x += len * fw;
     if (neg)
-      x += (flags & DBLSIZE ? 7 : FWNUM);
+      x += (dblsize ? 7 : FWNUM);
   }
 
   lcd_lastPos = x;
@@ -277,14 +278,14 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
   for (uint8_t i=1; i<=len; i++) {
     char c = ((uint16_t)val % 10) + '0';
     uint8_t f = flags;
-    if (flags & DBLSIZE) {
+    if (dblsize) {
       if (c=='1' && i==len && xn>x+10) { x+=2; f|=CONDENSED; }
       if (val >= 1000) { x+=FWNUM; f&=~DBLSIZE; }
     }
     lcd_putcAtt(x, y, c, f);
     if (mode==i) {
       flags &= ~PREC2; // TODO not needed but removes 64bytes, could be improved for sure, check asm
-      if (flags & DBLSIZE) {
+      if (dblsize) {
         xn = x;
         if(c=='2' || c=='3' || c=='1') ln++;
         uint8_t tn = ((uint16_t)val/10) % 10;
@@ -300,7 +301,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
           lcd_vline(x+1, y, 8);
       }
     }
-    if ((flags & DBLSIZE) && val >= 1000 && val < 10000) x-=2;
+    if (dblsize && val >= 1000 && val < 10000) x-=2;
     val = ((uint16_t)val) / 10;
     x-=fw;
   }
@@ -555,6 +556,20 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
   }
 
   putsSwitches(x, y, mode-(TMR_VAROFS-1), att|SWONLY);
+}
+
+void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
+{
+  int16_t v = getRawTrimValue(phase, idx);
+
+  if (v > TRIM_EXTENDED_MAX) {
+    uint8_t p = v - TRIM_EXTENDED_MAX - 1;
+    if (p >= phase) p++;
+    lcd_putcAtt(x, y, '0'+p, att);
+  }
+  else {
+    putsChnLetter(x, y, idx+1, att);
+  }
 }
 
 #ifdef PCBARM

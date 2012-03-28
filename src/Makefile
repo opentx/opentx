@@ -95,6 +95,10 @@ SOMO = NO
 # Values = en, 
 TRANSLATIONS = EN
 
+# EEPROM_PROGRESS_BAR
+# Values = YES, NO
+EEPROM_PROGRESS_BAR = NO
+
 # DEBUG mode
 DEBUG = NO
 
@@ -241,6 +245,10 @@ endif
 
 ifeq ($(DEBUG), YES)
   CPPDEFS += -DDEBUG
+endif
+
+ifeq ($(EEPROM_PROGRESS_BAR), YES)
+  CPPDEFS += -DEEPROM_PROGRESS_BAR
 endif
 
 ifeq ($(PCB), ARM)
