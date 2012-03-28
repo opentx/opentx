@@ -668,7 +668,7 @@ void menuProcPhaseOne(uint8_t event)
             v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX+MAX_PHASES-1, EE_MODEL);
             if (checkIncDec_Ret) {
               if (v == TRIM_EXTENDED_MAX) v = 0;
-              setRawTrimValue(s_currIdx, t, v);
+              setTrimValue(s_currIdx, t, v);
             }
           }
         }

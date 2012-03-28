@@ -192,7 +192,7 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
     memset(ModelNames[id2], 0, sizeof(g_model.name));
 
   Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
-  Eeprom32_data_size = sizeof(g_model) ;                                  // This much
+  Eeprom32_data_size = id1_size ;                                         // This much
   Eeprom32_file_index = id2 + 1 ;                                         // This file system entry
   Eeprom32_process_state = E32_BLANKCHECK ;
   eeWaitFinished();
