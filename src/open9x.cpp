@@ -741,19 +741,12 @@ void checkSwitches()
 {
   if(!g_eeGeneral.switchWarning) return; // if warning is on
 
-  // first - display warning
-  message(STR_ALERT, STR_SWITCHESNOTOFF, STR_RESETTHROTTLE, STR_PLEASERESETTHEM);
-
   bool state = (g_eeGeneral.switchWarning > 0);
+  bool first = true;
 
   //loop until all switches are reset
   while (1)
   {
-#ifdef SIMU
-    if (!main_thread_running) return;
-    sleep(1/*ms*/);
-#endif
-
     uint8_t i;
     for(i=SW_BASE; i<SW_Trainer; i++)
     {
@@ -762,7 +755,18 @@ void checkSwitches()
     }
     if(i==SW_Trainer || keyDown()) return;
 
+    // first - display warning
+    if (first) {
+      message(STR_ALERT, STR_SWITCHESNOTOFF, STR_RESETTHROTTLE, STR_PLEASERESETTHEM);
+      first = false;
+    }
+
     checkBacklight();
+
+#ifdef SIMU
+    if (!main_thread_running) return;
+    sleep(1/*ms*/);
+#endif
   }
 }
 
