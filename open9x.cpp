@@ -589,7 +589,7 @@ int16_t getTrimValue(uint8_t phase, uint8_t idx)
   return getRawTrimValue(getTrimFlightPhase(phase, idx), idx);
 }
 
-void setRawTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
+void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 {
   if (s_trimPtr[idx]) {
     *s_trimPtr[idx] = limit((int16_t)-125, trim, (int16_t)+125);
@@ -837,7 +837,7 @@ uint8_t checkTrim(uint8_t event)
       after = TRIM_EXTENDED_MAX;
     }
 
-    setRawTrimValue(phase, idx, after);
+    setTrimValue(phase, idx, after);
 
 #if defined (AUDIO)
     // toneFreq higher/lower according to trim position
@@ -2224,7 +2224,7 @@ void instantTrim()
       if (trim > TRIM_EXTENDED_MAX) {
         trim = TRIM_EXTENDED_MAX;
       }
-      setRawTrimValue(trim_phase, i, trim);
+      setTrimValue(trim_phase, i, trim);
     }
   }
 
@@ -2263,7 +2263,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
         int16_t trim = getRawTrimValue(phase, i);
         if (trim <= TRIM_EXTENDED_MAX)
-          setRawTrimValue(phase, i, trim - original_trim);
+          setTrimValue(phase, i, trim - original_trim);
       }
     }
   }

@@ -490,7 +490,7 @@ extern uint8_t getFlightPhase();
 extern uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
 extern int16_t getRawTrimValue(uint8_t phase, uint8_t idx);
 extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
-extern void setRawTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
+extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec
