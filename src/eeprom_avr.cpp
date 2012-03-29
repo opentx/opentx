@@ -249,7 +249,7 @@ void EeFsFormat()
   s_sync_write = false;
 }
 
-bool EeFsOpen()
+bool EeFsOpen() // TODO inline?
 {
   eeprom_read_block(&eeFs,0,sizeof(eeFs));
 

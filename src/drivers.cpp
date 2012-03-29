@@ -137,6 +137,10 @@ void per10ms()
   g_tmr10ms++;
   g_blinkTmr10ms++;
 
+#if defined (PCBARM)
+  Tenms |= 1 ;                    // 10 mS has passed
+#endif
+
 #if defined (PCBV4)
   /* Update gloabal Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100)

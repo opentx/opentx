@@ -32,10 +32,9 @@
  */
 
 #include "open9x.h"
-#include "AT91SAM3S2.h"
-#include "core_cm3.h"
 
 uint32_t Master_frequency ;
+volatile uint32_t Tenms ;
 
 /** Console baudrate 9600. */
 #define CONSOLE_BAUDRATE    9600
@@ -155,6 +154,8 @@ inline void setup_switches()
   pioptr->PIO_PUER = 0x10014900 ;         // Set bits with pullups
 #endif
 }
+
+#ifndef SIMU
 
 /**
  * Configures a UART peripheral with the specified parameters.
@@ -316,9 +317,6 @@ inline void start_timer0()
   ptc->TC_CHANNEL[0].TC_CCR = 5 ;         // Enable clock and trigger it (may only need trigger)
 }
 
-// TODO where used
-volatile uint32_t Tenms ;
-
 extern "C" void TC2_IRQHandler()
 {
   register uint32_t dummy;
@@ -327,7 +325,7 @@ extern "C" void TC2_IRQHandler()
   /* Clear status bit to acknowledge interrupt */
   dummy = TC0->TC_CHANNEL[2].TC_SR;
         (void) dummy ;          // Discard value - prevents compiler warning
-        Tenms |= 1 ;                    // 10 mS has passed
+
         /* TODO if ( Buzzer_count )
         {
                 if ( --Buzzer_count == 0 )
@@ -585,9 +583,12 @@ void board_init()
   eeprom_init();
 }
 
+
+#endif
+
 uint16_t getTmr2MHz()
 {
-        return TC1->TC_CHANNEL[0].TC_CV ;
+  return TC1->TC_CHANNEL[0].TC_CV ;
 }
 
 // keys:
@@ -601,129 +602,123 @@ uint16_t getTmr2MHz()
 // LCD pins 5 DOWN, 4 RIGHT, 3 LEFT, 1 UP
 uint32_t read_keys()
 {
-        register uint32_t x ;
-        register uint32_t y ;
+  register uint32_t x;
+  register uint32_t y;
 
-        x = PIOC->PIO_PDSR << 1 ; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+  x = PIOC->PIO_PDSR << 1; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+
 #ifdef REVB
-        y = x & 0x00000020 ;            // RIGHT
-        if ( x & 0x00000004 )
-        {
-                y |= 0x00000010 ;                       // UP
-        }
-        if ( x & 0x00000010 )
-        {
-                y |= 0x00000040 ;                       // LEFT
-        }
-        if ( x & 0x00000040 )
-        {
-                y |= 0x00000008 ;                       // DOWN
-        }
+  y = x & 0x00000020; // RIGHT
+  if ( x & 0x00000004 )
+  {
+    y |= 0x00000010; // UP
+  }
+  if ( x & 0x00000010 )
+  {
+    y |= 0x00000040; // LEFT
+  }
+  if ( x & 0x00000040 )
+  {
+    y |= 0x00000008; // DOWN
+  }
 #else
-        y = x & 0x00000060 ;
-        if ( x & 0x00000008 )
-        {
-                y |= 0x00000010 ;
-        }
-        if ( x & 0x00000010 )
-        {
-                y |= 0x00000008 ;
-        }
+
+  y = x & 0x00000060;
+  if (x & 0x00000008) {
+    y |= 0x00000010;
+  }
+  if (x & 0x00000010) {
+    y |= 0x00000008;
+  }
 #endif
 #ifdef REVB
-        if ( PIOC->PIO_PDSR & 0x01000000 )
+  if ( PIOC->PIO_PDSR & 0x01000000 )
 #else
-        if ( PIOA->PIO_PDSR & 0x80000000 )
+  if (PIOA->PIO_PDSR & 0x80000000)
 #endif
-        {
-                y |= 4 ;                // EXIT
-        }
+  {
+    y |= 4; // EXIT
+  }
 #ifdef REVB
-        if ( PIOB->PIO_PDSR & 0x000000020 )
+  if ( PIOB->PIO_PDSR & 0x000000020 )
 #else
-        if ( PIOB->PIO_PDSR & 0x000000040 )
+  if (PIOB->PIO_PDSR & 0x000000040)
 #endif
-        {
-                y |= 2 ;                // MENU
-        }
-        return y ;
+  {
+    y |= 2; // MENU
+  }
+
+  return y ;
 }
 
 
 
 uint32_t read_trims()
 {
-        uint32_t trims ;
-
-        trims = 0 ;
+  uint32_t trims = 0;
 
 // TRIM_LH_DOWN    PA7 (PA23)
 #ifdef REVB
-        if ( ( PIOA->PIO_PDSR & 0x00800000 ) == 0 )
+  if ( ( PIOA->PIO_PDSR & 0x00800000 ) == 0 )
 #else
-        if ( ( PIOA->PIO_PDSR & 0x0080 ) == 0 )
+  if ((PIOA->PIO_PDSR & 0x0080) == 0)
 #endif
-        {
-                trims |= 1 ;
-        }
+      {
+    trims |= 1;
+  }
 
 // TRIM_LH_UP PB4
-        if ( ( PIOB->PIO_PDSR & 0x10 ) == 0 )
-        {
-                trims |= 2 ;
-        }
+  if ((PIOB->PIO_PDSR & 0x10) == 0) {
+    trims |= 2;
+  }
 
 // TRIM_LV_DOWN  PA27 (PA24)
 #ifdef REVB
-        if ( ( PIOA->PIO_PDSR & 0x01000000 ) == 0 )
+  if ( ( PIOA->PIO_PDSR & 0x01000000 ) == 0 )
 #else
-        if ( ( PIOA->PIO_PDSR & 0x08000000 ) == 0 )
+  if ((PIOA->PIO_PDSR & 0x08000000) == 0)
 #endif
-        {
-                trims |= 4 ;
-        }
+      {
+    trims |= 4;
+  }
 
 // TRIM_LV_UP   PC28
-        if ( ( PIOC->PIO_PDSR & 0x10000000 ) == 0 )
-        {
-                trims |= 8 ;
-        }
+  if ((PIOC->PIO_PDSR & 0x10000000) == 0) {
+    trims |= 8;
+  }
 
 // TRIM_RV_DOWN   PC10
-        if ( ( PIOC->PIO_PDSR & 0x00000400 ) == 0 )
-        {
-                trims |= 0x10 ;
-        }
+  if ((PIOC->PIO_PDSR & 0x00000400) == 0) {
+    trims |= 0x10;
+  }
 
 // TRIM_RV_UP    PA30 (PA1)
 #ifdef REVB
-        if ( ( PIOA->PIO_PDSR & 0x00000002 ) == 0 )
+  if ( ( PIOA->PIO_PDSR & 0x00000002 ) == 0 )
 #else
-        if ( ( PIOA->PIO_PDSR & 0x40000000 ) == 0 )
+  if ((PIOA->PIO_PDSR & 0x40000000) == 0)
 #endif
-        {
-                trims |= 0x20 ;
-        }
+      {
+    trims |= 0x20;
+  }
 
 // TRIM_RH_DOWN    PA29 (PA0)
 #ifdef REVB
-        if ( ( PIOA->PIO_PDSR & 0x00000001 ) == 0 )
+  if ( ( PIOA->PIO_PDSR & 0x00000001 ) == 0 )
 #else
-        if ( ( PIOA->PIO_PDSR & 0x20000000 ) == 0 )
+  if ((PIOA->PIO_PDSR & 0x20000000) == 0)
 #endif
-        {
-                trims |= 0x40 ;
-        }
+      {
+    trims |= 0x40;
+  }
 
 // TRIM_RH_UP   PC9
-        if ( ( PIOC->PIO_PDSR & 0x00000200 ) == 0 )
-        {
-                trims |= 0x80 ;
-        }
+  if ((PIOC->PIO_PDSR & 0x00000200) == 0) {
+    trims |= 0x80;
+  }
 
-        return trims ;
+  return trims ;
 }
-
 
 uint8_t keyDown()
 {
@@ -732,53 +727,63 @@ uint8_t keyDown()
 
 extern uint32_t keyState(EnumKeys enuk)
 {
-  CPU_UINT xxx = 0 ;
-  if(enuk < (int)DIM(keys))  return keys[enuk].state() ? 1 : 0;
+  CPU_UINT xxx = 0;
 
-  switch((uint8_t)enuk)
-        {
+  if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
+
+  switch ((uint8_t) enuk) {
 #ifdef REVB
-    case SW_ElevDR : xxx = PIOC->PIO_PDSR & 0x80000000 ;        // ELE_DR   PC31
+    case SW_ElevDR : xxx = PIOC->PIO_PDSR & 0x80000000; // ELE_DR   PC31
 #else
-    case SW_ElevDR : xxx = PIOA->PIO_PDSR & 0x00000100 ;        // ELE_DR   PA8
+    case SW_ElevDR:
+      xxx = PIOA->PIO_PDSR & 0x00000100; // ELE_DR   PA8
 #endif
-    break ;
+      break;
 
-    case SW_AileDR : xxx = PIOA->PIO_PDSR & 0x00000004 ;        // AIL-DR  PA2
-    break ;
+    case SW_AileDR:
+      xxx = PIOA->PIO_PDSR & 0x00000004; // AIL-DR  PA2
+      break;
 
-    case SW_RuddDR : xxx = PIOA->PIO_PDSR & 0x00008000 ;        // RUN_DR   PA15
-    break ;
+    case SW_RuddDR:
+      xxx = PIOA->PIO_PDSR & 0x00008000; // RUN_DR   PA15
+      break;
       //     INP_G_ID1 INP_E_ID2
       // id0    0        1
       // id1    1        1
       // id2    1        0
-    case SW_ID0    : xxx = ~PIOC->PIO_PDSR & 0x00004000 ;       // SW_IDL1     PC14
-    break ;
-    case SW_ID1    : xxx = (PIOC->PIO_PDSR & 0x00004000) ; if ( xxx ) xxx = (PIOC->PIO_PDSR & 0x00000800);
-    break ;
-    case SW_ID2    : xxx = ~PIOC->PIO_PDSR & 0x00000800 ;       // SW_IDL2     PC11
-    break ;
+    case SW_ID0:
+      xxx = ~PIOC->PIO_PDSR & 0x00004000; // SW_IDL1     PC14
+      break;
+    case SW_ID1:
+      xxx = (PIOC->PIO_PDSR & 0x00004000);
+      if (xxx) xxx = (PIOC->PIO_PDSR & 0x00000800);
+      break;
+    case SW_ID2:
+      xxx = ~PIOC->PIO_PDSR & 0x00000800; // SW_IDL2     PC11
+      break;
 
-
-                case SW_Gear   : xxx = PIOC->PIO_PDSR & 0x00010000 ;    // SW_GEAR     PC16
-    break ;
+    case SW_Gear:
+      xxx = PIOC->PIO_PDSR & 0x00010000; // SW_GEAR     PC16
+      break;
 
 #ifdef REVB
-    case SW_ThrCt  : xxx = PIOC->PIO_PDSR & 0x00100000 ;        // SW_TCUT     PC20
+      case SW_ThrCt : xxx = PIOC->PIO_PDSR & 0x00100000; // SW_TCUT     PC20
 #else
-    case SW_ThrCt  : xxx = PIOA->PIO_PDSR & 0x10000000 ;        // SW_TCUT     PA28
+    case SW_ThrCt:
+      xxx = PIOA->PIO_PDSR & 0x10000000; // SW_TCUT     PA28
 #endif
-    break ;
+      break;
 
-    case SW_Trainer: xxx = PIOC->PIO_PDSR & 0x00000100 ;        // SW-TRAIN    PC8
-    break ;
-    default:;
+    case SW_Trainer:
+      xxx = PIOC->PIO_PDSR & 0x00000100; // SW-TRAIN    PC8
+      break;
+
+    default:
+      break;
   }
 
-  if ( xxx )
-  {
-    return 1 ;
+  if (xxx) {
+    return 1;
   }
   return 0;
 }
@@ -827,25 +832,22 @@ void read_9_adc()
 
 void readKeysAndTrims()
 {
-register uint32_t i ;
+  register uint32_t i;
 
-if ( PIOC->PIO_ODSR & 0x00080000 )
-{
-        PIOC->PIO_CODR = 0x00200000L ;  // Set bit C19 OFF
-}
-else
-{
-        PIOC->PIO_SODR = 0x00200000L ;  // Set bit C19 ON
-}
+  if (PIOC->PIO_ODSR & 0x00080000) {
+    PIOC->PIO_CODR = 0x00200000L; // Set bit C19 OFF
+  }
+  else {
+    PIOC->PIO_SODR = 0x00200000L; // Set bit C19 ON
+  }
 
-uint8_t enuk = KEY_MENU;
-uint8_t    in = ~read_keys() ;
-for( i=1; i<7; i++)
-{
+  uint8_t enuk = KEY_MENU;
+  uint8_t in = ~read_keys();
+  for (i = 1; i < 7; i++) {
 //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
-keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
-++enuk;
-}
+    keys[enuk].input(in & (1 << i), (EnumKeys) enuk);
+    ++enuk;
+  }
 //  static const uint8_t crossTrim[]={
 //    1<<INP_D_TRM_LH_DWN,
 //    1<<INP_D_TRM_LH_UP,
@@ -856,14 +858,13 @@ keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
 //    1<<INP_D_TRM_RH_DWN,
 //    1<<INP_D_TRM_RH_UP
 //  };
-in = read_trims() ;
+  in = read_trims();
 
-for( i=1; i<256; i<<=1)
-{
+  for (i = 1; i < 256; i <<= 1) {
 // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-keys[enuk].input(in & i,(EnumKeys)enuk);
-++enuk;
-}
+    keys[enuk].input(in & i, (EnumKeys) enuk);
+    ++enuk;
+  }
 }
 
 void end_ppm_capture()
@@ -871,3 +872,4 @@ void end_ppm_capture()
         TC1->TC_CHANNEL[0].TC_IDR = TC_IDR0_LDRAS ;
         NVIC_DisableIRQ(TC3_IRQn) ;
 }
+

@@ -31,11 +31,7 @@
  *
  */
 
-#include <ctype.h>
-#include "simpgmspace.h"
-#include "lcd.h"
 #include "open9x.h"
-#include "menus.h"
 
 volatile uint8_t pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
@@ -43,8 +39,20 @@ uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 
+#if defined(PCBARM)
+Pio Pioa;
+Pio Piob;
+Pio Pioc;
+uint32_t eeprom_pointer;
+char* eeprom_buffer_data;
+volatile int32_t eeprom_buffer_size;
+bool eeprom_read_operation;
+#define EESIZE (128*4048)
+#else
 extern uint16_t eeprom_pointer;
 extern const char* eeprom_buffer_data;
+#endif
+
 uint8_t eeprom[EESIZE];
 sem_t eeprom_write_sem;
 
@@ -59,6 +67,7 @@ void setSwitch(int8_t swtch)
       break;
     case DSW_ID2:
       ping &= ~(1<<INP_G_ID1);  pine |=  (1<<INP_E_ID2);
+      break;
     default:
       break;
   }
@@ -71,7 +80,14 @@ void *eeprom_write_function(void *)
 
     if (!eeprom_thread_running)
       return NULL;
-
+#if defined(PCBARM)
+    if (eeprom_read_operation) {
+      assert(eeprom_buffer_size);
+      eeprom_read_block(eeprom_buffer_data, (const void *)(int64_t)eeprom_pointer, eeprom_buffer_size);
+      // TODO sleep()
+    }
+    else {
+#endif
     while (--eeprom_buffer_size) {
       assert(eeprom_buffer_size > 0);
       if (fp) {
@@ -79,7 +95,9 @@ void *eeprom_write_function(void *)
           perror("error in fseek");
         if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
           perror("error in fwrite");
+#if !defined(PCBARM)
         sleep(5/*ms*/);
+#endif
       }
       else {
         memcpy(&eeprom[eeprom_pointer], eeprom_buffer_data, 1);
@@ -91,6 +109,10 @@ void *eeprom_write_function(void *)
         fflush(fp);
       }
     }
+#if defined(PCBARM)
+    }
+    Spi_complete = 1;
+#endif
   }
 
   return 0;
@@ -109,13 +131,19 @@ void *main_thread(void *)
     g_menuStack[0] = menuMainView;
     g_menuStack[1] = menuProcModelSelect;
 
+#ifdef PCBARM
+    eeprom_init();
+#endif
+
     eeReadAll(); //load general setup and selected model
 
     if (main_thread_running == 1) {
 #ifdef SPLASH
       doSplash();
 #endif
+#if !defined(PCBARM)
       checkLowEEPROM();
+#endif
       checkTHR();
       checkSwitches();
       checkAlarm();

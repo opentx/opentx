@@ -574,8 +574,6 @@ void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
 
 #ifdef PCBARM
 
-#include "AT91SAM3S2.h"
-
 // LCD i/o pins
 // LCD_RES     PC27
 // LCD_CS1     PC26
@@ -725,6 +723,7 @@ void lcd_init()
 
 void lcdSetRefVolt(uint8_t val)
 {
+#ifndef SIMU
   register Pio *pioptr ;
   pioptr = PIOC ;
 
@@ -746,8 +745,10 @@ void lcdSetRefVolt(uint8_t val)
   pioptr->PIO_PUER = 0x0000003CL ;                // Set bits 2, 3, 4, 5 with pullups
   pioptr->PIO_ODSR = 0 ;                                                  // Drive D0 low
 #endif
+#endif
 }
 
+#ifndef SIMU
 void refreshDisplay()
 {
   register Pio *pioptr;
@@ -827,6 +828,7 @@ void refreshDisplay()
 #endif
   pioptr->PIO_ODSR = 0 ;                                                  // Drive D0 low
 }
+#endif
 
 #else
 
@@ -885,12 +887,9 @@ void lcdSetRefVolt(uint8_t val)
   lcdSendCtl(val);
 }
 
+#ifndef SIMU
 void refreshDisplay()
 {
-#ifdef SIMU
-  memcpy(lcd_buf, displayBuf, sizeof(displayBuf));
-  lcd_refresh = true;
-#else
   uint8_t *p=displayBuf;
   for(uint8_t y=0; y < 8; y++) {
     lcdSendCtl(0x04);
@@ -910,7 +909,16 @@ void refreshDisplay()
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
   }
-#endif
 }
+#endif
 
 #endif
+
+#ifdef SIMU
+void refreshDisplay()
+{
+  memcpy(lcd_buf, displayBuf, sizeof(displayBuf));
+  lcd_refresh = true;
+}
+#endif
+
