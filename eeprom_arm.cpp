@@ -87,6 +87,7 @@ uint32_t Update_timer ;
 //#define E_WRITEWAITING			5
 //#define E_32ACTIVE					6
 
+// TODO use these constants everywhere
 #define EE_WAIT		0
 #define EE_NO_WAIT	1
 
@@ -101,8 +102,8 @@ void eeDirty(uint8_t msk)
 void handle_serial( void ) ;
 
 uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t *p_seq ) ;
-uint32_t read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate ) ;
-uint32_t write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate ) ;
+void read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate ) ;
+void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate ) ;
 void ee32_read_model_names( void ) ;
 void ee32LoadModelName(uint8_t id, char *buf, uint8_t len) ;
 
@@ -177,23 +178,25 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
 {
   // eeCheck(true) should have been called before entering here
 
-  uint16_t id1_size = File_system[id1+1].size;
-  uint32_t id1_block_no = File_system[id1+1].block_no;
+  uint16_t id2_size = File_system[id2+1].size;
+  uint32_t id2_block_no = File_system[id2+1].block_no;
 
-  eeCopyModel(id1, id2);
+  eeCopyModel(id2, id1);
 
   // block_no(id1) has been shifted now, but we have the size
-  read32_eeprom_data( (id1_block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, id1_size, 0 ) ;
 
   // TODO flash saving with function above ...
-  if (id1_size > sizeof(g_model.name))
-    memcpy(ModelNames[id2], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
-  else
-    memset(ModelNames[id2], 0, sizeof(g_model.name));
+  if (id2_size > sizeof(g_model.name)) {
+    read32_eeprom_data( (id2_block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, id2_size, 0 );
+    memcpy(ModelNames[id1], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+  }
+  else {
+    memset(ModelNames[id1], 0, sizeof(g_model.name));
+  }
 
   Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
-  Eeprom32_data_size = id1_size ;                                         // This much
-  Eeprom32_file_index = id2 + 1 ;                                         // This file system entry
+  Eeprom32_data_size = id2_size ;                                         // This much
+  Eeprom32_file_index = id1 + 1 ;                                         // This file system entry
   Eeprom32_process_state = E32_BLANKCHECK ;
   eeWaitFinished();
 }
@@ -254,6 +257,7 @@ uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, regist
 
 uint32_t  eeprom_write_one( uint8_t byte, uint8_t count )
 {
+#ifndef SIMU
   register Spi *spiptr;
   register uint32_t result;
 
@@ -285,6 +289,9 @@ uint32_t  eeprom_write_one( uint8_t byte, uint8_t count )
   }
   spiptr->SPI_CR = 2; // Disable
   return spiptr->SPI_RDR ;
+#else
+  return !Spi_complete;
+#endif
 }
 
 void eeprom_write_enable()
@@ -298,56 +305,56 @@ uint32_t eeprom_read_status()
 }
 
 // Read eeprom data starting at random address
-uint32_t read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate )
+void read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate )
 {
-  register uint8_t *p ;
-  register uint32_t x ;
-
-  p = Spi_tx_buf ;
+#ifdef SIMU
+  assert(size);
+  eeprom_pointer = eeAddress;
+  eeprom_buffer_data = (char*)buffer;
+  eeprom_buffer_size = size;
+  eeprom_read_operation = true;
+  Spi_complete = false;
+  sem_post(&eeprom_write_sem);
+#else
+  register uint8_t *p = Spi_tx_buf ;
   *p = 3 ;                     // Read command
   *(p+1) = eeAddress >> 16 ;
   *(p+2) = eeAddress >> 8 ;
   *(p+3) = eeAddress ;	       // 3 bytes address
   spi_PDC_action( p, 0, buffer, 4, size ) ;
+#endif
 
-  if ( immediate )
-  {
-    return 0 ;
-  }
-  for ( x = 0 ; x < 100000 ; x += 1  )
-  {
-    // TODO while + ERROR_TIMEOUT
-    if ( Spi_complete )
-    {
-      break ;
-    }
-  }
-  return x ;
+  if (immediate )
+    return ;
+
+  while (!Spi_complete) ;
 }
 
-uint32_t write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate )
+void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate )
 {
-  register uint8_t *p;
-  register uint32_t x;
-
+#ifdef SIMU
+  assert(size);
+  eeprom_pointer = eeAddress;
+  eeprom_buffer_data = (char*)buffer;
+  eeprom_buffer_size = size+1;
+  eeprom_read_operation = false;
+  Spi_complete = false;
+  sem_post(&eeprom_write_sem);
+#else
   eeprom_write_enable();
 
-  p = Spi_tx_buf;
+  register uint8_t *p = Spi_tx_buf;
   *p = 2; // Write command
   *(p + 1) = eeAddress >> 16;
   *(p + 2) = eeAddress >> 8;
   *(p + 3) = eeAddress; // 3 bytes address
   spi_PDC_action(p, buffer, 0, 4, size);
+#endif
 
-  if (immediate) {
-    return 0;
-  }
-  for (x = 0; x < 100000; x += 1) {
-    if (Spi_complete) {
-      break;
-    }
-  }
-  return x ;
+  if (immediate)
+    return;
+
+  while (!Spi_complete) ;
 }
 
 uint8_t byte_checksum( uint8_t *p, uint32_t size )
@@ -453,22 +460,22 @@ bool ee32LoadGeneral()
 
   memset(&g_eeGeneral, 0, sizeof(EEGeneral));
 
-  if ( size > sizeof(EEGeneral) ) {
+  if (size > sizeof(EEGeneral)) {
     size = sizeof(EEGeneral) ;
   }
 
-  if ( size ) {
+  if (size) {
     read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size, 0 ) ;
   }
 
-  /*if(g_eeGeneral.myVers<MDVERS)
-      sysFlags |= sysFLAG_OLD_EEPROM; // if old EEPROM - Raise flag
-*/
-  g_eeGeneral.myVers = EEPROM_VER;
+  if (g_eeGeneral.myVers == EEPROM_VER) {
+    uint16_t sum = evalChkSum();
+    if (g_eeGeneral.chkSum == sum) {
+      return true;
+    }
+  }
 
-  uint16_t sum=0;
-  if(size>(sizeof(EEGeneral)-20)) for(uint8_t i=0; i<12;i++) sum+=g_eeGeneral.calibMid[i];
-  return g_eeGeneral.chkSum == sum;
+  return false;
 }
 
 void eeLoadModel(uint8_t id)
@@ -640,6 +647,7 @@ void init_spi()
   spi_operation( p, spi_buf, 2 ) ;
 }
 
+#ifndef SIMU
 extern "C" void SPI_IRQHandler()
 {
   register Spi *spiptr ;
@@ -655,6 +663,7 @@ extern "C" void SPI_IRQHandler()
 // Power save
 //  PMC->PMC_PCER0 &= ~0x00200000L ;      // Disable peripheral clock to SPI
 }
+#endif
 
 void end_spi()
 {
@@ -747,6 +756,9 @@ void ee32_process()
       else
       {
 #endif
+#ifdef SIMU
+        Eeprom32_process_state = E32_WRITESTART ;
+#else
         eeAddress = Eeprom32_address ;
         eeprom_write_enable() ;
         p = Spi_tx_buf ;
@@ -757,6 +769,7 @@ void ee32_process()
         spi_PDC_action( p, 0, 0, 4, 0 ) ;
         Eeprom32_process_state = E32_ERASESENDING ;
         Eeprom32_state_after_erase = E32_WRITESTART ;
+#endif
       // }
    // }
   }
@@ -772,10 +785,8 @@ void ee32_process()
         *q++ = *p++; // Copy the data to temp buffer
       }
     }
-    Eeprom_buffer.header.sequence_no =
-        ++File_system[Eeprom32_file_index].sequence_no;
-    File_system[Eeprom32_file_index].size = Eeprom_buffer.header.data_size =
-        Eeprom32_data_size;
+    Eeprom_buffer.header.sequence_no = ++File_system[Eeprom32_file_index].sequence_no;
+    File_system[Eeprom32_file_index].size = Eeprom_buffer.header.data_size = Eeprom32_data_size;
     Eeprom_buffer.header.flags = 0;
     Eeprom_buffer.header.hcsum = byte_checksum((uint8_t *) &Eeprom_buffer, 7);
     total_size = Eeprom32_data_size + sizeof(struct t_eeprom_header);
@@ -820,9 +831,10 @@ void ee32_process()
       }
       else
       {
+        File_system[Eeprom32_file_index].block_no ^= 1 ;        // This is now the current block
 #if 0
         // now erase the other block
-        File_system[Eeprom32_file_index].block_no ^= 1 ;		// This is now the current block
+        File_system[Eeprom32_file_index].block_no ^= 1 ;	// This is now the current block
         eeAddress = Eeprom32_address ^ 0x00001000 ;		// Address of block to erase
         eeprom_write_enable() ;
         p = Spi_tx_buf ;
@@ -875,7 +887,9 @@ void ee32_read_model_names()
 
 void eeprom_init()
 {
+#ifndef SIMU
   init_spi() ;
+#endif
   fill_file_index() ;
   Eeprom32_process_state = E32_IDLE ;
 }

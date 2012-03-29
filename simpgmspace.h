@@ -95,6 +95,24 @@ typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
 extern sem_t eeprom_write_sem;
+#if defined(PCBARM)
+extern Pio Pioa, Piob, Pioc;
+#undef PIOA
+#define PIOA (&Pioa)
+#undef PIOB
+#define PIOB (&Piob)
+#undef PIOC
+#define PIOC (&Pioc)
+extern uint32_t eeprom_pointer;
+extern char* eeprom_buffer_data;
+extern volatile int32_t eeprom_buffer_size;
+extern bool eeprom_read_operation;
+extern volatile uint32_t Spi_complete;
+#else
+#define PIOA 0
+#define PIOB 0
+#define PIOC 0
+#endif
 
 #define loop_until_bit_is_set( port, bitnum) \
   while ( 0/*! ( (port) & (1 << (bitnum)) )*/ ) ;
@@ -217,6 +235,15 @@ extern sem_t eeprom_write_sem;
 #define WGM10   0
 #define WGM12   0
 #define CS10    0
+
+#if defined(PCBARM)
+extern volatile uint32_t Tenms;
+extern uint32_t Master_frequency;
+#define NVIC_EnableIRQ(x)
+#define NVIC_DisableIRQ(x)
+#define __disable_irq()
+#define __enable_irq()
+#endif
 
 extern volatile unsigned char pinb,pinc,pind,pine,ping,pinh,pinj,pinl;
 extern uint8_t portb, portc, porth, dummyport;

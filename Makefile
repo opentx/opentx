@@ -112,23 +112,17 @@ REV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 # MCU name
 ifeq ($(PCB), STD)
   TRGT = avr-
-  MCU = atmega64
-  BOARDSRC = board_stock.cpp
-  EEPROMSRC = eeprom_avr.cpp  
+  MCU = atmega64  
   CPPDEFS = -DF_CPU=$(F_CPU)UL
 endif
 ifeq ($(PCB), V4)
   TRGT = avr-
   MCU = atmega2560
-  BOARDSRC = board_gruvin9x.cpp
-  EEPROMSRC = eeprom_avr.cpp
   CPPDEFS = -DF_CPU=$(F_CPU)UL
 endif
 ifeq ($(PCB), ARM)
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
-  BOARDSRC = board_ersky9x.cpp
-  EEPROMSRC = eeprom_arm.cpp
   CPPDEFS = 
 endif
 
@@ -256,10 +250,9 @@ ifeq ($(PCB), ARM)
   OPT = 2
   CPPDEFS += -DPCBARM
   EXTRAINCDIRS += ersky9x
-  CPPSRC += ersky9x/core_cm3.c
-  CPPSRC += ersky9x/board_lowlevel.c
-  CPPSRC += ersky9x/crt.c
-  CPPSRC += ersky9x/vectors_sam3s.c
+  BOARDSRC = board_ersky9x.cpp 
+  EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
+  EEPROMSRC = eeprom_arm.cpp
   CPPSRC += ersky9x/sound.cpp
   CPPSRC += beeper.cpp
 endif
@@ -269,6 +262,8 @@ ifeq ($(PCB), V4)
   OPT = 2
   CPPDEFS += -DPCBV4 -DAUDIO
   EXTRAINCDIRS += gruvin9x
+  BOARDSRC += board_gruvin9x.cpp
+  EEPROMSRC = eeprom_avr.cpp
   CPPSRC += audio.cpp
   CPPSRC += gruvin9x/gtime.cpp
   CPPSRC += gruvin9x/rtc.cpp
@@ -296,6 +291,8 @@ ifeq ($(PCB), STD)
   # STD PCB, so ...
   OPT = s
   CPPDEFS += -DPCBSTD
+  BOARDSRC = board_stock.cpp
+  EEPROMSRC = eeprom_avr.cpp
    
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
@@ -511,7 +508,7 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 simu: $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
-	g++ simu.cpp $(BOARDSRC) $(CPPFLAGS) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
+	g++ simu.cpp $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -554,9 +551,9 @@ endif
 	$(OBJDUMP) -h -S $< > $@
 
 # Concatenate all sources files in one big file to optimize size
-allsrc.cpp: $(BOARDSRC) $(CPPSRC)
+allsrc.cpp: $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) 
 	@echo -n > allsrc.cpp
-	for f in $(BOARDSRC) $(CPPSRC); do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
+	for f in $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) ; do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 	
 remallsrc:
 	$(REMOVE) allsrc.cpp

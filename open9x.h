@@ -46,10 +46,13 @@
 #include "gruvin9x/gtime.h"
 #endif
 
+#if defined(PCBARM)
+#include "ersky9x/AT91SAM3S2.h"
+#endif
+
 #if defined(SIMU)
 #include "simpgmspace.h"
 #elif defined(PCBARM)
-#include "ersky9x/AT91SAM3S2.h"
 #include "ersky9x/core_cm3.h"
 typedef const unsigned char pm_uchar;
 typedef const char pm_char;
@@ -560,9 +563,13 @@ extern uint8_t  s_eeDirtyMsk;
 #define STORE_GENERALVARS eeDirty(EE_GENERAL)
 
 #if defined (PCBARM)
-#include "AT91SAM3S2.h"
+#ifndef SIMU
 #define BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = 0/*TODO g_eeGeneral.bright*/)
 #define BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
+#else
+#define BACKLIGHT_ON
+#define BACKLIGHT_OFF
+#endif
 #ifdef REVB
 #define NUMBER_ANALOG   9
 #else

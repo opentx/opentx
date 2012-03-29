@@ -35,7 +35,6 @@
 #include "FXExpression.h"
 #include "FXPNGImage.h"
 #include <unistd.h>
-#include "simpgmspace.h"
 #include "fxkeys.h"
 #include "open9x.h"
 #include "menus.h"
@@ -273,25 +272,33 @@ void Open9xSim::refreshDiplay()
   }
 
   if(hasFocus()) {
-    static FXuint keys1[]={
-      KEY_Return,    INP_B_KEY_MEN, INP_P_KEY_MEN,
-      KEY_Page_Up,   INP_B_KEY_MEN, INP_P_KEY_MEN,
-      KEY_KP_1,      INP_B_KEY_MEN, INP_P_KEY_MEN,
-      KEY_Page_Down, INP_B_KEY_EXT, INP_P_KEY_EXT,
-      KEY_BackSpace, INP_B_KEY_EXT, INP_P_KEY_EXT,
-      KEY_KP_0,      INP_B_KEY_EXT, INP_P_KEY_EXT,
-      KEY_Down,      INP_B_KEY_DWN, INP_P_KEY_DWN,
-      KEY_Up,        INP_B_KEY_UP,  INP_P_KEY_UP,
-      KEY_Right,     INP_B_KEY_RGT, INP_P_KEY_RGT,
-      KEY_Left,      INP_B_KEY_LFT, INP_P_KEY_LFT
+    static uint64_t keys1[]={
+      KEY_Return,    INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, 0x40,
+      KEY_Page_Up,   INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, 0x40,
+      KEY_KP_1,      INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, 0x40,
+      KEY_Page_Down, INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)PIOA, 0x80000000,
+      KEY_BackSpace, INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)PIOA, 0x80000000,
+      KEY_KP_0,      INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)PIOA, 0x80000000,
+      KEY_Down,      INP_B_KEY_DWN, INP_P_KEY_DWN, (uint64_t)PIOC, 0x10 >> 1,
+      KEY_Up,        INP_B_KEY_UP,  INP_P_KEY_UP,  (uint64_t)PIOC, 0x08 >> 1,
+      KEY_Right,     INP_B_KEY_RGT, INP_P_KEY_RGT, (uint64_t)PIOC, 0x20 >> 1,
+      KEY_Left,      INP_B_KEY_LFT, INP_P_KEY_LFT, (uint64_t)PIOC, 0x40 >> 1,
     };
 
     pinb &= ~ 0x7e;
     pinl &= ~ 0x3f; // for v4
-    for(unsigned i=0; i<DIM(keys1);i+=3) {
+#if defined(PCBARM)
+    PIOC->PIO_PDSR = 0xFFFFFFFF;
+    PIOB->PIO_PDSR = 0xFFFFFFFF;
+    PIOA->PIO_PDSR = 0xFFFFFFFF;
+#endif
+    for(unsigned i=0; i<DIM(keys1);i+=5) {
       if (getApp()->getKeyState(keys1[i])) {
         pinb |= (1<<keys1[i+1]);
         pinl |= (1<<keys1[i+2]);
+#if defined(PCBARM)
+        ((Pio*)keys1[i+3])->PIO_PDSR &= ~(keys1[i+4]);
+#endif
       }
     }
 

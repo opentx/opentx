@@ -32,14 +32,7 @@
 *
 ****************************************************************************/
 
-
-
-#include <stdint.h>
-
-#include "AT91SAM3S2.h"
-#include "core_cm3.h"
-
-#include "sound.h"
+#include "open9x.h"
 
 void start_sound( void ) ;
 void buzzer_on( void ) ;
@@ -58,7 +51,7 @@ extern "C" void TWI0_IRQHandler (void) ;
 void audioDefevent( uint8_t e ) ;
 
 
-extern uint32_t Master_frequency ;
+extern uint32_t Master_frequency ; // TODO in a .h?
 
 volatile uint32_t Tone_timer ;		// Modified in interrupt routine
 volatile uint8_t Buzzer_count ;
