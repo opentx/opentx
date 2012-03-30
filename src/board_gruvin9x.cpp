@@ -75,9 +75,13 @@ inline void board_init()
 
 uint8_t check_power()
 {
-#ifndef REV0
+#ifndef REV0 
+#ifndef SIMU
   if ((PING & 0b00000010) && (~PINL & 0b01000000))
     return 1;
+#else
+  return 0;
+#endif
 #endif
   return 0;
 }
@@ -85,7 +89,9 @@ uint8_t check_power()
 void soft_power_off()
 {
 #ifndef REV0
+#ifndef SIMU
   PORTL = 0x7f;
+#endif  
 #endif
 }
 
