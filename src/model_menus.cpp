@@ -99,53 +99,6 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
 #endif
 };
 
-
-const pm_char * s_warning_info;
-uint8_t         s_warning_info_len;
-// uint8_t s_warning_info_att not needed now
-uint8_t         s_confirmation = 0;
-
-void displayPopup(const pm_char * pstr)
-{
-  s_warning = pstr;
-  displayBox();
-  s_warning = 0;
-  refreshDisplay();
-}
-
-void displayWarning(uint8_t event)
-{
-  if (s_warning) {
-    displayBox();
-    lcd_puts(16, 5*FH, STR_EXIT);
-    switch(event) {
-      case EVT_KEY_FIRST(KEY_EXIT):
-        killEvents(event);
-        s_warning = 0;
-        break;
-    }
-  }
-}
-
-void displayConfirmation(uint8_t event)
-{
-  s_confirmation = false;
-  displayBox();
-  if (s_warning_info)
-    lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
-  lcd_puts(16, 5*FH, STR_POPUPS);
-
-  switch(event) {
-    case EVT_KEY_FIRST(KEY_MENU):
-      s_confirmation = true;
-      // no break
-    case EVT_KEY_FIRST(KEY_EXIT):
-      killEvents(event);
-      s_warning = 0;
-      break;
-  }
-}
-
 #define COPY_MODE 1
 #define MOVE_MODE 2
 static uint8_t s_copyMode = 0;

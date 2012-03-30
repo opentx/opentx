@@ -184,7 +184,7 @@ void SSC_IRQHandler (void) { while(1); }
 void TC0_IRQHandler (void) { while(1); }
 void TC1_IRQHandler (void) { while(1); }
 // void TC2_IRQHandler (void) { while(1); }
-void TC3_IRQHandler (void) { while(1); }
+// void TC3_IRQHandler (void) { while(1); }
 void TC4_IRQHandler (void) { while(1); }
 void TC5_IRQHandler (void) { while(1); }
 void ADC_IRQHandler (void) { while(1); }

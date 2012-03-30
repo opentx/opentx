@@ -288,6 +288,14 @@ const pm_char STR_LATITUDE[] PROGMEM = TR_LATITUDE;
 const pm_char STR_LONGITUDE[] PROGMEM = TR_LONGITUDE;
 #endif
 
+#if defined(PCBARM) || defined(PCBV4)
+const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
+#endif
+
+#if defined(PCBARM)
+const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
+#endif
+
 const pm_uchar font[] PROGMEM = {
 #include "font.lbm"
 #ifdef TRANSLATIONS_SE

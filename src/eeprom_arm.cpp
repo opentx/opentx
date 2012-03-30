@@ -41,9 +41,6 @@ uint16_t s_eeDirtyTime10ms;
 // 'main' needs to load a model
 
 
-
-#define WRITE_DELAY_10MS 100
-
 // These may not be needed, or might just be smaller
 uint8_t Spi_tx_buf[24] ;
 uint8_t Spi_rx_buf[24] ;
@@ -96,7 +93,7 @@ uint32_t Update_timer ;
 void eeDirty(uint8_t msk)
 {
   s_eeDirtyMsk |= msk;
-  s_eeDirtyTime10ms  = get_tmr10ms() ;
+  s_eeDirtyTime10ms = get_tmr10ms() ;
 }
 
 void handle_serial( void ) ;
@@ -327,7 +324,11 @@ void read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t 
   if (immediate )
     return ;
 
-  while (!Spi_complete) ;
+  while (!Spi_complete) {
+#ifdef SIMU
+    sleep(5/*ms*/);
+#endif
+  }
 }
 
 void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate )
@@ -354,7 +355,11 @@ void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_
   if (immediate)
     return;
 
-  while (!Spi_complete) ;
+  while (!Spi_complete) {
+#ifdef SIMU
+    sleep(5/*ms*/);
+#endif
+  }
 }
 
 uint8_t byte_checksum( uint8_t *p, uint32_t size )
@@ -676,17 +681,18 @@ void eeWaitFinished()
 {
   while (Eeprom32_process_state != E32_IDLE) {
     ee32_process();
+#ifdef SIMU
+    sleep(5/*ms*/);
+#endif
     // TODO perMain()?
   }
 }
 
 void eeCheck(bool immediately)
 {
-  if (!immediately && (Eeprom32_process_state != E32_IDLE || (get_tmr10ms() - s_eeDirtyTime10ms) < WRITE_DELAY_10MS))
-    return;
-
-  if (Eeprom32_process_state != E32_IDLE)
+  if (immediately) {
     eeWaitFinished();
+  }
 
   if (s_eeDirtyMsk & EE_GENERAL) {
     s_eeDirtyMsk -= EE_GENERAL;

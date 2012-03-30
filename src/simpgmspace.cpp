@@ -88,11 +88,13 @@ void *eeprom_write_function(void *)
     }
     else {
 #endif
+    if (fp) {
+      if (fseek(fp, eeprom_pointer, SEEK_SET) == -1)
+        perror("error in fseek");
+    }
     while (--eeprom_buffer_size) {
       assert(eeprom_buffer_size > 0);
       if (fp) {
-        if (fseek(fp, eeprom_pointer, SEEK_SET) == -1)
-          perror("error in fseek");
         if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
           perror("error in fwrite");
 #if !defined(PCBARM)

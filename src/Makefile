@@ -17,9 +17,13 @@
 
 #----------- BUILD OPTIONS ---------------------------
 
-#gruvin: PCB version -- OVERRIDES the following settings if not STD
+# PCB version
 # Values: STD, V4, ARM
 PCB = STD
+
+# PCB revision
+# Values: REVA, REVB
+PCBREV = REVB
 
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
@@ -107,23 +111,34 @@ DEBUG = NO
 # Define programs and commands.
 SHELL = sh
 IMG2LBM = python ../util/img2lbm.py
-REV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
+SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
+
+CPPDEFS = 
 
 # MCU name
 ifeq ($(PCB), STD)
   TRGT = avr-
   MCU = atmega64  
-  CPPDEFS = -DF_CPU=$(F_CPU)UL
+  CPPDEFS += -DF_CPU=$(F_CPU)UL
 endif
 ifeq ($(PCB), V4)
+  ifeq ($(PCBREV), REV0)
+    CPPDEFS += -DREV0
+  else
+    CPPDEFS += -DREV1
+  endif
   TRGT = avr-
   MCU = atmega2560
-  CPPDEFS = -DF_CPU=$(F_CPU)UL
+  CPPDEFS += -DF_CPU=$(F_CPU)UL
 endif
 ifeq ($(PCB), ARM)
+  ifeq ($(PCBREV), REVA)
+    CPPDEFS += -DREVA
+  else
+    CPPDEFS += -DREVB
+  endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
-  CPPDEFS = 
 endif
 
 CC      = $(TRGT)gcc
@@ -436,14 +451,14 @@ stamp_header:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-open9x.h
 	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> stamp-open9x.h
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)-$(MODS)\"" >> stamp-open9x.h
-	@echo "#define SVN_STR  \"open9x-r$(REV)\"" >> stamp-open9x.h
+	@echo "#define SVN_STR  \"open9x-r$(SVNREV)\"" >> stamp-open9x.h
 	@cat stamp-open9x.h
 	
 stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > ../stamp-open9x.txt
 	@echo "#define TIME_STR \"`date +%H:%I:%S`\"" >> ../stamp-open9x.txt
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> ../stamp-open9x.txt
-	@echo "#define SVN_VERS  \"open9x-r$(REV)\"" >> ../stamp-open9x.txt
+	@echo "#define SVN_VERS  \"open9x-r$(SVNREV)\"" >> ../stamp-open9x.txt
 	@cat ../stamp-open9x.txt
  
 font.lbm: font_6x1.xbm

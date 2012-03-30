@@ -260,7 +260,7 @@ void eeprom_read_block (void *pointer_ram,
                    const void *pointer_eeprom,
                         size_t size);
 
-#define wdt_reset() sleep(1)
+#define wdt_reset() sleep(1/*ms*/)
 #define board_init()
 
 #endif

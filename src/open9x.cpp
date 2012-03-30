@@ -722,6 +722,8 @@ void checkTHR()
       int16_t v = anaIn(thrchn);
       if (g_eeGeneral.throttleReversed) v = - v;
 
+      if (check_power()) return; // Usb on or power off
+
       if(v<=lowLim || keyDown()) {
         clearKeyEvents();
         return;
@@ -761,6 +763,8 @@ void checkSwitches()
       first = false;
     }
 
+    if (check_power()) return; // Usb on or power off
+
     checkBacklight();
 
 #ifdef SIMU
@@ -780,7 +784,12 @@ void alert(const pm_char * s)
     if (!main_thread_running) return;
     sleep(1/*ms*/);
 #endif
-    if(keyDown())   return;  //wait for key release
+
+#if defined(PCBARM)
+    if (check_power()) return; // Usb on or power off
+#endif
+
+    if(keyDown()) return;  // wait for key release
 
     checkBacklight();
 
@@ -887,6 +896,7 @@ uint16_t BandGap = 2040 ;
 uint16_t BandGap ;
 #endif
 #if defined(PCBARM) and defined(REVB)
+uint16_t Current_analogue;
 #define NUMBER_ANALOG   9
 #else
 #define NUMBER_ANALOG   8
@@ -1579,6 +1589,12 @@ void perOut(uint8_t phase)
 char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #endif
 
+#if defined(PCBARM) || (defined(PCBV4) && !defined(REV0))
+#define TIME_TO_WRITE (s_eeDirtyMsk && (get_tmr10ms() - s_eeDirtyTime10ms) >= WRITE_DELAY_10MS)
+#else
+#define TIME_TO_WRITE s_eeDirtyMsk
+#endif
+
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 void perMain()
 {
@@ -1652,18 +1668,18 @@ void perMain()
 
 // TODO same code here + integrate the timer which could be common
 #if defined(PCBARM)
-  if ( Tenms ) {
+  if (Tenms) {
     Tenms = 0 ;
     if (Eeprom32_process_state != E32_IDLE)
       ee32_process();
-    else if (s_eeDirtyMsk)
+    else if (TIME_TO_WRITE)
       eeCheck();
   }
 #else
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
-    else if (s_eeDirtyMsk)
+    else if (TIME_TO_WRITE)
       eeCheck();
   }
 #endif
@@ -1935,7 +1951,10 @@ void perMain()
     case 2:
       {
         int32_t instant_vbat = anaIn(7);
-#if defined(PCBV4)
+#if defined(PCBARM)
+        instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
+        instant_vbat /= 55296  ;
+#elif defined(PCBV4)
         instant_vbat = ((uint32_t)instant_vbat*1112 + (int32_t)instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
 #else
         instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
@@ -2322,23 +2341,6 @@ uint16_t stack_free()
   return p - &__bss_end ;
 }
 
-#else
-// TODO in another file...
-extern "C" void sam_boot( void ) ;
-
-void disable_ssc()
-{
-        register Pio *pioptr ;
-        register Ssc *sscptr ;
-
-        // Revert back to pwm output
-        pioptr = PIOA ;
-        pioptr->PIO_PER = 0x00020000L ;                                         // Assign A17 to PIO
-
-        sscptr = SSC ;
-        sscptr->SSC_CR = SSC_CR_TXDIS ;
-
-}
 #endif
 
 int main(void)
@@ -2479,22 +2481,29 @@ int main(void)
 
   // TODO init_main_ppm( 3000, 1 ) ;            // Default for now, initial period 1.5 mS, output on
 
-  // TODO start_ppm_capture() ;
+#if defined(PCBARM)
+  start_ppm_capture();
+  // TODO inside startPulses?
+#endif
 
   // FrSky testing serial receive
   // TODO startPdcUsartReceive() ;
 
   wdt_enable(WDTO_500MS);
 
-  while(1) {
 #if defined(PCBARM)
-    register Pio *pioptr = PIOC ;
-    if ( pioptr->PIO_PDSR & 0x02000000 ) {
-      // Detected USB
-      // TODO goto_usb = 1 ;
-      break;
-    }
+  register uint32_t shutdown_state = 0;
+#elif defined(PCBV4)
+  uint8_t shutdown_state = 0;
+#endif
 
+  while(1) {
+#if defined(PCBARM) || defined(PCBV4)
+    if ((shutdown_state=check_power()))
+      break;
+#endif
+
+#if defined(PCBARM)
     uint16_t t0 = getTmr2MHz();
 #else
     uint16_t t0 = getTmr16KHz();
@@ -2510,7 +2519,9 @@ int main(void)
       getADC_single() ;
     }
 
-#if defined(PCBV4)
+#if defined(PCBARM) && defined(REVB)
+    Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
+#elif defined(PCBV4)
     // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
     ADCSRB &= ~(1<<MUX5);
     ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
@@ -2536,32 +2547,34 @@ int main(void)
     t0 = getTmr16KHz() - t0;
 #endif
 
-    g_timeMain = max(g_timeMain,t0);
+    g_timeMain = max(g_timeMain, t0);
   }
 
-#if defined(PCBARM)
+#if defined(PCBARM) || defined(PCBV4)
+  // Time to switch off
   lcd_clear() ;
-  lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
-  lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
-  lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
-  refreshDisplay() ;
+  displayPopup(STR_SHUTDOWN);
+  eeCheck(true);
 
-  // This might be replaced by a software reset
-  // Any interrupts that have been enabled must be disabled here
-  // BEFORE calling sam_boot()
-  // TODO needed for REVB soft_power_off() ;
-  // TODO not started end_ppm_capture() ;
-  end_spi() ; // TODO in eeprom_arm ...
-  end_sound() ;
-  TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
-  NVIC_DisableIRQ(TC2_IRQn) ;
-  // PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
-  // TODO disable_main_ppm() ;
-  // PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
-  // NVIC_DisableIRQ(PWM_IRQn) ;
-  disable_ssc() ;
-  sam_boot() ;
+#if defined(PCBARM)
+  if (shutdown_state == e_power_usb) {
+    lcd_clear();
+    lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
+    lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
+    lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
+    refreshDisplay() ;
+    usb_mode();
+  }
+#ifdef REVB
+  else
 #endif
+#endif
+
+  {
+    soft_power_off();            // Only turn power off if necessary
+  }
+#endif
+
 }
 #endif
 

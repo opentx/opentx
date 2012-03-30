@@ -313,4 +313,6 @@
 #define TR_MINRSSI       "Min Rssi"
 #define TR_LATITUDE      "Breddgrad"
 #define TR_LONGITUDE     "L\201ngdgrad"
-#define TR_GPSCOORD     "GPS-Koord."
+#define TR_GPSCOORD      "GPS-Koord."
+#define TR_SHUTDOWN      "SHUTTING DOWN"
+#define TR_CURRENT       "Current"

@@ -432,7 +432,7 @@ FORCEINLINE void setupPulsesDsm2()
 
 void DSM2_Done()
 {
-  UCSR0B &= ~((1 << TXEN0) | (1 << UDRIE0)); // disable TX pin and interrupt
+  UCSR0B &= ~((1 << TXEN0) | (1 << UDRIE0)); // disable UART TX and interrupt
 }
 
 void DSM2_Init(void)
@@ -451,7 +451,7 @@ void DSM2_Init(void)
   UBRR0L = UBRRL_VALUE;
   UCSR0A &= ~(1 << U2X0); // disable double speed operation.
 
-  // set 8N1
+  // set 8N1 (leave TX and RX disabled for now)
   UCSR0B = 0 | (0 << RXCIE0) | (0 << TXCIE0) | (0 << UDRIE0) | (0 << RXEN0) | (0 << TXEN0) | (0 << UCSZ02);
   UCSR0C = 0 | (1 << UCSZ01) | (1 << UCSZ00);
 

@@ -75,7 +75,68 @@ inline void init_soft_power()
   pioptr->PIO_ODR = PIO_PA8 ;             // Set bit A8 as input
   pioptr->PIO_PUER = PIO_PA8 ;    // Enable PA8 pullup
 }
+
+// Returns non-zero if power is switched off
+uint32_t check_soft_power()
+{
+  if ( PIOC->PIO_PDSR & PIO_PC17 )        // Power on
+  {
+    return 1 ;
+  }
+
+  if ( PIOA->PIO_PDSR & PIO_PA8 )         // Trainer plugged in
+  {
+    return 1 ;
+  }
+
+  return 0 ;
+}
+
 #endif
+
+uint32_t check_power()
+{
+#ifdef REVB
+  if ( check_soft_power() == 0 )    // power now off
+  {
+    return e_power_off ;
+  }
+#endif
+  if ( PIOC->PIO_PDSR & 0x02000000 )
+  {
+    return e_power_usb ;            // Detected USB
+  }
+  return e_power_on;
+}
+
+// turn off soft power
+void soft_power_off()
+{
+#ifdef REVB
+  register Pio *pioptr ;
+
+  pioptr = PIOA ;
+  pioptr->PIO_PUDR = PIO_PA8 ;    // Disble PA8 pullup
+  pioptr->PIO_OER = PIO_PA8 ;             // Set bit A8 as input
+  pioptr->PIO_CODR = PIO_PA8 ;    // Set bit A8 OFF, disables soft power switch
+#endif
+}
+
+extern "C" void sam_boot( void ) ;
+
+void disable_ssc()
+{
+  register Pio *pioptr ;
+  register Ssc *sscptr ;
+
+  // Revert back to pwm output
+  pioptr = PIOA ;
+  pioptr->PIO_PER = 0x00020000L ;                                         // Assign A17 to PIO
+
+  sscptr = SSC ;
+  sscptr->SSC_CR = SSC_CR_TXDIS ;
+}
+
 
 // Prototype
 // Free pins (PA16 is stock buzzer)
@@ -155,7 +216,10 @@ inline void setup_switches()
 #endif
 }
 
-#ifndef SIMU
+#ifdef SIMU
+#define end_ppm_capture()
+#define sam_boot()
+#else
 
 /**
  * Configures a UART peripheral with the specified parameters.
@@ -269,6 +333,26 @@ inline void UART2_Configure( uint32_t baudrate, uint32_t masterClock)
   pUsart->US_CR = US_CR_RXEN | US_CR_TXEN;
 }
 
+// Test, starts TIMER0 at full speed (MCK/2) for delay timing
+// @ 36MHz this is 18MHz
+// This was 6 MHz, we may need to slow it to TIMER_CLOCK2 (MCK/8=4.5 MHz)
+inline void start_timer0()
+{
+  register Tc *ptc ;
+
+  // Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
+  PMC->PMC_PCER0 |= 0x00800000L ;               // Enable peripheral clock to TC0
+
+  ptc = TC0 ;           // Tc block 0 (TC0-2)
+  ptc->TC_BCR = 0 ;                       // No sync
+  ptc->TC_BMR = 2 ;
+  ptc->TC_CHANNEL[0].TC_CMR = 0x00008001 ;      // Waveform mode MCK/8 for 36MHz osc.
+  ptc->TC_CHANNEL[0].TC_RC = 0xFFF0 ;
+  ptc->TC_CHANNEL[0].TC_RA = 0 ;
+  ptc->TC_CHANNEL[0].TC_CMR = 0x00008040 ;        // 0000 0000 0000 0000 1000 0000 0100 0000, stop at regC
+  ptc->TC_CHANNEL[0].TC_CCR = 5 ;         // Enable clock and trigger it (may only need trigger)
+}
+
 // Starts TIMER2 at 100Hz,  commentd out drive of TIOA2 (A26, EXT2) out
 inline void start_timer2()
 {
@@ -299,22 +383,113 @@ inline void start_timer2()
   TC0->TC_CHANNEL[2].TC_IER = TC_IER0_CPCS ;
 }
 
-// Test, starts TIMER0 at full speed (MCK/2) for delay timing
-inline void start_timer0()
+// Start TIMER3 for input capture
+inline void start_timer3()
 {
   register Tc *ptc ;
+  register Pio *pioptr ;
+
+  pioptr = PIOC ;
 
   // Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
-  PMC->PMC_PCER0 |= 0x00800000L ;               // Enable peripheral clock to TC0
+  PMC->PMC_PCER0 |= 0x04000000L ;               // Enable peripheral clock to TC3
 
-  ptc = TC0 ;           // Tc block 0 (TC0-2)
+  ptc = TC1 ;           // Tc block 1 (TC3-5)
   ptc->TC_BCR = 0 ;                       // No sync
   ptc->TC_BMR = 2 ;
-  ptc->TC_CHANNEL[0].TC_CMR = 0x00008000 ;        // Waveform mode
-  ptc->TC_CHANNEL[0].TC_RC = 0xFFF0 ;
-  ptc->TC_CHANNEL[0].TC_RA = 0 ;
-  ptc->TC_CHANNEL[0].TC_CMR = 0x00008040 ;        // 0000 0000 0000 0000 1000 0000 0100 0000, stop at regC
+  ptc->TC_CHANNEL[0].TC_CMR = 0x00000000 ;        // Capture mode
+  ptc->TC_CHANNEL[0].TC_CMR = 0x00090005 ;        // 0000 0000 0000 1001 0000 0000 0000 0101, XC0, A rise, b fall
   ptc->TC_CHANNEL[0].TC_CCR = 5 ;         // Enable clock and trigger it (may only need trigger)
+
+  pioptr->PIO_ABCDSR[0] |= 0x00800000 ;         // Peripheral B = TIOA3
+  pioptr->PIO_ABCDSR[1] &= ~0x00800000 ;        // Peripheral B
+  pioptr->PIO_PDR = 0x00800000L ;         // Disable bit C23 (TIOA3) Assign to peripheral
+  NVIC_SetPriority( TC3_IRQn, 15 ) ; // Low ppiority interrupt
+  NVIC_EnableIRQ(TC3_IRQn) ;
+  ptc->TC_CHANNEL[0].TC_IER = TC_IER0_LDRAS ;
+}
+
+// Start Timer4 to provide 0.5uS clock for input capture
+void start_timer4()
+{
+  register Tc *ptc ;
+  register uint32_t timer ;
+
+  timer = Master_frequency / (2*2000000) ;                // MCK/2 and 2MHz
+
+  // Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
+  PMC->PMC_PCER0 |= 0x08000000L ;               // Enable peripheral clock to TC4
+
+  ptc = TC1 ;           // Tc block 1 (TC3-5)
+  ptc->TC_BCR = 0 ;                       // No sync
+  ptc->TC_BMR = 0 ;
+  ptc->TC_CHANNEL[1].TC_CMR = 0x00008000 ;        // Waveform mode
+  ptc->TC_CHANNEL[1].TC_RC = timer ;
+  ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
+  ptc->TC_CHANNEL[1].TC_CMR = 0x0009C000 ;        // 0000 0000 0000 1001 1100 0000 0100 0000
+                                                                                                                                                                                // MCK/2, set @ RA, Clear @ RC waveform
+  ptc->TC_CHANNEL[1].TC_CCR = 5 ;         // Enable clock and trigger it (may only need trigger)
+}
+
+// Timer3 used for PPM_IN pulse width capture. Counter running at 16MHz / 8 = 2MHz
+// equating to one count every half millisecond. (2 counts = 1ms). Control channel
+// count delta values thus can range from about 1600 to 4400 counts (800us to 2200us),
+// corresponding to a PPM signal in the range 0.8ms to 2.2ms (1.5ms at center).
+// (The timer is free-running and is thus not reset to zero at each capture interval.)
+// Timer 4 generates the 2MHz clock to clock Timer 3
+
+uint16_t Temp_captures[8] ;
+
+extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
+{
+  uint16_t capture ;
+  static uint16_t lastCapt ;
+  uint16_t val ;
+
+        capture = TC1->TC_CHANNEL[0].TC_RA ;
+        (void) TC1->TC_CHANNEL[0].TC_SR ;               // Acknowledgethe interrupt
+
+//      cli();
+//  ETIMSK &= ~(1<<TICIE3); //stop reentrance
+//  sei();
+
+  val = (capture - lastCapt) / 2 ;
+  lastCapt = capture;
+
+  // We prcoess g_ppmInsright here to make servo movement as smooth as possible
+  //    while under trainee control
+  if (ppmInState && ppmInState<=8) {
+    if(val>800 && val<2200) {
+      Temp_captures[ppmInState - 1] = capture ;
+      g_ppmIns[ppmInState++ - 1] =
+        (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
+
+    }
+    else {
+      ppmInState=0; // not triggered
+    }
+  }
+  else {
+    if (val>4000 && val < 16000) {
+      ppmInState=1; // triggered
+    }
+  }
+
+//  cli();
+//  ETIMSK |= (1<<TICIE3);
+//  sei();
+}
+
+void start_ppm_capture()
+{
+  start_timer4() ;
+  start_timer3() ;
+}
+
+void end_ppm_capture()
+{
+  TC1->TC_CHANNEL[0].TC_IDR = TC_IDR0_LDRAS ;
+  NVIC_DisableIRQ(TC3_IRQn) ;
 }
 
 extern "C" void TC2_IRQHandler()
@@ -586,11 +761,6 @@ void board_init()
 
 #endif
 
-uint16_t getTmr2MHz()
-{
-  return TC1->TC_CHANNEL[0].TC_CV ;
-}
-
 // keys:
 // KEY_EXIT    PA31 (PC24)
 // KEY_MENU    PB6 (PB5)
@@ -727,55 +897,63 @@ uint8_t keyDown()
 
 extern uint32_t keyState(EnumKeys enuk)
 {
+  register uint32_t a ;
+  register uint32_t c ;
+
   CPU_UINT xxx = 0;
 
   if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
 
+  a = PIOA->PIO_PDSR ;
+  c = PIOC->PIO_PDSR ;
+
   switch ((uint8_t) enuk) {
 #ifdef REVB
-    case SW_ElevDR : xxx = PIOC->PIO_PDSR & 0x80000000; // ELE_DR   PC31
+    case SW_ElevDR:
+      xxx = c & 0x80000000; // ELE_DR   PC31
 #else
     case SW_ElevDR:
-      xxx = PIOA->PIO_PDSR & 0x00000100; // ELE_DR   PA8
+      xxx = a & 0x00000100; // ELE_DR   PA8
 #endif
       break;
 
     case SW_AileDR:
-      xxx = PIOA->PIO_PDSR & 0x00000004; // AIL-DR  PA2
+      xxx = a & 0x00000004; // AIL-DR  PA2
       break;
 
     case SW_RuddDR:
-      xxx = PIOA->PIO_PDSR & 0x00008000; // RUN_DR   PA15
+      xxx = a & 0x00008000; // RUN_DR   PA15
       break;
       //     INP_G_ID1 INP_E_ID2
       // id0    0        1
       // id1    1        1
       // id2    1        0
     case SW_ID0:
-      xxx = ~PIOC->PIO_PDSR & 0x00004000; // SW_IDL1     PC14
+      xxx = ~c & 0x00004000; // SW_IDL1     PC14
       break;
     case SW_ID1:
-      xxx = (PIOC->PIO_PDSR & 0x00004000);
-      if (xxx) xxx = (PIOC->PIO_PDSR & 0x00000800);
+      xxx = (c & 0x00004000);
+      if (xxx) xxx = (c & 0x00000800);
       break;
     case SW_ID2:
-      xxx = ~PIOC->PIO_PDSR & 0x00000800; // SW_IDL2     PC11
+      xxx = ~c & 0x00000800; // SW_IDL2     PC11
       break;
 
     case SW_Gear:
-      xxx = PIOC->PIO_PDSR & 0x00010000; // SW_GEAR     PC16
+      xxx = c & 0x00010000; // SW_GEAR     PC16
       break;
 
 #ifdef REVB
-      case SW_ThrCt : xxx = PIOC->PIO_PDSR & 0x00100000; // SW_TCUT     PC20
+    case SW_ThrCt:
+      xxx = c & 0x00100000; // SW_TCUT     PC20
 #else
     case SW_ThrCt:
-      xxx = PIOA->PIO_PDSR & 0x10000000; // SW_TCUT     PA28
+      xxx = a & 0x10000000; // SW_TCUT     PA28
 #endif
       break;
 
     case SW_Trainer:
-      xxx = PIOC->PIO_PDSR & 0x00000100; // SW-TRAIN    PC8
+      xxx = c & 0x00000100; // SW-TRAIN    PC8
       break;
 
     default:
@@ -867,9 +1045,24 @@ void readKeysAndTrims()
   }
 }
 
-void end_ppm_capture()
+void usb_mode()
 {
-        TC1->TC_CHANNEL[0].TC_IDR = TC_IDR0_LDRAS ;
-        NVIC_DisableIRQ(TC3_IRQn) ;
+  // This might be replaced by a software reset
+  // Any interrupts that have been enabled must be disabled here
+  // BEFORE calling sam_boot()
+  // TODO endPdcUsartReceive() ;          // Terminate any serial reception
+#ifdef REVB
+  soft_power_off() ;
+#endif
+  end_ppm_capture() ;
+  end_spi() ;
+  end_sound() ;
+  TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
+  NVIC_DisableIRQ(TC2_IRQn) ;
+  //      PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
+  // TODO disable_main_ppm() ;
+  //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
+  //      NVIC_DisableIRQ(PWM_IRQn) ;
+  disable_ssc() ;
+  sam_boot() ;
 }
-
