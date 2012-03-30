@@ -138,6 +138,7 @@ extern volatile uint32_t Spi_complete;
 #define PORTF dummyport
 #define PORTG dummyport
 #define PORTH porth
+#define PORTL dummyport
 #define DDRA  dummyport
 #define DDRB  dummyport
 #define DDRC  dummyport
