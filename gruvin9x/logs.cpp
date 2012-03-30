@@ -163,11 +163,14 @@ void writeLogs()
     {
 // For now, append 'anything' as a test
       // if data type == Hub
+#ifdef FRSKY
       f_printf(&g_oLogFile, "%d,", frskyStreaming);
       f_printf(&g_oLogFile, "%d,", frskyRSSI[0].value);
       f_printf(&g_oLogFile, "%d,", frskyRSSI[1].value);
       f_printf(&g_oLogFile, "%d,", frskyTelemetry[0].value);
       f_printf(&g_oLogFile, "%d,", frskyTelemetry[1].value);
+#endif
+#ifdef FRSKY_HUB
       f_printf(&g_oLogFile, "%4d-%02d-%02d,", frskyHubData.year+2000, frskyHubData.month, frskyHubData.day);
       f_printf(&g_oLogFile, "%02d:%02d:%02d,", frskyHubData.hour, frskyHubData.min, frskyHubData.sec);
       f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLongitude_bp, frskyHubData.gpsLongitude_ap,
@@ -186,6 +189,7 @@ void writeLogs()
       f_printf(&g_oLogFile, "%d,", frskyHubData.accelX);
       f_printf(&g_oLogFile, "%d,", frskyHubData.accelY);
       f_printf(&g_oLogFile, "%d,", frskyHubData.accelZ);
+#endif
       f_printf(&g_oLogFile, "%d,", keyState(SW_ThrCt));
       f_printf(&g_oLogFile, "%d,", keyState(SW_RuddDR));
       f_printf(&g_oLogFile, "%d,", keyState(SW_ElevDR));

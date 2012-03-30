@@ -31,10 +31,15 @@
  *
  */
 
-#ifndef file_h
-#define file_h
+#ifndef eeprom_avr_h
+#define eeprom_avr_h
 
 #include <inttypes.h>
+
+#if defined(PCBV4) && !defined(REV0)
+#define WRITE_DELAY_10MS 500
+extern uint16_t s_eeDirtyTime10ms;
+#endif
 
 //
 // bs=16  128 blocks    verlust link:128  16files:16*8  128     sum 256

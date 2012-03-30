@@ -173,7 +173,13 @@ SIMPLE_SUBMENU_NOTITLE(lines_count); \
 TITLE(title)
 
 extern const pm_char * s_warning;
-// TODO macro for s_warning
+extern const pm_char * s_warning_info;
+extern uint8_t         s_warning_info_len;
+extern uint8_t         s_confirmation;
+
 void displayBox();
+void displayPopup(const pm_char * pstr);
+void displayWarning(uint8_t event);
+void displayConfirmation(uint8_t event);
 
 #endif

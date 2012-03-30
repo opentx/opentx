@@ -288,7 +288,7 @@ void Open9xSim::refreshDiplay()
     pinb &= ~ 0x7e;
     pinl &= ~ 0x3f; // for v4
 #if defined(PCBARM)
-    PIOC->PIO_PDSR = 0xFFFFFFFF;
+    PIOC->PIO_PDSR = 0xFDFFFFFF;
     PIOB->PIO_PDSR = 0xFFFFFFFF;
     PIOA->PIO_PDSR = 0xFFFFFFFF;
 #endif

@@ -466,9 +466,22 @@ uint8_t getEvent();
 void putEvent(uint8_t evt);
 
 uint8_t keyDown();
+
 #if defined(PCBARM)
 uint32_t keyState(EnumKeys enuk);
+enum PowerState {
+  e_power_on,
+  e_power_usb,
+  e_power_off
+};
+uint32_t check_power();
 #else
+#if defined(PCBV4)
+uint8_t check_power();
+#else
+#define check_power() (0)
+#endif
+
 bool keyState(EnumKeys enuk);
 #endif
 void readKeysAndTrims();
@@ -527,7 +540,7 @@ extern int8_t s_traceCnt;
 extern int8_t *s_trimPtr[NUM_STICKS];
 
 #if defined(PCBARM)
-uint16_t getTmr2MHz();
+static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
 uint16_t getTmr16KHz();
 #endif
@@ -698,6 +711,7 @@ extern uint8_t            g_beepVal[5];
 
 #include "o9xstrings.h"
 
+extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
 extern int16_t            g_ppmIns[8];
 extern int16_t            g_chans512[NUM_CHNOUT];
 extern volatile uint8_t   tick10ms;

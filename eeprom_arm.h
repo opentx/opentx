@@ -20,6 +20,12 @@
 #include <inttypes.h>
 #include <stdint.h>
 
+#ifdef REV0
+#define WRITE_DELAY_10MS 100
+#else
+#define WRITE_DELAY_10MS 500
+#endif
+
 extern uint8_t  s_eeDirtyMsk;
 extern uint16_t s_eeDirtyTime10ms;
 

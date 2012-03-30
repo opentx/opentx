@@ -349,5 +349,13 @@ extern const pm_char STR_LATITUDE[];
 extern const pm_char STR_LONGITUDE[];
 #endif
 
+#if defined(PCBARM) || defined(PCBV4)
+extern const pm_char STR_SHUTDOWN[];
+#endif
+
+#if defined(PCBARM)
+extern const pm_char STR_CURRENT[];
+#endif
+
 extern const pm_uchar font[];
 extern const pm_uchar font_dblsize[];

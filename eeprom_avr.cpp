@@ -39,6 +39,9 @@
 uint8_t  s_write_err = 0;    // error reasons
 uint8_t  s_sync_write = false;
 uint8_t  s_eeDirtyMsk;
+#if defined(PCBV4) && !defined(REV0)
+uint16_t s_eeDirtyTime10ms;
+#endif
 
 RlcFile theFile;  //used for any file operation
 
@@ -60,6 +63,9 @@ PACK(struct EeFs{
 void eeDirty(uint8_t msk)
 {
   s_eeDirtyMsk |= msk;
+#if defined(PCBV4) && !defined(REV0)
+  s_eeDirtyTime10ms = get_tmr10ms();
+#endif
 }
 
 uint16_t eeprom_pointer;
@@ -752,11 +758,13 @@ void eeCheck(bool immediately)
   if (immediately) {
     eeFlush();
   }
+
   if (s_eeDirtyMsk & EE_GENERAL) {
     s_eeDirtyMsk -= EE_GENERAL;
     theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), immediately);
     if (!immediately) return;
   }
+
   if (s_eeDirtyMsk & EE_MODEL) {
     s_eeDirtyMsk = 0;
     theFile.writeRlc(FILE_MODEL(g_eeGeneral.currModel), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), immediately);
