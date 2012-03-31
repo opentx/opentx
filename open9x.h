@@ -829,5 +829,7 @@ union ReusableBuffer
 
 extern union ReusableBuffer reusableBuffer;
 
+void checkFlashOnBeep();
+
 #endif // gruvin9x_h
 /*eof*/

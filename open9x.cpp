@@ -1595,6 +1595,11 @@ char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #define TIME_TO_WRITE s_eeDirtyMsk
 #endif
 
+void checkFlashOnBeep()
+{
+  if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
+}
+
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 void perMain()
 {
@@ -1824,19 +1829,14 @@ void perMain()
         if(s_timerVal[0]==20) AUDIO_TIMER_20(); //beep two times
         if(s_timerVal[0]==10) AUDIO_TIMER_10();
         if(s_timerVal[0]<= 3) AUDIO_TIMER_LT3();
-
-        if(g_eeGeneral.flashBeep && (s_timerVal[0]==30 || s_timerVal[0]==20 || s_timerVal[0]==10 || s_timerVal[0]<=3))
-          g_LightOffCounter = FLASH_DURATION;
       }
 
       if (g_eeGeneral.minuteBeep && (((g_model.timers[0].val ? g_model.timers[0].val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
         AUDIO_MINUTE_BEEP();
-        if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
       }
     }
     else if(s_timerState[0] == TMR_BEEPING) {
       AUDIO_WARNING1();
-      if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
     }
     last_tmr = s_timerVal[0];
   }
@@ -1966,7 +1966,6 @@ void perMain()
         s_batCheck+=32;
         if (s_batCheck==0 && g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
           AUDIO_ERROR();
-          if (g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
         }
       }
       break;
