@@ -1056,25 +1056,26 @@ void menuProcFrsky(uint8_t event)
     }
 #ifdef FRSKY_HUB
     else if (s_frsky_view == e_frsky_after_flight) {
-      // Latitude
-#define LAT_LINE (1*FH+1)
-      lcd_putsLeft(LAT_LINE, STR_LATITUDE);
-      displayGpsCoord(LAT_LINE, frskyHubData.gpsLatitudeNS, frskyHubData.gpsLatitude_bp, frskyHubData.gpsLatitude_ap);
-      // Longitude
-#define LONG_LINE (2*FH+2)
-      lcd_putsLeft(LONG_LINE, STR_LONGITUDE);
-      displayGpsCoord(LONG_LINE, frskyHubData.gpsLongitudeEW, frskyHubData.gpsLongitude_bp, frskyHubData.gpsLongitude_ap);
+      uint8_t line=1*FH+1;
+      if (g_model.frsky.usrProto == 1) { // FrSky Hub
+        // Latitude
+        lcd_putsLeft(line, STR_LATITUDE);
+        displayGpsCoord(line, frskyHubData.gpsLatitudeNS, frskyHubData.gpsLatitude_bp, frskyHubData.gpsLatitude_ap);
+        // Longitude
+        line+=1*FH+1;
+        lcd_putsLeft(line, STR_LONGITUDE);
+        displayGpsCoord(line, frskyHubData.gpsLongitudeEW, frskyHubData.gpsLongitude_bp, frskyHubData.gpsLongitude_ap);
+        displayGpsTime();
+        line+=1*FH+1;
+      }
       // Rssi
-#define RSSI_LINE (3*FH+3)
-      lcd_putsLeft(RSSI_LINE, STR_MINRSSI);
-      lcd_puts(10*FW, RSSI_LINE, STR_TX);
-      lcd_outdezNAtt(lcd_lastPos, RSSI_LINE, frskyRSSI[1].min, LEFT|LEADING0, 2);
-      lcd_puts(16*FW, RSSI_LINE, STR_RX);
-      lcd_outdezNAtt(lcd_lastPos, RSSI_LINE, frskyRSSI[0].min, LEFT|LEADING0, 2);
-
-      displayGpsTime();
+      lcd_putsLeft(line, STR_MINRSSI);
+      lcd_puts(10*FW, line, STR_TX);
+      lcd_outdezNAtt(lcd_lastPos, line, frskyRSSI[1].min, LEFT|LEADING0, 2);
+      lcd_puts(16*FW, line, STR_RX);
+      lcd_outdezNAtt(lcd_lastPos, line, frskyRSSI[0].min, LEFT|LEADING0, 2);
     }
-#endif
+#endif    
   }
   else {
     lcd_putsAtt(22, 40, STR_NODATA, DBLSIZE);
