@@ -161,7 +161,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
 #endif
 
   if (e < AU_FRSKY_FIRST || empty()) {
-    checkFlashOnBeep();
+    if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
     switch (e) {
       // inactivity timer alert
       case AU_INACTIVITY:
