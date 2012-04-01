@@ -122,6 +122,7 @@ bool s_haptic;
 void audioQueue::playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tRepeat, uint8_t tHaptic, int8_t tFreqIncr)
 {
+  if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
   toneFreq = ((s_beeper && tFreq) ? tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET : 0); // add pitch compensator
   toneTimeLeft = getToneLength(tLen);
   tonePause = tPause;
@@ -161,7 +162,6 @@ void audioQueue::event(uint8_t e, uint8_t f)
 #endif
 
   if (e < AU_FRSKY_FIRST || empty()) {
-    if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
     switch (e) {
       // inactivity timer alert
       case AU_INACTIVITY:
