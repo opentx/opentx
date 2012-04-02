@@ -287,7 +287,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
       flags &= ~PREC2; // TODO not needed but removes 64bytes, could be improved for sure, check asm
       if (dblsize) {
         xn = x;
-        if(c>='1' || c<='3') ln++;
+        if(c>='1' && c<='3') ln++;
         uint8_t tn = ((uint16_t)val/10) % 10;
         if (tn==2 || tn==4) {
           if (c=='4') { xn++; }
