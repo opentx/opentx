@@ -645,7 +645,9 @@ int16_t getRotaryEncoder(uint8_t idx)
 
 void incRotaryEncoder(uint8_t idx, int8_t inc)
 {
-  phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx] += inc;
+  g_rotenc[idx] += inc;
+  int16_t *value = &(phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
+  *value = limit((int16_t)-1024, *value + inc, (int16_t)+1024);
 }
 
 #endif
