@@ -944,10 +944,11 @@ uint16_t anaIn(uint8_t chan)
   //                        Google Translate (German): // if table already, then it must also be worthwhile
 #if defined(PCBARM)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3,8};
-
+#if defined(REVB)
   if ( chan == 8 ) {
     return Current_analogue ;
   }
+#endif
 #else
   static const pm_char crossAna[] PROGMEM ={3,1,2,0,4,5,6,7};
 #endif
