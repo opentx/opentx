@@ -63,17 +63,17 @@ volatile uint32_t Tenms ;
 #ifdef REVB
 inline void init_soft_power()
 {
-  register Pio *pioptr ;
-
-  pioptr = PIOC ;
-  // Configure RF_power (PC17) but not PPM-jack-in (PC22), neither need pullups
+  register Pio *pioptr = PIOC ;
+  // Configure RF_power (PC17)
   pioptr->PIO_PER = PIO_PC17 ;            // Enable bit C17
   pioptr->PIO_ODR = PIO_PC17 ;            // Set bit C17 as input
+  pioptr->PIO_PUDR = PIO_PC17;            // Disable pullup on bit C17
+  pioptr->PIO_PPDER = PIO_PC17;           // Enable pulldown on bit C17
 
   pioptr = PIOA ;
   pioptr->PIO_PER = PIO_PA8 ;             // Enable bit A8 (Soft Power)
   pioptr->PIO_ODR = PIO_PA8 ;             // Set bit A8 as input
-  pioptr->PIO_PUER = PIO_PA8 ;    // Enable PA8 pullup
+  pioptr->PIO_PUER = PIO_PA8 ;            // Enable PA8 pullup
 }
 
 // Returns non-zero if power is switched off
@@ -123,20 +123,6 @@ void soft_power_off()
 }
 
 extern "C" void sam_boot( void ) ;
-
-void disable_ssc()
-{
-  register Pio *pioptr ;
-  register Ssc *sscptr ;
-
-  // Revert back to pwm output
-  pioptr = PIOA ;
-  pioptr->PIO_PER = 0x00020000L ;                                         // Assign A17 to PIO
-
-  sscptr = SSC ;
-  sscptr->SSC_CR = SSC_CR_TXDIS ;
-}
-
 
 // Prototype
 // Free pins (PA16 is stock buzzer)
@@ -236,9 +222,9 @@ inline void UART_Configure( uint32_t baudrate, uint32_t masterClock)
 
   /* Configure PIO */
   pioptr = PIOA ;
-  pioptr->PIO_ABCDSR[0] &= ~0x00000600 ;        // Peripheral A
-  pioptr->PIO_ABCDSR[1] &= ~0x00000600 ;        // Peripheral A
-  pioptr->PIO_PDR = 0x00000600 ;                                        // Assign to peripheral
+  pioptr->PIO_ABCDSR[0] &= ~(PIO_PA9 | PIO_PA10) ;      // Peripheral A
+  pioptr->PIO_ABCDSR[1] &= ~(PIO_PA9 | PIO_PA10) ;      // Peripheral A
+  pioptr->PIO_PDR = (PIO_PA9 | PIO_PA10) ;                                      // Assign to peripheral
 
   /* Configure PMC */
   PMC->PMC_PCER0 = 1 << CONSOLE_ID;
@@ -259,6 +245,7 @@ inline void UART_Configure( uint32_t baudrate, uint32_t masterClock)
 
   /* Enable receiver and transmitter */
   pUart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
+
 }
 
 inline void UART3_Configure( uint32_t baudrate, uint32_t masterClock)
@@ -308,9 +295,9 @@ inline void UART2_Configure( uint32_t baudrate, uint32_t masterClock)
 
   /* Configure PIO */
   pioptr = PIOA ;
-  pioptr->PIO_ABCDSR[0] &= ~0x00000060 ;        // Peripheral A
-  pioptr->PIO_ABCDSR[1] &= ~0x00000060 ;        // Peripheral A
-  pioptr->PIO_PDR = 0x00000060 ;                                        // Assign to peripheral
+  pioptr->PIO_ABCDSR[0] &= ~(PIO_PA5 | PIO_PA6) ;       // Peripheral A
+  pioptr->PIO_ABCDSR[1] &= ~(PIO_PA5 | PIO_PA6) ;       // Peripheral A
+  pioptr->PIO_PDR = (PIO_PA5 | PIO_PA6) ;               // Assign to peripheral
 
 //  /* Configure PMC */
   PMC->PMC_PCER0 = 1 << SECOND_ID;
@@ -320,7 +307,7 @@ inline void UART2_Configure( uint32_t baudrate, uint32_t masterClock)
                          | US_CR_RXDIS | US_CR_TXDIS;
 
 //  /* Configure mode */
-  pUsart->US_MR =  0x000008C0 ;  // NORMAL, No Parity
+  pUsart->US_MR =  0x000008C0 ;  // NORMAL, No Parity, 8 bit
 
 //  /* Configure baudrate */
 //  /* Asynchronous, no oversampling */
@@ -333,7 +320,7 @@ inline void UART2_Configure( uint32_t baudrate, uint32_t masterClock)
   pUsart->US_CR = US_CR_RXEN | US_CR_TXEN;
 }
 
-// Test, starts TIMER0 at full speed (MCK/2) for delay timing
+// Starts TIMER0 at full speed (MCK/2) for delay timing
 // @ 36MHz this is 18MHz
 // This was 6 MHz, we may need to slow it to TIMER_CLOCK2 (MCK/8=4.5 MHz)
 inline void start_timer0()
@@ -350,34 +337,29 @@ inline void start_timer0()
   ptc->TC_CHANNEL[0].TC_RC = 0xFFF0 ;
   ptc->TC_CHANNEL[0].TC_RA = 0 ;
   ptc->TC_CHANNEL[0].TC_CMR = 0x00008040 ;        // 0000 0000 0000 0000 1000 0000 0100 0000, stop at regC
-  ptc->TC_CHANNEL[0].TC_CCR = 5 ;         // Enable clock and trigger it (may only need trigger)
+  ptc->TC_CHANNEL[0].TC_CCR = 5 ;                 // Enable clock and trigger it (may only need trigger)
 }
 
-// Starts TIMER2 at 100Hz,  commentd out drive of TIOA2 (A26, EXT2) out
+// TIMER2 at 200Hz, provides 5mS for sound and 10mS tick on interrupt
+// Starts TIMER2 at 200Hz,  commentd out drive of TIOA2 (A26, EXT2)
 inline void start_timer2()
 {
-  register Pio *pioptr ;
   register Tc *ptc ;
   register uint32_t timer ;
 
   // Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
   PMC->PMC_PCER0 |= 0x02000000L ;               // Enable peripheral clock to TC2
 
-  timer = Master_frequency / 12800 ;              // MCK/128 and 100 Hz
+  timer = Master_frequency / 12800 / 2;            // MCK/128 and 200 Hz
 
-  ptc = TC0 ;           // Tc block 0 (TC0-2)
-  ptc->TC_BCR = 0 ;                       // No sync
+  ptc = TC0 ;                                   // Tc block 0 (TC0-2)
+  ptc->TC_BCR = 0 ;                             // No sync
   ptc->TC_BMR = 0 ;
-  ptc->TC_CHANNEL[2].TC_CMR = 0x00008000 ;        // Waveform mode
-  ptc->TC_CHANNEL[2].TC_RC = timer ;                      // 10 Hz
+  ptc->TC_CHANNEL[2].TC_CMR = 0x00008000 ;      // Waveform mode
+  ptc->TC_CHANNEL[2].TC_RC = timer ;            // 10 Hz
   ptc->TC_CHANNEL[2].TC_RA = timer >> 1 ;
-  ptc->TC_CHANNEL[2].TC_CMR = 0x0009C003 ;        // 0000 0000 0000 1001 1100 0000 0000 0011
-                                                                                                                                                                                // MCK/128, set @ RA, Clear @ RC waveform
-
-  pioptr = PIOC ;
-  pioptr->PIO_PER = 0x00080000L ;         // Enable bits C19
-  pioptr->PIO_OER = 0x00080000L ;         // Set as output
-  ptc->TC_CHANNEL[2].TC_CCR = 5 ;         // Enable clock and trigger it (may only need trigger)
+  ptc->TC_CHANNEL[2].TC_CMR = 0x0009C003 ;      // 0000 0000 0000 1001 1100 0000 0000 0011
+  ptc->TC_CHANNEL[2].TC_CCR = 5 ;               // Enable clock and trigger it (may only need trigger)
 
   NVIC_EnableIRQ(TC2_IRQn) ;
   TC0->TC_CHANNEL[2].TC_IER = TC_IER0_CPCS ;
@@ -495,28 +477,23 @@ void end_ppm_capture()
 extern "C" void TC2_IRQHandler()
 {
   register uint32_t dummy;
-        static uint32_t pre_scale ;             // Used to get 10 Hz counter
+  static uint32_t pre_scale ;             // Used to get 10 Hz counter
 
   /* Clear status bit to acknowledge interrupt */
   dummy = TC0->TC_CHANNEL[2].TC_SR;
-        (void) dummy ;          // Discard value - prevents compiler warning
+  (void) dummy ;          // Discard value - prevents compiler warning
 
-        /* TODO if ( Buzzer_count )
-        {
-                if ( --Buzzer_count == 0 )
-                {
-                        buzzer_off() ;
-                }
-        } */
+  sound_5ms() ;
 
-        if ( ++pre_scale >= 10 )
-        {
-                // TODO needed? Timer2_count += 1 ;
-                pre_scale = 0 ;
-        }
-  per10ms();
-
-//      heartbeat |= HEART_TIMER10ms;
+  if ( ++pre_scale >= 2 ) {
+    Tenms |= 1 ;                    // 10 mS has passed
+     if ( Buzzer_count ) {
+       if ( --Buzzer_count == 0 )
+         buzzer_off() ;
+     }
+     pre_scale = 0 ;
+     per10ms();
+  }
 }
 
 // Settings for mode register ADC_MR
@@ -581,10 +558,8 @@ void init_pwm()
   pioptr = PIOB ;
   pioptr->PIO_PER = 0x00000020L ;         // Enable bit B5
   pioptr->PIO_ODR = 0x00000020L ;         // set as input
-#endif
-
-#ifdef REVB
-  pioptr = PIOB ;
+#else
+  pioptr = PIOA ;
   pioptr->PIO_ABCDSR[0] &= ~PIO_PA16 ;          // Peripheral C
   pioptr->PIO_ABCDSR[1] |= PIO_PA16 ;                   // Peripheral C
   pioptr->PIO_PDR = PIO_PA16 ;                                            // Disable bit A16 Assign to peripheral
@@ -758,7 +733,6 @@ void board_init()
   eeprom_init();
 }
 
-
 #endif
 
 // keys:
@@ -821,20 +795,52 @@ uint32_t read_keys()
   return y ;
 }
 
-
-
 uint32_t read_trims()
 {
-  uint32_t trims = 0;
+  uint32_t trims;
+  uint32_t trima;
 
+  trims = 0;
+
+  trima = PIOA->PIO_PDSR;
 // TRIM_LH_DOWN    PA7 (PA23)
 #ifdef REVB
-  if ( ( PIOA->PIO_PDSR & 0x00800000 ) == 0 )
+  if ((trima & 0x00800000) == 0)
 #else
-  if ((PIOA->PIO_PDSR & 0x0080) == 0)
+  if ( ( trima & 0x0080 ) == 0 )
 #endif
-      {
+  {
     trims |= 1;
+  }
+
+// TRIM_LV_DOWN  PA27 (PA24)
+#ifdef REVB
+  if ((trima & 0x01000000) == 0)
+#else
+  if ( ( trima & 0x08000000 ) == 0 )
+#endif
+  {
+    trims |= 4;
+  }
+
+// TRIM_RV_UP    PA30 (PA1)
+#ifdef REVB
+  if ((trima & 0x00000002) == 0)
+#else
+  if ( ( trima & 0x40000000 ) == 0 )
+#endif
+  {
+    trims |= 0x20;
+  }
+
+// TRIM_RH_DOWN    PA29 (PA0)
+#ifdef REVB
+  if ((trima & 0x00000001) == 0)
+#else
+  if ( ( trima & 0x20000000 ) == 0 )
+#endif
+  {
+    trims |= 0x40;
   }
 
 // TRIM_LH_UP PB4
@@ -842,52 +848,23 @@ uint32_t read_trims()
     trims |= 2;
   }
 
-// TRIM_LV_DOWN  PA27 (PA24)
-#ifdef REVB
-  if ( ( PIOA->PIO_PDSR & 0x01000000 ) == 0 )
-#else
-  if ((PIOA->PIO_PDSR & 0x08000000) == 0)
-#endif
-      {
-    trims |= 4;
-  }
-
+  trima = PIOC->PIO_PDSR;
 // TRIM_LV_UP   PC28
-  if ((PIOC->PIO_PDSR & 0x10000000) == 0) {
+  if ((trima & 0x10000000) == 0) {
     trims |= 8;
   }
 
 // TRIM_RV_DOWN   PC10
-  if ((PIOC->PIO_PDSR & 0x00000400) == 0) {
+  if ((trima & 0x00000400) == 0) {
     trims |= 0x10;
   }
 
-// TRIM_RV_UP    PA30 (PA1)
-#ifdef REVB
-  if ( ( PIOA->PIO_PDSR & 0x00000002 ) == 0 )
-#else
-  if ((PIOA->PIO_PDSR & 0x40000000) == 0)
-#endif
-      {
-    trims |= 0x20;
-  }
-
-// TRIM_RH_DOWN    PA29 (PA0)
-#ifdef REVB
-  if ( ( PIOA->PIO_PDSR & 0x00000001 ) == 0 )
-#else
-  if ((PIOA->PIO_PDSR & 0x20000000) == 0)
-#endif
-      {
-    trims |= 0x40;
-  }
-
 // TRIM_RH_UP   PC9
-  if ((PIOC->PIO_PDSR & 0x00000200) == 0) {
+  if ((trima & 0x00000200) == 0) {
     trims |= 0x80;
   }
 
-  return trims ;
+  return trims;
 }
 
 uint8_t keyDown()
@@ -1012,12 +989,13 @@ void readKeysAndTrims()
 {
   register uint32_t i;
 
+  /* Fix pulldown resistor on RF-POWER
   if (PIOC->PIO_ODSR & 0x00080000) {
     PIOC->PIO_CODR = 0x00200000L; // Set bit C19 OFF
   }
   else {
     PIOC->PIO_SODR = 0x00200000L; // Set bit C19 ON
-  }
+  } */
 
   uint8_t enuk = KEY_MENU;
   uint8_t in = ~read_keys();
@@ -1045,22 +1023,121 @@ void readKeysAndTrims()
   }
 }
 
+#define RX_UART_BUFFER_SIZE     32
+
+struct t_rxUartBuffer
+{
+    uint8_t fifo[RX_UART_BUFFER_SIZE] ;
+    uint8_t *outPtr ;
+} ;
+
+struct t_rxUartBuffer TelemetryInBuffer[2] ;
+uint32_t TelemetryActiveBuffer ;
+
+void startPdcUsartReceive()
+{
+  register Usart *pUsart = SECOND_USART;
+
+  TelemetryInBuffer[0].outPtr = TelemetryInBuffer[0].fifo ;
+  TelemetryInBuffer[1].outPtr = TelemetryInBuffer[1].fifo ;
+  pUsart->US_RPR = (uint32_t)TelemetryInBuffer[0].fifo ;
+  pUsart->US_RNPR = (uint32_t)TelemetryInBuffer[1].fifo ;
+  pUsart->US_RCR = RX_UART_BUFFER_SIZE ;
+  pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
+  pUsart->US_PTCR = US_PTCR_RXTEN ;
+  TelemetryActiveBuffer = 0 ;
+}
+
+void endPdcUsartReceive()
+{
+  register Usart *pUsart = SECOND_USART;
+
+  pUsart->US_PTCR = US_PTCR_RXTDIS ;
+}
+
+void rxPdcUsart( void (*pChProcess)(uint8_t x) )
+{
+#if !defined(SIMU)
+  register Usart *pUsart = SECOND_USART;
+  uint8_t *ptr ;
+  uint8_t *endPtr ;
+//      uint32_t bufIndex ;
+//      uint32_t i ;
+  uint32_t j ;
+
+ //Find out where the DMA has got to
+  __disable_irq() ;
+  pUsart->US_PTCR = US_PTCR_RXTDIS ;              // Freeze DMA
+  ptr = (uint8_t *)pUsart->US_RPR ;
+  j = pUsart->US_RNCR ;
+  pUsart->US_PTCR = US_PTCR_RXTEN ;                       // DMA active again
+  __enable_irq() ;
+
+  endPtr = ptr - 1 ;
+  ptr = TelemetryInBuffer[TelemetryActiveBuffer].outPtr ;
+  if ( j == 0 )           // First buf is full
+  {
+    endPtr = &TelemetryInBuffer[TelemetryActiveBuffer].fifo[RX_UART_BUFFER_SIZE-1] ;                // last byte
+  }
+  while ( ptr <= endPtr )
+  {
+    (*pChProcess)(*ptr++) ;
+  }
+  TelemetryInBuffer[TelemetryActiveBuffer].outPtr = ptr ;
+  if ( j == 0 )           // First buf is full
+  {
+    TelemetryInBuffer[TelemetryActiveBuffer].outPtr = TelemetryInBuffer[TelemetryActiveBuffer].fifo ;
+    pUsart->US_RNPR = (uint32_t)TelemetryInBuffer[TelemetryActiveBuffer].fifo ;
+    pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
+    TelemetryActiveBuffer ^= 1 ;            // Other buffer is active
+    rxPdcUsart( pChProcess ) ;                      // Get any chars from second buffer
+  }
+#endif
+}
+
+uint32_t txPdcUsart( uint8_t *buffer, uint32_t size )
+{
+  register Usart *pUsart = SECOND_USART;
+
+  if ( pUsart->US_TNCR == 0 )
+  {
+    pUsart->US_TNPR = (uint32_t)buffer ;
+    pUsart->US_TNCR = size ;
+    pUsart->US_PTCR = US_PTCR_TXTEN ;
+    return 1 ;
+  }
+  return 0 ;
+}
+
+uint32_t txPdcPending()
+{
+  register Usart *pUsart = SECOND_USART;
+  uint32_t x ;
+
+  __disable_irq() ;
+  pUsart->US_PTCR = US_PTCR_TXTDIS ;              // Freeze DMA
+  x = pUsart->US_TNCR ;                           // Total
+  x += pUsart->US_TCR ;                           // Still to send
+  pUsart->US_PTCR = US_PTCR_TXTEN ;                       // DMA active again
+  __enable_irq() ;
+
+  return x ;
+}
+
 void usb_mode()
 {
   // This might be replaced by a software reset
   // Any interrupts that have been enabled must be disabled here
   // BEFORE calling sam_boot()
-  // TODO endPdcUsartReceive() ;          // Terminate any serial reception
-#ifdef REVB
-  soft_power_off() ;
-#endif
+  endPdcUsartReceive() ;          // Terminate any serial reception
+  // TODO in ersky9x soft_power_off() ; is called before endPdcUsartReceive
   end_ppm_capture() ;
   end_spi() ;
   end_sound() ;
   TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
   NVIC_DisableIRQ(TC2_IRQn) ;
   //      PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
-  // TODO disable_main_ppm() ;
+  disable_main_ppm() ;
   //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
   //      NVIC_DisableIRQ(PWM_IRQn) ;
   disable_ssc() ;

@@ -161,7 +161,7 @@ FORMAT = ihex
 TARGET = open9x
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = open9x.cpp pulses.cpp stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp o9xstrings.cpp
+CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp o9xstrings.cpp
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -268,6 +268,7 @@ ifeq ($(PCB), ARM)
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   EEPROMSRC = eeprom_arm.cpp
+  PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/sound.cpp
   CPPSRC += beeper.cpp
 endif
@@ -279,6 +280,7 @@ ifeq ($(PCB), V4)
   EXTRAINCDIRS += gruvin9x
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
+  PULSESSRC = pulses_avr.cpp  
   CPPSRC += audio.cpp
   CPPSRC += gruvin9x/gtime.cpp
   CPPSRC += gruvin9x/rtc.cpp
@@ -308,6 +310,7 @@ ifeq ($(PCB), STD)
   CPPDEFS += -DPCBSTD
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp
+  PULSESSRC = pulses_avr.cpp
    
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO

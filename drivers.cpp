@@ -152,42 +152,12 @@ void per10ms()
 
   readKeysAndTrims();
 
-#ifdef MAVLINK
-  check_mavlink() ;
+#if defined(MAVLINK) && !defined(PCBARM)
+  check_mavlink();
 #endif
 
-#if defined (FRSKY)
-
-  // TODO everything here in check_frsky() ;
-  // TODO it would be better in frsky.h / .cpp!
-
-  // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
-  static uint8_t FrskyDelay = 5;
-  if (FrskyAlarmSendState && (--FrskyDelay == 0))
-  {
-    FrskyDelay = 5; // 50ms
-    FRSKY10mspoll();
-  }
-
-#ifndef SIMU
-  if (frskyUsrStreaming > 0)
-    frskyUsrStreaming--;
-  if (frskyStreaming > 0) {
-    frskyStreaming--;
-  }
-  else if (g_eeGeneral.enableTelemetryAlarm && (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio)) {
-#if defined (AUDIO)
-    if (!(g_tmr10ms % 30)) {
-      audioDefevent(AU_WARNING1);
-    }
-#else
-    if (!(g_tmr10ms % 30)) {
-      warble = !(g_tmr10ms % 60);
-      AUDIO_WARNING2();
-    }
-#endif
-  }
-#endif
+#if defined (FRSKY) && !defined(PCBARM)
+  check_frsky();
 #endif
 
   // These moved here from perOut() to improve beep trigger reliability.
@@ -195,33 +165,4 @@ void per10ms()
   if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_2();
   if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
 
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  static uint16_t s_varioTmr = 0;
-
-  if (isFunctionActive(FUNC_VARIO)) {
-#if defined(AUDIO)
-    uint8_t warble = 0;
-#endif
-    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyHubData.varioSpeed/10), (int16_t)+100);
-
-    uint16_t interval;
-    if (verticalSpeed == 0) {
-      interval = 300;
-    }
-    else {
-      if (verticalSpeed < 0) {
-        verticalSpeed = -verticalSpeed;
-        warble = 1;
-      }
-      interval = (uint8_t)200 / verticalSpeed;
-    }
-    if (g_tmr10ms - s_varioTmr > interval) {
-      s_varioTmr = g_tmr10ms;
-      if (warble)
-        AUDIO_VARIO_DOWN();
-      else
-        AUDIO_VARIO_UP();
-    }
-  }
-#endif
 }

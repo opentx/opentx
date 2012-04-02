@@ -179,7 +179,7 @@ void menuMainView(uint8_t event)
 
   {
     uint8_t phase = getFlightPhase();
-    lcd_putsnAtt(6*FW+2, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
+    lcd_putsnAtt(6*FW, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | DBLSIZE;
     putsModelName(2*FW-2, 0*FH, g_model.name, g_eeGeneral.currModel, DBLSIZE);
@@ -289,8 +289,19 @@ void menuMainView(uint8_t event)
       for (uint8_t i=0; i<8; i++) {
         int16_t val = g_chans512[8+i];
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
+#if defined(PCBV4)
+        V_BAR(SCREEN_WIDTH/2-5*3+5+i*5, SCREEN_HEIGHT-8, len)
+#else
         V_BAR(SCREEN_WIDTH/2-5*4+2+i*5, SCREEN_HEIGHT-8, len)
+#endif
       }
+#if defined(PCBV4)
+      for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
+        int16_t val = getRotaryEncoder(i);
+        int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
+        V_BAR(SCREEN_WIDTH/2-5*6+5+i*5, SCREEN_HEIGHT-8, len)
+      }
+#endif
       for (uint8_t i=0; i<12; i++) {
         if ((i%6) < 3) lcd_puts(i<6 ? 2*FW-2 : 16*FW-2, (i%3)*FH+4*FH, STR_SW);
         lcd_putcAtt((i<6 ? 2*FW-2 : 16*FW-2) + 2 * FW + ((i%6) < 3 ? 0 : FW), (i%3)*FH+4*FH, i<9 ? '1'+i : 'A'+i-9, getSwitch(10+i, 0) ? INVERS : 0);

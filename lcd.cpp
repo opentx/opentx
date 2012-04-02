@@ -461,28 +461,28 @@ void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx==0)
     lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
-  else if (idx<=NUM_STICKS+NUM_POTS+2+3)
+  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx-1, att);
-  else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM)
-    putsStrIdx(x, y, STR_PPM, idx - (NUM_STICKS+NUM_POTS+2+3), att);
-  else if (idx<=NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT)
-    putsStrIdx(x, y, STR_CH, idx - (NUM_STICKS+NUM_POTS+2+3+NUM_PPM), att);
+  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM)
+    putsStrIdx(x, y, STR_PPM, idx - (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3), att);
+  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+NUM_CHNOUT)
+    putsStrIdx(x, y, STR_CH, idx - (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM), att);
   else
-    lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-(NUM_STICKS+NUM_POTS+2+3+NUM_PPM+NUM_CHNOUT), att);
+    lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+NUM_CHNOUT), att);
 }
 
 void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx > 0 && idx <= NUM_CHNOUT)
-    putsChnRaw(x, y, idx+20, att);
+    putsChnRaw(x, y, idx+(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM), att);
 }
 
 void putsMixerSource(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
-  if (idx<=NUM_STICKS+NUM_POTS+2)
+  if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2)
     putsChnRaw(x, y, idx, att);
-  else if (idx<=NUM_STICKS+NUM_POTS+2+MAX_SWITCH)
-    putsSwitches(x, y, idx-NUM_STICKS-NUM_POTS-2, att);
+  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+MAX_SWITCH)
+    putsSwitches(x, y, idx-NUM_STICKS-NUM_POTS-NUM_ROTARY_ENCODERS-2, att);
   else
     putsChnRaw(x, y, idx-MAX_SWITCH, att);
 }
@@ -571,6 +571,22 @@ void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
     putsChnLetter(x, y, idx+1, att);
   }
 }
+
+#if defined(PCBV4)
+void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
+{
+  int16_t v = phaseaddress(phase)->rotaryEncoders[idx];
+
+  if (v > ROTARY_ENCODER_MAX) {
+    uint8_t p = v - ROTARY_ENCODER_MAX - 1;
+    if (p >= phase) p++;
+    lcd_putcAtt(x, y, '0'+p, att);
+  }
+  else {
+    lcd_putcAtt(x, y, 'A'+idx, att);
+  }
+}
+#endif
 
 #ifdef PCBARM
 
@@ -819,14 +835,16 @@ void refreshDisplay()
     }
     pioptr->PIO_SODR = LCD_CS1; // Deselect LCD
   }
+
+  pioptr->PIO_ODSR = 0xFF ;                                       // Drive lines high
 #ifdef REVB
-  pioptr->PIO_ODR = 0x0000003AL; // Set bits 1, 3, 4, 5 input
-  pioptr->PIO_PUER = 0x0000003AL;// Set bits 1, 3, 4, 5 with pullups
+  pioptr->PIO_PUER = 0x0000003AL ;        // Set bits 1, 3, 4, 5 with pullups
+  pioptr->PIO_ODR = 0x0000003AL ;         // Set bits 1, 3, 4, 5 input
 #else
-  pioptr->PIO_ODR = 0x0000003CL; // Set bits 2, 3, 4, 5 input
-  pioptr->PIO_PUER = 0x0000003CL; // Set bits 2, 3, 4, 5 with pullups
+  pioptr->PIO_PUER = 0x0000003CL ;        // Set bits 2, 3, 4, 5 with pullups
+  pioptr->PIO_ODR = 0x0000003CL ;         // Set bits 2, 3, 4, 5 input
 #endif
-  pioptr->PIO_ODSR = 0 ;                                                  // Drive D0 low
+  pioptr->PIO_ODSR = 0xFE ;                                       // Drive D0 low
 }
 #endif
 

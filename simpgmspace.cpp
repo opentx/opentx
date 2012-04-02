@@ -40,9 +40,8 @@ const char *eepromFile = NULL;
 FILE *fp = NULL;
 
 #if defined(PCBARM)
-Pio Pioa;
-Pio Piob;
-Pio Pioc;
+Pio Pioa, Piob, Pioc;
+Usart Usart0;
 uint32_t eeprom_pointer;
 char* eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;

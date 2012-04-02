@@ -137,7 +137,12 @@
 #define TR_VSWITCHES     "GAS""SID""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC"
 
 #define LEN_VSRCRAW      "\004"
-#define TR_VSRCRAW       "SID ""H\205J ""GAS ""SKE ""P1  ""P2  ""P3  ""MAX ""FULL""CYK1""CYK2""CYK3"
+#if defined(PCBV4)
+#define TR_ROTARY_ENCODERS_VSRCRAW "REA ""REB "
+#else
+#define TR_ROTARY_ENCODERS_VSRCRAW
+#endif
+#define TR_VSRCRAW       "SID ""H\205J ""GAS ""SKE ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "MAX ""FULL""CYK1""CYK2""CYK3"
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "AV ""ABS""THs""TH%""THt"

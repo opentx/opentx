@@ -33,10 +33,8 @@
 
 #include "open9x.h"
 
-#ifndef PCBARM
-// TODO!!!
-
 #if defined(DSM2)
+// DSM2 control bits
 #define DSM2_CHANS     6
 #define BIND_BIT       0x80
 #define RANGECHECK_BIT 0x20
@@ -190,7 +188,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
   if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
   if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
     
-  heartbeat |= HEART_TIMER2Mhz;
+  heartbeat |= HEART_TIMER_PULSES;
 }
 
 #endif
@@ -658,7 +656,7 @@ ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
   x = *pulses2MHzRPtr++;      // Byte size
   ICR1 = x ;
   if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up
-  heartbeat |= HEART_TIMER2Mhz; // TODO why not in TIMER1_COMPB_vect (in setupPulses)?
+  heartbeat |= HEART_TIMER_PULSES; // TODO why not in TIMER1_COMPB_vect (in setupPulses)?
 }
 
 #if defined(PXX)
@@ -687,7 +685,7 @@ ISR(TIMER1_COMPB_vect) // PXX main interrupt
         *pulses2MHzRPtr = x;
     }
 
-    heartbeat |= HEART_TIMER2Mhz;
+    heartbeat |= HEART_TIMER_PULSES;
 }
 #endif
 
@@ -795,7 +793,7 @@ ISR(TIMER3_COMPA_vect) //2MHz pulse generation
         pulsePol = g_model.pulsePol;
     }
 
-    heartbeat |= HEART_TIMER2Mhz;
+    heartbeat |= HEART_TIMER_PULSES;
 }
 
 ISR(TIMER3_COMPB_vect) //2MHz pulse generation
@@ -830,6 +828,4 @@ void setupPulsesPPM16()
     B3_comp_value = rest - 1000 ;               // 500uS before end of sync pulse
     *(ptr+2) = 0;
 }
-#endif
-
 #endif
