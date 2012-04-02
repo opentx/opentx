@@ -50,11 +50,18 @@ void set_volume( register uint8_t volume ) ;
 extern "C" void TWI0_IRQHandler (void) ;
 void audioDefevent( uint8_t e ) ;
 
-
 extern uint32_t Master_frequency ; // TODO in a .h?
-
-volatile uint32_t Tone_timer ;		// Modified in interrupt routine
 volatile uint8_t Buzzer_count ;
+
+struct t_sound_globals
+{
+	uint32_t Freq ;
+	uint32_t Sound_time ;
+	uint32_t Frequency ;
+	volatile uint32_t Tone_timer ;		// Modified in interrupt routine
+	volatile uint8_t Tone_ms_timer ;
+} Sound_g ;
+
 
 // Must NOT be in flash, PDC needs a RAM source.
 uint16_t Sine_values[] =
@@ -72,17 +79,18 @@ uint16_t Sine_values[] =
 } ;
 
 // Must NOT be in flash, PDC needs a RAM source.
-uint16_t Sine_values64[] =
-{
-2048,2244,2438,2628,2813,2990,3159,3316,
-3462,3594,3710,3811,3895,3961,4009,4038,
-4048,4038,4009,3961,3895,3811,3710,3594,
-3462,3316,3159,2990,2813,2628,2438,2244,
-2048,1851,1657,1467,1282,1105, 936, 779,
- 633, 501, 385, 284, 200, 134,  86,  57,
-  48,  57,  86, 134, 200, 284, 385, 501,
- 633, 779, 936,1105,1282,1467,1657,1851
-} ;
+// We'll use these for higher frequencies
+//uint16_t Sine_values64[] =
+//{
+//2048,2244,2438,2628,2813,2990,3159,3316,
+//3462,3594,3710,3811,3895,3961,4009,4038,
+//4048,4038,4009,3961,3895,3811,3710,3594,
+//3462,3316,3159,2990,2813,2628,2438,2244,
+//2048,1851,1657,1467,1282,1105, 936, 779,
+// 633, 501, 385, 284, 200, 134,  86,  57,
+//  48,  57,  86, 134, 200, 284, 385, 501,
+// 633, 779, 936,1105,1282,1467,1657,1851
+//} ;
 
 const uint16_t PianoTones[] =
 {
@@ -149,14 +157,12 @@ void buzzer_sound( uint8_t time )
 }
 
 
-static uint32_t Frequency ;
-
 void set_frequency( uint32_t frequency )
 {
   register Tc *ptc ;
 	register uint32_t timer ;
 
-	Frequency = frequency ;
+	Sound_g.Frequency = frequency ;
 	timer = Master_frequency / (800 * frequency) ;		// MCK/8 and 100 000 Hz
 	if ( timer > 65535 )
 	{
@@ -193,7 +199,7 @@ void start_timer1()
 	ptc->TC_CHANNEL[1].TC_CMR = 0x0009C001 ;	// 0000 0000 0000 1001 1100 0000 0000 0001
 																						// MCK/8, set @ RA, Clear @ RC waveform
 	ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
-	Frequency = 1000 ;
+	Sound_g.Frequency = 1000 ;
 }
 
 
@@ -232,13 +238,18 @@ extern "C" void DAC_IRQHandler()
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
 	DACC->DACC_TNPR = (uint32_t) Sine_values ;
 	DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
-	if ( Tone_timer )
+	if ( Sound_g.Tone_timer )
 	{
-		if ( --Tone_timer == 0 )
+		if ( --Sound_g.Tone_timer == 0 )
 		{
 			DACC->DACC_IDR = DACC_IDR_ENDTX ;
 		}
 	}
+//	if ( Tone_ms_timer == 0 )
+//	{
+//		Tone_ms_timer = -1 ;
+//		DACC->DACC_IDR = DACC_IDR_ENDTX ;
+//	}
 }
 
 void end_sound()
@@ -251,11 +262,42 @@ void end_sound()
   PMC->PMC_PCER0 &= ~0x40000000L ;		// Disable peripheral clock to DAC
 }
 
+// Called every 5mS from interrupt routine
+void sound_5ms()
+{
+	if ( Sound_g.Tone_ms_timer > 0 )
+	{
+		Sound_g.Tone_ms_timer -= 1 ;
+	}
+		
+	if ( Sound_g.Tone_ms_timer == 0 )
+	{
+		if ( Sound_g.Sound_time )
+		{
+			Sound_g.Tone_ms_timer = ( Sound_g.Sound_time + 4 ) / 5 ;
+			if ( Sound_g.Freq )		// 0 => silence for time
+			{
+				set_frequency( Sound_g.Freq ) ;
+				tone_start( 0 ) ;
+			}
+			Sound_g.Sound_time = 0 ;
+		}
+		else
+		{
+			DACC->DACC_IDR = DACC_IDR_ENDTX ;	// Disable interrupt
+			Sound_g.Tone_timer = 0 ;	
+		}
+	}
+}
 
+// frequency in Hz, time in mS
 void playTone( uint32_t frequency, uint32_t time )
 {
-	set_frequency( frequency ) ;
-	tone_start( time ) ;
+	Sound_g.Freq = frequency ;
+	Sound_g.Sound_time = time ;
+//	set_frequency( frequency ) ;
+//	Tone_ms_timer = ( time + 4 ) / 5 ;
+//	tone_start( 0 ) ;
 }
 
 
@@ -263,14 +305,14 @@ void playTone( uint32_t frequency, uint32_t time )
 void tone_start( register uint32_t time )
 {
   PMC->PMC_PCER0 |= 0x40000000L ;		// Enable peripheral clock to DAC
-	Tone_timer = Frequency * time / 1000 ;
+	Sound_g.Tone_timer = Sound_g.Frequency * time / 1000 ;
 	DACC->DACC_IER = DACC_IER_ENDTX ;
 }
 
 void tone_stop()
 {
 	DACC->DACC_IDR = DACC_IDR_ENDTX ;	// Disable interrupt
-	Tone_timer = 0 ;	
+	Sound_g.Tone_timer = 0 ;	
 }
 
 
@@ -298,7 +340,7 @@ void init_twi()
 	TWI0->TWI_CR = TWI_CR_MSEN | TWI_CR_SVDIS ;		// Master mode enable
 	TWI0->TWI_MMR = 0x002F0000 ;		// Device 5E (>>1) and master is writing
 	NVIC_EnableIRQ(TWI0_IRQn) ;
-
+	set_volume( 2 ) ;
 }
 
 static int16_t Volume_required ;
@@ -310,7 +352,7 @@ static const uint8_t Volume_scale[NUM_VOL_LEVELS] =
 
 void set_volume( register uint8_t volume )
 {
-	PMC->PMC_PCER0 |= 0x00080000L ;		// Enable peripheral clock to TWI0
+//	PMC->PMC_PCER0 |= 0x00080000L ;		// Enable peripheral clock to TWI0
 	
 	if ( volume >= NUM_VOL_LEVELS )
 	{
@@ -350,7 +392,7 @@ extern "C" void TWI0_IRQHandler()
 
 void audioDefevent(uint8_t e)
 {
-	buzzer_sound( 4 ) ;
+	playTone( 2000, 60 ) ;		// 2KHz, 60mS
 //	audio.event(e,BEEP_DEFAULT_FREQ);
 }
 

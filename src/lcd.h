@@ -106,6 +106,9 @@ extern void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
 extern void putsCurve(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
 extern void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att);
 extern void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att);
+#if defined(PCBV4)
+void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att);
+#endif
 
 extern void putsChnRaw(uint8_t x,uint8_t y,uint8_t idx1,uint8_t att);
 extern void putsChn(uint8_t x,uint8_t y,uint8_t idx1,uint8_t att);
@@ -133,6 +136,7 @@ inline void lcd_square(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0) { lcd_rec
     lcd_vline(xx,yy-ww/2,ww);  \
     lcd_hline(xx-ww/2,yy,ww);
 
+// TODO optimization here!!!
 #define V_BAR(xx,yy,ll)       \
     lcd_vline(xx-1,yy-ll,ll); \
     lcd_vline(xx  ,yy-ll,ll); \

@@ -97,6 +97,9 @@ typedef const int8_t pm_int8_t;
 extern sem_t eeprom_write_sem;
 #if defined(PCBARM)
 extern Pio Pioa, Piob, Pioc;
+extern Usart Usart0;
+#undef USART0
+#define USART0 (&Usart0)
 #undef PIOA
 #define PIOA (&Pioa)
 #undef PIOB
@@ -108,6 +111,10 @@ extern char* eeprom_buffer_data;
 extern volatile int32_t eeprom_buffer_size;
 extern bool eeprom_read_operation;
 extern volatile uint32_t Spi_complete;
+extern void startPdcUsartReceive() ;
+extern uint32_t txPdcUsart( uint8_t *buffer, uint32_t size );
+extern uint32_t txPdcPending();
+extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #else
 #define PIOA 0
 #define PIOB 0
@@ -236,6 +243,9 @@ extern volatile uint32_t Spi_complete;
 #define WGM10   0
 #define WGM12   0
 #define CS10    0
+#define DOR0    0
+#define UPE0    0
+#define FE0     0
 
 #if defined(PCBARM)
 extern volatile uint32_t Tenms;

@@ -86,8 +86,10 @@ void menuProcDebug(uint8_t event)
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_MENU):
+#if !defined(PCBARM)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
+#endif
       g_timeMain    = 0;
       AUDIO_KEYPAD_UP();
       break;
@@ -99,12 +101,16 @@ void menuProcDebug(uint8_t event)
       chainMenu(menuMainView);
       break;
   }
+
+#if !defined(PCBARM)
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
   lcd_outdez8(15*FW , 1*FH, g_tmr1Latency_max/2 );
   lcd_putsLeft(2*FH, STR_TMR1LATMINUS);
   lcd_outdez8(15*FW , 2*FH, g_tmr1Latency_min/2 );
   lcd_putsLeft(3*FH, STR_TMR1JITTERUS);
   lcd_outdez8(15*FW , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
+#endif
+
   lcd_putsLeft(4*FH, STR_TMAINMAXMS);
 #if defined(PCBARM)
   lcd_outdezAtt(15*FW, 4*FH, (g_timeMain)/20, PREC2);
@@ -124,6 +130,7 @@ void menuProcDebug(uint8_t event)
   lcd_putsLeft(6*FH, STR_CURRENT);
   lcd_outhex4(10*FW+3, 6*FH, Current ) ;
   lcd_outdezAtt(18*FW, 6*FH, Current/22, 0 ) ;
+  // TODO mAh, Battery from ersky9x?
 #endif
 
 

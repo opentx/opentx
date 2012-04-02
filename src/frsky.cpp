@@ -52,7 +52,9 @@
 
 uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
+#if !defined(PCBARM)
 uint8_t frskyTxBufferCount = 0;
+#endif
 uint8_t FrskyRxBufferReady = 0;
 int8_t frskyStreaming = -1;
 uint8_t frskyUsrStreaming = 0;
@@ -408,67 +410,72 @@ void processFrskyPacket(uint8_t *packet)
    a second buffer to receive data while one buffer is being processed (slowly).
 */
 
-#ifndef SIMU
-
+#if defined(PCBARM)
+void processSerialData(uint8_t data)
+#else
 NOINLINE void processSerialData(uint8_t stat, uint8_t data)
+#endif
 {
   static uint8_t numPktBytes = 0;
   static uint8_t dataState = frskyDataIdle;
 
-  if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0)))
-    { // discard buffer and start fresh on any comms error
-      FrskyRxBufferReady = 0;
-      numPktBytes = 0;
-    }
-    else
+#if !defined(PCBARM)
+  if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0))) {
+    // discard buffer and start fresh on any comms error
+    FrskyRxBufferReady = 0;
+    numPktBytes = 0;
+  }
+  else
+#endif
+  {
+    if (FrskyRxBufferReady == 0) // can't get more data if the buffer hasn't been cleared
     {
-      if (FrskyRxBufferReady == 0) // can't get more data if the buffer hasn't been cleared
+      switch (dataState)
       {
-        switch (dataState)
-        {
-          case frskyDataStart:
-            if (data == START_STOP) break; // Remain in userDataStart if possible 0x7e,0x7e doublet found.
+        case frskyDataStart:
+          if (data == START_STOP) break; // Remain in userDataStart if possible 0x7e,0x7e doublet found.
 
-            if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-              frskyRxBuffer[numPktBytes++] = data;
-            dataState = frskyDataInFrame;
-            break;
+          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+            frskyRxBuffer[numPktBytes++] = data;
+          dataState = frskyDataInFrame;
+          break;
 
-          case frskyDataInFrame:
-            if (data == BYTESTUFF)
-            {
-                dataState = frskyDataXOR; // XOR next byte
-                break;
-            }
-            if (data == START_STOP) // end of frame detected
-            {
-              processFrskyPacket(frskyRxBuffer); // FrskyRxBufferReady = 1;
-              dataState = frskyDataIdle;
+        case frskyDataInFrame:
+          if (data == BYTESTUFF)
+          {
+              dataState = frskyDataXOR; // XOR next byte
               break;
-            }
-            if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-              frskyRxBuffer[numPktBytes++] = data;
+          }
+          if (data == START_STOP) // end of frame detected
+          {
+            processFrskyPacket(frskyRxBuffer); // FrskyRxBufferReady = 1;
+            dataState = frskyDataIdle;
             break;
+          }
+          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+            frskyRxBuffer[numPktBytes++] = data;
+          break;
 
-          case frskyDataXOR:
-            if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-              frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
-            dataState = frskyDataInFrame;
-            break;
+        case frskyDataXOR:
+          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+            frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
+          dataState = frskyDataInFrame;
+          break;
 
-          case frskyDataIdle:
-            if (data == START_STOP)
-            {
-              numPktBytes = 0;
-              dataState = frskyDataStart;
-            }
-            break;
+        case frskyDataIdle:
+          if (data == START_STOP)
+          {
+            numPktBytes = 0;
+            dataState = frskyDataStart;
+          }
+          break;
 
-        } // switch
-      } // if (FrskyRxBufferReady == 0)
-    }
+      } // switch
+    } // if (FrskyRxBufferReady == 0)
+  }
 }
 
+#if !defined(PCBARM) && !defined(SIMU)
 ISR(USART0_RX_vect)
 {
   uint8_t stat;
@@ -516,20 +523,30 @@ ISR(USART0_RX_vect)
   cli() ;
   UCSR0B |= (1 << RXCIE0); // enable Interrupt
 }
-
 #endif
 
 /******************************************/
-
+#if defined(PCBARM)
+void frskyTransmitBuffer( uint32_t size )
+{
+  txPdcUsart( frskyTxBuffer, size ) ;
+}
+#else
+// TODO inline ? pass parameter? to avoid #ifdef?
 void frskyTransmitBuffer()
 {
   UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt
 }
+#endif
 
 uint8_t FrskyAlarmSendState = 0 ;
-void FRSKY10mspoll(void)
+inline void FRSKY10mspoll(void)
 {
+#if defined(PCBARM)
+  if (txPdcPending())
+#else
   if (frskyTxBufferCount)
+#endif
     return; // we only have one buffer. If it's in use, then we can't send yet.
 
   uint8_t *ptr = &frskyTxBuffer[0];
@@ -560,8 +577,78 @@ void FRSKY10mspoll(void)
 
   *ptr++ = START_STOP; // Start of packet
 
+#if defined(PCBARM)
+  frskyTransmitBuffer(ptr - &frskyTxBuffer[0]);
+#else
   frskyTxBufferCount = ptr - &frskyTxBuffer[0];
   frskyTransmitBuffer();
+#endif
+}
+
+void check_frsky()
+{
+#if defined(PCBARM)
+  rxPdcUsart(processSerialData);              // Send serial data here
+#endif
+
+  // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
+  static uint8_t FrskyDelay = 5;
+  if (FrskyAlarmSendState && (--FrskyDelay == 0)) {
+    FrskyDelay = 5; // 50ms
+    FRSKY10mspoll();
+  }
+
+#ifndef SIMU
+  if (frskyUsrStreaming > 0) {
+    frskyUsrStreaming--;
+  }
+
+  if (frskyStreaming > 0) {
+    frskyStreaming--;
+  }
+  else if (g_eeGeneral.enableTelemetryAlarm && (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio)) {
+#if defined (AUDIO)
+    if (!(g_tmr10ms % 30)) {
+      audioDefevent(AU_WARNING1);
+    }
+#else
+    if (!(g_tmr10ms % 30)) {
+      warble = !(g_tmr10ms % 60);
+      AUDIO_WARNING2();
+    }
+#endif
+  }
+#endif
+
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+  static uint16_t s_varioTmr = 0;
+
+  if (isFunctionActive(FUNC_VARIO)) {
+#if defined(AUDIO)
+    uint8_t warble = 0;
+#endif
+    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyHubData.varioSpeed/10), (int16_t)+100);
+
+    uint16_t interval;
+    if (verticalSpeed == 0) {
+      interval = 300;
+    }
+    else {
+      if (verticalSpeed < 0) {
+        verticalSpeed = -verticalSpeed;
+        warble = 1;
+      }
+      interval = (uint8_t)200 / verticalSpeed;
+    }
+    if (g_tmr10ms - s_varioTmr > interval) {
+      s_varioTmr = g_tmr10ms;
+      if (warble)
+        AUDIO_VARIO_DOWN();
+      else
+        AUDIO_VARIO_UP();
+    }
+  }
+#endif
 }
 
 bool FRSKY_alarmRaised(uint8_t idx)
@@ -581,6 +668,7 @@ bool FRSKY_alarmRaised(uint8_t idx)
   return false;
 }
 
+#if !defined(PCBARM)
 inline void FRSKY_EnableTXD(void)
 {
   frskyTxBufferCount = 0;
@@ -592,6 +680,7 @@ inline void FRSKY_EnableRXD(void)
   UCSR0B |= (1 << RXEN0);  // enable RX
   UCSR0B |= (1 << RXCIE0); // enable Interrupt
 }
+#endif
 
 void FRSKY_Init(void)
 {
@@ -599,12 +688,15 @@ void FRSKY_Init(void)
   memset(frskyAlarms, 0, sizeof(frskyAlarms));
   resetTelemetry();
 
+#if defined(PCBARM)
+  startPdcUsartReceive() ;
+#elif !defined(SIMU)
+
   DDRE &= ~(1 << DDE0);    // set RXD0 pin as input
   PORTE &= ~(1 << PORTE0); // disable pullup on RXD0 pin
 
 #undef BAUD
 #define BAUD 9600
-#ifndef SIMU
 #include <util/setbaud.h>
 
   UBRR0H = UBRRH_VALUE;
@@ -618,11 +710,10 @@ void FRSKY_Init(void)
   
   while (UCSR0A & (1 << RXC0)) UDR0; // flush receive buffer
 
-#endif
-
   // These should be running right from power up on a FrSky enabled '9X.
   FRSKY_EnableTXD(); // enable FrSky-Telemetry reception
   FRSKY_EnableRXD(); // enable FrSky-Telemetry reception
+#endif
 }
 
 #if 0

@@ -155,11 +155,11 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
 
 void audioQueue::event(uint8_t e, uint8_t f)
 {
-  s_beeper = (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>AU_MENUS) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR));
+  s_beeper = (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_WARNING1) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR));
 #if defined(HAPTIC)
-  s_haptic = (g_eeGeneral.hapticMode>0 || (g_eeGeneral.hapticMode==0 && e>AU_MENUS) || (g_eeGeneral.hapticMode>=-1 && e<=AU_ERROR));
+  s_haptic = (g_eeGeneral.hapticMode>0 || (g_eeGeneral.hapticMode==0 && e>=AU_WARNING1) || (g_eeGeneral.hapticMode>=-1 && e<=AU_ERROR));
 #endif
-  if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION; // we got an event do we need to flash the display ?
+  if (g_eeGeneral.flashBeep && (e <= AU_ERROR || e >= AU_WARNING1)) g_LightOffCounter = FLASH_DURATION; // we got an event do we need to flash the display ?
   if (e < AU_FRSKY_FIRST || empty()) {
     switch (e) {
       // inactivity timer alert

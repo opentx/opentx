@@ -161,7 +161,7 @@ extern uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 extern uint8_t frskyTxBufferCount;
 
 void FRSKY_Init(void);
-void FRSKY10mspoll(void);
+void check_frsky(void);
 
 inline void FRSKY_setModelAlarms(void)
 {

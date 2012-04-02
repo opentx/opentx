@@ -1322,6 +1322,7 @@ typedef struct {
   RoReg PIO_PCIMR;      /**< \brief (Pio Offset: 0x15C) Parallel Capture Interrupt Mask Register */
   RoReg PIO_PCISR;      /**< \brief (Pio Offset: 0x160) Parallel Capture Interrupt Status Register */
   RoReg PIO_PCRHR;      /**< \brief (Pio Offset: 0x164) Parallel Capture Reception Holding Register */
+  RwReg Reserved14[38];
 } Pio;
 #endif /* __ASSEMBLY__ */
 /* -------- PIO_PER : (PIO Offset: 0x0000) PIO Enable Register -------- */
@@ -6744,6 +6745,11 @@ typedef struct {
 #define WDT        CAST(Wdt       , 0x400E1450U) /**< \brief (WDT       ) Base Address */
 #define RTC        CAST(Rtc       , 0x400E1460U) /**< \brief (RTC       ) Base Address */
 #define GPBR       CAST(Gpbr      , 0x400E1490U) /**< \brief (GPBR      ) Base Address */
+
+// indices for three pio structures
+#define iPIOA           0
+#define iPIOB           1
+#define iPIOC           2
 /*@}*/
 
 /* ***************************************************************************** */

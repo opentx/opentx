@@ -156,6 +156,10 @@ enum MixSources {
     MIXSRC_P1,
     MIXSRC_P2,
     MIXSRC_P3,
+#if defined(PCBV4)
+    MIXSRC_RE1,
+    MIXSRC_RE2,
+#endif
     MIXSRC_MAX ,
     MIXSRC_3POS,
     MIXSRC_THR,
@@ -364,13 +368,25 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define TRIM_MAX 125
 #define TRIM_MIN (-TRIM_MAX)
 
+#if defined(PCBV4)
+#define NUM_ROTARY_ENCODERS 2
+#define ROTARY_ENCODER_MAX  1024
+#else
+#define NUM_ROTARY_ENCODERS 0
+#endif
+
+
 PACK(typedef struct t_PhaseData {
+  // TODO perhaps not a so good idea to have 10bits trims instead of 16bits ...
   int8_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
   int8_t trim_ext:8;  // 2 less significant extra bits per trim (10bits trims)
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
+#if defined(PCBV4)
+  int16_t rotaryEncoders[NUM_ROTARY_ENCODERS];
+#endif
 }) PhaseData;
 
 #define MAX_MODELS 16

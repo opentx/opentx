@@ -50,8 +50,10 @@ gtime_t g_unixTime; // Global date/time register, incremented each second in per
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
+#if !defined(PCBARM)
 uint8_t g_tmr1Latency_max;
 uint8_t g_tmr1Latency_min;
+#endif
 uint16_t g_timeMain;
 #ifdef DEBUG
 uint16_t g_time_per10;
@@ -392,11 +394,15 @@ int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMa
 #ifdef HELI
 int16_t cyc_anas[3] = {0};
 #endif
+
 int16_t getValue(uint8_t i)
 {
   /*srcRaw is shifted +1!*/
 
   if(i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
+#if defined(PCBV4)
+  else if(i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS) return getRotaryEncoder(i-(NUM_STICKS+NUM_POTS));
+#endif
   else if(i<MIXSRC_MAX) return 1024;
   else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
   else if(i<MIXSRC_3POS+3)
@@ -615,6 +621,35 @@ uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
   return 0;
 }
 
+#if defined(PCBV4)
+uint8_t s_perOut_flight_phase;
+
+uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
+{
+  uint8_t phase = s_perOut_flight_phase;
+  for (uint8_t i=0; i<MAX_PHASES; i++) {
+    if (phase == 0) return 0;
+    int16_t value = phaseaddress(phase)->rotaryEncoders[idx];
+    if (value <= ROTARY_ENCODER_MAX) return phase;
+    uint8_t result = value-ROTARY_ENCODER_MAX-1;
+    if (result >= phase) result++;
+    phase = result;
+  }
+  return 0;
+}
+
+int16_t getRotaryEncoder(uint8_t idx)
+{
+  return phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
+}
+
+void incRotaryEncoder(uint8_t idx, int8_t inc)
+{
+  phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx] += inc;
+}
+
+#endif
+
 void clearKeyEvents()
 {
 #ifdef SIMU
@@ -673,6 +708,8 @@ void doSplash()
         uint16_t tsum = stickMoveValue();
 
         if(keyDown() || (tsum!=inacSum))   return;  //wait for key release
+
+        if (check_power()) return; // Usb on or power off
 
         checkBacklight();
       }
@@ -785,11 +822,9 @@ void alert(const pm_char * s)
     sleep(1/*ms*/);
 #endif
 
-#if defined(PCBARM)
     if (check_power()) return; // Usb on or power off
-#endif
 
-    if(keyDown()) return;  // wait for key release
+    if (keyDown()) return;  // wait for key release
 
     checkBacklight();
 
@@ -909,6 +944,10 @@ uint16_t anaIn(uint8_t chan)
   //                        Google Translate (German): // if table already, then it must also be worthwhile
 #if defined(PCBARM)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3,8};
+
+  if ( chan == 8 ) {
+    return Current_analogue ;
+  }
 #else
   static const pm_char crossAna[] PROGMEM ={3,1,2,0,4,5,6,7};
 #endif
@@ -1194,11 +1233,16 @@ uint8_t evalSticks(uint8_t phase)
   }
 #endif
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++) {
 
     // normalization [0..2048] -> [-1024..1024]
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i+1) - 1 : i);
+
+#if defined(PCBV4)
+    int16_t v = ((i < NUM_STICKS+NUM_POTS) ? anaIn(i) : getRotaryEncoder(i-(NUM_STICKS+NUM_POTS)));
+#else
     int16_t v = anaIn(i);
+#endif
 
 #ifndef SIMU
     v -= g_eeGeneral.calibMid[i];
@@ -1213,7 +1257,9 @@ uint8_t evalSticks(uint8_t phase)
     if (g_eeGeneral.throttleReversed && ch==THR_STICK)
       v = -v;
 
-    calibratedStick[ch] = v; //for show in expo
+    if (i < NUM_STICKS+NUM_POTS)
+      calibratedStick[ch] = v; //for show in expo
+
     uint8_t tmp = (uint16_t)abs(v) / 16;
     if (tmp <= 1) anaCenter |= (tmp==0 ? 1<<ch : bpanaCenter & (1<<ch));
 
@@ -1338,6 +1384,10 @@ void evalFunctions()
 
 void perOut(uint8_t phase)
 {
+#if defined(PCBV4)
+  s_perOut_flight_phase = phase;
+#endif
+
   uint8_t anaCenter = evalSticks(phase);
 
   if (s_perout_mode == e_perout_mode_normal) {
@@ -1595,11 +1645,6 @@ char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #define TIME_TO_WRITE s_eeDirtyMsk
 #endif
 
-void checkFlashOnBeep()
-{
-  if(g_eeGeneral.flashBeep) g_LightOffCounter = FLASH_DURATION;
-}
-
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 void perMain()
 {
@@ -1691,19 +1736,19 @@ void perMain()
 
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
 
-  uint16_t val;
+  int16_t val;
 
   if (g_model.thrTraceSrc == 0) {
     val = calibratedStick[THR_STICK]; // get throttle channel value
-    val = (g_eeGeneral.throttleReversed ? RESX-val : val+RESX);
   }
   else if (g_model.thrTraceSrc > NUM_POTS) {
-    val = RESX + g_chans512[g_model.thrTraceSrc-NUM_POTS-1];
+    val = g_chans512[g_model.thrTraceSrc-NUM_POTS-1];
   }
   else {
-    val = RESX + calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1];
+    val = calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1];
   }
 
+  val += RESX;
   val /= (RESX/16); // calibrate it
 
   // Throttle trace start
@@ -1916,7 +1961,7 @@ void perMain()
   uint8_t evt = getEvent();
   evt = checkTrim(evt);
 
-  // TODO port lightOnStickMove from er9x
+  // TODO port lightOnStickMove from er9x + flash saving, call checkBacklight()
   if(g_LightOffCounter) g_LightOffCounter--;
   if(evt) g_LightOffCounter = g_eeGeneral.lightAutoOff*500; // on keypress turn the light on 5*100
 
@@ -1924,6 +1969,10 @@ void perMain()
     BACKLIGHT_ON;
   else
     BACKLIGHT_OFF;
+
+#if defined(PCBARM) && defined(FRSKY)
+  check_frsky();
+#endif
 
   g_menuStack[g_menuStackPtr](evt);
   refreshDisplay();
@@ -2160,7 +2209,9 @@ extern uint16_t g_timeMain;
    Used to transmit FrSky data packets and DSM2 protocol
 */
 
-#if defined (FRSKY)
+// TODO serial_arm and serial_avr
+
+#if defined (FRSKY) && !defined(PCBARM)
 FORCEINLINE void FRSKY_USART0_vect()
 {
   if (frskyTxBufferCount > 0) {
@@ -2172,7 +2223,7 @@ FORCEINLINE void FRSKY_USART0_vect()
 }
 #endif
 
-#if defined (DSM2_SERIAL)
+#if defined (DSM2_SERIAL) && !defined(PCBARM)
 FORCEINLINE void DSM2_USART0_vect()
 {
   UDR0 = *((uint16_t*)pulses2MHzRPtr);
@@ -2184,7 +2235,7 @@ FORCEINLINE void DSM2_USART0_vect()
 }
 #endif
 
-#ifndef SIMU
+#if !defined(SIMU) && !defined(PCBARM)
 #if defined (FRSKY) or defined(DSM2_SERIAL)
 ISR(USART0_UDRE_vect)
 {
@@ -2305,23 +2356,23 @@ volatile uint8_t g_rotenc[2] = {0};
 ISR(INT2_vect)
 {
   uint8_t input = PIND & 0b00001100;
-  if (input == 0 || input == 0b00001100) g_rotenc[0]--;
+  if (input == 0 || input == 0b00001100) incRotaryEncoder(0, -1);
 }
 ISR(INT3_vect)
 {
   uint8_t input = PIND & 0b00001100;
-  if (input == 0 || input == 0b00001100) g_rotenc[0]++;
+  if (input == 0 || input == 0b00001100) incRotaryEncoder(0, +1);
 }
 
 ISR(INT5_vect)
 {
   uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) g_rotenc[1]++;
+  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, +1);
 }
 ISR(INT6_vect)
 {
   uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) g_rotenc[1]--;
+  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, -1);
 }
 #endif
 
@@ -2474,21 +2525,16 @@ int main(void)
   TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
 #endif
 
-#if !defined(PCBARM)
-  startPulses();
-#endif
-
-  // TODO init_main_ppm( 3000, 1 ) ;            // Default for now, initial period 1.5 mS, output on
-
 #if defined(PCBARM)
   start_ppm_capture();
   // TODO inside startPulses?
 #endif
 
-  // FrSky testing serial receive
-  // TODO startPdcUsartReceive() ;
+  startPulses();
 
-  wdt_enable(WDTO_500MS);
+  if (check_power() != e_power_usb) {
+    wdt_enable(WDTO_500MS);
+  }
 
 #if defined(PCBARM)
   register uint32_t shutdown_state = 0;
@@ -2554,6 +2600,8 @@ int main(void)
   lcd_clear() ;
   displayPopup(STR_SHUTDOWN);
   eeCheck(true);
+  soft_power_off();            // Only turn power off if necessary
+#endif
 
 #if defined(PCBARM)
   if (shutdown_state == e_power_usb) {
@@ -2563,14 +2611,6 @@ int main(void)
     lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
     refreshDisplay() ;
     usb_mode();
-  }
-#ifdef REVB
-  else
-#endif
-#endif
-
-  {
-    soft_power_off();            // Only turn power off if necessary
   }
 #endif
 

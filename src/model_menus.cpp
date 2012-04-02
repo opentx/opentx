@@ -594,7 +594,13 @@ void menuProcPhaseOne(uint8_t event)
   PhaseData *phase = phaseaddress(s_currIdx);
   putsFlightPhase(13*FW, 0, s_currIdx+1, 0);
 
-  SUBMENU(STR_MENUFLIGHTPHASE, (s_currIdx==0 ? 3 : 5), {ZCHAR|(sizeof(phase->name)-1), 0, 3, 0/*, 0*/});
+#if defined(PCBV4)
+#define MAX_TRIM_LINE 5
+#else
+#define MAX_TRIM_LINE 3
+#endif
+
+  SUBMENU(STR_MENUFLIGHTPHASE, (s_currIdx==0 ? 3 : 5), {ZCHAR|(sizeof(phase->name)-1), 0, MAX_TRIM_LINE, 0/*, 0*/});
 
   int8_t sub = m_posVert;
 
@@ -625,6 +631,20 @@ void menuProcPhaseOne(uint8_t event)
             }
           }
         }
+#if defined(PCBV4)
+        for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
+          putsRotaryEncoderMode((14+t)*FW+2, y, s_currIdx, t, (attr && m_posHorz==4+t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+          if (attr && m_posHorz==4+t && ((s_editMode>0) || p1valdiff)) {
+            int16_t v = phaseaddress(s_currIdx)->rotaryEncoders[t];
+            if (v < ROTARY_ENCODER_MAX) v = ROTARY_ENCODER_MAX;
+            v = checkIncDec(event, v, ROTARY_ENCODER_MAX, ROTARY_ENCODER_MAX+MAX_PHASES-1, EE_MODEL);
+            if (checkIncDec_Ret) {
+              if (v == ROTARY_ENCODER_MAX) v = 0;
+              phaseaddress(s_currIdx)->rotaryEncoders[t] = v;
+            }
+          }
+        }
+#endif
         break;
       case 3:
         lcd_putsLeft( y, STR_FADEIN);
@@ -670,19 +690,32 @@ void menuProcPhasesAll(uint8_t event)
     att = i==sub ? INVERS : 0;
     PhaseData *p = phaseaddress(i);
     putsFlightPhase(0, y, i+1, att);
-    lcd_putsnAtt(4*FW, y, p->name, 6, ZCHAR);
+#if defined PCBV4
+#define NAME_OFS (-4)
+#define SWITCH_OFS (-FW/2-2)
+#define TRIMS_OFS  (-FW/2-4)
+#else
+#define NAME_OFS 0
+#define SWITCH_OFS (FW/2)
+#define TRIMS_OFS  (FW/2)
+#endif
+    lcd_putsnAtt(4*FW+NAME_OFS, y, p->name, 6, ZCHAR);
     if (i == 0) {
-      lcd_puts(11*FW+FW/2, y, STR_DEFAULT);
+      lcd_puts(11*FW+SWITCH_OFS, y, STR_DEFAULT);
     }
     else {
-      putsSwitches(11*FW+FW/2, y, p->swtch, 0);
+      putsSwitches(11*FW+SWITCH_OFS, y, p->swtch, 0);
       for (uint8_t t=0; t<NUM_STICKS; t++) {
-        putsTrimMode((16+t)*FW-FW/2, y, i, t, 0);
+        putsTrimMode((15+t)*FW+TRIMS_OFS, y, i, t, 0);
       }
+#if defined PCBV4
+      for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
+        putsRotaryEncoderMode((19+t)*FW+TRIMS_OFS+2, y, i, t, 0);
+      }
+#endif
     }
-    if (p->fadeIn) lcd_putc(20*FW+2, y, 'I');
-    if (p->fadeOut) lcd_putc(20*FW+2, y, 'O');
-    if (p->fadeIn && p->fadeOut) lcd_putc(20*FW+2, y, '*');
+    if (p->fadeIn || p->fadeOut) 
+      lcd_putc(20*FW+2, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
   }
 
   att = (sub==MAX_PHASES && !trimsCheckTimer) ? INVERS : 0;

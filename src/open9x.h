@@ -60,14 +60,14 @@ typedef const uint16_t pm_uint16_t;
 typedef const uint8_t pm_uint8_t;
 typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
-#define wdt_reset()
 #define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
 #define PSTR(adr) adr
 #define PROGMEM
 #define pgm_read_adr(x) *(x)
 #define cli()
 #define sei()
-#define wdt_enable(x)
+#define wdt_enable(x) WDT->WDT_MR = 0x3FFF2FFF
+#define wdt_reset()   WDT->WDT_CR = 0xA5000001
 extern void board_init();
 #else
 #include <avr/io.h>
@@ -87,8 +87,10 @@ extern void board_init();
 
 #if defined(PCBARM)
 #include "eeprom_arm.h"
+#include "pulses_arm.h"
 #else
 #include "eeprom_avr.h"
+#include "pulses_avr.h"
 #endif
 
 #include "lcd.h"
@@ -401,7 +403,7 @@ extern Key keys[NUM_KEYS];
 #define NUM_TELEMETRY      TELEM_TM2
 #endif
 
-#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+1/*MAX*/+1/*ID3*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT)
+#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+1/*MAX*/+1/*ID3*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT)
 #define NUM_XCHNCSW (NUM_XCHNRAW+NUM_TELEMETRY)
 #define NUM_XCHNMIX (NUM_XCHNRAW+MAX_SWITCH)
 
@@ -426,27 +428,26 @@ extern Key keys[NUM_KEYS];
 
 #define TRM_BASE TRM_LH_DWN
 
-//#define _MSK_KEY_FIRST (_MSK_KEY_REPT|0x20)
-//#define EVT_KEY_GEN_BREAK(key) ((key)|0x20)
-#define _MSK_KEY_REPT    0x40
-#define _MSK_KEY_DBL     0x10
+#define _MSK_KEY_DBL       0x10
+#define _MSK_KEY_BREAK     0x20
+#define _MSK_KEY_REPT      0x40
+#define _MSK_KEY_LONG      0x80
 #define IS_KEY_BREAK(key)  (((key)&0xf0)        ==  0x20)
-#define EVT_KEY_BREAK(key) ((key)|                  0x20)
-#define EVT_KEY_FIRST(key) ((key)|    _MSK_KEY_REPT|0x20)
-#define EVT_KEY_REPT(key)  ((key)|    _MSK_KEY_REPT     )
-#define EVT_KEY_LONG(key)  ((key)|0x80)
+#define EVT_KEY_BREAK(key) ((key)|_MSK_KEY_BREAK)
+#define EVT_KEY_FIRST(key) ((key)|_MSK_KEY_REPT|0x20)
+#define EVT_KEY_REPT(key)  ((key)|_MSK_KEY_REPT)
+#define EVT_KEY_LONG(key)  ((key)|_MSK_KEY_LONG)
 #define EVT_KEY_DBL(key)   ((key)|_MSK_KEY_DBL)
-//#define EVT_KEY_DBL(key)   ((key)|0x10)
-#define EVT_ENTRY               (0xff - _MSK_KEY_REPT)
-#define EVT_ENTRY_UP            (0xfe - _MSK_KEY_REPT)
-#define EVT_KEY_MASK             0x0f
+#define EVT_ENTRY          (0xff - _MSK_KEY_REPT)
+#define EVT_ENTRY_UP       (0xfe - _MSK_KEY_REPT)
+#define EVT_KEY_MASK       (0x0f)
 
-#define HEART_TIMER2Mhz  1
-#define HEART_TIMER10ms  2
+#define HEART_TIMER_PULSES  1
+#define HEART_TIMER10ms     2
+extern uint8_t heartbeat;
 
 #define MAX_ALERT_TIME   60
 
-extern uint8_t heartbeat;
 extern uint32_t inacCounter;
 
 #if defined(PXX)
@@ -467,19 +468,20 @@ void putEvent(uint8_t evt);
 
 uint8_t keyDown();
 
-#if defined(PCBARM)
-uint32_t keyState(EnumKeys enuk);
 enum PowerState {
   e_power_on,
   e_power_usb,
   e_power_off
 };
+
+#if defined(PCBARM)
+uint32_t keyState(EnumKeys enuk);
 uint32_t check_power();
 #else
 #if defined(PCBV4)
 uint8_t check_power();
 #else
-#define check_power() (0)
+#define check_power() (e_power_on)
 #endif
 
 bool keyState(EnumKeys enuk);
@@ -488,15 +490,10 @@ void readKeysAndTrims();
 
 uint16_t evalChkSum();
 
-/// Gibt Alarm Maske auf lcd aus.
-/// Die Maske wird so lange angezeigt bis eine beliebige Taste gedrueckt wird.
 extern void alert(const pm_char * s);
 extern void message(const pm_char *title, const pm_char *s, const pm_char *t, const char *last);
 
-/// periodisches Hauptprogramm
 void    perMain();
-/// Bearbeitet alle zeitkritischen Jobs.
-/// wie z.B. einlesen aller Eingaenge, Entprellung, Key-Repeat..
 void    per10ms();
 
 int16_t getValue(uint8_t i);
@@ -507,6 +504,12 @@ extern uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
 extern int16_t getRawTrimValue(uint8_t phase, uint8_t idx);
 extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
 extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
+
+#if defined(PCBV4)
+extern uint8_t s_perOut_flight_phase;
+int16_t getRotaryEncoder(uint8_t idx);
+void incRotaryEncoder(uint8_t idx, int8_t inc);
+#endif
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec
@@ -689,14 +692,6 @@ extern inline uint16_t get_tmr10ms()
 #endif
 
 #define TMR_VAROFS  5
-
-void startPulses();
-void setupPulses();
-void DSM2_Init();
-void DSM2_Done();
-
-extern uint8_t *pulses2MHzRPtr;
-extern uint8_t *pulses2MHzWPtr;
 
 extern const char stamp1[];
 extern const char stamp2[];

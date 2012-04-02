@@ -189,7 +189,7 @@ void TC4_IRQHandler (void) { while(1); }
 void TC5_IRQHandler (void) { while(1); }
 void ADC_IRQHandler (void) { while(1); }
 // void DAC_IRQHandler (void) { while(1); }
-void PWM_IRQHandler (void) { while(1); }
+// void PWM_IRQHandler (void) { while(1); }
 void CRCCU_IRQHandler (void) { while(1); }
 void ACC_IRQHandler (void) { while(1); }
 void USBD_IRQHandler (void) { while(1); }
