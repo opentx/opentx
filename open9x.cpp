@@ -712,7 +712,7 @@ void doSplash()
 
         if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
 
-        if (check_power()) return; // Usb on or power off
+        if (check_soft_power() > e_power_trainer) return; // Usb on or power off
 
         checkBacklight();
       }
@@ -762,7 +762,7 @@ void checkTHR()
       int16_t v = anaIn(thrchn);
       if (g_eeGeneral.throttleReversed) v = - v;
 
-      if (check_power()) return; // Usb on or power off
+      if (check_soft_power() > e_power_trainer) return; // Usb on or power off
 
       if(v<=lowLim || keyDown()) {
         clearKeyEvents();
@@ -803,7 +803,7 @@ void checkSwitches()
       first = false;
     }
 
-    if (check_power()) return; // Usb on or power off
+    if (check_soft_power() > e_power_trainer) return; // Usb on or power off
 
     checkBacklight();
 
@@ -825,7 +825,7 @@ void alert(const pm_char * s)
     sleep(1/*ms*/);
 #endif
 
-    if (check_power()) return; // Usb on or power off
+    if (check_soft_power() > e_power_trainer) return; // Usb on or power off
 
     if (keyDown()) return;  // wait for key release
 
@@ -1981,7 +1981,14 @@ void perMain()
   g_menuStack[g_menuStackPtr](evt);
   refreshDisplay();
 
-#if defined(PCBV4)
+#if defined(PCBARM)
+  if ( check_soft_power() == e_power_trainer ) {          // On trainer power
+    PIOC->PIO_PDR = PIO_PC22 ;                            // Disable bit C22 Assign to peripheral
+  }
+  else {
+    PIOC->PIO_PER = PIO_PC22 ;                            // Enable bit C22 as input
+  }
+#elif defined(PCBV4)
   // PPM signal on phono-jack. In or out? ...
   if(checkSlaveMode()) {
     PORTG |= (1<<OUT_G_SIM_CTL); // 1=ppm out
@@ -2536,7 +2543,7 @@ int main(void)
 
   startPulses();
 
-  if (check_power() != e_power_usb) {
+  if (check_soft_power() <= e_power_trainer) {
     wdt_enable(WDTO_500MS);
   }
 
@@ -2548,7 +2555,7 @@ int main(void)
 
   while(1) {
 #if defined(PCBARM) || defined(PCBV4)
-    if ((shutdown_state=check_power()))
+    if ((shutdown_state=check_soft_power()) > e_power_trainer)
       break;
 #endif
 

@@ -103,14 +103,11 @@ void disable_main_ppm()
 // TD is on PA17, peripheral A
 void init_ssc()
 {
-  register Pio *pioptr ;
   register Ssc *sscptr ;
 
   PMC->PMC_PCER0 |= 0x00400000L ;               // Enable peripheral clock to SSC
-  pioptr = PIOA ;
-  pioptr->PIO_ABCDSR[0] &= ~0x00020000 ;        // Peripheral A bit 17
-  pioptr->PIO_ABCDSR[1] &= ~0x00020000 ;        // Peripheral A
-  pioptr->PIO_PDR = 0x00020000 ;                                        // Assign to peripheral
+
+  configure_pins( PIO_PA17, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
 
   sscptr = SSC ;
   sscptr->SSC_CMR = Master_frequency / (125000*2) ;               // 8uS per bit
@@ -126,7 +123,7 @@ void disable_ssc()
 
   // Revert back to pwm output
   pioptr = PIOA ;
-  pioptr->PIO_PER = 0x00020000L ;                                         // Assign A17 to PIO
+  pioptr->PIO_PER = PIO_PA17 ;                                         // Assign A17 to PIO
 
   sscptr = SSC ;
   sscptr->SSC_CR = SSC_CR_TXDIS ;

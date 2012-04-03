@@ -33,7 +33,11 @@
 #define TR_VTRIMINC      "Exp   ""ExFine""Fine  ""Medium""Coarse"
 
 #define LEN_RETA123      "\001"
+#if defined(PCBV4)
+#define TR_RETA123       "RETA123AB"
+#else
 #define TR_RETA123       "RETA123"
+#endif
 
 #define LEN_VPROTOS      "\005"
 #define TR_VPROTOS       "PPM\0 ""PXX\0 ""DSM2\0""PPM16""FUT\0 "

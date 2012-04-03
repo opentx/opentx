@@ -394,7 +394,7 @@ void menuProcModel(uint8_t event)
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
 
   uint8_t protocol = g_model.protocol;
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, (protocol==PROTO_PPM||protocol==PROTO_FAAST||protocol==PROTO_DSM2||protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,6,2,1});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, (protocol==PROTO_PPM||protocol==PROTO_FAAST||protocol==PROTO_DSM2||protocol==PROTO_PXX ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,2,1});
 
   uint8_t  sub = m_posVert;
   uint8_t y = 1*FH;
@@ -469,7 +469,7 @@ void menuProcModel(uint8_t event)
   if(s_pgOfs<subN) {
     lcd_putsLeft(    y, STR_TTRACE);
     int8_t idx = 3;
-    if (g_model.thrTraceSrc > NUM_POTS) idx = NUM_STICKS+2+3+NUM_PPM+g_model.thrTraceSrc;
+    if (g_model.thrTraceSrc > NUM_POTS) idx = NUM_STICKS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+g_model.thrTraceSrc;
     else if (g_model.thrTraceSrc > 0) idx = NUM_STICKS+g_model.thrTraceSrc;
     putsChnRaw(PARAM_OFS, y, idx, (sub==subN ? INVERS:0));
     if (sub==subN) CHECK_INCDEC_MODELVAR(event, g_model.thrTraceSrc, 0, NUM_POTS+NUM_CHNOUT);
@@ -485,13 +485,13 @@ void menuProcModel(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft(    y, STR_BEEPCTR);
-    for (uint8_t i=0;i<NUM_STICKS+NUM_POTS;i++)
-      lcd_putsiAtt(PARAM_OFS+i*FW, y, STR_RETA123, i, ((m_posHorz==i) && (sub==subN)) ? BLINK|INVERS : ((g_model.beepANACenter & (1<<i)) ? INVERS : 0 ) );
-    if (sub==subN){
+    for (uint8_t i=0;i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS;i++)
+      lcd_putsiAtt(PARAM_OFS+i*FW, y, STR_RETA123, i, ((m_posHorz==i) && (sub==subN)) ? BLINK|INVERS : ((g_model.beepANACenter & ((BeepANACenter)1<<i)) ? INVERS : 0 ) );
+    if (sub==subN) {
       if((event==EVT_KEY_FIRST(KEY_MENU)) || p1valdiff) {
         killEvents(event);
         s_editMode = 0;
-        g_model.beepANACenter ^= (1<<m_posHorz);
+        g_model.beepANACenter ^= ((BeepANACenter)1<<m_posHorz);
         STORE_MODELVARS;
       }
     }
@@ -1767,7 +1767,7 @@ void menuProcFunctionSwitches(uint8_t event)
             uint8_t func_displayed;
             if (sd->func < NUM_CHNOUT) {
               func_displayed = 0;
-              putsChnRaw(14*FW-2, y, NUM_STICKS+NUM_POTS+2+3+NUM_PPM+sd->func+1, attr);
+              putsChnRaw(14*FW-2, y, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+sd->func+1, attr);
             }
             else if (sd->func < NUM_CHNOUT + NUM_STICKS + 1) {
               func_displayed = 1;

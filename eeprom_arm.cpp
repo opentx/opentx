@@ -617,7 +617,6 @@ uint32_t spi_operation( register uint8_t *tx, register uint8_t *rx, register uin
 // Set clock to 3 MHz, AT25 device is rated to 70MHz, 18MHz would be better
 void init_spi()
 {
-  register Pio *pioptr ;
   register Spi *spiptr ;
   register uint32_t timer ;
   register uint8_t *p ;
@@ -625,10 +624,7 @@ void init_spi()
 
   PMC->PMC_PCER0 |= 0x00200000L ;               // Enable peripheral clock to SPI
   /* Configure PIO */
-  pioptr = PIOA ;
-  pioptr->PIO_ABCDSR[0] &= ~0x00007800 ;        // Peripheral A bits 14,13,12,11
-  pioptr->PIO_ABCDSR[1] &= ~0x00007800 ;        // Peripheral A
-  pioptr->PIO_PDR = 0x00007800 ;                                        // Assign to peripheral
+  configure_pins( 0x00007800, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
 
   spiptr = SPI ;
   timer = ( Master_frequency / 3000000 ) << 8 ;           // Baud rate 3Mb/s
