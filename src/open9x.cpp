@@ -710,7 +710,7 @@ void doSplash()
 #endif
         uint16_t tsum = stickMoveValue();
 
-        if(keyDown() || (tsum!=inacSum))   return;  //wait for key release
+        if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
 
         if (check_power()) return; // Usb on or power off
 
