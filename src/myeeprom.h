@@ -436,6 +436,12 @@ enum Dsm2Variants {
 #define EXTDATA FrSkyData frsky
 #endif
 
+#if defined(PCBV4)
+#define BeepANACenter uint16_t
+#else
+#define BeepANACenter uint8_t
+#endif
+
 PACK(typedef struct t_ModelData {
   char      name[10];             // 10 must be first for eeLoadModelName
   TimerData timers[MAX_TIMERS];
@@ -449,7 +455,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   extendedTrims:1;
   uint8_t   spare2:1;
   int8_t    ppmDelay;
-  uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
+  BeepANACenter   beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData   mixData[MAX_MIXERS];
   LimitData limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];

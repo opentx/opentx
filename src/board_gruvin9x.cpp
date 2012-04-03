@@ -73,13 +73,13 @@ inline void board_init()
 }
 #endif
 
-uint8_t check_power()
+uint8_t check_soft_power()
 {
 #ifndef REV0 
   if ((PING & 0b00000010) && (~PINL & 0b01000000))
-    return 1;
+    return e_power_off;
 #endif
-  return 0;
+  return e_power_on;
 }
 
 void soft_power_off()

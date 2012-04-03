@@ -333,7 +333,7 @@ void Open9xSim::refreshDiplay()
     };
     
     static SwitchKey keys3[] = {
-#if defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
+#if defined(PCBV4) || defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
       { KEY_1, pinc,  INP_C_ThrCt, 0 },
       { KEY_6, pinc,  INP_C_AileDR, 0 },
 #else

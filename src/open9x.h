@@ -47,7 +47,7 @@
 #endif
 
 #if defined(PCBARM)
-#include "ersky9x/AT91SAM3S2.h"
+#include "board_ersky9x.h"
 #endif
 
 #if defined(SIMU)
@@ -470,18 +470,19 @@ uint8_t keyDown();
 
 enum PowerState {
   e_power_on,
+  e_power_trainer,
   e_power_usb,
   e_power_off
 };
 
 #if defined(PCBARM)
 uint32_t keyState(EnumKeys enuk);
-uint32_t check_power();
+uint32_t check_soft_power();
 #else
 #if defined(PCBV4)
-uint8_t check_power();
+uint8_t check_soft_power();
 #else
-#define check_power() (e_power_on)
+#define check_soft_power() (e_power_on)
 #endif
 
 bool keyState(EnumKeys enuk);
