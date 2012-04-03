@@ -799,7 +799,7 @@ void checkSwitches()
 
     // first - display warning
     if (first) {
-      message(STR_ALERT, STR_SWITCHESNOTOFF, STR_RESETTHROTTLE, STR_PLEASERESETTHEM);
+      message(STR_ALERT, STR_SWITCHESNOTOFF, STR_PLEASERESETTHEM, STR_PRESSANYKEYTOSKIP);
       first = false;
     }
 
