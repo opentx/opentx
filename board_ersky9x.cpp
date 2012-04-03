@@ -96,16 +96,18 @@ uint32_t check_soft_power()
 
 uint32_t check_power()
 {
+  if ( PIOC->PIO_PDSR & 0x02000000 )
+  {
+    return e_power_usb ;            // Detected USB
+  }
+
 #ifdef REVB
   if ( check_soft_power() == 0 )    // power now off
   {
     return e_power_off ;
   }
 #endif
-  if ( PIOC->PIO_PDSR & 0x02000000 )
-  {
-    return e_power_usb ;            // Detected USB
-  }
+
   return e_power_on;
 }
 
@@ -1130,7 +1132,6 @@ void usb_mode()
   // Any interrupts that have been enabled must be disabled here
   // BEFORE calling sam_boot()
   endPdcUsartReceive() ;          // Terminate any serial reception
-  // TODO in ersky9x soft_power_off() ; is called before endPdcUsartReceive
   end_ppm_capture() ;
   end_spi() ;
   end_sound() ;
