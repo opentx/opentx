@@ -442,7 +442,9 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           sscptr = SSC;
+#ifndef SIMU
           sscptr->SSC_TPR = (uint32_t) Bit_pulses;
+#endif
           sscptr->SSC_TCR = Serial_byte_count;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
@@ -466,7 +468,9 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           sscptr = SSC;
+#ifndef SIMU
           sscptr->SSC_TPR = (uint32_t) Bit_pulses;
+#endif
           sscptr->SSC_TCR = Serial_byte_count;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }

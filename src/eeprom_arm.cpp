@@ -200,6 +200,8 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
 
 uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
 {
+#ifndef SIMU
+
   register Spi *spiptr ;
   register uint32_t condition ;
   static uint8_t discard_rx_command[4] ;
@@ -248,6 +250,8 @@ uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, regist
     }
   }
   spiptr->SPI_IER = condition ;
+
+#endif
 
   return 0 ;
 }

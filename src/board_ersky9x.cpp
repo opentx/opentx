@@ -1107,7 +1107,9 @@ uint32_t txPdcUsart( uint8_t *buffer, uint32_t size )
 
   if ( pUsart->US_TNCR == 0 )
   {
+#ifndef SIMU
     pUsart->US_TNPR = (uint32_t)buffer ;
+#endif
     pUsart->US_TNCR = size ;
     pUsart->US_PTCR = US_PTCR_TXTEN ;
     return 1 ;
