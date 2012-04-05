@@ -77,9 +77,12 @@ void menuProcStatistic(uint8_t event)
   }
 }
 
+#if defined(PCBARM) && defined(REVB)
 uint16_t Current ;
 uint32_t Current_sum ;
 uint8_t  Current_count ;
+#endif
+
 void menuProcDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
