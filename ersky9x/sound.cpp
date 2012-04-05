@@ -225,8 +225,10 @@ void init_dac()
 #endif
 	dacptr->DACC_CDR = 2048 ;						// Half amplitude
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
+#ifndef SIMU
 	dacptr->DACC_TPR = (uint32_t) Sine_values ;
 	dacptr->DACC_TNPR = (uint32_t) Sine_values ;
+#endif
 	dacptr->DACC_TCR = 50 ;		// words, 100 16 bit values
 	dacptr->DACC_TNCR = 50 ;	// words, 100 16 bit values
 	dacptr->DACC_PTCR = DACC_PTCR_TXTEN ;
@@ -236,7 +238,9 @@ void init_dac()
 extern "C" void DAC_IRQHandler()
 {
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
+#ifndef SIMU
 	DACC->DACC_TNPR = (uint32_t) Sine_values ;
+#endif
 	DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
 	if ( Sound_g.Tone_timer )
 	{
