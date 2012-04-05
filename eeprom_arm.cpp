@@ -479,6 +479,12 @@ bool ee32LoadGeneral()
       return true;
     }
   }
+#ifdef SIMU
+  else {
+    printf("EEPROM version %d instead of %d\n", g_eeGeneral.myVers, EEPROM_VER);
+    fflush(stdout);
+  }
+#endif
 
   return false;
 }

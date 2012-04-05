@@ -32,7 +32,7 @@
 *
 ****************************************************************************/
 
-#include "open9x.h"
+#include "../open9x.h"
 
 void start_sound( void ) ;
 void buzzer_on( void ) ;

@@ -1221,9 +1221,9 @@ enum PerOutMode {
 
 uint8_t s_perout_mode = e_perout_mode_normal;
 
-uint8_t evalSticks(uint8_t phase)
+BeepANACenter evalSticks(uint8_t phase)
 {
-  uint8_t anaCenter = 0;
+  BeepANACenter anaCenter = 0;
 
 #ifdef HELI
   uint16_t d = 0;
@@ -1265,7 +1265,7 @@ uint8_t evalSticks(uint8_t phase)
       calibratedStick[ch] = v; //for show in expo
 
     uint8_t tmp = (uint16_t)abs(v) / 16;
-    if (tmp <= 1) anaCenter |= (tmp==0 ? 1<<ch : bpanaCenter & (1<<ch));
+    if (tmp <= 1) anaCenter |= (tmp==0 ? (BeepANACenter)1<<ch : bpanaCenter & ((BeepANACenter)1<<ch));
 
     if (ch < NUM_STICKS) { //only do this for sticks
       if (s_perout_mode==e_perout_mode_normal && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
@@ -1392,7 +1392,7 @@ void perOut(uint8_t phase)
   s_perOut_flight_phase = phase;
 #endif
 
-  uint8_t anaCenter = evalSticks(phase);
+  BeepANACenter anaCenter = evalSticks(phase);
 
   if (s_perout_mode == e_perout_mode_normal) {
     //===========BEEP CENTER================
