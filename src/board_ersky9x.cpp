@@ -1043,8 +1043,11 @@ void startPdcUsartReceive()
 
   TelemetryInBuffer[0].outPtr = TelemetryInBuffer[0].fifo ;
   TelemetryInBuffer[1].outPtr = TelemetryInBuffer[1].fifo ;
+#ifndef SIMU
+  // TODO because of the 64bits cast ...
   pUsart->US_RPR = (uint32_t)TelemetryInBuffer[0].fifo ;
   pUsart->US_RNPR = (uint32_t)TelemetryInBuffer[1].fifo ;
+#endif
   pUsart->US_RCR = RX_UART_BUFFER_SIZE ;
   pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
   pUsart->US_PTCR = US_PTCR_RXTEN ;
