@@ -1643,7 +1643,7 @@ void perOut(uint8_t phase)
 char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #endif
 
-#if defined(PCBARM) || (defined(PCBV4) && !defined(REV0))
+#if (defined(PCBARM) && !defined(REVA) && !defined(SIMU)) || (defined(PCBV4) && !defined(REV0) && !defined(SIMU))
 #define TIME_TO_WRITE (s_eeDirtyMsk && (get_tmr10ms() - s_eeDirtyTime10ms) >= WRITE_DELAY_10MS)
 #else
 #define TIME_TO_WRITE s_eeDirtyMsk
