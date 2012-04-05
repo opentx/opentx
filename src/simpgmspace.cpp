@@ -47,6 +47,7 @@ char* eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;
 bool eeprom_read_operation;
 #define EESIZE (128*4048)
+void configure_pins( uint32_t pins, uint16_t config ) { }
 #else
 extern uint16_t eeprom_pointer;
 extern const char* eeprom_buffer_data;

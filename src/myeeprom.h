@@ -375,8 +375,10 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #if defined(PCBV4)
 #define NUM_ROTARY_ENCODERS 2
 #define ROTARY_ENCODER_MAX  1024
+#define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[NUM_ROTARY_ENCODERS];
 #else
 #define NUM_ROTARY_ENCODERS 0
+#define ROTARY_ENCODER_ARRAY
 #endif
 
 
@@ -388,9 +390,7 @@ PACK(typedef struct t_PhaseData {
   char name[6];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
-#if defined(PCBV4)
-  int16_t rotaryEncoders[NUM_ROTARY_ENCODERS];
-#endif
+  ROTARY_ENCODER_ARRAY
 }) PhaseData;
 
 #define MAX_MODELS 16

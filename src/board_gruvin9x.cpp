@@ -75,7 +75,7 @@ inline void board_init()
 
 uint8_t check_soft_power()
 {
-#ifndef REV0 
+#if !defined(SIMU) && !defined(REV0)
   if ((PING & 0b00000010) && (~PINL & 0b01000000))
     return e_power_off;
 #endif
