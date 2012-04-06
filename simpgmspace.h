@@ -254,6 +254,7 @@ extern uint32_t Master_frequency;
 #define NVIC_DisableIRQ(x)
 #define __disable_irq()
 #define __enable_irq()
+#define AUDIO_HEARTBEAT()
 #endif
 
 extern volatile unsigned char pinb,pinc,pind,pine,ping,pinh,pinj,pinl;
