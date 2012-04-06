@@ -302,13 +302,17 @@ void audioQueue::event(uint8_t e, uint8_t f)
         break;
 #ifdef HAPTIC
       case AU_FRSKY_HAPTIC1:
-        playASAP(0,20,10,1,1);
+        playASAP(0,30,10,0,1);
+        playASAP(0,10,50,0,1);
         break;
       case AU_FRSKY_HAPTIC2:
-        playASAP(0,20,10,2,1);
+        playASAP(0,30,10,0,1);
+        playASAP(0,10,10,0,1);
+        playASAP(0,10,30,0,1);
         break;
       case AU_FRSKY_HAPTIC3:
-        playASAP(0,20,10,3,1);
+        playASAP(0,30,10,0,1);
+        playASAP(0,10,10,2,1);
         break;
 #endif
       default:
