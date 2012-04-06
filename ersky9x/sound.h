@@ -48,12 +48,15 @@ extern void init_dac( void ) ;
 extern "C" void DAC_IRQHandler( void ) ;
 extern void end_sound( void ) ;
 extern void playTone( uint32_t frequency, uint32_t time ) ;
+extern uint32_t queueTone( uint32_t frequency, uint32_t time, uint32_t frequency_increment ) ;
 extern void tone_start( register uint32_t time ) ;
 extern void tone_stop( void ) ;
 extern void init_twi( void ) ;
 extern void set_volume( register uint8_t volume ) ;
 extern "C" void TWI0_IRQHandler (void) ;
 extern void audioDefevent( uint8_t e ) ;
+extern void hapticOff(void) ;
+extern void hapticOn( uint32_t pwmPercent ) ;
 extern void sound_5ms( void ) ;
 
 

@@ -207,8 +207,8 @@ typedef struct {
 typedef struct {
   WoReg ADC_CR;        /**< \brief (Adc Offset: 0x00) Control Register */
   RwReg ADC_MR;        /**< \brief (Adc Offset: 0x04) Mode Register */
-  RwReg ADC_SEQ1R;     /**< \brief (Adc Offset: 0x08) Channel Sequence 1Register */
-  RwReg ADC_SEQ2R;     /**< \brief (Adc Offset: 0x0C) Channel Sequence 2 Register */
+  RwReg ADC_SEQR1;     /**< \brief (Adc Offset: 0x08) Channel Sequence 1Register */
+  RwReg ADC_SEQR2;     /**< \brief (Adc Offset: 0x0C) Channel Sequence 2 Register */
   WoReg ADC_CHER;      /**< \brief (Adc Offset: 0x10) Channel Enable Register */
   WoReg ADC_CHDR;      /**< \brief (Adc Offset: 0x14) Channel Disable Register */
   RoReg ADC_CHSR;      /**< \brief (Adc Offset: 0x18) Channel Status Register */
@@ -1322,6 +1322,7 @@ typedef struct {
   RoReg PIO_PCIMR;      /**< \brief (Pio Offset: 0x15C) Parallel Capture Interrupt Mask Register */
   RoReg PIO_PCISR;      /**< \brief (Pio Offset: 0x160) Parallel Capture Interrupt Status Register */
   RoReg PIO_PCRHR;      /**< \brief (Pio Offset: 0x164) Parallel Capture Reception Holding Register */
+  RwReg Reserved14[38];
 } Pio;
 #endif /* __ASSEMBLY__ */
 /* -------- PIO_PER : (PIO Offset: 0x0000) PIO Enable Register -------- */
@@ -3239,8 +3240,8 @@ typedef struct {
   RwReg      PWM_CMR;       /**< \brief (PwmCh_num Offset: 0x0) PWM Channel Mode Register */
   RwReg      PWM_CDTY;      /**< \brief (PwmCh_num Offset: 0x4) PWM Channel Duty Cycle Register */
   RwReg      PWM_CDTYUPD;   /**< \brief (PwmCh_num Offset: 0x8) PWM Channel Duty Cycle Update Register */
-  RwReg      PWM_CPRD;      /**< \brief (PwmCh_num Offset: 0xC) PWM Channel Period Register */
-  RwReg      PWM_CPRDUPD;   /**< \brief (PwmCh_num Offset: 0x10) PWM Channel Period Update Register */
+  RwReg      PWM_CPDR;      /**< \brief (PwmCh_num Offset: 0xC) PWM Channel Period Register */
+  RwReg      PWM_CPDRUPD;   /**< \brief (PwmCh_num Offset: 0x10) PWM Channel Period Update Register */
   RwReg      PWM_CCNT;      /**< \brief (PwmCh_num Offset: 0x14) PWM Channel Counter Register */
   RwReg      PWM_DT;        /**< \brief (PwmCh_num Offset: 0x18) PWM Channel Dead Time Register */
   RwReg      PWM_DTUPD;     /**< \brief (PwmCh_num Offset: 0x1C) PWM Channel Dead Time Update Register */
@@ -6744,6 +6745,11 @@ typedef struct {
 #define WDT        CAST(Wdt       , 0x400E1450U) /**< \brief (WDT       ) Base Address */
 #define RTC        CAST(Rtc       , 0x400E1460U) /**< \brief (RTC       ) Base Address */
 #define GPBR       CAST(Gpbr      , 0x400E1490U) /**< \brief (GPBR      ) Base Address */
+
+// indices for three pio structures
+#define iPIOA		0
+#define iPIOB		1
+#define iPIOC		2
 /*@}*/
 
 /* ***************************************************************************** */

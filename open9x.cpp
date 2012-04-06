@@ -2025,11 +2025,16 @@ void perMain()
         static uint8_t s_batCheck;
         s_batCheck+=32;
         if (s_batCheck==0 && g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
-          AUDIO_ERROR();
+          AUDIO_ERROR(); // TODO AUDIO_TX_BATTERY_LOW()
         }
       }
       break;
   }
+
+#if defined(PCBARM)
+  AUDIO_HEARTBEAT();  // the queue processing
+#endif
+
 }
 int16_t g_ppmIns[8];
 uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
@@ -2603,7 +2608,7 @@ int main(void)
     t0 = getTmr16KHz() - t0;
 #endif
 
-    g_timeMain = max(g_timeMain, t0);
+    if (t0 > g_timeMain) g_timeMain = t0 ;
   }
 
 #if defined(PCBARM) || defined(PCBV4)

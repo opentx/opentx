@@ -1,4 +1,8 @@
+#ifdef REVA
 #include "ersky9x/AT91SAM3S2.h"
+#else
+#include "ersky9x/AT91SAM3S4.h"
+#endif
 
 #define PIN_ENABLE           0x001
 #define PIN_PERIPHERAL       0x000
@@ -22,3 +26,5 @@
 #define PIN_HIGH             0x100
 
 void configure_pins( uint32_t pins, uint16_t config );
+
+extern uint16_t Temperature ;           // Raw temp reading

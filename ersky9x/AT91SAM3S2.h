@@ -720,7 +720,7 @@ typedef struct {
 
 #define DACC_MR_TRGSEL (0x7 << 1) /**< \brief (DACC_MR) Trigger Selection */
 #define   DACC_MR_TRGSEL_EXT_TRIG (0x0 << 1) // (DACC_MR) External trigger
-#define   DACC_MR_TRGSEL_TIOA_0 (0x1 << 1) // (DACC_MR) TIO Output of the rTimer Counter Channel 0
+#define   DACC_MR_TRGSEL_TIOA_0 (0x1 << 1) // (DACC_MR) TIO Output of the Timer Counter Channel 0
 #define   DACC_MR_TRGSEL_TIOA_1 (0x2 << 1) // (DACC_MR) TIO Output of the Timer Counter Channel 1
 #define   DACC_MR_TRGSEL_TIOA_2 (0x3 << 1) // (DACC_MR) TIO Output of the Timer Counter Channel 2
 #define   DACC_MR_TRGSEL_PWM_0 (0x4 << 1) // (DACC_MR) PWM Event Line 0
@@ -6747,9 +6747,9 @@ typedef struct {
 #define GPBR       CAST(Gpbr      , 0x400E1490U) /**< \brief (GPBR      ) Base Address */
 
 // indices for three pio structures
-#define iPIOA           0
-#define iPIOB           1
-#define iPIOC           2
+#define iPIOA		0
+#define iPIOB		1
+#define iPIOC		2
 /*@}*/
 
 /* ***************************************************************************** */
