@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys, shutil
+import os, sys, shutil, platform
 import subprocess
 
 options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"), ("ardupilot", "EXT=ARDUPILOT"), ("nmea", "EXT=NMEA")],
@@ -20,9 +20,14 @@ options_v4 = [[("", "EXT=FRSKY")],
               [("", "SOMO=NO"), ("SOMO", "SOMO=YES")],
              ]
 
+options_arm = [[("", "EXT=FRSKY")],
+               [("", "HELI=NO"), ("heli", "HELI=YES")],
+               [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
+              ]
+
 languages = ["en", "fr", "se"]
 
-def generate(hex, arg, options,v4):
+def generate(hex, arg, extension, options, maxsize):
     result = []
     states = [0] * len(options)
     
@@ -46,7 +51,7 @@ def generate(hex, arg, options,v4):
             hex_file += "-" + language
             make_args.append("TRANSLATIONS=" + language.upper())
             print "[%d/%d]" % (current, count), hex_file
-            subprocess.check_output(["make", "clean"])
+            subprocess.check_output(["make", "clean", arg])
             p = subprocess.Popen(make_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             p.wait()
             stderr = p.stderr.read()
@@ -63,15 +68,15 @@ def generate(hex, arg, options,v4):
                     while "" in parts:
                         parts.remove("")
                     size = int(parts[1])
-                    if ((size > 65530 and v4==0) or (size > 262000 and v4==1)):
+                    if size > maxsize:
                         print "  ", line[:-1], "[NOT RELEASED]"
                     else:
                         print "  ", line,
                 if line.startswith("Data:"):
                     print "  ", line,
             
-            if ((size <= 65530 and v4==0) or (size <=262000 and v4==1)) :
-                shutil.copyfile("open9x.hex", "../binaries/" + hex_file + ".hex")
+            if size <= maxsize:
+                shutil.copyfile("open9x." + extension, "../binaries/" + hex_file + "." + extension)
                 result.append(hex_file)
         
         for index, state in enumerate(states):
@@ -90,13 +95,18 @@ def generate_c9x_list(filename, hexes, size):
     for hex in hexes:
         f.write('open9x->add_option(new Open9xFirmware("%s", new Open9xInterface(%s), OPEN9X_BIN_URL "%s.hex"));\n' % (hex, size, hex))
 
-# stock board
-hexes = generate("open9x-stock", "PCB=STD", options_stock,0)
-generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "BOARD_STOCK")
+if platform.system() == "Windows":
+    # arm board
+    hexes = generate("open9x-arm", "PCB=ARM", "bin", options_arm, 262000)
+    generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "BOARD_ERSKY9X")
+else:
+    # stock board
+    hexes = generate("open9x-stock", "PCB=STD", "hex", options_stock, 65530)
+    generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "BOARD_STOCK")
 
-# v4 board
-hexes = generate("open9x-v4", "PCB=V4", options_v4,1)
-generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "BOARD_GRUVIN9X")
+    # v4 board
+    hexes = generate("open9x-v4", "PCB=V4", "hex", options_v4, 262000)
+    generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "BOARD_GRUVIN9X")
 
-# stamp
-subprocess.check_output(["make", "stamp"])
+    # stamp
+    subprocess.check_output(["make", "stamp"])
