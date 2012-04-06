@@ -58,6 +58,50 @@ bool audioQueue::freeslots(uint8_t slots)
 // it is called every 10ms
 void audioQueue::heartbeat()
 {
+#if defined(PCBARM)
+  if (toneTimeLeft) {
+
+    if (queueTone(toneFreq * 61 / 2, toneTimeLeft * 10,
+        toneFreqIncr * 61 / 2)) {
+      toneTimeLeft = 0; //time gets counted down
+    }
+
+    //this works - but really needs a delay added in.
+    // reason is because it takes time for the motor to spin up
+    // need to take this into account when the tone sent is really short!
+    // initial thoughts are a seconds queue to process haptic that gets
+    // fired from here.  end result is haptic events run for mix of 2 seconds?
+
+#if defined(HAPTIC)
+    if (toneHaptic) {
+      hapticOn((g_eeGeneral.hapticStrength * 2) * 10);
+    }
+#endif
+  }
+  else {
+
+    hapticOff();
+
+    if (tonePause) {
+      if (queueTone(0, tonePause * 10, 0)) {
+        tonePause = 0; //time gets counted down
+      }
+    }
+    else {
+      if (t_queueRidx != t_queueWidx) {
+        toneFreq = queueToneFreq[t_queueRidx];
+        toneTimeLeft = queueToneLength[t_queueRidx];
+        toneFreqIncr = queueToneFreqIncr[t_queueRidx];
+        tonePause = queueTonePause[t_queueRidx];
+        toneHaptic = queueToneHaptic[t_queueRidx];
+        hapticTick = 0;
+        if (!queueToneRepeat[t_queueRidx]--) {
+          t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
+        }
+      }
+    }
+  }
+#else
   if (toneTimeLeft > 0) {
 #if defined(PCBV4)
     if (toneFreq) {
@@ -100,6 +144,7 @@ void audioQueue::heartbeat()
       }
     }
   }
+#endif
 }
 
 inline uint8_t audioQueue::getToneLength(uint8_t tLen)

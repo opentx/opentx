@@ -466,10 +466,11 @@ inline void init_adc()
   PMC->PMC_PCER0 |= 0x20000000L ;               // Enable peripheral clock to ADC
   padc = ADC ;
   padc->ADC_MR = 0x14110000 | timer ;  // 0001 0100 0001 0001 xxxx xxxx 0000 0000
+  padc->ADC_ACR = ADC_ACR_TSON ;                        // Turn on temp sensor
 #ifdef REVB
-  padc->ADC_CHER = 0x0000633E ;  // channels 1,2,3,4,5,8,9,13,14
+  padc->ADC_CHER = 0x0000E33E ;  // channels 1,2,3,4,5,8,9,13,14,15
 #else
-  padc->ADC_CHER = 0x0000623E ;  // channels 1,2,3,4,5,9,13,14
+  padc->ADC_CHER = 0x0000E23E ;  // channels 1,2,3,4,5,9,13,14,15
 #endif
   padc->ADC_CGR = 0 ;  // Gain = 1, all channels
   padc->ADC_COR = 0 ;  // Single ended, 0 offset, all channels
@@ -547,7 +548,9 @@ void init_pwm()
   pwmptr->PWM_CH_NUM[2].PWM_CPDRUPD = 100 ;               // Period
   pwmptr->PWM_CH_NUM[2].PWM_CDTY = 40 ;                           // Duty
   pwmptr->PWM_CH_NUM[2].PWM_CDTYUPD = 40 ;                // Duty
-  pwmptr->PWM_ENA = PWM_ENA_CHID2 ;                                               // Enable channel 2
+  pwmptr->PWM_OOV &= ~0x00040000 ;      // Force low
+  pwmptr->PWM_OSS = 0x00040000 ;  // Force low
+  // pwmptr->PWM_ENA = PWM_ENA_CHID2 ;                                               // Enable channel 2 // TODO on REVA?
 #endif
 }
 
@@ -947,6 +950,7 @@ extern uint32_t keyState(EnumKeys enuk)
 }
 
 uint16_t Analog_values[NUMBER_ANALOG] ;
+uint16_t Temperature ;          // Raw temp reading
 
 // Read 8 (9 for REVB) ADC channels
 // Documented bug, must do them 1 by 1
@@ -960,7 +964,7 @@ void read_9_adc()
 
   padc = ADC;
   y = padc->ADC_ISR; // Clear EOC flags
-  for (y = NUMBER_ANALOG; --y > 0;) {
+  for (y = NUMBER_ANALOG+1; --y > 0;) {
     padc->ADC_CR = 2; // Start conversion
     x = 0;
     while ((padc->ADC_ISR & 0x01000000) == 0) {
@@ -980,9 +984,12 @@ void read_9_adc()
   Analog_values[5] = ADC->ADC_CDR9;
   Analog_values[6] = ADC->ADC_CDR13;
   Analog_values[7] = ADC->ADC_CDR14;
+
 #ifdef REVB
   Analog_values[8] = ADC->ADC_CDR8 ;
 #endif
+
+  Temperature = ( Temperature * 7 + ADC->ADC_CDR15 ) >> 3 ;     // Filter it
 
 // Power save
 //  PMC->PMC_PCER0 &= ~0x20000000L ;            // Disable peripheral clock to ADC

@@ -134,8 +134,10 @@ endif
 ifeq ($(PCB), ARM)
   ifeq ($(PCBREV), REVA)
     CPPDEFS += -DREVA
+    LDSCRIPT = ersky9x/sam3s2c_flash.ld
   else
     CPPDEFS += -DREVB
+    LDSCRIPT = ersky9x/sam3s4c_flash.ld
   endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
@@ -260,23 +262,25 @@ ifeq ($(EEPROM_PROGRESS_BAR), YES)
   CPPDEFS += -DEEPROM_PROGRESS_BAR
 endif
 
+RUN_FROM_FLASH = 1
+
 ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
-  CPPDEFS += -DPCBARM
+  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC
   EXTRAINCDIRS += ersky9x
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
+  CPPSRC += audio.cpp
   CPPSRC += ersky9x/sound.cpp
-  CPPSRC += beeper.cpp
 endif
 
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
   OPT = 2
-  CPPDEFS += -DPCBV4 -DAUDIO
+  CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC
   EXTRAINCDIRS += gruvin9x
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
@@ -569,7 +573,7 @@ endif
 	$(OBJDUMP) -h -S $< > $@
 
 # Concatenate all sources files in one big file to optimize size
-allsrc.cpp: $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) 
+allsrc.cpp: Makefile $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) 
 	@echo -n > allsrc.cpp
 	for f in $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) ; do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 	
@@ -582,7 +586,7 @@ ifeq ($(PCB), ARM)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ALL_CPPFLAGS) $< -o allsrc.o
-	$(CC) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -Tersky9x/sam3s2c_flash.ld -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
+	$(CC) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
 else
 %.elf: allsrc.cpp
 	@echo

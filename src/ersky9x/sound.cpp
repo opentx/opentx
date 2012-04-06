@@ -55,11 +55,13 @@ volatile uint8_t Buzzer_count ;
 
 struct t_sound_globals
 {
-	uint32_t Freq ;
-	uint32_t Sound_time ;
+	uint32_t Next_freq ;
+	volatile uint32_t Sound_time ;
 	uint32_t Frequency ;
 	volatile uint32_t Tone_timer ;		// Modified in interrupt routine
 	volatile uint8_t Tone_ms_timer ;
+	uint32_t Frequency_increment ;
+	uint32_t Next_frequency_increment ;
 } Sound_g ;
 
 
@@ -97,9 +99,9 @@ const uint16_t PianoTones[] =
   28,   29,   31,   33,   35,   37,   39,   41,   44,   46,
   49,   52,   55,   58,   62,   65,   69,   73,   78,   82,
   87,   92,   98,  104,  110,  117,  123,  131,  139,  147,
- 156,  165,  175,  185,  196,  208,  220,  233,  247,  262,
- 277,  294,  311,  330,  349,  370,  392,  415,  440,  466,
- 494,  523,  554,  587,  622,  659,  698,  740,  784,  831,
+ 156,  165,  175,  185,  196,  208,  220,  233,  247,  262, // d#, E, F, f#, G, g#, A, a#, B, C(middle)
+ 277,  294,  311,  330,  349,  370,  392,  415,  440,  466, // c#, D, d#, E, F, f#, G, g#, A, a#
+ 494,  523,  554,  587,  622,  659,  698,  740,  784,  831, // B, C, c#, D, d#, E, F, f#, G, g#
  880,  932,  988, 1047, 1109, 1175, 1245, 1319, 1397, 1480,
 1568, 1661, 1760, 1865, 1976, 2093, 2217, 2349, 2489, 2637,
 2794, 2960, 3136, 3322, 3520 ,3729, 3951, 4186
@@ -162,7 +164,6 @@ void set_frequency( uint32_t frequency )
   register Tc *ptc ;
 	register uint32_t timer ;
 
-	Sound_g.Frequency = frequency ;
 	timer = Master_frequency / (800 * frequency) ;		// MCK/8 and 100 000 Hz
 	if ( timer > 65535 )
 	{
@@ -279,10 +280,16 @@ void sound_5ms()
 		if ( Sound_g.Sound_time )
 		{
 			Sound_g.Tone_ms_timer = ( Sound_g.Sound_time + 4 ) / 5 ;
-			if ( Sound_g.Freq )		// 0 => silence for time
+			if ( Sound_g.Next_freq )		// 0 => silence for time
 			{
-				set_frequency( Sound_g.Freq ) ;
+				Sound_g.Frequency = Sound_g.Next_freq ;
+				Sound_g.Frequency_increment = Sound_g.Next_frequency_increment ;
+				set_frequency( Sound_g.Frequency ) ;
 				tone_start( 0 ) ;
+			}
+			else
+			{
+				DACC->DACC_IDR = DACC_IDR_ENDTX ;		// Silence
 			}
 			Sound_g.Sound_time = 0 ;
 		}
@@ -292,18 +299,41 @@ void sound_5ms()
 			Sound_g.Tone_timer = 0 ;	
 		}
 	}
+	else if ( ( Sound_g.Tone_ms_timer & 1 ) == 0 )		// Every 10 mS
+	{
+		if ( Sound_g.Frequency )
+		{
+			if ( Sound_g.Frequency_increment )
+			{
+				Sound_g.Frequency += Sound_g.Frequency_increment ;
+				set_frequency( Sound_g.Frequency ) ;
+			}
+		}
+	}
 }
 
 // frequency in Hz, time in mS
 void playTone( uint32_t frequency, uint32_t time )
 {
-	Sound_g.Freq = frequency ;
+	Sound_g.Next_frequency_increment = 0 ;
+	Sound_g.Next_freq = frequency ;
 	Sound_g.Sound_time = time ;
 //	set_frequency( frequency ) ;
 //	Tone_ms_timer = ( time + 4 ) / 5 ;
 //	tone_start( 0 ) ;
 }
 
+uint32_t queueTone( uint32_t frequency, uint32_t time, uint32_t frequency_increment )
+{
+	if ( Sound_g.Sound_time == 0 )
+	{
+		Sound_g.Next_freq = frequency ;
+		Sound_g.Next_frequency_increment = frequency_increment ;
+		Sound_g.Sound_time = time ;
+		return 1 ;
+	}
+	return 0 ;	
+}
 
 // Time is in milliseconds
 void tone_start( register uint32_t time )
@@ -394,10 +424,41 @@ extern "C" void TWI0_IRQHandler()
 }
 
 
-void audioDefevent(uint8_t e)
+//void audioDefevent(uint8_t e)
+//{
+//	if ( g_eeGeneral.speakerMode == 0 )
+//	{
+//		buzzer_sound( 4 ) ;
+//	}
+//	else if ( g_eeGeneral.speakerMode == 1 )
+//	{
+////		tone_start( 50 ) ;
+//		playTone( 2000, 60 ) ;		// 2KHz, 60mS
+//	}
+////	audio.event(e,BEEP_DEFAULT_FREQ);
+//}
+
+void hapticOff()
 {
-	playTone( 2000, 60 ) ;		// 2KHz, 60mS
-//	audio.event(e,BEEP_DEFAULT_FREQ);
+	PWM->PWM_DIS = PWM_DIS_CHID2 ;						// Disable channel 2
+	PWM->PWM_OOV &= ~0x00040000 ;	// Force low
+	PWM->PWM_OSS |= 0x00040000 ;	// Force low
+}
+
+// pwmPercent 0-100
+void hapticOn( uint32_t pwmPercent )
+{
+	register Pwm *pwmptr ;
+
+	pwmptr = PWM ;
+
+	if ( pwmPercent > 100 )
+	{
+		pwmPercent = 100 ;		
+	}
+	pwmptr->PWM_CH_NUM[2].PWM_CDTYUPD = pwmPercent ;		// Duty
+	pwmptr->PWM_ENA = PWM_ENA_CHID2 ;						// Enable channel 2
+	pwmptr->PWM_OSC = 0x00040000 ;	// Enable output
 }
 
 
