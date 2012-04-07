@@ -100,7 +100,7 @@ if platform.system() == "Windows":
     hexes = generate("open9x-arm", "PCB=ARM", "bin", options_arm, 262000)
     generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "bin", "OPEN9X_ARM_STAMP", "BOARD_ERSKY9X")
     # arm stamp
-    subprocess.check_output(["make", "arm-stamp"])
+    subprocess.check_output(["make", "PCB=ARM", "arm-stamp"])
 
 else:
     # stock board
