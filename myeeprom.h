@@ -111,7 +111,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
   int8_t    timezone:5;
-  uint8_t   spare2:1;
+  uint8_t   optrexDisplay:1;
   uint8_t   inactivityTimer;
   uint8_t   throttleReversed:1;
   uint8_t   minuteBeep:1;

@@ -58,6 +58,10 @@ bool audioQueue::freeslots(uint8_t slots)
 // it is called every 10ms
 void audioQueue::heartbeat()
 {
+#if defined(SIMU)
+  return;
+#endif
+
 #if defined(PCBARM)
   if (toneTimeLeft) {
 

@@ -73,6 +73,9 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 
 enum menuProcSetupItems {
   ITEM_SETUP_BASE=18,
+#ifdef PCBARM
+  ITEM_SETUP_OPTREX,
+#endif
 #ifdef AUDIO
   ITEM_SETUP_SPEAKER,
 #endif
@@ -116,8 +119,13 @@ void menuProcSetup(uint8_t event)
 #else
 #define FRSKY_ZEROS
 #endif
+#ifdef PCBARM
+#define OPTREX_ZEROS  0,
+#else
+#define OPTREX_ZEROS
+#endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0, AUDIO_ZEROS HAPTIC_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0, AUDIO_ZEROS HAPTIC_ZEROS OPTREX_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
   int8_t  sub = m_posVert;
   uint8_t y = 1*FH;
@@ -167,6 +175,16 @@ void menuProcSetup(uint8_t event)
     if (sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticStrength, 0, 5);
     }
+    if((y+=FH)>7*FH) return;
+  }subN++;
+#endif
+
+// TODO port onoffMenuItem here to save flash
+#if defined(PCBARM)
+  if(s_pgOfs<subN) {
+    lcd_putsLeft( y, PSTR("Optrex Display"));
+    menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.optrexDisplay, sub==subN ) ;
+    if (sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.optrexDisplay, 0, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
 #endif
