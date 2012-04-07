@@ -562,6 +562,8 @@ void eeReadAll()
     eeLoadModel(g_eeGeneral.currModel);
     ee32_read_model_names() ;
   }
+
+  stickMode = g_eeGeneral.stickMode; // TODO common!
 }
 
 uint32_t spi_operation( register uint8_t *tx, register uint8_t *rx, register uint32_t count )
