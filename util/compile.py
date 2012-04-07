@@ -90,26 +90,26 @@ def generate(hex, arg, extension, options, maxsize):
         
     return result
         
-def generate_c9x_list(filename, hexes, extension, size):
+def generate_c9x_list(filename, hexes, extension, stamp, board):
     f = file(filename, "w")
     for hex in hexes:
-        f.write('open9x->add_option(new Open9xFirmware("%s", new Open9xInterface(%s), OPEN9X_BIN_URL "%s.%s"));\n' % (hex, size, hex, extension))
+        f.write('open9x->add_option(new Open9xFirmware("%s", new Open9xInterface(%s), OPEN9X_BIN_URL "%s.%s", %s));\n' % (hex, board, hex, extension, stamp))
 
 if platform.system() == "Windows":
     # arm board
     hexes = generate("open9x-arm", "PCB=ARM", "bin", options_arm, 262000)
-    generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "bin", "BOARD_ERSKY9X")
+    generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "bin", "OPEN9X_ARM_STAMP", "BOARD_ERSKY9X")
     # arm stamp
     subprocess.check_output(["make", "arm-stamp"])
 
 else:
     # stock board
     hexes = generate("open9x-stock", "PCB=STD", "hex", options_stock, 65530)
-    generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "BOARD_STOCK")
+    generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_STOCK")
 
     # v4 board
     hexes = generate("open9x-v4", "PCB=V4", "hex", options_v4, 262000)
-    generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "BOARD_GRUVIN9X")
+    generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
 
     # stamp
     subprocess.check_output(["make", "stamp"])
