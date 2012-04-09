@@ -130,6 +130,10 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   gpsFormat:1;
   uint8_t   spare4:1;
   uint8_t   speakerPitch;
+#if defined(PCBARM)
+  uint8_t   speakerVolume;
+  uint8_t   backlightBright;                       // backlight
+#endif
 }) EEGeneral;
 
 // eeprom modelspec

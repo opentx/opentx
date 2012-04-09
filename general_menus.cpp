@@ -75,6 +75,8 @@ enum menuProcSetupItems {
   ITEM_SETUP_BASE=18,
 #ifdef PCBARM
   ITEM_SETUP_OPTREX,
+  ITEM_SETUP_BACKLIGHT_BRIGHT,
+  ITEM_SETUP_VOLUME,
 #endif
 #ifdef AUDIO
   ITEM_SETUP_SPEAKER,
@@ -120,12 +122,12 @@ void menuProcSetup(uint8_t event)
 #define FRSKY_ZEROS
 #endif
 #ifdef PCBARM
-#define OPTREX_ZEROS  0,
+#define ARM_ZEROS  0, 0, 0, 
 #else
-#define OPTREX_ZEROS
+#define ARM_ZEROS
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0, AUDIO_ZEROS HAPTIC_ZEROS OPTREX_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0, AUDIO_ZEROS HAPTIC_ZEROS ARM_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
   int8_t  sub = m_posVert;
   uint8_t y = 1*FH;
@@ -142,6 +144,21 @@ void menuProcSetup(uint8_t event)
     }
     if((y+=FH)>7*FH) return;
   }subN++;
+
+#if defined(PCBARM)
+  if(s_pgOfs<subN) {
+    uint8_t current_volume = g_eeGeneral.speakerVolume;
+    lcd_putsLeft(y, PSTR("Speaker Volume")); // TODO translations
+    lcd_outdezAtt(PARAM_OFS, y, current_volume, (sub==subN ? INVERS : 0)|LEFT);
+    if(sub==subN) {
+      CHECK_INCDEC_GENVAR(event, current_volume, 0, NUM_VOL_LEVELS-1);
+      if (current_volume != g_eeGeneral.speakerVolume) {
+        set_volume(g_eeGeneral.speakerVolume = current_volume);
+      }
+    }
+    if((y+=FH)>7*FH) return;
+  }subN++;
+#endif
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_BEEPERLEN);
@@ -182,11 +199,24 @@ void menuProcSetup(uint8_t event)
 // TODO port onoffMenuItem here to save flash
 #if defined(PCBARM)
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y, PSTR("Optrex Display"));
-    menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.optrexDisplay, sub==subN ) ;
+    lcd_putsLeft(y, PSTR("Optrex Display"));
+    menu_lcd_onoff(PARAM_OFS, y, g_eeGeneral.optrexDisplay, sub==subN) ;
     if (sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.optrexDisplay, 0, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
+
+  if(s_pgOfs<subN) {
+    lcd_putsLeft(y, PSTR("Brightness")); // TODO translations in the whole file ...
+    lcd_outdezAtt(PARAM_OFS, y, 100-g_eeGeneral.backlightBright, (sub==subN ? INVERS : 0)|LEFT) ;
+    if(sub==subN) {
+      uint8_t b ;
+      b = 100 - g_eeGeneral.backlightBright;
+      CHECK_INCDEC_GENVAR(event, b, 0, 100);
+      g_eeGeneral.backlightBright = 100 - b;
+      PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright ;
+    }
+    if((y+=FH)>7*FH) return;
+  } subN++;
 #endif
 
   if(s_pgOfs<subN) {
