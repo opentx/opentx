@@ -2471,6 +2471,11 @@ int main(void)
 
   uint8_t cModel = g_eeGeneral.currModel;
 
+#if defined(PCBARM)
+  set_volume(g_eeGeneral.speakerVolume);
+  PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
+#endif
+
 #if defined(PCBV4)
    if (MCUSR != (1 << PORF))
 #elif defined(PCBSTD)
