@@ -101,7 +101,7 @@
 #define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  ""Vibr1 ""Vibr2 ""Vibr3 "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Tank""T1\0 ""T2\0 ""Spd\0""Dist""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Tid\0"
+#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Hast""Avst""Batt""AccX""AccY""AccZ""Hdg\0""VHst""A1-\0""A2-\0""Hjd-""Hjd+""Vrv+""T1+\0""T2+\0""Hst+""Avs+""Acc\0""Tid\0"
 
 #define LEN_VTELEMUNIT   "\003"
 #define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0"
@@ -323,5 +323,5 @@
 #define TR_LATITUDE      "Breddgrad"
 #define TR_LONGITUDE     "L\201ngdgrad"
 #define TR_GPSCOORD      "GPS-Koord."
-#define TR_SHUTDOWN      "SHUTTING DOWN"
-#define TR_CURRENT       "Current"
+#define TR_SHUTDOWN      "ST\204NGER AV"
+#define TR_CURRENT       "Sp\201nning"
