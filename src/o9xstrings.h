@@ -353,8 +353,9 @@ extern const pm_char STR_LONGITUDE[];
 extern const pm_char STR_SHUTDOWN[];
 #endif
 
-#if defined(PCBARM)
 extern const pm_char STR_BATT_CALIB[];
+
+#if defined(PCBARM)
 extern const pm_char STR_CURRENT_CALIB[];
 extern const pm_char STR_CURRENT[];
 #endif
