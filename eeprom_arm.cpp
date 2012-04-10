@@ -50,16 +50,6 @@ struct t_file_entry File_system[MAX_MODELS+1] ;
 
 char ModelNames[MAX_MODELS][sizeof(g_model.name)] ;		// Allow for general
 
-
-//static uint32_t Eeprom_image_updated ;		// Ram image changed
-//static uint32_t Eeprom_sequence_no ;			// Ram image changed
-//static uint8_t Current_eeprom_block ;		// 0 or 1 is active block
-//static uint8_t Other_eeprom_block_blank ;
-//static uint8_t Eeprom_process_state ;
-//static uint8_t Eeprom_process_sub_no ;		// Used to manage writes
-//static uint8_t	Eeprom_write_pending ;
-//static uint8_t	Eeprom_writing_block_no ;
-
 // TODO check everything here
 uint8_t	Eeprom32_process_state ;
 uint8_t	Eeprom32_state_after_erase ;
@@ -70,25 +60,9 @@ uint8_t *Eeprom32_source_address ;
 uint32_t Eeprom32_address ;
 uint32_t Eeprom32_data_size ;
 
-
-uint16_t General_timer ;
-uint16_t Model_timer ;
-uint32_t Update_timer ;
-
-
-// States in Eeprom_process_state
-#define E_IDLE							1
-//#define E_ERASESENDING			2
-//#define E_ERASEWAITING			3
-//#define E_WRITESENDING			4
-//#define E_WRITEWAITING			5
-//#define E_32ACTIVE					6
-
 // TODO use these constants everywhere
 #define EE_WAIT		0
 #define EE_NO_WAIT	1
-
-//#define E32_READING						10		// Set elsewhere as a lock
 
 void eeDirty(uint8_t msk)
 {

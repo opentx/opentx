@@ -26,5 +26,7 @@
 #define PIN_HIGH             0x100
 
 void configure_pins( uint32_t pins, uint16_t config );
+uint16_t getCurrent();
 
 extern uint16_t Temperature ;           // Raw temp reading
+extern uint16_t maxTemperature ;           // Raw temp reading

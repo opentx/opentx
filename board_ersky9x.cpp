@@ -951,6 +951,7 @@ extern uint32_t keyState(EnumKeys enuk)
 
 uint16_t Analog_values[NUMBER_ANALOG] ;
 uint16_t Temperature ;          // Raw temp reading
+uint16_t maxTemperature ;          // Raw temp reading
 
 // Read 8 (9 for REVB) ADC channels
 // Documented bug, must do them 1 by 1
@@ -990,6 +991,9 @@ void read_9_adc()
 #endif
 
   Temperature = ( Temperature * 7 + ADC->ADC_CDR15 ) >> 3 ;     // Filter it
+  if ( Temperature > maxTemperature ) {
+    maxTemperature = Temperature ;
+  }
 
 // Power save
 //  PMC->PMC_PCER0 &= ~0x20000000L ;            // Disable peripheral clock to ADC
@@ -1157,3 +1161,22 @@ void usb_mode()
   disable_ssc() ;
   sam_boot() ;
 }
+
+#if defined(REVB)
+uint16_t getCurrent()
+{
+  static uint16_t Current ;
+  static uint32_t Current_sum ;
+  static uint8_t  Current_count ;
+
+  Current_sum += anaIn(NUMBER_ANALOG-1);
+  if ( ++Current_count > 49 ) {
+    Current = Current_sum / 5 ;
+    Current_sum = 0 ;
+    Current_count = 0 ;
+  }
+
+  uint32_t current_scale = 488 + g_eeGeneral.currentCalib ;
+  return (current_scale * Current) / 8192;
+}
+#endif

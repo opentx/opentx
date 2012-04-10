@@ -387,6 +387,11 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (safetyCh[channel] != -128) // if safety channel available for channel check
     ofs = calc100toRESX(safetyCh[channel]);
 
+#ifdef DSM2
+  if (g_model.protocol == PROTO_DSM2)
+    ofs = (ofs * 13) / 32;
+#endif
+
   return ofs;
 }
 
@@ -928,9 +933,9 @@ uint16_t BandGap = 225;
 // G: Note that the above would have set the ADC prescaler to 128, equating to
 // 125KHz sample rate. We now sample at 500KHz, with oversampling and other
 // filtering options to produce 11-bit results.
-#ifdef PCBV4
+#if defined(PCBV4)
 uint16_t BandGap = 2040 ;
-#else
+#elif defined(PCBSTD)
 uint16_t BandGap ;
 #endif
 #if defined(PCBARM) and defined(REVB)
@@ -1520,6 +1525,7 @@ void perOut(uint8_t phase)
 
     //========== DELAYS ===============
     uint8_t swTog;
+    bool apply_offset = true;
     if (sw) { // switch on?  (if no switch selected => on)
       swTog = !swOn[i];
       if (s_perout_mode == e_perout_mode_normal) {
@@ -1561,7 +1567,7 @@ void perOut(uint8_t phase)
       if (!has_delay) {
         if (md->speedDown) {
           if (md->mltpx==MLTPX_REP) continue;
-          if (md->swtch) v = 0;
+          if (md->swtch) { v = 0; apply_offset = false; }
         }
         else if (md->swtch) {
           continue;
@@ -1570,7 +1576,7 @@ void perOut(uint8_t phase)
     }
 
     //========== OFFSET ===============
-    if(md->sOffset) v += calc100toRESX(md->sOffset);
+    if (apply_offset && md->sOffset) v += calc100toRESX(md->sOffset);
 
     //========== SPEED ===============
     if (s_perout_mode==e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values

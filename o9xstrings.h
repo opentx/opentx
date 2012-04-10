@@ -354,6 +354,8 @@ extern const pm_char STR_SHUTDOWN[];
 #endif
 
 #if defined(PCBARM)
+extern const pm_char STR_BATT_CALIB[];
+extern const pm_char STR_CURRENT_CALIB[];
 extern const pm_char STR_CURRENT[];
 #endif
 

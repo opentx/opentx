@@ -570,10 +570,6 @@ void getADC_single();
 void getADC_osmp();
 void getADC_filt();
 
-// checkIncDec flags
-#define   EE_GENERAL 0x01
-#define   EE_MODEL   0x02
-
 extern uint8_t  s_eeDirtyMsk;
 
 #define STORE_MODELVARS eeDirty(EE_MODEL)
@@ -660,6 +656,22 @@ void generalDefault();
 void modelDefault(uint8_t id);
 void resetProto();
 
+#if defined(PCBARM)
+inline int32_t calc100toRESX(register int8_t x)
+{
+  return ((uint32_t)x*655)>>6 ;
+}
+
+inline int16_t calc1000toRESX( register int32_t x)  // improve calc time by Pat MacKenzie
+{
+    register int32_t y = x>>5;
+    x+=y;
+    y=y>>2;
+    x-=y;
+    return x+(y>>2);
+    //  return x + x/32 - x/128 + x/512;
+}
+#else
 extern inline int16_t calc100toRESX(int8_t x)
 {
   // return (int16_t)x*10 + x/4 - x/64;
@@ -675,6 +687,7 @@ extern inline int16_t calc1000toRESX(int16_t x)
   x-=y;
   return x+(y>>2);
 }
+#endif
 
 extern volatile uint16_t g_tmr10ms;
 

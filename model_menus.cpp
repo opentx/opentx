@@ -172,7 +172,7 @@ void menuProcModelSelect(uint8_t event)
         // no break
       case EVT_KEY_BREAK(KEY_EXIT):
         if (s_copyMode) {
-          sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (16+sub+s_copyTgtOfs) % 16 : s_copySrcRow; // TODO reset s_copySrcRow?
+          sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow; // TODO reset s_copySrcRow?
           s_copyMode = 0; // TODO only this one?
           s_copySrcRow = -1;
           s_copyTgtOfs = 0;
@@ -191,7 +191,7 @@ void menuProcModelSelect(uint8_t event)
           displayPopup(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
           eeCheck(true); // force writing of current model data before this is changed
 
-          uint8_t cur = (16 + sub + s_copyTgtOfs) % 16;
+          uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
 
           if (s_copyMode == COPY_MODE) {
             if (!eeCopyModel(cur, s_copySrcRow))
@@ -201,7 +201,7 @@ void menuProcModelSelect(uint8_t event)
           s_copySrcRow = g_eeGeneral.currModel; // to update the currModel value
           while (sub != cur) {
             uint8_t src = cur;
-            cur = (s_copyTgtOfs > 0 ? cur+15 : cur+1) % 16;
+            cur = (s_copyTgtOfs > 0 ? cur+15 : cur+1) % MAX_MODELS;
             eeSwapModels(src, cur);
             if (src == s_copySrcRow)
               s_copySrcRow = cur;
@@ -250,7 +250,7 @@ void menuProcModelSelect(uint8_t event)
       case EVT_KEY_FIRST(KEY_DOWN):
         if (s_copyMode) {
           int8_t next_ofs = (_event == EVT_KEY_FIRST(KEY_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
-          if (next_ofs == 16 || next_ofs == -16)
+          if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
             next_ofs = 0;
 
           if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
@@ -298,13 +298,13 @@ void menuProcModelSelect(uint8_t event)
           k = sub + s_copyTgtOfs;
         }
       }
-      else if (s_copyTgtOfs < 0 && ((k < sub && k >= sub+s_copyTgtOfs) || (k-16 < sub && k-16 >= sub+s_copyTgtOfs)))
+      else if (s_copyTgtOfs < 0 && ((k < sub && k >= sub+s_copyTgtOfs) || (k-MAX_MODELS < sub && k-MAX_MODELS >= sub+s_copyTgtOfs)))
         k += 1;
-      else if (s_copyTgtOfs > 0 && ((k > sub && k <= sub+s_copyTgtOfs) || (k+16 > sub && k+16 <= sub+s_copyTgtOfs)))
+      else if (s_copyTgtOfs > 0 && ((k > sub && k <= sub+s_copyTgtOfs) || (k+MAX_MODELS > sub && k+MAX_MODELS <= sub+s_copyTgtOfs)))
         k += 15;
     }
 
-    k %= 16;
+    k %= MAX_MODELS;
 
     if (eeModelExists(k)) {
 #if defined(PCBARM)
@@ -1851,6 +1851,7 @@ void menuProcTelemetry(uint8_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
       if (s_editMode>0 && sub<=13)
         FRSKY_setModelAlarms(); // update Fr-Sky module when edit mode exited
+      break;
   }
 
   blink = (s_editMode>0) ? BLINK|INVERS : INVERS ;
@@ -1860,7 +1861,7 @@ void menuProcTelemetry(uint8_t event)
   for (int i=0; i<2; i++) {
     if(s_pgOfs<subN) {
       y=(subN-s_pgOfs)*FH;
-      lcd_putsLeft( y, STR_ACHANNEL);
+      lcd_putsLeft(y, STR_ACHANNEL);
       lcd_outdezAtt(2*FW, y, 1+i, 0);
     }
     subN++;
@@ -1869,7 +1870,7 @@ void menuProcTelemetry(uint8_t event)
       y=(subN-s_pgOfs)*FH;
       lcd_puts(4, y, STR_RANGE);
       putsTelemetryChannel(TELEM_COL2, y, i+MAX_TIMERS, 255-g_model.frsky.channels[i].offset, (sub==subN && m_posHorz==0 ? blink:0)|NO_UNIT|LEFT);
-      lcd_putsiAtt(lcd_lastPos+1, y, STR_VTELEMUNIT, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==1 ? blink:0));
+      lcd_putsiAtt(lcd_lastPos, y, STR_VTELEMUNIT, g_model.frsky.channels[i].type, (sub==subN && m_posHorz==1 ? blink:0));
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         if (m_posHorz == 0) {
           uint16_t ratio = checkIncDec(event, g_model.frsky.channels[i].ratio, 0, 256, EE_MODEL);
@@ -1939,7 +1940,7 @@ void menuProcTelemetry(uint8_t event)
   for (int j=0; j<2; j++) {
     if(s_pgOfs<subN) {
       y = (subN-s_pgOfs)*FH;
-      lcd_putsn(4, y, STR_TX+j*OFS_RX, OFS_RX-2);
+      lcd_puts(4, y, STR_ALARM);
       lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ((2+j+g_model.frsky.rssiAlarms[j].level)%4), (sub==subN && m_posHorz==0) ? blink : 0);
       lcd_putc(TELEM_COL2+4*FW, y, '<');
       lcd_outdezNAtt(TELEM_COL2+6*FW, y, 50+g_model.frsky.rssiAlarms[j].value, LEFT|((sub==subN && m_posHorz==1) ? blink : 0), 3);

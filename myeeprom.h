@@ -133,6 +133,7 @@ PACK(typedef struct t_EEGeneral {
 #if defined(PCBARM)
   uint8_t   speakerVolume;
   uint8_t   backlightBright;                       // backlight
+  int8_t    currentCalib;
 #endif
 }) EEGeneral;
 
@@ -270,6 +271,7 @@ enum TelemetryUnit {
   UNIT_METERS,
   UNIT_DEGREES,
   UNIT_PERCENT,
+  UNIT_MILLIAMPS,
   UNIT_MAX
 };
 
@@ -397,7 +399,12 @@ PACK(typedef struct t_PhaseData {
   ROTARY_ENCODER_ARRAY
 }) PhaseData;
 
+#if defined(PCBARM)
+#define MAX_MODELS 60
+#else
 #define MAX_MODELS 16
+#endif
+
 #define MAX_TIMERS 2
 #define MAX_PHASES 5
 #define MAX_MIXERS 32

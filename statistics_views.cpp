@@ -77,12 +77,7 @@ void menuProcStatistic(uint8_t event)
   }
 }
 
-#if defined(PCBARM) && defined(REVB)
-uint16_t Current ;
-uint32_t Current_sum ;
-uint8_t  Current_count ;
-#endif
-
+#define MENU_DEBUG_COL_OFS (14*FW)
 void menuProcDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
@@ -107,43 +102,42 @@ void menuProcDebug(uint8_t event)
 
 #if !defined(PCBARM)
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
-  lcd_outdez8(15*FW , 1*FH, g_tmr1Latency_max/2 );
+  lcd_outdez8(MENU_DEBUG_COL_OFS , 1*FH, g_tmr1Latency_max/2 );
   lcd_putsLeft(2*FH, STR_TMR1LATMINUS);
-  lcd_outdez8(15*FW , 2*FH, g_tmr1Latency_min/2 );
+  lcd_outdez8(MENU_DEBUG_COL_OFS , 2*FH, g_tmr1Latency_min/2 );
   lcd_putsLeft(3*FH, STR_TMR1JITTERUS);
-  lcd_outdez8(15*FW , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
+  lcd_outdez8(MENU_DEBUG_COL_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
 #endif
 
   lcd_putsLeft(4*FH, STR_TMAINMAXMS);
 #if defined(PCBARM)
-  lcd_outdezAtt(15*FW, 4*FH, (g_timeMain)/20, PREC2);
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMain)/20, PREC2);
 #else
-  lcd_outdezAtt(15*FW, 4*FH, (g_timeMain*100)/16, PREC2);
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMain*100)/16, PREC2);
 #endif
 
-#if defined(PCBARM) && defined(REVB)
-  // TODO then there are 2 means, is it needed?
-  Current_sum += anaIn(NUMBER_ANALOG-1) ;
-  if ( ++Current_count > 49 )
-  {
-    Current = Current_sum / 5 ;
-    Current_sum = 0 ;
-    Current_count = 0 ;
-  }
-  lcd_putsLeft(6*FH, STR_CURRENT);
-  lcd_outhex4(10*FW+3, 6*FH, Current ) ;
-  lcd_outdezAtt(18*FW, 6*FH, Current/22, 0 ) ;
+#if defined(PCBARM)
+#if defined(REVB)
+  lcd_putsLeft(2*FH, STR_CURRENT);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, getCurrent(), UNIT_MILLIAMPS, 0) ;
+#endif
+
+  lcd_putsLeft(3*FH, PSTR("CPU temp.\010>"));
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, (((((int32_t)Temperature - 838 ) * 621 ) >> 11 ) - 20), UNIT_DEGREES, 0 ) ;
+  putsTelemetryValue(20*FW+2, 3*FH, (((((int32_t)maxTemperature - 838 ) * 621 ) >> 11 ) - 20), UNIT_DEGREES, 0 ) ;
   // TODO mAh, Battery from ersky9x?
 #endif
 
+#if !defined(PCBARM)
+  lcd_puts( 0*FW,  5*FH, STR_FREESTACKMINB);
+  lcd_outdezAtt(14*FW,  5*FH, stack_free(), UNSIGN) ;
+#endif
 
 #ifdef DEBUG
-  lcd_puts( 0*FW,  5*FH, STR_T10MSUS);
-  lcd_outdez8(15*FW , 5*FH, g_time_per10/2 );
+  lcd_puts( 0*FW,  6*FH, STR_T10MSUS);
+  lcd_outdez8(MENU_DEBUG_COL_OFS, 6*FH, g_time_per10/2 );
 #endif
-#if !defined(SIMU) && !defined(PCBARM)
-  lcd_puts( 0*FW,  6*FH, STR_FREESTACKMINB);
-  lcd_outdezAtt(18*FW-1,  6*FH, stack_free(), UNSIGN) ;
-#endif
+
+
   lcd_puts( 3*FW,  7*FH, STR_MENUTORESET);
 }

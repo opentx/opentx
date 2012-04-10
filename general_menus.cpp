@@ -635,23 +635,39 @@ void menuProcDiagKeys(uint8_t event)
 
 void menuProcDiagAna(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUANA, menuTabDiag, e_Ana, 2);
+#if defined(PCBARM) && defined(REVB)
+#define ANAS_ITEMS_COUNT 3
+#else
+#define ANAS_ITEMS_COUNT 2
+#endif
 
-  for (uint8_t i=0; i<8; i++) {
-    uint8_t y=i*FH;
-    putsStrIdx(4*FW, y, PSTR("A"), i+1);
-    lcd_outhex4( 8*FW, y, anaIn(i));
-    if (i<7)
-      lcd_outdez8(17*FW, y, (int32_t)calibratedStick[i]*100/1024);
-    else
-      putsVolts(17*FW, y, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
+  SIMPLE_MENU(STR_MENUANA, menuTabDiag, e_Ana, ANAS_ITEMS_COUNT);
+
+  for (uint8_t i=0; i<7; i++) {
+    uint8_t y = 1+FH+(i/2)*FH;
+    uint8_t x = i&1 ? 64+5 : 0;
+    putsStrIdx(x, y, PSTR("A"), i+1, TWO_DOTS);
+    lcd_outhex4(x+3*FW-1, y, anaIn(i));
+    lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[i]*25/256);
   }
-  // Display raw BandGap result (debug)
-  lcd_puts( 19*FW, 5*FH, STR_BG) ;
-  lcd_outdezAtt(21*FW, 6*FH, BandGap, 0);
-  lcd_outdezAtt(21*FW, 7*FH, anaIn(7)*35/512, PREC1);
 
+#if !defined(PCBARM)
+  // Display raw BandGap result (debug)
+  lcd_puts(64+5, 1+4*FH, STR_BG);
+  lcd_outdezAtt(64+5+6*FW-3, 1+4*FH, BandGap, 0);
+#endif
+
+  // Voltage calibration
+  lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
+  putsVolts(17*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
   if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
+
+#if defined(PCBARM) && defined(REVB)
+  lcd_putsLeft(7*FH-2, STR_CURRENT_CALIB);
+  putsTelemetryValue(17*FW, 7*FH-2, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
+  if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);
+#endif
+
 }
 
 void menuProcDiagCalib(uint8_t event)
