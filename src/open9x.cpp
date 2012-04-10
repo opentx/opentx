@@ -387,11 +387,6 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (safetyCh[channel] != -128) // if safety channel available for channel check
     ofs = calc100toRESX(safetyCh[channel]);
 
-#ifdef DSM2
-  if (g_model.protocol == PROTO_DSM2)
-    ofs = (ofs * 13) / 32;
-#endif
-
   return ofs;
 }
 
