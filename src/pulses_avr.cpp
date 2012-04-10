@@ -518,8 +518,7 @@ void setupPulsesDsm2()
   dsmDat[1] = g_model.modelId; // DSM2 Header second byte for model match
   for (uint8_t i=0; i<DSM2_CHANS; i++)
   {
-    uint16_t pulse = limit(0, (g_chans512[i]>>1)+512, 1023);
-    pulse = (pulse * 13) / 32;
+    uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
     dsmDat[3+2*i] = pulse & 0xff;
   }
