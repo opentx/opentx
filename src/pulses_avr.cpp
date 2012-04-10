@@ -212,8 +212,10 @@ FORCEINLINE void setupPulsesPPM()
     rest += (int16_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=0; i<p; i++) {
       int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + PPM_CENTER;
-      rest -= (v+q);
-      *ptr++ = v - q + 600; /* as Pat MacKenzie suggests */
+      *ptr = v - q + 600; /* as Pat MacKenzie suggests */
+      /* reviewed and modified by Cam */
+      rest -= (*ptr + q);
+      ptr++;
       *ptr++ = q;
     }
     *ptr = rest;
