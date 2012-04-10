@@ -272,17 +272,34 @@ void Open9xSim::refreshDiplay()
   }
 
   if(hasFocus()) {
+#ifdef REVB
+#define ERSKY9X_MENU_MASK  (0x20)
+#define ERSKY9X_EXIT_MASK  (0x01000000)
+#define ERSKY9X_EXIT_PIO   PIOC
+#define ERSKY9X_UP_MASK    (0x04 >> 1)
+#define ERSKY9X_RIGHT_MASK (0x20 >> 1)
+#define ERSKY9X_DOWN_MASK  (0x40 >> 1)
+#define ERSKY9X_LEFT_MASK  (0x10 >> 1)
+#else
+#define ERSKY9X_MENU_MASK  (0x40)
+#define ERSKY9X_EXIT_MASK  (0x80000000)
+#define ERSKY9X_EXIT_PIO   PIOA
+#define ERSKY9X_UP_MASK    (0x08 >> 1)
+#define ERSKY9X_RIGHT_MASK (0x20 >> 1)
+#define ERSKY9X_DOWN_MASK  (0x10 >> 1)
+#define ERSKY9X_LEFT_MASK  (0x40 >> 1)
+#endif
     static uint64_t keys1[]={
-      KEY_Return,    INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, 0x40,
-      KEY_Page_Up,   INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, 0x40,
-      KEY_KP_1,      INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, 0x40,
-      KEY_Page_Down, INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)PIOA, 0x80000000,
-      KEY_BackSpace, INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)PIOA, 0x80000000,
-      KEY_KP_0,      INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)PIOA, 0x80000000,
-      KEY_Down,      INP_B_KEY_DWN, INP_P_KEY_DWN, (uint64_t)PIOC, 0x10 >> 1,
-      KEY_Up,        INP_B_KEY_UP,  INP_P_KEY_UP,  (uint64_t)PIOC, 0x08 >> 1,
-      KEY_Right,     INP_B_KEY_RGT, INP_P_KEY_RGT, (uint64_t)PIOC, 0x20 >> 1,
-      KEY_Left,      INP_B_KEY_LFT, INP_P_KEY_LFT, (uint64_t)PIOC, 0x40 >> 1,
+      KEY_Return,    INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, ERSKY9X_MENU_MASK,
+      KEY_Page_Up,   INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, ERSKY9X_MENU_MASK,
+      KEY_KP_1,      INP_B_KEY_MEN, INP_P_KEY_MEN, (uint64_t)PIOB, ERSKY9X_MENU_MASK,
+      KEY_Page_Down, INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)ERSKY9X_EXIT_PIO, ERSKY9X_EXIT_MASK,
+      KEY_BackSpace, INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)ERSKY9X_EXIT_PIO, ERSKY9X_EXIT_MASK,
+      KEY_KP_0,      INP_B_KEY_EXT, INP_P_KEY_EXT, (uint64_t)ERSKY9X_EXIT_PIO, ERSKY9X_EXIT_MASK,
+      KEY_Down,      INP_B_KEY_DWN, INP_P_KEY_DWN, (uint64_t)PIOC, ERSKY9X_DOWN_MASK,
+      KEY_Up,        INP_B_KEY_UP,  INP_P_KEY_UP,  (uint64_t)PIOC, ERSKY9X_UP_MASK,
+      KEY_Right,     INP_B_KEY_RGT, INP_P_KEY_RGT, (uint64_t)PIOC, ERSKY9X_RIGHT_MASK,
+      KEY_Left,      INP_B_KEY_LFT, INP_P_KEY_LFT, (uint64_t)PIOC, ERSKY9X_LEFT_MASK,
     };
 
     pinb &= ~ 0x7e;
@@ -291,6 +308,8 @@ void Open9xSim::refreshDiplay()
     PIOC->PIO_PDSR = 0xFDFFFFFF;
     PIOB->PIO_PDSR = 0xFFFFFFFF;
     PIOA->PIO_PDSR = 0xFFFFFFFF;
+    Temperature = 1000;
+    maxTemperature = 1500;
 #endif
     for(unsigned i=0; i<DIM(keys1);i+=5) {
       if (getApp()->getKeyState(keys1[i])) {

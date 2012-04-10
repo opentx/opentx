@@ -443,7 +443,7 @@ void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
 void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcd_putcAtt(lcd_lastPos, y, 'v', att);
+  if (~att & NO_UNIT) lcd_putcAtt(lcd_lastPos, y, 'v', att&(~INVERS));
 }
 
 void putsVBat(uint8_t x, uint8_t y, uint8_t att)

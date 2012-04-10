@@ -97,6 +97,10 @@ extern int16_t p1valdiff;
 extern int8_t checkIncDec_Ret;  // global helper vars
 extern int8_t s_editMode;        // global editmode
 
+// checkIncDec flags
+#define EE_GENERAL      0x01
+#define EE_MODEL        0x02
+#define NO_INCDEC_MARKS 0x04
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags);
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);

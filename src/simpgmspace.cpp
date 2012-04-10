@@ -213,6 +213,11 @@ void eeprom_read_block (void *pointer_ram,
   }
 }
 
+uint16_t stack_free()
+{
+  return 500;
+}
+
 #if 0
 static void EeFsDump(){
   for(int i=0; i<EESIZE; i++)

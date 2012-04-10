@@ -853,7 +853,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 {
   lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT)); // TODO we could add this test inside lcd_outdezAtt!
   if (~att & NO_UNIT && unit != UNIT_RAW)
-    lcd_putsiAtt(lcd_lastPos+1, y, STR_VTELEMUNIT, unit, 0);
+    lcd_putsiAtt(lcd_lastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
 }
 
 static const pm_uint8_t bchunit_ar[] PROGMEM = {
@@ -963,27 +963,33 @@ void displayGpsTime()
 
 void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 {
-  if (!direction) direction = '-';
+  if (frskyHubData.gpsFix >= 0) {
+    if (!direction) direction = '-';
 
-  lcd_outdezAtt(10*FW, y, bp / 100, LEFT); // ddd before '.'
-  lcd_putc(lcd_lastPos, y, '@');
-  uint8_t mn = bp % 100;
-  if (g_eeGeneral.gpsFormat == 0) {
-    lcd_putc(lcd_lastPos+FWNUM, y, direction);
-    lcd_outdezNAtt(lcd_lastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
-    lcd_vline(lcd_lastPos, y, 2);
-    uint16_t ss = ap * 6;
-    lcd_outdezAtt(lcd_lastPos+3, y, ss / 1000, LEFT); // ''
-    lcd_plot(lcd_lastPos, y+FH-2, 0); // small decimal point
-    lcd_outdezAtt(lcd_lastPos+2, y, ss % 1000, LEFT); // ''
-    lcd_vline(lcd_lastPos, y, 2);
-    lcd_vline(lcd_lastPos+2, y, 2);
+    lcd_outdezAtt(10*FW, y, bp / 100, LEFT); // ddd before '.'
+    lcd_putc(lcd_lastPos, y, '@');
+    uint8_t mn = bp % 100;
+    if (g_eeGeneral.gpsFormat == 0) {
+      lcd_putc(lcd_lastPos+FWNUM, y, direction);
+      lcd_outdezNAtt(lcd_lastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcd_vline(lcd_lastPos, y, 2);
+      uint16_t ss = ap * 6;
+      lcd_outdezAtt(lcd_lastPos+3, y, ss / 1000, LEFT); // ''
+      lcd_plot(lcd_lastPos, y+FH-2, 0); // small decimal point
+      lcd_outdezAtt(lcd_lastPos+2, y, ss % 1000, LEFT); // ''
+      lcd_vline(lcd_lastPos, y, 2);
+      lcd_vline(lcd_lastPos+2, y, 2);
+    }
+    else {
+      lcd_outdezNAtt(lcd_lastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcd_plot(lcd_lastPos, y+FH-2, 0); // small decimal point
+      lcd_outdezNAtt(lcd_lastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+      lcd_putc(lcd_lastPos+1, y, direction);
+    }
   }
   else {
-    lcd_outdezNAtt(lcd_lastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
-    lcd_plot(lcd_lastPos, y+FH-2, 0); // small decimal point
-    lcd_outdezNAtt(lcd_lastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
-    lcd_putc(lcd_lastPos+1, y, direction);
+    // no fix
+    lcd_puts(10*FW, y, STR_VCSWFUNC+1/*----*/);
   }
 }
 #endif
@@ -1030,6 +1036,7 @@ void menuProcFrsky(uint8_t event)
   if (frskyStreaming >= 0) {
     if (s_frsky_view == e_frsky_custom) {
       // The custom view
+      uint8_t fields_count = 0;
       for (uint8_t i=0; i<4; i++) {
         for (uint8_t j=0; j<2; j++) {
           uint8_t field = getTelemCustomField(i, j);
@@ -1054,6 +1061,7 @@ void menuProcFrsky(uint8_t event)
             }
           }
           if (field) {
+            fields_count++;
             int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+field-1);
             uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
             if (field <= TELEM_TM2) {
@@ -1066,6 +1074,10 @@ void menuProcFrsky(uint8_t event)
             }
           }
         }
+      }
+      if (fields_count == 0) {
+        // No bars at all!
+        putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
       }
       lcd_status_line();
     }
@@ -1112,7 +1124,7 @@ void menuProcFrsky(uint8_t event)
       }
       if (bars_height == 13) {
         // No bars at all!
-        s_frsky_view = ((event == EVT_KEY_BREAK(KEY_UP)) ? e_frsky_custom : e_frsky_a1a2);
+        putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
       }
       displayRssiLine();
     }
