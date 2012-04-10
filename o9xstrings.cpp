@@ -292,8 +292,9 @@ const pm_char STR_LONGITUDE[] PROGMEM = TR_LONGITUDE;
 const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 #endif
 
-#if defined(PCBARM)
 const pm_char STR_BATT_CALIB[] PROGMEM = TR_BATT_CALIB;
+
+#if defined(PCBARM)
 const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
 const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
 #endif
