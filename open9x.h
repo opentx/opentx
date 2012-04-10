@@ -257,7 +257,7 @@ extern void board_init();
 #endif // defined (PCBV4)
 
 #if defined(PCBARM)
-#define SLAVE_MODE 1
+#define SLAVE_MODE (check_soft_power() == e_power_trainer)
 #else
 #define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
 #endif
