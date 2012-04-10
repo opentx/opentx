@@ -89,6 +89,15 @@ enum BeeperMode {
   e_mode_all
 };
 
+#if defined(PCBARM)
+#define EXTRA_ARM_FIELDS \
+  uint8_t   speakerVolume; \
+  uint8_t   backlightBright; \
+  int8_t    currentCalib;
+#else
+#define EXTRA_ARM_FIELDS
+#endif
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   myVers;
@@ -130,11 +139,9 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   gpsFormat:1;
   uint8_t   spare4:1;
   uint8_t   speakerPitch;
-#if defined(PCBARM)
-  uint8_t   speakerVolume;
-  uint8_t   backlightBright;                       // backlight
-  int8_t    currentCalib;
-#endif
+
+  EXTRA_ARM_FIELDS
+
 }) EEGeneral;
 
 // eeprom modelspec
