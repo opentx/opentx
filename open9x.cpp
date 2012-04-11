@@ -2507,8 +2507,9 @@ int main(void)
   if(cModel!=g_eeGeneral.currModel) eeDirty(EE_GENERAL); // if model was quick-selected, make sure it sticks
 
 #if defined (PCBV4)
-// Initialise global unix timestamp with current time from RTC chip on SD card interface
-  RTC rtc;
+  // TODO move this code inside board_gruvin9x.cpp
+  // Initialise global unix timestamp with current time from RTC chip on SD card interface
+  RTC rtc = {0,0,0,0,0,0,0};
   struct gtm utm;
   rtc_gettime(&rtc);
   utm.tm_year = rtc.year - 1900;
