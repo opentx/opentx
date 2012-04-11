@@ -594,11 +594,7 @@ void menuProcPhaseOne(uint8_t event)
   PhaseData *phase = phaseaddress(s_currIdx);
   putsFlightPhase(13*FW, 0, s_currIdx+1, 0);
 
-#if defined(PCBV4)
-#define MAX_TRIM_LINE 5
-#else
-#define MAX_TRIM_LINE 3
-#endif
+#define MAX_TRIM_LINE (3+NUM_ROTARY_ENCODERS)
 
   SUBMENU(STR_MENUFLIGHTPHASE, (s_currIdx==0 ? 3 : 5), {ZCHAR|(sizeof(phase->name)-1), 0, MAX_TRIM_LINE, 0/*, 0*/});
 
@@ -689,11 +685,24 @@ void menuProcPhasesAll(uint8_t event)
     uint8_t y=(i+1)*FH;
     att = i==sub ? INVERS : 0;
     PhaseData *p = phaseaddress(i);
+#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+//	  lcd_outdezNAtt(0, y, i, att|LEFT, 1);
+    putsFlightPhase(0, y, i+1, att|CONDENSED);
+#else //MOD_EXTRA_ROTARY_ENCODERS
     putsFlightPhase(0, y, i+1, att);
+#endif //MOD_EXTRA_ROTARY_ENCODERS
 #if defined PCBV4
+#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+#define NAME_OFS (-4-12)
+#define SWITCH_OFS (-FW/2-2-13)
+#define TRIMS_OFS  (-FW/2-4-15)
+#define ROTARY_ENC_OFS (0)
+#else //!MOD_EXTRA_ROTARY_ENCODERS
 #define NAME_OFS (-4)
 #define SWITCH_OFS (-FW/2-2)
 #define TRIMS_OFS  (-FW/2-4)
+#define ROTARY_ENC_OFS (2)
+#endif //MOD_EXTRA_ROTARY_ENCODERS
 #else
 #define NAME_OFS 0
 #define SWITCH_OFS (FW/2)
@@ -710,7 +719,7 @@ void menuProcPhasesAll(uint8_t event)
       }
 #if defined PCBV4
       for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
-        putsRotaryEncoderMode((19+t)*FW+TRIMS_OFS+2, y, i, t, 0);
+        putsRotaryEncoderMode((19+t)*FW+TRIMS_OFS+ROTARY_ENC_OFS, y, i, t, 0);
       }
 #endif
     }
@@ -1273,25 +1282,27 @@ inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, 
   uint8_t y = (row-s_pgOfs)*FH;
   MixData *md = mixaddress(mix);
   if (idx > 0)
-    lcd_putsiAtt(FW, y, STR_VMLTPX2, md->mltpx, 0);
+    lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, 0);
 
-  putsMixerSource(4*FW+2, y, md->srcRaw, 0);
+  putsMixerSource(4*FW+0, y, md->srcRaw, 0);
 
   uint8_t attr = ((s_copyMode || cur != row) ? 0 : INVERS);
-  lcd_outdezAtt(11*FW+7, y, md->weight, attr);
+  lcd_outdezAtt(11*FW+3, y, md->weight, attr);
   if (attr != 0)
     CHECK_INCDEC_MODELVAR(event, md->weight, -125, 125);
 
-  if (md->curve) putsCurve(12*FW+7, y, md->curve);
-  if (md->swtch) putsSwitches(16*FW+6, y, md->swtch);
+  if (md->curve) putsCurve(12*FW+2, y, md->curve);
+  if (md->swtch) putsSwitches(15*FW+5, y, md->swtch);
 
   char cs = ' ';
   if (md->speedDown || md->speedUp)
     cs = 'S';
   if ((md->delayUp || md->delayDown))
     cs = (cs =='S' ? '*' : 'D');
-  lcd_putcAtt(20*FW+3, y, cs, 0);
-
+  lcd_putcAtt(18*FW+6, y, cs, 0);
+  
+  putsFlightPhase(20*FW+3, y, md->phase, 0|CONDENSED);
+  
   if (s_copyMode) {
     if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && mix == (s_copySrcIdx + (s_copyTgtOfs<0))) {
       /* draw a border around the raw on selection mode (copy/move) */
@@ -1300,7 +1311,7 @@ inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, 
 
     if (row == cur) {
       /* invert the raw when it's the current one */
-      lcd_filled_rect(23, y, DISPLAY_W-1-23, 7);
+      lcd_filled_rect(22, y-1, DISPLAY_W-1-21, 9);
     }
   }
 }
@@ -1943,7 +1954,7 @@ void menuProcTelemetry(uint8_t event)
       lcd_puts(4, y, STR_ALARM);
       lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ((2+j+g_model.frsky.rssiAlarms[j].level)%4), (sub==subN && m_posHorz==0) ? blink : 0);
       lcd_putc(TELEM_COL2+4*FW, y, '<');
-      lcd_outdezNAtt(TELEM_COL2+6*FW, y, 50+g_model.frsky.rssiAlarms[j].value, LEFT|((sub==subN && m_posHorz==1) ? blink : 0), 3);
+      lcd_outdezNAtt(TELEM_COL2+6*FW, y, getRssiAlarmValue(j), LEFT|((sub==subN && m_posHorz==1) ? blink : 0), 3);
 
       if (sub==subN && (s_editMode>0 || p1valdiff)) {
         switch (m_posHorz) {

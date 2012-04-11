@@ -530,7 +530,10 @@ void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
   if (idx==0) { lcd_putsiAtt(x, y, STR_MMMINV, 0, att); return; }
   if (idx < 0) { lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/); idx = -idx; }
-  putsStrIdx(x, y, STR_FP, idx-1, att);
+  if (att & CONDENSED)
+    lcd_outdezNAtt(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
+  else
+    putsStrIdx(x, y, STR_FP, idx-1, att);
 }
 
 void putsCurve(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
@@ -584,7 +587,7 @@ void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uin
     lcd_putcAtt(x, y, '0'+p, att);
   }
   else {
-    lcd_putcAtt(x, y, 'A'+idx, att);
+    lcd_putcAtt(x, y, 'a'+idx, att);
   }
 }
 #endif
