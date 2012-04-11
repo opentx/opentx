@@ -1299,9 +1299,9 @@ inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, 
     cs = 'S';
   if ((md->delayUp || md->delayDown))
     cs = (cs =='S' ? '*' : 'D');
-  lcd_putcAtt(18*FW+6, y, cs, 0);
+  lcd_putcAtt(18*FW+7, y, cs, 0);
   
-  putsFlightPhase(20*FW+3, y, md->phase, 0|CONDENSED);
+  putsFlightPhase(20*FW+2, y, md->phase, CONDENSED);
   
   if (s_copyMode) {
     if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && mix == (s_copySrcIdx + (s_copyTgtOfs<0))) {
