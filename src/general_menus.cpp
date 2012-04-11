@@ -648,7 +648,7 @@ void menuProcDiagAna(uint8_t event)
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1, TWO_DOTS);
     lcd_outhex4(x+3*FW-1, y, anaIn(i));
-    lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[i]*25/256);
+    lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i+1)-1]*25/256);
   }
 
 #if !defined(PCBARM)
