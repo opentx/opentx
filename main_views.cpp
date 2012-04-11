@@ -289,19 +289,28 @@ void menuMainView(uint8_t event)
       for (uint8_t i=0; i<8; i++) {
         int16_t val = g_chans512[8+i];
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
-#if defined(PCBV4)
-        V_BAR(SCREEN_WIDTH/2-5*3+5+i*5, SCREEN_HEIGHT-8, len)
+#if defined(PCBV4) && defined(MOD_EXTRA_ROTARY_ENCODERS)
+#define V_BAR_W 4
+        V_BAR(SCREEN_WIDTH/2-V_BAR_W*1+1+V_BAR_W*i, SCREEN_HEIGHT-8, len)
+#elif defined(PCBV4) //MOD_EXTRA_ROTARY_ENCODERS
+#define V_BAR_W 5
+        V_BAR(SCREEN_WIDTH/2-V_BAR_W*3+5+V_BAR_W*i, SCREEN_HEIGHT-8, len)
 #else
-        V_BAR(SCREEN_WIDTH/2-5*4+2+i*5, SCREEN_HEIGHT-8, len)
+#define V_BAR_W 5
+        V_BAR(SCREEN_WIDTH/2-V_BAR_W*4+2+V_BAR_W*i, SCREEN_HEIGHT-8, len)
 #endif
       }
 #if defined(PCBV4)
-      for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
+      for (uint8_t i=0; i<(NUM_ROTARY_ENCODERS); i++) {
         int16_t val = getRotaryEncoder(i);
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
-        V_BAR(SCREEN_WIDTH/2-5*6+5+i*5, SCREEN_HEIGHT-8, len)
+#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+        V_BAR(SCREEN_WIDTH/2-V_BAR_W*7+1+V_BAR_W*i, SCREEN_HEIGHT-8, len)
+#else //MOD_EXTRA_ROTARY_ENCODERS
+        V_BAR(SCREEN_WIDTH/2-V_BAR_W*6+5+V_BAR_W*i, SCREEN_HEIGHT-8, len)
+#endif //MOD_EXTRA_ROTARY_ENCODERS
       }
-#endif
+#endif //PCBV4
       for (uint8_t i=0; i<12; i++) {
         if ((i%6) < 3) lcd_puts(i<6 ? 2*FW-2 : 16*FW-2, (i%3)*FH+4*FH, STR_SW);
         lcd_putcAtt((i<6 ? 2*FW-2 : 16*FW-2) + 2 * FW + ((i%6) < 3 ? 0 : FW), (i%3)*FH+4*FH, i<9 ? '1'+i : 'A'+i-9, getSwitch(10+i, 0) ? INVERS : 0);
