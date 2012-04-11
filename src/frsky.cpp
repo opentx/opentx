@@ -936,11 +936,11 @@ void displayRssiLine()
     lcd_hline(0, 55, 128, 0); // separator
     lcd_putsLeft(7*FH+1, STR_TX); lcd_outdezNAtt(4*FW, 7*FH+1, frskyRSSI[1].value, LEADING0, 2);
     lcd_rect(25, 57, 38, 7);
-    lcd_filled_rect(26, 58, 9*frskyRSSI[1].value/25, 5);
+    lcd_filled_rect(26, 58, 9*frskyRSSI[1].value/25, 5, (frskyRSSI[1].value < 50 + g_model.frsky.rssiAlarms[0].value) ? DOTTED : SOLID);
     lcd_puts(105, 7*FH+1, STR_RX); lcd_outdezNAtt(105+4*FW-1, 7*FH+1, frskyRSSI[0].value, LEADING0, 2);
     lcd_rect(65, 57, 38, 7);
     uint8_t v = 9*frskyRSSI[0].value/25;
-    lcd_filled_rect(66+36-v, 58, v, 5);
+    lcd_filled_rect(66+36-v, 58, v, 5, (frskyRSSI[0].value < 50 + g_model.frsky.rssiAlarms[0].value) ? DOTTED : SOLID);
   }
   else {
     lcd_putsAtt(7*FW, 7*FH+1, STR_NODATA, BLINK);
@@ -1099,7 +1099,7 @@ void menuProcFrsky(uint8_t event)
           else if (source <= TELEM_A2)
             threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
           else if (source <= TELEM_RSSI_RX)
-            threshold = 0;
+            threshold =  50 + g_model.frsky.rssiAlarms[0].value;
           else
             threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
           int16_t barMin = convertTelemValue(source, bmin);
