@@ -186,7 +186,7 @@ int32_t bintime (char *str);
 ISR (USART0_RX_vect)
 {
     uint8_t rl;
-    uint8_t rh;                         //USART control and Status Register 0 B
+//    uint8_t rh;                         //USART control and Status Register 0 B
     uint8_t iostat;                     //USART control and Status Register 0 A
 
     rl = UDR0;
