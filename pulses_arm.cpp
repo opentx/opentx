@@ -154,22 +154,13 @@ void setupPulsesPPM()                   // Don't enable interrupts through here
 
   uint16_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
   rest += (int16_t(g_model.ppmFrameLength)) * 1000;
-  //    if(p>9) rest=p*(1720u*2 + q) + 4000u*2; //for more than 9 channels, frame must be longer
   for (uint32_t i = 0; i < p; i++) { //NUM_CHNOUT
-    int16_t v = max((int) min(g_chans512[i], PPM_range),
-        -PPM_range) + PPM_CENTER;
+    int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + PPM_CENTER;
     rest -= (v);
-    //        *ptr++ = q;      //moved down two lines
-    //        pulses2MHz[j++] = q;
     *ptr++ = v; /* as Pat MacKenzie suggests */
-    //        pulses2MHz[j++] = v - q + 600; /* as Pat MacKenzie suggests */
-    //        *ptr++ = q;      //to here
   }
-  //    *ptr=q;       //reverse these two assignments
-  //    *(ptr+1)=rest;
   *ptr = rest;
   *(ptr + 1) = 0;
-
 }
 
 void put_serial_bit( uint8_t bit )

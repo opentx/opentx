@@ -195,7 +195,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
 FORCEINLINE void setupPulsesPPM()
 {
-#define PPM_CENTER 1200*2
+#define PPM_CENTER 1500*2
     int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;   //range of 0.7..1.7msec
 
     //Total frame length = 22.5msec
@@ -212,10 +212,8 @@ FORCEINLINE void setupPulsesPPM()
     rest += (int16_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=0; i<p; i++) {
       int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + PPM_CENTER;
-      *ptr = v - q + 600; /* as Pat MacKenzie suggests */
-      /* reviewed and modified by Cam */
-      rest -= (*ptr + q);
-      ptr++;
+      rest -= v;
+      *ptr++ = v - q; /* as Pat MacKenzie suggests, reviewed and modified by Cam */
       *ptr++ = q;
     }
     *ptr = rest;
@@ -820,10 +818,10 @@ void setupPulsesPPM16()
     uint16_t rest=22500u*2-q; //Minimum Framelen=22.5 ms
     rest += (int16_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=p-8; i<p; i++) { //NUM_CHNOUT
-        int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + PPM_CENTER;
-        rest -= (v+q);
-        *ptr++ = q;
-        *ptr++ = v - q + 600; /* as Pat MacKenzie suggests */
+      int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + PPM_CENTER;
+      rest -= v;
+      *ptr++ = q;
+      *ptr++ = v - q; /* as Pat MacKenzie suggests, reviewed and modified by Cam */
     }
     *ptr = q;       //reverse these two assignments
     *(ptr+1) = rest;
