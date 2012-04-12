@@ -2189,42 +2189,6 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
 #endif
 }
 
-#if defined (PCBV4) & defined(MOD_EXTRA_ROTARY_ENCODERS)
-
-uint8_t vpotToChange = 0;
-uint8_t vpot_mod_state = 0;
-
-ISR(USART2_RX_vect)
-{
-	//receive data from extension board
-	//bit 9 = 1 mean encoder number, following byte with bit 9 = 0 is increment value
-  /* Get status and 9th bit, then data */
-  /* from buffer */
-  //uint8_t status = UCSR2A;
-  uint16_t resh = UCSR2B;
-  uint16_t resl = UDR2;
-  uint16_t res = 0;
-  //if ( status & (1<<FEn)|(1<<DORn)|(1<<UPEn) )
-  
-  /* Filter the 9th bit, then return */
-  resh = (resh >> 1) & 0x01;
-  res = ((resh << 8) | resl);	
-  if((res & 0x100) == 0x100){
-	  vpotToChange = res & 0xff;
-	  vpot_mod_state = 1;
-  }else{
-	  if(vpot_mod_state & (vpotToChange>0) & (vpotToChange<=NUM_EXTRA_ROTARY_ENCODERS))
-	  {
-      int8_t vpot_inc = res & 0xff;
-		  if(vpot_inc){
-			  incRotaryEncoder(NUM_ROTARY_ENCODERS-NUM_EXTRA_ROTARY_ENCODERS+vpotToChange-1, vpot_inc);
-		  }	  
-	    vpot_mod_state = 0;
-	  }
-  }
-}
-#endif //MOD_EXTRA_ROTARY_ENCODERS
-
 extern uint16_t g_timeMain;
 
 /*
@@ -2542,60 +2506,6 @@ int main(void)
 
   if(cModel!=g_eeGeneral.currModel) eeDirty(EE_GENERAL); // if model was quick-selected, make sure it sticks
 
-#if defined (PCBV4)
-  // TODO move this code inside board_gruvin9x.cpp
-  // Initialise global unix timestamp with current time from RTC chip on SD card interface
-  RTC rtc = {0,0,0,0,0,0,0};
-  struct gtm utm;
-  rtc_gettime(&rtc);
-  utm.tm_year = rtc.year - 1900;
-  utm.tm_mon =  rtc.month - 1;
-  utm.tm_mday = rtc.mday;
-  utm.tm_hour = rtc.hour;
-  utm.tm_min =  rtc.min;
-  utm.tm_sec =  rtc.sec;
-  utm.tm_wday = rtc.wday - 1;
-  g_unixTime = mktime(&utm);
-#endif
-
-#if defined (PCBV4)
-  /***************************************************/
-  /* Rotary encoder interrupt set-up (V4 board only) */
-
-  // All external interrupts initialise to disabled. But maybe not after 
-  // a WDT or BOD event? So to be safe ...
-  EIMSK = 0; // disable ALL external interrupts.
-
-  // encoder 1
-  EICRB = (1<<ISC60) | (1<<ISC50); // 01 = interrupt on any edge
-  EIFR = (3<<INTF5); // clear the int. flag in case it got set when changing modes
-
-  // encoder 2
-  EICRA = (1<<ISC30) | (1<<ISC20); // do the same for encoder 1
-  EIFR = (3<<INTF2);
-
-  EIMSK = (3<<INT5) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
-  /***************************************************/
-
-  /*
-   * SOMO set-up (V4 board only)
-   */
-  OCR4A = 0x7d;
-  TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
-
-#ifdef MOD_EXTRA_ROTARY_ENCODERS
-  //configure uart2 here
-  DDRH &= ~(1 << 0);
-  PORTH &= ~(1 << 0);
-  #define MOD_EXTRA_ROTARY_ENCODERS_USART_BAUD 9600UL
-  UBRR2 = F_CPU/(16*MOD_EXTRA_ROTARY_ENCODERS_USART_BAUD)-1;
-  //9 bit mode
-  UCSR2C = (1<<USBS2)|(3<<UCSZ20);
-  UCSR2B = (1<<RXEN2)|(0<<TXEN2)|(1<<UCSZ22);
-  UCSR2B |= 1 << RXCIE2; //enable interrupt on rx
-#endif //MOD_EXTRA_ROTARY_ENCODERS
-  
-#endif
 
 #if defined(PCBARM)
   start_ppm_capture();
