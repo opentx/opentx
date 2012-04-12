@@ -188,6 +188,7 @@ class audioQueue
     uint8_t toneHaptic;
     uint8_t hapticTick;
     uint8_t queueToneHaptic[AUDIO_QUEUE_LENGTH];
+    uint8_t hapticSpinUpTime;
 #endif
 
 #if defined(PCBSTD)
@@ -200,12 +201,15 @@ extern audioQueue audio;
 
 void audioDefevent(uint8_t e);
 
+#define HAPTIC_SPINUP (10);
+
 #define AUDIO_KEYPAD_UP()   audioDefevent(AU_KEYPAD_UP)
 #define AUDIO_KEYPAD_DOWN() audioDefevent(AU_KEYPAD_DOWN)
 #define AUDIO_MENUS()       audioDefevent(AU_MENUS)
 #define AUDIO_WARNING1()    audioDefevent(AU_WARNING1)
 #define AUDIO_WARNING2()    audioDefevent(AU_WARNING2)
 #define AUDIO_ERROR()       audioDefevent(AU_ERROR)
+
 
 #define IS_AUDIO_BUSY()     audio.busy()
 

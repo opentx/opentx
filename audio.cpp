@@ -43,6 +43,7 @@ audioQueue::audioQueue()
 
 #ifdef HAPTIC
   hapticTick = 0;
+  hapticSpinUpTime = 0;
 #endif
 }
 
@@ -70,21 +71,25 @@ void audioQueue::heartbeat()
       toneTimeLeft = 0; //time gets counted down
     }
 
-    //this works - but really needs a delay added in.
-    // reason is because it takes time for the motor to spin up
-    // need to take this into account when the tone sent is really short!
-    // initial thoughts are a seconds queue to process haptic that gets
-    // fired from here.  end result is haptic events run for mix of 2 seconds?
 
 #if defined(HAPTIC)
+
     if (toneHaptic) {
       hapticOn((g_eeGeneral.hapticStrength * 2) * 10);
+      hapticSpinUpTime = HAPTIC_SPINUP; //min time haptic runs for.  Might be worth a config option in system prefs to allow user to set to suit motor?   	
     }
+     
 #endif
   }
   else {
 
-    hapticOff();
+#if defined(HAPTIC)  	
+    if(hapticSpinUpTime > 0){
+    	hapticSpinUpTime--;
+    } else {
+    	hapticOff();
+    }    	
+#endif   
 
     if (tonePause) {
       if (queueTone(0, tonePause * 10, 0)) {
