@@ -103,6 +103,10 @@ TRANSLATIONS = EN
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
 
+#enable extra rotary encoders
+#applicable on V4 board only
+MOD_EXTRA_ROTARY_ENCODERS = NO
+
 # DEBUG mode
 DEBUG = NO
 
@@ -206,6 +210,12 @@ ifeq ($(NAVIGATION), POT3)
 endif
 ifeq ($(NAVIGATION), POTS)
   CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
+endif
+
+ifeq ($(PCB), V4)
+  ifeq ($(MOD_EXTRA_ROTARY_ENCODERS), YES)
+    CPPDEFS += -DMOD_EXTRA_ROTARY_ENCODERS
+  endif
 endif
 
 ifeq ($(SPLASH), YES)
