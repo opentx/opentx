@@ -1185,7 +1185,11 @@ int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
 uint32_t inacCounter = 0;
 uint16_t inacSum = 0;
+#if defined(PCBV4)
+uint16_t  bpanaCenter = 0;
+#else
 uint8_t  bpanaCenter = 0;
+#endif
 int16_t  sDelay[MAX_MIXERS] = {0};
 int32_t  act   [MAX_MIXERS] = {0};
 uint8_t  swOn  [MAX_MIXERS] = {0};
@@ -1249,10 +1253,12 @@ BeepANACenter evalSticks(uint8_t phase)
 #endif
 
 #ifndef SIMU
-    v -= g_eeGeneral.calibMid[i];
-    v  =  v * (int32_t)RESX /  (max((int16_t)100,(v>0 ?
-                                     g_eeGeneral.calibSpanPos[i] :
-                                     g_eeGeneral.calibSpanNeg[i])));
+    if(i < NUM_STICKS+NUM_POTS){
+      v -= g_eeGeneral.calibMid[i];
+      v  =  v * (int32_t)RESX /  (max((int16_t)100,(v>0 ?
+                                       g_eeGeneral.calibSpanPos[i] :
+                                       g_eeGeneral.calibSpanNeg[i])));
+	  }									 
 #endif
 
     if(v < -RESX) v = -RESX;
