@@ -722,6 +722,7 @@ extern uint8_t            g_beepVal[5];
 
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
 extern int16_t            g_ppmIns[8];
+extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain
 extern int16_t            g_chans512[NUM_CHNOUT];
 extern volatile uint8_t   tick10ms;
 extern uint16_t           BandGap;

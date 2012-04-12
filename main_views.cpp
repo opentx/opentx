@@ -239,7 +239,7 @@ void menuMainView(uint8_t event)
     for(uint8_t i=0; i<8; i++)
     {
       uint8_t x0,y0;
-      int16_t val = g_chans512[i];
+      int16_t val = ex_chans[i];
       //val += g_model.limitData[i].revert ? g_model.limitData[i].offset : -g_model.limitData[i].offset;
       switch(view_base)
       {
@@ -301,7 +301,7 @@ void menuMainView(uint8_t event)
 #endif
       }
 #if defined(PCBV4)
-      for (uint8_t i=0; i<(NUM_ROTARY_ENCODERS); i++) {
+      for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
         int16_t val = getRotaryEncoder(i);
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
 #if defined(MOD_EXTRA_ROTARY_ENCODERS)
