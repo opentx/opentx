@@ -388,11 +388,8 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #if defined(PCBV4)
 #if defined(MOD_EXTRA_ROTARY_ENCODERS)
 #define NUM_EXTRA_ROTARY_ENCODERS 3
-#define VPOT_STEP       5
-#define VPOT_MAX        1000
-#define VPOT_MIN        -VPOT_MAX
 #else //MOD_EXTRA_ROTARY_ENCODERS
-#define NUM_EXTRA_ROTARY_ENCODERS 3
+#define NUM_EXTRA_ROTARY_ENCODERS 0
 #endif //MOD_EXTRA_ROTARY_ENCODERS
 #define NUM_ROTARY_ENCODERS (2+NUM_EXTRA_ROTARY_ENCODERS)
 #define ROTARY_ENCODER_MAX  1024
