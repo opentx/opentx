@@ -242,6 +242,7 @@ extern const pm_char STR_BEEPERLEN[];
 extern const pm_char STR_SPKRPITCH[];
 extern const pm_char STR_HAPTICMODE[];
 extern const pm_char STR_HAPTICSTRENGTH[];
+extern const pm_char STR_HAPTICLENGTH[];
 extern const pm_char STR_CONTRAST[];
 extern const pm_char STR_BATTERYWARNING[];
 extern const pm_char STR_INACTIVITYALARM[];
