@@ -1867,7 +1867,7 @@ void perMain()
         }
         else {
           if (atm<(TMR_VAROFS+MAX_SWITCH))
-            sw_toggled[i] = getSwitch((tm>0 ? tm-(TMR_VAROFS-1) : tm+(TMR_VAROFS-1)), 0); // normal switch
+            sw_toggled[i] = tm>0 ? getSwitch(tm-(TMR_VAROFS-1), 0) : !getSwitch(-tm, 0); // normal switch
           if (sw_toggled[i])
             s_timerVal[i]++;
         }
