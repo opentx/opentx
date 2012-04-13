@@ -92,7 +92,7 @@ PPM16 = NO
 # DSM2 (Spektrum) protocol
 DSM2 = NO
 
-# SOMO-14D module
+# SOMO-14D module (V4 board only)
 SOMO = NO
 
 # TRANSLATIONS
@@ -103,8 +103,8 @@ TRANSLATIONS = EN
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
 
-#enable extra rotary encoders
-#applicable on V4 board only
+# Enable extra rotary encoders (V4 board only)
+# Values = YES, NO
 MOD_EXTRA_ROTARY_ENCODERS = NO
 
 # DEBUG mode
@@ -212,12 +212,6 @@ ifeq ($(NAVIGATION), POTS)
   CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
 endif
 
-ifeq ($(PCB), V4)
-  ifeq ($(MOD_EXTRA_ROTARY_ENCODERS), YES)
-    CPPDEFS += -DMOD_EXTRA_ROTARY_ENCODERS
-  endif
-endif
-
 ifeq ($(SPLASH), YES)
   CPPDEFS += -DSPLASH
 endif
@@ -281,6 +275,7 @@ ifeq ($(PCB), ARM)
   EXTRAINCDIRS += ersky9x
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
+  # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += audio.cpp
@@ -301,7 +296,6 @@ ifeq ($(PCB), V4)
   CPPSRC += gruvin9x/ff.cpp
   CPPSRC += gruvin9x/diskio.cpp
    
-
   ifeq ($(NAVIGATION), RE1)
     CPPDEFS += -DNAVIGATION_RE1
   endif
@@ -316,6 +310,12 @@ ifeq ($(PCB), V4)
     CPPSRC += gruvin9x/somo14d.cpp
     CPPDEFS += -DSOMO
   endif
+  
+  ifeq ($(MOD_EXTRA_ROTARY_ENCODERS), YES)
+    CPPDEFS += -DMOD_EXTRA_ROTARY_ENCODERS
+    MODS:=${MODS}X
+  endif
+  
 endif
 
 ifeq ($(PCB), STD)
