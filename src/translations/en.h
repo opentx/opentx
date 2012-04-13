@@ -238,6 +238,7 @@
 #endif
 #define TR_HAPTICMODE   "Haptic Mode"
 #define TR_HAPTICSTRENGTH "Haptic Strength"
+#define TR_HAPTICLENGTH "Haptic Length"
 #define TR_CONTRAST     "Contrast"
 #define TR_BATTERYWARNING "Battery Warning"
 #define TR_INACTIVITYALARM "Inactivity alarm"

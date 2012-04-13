@@ -238,6 +238,7 @@
 #endif
 #define TR_HAPTICMODE   "Mode Vibreur"
 #define TR_HAPTICSTRENGTH "Force Vibreur"
+#define TR_HAPTICLENGTH "Length Vibreur"
 #define TR_CONTRAST     "Contraste"
 #define TR_BATTERYWARNING "Alarme Batterie"
 #define TR_INACTIVITYALARM "Alarme Inactivite"

@@ -238,6 +238,7 @@
 #endif
 #define TR_HAPTICMODE   "Vibrator l\201ge"
 #define TR_HAPTICSTRENGTH "Vibrator Niv\200"
+#define TR_HAPTICLENGTH "Vibrator tid"
 #define TR_CONTRAST     "Kontrast"
 #define TR_BATTERYWARNING "Batterivarning"
 #define TR_INACTIVITYALARM "Inaktivitetslarm"
