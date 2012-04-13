@@ -64,6 +64,11 @@ uint16_t g_time_per10;
 audioQueue  audio;
 #endif
 
+#ifdef HAPTIC
+//new audio object
+hapticQueue  haptic;
+#endif
+
 uint8_t heartbeat;
 
 uint8_t stickMode;
@@ -875,6 +880,8 @@ uint8_t checkTrim(uint8_t event)
         beepTrim = true;
       }
     }
+    
+
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
       if (!g_model.extendedTrims) after = before;
@@ -903,7 +910,8 @@ uint8_t checkTrim(uint8_t event)
 
     if (beepTrim) {
       killEvents(event);
-      AUDIO_WARNING2();
+      //AUDIO_WARNING2();
+      audio.event(AU_TRIM_MIDDLE);
     }
     else {
 #if defined (AUDIO)
@@ -2037,7 +2045,10 @@ void perMain()
 
 #if defined(PCBARM)
   AUDIO_HEARTBEAT();  // the queue processing
+  HAPTIC_HEARTBEAT();
 #endif
+
+
 
 }
 int16_t g_ppmIns[8];
@@ -2096,6 +2107,8 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
   sei();
+
+
   
 #if defined (PCBSTD) && defined (AUDIO)
   AUDIO_DRIVER();
@@ -2106,6 +2119,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
     AUDIO_HEARTBEAT();
+    HAPTIC_HEARTBEAT();
 
 #ifdef DEBUG
     // Record start time from TCNT1 to record excution time
