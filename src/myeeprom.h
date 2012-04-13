@@ -133,7 +133,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   lightAutoOff;
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
-  uint8_t hapticLength;
+  int8_t    hapticLength;
   uint8_t   spare3;
   int8_t    beeperLength:3;
   uint8_t   hapticStrength:3;
