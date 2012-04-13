@@ -910,8 +910,13 @@ uint8_t checkTrim(uint8_t event)
 
     if (beepTrim) {
       killEvents(event);
-      //AUDIO_WARNING2();
+     
+#if defined (AUDIO)      
       audio.event(AU_TRIM_MIDDLE);
+# else
+	AUDIO_WARNING2();
+#endif
+      
     }
     else {
 #if defined (AUDIO)
