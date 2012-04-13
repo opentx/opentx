@@ -92,7 +92,7 @@ PPM16 = NO
 # DSM2 (Spektrum) protocol
 DSM2 = NO
 
-# SOMO-14D module
+# SOMO-14D module (V4 board only)
 SOMO = NO
 
 # TRANSLATIONS
@@ -102,6 +102,10 @@ TRANSLATIONS = EN
 # EEPROM_PROGRESS_BAR
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
+ 
+# Enable extra rotary encoders (V4 board only)
+# Values = YES, NO
+MOD_EXTRA_ROTARY_ENCODERS = NO
 
 # DEBUG mode
 DEBUG = NO
@@ -293,7 +297,6 @@ ifeq ($(PCB), V4)
   CPPSRC += gruvin9x/rtc.cpp
   CPPSRC += gruvin9x/ff.cpp
   CPPSRC += gruvin9x/diskio.cpp
-   
 
   ifeq ($(NAVIGATION), RE1)
     CPPDEFS += -DNAVIGATION_RE1
