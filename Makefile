@@ -19,7 +19,7 @@
 
 # PCB version
 # Values: STD, V4, ARM
-PCB = ARM
+PCB = STD
 
 # PCB revision
 # Values: REVA, REVB
@@ -29,7 +29,7 @@ PCBREV = REVB
 # For this option you need to modify your hardware!
 # More information at [insertURLhere]
 # Values = STD, FRSKY, JETI, NMEA, ARDUPILOT, MAVLINK
-EXT = FRSKY
+EXT = STD
 
 # Enable heli menu
 # Values = YES, NO
@@ -37,7 +37,7 @@ HELI = NO
 
 # Enable templates menu
 # Values = YES, NO
-TEMPLATES = NO
+TEMPLATES = YES
 
 # Enable navigation with Pots / Rotary encoders
 # Values = NO
@@ -54,11 +54,11 @@ endif
 
 # AUDIO Mods
 # Values = YES, NO 
-AUDIO = YES
+AUDIO = NO
 
 # HAPTIC Mods
 # Values = YES, NO 
-HAPTIC = YES
+HAPTIC = NO
 
 # SPLASH on START
 SPLASH = YES
@@ -84,15 +84,15 @@ WS_HOW_HIGH = YES
 LOGS = YES
 
 # PXX (FrSky PCM) protocol
-PXX = YES
+PXX = NO
 
 # PPM16
 PPM16 = NO
 
 # DSM2 (Spektrum) protocol
-DSM2 = YES
+DSM2 = NO
 
-# SOMO-14D module (V4 board only)
+# SOMO-14D module
 SOMO = NO
 
 # TRANSLATIONS
@@ -101,11 +101,7 @@ TRANSLATIONS = EN
 
 # EEPROM_PROGRESS_BAR
 # Values = YES, NO
-EEPROM_PROGRESS_BAR = YES
-
-# Enable extra rotary encoders (V4 board only)
-# Values = YES, NO
-MOD_EXTRA_ROTARY_ENCODERS = NO
+EEPROM_PROGRESS_BAR = NO
 
 # DEBUG mode
 DEBUG = NO
@@ -293,12 +289,12 @@ ifeq ($(PCB), V4)
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += audio.cpp
-  CPPSRC += haptic.cpp
   CPPSRC += gruvin9x/gtime.cpp
   CPPSRC += gruvin9x/rtc.cpp
   CPPSRC += gruvin9x/ff.cpp
   CPPSRC += gruvin9x/diskio.cpp
    
+
   ifeq ($(NAVIGATION), RE1)
     CPPDEFS += -DNAVIGATION_RE1
   endif
@@ -335,12 +331,6 @@ ifeq ($(PCB), STD)
   else
     CPPSRC += beeper.cpp 
   endif
-
-  ifeq ($(HAPTIC), YES)
-    CPPDEFS += -DHAPTIC
-    CPPSRC += haptic.cpp 
-  endif  
-  
 endif
 
 ### Global Build-Option Directives ###
