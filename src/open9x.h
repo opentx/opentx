@@ -812,11 +812,6 @@ extern uint16_t jeti_keys;
 #include "beeper.h"
 #endif
 
-#if defined(HAPTIC)
-#include "haptic.h"
-#endif
-
-
 #ifdef LOGS
 #include "logs.h"
 #endif

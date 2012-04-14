@@ -84,7 +84,6 @@ enum menuProcSetupItems {
 #ifdef HAPTIC
   ITEM_SETUP_HAPTIC_MODE,
   ITEM_SETUP_HAPTIC_STRENGTH,
-  ITEM_SETUP_HAPTIC_LENGTH,
 #endif
 #ifdef SPLASH
   ITEM_SETUP_SPLASH,
@@ -108,7 +107,7 @@ void menuProcSetup(uint8_t event)
 #define AUDIO_ZEROS
 #endif
 #ifdef HAPTIC
-#define HAPTIC_ZEROS 0, 0, 0,
+#define HAPTIC_ZEROS 0, 0,
 #else
 #define HAPTIC_ZEROS
 #endif
@@ -195,14 +194,6 @@ void menuProcSetup(uint8_t event)
     }
     if((y+=FH)>7*FH) return;
   }subN++;
-  
-  if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_HAPTICLENGTH); //to do translations
-    lcd_putsiAtt(PARAM_OFS - 2*FW, y, STR_VBEEPLEN, 2+g_eeGeneral.hapticLength, (sub==subN ? INVERS:0));
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticLength, -2, 2);
-    if((y+=FH)>7*FH) return;
-  }subN++;  
-  
 #endif
 
 // TODO port onoffMenuItem here to save flash

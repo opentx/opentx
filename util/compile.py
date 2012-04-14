@@ -16,7 +16,7 @@ options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"),
 options_v4 = [[("", "EXT=FRSKY")],
               [("", "HELI=NO"), ("heli", "HELI=YES")],
               [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
-              [("", "LOGS=NO"), ("logs", "LOGS=YES")],
+              [("", "SDCARD=NO"), ("sdcard", "SDCARD=YES")],
               [("", "SOMO=NO"), ("SOMO", "SOMO=YES")],
              ]
 

@@ -497,6 +497,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   modelId;
   uint8_t   frskyLines[4];
   uint16_t  frskyLinesXtra;
+  int8_t    servoCenter[NUM_CHNOUT];
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

@@ -239,8 +239,8 @@ void menuMainView(uint8_t event)
     for(uint8_t i=0; i<8; i++)
     {
       uint8_t x0,y0;
-      int16_t val = ex_chans[i];
-      //val += g_model.limitData[i].revert ? g_model.limitData[i].offset : -g_model.limitData[i].offset;
+      int16_t val = g_chans512[i];
+
       switch(view_base)
       {
         case e_outputValues:

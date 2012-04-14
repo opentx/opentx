@@ -527,6 +527,46 @@ void displayConfirmation(uint8_t event)
   }
 }
 
+#if defined(SDCARD)
+const pm_char * s_menu[MENU_MAX_LINES] = { 0, 0, 0, 0 };
+uint8_t s_menu_item = 0;
+uint8_t s_menu_count = 0;
+const pm_char * displayMenu(uint8_t event)
+{
+  const pm_char * result = NULL;
+
+  lcd_filled_rect(10, 16, 108, s_menu_count * (FH+1) + 2, SOLID, WHITE);
+  lcd_rect(10, 16, 108, s_menu_count * (FH+1) + 2);
+
+  for (uint8_t i=0; i<s_menu_count; i++) {
+    lcd_puts(16, i*(FH+1) + 2*FH + 2, s_menu[i]);
+    if (i == s_menu_item) lcd_filled_rect(11, i*(FH+1) + 2*FH + 1, 106, 9);
+  }
+
+  switch(event) {
+    case EVT_KEY_FIRST(KEY_UP):
+      if (s_menu_item > 0) s_menu_item--;
+      break;
+    case EVT_KEY_FIRST(KEY_DOWN):
+      if (s_menu_item < s_menu_count - 1) s_menu_item++;
+      break;
+    case EVT_KEY_FIRST(KEY_EXIT):
+      killEvents(event);
+      s_menu_item = 0;
+      s_menu_count = 0;
+      break;
+    case EVT_KEY_FIRST(KEY_MENU):
+      killEvents(event);
+      result = s_menu[s_menu_item];
+      s_menu_count = 0;
+      s_menu_item = 0;
+      break;
+  }
+
+  return result;
+}
+#endif
+
 #ifdef NAVIGATION_RE1
 int8_t *s_inflight_value = NULL;
 int8_t s_inflight_min;

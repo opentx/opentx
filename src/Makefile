@@ -81,7 +81,7 @@ WS_HOW_HIGH = YES
 
 # SDCARD Logs
 # Values = YES, NO
-LOGS = YES
+SDCARD = NO
 
 # PXX (FrSky PCM) protocol
 PXX = NO
@@ -102,7 +102,7 @@ TRANSLATIONS = EN
 # EEPROM_PROGRESS_BAR
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
- 
+
 # Enable extra rotary encoders (V4 board only)
 # Values = YES, NO
 MOD_EXTRA_ROTARY_ENCODERS = NO
@@ -275,13 +275,11 @@ ifeq ($(PCB), ARM)
   EXTRAINCDIRS += ersky9x
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
-  # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/MEDSdcard.c
+  # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/sdcard.c ersky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += audio.cpp
   CPPSRC += ersky9x/sound.cpp
-  CPPSRC += haptic.cpp
-  CPPSRC += ersky9x/haptic.cpp
 endif
 
 ifeq ($(PCB), V4)
@@ -293,20 +291,19 @@ ifeq ($(PCB), V4)
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += audio.cpp
-  CPPSRC += haptic.cpp
   CPPSRC += gruvin9x/gtime.cpp
   CPPSRC += gruvin9x/rtc.cpp
   CPPSRC += gruvin9x/ff.cpp
   CPPSRC += gruvin9x/diskio.cpp
-
+   
   ifeq ($(NAVIGATION), RE1)
     CPPDEFS += -DNAVIGATION_RE1
   endif
 
-  ifeq ($(LOGS), YES)
+  ifeq ($(SDCARD), YES)
+    CPPDEFS += -DSDCARD 
     CPPSRC += gruvin9x/logs.cpp
-    CPPDEFS += -DLOGS
-    MODS:=${MODS}L
+    MODS:=${MODS}S
   endif
     
   ifeq ($(SOMO), YES)
@@ -335,12 +332,6 @@ ifeq ($(PCB), STD)
   else
     CPPSRC += beeper.cpp 
   endif
-  
-  ifeq ($(HAPTIC), YES)
-   CPPDEFS += -DHAPTIC
-   CPPSRC += haptic.cpp
-  endif
-  
 endif
 
 ### Global Build-Option Directives ###

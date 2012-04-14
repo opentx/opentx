@@ -131,7 +131,11 @@ void menuProcModelSelect(uint8_t event)
     s_copyMode = 0;
   }
 
-  uint8_t _event = (s_warning ? 0 : event);
+#if defined(SDCARD)
+  uint8_t _event = (s_warning || s_menu_count) ? 0 : event;
+#else
+  uint8_t _event = s_warning ? 0 : event;
+#endif
   uint8_t _event_ = (IS_RE1_EVT(_event) ? 0 : _event);
 
   if (s_copyMode || !eeModelExists(g_eeGeneral.currModel)) {
@@ -223,16 +227,27 @@ void menuProcModelSelect(uint8_t event)
 #ifdef NAVIGATION_RE1
           s_editMode = -1;
 #endif
-          displayPopup(STR_LOADINGMODEL);
-          eeCheck(true); // force writing of current model data before this is changed
-          if (g_eeGeneral.currModel != sub) {
-            g_eeGeneral.currModel = sub;
-            STORE_GENERALVARS;
-            eeLoadModel(sub);
-          }
           s_copyMode = 0;
           killEvents(event);
-          return;
+          if (g_eeGeneral.currModel != sub) {
+#if defined(SDCARD)
+            s_menu[s_menu_count++] = STR_LOAD_MODEL;
+            if (eeModelExists(sub)) {
+              s_menu[s_menu_count++] = STR_ARCHIVE_MODEL;
+              s_menu[s_menu_count++] = STR_DELETE_MODEL;;
+            }
+            else {
+              s_menu[s_menu_count++] = STR_RESTORE_MODEL;;
+            }
+#else
+            displayPopup(STR_LOADINGMODEL);
+            eeCheck(true); // force writing of current model data before this is changed
+            eeLoadModel(sub);
+            g_eeGeneral.currModel = sub;
+            STORE_GENERALVARS;
+            return;
+#endif
+          }
         }
         else if (eeModelExists(sub)) {
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
@@ -333,6 +348,32 @@ void menuProcModelSelect(uint8_t event)
     s_warning_info_len = sizeof(g_model.name);
     displayConfirmation(event);
   }
+
+#if defined(SDCARD)
+  if (s_menu_count) {
+    const pm_char * result = displayMenu(event);
+    if (result) {
+      if (result == STR_LOAD_MODEL) {
+        displayPopup(STR_LOADINGMODEL);
+        eeCheck(true); // force writing of current model data before this is changed
+        if (g_eeGeneral.currModel != sub) {
+          g_eeGeneral.currModel = sub;
+          STORE_GENERALVARS;
+          eeLoadModel(sub);
+        }
+      }
+      else if (result == STR_ARCHIVE_MODEL) {
+        // TODO
+      }
+      else if (result == STR_RESTORE_MODEL) {
+        // TODO
+      }
+      else if (result == STR_DELETE_MODEL) {
+        s_warning = STR_DELETEMODEL;
+      }
+    }
+  }
+#endif
 }
 
 void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active, uint8_t & cur)
@@ -1301,7 +1342,8 @@ inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, 
     cs = (cs =='S' ? '*' : 'D');
   lcd_putcAtt(18*FW+7, y, cs, 0);
   
-  putsFlightPhase(20*FW+2, y, md->phase, CONDENSED);
+  if (md->phase)
+    putsFlightPhase(20*FW+2, y, md->phase, CONDENSED);
   
   if (s_copyMode) {
     if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && mix == (s_copySrcIdx + (s_copyTgtOfs<0))) {
@@ -1554,7 +1596,7 @@ void menuProcMixAll(uint8_t event)
 
 void menuProcLimits(uint8_t event)
 {
-  MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0});
+  MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0});
 
   int8_t sub = m_posVert - 1;
 
@@ -1575,17 +1617,11 @@ void menuProcLimits(uint8_t event)
     }
 
     LimitData *ld = limitaddress(k) ;
-    int16_t v = (ld->revert) ? -ld->offset : ld->offset;
-
-    char swVal = '-';  // '-', '<', '>'
-    if((g_chans512[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
-    if((g_chans512[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
-    putsChn(0, y, k+1, 0);
-    lcd_putcAtt(12*FW+5, y, swVal, 0);
-
     int8_t limit = (g_model.extendedLimits ? 125 : 100);
 
-    for (uint8_t j=0; j<4; j++) {
+    putsChn(0, y, k+1, 0);
+
+    for (uint8_t j=0; j<5; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
       switch(j)
@@ -1593,7 +1629,7 @@ void menuProcLimits(uint8_t event)
         case 0:
           lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
           if (active) {
-            ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL);
+            ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS);
           }
           else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
             int16_t zero = g_chans512[k];
@@ -1603,21 +1639,27 @@ void menuProcLimits(uint8_t event)
           }
           break;
         case 1:
-          lcd_outdezAtt(12*FW, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
+          lcd_outdezAtt(12*FW+1, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
           if (active) {
             CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->min, -limit, limit, +100, STR_MINLIMIT);
           }
           break;
         case 2:
-          lcd_outdezAtt(17*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
+          lcd_outdezAtt(16*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
           if (active) {
             CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->max, -limit, limit, -100, STR_MAXLIMIT);
           }
           break;
         case 3:
-          lcd_putsiAtt(18*FW, y, STR_MMMINV, ld->revert, attr);
+          lcd_putcAtt(17*FW-2, y, ld->revert ? 127 : 126, attr);
           if (active) {
             CHECK_INCDEC_MODELVAR(event, ld->revert, 0, 1);
+          }
+          break;
+        case 4:
+          lcd_outdezAtt(21*FW+2, y, 1500+g_model.servoCenter[k], attr);
+          if (active) {
+            CHECK_INCDEC_MODELVAR(event, g_model.servoCenter[k], -125, +125);
           }
           break;
       }

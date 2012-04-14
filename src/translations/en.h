@@ -336,3 +336,7 @@
 #define TR_BATT_CALIB    "Battery Calib"
 #define TR_CURRENT_CALIB "Current Calib"
 #define TR_CURRENT       "Current"
+#define TR_LOAD_MODEL    "Load Model"
+#define TR_ARCHIVE_MODEL "Archive Model"
+#define TR_DELETE_MODEL  "Delete Model" // TODO merged into DELETEMODEL?
+#define TR_RESTORE_MODEL "Restore Model"
