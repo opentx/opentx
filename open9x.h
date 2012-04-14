@@ -500,7 +500,12 @@ void    per10ms();
 int16_t getValue(uint8_t i);
 bool    getSwitch(int8_t swtch, bool nc);
 
+#ifdef FLIGHT_PHASES
 extern uint8_t getFlightPhase();
+#else
+#define getFlightPhase() 0
+#endif
+
 extern uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
 extern int16_t getRawTrimValue(uint8_t phase, uint8_t idx);
 extern int16_t getTrimValue(uint8_t phase, uint8_t idx);

@@ -56,7 +56,12 @@
 #define TR_CURVMODES     "EDIT ""PRSET""A.GAZ"
 
 #define LEN_EXPLABELS    "\006"
-#define TR_EXPLABELS     "Ratio ""Expo  ""Courbe""Phase ""Inter ""Mode  ""      "
+#ifdef FLIGHT_PHASES
+#define TR_EXPLABEL_FP   "Phase "
+#else
+#define TR_EXPLABEL_FP
+#endif
+#define TR_EXPLABELS     "Ratio ""Expo  ""Courbe" TR_EXPLABEL_FP "Inter ""Mode  ""      "
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Ajouter ""Multiply""Remplace"
@@ -309,7 +314,7 @@
 #define TR_MENUCALIBRATION "CALIBRATION"
 #define TR_MENUSERROR   "MENUS OVERFLOW"
 #define TR_TRIMS2OFFSETS "Trims => Offsets"
-#define TR_MENUMODELSEL "SELMODE"
+#define TR_MENUMODELSEL "MODELES"
 #define TR_MENUSETUP    "SETUP"
 #define TR_MENUFLIGHTPHASE "PHASE DE VOL"
 #define TR_MENUFLIGHTPHASES "PHASES DE VOL"
