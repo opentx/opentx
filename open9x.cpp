@@ -64,11 +64,6 @@ uint16_t g_time_per10;
 audioQueue  audio;
 #endif
 
-#ifdef HAPTIC
-//new audio object
-hapticQueue  haptic;
-#endif
-
 uint8_t heartbeat;
 
 uint8_t stickMode;
@@ -880,8 +875,6 @@ uint8_t checkTrim(uint8_t event)
         beepTrim = true;
       }
     }
-    
-
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
       if (!g_model.extendedTrims) after = before;
@@ -910,13 +903,7 @@ uint8_t checkTrim(uint8_t event)
 
     if (beepTrim) {
       killEvents(event);
-     
-#if defined (AUDIO)      
-      audio.event(AU_TRIM_MIDDLE);
-# else
-	AUDIO_WARNING2();
-#endif
-      
+      AUDIO_WARNING2();
     }
     else {
 #if defined (AUDIO)
@@ -1341,7 +1328,7 @@ void evalFunctions()
     if (sd->swtch) {
       uint16_t mask = (sd->func >= FUNC_TRAINER ? (1 << (sd->func-FUNC_TRAINER)) : 0);
       if (getSwitch(sd->swtch, 0)) {
-        if (sd->func < FUNC_TRAINER  && (g_menuStack[0] != menuProcFunctionSwitches || m_posVert != i+1 || m_posHorz > 1)) {
+        if (sd->func < FUNC_TRAINER  && (g_menuStack[g_menuStackPtr] != menuProcFunctionSwitches || m_posVert != (i+1) || m_posHorz > 1)) {
           safetyCh[sd->func] = (int8_t)sd->param;
         }
 
@@ -2036,7 +2023,7 @@ void perMain()
 #else
         instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
 #endif
-        if (g_vbat100mV == 0 || g_menuStack[0] != menuMainView) g_vbat100mV = instant_vbat;
+        if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] != menuMainView) g_vbat100mV = instant_vbat;
         g_vbat100mV = (instant_vbat + g_vbat100mV*7) / 8;
 
         static uint8_t s_batCheck;
@@ -2050,10 +2037,7 @@ void perMain()
 
 #if defined(PCBARM)
   AUDIO_HEARTBEAT();  // the queue processing
-  HAPTIC_HEARTBEAT();
 #endif
-
-
 
 }
 int16_t g_ppmIns[8];
@@ -2112,8 +2096,6 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
   sei();
-
-
   
 #if defined (PCBSTD) && defined (AUDIO)
   AUDIO_DRIVER();
@@ -2124,7 +2106,6 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
     AUDIO_HEARTBEAT();
-    HAPTIC_HEARTBEAT();
 
 #ifdef DEBUG
     // Record start time from TCNT1 to record excution time

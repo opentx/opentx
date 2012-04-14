@@ -300,6 +300,13 @@ const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
 const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
 #endif
 
+#if defined(SDCARD)
+const pm_char STR_LOAD_MODEL[] PROGMEM = TR_LOAD_MODEL;
+const pm_char STR_ARCHIVE_MODEL[] PROGMEM = TR_ARCHIVE_MODEL;
+const pm_char STR_DELETE_MODEL[] PROGMEM = TR_DELETE_MODEL;
+const pm_char STR_RESTORE_MODEL[] PROGMEM = TR_RESTORE_MODEL;
+#endif
+
 const pm_uchar font[] PROGMEM = {
 #include "font.lbm"
 #ifdef TRANSLATIONS_SE

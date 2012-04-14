@@ -423,3 +423,27 @@ extern "C" void TWI0_IRQHandler()
 	}
 }
 
+void hapticOff()
+{
+	PWM->PWM_DIS = PWM_DIS_CHID2 ;						// Disable channel 2
+	PWM->PWM_OOV &= ~0x00040000 ;	// Force low
+	PWM->PWM_OSS |= 0x00040000 ;	// Force low
+}
+
+// pwmPercent 0-100
+void hapticOn( uint32_t pwmPercent )
+{
+	register Pwm *pwmptr ;
+
+	pwmptr = PWM ;
+
+	if ( pwmPercent > 100 )
+	{
+		pwmPercent = 100 ;		
+	}
+	pwmptr->PWM_CH_NUM[2].PWM_CDTYUPD = pwmPercent ;		// Duty
+	pwmptr->PWM_ENA = PWM_ENA_CHID2 ;						// Enable channel 2
+	pwmptr->PWM_OSC = 0x00040000 ;	// Enable output
+}
+
+

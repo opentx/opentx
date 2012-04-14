@@ -361,5 +361,13 @@ extern const pm_char STR_CURRENT_CALIB[];
 extern const pm_char STR_CURRENT[];
 #endif
 
+#if defined(SDCARD)
+extern const pm_char STR_LOAD_MODEL[];
+extern const pm_char STR_ARCHIVE_MODEL[];
+extern const pm_char STR_DELETE_MODEL[];
+extern const pm_char STR_RESTORE_MODEL[];
+#endif
+
 extern const pm_uchar font[];
 extern const pm_uchar font_dblsize[];
+

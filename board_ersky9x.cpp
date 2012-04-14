@@ -652,7 +652,6 @@ void configure_pins( uint32_t pins, uint16_t config )
         }
 }
 
-
 void board_init()
 {
   // register uint32_t goto_usb ;

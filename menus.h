@@ -186,4 +186,11 @@ void displayPopup(const pm_char * pstr);
 void displayWarning(uint8_t event);
 void displayConfirmation(uint8_t event);
 
+#if defined(SDCARD)
+#define MENU_MAX_LINES 4
+extern const pm_char * s_menu[];
+extern uint8_t s_menu_count;
+const pm_char * displayMenu(uint8_t event);
+#endif
+
 #endif
