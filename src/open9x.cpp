@@ -566,6 +566,7 @@ bool getSwitch(int8_t swtch, bool nc)
   return __getSwitch(swtch);
 }
 
+#ifdef FLIGHT_PHASES
 uint8_t getFlightPhase()
 {
   for (uint8_t i=1; i<MAX_PHASES; i++) {
@@ -576,6 +577,7 @@ uint8_t getFlightPhase()
   }
   return 0;
 }
+#endif
 
 int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {

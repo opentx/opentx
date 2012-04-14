@@ -56,7 +56,12 @@
 #define TR_CURVMODES     "EDIT ""PRSET""A.THR"
 
 #define LEN_EXPLABELS    "\006"
-#define TR_EXPLABELS     "Vikt  ""Expo  ""Kurva ""Fas   ""Brytar""N\201r   ""      " // TODO remove all the trailing spaces
+#ifdef FLIGHT_PHASES
+#define TR_EXPLABEL_FP   "Fas   "
+#else
+#define TR_EXPLABEL_FP
+#endif
+#define TR_EXPLABELS     "Vikt  ""Expo  ""Kurva " TR_EXPLABEL_FP "Brytar""N\201r   ""      " // TODO remove all the trailing spaces
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Addera  ""F\202rst\201rk""Ers\201tt  "

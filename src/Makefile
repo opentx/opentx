@@ -110,6 +110,10 @@ MOD_EXTRA_ROTARY_ENCODERS = NO
 # DEBUG mode
 DEBUG = NO
 
+# Flight Phases
+# Values = YES, NO
+FLIGHT_PHASES = YES
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -125,6 +129,7 @@ ifeq ($(PCB), STD)
   MCU = atmega64  
   CPPDEFS += -DF_CPU=$(F_CPU)UL
 endif
+
 ifeq ($(PCB), V4)
   ifeq ($(PCBREV), REV0)
     CPPDEFS += -DREV0
@@ -135,6 +140,7 @@ ifeq ($(PCB), V4)
   MCU = atmega2560
   CPPDEFS += -DF_CPU=$(F_CPU)UL
 endif
+
 ifeq ($(PCB), ARM)
   ifeq ($(PCBREV), REVA)
     CPPDEFS += -DREVA
@@ -214,6 +220,10 @@ endif
 
 ifeq ($(SPLASH), YES)
   CPPDEFS += -DSPLASH
+endif
+
+ifeq ($(FLIGHT_PHASES), YES)
+  CPPDEFS += -DFLIGHT_PHASES
 endif
 
 ifeq ($(HAPTIC), YES)

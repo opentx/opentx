@@ -526,6 +526,7 @@ void putsSwitches(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
 
+#ifdef FLIGHT_PHASES
 void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
   if (idx==0) { lcd_putsiAtt(x, y, STR_MMMINV, 0, att); return; }
@@ -535,6 +536,7 @@ void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
   else
     putsStrIdx(x, y, STR_FP, idx-1, att);
 }
+#endif
 
 void putsCurve(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
