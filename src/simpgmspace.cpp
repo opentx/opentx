@@ -33,7 +33,7 @@
 
 #include "open9x.h"
 
-volatile uint8_t pinb=0, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
+volatile uint8_t pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
 const char *eepromFile = NULL;
@@ -60,13 +60,37 @@ void setSwitch(int8_t swtch)
 {
   switch (swtch) {
     case DSW_ID0:
-      ping |=  (1<<INP_G_ID1);  pine &= ~(1<<INP_E_ID2);
+#if defined(PCBARM)
+      PIOC->PIO_PDSR &= ~0x00004000;
+#elif defined(PCBV4)
+      ping |=  (1<<INP_G_ID1);
+      pinb &= ~(1<<INP_B_ID2);
+#else
+      ping |=  (1<<INP_G_ID1);
+      pine &= ~(1<<INP_E_ID2);
+#endif
       break;
     case DSW_ID1:
-      ping &= ~(1<<INP_G_ID1);  pine &= ~(1<<INP_E_ID2);
+#if defined(PCBARM)
+      PIOC->PIO_PDSR |= 0x00004800;
+#elif defined(PCBV4)
+      ping &= ~(1<<INP_G_ID1);
+      pinb &= ~(1<<INP_B_ID2);
+#else
+      ping &= ~(1<<INP_G_ID1);
+      pine &= ~(1<<INP_E_ID2);
+#endif
       break;
     case DSW_ID2:
-      ping &= ~(1<<INP_G_ID1);  pine |=  (1<<INP_E_ID2);
+#if defined(PCBARM)
+      PIOC->PIO_PDSR &= ~0x00000800;
+#elif defined(PCBV4)
+      ping &= ~(1<<INP_G_ID1);
+      pinb |=  (1<<INP_B_ID2);
+#else
+      ping &= ~(1<<INP_G_ID1);
+      pine |=  (1<<INP_E_ID2);
+#endif
       break;
     default:
       break;
@@ -205,6 +229,7 @@ void eeprom_read_block (void *pointer_ram,
     size_t size)
 {
   if (fp) {
+    memset(pointer_ram, 0, size);
     if (fseek(fp, (long) pointer_eeprom, SEEK_SET)==-1) perror("error in seek");
     if (fread(pointer_ram, size, 1, fp) <= 0) perror("error in read");
   }

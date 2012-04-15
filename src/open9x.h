@@ -294,8 +294,8 @@ enum EnumKeys {
   TRM_RH_DWN  ,
   TRM_RH_UP   ,
 #ifdef PCBV4
-  BTN_RE1,
-  BTN_RE2,
+  BTN_REa,
+  BTN_REb,
 #endif
   //SW_NC     ,
   //SW_ON     ,
@@ -309,7 +309,6 @@ enum EnumKeys {
   SW_Gear   ,
   SW_Trainer,
   NUM_KEYS = SW_ThrCt
-
 };
 
 class Key

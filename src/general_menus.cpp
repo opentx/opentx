@@ -618,7 +618,7 @@ void menuProcDiagKeys(uint8_t event)
   for(uint8_t i=0; i<2; i++) {
     uint8_t y = i*FH + FH;
     lcd_putsiAtt(14*FW, y, STR_RE1RE2, i, 0);
-    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_RE1+i)) ? INVERS : 0));
+    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_REa+i)) ? INVERS : 0));
   }
 #endif
 

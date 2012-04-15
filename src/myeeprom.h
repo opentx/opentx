@@ -49,7 +49,7 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBV4)
-#define EEPROM_VER       206
+#define EEPROM_VER       207
 #else
 #define EEPROM_VER       205
 #endif
@@ -174,8 +174,13 @@ enum MixSources {
     MIXSRC_P2,
     MIXSRC_P3,
 #if defined(PCBV4)
-    MIXSRC_RE1,
-    MIXSRC_RE2,
+    MIXSRC_REa,
+    MIXSRC_REb,
+#if defined(EXTRA_ROTARY_ENCODERS)
+    MIXSRC_REc,
+    MIXSRC_REd,
+    MIXSRC_REe,
+#endif
 #endif
     MIXSRC_MAX ,
     MIXSRC_3POS,
@@ -387,11 +392,11 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define TRIM_MIN (-TRIM_MAX)
 
 #if defined(PCBV4)
-#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+#if defined(EXTRA_ROTARY_ENCODERS)
 #define NUM_EXTRA_ROTARY_ENCODERS 3
-#else //MOD_EXTRA_ROTARY_ENCODERS
+#else //EXTRA_ROTARY_ENCODERS
 #define NUM_EXTRA_ROTARY_ENCODERS 0
-#endif //MOD_EXTRA_ROTARY_ENCODERS
+#endif //EXTRA_ROTARY_ENCODERS
 #define NUM_ROTARY_ENCODERS (2+NUM_EXTRA_ROTARY_ENCODERS)
 #define ROTARY_ENCODER_MAX  1024
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[NUM_ROTARY_ENCODERS];
@@ -414,6 +419,8 @@ PACK(typedef struct t_PhaseData {
 
 #if defined(PCBARM)
 #define MAX_MODELS 60
+#elif defined(PCBV4)
+#define MAX_MODELS 30
 #else
 #define MAX_MODELS 16
 #endif

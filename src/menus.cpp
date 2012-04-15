@@ -180,12 +180,12 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
 
 #ifdef NAVIGATION_RE1
   check_rotary_encoder();
-  if (m_posVert < 0 && (event==EVT_KEY_FIRST(BTN_RE1) || event==EVT_KEY_FIRST(KEY_MENU))) {
+  if (m_posVert < 0 && (event==EVT_KEY_FIRST(BTN_REa) || event==EVT_KEY_FIRST(KEY_MENU))) {
     popMenu();
     killEvents(event);
     return false;
   }
-  if (event == EVT_KEY_BREAK(BTN_RE1)) {
+  if (event == EVT_KEY_BREAK(BTN_REa)) {
     if (s_editMode > 0 && (maxcol & ZCHAR)) {
       if (m_posHorz < maxcol-ZCHAR) {
         m_posHorz++;
@@ -579,7 +579,7 @@ void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t
 {
   *value = (((uint8_t)(*value)) & ((1 << bitshift) - 1)) + ((i_shift + checkIncDecModel(event, (((uint8_t)(*value)) >> bitshift)-i_shift, i_min, i_max)) << bitshift);
 
-  if (event == EVT_KEY_LONG(BTN_RE1)) {
+  if (event == EVT_KEY_LONG(BTN_REa)) {
     if (value == s_inflight_value) {
       s_inflight_value = NULL;
     }

@@ -190,10 +190,10 @@ void menuProcModelSelect(uint8_t event)
         }
         break;
 #ifdef NAVIGATION_RE1
-      case EVT_KEY_BREAK(BTN_RE1):
+      case EVT_KEY_BREAK(BTN_REa):
         s_editMode = (s_editMode == 0 && sub == g_eeGeneral.currModel) ? -1 : 0;
         break;
-      case EVT_KEY_LONG(BTN_RE1):
+      case EVT_KEY_LONG(BTN_REa):
 #endif
       case EVT_KEY_LONG(KEY_MENU):
       case EVT_KEY_BREAK(KEY_MENU):
@@ -406,10 +406,10 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
           if (next<size-1) next++;
           break;
 #ifdef NAVIGATION_RE1
-        case EVT_KEY_LONG(BTN_RE1):
+        case EVT_KEY_LONG(BTN_REa):
           if (v==0) {
             s_editMode = 0;
-            killEvents(BTN_RE1);
+            killEvents(BTN_REa);
             break;
           }
 #endif
@@ -714,7 +714,7 @@ void menuProcPhasesAll(uint8_t event)
   switch (event) {
     case EVT_KEY_FIRST(KEY_MENU):
 #ifdef NAVIGATION_RE1
-    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_REa):
 #endif
       if (sub == MAX_PHASES) {
         s_editMode = 0;
@@ -734,24 +734,24 @@ void menuProcPhasesAll(uint8_t event)
     uint8_t y=(i+1)*FH;
     att = i==sub ? INVERS : 0;
     PhaseData *p = phaseaddress(i);
-#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+#if defined(EXTRA_ROTARY_ENCODERS)
 //	  lcd_outdezNAtt(0, y, i, att|LEFT, 1);
     putsFlightPhase(0, y, i+1, att|CONDENSED);
-#else //MOD_EXTRA_ROTARY_ENCODERS
+#else //EXTRA_ROTARY_ENCODERS
     putsFlightPhase(0, y, i+1, att);
-#endif //MOD_EXTRA_ROTARY_ENCODERS
+#endif //EXTRA_ROTARY_ENCODERS
 #if defined PCBV4
-#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+#if defined(EXTRA_ROTARY_ENCODERS)
 #define NAME_OFS (-4-12)
 #define SWITCH_OFS (-FW/2-2-13)
 #define TRIMS_OFS  (-FW/2-4-15)
 #define ROTARY_ENC_OFS (0)
-#else //!MOD_EXTRA_ROTARY_ENCODERS
+#else //!EXTRA_ROTARY_ENCODERS
 #define NAME_OFS (-4)
 #define SWITCH_OFS (-FW/2-2)
 #define TRIMS_OFS  (-FW/2-4)
 #define ROTARY_ENC_OFS (2)
-#endif //MOD_EXTRA_ROTARY_ENCODERS
+#endif //EXTRA_ROTARY_ENCODERS
 #else
 #define NAME_OFS 0
 #define SWITCH_OFS (FW/2)
@@ -902,7 +902,7 @@ void menuProcCurveOne(uint8_t event)
       break;
     case EVT_KEY_FIRST(KEY_MENU):
 #ifdef NAVIGATION_RE1
-    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_REa):
 #endif
       if (s_editMode<=0) {
         switch (m_posHorz) {
@@ -1505,8 +1505,8 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
       }
       // no break
 #ifdef NAVIGATION_RE1
-    case EVT_KEY_BREAK(BTN_RE1):
-    case EVT_KEY_LONG(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_REa):
+    case EVT_KEY_LONG(BTN_REa):
       if (sub == 0)
         break;
 #endif
@@ -1696,13 +1696,13 @@ void menuProcLimits(uint8_t event)
         case 1:
           lcd_outdezAtt(12*FW+1, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
           if (active) {
-            CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->min, -limit, limit, +100, STR_MINLIMIT);
+            CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->min, -limit, 25, +100, STR_MINLIMIT);
           }
           break;
         case 2:
           lcd_outdezAtt(16*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
           if (active) {
-            CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->max, -limit, limit, -100, STR_MAXLIMIT);
+            CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->max, -25, limit, -100, STR_MAXLIMIT);
           }
           break;
         case 3:
@@ -1732,7 +1732,7 @@ void menuProcCurvesAll(uint8_t event)
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_MENU):
 #ifdef NAVIGATION_RE1
-    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_REa):
 #endif
       if (sub >= 0) {
         s_curveChan = sub;

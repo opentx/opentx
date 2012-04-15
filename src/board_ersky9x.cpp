@@ -960,8 +960,6 @@ void read_9_adc()
   register uint32_t y;
   register uint32_t x;
 
-//      PMC->PMC_PCER0 |= 0x20000000L ;         // Enable peripheral clock to ADC
-
   padc = ADC;
   y = padc->ADC_ISR; // Clear EOC flags
   for (y = NUMBER_ANALOG+1; --y > 0;) {
@@ -993,44 +991,22 @@ void read_9_adc()
   if ( Temperature > maxTemperature ) {
     maxTemperature = Temperature ;
   }
-
-// Power save
-//  PMC->PMC_PCER0 &= ~0x20000000L ;            // Disable peripheral clock to ADC
 }
 
 void readKeysAndTrims()
 {
   register uint32_t i;
 
-  /* Fix pulldown resistor on RF-POWER
-  if (PIOC->PIO_ODSR & 0x00080000) {
-    PIOC->PIO_CODR = 0x00200000L; // Set bit C19 OFF
-  }
-  else {
-    PIOC->PIO_SODR = 0x00200000L; // Set bit C19 ON
-  } */
-
   uint8_t enuk = KEY_MENU;
   uint8_t in = ~read_keys();
   for (i = 1; i < 7; i++) {
-//INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
     keys[enuk].input(in & (1 << i), (EnumKeys) enuk);
     ++enuk;
   }
-//  static const uint8_t crossTrim[]={
-//    1<<INP_D_TRM_LH_DWN,
-//    1<<INP_D_TRM_LH_UP,
-//    1<<INP_D_TRM_LV_DWN,
-//    1<<INP_D_TRM_LV_UP,
-//    1<<INP_D_TRM_RV_DWN,
-//    1<<INP_D_TRM_RV_UP,
-//    1<<INP_D_TRM_RH_DWN,
-//    1<<INP_D_TRM_RH_UP
-//  };
+
   in = read_trims();
 
   for (i = 1; i < 256; i <<= 1) {
-// INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
     keys[enuk].input(in & i, (EnumKeys) enuk);
     ++enuk;
   }
