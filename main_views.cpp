@@ -163,7 +163,7 @@ void menuMainView(uint8_t event)
       killEvents(KEY_DOWN);
       break;
 #ifdef NAVIGATION_RE1
-    case EVT_KEY_LONG(BTN_RE1):
+    case EVT_KEY_LONG(BTN_REa):
       killEvents(event);
       if (s_inflight_value && !s_warning) {
         s_warning = s_inflight_label;
@@ -171,7 +171,7 @@ void menuMainView(uint8_t event)
         break;
       }
       // no break
-    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_REa):
       s_warning = NULL;
       break;
 #endif
@@ -289,10 +289,10 @@ void menuMainView(uint8_t event)
       for (uint8_t i=0; i<8; i++) {
         int16_t val = g_chans512[8+i];
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
-#if defined(PCBV4) && defined(MOD_EXTRA_ROTARY_ENCODERS)
+#if defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
 #define V_BAR_W 4
         V_BAR(SCREEN_WIDTH/2-V_BAR_W*1+1+V_BAR_W*i, SCREEN_HEIGHT-8, len)
-#elif defined(PCBV4) //MOD_EXTRA_ROTARY_ENCODERS
+#elif defined(PCBV4) //EXTRA_ROTARY_ENCODERS
 #define V_BAR_W 5
         V_BAR(SCREEN_WIDTH/2-V_BAR_W*3+5+V_BAR_W*i, SCREEN_HEIGHT-8, len)
 #else
@@ -304,11 +304,11 @@ void menuMainView(uint8_t event)
       for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
         int16_t val = getRotaryEncoder(i);
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
-#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+#if defined(EXTRA_ROTARY_ENCODERS)
         V_BAR(SCREEN_WIDTH/2-V_BAR_W*7+1+V_BAR_W*i, SCREEN_HEIGHT-8, len)
-#else //MOD_EXTRA_ROTARY_ENCODERS
+#else //EXTRA_ROTARY_ENCODERS
         V_BAR(SCREEN_WIDTH/2-V_BAR_W*6+5+V_BAR_W*i, SCREEN_HEIGHT-8, len)
-#endif //MOD_EXTRA_ROTARY_ENCODERS
+#endif //EXTRA_ROTARY_ENCODERS
       }
 #endif //PCBV4
       for (uint8_t i=0; i<12; i++) {

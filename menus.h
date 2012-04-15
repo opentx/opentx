@@ -82,8 +82,8 @@ void menuProcDebug(uint8_t event);
 #if defined(NAVIGATION_RE1)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
-#define IS_RE1_EVT_TYPE(event, type) (event==type(BTN_RE1))
-#define IS_RE1_EVT(event) ((event&0x0f)==BTN_RE1)
+#define IS_RE1_EVT_TYPE(event, type) (event==type(BTN_REa))
+#define IS_RE1_EVT(event) ((event&0x0f)==BTN_REa)
 #else
 #define IS_RE1_EVT_TYPE(event, type) (0)
 #define IS_RE1_EVT(event) (0)

@@ -302,21 +302,26 @@ void Open9xSim::refreshDiplay()
       KEY_Left,      INP_B_KEY_LFT, INP_P_KEY_LFT, (uint64_t)PIOC, ERSKY9X_LEFT_MASK,
     };
 
-    pinb &= ~ 0x7e;
-    pinl &= ~ 0x3f; // for v4
 #if defined(PCBARM)
-    PIOC->PIO_PDSR = 0xFDFFFFFF;
-    PIOB->PIO_PDSR = 0xFFFFFFFF;
-    PIOA->PIO_PDSR = 0xFFFFFFFF;
+    PIOC->PIO_PDSR |= ERSKY9X_DOWN_MASK | ERSKY9X_UP_MASK | ERSKY9X_RIGHT_MASK | ERSKY9X_LEFT_MASK ;
+    ERSKY9X_EXIT_PIO->PIO_PDSR |= ERSKY9X_EXIT_MASK;
+    PIOB->PIO_PDSR |= ERSKY9X_MENU_MASK;
+//    PIOA->PIO_PDSR = 0xFFFFFFFF;
     Temperature = 1000;
     maxTemperature = 1500;
+#elif defined(PCBV4)
+    pinl &= ~ 0x3f;
+#else
+    pinb &= ~ 0x7e;
 #endif
     for(unsigned i=0; i<DIM(keys1);i+=5) {
       if (getApp()->getKeyState(keys1[i])) {
-        pinb |= (1<<keys1[i+1]);
-        pinl |= (1<<keys1[i+2]);
 #if defined(PCBARM)
         ((Pio*)keys1[i+3])->PIO_PDSR &= ~(keys1[i+4]);
+#elif defined(PCBV4)
+        pinl |= (1<<keys1[i+2]);
+#else
+        pinb |= (1<<keys1[i+1]);
 #endif
       }
     }
@@ -329,14 +334,22 @@ void Open9xSim::refreshDiplay()
 #else
     static FXuint keys2[]={KEY_F8, KEY_F7, KEY_F4, KEY_F3, KEY_F6, KEY_F5, KEY_F1, KEY_F2  };
 #endif
-#ifdef PCBV4
+#if defined(PCBARM)
+    PIOA->PIO_PDSR &= ~(0x00800000 | 0x01000000 | 0x00000002 | 0x00000001 );
+#elif defined(PCBV4)
     pinj = 0;
 #else
     pind  = 0;
 #endif
     for(unsigned i=0; i<DIM(keys2);i++){
       if(getApp()->getKeyState(keys2[i])) {
-#ifdef PCBV4
+#if defined(PCBARM)
+        switch(i) {
+          case 0:
+            PIOA->PIO_PDSR |= 0x00800000;
+            break;
+        }
+#elif defined(PCBV4)
         pinj |= (1<<i);
 #else
         pind |= (1<<i);
@@ -344,14 +357,31 @@ void Open9xSim::refreshDiplay()
       }
     }
 
+#if defined(PCBARM)
+    struct SwitchKey {
+        FXuint key;
+        volatile uint32_t & pin;
+        uint32_t shift;
+        uint32_t value;
+    };
+#else
     struct SwitchKey {
       FXuint key;
       volatile unsigned char& pin;
       unsigned char shift;
       unsigned char value;
     };
+#endif
     
     static SwitchKey keys3[] = {
+#if defined(PCBARM)
+      { KEY_1, PIOC->PIO_PDSR,  0x00100000, 0 },
+      { KEY_6, PIOA->PIO_PDSR,  0x00000004, 0 },
+      { KEY_2, PIOA->PIO_PDSR,  0x00008000, 0 },
+      { KEY_3, PIOC->PIO_PDSR,  0x80000000, 0 },
+      { KEY_7, PIOC->PIO_PDSR,  0x00010000, 0 },
+      { KEY_8, PIOC->PIO_PDSR,  0x00000100, 0 } };
+#else
 #if defined(PCBV4) || defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
       { KEY_1, pinc,  INP_C_ThrCt, 0 },
       { KEY_6, pinc,  INP_C_AileDR, 0 },
@@ -361,15 +391,20 @@ void Open9xSim::refreshDiplay()
 #endif
       { KEY_2, ping,  INP_G_RuddDR, 0 },
       { KEY_3, pine,  INP_E_ElevDR, 0 },
-      //KEY_4, ping,  INP_G_ID1,      0,
-      //KEY_5, pine,  INP_E_ID2,      0,
+      //KEY_4, ping,  INP_G_ID1, 0,
+      //KEY_5, pine,  INP_E_ID2, 0,
       { KEY_7, pine,  INP_E_Gear, 0 },
       { KEY_8, pine,  INP_E_Trainer, 0 } };
+#endif
 
     for(unsigned i=0; i<DIM(keys3); i++){
       bool ks = getApp()->getKeyState(keys3[i].key);
       if (ks != keys3[i].value) {
+#if defined(PCBARM)
+        if (ks) keys3[i].pin ^= (keys3[i].shift);
+#else
         if (ks) keys3[i].pin ^= (1<<keys3[i].shift);
+#endif
         keys3[i].value = ks;
       }
     }
@@ -388,6 +423,7 @@ void Open9xSim::refreshDiplay()
       if(ks && id<2) id++;
       k5st = ks;
     }
+
     switch(id){
       case 0: setSwitch(DSW_ID0); break;
       case 1: setSwitch(DSW_ID1); break;

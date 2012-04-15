@@ -110,7 +110,7 @@ bool keyState(EnumKeys enuk)
       break;
 
     case SW_ID1:
-      result = (PING & (1<<INP_G_ID1))&& (PINE & (1<<INP_E_ID2));
+      result = (PING & (1<<INP_G_ID1)) && (PINE & (1<<INP_E_ID2));
       break;
 
     case SW_ID2:

@@ -46,12 +46,30 @@ extern uint16_t s_eeDirtyTime10ms;
 // bs=32   64 blocks    verlust link: 64  16files:16*16 256     sum 320
 //
 #if defined(PCBV4)
-// 4096 - 16 bytes to give 255 blocks, since we can't address 256 block in an 8-bit register
-#define EESIZE   4080
+#define EESIZE     4096
+#define EEFS_VERS  5
+#define MAXFILES   36
 #else
-#define EESIZE   2048
+#define EESIZE     2048
+#define EEFS_VERS  4
+#define MAXFILES   20
 #endif
+
 #define BS       16
+
+PACK(struct DirEnt{
+  uint8_t  startBlk;
+  uint16_t size:12;
+  uint16_t typ:4;
+});
+
+PACK(struct EeFs{
+  uint8_t  version;
+  uint8_t  mySize;
+  uint8_t  freeList;
+  uint8_t  bs;
+  DirEnt   files[MAXFILES];
+});
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -60,11 +78,19 @@ extern uint16_t s_eeDirtyTime10ms;
 #define FILE_GENERAL   0
 /// convert model number 0..MAX_MODELS-1  int fileId
 #define FILE_MODEL(n) (1+(n))
-#define FILE_TMP      (1+16)
+#define FILE_TMP      (1+MAX_MODELS)
 
-#define RESV     64  //reserv for eeprom header with directory (eeFs)
-#define FIRSTBLK (RESV/BS)
-#define BLOCKS   (EESIZE/BS)
+#define RESV     sizeof(EeFs)  //reserv for eeprom header with directory (eeFs)
+
+#if defined(PCBV4)
+#define FIRSTBLK      1
+#define BLOCKS        (1+(EESIZE-RESV)/BS)
+#define BLOCKS_OFFSET (RESV-BS)
+#else
+#define FIRSTBLK      (RESV/BS)
+#define BLOCKS        (EESIZE/BS)
+#define BLOCKS_OFFSET 0
+#endif
 
 bool EeFsOpen();
 int8_t EeFsck();

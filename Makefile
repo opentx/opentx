@@ -105,7 +105,7 @@ EEPROM_PROGRESS_BAR = NO
 
 # Enable extra rotary encoders (V4 board only)
 # Values = YES, NO
-MOD_EXTRA_ROTARY_ENCODERS = NO
+EXTRA_ROTARY_ENCODERS = NO
 
 # DEBUG mode
 DEBUG = NO
@@ -321,8 +321,8 @@ ifeq ($(PCB), V4)
     CPPDEFS += -DSOMO
   endif
   
-  ifeq ($(MOD_EXTRA_ROTARY_ENCODERS), YES)
-    CPPDEFS += -DMOD_EXTRA_ROTARY_ENCODERS
+  ifeq ($(EXTRA_ROTARY_ENCODERS), YES)
+    CPPDEFS += -DEXTRA_ROTARY_ENCODERS
     MODS:=${MODS}X
   endif
   

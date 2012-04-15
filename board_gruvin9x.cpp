@@ -108,20 +108,20 @@ inline void board_init()
   OCR4A = 0x7d;
   TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
 
-#ifdef MOD_EXTRA_ROTARY_ENCODERS
+#ifdef EXTRA_ROTARY_ENCODERS
   //configure uart2 here
   DDRH &= ~(1 << 0);
   PORTH &= ~(1 << 0);
-  #define MOD_EXTRA_ROTARY_ENCODERS_USART_BAUD 9600UL
-  UBRR2 = F_CPU/(16*MOD_EXTRA_ROTARY_ENCODERS_USART_BAUD)-1;
+  #define EXTRA_ROTARY_ENCODERS_USART_BAUD 9600UL
+  UBRR2 = F_CPU/(16*EXTRA_ROTARY_ENCODERS_USART_BAUD)-1;
   //9 bit mode
   UCSR2C = (1<<USBS2)|(3<<UCSZ20);
   UCSR2B = (1<<RXEN2)|(0<<TXEN2)|(1<<UCSZ22);
   UCSR2B |= 1 << RXCIE2; //enable interrupt on rx
-#endif //MOD_EXTRA_ROTARY_ENCODERS
+#endif //EXTRA_ROTARY_ENCODERS
 }
 
-#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+#if defined(EXTRA_ROTARY_ENCODERS)
 
 uint8_t vpotToChange = 0;
 uint8_t vpot_mod_state = 0;
@@ -155,7 +155,7 @@ ISR(USART2_RX_vect)
 	  }
   }
 }
-#endif //MOD_EXTRA_ROTARY_ENCODERS
+#endif //EXTRA_ROTARY_ENCODERS
 
 #endif
 
@@ -257,8 +257,8 @@ void readKeysAndTrims()
 
   uint8_t enuk = KEY_MENU;
 
-  keys[BTN_RE1].input(~PIND & 0x20, BTN_RE1);
-  keys[BTN_RE2].input(~PIND & 0x10, BTN_RE2);
+  keys[BTN_REa].input(~PIND & 0x20, BTN_REa);
+  keys[BTN_REb].input(~PIND & 0x10, BTN_REb);
 
   uint8_t tin = ~PINL;
   uint8_t in;

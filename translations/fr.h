@@ -34,11 +34,11 @@
 
 #define LEN_RETA123      "\001"
 #if defined(PCBV4)
-#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+#if defined(EXTRA_ROTARY_ENCODERS)
 #define TR_RETA123       "RETA123abcde"
-#else //MOD_EXTRA_ROTARY_ENCODERS
+#else //EXTRA_ROTARY_ENCODERS
 #define TR_RETA123       "RETA123ab"
-#endif //MOD_EXTRA_ROTARY_ENCODERS
+#endif //EXTRA_ROTARY_ENCODERS
 #else
 #define TR_RETA123       "RETA123"
 #endif
@@ -152,7 +152,7 @@
 
 #define LEN_VSRCRAW      "\004"
 #if defined(PCBV4)
-#if defined(MOD_EXTRA_ROTARY_ENCODERS)
+#if defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd ""REe "
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "

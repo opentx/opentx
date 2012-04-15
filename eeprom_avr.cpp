@@ -44,21 +44,7 @@ uint16_t s_eeDirtyTime10ms;
 #endif
 
 RlcFile theFile;  //used for any file operation
-
-#define EEFS_VERS 4
-PACK(struct DirEnt{
-  uint8_t  startBlk;
-  uint16_t size:12;
-  uint16_t typ:4;
-});
-#define MAXFILES (1+MAX_MODELS+3)
-PACK(struct EeFs{
-  uint8_t  version;
-  uint8_t  mySize;
-  uint8_t  freeList;
-  uint8_t  bs;
-  DirEnt   files[MAXFILES];
-}) eeFs;
+EeFs eeFs;
 
 void eeDirty(uint8_t msk)
 {
@@ -131,7 +117,7 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 static uint8_t EeFsRead(uint8_t blk, uint8_t ofs)
 {
   uint8_t ret;
-  eeprom_read_block(&ret, (const void*)(blk*BS+ofs), 1);
+  eeprom_read_block(&ret, (const void*)(blk*BS+ofs+BLOCKS_OFFSET), 1);
   return ret;
 }
 
@@ -144,7 +130,7 @@ static void EeFsSetLink(uint8_t blk, uint8_t val)
 {
   static uint8_t s_link; // we write asynchronously, then nothing on the stack!
   s_link = val;
-  eeWriteBlockCmp(&s_link, (blk*BS), 1);
+  eeWriteBlockCmp(&s_link, (blk*BS)+BLOCKS_OFFSET, 1);
 }
 
 static uint8_t EeFsGetDat(uint8_t blk,uint8_t ofs)
@@ -154,7 +140,7 @@ static uint8_t EeFsGetDat(uint8_t blk,uint8_t ofs)
 
 static void EeFsSetDat(uint8_t blk,uint8_t ofs,uint8_t*buf,uint8_t len)
 {
-  eeWriteBlockCmp(buf, blk*BS+ofs+1, len);
+  eeWriteBlockCmp(buf, blk*BS+ofs+1+BLOCKS_OFFSET, len);
 }
 
 static void EeFsFlushFreelist()
@@ -183,7 +169,9 @@ uint16_t EeFsGetFree()
   return ret;
 }
 
-static void EeFsFree(uint8_t blk){///free one or more blocks
+/// free one or more blocks
+static void EeFsFree(uint8_t blk)
+{
   uint8_t i = blk;
   while( EeFsGetLink(i)) i = EeFsGetLink(i);
   EeFsSetLink(i,eeFs.freeList);
@@ -196,12 +184,12 @@ int8_t EeFsck()
   s_sync_write = true;
 
   uint8_t *bufp = reusableBuffer.eefs_buffer;
-  memset(bufp,0,BLOCKS);
+  memset(bufp, 0, BLOCKS);
   uint8_t blk ;
-  int8_t ret=0;
+  int8_t ret = 0;
 
-  for(uint8_t i = 0; i <= MAXFILES; i++){
-    uint8_t *startP = i==MAXFILES ? &eeFs.freeList : &eeFs.files[i].startBlk;
+  for(uint8_t i = 0; i <= MAXFILES; i++) {
+    uint8_t *startP = (i==MAXFILES ? &eeFs.freeList : &eeFs.files[i].startBlk);
     uint8_t lastBlk = 0;
     blk = *startP;
     while (blk) {
@@ -247,7 +235,7 @@ void EeFsFormat()
   eeFs.mySize   = sizeof(eeFs);
   eeFs.freeList = 0;
   eeFs.bs       = BS;
-  for(uint8_t i = FIRSTBLK; i < BLOCKS; i++) EeFsSetLink(i,i+1);
+  for(uint8_t i = FIRSTBLK; i < BLOCKS-1; i++) EeFsSetLink(i,i+1);
   EeFsSetLink(BLOCKS-1, 0);
   eeFs.freeList = FIRSTBLK;
   EeFsFlush();
@@ -257,11 +245,17 @@ void EeFsFormat()
 
 bool EeFsOpen() // TODO inline?
 {
-  eeprom_read_block(&eeFs,0,sizeof(eeFs));
+  eeprom_read_block(&eeFs, 0, sizeof(eeFs));
 
 #ifdef SIMU
-  if(eeFs.version != EEFS_VERS)    perror("bad eeFs.version\n");
-  if(eeFs.mySize  != sizeof(eeFs)) perror("bad eeFs.mySize\n");
+  if (eeFs.version != EEFS_VERS) {
+    printf("bad eeFs.version (%d instead of %d)\n", eeFs.version, EEFS_VERS);
+    fflush(stdout);
+  }
+  if (eeFs.mySize != sizeof(eeFs)) {
+    printf("bad eeFs.mySize (%d instead of %d)\n", eeFs.mySize, sizeof(eeFs));
+    fflush(stdout);
+  }
 #endif  
 
   return eeFs.version == EEFS_VERS && eeFs.mySize == sizeof(eeFs);
