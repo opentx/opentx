@@ -1118,7 +1118,7 @@ void menuProcFrsky(uint8_t event)
 
 	   // reversed barshade for T1/T2
 	  uint8_t barShade;
-	  if (source == TELEM_T1 or source == TELEM_T2)
+	  if (source == TELEM_T1 || source == TELEM_T2)
 		barShade = ((threshold < value) ? DOTTED : SOLID);
 	  else
 		barShade = ((threshold > value) ? DOTTED : SOLID);
