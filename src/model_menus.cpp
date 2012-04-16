@@ -1717,7 +1717,7 @@ void menuProcLimits(uint8_t event)
       switch(j)
       {
         case 0:
-#ifdef LIMITS_US
+#ifdef PPM_LIMITS_UNIT_US
           lcd_outdezAtt(  8*FW, y,  ((ld->offset)*128) / 25, attr|PREC1);
 #else
           lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
@@ -1733,7 +1733,7 @@ void menuProcLimits(uint8_t event)
           }
           break;
         case 1:
-#ifdef LIMITS_US
+#ifdef PPM_LIMITS_UNIT_US
           lcd_outdezAtt(12*FW+1, y, (((int16_t)ld->min-100)*128) / 25, attr | INFLIGHT(ld->min));
 #else
           lcd_outdezAtt(12*FW, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
@@ -1743,7 +1743,7 @@ void menuProcLimits(uint8_t event)
           }
           break;
         case 2:
-#ifdef LIMITS_US
+#ifdef PPM_LIMITS_UNIT_US
           lcd_outdezAtt(16*FW, y, (((int16_t)ld->max+100)*128) / 25, attr | INFLIGHT(ld->max));
 #else
           lcd_outdezAtt(17*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
