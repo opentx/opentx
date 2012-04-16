@@ -2001,8 +2001,8 @@ void menuProcFunctionSwitches(uint8_t event)
 #define TELEM_COL2 (9*FW+2)
 void menuProcTelemetry(uint8_t event)
 {
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 27, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)//                                                                                                                  v  v  v  v 4 new menu items for baro alt/vario
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 29, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, 0,  (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #else
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 24, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #endif
@@ -2148,6 +2148,48 @@ void menuProcTelemetry(uint8_t event)
     lcd_outdezAtt(TELEM_COL2+FWNUM, y, 2+g_model.frsky.blades, sub==subN ? INVERS : 0);
     if (sub==subN)
       CHECK_INCDEC_MODELVAR(event, g_model.frsky.blades, 0, 2);
+  }
+  subN++;
+
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_putsLeft(y, STR_BARO_VARIO);
+  }
+  subN++;
+
+  if(s_pgOfs<subN) {//setup baro altimeter after point data to be used
+    y = (subN-s_pgOfs)*FH;
+    lcd_puts(4, y, STR_BARO_PR);
+    menu_lcd_onoff( TELEM_COL2, y, g_model.frsky.use_baroAltitude_ap, sub==subN ) ;
+    if (sub==subN)
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.use_baroAltitude_ap, 0, 1);
+  }
+  subN++;
+
+  if(s_pgOfs<subN) {//use barometer altitude only if ON and use GPS altitude if OFF
+    y = (subN-s_pgOfs)*FH;
+    lcd_puts(4, y, STR_BARO_ONLY);
+    menu_lcd_onoff( TELEM_COL2, y, g_model.frsky.use_baroAltitude_only, sub==subN ) ;
+    if (sub==subN)
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.use_baroAltitude_only, 0, 1);
+  }
+  subN++;
+
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_puts(4, y, STR_BARO_DWN_LIM);
+    lcd_outdezAtt(TELEM_COL2+FWNUM, y, -VARIO_LIM_MUL*g_model.frsky.varioSpeedDownMin, (sub==subN ? INVERS : 0)|PREC2);//TODO: EDIT DECIMALS HERE
+    if (sub==subN)
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedDownMin, 0, 15);
+  }
+  subN++;
+
+  if(s_pgOfs<subN) {//g_model.frsky.varioSpeedUpMin
+    y = (subN-s_pgOfs)*FH;
+    lcd_puts(4, y, STR_BARO_UP_LIM);
+    lcd_outdezAtt(TELEM_COL2+FWNUM, y, VARIO_LIM_MUL*g_model.frsky.varioSpeedUpMin, (sub==subN ? INVERS : 0)|PREC2);//TODO: EDIT DECIMALS HERE
+    if (sub==subN)
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedUpMin, 0, 15);
   }
   subN++;
 #endif
