@@ -495,7 +495,7 @@ void eeLoadModel(uint8_t id)
     resetProto();
     resetAll();
 
-#ifdef LOGS
+#ifdef SDCARD
     initLogs();
 #endif
   }

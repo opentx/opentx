@@ -81,7 +81,7 @@
 #else
 #define TR_VARIO
 #endif
-#ifdef LOGS
+#ifdef SDCARD
 #define TR_SDCLOGGS      "SDCARD Logs  "
 #else
 #define TR_SDCLOGGS
@@ -96,18 +96,23 @@
 #else
 #define TR_SOUND         "Pip \0        "
 #endif
+#ifdef HAPTIC
+#define TR_HAPTIC        "Haptic\0      "
+#else
+#define TR_HAPTIC
+#endif
 #ifdef DEBUG
 #define TR_TEST          "Test\0        "
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO "Reset\0       " TR_VARIO TR_SDCLOGGS TR_TEST
+#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " "Reset\0       " TR_SOUND TR_HAPTIC TR_SOMO TR_VARIO TR_SDCLOGGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
 
 #define LEN_FUNCSOUNDS   "\006"
-#define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  ""Vibr1 ""Vibr2 ""Vibr3 "
+#define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
 #define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Tank""T1\0 ""T2\0 ""Spd\0""Dist""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Tid\0"
@@ -346,3 +351,5 @@
 #define TR_ARCHIVE_MODEL "Archive Model"
 #define TR_DELETE_MODEL  "Delete Model"
 #define TR_RESTORE_MODEL "Restore Model"
+#define TR_SDCARD_ERROR  "SDCARD Error"
+#define TR_NO_SDCARD     "No SDCARD"

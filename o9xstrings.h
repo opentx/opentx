@@ -366,6 +366,8 @@ extern const pm_char STR_LOAD_MODEL[];
 extern const pm_char STR_ARCHIVE_MODEL[];
 extern const pm_char STR_DELETE_MODEL[];
 extern const pm_char STR_RESTORE_MODEL[];
+extern const pm_char STR_SDCARD_ERROR[];
+extern const pm_char STR_NO_SDCARD[];
 #endif
 
 extern const pm_uchar font[];
