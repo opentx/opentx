@@ -193,8 +193,6 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
 #endif
 
-#define PPM_CENTER 1500
-
 FORCEINLINE void setupPulsesPPM()
 {
     int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;   //range of 0.7..1.7msec

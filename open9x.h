@@ -85,6 +85,8 @@ extern void board_init();
 
 #include "myeeprom.h"
 
+#define PPM_CENTER 1500
+
 #if defined(PCBARM)
 #include "eeprom_arm.h"
 #include "pulses_arm.h"
