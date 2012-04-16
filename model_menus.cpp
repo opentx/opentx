@@ -1662,7 +1662,7 @@ void menuProcMixAll(uint8_t event)
 
 void menuProcLimits(uint8_t event)
 {
-#ifdef LIMITS_US
+#ifdef PPM_CENTER_ADJUSTABLE
 #define LIMITS_ITEMS_COUNT 4
 #else
 #define LIMITS_ITEMS_COUNT 3
@@ -1672,7 +1672,7 @@ void menuProcLimits(uint8_t event)
 
   int8_t sub = m_posVert - 1;
 
-#ifdef LIMITS_US
+#ifdef PPM_CENTER_ADJUSTABLE
   if (sub >= 0) {
     lcd_outdezAtt(12*FW, 0, PPM_CENTER+g_model.servoCenter[sub]+g_chans512[sub]/2, 0);
     lcd_puts(12*FW, 0, STR_US);
@@ -1697,7 +1697,7 @@ void menuProcLimits(uint8_t event)
 
     LimitData *ld = limitaddress(k) ;
     
-#ifndef LIMITS_US
+#ifndef PPM_CENTER_ADJUSTABLE
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
 
     char swVal = '-';  // '-', '<', '>'
@@ -1753,7 +1753,7 @@ void menuProcLimits(uint8_t event)
           }
           break;
         case 3:
-#ifdef LIMITS_US
+#ifdef PPM_CENTER_ADJUSTABLE
           lcd_putcAtt(17*FW-2, y, ld->revert ? 127 : 126, attr);
 #else
           lcd_putsiAtt(18*FW, y, STR_MMMINV, ld->revert, attr);
@@ -1762,7 +1762,7 @@ void menuProcLimits(uint8_t event)
             CHECK_INCDEC_MODELVAR(event, ld->revert, 0, 1);
           }
           break;
-#ifdef LIMITS_US
+#ifdef PPM_CENTER_ADJUSTABLE
         case 4:
           lcd_outdezAtt(21*FW+2, y, PPM_CENTER+g_model.servoCenter[k], attr);
           if (active) {
@@ -2001,8 +2001,8 @@ void menuProcFunctionSwitches(uint8_t event)
 #define TELEM_COL2 (9*FW+2)
 void menuProcTelemetry(uint8_t event)
 {
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)//                                                                                                                  v  v  v  v 4 new menu items for baro alt/vario
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 29, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, 0,  (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 27, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #else
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 24, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #endif
@@ -2148,48 +2148,6 @@ void menuProcTelemetry(uint8_t event)
     lcd_outdezAtt(TELEM_COL2+FWNUM, y, 2+g_model.frsky.blades, sub==subN ? INVERS : 0);
     if (sub==subN)
       CHECK_INCDEC_MODELVAR(event, g_model.frsky.blades, 0, 2);
-  }
-  subN++;
-
-  if(s_pgOfs<subN) {
-    y = (subN-s_pgOfs)*FH;
-    lcd_putsLeft(y, STR_BARO_VARIO);
-  }
-  subN++;
-
-  if(s_pgOfs<subN) {//setup baro altimeter after point data to be used
-    y = (subN-s_pgOfs)*FH;
-    lcd_puts(4, y, STR_BARO_PR);
-    menu_lcd_onoff( TELEM_COL2, y, g_model.frsky.use_baroAltitude_ap, sub==subN ) ;
-    if (sub==subN)
-      CHECK_INCDEC_MODELVAR(event, g_model.frsky.use_baroAltitude_ap, 0, 1);
-  }
-  subN++;
-
-  if(s_pgOfs<subN) {//use barometer altitude only if ON and use GPS altitude if OFF
-    y = (subN-s_pgOfs)*FH;
-    lcd_puts(4, y, STR_BARO_ONLY);
-    menu_lcd_onoff( TELEM_COL2, y, g_model.frsky.use_baroAltitude_only, sub==subN ) ;
-    if (sub==subN)
-      CHECK_INCDEC_MODELVAR(event, g_model.frsky.use_baroAltitude_only, 0, 1);
-  }
-  subN++;
-
-  if(s_pgOfs<subN) {
-    y = (subN-s_pgOfs)*FH;
-    lcd_puts(4, y, STR_BARO_UP_LIM);
-    lcd_outdezAtt(TELEM_COL2+FWNUM+4, y, VARIO_LIM_MUL*g_model.frsky.varioSpeedUpMin, (sub==subN ? INVERS : 0)|PREC2);//TODO: EDIT DECIMALS HERE
-    if (sub==subN)
-      CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedUpMin, 0, 15);
-  }
-  subN++;
-
-  if(s_pgOfs<subN) {
-    y = (subN-s_pgOfs)*FH;
-    lcd_puts(4, y, STR_BARO_DWN_LIM);
-    lcd_outdezAtt(TELEM_COL2+FWNUM+4, y, -VARIO_LIM_MUL*g_model.frsky.varioSpeedDownMin, (sub==subN ? INVERS : 0)|PREC2);//TODO: EDIT DECIMALS HERE
-    if (sub==subN)
-      CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedDownMin, 0, 15);
   }
   subN++;
 #endif
