@@ -63,9 +63,13 @@ HAPTIC = NO
 # SPLASH on START
 SPLASH = YES
 
+# PPM center adjustable
+# Values = YES, NO
+PPM_CENTER_ADJUSTABLE = YES
+
 # Limits display in the LIMITS
 # Values = PERCENT, US
-LIMITS = PERCENT
+PPM_LIMITS_UNIT = PERCENT
 
 # Decimals display in the main view / PPM calibration, 
 # Values = YES, NO
@@ -352,8 +356,12 @@ endif
 
 ### Global Build-Option Directives ###
 
-ifeq ($(LIMITS), US)
-  CPPDEFS += -DLIMITS_US
+ifeq ($(PPM_CENTER_ADJUSTABLE), YES)
+  CPPDEFS += -DPPM_CENTER_ADJUSTABLE
+endif
+
+ifeq ($(PPM_LIMITS_UNIT), US)
+  CPPDEFS += -DPPM_LIMITS_UNIT_US
 endif
 
 ifeq ($(DECIMALS), YES)
