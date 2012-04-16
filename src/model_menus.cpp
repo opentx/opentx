@@ -2177,19 +2177,19 @@ void menuProcTelemetry(uint8_t event)
 
   if(s_pgOfs<subN) {
     y = (subN-s_pgOfs)*FH;
-    lcd_puts(4, y, STR_BARO_DWN_LIM);
-    lcd_outdezAtt(TELEM_COL2+FWNUM, y, -VARIO_LIM_MUL*g_model.frsky.varioSpeedDownMin, (sub==subN ? INVERS : 0)|PREC2);//TODO: EDIT DECIMALS HERE
+    lcd_puts(4, y, STR_BARO_UP_LIM);
+    lcd_outdezAtt(TELEM_COL2+FWNUM+4, y, VARIO_LIM_MUL*g_model.frsky.varioSpeedUpMin, (sub==subN ? INVERS : 0)|PREC2);//TODO: EDIT DECIMALS HERE
     if (sub==subN)
-      CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedDownMin, 0, 15);
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedUpMin, 0, 15);
   }
   subN++;
 
-  if(s_pgOfs<subN) {//g_model.frsky.varioSpeedUpMin
+  if(s_pgOfs<subN) {
     y = (subN-s_pgOfs)*FH;
-    lcd_puts(4, y, STR_BARO_UP_LIM);
-    lcd_outdezAtt(TELEM_COL2+FWNUM, y, VARIO_LIM_MUL*g_model.frsky.varioSpeedUpMin, (sub==subN ? INVERS : 0)|PREC2);//TODO: EDIT DECIMALS HERE
+    lcd_puts(4, y, STR_BARO_DWN_LIM);
+    lcd_outdezAtt(TELEM_COL2+FWNUM+4, y, -VARIO_LIM_MUL*g_model.frsky.varioSpeedDownMin, (sub==subN ? INVERS : 0)|PREC2);//TODO: EDIT DECIMALS HERE
     if (sub==subN)
-      CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedUpMin, 0, 15);
+      CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedDownMin, 0, 15);
   }
   subN++;
 #endif
