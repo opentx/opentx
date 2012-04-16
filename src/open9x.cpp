@@ -423,7 +423,7 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyRSSI[1].value;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyRSSI[0].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyHubData.baroAltitude_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyHubData.baroAltitude_full;
 #endif
 #if defined(FRSKY_HUB)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RPM) return frskyHubData.rpm;
@@ -440,7 +440,9 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyHubData.varioSpeed;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyTelemetry[0].min;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyTelemetry[1].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT) return frskyHubData.minAltitude_full;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_ALT) return frskyHubData.maxAltitude_full;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.minAltitude_full))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
 #endif
 #endif
   else return 0;
