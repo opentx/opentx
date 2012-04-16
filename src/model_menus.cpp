@@ -122,6 +122,11 @@ inline int8_t eeFindEmptyModel(uint8_t id, bool down)
   return i;
 }
 
+#ifdef SDCARD
+// TODO to be elsewhere if common to many menus
+const pm_char * s_sdcard_error = NULL;
+#endif
+
 void menuProcModelSelect(uint8_t event)
 {
   TITLE(STR_MENUMODELSEL);
@@ -138,7 +143,7 @@ void menuProcModelSelect(uint8_t event)
   }
 
 #if defined(SDCARD)
-  uint8_t _event = (s_warning || s_menu_count) ? 0 : event;
+  uint8_t _event = (s_warning || s_sdcard_error || s_menu_count) ? 0 : event;
 #else
   uint8_t _event = s_warning ? 0 : event;
 #endif
@@ -356,6 +361,12 @@ void menuProcModelSelect(uint8_t event)
   }
 
 #if defined(SDCARD)
+  if (s_sdcard_error) {
+    s_warning = s_sdcard_error;
+    displayWarning(event);
+    s_warning = NULL;
+  }
+
   if (s_menu_count) {
     const pm_char * result = displayMenu(event);
     if (result) {
@@ -369,7 +380,7 @@ void menuProcModelSelect(uint8_t event)
         }
       }
       else if (result == STR_ARCHIVE_MODEL) {
-        // TODO
+        s_sdcard_error = eeArchiveModel(sub);
       }
       else if (result == STR_RESTORE_MODEL) {
         // TODO
@@ -1651,14 +1662,22 @@ void menuProcMixAll(uint8_t event)
 
 void menuProcLimits(uint8_t event)
 {
-  MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0});
+#ifdef LIMITS_US
+#define LIMITS_ITEMS_COUNT 4
+#else
+#define LIMITS_ITEMS_COUNT 3
+#endif
+
+  MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, 0});
 
   int8_t sub = m_posVert - 1;
 
+#ifdef LIMITS_US
   if (sub >= 0) {
     lcd_outdezAtt(12*FW, 0, PPM_CENTER+g_model.servoCenter[sub]+g_chans512[sub]/2, 0);
     lcd_puts(12*FW, 0, STR_US);
   }
+#endif
 
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = (i+1)*FH;
@@ -1677,21 +1696,32 @@ void menuProcLimits(uint8_t event)
     }
 
     LimitData *ld = limitaddress(k) ;
+    
+#ifndef LIMITS_US
+    int16_t v = (ld->revert) ? -ld->offset : ld->offset;
+
+    char swVal = '-';  // '-', '<', '>'
+    if((g_chans512[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
+    if((g_chans512[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
+    putsChn(0, y, k+1, 0);
+    lcd_putcAtt(12*FW+5, y, swVal, 0);
+#endif
+
     int8_t limit = (g_model.extendedLimits ? 125 : 100);
 
     putsChn(0, y, k+1, 0);
 
-    for (uint8_t j=0; j<5; j++) {
+    for (uint8_t j=0; j<=LIMITS_ITEMS_COUNT; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
       switch(j)
       {
-         case 0:
+        case 0:
 #ifdef LIMITS_US
           lcd_outdezAtt(  8*FW, y,  ((ld->offset)*128) / 25, attr|PREC1);
 #else
-	  lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
-#endif	
+          lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
+#endif
           if (active) {
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS);
           }
@@ -1706,7 +1736,7 @@ void menuProcLimits(uint8_t event)
 #ifdef LIMITS_US
           lcd_outdezAtt(12*FW+1, y, (((int16_t)ld->min-100)*128) / 25, attr | INFLIGHT(ld->min));
 #else
-          lcd_outdezAtt(12*FW+1, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
+          lcd_outdezAtt(12*FW, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
 #endif
           if (active) {
             CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->min, -limit, 25, +100, STR_MINLIMIT);
@@ -1716,24 +1746,30 @@ void menuProcLimits(uint8_t event)
 #ifdef LIMITS_US
           lcd_outdezAtt(16*FW, y, (((int16_t)ld->max+100)*128) / 25, attr | INFLIGHT(ld->max));
 #else
-          lcd_outdezAtt(16*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
+          lcd_outdezAtt(17*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
 #endif
           if (active) {
             CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->max, -25, limit, -100, STR_MAXLIMIT);
           }
           break;
         case 3:
+#ifdef LIMITS_US
           lcd_putcAtt(17*FW-2, y, ld->revert ? 127 : 126, attr);
+#else
+          lcd_putsiAtt(18*FW, y, STR_MMMINV, ld->revert, attr);
+#endif
           if (active) {
             CHECK_INCDEC_MODELVAR(event, ld->revert, 0, 1);
           }
           break;
+#ifdef LIMITS_US
         case 4:
           lcd_outdezAtt(21*FW+2, y, PPM_CENTER+g_model.servoCenter[k], attr);
           if (active) {
             CHECK_INCDEC_MODELVAR(event, g_model.servoCenter[k], -125, +125);
           }
           break;
+#endif
       }
     }
   }
@@ -1923,6 +1959,12 @@ void menuProcFunctionSwitches(uint8_t event)
               break;
 #endif
             }
+#if defined(HAPTIC)
+            else if (sd->func == FUNC_HAPTIC) {
+              val_max = 3;
+              lcd_outdezAtt(21*FW, y, val_displayed, attr);
+            }
+#endif
 #if defined(SOMO)
             else if (sd->func == FUNC_PLAY_SOMO) {
               lcd_outdezAtt(21*FW, y, val_displayed, attr);

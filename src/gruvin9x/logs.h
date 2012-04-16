@@ -44,5 +44,7 @@ extern FIL g_oLogFile;
 extern void initLogs();
 extern void writeLogs();
 
+const pm_char *SDCARD_ERROR(FRESULT result);
+
 #endif
 

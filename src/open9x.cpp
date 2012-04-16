@@ -60,8 +60,11 @@ uint16_t g_time_per10;
 #endif
 
 #ifdef AUDIO
-//new audio object
 audioQueue  audio;
+#endif
+
+#ifdef HAPTIC
+hapticQueue  haptic;
 #endif
 
 uint8_t heartbeat;
@@ -905,7 +908,7 @@ uint8_t checkTrim(uint8_t event)
 
     if (beepTrim) {
       killEvents(event);
-      AUDIO_WARNING2();
+      AUDIO_TRIM_MIDDLE();
     }
     else {
 #if defined (AUDIO)
@@ -1382,6 +1385,13 @@ void evalFunctions()
           beep(3);
 #endif
         }
+
+#if defined(HAPTIC)
+        if (sd->func == FUNC_HAPTIC) {
+          hapticDefevent(sd->param);
+        }
+#endif
+
         active_functions |= mask;
       }
       else {
@@ -1937,7 +1947,7 @@ void perMain()
       if((inacCounter&0x3F)==10) AUDIO_INACTIVITY();
   }
 
-#if defined (LOGS)
+#if defined(SDCARD)
   writeLogs();
 #endif
 
@@ -2039,6 +2049,7 @@ void perMain()
 
 #if defined(PCBARM)
   AUDIO_HEARTBEAT();  // the queue processing
+  HAPTIC_HEARTBEAT();
 #endif
 
 }
@@ -2108,6 +2119,10 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
     AUDIO_HEARTBEAT();
+
+#ifdef HAPTIC
+    HAPTIC_HEARTBEAT();
+#endif
 
 #ifdef DEBUG
     // Record start time from TCNT1 to record excution time

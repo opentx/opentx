@@ -230,10 +230,6 @@ ifeq ($(FLIGHT_PHASES), YES)
   CPPDEFS += -DFLIGHT_PHASES
 endif
 
-ifeq ($(HAPTIC), YES)
-  CPPDEFS += -DHAPTIC
-endif
-
 # If ARDUPILOT-Support is enabled
 ifeq ($(EXT), ARDUPILOT)
   CPPDEFS += -DARDUPILOT
@@ -292,7 +288,7 @@ ifeq ($(PCB), ARM)
   # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/sdcard.c ersky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += audio.cpp
+  CPPSRC += audio.cpp haptic.cpp
   CPPSRC += ersky9x/sound.cpp
 endif
 
@@ -304,7 +300,7 @@ ifeq ($(PCB), V4)
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
-  CPPSRC += audio.cpp
+  CPPSRC += audio.cpp haptic.cpp
   CPPSRC += gruvin9x/gtime.cpp
   CPPSRC += gruvin9x/rtc.cpp
   CPPSRC += gruvin9x/ff.cpp
@@ -346,6 +342,12 @@ ifeq ($(PCB), STD)
   else
     CPPSRC += beeper.cpp 
   endif
+  
+  ifeq ($(HAPTIC), YES)
+   CPPDEFS += -DHAPTIC
+   CPPSRC += haptic.cpp
+  endif
+  
 endif
 
 ### Global Build-Option Directives ###

@@ -140,7 +140,7 @@ void setupPulsesPPM()                   // Don't enable interrupts through here
 
   pwmptr = PWM;
   // Now set up pulses
-#define PPM_CENTER 1500*2
+
   int16_t PPM_range = g_model.extendedLimits ? 640 * 2 : 512 * 2; //range of 0.7..1.7msec
 
   //Total frame length = 22.5msec
@@ -155,7 +155,7 @@ void setupPulsesPPM()                   // Don't enable interrupts through here
   uint16_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
   rest += (int16_t(g_model.ppmFrameLength)) * 1000;
   for (uint32_t i = 0; i < p; i++) { //NUM_CHNOUT
-    int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + PPM_CENTER;
+    int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CENTER;
     rest -= (v);
     *ptr++ = v; /* as Pat MacKenzie suggests */
   }

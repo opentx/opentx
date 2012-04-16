@@ -34,13 +34,6 @@
 #ifndef audio_h
 #define audio_h
 
-//#define ISER9X  //enable this define for er9x.  comment out for open9x
-
-#if defined(ISER9X)
-#define HAPTIC
-#define PCBSTD
-#endif
-
 #if defined(PCBARM)
 #include "ersky9x/sound.h"
 #endif
@@ -66,10 +59,10 @@ enum AUDIO_SOUNDS {
     AU_KEYPAD_DOWN,
     AU_MENUS,
     AU_TRIM_MOVE,
-    AU_TRIM_MIDDLE,
     AU_WARNING1,
     AU_WARNING2,
     AU_WARNING3,
+    AU_TRIM_MIDDLE,
     AU_TADA,
     AU_POT_STICK_MIDDLE,
     AU_MIX_WARNING_1,
@@ -93,11 +86,6 @@ enum AUDIO_SOUNDS {
     AU_FRSKY_ALARMC,
     AU_FRSKY_RATATA,
     AU_FRSKY_TICK,
-#ifdef HAPTIC
-    AU_FRSKY_HAPTIC1,
-    AU_FRSKY_HAPTIC2,
-    AU_FRSKY_HAPTIC3,
-#endif
     AU_FRSKY_LAST,
 };
 
@@ -109,9 +97,9 @@ class audioQueue
 
     // only difference between these two functions is that one does the
     // interupt queue (Now) and the other queues for playing ASAP.
-    void playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tRepeat=0, uint8_t tHaptic=0, int8_t tFreqIncr=0);
+    void playNow(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tRepeat=0, int8_t tFreqIncr=0);
 
-    void playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tRepeat=0, uint8_t tHaptic=0, int8_t tFreqIncr=0);
+    void playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tRepeat=0, int8_t tFreqIncr=0);
 
     inline bool busy() { return (toneTimeLeft > 0); }
 
@@ -184,13 +172,6 @@ class audioQueue
     uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
     uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
 
-#ifdef HAPTIC
-    uint8_t toneHaptic;
-    uint8_t hapticTick;
-    uint8_t queueToneHaptic[AUDIO_QUEUE_LENGTH];
-    uint8_t hapticSpinUpTime;
-#endif
-
 #if defined(PCBSTD)
     uint8_t toneCounter;
 #endif
@@ -200,8 +181,6 @@ class audioQueue
 extern audioQueue audio;
 
 void audioDefevent(uint8_t e);
-
-#define HAPTIC_SPINUP (10);
 
 #define AUDIO_KEYPAD_UP()   audioDefevent(AU_KEYPAD_UP)
 #define AUDIO_KEYPAD_DOWN() audioDefevent(AU_KEYPAD_DOWN)
@@ -225,6 +204,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_POT_STICK_MIDDLE() audioDefevent(AU_POT_STICK_MIDDLE)
 #define AUDIO_VARIO_UP()    audioDefevent(AU_KEYPAD_UP)
 #define AUDIO_VARIO_DOWN()  audioDefevent(AU_KEYPAD_DOWN)
+#define AUDIO_TRIM_MIDDLE() audioDefevent(AU_TRIM_MIDDLE)
 
 #if defined(PCBSTD)
 #define AUDIO_DRIVER()      audio.driver()

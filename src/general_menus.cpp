@@ -71,6 +71,15 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcDiagCalib
 };
 
+#define GENERAL_PARAM_OFS   17*FW
+uint8_t onoffMenuItem( uint8_t value, uint8_t y, const prog_char *s, uint8_t condition, uint8_t event )
+{
+  lcd_putsLeft(y, s);
+  menu_lcd_onoff( GENERAL_PARAM_OFS, y, value, condition ) ;
+  if (condition) CHECK_INCDEC_GENVAR(event, value, 0, 1);
+  return value ;
+}
+
 enum menuProcSetupItems {
   ITEM_SETUP_BASE=18,
 #ifdef PCBARM
@@ -84,6 +93,7 @@ enum menuProcSetupItems {
 #ifdef HAPTIC
   ITEM_SETUP_HAPTIC_MODE,
   ITEM_SETUP_HAPTIC_STRENGTH,
+  ITEM_SETUP_HAPTIC_LENGTH,
 #endif
 #ifdef SPLASH
   ITEM_SETUP_SPLASH,
@@ -98,16 +108,13 @@ enum menuProcSetupItems {
 
 void menuProcSetup(uint8_t event)
 {
-#undef  PARAM_OFS
-#define PARAM_OFS   17*FW
-
 #ifdef AUDIO
 #define AUDIO_ZEROS  0,
 #else
 #define AUDIO_ZEROS
 #endif
 #ifdef HAPTIC
-#define HAPTIC_ZEROS 0, 0,
+#define HAPTIC_ZEROS 0, 0, 0,
 #else
 #define HAPTIC_ZEROS
 #endif
@@ -135,7 +142,7 @@ void menuProcSetup(uint8_t event)
   uint8_t subN = 1;
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_BEEPERMODE);
-    lcd_putsiAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE, 2+g_eeGeneral.beeperMode, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(GENERAL_PARAM_OFS - 2*FW, y, STR_VBEEPMODE, 2+g_eeGeneral.beeperMode, (sub==subN ? INVERS:0));
     if(sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperMode, -2, 1);
 #if defined(FRSKY)
@@ -149,7 +156,7 @@ void menuProcSetup(uint8_t event)
   if(s_pgOfs<subN) {
     uint8_t current_volume = g_eeGeneral.speakerVolume;
     lcd_putsLeft(y, PSTR("Speaker Volume")); // TODO translations
-    lcd_outdezAtt(PARAM_OFS, y, current_volume, (sub==subN ? INVERS : 0)|LEFT);
+    lcd_outdezAtt(GENERAL_PARAM_OFS, y, current_volume, (sub==subN ? INVERS : 0)|LEFT);
     if(sub==subN) {
       CHECK_INCDEC_GENVAR(event, current_volume, 0, NUM_VOL_LEVELS-1);
       if (current_volume != g_eeGeneral.speakerVolume) {
@@ -162,7 +169,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_BEEPERLEN);
-    lcd_putsiAtt(PARAM_OFS - 2*FW, y, STR_VBEEPLEN, 2+g_eeGeneral.beeperLength, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(GENERAL_PARAM_OFS - 2*FW, y, STR_VBEEPLEN, 2+g_eeGeneral.beeperLength, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperLength, -2, 2);
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -170,7 +177,7 @@ void menuProcSetup(uint8_t event)
 #ifdef AUDIO
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_SPKRPITCH);
-    lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.speakerPitch,(sub==subN ? INVERS : 0)|LEFT);
+    lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerPitch,(sub==subN ? INVERS : 0)|LEFT);
     if (sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 100);
     }
@@ -181,33 +188,38 @@ void menuProcSetup(uint8_t event)
 #ifdef HAPTIC
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_HAPTICMODE);
-    lcd_putsiAtt(PARAM_OFS - 2*FW, y, STR_VBEEPMODE, 2+g_eeGeneral.hapticMode, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(GENERAL_PARAM_OFS - 2*FW, y, STR_VBEEPMODE, 2+g_eeGeneral.hapticMode, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticMode, -2, 1);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_HAPTICSTRENGTH);
-    lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.hapticStrength, (sub==subN ? INVERS : 0)|LEFT);
+    lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.hapticStrength, (sub==subN ? INVERS : 0)|LEFT);
     if (sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticStrength, 0, 5);
     }
     if((y+=FH)>7*FH) return;
   }subN++;
+  
+  if(s_pgOfs<subN) {
+    lcd_putsLeft( y, STR_HAPTICLENGTH);
+    lcd_putsiAtt(GENERAL_PARAM_OFS - 2*FW, y, STR_VBEEPLEN, 2+g_eeGeneral.hapticLength, (sub==subN ? INVERS:0));
+    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticLength, -2, 2);
+    if((y+=FH)>7*FH) return;
+  }subN++;  
+  
 #endif
 
-// TODO port onoffMenuItem here to save flash
 #if defined(PCBARM)
   if(s_pgOfs<subN) {
-    lcd_putsLeft(y, PSTR("Optrex Display"));
-    menu_lcd_onoff(PARAM_OFS, y, g_eeGeneral.optrexDisplay, sub==subN) ;
-    if (sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.optrexDisplay, 0, 1);
+    g_eeGeneral.optrexDisplay = onoffMenuItem( g_eeGeneral.optrexDisplay, y, PSTR("Optrex Display"), sub==subN, event ) ;
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
     lcd_putsLeft(y, PSTR("Brightness")); // TODO translations in the whole file ...
-    lcd_outdezAtt(PARAM_OFS, y, 100-g_eeGeneral.backlightBright, (sub==subN ? INVERS : 0)|LEFT) ;
+    lcd_outdezAtt(GENERAL_PARAM_OFS, y, 100-g_eeGeneral.backlightBright, (sub==subN ? INVERS : 0)|LEFT) ;
     if(sub==subN) {
       uint8_t b ;
       b = 100 - g_eeGeneral.backlightBright;
@@ -221,7 +233,7 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_CONTRAST);
-    lcd_outdezAtt(PARAM_OFS,y,g_eeGeneral.contrast,(sub==subN ? INVERS : 0)|LEFT);
+    lcd_outdezAtt(GENERAL_PARAM_OFS,y,g_eeGeneral.contrast,(sub==subN ? INVERS : 0)|LEFT);
     if(sub==subN) {
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
       lcdSetRefVolt(g_eeGeneral.contrast);
@@ -231,14 +243,14 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y,STR_BATTERYWARNING);
-    putsVolts(PARAM_OFS, y, g_eeGeneral.vBatWarn, (sub==subN ? INVERS : 0)|LEFT);
+    putsVolts(GENERAL_PARAM_OFS, y, g_eeGeneral.vBatWarn, (sub==subN ? INVERS : 0)|LEFT);
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y,STR_INACTIVITYALARM);
-    lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.inactivityTimer, (sub==subN ? INVERS : 0)|LEFT);
+    lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.inactivityTimer, (sub==subN ? INVERS : 0)|LEFT);
     lcd_putc(lcd_lastPos, y, 'm');
     if(sub==subN) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
     if((y+=FH)>7*FH) return;
@@ -246,42 +258,34 @@ void menuProcSetup(uint8_t event)
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y,STR_FILTERADC);
-    lcd_putsiAtt(PARAM_OFS, y, STR_ADCFILTER, g_eeGeneral.filterInput, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_ADCFILTER, g_eeGeneral.filterInput, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.filterInput, 0, 2);
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y,STR_THROTTLEREVERSE);
-    menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.throttleReversed, sub==subN ) ;
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.throttleReversed, 0, 1);
+    g_eeGeneral.throttleReversed = onoffMenuItem( g_eeGeneral.throttleReversed, y, STR_THROTTLEREVERSE, sub==subN, event ) ;
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_MINUTEBEEP);
-    menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.minuteBeep, sub==subN ) ;
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.minuteBeep, 0, 1);
+    g_eeGeneral.minuteBeep = onoffMenuItem( g_eeGeneral.minuteBeep, y, STR_MINUTEBEEP, sub==subN, event ) ;
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_BEEPCOUNTDOWN);
-    menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.preBeep, sub==subN ) ;
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.preBeep, 0, 1);
+    g_eeGeneral.preBeep = onoffMenuItem( g_eeGeneral.preBeep, y, STR_BEEPCOUNTDOWN, sub==subN, event ) ;
     if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-      lcd_putsLeft( y, STR_FLASHONBEEP);
-      menu_lcd_onoff( PARAM_OFS, y, g_eeGeneral.flashBeep, sub==subN ) ;
-      if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.flashBeep, 0, 1);
-      if((y+=FH)>7*FH) return;
+    g_eeGeneral.flashBeep = onoffMenuItem( g_eeGeneral.flashBeep, y, STR_FLASHONBEEP, sub==subN, event ) ;
+    if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_LIGHTSWITCH);
-    putsSwitches(PARAM_OFS,y,g_eeGeneral.lightSw,sub==subN ? INVERS : 0);
+    putsSwitches(GENERAL_PARAM_OFS,y,g_eeGeneral.lightSw,sub==subN ? INVERS : 0);
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightSw, SWITCH_OFF, SWITCH_ON);
     if((y+=FH)>7*FH) return;
   }subN++;
@@ -289,11 +293,11 @@ void menuProcSetup(uint8_t event)
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_LIGHTOFFAFTER);
     if(g_eeGeneral.lightAutoOff) {
-      lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.lightAutoOff*5,LEFT|(sub==subN ? INVERS : 0));
+      lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.lightAutoOff*5,LEFT|(sub==subN ? INVERS : 0));
       lcd_putc(lcd_lastPos, y, 's');
     }
     else {
-      lcd_putsiAtt(PARAM_OFS, y, STR_OFFON, 0,(sub==subN ? INVERS:0));
+      lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_OFFON, 0,(sub==subN ? INVERS:0));
     }
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
     if((y+=FH)>7*FH) return;
@@ -301,77 +305,47 @@ void menuProcSetup(uint8_t event)
 
 #ifdef SPLASH
   if(s_pgOfs<subN) {
-      uint8_t b = 1-g_eeGeneral.disableSplashScreen;
-      lcd_putsLeft( y,STR_SPLASHSCREEN);
-      menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
-      if(sub==subN)
-      {
-          CHECK_INCDEC_GENVAR(event, b, 0, 1);
-          g_eeGeneral.disableSplashScreen = 1-b;
-      }
-      if((y+=FH)>7*FH) return;
+    uint8_t b = 1-g_eeGeneral.disableSplashScreen;
+    g_eeGeneral.disableSplashScreen = 1 - onoffMenuItem( b, y, STR_SPLASHSCREEN, sub==subN, event ) ;
+    if((y+=FH)>7*FH) return;
   }subN++;
 #endif
 
   if(s_pgOfs<subN) {
-      uint8_t b = 1-g_eeGeneral.disableThrottleWarning;
-      lcd_putsLeft( y,STR_THROTTLEWARNING);
-      menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
-      if(sub==subN)
-      {
-          CHECK_INCDEC_GENVAR(event, b, 0, 1);
-          g_eeGeneral.disableThrottleWarning = 1-b;
-      }
-      if((y+=FH)>7*FH) return;
+    uint8_t b = 1-g_eeGeneral.disableThrottleWarning;
+    g_eeGeneral.disableThrottleWarning = 1-onoffMenuItem( b, y, STR_THROTTLEWARNING, sub==subN, event ) ;
+    if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
       lcd_putsLeft( y, STR_SWITCHWARNING);
-      lcd_putsiAtt(PARAM_OFS, y, STR_WARNSW, 1+g_eeGeneral.switchWarning, (sub==subN ? INVERS:0));
+      lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_WARNSW, 1+g_eeGeneral.switchWarning, (sub==subN ? INVERS:0));
       if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchWarning, -1, 1);
       if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-      uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-      lcd_putsLeft( y, STR_MEMORYWARNING);
-      menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
-      if(sub==subN)
-      {
-          CHECK_INCDEC_GENVAR(event, b, 0, 1);
-          g_eeGeneral.disableMemoryWarning = 1-b;
-      }
-      if((y+=FH)>7*FH) return;
+    uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
+    g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem( b, y, STR_MEMORYWARNING, sub==subN, event ) ;
+    if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
-      uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-      lcd_putsLeft( y,STR_ALARMWARNING);
-      menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
-      if(sub==subN)
-      {
-          CHECK_INCDEC_GENVAR(event, b, 0, 1);
-          g_eeGeneral.disableAlarmWarning = 1-b;
-      }
-      if((y+=FH)>7*FH) return;
+    uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
+    g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem( b, y, STR_ALARMWARNING, sub==subN, event ) ;
+    if((y+=FH)>7*FH) return;
   }subN++;
 
 #ifdef FRSKY
   if(s_pgOfs<subN) {
-      uint8_t b = g_eeGeneral.enableTelemetryAlarm;
-      lcd_putsLeft( y,STR_NODATAALARM);
-      menu_lcd_onoff( PARAM_OFS, y, b, sub==subN ) ;
-      if(sub==subN)
-      {
-          CHECK_INCDEC_GENVAR(event, b, 0, 1);
-          g_eeGeneral.enableTelemetryAlarm = b;
-      }
-      if((y+=FH)>7*FH) return;
+    uint8_t b = g_eeGeneral.enableTelemetryAlarm;
+    g_eeGeneral.disableAlarmWarning = onoffMenuItem( b, y, STR_NODATAALARM, sub==subN, event ) ;
+    if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
     lcd_putsLeft(y, STR_TIMEZONE);
-    lcd_outdezAtt(PARAM_OFS, y, g_eeGeneral.timezone, LEFT|(sub==subN ? INVERS : 0));
+    lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.timezone, LEFT|(sub==subN ? INVERS : 0));
     if (sub==subN)
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
     if((y+=FH)>7*FH) return;
@@ -379,7 +353,7 @@ void menuProcSetup(uint8_t event)
     
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_GPSCOORD);
-    lcd_putsiAtt(PARAM_OFS, y, STR_GPSFORMAT, g_eeGeneral.gpsFormat, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_GPSFORMAT, g_eeGeneral.gpsFormat, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.gpsFormat, 0, 1);
     if((y+=FH)>7*FH) return;
   }subN++;   

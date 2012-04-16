@@ -210,7 +210,11 @@ FORCEINLINE void setupPulsesPPM()
     uint16_t rest = 22500u*2-q; //Minimum Framelen=22.5 ms
     rest += (int16_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=0; i<p; i++) {
+#ifdef LIMITS_US
       int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*(PPM_CENTER+g_model.servoCenter[i]);
+#else
+      int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CENTER;
+#endif
       rest -= v;
       *ptr++ = v - q; /* as Pat MacKenzie suggests, reviewed and modified by Cam */
       *ptr++ = q;
@@ -817,7 +821,11 @@ void setupPulsesPPM16()
     uint16_t rest=22500u*2-q; //Minimum Framelen=22.5 ms
     rest += (int16_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=p-8; i<p; i++) { //NUM_CHNOUT
+#ifdef LIMITS_US
       int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*(PPM_CENTER+g_model.servoCenter[i]);
+#else
+      int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CENTER;
+#endif
       rest -= v;
       *ptr++ = q;
       *ptr++ = v - q; /* as Pat MacKenzie suggests, reviewed and modified by Cam */

@@ -526,6 +526,34 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
   return true;
 }
 
+#ifdef SDCARD
+const pm_char * eeArchiveModel(uint8_t i_fileSrc)
+{
+  char buf[15];
+  FIL archiveFile;
+
+  eeLoadModelName(i_fileSrc, buf);
+
+  FRESULT result = f_open(&archiveFile, buf, FA_OPEN_ALWAYS | FA_WRITE);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  EFile theFile2;
+  theFile2.openRd(i_fileSrc);
+
+  uint8_t len;
+  while ((len=theFile2.read((uint8_t *)buf, 15)))
+  {
+    for (uint8_t i=0; i<len; i++)
+      f_putc(buf[i], &g_oLogFile);
+  }
+
+  f_close(&g_oLogFile);
+  return NULL;
+}
+#endif
+
 void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t*buf, uint16_t i_len, uint8_t sync_write)
 {
   create(i_fileId, typ, sync_write);
@@ -718,7 +746,7 @@ void eeLoadModel(uint8_t id)
     resetProto();
     resetAll();
 
-#ifdef LOGS
+#ifdef SDCARD
     initLogs();
 #endif
   }

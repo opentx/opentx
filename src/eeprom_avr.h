@@ -214,5 +214,9 @@ uint16_t evalChkSum();
 #define eeCopyModel(dst, src) theFile.copy(FILE_MODEL(dst), FILE_MODEL(src))
 #define eeSwapModels(id1, id2) EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2))
 
+#ifdef SDCARD
+const pm_char * eeArchiveModel(uint8_t i_fileSrc);
+#endif
+
 #endif
 /*eof*/

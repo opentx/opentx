@@ -107,15 +107,20 @@ void initLogs()
     else
     {
       g_logState = -result;
-      if (result == FR_NOT_READY)
-        g_logError = PSTR("NO SDCARD");
-      else
-        g_logError = PSTR("SDCARD ERROR");
+      g_logError = SDCARD_ERROR(result);
       return;
     }
   }
 
   // g_logFilename should now be set appropriately.
+}
+
+const pm_char *SDCARD_ERROR(FRESULT result)
+{
+  if (result == FR_NOT_READY)
+    return STR_NO_SDCARD;
+  else
+    return STR_SDCARD_ERROR;
 }
 
 void writeLogs()

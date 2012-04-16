@@ -251,15 +251,18 @@ enum Functions {
   FUNC_TRAINER_THR,
   FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
+  FUNC_RESET,
   FUNC_PLAY_SOUND,
+#ifdef HAPTIC
+  FUNC_HAPTIC,
+#endif
 #ifdef SOMO
   FUNC_PLAY_SOMO,
 #endif
-  FUNC_RESET,
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   FUNC_VARIO,
 #endif
-#ifdef LOGS
+#ifdef SDCARD
   FUNC_LOGS,
 #endif
 #ifdef DEBUG
