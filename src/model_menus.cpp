@@ -1341,25 +1341,25 @@ void menuProcMixOne(uint8_t event)
         lcd_putsiAtt(10*FW, y, STR_VMLTPX, md2->mltpx, attr);
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->mltpx, 0, 2);
         break;
-      case MIX_FIELD_DELAY_DOWN:
-        lcd_puts(  2*FW,y,STR_DELAYDOWN);
-        lcd_outdezAtt(FW*16,y,md2->delayDown,attr);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayDown, 0,15);
-        break;
       case MIX_FIELD_DELAY_UP:
         lcd_puts(  2*FW,y,STR_DELAYUP);
         lcd_outdezAtt(FW*16,y,md2->delayUp,attr);
         if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayUp, 0,15);
         break;
-      case MIX_FIELD_SLOW_DOWN:
-        lcd_puts(  2*FW,y,STR_SLOWDOWN);
-        lcd_outdezAtt(FW*16,y,md2->speedDown,attr);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedDown, 0,15);
+      case MIX_FIELD_DELAY_DOWN:
+        lcd_puts(  2*FW,y,STR_DELAYDOWN);
+        lcd_outdezAtt(FW*16,y,md2->delayDown,attr);
+        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayDown, 0,15);
         break;
       case MIX_FIELD_SLOW_UP:
         lcd_puts(  2*FW,y,STR_SLOWUP);
         lcd_outdezAtt(FW*16,y,md2->speedUp,attr);
         if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedUp, 0,15);
+        break;
+      case MIX_FIELD_SLOW_DOWN:
+        lcd_puts(  2*FW,y,STR_SLOWDOWN);
+        lcd_outdezAtt(FW*16,y,md2->speedDown,attr);
+        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedDown, 0,15);
         break;
     }
   }
@@ -1655,6 +1655,11 @@ void menuProcLimits(uint8_t event)
 
   int8_t sub = m_posVert - 1;
 
+  if (sub >= 0) {
+    lcd_outdezAtt(12*FW, 0, PPM_CENTER+g_model.servoCenter[sub]+g_chans512[sub]/2, 0);
+    lcd_puts(12*FW, 0, STR_US);
+  }
+
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = (i+1)*FH;
     uint8_t k = i+s_pgOfs;
@@ -1694,13 +1699,21 @@ void menuProcLimits(uint8_t event)
           }
           break;
         case 1:
+#ifdef LIMITS_US
+          lcd_outdezAtt(12*FW+1, y, (((int16_t)ld->min-100)*128) / 25, attr | INFLIGHT(ld->min));
+#else
           lcd_outdezAtt(12*FW+1, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
+#endif
           if (active) {
             CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->min, -limit, 25, +100, STR_MINLIMIT);
           }
           break;
         case 2:
+#ifdef LIMITS_US
+          lcd_outdezAtt(16*FW, y, (((int16_t)ld->max+100)*128) / 25, attr | INFLIGHT(ld->max));
+#else
           lcd_outdezAtt(16*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
+#endif
           if (active) {
             CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->max, -25, limit, -100, STR_MAXLIMIT);
           }
@@ -1712,7 +1725,7 @@ void menuProcLimits(uint8_t event)
           }
           break;
         case 4:
-          lcd_outdezAtt(21*FW+2, y, 1500+g_model.servoCenter[k], attr);
+          lcd_outdezAtt(21*FW+2, y, PPM_CENTER+g_model.servoCenter[k], attr);
           if (active) {
             CHECK_INCDEC_MODELVAR(event, g_model.servoCenter[k], -125, +125);
           }

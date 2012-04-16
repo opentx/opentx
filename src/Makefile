@@ -63,7 +63,11 @@ HAPTIC = NO
 # SPLASH on START
 SPLASH = YES
 
-# Decimals display in the main view (PPM calibration, 
+# Limits display in the LIMITS
+# Values = PERCENT, US
+LIMITS = PERCENT
+
+# Decimals display in the main view / PPM calibration, 
 # Values = YES, NO
 DECIMALS = YES
 
@@ -345,6 +349,10 @@ ifeq ($(PCB), STD)
 endif
 
 ### Global Build-Option Directives ###
+
+ifeq ($(LIMITS), US)
+  CPPDEFS += -DLIMITS_US
+endif
 
 ifeq ($(DECIMALS), YES)
   CPPDEFS += -DDECIMALS_DISPLAYED

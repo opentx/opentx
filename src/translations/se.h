@@ -281,6 +281,7 @@
 #define TR_THRTHP       "THR\015TH%"
 #define TR_TOT          "TOT"
 #define TR_TMR1LATMAXUS "Tmr1Lat max\003us"
+#define STR_US (STR_TMR1LATMAXUS+12)
 #define TR_TMR1LATMINUS "Tmr1Lat min\003us"
 #define TR_TMR1JITTERUS "Tmr1 Jitter\003us"
 #define TR_TMAINMAXMS   "Tmain max\005ms"
