@@ -1686,8 +1686,12 @@ void menuProcLimits(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
       switch(j)
       {
-        case 0:
-          lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
+         case 0:
+#ifdef LIMITS_US
+          lcd_outdezAtt(  8*FW, y,  ((ld->offset)*128) / 25, attr|PREC1);
+#else
+	  lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
+#endif	
           if (active) {
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS);
           }
