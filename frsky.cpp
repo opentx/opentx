@@ -649,7 +649,7 @@ void check_frsky()
     int16_t verticalSpeed = 0;
     //vertical speed in 0.01m/s now
     if(g_model.frsky.use_baroAltitude_ap)//means if additional data enabled then _ap unit is 0.01
-      verticalSpeed = limit((int16_t)-VARIO_SPEED_LIMIT*100, (int16_t)(frskyHubData.varioSpeed), (int16_t)+VARIO_SPEED_LIMIT*100);
+      verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
     else
       verticalSpeed = limit((int16_t)-VARIO_SPEED_LIMIT, (int16_t)(frskyHubData.varioSpeed), (int16_t)+VARIO_SPEED_LIMIT)*100;
       
