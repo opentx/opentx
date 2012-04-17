@@ -145,7 +145,7 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     queueToneFreq[t_queueWidx] = ((s_beeper && tFreq) ? tFreq + g_eeGeneral.speakerPitch + BEEP_OFFSET : 0); // add pitch compensator
     queueToneLength[t_queueWidx] = getToneLength(tLen);
     queueTonePause[t_queueWidx] = tPause;
-    queueToneRepeat[t_queueWidx] = tRepeat;
+    queueToneRepeat[t_queueWidx] = tRepeat -1;
     queueToneFreqIncr[t_queueWidx] = tFreqIncr;
     t_queueWidx = next_queueWidx;
   }

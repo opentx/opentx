@@ -94,8 +94,14 @@ inline void hapticAudioEvent(uint8_t e)
 {
   if (g_eeGeneral.hapticMode>=-1 && e<=AU_ERROR)
     hapticDefevent(1);
+  else if (e == AU_TIMER_30)
+    hapticDefevent(3);
+  else if (e == AU_TIMER_20)
+    hapticDefevent(2);   
+  else if (e == AU_TIMER_10)
+    hapticDefevent(1);   
   else if (g_eeGeneral.hapticMode==0 && e>=AU_WARNING1)
-    hapticDefevent(1);
+    hapticDefevent(1);     
   else if (g_eeGeneral.hapticMode>0)
     hapticDefevent(0);
 }
@@ -104,6 +110,12 @@ inline void hapticBeepEvent(uint8_t e)
 {
   if (g_eeGeneral.hapticMode>=-1 && e>=3)
     hapticDefevent(1);
+  else if (e == AU_TIMER_30)
+    hapticDefevent(3);
+  else if (e == AU_TIMER_20)
+    hapticDefevent(2);   
+  else if (e == AU_TIMER_10)
+    hapticDefevent(1);     
   else if (g_eeGeneral.hapticMode==0 && e>0)
     hapticDefevent(1);
   else if (g_eeGeneral.hapticMode>0)
