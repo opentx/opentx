@@ -72,7 +72,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 };
 
 #define GENERAL_PARAM_OFS   17*FW
-uint8_t onoffMenuItem( uint8_t value, uint8_t y, const prog_char *s, uint8_t condition, uint8_t event )
+uint8_t onoffMenuItem( uint8_t value, uint8_t y, const pm_char *s, uint8_t condition, uint8_t event )
 {
   lcd_putsLeft(y, s);
   menu_lcd_onoff( GENERAL_PARAM_OFS, y, value, condition ) ;
