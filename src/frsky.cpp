@@ -255,30 +255,31 @@ void parseTelemHubByte(uint8_t byte)
         }
         if(++frskyHubData.queuePointer>=5)
           frskyHubData.queuePointer = 0;
+
+        frskyHubData.baroAltitudeQueue_Acc[frskyHubData.queuePointer] = 
+          frskyHubData.baroAltitude_full - frskyHubData.baroAltitude_full_prev;
+
+        frskyHubData.baroAltitude_full_prev = frskyHubData.baroAltitude_full;
           
-        int8_t tmp = frskyHubData.queuePointer + 1;
-        if(tmp >= 5)
-          tmp = 0;
-          
-        frskyHubData.baroAltitudeQueue_full[frskyHubData.queuePointer] = 
-          frskyHubData.baroAltitude_full;
-          
-        frskyHubData.varioSpeed =
-          frskyHubData.baroAltitudeQueue_full[frskyHubData.queuePointer] -
-          frskyHubData.baroAltitudeQueue_full[tmp];  
+        frskyHubData.varioSpeed = 0;
+		    for(uint8_t vi=0; vi<5; vi++){
+          frskyHubData.varioSpeed += frskyHubData.baroAltitudeQueue_Acc[vi];
+			  }		  
 
         // First received barometer altitude => Altitude offset
         if (!frskyHubData.baroAltitudeOffset)
-          frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_full;
-        frskyHubData.baroAltitude_full += frskyHubData.baroAltitudeOffset;
+          frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
+
+        frskyHubData.baroAltitude_bp += frskyHubData.baroAltitudeOffset;
+		
         if(g_model.frsky.use_baroAltitude_only){
-          if (frskyHubData.baroAltitude_full > frskyHubData.maxAltitude_full)
-            frskyHubData.maxAltitude_full = frskyHubData.baroAltitude_full;
-          if (frskyHubData.baroAltitude_full < frskyHubData.minAltitude_full)
-            frskyHubData.minAltitude_full = frskyHubData.baroAltitude_full;
+    	    frskyHubData.Altitude_show = frskyHubData.gpsAltitude_bp;
+          if (frskyHubData.baroAltitude_bp > frskyHubData.maxAltitude)
+            frskyHubData.maxAltitude = frskyHubData.baroAltitude_bp;
+          if (frskyHubData.baroAltitude_bp < frskyHubData.minAltitude)
+            frskyHubData.minAltitude = frskyHubData.baroAltitude_bp;
         }
 
-        
       }
       break;
 
@@ -289,13 +290,16 @@ void parseTelemHubByte(uint8_t byte)
         frskyHubData.gpsAltitude_full = frskyHubData.gpsAltitude_bp;
       }
       if (!frskyHubData.gpsAltitudeOffset)
-        frskyHubData.gpsAltitudeOffset = -frskyHubData.gpsAltitude_full;
-      frskyHubData.gpsAltitude_full += frskyHubData.gpsAltitudeOffset;
+        frskyHubData.gpsAltitudeOffset = -frskyHubData.gpsAltitude_bp;
+
+      frskyHubData.gpsAltitude_bp += frskyHubData.gpsAltitudeOffset;
+
       if(!g_model.frsky.use_baroAltitude_only){
-        if (frskyHubData.gpsAltitude_full > frskyHubData.maxAltitude_full)
-          frskyHubData.maxAltitude_full = frskyHubData.gpsAltitude_full;
-        if (frskyHubData.gpsAltitude_full < frskyHubData.minAltitude_full)
-          frskyHubData.minAltitude_full = frskyHubData.gpsAltitude_full;
+  	    frskyHubData.Altitude_show = frskyHubData.gpsAltitude_bp;
+        if (frskyHubData.gpsAltitude_bp > frskyHubData.maxAltitude)
+          frskyHubData.maxAltitude = frskyHubData.gpsAltitude_bp;
+        if (frskyHubData.gpsAltitude_bp < frskyHubData.minAltitude)
+          frskyHubData.minAltitude = frskyHubData.gpsAltitude_bp;
       }      
       if (!frskyHubData.pilotLatitude && !frskyHubData.pilotLongitude) {
         // First received GPS position => Pilot GPS position
@@ -1101,21 +1105,8 @@ void menuProcFrsky(uint8_t event)
               putsTime(x, 1+FH+2*FH*i, value, att, att);
             }
             else {
-              if(g_model.frsky.use_baroAltitude_ap & 
-                  ((field == TELEM_VSPD) | 
-                  (field == TELEM_ALT) |
-                  (field == TELEM_MIN_ALT) |
-                  (field == TELEM_MAX_ALT))){
-                switch(field){
-                  case TELEM_VSPD:
-                    putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att|PREC2);
-                    break;
-                  case TELEM_ALT:
-                  case TELEM_MIN_ALT:
-                  case TELEM_MAX_ALT:
-                    putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value/100, att);
-                    break;
-                }
+              if(g_model.frsky.use_baroAltitude_ap & (field == TELEM_VSPD)){
+                putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att|PREC2);
               }
               else {
                 putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
