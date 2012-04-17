@@ -675,9 +675,9 @@ void check_frsky()
           audio.playVario(SoundAltBeepNextFreq, 1);
       }
     }  
-  }
 #endif //AUDIO
 #endif //FRSKY_HUB || WS_HOW_HIGH
+  }
 }
 
 bool FRSKY_alarmRaised(uint8_t idx)
