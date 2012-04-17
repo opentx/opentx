@@ -241,7 +241,7 @@ void parseTelemHubByte(uint8_t byte)
       if (frskyHubData.temperature2 > frskyHubData.maxTemperature2)
         frskyHubData.maxTemperature2 = frskyHubData.temperature2;
       break;
-
+#if defined(VARIO_EXTENDED)
     case offsetof(FrskyHubData, baroAltitude_bp):
     case offsetof(FrskyHubData, baroAltitude_ap):
       if((!g_model.frsky.use_baroAltitude_ap & (offsetof(FrskyHubData, baroAltitude_bp) == (uint8_t)structPos)) |
@@ -282,7 +282,35 @@ void parseTelemHubByte(uint8_t byte)
 
       }
       break;
+#else
+    case offsetof(FrskyHubData, baroAltitude_bp):
+      // First received barometer altitude => Altitude offset
+      if (!frskyHubData.baroAltitudeOffset)
+        frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
+      frskyHubData.baroAltitude_bp += frskyHubData.baroAltitudeOffset;
+      if (frskyHubData.baroAltitude_bp > frskyHubData.maxAltitude)
+        frskyHubData.maxAltitude = frskyHubData.baroAltitude_bp;
+      if (frskyHubData.baroAltitude_bp < frskyHubData.minAltitude)
+        frskyHubData.minAltitude = frskyHubData.baroAltitude_bp;
 
+      {
+        int16_t actVario = frskyHubData.baroAltitude_bp - frskyHubData.lastBaroAltitude_bp;
+        frskyHubData.varioAcc2 = frskyHubData.varioAcc2 - frskyHubData.varioQueue[frskyHubData.queuePointer];
+        frskyHubData.varioQueue[frskyHubData.queuePointer] = actVario;
+        uint8_t tmp = frskyHubData.queuePointer + 5;
+        if (tmp >= 10)
+          tmp -= 10;
+        tmp = (uint8_t)frskyHubData.varioQueue[tmp];
+        frskyHubData.varioAcc2 = frskyHubData.varioAcc2 + (int8_t)tmp;
+        frskyHubData.varioAcc1 = frskyHubData.varioAcc1 + actVario - (int8_t)tmp;
+        frskyHubData.varioSpeed = frskyHubData.varioAcc1 - frskyHubData.varioAcc2;
+        if (++frskyHubData.queuePointer >= 10)
+          frskyHubData.queuePointer = 0;
+        frskyHubData.lastBaroAltitude_bp = frskyHubData.baroAltitude_bp;
+      }
+      break;
+#endif
+#if defined(VARIO_EXTENDED)
     case offsetof(FrskyHubData, gpsAltitude_ap):
       if(g_model.frsky.use_baroAltitude_ap){
         frskyHubData.gpsAltitude_full = frskyHubData.gpsAltitude_bp*100;
@@ -309,7 +337,25 @@ void parseTelemHubByte(uint8_t byte)
         getGpsDistance();
       }
       break;
+#else
+    case offsetof(FrskyHubData, gpsAltitude_ap):
+      if (!frskyHubData.gpsAltitudeOffset)
+        frskyHubData.gpsAltitudeOffset = -frskyHubData.gpsAltitude_bp;
+      frskyHubData.gpsAltitude_bp += frskyHubData.gpsAltitudeOffset;
+      if (frskyHubData.gpsAltitude_bp > frskyHubData.maxAltitude)
+        frskyHubData.maxAltitude = frskyHubData.gpsAltitude_bp;
+      if (frskyHubData.gpsAltitude_bp < frskyHubData.minAltitude)
+        frskyHubData.minAltitude = frskyHubData.gpsAltitude_bp;
 
+      if (!frskyHubData.pilotLatitude && !frskyHubData.pilotLongitude) {
+        // First received GPS position => Pilot GPS position
+        getGpsPilotPosition();
+      }
+      else if (frskyHubData.gpsDistNeeded || g_menuStack[0] == menuProcFrsky) {
+        getGpsDistance();
+      }
+      break;
+#endif
     case offsetof(FrskyHubData, gpsSpeed_bp):
       // Speed => Max speed
       if (frskyHubData.gpsSpeed_bp < frskyHubData.maxGpsSpeed)
@@ -648,7 +694,7 @@ void check_frsky()
 
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
-
+/*
 #define VARIO_SPEED_LIMIT 10 //m/s
     int16_t verticalSpeed = 0;
     //vertical speed in 0.01m/s now
@@ -656,7 +702,7 @@ void check_frsky()
       verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
     else
       verticalSpeed = limit((int16_t)-VARIO_SPEED_LIMIT, (int16_t)(frskyHubData.varioSpeed), (int16_t)+VARIO_SPEED_LIMIT)*100;
-      
+
     uint8_t SoundAltBeepNextFreq = (0);
     uint8_t SoundAltBeepNextTime = (0);
     if(verticalSpeed < g_model.varioSpeedUpMin*VARIO_LIM_MUL && verticalSpeed > g_model.varioSpeedDownMin*(-VARIO_LIM_MUL)) //check thresholds here in cm/s
@@ -675,6 +721,7 @@ void check_frsky()
           audio.playVario(SoundAltBeepNextFreq, 1);
       }
     }  
+	*/
 #endif //AUDIO
 #endif //FRSKY_HUB || WS_HOW_HIGH
   }
@@ -1105,10 +1152,13 @@ void menuProcFrsky(uint8_t event)
               putsTime(x, 1+FH+2*FH*i, value, att, att);
             }
             else {
+#if defined(PCBV4)
               if(g_model.frsky.use_baroAltitude_ap & (field == TELEM_VSPD)){
                 putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att|PREC2);
               }
-              else {
+              else 
+#endif
+              {
                 putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
               }
               lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);

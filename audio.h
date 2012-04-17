@@ -101,7 +101,9 @@ class audioQueue
 
     void playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tRepeat=0, int8_t tFreqIncr=0);
 
+#if defined(VARIO_EXTENDED)
     void playVario(uint8_t tFreq, uint8_t tLen);
+#endif
 
     inline bool busy() { return (toneTimeLeft > 0); }
 

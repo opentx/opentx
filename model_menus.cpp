@@ -2004,7 +2004,11 @@ void menuProcFunctionSwitches(uint8_t event)
 void menuProcTelemetry(uint8_t event)
 {
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)//                                                                                                                  v  v  v  v 4 new menu items for baro alt/vario
+#if defined(VARIO_EXTENDED)
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 32, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, 0,  (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
+#else 
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 27, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
+#endif
 #else
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 24, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #endif
@@ -2152,7 +2156,7 @@ void menuProcTelemetry(uint8_t event)
       CHECK_INCDEC_MODELVAR(event, g_model.frsky.blades, 0, 2);
   }
   subN++;
-
+#if defined(VARIO_EXTENDED)
   if(s_pgOfs<subN) {
     y = (subN-s_pgOfs)*FH;
     lcd_putsLeft(y, STR_BARO_VARIO);
@@ -2194,6 +2198,7 @@ void menuProcTelemetry(uint8_t event)
       CHECK_INCDEC_MODELVAR(event, g_model.varioSpeedDownMin, 0, 15);
   }
   subN++;
+#endif //VARIO_EXTENDED
 #endif
 
   // Display

@@ -109,10 +109,18 @@ PACK(struct FrskyHubData {
   uint8_t  cellsCount:4;     //        4bits out of 16bits spare reused
   uint8_t  minCellVolts;     //        8bits out of 16bits spare reused
   uint16_t current;          // 0x28   Current
-  int8_t   spare2[10];//varioQueue[10];   // circular-buffer
+#if defined(VARIO_EXTENDED)
+  int8_t   spare2[10];
+#else
+  int8_t   varioQueue[10];   // circular-buffer
+#endif
   uint8_t  queuePointer;     // circular-buffer pointer
   int8_t   spare3;
-  int16_t  spare4; //lastBaroAltitude_bp;
+#if defined(VARIO_EXTENDED)
+  int16_t  spare4; 
+#else
+  int16_t  lastBaroAltitude_bp;
+#endif
   int16_t  varioSpeed;
   /* next fields must keep this order! */
   int16_t  minAltitude;
@@ -123,19 +131,25 @@ PACK(struct FrskyHubData {
   uint16_t maxGpsSpeed;
   uint16_t maxGpsDistance;
   /* end */
+#if defined(VARIO_EXTENDED)
   int16_t  Altitude_show;
   int16_t  spare5;
+#else
+  int16_t  varioAcc1;
+  int16_t  varioAcc2;
+#endif
   uint16_t volts_bp;         // 0x3A
   uint16_t volts_ap;         // 0x3B
   // end of FrSky Hub data
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
   uint8_t  minCellMinVolts;
+#if defined(VARIO_EXTENDED)
   int32_t  baroAltitude_full;
   int32_t  gpsAltitude_full;
   int32_t  baroAltitude_full_prev;
   int16_t  baroAltitudeQueue_Acc[5];
-
+#endif
 });
 
 #elif defined(WS_HOW_HIGH)

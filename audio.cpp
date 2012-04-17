@@ -155,6 +155,7 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
   }
 }
 
+#if defined(VARIO_EXTENDED)
 void audioQueue::playVario(uint8_t tFreq, uint8_t tLen)
 {
   uint8_t next_queueWidx = (t_queueWidx + 1) % AUDIO_QUEUE_LENGTH;
@@ -167,6 +168,7 @@ void audioQueue::playVario(uint8_t tFreq, uint8_t tLen)
     t_queueWidx = next_queueWidx;
   }
 }
+#endif
 
 void audioQueue::event(uint8_t e, uint8_t f)
 {
