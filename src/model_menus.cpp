@@ -1696,8 +1696,11 @@ void menuProcLimits(uint8_t event)
     }
 
     LimitData *ld = limitaddress(k) ;
-    
-#ifndef PPM_CENTER_ADJUSTABLE
+
+#ifdef PPM_CENTER_ADJUSTABLE
+#define LIMITS_MAX_POS 16*FW
+#else
+#define LIMITS_MAX_POS 17*FW
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
 
     char swVal = '-';  // '-', '<', '>'
@@ -1718,7 +1721,7 @@ void menuProcLimits(uint8_t event)
       {
         case 0:
 #ifdef PPM_LIMITS_UNIT_US
-          lcd_outdezAtt(  8*FW, y,  ((ld->offset)*128) / 25, attr|PREC1);
+          lcd_outdezAtt(  8*FW, y,  ((int32_t)ld->offset*128) / 25, attr|PREC1);
 #else
           lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
 #endif
@@ -1746,7 +1749,7 @@ void menuProcLimits(uint8_t event)
 #ifdef PPM_LIMITS_UNIT_US
           lcd_outdezAtt(16*FW, y, (((int16_t)ld->max+100)*128) / 25, attr | INFLIGHT(ld->max));
 #else
-          lcd_outdezAtt(17*FW, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
+          lcd_outdezAtt(LIMITS_MAX_POS, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
 #endif
           if (active) {
             CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->max, -25, limit, -100, STR_MAXLIMIT);

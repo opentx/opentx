@@ -65,7 +65,7 @@ SPLASH = YES
 
 # PPM center adjustable
 # Values = YES, NO
-PPM_CENTER_ADJUSTABLE = YES
+PPM_CENTER_ADJUSTABLE = NO
 
 # Limits display in the LIMITS
 # Values = PERCENT, US
