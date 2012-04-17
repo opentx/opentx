@@ -253,11 +253,11 @@ void audioQueue::event(uint8_t e, uint8_t f)
         break;
       // time 10 seconds left
       case AU_TIMER_10:
-        playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 1);
+        playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 0);    
         break;
       // time <3 seconds left
       case AU_TIMER_LT3:
-        playNow(BEEP_DEFAULT_FREQ, 20, 25, 1);
+        playNow(BEEP_DEFAULT_FREQ + 50, 15, 3, 0);
         break;
       case AU_FRSKY_WARN1:
         playASAP(BEEP_DEFAULT_FREQ+20,15,5,2);
@@ -320,8 +320,8 @@ void audioQueue::event(uint8_t e, uint8_t f)
 
 void audioDefevent(uint8_t e)
 {
-  audio.event(e, BEEP_DEFAULT_FREQ);
 #ifdef HAPTIC
-  hapticAudioEvent(e);
-#endif
+  hapticAudioEvent(e); //do this before audio to help sync timings
+#endif	
+  audio.event(e, BEEP_DEFAULT_FREQ);
 }
