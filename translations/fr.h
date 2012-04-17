@@ -236,6 +236,11 @@
 #define TR_ALARM        "Alarme"
 #define TR_USRDATA      "UsrData"
 #define TR_BLADES       "Blades"
+#define TR_BARO_VARIO   "Baro Vario"
+#define TR_BARO_PR      "Use AP"
+#define TR_BARO_ONLY    "BaroOnly"
+#define TR_BARO_UP_LIM  "Up Lim"
+#define TR_BARO_DWN_LIM "Down Lim"
 #define TR_BARS         "Gauges"
 #define TR_DISPLAY      "Display"
 #ifdef AUDIO

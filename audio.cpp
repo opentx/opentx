@@ -89,9 +89,9 @@ void audioQueue::heartbeat()
     toneFreq += toneFreqIncr;
   }
   else {
-    SPEAKER_OFF;
     
     if (tonePause > 0) {
+      SPEAKER_OFF;
       tonePause--;
     }
     else if (t_queueRidx != t_queueWidx) {
@@ -99,10 +99,14 @@ void audioQueue::heartbeat()
       toneTimeLeft = queueToneLength[t_queueRidx];
       toneFreqIncr = queueToneFreqIncr[t_queueRidx];
       tonePause = queueTonePause[t_queueRidx];
-
+      if((toneFreq==0) || (toneTimeLeft==0)){
+        SPEAKER_OFF;
+      }
       if (!queueToneRepeat[t_queueRidx]--) {
         t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
       }
+    } else {
+      SPEAKER_OFF;
     }
   }
 #endif
@@ -147,6 +151,19 @@ void audioQueue::playASAP(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     queueTonePause[t_queueWidx] = tPause;
     queueToneRepeat[t_queueWidx] = tRepeat -1;
     queueToneFreqIncr[t_queueWidx] = tFreqIncr;
+    t_queueWidx = next_queueWidx;
+  }
+}
+
+void audioQueue::playVario(uint8_t tFreq, uint8_t tLen)
+{
+  uint8_t next_queueWidx = (t_queueWidx + 1) % AUDIO_QUEUE_LENGTH;
+  if (next_queueWidx != t_queueRidx) {
+    queueToneFreq[t_queueWidx] = tFreq;
+    queueToneLength[t_queueWidx] = tLen;
+    queueTonePause[t_queueWidx] = 0;
+    queueToneRepeat[t_queueWidx] = 0;
+    queueToneFreqIncr[t_queueWidx] = 0;
     t_queueWidx = next_queueWidx;
   }
 }
