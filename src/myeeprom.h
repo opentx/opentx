@@ -251,18 +251,15 @@ enum Functions {
   FUNC_TRAINER_THR,
   FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
-  FUNC_RESET,
   FUNC_PLAY_SOUND,
-#ifdef HAPTIC
-  FUNC_HAPTIC,
-#endif
 #ifdef SOMO
   FUNC_PLAY_SOMO,
 #endif
+  FUNC_RESET,
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   FUNC_VARIO,
 #endif
-#ifdef SDCARD
+#ifdef LOGS
   FUNC_LOGS,
 #endif
 #ifdef DEBUG
@@ -347,25 +344,18 @@ PACK(typedef struct t_FrSkyBarData {
   uint16_t   barMax:6;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
 
-enum FrskyUsrProtocols {//probably to add x3mfly protocol here
+enum FrskyUsrProtocols {
   PROTO_NONE,
   PROTO_FRSKY_HUB,
   PROTO_WS_HOW_HIGH
 };
-
-#define VARIO_LIM_MUL 20 //to get 0.2m steps
 
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:3; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
   uint8_t imperial:1;
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
-#if defined(VARIO_EXTENDED)
-  uint8_t use_baroAltitude_ap:1;//used 2 spare bits here
-  uint8_t use_baroAltitude_only:1;
-#else
   uint8_t spare:2;
-#endif
   FrSkyBarData bars[4];
   FrSkyRSSIAlarm rssiAlarms[2];
 }) FrSkyData;
@@ -515,11 +505,6 @@ PACK(typedef struct t_ModelData {
   uint8_t   frskyLines[4];
   uint16_t  frskyLinesXtra;
   int8_t    servoCenter[NUM_CHNOUT];
-#if defined(VARIO_EXTENDED)
-  //TODO:temporary place, need to move to frskydata
-  uint8_t varioSpeedUpMin:4;    //if increment in 0.2m/s = 3.0m/s max
-  uint8_t varioSpeedDownMin:4;  //too small but enough in most cases
-#endif //VARIO_EXTENDED
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

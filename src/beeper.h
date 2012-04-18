@@ -40,6 +40,9 @@ extern uint8_t beepAgainOrig;
 extern uint8_t beepOn;
 extern bool warble;
 extern bool warbleC;
+#if defined(HAPTIC)
+extern uint8_t hapticTick;
+#endif
 
 #if defined(PCBARM)
 #include "ersky9x/sound.h"
@@ -107,9 +110,19 @@ FORCEINLINE void AUDIO_HEARTBEAT()
         BUZZER_OFF;
       else
         BUZZER_ON;
+#if defined(HAPTIC)
+      if (hapticTick-- > 0) {
+        HAPTIC_ON; // haptic output 'high'
+      }
+      else {
+        HAPTIC_OFF; // haptic output 'low'
+        hapticTick = g_eeGeneral.hapticStrength;
+      }
+#endif
     }
     else {
       BUZZER_OFF;
+      HAPTIC_OFF;
     }
 }
 #endif

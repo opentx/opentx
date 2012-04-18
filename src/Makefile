@@ -83,10 +83,6 @@ DISPLAY_USER_DATA = NO
 # Values = YES, NO
 FRSKY_HUB = YES
 
-# Enable Extended vario functions (V4 board only)
-# Values = YES, NO
-VARIO_EXTENDED = NO
-
 # WS HowHigh 
 # Values = YES, NO
 WS_HOW_HIGH = YES
@@ -296,7 +292,7 @@ ifeq ($(PCB), ARM)
   # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/sdcard.c ersky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += audio.cpp haptic.cpp
+  CPPSRC += audio.cpp
   CPPSRC += ersky9x/sound.cpp
 endif
 
@@ -308,7 +304,7 @@ ifeq ($(PCB), V4)
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
-  CPPSRC += audio.cpp haptic.cpp
+  CPPSRC += audio.cpp
   CPPSRC += gruvin9x/gtime.cpp
   CPPSRC += gruvin9x/rtc.cpp
   CPPSRC += gruvin9x/ff.cpp
@@ -358,7 +354,6 @@ ifeq ($(PCB), STD)
   
   ifeq ($(HAPTIC), YES)
    CPPDEFS += -DHAPTIC
-   CPPSRC += haptic.cpp
   endif
   
 endif

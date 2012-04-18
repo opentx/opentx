@@ -128,8 +128,8 @@ uint8_t vpot_mod_state = 0;
 
 ISR(USART2_RX_vect)
 {
-  //receive data from extension board
-  //bit 9 = 1 mean encoder number, following byte with bit 9 = 0 is increment value
+	//receive data from extension board
+	//bit 9 = 1 mean encoder number, following byte with bit 9 = 0 is increment value
   /* Get status and 9th bit, then data */
   /* from buffer */
   //uint8_t status = UCSR2A;
@@ -144,7 +144,8 @@ ISR(USART2_RX_vect)
   if((res & 0x100) == 0x100){
     vpotToChange = res & 0xff;
     vpot_mod_state = 1;
-  }else{
+  }
+  else {
     if(vpot_mod_state & (vpotToChange>0) & (vpotToChange<=NUM_EXTRA_ROTARY_ENCODERS))
     {
       int8_t vpot_inc = res & 0xff;

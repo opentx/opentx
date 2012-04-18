@@ -39,6 +39,9 @@ uint8_t beepAgainOrig = 0;
 uint8_t beepOn = false;
 bool warble = false;
 bool warbleC;
+#if defined(HAPTIC)
+uint8_t hapticTick = 0;
+#endif
 
 // The various "beep" tone lengths
 static const pm_uint8_t beepTab[] PROGMEM = {
@@ -57,7 +60,4 @@ void beep(uint8_t val)
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && val!=0) || (g_eeGeneral.beeperMode==-1 && val>=3)) {
     _beep(pgm_read_byte(beepTab+5*(2+g_eeGeneral.beeperLength)+val));
   }
-#ifdef HAPTIC
-  hapticBeepEvent(val);
-#endif
 }
