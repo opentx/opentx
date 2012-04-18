@@ -83,6 +83,10 @@ DISPLAY_USER_DATA = NO
 # Values = YES, NO
 FRSKY_HUB = YES
 
+# Enable Extended vario functions (V4 board only)
+# Values = YES, NO
+VARIO_EXTENDED = NO
+
 # WS HowHigh 
 # Values = YES, NO
 WS_HOW_HIGH = YES
@@ -328,6 +332,11 @@ ifeq ($(PCB), V4)
   ifeq ($(EXTRA_ROTARY_ENCODERS), YES)
     CPPDEFS += -DEXTRA_ROTARY_ENCODERS
     MODS:=${MODS}X
+  endif
+
+  ifeq ($(VARIO_EXTENDED), YES)
+    CPPDEFS += -DVARIO_EXTENDED
+    MODS:=${MODS}V
   endif
   
 endif
