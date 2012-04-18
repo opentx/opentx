@@ -1177,7 +1177,7 @@ void menuProcFrsky(uint8_t event)
               putsTime(x, 1+FH+2*FH*i, value, att, att);
             }
             else {
-#if defined(PCBV4)
+#if defined(VARIO_EXTENDED)
               if(g_model.frsky.use_baroAltitude_ap & (field == TELEM_VSPD)){
                 putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att|PREC2);
               }
