@@ -148,13 +148,6 @@ const pm_char STR_BAR[] PROGMEM = TR_BAR;
 const pm_char STR_ALARM[] PROGMEM = TR_ALARM;
 const pm_char STR_USRDATA[] PROGMEM = TR_USRDATA;
 const pm_char STR_BLADES[] PROGMEM = TR_BLADES; // TODO check that it is optimized away when no FRSKY
-#ifdef VARIO_EXTENDED
-const pm_char STR_BARO_VARIO[] PROGMEM = TR_BARO_VARIO;
-const pm_char STR_BARO_PR[] PROGMEM = TR_BARO_PR;
-const pm_char STR_BARO_ONLY[] PROGMEM = TR_BARO_ONLY;
-const pm_char STR_BARO_UP_LIM[] PROGMEM = TR_BARO_UP_LIM;
-const pm_char STR_BARO_DWN_LIM[] PROGMEM = TR_BARO_DWN_LIM;
-#endif //VARIO_EXTENDED
 const pm_char STR_BARS[] PROGMEM = TR_BARS;
 const pm_char STR_DISPLAY[] PROGMEM = TR_DISPLAY;
 const pm_char STR_BEEPERMODE[] PROGMEM = TR_BEEPERMODE;

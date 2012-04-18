@@ -63,10 +63,6 @@ uint16_t g_time_per10;
 audioQueue  audio;
 #endif
 
-#ifdef HAPTIC
-hapticQueue  haptic;
-#endif
-
 uint8_t heartbeat;
 
 uint8_t stickMode;
@@ -423,12 +419,8 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyRSSI[1].value;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyRSSI[0].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-#if defined(VARIO_EXTENDED)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyHubData.Altitude_show;
-#else //VARIO_EXTENDED
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyHubData.baroAltitude_bp;
-#endif //VARIO_EXTENDED
-#endif //FRSKY_HUB || WS_HOW_HIGH
+#endif
 #if defined(FRSKY_HUB)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RPM) return frskyHubData.rpm;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_FUEL) return frskyHubData.fuelLevel;
@@ -445,7 +437,7 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyTelemetry[0].min;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyTelemetry[1].min;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
-#endif //FRSKY_HUB
+#endif
 #endif
   else return 0;
 }
@@ -1389,13 +1381,6 @@ void evalFunctions()
           beep(3);
 #endif
         }
-
-#if defined(HAPTIC)
-        if (sd->func == FUNC_HAPTIC) {
-          hapticDefevent(sd->param);
-        }
-#endif
-
         active_functions |= mask;
       }
       else {
@@ -2053,7 +2038,6 @@ void perMain()
 
 #if defined(PCBARM)
   AUDIO_HEARTBEAT();  // the queue processing
-  HAPTIC_HEARTBEAT();
 #endif
 
 }
@@ -2123,10 +2107,6 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
     AUDIO_HEARTBEAT();
-
-#ifdef HAPTIC
-    HAPTIC_HEARTBEAT();
-#endif
 
 #ifdef DEBUG
     // Record start time from TCNT1 to record excution time

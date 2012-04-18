@@ -96,23 +96,18 @@
 #else
 #define TR_SOUND         "Pip \0        "
 #endif
-#ifdef HAPTIC
-#define TR_HAPTIC        "Haptic\0      "
-#else
-#define TR_HAPTIC
-#endif
 #ifdef DEBUG
 #define TR_TEST          "Test\0        "
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " "Reset\0       " TR_SOUND TR_HAPTIC TR_SOMO TR_VARIO TR_SDCLOGGS TR_TEST
+#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO "Reset\0       " TR_VARIO TR_SDCLOGGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
 
 #define LEN_FUNCSOUNDS   "\006"
-#define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
+#define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  ""Vibr1 ""Vibr2 ""Vibr3 "
 
 #define LEN_VTELEMCHNS   "\004"
 #define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Tank""T1\0 ""T2\0 ""Spd\0""Dist""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Tid\0"
@@ -236,13 +231,6 @@
 #define TR_ALARM        "Alarm"
 #define TR_USRDATA      "Anv\201ndardata"
 #define TR_BLADES       "Blad"
-#ifdef VARIO_EXTENDED
-#define TR_BARO_VARIO   "Baro Vario"
-#define TR_BARO_PR      "Use AP"
-#define TR_BARO_ONLY    "BaroOnly"
-#define TR_BARO_UP_LIM  "Up Lim"
-#define TR_BARO_DWN_LIM "Down Lim"
-#endif //VARIO_EXTENDED
 #define TR_BARS         "Staplar som visas"
 #define TR_DISPLAY      "Display"
 #ifdef AUDIO
