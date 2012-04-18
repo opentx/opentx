@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import os, sys, shutil, platform
-import subprocess
+import os, sys, shutil, platform, getpass, subprocess, ftplib, time
+
+BINARY_DIR = "../binaries/"
 
 options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"), ("ardupilot", "EXT=ARDUPILOT"), ("nmea", "EXT=NMEA")],
                  [("", "HELI=NO"), ("heli", "HELI=YES")],
@@ -26,6 +27,35 @@ options_arm = [[("", "EXT=FRSKY")],
               ]
 
 languages = ["en", "fr", "se"]
+
+host = "ftpperso.free.fr"
+user = "open9x"   
+password = None
+ftp_connection = None
+ftp_tmpdir = "binaries/temp" + str(int(time.mktime(time.localtime())))
+
+def openFtp():
+    global password
+    global ftp_connection
+    
+    if password is None:
+        password = getpass.getpass()
+    ftp_connection = ftplib.FTP(host, user, password)
+    ftp_connection.mkd(ftp_tmpdir)
+    
+def closeFtp():
+    # ftp_connection.rename("binaries/latest", "binaries/r...")
+    ftp_connection.rename(ftp_tmpdir, "binaries/latest")
+    ftp_connection.quit()
+    
+def uploadBinary(binary_name):
+    welcome = ftp_connection.getwelcome()
+    while not welcome:
+        time.sleep(10)
+        openFtp()
+    f = file(BINARY_DIR + binary_name, 'rb') 
+    ftp_connection.storbinary('STOR ' + ftp_tmpdir + '/' + binary_name, f)
+    f.close()
 
 def generate(hex, arg, extension, options, maxsize):
     result = []
@@ -76,7 +106,11 @@ def generate(hex, arg, extension, options, maxsize):
                     print "  ", line,
             
             if size <= maxsize:
-                shutil.copyfile("open9x." + extension, "../binaries/" + hex_file + "." + extension)
+                binary_name =  hex_file + "." + extension
+                shutil.copyfile("open9x." + extension, BINARY_DIR + binary_name)
+                if upload:
+                    uploadBinary(binary_name)
+                    
                 result.append(hex_file)
         
         for index, state in enumerate(states):
@@ -95,21 +129,32 @@ def generate_c9x_list(filename, hexes, extension, stamp, board):
     for hex in hexes:
         f.write('open9x->add_option(new Open9xFirmware("%s", new Open9xInterface(%s), OPEN9X_BIN_URL "%s.%s", %s));\n' % (hex, board, hex, extension, stamp))
 
-if platform.system() == "Windows":
-    # arm board
-    hexes = generate("open9x-arm", "PCB=ARM", "bin", options_arm, 262000)
-    generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "bin", "OPEN9X_ARM_STAMP", "BOARD_ERSKY9X")
-    # arm stamp
-    subprocess.check_output(["make", "PCB=ARM", "arm-stamp"])
+if __name__ == "__main__":
+    
+    upload = "upload" in sys.argv
+    
+    if upload:
+        openFtp()
 
-else:
-    # stock board
-    hexes = generate("open9x-stock", "PCB=STD", "hex", options_stock, 65530)
-    generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_STOCK")
-
-    # v4 board
-    hexes = generate("open9x-v4", "PCB=V4", "hex", options_v4, 262000)
-    generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
-
-    # stamp
-    subprocess.check_output(["make", "stamp"])
+    if platform.system() == "Windows":
+        # arm board
+        hexes = generate("open9x-arm", "PCB=ARM", "bin", options_arm, 262000)
+        generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "bin", "OPEN9X_ARM_STAMP", "BOARD_ERSKY9X")
+        
+        # arm stamp
+        subprocess.check_output(["make", "PCB=ARM", "arm-stamp"])
+    
+    else:
+        # stock board
+        hexes = generate("open9x-stock", "PCB=STD", "hex", options_stock, 65530)
+        generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_STOCK")
+    
+        # v4 board
+        hexes = generate("open9x-v4", "PCB=V4", "hex", options_v4, 262000)
+        generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
+    
+        # stamp
+        subprocess.check_output(["make", "stamp"])
+        
+    if upload:
+        closeFtp()
