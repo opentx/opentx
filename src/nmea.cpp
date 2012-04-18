@@ -186,7 +186,7 @@ int32_t bintime (char *str);
 ISR (USART0_RX_vect)
 {
     uint8_t rl;
-//    uint8_t rh;                         //USART control and Status Register 0 B
+    // uint8_t rh;                         //USART control and Status Register 0 B
     uint8_t iostat;                     //USART control and Status Register 0 A
 
     rl = UDR0;
@@ -210,7 +210,7 @@ ISR (USART0_RX_vect)
         initval (LONG_BUF(2), PACK_GGA, TIM);   // always get UTC time for timer
         state = WAIT_PACKET;			         // restart on error
     }
-    rh = UCSR0B;                       //USART control and Status Register 0 B
+    // rh = UCSR0B;                       //USART control and Status Register 0 B
     /* bit 	7		6		5		4		3		2		1		0
         RxCIE0	TxCIE0	UDRIE0	RXEN0	TXEN0	UCSZ02	RXB80	TXB80
 
