@@ -71,13 +71,18 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcDiagCalib
 };
 
-#define GENERAL_PARAM_OFS   17*FW
-uint8_t onoffMenuItem( uint8_t value, uint8_t y, const pm_char *s, uint8_t condition, uint8_t event )
+#define GENERAL_PARAM_OFS   (2+16*FW)
+NOINLINE int8_t selectMenuItem(uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, uint8_t condition, uint8_t event)
 {
-  lcd_putsLeft(y, s);
-  menu_lcd_onoff( GENERAL_PARAM_OFS, y, value, condition ) ;
-  if (condition) CHECK_INCDEC_GENVAR(event, value, 0, 1);
-  return value ;
+  lcd_putsLeft(y, label);
+  lcd_putsiAtt(GENERAL_PARAM_OFS, y, values, value-min, condition ? INVERS:0) ;
+  if (condition) CHECK_INCDEC_GENVAR(event, value, min, max);
+  return value;
+}
+
+NOINLINE uint8_t onoffMenuItem(uint8_t value, uint8_t y, const pm_char *label, uint8_t condition, uint8_t event )
+{
+  return selectMenuItem(y, label, STR_OFFON, value, 0, 1, condition, event);
 }
 
 enum menuProcSetupItems {
@@ -141,14 +146,10 @@ void menuProcSetup(uint8_t event)
 
   uint8_t subN = 1;
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_BEEPERMODE);
-    lcd_putsiAtt(GENERAL_PARAM_OFS - 2*FW, y, STR_VBEEPMODE, 2+g_eeGeneral.beeperMode, (sub==subN ? INVERS:0));
-    if(sub==subN) {
-      CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperMode, -2, 1);
+    g_eeGeneral.beeperMode = selectMenuItem(y, STR_BEEPERMODE, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, sub==subN, event);
 #if defined(FRSKY)
-      if (checkIncDec_Ret) FRSKY_setModelAlarms();
+    if (sub==subN && checkIncDec_Ret) FRSKY_setModelAlarms();
 #endif
-    }
     if((y+=FH)>7*FH) return;
   }subN++;
 
@@ -168,9 +169,7 @@ void menuProcSetup(uint8_t event)
 #endif
 
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_BEEPERLEN);
-    lcd_putsiAtt(GENERAL_PARAM_OFS - 2*FW, y, STR_VBEEPLEN, 2+g_eeGeneral.beeperLength, (sub==subN ? INVERS:0));
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.beeperLength, -2, 2);
+    g_eeGeneral.beeperLength = selectMenuItem(y, STR_BEEPERLEN, STR_VBEEPLEN, g_eeGeneral.beeperLength, -2, 2, sub==subN, event);
     if((y+=FH)>7*FH) return;
   }subN++;
 
@@ -187,9 +186,7 @@ void menuProcSetup(uint8_t event)
 
 #ifdef HAPTIC
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_HAPTICMODE);
-    lcd_putsiAtt(GENERAL_PARAM_OFS - 2*FW, y, STR_VBEEPMODE, 2+g_eeGeneral.hapticMode, (sub==subN ? INVERS:0));
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticMode, -2, 1);
+    g_eeGeneral.hapticMode = selectMenuItem(y, STR_HAPTICMODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, sub==subN, event);
     if((y+=FH)>7*FH) return;
   }subN++;
 
@@ -204,7 +201,7 @@ void menuProcSetup(uint8_t event)
   
   if(s_pgOfs<subN) {
     lcd_putsLeft( y, STR_HAPTICLENGTH);
-    lcd_putsiAtt(GENERAL_PARAM_OFS - 2*FW, y, STR_VBEEPLEN, 2+g_eeGeneral.hapticLength, (sub==subN ? INVERS:0));
+    lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_VBEEPLEN, 2+g_eeGeneral.hapticLength, (sub==subN ? INVERS:0));
     if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticLength, -2, 2);
     if((y+=FH)>7*FH) return;
   }subN++;  
@@ -257,9 +254,7 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y,STR_FILTERADC);
-    lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_ADCFILTER, g_eeGeneral.filterInput, (sub==subN ? INVERS:0));
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.filterInput, 0, 2);
+    g_eeGeneral.filterInput = selectMenuItem(y, STR_FILTERADC, STR_ADCFILTER, g_eeGeneral.filterInput, 0, 2, sub==subN, event);
     if((y+=FH)>7*FH) return;
   }subN++;
 
@@ -318,10 +313,8 @@ void menuProcSetup(uint8_t event)
   }subN++;
 
   if(s_pgOfs<subN) {
-      lcd_putsLeft( y, STR_SWITCHWARNING);
-      lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_WARNSW, 1+g_eeGeneral.switchWarning, (sub==subN ? INVERS:0));
-      if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchWarning, -1, 1);
-      if((y+=FH)>7*FH) return;
+    g_eeGeneral.switchWarning = selectMenuItem(y, STR_SWITCHWARNING, STR_WARNSW, g_eeGeneral.switchWarning, -1, 1, sub==subN, event);
+    if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
@@ -363,7 +356,7 @@ void menuProcSetup(uint8_t event)
       uint8_t attr = sub==subN?INVERS:0;
       lcd_putsLeft( y,STR_RXCHANNELORD);//   RAET->AETR
       for (uint8_t i=1; i<=4; i++)
-        putsChnLetter((16+i)*FW, y, channel_order(i), attr);
+        putsChnLetter(GENERAL_PARAM_OFS - FW + i*FW, y, channel_order(i), attr);
       if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
       if((y+=FH)>7*FH) return;
   }subN++;

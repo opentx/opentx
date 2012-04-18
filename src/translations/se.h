@@ -8,11 +8,11 @@
 #define LEN_NCHANNELS    "\004"
 #define TR_NCHANNELS     "4CH 6KN 8KN 10KN12KN14KN16KN"
 
-#define LEN_VBEEPMODE    "\006"
-#define TR_VBEEPMODE     "Tyst  ""Alarm ""Ej Knp""Alla  "
+#define LEN_VBEEPMODE    "\005"
+#define TR_VBEEPMODE     "Tyst ""Alarm""EjKnp""Alla "
 
-#define LEN_VBEEPLEN     "\006"
-#define TR_VBEEPLEN      "xKort ""Kort  ""Normal""L\200ng  ""xL\200ng "
+#define LEN_VBEEPLEN     "\005"
+#define TR_VBEEPLEN      "xKort""Kort ""Norml""L\200ng ""xL\200ng"
 
 #define LEN_ADCFILTER    "\004"
 #define TR_ADCFILTER     "SING""OSMP""FILT"
@@ -355,6 +355,7 @@
 #define TR_CURRENT_CALIB "Current Calib"
 #define TR_CURRENT       "Sp\201nning"
 #define TR_LOAD_MODEL    "Load Model"
+#define TR_CREATE_MODEL  "Create Model"
 #define TR_ARCHIVE_MODEL "Archive Model"
 #define TR_DELETE_MODEL  "Delete Model"
 #define TR_RESTORE_MODEL "Restore Model"

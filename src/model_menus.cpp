@@ -242,12 +242,13 @@ void menuProcModelSelect(uint8_t event)
           killEvents(event);
           if (g_eeGeneral.currModel != sub) {
 #if defined(SDCARD)
-            s_menu[s_menu_count++] = STR_LOAD_MODEL;
             if (eeModelExists(sub)) {
+              s_menu[s_menu_count++] = STR_LOAD_MODEL;
               s_menu[s_menu_count++] = STR_ARCHIVE_MODEL;
               s_menu[s_menu_count++] = STR_DELETE_MODEL;;
             }
             else {
+              s_menu[s_menu_count++] = STR_CREATE_MODEL;
               s_menu[s_menu_count++] = STR_RESTORE_MODEL;;
             }
 #else
@@ -364,13 +365,16 @@ void menuProcModelSelect(uint8_t event)
   if (s_sdcard_error) {
     s_warning = s_sdcard_error;
     displayWarning(event);
-    s_warning = NULL;
+    if (s_warning)
+      s_warning = NULL;
+    else
+      s_sdcard_error = NULL;
   }
 
   if (s_menu_count) {
     const pm_char * result = displayMenu(event);
     if (result) {
-      if (result == STR_LOAD_MODEL) {
+      if (result == STR_LOAD_MODEL || result == STR_CREATE_MODEL) {
         displayPopup(STR_LOADINGMODEL);
         eeCheck(true); // force writing of current model data before this is changed
         if (g_eeGeneral.currModel != sub) {
@@ -381,6 +385,8 @@ void menuProcModelSelect(uint8_t event)
       }
       else if (result == STR_ARCHIVE_MODEL) {
         s_sdcard_error = eeArchiveModel(sub);
+        if (!s_sdcard_error)
+          eeDeleteModel(sub); // delete the model, it's archived!
       }
       else if (result == STR_RESTORE_MODEL) {
         // TODO

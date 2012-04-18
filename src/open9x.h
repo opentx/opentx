@@ -583,7 +583,7 @@ extern uint8_t  s_eeDirtyMsk;
 
 #if defined (PCBARM)
 #ifndef SIMU
-#define BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = 0/*TODO g_eeGeneral.bright*/)
+#define BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #else
 #define BACKLIGHT_ON
@@ -835,9 +835,9 @@ union ReusableBuffer
 {
 #if !defined(PCBARM)
     uint8_t eefs_buffer[BLOCKS];           // used by EeFsck
-
-    char model_name[sizeof(g_model.name)]; // used by menuProcModelSelect
 #endif
+
+    char model_name[42]; // used by menuProcModelSelect and for SD card archive / restore
 
     struct
     {
