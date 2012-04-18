@@ -694,7 +694,9 @@ void check_frsky()
 
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
-/*
+
+#if defined(VARIO_EXTENDED)
+
 #define VARIO_SPEED_LIMIT 10 //m/s
     int16_t verticalSpeed = 0;
     //vertical speed in 0.01m/s now
@@ -721,7 +723,30 @@ void check_frsky()
           audio.playVario(SoundAltBeepNextFreq, 1);
       }
     }  
-	*/
+#else //VARIO_EXTENDED
+    uint8_t warble = 0;
+    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyHubData.varioSpeed/10), (int16_t)+100);
+
+    uint16_t interval;
+    if (verticalSpeed == 0) {
+      interval = 300;
+    }
+    else {
+      if (verticalSpeed < 0) {
+        verticalSpeed = -verticalSpeed;
+        warble = 1;
+      }
+      interval = (uint8_t)200 / verticalSpeed;
+    }
+    if (g_tmr10ms - s_varioTmr > interval) {
+      s_varioTmr = g_tmr10ms;
+      if (warble)
+        AUDIO_VARIO_DOWN();
+      else
+        AUDIO_VARIO_UP();
+    }
+#endif //VARIO_EXTENDED
+
 #endif //AUDIO
 #endif //FRSKY_HUB || WS_HOW_HIGH
   }
