@@ -247,8 +247,13 @@ void Open9xSim::refreshDiplay()
 {
   if (lcd_refresh) {
     lcd_refresh = false;
+#if defined(PCBV4)
+    if(portc & 1<<OUT_C_LIGHT)  bmf->setOffColor(FXRGB(150,200,152));
+    else                        bmf->setOffColor(FXRGB(200,200,200));
+#else
     if(portb & 1<<OUT_B_LIGHT)  bmf->setOffColor(FXRGB(150,200,152));
     else                        bmf->setOffColor(FXRGB(200,200,200));
+#endif
 
     for(int x=0;x<W;x++){
       for(int y=0;y<H;y++)
