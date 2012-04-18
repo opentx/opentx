@@ -1704,6 +1704,7 @@ void menuProcLimits(uint8_t event)
 
 #ifdef PPM_CENTER_ADJUSTABLE
 #define LIMITS_MAX_POS 16*FW
+    int8_t limit = ((g_model.extendedLimits && !g_model.servoCenter[k]) ? 125 : 100);
 #else
 #define LIMITS_MAX_POS 17*FW
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
@@ -1713,9 +1714,9 @@ void menuProcLimits(uint8_t event)
     if((g_chans512[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
     putsChn(0, y, k+1, 0);
     lcd_putcAtt(12*FW+5, y, swVal, 0);
-#endif
 
     int8_t limit = (g_model.extendedLimits ? 125 : 100);
+#endif
 
     putsChn(0, y, k+1, 0);
 
@@ -1773,7 +1774,7 @@ void menuProcLimits(uint8_t event)
 #ifdef PPM_CENTER_ADJUSTABLE
         case 4:
           lcd_outdezAtt(21*FW+2, y, PPM_CENTER+g_model.servoCenter[k], attr);
-          if (active) {
+          if (active && ld->max <= 0 && ld->min >= 0) {
             CHECK_INCDEC_MODELVAR(event, g_model.servoCenter[k], -125, +125);
           }
           break;
