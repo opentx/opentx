@@ -40,6 +40,7 @@ FIL g_oLogFile;
 int8_t g_logState = 0; // 0=closed, >0=opened, <0=error
 const pm_char * g_logError = NULL;
 
+// TODO initSDCard()
 void initLogs()
 {
   // Determine and set log file filename
@@ -63,6 +64,18 @@ void initLogs()
     g_logState = -result;
     g_logError = PSTR("SDCARD F/S ERROR");
     return;
+  }
+
+  DIR dir;
+  result = f_opendir(&dir, MODELS_PATH);
+  if (result != FR_OK) {
+    if (result == FR_NO_PATH)
+      result = f_mkdir(MODELS_PATH);
+    if (result != FR_OK) {
+      g_logState = -result;
+      g_logError = PSTR("Check " MODELS_PATH " folder");
+      return;
+    }
   }
 
   // Loop, skipping over any existing log files ... _000, _001, etc. until we have a unique file name

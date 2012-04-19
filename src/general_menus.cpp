@@ -333,23 +333,21 @@ void menuProcSetup(uint8_t event)
     if (sub==subN)
       CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
     if((y+=FH)>7*FH) return;
-    }subN++;
+  }subN++;
     
   if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_GPSCOORD);
-    lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_GPSFORMAT, g_eeGeneral.gpsFormat, (sub==subN ? INVERS:0));
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.gpsFormat, 0, 1);
+    g_eeGeneral.gpsFormat = selectMenuItem(y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, sub==subN, event);
     if((y+=FH)>7*FH) return;
-  }subN++;   
+  }subN++;
 #endif
 
   if(s_pgOfs<subN) {
-      uint8_t attr = sub==subN?INVERS:0;
-      lcd_putsLeft( y,STR_RXCHANNELORD);//   RAET->AETR
-      for (uint8_t i=1; i<=4; i++)
-        putsChnLetter(GENERAL_PARAM_OFS - FW + i*FW, y, channel_order(i), attr);
-      if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
-      if((y+=FH)>7*FH) return;
+    uint8_t attr = sub==subN?INVERS:0;
+    lcd_putsLeft( y,STR_RXCHANNELORD);//   RAET->AETR
+    for (uint8_t i=1; i<=4; i++)
+      putsChnLetter(GENERAL_PARAM_OFS - FW + i*FW, y, channel_order(i), attr);
+    if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
+    if((y+=FH)>7*FH) return;
   }subN++;
 
   if(s_pgOfs<subN) {
@@ -517,7 +515,7 @@ void menuProcTrainer(uint8_t event)
 
     edit = (m_posVert==5);
     lcd_puts(0*FW, 6*FH, STR_MULTIPLIER);
-    lcd_outdezAtt(13*FW, 6*FH, g_eeGeneral.PPM_Multiplier+10, (edit ? INVERS : 0)|PREC1);
+    lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, 6*FH, g_eeGeneral.PPM_Multiplier+10, (edit ? INVERS : 0)|PREC1);
     if (edit) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
     edit = (m_posVert==6);
@@ -617,12 +615,12 @@ void menuProcDiagAna(uint8_t event)
 
   // Voltage calibration
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
-  putsVolts(17*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
   if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
 
 #if defined(PCBARM) && defined(REVB)
   lcd_putsLeft(7*FH-2, STR_CURRENT_CALIB);
-  putsTelemetryValue(17*FW, 7*FH-2, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
+  putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH-2, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
   if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);
 #endif
 

@@ -125,6 +125,51 @@ inline int8_t eeFindEmptyModel(uint8_t id, bool down)
 #ifdef SDCARD
 // TODO to be elsewhere if common to many menus
 const pm_char * s_sdcard_error = NULL;
+
+bool listSDcardModels()
+{
+  FILINFO fno;
+  DIR dir;
+  char *fn;   /* This function is assuming non-Unicode cfg. */
+#if _USE_LFN
+  static char lfn[_MAX_LFN + 1];
+  fno.lfname = lfn;
+  fno.lfsize = sizeof lfn;
+#endif
+
+  s_menu_count = 0;
+  s_menu_flags = BSS;
+
+  FRESULT res = f_opendir(&dir, MODELS_PATH);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      if (fno.fname[0] == '.') continue;             /* Ignore dot entry */
+#if _USE_LFN
+      fn = *fno.lfname ? fno.lfname : fno.fname;
+#else
+      fn = fno.fname;
+#endif
+      if (~fno.fattrib & AM_DIR) {                   /* It is a file. */
+        char *menu_entry = &s_bss_menu[s_menu_count*MENU_LINE_LENGTH];
+        memset(menu_entry, 0, MENU_LINE_LENGTH);
+        for (uint8_t i=0; i<MENU_LINE_LENGTH-1; i++) {
+          if (fn[i] == '.')
+            break;
+          menu_entry[i] = fn[i];
+        }
+        s_menu[s_menu_count++] = menu_entry;
+        // TODO better handling...
+        if (s_menu_count == MENU_MAX_LINES)
+          break;
+      }
+    }
+  }
+
+  return s_menu_count;
+}
+
 #endif
 
 void menuProcModelSelect(uint8_t event)
@@ -372,27 +417,35 @@ void menuProcModelSelect(uint8_t event)
   }
 
   if (s_menu_count) {
-    const pm_char * result = displayMenu(event);
+    const char * result = displayMenu(event);
     if (result) {
-      if (result == STR_LOAD_MODEL || result == STR_CREATE_MODEL) {
-        displayPopup(STR_LOADINGMODEL);
-        eeCheck(true); // force writing of current model data before this is changed
-        if (g_eeGeneral.currModel != sub) {
-          g_eeGeneral.currModel = sub;
-          STORE_GENERALVARS;
-          eeLoadModel(sub);
+      if (s_menu_flags) {
+        // The user choosed a file on SD
+      }
+      else {
+        if (result == STR_LOAD_MODEL || result == STR_CREATE_MODEL) {
+          displayPopup(STR_LOADINGMODEL);
+          eeCheck(true); // force writing of current model data before this is changed
+          if (g_eeGeneral.currModel != sub) {
+            g_eeGeneral.currModel = sub;
+            STORE_GENERALVARS;
+            eeLoadModel(sub);
+          }
         }
-      }
-      else if (result == STR_ARCHIVE_MODEL) {
-        s_sdcard_error = eeArchiveModel(sub);
-        if (!s_sdcard_error)
-          eeDeleteModel(sub); // delete the model, it's archived!
-      }
-      else if (result == STR_RESTORE_MODEL) {
-        // TODO
-      }
-      else if (result == STR_DELETE_MODEL) {
-        s_warning = STR_DELETEMODEL;
+        else if (result == STR_ARCHIVE_MODEL) {
+          s_sdcard_error = eeArchiveModel(sub);
+          /* TODO as soon as archive and restore do work! if (!s_sdcard_error)
+            eeDeleteModel(sub); // delete the model, it's archived!
+          */
+        }
+        else if (result == STR_RESTORE_MODEL) {
+          if (!listSDcardModels()) {
+            s_sdcard_error = PSTR("No Models on SD");
+          }
+        }
+        else if (result == STR_DELETE_MODEL) {
+          s_warning = STR_DELETEMODEL;
+        }
       }
     }
   }

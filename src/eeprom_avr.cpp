@@ -531,22 +531,35 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.model_name;
   FIL archiveFile;
+  UINT written;
 
   FRESULT result = f_mount(0, &g_FATFS_Obj);
   if (result != FR_OK) {
-    return PSTR("SDCARD F/S ERROR"); // TODO ...
+    return SDCARD_ERROR(result);
   }
 
-  strcpy_P(buf, PSTR(LOG_PATH "/Twister.bin")); // TODO Not PSTR everywhere ...
-/*  eeLoadModelName(i_fileSrc, &buf[sizeof(LOG_PATH)+1]);
-  uint8_t i = sizeof(LOG_PATH)+1;
-  while (i<sizeof(LOG_PATH)+11 && buf[i]) {
-    buf[i] = idx2char(buf[i]);
-    i++;
+  strcpy_P(buf, PSTR(MODELS_PATH "/")); // TODO Not PSTR everywhere ...
+
+  eeLoadModelName(i_fileSrc, &buf[sizeof(MODELS_PATH)]);
+  buf[sizeof(MODELS_PATH)+sizeof(g_model.name)] = '\0';
+
+  uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.name)-1;
+  uint8_t len = 0;
+  while (i>sizeof(MODELS_PATH)-1) {
+    if (!len && buf[i])
+      len = i+1;
+    if (len)
+      buf[i] = idx2char(buf[i]);
+    i--;
   }
-  strcpy_P(&buf[i], PSTR(".bin")); // TODO Not PSTR everywhere ...
-*/
+  strcpy_P(&buf[len], PSTR(".bin")); // TODO Not PSTR everywhere ...
+
   result = f_open(&archiveFile, buf, FA_OPEN_ALWAYS | FA_WRITE);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  result = f_write(&archiveFile, &g_eeGeneral.myVers, 1, &written);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
@@ -554,11 +567,11 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
   EFile theFile2;
   theFile2.openRd(FILE_MODEL(i_fileSrc));
 
-  uint8_t len;
-  while ((len=theFile2.read((uint8_t *)buf, 15)))
-  {
-    for (uint8_t i=0; i<len; i++)
-      f_putc(buf[i], &g_oLogFile);
+  while ((len=theFile2.read((uint8_t *)buf, 15))) {
+    result = f_write(&archiveFile, (uint8_t *)buf, len, &written);
+    if (result != FR_OK) {
+      return SDCARD_ERROR(result);
+    }
   }
 
   f_close(&archiveFile);
