@@ -426,8 +426,9 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_FUEL) return frskyHubData.fuelLevel;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T1) return frskyHubData.temperature1;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T2) return frskyHubData.temperature2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_SPEED) return frskyHubData.gpsSpeed_ap;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_SPEED) return frskyHubData.gpsSpeed_bp;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyHubData.gpsDistance;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_GPSALT) return frskyHubData.gpsAltitude_bp;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyHubData.minCellVolts * 2;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyHubData.accelX;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyHubData.accelY;

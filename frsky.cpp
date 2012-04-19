@@ -851,6 +851,19 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
 
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
 {
+#ifdef IMPERIAL_UNITS
+  if (unit == UNIT_DEGREES) {
+    val += 18 ;
+    val *= 115 ;
+    val >>= 6 ;
+  }
+  if (unit == UNIT_METERS) {
+    // m to ft *105/32
+    val = val * 3 + ( val >> 2 ) + (val >> 5) ;
+    unit = UNIT_MAX;
+  }
+#endif
+
   lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT)); // TODO we could add this test inside lcd_outdezAtt!
   if (~att & NO_UNIT && unit != UNIT_RAW)
     lcd_putsiAtt(lcd_lastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
@@ -864,6 +877,7 @@ static const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DEGREES, // T2
   UNIT_KMH,     // Speed
   UNIT_METERS,  // Dist
+  UNIT_METERS,  // GPS Alt
 };
 
 void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)

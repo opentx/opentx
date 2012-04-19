@@ -34,9 +34,10 @@
 #ifndef LOGS_H
 #define LOGS_H
 
-#define LOG_PATH "/O9XLOGS" // no trailing slash = important
+#define LOG_PATH     "/9XLOGS"   // no trailing slash = important
+#define MODELS_PATH  "/9XMODELS"
 
-extern char g_logFilename[21]; // "/O9XLOGS/M00_000.CSV\0" max required length = 21
+extern char g_logFilename[21]; // "/9XLOGS/M00_000.CSV\0" max required length = 21
 extern int8_t g_logState; // 0=closed, >0 = opened, <0 is error
 extern FATFS g_FATFS_Obj;
 extern FIL g_oLogFile;

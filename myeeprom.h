@@ -282,6 +282,7 @@ enum TelemetryUnit {
   UNIT_KMH,
   UNIT_MPH,
   UNIT_METERS,
+  UNIT_FEET = UNIT_METERS,
   UNIT_DEGREES,
   UNIT_PERCENT,
   UNIT_MILLIAMPS,
@@ -313,6 +314,7 @@ enum TelemetrySource {
   TELEM_T2,
   TELEM_SPEED,
   TELEM_DIST,
+  TELEM_GPSALT,
   TELEM_CELL,
   TELEM_ACCx,
   TELEM_ACCy,
@@ -474,7 +476,7 @@ enum Dsm2Variants {
 #endif
 
 PACK(typedef struct t_ModelData {
-  char      name[10];             // 10 must be first for eeLoadModelName
+  char      name[10];             // must be first for eeLoadModelName
   TimerData timers[MAX_TIMERS];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim

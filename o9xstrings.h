@@ -83,7 +83,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VALARM     (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
 #define OFS_VALARMFN   (OFS_VALARM + sizeof(TR_VALARM))
 #define OFS_VTELPROTO  (OFS_VALARMFN + sizeof(TR_VALARMFN))
-#define OFS_GPSFORMAT   (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
+#define OFS_GPSFORMAT  (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
 #define OFS_ENDTELEM   (OFS_GPSFORMAT + sizeof(TR_GPSFORMAT))
 #else
 #define OFS_ENDTELEM   (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
@@ -265,6 +265,7 @@ extern const pm_char STR_RXCHANNELORD[];
 extern const pm_char STR_SLAVE[];
 extern const pm_char STR_MODESRC[];
 extern const pm_char STR_MULTIPLIER[];
+#define LEN_MULTIPLIER PSIZE(TR_MULTIPLIER)
 extern const pm_char STR_CAL[];
 extern const pm_char STR_EEPROMV[];
 extern const pm_char STR_VTRIM[];
@@ -359,6 +360,9 @@ extern const pm_char STR_BATT_CALIB[];
 #if defined(PCBARM)
 extern const pm_char STR_CURRENT_CALIB[];
 extern const pm_char STR_CURRENT[];
+#define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
+#else
+#define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
 #endif
 
 #if defined(SDCARD)

@@ -188,9 +188,12 @@ void displayConfirmation(uint8_t event);
 
 #if defined(SDCARD)
 #define MENU_MAX_LINES 4
-extern const pm_char * s_menu[];
+#define MENU_LINE_LENGTH (8+1)
+extern const char *s_menu[MENU_MAX_LINES];
+extern char s_bss_menu[MENU_MAX_LINES*MENU_LINE_LENGTH];
 extern uint8_t s_menu_count;
-const pm_char * displayMenu(uint8_t event);
+extern uint8_t s_menu_flags;
+const char * displayMenu(uint8_t event);
 #endif
 
 #endif

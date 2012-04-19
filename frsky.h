@@ -71,7 +71,7 @@ class FrskyData: public FrskyRSSI {
 #if defined(FRSKY_HUB)
 PACK(struct FrskyHubData {
   int16_t  baroAltitudeOffset;//       spare reused
-  int16_t  gpsAltitude_bp;  // 0x01   before punct
+  int16_t  gpsAltitude_bp;   // 0x01   before punct
   int16_t  temperature1;     // 0x02   -20 .. 250 deg. celcius
   uint16_t rpm;              // 0x03   0..60,000 revs. per minute
   uint16_t fuelLevel;        // 0x04   0, 25, 50, 75, 100 percent

@@ -93,7 +93,7 @@ void menuMainView(uint8_t event)
       break;
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
-      if (view_base == e_inputs) {
+      if (view_base <= e_inputs) {
         g_eeGeneral.view ^= ALTERNATE_VIEW;
         eeDirty(EE_GENERAL);
         AUDIO_KEYPAD_UP();
@@ -235,11 +235,10 @@ void menuMainView(uint8_t event)
     }
   }
 
-  if(view_base<e_inputs) {
-    for(uint8_t i=0; i<8; i++)
-    {
+  if (view_base < e_inputs) {
+    for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
-      int16_t val = g_chans512[i];
+      int16_t val = g_chans512[(g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i];
 
       switch(view_base)
       {
@@ -254,6 +253,7 @@ void menuMainView(uint8_t event)
           lcd_outdezAtt( x0+4*FW , y0, GPERC(val)/10, 0); // G: Don't like the decimal part*
 #endif
           break;
+
         case e_outputBars:
 #define WBAR2 (50/2)
           x0       = i<4 ? 128/4+2 : 128*3/4-2;
@@ -337,4 +337,5 @@ void menuMainView(uint8_t event)
 #endif
 
   DISPLAY_PROGRESS_BAR(20*FW+1);
+
 }

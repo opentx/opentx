@@ -110,10 +110,16 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  ""Haptc1""Haptc2""Haptc3"
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Time"
+#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Time"
 
 #define LEN_VTELEMUNIT   "\003"
-#define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0 ""mA\0"
+#ifdef IMPERIAL_UNITS
+#define LENGTH_UNIT "ft\0"
+#else
+#define LENGTH_UNIT "m\0 "
+#endif
+
+#define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h" LENGTH_UNIT "@\0 ""%\0 ""mA\0"
 #define STR_V            (STR_VTELEMUNIT+1)
 #define STR_A            (STR_VTELEMUNIT+4)
 
@@ -131,7 +137,7 @@
 #endif
 
 #define LEN_GPSFORMAT     "\004"
-#define TR_GPSFORMAT   "HMS NMEA"
+#define TR_GPSFORMAT      "HMS NMEA"
 
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"

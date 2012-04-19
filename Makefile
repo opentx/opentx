@@ -104,8 +104,12 @@ DSM2 = NO
 SOMO = NO
 
 # TRANSLATIONS
-# Values = en, 
+# Values = en, fr, se 
 TRANSLATIONS = EN
+
+# UNITS
+# Values = imperial, metric 
+UNITS = METRIC
 
 # EEPROM_PROGRESS_BAR
 # Values = YES, NO
@@ -212,6 +216,10 @@ EXTRAINCDIRS = . translations
 
 CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
 
+ifeq ($(UNITS), IMPERIAL)
+  CPPDEFS += -DIMPERIAL_UNITS
+endif
+
 # If POT1/POTS/RE1 is used for fields modification
 ifeq ($(NAVIGATION), POT1)
   CPPDEFS += -DNAVIGATION_POT1
@@ -315,7 +323,7 @@ ifeq ($(PCB), V4)
   endif
 
   ifeq ($(SDCARD), YES)
-    CPPDEFS += -DSDCARD 
+    CPPDEFS += -DSDCARD
     CPPSRC += gruvin9x/logs.cpp
     MODS:=${MODS}S
   endif
