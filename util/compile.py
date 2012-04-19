@@ -32,16 +32,20 @@ host = "ftpperso.free.fr"
 user = "open9x"   
 password = None
 ftp_connection = None
-ftp_tmpdir = "binaries/temp" + str(int(time.mktime(time.localtime())))
+ftp_tmpdir = None
 
 def openFtp():
     global password
     global ftp_connection
+    global ftp_tmpdir
     
     if password is None:
         password = getpass.getpass()
+        
     ftp_connection = ftplib.FTP(host, user, password)
-    ftp_connection.mkd(ftp_tmpdir)
+    if ftp_tmpdir is None:
+        ftp_tmpdir = "binaries/temp" + str(int(time.mktime(time.localtime())))
+        ftp_connection.mkd(ftp_tmpdir)
     
 def closeFtp():
     # ftp_connection.rename("binaries/latest", "binaries/r...")
@@ -49,13 +53,27 @@ def closeFtp():
     ftp_connection.quit()
     
 def uploadBinary(binary_name):
-    welcome = ftp_connection.getwelcome()
-    while not welcome:
-        time.sleep(10)
-        openFtp()
-    f = file(BINARY_DIR + binary_name, 'rb') 
-    ftp_connection.storbinary('STOR ' + ftp_tmpdir + '/' + binary_name, f)
-    f.close()
+    while 1:
+        try:
+            try:
+                ftp_connection.delete(ftp_tmpdir + '/' + binary_name)
+            except:
+                pass
+            f = file(BINARY_DIR + binary_name, 'rb') 
+            ftp_connection.storbinary('STOR ' + ftp_tmpdir + '/' + binary_name, f)
+            f.close()
+            return
+        except:
+            time.sleep(10)
+            try:
+                ftp_connection.quit()
+            except:
+                pass
+            try:
+                openFtp()
+            except:
+                pass
+    
 
 def generate(hex, arg, extension, options, maxsize):
     result = []
