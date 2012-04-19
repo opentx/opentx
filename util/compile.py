@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys, shutil, platform, getpass, subprocess, ftplib, time
+import os, sys, shutil, platform, getpass, subprocess, ftplib, time, threading
 
 BINARY_DIR = "../binaries/"
 
@@ -29,10 +29,11 @@ options_arm = [[("", "EXT=FRSKY")],
 languages = ["en", "fr", "se"]
 
 host = "ftpperso.free.fr"
-user = "open9x"   
+user = "open9x"  
 password = None
 ftp_connection = None
 ftp_tmpdir = None
+ftp_lock = threading.Lock()
 
 def openFtp():
     global password
@@ -53,6 +54,7 @@ def closeFtp():
     ftp_connection.quit()
     
 def uploadBinary(binary_name):
+    ftp_lock.acquire()
     while 1:
         try:
             try:
@@ -62,6 +64,7 @@ def uploadBinary(binary_name):
             f = file(BINARY_DIR + binary_name, 'rb') 
             ftp_connection.storbinary('STOR ' + ftp_tmpdir + '/' + binary_name, f)
             f.close()
+            ftp_lock.release()
             return
         except:
             time.sleep(10)
@@ -72,23 +75,26 @@ def uploadBinary(binary_name):
             try:
                 openFtp()
             except:
-                pass
-    
+                pass   
 
-def generate(hex, arg, extension, options, maxsize):
+global_current = 0
+global_count = 0 
+def generate(hex, arg, extension, options, languages, maxsize):
+    global global_current
+    global global_count
+    
     result = []
     states = [0] * len(options)
     
     count = len(languages)
     for option in options:
       count *= len(option)
-    current = 0
+    global_count += count
     
     while 1:
         # print index, states
     
         for language in languages:
-            current += 1
             hex_file = hex
             make_args = ["make", arg]
             for i, option in enumerate(options):
@@ -98,11 +104,16 @@ def generate(hex, arg, extension, options, maxsize):
                 make_args.append(option[state][1])
             hex_file += "-" + language
             make_args.append("TRANSLATIONS=" + language.upper())
-            print "[%d/%d]" % (current, count), hex_file
-            subprocess.check_output(["make", "clean", arg])
-            p = subprocess.Popen(make_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if mt:
+                cwd = language
+            else:
+                cwd = None
+            subprocess.Popen(["make", "clean", arg], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd).wait()
+            p = subprocess.Popen(make_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
             p.wait()
             stderr = p.stderr.read()
+            global_current += 1
+            print "[%d/%d]" % (global_current, global_count), hex_file
             if "error" in stderr:
                 print stderr
                 exit()
@@ -125,7 +136,10 @@ def generate(hex, arg, extension, options, maxsize):
             
             if size <= maxsize:
                 binary_name =  hex_file + "." + extension
-                shutil.copyfile("open9x." + extension, BINARY_DIR + binary_name)
+                if mt:
+                    shutil.copyfile(language + "/open9x." + extension, BINARY_DIR + binary_name)
+                else:
+                    shutil.copyfile("open9x." + extension, BINARY_DIR + binary_name)
                 if upload:
                     uploadBinary(binary_name)
                     
@@ -141,6 +155,35 @@ def generate(hex, arg, extension, options, maxsize):
             break
         
     return result
+
+class GenerateThread(threading.Thread):
+   def __init__ (self, hex, arg, extension, options, language, maxsize):
+      threading.Thread.__init__(self)
+      self.hex = hex
+      self.arg = arg
+      self.extension = extension
+      self.options = options
+      self.language = language
+      self.maxsize = maxsize
+      
+   def run(self):
+      self.hexes = generate(self.hex, self.arg, self.extension, self.options, [self.language], self.maxsize)     
+           
+def multithread_generate(hex, arg, extension, options, languages, maxsize):
+    if mt:
+        result = []
+        threads = []
+        for language in languages:
+            thread = GenerateThread(hex, arg, extension, options, language, maxsize)
+            threads.append(thread)
+            thread.start()
+        for thread in threads:
+            thread.join()
+            result.extend(thread.hexes)
+        return result
+    else:
+        return generate(hex, arg, extension, options, languages, maxsize)
+        
         
 def generate_c9x_list(filename, hexes, extension, stamp, board):
     f = file(filename, "w")
@@ -150,13 +193,20 @@ def generate_c9x_list(filename, hexes, extension, stamp, board):
 if __name__ == "__main__":
     
     upload = "upload" in sys.argv
+    mt = "mt" in sys.argv and platform.system() != "Windows"
     
     if upload:
         openFtp()
 
+    if mt:
+        for lang in languages:
+            print "Directory %s creation..." % lang
+            shutil.rmtree(lang, True)
+            shutil.copytree("../src", lang)
+    
     if platform.system() == "Windows":
         # arm board
-        hexes = generate("open9x-arm", "PCB=ARM", "bin", options_arm, 262000)
+        hexes = generate("open9x-arm", "PCB=ARM", "bin", options_arm, languages, 262000)
         generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "bin", "OPEN9X_ARM_STAMP", "BOARD_ERSKY9X")
         
         # arm stamp
@@ -164,11 +214,11 @@ if __name__ == "__main__":
     
     else:
         # stock board
-        hexes = generate("open9x-stock", "PCB=STD", "hex", options_stock, 65530)
+        hexes = multithread_generate("open9x-stock", "PCB=STD", "hex", options_stock, languages, 65530)
         generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_STOCK")
     
         # v4 board
-        hexes = generate("open9x-v4", "PCB=V4", "hex", options_v4, 262000)
+        hexes = multithread_generate("open9x-v4", "PCB=V4", "hex", options_v4, languages, 262000)
         generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
     
         # stamp
