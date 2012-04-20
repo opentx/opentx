@@ -28,8 +28,10 @@ options_arm = [[("", "EXT=FRSKY")],
 
 languages = ["en", "fr", "se"]
 
-host = "ftpperso.free.fr"
-user = "open9x"  
+#host = "ftpperso.free.fr"
+#user = "open9x"
+host = "open9x.freehosting.com"
+user = "openxfre"  
 password = None
 ftp_connection = None
 ftp_tmpdir = None
@@ -45,12 +47,12 @@ def openFtp():
         
     ftp_connection = ftplib.FTP(host, user, password)
     if ftp_tmpdir is None:
-        ftp_tmpdir = "binaries/temp" + str(int(time.mktime(time.localtime())))
+        ftp_tmpdir = "public_html/binaries/temp" + str(int(time.mktime(time.localtime())))
         ftp_connection.mkd(ftp_tmpdir)
     
 def closeFtp():
     # ftp_connection.rename("binaries/latest", "binaries/r...")
-    ftp_connection.rename(ftp_tmpdir, "binaries/latest")
+    ftp_connection.rename(ftp_tmpdir, "public_html/binaries/latest")
     ftp_connection.quit()
     
 def uploadBinary(binary_name):
@@ -222,7 +224,7 @@ if __name__ == "__main__":
         generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
     
         # stamp
-        subprocess.check_output(["make", "stamp"])
+        subprocess.Popen(["make", "stamp"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd="../src").wait()
         
     if upload:
         closeFtp()
