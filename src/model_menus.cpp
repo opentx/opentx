@@ -527,7 +527,17 @@ enum menuProcModelItems {
   ITEM_MODEL_PROTOCOL_PARAMS
 };
 
-// TODO little flash saving with the test on protocol below
+#if defined(DSM2)
+#define IS_DSM2_PROTOCOL(protocol) (protocol==PROTO_DSM2)
+#else
+#define IS_DSM2_PROTOCOL(protocol) (0)
+#endif
+
+#if defined(PXX)
+#define IS_PXX_PROTOCOL(protocol) (protocol==PROTO_PXX)
+#else
+#define IS_PXX_PROTOCOL(protocol) (0)
+#endif
 
 #define MODEL_PARAM_OFS (9*FW+2)
 void menuProcModel(uint8_t event)
@@ -535,14 +545,7 @@ void menuProcModel(uint8_t event)
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
 
   uint8_t protocol = g_model.protocol;
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol==PROTO_PPM||protocol==PROTO_FAAST
-#if defined(DSM2)
-      ||protocol==PROTO_DSM2
-#endif
-#if defined(PXX)
-      ||protocol==PROTO_PXX
-#endif
-      ) ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,2,1});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol==PROTO_PPM||protocol==PROTO_FAAST||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,2,1});
 
   uint8_t  sub = m_posVert - 1;
 

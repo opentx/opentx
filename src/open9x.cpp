@@ -2608,12 +2608,14 @@ int main(void)
   lcd_clear() ;
   displayPopup(STR_SHUTDOWN);
   eeCheck(true);
+  lcd_clear() ;
+  refreshDisplay() ;
+  // TODO needed? lcdSetRefVolt(0);
   soft_power_off();            // Only turn power off if necessary
 #endif
 
 #if defined(PCBARM)
   if (shutdown_state == e_power_usb) {
-    lcd_clear();
     lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
     lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
     lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
