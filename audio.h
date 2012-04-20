@@ -219,6 +219,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_VARIO_UP()    audioDefevent(AU_KEYPAD_UP)
 #define AUDIO_VARIO_DOWN()  audioDefevent(AU_KEYPAD_DOWN)
 #define AUDIO_TRIM_MIDDLE() audioDefevent(AU_TRIM_MIDDLE)
+#define AUDIO_TELEMETRY_ALARM() audioDefevent(AU_WARNING1)
 
 #if defined(PCBSTD)
 #define AUDIO_DRIVER()      audio.driver()

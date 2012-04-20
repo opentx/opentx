@@ -45,12 +45,7 @@ TEMPLATES = YES
 #          POT2 (menus scroll),
 #          POT3 (cursor down/up),
 #          POTS (POT1, POT2, POT3),
-#          RE1  (Rotary encoder 1, on V4 boards)
-ifeq ($(PCB), V4)
-NAVIGATION = RE1
-else
-NAVIGATION = POTS
-endif
+NAVIGATION = NO
 
 # AUDIO Mods
 # Values = YES, NO 
@@ -307,7 +302,7 @@ endif
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
   OPT = 2
-  CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC
+  CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC -DROTARY_ENCODERS
   EXTRAINCDIRS += gruvin9x
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
@@ -317,10 +312,6 @@ ifeq ($(PCB), V4)
   CPPSRC += gruvin9x/rtc.cpp
   CPPSRC += gruvin9x/ff.cpp
   CPPSRC += gruvin9x/diskio.cpp
-   
-  ifeq ($(NAVIGATION), RE1)
-    CPPDEFS += -DNAVIGATION_RE1
-  endif
 
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DSDCARD

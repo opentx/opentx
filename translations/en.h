@@ -14,8 +14,11 @@
 #define LEN_VBEEPLEN     "\005"
 #define TR_VBEEPLEN      "xShrt""Short""Norml""Long ""xLong"
 
-#define LEN_ADCFILTER    "\004"
-#define TR_ADCFILTER     "SING""OSMP""FILT"
+#define LEN_VRENAVIG     "\003"
+#define TR_VRENAVIG      "No REaREb"
+
+#define LEN_VFILTERADC   "\004"
+#define TR_VFILTERADC    "SING""OSMP""FILT"
 
 #define LEN_WARNSW       "\004"
 #define TR_WARNSW        "Down""OFF ""Up  "
@@ -255,6 +258,7 @@
 #define TR_CONTRAST     "Contrast"
 #define TR_BATTERYWARNING "Battery Warning"
 #define TR_INACTIVITYALARM "Inactivity alrm"
+#define TR_RENAVIG      "Navig RotEnc"
 #define TR_FILTERADC    "Filter ADC"
 #define TR_THROTTLEREVERSE "Thr reverse"
 #define TR_MINUTEBEEP   "Minute beep"

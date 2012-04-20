@@ -315,7 +315,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
 
   if (neg) lcd_putcAtt(x, y, '-', flags);
 
-#ifdef NAVIGATION_RE1
+#if defined(ROTARY_ENCODERS)
   if (flags & SURROUNDED) {
     xn = lcd_lastPos - x + 2;
     if (!neg) { x+=FW; xn-=FW; }

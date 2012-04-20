@@ -59,8 +59,9 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_NCHANNELS  (OFS_MMMINV + sizeof(TR_MMMINV))
 #define OFS_VBEEPMODE  (OFS_NCHANNELS + sizeof(TR_NCHANNELS))
 #define OFS_VBEEPLEN   (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
-#define OFS_ADCFILTER  (OFS_VBEEPLEN + sizeof(TR_VBEEPLEN))
-#define OFS_WARNSW     (OFS_ADCFILTER + sizeof(TR_ADCFILTER))
+#define OFS_VRENAVIG   (OFS_VBEEPLEN + sizeof(TR_VBEEPLEN))
+#define OFS_VFILTERADC (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
+#define OFS_WARNSW     (OFS_VFILTERADC + sizeof(TR_VFILTERADC))
 #define OFS_TRNMODE    (OFS_WARNSW + sizeof(TR_WARNSW))
 #define OFS_TRNCHN     (OFS_TRNMODE + sizeof(TR_TRNMODE))
 #define OFS_VTRIMINC   (OFS_TRNCHN + sizeof(TR_TRNCHN))
@@ -120,7 +121,8 @@ extern const pm_char STR_OPEN9X[];
 #define STR_NCHANNELS  (STR_OPEN9X + OFS_NCHANNELS)
 #define STR_VBEEPMODE  (STR_OPEN9X + OFS_VBEEPMODE)
 #define STR_VBEEPLEN   (STR_OPEN9X + OFS_VBEEPLEN)
-#define STR_ADCFILTER  (STR_OPEN9X + OFS_ADCFILTER)
+#define STR_VRENAVIG   (STR_OPEN9X + OFS_VRENAVIG)
+#define STR_VFILTERADC (STR_OPEN9X + OFS_VFILTERADC)
 #define STR_WARNSW     (STR_OPEN9X + OFS_WARNSW)
 #define STR_TRNMODE    (STR_OPEN9X + OFS_TRNMODE)
 #define STR_TRNCHN     (STR_OPEN9X + OFS_TRNCHN)
@@ -246,6 +248,7 @@ extern const pm_char STR_HAPTICLENGTH[];
 extern const pm_char STR_CONTRAST[];
 extern const pm_char STR_BATTERYWARNING[];
 extern const pm_char STR_INACTIVITYALARM[];
+extern const pm_char STR_RENAVIG[];
 extern const pm_char STR_FILTERADC[];
 extern const pm_char STR_THROTTLEREVERSE[];
 extern const pm_char STR_MINUTEBEEP[];
@@ -334,7 +337,7 @@ extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
 #endif
 
-#ifdef NAVIGATION_RE1
+#if defined(ROTARY_ENCODERS)
 extern const pm_char STR_BACK[];
 #define LEN_BACK PSIZE(TR_BACK)
 extern const pm_char STR_MIXERWEIGHT[];
