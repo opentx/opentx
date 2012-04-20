@@ -184,6 +184,7 @@ void menuProcSetup(uint8_t event)
 
 #if defined(PCBARM)
       case ITEM_SETUP_SPEAKER_VOLUME:
+      {
         uint8_t current_volume = g_eeGeneral.speakerVolume;
         lcd_putsLeft(y, PSTR("Speaker Volume")); // TODO translations
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, current_volume, attr|LEFT);
@@ -194,6 +195,7 @@ void menuProcSetup(uint8_t event)
           }
         }
         break;
+      }
 #endif
 
       case ITEM_SETUP_BEEPER_LENGTH:
