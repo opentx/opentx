@@ -516,7 +516,7 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 extern uint8_t s_perOut_flight_phase;
 #endif
 
-#if define(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS)
 int16_t getRotaryEncoder(uint8_t idx);
 void incRotaryEncoder(uint8_t idx, int8_t inc);
 inline bool navigationRotaryEncoder(uint8_t event)
