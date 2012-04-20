@@ -847,5 +847,9 @@ extern union ReusableBuffer reusableBuffer;
 
 void checkFlashOnBeep();
 
+#if defined(FRSKY) || defined(PCBARM)
+void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
+#endif
+
 #endif // gruvin9x_h
 /*eof*/

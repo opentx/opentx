@@ -128,6 +128,8 @@
 #define TR_VTELPROTO     "--- Hub WSHH"
 #elif defined(FRSKY_HUB)
 #define TR_VTELPROTO     "--- Hub "
+#else
+#define TR_VTELPROTO     ""
 #endif
 
 #define LEN_GPSFORMAT     "\004"
