@@ -374,12 +374,8 @@ extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
   static uint16_t lastCapt ;
   uint16_t val ;
 
-        capture = TC1->TC_CHANNEL[0].TC_RA ;
-        (void) TC1->TC_CHANNEL[0].TC_SR ;               // Acknowledgethe interrupt
-
-//      cli();
-//  ETIMSK &= ~(1<<TICIE3); //stop reentrance
-//  sei();
+  capture = TC1->TC_CHANNEL[0].TC_RA ;
+  (void) TC1->TC_CHANNEL[0].TC_SR ;               // Acknowledgethe interrupt
 
   val = (capture - lastCapt) / 2 ;
   lastCapt = capture;
@@ -389,23 +385,17 @@ extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
   if (ppmInState && ppmInState<=8) {
     if(val>800 && val<2200) {
       Temp_captures[ppmInState - 1] = capture ;
-      g_ppmIns[ppmInState++ - 1] =
-        (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
-
+      g_ppmIns[ppmInState++ - 1] = (int16_t)(val - PPM_CENTER)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
     }
     else {
-      ppmInState=0; // not triggered
+      ppmInState = 0; // not triggered
     }
   }
   else {
     if (val>4000 && val < 16000) {
-      ppmInState=1; // triggered
+      ppmInState = 1; // triggered
     }
   }
-
-//  cli();
-//  ETIMSK |= (1<<TICIE3);
-//  sei();
 }
 
 void start_ppm_capture()
