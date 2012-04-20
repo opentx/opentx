@@ -59,7 +59,12 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_NCHANNELS  (OFS_MMMINV + sizeof(TR_MMMINV))
 #define OFS_VBEEPMODE  (OFS_NCHANNELS + sizeof(TR_NCHANNELS))
 #define OFS_VBEEPLEN   (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
+#if defined(ROTARY_ENCODERS)
 #define OFS_VRENAVIG   (OFS_VBEEPLEN + sizeof(TR_VBEEPLEN))
+#define OFS_VFILTERADC (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
+#else
+#define OFS_VFILTERADC (OFS_VBEEPLEN + sizeof(TR_VBEEPLEN))
+#endif
 #define OFS_VFILTERADC (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
 #define OFS_WARNSW     (OFS_VFILTERADC + sizeof(TR_VFILTERADC))
 #define OFS_TRNMODE    (OFS_WARNSW + sizeof(TR_WARNSW))
