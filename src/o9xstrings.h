@@ -65,7 +65,6 @@ extern const pm_char STR_OPEN9X[];
 #else
 #define OFS_VFILTERADC (OFS_VBEEPLEN + sizeof(TR_VBEEPLEN))
 #endif
-#define OFS_VFILTERADC (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
 #define OFS_WARNSW     (OFS_VFILTERADC + sizeof(TR_VFILTERADC))
 #define OFS_TRNMODE    (OFS_WARNSW + sizeof(TR_WARNSW))
 #define OFS_TRNCHN     (OFS_TRNMODE + sizeof(TR_TRNMODE))
