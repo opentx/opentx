@@ -79,14 +79,14 @@ void menuProcFunctionSwitches(uint8_t event);
 void menuProcStatistic(uint8_t event);
 void menuProcDebug(uint8_t event);
 
-#if defined(NAVIGATION_RE1)
+#if defined(ROTARY_ENCODERS)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
-#define IS_RE1_EVT_TYPE(event, type) (event==type(BTN_REa))
-#define IS_RE1_EVT(event) ((event&0x0f)==BTN_REa)
+#define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
+#define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && (event&EVT_KEY_MASK)==(BTN_REa + g_eeGeneral.reNavigation - 1))
 #else
-#define IS_RE1_EVT_TYPE(event, type) (0)
-#define IS_RE1_EVT(event) (0)
+#define IS_RE_NAVIGATION_EVT_TYPE(event, type) (0)
+#define IS_RE_NAVIGATION_EVT(event) (0)
 #if defined(NAVIGATION_POT1)
 extern int16_t p1valdiff;
 #else
@@ -111,7 +111,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_GENVAR( event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
 
-#ifdef NAVIGATION_RE1
+#if defined(ROTARY_ENCODERS)
 extern int8_t *s_inflight_value;
 extern const pm_char *s_inflight_label;
 extern int8_t s_inflight_min;
@@ -136,7 +136,7 @@ void check_rotary_encoder();
 #endif
 
 // Menus related stuff ...
-#ifdef NAVIGATION_RE1
+#if defined(ROTARY_ENCODERS)
 extern int8_t m_posVert;
 #else
 extern uint8_t m_posVert;

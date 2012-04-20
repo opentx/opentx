@@ -295,7 +295,7 @@ enum EnumKeys {
   TRM_RV_UP   ,
   TRM_RH_DWN  ,
   TRM_RH_UP   ,
-#ifdef PCBV4
+#if defined(ROTARY_ENCODERS)
   BTN_REa,
   BTN_REb,
 #endif
@@ -516,6 +516,10 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 extern uint8_t s_perOut_flight_phase;
 int16_t getRotaryEncoder(uint8_t idx);
 void incRotaryEncoder(uint8_t idx, int8_t inc);
+inline bool navigationRotaryEncoder(uint8_t event)
+{
+  return g_eeGeneral.reNavigation == ((event & EVT_KEY_MASK) - BTN_REa + 1);
+}
 #endif
 
 extern uint16_t s_timeCumTot;

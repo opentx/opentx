@@ -72,41 +72,63 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 };
 
 #define GENERAL_PARAM_OFS   (2+16*FW)
-NOINLINE int8_t selectMenuItem(uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, uint8_t condition, uint8_t event)
+NOINLINE int8_t selectMenuItem(uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event)
 {
   lcd_putsLeft(y, label);
-  lcd_putsiAtt(GENERAL_PARAM_OFS, y, values, value-min, condition ? INVERS:0) ;
-  if (condition) CHECK_INCDEC_GENVAR(event, value, min, max);
+  lcd_putsiAtt(GENERAL_PARAM_OFS, y, values, value-min, attr) ;
+  if (attr) CHECK_INCDEC_GENVAR(event, value, min, max);
   return value;
 }
 
-NOINLINE uint8_t onoffMenuItem(uint8_t value, uint8_t y, const pm_char *label, uint8_t condition, uint8_t event )
+NOINLINE uint8_t onoffMenuItem(uint8_t value, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event )
 {
-  return selectMenuItem(y, label, STR_OFFON, value, 0, 1, condition, event);
+  return selectMenuItem(y, label, STR_OFFON, value, 0, 1, attr, event);
 }
 
 enum menuProcSetupItems {
-  ITEM_SETUP_BASE=18,
-#ifdef PCBARM
-  ITEM_SETUP_OPTREX,
-  ITEM_SETUP_BACKLIGHT_BRIGHT,
-  ITEM_SETUP_VOLUME,
+  ITEM_SETUP_BEEPER_MODE,
+#if defined(PCBARM)
+  ITEM_SETUP_SPEAKER_VOLUME,
 #endif
-#ifdef AUDIO
-  ITEM_SETUP_SPEAKER,
+  ITEM_SETUP_BEEPER_LENGTH,
+#if defined(AUDIO)
+  ITEM_SETUP_SPEAKER_PITCH,
 #endif
-#ifdef HAPTIC
+#if defined(HAPTIC)
   ITEM_SETUP_HAPTIC_MODE,
   ITEM_SETUP_HAPTIC_STRENGTH,
 #endif
-#ifdef SPLASH
-  ITEM_SETUP_SPLASH,
+#if defined(PCBARM)
+  ITEM_SETUP_OPTREX_DISPLAY,
+  ITEM_SETUP_BRIGHTNESS,
 #endif
-#ifdef FRSKY
-  ITEM_SETUP_NODATA_ALARM,
+  ITEM_SETUP_CONTRAST,
+  ITEM_SETUP_BATTERY_WARNING,
+  ITEM_SETUP_INACTIVITY_ALARM,
+#if defined(ROTARY_ENCODERS)
+  ITEM_SETUP_RE_NAVIGATION,
+#endif
+  ITEM_SETUP_FILTER_ADC,
+  ITEM_SETUP_THROTTLE_REVERSED,
+  ITEM_SETUP_MINUTE_BEEP,
+  ITEM_SETUP_COUNTDOWN_BEEP,
+  ITEM_SETUP_FLASH_BEEP,
+  ITEM_SETUP_LIGHT_SWITCH,
+  ITEM_SETUP_LIGHT_OFF_AFTER,
+#if defined(SPLASH)
+  ITEM_SETUP_DISABLE_SPLASH,
+#endif
+  ITEM_SETUP_THROTTLE_WARNING,
+  ITEM_SETUP_SWITCH_WARNING,
+  ITEM_SETUP_MEMORY_WARNING,
+  ITEM_SETUP_ALARM_WARNING,
+#if defined(FRSKY)
+  ITEM_SETUP_TELEMETRY_ALARM,
   ITEM_SETUP_TIMEZONE,
-  ITEM_SETUP_GPSCOORD,
+  ITEM_SETUP_GPSFORMAT,
 #endif
+  ITEM_SETUP_RX_CHANNEL_ORD,
+  ITEM_SETUP_STICK_MODE,
   ITEM_SETUP_MAX
 };
 
@@ -137,231 +159,228 @@ void menuProcSetup(uint8_t event)
 #else
 #define ARM_ZEROS
 #endif
-
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, 0, 0, AUDIO_ZEROS HAPTIC_ZEROS ARM_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
-
-  int8_t  sub = m_posVert;
-  uint8_t y = 1*FH;
-
-  uint8_t subN = 1;
-  if(s_pgOfs<subN) {
-    g_eeGeneral.beeperMode = selectMenuItem(y, STR_BEEPERMODE, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, sub==subN, event);
-#if defined(FRSKY)
-    if (sub==subN && checkIncDec_Ret) FRSKY_setModelAlarms();
+#ifdef ROTARY_ENCODERS
+#define ROTARY_ENCODERS_ZEROS 0,
+#else
+#define ROTARY_ENCODERS_ZEROS
 #endif
-    if((y+=FH)>7*FH) return;
-  }subN++;
+
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+2, {0, 0, 0, AUDIO_ZEROS HAPTIC_ZEROS ARM_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+
+  uint8_t sub = m_posVert - 1;
+
+  for (uint8_t i=0; i<7; i++) {
+    uint8_t y = 1*FH + i*FH;
+    uint8_t k = i+s_pgOfs;
+    uint8_t attr = (sub == k ? INVERS : 0);
+
+    switch(k) {
+      case ITEM_SETUP_BEEPER_MODE:
+        g_eeGeneral.beeperMode = selectMenuItem(y, STR_BEEPERMODE, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, attr, event);
+#if defined(FRSKY)
+        if (attr && checkIncDec_Ret) FRSKY_setModelAlarms();
+#endif
+        break;
 
 #if defined(PCBARM)
-  if(s_pgOfs<subN) {
-    uint8_t current_volume = g_eeGeneral.speakerVolume;
-    lcd_putsLeft(y, PSTR("Speaker Volume")); // TODO translations
-    lcd_outdezAtt(GENERAL_PARAM_OFS, y, current_volume, (sub==subN ? INVERS : 0)|LEFT);
-    if(sub==subN) {
-      CHECK_INCDEC_GENVAR(event, current_volume, 0, NUM_VOL_LEVELS-1);
-      if (current_volume != g_eeGeneral.speakerVolume) {
-        set_volume(g_eeGeneral.speakerVolume = current_volume);
-      }
-    }
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_SPEAKER_VOLUME:
+        uint8_t current_volume = g_eeGeneral.speakerVolume;
+        lcd_putsLeft(y, PSTR("Speaker Volume")); // TODO translations
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, current_volume, attr|LEFT);
+        if(attr) {
+          CHECK_INCDEC_GENVAR(event, current_volume, 0, NUM_VOL_LEVELS-1);
+          if (current_volume != g_eeGeneral.speakerVolume) {
+            set_volume(g_eeGeneral.speakerVolume = current_volume);
+          }
+        }
+        break;
 #endif
 
-  if(s_pgOfs<subN) {
-    g_eeGeneral.beeperLength = selectMenuItem(y, STR_BEEPERLEN, STR_VBEEPLEN, g_eeGeneral.beeperLength, -2, 2, sub==subN, event);
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_BEEPER_LENGTH:
+        g_eeGeneral.beeperLength = selectMenuItem(y, STR_BEEPERLEN, STR_VBEEPLEN, g_eeGeneral.beeperLength, -2, 2, attr, event);
+        break;
 
-#ifdef AUDIO
-  if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_SPKRPITCH);
-    lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerPitch,(sub==subN ? INVERS : 0)|LEFT);
-    if (sub==subN) {
-      CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 100);
-    }
-    if((y+=FH)>7*FH) return;
-  }subN++;
+#if defined(AUDIO)
+      case ITEM_SETUP_SPEAKER_PITCH:
+        lcd_putsLeft( y, STR_SPKRPITCH);
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerPitch, attr|LEFT);
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 100);
+        }
+        break;
 #endif
 
 #ifdef HAPTIC
-  if(s_pgOfs<subN) {
-    g_eeGeneral.hapticMode = selectMenuItem(y, STR_HAPTICMODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, sub==subN, event);
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_HAPTIC_MODE:
+        g_eeGeneral.hapticMode = selectMenuItem(y, STR_HAPTICMODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
+        break;
 
-  if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_HAPTICSTRENGTH);
-    lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.hapticStrength, (sub==subN ? INVERS : 0)|LEFT);
-    if (sub==subN) {
-      CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticStrength, 0, 5);
-    }
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_HAPTIC_STRENGTH:
+        lcd_putsLeft( y, STR_HAPTICSTRENGTH);
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.hapticStrength, attr|LEFT);
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticStrength, 0, 5);
+        }
+        break;
 #endif
 
 #if defined(PCBARM)
-  if(s_pgOfs<subN) {
-    g_eeGeneral.optrexDisplay = onoffMenuItem( g_eeGeneral.optrexDisplay, y, PSTR("Optrex Display"), sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_OPTREX_DISPLAY:
+        g_eeGeneral.optrexDisplay = onoffMenuItem( g_eeGeneral.optrexDisplay, y, PSTR("Optrex Display"), attr, event ) ;
+        break;
 
-  if(s_pgOfs<subN) {
-    lcd_putsLeft(y, PSTR("Brightness")); // TODO translations in the whole file ...
-    lcd_outdezAtt(GENERAL_PARAM_OFS, y, 100-g_eeGeneral.backlightBright, (sub==subN ? INVERS : 0)|LEFT) ;
-    if(sub==subN) {
-      uint8_t b ;
-      b = 100 - g_eeGeneral.backlightBright;
-      CHECK_INCDEC_GENVAR(event, b, 0, 100);
-      g_eeGeneral.backlightBright = 100 - b;
-      PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright ;
-    }
-    if((y+=FH)>7*FH) return;
-  } subN++;
+      case ITEM_SETUP_BRIGHTNESS:
+        lcd_putsLeft(y, PSTR("Brightness")); // TODO translations in the whole file ...
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
+        if(attr) {
+          uint8_t b ;
+          b = 100 - g_eeGeneral.backlightBright;
+          CHECK_INCDEC_GENVAR(event, b, 0, 100);
+          g_eeGeneral.backlightBright = 100 - b;
+          PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright ;
+        }
+        break;
 #endif
 
-  if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_CONTRAST);
-    lcd_outdezAtt(GENERAL_PARAM_OFS,y,g_eeGeneral.contrast,(sub==subN ? INVERS : 0)|LEFT);
-    if(sub==subN) {
-      CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
-      lcdSetRefVolt(g_eeGeneral.contrast);
-    }
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_CONTRAST:
+        lcd_putsLeft( y, STR_CONTRAST);
+        lcd_outdezAtt(GENERAL_PARAM_OFS,y,g_eeGeneral.contrast, attr|LEFT);
+        if(attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
+          lcdSetRefVolt(g_eeGeneral.contrast);
+        }
+        break;
 
-  if(s_pgOfs<subN) {
-    lcd_putsLeft( y,STR_BATTERYWARNING);
-    putsVolts(GENERAL_PARAM_OFS, y, g_eeGeneral.vBatWarn, (sub==subN ? INVERS : 0)|LEFT);
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_BATTERY_WARNING:
+        lcd_putsLeft( y,STR_BATTERYWARNING);
+        putsVolts(GENERAL_PARAM_OFS, y, g_eeGeneral.vBatWarn, attr|LEFT);
+        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
+        break;
 
-  if(s_pgOfs<subN) {
-    lcd_putsLeft( y,STR_INACTIVITYALARM);
-    lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.inactivityTimer, (sub==subN ? INVERS : 0)|LEFT);
-    lcd_putc(lcd_lastPos, y, 'm');
-    if(sub==subN) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_INACTIVITY_ALARM:
+        lcd_putsLeft( y,STR_INACTIVITYALARM);
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.inactivityTimer, attr|LEFT);
+        lcd_putc(lcd_lastPos, y, 'm');
+        if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
+        break;
 
-  if(s_pgOfs<subN) {
-    g_eeGeneral.filterInput = selectMenuItem(y, STR_FILTERADC, STR_ADCFILTER, g_eeGeneral.filterInput, 0, 2, sub==subN, event);
-    if((y+=FH)>7*FH) return;
-  }subN++;
+#if defined(ROTARY_ENCODERS)
+      case ITEM_SETUP_RE_NAVIGATION:
+        g_eeGeneral.reNavigation = selectMenuItem(y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, 2, attr, event);
+        break;
+#endif
 
-  if(s_pgOfs<subN) {
-    g_eeGeneral.throttleReversed = onoffMenuItem( g_eeGeneral.throttleReversed, y, STR_THROTTLEREVERSE, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_FILTER_ADC:
+        g_eeGeneral.filterInput = selectMenuItem(y, STR_FILTERADC, STR_VFILTERADC, g_eeGeneral.filterInput, 0, 2, attr, event);
+        break;
 
-  if(s_pgOfs<subN) {
-    g_eeGeneral.minuteBeep = onoffMenuItem( g_eeGeneral.minuteBeep, y, STR_MINUTEBEEP, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_THROTTLE_REVERSED:
+        g_eeGeneral.throttleReversed = onoffMenuItem( g_eeGeneral.throttleReversed, y, STR_THROTTLEREVERSE, attr, event ) ;
+        break;
 
-  if(s_pgOfs<subN) {
-    g_eeGeneral.preBeep = onoffMenuItem( g_eeGeneral.preBeep, y, STR_BEEPCOUNTDOWN, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_MINUTE_BEEP:
+        g_eeGeneral.minuteBeep = onoffMenuItem( g_eeGeneral.minuteBeep, y, STR_MINUTEBEEP, attr, event ) ;
+        break;
 
-  if(s_pgOfs<subN) {
-    g_eeGeneral.flashBeep = onoffMenuItem( g_eeGeneral.flashBeep, y, STR_FLASHONBEEP, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_COUNTDOWN_BEEP:
+        g_eeGeneral.preBeep = onoffMenuItem( g_eeGeneral.preBeep, y, STR_BEEPCOUNTDOWN, attr, event ) ;
+        break;
 
-  if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_LIGHTSWITCH);
-    putsSwitches(GENERAL_PARAM_OFS,y,g_eeGeneral.lightSw,sub==subN ? INVERS : 0);
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightSw, SWITCH_OFF, SWITCH_ON);
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_FLASH_BEEP:
+        g_eeGeneral.flashBeep = onoffMenuItem( g_eeGeneral.flashBeep, y, STR_FLASHONBEEP, attr, event ) ;
+        break;
 
-  if(s_pgOfs<subN) {
-    lcd_putsLeft( y, STR_LIGHTOFFAFTER);
-    if(g_eeGeneral.lightAutoOff) {
-      lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.lightAutoOff*5,LEFT|(sub==subN ? INVERS : 0));
-      lcd_putc(lcd_lastPos, y, 's');
-    }
-    else {
-      lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_OFFON, 0,(sub==subN ? INVERS:0));
-    }
-    if(sub==subN) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_LIGHT_SWITCH:
+        lcd_putsLeft( y, STR_LIGHTSWITCH);
+        putsSwitches(GENERAL_PARAM_OFS,y,g_eeGeneral.lightSw,attr ? INVERS : 0);
+        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightSw, SWITCH_OFF, SWITCH_ON);
+        break;
+
+      case ITEM_SETUP_LIGHT_OFF_AFTER:
+        lcd_putsLeft( y, STR_LIGHTOFFAFTER);
+        if(g_eeGeneral.lightAutoOff) {
+          lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.lightAutoOff*5, attr|LEFT);
+          lcd_putc(lcd_lastPos, y, 's');
+        }
+        else {
+          lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_OFFON, 0, attr);
+        }
+        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
+        break;
 
 #ifdef SPLASH
-  if(s_pgOfs<subN) {
-    uint8_t b = 1-g_eeGeneral.disableSplashScreen;
-    g_eeGeneral.disableSplashScreen = 1 - onoffMenuItem( b, y, STR_SPLASHSCREEN, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_DISABLE_SPLASH:
+      {
+        uint8_t b = 1-g_eeGeneral.disableSplashScreen;
+        g_eeGeneral.disableSplashScreen = 1 - onoffMenuItem( b, y, STR_SPLASHSCREEN, attr, event ) ;
+        break;
+      }
 #endif
 
-  if(s_pgOfs<subN) {
-    uint8_t b = 1-g_eeGeneral.disableThrottleWarning;
-    g_eeGeneral.disableThrottleWarning = 1-onoffMenuItem( b, y, STR_THROTTLEWARNING, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_THROTTLE_WARNING:
+      {
+        uint8_t b = 1-g_eeGeneral.disableThrottleWarning;
+        g_eeGeneral.disableThrottleWarning = 1-onoffMenuItem( b, y, STR_THROTTLEWARNING, attr, event ) ;
+        break;
+      }
 
-  if(s_pgOfs<subN) {
-    g_eeGeneral.switchWarning = selectMenuItem(y, STR_SWITCHWARNING, STR_WARNSW, g_eeGeneral.switchWarning, -1, 1, sub==subN, event);
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_SWITCH_WARNING:
+        g_eeGeneral.switchWarning = selectMenuItem(y, STR_SWITCHWARNING, STR_WARNSW, g_eeGeneral.switchWarning, -1, 1, attr, event);
+        break;
 
-  if(s_pgOfs<subN) {
-    uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-    g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem( b, y, STR_MEMORYWARNING, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_MEMORY_WARNING:
+      {
+        uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
+        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem( b, y, STR_MEMORYWARNING, attr, event ) ;
+        break;
+      }
 
-  if(s_pgOfs<subN) {
-    uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-    g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem( b, y, STR_ALARMWARNING, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_ALARM_WARNING:
+      {
+        uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
+        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem( b, y, STR_ALARMWARNING, attr, event ) ;
+        break;
+      }
 
-#ifdef FRSKY
-  if(s_pgOfs<subN) {
-    uint8_t b = g_eeGeneral.enableTelemetryAlarm;
-    g_eeGeneral.disableAlarmWarning = onoffMenuItem( b, y, STR_NODATAALARM, sub==subN, event ) ;
-    if((y+=FH)>7*FH) return;
-  }subN++;
+#if defined(FRSKY)
+      case ITEM_SETUP_TELEMETRY_ALARM:
+      {
+        uint8_t b = g_eeGeneral.enableTelemetryAlarm;
+        g_eeGeneral.disableAlarmWarning = onoffMenuItem( b, y, STR_NODATAALARM, attr, event ) ;
+        break;
+      }
 
-  if(s_pgOfs<subN) {
-    lcd_putsLeft(y, STR_TIMEZONE);
-    lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.timezone, LEFT|(sub==subN ? INVERS : 0));
-    if (sub==subN)
-      CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
-    if((y+=FH)>7*FH) return;
-  }subN++;
-    
-  if(s_pgOfs<subN) {
-    g_eeGeneral.gpsFormat = selectMenuItem(y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, sub==subN, event);
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_TIMEZONE:
+        lcd_putsLeft(y, STR_TIMEZONE);
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.timezone, attr|LEFT);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
+        break;
+
+      case ITEM_SETUP_GPSFORMAT:
+        g_eeGeneral.gpsFormat = selectMenuItem(y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
+        break;
 #endif
 
-  if(s_pgOfs<subN) {
-    uint8_t attr = sub==subN?INVERS:0;
-    lcd_putsLeft( y,STR_RXCHANNELORD);//   RAET->AETR
-    for (uint8_t i=1; i<=4; i++)
-      putsChnLetter(GENERAL_PARAM_OFS - FW + i*FW, y, channel_order(i), attr);
-    if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
-    if((y+=FH)>7*FH) return;
-  }subN++;
+      case ITEM_SETUP_RX_CHANNEL_ORD:
+        lcd_putsLeft( y,STR_RXCHANNELORD);//   RAET->AETR
+        for (uint8_t i=1; i<=4; i++)
+          putsChnLetter(GENERAL_PARAM_OFS - FW + i*FW, y, channel_order(i), attr);
+        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
+        break;
 
-  if(s_pgOfs<subN) {
-    lcd_puts( 1*FW, y, STR_MODE);
-    for(uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks,i,0);
-    if((y+=FH)>7*FH) return;
+      case ITEM_SETUP_STICK_MODE:
+        lcd_puts( 1*FW, y, STR_MODE);
+        for(uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks,i,0);
+        if((y+=FH)>7*FH) return;
+        lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,(sub==k+1) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+        for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
 
-    lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,(sub==subN+1) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-    for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
-
-    if (sub==subN+1 && s_editMode>0)
-      CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
-    else
-      stickMode = g_eeGeneral.stickMode;
+        if (sub==k+1 && s_editMode>0)
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
+        else
+          stickMode = g_eeGeneral.stickMode;
+        break;
+    }
   }
 }
 

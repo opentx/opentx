@@ -606,17 +606,12 @@ void check_frsky()
   if (frskyStreaming > 0) {
     frskyStreaming--;
   }
-  else if (g_eeGeneral.enableTelemetryAlarm && (g_model.frsky.channels[0].ratio || g_model.frsky.channels[1].ratio)) {
-#if defined (AUDIO)
+  else if (g_eeGeneral.enableTelemetryAlarm) {
+    frskyRSSI[0].set(0);
+    frskyRSSI[1].set(0);
     if (!(g_tmr10ms % 30)) {
-      audioDefevent(AU_WARNING1);
+      AUDIO_TELEMETRY_ALARM();
     }
-#else
-    if (!(g_tmr10ms % 30)) {
-      warble = !(g_tmr10ms % 60);
-      AUDIO_WARNING2();
-    }
-#endif
   }
 #endif
 
@@ -750,7 +745,7 @@ void FrskyRSSI::set(uint8_t value)
      this->value = value;
    else
      this->value = (((uint16_t)this->value * 7) + value + 4) / 8;
-   if (!min || value < min)
+   if (value && (!min || value < min))
      min = value;
 }
 

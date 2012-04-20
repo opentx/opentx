@@ -140,7 +140,7 @@ void menuMainView(uint8_t event)
       if(s_timerState[0]==TMR_BEEPING) {
         s_timerState[0] = TMR_STOPPED;
       }
-#ifdef NAVIGATION_RE1
+#if defined(ROTARY_ENCODERS)
       else if (s_warning) {
         s_warning = NULL;
       }
@@ -162,16 +162,20 @@ void menuMainView(uint8_t event)
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
       break;
-#ifdef NAVIGATION_RE1
+#if defined(ROTARY_ENCODERS)
     case EVT_KEY_LONG(BTN_REa):
-      killEvents(event);
-      if (s_inflight_value && !s_warning) {
-        s_warning = s_inflight_label;
-        s_editMode = 1;
-        break;
+    case EVT_KEY_LONG(BTN_REb):
+      if (navigationRotaryEncoder(event)) {
+        killEvents(event);
+        if (s_inflight_value && !s_warning) {
+          s_warning = s_inflight_label;
+          s_editMode = 1;
+          break;
+        }
       }
       // no break
     case EVT_KEY_BREAK(BTN_REa):
+    case EVT_KEY_BREAK(BTN_REb):
       s_warning = NULL;
       break;
 #endif
@@ -323,7 +327,7 @@ void menuMainView(uint8_t event)
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 
-#ifdef NAVIGATION_RE1
+#if defined(ROTARY_ENCODERS)
   check_rotary_encoder();
   if (s_warning) {
     int8_t value = (((uint8_t)(*s_inflight_value)) >> s_inflight_bitshift) - s_inflight_shift;
