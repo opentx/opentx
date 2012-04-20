@@ -134,11 +134,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
   int8_t    hapticLength;
-#if defined(ROTARY_ENCODERS)
-  uint8_t   reNavigation;
-#else
-  uint8_t   spare3;
-#endif
+  uint8_t   reNavigation; // TODO not needed on stock board
   int8_t    beeperLength:3;
   uint8_t   hapticStrength:3;
   uint8_t   gpsFormat:1;
