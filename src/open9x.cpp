@@ -655,6 +655,27 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 
 #endif
 
+#if defined(FRSKY) || defined(PCBARM)
+void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
+{
+#ifdef IMPERIAL_UNITS
+  if (unit == UNIT_DEGREES) {
+    val += 18 ;
+    val *= 115 ;
+    val >>= 6 ;
+  }
+  if (unit == UNIT_METERS) {
+    // m to ft *105/32
+    val = val * 3 + ( val >> 2 ) + (val >> 5) ;
+  }
+#endif
+
+  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT)); // TODO we could add this test inside lcd_outdezAtt!
+  if (~att & NO_UNIT && unit != UNIT_RAW)
+    lcd_putsiAtt(lcd_lastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+}
+#endif
+
 void clearKeyEvents()
 {
 #ifdef SIMU
