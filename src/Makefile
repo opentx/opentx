@@ -511,18 +511,25 @@ stamp_header:
 	@echo "#define SVN_STR  \"open9x-r$(SVNREV)\"" >> stamp-open9x.h
 	@cat stamp-open9x.h
 	
-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > ../stamp-open9x.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> ../stamp-open9x.txt
-	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> ../stamp-open9x.txt
-	@echo "#define SVN_VERS  \"open9x-r$(SVNREV)\"" >> ../stamp-open9x.txt
-	@cat ../stamp-open9x.txt
+stock-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-stock.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-stock.txt
+	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> stamp-open9x-stock.txt
+	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-stock.txt
+	@cat ../stamp-open9x-stock.txt
+
+v4-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-v4.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-v4.txt
+	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> stamp-open9x-v4.txt
+	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-v4.txt
+	@cat ../stamp-open9x-v4.txt
 	
 arm-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > ../stamp-open9x-arm.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> ../stamp-open9x-arm.txt
-	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> ../stamp-open9x-arm.txt
-	@echo "#define SVN_VERS  \"open9x-r$(SVNREV)\"" >> ../stamp-open9x-arm.txt
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-arm.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-arm.txt
+	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> stamp-open9x-arm.txt
+	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-arm.txt
 	@cat ../stamp-open9x-arm.txt
  
 font.lbm: font_6x1.xbm
@@ -667,6 +674,7 @@ clean_list :
 	$(REMOVE) $(TARGET).map
 	$(REMOVE) $(TARGET).sym
 	$(REMOVE) $(TARGET).lss
+	$(REMOVE) $(TARGET).lst
 	$(REMOVE) $(SRC:.c=.s)
 	$(REMOVE) *.o
 	$(REMOVE) *.d

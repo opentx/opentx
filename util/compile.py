@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import os, sys, shutil, platform, getpass, subprocess, ftplib, time, threading
+import os, sys, shutil, platform, getpass, subprocess, zipfile, ftplib, httplib, threading
 
-BINARY_DIR = "../binaries/"
+BINARY_DIR = "../build/"
 
 options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"), ("ardupilot", "EXT=ARDUPILOT"), ("nmea", "EXT=NMEA")],
                  [("", "HELI=NO"), ("heli", "HELI=YES")],
@@ -11,73 +11,63 @@ options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"),
                  [("", "HAPTIC=NO"), ("haptic", "HAPTIC=YES")],
                  [("", "DSM2=NO"), ("DSM2", "DSM2=PPM")],
                  [("", "NAVIGATION=NO"), ("potscroll", "NAVIGATION=POTS")],
+                 [("", "PPM_CENTER_ADJUSTABLE=NO"), ("ppmca", "PPM_CENTER_ADJUSTABLE=YES")],
+                 [("", "UNITS=METRIC"), ("imperial", "UNITS=IMPERIAL")],
 #                 ("PXX", "PXX=NO", "PXX=YES"),
                 ]
 
-options_v4 = [[("", "EXT=FRSKY")],
-              [("", "HELI=NO"), ("heli", "HELI=YES")],
-              [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
-              [("", "SDCARD=NO"), ("sdcard", "SDCARD=YES")],
-              [("", "SOMO=NO"), ("SOMO", "SOMO=YES")],
-             ]
+options_v4 =    [[("", "EXT=FRSKY")],
+                 [("", "HELI=NO"), ("heli", "HELI=YES")],
+                 [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
+                 [("", "SDCARD=NO"), ("sdcard", "SDCARD=YES")],
+                 [("", "SOMO=NO"), ("SOMO", "SOMO=YES")],
+                 [("", "PPM_CENTER_ADJUSTABLE=NO"), ("ppmca", "PPM_CENTER_ADJUSTABLE=YES")],
+                 [("", "UNITS=METRIC"), ("imperial", "UNITS=IMPERIAL")],
+                ]
 
-options_arm = [[("", "EXT=FRSKY")],
-               [("", "HELI=NO"), ("heli", "HELI=YES")],
-               [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
-              ]
+options_arm =   [[("", "EXT=FRSKY")],
+                 [("", "HELI=NO"), ("heli", "HELI=YES")],
+                 [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
+                 [("", "UNITS=METRIC"), ("imperial", "UNITS=IMPERIAL")],
+                ]
 
 languages = ["en", "fr", "se"]
 
-#host = "ftpperso.free.fr"
-#user = "open9x"
-host = "open9x.freehosting.com"
-user = "openxfre"  
-password = None
-ftp_connection = None
-ftp_tmpdir = None
-ftp_lock = threading.Lock()
-
-def openFtp():
-    global password
-    global ftp_connection
-    global ftp_tmpdir
+#ftp_host = "ftpperso.free.fr"
+#ftp_user = "open9x"
+ftp_host = "open9x.freehosting.com"
+ftp_user = "openxfre"
+ftp_directory = "public_html/binaries/"
+            
+def upload(binaries, ext, stamp):
+    if not ftp:
+        return
     
-    if password is None:
-        password = getpass.getpass()
-        
-    ftp_connection = ftplib.FTP(host, user, password)
-    if ftp_tmpdir is None:
-        ftp_tmpdir = "public_html/binaries/temp" + str(int(time.mktime(time.localtime())))
-        ftp_connection.mkd(ftp_tmpdir)
+    print "Zip creation..."
+    zip_name = "release.zip"
+    zip = zipfile.ZipFile(zip_name, "w")
+    for bin in binaries:
+        zip.write(BINARY_DIR + bin + "." + ext, bin)
+    zip.write(BINARY_DIR + stamp, stamp)
+    zip.close()
     
-def closeFtp():
-    # ftp_connection.rename("binaries/latest", "binaries/r...")
-    ftp_connection.rename(ftp_tmpdir, "public_html/binaries/latest")
+    print "FTP transfer..."
+    ftp_connection = ftplib.FTP(ftp_host, ftp_user, ftp_password)
+    try:
+        ftp_connection.delete(ftp_directory + zip_name)
+    except:
+        pass
+    f = file(zip_name, 'rb')
+    ftp_connection.storbinary('STOR ' + ftp_directory + zip_name, f)
+    f.close()
     ftp_connection.quit()
     
-def uploadBinary(binary_name):
-    ftp_lock.acquire()
-    while 1:
-        try:
-            try:
-                ftp_connection.delete(ftp_tmpdir + '/' + binary_name)
-            except:
-                pass
-            f = file(BINARY_DIR + binary_name, 'rb') 
-            ftp_connection.storbinary('STOR ' + ftp_tmpdir + '/' + binary_name, f)
-            f.close()
-            ftp_lock.release()
-            return
-        except:
-            time.sleep(10)
-            try:
-                ftp_connection.quit()
-            except:
-                pass
-            try:
-                openFtp()
-            except:
-                pass   
+    print "ZIP extraction...",
+    http_connection = httplib.HTTPConnection("open9x.freehosting.com")
+    http_connection.request("GET", "/binaries/uncompress.php")
+    response = http_connection.getresponse()
+    print response.status, response.reason
+    os.remove(zip_name)
 
 global_current = 0
 global_count = 0 
@@ -109,7 +99,7 @@ def generate(hex, arg, extension, options, languages, maxsize):
             if mt:
                 cwd = language
             else:
-                cwd = None
+                cwd = "."
             subprocess.Popen(["make", "clean", arg], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd).wait()
             p = subprocess.Popen(make_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
             p.wait()
@@ -137,14 +127,8 @@ def generate(hex, arg, extension, options, languages, maxsize):
                     print "  ", line,
             
             if size <= maxsize:
-                binary_name =  hex_file + "." + extension
-                if mt:
-                    shutil.copyfile(language + "/open9x." + extension, BINARY_DIR + binary_name)
-                else:
-                    shutil.copyfile("open9x." + extension, BINARY_DIR + binary_name)
-                if upload:
-                    uploadBinary(binary_name)
-                    
+                binary_name = hex_file + "." + extension
+                shutil.copyfile(cwd + "/open9x." + extension, BINARY_DIR + binary_name)
                 result.append(hex_file)
         
         for index, state in enumerate(states):
@@ -155,8 +139,13 @@ def generate(hex, arg, extension, options, languages, maxsize):
                 break
         else:
             break
+    
+    # stamp
+    stamp = "stamp-open9x-%s.txt" % hex.split("-")[1]
+    subprocess.Popen(["make", hex.split("-")[1] + "-stamp"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd="../src").wait()
+    shutil.copyfile("../src/" + stamp, BINARY_DIR + stamp)
         
-    return result
+    return result, stamp
 
 class GenerateThread(threading.Thread):
    def __init__ (self, hex, arg, extension, options, language, maxsize):
@@ -169,7 +158,7 @@ class GenerateThread(threading.Thread):
       self.maxsize = maxsize
       
    def run(self):
-      self.hexes = generate(self.hex, self.arg, self.extension, self.options, [self.language], self.maxsize)     
+      self.hexes, self.stamp = generate(self.hex, self.arg, self.extension, self.options, [self.language], self.maxsize)     
            
 def multithread_generate(hex, arg, extension, options, languages, maxsize):
     if mt:
@@ -182,7 +171,8 @@ def multithread_generate(hex, arg, extension, options, languages, maxsize):
         for thread in threads:
             thread.join()
             result.extend(thread.hexes)
-        return result
+            stamp = thread.stamp
+        return result, stamp
     else:
         return generate(hex, arg, extension, options, languages, maxsize)
         
@@ -194,12 +184,12 @@ def generate_c9x_list(filename, hexes, extension, stamp, board):
 
 if __name__ == "__main__":
     
-    upload = "upload" in sys.argv
+    ftp = "ftp" in sys.argv
     mt = "mt" in sys.argv and platform.system() != "Windows"
     
-    if upload:
-        openFtp()
-
+    if ftp:
+        ftp_password = getpass.getpass()
+        
     if mt:
         for lang in languages:
             print "Directory %s creation..." % lang
@@ -208,23 +198,18 @@ if __name__ == "__main__":
     
     if platform.system() == "Windows":
         # arm board
-        hexes = generate("open9x-arm", "PCB=ARM", "bin", options_arm, languages, 262000)
+        hexes, stamp = generate("open9x-arm", "PCB=ARM", "bin", options_arm, languages, 262000)
         generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "bin", "OPEN9X_ARM_STAMP", "BOARD_ERSKY9X")
-        
-        # arm stamp
-        subprocess.check_output(["make", "PCB=ARM", "arm-stamp"])
+        upload(hexes, "bin", stamp)        
     
     else:
         # stock board
-        hexes = multithread_generate("open9x-stock", "PCB=STD", "hex", options_stock, languages, 65530)
+        hexes, stamp = multithread_generate("open9x-stock", "PCB=STD", "hex", options_stock, languages, 65530)
         generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_STOCK")
+        upload(hexes, "hex", stamp)
     
         # v4 board
-        hexes = multithread_generate("open9x-v4", "PCB=V4", "hex", options_v4, languages, 262000)
+        hexes, stamp = multithread_generate("open9x-v4", "PCB=V4", "hex", options_v4, languages, 262000)
         generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
-    
-        # stamp
-        subprocess.Popen(["make", "stamp"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd="../src").wait()
-        
-    if upload:
-        closeFtp()
+        upload(hexes, "hex", stamp)
+            
