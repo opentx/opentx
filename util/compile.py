@@ -206,12 +206,14 @@ if __name__ == "__main__":
     
     else:
         # stock board
-        hexes, stamp = multithread_generate("open9x-stock", "PCB=STD", "hex", options_stock, languages, 65530)
-        generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_STOCK")
-        upload(hexes, "hex", stamp)
-    
+        if not "v4" in sys.argv:
+            hexes, stamp = multithread_generate("open9x-stock", "PCB=STD", "hex", options_stock, languages, 65530)
+            generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_STOCK")
+            upload(hexes, "hex", stamp)
+        
         # v4 board
-        hexes, stamp = multithread_generate("open9x-v4", "PCB=V4", "hex", options_v4, languages, 262000)
-        generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
-        upload(hexes, "hex", stamp)
+        if not "stock" in sys.argv:
+            hexes, stamp = multithread_generate("open9x-v4", "PCB=V4", "hex", options_v4, languages, 262000)
+            generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
+            upload(hexes, "hex", stamp)
             
