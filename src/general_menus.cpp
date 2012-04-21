@@ -269,6 +269,12 @@ void menuProcSetup(uint8_t event)
 #if defined(ROTARY_ENCODERS)
       case ITEM_SETUP_RE_NAVIGATION:
         g_eeGeneral.reNavigation = selectMenuItem(y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, 2, attr, event);
+        if (attr && checkIncDec_Ret) {
+          g_rotenc[0] = 0;
+          g_rotenc[1] = 0;
+          p1valdiff = 0;
+          scrollRE = 0;
+        }
         break;
 #endif
 
