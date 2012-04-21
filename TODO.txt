@@ -1,7 +1,5 @@
 TODO list (no particular order)
 
-- Trims 2 offsets (french forum)
-- Optimization for extra dblsize chars (se: 16 used when 6 needed)
 - DSM2 channel order (Cam)
 - Variometer (rate as cm/sec)
 - Trace telemetry data
