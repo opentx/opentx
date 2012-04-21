@@ -2624,6 +2624,11 @@ int main(void)
   }
 #endif
 
+#if defined(PCBARM) || defined(PCBV4)
+  //never return from main() - there is no code to return back, if any daelays occurs in physical power it does dead loop.
+  for(;;){}
+#endif
+
 }
 #endif
 
