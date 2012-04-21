@@ -165,6 +165,11 @@ void check_rotary_encoder()
       }
     }
   }
+  else {
+    re1valprev = 0;
+    p1valdiff = 0;
+    scrollRE = 0;
+  }
 }
 #endif
 
