@@ -102,11 +102,11 @@ def generate(hex, arg, extension, options, languages, maxsize):
                 cwd = "."
             subprocess.Popen(["make", "clean", arg], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd).wait()
             p = subprocess.Popen(make_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
-            p.wait()
+            ret = p.wait()
             stderr = p.stderr.read()
             global_current += 1
             print "[%d/%d]" % (global_current, global_count), hex_file
-            if "error" in stderr:
+            if ret or "error" in stderr:
                 print stderr
                 exit()
             for line in stderr.split("\n"):
@@ -191,6 +191,8 @@ if __name__ == "__main__":
         ftp_password = getpass.getpass()
         
     if mt:
+        shutil.rmtree("util", True)
+        shutil.copytree("../util", "util")
         for lang in languages:
             print "Directory %s creation..." % lang
             shutil.rmtree(lang, True)
