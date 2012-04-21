@@ -577,6 +577,67 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
   f_close(&archiveFile);
   return NULL;
 }
+
+const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
+{
+  char *buf = reusableBuffer.model_name;
+  FIL restoreFile;
+  UINT read;
+
+  FRESULT result = f_mount(0, &g_FATFS_Obj);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  strcpy_P(buf, PSTR(MODELS_PATH "/")); // TODO Not PSTR everywhere ...
+  strcpy(&buf[sizeof(MODELS_PATH)], model_name);
+  strcpy_P(&buf[strlen(buf)], PSTR(".bin")); // TODO Not PSTR everywhere ...
+
+  result = f_open(&restoreFile, buf, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  result = f_read(&restoreFile, (uint8_t *)buf, 1, &read);
+  if (result != FR_OK || read != 1) {
+    return SDCARD_ERROR(result);
+  }
+
+  if (buf[0] != g_eeGeneral.myVers) {
+    // TODO
+  }
+
+  theFile.create(FILE_MODEL(i_fileDst), FILE_TYP_MODEL, true);
+
+  do {
+    result = f_read(&restoreFile, (uint8_t *)buf, 15, &read);
+    if (result != FR_OK) {
+      s_sync_write = false;
+      return SDCARD_ERROR(result);
+    }
+    if (read > 0) {
+      theFile.write((uint8_t *)buf, read);
+      if (write_errno() != 0) {
+        s_sync_write = false;
+        return STR_EEPROMOVERFLOW;
+      }
+    }
+  } while (read == 15);
+
+  uint8_t fri=0;
+  if (theFile.m_currBlk && (fri=EeFsGetLink(theFile.m_currBlk)))
+    EeFsSetLink(theFile.m_currBlk, 0);
+
+  if (fri) EeFsFree(fri);  //chain in
+
+  eeFs.files[FILE_TMP].size = theFile.m_pos;
+  EFile::swap(theFile.m_fileId, FILE_TMP); // s_sync_write is set to false in swap();
+
+  assert(!theFile.m_write_step);
+
+  f_close(&restoreFile);
+  return NULL;
+}
 #endif
 
 void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t*buf, uint16_t i_len, uint8_t sync_write)

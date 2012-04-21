@@ -120,7 +120,7 @@ class EFile
 
     uint8_t read(uint8_t*buf, uint16_t i_len);
 
-  protected:
+//  protected:
 
     uint8_t  m_fileId;    //index of file in directory = filename
     uint16_t m_pos;       //over all filepos
@@ -216,6 +216,7 @@ uint16_t evalChkSum();
 
 #ifdef SDCARD
 const pm_char * eeArchiveModel(uint8_t i_fileSrc);
+const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 #endif
 
 #endif
