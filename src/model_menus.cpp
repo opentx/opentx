@@ -139,6 +139,7 @@ bool listSDcardModels()
 
   s_menu_count = 0;
   s_menu_flags = BSS;
+  uint8_t offset = 0;
 
   FRESULT res = f_opendir(&dir, MODELS_PATH);        /* Open the directory */
   if (res == FR_OK) {
@@ -152,6 +153,14 @@ bool listSDcardModels()
       fn = fno.fname;
 #endif
       if (~fno.fattrib & AM_DIR) {                   /* It is a file. */
+        if (offset < s_menu_offset) {
+          offset++;
+          continue;
+        }
+        if (s_menu_count == MENU_MAX_LINES) {
+          s_menu_more = true;
+          break;
+        }
         char *menu_entry = &s_bss_menu[s_menu_count*MENU_LINE_LENGTH];
         memset(menu_entry, 0, MENU_LINE_LENGTH);
         for (uint8_t i=0; i<MENU_LINE_LENGTH-1; i++) {
@@ -160,9 +169,6 @@ bool listSDcardModels()
           menu_entry[i] = fn[i];
         }
         s_menu[s_menu_count++] = menu_entry;
-        // TODO better handling...
-        if (s_menu_count == MENU_MAX_LINES)
-          break;
       }
     }
   }
@@ -439,7 +445,7 @@ void menuProcModelSelect(uint8_t event)
         if (!s_sdcard_error)
           eeDeleteModel(sub); // delete the model, it's archived!
       }
-      else if (result == STR_RESTORE_MODEL) {
+      else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
         if (!listSDcardModels()) {
           s_sdcard_error = PSTR("No Models on SD");
         }

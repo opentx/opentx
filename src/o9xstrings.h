@@ -380,6 +380,7 @@ extern const pm_char STR_DELETE_MODEL[];
 extern const pm_char STR_RESTORE_MODEL[];
 extern const pm_char STR_SDCARD_ERROR[];
 extern const pm_char STR_NO_SDCARD[];
+#define STR_UPDATE_LIST STR_DELAYDOWN
 #endif
 
 extern const pm_uchar font[];
