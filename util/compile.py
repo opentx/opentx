@@ -45,7 +45,7 @@ def upload(binaries, ext, stamp):
     
     print "Zip creation..."
     zip_name = "release.zip"
-    zip = zipfile.ZipFile(zip_name, "w")
+    zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
     for bin in binaries:
         zip.write(BINARY_DIR + bin + "." + ext, bin + "." + ext)
     zip.write(BINARY_DIR + stamp, stamp)
