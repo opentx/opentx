@@ -425,33 +425,31 @@ void menuProcModelSelect(uint8_t event)
   if (s_menu_count) {
     const char * result = displayMenu(event);
     if (result) {
-      if (s_menu_flags) {
-        // The user choosed a file on SD
+      if (result == STR_LOAD_MODEL || result == STR_CREATE_MODEL) {
+        displayPopup(STR_LOADINGMODEL);
+        eeCheck(true); // force writing of current model data before this is changed
+        if (g_eeGeneral.currModel != sub) {
+          g_eeGeneral.currModel = sub;
+          STORE_GENERALVARS;
+          eeLoadModel(sub);
+        }
+      }
+      else if (result == STR_ARCHIVE_MODEL) {
+        s_sdcard_error = eeArchiveModel(sub);
+        if (!s_sdcard_error)
+          eeDeleteModel(sub); // delete the model, it's archived!
+      }
+      else if (result == STR_RESTORE_MODEL) {
+        if (!listSDcardModels()) {
+          s_sdcard_error = PSTR("No Models on SD");
+        }
+      }
+      else if (result == STR_DELETE_MODEL) {
+        s_warning = STR_DELETEMODEL;
       }
       else {
-        if (result == STR_LOAD_MODEL || result == STR_CREATE_MODEL) {
-          displayPopup(STR_LOADINGMODEL);
-          eeCheck(true); // force writing of current model data before this is changed
-          if (g_eeGeneral.currModel != sub) {
-            g_eeGeneral.currModel = sub;
-            STORE_GENERALVARS;
-            eeLoadModel(sub);
-          }
-        }
-        else if (result == STR_ARCHIVE_MODEL) {
-          s_sdcard_error = eeArchiveModel(sub);
-          /* TODO as soon as archive and restore do work! if (!s_sdcard_error)
-            eeDeleteModel(sub); // delete the model, it's archived!
-          */
-        }
-        else if (result == STR_RESTORE_MODEL) {
-          if (!listSDcardModels()) {
-            s_sdcard_error = PSTR("No Models on SD");
-          }
-        }
-        else if (result == STR_DELETE_MODEL) {
-          s_warning = STR_DELETEMODEL;
-        }
+        // The user choosed a file on SD to restore
+        s_sdcard_error = eeRestoreModel(sub, (char *)result);
       }
     }
   }
