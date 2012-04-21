@@ -541,7 +541,9 @@ const char *s_menu[MENU_MAX_LINES];
 char s_bss_menu[MENU_MAX_LINES*MENU_LINE_LENGTH];
 uint8_t s_menu_item = 0;
 uint8_t s_menu_count = 0;
-uint8_t s_menu_flags;
+uint8_t s_menu_flags = 0;
+uint8_t s_menu_offset = 0;
+bool s_menu_more = false;
 const char * displayMenu(uint8_t event)
 {
   const char * result = NULL;
@@ -556,10 +558,20 @@ const char * displayMenu(uint8_t event)
 
   switch(event) {
     case EVT_KEY_FIRST(KEY_UP):
-      if (s_menu_item > 0) s_menu_item--;
+      if (s_menu_item > 0)
+        s_menu_item--;
+      else if (s_menu_offset > 0) {
+        s_menu_offset--;
+        result = STR_UPDATE_LIST;
+      }
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
-      if (s_menu_item < s_menu_count - 1) s_menu_item++;
+      if (s_menu_item < s_menu_count - 1)
+        s_menu_item++;
+      else if (s_menu_more) {
+        s_menu_offset++;
+        result = STR_UPDATE_LIST;
+      }
       break;
     case EVT_KEY_FIRST(KEY_MENU):
       result = s_menu[s_menu_item];
@@ -569,6 +581,8 @@ const char * displayMenu(uint8_t event)
       s_menu_count = 0;
       s_menu_item = 0;
       s_menu_flags = 0;
+      s_menu_offset = 0;
+      s_menu_more = false;
       break;
   }
 
