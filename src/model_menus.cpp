@@ -1554,6 +1554,9 @@ inline void displayExpoLine(uint8_t row, uint8_t expo, uint8_t ch, uint8_t idx, 
   }
 }
 
+#define _STR_MAX(x) PSTR("/" #x)
+#define STR_MAX(x) _STR_MAX(x)
+
 void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 {
   uint8_t _event = (s_warning ? 0 : _event_);
@@ -1567,7 +1570,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 
   TITLEP(expo ? STR_MENUDREXPO : STR_MIXER);
   lcd_outdezAtt(lcd_lastPos+2*FW+FW/2, 0, getExpoMixCount(expo));
-  lcd_puts(lcd_lastPos, 0, expo ? PSTR("/14") : PSTR("/32"));
+  lcd_puts(lcd_lastPos, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
   SIMPLE_MENU_NOTITLE(menuTabModel, expo ? e_ExposAll : e_MixAll, s_maxLines);
 
 #if defined(ROTARY_ENCODERS)
