@@ -531,6 +531,7 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.model_name;
   FIL archiveFile;
+  DIR archiveFolder;
   UINT written;
 
   FRESULT result = f_mount(0, &g_FATFS_Obj);
@@ -541,6 +542,9 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
   strcpy_P(buf, PSTR(MODELS_PATH "/")); // TODO Not PSTR everywhere ...
 
   eeLoadModelName(i_fileSrc, &buf[sizeof(MODELS_PATH)]);
+	if(buf[sizeof(MODELS_PATH)] == '\0'){//no model name loaded
+		strcpy_P(&buf[sizeof(MODELS_PATH)], PSTR("\x0d\x0f\x04\x05\x0c\x18\x18"));//temporary fix as "MODELXX", itoa(i_fileSrc-1) need to be appended
+	}		
   buf[sizeof(MODELS_PATH)+sizeof(g_model.name)] = '\0';
 
   uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.name)-1;
@@ -553,6 +557,22 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
     i--;
   }
   strcpy_P(&buf[len], PSTR(".bin")); // TODO Not PSTR everywhere ...
+
+  //check and create folder here
+  //temporary truncate for folder name only
+  buf[sizeof(MODELS_PATH)-1] = '\0';
+  
+  result = f_opendir(&archiveFolder, buf);
+  if(result != FR_OK){
+	  result = f_mkdir(buf);
+	  if(result != FR_OK){
+		  return SDCARD_ERROR(result);
+	  }		  
+  }
+  
+  //return back / char to get full model name
+  buf[sizeof(MODELS_PATH)-1] = '/';
+  //folder ready to write here
 
   result = f_open(&archiveFile, buf, FA_OPEN_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
