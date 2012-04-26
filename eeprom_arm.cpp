@@ -476,19 +476,22 @@ void eeLoadModel(uint8_t id)
     size =  File_system[id+1].size ;
 
     memset(&g_model, 0, sizeof(g_model));
-       
-    if ( size > sizeof(g_model) )
-    {
+
+#ifdef SIMU
+    if (size > 0 && size != sizeof(g_model)) {
+      printf("Model data read=%d bytes vs %d bytes\n", size, (int)sizeof(ModelData));
+    }
+#endif
+
+    if (size > sizeof(g_model)) {
       size = sizeof(g_model) ;
     }
 			 
-    if(size<256) // if not loaded a fair amount
-    {
+    if(size < 256) { // if not loaded a fair amount
       modelDefault(id) ;
       eeCheck(true);
     }
-    else
-    {
+    else {
       read32_eeprom_data( ( File_system[id+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_model, size, 0 ) ;
     }
 

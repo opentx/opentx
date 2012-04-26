@@ -46,8 +46,8 @@
 #define TR_RETA123       "RETA123"
 #endif
 
-#define LEN_VPROTOS      "\005"
-#define TR_VPROTOS       "PPM\0 ""PXX\0 ""DSM2\0""PPM16""FUT\0 "
+#define LEN_VPROTOS      "\006"
+#define TR_VPROTOS       "PPM\0  ""PXX\0  ""DSM2\0 ""PPM16\0""FUT\0  PPMsim"
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -115,8 +115,16 @@
 #define LEN_VTELEMCHNS   "\004"
 #define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Tank""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Tid\0"
 
+#ifdef IMPERIAL_UNITS
+#define LENGTH_UNIT "ft\0"
+#define SPEED_UNIT  "kts"
+#else
+#define LENGTH_UNIT "m\0 "
+#define SPEED_UNIT  "kmh"
+#endif
+
 #define LEN_VTELEMUNIT   "\003"
-#define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h""m\0 ""@\0 ""%\0 ""mA\0""ft\0"
+#define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0"
 #define STR_V            (STR_VTELEMUNIT+1)
 #define STR_A            (STR_VTELEMUNIT+4)
 
@@ -155,7 +163,11 @@
 #define TR_RE1RE2        "RE1""RE2"
 
 #define LEN_VSWITCHES    "\003"
+#if defined(PCBARM)
+#define TR_VSWITCHES     "GAS""SID""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC""BRD""BRE""BRF""BRG""BRH""BRI""BRJ""BRK""BRL""BRM""BRN""BRO""BRP""BRQ""BRR""BRS""BRT""BRU""BRV""BRW"
+#else
 #define TR_VSWITCHES     "GAS""SID""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC"
+#endif
 
 #define LEN_VSRCRAW      "\004"
 #if defined(PCBV4)

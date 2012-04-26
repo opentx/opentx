@@ -628,8 +628,8 @@ endif
 	$(OBJDUMP) -h -S $< > $@
 
 # Concatenate all sources files in one big file to optimize size
-allsrc.cpp: Makefile $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) 
-	@echo -n > allsrc.cpp
+allsrc.cpp: Makefile $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC)
+	@rm -f allsrc.cpp 
 	for f in $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) ; do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 	
 remallsrc:

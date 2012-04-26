@@ -46,8 +46,8 @@
 #define TR_RETA123       "RETA123"
 #endif
 
-#define LEN_VPROTOS      "\005"
-#define TR_VPROTOS       "PPM\0 ""PXX\0 ""DSM2\0""PPM16""FUT\0 "
+#define LEN_VPROTOS      "\006"
+#define TR_VPROTOS       "PPM\0  ""PXX\0  ""DSM2\0 ""PPM16\0""FUT\0  ""PPMsim"
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -64,7 +64,7 @@
 #else
 #define TR_EXPLABEL_FP
 #endif
-#define TR_EXPLABELS     "Weight""Expo  ""Curve " TR_EXPLABEL_FP "Swtch ""When  ""      " // TODO remove all the trailing spaces
+#define TR_EXPLABELS     "Weight""Expo  ""Curve " TR_EXPLABEL_FP "Swtch ""Side ""      " // TODO remove all the trailing spaces
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Add     ""Multiply""Replace "
@@ -115,14 +115,16 @@
 #define LEN_VTELEMCHNS   "\004"
 #define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Time"
 
-#define LEN_VTELEMUNIT   "\003"
 #ifdef IMPERIAL_UNITS
 #define LENGTH_UNIT "ft\0"
+#define SPEED_UNIT  "kts"
 #else
 #define LENGTH_UNIT "m\0 "
+#define SPEED_UNIT  "kmh"
 #endif
 
-#define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 ""kts""kmh""M/h" LENGTH_UNIT "@\0 ""%\0 ""mA\0"
+#define LEN_VTELEMUNIT   "\003"
+#define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0"
 #define STR_V            (STR_VTELEMUNIT+1)
 #define STR_A            (STR_VTELEMUNIT+4)
 
@@ -158,7 +160,11 @@
 #define TR_RE1RE2        "RE1""RE2"
 
 #define LEN_VSWITCHES    "\003"
+#if defined(PCBARM)
+#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC""SWD""SWE""SWF""SWG""SWH""SWI""SWJ""SWK""SWL""SWM""SWN""SWO""SWP""SWQ""SWR""SWS""SWT""SWU""SWV""SWW"
+#else
 #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
+#endif
 
 #define LEN_VSRCRAW      "\004"
 #if defined(PCBV4)

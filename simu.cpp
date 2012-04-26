@@ -340,7 +340,9 @@ void Open9xSim::refreshDiplay()
     static FXuint keys2[]={KEY_F8, KEY_F7, KEY_F4, KEY_F3, KEY_F6, KEY_F5, KEY_F1, KEY_F2  };
 #endif
 #if defined(PCBARM)
-    PIOA->PIO_PDSR &= ~(0x00800000 | 0x01000000 | 0x00000002 | 0x00000001 );
+    PIOA->PIO_PDSR |= (0x00800000 | 0x01000000 | 0x00000002 | 0x00000001);
+    PIOB->PIO_PDSR |= (0x00000010);
+    PIOC->PIO_PDSR |= (0x10000000 | 0x00000400 | 0x00000200);
 #elif defined(PCBV4)
     pinj = 0;
 #else

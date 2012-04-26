@@ -333,15 +333,26 @@ void applyExpos(int16_t *anas, uint8_t phase)
 
   for (uint8_t i=0; i<MAX_EXPOS; i++) {
     ExpoData &ed = g_model.expoData[i];
+#if defined(PCBARM)
+    int8_t ed_phase = ed.phase;
+#else
     uint8_t ed_phase = ed.phase;
+#endif
     if (ed.mode==0) break; // end of list
     if (ed.chn == cur_chn)
       continue;
     if (ed_phase != 0) {
+#if defined(PCBARM)
+      if (ed_phase < 0) {
+        if (phase == -ed_phase)
+          continue;
+      }
+#else
       if (ed.negPhase) {
         if (phase == ed_phase)
           continue;
       }
+#endif
       else {
         if (phase != ed_phase)
           continue;
@@ -587,7 +598,11 @@ int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
   }
   else {
     PhaseData *p = phaseaddress(phase);
+#if defined(PCBSTD)
     result = (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
+#else
+    result = p->trim[idx];
+#endif
   }
   return result;
 }
@@ -604,8 +619,12 @@ void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
   }
   else {
     PhaseData *p = phaseaddress(phase);
+#if defined(PCBSTD)
     p->trim[idx] = (int8_t)(trim >> 2);
     p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
+#else
+    p->trim[idx] = trim;
+#endif
   }
   STORE_MODELVARS;
 }
@@ -668,8 +687,12 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
     // m to ft *105/32
     val = val * 3 + ( val >> 2 ) + (val >> 5) ;
   }
+#else
+  if (unit == UNIT_KTS) {
+    // kts to km/h
+    val = (val * 463) / 250;
+  }
 #endif
-
   lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT)); // TODO we could add this test inside lcd_outdezAtt!
   if (~att & NO_UNIT && unit != UNIT_RAW)
     lcd_putsiAtt(lcd_lastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
@@ -868,10 +891,10 @@ void message(const pm_char *title, const pm_char *s, const pm_char *t, const cha
   if (last) {
     lcd_putsLeft(7*FH, last);
     AUDIO_ERROR();
-    clearKeyEvents();
   }
   refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
+  clearKeyEvents();
 }
 
 int8_t *s_trimPtr[NUM_STICKS] = { NULL, NULL, NULL, NULL };
@@ -2610,7 +2633,6 @@ int main(void)
   eeCheck(true);
   lcd_clear() ;
   refreshDisplay() ;
-  // TODO needed? lcdSetRefVolt(0);
   soft_power_off();            // Only turn power off if necessary
 #endif
 
@@ -2625,11 +2647,14 @@ int main(void)
 #endif
 
 #if defined(PCBARM) || defined(PCBV4)
+  lcdSetRefVolt(0); // TODO before soft_power_off?
+#endif
+
+#if defined(PCBV4)
   //never return from main() - there is no code to return back, if any daelays occurs in physical power it does dead loop.
   wdt_disable();
   for(;;){}
 #endif
-
 }
 #endif
 
