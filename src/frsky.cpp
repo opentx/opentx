@@ -851,7 +851,7 @@ static const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_PERCENT, // Fuel
   UNIT_DEGREES, // T1
   UNIT_DEGREES, // T2
-  UNIT_KMH,     // Speed
+  UNIT_KTS,     // Speed
   UNIT_METERS,  // Dist
   UNIT_METERS,  // GPS Alt
 };

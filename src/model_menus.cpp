@@ -843,7 +843,12 @@ void menuProcPhasesAll(uint8_t event)
 
   uint8_t att;
   for (uint8_t i=0; i<MAX_PHASES; i++) {
+#if defined(PCBARM)
+    int8_t y = (1+i-s_pgOfs)*FH;
+    if (y<1*FH || y>7*FH) continue;
+#else
     uint8_t y=(i+1)*FH;
+#endif
     att = i==sub ? INVERS : 0;
     PhaseData *p = phaseaddress(i);
 #if defined(EXTRA_ROTARY_ENCODERS)
@@ -886,6 +891,10 @@ void menuProcPhasesAll(uint8_t event)
     if (p->fadeIn || p->fadeOut) 
       lcd_putc(20*FW+2, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
   }
+
+#if defined(PCBARM)
+  if (s_pgOfs != MAX_PHASES-6) return;
+#endif
 
   att = (sub==MAX_PHASES && !trimsCheckTimer) ? INVERS : 0;
   lcd_putsAtt(0, 7*FH, STR_CHECKTRIMS, att);
@@ -1306,9 +1315,14 @@ inline void editExpoVals(uint8_t event, uint8_t which, bool edit, uint8_t y, uin
 #ifdef FLIGHT_PHASES
     case EXPO_FIELD_FLIGHT_PHASE:
       {
+#if defined(PCBARM)
+        putsFlightPhase(6*FW+5, y, ed->phase, invBlk);
+        if(edit) { ed->phase = checkIncDecModel(event, ed->phase, -MAX_PHASES, MAX_PHASES); }
+#else
         int8_t phase = ed->negPhase ? -ed->phase : +ed->phase;
         putsFlightPhase(6*FW+5, y, phase, invBlk);
         if(edit) { phase = checkIncDecModel(event, phase, -MAX_PHASES, MAX_PHASES); ed->negPhase = (phase < 0); ed->phase = abs(phase); }
+#endif
       }
       break;
 #endif
@@ -1535,8 +1549,12 @@ inline void displayExpoLine(uint8_t row, uint8_t expo, uint8_t ch, uint8_t idx, 
   if (attr != 0)
     CHECK_INCDEC_MODELVAR(event, ed->weight, 0, 100);
   lcd_outdezAtt(9*FW+1, y, ed->expo, 0);
-#ifdef FLIGHT_PHASES
+#if defined(FLIGHT_PHASES)
+#if defined(PCBARM)
+  putsFlightPhase(10*FW, y, ed->phase);
+#else
   putsFlightPhase(10*FW, y, ed->negPhase ? -ed->phase : +ed->phase);
+#endif
 #endif
   putsSwitches(13*FW+4, y, ed->swtch, 0); // normal switches
   if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
@@ -2041,17 +2059,17 @@ void menuProcFunctionSwitches(uint8_t event)
         case 1:
           if (sd->swtch) {
             uint8_t func_displayed;
-            if (sd->func < NUM_CHNOUT) {
+            if (sd->func < 16) {
               func_displayed = 0;
               putsChnRaw(14*FW-2, y, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+sd->func+1, attr);
             }
-            else if (sd->func < NUM_CHNOUT + NUM_STICKS + 1) {
+            else if (sd->func < 16 + NUM_STICKS + 1) {
               func_displayed = 1;
               if (sd->func != FUNC_TRAINER)
                 putsChnRaw(13*FW-2, y, sd->func-FUNC_TRAINER, attr);
             }
             else
-              func_displayed = 2 + sd->func - NUM_CHNOUT - NUM_STICKS - 1;
+              func_displayed = 2 + sd->func - 16 - NUM_STICKS - 1;
             lcd_putsiAtt(5*FW-2, y, STR_VFSWFUNC, func_displayed, attr);
             if (active) {
               CHECK_INCDEC_MODELVAR( event, sd->func, 0, FUNC_MAX-1);

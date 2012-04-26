@@ -228,6 +228,8 @@ void eeprom_read_block (void *pointer_ram,
     const void *pointer_eeprom,
     size_t size)
 {
+  assert(size);
+
   if (fp) {
     memset(pointer_ram, 0, size);
     if (fseek(fp, (long) pointer_eeprom, SEEK_SET)==-1) perror("error in seek");

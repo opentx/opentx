@@ -377,7 +377,11 @@ extern Key keys[NUM_KEYS];
 #define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
 #define SWITCH_ON     (1+MAX_SWITCH)
 #define SWITCH_OFF    (-SWITCH_ON)
+#if defined(PCBARM)
+#define MAX_DRSWITCH  (MAX_PSWITCH+NUM_CSW)  // 15(9+6) !switches + 0 + 15 switches: 5 bits needed
+#else
 #define MAX_DRSWITCH  (MAX_PSWITCH+NUM_CSW/2)  // 15(9+6) !switches + 0 + 15 switches: 5 bits needed
+#endif
 
 #define NUM_STICKS      4
 #define NUM_POTS        3

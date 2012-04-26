@@ -45,11 +45,20 @@ uint8_t getEvent()
   return evt;
 }
 
+#if defined(PCBARM)
+#define KEY_LONG_DELAY 32
+#else
+#define KEY_LONG_DELAY 24
+#endif
+
 Key keys[NUM_KEYS];
 void Key::input(bool val, EnumKeys enuk)
 {
-  //  uint8_t old=m_vals;
-  m_vals <<= 1;  if(val) m_vals |= 1; //portbit einschieben
+  uint8_t t_vals = m_vals ;
+  t_vals <<= 1 ;
+  if(val) t_vals |= 1; //portbit einschieben
+  m_vals = t_vals ;
+
   m_cnt++;
 
   if(m_state && m_vals==0){  //gerade eben sprung auf 0
@@ -81,7 +90,7 @@ void Key::input(bool val, EnumKeys enuk)
       break;
 
     case KSTATE_RPTDELAY: // gruvin: delay state before first key repeat
-      if(m_cnt == 24) putEvent(EVT_KEY_LONG(enuk)); 
+      if(m_cnt == KEY_LONG_DELAY) putEvent(EVT_KEY_LONG(enuk));
       if (m_cnt == 40) {
         m_state = 16;
         m_cnt = 0;

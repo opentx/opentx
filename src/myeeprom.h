@@ -48,8 +48,10 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#if defined(PCBV4)
-#define EEPROM_VER       207
+#if defined(PCBARM)
+#define EEPROM_VER       208
+#elif defined(PCBV4)
+#define EEPROM_VER       208
 #else
 #define EEPROM_VER       205
 #endif
@@ -147,6 +149,17 @@ PACK(typedef struct t_EEGeneral {
 
 // eeprom modelspec
 
+#if defined(PCBARM)
+PACK(typedef struct t_ExpoData {
+  uint8_t mode;         // 0=end, 1=pos, 2=neg, 3=both
+  uint8_t chn;
+  int8_t  curve;        // 0=no curve, 1-6=std curves, 7-10=CV1-CV4, 11-15=CV9-CV13
+  int8_t  swtch;
+  int8_t  phase;        // if negPhase is 0: 0=normal, 5=FP4    if negPhase is 1: 5=!FP4
+  uint8_t weight;
+  int8_t  expo;
+}) ExpoData;
+#else
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t chn:2;
@@ -157,6 +170,7 @@ PACK(typedef struct t_ExpoData {
   uint8_t weight:7;
   int8_t  expo;
 }) ExpoData;
+#endif
 
 PACK(typedef struct t_LimitData {
   int8_t  min;
@@ -218,6 +232,25 @@ enum MixSources {
 #define MLTPX_MUL  1
 #define MLTPX_REP  2
 
+#if defined(PCBARM)
+PACK(typedef struct t_MixData {
+  uint8_t destCh;
+  int8_t  phase;
+  int8_t  weight;
+  int8_t  swtch;
+  uint8_t mltpx;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  int8_t  curve;
+  uint8_t mixWarn;         // mixer warning
+  uint8_t delayUp;
+  uint8_t delayDown;
+  uint8_t speedUp;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
+  uint8_t speedDown;       // 0 nichts
+  uint8_t srcRaw;         //
+  int8_t  differential;
+  uint8_t carryTrim;
+  int8_t  sOffset;
+}) MixData;
+#else
 PACK(typedef struct t_MixData {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   int8_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
@@ -235,6 +268,7 @@ PACK(typedef struct t_MixData {
   uint16_t carryTrim:2;
   int8_t  sOffset;
 }) MixData;
+#endif
 
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
@@ -278,9 +312,8 @@ enum TelemetryUnit {
   UNIT_VOLTS,
   UNIT_AMPS,
   UNIT_RAW,
-  UNIT_KTS,
   UNIT_KMH,
-  UNIT_MPH,
+  UNIT_KTS = UNIT_KMH,
   UNIT_METERS,
   UNIT_FEET = UNIT_METERS,
   UNIT_DEGREES,
@@ -396,22 +429,25 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #if defined(PCBV4)
 #if defined(EXTRA_ROTARY_ENCODERS)
 #define NUM_EXTRA_ROTARY_ENCODERS 3
-#else //EXTRA_ROTARY_ENCODERS
+#else
 #define NUM_EXTRA_ROTARY_ENCODERS 0
-#endif //EXTRA_ROTARY_ENCODERS
+#endif
 #define NUM_ROTARY_ENCODERS (2+NUM_EXTRA_ROTARY_ENCODERS)
 #define ROTARY_ENCODER_MAX  1024
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[NUM_ROTARY_ENCODERS];
-#else //PCBV4
+#else
 #define NUM_ROTARY_ENCODERS 0
 #define ROTARY_ENCODER_ARRAY
-#endif //PCBV4
+#endif
 
+#if defined(PCBSTD)
+#define TRIM_ARRAY int8_t trim[4]; int8_t trim_ext:8
+#else
+#define TRIM_ARRAY int16_t trim[4]
+#endif
 
 PACK(typedef struct t_PhaseData {
-  // TODO perhaps not a so good idea to have 10bits trims instead of 16bits ...
-  int8_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
-  int8_t trim_ext:8;  // 2 less significant extra bits per trim (10bits trims)
+  TRIM_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
@@ -421,22 +457,33 @@ PACK(typedef struct t_PhaseData {
 
 #if defined(PCBARM)
 #define MAX_MODELS 60
+#define NUM_CHNOUT 32 // number of real output channels CH1-CH32
+#define MAX_PHASES 9
+#define MAX_MIXERS 64
+#define MAX_EXPOS  32
+#define NUM_CSW    32 // number of custom switches
+#define NUM_FSW    32 // number of functions assigned to switches
 #elif defined(PCBV4)
 #define MAX_MODELS 30
-#else
-#define MAX_MODELS 16
-#endif
-
-#define MAX_TIMERS 2
+#define NUM_CHNOUT 16 // number of real output channels CH1-CH16
 #define MAX_PHASES 5
 #define MAX_MIXERS 32
 #define MAX_EXPOS  14
+#define NUM_CSW    12 // number of custom switches
+#define NUM_FSW    16 // number of functions assigned to switches
+#else
+#define MAX_MODELS 16
+#define NUM_CHNOUT 16 // number of real output channels CH1-CH16
+#define MAX_PHASES 5
+#define MAX_MIXERS 32
+#define MAX_EXPOS  14
+#define NUM_CSW    12 // number of custom switches
+#define NUM_FSW    16 // number of functions assigned to switches
+#endif
+
+#define MAX_TIMERS 2
 #define MAX_CURVE5 8
 #define MAX_CURVE9 8
-
-#define NUM_CHNOUT   16 // number of real output channels CH1-CH16
-#define NUM_CSW      12 // number of custom switches
-#define NUM_FSW      16 // number of functions assigned to switches
 
 #define TMRMODE_NONE     0
 #define TMRMODE_ABS      1
@@ -454,6 +501,7 @@ enum Protocols {
   PROTO_DSM2,
   PROTO_PPM16,
   PROTO_FAAST,
+  PROTO_PPMSIM,
   PROTO_MAX
 };
 
@@ -469,7 +517,7 @@ enum Dsm2Variants {
 #define EXTDATA FrSkyData frsky
 #endif
 
-#if defined(PCBV4)
+#if defined(PCBV4) || defined(PCBARM)
 #define BeepANACenter uint16_t
 #else
 #define BeepANACenter uint8_t

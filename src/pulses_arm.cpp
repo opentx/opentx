@@ -77,12 +77,14 @@ static void init_main_ppm( uint32_t period, uint32_t out_enable )
 
   pwmptr = PWM ;
   // PWM3 for PPM output
-  pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0000000B ;    // CLKA
-  pwmptr->PWM_CH_NUM[3].PWM_CPDR = period ;                       // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period ;    // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTY = 600 ;                  // Duty in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = 600 ;               // Duty in half uS
-  pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                                               // Enable channel 3
+  pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0000000B ;                  // CLKA
+  if (g_model.pulsePol)
+    pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;               // CPOL
+  pwmptr->PWM_CH_NUM[3].PWM_CPDR = period ;                     // Period in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period ;                  // Period in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.ppmDelay*100+600;    // Duty in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.ppmDelay*100+600; // Duty in half uS
+  pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
 
   NVIC_EnableIRQ(PWM_IRQn) ;
   pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
@@ -151,6 +153,10 @@ void setupPulsesPPM()                   // Don't enable interrupts through here
   uint32_t p = 8 + g_model.ppmNCH * 2; //Channels *2
 
   pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = (g_model.ppmDelay * 50 + 300) * 2; //Stoplen *2
+  if (g_model.pulsePol)
+    pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;   // CPOL
+  else
+    pwmptr->PWM_CH_NUM[3].PWM_CMR &= ~0x00000200 ;  // CPOL
 
   uint16_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
   rest += (int16_t(g_model.ppmFrameLength)) * 1000;
