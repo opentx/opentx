@@ -356,7 +356,7 @@ void menuProcSetup(uint8_t event)
       case ITEM_SETUP_TELEMETRY_ALARM:
       {
         uint8_t b = g_eeGeneral.enableTelemetryAlarm;
-        g_eeGeneral.disableAlarmWarning = onoffMenuItem( b, y, STR_NODATAALARM, attr, event ) ;
+        g_eeGeneral.enableTelemetryAlarm = onoffMenuItem( b, y, STR_NODATAALARM, attr, event ) ;
         break;
       }
 
