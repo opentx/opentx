@@ -171,8 +171,11 @@ inline void evalVario(int16_t altitude_bp, uint8_t altitude_ap)
 {
    int16_t varioAltitude_cm = altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
    
-   frskyHubData.varioAltitudeQueuePointer = (frskyHubData.varioAltitudeQueuePointer + 1) % VARIO_QUEUE_LENGTH;
-   frskyHubData.varioAltitudeQueue[frskyHubData.varioAltitudeQueuePointer] = varioAltitude_cm - frskyHubData.varioAltitude_cm;
+   uint8_t varioAltitudeQueuePointer = frskyHubData.varioAltitudeQueuePointer + 1;
+   if (varioAltitudeQueuePointer == VARIO_QUEUE_LENGTH)
+     varioAltitudeQueuePointer = 0;
+   frskyHubData.varioAltitudeQueuePointer = varioAltitudeQueuePointer;
+   frskyHubData.varioAltitudeQueue[varioAltitudeQueuePointer] = varioAltitude_cm - frskyHubData.varioAltitude_cm;
    frskyHubData.varioAltitude_cm = varioAltitude_cm;
 
    int16_t speed = 0;
