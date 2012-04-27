@@ -124,7 +124,7 @@
 #endif
 
 #define LEN_VTELEMUNIT   "\003"
-#define TR_VTELEMUNIT    "v\0 ""A\0 ""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0"
+#define TR_VTELEMUNIT    "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0"
 #define STR_V            (STR_VTELEMUNIT+1)
 #define STR_A            (STR_VTELEMUNIT+4)
 

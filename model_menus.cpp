@@ -2125,7 +2125,7 @@ void menuProcFunctionSwitches(uint8_t event)
 }
 
 #ifdef FRSKY
-#define TELEM_COL2 (9*FW+2)
+#define TELEM_COL2 (8*FW-2)
 void menuProcTelemetry(uint8_t event)
 {
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
@@ -2191,7 +2191,7 @@ void menuProcTelemetry(uint8_t event)
       y=(subN-s_pgOfs)*FH;
       lcd_puts(4, y, STR_OFFSET);
       putsTelemetryChannel(TELEM_COL2, y, i+MAX_TIMERS, 0, (sub==subN ? blink:0)|LEFT);
-      if(sub==subN) CHECK_INCDEC_MODELVAR(event, g_model.frsky.channels[i].offset, -128, 127);
+      if(sub==subN) g_model.frsky.channels[i].offset = checkIncDec(event, g_model.frsky.channels[i].offset, -256, 256, EE_MODEL);
     }
     subN++;
 
@@ -2320,7 +2320,7 @@ void menuProcTelemetry(uint8_t event)
       y = (subN-s_pgOfs)*FH;
       lcd_putsiAtt(4, y, STR_VTELEMCHNS, barSource, (sub==subN && m_posHorz==0) ? blink : 0);
       if (barSource) {
-        putsTelemetryChannel(TELEM_COL2-3*FW, y, barSource-1, convertTelemValue(barSource, g_model.frsky.bars[j].barMin*5), (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
+        putsTelemetryChannel(56-3*FW, y, barSource-1, convertTelemValue(barSource, g_model.frsky.bars[j].barMin*5), (sub==subN && m_posHorz==1 ? blink : 0) | LEFT);
         putsTelemetryChannel(14*FW-3, y, barSource-1, convertTelemValue(barSource, (51-g_model.frsky.bars[j].barMax)*5), (sub==subN && m_posHorz==2 ? blink : 0) | LEFT);
       }
       else {

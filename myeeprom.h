@@ -53,7 +53,7 @@
 #elif defined(PCBV4)
 #define EEPROM_VER       208
 #else
-#define EEPROM_VER       205
+#define EEPROM_VER       208
 #endif
 
 #ifndef PACK
@@ -311,6 +311,7 @@ PACK(typedef struct t_FuncSwData { // Function Switches data
 enum TelemetryUnit {
   UNIT_VOLTS,
   UNIT_AMPS,
+  UNIT_METERS_PER_SECOND,
   UNIT_RAW,
   UNIT_KMH,
   UNIT_KTS = UNIT_KMH,
@@ -324,12 +325,12 @@ enum TelemetryUnit {
 
 PACK(typedef struct t_FrSkyChannelData {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
-  uint8_t   type;               // channel unit (0=volts, ...)
+  int16_t   offset:12;
+  uint16_t  type:4;             // channel unit (0=volts, ...)
   uint8_t   alarms_value[2];    // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc. 
   uint8_t   alarms_level:4;
   uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
   uint8_t   multiplier:2;       // 0=no multiplier, 1=*2 multiplier
-  int8_t    offset;
 }) FrSkyChannelData;
 
 enum TelemetrySource {
