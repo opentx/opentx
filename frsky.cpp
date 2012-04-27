@@ -162,6 +162,11 @@ typedef enum {
   TS_XOR = 0x80 // decode stuffed byte
 } TS_STATE;
 
+int16_t applyChannelRatio(uint8_t channel, int16_t val)
+{
+  return ((int32_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51;
+}
+
 void evalVario(int16_t altitude_bp, uint8_t altitude_ap)
 {
    int16_t varioAltitude_cm = altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
@@ -377,12 +382,7 @@ void processFrskyPacket(uint8_t *packet)
       frskyRSSI[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       if (g_model.varioSource >= VARIO_SOURCE_A1) {
-#warning TODO
-#if 0
-        frskyHubData.varioSpeed = 
-	    (frskyTelemetry[g_model.varioSource - VARIO_SOURCE_A1].value - g_model.varioAXCenter) * 
-		  ((g_model.varioAXMultiplier - 127)/10);
-#endif
+        frskyHubData.varioSpeed = applyChannelRatio(frskyTelemetry[g_model.varioSource - VARIO_SOURCE_A1].value, g_model.varioSource - VARIO_SOURCE_A1);
       }
       break;
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
@@ -886,7 +886,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       channel -= MAX_TIMERS;
       // A1 and A2
     {
-      int16_t converted_value = ((int32_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51;
+      int16_t converted_value = applyChannelRatio(channel, val);
       if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
         converted_value /= 10;
       }
