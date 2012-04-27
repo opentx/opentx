@@ -314,6 +314,9 @@ const pm_char STR_DELETE_MODEL[] PROGMEM = TR_DELETE_MODEL;
 const pm_char STR_RESTORE_MODEL[] PROGMEM = TR_RESTORE_MODEL;
 const pm_char STR_SDCARD_ERROR[] PROGMEM = TR_SDCARD_ERROR;
 const pm_char STR_NO_SDCARD[] PROGMEM = TR_NO_SDCARD;
+const pm_char STR_LOGS_PATH[] PROGMEM = LOGS_PATH;
+const pm_char STR_MODELS_PATH[] PROGMEM = MODELS_PATH;
+const pm_char STR_MODELS_EXT[] PROGMEM = MODELS_EXT;
 #endif
 
 const pm_uchar font[] PROGMEM = {

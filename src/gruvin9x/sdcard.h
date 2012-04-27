@@ -31,11 +31,13 @@
  *
  */
 
-#ifndef LOGS_H
-#define LOGS_H
+#ifndef sdcard_h
+#define sdcard_h
 
-#define LOG_PATH     "/9XLOGS"   // no trailing slash = important
+#define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
 #define MODELS_PATH  "/9XMODELS"
+
+#define MODELS_EXT   ".bin"
 
 extern char g_logFilename[21]; // "/9XLOGS/M00_000.CSV\0" max required length = 21
 extern int8_t g_logState; // 0=closed, >0 = opened, <0 is error
