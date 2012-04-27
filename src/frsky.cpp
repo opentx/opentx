@@ -171,8 +171,8 @@ inline void evalVario(int16_t altitude_bp, uint8_t altitude_ap)
 {
    int16_t varioAltitude_cm = altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
    
-   frskyHubData.queuePointer = (frskyHubData.queuePointer + 1) % VARIO_QUEUE_LENGTH;
-   frskyHubData.varioAltitudeQueue[frskyHubData.queuePointer] = varioAltitude_cm - frskyHubData.varioAltitude_cm;
+   frskyHubData.varioAltitudeQueuePointer = (frskyHubData.varioAltitudeQueuePointer + 1) % VARIO_QUEUE_LENGTH;
+   frskyHubData.varioAltitudeQueue[frskyHubData.varioAltitudeQueuePointer] = varioAltitude_cm - frskyHubData.varioAltitude_cm;
    frskyHubData.varioAltitude_cm = varioAltitude_cm;
 
    int16_t speed = 0;
@@ -262,24 +262,23 @@ void parseTelemHubByte(uint8_t byte)
         frskyHubData.maxTemperature2 = frskyHubData.temperature2;
       break;
 
-    case offsetof(FrskyHubData, baroAltitude_ap):
+    case offsetof(FrskyHubData, baroAltitude_bp):
       // First received barometer altitude => Altitude offset
       if (!frskyHubData.baroAltitudeOffset)
         frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
 		
-      if (g_model.varioSource == VARIO_SOURCE_BARO) {
-        evalVario(frskyHubData.baroAltitude_bp, frskyHubData.baroAltitude_ap);
-      }
-
       frskyHubData.baroAltitude_bp += frskyHubData.baroAltitudeOffset;
-	  
-      frskyHubData.lastBaroAltitude_bp = frskyHubData.baroAltitude_bp;
-	  
+
       if (frskyHubData.baroAltitude_bp > frskyHubData.maxAltitude)
         frskyHubData.maxAltitude = frskyHubData.baroAltitude_bp;
       if (frskyHubData.baroAltitude_bp < frskyHubData.minAltitude)
         frskyHubData.minAltitude = frskyHubData.baroAltitude_bp;
+      break;
 
+    case offsetof(FrskyHubData, baroAltitude_ap):
+      if (g_model.varioSource == VARIO_SOURCE_BARO) {
+        evalVario(frskyHubData.baroAltitude_bp, frskyHubData.baroAltitude_ap);
+      }
       break;
 
     case offsetof(FrskyHubData, gpsAltitude_ap):

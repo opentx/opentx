@@ -114,9 +114,7 @@ PACK(struct FrskyHubData {
   uint8_t  minCellVolts;     //        8bits out of 16bits spare reused
   uint16_t current;          // 0x28   Current
   int16_t  varioAltitudeQueue[VARIO_QUEUE_LENGTH]; //circular buffer
-  uint8_t  queuePointer;     // circular-buffer pointer
-  int8_t   spare2;
-  int16_t  lastBaroAltitude_bp;
+  int32_t  varioAltitude_cm;
   int16_t  varioSpeed;
   /* next fields must keep this order! */
   int16_t  minAltitude;
@@ -135,7 +133,7 @@ PACK(struct FrskyHubData {
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
   uint8_t  minCellMinVolts;
-  int32_t  varioAltitude_cm;
+  uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
 });
 
 #elif defined(WS_HOW_HIGH)
