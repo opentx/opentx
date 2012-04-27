@@ -539,12 +539,17 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
     return SDCARD_ERROR(result);
   }
 
-  strcpy_P(buf, PSTR(MODELS_PATH "/")); // TODO Not PSTR everywhere ...
+  // check and create folder here
+  strcpy_P(buf, STR_MODELS_PATH);
+  result = f_opendir(&archiveFolder, buf);
+  if (result != FR_OK) {
+    result = f_mkdir(buf);
+    if (result != FR_OK)
+      return SDCARD_ERROR(result);
+  }
 
+  buf[sizeof(MODELS_PATH)-1] = '/';
   eeLoadModelName(i_fileSrc, &buf[sizeof(MODELS_PATH)]);
-	if(buf[sizeof(MODELS_PATH)] == '\0'){//no model name loaded
-		strcpy_P(&buf[sizeof(MODELS_PATH)], PSTR("\x0d\x0f\x04\x05\x0c\x18\x18"));//temporary fix as "MODELXX", itoa(i_fileSrc-1) need to be appended
-	}		
   buf[sizeof(MODELS_PATH)+sizeof(g_model.name)] = '\0';
 
   uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.name)-1;
@@ -556,23 +561,16 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
       buf[i] = idx2char(buf[i]);
     i--;
   }
-  strcpy_P(&buf[len], PSTR(".bin")); // TODO Not PSTR everywhere ...
 
-  //check and create folder here
-  //temporary truncate for folder name only
-  buf[sizeof(MODELS_PATH)-1] = '\0';
-  
-  result = f_opendir(&archiveFolder, buf);
-  if(result != FR_OK){
-	  result = f_mkdir(buf);
-	  if(result != FR_OK){
-		  return SDCARD_ERROR(result);
-	  }		  
+  if (len == sizeof(MODELS_PATH)) {
+    uint8_t num = i_fileSrc + 1;
+    strcpy_P(&buf[sizeof(MODELS_PATH)], STR_MODEL);
+    buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL)] = (char)((num / 10) + '0');
+    buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 1] = (char)((num % 10) + '0');
+    len = sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 2;
   }
-  
-  //return back / char to get full model name
-  buf[sizeof(MODELS_PATH)-1] = '/';
-  //folder ready to write here
+
+  strcpy_P(&buf[len], STR_MODELS_EXT);
 
   result = f_open(&archiveFile, buf, FA_OPEN_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
@@ -609,9 +607,10 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     return SDCARD_ERROR(result);
   }
 
-  strcpy_P(buf, PSTR(MODELS_PATH "/")); // TODO Not PSTR everywhere ...
+  strcpy_P(buf, STR_MODELS_PATH);
+  buf[sizeof(MODELS_PATH)-1] = '/';
   strcpy(&buf[sizeof(MODELS_PATH)], model_name);
-  strcpy_P(&buf[strlen(buf)], PSTR(".bin")); // TODO Not PSTR everywhere ...
+  strcpy_P(&buf[strlen(buf)], STR_MODELS_EXT);
 
   result = f_open(&restoreFile, buf, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {

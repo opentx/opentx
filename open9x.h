@@ -830,7 +830,7 @@ extern uint16_t jeti_keys;
 #endif
 
 #if defined(SDCARD)
-#include "logs.h"
+#include "sdcard.h"
 #endif
 
 #if defined(SOMO)

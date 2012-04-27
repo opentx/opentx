@@ -50,11 +50,11 @@ void initLogs()
   if (g_oLogFile.fs) f_close(&g_oLogFile);
   g_logState = 0;
 
-  strcpy_P(g_logFilename, PSTR(LOG_PATH "/M00_000.CSV"));
+  strcpy_P(g_logFilename, PSTR(LOGS_PATH "/M00_000.CSV"));
 
   // Set log file model number
   uint8_t num = g_eeGeneral.currModel + 1;
-  char *n = &g_logFilename[sizeof(LOG_PATH) + 3];
+  char *n = &g_logFilename[sizeof(LOGS_PATH) + 3];
   *n = (char)((num % 10) + '0');
   *(--n) = (char)((num / 10) + '0');
 
@@ -87,7 +87,7 @@ void initLogs()
       f_close(&g_oLogFile);
 
       // bump log file counter (file extension)
-      n = &g_logFilename[sizeof(LOG_PATH) + 7];
+      n = &g_logFilename[sizeof(LOGS_PATH) + 7];
       if (++*n > '9')
       {
         *n='0';
@@ -110,10 +110,10 @@ void initLogs()
     }
     else if (result == FR_NO_PATH)
     {
-      if (f_mkdir(LOG_PATH) != FR_OK)
+      if (f_mkdir(LOGS_PATH) != FR_OK)
       {
         g_logState = -result;
-        g_logError = PSTR("Check " LOG_PATH " folder");
+        g_logError = PSTR("Check " LOGS_PATH " folder");
         return;
       }
     }

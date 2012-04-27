@@ -122,7 +122,7 @@ inline int8_t eeFindEmptyModel(uint8_t id, bool down)
   return i;
 }
 
-#ifdef SDCARD
+#if defined(SDCARD)
 // TODO to be elsewhere if common to many menus
 const pm_char * s_sdcard_error = NULL;
 
