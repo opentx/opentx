@@ -144,7 +144,7 @@
 #endif
 
 #define LEN_VARIOSRC     "\004"
-#define TR_VARIOSRC      "None""Baro""GPS ""A1  ""A2  "
+#define TR_VARIOSRC      "None""Baro""A1  ""A2  "
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"

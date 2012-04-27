@@ -167,7 +167,7 @@ int16_t applyChannelRatio(uint8_t channel, int16_t val)
   return ((int32_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51;
 }
 
-void evalVario(int16_t altitude_bp, uint8_t altitude_ap)
+inline void evalVario(int16_t altitude_bp, uint8_t altitude_ap)
 {
    int16_t varioAltitude_cm = altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
    
@@ -292,9 +292,6 @@ void parseTelemHubByte(uint8_t byte)
       }
       else if (frskyHubData.gpsDistNeeded || g_menuStack[0] == menuProcFrsky) {
         getGpsDistance();
-      }
-      if (g_model.varioSource == VARIO_SOURCE_GPS) {
-        evalVario(frskyHubData.gpsAltitude_bp, frskyHubData.gpsAltitude_ap);
       }
       break;
 
