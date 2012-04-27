@@ -562,7 +562,7 @@ const pm_char * eeArchiveModel(uint8_t i_fileSrc)
     i--;
   }
 
-  if (len == sizeof(MODELS_PATH)) {
+  if (len == 0) {
     uint8_t num = i_fileSrc + 1;
     strcpy_P(&buf[sizeof(MODELS_PATH)], STR_MODEL);
     buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL)] = (char)((num / 10) + '0');
