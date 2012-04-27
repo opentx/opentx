@@ -162,6 +162,21 @@ typedef enum {
   TS_XOR = 0x80 // decode stuffed byte
 } TS_STATE;
 
+void evalVario(int16_t altitude_bp, uint8_t altitude_ap)
+{
+   int16_t varioAltitude_cm = altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
+   
+   frskyHubData.queuePointer = (frskyHubData.queuePointer + 1) % VARIO_QUEUE_LENGTH;
+   frskyHubData.varioAltitudeQueue[frskyHubData.queuePointer] = varioAltitude_cm - frskyHubData.varioAltitude_cm;
+   frskyHubData.varioAltitude_cm = varioAltitude_cm;
+
+   int16_t speed = 0;
+   for (uint8_t i=0; i<VARIO_QUEUE_LENGTH; i++) {
+      speed += frskyHubData.varioAltitudeQueue[i];
+   }		  
+   frskyHubData.varioSpeed = speed;
+}
+          
 void parseTelemHubByte(uint8_t byte)
 {
   static int8_t structPos;
@@ -242,7 +257,7 @@ void parseTelemHubByte(uint8_t byte)
         frskyHubData.maxTemperature2 = frskyHubData.temperature2;
       break;
 
-    case offsetof(FrskyHubData, baroAltitude_bp):
+    case offsetof(FrskyHubData, baroAltitude_ap):
       // First received barometer altitude => Altitude offset
       if (!frskyHubData.baroAltitudeOffset)
         frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
@@ -252,20 +267,8 @@ void parseTelemHubByte(uint8_t byte)
       if (frskyHubData.baroAltitude_bp < frskyHubData.minAltitude)
         frskyHubData.minAltitude = frskyHubData.baroAltitude_bp;
 
-      {
-        int16_t actVario = frskyHubData.baroAltitude_bp - frskyHubData.lastBaroAltitude_bp;
-        frskyHubData.varioAcc2 = frskyHubData.varioAcc2 - frskyHubData.varioQueue[frskyHubData.queuePointer];
-        frskyHubData.varioQueue[frskyHubData.queuePointer] = actVario;
-        uint8_t tmp = frskyHubData.queuePointer + 5;
-        if (tmp >= 10)
-          tmp -= 10;
-        tmp = (uint8_t)frskyHubData.varioQueue[tmp];
-        frskyHubData.varioAcc2 = frskyHubData.varioAcc2 + (int8_t)tmp;
-        frskyHubData.varioAcc1 = frskyHubData.varioAcc1 + actVario - (int8_t)tmp;
-        frskyHubData.varioSpeed = frskyHubData.varioAcc1 - frskyHubData.varioAcc2;
-        if (++frskyHubData.queuePointer >= 10)
-          frskyHubData.queuePointer = 0;
-        frskyHubData.lastBaroAltitude_bp = frskyHubData.baroAltitude_bp;
+      if (g_model.varioSource == VARIO_SOURCE_BARO) {
+        evalVario(frskyHubData.baroAltitude_bp, frskyHubData.baroAltitude_ap);
       }
       break;
 
@@ -284,6 +287,9 @@ void parseTelemHubByte(uint8_t byte)
       }
       else if (frskyHubData.gpsDistNeeded || g_menuStack[0] == menuProcFrsky) {
         getGpsDistance();
+      }
+      if (g_model.varioSource == VARIO_SOURCE_GPS) {
+        evalVario(frskyHubData.gpsAltitude_bp, frskyHubData.gpsAltitude_ap);
       }
       break;
 
@@ -370,6 +376,14 @@ void processFrskyPacket(uint8_t *packet)
       frskyRSSI[0].set(packet[3]);
       frskyRSSI[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+      if (g_model.varioSource >= VARIO_SOURCE_A1) {
+#warning TODO
+#if 0
+        frskyHubData.varioSpeed = 
+	    (frskyTelemetry[g_model.varioSource - VARIO_SOURCE_A1].value - g_model.varioAXCenter) * 
+		  ((g_model.varioAXMultiplier - 127)/10);
+#endif
+      }
       break;
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
     case USRPKT: // User Data packet
