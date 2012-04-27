@@ -80,9 +80,9 @@
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-#define TR_VARIO         "Vario        "
+#define TR_VVARIO         "Vario        "
 #else
-#define TR_VARIO
+#define TR_VVARIO
 #endif
 #ifdef SDCARD
 #define TR_SDCLOGGS      "SDCARD Logs  "
@@ -104,7 +104,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO "Reset\0       " TR_VARIO TR_SDCLOGGS TR_TEST
+#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
@@ -143,11 +143,14 @@
 #define TR_VTELPROTO     ""
 #endif
 
-#define LEN_GPSFORMAT     "\004"
-#define TR_GPSFORMAT      "HMS NMEA"
+#define LEN_VARIOSRC     "\004"
+#define TR_VARIOSRC      "None""Baro""GPS ""A1  ""A2  "
 
-#define LEN_VUNITSFORMAT  "\004"
-#define TR_VUNITSFORMAT   "MetrImpr"
+#define LEN_GPSFORMAT    "\004"
+#define TR_GPSFORMAT     "HMS NMEA"
+
+#define LEN_VUNITSFORMAT "\004"
+#define TR_VUNITSFORMAT  "MetrImpr"
 
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"
@@ -354,11 +357,13 @@
 #define TR_SYNCMENU      "Synk [MENU]"
 #define TR_BACK          "EXIT"
 #define TR_MINLIMIT      "Mininiv\200"
+#define STR_LIMIT        (STR_MINLIMIT)
 #define TR_MAXLIMIT      "Maxiniv\200"
 #define TR_MINRSSI       "Min Rssi"
 #define TR_LATITUDE      "Breddgrad"
 #define TR_LONGITUDE     "L\201ngdgrad"
 #define TR_GPSCOORD      "GPS-Koord."
+#define TR_VARIO         "Vario"
 #define TR_UNITSFORMAT   "Units Format"
 #define TR_SHUTDOWN      "ST\204NGER AV"
 #define TR_BATT_CALIB    "Battery Calib"

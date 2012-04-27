@@ -290,7 +290,7 @@ enum Functions {
   FUNC_PLAY_SOMO,
 #endif
   FUNC_RESET,
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+#if defined(FRSKY)
   FUNC_VARIO,
 #endif
 #ifdef SDCARD
@@ -372,6 +372,15 @@ enum TelemetrySource {
   TELEM_NOUSR_CSW_MAX = TELEM_RSSI_RX,
   TELEM_DISPLAY_MAX = TELEM_MAX_DIST,
   TELEM_STATUS_MAX = TELEM_GPS_TIME
+};
+
+enum VarioSource {
+  VARIO_SOURCE_NONE = 0,
+  VARIO_SOURCE_BARO,
+  VARIO_SOURCE_GPS,
+  VARIO_SOURCE_A1,
+  VARIO_SOURCE_A2,
+  VARIO_SOURCE_LAST
 };
 
 PACK(typedef struct t_FrSkyBarData {
@@ -556,6 +565,11 @@ PACK(typedef struct t_ModelData {
   uint8_t   frskyLines[4];
   uint16_t  frskyLinesXtra;
   int8_t    servoCenter[NUM_CHNOUT];
+  
+  // TODO:temporary place, need to move to frskydata
+  uint8_t varioSource:4;
+  uint8_t varioSpeedUpMin:4;    // if increment in 0.2m/s = 3.0m/s max
+  uint8_t varioSpeedDownMin;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

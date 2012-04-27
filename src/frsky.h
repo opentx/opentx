@@ -68,6 +68,10 @@ class FrskyData: public FrskyRSSI {
 #define EARTH_RADIUSKM ((uint32_t)6371)
 #define EARTH_RADIUS ((uint32_t)111194)
 
+#define VARIO_QUEUE_LENGTH    5
+#define VARIO_SPEED_LIMIT     10 //m/s
+#define VARIO_SPEED_LIMIT_MUL 20 //to get 0.2m steps
+
 #if defined(FRSKY_HUB)
 PACK(struct FrskyHubData {
   int16_t  baroAltitudeOffset;//       spare reused
@@ -109,7 +113,7 @@ PACK(struct FrskyHubData {
   uint8_t  cellsCount:4;     //        4bits out of 16bits spare reused
   uint8_t  minCellVolts;     //        8bits out of 16bits spare reused
   uint16_t current;          // 0x28   Current
-  int8_t   varioQueue[10];   // circular-buffer
+  int16_t  varioAltitudeQueue[VARIO_QUEUE_LENGTH]; //circular buffer
   uint8_t  queuePointer;     // circular-buffer pointer
   int8_t   spare2;
   int16_t  lastBaroAltitude_bp;
@@ -131,7 +135,7 @@ PACK(struct FrskyHubData {
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
   uint8_t  minCellMinVolts;
-
+  int32_t  varioAltitude_cm;
 });
 
 #elif defined(WS_HOW_HIGH)

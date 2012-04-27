@@ -2129,7 +2129,7 @@ void menuProcFunctionSwitches(uint8_t event)
 void menuProcTelemetry(uint8_t event)
 {
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 27, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 30, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 1, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #else
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 24, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 #endif
@@ -2278,6 +2278,41 @@ void menuProcTelemetry(uint8_t event)
   }
   subN++;
 #endif
+
+  if (s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_putsLeft(y, STR_VARIO);
+  }
+  subN++;
+  
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_puts(4, y, STR_SOURCE);
+    lcd_putsiAtt(TELEM_COL2, y, STR_VARIOSRC, g_model.varioSource, ((sub==subN && m_posHorz==0) ? blink : 0));
+    if (sub==subN) {
+      CHECK_INCDEC_MODELVAR(event, g_model.varioSource, VARIO_SOURCE_NONE, VARIO_SOURCE_LAST-1);
+    }                
+  }
+  subN++;
+
+  if(s_pgOfs<subN) {
+    y = (subN-s_pgOfs)*FH;
+    lcd_puts(4, y, STR_LIMIT);
+    lcd_outdezAtt(TELEM_COL2, y, -VARIO_SPEED_LIMIT_MUL*(255 - g_model.varioSpeedDownMin), ((sub==subN && m_posHorz==0) ? blink : 0)|PREC2|LEFT);
+    lcd_outdezAtt(TELEM_COL2+6*FW, y, VARIO_SPEED_LIMIT_MUL*g_model.varioSpeedUpMin, ((sub==subN && m_posHorz==1) ? blink : 0)|PREC2|LEFT);
+
+    if (sub==subN && (s_editMode>0 || p1valdiff)) {
+      switch (m_posHorz) {
+        case 0:
+          g_model.varioSpeedDownMin = checkIncDec(event, g_model.varioSpeedDownMin, 0, 255, EE_MODEL);
+          break;
+        case 1:
+          CHECK_INCDEC_MODELVAR(event, g_model.varioSpeedUpMin, 0, 15);
+          break;
+      }
+    }        
+  }
+  subN++;
 
   // Display
   if(s_pgOfs<subN) {
