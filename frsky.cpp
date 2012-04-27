@@ -175,14 +175,10 @@ inline void evalVario(int16_t altitude_bp, uint8_t altitude_ap)
    if (varioAltitudeQueuePointer == VARIO_QUEUE_LENGTH)
      varioAltitudeQueuePointer = 0;
    frskyHubData.varioAltitudeQueuePointer = varioAltitudeQueuePointer;
+   frskyHubData.varioSpeed -= frskyHubData.varioAltitudeQueue[varioAltitudeQueuePointer] ;
    frskyHubData.varioAltitudeQueue[varioAltitudeQueuePointer] = varioAltitude_cm - frskyHubData.varioAltitude_cm;
    frskyHubData.varioAltitude_cm = varioAltitude_cm;
-
-   int16_t speed = 0;
-   for (uint8_t i=0; i<VARIO_QUEUE_LENGTH; i++) {
-      speed += frskyHubData.varioAltitudeQueue[i];
-   }		  
-   frskyHubData.varioSpeed = speed;
+   frskyHubData.varioSpeed += frskyHubData.varioAltitudeQueue[varioAltitudeQueuePointer] ;
 }
           
 void parseTelemHubByte(uint8_t byte)
