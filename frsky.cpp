@@ -169,8 +169,7 @@ int16_t applyChannelRatio(uint8_t channel, int16_t val)
 
 inline void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
 {
-   int32_t varioAltitude_cm = (int32_t)altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
-   
+   int32_t varioAltitude_cm = (int32_t)altitude_bp * 100 + altitude_ap;
    uint8_t varioAltitudeQueuePointer = frskyHubData.varioAltitudeQueuePointer + 1;
    if (varioAltitudeQueuePointer == VARIO_QUEUE_LENGTH)
      varioAltitudeQueuePointer = 0;
@@ -276,7 +275,7 @@ void parseTelemHubByte(uint8_t byte)
 
     case offsetof(FrskyHubData, baroAltitude_ap):
       if (g_model.varioSource == VARIO_SOURCE_BARO) {
-        evalVario(frskyHubData.baroAltitude_bp-frskyHubData.baroAltitudeOffset, frskyHubData.baroAltitude_ap);
+        evalVario(frskyHubData.baroAltitude_bp, frskyHubData.baroAltitude_ap);
       }
       break;
 
