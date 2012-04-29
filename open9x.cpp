@@ -687,6 +687,9 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
     // m to ft *105/32
     val = val * 3 + ( val >> 2 ) + (val >> 5) ;
   }
+  if (unit == UNIT_FEET) {
+    unit = UNIT_METERS;
+  }
 #else
   if (unit == UNIT_KTS) {
     // kts to km/h
