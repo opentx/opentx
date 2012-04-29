@@ -587,11 +587,18 @@ void setupPulses()
         TCCR1B = 0 ;            // Stop counter
         OCR1A = 40000 ;         // Next frame starts in 20 mS
         TCNT1 = 0 ;
-        TIMSK &= ~0x3C ;        // All interrupts off
-        ETIMSK &= ~(1<<OCIE1C); // COMPC1 off
-        TIFR = 0x3C ;           // Clear all pending interrupts // TODO comment
-        ETIFR = 0x3F ;          // Clear all pending interrupts
+#if defined(PCBV4)
+        TIMSK1 &= ~0x3C; // All interrupts off
+        TIMSK3 &= ~(1<<OCIE1C) ;            // COMPC1 off
+        TIFR1 = 0x2F;
+        TIMSK1 |= 0x10; // Enable COMPA
+#else
+        TIMSK &= ~0x3C ;    // All interrupts off
+        ETIMSK &= ~(1<<OCIE1C) ;            // COMPC1 off
+        TIFR = 0x3C ;                       // Clear all pending interrupts
+        ETIFR = 0x3F ;                      // Clear all pending interrupts
         TIMSK |= 0x10 ;         // Enable COMPA
+#endif
         TCCR1A = (0<<WGM10) ;
         TCCR1B = (1 << WGM12) | (2<<CS10) ; // CTC OCRA, 16MHz / 8
         setupPulsesPPM16(PROTO_PPM16);
@@ -603,10 +610,16 @@ void setupPulses()
       case PROTO_PPMSIM :
         TCCR1B = 0 ;                        // Stop counter
         TCNT1 = 0 ;
+#if defined(PCBV4)
+        TIMSK1 &= ~0x3C; // All interrupts off
+        TIMSK3 &= ~(1<<OCIE1C) ;            // COMPC1 off
+        TIFR1 = 0x2F;
+#else
         TIMSK &= ~0x3C ;    // All interrupts off
         ETIMSK &= ~(1<<OCIE1C) ;            // COMPC1 off
         TIFR = 0x3C ;                       // Clear all pending interrupts
         ETIFR = 0x3F ;                      // Clear all pending interrupts
+#endif
         setupPulsesPPM16(PROTO_PPMSIM);
         OCR3A = 50000 ;
         OCR3B = 5000 ;
@@ -776,7 +789,11 @@ void set_timer3_ppm()
     TCCR3A = (0<<WGM10);
     TCCR3B = (1 << WGM12) | (2<<CS10); // CTC OCR1A, 16MHz / 8
 
+#if defined (PCBV4)
+    TIMSK3 |= ( (1<<OCIE3A) | (1<<OCIE3B) );                    // enable immediately before mainloop
+#else
     ETIMSK |= ( (1<<OCIE3A) | (1<<OCIE3B) );                    // enable immediately before mainloop
+#endif
 #endif
 }
 
