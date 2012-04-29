@@ -932,7 +932,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 
 #if defined(IMPERIAL_UNITS)
     case TELEM_ALT:
-      if (g_model.frsky.usrProto == WSHH) {
+      if (g_model.frsky.usrProto == PROTO_WS_HOW_HIGH) {
         putsTelemetryValue(x, y, val, UNIT_FEET, att);
         break;
       }
