@@ -283,10 +283,12 @@ void parseTelemHubByte(uint8_t byte)
       if (!frskyHubData.gpsAltitudeOffset)
         frskyHubData.gpsAltitudeOffset = -frskyHubData.gpsAltitude_bp;
       frskyHubData.gpsAltitude_bp += frskyHubData.gpsAltitudeOffset;
-      if (frskyHubData.gpsAltitude_bp > frskyHubData.maxAltitude)
-        frskyHubData.maxAltitude = frskyHubData.gpsAltitude_bp;
-      if (frskyHubData.gpsAltitude_bp < frskyHubData.minAltitude)
-        frskyHubData.minAltitude = frskyHubData.gpsAltitude_bp;
+      if (!frskyHubData.baroAltitudeOffset) {
+        if (frskyHubData.gpsAltitude_bp > frskyHubData.maxAltitude)
+          frskyHubData.maxAltitude = frskyHubData.gpsAltitude_bp;
+        if (frskyHubData.gpsAltitude_bp < frskyHubData.minAltitude)
+          frskyHubData.minAltitude = frskyHubData.gpsAltitude_bp;
+      }
 
       if (!frskyHubData.pilotLatitude && !frskyHubData.pilotLongitude) {
         // First received GPS position => Pilot GPS position
