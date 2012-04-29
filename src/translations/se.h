@@ -47,7 +47,7 @@
 #endif
 
 #define LEN_VPROTOS      "\006"
-#define TR_VPROTOS       "PPM\0  ""PXX\0  ""DSM2\0 ""PPM16\0""FUT\0  PPMsim"
+#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim""PXX\0  ""DSM2\0 "
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
