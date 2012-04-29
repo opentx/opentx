@@ -550,7 +550,7 @@ void menuProcModel(uint8_t event)
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
 
   uint8_t protocol = g_model.protocol;
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol==PROTO_PPM||protocol==PROTO_FAAST||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,2,1});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 12 : 11), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
 
   uint8_t  sub = m_posVert - 1;
 
@@ -657,23 +657,21 @@ void menuProcModel(uint8_t event)
         lcd_putsLeft(y, STR_PROTO);
         lcd_putsiAtt(MODEL_PARAM_OFS, y, STR_VPROTOS, protocol,
             (attr && m_posHorz==0 ? (s_editMode>0 ? BLINK|INVERS : INVERS):0));
-        if (protocol == PROTO_PPM || protocol == PROTO_FAAST) {
-          lcd_putsiAtt(MODEL_PARAM_OFS+4*FW, y, STR_NCHANNELS, g_model.ppmNCH+2, (attr && m_posHorz==1) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-          lcd_puts(MODEL_PARAM_OFS+11*FW, y, PSTR("u"));
-          lcd_outdezAtt(MODEL_PARAM_OFS+11*FW, y, (g_model.ppmDelay*50)+300, ((attr && m_posHorz==2) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0));
+        if (protocol <= PROTO_PPMSIM) {
+          lcd_putsiAtt(MODEL_PARAM_OFS+7*FW, y, STR_NCHANNELS, g_model.ppmNCH+2, (attr && m_posHorz==1) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
         }
 #ifdef DSM2
         else if (protocol == PROTO_DSM2) {
           if (m_posHorz > 1) m_posHorz = 1;
           int8_t x = limit((int8_t)0, (int8_t)g_model.ppmNCH, (int8_t)2);
           g_model.ppmNCH = x;
-          lcd_putsiAtt(MODEL_PARAM_OFS+5*FW, y, STR_DSM2MODE, x, (attr && m_posHorz==1) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+          lcd_putsiAtt(MODEL_PARAM_OFS+7*FW, y, STR_DSM2MODE, x, (attr && m_posHorz==1) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
         }
 #endif
         else if (attr) {
           m_posHorz = 0;
         }
-        if (attr && (s_editMode>0 || p1valdiff || (protocol!=PROTO_PPM && protocol!=PROTO_FAAST && protocol!=PROTO_DSM2))) { // TODO avoid DSM2 when not defined
+        if (attr && (s_editMode>0 || p1valdiff || (protocol>PROTO_PPMSIM && !IS_DSM2_PROTOCOL(protocol)))) {
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.protocol,0, PROTO_MAX-1);
@@ -686,25 +684,28 @@ void menuProcModel(uint8_t event)
 #endif
                 CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
               break;
-            case 2:
-              CHECK_INCDEC_MODELVAR(event, g_model.ppmDelay, -4, 10);
-              break;
           }
         }
         break;
 
       case ITEM_MODEL_PROTOCOL_PARAMS:
-        if (protocol == PROTO_PPM || protocol == PROTO_FAAST) {
+        if (protocol <= PROTO_PPMSIM) {
           lcd_putsLeft( y, STR_PPMFRAME);
           lcd_puts(MODEL_PARAM_OFS+3*FW, y, STR_MS);
           lcd_outdezAtt(MODEL_PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((attr && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | PREC1|LEFT);
-          lcd_putsiAtt(MODEL_PARAM_OFS+6*FW, y, STR_POSNEG, g_model.pulsePol, (attr && m_posHorz==1) ? INVERS : 0);
+          lcd_puts(MODEL_PARAM_OFS+8*FW+2, y, PSTR("us"));
+          lcd_outdezAtt(MODEL_PARAM_OFS+8*FW+2, y, (g_model.ppmDelay*50)+300, ((attr && m_posHorz==1) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0));
+          lcd_putcAtt(MODEL_PARAM_OFS+11*FW, y, g_model.pulsePol ? '-' : '+', (attr && m_posHorz==2) ? INVERS : 0);
+
           if(attr && (s_editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
               case 0:
                 CHECK_INCDEC_MODELVAR(event, g_model.ppmFrameLength, -20, 20);
                 break;
               case 1:
+                CHECK_INCDEC_MODELVAR(event, g_model.ppmDelay, -4, 10);
+                break;
+              case 2:
                 CHECK_INCDEC_MODELVAR(event, g_model.pulsePol, 0, 1);
                 break;
             }

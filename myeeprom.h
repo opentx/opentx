@@ -140,7 +140,7 @@ PACK(typedef struct t_EEGeneral {
   int8_t    beeperLength:3;
   uint8_t   hapticStrength:3;
   uint8_t   gpsFormat:1;
-  uint8_t   spare4:1;
+  uint8_t   unexpectedShutdown:1;
   uint8_t   speakerPitch;
 
   EXTRA_ARM_FIELDS
@@ -506,11 +506,10 @@ PACK(typedef struct t_TimerData {
 
 enum Protocols {
   PROTO_PPM,
+  PROTO_PPM16,
+  PROTO_PPMSIM,
   PROTO_PXX,
   PROTO_DSM2,
-  PROTO_PPM16,
-  PROTO_FAAST,
-  PROTO_PPMSIM,
   PROTO_MAX
 };
 

@@ -55,7 +55,7 @@ inline void DSM2_EnableTXD(void)
 
 void set_timer3_capture( void ) ;
 void set_timer3_ppm( void ) ;
-void setupPulsesPPM16( void ) ;
+void setupPulsesPPM16( uint8_t proto  ) ;
 
 void startPulses()
 {
@@ -583,7 +583,6 @@ void setupPulses()
         break;
 #endif
 
-#if defined(PPM16)
       case PROTO_PPM16 :
         TCCR1B = 0 ;            // Stop counter
         OCR1A = 40000 ;         // Next frame starts in 20 mS
@@ -595,12 +594,24 @@ void setupPulses()
         TIMSK |= 0x10 ;         // Enable COMPA
         TCCR1A = (0<<WGM10) ;
         TCCR1B = (1 << WGM12) | (2<<CS10) ; // CTC OCRA, 16MHz / 8
-        setupPulsesPPM16();
+        setupPulsesPPM16(PROTO_PPM16);
         OCR3A = 50000 ;
         OCR3B = 5000 ;
         set_timer3_ppm() ;
         break ;
-#endif
+
+      case PROTO_PPMSIM :
+        TCCR1B = 0 ;                        // Stop counter
+        TCNT1 = 0 ;
+        TIMSK &= ~0x3C ;    // All interrupts off
+        ETIMSK &= ~(1<<OCIE1C) ;            // COMPC1 off
+        TIFR = 0x3C ;                       // Clear all pending interrupts
+        ETIFR = 0x3F ;                      // Clear all pending interrupts
+        setupPulsesPPM16(PROTO_PPMSIM);
+        OCR3A = 50000 ;
+        OCR3B = 5000 ;
+        set_timer3_ppm() ;
+        break ;
 
       default:
         set_timer3_capture() ;
@@ -751,7 +762,6 @@ void set_timer3_capture()
 #endif
 }
 
-#if defined(PPM16)
 void set_timer3_ppm()
 {
 #ifndef SIMU
@@ -802,12 +812,12 @@ ISR(TIMER3_COMPA_vect) //2MHz pulse generation
 ISR(TIMER3_COMPB_vect) //2MHz pulse generation
 {
     sei() ;
-    setupPulsesPPM16() ;
+    setupPulsesPPM16(g_model.protocol) ;
 }
 
 #endif // SIMU
 
-void setupPulsesPPM16()
+void setupPulsesPPM16(uint8_t proto)
 {
     int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;   //range of 0.7..1.7msec
 
@@ -816,11 +826,11 @@ void setupPulsesPPM16()
     //The pulse ISR is 2mhz that's why everything is multiplied by 2
     uint16_t *ptr ;
     ptr = (uint16_t *) &pulses2MHz[PULSES_SIZE/2] ;
-    uint8_t p= 16+g_model.ppmNCH*2; //Channels *2
+    uint8_t p= ( ( proto == PROTO_PPM16) ? 16 : 8 ) +g_model.ppmNCH*2 ; //Channels *2
     uint16_t q=(g_model.ppmDelay*50+300)*2; //Stoplen *2
     uint16_t rest=22500u*2-q; //Minimum Framelen=22.5 ms
     rest += (int16_t(g_model.ppmFrameLength))*1000;
-    for (uint8_t i=p-8; i<p; i++) { //NUM_CHNOUT
+    for (uint8_t i=(proto==PROTO_PPM16) ? p-8 : 0; i<p; i++) {
 #ifdef PPM_CENTER_ADJUSTABLE
       int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*(PPM_CENTER+g_model.servoCenter[i]);
 #else
@@ -835,4 +845,3 @@ void setupPulsesPPM16()
     B3_comp_value = rest - 1000 ;               // 500uS before end of sync pulse
     *(ptr+2) = 0;
 }
-#endif

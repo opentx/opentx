@@ -2527,13 +2527,16 @@ int main(void)
 #endif
 
 #if defined(PCBV4)
-   if (MCUSR != (1 << PORF))
+  if (MCUSR != (1 << PORF) && !g_eeGeneral.unexpectedShutdown)
 #elif defined(PCBSTD)
-   if (MCUCSR != (1 << PORF))
+  if (MCUCSR != (1 << PORF))
+#else
+  if (!g_eeGeneral.unexpectedShutdown)
 #endif
    {
 #ifdef SPLASH
-    if (g_model.protocol != PROTO_FAAST && g_model.protocol != PROTO_DSM2)
+    // TODO rather use another Model Parameter
+    if (g_model.protocol != PROTO_DSM2)
       doSplash();
 #endif
 
@@ -2547,6 +2550,13 @@ int main(void)
     checkSwitches();
     checkAlarm();
   }
+
+#if defined(PCBARM) || defined(PCBV4)
+  if (!g_eeGeneral.unexpectedShutdown) {
+    g_eeGeneral.unexpectedShutdown = 1;
+    eeDirty(EE_GENERAL);
+  }
+#endif
 
   clearKeyEvents(); //make sure no keys are down before proceeding
 
@@ -2630,6 +2640,8 @@ int main(void)
   // Time to switch off
   lcd_clear() ;
   displayPopup(STR_SHUTDOWN);
+  g_eeGeneral.unexpectedShutdown=0;
+  eeDirty(EE_GENERAL);
   eeCheck(true);
   lcd_clear() ;
   refreshDisplay() ;

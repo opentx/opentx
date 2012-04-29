@@ -89,9 +89,6 @@ SDCARD = NO
 # PXX (FrSky PCM) protocol
 PXX = NO
 
-# PPM16
-PPM16 = NO
-
 # DSM2 (Spektrum) protocol
 DSM2 = NO
 
@@ -387,10 +384,6 @@ endif
 
 ifeq ($(PXX), YES)
   CPPDEFS += -DPXX
-endif
-
-ifeq ($(PPM16), YES)
-  CPPDEFS += -DPPM16
 endif
 
 ifeq ($(DSM2), SERIAL)
