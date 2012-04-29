@@ -316,11 +316,11 @@ enum TelemetryUnit {
   UNIT_KMH,
   UNIT_KTS = UNIT_KMH,
   UNIT_METERS,
-  UNIT_FEET = UNIT_METERS,
   UNIT_DEGREES,
   UNIT_PERCENT,
   UNIT_MILLIAMPS,
-  UNIT_MAX
+  UNIT_MAX,
+  UNIT_FEET
 };
 
 PACK(typedef struct t_FrSkyChannelData {

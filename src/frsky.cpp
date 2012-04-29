@@ -336,10 +336,20 @@ void parseTelemHubByte(uint8_t byte)
 #ifdef WS_HOW_HIGH
 void parseTelemWSHowHighByte(uint8_t byte)
 {
-  if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10))  // At least 100mS passed since last data received
+  if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10)) {
     ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude_bp)] = byte;
-  else
+#if 0
+    if (g_model.varioSource == VARIO_SOURCE_BARO) {
+      // the vario will be in feet / second
+      evalVario(frskyHubData.baroAltitude_bp, 0);
+    }
+#endif
+  }
+  else {
+    // At least 100mS passed since last data received
     ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude_bp)+1] = byte;
+  }
+  // baroAltitude_bp unit here is feet!
   frskyUsrStreaming = FRSKY_TIMEOUT10ms*3; // reset counter
 }
 #endif  
@@ -917,6 +927,15 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
     case TELEM_RSSI_RX-1:
       putsTelemetryValue(x, y, val, UNIT_RAW, att);
       break;
+
+#if defined(IMPERIAL_UNITS)
+    case TELEM_ALT:
+      if (g_model.frsky.usrProto == WSHH) {
+        putsTelemetryValue(x, y, val, UNIT_FEET, att);
+        break;
+      }
+      // no break
+#endif
 
     default:
       putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel-6), att);
