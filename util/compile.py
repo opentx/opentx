@@ -179,8 +179,10 @@ def multithread_generate(hex, arg, extension, options, languages, maxsize):
         
 def generate_c9x_list(filename, hexes, extension, stamp, board):
     f = file(filename, "w")
+    f.write("const char *open9x_arm_binaries[] = {\n")
     for hex in hexes:
-        f.write('open9x->add_option(new Open9xFirmware("%s", new Open9xInterface(%s), OPEN9X_BIN_URL "%s.%s", %s));\n' % (hex, board, hex, extension, stamp))
+        f.write('"%s",\n' % hex)
+    f.write("0\n};")
 
 if __name__ == "__main__":
     
