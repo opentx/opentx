@@ -199,6 +199,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 #define TIMSK  dummyport
 #define TIMSK1 dummyport
+#define TIMSK3 dummyport
 #define TIMSK4 dummyport
 #define ETIMSK  dummyport
 #define ETIMSK1 dummyport
