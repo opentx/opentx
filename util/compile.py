@@ -182,7 +182,7 @@ def generate_c9x_list(filename, hexes, extension, stamp, board):
     f.write("const char *open9x_arm_binaries[] = {\n")
     for hex in hexes:
         f.write('"%s",\n' % hex)
-    f.write("0\n};")
+    f.write("0\n};\n")
 
 if __name__ == "__main__":
     

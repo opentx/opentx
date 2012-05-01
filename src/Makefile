@@ -500,21 +500,21 @@ stock-stamp:
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-stock.txt
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> stamp-open9x-stock.txt
 	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-stock.txt
-	@cat ../stamp-open9x-stock.txt
+	@cat stamp-open9x-stock.txt
 
 v4-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-v4.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-v4.txt
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> stamp-open9x-v4.txt
 	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-v4.txt
-	@cat ../stamp-open9x-v4.txt
+	@cat stamp-open9x-v4.txt
 	
 arm-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-arm.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-arm.txt
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> stamp-open9x-arm.txt
 	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-arm.txt
-	@cat ../stamp-open9x-arm.txt
+	@cat stamp-open9x-arm.txt
  
 font.lbm: font_6x1.xbm
 	@echo
