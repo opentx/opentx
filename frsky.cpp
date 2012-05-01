@@ -79,8 +79,9 @@ enum BarThresholdIdx {
   THLD_T1,
   THLD_T2,
   THLD_SPEED,
-  THLD_CELL,
   THLD_DIST,
+  THLD_GPSALT,
+  THLD_CELL,
   THLD_MAX,
 };
 uint8_t barsThresholds[THLD_MAX];
