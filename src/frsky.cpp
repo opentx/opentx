@@ -180,7 +180,15 @@ inline void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
   frskyHubData.varioAltitude_cm = varioAltitude_cm;
   frskyHubData.varioSpeed += frskyHubData.varioAltitudeQueue[varioAltitudeQueuePointer] ;
 }
-          
+
+void checkMinMaxAltitude()
+{
+  if (frskyHubData.baroAltitude_bp > frskyHubData.maxAltitude)
+    frskyHubData.maxAltitude = frskyHubData.baroAltitude_bp;
+  if (frskyHubData.baroAltitude_bp < frskyHubData.minAltitude)
+    frskyHubData.minAltitude = frskyHubData.baroAltitude_bp;
+}
+
 void parseTelemHubByte(uint8_t byte)
 {
   static int8_t structPos;
@@ -265,13 +273,8 @@ void parseTelemHubByte(uint8_t byte)
       // First received barometer altitude => Altitude offset
       if (!frskyHubData.baroAltitudeOffset)
         frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
-		
       frskyHubData.baroAltitude_bp += frskyHubData.baroAltitudeOffset;
-
-      if (frskyHubData.baroAltitude_bp > frskyHubData.maxAltitude)
-        frskyHubData.maxAltitude = frskyHubData.baroAltitude_bp;
-      if (frskyHubData.baroAltitude_bp < frskyHubData.minAltitude)
-        frskyHubData.minAltitude = frskyHubData.baroAltitude_bp;
+      checkMinMaxAltitude();
       break;
 
     case offsetof(FrskyHubData, baroAltitude_ap):
@@ -341,12 +344,7 @@ void parseTelemWSHowHighByte(uint8_t byte)
 {
   if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10)) {
     ((uint8_t*)&frskyHubData)[offsetof(FrskyHubData, baroAltitude_bp)] = byte;
-#if 0
-    if (g_model.varioSource == VARIO_SOURCE_BARO) {
-      // the vario will be in feet / second
-      evalVario(frskyHubData.baroAltitude_bp, 0);
-    }
-#endif
+    checkMinMaxAltitude();
   }
   else {
     // At least 100mS passed since last data received
