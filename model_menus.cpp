@@ -272,7 +272,7 @@ void menuProcModelSelect(uint8_t event)
           s_copySrcRow = g_eeGeneral.currModel; // to update the currModel value
           while (sub != cur) {
             uint8_t src = cur;
-            cur = (s_copyTgtOfs > 0 ? cur+15 : cur+1) % MAX_MODELS;
+            cur = (s_copyTgtOfs > 0 ? cur+MAX_MODELS-1 : cur+1) % MAX_MODELS;
             eeSwapModels(src, cur);
             if (src == s_copySrcRow)
               s_copySrcRow = cur;
@@ -385,7 +385,7 @@ void menuProcModelSelect(uint8_t event)
       else if (s_copyTgtOfs < 0 && ((k < sub && k >= sub+s_copyTgtOfs) || (k-MAX_MODELS < sub && k-MAX_MODELS >= sub+s_copyTgtOfs)))
         k += 1;
       else if (s_copyTgtOfs > 0 && ((k > sub && k <= sub+s_copyTgtOfs) || (k+MAX_MODELS > sub && k+MAX_MODELS <= sub+s_copyTgtOfs)))
-        k += 15;
+        k += MAX_MODELS-1;
     }
 
     k %= MAX_MODELS;
