@@ -543,7 +543,7 @@ void menuProcTrainer(uint8_t event)
     }
 
     edit = (m_posVert==5);
-    lcd_puts(0*FW, 6*FH, STR_MULTIPLIER);
+    lcd_putsLeft(6*FH, STR_MULTIPLIER);
     lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, 6*FH, g_eeGeneral.PPM_Multiplier+10, (edit ? INVERS : 0)|PREC1);
     if (edit) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
