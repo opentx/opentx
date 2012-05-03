@@ -869,7 +869,7 @@ enum AUDIO_SOUNDS {
 #if defined(PCBARM)
 #include "ersky9x/audio.h"
 #else
-#include "ersky9x/audio.h"
+#include "stock/audio.h"
 #endif
 #else
 #include "beeper.h"
