@@ -2093,7 +2093,7 @@ void perMain()
 
 #if defined(PCBARM)
   HAPTIC_HEARTBEAT();
-  AUDIO_HEARTBEAT();  // the queue processing
+  // AUDIO_HEARTBEAT();  // the queue processing
 #endif
 
 }

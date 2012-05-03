@@ -419,7 +419,7 @@ extern "C" void TC2_IRQHandler()
   dummy = TC0->TC_CHANNEL[2].TC_SR;
   (void) dummy ;          // Discard value - prevents compiler warning
 
-  sound_5ms() ;
+  AUDIO_HEARTBEAT();
 
   if ( ++pre_scale >= 2 ) {
     Tenms |= 1 ;                    // 10 mS has passed
