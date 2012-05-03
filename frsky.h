@@ -70,7 +70,7 @@ class FrskyData: public FrskyRSSI {
 
 #define VARIO_QUEUE_LENGTH          5
 #define VARIO_SPEED_LIMIT           10 //m/s
-#define VARIO_SPEED_LIMIT_MUL       10 //to get 0.2m steps
+#define VARIO_SPEED_LIMIT_MUL       10 //to get 0.1m/s steps
 #define VARIO_SPEED_LIMIT_DOWN_OFF  (100+1) //100 steps + OFF
 #define VARIO_SPEED_LIMIT_UP_CENTER 15
 #define VARIO_SPEED_LIMIT_UP_MAX    30
