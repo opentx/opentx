@@ -1432,7 +1432,7 @@ void evalFunctions()
 
 #if defined(HAPTIC)
         if (sd->func == FUNC_HAPTIC) {
-          haptic.event(sd->param);
+          haptic.event(AU_FRSKY_LAST+sd->param);
         }
 #endif
 
