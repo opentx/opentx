@@ -374,7 +374,7 @@
 #define TR_BATT_CALIB    "Calib. Batterie"
 #define TR_CURRENT_CALIB "Calib. Amperage"
 #define TR_CURRENT       "Courant"
-#define TR_LOAD_MODEL    "Charger Modele"
+#define TR_SELECT_MODEL  "Select Modele"
 #define TR_CREATE_MODEL  "Creer Modele"
 #define TR_BACKUP_MODEL  "Archiver Modele"
 #define TR_DELETE_MODEL  "Supprimer Modele"

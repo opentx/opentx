@@ -379,7 +379,7 @@ extern const pm_char STR_CURRENT[];
 #endif
 
 #if defined(SDCARD)
-extern const pm_char STR_LOAD_MODEL[];
+extern const pm_char STR_SELECT_MODEL[];
 extern const pm_char STR_CREATE_MODEL[];
 extern const pm_char STR_BACKUP_MODEL[];
 extern const pm_char STR_DELETE_MODEL[];

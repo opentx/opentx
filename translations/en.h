@@ -370,7 +370,7 @@
 #define TR_BATT_CALIB    "Battery Calib"
 #define TR_CURRENT_CALIB "Current Calib"
 #define TR_CURRENT       "Current"
-#define TR_LOAD_MODEL    "Load Model"
+#define TR_SELECT_MODEL  "Select Model"
 #define TR_CREATE_MODEL  "Create Model"
 #define TR_BACKUP_MODEL  "Backup Model"
 #define TR_DELETE_MODEL  "Delete Model" // TODO merged into DELETEMODEL?

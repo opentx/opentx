@@ -299,8 +299,9 @@ void menuProcModelSelect(uint8_t event)
 #if defined(SDCARD)
           if (g_eeGeneral.currModel != sub) {
             if (eeModelExists(sub)) {
-              s_menu[s_menu_count++] = STR_LOAD_MODEL;
+              s_menu[s_menu_count++] = STR_SELECT_MODEL;
               s_menu[s_menu_count++] = STR_BACKUP_MODEL;
+              s_menu[s_menu_count++] = STR_RESTORE_MODEL;
               s_menu[s_menu_count++] = STR_DELETE_MODEL;;
             }
             else {
@@ -437,7 +438,7 @@ void menuProcModelSelect(uint8_t event)
   if (s_menu_count) {
     const char * result = displayMenu(event);
     if (result) {
-      if (result == STR_LOAD_MODEL || result == STR_CREATE_MODEL) {
+      if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
         displayPopup(STR_LOADINGMODEL);
         eeCheck(true); // force writing of current model data before this is changed
         if (g_eeGeneral.currModel != sub) {
@@ -459,7 +460,11 @@ void menuProcModelSelect(uint8_t event)
       }
       else {
         // The user choosed a file on SD to restore
+        if (g_eeGeneral.currModel == sub)
+          eeCheck(true); // force writing of current model data before this is changed
         s_sdcard_error = eeRestoreModel(sub, (char *)result);
+        if (!s_sdcard_error && g_eeGeneral.currModel == sub)
+          eeLoadModel(sub); // force writing of current model data before this is changed
       }
     }
   }
