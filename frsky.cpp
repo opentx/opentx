@@ -612,7 +612,7 @@ inline void FRSKY10mspoll(void)
 void check_frsky()
 {
 #if defined(PCBARM)
-  rxPdcUsart(processSerialData);              // Send serial data here
+  rxPdcUsart(processSerialData);              // Receive serial data here
 #endif
 
   // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
@@ -644,10 +644,10 @@ void check_frsky()
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
     int16_t verticalSpeed = 0;
-    //TODO: get negative values in Up Speed to shift zero, i.e. get positive sound on small negative speeds
-	  // positive values in g_model.varioSpeedUpMin must works same as now
-	  // negative must make an offset in sounds
-	  // also changes need in model_menus.cpp
+    // TODO: get negative values in Up Speed to shift zero, i.e. get positive sound on small negative speeds
+    // positive values in g_model.varioSpeedUpMin must works same as now
+    // negative must make an offset in sounds
+    // also changes need in model_menus.cpp
     verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
 
     uint8_t SoundAltBeepNextFreq = 0;

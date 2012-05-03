@@ -215,7 +215,7 @@ uint16_t evalChkSum();
 #define eeSwapModels(id1, id2) EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2))
 
 #ifdef SDCARD
-const pm_char * eeArchiveModel(uint8_t i_fileSrc);
+const pm_char * eeBackupModel(uint8_t i_fileSrc);
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 #endif
 

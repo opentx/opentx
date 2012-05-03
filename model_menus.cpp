@@ -296,26 +296,32 @@ void menuProcModelSelect(uint8_t event)
 #endif
           s_copyMode = 0;
           killEvents(event);
-          if (g_eeGeneral.currModel != sub) {
 #if defined(SDCARD)
+          if (g_eeGeneral.currModel != sub) {
             if (eeModelExists(sub)) {
               s_menu[s_menu_count++] = STR_LOAD_MODEL;
-              s_menu[s_menu_count++] = STR_ARCHIVE_MODEL;
+              s_menu[s_menu_count++] = STR_BACKUP_MODEL;
               s_menu[s_menu_count++] = STR_DELETE_MODEL;;
             }
             else {
               s_menu[s_menu_count++] = STR_CREATE_MODEL;
               s_menu[s_menu_count++] = STR_RESTORE_MODEL;;
             }
+          }
+          else {
+            s_menu[s_menu_count++] = STR_BACKUP_MODEL;
+            s_menu[s_menu_count++] = STR_RESTORE_MODEL;;
+          }
 #else
+          if (g_eeGeneral.currModel != sub) {
             displayPopup(STR_LOADINGMODEL);
             eeCheck(true); // force writing of current model data before this is changed
             g_eeGeneral.currModel = sub;
             STORE_GENERALVARS;
             eeLoadModel(sub);
             return;
-#endif
           }
+#endif
         }
         else if (eeModelExists(sub)) {
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
@@ -440,10 +446,8 @@ void menuProcModelSelect(uint8_t event)
           eeLoadModel(sub);
         }
       }
-      else if (result == STR_ARCHIVE_MODEL) {
-        s_sdcard_error = eeArchiveModel(sub);
-        if (!s_sdcard_error)
-          eeDeleteModel(sub); // delete the model, it's archived!
+      else if (result == STR_BACKUP_MODEL) {
+        s_sdcard_error = eeBackupModel(sub);
       }
       else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
         if (!listSDcardModels()) {
