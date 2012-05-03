@@ -52,7 +52,7 @@ void audioDefevent( uint8_t e ) ;
 
 extern uint32_t Master_frequency ; // TODO in a .h?
 volatile uint8_t Buzzer_count ;
-
+/*
 struct t_sound_globals
 {
 	uint32_t Next_freq ;
@@ -63,7 +63,7 @@ struct t_sound_globals
 	uint32_t Frequency_increment ;
 	uint32_t Next_frequency_increment ;
 } Sound_g ;
-
+*/
 
 // Must NOT be in flash, PDC needs a RAM source.
 uint16_t Sine_values[] =
@@ -162,22 +162,24 @@ void buzzer_sound( uint8_t time )
 void set_frequency( uint32_t frequency )
 {
   register Tc *ptc ;
-	register uint32_t timer ;
+  register uint32_t timer ;
 
-	timer = Master_frequency / (800 * frequency) ;		// MCK/8 and 100 000 Hz
-	if ( timer > 65535 )
-	{
-		timer = 65535 ;		
-	}
-	if ( timer < 2 )
-	{
-		timer = 2 ;		
-	}
-	ptc = TC0 ;		// Tc block 0 (TC0-2)
-	ptc->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;		// Stop clock
-	ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
-	ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
-	ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
+  frequency = frequency * 61 / 2;
+
+  timer = Master_frequency / (800 * frequency) ;		// MCK/8 and 100 000 Hz
+  if ( timer > 65535 )
+  {
+          timer = 65535 ;
+  }
+  if ( timer < 2 )
+  {
+          timer = 2 ;
+  }
+  ptc = TC0 ;		// Tc block 0 (TC0-2)
+  ptc->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;		// Stop clock
+  ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
+  ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
+  ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
 }
 
 
@@ -185,22 +187,22 @@ void set_frequency( uint32_t frequency )
 void start_timer1()
 {
   register Tc *ptc ;
-	register uint32_t timer ;
+  register uint32_t timer ;
 
 	// Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
   PMC->PMC_PCER0 |= 0x01000000L ;		// Enable peripheral clock to TC1
   
-	timer = Master_frequency / 800000 ;		// MCK/8 and 100 000 Hz
-	ptc = TC0 ;		// Tc block 0 (TC0-2)
-	ptc->TC_BCR = 0 ;			// No sync
-	ptc->TC_BMR = 0 ;
-	ptc->TC_CHANNEL[1].TC_CMR = 0x00008000 ;	// Waveform mode
-	ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
-	ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
-	ptc->TC_CHANNEL[1].TC_CMR = 0x0009C001 ;	// 0000 0000 0000 1001 1100 0000 0000 0001
+  timer = Master_frequency / 800000 ;		// MCK/8 and 100 000 Hz
+  ptc = TC0 ;		// Tc block 0 (TC0-2)
+  ptc->TC_BCR = 0 ;			// No sync
+  ptc->TC_BMR = 0 ;
+  ptc->TC_CHANNEL[1].TC_CMR = 0x00008000 ;	// Waveform mode
+  ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
+  ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
+  ptc->TC_CHANNEL[1].TC_CMR = 0x0009C001 ;	// 0000 0000 0000 1001 1100 0000 0000 0001
 																						// MCK/8, set @ RA, Clear @ RC waveform
-	ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
-	Sound_g.Frequency = 1000 ;
+  ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
+  // Sound_g.Frequency = 1000 ;
 }
 
 
@@ -210,46 +212,46 @@ void start_timer1()
 // So maybe it is automatically done
 void init_dac()
 {
-	register Dacc *dacptr ;
+  register Dacc *dacptr ;
 
   PMC->PMC_PCER0 |= 0x40000000L ;		// Enable peripheral clock to DAC
-	dacptr = DACC ;
+  dacptr = DACC ;
 #ifdef REVB
-	dacptr->DACC_MR = 0x0B000215L ;			// 0000 1011 0000 0001 0000 0010 0001 0101
+  dacptr->DACC_MR = 0x0B000215L ;			// 0000 1011 0000 0001 0000 0010 0001 0101
 #else
-	dacptr->DACC_MR = 0x0B010215L ;			// 0000 1011 0000 0001 0000 0010 0001 0101
+  dacptr->DACC_MR = 0x0B010215L ;			// 0000 1011 0000 0001 0000 0010 0001 0101
 #endif
 #ifdef REVB
-	dacptr->DACC_CHER	= 1 ;							// Enable channel 0
+  dacptr->DACC_CHER	= 1 ;							// Enable channel 0
 #else
-	dacptr->DACC_CHER	= 2 ;							// Enable channel 1
+  dacptr->DACC_CHER	= 2 ;							// Enable channel 1
 #endif
-	dacptr->DACC_CDR = 2048 ;						// Half amplitude
+  dacptr->DACC_CDR = 2048 ;						// Half amplitude
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
 #ifndef SIMU
-	dacptr->DACC_TPR = (uint32_t) Sine_values ;
-	dacptr->DACC_TNPR = (uint32_t) Sine_values ;
+  dacptr->DACC_TPR = (uint32_t) Sine_values ;
+  dacptr->DACC_TNPR = (uint32_t) Sine_values ;
 #endif
-	dacptr->DACC_TCR = 50 ;		// words, 100 16 bit values
-	dacptr->DACC_TNCR = 50 ;	// words, 100 16 bit values
-	dacptr->DACC_PTCR = DACC_PTCR_TXTEN ;
-	NVIC_EnableIRQ(DACC_IRQn) ;
+  dacptr->DACC_TCR = 50 ;		// words, 100 16 bit values
+  dacptr->DACC_TNCR = 50 ;	// words, 100 16 bit values
+  dacptr->DACC_PTCR = DACC_PTCR_TXTEN ;
+  NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
 extern "C" void DAC_IRQHandler()
 {
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
 #ifndef SIMU
-	DACC->DACC_TNPR = (uint32_t) Sine_values ;
+  DACC->DACC_TNPR = (uint32_t) Sine_values ;
 #endif
-	DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
-	if ( Sound_g.Tone_timer )
-	{
-		if ( --Sound_g.Tone_timer == 0 )
-		{
-			DACC->DACC_IDR = DACC_IDR_ENDTX ;
-		}
-	}
+  DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
+/*  if ( Sound_g.Tone_timer )
+  {
+    if ( --Sound_g.Tone_timer == 0 )
+    {
+      DACC->DACC_IDR = DACC_IDR_ENDTX ;
+    }
+  } */
 //	if ( Tone_ms_timer == 0 )
 //	{
 //		Tone_ms_timer = -1 ;
@@ -259,59 +261,15 @@ extern "C" void DAC_IRQHandler()
 
 void end_sound()
 {
-	DACC->DACC_IDR = DACC_IDR_ENDTX ;
-	NVIC_DisableIRQ(DACC_IRQn) ;
-	TWI0->TWI_IDR = TWI_IDR_TXCOMP ;
-	NVIC_DisableIRQ(TWI0_IRQn) ;
-	PMC->PMC_PCER0 &= ~0x00080000L ;		// Disable peripheral clock to TWI0
+  DACC->DACC_IDR = DACC_IDR_ENDTX ;
+  NVIC_DisableIRQ(DACC_IRQn) ;
+  TWI0->TWI_IDR = TWI_IDR_TXCOMP ;
+  NVIC_DisableIRQ(TWI0_IRQn) ;
+  PMC->PMC_PCER0 &= ~0x00080000L ;		// Disable peripheral clock to TWI0
   PMC->PMC_PCER0 &= ~0x40000000L ;		// Disable peripheral clock to DAC
 }
 
-// Called every 5mS from interrupt routine
-void sound_5ms()
-{
-	if ( Sound_g.Tone_ms_timer > 0 )
-	{
-		Sound_g.Tone_ms_timer -= 1 ;
-	}
-		
-	if ( Sound_g.Tone_ms_timer == 0 )
-	{
-		if ( Sound_g.Sound_time )
-		{
-			Sound_g.Tone_ms_timer = ( Sound_g.Sound_time + 4 ) / 5 ;
-			if ( Sound_g.Next_freq )		// 0 => silence for time
-			{
-				Sound_g.Frequency = Sound_g.Next_freq ;
-				Sound_g.Frequency_increment = Sound_g.Next_frequency_increment ;
-				set_frequency( Sound_g.Frequency ) ;
-				tone_start( 0 ) ;
-			}
-			else
-			{
-				DACC->DACC_IDR = DACC_IDR_ENDTX ;		// Silence
-			}
-			Sound_g.Sound_time = 0 ;
-		}
-		else
-		{
-			DACC->DACC_IDR = DACC_IDR_ENDTX ;	// Disable interrupt
-			Sound_g.Tone_timer = 0 ;	
-		}
-	}
-	else if ( ( Sound_g.Tone_ms_timer & 1 ) == 0 )		// Every 10 mS
-	{
-		if ( Sound_g.Frequency )
-		{
-			if ( Sound_g.Frequency_increment )
-			{
-				Sound_g.Frequency += Sound_g.Frequency_increment ;
-				set_frequency( Sound_g.Frequency ) ;
-			}
-		}
-	}
-}
-
+#if 0
 // frequency in Hz, time in mS
 void playTone( uint32_t frequency, uint32_t time )
 {
@@ -322,7 +280,8 @@ void playTone( uint32_t frequency, uint32_t time )
 //	Tone_ms_timer = ( time + 4 ) / 5 ;
 //	tone_start( 0 ) ;
 }
-
+#endif
+/*
 uint32_t queueTone( uint32_t frequency, uint32_t time, uint32_t frequency_increment )
 {
 	if ( Sound_g.Sound_time == 0 )
@@ -334,19 +293,19 @@ uint32_t queueTone( uint32_t frequency, uint32_t time, uint32_t frequency_increm
 	}
 	return 0 ;	
 }
-
+*/
 // Time is in milliseconds
 void tone_start( register uint32_t time )
 {
   PMC->PMC_PCER0 |= 0x40000000L ;		// Enable peripheral clock to DAC
-	Sound_g.Tone_timer = Sound_g.Frequency * time / 1000 ;
-	DACC->DACC_IER = DACC_IER_ENDTX ;
+  // Sound_g.Tone_timer = Sound_g.Frequency * time / 1000 ;
+  DACC->DACC_IER = DACC_IER_ENDTX ;
 }
 
 void tone_stop()
 {
-	DACC->DACC_IDR = DACC_IDR_ENDTX ;	// Disable interrupt
-	Sound_g.Tone_timer = 0 ;	
+  DACC->DACC_IDR = DACC_IDR_ENDTX ;	// Disable interrupt
+  // Sound_g.Tone_timer = 0 ;
 }
 
 

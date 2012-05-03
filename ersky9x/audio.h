@@ -73,12 +73,14 @@ class audioQueue
     uint8_t t_queueRidx;
     uint8_t t_queueWidx;
 
+    uint8_t toneChanged;
     uint8_t toneFreq;
     int8_t toneFreqIncr;
     uint8_t toneTimeLeft;
     uint8_t tonePause;
 
     // vario
+    uint8_t tone2Changed;
     uint8_t tone2Freq;
     uint8_t tone2TimeLeft;
     uint8_t tone2Pause;

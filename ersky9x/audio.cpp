@@ -42,10 +42,6 @@ audioQueue::audioQueue()
   t_queueWidx = 0;
 }
 
-
-#define QUEUE_TONE(tf,ttl,tfi) queueTone(tf * 61 / 2, ttl * 10, tfi * 61 / 2)
-
-
 // heartbeat is responsibile for issueing the audio tones and general square waves
 // it is essentially the life of the class.
 // it is called every 10ms
@@ -55,56 +51,49 @@ void audioQueue::heartbeat()
   return;
 #endif
 
-  if (toneTimeLeft == 0) {
-    if (tonePause == 0) {
-      if (t_queueRidx != t_queueWidx) {
-        toneFreq = queueToneFreq[t_queueRidx];
-        toneTimeLeft = queueToneLength[t_queueRidx];
-        toneFreqIncr = queueToneFreqIncr[t_queueRidx];
-        tonePause = queueTonePause[t_queueRidx];
-        if ((toneFreq == 0) || (toneTimeLeft == 0)) {
-          //SPEAKER_OFF;
-        }
-        if (!queueToneRepeat[t_queueRidx]--) {
-          t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
-        }
-      }
-      else {
-        if ((tone2Freq == 0) & (tone2TimeLeft == 0)) {
-          //SPEAKER_OFF;
-        }
-      }
-    }
-  }
-
-  if ((toneFreq > 0) & (toneTimeLeft > 0)) {
-    QUEUE_TONE(toneFreq, toneTimeLeft, toneFreqIncr);
-  }
-  else if (((tone2Freq > 0) & (tone2TimeLeft > 0)) & (tonePause == 0)) {
-    //second flow tone here, priority on 1st, pause of 1st not allow to start second
-    QUEUE_TONE(tone2Freq, tone2TimeLeft, 0);
-  }
-
   if (toneTimeLeft > 0) {
+    if (toneChanged) {
+      toneChanged = 0;
+      set_frequency(toneFreq);
+      tone_start(0);
+    }
+    else if (toneFreqIncr && (toneTimeLeft&1) == 0) {
+      toneFreq += toneFreqIncr;
+      set_frequency(toneFreq);
+    }
     toneTimeLeft--; //time gets counted down
-    toneFreq += toneFreqIncr;
   }
   else {
     if (tonePause > 0) {
+      DACC->DACC_IDR = DACC_IDR_ENDTX ;       // Disable interrupt
       // SPEAKER_OFF;
       tonePause--; //time gets counted down
     }
-  }
-
-  if (tone2TimeLeft > 0) {
-    tone2TimeLeft--; //time gets counted down
-  }
-  else {
-    if (toneTimeLeft == 0) {
-      //SPEAKER_OFF;
+    else if (t_queueRidx != t_queueWidx) {
+      toneChanged = 1;
+      toneFreq = queueToneFreq[t_queueRidx];
+      toneTimeLeft = queueToneLength[t_queueRidx];
+      toneFreqIncr = queueToneFreqIncr[t_queueRidx];
+      tonePause = queueTonePause[t_queueRidx];
+      if (!queueToneRepeat[t_queueRidx]--) {
+        t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
+      }
     }
-    if (tone2Pause > 0) {
-      tone2Pause--; //time gets counted down
+    else {
+      if (tone2TimeLeft > 0) {
+        if (tone2Changed) {
+          tone2Changed = 0;
+          set_frequency(toneFreq);
+          tone_start(0);
+        }
+        tone2TimeLeft--; //time gets counted down
+      }
+      else {
+        DACC->DACC_IDR = DACC_IDR_ENDTX ;       // Disable interrupt
+        if (tone2Pause > 0) {
+          tone2Pause--; //time gets counted down
+        }
+      }
     }
   }
 }
@@ -124,7 +113,11 @@ inline uint8_t audioQueue::getToneLength(uint8_t tLen)
 void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tFlags, int8_t tFreqIncr)
 {
+  // tLen *= 10;
+  // tPause *= 10;
+
   if (tFlags & PLAY_SOUND_VARIO) {
+    tone2Changed = 1;
     tone2Freq = tFreq;
     tone2TimeLeft = tLen;
     tone2Pause = tPause;
@@ -133,6 +126,7 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     tLen = getToneLength(tLen);
     if (tFlags & PLAY_NOW || (!busy() && empty())) {
+      toneChanged = 1;
       toneFreq = tFreq;
       toneTimeLeft = tLen;
       tonePause = tPause;
