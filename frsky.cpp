@@ -644,20 +644,17 @@ void check_frsky()
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
     int16_t verticalSpeed = 0;
-    //vertical speed in 0.01m/s now
-    //not baro vario only has additional resolution
-    //A1/A2 need conversion there
-    //GPS source need precision to be set, my gps gives 0.1m resolution
-    /*if (g_model.varioSource == BARO_SOURCE_BARO)*/
-      verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
-    /*else
-      verticalSpeed = limit((int16_t)-VARIO_SPEED_LIMIT, (int16_t)(frskyHubData.varioSpeed), (int16_t)+VARIO_SPEED_LIMIT)*100;*/
+    //TODO: get negative values in Up Speed to shift zero, i.e. get positive sound on small negative speeds
+	  // positive values in g_model.varioSpeedUpMin must works same as now
+	  // negative must make an offset in sounds
+	  // also changes need in model_menus.cpp
+    verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
 
     uint8_t SoundAltBeepNextFreq = 0;
     uint8_t SoundAltBeepNextTime = 0;
     static uint8_t SoundAltBeepFreq = 0;
     static uint8_t SoundAltBeepTime = 0;
-    if ((verticalSpeed < g_model.varioSpeedUpMin*VARIO_SPEED_LIMIT_MUL) && (verticalSpeed > (255 - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL))) { //check thresholds here in cm/s
+    if ((verticalSpeed < g_model.varioSpeedUpMin*VARIO_SPEED_LIMIT_MUL) && (verticalSpeed > (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL))) { //check thresholds here in cm/s
       SoundAltBeepNextFreq = (0);
       SoundAltBeepNextTime = (0);
     }
