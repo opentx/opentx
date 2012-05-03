@@ -107,20 +107,14 @@ void hapticQueue::play(uint8_t tLen, uint8_t tPause, uint8_t tFlags)
 void hapticQueue::event(uint8_t e)
 {
   if (g_eeGeneral.hapticMode>0 || (g_eeGeneral.hapticMode==0 && e>=AU_WARNING1) || (g_eeGeneral.hapticMode>=-1 && e<=AU_ERROR)) {
-    switch (e) {
-      case 0: // very little buzz for keys / trims
-        play(5, 0, PLAY_NOW);
-        break;
-      case AU_TIMER_20: // two buzz
-        play(10,2,1);
-        break;
-      case AU_TIMER_30: // three buzz
-        play(10,2,2);
-        break;
-      default:
-        play(10,2,0);
-        break;
-    }
+    if (e <= AU_ERROR)
+      play(15, 3, PLAY_NOW);
+    else if (e <= AU_TRIM_MOVE)
+      play(5, 0, PLAY_NOW);
+    else if (e <= AU_TIMER_LT3)
+      play(15, 3, PLAY_NOW);
+    else if (e < AU_FRSKY_FIRST)
+      play(15, 3, (e-AU_TIMER_10)|PLAY_NOW);
   }
 }
 

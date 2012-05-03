@@ -61,6 +61,7 @@ void audioQueue::heartbeat()
 #endif
     toneTimeLeft--; //time gets counted down
     toneFreq += toneFreqIncr;
+    // TODO tone2TimeLeft = 0?
   }
   else {
     if (tonePause > 0) {

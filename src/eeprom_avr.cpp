@@ -526,8 +526,8 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
   return true;
 }
 
-#ifdef SDCARD
-const pm_char * eeArchiveModel(uint8_t i_fileSrc)
+#if defined(SDCARD)
+const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.model_name;
   FIL archiveFile;
@@ -626,6 +626,10 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     // TODO
   }
 
+  if (EFile::exists(FILE_MODEL(i_fileDst))) {
+    eeDeleteModel(i_fileDst);
+  }
+
   theFile.create(FILE_MODEL(i_fileDst), FILE_TYP_MODEL, true);
 
   do {
@@ -651,8 +655,6 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   eeFs.files[FILE_TMP].size = theFile.m_pos;
   EFile::swap(theFile.m_fileId, FILE_TMP); // s_sync_write is set to false in swap();
-
-  assert(!theFile.m_write_step);
 
   f_close(&restoreFile);
   return NULL;

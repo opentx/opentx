@@ -115,7 +115,7 @@
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
 
 #define LEN_FUNCSOUNDS   "\006"
-#define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  ""Vibr1 ""Vibr2 ""Vibr3 "
+#define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
 #define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Tank""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Tid\0"
@@ -376,7 +376,7 @@
 #define TR_CURRENT       "Sp\201nning"
 #define TR_LOAD_MODEL    "Load Model"
 #define TR_CREATE_MODEL  "Create Model"
-#define TR_ARCHIVE_MODEL "Archive Model"
+#define TR_BACKUP_MODEL  "Backup Model"
 #define TR_DELETE_MODEL  "Delete Model"
 #define TR_RESTORE_MODEL "Restore Model"
 #define TR_SDCARD_ERROR  "SDCARD Error"

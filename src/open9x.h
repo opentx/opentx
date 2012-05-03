@@ -845,10 +845,10 @@ enum AUDIO_SOUNDS {
     AU_MIX_WARNING_1,
     AU_MIX_WARNING_2,
     AU_MIX_WARNING_3,
-    AU_TIMER_30,
-    AU_TIMER_20,
-    AU_TIMER_10,
     AU_TIMER_LT3,
+    AU_TIMER_10,
+    AU_TIMER_20,
+    AU_TIMER_30,
     AU_FRSKY_FIRST,
     AU_FRSKY_WARN1 = AU_FRSKY_FIRST,
     AU_FRSKY_WARN2,
@@ -866,8 +866,6 @@ enum AUDIO_SOUNDS {
     AU_FRSKY_LAST,
 };
 #if defined(AUDIO)
-//audio settungs are external to keep out clutter!
-// TODO english learning for me... what does mean "keep out clutter"?
 #include "audio.h"
 #else
 #include "beeper.h"
