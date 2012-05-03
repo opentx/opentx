@@ -621,7 +621,9 @@ void read_9_adc(void ) ;
 #define BUZZER_OFF    PORTE &= ~(1 << OUT_E_BUZZER)
 
 #if defined(HAPTIC)
-#if defined(PCBV4)
+#if defined(PCBARM)
+#define HAPTIC_OFF    hapticOff()
+#elif defined(PCBV4)
 #define HAPTIC_ON     PORTD &= ~(1 << INP_D_HAPTIC)
 #define HAPTIC_OFF    PORTD |=  (1 << INP_D_HAPTIC)
 #else
@@ -821,12 +823,58 @@ extern uint16_t jeti_keys;
 #include "mavlink.h"
 #endif
 
+// REPEAT uses 0x01 to 0x0f
+#define PLAY_NOW                  0x10
+#define PLAY_SOUND_VARIO          0x20
+
+/* make sure the defines below always go in numeric order */
+enum AUDIO_SOUNDS {
+    AU_INACTIVITY,
+    AU_TX_BATTERY_LOW,
+    AU_ERROR,
+    AU_KEYPAD_UP,
+    AU_KEYPAD_DOWN,
+    AU_MENUS,
+    AU_TRIM_MOVE,
+    AU_WARNING1,
+    AU_WARNING2,
+    AU_WARNING3,
+    AU_TRIM_MIDDLE,
+    AU_TADA,
+    AU_POT_STICK_MIDDLE,
+    AU_MIX_WARNING_1,
+    AU_MIX_WARNING_2,
+    AU_MIX_WARNING_3,
+    AU_TIMER_30,
+    AU_TIMER_20,
+    AU_TIMER_10,
+    AU_TIMER_LT3,
+    AU_FRSKY_FIRST,
+    AU_FRSKY_WARN1 = AU_FRSKY_FIRST,
+    AU_FRSKY_WARN2,
+    AU_FRSKY_CHEEP,
+    AU_FRSKY_RING,
+    AU_FRSKY_SCIFI,
+    AU_FRSKY_ROBOT,
+    AU_FRSKY_CHIRP,
+    AU_FRSKY_TADA,
+    AU_FRSKY_CRICKET,
+    AU_FRSKY_SIREN,
+    AU_FRSKY_ALARMC,
+    AU_FRSKY_RATATA,
+    AU_FRSKY_TICK,
+    AU_FRSKY_LAST,
+};
 #if defined(AUDIO)
 //audio settungs are external to keep out clutter!
 // TODO english learning for me... what does mean "keep out clutter"?
 #include "audio.h"
 #else
 #include "beeper.h"
+#endif
+
+#if defined(HAPTIC)
+#include "haptic.h"
 #endif
 
 #if defined(SDCARD)

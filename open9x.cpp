@@ -1429,6 +1429,13 @@ void evalFunctions()
           beep(3);
 #endif
         }
+
+#if defined(HAPTIC)
+        if (sd->func == FUNC_HAPTIC) {
+          haptic.event(sd->param);
+        }
+#endif
+
         active_functions |= mask;
       }
       else {
@@ -2085,6 +2092,7 @@ void perMain()
   }
 
 #if defined(PCBARM)
+  HAPTIC_HEARTBEAT();
   AUDIO_HEARTBEAT();  // the queue processing
 #endif
 
@@ -2155,6 +2163,10 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
     AUDIO_HEARTBEAT();
+
+#ifdef HAPTIC
+    HAPTIC_HEARTBEAT();
+#endif
 
 #ifdef DEBUG
     // Record start time from TCNT1 to record excution time

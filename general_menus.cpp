@@ -96,6 +96,7 @@ enum menuProcSetupItems {
 #endif
 #if defined(HAPTIC)
   ITEM_SETUP_HAPTIC_MODE,
+  ITEM_SETUP_HAPTIC_LENGTH,
   ITEM_SETUP_HAPTIC_STRENGTH,
 #endif
 #if defined(PCBARM)
@@ -215,6 +216,10 @@ void menuProcSetup(uint8_t event)
 #ifdef HAPTIC
       case ITEM_SETUP_HAPTIC_MODE:
         g_eeGeneral.hapticMode = selectMenuItem(y, STR_HAPTICMODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
+        break;
+
+      case ITEM_SETUP_HAPTIC_LENGTH:
+        g_eeGeneral.hapticLength = selectMenuItem(y, STR_HAPTICLENGTH, STR_VBEEPLEN, g_eeGeneral.hapticLength, -2, 2, attr, event);
         break;
 
       case ITEM_SETUP_HAPTIC_STRENGTH:
