@@ -1819,7 +1819,7 @@ void perMain()
   s_cnt_1s++;
   s_sum_1s += val;
 
-  if (tmr10ms - s_time_tot >= 100) { // 1sec
+  if ((uint16_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
     s_time_tot += 100;
     s_timeCumTot += 1;
 
@@ -1832,7 +1832,7 @@ void perMain()
     s_cnt_1s = 0;
     s_sum_1s = 0;
 
-    if (tmr10ms - s_time_trace >= 1000) {// 10sec
+    if ((uint16_t)(tmr10ms - s_time_trace) >= 1000) {// 10sec
       s_time_trace += 1000;
       val = s_sum_10s / s_cnt_10s;
       s_sum_10s = 0;
