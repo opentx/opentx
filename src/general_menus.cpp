@@ -141,7 +141,7 @@ void menuProcSetup(uint8_t event)
 #define AUDIO_ZEROS
 #endif
 #ifdef HAPTIC
-#define HAPTIC_ZEROS 0, 0,
+#define HAPTIC_ZEROS 0, 0, 0,
 #else
 #define HAPTIC_ZEROS
 #endif
