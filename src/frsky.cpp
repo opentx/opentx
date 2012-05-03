@@ -643,22 +643,22 @@ void check_frsky()
   static uint16_t s_varioTmr = 0;
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
-    int16_t verticalSpeed = 0;
-    // TODO: get negative values in Up Speed to shift zero, i.e. get positive sound on small negative speeds
-    // positive values in g_model.varioSpeedUpMin must works same as now
-    // negative must make an offset in sounds
-    // also changes need in model_menus.cpp
-    verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
+    int16_t varioSpeedUpMin = (g_model.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER)*VARIO_SPEED_LIMIT_MUL;
+    int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
+    int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
 
     uint8_t SoundAltBeepNextFreq = 0;
     uint8_t SoundAltBeepNextTime = 0;
     static uint8_t SoundAltBeepFreq = 0;
     static uint8_t SoundAltBeepTime = 0;
-    if ((verticalSpeed < g_model.varioSpeedUpMin*VARIO_SPEED_LIMIT_MUL) && (verticalSpeed > (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL))) { //check thresholds here in cm/s
+    if ((verticalSpeed < varioSpeedUpMin) && (verticalSpeed > varioSpeedDownMin)) { //check thresholds here in cm/s
       SoundAltBeepNextFreq = (0);
       SoundAltBeepNextTime = (0);
     }
     else {
+      if((varioSpeedUpMin < 0) & (verticalSpeed >= varioSpeedUpMin)){
+        verticalSpeed = verticalSpeed - varioSpeedUpMin;
+      }		  
       SoundAltBeepNextFreq = (verticalSpeed * 10 + 16000) >> 8;
       SoundAltBeepNextTime = (1600 - verticalSpeed) / 100;
       if (verticalSpeed > 0) {
