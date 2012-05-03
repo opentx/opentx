@@ -866,7 +866,11 @@ enum AUDIO_SOUNDS {
     AU_FRSKY_LAST,
 };
 #if defined(AUDIO)
-#include "audio.h"
+#if defined(PCBARM)
+#include "ersky9x/audio.h"
+#else
+#include "ersky9x/audio.h"
+#endif
 #else
 #include "beeper.h"
 #endif
