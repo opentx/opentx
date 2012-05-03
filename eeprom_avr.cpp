@@ -117,7 +117,11 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 static uint8_t EeFsRead(uint8_t blk, uint8_t ofs)
 {
   uint8_t ret;
+#ifdef SIMU
+  eeprom_read_block(&ret, (const void*)(uint64_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
+#else
   eeprom_read_block(&ret, (const void*)(blk*BS+ofs+BLOCKS_OFFSET), 1);
+#endif
   return ret;
 }
 
