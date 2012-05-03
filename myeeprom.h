@@ -568,9 +568,9 @@ PACK(typedef struct t_ModelData {
   int8_t    servoCenter[NUM_CHNOUT];
   
   // TODO:temporary place, need to move to frskydata
-  uint16_t varioSource:4;
-  uint16_t varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
-  uint16_t varioSpeedDownMin:7;
+  uint8_t   varioSource:3;
+  uint8_t   varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
+  uint8_t   varioSpeedDownMin;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
