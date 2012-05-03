@@ -641,11 +641,45 @@ void check_frsky()
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   static uint16_t s_varioTmr = 0;
-
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
-    uint8_t warble = 0;
-#endif
+    int16_t verticalSpeed = 0;
+    //vertical speed in 0.01m/s now
+    //not baro vario only has additional resolution
+    //A1/A2 need conversion there
+    //GPS source need precision to be set, my gps gives 0.1m resolution
+    /*if (g_model.varioSource == BARO_SOURCE_BARO)*/
+      verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
+    /*else
+      verticalSpeed = limit((int16_t)-VARIO_SPEED_LIMIT, (int16_t)(frskyHubData.varioSpeed), (int16_t)+VARIO_SPEED_LIMIT)*100;*/
+
+    uint8_t SoundAltBeepNextFreq = 0;
+    uint8_t SoundAltBeepNextTime = 0;
+    static uint8_t SoundAltBeepFreq = 0;
+    static uint8_t SoundAltBeepTime = 0;
+    if ((verticalSpeed < g_model.varioSpeedUpMin*VARIO_SPEED_LIMIT_MUL) && (verticalSpeed > (255 - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL))) { //check thresholds here in cm/s
+      SoundAltBeepNextFreq = (0);
+      SoundAltBeepNextTime = (0);
+    }
+    else {
+      SoundAltBeepNextFreq = (verticalSpeed * 10 + 16000) >> 8;
+      SoundAltBeepNextTime = (1600 - verticalSpeed) / 100;
+      if (verticalSpeed > 0) {
+        if ((int16_t)(g_tmr10ms - s_varioTmr) > (int16_t)((int16_t)SoundAltBeepTime*2)) {
+          s_varioTmr = g_tmr10ms;
+          SoundAltBeepTime = SoundAltBeepNextTime;
+          SoundAltBeepFreq = SoundAltBeepNextFreq;
+          audio.play(SoundAltBeepFreq, SoundAltBeepTime, 0, PLAY_SOUND_VARIO);
+        }
+      }
+      else {
+        // negative vertical speed gives sound without pauses
+        SoundAltBeepTime = SoundAltBeepNextTime;
+        SoundAltBeepFreq = SoundAltBeepNextFreq;
+        audio.play(SoundAltBeepFreq, 1, 0, PLAY_SOUND_VARIO);
+      }
+    }
+#else
     int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyHubData.varioSpeed/10), (int16_t)+100);
 
     uint16_t interval;
@@ -666,6 +700,7 @@ void check_frsky()
       else
         AUDIO_VARIO_UP();
     }
+#endif
   }
 #endif
 }

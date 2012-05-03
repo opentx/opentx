@@ -292,19 +292,18 @@ ifeq ($(PCB), ARM)
   # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/sdcard.c ersky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += audio.cpp
-  CPPSRC += ersky9x/sound.cpp
+  CPPSRC += ersky9x/audio.cpp ersky9x/sound.cpp haptic.cpp
 endif
 
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
   OPT = 2
   CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC -DROTARY_ENCODERS
-  EXTRAINCDIRS += gruvin9x
+  EXTRAINCDIRS += gruvin9x stock
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
-  CPPSRC += audio.cpp
+  CPPSRC += stock/audio.cpp haptic.cpp
   CPPSRC += gruvin9x/gtime.cpp
   CPPSRC += gruvin9x/rtc.cpp
   CPPSRC += gruvin9x/ff.cpp
@@ -336,6 +335,7 @@ endif
 ifeq ($(PCB), STD)
   # STD PCB, so ...
   OPT = s
+  EXTRAINCDIRS += stock
   CPPDEFS += -DPCBSTD
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp
@@ -343,13 +343,14 @@ ifeq ($(PCB), STD)
    
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
-    CPPSRC += audio.cpp
+    CPPSRC += stock/audio.cpp
   else
     CPPSRC += beeper.cpp 
   endif
   
   ifeq ($(HAPTIC), YES)
    CPPDEFS += -DHAPTIC
+   CPPSRC += haptic.cpp
   endif
   
 endif

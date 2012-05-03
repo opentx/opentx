@@ -2102,6 +2102,12 @@ void menuProcFunctionSwitches(uint8_t event)
               break;
 #endif
             }
+#if defined(HAPTIC)
+            else if (sd->func == FUNC_HAPTIC) {
+              val_max = 3;
+              lcd_outdezAtt(21*FW, y, val_displayed, attr);
+            }
+#endif
 #if defined(SOMO)
             else if (sd->func == FUNC_PLAY_SOMO) {
               lcd_outdezAtt(21*FW, y, val_displayed, attr);

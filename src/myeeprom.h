@@ -286,6 +286,9 @@ enum Functions {
   FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
   FUNC_PLAY_SOUND,
+#ifdef HAPTIC
+  FUNC_HAPTIC,
+#endif
 #ifdef SOMO
   FUNC_PLAY_SOMO,
 #endif

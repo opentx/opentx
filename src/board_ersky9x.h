@@ -40,6 +40,8 @@
 #include "ersky9x/AT91SAM3S4.h"
 #endif
 
+#include "ersky9x/sound.h"
+
 #define PIN_ENABLE           0x001
 #define PIN_PERIPHERAL       0x000
 #define PIN_INPUT            0x002

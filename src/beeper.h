@@ -111,19 +111,9 @@ FORCEINLINE void AUDIO_HEARTBEAT()
         BUZZER_OFF;
       else
         BUZZER_ON;
-#if defined(HAPTIC)
-      if (hapticTick-- > 0) {
-        HAPTIC_ON; // haptic output 'high'
-      }
-      else {
-        HAPTIC_OFF; // haptic output 'low'
-        hapticTick = g_eeGeneral.hapticStrength;
-      }
-#endif
     }
     else {
       BUZZER_OFF;
-      HAPTIC_OFF;
     }
 }
 #endif
