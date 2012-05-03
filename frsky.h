@@ -73,7 +73,7 @@ class FrskyData: public FrskyRSSI {
 #define VARIO_SPEED_LIMIT_MUL       10 //to get 0.2m steps
 #define VARIO_SPEED_LIMIT_DOWN_OFF  (100+1) //100 steps + OFF
 #define VARIO_SPEED_LIMIT_UP_CENTER 15
-#define VARIO_SPEED_LIMIT_UP_MAX    31
+#define VARIO_SPEED_LIMIT_UP_MAX    30
 
 #if defined(FRSKY_HUB)
 PACK(struct FrskyHubData {
