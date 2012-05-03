@@ -2331,16 +2331,17 @@ void menuProcTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_VARIO_SPEED:
         lcd_puts(4, y, STR_LIMIT);
-        lcd_outdezAtt(TELEM_COL2, y, -VARIO_SPEED_LIMIT_MUL*(255 - g_model.varioSpeedDownMin), ((attr && m_posHorz==0) ? blink : 0)|PREC2|LEFT);
+		    if(!g_model.varioSpeedDownMin) lcd_putsAtt(TELEM_COL2, y, STR_OFF, ((attr && m_posHorz==0) ? blink : 0));
+        else lcd_outdezAtt(TELEM_COL2, y, -VARIO_SPEED_LIMIT_MUL*(VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin), ((attr && m_posHorz==0) ? blink : 0)|PREC2|LEFT);
         lcd_outdezAtt(TELEM_COL2+6*FW, y, VARIO_SPEED_LIMIT_MUL*g_model.varioSpeedUpMin, ((attr && m_posHorz==1) ? blink : 0)|PREC2|LEFT);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
-              g_model.varioSpeedDownMin = checkIncDec(event, g_model.varioSpeedDownMin, 0, 255, EE_MODEL);
+              g_model.varioSpeedDownMin = checkIncDec(event, g_model.varioSpeedDownMin, 0, VARIO_SPEED_LIMIT_DOWN_OFF, EE_MODEL);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.varioSpeedUpMin, 0, 15);
+              CHECK_INCDEC_MODELVAR(event, g_model.varioSpeedUpMin, 0, VARIO_SPEED_LIMIT_UP_MAX);
               break;
           }
         }

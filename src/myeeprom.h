@@ -569,8 +569,8 @@ PACK(typedef struct t_ModelData {
   
   // TODO:temporary place, need to move to frskydata
   uint8_t varioSource:4;
-  uint8_t varioSpeedUpMin:4;    // if increment in 0.2m/s = 3.0m/s max
-  uint8_t varioSpeedDownMin;
+  uint8_t varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
+  uint8_t varioSpeedDownMin:7;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
