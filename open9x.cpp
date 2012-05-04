@@ -1374,9 +1374,19 @@ void evalFunctions()
 
   for (uint8_t i=0; i<NUM_FSW; i++) {
     FuncSwData *sd = &g_model.funcSw[i];
-    if (sd->swtch) {
+    int8_t swtch = sd->swtch;
+    if (swtch) {
       uint16_t mask = (sd->func >= FUNC_TRAINER ? (1 << (sd->func-FUNC_TRAINER)) : 0);
-      if (getSwitch(sd->swtch, 0)) {
+      uint8_t momentary = 0;
+      if (swtch > MAX_SWITCH+1) {
+        momentary = 1;
+        swtch -= MAX_SWITCH+1;
+      }
+      if (swtch < -MAX_SWITCH-1) {
+        momentary = 1;
+        swtch += MAX_SWITCH+1;
+      }
+      if (getSwitch(swtch, 0)) {
         if (sd->func < FUNC_TRAINER  && (g_menuStack[g_menuStackPtr] != menuProcFunctionSwitches || m_posVert != (i+1) || m_posHorz > 1)) {
           safetyCh[sd->func] = (int8_t)sd->param;
         }
@@ -1398,12 +1408,6 @@ void evalFunctions()
           }
 #endif
 
-#if defined(DEBUG)
-          if (sd->func == FUNC_TEST) {
-            testFunc();
-          }
-#endif
-
           if (sd->func == FUNC_RESET) {
             switch (sd->param) {
               case 0:
@@ -1422,19 +1426,27 @@ void evalFunctions()
           }
         }
 
-        if (sd->func == FUNC_PLAY_SOUND) {
+        if (!momentary || ~active_functions & mask) {
+          if (sd->func == FUNC_PLAY_SOUND) {
 #if defined(AUDIO)
-          audioDefevent(AU_FRSKY_FIRST+sd->param);
+            audioDefevent(AU_FRSKY_FIRST+sd->param);
 #else
-          beep(3);
+            beep(3);
 #endif
-        }
+          }
 
 #if defined(HAPTIC)
-        if (sd->func == FUNC_HAPTIC) {
-          haptic.event(AU_FRSKY_LAST+sd->param);
-        }
+          if (sd->func == FUNC_HAPTIC) {
+            haptic.event(AU_FRSKY_LAST+sd->param);
+          }
 #endif
+
+#if defined(DEBUG)
+          if (sd->func == FUNC_TEST) {
+            testFunc();
+          }
+#endif
+        }
 
         active_functions |= mask;
       }
