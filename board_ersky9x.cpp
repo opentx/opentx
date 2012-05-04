@@ -419,6 +419,7 @@ extern "C" void TC2_IRQHandler()
   dummy = TC0->TC_CHANNEL[2].TC_SR;
   (void) dummy ;          // Discard value - prevents compiler warning
 
+  HAPTIC_HEARTBEAT();
   AUDIO_HEARTBEAT();
 
   if ( ++pre_scale >= 2 ) {

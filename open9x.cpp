@@ -2116,12 +2116,6 @@ void perMain()
       }
       break;
   }
-
-#if defined(PCBARM)
-  HAPTIC_HEARTBEAT();
-  // AUDIO_HEARTBEAT();  // the queue processing
-#endif
-
 }
 int16_t g_ppmIns[8];
 uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
