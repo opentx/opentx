@@ -1,4 +1,46 @@
 ******************************************
+CHANGELOG: 04-05-2012  BSS
+Momentary Switches in Function Switches
+
+******************************************
+CHANGELOG: 03-05-2012  BSS
+[Arm] Audio / Haptic refactoring
+[Arm] Timer blocked at 10:55
+[V4] SDcard menu reworked
+
+******************************************
+CHANGELOG: 02-05-2012  BSS
+[V4/Arm] Problem in Models Move
+[stock] Flash saving (840bytes)
+
+******************************************
+CHANGELOG: 01-05-2012  BSS
+[FrSky] GPS distance bug fix
+
+******************************************
+CHANGELOG: 29-04-2012  BSS
+[V4/Arm] EEPROM marked as dirty on reboot 
+
+******************************************
+CHANGELOG: 27-04-2012  BSS
+Vario feature added
+New EEPROM format 205
+[FrSky] Telemetry offset for A1/A2 on 12bits
+[V4] Models with empty name bug when SDcard backup  
+
+******************************************
+CHANGELOG: 26-04-2012  BSS
+[Arm] 32Channels 9Phases 64Mixes 32Expos 32VSwitches 32FSwitches
+
+******************************************
+CHANGELOG: 23-04-2012  BSS
+[V4] SDcard Models storage implemented
+
+******************************************
+CHANGELOG: 20-04-2012  BSS
+[Stock] 400bytes flash saving
+
+******************************************
 CHANGELOG: 15-03-2012  BSS
 FAAST option in protocol to enable startPulses before the splash screen
 Telemetry configurable screen
