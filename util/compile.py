@@ -7,27 +7,32 @@ BINARY_DIR = "../build/"
 options_stock = [[("", "EXT=STD"), ("frsky", "EXT=FRSKY"), ("jeti", "EXT=JETI"), ("ardupilot", "EXT=ARDUPILOT"), ("nmea", "EXT=NMEA")],
                  [("", "HELI=NO"), ("heli", "HELI=YES")],
                  [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
+                 [("", ""), ("nofp", "FLIGHT_PHASES=NO")],
                  [("", "AUDIO=NO"), ("audio", "AUDIO=YES")],
                  [("", "HAPTIC=NO"), ("haptic", "HAPTIC=YES")],
+                 [("", "PXX=NO"), ("PXX", "PXX=YES")],
                  [("", "DSM2=NO"), ("DSM2", "DSM2=PPM")],
+                 [("", ""), ("ppmca", "PPM_CENTER_ADJUSTABLE=YES")],
                  [("", "NAVIGATION=NO"), ("potscroll", "NAVIGATION=POTS")],
-                 [("", "PPM_CENTER_ADJUSTABLE=NO"), ("ppmca", "PPM_CENTER_ADJUSTABLE=YES")],
+                 [("", ""), ("pgbar", "EEPROM_PROGRESS_BAR=YES")],
                  [("", "UNITS=METRIC"), ("imperial", "UNITS=IMPERIAL")],
-#                 ("PXX", "PXX=NO", "PXX=YES"),
                 ]
 
 options_v4 =    [[("", "EXT=FRSKY")],
                  [("", "HELI=NO"), ("heli", "HELI=YES")],
                  [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
+                 [("", ""), ("nofp", "FLIGHT_PHASES=NO")],
                  [("", "SDCARD=NO"), ("sdcard", "SDCARD=YES")],
                  [("", "SOMO=NO"), ("SOMO", "SOMO=YES")],
-                 [("", "PPM_CENTER_ADJUSTABLE=NO"), ("ppmca", "PPM_CENTER_ADJUSTABLE=YES")],
+                 [("", ""), ("ppmca", "PPM_CENTER_ADJUSTABLE=YES")],
+                 [("", ""), ("pgbar", "EEPROM_PROGRESS_BAR=YES")],
                  [("", "UNITS=METRIC"), ("imperial", "UNITS=IMPERIAL")],
                 ]
 
 options_arm =   [[("", "EXT=FRSKY")],
                  [("", "HELI=NO"), ("heli", "HELI=YES")],
                  [("", "TEMPLATES=NO"), ("templates", "TEMPLATES=YES")],
+                 [("", ""), ("nofp", "FLIGHT_PHASES=NO")],
                  [("", "UNITS=METRIC"), ("imperial", "UNITS=IMPERIAL")],
                 ]
 
@@ -100,35 +105,38 @@ def generate(hex, arg, extension, options, languages, maxsize):
                 cwd = language
             else:
                 cwd = "."
-            subprocess.Popen(["make", "clean", arg], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd).wait()
-            p = subprocess.Popen(make_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
-            ret = p.wait()
-            stderr = p.stderr.read()
-            global_current += 1
-            print "[%d/%d]" % (global_current, global_count), hex_file
-            if ret or "error" in stderr:
-                print stderr
-                exit()
-            for line in stderr.split("\n"):
-                if "warning" in line:
-                    print "  ", line
+                
             size = 0
-            for line in p.stdout.readlines():
-                if line.startswith("Program:"):
-                    parts = line.split(" ")
-                    while "" in parts:
-                        parts.remove("")
-                    size = int(parts[1])
-                    if size > maxsize:
-                        print "  ", line[:-1], "[NOT RELEASED]"
-                    else:
+            if compile:
+                subprocess.Popen(["make", "clean", arg], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd).wait()
+                p = subprocess.Popen(make_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
+                ret = p.wait()
+                stderr = p.stderr.read()
+                global_current += 1
+                print "[%d/%d]" % (global_current, global_count), hex_file
+                if ret or "error" in stderr:
+                    print stderr
+                    exit()
+                for line in stderr.split("\n"):
+                    if "warning" in line:
+                        print "  ", line
+                for line in p.stdout.readlines():
+                    if line.startswith("Program:"):
+                        parts = line.split(" ")
+                        while "" in parts:
+                            parts.remove("")
+                        size = int(parts[1])
+                        if size > maxsize:
+                            print "  ", line[:-1], "[NOT RELEASED]"
+                        else:
+                            print "  ", line,
+                    if line.startswith("Data:"):
                         print "  ", line,
-                if line.startswith("Data:"):
-                    print "  ", line,
             
             if size <= maxsize:
                 binary_name = hex_file + "." + extension
-                shutil.copyfile(cwd + "/open9x." + extension, BINARY_DIR + binary_name)
+                if compile:
+                    shutil.copyfile(cwd + "/open9x." + extension, BINARY_DIR + binary_name)
                 result.append(hex_file)
         
         for index, state in enumerate(states):
@@ -177,9 +185,9 @@ def multithread_generate(hex, arg, extension, options, languages, maxsize):
         return generate(hex, arg, extension, options, languages, maxsize)
         
         
-def generate_c9x_list(filename, hexes, extension, stamp, board):
+def generate_c9x_list(filename, hexes, board):
     f = file(filename, "w")
-    f.write("const char *open9x_arm_binaries[] = {\n")
+    f.write("const char *open9x_%s_binaries[] = {\n" % board)
     for hex in hexes:
         f.write('"%s",\n' % hex)
     f.write("0\n};\n")
@@ -188,6 +196,7 @@ if __name__ == "__main__":
     
     ftp = "ftp" in sys.argv
     mt = "mt" in sys.argv and platform.system() != "Windows"
+    compile = not "nc" in sys.argv
     
     if ftp:
         ftp_password = getpass.getpass()
@@ -203,19 +212,19 @@ if __name__ == "__main__":
     if platform.system() == "Windows":
         # arm board
         hexes, stamp = generate("open9x-arm", "PCB=ARM", "bin", options_arm, languages, 262000)
-        generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "bin", "OPEN9X_ARM_STAMP", "BOARD_ERSKY9X")
+        generate_c9x_list("../../companion9x/src/open9x-arm-binaries.cpp", hexes, "arm")
         upload(hexes, "bin", stamp)        
     
     else:
         # stock board
         if not "v4" in sys.argv:
             hexes, stamp = multithread_generate("open9x-stock", "PCB=STD", "hex", options_stock, languages, 65530)
-            generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_STOCK")
+            generate_c9x_list("../../companion9x/src/open9x-stock-binaries.cpp", hexes, "stock")
             upload(hexes, "hex", stamp)
         
         # v4 board
         if not "stock" in sys.argv:
             hexes, stamp = multithread_generate("open9x-v4", "PCB=V4", "hex", options_v4, languages, 262000)
-            generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "hex", "OPEN9X_STAMP", "BOARD_GRUVIN9X")
+            generate_c9x_list("../../companion9x/src/open9x-v4-binaries.cpp", hexes, "v4")
             upload(hexes, "hex", stamp)
             
