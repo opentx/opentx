@@ -153,6 +153,10 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
 
 void audioQueue::event(uint8_t e, uint8_t f)
 {
+#ifdef HAPTIC
+  haptic.event(e); //do this before audio to help sync timings
+#endif
+
   if (g_eeGeneral.flashBeep && (e <= AU_ERROR || e >= AU_WARNING1))
     g_LightOffCounter = FLASH_DURATION;
 
@@ -192,7 +196,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
           break;
         // trim center
         case AU_TRIM_MIDDLE:
-          play(BEEP_DEFAULT_FREQ, 10, 2, PLAY_NOW);
+          play(f, 10, 2, PLAY_NOW);
           break;
         // warning one
         case AU_WARNING1:
@@ -306,8 +310,5 @@ void audioQueue::event(uint8_t e, uint8_t f)
 
 void audioDefevent(uint8_t e)
 {
-#ifdef HAPTIC
-  haptic.event(e); //do this before audio to help sync timings
-#endif	
   audio.event(e, BEEP_DEFAULT_FREQ);
 }
