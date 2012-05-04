@@ -83,7 +83,7 @@ void hapticQueue::play(uint8_t tLen, uint8_t tPause, uint8_t tFlags)
 {
   tLen = getHapticLength(tLen);
 
-  if (tFlags & PLAY_NOW || (!busy() && empty())) {
+  if ((tFlags & PLAY_NOW) || (!busy() && empty())) {
     buzzTimeLeft = tLen;
     buzzPause = tPause;
     t_queueWidx = t_queueRidx;
@@ -115,8 +115,9 @@ void hapticQueue::event(uint8_t e)
       play(15, 3, PLAY_NOW);
     else if (e < AU_FRSKY_FIRST)
       play(15, 3, (e-AU_TIMER_10)|PLAY_NOW);
-    else if (e >= AU_FRSKY_LAST)
+    else if (e >= AU_FRSKY_LAST && empty()) {
       play(15, 3, e-AU_FRSKY_LAST);
+    }
   }
 }
 

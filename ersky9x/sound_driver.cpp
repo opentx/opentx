@@ -34,36 +34,7 @@
 
 #include "../open9x.h"
 
-void start_sound( void ) ;
-void buzzer_on( void ) ;
-void buzzer_off( void ) ;
-void buzzer_sound( uint8_t time ) ;
-void start_timer1( void ) ;
-void init_dac( void ) ;
-extern "C" void DAC_IRQHandler( void ) ;
-void disp_mem( register uint32_t address ) ;
-void end_sound( void ) ;
-void tone_start( register uint32_t time ) ;
-void tone_stop( void ) ;
-void init_twi( void ) ;
-void set_volume( register uint8_t volume ) ;
-extern "C" void TWI0_IRQHandler (void) ;
-void audioDefevent( uint8_t e ) ;
-
-extern uint32_t Master_frequency ; // TODO in a .h?
 volatile uint8_t Buzzer_count ;
-/*
-struct t_sound_globals
-{
-	uint32_t Next_freq ;
-	volatile uint32_t Sound_time ;
-	uint32_t Frequency ;
-	volatile uint32_t Tone_timer ;		// Modified in interrupt routine
-	volatile uint8_t Tone_ms_timer ;
-	uint32_t Frequency_increment ;
-	uint32_t Next_frequency_increment ;
-} Sound_g ;
-*/
 
 // Must NOT be in flash, PDC needs a RAM source.
 uint16_t Sine_values[] =
@@ -79,20 +50,6 @@ uint16_t Sine_values[] =
  145, 188, 238, 295, 359, 429, 506, 590, 678, 773,
  872, 976,1084,1196,1311,1429,1550,1673,1797,1922
 } ;
-
-// Must NOT be in flash, PDC needs a RAM source.
-// We'll use these for higher frequencies
-//uint16_t Sine_values64[] =
-//{
-//2048,2244,2438,2628,2813,2990,3159,3316,
-//3462,3594,3710,3811,3895,3961,4009,4038,
-//4048,4038,4009,3961,3895,3811,3710,3594,
-//3462,3316,3159,2990,2813,2628,2438,2244,
-//2048,1851,1657,1467,1282,1105, 936, 779,
-// 633, 501, 385, 284, 200, 134,  86,  57,
-//  48,  57,  86, 134, 200, 284, 385, 501,
-// 633, 779, 936,1105,1282,1467,1657,1851
-//} ;
 
 const uint16_t PianoTones[] =
 {
@@ -112,59 +69,56 @@ const uint16_t PianoTones[] =
 
 void start_sound()
 {
-	register Pio *pioptr ;
-	
-	start_timer1() ;
-	init_dac() ;
-	init_twi() ;
+  register Pio *pioptr ;
 
-	pioptr = PIOA ;
+  start_timer1() ;
+  init_dac() ;
+  init_twi() ;
+
+  pioptr = PIOA ;
 #ifdef REVB
-	pioptr->PIO_CODR = 0x02000000L ;	// Set bit A25 OFF
-	pioptr->PIO_PER = 0x02000000L ;		// Enable bit A25 (Stock buzzer)
-	pioptr->PIO_OER = 0x02000000L ;		// Set bit A25 as output
+  pioptr->PIO_CODR = 0x02000000L ;	// Set bit A25 OFF
+  pioptr->PIO_PER = 0x02000000L ;		// Enable bit A25 (Stock buzzer)
+  pioptr->PIO_OER = 0x02000000L ;		// Set bit A25 as output
 #else
-	pioptr->PIO_CODR = 0x00010000L ;	// Set bit A16 OFF
-	pioptr->PIO_PER = 0x00010000L ;		// Enable bit A16 (Stock buzzer)
-	pioptr->PIO_OER = 0x00010000L ;		// Set bit A16 as output
+  pioptr->PIO_CODR = 0x00010000L ;	// Set bit A16 OFF
+  pioptr->PIO_PER = 0x00010000L ;		// Enable bit A16 (Stock buzzer)
+  pioptr->PIO_OER = 0x00010000L ;		// Set bit A16 as output
 #endif
 }
 
 #ifdef REVB
 void buzzer_on()
 {
-	PIOA->PIO_SODR = 0x02000000L ;	// Set bit A25 ON
+  PIOA->PIO_SODR = 0x02000000L ;	// Set bit A25 ON
 }
 
 void buzzer_off()
 {
-	PIOA->PIO_CODR = 0x02000000L ;	// Set bit A25 ON
+  PIOA->PIO_CODR = 0x02000000L ;	// Set bit A25 ON
 }
 #else
 void buzzer_on()
 {
-	PIOA->PIO_SODR = 0x00010000L ;	// Set bit A16 ON
+  PIOA->PIO_SODR = 0x00010000L ;	// Set bit A16 ON
 }
 
 void buzzer_off()
 {
-	PIOA->PIO_CODR = 0x00010000L ;	// Set bit A16 ON
+  PIOA->PIO_CODR = 0x00010000L ;	// Set bit A16 ON
 }
 #endif
 
 void buzzer_sound( uint8_t time )
 {
-	buzzer_on() ;
-	Buzzer_count = time ;
+  buzzer_on() ;
+  Buzzer_count = time ;
 }
-
 
 void set_frequency( uint32_t frequency )
 {
   register Tc *ptc ;
   register uint32_t timer ;
-
-  frequency = frequency * 61 / 2;
 
   timer = Master_frequency / (800 * frequency) ;		// MCK/8 and 100 000 Hz
   if ( timer > 65535 )
@@ -206,7 +160,6 @@ void start_timer1()
 }
 
 
-
 // Configure DAC1 (or DAC0 for REVB)
 // Not sure why PB14 has not be allocated to the DAC, although it is an EXTRA function
 // So maybe it is automatically done
@@ -245,18 +198,6 @@ extern "C" void DAC_IRQHandler()
   DACC->DACC_TNPR = (uint32_t) Sine_values ;
 #endif
   DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
-/*  if ( Sound_g.Tone_timer )
-  {
-    if ( --Sound_g.Tone_timer == 0 )
-    {
-      DACC->DACC_IDR = DACC_IDR_ENDTX ;
-    }
-  } */
-//	if ( Tone_ms_timer == 0 )
-//	{
-//		Tone_ms_timer = -1 ;
-//		DACC->DACC_IDR = DACC_IDR_ENDTX ;
-//	}
 }
 
 void end_sound()
@@ -269,78 +210,38 @@ void end_sound()
   PMC->PMC_PCER0 &= ~0x40000000L ;		// Disable peripheral clock to DAC
 }
 
-#if 0
-// frequency in Hz, time in mS
-void playTone( uint32_t frequency, uint32_t time )
-{
-	Sound_g.Next_frequency_increment = 0 ;
-	Sound_g.Next_freq = frequency ;
-	Sound_g.Sound_time = time ;
-//	set_frequency( frequency ) ;
-//	Tone_ms_timer = ( time + 4 ) / 5 ;
-//	tone_start( 0 ) ;
-}
-#endif
-/*
-uint32_t queueTone( uint32_t frequency, uint32_t time, uint32_t frequency_increment )
-{
-	if ( Sound_g.Sound_time == 0 )
-	{
-		Sound_g.Next_freq = frequency ;
-		Sound_g.Next_frequency_increment = frequency_increment ;
-		Sound_g.Sound_time = time ;
-		return 1 ;
-	}
-	return 0 ;	
-}
-*/
-// Time is in milliseconds
-void tone_start( register uint32_t time )
-{
-  PMC->PMC_PCER0 |= 0x40000000L ;		// Enable peripheral clock to DAC
-  // Sound_g.Tone_timer = Sound_g.Frequency * time / 1000 ;
-  DACC->DACC_IER = DACC_IER_ENDTX ;
-}
-
-void tone_stop()
-{
-  DACC->DACC_IDR = DACC_IDR_ENDTX ;	// Disable interrupt
-  // Sound_g.Tone_timer = 0 ;
-}
-
-
 // Set up for volume control (TWI0)
 // Need PA3 and PA4 set to peripheral A
 void init_twi()
 {
-	register Pio *pioptr ;
-	register uint32_t timing ;
+  register Pio *pioptr ;
+  register uint32_t timing ;
   
-	PMC->PMC_PCER0 |= 0x00080000L ;		// Enable peripheral clock to TWI0
+  PMC->PMC_PCER0 |= 0x00080000L ;		// Enable peripheral clock to TWI0
 	
 	/* Configure PIO */
-	pioptr = PIOA ;
+  pioptr = PIOA ;
   pioptr->PIO_ABCDSR[0] &= ~0x00000018 ;	// Peripheral A
   pioptr->PIO_ABCDSR[1] &= ~0x00000018 ;	// Peripheral A
   pioptr->PIO_PDR = 0x00000018 ;					// Assign to peripheral
 	
-	timing = Master_frequency * 5 / 1000000 ;		// 5uS high and low
-	timing += 15 - 4 ;
-	timing /= 16 ;
-	timing |= timing << 8 ;
+  timing = Master_frequency * 5 / 1000000 ;		// 5uS high and low
+  timing += 15 - 4 ;
+  timing /= 16 ;
+  timing |= timing << 8 ;
 
-	TWI0->TWI_CWGR = 0x00040000 | timing ;			// TWI clock set
-	TWI0->TWI_CR = TWI_CR_MSEN | TWI_CR_SVDIS ;		// Master mode enable
-	TWI0->TWI_MMR = 0x002F0000 ;		// Device 5E (>>1) and master is writing
-	NVIC_EnableIRQ(TWI0_IRQn) ;
-	set_volume( 2 ) ;
+  TWI0->TWI_CWGR = 0x00040000 | timing ;			// TWI clock set
+  TWI0->TWI_CR = TWI_CR_MSEN | TWI_CR_SVDIS ;		// Master mode enable
+  TWI0->TWI_MMR = 0x002F0000 ;		// Device 5E (>>1) and master is writing
+  NVIC_EnableIRQ(TWI0_IRQn) ;
+  set_volume( 2 ) ;
 }
 
 static int16_t Volume_required ;
 static const uint8_t Volume_scale[NUM_VOL_LEVELS] = 
 {
-	 0,  2,  4,   6,   8,  10,  13,  17,  22,  27,  33,  40,
-	64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127 	
+    0,  2,  4,   6,   8,  10,  13,  17,  22,  27,  33,  40,
+    64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
 } ;
 
 void set_volume( register uint8_t volume )
@@ -380,29 +281,6 @@ extern "C" void TWI0_IRQHandler()
 	{
 		TWI0->TWI_IDR = TWI_IDR_TXCOMP ;
 	}
-}
-
-void hapticOff()
-{
-	PWM->PWM_DIS = PWM_DIS_CHID2 ;						// Disable channel 2
-	PWM->PWM_OOV &= ~0x00040000 ;	// Force low
-	PWM->PWM_OSS |= 0x00040000 ;	// Force low
-}
-
-// pwmPercent 0-100
-void hapticOn( uint32_t pwmPercent )
-{
-	register Pwm *pwmptr ;
-
-	pwmptr = PWM ;
-
-	if ( pwmPercent > 100 )
-	{
-		pwmPercent = 100 ;		
-	}
-	pwmptr->PWM_CH_NUM[2].PWM_CDTYUPD = pwmPercent ;		// Duty
-	pwmptr->PWM_ENA = PWM_ENA_CHID2 ;						// Enable channel 2
-	pwmptr->PWM_OSC = 0x00040000 ;	// Enable output
 }
 
 

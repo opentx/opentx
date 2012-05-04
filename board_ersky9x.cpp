@@ -720,6 +720,7 @@ void board_init()
   start_timer0() ;
   init_adc() ;
   init_pwm() ;
+  init_SDcard() ;
 
   __enable_irq() ;
 
