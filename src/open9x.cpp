@@ -1426,7 +1426,7 @@ void evalFunctions()
           }
         }
 
-        if (!momentary || ~active_functions & mask) {
+        if ((!momentary) || (~active_functions & mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
 #if defined(AUDIO)
             audioDefevent(AU_FRSKY_FIRST+sd->param);
