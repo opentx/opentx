@@ -952,7 +952,7 @@ uint8_t checkTrim(uint8_t event)
 
     if (beepTrim) {
       killEvents(event);
-      AUDIO_TRIM_MIDDLE();
+      AUDIO_TRIM_MIDDLE(after);
     }
     else {
 #if defined (AUDIO)
