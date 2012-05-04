@@ -1365,12 +1365,16 @@ void testFunc()
 }
 #endif
 
-uint16_t active_functions = 0; // current max = 16 functions
+#if defined(PCBARM)
+#define MASK_FSW_TYPE uint32_t // current max = 32 functions
+#else
+#define MASK_FSW_TYPE uint16_t // current max = 16 functions
+#endif
+
+MASK_FSW_TYPE active_functions = 0;
 
 void evalFunctions()
 {
-  assert((int)(sizeof(active_functions)*8) > (int)(FUNC_MAX-NUM_CHNOUT));
-
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
     safetyCh[i] = -128; // not defined
 
@@ -1378,7 +1382,7 @@ void evalFunctions()
     FuncSwData *sd = &g_model.funcSw[i];
     int8_t swtch = sd->swtch;
     if (swtch) {
-      uint16_t mask = (sd->func >= FUNC_TRAINER ? (1 << (sd->func-FUNC_TRAINER)) : 0);
+      MASK_FSW_TYPE mask = ((MASK_FSW_TYPE)1 << i);
       uint8_t momentary = 0;
       if (swtch > MAX_SWITCH+1) {
         momentary = 1;
