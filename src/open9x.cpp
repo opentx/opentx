@@ -1365,16 +1365,20 @@ void testFunc()
 }
 #endif
 
+
 #if defined(PCBARM)
-#define MASK_FSW_TYPE uint32_t // current max = 32 functions
+#define MASK_FSW_TYPE uint32_t // current max = 32 function switches
 #else
-#define MASK_FSW_TYPE uint16_t // current max = 16 functions
+#define MASK_FSW_TYPE uint16_t // current max = 16 function switches
 #endif
 
-MASK_FSW_TYPE active_functions = 0;
+uint16_t active_functions = 0;
+MASK_FSW_TYPE active_switches = 0;
 
 void evalFunctions()
 {
+  assert((int)(sizeof(active_functions)*8) > (int)(FUNC_MAX-NUM_CHNOUT));
+
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
     safetyCh[i] = -128; // not defined
 
@@ -1382,7 +1386,8 @@ void evalFunctions()
     FuncSwData *sd = &g_model.funcSw[i];
     int8_t swtch = sd->swtch;
     if (swtch) {
-      MASK_FSW_TYPE mask = ((MASK_FSW_TYPE)1 << i);
+      uint16_t function_mask = (sd->func >= FUNC_TRAINER ? (1 << (sd->func-FUNC_TRAINER)) : 0);
+      MASK_FSW_TYPE switch_mask = ((MASK_FSW_TYPE)1 << i);
       uint8_t momentary = 0;
       if (swtch > MAX_SWITCH+1) {
         momentary = 1;
@@ -1397,8 +1402,7 @@ void evalFunctions()
           safetyCh[sd->func] = (int8_t)sd->param;
         }
 
-        if (~active_functions & mask) {
-
+        if (~active_functions & function_mask) {
           if (sd->func == FUNC_INSTANT_TRIM) {
             if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
@@ -1407,13 +1411,9 @@ void evalFunctions()
                 )
             instantTrim();
           }
+        }
 
-#if defined(SOMO)
-          if (sd->func == FUNC_PLAY_SOMO) {
-            somoPushPrompt(sd->param);
-          }
-#endif
-
+	if (~active_switches & switch_mask) {
           if (sd->func == FUNC_RESET) {
             switch (sd->param) {
               case 0:
@@ -1432,7 +1432,7 @@ void evalFunctions()
           }
         }
 
-        if ((!momentary) || (~active_functions & mask)) {
+        if ((!momentary) || (~active_switches & switch_mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
 #if defined(AUDIO)
             audioDefevent(AU_FRSKY_FIRST+sd->param);
@@ -1447,6 +1447,12 @@ void evalFunctions()
           }
 #endif
 
+#if defined(SOMO)
+          if (sd->func == FUNC_PLAY_SOMO) {
+            somoPushPrompt(sd->param);
+          }
+#endif
+
 #if defined(DEBUG)
           if (sd->func == FUNC_TEST) {
             testFunc();
@@ -1454,10 +1460,12 @@ void evalFunctions()
 #endif
         }
 
-        active_functions |= mask;
+        active_functions |= function_mask;
+        active_switches |= switch_mask;
       }
       else {
-        active_functions &= (~mask);
+        active_functions &= (~function_mask);
+        active_switches &= (~switch_mask);
       }
     }
   }
