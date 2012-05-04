@@ -292,7 +292,8 @@ ifeq ($(PCB), ARM)
   # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/sdcard.c ersky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += ersky9x/audio.cpp ersky9x/sound.cpp haptic.cpp
+  CPPSRC += ersky9x/audio.cpp haptic.cpp
+  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp  
 endif
 
 ifeq ($(PCB), V4)

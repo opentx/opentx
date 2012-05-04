@@ -40,7 +40,9 @@
 #include "ersky9x/AT91SAM3S4.h"
 #endif
 
-#include "ersky9x/sound.h"
+#include "ersky9x/sound_driver.h"
+#include "ersky9x/haptic_driver.h"
+#include "ersky9x/sdcard_driver.h"
 
 #define PIN_ENABLE           0x001
 #define PIN_PERIPHERAL       0x000

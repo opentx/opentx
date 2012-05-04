@@ -54,19 +54,18 @@ void audioQueue::heartbeat()
   if (toneTimeLeft > 0) {
     if (toneChanged) {
       toneChanged = 0;
-      set_frequency(toneFreq);
+      set_frequency(toneFreq * 61 / 2);
       tone_start(0);
     }
     else if (toneFreqIncr && (toneTimeLeft&1) == 0) {
       toneFreq += toneFreqIncr;
-      set_frequency(toneFreq);
+      set_frequency(toneFreq * 61 / 2);
     }
     toneTimeLeft--; //time gets counted down
   }
   else {
     if (tonePause > 0) {
-      DACC->DACC_IDR = DACC_IDR_ENDTX ;       // Disable interrupt
-      // SPEAKER_OFF;
+      tone_stop();
       tonePause--; //time gets counted down
     }
     else if (t_queueRidx != t_queueWidx) {
@@ -83,13 +82,13 @@ void audioQueue::heartbeat()
       if (tone2TimeLeft > 0) {
         if (tone2Changed) {
           tone2Changed = 0;
-          set_frequency(toneFreq);
+          set_frequency(toneFreq * 61 / 2);
           tone_start(0);
         }
         tone2TimeLeft--; //time gets counted down
       }
       else {
-        DACC->DACC_IDR = DACC_IDR_ENDTX ;       // Disable interrupt
+        tone_stop();
         if (tone2Pause > 0) {
           tone2Pause--; //time gets counted down
         }
