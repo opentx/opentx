@@ -1359,7 +1359,9 @@ BeepANACenter evalSticks(uint8_t phase)
  */
 void testFunc()
 {
-  // printf("testFunc\n"); fflush(stdout);
+#ifdef SIMU
+  printf("testFunc\n"); fflush(stdout);
+#endif
 }
 #endif
 
