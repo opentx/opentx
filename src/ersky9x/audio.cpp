@@ -82,7 +82,7 @@ void audioQueue::heartbeat()
       if (tone2TimeLeft > 0) {
         if (tone2Changed) {
           tone2Changed = 0;
-          set_frequency(toneFreq * 61 / 2);
+          set_frequency(tone2Freq * 61 / 2);
           tone_start(0);
         }
         tone2TimeLeft--; //time gets counted down
