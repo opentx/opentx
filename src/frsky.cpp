@@ -835,6 +835,7 @@ void resetTelemetry()
   frskyHubData.gpsLatitude_ap = 7710;
   frskyHubData.gpsLongitude_bp = 1006;
   frskyHubData.gpsLongitude_ap = 8872;
+  frskyHubData.gpsSpeed_bp = (100 * 250) / 463;
   getGpsPilotPosition();
 
   frskyHubData.gpsLatitude_bp = 4401;
@@ -887,7 +888,6 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
     case TELEM_T2:
       result = (int16_t)value - 30;
       break;
-    case TELEM_SPEED:
     case TELEM_CELL:
       result = value * 2;
       break;
