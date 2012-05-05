@@ -4234,7 +4234,7 @@ typedef struct {
   RwReg SPI_TNCR;      /**< \brief (Spi Offset: 0x11C) Transmit Next Counter Register */
   WoReg SPI_PTCR;      /**< \brief (Spi Offset: 0x120) Transfer Control Register */
   RoReg SPI_PTSR;      /**< \brief (Spi Offset: 0x124) Transfer Status Register */
-} Spi;
+} Spi, AT91S_SPI, *AT91PS_SPI;
 #endif /* __ASSEMBLY__ */
 /* -------- SPI_CR : (SPI Offset: 0x00) Control Register -------- */
 #define SPI_CR_SPIEN (0x1 << 0) /**< \brief (SPI_CR) SPI Enable */
