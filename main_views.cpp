@@ -340,6 +340,9 @@ void menuMainView(uint8_t event)
   }
 #endif
 
+#if 0
+  // in case we want a progress bar in the Main Views
   DISPLAY_PROGRESS_BAR(20*FW+1);
+#endif
 
 }
