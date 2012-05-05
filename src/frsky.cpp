@@ -305,7 +305,7 @@ void parseTelemHubByte(uint8_t byte)
 
     case offsetof(FrskyHubData, gpsSpeed_bp):
       // Speed => Max speed
-      if (frskyHubData.gpsSpeed_bp < frskyHubData.maxGpsSpeed)
+      if (frskyHubData.gpsSpeed_bp > frskyHubData.maxGpsSpeed)
         frskyHubData.maxGpsSpeed = frskyHubData.gpsSpeed_bp;
       break;
 
