@@ -49,7 +49,7 @@ NAVIGATION = NO
 
 # Switches autmatic selection
 # Values = YES, NO 
-AUTOSWITCH = YES
+AUTOSWITCH = NO
 
 # AUDIO Mods
 # Values = YES, NO 
@@ -230,7 +230,7 @@ ifeq ($(NAVIGATION), POTS)
   CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
 endif
 
-ifeq ($(AUTOSWITCH), NO)
+ifeq ($(AUTOSWITCH), YES)
   CPPDEFS += -DAUTOSWITCH
 endif
 
