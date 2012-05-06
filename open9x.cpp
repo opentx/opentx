@@ -578,6 +578,38 @@ bool getSwitch(int8_t swtch, bool nc)
   return __getSwitch(swtch);
 }
 
+int8_t getMovedSwitch()
+{
+  static uint8_t switches_states = 0;
+  int8_t result = 0;
+
+  for (uint8_t i=MAX_PSWITCH; i>0; i--) {
+    bool prev;
+    uint8_t mask = 0;
+    if (i <= 3) {
+      mask = (1<<(i-1));
+      prev = (switches_states & mask);
+    }
+    else if (i <= 6) {
+      prev = ((switches_states & 0b00011000) == ((i-3) << 3));
+    }
+    else {
+      mask = (1<<(i-2));
+      prev = (switches_states & mask);
+    }
+    bool next = __getSwitch(i);
+    if (prev != next) {
+      result = i;
+      if (mask)
+        switches_states ^= mask;
+      else
+        switches_states = (switches_states & 0b11100111) | ((i-3) << 3);
+    }
+  }
+
+  return result;
+}
+
 #ifdef FLIGHT_PHASES
 uint8_t getFlightPhase()
 {
