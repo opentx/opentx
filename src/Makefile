@@ -47,6 +47,10 @@ TEMPLATES = YES
 #          POTS (POT1, POT2, POT3),
 NAVIGATION = NO
 
+# Switches autmatic selection
+# Values = YES, NO 
+AUTOSWITCH = YES
+
 # AUDIO Mods
 # Values = YES, NO 
 AUDIO = NO
@@ -224,6 +228,10 @@ ifeq ($(NAVIGATION), POT3)
 endif
 ifeq ($(NAVIGATION), POTS)
   CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
+endif
+
+ifeq ($(AUTOSWITCH), YES)
+  CPPDEFS += -DAUTOSWITCH
 endif
 
 ifeq ($(SPLASH), YES)
