@@ -504,6 +504,7 @@ void    per10ms();
 
 int16_t getValue(uint8_t i);
 bool    getSwitch(int8_t swtch, bool nc);
+int8_t  getMovedSwitch();
 
 #ifdef FLIGHT_PHASES
 extern uint8_t getFlightPhase();
