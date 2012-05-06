@@ -455,15 +455,26 @@ int16_t getValue(uint8_t i)
   else return 0;
 }
 
-volatile uint16_t s_last_switch_used;
-volatile uint16_t s_last_switch_value;
+#if defined(PCBARM)
+#define GETSWITCH_RECURSIVE_TYPE uint32_t
+volatile bool s_default_switch_value;
+#else
+#define GETSWITCH_RECURSIVE_TYPE uint16_t
+#endif
+
+volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
+volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 /* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 bool __getSwitch(int8_t swtch)
 {
   bool result;
 
   if (swtch == 0)
-    return s_last_switch_used & ((uint16_t)1<<15);
+#if defined(PCBARM)
+    return s_default_switch_value;
+#else
+    return s_last_switch_used & ((GETSWITCH_RECURSIVE_TYPE)1<<15);
+#endif
 
   uint8_t cs_idx = abs(swtch);
 
@@ -480,7 +491,7 @@ bool __getSwitch(int8_t swtch)
 
     uint8_t s = CS_STATE(cs.func);
     if (s == CS_VBOOL) {
-      uint16_t mask = (1 << cs_idx);
+      GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
       if (s_last_switch_used & mask) {
         result = (s_last_switch_value & mask);
       }
@@ -502,9 +513,9 @@ bool __getSwitch(int8_t swtch)
         }
       }
       if (result)
-        s_last_switch_value |= (1<<cs_idx);
+        s_last_switch_value |= ((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
       else
-        s_last_switch_value &= ~(1<<cs_idx);
+        s_last_switch_value &= ~((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
     }
     else {
       int16_t x = getValue(cs.v1-1);
@@ -574,7 +585,12 @@ bool __getSwitch(int8_t swtch)
 
 bool getSwitch(int8_t swtch, bool nc)
 {
-  s_last_switch_used = ((uint16_t)nc<<15);
+#if defined(PCBARM)
+  s_last_switch_used = 0;
+  s_default_switch_value = nc;
+#else
+  s_last_switch_used = ((GETSWITCH_RECURSIVE_TYPE)nc<<15);
+#endif
   return __getSwitch(swtch);
 }
 
