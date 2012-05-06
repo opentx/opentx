@@ -100,6 +100,35 @@ enum BeeperMode {
 #define EXTRA_ARM_FIELDS
 #endif
 
+#if defined(FRSKY)
+#define FRSKY_OPTION 0x01
+#else
+#define FRSKY_OPTION 0x00
+#endif
+#if defined(HAPTIC)
+#define HAPTIC_OPTION 0x02
+#else
+#define HAPTIC_OPTION 0x00
+#endif
+#if defined(DEBUG)
+#define DEBUG_OPTION 0x04
+#else
+#define DEBUG_OPTION 0x00
+#endif
+
+#if defined(PXX)
+#define PXX_OPTION 0x10
+#else
+#define PXX_OPTION 0x00
+#endif
+#if defined(DSM2)
+#define DSM2_OPTION 0x20
+#else
+#define DSM2_OPTION 0x00
+#endif
+
+#define FW_OPTIONS (FRSKY_OPTION|HAPTIC_OPTION|DEBUG_OPTION|PXX_OPTION|DSM2_OPTION)
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   myVers;
@@ -144,6 +173,8 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   speakerPitch;
 
   EXTRA_ARM_FIELDS
+
+  uint8_t   fwOptions;
 
 }) EEGeneral;
 
@@ -511,8 +542,12 @@ enum Protocols {
   PROTO_PPM,
   PROTO_PPM16,
   PROTO_PPMSIM,
+#if defined(PXX)
   PROTO_PXX,
+#endif
+#if defined(DSM2)
   PROTO_DSM2,
+#endif
   PROTO_MAX
 };
 

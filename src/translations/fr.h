@@ -47,7 +47,17 @@
 #endif
 
 #define LEN_VPROTOS      "\006"
-#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim""PXX\0  ""DSM2\0 "
+#ifdef PXX
+#define TR_PXX "PXX\0  "
+#else
+#define TR_PXX
+#endif
+#ifdef DSM2
+#define TR_DSM2 "DSM2\0 "
+#else
+#define TR_DSM2
+#endif
+#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"

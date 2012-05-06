@@ -135,6 +135,7 @@ void generalDefault()
   memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
   g_eeGeneral.lightSw  = SWITCH_ON;
   g_eeGeneral.myVers   = EEPROM_VER;
+  g_eeGeneral.fwOptions = FW_OPTIONS;
   g_eeGeneral.contrast = 25;
   g_eeGeneral.vBatWarn = 90;
   for (int i = 0; i < 7; ++i) {
@@ -2570,8 +2571,10 @@ int main(void)
 #endif
    {
 #ifdef SPLASH
+#ifdef DSM2
     // TODO rather use another Model Parameter
     if (g_model.protocol != PROTO_DSM2)
+#endif
       doSplash();
 #endif
 
