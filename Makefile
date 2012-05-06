@@ -290,7 +290,7 @@ ifeq ($(PCB), ARM)
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/sdcard.c ersky9x/MEDSdcard.c
-  CPPSRC += ersky9x/sdmmc_spi.c ersky9x/sdspi.c
+  # CPPSRC += ersky9x/sdmmc_spi.c ersky9x/sdspi.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
