@@ -285,7 +285,7 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
-  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC
+  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM
   EXTRAINCDIRS += ersky9x
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
