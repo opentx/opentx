@@ -66,28 +66,28 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   int16_t newval = val;
   uint8_t kpl=KEY_RIGHT, kmi=KEY_LEFT, kother = -1;
 
-  if(event & _MSK_KEY_DBL){ 
+  if (event & _MSK_KEY_DBL) {
     uint8_t hlp=kpl;
     kpl=kmi;
     kmi=hlp;
     event=EVT_KEY_FIRST(EVT_KEY_MASK & event);
   }
-  if(event==EVT_KEY_FIRST(kpl) || event== EVT_KEY_REPT(kpl) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event== EVT_KEY_REPT(KEY_UP))) ) {
+  if (event==EVT_KEY_FIRST(kpl) || event== EVT_KEY_REPT(kpl) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event== EVT_KEY_REPT(KEY_UP))) ) {
     newval++;
     AUDIO_KEYPAD_UP();
     kother=kmi;
   }
-  else if(event==EVT_KEY_FIRST(kmi) || event== EVT_KEY_REPT(kmi) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_DOWN) || event== EVT_KEY_REPT(KEY_DOWN))) ) {
+  else if (event==EVT_KEY_FIRST(kmi) || event== EVT_KEY_REPT(kmi) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_DOWN) || event== EVT_KEY_REPT(KEY_DOWN))) ) {
     newval--;
     AUDIO_KEYPAD_DOWN();
     kother=kpl;
   }
-  if((kother != (uint8_t)-1) && keyState((EnumKeys)kother)){
+  if ((kother != (uint8_t)-1) && keyState((EnumKeys)kother)) {
     newval=-val;
     killEvents(kmi);
     killEvents(kpl);
   }
-  if(i_min==0 && i_max==1 && event==EVT_KEY_FIRST(KEY_MENU)) {
+  if (i_min==0 && i_max==1 && event==EVT_KEY_FIRST(KEY_MENU)) {
     s_editMode = 0;
     newval=!val;
     killEvents(event);
@@ -98,14 +98,21 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   newval -= p1valdiff;
 #endif
 
-  if(newval > i_max)
-  {
+#if defined(AUTOSWITCH)
+  if (i_flags & INCDEC_SWITCH) {
+    uint8_t swtch = getMovedSwitch();
+    if (swtch) {
+      newval = (val == swtch ? -swtch : swtch);
+    }
+  }
+#endif
+
+  if (newval > i_max) {
     newval = i_max;
     killEvents(event);
     AUDIO_WARNING2();
   }
-  if(newval < i_min)
-  {
+  if (newval < i_min) {
     newval = i_min;
     killEvents(event);
     AUDIO_WARNING2();

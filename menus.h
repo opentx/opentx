@@ -101,14 +101,22 @@ extern int8_t s_editMode;        // global editmode
 #define EE_GENERAL      0x01
 #define EE_MODEL        0x02
 #define NO_INCDEC_MARKS 0x04
+#define INCDEC_SWITCH   0x08
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags);
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 
-#define CHECK_INCDEC_MODELVAR( event, var, min, max) \
+#define CHECK_INCDEC_MODELVAR(event, var, min, max) \
   var = checkIncDecModel(event,var,min,max)
 
-#define CHECK_INCDEC_GENVAR( event, var, min, max) \
+#if defined(AUTOSWITCH)
+#define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
+  var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH)
+#else
+#define CHECK_INCDEC_MODELSWITCH CHECK_INCDEC_MODELVAR
+#endif
+
+#define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
 
 #if defined(ROTARY_ENCODERS)

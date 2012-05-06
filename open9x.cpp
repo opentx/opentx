@@ -594,9 +594,12 @@ bool getSwitch(int8_t swtch, bool nc)
   return __getSwitch(swtch);
 }
 
+#if defined(AUTOSWITCH)
 int8_t getMovedSwitch()
 {
   static uint8_t switches_states = 0;
+  static uint16_t s_last_time = 0;
+
   int8_t result = 0;
 
   for (uint8_t i=MAX_PSWITCH; i>0; i--) {
@@ -623,8 +626,14 @@ int8_t getMovedSwitch()
     }
   }
 
+  if (get_tmr10ms() - s_last_time > 10)
+    result = 0;
+
+  s_last_time = get_tmr10ms();
+
   return result;
 }
+#endif
 
 #ifdef FLIGHT_PHASES
 uint8_t getFlightPhase()
