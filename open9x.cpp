@@ -693,7 +693,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 #else
   if (unit == UNIT_KTS) {
     // kts to km/h
-    val = (val * 463) / 250;
+    val = (val * 46) / 25;
   }
 #endif
   lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT)); // TODO we could add this test inside lcd_outdezAtt!
