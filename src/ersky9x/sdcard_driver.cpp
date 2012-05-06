@@ -33,7 +33,9 @@
 
 void init_SDcard()
 {
+#ifndef SIMU
   configure_pins( 0xFC000000, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_C | PIN_PORTA | PIN_NO_PULLUP ) ;
   configure_pins( PIO_PB7, PIN_INPUT | PIN_PORTB | PIN_NO_PULLUP | PIN_NO_PULLDOWN ) ;
+#endif
 }
 
