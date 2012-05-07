@@ -1617,7 +1617,7 @@ void perOut(uint8_t phase)
   memset(chans, 0, sizeof(chans));        // All outputs to 0
 
   //========== MIXER LOOP ===============
-  mixWarning = 0; // TODO should be in a local variable on stack
+  uint8_t lv_mixWarning = 0;
   for (uint8_t i=0; i<MAX_MIXERS; i++) {
 
     MixData *md = mixaddress( i ) ;
@@ -1682,7 +1682,7 @@ void perOut(uint8_t phase)
             }
           }
         }
-        if (md->mixWarn) mixWarning |= 1<<(md->mixWarn-1); // Mix warning
+        if (md->mixWarn) lv_mixWarning |= 1<<(md->mixWarn-1); // Mix warning
       }
     }
     else {
@@ -1781,6 +1781,8 @@ void perOut(uint8_t phase)
         break;
       }
   }
+
+  mixWarning = lv_mixWarning;
 }
 
 #ifdef DISPLAY_USER_DATA
