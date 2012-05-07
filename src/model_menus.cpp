@@ -1304,58 +1304,6 @@ enum ExposFields {
   EXPO_FIELD_WHEN
 };
 
-inline void editExpoVals(uint8_t event, uint8_t which, bool edit, uint8_t y, uint8_t idt)
-{
-  uint8_t invBlk = edit ? INVERS : 0;
-
-  ExpoData *ed = expoaddress(idt); // TODO volatile
-
-  switch(which)
-  {
-    case EXPO_FIELD_WIDTH:
-      {
-        PREPARE_INFLIGHT_BITFIELD(&ed->expo - 1);
-        lcd_outdezAtt(9*FW+5, y, ed->weight, invBlk|INFLIGHT(*bitfield));
-        if (edit) CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, ed->weight, 0, 100, 0, STR_DRWEIGHT, 1);
-      }
-      break;
-    case EXPO_FIELD_EXPO:
-      lcd_outdezAtt(9*FW+5, y, ed->expo, invBlk|INFLIGHT(ed->expo));
-      if (edit) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
-      break;
-    case EXPO_FIELD_CURVE:
-      putsCurve(6*FW+5, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0), invBlk);
-      if (invBlk) CHECK_INCDEC_MODELVAR(event, ed->curve, 0, 15);
-      if (invBlk && ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
-        s_curveChan = ed->curve - (ed->curve >= CURVE_BASE+4 ? CURVE_BASE-4 : CURVE_BASE);
-        pushMenu(menuProcCurveOne);
-      }
-      break;
-#ifdef FLIGHT_PHASES
-    case EXPO_FIELD_FLIGHT_PHASE:
-      {
-#if defined(PCBARM)
-        putsFlightPhase(6*FW+5, y, ed->phase, invBlk);
-        if(edit) { ed->phase = checkIncDecModel(event, ed->phase, -MAX_PHASES, MAX_PHASES); }
-#else
-        int8_t phase = ed->negPhase ? -ed->phase : +ed->phase;
-        putsFlightPhase(6*FW+5, y, phase, invBlk);
-        if(edit) { phase = checkIncDecModel(event, phase, -MAX_PHASES, MAX_PHASES); ed->negPhase = (phase < 0); ed->phase = abs(phase); }
-#endif
-      }
-      break;
-#endif
-    case EXPO_FIELD_SWITCH:
-      putsSwitches(6*FW+5, y, ed->swtch, invBlk);
-      if(edit) CHECK_INCDEC_MODELVAR(event, ed->swtch, -MAX_DRSWITCH, MAX_DRSWITCH);
-      break;
-    case EXPO_FIELD_WHEN:
-      lcd_putsiAtt(6*FW+5, y, STR_VWHEN, 3-ed->mode, invBlk);
-      if(edit) ed->mode = 4 - checkIncDecModel(event, 4-ed->mode, 1, 3);
-      break;
-  }
-}
-
 #ifdef FLIGHT_PHASES
 #define EXPO_ONE_LINES_COUNT 6
 #else
@@ -1375,7 +1323,52 @@ void menuProcExpoOne(uint8_t event)
 
   for (uint8_t i=0; i<EXPO_ONE_LINES_COUNT+1; i++) {
     lcd_putsiAtt(0, y, STR_EXPLABELS, i, 0);
-    editExpoVals(event, i, sub==i, y, s_currIdx);
+    uint8_t edit = (sub==i);
+    uint8_t invBlk = edit ? INVERS : 0;
+    switch(i)
+    {
+      case EXPO_FIELD_WIDTH:
+        {
+          PREPARE_INFLIGHT_BITFIELD(&ed->expo - 1);
+          lcd_outdezAtt(9*FW+5, y, ed->weight, invBlk|INFLIGHT(*bitfield));
+          if (edit) CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, ed->weight, 0, 100, 0, STR_DRWEIGHT, 1);
+        }
+        break;
+      case EXPO_FIELD_EXPO:
+        lcd_outdezAtt(9*FW+5, y, ed->expo, invBlk|INFLIGHT(ed->expo));
+        if (edit) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
+        break;
+      case EXPO_FIELD_CURVE:
+        putsCurve(6*FW+5, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0), invBlk);
+        if (invBlk) CHECK_INCDEC_MODELVAR(event, ed->curve, 0, 15);
+        if (invBlk && ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
+          s_curveChan = ed->curve - (ed->curve >= CURVE_BASE+4 ? CURVE_BASE-4 : CURVE_BASE);
+          pushMenu(menuProcCurveOne);
+        }
+        break;
+#ifdef FLIGHT_PHASES
+      case EXPO_FIELD_FLIGHT_PHASE:
+        {
+#if defined(PCBARM)
+          putsFlightPhase(6*FW+5, y, ed->phase, invBlk);
+          if(edit) { ed->phase = checkIncDecModel(event, ed->phase, -MAX_PHASES, MAX_PHASES); }
+#else
+          int8_t phase = ed->negPhase ? -ed->phase : +ed->phase;
+          putsFlightPhase(6*FW+5, y, phase, invBlk);
+          if(edit) { phase = checkIncDecModel(event, phase, -MAX_PHASES, MAX_PHASES); ed->negPhase = (phase < 0); ed->phase = abs(phase); }
+#endif
+        }
+        break;
+#endif
+      case EXPO_FIELD_SWITCH:
+        putsSwitches(6*FW+5, y, ed->swtch, invBlk);
+        if(edit) CHECK_INCDEC_MODELSWITCH(event, ed->swtch, -MAX_DRSWITCH, MAX_DRSWITCH);
+        break;
+      case EXPO_FIELD_WHEN:
+        lcd_putsiAtt(6*FW+5, y, STR_VWHEN, 3-ed->mode, invBlk);
+        if(edit) ed->mode = 4 - checkIncDecModel(event, 4-ed->mode, 1, 3);
+        break;
+    }
     y+=FH;
   }
 
@@ -1466,7 +1459,7 @@ void menuProcMixOne(uint8_t event)
       case MIX_FIELD_SWITCH:
         lcd_puts(  2*FW,y,STR_SWITCH);
         putsSwitches(10*FW,  y,md2->swtch,attr);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->swtch, -MAX_SWITCH, MAX_SWITCH);
+        if(attr) CHECK_INCDEC_MODELSWITCH( event, md2->swtch, -MAX_SWITCH, MAX_SWITCH);
         break;
 #ifdef FLIGHT_PHASES
       case MIX_FIELD_FLIGHT_PHASE:
@@ -2067,12 +2060,12 @@ void menuProcFunctionSwitches(uint8_t event)
     FuncSwData *sd = &g_model.funcSw[k];
     for (uint8_t j=0; j<3; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-      uint8_t active = (attr && (s_editMode>0 || p1valdiff));
+      uint8_t active = (attr && (s_editMode>0 || p1valdiff || !sd->swtch));
       switch (j) {
         case 0:
           putsSwitches(3, y, sd->swtch, attr);
           if (active) {
-            CHECK_INCDEC_MODELVAR( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH);
+            CHECK_INCDEC_MODELSWITCH( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH);
           }
           break;
         case 1:
