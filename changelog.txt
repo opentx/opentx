@@ -1,4 +1,19 @@
 ******************************************
+CHANGELOG: 07-05-2012  BSS
+AutoSwitch feature added
+Mix Warning was not so regular (sometime 2 ticks instead of 3)
+
+******************************************
+CHANGELOG: 06-05-2012  BSS
+FW options now stored in a byte of the EEPROM
+[Arm] getSwitch() problem with Custom Switches
+
+******************************************
+CHANGELOG: 05-05-2012  BSS
+[FrSky] Speed in Gauges configuration was buggy
+[FrSky] We stored Min Speed instead of Max Speed
+
+******************************************
 CHANGELOG: 04-05-2012  BSS
 Momentary Switches in Function Switches
 
