@@ -99,7 +99,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
 
 #if defined(AUTOSWITCH)
-  if (i_flags & INCDEC_SWITCH) {
+  if (s_editMode>0 && (i_flags & INCDEC_SWITCH)) {
     uint8_t swtch = getMovedSwitch();
     if (swtch) {
       newval = (val == swtch ? -swtch : swtch);
@@ -362,8 +362,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
       break;
 #endif
     case EVT_KEY_FIRST(KEY_MENU):
-      if (maxcol > 0)
-        s_editMode = (s_editMode<=0);
+      s_editMode = (s_editMode<=0);
       break;
     case EVT_KEY_LONG(KEY_EXIT):
       s_editMode = 0;
