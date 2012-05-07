@@ -498,16 +498,16 @@ void menuProcTime(uint8_t event)
 
 void menuProcTrainer(uint8_t event)
 {
-  MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, 7, {0, 2, 2, 2, 2, 0/*, 0*/});
-
   uint8_t y;
   bool    edit;
   uint8_t blink ;
 
   if (SLAVE_MODE) { // i am the slave
+    SIMPLE_MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, 1);
     lcd_puts(7*FW, 3*FH, STR_SLAVE);
   }
   else {
+    MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, 7, {0, 2, 2, 2, 2, 0/*, 0*/});
     lcd_puts(3*FW, 1*FH, STR_MODESRC);
 
     y = 2*FH;
