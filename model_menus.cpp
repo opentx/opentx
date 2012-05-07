@@ -723,7 +723,7 @@ void menuProcModel(uint8_t event)
         }
         // TODO port PPM16 ppmDelay from er9x
 #if defined(DSM2) || defined(PXX)
-        else if (protocol == PROTO_DSM2 || protocol == PROTO_PXX) {
+        else if (IS_DSM2_PROTOCOL(protocol) || IS_PXX_PROTOCOL(protocol)) {
           lcd_putsLeft( y, STR_RXNUM);
           lcd_outdezNAtt(MODEL_PARAM_OFS-(protocol==PROTO_DSM2 ? 0 : 3*FW), y, g_model.modelId, ((attr && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | LEADING0|LEFT, 2);
 
