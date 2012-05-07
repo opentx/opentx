@@ -62,6 +62,7 @@ void setSwitch(int8_t swtch)
     case DSW_ID0:
 #if defined(PCBARM)
       PIOC->PIO_PDSR &= ~0x00004000;
+      PIOC->PIO_PDSR |= 0x00000800;
 #elif defined(PCBV4)
       ping |=  (1<<INP_G_ID1);
       pinb &= ~(1<<INP_B_ID2);
@@ -84,6 +85,7 @@ void setSwitch(int8_t swtch)
     case DSW_ID2:
 #if defined(PCBARM)
       PIOC->PIO_PDSR &= ~0x00000800;
+      PIOC->PIO_PDSR |= 0x00004000;
 #elif defined(PCBV4)
       ping &= ~(1<<INP_G_ID1);
       pinb |=  (1<<INP_B_ID2);
