@@ -571,8 +571,6 @@ void init_pwm()
 #define LCD_CS1   0x04000000L
 #define LCD_RES   0x08000000L
 
-extern void start_sound(); // TODO elsewhere
-
 void configure_pins( uint32_t pins, uint16_t config )
 {
         register Pio *pioptr ;

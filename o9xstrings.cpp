@@ -332,7 +332,6 @@ const pm_uchar font[] PROGMEM = {
 };
 
 const pm_uchar font_dblsize[] PROGMEM = {
-// TODO flash saving with locale extensions
 #include "font_dblsize.lbm"
 #ifdef TRANSLATIONS_SE
 #include "font_dblsize_se.lbm"
