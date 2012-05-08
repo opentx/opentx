@@ -158,8 +158,8 @@
 #define TR_VTELPROTO     ""
 #endif
 
-#define LEN_VARIOSRC     "\004"
-#define TR_VARIOSRC      "None""Baro""A1  ""A2  "
+#define LEN_VARIOSRC     "\006"
+#define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2    "
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
