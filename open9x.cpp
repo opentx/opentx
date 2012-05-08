@@ -618,7 +618,8 @@ int8_t getMovedSwitch()
     }
     bool next = __getSwitch(i);
     if (prev != next) {
-      result = i;
+      if (i!=MAX_PSWITCH || next==true)
+        result = i;
       if (mask)
         switches_states ^= mask;
       else
