@@ -60,9 +60,7 @@ uint8_t *Eeprom32_source_address ;
 uint32_t Eeprom32_address ;
 uint32_t Eeprom32_data_size ;
 
-// TODO use these constants everywhere
-#define EE_WAIT		0
-#define EE_NO_WAIT	1
+#define EE_NOWAIT	1
 
 void eeDirty(uint8_t msk)
 {
@@ -73,8 +71,8 @@ void eeDirty(uint8_t msk)
 void handle_serial( void ) ;
 
 uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t *p_seq ) ;
-void read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate ) ;
-void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate ) ;
+void read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0 ) ;
+void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0 ) ;
 void ee32_read_model_names( void ) ;
 void ee32LoadModelName(uint8_t id, char *buf, uint8_t len) ;
 
@@ -130,7 +128,7 @@ bool eeCopyModel(uint8_t dst, uint8_t src)
   // eeCheck(true) should have been called before entering here
 
   uint16_t size = File_system[src+1].size ;
-  read32_eeprom_data( (File_system[src+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, size, 0 ) ;
+  read32_eeprom_data( (File_system[src+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, size) ;
 
   if (size > sizeof(g_model.name))
     memcpy(ModelNames[dst], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
@@ -158,7 +156,7 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
 
   // TODO flash saving with function above ...
   if (id2_size > sizeof(g_model.name)) {
-    read32_eeprom_data( (id2_block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, id2_size, 0 );
+    read32_eeprom_data( (id2_block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, id2_size);
     memcpy(ModelNames[id1], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
   }
   else {
@@ -375,8 +373,8 @@ uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t
   struct t_eeprom_header b1 ;
   uint32_t sequence_no ;
   uint16_t size ;
-  read32_eeprom_data( block_no << 12, ( uint8_t *)&b0, sizeof(b0), EE_WAIT ) ;		// Sequence # 0
-  read32_eeprom_data( (block_no+1) << 12, ( uint8_t *)&b1, sizeof(b1), EE_WAIT ) ;	// Sequence # 1
+  read32_eeprom_data( block_no << 12, ( uint8_t *)&b0, sizeof(b0) ) ;		// Sequence # 0
+  read32_eeprom_data( (block_no+1) << 12, ( uint8_t *)&b1, sizeof(b1) ) ;	// Sequence # 1
 
   if ( ee32_check_header( &b0 ) == 0 )
   {
@@ -448,7 +446,7 @@ bool ee32LoadGeneral()
   }
 
   if (size) {
-    read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size, 0 ) ;
+    read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size) ;
   }
 
   if (g_eeGeneral.myVers == EEPROM_VER) {
@@ -492,7 +490,7 @@ void eeLoadModel(uint8_t id)
       eeCheck(true);
     }
     else {
-      read32_eeprom_data( ( File_system[id+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_model, size, 0 ) ;
+      read32_eeprom_data( ( File_system[id+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_model, size) ;
     }
 
     resetProto();
@@ -515,7 +513,7 @@ void ee32LoadModelName(uint8_t id, char *buf, uint8_t len)
     id += 1;
     memset(buf, 0, len);
     if (File_system[id].size > sizeof(g_model.name) ) {
-      read32_eeprom_data( ( File_system[id].block_no << 12) + 8, ( uint8_t *)buf, sizeof(g_model.name), 0 ) ;
+      read32_eeprom_data( ( File_system[id].block_no << 12) + 8, ( uint8_t *)buf, sizeof(g_model.name)) ;
     }
   }
 }
@@ -716,7 +714,7 @@ void ee32_process()
 #if 0
     x = Eeprom32_data_size + sizeof( struct t_eeprom_header ) ;	// Size needing to be checked
     p = (uint8_t *) &Eeprom_buffer ;
-    read32_eeprom_data( eeAddress, p, x, 1 ) ;
+    read32_eeprom_data( eeAddress, p, x, EE_NOWAIT ) ;
 #endif
     Eeprom32_process_state = E32_READSENDING ;
   }
@@ -796,7 +794,7 @@ void ee32_process()
     }
     Eeprom32_buffer_address = p;
     Eeprom32_address = eeAddress;
-    write32_eeprom_block(eeAddress, p, x, 1);
+    write32_eeprom_block(eeAddress, p, x, EE_NOWAIT);
     Eeprom32_process_state = E32_WRITESENDING ;
   }
 
@@ -817,7 +815,7 @@ void ee32_process()
       {
         Eeprom32_address -= 256 ;
         Eeprom32_buffer_address -= 256 ;
-        write32_eeprom_block( Eeprom32_address, Eeprom32_buffer_address, 256, 1 ) ;
+        write32_eeprom_block( Eeprom32_address, Eeprom32_buffer_address, 256, EE_NOWAIT ) ;
         Eeprom32_process_state = E32_WRITESENDING ;
       }
       else
