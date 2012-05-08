@@ -1977,15 +1977,17 @@ void menuProcCustomSwitches(uint8_t event)
   for(uint8_t i=0; i<7; i++) {
     y=(i+1)*FH;
     k=i+s_pgOfs;
-    if(k==NUM_CSW) break;
     uint8_t attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
     CustomSwData &cs = g_model.customSw[k];
 
-    //write SW names here
-    lcd_putsLeft(y, STR_SW);
-    lcd_putc(2*FW, y, k + (k>8 ? 'A'-9: '1'));
+    // CSW name
+    uint8_t sw = DSW_SW1+k;
+    putsSwitches(0, y, sw, getSwitch(sw, 0) ? INVERS : 0);
+
+    // CSW func
     lcd_putsiAtt(4*FW - 1, y, STR_VCSWFUNC, cs.func, m_posHorz==0 ? attr : 0);
 
+    // CSW params
     uint8_t cstate = CS_STATE(cs.func);
     int8_t v1_min=0, v1_max=NUM_XCHNCSW, v2_min=0, v2_max=NUM_XCHNCSW;
 
