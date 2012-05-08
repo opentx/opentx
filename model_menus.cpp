@@ -2212,6 +2212,7 @@ void menuProcTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A2_LABEL:
         lcd_putsLeft(y, STR_ACHANNEL);
         lcd_outdezAtt(2*FW, y, ch+1, 0);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, ch+MAX_TIMERS, frskyTelemetry[ch].value, LEFT);
         break;
 
       case ITEM_TELEMETRY_A1_RANGE:

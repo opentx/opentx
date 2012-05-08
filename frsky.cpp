@@ -648,7 +648,7 @@ void check_frsky()
 #if defined(AUDIO)
     int16_t varioSpeedUpMin = (g_model.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER)*VARIO_SPEED_LIMIT_MUL;
     int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
-    int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), (int16_t)frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
+    int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
 
     uint8_t SoundAltBeepNextFreq = 0;
     uint8_t SoundAltBeepNextTime = 0;
@@ -660,12 +660,12 @@ void check_frsky()
     }
     else {
       if((varioSpeedUpMin < 0) & (verticalSpeed >= varioSpeedUpMin)){
-        verticalSpeed = verticalSpeed - varioSpeedUpMin;
+        verticalSpeed -= varioSpeedUpMin;
       }		  
       SoundAltBeepNextFreq = (verticalSpeed * 10 + 16000) >> 8;
       SoundAltBeepNextTime = (1600 - verticalSpeed) / 100;
       if (verticalSpeed > 0) {
-        if ((int16_t)(g_tmr10ms - s_varioTmr) > (int16_t)((int16_t)SoundAltBeepTime*2)) {
+        if ((uint16_t)(g_tmr10ms - s_varioTmr) > (uint16_t)SoundAltBeepTime*2) {
           s_varioTmr = g_tmr10ms;
           SoundAltBeepTime = SoundAltBeepNextTime;
           SoundAltBeepFreq = SoundAltBeepNextFreq;
