@@ -573,11 +573,16 @@ void setupPulses()
         TCNT1 = 0 ;
         OCR1B = 6000 ;         // Next frame starts in 3 mS
         OCR1C = 4000 ;         // Next frame setup in 2 mS
+#if defined(PCBV4)
+        TIMSK1 &= ~0x3C; // All interrupts off
+        TIFR1 = 0x2F;
+#else
         TIMSK &= ~0x3C;        // All interrupts off
         TIFR = 0x3C ;
         ETIFR = 0x3F ;
         TIMSK |= (1<<OCIE1B) ; // Enable COMPB
         ETIMSK |= (1<<OCIE1C); // Enable COMPC
+#endif
         TCCR1A  = 0;
         TCCR1B  = (2<<CS10);   //ICNC3 16MHz / 8
         break;
