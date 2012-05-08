@@ -273,12 +273,15 @@ void parseTelemHubByte(uint8_t byte)
       // First received barometer altitude => Altitude offset
       if (!frskyHubData.baroAltitudeOffset)
         frskyHubData.baroAltitudeOffset = -frskyHubData.baroAltitude_bp;
+      if (g_model.varioSource == VARIO_SOURCE_BARO_V1) {
+        evalVario(frskyHubData.baroAltitude_bp*100, 0);
+      }
       frskyHubData.baroAltitude_bp += frskyHubData.baroAltitudeOffset;
       checkMinMaxAltitude();
       break;
 
     case offsetof(FrskyHubData, baroAltitude_ap):
-      if (g_model.varioSource == VARIO_SOURCE_BARO) {
+      if (g_model.varioSource == VARIO_SOURCE_BARO_V2) {
         evalVario(frskyHubData.baroAltitude_bp-frskyHubData.baroAltitudeOffset, frskyHubData.baroAltitude_ap);
       }
       break;

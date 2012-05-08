@@ -2327,7 +2327,7 @@ void menuProcTelemetry(uint8_t event)
       case ITEM_TELEMETRY_VARIO_SOURCE:
         lcd_puts(4, y, STR_SOURCE);
         lcd_putsiAtt(TELEM_COL2, y, STR_VARIOSRC, g_model.varioSource, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.varioSource, VARIO_SOURCE_NONE, VARIO_SOURCE_LAST-1);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.varioSource, VARIO_SOURCE_FIRST, VARIO_SOURCE_LAST-1);
         break;
 
       case ITEM_TELEMETRY_VARIO_SPEED:
