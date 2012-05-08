@@ -41,6 +41,7 @@ FILE *fp = NULL;
 
 #if defined(PCBARM)
 Pio Pioa, Piob, Pioc;
+Twi Twio;
 Usart Usart0;
 uint32_t eeprom_pointer;
 char* eeprom_buffer_data;

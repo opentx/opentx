@@ -97,6 +97,7 @@ typedef const int8_t pm_int8_t;
 extern sem_t eeprom_write_sem;
 #if defined(PCBARM)
 extern Pio Pioa, Piob, Pioc;
+extern Twi Twio;
 extern Usart Usart0;
 #undef USART0
 #define USART0 (&Usart0)
@@ -106,6 +107,8 @@ extern Usart Usart0;
 #define PIOB (&Piob)
 #undef PIOC
 #define PIOC (&Pioc)
+#undef TWI0
+#define TWI0 (&Twio)
 extern uint32_t eeprom_pointer;
 extern char* eeprom_buffer_data;
 extern volatile int32_t eeprom_buffer_size;
