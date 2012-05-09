@@ -650,33 +650,33 @@ void check_frsky()
     int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
     int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), frskyHubData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
 
-    uint8_t SoundAltBeepNextFreq = 0;
-    uint8_t SoundAltBeepNextTime = 0;
-    static uint8_t SoundAltBeepFreq = 0;
-    static uint8_t SoundAltBeepTime = 0;
+    uint8_t SoundVarioBeepNextFreq = 0;
+    uint8_t SoundVarioBeepNextTime = 0;
+    static uint8_t SoundVarioBeepFreq = 0;
+    static uint8_t SoundVarioBeepTime = 0;
     if ((verticalSpeed < varioSpeedUpMin) && (verticalSpeed > varioSpeedDownMin)) { //check thresholds here in cm/s
-      SoundAltBeepNextFreq = (0);
-      SoundAltBeepNextTime = (0);
+      SoundVarioBeepNextFreq = (0);
+      SoundVarioBeepNextTime = (0);
     }
     else {
       if((varioSpeedUpMin < 0) & (verticalSpeed >= varioSpeedUpMin)){
         verticalSpeed -= varioSpeedUpMin;
       }		  
-      SoundAltBeepNextFreq = (verticalSpeed * 10 + 16000) >> 8;
-      SoundAltBeepNextTime = (1600 - verticalSpeed) / 100;
+      SoundVarioBeepNextFreq = (verticalSpeed * 10 + 16000) >> 8;
+      SoundVarioBeepNextTime = (1600 - verticalSpeed) / 100;
       if (verticalSpeed >= 0) {
-        if ((uint16_t)(g_tmr10ms - s_varioTmr) > (uint16_t)SoundAltBeepTime*2) {
+        if ((uint16_t)(g_tmr10ms - s_varioTmr) > (uint16_t)SoundVarioBeepTime*2) {
           s_varioTmr = g_tmr10ms;
-          SoundAltBeepTime = SoundAltBeepNextTime;
-          SoundAltBeepFreq = SoundAltBeepNextFreq;
-          audio.play(SoundAltBeepFreq, SoundAltBeepTime, 0, PLAY_SOUND_VARIO);
+          SoundVarioBeepTime = SoundVarioBeepNextTime;
+          SoundVarioBeepFreq = SoundVarioBeepNextFreq;
+          audio.play(SoundVarioBeepFreq, SoundVarioBeepTime, 0, PLAY_SOUND_VARIO);
         }
       }
       else {
         // negative vertical speed gives sound without pauses
-        SoundAltBeepTime = SoundAltBeepNextTime;
-        SoundAltBeepFreq = SoundAltBeepNextFreq;
-        audio.play(SoundAltBeepFreq, 1, 0, PLAY_SOUND_VARIO);
+        SoundVarioBeepTime = SoundVarioBeepNextTime;
+        SoundVarioBeepFreq = SoundVarioBeepNextFreq;
+        audio.play(SoundVarioBeepFreq, 1, 0, PLAY_SOUND_VARIO);
       }
     }
 #else
