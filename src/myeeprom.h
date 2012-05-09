@@ -143,7 +143,7 @@ PACK(typedef struct t_EEGeneral {
   int8_t    lightSw;
   TrainerData trainer;
   uint8_t   view;      //index of subview in main scrren
-  uint8_t   disableThrottleWarning:1;
+  uint8_t   spare0:1;
   int8_t    switchWarning:2; // -1=down, 0=off, 1=up
   int8_t    beeperMode:2;
   uint8_t   spare1:1;
@@ -577,7 +577,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
   uint8_t   trimInc:3;            // Trim Increments
-  uint8_t   spare1:1;
+  uint8_t   disableThrottleWarning:1;
   uint8_t   pulsePol:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;

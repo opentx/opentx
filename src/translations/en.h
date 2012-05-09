@@ -291,7 +291,7 @@
 #define TR_LIGHTSWITCH  "Light switch"
 #define TR_LIGHTOFFAFTER "Light off after"
 #define TR_SPLASHSCREEN  "Splash screen"
-#define TR_THROTTLEWARNING "Thr Warning"
+#define TR_THROTTLEWARNING "T-Warning"
 #define TR_SWITCHWARNING "Switch Warning"
 #define TR_MEMORYWARNING "Memory Warning"
 #define TR_ALARMWARNING "Alarm Warning"
