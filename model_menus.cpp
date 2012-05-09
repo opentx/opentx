@@ -291,9 +291,7 @@ void menuProcModelSelect(uint8_t event)
           return;
         }
         else if (_event == EVT_KEY_LONG(KEY_MENU) || IS_RE_NAVIGATION_EVT_TYPE(_event, EVT_KEY_LONG)) {
-#if defined(ROTARY_ENCODERS)
           s_editMode = -1;
-#endif
           s_copyMode = 0;
           killEvents(event);
 #if defined(SDCARD)
