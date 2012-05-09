@@ -162,7 +162,7 @@ typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 
 #define MENU(title, tab, menu, lines_count, ...) \
 static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
-if (!check(event,menu,tab,DIM(tab),mstate_tab,DIM(mstate_tab)-1,lines_count-1)) return; \
+if (!check(event,menu,tab,DIM(tab),mstate_tab,lines_count ? DIM(mstate_tab)-1 : 0,lines_count-1)) return; \
 TITLE(title)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
