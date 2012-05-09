@@ -491,61 +491,58 @@ void menuProcTime(uint8_t event)
 void menuProcTrainer(uint8_t event)
 {
   uint8_t y;
-  bool    edit;
-  uint8_t blink ;
+  bool slave = SLAVE_MODE;
 
-  if (SLAVE_MODE) { // i am the slave
-    SIMPLE_MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, 1);
+  MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, slave ? 1 : 7, {0, 2, 2, 2, 2, 0/*, 0*/});
+
+  if (slave) { // i am the slave
     lcd_puts(7*FW, 3*FH, STR_SLAVE);
   }
   else {
-    MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, 7, {0, 2, 2, 2, 2, 0/*, 0*/});
+    uint8_t attr;
+    uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+
     lcd_puts(3*FW, 1*FH, STR_MODESRC);
 
     y = 2*FH;
-    blink = (s_editMode>0) ? BLINK|INVERS : INVERS ;
 
     for (uint8_t i=1; i<=NUM_STICKS; i++) {
       uint8_t chan = channel_order(i);
-
       volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
       putsChnRaw(0, y, chan, 0);
 
       for (uint8_t j=0; j<3; j++) {
-        edit = (m_posVert==i && m_posHorz==j);
-        bool incdec = (edit && s_editMode>0);
+
+        attr = ((m_posVert==i && m_posHorz==j) ? blink : 0);
 
         switch(j) {
           case 0:
-            lcd_putsiAtt(4*FW, y, STR_TRNMODE, td->mode, edit ? blink : 0);
-            if (incdec)
-              CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
+            lcd_putsiAtt(4*FW, y, STR_TRNMODE, td->mode, attr);
+            if (attr) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
             break;
 
           case 1:
-            lcd_outdezAtt(11*FW, y, td->studWeight, edit ? blink : 0);
-            if (incdec)
-              CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
+            lcd_outdezAtt(11*FW, y, td->studWeight, attr);
+            if (attr) CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
             break;
 
           case 2:
-            lcd_putsiAtt(12*FW, y, STR_TRNCHN, td->srcChn, edit ? blink : 0);
-            if (incdec)
-              CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
+            lcd_putsiAtt(12*FW, y, STR_TRNCHN, td->srcChn, attr);
+            if (attr) CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
             break;
         }
       }
       y += FH;
     }
 
-    edit = (m_posVert==5);
+    attr = (m_posVert==5) ? blink : 0;
     lcd_putsLeft(6*FH, STR_MULTIPLIER);
-    lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, 6*FH, g_eeGeneral.PPM_Multiplier+10, (edit ? INVERS : 0)|PREC1);
-    if (edit) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
+    lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, 6*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
+    if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    edit = (m_posVert==6);
-    lcd_putsAtt(0*FW, 7*FH, STR_CAL, edit ? INVERS : 0);
+    attr = (m_posVert==6) ? blink : 0;
+    lcd_putsAtt(0*FW, 7*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*8+16)*FW/2;
 #if defined (DECIMALS_DISPLAYED)
@@ -555,7 +552,7 @@ void menuProcTrainer(uint8_t event)
 #endif
     }
 
-    if (edit) {
+    if (attr) {
       if (event==EVT_KEY_FIRST(KEY_MENU)){
         memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
