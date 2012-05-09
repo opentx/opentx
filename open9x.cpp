@@ -841,7 +841,7 @@ void checkLowEEPROM()
 
 void checkTHR()
 {
-  if(g_eeGeneral.disableThrottleWarning) return;
+  if(g_model.disableThrottleWarning) return;
 
   int thrchn=(2-(stickMode&1));//stickMode=0123 -> thr=2121
 
