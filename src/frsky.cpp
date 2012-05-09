@@ -664,7 +664,7 @@ void check_frsky()
       }		  
       SoundAltBeepNextFreq = (verticalSpeed * 10 + 16000) >> 8;
       SoundAltBeepNextTime = (1600 - verticalSpeed) / 100;
-      if (verticalSpeed > 0) {
+      if (verticalSpeed >= 0) {
         if ((uint16_t)(g_tmr10ms - s_varioTmr) > (uint16_t)SoundAltBeepTime*2) {
           s_varioTmr = g_tmr10ms;
           SoundAltBeepTime = SoundAltBeepNextTime;
