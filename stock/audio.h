@@ -37,7 +37,7 @@
 
 #if defined(PCBSTD)
 #define SPEAKER_ON   BUZZER_ON
-#define SPEAKER_OFF  BUZZER_OFF
+#define SPEAKER_OFF  toneFreq=0; BUZZER_OFF
 #endif
 
 //audio
@@ -60,7 +60,7 @@ class audioQueue
     void event(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
     inline void driver() {
-      if (toneFreq && toneTimeLeft > 0) {
+      if (toneFreq) {
         toneCounter += toneFreq;
         if ((toneCounter & 0x80) == 0x80)
           BUZZER_ON;
