@@ -2623,9 +2623,9 @@ int main(void)
 #endif
 
 #if defined(PCBV4)
-  if (MCUSR != (1 << PORF) && !g_eeGeneral.unexpectedShutdown)
+  if ((~MCUSR & (1 << WDRF)) && !g_eeGeneral.unexpectedShutdown)
 #elif defined(PCBSTD)
-  if (MCUCSR != (1 << PORF))
+  if (~MCUCSR & (1 << WDRF))
 #else
   if (!g_eeGeneral.unexpectedShutdown)
 #endif
