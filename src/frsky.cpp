@@ -395,8 +395,6 @@ void processFrskyPacket(uint8_t *packet)
       frskyRSSI[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       if (g_model.varioSource >= VARIO_SOURCE_A1) {
-        //frskyHubData.varioSpeed = applyChannelRatio(frskyTelemetry[g_model.varioSource - VARIO_SOURCE_A1].value, g_model.varioSource - VARIO_SOURCE_A1);
-		    //frskyHubData.varioSpeed = frskyTelemetry[g_model.varioSource - VARIO_SOURCE_A1].value;
         frskyHubData.varioSpeed = applyChannelRatio(g_model.varioSource - VARIO_SOURCE_A1, frskyTelemetry[g_model.varioSource - VARIO_SOURCE_A1].value);
       }
       break;
