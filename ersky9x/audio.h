@@ -35,11 +35,13 @@
 #ifndef audio_h
 #define audio_h
 
-#define AUDIO_QUEUE_LENGTH (20) 
+#define AUDIO_QUEUE_LENGTH (100) 
 #define BEEP_DEFAULT_FREQ  (70)
 #define BEEP_OFFSET        (10)
 #define BEEP_KEY_UP_FREQ   (BEEP_DEFAULT_FREQ+5)
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
+#define TONE1_RATE_LIMIT (10)
+#define TONE2_RATE_LIMIT (10)
 
 class audioQueue
 {
@@ -78,12 +80,14 @@ class audioQueue
     int8_t toneFreqIncr;
     uint8_t toneTimeLeft;
     uint8_t tonePause;
+    uint8_t toneRateLimit;
 
     // vario
     uint8_t tone2Changed;
     uint8_t tone2Freq;
     uint8_t tone2TimeLeft;
     uint8_t tone2Pause;
+    uint8_t tone2RateLimit;
 
     // queue arrays
     uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
