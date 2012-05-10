@@ -62,7 +62,7 @@ class FrskyRSSI {
 class FrskyData: public FrskyRSSI {
  public:
   uint8_t max;
-  void set(uint8_t value);
+  void set(uint8_t value, uint8_t unit);
 };
 
 #define EARTH_RADIUSKM ((uint32_t)6371)
