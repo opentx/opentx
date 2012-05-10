@@ -389,8 +389,8 @@ void processFrskyPacket(uint8_t *packet)
       }
       break;
     case LINKPKT: // A1/A2/RSSI values
-      frskyTelemetry[0].set(packet[1]);
-      frskyTelemetry[1].set(packet[2]);
+      frskyTelemetry[0].set(packet[1], g_model.frsky.channels[0].type);
+      frskyTelemetry[1].set(packet[2], g_model.frsky.channels[1].type);
       frskyRSSI[0].set(packet[3]);
       frskyRSSI[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
@@ -808,8 +808,9 @@ void FrskyRSSI::set(uint8_t value)
      min = value;
 }
 
-void FrskyData::set(uint8_t value)
+void FrskyData::set(uint8_t value, uint8_t unit)
 {
+  if (unit != UNIT_VOLTS) this->value = value;
   FrskyRSSI::set(value);
   if (!max || value > max)
     max = value;
@@ -828,7 +829,7 @@ void resetTelemetry()
 #endif
 
 #ifdef SIMU
-  frskyTelemetry[0].set(120);
+  frskyTelemetry[0].set(120, UNIT_VOLTS);
   frskyRSSI[0].set(75);
   frskyHubData.fuelLevel = 75;
   frskyHubData.rpm = 12000;
