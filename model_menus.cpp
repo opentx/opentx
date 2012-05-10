@@ -2169,9 +2169,11 @@ enum menuProcTelemetryItems {
   ITEM_TELEMETRY_USR_PROTO,
   ITEM_TELEMETRY_USR_BLADES,
 #endif
+#if defined(VARIO)
   ITEM_TELEMETRY_VARIO_LABEL,
   ITEM_TELEMETRY_VARIO_SOURCE,
   ITEM_TELEMETRY_VARIO_SPEED,
+#endif
   ITEM_TELEMETRY_CUSTOM_SCREEN_LABEL,
   ITEM_TELEMETRY_CUSTOM_SCREEN_LINE1,
   ITEM_TELEMETRY_CUSTOM_SCREEN_LINE2,
@@ -2181,18 +2183,26 @@ enum menuProcTelemetryItems {
   ITEM_TELEMETRY_GAUGES_LINE1,
   ITEM_TELEMETRY_GAUGES_LINE2,
   ITEM_TELEMETRY_GAUGES_LINE3,
-  ITEM_TELEMETRY_GAUGES_LINE4
+  ITEM_TELEMETRY_GAUGES_LINE4,
+  ITEM_TELEMETRY_MAX
 };
+
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+#define USRDATA_LINES (uint8_t)-1, 0, 0,
+#else
+#define USRDATA_LINES
+#endif
+#if defined(VARIO)
+#define VARIO_LINES   (uint8_t)-1, 0, 1,
+#else
+#define VARIO_LINES
+#endif
 
 #ifdef FRSKY
 #define TELEM_COL2 (8*FW-2)
 void menuProcTelemetry(uint8_t event)
 {
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 30, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 1, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
-#else
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, 24, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
-#endif
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES VARIO_LINES (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 
   uint8_t sub = m_posVert - 1;
 
@@ -2330,6 +2340,7 @@ void menuProcTelemetry(uint8_t event)
         break;
 #endif
 
+#if defined(VARIO)
       case ITEM_TELEMETRY_VARIO_LABEL:
         lcd_putsLeft(y, STR_VARIO);
         break;
@@ -2359,6 +2370,7 @@ void menuProcTelemetry(uint8_t event)
           }
         }
         break;
+#endif
 
       case ITEM_TELEMETRY_CUSTOM_SCREEN_LABEL:
         lcd_putsLeft(y, STR_DISPLAY);

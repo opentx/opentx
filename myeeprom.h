@@ -110,12 +110,11 @@ enum BeeperMode {
 #else
 #define HAPTIC_OPTION 0x00
 #endif
-#if defined(DEBUG)
-#define DEBUG_OPTION 0x04
+#if defined(VARIO)
+#define VARIO_OPTION 0x04
 #else
-#define DEBUG_OPTION 0x00
+#define VARIO_OPTION 0x00
 #endif
-
 #if defined(PXX)
 #define PXX_OPTION 0x10
 #else
@@ -127,7 +126,7 @@ enum BeeperMode {
 #define DSM2_OPTION 0x00
 #endif
 
-#define FW_OPTIONS (FRSKY_OPTION|HAPTIC_OPTION|DEBUG_OPTION|PXX_OPTION|DSM2_OPTION)
+#define FW_OPTIONS (FRSKY_OPTION|HAPTIC_OPTION|VARIO_OPTION|PXX_OPTION|DSM2_OPTION)
 
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
