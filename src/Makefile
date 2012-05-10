@@ -86,6 +86,10 @@ FRSKY_HUB = YES
 # Values = YES, NO
 WS_HOW_HIGH = YES
 
+# WS HowHigh 
+# Values = YES, NO
+VARIO = YES
+
 # SDCARD Logs
 # Values = YES, NO
 SDCARD = NO
@@ -278,6 +282,10 @@ ifeq ($(EXT), FRSKY)
     MODS:=${MODS}W
     CPPDEFS += -DWS_HOW_HIGH
   endif
+  # If Vario is enabled
+  ifeq ($(VARIO), YES)
+    CPPDEFS += -DVARIO
+  endif
 endif
 
 ifeq ($(DEBUG), YES)
@@ -333,11 +341,6 @@ ifeq ($(PCB), V4)
   ifeq ($(EXTRA_ROTARY_ENCODERS), YES)
     CPPDEFS += -DEXTRA_ROTARY_ENCODERS
     MODS:=${MODS}X
-  endif
-
-  ifeq ($(VARIO_EXTENDED), YES)
-    CPPDEFS += -DVARIO_EXTENDED
-    MODS:=${MODS}V
   endif
   
 endif
