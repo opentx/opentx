@@ -519,17 +519,17 @@ void menuProcTrainer(uint8_t event)
         switch(j) {
           case 0:
             lcd_putsiAtt(4*FW, y, STR_TRNMODE, td->mode, attr);
-            if (attr) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
+            if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
             break;
 
           case 1:
             lcd_outdezAtt(11*FW, y, td->studWeight, attr);
-            if (attr) CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
+            if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
             break;
 
           case 2:
             lcd_putsiAtt(12*FW, y, STR_TRNCHN, td->srcChn, attr);
-            if (attr) CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
+            if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->srcChn, 0, 3);
             break;
         }
       }
@@ -554,6 +554,7 @@ void menuProcTrainer(uint8_t event)
 
     if (attr) {
       if (event==EVT_KEY_FIRST(KEY_MENU)){
+        s_editMode = -1;
         memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
         AUDIO_KEYPAD_UP();
