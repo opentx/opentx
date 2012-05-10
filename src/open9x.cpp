@@ -2752,6 +2752,10 @@ int main(void)
     lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
     lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
     refreshDisplay() ;
+    #if defined(HAPTIC)
+    hapticOff()	; 
+    #endif
+    /* end force haptic to be disabled in this mode */	  
     usb_mode();
   }
 #endif
