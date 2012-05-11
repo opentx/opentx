@@ -51,6 +51,7 @@ class audioQueue
 
 
     void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
+    void pause(uint8_t tLen);
 
     inline bool busy() {
       return (toneTimeLeft > 0);
