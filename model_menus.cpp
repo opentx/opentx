@@ -182,9 +182,19 @@ void menuProcModelSelect(uint8_t event)
 {
   TITLE(STR_MENUMODELSEL);
 
+#if defined(SDCARD)
+  static bool refresh = true;
+#else
+#define refresh event
+#endif
+
 #if !defined(PCBARM)
-  if (event)
+  if (event) {
     eeFlush(); // flush eeprom write
+#if defined(PCBV4)
+    refresh = true;
+#endif
+  }
 #endif
 
   if (s_confirmation) {
@@ -229,6 +239,9 @@ void menuProcModelSelect(uint8_t event)
         s_copyTgtOfs = 0;
         s_copySrcRow = -1;
         s_editMode = -1;
+#if defined(PCBV4)
+        eeCheck(true);
+#endif
         break;
       case EVT_KEY_LONG(KEY_EXIT):
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
@@ -365,7 +378,7 @@ void menuProcModelSelect(uint8_t event)
 
 #if !defined(PCBARM)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  if (event) reusableBuffer.models.eepromfree = EeFsGetFree();
+  if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
   lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
 #endif
 
@@ -403,7 +416,7 @@ void menuProcModelSelect(uint8_t event)
 #else
       uint16_t & size = reusableBuffer.models.listsizes[i];
       char * name = reusableBuffer.models.listnames[i];
-      if (event) size = eeLoadModelName(k, name);
+      if (refresh) size = eeLoadModelName(k, name);
       putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, size, 0);
 #endif
@@ -421,7 +434,7 @@ void menuProcModelSelect(uint8_t event)
     s_warning_info = ModelNames[sub];
 #else
     char * name = reusableBuffer.models.mainname;
-    if (event) eeLoadModelName(sub, name);
+    if (refresh) eeLoadModelName(sub, name);
     s_warning_info = name;
 #endif
     s_warning_info_len = sizeof(g_model.name);
@@ -429,6 +442,7 @@ void menuProcModelSelect(uint8_t event)
   }
 
 #if defined(SDCARD)
+  refresh = false;
   if (s_sdcard_error) {
     s_warning = s_sdcard_error;
     displayWarning(event);
@@ -467,6 +481,7 @@ void menuProcModelSelect(uint8_t event)
         s_sdcard_error = eeRestoreModel(sub, (char *)result);
         if (!s_sdcard_error && g_eeGeneral.currModel == sub)
           eeLoadModel(sub); // force writing of current model data before this is changed
+        refresh = true;
       }
     }
   }
