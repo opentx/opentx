@@ -127,16 +127,14 @@ inline uint8_t audioQueue::getToneLength(uint8_t tLen)
   return result;
 }
 
-void audioQueue::pause(uint8_t tLen){
-	play(0,tLen,5); // a pause	
+void audioQueue::pause(uint8_t tLen)
+{
+  play(0, tLen, 5); // a pause
 }	
 
 void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tFlags, int8_t tFreqIncr)
 {
-
-
-
   if (tFlags & PLAY_SOUND_VARIO) {
     tone2Changed = 1;
     tone2Freq = tFreq;
@@ -144,9 +142,8 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     tone2Pause = tPause;
   }
   else {
-    if(tFreq > 0) //we dont add pitch if zero as this is a pause only event
-    {
-    	tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
+    if (tFreq > 0) { //we dont add pitch if zero as this is a pause only event
+      tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     }
     tLen = getToneLength(tLen);
     if (tFlags & PLAY_NOW || (!busy() && empty())) {
