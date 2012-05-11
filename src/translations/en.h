@@ -95,7 +95,7 @@
 #define TR_VVARIO         "[Vario]      "
 #endif
 #if defined(AUDIO)
-#define TR_SOUND         "[Play Sound]\0"
+#define TR_SOUND         "Play Sound\0"
 #else
 #define TR_SOUND         "Beep\0        "
 #endif
