@@ -53,20 +53,20 @@ void audioQueue::heartbeat()
 #endif
 
   if (toneTimeLeft > 0) {
-	if(toneFreq == 0){  //pause only events
-		SPEAKER_OFF;
-	} else {	  	
-	#if defined(PCBV4)
-	    if (toneFreq) {
-	      OCR0A = (5000 / toneFreq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
-	      SPEAKER_ON;
-	    }
-	#endif
-	    
-	    toneFreq += toneFreqIncr;
-	    // TODO tone2TimeLeft = 0?
-	}   
-	toneTimeLeft--; //time gets counted down 
+    if (toneFreq == 0) {  //pause only events
+      SPEAKER_OFF;
+    }
+    else {
+#if defined(PCBV4)
+      if (toneFreq) {
+        OCR0A = (5000 / toneFreq); // sticking with old values approx 20(abs. min) to 90, 60 being the default tone(?).
+        SPEAKER_ON;
+      }
+#endif
+      toneFreq += toneFreqIncr;
+      // TODO tone2TimeLeft = 0?
+    }
+    toneTimeLeft--; //time gets counted down
   }
   else {
     if (tonePause > 0) {
@@ -116,8 +116,9 @@ inline uint8_t audioQueue::getToneLength(uint8_t tLen)
   return result;
 }
 
-void audioQueue::pause(uint8_t tLen){
-	play(0,tLen,5); // a pause	
+void audioQueue::pause(uint8_t tLen)
+{
+  play(0, tLen, 5); // a pause
 }
 
 void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
@@ -129,9 +130,8 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     tone2Pause = tPause;
   }
   else {
-    if(tFreq > 0) //we dont add pitch if zero as this is a pause only event
-    {
-    	tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
+    if (tFreq > 0) { //we dont add pitch if zero as this is a pause only event
+      tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     }
     tLen = getToneLength(tLen);
     if (tFlags & PLAY_NOW || (!busy() && empty())) {
