@@ -844,9 +844,10 @@ void checkTHR()
 
   int thrchn=(2-(stickMode&1));//stickMode=0123 -> thr=2121
 
+#ifdef SIMU
+  int16_t lowLim = THRCHK_DEADBAND - 1024 ;
+#else
   int16_t lowLim = THRCHK_DEADBAND + g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanNeg[thrchn];
-
-#ifndef SIMU
   getADC_single();   // if thr is down - do not display warning at all
 #endif
   int16_t v = anaIn(thrchn);
