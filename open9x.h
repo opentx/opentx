@@ -895,7 +895,13 @@ union ReusableBuffer
     uint8_t eefs_buffer[BLOCKS];           // used by EeFsck
 #endif
 
-    char model_name[42]; // used by menuProcModelSelect and for SD card archive / restore
+    struct
+    {
+        char mainname[42]; // used by menuProcModelSelect and for SD card archive / restore
+        char listnames[7][10];
+        uint16_t listsizes[7];
+        uint16_t eepromfree;
+    } models;
 
     struct
     {

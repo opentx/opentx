@@ -183,8 +183,8 @@ void menuProcModelSelect(uint8_t event)
   TITLE(STR_MENUMODELSEL);
 
 #if !defined(PCBARM)
-  // flush eeprom write
-  eeFlush();
+  if (event)
+    eeFlush(); // flush eeprom write
 #endif
 
   if (s_confirmation) {
@@ -210,6 +210,7 @@ void menuProcModelSelect(uint8_t event)
 #if defined(ROTARY_ENCODERS)
   if (m_posVert < 0) m_posVert = 0;
 #endif
+  if (s_editMode > 0) s_editMode = 0;
 
   int8_t sub = m_posVert;
 
@@ -258,6 +259,7 @@ void menuProcModelSelect(uint8_t event)
 #endif
       case EVT_KEY_LONG(KEY_MENU):
       case EVT_KEY_BREAK(KEY_MENU):
+        s_editMode = 0;
         if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
           displayPopup(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
           eeCheck(true); // force writing of current model data before this is changed
@@ -291,7 +293,6 @@ void menuProcModelSelect(uint8_t event)
           return;
         }
         else if (_event == EVT_KEY_LONG(KEY_MENU) || IS_RE_NAVIGATION_EVT_TYPE(_event, EVT_KEY_LONG)) {
-          s_editMode = -1;
           s_copyMode = 0;
           killEvents(event);
 #if defined(SDCARD)
@@ -364,7 +365,8 @@ void menuProcModelSelect(uint8_t event)
 
 #if !defined(PCBARM)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  lcd_outdezAtt(  17*FW, 0, EeFsGetFree(),0);
+  if (event) reusableBuffer.models.eepromfree = EeFsGetFree();
+  lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
 #endif
 
   DisplayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
@@ -399,8 +401,10 @@ void menuProcModelSelect(uint8_t event)
 #if defined(PCBARM)
       putsModelName(4*FW, y, ModelNames[k], k, 0);
 #else
-      uint16_t size = eeLoadModelName(k, reusableBuffer.model_name);
-      putsModelName(4*FW, y, reusableBuffer.model_name, k, 0);
+      uint16_t & size = reusableBuffer.models.listsizes[i];
+      char * name = reusableBuffer.models.listnames[i];
+      if (event) size = eeLoadModelName(k, name);
+      putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, size, 0);
 #endif
       if (k==g_eeGeneral.currModel && (s_copySrcRow<0 || i+s_pgOfs!=sub)) lcd_putc(1, y, '*');
@@ -416,8 +420,9 @@ void menuProcModelSelect(uint8_t event)
 #if defined(PCBARM)
     s_warning_info = ModelNames[sub];
 #else
-    eeLoadModelName(sub, reusableBuffer.model_name);
-    s_warning_info = reusableBuffer.model_name;
+    char * name = reusableBuffer.models.mainname;
+    if (event) eeLoadModelName(sub, name);
+    s_warning_info = name;
 #endif
     s_warning_info_len = sizeof(g_model.name);
     displayConfirmation(event);
@@ -446,6 +451,7 @@ void menuProcModelSelect(uint8_t event)
         }
       }
       else if (result == STR_BACKUP_MODEL) {
+        eeCheck(true); // force writing of current model data before this is changed
         s_sdcard_error = eeBackupModel(sub);
       }
       else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
@@ -458,8 +464,6 @@ void menuProcModelSelect(uint8_t event)
       }
       else {
         // The user choosed a file on SD to restore
-        if (g_eeGeneral.currModel == sub)
-          eeCheck(true); // force writing of current model data before this is changed
         s_sdcard_error = eeRestoreModel(sub, (char *)result);
         if (!s_sdcard_error && g_eeGeneral.currModel == sub)
           eeLoadModel(sub); // force writing of current model data before this is changed
