@@ -188,15 +188,6 @@ void menuProcModelSelect(uint8_t event)
 #define refresh event
 #endif
 
-#if !defined(PCBARM)
-  if (event) {
-    eeFlush(); // flush eeprom write
-#if defined(PCBV4)
-    refresh = true;
-#endif
-  }
-#endif
-
   if (s_confirmation) {
     eeDeleteModel(m_posVert); // delete file
     s_confirmation = 0;
@@ -224,6 +215,19 @@ void menuProcModelSelect(uint8_t event)
   if (m_posVert < 0) m_posVert = 0;
 #endif
   if (s_editMode > 0) s_editMode = 0;
+
+#if !defined(PCBARM)
+  if (event
+#if defined(ROTARY_ENCODERS)
+      || oldSub != m_posVert
+#endif
+      ) {
+    eeFlush(); // flush eeprom write
+#if defined(SDCARD)
+    refresh = true;
+#endif
+  }
+#endif
 
   int8_t sub = m_posVert;
 
@@ -1634,6 +1638,9 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 #else
   uint8_t sub = m_posVert;
 #endif
+
+  if (s_editMode > 0)
+    s_editMode = 0;
 
   switch(_event)
   {
