@@ -2041,10 +2041,8 @@ void menuProcCustomSwitches(uint8_t event)
           }
           break;
         case 1:
-        {
           CHECK_INCDEC_MODELVAR(event, cs.v1, v1_min, v1_max);
           break;
-        }
         case 2:
           CHECK_INCDEC_MODELVAR(event, cs.v2, v2_min, v2_max);
           break;
