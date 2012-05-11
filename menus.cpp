@@ -195,7 +195,8 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
   int8_t maxcol = MAXCOL(m_posVert);
 
 #if defined(ROTARY_ENCODERS)
-  check_rotary_encoder();
+  if (!(s_warning || s_sdcard_error || s_menu_count))
+    check_rotary_encoder();
   if (m_posVert < 0 && (event==EVT_KEY_FIRST(BTN_REa) || event==EVT_KEY_FIRST(BTN_REb) || event==EVT_KEY_FIRST(KEY_MENU))) {
     popMenu();
     killEvents(event);
