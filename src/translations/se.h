@@ -48,14 +48,14 @@
 
 #define LEN_VPROTOS      "\006"
 #ifdef PXX
-#define TR_PXX "PXX\0  "
+#define TR_PXX  "PXX\0  "
 #else
-#define TR_PXX
+#define TR_PXX  "[PXX]\0"
 #endif
 #ifdef DSM2
 #define TR_DSM2 "DSM2\0 "
 #else
-#define TR_DSM2
+#define TR_DSM2 "[DSM2]"
 #endif
 #define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2
 
@@ -89,37 +89,42 @@
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""(v)>ofs""(v)<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
 #define LEN_VFSWFUNC     "\015"
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+#if defined(VARIO)
 #define TR_VVARIO         "Vario        "
 #else
-#define TR_VVARIO
+#define TR_VVARIO         "[Vario]      "
 #endif
-#ifdef SDCARD
-#define TR_SDCLOGGS      "SDCARD Logs  "
+#if defined(AUDIO)
+#define TR_SOUND         "[Play Sound]\0"
 #else
-#define TR_SDCLOGGS
+#define TR_SOUND         "Beep\0        "
 #endif
-#ifdef SOMO
-#define TR_SOMO          "Spela Sp\200r\0  "
-#else
-#define TR_SOMO
-#endif
-#ifdef AUDIO
-#define TR_SOUND         "Spela Ljud\0  "
-#else
-#define TR_SOUND         "Pip \0        "
-#endif
-#ifdef HAPTIC
+#if defined(HAPTIC)
 #define TR_HAPTIC        "Haptic\0      "
 #else
-#define TR_HAPTIC
+#define TR_HAPTIC        "[Haptic]\0    "
+#endif
+#if defined(PCBV4)
+#if defined(SDCARD)
+#define TR_SDCLOGS       "SDCARD Logs  "
+#else
+#define TR_SDCLOGS       "[SDCARD Logs]"
+#endif
+#if defined(SOMO)
+#define TR_SOMO          "Spela Sp\200r\0  "
+#else
+#define TR_SOMO          "[Spela Sp\200r]\0"
+#endif
+#else
+#define TR_SDCLOGS
+#define TR_SOMO
 #endif
 #ifdef DEBUG
 #define TR_TEST          "Test\0        "
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGGS TR_TEST
+#define TR_VFSWFUNC      "S\201kerhet \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."

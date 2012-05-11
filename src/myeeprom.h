@@ -100,34 +100,6 @@ enum BeeperMode {
 #define EXTRA_ARM_FIELDS
 #endif
 
-#if defined(FRSKY)
-#define FRSKY_OPTION 0x01
-#else
-#define FRSKY_OPTION 0x00
-#endif
-#if defined(HAPTIC)
-#define HAPTIC_OPTION 0x02
-#else
-#define HAPTIC_OPTION 0x00
-#endif
-#if defined(VARIO)
-#define VARIO_OPTION 0x04
-#else
-#define VARIO_OPTION 0x00
-#endif
-#if defined(PXX)
-#define PXX_OPTION 0x10
-#else
-#define PXX_OPTION 0x00
-#endif
-#if defined(DSM2)
-#define DSM2_OPTION 0x20
-#else
-#define DSM2_OPTION 0x00
-#endif
-
-#define FW_OPTIONS (FRSKY_OPTION|HAPTIC_OPTION|VARIO_OPTION|PXX_OPTION|DSM2_OPTION)
-
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   myVers;
@@ -172,8 +144,6 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   speakerPitch;
 
   EXTRA_ARM_FIELDS
-
-  uint8_t   fwOptions;
 
 }) EEGeneral;
 
@@ -316,21 +286,17 @@ enum Functions {
   FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
   FUNC_PLAY_SOUND,
-#ifdef HAPTIC
   FUNC_HAPTIC,
-#endif
-#ifdef SOMO
+#if defined(PCBV4)
   FUNC_PLAY_SOMO,
 #endif
   FUNC_RESET,
-#if defined(FRSKY)
   FUNC_VARIO,
-#endif
-#ifdef SDCARD
+#if defined(PCBV4)
   FUNC_LOGS,
 #endif
-#ifdef DEBUG
-  FUNC_TEST,
+#if defined(DEBUG)
+  FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif
   FUNC_MAX
 };
@@ -408,7 +374,7 @@ enum TelemetrySource {
 };
 
 enum VarioSource {
-	VARIO_SOURCE_FIRST = 0,
+  VARIO_SOURCE_FIRST = 0,
   VARIO_SOURCE_BARO_V1 = 0,
   VARIO_SOURCE_BARO_V2,
   VARIO_SOURCE_A1,
@@ -542,12 +508,8 @@ enum Protocols {
   PROTO_PPM,
   PROTO_PPM16,
   PROTO_PPMSIM,
-#if defined(PXX)
   PROTO_PXX,
-#endif
-#if defined(DSM2)
   PROTO_DSM2,
-#endif
   PROTO_MAX
 };
 
