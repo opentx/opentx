@@ -204,7 +204,10 @@ void menuProcModelSelect(uint8_t event)
   }
 
 #if defined(SDCARD)
-  uint8_t _event = (s_warning || s_sdcard_error || s_menu_count) ? 0 : event;
+  uint8_t _event = event;
+  if (s_warning || s_sdcard_error || s_menu_count) {
+    _event = 0;
+  }
 #else
   uint8_t _event = s_warning ? 0 : event;
 #endif
@@ -239,9 +242,7 @@ void menuProcModelSelect(uint8_t event)
         s_copyTgtOfs = 0;
         s_copySrcRow = -1;
         s_editMode = -1;
-#if defined(PCBV4)
         eeCheck(true);
-#endif
         break;
       case EVT_KEY_LONG(KEY_EXIT):
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
@@ -663,15 +664,15 @@ void menuProcModel(uint8_t event)
 
       case ITEM_MODEL_THROTTLE_TRIM:
         lcd_putsLeft(y, STR_TTRIM);
-        menu_lcd_onoff(MODEL_PARAM_OFS, y, g_model.disableThrottleWarning, attr) ;
-        if (attr) CHECK_INCDEC_MODELVAR(event,g_model.disableThrottleWarning,0,1);
+        menu_lcd_onoff(MODEL_PARAM_OFS, y, g_model.thrTrim, attr) ;
+        if (attr) CHECK_INCDEC_MODELVAR(event,g_model.thrTrim,0,1);
         break;
 
       case ITEM_MODEL_THROTTLE_WARNING:
       {
         lcd_putsLeft(y, STR_THROTTLEWARNING);
-        menu_lcd_onoff(MODEL_PARAM_OFS, y, !g_model.thrTrim, attr) ;
-        if (attr) g_model.thrTrim = !checkIncDecModel(event, !g_model.thrTrim, 0, 1);
+        menu_lcd_onoff(MODEL_PARAM_OFS, y, !g_model.disableThrottleWarning, attr) ;
+        if (attr) g_model.disableThrottleWarning = !checkIncDecModel(event, !g_model.disableThrottleWarning, 0, 1);
         break;
       }
 
