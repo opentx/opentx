@@ -329,6 +329,9 @@ const pm_uchar font[] PROGMEM = {
 #ifdef TRANSLATIONS_SE
 #include "font_se.lbm"
 #endif
+#ifdef TRANSLATIONS_IT
+#include "font_it.lbm"
+#endif
 };
 
 const pm_uchar font_dblsize[] PROGMEM = {
