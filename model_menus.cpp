@@ -1811,7 +1811,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
           putsChn(0, k*FH, ch, attr); // show CHx
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
           uint8_t y = k*FH;
-          lcd_rect(22, y-1, DISPLAY_W-1-21, 9, DOTTED);
+          lcd_rect(expo ? 18 : 22, y-1, expo ? (DISPLAY_W-18) : (DISPLAY_W-22), 9, DOTTED);
         }
       }
       cur++;
