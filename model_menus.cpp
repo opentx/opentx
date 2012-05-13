@@ -1576,7 +1576,7 @@ inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, 
 
     if (row == cur) {
       /* invert the raw when it's the current one */
-      lcd_filled_rect(22, y-1, DISPLAY_W-1-21, 9);
+      lcd_filled_rect(23, y, DISPLAY_W-24, 7);
     }
   }
 }
@@ -1757,19 +1757,20 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 
   for (uint8_t ch=1; ch<=(expo ? NUM_STICKS : NUM_CHNOUT); ch++) {
     MixData *md=NULL; ExpoData *ed=NULL;
+    int8_t k = cur - s_pgOfs;
     if (expo ? (i<MAX_EXPOS && (ed=expoaddress(i))->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && (md=mixaddress(i))->srcRaw && md->destCh+1 == ch)) {
-      if (s_pgOfs < cur && cur-s_pgOfs < 8) {
+      if (k > 0 && k < 8) {
         if (expo)
-          putsChnRaw(0, (cur-s_pgOfs)*FH, ch, 0);
+          putsChnRaw(0, k*FH, ch, 0);
         else
-          putsChn(0, (cur-s_pgOfs)*FH, ch, 0); // show CHx
+          putsChn(0, k*FH, ch, 0); // show CHx
       }
       uint8_t mixCnt = 0;
       do {
         if (s_copyMode) {
-          if (s_copyMode == MOVE_MODE && s_pgOfs < cur && cur-s_pgOfs < 8 && s_copySrcCh == ch && s_copyTgtOfs != 0 && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
-            uint8_t y = (cur-s_pgOfs)*FH;
-            lcd_rect(22, y-1, DISPLAY_W-1-21, 9, DOTTED);
+          if (s_copyMode == MOVE_MODE && k > 0 && k < 8 && s_copySrcCh == ch && s_copyTgtOfs != 0 && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
+            uint8_t y = k*FH;
+            lcd_rect(expo ? 18 : 22, y-1, expo ? DISPLAY_W-18 : DISPLAY_W-22, 9, DOTTED);
             cur++;
           }
           if (s_currIdx == i) {
@@ -1780,7 +1781,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
         else if (sub == cur) {
           s_currIdx = i;
         }
-        if (s_pgOfs < cur && cur-s_pgOfs < 8) {
+        if (k > 0 && k < 8) {
           if (expo)
             displayExpoLine(cur, i, ch, mixCnt, sub, _event);
           else
@@ -1788,9 +1789,9 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
         }
         cur++; mixCnt++; i++; md++; ed++;
       } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && md->srcRaw && md->destCh+1 == ch));
-      if (s_copyMode == MOVE_MODE && s_pgOfs < cur && cur-s_pgOfs < 8 && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
-        uint8_t y = (cur-s_pgOfs)*FH;
-        lcd_rect(22, y-1, DISPLAY_W-1-21, 9, DOTTED);
+      if (s_copyMode == MOVE_MODE && k > 0 && k < 8 && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
+        uint8_t y = k*FH;
+        lcd_rect(expo ? 18 : 22, y-1, expo ? DISPLAY_W-18 : DISPLAY_W-22, 9, DOTTED);
         cur++;
       }
     }
@@ -1803,13 +1804,13 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
           attr = INVERS;
         }
       }
-      if (s_pgOfs < cur && cur-s_pgOfs < 8) {
+      if (k > 0 && k < 8) {
         if (expo)
-          putsChnRaw(0, (cur-s_pgOfs)*FH, ch, attr);
+          putsChnRaw(0, k*FH, ch, attr);
         else
-          putsChn(0, (cur-s_pgOfs)*FH, ch, attr); // show CHx
+          putsChn(0, k*FH, ch, attr); // show CHx
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
-          uint8_t y = (cur-s_pgOfs)*FH;
+          uint8_t y = k*FH;
           lcd_rect(22, y-1, DISPLAY_W-1-21, 9, DOTTED);
         }
       }
