@@ -39,7 +39,7 @@
 #define LEN_SPECIAL_CHARS 0
 #elif defined(TRANSLATIONS_IT)
 #include "translations/it.h"
-#define LEN_SPECIAL_CHARS 0
+#define LEN_SPECIAL_CHARS 1
 #elif defined(TRANSLATIONS_SE)
 #include "translations/se.h"
 #define LEN_SPECIAL_CHARS 6
