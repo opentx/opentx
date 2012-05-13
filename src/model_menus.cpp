@@ -1539,48 +1539,6 @@ static uint8_t s_maxLines = 8;
 static uint8_t s_copySrcIdx;
 static uint8_t s_copySrcCh;
 
-inline void displayMixerLine(uint8_t row, uint8_t mix, uint8_t ch, uint8_t idx, uint8_t cur, uint8_t event)
-{
-  uint8_t y = (row-s_pgOfs)*FH;
-  MixData *md = mixaddress(mix);
-  if (idx > 0)
-    lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, 0);
-
-  putsMixerSource(4*FW+0, y, md->srcRaw, 0);
-
-  uint8_t attr = ((s_copyMode || cur != row) ? 0 : INVERS);
-  lcd_outdezAtt(11*FW+3, y, md->weight, attr);
-  if (attr != 0)
-    CHECK_INCDEC_MODELVAR(event, md->weight, -125, 125);
-
-  if (md->curve) putsCurve(12*FW+2, y, md->curve);
-  if (md->swtch) putsSwitches(15*FW+5, y, md->swtch);
-
-  char cs = ' ';
-  if (md->speedDown || md->speedUp)
-    cs = 'S';
-  if ((md->delayUp || md->delayDown))
-    cs = (cs =='S' ? '*' : 'D');
-  lcd_putcAtt(18*FW+7, y, cs, 0);
-  
-#ifdef FLIGHT_PHASES
-  if (md->phase)
-    putsFlightPhase(20*FW+2, y, md->phase, CONDENSED);
-#endif
-  
-  if (s_copyMode) {
-    if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && mix == (s_copySrcIdx + (s_copyTgtOfs<0))) {
-      /* draw a border around the raw on selection mode (copy/move) */
-      lcd_rect(22, y-1, DISPLAY_W-1-21, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
-    }
-
-    if (row == cur) {
-      /* invert the raw when it's the current one */
-      lcd_filled_rect(23, y, DISPLAY_W-24, 7);
-    }
-  }
-}
-
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
@@ -1723,7 +1681,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
   uint8_t i = 0;
 
   for (uint8_t ch=1; ch<=(expo ? NUM_STICKS : NUM_CHNOUT); ch++) {
-    MixData *md=NULL; ExpoData *ed=NULL;
+    void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
     if (expo ? (i<MAX_EXPOS && (ed=expoaddress(i))->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && (md=mixaddress(i))->srcRaw && md->destCh+1 == ch)) {
       if (s_pgOfs < cur && cur-s_pgOfs < 8) {
         if (expo)
@@ -1748,9 +1706,9 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
           s_currIdx = i;
         }
         if (s_pgOfs < cur && cur-s_pgOfs < 8) {
+          uint8_t y = (cur-s_pgOfs)*FH;
+          uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
-            uint8_t y = (cur-s_pgOfs)*FH;
-            uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
             lcd_outdezAtt(6*FW-2, y, ed->weight, attr);
             if (attr != 0)
               CHECK_INCDEC_MODELVAR(_event, ed->weight, 0, 100);
@@ -1765,23 +1723,44 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
             putsSwitches(13*FW+4, y, ed->swtch, 0); // normal switches
             if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
             if (ed->curve) putsCurve(18*FW+2, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0));
+          }
+          else {
+            if (mixCnt > 0)
+              lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, 0);
 
-            if (s_copyMode) {
-              if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
-                /* draw a border around the raw on selection mode (copy/move) */
-                lcd_rect(18, y-1, DISPLAY_W-18, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
-              }
-              if (cur == sub) {
-                /* invert the raw when it's the current one */
-                lcd_filled_rect(19, y, DISPLAY_W-20, 7);
-              }
+            putsMixerSource(4*FW+0, y, md->srcRaw, 0);
+
+            lcd_outdezAtt(11*FW+3, y, md->weight, attr);
+            if (attr != 0)
+              CHECK_INCDEC_MODELVAR(_event, md->weight, -125, 125);
+
+            if (md->curve) putsCurve(12*FW+2, y, md->curve);
+            if (md->swtch) putsSwitches(15*FW+5, y, md->swtch);
+
+            char cs = ' ';
+            if (md->speedDown || md->speedUp)
+              cs = 'S';
+            if ((md->delayUp || md->delayDown))
+              cs = (cs =='S' ? '*' : 'D');
+            lcd_putcAtt(18*FW+7, y, cs, 0);
+
+#ifdef FLIGHT_PHASES
+            if (md->phase)
+              putsFlightPhase(20*FW+2, y, md->phase, CONDENSED);
+#endif
+          }
+          if (s_copyMode) {
+            if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
+              /* draw a border around the raw on selection mode (copy/move) */
+              lcd_rect(expo ? 18 : 22, y-1, expo ? (DISPLAY_W-18) : (DISPLAY_W-22), 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
+            }
+            if (cur == sub) {
+              /* invert the raw when it's the current one */
+              lcd_filled_rect(expo ? 19 : 23, y, expo ? (DISPLAY_W-20) : (DISPLAY_W-24), 7);
             }
           }
-
-          else
-            displayMixerLine(cur, i, ch, mixCnt, sub, _event);
         }
-        cur++; mixCnt++; i++; md++; ed++;
+        cur++; mixCnt++; i++; if (expo) ed++; else md++;
       } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && md->srcRaw && md->destCh+1 == ch));
       if (s_copyMode == MOVE_MODE && s_pgOfs < cur && cur-s_pgOfs < 8 && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
         uint8_t y = (cur-s_pgOfs)*FH;
