@@ -100,17 +100,17 @@
 #define TR_SDCLOGGS
 #endif
 #ifdef SOMO
-#define TR_SOMO          "EseguiBran\0  "
+#define TR_SOMO          "Esegui Brano\0"
 #else
 #define TR_SOMO
 #endif
 #ifdef AUDIO
-#define TR_SOUND         "EseguiAudi\0  "
+#define TR_SOUND         "Esegui Audio\0"
 #else
 #define TR_SOUND         "Beep\0        "
 #endif
 #ifdef HAPTIC
-#define TR_HAPTIC        "Aptico\0      "
+#define TR_HAPTIC        "Vibrazione\0  "
 #else
 #define TR_HAPTIC
 #endif
@@ -119,7 +119,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "Sicura   \0   ""Trainer \0    ""Insta-Trim   " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGGS TR_TEST
+#define TR_VFSWFUNC      "Blocco   \0   ""Trainer \0    ""Insta-Trim   " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Tutto ""Telem."
@@ -172,7 +172,7 @@
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
 
 #define LEN_VKEYS        "\005"
-#define TR_VKEYS         " MENU"" EXIT""  DN ""   UP""   SX""   DX"
+#define TR_VKEYS         " Men\200"" EXIT""  DN ""   UP""   SX""   DX"
 
 #define LEN_RE1RE2       "\003"
 #define TR_RE1RE2        "RE1""RE2"
@@ -208,9 +208,9 @@
 #define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
 
 // ZERO TERMINATED STRINGS
-#define TR_POPUPS       "[MENU]\004[EXIT]"
+#define TR_POPUPS       "[Men\200]\004[Exit]"
 #define OFS_EXIT        7
-#define TR_MENUWHENDONE "[MENU] A TERMINE"
+#define TR_MENUWHENDONE "[Men\200] Conferma"
 #define TR_FREE         " Disp."
 #define TR_DELETEMODEL  "Elimina modello?"
 #define TR_COPYINGMODEL "Copia in corso..."
@@ -296,7 +296,7 @@
 #define TR_LIGHTSWITCH  "Switch ill. "
 #define TR_LIGHTOFFAFTER "Spegni ill.dopo"
 #define TR_SPLASHSCREEN  "Schermata avvio"
-#define TR_THROTTLEWARNING "Avviso Thr "
+#define TR_THROTTLEWARNING "AvvisoThr "
 #define TR_SWITCHWARNING "Avviso Switch "
 #define TR_MEMORYWARNING "Avviso Memoria"
 #define TR_ALARMWARNING "Avviso Allarme"
@@ -310,7 +310,7 @@
 #define TR_EEPROMV      "EEPROM v"
 #define TR_VTRIM        "Trim- +"
 #define TR_BG           "BG:"
-#define TR_MENUTOSTART  "[MENU] PER CAL."
+#define TR_MENUTOSTART  "[Men\200] per Cal."
 #define TR_SETMIDPOINT  "SETTA CENTRO"
 #define TR_MOVESTICKSPOTS "MUOVI STICK/POTS"
 #define TR_RXBATT       "Rx Batt:"
@@ -328,7 +328,7 @@
 #define TR_TMAINMAXMS   "Tmain max\005ms"
 #define TR_T10MSUS      "T10ms\007us"
 #define TR_FREESTACKMINB "Free Stack\004b"
-#define TR_MENUTORESET  "[MENU] PER RESET"
+#define TR_MENUTORESET  "[Men\200] x Azzerare"
 #define TR_PPM          "PPM"
 #define TR_CH           "CH"
 #define TR_MODEL        "MODELLO"
@@ -349,11 +349,11 @@
 #define TR_MENURADIOSETUP "CONFIGURATX"
 #define TR_MENUDATEANDTIME "DATA E ORA"
 #define TR_MENUTRAINER  "TRAINER"
-#define TR_MENUVERSION  "VERSION"
+#define TR_MENUVERSION  "VERSIONE"
 #define TR_MENUDIAG     "DIAG"
 #define TR_MENUANA      "ANAS"
 #define TR_MENUCALIBRATION "CALIBRAZIONE"
-#define TR_MENUSERROR   "ERRORE MENU   "
+#define TR_MENUSERROR   "Errore Men\200   "
 #define TR_TRIMS2OFFSETS "Trim  => Offset "
 #define TR_MENUMODELSEL "MODELLI"
 #define TR_MENUSETUP    "SETUP"
@@ -371,7 +371,7 @@
 #define TR_MENUSTAT      "STATS"
 #define TR_MENUDEBUG     "DEBUG"
 #define TR_RXNUM         "RxNum"
-#define TR_SYNCMENU      "Sinc.[MENU]"
+#define TR_SYNCMENU      "Sinc.[Men\200]"
 #define TR_BACK          "Prec"
 #define TR_MINLIMIT      "LimiteMin"
 #define STR_LIMIT        (STR_MINLIMIT+4)
@@ -381,7 +381,7 @@
 #define TR_LONGITUDE     "Longitude"
 #define TR_GPSCOORD      "Gps Coords"
 #define TR_VARIO         "Vario"
-#define TR_SHUTDOWN      "SPEGNENDO"
+#define TR_SHUTDOWN      "ARRESTO.."
 #define TR_BATT_CALIB    "Calibra batt."
 #define TR_CURRENT_CALIB "Calibra corr."
 #define TR_CURRENT       "Corr."
