@@ -194,7 +194,12 @@
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW
 #endif
-#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "MAX ""3POS""CYC1""CYC2""CYC3"
+#if defined(HELI)
+#define TR_CYC_VSRCRAW "CYC1""CYC2""CYC3"
+#else
+#define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
+#endif
+#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "MAX ""3POS" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"

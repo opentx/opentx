@@ -43,6 +43,9 @@
 #elif defined(TRANSLATIONS_SE)
 #include "translations/se.h"
 #define LEN_SPECIAL_CHARS 6
+#elif defined(TRANSLATIONS_CZ)
+#include "translations/cz.h"
+#define LEN_SPECIAL_CHARS 0
 #else
 #include "translations/en.h"
 #define LEN_SPECIAL_CHARS 0
