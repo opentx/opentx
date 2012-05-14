@@ -12,7 +12,7 @@
 #define TR_VBEEPMODE     "Tyst ""Alarm""EjKnp""Alla "
 
 #define LEN_VBEEPLEN     "\005"
-#define TR_VBEEPLEN      "xKort""Kort ""Norml""L\200ng ""xL\200ng"
+#define TR_VBEEPLEN      "xKort""Kort ""Medel""L\200ng ""xL\200ng"
 
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "No REaREb"
@@ -33,7 +33,7 @@
 #define TR_DATETIME      "DAG: ""TID: "
 
 #define LEN_VTRIMINC     "\006"
-#define TR_VTRIMINC      "Exp   ""xFin  ""Fin   ""Medium""Grov  "
+#define TR_VTRIMINC      "Exp   ""xFin  ""Fin   ""Medel.""Grov  "
 
 #define LEN_RETA123      "\001"
 #if defined(PCBV4)
@@ -95,20 +95,20 @@
 #define TR_VVARIO         "[Vario]      "
 #endif
 #if defined(AUDIO)
-#define TR_SOUND         "Play Sound\0  "
+#define TR_SOUND         "Spela Ljud\0  "
 #else
-#define TR_SOUND         "Beep\0        "
+#define TR_SOUND         "Pip\0         "
 #endif
 #if defined(HAPTIC)
-#define TR_HAPTIC        "Haptic\0      "
+#define TR_HAPTIC        "Vibrator\0    "
 #else
-#define TR_HAPTIC        "[Haptic]\0    "
+#define TR_HAPTIC        "[Vibrator]\0  "
 #endif
 #if defined(PCBV4)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs  "
+#define TR_SDCLOGS       "SDCARD Loggar"
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_SDCLOGS       "[SDCARD Logg]"
 #endif
 #if defined(SOMO)
 #define TR_SOMO          "Spela Sp\200r\0  "
@@ -133,11 +133,11 @@
 #define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Tank""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Tid\0"
+#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Acc\0""Tid\0"
 
 #ifdef IMPERIAL_UNITS
-#define LENGTH_UNIT "ft\0"
-#define SPEED_UNIT  "kts"
+#define LENGTH_UNIT "fot"
+#define SPEED_UNIT  "knp"
 #else
 #define LENGTH_UNIT "m\0 "
 #define SPEED_UNIT  "kmh"
@@ -388,15 +388,15 @@
 #define TR_LONGITUDE     "L\201ngdgrad"
 #define TR_GPSCOORD      "GPS-Koord."
 #define TR_VARIO         "Vario"
-#define TR_UNITSFORMAT   "Units Format"
+#define TR_UNITSFORMAT   "Enhetsformat"
 #define TR_SHUTDOWN      "ST\204NGER AV"
-#define TR_BATT_CALIB    "Battery Calib"
-#define TR_CURRENT_CALIB "Current Calib"
+#define TR_BATT_CALIB    "Kalib. Batteri"
+#define TR_CURRENT_CALIB "Kalib. Spänning"
 #define TR_CURRENT       "Sp\201nning"
-#define TR_SELECT_MODEL  "Select Model"
-#define TR_CREATE_MODEL  "Create Model"
-#define TR_BACKUP_MODEL  "Backup Model"
-#define TR_DELETE_MODEL  "Delete Model"
-#define TR_RESTORE_MODEL "Restore Model"
-#define TR_SDCARD_ERROR  "SDCARD Error"
-#define TR_NO_SDCARD     "No SDCARD"
+#define TR_SELECT_MODEL  "V\201lj Modell"
+#define TR_CREATE_MODEL  "Skapa Modell"
+#define TR_BACKUP_MODEL  "Modell-backup"
+#define TR_DELETE_MODEL  "Ta Bort Modell"
+#define TR_RESTORE_MODEL "\203terst\201ll Modell"
+#define TR_SDCARD_ERROR  "SDCARD-fel"
+#define TR_NO_SDCARD     "SDCARD saknas"
