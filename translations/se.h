@@ -272,7 +272,6 @@
 #define TR_SLOWUP       "Tr\202ghet Upp"
 #define TR_MIXER        "MIXER"
 #define TR_CV           "KU"
-#define TR_SW           "BR"
 #define TR_ACHANNEL     "A\002kanal  "
 #define TR_RANGE        "Omr\200de"
 #define TR_BAR          "Data"

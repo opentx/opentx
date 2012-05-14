@@ -94,7 +94,14 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
       if (view_base <= e_inputs) {
+#if defined(PCBARM)
+        if (view_base == e_inputs)
+          g_eeGeneral.view ^= ALTERNATE_VIEW;
+        else
+          g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_BREAK(KEY_RIGHT)) ? ALTERNATE_VIEW : -ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
+#else
         g_eeGeneral.view ^= ALTERNATE_VIEW;
+#endif
         eeDirty(EE_GENERAL);
         AUDIO_KEYPAD_UP();
       }
@@ -201,7 +208,7 @@ void menuMainView(uint8_t event)
     {
 #define TL 27
       //                        LH LV RV RH
-      static uint8_t x[4]    = {128*1/4+2, 4, 128-4, 128*3/4-2};
+      static uint8_t x[4]    = {128*1/4+2, 3, 128-4, 128*3/4-2};
       static uint8_t vert[4] = {0,1,1,0};
       uint8_t xm, ym;
       xm = x[CONVERT_MODE(i+1)-1];
@@ -240,9 +247,21 @@ void menuMainView(uint8_t event)
   }
 
   if (view_base < e_inputs) {
+    // scroll bar
+    lcd_hlineStip(38, 34, 54, DOTTED);
+#if defined(PCBARM)
+    lcd_hline(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
+#else
+    lcd_hline((g_eeGeneral.view & ALTERNATE_VIEW) ? 64 : 38, 34, 26, SOLID);
+#endif
+
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
+#if defined(PCBARM)
+      int16_t val = g_chans512[8*(g_eeGeneral.view / ALTERNATE_VIEW) + i];
+#else
       int16_t val = g_chans512[(g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i];
+#endif
 
       switch(view_base)
       {
@@ -285,40 +304,39 @@ void menuMainView(uint8_t event)
       for (uint8_t i=0; i<6; i++) {
         int8_t sw1 = (i<3 ? 1+i : 4+i);
         int8_t sw2 = (sw1 == 9 ? (getSwitch(4, 0) ? 4 : (getSwitch(5, 0) ? 5 : 6)) : sw1);
-        putsSwitches(i<3 ? 2*FW-2: 17*FW-1, (i%3)*FH+4*FH, sw2, getSwitch(sw1, 0) ? INVERS : 0);
+        putsSwitches(i<3 ? 2*FW-2: 17*FW-1, (i%3)*FH+4*FH+1, sw2, getSwitch(sw1, 0) ? INVERS : 0);
       }
     }
     else {
-      // virtual inputs
-      for (uint8_t i=0; i<8; i++) {
-        int16_t val = g_chans512[8+i];
-        int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
-#if defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
-#define V_BAR_W 4
-        V_BAR(SCREEN_WIDTH/2-V_BAR_W*1+1+V_BAR_W*i, SCREEN_HEIGHT-8, len)
-#elif defined(PCBV4) //EXTRA_ROTARY_ENCODERS
-#define V_BAR_W 5
-        V_BAR(SCREEN_WIDTH/2-V_BAR_W*3+5+V_BAR_W*i, SCREEN_HEIGHT-8, len)
-#else
-#define V_BAR_W 5
-        V_BAR(SCREEN_WIDTH/2-V_BAR_W*4+2+V_BAR_W*i, SCREEN_HEIGHT-8, len)
-#endif
-      }
 #if defined(PCBV4)
       for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
         int16_t val = getRotaryEncoder(i);
-        int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
+        int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT); // TODO uint16_t?
 #if defined(EXTRA_ROTARY_ENCODERS)
-        V_BAR(SCREEN_WIDTH/2-V_BAR_W*7+1+V_BAR_W*i, SCREEN_HEIGHT-8, len)
+#define V_BAR_W 4
+        V_BAR(SCREEN_WIDTH/2-9+V_BAR_W*i, SCREEN_HEIGHT-8, len)
 #else //EXTRA_ROTARY_ENCODERS
-        V_BAR(SCREEN_WIDTH/2-V_BAR_W*6+5+V_BAR_W*i, SCREEN_HEIGHT-8, len)
+#define V_BAR_W 5
+        V_BAR(SCREEN_WIDTH/2-3+V_BAR_W*i, SCREEN_HEIGHT-8, len)
 #endif //EXTRA_ROTARY_ENCODERS
       }
 #endif //PCBV4
-      for (uint8_t i=0; i<12; i++) {
-        if ((i%6) < 3) lcd_puts(i<6 ? 2*FW-2 : 16*FW-2, (i%3)*FH+4*FH, STR_SW);
-        lcd_putcAtt((i<6 ? 2*FW-2 : 16*FW-2) + 2 * FW + ((i%6) < 3 ? 0 : FW), (i%3)*FH+4*FH, i<9 ? '1'+i : 'A'+i-9, getSwitch(10+i, 0) ? INVERS : 0);
+#if defined(PCBARM)
+      for (uint8_t i=0; i<NUM_CSW; i++) {
+        int8_t len = getSwitch(10+i, 0) ? BAR_HEIGHT : 1;
+        lcd_vline(16+3*i-1,SCREEN_HEIGHT-8-len,len);
+        lcd_vline(16+3*i  ,SCREEN_HEIGHT-8-len,len);
       }
+#elif defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
+      for (uint8_t i=0; i<NUM_CSW; i++)
+        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
+#elif defined(PCBV4)
+      for (uint8_t i=0; i<NUM_CSW; i++)
+        putsSwitches(2*FW-2 + (i/3)*(4*FW) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
+#else
+      for (uint8_t i=0; i<NUM_CSW; i++)
+        putsSwitches(2*FW-2 + (i/3)*(5*FW), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
+#endif
     }
   }
   else { // timer2

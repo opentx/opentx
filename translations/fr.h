@@ -272,7 +272,6 @@
 #define TR_SLOWUP       "Ralenti Bas"
 #define TR_MIXER        "MIXEUR"
 #define TR_CV           "CV"
-#define TR_SW           "SW"
 #define TR_ACHANNEL     "A\002voie"
 #define TR_RANGE        "Range"
 #define TR_BAR          "Bar"
