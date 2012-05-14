@@ -2463,6 +2463,7 @@ void menuProcTemplates(uint8_t _event)
       s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
       killEvents(event);
       _event = 0;
+      s_editMode = 0;
       break;
   }
 
