@@ -41,11 +41,6 @@
 #include <string.h>
 #include <stddef.h>
 
-#if defined(PCBV4)
-#include "gruvin9x/ff.h"
-#include "gruvin9x/gtime.h"
-#endif
-
 #if defined(PCBARM)
 #include "board_ersky9x.h"
 #endif
@@ -761,14 +756,6 @@ extern uint8_t  beepAgain;
 extern uint16_t g_LightOffCounter;
 extern uint8_t mixWarning;
 
-// MM/SD card Disk IO Support
-#if defined (PCBV4)
-#include "gruvin9x/rtc.h"
-extern void disk_timerproc(void);
-extern gtime_t g_unixTime; // global unix timestamp -- hold current time in seconds since 1970-01-01 00:00:00
-extern uint8_t g_ms100; // defined in drivers.cpp
-#endif
-
 extern PhaseData *phaseaddress(uint8_t idx);
 extern ExpoData *expoaddress(uint8_t idx);
 extern MixData *mixaddress(uint8_t idx);
@@ -880,7 +867,7 @@ enum AUDIO_SOUNDS {
 #endif
 
 #if defined(SDCARD)
-#include "sdcard.h"
+#include "gruvin9x/sdcard.h"
 #endif
 
 #if defined(SOMO)

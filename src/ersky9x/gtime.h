@@ -31,30 +31,33 @@
  *
  */
 
-#ifndef sdcard_h
-#define sdcard_h
+#ifndef g9x_time_h
+#define g9x_time_h
 
-#include "ff.h"
-#include "rtc.h"
-#include "gtime.h"
+#include <inttypes.h>
+#include <limits.h>
 
-#define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
-#define MODELS_PATH  "/9XMODELS"
-#define MODELS_EXT   ".bin"
+#undef CHAR_BIT
+#define CHAR_BIT 8
 
-extern char g_logFilename[21]; // "/9XLOGS/M00_000.CSV\0" max required length = 21
-extern int8_t g_logState; // 0=closed, >0 = opened, <0 is error
-extern FATFS g_FATFS_Obj;
-extern FIL g_oLogFile;
+typedef long int gtime_t;
 
-extern void initLogs();
-extern void writeLogs();
+struct gtm
+{
+  int8_t tm_sec;                   /* Seconds.     [0-60] (1 leap second) */
+  int8_t tm_min;                   /* Minutes.     [0-59] */
+  int8_t tm_hour;                  /* Hours.       [0-23] */
+  int8_t tm_mday;                  /* Day.         [1-31] */
+  int8_t tm_mon;                   /* Month.       [0-11] */
+  int8_t tm_year;                  /* Year - 1900. Limited to the year 2115. Oh no! :P */
+  int8_t tm_wday;                  /* Day of week. [0-6] */
+  int16_t tm_yday;                 /* Day of year. [0-365] Needed internally for calculations */
+};
 
-const pm_char *SDCARD_ERROR(FRESULT result);
+extern const unsigned short int __mon_yday[2][13];
 
-// MM/SD card Disk IO Support
-extern void disk_timerproc(void);
-extern uint8_t g_ms100; // defined in drivers.cpp
+extern gtime_t mktime(struct gtm *tp);
+extern gtime_t filltm(gtime_t *t, struct gtm *tp);
 
 #endif
 

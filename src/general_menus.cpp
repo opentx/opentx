@@ -50,7 +50,7 @@ enum EnumTabDiag {
 };
 
 void menuProcSetup(uint8_t event);
-#if defined(PCBV4)
+#if defined(PCBV4) && defined(SDCARD)
 void menuProcTime(uint8_t event);
 #endif
 void menuProcTrainer(uint8_t event);
@@ -61,7 +61,7 @@ void menuProcDiagCalib(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcSetup,
-#if defined(PCBV4)
+#if defined(PCBV4) && defined(SDCARD)
   menuProcTime,
 #endif
   menuProcTrainer,
@@ -392,7 +392,7 @@ void menuProcSetup(uint8_t event)
 }
 
 
-#if defined(PCBV4)
+#if defined(PCBV4) && defined(SDCARD)
 // SD card interface contains Real-Time-Clock chip
 void menuProcTime(uint8_t event)
 {

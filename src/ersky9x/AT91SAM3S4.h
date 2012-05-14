@@ -932,6 +932,12 @@ typedef struct {
 /* -------- HSMCI_SDCR : (HSMCI Offset: 0x0C) SD/SDIO Card Register -------- */
 #define HSMCI_SDCR_SDCSEL (0x3 << 0) /**< \brief (HSMCI_SDCR) SDCard/SDIO Slot */
 #define HSMCI_SDCR_SDCBUS (0x3 << 6) /**< \brief (HSMCI_SDCR) SDCard/SDIO Bus Width */
+#define HSMCI_SDCR_SDCSEL_SLOTA (0x0u << 0) /**< \brief (HSMCI_SDCR) Slot A is selected. */
+#define HSMCI_SDCR_SDCSEL_SLOTB (0x1u << 0) /**< \brief (HSMCI_SDCR) - */
+#define HSMCI_SDCR_SDCSEL_SLOTC (0x2u << 0) /**< \brief (HSMCI_SDCR) - */
+#define HSMCI_SDCR_SDCSEL_SLOTD (0x3u << 0) /**< \brief (HSMCI_SDCR) - */
+#define HSMCI_SDCR_SDCBUS_1 (0x0u << 6) /**< \brief (HSMCI_SDCR) 1 bit */
+#define HSMCI_SDCR_SDCBUS_4 (0x2u << 6) /**< \brief (HSMCI_SDCR) 4 bit */
 /* -------- HSMCI_ARGR : (HSMCI Offset: 0x10) Argument Register -------- */
 #define HSMCI_ARGR_ARG (0xffffffff << 0) /**< \brief (HSMCI_ARGR) Command Argument */
 /* -------- HSMCI_CMDR : (HSMCI Offset: 0x14) Command Register -------- */

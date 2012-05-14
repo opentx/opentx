@@ -42,11 +42,6 @@ const pm_uchar * s9xsplash = splashdata+4;
 
 #include "menus.h"
 
-// MM/SD card Disk IO Support
-#if defined (PCBV4)
-gtime_t g_unixTime; // Global date/time register, incremented each second in per10ms()
-#endif
-
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
@@ -1875,6 +1870,7 @@ void perMain()
       ee32_process();
     else if (TIME_TO_WRITE)
       eeCheck();
+    sd_poll_10mS();
   }
 #else
   if (!eeprom_buffer_size) {
@@ -2078,7 +2074,7 @@ void perMain()
       if((inacCounter&0x3F)==10) AUDIO_INACTIVITY();
   }
 
-#if defined(SDCARD)
+#if defined(PCBV4) && defined(SDCARD)
   writeLogs();
 #endif
 
@@ -2258,7 +2254,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 
     per10ms();
 
-#if defined (PCBV4)
+#if defined (PCBV4) && defined(SDCARD)
     disk_timerproc();
 #endif
 
@@ -2415,30 +2411,6 @@ ISR(USART0_UDRE_vect)
 #endif
 }
 #endif
-#endif
-
-#if defined (PCBV4)
-/*---------------------------------------------------------*/
-/* User Provided Date/Time Function for FatFs module       */
-/*---------------------------------------------------------*/
-/* This is a real time clock service to be called from     */
-/* FatFs module. Any valid time must be returned even if   */
-/* the system does not support a real time clock.          */
-/* This is not required in read-only configuration.        */
-
-uint32_t o9x_get_fattime(void) // TODO why not in ff.cpp?
-{
-  struct gtm t;
-  filltm(&g_unixTime, &t); // create a struct tm date/time structure from global unix time stamp
-
-  /* Pack date and time into a DWORD variable */
-  return    ((DWORD)(t.tm_year - 80) << 25)
-    | ((uint32_t)(t.tm_mon+1) << 21)
-    | ((uint32_t)t.tm_mday << 16)
-    | ((uint32_t)t.tm_hour << 11)
-    | ((uint32_t)t.tm_min << 5)
-    | ((uint32_t)t.tm_sec >> 1);
-}
 #endif
 
 void instantTrim()

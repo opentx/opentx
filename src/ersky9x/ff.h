@@ -57,7 +57,6 @@ extern "C" {
 #include "inttypes.h"
 #include "integer.h"	/* Basic integer types */
 #include "ffconf.h"	/* FatFs configuration options */
-#include "gtime.h"
 
 #if _FATFS != _FFCONF
 #error Wrong configuration file (ffconf.h).
@@ -572,7 +571,5 @@ void ff_rel_grant (_SYNC_t);		/* Unlock sync object */
 #ifdef __cplusplus
 }
 #endif
-
-extern gtime_t g_unixTime; // Global date/time register, incremented each second in per10ms()
 
 #endif /* _FATFS */
