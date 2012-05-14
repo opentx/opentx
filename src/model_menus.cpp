@@ -111,13 +111,13 @@ static uint8_t s_copyMode = 0;
 static int8_t s_copySrcRow;
 static int8_t s_copyTgtOfs;
 
-inline int8_t eeFindEmptyModel(uint8_t id, bool down)
+inline uint8_t eeFindEmptyModel(uint8_t id, bool down)
 {
-  int8_t i = id;
+  uint8_t i = id;
   for (;;) {
     i = (MAX_MODELS + (down ? i+1 : i-1)) % MAX_MODELS;
     if (!eeModelExists(i)) break;
-    if (i == id) return -1; // no free space in directory left
+    if (i == id) return 0xff; // no free space in directory left
   }
   return i;
 }
@@ -364,7 +364,7 @@ void menuProcModelSelect(uint8_t event)
             s_copySrcRow = oldSub;
             // find a hole (in the first empty slot above / below)
             m_posVert = eeFindEmptyModel(s_copySrcRow, _event==EVT_KEY_FIRST(KEY_DOWN));
-            if (m_posVert == (uint8_t)-1) {
+            if (m_posVert == 0xff) {
               // no free room for duplicating the model
               AUDIO_ERROR();
               m_posVert = oldSub;

@@ -257,7 +257,7 @@ bool EeFsOpen() // TODO inline?
     fflush(stdout);
   }
   if (eeFs.mySize != sizeof(eeFs)) {
-    printf("bad eeFs.mySize (%d instead of %d)\n", eeFs.mySize, sizeof(eeFs));
+    printf("bad eeFs.mySize (%u instead of %u)\n", eeFs.mySize, sizeof(eeFs));
     fflush(stdout);
   }
 #endif  
