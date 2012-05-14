@@ -1870,7 +1870,9 @@ void perMain()
       ee32_process();
     else if (TIME_TO_WRITE)
       eeCheck();
+#if !defined(SIMU)
     sd_poll_10mS();
+#endif
   }
 #else
   if (!eeprom_buffer_size) {
