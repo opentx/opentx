@@ -200,9 +200,9 @@
 #define TR_ROTARY_ENCODERS_VSRCRAW
 #endif
 #if defined(HELI)
-#define TR_CYC_VSRCRAW "CYK1""CYK2""CYK3"
+#define TR_CYC_VSRCRAW   "CYC1""CYC2""CYC3"
 #else
-#define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
+#define TR_CYC_VSRCRAW   "[C1]""[C2]""[C3]"
 #endif
 #define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "MAX ""3POS" TR_CYC_VSRCRAW
 
