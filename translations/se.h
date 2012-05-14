@@ -38,12 +38,12 @@
 #define LEN_RETA123      "\001"
 #if defined(PCBV4)
 #if defined(EXTRA_ROTARY_ENCODERS)
-#define TR_RETA123       "RETA123abcde"
+#define TR_RETA123       "RHGS123abcde"
 #else //EXTRA_ROTARY_ENCODERS
-#define TR_RETA123       "RETA123ab"
+#define TR_RETA123       "RHGS123ab"
 #endif //EXTRA_ROTARY_ENCODERS
 #else
-#define TR_RETA123       "RETA123"
+#define TR_RETA123       "RHGS123"
 #endif
 
 #define LEN_VPROTOS      "\006"
@@ -187,9 +187,9 @@
 
 #define LEN_VSWITCHES    "\003"
 #if defined(PCBARM)
-#define TR_VSWITCHES     "GAS""SID""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC""BRD""BRE""BRF""BRG""BRH""BRI""BRJ""BRK""BRL""BRM""BRN""BRO""BRP""BRQ""BRR""BRS""BRT""BRU""BRV""BRW"
+#define TR_VSWITCHES     "GAS""ROD""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC""BRD""BRE""BRF""BRG""BRH""BRI""BRJ""BRK""BRL""BRM""BRN""BRO""BRP""BRQ""BRR""BRS""BRT""BRU""BRV""BRW"
 #else
-#define TR_VSWITCHES     "GAS""SID""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC"
+#define TR_VSWITCHES     "GAS""ROD""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC"
 #endif
 
 #define LEN_VSRCRAW      "\004"
@@ -207,7 +207,7 @@
 #else
 #define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "SID ""H\205J ""GAS ""SKE ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "MAX ""FULL" TR_CYC_VSRCRAW
+#define TR_VSRCRAW       "ROD ""H\205J ""GAS ""SKE ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "MAX ""FULL" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "AV ""ABS""THs""TH%""THt"
@@ -278,8 +278,8 @@
 #define TR_ALARM        "Alarm"
 #define TR_USRDATA      "Anv\201ndardata"
 #define TR_BLADES       "Blad"
-#define TR_BARS         "Staplar som visas"
-#define TR_DISPLAY      "Display"
+#define TR_BARS         "Visa Grafiskt"
+#define TR_DISPLAY      "Visa Numeriskt"
 #ifdef AUDIO
 #define TR_BEEPERMODE   "H\202gtalare l\201ge"
 #define TR_BEEPERLEN    "H\202gtalare tid"
@@ -311,15 +311,15 @@
 #define TR_TIMEZONE     "Tidszon"
 #define TR_RXCHANNELORD "Kanalordning RX"
 #define TR_SLAVE        "Slav"
-#define TR_MODESRC      "effekt % k\201lla"
-#define TR_MULTIPLIER   "F\202rst\201rkn."
-#define TR_CAL          "Cal"
+#define TR_MODESRC      " l\201ge  % k\201lla"
+#define TR_MULTIPLIER   "Styrka"
+#define TR_CAL          "Kalib."
 #define TR_EEPROMV      "EEPROM v"
 #define TR_VTRIM        "Trim- +"
 #define TR_BG           "BG:"
 #define TR_MENUTOSTART  "[MENU] STARTAR"
-#define TR_SETMIDPOINT  " CENTRERA "
-#define TR_MOVESTICKSPOTS "R\205R SPAKAR/RATTAR"
+#define TR_SETMIDPOINT  "Centrera Allt"
+#define TR_MOVESTICKSPOTS "R\202r Rattar/Spakar"
 #define TR_RXBATT       "Rx Batt:"
 #define TR_TXnRX        "Tx:\0Rx:"
 #define OFS_RX          4
@@ -358,7 +358,7 @@
 #define TR_MENUTRAINER  "TRAINER (PPM IN)"
 #define TR_MENUVERSION  "VERSION"
 #define TR_MENUDIAG     "DIAGNOS"
-#define TR_MENUANA      "ANAS"
+#define TR_MENUANA      "ANALOGA V\204RDEN"
 #define TR_MENUCALIBRATION "KALIBRERING"
 #define TR_MENUSERROR   "FEL I MENU"
 #define TR_TRIMS2OFFSETS "[Spara Trimv\201rden]"
@@ -380,13 +380,13 @@
 #define TR_RXNUM         "RxNum"
 #define TR_SYNCMENU      "Synk [MENU]"
 #define TR_BACK          "EXIT"
-#define TR_MINLIMIT      "Mininiv\200"
+#define TR_MINLIMIT      "MinNiv\200"
 #define STR_LIMIT        (STR_MINLIMIT)
-#define TR_MAXLIMIT      "Maxiniv\200"
+#define TR_MAXLIMIT      "MaxNiv\200"
 #define TR_MINRSSI       "Min Rssi"
 #define TR_LATITUDE      "Breddgrad"
 #define TR_LONGITUDE     "L\201ngdgrad"
-#define TR_GPSCOORD      "GPS-Koord."
+#define TR_GPSCOORD      "GPS-Koordinater"
 #define TR_VARIO         "Vario"
 #define TR_UNITSFORMAT   "Enhetsformat"
 #define TR_SHUTDOWN      "ST\204NGER AV"
