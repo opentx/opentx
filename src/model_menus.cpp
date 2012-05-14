@@ -2460,7 +2460,9 @@ void menuProcTemplates(uint8_t _event)
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_MENU):
-      s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
+      if (sub!=255) {
+        s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
+      }
       killEvents(event);
       _event = 0;
       s_editMode = 0;
