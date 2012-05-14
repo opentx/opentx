@@ -671,7 +671,6 @@ void eeReadAll();
 bool eeModelExists(uint8_t id);
 uint16_t eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
-int8_t eeFindEmptyModel(uint8_t id, bool down);
 void generalDefault();
 void modelDefault(uint8_t id);
 void resetProto();
