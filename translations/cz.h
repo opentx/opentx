@@ -95,7 +95,7 @@
 #define TR_VVARIO         "[Vario]      "
 #endif
 #if defined(AUDIO)
-#define TR_SOUND         "Prehrat\0"
+#define TR_SOUND         "Prehrat\0     "
 #else
 #define TR_SOUND         "Pipnout\0     "
 #endif
@@ -148,17 +148,17 @@
 #define STR_V            (STR_VTELEMUNIT+1)
 #define STR_A            (STR_VTELEMUNIT+4)
 
-#define LEN_VALARM       "\003"
-#define TR_VALARM        "---""Yel""Org""Red"
+#define LEN_VALARM       "\004"
+#define TR_VALARM        "----""Zlut""Oran""Cerv"
 
 #define LEN_VALARMFN     "\001"
 #define TR_VALARMFN      "<>"
 
 #define LEN_VTELPROTO    "\004"
 #if defined(WS_HOW_HIGH)
-#define TR_VTELPROTO     "NoneHub WSHH"
+#define TR_VTELPROTO     "----Hub WSHH"
 #elif defined(FRSKY_HUB)
-#define TR_VTELPROTO     "NoneHub "
+#define TR_VTELPROTO     "----Hub "
 #else
 #define TR_VTELPROTO     ""
 #endif
@@ -229,7 +229,7 @@
 #define TR_TTRACE       "StopaPlyn"
 #define TR_TTRIM        "TrimPlynu"
 #define TR_BEEPCTR      "PipStred"
-#define TR_PROTO        "Protokol"
+#define TR_PROTO        "Proto."
 #define TR_PPMFRAME     "PPM frame"
 #define TR_MS           "ms"
 #define TR_SWITCH       "Spinac"
@@ -269,14 +269,14 @@
 #define TR_SLOWUP       "Zpomal. Zap"
 #define TR_MIXER        "MIXER"
 #define TR_CV           "CV"
-#define TR_ACHANNEL     "A\002channel"
-#define TR_RANGE        "Range"
+#define TR_ACHANNEL     "A\002Kanal"
+#define TR_RANGE        "Rozsah"
 #define TR_BAR          "Bar"
 #define TR_ALARM        "Alarm"
-#define TR_USRDATA      "UsrData"
+#define TR_USRDATA      "UzivData"
 #define TR_BLADES       "Blades"
-#define TR_BARS         "Bars"
-#define TR_DISPLAY      "Display"
+#define TR_BARS         "Ukazatele"
+#define TR_DISPLAY      "Zobrazeni"
 #ifdef AUDIO
 #define TR_BEEPERMODE   "Repro Mod"
 #define TR_BEEPERLEN    "Repro Delka"
@@ -289,7 +289,7 @@
 #define TR_HAPTICSTRENGTH "Sila Vibrace"
 #define TR_HAPTICLENGTH "Delka Vibrace"
 #define TR_CONTRAST     "Kontrast"
-#define TR_BATTERYWARNING "Varovani Baterie"
+#define TR_BATTERYWARNING "Alarm Baterie"
 #define TR_INACTIVITYALARM "UpozNaNecinnost"
 #define TR_RENAVIG      "Navig RotEnc"
 #define TR_FILTERADC    "Filtr ADC"
