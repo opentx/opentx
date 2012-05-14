@@ -395,7 +395,7 @@ DSTATUS disk_initialize (
 /*-----------------------------------------------------------------------*/
 
 DSTATUS disk_status (
-					 BYTE drv		/* Physical drive nmuber (0) */
+					 BYTE drv		/* Physical drive number (0) */
 					 )
 {
 	if (drv) return STA_NOINIT;		/* Supports only single drive */

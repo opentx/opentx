@@ -122,7 +122,6 @@
 #include "diskio.h"		/* Declarations of low level disk I/O functions */
 #include "gtime.h"
 
-
 /*--------------------------------------------------------------------------
 
    Module Private Definitions
@@ -2036,8 +2035,7 @@ FRESULT f_mount (
 /* the system does not support a real time clock.          */
 /* This is not required in read-only configuration.        */
 
-uint8_t g_ms100 = 0; // global to allow time set function to reset to zero
-gtime_t g_unixTime;  // global date/time register, incremented each second in per10ms()
+gtime_t g_unixTime; // Global date/time register, incremented each second in per10ms()
 
 uint32_t o9x_get_fattime(void)
 {
@@ -2052,7 +2050,6 @@ uint32_t o9x_get_fattime(void)
     | ((uint32_t)t.tm_min << 5)
     | ((uint32_t)t.tm_sec >> 1);
 }
-
 
 /*-----------------------------------------------------------------------*/
 /* Open or Create a File                                                 */

@@ -137,10 +137,6 @@ void killEvents(uint8_t event)
 volatile uint16_t g_tmr10ms;
 volatile uint8_t  g_blinkTmr10ms;
 
-
-#if defined (PCBV4)
-uint8_t g_ms100 = 0; // global to allow time set function to reset to zero
-#endif
 void per10ms()
 {
   g_tmr10ms++;
@@ -150,10 +146,9 @@ void per10ms()
   Tenms |= 1 ;                    // 10 mS has passed
 #endif
 
-#if defined (PCBV4)
+#if defined (PCBV4) && defined(SDCARD)
   /* Update gloabal Date/Time every 100 per10ms cycles */
-  if (++g_ms100 == 100)
-  {
+  if (++g_ms100 == 100) {
     g_unixTime++; // inc global unix timestamp one second
     g_ms100 = 0;
   }

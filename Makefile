@@ -296,6 +296,10 @@ ifeq ($(EEPROM_PROGRESS_BAR), YES)
   CPPDEFS += -DEEPROM_PROGRESS_BAR
 endif
 
+ifeq ($(SDCARD), YES)
+  CPPDEFS += -DSDCARD
+endif
+
 RUN_FROM_FLASH = 1
 
 ifeq ($(PCB), ARM)
@@ -305,8 +309,7 @@ ifeq ($(PCB), ARM)
   EXTRAINCDIRS += ersky9x
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
-  # ersky9x/ff.c ersky9x/diskio_sam3s.c ersky9x/Media.c ersky9x/ccsbcs.c ersky9x/sdcard.c ersky9x/MEDSdcard.c
-  # CPPSRC += ersky9x/sdmmc_spi.c ersky9x/sdspi.c
+  CPPSRC += ersky9x/ff.cpp ersky9x/diskio.cpp ersky9x/gtime.cpp
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
@@ -322,14 +325,9 @@ ifeq ($(PCB), V4)
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += stock/audio.cpp haptic.cpp
-  CPPSRC += gruvin9x/gtime.cpp
-  CPPSRC += gruvin9x/rtc.cpp
-  CPPSRC += gruvin9x/ff.cpp
-  CPPSRC += gruvin9x/diskio.cpp
 
   ifeq ($(SDCARD), YES)
-    CPPDEFS += -DSDCARD
-    CPPSRC += gruvin9x/logs.cpp
+    CPPSRC += gruvin9x/logs.cpp gruvin9x/gtime.cpp gruvin9x/rtc.cpp gruvin9x/ff.cpp gruvin9x/diskio.cpp
     MODS:=${MODS}S
   endif
     
