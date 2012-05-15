@@ -1709,15 +1709,31 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
           uint8_t y = (cur-s_pgOfs)*FH;
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
+#if defined(TRANSLATIONS_CZ)   
+            lcd_outdezAtt(7*FW-2, y, ed->weight, attr);
+#else       
             lcd_outdezAtt(6*FW-2, y, ed->weight, attr);
+#endif            
             if (attr != 0)
               CHECK_INCDEC_MODELVAR(_event, ed->weight, 0, 100);
+#if defined(TRANSLATIONS_CZ)
+            lcd_outdezAtt(10*FW+2, y, ed->expo, 0);
+#else             
             lcd_outdezAtt(9*FW+1, y, ed->expo, 0);
+#endif            
 #if defined(FLIGHT_PHASES)
 #if defined(PCBARM)
+#if defined(TRANSLATIONS_CZ)
+            putsFlightPhase(10*FW+4, y, ed->phase);
+#else
             putsFlightPhase(10*FW, y, ed->phase);
+#endif            
+#else
+#if defined(TRANSLATIONS_CZ)
+            putsFlightPhase(10*FW+4, y, ed->negPhase ? -ed->phase : +ed->phase);
 #else
             putsFlightPhase(10*FW, y, ed->negPhase ? -ed->phase : +ed->phase);
+#endif            
 #endif
 #endif
             putsSwitches(13*FW+4, y, ed->swtch, 0); // normal switches
