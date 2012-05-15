@@ -189,7 +189,7 @@ void menuMainView(uint8_t event)
   }
 
   {
-    uint8_t phase = getFlightPhase();
+    uint8_t phase = s_perout_flight_phase;
     lcd_putsnAtt(6*FW, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 
     uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | DBLSIZE;

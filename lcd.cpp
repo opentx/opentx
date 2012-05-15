@@ -462,28 +462,28 @@ void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx==0)
     lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
-  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3)
+  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx-1, att);
-  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM)
-    putsStrIdx(x, y, STR_PPM, idx - (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3), att);
-  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+NUM_CHNOUT)
-    putsStrIdx(x, y, STR_CH, idx - (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM), att);
+  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM)
+    putsStrIdx(x, y, STR_PPM, idx - (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC), att);
+  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM+NUM_CHNOUT)
+    putsStrIdx(x, y, STR_CH, idx - (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM), att);
   else
-    lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+NUM_CHNOUT), att);
+    lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM+NUM_CHNOUT), att);
 }
 
 void putsChn(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
   if (idx > 0 && idx <= NUM_CHNOUT)
-    putsChnRaw(x, y, idx+(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM), att);
+    putsChnRaw(x, y, idx+(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM), att);
 }
 
 void putsMixerSource(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
 {
-  if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2)
+  if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2)
     putsChnRaw(x, y, idx, att);
-  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+MAX_SWITCH)
-    putsSwitches(x, y, idx-NUM_STICKS-NUM_POTS-NUM_ROTARY_ENCODERS-2, att);
+  else if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+MAX_SWITCH)
+    putsSwitches(x, y, idx-NUM_STICKS-NUM_POTS-NUM_ROTARY_ENCODERS-NUM_STICKS-2, att);
   else
     putsChnRaw(x, y, idx-MAX_SWITCH, att);
 }

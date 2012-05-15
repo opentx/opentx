@@ -82,8 +82,8 @@
 #define LEN_VMLTPX2      "\002"
 #define TR_VMLTPX2       "+=""*="":="
 
-#define LEN_VMIXTRIMS    "\006"
-#define TR_VMIXTRIMS     "ZAP   ""VYP   ""Offset"
+#define LEN_VMIXTRIMS    "\003"
+#define TR_VMIXTRIMS     "OFF""ON ""Rud""Ele""Thr""Ail"
 
 #define LEN_VCSWFUNC     "\007"
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
@@ -204,7 +204,7 @@
 #else
 #define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "Smer""Vysk""Plyn""Krid""Pot1""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "MAX ""3POS" TR_CYC_VSRCRAW
+#define TR_VSRCRAW       "Smer""Vysk""Plyn""Krid""Pot1""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "VYP""ABS""THs""TH%""THt"

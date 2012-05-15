@@ -49,11 +49,11 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBARM)
-#define EEPROM_VER       208
+#define EEPROM_VER       209
 #elif defined(PCBV4)
-#define EEPROM_VER       208
+#define EEPROM_VER       209
 #else
-#define EEPROM_VER       208
+#define EEPROM_VER       209
 #endif
 
 #ifndef PACK
@@ -196,6 +196,10 @@ enum MixSources {
     MIXSRC_REe,
 #endif
 #endif
+    MIXSRC_TrimRud,
+    MIXSRC_TrimEle,
+    MIXSRC_TrimThr,
+    MIXSRC_TrimAil,
     MIXSRC_MAX ,
     MIXSRC_3POS,
     MIXSRC_THR,
@@ -224,9 +228,12 @@ enum MixSources {
     MIXSRC_CH16 = MIXSRC_CH11 + 5
 };
 
-#define TRIM_ON     0
 #define TRIM_OFF    1
-#define TRIM_OFFSET 2
+#define TRIM_ON     0
+#define TRIM_RUD   -1
+#define TRIM_ELE   -2
+#define TRIM_THR   -3
+#define TRIM_AIL   -4
 
 #define MLTPX_ADD  0
 #define MLTPX_MUL  1
@@ -247,7 +254,7 @@ PACK(typedef struct t_MixData {
   uint8_t speedDown;       // 0 nichts
   uint8_t srcRaw;         //
   int8_t  differential;
-  uint8_t carryTrim;
+  int8_t carryTrim;
   int8_t  sOffset;
 }) MixData;
 #else
@@ -263,9 +270,9 @@ PACK(typedef struct t_MixData {
   uint8_t delayDown:4;
   uint8_t speedUp:4;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
   uint8_t speedDown:4;       // 0 nichts
-  uint16_t srcRaw:7;         //
+  uint16_t srcRaw:6;         //
   int16_t differential:7;
-  uint16_t carryTrim:2;
+  int16_t carryTrim:3;
   int8_t  sOffset;
 }) MixData;
 #endif

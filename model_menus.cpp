@@ -706,7 +706,7 @@ void menuProcModel(uint8_t event)
           if (m_posHorz > 1) m_posHorz = 1;
           int8_t x = limit((int8_t)0, (int8_t)g_model.ppmNCH, (int8_t)2);
           g_model.ppmNCH = x;
-          lcd_putsiAtt(MODEL_PARAM_OFS+7*FW, y, STR_DSM2MODE, x, (attr && m_posHorz==1) ? blink : 0);
+          lcd_putsiAtt(MODEL_PARAM_OFS+5*FW, y, STR_DSM2MODE, x, (attr && m_posHorz==1) ? blink : 0);
         }
 #endif
         else if (attr) {
@@ -755,16 +755,14 @@ void menuProcModel(uint8_t event)
         // TODO port PPM16 ppmDelay from er9x
 #if defined(DSM2) || defined(PXX)
         else if (IS_DSM2_PROTOCOL(protocol) || IS_PXX_PROTOCOL(protocol)) {
-          lcd_putsLeft( y, STR_RXNUM);
+          if (attr && m_posHorz > 0 && IS_DSM2_PROTOCOL(protocol))
+            m_posHorz = 0;
+
+          lcd_putsLeft(y, STR_RXNUM);
           lcd_outdezNAtt(MODEL_PARAM_OFS-(IS_DSM2_PROTOCOL(protocol) ? 0 : 3*FW), y, g_model.modelId, ((attr && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | LEADING0|LEFT, 2);
 
-          if (attr && (s_editMode>0 || p1valdiff)) {
-            switch (m_posHorz) {
-              case 0:
-                CHECK_INCDEC_MODELVAR(event, g_model.modelId, 0, 99);
-                break;
-            }
-          }
+          if (attr && (IS_DSM2_PROTOCOL(protocol) || (m_posHorz==0 && (s_editMode>0 || p1valdiff))))
+            CHECK_INCDEC_MODELVAR(event, g_model.modelId, 0, 99);
 
 #if defined(PXX)
           if (protocol == PROTO_PXX) {
@@ -940,7 +938,7 @@ void menuProcPhasesAll(uint8_t event)
 
   att = (sub==MAX_PHASES && !trimsCheckTimer) ? INVERS : 0;
   lcd_putsAtt(0, 7*FH, STR_CHECKTRIMS, att);
-  putsFlightPhase(6*FW, 7*FH, getFlightPhase()+1, att);
+  putsFlightPhase(6*FW, 7*FH, s_perout_flight_phase+1, att);
 }
 
 #endif
@@ -1474,8 +1472,8 @@ void menuProcMixOne(uint8_t event)
         break;
       case MIX_FIELD_TRIM:
         lcd_puts(2*FW, y, STR_TRIM);
-        lcd_putsiAtt(FW*10, y, STR_VMIXTRIMS, (md2->srcRaw <= 4) ? md2->carryTrim : 1, attr);
-        if (attr) CHECK_INCDEC_MODELVAR( event, md2->carryTrim, TRIM_ON, TRIM_OFFSET);
+        lcd_putsiAtt(FW*10, y, STR_VMIXTRIMS, 1-md2->carryTrim, attr);
+        if (attr) md2->carryTrim = -checkIncDecModel(event, -(int8_t)md2->carryTrim, -TRIM_OFF, -TRIM_AIL);
         break;
       case MIX_FIELD_CURVE:
         lcd_puts(2*FW, y, STR_CURVES);
@@ -1733,7 +1731,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
             putsFlightPhase(10*FW+4, y, ed->negPhase ? -ed->phase : +ed->phase);
 #else
             putsFlightPhase(10*FW, y, ed->negPhase ? -ed->phase : +ed->phase);
-#endif            
+#endif
 #endif
 #endif
             putsSwitches(13*FW+4, y, ed->swtch, 0); // normal switches
@@ -2457,7 +2455,6 @@ void menuProcTelemetry(uint8_t event)
 #endif
 
 #ifdef TEMPLATES
-// TODO s_noHi needed?
 void menuProcTemplates(uint8_t _event)
 {
   uint8_t event = (s_warning ? 0 : _event);
