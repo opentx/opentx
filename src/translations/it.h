@@ -12,7 +12,7 @@
 #define TR_VBEEPMODE     "Silen""Avvis""Notst""Tutti"
 
 #define LEN_VBEEPLEN     "\005"
-#define TR_VBEEPLEN      "xBrev""Breve""Norml""Ampio""xAmpi"
+#define TR_VBEEPLEN      "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "No REaREb"
@@ -21,7 +21,7 @@
 #define TR_VFILTERADC    "SING""OSMP""FILT"
 
 #define LEN_WARNSW       "\004"
-#define TR_WARNSW        "Giù ""OFF ""Sù  "
+#define TR_WARNSW        "Gi\200 ""OFF ""S\200  "
 
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       "off"" +="" :="
@@ -50,12 +50,12 @@
 #ifdef PXX
 #define TR_PXX "PXX\0  "
 #else
-#define TR_PXX
+#define TR_PXX "[PXX]\0"
 #endif
 #ifdef DSM2
 #define TR_DSM2 "DSM2\0 "
 #else
-#define TR_DSM2
+#define TR_DSM2 "[DSM2]"
 #endif
 #define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2
 
@@ -90,36 +90,41 @@
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-#define TR_VVARIO         "Vario        "
+#define TR_VVARIO        "Vario\0       "
 #else
-#define TR_VVARIO
+#define TR_VVARIO        "[Vario]\0     "
 #endif
-#ifdef SDCARD
-#define TR_SDCLOGGS      "SDCARD Logs  "
-#else
-#define TR_SDCLOGGS
-#endif
-#ifdef SOMO
-#define TR_SOMO          "Esegui Brano\0"
-#else
-#define TR_SOMO
-#endif
-#ifdef AUDIO
-#define TR_SOUND         "Esegui Audio\0"
+#if defined(AUDIO)
+#define TR_SOUND         "Suona\0       "
 #else
 #define TR_SOUND         "Beep\0        "
 #endif
-#ifdef HAPTIC
+#if defined(HAPTIC)
 #define TR_HAPTIC        "Vibrazione\0  "
 #else
-#define TR_HAPTIC
+#define TR_HAPTIC        "[Vibrazione]\0"
+#endif
+#if defined(PCBV4)
+#if defined(SDCARD)
+#define TR_SDCLOGS       "SDCARD Logs  "
+#else
+#define TR_SDCLOGS       "[SDCARD Logs]"
+#endif
+#if defined(SOMO)
+#define TR_SOMO          "Brano\0       "
+#else
+#define TR_SOMO          "[Brano]\0     "
+#endif
+#else
+#define TR_SDCLOGS
+#define TR_SOMO
 #endif
 #ifdef DEBUG
 #define TR_TEST          "Test\0        "
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "Blocco   \0   ""Trainer \0    ""Insta-Trim   " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGGS TR_TEST
+#define TR_VFSWFUNC      "Blocco   \0   ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Tutto ""Telem."
@@ -128,7 +133,7 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Acc\0""Time"
+#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vel\0""Dist""GAlt""Cell""AccX""AccY""AccZ""Dir\0""VelV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vel+""Dst+""Acc\0""Time"
 
 #ifdef IMPERIAL_UNITS
 #define LENGTH_UNIT "ft\0"
@@ -158,8 +163,8 @@
 #define TR_VTELPROTO     ""
 #endif
 
-#define LEN_VARIOSRC     "\004"
-#define TR_VARIOSRC      "None""Baro""A1  ""A2  "
+#define LEN_VARIOSRC     "\006"
+#define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2    "
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
@@ -232,7 +237,7 @@
 #define TR_FADEIN       "Diss.In"
 #define TR_FADEOUT      "Diss.Out"
 #define TR_DEFAULT      "(default)"
-#define TR_CHECKTRIMS   "Contr.\005 Trim"
+#define TR_CHECKTRIMS   "Contr.\003 Trim"
 #define TR_SWASHTYPE    "Tipo Ciclico"
 #define TR_COLLECTIVE   "Collettivo"
 #define TR_SWASHRING    "AnelloCiclico"
@@ -257,20 +262,20 @@
 #define TR_FPHASE       "Fase V."
 #define TR_WARNING      "Avviso"
 #define TR_OFF          "OFF"
-#define TR_MULTPX       "Moltpx"
-#define TR_DELAYDOWN    "Post. Giù "
-#define TR_DELAYUP      "Post. Sù"
-#define TR_SLOWDOWN     "Rall. Giù "
-#define TR_SLOWUP       "Rall. Sù"
+#define TR_MULTPX       "MultPx"
+#define TR_DELAYDOWN    "Post. Gi\200 "
+#define TR_DELAYUP      "Post. S\200"
+#define TR_SLOWDOWN     "Rall. Gi\200 "
+#define TR_SLOWUP       "Rall. S\200"
 #define TR_MIXER        "MIXER"
 #define TR_CV           "CV"
-#define TR_ACHANNEL     "A\002channel"
+#define TR_ACHANNEL     "A\002ingresso"
 #define TR_RANGE        "Range"
-#define TR_BAR          "Bar"
-#define TR_ALARM        "Alarm"
-#define TR_USRDATA      "UsrData"
-#define TR_BLADES       "Blades"
-#define TR_BARS         "Bars"
+#define TR_BAR          "Barra"
+#define TR_ALARM        "Allarme"
+#define TR_USRDATA      "Dati   "
+#define TR_BLADES       "Pale  "
+#define TR_BARS         "Barre"
 #define TR_DISPLAY      "Display"
 #ifdef AUDIO
 #define TR_BEEPERMODE   "Modo Audio"
@@ -280,9 +285,9 @@
 #define TR_BEEPERMODE   "Modo   Beep"
 #define TR_BEEPERLEN    "Durata Beep"
 #endif
-#define TR_HAPTICMODE   "Modo Aptico"
-#define TR_HAPTICSTRENGTH "IntensitàAptico"
-#define TR_HAPTICLENGTH "Durata Aptico"
+#define TR_HAPTICMODE   "Vibrazione"
+#define TR_HAPTICSTRENGTH "Int. Vibrazione"
+#define TR_HAPTICLENGTH "Durata Vibra."
 #define TR_CONTRAST     "Contrasto"
 #define TR_BATTERYWARNING "Avviso Batteria"
 #define TR_INACTIVITYALARM "Avviso Inattiv."
@@ -295,12 +300,12 @@
 #define TR_LIGHTSWITCH  "Switch ill. "
 #define TR_LIGHTOFFAFTER "Spegni ill.dopo"
 #define TR_SPLASHSCREEN  "Schermata avvio"
-#define TR_THROTTLEWARNING "AvvisoThr "
+#define TR_THROTTLEWARNING "All. Thr  "
 #define TR_SWITCHWARNING "Avviso Switch "
 #define TR_MEMORYWARNING "Avviso Memoria"
 #define TR_ALARMWARNING "Avviso Allarme"
-#define TR_NODATAALARM  "NO DATA Alarm"
-#define TR_TIMEZONE     "Zona ora "
+#define TR_NODATAALARM  "Avviso NODATA"
+#define TR_TIMEZONE     "Ora locale"
 #define TR_RXCHANNELORD "Ordine ch RX  "
 #define TR_SLAVE        "Slave"
 #define TR_MODESRC      "mode\003% src"
@@ -334,7 +339,7 @@
 #define TR_FP           "FV"
 #define TR_EEPROMLOWMEM "EEPROM quasi piena!"
 #define TR_ALERT        "\007ALERT"
-#define TR_PRESSANYKEYTOSKIP "Premi qualsiasi tasto"
+#define TR_PRESSANYKEYTOSKIP "    Premi un tasto   "
 #define TR_THROTTLENOTIDLE "Throttle non in pos."
 #define TR_RESETTHROTTLE "Riposiziona Throttle"
 #define TR_ALARMSDISABLED "Avvisi Disattivati!"
@@ -372,22 +377,22 @@
 #define TR_RXNUM         "RxNum"
 #define TR_SYNCMENU      "Sinc.[Men\200]"
 #define TR_BACK          "Prec"
-#define TR_MINLIMIT      "LimiteMin"
+#define TR_MINLIMIT      "MinLimite"
 #define STR_LIMIT        (STR_MINLIMIT+4)
-#define TR_MAXLIMIT      "LimiteMax"
+#define TR_MAXLIMIT      "MaxLimite"
 #define TR_MINRSSI       "Min Rssi"
-#define TR_LATITUDE      "Latitude"
-#define TR_LONGITUDE     "Longitude"
-#define TR_GPSCOORD      "Gps Coords"
+#define TR_LATITUDE      "Latitud."
+#define TR_LONGITUDE     "Longitud."
+#define TR_GPSCOORD      "Coord. GPS"
 #define TR_VARIO         "Vario"
 #define TR_SHUTDOWN      "ARRESTO.."
 #define TR_BATT_CALIB    "Calibra batt."
 #define TR_CURRENT_CALIB "Calibra corr."
 #define TR_CURRENT       "Corr."
 #define TR_SELECT_MODEL  "Scegli Memo."
-#define TR_CREATE_MODEL  "Crea Memoria"
-#define TR_BACKUP_MODEL  "Salva Memo."
-#define TR_DELETE_MODEL  "Canc. Memo." // TODO merged into DELETEMODEL?
-#define TR_RESTORE_MODEL "Ripr. Memoria"
+#define TR_CREATE_MODEL  "Crea Modello"
+#define TR_BACKUP_MODEL  "Salva Modello"
+#define TR_DELETE_MODEL  "Canc. Modello" // TODO merged into DELETEMODEL?
+#define TR_RESTORE_MODEL "Ripr. Modello"
 #define TR_SDCARD_ERROR  "Errore SD"
 #define TR_NO_SDCARD     "No SDCARD"
