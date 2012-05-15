@@ -315,15 +315,12 @@ int16_t  Expo::expo(int16_t x)
 #endif
 
 
-void applyExpos(int16_t *anas, uint8_t phase)
+void applyExpos(int16_t *anas)
 {
   static int16_t anas2[NUM_STICKS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 
-  if (phase == 255)
-    phase = getFlightPhase();
-  phase++;
-
+  uint8_t phase = s_perout_flight_phase + 1;
   int8_t cur_chn = -1;
 
   for (uint8_t i=0; i<MAX_EXPOS; i++) {
@@ -408,6 +405,7 @@ int16_t getValue(uint8_t i)
 #if defined(PCBV4)
   else if(i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS) return getRotaryEncoder(i-(NUM_STICKS+NUM_POTS));
 #endif
+  else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
   else if(i<MIXSRC_MAX) return 1024;
   else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
   else if(i<MIXSRC_3POS+3)
@@ -645,19 +643,12 @@ uint8_t getFlightPhase()
 
 int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
-  int16_t result;
-  if (s_trimPtr[idx]) {
-    result = *s_trimPtr[idx];
-  }
-  else {
-    PhaseData *p = phaseaddress(phase);
+  PhaseData *p = phaseaddress(phase);
 #if defined(PCBSTD)
-    result = (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
+  return (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
 #else
-    result = p->trim[idx];
+  return p->trim[idx];
 #endif
-  }
-  return result;
 }
 
 int16_t getTrimValue(uint8_t phase, uint8_t idx)
@@ -667,18 +658,13 @@ int16_t getTrimValue(uint8_t phase, uint8_t idx)
 
 void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 {
-  if (s_trimPtr[idx]) {
-    *s_trimPtr[idx] = limit((int16_t)-125, trim, (int16_t)+125);
-  }
-  else {
-    PhaseData *p = phaseaddress(phase);
+  PhaseData *p = phaseaddress(phase);
 #if defined(PCBSTD)
-    p->trim[idx] = (int8_t)(trim >> 2);
-    p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
+  p->trim[idx] = (int8_t)(trim >> 2);
+  p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
 #else
-    p->trim[idx] = trim;
+  p->trim[idx] = trim;
 #endif
-  }
   STORE_MODELVARS;
 }
 
@@ -696,11 +682,9 @@ uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
 }
 
 #if defined(PCBV4)
-uint8_t s_perOut_flight_phase;
-
 uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 {
-  uint8_t phase = s_perOut_flight_phase;
+  uint8_t phase = s_perout_flight_phase;
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     if (phase == 0) return 0;
     int16_t value = phaseaddress(phase)->rotaryEncoders[idx];
@@ -928,7 +912,8 @@ void alert(const pm_char * s)
     sleep(1/*ms*/);
 #endif
 
-    if (check_soft_power() > e_power_trainer) return; // Usb on or power off
+
+    if (check_soft_power() >= e_power_usb) return; // Usb on or power off
 
     if (keyDown()) return;  // wait for key release
 
@@ -954,8 +939,6 @@ void message(const pm_char *title, const pm_char *s, const pm_char *t, const cha
   clearKeyEvents();
 }
 
-int8_t *s_trimPtr[NUM_STICKS] = { NULL, NULL, NULL, NULL };
-
 uint8_t checkTrim(uint8_t event)
 {
   int8_t  k = (event & EVT_KEY_MASK) - TRM_BASE;
@@ -964,7 +947,7 @@ uint8_t checkTrim(uint8_t event)
   if (k>=0 && k<8) { // && (event & _MSK_KEY_REPT))
     //LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
-    uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
+    uint8_t phase = getTrimFlightPhase(s_perout_flight_phase, idx);
     int16_t before = getRawTrimValue(phase, idx);
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
     bool thro = (idx==THR_STICK && g_model.thrTrim);
@@ -1295,8 +1278,9 @@ int32_t  act   [MAX_MIXERS] = {0};
 uint8_t  swOn  [MAX_MIXERS] = {0};
 uint8_t mixWarning;
 
-FORCEINLINE void evalTrims(uint8_t phase)
+FORCEINLINE void evalTrims()
 {
+  uint8_t phase = s_perout_flight_phase;
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
     // TODO avoid int32_t vv
@@ -1325,7 +1309,7 @@ enum PerOutMode {
 
 uint8_t s_perout_mode = e_perout_mode_normal;
 
-BeepANACenter evalSticks(uint8_t phase)
+BeepANACenter evalSticks()
 {
   BeepANACenter anaCenter = 0;
 
@@ -1399,10 +1383,10 @@ BeepANACenter evalSticks(uint8_t phase)
   }
 
   /* EXPOs */
-  applyExpos(anas, phase);
+  applyExpos(anas);
 
   /* TRIMs */
-  evalTrims(phase);
+  evalTrims();
 
   return anaCenter;
 }
@@ -1525,13 +1509,10 @@ void evalFunctions()
   }
 }
 
-void perOut(uint8_t phase)
+uint8_t s_perout_flight_phase;
+void perOut()
 {
-#if defined(PCBV4)
-  s_perOut_flight_phase = phase;
-#endif
-
-  BeepANACenter anaCenter = evalSticks(phase);
+  BeepANACenter anaCenter = evalSticks();
 
   if (s_perout_mode == e_perout_mode_normal) {
     //===========BEEP CENTER================
@@ -1603,17 +1584,13 @@ void perOut(uint8_t phase)
       }
     }
 #endif
-
-    s_trimPtr[0] = NULL;
-    s_trimPtr[1] = NULL;
-    s_trimPtr[2] = NULL;
-    s_trimPtr[3] = NULL;
   }
 
   memset(chans, 0, sizeof(chans));        // All outputs to 0
 
   //========== MIXER LOOP ===============
   uint8_t lv_mixWarning = 0;
+  uint8_t phase = s_perout_flight_phase + 1;
   for (uint8_t i=0; i<MAX_MIXERS; i++) {
 
     MixData *md = mixaddress( i ) ;
@@ -1622,11 +1599,11 @@ void perOut(uint8_t phase)
 
     if (md->phase != 0) {
       if (md->phase > 0) {
-        if (phase+1 != md->phase)
+        if (phase != md->phase)
           continue;
       }
       else {
-        if (phase+1 == -md->phase)
+        if (phase == -md->phase)
           continue;
       }
     }
@@ -1741,15 +1718,16 @@ void perOut(uint8_t phase)
       v = applyCurve(v, md->curve);
 
     //========== TRIMS ===============
-    if (k < NUM_STICKS) {
-      if (s_perout_mode < e_perout_mode_zeros && md->carryTrim == TRIM_ON) {
-        v += trims[k];
-      }
-      if (s_perout_mode == e_perout_mode_normal && md->carryTrim == TRIM_OFFSET) {
-        v = md->sOffset;
-        v = calc1000toRESX(v << 3);
-        s_trimPtr[k] = &md->sOffset;  // use the value stored here for the trim
-      }
+    if (s_perout_mode < e_perout_mode_zeros) {
+      int8_t mix_trim = md->carryTrim;
+      if (mix_trim < TRIM_ON)
+        mix_trim = -mix_trim-1;
+      else if (mix_trim == TRIM_ON && k < NUM_STICKS)
+        mix_trim = k;
+      else
+        mix_trim = -1;
+      if (mix_trim >= 0)
+        v += trims[mix_trim];
     }
 
     //========== MULTIPLEX ===============
@@ -1831,7 +1809,8 @@ void perMain()
     weight = 0;
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {
-        perOut(p);
+        s_perout_flight_phase = p;
+        perOut();
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
           sum_chans512[i] += (chans[i] / 16) * fp_act[p];
         weight += fp_act[p];
@@ -1839,9 +1818,11 @@ void perMain()
     }
     // printf("sum=%d, weight=%d ", sum_chans512[2], weight); fflush(stdout);
     assert(weight);
+    s_perout_flight_phase = phase;
   }
   else {
-    perOut(phase);
+    s_perout_flight_phase = phase;
+    perOut();
   }
 
   //========== LIMITS ===============
@@ -2417,14 +2398,12 @@ ISR(USART0_UDRE_vect)
 
 void instantTrim()
 {
-  uint8_t phase = getFlightPhase();
-
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightPhase(phase, i);
+      uint8_t trim_phase = getTrimFlightPhase(s_perout_flight_phase, i);
       s_perout_mode = e_instant_trim;
-      evalSticks(phase);
+      evalSticks();
       s_perout_mode = e_perout_mode_normal;
       int16_t trim = (anas[i] + trims[i]) / 2;
       if (trim < TRIM_EXTENDED_MIN) {
@@ -2444,16 +2423,15 @@ void instantTrim()
 void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 {
   int16_t zeros[NUM_CHNOUT];
-  uint8_t phase = getFlightPhase();
 
   s_perout_mode = e_perout_mode_zeros;
-  perOut(phase); // do output loop - zero input sticks and trims
+  perOut(); // do output loop - zero input sticks and trims
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
   s_perout_mode = e_perout_mode_trims;
-  perOut(phase); // do output loop - only trims
+  perOut(); // do output loop - only trims
   s_perout_mode = e_perout_mode_normal;
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
@@ -2468,7 +2446,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   // reset all trims, except throttle (if throttle trim)
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK || !g_model.thrTrim) {
-      int16_t original_trim = getTrimValue(phase, i);
+      int16_t original_trim = getTrimValue(s_perout_flight_phase, i);
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
         int16_t trim = getRawTrimValue(phase, i);
         if (trim <= TRIM_EXTENDED_MAX)

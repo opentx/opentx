@@ -529,8 +529,14 @@ void eeReadAll()
 
     modelDefault(0);
 
-    STORE_GENERALVARS;
-    STORE_MODELVARS;
+    if (check_soft_power() < e_power_usb) { // Usb on or power off
+      /* we remove all models */
+      for (uint32_t i=0; i<MAX_MODELS; i++)
+        eeDeleteModel(i);
+
+      STORE_GENERALVARS;
+      STORE_MODELVARS;
+    }
   }
   else
   {

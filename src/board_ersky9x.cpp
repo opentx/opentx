@@ -72,6 +72,10 @@ inline void init_soft_power()
 
 uint32_t check_soft_power()
 {
+#ifdef SIMU
+  return e_power_on;
+#endif
+
   if ( PIOC->PIO_PDSR & 0x02000000 )
   {
     return e_power_usb ;            // Detected USB

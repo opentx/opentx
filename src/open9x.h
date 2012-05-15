@@ -380,7 +380,8 @@ extern Key keys[NUM_KEYS];
 
 #define NUM_STICKS      4
 #define NUM_POTS        3
-#define CSW_PPM_BASE    (MIXSRC_3POS+3/*CYC1-CYC3*/) // because srcRaw is shifted +1!
+#define NUM_CYC         3
+#define CSW_PPM_BASE    (MIXSRC_3POS+NUM_CYC) // because srcRaw is shifted +1!
 #define NUM_CAL_PPM     4
 #define NUM_PPM         8
 #define CSW_CHOUT_BASE  (CSW_PPM_BASE+NUM_PPM)
@@ -403,7 +404,7 @@ extern Key keys[NUM_KEYS];
 #define NUM_TELEMETRY      TELEM_TM2
 #endif
 
-#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+1/*MAX*/+1/*ID3*/+3/*CYC1-CYC3*/+NUM_PPM+NUM_CHNOUT)
+#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1/*MAX*/+1/*ID3*/+NUM_CYC+NUM_PPM+NUM_CHNOUT)
 #define NUM_XCHNCSW (NUM_XCHNRAW+NUM_TELEMETRY)
 #define NUM_XCHNMIX (NUM_XCHNRAW+MAX_SWITCH)
 
@@ -512,9 +513,7 @@ extern int16_t getRawTrimValue(uint8_t phase, uint8_t idx);
 extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
 extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
-#if defined(PCBV4)
-extern uint8_t s_perOut_flight_phase;
-#endif
+extern uint8_t s_perout_flight_phase;
 
 #if defined(ROTARY_ENCODERS)
 int16_t getRotaryEncoder(uint8_t idx);
@@ -745,7 +744,7 @@ extern uint16_t expou(uint16_t x, uint16_t k);
 extern int16_t expo(int16_t x, int16_t k);
 extern int16_t intpol(int16_t, uint8_t);
 extern int16_t applyCurve(int16_t, int8_t);
-extern void applyExpos(int16_t *anas, uint8_t phase=255);
+extern void applyExpos(int16_t *anas);
 
 extern uint16_t anaIn(uint8_t chan);
 extern int16_t calibratedStick[7];

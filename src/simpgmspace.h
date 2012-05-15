@@ -86,6 +86,7 @@ void sig(int sgn)
 #undef max
 
 #define APM
+#define __REV
 
 typedef const unsigned char pm_uchar;
 typedef const char pm_char;
