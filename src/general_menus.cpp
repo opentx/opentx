@@ -231,7 +231,7 @@ void menuProcSetup(uint8_t event)
       {
         int8_t hapticLength = g_eeGeneral.hapticLength;
         displaySlider(GENERAL_PARAM_OFS, y, hapticLength, attr);
-        g_eeGeneral.hapticLength = selectMenuItem(y, STR_BEEPERLEN, NULL, hapticLength, -2, 2, attr, event);
+        g_eeGeneral.hapticLength = selectMenuItem(y, STR_HAPTICLENGTH, NULL, hapticLength, -2, 2, attr, event);
         break;
       }
 
