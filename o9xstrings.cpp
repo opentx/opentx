@@ -41,7 +41,6 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(MMMINV)
     ISTR(NCHANNELS)
     ISTR(VBEEPMODE)
-    ISTR(VBEEPLEN)
 #if defined(ROTARY_ENCODERS)
     ISTR(VRENAVIG)
 #endif

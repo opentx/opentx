@@ -11,9 +11,6 @@
 #define LEN_VBEEPMODE    "\005"
 #define TR_VBEEPMODE     "Tichy""Alarm""BezKL""Vse  "
 
-#define LEN_VBEEPLEN     "\005"
-#define TR_VBEEPLEN      "O====""=O===""==O==""===O=""====O"
-
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "Ne REaREb"
 

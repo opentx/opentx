@@ -11,9 +11,6 @@
 #define LEN_VBEEPMODE    "\005"
 #define TR_VBEEPMODE     "Tyst ""Alarm""EjKnp""Alla "
 
-#define LEN_VBEEPLEN     "\005"
-#define TR_VBEEPLEN      "xKort""Kort ""Medel""L\200ng ""xL\200ng"
-
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "No REaREb"
 

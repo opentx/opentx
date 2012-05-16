@@ -363,7 +363,8 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
       break;
 #endif
     case EVT_KEY_FIRST(KEY_MENU):
-      s_editMode = (s_editMode<=0);
+      if (!menuTab || m_posVert>0)
+        s_editMode = (s_editMode<=0);
       break;
     case EVT_KEY_LONG(KEY_EXIT):
       s_editMode = 0;
