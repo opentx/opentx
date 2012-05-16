@@ -11,9 +11,6 @@
 #define LEN_VBEEPMODE    "\005"
 #define TR_VBEEPMODE     "Quiet""Alarm""NoKey""Tout "
 
-#define LEN_VBEEPLEN     "\005"
-#define TR_VBEEPLEN      "xShrt""Short""Norml""Long ""xLong"
-
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "No REaREb"
 
