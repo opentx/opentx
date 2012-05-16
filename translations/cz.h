@@ -82,8 +82,8 @@
 #define LEN_VMLTPX2      "\002"
 #define TR_VMLTPX2       "+=""*="":="
 
-#define LEN_VMIXTRIMS    "\003"
-#define TR_VMIXTRIMS     "OFF""ON ""Rud""Ele""Thr""Ail"
+#define LEN_VMIXTRIMS    "\004"
+#define TR_VMIXTRIMS     "VYP ""ZAP ""Smer""Vysk""Plyn""Krid"
 
 #define LEN_VCSWFUNC     "\007"
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
@@ -124,7 +124,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "Bezpecny CH\0 ""Trener\0      ""Instant Trim\0" TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
+#define TR_VFSWFUNC      "Bezpecny \0   ""Trener\0      ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Vse   ""Telem."
@@ -171,7 +171,7 @@
 
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"
-#define TR_VTEMPLATES    "Smazat Mixy\0\0""Zakladni 4CH\0""T-Cut       \0""V-Ocas      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
+#define TR_VTEMPLATES    "Smazat Mixy\0\0""Zakl. 4kanal\0""T-Cut       \0""V-Ocas      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
@@ -204,7 +204,7 @@
 #else
 #define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "Smer""Vysk""Plyn""Krid""Pot1""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
+#define TR_VSRCRAW       "Smer""Vysk""Plyn""Krid""Pot1""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3POS" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "VYP""ABS""THs""TH%""THt"
@@ -218,9 +218,9 @@
 #define TR_MENUWHENDONE "[MENU] = DOKONCIT"
 #define TR_FREE         "volne"
 #define TR_DELETEMODEL  "SMAZAT MODEL"
-#define TR_COPYINGMODEL "Kopiruji model..."
-#define TR_MOVINGMODEL  "Presouvam model..."
-#define TR_LOADINGMODEL "Aktivuji model..."
+#define TR_COPYINGMODEL "Kopiruji model.."
+#define TR_MOVINGMODEL  "Presouvam model."
+#define TR_LOADINGMODEL "Aktivuji model.."
 #define TR_NAME         "Jmeno"
 #define TR_TIMER        "Stopky "
 #define TR_ELIMITS      "Limit+25%"
@@ -278,27 +278,27 @@
 #define TR_BARS         "Ukazatele"
 #define TR_DISPLAY      "Zobrazeni"
 #ifdef AUDIO
-#define TR_BEEPERMODE   "Repro Mod"
-#define TR_BEEPERLEN    "Repro Delka"
-#define TR_SPKRPITCH    "Repro Ton"
+#define TR_BEEPERMODE   "Repro  : Mod"
+#define TR_BEEPERLEN    "  +      Delka"
+#define TR_SPKRPITCH    "  +      Ton"
 #else
-#define TR_BEEPERMODE   "Mod Zvuku"
-#define TR_BEEPERLEN    "Delka Zvuku"
+#define TR_BEEPERMODE   "Zvuk   : Mod"
+#define TR_BEEPERLEN    "  +      Delka"
 #endif
-#define TR_HAPTICMODE   "Mod Vibrace"
-#define TR_HAPTICSTRENGTH "Sila Vibrace"
-#define TR_HAPTICLENGTH "Delka Vibrace"
+#define TR_HAPTICMODE   "Vibrace: Mod"
+#define TR_HAPTICSTRENGTH "  +      Sila"
+#define TR_HAPTICLENGTH "  +      Delka "
 #define TR_CONTRAST     "Kontrast"
 #define TR_BATTERYWARNING "Alarm Baterie"
 #define TR_INACTIVITYALARM "UpozNaNecinnost"
 #define TR_RENAVIG      "Navig RotEnc"
 #define TR_FILTERADC    "Filtr ADC"
 #define TR_THROTTLEREVERSE "Revers Plynu"
-#define TR_MINUTEBEEP   "Pipak-Minuta"
-#define TR_BEEPCOUNTDOWN "Pipak-Odecet"
-#define TR_FLASHONBEEP  "BlikatPodsvetl."
-#define TR_LIGHTSWITCH  "SpinacPodsvetl."
-#define TR_LIGHTOFFAFTER "Zhasnout po"
+#define TR_MINUTEBEEP   "Pipat: Minuta"
+#define TR_BEEPCOUNTDOWN "  +    Odecet"
+#define TR_FLASHONBEEP  "Podsvetl.:Alarm"
+#define TR_LIGHTSWITCH  "  +      Spinac"
+#define TR_LIGHTOFFAFTER "  + Zhasnout po"
 #define TR_SPLASHSCREEN  "UvodniLogo"
 #define TR_THROTTLEWARNING "UpozPlynu"
 #define TR_SWITCHWARNING "KontrolaSpinacu"
