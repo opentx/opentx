@@ -377,9 +377,9 @@
 #define TR_RXNUM         "RxNum"
 #define TR_SYNCMENU      "Sinc.[Men\200]"
 #define TR_BACK          "Prec"
-#define TR_MINLIMIT      "MinLimite"
+#define TR_MINLIMIT      "Min Limit"
 #define STR_LIMIT        (STR_MINLIMIT+4)
-#define TR_MAXLIMIT      "MaxLimite"
+#define TR_MAXLIMIT      "Max Limit"
 #define TR_MINRSSI       "Min Rssi"
 #define TR_LATITUDE      "Latitud."
 #define TR_LONGITUDE     "Longitud."
