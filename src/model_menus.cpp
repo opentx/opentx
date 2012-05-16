@@ -1544,6 +1544,20 @@ static uint8_t s_copySrcCh;
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
+#if defined(TRANSLATIONS_CZ)
+#define EXPO_LINE_WEIGHT_POS 7*FW-2
+#define EXPO_LINE_EXPO_POS   10*FW+2
+#define EXPO_LINE_PHASE_POS  10*FW+4
+#define EXPO_LINE_SWITCH_POS 13*FW+5
+#define EXPO_LINE_SELECT_POS 24
+#else
+#define EXPO_LINE_WEIGHT_POS 6*FW-2
+#define EXPO_LINE_EXPO_POS   9*FW+1
+#define EXPO_LINE_PHASE_POS  10*FW
+#define EXPO_LINE_SWITCH_POS 13*FW+4
+#define EXPO_LINE_SELECT_POS 18
+#endif
+
 void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 {
   uint8_t _event = (s_warning ? 0 : _event_);
@@ -1711,38 +1725,18 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
           uint8_t y = (cur-s_pgOfs)*FH;
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
-#if defined(TRANSLATIONS_CZ)   
-            lcd_outdezAtt(7*FW-2, y, ed->weight, attr);
-#else       
-            lcd_outdezAtt(6*FW-2, y, ed->weight, attr);
-#endif            
+            lcd_outdezAtt(EXPO_LINE_WEIGHT_POS, y, ed->weight, attr);
             if (attr != 0)
               CHECK_INCDEC_MODELVAR(_event, ed->weight, 0, 100);
-#if defined(TRANSLATIONS_CZ)
-            lcd_outdezAtt(10*FW+2, y, ed->expo, 0);
-#else             
-            lcd_outdezAtt(9*FW+1, y, ed->expo, 0);
-#endif            
+            lcd_outdezAtt(EXPO_LINE_EXPO_POS, y, ed->expo, 0);
 #if defined(FLIGHT_PHASES)
 #if defined(PCBARM)
-#if defined(TRANSLATIONS_CZ)
-            putsFlightPhase(10*FW+4, y, ed->phase);
+            putsFlightPhase(EXPO_LINE_PHASE_POS, y, ed->phase);
 #else
-            putsFlightPhase(10*FW, y, ed->phase);
-#endif            
-#else
-#if defined(TRANSLATIONS_CZ)
-            putsFlightPhase(10*FW+4, y, ed->negPhase ? -ed->phase : +ed->phase);
-#else
-            putsFlightPhase(10*FW, y, ed->negPhase ? -ed->phase : +ed->phase);
+            putsFlightPhase(EXPO_LINE_PHASE_POS, y, ed->negPhase ? -ed->phase : +ed->phase);
 #endif
 #endif
-#endif
-#if defined(TRANSLATIONS_CZ)
-            putsSwitches(13*FW+5, y, ed->swtch, 0); // normal switches
-#else
-            putsSwitches(13*FW+4, y, ed->swtch, 0); // normal switches
-#endif
+            putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
             if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
             if (ed->curve) putsCurve(18*FW+2, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0));
           }
@@ -1774,11 +1768,11 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
               /* draw a border around the raw on selection mode (copy/move) */
-              lcd_rect(expo ? 18 : 22, y-1, expo ? (DISPLAY_W-18) : (DISPLAY_W-22), 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
+              lcd_rect(expo ? EXPO_LINE_SELECT_POS : 22, y-1, expo ? (DISPLAY_W-EXPO_LINE_SELECT_POS) : (DISPLAY_W-22), 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
             }
             if (cur == sub) {
               /* invert the raw when it's the current one */
-              lcd_filled_rect(expo ? 19 : 23, y, expo ? (DISPLAY_W-20) : (DISPLAY_W-24), 7);
+              lcd_filled_rect(expo ? EXPO_LINE_SELECT_POS+1 : 23, y, expo ? (DISPLAY_W-EXPO_LINE_SELECT_POS-2) : (DISPLAY_W-24), 7);
             }
           }
         }
@@ -1786,7 +1780,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
       } while (expo ? (i<MAX_EXPOS && ed->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && md->srcRaw && md->destCh+1 == ch));
       if (s_copyMode == MOVE_MODE && s_pgOfs < cur && cur-s_pgOfs < 8 && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
         uint8_t y = (cur-s_pgOfs)*FH;
-        lcd_rect(expo ? 18 : 22, y-1, expo ? DISPLAY_W-18 : DISPLAY_W-22, 9, DOTTED);
+        lcd_rect(expo ? EXPO_LINE_SELECT_POS : 22, y-1, expo ? DISPLAY_W-EXPO_LINE_SELECT_POS : DISPLAY_W-22, 9, DOTTED);
         cur++;
       }
     }
@@ -1806,7 +1800,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
           putsChn(0, (cur-s_pgOfs)*FH, ch, attr); // show CHx
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
           uint8_t y = (cur-s_pgOfs)*FH;
-          lcd_rect(expo ? 18 : 22, y-1, expo ? (DISPLAY_W-18) : (DISPLAY_W-22), 9, DOTTED);
+          lcd_rect(expo ? EXPO_LINE_SELECT_POS : 22, y-1, expo ? (DISPLAY_W-EXPO_LINE_SELECT_POS) : (DISPLAY_W-22), 9, DOTTED);
         }
       }
       cur++;
