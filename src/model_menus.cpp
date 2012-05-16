@@ -2073,7 +2073,7 @@ void menuProcCustomSwitches(uint8_t event)
 
 void menuProcFunctionSwitches(uint8_t event)
 {
-  MENU(STR_MENUFUNCSWITCHES, menuTabModel, e_FunctionSwitches, NUM_FSW+1, {0, 2/*repeated*/});
+  MENU(STR_MENUFUNCSWITCHES, menuTabModel, e_FunctionSwitches, NUM_FSW+1, {0, 3/*repeated*/});
 
   uint8_t y = 0;
   uint8_t k = 0;
@@ -2084,7 +2084,7 @@ void menuProcFunctionSwitches(uint8_t event)
     k=i+s_pgOfs;
     if(k==NUM_CHNOUT) break;
     FuncSwData *sd = &g_model.funcSw[k];
-    for (uint8_t j=0; j<3; j++) {
+    for (uint8_t j=0; j<4; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
@@ -2099,7 +2099,7 @@ void menuProcFunctionSwitches(uint8_t event)
             uint8_t func_displayed;
             if (sd->func < 16) {
               func_displayed = 0;
-              putsChnRaw(14*FW-2, y, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+3+NUM_PPM+sd->func+1, attr);
+              putsChnRaw(11*FW-2, y, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+3+NUM_PPM+sd->func+1, attr);
             }
             else if (sd->func < 16 + NUM_STICKS + 1) {
               func_displayed = 1;
@@ -2146,18 +2146,29 @@ void menuProcFunctionSwitches(uint8_t event)
               lcd_putsiAtt(15*FW, y, STR_VFSWRESET, sd->param, attr);
             }
             else if (sd->func <= FUNC_SAFETY_CH16) {
-              val_displayed = (int16_t)(int8_t)sd->param;
-              val_min = -125;
-              val_max = 125;
-              lcd_outdezAtt(21*FW, y, val_displayed, attr);
+              int8_t value = ((int8_t)sd->param >> 1);
+              lcd_outdezAtt(18*FW, y, value * 2, attr);
+              if (active) sd->param = (sd->param & 1) + (checkIncDecModel(event, value, -63, 63) << 1);
+              break;
             }
             else {
+              if (attr) m_posHorz = 0;
               break;
             }
 
             if (active) {
               sd->param = checkIncDec(event, val_displayed, val_min, val_max, EE_MODEL);
             }
+          }
+          else if (attr) {
+            m_posHorz = 0;
+          }
+          break;
+
+        case 3:
+          if (sd->swtch && sd->func <= FUNC_SAFETY_CH16) {
+            menu_lcd_onoff(18*FW+2, y, (sd->param & 1), attr ) ;
+            if (active) sd->param = (sd->param & 0xfe) + checkIncDecModel(event,sd->param & 1, 0, 1);
           }
           else if (attr) {
             m_posHorz = 0;
