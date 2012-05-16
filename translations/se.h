@@ -83,7 +83,7 @@
 #define TR_VMLTPX2       "+=""*="":="
 
 #define LEN_VMIXTRIMS    "\003"
-#define TR_VMIXTRIMS     "OFF""ON ""Rud""Ele""Thr""Ail"
+#define TR_VMIXTRIMS     "AV """P\203 ""Rod""Hjd""Gas""Ske"
 
 #define LEN_VCSWFUNC     "\007"
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""(v)>ofs""(v)<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
@@ -207,7 +207,7 @@
 #else
 #define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "ROD ""H\205J ""GAS ""SKE ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
+#define TR_VSRCRAW       "ROD ""H\205J ""GAS ""SKE ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" "MAX ""3POS" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "AV ""ABS""THs""TH%""THt"
@@ -246,7 +246,7 @@
 #define TR_SWASHRING    "Swashring"
 #define TR_ELEDIRECTION "H\205JD Riktning"
 #define TR_AILDIRECTION "SKEV Riktning"
-#define TR_COLDIRECTION "KOLL Riktning"
+#define TR_COLDIRECTION "KOLL.Riktning"
 #define TR_MODE         "Mod"
 #define TR_NOFREEEXPO   "Expo saknas!"
 #define TR_NOFREEMIXER  "Mixer saknas!"
