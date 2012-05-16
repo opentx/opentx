@@ -80,7 +80,7 @@
 #define TR_VMLTPX2       "+=""*="":="
 
 #define LEN_VMIXTRIMS    "\003"
-#define TR_VMIXTRIMS     "AV """P\203 ""Rod""Hjd""Gas""Ske"
+#define TR_VMIXTRIMS     "AV ""P\203 ""Rod""Hjd""Gas""Ske"
 
 #define LEN_VCSWFUNC     "\007"
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""(v)>ofs""(v)<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
@@ -121,7 +121,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kerh.\0     ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
+#define TR_VFSWFUNC      "S\201kerh\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
@@ -388,7 +388,7 @@
 #define TR_UNITSFORMAT   "Enhetsformat"
 #define TR_SHUTDOWN      "ST\204NGER AV"
 #define TR_BATT_CALIB    "Kalib. Batteri"
-#define TR_CURRENT_CALIB "Kalib. Spänning"
+#define TR_CURRENT_CALIB "Kalib. Sp\201nning"
 #define TR_CURRENT       "Sp\201nning"
 #define TR_SELECT_MODEL  "V\201lj Modell"
 #define TR_CREATE_MODEL  "Skapa Modell"
