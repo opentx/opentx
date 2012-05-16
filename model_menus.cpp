@@ -1738,7 +1738,11 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 #endif
 #endif
 #endif
+#if defined(TRANSLATIONS_CZ)
+            putsSwitches(13*FW+5, y, ed->swtch, 0); // normal switches
+#else
             putsSwitches(13*FW+4, y, ed->swtch, 0); // normal switches
+#endif
             if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
             if (ed->curve) putsCurve(18*FW+2, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0));
           }
