@@ -1436,8 +1436,8 @@ void evalFunctions()
         swtch += MAX_SWITCH+1;
       }
       if (getSwitch(swtch, 0)) {
-        if (sd->func < FUNC_TRAINER  && (g_menuStack[g_menuStackPtr] != menuProcFunctionSwitches || m_posVert != (i+1) || m_posHorz > 1)) {
-          safetyCh[sd->func] = (int8_t)sd->param;
+        if (sd->func < FUNC_TRAINER && (sd->param & 1)) {
+          safetyCh[sd->func] = ((int8_t)sd->param >> 1) * 2;
         }
 
         if (~active_functions & function_mask) {
