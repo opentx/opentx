@@ -1471,10 +1471,14 @@ void menuProcMixOne(uint8_t event)
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, md2->sOffset, -125, 125, 0, STR_MIXEROFFSET);
         break;
       case MIX_FIELD_TRIM:
+      {
+        uint8_t not_stick = (md2->srcRaw > NUM_STICKS);
+        int8_t carryTrim = -md2->carryTrim;
         lcd_puts(2*FW, y, STR_TRIM);
-        lcd_putsiAtt(FW*10, y, STR_VMIXTRIMS, 1-md2->carryTrim, attr);
-        if (attr) md2->carryTrim = -checkIncDecModel(event, -(int8_t)md2->carryTrim, -TRIM_OFF, -TRIM_AIL);
+        lcd_putsiAtt(FW*10, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, attr);
+        if (attr) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         break;
+      }
       case MIX_FIELD_CURVE:
         lcd_puts(2*FW, y, STR_CURVES);
         putsCurve(FW*10, y, md2->curve, attr);
@@ -1846,10 +1850,13 @@ void menuProcLimits(uint8_t event)
       // last line available - add the "copy trim menu" line
       uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
       lcd_putsAtt(3*FW, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
-      if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
-        s_noHi = NO_HI_LEN;
-        killEvents(event);
-        moveTrimsToOffsets(); // if highlighted and menu pressed - move trims to offsets
+      if (attr) {
+        s_editMode = 0;
+        if (event==EVT_KEY_LONG(KEY_MENU)) {
+          s_noHi = NO_HI_LEN;
+          killEvents(event);
+          moveTrimsToOffsets(); // if highlighted and menu pressed - move trims to offsets
+        }
       }
       return;
     }
@@ -2094,7 +2101,7 @@ void menuProcFunctionSwitches(uint8_t event)
             uint8_t func_displayed;
             if (sd->func < 16) {
               func_displayed = 0;
-              putsChnRaw(14*FW-2, y, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+sd->func+1, attr);
+              putsChnRaw(14*FW-2, y, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+3+NUM_PPM+sd->func+1, attr);
             }
             else if (sd->func < 16 + NUM_STICKS + 1) {
               func_displayed = 1;
