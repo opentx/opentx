@@ -89,7 +89,7 @@ void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 {
   lcd_putc(GENERAL_PARAM_OFS+2*FW+(value*FW), y, '$');
   lcd_hline(GENERAL_PARAM_OFS, y+3, 5*FW-1, SOLID);
-  if (attr) lcd_filled_rect(GENERAL_PARAM_OFS, y, 5*FW-1, FH-1);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(GENERAL_PARAM_OFS, y, 5*FW-1, FH-1);
 }
 
 enum menuProcSetupItems {
@@ -179,7 +179,8 @@ void menuProcSetup(uint8_t event)
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = 1*FH + i*FH;
     uint8_t k = i+s_pgOfs;
-    uint8_t attr = (sub == k ? INVERS : 0);
+    uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    uint8_t attr = (sub == k ? blink : 0);
 
     switch(k) {
       case ITEM_SETUP_BEEPER_MODE:
