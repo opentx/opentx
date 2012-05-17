@@ -39,7 +39,7 @@ const pm_uchar sticks[] PROGMEM = {
 
 enum EnumTabDiag {
   e_Setup,
-#if defined(PCBV4)
+#if defined(PCBV4) && defined(SDCARD)
   e_FrskyTime,
 #endif
   e_Trainer,
