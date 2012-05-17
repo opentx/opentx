@@ -533,12 +533,16 @@ font.lbm: font_6x1.xbm
 	@echo "Convert font from xbm to lbm:"
 	$(IMG2LBM) $< $@ char
 	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm char
+	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm char
+	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm char
 
 font_dblsize.lbm: font_dblsize.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
 	$(IMG2LBM) $< $@ dblsize
 	$(IMG2LBM) translations/font_dblsize_se.xbm translations/font_dblsize_se.lbm dblsize
+	$(IMG2LBM) translations/font_dblsize_de.xbm translations/font_dblsize_de.lbm dblsize
+	$(IMG2LBM) translations/font_dblsize_it.xbm translations/font_dblsize_it.lbm dblsize
 
 sticks.lbm: sticks_4x1.xbm
 	@echo
