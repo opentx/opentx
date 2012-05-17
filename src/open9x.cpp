@@ -1060,29 +1060,7 @@ void getADC_filt()
                 t_ana[0][x] = ( t_ana[0][x] + Analog_values[x] ) >> 1 ;
         }
 }
-#else
-void getADC_filt()
-{
-  static uint16_t t_ana[2][8];
-  for (uint8_t adc_input=0; adc_input<8; adc_input++) {
-      ADMUX=adc_input|ADC_VREF_TYPE;
-      // Start the AD conversion
-      ADCSRA|=0x40;
 
-    // Do this while waiting
-    s_anaFilt[adc_input] = (s_anaFilt[adc_input]/2 + t_ana[1][adc_input]) & 0xFFFE; //gain of 2 on last conversion - clear last bit
-    t_ana[1][adc_input]  = (t_ana[1][adc_input] + t_ana[0][adc_input]) >> 1;
-
-      // Wait for the AD conversion to complete
-      while ((ADCSRA & 0x10)==0);
-      ADCSRA|=0x10;
-
-      t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADCW) >> 1;
-  }
-}
-#endif
-
-#if defined(PCBARM)
 void getADC_osmp()
 {
   register uint32_t x;
@@ -1106,7 +1084,41 @@ void getADC_osmp()
     s_anaFilt[x] = temp[x] >> 3;
   }
 }
+
+void getADC_single()
+{
+  register uint32_t x ;
+
+  read_9_adc() ;
+
+  for( x = 0 ; x < NUMBER_ANALOG ; x += 1 )
+  {
+    s_anaFilt[x] = Analog_values[x] >> 1 ;
+  }
+}
+
 #else
+
+void getADC_filt()
+{
+  static uint16_t t_ana[2][8];
+  for (uint8_t adc_input=0; adc_input<8; adc_input++) {
+      ADMUX=adc_input|ADC_VREF_TYPE;
+      // Start the AD conversion
+      ADCSRA|=0x40;
+
+    // Do this while waiting
+    s_anaFilt[adc_input] = (s_anaFilt[adc_input]/2 + t_ana[1][adc_input]) & 0xFFFE; //gain of 2 on last conversion - clear last bit
+    t_ana[1][adc_input]  = (t_ana[1][adc_input] + t_ana[0][adc_input]) >> 1;
+
+      // Wait for the AD conversion to complete
+      while ((ADCSRA & 0x10)==0);
+      ADCSRA|=0x10;
+
+      t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADCW) >> 1;
+  }
+}
+
 void getADC_osmp()
 {
   uint16_t temp_ana;
@@ -1125,21 +1137,7 @@ void getADC_osmp()
     s_anaFilt[adc_input] = temp_ana / 2; // divide by 2^n to normalize result.
   }
 }
-#endif
 
-#if defined(PCBARM)
-void getADC_single()
-{
-  register uint32_t x ;
-
-  read_9_adc() ;
-
-  for( x = 0 ; x < NUMBER_ANALOG ; x += 1 )
-  {
-    s_anaFilt[x] = Analog_values[x] >> 1 ;
-  }
-}
-#else
 void getADC_single()
 {
   for (uint8_t adc_input=0; adc_input<8; adc_input++) {
@@ -1182,7 +1180,7 @@ void getADC_bandgap()
 
 #endif // SIMU
 
-uint16_t g_vbat100mV = 0;
+uint8_t g_vbat100mV = 0;
 
 volatile uint8_t tick10ms = 0;
 uint16_t g_LightOffCounter;
@@ -2136,22 +2134,30 @@ void perMain()
 
     case 2:
       {
-        int32_t instant_vbat = anaIn(7);
 #if defined(PCBARM)
+        int32_t instant_vbat = anaIn(7);
         instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
         instant_vbat /= 55296  ;
 #elif defined(PCBV4)
+        uint16_t instant_vbat = anaIn(7);
         instant_vbat = ((uint32_t)instant_vbat*1112 + (int32_t)instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
 #else
+        uint16_t instant_vbat = anaIn(7);
         instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
 #endif
         if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] != menuMainView) g_vbat100mV = instant_vbat;
-        g_vbat100mV = (instant_vbat + g_vbat100mV*7) / 8;
 
-        static uint8_t s_batCheck;
-        s_batCheck+=32;
-        if (s_batCheck==0 && g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
-          AUDIO_ERROR(); // TODO AUDIO_TX_BATTERY_LOW()
+        static uint8_t  s_batCheck;
+        static uint16_t s_batSum;
+        s_batCheck += 32;
+        s_batSum += instant_vbat;
+
+        if (s_batCheck==0) {
+          g_vbat100mV = s_batSum / 8;
+          s_batSum = 0;
+          if (g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
+            AUDIO_ERROR(); // TODO AUDIO_TX_BATTERY_LOW()
+          }
         }
       }
       break;
