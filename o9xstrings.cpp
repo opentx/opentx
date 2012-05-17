@@ -324,20 +324,22 @@ const pm_char STR_MODELS_EXT[] PROGMEM = MODELS_EXT;
 
 const pm_uchar font[] PROGMEM = {
 #include "font.lbm"
-#ifdef TRANSLATIONS_SE
+#if defined(TRANSLATIONS_SE)
 #include "font_se.lbm"
-#endif
-#ifdef TRANSLATIONS_IT
+#elif defined(TRANSLATIONS_DE)
+#include "font_de.lbm"
+#elif defined(TRANSLATIONS_IT)
 #include "font_it.lbm"
 #endif
 };
 
 const pm_uchar font_dblsize[] PROGMEM = {
 #include "font_dblsize.lbm"
-#ifdef TRANSLATIONS_SE
+#if defined(TRANSLATIONS_SE)
 #include "font_dblsize_se.lbm"
-#endif
-#ifdef TRANSLATIONS_IT
+#elif defined(TRANSLATIONS_DE)
+#include "font_dblsize_de.lbm"
+#elif defined(TRANSLATIONS_IT)
 #include "font_dblsize_it.lbm"
 #endif
 };
