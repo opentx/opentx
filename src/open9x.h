@@ -725,7 +725,7 @@ extern const char stamp2[];
 extern const char stamp3[];
 extern const char stamp4[];
 
-extern uint8_t           g_vbat100mV;
+extern uint8_t            g_vbat100mV;
 extern volatile uint16_t  g_tmr10ms;
 extern volatile uint8_t   g_blinkTmr10ms;
 extern uint8_t            g_beepCnt;
