@@ -659,7 +659,7 @@ void menuProcModel(uint8_t event)
       {
         lcd_putsLeft(y, STR_TTRACE);
         int8_t idx = 3;
-        if (g_model.thrTraceSrc > NUM_POTS) idx = NUM_STICKS+NUM_ROTARY_ENCODERS+2+3+NUM_PPM+g_model.thrTraceSrc;
+        if (g_model.thrTraceSrc > NUM_POTS) idx = NUM_STICKS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+3+NUM_PPM+g_model.thrTraceSrc;
         else if (g_model.thrTraceSrc > 0) idx = NUM_STICKS+g_model.thrTraceSrc;
         putsChnRaw(MODEL_PARAM_OFS, y, idx, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.thrTraceSrc, 0, NUM_POTS+NUM_CHNOUT);
