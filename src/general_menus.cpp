@@ -88,8 +88,8 @@ NOINLINE uint8_t onoffMenuItem(uint8_t value, uint8_t y, const pm_char *label, u
 void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 {
   lcd_putc(GENERAL_PARAM_OFS+2*FW+(value*FW), y, '$');
-  lcd_hline(GENERAL_PARAM_OFS, y+3, 5*FW, SOLID);
-  if (attr) lcd_filled_rect(GENERAL_PARAM_OFS, y, 5*FW, FH-1);
+  lcd_hline(GENERAL_PARAM_OFS, y+3, 5*FW-1, SOLID);
+  if (attr) lcd_filled_rect(GENERAL_PARAM_OFS, y, 5*FW-1, FH-1);
 }
 
 enum menuProcSetupItems {
