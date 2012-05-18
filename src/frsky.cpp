@@ -58,6 +58,7 @@ uint8_t frskyTxBufferCount = 0;
 uint8_t FrskyRxBufferReady = 0;
 int8_t frskyStreaming = -1;
 uint8_t frskyUsrStreaming = 0;
+uint8_t link_counter = 0;
 
 FrskyData frskyTelemetry[2];
 FrskyRSSI frskyRSSI[2];
@@ -391,6 +392,7 @@ void processFrskyPacket(uint8_t *packet)
       }
       break;
     case LINKPKT: // A1/A2/RSSI values
+      link_counter += 32;
       frskyTelemetry[0].set(packet[1], g_model.frsky.channels[0].type);
       frskyTelemetry[1].set(packet[2], g_model.frsky.channels[1].type);
       frskyRSSI[0].set(packet[3]);
@@ -802,18 +804,25 @@ void frskyAlarmsRefresh()
 
 void FrskyRSSI::set(uint8_t value)
 {
-   if (this->value == 0)
-     this->value = value;
-   else
-     this->value = (((uint16_t)this->value * 7) + value + 4) / 8;
-   if (value && (!min || value < min))
-     min = value;
+  if (this->value == 0)
+    this->value = value;
+
+  sum += value;
+  if (link_counter == 0) {
+    this->value = sum / 8;
+    sum = 0;
+  }
+
+  if (value && (!min || value < min))
+    min = value;
 }
 
 void FrskyData::set(uint8_t value, uint8_t unit)
 {
-  if (unit != UNIT_VOLTS) this->value = value;
   FrskyRSSI::set(value);
+  if (unit != UNIT_VOLTS) {
+    this->value = value;
+  }
   if (!max || value > max)
     max = value;
 }

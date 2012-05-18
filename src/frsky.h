@@ -56,6 +56,7 @@ class FrskyRSSI {
  public:
   uint8_t value;
   uint8_t min;
+  uint16_t sum;
   void set(uint8_t value);
 };
 
