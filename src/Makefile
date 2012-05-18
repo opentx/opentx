@@ -535,6 +535,7 @@ font.lbm: font_6x1.xbm
 	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm char
 	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm char
 	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm char
+	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm char
 
 font_dblsize.lbm: font_dblsize.xbm
 	@echo

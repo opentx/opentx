@@ -330,6 +330,8 @@ const pm_uchar font[] PROGMEM = {
 #include "font_de.lbm"
 #elif defined(TRANSLATIONS_IT)
 #include "font_it.lbm"
+#elif defined(TRANSLATIONS_CZ)
+#include "font_cz.lbm"
 #endif
 };
 
