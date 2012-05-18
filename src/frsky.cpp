@@ -1005,13 +1005,15 @@ void displayRssiLine()
 {
   if (frskyStreaming > 0) {
     lcd_hline(0, 55, 128, 0); // separator
-    lcd_putsLeft(7*FH+1, STR_TX); lcd_outdezNAtt(4*FW, 7*FH+1, frskyRSSI[1].value, LEADING0, 2);
+    uint8_t rssi = min((uint8_t)99, frskyRSSI[1].value);
+    lcd_putsLeft(7*FH+1, STR_TX); lcd_outdezNAtt(4*FW, 7*FH+1, rssi, LEADING0, 2);
     lcd_rect(25, 57, 38, 7);
-    lcd_filled_rect(26, 58, 9*frskyRSSI[1].value/25, 5, (frskyRSSI[1].value < getRssiAlarmValue(0)) ? DOTTED : SOLID);
-    lcd_puts(105, 7*FH+1, STR_RX); lcd_outdezNAtt(105+4*FW-1, 7*FH+1, frskyRSSI[0].value, LEADING0, 2);
+    lcd_filled_rect(26, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    rssi = min((uint8_t)99, frskyRSSI[0].value);
+    lcd_puts(105, 7*FH+1, STR_RX); lcd_outdezNAtt(105+4*FW-1, 7*FH+1, rssi, LEADING0, 2);
     lcd_rect(65, 57, 38, 7);
-    uint8_t v = 9*frskyRSSI[0].value/25;
-    lcd_filled_rect(66+36-v, 58, v, 5, (frskyRSSI[0].value < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    uint8_t v = 4*rssi/11;
+    lcd_filled_rect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
     lcd_putsAtt(7*FW, 7*FH+1, STR_NODATA, BLINK);
