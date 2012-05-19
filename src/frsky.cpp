@@ -977,7 +977,9 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       break;
 
 #if defined(IMPERIAL_UNITS)
-    case TELEM_ALT:
+    case TELEM_ALT-1:
+    case TELEM_MIN_ALT-1:
+    case TELEM_MAX_ALT-1:
       if (g_model.frsky.usrProto == PROTO_WS_HOW_HIGH) {
         putsTelemetryValue(x, y, val, UNIT_FEET, att);
         break;
@@ -986,8 +988,17 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 #endif
 
     default:
-      putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+channel-6), att);
+    {
+      uint8_t unit;
+      if (channel <= TELEM_GPSALT-1)
+        unit = channel - 6;
+      else if (channel >= TELEM_MAX_T1-1 && channel <= TELEM_MAX_DIST-1)
+        unit = channel - 22;
+      else
+        unit = 1;
+      putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+unit), att);
       break;
+    }
   }
 }
 
