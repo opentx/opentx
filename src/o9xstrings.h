@@ -70,8 +70,7 @@ extern const pm_char STR_OPEN9X[];
 #else
 #define OFS_VFILTERADC (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
-#define OFS_WARNSW     (OFS_VFILTERADC + sizeof(TR_VFILTERADC))
-#define OFS_TRNMODE    (OFS_WARNSW + sizeof(TR_WARNSW))
+#define OFS_TRNMODE    (OFS_VFILTERADC + sizeof(TR_VFILTERADC))
 #define OFS_TRNCHN     (OFS_TRNMODE + sizeof(TR_TRNMODE))
 #define OFS_VTRIMINC   (OFS_TRNCHN + sizeof(TR_TRNCHN))
 #define OFS_RETA123    (OFS_VTRIMINC + sizeof(TR_VTRIMINC))
@@ -132,7 +131,6 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VBEEPMODE  (STR_OPEN9X + OFS_VBEEPMODE)
 #define STR_VRENAVIG   (STR_OPEN9X + OFS_VRENAVIG)
 #define STR_VFILTERADC (STR_OPEN9X + OFS_VFILTERADC)
-#define STR_WARNSW     (STR_OPEN9X + OFS_WARNSW)
 #define STR_TRNMODE    (STR_OPEN9X + OFS_TRNMODE)
 #define STR_TRNCHN     (STR_OPEN9X + OFS_TRNCHN)
 #define STR_VTRIMINC   (STR_OPEN9X + OFS_VTRIMINC)
@@ -270,7 +268,6 @@ extern const pm_char STR_THROTTLEWARNING[];
 extern const pm_char STR_SWITCHWARNING[];
 extern const pm_char STR_MEMORYWARNING[];
 extern const pm_char STR_ALARMWARNING[];
-extern const pm_char STR_NODATAALARM[];
 extern const pm_char STR_TIMEZONE[];
 extern const pm_char STR_GPSCOORD[];
 extern const pm_char STR_VARIO[];

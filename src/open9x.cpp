@@ -586,10 +586,9 @@ bool getSwitch(int8_t swtch, bool nc)
   return __getSwitch(swtch);
 }
 
-#if defined(AUTOSWITCH)
+uint8_t switches_states = 0;
 int8_t getMovedSwitch()
 {
-  static uint8_t switches_states = 0;
   static uint16_t s_last_time = 0;
 
   int8_t result = 0;
@@ -626,7 +625,6 @@ int8_t getMovedSwitch()
 
   return result;
 }
-#endif
 
 #ifdef FLIGHT_PHASES
 uint8_t getFlightPhase()
@@ -730,6 +728,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 #else
   if (unit == UNIT_KTS) {
     // kts to km/h
+    unit = UNIT_KMH;
     val = (val * 46) / 25;
   }
 #endif
@@ -868,29 +867,26 @@ void checkAlarm() // added by Gohst
 
 void checkSwitches()
 {
-  if(!g_eeGeneral.switchWarning) return; // if warning is on
+  int8_t last_bad_switch = 0;
+  
+  while (1) {
+    uint8_t states = g_model.switchWarningStates;
 
-  bool state = (g_eeGeneral.switchWarning > 0);
-  bool first = true;
+    switches_states = (states >> 1);
+    int8_t bad_switch = getMovedSwitch();
 
-  //loop until all switches are reset
-  while (1)
-  {
-    uint8_t i;
-    for(i=SW_BASE; i<SW_Trainer; i++)
-    {
-        if(i==SW_ID0) continue;
-        if(getSwitch(i-SW_BASE+1,0) != state) break;
-    }
-    if(i==SW_Trainer || keyDown()) return;
+    if (states & 0x01 || states == (switches_states << 1))
+      return;
 
     // first - display warning
-    if (first) {
+    if (bad_switch != last_bad_switch) {
       message(STR_ALERT, STR_SWITCHESNOTOFF, STR_PLEASERESETTHEM, STR_PRESSANYKEYTOSKIP);
-      first = false;
+      putsSwitches(POS_SWITCH_WARN*FW, 4*FH, bad_switch);
+      refreshDisplay();
+      last_bad_switch = bad_switch;
     }
 
-    if (check_soft_power() > e_power_trainer) return; // Usb on or power off
+    if (keyDown() || check_soft_power() > e_power_trainer) return; // Usb on or power off
 
     checkBacklight();
 

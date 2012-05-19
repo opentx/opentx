@@ -17,9 +17,6 @@
 #define LEN_VFILTERADC                  "\004"                                                                                                        
 #define TR_VFILTERADC                   "SING""OSMP""FILT"                                                                                            
                                                                                                                                                       
-#define LEN_WARNSW                      "\004"                                                                                                        
-#define TR_WARNSW                       "Down""OFF ""Up  "                                                                                            
-                                                                                                                                                      
 #define LEN_TRNMODE                     "\003"                                                                                                        
 #define TR_TRNMODE                      "OFF"" +="" :="                                                                                               
                                                                                                                                                       
@@ -301,7 +298,6 @@
 #define TR_SWITCHWARNING                "Warnung Schalter"                                
 #define TR_MEMORYWARNING                "Warnung Memory"                                  
 #define TR_ALARMWARNING                 "Warnung Alarm"                                   
-#define TR_NODATAALARM                  "NO DATA Alarm"                                   
 #define TR_TIMEZONE                     "Zeitzone"                                        
 #define TR_RXCHANNELORD                 "Kanalanordnung"                                  
 #define TR_SLAVE                        "Slave"                                           
@@ -340,7 +336,8 @@
 #define TR_THROTTLENOTIDLE              "Schub nicht OFF!"                                                                
 #define TR_RESETTHROTTLE                "Auf Null stellen."                                                               
 #define TR_ALARMSDISABLED               "Alarme ausgeschaltet"                                                            
-#define TR_SWITCHESNOTOFF               "Schalter nicht OFF"                                                              
+#define TR_SWITCHESNOTOFF               "Schalter     on"
+#define POS_SWITCH_WARN                 9
 #define TR_PLEASERESETTHEM              "Bitte zur\205cksetzen"                                                           
 #define TR_MESSAGE                      "HINWEIS"                                                                         
 #define TR_PRESSANYKEY                  "\004Taste dr\205cken"                                                            

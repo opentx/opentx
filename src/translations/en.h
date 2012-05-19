@@ -1,6 +1,6 @@
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"
-#define TR_OFFON         "OFF""ON "
+#define TR_OFFON         "OFF""ON\0"
 
 #define LEN_MMMINV       "\003"
 #define TR_MMMINV        "---""INV"
@@ -16,9 +16,6 @@
 
 #define LEN_VFILTERADC   "\004"
 #define TR_VFILTERADC    "SING""OSMP""FILT"
-
-#define LEN_WARNSW       "\004"
-#define TR_WARNSW        "Down""OFF ""Up  "
 
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       "off"" +="" :="
@@ -298,10 +295,9 @@
 #define TR_LIGHTOFFAFTER "Light off after"
 #define TR_SPLASHSCREEN  "Splash screen"
 #define TR_THROTTLEWARNING "T-Warning"
-#define TR_SWITCHWARNING "Switch Warning"
+#define TR_SWITCHWARNING "S-Warning"
 #define TR_MEMORYWARNING "Memory Warning"
 #define TR_ALARMWARNING "Alarm Warning"
-#define TR_NODATAALARM  "NO DATA Alarm"
 #define TR_TIMEZONE     "Time Zone"
 #define TR_RXCHANNELORD "Rx Channel Ord"
 #define TR_SLAVE        "Slave"
@@ -340,8 +336,9 @@
 #define TR_THROTTLENOTIDLE "Throttle not idle"
 #define TR_RESETTHROTTLE "Reset throttle"
 #define TR_ALARMSDISABLED "Alarms Disabled"
-#define TR_SWITCHESNOTOFF "Switches not off"
-#define TR_PLEASERESETTHEM "Please reset them"
+#define TR_SWITCHESNOTOFF "Switch     on"
+#define POS_SWITCH_WARN   7
+#define TR_PLEASERESETTHEM "Please reset it"
 #define TR_MESSAGE      "\004MESSAGE"
 #define TR_PRESSANYKEY  "\004Press any Key"
 #define TR_BADEEPROMDATA "Bad EEprom Data"

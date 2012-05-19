@@ -126,11 +126,9 @@ enum menuProcSetupItems {
 #if defined(SPLASH)
   ITEM_SETUP_DISABLE_SPLASH,
 #endif
-  ITEM_SETUP_SWITCH_WARNING,
   ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
 #if defined(FRSKY)
-  ITEM_SETUP_TELEMETRY_ALARM,
   ITEM_SETUP_TIMEZONE,
   ITEM_SETUP_GPSFORMAT,
 #endif
@@ -157,7 +155,7 @@ void menuProcSetup(uint8_t event)
 #define SPLASH_ZEROS
 #endif
 #ifdef FRSKY
-#define FRSKY_ZEROS  0, 0, 0,
+#define FRSKY_ZEROS  0, 0,
 #else
 #define FRSKY_ZEROS
 #endif
@@ -172,7 +170,7 @@ void menuProcSetup(uint8_t event)
 #define ROTARY_ENCODERS_ZEROS
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+2, {0, 0, AUDIO_ZEROS HAPTIC_ZEROS ARM_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+2, {0, 0, AUDIO_ZEROS HAPTIC_ZEROS ARM_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
   uint8_t sub = m_posVert - 1;
 
@@ -346,10 +344,6 @@ void menuProcSetup(uint8_t event)
       }
 #endif
 
-      case ITEM_SETUP_SWITCH_WARNING:
-        g_eeGeneral.switchWarning = selectMenuItem(y, STR_SWITCHWARNING, STR_WARNSW, g_eeGeneral.switchWarning, -1, 1, attr, event);
-        break;
-
       case ITEM_SETUP_MEMORY_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
@@ -365,13 +359,6 @@ void menuProcSetup(uint8_t event)
       }
 
 #if defined(FRSKY)
-      case ITEM_SETUP_TELEMETRY_ALARM:
-      {
-        uint8_t b = g_eeGeneral.enableTelemetryAlarm;
-        g_eeGeneral.enableTelemetryAlarm = onoffMenuItem( b, y, STR_NODATAALARM, attr, event ) ;
-        break;
-      }
-
       case ITEM_SETUP_TIMEZONE:
         lcd_putsLeft(y, STR_TIMEZONE);
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.timezone, attr|LEFT);

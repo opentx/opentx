@@ -17,9 +17,6 @@
 #define LEN_VFILTERADC   "\004"
 #define TR_VFILTERADC    "SING""OSMP""FILT"
 
-#define LEN_WARNSW       "\004"
-#define TR_WARNSW        "Ned ""AV  ""Upp "
-
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       " AV"" +="" :="
 
@@ -80,7 +77,7 @@
 #define TR_VMLTPX2       "+=""*="":="
 
 #define LEN_VMIXTRIMS    "\003"
-#define TR_VMIXTRIMS     "AV ""P\203 ""Rod""Hjd""Gas""Ske"
+#define TR_VMIXTRIMS     "AV """P\203 ""Rod""Hjd""Gas""Ske"
 
 #define LEN_VCSWFUNC     "\007"
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""(v)>ofs""(v)<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
@@ -121,7 +118,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kerh\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
+#define TR_VFSWFUNC      "S\201kerh.\0     ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
@@ -304,7 +301,6 @@
 #define TR_SWITCHWARNING "Brytarvarning"
 #define TR_MEMORYWARNING "Minnesvarning"
 #define TR_ALARMWARNING "Alarmvarning"
-#define TR_NODATAALARM  "NO DATA Varning"
 #define TR_TIMEZONE     "Tidszon"
 #define TR_RXCHANNELORD "Kanalordning RX"
 #define TR_SLAVE        "Slav"
@@ -343,7 +339,8 @@
 #define TR_THROTTLENOTIDLE "Gasen ej avst\201ngd!"
 #define TR_RESETTHROTTLE "Sl\200 av gasen"
 #define TR_ALARMSDISABLED "Alarmen Avst\201ngda!"
-#define TR_SWITCHESNOTOFF "Brytare P\200slagna!"
+#define TR_SWITCHESNOTOFF "Switch     on"
+#define POS_SWITCH_WARN   7
 #define TR_PLEASERESETTHEM "St\201ng av dem"
 #define TR_MESSAGE      "MEDDELANDE"
 #define TR_PRESSANYKEY  "Tryck ned en knapp"
@@ -388,7 +385,7 @@
 #define TR_UNITSFORMAT   "Enhetsformat"
 #define TR_SHUTDOWN      "ST\204NGER AV"
 #define TR_BATT_CALIB    "Kalib. Batteri"
-#define TR_CURRENT_CALIB "Kalib. Sp\201nning"
+#define TR_CURRENT_CALIB "Kalib. Spänning"
 #define TR_CURRENT       "Sp\201nning"
 #define TR_SELECT_MODEL  "V\201lj Modell"
 #define TR_CREATE_MODEL  "Skapa Modell"

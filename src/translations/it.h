@@ -17,9 +17,6 @@
 #define LEN_VFILTERADC   "\004"
 #define TR_VFILTERADC    "SING""OSMP""FILT"
 
-#define LEN_WARNSW       "\004"
-#define TR_WARNSW        "Gi\200 ""OFF ""S\200  "
-
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       "off"" +="" :="
 
@@ -301,7 +298,6 @@
 #define TR_SWITCHWARNING "Avviso Switch "
 #define TR_MEMORYWARNING "Avviso Memoria"
 #define TR_ALARMWARNING "Avviso Allarme"
-#define TR_NODATAALARM  "Avviso NODATA"
 #define TR_TIMEZONE     "Ora locale"
 #define TR_RXCHANNELORD "Ordine ch RX  "
 #define TR_SLAVE        "Slave"
@@ -336,11 +332,12 @@
 #define TR_FP           "FV"
 #define TR_EEPROMLOWMEM "EEPROM quasi piena!"
 #define TR_ALERT        "\007ALERT"
-#define TR_PRESSANYKEYTOSKIP "    Premi un tasto   "
+#define TR_PRESSANYKEYTOSKIP "    Premi un tasto"
 #define TR_THROTTLENOTIDLE "Throttle non in pos."
 #define TR_RESETTHROTTLE "Riposiziona Throttle"
 #define TR_ALARMSDISABLED "Avvisi Disattivati!"
-#define TR_SWITCHESNOTOFF "Switch attivi!  "
+#define TR_SWITCHESNOTOFF "Switch     attivi!"
+#define POS_SWITCH_WARN   7
 #define TR_PLEASERESETTHEM "Disattivarli"
 #define TR_MESSAGE      "\004MESSAGE"
 #define TR_PRESSANYKEY  "\004Premi un tasto"

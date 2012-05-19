@@ -559,6 +559,7 @@ enum menuProcModelItems {
   ITEM_MODEL_THROTTLE_TRACE,
   ITEM_MODEL_THROTTLE_TRIM,
   ITEM_MODEL_THROTTLE_WARNING,
+  ITEM_MODEL_SWITCHES_WARNING,
   ITEM_MODEL_BEEP_CENTER,
   ITEM_MODEL_PROTOCOL,
   ITEM_MODEL_PROTOCOL_PARAMS
@@ -582,7 +583,7 @@ void menuProcModel(uint8_t event)
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
 
   uint8_t protocol = g_model.protocol;
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 13 : 12), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 14 : 13), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
 
   uint8_t  sub = m_posVert - 1;
 
@@ -677,6 +678,48 @@ void menuProcModel(uint8_t event)
         lcd_putsLeft(y, STR_THROTTLEWARNING);
         menu_lcd_onoff(MODEL_PARAM_OFS, y, !g_model.disableThrottleWarning, attr) ;
         if (attr) g_model.disableThrottleWarning = !checkIncDecModel(event, !g_model.disableThrottleWarning, 0, 1);
+        break;
+      }
+
+      case ITEM_MODEL_SWITCHES_WARNING:
+      {
+        lcd_putsLeft(y, STR_SWITCHWARNING);
+        uint8_t states = g_model.switchWarningStates;
+        char c = !(states & 1);
+        menu_lcd_onoff(MODEL_PARAM_OFS, y, c, attr);
+        if (attr) {
+          s_editMode = 0;
+          switch(event) {
+            case EVT_KEY_LONG(KEY_MENU):
+              killEvents(event);
+              getMovedSwitch();
+              g_model.switchWarningStates = 0x01 + (switches_states << 1);
+              // no break
+            case EVT_KEY_BREAK(KEY_MENU):
+            case EVT_KEY_BREAK(KEY_LEFT):
+            case EVT_KEY_BREAK(KEY_RIGHT):
+              g_model.switchWarningStates ^= 0x01;
+              STORE_MODELVARS;
+              break;
+          }
+        }
+        if (c) {
+          states >>= 1;
+          for (uint8_t i=1; i<7; i++) {
+            attr = 0;
+            if (i == 4) {
+              c = '0'+(states & 0x03)-1;
+              states >>= 2;
+            }
+            else {
+              if (states & 0x01)
+                attr = INVERS;
+              c = pgm_read_byte(STR_VSWITCHES - 2 + (3*i) + (i>=5 ? 6 : 0));
+              states >>= 1;
+            }
+            lcd_putcAtt(MODEL_PARAM_OFS+2*FW+i*FW, y, c, attr);
+          }
+        }
         break;
       }
 

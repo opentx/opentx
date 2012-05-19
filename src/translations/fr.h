@@ -17,9 +17,6 @@
 #define LEN_VFILTERADC   "\004"
 #define TR_VFILTERADC    "SING""OSMP""FILT"
 
-#define LEN_WARNSW       "\004"
-#define TR_WARNSW        "Bas ""OFF ""Haut"
-
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       "off"" +="" :="
 
@@ -300,10 +297,9 @@
 #define TR_LIGHTSWITCH  "Inter eclairage"
 #define TR_LIGHTOFFAFTER "Duree eclairage"
 #define TR_SPLASHSCREEN  "Ecran d'accueil"
-#define TR_SWITCHWARNING "Alerte Inter"
+#define TR_SWITCHWARNING "S-Warning"
 #define TR_MEMORYWARNING "Alerte Memoire"
 #define TR_ALARMWARNING "Alerte Alarme"
-#define TR_NODATAALARM  "Alerte Telem."
 #define TR_TIMEZONE     "Fuseau Horaire"
 #define TR_RXCHANNELORD "Ordre Voies Rx"
 #define TR_MODE         "Mode"
@@ -343,8 +339,9 @@
 #define TR_THROTTLENOTIDLE "Gaz pas a zero"
 #define TR_RESETTHROTTLE    "Reinitialisez le"
 #define TR_ALARMSDISABLED   "Alarmes Desactivees"
-#define TR_SWITCHESNOTOFF   "Switches enclenches"
-#define TR_PLEASERESETTHEM  "Reinitialisez les"
+#define TR_SWITCHESNOTOFF   "Switch     enclenche"
+#define POS_SWITCH_WARN     7
+#define TR_PLEASERESETTHEM  "Reinitialisez le"
 #define TR_MESSAGE          "MESSAGE"
 #define TR_PRESSANYKEY      "Touche pour continuer"
 #define TR_BADEEPROMDATA    "Bad EEprom Data"

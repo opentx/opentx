@@ -114,8 +114,7 @@ PACK(typedef struct t_EEGeneral {
   int8_t    lightSw;
   TrainerData trainer;
   uint8_t   view;      //index of subview in main scrren
-  uint8_t   spare0:1;
-  int8_t    switchWarning:2; // -1=down, 0=off, 1=up
+  uint8_t   spare0:3;
   int8_t    beeperMode:2;
   uint8_t   spare1:1;
   uint8_t   disableMemoryWarning:1;
@@ -129,7 +128,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   preBeep:1;
   uint8_t   flashBeep:1;
   uint8_t   disableSplashScreen:1;
-  uint8_t   enableTelemetryAlarm:1;   // 0=no, 1=yes (Sound alarm when there's no telem. data coming in)
+  uint8_t   spare2:1;
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   filterInput;
   uint8_t   lightAutoOff;
@@ -320,13 +319,13 @@ enum TelemetryUnit {
   UNIT_METERS_PER_SECOND,
   UNIT_RAW,
   UNIT_KMH,
-  UNIT_KTS = UNIT_KMH,
   UNIT_METERS,
   UNIT_DEGREES,
   UNIT_PERCENT,
   UNIT_MILLIAMPS,
   UNIT_MAX,
-  UNIT_FEET
+  UNIT_FEET,
+  UNIT_KTS
 };
 
 PACK(typedef struct t_FrSkyChannelData {
@@ -575,6 +574,8 @@ PACK(typedef struct t_ModelData {
   uint8_t   varioSource:3;
   uint8_t   varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
   uint8_t   varioSpeedDownMin;
+
+  uint8_t switchWarningStates;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;
