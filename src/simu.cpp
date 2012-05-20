@@ -382,12 +382,12 @@ void Open9xSim::refreshDiplay()
     
     static SwitchKey keys3[] = {
 #if defined(PCBARM)
-      { KEY_1, PIOC->PIO_PDSR,  0x00100000, 0 },
-      { KEY_6, PIOA->PIO_PDSR,  0x00000004, 0 },
-      { KEY_2, PIOA->PIO_PDSR,  0x00008000, 0 },
-      { KEY_3, PIOC->PIO_PDSR,  0x80000000, 0 },
-      { KEY_7, PIOC->PIO_PDSR,  0x00010000, 0 },
-      { KEY_8, PIOC->PIO_PDSR,  0x00000100, 0 } };
+      { KEY_1, PIOC->PIO_PDSR,  20, 0 },
+      { KEY_6, PIOA->PIO_PDSR,  2, 0 },
+      { KEY_2, PIOA->PIO_PDSR,  15, 0 },
+      { KEY_3, PIOC->PIO_PDSR,  31, 0 },
+      { KEY_7, PIOC->PIO_PDSR,  16, 0 },
+      { KEY_8, PIOC->PIO_PDSR,  8, 0 } };
 #else
 #if defined(PCBV4) || defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
       { KEY_1, pinc,  INP_C_ThrCt, 0 },
@@ -407,11 +407,7 @@ void Open9xSim::refreshDiplay()
     for(unsigned i=0; i<DIM(keys3); i++){
       bool ks = getApp()->getKeyState(keys3[i].key);
       if (ks != keys3[i].value) {
-#if defined(PCBARM)
-        if (ks) keys3[i].pin ^= (keys3[i].shift);
-#else
         if (ks) keys3[i].pin ^= (1<<keys3[i].shift);
-#endif
         keys3[i].value = ks;
       }
     }
