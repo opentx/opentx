@@ -36,7 +36,7 @@
 
 #if defined(TRANSLATIONS_FR)
 #include "translations/fr.h"
-#define LEN_SPECIAL_CHARS 0
+#define LEN_SPECIAL_CHARS 3
 #elif defined(TRANSLATIONS_IT)
 #include "translations/it.h"
 #define LEN_SPECIAL_CHARS 1
