@@ -77,7 +77,7 @@
 #define TR_VMLTPX2       "+=""*="":="
 
 #define LEN_VMIXTRIMS    "\003"
-#define TR_VMIXTRIMS     "AV """P\203 ""Rod""Hjd""Gas""Ske"
+#define TR_VMIXTRIMS     "AV ""P\203 ""Rod""Hjd""Gas""Ske"
 
 #define LEN_VCSWFUNC     "\007"
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""(v)>ofs""(v)<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
