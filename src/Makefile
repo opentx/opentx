@@ -536,6 +536,7 @@ font.lbm: font_6x1.xbm
 	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm char
 	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm char
 	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm char
+	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm char
 
 font_dblsize.lbm: font_dblsize.xbm
 	@echo
@@ -544,6 +545,7 @@ font_dblsize.lbm: font_dblsize.xbm
 	$(IMG2LBM) translations/font_dblsize_se.xbm translations/font_dblsize_se.lbm dblsize
 	$(IMG2LBM) translations/font_dblsize_de.xbm translations/font_dblsize_de.lbm dblsize
 	$(IMG2LBM) translations/font_dblsize_it.xbm translations/font_dblsize_it.lbm dblsize
+	$(IMG2LBM) translations/font_dblsize_fr.xbm translations/font_dblsize_fr.lbm dblsize
 
 sticks.lbm: sticks_4x1.xbm
 	@echo
