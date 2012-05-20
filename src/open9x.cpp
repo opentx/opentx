@@ -601,7 +601,7 @@ int8_t getMovedSwitch()
       prev = (switches_states & mask);
     }
     else if (i <= 6) {
-      prev = ((switches_states & 0x18) == ((i-3) << 3));
+      prev = ((switches_states & 0x18) == ((i-4) << 3));
     }
     else {
       mask = (1<<(i-2));
@@ -614,7 +614,7 @@ int8_t getMovedSwitch()
       if (mask)
         switches_states ^= mask;
       else
-        switches_states = (switches_states & 0xE7) | ((i-3) << 3);
+        switches_states = (switches_states & 0xE7) | ((i-4) << 3);
     }
   }
 

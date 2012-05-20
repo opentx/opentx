@@ -708,7 +708,7 @@ void menuProcModel(uint8_t event)
           for (uint8_t i=1; i<7; i++) {
             attr = 0;
             if (i == 4) {
-              c = '0'+(states & 0x03)-1;
+              c = '0'+(states & 0x03);
               states >>= 2;
             }
             else {
