@@ -637,12 +637,9 @@ void check_frsky()
   if (frskyStreaming > 0) {
     frskyStreaming--;
   }
-  else if (g_eeGeneral.enableTelemetryAlarm) {
+  else {
     frskyRSSI[0].set(0);
     frskyRSSI[1].set(0);
-    if (!(g_tmr10ms % 30)) {
-      AUDIO_TELEMETRY_ALARM();
-    }
   }
 #endif
 

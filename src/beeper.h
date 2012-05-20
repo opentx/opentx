@@ -77,7 +77,6 @@ extern void beep(uint8_t val);
 #define AUDIO_VARIO_UP()      _beep(1)
 #define AUDIO_VARIO_DOWN()    _beep(1)
 #define AUDIO_TRIM_MIDDLE(f)   beep(2)
-#define AUDIO_TELEMETRY_ALARM() { warble = !(g_tmr10ms % 60); AUDIO_WARNING2(); }
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
 

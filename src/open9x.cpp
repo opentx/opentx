@@ -1469,6 +1469,7 @@ void evalFunctions()
 #if defined(AUDIO)
             audioDefevent(AU_FRSKY_FIRST+sd->param);
 #else
+            // TODO sound with warble = !(g_tmr10ms % 60); AUDIO_WARNING2(); }
             beep(3);
 #endif
           }
