@@ -1,12 +1,12 @@
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"
-#define TR_OFFON         " \220 "" \221 "
+#define TR_OFFON         "VYP""ZAP"
 
 #define LEN_MMMINV       "\003"
 #define TR_MMMINV        "---""INV"
 
 #define LEN_NCHANNELS    "\004"
-#define TR_NCHANNELS     "4CH 6CH 8CH 10CH12CH14CH16CH"
+#define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE    "\005"
 #define TR_VBEEPMODE     "Tich\212""Alarm""BezKL""V\207e  "
@@ -18,10 +18,10 @@
 #define TR_VFILTERADC    "SING""OSMP""FILT"
 
 #define LEN_TRNMODE      "\003"
-#define TR_TRNMODE       " \220 "" +="" :="
+#define TR_TRNMODE       " X "" +="" :="
 
 #define LEN_TRNCHN       "\003"
-#define TR_TRNCHN        "ch1ch2ch3ch4"
+#define TR_TRNCHN        "CH1CH2CH3CH4"
 
 #define LEN_DATETIME     "\006"
 #define TR_DATETIME      "DATUM:""\201AS:  "
@@ -51,7 +51,12 @@
 #else
 #define TR_DSM2 "[DSM2]"
 #endif
-#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2
+#ifdef IRPROTOS
+#define TR_IRPROTOS "SILV  TRAC09PICZ  SWIFT\0"
+#else
+#define TR_IRPROTOS
+#endif
+#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2 TR_IRPROTOS
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -77,7 +82,7 @@
 #define TR_VMLTPX2       "+=""*="":="
 
 #define LEN_VMIXTRIMS    "\004"
-#define TR_VMIXTRIMS     "\220\0  ""\221\0  ""Sm\203r""V\212\207k""Plyn""K\206id"
+#define TR_VMIXTRIMS     "VYP\0""ZAP\0""Sm\203r""V\212\207k""Plyn""K\206id"
 
 #define LEN_VCSWFUNC     "\007"
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
@@ -231,7 +236,7 @@
 #define TR_FADEIN       "P\206echodZap"
 #define TR_FADEOUT      "P\206echodVyp"
 #define TR_DEFAULT      "(v\212choz\204)"
-#define TR_CHECKTRIMS   "Kont.\005Trimy"
+#define TR_CHECKTRIMS   "Kont. \002  Trimy"
 #define TR_SWASHTYPE    "Swash Type"
 #define TR_COLLECTIVE   "Collective"
 #define TR_SWASHRING    "Swash Ring"
