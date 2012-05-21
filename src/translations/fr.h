@@ -121,7 +121,7 @@
 #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
-#define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
+#define TR_VFSWRESET     "Timer1""Timer2""Tout  ""T\200l\200m."
 
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
@@ -142,8 +142,8 @@
 #define STR_V            (STR_VTELEMUNIT+1)
 #define STR_A            (STR_VTELEMUNIT+4)
 
-#define LEN_VALARM       "\003"
-#define TR_VALARM        "---""Yel""Org""Red"
+#define LEN_VALARM       "\004"
+#define TR_VALARM        "----""Jaun""Oran""Roug"
 
 #define LEN_VALARMFN     "\001"
 #define TR_VALARMFN      "<>"
@@ -164,7 +164,7 @@
 #define TR_GPSFORMAT     "HMS NMEA"
 
 #define LEN_VUNITSFORMAT "\004"
-#define TR_VUNITSFORMAT  "MetrImpr"
+#define TR_VUNITSFORMAT  "M\200trImpr"
 
 #define LEN2_VTEMPLATES  15
 #define LEN_VTEMPLATES   "\017"
@@ -220,13 +220,13 @@
 #define TR_LOADINGMODEL "Chargement..."
 #define TR_NAME         "Nom"
 #define TR_TIMER        "Chrono"
-#define TR_ELIMITS      "LimitesEt"
+#define TR_ELIMITS      "Limites Et"
 #define TR_ETRIMS       "Trims Et."
 #define TR_TRIMINC      "Pas Trim"
 #define TR_TTRACE       "Trace Gaz"
 #define TR_TTRIM        "Trim Gaz"
-#define TR_THROTTLEWARNING "AlerteGaz"
-#define TR_BEEPCTR      "Bips Cont"
+#define TR_THROTTLEWARNING "Alerte Gaz"
+#define TR_BEEPCTR      "Bips Contr"
 #define TR_PROTO        "Proto."
 #define TR_PPMFRAME     "Trame PPM"
 #define TR_MS           "ms"
@@ -297,7 +297,7 @@
 #define TR_LIGHTSWITCH  "Inter \200clairage"
 #define TR_LIGHTOFFAFTER "Dur\200e \200clairage"
 #define TR_SPLASHSCREEN  "Ecran d'accueil"
-#define TR_SWITCHWARNING "AlerteInt"
+#define TR_SWITCHWARNING "Alerte Int"
 #define TR_MEMORYWARNING "Alerte m\200moire"
 #define TR_ALARMWARNING "Alerte alarmes"
 #define TR_TIMEZONE     "Fuseau horaire"
@@ -333,7 +333,7 @@
 #define TR_CH           "CH"
 #define TR_MODEL        "MODELE"
 #define TR_FP           "PV"
-#define TR_EEPROMLOWMEM "EEPROM low mem"
+#define TR_EEPROMLOWMEM "EEPROM pleine!"
 #define TR_ALERT        "   ALERTE"
 #define TR_PRESSANYKEYTOSKIP "Touche pour ignorer"
 #define TR_THROTTLENOTIDLE "Gaz pas \202 z\200ro"
@@ -385,7 +385,7 @@
 #define TR_UNITSFORMAT   "Format Unit\200s"
 #define TR_SHUTDOWN      "ARRET EN COURS"
 #define TR_BATT_CALIB    "Calib. Batterie"
-#define TR_CURRENT_CALIB "Calib. Amp\200rage"
+#define TR_CURRENT_CALIB "Calib. Courant"
 #define TR_CURRENT       "Courant"
 #define TR_SELECT_MODEL  "S\200lect Mod\201le"
 #define TR_CREATE_MODEL  "Cr\200er Mod\201le"
