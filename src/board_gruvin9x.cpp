@@ -101,7 +101,11 @@ inline void board_init()
   EICRA = (1<<ISC30) | (1<<ISC20); // do the same for encoder 1
   EIFR = (3<<INTF2);
 
+  #if defined(EXTRA_ROTARY_ENCODERS)
+  EIMSK = (3<<INT5); // enable the ONE rot. enc. ext. int. pairs.
+  #else
   EIMSK = (3<<INT5) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
+  #endif
   /***************************************************/
 
   /*
@@ -111,15 +115,15 @@ inline void board_init()
   TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
 
 #ifdef EXTRA_ROTARY_ENCODERS
-  //configure uart2 here
-  DDRH &= ~(1 << 0);
-  PORTH &= ~(1 << 0);
+  //configure uart1 here
+  DDRD &= ~(1 << 2);
+  PORTD &= ~(1 << 2);
   #define EXTRA_ROTARY_ENCODERS_USART_BAUD 9600UL
-  UBRR2 = F_CPU/(16*EXTRA_ROTARY_ENCODERS_USART_BAUD)-1;
+  UBRR1 = F_CPU/(16*EXTRA_ROTARY_ENCODERS_USART_BAUD)-1;
   //9 bit mode
-  UCSR2C = (1<<USBS2)|(3<<UCSZ20);
-  UCSR2B = (1<<RXEN2)|(0<<TXEN2)|(1<<UCSZ22);
-  UCSR2B |= 1 << RXCIE2; //enable interrupt on rx
+  UCSR1C = (1<<USBS1)|(3<<UCSZ10);
+  UCSR1B = (1<<RXEN1)|(0<<TXEN1)|(1<<UCSZ12);
+  UCSR1B |= 1 << RXCIE1; //enable interrupt on rx
 #endif //EXTRA_ROTARY_ENCODERS
 }
 
@@ -128,17 +132,15 @@ inline void board_init()
 uint8_t vpotToChange = 0;
 uint8_t vpot_mod_state = 0;
 
-ISR(USART2_RX_vect)
+ISR(USART1_RX_vect)
 {
-	//receive data from extension board
-	//bit 9 = 1 mean encoder number, following byte with bit 9 = 0 is increment value
+  //receive data from extension board
+  //bit 9 = 1 mean encoder number, following byte with bit 9 = 0 is increment value
   /* Get status and 9th bit, then data */
   /* from buffer */
-  //uint8_t status = UCSR2A;
-  uint16_t resh = UCSR2B;
-  uint16_t resl = UDR2;
+  uint16_t resh = UCSR1B;
+  uint16_t resl = UDR1;
   uint16_t res = 0;
-  //if ( status & (1<<FEn)|(1<<DORn)|(1<<UPEn) )
   
   /* Filter the 9th bit, then return */
   resh = (resh >> 1) & 0x01;
@@ -148,11 +150,11 @@ ISR(USART2_RX_vect)
     vpot_mod_state = 1;
   }
   else {
-    if(vpot_mod_state & (vpotToChange>0) & (vpotToChange<=NUM_EXTRA_ROTARY_ENCODERS))
+    if(vpot_mod_state & (vpotToChange>0) & (vpotToChange<=NUM_UART_ROTARY_ENCODERS))
     {
       int8_t vpot_inc = res & 0xff;
       if(vpot_inc){
-        incRotaryEncoder(NUM_ROTARY_ENCODERS-NUM_EXTRA_ROTARY_ENCODERS+vpotToChange-1, vpot_inc);
+        incRotaryEncoder((NUM_ROTARY_ENCODERS - NUM_UART_ROTARY_ENCODERS) + (vpotToChange - 1), vpot_inc);
       }    
       vpot_mod_state = 0;
     }
@@ -260,8 +262,12 @@ void readKeysAndTrims()
 
   uint8_t enuk = KEY_MENU;
 
+#if !defined(EXTRA_ROTARY_ENCODERS)
   keys[BTN_REa].input(~PIND & 0x20, BTN_REa);
   keys[BTN_REb].input(~PIND & 0x10, BTN_REb);
+#else //EXTRA_ROTARY_ENCODERS
+  keys[BTN_REa].input(~PIND & 0x10, BTN_REa);
+#endif //EXTRA_ROTARY_ENCODERS
 
   uint8_t tin = ~PINL;
   uint8_t in;

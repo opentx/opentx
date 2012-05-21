@@ -313,8 +313,8 @@ void menuMainView(uint8_t event)
         int16_t val = getRotaryEncoder(i);
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT); // TODO uint16_t?
 #if defined(EXTRA_ROTARY_ENCODERS)
-#define V_BAR_W 4
-        V_BAR(SCREEN_WIDTH/2-9+V_BAR_W*i, SCREEN_HEIGHT-8, len)
+#define V_BAR_W 5
+        V_BAR(SCREEN_WIDTH/2-8+V_BAR_W*i, SCREEN_HEIGHT-8, len)
 #else //EXTRA_ROTARY_ENCODERS
 #define V_BAR_W 5
         V_BAR(SCREEN_WIDTH/2-3+V_BAR_W*i, SCREEN_HEIGHT-8, len)

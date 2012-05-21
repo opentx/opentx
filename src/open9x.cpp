@@ -685,7 +685,11 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
   uint8_t phase = s_perout_flight_phase;
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     if (phase == 0) return 0;
-    int16_t value = phaseaddress(phase)->rotaryEncoders[idx];
+    int16_t value = 0;
+    if(idx<(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
+      value = phaseaddress(phase)->rotaryEncoders[idx];
+    else
+      value = g_model.rotaryEncodersExtra[phase][idx-(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)];
     if (value <= ROTARY_ENCODER_MAX) return phase;
     uint8_t result = value-ROTARY_ENCODER_MAX-1;
     if (result >= phase) result++;
@@ -696,13 +700,20 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 
 int16_t getRotaryEncoder(uint8_t idx)
 {
-  return phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
+  if(idx < (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
+    return phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
+  else
+    return g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)];
 }
 
 void incRotaryEncoder(uint8_t idx, int8_t inc)
 {
   g_rotenc[idx] += inc;
-  int16_t *value = &(phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
+  int16_t *value;
+  if(idx < (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
+    value = &(phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
+  else
+    value = &(g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)]);
   *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
   eeDirty(EE_MODEL);
 }
@@ -1445,7 +1456,7 @@ void evalFunctions()
           }
         }
 
-	if (~active_switches & switch_mask) {
+  if (~active_switches & switch_mask) {
           if (sd->func == FUNC_RESET) {
             switch (sd->param) {
               case 0:
@@ -2470,6 +2481,7 @@ volatile uint8_t g_rotenc[2] = {0};
 #ifndef SIMU
 
 #if defined (PCBV4)
+#if !defined(EXTRA_ROTARY_ENCODERS)
 ISR(INT2_vect)
 {
   uint8_t input = PIND & 0b00001100;
@@ -2480,16 +2492,24 @@ ISR(INT3_vect)
   uint8_t input = PIND & 0b00001100;
   if (input == 0 || input == 0b00001100) incRotaryEncoder(0, +1);
 }
+#endif //EXTRA_ROTARY_ENCODERS
+
+#if !defined(EXTRA_ROTARY_ENCODERS)
+#define ENC_B_ID 1
+#else 
+#define ENC_B_ID 0
+#endif
+
 
 ISR(INT5_vect)
 {
   uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, +1);
+  if (input == 0 || input == 0b01100000) incRotaryEncoder(ENC_B_ID, +1);
 }
 ISR(INT6_vect)
 {
   uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, -1);
+  if (input == 0 || input == 0b01100000) incRotaryEncoder(ENC_B_ID, -1);
 }
 #endif
 
@@ -2708,9 +2728,9 @@ int main(void)
     lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
     refreshDisplay() ;
     #if defined(HAPTIC)
-    hapticOff()	; 
+    hapticOff(); 
     #endif
-    /* end force haptic to be disabled in this mode */	  
+    /* end force haptic to be disabled in this mode */
     usb_mode();
   }
 #endif

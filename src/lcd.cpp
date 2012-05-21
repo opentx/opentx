@@ -581,7 +581,11 @@ void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
 #if defined(PCBV4)
 void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
 {
-  int16_t v = phaseaddress(phase)->rotaryEncoders[idx];
+  int16_t v;
+  if(idx < (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
+    v = phaseaddress(phase)->rotaryEncoders[idx];
+  else
+    v = g_model.rotaryEncodersExtra[phase][idx - (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)];
 
   if (v > ROTARY_ENCODER_MAX) {
     uint8_t p = v - ROTARY_ENCODER_MAX - 1;
