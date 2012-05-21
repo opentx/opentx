@@ -41,9 +41,20 @@ uint8_t s_noScroll;
 
 int16_t g_chans512[NUM_CHNOUT]; // TODO not here!
 
-void menu_lcd_onoff( uint8_t x,uint8_t y, uint8_t value, uint8_t mode )
+void menu_lcd_onoff(uint8_t x,uint8_t y, uint8_t value, uint8_t attr)
 {
-  lcd_putsiAtt(x, y, STR_OFFON, value, mode ? INVERS:0) ;
+#if 0
+  /* ON / OFF version */
+  lcd_putsiAtt(x, y, STR_OFFON, value, attr ? INVERS:0) ;
+#else
+  if (value) {
+    lcd_putc(x+1, y, '#');
+  }
+  if (attr)
+    lcd_filled_rect(x, y, 7, 7);
+  else
+    lcd_square(x, y, 7);
+#endif
 }
 
 void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)

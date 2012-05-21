@@ -521,8 +521,18 @@ enum Protocols {
   PROTO_PPM,
   PROTO_PPM16,
   PROTO_PPMSIM,
+#if defined(PXX) || defined(DSM2) || defined(IRPROTOS)
   PROTO_PXX,
+#endif
+#if defined(DSM2) || defined(IRPROTOS)
   PROTO_DSM2,
+#endif
+#if defined(IRPROTOS)
+  PROTO_SILV,
+  PROTO_TRAC09,
+  PROTO_PICZ,
+//  PROTO_SWIFT, // we will need 4 bytes for proto :(
+#endif
   PROTO_MAX
 };
 

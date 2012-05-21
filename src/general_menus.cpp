@@ -82,7 +82,8 @@ NOINLINE int8_t selectMenuItem(uint8_t y, const pm_char *label, const pm_char *v
 
 NOINLINE uint8_t onoffMenuItem(uint8_t value, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event )
 {
-  return selectMenuItem(y, label, STR_OFFON, value, 0, 1, attr, event);
+  menu_lcd_onoff(GENERAL_PARAM_OFS, y, value, attr);
+  return selectMenuItem(y, label, NULL, value, 0, 1, attr, event);
 }
 
 void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)

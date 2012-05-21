@@ -6,7 +6,7 @@
 #define TR_MMMINV        "---""INV"
 
 #define LEN_NCHANNELS    "\004"
-#define TR_NCHANNELS     "4CH 6CH 8CH 10CH12CH14CH16CH"
+#define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE    "\005"
 #define TR_VBEEPMODE     "Quiet""Alarm""NoKey""All  "
@@ -51,7 +51,12 @@
 #else
 #define TR_DSM2 "[DSM2]"
 #endif
-#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2
+#ifdef IRPROTOS
+#define TR_IRPROTOS "SILV  TRAC09PICZ  SWIFT\0"
+#else
+#define TR_IRPROTOS
+#endif
+#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2 TR_IRPROTOS
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -336,7 +341,7 @@
 #define TR_THROTTLENOTIDLE "Throttle not idle"
 #define TR_RESETTHROTTLE "Reset throttle"
 #define TR_ALARMSDISABLED "Alarms Disabled"
-#define TR_SWITCHESNOTOFF "Switch     on"
+#define TR_SWITCHESNOTOFF "Switch     inverted"
 #define POS_SWITCH_WARN   7
 #define TR_PLEASERESETTHEM "Please reset it"
 #define TR_MESSAGE      "\004MESSAGE"

@@ -100,6 +100,9 @@ PXX = NO
 # DSM2 (Spektrum) protocol
 DSM2 = NO
 
+#IR protocols (SILV / TRAC09 / PICZ / SWIFT)
+IRPROTOS = NO
+
 # SOMO-14D module (V4 board only)
 SOMO = NO
 
@@ -404,6 +407,10 @@ endif
 
 ifeq ($(DSM2), PPM)
   CPPDEFS += -DDSM2 -DDSM2_PPM
+endif
+
+ifeq ($(IRPROTOS), YES)
+  CPPDEFS += -DIRPROTOS
 endif
 
 #---------------- Compiler Options C++ ----------------

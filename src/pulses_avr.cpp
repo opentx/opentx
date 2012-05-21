@@ -88,7 +88,7 @@ void startPulses()
 uint8_t pulses2MHz[PULSES_SIZE] = {0}; // TODO check this length, pulled from er9x, perhaps too big
 uint8_t *pulses2MHzRPtr = pulses2MHz;
 
-#if defined(DSM2) || defined(PXX)
+#if defined(DSM2) || defined(PXX) || defined(IRPROTOS)
 uint8_t *pulses2MHzWPtr = pulses2MHz;
 #endif
 
@@ -164,14 +164,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
       setupPulses();
 
       // TODO test that it's optimized
-      if (1
-#if defined(PXX)
-            && g_model.protocol != PROTO_PXX
-#endif
-#if defined(DSM2_PPM)
-            && g_model.protocol != PROTO_DSM2
-#endif
-      ) {
+      if (!IS_PXX_PROTOCOL(g_model.protocol) && !IS_DSM2_PROTOCOL(g_model.protocol)) {
 
         // cli is not needed because for these 2 protocols interrupts are not enabled when entering here
 
@@ -535,6 +528,169 @@ void setupPulsesDsm2()
 }
 #endif
 
+#if defined(IRPROTOS)
+static void _send_u8(uint8_t u8)
+{
+#ifdef SIMU
+  *(pulses2MHzPtr)++=u8;
+#else
+  asm volatile(
+    " st   Z+,%A[u]        \n\t"
+
+    : [p]"=z"(pulses2MHzWPtr)
+    :    "%[p]"(pulses2MHzWPtr)
+    , [u]"r"(u8)
+  );
+
+#endif
+}
+static void _send_u16(uint16_t u16)
+{
+#ifdef  SIMU
+  *(*(uint16_t**)&pulses2MHzWPtr)++=u16;
+#else
+  asm volatile(
+    " st   Z+,%A[t0]        \n\t"
+    " st   Z+,%B[t0]        \n\t"
+
+    : [p]"=z"(pulses2MHzWPtr)
+    :    "%[p]"(pulses2MHzWPtr)
+    , [t0]"r"(u16)
+  );
+
+#endif
+}
+
+static void _send_1(uint16_t t0)
+{
+  //  *(*(uint16_t**)&pulses2MHzPtr)++=t0;
+  _send_u16(t0);
+  *pulses2MHzWPtr++=CTRL_CNT;
+  //_send_u8(CTRL_CNT);
+}
+
+static void _send_rep1(uint16_t t0,uint8_t cnt)
+{
+  //  *(*(uint16_t**)&pulses2MHzPtr)++=t0;
+  _send_u16(t0);
+  _send_u8(CTRL_REP_1CMD);
+  _send_u8(cnt);
+  _send_u8(CTRL_CNT);
+}
+
+//picco z
+//http://home.versanet.de/~b-konze/uni_fb/uni_fb.htm
+// /home/husteret/txt/flieger/protokolle/m168fb_ufo_v08/picooz.c
+//
+// 1900  650 650         1226             650       1226           Stop
+// ----   __  -- __ -- __----__----__     --__      ----____       --__
+/*
+  chn:2 a=00 b=01 c=10
+  pow:4u msb first
+  trim:4s  -2,0,1
+  direction:3s
+  -chk[0]
+  -chk[1]
+  0
+-------
+2-bit sum = 0
+
+chk:2 = chn:2 + pow>>2:2 +pow:2 +  trim>>2:2 +trim:2 dir + direction>>1:2 + direction<<1:2
+
+*/
+
+#define PICOOZ_RC_HIGH   93 //(1226/13)
+#define PICOOZ_RC_LOW    49 //(650/13)
+
+#define LEN_38KHZ (13*2) //= 38,46KHz
+
+void picco_sendB1(bool bit)
+{
+  if (bit) {
+    _send_rep1(LEN_38KHZ-1, PICOOZ_RC_HIGH);     //ungerade anzahl 10101
+    _send_1   (1226*2 - 1);   //lange 0
+  }
+  else {
+    _send_rep1(LEN_38KHZ-1, PICOOZ_RC_LOW);      //ungerade anzahl 10101
+    _send_1   (650*2  - 1);   //lange 0
+  }
+}
+
+void picco_sendBn(uint8_t bits, uint8_t n)
+{
+  while (n--) picco_sendB1(bits & (1<<n));
+}
+
+
+#define BITS  10
+#define BITS2 (BITS-1)
+
+NOINLINE uint8_t reduce7u(int16_t v, uint8_t sfr)
+{
+  v += (1<<BITS2);
+  if(v <  0) v=0;
+  if(v >= (1<<BITS)) v=(1<<BITS)-1;
+  return v>>sfr;
+}
+
+NOINLINE int8_t reduce7s(int16_t v, uint8_t sfr, uint8_t sf2, int8_t ofs2)
+{
+  v += (1<<BITS2)+sf2;
+  if(v&(1<<BITS)) v = (1<<BITS)-1; //no overflow
+  int8_t  i8 = (uint16_t)v>>sfr;
+  if(i8<=0) i8=1;
+  i8-=ofs2;
+  if(i8>=ofs2) i8=ofs2-1;//no overflow
+  return i8;
+}
+
+//these defines allow the compiler to preclculate constants
+#define getChan7u(i,bitsRes) reduce7u(g_chans512[i],(BITS-bitsRes))
+#define getChan7s(i,bitsRes) reduce7s(g_chans512[i],(BITS-bitsRes),1<<((BITS-bitsRes)-1),1<<(bitsRes-1))
+
+static void setupPulsesPiccoZ(uint8_t chn)
+{
+  // 1900  650 650         1226             650 0bit  1226 1bit      Stop
+  // ----   __  -- __ -- __----__----__     --__      ----____       --__
+  static bool    state = 0;
+  static uint8_t pow;
+  static int8_t  trim;
+  static int8_t  dir;
+  static uint8_t chk;
+  if (state == 0)  {
+    _send_rep1(LEN_38KHZ-1, 147);   // 1900/13  !! must be odd
+    _send_1   (650*2 - 1);//
+    picco_sendBn(0,2);
+    _send_rep1(LEN_38KHZ-1, PICOOZ_RC_HIGH);
+    _send_1   (650*2 - 1);//
+    _send_rep1(LEN_38KHZ-1, PICOOZ_RC_HIGH);
+    _send_1   (650*2 - 1);//
+    //   chn:2 a=00 b=01 c=10
+    //   pow:4u msb first
+    //   trim:4s  -2,0,1
+    //   dir:3s
+    //   -chk[0]
+    //   -chk[1]
+    //   0
+    pow  = getChan7u(2,4);
+    trim = getChan7s(1,4);
+    dir  = getChan7s(0,3);
+    chk    = - (chn+ (pow>>2) + pow + (trim>>2) + trim + (dir>>1) + (dir<<1));
+  }
+  else {
+    picco_sendBn(chn,2);
+    picco_sendBn(pow,4);
+    picco_sendBn(trim,4);
+    picco_sendBn(dir,3);
+    picco_sendB1(chk & (1<<0)); //lsb first, because we are here on a odd bit (dir is only 3 bits)
+    picco_sendB1(chk & (1<<1));
+    _send_rep1(LEN_38KHZ-1, PICOOZ_RC_LOW); //0-bit pulses
+    _send_1   (20000u*2  - 1); //20ms gap ?
+  }
+  state = !state;
+}
+#endif
+
 void setupPulses()
 {
   if (s_current_protocol != g_model.protocol) {
@@ -667,6 +823,13 @@ void setupPulses()
     case PROTO_DSM2:
       sei();
       setupPulsesDsm2();
+      break;
+#endif
+
+#ifdef IRPROTOS
+    case PROTO_PICZ:
+      setupPulsesPiccoZ(g_model.ppmNCH);
+      // TODO BSS stbyLevel = 0; //start with 1
       break;
 #endif
 
