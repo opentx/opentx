@@ -1958,7 +1958,7 @@ void menuProcLimits(uint8_t event)
           break;
         case 2:
 #ifdef PPM_LIMITS_UNIT_US
-          lcd_outdezAtt(16*FW, y, (((int16_t)ld->max+100)*128) / 25, attr | INFLIGHT(ld->max));
+          lcd_outdezAtt(LIMITS_MAX_POS, y, (((int16_t)ld->max+100)*128) / 25, attr | INFLIGHT(ld->max));
 #else
           lcd_outdezAtt(LIMITS_MAX_POS, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
 #endif
