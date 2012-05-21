@@ -860,19 +860,27 @@ void menuProcPhaseOne(uint8_t event)
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
           putsRotaryEncoderMode((14+t)*FW+2, y, s_currIdx, t, (attr && m_posHorz==4+t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
           if (attr && m_posHorz==4+t && ((s_editMode>0) || p1valdiff)) {
+#if defined(EXTRA_ROTARY_ENCODERS)
             int16_t v;
             if(t < (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
               v = phaseaddress(s_currIdx)->rotaryEncoders[t];
             else
               v = g_model.rotaryEncodersExtra[s_currIdx][t-(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)];
+#else
+            int16_t v = phaseaddress(s_currIdx)->rotaryEncoders[t];
+#endif
             if (v < ROTARY_ENCODER_MAX) v = ROTARY_ENCODER_MAX;
             v = checkIncDec(event, v, ROTARY_ENCODER_MAX, ROTARY_ENCODER_MAX+MAX_PHASES-1, EE_MODEL);
             if (checkIncDec_Ret) {
               if (v == ROTARY_ENCODER_MAX) v = 0;
-              if(t < (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
+#if defined(EXTRA_ROTARY_ENCODERS)
+              if (t < (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
                 phaseaddress(s_currIdx)->rotaryEncoders[t] = v;
               else
                 g_model.rotaryEncodersExtra[s_currIdx][t-(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)] = v;
+#else
+              phaseaddress(s_currIdx)->rotaryEncoders[t] = v;
+#endif
             }
           }
         }
