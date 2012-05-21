@@ -1456,7 +1456,7 @@ void evalFunctions()
           }
         }
 
-  if (~active_switches & switch_mask) {
+        if (~active_switches & switch_mask) {
           if (sd->func == FUNC_RESET) {
             switch (sd->param) {
               case 0:
@@ -1467,7 +1467,7 @@ void evalFunctions()
                 resetAll();
                 break;
 #ifdef FRSKY
-                case 3:
+              case 3:
                 resetTelemetry();
                 break;
 #endif
