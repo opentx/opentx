@@ -1,6 +1,6 @@
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON                       "\003"                                                                                                        
-#define TR_OFFON                        "AUS""AN "                                                                                                    
+#define TR_OFFON                        " \210 "" \211 "                                                                                                    
                                                                                                                                                       
 #define LEN_MMMINV                      "\003"                                                                                                        
 #define TR_MMMINV                       "---""INV"                                                                                                    
@@ -18,7 +18,7 @@
 #define TR_VFILTERADC                   "SING""OSMP""FILT"                                                                                            
                                                                                                                                                       
 #define LEN_TRNMODE                     "\003"                                                                                                        
-#define TR_TRNMODE                      "OFF"" +="" :="                                                                                               
+#define TR_TRNMODE                      " \210 "" +="" :="                                                                                               
                                                                                                                                                       
 #define LEN_TRNCHN                      "\003"                                                                                                        
 #define TR_TRNCHN                       "CH1CH2CH3CH4"                                                                                                
@@ -77,7 +77,7 @@
 #define TR_VMLTPX2                      "+=""*="":="                                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                                                                    
 #define LEN_VMIXTRIMS                   "\003"                                                                                                                                                                                                                                                     
-#define TR_VMIXTRIMS                    "OFF""ON ""Rud""Ele""Thr""Ail"                                                                                                                                                                                                                             
+#define TR_VMIXTRIMS                    " \210 "" \211 ""Rud""Ele""Thr""Ail"                                                                                                                                                                                                                             
                                                                                                                                                                                                                                                                                                    
 #define LEN_VCSWFUNC                    "\007"                                                                                                                                                                                                                                                     
 #define TR_VCSWFUNC                     "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "                                                                                                                            
@@ -201,7 +201,7 @@
 #define TR_VSRCRAW                      "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW  
                                                                                                                                                                        
 #define LEN_VTMRMODES                   "\003"                                                                                                                         
-#define TR_VTMRMODES                    "OFF""ABS""THs""TH%""THt"                                                                                                      
+#define TR_VTMRMODES                    " \210 ""ABS""THs""TH%""THt"                                                                                                      
                                                                                                                                                                        
 #define LEN_DSM2MODE                    "\007"                                                                                                                         
 #define TR_DSM2MODE                     "LP4/LP5DSMonlyDSMX   "                                                                                                        
@@ -295,7 +295,7 @@
 #define TR_LIGHTOFFAFTER                "Licht aus nach"                                  
 #define TR_SPLASHSCREEN                 "Startbild"                                       
 #define TR_THROTTLEWARNING              "T-Warnung"                                       
-#define TR_SWITCHWARNING                "Warnung Schalter"                                
+#define TR_SWITCHWARNING                "S-Warnung"                                
 #define TR_MEMORYWARNING                "Warnung Memory"                                  
 #define TR_ALARMWARNING                 "Warnung Alarm"                                   
 #define TR_TIMEZONE                     "Zeitzone"                                        
@@ -333,10 +333,10 @@
 #define TR_EEPROMLOWMEM                 "EEPROM low mem"                                                                  
 #define TR_ALERT                        "WARNUNG"                                                                         
 #define TR_PRESSANYKEYTOSKIP            "Taste dr\205cken"                                                                
-#define TR_THROTTLENOTIDLE              "Schub nicht OFF!"                                                                
+#define TR_THROTTLENOTIDLE              "Schub nicht Null!"                                                                
 #define TR_RESETTHROTTLE                "Auf Null stellen."                                                               
 #define TR_ALARMSDISABLED               "Alarme ausgeschaltet"                                                            
-#define TR_SWITCHESNOTOFF               "Schalter     on"
+#define TR_SWITCHESNOTOFF               "Schalter     an"
 #define POS_SWITCH_WARN                 9
 #define TR_PLEASERESETTHEM              "Bitte zur\205cksetzen"                                                           
 #define TR_MESSAGE                      "HINWEIS"                                                                         
