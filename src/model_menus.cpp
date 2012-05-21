@@ -565,19 +565,7 @@ enum menuProcModelItems {
   ITEM_MODEL_PROTOCOL_PARAMS
 };
 
-#if defined(DSM2)
-#define IS_DSM2_PROTOCOL(protocol) (protocol==PROTO_DSM2)
-#else
-#define IS_DSM2_PROTOCOL(protocol) (0)
-#endif
-
-#if defined(PXX)
-#define IS_PXX_PROTOCOL(protocol) (protocol==PROTO_PXX)
-#else
-#define IS_PXX_PROTOCOL(protocol) (0)
-#endif
-
-#define MODEL_PARAM_OFS (9*FW+2)
+#define MODEL_PARAM_OFS (10*FW+2)
 void menuProcModel(uint8_t event)
 {
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
@@ -777,9 +765,9 @@ void menuProcModel(uint8_t event)
           lcd_putsLeft( y, STR_PPMFRAME);
           lcd_puts(MODEL_PARAM_OFS+3*FW, y, STR_MS);
           lcd_outdezAtt(MODEL_PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((attr && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | PREC1|LEFT);
-          lcd_puts(MODEL_PARAM_OFS+8*FW+2, y, PSTR("us"));
+          lcd_putc(MODEL_PARAM_OFS+8*FW+2, y, 'u');
           lcd_outdezAtt(MODEL_PARAM_OFS+8*FW+2, y, (g_model.ppmDelay*50)+300, ((attr && m_posHorz==1) ? blink : 0));
-          lcd_putcAtt(MODEL_PARAM_OFS+11*FW, y, g_model.pulsePol ? '-' : '+', (attr && m_posHorz==2) ? INVERS : 0);
+          lcd_putcAtt(MODEL_PARAM_OFS+10*FW, y, g_model.pulsePol ? '-' : '+', (attr && m_posHorz==2) ? INVERS : 0);
 
           if(attr && (s_editMode>0 || p1valdiff)) {
             switch (m_posHorz) {

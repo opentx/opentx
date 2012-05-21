@@ -90,6 +90,18 @@ extern void board_init();
 #include "pulses_avr.h"
 #endif
 
+#if defined(DSM2)
+#define IS_DSM2_PROTOCOL(protocol) (protocol==PROTO_DSM2)
+#else
+#define IS_DSM2_PROTOCOL(protocol) (0)
+#endif
+
+#if defined(PXX)
+#define IS_PXX_PROTOCOL(protocol) (protocol==PROTO_PXX)
+#else
+#define IS_PXX_PROTOCOL(protocol) (0)
+#endif
+
 #include "lcd.h"
 #include "menus.h"
 #ifdef TEMPLATES
