@@ -397,9 +397,12 @@ uint32_t sd_cmd7()
                                      | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
                                      | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
 
-#define SD_WRITE_SINGLE_BLOCK     (17 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
-                                      | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
-                                      | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
+#define SD_WRITE_BLOCK           (24| HSMCI_CMDR_SPCMD_STD \
+                                    | HSMCI_CMDR_RSPTYP_48_BIT \
+                                    | HSMCI_CMDR_TRCMD_START_DATA \
+                                    | HSMCI_CMDR_TRTYP_MULTIPLE \
+                                    | HSMCI_CMDR_TRDIR_READ \
+                                    | HSMCI_CMDR_MAXLAT)
 
 // Get SCR
 uint32_t sd_acmd51( uint32_t *presult )
@@ -624,10 +627,11 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
                   // Block size = 512, nblocks = 1
                   phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
                   phsmci->HSMCI_ARGR = block_no << 9 ;
-                  phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK ;
-#if 0
-                  for ( i = 0 ; i < 50000 ; i += 1 )
+                  phsmci->HSMCI_CMDR = SD_WRITE_BLOCK ;
+
+                  for ( i = 0 ; i < 128 ; i += 1 )
                   {
+#if 0
                     if ( phsmci->HSMCI_SR & HSMCI_SR_RXRDY )
                     {
                       *data++ = phsmci->HSMCI_RDR ;
@@ -641,8 +645,8 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
                     {
                       break ;
                     }
-                  }
 #endif
+                  }
                   return i | (j << 16) ; //phsmci->HSMCI_RSPR[0] ;
                 }
                 else
