@@ -2213,7 +2213,11 @@ void menuProcFunctionSwitches(uint8_t event)
 
         case 3:
           if (sd->swtch && sd->func <= FUNC_SAFETY_CH16) {
+	#if defined(GRAPHICS)
             menu_lcd_onoff(20*FW, y, (sd->param & 1), attr ) ;
+	#else
+            menu_lcd_onoff(18*FW+2, y, (sd->param & 1), attr ) ;
+	#endif
             if (active) sd->param = (sd->param & 0xfe) + checkIncDecModel(event,sd->param & 1, 0, 1);
           }
           else if (attr) {
