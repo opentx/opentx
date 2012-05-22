@@ -693,11 +693,13 @@ static void setupPulsesPiccoZ(uint8_t chn)
 
 void setupPulses()
 {
-  if (s_current_protocol != g_model.protocol) {
+  uint8_t required_protocol = g_model.protocol;
 
-    s_current_protocol = g_model.protocol;
+  if (s_current_protocol != required_protocol) {
 
-    switch (g_model.protocol) {
+    s_current_protocol = required_protocol;
+
+    switch (required_protocol) {
 
 #if defined(DSM2_PPM)
       case PROTO_DSM2:
@@ -810,7 +812,7 @@ void setupPulses()
     }
   }
 
-  switch(g_model.protocol) {
+  switch(required_protocol) {
 
 #ifdef PXX
     case PROTO_PXX:
@@ -996,8 +998,15 @@ ISR(TIMER3_COMPA_vect) //2MHz pulse generation
 
 ISR(TIMER3_COMPB_vect) //2MHz pulse generation
 {
-    sei() ;
+  sei() ;
+  if (s_current_protocol != g_model.protocol) {
+    if (s_current_protocol == PROTO_PPMSIM) {
+      setupPulses();
+    }
+  }
+  else {
     setupPulsesPPM16(g_model.protocol) ;
+  }
 }
 
 #endif // SIMU
