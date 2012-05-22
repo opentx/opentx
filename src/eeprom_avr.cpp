@@ -630,7 +630,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     // TODO
   }
 
-  if (EFile::exists(FILE_MODEL(i_fileDst))) {
+  if (eeModelExists(i_fileDst)) {
     eeDeleteModel(i_fileDst);
   }
 

@@ -73,5 +73,10 @@ extern ModelData  g_model;
 extern uint8_t Spi_tx_buf[] ;
 extern uint8_t Spi_rx_buf[] ;
 
+#if defined(SDCARD)
+const pm_char * eeBackupModel(uint8_t i_fileSrc);
+const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
+#endif
+
 #endif
 

@@ -35,7 +35,10 @@
 #define sdcard_h
 
 #include "ff.h"
+#if defined(PCBV4)
+// TODO because this file is used for ersky9x
 #include "rtc.h"
+#endif
 #include "gtime.h"
 
 #define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
@@ -50,7 +53,13 @@ extern FIL g_oLogFile;
 extern void initLogs();
 extern void writeLogs();
 
-const pm_char *SDCARD_ERROR(FRESULT result);
+const pm_char *SDCARD_ERROR(FRESULT result)
+{
+  if (result == FR_NOT_READY)
+    return STR_NO_SDCARD;
+  else
+    return STR_SDCARD_ERROR;
+}
 
 // MM/SD card Disk IO Support
 extern void disk_timerproc(void);

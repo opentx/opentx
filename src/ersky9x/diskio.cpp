@@ -248,7 +248,7 @@ void sd_cmd55()
 uint32_t sd_acmd41()
 {
         uint32_t i ;
-  Hsmci *phsmci = HSMCI ;
+        Hsmci *phsmci = HSMCI ;
 
         if ( CardIsConnected() )
         {
@@ -275,7 +275,7 @@ uint32_t sd_acmd41()
 uint32_t sd_cmd2()
 {
         uint32_t i ;
-  Hsmci *phsmci = HSMCI ;
+        Hsmci *phsmci = HSMCI ;
 
         if ( CardIsConnected() )
         {
@@ -305,7 +305,7 @@ uint32_t sd_cmd2()
 uint32_t sd_cmd3()
 {
         uint32_t i ;
-  Hsmci *phsmci = HSMCI ;
+        Hsmci *phsmci = HSMCI ;
 
         if ( CardIsConnected() )
         {
@@ -331,7 +331,7 @@ uint32_t sd_cmd3()
 uint32_t sd_cmd9()
 {
         uint32_t i ;
-  Hsmci *phsmci = HSMCI ;
+        Hsmci *phsmci = HSMCI ;
 
         if ( CardIsConnected() )
         {
@@ -361,7 +361,7 @@ uint32_t sd_cmd9()
 uint32_t sd_cmd7()
 {
         uint32_t i ;
-  Hsmci *phsmci = HSMCI ;
+        Hsmci *phsmci = HSMCI ;
 
         if ( CardIsConnected() )
         {
@@ -383,11 +383,11 @@ uint32_t sd_cmd7()
         }
 }
 
-#define HSMCI_CMDR_SPCMD_STD                                            ( 0 << 8 )
-#define HSMCI_CMDR_RSPTYP_48_BIT                                ( 1 << 6 )
+#define HSMCI_CMDR_SPCMD_STD            ( 0 << 8 )
+#define HSMCI_CMDR_RSPTYP_48_BIT        ( 1 << 6 )
 #define HSMCI_CMDR_TRCMD_START_DATA     ( 1 << 16 )
-#define HSMCI_CMDR_TRDIR_READ                                           ( 1 << 18 )
-#define HSMCI_CMDR_TRTYP_SINGLE                                 ( 0 << 19 )
+#define HSMCI_CMDR_TRDIR_READ           ( 1 << 18 )
+#define HSMCI_CMDR_TRTYP_SINGLE         ( 0 << 19 )
 
 #define SD_SEND_SCR  (51 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
                          | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
@@ -395,14 +395,18 @@ uint32_t sd_cmd7()
 
 #define SD_READ_SINGLE_BLOCK     (17 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
                                      | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
-                                                                                                                                                 | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
+                                     | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
+
+#define SD_WRITE_SINGLE_BLOCK     (17 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
+                                      | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
+                                      | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
 
 // Get SCR
 uint32_t sd_acmd51( uint32_t *presult )
 {
         uint32_t i ;
         uint32_t j = 0 ;
-  Hsmci *phsmci = HSMCI ;
+        Hsmci *phsmci = HSMCI ;
 
         if ( CardIsConnected() )
         {
@@ -466,45 +470,6 @@ uint32_t sd_acmd6()
                 SD_SetBusWidth( HSMCI_SDCR_SDCBUS_4 ) ;
                 SD_SetSpeed( 9000000 ) ;
                 return i ; //phsmci->HSMCI_RSPR[0] ;
-        }
-        else
-        {
-                return 0 ;
-        }
-}
-
-
-// Read SD card from (byte) address, for 512 bytes
-uint32_t sd_cmd17( uint32_t address, uint32_t *presult )
-{
-        uint32_t i ;
-        uint32_t j = 0 ;
-  Hsmci *phsmci = HSMCI ;
-
-        if ( CardIsConnected() )
-        {
-                // Block size = 512, nblocks = 1
-                phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
-                phsmci->HSMCI_ARGR = address ;
-                phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK ;
-
-                for ( i = 0 ; i < 50000 ; i += 1 )
-                {
-                        if ( phsmci->HSMCI_SR & HSMCI_SR_RXRDY )
-                        {
-                                *presult++ = phsmci->HSMCI_RDR ;
-                                j += 1 ;
-                        }
-                        if ( ( phsmci->HSMCI_SR & ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) ) == ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) )
-                        {
-                                break ;
-                        }
-                        if ( j >= 128 )
-                        {
-                                break ;
-                        }
-                }
-                return i | (j << 16) ; //phsmci->HSMCI_RSPR[0] ;
         }
         else
         {
@@ -606,7 +571,39 @@ uint32_t sd_read_block( uint32_t block_no, uint32_t *data )
 {
         if ( Card_state == SD_ST_DATA )
         {
-                return sd_cmd17( block_no << 9, data ) ;
+                uint32_t i ;
+                uint32_t j = 0 ;
+                Hsmci *phsmci = HSMCI ;
+
+                if ( CardIsConnected() )
+                {
+                  // Block size = 512, nblocks = 1
+                  phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
+                  phsmci->HSMCI_ARGR = block_no << 9 ;
+                  phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK ;
+
+                  for ( i = 0 ; i < 50000 ; i += 1 )
+                  {
+                    if ( phsmci->HSMCI_SR & HSMCI_SR_RXRDY )
+                    {
+                      *data++ = phsmci->HSMCI_RDR ;
+                      j += 1 ;
+                    }
+                    if ( ( phsmci->HSMCI_SR & ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) ) == ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) )
+                    {
+                      break ;
+                    }
+                    if ( j >= 128 )
+                    {
+                      break ;
+                    }
+                  }
+                  return i | (j << 16) ; //phsmci->HSMCI_RSPR[0] ;
+                }
+                else
+                {
+                  return 0 ;
+                }
         }
         else
         {
@@ -614,6 +611,50 @@ uint32_t sd_read_block( uint32_t block_no, uint32_t *data )
         }
 }
 
+uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
+{
+        if ( Card_state == SD_ST_DATA )
+        {
+                uint32_t i ;
+                uint32_t j = 0 ;
+                Hsmci *phsmci = HSMCI ;
+
+                if ( CardIsConnected() )
+                {
+                  // Block size = 512, nblocks = 1
+                  phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
+                  phsmci->HSMCI_ARGR = block_no << 9 ;
+                  phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK ;
+#if 0
+                  for ( i = 0 ; i < 50000 ; i += 1 )
+                  {
+                    if ( phsmci->HSMCI_SR & HSMCI_SR_RXRDY )
+                    {
+                      *data++ = phsmci->HSMCI_RDR ;
+                      j += 1 ;
+                    }
+                    if ( ( phsmci->HSMCI_SR & ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) ) == ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) )
+                    {
+                      break ;
+                    }
+                    if ( j >= 128 )
+                    {
+                      break ;
+                    }
+                  }
+#endif
+                  return i | (j << 16) ; //phsmci->HSMCI_RSPR[0] ;
+                }
+                else
+                {
+                  return 0 ;
+                }
+        }
+        else
+        {
+                return 0 ;
+        }
+}
 
 /*
  Notes on SD card:
@@ -799,37 +840,22 @@ DRESULT disk_read (
 
         if ( sd_card_ready() == 0 ) return RES_NOTRDY;
 
-        if (count == 1)
-        {       /* Single block read */
-                result = sd_read_block( sector, ( uint32_t *)buff ) ;
-                if ( result )
-                {
-                        count = 0 ;
-                }
-//                      if ((send_cmd(CMD17, sector) == 0)      /* READ_SINGLE_BLOCK */
-//                      && rcvr_datablock(buff, 512))
-//                      count = 0;
-        }
-        else
-        {                               /* Multiple block read */
-                do
-                {
-                        result = sd_read_block( sector, ( uint32_t *)buff ) ;
-                        if ( result )
-                        {
-                                sector += 1 ;
-                                buff += 512 ;
-                                count -= 1 ;
-                        }
-                        else
-                        {
-                                count = 1 ;             // Flag error
-                                break ;
-                        }
-                }       while ( count ) ;
-        }
+        do {
+          result = sd_read_block( sector, ( uint32_t *)buff ) ;
+          if (result) {
+            sector += 1 ;
+            buff += 512 ;
+            count -= 1 ;
+          }
+          else {
+            count = 1 ;             // Flag error
+            break ;
+          }
+        } while ( count ) ;
+
         return count ? RES_ERROR : RES_OK;
 }
+
 
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
@@ -842,32 +868,27 @@ DRESULT disk_write (
                                         BYTE count                      /* Sector count (1..255) */
                                         )
 {
+        uint32_t result ;
+
         if (drv || !count) return RES_PARERR;
 
-#if 0
-        if (Stat & STA_NOINIT) return RES_NOTRDY;
-        if (Stat & STA_PROTECT) return RES_WRPRT;
+        if ( sd_card_ready() == 0 ) return RES_NOTRDY;
 
-        if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
+        // TODO if (Stat & STA_PROTECT) return RES_WRPRT;
 
-        if (count == 1) {       /* Single block write */
-                if ((send_cmd(CMD24, sector) == 0)      /* WRITE_BLOCK */
-                        && xmit_datablock(buff, 0xFE))
-                        count = 0;
-        }
-        else {                          /* Multiple block write */
-                if (CardType & CT_SDC) send_cmd(ACMD23, count);
-                if (send_cmd(CMD25, sector) == 0) {     /* WRITE_MULTIPLE_BLOCK */
-                        do {
-                                if (!xmit_datablock(buff, 0xFC)) break;
-                                buff += 512;
-                        } while (--count);
-                        if (!xmit_datablock(0, 0xFD))   /* STOP_TRAN token */
-                                count = 1;
-                }
-        }
-        deselect();
-#endif
+        do {
+          result = sd_write_block( sector, ( uint32_t *)buff ) ;
+          if (result) {
+            sector += 1 ;
+            buff += 512 ;
+            count -= 1 ;
+          }
+          else {
+            count = 1 ;             // Flag error
+            break ;
+          }
+        } while ( count ) ;
+
         return count ? RES_ERROR : RES_OK;
 }
 

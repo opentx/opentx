@@ -35,7 +35,7 @@
 #include "ff.h"
 
 char g_logFilename[21]; // "/O9XLOGS/M00_000.CSV\0" max required length = 21
-FATFS g_FATFS_Obj;
+FATFS g_FATFS_Obj; // TODO not here
 FIL g_oLogFile;
 int8_t g_logState = 0; // 0=closed, >0=opened, <0=error
 const pm_char * g_logError = NULL;
@@ -126,14 +126,6 @@ void initLogs()
   }
 
   // g_logFilename should now be set appropriately.
-}
-
-const pm_char *SDCARD_ERROR(FRESULT result)
-{
-  if (result == FR_NOT_READY)
-    return STR_NO_SDCARD;
-  else
-    return STR_SDCARD_ERROR;
 }
 
 void writeLogs()

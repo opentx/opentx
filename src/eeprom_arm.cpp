@@ -496,7 +496,7 @@ void eeLoadModel(uint8_t id)
     resetProto();
     resetAll();
 
-#ifdef SDCARD
+#if defined(SDCARD) && defined(PCBV4)
     initLogs();
 #endif
   }
@@ -904,3 +904,129 @@ uint32_t unprotect_eeprom()
   return spi_operation( p, Spi_rx_buf, 4 ) ;
 }
 
+#if defined(SDCARD)
+FATFS g_FATFS_Obj; // TODO not here
+const pm_char * eeBackupModel(uint8_t i_fileSrc)
+{
+  char *buf = reusableBuffer.models.mainname;
+  FIL archiveFile;
+  DIR archiveFolder;
+  UINT written;
+
+  FRESULT result = f_mount(0, &g_FATFS_Obj);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  // check and create folder here
+  strcpy(buf, STR_MODELS_PATH);
+  result = f_opendir(&archiveFolder, buf);
+  if (result != FR_OK) {
+    result = f_mkdir(buf);
+    if (result != FR_OK)
+      return SDCARD_ERROR(result);
+  }
+
+  buf[sizeof(MODELS_PATH)-1] = '/';
+  memcpy(&buf[sizeof(MODELS_PATH)], ModelNames[i_fileSrc], sizeof(g_model.name));
+  buf[sizeof(MODELS_PATH)+sizeof(g_model.name)] = '\0';
+
+  uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.name)-1;
+  uint8_t len = 0;
+  while (i>sizeof(MODELS_PATH)-1) {
+    if (!len && buf[i])
+      len = i+1;
+    if (len)
+      buf[i] = idx2char(buf[i]);
+    i--;
+  }
+
+  if (len == 0) {
+    uint8_t num = i_fileSrc + 1;
+    strcpy(&buf[sizeof(MODELS_PATH)], STR_MODEL);
+    buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL)] = (char)((num / 10) + '0');
+    buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 1] = (char)((num % 10) + '0');
+    len = sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 2;
+  }
+
+  strcpy(&buf[len], STR_MODELS_EXT);
+
+  result = f_open(&archiveFile, buf, FA_OPEN_ALWAYS | FA_WRITE);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  result = f_write(&archiveFile, &g_eeGeneral.myVers, 1, &written);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  uint16_t size = File_system[i_fileSrc].size ;
+  read32_eeprom_data( (File_system[i_fileSrc+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, size) ;
+
+  result = f_write(&archiveFile, (uint8_t *)&Eeprom_buffer.data.model_data, size, &written);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  f_close(&archiveFile);
+
+  return NULL;
+}
+
+const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
+{
+  char *buf = reusableBuffer.models.mainname;
+  FIL restoreFile;
+  UINT read;
+
+  FRESULT result = f_mount(0, &g_FATFS_Obj);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  strcpy(buf, STR_MODELS_PATH);
+  buf[sizeof(MODELS_PATH)-1] = '/';
+  strcpy(&buf[sizeof(MODELS_PATH)], model_name);
+  strcpy(&buf[strlen(buf)], STR_MODELS_EXT);
+
+  result = f_open(&restoreFile, buf, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  result = f_read(&restoreFile, (uint8_t *)buf, 1, &read);
+  if (result != FR_OK || read != 1) {
+    return SDCARD_ERROR(result);
+  }
+
+  if (buf[0] != g_eeGeneral.myVers) {
+    // TODO
+  }
+
+  if (eeModelExists(i_fileDst)) {
+    eeDeleteModel(i_fileDst);
+  }
+
+  result = f_read(&restoreFile, ( uint8_t *)&Eeprom_buffer.data.model_data, sizeof(g_model), &read);
+  f_close(&restoreFile);
+
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  // TODO flash saving ...
+  if (read > sizeof(g_model.name))
+    memcpy(ModelNames[i_fileDst], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+  else
+    memset(ModelNames[i_fileDst], 0, sizeof(g_model.name));
+
+  Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
+  Eeprom32_data_size = sizeof(g_model) ;                                  // This much
+  Eeprom32_file_index = i_fileDst + 1 ;                                         // This file system entry
+  Eeprom32_process_state = E32_BLANKCHECK ;
+  eeWaitFinished();
+
+  return NULL;
+}
+#endif

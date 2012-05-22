@@ -134,7 +134,6 @@ extern uint32_t sd_cmd2( void ) ;
 extern uint32_t sd_cmd3( void ) ;
 extern uint32_t sd_cmd7( void ) ;
 extern uint32_t sd_cmd9( void ) ;
-extern uint32_t sd_cmd17( uint32_t address, uint32_t *presult ) ;
 extern uint32_t sd_acmd6( void ) ;
 extern uint32_t sd_acmd51( uint32_t *presult ) ;
 extern void sd_poll_10mS( void ) ;
