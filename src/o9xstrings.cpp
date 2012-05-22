@@ -40,6 +40,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(OFFON)
     ISTR(MMMINV)
     ISTR(NCHANNELS)
+#if !defined(GRAPHICS)
+    ISTR(VBEEPLEN)
+#endif
     ISTR(VBEEPMODE)
 #if defined(ROTARY_ENCODERS)
     ISTR(VRENAVIG)

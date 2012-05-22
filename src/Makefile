@@ -62,6 +62,9 @@ HAPTIC = NO
 # SPLASH on START
 SPLASH = YES
 
+# GRAPHICS (sliders / checkboxes)
+GRAPHICS = YES
+
 # PPM center adjustable
 # Values = YES, NO
 PPM_CENTER_ADJUSTABLE = NO
@@ -245,6 +248,10 @@ ifeq ($(SPLASH), YES)
   CPPDEFS += -DSPLASH
 endif
 
+ifeq ($(GRAPHICS), YES)
+  CPPDEFS += -DGRAPHICS
+endif
+
 ifeq ($(FLIGHT_PHASES), YES)
   CPPDEFS += -DFLIGHT_PHASES
 endif
@@ -384,17 +391,17 @@ ifeq ($(DECIMALS), YES)
 endif
 
 ifeq ($(HELI), YES)
- MODS:=${MODS}H
- CPPDEFS += -DHELI
+  MODS:=${MODS}H
+  CPPDEFS += -DHELI
 endif
 
 ifeq ($(TEMPLATES), YES)
- CPPDEFS += -DTEMPLATES
- CPPSRC += templates.cpp
+  CPPDEFS += -DTEMPLATES
+  CPPSRC += templates.cpp
 endif
 
 ifeq ($(DISPLAY_USER_DATA), YES)
- CPPDEFS += -DDISPLAY_USER_DATA
+  CPPDEFS += -DDISPLAY_USER_DATA
 endif
 
 ifeq ($(PXX), YES)

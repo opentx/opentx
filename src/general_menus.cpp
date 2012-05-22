@@ -82,16 +82,30 @@ NOINLINE int8_t selectMenuItem(uint8_t y, const pm_char *label, const pm_char *v
 
 NOINLINE uint8_t onoffMenuItem(uint8_t value, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event )
 {
+#if defined(GRAPHICS)
   menu_lcd_onoff(GENERAL_PARAM_OFS, y, value, attr);
   return selectMenuItem(y, label, NULL, value, 0, 1, attr, event);
+#else
+  return selectMenuItem(y, label, STR_OFFON, value, 0, 1, attr, event);
+#endif
 }
 
+#if defined(GRAPHICS)
 void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 {
   lcd_putc(GENERAL_PARAM_OFS+2*FW+(value*FW), y, '$');
   lcd_hline(GENERAL_PARAM_OFS, y+3, 5*FW-1, SOLID);
   if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(GENERAL_PARAM_OFS, y, 5*FW-1, FH-1);
 }
+#define SLIDER(y, value, min, max, label, values, event, attr) { \
+          int8_t tmp = value; \
+          displaySlider(GENERAL_PARAM_OFS, y, tmp, attr); \
+          value = selectMenuItem(y, label, NULL, tmp, min, max, attr, event); \
+        }
+#else
+#define SLIDER(y, value, min, max, label, values, event, attr) \
+          value = selectMenuItem(y, label, values, value, min, max, attr, event)
+#endif
 
 enum menuProcSetupItems {
   ITEM_SETUP_BEEPER_MODE,
@@ -205,12 +219,9 @@ void menuProcSetup(uint8_t event)
       }
 #endif
 
-      case ITEM_SETUP_BEEPER_LENGTH: {
-        int8_t beeperLength = g_eeGeneral.beeperLength;
-        displaySlider(GENERAL_PARAM_OFS, y, beeperLength, attr);
-        g_eeGeneral.beeperLength = selectMenuItem(y, STR_BEEPERLEN, NULL, beeperLength, -2, 2, attr, event);
+      case ITEM_SETUP_BEEPER_LENGTH:
+        SLIDER(y, g_eeGeneral.beeperLength, -2, 2, STR_BEEPERLEN, STR_VBEEPLEN, event, attr);
         break;
-      }
 
 #if defined(AUDIO)
       case ITEM_SETUP_SPEAKER_PITCH:
@@ -228,12 +239,8 @@ void menuProcSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_HAPTIC_LENGTH:
-      {
-        int8_t hapticLength = g_eeGeneral.hapticLength;
-        displaySlider(GENERAL_PARAM_OFS, y, hapticLength, attr);
-        g_eeGeneral.hapticLength = selectMenuItem(y, STR_HAPTICLENGTH, NULL, hapticLength, -2, 2, attr, event);
+        SLIDER(y, g_eeGeneral.hapticLength, -2, 2, STR_HAPTICLENGTH, STR_VBEEPLEN, event, attr);
         break;
-      }
 
       case ITEM_SETUP_HAPTIC_STRENGTH:
         lcd_putsLeft( y, STR_HAPTICSTRENGTH);

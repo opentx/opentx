@@ -63,7 +63,12 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_OFFON      0
 #define OFS_MMMINV     (OFS_OFFON + sizeof(TR_OFFON))
 #define OFS_NCHANNELS  (OFS_MMMINV + sizeof(TR_MMMINV))
+#if defined(GRAPHICS)
 #define OFS_VBEEPMODE  (OFS_NCHANNELS + sizeof(TR_NCHANNELS))
+#else
+#define OFS_VBEEPLEN   (OFS_NCHANNELS + sizeof(TR_NCHANNELS))
+#define OFS_VBEEPMODE  (OFS_VBEEPLEN + sizeof(TR_VBEEPLEN))
+#endif
 #if defined(ROTARY_ENCODERS)
 #define OFS_VRENAVIG   (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #define OFS_VFILTERADC (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
@@ -128,6 +133,9 @@ extern const pm_char STR_OPEN9X[];
 #define STR_OFFON      (STR_OPEN9X + OFS_OFFON)
 #define STR_MMMINV     (STR_OPEN9X + OFS_MMMINV)
 #define STR_NCHANNELS  (STR_OPEN9X + OFS_NCHANNELS)
+#if !defined(GRAPHICS)
+#define STR_VBEEPLEN   (STR_OPEN9X + OFS_VBEEPLEN)
+#endif
 #define STR_VBEEPMODE  (STR_OPEN9X + OFS_VBEEPMODE)
 #define STR_VRENAVIG   (STR_OPEN9X + OFS_VRENAVIG)
 #define STR_VFILTERADC (STR_OPEN9X + OFS_VFILTERADC)
