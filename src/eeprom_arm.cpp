@@ -524,8 +524,8 @@ void eeReadAll()
   {
     generalDefault();
 
-    alert(STR_BADEEPROMDATA);
-    message(STR_MESSAGE, STR_EEPROMFORMATTING, NULL, NULL);
+    alert(STR_EEPROMWARN, STR_BADEEPROMDATA);
+    message(STR_EEPROM, STR_EEPROMFORMATTING, NULL);
 
     modelDefault(0);
 
