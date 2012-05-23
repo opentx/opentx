@@ -342,12 +342,7 @@
 #define TR_ALERT        "\007ALERT"
 #define TR_PRESSANYKEYTOSKIP "Press any key to skip"
 #define TR_THROTTLENOTIDLE "Throttle not idle"
-#define TR_RESETTHROTTLE "Reset throttle"
 #define TR_ALARMSDISABLED "Alarms Disabled"
-#define TR_SWITCHESNOTOFF "Switch     inverted"
-#define POS_SWITCH_WARN   7
-#define TR_PLEASERESETTHEM "Please reset it"
-#define TR_MESSAGE      "\004MESSAGE"
 #define TR_PRESSANYKEY  "\004Press any Key"
 #define TR_BADEEPROMDATA "Bad EEprom Data"
 #define TR_EEPROMFORMATTING "Formatting EEPROM"

@@ -340,12 +340,7 @@
 #define TR_ALERT        "   ALERTE"
 #define TR_PRESSANYKEYTOSKIP "Touche pour ignorer"
 #define TR_THROTTLENOTIDLE "Gaz pas \202 z\200ro"
-#define TR_RESETTHROTTLE    "R\200initialisez le"
 #define TR_ALARMSDISABLED   "Alarmes D\200sactiv\200es"
-#define TR_SWITCHESNOTOFF   "Inter     invers\200"
-#define POS_SWITCH_WARN     6
-#define TR_PLEASERESETTHEM  "R\200initialisez le"
-#define TR_MESSAGE          "  MESSAGE"
 #define TR_PRESSANYKEY      "Touche pour continuer"
 #define TR_BADEEPROMDATA    "EEPROM corrompue"
 #define TR_EEPROMFORMATTING "Formatage EEPROM"

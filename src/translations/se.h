@@ -340,12 +340,7 @@
 #define TR_ALERT        " OBS"
 #define TR_PRESSANYKEYTOSKIP "Tryck ned en knapp"
 #define TR_THROTTLENOTIDLE "Gasen ej avst\201ngd!"
-#define TR_RESETTHROTTLE "Sl\200 av gasen"
 #define TR_ALARMSDISABLED "Alarmen Avst\201ngda!"
-#define TR_SWITCHESNOTOFF "Brytare    p\200"
-#define POS_SWITCH_WARN   7
-#define TR_PLEASERESETTHEM "St\201ng av dem"
-#define TR_MESSAGE      "MEDDELANDE"
 #define TR_PRESSANYKEY  "Tryck ned en knapp"
 #define TR_BADEEPROMDATA "EEprom Datafel "
 #define TR_EEPROMFORMATTING "Formaterar EEprom"

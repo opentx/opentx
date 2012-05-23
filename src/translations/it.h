@@ -337,12 +337,7 @@
 #define TR_ALERT        "\007ALERT"
 #define TR_PRESSANYKEYTOSKIP "    Premi un tasto"
 #define TR_THROTTLENOTIDLE "Throttle non in pos."
-#define TR_RESETTHROTTLE "Riposiziona Throttle"
 #define TR_ALARMSDISABLED "Avvisi Disattivati!"
-#define TR_SWITCHESNOTOFF "Switch     attivi!"
-#define POS_SWITCH_WARN   7
-#define TR_PLEASERESETTHEM "Disattivarli"
-#define TR_MESSAGE      "\004MESSAGE"
 #define TR_PRESSANYKEY  "\004Premi un tasto"
 #define TR_BADEEPROMDATA "Dati corrotti!"
 #define TR_EEPROMFORMATTING "Formatto EEPROM..."

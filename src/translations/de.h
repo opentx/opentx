@@ -337,12 +337,7 @@
 #define TR_ALERT                        "WARNUNG"                                                                         
 #define TR_PRESSANYKEYTOSKIP            "Taste dr\205cken"                                                                
 #define TR_THROTTLENOTIDLE              "Schub nicht Null!"                                                                
-#define TR_RESETTHROTTLE                "Auf Null stellen."                                                               
 #define TR_ALARMSDISABLED               "Alarme ausgeschaltet"                                                            
-#define TR_SWITCHESNOTOFF               "Schalter     an"
-#define POS_SWITCH_WARN                 9
-#define TR_PLEASERESETTHEM              "Bitte zur\205cksetzen"                                                           
-#define TR_MESSAGE                      "HINWEIS"                                                                         
 #define TR_PRESSANYKEY                  "\004Taste dr\205cken"                                                            
 #define TR_BADEEPROMDATA                "Bad EEprom Data"                                                                 
 #define TR_EEPROMFORMATTING             "EEPROM Formatting"                                                               

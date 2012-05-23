@@ -314,11 +314,7 @@ extern const pm_char STR_EEPROMLOWMEM[];
 extern const pm_char STR_ALERT[];
 extern const pm_char STR_PRESSANYKEYTOSKIP[];
 extern const pm_char STR_THROTTLENOTIDLE[];
-extern const pm_char STR_RESETTHROTTLE[];
 extern const pm_char STR_ALARMSDISABLED[];
-extern const pm_char STR_SWITCHESNOTOFF[];
-extern const pm_char STR_PLEASERESETTHEM[];
-extern const pm_char STR_MESSAGE[];
 extern const pm_char STR_PRESSANYKEY[];
 #define LEN_PRESSANYKEY PSIZE(TR_PRESSANYKEY)
 extern const pm_char STR_BADEEPROMDATA[];

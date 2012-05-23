@@ -342,12 +342,7 @@
 #define TR_ALERT        "\003(!)POZOR"
 #define TR_PRESSANYKEYTOSKIP "Kl\200vesa >>> p\206esko\201it"
 #define TR_THROTTLENOTIDLE "P\200ka plynu je pohnut\200."
-#define TR_RESETTHROTTLE "\002..vynulujte plyn!"
 #define TR_ALARMSDISABLED "Alarmy Zak\200z\200ny"
-#define TR_SWITCHESNOTOFF "\002Sp\204na\201\005nen\204 ve"
-#define POS_SWITCH_WARN   9
-#define TR_PLEASERESETTHEM "\003spr\200vn\202 poloze!"
-#define TR_MESSAGE      "\007(!)"
 #define TR_PRESSANYKEY  "\003Stiskni Kl\200vesu"
 #define TR_BADEEPROMDATA "\003Chyba dat EEprom"
 #define TR_EEPROMFORMATTING " Formatov\200n\204 EEPROM"
