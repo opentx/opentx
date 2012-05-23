@@ -103,9 +103,9 @@
 #endif
 #if defined(PCBV4)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "Logs carte SD "
+#define TR_SDCLOGS       "Logs carte SD"
 #else
-#define TR_SDCLOGS       "[Logs carteSD]"
+#define TR_SDCLOGS       "[Logs SD]    "
 #endif
 #if defined(SOMO)
 #define TR_SOMO          "Jouer fichier"
