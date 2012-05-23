@@ -851,8 +851,7 @@ bool eeModelExists(uint8_t id)
 
 void eeLoadModel(uint8_t id)
 {
-  if(id<MAX_MODELS)
-  {
+  if (id<MAX_MODELS) {
     theFile.openRlc(FILE_MODEL(id));
     uint16_t sz = theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
 

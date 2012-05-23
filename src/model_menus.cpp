@@ -337,7 +337,6 @@ void menuProcModelSelect(uint8_t event)
             g_eeGeneral.currModel = sub;
             STORE_GENERALVARS;
             eeLoadModel(sub);
-            return;
           }
 #endif
         }
