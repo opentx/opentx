@@ -476,7 +476,7 @@ void RlcFile::nextWriteStep()
   }
 
   if (s_write_err == ERR_FULL) {
-    alert(STR_EEPROMOVERFLOW);
+    alert(STR_EEPROMWARN, STR_EEPROMOVERFLOW);
     m_write_step = 0;
     m_write_len = 0;
   }
@@ -884,8 +884,8 @@ void eeReadAll()
   {
     generalDefault();
 
-    alert(STR_BADEEPROMDATA);
-    message(STR_MESSAGE, STR_EEPROMFORMATTING, NULL, NULL);
+    alert(STR_EEPROMWARN, STR_BADEEPROMDATA);
+    message(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL);
 
     EeFsFormat();
 

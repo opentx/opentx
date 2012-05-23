@@ -1546,7 +1546,7 @@ void menuProcMixOne(uint8_t event)
         break;
 #endif
       case MIX_FIELD_WARNING:
-        lcd_puts(  2*FW,y,STR_WARNING);
+        lcd_puts(  2*FW,y,STR_MIXWARNING);
         if(md2->mixWarn)
           lcd_outdezAtt(FW*10,y,md2->mixWarn,attr|LEFT);
         else

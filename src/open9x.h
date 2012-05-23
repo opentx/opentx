@@ -504,8 +504,8 @@ void readKeysAndTrims();
 
 uint16_t evalChkSum();
 
-extern void alert(const pm_char * s);
-extern void message(const pm_char *title, const pm_char *s, const pm_char *t, const char *last);
+extern void alert(const pm_char * t, const pm_char * s);
+extern void message(const pm_char *title, const pm_char *s, const char *last);
 
 void    perMain();
 void    per10ms();

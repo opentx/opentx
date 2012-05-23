@@ -33,11 +33,17 @@
 
 #include "open9x.h"
 
-#ifdef SPLASH
+#if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 #include "s9xsplash.lbm"
 	'S','P','E',0};
-const pm_uchar * s9xsplash = splashdata+4;
+const pm_uchar * splash_lbm = splashdata+4;
+#endif
+
+#if defined(PCBV4) || defined(PCBARM)
+const pm_uchar asterisk_lbm[] PROGMEM = {
+#include "asterisk.lbm"
+};
 #endif
 
 #include "menus.h"
@@ -792,7 +798,7 @@ void doSplash()
     {
       checkBacklight() ;
       lcd_clear();
-      lcd_img(0, 0, s9xsplash,0,0);
+      lcd_img(0, 0, splash_lbm, 0, 0);
       refreshDisplay();
       lcdSetRefVolt(g_eeGeneral.contrast);
       clearKeyEvents();
@@ -831,7 +837,7 @@ void checkLowEEPROM()
   if(g_eeGeneral.disableMemoryWarning) return;
   if(EeFsGetFree() < 200)
   {
-    alert(STR_EEPROMLOWMEM);
+    alert(STR_EEPROMWARN, STR_EEPROMLOWMEM);
   }
 }
 #endif
@@ -854,9 +860,8 @@ void checkTHR()
   if(v<=lowLim) return;
 
   // first - display warning
-  message(STR_ALERT, STR_THROTTLENOTIDLE, STR_RESETTHROTTLE, STR_PRESSANYKEYTOSKIP);
+  message(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP);
 
-  //loop until all switches are reset
   while (1)
   {
 #ifdef SIMU
@@ -882,28 +887,36 @@ void checkTHR()
 void checkAlarm() // added by Gohst
 {
   if (g_eeGeneral.disableAlarmWarning) return;
-  if (g_eeGeneral.beeperMode == e_mode_quiet) alert(STR_ALARMSDISABLED);
+  if (g_eeGeneral.beeperMode == e_mode_quiet) alert(STR_ALARMSWARN, STR_ALARMSDISABLED);
 }
 
 void checkSwitches()
 {
-  int8_t last_bad_switch = 0;
-  
+  uint8_t last_bad_switches = 0xff;
+  uint8_t states = g_model.switchWarningStates;
+
   while (1) {
-    uint8_t states = g_model.switchWarningStates;
 
-    switches_states = (states >> 1);
-    int8_t bad_switch = getMovedSwitch();
+    getMovedSwitch();
 
-    if (states & 0x01 || states == (switches_states << 1))
+    switches_states <<= 1;
+
+    if ((states & 0x01) || (states == switches_states)) {
       return;
+    }
 
     // first - display warning
-    if (bad_switch != last_bad_switch) {
-      message(STR_ALERT, STR_SWITCHESNOTOFF, STR_PLEASERESETTHEM, STR_PRESSANYKEYTOSKIP);
-      putsSwitches(POS_SWITCH_WARN*FW, 4*FH, bad_switch);
+    if (last_bad_switches != switches_states) {
+      message(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP);
+      uint8_t x = 2;
+      for (uint8_t i=1; i<8; i++) {
+        uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
+        putsSwitches(x, 5*FH, (i>5?(i+1):(i>=4?(4+((states>>4)&0x3)):i)), attr);
+        if (i == 4 && attr) i++;
+        if (i != 4) x += 3*FW+FW/2;
+      }
       refreshDisplay();
-      last_bad_switch = bad_switch;
+      last_bad_switches = switches_states;
     }
 
     if (keyDown() || check_soft_power() > e_power_trainer) return; // Usb on or power off
@@ -917,9 +930,9 @@ void checkSwitches()
   }
 }
 
-void alert(const pm_char * s)
+void alert(const pm_char * t, const pm_char *s)
 {
-  message(STR_ALERT, s, 0, STR_PRESSANYKEY);
+  message(t, s, STR_PRESSANYKEY);
 
   while(1)
   {
@@ -939,13 +952,19 @@ void alert(const pm_char * s)
   }
 }
 
-void message(const pm_char *title, const pm_char *s, const pm_char *t, const char *last)
+void message(const pm_char *title, const pm_char *t, const char *last)
 {
   lcd_clear();
-  lcd_putsAtt(0, 0, title, DBLSIZE);
-  lcd_putsLeft(4*FH, s);
-  if (t)
-    lcd_putsLeft(5*FH, t);
+
+#if defined(PCBV4) || defined(PCBARM)
+  lcd_img(1, 0, asterisk_lbm, 0, 0);
+#else
+  lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
+#endif
+  lcd_putsAtt(6*FW, 0, title, DBLSIZE);
+  lcd_putsAtt(6*FW, 2*FH, STR_WARNING, DBLSIZE);
+  lcd_filled_rect(0, 0, 128, 32);
+  if (t) lcd_putsLeft(5*FH, t);
   if (last) {
     lcd_putsLeft(7*FH, last);
     AUDIO_ERROR();

@@ -466,7 +466,7 @@ void popMenu()
     (*g_menuStack[g_menuStackPtr])(EVT_ENTRY_UP);
   }
   else {
-    alert(STR_MENUSERROR);
+    assert(!"Menus overflow!");
   }
 }
 
@@ -492,7 +492,7 @@ void pushMenu(MenuFuncP newMenu)
   if(g_menuStackPtr >= DIM(g_menuStack))
   {
     g_menuStackPtr--;
-    alert(STR_MENUSERROR);
+    assert(!"Menus overflow!");
     return;
   }
   AUDIO_MENUS();
