@@ -15,10 +15,10 @@
 #define TR_VBEEPLEN      "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG     "\003"
-#define TR_VRENAVIG      "No REaREb"
+#define TR_VRENAVIG      "NonREaREb"
 
 #define LEN_VFILTERADC   "\004"
-#define TR_VFILTERADC    "SING""OSMP""FILT"
+#define TR_VFILTERADC    "SIMP""OSMP""FILT"
 
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       "OFF"" +="" :="
@@ -35,12 +35,12 @@
 #define LEN_RETA123      "\001"
 #if defined(PCBV4)
 #if defined(EXTRA_ROTARY_ENCODERS)
-#define TR_RETA123       "RETA123abcd"
+#define TR_RETA123       "DPGA123abcd"
 #else //EXTRA_ROTARY_ENCODERS
-#define TR_RETA123       "RETA123ab"
+#define TR_RETA123       "DPGA123ab"
 #endif //EXTRA_ROTARY_ENCODERS
 #else
-#define TR_RETA123       "RETA123"
+#define TR_RETA123       "DPGA123"
 #endif
 
 #define LEN_VPROTOS      "\006"
@@ -74,7 +74,7 @@
 #define TR_EXPLABELS     "Ratio ""Expo  ""Courbe" TR_EXPLABEL_FP "Inter ""Mode  ""      "
 
 #define LEN_VMLTPX       "\010"
-#define TR_VMLTPX        "Ajouter ""Multipl.""Remplace"
+#define TR_VMLTPX        "Ajoute  ""Multipl.""Remplace"
 
 #define LEN_VMLTPX2      "\002"
 #define TR_VMLTPX2       "+=""*="":="
@@ -97,15 +97,15 @@
 #define TR_SOUND         "Bip\0         "
 #endif
 #if defined(HAPTIC)
-#define TR_HAPTIC        "Haptic\0      "
+#define TR_HAPTIC        "Vibreur\0     "
 #else
-#define TR_HAPTIC        "[Haptic]\0    "
+#define TR_HAPTIC        "[Vibreur]\0   "
 #endif
 #if defined(PCBV4)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs  "
+#define TR_SDCLOGS       "Logs carte SD "
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_SDCLOGS       "[Logs carteSD]"
 #endif
 #if defined(SOMO)
 #define TR_SOMO          "Jouer fichier"
@@ -153,9 +153,9 @@
 
 #define LEN_VTELPROTO    "\004"
 #if defined(WS_HOW_HIGH)
-#define TR_VTELPROTO     "NoneHub WSHH"
+#define TR_VTELPROTO     "Non Hub WSHH"
 #elif defined(FRSKY_HUB)
-#define TR_VTELPROTO     "NoneHub "
+#define TR_VTELPROTO     "Non Hub "
 #else
 #define TR_VTELPROTO     ""
 #endif
