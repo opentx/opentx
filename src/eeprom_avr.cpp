@@ -531,6 +531,7 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 }
 
 #if defined(SDCARD)
+#define FILENAME_MAXLEN 8
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.models.mainname;
@@ -538,25 +539,29 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   DIR archiveFolder;
   UINT written;
 
+#ifndef SIMU
   FRESULT result = f_mount(0, &g_FATFS_Obj);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
+#endif
 
   // check and create folder here
   strcpy_P(buf, STR_MODELS_PATH);
+#ifndef SIMU
   result = f_opendir(&archiveFolder, buf);
   if (result != FR_OK) {
     result = f_mkdir(buf);
     if (result != FR_OK)
       return SDCARD_ERROR(result);
   }
+#endif
 
   buf[sizeof(MODELS_PATH)-1] = '/';
   eeLoadModelName(i_fileSrc, &buf[sizeof(MODELS_PATH)]);
-  buf[sizeof(MODELS_PATH)+sizeof(g_model.name)] = '\0';
+  buf[sizeof(MODELS_PATH)+FILENAME_MAXLEN] = '\0';
 
-  uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.name)-1;
+  uint8_t i = sizeof(MODELS_PATH)+FILENAME_MAXLEN-1;
   uint8_t len = 0;
   while (i>sizeof(MODELS_PATH)-1) {
     if (!len && buf[i])
@@ -575,6 +580,11 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   }
 
   strcpy_P(&buf[len], STR_MODELS_EXT);
+
+#ifdef SIMU
+  printf("SD-card backup filename=%s\n", buf); fflush(stdout);
+  FRESULT
+#endif
 
   result = f_open(&archiveFile, buf, FA_OPEN_ALWAYS | FA_WRITE);
   if (result != FR_OK) {

@@ -479,7 +479,7 @@ __mktime_internal (struct gtm *tp,
 
 /* Convert *TP to a gtime_t value.  */
 gtime_t
-mktime (struct gtm *tp)
+gmktime (struct gtm *tp)
 {
  // no time zone stuff. Just do the math ;)
   static gtime_t localtime_offset;

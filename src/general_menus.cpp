@@ -423,7 +423,7 @@ void menuProcTime(uint8_t event)
       if (sub >= 0 && s_editMode<=0) // set the date and time into RTC chip
       {
         g_ms100 = 0; // start of next second begins now
-        g_unixTime = mktime(&t); // update local timestamp and get wday calculated
+        g_unixTime = gmktime(&t); // update local timestamp and get wday calculated
 
         RTC rtc;
         rtc.year = t.tm_year + 1900;

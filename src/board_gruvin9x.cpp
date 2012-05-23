@@ -83,7 +83,7 @@ inline void board_init()
   utm.tm_min =  rtc.min;
   utm.tm_sec =  rtc.sec;
   utm.tm_wday = rtc.wday - 1;
-  g_unixTime = mktime(&utm);
+  g_unixTime = gmktime(&utm);
 #endif
 
   /***************************************************/

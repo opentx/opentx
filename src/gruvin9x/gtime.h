@@ -56,7 +56,7 @@ struct gtm
 
 extern const unsigned short int __mon_yday[2][13];
 
-extern gtime_t mktime(struct gtm *tp);
+extern gtime_t gmktime(struct gtm *tp);
 extern gtime_t filltm(gtime_t *t, struct gtm *tp);
 
 #endif
