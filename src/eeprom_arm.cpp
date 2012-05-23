@@ -937,8 +937,12 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   while (i>sizeof(MODELS_PATH)-1) {
     if (!len && buf[i])
       len = i+1;
-    if (len)
-      buf[i] = idx2char(buf[i]);
+    if (len) {
+      if (buf[i])
+        buf[i] = idx2char(buf[i]);
+      else
+        buf[i] = '_';
+    }
     i--;
   }
 
