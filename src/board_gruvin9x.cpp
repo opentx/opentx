@@ -145,18 +145,18 @@ ISR(USART1_RX_vect)
   /* Filter the 9th bit, then return */
   resh = (resh >> 1) & 0x01;
   res = ((resh << 8) | resl);  
-  if((res == 0x181) | (res == 0x1C1)){         //button REb filter
-    keys[BTN_REb].input((res & 0x1C1) == 0x1C1, BTN_REb);
+  if((res == 0x180) | (res == 0x1C0)){         //button REb filter
+    keys[BTN_REa].input((res & 0x1C0) == 0x1C0, BTN_REa);
   } else if((res & 0x100) == 0x100){  //rotary filter
     vpotToChange = res & 0xEF;
     vpot_mod_state = 1;
   }
   else {
-    if(vpot_mod_state & (vpotToChange>0) & (vpotToChange<=NUM_UART_ROTARY_ENCODERS))
+    if(vpot_mod_state  & (vpotToChange < NUM_ROTARY_ENCODERS))
     {
       int8_t vpot_inc = res & 0xFF;
       if(vpot_inc){
-        incRotaryEncoder((NUM_ROTARY_ENCODERS - NUM_UART_ROTARY_ENCODERS) + (vpotToChange - 1), vpot_inc);
+        incRotaryEncoder(vpotToChange, vpot_inc);
       }    
       vpot_mod_state = 0;
     }
@@ -266,10 +266,8 @@ void readKeysAndTrims()
 
 #if !defined(EXTRA_ROTARY_ENCODERS)
   keys[BTN_REa].input(~PIND & 0x20, BTN_REa);
+#endif //!EXTRA_ROTARY_ENCODERS
   keys[BTN_REb].input(~PIND & 0x10, BTN_REb);
-#else //EXTRA_ROTARY_ENCODERS
-  keys[BTN_REa].input(~PIND & 0x10, BTN_REa);
-#endif //EXTRA_ROTARY_ENCODERS
 
   uint8_t tin = ~PINL;
   uint8_t in;
