@@ -569,12 +569,12 @@ sticks.lbm: sticks_4x1.xbm
 s9xsplash.lbm: s9xsplash.xbm
 	@echo
 	@echo "Convert splash from xbm to lbm:"
-	$(IMG2LBM) $< $@ img
+	$(IMG2LBM) $< $@ imgc
 
 asterisk.lbm: asterisk.xbm
 	@echo
 	@echo "Convert asterisk from xbm to lbm:"
-	$(IMG2LBM) $< $@ img
+	$(IMG2LBM) $< $@ imgc
 	 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on

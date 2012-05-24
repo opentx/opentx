@@ -54,12 +54,22 @@ void lcd_img(uint8_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mo
   const pm_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);
   uint8_t hb   = (pgm_read_byte(q++)+7)/8;
+  bool    comp = pgm_read_byte(q++);
   bool    inv  = (mode & INVERS) ? true : (mode & BLINK ? BLINK_ON_PHASE : false);
   q += idx*w*hb;
+  uint8_t ocur=0, b;
   for (uint8_t yb = 0; yb < hb; yb++) {
     uint8_t *p = &displayBuf[ (y / 8 + yb) * DISPLAY_W + x ];
     for (uint8_t i=0; i<w; i++){
-      uint8_t b = pgm_read_byte(q++);
+      if (ocur==0)
+      {
+        b = pgm_read_byte(q++);
+	if (comp && b==0xf0)
+	{
+	    b = pgm_read_byte(q++);
+	    ocur = pgm_read_byte(q++)-1;
+	}
+      } else ocur--;
       *p++ = inv ? ~b : b;
     }
   }
