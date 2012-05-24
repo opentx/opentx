@@ -583,10 +583,10 @@ void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uin
 {
 #if defined(EXTRA_ROTARY_ENCODERS)
   int16_t v;
-  if(idx < (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
+  if(idx < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
     v = phaseaddress(phase)->rotaryEncoders[idx];
   else
-    v = g_model.rotaryEncodersExtra[phase][idx - (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)];
+    v = g_model.rotaryEncodersExtra[phase][idx - (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
 #else
   int16_t v = phaseaddress(phase)->rotaryEncoders[idx];
 #endif

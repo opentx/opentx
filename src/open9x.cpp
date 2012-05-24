@@ -693,10 +693,10 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
     if (phase == 0) return 0;
 #if defined(EXTRA_ROTARY_ENCODERS)
     int16_t value;
-    if(idx<(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
+    if(idx<(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
       value = phaseaddress(phase)->rotaryEncoders[idx];
     else
-      value = g_model.rotaryEncodersExtra[phase][idx-(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)];
+      value = g_model.rotaryEncodersExtra[phase][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
 #else
     int16_t value = phaseaddress(phase)->rotaryEncoders[idx];
 #endif
@@ -711,8 +711,8 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 int16_t getRotaryEncoder(uint8_t idx)
 {
 #if defined(EXTRA_ROTARY_ENCODERS)
-  if(idx >= (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
-    return g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)];
+  if(idx >= (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
+    return g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
 #endif
   return phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
 }
@@ -722,10 +722,10 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
   g_rotenc[idx] += inc;
 #if defined(EXTRA_ROTARY_ENCODERS)
   int16_t *value;
-  if (idx < (NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS))
+  if (idx < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
     value = &(phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
   else
-    value = &(g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_EXTRA_ROTARY_ENCODERS)]);
+    value = &(g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)]);
 #else
   int16_t *value = &(phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
 #endif
