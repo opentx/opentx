@@ -957,7 +957,7 @@ void message(const pm_char *title, const pm_char *t, const char *last)
   lcd_clear();
 
 #if defined(PCBV4) || defined(PCBARM)
-  lcd_img(1, 0, asterisk_lbm, 0, 0);
+  lcd_img(2, 0, asterisk_lbm, 0, 0);
 #else
   lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
 #endif
