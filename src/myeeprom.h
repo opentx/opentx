@@ -192,7 +192,6 @@ enum MixSources {
 #if defined(EXTRA_ROTARY_ENCODERS)
     MIXSRC_REc,
     MIXSRC_REd,
-    MIXSRC_REe,
 #endif
 #endif
     MIXSRC_TrimRud,
