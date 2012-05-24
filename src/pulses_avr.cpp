@@ -734,6 +734,8 @@ void setupPulses()
 #if defined(PCBV4)
         TIMSK1 &= ~0x3C; // All interrupts off
         TIFR1 = 0x2F;
+        TIMSK1 |= (1<<OCIE1B) ; // Enable COMPB
+        TIMSK1 |= (1<<OCIE1C); // Enable COMPC
 #else
         TIMSK &= ~0x3C;        // All interrupts off
         TIFR = 0x3C ;
