@@ -2192,7 +2192,7 @@ void menuProcFunctionSwitches(uint8_t event)
             }
             else if (sd->func <= FUNC_SAFETY_CH16) {
               int8_t value = ((int8_t)sd->param >> 1);
-              lcd_outdezAtt(18*FW, y, value * 2, attr);
+              lcd_outdezAtt(18*FW, y, limit((int8_t)-125, (int8_t)(value * 2), (int8_t)125), attr);
               if (active) sd->param = (sd->param & 1) + (checkIncDecModel(event, value, -63, 63) << 1);
               break;
             }

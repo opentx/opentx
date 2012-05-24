@@ -1470,7 +1470,7 @@ void evalFunctions()
       }
       if (getSwitch(swtch, 0)) {
         if (sd->func < FUNC_TRAINER && (sd->param & 1)) {
-          safetyCh[sd->func] = ((int8_t)sd->param >> 1) * 2;
+          safetyCh[sd->func] = limit((int8_t)-125, (int8_t)(((int8_t)sd->param >> 1) * 2), (int8_t)125);
         }
 
         if (~active_functions & function_mask) {
