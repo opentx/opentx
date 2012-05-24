@@ -961,7 +961,7 @@ void message(const pm_char *title, const pm_char *t, const char *last)
 #else
   lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
 #endif
-#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT)
+#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
   lcd_putsAtt(6*FW, 0, STR_WARNING, DBLSIZE);
   lcd_putsAtt(6*FW, 2*FH, title, DBLSIZE);
 #else
