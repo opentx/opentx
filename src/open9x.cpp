@@ -961,8 +961,13 @@ void message(const pm_char *title, const pm_char *t, const char *last)
 #else
   lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
 #endif
+#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT)
+  lcd_putsAtt(6*FW, 0, STR_WARNING, DBLSIZE);
+  lcd_putsAtt(6*FW, 2*FH, title, DBLSIZE);
+#else
   lcd_putsAtt(6*FW, 0, title, DBLSIZE);
   lcd_putsAtt(6*FW, 2*FH, STR_WARNING, DBLSIZE);
+#endif
   lcd_filled_rect(0, 0, 128, 32);
   if (t) lcd_putsLeft(5*FH, t);
   if (last) {
