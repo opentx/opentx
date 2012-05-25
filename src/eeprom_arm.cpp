@@ -287,7 +287,7 @@ void read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t 
   eeprom_buffer_size = size;
   eeprom_read_operation = true;
   Spi_complete = false;
-  sem_post(&eeprom_write_sem);
+  sem_post(eeprom_write_sem);
 #else
   register uint8_t *p = Spi_tx_buf ;
   *p = 3 ;                     // Read command
@@ -316,7 +316,7 @@ void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_
   eeprom_buffer_size = size+1;
   eeprom_read_operation = false;
   Spi_complete = false;
-  sem_post(&eeprom_write_sem);
+  sem_post(eeprom_write_sem);
 #else
   eeprom_write_enable();
 

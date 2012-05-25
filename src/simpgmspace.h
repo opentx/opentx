@@ -95,7 +95,7 @@ typedef const uint8_t pm_uint8_t;
 typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
-extern sem_t eeprom_write_sem;
+extern sem_t *eeprom_write_sem;
 #if defined(PCBARM)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
