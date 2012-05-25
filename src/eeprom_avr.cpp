@@ -101,7 +101,6 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 
 #ifdef SIMU
   sem_post(eeprom_write_sem);
-  printf("sem_post doit demarrer le thread EEPROM"); fflush(stdout);
 #elif defined (PCBARM)
 
 #elif defined (PCBV4)
