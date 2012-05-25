@@ -168,7 +168,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
       setupPulses();
 
-      if (!IS_PXX_PROTOCOL(g_model.protocol) && !IS_DSM2_PROTOCOL(g_model.protocol)) {
+      if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
 
         // cli is not needed because for these 2 protocols interrupts are not enabled when entering here
 
