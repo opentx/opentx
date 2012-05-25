@@ -769,7 +769,7 @@ void clearKeyEvents()
 #ifdef SIMU
     while (keyDown() && main_thread_running) sleep(1/*ms*/);
 #else
-    while (keyDown());  // loop until all keys are up
+    while (keyDown()) wdt_reset();  // loop until all keys are up
 #endif
     memset(keys, 0, sizeof(keys));
     putEvent(0);
