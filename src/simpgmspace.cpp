@@ -105,6 +105,7 @@ void *eeprom_write_function(void *)
 {
   printf("on entre dans eeprom_write_function\n"); fflush(stdout);
   while (!sem_wait(&eeprom_write_sem)) {
+    printf("sortie sem_wait"); fflush(stdout);
     if (!eeprom_thread_running)
       return NULL;
 #if defined(PCBARM)
@@ -147,7 +148,7 @@ void *eeprom_write_function(void *)
     Spi_complete = 1;
 #endif
   }
-
+  printf("sortie du thread EEPROM, pas bon avant la fin !!!"); fflush(stdout);
   return 0;
 }
 
