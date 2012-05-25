@@ -237,44 +237,6 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     }
   }
 
-  per10ms();
-  refreshDiplay();
-  getApp()->addTimeout(this,2,5);
-  return 0;
-}
-
-void Open9xSim::refreshDiplay()
-{
-  if (lcd_refresh) {
-    lcd_refresh = false;
-#if defined(PCBV4)
-    if(portc & 1<<OUT_C_LIGHT)  bmf->setOffColor(FXRGB(150,200,152));
-    else                        bmf->setOffColor(FXRGB(200,200,200));
-#else
-    if(portb & 1<<OUT_B_LIGHT)  bmf->setOffColor(FXRGB(150,200,152));
-    else                        bmf->setOffColor(FXRGB(200,200,200));
-#endif
-
-    for(int x=0;x<W;x++){
-      for(int y=0;y<H;y++)
-      {
-        int o2 = x/4 + y*W*2*2/8;
-        if( lcd_buf[x+(y/8)*W] & (1<<(y%8))) {
-          buf2[o2]      |=   3<<(x%4*2);
-          buf2[o2+W2/8] |=   3<<(x%4*2);
-        }
-        else {
-          buf2[o2]      &= ~(3<<(x%4*2));
-          buf2[o2+W2/8] &= ~(3<<(x%4*2));
-          //buf2[x2/8+y2*W2/8] &= ~(3<<(x%8));
-        }
-      }
-    }
-
-    bmp->setData (buf2,0);
-    bmp->render();
-    bmf->setBitmap( bmp );
-  }
 
   if(hasFocus()) {
 #ifdef REVB
@@ -314,22 +276,30 @@ void Open9xSim::refreshDiplay()
 //    PIOA->PIO_PDSR = 0xFFFFFFFF;
     Temperature = 1000;
     maxTemperature = 1500;
+
 #elif defined(PCBV4)
-    pinl &= ~ 0x3f;
+    uint8_t pin = (pinl & ~0x3f);
 #else
-    pinb &= ~ 0x7e;
+    uint8_t pin = (pinb & ~0x7e);
 #endif
+
     for(unsigned i=0; i<DIM(keys1);i+=5) {
       if (getApp()->getKeyState(keys1[i])) {
 #if defined(PCBARM)
         ((Pio*)keys1[i+3])->PIO_PDSR &= ~(keys1[i+4]);
 #elif defined(PCBV4)
-        pinl |= (1<<keys1[i+2]);
+        pin |= (1<<keys1[i+2]);
 #else
-        pinb |= (1<<keys1[i+1]);
+        pin |= (1<<keys1[i+1]);
 #endif
       }
     }
+
+#if defined(PCBV4)
+    pinl = pin;
+#else
+    pinb = pin;
+#endif
 
 #ifdef __APPLE__
     // gruvin: Can't use Function keys on the Mac -- too many other app conflicts.
@@ -433,6 +403,47 @@ void Open9xSim::refreshDiplay()
       case 2: setSwitch(DSW_ID2); break;
     }
   }
+
+
+  per10ms();
+  refreshDiplay();
+  getApp()->addTimeout(this,2,5);
+  return 0;
+}
+
+void Open9xSim::refreshDiplay()
+{
+  if (lcd_refresh) {
+    lcd_refresh = false;
+#if defined(PCBV4)
+    if(portc & 1<<OUT_C_LIGHT)  bmf->setOffColor(FXRGB(150,200,152));
+    else                        bmf->setOffColor(FXRGB(200,200,200));
+#else
+    if(portb & 1<<OUT_B_LIGHT)  bmf->setOffColor(FXRGB(150,200,152));
+    else                        bmf->setOffColor(FXRGB(200,200,200));
+#endif
+
+    for(int x=0;x<W;x++){
+      for(int y=0;y<H;y++)
+      {
+        int o2 = x/4 + y*W*2*2/8;
+        if( lcd_buf[x+(y/8)*W] & (1<<(y%8))) {
+          buf2[o2]      |=   3<<(x%4*2);
+          buf2[o2+W2/8] |=   3<<(x%4*2);
+        }
+        else {
+          buf2[o2]      &= ~(3<<(x%4*2));
+          buf2[o2+W2/8] &= ~(3<<(x%4*2));
+          //buf2[x2/8+y2*W2/8] &= ~(3<<(x%8));
+        }
+      }
+    }
+
+    bmp->setData (buf2,0);
+    bmp->render();
+    bmf->setBitmap( bmp );
+  }
+
 }
 
 Open9xSim *th9xSim;

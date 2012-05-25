@@ -345,7 +345,6 @@ extern const pm_char STR_MENUSTAT[];
 extern const pm_char STR_MENUDEBUG[];
 extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
-#endif
 
 #if defined(ROTARY_ENCODERS)
 extern const pm_char STR_BACK[];
@@ -403,3 +402,5 @@ extern const pm_char STR_EEPROMWARN[];
 extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
+
+#endif

@@ -178,6 +178,8 @@ void *main_thread(void *)
       checkAlarm();
     }
 
+    s_current_protocol = 0;
+
     while (main_thread_running) {
       perMain();
       sleep(1/*ms*/);
