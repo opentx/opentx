@@ -103,8 +103,8 @@ void setSwitch(int8_t swtch)
 bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
 {
+  printf("on entre dans eeprom_write_function\n"); fflush(stdout);
   while (!sem_wait(&eeprom_write_sem)) {
-
     if (!eeprom_thread_running)
       return NULL;
 #if defined(PCBARM)
@@ -119,7 +119,9 @@ void *eeprom_write_function(void *)
       if (fseek(fp, eeprom_pointer, SEEK_SET) == -1)
         perror("error in fseek");
     }
+    printf("avant la boucle eeprom_buffer_size=%d\n", eeprom_buffer_size); fflush(stdout);
     while (--eeprom_buffer_size) {
+      printf("ecriture eeprom_buffer_size=%d\n", eeprom_buffer_size); fflush(stdout);
       assert(eeprom_buffer_size > 0);
       if (fp) {
         if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
@@ -129,6 +131,7 @@ void *eeprom_write_function(void *)
 #endif
       }
       else {
+        printf("avant memcpy eeprom_pointer=%d\n", eeprom_pointer); fflush(stdout);
         memcpy(&eeprom[eeprom_pointer], eeprom_buffer_data, 1);
       }
       eeprom_pointer++;
@@ -138,6 +141,7 @@ void *eeprom_write_function(void *)
         fflush(fp);
       }
     }
+    printf("sortie boucle ecriture eeprom_buffer_size=%d\n", eeprom_buffer_size); fflush(stdout);
 #if defined(PCBARM)
     }
     Spi_complete = 1;
