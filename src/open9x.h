@@ -474,6 +474,7 @@ extern uint8_t pxxFlag;
 
 extern char idx2char(int8_t idx);
 
+void clearKeyEvents();
 void pauseEvents(uint8_t enuk);
 void killEvents(uint8_t enuk);
 uint8_t getEvent();
