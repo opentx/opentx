@@ -32,6 +32,7 @@
  */
 
 #include "open9x.h"
+#include "errno.h"
 
 volatile uint8_t pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
