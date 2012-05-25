@@ -1,18 +1,18 @@
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"
-#define TR_OFFON         "OFF""ON "
+#define TR_OFFON         "OFF""ON\0"
 
 #define LEN_MMMINV       "\003"
 #define TR_MMMINV        "---""INV"
 
 #define LEN_NCHANNELS    "\004"
-#define TR_NCHANNELS     "4CH 6CH 8CH 10CH12CH14CH16CH"
+#define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE    "\005"
 #define TR_VBEEPMODE     "Silen""Avvis""Notst""Tutti"
 
 #define LEN_VBEEPLEN     "\005"
-#define TR_VBEEPLEN      "0====""=0===""==0==""===0=""====0"
+#define TR_VBEEPLEN      "+Cort""Corta""Media""Lunga""+Lung"
 
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "No REaREb"
@@ -54,7 +54,12 @@
 #else
 #define TR_DSM2 "[DSM2]"
 #endif
-#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2
+#ifdef IRPROTOS
+#define TR_IRPROTOS "SILV  TRAC09PICZ  SWIFT\0"
+#else
+#define TR_IRPROTOS
+#endif
+#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2 TR_IRPROTOS
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -86,7 +91,7 @@
 #define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
 #define LEN_VFSWFUNC     "\015"
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+#if defined(VARIO)
 #define TR_VVARIO        "Vario\0       "
 #else
 #define TR_VVARIO        "[Vario]\0     "
@@ -215,7 +220,7 @@
 #define TR_MENUWHENDONE "[Men\200] Conferma"
 #define TR_FREE         " Disp."
 #define TR_DELETEMODEL  "Elimina modello?"
-#define TR_COPYINGMODEL "Copia in corso..."
+#define TR_COPYINGMODEL "Copia in corso.."
 #define TR_MOVINGMODEL  "Spostamento..."
 #define TR_LOADINGMODEL "Caricamento..."
 #define TR_NAME         "Nome"
@@ -298,7 +303,7 @@
 #define TR_LIGHTOFFAFTER "Spegni ill.dopo"
 #define TR_SPLASHSCREEN  "Schermata avvio"
 #define TR_THROTTLEWARNING "All. Thr  "
-#define TR_SWITCHWARNING "Avviso Switch "
+#define TR_SWITCHWARNING "Avv. SW.      "
 #define TR_MEMORYWARNING "Avviso Memoria"
 #define TR_ALARMWARNING "Avviso Allarme"
 #define TR_TIMEZONE     "Ora locale"
