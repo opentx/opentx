@@ -771,6 +771,7 @@ void clearKeyEvents()
 #else
     while (keyDown());  // loop until all keys are up
 #endif
+    memset(keys, 0, sizeof(keys));
     putEvent(0);
 }
 
@@ -881,6 +882,8 @@ void checkTHR()
       }
 
       checkBacklight();
+
+      wdt_reset();
   }
 }
 
@@ -922,6 +925,8 @@ void checkSwitches()
     if (keyDown() || check_soft_power() > e_power_trainer) return; // Usb on or power off
 
     checkBacklight();
+
+    wdt_reset();
 
 #ifdef SIMU
     if (!main_thread_running) return;
@@ -2645,7 +2650,6 @@ int main(void)
 
     getADC_single();
     checkTHR();
-
     checkSwitches();
     checkAlarm();
   }

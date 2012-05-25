@@ -34,7 +34,13 @@
 #ifndef pulses_arm_h
 #define pulses_arm_h
 
+extern uint8_t s_current_protocol;
+extern uint8_t s_pulses_paused;
+
 void startPulses();
+inline bool pulsesStarted() { return s_current_protocol != 255; }
+inline void pausePulses() { s_pulses_paused = true; }
+inline void resumePulses() { s_pulses_paused = false; }
 
 void disable_main_ppm();
 void disable_ssc();

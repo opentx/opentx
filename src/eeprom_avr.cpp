@@ -852,6 +852,11 @@ bool eeModelExists(uint8_t id)
 void eeLoadModel(uint8_t id)
 {
   if (id<MAX_MODELS) {
+
+    if (pulsesStarted()) {
+      pausePulses();
+    }
+
     theFile.openRlc(FILE_MODEL(id));
     uint16_t sz = theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
 
@@ -862,9 +867,15 @@ void eeLoadModel(uint8_t id)
 #endif
 
     if (sz < 256) {
-      // alert("Error Loading Model");
       modelDefault(id);
       eeCheck(true);
+    }
+
+    if (pulsesStarted()) {
+      checkTHR();
+      checkSwitches();
+      resumePulses();
+      clearKeyEvents();
     }
 
     resetProto();

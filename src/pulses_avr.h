@@ -34,13 +34,19 @@
 #ifndef pulses_avr_h
 #define pulses_avr_h
 
-void startPulses();
-void setupPulses();
-void DSM2_Init();
-void DSM2_Done();
+extern uint8_t s_current_protocol;
+extern uint8_t s_pulses_paused;
 
 extern uint8_t *pulses2MHzRPtr;
 extern uint8_t *pulses2MHzWPtr;
+
+void startPulses();
+inline bool pulsesStarted() { return s_current_protocol != 255; }
+inline void pausePulses() { s_pulses_paused = true; }
+inline void resumePulses() { s_pulses_paused = false; }
+void setupPulses();
+void DSM2_Init();
+void DSM2_Done();
 
 #endif
 /*eof*/

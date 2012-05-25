@@ -484,7 +484,7 @@ void menuProcModelSelect(uint8_t event)
         // The user choosed a file on SD to restore
         s_sdcard_error = eeRestoreModel(sub, (char *)result);
         if (!s_sdcard_error && g_eeGeneral.currModel == sub)
-          eeLoadModel(sub); // force writing of current model data before this is changed
+          eeLoadModel(sub);
         refresh = true;
       }
     }

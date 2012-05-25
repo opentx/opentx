@@ -407,11 +407,11 @@ void processFrskyPacket(uint8_t *packet)
       uint8_t numBytes = 3 + (packet[1] & 0x07); // sanitize in case of data corruption leading to buffer overflow
       for (uint8_t i=3; i<numBytes; i++) {
 #if defined(FRSKY_HUB)
-        if (g_model.frsky.usrProto == 1) // FrSky Hub
+        if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB)
           parseTelemHubByte(packet[i]);
 #endif
 #if defined(WS_HOW_HIGH)
-        if (g_model.frsky.usrProto == 2) // WS How High
+        if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
           parseTelemWSHowHighByte(packet[i]);
 #endif
       }
@@ -977,7 +977,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
     case TELEM_ALT-1:
     case TELEM_MIN_ALT-1:
     case TELEM_MAX_ALT-1:
-      if (g_model.frsky.usrProto == PROTO_WS_HOW_HIGH) {
+      if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
         putsTelemetryValue(x, y, val, UNIT_FEET, att);
         break;
       }
@@ -1254,7 +1254,7 @@ void menuProcFrsky(uint8_t event)
 #ifdef FRSKY_HUB
     else if (s_frsky_view == e_frsky_after_flight) {
       uint8_t line=1*FH+1;
-      if (g_model.frsky.usrProto == 1) { // FrSky Hub
+      if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB) {
         // Latitude
         lcd_putsLeft(line, STR_LATITUDE);
         displayGpsCoord(line, frskyHubData.gpsLatitudeNS, frskyHubData.gpsLatitude_bp, frskyHubData.gpsLatitude_ap);

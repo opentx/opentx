@@ -41,7 +41,7 @@ void putEvent(uint8_t evt)
 uint8_t getEvent()
 {
   uint8_t evt = s_evt;
-  s_evt=0;
+  s_evt = 0;
   return evt;
 }
 

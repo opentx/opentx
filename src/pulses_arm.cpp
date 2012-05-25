@@ -33,7 +33,8 @@
 
 #include "open9x.h"
 
-uint8_t Current_protocol ;
+uint8_t s_pulses_paused = 0;
+uint8_t s_current_protocol ;
 uint8_t pxxFlag = 0 ;
 
 uint16_t Pulses[18] = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0,0,0,0,0,0, 0 } ;
@@ -71,8 +72,8 @@ static void init_main_ppm( uint32_t period, uint32_t out_enable )
   {
     pioptr = PIOA ;
     pioptr->PIO_ABCDSR[0] &= ~PIO_PA17 ;            // Peripheral C
-    pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;                     // Peripheral C
-    pioptr->PIO_PDR = PIO_PA17 ;                                            // Disable bit A17 Assign to peripheral
+    pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
+    pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
   }
 
   pwmptr = PWM ;
@@ -409,18 +410,8 @@ extern "C" void PWM_IRQHandler(void)
 
   pwmptr = PWM;
   if (pwmptr->PWM_ISR1 & PWM_ISR1_CHID3) {
-    switch (Current_protocol) // Use the current, don't switch until set_up_pulses
+    switch (s_current_protocol) // Use the current, don't switch until set_up_pulses
     {
-      case PROTO_PPM:
-      case PROTO_PPM16:
-        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = Pulses[Pulses_index++]; // Period in half uS
-        if (Pulses[Pulses_index] == 0) {
-          Pulses_index = 0;
-
-          setupPulses();
-        }
-        break;
-
       case PROTO_PXX:
         // Alternate periods of 15.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
@@ -459,7 +450,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 5000) // 2.5 mS
-            {
+        {
           setupPulses();
         }
         else {
@@ -472,6 +463,15 @@ extern "C" void PWM_IRQHandler(void)
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
         break;
+
+      default:
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = Pulses[Pulses_index++]; // Period in half uS
+        if (Pulses[Pulses_index] == 0) {
+          Pulses_index = 0;
+          setupPulses();
+        }
+        break;
+
     }
   }
 }
@@ -480,27 +480,27 @@ void setupPulses()
 {
   heartbeat |= HEART_TIMER_PULSES;
 
-  if (Current_protocol != g_model.protocol) {
-    switch (Current_protocol) { // stop existing protocol hardware
-      case PROTO_PPM:
-        disable_main_ppm();
-        break;
+  uint8_t required_protocol = g_model.protocol;
+  if (s_pulses_paused)
+    required_protocol = PROTO_NONE;
+
+  if (s_current_protocol != required_protocol) {
+
+    switch (s_current_protocol) { // stop existing protocol hardware
       case PROTO_PXX:
         disable_ssc();
         break;
       case PROTO_DSM2:
         disable_ssc();
         break;
-      case PROTO_PPM16:
+      default:
         disable_main_ppm();
         break;
     }
 
-    Current_protocol = g_model.protocol;
-    switch (Current_protocol) { // Start new protocol hardware here
-      case PROTO_PPM:
-        init_main_ppm(3000, 1); // Initial period 1.5 mS, output on
-        break;
+    s_current_protocol = required_protocol;
+
+    switch (required_protocol) { // Start new protocol hardware here
       case PROTO_PXX:
         init_main_ppm(5000, 0); // Initial period 2.5 mS, output off
         init_ssc();
@@ -509,24 +509,24 @@ void setupPulses()
         init_main_ppm(5000, 0); // Initial period 2.5 mS, output off
         init_ssc();
         break;
-      case PROTO_PPM16:
+      case PROTO_NONE:
+        init_main_ppm(3000, 0); // Initial period 1.5 mS, output on
+        break;
+      default:
         init_main_ppm(3000, 1); // Initial period 1.5 mS, output on
         break;
     }
   }
 
-// Set up output data here
-  switch (Current_protocol) {
-    case PROTO_PPM:
-      setupPulsesPPM(); // Don't enable interrupts through here
-      break;
+  // Set up output data here
+  switch (required_protocol) {
     case PROTO_PXX:
       setupPulsesPXX();
       break;
     case PROTO_DSM2:
       setupPulsesDsm2(6);
       break;
-    case PROTO_PPM16:
+    default:
       setupPulsesPPM(); // Don't enable interrupts through here
       break ;
   }

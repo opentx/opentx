@@ -394,9 +394,9 @@ PACK(typedef struct t_FrSkyBarData {
 }) FrSkyBarData;
 
 enum FrskyUsrProtocols {
-  PROTO_NONE,
-  PROTO_FRSKY_HUB,
-  PROTO_WS_HOW_HIGH
+  USR_PROTO_NONE,
+  USR_PROTO_FRSKY_HUB,
+  USR_PROTO_WS_HOW_HIGH
 };
 
 PACK(typedef struct t_FrSkyData {
@@ -531,7 +531,8 @@ enum Protocols {
   PROTO_PICZ,
 //  PROTO_SWIFT, // we will need 4 bytes for proto :(
 #endif
-  PROTO_MAX
+  PROTO_MAX,
+  PROTO_NONE
 };
 
 enum Dsm2Variants {
