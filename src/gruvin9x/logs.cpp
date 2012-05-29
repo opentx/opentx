@@ -54,7 +54,7 @@ void initLogs()
 
   // Set log file model number
   uint8_t num = g_eeGeneral.currModel + 1;
-  char *n = &g_logFilename[sizeof(LOGS_PATH) + 3];
+  char *n = &g_logFilename[sizeof(LOGS_PATH) + 2];
   *n = (char)((num % 10) + '0');
   *(--n) = (char)((num / 10) + '0');
 
@@ -87,7 +87,7 @@ void initLogs()
       f_close(&g_oLogFile);
 
       // bump log file counter (file extension)
-      n = &g_logFilename[sizeof(LOGS_PATH) + 7];
+      n = &g_logFilename[sizeof(LOGS_PATH) + 6];
       if (++*n > '9')
       {
         *n='0';
