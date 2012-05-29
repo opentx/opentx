@@ -76,7 +76,7 @@
 #else
 #define TR_EXPLABEL_FP
 #endif
-#define TR_EXPLABELS     "V\200ha  ""Expo  ""K\206ivka" TR_EXPLABEL_FP "Sp\204na\201""Strana""      " // TODO remove all the trailing spaces
+#define TR_EXPLABELS     "V\200ha  ""Expo  ""K\206ivka" TR_EXPLABEL_FP "Sp\204na\201""Strana""\0"
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Se\201\204st  ""N\200sobit ""Zam\203nit  "
@@ -166,7 +166,7 @@
 #endif
 
 #define LEN_VARIOSRC     "\006"
-#define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2    "
+#define TR_VARIOSRC      "BaroV1""BaroV2""A1\0   ""A2\0"
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
@@ -176,7 +176,7 @@
 #define TR_VTEMPLATES    "Smazat Mixy\0\0""Z\200kl. 4kan\200l\0""T-Cut       \0""V-Ocas      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
 
 #define LEN_VSWASHTYPE   "\004"
-#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
+#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS        "\005"
 #define TR_VKEYS         " Menu"" Exit"" Dol\211""Nhoru""Vprvo""Vlevo"

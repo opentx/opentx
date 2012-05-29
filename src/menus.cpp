@@ -33,13 +33,10 @@
 
 #include "open9x.h"
 
-int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 uint8_t s_pgOfs;
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t s_noScroll;
-
-int16_t g_chans512[NUM_CHNOUT]; // TODO not here!
 
 void menu_lcd_onoff(uint8_t x,uint8_t y, uint8_t value, uint8_t attr)
 {

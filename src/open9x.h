@@ -762,7 +762,7 @@ extern int16_t applyCurve(int16_t, int8_t);
 extern void applyExpos(int16_t *anas);
 
 extern uint16_t anaIn(uint8_t chan);
-extern int16_t calibratedStick[7];
+extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
 #define FLASH_DURATION 50
 

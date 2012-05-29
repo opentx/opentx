@@ -398,6 +398,8 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   return ofs;
 }
 
+int16_t calibratedStick[NUM_STICKS+NUM_POTS];
+int16_t g_chans512[NUM_CHNOUT];
 int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain
 #ifdef HELI
 int16_t cyc_anas[3] = {0};
@@ -1326,20 +1328,19 @@ FORCEINLINE void evalTrims()
   uint8_t phase = s_perout_flight_phase;
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
-    // TODO avoid int32_t vv
-    int32_t vv = 2*RESX;
     int16_t trim = getTrimValue(phase, i);
     if (i==THR_STICK && g_model.thrTrim) {
       if (g_eeGeneral.throttleReversed)
         trim = -trim;
       int16_t v = anas[i];
-      vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
+      int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
+      trim = vv;
     }
     else if (trimsCheckTimer > 0) {
       trim = 0;
     }
 
-    trims[i] = (vv==2*RESX) ? trim*2 : (int16_t)vv*2; // if throttle trim -> trim low end
+    trims[i] = trim*2;
   }
 }
 
@@ -1747,12 +1748,16 @@ void perOut()
         if (tick10ms) {
             int32_t rate = (int32_t)DEL_MULT*2048*100;
             if(md->weight) rate /= abs(md->weight);
-            // TODO port optim er9x by Mike
+
             act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)100*md->speedUp)   :  (int32_t)v*DEL_MULT) :
                                 ((md->speedDown>0) ? act[i]-(rate)/((int16_t)100*md->speedDown) :  (int32_t)v*DEL_MULT) ;
         }
 
-        if(((diff>0) && (v<(act[i]/DEL_MULT))) || ((diff<0) && (v>(act[i]/DEL_MULT)))) act[i]=(int32_t)v*DEL_MULT; //deal with overflow
+        {
+          int32_t tmp = act[i]/DEL_MULT ;
+          if(((diff>0) && (v<tmp)) || ((diff<0) && (v>tmp))) act[i]=(int32_t)v*DEL_MULT; //deal with overflow
+        }
+
         v = act[i]/DEL_MULT;
       }
     }
@@ -2563,6 +2568,20 @@ uint16_t stack_free()
 
 int main(void)
 {
+  // The WDT remains active after a WDT reset -- at maximum clock speed. So it's
+  // important to disable it before commencing with system initialisation (or
+  // we could put a bunch more wdt_reset()s in. But I don't like that approach
+  // during boot up.)
+#if defined(PCBV4)
+  uint8_t mcusr_mirror = MCUSR; // save the WDT (etc) flags
+  MCUSR = 0; // must be zeroed before disabling the WDT
+#elif defined(PCBSTD)
+  uint8_t mcusr_mirror = MCUCSR;
+  MCUCSR = 0;
+#endif
+
+  wdt_disable();
+
   board_init();
 
   lcd_init();
@@ -2629,13 +2648,13 @@ int main(void)
 #endif
 
 #if defined(PCBV4)
-  if ((~MCUSR & (1 << WDRF)) && !g_eeGeneral.unexpectedShutdown)
+  if ((~mcusr_mirror & (1 << WDRF)) && !g_eeGeneral.unexpectedShutdown)
 #elif defined(PCBSTD)
-  if (~MCUCSR & (1 << WDRF))
+  if (~mcusr_mirror & (1 << WDRF))
 #else
   if (!g_eeGeneral.unexpectedShutdown)
 #endif
-   {
+  {
 #ifdef SPLASH
 #ifdef DSM2
     // TODO rather use another Model Parameter

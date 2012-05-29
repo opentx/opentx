@@ -242,9 +242,7 @@ void menuProcModelSelect(uint8_t event)
   {
       case EVT_ENTRY:
         m_posVert = sub = g_eeGeneral.currModel;
-        s_copyMode = 0; // TODO only this one?
-        s_copyTgtOfs = 0;
-        s_copySrcRow = -1;
+        s_copyMode = 0;
         s_editMode = -1;
         eeCheck(true);
         break;
@@ -257,10 +255,8 @@ void menuProcModelSelect(uint8_t event)
         // no break
       case EVT_KEY_BREAK(KEY_EXIT):
         if (s_copyMode) {
-          sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow; // TODO reset s_copySrcRow?
-          s_copyMode = 0; // TODO only this one?
-          s_copySrcRow = -1;
-          s_copyTgtOfs = 0;
+          sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
+          s_copyMode = 0;
           killEvents(_event);
         }
         break;
@@ -305,9 +301,7 @@ void menuProcModelSelect(uint8_t event)
             STORE_GENERALVARS;
           }
 
-          s_copyMode = 0; // TODO only this one?
-          s_copySrcRow = -1;
-          s_copyTgtOfs = 0;
+          s_copyMode = 0;
           return;
         }
         else if (_event == EVT_KEY_LONG(KEY_MENU) || IS_RE_NAVIGATION_EVT_TYPE(_event, EVT_KEY_LONG)) {
@@ -342,6 +336,8 @@ void menuProcModelSelect(uint8_t event)
         }
         else if (eeModelExists(sub)) {
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
+          s_copyTgtOfs = 0;
+          s_copySrcRow = -1;
         }
         break;
       case EVT_KEY_FIRST(KEY_LEFT):
@@ -367,9 +363,7 @@ void menuProcModelSelect(uint8_t event)
               // no free room for duplicating the model
               AUDIO_ERROR();
               m_posVert = oldSub;
-              s_copyMode = 0; // TODO only this one?
-              s_copyTgtOfs = 0;
-              s_copySrcRow = -1;
+              s_copyMode = 0;
             }
             next_ofs = 0;
             sub = m_posVert;
@@ -424,7 +418,7 @@ void menuProcModelSelect(uint8_t event)
       putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, size, 0);
 #endif
-      if (k==g_eeGeneral.currModel && (s_copySrcRow<0 || i+s_pgOfs!=sub)) lcd_putc(1, y, '*');
+      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=sub)) lcd_putc(1, y, '*');
     }
 
     if (s_copyMode && sub==i+s_pgOfs) {
@@ -505,7 +499,6 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
           || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
          if (c < 0) v = -v;
-         STORE_MODELVARS;
       }
 
       switch (event) {
@@ -531,14 +524,16 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
         case EVT_KEY_LONG(KEY_RIGHT):
           if (v>=-26 && v<=26) {
             v = -v; // toggle case
-            STORE_MODELVARS; // TODO optim if (c!=v) at the end
             if (event==EVT_KEY_LONG(KEY_LEFT))
               killEvents(KEY_LEFT);
           }
           break;
       }
 
-      name[cur] = v;
+      if (c != v) {
+        name[cur] = v;
+        STORE_MODELVARS;
+      }
       lcd_putcAtt(x+cur*FW, y, idx2char(v), INVERS);
       cur = next;
     }

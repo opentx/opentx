@@ -71,7 +71,7 @@
 #else
 #define TR_EXPLABEL_FP
 #endif
-#define TR_EXPLABELS     "Ratio ""Expo  ""Courbe" TR_EXPLABEL_FP "Inter ""Mode  ""      "
+#define TR_EXPLABELS     "Ratio ""Expo  ""Courbe" TR_EXPLABEL_FP "Inter ""Mode  ""\0"
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Ajoute  ""Multipl.""Remplace"
@@ -161,7 +161,7 @@
 #endif
 
 #define LEN_VARIOSRC     "\006"
-#define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2    "
+#define TR_VARIOSRC      "BaroV1""BaroV2""A1\0   ""A2\0"
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
@@ -174,7 +174,7 @@
 #define TR_VTEMPLATES    "Suppr Mixages\0\0""4 Voies simple\0""Coupure Gaz   \0""Empennage V   \0""Elevon\\Delta  \0""eCCPM         \0""Conf. H\200lico  \0""Servo Test    \0"
 
 #define LEN_VSWASHTYPE   "\004"
-#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
+#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS        "\005"
 #define TR_VKEYS         " Menu"" Exit""  Bas"" Haut""Droit""Gauch"

@@ -76,7 +76,7 @@
 #else
 #define TR_EXPLABEL_FP
 #endif
-#define TR_EXPLABELS     "Weight""Expo  ""Curve " TR_EXPLABEL_FP "Swtch ""Side ""      " // TODO remove all the trailing spaces
+#define TR_EXPLABELS     "Weight""Expo  ""Curve " TR_EXPLABEL_FP "Swtch ""Side\0 ""\0"
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Add     ""Multiply""Replace "
@@ -122,7 +122,7 @@
 #define TR_SOMO
 #endif
 #ifdef DEBUG
-#define TR_TEST          "Test\0        "
+#define TR_TEST          "Test\0"
 #else
 #define TR_TEST
 #endif
@@ -166,7 +166,7 @@
 #endif
 
 #define LEN_VARIOSRC     "\006"
-#define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2    "
+#define TR_VARIOSRC      "BaroV1""BaroV2""A1\0   ""A2\0"
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
@@ -176,7 +176,7 @@
 #define TR_VTEMPLATES    "Clear Mixes\0\0""Simple 4-CH \0""T-Cut       \0""V-Tail      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
 
 #define LEN_VSWASHTYPE   "\004"
-#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
+#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS        "\005"
 #define TR_VKEYS         " Menu"" Exit"" Down""   Up""Right"" Left"

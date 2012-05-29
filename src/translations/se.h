@@ -71,10 +71,10 @@
 #else
 #define TR_EXPLABEL_FP
 #endif
-#define TR_EXPLABELS     "Vikt  ""Expo  ""Kurva " TR_EXPLABEL_FP "Brytar""N\201r   ""      " // TODO remove all the trailing spaces
+#define TR_EXPLABELS     "Vikt  ""Expo  ""Kurva " TR_EXPLABEL_FP "Brytar""N\201r   ""\0"
 
 #define LEN_VMLTPX       "\010"
-#define TR_VMLTPX        "Addera  ""F\202rst\201rk""Ers\201tt  "
+#define TR_VMLTPX        "Addera  ""F\202rst\201rk""Ers\201tt\0"
 
 #define LEN_VMLTPX2      "\002"
 #define TR_VMLTPX2       "+=""*="":="
@@ -161,7 +161,7 @@
 #endif
 
 #define LEN_VARIOSRC     "\006"
-#define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2    "
+#define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2\0"
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
@@ -174,7 +174,7 @@
 #define TR_VTEMPLATES    "Nolla Mixar\0\0""Enkel 4kanal\0""Gasklippning\0""V-Stj\201rt    \0""Deltavinge  \0""eCCPM       \0""Helikopter  \0""Servotest   \0"
 
 #define LEN_VSWASHTYPE   "\004"
-#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90  "
+#define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS        "\005"
 #define TR_VKEYS         " MENU"" EXIT""  Ned""  Upp""H\202ger""V\201nst"
