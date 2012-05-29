@@ -256,6 +256,11 @@ ifeq ($(FLIGHT_PHASES), YES)
   CPPDEFS += -DFLIGHT_PHASES
 endif
 
+# If STD-Support is enabled
+ifeq ($(EXT), STD)
+  CPPDEFS += -DEXTSTD
+endif
+
 # If ARDUPILOT-Support is enabled
 ifeq ($(EXT), ARDUPILOT)
   CPPDEFS += -DARDUPILOT

@@ -40,7 +40,7 @@ const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 const pm_uchar * splash_lbm = splashdata+4;
 #endif
 
-#if defined(PCBV4) || defined(PCBARM)
+#if defined(PCBV4) || defined(PCBARM) || defined(EXTSTD)
 const pm_uchar asterisk_lbm[] PROGMEM = {
 #include "asterisk.lbm"
 };
@@ -961,7 +961,7 @@ void message(const pm_char *title, const pm_char *t, const char *last)
 {
   lcd_clear();
 
-#if defined(PCBV4) || defined(PCBARM)
+#if defined(PCBV4) || defined(PCBARM) || defined(EXTSTD)
   lcd_img(2, 0, asterisk_lbm, 0, 0);
 #else
   lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
