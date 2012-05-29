@@ -157,8 +157,8 @@ void writeLogs()
         {
           if (g_oLogFile.fsize == 0) {
             // if data type == Hub TODO
-            f_puts("Buffer,RX,TX,A1,A2,Date,Time,Long,Lat,Course,Speed,Alt,BarAlt,"
-                "Temp1,Temp2,RPM,Fuel,Volts,AccelX,AccelY,AccelZ,THR,RUD,ELE,IDL0,IDL1,IDL2,AIL,GEA,TRN\n",
+            f_puts("Date,Time,Buffer,RX,TX,A1,A2,GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,"
+                "Temp1,Temp2,RPM,Fuel,Volts,AccelX,AccelY,AccelZ,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n",
                 &g_oLogFile);
           }
           
@@ -171,6 +171,13 @@ void writeLogs()
 
     if (g_logState>0)
     {
+      static struct gtm t;
+      struct gtm *at = &t;
+      filltm(&g_unixTime, &t);
+
+      f_printf(&g_oLogFile, "%4d-%02d-%02d,", at->tm_year+1900, at->tm_mon+1, at->tm_mday);
+      f_printf(&g_oLogFile, "%02d:%02d:%02d,", at->tm_hour, at->tm_min, at->tm_sec);
+
 // For now, append 'anything' as a test
       // if data type == Hub
 #ifdef FRSKY
@@ -210,7 +217,7 @@ void writeLogs()
       f_printf(&g_oLogFile, "%d,", keyState(SW_Gear));
       f_printf(&g_oLogFile, "%d\n", keyState(SW_Trainer));
 
-      // Don't close the log file here. We have 'soft off' available on the v4.1 board. Once
+      // TODO Don't close the log file here. We have 'soft off' available on the v4.1 board. Once
       // that is implemented, it can take care of closing the file, should the radio be
       // powered off before the FUNC SWITCH is turned off.
     }
