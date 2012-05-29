@@ -138,6 +138,7 @@ bool listSDcardModels()
 #endif
 
   s_menu_count = 0;
+  s_menu_more = false;
   s_menu_flags = BSS;
   uint8_t offset = 0;
 
@@ -453,6 +454,7 @@ void menuProcModelSelect(uint8_t event)
   if (s_menu_count) {
     const char * result = displayMenu(event);
     if (result) {
+      refresh = true;
       if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
         displayPopup(STR_LOADINGMODEL);
         eeCheck(true); // force writing of current model data before this is changed
@@ -469,6 +471,7 @@ void menuProcModelSelect(uint8_t event)
       else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
         if (!listSDcardModels()) {
           s_sdcard_error = PSTR("No Models on SD");
+          s_menu_flags = 0;
         }
       }
       else if (result == STR_DELETE_MODEL) {
@@ -479,7 +482,6 @@ void menuProcModelSelect(uint8_t event)
         s_sdcard_error = eeRestoreModel(sub, (char *)result);
         if (!s_sdcard_error && g_eeGeneral.currModel == sub)
           eeLoadModel(sub);
-        refresh = true;
       }
     }
   }
