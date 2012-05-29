@@ -157,9 +157,10 @@ void writeLogs()
         {
           if (g_oLogFile.fsize == 0) {
             // if data type == Hub TODO
-            f_puts("Date,Time,Buffer,RX,TX,A1,A2,GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,"
-                "Temp1,Temp2,RPM,Fuel,Volts,AccelX,AccelY,AccelZ,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n",
-                &g_oLogFile);
+            f_puts("Date,Time,Buffer,RX,TX,A1,A2,", &g_oLogFile);
+            if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB)
+              f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,Temp1,Temp2,RPM,Fuel,Volts,AccelX,AccelY,AccelZ,", &g_oLogFile);
+            f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n", &g_oLogFile);
           }
           
           f_lseek(&g_oLogFile, g_oLogFile.fsize); // append
@@ -178,8 +179,6 @@ void writeLogs()
       f_printf(&g_oLogFile, "%4d-%02d-%02d,", at->tm_year+1900, at->tm_mon+1, at->tm_mday);
       f_printf(&g_oLogFile, "%02d:%02d:%02d,", at->tm_hour, at->tm_min, at->tm_sec);
 
-// For now, append 'anything' as a test
-      // if data type == Hub
 #ifdef FRSKY
       f_printf(&g_oLogFile, "%d,", frskyStreaming);
       f_printf(&g_oLogFile, "%d,", frskyRSSI[0].value);
@@ -188,25 +187,29 @@ void writeLogs()
       f_printf(&g_oLogFile, "%d,", frskyTelemetry[1].value);
 #endif
 #ifdef FRSKY_HUB
-      f_printf(&g_oLogFile, "%4d-%02d-%02d,", frskyHubData.year+2000, frskyHubData.month, frskyHubData.day);
-      f_printf(&g_oLogFile, "%02d:%02d:%02d,", frskyHubData.hour, frskyHubData.min, frskyHubData.sec);
-      f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLongitude_bp, frskyHubData.gpsLongitude_ap,
-          frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
-      f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLatitude_bp, frskyHubData.gpsLatitude_ap, 
-          frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
-      f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsCourse_bp, frskyHubData.gpsCourse_ap);
-      f_printf(&g_oLogFile, "%d.%d,", frskyHubData.gpsSpeed_bp, frskyHubData.gpsSpeed_ap);
-      f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsAltitude_bp, frskyHubData.gpsAltitude_ap);
-      f_printf(&g_oLogFile, "%d.%d,", frskyHubData.baroAltitude_bp, frskyHubData.baroAltitude_ap);
-      f_printf(&g_oLogFile, "%d,", frskyHubData.temperature1);
-      f_printf(&g_oLogFile, "%d,", frskyHubData.temperature2);
-      f_printf(&g_oLogFile, "%d,", frskyHubData.rpm);
-      f_printf(&g_oLogFile, "%d,", frskyHubData.fuelLevel);
-      f_printf(&g_oLogFile, "%d,", frskyHubData.volts);
-      f_printf(&g_oLogFile, "%d,", frskyHubData.accelX);
-      f_printf(&g_oLogFile, "%d,", frskyHubData.accelY);
-      f_printf(&g_oLogFile, "%d,", frskyHubData.accelZ);
+      if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB) {
+        f_printf(&g_oLogFile, "%4d-%02d-%02d,", frskyHubData.year+2000, frskyHubData.month, frskyHubData.day);
+        f_printf(&g_oLogFile, "%02d:%02d:%02d,", frskyHubData.hour, frskyHubData.min, frskyHubData.sec);
+        f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLongitude_bp, frskyHubData.gpsLongitude_ap,
+            frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
+        f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLatitude_bp, frskyHubData.gpsLatitude_ap,
+            frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
+        f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsCourse_bp, frskyHubData.gpsCourse_ap);
+        f_printf(&g_oLogFile, "%d.%d,", frskyHubData.gpsSpeed_bp, frskyHubData.gpsSpeed_ap);
+        f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsAltitude_bp, frskyHubData.gpsAltitude_ap);
+        f_printf(&g_oLogFile, "%d.%d,", frskyHubData.baroAltitude_bp, frskyHubData.baroAltitude_ap);
+        f_printf(&g_oLogFile, "%d,", frskyHubData.temperature1);
+        f_printf(&g_oLogFile, "%d,", frskyHubData.temperature2);
+        f_printf(&g_oLogFile, "%d,", frskyHubData.rpm);
+        f_printf(&g_oLogFile, "%d,", frskyHubData.fuelLevel);
+        f_printf(&g_oLogFile, "%d,", frskyHubData.volts);
+        f_printf(&g_oLogFile, "%d,", frskyHubData.accelX);
+        f_printf(&g_oLogFile, "%d,", frskyHubData.accelY);
+        f_printf(&g_oLogFile, "%d,", frskyHubData.accelZ);
+      }
 #endif
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++)
+        f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
       f_printf(&g_oLogFile, "%d,", keyState(SW_ThrCt));
       f_printf(&g_oLogFile, "%d,", keyState(SW_RuddDR));
       f_printf(&g_oLogFile, "%d,", keyState(SW_ElevDR));
