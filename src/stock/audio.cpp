@@ -166,8 +166,10 @@ void audioQueue::event(uint8_t e, uint8_t f)
   haptic.event(e); //do this before audio to help sync timings
 #endif
 
-  if (g_eeGeneral.flashBeep && (e <= AU_ERROR || e >= AU_WARNING1))
-    g_LightOffCounter = FLASH_DURATION;
+  if (g_eeGeneral.flashBeep && (e <= AU_ERROR || e >= AU_WARNING1)) {
+    if (g_LightOffCounter < FLASH_DURATION)
+      g_LightOffCounter = FLASH_DURATION;
+  }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
     if (e < AU_FRSKY_FIRST || empty()) {
