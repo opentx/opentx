@@ -145,6 +145,7 @@ bool listSDcardModels()
   FRESULT res = f_opendir(&dir, MODELS_PATH);        /* Open the directory */
   if (res == FR_OK) {
     for (;;) {
+      wdt_reset();
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       if (fno.fname[0] == '.') continue;             /* Ignore dot entry */

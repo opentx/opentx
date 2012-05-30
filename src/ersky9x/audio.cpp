@@ -181,7 +181,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
 
   if (g_eeGeneral.flashBeep && (e <= AU_ERROR || e >= AU_WARNING1)) {
     if (g_LightOffCounter < FLASH_DURATION)
-          g_LightOffCounter = FLASH_DURATION;
+      g_LightOffCounter = FLASH_DURATION;
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {

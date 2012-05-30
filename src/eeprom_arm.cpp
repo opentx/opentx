@@ -506,10 +506,6 @@ void eeLoadModel(uint8_t id)
 
     resetProto();
     resetAll();
-
-#if 0
-    initLogs();
-#endif
   }
 }
 

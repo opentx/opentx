@@ -2370,8 +2370,6 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
 #endif
 }
 
-extern uint16_t g_timeMain;
-
 /*
 // gruvin: Fuse declarations work if we use the .elf file for AVR Studio (v4)
 // instead of the Intel .hex files.  They should also work with AVRDUDE v5.10
@@ -2765,6 +2763,9 @@ int main(void)
   g_eeGeneral.unexpectedShutdown=0;
   eeDirty(EE_GENERAL);
   eeCheck(true);
+#if defined(SDCARD)
+  closeLogs();
+#endif
   lcd_clear() ;
   refreshDisplay() ;
   soft_power_off();            // Only turn power off if necessary

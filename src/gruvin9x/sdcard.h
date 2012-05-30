@@ -42,15 +42,16 @@
 #include "gtime.h"
 
 #define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
+#define LOGS_EXT     ".CSV"
 #define MODELS_PATH  "/9XMODELS"
-#define MODELS_EXT   ".bin"
+#define MODELS_EXT   ".BIN"
 
 extern char g_logFilename[21]; // "/9XLOGS/M00_000.CSV\0" max required length = 21
-extern int8_t g_logState; // 0=closed, >0 = opened, <0 is error
 extern FATFS g_FATFS_Obj;
 extern FIL g_oLogFile;
 
-extern void initLogs();
+extern const pm_char * openLogs();
+extern void closeLogs();
 extern void writeLogs();
 
 inline const pm_char *SDCARD_ERROR(FRESULT result)
