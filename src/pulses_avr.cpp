@@ -717,7 +717,7 @@ void setupPulses()
 #if defined(PCBV4)
         TIMSK1 &= ~0x3C;       // All interrupts off
         TIFR1 = 0x2F;
-        TIMSK1 |= 0x28;        // Enable CAPT and COMPB
+        TIMSK1 |= 0x28;        // Enable CAPT and COMPC
 #else
         TIMSK &= ~0x3C;        // All interrupts off
         TIFR = 0x3C;
@@ -760,7 +760,7 @@ void setupPulses()
         TCNT1 = 0 ;
 #if defined(PCBV4)
         TIMSK1 &= ~0x3C; // All interrupts off
-        TIMSK3 &= ~(1<<OCIE1C) ;            // COMPC1 off
+        TIMSK1 &= ~(1<<OCIE1C) ;            // COMPC1 off
         TIFR1 = 0x2F;
         TIMSK1 |= 0x10; // Enable COMPA
 #else
@@ -783,7 +783,7 @@ void setupPulses()
         TCNT1 = 0 ;
 #if defined(PCBV4)
         TIMSK1 &= ~0x3C; // All interrupts off
-        TIMSK3 &= ~(1<<OCIE1C) ;            // COMPC1 off
+        TIMSK1 &= ~(1<<OCIE1C) ;            // COMPC1 off
         TIFR1 = 0x2F;
 #else
         TIMSK &= ~0x3C ;    // All interrupts off
