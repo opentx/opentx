@@ -295,7 +295,8 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       }
     }
 
-#if defined(PCBV4)
+#if defined(PCBARM)
+#elif defined(PCBV4)
     pinl = pin;
 #else
     pinb = pin;
