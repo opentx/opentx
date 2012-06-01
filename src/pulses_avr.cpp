@@ -200,9 +200,6 @@ FORCEINLINE void setupPulsesPPM()
     //each pulse is 0.7..1.7ms long with a 0.3ms stop tail
     //The pulse ISR is 2mhz that's why everything is multiplied by 2
 
-    // G: Found the following reference at th9x. The below code does not seem
-    // to produce quite exactly this, to my eye. *shrug*
-    //   http://www.aerodesign.de/peter/2000/PCM/frame_ppm.gif
     uint16_t *ptr = (uint16_t *)pulses2MHz;
     uint8_t p = 8+(g_model.ppmNCH*2); // channels count
     uint16_t q = (g_model.ppmDelay*50+300)*2; //Stoplen *2
