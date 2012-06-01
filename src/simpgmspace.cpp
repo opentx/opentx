@@ -158,6 +158,9 @@ void *main_thread(void *)
 
   try {
 #endif
+
+    s_current_protocol = 255;
+
     g_menuStackPtr = 0;
     g_menuStack[0] = menuMainView;
     g_menuStack[1] = menuProcModelSelect;

@@ -60,7 +60,9 @@ void setupPulsesPPM16( uint8_t proto  ) ;
 
 void startPulses()
 {
-#ifndef SIMU
+#ifdef SIMU
+  s_current_protocol = g_model.protocol;
+#else
   setupPulses();
 
 #ifdef DSM2_SERIAL
