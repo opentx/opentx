@@ -397,3 +397,4 @@
 #define TR_THROTTLEWARN  "PLYNU"
 #define TR_ALARMSWARN    "ALARMU"
 #define TR_SWITCHWARN    "POZICE"
+#define TR_INVERT_THR    "Invert Thr?"

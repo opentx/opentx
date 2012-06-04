@@ -275,6 +275,8 @@ const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
 const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
 #endif
 
+const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
+
 #if defined(ROTARY_ENCODERS)
 const pm_char STR_BACK[] PROGMEM = TR_BACK;
 const pm_char STR_MIXERWEIGHT[] PROGMEM = TR_MIXERWEIGHT;

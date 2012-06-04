@@ -396,3 +396,4 @@
 #define TR_THROTTLEWARN  "GAZ"
 #define TR_ALARMSWARN    "ALARMES"
 #define TR_SWITCHWARN    "INTERS"
+#define TR_INVERT_THR    "Inverser Gaz?"

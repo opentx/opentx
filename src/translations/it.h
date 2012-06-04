@@ -397,3 +397,4 @@
 #define TR_THROTTLEWARN  "MOTORE"
 #define TR_ALARMSWARN    "ALLARMI"
 #define TR_SWITCHWARN    "SWITCH"
+#define TR_INVERT_THR    "Invert Thr?"

@@ -392,3 +392,4 @@
 #define TR_THROTTLEWARN  "GAS"
 #define TR_ALARMSWARN    "ALARM"
 #define TR_SWITCHWARN    "SCHALTER"
+#define TR_INVERT_THR    "Invert Thr?"

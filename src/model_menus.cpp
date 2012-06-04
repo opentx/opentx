@@ -1864,13 +1864,25 @@ void menuProcMixAll(uint8_t event)
   return menuProcExpoMix(0, event);
 }
 
-void menuProcLimits(uint8_t event)
+bool thrOutput(uint8_t ch)
+{
+  for (uint8_t i=0; i<MAX_MIXERS; i++) {
+    MixData *mix = mixaddress(i);
+    if (mix->destCh==ch && mix->srcRaw==MIXSRC_Thr)
+      return true;
+  }
+  return false;
+}
+
+void menuProcLimits(uint8_t _event)
 {
 #ifdef PPM_CENTER_ADJUSTABLE
 #define LIMITS_ITEMS_COUNT 4
 #else
 #define LIMITS_ITEMS_COUNT 3
 #endif
+
+  uint8_t event = (s_warning ? 0 : _event);
 
   MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, LIMITS_ITEMS_COUNT, 0});
 
@@ -1882,6 +1894,13 @@ void menuProcLimits(uint8_t event)
     lcd_puts(12*FW, 0, STR_US);
   }
 #endif
+
+  if (s_confirmation) {
+    LimitData *ld = limitaddress(sub);
+    ld->revert = !ld->revert;
+    s_confirmation = 0;
+    AUDIO_WARNING2();
+  }
 
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = (i+1)*FH;
@@ -1970,7 +1989,14 @@ void menuProcLimits(uint8_t event)
           lcd_putsiAtt(18*FW, y, STR_MMMINV, ld->revert, attr);
 #endif
           if (active) {
-            CHECK_INCDEC_MODELVAR(event, ld->revert, 0, 1);
+            bool revert_new = checkIncDecModel(event, ld->revert, 0, 1);
+            if (checkIncDec_Ret && thrOutput(k)) {
+              s_warning = STR_INVERT_THR;
+              killEvents(event);
+              _event = 0;
+            }
+            else
+              ld->revert = revert_new;
           }
           break;
 #ifdef PPM_CENTER_ADJUSTABLE
@@ -1983,6 +2009,10 @@ void menuProcLimits(uint8_t event)
 #endif
       }
     }
+  }
+
+  if (s_warning) {
+    displayConfirmation(_event);
   }
 }
 

@@ -345,6 +345,7 @@ extern const pm_char STR_MENUSTAT[];
 extern const pm_char STR_MENUDEBUG[];
 extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
+extern const pm_char STR_INVERT_THR[];
 
 #if defined(ROTARY_ENCODERS)
 extern const pm_char STR_BACK[];
