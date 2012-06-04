@@ -12,7 +12,7 @@
 #define TR_VBEEPMODE     "Tich\212""Alarm""BezKL""V\207e  "
 
 #define LEN_VBEEPLEN     "\005"
-#define TR_VBEEPLEN      "0====""=0===""==0==""===0=""====0"
+#define TR_VBEEPLEN      "O====""=O===""==O==""===O=""====O"
 
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "Ne REaREb"
@@ -113,9 +113,9 @@
 #define TR_SDCLOGS       "[SDCARD Logs]"
 #endif
 #if defined(SOMO)
-#define TR_SOMO          "Play Track\0  "
+#define TR_SOMO          "P\206ehr\200t stopu"
 #else
-#define TR_SOMO          "[Play Track]\0"
+#define TR_SOMO          "[Hr\200t stopu]\0"
 #endif
 #else
 #define TR_SDCLOGS
@@ -338,7 +338,7 @@
 #define TR_CH           "CH"
 #define TR_MODEL        "MODEL"
 #define TR_FP           "FP"
-#define TR_EEPROMLOWMEM "EEPROM low mem"
+#define TR_EEPROMLOWMEM "Doch\200z\204 EEPROM"
 #define TR_ALERT        "\003(!)POZOR"
 #define TR_PRESSANYKEYTOSKIP "Kl\200vesa >>> p\206esko\201it"
 #define TR_THROTTLENOTIDLE "P\200ka plynu je pohnut\200."
@@ -381,20 +381,20 @@
 #define TR_LONGITUDE     "Longitude"
 #define TR_GPSCOORD      "Gps Sou\206adnice"
 #define TR_VARIO         "Vario"
-#define TR_SHUTDOWN      "SHUTTING DOWN"
+#define TR_SHUTDOWN      "Vyp\204n\200n\204.."
 #define TR_BATT_CALIB    "Kalibrace Bat"
-#define TR_CURRENT_CALIB "Current Calib"
-#define TR_CURRENT       "Current"
-#define TR_SELECT_MODEL  "Select Model"
-#define TR_CREATE_MODEL  "Create Model"
-#define TR_BACKUP_MODEL  "Backup Model"
-#define TR_DELETE_MODEL  "Delete Model" // TODO merged into DELETEMODEL?
-#define TR_RESTORE_MODEL "Restore Model"
-#define TR_SDCARD_ERROR  "SDCARD Error"
-#define TR_NO_SDCARD     "No SDCARD"
+#define TR_CURRENT_CALIB "Kalib. Proudu"
+#define TR_CURRENT       "Proud"
+#define TR_SELECT_MODEL  "Vyber Model"
+#define TR_CREATE_MODEL  "Vytvo\206 Model"
+#define TR_BACKUP_MODEL  "Z\200lohuj Model"
+#define TR_DELETE_MODEL  "Sma\217 Model" // TODO merged into DELETEMODEL?
+#define TR_RESTORE_MODEL "Obnov Model"
+#define TR_SDCARD_ERROR  "Chyba SDkarty"
+#define TR_NO_SDCARD     "Nen\204 SDkarta"
 #define TR_WARNING       "KONTROLA"
 #define TR_EEPROMWARN    "EEPROM"
 #define TR_THROTTLEWARN  "PLYNU"
 #define TR_ALARMSWARN    "ALARMU"
 #define TR_SWITCHWARN    "POZICE"
-#define TR_INVERT_THR    "Invert Thr?"
+#define TR_INVERT_THR    "Invertovat Plyn?"
