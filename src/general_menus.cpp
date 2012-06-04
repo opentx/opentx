@@ -392,10 +392,16 @@ void menuProcSetup(uint8_t event)
         lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,(sub==k+1) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
         for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
 
-        if (sub==k+1 && s_editMode>0)
+        if (sub==k+1 && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
-        else
+        }
+        else if (stickMode != g_eeGeneral.stickMode) {
+          pausePulses();
           stickMode = g_eeGeneral.stickMode;
+          checkTHR();
+          resumePulses();
+          clearKeyEvents();
+        }
         break;
     }
   }
