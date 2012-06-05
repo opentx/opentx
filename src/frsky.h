@@ -136,8 +136,8 @@ PACK(struct FrskyHubData {
   // end of FrSky Hub data
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
-  uint8_t  minCellMinVolts;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
+  uint8_t  minCellIdx;
 });
 
 #elif defined(WS_HOW_HIGH)

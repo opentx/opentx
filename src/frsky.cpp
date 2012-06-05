@@ -325,8 +325,10 @@ void parseTelemHubByte(uint8_t byte)
         }
         uint8_t cellVolts = (uint8_t)(((((frskyHubData.volts & 0xFF00) >> 8) + ((frskyHubData.volts & 0x000F) << 8)))/10);
         frskyHubData.cellVolts[battnumber] = cellVolts;
-        if (!frskyHubData.minCellVolts || cellVolts < frskyHubData.minCellVolts)
+        if (!frskyHubData.minCellVolts || cellVolts < frskyHubData.minCellVolts || battnumber==frskyHubData.minCellIdx) {
+          frskyHubData.minCellIdx = battnumber;
           frskyHubData.minCellVolts = cellVolts;
+        }
       }
       break;
     }
