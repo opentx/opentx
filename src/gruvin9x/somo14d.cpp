@@ -78,8 +78,9 @@ NOINLINE uint8_t SomoWakeup()
   // This will happen before the SOMO14D busy flag gets set
   // Busy flag happens 20ms after the last data is clocked in
   if (i==0 && !busy) {
-    if(somo14command) { // Allow a command to be send even if the SOMO is busy, i.e. STOP or PAUSE
+    if (somo14command) { // Allow a command to be send even if the SOMO is busy, i.e. STOP or PAUSE
       somo14_current = somo14command;
+      somo14command = 0;
       busy = 1;
     }
     else if (!SOMOBUSY) {
@@ -90,7 +91,6 @@ NOINLINE uint8_t SomoWakeup()
       somo14RIdx = (somo14RIdx + 1) % QUEUE_LENGTH;
       busy = 1;
     }
-
   }
 
   // Start and stop bits
