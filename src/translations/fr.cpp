@@ -44,15 +44,12 @@ enum FrenchPrompts {
   PROMPT_CENT = PROMPT_NUMBERS_BASE+28,
   PROMPT_MILLE = PROMPT_NUMBERS_BASE+29,
 
-  PROMPT_HOUR = 40,
-  PROMPT_HOURS = 41,
-  PROMPT_MINUTE = 42,
-  PROMPT_MINUTES = 43,
-  PROMPT_SECOND = 44,
-  PROMPT_SECONDS = 45,
+  PROMPT_HEURE = 40,
+  PROMPT_MINUTE = 41,
+  PROMPT_SECONDE = 42,
 
-  PROMPT_AND = 47,
-  PROMPT_MINUS = 48,
+  PROMPT_ET = 47,
+  PROMPT_MOINS = 48,
 
   PROMPT_UNITS_BASE = 50,
   PROMPT_VOLTS = PROMPT_UNITS_BASE+UNIT_VOLTS,
@@ -111,7 +108,7 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
 void playDuration(int16_t seconds)
 {
   if (seconds < 0) {
-    pushPrompt(PROMPT_MINUS);
+    pushPrompt(PROMPT_MOINS);
     seconds = -seconds;
   }
 
@@ -119,21 +116,21 @@ void playDuration(int16_t seconds)
   seconds %= 3600;
   if (tmp > 0) {
     playNumber(tmp);
-    pushPrompt(tmp == 1 ? PROMPT_HOUR : PROMPT_HOURS);
+    pushPrompt(PROMPT_HEURE);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
     playNumber(tmp);
-    pushPrompt(tmp == 1 ? PROMPT_MINUTE : PROMPT_MINUTES);
+    pushPrompt(PROMPT_MINUTE);
     if (seconds > 0)
-      pushPrompt(PROMPT_AND);
+      pushPrompt(PROMPT_ET);
   }
 
   if (seconds > 0) {
     playNumber(seconds);
-    pushPrompt(tmp == 1 ? PROMPT_SECOND : PROMPT_SECONDS);
+    pushPrompt(PROMPT_SECONDE);
   }
 }
 
