@@ -159,7 +159,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
     pulses2MHzRPtr += sizeof(uint16_t);
     if (*((uint16_t*)pulses2MHzRPtr) == 0) {
 
-      pulsePol = !g_model.pulsePol;
+      pulsePol = g_model.pulsePol;
 
 #if defined(PCBV4)
       TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
@@ -212,25 +212,20 @@ void setupPulsesPPM(uint8_t proto)
       int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CENTER;
 #endif
       rest -= v;
-      if (proto == PROTO_PPM) {
-        *ptr++ = v - q; /* as Pat MacKenzie suggests, reviewed and modified by Cam */
-        *ptr++ = q;
-      }
-      else {
-        *ptr++ = q;
-        *ptr++ = v - q; /* as Pat MacKenzie suggests, reviewed and modified by Cam */
-      }
+      *ptr++ = q;
+      *ptr++ = v - q; /* as Pat MacKenzie suggests, reviewed and modified by Cam */
     }
+
+    *ptr = q;       //reverse these two assignments
+    *(ptr+1) = rest;
+
     if (proto == PROTO_PPM) {
-      *ptr = rest;
-      *(ptr+1) = q;
       pulses2MHzRPtr = pulses2MHz;
     }
     else {
-      *ptr = q;       //reverse these two assignments
-      *(ptr+1) = rest;
       B3_comp_value = rest - 1000 ;               // 500uS before end of sync pulse
     }
+
     *(ptr+2) = 0;
 }
 
