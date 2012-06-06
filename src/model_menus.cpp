@@ -2215,7 +2215,7 @@ void menuProcFunctionSwitches(uint8_t event)
             }
             else if (sd->func == FUNC_PLAY_VALUE) {
               val_max = NUM_XCHNPLAY;
-              putsChnRaw(17*FW, y, val_displayed, attr);
+              putsChnRaw(17*FW, y, val_displayed+1, attr);
             }
 #endif
             else if (sd->func == FUNC_RESET) {

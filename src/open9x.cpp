@@ -1523,7 +1523,7 @@ void playValue(uint8_t idx)
     default:
     {
       uint8_t unit;
-      if (idx <= NUM_XCHNRAW+TELEM_GPSALT-1)
+      if (idx >= NUM_XCHNRAW && idx <= NUM_XCHNRAW+TELEM_GPSALT-1)
         unit = idx - NUM_XCHNRAW - 6;
       else if (idx >= NUM_XCHNRAW+TELEM_MAX_T1-1 && idx <= NUM_XCHNRAW+TELEM_MAX_DIST-1)
         unit = idx - NUM_XCHNRAW - 22;
