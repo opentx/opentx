@@ -59,102 +59,118 @@ volatile uint8_t somo14WIdx = 0;
 
 #ifdef SIMU
 #define BUSY busy
-bool TIMER4_COMPA_vect()
 #else
 #define BUSY
-ISR(TIMER4_COMPA_vect) //Every 0.5ms
 #endif
+
+NOINLINE uint8_t SomoWakeup()
 {
   static uint16_t somo14_current;
-  static uint8_t i=0;
-  static uint8_t busy=0; // debugging make BOOL when done
-  static uint8_t startstop=SOMOSSBIT; // Only the first playback can have this short delay
-
-  OCR4A = 0x7d; //another 0.5ms 
+  static uint8_t i = 0;
+  static uint8_t busy = 0; // debugging make BOOL when done
+  static uint8_t startstop = SOMOSSBIT; // Only the first playback can have this short delay
 
   // printf("startstop=%d i=%d\n", startstop, i); fflush(stdout);
 
-  // Send no data unless we are either not busy or it's a command
+// Send no data unless we are either not busy or it's a command
 
-    // Only when stop bit is sent do we increment read pointer
-    // This will happen before the SOMO14D busy flag gets set
-    // Busy flag happens 20ms after the last data is clocked in
-    if (i==0 && !busy) {
-      if(somo14command) { // Allow a command to be send even if the SOMO is busy, i.e. STOP or PAUSE
-        somo14_current=somo14command;
-		busy=1;
+  // Only when stop bit is sent do we increment read pointer
+  // This will happen before the SOMO14D busy flag gets set
+  // Busy flag happens 20ms after the last data is clocked in
+  if (i==0 && !busy) {
+    if(somo14command) { // Allow a command to be send even if the SOMO is busy, i.e. STOP or PAUSE
+      somo14_current = somo14command;
+      busy = 1;
+    }
+    else if (!SOMOBUSY) {
+      if (somo14RIdx == somo14WIdx) {
+        return 1;
       }
-      else if (!SOMOBUSY) {
-        if (somo14RIdx == somo14WIdx) {
-          TIMSK4 &= ~(1<<OCIE4A);
-          return BUSY;
-        }
-        somo14_current = somo14playlist[somo14RIdx];
-        somo14RIdx = (somo14RIdx + 1) % QUEUE_LENGTH;
-		busy = 1;
-      }
-      
+      somo14_current = somo14playlist[somo14RIdx];
+      somo14RIdx = (somo14RIdx + 1) % QUEUE_LENGTH;
+      busy = 1;
     }
 
-    // Start and stop bits
-    if (busy && startstop) {
-      // Start bit
-      if (i==0) {
-        if (startstop < SOMOSSBIT) { // This stretches the time before we start sending data to allow for the
-          // undocumented delay that must exist between playbacks. Unfortunately the
-          // device isn't ready even though the busy flag says it is.
-          PORTH &= ~(1<<OUT_H_14DCLK); // Start Bit, CLK low for 2ms
-        }
-        startstop--;
-        return BUSY;
+  }
+
+  // Start and stop bits
+  if (busy && startstop) {
+    // Start bit
+    if (i==0) {
+      if (startstop < SOMOSSBIT) { // This stretches the time before we start sending data to allow for the
+        // undocumented delay that must exist between playbacks. Unfortunately the
+        // device isn't ready even though the busy flag says it is.
+        PORTH &= ~(1<<OUT_H_14DCLK); // Start Bit, CLK low for 2ms
       }
-      // Stop bit
-      if (i==16) {
-        PORTH &= ~(1<<OUT_H_14DDATA); // Data low
-        PORTH |= (1<<OUT_H_14DCLK); // Stop Bit, CLK high for 2ms
-        startstop--;
-        return BUSY;
+      startstop--;
+      return 0;
+    }
+    // Stop bit
+    if (i==16) {
+      PORTH &= ~(1<<OUT_H_14DDATA); // Data low
+      PORTH |= (1<<OUT_H_14DCLK); // Stop Bit, CLK high for 2ms
+      startstop--;
+      return 0;
+    }
+  }
+
+  // After stop bit is sent
+  // we are done sending so prepair for next
+  if (i==16 && !startstop) {
+    // Cam, here I think there is a bug (if we send a "command") somo14RPtr++;
+    i=0;
+    busy=0;
+    startstop = SOMOSTART;
+    return 0;
+  }
+
+  // Send the data
+  if (i<16 && busy) {
+    if (!SOMOCLK) { // Only change data when the CLK is low
+      startstop =SOMOSTOP;
+      if (somo14_current & 0x8000) {
+        PORTH |= (1<<OUT_H_14DDATA); // Data high
       }
+      somo14_current = (somo14_current<<1);
+      i++;
+      // Strictly speaking there should be a data setup delay in here of 1us
+      // Be we don't like no stinking delays !
+      PORTH |= (1<<OUT_H_14DCLK); // CLK high
     }
 
-    // After stop bit is sent
-    // we are done sending so prepair for next
-    if (i==16 && !startstop) {
-      // Cam, here I think there is a bug (if we send a "command") somo14RPtr++;
-      i=0;
-      busy=0;
-      startstop=SOMOSTART;
-      return BUSY;
+    else { // Don't alter after sending last bit in preparation for sending stop bit
+      PORTH &= ~(1<<OUT_H_14DCLK); // CLK low
+      PORTH &= ~(1<<OUT_H_14DDATA); // Data low
     }
+  }
 
-    // Send the data
-    if (i<16 && busy) {
-      if (!SOMOCLK) { // Only change data when the CLK is low
-        startstop =SOMOSTOP;
-        if (somo14_current & 0x8000) {
-          PORTH |= (1<<OUT_H_14DDATA); // Data high
-        }
-        somo14_current = (somo14_current<<1);
-        i++;
-        // Strictly speaking there should be a data setup delay in here of 1us
-        // Be we don't like no stinking delays !
-        PORTH |= (1<<OUT_H_14DCLK); // CLK high
-      }
-
-      else { // Don't alter after sending last bit in preparation for sending stop bit
-        PORTH &= ~(1<<OUT_H_14DCLK); // CLK low
-        PORTH &= ~(1<<OUT_H_14DDATA); // Data low
-      }
-    }
-    
-    return BUSY;
+  return 0;
 }
+
+#ifndef SIMU
+ISR(TIMER4_COMPA_vect) //Every 0.5ms
+{
+  OCR4A = 0x7d; // another 0.5ms
+
+  TIMSK4 &= ~(1<<OCIE4A); // stop reentrance
+
+  sei();
+
+  uint8_t finished = SomoWakeup();
+
+  cli();
+
+  if (!finished) TIMSK4 |= (1<<OCIE4A);
+}
+#endif
 
 void pushPrompt(uint16_t prompt)
 {
   somo14playlist[somo14WIdx] = prompt;
   somo14WIdx = (somo14WIdx + 1) % QUEUE_LENGTH;
+  cli();
   TIMSK4 |= (1<<OCIE4A);
+  sei();
 }
 
 bool isPlaying()
