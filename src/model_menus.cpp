@@ -2210,8 +2210,12 @@ void menuProcFunctionSwitches(uint8_t event)
             }
 #endif
 #if defined(SOMO)
-            else if (sd->func == FUNC_PLAY_SOMO) {
+            else if (sd->func == FUNC_PLAY_TRACK) {
               lcd_outdezAtt(21*FW, y, val_displayed, attr);
+            }
+            else if (sd->func == FUNC_PLAY_VALUE) {
+              val_max = NUM_XCHNPLAY;
+              putsChnRaw(17*FW, y, val_displayed, attr);
             }
 #endif
             else if (sd->func == FUNC_RESET) {

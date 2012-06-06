@@ -913,7 +913,6 @@ uint32_t unprotect_eeprom()
 
 #if defined(SDCARD)
 FATFS g_FATFS_Obj; // TODO not here
-#define FILENAME_MAXLEN 8
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.models.mainname;

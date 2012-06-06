@@ -1457,6 +1457,85 @@ void testFunc()
 uint16_t active_functions = 0;
 MASK_FSW_TYPE active_switches = 0;
 
+#if defined(SOMO)
+void playValue(uint8_t idx)
+{
+  int16_t val = getValue(idx);
+  switch (idx) {
+    case NUM_XCHNRAW+TELEM_TM1-1:
+    case NUM_XCHNRAW+TELEM_TM2-1:
+      playDuration(val);
+      break;
+    case NUM_XCHNRAW+TELEM_MIN_A1-1:
+    case NUM_XCHNRAW+TELEM_MIN_A2-1:
+      idx -= TELEM_MIN_A1-1-MAX_TIMERS;
+      // no break
+    case NUM_XCHNRAW+TELEM_A1-1:
+    case NUM_XCHNRAW+TELEM_A2-1:
+      idx -= NUM_XCHNRAW+MAX_TIMERS;
+        // A1 and A2
+      {
+        uint8_t att = 0;
+        int16_t converted_value = applyChannelRatio(idx, val);
+        if (g_model.frsky.channels[idx].type >= UNIT_RAW) {
+          converted_value /= 10;
+        }
+        else {
+          if (converted_value < 1000) {
+            att |= PREC2;
+          }
+          else {
+            converted_value /= 10;
+            att |= PREC1;
+          }
+        }
+        playNumber(converted_value, UNIT_VOLTS, att);
+        break;
+      }
+
+    case NUM_XCHNRAW+TELEM_CELL-1:
+      playNumber(val, UNIT_VOLTS, PREC2);
+      break;
+
+    case NUM_XCHNRAW+TELEM_ACCx-1:
+    case NUM_XCHNRAW+TELEM_ACCy-1:
+    case NUM_XCHNRAW+TELEM_ACCz-1:
+    case NUM_XCHNRAW+TELEM_VSPD-1:
+      playNumber(val, UNIT_RAW, PREC2);
+      break;
+
+    case NUM_XCHNRAW+TELEM_RSSI_TX-1:
+    case NUM_XCHNRAW+TELEM_RSSI_RX-1:
+      playNumber(val);
+      break;
+
+  #if defined(IMPERIAL_UNITS)
+    case NUM_XCHNRAW+TELEM_ALT-1:
+    case NUM_XCHNRAW+TELEM_MIN_ALT-1:
+    case NUM_XCHNRAW+TELEM_MAX_ALT-1:
+      if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
+        playNumber(val, UNIT_FEET);
+        break;
+      }
+      // no break
+  #endif
+
+    default:
+    {
+      uint8_t unit;
+      if (idx <= NUM_XCHNRAW+TELEM_GPSALT-1)
+        unit = idx - NUM_XCHNRAW - 6;
+      else if (idx >= NUM_XCHNRAW+TELEM_MAX_T1-1 && idx <= NUM_XCHNRAW+TELEM_MAX_DIST-1)
+        unit = idx - NUM_XCHNRAW - 22;
+      else
+        unit = 1;
+      playNumber(val, pgm_read_byte(bchunit_ar+unit));
+      break;
+    }
+  }
+}
+#endif
+
 void evalFunctions()
 {
   assert((int)(sizeof(active_functions)*8) > (int)(FUNC_MAX-NUM_CHNOUT));
@@ -1531,8 +1610,18 @@ void evalFunctions()
 #endif
 
 #if defined(SOMO)
-          if (sd->func == FUNC_PLAY_SOMO) {
-            somoPushPrompt(sd->param);
+          if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {
+            if (!isPlaying()) {
+              static uint16_t s_last_play = 0;
+              uint16_t tmr10ms = get_tmr10ms();
+              if (tmr10ms - s_last_play >= 100) {
+                s_last_play = tmr10ms;
+                if (sd->func == FUNC_PLAY_TRACK)
+                  pushPrompt(PROMPT_CUSTOM_BASE+sd->param);
+                else
+                  playValue(sd->param);
+              }
+            }
           }
 #endif
 

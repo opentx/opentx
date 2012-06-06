@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef o9xstrings_h
-#define o9xstrings_h
+#ifndef translations_h
+#define translations_h
 
 #if defined(TRANSLATIONS_FR)
 #include "translations/fr.h"
@@ -404,5 +404,10 @@ extern const pm_char STR_EEPROMWARN[];
 extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
+
+#if defined(SOMO)
+void playNumber(int16_t number, uint8_t unit=0, uint8_t att=0);
+void playDuration(int16_t seconds);
+#endif
 
 #endif

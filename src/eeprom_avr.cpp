@@ -531,7 +531,6 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 }
 
 #if defined(SDCARD)
-#define FILENAME_MAXLEN 8
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.models.mainname;

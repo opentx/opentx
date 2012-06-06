@@ -31,4 +31,8 @@
  *
  */
 
-extern void somoPushPrompt(uint16_t prompt);
+#define PROMPT_CUSTOM_BASE 100
+
+extern void pushPrompt(uint16_t prompt);
+extern bool isPlaying();
+

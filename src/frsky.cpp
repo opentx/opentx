@@ -915,7 +915,7 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
   return result;
 }
 
-static const pm_uint8_t bchunit_ar[] PROGMEM = {
+const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_METERS,  // Alt
   UNIT_RAW,     // Rpm
   UNIT_PERCENT, // Fuel

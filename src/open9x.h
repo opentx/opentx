@@ -416,9 +416,10 @@ extern Key keys[NUM_KEYS];
 #define NUM_TELEMETRY      TELEM_TM2
 #endif
 
-#define NUM_XCHNRAW (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1/*MAX*/+1/*ID3*/+NUM_CYC+NUM_PPM+NUM_CHNOUT)
-#define NUM_XCHNCSW (NUM_XCHNRAW+NUM_TELEMETRY)
-#define NUM_XCHNMIX (NUM_XCHNRAW+MAX_SWITCH)
+#define NUM_XCHNRAW  (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1/*MAX*/+1/*ID3*/+NUM_CYC+NUM_PPM+NUM_CHNOUT)
+#define NUM_XCHNCSW  (NUM_XCHNRAW+NUM_TELEMETRY)
+#define NUM_XCHNMIX  (NUM_XCHNRAW+MAX_SWITCH)
+#define NUM_XCHNPLAY (NUM_XCHNRAW+TELEM_DISPLAY_MAX)
 
 #define DSW_THR  1
 #define DSW_RUD  2
@@ -746,7 +747,7 @@ extern volatile uint8_t   g_blinkTmr10ms;
 extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
-#include "o9xstrings.h"
+#include "translations.h"
 
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
 extern int16_t            g_ppmIns[8];
@@ -881,6 +882,7 @@ enum AUDIO_SOUNDS {
 #endif
 
 #if defined(SDCARD)
+#define FILENAME_MAXLEN 8
 #include "gruvin9x/sdcard.h"
 #endif
 

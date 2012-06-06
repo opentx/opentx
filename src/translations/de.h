@@ -11,8 +11,8 @@
 #define LEN_VBEEPMODE                   "\005"                                                                                                        
 #define TR_VBEEPMODE                    "Stumm""Alarm""NoKey""Alle "                                                                                  
 
-#define LEN_VBEEPLEN     "\005"
-#define TR_VBEEPLEN      "0====""=0===""==0==""===0=""====0"
+#define LEN_VBEEPLEN                    "\005"
+#define TR_VBEEPLEN                     "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG                    "\003"                                                                                                        
 #define TR_VRENAVIG                     "No REaREb"                                                                                                   
@@ -108,20 +108,23 @@
 #define TR_SDCLOGS                      "[SDCARD Logs]"                                                                                                                                                                                                                                            
 #endif                                                                                                                                                                                                                                                                                             
 #if defined(SOMO)                                                                                                                                                                                                                                                                                  
-#define TR_SOMO                         "Play Track\0  "                                                                                                                                                                                                                                           
+#define TR_PLAY_TRACK                   "Play Track\0  "
+#define TR_PLAY_VALUE                   "Play Value\0  "
 #else                                                                                                                                                                                                                                                                                              
-#define TR_SOMO                         "[Play Track]\0"                                                                                                                                                                                                                                           
+#define TR_PLAY_TRACK                   "[Play Track]\0"
+#define TR_PLAY_VALUE                   "[Play Value]\0"
 #endif                                                                                                                                                                                                                                                                                             
 #else                                                                                                                                                                                                                                                                                              
 #define TR_SDCLOGS                                                                                                                                                                                                                                                                                 
-#define TR_SOMO                                                                                                                                                                                                                                                                                    
+#define TR_PLAY_TRACK
+#define TR_PLAY_VALUE
 #endif                                                                                                                                                                                                                                                                                             
 #ifdef DEBUG                                                                                                                                                                                                                                                                                       
 #define TR_TEST                         "Test\0        "                                                                                                                                                                                                                                           
 #else                                                                                                                                                                                                                                                                                              
 #define TR_TEST                                                                                                                                                                                                                                                                                    
 #endif                                                                                                                                                                                                                                                                                             
-#define TR_VFSWFUNC                     "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST                                                                                                                                   
+#define TR_VFSWFUNC                     "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_TEST
                                                                                                                                                                                                                                                                                                    
 #define LEN_VFSWRESET                   "\006"                                                                                                                                                                                                                                                     
 #define TR_VFSWRESET                    "Timer1""Timer2""Alle  ""Telem."                                                                                                                                                                                                                           

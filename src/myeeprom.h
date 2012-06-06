@@ -292,11 +292,12 @@ enum Functions {
   FUNC_INSTANT_TRIM,
   FUNC_PLAY_SOUND,
   FUNC_HAPTIC,
-#if defined(PCBV4)
-  FUNC_PLAY_SOMO,
-#endif
   FUNC_RESET,
   FUNC_VARIO,
+#if defined(SOMO)
+  FUNC_PLAY_TRACK,
+  FUNC_PLAY_VALUE,
+#endif
 #if defined(PCBV4)
   FUNC_LOGS,
 #endif

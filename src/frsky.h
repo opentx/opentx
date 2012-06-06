@@ -182,6 +182,8 @@ uint8_t maxTelemValue(uint8_t channel);
 int16_t convertTelemValue(uint8_t channel, uint8_t value);
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
 
+extern const pm_uint8_t bchunit_ar[];
+int16_t applyChannelRatio(uint8_t channel, int16_t val);
 void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att);
 
 #endif

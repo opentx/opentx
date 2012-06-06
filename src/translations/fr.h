@@ -108,20 +108,23 @@
 #define TR_SDCLOGS       "[Logs SD]    "
 #endif
 #if defined(SOMO)
-#define TR_SOMO          "Jouer fichier"
+#define TR_PLAY_TRACK    "Jouer fichier"
+#define TR_PLAY_VALUE    "Jouer valeur "
 #else
-#define TR_SOMO          "[Jouer fich.]"
+#define TR_PLAY_TRACK    "[Jouer fich.]"
+#define TR_PLAY_VALUE    "[Jouer val.] "
 #endif
 #else
 #define TR_SDCLOGS
-#define TR_SOMO
+#define TR_PLAY_TRACK
+#define TR_PLAY_VALUE
 #endif
 #ifdef DEBUG
 #define TR_TEST          "Test\0        "
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC TR_SOMO "Reset\0       " TR_VVARIO TR_SDCLOGS TR_TEST
+#define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Tout  ""T\200l\200m."

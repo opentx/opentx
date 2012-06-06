@@ -191,7 +191,7 @@ FORMAT = ihex
 TARGET = open9x
 
 # List C++ source files here. (C dependencies are automatically generated.)
-CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp o9xstrings.cpp
+CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp translations.cpp
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
