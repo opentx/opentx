@@ -356,7 +356,7 @@ const pm_uchar font_dblsize[] PROGMEM = {
 };
 
 #if defined(TRANSLATIONS_FR)
-#include "fr.cpp"
+#include "translations/fr.cpp"
 #else
-#include "en.cpp"
+#include "translations/en.cpp"
 #endif
