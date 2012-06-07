@@ -1,6 +1,6 @@
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON                       "\003"                                                                                                        
-#define TR_OFFON                        " \210 "" \211 "                                                                                                    
+#define TR_OFFON                        "AUS""AN\0"                                                                                                    
                                                                                                                                                       
 #define LEN_MMMINV                      "\003"                                                                                                        
 #define TR_MMMINV                       "---""INV"                                                                                                    
@@ -15,13 +15,13 @@
 #define TR_VBEEPLEN                     "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG                    "\003"                                                                                                        
-#define TR_VRENAVIG                     "No REaREb"                                                                                                   
+#define TR_VRENAVIG                     "AUSREaREb"                                                                                                   
                                                                                                                                                       
 #define LEN_VFILTERADC                  "\004"                                                                                                        
 #define TR_VFILTERADC                   "SING""OSMP""FILT"                                                                                            
                                                                                                                                                       
 #define LEN_TRNMODE                     "\003"                                                                                                        
-#define TR_TRNMODE                      " \210 "" +="" :="                                                                                               
+#define TR_TRNMODE                      "AUS"" +="" :="                                                                                               
                                                                                                                                                       
 #define LEN_TRNCHN                      "\003"                                                                                                        
 #define TR_TRNCHN                       "CH1CH2CH3CH4"                                                                                                
@@ -45,15 +45,20 @@
                                                                                                                                                                                                                                                                                                    
 #define LEN_VPROTOS                     "\006"                                                                                                                                                                                                                                                     
 #ifdef PXX                                                                                                                                                                                                                                                                                         
-#define TR_PXX  "PXX\0  "                                                                                                                                                                                                                                                                          
+#define TR_PXX                          "PXX\0  "                                                                                                                                                                                                                                                                          
 #else                                                                                                                                                                                                                                                                                              
-#define TR_PXX  "[PXX]\0"                                                                                                                                                                                                                                                                          
+#define TR_PXX                          "[PXX]\0"                                                                                                                                                                                                                                                                          
 #endif                                                                                                                                                                                                                                                                                             
 #ifdef DSM2                                                                                                                                                                                                                                                                                        
-#define TR_DSM2 "DSM2\0 "                                                                                                                                                                                                                                                                          
+#define TR_DSM2                         "DSM2\0 "                                                                                                                                                                                                                                                                          
 #else                                                                                                                                                                                                                                                                                              
-#define TR_DSM2 "[DSM2]"                                                                                                                                                                                                                                                                           
+#define TR_DSM2                         "[DSM2]"                                                                                                                                                                                                                                                                           
 #endif                                                                                                                                                                                                                                                                                             
+#ifdef IRPROTOS
+#define TR_IRPROTOS                     "SILV  TRAC09PICZ  SWIFT\0"
+#else
+#define TR_IRPROTOS
+#endif
 #define TR_VPROTOS                      "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2                                                                                                                                                                                                                  
                                                                                                                                                                                                                                                                                                    
 #define LEN_POSNEG                      "\003"                                                                                                                                                                                                                                                     
@@ -80,7 +85,7 @@
 #define TR_VMLTPX2                      "+=""*="":="                                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                                                                    
 #define LEN_VMIXTRIMS                   "\003"                                                                                                                                                                                                                                                     
-#define TR_VMIXTRIMS                    " \210 "" \211 ""Rud""Ele""Thr""Ail"                                                                                                                                                                                                                             
+#define TR_VMIXTRIMS                    "AUS""AN ""Rud""Ele""Thr""Ail"                                                                                                                                                                                                                             
                                                                                                                                                                                                                                                                                                    
 #define LEN_VCSWFUNC                    "\007"                                                                                                                                                                                                                                                     
 #define TR_VCSWFUNC                     "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "                                                                                                                            
@@ -103,9 +108,9 @@
 #endif                                                                                                                                                                                                                                                                                             
 #if defined(PCBV4)                                                                                                                                                                                                                                                                                 
 #if defined(SDCARD)                                                                                                                                                                                                                                                                                
-#define TR_SDCLOGS                      "SDCARD Logs  "                                                                                                                                                                                                                                            
+#define TR_SDCLOGS                      "SDcard Logs  "                                                                                                                                                                                                                                            
 #else                                                                                                                                                                                                                                                                                              
-#define TR_SDCLOGS                      "[SDCARD Logs]"                                                                                                                                                                                                                                            
+#define TR_SDCLOGS                      "[SDcard Logs]"                                                                                                                                                                                                                                            
 #endif                                                                                                                                                                                                                                                                                             
 #if defined(SOMO)                                                                                                                                                                                                                                                                                  
 #define TR_PLAY_TRACK                   "Play Track\0  "
@@ -118,6 +123,7 @@
 #define TR_SDCLOGS                                                                                                                                                                                                                                                                                 
 #define TR_PLAY_TRACK
 #define TR_PLAY_VALUE
+
 #endif                                                                                                                                                                                                                                                                                             
 #ifdef DEBUG                                                                                                                                                                                                                                                                                       
 #define TR_TEST                         "Test\0        "                                                                                                                                                                                                                                           
@@ -248,7 +254,7 @@
 #define TR_NOFREEEXPO                   "No free expo!"                                                       
 #define TR_NOFREEMIXER                  "No free mixer!"                                                      
 #define TR_INSERTMIX                    "INSERT MIX "                                                         
-#define TR_EDITMIX                      "MISCHER "                                                            
+#define TR_EDITMIX                      "MIXER "                                                            
 #define TR_SOURCE                       "Quelle"                                                              
 #define TR_WEIGHT                       "Gewicht"                                                             
 #define TR_MIXERWEIGHT                  "Mixer Weight"                                                        
@@ -261,7 +267,7 @@
 #define TR_CURVES                       "Kurven"                                                              
 #define TR_FPHASE                       "F.Phase"                                                             
 #define TR_MIXWARNING                   "Warnung"
-#define TR_OFF                          "OFF"                                                                 
+#define TR_OFF                          "AUS"                                                                 
 #define TR_MULTPX                       "Multpx"                                                              
 #define TR_DELAYDOWN                    "Verz. Unten"                                                         
 #define TR_DELAYUP                      "Verz. Oben"                                                          
@@ -388,11 +394,11 @@
 #define TR_BACKUP_MODEL                 "Modell Backup"                                                                   
 #define TR_DELETE_MODEL                 "Modell L\203schen" // TODO merged into DELETEMODEL?                              
 #define TR_RESTORE_MODEL                "Modell Restore"                                                                  
-#define TR_SDCARD_ERROR                 "SDCARD Error"                                                                    
-#define TR_NO_SDCARD                    "Keine SDCARD"                                                                    
-#define TR_WARNING       "WARNUNG"
-#define TR_EEPROMWARN    "EEPROM"
-#define TR_THROTTLEWARN  "GAS"
-#define TR_ALARMSWARN    "ALARM"
-#define TR_SWITCHWARN    "SCHALTER"
-#define TR_INVERT_THR    "Invert Thr?"
+#define TR_SDCARD_ERROR                 "SDcard Error"                                                                    
+#define TR_NO_SDCARD                    "Keine SDcard"                                                                    
+#define TR_WARNING                      "WARNUNG"
+#define TR_EEPROMWARN                   "EEPROM"
+#define TR_THROTTLEWARN                 "GAS"
+#define TR_ALARMSWARN                   "ALARM"
+#define TR_SWITCHWARN                   "SCHALTER"
+#define TR_INVERT_THR                   "Invert Thr?"
