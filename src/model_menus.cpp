@@ -769,7 +769,7 @@ void menuProcModel(uint8_t event)
           if(attr && (s_editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
               case 0:
-                CHECK_INCDEC_MODELVAR(event, g_model.ppmFrameLength, -20, 20);
+                CHECK_INCDEC_MODELVAR(event, g_model.ppmFrameLength, -20, 35);
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR(event, g_model.ppmDelay, -4, 10);
