@@ -321,14 +321,14 @@ ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM
-  EXTRAINCDIRS += ersky9x
+  EXTRAINCDIRS += ersky9x FreeRTOSV7.1.1/Source/include FreeRTOSV7.1.1/Source/portable/IAR/ARM_CM3
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   CPPSRC += ersky9x/ff.cpp ersky9x/diskio.cpp ersky9x/gtime.cpp
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
-  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp  
+  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp 
 endif
 
 ifeq ($(PCB), V4)
@@ -676,6 +676,11 @@ ifeq ($(PCB), ARM)
 %.elf: allsrc.cpp
 	@echo
 	@echo $(MSG_COMPILING) $@
+	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/list.c -o list.o
+	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/queue.c -o queue.o 
+	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/tasks.c -o tasks.o
+	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/timers.c -o timers.o
+	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/portable/GCC/ARM_CM3_MPU/port.c -o port.o
 	$(CC) $(ALL_CPPFLAGS) $< -o allsrc.o
 	$(CC) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
 else
