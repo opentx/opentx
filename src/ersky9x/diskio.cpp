@@ -209,8 +209,8 @@ void SD_Reset( uint8_t keepSettings)
     dtor  = pMciHw->HSMCI_DTOR;
     cstor = pMciHw->HSMCI_CSTOR;
     cfg   = pMciHw->HSMCI_CFG;
-                pMciHw->HSMCI_CR = HSMCI_CR_SWRST ;             // Reset
-                pMciHw->HSMCI_CR = HSMCI_CR_MCIDIS;             // Disable
+    pMciHw->HSMCI_CR = HSMCI_CR_SWRST ;             // Reset
+    pMciHw->HSMCI_CR = HSMCI_CR_MCIDIS;             // Disable
     pMciHw->HSMCI_MR    = mr;
     pMciHw->HSMCI_SDCR  = sdcr;
     pMciHw->HSMCI_DTOR  = dtor;
@@ -808,6 +808,8 @@ Now decide what the card can do!
 #define LDIR_Chksum                     13
 #define LDIR_FstClusLO          26
 
+static volatile
+DSTATUS Stat = STA_NOINIT;      /* Disk status */
 
 /*-----------------------------------------------------------------------*/
 /* Initialize Disk Drive                                                 */
@@ -817,13 +819,16 @@ DSTATUS disk_initialize (
                          BYTE drv               /* Physical drive nmuber (0) */
                          )
 {
-        // TODO BSS BYTE n, cmd, ty, ocr[4];
+  if (drv) return STA_NOINIT;             /* Supports only single drive */
+  if ( sd_card_ready() == 0 ) return RES_NOTRDY;
+  return RES_OK;
+
+#if 0
+  BYTE n, cmd, ty, ocr[4];
 
 
         if (drv) return STA_NOINIT;             /* Supports only single drive */
 
-#if 0
-        // TODO BSS
         if (Stat & STA_NODISK) return Stat;     /* No card in the socket */
 
         power_on();                             /* Force socket power on */
@@ -865,7 +870,6 @@ DSTATUS disk_initialize (
 
         return Stat;
 #endif
-        return 0;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -877,7 +881,8 @@ DSTATUS disk_status (
                                          )
 {
         if (drv) return STA_NOINIT;             /* Supports only single drive */
-        return 0; // TODO BSS return Stat;
+        if ( sd_card_ready() == 0 ) return RES_NOTRDY;
+        return RES_OK;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -961,14 +966,16 @@ DRESULT disk_ioctl (
                         )
 {
         DRESULT res;
-        // TODO BSS BYTE n, csd[16], *ptr = buff;
-        // TODO BSS WORD csize;
+        BYTE *csd = (BYTE*)&Card_CSD[0];
+        BYTE n; // csd[16], *ptr = buff;
+        WORD csize;
 
         if (drv) return RES_PARERR;
 
         res = RES_ERROR;
-#if 0
+
         if (ctrl == CTRL_POWER) {
+#if 0
                 switch (ptr[0]) {
                         case 0:         /* Sub control code (POWER_OFF) */
                                 power_off();            /* Power off */
@@ -981,20 +988,21 @@ DRESULT disk_ioctl (
                         default :
                                 res = RES_PARERR;
                 }
+#endif
         }
         else {
                 if (Stat & STA_NOINIT) return RES_NOTRDY;
 
                 switch (ctrl) {
                         case CTRL_SYNC :                /* Make sure that no pending write process. Do not remove this or written sector might not left updated. */
-                                if (select()) {
-                                        deselect();
+                               /* BSS if (select()) {
+                                        deselect(); */
                                         res = RES_OK;
-                                }
+                               // }
                                 break;
 
                         case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
-                                if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {
+                                // if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {
                                         if ((csd[0] >> 6) == 1) {       /* SDC ver 2.00 */
                                                 csize = csd[9] + ((WORD)csd[8] << 8) + 1;
                                                 *(DWORD*)buff = (DWORD)csize << 10;
@@ -1004,7 +1012,7 @@ DRESULT disk_ioctl (
                                                 *(DWORD*)buff = (DWORD)csize << (n - 9);
                                         }
                                         res = RES_OK;
-                                }
+                                // }
                                 break;
 
                         case GET_SECTOR_SIZE :  /* Get R/W sector size (WORD) */
@@ -1013,6 +1021,8 @@ DRESULT disk_ioctl (
                                 break;
 
                         case GET_BLOCK_SIZE :   /* Get erase block size in unit of sector (DWORD) */
+                          // only used in f_mkfs
+#if 0
                                 if (CardType & CT_SD2) {        /* SDv2? */
                                         if (send_cmd(ACMD13, 0) == 0) { /* Read SD status */
                                                 rcvr_spi();
@@ -1032,8 +1042,10 @@ DRESULT disk_ioctl (
                                                 res = RES_OK;
                                         }
                                 }
+#endif
                                 break;
 
+#if 0
                         case MMC_GET_TYPE :             /* Get card type flags (1 byte) */
                                 *ptr = CardType;
                                 res = RES_OK;
@@ -1065,14 +1077,14 @@ DRESULT disk_ioctl (
                                                 res = RES_OK;
                                 }
                                 break;
-
+#endif
                         default:
                                 res = RES_PARERR;
                 }
 
-                deselect();
+                // BSS deselect();
         }
-#endif
+
         return res;
 }
 

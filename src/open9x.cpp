@@ -2667,7 +2667,10 @@ int main(void)
   MCUCSR = 0;
 #endif
 
+#if !defined(PCBARM)
+  // TODO test WDT on ARM
   wdt_disable();
+#endif
 
   board_init();
 
@@ -2852,7 +2855,7 @@ int main(void)
   g_eeGeneral.unexpectedShutdown=0;
   eeDirty(EE_GENERAL);
   eeCheck(true);
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(PCBARM)
   closeLogs();
 #endif
   lcd_clear() ;

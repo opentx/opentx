@@ -184,7 +184,7 @@ void menuProcModelSelect(uint8_t event)
 {
   TITLE(STR_MENUMODELSEL);
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(PCBARM)
   static bool refresh = true;
 #else
 #define refresh event

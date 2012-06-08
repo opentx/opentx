@@ -61,6 +61,7 @@ typedef const int8_t pm_int8_t;
 #define pgm_read_adr(x) *(x)
 #define cli()
 #define sei()
+#define wdt_disable() WDT->WDT_MR = WDT_MR_WDDIS;
 #define wdt_enable(x) WDT->WDT_MR = 0x3FFF2FFF
 #define wdt_reset()   WDT->WDT_CR = 0xA5000001
 extern void board_init();
