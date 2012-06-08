@@ -100,6 +100,12 @@ enum BeeperMode {
 #define EXTRA_ARM_FIELDS
 #endif
 
+enum AdcInput {
+  e_adc_single,
+  e_adc_osmp,
+  e_adc_filtered
+};
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   myVers;
