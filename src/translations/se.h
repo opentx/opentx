@@ -109,10 +109,10 @@
 #endif
 #if defined(SOMO)
 #define TR_PLAY_TRACK    "Spela Sp\200r\0  "
-#define TR_PLAY_VALUE    "Play Value\0  "
+#define TR_PLAY_VALUE    "Spela V\201rde\0 "
 #else
 #define TR_PLAY_TRACK    "[Spela Sp\200r]\0"
-#define TR_PLAY_VALUE    "[Play Value]\0"
+#define TR_PLAY_VALUE    "[Spela V\201rde]\0"
 #endif
 #else
 #define TR_SDCLOGS
