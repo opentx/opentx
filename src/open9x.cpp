@@ -31,6 +31,9 @@
  *
  */
 
+extern "C" {
+#include <CoOS.h>
+}
 #include "open9x.h"
 
 #if defined(SPLASH)
@@ -2653,6 +2656,66 @@ uint16_t stack_free()
 
 #endif
 
+OS_STK uartprintf_stk[1024];
+
+extern "C" {
+void vMainTask(void *) {
+
+  alert("START", "START");
+while(1) {
+
+#if defined(PCBARM)
+  uint16_t t0 = getTmr2MHz();
+#else
+  uint16_t t0 = getTmr16KHz();
+#endif
+
+  if (g_eeGeneral.filterInput == e_adc_filtered) {
+    getADC_filt() ;
+  }
+  else if ( g_eeGeneral.filterInput == e_adc_osmp) {
+    getADC_osmp() ;
+  }
+  else {
+    getADC_single() ;
+  }
+
+#if defined(PCBARM) && defined(REVB)
+  Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
+#elif defined(PCBV4)
+  // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
+  ADCSRB &= ~(1<<MUX5);
+  ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
+#elif defined(PCBSTD)
+  ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
+#endif
+
+  perMain();
+
+  // Bandgap has had plenty of time to settle...
+#if not defined(PCBARM)
+  getADC_bandgap();
+#endif
+
+  if(heartbeat == 0x3)
+  {
+    wdt_reset();
+    heartbeat = 0;
+  }
+#if defined(PCBARM)
+  t0 = getTmr2MHz() - t0;
+#else
+  t0 = getTmr16KHz() - t0;
+#endif
+
+  if (t0 > g_timeMain) g_timeMain = t0 ;
+}
+
+}
+}
+
+OS_TID uartprintfTask;
+
 int main(void)
 {
   // The WDT remains active after a WDT reset -- at maximum clock speed. So it's
@@ -2786,7 +2849,7 @@ int main(void)
   startPulses();
 
   if (check_soft_power() <= e_power_trainer) {
-    wdt_enable(WDTO_500MS);
+    // wdt_enable(WDTO_500MS);
   }
 
 #if defined(PCBARM)
@@ -2794,58 +2857,17 @@ int main(void)
 #elif defined(PCBV4)
   uint8_t shutdown_state = 0;
 #endif
-
-  while(1) {
-#if defined(PCBARM) || defined(PCBV4)
-    if ((shutdown_state=check_soft_power()) > e_power_trainer)
-      break;
-#endif
-
-#if defined(PCBARM)
-    uint16_t t0 = getTmr2MHz();
-#else
-    uint16_t t0 = getTmr16KHz();
-#endif
-
-    if (g_eeGeneral.filterInput == e_adc_filtered) {
-      getADC_filt() ;
-    }
-    else if ( g_eeGeneral.filterInput == e_adc_osmp) {
-      getADC_osmp() ;
-    }
-    else {
-      getADC_single() ;
-    }
-
-#if defined(PCBARM) && defined(REVB)
-    Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
-#elif defined(PCBV4)
-    // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
-    ADCSRB &= ~(1<<MUX5);
-    ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
-#elif defined(PCBSTD)
-    ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
-#endif
-  
-    perMain();
-    
-    // Bandgap has had plenty of time to settle...
-#if not defined(PCBARM)
-    getADC_bandgap();
-#endif
-
-    if(heartbeat == 0x3)
-    {
-      wdt_reset();
-      heartbeat = 0;
-    }
-#if defined(PCBARM)
-    t0 = getTmr2MHz() - t0;
-#else
-    t0 = getTmr16KHz() - t0;
-#endif
-
-    if (t0 > g_timeMain) g_timeMain = t0 ;
+  if ((shutdown_state=check_soft_power()) <= e_power_trainer) {
+    alert("COOS", "START");
+    CoInitOS();
+    alert("COOS", "INIT");
+    //xTaskHandle taskHandle;
+    //xTaskCreate ((pdTASK_CODE)&vMainTask,  (const signed portCHAR * const) "Main",  2048,     NULL, (tskIDLE_PRIORITY + 1), &taskHandle);
+    //vTaskStartScheduler ();
+    uartprintfTask = CoCreateTask(vMainTask,NULL,0,&uartprintf_stk[1023],100);
+    alert("COOS", "TASK");
+    CoStartOS();
+    alert("COOS", "FIN");
   }
 
 #if defined(PCBARM) || defined(PCBV4)
