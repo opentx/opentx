@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       serviceReq.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      servive request management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -22,15 +22,15 @@
 
 #if CFG_MAX_SERVICE_REQUEST > 0
 /*---------------------------- Variable Define -------------------------------*/
-SRQ   ServiceReq = {0};                 /*!< ISR server request queue         */		     
+SRQ   ServiceReq = {0,0};             /*!< ISR server request queue         */		     
 #endif       
-BOOL  IsrReq   = FALSE;
+BOOL  IsrReq   = Co_FALSE;
 #if (CFG_TASK_WAITTING_EN > 0)
-BOOL  TimeReq  = FALSE;                 /*!< Time delay dispose request       */
+BOOL  TimeReq  = Co_FALSE;                 /*!< Time delay dispose request       */
 #endif
 
 #if CFG_TMR_EN  > 0
-BOOL  TimerReq = FALSE;                 /*!< Timer dispose request            */
+BOOL  TimerReq = Co_FALSE;                 /*!< Timer dispose request            */
 #endif
 
 /**
@@ -41,8 +41,8 @@ BOOL  TimerReq = FALSE;                 /*!< Timer dispose request            */
  * @param[in]  arg      Service request argument. 
  * @param[out] None 
  * 	 
- * @retval     FALSE    Successfully insert into service request queue. 
- * @retval     TRUE     Failure to insert into service request queue.  
+ * @retval     Co_FALSE    Successfully insert into service request queue.
+ * @retval     Co_TRUE     Failure to insert into service request queue.
  *
  * @par Description		 
  * @details    This function be called to insert a requst into service request	
@@ -50,24 +50,32 @@ BOOL  TimerReq = FALSE;                 /*!< Timer dispose request            */
  * @note 
  *******************************************************************************
  */
-#if CFG_MAX_SERVICE_REQUEST > 0
+#if (CFG_MAX_SERVICE_REQUEST > 0)
 BOOL InsertInSRQ(U8 type,U8 id,void* arg)
 {
-    U16 cnt;
-    P_SQC pcell;
-    cnt = Inc8(&ServiceReq.cnt);        /* Service request counter decrease   */
-    if(cnt >= CFG_MAX_SERVICE_REQUEST)  /* If counter exceed max              */
+    P_SQC   pcell;
+	U8 cnt;
+	U8 heed;
+    IRQ_DISABLE_SAVE();
+    if (ServiceReq.cnt >= CFG_MAX_SERVICE_REQUEST)
     {
-        return FALSE;                   /* Error return                       */
+        IRQ_ENABLE_RESTORE ();
+
+        return Co_FALSE;                   /* Error return                       */
     }
-    IsrReq = TRUE;
-    pcell = &ServiceReq.cell[cnt]; /* Save service request type and parameter */
-    pcell->type = type;
-    pcell->id   = id;
-    pcell->arg  = arg;
-    return TRUE;                        /* Return OK                          */
+	cnt = Inc8(&ServiceReq.cnt);
+	heed = ServiceReq.head;
+    IsrReq = Co_TRUE;
+    pcell = &ServiceReq.cell[((cnt+heed)%CFG_MAX_SERVICE_REQUEST)];/*the tail */
+    pcell->type = type;                 /* Save service request type,         */
+    pcell->id   = id;                   /* event id                           */
+    pcell->arg  = arg;                  /* and parameter                      */
+    IRQ_ENABLE_RESTORE ();
+
+    return Co_TRUE;                        /* Return OK                          */
 }
 #endif
+
 
 
 /**
@@ -85,62 +93,72 @@ BOOL InsertInSRQ(U8 type,U8 id,void* arg)
  */
 void RespondSRQ(void)
 {
+
 #if CFG_MAX_SERVICE_REQUEST > 0
-    U16 i;
-    P_SQC pcell;
+    SQC cell;
+
 #endif
- 
+
 #if (CFG_TASK_WAITTING_EN > 0)
-    if(TimeReq == TRUE)                 /* Time delay request?                */
+    if(TimeReq == Co_TRUE)                 /* Time delay request?                */
     {
         TimeDispose();                  /* Yes,call handler                   */
-        TimeReq = FALSE;                /* Reset time delay request false     */
+        TimeReq = Co_FALSE;                /* Reset time delay request Co_FALSE     */
     }
 #endif
 #if CFG_TMR_EN  > 0
-    if(TimerReq == TRUE)                /* Timer request?                     */
+    if(TimerReq == Co_TRUE)                /* Timer request?                     */
     {
         TmrDispose();                   /* Yes,call handler                   */
-        TimerReq = FALSE;               /* Reset timer request false          */
+        TimerReq = Co_FALSE;               /* Reset timer request Co_FALSE          */
     }
 #endif
 
 #if CFG_MAX_SERVICE_REQUEST > 0
-    pcell = &ServiceReq.cell[0];  /* Get the head item of service request list*/
-    for(i=0;i<ServiceReq.cnt;i++,pcell++) 
+
+    while (ServiceReq.cnt != 0)
     {
-        switch(pcell->type)             /* Judge service request type         */
+        IRQ_DISABLE_SAVE ();            /* need to protect the following      */
+        cell = ServiceReq.cell[ServiceReq.head];  /* extract one cell         */
+        ServiceReq.head = (ServiceReq.head + 1) % /* move head (pop)          */
+                     CFG_MAX_SERVICE_REQUEST;
+        ServiceReq.cnt--;
+        IRQ_ENABLE_RESTORE ();          /* now use the cell copy              */
+
+        switch(cell.type)               /* Judge service request type         */
         {
 #if CFG_SEM_EN > 0
-            case SEM_REQ:               /* Semaphore post request,call handler*/
-                  CoPostSem(pcell->id);
-                  break;
+        case SEM_REQ:                   /* Semaphore post request,call handler*/
+            CoPostSem(cell.id);
+            break;
 #endif
 #if CFG_MAILBOX_EN > 0
-            case MBOX_REQ:              /* Mailbox post request,call handler  */
-                  CoPostMail(pcell->id,pcell->arg);
-                  break;
+        case MBOX_REQ:                  /* Mailbox post request,call handler  */
+            CoPostMail(cell.id, cell.arg);
+            break;
 #endif
 #if CFG_FLAG_EN > 0
-            case FLAG_REQ:              /* Flag set request,call handler      */
-                  CoSetFlag(pcell->id);
-                  break;
-#endif	 
+        case FLAG_REQ:                  /* Flag set request,call handler      */
+            CoSetFlag(cell.id);
+            break;
+#endif
 #if CFG_QUEUE_EN > 0
-            case QUEUE_REQ:             /* Queue post request,call handler    */
-				  CoPostQueueMail(pcell->id,pcell->arg);
-                  break;
+        case QUEUE_REQ:                 /* Queue post request,call handler    */
+            CoPostQueueMail(cell.id, cell.arg);
+            break;
 #endif
-            default:                    /* Others,break                       */
-                  break;
-		}
-    pcell->type = 0;                    /* Initialize the service request cell*/
-    pcell->id   = 0;
-    pcell->arg  = 0;	
-	}
-    ServiceReq.cnt = 0;               /* Initialize the service request queue */
+        default:                        /* Others,break                       */
+            break;
+        }
+    }
 #endif
-    IsrReq = FALSE;
+    IRQ_DISABLE_SAVE ();                /* need to protect the following      */
+
+    if (ServiceReq.cnt == 0)            /* another item in the queue already? */
+    {
+        IsrReq = Co_FALSE;                 /* queue still empty here             */
+    }
+    IRQ_ENABLE_RESTORE ();              /* now it is done and return          */
 }
 
 #endif

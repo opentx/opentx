@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
- * @file       task.h
- * @version    V1.12    
- * @date       2010.03.01
+ * @file       OsTask.h
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Header file	related to task.
  * @details    This file including some defines and function declare related to task.  	
  *******************************************************************************
@@ -93,9 +93,9 @@ extern P_OSTCB  TCBNext;      /*!< A pointer to TCB next be scheduled.        */
 extern P_OSTCB  TCBRunning;   /*!< A pointer to TCB that is running.          */
 
 extern U64      OSCheckTime;
-extern U8       OSIntNesting; /*!< Use to indicate interrupt nesting level.   */   				
-extern U8       OSSchedLock;  /*!< Schedule is lock(LOCK) or unlock(UN_LOCK). */  	
-extern BOOL     TaskSchedReq;
+extern volatile U8   OSIntNesting; /*!< Use to indicate interrupt nesting level.*/   				
+extern volatile U8   OSSchedLock;  /*!< Schedule is lock(LOCK) or unlock(UN_LOCK).*/  	
+extern volatile BOOL TaskSchedReq;
 extern OS_STK   idle_stk[CFG_IDLE_STACK_SIZE];
 
 

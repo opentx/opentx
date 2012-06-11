@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       utility.h
- * @version    V1.00    Initial version
- * @date       2009.06.26
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Utility function header file 
  * @details    This file including some defines and declares related to utility 
  *             function.	

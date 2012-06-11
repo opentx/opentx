@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       task.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      task management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -25,10 +25,10 @@ OSTCB    TCBTbl[CFG_MAX_USER_TASKS+SYS_TASK_NUM] = {{0}};
 /*!< The stack of IDLE task.                     */
 OS_STK   idle_stk[CFG_IDLE_STACK_SIZE] = {0};
 
-P_OSTCB  FreeTCB     = NULL;  /*!< pointer to free TCB                        */	
-P_OSTCB  TCBRdy      = NULL;  /*!< Pointer to the READY list.                 */
-P_OSTCB  TCBNext     = NULL;  /*!< Poniter to task that next scheduled by OS  */
-P_OSTCB  TCBRunning  = NULL;  /*!< Pointer to TCB that current running task.  */
+P_OSTCB  FreeTCB     = Co_NULL;  /*!< pointer to free TCB                        */
+P_OSTCB  TCBRdy      = Co_NULL;  /*!< Pointer to the READY list.                 */
+P_OSTCB  TCBNext     = Co_NULL;  /*!< Poniter to task that next scheduled by OS  */
+P_OSTCB  TCBRunning  = Co_NULL;  /*!< Pointer to TCB that current running task.  */
 U64      OSCheckTime = 0;     /*!< The counter of system tick.                */
 
 #if CFG_ORDER_LIST_SCHEDULE_EN ==0
@@ -80,7 +80,7 @@ void CreateTCBList(void)
 #endif
 
 	ptcb1->taskID    = i;	
-    ptcb1->TCBnext   = NULL;
+    ptcb1->TCBnext   = Co_NULL;
     FreeTCB = &TCBTbl[0];         /* Initialize FreeTCB as head item of list  */			
 }
 
@@ -93,8 +93,8 @@ void CreateTCBList(void)
  * @brief      Get sequence number for Assign priority	  
  * @param[in]  pri            Assign priority	 
  * @param[out] SequenceNum    priority number 
- * @retval     TRUE           Assign priority in priority queue.    
- *             FALSE          Assign priority not in priority queue. 		 
+ * @retval     Co_TRUE           Assign priority in priority queue.
+ *             Co_FALSE          Assign priority not in priority queue.
  *					
  * @par Description
  * @details    This function is called in Binary-Scheduling Algorithm 
@@ -114,7 +114,7 @@ static BOOL  GetPriSeqNum(U8 pri,OS_TID* SequenceNum)
 		if(pri == ActivePri[num])
 		{
 			*SequenceNum = num;
-			return TRUE;
+			return Co_TRUE;
 		}
 		else if (pri < ActivePri[num])
 		{
@@ -127,7 +127,7 @@ static BOOL  GetPriSeqNum(U8 pri,OS_TID* SequenceNum)
 		}
 	}
 	*SequenceNum = num;
-	return FALSE;		
+	return Co_FALSE;
 }
 
 
@@ -238,8 +238,8 @@ static void PrioRemap(OS_TID  seqNum)
  * @brief      Get the ready status for assign sequence number 
  * @param[in]  seqNum      Assign sequence number	 
  * @param[out] None
- * @retval     TRUE        This priority has ready task   
- *             FALSE       This priority doesn't have ready task  		 
+ * @retval     Co_TRUE        This priority has ready task
+ *             Co_FALSE       This priority doesn't have ready task
  *					
  * @par Description
  * @details    This function is called in Binary-Scheduling Algorithm 
@@ -250,9 +250,9 @@ static BOOL GetPrioSeqNumStatus(U8 seqNum)
 {
 	if( (RdyTaskPriInfo[seqNum/32] & (1<<(seqNum%32))) == 0)
 	{
-		return FALSE;
+		return Co_FALSE;
 	}
-	return TRUE;
+	return Co_TRUE;
 }
 
 
@@ -293,10 +293,10 @@ static void SetPrioSeqNumStatus(U8 seqNum, BOOL isRdy)
  *             increate the task num for this priority.    
  *******************************************************************************
  */
-static void ActiveTaskPri(U8 pri)
+void ActiveTaskPri(U8 pri)
 {
 	OS_TID  seqNum,num;
-	if(GetPriSeqNum(pri,&seqNum) == FALSE)
+	if(GetPriSeqNum(pri,&seqNum) == Co_FALSE)
 	{
 		for(num=PriNum;num>seqNum;num--)
 		{
@@ -332,7 +332,7 @@ static void ActiveTaskPri(U8 pri)
  *             remove the priority for queue.
  *******************************************************************************
  */
-static void DeleteTaskPri(U8 pri)
+void DeleteTaskPri(U8 pri)
 {
 	OS_TID  seqNum,num;
 
@@ -384,7 +384,7 @@ void InsertToTCBRdyList(P_OSTCB tcbInsert)
     {
         if(ptcb != tcbInsert) /* Yes,is inserted task equal to running task?  */
         {
-            if(ptcb != NULL)            /* No,TCBRunning == NULL?             */
+            if(ptcb != Co_NULL)            /* No,TCBRunning == Co_NULL?             */
             {                           /* N0,OSCheckTime < OSTickCnt?        */
                 if(OSCheckTime < OSTickCnt)	 
                 {                       /* Yes,set OSCheckTime for task robin */
@@ -398,7 +398,7 @@ void InsertToTCBRdyList(P_OSTCB tcbInsert)
 
 #if CFG_ORDER_LIST_SCHEDULE_EN ==0
 	GetPriSeqNum(prio,&seqNum);
-	if(GetPrioSeqNumStatus(seqNum) == TRUE)
+	if(GetPrioSeqNumStatus(seqNum) == Co_TRUE)
 	{
 		ptcb = &TCBTbl[RdyTaskPri[seqNum]];
 		RdyTaskPri[seqNum] = tcbInsert->taskID;
@@ -411,8 +411,8 @@ void InsertToTCBRdyList(P_OSTCB tcbInsert)
 		if(RdyTaskSeqNum == INVALID_ID)
 		{
 		    ptcb = TCBRdy;
-		    TaskSchedReq = TRUE;
-			if(ptcb == NULL)
+		    TaskSchedReq = Co_TRUE;
+			if(ptcb == Co_NULL)
 			{
 				TCBRdy   = tcbInsert;	
 			}
@@ -434,7 +434,7 @@ void InsertToTCBRdyList(P_OSTCB tcbInsert)
 	tcbInsert->TCBnext = ptcbNext;    /* Set link for list                  */
 	ptcb->TCBnext      = tcbInsert;
 	tcbInsert->TCBprev = ptcb;
-	if(ptcbNext != NULL)
+	if(ptcbNext != Co_NULL)
 	{
 	    ptcbNext->TCBprev  = tcbInsert;
 	}
@@ -442,14 +442,14 @@ void InsertToTCBRdyList(P_OSTCB tcbInsert)
 
 #else
     ptcb = TCBRdy;
-    if (ptcb == NULL)                   /* Is ready list NULL?                */
+    if (ptcb == Co_NULL)                   /* Is ready list Co_NULL?                */
     {
-        TaskSchedReq = TRUE;
+        TaskSchedReq = Co_TRUE;
         TCBRdy = tcbInsert;         /* Yse,set tcbInsert as head item of list */
     }
     else if (prio < ptcb->prio)/* Is PRI of inserted task higher than TCBRdy? */
     {
-        TaskSchedReq = TRUE;
+        TaskSchedReq = Co_TRUE;
         tcbInsert->TCBnext = ptcb;  /* Yes,set tcbInsert as head item of list */
         ptcb->TCBprev  = tcbInsert;
         TCBRdy         = tcbInsert;
@@ -457,7 +457,7 @@ void InsertToTCBRdyList(P_OSTCB tcbInsert)
     else                                /* No,find correct place              */
     {								    
         ptcbNext = ptcb->TCBnext;       /* Get next item                      */
-        while(ptcbNext != NULL)         /* Is last item in ready list?        */
+        while(ptcbNext != Co_NULL)         /* Is last item in ready list?        */
         {                               /* No,find correct place              */
             if(prio < ptcbNext->prio)   /* Is correct place?                  */
                 break;                  /* Yes,break circulation              */
@@ -467,7 +467,7 @@ void InsertToTCBRdyList(P_OSTCB tcbInsert)
         tcbInsert->TCBnext = ptcbNext;  /* Set link for list                  */
         ptcb->TCBnext      = tcbInsert;
         tcbInsert->TCBprev = ptcb;
-        if(ptcbNext != NULL)
+        if(ptcbNext != Co_NULL)
         {
             ptcbNext->TCBprev  = tcbInsert;
         }		
@@ -495,57 +495,57 @@ void RemoveFromTCBRdyList(P_OSTCB ptcb)
 	U8 prio;
 	U8 seqNum;
 	BOOL isChange;
-	isChange = FALSE;
+	isChange = Co_FALSE;
 	prio = ptcb->prio;
 	GetPriSeqNum(prio,&seqNum);
 #endif
 
     /* Is there only one item in READY list?                                  */
-    if((ptcb->TCBnext == NULL) && (ptcb->TCBprev == NULL) )
+    if((ptcb->TCBnext == Co_NULL) && (ptcb->TCBprev == Co_NULL) )
     {
-        TCBRdy = NULL;                  /* Yes,set READY list as NULL         */
+        TCBRdy = Co_NULL;                  /* Yes,set READY list as Co_NULL         */
 #if CFG_ORDER_LIST_SCHEDULE_EN ==0
-		isChange = TRUE;
+		isChange = Co_TRUE;
 #endif
     }
-    else if(ptcb->TCBprev == NULL)      /* Is the first item in READY list?   */
+    else if(ptcb->TCBprev == Co_NULL)      /* Is the first item in READY list?   */
     {   
 	    /* Yes,remove task from the list,and reset the head of READY list     */
         TCBRdy = ptcb->TCBnext;		    
-        ptcb->TCBnext   = NULL;
-        TCBRdy->TCBprev = NULL;
+        ptcb->TCBnext   = Co_NULL;
+        TCBRdy->TCBprev = Co_NULL;
 #if CFG_ORDER_LIST_SCHEDULE_EN ==0
 		if(TCBRdy->prio != prio)
-			isChange = TRUE;
+			isChange = Co_TRUE;
 		
 #endif
     }
-    else if( ptcb->TCBnext == NULL)     /* Is the last item in READY list?    */
+    else if( ptcb->TCBnext == Co_NULL)     /* Is the last item in READY list?    */
     {                                   /* Yes,remove task from list          */
 #if CFG_ORDER_LIST_SCHEDULE_EN ==0
 		if(ptcb->TCBprev->prio != prio)
-			isChange = TRUE;
+			isChange = Co_TRUE;
 		else 
 			RdyTaskPri[seqNum] = ptcb->TCBprev->taskID;
 #endif
-        ptcb->TCBprev->TCBnext = NULL;  
-        ptcb->TCBprev          = NULL;
+        ptcb->TCBprev->TCBnext = Co_NULL;
+        ptcb->TCBprev          = Co_NULL;
     }
     else                                /* No, remove task from list          */
     {	
 #if CFG_ORDER_LIST_SCHEDULE_EN ==0
 		if((ptcb->TCBprev->prio != prio) && (ptcb->TCBnext->prio != prio))
-			isChange = TRUE;
+			isChange = Co_TRUE;
 		else if((ptcb->TCBprev->prio == prio) && (ptcb->TCBnext->prio != prio))
 			RdyTaskPri[seqNum] = ptcb->TCBprev->taskID;
 #endif								
         ptcb->TCBprev->TCBnext = ptcb->TCBnext;
         ptcb->TCBnext->TCBprev = ptcb->TCBprev;
-        ptcb->TCBnext = NULL;
-        ptcb->TCBprev = NULL;
+        ptcb->TCBnext = Co_NULL;
+        ptcb->TCBprev = Co_NULL;
     }
 #if CFG_ORDER_LIST_SCHEDULE_EN ==0
-		if(isChange == TRUE)
+		if(isChange == Co_TRUE)
 		{
 			RdyTaskPri[seqNum] = INVALID_ID;
 			SetPrioSeqNumStatus(seqNum, 0);
@@ -642,7 +642,7 @@ StatusType CoSetPriority(OS_TID taskID,U8 priority)
             if(ptcb->prio > TCBRdy->prio)   /* Yes,Is PRI higher than TCBRdy? */
             {
 				OsSchedLock();              /* Yes,reorder task in READY list */
-				TaskSchedReq = TRUE;
+				TaskSchedReq = Co_TRUE;
                 OsSchedUnlock();
             }
         }
@@ -657,7 +657,7 @@ StatusType CoSetPriority(OS_TID taskID,U8 priority)
                 ptcb = pMutex->waittingList;  
                 prio = pMutex->originalPrio; 
                 pMutex->hipriTaskID = pMutex->taskID;
-                while(ptcb != NULL)
+                while(ptcb != Co_NULL)
                 {
                     if(ptcb->prio < prio)
                     {
@@ -716,12 +716,12 @@ void Schedule(void)
     pCurTcb = TCBRunning;    
     pRdyTcb = TCBRdy;
 
-	if((pRdyTcb==NULL) || (pCurTcb != TCBNext) || (OSSchedLock >1) || (OSIntNesting >0))
+	if((pRdyTcb==Co_NULL) || (pCurTcb != TCBNext) || (OSSchedLock >1) || (OSIntNesting >0))
 	{
 		return;
 	}
     
-	TaskSchedReq = FALSE;
+	TaskSchedReq = Co_FALSE;
     RunPrio = pCurTcb->prio;
     RdyPrio = pRdyTcb->prio;
 
@@ -790,10 +790,10 @@ static P_OSTCB AssignTCB(void)
     P_OSTCB	ptcb;
     
     OsSchedLock();                      /* Lock schedule                      */
-    if(FreeTCB == NULL)                 /* Is there no free TCB               */
+    if(FreeTCB == Co_NULL)                 /* Is there no free TCB               */
     {
         OsSchedUnlock();                /* Yes,unlock schedule                */
-        return NULL;                    /* Error return                       */
+        return Co_NULL;                    /* Error return                       */
     }	
 	ptcb    = FreeTCB;          /* Yes,assgin free TCB for this task  */    
 	/* Set next item as the head of free TCB list                     */
@@ -835,11 +835,11 @@ OS_TID CreateTask(FUNCPtr task,void *argv,U32 parameter,OS_STK *stk)
     prio = parameter&0xff;
 
 #if CFG_PAR_CHECKOUT_EN >0              /* Check validity of parameter        */
-    if(task == NULL)
+    if(task == Co_NULL)
     {
         return E_CREATE_FAIL;
     }
-    if(stk == NULL)
+    if(stk == Co_NULL)
     {
         return E_CREATE_FAIL;
     }
@@ -856,7 +856,7 @@ OS_TID CreateTask(FUNCPtr task,void *argv,U32 parameter,OS_STK *stk)
 #endif	  // CFG_PAR_CHECKOUT_EN
 
 #if CFG_TASK_SCHEDULE_EN == 0
-	if(TCBRunning != NULL)
+	if(TCBRunning != Co_NULL)
 		 return E_CREATE_FAIL;	
 #endif   
 
@@ -864,7 +864,7 @@ OS_TID CreateTask(FUNCPtr task,void *argv,U32 parameter,OS_STK *stk)
     
     ptcb = AssignTCB();                 /* Get free TCB to use                */
     
-    if(ptcb == NULL)                    /* Is free TCB equal to NULL?         */
+    if(ptcb == Co_NULL)                    /* Is free TCB equal to Co_NULL?         */
     {
         return E_CREATE_FAIL;           /* Yes,error return                   */
     }
@@ -884,8 +884,8 @@ OS_TID CreateTask(FUNCPtr task,void *argv,U32 parameter,OS_STK *stk)
 	ptcb->taskFuc = task;
 	ptcb->taskStk = stk;
 #endif     
-    ptcb->TCBnext = NULL;               /* Initialize TCB link in READY list  */
-    ptcb->TCBprev = NULL;
+    ptcb->TCBnext = Co_NULL;               /* Initialize TCB link in READY list  */
+    ptcb->TCBprev = Co_NULL;
 
 #if CFG_ROBIN_EN >0						/* Set task time slice for task robin */
     timeSlice = (parameter&0x7fff0000)>>20; 
@@ -897,14 +897,14 @@ OS_TID CreateTask(FUNCPtr task,void *argv,U32 parameter,OS_STK *stk)
 #endif
 
 #if CFG_FLAG_EN > 0
-    ptcb->pnode = NULL;                 /* Initialize task as no flag waiting */
+    ptcb->pnode = Co_NULL;                 /* Initialize task as no flag waiting */
 #endif
 
 #if CFG_EVENT_EN > 0
     ptcb->eventID  = INVALID_ID;      	/* Initialize task as no event waiting*/
-    ptcb->pmail    = NULL;
-    ptcb->waitNext = NULL;
-    ptcb->waitPrev = NULL;
+    ptcb->pmail    = Co_NULL;
+    ptcb->waitNext = Co_NULL;
+    ptcb->waitPrev = Co_NULL;
 #endif
 
 #if CFG_MUTEX_EN > 0
@@ -1009,7 +1009,7 @@ StatusType CoDelTask(OS_TID taskID)
 #endif
 
 #if CFG_FLAG_EN > 0
-        if(ptcb->pnode != NULL)         /* Is task in flag waiting list?      */
+        if(ptcb->pnode != Co_NULL)         /* Is task in flag waiting list?      */
         {
             /* Yes,remove task from flag waiting list                         */
             RemoveLinkNode(ptcb->pnode);	
@@ -1025,7 +1025,7 @@ StatusType CoDelTask(OS_TID taskID)
 	  }
 #endif
     ptcb->state   = TASK_DORMANT;       /* Release TCB                        */
-	TaskSchedReq  = TRUE;	
+	TaskSchedReq  = Co_TRUE;
 
 #if CFG_ORDER_LIST_SCHEDULE_EN ==0
 	DeleteTaskPri(ptcb->prio);	
@@ -1083,7 +1083,7 @@ StatusType CoActivateTask(OS_TID taskID,void *argv)
 #endif
 	ptcb = &TCBTbl[taskID];
 #if CFG_PAR_CHECKOUT_EN >0
-	if(ptcb->stkPtr == NULL)
+	if(ptcb->stkPtr == Co_NULL)
 		return E_INVALID_ID;
 #endif
 	if(ptcb->state != TASK_DORMANT)	
@@ -1171,7 +1171,7 @@ StatusType CoSuspendTask(OS_TID taskID)
     }
 	else
 	{
-		TaskSchedReq = TRUE;
+		TaskSchedReq = Co_TRUE;
 	}
 
     ptcb->state = TASK_WAITING;	        /* Set task status as TASK_WAITING    */
@@ -1229,7 +1229,7 @@ StatusType CoAwakeTask(OS_TID taskID)
     }
 
 #if CFG_FLAG_EN > 0
-    if(ptcb->pnode != NULL)             /* Is task in flag waiting list       */
+    if(ptcb->pnode != Co_NULL)             /* Is task in flag waiting list       */
     {
         return E_TASK_WAIT_OTHER;       /* Yes,error return                   */
     }

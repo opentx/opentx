@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       event.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      event management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -22,7 +22,7 @@
 #if CFG_EVENT_EN > 0
 
 ECB    EventTbl[CFG_MAX_EVENT]= {{0}};/*!< Table which save event control block.*/
-P_ECB  FreeEventList = NULL;        /*!< Pointer to free event control block. */
+P_ECB  FreeEventList = Co_NULL;        /*!< Pointer to free event control block. */
 
 
 /**
@@ -47,7 +47,7 @@ void CreateEventList(void)
     i=0;
     pecb1 = &EventTbl[0];               /* Get first item                     */
 #if CFG_MAX_EVENT == 1                  /* Build event list for only one item */									   
-    pecb1->eventPtr  = NULL;
+    pecb1->eventPtr  = Co_NULL;
     pecb1->id        = i;               /* Assign ID.                         */
     pecb1->eventType = EVENT_TYPE_INVALID;  /* Sign that not to use.          */
 #endif
@@ -63,7 +63,7 @@ void CreateEventList(void)
         pecb2++;	
     }
 	pecb1->eventType = EVENT_TYPE_INVALID;    /* Sign that not to use.        */
-    pecb1->eventPtr  = NULL;                  /* Set link for last item       */
+    pecb1->eventPtr  = Co_NULL;                  /* Set link for last item       */
     pecb1->id        = i;	
 #endif
     
@@ -101,10 +101,10 @@ static void ReleaseECB(P_ECB pecb)
  * @param[in]  eventType       The type of event which	being created.
  * @param[in]  eventSortType   Event sort type.
  * @param[in]  eventCounter    Event counter,ONLY for EVENT_TYPE_SEM.
- * @param[in]  eventPtr        Event struct pointer,ONLY for Queue.NULL for other 
+ * @param[in]  eventPtr        Event struct pointer,ONLY for Queue.Co_NULL for other
  *                             event type.		
  * @param[out] None  
- * @retval     NULL     Invalid pointer,create event fail.					 
+ * @retval     Co_NULL     Invalid pointer,create event fail.
  * @retval     others   Pointer to event control block which had assigned right now.
  *
  * @par Description
@@ -119,10 +119,10 @@ P_ECB CreatEvent(U8 eventType,U8 eventSortType,void* eventPtr)
     P_ECB pecb;
     
     OsSchedLock();                      /* Lock schedule                      */
-    if(FreeEventList == NULL)           /* Is there no free evnet item        */
+    if(FreeEventList == Co_NULL)           /* Is there no free evnet item        */
     {
         OsSchedUnlock();                /* Yes,unlock schedule                */
-        return NULL;                    /* Return error                       */
+        return Co_NULL;                    /* Return error                       */
     }
     pecb          = FreeEventList;/* Assign the free event item to this event */
     FreeEventList = FreeEventList->eventPtr;  /* Reset free event item        */
@@ -131,7 +131,7 @@ P_ECB CreatEvent(U8 eventType,U8 eventSortType,void* eventPtr)
     pecb->eventType     = eventType;    /* Initialize event item as user set  */
     pecb->eventSortType = eventSortType;
     pecb->eventPtr      = eventPtr;
-    pecb->eventTCBList  = NULL;
+    pecb->eventTCBList  = Co_NULL;
     return pecb;                        /* Return event item pointer          */
 }
 
@@ -160,7 +160,7 @@ StatusType DeleteEvent(P_ECB pecb,U8 opt)
     P_OSTCB ptcb;
     if(opt == OPT_DEL_NO_PEND)          /* Do delete event when no task pend? */
     {
-        if(pecb->eventTCBList != NULL)  /* Yes,is there task pend this event? */
+        if(pecb->eventTCBList != Co_NULL)  /* Yes,is there task pend this event? */
         {
             return E_TASK_WAITING;      /* Yes,error return                   */
         }
@@ -172,7 +172,7 @@ StatusType DeleteEvent(P_ECB pecb,U8 opt)
     else if(opt == OPT_DEL_ANYWAY)      /* Do delete event anyway?            */
     {
         OsSchedLock();                      /* Lock schedule                  */
-        while(pecb->eventTCBList != NULL)   /* Is there task pend this event? */
+        while(pecb->eventTCBList != Co_NULL)   /* Is there task pend this event? */
         {                                   /* Yes,remove it                  */
             ptcb = pecb->eventTCBList;/* Get first task in event waiting list */
             if(ptcb->delayTick != INVALID_VALUE) /* Is task in delay list?    */
@@ -182,7 +182,7 @@ StatusType DeleteEvent(P_ECB pecb,U8 opt)
 
             /* Set next item as event waiting list head */
             pecb->eventTCBList = ptcb->waitNext; 
-            ptcb->waitNext     = NULL;  /* Clear link for event waiting list  */
+            ptcb->waitNext     = Co_NULL;  /* Clear link for event waiting list  */
             ptcb->eventID      = INVALID_ID;  /* Sign that not to use.        */
 
 			InsertToTCBRdyList(ptcb);         /* Insert task into ready list  */
@@ -207,7 +207,7 @@ StatusType DeleteEvent(P_ECB pecb,U8 opt)
  *            opt == EVENT_SORT_TYPE_FIFO   By FIFO.
  *            opt == EVENT_SORT_TYPE_PRIO   By priority order,hghest priority 
  *                                          as head,lowest priority as end.
- *                                          (Highest-->...-->Lowest-->NULL)	
+ *                                          (Highest-->...-->Lowest-->Co_NULL)
  *******************************************************************************
  */
 void EventTaskToWait(P_ECB pecb,P_OSTCB ptcb)
@@ -228,13 +228,13 @@ void EventTaskToWait(P_ECB pecb,P_OSTCB ptcb)
     
 #if (CFG_EVENT_SORT == 1) || (CFG_EVENT_SORT == 3)
     {
-        if(ptcb1 == NULL)                 /* Is no item in event waiting list?*/
+        if(ptcb1 == Co_NULL)                 /* Is no item in event waiting list?*/
         {
             pecb->eventTCBList = ptcb;    /* Yes,set task as first item       */
         }
         else
         {								
-            while(ptcb1->waitNext != NULL)/* No,insert task in last           */
+            while(ptcb1->waitNext != Co_NULL)/* No,insert task in last           */
             {
                 ptcb1 = ptcb1->waitNext;	
             }	
@@ -249,7 +249,7 @@ void EventTaskToWait(P_ECB pecb,P_OSTCB ptcb)
 #endif  
 #if (CFG_EVENT_SORT == 2) || (CFG_EVENT_SORT == 3)
     {
-        if(ptcb1 == NULL)               /* Is no item in event waiting list?  */
+        if(ptcb1 == Co_NULL)               /* Is no item in event waiting list?  */
         {
             pecb->eventTCBList = ptcb;  /* Yes,set task as first item         */
         }
@@ -263,7 +263,7 @@ void EventTaskToWait(P_ECB pecb,P_OSTCB ptcb)
         else                            /* No,find correct place to insert    */
         {								
             ptcb2 = ptcb1->waitNext;
-            while(ptcb2 != NULL)        /* Is last item?                      */
+            while(ptcb2 != Co_NULL)        /* Is last item?                      */
             {	                          
                 if(ptcb2->prio > ptcb->prio)  /* No,is correct place?         */
                 { 
@@ -275,7 +275,7 @@ void EventTaskToWait(P_ECB pecb,P_OSTCB ptcb)
             ptcb1->waitNext = ptcb;           /* Set link for list            */
             ptcb->waitPrev  = ptcb1;
             ptcb->waitNext  = ptcb2;
-            if(ptcb2 != NULL)
+            if(ptcb2 != Co_NULL)
             {
                 ptcb2->waitPrev = ptcb;	
             }
@@ -283,7 +283,7 @@ void EventTaskToWait(P_ECB pecb,P_OSTCB ptcb)
     }
 #endif
     ptcb->state = TASK_WAITING;     /* Set task status to TASK_WAITING state  */
-    TaskSchedReq = TRUE;
+    TaskSchedReq = Co_TRUE;
     OsSchedUnlock();                /* Unlock schedule,and call task schedule */
 }
 
@@ -307,16 +307,16 @@ void EventTaskToRdy(P_ECB pecb)
     P_QCB   pqcb;
 #endif
     ptcb = pecb->eventTCBList;
-    if(ptcb == NULL)
+    if(ptcb == Co_NULL)
         return;
     
     pecb->eventTCBList = ptcb->waitNext;/* Get first task in event waiting list*/
-    if(pecb->eventTCBList != NULL)      /* Is no item in event waiting list?  */
+    if(pecb->eventTCBList != Co_NULL)      /* Is no item in event waiting list?  */
     {
-        pecb->eventTCBList->waitPrev = NULL; /* No,clear link for first item  */
+        pecb->eventTCBList->waitPrev = Co_NULL; /* No,clear link for first item  */
     }
     
-    ptcb->waitNext = NULL;                /* Clear event waiting link for task*/
+    ptcb->waitNext = Co_NULL;                /* Clear event waiting link for task*/
     ptcb->eventID  = INVALID_ID;          /* Sign that not to use.            */
     
     if(ptcb->delayTick != INVALID_VALUE)  /* Is task in delay list?           */		         
@@ -326,7 +326,7 @@ void EventTaskToRdy(P_ECB pecb)
     if(pecb->eventType == EVENT_TYPE_MBOX)/* Is it a mailbox event?           */
     {
         ptcb->pmail    = pecb->eventPtr;  /* Yes,send mail to task            */
-        pecb->eventPtr = NULL;            /* Clear event sign                 */
+        pecb->eventPtr = Co_NULL;            /* Clear event sign                 */
         pecb->eventCounter--;
     }
 #if CFG_QUEUE_EN >0
@@ -380,28 +380,28 @@ void RemoveEventWaittingList(P_OSTCB ptcb)
     pecb = &EventTbl[ptcb->eventID];    /* Get event control block            */
     
     /* Is there only one item in event waiting list?                          */
-    if((ptcb->waitNext == NULL) && (ptcb->waitPrev == NULL))
+    if((ptcb->waitNext == Co_NULL) && (ptcb->waitPrev == Co_NULL))
     {
-        pecb->eventTCBList = NULL;      /* Yes,set event waiting list as NULL */
+        pecb->eventTCBList = Co_NULL;      /* Yes,set event waiting list as Co_NULL */
     }
-    else if(ptcb->waitPrev == NULL)/* Is the first item in event waiting list?*/
+    else if(ptcb->waitPrev == Co_NULL)/* Is the first item in event waiting list?*/
     {
         /* Yes,remove task from list,and reset event waiting list             */
-        ptcb->waitNext->waitPrev = NULL;
+        ptcb->waitNext->waitPrev = Co_NULL;
 		pecb->eventTCBList = ptcb->waitNext;	
-        ptcb->waitNext = NULL;		
+        ptcb->waitNext = Co_NULL;
     }
-    else if(ptcb->waitNext == NULL)/* Is the last item in event waiting list? */
+    else if(ptcb->waitNext == Co_NULL)/* Is the last item in event waiting list? */
     {
-        ptcb->waitPrev->waitNext = NULL;  /* Yes,remove task form list        */
-        ptcb->waitPrev = NULL;
+        ptcb->waitPrev->waitNext = Co_NULL;  /* Yes,remove task form list        */
+        ptcb->waitPrev = Co_NULL;
     }
     else                                  /* No, remove task from list        */
     {										
         ptcb->waitPrev->waitNext = ptcb->waitNext;
         ptcb->waitNext->waitPrev = ptcb->waitPrev;
-        ptcb->waitPrev = NULL;
-        ptcb->waitNext = NULL;		
+        ptcb->waitPrev = Co_NULL;
+        ptcb->waitNext = Co_NULL;
     }
     ptcb->eventID  = INVALID_ID;          /* Sign that not to use.            */
 }

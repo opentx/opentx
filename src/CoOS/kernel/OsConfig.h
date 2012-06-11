@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
- * @file       config.h
- * @version    V1.12    
- * @date       2010.03.01
+ * @file       OsConfig.h
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      This file use by user to configuration CooCox CoOS.
  * @note       Ensure you have knew every item before modify this file. 
  *******************************************************************************
@@ -32,12 +32,12 @@ Defines the lowest priority that be assigned.
 /*!< 
 Max number of tasks that can be running.		     
 */			
-#define CFG_MAX_USER_TASKS      (5) 	
+#define CFG_MAX_USER_TASKS      (5)
 
 /*!< 
 Idle task stack size(word).		                         
 */	
-#define CFG_IDLE_STACK_SIZE     (25)	
+#define CFG_IDLE_STACK_SIZE     (25)
 
 /*!< 
 System frequency (Hz).	                 	         
@@ -52,7 +52,7 @@ systick frequency (Hz).
 /*!< 
 max systerm api call num in ISR.	                         
 */
-#define CFG_MAX_SERVICE_REQUEST (3) 
+#define CFG_MAX_SERVICE_REQUEST (5)
 
 /*!< 
 Enable(1) or disable(0) order list schedule.
@@ -136,7 +136,7 @@ Enable(1) or disable(0) memory management.
 Max number of memory.(must be less than 32).      
 */ 
 #if CFG_MM_EN >0
-#define CFG_MAX_MM              (2)			
+#define CFG_MAX_MM              (2)
 #endif 
 
 
@@ -145,13 +145,13 @@ Max number of memory.(must be less than 32).
 /*!< 
 Enable(1) or disable(0) kernel heap management.	      
 */
-#define CFG_KHEAP_EN            (0)
+#define CFG_KHEAP_EN            (0)  		
 
 /*!< 
 Kernel heap size(word).      
 */ 
 #if CFG_KHEAP_EN >0
-#define KHEAP_SIZE              (50)			
+#define KHEAP_SIZE              (50)
 #endif   
 
 
@@ -198,28 +198,28 @@ Event sort type.(1)FIFO (2)PRI (3)FIFO+PRI
 Max number of event.(must be less than 255) 	      
 Event = semaphore + mailbox + queue;			      
 */
-#define CFG_MAX_EVENT           (10)	
+#define CFG_MAX_EVENT           (20)
 
 /*!< 
 Enable(1) or disable(0) semaphore management.	      
 */
-#define CFG_SEM_EN              (1)	
+#define CFG_SEM_EN              (0)	
 
 /*!< 
 Enable(1) or disable(0) mailbox management.	      
 */		
-#define CFG_MAILBOX_EN          (1)	
+#define CFG_MAILBOX_EN          (0)	
 
 /*!< 
 Enable(1) or disable(0) queue management.		      
 */		
-#define CFG_QUEUE_EN            (1)	
+#define CFG_QUEUE_EN            (0)	
 
 /*!< 
 Max number of queue.(less than CFG_MAX_EVENT).       
 */
 #if	CFG_QUEUE_EN >0	
-#define CFG_MAX_QUEUE           (2)		
+#define CFG_MAX_QUEUE           (2)
 #endif   // CFG_QUEUE_EN
 	
 #endif   // CFG_EVENT_EN
@@ -232,7 +232,7 @@ Enable(1) or disable(0) flag management.
 Max number of flag is 32.					    	  
 */
 #if CFG_TASK_WAITTING_EN > 0
-#define  CFG_FLAG_EN           (1) 
+#define  CFG_FLAG_EN           (0) 
 #endif		
 
 
@@ -242,7 +242,7 @@ Enable(1) or disable(0) mutex management.
 */
 #if CFG_TASK_WAITTING_EN > 0
 #if CFG_TASK_SCHEDULE_EN > 0
-#define  CFG_MUTEX_EN           (1) 
+#define  CFG_MUTEX_EN           (0) 
 #endif
 #endif
 
@@ -258,7 +258,7 @@ Max number of mutex.(must be less than 255).
 /*!< 
 Enable(1) or disable(0) utility management.    	  
 */
-#define CFG_UTILITY_EN          (1)      
+#define CFG_UTILITY_EN          (0)      
    
 #if CFG_UTILITY_EN >0
 

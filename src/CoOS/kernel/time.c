@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       time.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      time management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -11,7 +11,7 @@
  * 
  * <h2><center>&copy; COPYRIGHT 2009 CooCox </center></h2>
  *******************************************************************************
- */ 
+ */  
 
 
 
@@ -21,7 +21,7 @@
 #if CFG_TASK_WAITTING_EN > 0
 
 /*---------------------------- Variable Define -------------------------------*/
-P_OSTCB DlyList   = NULL;               /*!< Header pointer to the DELAY list.*/
+P_OSTCB DlyList   = Co_NULL;               /*!< Header pointer to the DELAY list.*/
 
 
 /**
@@ -44,7 +44,7 @@ void InsertDelayList(P_OSTCB ptcb,U32 ticks)
     
     if(ticks == 0)                      /* Is delay tick == 0?                */
         return;                         /* Yes,do nothing,return              */
-    if(DlyList == NULL)                 /* Is no item in DELAY list?          */
+    if(DlyList == Co_NULL)                 /* Is no item in DELAY list?          */
     {
         ptcb->delayTick = ticks;        /* Yes,set this as first item         */
         DlyList         = ptcb;
@@ -56,14 +56,14 @@ void InsertDelayList(P_OSTCB ptcb,U32 ticks)
         deltaTicks = ticks;             /* Get task delay ticks               */
         
         /* Find correct place */
-        while(dlyNext != NULL)
+        while(dlyNext != Co_NULL)
         {		
             /* Get delta ticks with previous item */ 
             deltaTicks -= dlyNext->delayTick;  
             if(deltaTicks < 0)          /* Is delta ticks<0?                  */
             {	  
                 /* Yes,get correct place */
-                if(dlyNext->TCBprev != NULL)   /* Is head item of DELAY list? */
+                if(dlyNext->TCBprev != Co_NULL)   /* Is head item of DELAY list? */
                 {							   
                     dlyNext->TCBprev->TCBnext = ptcb;   /* No,insert into     */ 
                     ptcb->TCBprev             = dlyNext->TCBprev;
@@ -81,7 +81,7 @@ void InsertDelayList(P_OSTCB ptcb,U32 ticks)
                 break;
             }
             /* Is last item in DELAY list? */
-            else if((deltaTicks >= 0) && (dlyNext->TCBnext == NULL) )
+            else if((deltaTicks >= 0) && (dlyNext->TCBnext == Co_NULL) )
             {								   
                 ptcb->TCBprev    = dlyNext; /* Yes,insert into                */
                 dlyNext->TCBnext = ptcb;	
@@ -93,7 +93,7 @@ void InsertDelayList(P_OSTCB ptcb,U32 ticks)
     }
 
     ptcb->state  = TASK_WAITING;        /* Set task status as TASK_WAITING    */
-    TaskSchedReq = TRUE;
+    TaskSchedReq = Co_TRUE;
 }
 
 
@@ -112,31 +112,31 @@ void RemoveDelayList(P_OSTCB ptcb)
 {
     
     /* Is there only one item in the DELAY list?   */
-    if((ptcb->TCBprev == NULL) && ( ptcb->TCBnext == NULL))
+    if((ptcb->TCBprev == Co_NULL) && ( ptcb->TCBnext == Co_NULL))
     {
-        DlyList = NULL;	                /* Yes,set DELAY list as NULL         */
+        DlyList = Co_NULL;	                /* Yes,set DELAY list as Co_NULL         */
     }
-    else if(ptcb->TCBprev == NULL)      /* Is the first item in DELAY list?   */
+    else if(ptcb->TCBprev == Co_NULL)      /* Is the first item in DELAY list?   */
     {   
 	    /* Yes,remove task from the DELAY list,and reset the list             */
         DlyList	                  = ptcb->TCBnext;
         ptcb->TCBnext->delayTick += ptcb->delayTick;
-        ptcb->TCBnext->TCBprev    = NULL;	
-        ptcb->TCBnext             = NULL;
+        ptcb->TCBnext->TCBprev    = Co_NULL;
+        ptcb->TCBnext             = Co_NULL;
         
     }
-    else if(ptcb->TCBnext == NULL)      /* Is the last item in DELAY list?    */
+    else if(ptcb->TCBnext == Co_NULL)      /* Is the last item in DELAY list?    */
     {									
-        ptcb->TCBprev->TCBnext = NULL;  /* Yes,remove task form DELAY list    */
-        ptcb->TCBprev          = NULL;	
+        ptcb->TCBprev->TCBnext = Co_NULL;  /* Yes,remove task form DELAY list    */
+        ptcb->TCBprev          = Co_NULL;
     }
     else                                /* No, remove task from DELAY list    */
     {									
         ptcb->TCBprev->TCBnext    = ptcb->TCBnext;	
         ptcb->TCBnext->TCBprev    = ptcb->TCBprev;	
         ptcb->TCBnext->delayTick += ptcb->delayTick;
-        ptcb->TCBnext     	      = NULL;
-        ptcb->TCBprev             = NULL;
+        ptcb->TCBnext     	      = Co_NULL;
+        ptcb->TCBprev             = Co_NULL;
     }
     ptcb->delayTick = INVALID_VALUE;  /* Set task delay tick value as invalid */		
 }
@@ -227,7 +227,7 @@ StatusType CoResetTaskDelayTick(OS_TID taskID,U32 ticks)
 
 	ptcb = &TCBTbl[taskID];
 #if CFG_PAR_CHECKOUT_EN >0 
-    if(ptcb->stkPtr == NULL)
+    if(ptcb->stkPtr == Co_NULL)
     {
         return E_INVALID_ID;
     }
@@ -316,7 +316,7 @@ void TimeDispose(void)
     P_OSTCB	dlyList;
     
     dlyList = DlyList;                  /* Get first item of DELAY list       */
-    while((dlyList != NULL) && (dlyList->delayTick == 0) )
+    while((dlyList != Co_NULL) && (dlyList->delayTick == 0) )
     {	
     
 #if CFG_EVENT_EN > 0
@@ -327,21 +327,21 @@ void TimeDispose(void)
 #endif
 
 #if CFG_FLAG_EN  > 0
-        if(dlyList->pnode != NULL)          /* Is task in flag waiting list?  */
+        if(dlyList->pnode != Co_NULL)          /* Is task in flag waiting list?  */
         {
             RemoveLinkNode(dlyList->pnode); /* Yes,remove task from list      */	
         }
 #endif
         dlyList->delayTick = INVALID_VALUE; /* Set delay tick value as invalid*/
         DlyList = dlyList->TCBnext; /* Get next item as the head of DELAY list*/
-        dlyList->TCBnext   = NULL;		   
+        dlyList->TCBnext   = Co_NULL;
 
 		InsertToTCBRdyList(dlyList);        /* Insert task into READY list    */
         
         dlyList = DlyList;                /* Get the first item of DELAY list */
-        if(dlyList != NULL)                 /* Is DELAY list as NULL?         */
+        if(dlyList != Co_NULL)                 /* Is DELAY list as Co_NULL?         */
         {
-            dlyList->TCBprev = NULL;        /* No,initialize the first item   */
+            dlyList->TCBprev = Co_NULL;        /* No,initialize the first item   */
         }
     }
 }
@@ -363,8 +363,8 @@ void isr_TimeDispose(void)
 {
     if(OSSchedLock > 1)                 /* Is schedule lock?                  */
     {
-        IsrReq = TRUE;
-        TimeReq = TRUE;                 /* Yes,set time request true          */
+        IsrReq = Co_TRUE;
+        TimeReq = Co_TRUE;                 /* Yes,set time request Co_TRUE          */
     }
     else
     {

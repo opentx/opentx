@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       mm.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      memory management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -45,7 +45,7 @@ OS_MMID CoCreateMemPartition(U8* memBuf,U32 blockSize,U32 blockNum)
     memory = memBuf;
 	
 #if CFG_PAR_CHECKOUT_EN >0              /* Check validity of parameter        */
-    if(memBuf == NULL)
+    if(memBuf == Co_NULL)
     {
         return 	E_CREATE_FAIL;
     }
@@ -81,7 +81,7 @@ OS_MMID CoCreateMemPartition(U8* memBuf,U32 blockSize,U32 blockNum)
                 memBlk->nextBlock = (P_MemBlk)memory;
                 memBlk = memBlk->nextBlock;
             }
-            memBlk->nextBlock = NULL;
+            memBlk->nextBlock = Co_NULL;
             return i;                   /* Return memory block ID             */
         }
     }
@@ -120,8 +120,8 @@ StatusType CoDelMemoryPartition(OS_MMID mmID)
     MemoryIDVessel &= ~(1<<mmID);
     OsSchedUnlock();                    /* Unlock schedule                    */
     
-    memCtl->memAddr   = NULL;
-    memCtl->freeBlock = NULL;	
+    memCtl->memAddr   = Co_NULL;
+    memCtl->freeBlock = Co_NULL;
     memCtl->blockSize = 0;
     memCtl->blockNum  = 0;	
     return E_OK;                        /* Return OK                          */
@@ -163,7 +163,7 @@ U32 CoGetFreeBlockNum(OS_MMID mmID,StatusType* perr)
     OsSchedLock();                      /* Lock schedule                      */
     memBlk = (P_MemBlk)(memCtl->freeBlock);/* Get the free item in memory list*/
     fbNum  = 0;
-    while(memBlk != NULL)               /* Get counter of free item           */
+    while(memBlk != Co_NULL)               /* Get counter of free item           */
     {
         fbNum++;
         memBlk = memBlk->nextBlock;     /* Get next free iterm                */
@@ -179,7 +179,7 @@ U32 CoGetFreeBlockNum(OS_MMID mmID,StatusType* perr)
  * @brief      Get a memory buffer from memory partition	    
  * @param[in]  mmID     Specify	memory partition that want to assign buffer.	
  * @param[out] None
- * @retval     NULL     Assign buffer fail.
+ * @retval     Co_NULL     Assign buffer fail.
  * @retval     others   Assign buffer successful,and return the buffer pointer.	
  *		 
  * @par Description
@@ -193,19 +193,19 @@ void* CoGetMemoryBuffer(OS_MMID mmID)
 #if CFG_PAR_CHECKOUT_EN >0              /* Check validity of parameter        */
     if(mmID >= CFG_MAX_MM)
     {
-        return NULL;
+        return Co_NULL;
     }
     if( ((1<<mmID)&MemoryIDVessel)  == 0)
     {
-        return NULL;
+        return Co_NULL;
     }
 #endif
     memCtl = &MemoryTbl[mmID];	
     OsSchedLock();                      /* Lock schedule                      */	        
-    if(memCtl->freeBlock == NULL )    /* Is there no free item in memory list */
+    if(memCtl->freeBlock == Co_NULL )    /* Is there no free item in memory list */
     {
         OsSchedUnlock();                /* Unlock schedule                    */
-        return NULL;                    /* Yes,error return                   */
+        return Co_NULL;                    /* Yes,error return                   */
     }
     memBlk = (P_MemBlk)memCtl->freeBlock;       /* Get free memory block      */
     memCtl->freeBlock = (U8*)memBlk->nextBlock; /* Reset the first free item  */
@@ -242,7 +242,7 @@ StatusType CoFreeMemoryBuffer(OS_MMID mmID,void* buf)
     {
         return E_INVALID_ID;
     }
-    if(buf == NULL)
+    if(buf == Co_NULL)
     {
         return E_INVALID_PARAMETER;
     }

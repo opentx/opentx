@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
- * @file       flag.h
- * @version    V1.12    
- * @date       2010.03.01
+ * @file       OsFlag.h
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Evnet flag management header file
  * @details    This file including some defines and declares about flag management.	
  *******************************************************************************

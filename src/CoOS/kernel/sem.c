@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       sem.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Semaphore management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -49,8 +49,8 @@ OS_EventID CoCreateSem(U16 initCnt,U16 maxCnt,U8 sortType)
 #endif	
     
     /* Create a semaphore type event control block                            */
-    pecb = CreatEvent(EVENT_TYPE_SEM,sortType,NULL);
-    if(pecb == NULL)                    /* If failed to create event block    */
+    pecb = CreatEvent(EVENT_TYPE_SEM,sortType,Co_NULL);
+    if(pecb == Co_NULL)                    /* If failed to create event block    */
     {
         return E_CREATE_FAIL;
     }
@@ -193,19 +193,22 @@ StatusType CoPendSem(OS_EventID id,U32 timeout)
     if(OSSchedLock != 0)                /* Schdule is locked?                 */
     {
         return E_OS_IN_LOCK;            /* Yes,error return                   */
-    }	
+    }
+    OsSchedLock();
     if(pecb->eventCounter > 0) /* If semaphore is positive,resource available */       
     {	
         pecb->eventCounter--;         /* Decrement semaphore only if positive */
+        OsSchedUnlock();
         return E_OK;	
     }
     else                                /* Resource is not available          */
     {
+    	OsSchedUnlock();
         curTCB = TCBRunning;
         if(timeout == 0)                /* If time-out is not configured      */
         {
             EventTaskToWait(pecb,curTCB); /* Block task until event occurs    */
-            curTCB->pmail = NULL;           
+            curTCB->pmail = Co_NULL;
             return E_OK;
         }
         else                            /* If time-out is configured          */
@@ -217,13 +220,13 @@ StatusType CoPendSem(OS_EventID id,U32 timeout)
             InsertDelayList(curTCB,timeout);
             
             OsSchedUnlock();
-            if (curTCB->pmail == NULL)  /* If pmail is NULL, time-out occurred*/
+            if (curTCB->pmail == Co_NULL)  /* If pmail is Co_NULL, time-out occurred*/
             {
               return E_TIMEOUT;	
             }                               
             else                  /* Event occurred or event have been deleted*/    
             {
-                curTCB->pmail = NULL;
+                curTCB->pmail = Co_NULL;
                 return E_OK;	
             }				
         }		
@@ -300,7 +303,7 @@ StatusType isr_PostSem(OS_EventID id)
     if(OSSchedLock > 0)         /* If scheduler is locked,(the caller is ISR) */      
     {
         /* Initiate a post service handling request */
-        if(InsertInSRQ(SEM_REQ,id,NULL) == FALSE) 
+        if(InsertInSRQ(SEM_REQ,id,Co_NULL) == Co_FALSE)
         {
             return E_SEV_REQ_FULL;        /* If service request queue is full */
         }			

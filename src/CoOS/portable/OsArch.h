@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
- * @file       cpu.h
- * @version    V1.12    
- * @date       2010.03.01
+ * @file       OsArch.h
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Implement function declare related to Cortex-M3(ARM-v7)
  * @details    This header file including functions or defines related to 
  *             Cortex-M3(ARM-v7).	 		
@@ -43,6 +43,8 @@ extern U64      OSTickCnt;          /*!< Counter for current system ticks.    */
 extern OS_STK  *InitTaskContext(FUNCPtr task,void *param,OS_STK *pstk);
 extern void    SwitchContext(void);         /*!< Switch context                   */
 extern void    SetEnvironment(OS_STK *pstk);/*!< Set environment for run          */
-extern U8      Inc8 (U8 *data);
-extern U8      Dec8 (U8 *data);
+extern U8      Inc8 (volatile U8 *data);
+extern U8      Dec8 (volatile U8 *data);
+extern void    IRQ_ENABLE_RESTORE(void);
+extern void    IRQ_DISABLE_SAVE(void);
 #endif

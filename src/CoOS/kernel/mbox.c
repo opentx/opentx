@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       mbox.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Mailbox management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -38,8 +38,8 @@ OS_EventID CoCreateMbox(U8 sortType)
     P_ECB pecb;
     
     /* Create a mailbox type event control block                              */
-    pecb = CreatEvent(EVENT_TYPE_MBOX,sortType,NULL);   
-    if(pecb == NULL)                    /* If failed to create event block    */
+    pecb = CreatEvent(EVENT_TYPE_MBOX,sortType,Co_NULL);
+    if(pecb == Co_NULL)                    /* If failed to create event block    */
     {
         return E_CREATE_FAIL;
     }
@@ -92,7 +92,7 @@ StatusType CoDelMbox(OS_EventID id,U8 opt)
  * @brief      Accept a mailbox	 
  * @param[in]  id    Event ID.  	 
  * @param[out] perr  A pointer to error code.  
- * @retval     NULL
+ * @retval     Co_NULL
  * @retval     A pointer to mailbox accepted.			 
  *
  * @par Description
@@ -108,7 +108,7 @@ void* CoAcceptMail(OS_EventID id,StatusType* perr)
     if(id >= CFG_MAX_EVENT)	                
     {
         *perr = E_INVALID_ID;             /* Invalid 'id'                     */
-        return NULL;
+        return Co_NULL;
     }
 #endif
     pecb = &EventTbl[id];
@@ -117,7 +117,7 @@ void* CoAcceptMail(OS_EventID id,StatusType* perr)
     if(pecb->eventType != EVENT_TYPE_MBOX)/* Invalid event control block type */
     {
         *perr = E_INVALID_ID;	
-        return NULL;
+        return Co_NULL;
     }
 #endif
 	OsSchedLock();
@@ -125,7 +125,7 @@ void* CoAcceptMail(OS_EventID id,StatusType* perr)
     {
         *perr = E_OK;
         pmail = pecb->eventPtr;             /* Get the message                */
-        pecb->eventPtr     = NULL;          /* Clear the mailbox              */
+        pecb->eventPtr     = Co_NULL;          /* Clear the mailbox              */
         pecb->eventCounter = 0;
 		OsSchedUnlock();
         return pmail;                       /* Return the message received    */		
@@ -133,8 +133,8 @@ void* CoAcceptMail(OS_EventID id,StatusType* perr)
     else                                    /* If the mailbox is empty        */
     {	
 		OsSchedUnlock();
-        *perr = E_MBOX_EMPTY;               /* Mailbox is empty,return NULL   */
-        return NULL;	
+        *perr = E_MBOX_EMPTY;               /* Mailbox is empty,return Co_NULL   */
+        return Co_NULL;
     }
 }
 
@@ -146,7 +146,7 @@ void* CoAcceptMail(OS_EventID id,StatusType* perr)
  * @param[in]  id       Event ID.	 
  * @param[in]  timeout  The longest time for writting mail.	    
  * @param[out] perr     A pointer to error code.	  
- * @retval     NULL	
+ * @retval     Co_NULL
  * @retval     A pointer to mailbox accept.
  *
  * @par Description
@@ -163,14 +163,14 @@ void* CoPendMail(OS_EventID id,U32 timeout,StatusType* perr)
     if(OSIntNesting > 0)                /* If the caller is ISR               */
     {
         *perr = E_CALL;
-        return NULL;
+        return Co_NULL;
     }
     
 #if CFG_PAR_CHECKOUT_EN >0
     if(id >= CFG_MAX_EVENT)              
     {
         *perr = E_INVALID_ID;           /* Invalid 'id',retrun error          */
-        return NULL;
+        return Co_NULL;
     }
 #endif
 
@@ -179,25 +179,28 @@ void* CoPendMail(OS_EventID id,U32 timeout,StatusType* perr)
     if(pecb->eventType != EVENT_TYPE_MBOX)
     {
         *perr = E_INVALID_ID;       /* Invalid event type,not EVENT_TYPE_MBOX */
-        return NULL;
+        return Co_NULL;
     }
 #endif
 
     if(OSSchedLock != 0)                /* Judge schedule is locked or not?   */
     {	
         *perr = E_OS_IN_LOCK;           /* Schedule is locked                 */								 
-        return NULL;                    /* return NULL                        */
-    }	
+        return Co_NULL;                    /* return Co_NULL                        */
+    }
+    OsSchedLock();
     if( pecb->eventCounter == 1)        /* If there is already a message      */
     {
         *perr = E_OK;
         pmail = pecb->eventPtr;         /* Get the message                    */
-        pecb->eventPtr     = NULL;      /* Clear the mailbox                  */
-        pecb->eventCounter = 0;             
+        pecb->eventPtr     = Co_NULL;      /* Clear the mailbox                  */
+        pecb->eventCounter = 0;
+        OsSchedUnlock();
         return pmail;                   /* Return the message received        */
     }
     else                       /* If message is not available, task will pend */ 
     {
+    	OsSchedUnlock();
         curTCB = TCBRunning;
         if(timeout == 0)                /* If time-out is not configured      */
         {
@@ -206,8 +209,8 @@ void* CoPendMail(OS_EventID id,U32 timeout,StatusType* perr)
             
             /* Have recived a message or the mailbox have been deleted        */
             pmail = curTCB->pmail;          
-            curTCB->pmail = NULL;
-            return pmail;               /* Return received message or NULL    */
+            curTCB->pmail = Co_NULL;
+            return pmail;               /* Return received message or Co_NULL    */
         }
         else                            /* If time-out is configured          */
         {
@@ -217,17 +220,17 @@ void* CoPendMail(OS_EventID id,U32 timeout,StatusType* perr)
             EventTaskToWait(pecb,curTCB);   
             InsertDelayList(curTCB,timeout);
             OsSchedUnlock();
-            if( curTCB->pmail == NULL)  /* Time-out occurred                  */
+            if( curTCB->pmail == Co_NULL)  /* Time-out occurred                  */
             {
                 *perr = E_TIMEOUT;
-                return NULL;	
+                return Co_NULL;
             }
             else    /* Have recived a message or the mailbox have been deleted*/
             {
                 *perr = E_OK;
                 pmail = curTCB->pmail;
-                curTCB->pmail = NULL;
-                return pmail;           /* Return received message or NULL    */	
+                curTCB->pmail = Co_NULL;
+                return pmail;           /* Return received message or Co_NULL    */
             }			
         }	
     }
@@ -301,7 +304,7 @@ StatusType isr_PostMail(OS_EventID id,void* pmail)
     if(OSSchedLock > 0)         /* If scheduler is locked,(the caller is ISR) */
     {
         /* Insert the request into service request queue                      */
-        if(InsertInSRQ(MBOX_REQ,id,pmail) == FALSE)  
+        if(InsertInSRQ(MBOX_REQ,id,pmail) == Co_FALSE)
         {
             return E_SEV_REQ_FULL;        /* If service request queue is full */
         }			

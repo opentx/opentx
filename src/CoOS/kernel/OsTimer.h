@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
- * @file       timer.h
- * @version    V1.12    
- * @date       2010.03.01
+ * @file       OsTimer.h
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Timer manage header file	
  * @details    This file including some declares and defines related to timer 
  *             management.

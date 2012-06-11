@@ -1,8 +1,8 @@
-/**
+ /**
  *******************************************************************************
  * @file       core.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Core implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -17,9 +17,9 @@
 #include <coocox.h>
 
 /*---------------------------- Variable Define -------------------------------*/
-U8     OSIntNesting  = 0;         /*!< Use to indicate interrupt nesting level*/
-U8     OSSchedLock   = 0;         /*!< Task Switch lock.                      */
-BOOL   TaskSchedReq  = FALSE;
+volatile U8     OSIntNesting  = 0;         /*!< Use to indicate interrupt nesting level*/
+volatile U8     OSSchedLock   = 0;         /*!< Task Switch lock.                      */
+volatile BOOL   TaskSchedReq  = Co_FALSE;
 
 
 /**
@@ -61,7 +61,7 @@ void CoExitISR(void)
     Dec8(&OSIntNesting);                /* OSIntNesting decrease              */
     if( OSIntNesting == 0)              /* Is OSIntNesting == 0?              */
     {
-        if(TaskSchedReq == TRUE)
+        if(TaskSchedReq == Co_TRUE)
         {
 			OSSchedLock++;
             Schedule();                 /* Call task schedule                 */
@@ -90,13 +90,13 @@ void OsSchedUnlock(void)
     if(OSSchedLock == 1)                /* Is OSSchedLock == 0?               */
     {
 #if CFG_TASK_WAITTING_EN > 0
-        if(IsrReq == TRUE)
+        if(IsrReq == Co_TRUE)
         {
             RespondSRQ();               /* Respond service request            */	
         }
 #endif
         /* Judge task state change or higher PRI task coming in               */
-        if(TaskSchedReq == TRUE)
+        if(TaskSchedReq == Co_TRUE)
         {
             Schedule();                 /* Call task schedule                 */
         }
@@ -184,7 +184,7 @@ void CoInitOS(void)
     OsSchedLock();                /* Lock Schedule                            */ 
                                   /* Create first task -- IDLE task.          */ 
     CoCreateTask(                      CoIdleTask,
-                                             NULL,
+                                             Co_NULL,
                                   CFG_LOWEST_PRIO,
                  &idle_stk[CFG_IDLE_STACK_SIZE-1],
                               CFG_IDLE_STACK_SIZE

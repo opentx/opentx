@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
- * @file       ccrtos.h
- * @version    V1.12    
- * @date       2010.03.01
+ * @file       CoOS.h
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      API header file of CooCox CoOS.
  * @details    This file including all API functions's declare of CooCox CoOS.	
  *******************************************************************************
@@ -19,7 +19,7 @@
 #include "OsConfig.h"
 /*---------------------------- Type Define  ----------------------------------*/
 typedef signed   char      S8;              
-typedef unsigned char      U8;			   	
+typedef unsigned char      U8;	
 typedef short              S16;
 typedef unsigned short     U16;
 typedef int                S32;
@@ -42,16 +42,16 @@ typedef void               (*vFUNCPtr)(void);
 
 
 /*---------------------------- Constant Define -------------------------------*/
-#ifndef NULL
-#define NULL          ((void *)0)
+#ifndef Co_NULL
+#define Co_NULL          ((void *)0)
 #endif
 
-#ifndef FALSE
-#define FALSE         (0)
+#ifndef Co_FALSE
+#define Co_FALSE         (0)
 #endif
 
-#ifndef TRUE
-#define TRUE          (1)
+#ifndef Co_TRUE
+#define Co_TRUE          (1)
 #endif
 
 
@@ -120,11 +120,11 @@ extern OS_VER  CoGetOSVersion(void);    /*!< Get OS version value             */
 
 /* Implement in file "task.c"      */
 #define CoCreateTask(task,argv,prio,stk,stkSz)              \
-            CreateTask(task,argv,(prio)|((stkSz)<<8),stk)
+            CreateTask(task,argv,(prio)|(((stkSz)<<8) &0x000FFF00 ),stk)
 
 
 #define CoCreateTaskEx(task,argv,prio,stk,stkSz,timeSlice,isWaitting)  \
-           CreateTask(task,argv,(prio)|((stkSz)<<8)|((timeSlice)<<20)|(isWaitting<<31),stk)
+           CreateTask(task,argv,(prio)|(((stkSz)<<8)&0x000FFF00)|(((timeSlice)<<20)&0x7FF00000)|((isWaitting<<31)&0x80000000),stk)
 
 extern void        CoExitTask(void);
 extern OS_TID      CoGetCurTaskID(void);

@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       queue.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Queue management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -45,7 +45,7 @@ OS_EventID CoCreateQueue(void **qStart, U16 size ,U8 sortType)
     P_ECB pecb;
 
 #if CFG_PAR_CHECKOUT_EN >0	
-    if((qStart == NULL) || (size == 0)) 	
+    if((qStart == Co_NULL) || (size == 0))
     {
         return E_CREATE_FAIL;
     }
@@ -70,7 +70,7 @@ OS_EventID CoCreateQueue(void **qStart, U16 size ,U8 sortType)
             /* Get a event control block and initial the event content        */
             pecb = CreatEvent(EVENT_TYPE_QUEUE,sortType,&QueueTbl[i]);
             
-            if(pecb == NULL )       /* If there is no free EVENT control block*/
+            if(pecb == Co_NULL )       /* If there is no free EVENT control block*/
             {
                 return E_CREATE_FAIL;
             }
@@ -123,7 +123,7 @@ StatusType CoDelQueue(OS_EventID id,U8 opt)
     if(err == E_OK)                   /* If the event block have been deleted */
     {
         QueueIDVessel &= ~((U32)(1<<(pqcb->id)));   /* Update free queue list             */
-        pqcb->qStart   = NULL;
+        pqcb->qStart   = Co_NULL;
 		    pqcb->id       = 0;
         pqcb->head     = 0;
         pqcb->tail     = 0;
@@ -140,7 +140,7 @@ StatusType CoDelQueue(OS_EventID id,U8 opt)
  * @brief      Accept a mail from queue   
  * @param[in]  id     Event ID.	 	 
  * @param[out] perr   A pointer to error code.  
- * @retval     NULL	
+ * @retval     Co_NULL
  * @retval     A pointer to mail accepted.
  *
  * @par Description
@@ -157,7 +157,7 @@ void* CoAcceptQueueMail(OS_EventID id,StatusType* perr)
     if(id >= CFG_MAX_EVENT)             
     {
         *perr = E_INVALID_ID;           /* Invalid id,return error            */
-        return NULL;
+        return Co_NULL;
     }
 #endif
 
@@ -166,7 +166,7 @@ void* CoAcceptQueueMail(OS_EventID id,StatusType* perr)
     if(pecb->eventType != EVENT_TYPE_QUEUE)/* Invalid event control block type*/          		
     {
         *perr = E_INVALID_ID;
-        return NULL;	
+        return Co_NULL;
     }
 #endif	
     pqcb = (P_QCB)pecb->eventPtr;       /* Point at queue control block       */
@@ -189,7 +189,7 @@ void* CoAcceptQueueMail(OS_EventID id,StatusType* perr)
     {
 		OsSchedUnlock();
         *perr = E_QUEUE_EMPTY;                 
-        return NULL;                    /* Return NULL                        */ 
+        return Co_NULL;                    /* Return Co_NULL                        */
     }	
 }
 
@@ -201,7 +201,7 @@ void* CoAcceptQueueMail(OS_EventID id,StatusType* perr)
  * @param[in]  id       Event ID.	 
  * @param[in]  timeout  The longest time for writting mail.	
  * @param[out] perr     A pointer to error code.   
- * @retval     NULL	
+ * @retval     Co_NULL
  * @retval     A pointer to mail accept.	 
  *
  * @par Description
@@ -218,13 +218,13 @@ void* CoPendQueueMail(OS_EventID id,U32 timeout,StatusType* perr)
     if(OSIntNesting > 0)                /* If the caller is ISR               */
     {
         *perr = E_CALL;
-        return NULL;
+        return Co_NULL;
     }
 #if CFG_PAR_CHECKOUT_EN >0
     if(id >= CFG_MAX_EVENT)	         
     {
         *perr = E_INVALID_ID;           /* Invalid event id,return error      */
-        return NULL;
+        return Co_NULL;
     }
 #endif
 
@@ -233,16 +233,16 @@ void* CoPendQueueMail(OS_EventID id,U32 timeout,StatusType* perr)
     if(pecb->eventType != EVENT_TYPE_QUEUE) /* The event type is not queue    */
     {
         *perr = E_INVALID_ID;
-        return NULL;	
+        return Co_NULL;
     }
 #endif	
     if(OSSchedLock != 0)                /* Judge schedule is locked or not?   */
     {	
         *perr = E_OS_IN_LOCK;           /* Schedule is locked,return error    */								 
-        return NULL;          
+        return Co_NULL;
     }	
     pqcb = (P_QCB)pecb->eventPtr;       /* Point at queue control block       */
-	 
+    OsSchedLock();
     if(pqcb->qSize != 0)            /* If there are any messages in the queue */
     {
         /* Extract oldest message from the queue                              */
@@ -253,11 +253,13 @@ void* CoPendQueueMail(OS_EventID id,U32 timeout,StatusType* perr)
         {
             pqcb->head = 0;	
         }
+        OsSchedUnlock();
         *perr = E_OK;
         return pmail;                   /* Return message received            */
     }
     else                                /* If there is no message in the queue*/
     {
+    	OsSchedUnlock();
         curTCB = TCBRunning;
         if(timeout == 0)                /* If time-out is not configured      */
         {
@@ -266,9 +268,9 @@ void* CoPendQueueMail(OS_EventID id,U32 timeout,StatusType* perr)
             
             /* Have recived message or the queue have been deleted            */
             pmail = curTCB->pmail;              
-            curTCB->pmail = NULL;
+            curTCB->pmail = Co_NULL;
             *perr = E_OK;
-            return pmail;               /* Return message received or NULL    */
+            return pmail;               /* Return message received or Co_NULL    */
         }
         else                            /* If time-out is configured          */
         {
@@ -278,17 +280,17 @@ void* CoPendQueueMail(OS_EventID id,U32 timeout,StatusType* perr)
             EventTaskToWait(pecb,curTCB);       
             InsertDelayList(curTCB,timeout);
             OsSchedUnlock();
-            if(curTCB->pmail == NULL)   /* If time-out occurred               */
+            if(curTCB->pmail == Co_NULL)   /* If time-out occurred               */
             {
                 *perr = E_TIMEOUT;
-                return NULL;
+                return Co_NULL;
             }
             else                        /* If event occured                   */
             {
                 pmail = curTCB->pmail;
-                curTCB->pmail = NULL;
+                curTCB->pmail = Co_NULL;
                 *perr = E_OK;
-                return pmail;           /* Return message received or NULL    */
+                return pmail;           /* Return message received or Co_NULL    */
             }				
         }	
     }
@@ -372,7 +374,7 @@ StatusType isr_PostQueueMail(OS_EventID id,void* pmail)
     if(OSSchedLock > 0)         /* If scheduler is locked,(the caller is ISR) */
     {
         /* Insert the request into service request queue                      */
-        if(InsertInSRQ(QUEUE_REQ,id,pmail) == FALSE)   
+        if(InsertInSRQ(QUEUE_REQ,id,pmail) == Co_FALSE)
         {
             return E_SEV_REQ_FULL;      /* If service request queue is full   */          
         }			

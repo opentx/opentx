@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       timer.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      timer management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -22,7 +22,7 @@
 #if CFG_TMR_EN > 0
 
 TmrCtrl    TmrTbl[CFG_MAX_TMR]= {{0}};/*!< Table which save timer control block.*/
-P_TmrCtrl  TmrList     = NULL;      /*!< The header of the TmrCtrl list.      */
+P_TmrCtrl  TmrList     = Co_NULL;      /*!< The header of the TmrCtrl list.      */
 U32        TmrIDVessel = 0;         /*!< Timer ID container.                  */
 
 
@@ -51,7 +51,7 @@ static void InsertTmrList(OS_TCID tmrID)
     }
     
     OsSchedLock();                      /* Lock schedule                      */
-    if(TmrList == NULL)                 /* Is no item in timer list?          */
+    if(TmrList == Co_NULL)                 /* Is no item in timer list?          */
     {
         TmrList = &TmrTbl[tmrID];       /* Yes,set this as first item         */
     }
@@ -61,13 +61,13 @@ static void InsertTmrList(OS_TCID tmrID)
       	deltaTicks = tmrCnt;            /* Get timer tick                     */
       	
       	/* find correct place */
-      	while(pTmr != NULL)
+      	while(pTmr != Co_NULL)
       	{				    
             deltaTicks -= pTmr->tmrCnt; /* Get ticks with previous item       */
             if(deltaTicks < 0)          /* Is delta ticks<0?                  */  
             {	
                 /* Yes,get correct place */
-                if(pTmr->tmrPrev!= NULL)/* Is head item of timer list?        */
+                if(pTmr->tmrPrev!= Co_NULL)/* Is head item of timer list?        */
                 {	
                     /* No,insert into */
                     pTmr->tmrPrev->tmrNext = &TmrTbl[tmrID]; 
@@ -86,7 +86,7 @@ static void InsertTmrList(OS_TCID tmrID)
                 break;	
             }
             /* Is last item in list? */									
-            else if((deltaTicks >= 0) && (pTmr->tmrNext == NULL))
+            else if((deltaTicks >= 0) && (pTmr->tmrNext == Co_NULL))
             {	
                 /* Yes,insert into */
                 TmrTbl[tmrID].tmrPrev = pTmr;
@@ -121,30 +121,30 @@ static void RemoveTmrList(OS_TCID tmrID)
     OsSchedLock();                      /* Lock schedule                      */
     
     /* Is there only one item in timer list?                                  */
-    if((pTmr->tmrPrev == NULL) && (pTmr->tmrNext == NULL))
+    if((pTmr->tmrPrev == Co_NULL) && (pTmr->tmrNext == Co_NULL))
     {		
-        TmrList = NULL;                 /* Yes,set timer list as NULL         */ 	
+        TmrList = Co_NULL;                 /* Yes,set timer list as Co_NULL         */
     }
-    else if(pTmr->tmrPrev == NULL)      /* Is the first item in timer list?   */
+    else if(pTmr->tmrPrev == Co_NULL)      /* Is the first item in timer list?   */
     {   /* Yes,remove timer from list,and reset timer list                    */
         TmrList  = pTmr->tmrNext;
-        TmrList->tmrPrev = NULL;
+        TmrList->tmrPrev = Co_NULL;
         pTmr->tmrNext->tmrCnt += pTmr->tmrCnt;
-        pTmr->tmrNext    = NULL;  
+        pTmr->tmrNext    = Co_NULL;
     }
-    else if(pTmr->tmrNext == NULL)      /* Is the last item in timer list?    */
+    else if(pTmr->tmrNext == Co_NULL)      /* Is the last item in timer list?    */
     {
         /* Yes,remove timer form list */
-        pTmr->tmrPrev->tmrNext = NULL;	
-        pTmr->tmrPrev = NULL;
+        pTmr->tmrPrev->tmrNext = Co_NULL;
+        pTmr->tmrPrev = Co_NULL;
     }
     else                                /* No, remove timer from list         */
     {
         pTmr->tmrPrev->tmrNext  =  pTmr->tmrNext;
         pTmr->tmrNext->tmrPrev  =  pTmr->tmrPrev;
         pTmr->tmrNext->tmrCnt  += pTmr->tmrCnt;
-        pTmr->tmrNext = NULL;
-        pTmr->tmrPrev = NULL;
+        pTmr->tmrNext = Co_NULL;
+        pTmr->tmrPrev = Co_NULL;
     }
     OsSchedUnlock();                    /* Unlock schedule                    */
 }
@@ -173,7 +173,7 @@ OS_TCID CoCreateTmr(U8 tmrType, U32 tmrCnt, U32 tmrReload, vFUNCPtr func)
     {
         return E_CREATE_FAIL;	
     }
-    if(func == NULL)
+    if(func == Co_NULL)
     {
         return E_CREATE_FAIL;
     }
@@ -191,8 +191,8 @@ OS_TCID CoCreateTmr(U8 tmrType, U32 tmrCnt, U32 tmrReload, vFUNCPtr func)
             TmrTbl[i].tmrCnt    = tmrCnt;
             TmrTbl[i].tmrReload	= tmrReload;
             TmrTbl[i].tmrCallBack = func;
-            TmrTbl[i].tmrPrev   = NULL;
-            TmrTbl[i].tmrNext   = NULL;
+            TmrTbl[i].tmrPrev   = Co_NULL;
+            TmrTbl[i].tmrNext   = Co_NULL;
             return i;                     /* Return timer ID                  */
         }
     }
@@ -396,7 +396,7 @@ void TmrDispose(void)
     P_TmrCtrl	pTmr;
     
     pTmr = TmrList;                     /* Get first item of timer list       */
-    while((pTmr != NULL) && (pTmr->tmrCnt == 0) )
+    while((pTmr != Co_NULL) && (pTmr->tmrCnt == 0) )
     {	
         if(pTmr->tmrType == TMR_TYPE_ONE_SHOT)    /* Is a One-shot timer?     */
         {
@@ -435,8 +435,8 @@ void isr_TmrDispose(void)
 {
     if(OSSchedLock > 1)                 /* Is schedule lock?                  */
     {
-        IsrReq = TRUE;
-        TimerReq  = TRUE;               /* Yes,set timer request true         */
+        IsrReq = Co_TRUE;
+        TimerReq  = Co_TRUE;               /* Yes,set timer request true         */
     }
     else
     {

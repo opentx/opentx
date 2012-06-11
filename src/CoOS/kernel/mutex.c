@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       mutex.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Mutex management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -56,7 +56,7 @@ OS_MutexID CoCreateMutex(void)
         pMutex->originalPrio = 0xff;
         pMutex->mutexFlag    = MUTEX_FREE;  /* Mutex is free,not was occupied */
         pMutex->taskID       = INVALID_ID;
-        pMutex->waittingList = NULL;
+        pMutex->waittingList = Co_NULL;
         return id;                      /* Return mutex ID                    */			
     }	
     
@@ -156,24 +156,24 @@ StatusType CoEnterMutexSection(OS_MutexID mutexID)
         }
         
         pCurTcb->state   = TASK_WAITING;    /* Block current task             */
-		TaskSchedReq     = TRUE;
-        pCurTcb->TCBnext = NULL;
-        pCurTcb->TCBprev = NULL;
+		TaskSchedReq     = Co_TRUE;
+        pCurTcb->TCBnext = Co_NULL;
+        pCurTcb->TCBprev = Co_NULL;
         
         ptcb = pMutex->waittingList;
-        if(ptcb == NULL)               /* If the event waiting list is empty  */
+        if(ptcb == Co_NULL)               /* If the event waiting list is empty  */
         {
             pMutex->waittingList = pCurTcb; /* Insert the task to head        */
         }
         else                        /* If the event waiting list is not empty */
         {            	
-            while(ptcb->TCBnext != NULL)    /* Insert the task to tail        */
+            while(ptcb->TCBnext != Co_NULL)    /* Insert the task to tail        */
             {
                 ptcb = ptcb->TCBnext;		
             }
             ptcb->TCBnext    = pCurTcb;
             pCurTcb->TCBprev = ptcb;
-            pCurTcb->TCBnext = NULL;	
+            pCurTcb->TCBnext = Co_NULL;
         }
     }
     OsSchedUnlock();
@@ -217,7 +217,7 @@ StatusType CoLeaveMutexSection(OS_MutexID mutexID)
     pMutex = &MutexTbl[mutexID];        /* Obtain point of mutex control block*/   
     ptcb = &TCBTbl[pMutex->taskID];
 	ptcb->mutexID = INVALID_ID;
-	if(pMutex->waittingList == NULL)    /* If the mutex waiting list is empty */
+	if(pMutex->waittingList == Co_NULL)    /* If the mutex waiting list is empty */
     {
         pMutex->mutexFlag = MUTEX_FREE; /* The mutex resource is available    */
         pMutex->taskID    = INVALID_ID;
@@ -232,7 +232,7 @@ StatusType CoLeaveMutexSection(OS_MutexID mutexID)
         {
             ptcb = pMutex->waittingList;/* Point to mutex first waiting task  */		
             prio = ptcb->prio; 
-            while(ptcb != NULL)         /* Find the highest priority task     */
+            while(ptcb != Co_NULL)         /* Find the highest priority task     */
             {
                 if(ptcb->prio < prio)  		
                 {
@@ -268,8 +268,8 @@ StatusType CoLeaveMutexSection(OS_MutexID mutexID)
         ptcb->prio           = prio;    /* Raise the task's priority          */       
         				   
         /* Insert the task which acquire the mutex into ready list.           */
-        ptcb->TCBnext = NULL;
-        ptcb->TCBprev = NULL;
+        ptcb->TCBnext = Co_NULL;
+        ptcb->TCBprev = Co_NULL;
 
 		InsertToTCBRdyList(ptcb);     /* Insert the task into the READY list  */
         OsSchedUnlock();
@@ -297,29 +297,29 @@ void RemoveMutexList(P_OSTCB ptcb)
     pMutex = &MutexTbl[ptcb->mutexID];
     
     /* If only one task waiting on mutex                                      */	
-    if((ptcb->TCBnext ==NULL) && (ptcb->TCBprev == NULL)) 
+    if((ptcb->TCBnext ==Co_NULL) && (ptcb->TCBprev == Co_NULL))
     {
-        pMutex->waittingList = NULL;     /* Waiting list is empty             */
+        pMutex->waittingList = Co_NULL;     /* Waiting list is empty             */
     }
-    else if(ptcb->TCBnext == NULL)  /* If the task is the last of waiting list*/
+    else if(ptcb->TCBnext == Co_NULL)  /* If the task is the last of waiting list*/
     {
         /* Remove task from mutex waiting list                                */
-        ptcb->TCBprev->TCBnext = NULL;
-        ptcb->TCBprev = NULL;		
+        ptcb->TCBprev->TCBnext = Co_NULL;
+        ptcb->TCBprev = Co_NULL;
     }	
-    else if(ptcb->TCBprev ==  NULL)/* If the task is the first of waiting list*/	
+    else if(ptcb->TCBprev ==  Co_NULL)/* If the task is the first of waiting list*/
     {
         /* Remove task from waiting list                                      */
-        ptcb->TCBnext->TCBprev = NULL;
-        ptcb->TCBnext = NULL;	
+        ptcb->TCBnext->TCBprev = Co_NULL;
+        ptcb->TCBnext = Co_NULL;
     }
     else                      /* If the task is in the middle of waiting list */
     {
         /* Remove task from wait list */
         ptcb->TCBnext->TCBprev = ptcb->TCBprev;
         ptcb->TCBprev->TCBnext = ptcb->TCBnext;
-        ptcb->TCBprev          = NULL;
-        ptcb->TCBnext          = NULL;	
+        ptcb->TCBprev          = Co_NULL;
+        ptcb->TCBnext          = Co_NULL;
     }
     
     ptcb->mutexID = INVALID_ID;
@@ -330,7 +330,7 @@ void RemoveMutexList(P_OSTCB ptcb)
         ptcb = pMutex->waittingList;
         prio = pMutex->originalPrio; 
         pMutex->hipriTaskID = pMutex->taskID;
-        while(ptcb != NULL)           /* Find task ID of highest priority task*/					
+        while(ptcb != Co_NULL)           /* Find task ID of highest priority task*/
         {
             if(ptcb->prio < prio)
             {

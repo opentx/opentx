@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       utility.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Utility management implementation code of CooCox CoOS kernel.	
  *******************************************************************************
  * @copy

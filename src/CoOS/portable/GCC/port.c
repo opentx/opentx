@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       prot.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Compiler adapter for CooCox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -27,8 +27,10 @@ U32 INT_EXIT       = 0xFFFFFFFC;
 //******************************************************************************
 //                         PUBLIC FUNCTIONS
 //******************************************************************************
-extern U8     Inc8(U8 *data) ;
-extern U8     Dec8(U8 *data) ; 
+extern U8     Inc8(volatile U8 *data) ;
+extern U8     Dec8(volatile U8 *data) ; 
+extern void   IRQ_ENABLE_RESTORE(void);
+extern void   IRQ_DISABLE_SAVE(void);
 extern void   SetEnvironment(OS_STK *pstk) __attribute__ ((naked)); 	
 extern void   SwitchContext(void)          __attribute__ ((naked));
 extern void   PendSV_Handler(void)         __attribute__ ((naked));
@@ -46,7 +48,7 @@ extern void   PendSV_Handler(void)         __attribute__ ((naked));
  *             and Saved into memory cell.
  ******************************************************************************
  */
-U8 Inc8 (U8 *data)
+U8 Inc8 (volatile U8 *data)
 {
   register U8  result = 0;
   
@@ -81,7 +83,7 @@ U8 Inc8 (U8 *data)
  *             and Saved into memory cell.
  ******************************************************************************
  */
-U8 Dec8 (U8 *data)
+U8 Dec8 (volatile U8 *data)
 {
   register U8  result = 0;
   __asm volatile 
@@ -98,6 +100,46 @@ U8 Dec8 (U8 *data)
       :"r"(data)
   ); 
   return (result); 
+}
+
+/**
+ ******************************************************************************
+ * @brief      ENABLE Interrupt
+ * @param[in]  None	 
+ * @param[out] None  
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to ENABLE Interrupt.
+ ******************************************************************************
+ */
+void IRQ_ENABLE_RESTORE(void)
+{ 
+  __asm volatile 
+  (
+      " CPSIE   I        \n"
+  );	
+  return;
+}
+
+/**
+ ******************************************************************************
+ * @brief      Close Interrupt
+ * @param[in]  None	 
+ * @param[out] None  
+ * @retval     None		 
+ *
+ * @par Description
+ * @details    This function is called to close Interrupt.
+ ******************************************************************************
+ */
+void IRQ_DISABLE_SAVE(void)
+{  
+  __asm volatile 
+  (
+      " CPSID   I        \n"
+  );	
+  return;
 }
 
 
@@ -119,8 +161,9 @@ void SetEnvironment (OS_STK *pstk)
     (   
        " SUB    R0,#28 \n"
        " MSR    PSP,R0 \n"
-       " BX     LR     \n"
+       " BX      LR               \n"
     );
+  
 }
 
 
@@ -145,8 +188,9 @@ void SwitchContext(void)
 	  " LDR     R2,=NVIC_PENDSVSET \n"
 	  " LDR     R1,[R2]            \n"
       " STR     R1, [R3]           \n"
-      " BX      LR                 \n"
+      " BX      LR               \n"   
   );
+ 
 }
 
 

@@ -322,7 +322,7 @@ ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM
-  EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable # FreeRTOSV7.1.1/Source/include FreeRTOSV7.1.1/Source/portable/GCC/ARM_CM3
+  EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
   EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   CPPSRC += ersky9x/ff.cpp ersky9x/diskio.cpp ersky9x/gtime.cpp
@@ -677,24 +677,14 @@ ifeq ($(PCB), ARM)
 %.elf: allsrc.cpp
 	@echo
 	@echo $(MSG_COMPILING) $@
-	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/list.c -o list.o
-	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/queue.c -o queue.o 
-	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/tasks.c -o tasks.o
-	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/timers.c -o timers.o
-	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/portable/GCC/ARM_CM3/port.c -o port.o
-	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/portable/IAR/ARM_CM3/port.c -o port.o
-	#$(AS) FreeRTOSV7.1.1/Source/portable/IAR/ARM_CM3/portasm.s -o portasm.o
-	#$(CC) $(ALL_CPPFLAGS) FreeRTOSV7.1.1/Source/portable/MemMang/heap_2.c -o heap.o
-	#$(CC) $(ALL_CPPFLAGS) syscalls.c -o syscalls.o
 	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/core.c -o core.o
 	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/hook.c -o hook.o
-	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/kernelHeap.c -o kernelHeap.o
 	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/task.c -o task.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/mutex.c -o mutex.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/sem.c -o sem.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/queue.c -o queue.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/mbox.c -o mbox.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/flag.c -o flag.o
+	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/mutex.c -o mutex.o
+	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/sem.c -o sem.o
+	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/queue.c -o queue.o
+	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/mbox.c -o mbox.o
+	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/flag.c -o flag.o
 	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/event.c -o event.o
 	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/time.c -o time.o
 	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/timer.c -o timer.o
@@ -702,8 +692,7 @@ ifeq ($(PCB), ARM)
 	$(CC) $(ALL_CPPFLAGS) CoOS/portable/GCC/port.c -o port.o
 	$(CC) $(ALL_CPPFLAGS) CoOS/portable/arch.c -o arch.o
 	$(CC) $(ALL_CPPFLAGS) $< -o allsrc.o
-	#$(CC) allsrc.o list.o queue.o tasks.o timers.o port.o heap.o syscalls.o -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
-	$(CC) allsrc.o core.o hook.o task.o mutex.o sem.o queue.o mbox.o flag.o event.o time.o timer.o serviceReq.o port.o arch.o -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
+	$(CC) allsrc.o core.o hook.o task.o event.o time.o timer.o serviceReq.o port.o arch.o -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
 else
 %.elf: allsrc.cpp
 	@echo

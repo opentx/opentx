@@ -1,16 +1,16 @@
 /**
  *******************************************************************************
- * @file     cpu.c
- * @version    V1.12    
- * @date       2010.03.01
- * @brief    This file provides InitTaskContext() and SysTick_Handler().
+ * @file      arch.c
+ * @version   V1.1.4    
+ * @date      2011.04.20
+ * @brief     This file provides InitTaskContext() and SysTick_Handler().
  *******************************************************************************
  * @copy
  *	WRITE COPY INFORMATION USE CAPITAL LETTER
  *
  * <h2><center>&copy; COPYRIGHT 2009 CooCox </center></h2>
  *******************************************************************************
- */ 
+ */  
 
 /*---------------------------- Include ---------------------------------------*/
 #include <coocox.h>
@@ -63,7 +63,7 @@ void SysTick_Handler(void)
     OSSchedLock++;                  /* Lock scheduler.                        */
     OSTickCnt++;                    /* Increment systerm time.                */
 #if CFG_TASK_WAITTING_EN >0    
-    if(DlyList != NULL)             /* Have task in delay list?               */
+    if(DlyList != Co_NULL)             /* Have task in delay list?               */
     {
         if(DlyList->delayTick > 1)  /* Delay time > 1?                        */
         {
@@ -78,7 +78,7 @@ void SysTick_Handler(void)
 #endif
     
 #if CFG_TMR_EN > 0	
-    if(TmrList != NULL)             /* Have timer in working?                 */
+    if(TmrList != Co_NULL)             /* Have timer in working?                 */
     {
         if(TmrList->tmrCnt > 1)     /* Timer time > 1?                        */
         {
@@ -91,6 +91,6 @@ void SysTick_Handler(void)
 		}
     }	
 #endif
-	TaskSchedReq = TRUE;
+	TaskSchedReq = Co_TRUE;
     OsSchedUnlock();
 }

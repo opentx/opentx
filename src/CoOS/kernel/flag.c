@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       flag.c
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Flag management implementation code of coocox CoOS kernel.	
  *******************************************************************************
  * @copy
@@ -31,7 +31,7 @@ static  P_FLAG_NODE RemoveFromLink(P_FLAG_NODE pnode);
 /**
  *******************************************************************************
  * @brief      Create a flag	 
- * @param[in]  bAutoReset      Reset mode,TRUE(Auto Reset)  FLASE(Manual Reset).
+ * @param[in]  bAutoReset      Reset mode,Co_TRUE(Auto Reset)  FLASE(Manual Reset).
  * @param[in]  bInitialState   Initial state.	 
  * @param[out] None  
  * @retval     E_CREATE_FAIL   Create flag fail.
@@ -99,7 +99,7 @@ StatusType CoDelFlag(OS_FlagID id,U8 opt)
     OsSchedLock();
     pnode = pfcb->headNode;
     
-    while(pnode != NULL)                /* Ready all tasks waiting for flags  */
+    while(pnode != Co_NULL)                /* Ready all tasks waiting for flags  */
     {
         if((pnode->waitFlags&(1<<id)) != 0) /* If no task is waiting on flags */
     	  {
@@ -305,11 +305,11 @@ StatusType CoWaitForSingleFlag(OS_FlagID id,U32 timeout)
             /* Block task until the required flag is set                      */
             FlagBlock (&flagNode,(1<<id),OPT_WAIT_ONE);  
             curTCB->state  = TASK_WAITING;	
-			TaskSchedReq   = TRUE;
+			TaskSchedReq   = Co_TRUE;
             OsSchedUnlock();
             
             /* The required flag is set and the task is in running state      */
-            curTCB->pnode  = NULL;					   		
+            curTCB->pnode  = Co_NULL;
             OsSchedLock();
             
             /* Clear the required flag or not                                 */	
@@ -323,13 +323,13 @@ StatusType CoWaitForSingleFlag(OS_FlagID id,U32 timeout)
             InsertDelayList(curTCB,timeout);
             
             OsSchedUnlock();
-            if(curTCB->pnode == NULL)     /* If time-out occurred             */
+            if(curTCB->pnode == Co_NULL)     /* If time-out occurred             */
             {
                 return E_TIMEOUT;		
             }
             else                          /* If flag is set                   */
             {
-                curTCB->pnode = NULL;
+                curTCB->pnode = Co_NULL;
                 OsSchedLock();
                 
                 /* Clear the required flag or not                             */
@@ -410,10 +410,10 @@ U32 CoWaitForMultipleFlags(U32 flags,U8 waitType,U32 timeout,StatusType *perr)
         /* Block task until the required flag are set                         */
         FlagBlock(&flagNode,flags,waitType);
         curTCB->state  = TASK_WAITING;	
-		TaskSchedReq   = TRUE;
+		TaskSchedReq   = Co_TRUE;
 		OsSchedUnlock();
         
-        curTCB->pnode  = NULL;
+        curTCB->pnode  = Co_NULL;
         OsSchedLock();			 	
         springFlag     = flags & pfcb->flagRdy;		
         pfcb->flagRdy &= ~(springFlag & pfcb->resetOpt);/* Clear the flags    */	
@@ -428,14 +428,14 @@ U32 CoWaitForMultipleFlags(U32 flags,U8 waitType,U32 timeout,StatusType *perr)
         InsertDelayList(curTCB,timeout);
         
         OsSchedUnlock();
-        if(curTCB->pnode == NULL)       /* If time-out occurred               */
+        if(curTCB->pnode == Co_NULL)       /* If time-out occurred               */
         {
             *perr = E_TIMEOUT;
             return 0;	
         }
         else                            /* If the required flags are set      */
         {
-            curTCB->pnode = NULL;
+            curTCB->pnode = Co_NULL;
             OsSchedLock();
             springFlag    = flags & FlagCrl.flagRdy;
             
@@ -522,7 +522,7 @@ StatusType CoSetFlag(OS_FlagID id)
     
     OsSchedLock();
     pnode = pfcb->headNode;	  		
-    while(pnode != NULL)
+    while(pnode != Co_NULL)
     {
         if(pnode->waitType == OPT_WAIT_ALL)   /* Extract all the bits we want */
       	{			
@@ -577,7 +577,7 @@ StatusType isr_SetFlag(OS_FlagID id)
     if(OSSchedLock > 0)         /* If scheduler is locked,(the caller is ISR) */
     {
         /* Insert the request into service request queue                      */
-        if(InsertInSRQ(FLAG_REQ,id,NULL) == FALSE)	
+        if(InsertInSRQ(FLAG_REQ,id,Co_NULL) == Co_FALSE)
         {
             return E_SEV_REQ_FULL;      /* The service requst queue is full   */
         }			
@@ -617,17 +617,17 @@ static void FlagBlock(P_FLAG_NODE pnode,U32 flags,U8 waitType)
     pnode->waitFlags  = flags;      /* Save the flags that we need to wait for*/
     pnode->waitType   = waitType;   /* Save the type of wait                  */
         
-    if(pfcb->tailNode == NULL)      /* If this is the first NODE to insert?   */
+    if(pfcb->tailNode == Co_NULL)      /* If this is the first NODE to insert?   */
     {
-        pnode->nextNode = NULL;
-        pnode->prevNode = NULL;
+        pnode->nextNode = Co_NULL;
+        pnode->prevNode = Co_NULL;
         pfcb->headNode  = pnode;    /* Insert the NODE to the head            */	
     }
     else                            /* If it is not the first NODE to insert? */
     {
         pfcb->tailNode->nextNode = pnode;   /* Insert the NODE to the tail    */
         pnode->prevNode          = pfcb->tailNode;
-        pnode->nextNode          = NULL;
+        pnode->nextNode          = Co_NULL;
     }
     pfcb->tailNode = pnode;
 }
@@ -686,27 +686,27 @@ static P_FLAG_NODE RemoveFromLink(P_FLAG_NODE pnode)
 void RemoveLinkNode(P_FLAG_NODE pnode)
 {
     /* If only one NODE in the list*/
-    if((pnode->nextNode == NULL) && (pnode->prevNode == NULL)) 
+    if((pnode->nextNode == Co_NULL) && (pnode->prevNode == Co_NULL))
     {
-        FlagCrl.headNode = NULL;
-        FlagCrl.tailNode = NULL;
+        FlagCrl.headNode = Co_NULL;
+        FlagCrl.tailNode = Co_NULL;
     }
-    else if(pnode->nextNode == NULL)      /* If the NODE is tail              */
+    else if(pnode->nextNode == Co_NULL)      /* If the NODE is tail              */
     {
         FlagCrl.tailNode          = pnode->prevNode;
-        pnode->prevNode->nextNode = NULL;
+        pnode->prevNode->nextNode = Co_NULL;
     }
-    else if(pnode->prevNode == NULL)      /* If the NODE is head              */
+    else if(pnode->prevNode == Co_NULL)      /* If the NODE is head              */
     {
         FlagCrl.headNode          = pnode->nextNode;
-        pnode->nextNode->prevNode = NULL;	
+        pnode->nextNode->prevNode = Co_NULL;
     }
     else                                  /* The NODE is in the middle        */
     {
         pnode->nextNode->prevNode = pnode->prevNode;
         pnode->prevNode->nextNode = pnode->nextNode;
     }
-    pnode->waitTask->pnode = NULL;
+    pnode->waitTask->pnode = Co_NULL;
 }
 
 #endif

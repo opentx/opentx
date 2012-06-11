@@ -1,8 +1,8 @@
 /**
  *******************************************************************************
  * @file       coocox.h
- * @version    V1.12    
- * @date       2010.03.01
+ * @version   V1.1.4    
+ * @date      2011.04.20
  * @brief      Gather for all header file of CooCox CoOS.	
  *******************************************************************************
  * @copy
@@ -17,8 +17,8 @@
 #ifndef _COOCOX_H
 #define _COOCOX_H
 
-#define  OS_VERSION       (U16)0x0112   /*!< OS version.(format: Vx.xx), 	
-                                            e.g. value 0x0111 is version V1.12*/
+#define  OS_VERSION       (U16)0x0113   /*!< OS version.(format: Vx.xx), 	
+                                            e.g. value 0x0113 is version V1.13*/
 /*---------------------------- Include ---------------------------------------*/
 #include "CoOS.h"
 #include "OsArch.h"
