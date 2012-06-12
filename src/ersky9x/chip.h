@@ -1,30 +1,34 @@
-/* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
- * ----------------------------------------------------------------------------
- * Copyright (c) 2008, Atmel Corporation
+/*
+ * Authors (alphabetical order)
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
+ * - Cameron Weeks <th9xer@gmail.com>
+ * - Erez Raviv
+ * - Jean-Pierre Parisy
+ * - Karl Szmutny <shadow@privy.de>
+ * - Michael Blandford
+ * - Michal Hlavinka
+ * - Pat Mackenzie
+ * - Philip Moss
+ * - Rob Thomson
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Thomas Husterer
  *
- * All rights reserved.
+ * open9x is based on code named
+ * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
+ * er9x by Erez Raviv: http://code.google.com/p/er9x/,
+ * and the original (and ongoing) project by
+ * Thomas Husterer, th9x: http://code.google.com/p/th9x/
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
- * - Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the disclaimer below.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Atmel's name may not be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
- * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
- * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * ----------------------------------------------------------------------------
  */
  
 //------------------------------------------------------------------------------
@@ -39,16 +43,8 @@
 /// -# For misc, see "AT91SAM3S4 - Misc".
 //------------------------------------------------------------------------------
  
-#ifndef CHIP_H 
-#define CHIP_H
-
-//------------------------------------------------------------------------------
-//         Headers
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-//         Definitions
-//------------------------------------------------------------------------------
+#ifndef chip_h
+#define chip_h
 
 //------------------------------------------------------------------------------
 /// \page "AT91SAM3S4 - ARM core features"
@@ -126,5 +122,5 @@
 
 //Misc 
 
-#endif //#ifndef CHIP_H
+#endif //#ifndef chip_h
 

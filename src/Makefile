@@ -192,6 +192,7 @@ FORMAT = ihex
 TARGET = open9x
 
 # List C++ source files here. (C dependencies are automatically generated.)
+SRC = 
 CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp translations.cpp
 
 ifeq ($(EXT), JETI)
@@ -324,7 +325,8 @@ ifeq ($(PCB), ARM)
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM
   EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
-  EXTRABOARDSRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
+  SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
+  SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   CPPSRC += ersky9x/ff.cpp ersky9x/diskio.cpp ersky9x/gtime.cpp
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
@@ -674,25 +676,14 @@ remallsrc:
     
 # Link: create ELF output file from object files.
 ifeq ($(PCB), ARM)
-%.elf: allsrc.cpp
+%.o: %.c
+	$(CC) $(ALL_CPPFLAGS) $< -o $@
+OBJS = $(SRC:.c=.o)
+%.elf: allsrc.cpp $(OBJS)
 	@echo
 	@echo $(MSG_COMPILING) $@
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/core.c -o core.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/hook.c -o hook.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/task.c -o task.o
-	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/mutex.c -o mutex.o
-	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/sem.c -o sem.o
-	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/queue.c -o queue.o
-	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/mbox.c -o mbox.o
-	#$(CC) $(ALL_CPPFLAGS) CoOS/kernel/flag.c -o flag.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/event.c -o event.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/time.c -o time.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/timer.c -o timer.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/kernel/serviceReq.c -o serviceReq.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/portable/GCC/port.c -o port.o
-	$(CC) $(ALL_CPPFLAGS) CoOS/portable/arch.c -o arch.o
 	$(CC) $(ALL_CPPFLAGS) $< -o allsrc.o
-	$(CC) allsrc.o core.o hook.o task.o event.o time.o timer.o serviceReq.o port.o arch.o -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
+	$(CC) allsrc.o $(OBJS) -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
 else
 %.elf: allsrc.cpp
 	@echo

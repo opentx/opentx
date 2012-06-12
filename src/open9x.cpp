@@ -2661,7 +2661,6 @@ OS_STK uartprintf_stk[1024];
 extern "C" {
 void vMainTask(void *) {
 
-  alert("START", "START");
 while(1) {
 
 #if defined(PCBARM)
@@ -2858,16 +2857,9 @@ int main(void)
   uint8_t shutdown_state = 0;
 #endif
   if ((shutdown_state=check_soft_power()) <= e_power_trainer) {
-    alert("COOS", "START");
     CoInitOS();
-    alert("COOS", "INIT");
-    //xTaskHandle taskHandle;
-    //xTaskCreate ((pdTASK_CODE)&vMainTask,  (const signed portCHAR * const) "Main",  2048,     NULL, (tskIDLE_PRIORITY + 1), &taskHandle);
-    //vTaskStartScheduler ();
     uartprintfTask = CoCreateTask(vMainTask,NULL,0,&uartprintf_stk[1023],100);
-    alert("COOS", "TASK");
     CoStartOS();
-    alert("COOS", "FIN");
   }
 
 #if defined(PCBARM) || defined(PCBV4)
