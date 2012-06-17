@@ -32,7 +32,7 @@
  */
 
 #include "open9x.h"
-#include "board.h"
+#include "ersky9x/board.h"
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
