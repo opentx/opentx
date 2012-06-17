@@ -44,6 +44,7 @@ FILE *fp = NULL;
 
 #if defined(PCBARM)
 Pio Pioa, Piob, Pioc;
+Pwm pwm;
 Twi Twio;
 Usart Usart0;
 uint32_t eeprom_pointer;

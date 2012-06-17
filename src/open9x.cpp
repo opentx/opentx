@@ -799,11 +799,18 @@ void doSplash()
 {
     if(!g_eeGeneral.disableSplashScreen)
     {
-      checkBacklight() ;
       lcd_clear();
       lcd_img(0, 0, splash_lbm, 0, 0);
       refreshDisplay();
+
+#if defined(PCBSTD)
       lcdSetRefVolt(g_eeGeneral.contrast);
+#else
+      uint16_t curTime = get_tmr10ms() + 6;
+      uint8_t contrast = 10;
+      lcdSetRefVolt(contrast);
+#endif
+
       clearKeyEvents();
 
 #ifndef SIMU
@@ -813,7 +820,7 @@ void doSplash()
 
       uint16_t inacSum = stickMoveValue();
 
-      uint16_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;  //2sec splash screen
+      uint16_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
       while (tgtime != get_tmr10ms())
       {
 #ifdef SIMU
@@ -827,6 +834,16 @@ void doSplash()
         if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
 
         if (check_soft_power() > e_power_trainer) return; // Usb on or power off
+
+#if !defined(PCBSTD)
+        if (curTime < get_tmr10ms()) {
+          curTime += 6;
+          if (contrast < g_eeGeneral.contrast) {
+            contrast += 1;
+            lcdSetRefVolt(contrast);
+          }
+        }
+#endif
 
         checkBacklight();
       }
@@ -1838,8 +1855,8 @@ void perOut()
             int32_t rate = (int32_t)DEL_MULT*2048*100;
             if(md->weight) rate /= abs(md->weight);
 
-            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)100*md->speedUp)   :  (int32_t)v*DEL_MULT) :
-                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)100*md->speedDown) :  (int32_t)v*DEL_MULT) ;
+            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)200*md->speedUp)   :  (int32_t)v*DEL_MULT) :
+                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)200*md->speedDown) :  (int32_t)v*DEL_MULT) ;
         }
 
         {

@@ -110,6 +110,9 @@ extern Usart Usart0;
 #define PIOC (&Pioc)
 #undef TWI0
 #define TWI0 (&Twio)
+extern Pwm pwm;
+#undef PWM
+#define PWM (&pwm)
 extern uint32_t eeprom_pointer;
 extern char* eeprom_buffer_data;
 extern volatile int32_t eeprom_buffer_size;

@@ -62,37 +62,8 @@ uint32_t Card_CSD[4] ;
 uint32_t Card_state = SD_ST_EMPTY ;
 uint32_t Sd_128_resp[4] ;
 uint32_t Sd_rca ;
-//uint32_t Cmd_55_resp ;
 uint32_t Cmd_8_resp ;
 uint32_t Cmd_A41_resp ;
-
-/**
- * Initializes a MCI peripheral.
- */
-void SD_Init()
-{
-  unsigned short clkDiv;
-  Hsmci *pMciHw = HSMCI ;
-
-  /* Enable the MCI peripheral */
-  PMC->PMC_PCER0 |= 1 << ID_HSMCI ;             // Enable peripheral clock to HSMCI
-  pMciHw->HSMCI_CR = HSMCI_CR_SWRST;  /* Reset the MCI */
-  pMciHw->HSMCI_CR = HSMCI_CR_MCIDIS | HSMCI_CR_PWSDIS;  /* Disable the MCI */
-  pMciHw->HSMCI_IDR = 0xFFFFFFFF;  /* Disable all the interrupts */
-  pMciHw->HSMCI_DTOR = HSMCI_DTOR_DTOCYC | HSMCI_DTOR_DTOMUL ;  /* Set the Data Timeout Register */
-  pMciHw->HSMCI_CSTOR = HSMCI_CSTOR_CSTOCYC | HSMCI_CSTOR_CSTOMUL ;  /* CSTOR ? */
-  /* Set the Mode Register: 400KHz for MCK = 48MHz (CLKDIV = 58) */
-  clkDiv = (Master_frequency / (MCI_INITIAL_SPEED * 2)) - 1;
-  pMciHw->HSMCI_MR = clkDiv | (7 << 8) ;
-
-  /* Set the SDCard Register 1-bit, slot A */
-  pMciHw->HSMCI_SDCR = HSMCI_SDCR_SDCSEL_SLOTA | HSMCI_SDCR_SDCBUS_1 ;
-  /* Enable the MCI and the Power Saving */
-  pMciHw->HSMCI_CR = HSMCI_CR_MCIEN | HSMCI_CR_PWSEN ;
-  /* Configure MCI */
-  pMciHw->HSMCI_CFG = HSMCI_CFG_FIFOMODE | ((1 << 4) & HSMCI_CFG_FERRCTRL);
-}
-
 
 /**
  * Configure the  MCI SDCBUS in the MCI_SDCR register. Only two modes available
@@ -106,16 +77,17 @@ uint32_t SD_SetBusWidth( uint32_t busWidth)
   if( (busWidth != HSMCI_SDCR_SDCBUS_1) && (busWidth != HSMCI_SDCR_SDCBUS_4) )
   {
         return (uint32_t)-1;
-        }
+  }
 
-  busWidth &= HSMCI_SDCR_SDCBUS ;
+  busWidth &= HSMCI_SDCR_SDCBUS_Msk ;
 
-        mciSdcr = (HSMCI->HSMCI_SDCR & ~(uint32_t)(HSMCI_SDCR_SDCBUS));
-        HSMCI->HSMCI_SDCR = mciSdcr | busWidth;
+  mciSdcr = (HSMCI->HSMCI_SDCR & ~(uint32_t)(HSMCI_SDCR_SDCBUS_Msk));
+  HSMCI->HSMCI_SDCR = mciSdcr | busWidth;
 
-        return 0;
+  return 0;
 }
 
+#if 0
 /**
  * Configure the MCI_CFG to enable the HS mode
  * \param hsEnable 1 to enable, 0 to disable HS mode.
@@ -136,7 +108,7 @@ void SD_EnableHsMode( uint8_t hsEnable)
 
         HSMCI->HSMCI_CFG = cfgr;
 }
-
+#endif
 
 /**
  * Configure the  MCI CLKDIV in the MCI_MR register. The max. for MCI clock is
@@ -149,7 +121,7 @@ uint32_t SD_SetSpeed( uint32_t mciSpeed )
         uint32_t mciMr;
         uint32_t clkdiv;
 
-        mciMr = HSMCI->HSMCI_MR & (~(uint32_t)HSMCI_MR_CLKDIV);
+        mciMr = HSMCI->HSMCI_MR & (~(uint32_t)HSMCI_MR_CLKDIV_Msk);
         /* Multimedia Card Interface clock (MCCK or MCI_CK) is Master Clock (MCK)
          * divided by (2*(CLKDIV+1))
          * mciSpeed = MCK / (2*(CLKDIV+1)) */
@@ -180,17 +152,19 @@ uint32_t SD_SetSpeed( uint32_t mciSpeed )
         return (mciSpeed);
 }
 
-//void SD_SetBlklen( uint32_t blklen )
-//{
-//      uint32_t mciMr;
-//      uint32_t clkdiv;
+#if 0
+void SD_SetBlklen( uint32_t blklen )
+{
+      uint32_t mciMr;
+      uint32_t clkdiv;
 
-//      mciMr = HSMCI->HSMCI_MR & (~(uint32_t)HSMCI_MR_BLKLEN);
-//      /* Modify MR */
-//      HSMCI->HSMCI_MR = mciMr | blklen << 16 ;
-//}
+      mciMr = HSMCI->HSMCI_MR & (~(uint32_t)HSMCI_MR_BLKLEN);
+      /* Modify MR */
+      HSMCI->HSMCI_MR = mciMr | blklen << 16 ;
+}
+#endif
 
-
+#if 0
 /**
  * Reset MCI HW interface and disable it.
  * \param keepSettings Keep old register settings, including
@@ -219,11 +193,11 @@ void SD_Reset( uint8_t keepSettings)
   }
   else
   {
-                pMciHw->HSMCI_CR = HSMCI_CR_SWRST ;             // Reset
+          pMciHw->HSMCI_CR = HSMCI_CR_SWRST ;             // Reset
           pMciHw->HSMCI_CR = HSMCI_CR_MCIDIS;           // Disable
   }
 }
-
+#endif
 
 void sd_cmd55()
 {
@@ -422,26 +396,24 @@ uint32_t sd_cmd7()
         }
 }
 
-#define HSMCI_CMDR_SPCMD_STD            ( 0 << 8 )
-#define HSMCI_CMDR_RSPTYP_48_BIT        ( 1 << 6 )
-#define HSMCI_CMDR_TRCMD_START_DATA     ( 1 << 16 )
-#define HSMCI_CMDR_TRDIR_READ           ( 1 << 18 )
-#define HSMCI_CMDR_TRTYP_SINGLE         ( 0 << 19 )
-#define HSMCI_CMDR_TRTYP_MULTIPLE       ( 1 << 19 )
-
 #define SD_SEND_SCR  (51 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
                          | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
                          | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
+
+#define SDMMC_SET_BLOCKLEN       (16 | HSMCI_CMDR_TRCMD_NO_DATA \
+                                     | HSMCI_CMDR_SPCMD_STD \
+                                     | HSMCI_CMDR_RSPTYP_48_BIT \
+                                     | HSMCI_CMDR_MAXLAT_64 )
 
 #define SD_READ_SINGLE_BLOCK     (17 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
                                      | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
                                      | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
 
-#define SD_WRITE_BLOCK           (24 | HSMCI_CMDR_SPCMD_STD \
+#define SD_WRITE_SINGLE_BLOCK    (24 | HSMCI_CMDR_SPCMD_STD \
                                      | HSMCI_CMDR_RSPTYP_48_BIT \
                                      | HSMCI_CMDR_TRCMD_START_DATA \
-                                     | HSMCI_CMDR_TRTYP_MULTIPLE \
-                                     | HSMCI_CMDR_TRDIR_READ \
+                                     | HSMCI_CMDR_TRDIR_WRITE \
+                                     | HSMCI_CMDR_TRTYP_SINGLE \
                                      | HSMCI_CMDR_MAXLAT)
 
 // Get SCR
@@ -491,7 +463,7 @@ uint32_t sd_acmd51( uint32_t *presult )
 uint32_t sd_acmd6()
 {
         uint32_t i ;
-  Hsmci *phsmci = HSMCI ;
+        Hsmci *phsmci = HSMCI ;
 
         if ( CardIsConnected() )
         {
@@ -618,92 +590,72 @@ uint32_t sd_card_ready( void )
         return 0 ;
 }
 
-uint32_t sd_read_block( uint32_t block_no, uint32_t *data )
+uint32_t sd_read_block( uint32_t block_no, uint32_t *dat )
 {
-        if ( Card_state == SD_ST_DATA )
-        {
-                uint32_t i ;
-                uint32_t j = 0 ;
-                Hsmci *phsmci = HSMCI ;
+  if (Card_state == SD_ST_DATA) {
+    Hsmci *phsmci = HSMCI;
 
-                if ( CardIsConnected() )
-                {
-                  // Block size = 512, nblocks = 1
-                  phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
-                  phsmci->HSMCI_ARGR = block_no << 9 ;
-                  phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK ;
+    if (CardIsConnected()) {
+      for (uint8_t i = 0; i < 3; i++) {
+        uint32_t *data = dat;
+        uint32_t j = 0;
+        // Block size = 512, nblocks = 1
+        phsmci->HSMCI_BLKR = ((512) << 16) | 1;
+        phsmci->HSMCI_ARGR = block_no << 9;
+        phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
+        phsmci->HSMCI_MR &= ~HSMCI_MR_PDCMODE;
+        phsmci->HSMCI_MR |= (512 << 16);
 
-                  for ( i = 0 ; i < 50000 ; i += 1 )
-                  {
-                    if ( phsmci->HSMCI_SR & HSMCI_SR_RXRDY )
-                    {
-                      *data++ = phsmci->HSMCI_RDR ;
-                      j += 1 ;
-                    }
-                    if ( ( phsmci->HSMCI_SR & ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) ) == ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) )
-                    {
-                      break ;
-                    }
-                    if ( j >= 128 )
-                    {
-                      break ;
-                    }
-                  }
-                  return i | (j << 16) ; //phsmci->HSMCI_RSPR[0] ;
-                }
-                else
-                {
-                  return 0 ;
-                }
+        while (1) {
+          if (phsmci->HSMCI_SR & HSMCI_SR_RXRDY) {
+            *data++ = phsmci->HSMCI_RDR;
+            j += 1;
+          }
+
+          if (j >= 128) {
+            return 1;
+          }
+
+          if ((phsmci->HSMCI_SR & (HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE)) == (HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE)) {
+            break;
+          }
         }
-        else
-        {
-                return 0 ;
-        }
+      }
+    }
+  }
+  return 0;
 }
 
 uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 {
-        if ( Card_state == SD_ST_DATA )
-        {
-                uint32_t i ;
-                uint32_t j = 0 ;
-                Hsmci *phsmci = HSMCI ;
+  if (Card_state == SD_ST_DATA) {
+    uint32_t j = 0;
+    Hsmci *phsmci = HSMCI;
 
-                if ( CardIsConnected() )
-                {
-                  // Block size = 512, nblocks = 1
-                  phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
-                  phsmci->HSMCI_ARGR = block_no << 9 ;
-                  phsmci->HSMCI_CMDR = SD_WRITE_BLOCK ;
+    if (CardIsConnected()) {
+      // Block size = 512, nblocks = 1
+      phsmci->HSMCI_BLKR = ((512) << 16) | 1;
+      phsmci->HSMCI_ARGR = block_no << 9;
+      phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
+      phsmci->HSMCI_MR &= ~(HSMCI_MR_WRPROOF | HSMCI_MR_RDPROOF | HSMCI_MR_BLKLEN_Msk | HSMCI_MR_PDCMODE);
+      phsmci->HSMCI_MR |= (512 << 16);
 
-                  for ( i = 0 ; i < 50000 ; i += 1 )
-                  {
-                    if ( phsmci->HSMCI_SR & HSMCI_SR_TXRDY )
-                    {
-                      phsmci->HSMCI_TDR = *data++;
-                      j += 1 ;
-                    }
-                    if ( ( phsmci->HSMCI_SR & ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) ) == ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) )
-                    {
-                      break ;
-                    }
-                    if ( j >= 128 )
-                    {
-                      break ;
-                    }
-                  }
-                  return i | (j << 16) ; //phsmci->HSMCI_RSPR[0] ;
-                }
-                else
-                {
-                  return 0 ;
-                }
+      while (1) {
+        if (j >= 128) {
+          while (~phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY)
+            ;
+          return 1;
         }
-        else
-        {
-                return 0 ;
+
+        if (phsmci->HSMCI_SR & HSMCI_SR_TXRDY) {
+          phsmci->HSMCI_TDR = *data++;
+          j += 1;
         }
+      }
+    }
+  }
+
+  return 0;
 }
 
 /*
@@ -807,9 +759,6 @@ Now decide what the card can do!
 #define LDIR_Type                       12
 #define LDIR_Chksum                     13
 #define LDIR_FstClusLO          26
-
-static volatile
-DSTATUS Stat = STA_NOINIT;      /* Disk status */
 
 /*-----------------------------------------------------------------------*/
 /* Initialize Disk Drive                                                 */
@@ -991,8 +940,6 @@ DRESULT disk_ioctl (
 #endif
         }
         else {
-                if (Stat & STA_NOINIT) return RES_NOTRDY;
-
                 switch (ctrl) {
                         case CTRL_SYNC :                /* Make sure that no pending write process. Do not remove this or written sector might not left updated. */
                                /* BSS if (select()) {

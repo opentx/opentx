@@ -34,7 +34,7 @@
 #include "open9x.h"
 
 uint8_t s_pulses_paused = 0;
-uint8_t s_current_protocol ;
+uint8_t s_current_protocol = 255;
 uint8_t pxxFlag = 0 ;
 
 uint16_t Pulses[18] = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0,0,0,0,0,0, 0 } ;

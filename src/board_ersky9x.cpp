@@ -32,6 +32,7 @@
  */
 
 #include "open9x.h"
+#include "board.h"
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
@@ -723,13 +724,14 @@ void board_init()
   start_timer0() ;
   init_adc() ;
   init_pwm() ;
-  init_SDcard() ;
 
   __enable_irq() ;
 
   start_sound() ;
 
   eeprom_init();
+
+  init_SDcard();
 }
 
 #endif

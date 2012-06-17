@@ -439,7 +439,7 @@ extern Key keys[NUM_KEYS];
 #define DSW_SW6  15
 
 #define THRCHK_DEADBAND 16
-#define SPLASH_TIMEOUT  (4*100)  //400 msec - 4 seconds
+#define SPLASH_TIMEOUT  (4*100)  // 4 seconds
 
 #define TRM_BASE TRM_LH_DWN
 
@@ -605,13 +605,8 @@ extern uint8_t  s_eeDirtyMsk;
 #define STORE_GENERALVARS eeDirty(EE_GENERAL)
 
 #if defined (PCBARM)
-#ifndef SIMU
 #define BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
-#else
-#define BACKLIGHT_ON
-#define BACKLIGHT_OFF
-#endif
 #ifdef REVB
 #define NUMBER_ANALOG   9
 #else
