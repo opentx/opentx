@@ -34,16 +34,7 @@
 #ifndef board_h
 #define board_h
 
-#define TRACE_ERROR(...)
-#define TRACE_WARNING(...)
-#define TRACE_WARNING_WP(...)
-#define TRACE_DEBUG(...)
-#define TRACE_INFO(...)
-#define TRACE_INFO_WP(...)
-
 #include <stdint.h>
-#include <stdbool.h>
-
 #include "chip.h"
 
 #ifdef REVA
@@ -52,7 +43,6 @@
 #include "AT91SAM3S4.h"
 #endif
 
-//#include "SAM3S.h"
 #define BOARD_MCK               64000000
 
 /// SD card block size in bytes.
