@@ -224,7 +224,7 @@ void StartEepromThread(const char *filename)
     if (!fp) perror("error in fopen");
   }
 #ifdef __APPLE__
-  eeprom_write_sem = sem_open("eepromsemaphore", O_CREAT);
+  eeprom_write_sem = sem_open("eepromsem", O_CREAT, S_IRUSR | S_IWUSR, 0);
 #else
   eeprom_write_sem = (sem_t *)malloc(sizeof(sem_t));
   sem_init(eeprom_write_sem, 0, 0);
