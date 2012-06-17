@@ -41,8 +41,6 @@
 #define TRACE_INFO(...)
 #define TRACE_INFO_WP(...)
 
-#define assert(x)
-
 #include <stdint.h>
 #include <stdbool.h>
 
