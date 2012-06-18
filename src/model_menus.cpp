@@ -1567,22 +1567,22 @@ void menuProcMixOne(uint8_t event)
       case MIX_FIELD_DELAY_UP:
         lcd_putsLeft(y, STR_DELAYUP);
         lcd_outdezAtt(MIXES_2ND_COLUMN,y,md2->delayUp,attr|LEFT);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayUp, 0, 15);
+        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayUp, 0, MAX_DELAY);
         break;
       case MIX_FIELD_DELAY_DOWN:
         lcd_putsLeft(y, STR_DELAYDOWN);
         lcd_outdezAtt(MIXES_2ND_COLUMN,y,md2->delayDown,attr|LEFT);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayDown, 0, 15);
+        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayDown, 0, MAX_DELAY);
         break;
       case MIX_FIELD_SLOW_UP:
         lcd_putsLeft(y, STR_SLOWUP);
         lcd_outdezAtt(MIXES_2ND_COLUMN,y,5*md2->speedUp,attr|PREC1|LEFT);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedUp, 0, 15);
+        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedUp, 0, MAX_SLOW);
         break;
       case MIX_FIELD_SLOW_DOWN:
         lcd_putsLeft(y, STR_SLOWDOWN);
         lcd_outdezAtt(MIXES_2ND_COLUMN,y,5*md2->speedDown,attr|PREC1|LEFT);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedDown, 0, 15);
+        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedDown, 0, MAX_SLOW);
         break;
     }
   }

@@ -239,11 +239,13 @@ enum MixSources {
 #define TRIM_THR   -3
 #define TRIM_AIL   -4
 
-#define MLTPX_ADD  0
-#define MLTPX_MUL  1
-#define MLTPX_REP  2
+#define MLTPX_ADD   0
+#define MLTPX_MUL   1
+#define MLTPX_REP   2
 
 #if defined(PCBARM)
+#define MAX_DELAY   60 /* 30 seconds */
+#define MAX_SLOW    60 /* 30 seconds */
 PACK(typedef struct t_MixData {
   uint8_t destCh;
   int8_t  phase;
@@ -258,10 +260,12 @@ PACK(typedef struct t_MixData {
   uint8_t speedDown;       // 0 nichts
   uint8_t srcRaw;         //
   int8_t  differential;
-  int8_t carryTrim;
+  int8_t  carryTrim;
   int8_t  sOffset;
 }) MixData;
 #else
+#define MAX_DELAY   15 /* 7.5 seconds */
+#define MAX_SLOW    15 /* 7.5 seconds */
 PACK(typedef struct t_MixData {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   int8_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
