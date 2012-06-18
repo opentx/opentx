@@ -1855,8 +1855,8 @@ void perOut()
             int32_t rate = (int32_t)DEL_MULT*2048*100;
             if(md->weight) rate /= abs(md->weight);
 
-            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)200*md->speedUp)   :  (int32_t)v*DEL_MULT) :
-                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)200*md->speedDown) :  (int32_t)v*DEL_MULT) ;
+            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)50*md->speedUp)   :  (int32_t)v*DEL_MULT) :
+                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)50*md->speedDown) :  (int32_t)v*DEL_MULT) ;
         }
 
         {
