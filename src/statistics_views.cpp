@@ -88,7 +88,7 @@ void menuProcDebug(uint8_t event)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
 #endif
-      g_timeMain    = 0;
+      g_timeMainMax    = 0;
       AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
@@ -111,9 +111,9 @@ void menuProcDebug(uint8_t event)
 
   lcd_putsLeft(4*FH, STR_TMAINMAXMS);
 #if defined(PCBARM)
-  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMain)/20, PREC2);
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMainMax)/20, PREC2);
 #else
-  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMain*100)/16, PREC2);
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMainMax*100)/16, PREC2);
 #endif
 
 #if defined(PCBARM)
@@ -132,12 +132,6 @@ void menuProcDebug(uint8_t event)
   lcd_puts( 0*FW,  5*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(14*FW,  5*FH, stack_free(), UNSIGN) ;
 #endif
-
-#ifdef DEBUG
-  lcd_puts( 0*FW,  6*FH, STR_T10MSUS);
-  lcd_outdez8(MENU_DEBUG_COL_OFS, 6*FH, g_time_per10/2 );
-#endif
-
 
   lcd_puts( 3*FW,  7*FH, STR_MENUTORESET);
 }

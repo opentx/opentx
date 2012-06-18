@@ -38,12 +38,30 @@ void putEvent(uint8_t evt)
 {
   s_evt = evt;
 }
+
+#if defined(PCBV4)
+uint8_t getEvent(bool trim)
+{
+  uint8_t evt = s_evt;
+  int8_t k = (s_evt & EVT_KEY_MASK) - TRM_BASE;
+  bool trim_evt = (k>=0 && k<8);
+
+  if (trim == trim_evt) {
+    s_evt = 0;
+    return evt;
+  }
+  else {
+    return 0;
+  }
+}
+#else
 uint8_t getEvent()
 {
   uint8_t evt = s_evt;
   s_evt = 0;
   return evt;
 }
+#endif
 
 #if defined(PCBARM)
 #define KEY_LONG_DELAY 32
@@ -105,7 +123,7 @@ void Key::input(bool val, EnumKeys enuk)
         m_state >>= 1;
         m_cnt     = 0;
       }
-      //fallthrough
+      // no break
     case 1:
       if( (m_cnt & (m_state-1)) == 0)  putEvent(EVT_KEY_REPT(enuk));
       break;
@@ -133,7 +151,6 @@ void killEvents(uint8_t event)
   if(event < (int)DIM(keys))  keys[event].killEvents();
 }
 
-//uint16_t g_anaIns[8];
 volatile uint16_t g_tmr10ms;
 volatile uint8_t  g_blinkTmr10ms;
 
@@ -141,6 +158,9 @@ void per10ms()
 {
   g_tmr10ms++;
   g_blinkTmr10ms++;
+  
+  if (s_noHi) s_noHi--;
+  if (trimsCheckTimer) trimsCheckTimer --;
 
 #if defined (PCBARM)
   Tenms |= 1 ;                    // 10 mS has passed

@@ -54,8 +54,6 @@ const pm_char * openLogs()
     return SDCARD_ERROR(result);
   }
 
-  wdt_reset();
-
   strcpy_P(buf, STR_LOGS_PATH);
 
   result = f_opendir(&folder, buf);
@@ -65,8 +63,6 @@ const pm_char * openLogs()
     if (result != FR_OK)
       return SDCARD_ERROR(result);
   }
-
-  wdt_reset();
 
   buf[sizeof(LOGS_PATH)-1] = '/';
   memcpy(&buf[sizeof(LOGS_PATH)], g_model.name, sizeof(g_model.name));

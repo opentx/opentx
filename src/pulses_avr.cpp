@@ -204,6 +204,12 @@ void setupPulsesPPM(uint8_t proto)
     uint8_t p = (proto == PROTO_PPM16 ? 16 : 8) + (g_model.ppmNCH * 2); //Channels *2
     uint16_t q = (g_model.ppmDelay*50+300)*2; // Stoplen *2
     uint32_t rest = 22500u*2 - q; // Minimum Framelen=22.5ms
+    
+#if defined(PCBV4)
+    OCR5A = (uint16_t)0x7d * (45+g_model.ppmFrameLength-g_timeMainLast-2/*1ms*/);
+    TCNT5 = 0;
+#endif
+
     rest += (int32_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=(proto==PROTO_PPM16) ? p-8 : 0; i<p; i++) {
 #ifdef PPM_CENTER_ADJUSTABLE

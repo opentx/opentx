@@ -55,9 +55,10 @@ ModelData  g_model;
 uint8_t g_tmr1Latency_max;
 uint8_t g_tmr1Latency_min;
 #endif
-uint16_t g_timeMain;
-#ifdef DEBUG
-uint16_t g_time_per10;
+
+uint16_t g_timeMainMax;
+#if defined(PCBV4)
+uint8_t  g_timeMainLast;
 #endif
 
 #ifdef AUDIO
@@ -771,7 +772,7 @@ void clearKeyEvents()
 #ifdef SIMU
     while (keyDown() && main_thread_running) sleep(1/*ms*/);
 #else
-    while (keyDown()) wdt_reset();  // loop until all keys are up
+    while (keyDown()) WDT_RESET_STOCK();  // loop until all keys are up
 #endif
     memset(keys, 0, sizeof(keys));
     putEvent(0);
@@ -902,7 +903,7 @@ void checkTHR()
 
       checkBacklight();
 
-      wdt_reset();
+      WDT_RESET_STOCK();
   }
 }
 
@@ -945,7 +946,7 @@ void checkSwitches()
 
     checkBacklight();
 
-    wdt_reset();
+    WDT_RESET_STOCK();
 
 #ifdef SIMU
     if (!main_thread_running) return;
@@ -972,7 +973,7 @@ void alert(const pm_char * t, const pm_char *s)
 
     checkBacklight();
 
-    wdt_reset();
+    WDT_RESET_STOCK();
   }
 }
 
@@ -1003,12 +1004,21 @@ void message(const pm_char *title, const pm_char *t, const char *last)
   clearKeyEvents();
 }
 
+#if defined(PCBV4)
+void checkTrims()
+{
+  uint8_t event = getEvent(true);
+#else
 uint8_t checkTrim(uint8_t event)
 {
+#endif
   int8_t  k = (event & EVT_KEY_MASK) - TRM_BASE;
   int8_t  s = g_model.trimInc;
 
-  if (k>=0 && k<8) { // && (event & _MSK_KEY_REPT))
+#if !defined(PCBV4)
+  if (k>=0 && k<8)
+#endif
+  { // && (event & _MSK_KEY_REPT))
     //LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
     uint8_t phase = getTrimFlightPhase(s_perout_flight_phase, idx);
@@ -1063,9 +1073,13 @@ uint8_t checkTrim(uint8_t event)
       AUDIO_TRIM();
 #endif
     }
+#if !defined(PCBV4)
     return 0;
+#endif
   }
+#if !defined(PCBV4)
   return event;
+#endif
 }
 
 #ifdef SIMU
@@ -1245,7 +1259,6 @@ void getADC_bandgap()
 #endif // SIMU
 
 uint8_t g_vbat100mV = 0;
-
 volatile uint8_t tick10ms = 0;
 uint16_t g_LightOffCounter;
 
@@ -1797,7 +1810,7 @@ void perOut()
             sDelay[i] = md->delayUp * 100;
           }
           if (sDelay[i]) { // perform delay
-            if(tick10ms) sDelay[i]--;
+            if(tick10ms) sDelay[i]-=tick10ms;
             if (!md->swtch) {
               v = -1024;
             }
@@ -1818,7 +1831,7 @@ void perOut()
           sDelay[i] = md->delayDown * 100;
         }
         if (sDelay[i]) { // perform delay
-          if(tick10ms) sDelay[i]--;
+          if(tick10ms) sDelay[i]-=tick10ms;
           if (!md->swtch) v = +1024;
           has_delay = true;
         }
@@ -1852,7 +1865,7 @@ void perOut()
         //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
         //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 since it's asymmetrical
         if (tick10ms) {
-            int32_t rate = (int32_t)DEL_MULT*2048*100;
+            int32_t rate = (int32_t)DEL_MULT*2048*100*tick10ms;
             if(md->weight) rate /= abs(md->weight);
 
             act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)50*md->speedUp)   :  (int32_t)v*DEL_MULT) :
@@ -1925,12 +1938,27 @@ char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #endif
 
 int32_t sum_chans512[NUM_CHNOUT] = {0};
-void perMain()
+inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
 {
-  static uint16_t lastTMR;
-  uint16_t tmr10ms = get_tmr10ms();
-  tick10ms = (tmr10ms != lastTMR);
-  lastTMR = tmr10ms;
+  if (g_eeGeneral.filterInput == 1) {
+    getADC_filt() ;
+  }
+  else if ( g_eeGeneral.filterInput == 2) {
+    getADC_osmp() ;
+  }
+  else {
+    getADC_single() ;
+  }
+
+#if defined(PCBARM) && defined(REVB)
+  Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
+#elif defined(PCBV4)
+  // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
+  ADCSRB &= ~(1<<MUX5);
+  ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
+#elif defined(PCBSTD)
+  ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
+#endif
 
 #define MAX_ACT 0xffff
   static uint16_t fp_act[MAX_PHASES] = {0};
@@ -1998,29 +2026,14 @@ void perMain()
     sei();
   }
 
-// TODO same code here + integrate the timer which could be common
-#if defined(PCBARM)
-  if (Tenms) {
-    Tenms = 0 ;
-    if (Eeprom32_process_state != E32_IDLE)
-      ee32_process();
-    else if (TIME_TO_WRITE)
-      eeCheck();
-#if !defined(SIMU)
-    sd_poll_10mS();
-#endif
-  }
-#else
-  if (!eeprom_buffer_size) {
-    if (theFile.isWriting())
-      theFile.nextWriteStep();
-    else if (TIME_TO_WRITE)
-      eeCheck();
-  }
+  // Bandgap has had plenty of time to settle...
+#if not defined(PCBARM)
+  getADC_bandgap();
 #endif
 
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
 
+  /* Throttle trace */
   int16_t val;
 
   if (g_model.thrTraceSrc == 0) {
@@ -2036,7 +2049,6 @@ void perMain()
   val += RESX;
   val /= (RESX/16); // calibrate it
 
-  // Throttle trace start
   static uint16_t s_time_tot;
   static uint16_t s_time_trace;
   static uint8_t s_cnt_1s;
@@ -2071,7 +2083,6 @@ void perMain()
       if (s_traceCnt >= 0) s_traceCnt++; // TODO to be checked
     }
   }
-  // Throttle trace end
 
   // Timers start
   for (uint8_t i=0; i<2; i++) {
@@ -2102,7 +2113,7 @@ void perMain()
         lastSwPos[i] = swPos;
       }
 
-      if ( (s_timerVal_10ms[i] += 1 ) >= 100 ) {
+      if ( (s_timerVal_10ms[i] += tick10ms ) >= 100 ) {
         s_timerVal_10ms[i] -= 100 ;
 
         if (tv) s_timerVal[i] = tv - s_timerVal[i];
@@ -2176,16 +2187,16 @@ void perMain()
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {
         if (p == phase) {
-          if (MAX_ACT - fp_act[p] > delta)
-            fp_act[p] += delta;
+          if (MAX_ACT - fp_act[p] > delta * tick10ms)
+            fp_act[p] += delta * tick10ms;
           else {
             fp_act[p] = MAX_ACT;
             s_fade_flight_phases -= (1<<p);
           }
         }
         else {
-          if (fp_act[p] > delta)
-            fp_act[p] -= delta;
+          if (fp_act[p] > delta * tick10ms)
+            fp_act[p] -= delta * tick10ms;
           else {
             fp_act[p] = 0;
             s_fade_flight_phases -= (1<<p);
@@ -2196,9 +2207,42 @@ void perMain()
   }
   
   evalFunctions();
+  
+}
 
-  if (s_noHi) s_noHi--;
-  if (trimsCheckTimer) trimsCheckTimer --;
+void perMain()
+{
+  static uint16_t lastTMR;
+  uint16_t tmr10ms = get_tmr10ms();
+  uint8_t tick10ms = (tmr10ms - lastTMR);
+  lastTMR = tmr10ms;
+
+#if !defined(PCBV4)
+  doMixerCalculations(tmr10ms, tick10ms);
+#endif
+
+// TODO same code here + integrate the timer which could be common
+#if defined(PCBARM)
+  if (Tenms) {
+    Tenms = 0 ;
+    if (Eeprom32_process_state != E32_IDLE)
+      ee32_process();
+    else if (TIME_TO_WRITE)
+      eeCheck();
+#if !defined(SIMU)
+    sd_poll_10mS();
+#endif
+  }
+#else
+  if (!eeprom_buffer_size) {
+    if (theFile.isWriting())
+      theFile.nextWriteStep();
+    else if (TIME_TO_WRITE)
+      eeCheck();
+  }
+#endif
+
+  if (!tick10ms) return; //make sure the rest happen only every 10ms.
 
   if (g_eeGeneral.inactivityTimer && g_vbat100mV>50) {
     inacCounter++;
@@ -2243,8 +2287,13 @@ void perMain()
 #endif
 
   lcd_clear();
+  
+#if defined(PCBV4)
+  uint8_t evt = getEvent(false);
+#else
   uint8_t evt = getEvent();
   evt = checkTrim(evt);
+#endif
 
   // TODO port lightOnStickMove from er9x + flash saving, call checkBacklight()
   if(g_LightOffCounter) g_LightOffCounter--;
@@ -2320,6 +2369,7 @@ void perMain()
       break;
   }
 }
+
 int16_t g_ppmIns[8];
 uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
 
@@ -2352,6 +2402,43 @@ uint16_t getTmr16KHz()
 }
 
 #if defined (PCBV4)
+ISR(TIMER5_COMPA_vect, ISR_NOBLOCK) // mixer interrupt
+{
+  cli();
+  TIMSK5 &= ~(1<<OCIE5A); //stop reentrance
+  OCR5A = 0x7d * 40; /* 20ms */
+  sei();
+
+  uint16_t t0 = getTmr16KHz();  
+  
+  static uint16_t lastTMR;
+  uint16_t tmr10ms = get_tmr10ms();
+  uint8_t tick10ms = (tmr10ms - lastTMR);
+  lastTMR = tmr10ms;
+  
+  if (s_current_protocol < PROTO_NONE) {
+    checkTrims();
+    doMixerCalculations(tmr10ms, tick10ms);
+  }
+
+  heartbeat |= HEART_TIMER10ms;
+
+  if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
+    wdt_reset();
+    heartbeat = 0;
+  }
+
+  t0 = getTmr16KHz() - t0;
+  g_timeMainLast = t0 / 8;
+  if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
+
+  cli();
+  TIMSK5 |= (1<<OCIE5A); //stop reentrance
+  sei();
+}
+#endif
+
+#if defined (PCBV4)
 ISR(TIMER2_COMPA_vect, ISR_NOBLOCK) //10ms timer
 #else
 ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
@@ -2376,7 +2463,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
   sei();
-  
+
 #if defined (PCBSTD) && defined (AUDIO)
   AUDIO_DRIVER();
   static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
@@ -2391,39 +2478,29 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
     HAPTIC_HEARTBEAT();
 #endif
 
-#ifdef DEBUG
-    // Record start time from TCNT1 to record excution time
-    cli();
-    uint16_t dt=TCNT1;// TCNT1 (used for PPM out pulse generation) is running at 2MHz
-    sei();
-#endif
-
     per10ms();
 
 #if defined (PCBV4) && defined(SDCARD)
     disk_timerproc();
 #endif
 
+#if !defined(PCBV4)
     heartbeat |= HEART_TIMER10ms;
-    
-#ifdef DEBUG
-    // Record per10ms ISR execution time, in us(x2) for STAT2 page
-    cli();
-    uint16_t dt2 = TCNT1; // capture end time
-    sei();
-    g_time_per10 = dt2 - dt; // NOTE: These spike to nearly 65535 just now and then. Why? :/
 #endif
+
 
 #if defined (PCBSTD) && defined (AUDIO)
   } // end 10ms event
 #endif
 
   cli();
+  
 #if defined (PCBV4)
   TIMSK2 |= (1<<OCIE2A);
 #else
   TIMSK |= (1<<OCIE0);
 #endif
+
   sei();
 }
 
@@ -2820,37 +2897,13 @@ int main(void)
 
 #if defined(PCBARM)
     uint16_t t0 = getTmr2MHz();
-#else
-    uint16_t t0 = getTmr16KHz();
-#endif
-
-    if (g_eeGeneral.filterInput == e_adc_filtered) {
-      getADC_filt() ;
-    }
-    else if ( g_eeGeneral.filterInput == e_adc_osmp) {
-      getADC_osmp() ;
-    }
-    else {
-      getADC_single() ;
-    }
-
-#if defined(PCBARM) && defined(REVB)
-    Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
-#elif defined(PCBV4)
-    // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
-    ADCSRB &= ~(1<<MUX5);
-    ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
 #elif defined(PCBSTD)
-    ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
+    uint16_t t0 = getTmr16KHz();
 #endif
   
     perMain();
-    
-    // Bandgap has had plenty of time to settle...
-#if not defined(PCBARM)
-    getADC_bandgap();
-#endif
 
+#if !defined(PCBV4)    
     if(heartbeat == 0x3)
     {
       wdt_reset();
@@ -2862,7 +2915,9 @@ int main(void)
     t0 = getTmr16KHz() - t0;
 #endif
 
-    if (t0 > g_timeMain) g_timeMain = t0 ;
+    if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
+#endif
+
   }
 
 #if defined(PCBARM) || defined(PCBV4)
