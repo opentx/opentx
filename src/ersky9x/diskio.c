@@ -38,12 +38,8 @@
 /* are platform dependent.                                               */
 /*-----------------------------------------------------------------------*/
 
-#include "../open9x.h"
-#include "diskio.h"
-
-// SD Card routines
-
-#define MCI_INITIAL_SPEED   400000
+#include "board.h"
+#include "FatFs/diskio.h"
 
 // States for initialising card
 #define SD_ST_EMPTY             0
@@ -596,7 +592,8 @@ uint32_t sd_read_block( uint32_t block_no, uint32_t *dat )
     Hsmci *phsmci = HSMCI;
 
     if (CardIsConnected()) {
-      for (uint8_t i = 0; i < 3; i++) {
+      uint8_t i;
+      for (i = 0; i < 3; i++) {
         uint32_t *data = dat;
         uint32_t j = 0;
         // Block size = 512, nblocks = 1
@@ -692,73 +689,6 @@ Now decide what the card can do!
 9. Read block 0
 
 */
-
-
-#include "ff.h"
-#include "diskio.h"
-
-/* FAT sub-type boundaries */
-/* Note that the FAT spec by Microsoft says 4085 but Windows works with 4087! */
-#define MIN_FAT16       4086    /* Minimum number of clusters for FAT16 */
-#define MIN_FAT32       65526   /* Minimum number of clusters for FAT32 */
-
-
-/* FatFs refers the members in the FAT structures as byte array instead of
-/ structure member because there are incompatibility of the packing option
-/ between compilers. */
-
-#define BS_jmpBoot                      0
-#define BS_OEMName                      3
-#define BPB_BytsPerSec          11
-#define BPB_SecPerClus          13
-#define BPB_RsvdSecCnt          14
-#define BPB_NumFATs                     16
-#define BPB_RootEntCnt          17
-#define BPB_TotSec16            19
-#define BPB_Media                       21
-#define BPB_FATSz16                     22
-#define BPB_SecPerTrk           24
-#define BPB_NumHeads            26
-#define BPB_HiddSec                     28
-#define BPB_TotSec32            32
-#define BS_DrvNum                       36
-#define BS_BootSig                      38
-#define BS_VolID                        39
-#define BS_VolLab                       43
-#define BS_FilSysType           54
-#define BPB_FATSz32                     36
-#define BPB_ExtFlags            40
-#define BPB_FSVer                       42
-#define BPB_RootClus            44
-#define BPB_FSInfo                      48
-#define BPB_BkBootSec           50
-#define BS_DrvNum32                     64
-#define BS_BootSig32            66
-#define BS_VolID32                      67
-#define BS_VolLab32                     71
-#define BS_FilSysType32         82
-#define FSI_LeadSig                     0
-#define FSI_StrucSig            484
-#define FSI_Free_Count          488
-#define FSI_Nxt_Free            492
-#define MBR_Table                       446
-#define BS_55AA                         510
-
-#define DIR_Name                        0
-#define DIR_Attr                        11
-#define DIR_NTres                       12
-#define DIR_CrtTime                     14
-#define DIR_CrtDate                     16
-#define DIR_FstClusHI           20
-#define DIR_WrtTime                     22
-#define DIR_WrtDate                     24
-#define DIR_FstClusLO           26
-#define DIR_FileSize            28
-#define LDIR_Ord                        0
-#define LDIR_Attr                       11
-#define LDIR_Type                       12
-#define LDIR_Chksum                     13
-#define LDIR_FstClusLO          26
 
 /*-----------------------------------------------------------------------*/
 /* Initialize Disk Drive                                                 */
@@ -911,7 +841,7 @@ DRESULT disk_write (
 DRESULT disk_ioctl (
                         BYTE drv,               /* Physical drive nmuber (0) */
                         BYTE ctrl,              /* Control code */
-                        BYTE *buff              /* Buffer to send/receive control data */
+                        void *buff              /* Buffer to send/receive control data */
                         )
 {
         DRESULT res;
@@ -1027,6 +957,7 @@ DRESULT disk_ioctl (
 #endif
                         default:
                                 res = RES_PARERR;
+                                break;
                 }
 
                 // BSS deselect();
@@ -1034,8 +965,6 @@ DRESULT disk_ioctl (
 
         return res;
 }
-
-
 
 
 

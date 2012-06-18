@@ -34,12 +34,13 @@
 #ifndef sdcard_h
 #define sdcard_h
 
-#include "ff.h"
+#include "FatFs/ff.h"
+#include "FatFs/fattime.h"
+
 #if defined(PCBV4)
 // TODO because this file is used for ersky9x
 #include "rtc.h"
 #endif
-#include "gtime.h"
 
 #define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
 #define LOGS_EXT     ".CSV"
@@ -64,7 +65,7 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
 
 // MM/SD card Disk IO Support
 extern void disk_timerproc(void);
-extern uint8_t g_ms100; // defined in drivers.cpp
+extern uint8_t g_ms100;
 
 #endif
 

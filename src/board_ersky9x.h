@@ -43,8 +43,10 @@
 #include "ersky9x/sound_driver.h"
 #include "ersky9x/haptic_driver.h"
 
+extern "C" {
 extern void init_SDcard();
 extern void sd_poll_10mS();
+}
 
 #define PIN_ENABLE           0x001
 #define PIN_PERIPHERAL       0x000

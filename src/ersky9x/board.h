@@ -43,65 +43,13 @@
 #include "AT91SAM3S4.h"
 #endif
 
+#ifndef SIMU
+#include "core_cm3.h"
+#endif
+
 #define BOARD_MCK               64000000
 
-/// SD card block size in bytes.
-#define SD_BLOCK_SIZE           512
-
-/// There was an error with the SD driver.
-#define SD_ERROR_DRIVER          1
-/// The SD card did not answer the command.
-#define SD_ERROR_NORESPONSE      2
-/// The SD card did not answer the command.
-#define SD_ERROR_NOT_INITIALIZED 3
-/// The SD card is busy
-#define SD_ERROR_BUSY            4
-/// The operation is not supported
-#define SD_ERROR_NOT_SUPPORT     5
-
-typedef void (*SdCallback)(unsigned char status, void *pCommand);
-
-typedef struct _SdCmd {
-
-    /// Command status.
-    volatile char status;
-    /// Command code.
-    unsigned int cmd;
-    /// Command argument.
-    unsigned int arg;
-    /// Data buffer.
-    unsigned char *pData;
-    /// Size of data buffer in bytes.
-    unsigned short blockSize;
-    /// Number of blocks to be transfered
-    unsigned short nbBlock;
-    /// Indicate if continue to transfer data
-    unsigned char conTrans;
-    /// Indicates if the command is a read operation.
-    unsigned char isRead;
-    /// Response buffer.
-    unsigned int  *pResp;
-    /// SD card response type.
-    unsigned char  resType;
-    /// Optional user-provided callback function.
-    SdCallback callback;
-    /// Optional argument to the callback function.
-    void *pArg;
-
-} SdCmd;
-
-typedef struct {
-
-    /// Pointer to a SPI peripheral.
-    //AT91S_MCI *pSdHw;
-    /// SPI peripheral identifier.
-    unsigned char spiId;
-    /// Pointer to currently executing command.
-    SdCmd *pCommand;
-    /// Mutex.
-    volatile char semaphore;
-
-} SdDriver;
+#define CardIsConnected() ( (PIOB->PIO_PDSR & PIO_PB7) == 0 )
 
 
 //------------------------------------------------------------------------------
@@ -124,6 +72,7 @@ typedef struct {
 /// Core definition
 #define cortexm3
 
+// TODO remove these definitions
 //#define BOARD_REV_A
 #define BOARD_REV_B
 
@@ -681,5 +630,6 @@ typedef struct {
 /// Address for transferring data bytes to the nandflash.
 #define BOARD_NF_DATA_ADDR      0x60000000
 
+extern uint32_t Master_frequency ;
 
 #endif

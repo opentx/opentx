@@ -337,7 +337,7 @@ inline void start_timer3()
 
   configure_pins( PIO_PC23, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_PULLUP ) ;
 
-  NVIC_SetPriority( TC3_IRQn, 15 ) ; // Low ppiority interrupt
+  NVIC_SetPriority( TC3_IRQn, 14 ) ; // Low priority interrupt
   NVIC_EnableIRQ(TC3_IRQn) ;
   ptc->TC_CHANNEL[0].TC_IER = TC_IER0_LDRAS ;
 }

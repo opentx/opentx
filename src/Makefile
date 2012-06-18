@@ -324,25 +324,25 @@ ifeq ($(PCB), ARM)
   EXTRAINCDIRS += ersky9x
   BOARDSRC = board_ersky9x.cpp 
   SRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c 
-  CPPSRC += ersky9x/ff.cpp ersky9x/diskio.cpp ersky9x/gtime.cpp ersky9x/sdcard_driver.cpp
+  SRC += FatFs/ff.c FatFs/fattime.c ersky9x/diskio.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
-  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp
+  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp
 endif
 
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
   OPT = 2
   CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC -DROTARY_ENCODERS
-  EXTRAINCDIRS += gruvin9x stock
+  EXTRAINCDIRS += gruvin9x stock FatFs
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += stock/audio.cpp haptic.cpp
 
   ifeq ($(SDCARD), YES)
-    CPPSRC += gruvin9x/logs.cpp gruvin9x/gtime.cpp gruvin9x/rtc.cpp gruvin9x/ff.cpp gruvin9x/diskio.cpp
+    CPPSRC += gruvin9x/logs.cpp FatFs/fattime.c gruvin9x/rtc.cpp FatFs/ff.c gruvin9x/diskio.cpp
     MODS:=${MODS}S
   endif
     

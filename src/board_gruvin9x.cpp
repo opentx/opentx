@@ -32,6 +32,11 @@
  */
 
 #include "open9x.h"
+
+#ifdef SDCARD
+uint8_t g_ms100 = 0; // global to allow time set function to reset to zero
+#endif
+
 #ifndef SIMU
 inline void board_init()
 {

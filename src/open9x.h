@@ -48,7 +48,6 @@
 #if defined(SIMU)
 #include "simpgmspace.h"
 #elif defined(PCBARM)
-#include "ersky9x/core_cm3.h"
 typedef const unsigned char pm_uchar;
 typedef const char pm_char;
 typedef const uint16_t pm_uint16_t;

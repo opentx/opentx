@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef g9x_time_h
-#define g9x_time_h
+#ifndef fattime_h
+#define fattime_h
 
 #include <inttypes.h>
 #include <limits.h>
@@ -58,6 +58,8 @@ extern const unsigned short int __mon_yday[2][13];
 
 extern gtime_t gmktime(struct gtm *tp);
 extern gtime_t filltm(gtime_t *t, struct gtm *tp);
+
+extern gtime_t g_unixTime; // Global date/time register, incremented each second in per10ms()
 
 #endif
 

@@ -31,7 +31,8 @@
  *
  */
 
-#include "gtime.h"
+#include "FatFs/fattime.h"
+#include "FatFs/integer.h"
 
 #define LEAP_SECONDS_POSSIBLE 0
 
@@ -493,3 +494,27 @@ filltm(gtime_t *t, struct gtm *tp)
   return __offtime(t, 0, tp);
 }
 
+
+/*---------------------------------------------------------*/
+/* User Provided Date/Time Function for FatFs module       */
+/*---------------------------------------------------------*/
+/* This is a real time clock service to be called from     */
+/* FatFs module. Any valid time must be returned even if   */
+/* the system does not support a real time clock.          */
+/* This is not required in read-only configuration.        */
+
+gtime_t g_unixTime; // Global date/time register, incremented each second in per10ms()
+
+DWORD get_fattime(void)
+{
+  struct gtm t;
+  filltm(&g_unixTime, &t); // create a struct tm date/time structure from global unix time stamp
+
+  /* Pack date and time into a DWORD variable */
+  return    ((DWORD)(t.tm_year - 80) << 25)
+    | ((uint32_t)(t.tm_mon+1) << 21)
+    | ((uint32_t)t.tm_mday << 16)
+    | ((uint32_t)t.tm_hour << 11)
+    | ((uint32_t)t.tm_min << 5)
+    | ((uint32_t)t.tm_sec >> 1);
+}

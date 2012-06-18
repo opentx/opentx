@@ -1,38 +1,5 @@
-/*
- * Authors (alphabetical order)
- * - Bertrand Songis <bsongis@gmail.com>
- * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
- * - Cameron Weeks <th9xer@gmail.com>
- * - Erez Raviv
- * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
- * - Michael Blandford
- * - Michal Hlavinka
- * - Pat Mackenzie
- * - Philip Moss
- * - Rob Thomson
- * - Romolo Manfredini <romolo.manfredini@gmail.com>
- * - Thomas Husterer
- *
- * open9x is based on code named
- * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
- * er9x by Erez Raviv: http://code.google.com/p/er9x/,
- * and the original (and ongoing) project by
- * Thomas Husterer, th9x: http://code.google.com/p/th9x/
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- */
-
 /*---------------------------------------------------------------------------/
-/  FatFs - FAT file system module configuration file  R0.08a (C)ChaN, 2010
+/  FatFs - FAT file system module configuration file  R0.09  (C)ChaN, 2011
 /----------------------------------------------------------------------------/
 /
 / CAUTION! Do not forget to make clean the project after any changes to
@@ -40,14 +7,14 @@
 /
 /----------------------------------------------------------------------------*/
 #ifndef _FFCONF
-#define _FFCONF 8255	/* Revision ID */
+#define _FFCONF 6502	/* Revision ID */
 
 
 /*---------------------------------------------------------------------------/
-/ Function and Buffer Configurations
+/ Functions and Buffer Configurations
 /----------------------------------------------------------------------------*/
 
-#define	_FS_TINY	1		/* 0:Normal or 1:Tiny */
+#define	_FS_TINY	1	/* 0:Normal or 1:Tiny */
 /* When _FS_TINY is set to 1, FatFs uses the sector buffer in the file system
 /  object instead of the sector buffer in the individual file object for file
 /  data transfer. This reduces memory consumption 512 bytes each file object. */
@@ -69,11 +36,11 @@
 /   3: f_lseek is removed in addition to 2. */
 
 
-#define	_USE_STRFUNC	1	/* 0:Disable or 1/2:Enable */
+#define	_USE_STRFUNC	1	/* 0:Disable or 1-2:Enable */
 /* To enable string functions, set _USE_STRFUNC to 1 or 2. */
 
 
-#define	_USE_MKFS	1		/* 0:Disable or 1:Enable */
+#define	_USE_MKFS	0	/* 0:Disable or 1:Enable */
 /* To enable f_mkfs function, set _USE_MKFS to 1 and set _FS_READONLY to 0 */
 
 
@@ -143,7 +110,7 @@
 /  enable LFN feature and set _LFN_UNICODE to 1. */
 
 
-#define _FS_RPATH	2		/* 0 to 2 */
+#define _FS_RPATH		0	/* 0 to 2 */
 /* The _FS_RPATH option configures relative path feature.
 /
 /   0: Disable relative path feature and remove related functions.
@@ -165,19 +132,20 @@
 #define	_MAX_SS		512		/* 512, 1024, 2048 or 4096 */
 /* Maximum sector size to be handled.
 /  Always set 512 for memory card and hard disk but a larger value may be
-/  required for floppy disk (512/1024) and optical disk (512/2048).
-/  When _MAX_SS is larger than 512, GET_SECTOR_SIZE command must be implememted
-/  to the disk_ioctl function. */
+/  required for on-board flash memory, floppy disk and optical disk.
+/  When _MAX_SS is larger than 512, it configures FatFs to variable sector size
+/  and GET_SECTOR_SIZE command must be implememted to the disk_ioctl function. */
 
 
-#define	_MULTI_PARTITION	0	/* 0:Single partition or 1:Multiple partition */
+#define	_MULTI_PARTITION	0	/* 0:Single partition, 1/2:Enable multiple partition */
 /* When set to 0, each volume is bound to the same physical drive number and
 / it can mount only first primaly partition. When it is set to 1, each volume
 / is tied to the partitions listed in VolToPart[]. */
 
 
 #define	_USE_ERASE	0	/* 0:Disable or 1:Enable */
-/* To enable sector erase feature, set _USE_ERASE to 1. */
+/* To enable sector erase feature, set _USE_ERASE to 1. CTRL_ERASE_SECTOR command
+/  should be added to the disk_ioctl functio. */
 
 
 
@@ -195,17 +163,18 @@
 /  When the byte order on the memory is big-endian or address miss-aligned word
 /  access results incorrect behavior, the _WORD_ACCESS must be set to 0.
 /  If it is not the case, the value can also be set to 1 to improve the
-/  performance and code size. */
+/  performance and code size.
+*/
 
 
-/* Include a header file here to define sync object types on the O/S */
-/* #include <windows.h>, <ucos_ii.h.h>, <semphr.h> or ohters. */
+/* A header file that defines sync object types on the O/S, such as
+/  windows.h, ucos_ii.h and semphr.h, must be included prior to ff.h. */
 
 #define _FS_REENTRANT	0		/* 0:Disable or 1:Enable */
 #define _FS_TIMEOUT		1000	/* Timeout period in unit of time ticks */
 #define	_SYNC_t			HANDLE	/* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
 
-/* The _FS_REENTRANT option switches the reentrancy of the FatFs module.
+/* The _FS_REENTRANT option switches the reentrancy (thread safe) of the FatFs module.
 /
 /   0: Disable reentrancy. _SYNC_t and _FS_TIMEOUT have no effect.
 /   1: Enable reentrancy. Also user provided synchronization handlers,
