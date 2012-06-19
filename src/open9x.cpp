@@ -1008,18 +1008,17 @@ void message(const pm_char *title, const pm_char *t, const char *last)
 void checkTrims()
 {
   uint8_t event = getEvent(true);
+  if (event) {
+    int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
+    int8_t s = g_model.trimInc;
 #else
 uint8_t checkTrim(uint8_t event)
 {
+  int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
+  int8_t s = g_model.trimInc;
+  if (k>=0 && k<8) {
 #endif
-  int8_t  k = (event & EVT_KEY_MASK) - TRM_BASE;
-  int8_t  s = g_model.trimInc;
-
-#if !defined(PCBV4)
-  if (k>=0 && k<8)
-#endif
-  { // && (event & _MSK_KEY_REPT))
-    //LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
+    // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
     uint8_t phase = getTrimFlightPhase(s_perout_flight_phase, idx);
     int16_t before = getRawTrimValue(phase, idx);
