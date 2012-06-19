@@ -579,6 +579,7 @@ void menuProcTrainer(uint8_t event)
   }
 }
 
+extern uint32_t Card_state;
 void menuProcDiagVers(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
@@ -589,6 +590,9 @@ void menuProcDiagVers(uint8_t event)
   lcd_putsLeft(5*FH, stamp4);
   lcd_putsLeft(7*FH, STR_EEPROMV);
   lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
+#if defined(PCBARM) && defined(SDCARD)
+  lcd_puts(12*FW, 7*FH, Card_state == 8 /* TODO SD_ST_DATA*/ ? "SDCARD OK" : "NO SDCARD");
+#endif
 }
 
 void menuProcDiagKeys(uint8_t event)
