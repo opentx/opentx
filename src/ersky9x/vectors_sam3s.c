@@ -51,9 +51,8 @@ void BusFault_Handler (void) __attribute__((weak));
 void UsageFault_Handler (void) __attribute__((weak));
 void SVC_Handler (void) __attribute__((weak));
 void DebugMon_Handler (void) __attribute__((weak));
-void PendSV_Handler (void) __attribute__((weak));
+void PendSV_Handler(void) __attribute__((weak));
 void SysTick_Handler (void) __attribute__((weak));
-
 void SUPC_IRQHandler (void) __attribute__((weak));
 void RSTC_IRQHandler (void) __attribute__((weak));
 void RTC_IRQHandler (void) __attribute__((weak));
@@ -158,9 +157,6 @@ void BusFault_Handler (void) { while(1); }
 void UsageFault_Handler (void) { while(1); }
 void SVC_Handler (void) { while(1); }
 void DebugMon_Handler (void) { while(1); }
-void PendSV_Handler (void) { while(1); }
-void SysTick_Handler (void) { while(1); }
-
 void SUPC_IRQHandler (void) { while(1); }
 void RSTC_IRQHandler (void) { while(1); }
 void RTC_IRQHandler (void) { while(1); }

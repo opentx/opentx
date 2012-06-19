@@ -34,12 +34,7 @@
 #ifndef board_ersky9x_h
 #define board_ersky9x_h
 
-#ifdef REVA
-#include "ersky9x/AT91SAM3S2.h"
-#else
-#include "ersky9x/AT91SAM3S4.h"
-#endif
-
+#include "ersky9x/board.h"
 #include "ersky9x/sound_driver.h"
 #include "ersky9x/haptic_driver.h"
 

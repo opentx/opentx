@@ -962,7 +962,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
   strcpy(&buf[len], STR_MODELS_EXT);
 
-  result = f_open(&archiveFile, buf, FA_OPEN_ALWAYS | FA_WRITE);
+  result = f_open(&archiveFile, buf, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }

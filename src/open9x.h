@@ -484,10 +484,10 @@ extern char idx2char(int8_t idx);
 void clearKeyEvents();
 void pauseEvents(uint8_t enuk);
 void killEvents(uint8_t enuk);
-#if defined(PCBV4)
-uint8_t getEvent(bool trim);
-#else
+#if defined(PCBSTD)
 uint8_t getEvent();
+#else
+uint8_t getEvent(bool trim);
 #endif
 void putEvent(uint8_t evt);
 
@@ -574,10 +574,12 @@ extern uint16_t g_timeMainMax;
 extern uint8_t  g_timeMainLast;
 #endif
 
+#if defined(THRTRACE)
 #define MAXTRACE 120
 extern uint8_t s_traceBuf[MAXTRACE];
 extern uint8_t s_traceWr;
 extern int8_t s_traceCnt;
+#endif
 
 extern int8_t *s_trimPtr[NUM_STICKS];
 

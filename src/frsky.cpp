@@ -1050,24 +1050,24 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
     if (!direction) direction = '-';
 
     lcd_outdezAtt(10*FW, y, bp / 100, LEFT); // ddd before '.'
-    lcd_putc(lcd_lastPos, y, '@');
+    lcd_putc(lcdLastPos, y, '@');
     uint8_t mn = bp % 100;
     if (g_eeGeneral.gpsFormat == 0) {
-      lcd_putc(lcd_lastPos+FWNUM, y, direction);
-      lcd_outdezNAtt(lcd_lastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
-      lcd_vline(lcd_lastPos, y, 2);
+      lcd_putc(lcdLastPos+FWNUM, y, direction);
+      lcd_outdezNAtt(lcdLastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcd_vline(lcdLastPos, y, 2);
       uint16_t ss = ap * 6;
-      lcd_outdezAtt(lcd_lastPos+3, y, ss / 1000, LEFT); // ''
-      lcd_plot(lcd_lastPos, y+FH-2, 0); // small decimal point
-      lcd_outdezAtt(lcd_lastPos+2, y, ss % 1000, LEFT); // ''
-      lcd_vline(lcd_lastPos, y, 2);
-      lcd_vline(lcd_lastPos+2, y, 2);
+      lcd_outdezAtt(lcdLastPos+3, y, ss / 1000, LEFT); // ''
+      lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
+      lcd_outdezAtt(lcdLastPos+2, y, ss % 1000, LEFT); // ''
+      lcd_vline(lcdLastPos, y, 2);
+      lcd_vline(lcdLastPos+2, y, 2);
     }
     else {
-      lcd_outdezNAtt(lcd_lastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
-      lcd_plot(lcd_lastPos, y+FH-2, 0); // small decimal point
-      lcd_outdezNAtt(lcd_lastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
-      lcd_putc(lcd_lastPos+1, y, direction);
+      lcd_outdezNAtt(lcdLastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcd_plot(lcdLastPos, y+FH-2, 0); // small decimal point
+      lcd_outdezNAtt(lcdLastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+      lcd_putc(lcdLastPos+1, y, direction);
     }
   }
   else {
@@ -1270,9 +1270,9 @@ void menuProcFrsky(uint8_t event)
       // Rssi
       lcd_putsLeft(line, STR_MINRSSI);
       lcd_puts(10*FW, line, STR_TX);
-      lcd_outdezNAtt(lcd_lastPos, line, frskyRSSI[1].min, LEFT|LEADING0, 2);
+      lcd_outdezNAtt(lcdLastPos, line, frskyRSSI[1].min, LEFT|LEADING0, 2);
       lcd_puts(16*FW, line, STR_RX);
-      lcd_outdezNAtt(lcd_lastPos, line, frskyRSSI[0].min, LEFT|LEADING0, 2);
+      lcd_outdezNAtt(lcdLastPos, line, frskyRSSI[0].min, LEFT|LEADING0, 2);
     }
 #endif    
   }

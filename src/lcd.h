@@ -79,7 +79,12 @@
 #define TWO_DOTS      LEFT
 
 extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
-extern uint8_t lcd_lastPos;
+extern uint8_t lcdLastPos;
+
+#if defined(PCBARM)
+extern uint8_t lcdLock ;
+extern uint8_t lcdInputs ;
+#endif
 
 extern void lcd_putc(uint8_t x,uint8_t y,const unsigned char c);
 extern void lcd_putcAtt(uint8_t x,uint8_t y,const unsigned char c,uint8_t mode);

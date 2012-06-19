@@ -750,7 +750,8 @@ uint32_t read_keys()
   register uint32_t x;
   register uint32_t y;
 
-  x = PIOC->PIO_PDSR << 1; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+  x = lcdLock ? lcdInputs : PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+  x <<= 1;
 
 #ifdef REVB
   y = x & 0x00000020; // RIGHT

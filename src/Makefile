@@ -65,6 +65,9 @@ SPLASH = YES
 # GRAPHICS (sliders / checkboxes)
 GRAPHICS = YES
 
+# THR trace (in STATS screen)
+THR_TRACE = YES
+
 # PPM center adjustable
 # Values = YES, NO
 PPM_CENTER_ADJUSTABLE = NO
@@ -172,6 +175,7 @@ ifeq ($(PCB), ARM)
 endif
 
 CC      = $(TRGT)gcc
+AS      = $(TRGT)as
 OBJCOPY = $(TRGT)objcopy
 OBJDUMP = $(TRGT)objdump
 SIZE    = $(TRGT)size
@@ -191,6 +195,7 @@ FORMAT = ihex
 TARGET = open9x
 
 # List C++ source files here. (C dependencies are automatically generated.)
+SRC = 
 CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp translations.cpp
 
 ifeq ($(EXT), JETI)
@@ -250,6 +255,10 @@ endif
 
 ifeq ($(GRAPHICS), YES)
   CPPDEFS += -DGRAPHICS
+endif
+
+ifeq ($(THR_TRACE), YES)
+  CPPDEFS += -DTHRTRACE
 endif
 
 ifeq ($(FLIGHT_PHASES), YES)
@@ -321,9 +330,10 @@ ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM
-  EXTRAINCDIRS += ersky9x
+  EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
-  SRC = ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c 
+  SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c 
+  SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += FatFs/ff.c FatFs/fattime.c ersky9x/diskio.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
@@ -620,8 +630,8 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
-	g++ simu.cpp $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
+simu: stamp_header $(BOARDSRC) $(CPPSRC) $(SRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
+	g++ simu.cpp $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) $(SRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048

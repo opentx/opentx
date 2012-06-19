@@ -31,6 +31,7 @@
  *
  */
 
+#include "ff.h"
 #include "fattime.h"
 #include "integer.h"
 

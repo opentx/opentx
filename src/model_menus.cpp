@@ -1516,7 +1516,7 @@ void menuProcMixOne(uint8_t event)
 {
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
-  putsChn(lcd_lastPos+1*FW,0,md2->destCh+1,0);
+  putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
   SIMPLE_SUBMENU_NOTITLE(MIX_FIELD_COUNT);
 
   int8_t  sub = m_posVert;
@@ -1647,8 +1647,8 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
   }
 
   TITLEP(expo ? STR_MENUDREXPO : STR_MIXER);
-  lcd_outdezAtt(lcd_lastPos+2*FW+FW/2, 0, getExpoMixCount(expo));
-  lcd_puts(lcd_lastPos, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
+  lcd_outdezAtt(lcdLastPos+2*FW+FW/2, 0, getExpoMixCount(expo));
+  lcd_puts(lcdLastPos, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
   SIMPLE_MENU_NOTITLE(menuTabModel, expo ? e_ExposAll : e_MixAll, s_maxLines);
 
 #if defined(ROTARY_ENCODERS)
@@ -2392,7 +2392,7 @@ void menuProcTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A2_RANGE:
         lcd_puts(4, y, STR_RANGE);
         putsTelemetryChannel(TELEM_COL2, y, ch+MAX_TIMERS, 255-channel.offset, ((attr && m_posHorz==0) ? blink : 0)|NO_UNIT|LEFT);
-        lcd_putsiAtt(lcd_lastPos, y, STR_VTELEMUNIT, channel.type, (attr && m_posHorz==1 ? blink : 0));
+        lcd_putsiAtt(lcdLastPos, y, STR_VTELEMUNIT, channel.type, (attr && m_posHorz==1 ? blink : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
           if (m_posHorz == 0) {
             uint16_t ratio = checkIncDec(event, channel.ratio, 0, 256, EE_MODEL);

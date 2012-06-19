@@ -298,7 +298,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
   }
 #endif
 
-  DISPLAY_PROGRESS_BAR(menuTab ? lcd_lastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
+  DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
 
   if (s_editMode<=0) {
     if (scrollUD) {

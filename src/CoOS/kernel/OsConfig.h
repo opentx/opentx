@@ -42,12 +42,12 @@ Idle task stack size(word).
 /*!< 
 System frequency (Hz).	                 	         
 */    
-#define CFG_CPU_FREQ            (72000000)  
+#define CFG_CPU_FREQ            (36000000)
 
 /*!< 
 systick frequency (Hz).	                         
 */
-#define CFG_SYSTICK_FREQ        (100) 		
+#define CFG_SYSTICK_FREQ        (500)
 
 /*!< 
 max systerm api call num in ISR.	                         
@@ -96,7 +96,7 @@ But in Dynamic Task Scheduling model(1),task resources will be recovered.
 If in Static Task Scheduling model(0),mutex module can not be used, as this model don't
 support to change task priority while CoOS running. 
 */
-#define CFG_TASK_SCHEDULE_EN     (1)
+#define CFG_TASK_SCHEDULE_EN     (0)
 
 
 /*---------------------- Task Management Config -----------------------------*/
@@ -110,19 +110,19 @@ Enable(1) or disable(0) CoSetPriority() API.
 /*!< 
 Enable(1) or disable(0) CoAwakeTask() and CoSuspendTask() API.		      
 */
-#define CFG_TASK_SUSPEND_EN       (1)
+#define CFG_TASK_SUSPEND_EN       (0)
 
 
 /*---------------------- Debug Management Config ----------------------------*/
 /*!< 
 Enable(1) or disable(0) parameter checkout .		  
 */
-#define CFG_PAR_CHECKOUT_EN     (1)	
+#define CFG_PAR_CHECKOUT_EN     (0)	
 
 /*!< 
 Enable(1) or disable(0) stack overflow checkout .  	  
 */		
-#define CFG_STK_CHECKOUT_EN     (1)		
+#define CFG_STK_CHECKOUT_EN     (0)		
 
 
 
@@ -130,7 +130,7 @@ Enable(1) or disable(0) stack overflow checkout .
 /*!< 
 Enable(1) or disable(0) memory management.	      
 */
-#define CFG_MM_EN               (1)   
+#define CFG_MM_EN               (0)   
 
 /*!< 
 Max number of memory.(must be less than 32).      
@@ -161,7 +161,7 @@ Kernel heap size(word).
 Enable(1) or disable(0) TimeDelay() API.		      
 */
 #if CFG_TASK_WAITTING_EN >0
-#define CFG_TIME_DELAY_EN       (1)	
+#define CFG_TIME_DELAY_EN       (0)	
 #endif
 
 
@@ -198,7 +198,7 @@ Event sort type.(1)FIFO (2)PRI (3)FIFO+PRI
 Max number of event.(must be less than 255) 	      
 Event = semaphore + mailbox + queue;			      
 */
-#define CFG_MAX_EVENT           (20)
+#define CFG_MAX_EVENT           (10)
 
 /*!< 
 Enable(1) or disable(0) semaphore management.	      

@@ -58,6 +58,7 @@ void menuProcStatistic(uint8_t event)
   lcd_puts( 17*FW, FH*0, STR_TOT);
   putsTime(   12*FW, FH*0, s_timeCumTot, 0, 0);
 
+#if defined(THRTRACE)
   uint8_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
   const uint8_t x=5;
   const uint8_t y=60;
@@ -75,6 +76,7 @@ void menuProcStatistic(uint8_t event)
     if(traceRd>=MAXTRACE) traceRd=0;
     if(traceRd==s_traceWr) break;
   }
+#endif
 }
 
 #define MENU_DEBUG_COL_OFS (14*FW)

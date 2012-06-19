@@ -39,7 +39,8 @@
 /*-----------------------------------------------------------------------*/
 
 #include "board.h"
-#include "FatFs/diskio.h"
+#include "../FatFs/diskio.h"
+#include "../CoOS/kernel/CoOS.h"
 
 // States for initialising card
 #define SD_ST_EMPTY             0
@@ -586,67 +587,81 @@ uint32_t sd_card_ready( void )
         return 0 ;
 }
 
-uint32_t sd_read_block( uint32_t block_no, uint32_t *dat )
+uint32_t sd_cmd16()
+{
+  Hsmci *phsmci = HSMCI;
+
+  if (CardIsConnected()) {
+    phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
+    phsmci->HSMCI_ARGR = 512;
+    phsmci->HSMCI_CMDR = SDMMC_SET_BLOCKLEN;
+
+    while(1) {
+      if (phsmci->HSMCI_SR & HSMCI_SR_CMDRDY) {
+        break;
+      }
+    }
+    return phsmci->HSMCI_RSPR[0];
+  }
+  else {
+    return 0;
+  }
+}
+
+uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 {
   if (Card_state == SD_ST_DATA) {
     Hsmci *phsmci = HSMCI;
-
     if (CardIsConnected()) {
-      uint8_t i;
-      for (i = 0; i < 3; i++) {
-        uint32_t *data = dat;
-        uint32_t j = 0;
-        // Block size = 512, nblocks = 1
-        phsmci->HSMCI_BLKR = ((512) << 16) | 1;
-        phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_PDCMODE|HSMCI_MR_FBYTE))) | HSMCI_MR_WRPROOF | HSMCI_MR_RDPROOF | (512 << 16);
-        phsmci->HSMCI_ARGR = block_no << 9;
-        phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
+      sd_cmd16();
+      // Block size = 512, nblocks = 1
+      phsmci->HSMCI_BLKR = ((512) << 16) | 1;
+      phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
+      phsmci->HSMCI_RPR  = (uint32_t)data;
+      phsmci->HSMCI_RCR  = 512 / 4;
+      phsmci->HSMCI_RNCR = 0;
+      phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTEN;
+      phsmci->HSMCI_ARGR = block_no << 9;
+      phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
         
-        while (1) {
-          if (phsmci->HSMCI_SR & HSMCI_SR_RXRDY) {
-            *data++ = phsmci->HSMCI_RDR;
-            j += 1;
-          }
-
-          if (j >= 128) {
-            return 1;
-          }
-
-          if ((phsmci->HSMCI_SR & (HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE)) == (HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE)) {
-            break;
-          }
+      uint8_t retry = 100;
+      while (retry-- > 0) {
+        CoTickDelay(1); // 2ms
+        if (phsmci->HSMCI_SR & HSMCI_SR_ENDRX) {
+          return 1;
         }
       }
+
     }
   }
+
   return 0;
 }
 
 uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 {
   if (Card_state == SD_ST_DATA) {
-    uint32_t j = 0;
     Hsmci *phsmci = HSMCI;
-
     if (CardIsConnected()) {
+      sd_cmd16();
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
-      phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_PDCMODE|HSMCI_MR_FBYTE))) | HSMCI_MR_WRPROOF | HSMCI_MR_RDPROOF | (512 << 16);
+      phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
+      phsmci->HSMCI_TPR  = (uint32_t)data;
+      phsmci->HSMCI_TCR  = 512 / 4;
+      phsmci->HSMCI_TNCR = 0;
       phsmci->HSMCI_ARGR = block_no << 9;
       phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
+      phsmci->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
       
-      while (1) {
-        if (j >= 128) {
-          while (~phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY)
-            ;
+      uint8_t retry = 100;
+      while (retry-- > 0) {
+        CoTickDelay(1); // 2ms
+        if (phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY) {
           return 1;
         }
-
-        if (phsmci->HSMCI_SR & HSMCI_SR_TXRDY) {
-          phsmci->HSMCI_TDR = *data++;
-          j += 1;
-        }
       }
+
     }
   }
 

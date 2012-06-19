@@ -65,7 +65,12 @@ void lcd_img(uint8_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mo
   }
 }
 
-uint8_t lcd_lastPos;
+uint8_t lcdLastPos;
+
+#if defined(PCBARM)
+uint8_t lcdLock;
+uint8_t lcdInputs;
+#endif
 
 void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
 {
@@ -174,7 +179,7 @@ void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mode
     s++;
     len--;
   }
-  lcd_lastPos = x;
+  lcdLastPos = x;
 }
 
 void lcd_putsn(uint8_t x,uint8_t y,const pm_char * s,uint8_t len)
@@ -272,7 +277,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
       x += (dblsize ? 7 : FWNUM);
   }
 
-  lcd_lastPos = x;
+  lcdLastPos = x;
   x -= fw + 1;
 
   for (uint8_t i=1; i<=len; i++) {
@@ -317,7 +322,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
 
 #if defined(ROTARY_ENCODERS)
   if (flags & SURROUNDED) {
-    xn = lcd_lastPos - x + 2;
+    xn = lcdLastPos - x + 2;
     if (!neg) { x+=FW; xn-=FW; }
     lcd_rect(x-1, y-1, xn, 9, BLINK_ON_PHASE ? DOTTED : ~DOTTED);
   }
@@ -435,15 +440,15 @@ void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
   }
 
   lcd_outdezNAtt(x, y, tme/60, att|LEADING0|LEFT, 2);
-  lcd_putcAtt(lcd_lastPos-((att & DBLSIZE) ? 1 : 0), y, ':', att&att2);
-  lcd_outdezNAtt(lcd_lastPos+FW, y, tme%60, att2|LEADING0|LEFT, 2);
+  lcd_putcAtt(lcdLastPos-((att & DBLSIZE) ? 1 : 0), y, ':', att&att2);
+  lcd_outdezNAtt(lcdLastPos+FW, y, tme%60, att2|LEADING0|LEFT, 2);
 }
 
 // TODO to be optimized with putsTelemetryValue
 void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcd_putcAtt(lcd_lastPos, y, 'v', att&(~INVERS));
+  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att&(~INVERS));
 }
 
 void putsVBat(uint8_t x, uint8_t y, uint8_t att)
@@ -454,8 +459,8 @@ void putsVBat(uint8_t x, uint8_t y, uint8_t att)
 void putsStrIdx(uint8_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t att)
 {
   lcd_putsAtt(x, y, str, att & ~BSS); // TODO use something else than BSS for LEADING0
-  lcd_outdezNAtt(lcd_lastPos, y, idx, att|LEFT, 2);
-  if (att&TWO_DOTS) lcd_putc(lcd_lastPos, y, ':');
+  lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
+  if (att&TWO_DOTS) lcd_putc(lcdLastPos, y, ':');
 }
 
 void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
@@ -754,6 +759,10 @@ void lcdSetRefVolt(uint8_t val)
   register Pio *pioptr ;
   pioptr = PIOC ;
 
+  // read the inputs, and lock the LCD lines
+  lcdInputs = PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+  lcdLock = 1 ;
+
   pioptr->PIO_OER = 0x0C00B0FFL ;         // Set bits 27,26,15,13,12,7-0 output
 
   lcdSendCtl(0x81);
@@ -766,13 +775,14 @@ void lcdSetRefVolt(uint8_t val)
 #ifdef REVB
   pioptr->PIO_ODR = 0x0000003AL ;         // Set bits 1, 3, 4, 5 input
   pioptr->PIO_PUER = 0x0000003AL ;                // Set bits 1, 3, 4, 5 with pullups
-  pioptr->PIO_ODSR = 0 ;                                                  // Drive D0 low
 #else
   pioptr->PIO_ODR = 0x0000003CL ;         // Set bits 2, 3, 4, 5 input
   pioptr->PIO_PUER = 0x0000003CL ;                // Set bits 2, 3, 4, 5 with pullups
-  pioptr->PIO_ODSR = 0 ;                                                  // Drive D0 low
 #endif
 #endif
+
+  pioptr->PIO_ODSR = lcdInputs;                  // Drive D0 low
+  lcdLock = 0 ;
 }
 
 #ifndef SIMU
@@ -784,11 +794,11 @@ void refreshDisplay()
   register uint32_t x;
   register uint32_t z;
   register uint32_t ebit;
-#ifdef REVB
-#else
+#ifndef REVB
   register uint8_t *lookup;
   lookup = (uint8_t *) Lcd_lookup;
 #endif
+
   ebit = LCD_E;
 
 #ifdef REVB
@@ -796,6 +806,10 @@ void refreshDisplay()
   pioptr->PIO_PER = 0x00000080; // Enable bit 7 (LCD-A0)
   pioptr->PIO_OER = 0x00000080;// Set bit 7 output
 #endif
+
+  // read the inputs, and lock the LCD lines
+  lcdInputs = PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+  lcdLock = 1 ;
 
   pioptr = PIOC;
 #ifdef REVB
@@ -855,7 +869,9 @@ void refreshDisplay()
   pioptr->PIO_PUER = 0x0000003CL ;        // Set bits 2, 3, 4, 5 with pullups
   pioptr->PIO_ODR = 0x0000003CL ;         // Set bits 2, 3, 4, 5 input
 #endif
-  pioptr->PIO_ODSR = 0xFE ;                                       // Drive D0 low
+
+  pioptr->PIO_ODSR = lcdInputs;                                       // Drive D0 low
+  lcdLock = 0;
 }
 #endif
 

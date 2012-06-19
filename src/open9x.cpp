@@ -31,6 +31,27 @@
  *
  */
 
+#if defined(PCBARM)
+extern "C" {
+#include <CoOS.h>
+}
+
+#define MIXER_STACK_SIZE    300
+#define MENUS_STACK_SIZE    300
+#define BT_STACK_SIZE       100
+
+OS_TID mixerTaskId;
+OS_STK mixerStack[MIXER_STACK_SIZE];
+
+OS_TID menusTaskId;
+OS_STK menusStack[MENUS_STACK_SIZE];
+
+/*OS_TID btTask;
+OS_STK btStack[BT_STACK_SIZE];
+OS_TCID btTimer;
+OS_FlagID btFlag;*/
+#endif
+
 #include "open9x.h"
 
 #if defined(SPLASH)
@@ -763,7 +784,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 #endif
   lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT)); // TODO we could add this test inside lcd_outdezAtt!
   if (~att & NO_UNIT && unit != UNIT_RAW)
-    lcd_putsiAtt(lcd_lastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+    lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
 }
 #endif
 
@@ -1004,19 +1025,19 @@ void message(const pm_char *title, const pm_char *t, const char *last)
   clearKeyEvents();
 }
 
-#if defined(PCBV4)
+#if defined(PCBSTD)
+uint8_t checkTrim(uint8_t event)
+{
+  int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
+  int8_t s = g_model.trimInc;
+  if (k>=0 && k<8) {
+#else
 void checkTrims()
 {
   uint8_t event = getEvent(true);
   if (event) {
     int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
     int8_t s = g_model.trimInc;
-#else
-uint8_t checkTrim(uint8_t event)
-{
-  int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
-  int8_t s = g_model.trimInc;
-  if (k>=0 && k<8) {
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
@@ -1072,11 +1093,11 @@ uint8_t checkTrim(uint8_t event)
       AUDIO_TRIM();
 #endif
     }
-#if !defined(PCBV4)
+#if defined(PCBSTD)
     return 0;
 #endif
   }
-#if !defined(PCBV4)
+#if defined(PCBSTD)
   return event;
 #endif
 }
@@ -1319,9 +1340,11 @@ static uint16_t s_sum[2] = {0, 0};
 static uint8_t sw_toggled[2] = {false, false};
 static uint16_t s_time_cum_16[2] = {0, 0};
 
+#if defined(THRTRACE)
 uint8_t s_traceBuf[MAXTRACE];
 uint8_t s_traceWr;
 int8_t s_traceCnt;
+#endif
 
 #if defined(HELI) || defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n)
@@ -2051,11 +2074,13 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
   val /= (RESX/16); // calibrate it
 
   static uint16_t s_time_tot;
-  static uint16_t s_time_trace;
   static uint8_t s_cnt_1s;
   static uint16_t s_sum_1s;
+#if defined(THRTRACE)
+  static uint16_t s_time_trace;
   static uint16_t s_cnt_10s;
   static uint16_t s_sum_10s;
+#endif
 
   s_cnt_1s++;
   s_sum_1s += val;
@@ -2068,10 +2093,9 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
     s_timeCum16ThrP += val / 2;
     if (val) s_timeCumThr += 1;
 
+#if defined(THRTRACE)
     s_cnt_10s += s_cnt_1s;
     s_sum_10s += s_sum_1s;
-    s_cnt_1s = 0;
-    s_sum_1s = 0;
 
     if ((uint16_t)(tmr10ms - s_time_trace) >= 1000) {// 10sec
       s_time_trace += 1000;
@@ -2083,6 +2107,10 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
       if (s_traceWr >= MAXTRACE) s_traceWr = 0;
       if (s_traceCnt >= 0) s_traceCnt++; // TODO to be checked
     }
+#endif
+
+    s_cnt_1s = 0;
+    s_sum_1s = 0;
   }
 
   // Timers start
@@ -2218,7 +2246,7 @@ void perMain()
   uint8_t tick10ms = (tmr10ms - lastTMR);
   lastTMR = tmr10ms;
 
-#if !defined(PCBV4) || defined(SIMU)
+#if defined(PCBSTD) || defined(SIMU)
   doMixerCalculations(tmr10ms, tick10ms);
 #endif
 
@@ -2289,11 +2317,11 @@ void perMain()
 
   lcd_clear();
   
-#if defined(PCBV4)
-  uint8_t evt = getEvent(false);
-#else
+#if defined(PCBSTD)
   uint8_t evt = getEvent();
   evt = checkTrim(evt);
+#else
+  uint8_t evt = getEvent(false);
 #endif
 
   // TODO port lightOnStickMove from er9x + flash saving, call checkBacklight()
@@ -2337,10 +2365,17 @@ void perMain()
   }
 #endif
 
+#if defined(PCBARM)
+  static uint8_t counter = 0;
+  if (counter-- == 0) {
+    counter = 10;
+#else
   switch( tmr10ms & 0x1f ) { //alle 10ms*32
 
     case 2:
-      {
+    {
+#endif
+
 #if defined(PCBARM)
         int32_t instant_vbat = anaIn(7);
         instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
@@ -2366,8 +2401,10 @@ void perMain()
             AUDIO_ERROR(); // TODO AUDIO_TX_BATTERY_LOW()
           }
         }
+#if !defined(PCBARM)
       }
       break;
+#endif
   }
 }
 
@@ -2486,7 +2523,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
 #if !defined(PCBV4)
-    heartbeat |= HEART_TIMER10ms;
+    heartbeat |= HEART_TIMER10ms; // TODO check heartbeat everywhere!
 #endif
 
 
@@ -2748,6 +2785,78 @@ uint16_t stack_free()
 
 #endif
 
+#if defined(PCBARM)
+void mixerTask(void * pdata)
+{
+  while(1) {
+
+    uint16_t t0 = getTmr2MHz();
+
+    static uint16_t lastTMR;
+    uint16_t tmr10ms = get_tmr10ms();
+    uint8_t tick10ms = (tmr10ms - lastTMR);
+    lastTMR = tmr10ms;
+
+    if (s_current_protocol < PROTO_NONE) {
+      checkTrims();
+      doMixerCalculations(tmr10ms, tick10ms);
+    }
+
+    heartbeat |= HEART_TIMER10ms;
+
+    if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
+      wdt_reset();
+      heartbeat = 0;
+    }
+
+    t0 = getTmr2MHz() - t0;
+    if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
+
+    CoTickDelay(1);  // 2ms for now
+  }
+}
+
+void menusTask(void * pdata)
+{
+  register uint32_t shutdown_state = 0;
+
+  while ((shutdown_state=check_soft_power()) <= e_power_trainer) {
+
+    perMain();
+    CoTickDelay(5);  // 10ms for now
+
+  }
+
+  SysTick->CTRL = 0; // turn off systick
+
+#if defined(HAPTIC)
+  hapticOff();
+#endif
+
+  lcd_clear() ;
+  displayPopup(STR_SHUTDOWN);
+  g_eeGeneral.unexpectedShutdown=0;
+  eeDirty(EE_GENERAL);
+  eeCheck(true);
+#if defined(SDCARD) && !defined(PCBARM)
+  closeLogs();
+#endif
+  lcd_clear() ;
+  refreshDisplay() ;
+  soft_power_off();            // Only turn power off if necessary
+
+  if (shutdown_state == e_power_usb) {
+    lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
+    lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
+    lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
+    refreshDisplay() ;
+    usb_mode();
+  }
+
+  lcdSetRefVolt(0); // TODO before soft_power_off?
+}
+#endif
+
 int main(void)
 {
   // The WDT remains active after a WDT reset -- at maximum clock speed. So it's
@@ -2872,7 +2981,6 @@ int main(void)
 
   if(cModel!=g_eeGeneral.currModel) eeDirty(EE_GENERAL); // if model was quick-selected, make sure it sticks
 
-
 #if defined(PCBARM)
   start_ppm_capture();
   // TODO inside startPulses?
@@ -2885,80 +2993,62 @@ int main(void)
   }
 
 #if defined(PCBARM)
-  register uint32_t shutdown_state = 0;
-#elif defined(PCBV4)
+  CoInitOS();
+
+  // btFlag = CoCreateFlag(TRUE, FALSE);          // Auto-reset, start FALSE
+  // btTimer = CoCreateTmr(TMR_TYPE_PERIODIC, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), btTimerHandle);
+
+  // btTaskId = CoCreateTask(btTask, NULL, 19, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
+  menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
+  mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
+
+  CoStartOS();
+#else
+#if defined(PCBV4)
   uint8_t shutdown_state = 0;
 #endif
 
   while(1) {
-#if defined(PCBARM) || defined(PCBV4)
+#if defined(PCBV4)
     if ((shutdown_state=check_soft_power()) > e_power_trainer)
       break;
 #endif
 
-#if defined(PCBARM)
-    uint16_t t0 = getTmr2MHz();
-#elif defined(PCBSTD)
+#if defined(PCBSTD)
     uint16_t t0 = getTmr16KHz();
 #endif
   
     perMain();
 
-#if !defined(PCBV4)    
+#if defined(PCBSTD)
     if(heartbeat == 0x3)
     {
       wdt_reset();
       heartbeat = 0;
     }
-#if defined(PCBARM)
-    t0 = getTmr2MHz() - t0;
-#else
+
     t0 = getTmr16KHz() - t0;
+    if (t0 > g_timeMainMax) g_timeMainMax = t0;
 #endif
-
-    if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
-#endif
-
   }
+#endif // PCBARM
 
-#if defined(PCBARM) || defined(PCBV4)
+#if defined(PCBV4)
   // Time to switch off
   lcd_clear() ;
   displayPopup(STR_SHUTDOWN);
   g_eeGeneral.unexpectedShutdown=0;
   eeDirty(EE_GENERAL);
   eeCheck(true);
-#if defined(SDCARD) && !defined(PCBARM)
+#if defined(SDCARD)
   closeLogs();
 #endif
   lcd_clear() ;
   refreshDisplay() ;
   soft_power_off();            // Only turn power off if necessary
-#endif
-
-#if defined(PCBARM)
-  if (shutdown_state == e_power_usb) {
-    lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
-    lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
-    lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
-    refreshDisplay() ;
-    #if defined(HAPTIC)
-    hapticOff(); 
-    #endif
-    /* end force haptic to be disabled in this mode */
-    usb_mode();
-  }
-#endif
-
-#if defined(PCBARM) || defined(PCBV4)
-  lcdSetRefVolt(0); // TODO before soft_power_off?
-#endif
-
-#if defined(PCBV4)
-  //never return from main() - there is no code to return back, if any daelays occurs in physical power it does dead loop.
   wdt_disable();
-  for(;;){}
+  while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif
 }
-#endif
+#endif // !SIMU
 

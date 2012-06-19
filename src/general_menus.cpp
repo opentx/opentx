@@ -289,7 +289,7 @@ void menuProcSetup(uint8_t event)
       case ITEM_SETUP_INACTIVITY_ALARM:
         lcd_putsLeft( y,STR_INACTIVITYALARM);
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.inactivityTimer, attr|LEFT);
-        lcd_putc(lcd_lastPos, y, 'm');
+        lcd_putc(lcdLastPos, y, 'm');
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
 
@@ -335,7 +335,7 @@ void menuProcSetup(uint8_t event)
         lcd_putsLeft( y, STR_LIGHTOFFAFTER);
         if(g_eeGeneral.lightAutoOff) {
           lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.lightAutoOff*5, attr|LEFT);
-          lcd_putc(lcd_lastPos, y, 's');
+          lcd_putc(lcdLastPos, y, 's');
         }
         else {
           lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_OFFON, 0, attr);
