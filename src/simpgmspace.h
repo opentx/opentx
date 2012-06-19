@@ -184,6 +184,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define OCR3A dummyport16
 #define OCR3B dummyport16
 #define OCR4A dummyport
+#define OCR5A dummyport
 #define OCR1B dummyport16
 #define OCR1C dummyport16
 #define TCCR0A dummyport
@@ -194,6 +195,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define COM0A0 dummyport
 
 #define TCNT1 dummyport16
+#define TCNT5 dummyport16
 #define ICR1 dummyport16
 #define TIFR dummyport
 #define TIFR1 dummyport
@@ -208,6 +210,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define TIMSK1 dummyport
 #define TIMSK3 dummyport
 #define TIMSK4 dummyport
+#define TIMSK5 dummyport
 #define ETIMSK  dummyport
 #define ETIMSK1 dummyport
 
@@ -223,6 +226,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define OCIE1B dummyport
 #define OCIE1C dummyport
 #define OCIE4A dummyport
+#define OCIE5A dummyport
 
 #define OUT_B_LIGHT   7
 #define INP_E_ElevDR  2
@@ -268,6 +272,11 @@ extern volatile unsigned char pinb,pinc,pind,pine,ping,pinh,pinj,pinl;
 extern uint8_t portb, portc, porth, dummyport;
 extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
+
+#define getADC_filt()
+#define getADC_single()
+#define getADC_osmp()
+#define getADC_bandgap()
 
 extern void setSwitch(int8_t swtch);
 

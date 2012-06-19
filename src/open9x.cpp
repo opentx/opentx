@@ -1082,28 +1082,30 @@ uint8_t checkTrim(uint8_t event)
 #endif
 }
 
-#ifdef SIMU
-
-uint16_t BandGap = 225;
-
-#else
-
-// #define STARTADCONV (ADCSRA  = (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2) | (1<<ADSC) | (1 << ADIE))
-// G: Note that the above would have set the ADC prescaler to 128, equating to
-// 125KHz sample rate. We now sample at 500KHz, with oversampling and other
-// filtering options to produce 11-bit results.
-#if defined(PCBV4)
-uint16_t BandGap = 2040 ;
-#elif defined(PCBSTD)
-uint16_t BandGap ;
-#endif
-#if defined(PCBARM) and defined(REVB)
+#if defined(PCBARM) && defined(REVB)
 uint16_t Current_analogue;
 #define NUMBER_ANALOG   9
 #else
 #define NUMBER_ANALOG   8
 #endif
+
+#if !defined(SIMU)
 static uint16_t s_anaFilt[NUMBER_ANALOG];
+#endif
+
+#if defined(SIMU)
+uint16_t BandGap = 225;
+#elif defined(PCBV4)
+// #define STARTADCONV (ADCSRA  = (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2) | (1<<ADSC) | (1 << ADIE))
+// G: Note that the above would have set the ADC prescaler to 128, equating to
+// 125KHz sample rate. We now sample at 500KHz, with oversampling and other
+// filtering options to produce 11-bit results.
+uint16_t BandGap = 2040 ;
+#elif defined(PCBSTD)
+uint16_t BandGap ;
+#endif
+
+#if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
 {
   //                     ana-in:   3 1 2 0 4 5 6 7
@@ -1230,7 +1232,7 @@ void getADC_single()
 }
 #endif
 
-#if not defined(PCBARM)
+#if !defined(PCBARM)
 void getADC_bandgap()
 {
 #if defined (PCBV4)
@@ -1950,13 +1952,13 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
     getADC_single() ;
   }
 
-#if defined(PCBARM) && defined(REVB)
+#if defined(PCBARM) && defined(REVB) && !defined(SIMU)
   Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
-#elif defined(PCBV4)
+#elif defined(PCBV4) && !defined(SIMU)
   // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
   ADCSRB &= ~(1<<MUX5);
   ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
-#elif defined(PCBSTD)
+#elif defined(PCBSTD) && !defined(SIMU)
   ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
 #endif
 
@@ -2027,7 +2029,7 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
   }
 
   // Bandgap has had plenty of time to settle...
-#if not defined(PCBARM)
+#if !defined(PCBARM)
   getADC_bandgap();
 #endif
 
@@ -2217,7 +2219,7 @@ void perMain()
   uint8_t tick10ms = (tmr10ms - lastTMR);
   lastTMR = tmr10ms;
 
-#if !defined(PCBV4)
+#if !defined(PCBV4) || defined(SIMU)
   doMixerCalculations(tmr10ms, tick10ms);
 #endif
 

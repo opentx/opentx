@@ -604,9 +604,11 @@ void checkAlarm();
 #define GETADC_OSMP = 1
 #define GETADC_FILT = 2
 
+#if !defined(SIMU)
 void getADC_single();
 void getADC_osmp();
 void getADC_filt();
+#endif
 
 extern uint8_t  s_eeDirtyMsk;
 
