@@ -39,7 +39,7 @@
 /*-----------------------------------------------------------------------*/
 
 #include "../open9x.h"
-#include "diskio.h"
+#include "../FatFs/diskio.h"
 
 /* Definitions for MMC/SDC command */
 #define CMD0	(0)			/* GO_IDLE_STATE */
@@ -488,11 +488,11 @@ DRESULT disk_write (
 DRESULT disk_ioctl (
 			BYTE drv,		/* Physical drive nmuber (0) */
 			BYTE ctrl,		/* Control code */
-			BYTE *buff		/* Buffer to send/receive control data */
+			void *buff		/* Buffer to send/receive control data */
 			)
 {
 	DRESULT res;
-	BYTE n, csd[16], *ptr = buff;
+	BYTE n, csd[16], *ptr = (BYTE*)buff;
 	WORD csize;
 	
 	

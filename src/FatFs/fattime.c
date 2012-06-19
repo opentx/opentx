@@ -31,8 +31,8 @@
  *
  */
 
-#include "FatFs/fattime.h"
-#include "FatFs/integer.h"
+#include "fattime.h"
+#include "integer.h"
 
 #define LEAP_SECONDS_POSSIBLE 0
 
