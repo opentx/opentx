@@ -598,11 +598,10 @@ uint32_t sd_read_block( uint32_t block_no, uint32_t *dat )
         uint32_t j = 0;
         // Block size = 512, nblocks = 1
         phsmci->HSMCI_BLKR = ((512) << 16) | 1;
+        phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_PDCMODE|HSMCI_MR_FBYTE))) | HSMCI_MR_WRPROOF | HSMCI_MR_RDPROOF | (512 << 16);
         phsmci->HSMCI_ARGR = block_no << 9;
         phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
-        phsmci->HSMCI_MR &= ~HSMCI_MR_PDCMODE;
-        phsmci->HSMCI_MR |= (512 << 16);
-
+        
         while (1) {
           if (phsmci->HSMCI_SR & HSMCI_SR_RXRDY) {
             *data++ = phsmci->HSMCI_RDR;
@@ -632,11 +631,10 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
     if (CardIsConnected()) {
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
+      phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_PDCMODE|HSMCI_MR_FBYTE))) | HSMCI_MR_WRPROOF | HSMCI_MR_RDPROOF | (512 << 16);
       phsmci->HSMCI_ARGR = block_no << 9;
       phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
-      phsmci->HSMCI_MR &= ~(HSMCI_MR_WRPROOF | HSMCI_MR_RDPROOF | HSMCI_MR_BLKLEN_Msk | HSMCI_MR_PDCMODE);
-      phsmci->HSMCI_MR |= (512 << 16);
-
+      
       while (1) {
         if (j >= 128) {
           while (~phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY)
