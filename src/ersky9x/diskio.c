@@ -613,7 +613,7 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
   if (Card_state == SD_ST_DATA) {
     Hsmci *phsmci = HSMCI;
     if (CardIsConnected()) {
-      sd_cmd16();
+      //sd_cmd16();
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
@@ -643,7 +643,7 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
   if (Card_state == SD_ST_DATA) {
     Hsmci *phsmci = HSMCI;
     if (CardIsConnected()) {
-      sd_cmd16();
+      //sd_cmd16();
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
