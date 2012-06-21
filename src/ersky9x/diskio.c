@@ -623,10 +623,10 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
+      phsmci->HSMCI_ARGR = block_no << 9;
       phsmci->HSMCI_RPR  = (uint32_t)data;
       phsmci->HSMCI_RCR  = 512 / 4;
       phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTEN;
-      phsmci->HSMCI_ARGR = block_no << 9;
       phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
         
       uint8_t retry = 100;
@@ -656,9 +656,9 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
+      phsmci->HSMCI_ARGR = block_no << 9;
       phsmci->HSMCI_TPR  = (uint32_t)data;
       phsmci->HSMCI_TCR  = 512 / 4;
-      phsmci->HSMCI_ARGR = block_no << 9;
       phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
       phsmci->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
       

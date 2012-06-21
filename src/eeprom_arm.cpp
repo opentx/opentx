@@ -972,7 +972,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     return SDCARD_ERROR(result);
   }
 
-  uint16_t size = File_system[i_fileSrc].size ;
+  uint16_t size = File_system[i_fileSrc+1].size ;
   read32_eeprom_data( (File_system[i_fileSrc+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, size) ;
 
   result = f_write(&archiveFile, (uint8_t *)&Eeprom_buffer.data.model_data, size, &written);
