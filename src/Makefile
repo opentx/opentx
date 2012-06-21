@@ -332,9 +332,9 @@ ifeq ($(PCB), ARM)
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM
   EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
-  SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c 
+  SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  SRC += FatFs/ff.c FatFs/fattime.c ersky9x/diskio.c
+  SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
@@ -345,14 +345,14 @@ ifeq ($(PCB), V4)
   # V4 PCB, so ...
   OPT = 2
   CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC -DROTARY_ENCODERS
-  EXTRAINCDIRS += gruvin9x stock FatFs
+  EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += stock/audio.cpp haptic.cpp
 
   ifeq ($(SDCARD), YES)
-    CPPSRC += gruvin9x/logs.cpp FatFs/fattime.c gruvin9x/rtc.cpp FatFs/ff.c gruvin9x/diskio.cpp
+    CPPSRC += gruvin9x/logs.cpp FatFs/fattime.c gruvin9x/rtc.cpp FatFs/ff.c FatFs/option/ccsbcs.c gruvin9x/diskio.cpp
     MODS:=${MODS}S
   endif
     
@@ -630,8 +630,8 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-simu: stamp_header $(BOARDSRC) $(CPPSRC) $(SRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
-	g++ simu.cpp $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) $(SRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
+simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
+	g++ simu.cpp $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -717,6 +717,7 @@ clean_list :
 	$(REMOVE) $(TARGET).lst
 	$(REMOVE) $(SRC:.c=.s)
 	$(REMOVE) *.o
+	$(REMOVE) */*.o
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp

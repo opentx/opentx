@@ -86,7 +86,7 @@ extern uint32_t Master_frequency ;
 /***************************************************************************/
 void ResetHandler (void)
 {
-	{	
+  {
   	register uint32_t *pSrc;
   	register uint32_t *pDest;
   	register uint32_t m_freq ;
@@ -125,10 +125,10 @@ void ResetHandler (void)
   	pDest = &_sbss;
   	while(pDest < &_ebss)
   	{
-			*pDest++ = 0;
-		}
-		Master_frequency = m_freq ;
-	}
+  	  *pDest++ = 0;
+  	}
+  	Master_frequency = m_freq ;
+  }
    
    /*
     * And now the main function can be called.

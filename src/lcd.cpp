@@ -779,10 +779,10 @@ void lcdSetRefVolt(uint8_t val)
   pioptr->PIO_ODR = 0x0000003CL ;         // Set bits 2, 3, 4, 5 input
   pioptr->PIO_PUER = 0x0000003CL ;                // Set bits 2, 3, 4, 5 with pullups
 #endif
-#endif
 
   pioptr->PIO_ODSR = lcdInputs;                  // Drive D0 low
   lcdLock = 0 ;
+#endif
 }
 
 #ifndef SIMU

@@ -47,11 +47,6 @@
 #include "core_cm3.h"
 #endif
 
-#define BOARD_MCK               64000000
-
-#define CardIsConnected() ( (PIOB->PIO_PDSR & PIO_PB7) == 0 )
-
-
 //------------------------------------------------------------------------------
 //         Definitions
 //------------------------------------------------------------------------------
@@ -91,7 +86,6 @@
 #define BOARD_MAINOSC           12000000
 
 /// Master clock frequency (when using board_lowlevel.c).
-//#define BOARD_MCK               48000000
 #define BOARD_MCK               64000000
 
 //------------------------------------------------------------------------------
@@ -353,8 +347,6 @@
 #define PIN_USART1_RTS    {0x1 << 24, PIOA, ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
 #define PIN_USART1_EN     {0x1 << 23, PIOA, ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
 
-
-
 /// USB VBus monitoring pin definition.
 #ifdef BOARD_REV_A
 #define PIN_USB_VBUS    {1 << 23, PIOC, ID_PIOC, PIO_INPUT, PIO_DEFAULT}
@@ -499,6 +491,8 @@
 #define BOARD_SD_SLOT               MCI_SD_SLOTA
 ///// MCI Card Detect pin.
 #define BOARD_SD_PIN_CD             PIN_MCI_CD
+
+#define CardIsConnected() ( (PIOB->PIO_PDSR & PIO_PB7) == 0 )
 
 /*
 #define BOARD_PSRAM_PINS            PIN_EBI_DATA_BUS, PIN_EBI_NCS0, PIN_EBI_NRD, PIN_EBI_NWE, \

@@ -604,6 +604,34 @@ const char * displayMenu(uint8_t event)
 
   return result;
 }
+
+char statusLineMsg[STATUS_LINE_LENGTH];
+uint16_t statusLineTimeout = 0;
+uint8_t statusLineHeight = 0;
+
+void showStatusLine()
+{
+  statusLineHeight = 0;
+  statusLineTimeout = get_tmr10ms() + 3*100; /* 3 seconds */
+}
+
+void drawStatusLine()
+{
+  if (get_tmr10ms() < statusLineTimeout) {
+    if (statusLineHeight < 8) statusLineHeight++;
+  }
+  else if (statusLineHeight) {
+    statusLineHeight--;
+  }
+  else {
+    return;
+  }
+
+  lcd_filled_rect(0, 7*FH+8-statusLineHeight, DISPLAY_W, 8, SOLID, WHITE);
+  lcd_putsAtt(5, 7*FH+1+8-statusLineHeight, statusLineMsg, BSS);
+  lcd_filled_rect(0, 7*FH+8-statusLineHeight, DISPLAY_W, 8, SOLID);
+}
+
 #endif
 
 #if defined(ROTARY_ENCODERS)
@@ -632,6 +660,7 @@ void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t
     }
   }
 }
+
 #endif
 
 

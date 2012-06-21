@@ -132,9 +132,9 @@ bool listSDcardModels()
   DIR dir;
   char *fn;   /* This function is assuming non-Unicode cfg. */
 #if _USE_LFN
-  static char lfn[_MAX_LFN + 1];
+  TCHAR lfn[_MAX_LFN + 1];
   fno.lfname = lfn;
-  fno.lfsize = sizeof lfn;
+  fno.lfsize = sizeof(lfn);
 #endif
 
   s_menu_count = 0;
@@ -321,16 +321,16 @@ void menuProcModelSelect(uint8_t event)
               s_menu[s_menu_count++] = STR_SELECT_MODEL;
               s_menu[s_menu_count++] = STR_BACKUP_MODEL;
               s_menu[s_menu_count++] = STR_RESTORE_MODEL;
-              s_menu[s_menu_count++] = STR_DELETE_MODEL;;
+              s_menu[s_menu_count++] = STR_DELETE_MODEL;
             }
             else {
               s_menu[s_menu_count++] = STR_CREATE_MODEL;
-              s_menu[s_menu_count++] = STR_RESTORE_MODEL;;
+              s_menu[s_menu_count++] = STR_RESTORE_MODEL;
             }
           }
           else {
             s_menu[s_menu_count++] = STR_BACKUP_MODEL;
-            s_menu[s_menu_count++] = STR_RESTORE_MODEL;;
+            s_menu[s_menu_count++] = STR_RESTORE_MODEL;
           }
 #else
           if (g_eeGeneral.currModel != sub) {

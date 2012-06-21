@@ -271,3 +271,55 @@ static void EeFsDump(){
   puts("");
 }
 #endif
+
+#if defined(SDCARD)
+#include "FatFs/ff.h"
+FRESULT f_mount (BYTE, FATFS*)
+{
+  return FR_OK;
+}
+
+FRESULT f_open (FIL* fil, const TCHAR*name, BYTE)
+{
+  //fil->fs = (FATFS*)fopen(name);
+  return FR_OK;
+}
+
+FRESULT f_read (FIL*, void*, UINT, UINT*)
+{
+
+  return FR_OK;
+}
+
+FRESULT f_write (FIL*, const void*, UINT, UINT*)
+{
+  return FR_OK;
+}
+
+FRESULT f_lseek (FIL*, DWORD)
+{
+  return FR_OK;
+}
+
+FRESULT f_close (FIL*)
+{
+  return FR_OK;
+}
+
+FRESULT f_opendir (DIR*, const TCHAR*)
+{
+  return FR_OK;
+}
+
+FRESULT f_readdir (DIR*, FILINFO*)
+{
+  return FR_OK;
+}
+
+FRESULT f_mkdir (const TCHAR*)
+{
+  return FR_OK;
+}
+
+uint32_t Card_state = 8;
+#endif

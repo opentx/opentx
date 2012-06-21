@@ -2311,7 +2311,6 @@ void perMain()
     // Write the raw byte out to log file, if open
     if (testLogOpen && (g_oLogFile.fs != 0))
       f_putc(userDataRxBuffer[byt], &g_oLogFile);
-
   }
 #endif
 
@@ -2338,6 +2337,7 @@ void perMain()
 #endif
 
   g_menuStack[g_menuStackPtr](evt);
+  drawStatusLine();
   refreshDisplay();
 
 #if defined(PCBARM)
@@ -2816,11 +2816,41 @@ void mixerTask(void * pdata)
   }
 }
 
+extern "C" {
+void usbMassStorage()
+{
+}
+}
+
 void menusTask(void * pdata)
 {
   register uint32_t shutdown_state = 0;
 
-  while ((shutdown_state=check_soft_power()) <= e_power_trainer) {
+  while (1) {
+    shutdown_state = check_soft_power();
+#if 0
+    if (shutdown_state == e_power_off)
+      break;
+    else if (shutdown_state == e_power_usb) {
+      const char STR_SDCARD[] = "SD Card";
+      const char STR_BOOTLOADER[] = "Bootloader";
+      s_menu[s_menu_count++] = STR_SDCARD;
+      s_menu[s_menu_count++] = STR_BOOTLOADER;
+      uint8_t event = getEvent(false);
+      const char * result = displayMenu(event);
+      if (result) {
+        if (result == STR_BOOTLOADER)
+          break;
+        else {
+          usbMassStorage();
+          s_menu_count = 0;
+        }
+      }
+    }
+#else
+    if (shutdown_state >= e_power_usb)
+      break;
+#endif
 
     perMain();
     CoTickDelay(5);  // 10ms for now
@@ -2828,10 +2858,6 @@ void menusTask(void * pdata)
   }
 
   SysTick->CTRL = 0; // turn off systick
-
-#if defined(HAPTIC)
-  hapticOff();
-#endif
 
   lcd_clear() ;
   displayPopup(STR_SHUTDOWN);
@@ -2843,6 +2869,9 @@ void menusTask(void * pdata)
 #endif
   lcd_clear() ;
   refreshDisplay() ;
+#if defined(HAPTIC)
+  hapticOff();
+#endif
   soft_power_off();            // Only turn power off if necessary
 
   if (shutdown_state == e_power_usb) {

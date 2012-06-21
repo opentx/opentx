@@ -982,6 +982,10 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
   f_close(&archiveFile);
 
+  strcpy(statusLineMsg, PSTR("File "));
+  strcpy(statusLineMsg+5, &buf[sizeof(MODELS_PATH)]);
+  showStatusLine();
+
   return NULL;
 }
 

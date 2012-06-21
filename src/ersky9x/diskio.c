@@ -589,6 +589,7 @@ uint32_t sd_card_ready( void )
 
 uint32_t sd_cmd16()
 {
+#if 0
   Hsmci *phsmci = HSMCI;
 
   if (CardIsConnected()) {
@@ -606,20 +607,24 @@ uint32_t sd_cmd16()
   else {
     return 0;
   }
+#else
+  return 0;
+#endif
 }
 
 uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 {
+  uint32_t result = 0;
+  Hsmci *phsmci = HSMCI;
+
   if (Card_state == SD_ST_DATA) {
-    Hsmci *phsmci = HSMCI;
     if (CardIsConnected()) {
-      //sd_cmd16();
+      sd_cmd16();
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
       phsmci->HSMCI_RPR  = (uint32_t)data;
       phsmci->HSMCI_RCR  = 512 / 4;
-      phsmci->HSMCI_RNCR = 0;
       phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTEN;
       phsmci->HSMCI_ARGR = block_no << 9;
       phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
@@ -628,28 +633,31 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
       while (retry-- > 0) {
         CoTickDelay(1); // 2ms
         if (phsmci->HSMCI_SR & HSMCI_SR_ENDRX) {
-          return 1;
+          result = 1;
+          break;
         }
       }
 
     }
   }
 
-  return 0;
+  phsmci->HSMCI_MR &= ~HSMCI_MR_PDCMODE;
+  return result;
 }
 
 uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 {
+  uint32_t result = 0;
+  Hsmci *phsmci = HSMCI;
+
   if (Card_state == SD_ST_DATA) {
-    Hsmci *phsmci = HSMCI;
     if (CardIsConnected()) {
-      //sd_cmd16();
+      sd_cmd16();
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
       phsmci->HSMCI_TPR  = (uint32_t)data;
       phsmci->HSMCI_TCR  = 512 / 4;
-      phsmci->HSMCI_TNCR = 0;
       phsmci->HSMCI_ARGR = block_no << 9;
       phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
       phsmci->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
@@ -658,14 +666,16 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
       while (retry-- > 0) {
         CoTickDelay(1); // 2ms
         if (phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY) {
-          return 1;
+          result = 1;
+          break;
         }
       }
 
     }
   }
 
-  return 0;
+  phsmci->HSMCI_MR &= ~HSMCI_MR_PDCMODE;
+  return result;
 }
 
 /*

@@ -45,7 +45,7 @@
 #define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
 #define LOGS_EXT     ".CSV"
 #define MODELS_PATH  "/9XMODELS"
-#define MODELS_EXT   ".BIN"
+#define MODELS_EXT   ".bin"
 
 extern char g_logFilename[21]; // "/9XLOGS/M00_000.CSV\0" max required length = 21
 extern FATFS g_FATFS_Obj;
