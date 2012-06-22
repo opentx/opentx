@@ -31,7 +31,7 @@
  *
  */
 
-#if defined(PCBARM)
+#if defined(PCBARM) && !defined(SIMU)
 extern "C" {
 #include <CoOS.h>
 }
