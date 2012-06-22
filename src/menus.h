@@ -212,7 +212,7 @@ void drawStatusLine();
 #else
 #define s_menu_count 0
 #define s_sdcard_error 0
-#define displayStatusLine()
+#define drawStatusLine()
 #endif
 
 #endif
