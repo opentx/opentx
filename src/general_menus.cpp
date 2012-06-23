@@ -579,6 +579,7 @@ void menuProcSd(uint8_t event)
 
   if (reusableBuffer.sd.offset != s_pgOfs) {
     memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
+    memset(reusableBuffer.sd.flags, 0, sizeof(reusableBuffer.sd.flags));
     reusableBuffer.sd.offset = s_pgOfs;
     reusableBuffer.sd.count = 0;
     uint16_t offset = 0;
@@ -627,7 +628,10 @@ void menuProcSd(uint8_t event)
     if (result) {
       uint8_t index = m_posVert-1-s_pgOfs;
       if (result == STR_DELETE_FILE) {
-        f_unlink(reusableBuffer.sd.lines[index]);
+        f_getcwd(lfn, _MAX_LFN);
+        strcat_P(lfn, "/");
+        strcat_P(lfn, reusableBuffer.sd.lines[index]);
+        f_unlink(lfn);
         strcpy(statusLineMsg, reusableBuffer.sd.lines[index]);
         strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), PSTR(" removed"));
         showStatusLine();
