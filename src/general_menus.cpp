@@ -549,6 +549,8 @@ void menuProcSd(uint8_t event)
 
   switch(event) {
     case EVT_ENTRY:
+      f_mount(0, &g_FATFS_Obj);
+      f_chdir("/");
       reusableBuffer.sd.offset = 255;
       break;
     case EVT_KEY_FIRST(KEY_RIGHT):
@@ -567,9 +569,11 @@ void menuProcSd(uint8_t event)
     }
     case EVT_KEY_LONG(KEY_MENU):
       killEvents(event);
-      s_menu[s_menu_count++] = STR_DELETE_FILE;
-      s_menu[s_menu_count++] = STR_RENAME_FILE;
-      s_menu[s_menu_count++] = STR_COPY_FILE;
+      if (m_posVert > 0) {
+        s_menu[s_menu_count++] = STR_DELETE_FILE;
+        s_menu[s_menu_count++] = STR_RENAME_FILE;
+        s_menu[s_menu_count++] = STR_COPY_FILE;
+      }
       break;
   }
 
