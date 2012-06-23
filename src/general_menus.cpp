@@ -42,6 +42,9 @@ enum EnumTabDiag {
 #if defined(PCBV4) && defined(SDCARD)
   e_FrskyTime,
 #endif
+#if defined(SDCARD)
+  e_Sd,
+#endif
   e_Trainer,
   e_Vers,
   e_Keys,
@@ -53,6 +56,9 @@ void menuProcSetup(uint8_t event);
 #if defined(PCBV4) && defined(SDCARD)
 void menuProcTime(uint8_t event);
 #endif
+#if defined(SDCARD)
+void menuProcSd(uint8_t event);
+#endif
 void menuProcTrainer(uint8_t event);
 void menuProcDiagVers(uint8_t event);
 void menuProcDiagKeys(uint8_t event);
@@ -63,6 +69,9 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcSetup,
 #if defined(PCBV4) && defined(SDCARD)
   menuProcTime,
+#endif
+#if defined(SDCARD)
+  menuProcSd,
 #endif
   menuProcTrainer,
   menuProcDiagVers,
@@ -498,6 +507,127 @@ void menuProcTime(uint8_t event)
           }
           break;
 
+      }
+    }
+  }
+}
+#endif
+
+#if defined(SDCARD)
+#if defined(PCBARM) && !defined(SIMU)
+// TODO rewrite this ...
+extern uint32_t Cmd_A41_resp;
+#define OCR_SD_CCS             (1UL << 30)
+#else
+#define Cmd_A41_resp 0
+#define OCR_SD_CCS             (0)
+#endif
+
+const char STR_DELETE_FILE[] = "Delete";
+const char STR_COPY_FILE[] = "Copy";
+const char STR_RENAME_FILE[] = "Rename";
+
+void menuProcSd(uint8_t event)
+{
+  FILINFO fno;
+  DIR dir;
+  char *fn;   /* This function is assuming non-Unicode cfg. */
+#if _USE_LFN
+  TCHAR lfn[_MAX_LFN + 1];
+  fno.lfname = lfn;
+  fno.lfsize = sizeof(lfn);
+#endif
+
+  uint8_t _event = event;
+  if (s_menu_count) {
+    event = 0;
+  }
+
+  SIMPLE_MENU(Cmd_A41_resp & OCR_SD_CCS ? PSTR("SD-HC Card") : PSTR("SD Card"), menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
+
+  s_editMode = 0;
+
+  switch(event) {
+    case EVT_ENTRY:
+      reusableBuffer.sd.offset = 255;
+      break;
+    case EVT_KEY_FIRST(KEY_RIGHT):
+    case EVT_KEY_FIRST(KEY_MENU):
+    {
+      if (m_posVert > 0) {
+        uint8_t index = m_posVert-1-s_pgOfs;
+        if (reusableBuffer.sd.flags[index]) {
+          killEvents(event);
+          f_chdir(reusableBuffer.sd.lines[index]);
+          s_pgOfs = 0;
+          reusableBuffer.sd.offset = 255;
+        }
+      }
+      break;
+    }
+    case EVT_KEY_LONG(KEY_MENU):
+      killEvents(event);
+      s_menu[s_menu_count++] = STR_DELETE_FILE;
+      s_menu[s_menu_count++] = STR_RENAME_FILE;
+      s_menu[s_menu_count++] = STR_COPY_FILE;
+      break;
+  }
+
+  if (reusableBuffer.sd.offset != s_pgOfs) {
+    memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
+    reusableBuffer.sd.offset = s_pgOfs;
+    reusableBuffer.sd.count = 0;
+    uint16_t offset = 0;
+    uint8_t count = 0;
+    FRESULT res = f_opendir(&dir, ".");        /* Open the directory */
+    if (res == FR_OK) {
+      for (;;) {
+        res = f_readdir(&dir, &fno);                   /* Read a directory item */
+        if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+        if (fno.fname[0] == '.' && fno.fname[1] == '\0') continue;             /* Ignore dot entry */
+#if _USE_LFN
+        fn = *fno.lfname ? fno.lfname : fno.fname;
+#else
+        fn = fno.fname;
+#endif
+        reusableBuffer.sd.count++;
+        if (offset < s_pgOfs) {
+          offset++;
+          continue;
+        }
+
+        if (count < 7) {
+          reusableBuffer.sd.flags[count] = (fno.fattrib & AM_DIR);
+          char * line = reusableBuffer.sd.lines[count];
+          memset(line, 0, SD_SCREEN_FILE_LENGTH);
+          for (uint8_t i=0; i<SD_SCREEN_FILE_LENGTH-1 && fn[i]; i++) {
+            line[i] = fn[i];
+          }
+          count++;
+        }
+      }
+    }
+  }
+
+  for (uint8_t i=0; i<7; i++) {
+    uint8_t y = FH+i*FH;
+    uint8_t x = 0;
+    uint8_t attr = (m_posVert-1-s_pgOfs == i ? INVERS : 0);
+    if (reusableBuffer.sd.flags[i]) { lcd_putcAtt(0, y, '[', attr); x += FW; }
+    lcd_putsAtt(x, y, reusableBuffer.sd.lines[i], attr);
+    if (reusableBuffer.sd.flags[i]) { lcd_putcAtt(lcdLastPos, y, ']', attr); }
+  }
+
+  if (s_menu_count) {
+    const char * result = displayMenu(_event);
+    if (result) {
+      uint8_t index = m_posVert-1-s_pgOfs;
+      if (result == STR_DELETE_FILE) {
+        f_unlink(reusableBuffer.sd.lines[index]);
+        strcpy(statusLineMsg, reusableBuffer.sd.lines[index]);
+        strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), PSTR(" removed"));
+        showStatusLine();
+        reusableBuffer.sd.offset = s_pgOfs-1;
       }
     }
   }

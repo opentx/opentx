@@ -352,7 +352,8 @@ ifeq ($(PCB), V4)
   CPPSRC += stock/audio.cpp haptic.cpp
 
   ifeq ($(SDCARD), YES)
-    CPPSRC += gruvin9x/logs.cpp FatFs/fattime.c gruvin9x/rtc.cpp FatFs/ff.c FatFs/option/ccsbcs.c gruvin9x/diskio.cpp
+    CPPSRC += gruvin9x/logs.cpp FatFs/fattime.c gruvin9x/rtc.cpp gruvin9x/diskio.cpp
+    EXTRABOARDSRC += FatFs/ff.c FatFs/option/ccsbcs.c 
     MODS:=${MODS}S
   endif
     

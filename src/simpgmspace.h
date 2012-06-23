@@ -142,6 +142,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define cli()
 #define sei()
 #define strcpy_P strcpy
+#define strcat_P strcat
 #define memcpy_P memcpy
 
 #define PORTA dummyport

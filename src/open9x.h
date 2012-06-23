@@ -890,6 +890,7 @@ enum AUDIO_SOUNDS {
 #endif
 
 #if defined(SDCARD)
+// TODO ailleurs
 #define FILENAME_MAXLEN 8
 #include "gruvin9x/sdcard.h"
 #endif
@@ -899,8 +900,11 @@ enum AUDIO_SOUNDS {
 #endif
 
 // Re-useable byte array to save having multiple buffers
+#define SD_SCREEN_FILE_LENGTH 20
 union ReusableBuffer
 {
+    /* 128 bytes on stock */
+
 #if !defined(PCBARM)
     uint8_t eefs_buffer[BLOCKS];           // used by EeFsck
 #endif
@@ -919,6 +923,18 @@ union ReusableBuffer
         int16_t loVals[7];
         int16_t hiVals[7];
     } calib;                               // used by menuProcDiagCalib
+
+#if defined(SDCARD)
+    struct
+    {
+        char lines[7][SD_SCREEN_FILE_LENGTH];
+        uint8_t flags[7];
+        uint32_t available;
+        uint8_t level;
+        uint16_t offset;
+        uint16_t count;
+    } sd;
+#endif
 };
 
 extern union ReusableBuffer reusableBuffer;

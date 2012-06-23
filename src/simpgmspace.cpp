@@ -35,6 +35,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
+namespace simu {
+#include <dirent.h>
+}
 
 volatile uint8_t pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
@@ -306,19 +309,48 @@ FRESULT f_close (FIL*)
   return FR_OK;
 }
 
-FRESULT f_opendir (DIR*, const TCHAR*)
+FRESULT f_chdir (const TCHAR *name)
 {
+  chdir(name);
   return FR_OK;
 }
 
-FRESULT f_readdir (DIR*, FILINFO*)
+FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
+  rep->fs = (FATFS *)simu::opendir(name);
+  return FR_OK;
+}
+
+FRESULT f_readdir (DIR * rep, FILINFO * fil)
+{
+  simu::dirent * ent = simu::readdir((simu::DIR *)rep->fs);
+  if (!ent) return FR_NO_FILE;
+  if(ent->d_type == simu::DT_DIR) fil->fattrib = AM_DIR; else fil->fattrib = 0;
+  memset(fil->fname, 0, 13);
+  memset(fil->lfname, 0, SD_SCREEN_FILE_LENGTH);
+  strncpy(fil->fname, ent->d_name, 13-1);
+  strcpy(fil->lfname, ent->d_name);
   return FR_OK;
 }
 
 FRESULT f_mkdir (const TCHAR*)
 {
   return FR_OK;
+}
+
+FRESULT f_unlink (const TCHAR*)
+{
+  return FR_OK;
+}
+
+int f_puts (const TCHAR*, FIL*)
+{
+  return 0;                                        /* Put a string to the file */
+}
+
+int f_printf (FIL*, const TCHAR*, ...)                         /* Put a formatted string to the file */
+{
+  return 0;
 }
 
 uint32_t Card_state = 8;
