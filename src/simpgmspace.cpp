@@ -35,9 +35,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
-namespace simu {
-#include <dirent.h>
-}
 
 volatile uint8_t pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
@@ -275,8 +272,12 @@ static void EeFsDump(){
 }
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined WIN32 && defined __GNUC__
+namespace simu {
+#include <dirent.h>
+}
 #include "FatFs/ff.h"
+
 FRESULT f_mount (BYTE, FATFS*)
 {
   return FR_OK;
