@@ -603,11 +603,7 @@ void menuProcSd(uint8_t event)
 
         if (count < 7) {
           reusableBuffer.sd.flags[count] = (fno.fattrib & AM_DIR);
-          char * line = reusableBuffer.sd.lines[count];
-          memset(line, 0, SD_SCREEN_FILE_LENGTH);
-          for (uint8_t i=0; i<SD_SCREEN_FILE_LENGTH-1 && fn[i]; i++) {
-            line[i] = fn[i];
-          }
+          strncpy(reusableBuffer.sd.lines[count], fn, SD_SCREEN_FILE_LENGTH);
           count++;
         }
       }
@@ -628,13 +624,14 @@ void menuProcSd(uint8_t event)
     if (result) {
       uint8_t index = m_posVert-1-s_pgOfs;
       if (result == STR_DELETE_FILE) {
-        f_getcwd(lfn, _MAX_LFN);
+        f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
         strcat_P(lfn, "/");
         strcat_P(lfn, reusableBuffer.sd.lines[index]);
         f_unlink(lfn);
-        strcpy(statusLineMsg, reusableBuffer.sd.lines[index]);
+        strncpy(statusLineMsg, reusableBuffer.sd.lines[index], 13);
         strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), PSTR(" removed"));
         showStatusLine();
+        if (m_posVert == reusableBuffer.sd.count) m_posVert--;
         reusableBuffer.sd.offset = s_pgOfs-1;
       }
     }

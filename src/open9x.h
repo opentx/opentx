@@ -900,7 +900,7 @@ enum AUDIO_SOUNDS {
 #endif
 
 // Re-useable byte array to save having multiple buffers
-#define SD_SCREEN_FILE_LENGTH 20
+#define SD_SCREEN_FILE_LENGTH (32)
 union ReusableBuffer
 {
     /* 128 bytes on stock */
@@ -927,10 +927,9 @@ union ReusableBuffer
 #if defined(SDCARD)
     struct
     {
-        char lines[7][SD_SCREEN_FILE_LENGTH];
+        char lines[7][SD_SCREEN_FILE_LENGTH+1];
         uint8_t flags[7];
         uint32_t available;
-        uint8_t level;
         uint16_t offset;
         uint16_t count;
     } sd;
