@@ -163,8 +163,8 @@ void initDac()
 #endif
   dacptr->DACC_CDR = 2048 ;						// Half amplitude
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
-  dacptr->DACC_TPR = (uint32_t) Sine_values ;
-  dacptr->DACC_TNPR = (uint32_t) Sine_values ;
+  dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
+  dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);
   dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
   dacptr->DACC_TNCR = 50 ;	// words, 100 16 bit values
   dacptr->DACC_PTCR = DACC_PTCR_TXTEN ;
@@ -182,11 +182,11 @@ extern "C" void DAC_IRQHandler()
     CoSetFlag(audioFlag);
     CoExitISR(); // Exit the interrupt
     wavSamplesBuffer = (wavSamplesBuffer == wavSamplesArray) ? wavSamplesArray+WAV_BUFFER_SIZE : wavSamplesArray;
-    DACC->DACC_TNPR = (uint32_t)wavSamplesBuffer;
+    DACC->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
     DACC->DACC_TNCR = WAV_BUFFER_SIZE/2;
   }
   else {
-    DACC->DACC_TNPR = (uint32_t) Sine_values ;
+    DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
     DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
   }
 }

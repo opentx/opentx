@@ -73,6 +73,7 @@ void audioTimerHandle(void)
 // TODO Should be here!
 extern uint16_t Sine_values[];
 
+#define WAV_HEADER_SIZE 36
 
 void audioTask(void* pdata)
 {
@@ -88,26 +89,35 @@ void audioTask(void* pdata)
 #ifndef SIMU
     if (toneWavFile[0]) {
       FRESULT result = FR_OK;
+      UINT read;
       uint16_t bufsize = 2*WAV_BUFFER_SIZE;
       uint16_t * bufdata = wavSamplesBuffer;
       if (toneWavFile[1]) {
         result = f_open(&wavFile, toneWavFile, FA_OPEN_EXISTING | FA_READ);
-        toneWavFile[1] = '\0';
-        bufdata = wavSamplesArray;
-        bufsize = 4*WAV_BUFFER_SIZE;
-        register Dacc *dacptr = DACC;
-        dacptr->DACC_TPR = (uint32_t)wavSamplesArray;
-        wavSamplesBuffer = wavSamplesArray + WAV_BUFFER_SIZE;
-        dacptr->DACC_TNPR = (uint32_t)wavSamplesBuffer;
-        dacptr->DACC_TCR = WAV_BUFFER_SIZE/2;
-        dacptr->DACC_TNCR = WAV_BUFFER_SIZE/2;
-        setFrequency(12000);
-        toneStart();
+        if (result == FR_OK) {
+          uint8_t wavHeader[WAV_HEADER_SIZE];
+          result = f_read(&wavFile, (uint8_t *)wavHeader, WAV_HEADER_SIZE, &read);
+          if (result == FR_OK && read == WAV_HEADER_SIZE && !memcmp(wavHeader, "RIFF", 4)) {
+            bufdata = wavSamplesArray;
+            bufsize = 4*WAV_BUFFER_SIZE;
+            register Dacc *dacptr = DACC;
+            dacptr->DACC_TPR = CONVERT_PTR(wavSamplesArray);
+            wavSamplesBuffer = wavSamplesArray + WAV_BUFFER_SIZE;
+            dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
+            dacptr->DACC_TCR = WAV_BUFFER_SIZE/2;
+            dacptr->DACC_TNCR = WAV_BUFFER_SIZE/2;
+            setFrequency((wavHeader[24] << 8) + wavHeader[25]);
+            toneStart();
+          }
+          else {
+            result = FR_DENIED;
+          }
+        }
       }
-      UINT read;
+
       if (result != FR_OK || f_read(&wavFile, (uint8_t *)bufdata, bufsize, &read) != FR_OK || read != bufsize) {
-        f_close(&wavFile);
         toneWavFile[0] = '\0';
+        f_close(&wavFile);
         toneStop();
       }
 #if 1
@@ -125,9 +135,9 @@ void audioTask(void* pdata)
       CoSetTmrCnt(audioTimer, toneTimeLeft, 0);
       toneTimeLeft = 0;
       // TODO function for that ...
-      DACC->DACC_TPR = (uint32_t) Sine_values ;
+      DACC->DACC_TPR = CONVERT_PTR(Sine_values);
       DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
-      DACC->DACC_TNPR = (uint32_t) Sine_values ;
+      DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
       DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
       setFrequency(toneFreq * 6100 / 2);
       toneStart();
