@@ -208,7 +208,7 @@ extern void processFrskyPacket(uint8_t *packet);
 
 TEST(FrSky, gpsNfuel) {
   g_model.frsky.usrProto = 1;
-  frskyHubData.gpsFix = 1;
+  frskyData.hub.gpsFix = 1;
 
   uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x14, 0x2c, 0x00, 0x5e, 0x1c, 0x03 };
   uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x13, 0x38, 0x0c, 0x5e, 0x1b };
@@ -224,14 +224,14 @@ TEST(FrSky, gpsNfuel) {
   processFrskyPacket(pkt5);
   processFrskyPacket(pkt6);
   processFrskyPacket(pkt7);
-  EXPECT_EQ(frskyHubData.gpsCourse_bp, 44);
-  EXPECT_EQ(frskyHubData.gpsCourse_ap, 03);
-  EXPECT_EQ(frskyHubData.gpsLongitude_bp / 100, 120);
-  EXPECT_EQ(frskyHubData.gpsLongitude_bp % 100, 15);
-  EXPECT_EQ(frskyHubData.gpsLongitude_ap, 0x2698);
-  EXPECT_EQ(frskyHubData.gpsLatitudeNS, 'N');
-  EXPECT_EQ(frskyHubData.gpsLongitudeEW, 'E');
-  EXPECT_EQ(frskyHubData.fuelLevel, 100);
+  EXPECT_EQ(frskyData.hub.gpsCourse_bp, 44);
+  EXPECT_EQ(frskyData.hub.gpsCourse_ap, 03);
+  EXPECT_EQ(frskyData.hub.gpsLongitude_bp / 100, 120);
+  EXPECT_EQ(frskyData.hub.gpsLongitude_bp % 100, 15);
+  EXPECT_EQ(frskyData.hub.gpsLongitude_ap, 0x2698);
+  EXPECT_EQ(frskyData.hub.gpsLatitudeNS, 'N');
+  EXPECT_EQ(frskyData.hub.gpsLongitudeEW, 'E');
+  EXPECT_EQ(frskyData.hub.fuelLevel, 100);
 }
 
 TEST(FrSky, dateNtime) {
@@ -241,12 +241,12 @@ TEST(FrSky, dateNtime) {
   processFrskyPacket(pkt1);
   processFrskyPacket(pkt2);
   processFrskyPacket(pkt3);
-  EXPECT_EQ(frskyHubData.day, 15);
-  EXPECT_EQ(frskyHubData.month, 07);
-  EXPECT_EQ(frskyHubData.year, 11);
-  EXPECT_EQ(frskyHubData.hour, 06);
-  EXPECT_EQ(frskyHubData.min, 18);
-  EXPECT_EQ(frskyHubData.sec, 50);
+  EXPECT_EQ(frskyData.hub.day, 15);
+  EXPECT_EQ(frskyData.hub.month, 07);
+  EXPECT_EQ(frskyData.hub.year, 11);
+  EXPECT_EQ(frskyData.hub.hour, 06);
+  EXPECT_EQ(frskyData.hub.min, 18);
+  EXPECT_EQ(frskyData.hub.sec, 50);
 }
 
 TEST(getSwitch, undefCSW) {

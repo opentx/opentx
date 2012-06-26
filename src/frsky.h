@@ -151,10 +151,10 @@ struct FrskyHubData {
 #endif
 
 struct FrskyData {
-  FrskyValueWithMinMax frskyTelemetry[2];
-  FrskyValueWithMin    frskyRSSI[2];
+  FrskyValueWithMinMax analog[2];
+  FrskyValueWithMin    rssi[2];
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  FrskyHubData         frskyHubData;
+  FrskyHubData         hub;
 #endif
   uint16_t             currentConsumption;
   uint16_t             currentPrescale;
@@ -169,7 +169,7 @@ extern int8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata d
 extern uint8_t frskyUsrStreaming;
 
 #define SEND_MODEL_ALARMS 6
-extern uint8_t FrskyAlarmSendState;
+extern uint8_t frskyAlarmsSendState;
 
 extern FrskyData frskyData;
 
@@ -183,7 +183,7 @@ void check_frsky(void);
 
 inline void FRSKY_setModelAlarms(void)
 {
-  FrskyAlarmSendState = SEND_MODEL_ALARMS;
+  frskyAlarmsSendState = SEND_MODEL_ALARMS;
 }
 
 extern void frskyEvalCurrentConsumptionBoundary();

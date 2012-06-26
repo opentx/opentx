@@ -457,31 +457,31 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CSW_CHOUT_BASE];
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_TM2) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT];
 #if defined(FRSKY)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_A2) return frskyData.frskyTelemetry[i-CSW_CHOUT_BASE-NUM_CHNOUT-2].value;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyData.frskyRSSI[1].value;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyData.frskyRSSI[0].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_A2) return frskyData.analog[i-CSW_CHOUT_BASE-NUM_CHNOUT-2].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyData.rssi[1].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyData.rssi[0].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyData.frskyHubData.baroAltitude_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyData.hub.baroAltitude_bp;
 #endif
 #if defined(FRSKY_HUB)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RPM) return frskyData.frskyHubData.rpm;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_FUEL) return frskyData.frskyHubData.fuelLevel;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T1) return frskyData.frskyHubData.temperature1;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T2) return frskyData.frskyHubData.temperature2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_SPEED) return frskyData.frskyHubData.gpsSpeed_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyData.frskyHubData.gpsDistance;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_GPSALT) return frskyData.frskyHubData.gpsAltitude_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyData.frskyHubData.minCellVolts * 2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CURRENT) return (int16_t)frskyData.frskyHubData.current;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RPM) return frskyData.hub.rpm;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_FUEL) return frskyData.hub.fuelLevel;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T1) return frskyData.hub.temperature1;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T2) return frskyData.hub.temperature2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_SPEED) return frskyData.hub.gpsSpeed_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyData.hub.gpsDistance;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_GPSALT) return frskyData.hub.gpsAltitude_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyData.hub.minCellVolts * 2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CONSUMPTION) return frskyData.currentConsumption;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyData.frskyHubData.accelX;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyData.frskyHubData.accelY;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyData.frskyHubData.accelZ;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_HDG) return frskyData.frskyHubData.gpsCourse_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyData.frskyHubData.varioSpeed;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyData.frskyTelemetry[0].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyData.frskyTelemetry[1].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyData.frskyHubData.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyData.hub.accelX;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyData.hub.accelY;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyData.hub.accelZ;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyData.hub.varioSpeed;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyData.analog[0].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyData.analog[1].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
 #endif
 #endif
   else return 0;
@@ -1286,7 +1286,6 @@ void getADC_bandgap()
 #endif // SIMU
 
 uint8_t g_vbat100mV = 0;
-volatile uint8_t tick10ms = 0;
 uint16_t g_LightOffCounter;
 
 #if !defined(PCBARM)
@@ -1698,7 +1697,7 @@ void evalFunctions()
 }
 
 uint8_t s_perout_flight_phase;
-void perOut()
+void perOut(uint8_t tick10ms)
 {
   BeepANACenter anaCenter = evalSticks();
 
@@ -2017,19 +2016,18 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {
         s_perout_flight_phase = p;
-        perOut();
+        perOut(tick10ms);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
           sum_chans512[i] += (chans[i] / 16) * fp_act[p];
         weight += fp_act[p];
       }
     }
-    // printf("sum=%d, weight=%d ", sum_chans512[2], weight); fflush(stdout);
     assert(weight);
     s_perout_flight_phase = phase;
   }
   else {
     s_perout_flight_phase = phase;
-    perOut();
+    perOut(tick10ms);
   }
 
   //========== LIMITS ===============
@@ -2039,7 +2037,6 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
     // at the end chans[i] = chans[i]/100 =>  -1024..1024
     // interpolate value with min/max so we get smooth motion from center to stop
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
-    //printf("chans%d=%d\n", i, chans[i]);fflush(stdout);
     int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) * 16 : chans[i]);
     ex_chans[i] = q / 100; // for the next perMain
 
@@ -2701,13 +2698,13 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   int16_t zeros[NUM_CHNOUT];
 
   s_perout_mode = e_perout_mode_zeros;
-  perOut(); // do output loop - zero input sticks and trims
+  perOut(0); // do output loop - zero input sticks and trims
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
   s_perout_mode = e_perout_mode_trims;
-  perOut(); // do output loop - only trims
+  perOut(0); // do output loop - only trims
   s_perout_mode = e_perout_mode_normal;
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
