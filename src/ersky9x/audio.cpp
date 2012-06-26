@@ -39,7 +39,7 @@ uint8_t t_queueRidx;
 uint8_t t_queueWidx;
 
 uint8_t toneFreq;
-//int8_t toneFreqIncr;
+int8_t toneFreqIncr;
 uint8_t toneTimeLeft;
 uint8_t tonePause;
 
@@ -51,7 +51,7 @@ char toneWavFile[32+1] = "";
 
 // queue arrays
 uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
-// int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
+int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
 uint8_t queueToneLength[AUDIO_QUEUE_LENGTH];
 uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
 uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
@@ -111,6 +111,10 @@ void audioTask(void* pdata)
         toneWavFile[0] = '\0';
         f_close(&wavFile);
         toneStop();
+        DACC->DACC_TPR = CONVERT_PTR(Sine_values);
+        DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
+        DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
+        DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
       }
 #if 1
       else {
@@ -133,19 +137,22 @@ void audioTask(void* pdata)
     else
 #endif
     if (toneTimeLeft > 0) {
-      CoSetTmrCnt(audioTimer, toneTimeLeft, 0);
-      toneTimeLeft = 0;
       // TODO function for that ...
-      DACC->DACC_TPR = CONVERT_PTR(Sine_values);
-      DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
-      DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
-      DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
       setFrequency(toneFreq * 6100 / 2);
+      if (toneFreqIncr) {
+        CoSetTmrCnt(audioTimer, 5/*10ms*/, 0);
+        toneFreq += toneFreqIncr;
+        toneTimeLeft--;
+      }
+      else {
+        CoSetTmrCnt(audioTimer, toneTimeLeft*5, 0);
+        toneTimeLeft = 0;
+      }
       toneStart();
       CoStartTmr(audioTimer);
     }
     else if (tonePause > 0) {
-      CoSetTmrCnt(audioTimer, tonePause, 0);
+      CoSetTmrCnt(audioTimer, tonePause*5, 0);
       tonePause = 0;
       toneStop();
       CoStartTmr(audioTimer);
@@ -153,7 +160,7 @@ void audioTask(void* pdata)
     else if (t_queueRidx != t_queueWidx) {
       toneFreq = queueToneFreq[t_queueRidx];
       toneTimeLeft = queueToneLength[t_queueRidx];
-      // TODO ? toneFreqIncr = queueToneFreqIncr[t_queueRidx];
+      toneFreqIncr = queueToneFreqIncr[t_queueRidx];
       tonePause = queueTonePause[t_queueRidx];
       if (!queueToneRepeat[t_queueRidx]--) {
         t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
@@ -161,13 +168,8 @@ void audioTask(void* pdata)
       CoSetFlag(audioFlag);
     }
     else if (tone2TimeLeft > 0) {
-      CoSetTmrCnt(audioTimer, tone2TimeLeft, 0);
+      CoSetTmrCnt(audioTimer, tone2TimeLeft*5, 0);
       tone2TimeLeft = 0;
-      // TODO function for that ...
-      DACC->DACC_TPR = CONVERT_PTR(Sine_values);
-      DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
-      DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
-      DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
       setFrequency(tone2Freq * 6100 / 2);
       toneStart();
       CoStartTmr(audioTimer);
@@ -210,12 +212,12 @@ void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
       tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     }
     tLen = getToneLength(tLen);
-    if ((tFlags & PLAY_NOW) || audioState == 0) {
+    if ((tFlags & PLAY_NOW) || (audioState == 0 && audioEmpty())) {
       toneWavFile[0] = '\0';
       toneFreq = tFreq;
       toneTimeLeft = tLen;
       tonePause = tPause;
-      // toneFreqIncr = tFreqIncr;
+      toneFreqIncr = tFreqIncr;
       t_queueWidx = t_queueRidx;
       CoSetFlag(audioFlag);
     }
@@ -231,7 +233,7 @@ void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
         queueToneLength[t_queueWidx] = tLen;
         queueTonePause[t_queueWidx] = tPause;
         queueToneRepeat[t_queueWidx] = tFlags - 1;
-        // queueToneFreqIncr[t_queueWidx] = tFreqIncr;
+        queueToneFreqIncr[t_queueWidx] = tFreqIncr;
         t_queueWidx = next_queueWidx;
       }
     }
