@@ -163,9 +163,9 @@ void audioTask(void* pdata)
       CoSetTmrCnt(audioTimer, tone2TimeLeft, 0);
       tone2TimeLeft = 0;
       // TODO function for that ...
-      DACC->DACC_TPR = (uint32_t) Sine_values ;
+      DACC->DACC_TPR = CONVERT_PTR(Sine_values);
       DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
-      DACC->DACC_TNPR = (uint32_t) Sine_values ;
+      DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
       DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
       setFrequency(tone2Freq * 6100 / 2);
       toneStart();
