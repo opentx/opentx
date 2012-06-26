@@ -792,7 +792,7 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
 void frskyEvalCurrentConsumptionBoundary()
 {
   if (g_model.frsky.currentSource == CURRENT_SOURCE_HUB) {
-    currentConsumptionBoundary = 360;
+    currentConsumptionBoundary = 3600;
   }
   else {
     currentConsumptionBoundary = 360000L / (g_model.frsky.channels[g_model.frsky.currentSource-1].ratio << g_model.frsky.channels[g_model.frsky.currentSource-1].multiplier);
