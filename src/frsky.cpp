@@ -942,7 +942,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 
     case TELEM_CURRENT-1:
     case TELEM_MAX_CURRENT-1:
-      putsTelemetryValue(x, y, val, UNIT_AMPS, att);
+      putsTelemetryValue(x, y, val, UNIT_AMPS, att|PREC1);
       break;
 
     case TELEM_CONSUMPTION-1:
