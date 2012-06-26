@@ -138,6 +138,7 @@ PACK(struct FrskyHubData {
   int16_t  gpsAltitudeOffset;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
   uint8_t  minCellIdx;
+  uint16_t maxCurrent;
 });
 
 #elif defined(WS_HOW_HIGH)
@@ -157,7 +158,7 @@ extern uint8_t barsThresholds[];
 // Global Fr-Sky telemetry data variables
 extern int8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
 extern uint8_t frskyUsrStreaming;
-
+extern uint32_t consumption;
 #define SEND_MODEL_ALARMS 6
 extern uint8_t FrskyAlarmSendState;
 

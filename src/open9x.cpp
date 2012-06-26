@@ -464,6 +464,8 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyHubData.gpsDistance;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_GPSALT) return frskyHubData.gpsAltitude_bp;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyHubData.minCellVolts * 2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CURRENT) return (int16_t)frskyHubData.current;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CONSUMPTION) return consumption/360;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyHubData.accelX;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyHubData.accelY;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyHubData.accelZ;
@@ -471,6 +473,7 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyHubData.varioSpeed;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyTelemetry[0].min;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyTelemetry[1].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_CURRENT) return frskyHubData.maxCurrent;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
 #endif
 #endif

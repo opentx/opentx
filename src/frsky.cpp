@@ -60,6 +60,9 @@ int8_t frskyStreaming = -1;
 uint8_t frskyUsrStreaming = 0;
 uint8_t link_counter = 0;
 
+uint32_t consumption = 0;
+uint16_t s_currTmr = 0;
+
 FrskyData frskyTelemetry[2];
 FrskyRSSI frskyRSSI[2];
 
@@ -83,6 +86,8 @@ enum BarThresholdIdx {
   THLD_DIST,
   THLD_GPSALT,
   THLD_CELL,
+  THLD_CURRENT,
+  THLD_CONSUMPTION,
   THLD_MAX,
 };
 uint8_t barsThresholds[THLD_MAX];
@@ -270,6 +275,11 @@ void parseTelemHubByte(uint8_t byte)
     case offsetof(FrskyHubData, temperature2):
       if (frskyHubData.temperature2 > frskyHubData.maxTemperature2)
         frskyHubData.maxTemperature2 = frskyHubData.temperature2;
+      break;
+
+    case offsetof(FrskyHubData, current):
+      if (frskyHubData.current > frskyHubData.maxCurrent)
+        frskyHubData.maxCurrent = frskyHubData.current;
       break;
 
     case offsetof(FrskyHubData, baroAltitude_bp):
@@ -644,10 +654,14 @@ void check_frsky()
     frskyRSSI[1].set(0);
   }
 #endif
+uint16_t currint;
+currint=(g_tmr10ms<s_currTmr ? 65535-s_currTmr+g_tmr10ms : g_tmr10ms-s_currTmr);
+s_currTmr=g_tmr10ms;
+consumption+=(frskyHubData.current*currint);
 
 #if defined(VARIO)
-  static uint16_t s_varioTmr = 0;
-  if (isFunctionActive(FUNC_VARIO)) {
+ static uint16_t s_varioTmr = 0;
+ if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
     int16_t varioSpeedUpMin = (g_model.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER)*VARIO_SPEED_LIMIT_MUL;
     int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
@@ -868,6 +882,10 @@ void resetTelemetry()
   frskyHubData.accelY = 100;
   frskyHubData.temperature1 = -30;
   frskyHubData.maxTemperature1 = 100;
+  frskyHubData.maxCurrent = 56;
+  consumption=0;
+  s_currTmr = g_tmr10ms;
+  frskyHubData.current = 5;
 #endif
 }
 
@@ -924,6 +942,8 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_KTS,     // Speed
   UNIT_METERS,  // Dist
   UNIT_METERS,  // GPS Alt
+  UNIT_AMPS,  // current
+  UNIT_MILLIAMPS,  // current consumption
 };
 
 void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att)
@@ -975,6 +995,15 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       putsTelemetryValue(x, y, val, UNIT_RAW, att);
       break;
 
+    case TELEM_CURRENT-1:
+    case TELEM_MAX_CURRENT-1:
+      putsTelemetryValue(x, y, val, UNIT_AMPS, att);
+      break;
+
+    case TELEM_CONSUMPTION-1:
+      putsTelemetryValue(x, y, val, UNIT_MILLIAMPS, att);
+      break;
+    
 #if defined(IMPERIAL_UNITS)
     case TELEM_ALT-1:
     case TELEM_MIN_ALT-1:
