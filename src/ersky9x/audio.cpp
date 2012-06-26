@@ -73,7 +73,7 @@ void audioTimerHandle(void)
 // TODO Should be here!
 extern uint16_t Sine_values[];
 
-#define WAV_HEADER_SIZE 36
+#define WAV_HEADER_SIZE 44
 
 void audioTask(void* pdata)
 {
@@ -90,24 +90,16 @@ void audioTask(void* pdata)
     if (toneWavFile[0]) {
       FRESULT result = FR_OK;
       UINT read;
-      uint16_t bufsize = 2*WAV_BUFFER_SIZE;
       uint16_t * bufdata = wavSamplesBuffer;
       if (toneWavFile[1]) {
         result = f_open(&wavFile, toneWavFile, FA_OPEN_EXISTING | FA_READ);
         if (result == FR_OK) {
-          uint8_t wavHeader[WAV_HEADER_SIZE];
-          result = f_read(&wavFile, (uint8_t *)wavHeader, WAV_HEADER_SIZE, &read);
-          if (result == FR_OK && read == WAV_HEADER_SIZE && !memcmp(wavHeader, "RIFF", 4)) {
+          result = f_read(&wavFile, (uint8_t *)wavSamplesArray, WAV_HEADER_SIZE, &read);
+          if (result == FR_OK && read == WAV_HEADER_SIZE && !memcmp(wavSamplesArray, "RIFF", 4)) {
+            CoSetFlag(audioFlag);
             bufdata = wavSamplesArray;
-            bufsize = 4*WAV_BUFFER_SIZE;
-            register Dacc *dacptr = DACC;
-            dacptr->DACC_TPR = CONVERT_PTR(wavSamplesArray);
             wavSamplesBuffer = wavSamplesArray + WAV_BUFFER_SIZE;
-            dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
-            dacptr->DACC_TCR = WAV_BUFFER_SIZE/2;
-            dacptr->DACC_TNCR = WAV_BUFFER_SIZE/2;
-            setFrequency((wavHeader[24] << 8) + wavHeader[25]);
-            toneStart();
+            setFrequency(wavSamplesArray[12]);
           }
           else {
             result = FR_DENIED;
@@ -115,7 +107,7 @@ void audioTask(void* pdata)
         }
       }
 
-      if (result != FR_OK || f_read(&wavFile, (uint8_t *)bufdata, bufsize, &read) != FR_OK || read != bufsize) {
+      if (result != FR_OK || f_read(&wavFile, (uint8_t *)bufdata, 2*WAV_BUFFER_SIZE, &read) != FR_OK || read == 0) {
         toneWavFile[0] = '\0';
         f_close(&wavFile);
         toneStop();
@@ -125,6 +117,15 @@ void audioTask(void* pdata)
         read /= 2;
         for (uint32_t i=0; i<read; i++) {
           bufdata[i] = ((uint16_t)0x8000 + ((int16_t)(bufdata[i]))) >> 4;
+        }
+        if (toneWavFile[1]) {
+          toneWavFile[1] = '\0';
+          register Dacc *dacptr = DACC;
+          dacptr->DACC_TPR = CONVERT_PTR(wavSamplesArray);
+          dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
+          dacptr->DACC_TCR = WAV_BUFFER_SIZE/2;
+          dacptr->DACC_TNCR = WAV_BUFFER_SIZE/2;
+          toneStart();
         }
       }
 #endif
