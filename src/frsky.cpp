@@ -812,8 +812,8 @@ void resetTelemetry()
 #endif
 
 #ifdef SIMU
-  frskyTelemetry[0].set(120, UNIT_VOLTS);
-  frskyRSSI[0].set(75);
+  frskyData.frskyTelemetry[0].set(120, UNIT_VOLTS);
+  frskyData.frskyRSSI[0].set(75);
   frskyData.frskyHubData.fuelLevel = 75;
   frskyData.frskyHubData.rpm = 12000;
 
