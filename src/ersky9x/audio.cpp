@@ -76,13 +76,16 @@ extern uint16_t Sine_values[];
 
 void audioTask(void* pdata)
 {
+#ifndef SIMU
   static FIL wavFile;
+#endif
 
   while (1) {
     CoWaitForSingleFlag(audioFlag, 0);
 
     audioState = 1; // TODO #define
 
+#ifndef SIMU
     if (toneWavFile[0]) {
       FRESULT result = FR_OK;
       uint16_t bufsize = 2*WAV_BUFFER_SIZE;
@@ -116,7 +119,9 @@ void audioTask(void* pdata)
       }
 #endif
     }
-    else if (toneTimeLeft > 0) {
+    else
+#endif
+    if (toneTimeLeft > 0) {
       CoSetTmrCnt(audioTimer, toneTimeLeft, 0);
       toneTimeLeft = 0;
       // TODO function for that ...
