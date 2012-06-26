@@ -99,6 +99,7 @@ extern sem_t *eeprom_write_sem;
 #if defined(PCBARM)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
+extern Dacc dacc;
 extern Usart Usart0;
 #undef USART0
 #define USART0 (&Usart0)
@@ -110,6 +111,8 @@ extern Usart Usart0;
 #define PIOC (&Pioc)
 #undef TWI0
 #define TWI0 (&Twio)
+#undef DACC
+#define DACC (&dacc)
 extern Pwm pwm;
 #undef PWM
 #define PWM (&pwm)
@@ -291,5 +294,12 @@ void eeprom_read_block (void *pointer_ram,
 
 #define wdt_reset() sleep(1/*ms*/)
 #define board_init()
+
+#define CoSetFlag(...)
+#define CoSetTmrCnt(...)
+#define CoEnterISR(...)
+#define CoExitISR(...)
+#define CoStartTmr(...)
+#define CoWaitForSingleFlag(...)
 
 #endif

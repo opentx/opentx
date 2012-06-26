@@ -33,7 +33,30 @@
 
 #include "../open9x.h"
 
-audioQueue::audioQueue()
+uint8_t audioState = 0;
+
+uint8_t t_queueRidx;
+uint8_t t_queueWidx;
+
+uint8_t toneFreq;
+//int8_t toneFreqIncr;
+uint8_t toneTimeLeft;
+uint8_t tonePause;
+
+uint8_t tone2Freq;
+uint8_t tone2TimeLeft;
+uint8_t tone2Pause;
+
+char toneWavFile[32+1] = "";
+
+// queue arrays
+uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
+// int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
+uint8_t queueToneLength[AUDIO_QUEUE_LENGTH];
+uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
+uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
+
+void audioInit()
 {
   toneTimeLeft = 0;
   tonePause = 0;
@@ -42,80 +65,105 @@ audioQueue::audioQueue()
   t_queueWidx = 0;
 }
 
-// heartbeat is responsibile for issueing the audio tones and general square waves
-// it is essentially the life of the class.
-// it is called every 10ms
-void audioQueue::heartbeat()
+void audioTimerHandle(void)
 {
-#if defined(SIMU)
-  return;
-#endif
+  CoSetFlag(audioFlag);
+}
 
-  if (toneTimeLeft > 0) {
-    if (toneChanged) {
-      toneChanged = 0;
-      set_frequency(toneFreq * 61 / 2);
-      if(toneRateLimit == 0){ //only start if within rate limit
-      	if(toneFreq == 0){
-      		tone_stop();
-	} else {		
-      		tone_start(0);
-	} 
-      }	
-      toneRateLimit++; //count up the rate limit
-      if(toneRateLimit == TONE1_RATE_LIMIT){ //reset the rate limit
-	toneRateLimit = 0;	
-      }      
+// TODO Should be here!
+extern uint16_t Sine_values[];
+
+
+void audioTask(void* pdata)
+{
+  static FIL wavFile;
+
+  while (1) {
+    CoWaitForSingleFlag(audioFlag, 0);
+
+    audioState = 1; // TODO #define
+
+    if (toneWavFile[0]) {
+      FRESULT result = FR_OK;
+      uint16_t bufsize = 2*WAV_BUFFER_SIZE;
+      uint16_t * bufdata = wavSamplesBuffer;
+      if (toneWavFile[1]) {
+        result = f_open(&wavFile, toneWavFile, FA_OPEN_EXISTING | FA_READ);
+        toneWavFile[1] = '\0';
+        bufdata = wavSamplesArray;
+        bufsize = 4*WAV_BUFFER_SIZE;
+        register Dacc *dacptr = DACC;
+        dacptr->DACC_TPR = (uint32_t)wavSamplesArray;
+        wavSamplesBuffer = wavSamplesArray + WAV_BUFFER_SIZE;
+        dacptr->DACC_TNPR = (uint32_t)wavSamplesBuffer;
+        dacptr->DACC_TCR = WAV_BUFFER_SIZE/2;
+        dacptr->DACC_TNCR = WAV_BUFFER_SIZE/2;
+        setFrequency(12000);
+        toneStart();
+      }
+      UINT read;
+      if (result != FR_OK || f_read(&wavFile, (uint8_t *)bufdata, bufsize, &read) != FR_OK || read != bufsize) {
+        f_close(&wavFile);
+        toneWavFile[0] = '\0';
+        toneStop();
+      }
+#if 1
+      else {
+        read /= 2;
+        for (uint32_t i=0; i<read; i++) {
+          bufdata[i] = ((uint16_t)0x8000 + ((int16_t)(bufdata[i]))) >> 4;
+        }
+      }
+#endif
     }
-    else if (toneFreqIncr && (toneTimeLeft&1) == 0) {
-      toneFreq += toneFreqIncr;
-      set_frequency(toneFreq * 61 / 2);
+    else if (toneTimeLeft > 0) {
+      CoSetTmrCnt(audioTimer, toneTimeLeft, 0);
+      toneTimeLeft = 0;
+      // TODO function for that ...
+      DACC->DACC_TPR = (uint32_t) Sine_values ;
+      DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
+      DACC->DACC_TNPR = (uint32_t) Sine_values ;
+      DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
+      setFrequency(toneFreq * 6100 / 2);
+      toneStart();
+      CoStartTmr(audioTimer);
     }
-    toneTimeLeft--; //time gets counted down
-  }
-  else {
-    if (tonePause > 0) {
-      tone_stop();
-      toneRateLimit = 0; //reset rate limit
-      tonePause--; //time gets counted down
+    else if (tonePause > 0) {
+      CoSetTmrCnt(audioTimer, tonePause, 0);
+      tonePause = 0;
+      toneStop();
+      CoStartTmr(audioTimer);
     }
     else if (t_queueRidx != t_queueWidx) {
-      toneChanged = 1;
       toneFreq = queueToneFreq[t_queueRidx];
       toneTimeLeft = queueToneLength[t_queueRidx];
-      toneFreqIncr = queueToneFreqIncr[t_queueRidx];
+      // TODO ? toneFreqIncr = queueToneFreqIncr[t_queueRidx];
       tonePause = queueTonePause[t_queueRidx];
       if (!queueToneRepeat[t_queueRidx]--) {
         t_queueRidx = (t_queueRidx + 1) % AUDIO_QUEUE_LENGTH;
       }
+      CoSetFlag(audioFlag);
+    }
+    else if (tone2TimeLeft > 0) {
+      CoSetTmrCnt(audioTimer, tone2TimeLeft, 0);
+      tone2TimeLeft = 0;
+      // TODO function for that ...
+      DACC->DACC_TPR = (uint32_t) Sine_values ;
+      DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
+      DACC->DACC_TNPR = (uint32_t) Sine_values ;
+      DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
+      setFrequency(tone2Freq * 6100 / 2);
+      toneStart();
+      CoStartTmr(audioTimer);
     }
     else {
-      if (tone2TimeLeft > 0) {
-        if (tone2Changed) {
-          tone2Changed = 0;
-          set_frequency(tone2Freq * 61 / 2);
-          if(tone2RateLimit == 0){ //only start if within rate limit
-          	tone_start(0);
-          }
-        }
-        tone2TimeLeft--; //time gets counted down
-        tone2RateLimit++; //count up the rate limit
-        if(tone2RateLimit == TONE2_RATE_LIMIT){ //reset the rate limit
-        	tone2RateLimit = 0;	
-        }
-      }
-      else {
-        tone_stop();
-        tone2RateLimit = 0; //reset rate limit
-        if (tone2Pause > 0) {
-          tone2Pause--; //time gets counted down
-        }
-      }
+      audioState = 0;
+      toneStop();
     }
   }
 }
 
-inline uint8_t audioQueue::getToneLength(uint8_t tLen)
+inline uint8_t getToneLength(uint8_t tLen)
 {
   uint8_t result = tLen; // default
   if (g_eeGeneral.beeperLength < 0) {
@@ -127,32 +175,33 @@ inline uint8_t audioQueue::getToneLength(uint8_t tLen)
   return result;
 }
 
-void audioQueue::pause(uint8_t tLen)
+void pause(uint8_t tLen)
 {
-  play(0, tLen, 5); // a pause
+  play(0, 0, tLen); // a pause
 }	
 
-void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
+void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tFlags, int8_t tFreqIncr)
 {
   if (tFlags & PLAY_SOUND_VARIO) {
-    tone2Changed = 1;
     tone2Freq = tFreq;
     tone2TimeLeft = tLen;
     tone2Pause = tPause;
+    if (audioState == 0) CoSetFlag(audioFlag);
   }
   else {
     if (tFreq > 0) { //we dont add pitch if zero as this is a pause only event
       tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     }
     tLen = getToneLength(tLen);
-    if (tFlags & PLAY_NOW || (!busy() && empty())) {
-      toneChanged = 1;
+    if ((tFlags & PLAY_NOW) || audioState == 0) {
+      toneWavFile[0] = '\0';
       toneFreq = tFreq;
       toneTimeLeft = tLen;
       tonePause = tPause;
-      toneFreqIncr = tFreqIncr;
+      // toneFreqIncr = tFreqIncr;
       t_queueWidx = t_queueRidx;
+      CoSetFlag(audioFlag);
     }
     else {
       tFlags++;
@@ -166,14 +215,20 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
         queueToneLength[t_queueWidx] = tLen;
         queueTonePause[t_queueWidx] = tPause;
         queueToneRepeat[t_queueWidx] = tFlags - 1;
-        queueToneFreqIncr[t_queueWidx] = tFreqIncr;
+        // queueToneFreqIncr[t_queueWidx] = tFreqIncr;
         t_queueWidx = next_queueWidx;
       }
     }
   }
 }
 
-void audioQueue::event(uint8_t e, uint8_t f)
+void playFile(const char *filename)
+{
+  strcpy(toneWavFile, filename);
+  CoSetFlag(audioFlag);
+}
+
+void audioEvent(uint8_t e, uint8_t f)
 {
 #ifdef HAPTIC
   haptic.event(e); //do this before audio to help sync timings
@@ -185,7 +240,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
-    if (e < AU_FRSKY_FIRST || empty()) {
+    if (e < AU_FRSKY_FIRST || audioEmpty()) {
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:
@@ -193,7 +248,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
           break;
         // low battery in tx
         case AU_TX_BATTERY_LOW:
-          if (empty()) {
+          if (audioEmpty()) {
             play(60, 40, 6, 2, 1);
             play(80, 40, 6, 2, -1);
           }
@@ -342,9 +397,4 @@ void audioQueue::event(uint8_t e, uint8_t f)
       }
     }
   }
-}
-
-void audioDefevent(uint8_t e)
-{
-  audio.event(e, BEEP_DEFAULT_FREQ);
 }

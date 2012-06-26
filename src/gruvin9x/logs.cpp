@@ -130,31 +130,31 @@ void writeLogs()
 
 #ifdef FRSKY
       f_printf(&g_oLogFile, "%d,", frskyStreaming);
-      f_printf(&g_oLogFile, "%d,", frskyRSSI[0].value);
-      f_printf(&g_oLogFile, "%d,", frskyRSSI[1].value);
-      f_printf(&g_oLogFile, "%d,", frskyTelemetry[0].value);
-      f_printf(&g_oLogFile, "%d,", frskyTelemetry[1].value);
+      f_printf(&g_oLogFile, "%d,", frskyData.frskyRSSI[0].value);
+      f_printf(&g_oLogFile, "%d,", frskyData.frskyRSSI[1].value);
+      f_printf(&g_oLogFile, "%d,", frskyData.frskyTelemetry[0].value);
+      f_printf(&g_oLogFile, "%d,", frskyData.frskyTelemetry[1].value);
 #endif
 #ifdef FRSKY_HUB
       if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB) {
-        f_printf(&g_oLogFile, "%4d-%02d-%02d,", frskyHubData.year+2000, frskyHubData.month, frskyHubData.day);
-        f_printf(&g_oLogFile, "%02d:%02d:%02d,", frskyHubData.hour, frskyHubData.min, frskyHubData.sec);
-        f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLongitude_bp, frskyHubData.gpsLongitude_ap,
-            frskyHubData.gpsLongitudeEW ? frskyHubData.gpsLongitudeEW : '-');
-        f_printf(&g_oLogFile, "%03d.%04d%c,", frskyHubData.gpsLatitude_bp, frskyHubData.gpsLatitude_ap,
-            frskyHubData.gpsLatitudeNS ? frskyHubData.gpsLatitudeNS : '-');
-        f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsCourse_bp, frskyHubData.gpsCourse_ap);
-        f_printf(&g_oLogFile, "%d.%d,", frskyHubData.gpsSpeed_bp, frskyHubData.gpsSpeed_ap);
-        f_printf(&g_oLogFile, "%03d.%d,", frskyHubData.gpsAltitude_bp, frskyHubData.gpsAltitude_ap);
-        f_printf(&g_oLogFile, "%d.%d,", frskyHubData.baroAltitude_bp, frskyHubData.baroAltitude_ap);
-        f_printf(&g_oLogFile, "%d,", frskyHubData.temperature1);
-        f_printf(&g_oLogFile, "%d,", frskyHubData.temperature2);
-        f_printf(&g_oLogFile, "%d,", frskyHubData.rpm);
-        f_printf(&g_oLogFile, "%d,", frskyHubData.fuelLevel);
-        f_printf(&g_oLogFile, "%d,", frskyHubData.volts);
-        f_printf(&g_oLogFile, "%d,", frskyHubData.accelX);
-        f_printf(&g_oLogFile, "%d,", frskyHubData.accelY);
-        f_printf(&g_oLogFile, "%d,", frskyHubData.accelZ);
+        f_printf(&g_oLogFile, "%4d-%02d-%02d,", frskyData.frskyHubData.year+2000, frskyData.frskyHubData.month, frskyData.frskyHubData.day);
+        f_printf(&g_oLogFile, "%02d:%02d:%02d,", frskyData.frskyHubData.hour, frskyData.frskyHubData.min, frskyData.frskyHubData.sec);
+        f_printf(&g_oLogFile, "%03d.%04d%c,", frskyData.frskyHubData.gpsLongitude_bp, frskyData.frskyHubData.gpsLongitude_ap,
+            frskyData.frskyHubData.gpsLongitudeEW ? frskyData.frskyHubData.gpsLongitudeEW : '-');
+        f_printf(&g_oLogFile, "%03d.%04d%c,", frskyData.frskyHubData.gpsLatitude_bp, frskyData.frskyHubData.gpsLatitude_ap,
+            frskyData.frskyHubData.gpsLatitudeNS ? frskyData.frskyHubData.gpsLatitudeNS : '-');
+        f_printf(&g_oLogFile, "%03d.%d,", frskyData.frskyHubData.gpsCourse_bp, frskyData.frskyHubData.gpsCourse_ap);
+        f_printf(&g_oLogFile, "%d.%d,", frskyData.frskyHubData.gpsSpeed_bp, frskyData.frskyHubData.gpsSpeed_ap);
+        f_printf(&g_oLogFile, "%03d.%d,", frskyData.frskyHubData.gpsAltitude_bp, frskyData.frskyHubData.gpsAltitude_ap);
+        f_printf(&g_oLogFile, "%d.%d,", frskyData.frskyHubData.baroAltitude_bp, frskyData.frskyHubData.baroAltitude_ap);
+        f_printf(&g_oLogFile, "%d,", frskyData.frskyHubData.temperature1);
+        f_printf(&g_oLogFile, "%d,", frskyData.frskyHubData.temperature2);
+        f_printf(&g_oLogFile, "%d,", frskyData.frskyHubData.rpm);
+        f_printf(&g_oLogFile, "%d,", frskyData.frskyHubData.fuelLevel);
+        f_printf(&g_oLogFile, "%d,", frskyData.frskyHubData.volts);
+        f_printf(&g_oLogFile, "%d,", frskyData.frskyHubData.accelX);
+        f_printf(&g_oLogFile, "%d,", frskyData.frskyHubData.accelY);
+        f_printf(&g_oLogFile, "%d,", frskyData.frskyHubData.accelZ);
       }
 #endif
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++)

@@ -523,9 +523,10 @@ extern uint32_t Cmd_A41_resp;
 #define OCR_SD_CCS             (0)
 #endif
 
-const char STR_DELETE_FILE[] = "Delete";
-const char STR_COPY_FILE[] = "Copy";
-const char STR_RENAME_FILE[] = "Rename";
+const pm_char STR_PLAY_FILE[] PROGMEM = "Play";
+const pm_char STR_DELETE_FILE[] PROGMEM = "Delete";
+const pm_char STR_COPY_FILE[] PROGMEM = "Copy";
+const pm_char STR_RENAME_FILE[] PROGMEM = "Rename";
 
 void menuProcSd(uint8_t event)
 {
@@ -536,6 +537,8 @@ void menuProcSd(uint8_t event)
   TCHAR lfn[_MAX_LFN + 1];
   fno.lfname = lfn;
   fno.lfsize = sizeof(lfn);
+#else
+  char lfn[32];
 #endif
 
   uint8_t _event = event;
@@ -549,7 +552,10 @@ void menuProcSd(uint8_t event)
 
   switch(event) {
     case EVT_ENTRY:
+#if defined(PCBV4)
+      // TODO as ARM
       f_mount(0, &g_FATFS_Obj);
+#endif
       f_chdir("/");
       reusableBuffer.sd.offset = 255;
       break;
@@ -562,6 +568,7 @@ void menuProcSd(uint8_t event)
           killEvents(event);
           f_chdir(reusableBuffer.sd.lines[index]);
           s_pgOfs = 0;
+          m_posVert = 1;
           reusableBuffer.sd.offset = 255;
         }
       }
@@ -570,6 +577,13 @@ void menuProcSd(uint8_t event)
     case EVT_KEY_LONG(KEY_MENU):
       killEvents(event);
       if (m_posVert > 0) {
+#if defined(PCBARM)
+        uint8_t index = m_posVert-1-s_pgOfs;
+        char * line = reusableBuffer.sd.lines[index];
+        if (!strcmp(line+strlen(line)-4, ".wav")) {
+          s_menu[s_menu_count++] = STR_PLAY_FILE;
+        }
+#endif
         s_menu[s_menu_count++] = STR_DELETE_FILE;
         s_menu[s_menu_count++] = STR_RENAME_FILE;
         s_menu[s_menu_count++] = STR_COPY_FILE;
@@ -613,7 +627,7 @@ void menuProcSd(uint8_t event)
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = FH+i*FH;
     uint8_t x = 0;
-    uint8_t attr = (m_posVert-1-s_pgOfs == i ? INVERS : 0);
+    uint8_t attr = (m_posVert-1-s_pgOfs == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sd.flags[i]) { lcd_putcAtt(0, y, '[', attr); x += FW; }
     lcd_putsAtt(x, y, reusableBuffer.sd.lines[i], attr);
     if (reusableBuffer.sd.flags[i]) { lcd_putcAtt(lcdLastPos, y, ']', attr); }
@@ -625,15 +639,23 @@ void menuProcSd(uint8_t event)
       uint8_t index = m_posVert-1-s_pgOfs;
       if (result == STR_DELETE_FILE) {
         f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
-        strcat_P(lfn, "/");
-        strcat_P(lfn, reusableBuffer.sd.lines[index]);
+        strcat_P(lfn, PSTR("/"));
+        strcat(lfn, reusableBuffer.sd.lines[index]);
         f_unlink(lfn);
         strncpy(statusLineMsg, reusableBuffer.sd.lines[index], 13);
         strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), PSTR(" removed"));
         showStatusLine();
-        if (m_posVert == reusableBuffer.sd.count) m_posVert--;
+        if ((uint16_t)m_posVert == reusableBuffer.sd.count) m_posVert--;
         reusableBuffer.sd.offset = s_pgOfs-1;
       }
+#if defined(PCBARM)
+      else if (result == STR_PLAY_FILE) {
+        f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
+        strcat_P(lfn, PSTR("/"));
+        strcat(lfn, reusableBuffer.sd.lines[index]);
+        playFile(lfn);
+      }
+#endif
     }
   }
 }
@@ -725,9 +747,6 @@ void menuProcDiagVers(uint8_t event)
   lcd_putsLeft(5*FH, stamp4);
   lcd_putsLeft(7*FH, STR_EEPROMV);
   lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
-#if defined(PCBARM) && defined(SDCARD)
-  lcd_puts(12*FW, 7*FH, Card_state == 8 /* TODO SD_ST_DATA*/ ? "SDCARD OK" : "NO SDCARD");
-#endif
 }
 
 void menuProcDiagKeys(uint8_t event)

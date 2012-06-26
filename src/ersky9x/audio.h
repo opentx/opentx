@@ -43,91 +43,72 @@
 #define TONE1_RATE_LIMIT (10)
 #define TONE2_RATE_LIMIT (10)
 
-class audioQueue
+extern uint8_t t_queueRidx;
+extern uint8_t t_queueWidx;
+
+extern uint8_t toneFreq;
+//int8_t toneFreqIncr;
+extern uint8_t toneTimeLeft;
+extern uint8_t tonePause;
+
+extern char toneWavFile[32+1];
+
+// vario
+extern uint8_t tone2Freq;
+extern uint8_t tone2TimeLeft;
+extern uint8_t tone2Pause;
+
+// queue arrays
+extern uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
+// int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
+extern uint8_t queueToneLength[AUDIO_QUEUE_LENGTH];
+extern uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
+extern uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
+
+void initAudio();
+
+void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
+void playFile(const char *filename);
+void pause(uint8_t tLen);
+
+inline bool audioBusy()
 {
-  public:
+  return (toneTimeLeft > 0);
+}
 
-    audioQueue();
+void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
+inline bool audioEmpty()
+{
+  return (t_queueRidx == t_queueWidx);
+}
 
-    void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
-    void pause(uint8_t tLen);
+#define AUDIO_KEYPAD_UP()   audioEvent(AU_KEYPAD_UP)
+#define AUDIO_KEYPAD_DOWN() audioEvent(AU_KEYPAD_DOWN)
+#define AUDIO_MENUS()       audioEvent(AU_MENUS)
+#define AUDIO_WARNING1()    audioEvent(AU_WARNING1)
+#define AUDIO_WARNING2()    audioEvent(AU_WARNING2)
+#define AUDIO_ERROR()       audioEvent(AU_ERROR)
 
-    inline bool busy() {
-      return (toneTimeLeft > 0);
-    }
+#define IS_AUDIO_BUSY()     audioBusy()
 
-    void event(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
+#define AUDIO_TIMER_30()    audioEvent(AU_TIMER_30)
+#define AUDIO_TIMER_20()    audioEvent(AU_TIMER_20)
+#define AUDIO_TIMER_10()    audioEvent(AU_TIMER_10)
+#define AUDIO_TIMER_LT3()   audioEvent(AU_TIMER_LT3)
+#define AUDIO_MINUTE_BEEP() audioEvent(AU_WARNING1)
+#define AUDIO_INACTIVITY()  audioEvent(AU_INACTIVITY)
+#define AUDIO_MIX_WARNING_1() audioEvent(AU_MIX_WARNING_1)
+#define AUDIO_MIX_WARNING_2() audioEvent(AU_MIX_WARNING_2)
+#define AUDIO_MIX_WARNING_3() audioEvent(AU_MIX_WARNING_3)
+#define AUDIO_POT_STICK_MIDDLE() audioEvent(AU_POT_STICK_MIDDLE)
+#define AUDIO_VARIO_UP()    audioEvent(AU_KEYPAD_UP)
+#define AUDIO_VARIO_DOWN()  audioEvent(AU_KEYPAD_DOWN)
+#define AUDIO_TRIM_MIDDLE(f) audioEvent(AU_TRIM_MIDDLE, f)
+#define AUDIO_TRIM(event, f) audioEvent(AU_TRIM_MOVE, f)
+#define AUDIO_PLAY(p)        audioEvent(p)
+#define AUDIO_VARIO(f, t)    play(f, t, 0, PLAY_SOUND_VARIO)
 
-    // heartbeat is responsibile for issueing the audio tones and general square waves
-    // it is essentially the life of the class.
-    void heartbeat();
-
-    // bool freeslots(uint8_t slots);
-
-    inline bool empty() {
-      return (t_queueRidx == t_queueWidx);
-    }
-
-  protected:
-    inline uint8_t getToneLength(uint8_t tLen);
-
-  private:
-    uint8_t t_queueRidx;
-    uint8_t t_queueWidx;
-
-    uint8_t toneChanged;
-    uint8_t toneFreq;
-    int8_t toneFreqIncr;
-    uint8_t toneTimeLeft;
-    uint8_t tonePause;
-    uint8_t toneRateLimit;
-
-    // vario
-    uint8_t tone2Changed;
-    uint8_t tone2Freq;
-    uint8_t tone2TimeLeft;
-    uint8_t tone2Pause;
-    uint8_t tone2RateLimit;
-
-    // queue arrays
-    uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
-    int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
-    uint8_t queueToneLength[AUDIO_QUEUE_LENGTH];
-    uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
-    uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
-
-};
-
-//wrapper function - dirty but results in a space saving!!!
-extern audioQueue audio;
-
-void audioDefevent(uint8_t e);
-
-#define AUDIO_KEYPAD_UP()   audioDefevent(AU_KEYPAD_UP)
-#define AUDIO_KEYPAD_DOWN() audioDefevent(AU_KEYPAD_DOWN)
-#define AUDIO_MENUS()       audioDefevent(AU_MENUS)
-#define AUDIO_WARNING1()    audioDefevent(AU_WARNING1)
-#define AUDIO_WARNING2()    audioDefevent(AU_WARNING2)
-#define AUDIO_ERROR()       audioDefevent(AU_ERROR)
-
-
-#define IS_AUDIO_BUSY()     audio.busy()
-
-#define AUDIO_TIMER_30()    audioDefevent(AU_TIMER_30)
-#define AUDIO_TIMER_20()    audioDefevent(AU_TIMER_20)
-#define AUDIO_TIMER_10()    audioDefevent(AU_TIMER_10)
-#define AUDIO_TIMER_LT3()   audioDefevent(AU_TIMER_LT3)
-#define AUDIO_MINUTE_BEEP() audioDefevent(AU_WARNING1)
-#define AUDIO_INACTIVITY()  audioDefevent(AU_INACTIVITY)
-#define AUDIO_MIX_WARNING_1() audioDefevent(AU_MIX_WARNING_1)
-#define AUDIO_MIX_WARNING_2() audioDefevent(AU_MIX_WARNING_2)
-#define AUDIO_MIX_WARNING_3() audioDefevent(AU_MIX_WARNING_3)
-#define AUDIO_POT_STICK_MIDDLE() audioDefevent(AU_POT_STICK_MIDDLE)
-#define AUDIO_VARIO_UP()    audioDefevent(AU_KEYPAD_UP)
-#define AUDIO_VARIO_DOWN()  audioDefevent(AU_KEYPAD_DOWN)
-#define AUDIO_TRIM_MIDDLE(f) audio.event(AU_TRIM_MIDDLE, f)
-
-#define AUDIO_HEARTBEAT()   audio.heartbeat()
+#define AUDIO_HEARTBEAT()
 
 #endif

@@ -51,28 +51,14 @@ uint16_t Sine_values[] =
  872, 976,1084,1196,1311,1429,1550,1673,1797,1922
 } ;
 
-const uint16_t PianoTones[] =
-{
-  28,   29,   31,   33,   35,   37,   39,   41,   44,   46,
-  49,   52,   55,   58,   62,   65,   69,   73,   78,   82,
-  87,   92,   98,  104,  110,  117,  123,  131,  139,  147,
- 156,  165,  175,  185,  196,  208,  220,  233,  247,  262, // d#, E, F, f#, G, g#, A, a#, B, C(middle)
- 277,  294,  311,  330,  349,  370,  392,  415,  440,  466, // c#, D, d#, E, F, f#, G, g#, A, a#
- 494,  523,  554,  587,  622,  659,  698,  740,  784,  831, // B, C, c#, D, d#, E, F, f#, G, g#
- 880,  932,  988, 1047, 1109, 1175, 1245, 1319, 1397, 1480,
-1568, 1661, 1760, 1865, 1976, 2093, 2217, 2349, 2489, 2637,
-2794, 2960, 3136, 3322, 3520 ,3729, 3951, 4186
-} ;
-
-
 // Sound routines
 
-void start_sound()
+void startSound()
 {
   register Pio *pioptr ;
 
   start_timer1() ;
-  init_dac() ;
+  initDac() ;
   init_twi() ;
 
   pioptr = PIOA ;
@@ -115,27 +101,23 @@ void buzzer_sound( uint8_t time )
   Buzzer_count = time ;
 }
 
-void set_frequency( uint32_t frequency )
+void setFrequency( uint32_t frequency )
 {
   register Tc *ptc ;
   register uint32_t timer ;
 
-  timer = Master_frequency / (800 * frequency) ;		// MCK/8 and 100 000 Hz
-  if ( timer > 65535 )
-  {
-          timer = 65535 ;
-  }
-  if ( timer < 2 )
-  {
-          timer = 2 ;
-  }
+  timer = Master_frequency / (8 * frequency) ;		// MCK/8 and 100 000 Hz
+  if (timer > 65535)
+    timer = 65535 ;
+  if (timer < 2)
+    timer = 2 ;
+
   ptc = TC0 ;		// Tc block 0 (TC0-2)
   ptc->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;		// Stop clock
   ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
   ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
   ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
 }
-
 
 // Start TIMER1 at 100000Hz, used for DACC trigger
 void start_timer1()
@@ -163,7 +145,7 @@ void start_timer1()
 // Configure DAC1 (or DAC0 for REVB)
 // Not sure why PB14 has not be allocated to the DAC, although it is an EXTRA function
 // So maybe it is automatically done
-void init_dac()
+void initDac()
 {
   register Dacc *dacptr ;
 
@@ -181,23 +163,32 @@ void init_dac()
 #endif
   dacptr->DACC_CDR = 2048 ;						// Half amplitude
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
-#ifndef SIMU
   dacptr->DACC_TPR = (uint32_t) Sine_values ;
   dacptr->DACC_TNPR = (uint32_t) Sine_values ;
-#endif
-  dacptr->DACC_TCR = 50 ;		// words, 100 16 bit values
+  dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
   dacptr->DACC_TNCR = 50 ;	// words, 100 16 bit values
   dacptr->DACC_PTCR = DACC_PTCR_TXTEN ;
   NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
+uint16_t wavSamplesArray[2*WAV_BUFFER_SIZE]; /* 2 buffers of 100ms at 12kHz */
+uint16_t *wavSamplesBuffer;
+
 extern "C" void DAC_IRQHandler()
 {
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
-#ifndef SIMU
-  DACC->DACC_TNPR = (uint32_t) Sine_values ;
-#endif
-  DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
+  if (toneWavFile[0]) {
+    CoEnterISR(); // Enter the interrupt
+    CoSetFlag(audioFlag);
+    CoExitISR(); // Exit the interrupt
+    wavSamplesBuffer = (wavSamplesBuffer == wavSamplesArray) ? wavSamplesArray+WAV_BUFFER_SIZE : wavSamplesArray;
+    DACC->DACC_TNPR = (uint32_t)wavSamplesBuffer;
+    DACC->DACC_TNCR = WAV_BUFFER_SIZE/2;
+  }
+  else {
+    DACC->DACC_TNPR = (uint32_t) Sine_values ;
+    DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
+  }
 }
 
 void end_sound()

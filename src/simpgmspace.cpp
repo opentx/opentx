@@ -47,6 +47,7 @@ Pio Pioa, Piob, Pioc;
 Pwm pwm;
 Twi Twio;
 Usart Usart0;
+Dacc dacc;
 uint32_t eeprom_pointer;
 char* eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;
@@ -352,6 +353,12 @@ int f_puts (const TCHAR*, FIL*)
 int f_printf (FIL*, const TCHAR*, ...)                         /* Put a formatted string to the file */
 {
   return 0;
+}
+
+FRESULT f_getcwd (TCHAR *path, UINT sz_path)
+{
+  getcwd(path, sz_path);
+  return FR_OK;
 }
 
 uint32_t Card_state = 8;

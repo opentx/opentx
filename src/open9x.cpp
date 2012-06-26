@@ -38,6 +38,7 @@ extern "C" {
 
 #define MIXER_STACK_SIZE    300
 #define MENUS_STACK_SIZE    300
+#define AUDIO_STACK_SIZE    300
 #define BT_STACK_SIZE       100
 
 OS_TID mixerTaskId;
@@ -45,6 +46,13 @@ OS_STK mixerStack[MIXER_STACK_SIZE];
 
 OS_TID menusTaskId;
 OS_STK menusStack[MENUS_STACK_SIZE];
+
+OS_TID audioTaskId;
+OS_STK audioStack[AUDIO_STACK_SIZE];
+OS_TCID audioTimer;
+OS_FlagID audioFlag;
+
+OS_MutexID sdMutex;
 
 /*OS_TID btTask;
 OS_STK btStack[BT_STACK_SIZE];
@@ -82,7 +90,7 @@ uint16_t g_timeMainMax;
 uint8_t  g_timeMainLast;
 #endif
 
-#ifdef AUDIO
+#if defined(AUDIO) && !defined(PCBARM)
 audioQueue  audio;
 #endif
 
@@ -449,32 +457,31 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CSW_CHOUT_BASE];
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_TM2) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT];
 #if defined(FRSKY)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_A2) return frskyTelemetry[i-CSW_CHOUT_BASE-NUM_CHNOUT-2].value;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyRSSI[1].value;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyRSSI[0].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_A2) return frskyData.frskyTelemetry[i-CSW_CHOUT_BASE-NUM_CHNOUT-2].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyData.frskyRSSI[1].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyData.frskyRSSI[0].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyHubData.baroAltitude_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyData.frskyHubData.baroAltitude_bp;
 #endif
 #if defined(FRSKY_HUB)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RPM) return frskyHubData.rpm;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_FUEL) return frskyHubData.fuelLevel;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T1) return frskyHubData.temperature1;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T2) return frskyHubData.temperature2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_SPEED) return frskyHubData.gpsSpeed_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyHubData.gpsDistance;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_GPSALT) return frskyHubData.gpsAltitude_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyHubData.minCellVolts * 2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CURRENT) return (int16_t)frskyHubData.current;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CONSUMPTION) return consumption/360;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyHubData.accelX;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyHubData.accelY;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyHubData.accelZ;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_HDG) return frskyHubData.gpsCourse_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyHubData.varioSpeed;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyTelemetry[0].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyTelemetry[1].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_CURRENT) return frskyHubData.maxCurrent;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyHubData.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RPM) return frskyData.frskyHubData.rpm;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_FUEL) return frskyData.frskyHubData.fuelLevel;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T1) return frskyData.frskyHubData.temperature1;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T2) return frskyData.frskyHubData.temperature2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_SPEED) return frskyData.frskyHubData.gpsSpeed_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyData.frskyHubData.gpsDistance;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_GPSALT) return frskyData.frskyHubData.gpsAltitude_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyData.frskyHubData.minCellVolts * 2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CURRENT) return (int16_t)frskyData.frskyHubData.current;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CONSUMPTION) return frskyData.currentConsumption;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyData.frskyHubData.accelX;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyData.frskyHubData.accelY;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyData.frskyHubData.accelZ;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_HDG) return frskyData.frskyHubData.gpsCourse_bp;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyData.frskyHubData.varioSpeed;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyData.frskyTelemetry[0].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyData.frskyTelemetry[1].min;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_DIST) return *(((int16_t*)(&frskyData.frskyHubData.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
 #endif
 #endif
   else return 0;
@@ -1089,12 +1096,7 @@ void checkTrims()
       AUDIO_TRIM_MIDDLE(after);
     }
     else {
-#if defined (AUDIO)
-      audio.event(AU_TRIM_MOVE, after);
-#else
-      if (event & _MSK_KEY_REPT) warble = true;
-      AUDIO_TRIM();
-#endif
+      AUDIO_TRIM(event, after);
     }
 #if defined(PCBSTD)
     return 0;
@@ -1652,12 +1654,7 @@ void evalFunctions()
 
         if ((!momentary) || (~active_switches & switch_mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
-#if defined(AUDIO)
-            audioDefevent(AU_FRSKY_FIRST+sd->param);
-#else
-            // TODO sound with warble = !(g_tmr10ms % 60); AUDIO_WARNING2(); }
-            beep(3);
-#endif
+            AUDIO_PLAY(AU_FRSKY_FIRST+sd->param);
           }
 
 #if defined(HAPTIC)
@@ -2832,11 +2829,14 @@ void menusTask(void * pdata)
   while (1) {
     shutdown_state = check_soft_power();
 #if 0
-    if (shutdown_state == e_power_off)
+    if (shutdown_state == e_power_off) {
       break;
+    }
     else if (shutdown_state == e_power_usb) {
-      const char STR_SDCARD[] = "SD Card";
+      const char STR_SDCARD[] = "Massstorage"; // TODO translations
       const char STR_BOOTLOADER[] = "Bootloader";
+      lcd_clear();
+      s_menu_count = 0;
       s_menu[s_menu_count++] = STR_SDCARD;
       s_menu[s_menu_count++] = STR_BOOTLOADER;
       uint8_t event = getEvent(false);
@@ -2849,15 +2849,17 @@ void menusTask(void * pdata)
           s_menu_count = 0;
         }
       }
+      refreshDisplay();
     }
 #else
-    if (shutdown_state >= e_power_usb)
+    if (shutdown_state >= e_power_usb) {
       break;
+    }
 #endif
-
-    perMain();
+    else {
+      perMain();
+    }
     CoTickDelay(5);  // 10ms for now
-
   }
 
   SysTick->CTRL = 0; // turn off systick
@@ -2887,6 +2889,10 @@ void menusTask(void * pdata)
 
   lcdSetRefVolt(0); // TODO before soft_power_off?
 }
+
+extern void audioTimerHandle(void);
+extern void audioTask(void* pdata);
+
 #endif
 
 int main(void)
@@ -3031,8 +3037,14 @@ int main(void)
   // btTimer = CoCreateTmr(TMR_TYPE_PERIODIC, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), btTimerHandle);
 
   // btTaskId = CoCreateTask(btTask, NULL, 19, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
-  menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
   mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
+  menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
+
+  audioFlag = CoCreateFlag(true, false);          // Auto-reset, start FALSE
+  audioTimer = CoCreateTmr(TMR_TYPE_ONE_SHOT, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), audioTimerHandle);
+  audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
+
+  sdMutex = CoCreateMutex();
 
   CoStartOS();
 #else

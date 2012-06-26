@@ -96,7 +96,7 @@ But in Dynamic Task Scheduling model(1),task resources will be recovered.
 If in Static Task Scheduling model(0),mutex module can not be used, as this model don't
 support to change task priority while CoOS running. 
 */
-#define CFG_TASK_SCHEDULE_EN     (0)
+#define CFG_TASK_SCHEDULE_EN     (1)
 
 
 /*---------------------- Task Management Config -----------------------------*/
@@ -232,7 +232,7 @@ Enable(1) or disable(0) flag management.
 Max number of flag is 32.					    	  
 */
 #if CFG_TASK_WAITTING_EN > 0
-#define  CFG_FLAG_EN           (0) 
+#define  CFG_FLAG_EN            (1)
 #endif		
 
 
@@ -242,7 +242,7 @@ Enable(1) or disable(0) mutex management.
 */
 #if CFG_TASK_WAITTING_EN > 0
 #if CFG_TASK_SCHEDULE_EN > 0
-#define  CFG_MUTEX_EN           (0) 
+#define  CFG_MUTEX_EN           (1)
 #endif
 #endif
 

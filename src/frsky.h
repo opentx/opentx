@@ -52,7 +52,7 @@ enum AlarmLevel {
 #define ALARM_GREATER(channel, alarm) ((g_model.frsky.channels[channel].alarms_greater >> alarm) & 1)
 #define ALARM_LEVEL(channel, alarm) ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
 
-class FrskyRSSI {
+class FrskyValueWithMin {
  public:
   uint8_t value;
   uint8_t min;
@@ -60,7 +60,7 @@ class FrskyRSSI {
   void set(uint8_t value);
 };
 
-class FrskyData: public FrskyRSSI {
+class FrskyValueWithMinMax: public FrskyValueWithMin {
  public:
   uint8_t max;
   void set(uint8_t value, uint8_t unit);
@@ -119,7 +119,6 @@ PACK(struct FrskyHubData {
   uint16_t current;          // 0x28   Current
   int16_t  varioAltitudeQueue[VARIO_QUEUE_LENGTH]; //circular buffer
   int32_t  varioAltitude_cm;
-  int16_t  varioSpeed;
   /* next fields must keep this order! */
   int16_t  minAltitude;
   int16_t  maxAltitude;
@@ -128,6 +127,7 @@ PACK(struct FrskyHubData {
   int16_t  maxTemperature2;
   uint16_t maxGpsSpeed;
   uint16_t maxGpsDistance;
+  uint16_t maxCurrent;
   /* end */
   int16_t  varioAcc1;
   int16_t  varioAcc2;
@@ -136,9 +136,9 @@ PACK(struct FrskyHubData {
   // end of FrSky Hub data
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
+  int16_t  varioSpeed;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
   uint8_t  minCellIdx;
-  uint16_t maxCurrent;
 });
 
 #elif defined(WS_HOW_HIGH)
@@ -150,22 +150,33 @@ struct FrskyHubData {
 
 #endif
 
+struct FrskyData {
+  FrskyValueWithMinMax frskyTelemetry[2];
+  FrskyValueWithMin    frskyRSSI[2];
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-extern FrskyHubData frskyHubData;
+  FrskyHubData         frskyHubData;
+#endif
+  uint16_t             currentConsumption;
+  uint16_t             currentPrescale;
+};
+
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 extern uint8_t barsThresholds[];
 #endif
 
 // Global Fr-Sky telemetry data variables
 extern int8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
 extern uint8_t frskyUsrStreaming;
-extern uint32_t consumption;
+
 #define SEND_MODEL_ALARMS 6
 extern uint8_t FrskyAlarmSendState;
 
-extern FrskyData frskyTelemetry[2];
-extern FrskyRSSI frskyRSSI[2];
+extern FrskyData frskyData;
+
 extern uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 extern uint8_t frskyTxBufferCount;
+
+
 
 void FRSKY_Init(void);
 void check_frsky(void);
@@ -174,6 +185,8 @@ inline void FRSKY_setModelAlarms(void)
 {
   FrskyAlarmSendState = SEND_MODEL_ALARMS;
 }
+
+extern void frskyEvalCurrentConsumptionBoundary();
 
 bool FRSKY_alarmRaised(uint8_t idx);
 

@@ -98,7 +98,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VALARMFN   (OFS_VALARM + sizeof(TR_VALARM))
 #define OFS_VTELPROTO  (OFS_VALARMFN + sizeof(TR_VALARMFN))
 #define OFS_GPSFORMAT  (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
-#define OFS_VARIOSRC   (OFS_GPSFORMAT + sizeof(TR_GPSFORMAT))
+#define OFS_CURRENTSRC (OFS_GPSFORMAT + sizeof(TR_GPSFORMAT))
+#define OFS_VARIOSRC   (OFS_CURRENTSRC + sizeof(TR_CURRENTSRC))
 #define OFS_ENDTELEM   (OFS_VARIOSRC + sizeof(TR_VARIOSRC))
 #else
 #define OFS_ENDTELEM   (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
@@ -165,6 +166,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VALARMFN   (STR_OPEN9X + OFS_VALARMFN)
 #define STR_VTELPROTO  (STR_OPEN9X + OFS_VTELPROTO)
 #define STR_GPSFORMAT  (STR_OPEN9X + OFS_GPSFORMAT)
+#define STR_CURRENTSRC (STR_OPEN9X + OFS_CURRENTSRC)
 #define STR_VARIOSRC   (STR_OPEN9X + OFS_VARIOSRC)
 #define STR_TELEMCHNS  (STR_OPEN9X + OFS_TELEMCHNS)
 #endif
@@ -373,9 +375,12 @@ extern const pm_char STR_SHUTDOWN[];
 
 extern const pm_char STR_BATT_CALIB[];
 
+#if defined(PCBARM) || defined(FRSKY)
+extern const pm_char STR_CURRENT[];
+#endif
+
 #if defined(PCBARM)
 extern const pm_char STR_CURRENT_CALIB[];
-extern const pm_char STR_CURRENT[];
 #define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
 #else
 #define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)

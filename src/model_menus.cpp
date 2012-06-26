@@ -142,10 +142,13 @@ bool listSDcardModels()
   s_menu_flags = BSS;
   uint8_t offset = 0;
 
+#if defined(PCBV4)
+  // TODO as ARM
   FRESULT result = f_mount(0, &g_FATFS_Obj);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
+#endif
 
   FRESULT res = f_opendir(&dir, MODELS_PATH);        /* Open the directory */
   if (res == FR_OK) {
@@ -2325,6 +2328,7 @@ enum menuProcTelemetryItems {
   ITEM_TELEMETRY_USR_PROTO,
   ITEM_TELEMETRY_USR_BLADES,
 #endif
+  ITEM_TELEMETRY_USR_CURRENT_SOURCE,
 #if defined(VARIO)
   ITEM_TELEMETRY_VARIO_LABEL,
   ITEM_TELEMETRY_VARIO_SOURCE,
@@ -2355,10 +2359,10 @@ enum menuProcTelemetryItems {
 #endif
 
 #ifdef FRSKY
-#define TELEM_COL2 (8*FW-2)
+#define TELEM_COL2 (8*FW-1)
 void menuProcTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES VARIO_LINES (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES 0, VARIO_LINES (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 
   uint8_t sub = m_posVert - 1;
 
@@ -2367,7 +2371,8 @@ void menuProcTelemetry(uint8_t event)
     case EVT_KEY_BREAK(KEY_UP):
     case EVT_KEY_BREAK(KEY_LEFT):
     case EVT_KEY_BREAK(KEY_RIGHT):
-      if (s_editMode>0 && sub<=13)
+      frskyEvalCurrentConsumptionBoundary();
+      if (s_editMode>0 && sub<=ITEM_TELEMETRY_RSSI_ALARM2)
         FRSKY_setModelAlarms(); // update Fr-Sky module when edit mode exited
       break;
   }
@@ -2385,7 +2390,7 @@ void menuProcTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A2_LABEL:
         lcd_putsLeft(y, STR_ACHANNEL);
         lcd_outdezAtt(2*FW, y, ch+1, 0);
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, ch+MAX_TIMERS, frskyTelemetry[ch].value, LEFT);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, ch+MAX_TIMERS, frskyData.frskyTelemetry[ch].value, LEFT);
         break;
 
       case ITEM_TELEMETRY_A1_RANGE:
@@ -2495,6 +2500,12 @@ void menuProcTelemetry(uint8_t event)
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.blades, 0, 2);
         break;
 #endif
+
+      case ITEM_TELEMETRY_USR_CURRENT_SOURCE:
+        lcd_puts(4, y, STR_CURRENT);
+        lcd_putsiAtt(TELEM_COL2, y, STR_CURRENTSRC, g_model.frsky.currentSource, attr);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.currentSource, 0, 2);
+        break;
 
 #if defined(VARIO)
       case ITEM_TELEMETRY_VARIO_LABEL:

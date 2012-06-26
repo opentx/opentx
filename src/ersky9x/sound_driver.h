@@ -37,23 +37,26 @@
 
 #define NUM_VOL_LEVELS	24
 
-extern void start_sound( void ) ;
+extern void startSound( void ) ;
 extern void buzzer_on( void ) ;
 extern void buzzer_off( void ) ;
 extern void buzzer_sound( uint8_t time ) ;
-extern void set_frequency( uint32_t frequency ) ;
+extern void setFrequency( uint32_t frequency ) ;
 extern void start_timer1( void ) ;
-extern void init_dac( void ) ;
-extern "C" void DAC_IRQHandler( void ) ;
+extern void initDac( void ) ;
 extern void end_sound( void ) ;
 
-inline void tone_start( register uint32_t time )
+#define WAV_BUFFER_SIZE 1200
+extern uint16_t wavSamplesArray[2*WAV_BUFFER_SIZE]; /* 2 buffers of 100ms at 12kHz */
+extern uint16_t *wavSamplesBuffer;
+
+inline void toneStart()
 {
   PMC->PMC_PCER0 |= 0x40000000L ; // Enable peripheral clock to DAC
   DACC->DACC_IER = DACC_IER_ENDTX ;
 }
 
-inline void tone_stop( void )
+inline void toneStop()
 {
   DACC->DACC_IDR = DACC_IDR_ENDTX ; // Disable interrupt
 }

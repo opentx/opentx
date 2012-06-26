@@ -71,6 +71,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VALARMFN)
     ISTR(VTELPROTO)
     ISTR(GPSFORMAT)
+    ISTR(CURRENTSRC)
     ISTR(VARIOSRC)
 #endif
 #ifdef TEMPLATES
@@ -302,9 +303,12 @@ const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 
 const pm_char STR_BATT_CALIB[] PROGMEM = TR_BATT_CALIB;
 
+#if defined(PCBARM) || defined(FRSKY)
+const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
+#endif
+
 #if defined(PCBARM)
 const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
-const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
 #endif
 
 #if defined(SDCARD)

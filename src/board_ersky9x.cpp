@@ -727,7 +727,7 @@ void board_init()
 
   __enable_irq() ;
 
-  start_sound() ;
+  startSound() ;
 
   eeprom_init();
 

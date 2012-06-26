@@ -40,7 +40,31 @@
 
 #include "board.h"
 #include "../FatFs/diskio.h"
+#include "../FatFs/ff.h"
 #include "../CoOS/kernel/CoOS.h"
+
+#define CARD_TYPE_bmHC           (1 << 0)   /**< Bit for High-Capacity(Density) */
+#define CARD_TYPE_bmSDMMC        (0x3 << 1) /**< Bits mask for SD/MMC */
+#define CARD_TYPE_bmUNKNOWN      (0x0 << 1) /**< Bits for Unknown card */
+#define CARD_TYPE_bmSD           (0x1 << 1) /**< Bits for SD */
+#define CARD_TYPE_bmMMC          (0x2 << 1) /**< Bits for MMC */
+#define CARD_TYPE_bmSDIO         (1 << 3)   /**< Bit for SDIO */
+/** Card can not be identified */
+#define CARD_UNKNOWN    (0)
+/** SD Card (0x2) */
+#define CARD_SD         (CARD_TYPE_bmSD)
+/** SD High Capacity Card (0x3) */
+#define CARD_SDHC       (CARD_TYPE_bmSD|CARD_TYPE_bmHC)
+/** MMC Card (0x4) */
+#define CARD_MMC        (CARD_TYPE_bmMMC)
+/** MMC High-Density Card (0x5) */
+#define CARD_MMCHD      (CARD_TYPE_bmMMC|CARD_TYPE_bmHC)
+/** SDIO only card (0x8) */
+#define CARD_SDIO       (CARD_TYPE_bmSDIO)
+/** SDIO Combo, with SD embedded (0xA) */
+#define CARD_SDCOMBO    (CARD_TYPE_bmSDIO|CARD_SD)
+/** SDIO Combo, with SDHC embedded (0xB) */
+#define CARD_SDHCCOMBO  (CARD_TYPE_bmSDIO|CARD_SDHC)
 
 // States for initialising card
 #define SD_ST_EMPTY             0
@@ -61,51 +85,7 @@ uint32_t Sd_128_resp[4] ;
 uint32_t Sd_rca ;
 uint32_t Cmd_8_resp ;
 uint32_t Cmd_A41_resp ;
-
-/**
- * Configure the  MCI SDCBUS in the MCI_SDCR register. Only two modes available
- *
- * \param busWidth  MCI bus width mode. 00: 1-bit, 10: 4-bit.
- */
-uint32_t SD_SetBusWidth( uint32_t busWidth)
-{
-  uint32_t mciSdcr;
-
-  if( (busWidth != HSMCI_SDCR_SDCBUS_1) && (busWidth != HSMCI_SDCR_SDCBUS_4) )
-  {
-        return (uint32_t)-1;
-  }
-
-  busWidth &= HSMCI_SDCR_SDCBUS_Msk ;
-
-  mciSdcr = (HSMCI->HSMCI_SDCR & ~(uint32_t)(HSMCI_SDCR_SDCBUS_Msk));
-  HSMCI->HSMCI_SDCR = mciSdcr | busWidth;
-
-  return 0;
-}
-
-#if 0
-/**
- * Configure the MCI_CFG to enable the HS mode
- * \param hsEnable 1 to enable, 0 to disable HS mode.
- */
-void SD_EnableHsMode( uint8_t hsEnable)
-{
-        uint32_t cfgr;
-
-        cfgr = HSMCI->HSMCI_CFG;
-        if (hsEnable)
-        {
-          cfgr |=  HSMCI_CFG_HSMODE;
-        }
-        else
-        {
-          cfgr &= ~(uint32_t)HSMCI_CFG_HSMODE;
-        }
-
-        HSMCI->HSMCI_CFG = cfgr;
-}
-#endif
+uint8_t cardType;
 
 /**
  * Configure the  MCI CLKDIV in the MCI_MR register. The max. for MCI clock is
@@ -113,40 +93,35 @@ void SD_EnableHsMode( uint8_t hsEnable)
  * \param mciSpeed  MCI clock speed in Hz, 0 will not change current speed.
  * \return The actual speed used, 0 for fail.
  */
-uint32_t SD_SetSpeed( uint32_t mciSpeed )
+uint32_t sdSetSpeed(uint32_t mciSpeed )
 {
-        uint32_t mciMr;
-        uint32_t clkdiv;
+  uint32_t mciMr;
+  uint32_t clkdiv;
 
-        mciMr = HSMCI->HSMCI_MR & (~(uint32_t)HSMCI_MR_CLKDIV_Msk);
-        /* Multimedia Card Interface clock (MCCK or MCI_CK) is Master Clock (MCK)
-         * divided by (2*(CLKDIV+1))
-         * mciSpeed = MCK / (2*(CLKDIV+1)) */
-        if (mciSpeed > 0)
-        {
-          clkdiv = (Master_frequency / 2 / mciSpeed);
-          /* Speed should not bigger than expired one */
-          if (mciSpeed < Master_frequency/2/clkdiv)
-          {
-              clkdiv++;
-          }
+  mciMr = HSMCI->HSMCI_MR & (~(uint32_t) HSMCI_MR_CLKDIV_Msk);
+  /* Multimedia Card Interface clock (MCCK or MCI_CK) is Master Clock (MCK)
+   * divided by (2*(CLKDIV+1))
+   * mciSpeed = MCK / (2*(CLKDIV+1)) */
+  if (mciSpeed > 0) {
+    clkdiv = (Master_frequency / 2 / mciSpeed);
+    /* Speed should not bigger than expired one */
+    if (mciSpeed < Master_frequency / 2 / clkdiv) {
+      clkdiv++;
+    }
 
-          if ( clkdiv > 0 )
-          {
-              clkdiv -= 1;
-          }
-        }
-        else
-        {
-                clkdiv = 0 ;
-        }
+    if (clkdiv > 0) {
+      clkdiv -= 1;
+    }
+  }
+  else {
+    clkdiv = 0;
+  }
 
-        /* Actual MCI speed */
-        mciSpeed = Master_frequency / 2 / (clkdiv + 1);
-        /* Modify MR */
-        HSMCI->HSMCI_MR = mciMr | clkdiv;
+  /* Actual MCI speed */
+  mciSpeed = Master_frequency / 2 / (clkdiv + 1);
+  /* Modify MR */HSMCI->HSMCI_MR = mciMr | clkdiv;
 
-        return (mciSpeed);
+  return mciSpeed;
 }
 
 #if 0
@@ -196,201 +171,185 @@ void SD_Reset( uint8_t keepSettings)
 }
 #endif
 
-void sd_cmd55()
-{
-  uint32_t i ;
-  Hsmci *phsmci = HSMCI ;
+const char SD_NORESPONSE[] = "No response";
 
-  if ( CardIsConnected() )
-  {
-    phsmci->HSMCI_ARGR = Sd_rca ;
-    phsmci->HSMCI_CMDR = 0x00001077 ;
-
-    for ( i = 0 ; i < 30000 ; i += 1 )
-    {
-      if ( phsmci->HSMCI_SR & HSMCI_SR_CMDRDY )
-      {
-        break ;
-      }
-    }
-//              Cmd_55_resp = phsmci->HSMCI_RSPR[0] ;
-  }
-}
-
-uint32_t sd_cmd0()
+const char * sdCommand(uint32_t cmd, uint32_t arg)
 {
   uint32_t i;
   Hsmci *phsmci = HSMCI;
 
   if (CardIsConnected()) {
-    phsmci->HSMCI_ARGR = 0;
-    phsmci->HSMCI_CMDR = 0x00001000;
+    phsmci->HSMCI_ARGR = arg;
+    phsmci->HSMCI_CMDR = cmd;
 
     for (i = 0; i < 30000; i += 1) {
       if (phsmci->HSMCI_SR & HSMCI_SR_CMDRDY) {
-        break;
+        return 0;
       }
     }
-    return phsmci->HSMCI_RSPR[0];
+    return SD_NORESPONSE;
   }
   else {
-    return 0;
+    return "No Sdcard";
   }
 }
 
-uint32_t sd_cmd8()
+#define SDMMC_POWER_ON_INIT (0 | HSMCI_CMDR_TRCMD_NO_DATA \
+                               | HSMCI_CMDR_SPCMD_INIT \
+                               | HSMCI_CMDR_OPDCMD )
+
+const char * sdPowerOn()
 {
-  uint32_t i;
-  Hsmci *phsmci = HSMCI;
-
-  if (CardIsConnected()) {
-    phsmci->HSMCI_ARGR = 0X000001AA;
-    phsmci->HSMCI_CMDR = 0x00001048;
-
-    for (i = 0; i < 30000; i += 1) {
-      if (phsmci->HSMCI_SR & HSMCI_SR_CMDRDY) {
-        break;
-      }
-    }
-    return Cmd_8_resp = phsmci->HSMCI_RSPR[0];
-  }
-  else {
-    return 0;
-  }
+  return sdCommand(SDMMC_POWER_ON_INIT, 0);
 }
 
-uint32_t sd_acmd41()
+#define SDMMC_GO_IDLE_STATE     (0 | HSMCI_CMDR_TRCMD_NO_DATA \
+                                   | HSMCI_CMDR_SPCMD_STD )
+
+const char * sdCmd0()
 {
-  uint32_t i;
-  Hsmci *phsmci = HSMCI;
+  return sdCommand(SDMMC_GO_IDLE_STATE, 0);
+}
 
-  if (CardIsConnected()) {
-    sd_cmd55();
-    phsmci->HSMCI_ARGR = 0x403F8000;
-    phsmci->HSMCI_CMDR = 0x00001069;
+#if 0
+#define SDIO_SEND_OP_COND           (5 | HSMCI_CMDR_SPCMD_STD \
+                                       | HSMCI_CMDR_TRCMD_NO_DATA \
+                                       | HSMCI_CMDR_RSPTYP_48_BIT \
+                                       | HSMCI_CMDR_OPDCMD )
 
-    for (i = 0; i < 30000; i += 1) {
-      if (phsmci->HSMCI_SR & HSMCI_SR_CMDRDY) {
-        break;
-      }
-    }
-    return Cmd_A41_resp = phsmci->HSMCI_RSPR[0] ;
-  }
-  else {
-    return 0;
-  }
+const char * sdCmd5(uint32_t *pIo)
+{
+  const char * result = sdCommand(SDIO_SEND_OP_COND, *pIo);
+  if (result)
+    return result;
+  *pIo = HSMCI->HSMCI_RSPR[0];
+  return 0;
+}
+#endif
+
+#define SD_SEND_IF_COND         (8 | HSMCI_CMDR_TRCMD_NO_DATA \
+                                   | HSMCI_CMDR_SPCMD_STD \
+                                   | HSMCI_CMDR_RSPTYP_48_BIT \
+                                   | HSMCI_CMDR_OPDCMD /* BSS difference */ \
+                                   | HSMCI_CMDR_MAXLAT )
+
+const char * sdCmd8(uint8_t supplyVoltage)
+{
+  return sdCommand(SD_SEND_IF_COND, (supplyVoltage << 8) | (0xAA));
+}
+
+#define SDMMC_APP_CMD               (55| HSMCI_CMDR_SPCMD_STD \
+                                       | HSMCI_CMDR_RSPTYP_48_BIT \
+                                       | HSMCI_CMDR_TRCMD_NO_DATA \
+                                       | HSMCI_CMDR_MAXLAT)
+
+const char * sdCmd55()
+{
+  return sdCommand(SDMMC_APP_CMD, Sd_rca);
+}
+
+#define SD_SD_SEND_OP_COND          (41| HSMCI_CMDR_SPCMD_STD \
+                                       | HSMCI_CMDR_RSPTYP_48_BIT \
+                                       | HSMCI_CMDR_TRCMD_NO_DATA \
+                                       /*| HSMCI_CMDR_OPDCMD_OPENDRAIN */ )
+
+const char * sdCmd41(uint32_t arg, uint32_t * status)
+{
+  const char * result = sdCommand(SD_SD_SEND_OP_COND, arg);
+  if (result)
+    return result;
+  *status = HSMCI->HSMCI_RSPR[0];
+  return 0;
+}
+
+#define OCR_VDD_27_28          ((uint32_t)(1 << 15))
+#define OCR_VDD_28_29          ((uint32_t)(1 << 16))
+#define OCR_VDD_29_30          ((uint32_t)(1 << 17))
+#define OCR_VDD_30_31          ((uint32_t)(1 << 18))
+#define OCR_VDD_31_32          ((uint32_t)(1 << 19))
+#define OCR_VDD_32_33          ((uint32_t)(1 << 20))
+#define OCR_VDD_33_34          ((uint32_t)(1 << 21))
+
+#define SDMMC_HOST_VOLTAGE_RANGE     (OCR_VDD_27_28 +\
+                                      OCR_VDD_28_29 +\
+                                      OCR_VDD_29_30 +\
+                                      OCR_VDD_30_31 +\
+                                      OCR_VDD_31_32 +\
+                                      OCR_VDD_32_33 +\
+                                      OCR_VDD_32_33) /* not in SAM3S reference code */
+
+#define OCR_SD_CCS             (1UL << 30)
+
+#define OCR_POWER_UP_BUSY      (1UL << 31)
+
+const char * sdMemInit(uint8_t hcs, uint32_t *pCCS)
+{
+  const char * result;
+  uint32_t arg;
+  uint32_t status;
+  do {
+    result = sdCmd55();
+    if (result)
+      return result;
+    arg = SDMMC_HOST_VOLTAGE_RANGE;
+    if (hcs) arg |= OCR_SD_CCS;
+    result = sdCmd41(arg, &status);
+    if (result)
+      return result;
+    *pCCS = (status & OCR_SD_CCS);
+  } while ((status & OCR_POWER_UP_BUSY) != OCR_POWER_UP_BUSY);
+  return 0;
 }
 
 // Get Card ID
-uint32_t sd_cmd2()
+const char * sdCmd2()
 {
-        uint32_t i ;
-        Hsmci *phsmci = HSMCI ;
+  const char * result = sdCommand(0x00001082, 0);
+  if (result)
+    return result;
 
-        if ( CardIsConnected() )
-        {
-                phsmci->HSMCI_ARGR = 0 ;
-                phsmci->HSMCI_CMDR = 0x00001082 ;
-
-                for ( i = 0 ; i < 30000 ; i += 1 )
-                {
-                        if ( phsmci->HSMCI_SR & HSMCI_SR_CMDRDY )
-                        {
-                                break ;
-                        }
-                }
-                Sd_128_resp[0] = phsmci->HSMCI_RSPR[0] ;
-                Sd_128_resp[1] = phsmci->HSMCI_RSPR[1] ;
-                Sd_128_resp[2] = phsmci->HSMCI_RSPR[2] ;
-                Sd_128_resp[3] = phsmci->HSMCI_RSPR[3] ;
-                return 1 ;
-        }
-        else
-        {
-                return 0 ;
-        }
+  Hsmci *phsmci = HSMCI ;
+  Card_ID[0] = phsmci->HSMCI_RSPR[0] ;
+  Card_ID[1] = phsmci->HSMCI_RSPR[1] ;
+  Card_ID[2] = phsmci->HSMCI_RSPR[2] ;
+  Card_ID[3] = phsmci->HSMCI_RSPR[3] ;
+  return 0;
 }
 
 // Get new RCA
-uint32_t sd_cmd3()
+const char * sdCmd3()
 {
-        uint32_t i ;
-        Hsmci *phsmci = HSMCI ;
-
-        if ( CardIsConnected() )
-        {
-                phsmci->HSMCI_ARGR = 0 ;
-                phsmci->HSMCI_CMDR = 0x00001043 ;
-
-                for ( i = 0 ; i < 30000 ; i += 1 )
-                {
-                        if ( phsmci->HSMCI_SR & HSMCI_SR_CMDRDY )
-                        {
-                                break ;
-                        }
-                }
-                return phsmci->HSMCI_RSPR[0] ;
-        }
-        else
-        {
-                return 0 ;
-        }
+  const char * result = sdCommand(0x00001043, 0);
+  if (result)
+    return result;
+  Sd_rca = HSMCI->HSMCI_RSPR[0];
+  return 0;
 }
 
 // Get CSD
-uint32_t sd_cmd9()
+const char * sdCmd9()
 {
-        uint32_t i ;
-        Hsmci *phsmci = HSMCI ;
+  const char * result = sdCommand(0x00001089, Sd_rca);
+  if (result)
+    return result;
 
-        if ( CardIsConnected() )
-        {
-                phsmci->HSMCI_ARGR = Sd_rca ;
-                phsmci->HSMCI_CMDR = 0x00001089 ;
-
-                for ( i = 0 ; i < 30000 ; i += 1 )
-                {
-                        if ( phsmci->HSMCI_SR & HSMCI_SR_CMDRDY )
-                        {
-                                break ;
-                        }
-                }
-                Sd_128_resp[0] = phsmci->HSMCI_RSPR[0] ;
-                Sd_128_resp[1] = phsmci->HSMCI_RSPR[1] ;
-                Sd_128_resp[2] = phsmci->HSMCI_RSPR[2] ;
-                Sd_128_resp[3] = phsmci->HSMCI_RSPR[3] ;
-                return 1 ;
-        }
-        else
-        {
-                return 0 ;
-        }
+  Hsmci *phsmci = HSMCI ;
+  Card_CSD[0] = phsmci->HSMCI_RSPR[0] ;
+  Card_CSD[1] = phsmci->HSMCI_RSPR[1] ;
+  Card_CSD[2] = phsmci->HSMCI_RSPR[2] ;
+  Card_CSD[3] = phsmci->HSMCI_RSPR[3] ;
+  return 0;
 }
 
-// Select Card
-uint32_t sd_cmd7()
+/** Cmd7 MCI, ac, R1/R1b */
+#define SDMMC_SELECT_CARD       (7 | HSMCI_CMDR_TRCMD_NO_DATA \
+                                   | HSMCI_CMDR_SPCMD_STD \
+                                   | HSMCI_CMDR_RSPTYP_R1B \
+                                   | HSMCI_CMDR_MAXLAT /* TODO not the same */ )
+
+const char * sdCmd7()
 {
-        uint32_t i ;
-        Hsmci *phsmci = HSMCI ;
-
-        if ( CardIsConnected() )
-        {
-                phsmci->HSMCI_ARGR = Sd_rca ;
-                phsmci->HSMCI_CMDR = 0x00001047 ;
-
-                for ( i = 0 ; i < 30000 ; i += 1 )
-                {
-                        if ( phsmci->HSMCI_SR & HSMCI_SR_CMDRDY )
-                        {
-                                break ;
-                        }
-                }
-                return 1 ;
-        }
-        else
-        {
-                return 0 ;
-        }
+  return sdCommand(SDMMC_SELECT_CARD, Sd_rca);
 }
 
 #define SD_SEND_SCR  (51 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
@@ -414,163 +373,492 @@ uint32_t sd_cmd7()
                                      | HSMCI_CMDR_MAXLAT)
 
 // Get SCR
-uint32_t sd_acmd51( uint32_t *presult )
+const char * sdAcmd51()
 {
-        uint32_t i ;
-        uint32_t j = 0 ;
-        Hsmci *phsmci = HSMCI ;
+  const char * result;
+  result = sdCmd55();
+  if (result)
+    return result;
 
-        if ( CardIsConnected() )
-        {
-                sd_cmd55() ;
-                // Block size = 64/ 8, nblocks = 1
-                phsmci->HSMCI_BLKR = ( ( 64 / 8 ) << 16 ) | 1 ;
-                phsmci->HSMCI_ARGR = 0 ;
-                phsmci->HSMCI_CMDR = SD_SEND_SCR ;
+  Hsmci *phsmci = HSMCI ;
+  // Block size = 64/ 8, nblocks = 1
+  phsmci->HSMCI_BLKR = ( ( 64 / 8 ) << 16 ) | 1 ;
+  phsmci->HSMCI_ARGR = 0 ;
+  phsmci->HSMCI_CMDR = SD_SEND_SCR ;
 
-                for ( i = 0 ; i < 50000 ; i += 1 )
-                {
-                        if ( phsmci->HSMCI_SR & HSMCI_SR_RXRDY )
-                        {
-                                *presult++ = __REV(phsmci->HSMCI_RDR) ;
-                                j += 0x10000000 ;
-                        }
-                        if ( ( phsmci->HSMCI_SR & ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) ) == ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) )
-                        {
-                                break ;
-                        }
-
-                }
-                if ( i >= 50000 )
-                {
-                        *presult = phsmci->HSMCI_SR ;
-                }
-                return i | j ; //phsmci->HSMCI_RSPR[0] ;
-        }
-        else
-        {
-                return 0 ;
-        }
+  uint8_t scrLen = 0;
+  uint32_t i;
+  for ( i = 0 ; i < 50000 ; i += 1 ) {
+    if ( phsmci->HSMCI_SR & HSMCI_SR_RXRDY )
+      Card_SCR[scrLen++] = __REV(phsmci->HSMCI_RDR) ;
+    if ( ( phsmci->HSMCI_SR & ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) ) == ( HSMCI_SR_CMDRDY | HSMCI_SR_XFRDONE ) )
+      return 0;
+  }
+  return "No response";
 }
 
 #define SD_SET_BUS_WIDTH            (6 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
                                        | HSMCI_CMDR_MAXLAT)
 
-// Set bus width to 4 bits, set speed to 9 MHz
-uint32_t sd_acmd6()
+void sdEnableHsMode(uint8_t enable)
 {
-        uint32_t i ;
-        Hsmci *phsmci = HSMCI ;
-
-        if ( CardIsConnected() )
-        {
-                sd_cmd55() ;
-                phsmci->HSMCI_ARGR = 2 ;                // Bus width 4 bits
-                phsmci->HSMCI_CMDR = SD_SET_BUS_WIDTH ;
-
-                for ( i = 0 ; i < 300000 ; i += 1 )
-                {
-                        if ( phsmci->HSMCI_SR & HSMCI_SR_CMDRDY )
-                        {
-                                break ;
-                        }
-                }
-                if ( i >= 300000 )
-                {
-                        return 0 ;
-                }
-                SD_SetBusWidth( HSMCI_SDCR_SDCBUS_4 ) ;
-                SD_SetSpeed( 9000000 ) ;
-                return i ; //phsmci->HSMCI_RSPR[0] ;
-        }
-        else
-        {
-                return 0 ;
-        }
+  Hsmci *phsmci = HSMCI;
+  if (enable)
+    phsmci->HSMCI_CFG |= HSMCI_CFG_HSMODE;
+  else
+    phsmci->HSMCI_CFG &= ~HSMCI_CFG_HSMODE;
 }
 
-// This routine is called every 10 mS, and checks for card
-// insertion and removal.
-// When a card is inserted, it initialises it ready for read/write access.
+void sdSetBusWidth(uint32_t busWidth)
+{
+  Hsmci *phsmci = HSMCI;
+  phsmci->HSMCI_SDCR = (HSMCI->HSMCI_SDCR & ~HSMCI_SDCR_SDCBUS_Msk) | busWidth;
+}
+
+// Set bus width to 4 bits, set speed to 9 MHz
+const char * sdAcmd6()
+{
+  const char * result;
+  result = sdCmd55() ;
+  if (result)
+    return result;
+
+  result = sdCommand(SD_SET_BUS_WIDTH, 2);
+  if (result)
+    return result;
+
+  sdSetBusWidth( HSMCI_SDCR_SDCBUS_4 ) ;
+  sdSetSpeed(9000000);
+  return 0;
+}
+
+#if 0
+/** SDIO CMD52, R5 */
+#define SDIO_IO_RW_DIRECT           (52| HSMCI_CMDR_SPCMD_STD \
+                                       | HSMCI_CMDR_TRCMD_NO_DATA \
+                                       | HSMCI_CMDR_RSPTYP_48_BIT \
+                                       | HSMCI_CMDR_MAXLAT)
+
+static const char * sdCmd52(uint8_t wrFlag,
+                            uint8_t funcNb,
+                            uint8_t rdAfterWr,
+                            uint32_t addr,
+                            uint32_t *status)
+{
+  typedef struct
+  {
+      uint32_t data:8, /**< [ 7: 0] data for writing */
+      stuff0:1,        /**< [    8] reserved */
+      regAddress:17,   /**< [25: 9] register address */
+      stuff1:1,        /**< [   26] reserved */
+      rawFlag:1,       /**< [   27] Read after Write flag */
+      functionNum:3,   /**< [30:28] Number of the function */
+      rwFlag:1;        /**< [   31] Direction, 1:write, 0:read. */
+  } SdioCmd52Arg;
+
+  SdioCmd52Arg pArg52;
+  pArg52.rwFlag = wrFlag;
+  pArg52.functionNum = funcNb;
+  pArg52.rawFlag = rdAfterWr;
+  pArg52.regAddress = addr;
+
+  const char * result = sdCommand(SDIO_IO_RW_DIRECT, *(uint32_t*)&pArg52);
+  if (result)
+    return result;
+  *status = HSMCI->HSMCI_RSPR[0];
+  return 0;
+}
+#endif
+
+const char * sdSwReset(uint32_t retry)
+{
+    uint32_t i;
+    const char * result = 0;
+
+    for (i = 0; i < retry; i++) {
+      result = sdCmd0(0);
+        if (result != SD_NORESPONSE)
+          break;
+    }
+    return result;
+}
+
+/**
+ * \brief Run the SD/MMC/SDIO Mode initialization sequence.
+ * This function runs the initialization procedure and the identification
+ * process. Then it leaves the card in ready state. The following procedure must
+ * check the card type and continue to put the card into tran(for memory card)
+ * or cmd(for io card) state for data exchange.
+ * \param pSd  Pointer to a SD card driver instance.
+ * \return 0 if successful; otherwise returns an \ref sdmmc_rc "SD_ERROR code".
+ */
+
+#define SDIO_CIA            0       /**< SDIO Function 0 (CIA) */
+#define SDIO_IOA_REG        0x06    /**< I/O Abort */
+
+/** SDIO state (in R5) */
+#define SDIO_R5_ERROR        (1UL << 11)/**< General error */
+#define SDIO_R5_FUNC_NUM     (1UL << 10)/**< Invalid function number */
+#define SDIO_R5_OUT_OF_RANGE (1UL << 9) /**< Argument out of range */
+
+/** Status bits mask for SDIO R5 */
+#define STATUS_SDIO_R5  (0/*SDIO_R5_STATE*/ \
+                         | SDIO_R5_ERROR \
+                         | SDIO_R5_FUNC_NUM \
+                         | SDIO_R5_OUT_OF_RANGE)
+
+
+#define OCR_SDIO_MP            (1UL << 27)
+#define OCR_SDIO_NF            (7UL << 28)
+
+const char * sdIdentify()
+{
+    uint8_t mem = 0, io = 0, f8 = 0, mp = 1;
+    uint32_t status, ccs=0;
+    const char * result;
+
+    /* Reset HC to default HS and BusMode */
+    sdEnableHsMode(0);
+    sdSetBusWidth(HSMCI_SDCR_SDCBUS_1);
+
+#if 0
+    /* Reset SDIO: CMD52, write 1 to RES bit in CCCR (bit 3 of register 6) */
+    result = sdCmd52(1, SDIO_CIA, 0, SDIO_IOA_REG, &status);
+    if (result)
+      return result;
+    if (status & STATUS_SDIO_R5)
+      return "Identify.52 error";
+#endif
+
+    /* Reset MEM: CMD0 */
+    result = sdSwReset(1);
+    if (result)
+      return result;
+
+    /* CMD8 is newly added in the Physical Layer Specification Version 2.00 to
+     * support multiple voltage ranges and used to check whether the card
+     * supports supplied voltage. The version 2.00 host shall issue CMD8 and
+     * verify voltage before card initialization.
+     * The host that does not support CMD8 shall supply high voltage range... */
+    result = sdCmd8(1);
+    if (result == 0) f8 = 1;
+    else if (result == SD_NORESPONSE) CoTickDelay(1); /* 2ms delay after "no response" */
+    else return "Identify.8 error";
+
+#if 0
+    /* CMD5 is newly added for SDIO initialize & power on */
+    status = 0;
+    result = sdCmd5(&status);
+    if (!result && (status & OCR_SDIO_NF) > 0) {
+      unsigned int cmd5Retries = 10000;
+      do {
+        status &= SDMMC_HOST_VOLTAGE_RANGE;
+        result = sdCmd5(&status);
+        if (status & OCR_POWER_UP_BUSY) break;
+      } while(!result && cmd5Retries --);
+      if (result)
+        return "Identify.5 error";
+      io = 1;
+      /* IO only ?*/
+      mp = ((status & OCR_SDIO_MP) > 0);
+    }
+#endif
+
+    /* Has memory: SD/MMC/COMBO */
+    /*if (mp) */
+    {
+      /* Try SD memory initialize */
+      result = sdMemInit(f8, &ccs);
+      if (result) {
+        //unsigned int cmd1Retries = 10000;
+        /* Try MMC initialize */
+        result = sdSwReset(10);
+        if (result)
+          return "Reset error";
+        /* TODO ccs = 1;
+        do { result = sdCmd1(&ccs); } while(result && cmd1Retries -- > 0);
+        if (error) {
+            TRACE_ERROR("SdMmcIdentify.Cmd1: %u\n\r", error);
+            return SDMMC_ERROR;
+        }
+        else if (ccs) cardType = CARD_MMCHD;
+        else          cardType = CARD_MMC;
+        */
+        return "TODO error";
+        /* MMC card identification OK */
+        return 0;
+      }
+      // mem = 1;
+    }
+    /* SD(IO) + MEM ? */
+    /* if (!mem) {
+      if (io) cardType = CARD_SDIO;
+      else
+        return "Unknown SD";
+    } */
+    /* SD(HC) combo */
+    /*else if (io)
+      cardType = ccs ? CARD_SDHCCOMBO : CARD_SDCOMBO;*/
+    /* SD(HC) */
+    //else
+      cardType = ccs ? CARD_SDHC : CARD_SD;
+
+    return 0;
+}
+
+#if 0
+const char * sdEnum()
+{
+    uint8_t mem , io;
+    const char * result;
+    uint32_t ioSpeed = 0, memSpeed = 0;
+    uint8_t hsExec = 0, bwExec = 0;
+
+    /* - has Memory/IO/High-Capacity - */
+    mem = ((cardType & CARD_TYPE_bmSDMMC) > 0);
+    io  = ((cardType & CARD_TYPE_bmSDIO)  > 0);
+
+    /* For MEMORY cards:
+     * The host then issues the command ALL_SEND_CID (CMD2) to the card to get
+     * its unique card identification (CID) number.
+     * Card that is unidentified (i.e. which is in Ready State) sends its CID
+     * number as the response (on the CMD line). */
+    if (mem) {
+      result = sdCmd2();
+      if (result)
+        return result;
+    }
+
+    /* For MEMORY and SDIO cards:
+     * Thereafter, the host issues CMD3 (SEND_RELATIVE_ADDR) asks the
+     * card to publish a new relative card address (RCA), which is shorter than
+     * CID and which is used to address the card in the future data transfer
+     * mode. Once the RCA is received the card state changes to the Stand-by
+     * State. At this point, if the host wants to assign another RCA number, it
+     * can ask the card to publish a new number by sending another CMD3 command
+     * to the card. The last published RCA is the actual RCA number of the
+     * card. */
+    result = sdCmd3();
+    if (result)
+      return result;
+
+    /* For MEMORY cards:
+     * SEND_CSD (CMD9) to obtain the Card Specific Data (CSD register),
+     * e.g. block length, card storage capacity, etc... */
+    if (mem) {
+      result = sdCmd9();
+      if (result)
+        return result;
+    }
+
+    /* Now select the card, to TRAN state */
+    error = MmcSelectCard(pSd, pSd->cardAddress, 0);
+    if (error) {
+        TRACE_ERROR("SdMmcInit.SelCard(%d)\n\r", error);
+        return error;
+    }
+
+    /* - Now in TRAN, obtain extended setup information - */
+
+    /* If the card support EXT_CSD, read it! */
+    TRACE_INFO("Card Type %d, CSD_STRUCTURE %d\n\r",
+               pSd->cardType, SD_CSD_STRUCTURE(pSd));
+
+    /* Get extended information of the card */
+    SdMmcUpdateInformation(pSd, 0, 1);
+
+    /* Calculate transfer speed */
+    if (io)     ioSpeed = SdioGetMaxSpeed(pSd);
+    if (mem)    memSpeed = SdmmcGetMaxSpeed(pSd);
+    /* Combo, min speed */
+    if (io && mem) {
+        pSd->transSpeed = (ioSpeed > memSpeed) ? memSpeed : ioSpeed;
+    }
+    /* SDIO only */
+    else if (io) {
+        pSd->transSpeed = ioSpeed;
+    }
+    /* Memory card only */
+    else if (mem) {
+        pSd->transSpeed = memSpeed;
+    }
+    pSd->transSpeed *= 1000;
+
+    /* Enable more bus width Mode */
+    error = SdMmcDesideBuswidth(pSd);
+    if (!error) bwExec = 1;
+    else if (error != SDMMC_ERROR_NOT_SUPPORT) {
+        TRACE_ERROR("SdmmcEnum.DesideBusWidth: %u\n\r", error);
+        return SDMMC_ERROR;
+    }
+
+    /* Enable High-Speed Mode */
+    error = SdMmcEnableHighSpeed(pSd);
+    if (!error) hsExec = 1;
+    else if (error != SDMMC_ERROR_NOT_SUPPORT) {
+        TRACE_ERROR("SdmmcEnum.EnableHS: %u\n\r", error);
+        return SDMMC_ERROR;
+    }
+
+    /* In HS mode transfer speed *2 */
+    if (hsExec) pSd->transSpeed *= 2;
+
+    /* Update card information since status changed */
+    if (bwExec || hsExec) SdMmcUpdateInformation(pSd, hsExec, 1);
+    return 0;
+}
+#endif
+
+void sdInit()
+{
+  const char * result;
+  uint8_t i;
+
+  /* Clear CID, CSD, EXT_CSD data */
+  for (i = 0; i < 4; i++) Card_ID[i] = 0;
+  for (i = 0; i < 4; i++) Card_CSD[i] = 0;
+  // TODO for (i = 0; i < 512/4; i++) pSd->extData[i] = 0;
+
+  /* Set low speed for device identification (LS device max speed) */
+  sdSetSpeed(400000);
+
+  /* Initialization delay: The maximum of 1 msec, 74 clock cycles and supply
+   * ramp up time. Supply ramp up time provides the time that the power is
+   * built up to the operating level (the bus master supply voltage) and the
+   * time to wait until the SD card can accept the first command.
+   */
+
+  /* Power On Init Special Command */
+  result = sdPowerOn();
+  if (result)
+    return;
+
+  /* After power-on or CMD0, all cards?
+   * CMD lines are in input mode, waiting for start bit of the next command.
+   * The cards are initialized with a default relative card address
+   * (RCA=0x0000) and with a default driver stage register setting
+   * (lowest speed, highest driving current capability).
+   */
+  result = sdIdentify();
+  if (result) {
+    return;
+  }
+
+#if 0
+  result = sdEnum();
+  if (result) {
+    return;
+  }
+
+  /* In the case of a Standard Capacity SD Memory Card, this command sets the
+   * block length (in bytes) for all following block commands
+   * (read, write, lock).
+   * Default block length is fixed to 512 Bytes.
+   * Set length is valid for memory access commands only if partial block read
+   * operation are allowed in CSD.
+   * In the case of a High Capacity SD Memory Card, block length set by CMD16
+   * command does not affect the memory read and write commands. Always 512
+   * Bytes fixed block length is used. This command is effective for
+   * LOCK_UNLOCK command.
+   * In both cases, if block length is set larger than 512Bytes, the card sets
+   * the BLOCK_LEN_ERROR bit. */
+  if (pSd->cardType == CARD_SD) {
+      error = Cmd16(pSd, SDMMC_BLOCK_SIZE);
+      if (error) {
+          pSd->optCmdBitMap &= ~SD_CMD16_SUPPORT;
+          TRACE_INFO("SD_Init.Cmd16 (%d)\n\r", error);
+          TRACE_INFO("Fail to set BLK_LEN, default is 512\n\r");
+      }
+  }
+
+  /* Reset status for R/W */
+  pSd->state = SD_STATE_READY;
+
+  /* If MMC Card & get size from EXT_CSD */
+  if ((pSd->cardType & CARD_TYPE_bmSDMMC) == CARD_TYPE_bmMMC
+      && SD_CSD_C_SIZE(pSd) == 0xFFF) {
+      pSd->blockNr = SD_EXTCSD_BLOCKNR(pSd);
+      /* Block number less than 0x100000000/512 */
+      if (pSd->blockNr > 0x800000)
+          pSd->totalSize = 0xFFFFFFFF;
+      else
+          pSd->totalSize = SD_EXTCSD_TOTAL_SIZE(pSd);
+  }
+  /* If SD CSD v2.0 */
+  else if((pSd->cardType & CARD_TYPE_bmSDMMC) == CARD_TYPE_bmSD
+      && SD_CSD_STRUCTURE(pSd) >= 1) {
+      pSd->blockNr   = SD_CSD_BLOCKNR_HC(pSd);
+      pSd->totalSize = 0xFFFFFFFF;
+  }
+  /* Normal SD/MMC card */
+  else if (pSd->cardType & CARD_TYPE_bmSDMMC) {
+      pSd->totalSize = SD_CSD_TOTAL_SIZE(pSd);
+      pSd->blockNr = SD_CSD_BLOCKNR(pSd);
+  }
+
+  if (pSd->cardType == CARD_UNKNOWN) {
+      return SDMMC_ERROR_NOT_INITIALIZED;
+  }
+  /* Automatically select the max clock */
+  clock = SdmmcSetSpeed(pSd, pSd->transSpeed);
+  TRACE_WARNING_WP("-I- Set SD/MMC clock to %dK\n\r", clock/1000);
+  pSd->accSpeed = clock;
+#endif
+}
+
+
+extern FATFS g_FATFS_Obj;
 void sd_poll_10mS()
 {
-        uint32_t i ;
+  if (!CardIsConnected()) {
+    Card_state = SD_ST_EMPTY;
+    Sd_rca = 0;
+  }
 
-        if ( !CardIsConnected() )
-        {
-                Card_state = SD_ST_EMPTY ;
-                Sd_rca = 0 ;
+  switch (Card_state) {
+    case SD_ST_EMPTY:
+      if (CardIsConnected()) {
+        Card_state = SD_ST_INIT1;
+      }
+      break;
 
-        }
+    case SD_ST_INIT1:
+      sdCmd0();
+      Card_state = SD_ST_INIT2;
+      break;
 
-        switch ( Card_state )
-        {
-                case SD_ST_EMPTY :
-                  if ( CardIsConnected() ) {
-                    Card_state = SD_ST_INIT1 ;
-                  }
-                  break ;
+    case SD_ST_INIT2:
+      sdCmd8(1);
+      Card_state = SD_ST_IDLE;
+      break;
 
-                case SD_ST_INIT1 :
-                  i = sd_cmd0() ;
-                  Card_state = SD_ST_INIT2 ;
-                  break ;
+    case SD_ST_IDLE:
+      sdMemInit(1, &Cmd_A41_resp);
+      Card_state = SD_ST_READY;
+      break;
 
-                case SD_ST_INIT2 :
-                  i = sd_cmd8() ;
-                  Card_state = SD_ST_IDLE ;
-                  break ;
+    case SD_ST_READY:
+      if (!sdCmd2()) Card_state = SD_ST_IDENT;
+      break;
 
-                case SD_ST_IDLE :
-                  i = sd_acmd41() ;
-                  if ( i & 0x80000000 ) {
-                    Card_state = SD_ST_READY ;
-                  }
-                  break ;
+    case SD_ST_IDENT:
+      if (!sdCmd3()) Card_state = SD_ST_STBY;
+      break;
 
-                case SD_ST_READY :
-                        i = sd_cmd2() ;
-                        if ( i )
-                        {
-                                Card_ID[0] = Sd_128_resp[0] ;
-                                Card_ID[1] = Sd_128_resp[1] ;
-                                Card_ID[2] = Sd_128_resp[2] ;
-                                Card_ID[3] = Sd_128_resp[3] ;
-                                Card_state = SD_ST_IDENT ;
-                        }
-                break ;
+    case SD_ST_STBY:
+      sdCmd9();
+      sdCmd7(); // Select Card
+      Card_state = SD_ST_TRAN;
+      break;
 
-                case SD_ST_IDENT :
-                        i = sd_cmd3() ;         // Get new RCA
-                        Sd_rca = i ;
-                        Card_state = SD_ST_STBY ;
-                break ;
-
-                case SD_ST_STBY :
-                        i = sd_cmd9() ;
-                        Card_CSD[0] = Sd_128_resp[0] ;
-                        Card_CSD[1] = Sd_128_resp[1] ;
-                        Card_CSD[2] = Sd_128_resp[2] ;
-                        Card_CSD[3] = Sd_128_resp[3] ;
-                        i = sd_cmd7() ;         // Select Card
-//                      txmit( '+' ) ;
-//                      p8hex( i ) ;
-//                      crlf() ;
-                        Card_state = SD_ST_TRAN ;
-                break ;
-
-                case SD_ST_TRAN :
-                        i = sd_acmd51( Sd_128_resp ) ;
-                        Card_SCR[0] = Sd_128_resp[0] ;
-                        Card_SCR[1] = Sd_128_resp[1] ;
-                        Card_state = SD_ST_DATA ;
-                        i = sd_acmd6() ;                // Set bus width to 4 bits, and speed to 9 MHz
-//                      txmit( '-' ) ;
-//                      p8hex( i ) ;
-//                      crlf() ;
-                        // Should check the card can do this ****
-                break ;
-        }
+    case SD_ST_TRAN:
+      sdAcmd51();
+      Card_state = SD_ST_DATA;
+      sdAcmd6(); // Set bus width to 4 bits, and speed to 9 MHz
+      // Should check the card can do this ****
+      f_mount(0, &g_FATFS_Obj);
+      break;
+  }
 }
 
 // Checks for card ready for read/write
@@ -612,10 +900,14 @@ uint32_t sd_cmd16()
 #endif
 }
 
+extern OS_MutexID sdMutex;
+
 uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 {
   uint32_t result = 0;
   Hsmci *phsmci = HSMCI;
+
+  CoEnterMutexSection(sdMutex);
 
   if (Card_state == SD_ST_DATA) {
     if (CardIsConnected()) {
@@ -623,7 +915,7 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
-      phsmci->HSMCI_ARGR = Cmd_A41_resp & 0x40000000 ? block_no : block_no << 9;
+      phsmci->HSMCI_ARGR = (Cmd_A41_resp & OCR_SD_CCS ? block_no : (block_no << 9));
       phsmci->HSMCI_RPR  = (uint32_t)data;
       phsmci->HSMCI_RCR  = 512 / 4;
       phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTEN;
@@ -641,7 +933,9 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
     }
   }
 
-  phsmci->HSMCI_MR &= ~HSMCI_MR_PDCMODE;
+  phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+
+  CoLeaveMutexSection(sdMutex);
   return result;
 }
 
@@ -650,13 +944,15 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
   uint32_t result = 0;
   Hsmci *phsmci = HSMCI;
 
+  CoEnterMutexSection(sdMutex);
+
   if (Card_state == SD_ST_DATA) {
     if (CardIsConnected()) {
       sd_cmd16();
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
-      phsmci->HSMCI_ARGR = Cmd_A41_resp & 0x40000000 ? block_no : block_no << 9;
+      phsmci->HSMCI_ARGR = (Cmd_A41_resp & OCR_SD_CCS ? block_no : (block_no << 9));
       phsmci->HSMCI_TPR  = (uint32_t)data;
       phsmci->HSMCI_TCR  = 512 / 4;
       phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
@@ -674,7 +970,10 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
     }
   }
 
-  phsmci->HSMCI_MR &= ~HSMCI_MR_PDCMODE;
+  phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+
+  CoLeaveMutexSection(sdMutex);
+
   return result;
 }
 

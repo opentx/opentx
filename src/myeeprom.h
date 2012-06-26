@@ -333,6 +333,7 @@ enum TelemetryUnit {
   UNIT_DEGREES,
   UNIT_PERCENT,
   UNIT_MILLIAMPS,
+  UNIT_MAH,
   UNIT_MAX,
   UNIT_FEET,
   UNIT_KTS
@@ -402,7 +403,7 @@ enum VarioSource {
 };
 
 PACK(typedef struct t_FrSkyBarData {
-  uint16_t   source:4;
+  uint16_t   source:4;       // TODO modification in next EEPROM
   uint16_t   barMin:6;           // minimum for bar display
   uint16_t   barMax:6;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
@@ -413,12 +414,18 @@ enum FrskyUsrProtocols {
   USR_PROTO_WS_HOW_HIGH
 };
 
+enum CurrentSource {
+  CURRENT_SOURCE_HUB,
+  CURRENT_SOURCE_A1,
+  CURRENT_SOURCE_A2
+};
+
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:3; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
   uint8_t imperial:1;
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
-  uint8_t spare:2;
+  uint8_t currentSource:2;
   FrSkyBarData bars[4];
   FrSkyRSSIAlarm rssiAlarms[2];
 }) FrSkyData;
@@ -593,10 +600,10 @@ PACK(typedef struct t_ModelData {
 
   EXTDATA;
 
-  int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
+  int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
-  uint8_t   frskyLines[4];
+  uint8_t   frskyLines[4];    // TODO modification in next EEPROM
   uint16_t  frskyLinesXtra;
   int8_t    servoCenter[NUM_CHNOUT];
   

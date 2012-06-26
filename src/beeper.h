@@ -60,7 +60,6 @@ extern void beep(uint8_t val);
 #define AUDIO_KEYPAD_UP()     beep(0)
 #define AUDIO_KEYPAD_DOWN()   beep(0)
 #define AUDIO_MENUS()         beep(0)
-#define AUDIO_TRIM()          beep(1)
 #define AUDIO_WARNING2()      beep(2)
 #define AUDIO_WARNING1()      beep(3)
 #define AUDIO_ERROR()         beep(4)
@@ -76,7 +75,9 @@ extern void beep(uint8_t val);
 #define AUDIO_POT_STICK_MIDDLE() beep(2)
 #define AUDIO_VARIO_UP()      _beep(1)
 #define AUDIO_VARIO_DOWN()    _beep(1)
-#define AUDIO_TRIM_MIDDLE(f)   beep(2)
+#define AUDIO_TRIM(event, f)  { if (event & _MSK_KEY_REPT) warble = true; beep(1); }
+#define AUDIO_TRIM_MIDDLE(f)  beep(2)
+#define AUDIO_PLAY(p)         beep(3)
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
 

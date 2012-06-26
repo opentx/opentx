@@ -920,14 +920,9 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   DIR archiveFolder;
   UINT written;
 
-  FRESULT result = f_mount(0, &g_FATFS_Obj);
-  if (result != FR_OK) {
-    return SDCARD_ERROR(result);
-  }
-
   // check and create folder here
   strcpy(buf, STR_MODELS_PATH);
-  result = f_opendir(&archiveFolder, buf);
+  FRESULT result = f_opendir(&archiveFolder, buf);
   if (result != FR_OK) {
     result = f_mkdir(buf);
     if (result != FR_OK)
@@ -995,17 +990,12 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   FIL restoreFile;
   UINT read;
 
-  FRESULT result = f_mount(0, &g_FATFS_Obj);
-  if (result != FR_OK) {
-    return SDCARD_ERROR(result);
-  }
-
   strcpy(buf, STR_MODELS_PATH);
   buf[sizeof(MODELS_PATH)-1] = '/';
   strcpy(&buf[sizeof(MODELS_PATH)], model_name);
   strcpy(&buf[strlen(buf)], STR_MODELS_EXT);
 
-  result = f_open(&restoreFile, buf, FA_OPEN_EXISTING | FA_READ);
+  FRESULT result = f_open(&restoreFile, buf, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
