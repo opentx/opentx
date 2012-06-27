@@ -510,7 +510,7 @@ void setupPulses()
         init_ssc();
         break;
       case PROTO_NONE:
-        init_main_ppm(3000, 0); // Initial period 1.5 mS, output on
+        init_main_ppm(3000, 0); // Initial period 1.5 mS, output off
         break;
       default:
         init_main_ppm(3000, 1); // Initial period 1.5 mS, output on

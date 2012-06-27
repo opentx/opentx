@@ -77,7 +77,7 @@ extern uint16_t Sine_values[];
 
 void audioTask(void* pdata)
 {
-#ifndef SIMU
+#if defined(SDCARD) && !defined(SIMU)
   static FIL wavFile;
 #endif
 
@@ -86,7 +86,7 @@ void audioTask(void* pdata)
 
     audioState = 1; // TODO #define
 
-#ifndef SIMU
+#if defined(SDCARD) && !defined(SIMU)
     if (toneWavFile[0]) {
       FRESULT result = FR_OK;
       UINT read;
@@ -205,20 +205,24 @@ void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     tone2Freq = tFreq;
     tone2TimeLeft = tLen;
     tone2Pause = tPause;
-    if (audioState == 0) CoSetFlag(audioFlag);
+    if (audioState == 0) {
+      audioState = 1;
+      CoSetFlag(audioFlag);
+    }
   }
   else {
     if (tFreq > 0) { //we dont add pitch if zero as this is a pause only event
       tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     }
     tLen = getToneLength(tLen);
-    if ((tFlags & PLAY_NOW) || (audioState == 0 && audioEmpty())) {
+    if ((tFlags & PLAY_NOW) || !audioBusy()) {
       toneWavFile[0] = '\0';
       toneFreq = tFreq;
       toneTimeLeft = tLen;
       tonePause = tPause;
       toneFreqIncr = tFreqIncr;
       t_queueWidx = t_queueRidx;
+      audioState = 1;
       CoSetFlag(audioFlag);
     }
     else {
@@ -258,7 +262,7 @@ void audioEvent(uint8_t e, uint8_t f)
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
-    if (e < AU_FRSKY_FIRST || audioEmpty()) {
+    if (e < AU_FRSKY_FIRST || !audioBusy()) {
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:
@@ -266,7 +270,7 @@ void audioEvent(uint8_t e, uint8_t f)
           break;
         // low battery in tx
         case AU_TX_BATTERY_LOW:
-          if (audioEmpty()) {
+          if (!audioBusy()) {
             play(60, 40, 6, 2, 1);
             play(80, 40, 6, 2, -1);
           }

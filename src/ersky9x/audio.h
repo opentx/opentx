@@ -35,19 +35,18 @@
 #ifndef audio_h
 #define audio_h
 
-#define AUDIO_QUEUE_LENGTH (100) 
+#define AUDIO_QUEUE_LENGTH (20)
 #define BEEP_DEFAULT_FREQ  (70)
 #define BEEP_OFFSET        (10)
 #define BEEP_KEY_UP_FREQ   (BEEP_DEFAULT_FREQ+5)
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
-#define TONE1_RATE_LIMIT (10)
-#define TONE2_RATE_LIMIT (10)
+
+extern uint8_t audioState;
 
 extern uint8_t t_queueRidx;
 extern uint8_t t_queueWidx;
 
 extern uint8_t toneFreq;
-//int8_t toneFreqIncr;
 extern uint8_t toneTimeLeft;
 extern uint8_t tonePause;
 
@@ -73,15 +72,10 @@ void pause(uint8_t tLen);
 
 inline bool audioBusy()
 {
-  return (toneTimeLeft > 0);
+  return (audioState != 0);
 }
 
 void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
-
-inline bool audioEmpty()
-{
-  return (t_queueRidx == t_queueWidx);
-}
 
 #define AUDIO_KEYPAD_UP()   audioEvent(AU_KEYPAD_UP)
 #define AUDIO_KEYPAD_DOWN() audioEvent(AU_KEYPAD_DOWN)
@@ -89,9 +83,6 @@ inline bool audioEmpty()
 #define AUDIO_WARNING1()    audioEvent(AU_WARNING1)
 #define AUDIO_WARNING2()    audioEvent(AU_WARNING2)
 #define AUDIO_ERROR()       audioEvent(AU_ERROR)
-
-#define IS_AUDIO_BUSY()     audioBusy()
-
 #define AUDIO_TIMER_30()    audioEvent(AU_TIMER_30)
 #define AUDIO_TIMER_20()    audioEvent(AU_TIMER_20)
 #define AUDIO_TIMER_10()    audioEvent(AU_TIMER_10)

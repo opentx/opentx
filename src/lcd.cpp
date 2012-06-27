@@ -426,7 +426,7 @@ void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t pat, uin
 {
   for (int8_t i=y; i<y+h; i++) {
     if (i>=0 && i<64) lcd_hlineStip(x, i, w, pat, att);
-    if (pat != 0xff) pat = ~pat;
+    pat = (pat >> 1) + ((pat & 1) << 7);
   }
 }
 
