@@ -566,9 +566,10 @@ bool __getSwitch(int8_t swtch)
         // Telemetry
         if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
           y = convertTelemValue(cs.v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs.v2);
-          if (cs.v1 >= CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) {
+          uint8_t idx = cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT
+          if (idx < THLD_MAX) {
             // Fill the threshold array
-            barsThresholds[cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT] = 128 + cs.v2;
+            barsThresholds[idx] = 128 + cs.v2;
           }
         }
         else
