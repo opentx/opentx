@@ -163,7 +163,21 @@ struct FrskyData {
 };
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-extern uint8_t barsThresholds[];
+enum BarThresholdIdx {
+  THLD_ALT,
+  THLD_RPM,
+  THLD_FUEL,
+  THLD_T1,
+  THLD_T2,
+  THLD_SPEED,
+  THLD_DIST,
+  THLD_GPSALT,
+  THLD_CELL,
+  THLD_CURRENT,
+  THLD_CONSUMPTION,
+  THLD_MAX,
+};
+extern uint8_t barsThresholds[THLD_MAX];
 #endif
 
 // Global Fr-Sky telemetry data variables
