@@ -644,6 +644,7 @@ void check_frsky()
   else {
     for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
       voltage += frskyData.hub.cellVolts[i];
+    voltage /= 5;
   }
   frskyData.voltage = voltage;
   frskyData.power = current * voltage / 1000;
@@ -961,6 +962,10 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 
     case TELEM_CELL-1:
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);
+      break;
+
+    case TELEM_VOLTAGE-1:
+      putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC1);
       break;
 
     case TELEM_CURRENT-1:
