@@ -647,7 +647,7 @@ void check_frsky()
     voltage /= 5;
   }
   frskyData.voltage = voltage;
-  frskyData.power = current * voltage / 1000;
+  frskyData.power = current * voltage / 100;
   if (frskyData.currentPrescale >= currentConsumptionBoundary) {
     frskyData.currentConsumption += 1;
     frskyData.currentPrescale -= currentConsumptionBoundary;
