@@ -2444,7 +2444,7 @@ void perMain()
           g_vbat100mV = s_batSum / 8;
           s_batSum = 0;
           if (g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
-            AUDIO_ERROR(); // TODO AUDIO_TX_BATTERY_LOW()
+            AUDIO_TX_BATTERY_LOW();
           }
         }
 #if !defined(PCBARM)

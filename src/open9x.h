@@ -918,6 +918,7 @@ enum AUDIO_SOUNDS {
 
 #if defined(PCBV4)
 #include "rtc.h"
+extern uint8_t g_ms100; // global to allow time set function to reset to zero
 #endif
 
 // Re-useable byte array to save having multiple buffers

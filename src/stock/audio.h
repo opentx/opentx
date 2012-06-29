@@ -116,6 +116,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_MENUS()       audioDefevent(AU_MENUS)
 #define AUDIO_WARNING1()    audioDefevent(AU_WARNING1)
 #define AUDIO_WARNING2()    audioDefevent(AU_WARNING2)
+#define AUDIO_TX_BATTERY_LOW() audioDefevent(AU_TX_BATTERY_LOW)
 #define AUDIO_ERROR()       audioDefevent(AU_ERROR)
 #define AUDIO_TIMER_30()    audioDefevent(AU_TIMER_30)
 #define AUDIO_TIMER_20()    audioDefevent(AU_TIMER_20)
