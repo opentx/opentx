@@ -117,7 +117,7 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
     uint8_t condense=0;
 
     if (mode & CONDENSED) {
-      *p++ = inv ? ~0 : 0;
+      *p = inv ? ~0 : 0;
       condense=1;
     }
 
@@ -127,10 +127,11 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
       uint8_t b = (i!=5 ? pgm_read_byte(q--) : 0);
       if (inv) b = ~b;
 
-      if (condense && i==4) {
-          /*condense the letter by skipping column 4 */
-          continue;
+      if (condense && i==1) {
+        /*condense the letter by skipping column 4 */
+        continue;
       }
+
       if (p<DISPLAY_END) {
         *p = (*p & (~(0xff << ym8))) + (b << ym8);
         if (ym8) { uint8_t *r = p + DISPLAY_W; if (r<DISPLAY_END) *r = (*r & (~(0xff >> (8-ym8)))) + (b >> (8-ym8)); }
