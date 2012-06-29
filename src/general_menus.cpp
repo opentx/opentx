@@ -792,7 +792,8 @@ void menuProcDiagAna(uint8_t event)
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = 1+FH+(i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
-    putsStrIdx(x, y, PSTR("A"), i+1, TWO_DOTS);
+    putsStrIdx(x, y, PSTR("A"), i+1);
+    lcd_putc(x+2*FWNUM, y, ':');
     lcd_outhex4(x+3*FW-1, y, anaIn(i));
     lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i+1)-1]*25/256);
   }

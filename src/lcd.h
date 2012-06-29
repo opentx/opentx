@@ -75,9 +75,6 @@
 /* telemetry flags */
 #define NO_UNIT       0x40
 
-/* other flags */
-#define TWO_DOTS      LEFT
-
 extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 extern uint8_t lcdLastPos;
 
