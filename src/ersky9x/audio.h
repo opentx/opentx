@@ -65,6 +65,7 @@ extern uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
 extern uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
 
 void initAudio();
+extern "C" void retrieveAvailableAudioFiles();
 
 void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
 void playFile(const char *filename);

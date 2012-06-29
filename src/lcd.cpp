@@ -69,14 +69,14 @@ uint8_t lcdLastPos;
 
 #if defined(PCBARM)
 uint8_t lcdLock;
-uint8_t lcdInputs;
+uint32_t lcdInputs;
 #endif
 
 void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
 {
   uint8_t *p = &displayBuf[ y / 8 * DISPLAY_W + x ];
 
-  const pm_uchar *q = &font_5x8_x20_x7f[ (c-0x20)*5];
+  const pm_uchar *q = &font_5x8_x20_x7f[(c-0x20)*5+4];
 
   bool inv = false;
   if (mode & BLINK) {
@@ -91,8 +91,7 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
     inv = true;
   }
 
-  if(mode & DBLSIZE)
-  {
+  if (mode & DBLSIZE) {
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
     q = &font_10x16_x20_x7f[((uint16_t)c-0x20)*20];
@@ -118,24 +117,32 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
     uint8_t condense=0;
 
     if (mode & CONDENSED) {
-        *p++ = inv ? ~0 : 0;
-        condense=1;
+      *p++ = inv ? ~0 : 0;
+      condense=1;
     }
 
     uint8_t ym8 = (y % 8);
+    p += 5;
     for (int8_t i=5; i>=0; i--) {
-        uint8_t b = (i>0 ? pgm_read_byte(q++) : 0);
-        if (inv) b = ~b;
-        
-        if (condense && i==4) {
-            /*condense the letter by skipping column 4 */
-            continue;
+      uint8_t b = (i!=5 ? pgm_read_byte(q--) : 0);
+      if (inv) b = ~b;
+
+      if (condense && i==4) {
+          /*condense the letter by skipping column 4 */
+          continue;
+      }
+      if (p<DISPLAY_END) {
+        *p = (*p & (~(0xff << ym8))) + (b << ym8);
+        if (ym8) { uint8_t *r = p + DISPLAY_W; if (r<DISPLAY_END) *r = (*r & (~(0xff >> (8-ym8)))) + (b >> (8-ym8)); }
+        if (mode & BOLD) {
+          if (inv)
+            *(p+1) &= (b << ym8);
+          else
+            *(p+1) |= (b << ym8);
+
         }
-        if (p<DISPLAY_END) {
-          *p = (*p & (~(0xff << ym8))) + (b << ym8);
-          if (ym8) { uint8_t *r = p + DISPLAY_W; if (r<DISPLAY_END) *r = (*r & (~(0xff >> (8-ym8)))) + (b >> (8-ym8)); }
-          p++;
-        }
+      }
+      p--;
     }
   }
 }
@@ -321,7 +328,8 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
   if (neg) lcd_putcAtt(x, y, '-', flags);
 
 #if defined(ROTARY_ENCODERS)
-  if (flags & SURROUNDED) {
+  // TODO review it!
+  if (flags & BOLD) {
     xn = lcdLastPos - x + 2;
     if (!neg) { x+=FW; xn-=FW; }
     lcd_rect(x-1, y-1, xn, 9, BLINK_ON_PHASE ? DOTTED : ~DOTTED);
@@ -460,6 +468,7 @@ void putsStrIdx(uint8_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t a
 {
   lcd_putsAtt(x, y, str, att & ~BSS); // TODO use something else than BSS for LEADING0
   lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
+  lcd_putsAtt(x, y, str, att & ~BSS); // TODO use something else than BSS for LEADING0
   if (att&TWO_DOTS) lcd_putc(lcdLastPos, y, ':');
 }
 

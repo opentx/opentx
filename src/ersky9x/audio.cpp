@@ -33,6 +33,83 @@
 
 #include "../open9x.h"
 
+const char * audioFilenames[] = {
+  "inactiv",
+  "lowbatt",
+  "error",
+  "keyup",
+  "keydown",
+  "menus",
+  "trim",
+  "warning1",
+  "warning2",
+  "warning3",
+  "midtrim",
+  "tada",
+  "midpot",
+  "mixwarn1",
+  "mixwarn2",
+  "mixwarn3",
+  "timerlt3",
+  "timer10",
+  "timer20",
+  "timer30"
+#if 0
+  AU_FRSKY_WARN1 = AU_FRSKY_FIRST,
+  AU_FRSKY_WARN2,
+  AU_FRSKY_CHEEP,
+  AU_FRSKY_RING,
+  AU_FRSKY_SCIFI,
+  AU_FRSKY_ROBOT,
+  AU_FRSKY_CHIRP,
+  AU_FRSKY_TADA,
+  AU_FRSKY_CRICKET,
+  AU_FRSKY_SIREN,
+  AU_FRSKY_ALARMC,
+  AU_FRSKY_RATATA,
+  AU_FRSKY_TICK,
+#endif
+};
+
+uint32_t sdAvailableAudioFiles;
+
+#define AUDIO_FILENAME_PATTERN "/9XSOUNDS/xxxxxxxx.wav"
+
+#if defined(SDCARD)
+void retrieveAvailableAudioFiles()
+{
+  FILINFO info;
+  char filename[] = AUDIO_FILENAME_PATTERN;
+
+  assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
+  assert(sizeof(sdAvailableAudioFiles)*8 > AU_FRSKY_FIRST);
+
+  sdAvailableAudioFiles = 0;
+
+  for (uint32_t i=0; i<AU_FRSKY_FIRST; i++) {
+    strcpy(filename+10/*TODO sizeof(...)*/, audioFilenames[i]);
+    strcat(filename+10, ".wav");
+    if (f_stat(filename, &info) == FR_OK)
+      sdAvailableAudioFiles |= ((uint32_t)1 << i);
+  }
+}
+
+inline bool isAudioFileAvailable(uint8_t i, char * filename)
+{
+  if (sdAvailableAudioFiles & ((uint32_t)1 << i)) {
+    strcpy(filename+10/*TODO sizeof(...)*/, audioFilenames[i]);
+    strcat(filename+10, ".wav");
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+#else
+#define isAudioFileAvailable(i, f) false
+#endif
+
+
 uint8_t audioState = 0;
 
 uint8_t t_queueRidx;
@@ -252,6 +329,8 @@ void playFile(const char *filename)
 
 void audioEvent(uint8_t e, uint8_t f)
 {
+  char filename[] = AUDIO_FILENAME_PATTERN;
+
 #ifdef HAPTIC
   haptic.event(e); //do this before audio to help sync timings
 #endif
@@ -262,7 +341,10 @@ void audioEvent(uint8_t e, uint8_t f)
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
-    if (e < AU_FRSKY_FIRST || !audioBusy()) {
+    if (e < AU_FRSKY_FIRST && isAudioFileAvailable(e, filename)) {
+      playFile(filename);
+    }
+    else if (e < AU_FRSKY_FIRST || !audioBusy()) {
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:

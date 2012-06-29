@@ -448,7 +448,6 @@ extern Key keys[NUM_KEYS];
 
 #define TRM_BASE TRM_LH_DWN
 
-#define _MSK_KEY_DBL       0x10
 #define _MSK_KEY_BREAK     0x20
 #define _MSK_KEY_REPT      0x40
 #define _MSK_KEY_LONG      0x80
@@ -457,7 +456,6 @@ extern Key keys[NUM_KEYS];
 #define EVT_KEY_FIRST(key) ((key)|_MSK_KEY_REPT|0x20)
 #define EVT_KEY_REPT(key)  ((key)|_MSK_KEY_REPT)
 #define EVT_KEY_LONG(key)  ((key)|_MSK_KEY_LONG)
-#define EVT_KEY_DBL(key)   ((key)|_MSK_KEY_DBL)
 #define EVT_ENTRY          (0xff - _MSK_KEY_REPT)
 #define EVT_ENTRY_UP       (0xfe - _MSK_KEY_REPT)
 #define EVT_KEY_MASK       (0x0f)
@@ -790,10 +788,31 @@ extern void incSubtrim(uint8_t idx, int16_t inc);
 extern void instantTrim();
 extern void moveTrimsToOffsets();
 
-extern uint16_t active_functions;
+#if defined(PCBARM)
+#define ACTIVE_EXPOS_TYPE uint32_t
+#define ACTIVE_MIXES_TYPE uint64_t
+#else
+#define ACTIVE_EXPOS_TYPE uint16_t
+#define ACTIVE_MIXES_TYPE uint32_t
+#endif
+
+extern ACTIVE_EXPOS_TYPE activeExpos;
+extern ACTIVE_MIXES_TYPE activeMixes;
+extern uint16_t activeFunctions;
+
+inline bool isExpoActive(uint8_t expo)
+{
+  return activeExpos & ((ACTIVE_EXPOS_TYPE)1 << expo);
+}
+
+inline bool isMixActive(uint8_t mix)
+{
+  return activeMixes & ((ACTIVE_MIXES_TYPE)1 << mix);
+}
+
 inline bool isFunctionActive(uint8_t func)
 {
-  return active_functions & (1 << (func-FUNC_TRAINER));
+  return activeFunctions & (1 << (func-FUNC_TRAINER));
 }
 
 #ifdef DISPLAY_USER_DATA

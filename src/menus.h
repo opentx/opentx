@@ -127,7 +127,7 @@ extern int8_t s_inflight_max;
 extern int8_t s_inflight_shift;
 extern uint8_t s_inflight_bitshift;
 #define PREPARE_INFLIGHT_BITFIELD(a) int8_t *bitfield = (a)
-#define INFLIGHT(val) (s_inflight_value==&val ? SURROUNDED : 0)
+#define INFLIGHT(val) (s_inflight_value==&val ? BOLD : 0)
 void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t i_max, int8_t i_shift, const pm_char *label, uint8_t bitshift=0);
 #define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, imin, imax, ishift, label) \
   checkInFlightIncDecModel(event, &var, imin, imax, ishift, label)

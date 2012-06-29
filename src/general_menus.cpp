@@ -215,14 +215,10 @@ void menuProcSetup(uint8_t event)
 #if defined(PCBARM)
       case ITEM_SETUP_SPEAKER_VOLUME:
       {
-        uint8_t current_volume = g_eeGeneral.speakerVolume;
         lcd_putsLeft(y, PSTR("Speaker Volume")); // TODO translations
-        lcd_outdezAtt(GENERAL_PARAM_OFS, y, current_volume, attr|LEFT);
-        if(attr) {
-          CHECK_INCDEC_GENVAR(event, current_volume, 0, NUM_VOL_LEVELS-1);
-          if (current_volume != g_eeGeneral.speakerVolume) {
-            set_volume(g_eeGeneral.speakerVolume = current_volume);
-          }
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerVolume, attr|LEFT);
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerVolume, 0, NUM_VOL_LEVELS-1);
         }
         break;
       }
@@ -538,7 +534,7 @@ void menuProcSd(uint8_t event)
   fno.lfname = lfn;
   fno.lfsize = sizeof(lfn);
 #else
-  char lfn[32];
+  char lfn[SD_SCREEN_FILE_LENGTH];
 #endif
 
   uint8_t _event = event;
@@ -552,10 +548,6 @@ void menuProcSd(uint8_t event)
 
   switch(event) {
     case EVT_ENTRY:
-#if defined(PCBV4)
-      // TODO as ARM
-      f_mount(0, &g_FATFS_Obj);
-#endif
       f_chdir("/");
       reusableBuffer.sd.offset = 255;
       break;

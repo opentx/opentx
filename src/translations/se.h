@@ -63,15 +63,20 @@
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
 #define LEN_CURVMODES    "\005"
-#define TR_CURVMODES     "EDIT ""PRSET""A.THR"
+#define TR_CURVMODES     "EDIT ""PRSET"
 
 #define LEN_EXPLABELS    "\006"
+#ifdef PCBARM
+#define TR_EXPLABEL_NAME "Name  "
+#else
+#define TR_EXPLABEL_NAME
+#endif
 #ifdef FLIGHT_PHASES
 #define TR_EXPLABEL_FP   "Fas   "
 #else
 #define TR_EXPLABEL_FP
 #endif
-#define TR_EXPLABELS     "Vikt  ""Expo  ""Kurva " TR_EXPLABEL_FP "Brytar""N\201r   ""\0"
+#define TR_EXPLABELS     TR_EXPLABEL_NAME "Vikt  ""Expo  ""Kurva " TR_EXPLABEL_FP "Brytar""N\201r   ""\0"
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Addera  ""F\202rst\201rk""Ers\201tt\0"
@@ -101,7 +106,18 @@
 #else
 #define TR_HAPTIC        "[Vibrator]\0  "
 #endif
-#if defined(PCBV4)
+#if defined(PCBARM)
+#if defined(SDCARD)
+#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_PLAY_TRACK    "Play Track\0  "
+#define TR_PLAY_VALUE    "[Play Value]\0"
+#else
+#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_PLAY_TRACK    "[Play Track]\0"
+#define TR_PLAY_VALUE    "[Play Value]\0"
+#endif
+#define TR_FSW_VOLUME    "Volume\0      "
+#elif defined(PCBV4)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SDCARD Loggar"
 #else
@@ -114,17 +130,19 @@
 #define TR_PLAY_TRACK    "[Spela Sp\200r]\0"
 #define TR_PLAY_VALUE    "[Spela V\201rde]\0"
 #endif
+#define TR_FSW_VOLUME
 #else
 #define TR_SDCLOGS
 #define TR_PLAY_TRACK
 #define TR_PLAY_VALUE
+#define TR_FSW_VOLUME
 #endif
 #ifdef DEBUG
 #define TR_TEST          "Test\0        "
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kra\0       ""Trainer\0     ""S\201tt Trim    " TR_SOUND TR_HAPTIC "Nollst\201ll    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_TEST
+#define TR_VFSWFUNC      "S\201kra\0       ""Trainer\0     ""S\201tt Trim    " TR_SOUND TR_HAPTIC "Nollst\201ll    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Allt  ""Telem."
@@ -133,7 +151,7 @@
 #define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Curr""Cnsp""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Cur+""Acc\0""Tid\0"
+#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Volt""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Cur+""Acc\0""Tid\0"
 
 #ifdef IMPERIAL_UNITS
 #define LENGTH_UNIT      "fot"
@@ -144,7 +162,7 @@
 #endif
 
 #define LEN_VTELEMUNIT   "\003"
-#define TR_VTELEMUNIT    "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh"
+#define TR_VTELEMUNIT    "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
 #define STR_V            (STR_VTELEMUNIT+1)
 #define STR_A            (STR_VTELEMUNIT+4)
 
@@ -164,7 +182,7 @@
 #endif
 
 #define LEN_CURRENTSRC   "\003"
-#define TR_CURRENTSRC    "Hub""A1\0""A2\0"
+#define TR_CURRENTSRC    "---""Hub""A1\0""A2\0"
 
 #define LEN_VARIOSRC     "\006"
 #define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2\0"
@@ -388,6 +406,7 @@
 #define TR_SHUTDOWN      "ST\204NGER AV"
 #define TR_BATT_CALIB    "Kalib. Batteri"
 #define TR_CURRENT_CALIB "Kalib. Sp\201nning"
+#define TR_VOLTAGE       "Voltage"
 #define TR_CURRENT       "Sp\201nning"
 #define TR_SELECT_MODEL  "V\201lj Modell"
 #define TR_CREATE_MODEL  "Skapa Modell"

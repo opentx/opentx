@@ -225,53 +225,48 @@ void init_twi()
   TWI0->TWI_CR = TWI_CR_MSEN | TWI_CR_SVDIS ;		// Master mode enable
   TWI0->TWI_MMR = 0x002F0000 ;		// Device 5E (>>1) and master is writing
   NVIC_EnableIRQ(TWI0_IRQn) ;
-  set_volume( 2 ) ;
+  setVolume(2) ;
 }
 
-static int16_t Volume_required ;
+static int16_t volumeRequiredIrq ;
 static const uint8_t Volume_scale[NUM_VOL_LEVELS] = 
 {
     0,  2,  4,   6,   8,  10,  13,  17,  22,  27,  33,  40,
     64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
 } ;
 
-void set_volume( register uint8_t volume )
+void setVolume( register uint8_t volume )
 {
 //	PMC->PMC_PCER0 |= 0x00080000L ;		// Enable peripheral clock to TWI0
 	
-	if ( volume >= NUM_VOL_LEVELS )
-	{
-		volume = NUM_VOL_LEVELS - 1 ;		
-	}
-	volume = Volume_scale[volume] ;
+  if (volume >= NUM_VOL_LEVELS) {
+    volume = NUM_VOL_LEVELS - 1 ;
+  }
 
-	__disable_irq() ;
-	if ( TWI0->TWI_IMR & TWI_IMR_TXCOMP )
-	{
-		Volume_required = volume ;
-	}
-	else
-	{
-		TWI0->TWI_THR = volume ;		// Send data
-		TWI0->TWI_CR = TWI_CR_STOP ;		// Stop Tx
-		TWI0->TWI_IER = TWI_IER_TXCOMP ;
+  volume = Volume_scale[volume] ;
 
-	}
-	__enable_irq() ;
+  __disable_irq() ;
+  if ( TWI0->TWI_IMR & TWI_IMR_TXCOMP ) {
+    volumeRequiredIrq = volume ;
+  }
+  else {
+    TWI0->TWI_THR = volume ;		// Send data
+    TWI0->TWI_CR = TWI_CR_STOP ;	// Stop Tx
+    TWI0->TWI_IER = TWI_IER_TXCOMP ;
+  }
+  __enable_irq() ;
 }
 
 extern "C" void TWI0_IRQHandler()
 {
-	if ( Volume_required >= 0 )
-	{
-		TWI0->TWI_THR = Volume_required ;		// Send data
-		Volume_required = -1 ;
-		TWI0->TWI_CR = TWI_CR_STOP ;		// Stop Tx
-	}
-	else
-	{
-		TWI0->TWI_IDR = TWI_IDR_TXCOMP ;
-	}
+  if ( volumeRequiredIrq >= 0 ) {
+    TWI0->TWI_THR = volumeRequiredIrq ;		// Send data
+    volumeRequiredIrq = -1 ;
+    TWI0->TWI_CR = TWI_CR_STOP ;		// Stop Tx
+  }
+  else {
+    TWI0->TWI_IDR = TWI_IDR_TXCOMP ;
+  }
 }
 
 

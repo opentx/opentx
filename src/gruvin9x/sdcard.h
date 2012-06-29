@@ -42,10 +42,20 @@
 #include "rtc.h"
 #endif
 
-#define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
-#define LOGS_EXT     ".CSV"
+
+#ifdef SIMU
+#define MODELS_PATH  "."
+#define LOGS_PATH    "."
+#define SOUNDS_PATH  "."
+#else
 #define MODELS_PATH  "/9XMODELS"
+#define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
+#define SOUNDS_PATH  "/9XSOUNDS" // no trailing slash = important
+#endif
+
 #define MODELS_EXT   ".bin"
+#define LOGS_EXT     ".csv"
+#define SOUNDS_EXT   ".wav"
 
 extern char g_logFilename[21]; // "/9XLOGS/M00_000.CSV\0" max required length = 21
 extern FATFS g_FATFS_Obj;

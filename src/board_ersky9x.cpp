@@ -754,45 +754,28 @@ uint32_t read_keys()
   x <<= 1;
 
 #ifdef REVB
-  y = x & 0x00000020; // RIGHT
-  if ( x & 0x00000004 )
-  {
-    y |= 0x00000010; // UP
-  }
-  if ( x & 0x00000010 )
-  {
-    y |= 0x00000040; // LEFT
-  }
-  if ( x & 0x00000040 )
-  {
-    y |= 0x00000008; // DOWN
-  }
+  y = (x & 0x00000020); // RIGHT
+  if (x & 0x00000004)
+    y |= 0x10; // UP
+  if (x & 0x00000010)
+    y |= 0x40; // LEFT
+  if (x & 0x00000040)
+    y |= 0x08; // DOWN
+  if (x & 0x02000000)
+    y |= 0x04; // EXIT
+  if (PIOB->PIO_PDSR & 0x000000020)
+    y |= 0x02; // MENU
 #else
-
-  y = x & 0x00000060;
-  if (x & 0x00000008) {
-    y |= 0x00000010;
-  }
-  if (x & 0x00000010) {
-    y |= 0x00000008;
-  }
-#endif
-#ifdef REVB
-  if ( PIOC->PIO_PDSR & 0x01000000 )
-#else
+  y = (x & 0x00000060);
+  if (x & 0x00000008)
+    y |= 0x10;
+  if (x & 0x00000010)
+    y |= 0x08;
   if (PIOA->PIO_PDSR & 0x80000000)
-#endif
-  {
-    y |= 4; // EXIT
-  }
-#ifdef REVB
-  if ( PIOB->PIO_PDSR & 0x000000020 )
-#else
+    y |= 0x04; // EXIT
   if (PIOB->PIO_PDSR & 0x000000040)
+    y |= 0x02; // MENU
 #endif
-  {
-    y |= 2; // MENU
-  }
 
   return y ;
 }

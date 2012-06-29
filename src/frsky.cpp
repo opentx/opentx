@@ -630,8 +630,23 @@ void check_frsky()
   }
 #endif
 
-
-  frskyData.currentPrescale += (g_model.frsky.currentSource == 0 ? frskyData.hub.current : frskyData.analog[g_model.frsky.currentSource-1].value);
+  uint16_t current = frskyData.hub.current;
+  if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1) {
+    uint8_t channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
+    current = applyChannelRatio(channel, frskyData.analog[channel].value);
+  }
+  frskyData.currentPrescale += current;
+  uint16_t voltage = 0;
+  if (g_model.frsky.voltsSource >= FRSKY_SOURCE_A1) {
+    uint8_t channel = g_model.frsky.voltsSource - FRSKY_SOURCE_A1;
+    voltage = applyChannelRatio(channel, frskyData.analog[channel].value);
+  }
+  else {
+    for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
+      voltage += frskyData.hub.cellVolts[i];
+  }
+  frskyData.voltage = voltage;
+  frskyData.power = current * voltage / 1000;
   if (frskyData.currentPrescale >= currentConsumptionBoundary) {
     frskyData.currentConsumption += 1;
     frskyData.currentPrescale -= currentConsumptionBoundary;
@@ -792,8 +807,8 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
 void frskyEvalCurrentConsumptionBoundary()
 {
   currentConsumptionBoundary = 3600;
-  if (g_model.frsky.currentSource > CURRENT_SOURCE_HUB) {
-    uint16_t divider = (g_model.frsky.channels[g_model.frsky.currentSource-1].ratio << g_model.frsky.channels[g_model.frsky.currentSource-1].multiplier);
+  if (g_model.frsky.currentSource > FRSKY_SOURCE_HUB) {
+    uint16_t divider = (g_model.frsky.channels[g_model.frsky.currentSource-FRSKY_SOURCE_A1].ratio << g_model.frsky.channels[g_model.frsky.currentSource-FRSKY_SOURCE_A1].multiplier);
     if (divider > 5) {
       currentConsumptionBoundary = 360000L / divider;
     }
@@ -886,6 +901,13 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
     case TELEM_DIST:
       result = value * 8;
       break;
+    case TELEM_CURRENT:
+    case TELEM_POWER:
+      result = value * 5;
+      break;
+    case TELEM_CONSUMPTION:
+      result = value * 20;
+      break;
     default:
       result = value;
       break;
@@ -948,6 +970,10 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 
     case TELEM_CONSUMPTION-1:
       putsTelemetryValue(x, y, val, UNIT_MAH, att);
+      break;
+
+    case TELEM_POWER-1:
+      putsTelemetryValue(x, y, val, UNIT_WATTS, att);
       break;
 
     case TELEM_ACCx-1:
@@ -1066,9 +1092,13 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 
 uint8_t getTelemCustomField(uint8_t line, uint8_t col)
 {
+#if defined(PCBARM)
+  return g_model.frsky.lines[2*line+col];
+#else
   uint8_t result = (col==0 ? (g_model.frskyLines[line] & 0x0f) : ((g_model.frskyLines[line] & 0xf0) / 16));
   result += (((g_model.frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
   return result;
+#endif
 }
 
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
@@ -1222,16 +1252,16 @@ void menuProcFrsky(uint8_t event)
           putsTelemetryChannel(3*FW+6*FW+4, y, i+MAX_TIMERS, frskyData.analog[i].value, blink|DBLSIZE);
           lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, i+MAX_TIMERS, frskyData.analog[i].min, NO_UNIT);
           lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, i+MAX_TIMERS, frskyData.analog[i].max, NO_UNIT);
-          y += (frskyData.currentConsumption > 0) ? 2*FH : 3*FH;
+          y += (g_model.frsky.currentSource == FRSKY_SOURCE_NONE) ? 3*FH : 2*FH;
         }
         else if (i > 0) {
           y += FH;
         }
       }
-      if (frskyData.currentConsumption > 0) {
-        lcd_putsLeft(y, PSTR("Cur"));
-        if (g_model.frsky.currentSource == CURRENT_SOURCE_HUB)
-          putsTelemetryChannel(3*FW+4+FW, y, TELEM_CURRENT-1, frskyData.hub.current, LEFT|DBLSIZE);
+      if (g_model.frsky.currentSource != FRSKY_SOURCE_NONE) {
+        if (g_model.frsky.currentSource == FRSKY_SOURCE_HUB)
+          putsTelemetryChannel(2, y, TELEM_CURRENT-1, frskyData.hub.current, LEFT|DBLSIZE);
+        putsTelemetryChannel(3*FW+4+4*FW+FW, y, TELEM_POWER-1, frskyData.power, DBLSIZE);
         putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, y, TELEM_CONSUMPTION-1, frskyData.currentConsumption, DBLSIZE);
       }
 #ifdef FRSKY_HUB

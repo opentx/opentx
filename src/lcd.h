@@ -42,11 +42,11 @@
 
 /* lcd common flags */
 #define BLINK         0x01
-#define SURROUNDED    0x40
 
 /* lcd text flags */
 #define INVERS        0x02
 #define DBLSIZE       0x04
+#define BOLD          0x40
 
 /* lcd putc flags */
 #define CONDENSED     0x08
@@ -83,7 +83,7 @@ extern uint8_t lcdLastPos;
 
 #if defined(PCBARM)
 extern uint8_t lcdLock ;
-extern uint8_t lcdInputs ;
+extern uint32_t lcdInputs ;
 #endif
 
 extern void lcd_putc(uint8_t x,uint8_t y,const unsigned char c);

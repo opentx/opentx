@@ -278,6 +278,10 @@ namespace simu {
 #include <dirent.h>
 }
 #include "FatFs/ff.h"
+FRESULT f_stat (const TCHAR*, FILINFO*)
+{
+  return FR_OK;
+}
 
 FRESULT f_mount (BYTE, FATFS*)
 {

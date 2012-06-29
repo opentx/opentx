@@ -72,29 +72,51 @@ int8_t  checkIncDec_Ret;
 int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
 {
   int16_t newval = val;
-  uint8_t kpl=KEY_RIGHT, kmi=KEY_LEFT, kother = -1;
-
-  if (event & _MSK_KEY_DBL) {
-    uint8_t hlp=kpl;
-    kpl=kmi;
-    kmi=hlp;
-    event=EVT_KEY_FIRST(EVT_KEY_MASK & event);
+  
+#if 1
+  uint8_t kother = -1;
+#else
+  if (keyState(KEY_RIGHT) && keyState(KEY_LEFT)) {
+    newval = -val;
+    killEvents(KEY_LEFT);
+    killEvents(KEY_RIGHT);
   }
-  if (event==EVT_KEY_FIRST(kpl) || event== EVT_KEY_REPT(kpl) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event== EVT_KEY_REPT(KEY_UP))) ) {
+  else if (s_editMode && keyState(KEY_RIGHT) && keyState(KEY_UP)) {
+    newval = i_max;
+    killEvents(KEY_RIGHT);
+    killEvents(KEY_UP);
+  }
+  else if (s_editMode && keyState(KEY_LEFT) && keyState(KEY_DOWN)) {
+    newval = i_min;
+    killEvents(KEY_LEFT);
+    killEvents(KEY_DOWN);
+  }
+  else if (s_editMode && keyState(KEY_UP) && keyState(KEY_DOWN)) {
+    newval = (i_min + i_max) / 2;
+    killEvents(KEY_UP);
+    killEvents(KEY_DOWN);
+  }
+  else 
+#endif
+  
+  if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
     newval++;
     AUDIO_KEYPAD_UP();
-    kother=kmi;
+    kother = KEY_LEFT;
   }
-  else if (event==EVT_KEY_FIRST(kmi) || event== EVT_KEY_REPT(kmi) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_DOWN) || event== EVT_KEY_REPT(KEY_DOWN))) ) {
+  else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
     newval--;
     AUDIO_KEYPAD_DOWN();
-    kother=kpl;
+    kother = KEY_RIGHT;
   }
+
+#if 1
   if ((kother != (uint8_t)-1) && keyState((EnumKeys)kother)) {
-    newval=-val;
-    killEvents(kmi);
-    killEvents(kpl);
+    newval = -val;
+    killEvents(KEY_RIGHT);
+    killEvents(KEY_LEFT);
   }
+#endif
   if (i_min==0 && i_max==1 && event==EVT_KEY_FIRST(KEY_MENU)) {
     s_editMode = 0;
     newval=!val;

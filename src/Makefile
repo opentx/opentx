@@ -334,11 +334,14 @@ ifeq ($(PCB), ARM)
   BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
   CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp
+  
+  ifeq ($(SDCARD), YES)
+    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
+  endif
 endif
 
 ifeq ($(PCB), V4)

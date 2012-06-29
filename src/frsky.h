@@ -158,6 +158,8 @@ struct FrskyData {
 #endif
   uint16_t             currentConsumption;
   uint16_t             currentPrescale;
+  uint16_t             voltage;
+  uint16_t             power;
 };
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)

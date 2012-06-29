@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef eeprom_h
-#define eeprom_h
+#ifndef myeeprom_h
+#define myeeprom_h
 
 #include <inttypes.h>
 
@@ -49,7 +49,7 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBARM)
-#define EEPROM_VER       209
+#define EEPROM_VER       210
 #elif defined(PCBV4)
 #define EEPROM_VER       209
 #else
@@ -163,6 +163,8 @@ PACK(typedef struct t_ExpoData {
   int8_t  phase;        // if negPhase is 0: 0=normal, 5=FP4    if negPhase is 1: 5=!FP4
   uint8_t weight;
   int8_t  expo;
+  char    name[6];
+  uint8_t spare[4];
 }) ExpoData;
 #else
 PACK(typedef struct t_ExpoData {
@@ -262,6 +264,8 @@ PACK(typedef struct t_MixData {
   int8_t  differential;
   int8_t  carryTrim;
   int8_t  sOffset;
+  char    name[6];
+  uint8_t spare[4];
 }) MixData;
 #else
 #define MAX_DELAY   15 /* 7.5 seconds */
@@ -304,12 +308,13 @@ enum Functions {
   FUNC_HAPTIC,
   FUNC_RESET,
   FUNC_VARIO,
-#if defined(SOMO)
+#if !defined(PCBSTD)
   FUNC_PLAY_TRACK,
   FUNC_PLAY_VALUE,
-#endif
-#if defined(PCBV4)
   FUNC_LOGS,
+#endif
+#if defined(PCBARM)
+  FUNC_VOLUME,
 #endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
@@ -317,11 +322,24 @@ enum Functions {
   FUNC_MAX
 };
 
+#if defined(PCBARM)
+PACK(typedef struct t_FuncSwData { // Function Switches data
+  int8_t  swtch; //input
+  uint8_t func;
+  union {
+    uint32_t value;
+    char     name[6];
+  } param;
+}) FuncSwData;
+#define FSW_PARAM(p) ((p)->param.value)
+#else
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
   uint8_t func;
   uint8_t param;
 }) FuncSwData;
+#define FSW_PARAM(p) ((p)->param)
+#endif
 
 enum TelemetryUnit {
   UNIT_VOLTS,
@@ -334,6 +352,7 @@ enum TelemetryUnit {
   UNIT_PERCENT,
   UNIT_MILLIAMPS,
   UNIT_MAH,
+  UNIT_WATTS,
   UNIT_MAX,
   UNIT_FEET,
   UNIT_KTS
@@ -366,8 +385,10 @@ enum TelemetrySource {
   TELEM_DIST,
   TELEM_GPSALT,
   TELEM_CELL,
+  TELEM_VOLTAGE,
   TELEM_CURRENT,
   TELEM_CONSUMPTION,
+  TELEM_POWER,
   TELEM_ACCx,
   TELEM_ACCy,
   TELEM_ACCz,
@@ -387,7 +408,7 @@ enum TelemetrySource {
   TELEM_GPS_TIME,
   TELEM_BAR_MAX = TELEM_CELL,
   TELEM_NOUSR_BAR_MAX = TELEM_RSSI_RX,
-  TELEM_CSW_MAX = TELEM_CONSUMPTION,
+  TELEM_CSW_MAX = TELEM_POWER,
   TELEM_NOUSR_CSW_MAX = TELEM_RSSI_RX,
   TELEM_DISPLAY_MAX = TELEM_MAX_CURRENT,
   TELEM_STATUS_MAX = TELEM_GPS_TIME
@@ -402,11 +423,19 @@ enum VarioSource {
   VARIO_SOURCE_LAST
 };
 
+#if defined(PCBARM)
 PACK(typedef struct t_FrSkyBarData {
-  uint16_t   source:4;       // TODO modification in next EEPROM
+  uint8_t    source;
+  uint8_t    barMin;           // minimum for bar display
+  uint8_t    barMax;           // ditto for max display (would usually = ratio)
+}) FrSkyBarData;
+#else
+PACK(typedef struct t_FrSkyBarData {
+  uint16_t   source:4;           // TODO modification in next EEPROM
   uint16_t   barMin:6;           // minimum for bar display
   uint16_t   barMax:6;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
+#endif
 
 enum FrskyUsrProtocols {
   USR_PROTO_NONE,
@@ -414,20 +443,32 @@ enum FrskyUsrProtocols {
   USR_PROTO_WS_HOW_HIGH
 };
 
-enum CurrentSource {
-  CURRENT_SOURCE_HUB,
-  CURRENT_SOURCE_A1,
-  CURRENT_SOURCE_A2
+enum FrskySource {
+  FRSKY_SOURCE_NONE,
+  FRSKY_SOURCE_HUB,
+  FRSKY_SOURCE_A1,
+  FRSKY_SOURCE_A2
 };
+
+#if defined(PCBARM)
+#define CUSTOM_TELEMETRY_VIEW \
+  uint8_t lines[4*2*2]; \
+  uint8_t spare[4]
+#else
+#define CUSTOM_TELEMETRY_VIEW
+#endif
 
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
-  uint8_t usrProto:3; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
-  uint8_t imperial:1;
+  uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint8_t voltsSource:2;
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint8_t currentSource:2;
   FrSkyBarData bars[4];
   FrSkyRSSIAlarm rssiAlarms[2];
+
+  CUSTOM_TELEMETRY_VIEW;
+
 }) FrSkyData;
 
 #ifdef MAVLINK
@@ -574,6 +615,15 @@ enum Dsm2Variants {
 #define BeepANACenter uint8_t
 #endif
 
+#if !defined(PCBARM)
+// TODO modification in next EEPROM
+#define TEMP_CUSTOM_TELEMETRY_VIEW \
+  uint8_t   frskyLines[4]; \
+  uint16_t  frskyLinesXtra
+#else
+#define TEMP_CUSTOM_TELEMETRY_VIEW
+#endif
+
 PACK(typedef struct t_ModelData {
   char      name[10];             // must be first for eeLoadModelName
   TimerData timers[MAX_TIMERS];
@@ -603,8 +653,9 @@ PACK(typedef struct t_ModelData {
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
-  uint8_t   frskyLines[4];    // TODO modification in next EEPROM
-  uint16_t  frskyLinesXtra;
+
+  TEMP_CUSTOM_TELEMETRY_VIEW;
+
   int8_t    servoCenter[NUM_CHNOUT];
   
   // TODO:temporary place, need to move to frskydata
@@ -613,6 +664,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   varioSpeedDownMin;
 
   uint8_t switchWarningStates;
+
   ROTARY_ENCODER_ARRAY_EXTRA;
 }) ModelData;
 

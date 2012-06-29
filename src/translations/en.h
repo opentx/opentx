@@ -68,15 +68,20 @@
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
 #define LEN_CURVMODES    "\005"
-#define TR_CURVMODES     "EDIT ""PRSET""A.THR"
+#define TR_CURVMODES     "EDIT ""PRSET"
 
 #define LEN_EXPLABELS    "\006"
+#ifdef PCBARM
+#define TR_EXPLABEL_NAME "Name  "
+#else
+#define TR_EXPLABEL_NAME
+#endif
 #ifdef FLIGHT_PHASES
 #define TR_EXPLABEL_FP   "Phase "
 #else
 #define TR_EXPLABEL_FP
 #endif
-#define TR_EXPLABELS     "Weight""Expo  ""Curve " TR_EXPLABEL_FP "Swtch ""Side\0 ""\0"
+#define TR_EXPLABELS     TR_EXPLABEL_NAME "Weight""Expo  ""Curve " TR_EXPLABEL_FP "Swtch ""Side\0 ""\0"
 
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Add     ""Multiply""Replace "
@@ -88,13 +93,13 @@
 #define TR_VMIXTRIMS     "OFF""ON ""Rud""Ele""Thr""Ail"
 
 #define LEN_VCSWFUNC     "\007"
-#define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
+#define TR_VCSWFUNC      "----\0  ""v>ofs\0 ""v<ofs\0 ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)
-#define TR_VVARIO         "Vario        "
+#define TR_VVARIO        "Vario        "
 #else
-#define TR_VVARIO         "[Vario]      "
+#define TR_VVARIO        "[Vario]      "
 #endif
 #if defined(AUDIO)
 #define TR_SOUND         "Play Sound\0  "
@@ -106,7 +111,18 @@
 #else
 #define TR_HAPTIC        "[Haptic]\0    "
 #endif
-#if defined(PCBV4)
+#if defined(PCBARM)
+#if defined(SDCARD)
+#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_PLAY_TRACK    "Play Track\0  "
+#define TR_PLAY_VALUE    "[Play Value]\0"
+#else
+#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_PLAY_TRACK    "[Play Track]\0"
+#define TR_PLAY_VALUE    "[Play Value]\0"
+#endif
+#define TR_FSW_VOLUME    "Volume\0      "
+#elif defined(PCBV4)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SDCARD Logs  "
 #else
@@ -119,10 +135,12 @@
 #define TR_PLAY_TRACK    "[Play Track]\0"
 #define TR_PLAY_VALUE    "[Play Value]\0"
 #endif
+#define TR_FSW_VOLUME
 #else
 #define TR_SDCLOGS
 #define TR_PLAY_TRACK
 #define TR_PLAY_VALUE
+#define TR_FSW_VOLUME
 
 #endif
 #ifdef DEBUG
@@ -130,7 +148,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_TEST
+#define TR_VFSWFUNC      "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
@@ -139,7 +157,7 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Curr""Cnsp""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
+#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Volt""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
 
 #ifdef IMPERIAL_UNITS
 #define LENGTH_UNIT "ft\0"
@@ -150,7 +168,7 @@
 #endif
 
 #define LEN_VTELEMUNIT   "\003"
-#define TR_VTELEMUNIT    "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh"
+#define TR_VTELEMUNIT    "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
 #define STR_V            (STR_VTELEMUNIT+1)
 #define STR_A            (STR_VTELEMUNIT+4)
 
@@ -170,7 +188,7 @@
 #endif
 
 #define LEN_CURRENTSRC   "\003"
-#define TR_CURRENTSRC    "Hub""A1\0""A2\0"
+#define TR_CURRENTSRC    "---""Hub""A1\0""A2\0"
 
 #define LEN_VARIOSRC     "\006"
 #define TR_VARIOSRC      "BaroV1""BaroV2""A1\0   ""A2\0"
@@ -193,9 +211,9 @@
 
 #define LEN_VSWITCHES    "\003"
 #if defined(PCBARM)
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC""SWD""SWE""SWF""SWG""SWH""SWI""SWJ""SWK""SWL""SWM""SWN""SWO""SWP""SWQ""SWR""SWS""SWT""SWU""SWV""SWW"
+#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"
 #else
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
+#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
 #endif
 
 #define LEN_VSRCRAW      "\004"
@@ -391,6 +409,7 @@
 #define TR_SHUTDOWN      "SHUTTING DOWN"
 #define TR_BATT_CALIB    "Battery Calib"
 #define TR_CURRENT_CALIB "Current Calib"
+#define TR_VOLTAGE       "Voltage"
 #define TR_CURRENT       "Current"
 #define TR_SELECT_MODEL  "Select Model"
 #define TR_CREATE_MODEL  "Create Model"

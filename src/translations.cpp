@@ -304,6 +304,7 @@ const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 const pm_char STR_BATT_CALIB[] PROGMEM = TR_BATT_CALIB;
 
 #if defined(PCBARM) || defined(FRSKY)
+const pm_char STR_VOLTAGE[] PROGMEM = TR_VOLTAGE;
 const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
 #endif
 

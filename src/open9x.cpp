@@ -240,16 +240,19 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
   int16_t erg;
 
   x+=RESXu;
-  if(x < 0) {
+  if (x < 0) {
     erg = (int16_t)crv[0] * (RESX/4);
-  } else if(x >= (RESX*2)) {
+  }
+  else if (x >= (RESX*2)) {
     erg = (int16_t)crv[(cv9 ? 8 : 4)] * (RESX/4);
-  } else {
+  }
+  else {
     int16_t a,dx;
-    if(cv9){
+    if (cv9) {
       a   = (uint16_t)x / D9;
       dx  =((uint16_t)x % D9) * 2;
-    } else {
+    }
+    else {
       a   = (uint16_t)x / D5;
       dx  = (uint16_t)x % D5;
     }
@@ -302,16 +305,17 @@ uint16_t expou(uint16_t x, uint16_t k)
 
 int16_t expo(int16_t x, int16_t k)
 {
-  if(k == 0) return x;
-  int16_t   y;
-  bool    neg =  x < 0;
-  if(neg)   x = -x;
-  if(k<0){
-    y = RESXu-expou(RESXu-x,-k);
-  }else{
-    y = expou(x,k);
+  if (k == 0) return x;
+  int16_t y;
+  bool neg =  x < 0;
+  if (neg) x = -x;
+  if (k<0) {
+    y = RESXu-expou(RESXu-x, -k);
   }
-  return neg? -y:y;
+  else {
+    y = expou(x, k);
+  }
+  return neg? -y : y;
 }
 
 #ifdef EXTENDED_EXPO
@@ -350,6 +354,7 @@ int16_t  Expo::expo(int16_t x)
 }
 #endif
 
+ACTIVE_EXPOS_TYPE activeExpos;
 
 void applyExpos(int16_t *anas)
 {
@@ -358,6 +363,7 @@ void applyExpos(int16_t *anas)
 
   uint8_t phase = s_perout_flight_phase + 1;
   int8_t cur_chn = -1;
+  activeExpos = 0;
 
   for (uint8_t i=0; i<MAX_EXPOS; i++) {
     ExpoData &ed = g_model.expoData[i];
@@ -387,6 +393,7 @@ void applyExpos(int16_t *anas)
       }
     }
     if (getSwitch(ed.swtch, 1)) {
+      activeExpos |= ((ACTIVE_EXPOS_TYPE)1 << i);
       int16_t v = anas2[ed.chn];
       if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
         cur_chn = ed.chn;
@@ -472,8 +479,10 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyData.hub.gpsDistance;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_GPSALT) return frskyData.hub.gpsAltitude_bp;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyData.hub.minCellVolts * 2;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VOLTAGE) return (int16_t)frskyData.voltage;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CONSUMPTION) return frskyData.currentConsumption;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_POWER) return frskyData.power;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyData.hub.accelX;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyData.hub.accelY;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyData.hub.accelZ;
@@ -800,13 +809,17 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 
 void clearKeyEvents()
 {
-#ifdef SIMU
-    while (keyDown() && main_thread_running) sleep(1/*ms*/);
-#else
-    while (keyDown()) WDT_RESET_STOCK();  // loop until all keys are up
+#if defined(PCBARM) && !defined(SIMU)
+  CoTickDelay(100);  // 200ms
 #endif
-    memset(keys, 0, sizeof(keys));
-    putEvent(0);
+
+#ifdef SIMU
+  while (keyDown() && main_thread_running) sleep(1/*ms*/);
+#else
+  while (keyDown()) WDT_RESET_STOCK();  // loop until all keys are up
+#endif
+  memset(keys, 0, sizeof(keys));
+  putEvent(0);
 }
 
 #define INAC_DEVISOR 256   // Bypass splash screen with stick movement
@@ -827,60 +840,68 @@ void checkBacklight()
 }
 
 #ifdef SPLASH
+
+#ifdef DSM2
+#define SPLASH_NEEDED() (g_model.protocol != PROTO_DSM2 && !g_eeGeneral.disableSplashScreen)
+#else
+#define SPLASH_NEEDED() (!g_eeGeneral.disableSplashScreen)
+#endif
+
 void doSplash()
 {
-    if(!g_eeGeneral.disableSplashScreen)
-    {
-      lcd_clear();
-      lcd_img(0, 0, splash_lbm, 0, 0);
-      refreshDisplay();
+  if (SPLASH_NEEDED()) {
+    lcd_clear();
+    lcd_img(0, 0, splash_lbm, 0, 0);
+    refreshDisplay();
 
 #if defined(PCBSTD)
-      lcdSetRefVolt(g_eeGeneral.contrast);
+    lcdSetRefVolt(g_eeGeneral.contrast);
 #else
-      uint16_t curTime = get_tmr10ms() + 6;
-      uint8_t contrast = 10;
-      lcdSetRefVolt(contrast);
+    uint16_t curTime = get_tmr10ms() + 6;
+    uint8_t contrast = 10;
+    lcdSetRefVolt(contrast);
 #endif
 
-      clearKeyEvents();
+    clearKeyEvents();
 
 #ifndef SIMU
-      for(uint8_t i=0; i<32; i++)
-        getADC_filt(); // init ADC array
+    for(uint8_t i=0; i<32; i++)
+      getADC_filt(); // init ADC array
 #endif
 
-      uint16_t inacSum = stickMoveValue();
+    uint16_t inacSum = stickMoveValue();
 
-      uint16_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
-      while (tgtime != get_tmr10ms())
-      {
+    uint16_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
+    while (tgtime != get_tmr10ms())
+    {
 #ifdef SIMU
-        if (!main_thread_running) return;
-        sleep(1/*ms*/);
+      if (!main_thread_running) return;
+      sleep(1/*ms*/);
 #else
-        getADC_filt();
+      getADC_filt();
 #endif
-        uint16_t tsum = stickMoveValue();
+      uint16_t tsum = stickMoveValue();
 
-        if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
+      if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
 
-        if (check_soft_power() > e_power_trainer) return; // Usb on or power off
+      if (check_soft_power() > e_power_trainer) return; // Usb on or power off
 
 #if !defined(PCBSTD)
-        if (curTime < get_tmr10ms()) {
-          curTime += 6;
-          if (contrast < g_eeGeneral.contrast) {
-            contrast += 1;
-            lcdSetRefVolt(contrast);
-          }
+      if (curTime < get_tmr10ms()) {
+        curTime += 6;
+        if (contrast < g_eeGeneral.contrast) {
+          contrast += 1;
+          lcdSetRefVolt(contrast);
         }
+      }
 #endif
 
-        checkBacklight();
-      }
+      checkBacklight();
     }
+  }
 }
+#else
+#define doSplash()
 #endif
 
 #if !defined(PCBARM)
@@ -903,8 +924,8 @@ void checkTHR()
 #ifdef SIMU
   int16_t lowLim = THRCHK_DEADBAND - 1024 ;
 #else
-  int16_t lowLim = THRCHK_DEADBAND + g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanNeg[thrchn];
   getADC_single();   // if thr is down - do not display warning at all
+  int16_t lowLim = THRCHK_DEADBAND + g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanNeg[thrchn];
 #endif
   int16_t v = anaIn(thrchn);
   if (g_eeGeneral.throttleReversed) v = - v;
@@ -925,12 +946,8 @@ void checkTHR()
       int16_t v = anaIn(thrchn);
       if (g_eeGeneral.throttleReversed) v = - v;
 
-      if (check_soft_power() > e_power_trainer) return; // Usb on or power off
-
-      if(v<=lowLim || keyDown()) {
-        clearKeyEvents();
-        return;
-      }
+      if (check_soft_power() > e_power_trainer || v<=lowLim || keyDown())
+        break;
 
       checkBacklight();
 
@@ -1512,7 +1529,7 @@ void testFunc()
 #define MASK_FSW_TYPE uint16_t // current max = 16 function switches
 #endif
 
-uint16_t active_functions = 0;
+uint16_t activeFunctions = 0;
 MASK_FSW_TYPE active_switches = 0;
 
 #if defined(SOMO)
@@ -1594,9 +1611,14 @@ void playValue(uint8_t idx)
 }
 #endif
 
+#if defined(PCBARM)
+static uint8_t currentSpeakerVolume = 255;
+uint8_t requiredSpeakerVolume;
+#endif
+
 void evalFunctions()
 {
-  assert((int)(sizeof(active_functions)*8) > (int)(FUNC_MAX-NUM_CHNOUT));
+  assert((int)(sizeof(activeFunctions)*8) > (int)(FUNC_MAX-NUM_CHNOUT));
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
     safetyCh[i] = -128; // not defined
@@ -1617,11 +1639,11 @@ void evalFunctions()
         swtch += MAX_SWITCH+1;
       }
       if (getSwitch(swtch, 0)) {
-        if (sd->func < FUNC_TRAINER && (sd->param & 1)) {
-          safetyCh[sd->func] = limit((int8_t)-125, (int8_t)(((int8_t)sd->param >> 1) * 2), (int8_t)125);
+        if (sd->func < FUNC_TRAINER && (FSW_PARAM(sd) & 1)) {
+          safetyCh[sd->func] = limit((int8_t)-125, (int8_t)(((int8_t)FSW_PARAM(sd) >> 1) * 2), (int8_t)125);
         }
 
-        if (~active_functions & function_mask) {
+        if (~activeFunctions & function_mask) {
           if (sd->func == FUNC_INSTANT_TRIM) {
             if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
@@ -1634,10 +1656,10 @@ void evalFunctions()
 
         if (~active_switches & switch_mask) {
           if (sd->func == FUNC_RESET) {
-            switch (sd->param) {
+            switch (FSW_PARAM(sd)) {
               case 0:
               case 1:
-                resetTimer(sd->param);
+                resetTimer(FSW_PARAM(sd));
                 break;
               case 2:
                 resetAll();
@@ -1653,17 +1675,29 @@ void evalFunctions()
 
         if ((!momentary) || (~active_switches & switch_mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
-            AUDIO_PLAY(AU_FRSKY_FIRST+sd->param);
+            AUDIO_PLAY(AU_FRSKY_FIRST+FSW_PARAM(sd));
           }
 
 #if defined(HAPTIC)
           if (sd->func == FUNC_HAPTIC) {
-            haptic.event(AU_FRSKY_LAST+sd->param);
+            haptic.event(AU_FRSKY_LAST+FSW_PARAM(sd));
           }
 #endif
 
-#if defined(SOMO)
-          if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {
+#if defined(PCBARM) && defined(SDCARD)
+          else if (sd->func == FUNC_PLAY_TRACK) {
+            if (!audioBusy()) {
+              char lfn[32] = SOUNDS_PATH "/";
+              strcat(lfn, sd->param.name);
+              strcat(lfn, SOUNDS_EXT);
+              playFile(lfn);
+            }
+          }
+          else if (sd->func == FUNC_VOLUME) {
+            requiredSpeakerVolume = ((1024 + getValue(sd->param.value)) * NUM_VOL_LEVELS) / 2048;
+          }
+#elif defined(SOMO)
+          else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {
             if (!isPlaying()) {
               static uint16_t s_last_play = 0;
               uint16_t tmr10ms = get_tmr10ms();
@@ -1685,11 +1719,11 @@ void evalFunctions()
 #endif
         }
 
-        active_functions |= function_mask;
+        activeFunctions |= function_mask;
         active_switches |= switch_mask;
       }
       else {
-        active_functions &= (~function_mask);
+        activeFunctions &= (~function_mask);
         active_switches &= (~switch_mask);
       }
     }
@@ -1873,6 +1907,8 @@ void perOut(uint8_t tick10ms)
       }
     }
 
+    activeMixes |= ((ACTIVE_MIXES_TYPE)1 << i);
+
     //========== OFFSET ===============
     if (apply_offset && md->sOffset) v += calc100toRESX(md->sOffset);
 
@@ -1960,9 +1996,12 @@ char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #define TIME_TO_WRITE s_eeDirtyMsk
 #endif
 
+ACTIVE_MIXES_TYPE activeMixes;
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
 {
+  activeMixes = 0;
+
   if (g_eeGeneral.filterInput == 1) {
     getADC_filt() ;
   }
@@ -2231,9 +2270,19 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
       }
     }
   }
-  
+
+#if defined(PCBARM)
+  requiredSpeakerVolume = g_eeGeneral.speakerVolume;
+#endif
+
   evalFunctions();
   
+#if defined(PCBARM)
+  if (currentSpeakerVolume != requiredSpeakerVolume) {
+    setVolume(requiredSpeakerVolume);
+    currentSpeakerVolume = requiredSpeakerVolume;
+  }
+#endif
 }
 
 void perMain()
@@ -2255,8 +2304,8 @@ void perMain()
       ee32_process();
     else if (TIME_TO_WRITE)
       eeCheck();
-#if !defined(SIMU)
-    sd_poll_10mS();
+#if defined(SDCARD) && !defined(SIMU)
+    sdPoll10mS();
 #endif
   }
 #else
@@ -2782,32 +2831,91 @@ uint16_t stack_free()
 
 #endif
 
+#if defined(PCBV4)
+#define UNEXPECTED_SHUTDOWN() ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
+#define OPEN9X_INIT_ARGS const uint8_t mcusr
+#elif defined(PCBSTD)
+#define UNEXPECTED_SHUTDOWN() (mcusr & (1 << WDRF))
+#define OPEN9X_INIT_ARGS const uint8_t mcusr
+#else
+#define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
+#define OPEN9X_INIT_ARGS
+#endif
+
+inline void open9xInit(OPEN9X_INIT_ARGS)
+{
+  eeReadAll();
+
+#if defined(PCBARM)
+  setVolume(g_eeGeneral.speakerVolume);
+  PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
+#endif
+
+  if (!UNEXPECTED_SHUTDOWN()) {
+    doSplash();
+
+#if !defined(PCBARM)
+    checkLowEEPROM();
+#endif
+
+    checkTHR();
+    checkSwitches();
+    checkAlarm();
+  }
+
+#if defined(PCBARM) || defined(PCBV4)
+  if (!g_eeGeneral.unexpectedShutdown) {
+    g_eeGeneral.unexpectedShutdown = 1;
+    eeDirty(EE_GENERAL);
+  }
+#endif
+
+  clearKeyEvents(); //make sure no keys are down before proceeding
+
+  lcdSetRefVolt(g_eeGeneral.contrast);
+  g_LightOffCounter = g_eeGeneral.lightAutoOff*500; //turn on light for x seconds - no need to press key Issue 152
+
+#if defined(PCBARM)
+
+  start_ppm_capture();
+  // TODO inside startPulses?
+#endif
+
+  startPulses();
+
+  if (check_soft_power() <= e_power_trainer) {
+    wdt_enable(WDTO_500MS);
+  }
+}
+
 #if defined(PCBARM)
 void mixerTask(void * pdata)
 {
   while(1) {
 
-    uint16_t t0 = getTmr2MHz();
+    if (!s_pulses_paused) {
+      uint16_t t0 = getTmr2MHz();
 
-    static uint16_t lastTMR;
-    uint16_t tmr10ms = get_tmr10ms();
-    uint8_t tick10ms = (tmr10ms - lastTMR);
-    lastTMR = tmr10ms;
+      static uint16_t lastTMR;
+      uint16_t tmr10ms = get_tmr10ms();
+      uint8_t tick10ms = (tmr10ms - lastTMR);
+      lastTMR = tmr10ms;
 
-    if (s_current_protocol < PROTO_NONE) {
-      checkTrims();
-      doMixerCalculations(tmr10ms, tick10ms);
+      if (s_current_protocol < PROTO_NONE) {
+        checkTrims();
+        doMixerCalculations(tmr10ms, tick10ms);
+      }
+
+      heartbeat |= HEART_TIMER10ms;
+
+      if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
+        wdt_reset();
+        heartbeat = 0;
+      }
+
+      t0 = getTmr2MHz() - t0;
+      if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
     }
-
-    heartbeat |= HEART_TIMER10ms;
-
-    if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
-      wdt_reset();
-      heartbeat = 0;
-    }
-
-    t0 = getTmr2MHz() - t0;
-    if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
 
     CoTickDelay(1);  // 2ms for now
   }
@@ -2822,6 +2930,8 @@ void usbMassStorage()
 void menusTask(void * pdata)
 {
   register uint32_t shutdown_state = 0;
+
+  open9xInit();
 
   while (1) {
     shutdown_state = check_soft_power();
@@ -2899,10 +3009,10 @@ int main(void)
   // we could put a bunch more wdt_reset()s in. But I don't like that approach
   // during boot up.)
 #if defined(PCBV4)
-  uint8_t mcusr_mirror = MCUSR; // save the WDT (etc) flags
+  uint8_t mcusr = MCUSR; // save the WDT (etc) flags
   MCUSR = 0; // must be zeroed before disabling the WDT
 #elif defined(PCBSTD)
-  uint8_t mcusr_mirror = MCUCSR;
+  uint8_t mcusr = MCUCSR;
   MCUCSR = 0;
 #endif
 
@@ -2967,65 +3077,9 @@ int main(void)
   init_rotary_sw();
 #endif
 
-  eeReadAll();
-
-  uint8_t cModel = g_eeGeneral.currModel;
-
-#if defined(PCBARM)
-  set_volume(g_eeGeneral.speakerVolume);
-  PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
+#ifndef PCBARM
+  open9xInit(mcusr);
 #endif
-
-#if defined(PCBV4)
-  if ((~mcusr_mirror & (1 << WDRF)) && !g_eeGeneral.unexpectedShutdown)
-#elif defined(PCBSTD)
-  if (~mcusr_mirror & (1 << WDRF))
-#else
-  if (!g_eeGeneral.unexpectedShutdown)
-#endif
-  {
-#ifdef SPLASH
-#ifdef DSM2
-    // TODO rather use another Model Parameter
-    if (g_model.protocol != PROTO_DSM2)
-#endif
-      doSplash();
-#endif
-
-#if !defined(PCBARM)
-    checkLowEEPROM();
-#endif
-
-    getADC_single();
-    checkTHR();
-    checkSwitches();
-    checkAlarm();
-  }
-
-#if defined(PCBARM) || defined(PCBV4)
-  if (!g_eeGeneral.unexpectedShutdown) {
-    g_eeGeneral.unexpectedShutdown = 1;
-    eeDirty(EE_GENERAL);
-  }
-#endif
-
-  clearKeyEvents(); //make sure no keys are down before proceeding
-
-  lcdSetRefVolt(g_eeGeneral.contrast);
-  g_LightOffCounter = g_eeGeneral.lightAutoOff*500; //turn on light for x seconds - no need to press key Issue 152
-
-  if(cModel!=g_eeGeneral.currModel) eeDirty(EE_GENERAL); // if model was quick-selected, make sure it sticks
-
-#if defined(PCBARM)
-  start_ppm_capture();
-  // TODO inside startPulses?
-#endif
-
-  startPulses();
-
-  if (check_soft_power() <= e_power_trainer) {
-    wdt_enable(WDTO_500MS);
-  }
 
 #if defined(PCBARM)
   CoInitOS();
@@ -3062,8 +3116,7 @@ int main(void)
     perMain();
 
 #if defined(PCBSTD)
-    if(heartbeat == 0x3)
-    {
+    if(heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
       wdt_reset();
       heartbeat = 0;
     }

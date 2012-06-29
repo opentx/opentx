@@ -85,7 +85,7 @@ uint32_t Sd_128_resp[4] ;
 uint32_t Sd_rca ;
 uint32_t Cmd_8_resp ;
 uint32_t Cmd_A41_resp ;
-uint8_t cardType;
+uint8_t  cardType;
 
 /**
  * Configure the  MCI CLKDIV in the MCI_MR register. The max. for MCI clock is
@@ -808,7 +808,7 @@ void sdInit()
 
 
 extern FATFS g_FATFS_Obj;
-void sd_poll_10mS()
+void sdPoll10mS()
 {
   if (!CardIsConnected()) {
     Card_state = SD_ST_EMPTY;
@@ -857,6 +857,7 @@ void sd_poll_10mS()
       sdAcmd6(); // Set bus width to 4 bits, and speed to 9 MHz
       // Should check the card can do this ****
       f_mount(0, &g_FATFS_Obj);
+      retrieveAvailableAudioFiles();
       break;
   }
 }

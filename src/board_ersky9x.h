@@ -40,7 +40,7 @@
 
 extern "C" {
 extern void init_SDcard();
-extern void sd_poll_10mS();
+extern void sdPoll10mS();
 }
 
 #define PIN_ENABLE           0x001
