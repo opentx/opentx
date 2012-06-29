@@ -65,7 +65,6 @@ static void init_main_ppm( uint32_t period, uint32_t out_enable )
   register Pio *pioptr ;
   register Pwm *pwmptr ;
 
-  // TODO ? perOut(g_chans512, 0) ;
   setupPulsesPPM() ;
 
   if ( out_enable )

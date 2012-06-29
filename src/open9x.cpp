@@ -2565,7 +2565,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
     per10ms();
 
 #if defined (PCBV4) && defined(SDCARD)
-    disk_timerproc();
+    sdPoll10mS();
 #endif
 
 #if !defined(PCBV4)

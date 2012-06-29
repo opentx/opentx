@@ -931,9 +931,9 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
   buf[sizeof(MODELS_PATH)-1] = '/';
   memcpy(&buf[sizeof(MODELS_PATH)], ModelNames[i_fileSrc], sizeof(g_model.name));
-  buf[sizeof(MODELS_PATH)+FILENAME_MAXLEN] = '\0';
+  buf[sizeof(MODELS_PATH)+sizeof(g_model.name)] = '\0';
 
-  uint8_t i = sizeof(MODELS_PATH)+FILENAME_MAXLEN-1;
+  uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.name)-1;
   uint8_t len = 0;
   while (i>sizeof(MODELS_PATH)-1) {
     if (!len && buf[i])
@@ -1007,6 +1007,8 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   if (buf[0] != g_eeGeneral.myVers) {
     // TODO
+    f_close(&restoreFile);
+    return STR_INCOMPATIBLE;
   }
 
   if (eeModelExists(i_fileDst)) {

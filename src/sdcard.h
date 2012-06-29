@@ -34,14 +34,8 @@
 #ifndef sdcard_h
 #define sdcard_h
 
-#include "../FatFs/ff.h"
-#include "../FatFs/fattime.h"
-
-#if defined(PCBV4)
-// TODO because this file is used for ersky9x
-#include "rtc.h"
-#endif
-
+#include "FatFs/ff.h"
+#include "FatFs/fattime.h"
 
 #ifdef SIMU
 #define MODELS_PATH  "."
@@ -73,9 +67,7 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
     return STR_SDCARD_ERROR;
 }
 
-// MM/SD card Disk IO Support
-extern void disk_timerproc(void);
-extern uint8_t g_ms100;
+extern void sdPoll10mS();
 
 #endif
 

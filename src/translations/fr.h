@@ -416,6 +416,7 @@
 #define TR_RESTORE_MODEL "R\200storer Mod\201le"
 #define TR_SDCARD_ERROR  "SDCARD Error"
 #define TR_NO_SDCARD     "No SDCARD"
+#define TR_INCOMPATIBLE  "Incompatible"
 #define TR_WARNING       "ALERTE"
 #define TR_EEPROMWARN    "EEPROM"
 #define TR_THROTTLEWARN  "GAZ"

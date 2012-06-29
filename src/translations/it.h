@@ -417,6 +417,7 @@
 #define TR_RESTORE_MODEL "Ripr. Modello"
 #define TR_SDCARD_ERROR  "Errore SD"
 #define TR_NO_SDCARD     "No SDCARD"
+#define TR_INCOMPATIBLE  "Incompatible"
 #define TR_WARNING       "AVVISO"
 #define TR_EEPROMWARN    "EEPROM"
 #define TR_THROTTLEWARN  "MOTORE"

@@ -415,6 +415,7 @@
 #define TR_RESTORE_MODEL "\203terst\201ll Modell"
 #define TR_SDCARD_ERROR  "SDCARD-fel"
 #define TR_NO_SDCARD     "SDCARD saknas"
+#define TR_INCOMPATIBLE  "Incompatible"
 #define TR_WARNING       "VARNING"
 #define TR_EEPROMWARN    "EEPROM"
 #define TR_THROTTLEWARN  "GAS"

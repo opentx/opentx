@@ -395,6 +395,7 @@ extern const pm_char STR_DELETE_MODEL[];
 extern const pm_char STR_RESTORE_MODEL[];
 extern const pm_char STR_SDCARD_ERROR[];
 extern const pm_char STR_NO_SDCARD[];
+extern const pm_char STR_INCOMPATIBLE[];
 extern const pm_char STR_LOGS_PATH[];
 extern const pm_char STR_LOGS_EXT[];
 extern const pm_char STR_MODELS_PATH[];

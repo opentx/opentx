@@ -909,13 +909,15 @@ enum AUDIO_SOUNDS {
 #endif
 
 #if defined(SDCARD)
-// TODO ailleurs
-#define FILENAME_MAXLEN 8
-#include "gruvin9x/sdcard.h"
+#include "sdcard.h"
 #endif
 
 #if defined(SOMO)
 #include "somo14d.h"
+#endif
+
+#if defined(PCBV4)
+#include "rtc.h"
 #endif
 
 // Re-useable byte array to save having multiple buffers

@@ -66,9 +66,9 @@ const pm_char * openLogs()
 
   buf[sizeof(LOGS_PATH)-1] = '/';
   memcpy(&buf[sizeof(LOGS_PATH)], g_model.name, sizeof(g_model.name));
-  buf[sizeof(LOGS_PATH)+FILENAME_MAXLEN] = '\0';
+  buf[sizeof(LOGS_PATH)+sizeof(g_model.name)] = '\0';
 
-  uint8_t i = sizeof(LOGS_PATH)+FILENAME_MAXLEN-1;
+  uint8_t i = sizeof(LOGS_PATH)+sizeof(g_model.name)-1;
   uint8_t len = 0;
   while (i>sizeof(LOGS_PATH)-1) {
     if (!len && buf[i])

@@ -416,7 +416,8 @@
 #define TR_DELETE_MODEL                 "Modell L\203schen" // TODO merged into DELETEMODEL?                              
 #define TR_RESTORE_MODEL                "Modell Restore"                                                                  
 #define TR_SDCARD_ERROR                 "SDcard Error"                                                                    
-#define TR_NO_SDCARD                    "Keine SDcard"                                                                    
+#define TR_NO_SDCARD                    "Keine SDcard"
+#define TR_INCOMPATIBLE                 "Incompatible"
 #define TR_WARNING                      "WARNUNG"
 #define TR_EEPROMWARN                   "EEPROM"
 #define TR_THROTTLEWARN                 "GAS"

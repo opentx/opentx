@@ -417,6 +417,7 @@
 #define TR_RESTORE_MODEL "Obnov Model"
 #define TR_SDCARD_ERROR  "Chyba SDkarty"
 #define TR_NO_SDCARD     "Nen\204 SDkarta"
+#define TR_INCOMPATIBLE  "Incompatible"
 #define TR_WARNING       "KONTROLA"
 #define TR_EEPROMWARN    "EEPROM"
 #define TR_THROTTLEWARN  "PLYNU"

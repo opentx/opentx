@@ -34,7 +34,7 @@
 /*-----------------------------------------------------------------------*/
 /* MMCv3/SDv1/SDv2 (in SPI mode) control module  (C)ChaN, 2010           */
 /*-----------------------------------------------------------------------*/
-/* Only rcvr_spi(), xmit_spi(), disk_timerproc() and some macros         */
+/* Only rcvr_spi(), xmit_spi(), sdPoll10mS() and some macros         */
 /* are platform dependent.                                               */
 /*-----------------------------------------------------------------------*/
 

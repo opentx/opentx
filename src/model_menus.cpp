@@ -2208,7 +2208,7 @@ void menuProcCustomSwitches(uint8_t event)
 
 void menuProcFunctionSwitches(uint8_t event)
 {
-#if defined(SDCARD)
+#if defined(PCBARM) && defined(SDCARD)
   uint8_t _event = event;
   if (s_warning || s_menu_count) {
     event = 0;

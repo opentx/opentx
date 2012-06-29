@@ -418,9 +418,11 @@
 #define TR_RESTORE_MODEL "Restore Model"
 #define TR_SDCARD_ERROR  "SDCARD Error"
 #define TR_NO_SDCARD     "No SDCARD"
+#define TR_INCOMPATIBLE  "Incompatible"
 #define TR_WARNING       "WARNING"
 #define TR_EEPROMWARN    "EEPROM"
 #define TR_THROTTLEWARN  "THROTTLE"
 #define TR_ALARMSWARN    "ALARMS"
 #define TR_SWITCHWARN    "SWITCH"
 #define TR_INVERT_THR    "Invert Thr?"
+#define TR_INCOMPATIBLE_FILE
