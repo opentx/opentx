@@ -2231,7 +2231,7 @@ void menuProcFunctionSwitches(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          putsSwitches(3, y, sd->swtch, attr | (getSwitch(sd->swtch, 0) ? BOLD : 0));
+          putsSwitches(3, y, sd->swtch, attr | ((getSwitch(sd->swtch, 0) && (sd->func >= 16 || (FSW_PARAM(sd) & 1))) ? BOLD : 0));
           if (active) {
             CHECK_INCDEC_MODELSWITCH( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH);
           }
