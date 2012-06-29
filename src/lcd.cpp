@@ -469,8 +469,8 @@ void putsStrIdx(uint8_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t a
 {
   lcd_putsAtt(x, y, str, att & ~BSS); // TODO use something else than BSS for LEADING0
   lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
-  lcd_putsAtt(x, y, str, att & ~BSS); // TODO use something else than BSS for LEADING0
   if (att&TWO_DOTS) lcd_putc(lcdLastPos, y, ':');
+  lcd_putsAtt(x, y, str, att & ~BSS); // TODO use something else than BSS for LEADING0
 }
 
 void putsChnRaw(uint8_t x, uint8_t y, uint8_t idx, uint8_t att)
