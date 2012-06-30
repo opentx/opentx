@@ -210,9 +210,9 @@
 
 #define LEN_VSWITCHES    "\003"
 #if defined(PCBARM)
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC""SWD""SWE""SWF""SWG""SWH""SWI""SWJ""SWK""SWL""SWM""SWN""SWO""SWP""SWQ""SWR""SWS""SWT""SWU""SWV""SWW"
+#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"
 #else
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
+#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
 #endif
 
 #define LEN_VSRCRAW      "\004"
@@ -408,7 +408,7 @@
 #define TR_SHUTDOWN      "VYP\214N\213\N\204.."
 #define TR_BATT_CALIB    "Kalibrace Bat"
 #define TR_CURRENT_CALIB "Kalib.Proudu"
-#define TR_VOLTAGE       "Voltage"
+#define TR_VOLTAGE       "Nap\203t\204"
 #define TR_CURRENT       "Proud"
 #define TR_SELECT_MODEL  "Vyber Model"
 #define TR_CREATE_MODEL  "Vytvo\206 Model"
@@ -417,7 +417,7 @@
 #define TR_RESTORE_MODEL "Obnov Model"
 #define TR_SDCARD_ERROR  "Chyba SDkarty"
 #define TR_NO_SDCARD     "Nen\204 SDkarta"
-#define TR_INCOMPATIBLE  "Incompatible"
+#define TR_INCOMPATIBLE  "Nekompatibiln\204"
 #define TR_WARNING       "KONTROLA"
 #define TR_EEPROMWARN    "EEPROM"
 #define TR_THROTTLEWARN  "PLYNU"
