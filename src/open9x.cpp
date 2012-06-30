@@ -1971,6 +1971,8 @@ void perOut(uint8_t tick10ms)
     switch(md->mltpx){
       case MLTPX_REP:
         *ptr = dv;
+        for (uint8_t m=i-1; m>=0 && mixaddress(m)->destCh == md->destCh; m--)
+          activeMixes &= ~((ACTIVE_MIXES_TYPE)1 << m);
         break;
       case MLTPX_MUL:
         dv /= 100;
