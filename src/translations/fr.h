@@ -67,7 +67,7 @@
 
 #define LEN_EXPLABELS    "\006"
 #ifdef PCBARM
-#define TR_EXPLABEL_NAME "Name  "
+#define TR_EXPLABEL_NAME "Nom   "
 #else
 #define TR_EXPLABEL_NAME
 #endif
@@ -151,7 +151,7 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Chr1""Chr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Volt""Cour""Cnsm""Powr""AccX""AccY""AccZ""Cap\0""VitV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Cur+""Acc\0""Time"
+#define TR_VTELEMCHNS    "---\0""Chr1""Chr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Volt""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Cur+""Acc\0""Time"
 
 #ifdef IMPERIAL_UNITS
 #define LENGTH_UNIT "ft\0"
@@ -297,7 +297,7 @@
 #define TR_RANGE        "Plage"
 #define TR_BAR          "Barre"
 #define TR_ALARM        "Alarme"
-#define TR_USRDATA      "UsrData"
+#define TR_USRDATA      "Donn\200es"
 #define TR_BLADES       "Pales"
 #define TR_BARS         "Jauges"
 #define TR_DISPLAY      "Affichage"
