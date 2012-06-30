@@ -913,11 +913,11 @@ enum AUDIO_SOUNDS {
 #endif
 
 #if defined(SOMO)
-#include "somo14d.h"
+#include "gruvin9x/somo14d.h"
 #endif
 
 #if defined(PCBV4)
-#include "rtc.h"
+#include "gruvin9x/rtc.h"
 extern uint8_t g_ms100; // global to allow time set function to reset to zero
 #endif
 
