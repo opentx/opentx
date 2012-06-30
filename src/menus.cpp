@@ -73,7 +73,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 {
   int16_t newval = val;
   
-#if 1
+#ifndef KILRAH
   uint8_t kother = -1;
 #else
   if (keyState(KEY_RIGHT) && keyState(KEY_LEFT)) {
@@ -92,7 +92,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     killEvents(KEY_DOWN);
   }
   else if (s_editMode && keyState(KEY_UP) && keyState(KEY_DOWN)) {
-    newval = (i_min + i_max) / 2;
+    newval = 0;
     killEvents(KEY_UP);
     killEvents(KEY_DOWN);
   }
@@ -110,7 +110,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     kother = KEY_RIGHT;
   }
 
-#if 1
+#ifndef KILRAH
   if ((kother != (uint8_t)-1) && keyState((EnumKeys)kother)) {
     newval = -val;
     killEvents(KEY_RIGHT);
