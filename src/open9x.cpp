@@ -1689,13 +1689,13 @@ void evalFunctions()
           else if (sd->func == FUNC_PLAY_TRACK) {
             if (!audioBusy()) {
               char lfn[32] = SOUNDS_PATH "/";
-              strcat(lfn, sd->param.name);
+              strcat(lfn, sd->param);
               strcat(lfn, SOUNDS_EXT);
               playFile(lfn);
             }
           }
           else if (sd->func == FUNC_VOLUME) {
-            requiredSpeakerVolume = ((1024 + getValue(sd->param.value)) * NUM_VOL_LEVELS) / 2048;
+            requiredSpeakerVolume = ((1024 + getValue(FSW_PARAM(sd))) * NUM_VOL_LEVELS) / 2048;
           }
 #elif defined(SOMO)
           else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {

@@ -2280,7 +2280,7 @@ void menuProcFunctionSwitches(uint8_t event)
 #endif
 #if defined(PCBARM) && defined(SDCARD)
             else if (sd->func == FUNC_PLAY_TRACK) {
-              lcd_putsnAtt(15*FW, y, sd->param.name, sizeof(sd->param.name), attr);
+              lcd_putsnAtt(15*FW, y, sd->param, sizeof(sd->param), attr);
               if (active && event==EVT_KEY_BREAK(KEY_MENU)) {
                 s_editMode = 0;
                 if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT)) {
@@ -2363,7 +2363,7 @@ void menuProcFunctionSwitches(uint8_t event)
       }
       else {
         // The user choosed a wav file in the list
-        memcpy(g_model.funcSw[sub].param.name, result, sizeof(g_model.funcSw[sub].param.name));
+        memcpy(g_model.funcSw[sub].param, result, sizeof(g_model.funcSw[sub].param));
         eeDirty(EE_MODEL);
       }
     }

@@ -326,12 +326,9 @@ enum Functions {
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
   uint8_t func;
-  union {
-    uint32_t value;
-    char     name[6];
-  } param;
+  char param[6];
 }) FuncSwData;
-#define FSW_PARAM(p) ((p)->param.value)
+#define FSW_PARAM(p) (*((uint32_t*)(p)->param))
 #else
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input

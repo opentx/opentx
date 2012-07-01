@@ -359,7 +359,7 @@ void audioEvent(uint8_t e, uint8_t f)
           break;
         // error
         case AU_ERROR:
-          play(BEEP_DEFAULT_FREQ, 80, 2, PLAY_NOW);
+          play(BEEP_DEFAULT_FREQ, 50, 2, PLAY_NOW);
           break;
         // keypad up (seems to be used when going left/right through system menu options. 0-100 scales etc)
         case AU_KEYPAD_UP:
@@ -391,7 +391,7 @@ void audioEvent(uint8_t e, uint8_t f)
           break;
         // warning three
         case AU_WARNING3:
-          play(BEEP_DEFAULT_FREQ, 60, 2, PLAY_NOW);
+          play(BEEP_DEFAULT_FREQ, 50, 2, PLAY_NOW);
           break;
         // startup tune
         case AU_TADA:
