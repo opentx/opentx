@@ -1503,7 +1503,11 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
+#if defined(TRANSLATIONS_FR)
+#define MIXES_2ND_COLUMN (12*FW)
+#else
 #define MIXES_2ND_COLUMN (9*FW)
+#endif
 void menuProcMixOne(uint8_t event)
 {
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
