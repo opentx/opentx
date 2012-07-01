@@ -354,7 +354,9 @@ int16_t  Expo::expo(int16_t x)
 }
 #endif
 
+#ifdef BOLD_FONT
 ACTIVE_EXPOS_TYPE activeExpos;
+#endif
 
 void applyExpos(int16_t *anas)
 {
@@ -363,7 +365,10 @@ void applyExpos(int16_t *anas)
 
   uint8_t phase = s_perout_flight_phase + 1;
   int8_t cur_chn = -1;
+
+#ifdef BOLD_FONT
   activeExpos = 0;
+#endif
 
   for (uint8_t i=0; i<MAX_EXPOS; i++) {
     ExpoData &ed = g_model.expoData[i];
@@ -393,7 +398,9 @@ void applyExpos(int16_t *anas)
       }
     }
     if (getSwitch(ed.swtch, 1)) {
+#ifdef BOLD_FONT
       activeExpos |= ((ACTIVE_EXPOS_TYPE)1 << i);
+#endif
       int16_t v = anas2[ed.chn];
       if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
         cur_chn = ed.chn;
@@ -1908,7 +1915,9 @@ void perOut(uint8_t tick10ms)
       }
     }
 
+#ifdef BOLD_FONT
     activeMixes |= ((ACTIVE_MIXES_TYPE)1 << i);
+#endif
 
     //========== OFFSET ===============
     if (apply_offset && md->sOffset) v += calc100toRESX(md->sOffset);
@@ -1971,8 +1980,10 @@ void perOut(uint8_t tick10ms)
     switch(md->mltpx){
       case MLTPX_REP:
         *ptr = dv;
+#ifdef BOLD_FONT
         for (uint8_t m=i-1; m>=0 && mixaddress(m)->destCh == md->destCh; m--)
           activeMixes &= ~((ACTIVE_MIXES_TYPE)1 << m);
+#endif
         break;
       case MLTPX_MUL:
         dv /= 100;
@@ -1999,11 +2010,15 @@ char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #define TIME_TO_WRITE s_eeDirtyMsk
 #endif
 
+#ifdef BOLD_FONT
 ACTIVE_MIXES_TYPE activeMixes;
+#endif
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
 {
+#ifdef BOLD_FONT
   activeMixes = 0;
+#endif
 
   if (g_eeGeneral.filterInput == 1) {
     getADC_filt() ;

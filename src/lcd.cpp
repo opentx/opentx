@@ -135,6 +135,7 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
       if (p<DISPLAY_END) {
         *p = (*p & (~(0xff << ym8))) + (b << ym8);
         if (ym8) { uint8_t *r = p + DISPLAY_W; if (r<DISPLAY_END) *r = (*r & (~(0xff >> (8-ym8)))) + (b >> (8-ym8)); }
+#ifdef BOLD_FONT
         if (mode & BOLD) {
           if (inv)
             *(p+1) &= (b << ym8);
@@ -142,6 +143,7 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
             *(p+1) |= (b << ym8);
 
         }
+#endif
       }
       p--;
     }

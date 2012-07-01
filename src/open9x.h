@@ -796,10 +796,9 @@ extern void moveTrimsToOffsets();
 #define ACTIVE_MIXES_TYPE uint32_t
 #endif
 
+#ifdef BOLD_FONT
 extern ACTIVE_EXPOS_TYPE activeExpos;
 extern ACTIVE_MIXES_TYPE activeMixes;
-extern uint16_t activeFunctions;
-
 inline bool isExpoActive(uint8_t expo)
 {
   return activeExpos & ((ACTIVE_EXPOS_TYPE)1 << expo);
@@ -809,7 +808,12 @@ inline bool isMixActive(uint8_t mix)
 {
   return activeMixes & ((ACTIVE_MIXES_TYPE)1 << mix);
 }
+#else
+#define isExpoActive(x) false
+#define isMixActive(x) false
+#endif
 
+extern uint16_t activeFunctions;
 inline bool isFunctionActive(uint8_t func)
 {
   return activeFunctions & (1 << (func-FUNC_TRAINER));

@@ -46,7 +46,11 @@
 /* lcd text flags */
 #define INVERS        0x02
 #define DBLSIZE       0x04
+#ifdef BOLD_FONT
 #define BOLD          0x40
+#else
+#define BOLD          0x00
+#endif
 
 /* lcd putc flags */
 #define CONDENSED     0x08

@@ -62,8 +62,9 @@ HAPTIC = NO
 # SPLASH on START
 SPLASH = YES
 
-# GRAPHICS (sliders / checkboxes)
+# GRAPHICS (sliders / checkboxes / bold)
 GRAPHICS = YES
+BOLD = YES
 
 # THR trace (in STATS screen)
 THR_TRACE = YES
@@ -255,6 +256,10 @@ endif
 
 ifeq ($(GRAPHICS), YES)
   CPPDEFS += -DGRAPHICS
+endif
+
+ifeq ($(BOLD), YES)
+  CPPDEFS += -DBOLD_FONT
 endif
 
 ifeq ($(THR_TRACE), YES)
