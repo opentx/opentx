@@ -157,7 +157,7 @@ void lcd_putsiAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t idx, uint8_t fla
 {
   uint8_t length;
   length = pgm_read_byte(s++) ;
-  lcd_putsnAtt(x,y,s+length*idx,length,flags);
+  lcd_putsnAtt(x,y,s+length*idx,length,flags & ~(BSS|ZCHAR));
 }
 
 void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mode)
