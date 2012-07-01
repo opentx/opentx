@@ -1505,6 +1505,8 @@ enum MixFields {
 
 #if defined(TRANSLATIONS_FR)
 #define MIXES_2ND_COLUMN (12*FW)
+#elif defined(TRANSLATIONS_CZ)
+#define MIXES_2ND_COLUMN (13*FW)
 #else
 #define MIXES_2ND_COLUMN (9*FW)
 #endif
