@@ -890,12 +890,12 @@ void menuProcPhaseOne(uint8_t event)
         break;
       case 3:
         lcd_putsLeft( y, STR_FADEIN);
-        lcd_outdezAtt(10*FW, y, phase->fadeIn, attr|LEFT);
+        lcd_outdezAtt(10*FW, y, phase->fadeIn*5, attr|PREC1|LEFT);
         if(attr) CHECK_INCDEC_MODELVAR(event, phase->fadeIn, 0, 15);
         break;
       case 4:
         lcd_putsLeft( y, STR_FADEOUT);
-        lcd_outdezAtt(10*FW, y, phase->fadeOut, attr|LEFT);
+        lcd_outdezAtt(10*FW, y, phase->fadeOut*5, attr|PREC1|LEFT);
         if(attr) CHECK_INCDEC_MODELVAR(event, phase->fadeOut, 0, 15);
         break;
     }

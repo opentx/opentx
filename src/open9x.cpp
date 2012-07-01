@@ -2041,7 +2041,7 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
       uint8_t fadeTime = max(g_model.phaseData[s_last_phase].fadeOut, g_model.phaseData[phase].fadeIn);
       if (fadeTime) {
         s_fade_flight_phases |= (1<<s_last_phase) + (1<<phase);
-        delta = (MAX_ACT / 100) / fadeTime;
+        delta = (MAX_ACT / 50) / fadeTime;
       }
       else {
         fp_act[s_last_phase] = 0;
