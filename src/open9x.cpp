@@ -1865,7 +1865,7 @@ void perOut(uint8_t tick10ms)
         swOn[i] = true;
         if (md->delayUp) {
           if (swTog) {
-            sDelay[i] = md->delayUp * 100;
+            sDelay[i] = md->delayUp * 50;
           }
           if (sDelay[i]) { // perform delay
             if(tick10ms) sDelay[i]-=tick10ms;
@@ -1886,7 +1886,7 @@ void perOut(uint8_t tick10ms)
       swOn[i] = false;
       if (md->delayDown) {
         if (swTog) {
-          sDelay[i] = md->delayDown * 100;
+          sDelay[i] = md->delayDown * 50;
         }
         if (sDelay[i]) { // perform delay
           if(tick10ms) sDelay[i]-=tick10ms;

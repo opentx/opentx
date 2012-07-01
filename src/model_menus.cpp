@@ -1594,12 +1594,12 @@ void menuProcMixOne(uint8_t event)
         break;
       case MIX_FIELD_DELAY_UP:
         lcd_putsLeft(y, STR_DELAYUP);
-        lcd_outdezAtt(MIXES_2ND_COLUMN,y,md2->delayUp,attr|LEFT);
+        lcd_outdezAtt(MIXES_2ND_COLUMN,y,5*md2->delayUp,attr|PREC1|LEFT);
         if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayUp, 0, MAX_DELAY);
         break;
       case MIX_FIELD_DELAY_DOWN:
         lcd_putsLeft(y, STR_DELAYDOWN);
-        lcd_outdezAtt(MIXES_2ND_COLUMN,y,md2->delayDown,attr|LEFT);
+        lcd_outdezAtt(MIXES_2ND_COLUMN,y,5*md2->delayDown,attr|PREC1|LEFT);
         if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayDown, 0, MAX_DELAY);
         break;
       case MIX_FIELD_SLOW_UP:
