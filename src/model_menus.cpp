@@ -598,7 +598,7 @@ void menuProcModel(uint8_t event)
         TimerData *timer = &g_model.timers[k-ITEM_MODEL_TIMER1];
         putsStrIdx(0*FW, y, STR_TIMER, k-ITEM_MODEL_TIMER1+1); // TODO keep that?
         putsTmrMode(MODEL_PARAM_OFS, y, timer->mode, (attr && m_posHorz==0) ? blink : 0);
-        putsTime(14*FW, y, timer->val,
+        putsTime(15*FW, y, timer->val,
             (attr && m_posHorz==1 ? blink:0),
             (attr && m_posHorz==2 ? blink:0) );
         if (attr && (s_editMode>0 || p1valdiff)) {
