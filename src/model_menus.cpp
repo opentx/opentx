@@ -2286,7 +2286,10 @@ void menuProcFunctionSwitches(uint8_t event)
 #endif
 #if defined(PCBARM) && defined(SDCARD)
             else if (sd->func == FUNC_PLAY_TRACK) {
-              lcd_putsnAtt(15*FW, y, sd->param, sizeof(sd->param), attr);
+              if (sd->param[0])
+                lcd_putsnAtt(15*FW, y, sd->param, sizeof(sd->param), attr);
+              else
+                lcd_putsiAtt(15*FW, y, STR_VCSWFUNC, 0, attr);
               if (active && event==EVT_KEY_BREAK(KEY_MENU)) {
                 s_editMode = 0;
                 if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT)) {
