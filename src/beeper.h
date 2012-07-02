@@ -78,6 +78,7 @@ extern void beep(uint8_t val);
 #define AUDIO_VARIO_DOWN()    _beep(1)
 #define AUDIO_TRIM(event, f)  { if (event & _MSK_KEY_REPT) warble = true; beep(1); }
 #define AUDIO_TRIM_MIDDLE(f)  beep(2)
+#define AUDIO_TRIM_END(f)  beep(2)
 #define AUDIO_PLAY(p)         beep(3)
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)

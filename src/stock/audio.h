@@ -131,6 +131,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_VARIO_UP()    audioDefevent(AU_KEYPAD_UP)
 #define AUDIO_VARIO_DOWN()  audioDefevent(AU_KEYPAD_DOWN)
 #define AUDIO_TRIM_MIDDLE(f) audio.event(AU_TRIM_MIDDLE, f)
+#define AUDIO_TRIM_END) audio.event(AU_TRIM_END, f)
 #define AUDIO_TRIM(event, f) audio.event(AU_TRIM_MOVE, f)
 #define AUDIO_PLAY(p)       audio.event(p)
 #define AUDIO_VARIO(f, t)   audio.play(f, t, 0, PLAY_SOUND_VARIO)

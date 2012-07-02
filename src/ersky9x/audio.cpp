@@ -45,6 +45,7 @@ const char * audioFilenames[] = {
   "warning2",
   "warning3",
   "midtrim",
+  "endtrim",
   "tada",
   "midpot",
   "mixwarn1",
@@ -380,6 +381,10 @@ void audioEvent(uint8_t e, uint8_t f)
         case AU_TRIM_MIDDLE:
           play(f, 20, 4, PLAY_NOW);
           break;
+        // trim center
+        case AU_TRIM_END:
+          play(f, 20, 4, PLAY_NOW);
+          break;          
         // warning one
         case AU_WARNING1:
           play(BEEP_DEFAULT_FREQ, 20, 2, PLAY_NOW);
