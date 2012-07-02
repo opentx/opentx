@@ -76,6 +76,7 @@
 #define SD_ST_STBY              6
 #define SD_ST_TRAN              7
 #define SD_ST_DATA              8
+#define SD_ST_ERR               9
 
 uint32_t Card_ID[4] ;
 uint32_t Card_SCR[2] ;
@@ -806,13 +807,14 @@ void sdInit()
 #endif
 }
 
-
+uint8_t sdErrorCount = 0;
 extern FATFS g_FATFS_Obj;
 void sdPoll10mS()
 {
   if (!CardIsConnected()) {
     Card_state = SD_ST_EMPTY;
     Sd_rca = 0;
+    sdErrorCount = 0;
   }
 
   switch (Card_state) {
@@ -858,6 +860,9 @@ void sdPoll10mS()
       // Should check the card can do this ****
       f_mount(0, &g_FATFS_Obj);
       retrieveAvailableAudioFiles();
+      break;
+
+    case SD_ST_ERR:
       break;
   }
 }
@@ -1116,7 +1121,13 @@ DRESULT disk_read (
           }
         } while ( count ) ;
 
-        return count ? RES_ERROR : RES_OK;
+        if (!count)
+          return RES_OK;
+
+        if (++sdErrorCount > 3)
+          Card_state = SD_ST_ERR;
+
+        return RES_ERROR;
 }
 
 
@@ -1152,7 +1163,13 @@ DRESULT disk_write (
           }
         } while ( count ) ;
 
-        return count ? RES_ERROR : RES_OK;
+        if (!count)
+          return RES_OK;
+
+        if (++sdErrorCount > 3)
+          Card_state = SD_ST_ERR;
+
+        return RES_ERROR;
 }
 
 
