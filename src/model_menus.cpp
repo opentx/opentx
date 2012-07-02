@@ -820,6 +820,12 @@ static uint8_t s_currIdx;
 
 #ifdef FLIGHT_PHASES
 
+#if defined(TRANSLATIONS_CZ)
+#define PHASES_EDIT_2ND_COLUMN 12
+#else
+#define PHASES_EDIT_2ND_COLUMN 10
+#endif
+
 void menuProcPhaseOne(uint8_t event)
 {
   PhaseData *phase = phaseaddress(s_currIdx);
@@ -837,17 +843,17 @@ void menuProcPhaseOne(uint8_t event)
     switch(i) {
       case 0:
         lcd_putsLeft( y, STR_NAME);
-        EditName(10*FW, y, phase->name, sizeof(phase->name), event, attr, m_posHorz);
+        EditName(PHASES_EDIT_2ND_COLUMN*FW, y, phase->name, sizeof(phase->name), event, attr, m_posHorz);
         break;
       case 1:
         lcd_putsLeft( y, STR_SWITCH);
-        putsSwitches(10*FW,  y, phase->swtch, attr);
+        putsSwitches(PHASES_EDIT_2ND_COLUMN*FW,  y, phase->swtch, attr);
         if (attr) CHECK_INCDEC_MODELSWITCH(event, phase->swtch, -MAX_DRSWITCH, MAX_DRSWITCH);
         break;
       case 2:
         lcd_putsLeft( y, STR_TRIMS);
         for (uint8_t t=0; t<NUM_STICKS; t++) {
-          putsTrimMode((10+t)*FW, y, s_currIdx, t, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+          putsTrimMode((PHASES_EDIT_2ND_COLUMN+t)*FW, y, s_currIdx, t, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
           if (attr && m_posHorz==t && ((s_editMode>0) || p1valdiff)) {
             int16_t v = getRawTrimValue(s_currIdx, t);
             if (v < TRIM_EXTENDED_MAX) v = TRIM_EXTENDED_MAX;
@@ -860,7 +866,7 @@ void menuProcPhaseOne(uint8_t event)
         }
 #if defined(PCBV4)
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
-          putsRotaryEncoderMode((14+t)*FW+2, y, s_currIdx, t, (attr && m_posHorz==4+t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+          putsRotaryEncoderMode((PHASES_EDIT_2ND_COLUMN+4+t)*FW+2, y, s_currIdx, t, (attr && m_posHorz==4+t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
           if (attr && m_posHorz==4+t && ((s_editMode>0) || p1valdiff)) {
 #if defined(EXTRA_ROTARY_ENCODERS)
             int16_t v;
@@ -890,12 +896,12 @@ void menuProcPhaseOne(uint8_t event)
         break;
       case 3:
         lcd_putsLeft( y, STR_FADEIN);
-        lcd_outdezAtt(10*FW, y, phase->fadeIn*5, attr|PREC1|LEFT);
+        lcd_outdezAtt((PHASES_EDIT_2ND_COLUMN*FW), y, phase->fadeIn*5, attr|PREC1|LEFT);
         if(attr) CHECK_INCDEC_MODELVAR(event, phase->fadeIn, 0, 15);
         break;
       case 4:
         lcd_putsLeft( y, STR_FADEOUT);
-        lcd_outdezAtt(10*FW, y, phase->fadeOut*5, attr|PREC1|LEFT);
+        lcd_outdezAtt((PHASES_EDIT_2ND_COLUMN*FW), y, phase->fadeOut*5, attr|PREC1|LEFT);
         if(attr) CHECK_INCDEC_MODELVAR(event, phase->fadeOut, 0, 15);
         break;
     }
