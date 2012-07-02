@@ -165,7 +165,7 @@ void audioTask(void* pdata)
 #if defined(SDCARD) && !defined(SIMU)
     if (toneWavFile[0]) {
       FRESULT result = FR_OK;
-      UINT read;
+      UINT read = 0;
       uint16_t * bufdata = wavSamplesBuffer;
       if (toneWavFile[1]) {
         result = f_open(&wavFile, toneWavFile, FA_OPEN_EXISTING | FA_READ);
@@ -183,22 +183,22 @@ void audioTask(void* pdata)
         }
       }
 
-      if (result != FR_OK || f_read(&wavFile, (uint8_t *)bufdata, 2*WAV_BUFFER_SIZE, &read) != FR_OK || read == 0) {
-        toneWavFile[0] = '\0';
-        f_close(&wavFile);
+      read = 0;
+      if (result != FR_OK || f_read(&wavFile, (uint8_t *)bufdata, 2*WAV_BUFFER_SIZE, &read) != FR_OK || read != 2*WAV_BUFFER_SIZE) {
+        for (uint32_t i=read/2; i<WAV_BUFFER_SIZE; i++)
+          bufdata[i] = 0x8000;
+        DACC->DACC_TNCR = read/4;
         toneStop();
-        DACC->DACC_TPR = CONVERT_PTR(Sine_values);
-        DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
-        DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
-        DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
+        toneWavFile[0] = '\0';
+        toneWavFile[1] = 0;
+        f_close(&wavFile);
         audioState = 0;
       }
 #if 1
-      else {
+       {
         read /= 2;
-        for (uint32_t i=0; i<read; i++) {
+        for (uint32_t i=0; i<read; i++)
           bufdata[i] = ((uint16_t)0x8000 + ((int16_t)(bufdata[i]))) >> 4;
-        }
         if (toneWavFile[1]) {
           toneWavFile[1] = '\0';
           register Dacc *dacptr = DACC;
