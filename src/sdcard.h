@@ -41,10 +41,12 @@
 #define MODELS_PATH  "."
 #define LOGS_PATH    "."
 #define SOUNDS_PATH  "."
+#define SYSTEM_SOUNDS_PATH "."
 #else
-#define MODELS_PATH  "/9XMODELS"
-#define LOGS_PATH    "/9XLOGS"   // no trailing slash = important
-#define SOUNDS_PATH  "/9XSOUNDS" // no trailing slash = important
+#define MODELS_PATH         "/9XMODELS"
+#define LOGS_PATH           "/9XLOGS"   // no trailing slash = important
+#define SOUNDS_PATH         "/9XSOUNDS" // no trailing slash = important
+#define SYSTEM_SOUNDS_PATH  "/9XSOUNDS/SYSTEM" // no trailing slash = important
 #endif
 
 #define MODELS_EXT   ".bin"
