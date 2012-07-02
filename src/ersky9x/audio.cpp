@@ -192,6 +192,7 @@ void audioTask(void* pdata)
         DACC->DACC_TCR = 50 ;      // words, 100 16 bit values
         DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
         DACC->DACC_TNCR = 50 ;      // words, 100 16 bit values
+        audioState = 0;
       }
 #if 1
       else {
