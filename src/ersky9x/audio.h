@@ -98,7 +98,7 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 #define AUDIO_VARIO_UP()    audioEvent(AU_KEYPAD_UP)
 #define AUDIO_VARIO_DOWN()  audioEvent(AU_KEYPAD_DOWN)
 #define AUDIO_TRIM_MIDDLE(f) audioEvent(AU_TRIM_MIDDLE, f)
-#define AUDIO_TRIM_END(f) audioEvent(AU_TRIM_END, f)
+#define AUDIO_TRIM_END(f)    audioEvent(AU_TRIM_END, f)
 #define AUDIO_TRIM(event, f) audioEvent(AU_TRIM_MOVE, f)
 #define AUDIO_PLAY(p)        audioEvent(p)
 #define AUDIO_VARIO(f, t)    play(f, t, 0, PLAY_SOUND_VARIO)

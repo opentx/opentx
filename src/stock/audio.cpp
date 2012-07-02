@@ -209,9 +209,6 @@ void audioQueue::event(uint8_t e, uint8_t f)
         case AU_TRIM_MIDDLE:
           play(f, 10, 2, PLAY_NOW);
           break;
-        case AU_TRIM_END:
-          play(f, 10, 2, PLAY_NOW);
-          break;
         // warning one
         case AU_WARNING1:
           play(BEEP_DEFAULT_FREQ, 10, 1, PLAY_NOW);

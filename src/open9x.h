@@ -873,7 +873,9 @@ enum AUDIO_SOUNDS {
     AU_WARNING2,
     AU_WARNING3,
     AU_TRIM_MIDDLE,
-    AU_TRIM_END,    
+#if defined(PCBARM)
+    AU_TRIM_END,
+#endif
     AU_TADA,
     AU_POT_STICK_MIDDLE,
     AU_MIX_WARNING_1,
