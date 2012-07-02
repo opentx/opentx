@@ -73,13 +73,11 @@ const char * audioFilenames[] = {
 
 uint32_t sdAvailableAudioFiles;
 
-#define AUDIO_FILENAME_PATTERN "/9XSOUNDS/xxxxxxxx.wav"
-
 #if defined(SDCARD)
 void retrieveAvailableAudioFiles()
 {
   FILINFO info;
-  char filename[] = AUDIO_FILENAME_PATTERN;
+  char filename[32] = SYSTEM_SOUNDS_PATH "/";
 
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableAudioFiles)*8 > AU_FRSKY_FIRST);
@@ -87,8 +85,8 @@ void retrieveAvailableAudioFiles()
   sdAvailableAudioFiles = 0;
 
   for (uint32_t i=0; i<AU_FRSKY_FIRST; i++) {
-    strcpy(filename+10/*TODO sizeof(...)*/, audioFilenames[i]);
-    strcat(filename+10, ".wav");
+    strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
+    strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
     if (f_stat(filename, &info) == FR_OK)
       sdAvailableAudioFiles |= ((uint32_t)1 << i);
   }
@@ -97,8 +95,8 @@ void retrieveAvailableAudioFiles()
 inline bool isAudioFileAvailable(uint8_t i, char * filename)
 {
   if (sdAvailableAudioFiles & ((uint32_t)1 << i)) {
-    strcpy(filename+10/*TODO sizeof(...)*/, audioFilenames[i]);
-    strcat(filename+10, ".wav");
+    strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
+    strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
     return true;
   }
   else {
@@ -330,7 +328,7 @@ void playFile(const char *filename)
 
 void audioEvent(uint8_t e, uint8_t f)
 {
-  char filename[] = AUDIO_FILENAME_PATTERN;
+  char filename[32] = SYSTEM_SOUNDS_PATH "/";
 
 #ifdef HAPTIC
   haptic.event(e); //do this before audio to help sync timings
