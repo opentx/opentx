@@ -1082,21 +1082,21 @@ void checkTrims()
     bool thro = (idx==THR_STICK && g_model.thrTrim);
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
-
-    bool beepTrimEnd = false;
-    bool beepTrimMid = false;
+#if defined(PCBARM)
+    uint8_t beepTrim = 0;
+#else
+    bool beepTrim = false;
+#endif
     for (int16_t mark=TRIM_MIN; mark<=TRIM_MAX; mark+=TRIM_MAX) {
       if ((mark!=0 || !thro) && ((mark!=TRIM_MIN && after>=mark && before<mark) || (mark!=TRIM_MAX && after<=mark && before>mark))) {
         after = mark;
-        if(mark == 0){
-        	beepTrimMid = true;
-	}
+        beepTrim = (mark == 0 ? 1 : 2);
       }
     }
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
       if (!g_model.extendedTrims) after = before;
-      beepTrimEnd = true; // no repetition, it could be dangerous
+      beepTrim = 2; // no repetition, it could be dangerous
     }
 
     if (after < TRIM_EXTENDED_MIN) {
@@ -1119,14 +1119,13 @@ void checkTrims()
     after += 60;
 #endif
 
-    if (beepTrimMid) {
+    if (beepTrim) {
       killEvents(event);
-      AUDIO_TRIM_MIDDLE(after);
+      if (beepTrim == 1)
+        AUDIO_TRIM_MIDDLE(after);
+      else
+        AUDIO_TRIM_END(after);
     }
-    else if (beepTrimEnd) {
-      killEvents(event);
-      AUDIO_TRIM_END(after);
-    }    
     else {
       AUDIO_TRIM(event, after);
     }
