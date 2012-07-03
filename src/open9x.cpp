@@ -1701,8 +1701,9 @@ void evalFunctions()
           else if (sd->func == FUNC_PLAY_TRACK) {
             if (!audioBusy()) {
               char lfn[32] = SOUNDS_PATH "/";
-              strcat(lfn, sd->param);
-              strcat(lfn, SOUNDS_EXT);
+              strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
+              lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
+              strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
               playFile(lfn);
             }
           }
@@ -1727,6 +1728,7 @@ void evalFunctions()
 
 #if defined(DEBUG)
           if (sd->func == FUNC_TEST) {
+            printf("%d ", sd->swtch);
             testFunc();
           }
 #endif
