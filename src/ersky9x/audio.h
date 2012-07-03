@@ -70,6 +70,7 @@ extern "C" void retrieveAvailableAudioFiles();
 void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
 void playFile(const char *filename);
 void pause(uint8_t tLen);
+void volumeInit(uint8_t boost);
 
 inline bool audioBusy()
 {

@@ -189,6 +189,7 @@ void audioTask(void* pdata)
           bufdata[i] = 0x8000;
         DACC->DACC_TNCR = read/4;
         toneStop();
+        volumeInit(0);
         toneWavFile[0] = '\0';
         toneWavFile[1] = 0;
         f_close(&wavFile);
@@ -206,6 +207,7 @@ void audioTask(void* pdata)
           dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
           dacptr->DACC_TCR = WAV_BUFFER_SIZE/2;
           dacptr->DACC_TNCR = WAV_BUFFER_SIZE/2;
+          volumeInit(1);
           toneStart();
         }
       }
@@ -225,6 +227,7 @@ void audioTask(void* pdata)
         CoSetTmrCnt(audioTimer, toneTimeLeft*5, 0);
         toneTimeLeft = 0;
       }
+      volumeInit(0);
       toneStart();
       CoStartTmr(audioTimer);
     }
@@ -248,6 +251,7 @@ void audioTask(void* pdata)
       CoSetTmrCnt(audioTimer, tone2TimeLeft*5, 0);
       tone2TimeLeft = 0;
       setFrequency(tone2Freq * 6100 / 2);
+      volumeInit(0);
       toneStart();
       CoStartTmr(audioTimer);
     }
@@ -319,6 +323,18 @@ void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
       }
     }
   }
+}
+
+
+void volumeInit(uint8_t boost){
+	if(boost == 0){
+		setVolume(g_eeGeneral.speakerVolume); //then raise it
+	} else {
+		setVolume(g_eeGeneral.speakerVolume + 10); 
+		/* raise it by factor of 5 higher so wav and beep similar volume!	
+		   this value of 10 could potentially be a secondary menu config option in
+		   system setup as may be different per user? */	
+	}		
 }
 
 void playFile(const char *filename)
