@@ -1088,7 +1088,9 @@ void checkTrims()
     for (int16_t mark=TRIM_MIN; mark<=TRIM_MAX; mark+=TRIM_MAX) {
       if ((mark!=0 || !thro) && ((mark!=TRIM_MIN && after>=mark && before<mark) || (mark!=TRIM_MAX && after<=mark && before>mark))) {
         after = mark;
-        beepTrimMid = true;
+        if(mark == 0){
+        	beepTrimMid = true;
+	}
       }
     }
 
