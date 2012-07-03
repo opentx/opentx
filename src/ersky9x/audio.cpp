@@ -224,7 +224,7 @@ void audioTask(void* pdata)
         DACC->DACC_TNCR = read/4;
         toneStop();
         toneWavFile[0] = '\0';
-        toneWavFile[1] = 0;
+        toneWavFile[1] = '\0';
         f_close(&wavFile);
         audioState = 0;
       }
@@ -319,9 +319,13 @@ void pause(uint8_t tLen)
   play(0, 0, tLen); // a pause
 }	
 
+extern OS_MutexID audioMutex;
+
 void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tFlags, int8_t tFreqIncr)
 {
+  CoEnterMutexSection(audioMutex);
+
   if (tFlags & PLAY_SOUND_VARIO) {
     tone2Freq = tFreq;
     tone2TimeLeft = tLen;
@@ -363,12 +367,16 @@ void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
       }
     }
   }
+
+  CoLeaveMutexSection(audioMutex);
 }
 
 void playFile(const char *filename)
 {
+  CoEnterMutexSection(audioMutex);
   strcpy(toneWavFile, filename);
   CoSetFlag(audioFlag);
+  CoLeaveMutexSection(audioMutex);
 }
 
 void audioEvent(uint8_t e, uint8_t f)

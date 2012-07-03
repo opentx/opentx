@@ -53,6 +53,7 @@ OS_TCID audioTimer;
 OS_FlagID audioFlag;
 
 OS_MutexID sdMutex;
+OS_MutexID audioMutex;
 
 /*OS_TID btTask;
 OS_STK btStack[BT_STACK_SIZE];
@@ -3122,6 +3123,7 @@ int main(void)
   audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
 
   sdMutex = CoCreateMutex();
+  audioMutex = CoCreateMutex();
 
   CoStartOS();
 #else
