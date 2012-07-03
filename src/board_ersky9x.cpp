@@ -729,9 +729,12 @@ void board_init()
 
   startSound() ;
 
+  alawInit();
+
   eeprom_init();
 
   init_SDcard();
+
 }
 
 #endif

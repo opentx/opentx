@@ -108,6 +108,33 @@ inline bool isAudioFileAvailable(uint8_t i, char * filename)
 #define isAudioFileAvailable(i, f) false
 #endif
 
+uint16_t alawTable[256];
+
+#define         SIGN_BIT        (0x80)      /* Sign bit for a A-law byte. */
+#define         QUANT_MASK      (0xf)       /* Quantization field mask. */
+#define         SEG_SHIFT       (4)         /* Left shift for segment number. */
+#define         SEG_MASK        (0x70)      /* Segment field mask. */
+
+static short alaw2linear(unsigned char a_val)
+{
+  int t;
+  int seg;
+
+  a_val ^= 0x55;
+
+  t = a_val & QUANT_MASK;
+  seg = ((unsigned)a_val & SEG_MASK) >> SEG_SHIFT;
+  if(seg) t= (t + t + 1 + 32) << (seg + 2);
+  else    t= (t + t + 1     ) << 3;
+
+  return (a_val & SIGN_BIT) ? t : -t;
+}
+
+void alawInit()
+{
+  for (uint32_t i=0; i<256; i++)
+    alawTable[i] = (0x8000 + alaw2linear(i)) >> 4;
+}
 
 uint8_t audioState = 0;
 
@@ -151,6 +178,10 @@ extern uint16_t Sine_values[];
 
 #define WAV_HEADER_SIZE 44
 
+#define CODEC_ID_PCM_S16LE  1
+#define CODEC_ID_PCM_ALAW   6
+uint8_t pcmCodec;
+
 void audioTask(void* pdata)
 {
 #if defined(SDCARD) && !defined(SIMU)
@@ -175,7 +206,11 @@ void audioTask(void* pdata)
             CoSetFlag(audioFlag);
             bufdata = wavSamplesArray;
             wavSamplesBuffer = wavSamplesArray + WAV_BUFFER_SIZE;
+            pcmCodec = wavSamplesArray[10];
             setFrequency(wavSamplesArray[12]);
+            if (pcmCodec != CODEC_ID_PCM_S16LE) {
+              result = f_read(&wavFile, (uint8_t *)wavSamplesArray, 12, &read);
+            }
           }
           else {
             result = FR_DENIED;
@@ -184,34 +219,41 @@ void audioTask(void* pdata)
       }
 
       read = 0;
-      if (result != FR_OK || f_read(&wavFile, (uint8_t *)bufdata, 2*WAV_BUFFER_SIZE, &read) != FR_OK || read != 2*WAV_BUFFER_SIZE) {
-        for (uint32_t i=read/2; i<WAV_BUFFER_SIZE; i++)
-          bufdata[i] = 0x8000;
+      uint16_t bufsize = (pcmCodec == CODEC_ID_PCM_S16LE ? 2*WAV_BUFFER_SIZE : WAV_BUFFER_SIZE);
+      if (result != FR_OK || f_read(&wavFile, (uint8_t *)bufdata, bufsize, &read) != FR_OK || read != bufsize) {
         DACC->DACC_TNCR = read/4;
         toneStop();
-        volumeInit(0);
         toneWavFile[0] = '\0';
         toneWavFile[1] = 0;
         f_close(&wavFile);
         audioState = 0;
       }
-#if 1
-       {
+
+      if (pcmCodec == CODEC_ID_PCM_S16LE) {
         read /= 2;
-        for (uint32_t i=0; i<read; i++)
+        uint32_t i = 0;
+        for (; i<read; i++)
           bufdata[i] = ((uint16_t)0x8000 + ((int16_t)(bufdata[i]))) >> 4;
-        if (toneWavFile[1]) {
-          toneWavFile[1] = '\0';
-          register Dacc *dacptr = DACC;
-          dacptr->DACC_TPR = CONVERT_PTR(wavSamplesArray);
-          dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
-          dacptr->DACC_TCR = WAV_BUFFER_SIZE/2;
-          dacptr->DACC_TNCR = WAV_BUFFER_SIZE/2;
-          volumeInit(1);
-          toneStart();
-        }
+        for (; i<WAV_BUFFER_SIZE; i++)
+          bufdata[i] = 0x8000;
       }
-#endif
+      else if (pcmCodec == CODEC_ID_PCM_ALAW) {
+        int32_t i;
+        for (i=read-1; i>=0; i--)
+          bufdata[i] = alawTable[((uint8_t *)bufdata)[i]];
+        for (i=read; i<WAV_BUFFER_SIZE; i++)
+          bufdata[i] = 0x8000;
+      }
+
+      if (toneWavFile[1]) {
+        toneWavFile[1] = '\0';
+        register Dacc *dacptr = DACC;
+        dacptr->DACC_TPR = CONVERT_PTR(wavSamplesArray);
+        dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
+        dacptr->DACC_TCR = WAV_BUFFER_SIZE/2;
+        dacptr->DACC_TNCR = WAV_BUFFER_SIZE/2;
+        toneStart();
+      }
     }
     else
 #endif
@@ -227,7 +269,6 @@ void audioTask(void* pdata)
         CoSetTmrCnt(audioTimer, toneTimeLeft*5, 0);
         toneTimeLeft = 0;
       }
-      volumeInit(0);
       toneStart();
       CoStartTmr(audioTimer);
     }
@@ -251,7 +292,6 @@ void audioTask(void* pdata)
       CoSetTmrCnt(audioTimer, tone2TimeLeft*5, 0);
       tone2TimeLeft = 0;
       setFrequency(tone2Freq * 6100 / 2);
-      volumeInit(0);
       toneStart();
       CoStartTmr(audioTimer);
     }
@@ -323,18 +363,6 @@ void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
       }
     }
   }
-}
-
-
-void volumeInit(uint8_t boost){
-	if(boost == 0){
-		setVolume(g_eeGeneral.speakerVolume); //then raise it
-	} else {
-		setVolume(g_eeGeneral.speakerVolume + 10); 
-		/* raise it by factor of 5 higher so wav and beep similar volume!	
-		   this value of 10 could potentially be a secondary menu config option in
-		   system setup as may be different per user? */	
-	}		
 }
 
 void playFile(const char *filename)
