@@ -645,7 +645,7 @@ void menuProcSd(uint8_t event)
         f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
         strcat_P(lfn, PSTR("/"));
         strcat(lfn, reusableBuffer.sd.lines[index]);
-        playFile(lfn);
+        audioQueue.playFile(lfn);
       }
 #endif
     }

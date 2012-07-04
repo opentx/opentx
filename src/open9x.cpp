@@ -1701,12 +1701,12 @@ void evalFunctions()
 
 #if defined(PCBARM) && defined(SDCARD)
           else if (sd->func == FUNC_PLAY_TRACK) {
-            if (!audioBusy()) {
+            if (!audioQueue.busy()) {
               char lfn[32] = SOUNDS_PATH "/";
               strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
               lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
               strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-              playFile(lfn);
+              audioQueue.playFile(lfn);
             }
           }
           else if (sd->func == FUNC_VOLUME) {

@@ -31,7 +31,6 @@
  *
  */
 
-
 #ifndef audio_h
 #define audio_h
 
@@ -41,40 +40,60 @@
 #define BEEP_KEY_UP_FREQ   (BEEP_DEFAULT_FREQ+5)
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
 
-extern uint8_t audioState;
+class ToneFragment {
+  public:
+    uint8_t freq;
+    uint8_t duration;
+    uint8_t pause;
+    uint8_t repeat;
+    int8_t  freqIncr;
+};
 
-extern uint8_t t_queueRidx;
-extern uint8_t t_queueWidx;
+class AudioFragment : public ToneFragment {
+  public:
+    char file[32+1];
+};
 
-extern uint8_t toneFreq;
-extern uint8_t toneTimeLeft;
-extern uint8_t tonePause;
+extern "C" void DAC_IRQHandler();
 
-extern char toneWavFile[32+1];
+class AudioQueue {
 
-// vario
-extern uint8_t tone2Freq;
-extern uint8_t tone2TimeLeft;
-extern uint8_t tone2Pause;
+  friend void audioTask(void* pdata);
+  friend void DAC_IRQHandler();
 
-// queue arrays
-extern uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
-// int8_t queueToneFreqIncr[AUDIO_QUEUE_LENGTH];
-extern uint8_t queueToneLength[AUDIO_QUEUE_LENGTH];
-extern uint8_t queueTonePause[AUDIO_QUEUE_LENGTH];
-extern uint8_t queueToneRepeat[AUDIO_QUEUE_LENGTH];
+  public:
+
+    AudioQueue();
+
+    void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
+
+    void playFile(const char *filename, uint8_t tFlags=0);
+
+    void pause(uint8_t tLen);
+
+    bool busy()
+    {
+      return (state != 0);
+    }
+
+  protected:
+
+    void wakeup();
+
+    uint8_t state;
+    uint8_t ridx;
+    uint8_t widx;
+    AudioFragment fragments[AUDIO_QUEUE_LENGTH];
+    ToneFragment background; // for vario
+
+    AudioFragment current;
+
+};
+
+extern AudioQueue audioQueue;
 
 void alawInit();
 extern "C" void retrieveAvailableAudioFiles();
-
-void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
-void playFile(const char *filename);
-void pause(uint8_t tLen);
-
-inline bool audioBusy()
-{
-  return (audioState != 0);
-}
 
 void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
@@ -101,7 +120,7 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 #define AUDIO_TRIM_END(f)    audioEvent(AU_TRIM_END, f)
 #define AUDIO_TRIM(event, f) audioEvent(AU_TRIM_MOVE, f)
 #define AUDIO_PLAY(p)        audioEvent(p)
-#define AUDIO_VARIO(f, t)    play(f, t, 0, PLAY_SOUND_VARIO)
+#define AUDIO_VARIO(f, t)    audioQueue.play(f, t, 0, PLAY_SOUND_VARIO)
 
 #define AUDIO_HEARTBEAT()
 

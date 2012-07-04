@@ -177,7 +177,7 @@ uint16_t *wavSamplesBuffer;
 extern "C" void DAC_IRQHandler()
 {
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
-  if (toneWavFile[0]) {
+  if (audioQueue.current.file[0]) {
     CoEnterISR(); // Enter the interrupt
     CoSetFlag(audioFlag);
     CoExitISR(); // Exit the interrupt
