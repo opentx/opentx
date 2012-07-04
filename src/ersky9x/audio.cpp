@@ -301,11 +301,15 @@ void AudioQueue::pause(uint8_t tLen)
   play(0, 0, tLen); // a pause
 }	
 
+#ifndef SIMU
 extern OS_MutexID audioMutex;
+#endif
 
 void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags, int8_t tFreqIncr)
 {
+#ifndef SIMU
   CoEnterMutexSection(audioMutex);
+#endif
 
   if (tFlags & PLAY_SOUND_VARIO) {
     background.freq = tFreq;
@@ -351,12 +355,16 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
     }
   }
 
+#ifndef SIMU
   CoLeaveMutexSection(audioMutex);
+#endif
 }
 
 void AudioQueue::playFile(const char *filename, uint8_t flags)
 {
+#ifndef SIMU
   CoEnterMutexSection(audioMutex);
+#endif
 
   if ((flags & PLAY_NOW) || !busy()) {
     state = 1;
@@ -381,12 +389,17 @@ void AudioQueue::playFile(const char *filename, uint8_t flags)
     }
   }
   CoSetFlag(audioFlag);
+
+#ifndef SIMU
   CoLeaveMutexSection(audioMutex);
+#endif
 }
 
 void audioEvent(uint8_t e, uint8_t f)
 {
+#ifdef SDCARD
   char filename[32] = SYSTEM_SOUNDS_PATH "/";
+#endif
 
 #ifdef HAPTIC
   haptic.event(e); //do this before audio to help sync timings
@@ -398,10 +411,13 @@ void audioEvent(uint8_t e, uint8_t f)
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
+#ifdef SDCARD
     if (e < AU_FRSKY_FIRST && isAudioFileAvailable(e, filename)) {
       audioQueue.playFile(filename);
     }
-    else if (e < AU_FRSKY_FIRST || !audioQueue.busy()) {
+    else
+#endif
+    if (e < AU_FRSKY_FIRST || !audioQueue.busy()) {
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:
