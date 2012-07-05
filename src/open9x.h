@@ -40,6 +40,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 #if defined(PCBSTD)
 #define WDT_RESET_STOCK() wdt_reset()
@@ -708,13 +709,13 @@ inline int16_t calc1000toRESX( register int32_t x)  // improve calc time by Pat 
     //  return x + x/32 - x/128 + x/512;
 }
 #else
-extern inline int16_t calc100toRESX(int8_t x)
+inline int16_t calc100toRESX(int8_t x)
 {
   // return (int16_t)x*10 + x/4 - x/64;
   return ((x*41)>>2) - x/64;
 }
 
-extern inline int16_t calc1000toRESX(int16_t x)
+int16_t calc1000toRESX(int16_t x)
 {
   // return x + x/32 - x/128 + x/512;
   int16_t y = x>>5;

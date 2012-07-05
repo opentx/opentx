@@ -443,6 +443,8 @@ void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t pat, uin
 
 void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
 {
+  div_t qr;
+
   if (att & LEFT) x+=3*FW;
 
   if (tme<0) {
@@ -450,9 +452,11 @@ void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
     tme = -tme;
   }
 
-  lcd_outdezNAtt(x, y, tme/60, att|LEADING0|LEFT, 2);
+  qr = div(tme, 60);
+
+  lcd_outdezNAtt(x, y, qr.quot, att|LEADING0|LEFT, 2);
   lcd_putcAtt(lcdLastPos-((att & DBLSIZE) ? 1 : 0), y, ':', att&att2);
-  lcd_outdezNAtt(lcdLastPos+FW, y, tme%60, att2|LEADING0|LEFT, 2);
+  lcd_outdezNAtt(lcdLastPos+FW, y, qr.rem, att2|LEADING0|LEFT, 2);
 }
 
 // TODO to be optimized with putsTelemetryValue

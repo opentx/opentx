@@ -602,28 +602,25 @@ void menuProcModel(uint8_t event)
             (attr && m_posHorz==1 ? blink:0),
             (attr && m_posHorz==2 ? blink:0) );
         if (attr && (s_editMode>0 || p1valdiff)) {
-          uint16_t timer_val = timer->val;
+          div_t qr = div(timer->val, 60);
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(MAX_PSWITCH+NUM_CSW));
               break;
             case 1:
             {
-              int8_t min = timer_val/60;
-              CHECK_INCDEC_MODELVAR(event, min, 0, 59);
-              timer_val = timer_val%60 + min*60;
+              CHECK_INCDEC_MODELVAR(event, qr.quot, 0, 59);
+              timer->val = qr.rem + qr.quot*60;
               break;
             }
             case 2:
             {
-              int8_t sec = timer_val%60;
-              sec -= checkIncDecModel(event, sec+2, 1, 62)-2;
-              timer_val -= sec ;
-              if ((int16_t)timer_val < 0) timer_val=0;
+              qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
+              timer->val -= qr.rem ;
+              if ((int16_t)timer->val < 0) timer->val=0;
               break;
             }
           }
-          timer->val = timer_val;
         }
         break;
       }

@@ -32,7 +32,6 @@
  */
 
 #include "open9x.h"
-#include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
 
