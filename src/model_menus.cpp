@@ -2434,7 +2434,12 @@ enum menuProcTelemetryItems {
 #endif
 
 #ifdef FRSKY
+#ifdef TRANSLATIONS_FR
+#define TELEM_COL2 (9*FW)
+#else
 #define TELEM_COL2 (8*FW)
+#endif
+
 void menuProcTelemetry(uint8_t event)
 {
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES 0, 0, VARIO_LINES (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
