@@ -416,6 +416,16 @@ void applyExpos(int16_t *anas)
   }
 }
 
+int16_t calc1000toRESX(int16_t x)
+{
+  // return x + x/32 - x/128 + x/512;
+  int16_t y = x>>5;
+  x+=y;
+  y=y>>2;
+  x-=y;
+  return x+(y>>2);
+}
+
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
   int16_t ofs = g_model.limitData[channel].offset;

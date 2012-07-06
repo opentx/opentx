@@ -717,15 +717,7 @@ inline int16_t calc100toRESX(int8_t x)
   return ((x*41)>>2) - x/64;
 }
 
-int16_t calc1000toRESX(int16_t x)
-{
-  // return x + x/32 - x/128 + x/512;
-  int16_t y = x>>5;
-  x+=y;
-  y=y>>2;
-  x-=y;
-  return x+(y>>2);
-}
+extern int16_t calc1000toRESX(int16_t x);
 #endif
 
 extern volatile uint16_t g_tmr10ms;
