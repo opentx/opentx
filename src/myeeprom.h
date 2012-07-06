@@ -443,9 +443,10 @@ enum FrskyUsrProtocols {
 
 enum FrskySource {
   FRSKY_SOURCE_NONE,
-  FRSKY_SOURCE_HUB,
   FRSKY_SOURCE_A1,
-  FRSKY_SOURCE_A2
+  FRSKY_SOURCE_A2,
+  FRSKY_SOURCE_FAS,
+  FRSKY_SOURCE_CELLS,
 };
 
 #if defined(PCBARM)

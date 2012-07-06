@@ -2585,13 +2585,13 @@ void menuProcTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_USR_VOLTAGE_SOURCE:
         lcd_puts(4, y, STR_VOLTAGE);
-        lcd_putsiAtt(TELEM_COL2, y, STR_CURRENTSRC, g_model.frsky.voltsSource, attr);
+        lcd_putsiAtt(TELEM_COL2, y, STR_VOLTSRC, g_model.frsky.voltsSource+1, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.voltsSource, 0, 3);
         break;
 
       case ITEM_TELEMETRY_USR_CURRENT_SOURCE:
         lcd_puts(4, y, STR_CURRENT);
-        lcd_putsiAtt(TELEM_COL2, y, STR_CURRENTSRC, g_model.frsky.currentSource, attr);
+        lcd_putsiAtt(TELEM_COL2, y, STR_VOLTSRC, g_model.frsky.currentSource, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.currentSource, 0, 3);
         break;
 

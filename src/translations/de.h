@@ -186,8 +186,8 @@
 #define TR_VTELPROTO                    ""                                                                                                                                                                                                                                                         
 #endif                                                                                                                                                                                                                                                                                             
 
-#define LEN_CURRENTSRC   "\003"
-#define TR_CURRENTSRC    "---""Hub""A1\0""A2\0"
+#define LEN_VOLTSRC   "\003"
+#define TR_VOLTSRC    "---""A1\0""A2\0""FAS""Cel"
 
 #define LEN_VARIOSRC                    "\006"                                                                                                                                                                                                                                                     
 #define TR_VARIOSRC                     "BaroV1""BaroV2""A1\0   ""A2\0"

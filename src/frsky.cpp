@@ -810,7 +810,7 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
 void frskyEvalCurrentConsumptionBoundary()
 {
   currentConsumptionBoundary = 3600;
-  if (g_model.frsky.currentSource > FRSKY_SOURCE_HUB) {
+  if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1 && g_model.frsky.currentSource <= FRSKY_SOURCE_A2) {
     uint16_t divider = (g_model.frsky.channels[g_model.frsky.currentSource-FRSKY_SOURCE_A1].ratio << g_model.frsky.channels[g_model.frsky.currentSource-FRSKY_SOURCE_A1].multiplier);
     if (divider > 5) {
       currentConsumptionBoundary = 360000L / divider;
@@ -1113,6 +1113,14 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
   return (50 + g_model.frsky.rssiAlarms[alarm].value);
 }
 
+void displayVoltageScreenLine(uint8_t y, uint8_t index)
+{
+  putsStrIdx(0, y, STR_A, index+1, 0);
+  putsTelemetryChannel(3*FW+6*FW+4, y, index+MAX_TIMERS, frskyData.analog[index].value, DBLSIZE);
+  lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+MAX_TIMERS, frskyData.analog[index].min, NO_UNIT);
+  lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+MAX_TIMERS, frskyData.analog[index].max, NO_UNIT);
+}
+
 void menuProcFrsky(uint8_t event)
 {
   switch (event) {
@@ -1249,28 +1257,43 @@ void menuProcFrsky(uint8_t event)
       displayRssiLine();
     }
     else if (s_frsky_view == e_frsky_voltages) {
-      // Big A1 / A2 with min and max, cells, Amps, mAh
-      uint8_t blink;
-      uint8_t y = 2*FH;
-      for (uint8_t i=0; i<2; i++) {
-        if (g_model.frsky.channels[i].ratio) {
-          blink = (FRSKY_alarmRaised(i) ? INVERS : 0);
-          putsStrIdx(0, y, STR_A, i+1, 0);
-          putsTelemetryChannel(3*FW+6*FW+4, y, i+MAX_TIMERS, frskyData.analog[i].value, blink|DBLSIZE);
-          lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, i+MAX_TIMERS, frskyData.analog[i].min, NO_UNIT);
-          lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, i+MAX_TIMERS, frskyData.analog[i].max, NO_UNIT);
-          y += (g_model.frsky.currentSource == FRSKY_SOURCE_NONE) ? 3*FH : 2*FH;
-        }
-        else if (i > 0) {
-          y += FH;
-        }
+      // Volts / Amps / Watts / mAh
+      uint8_t other = 0;
+      lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource+1, 0);
+      switch(g_model.frsky.voltsSource) {
+        case 0:
+        case 1:
+          displayVoltageScreenLine(2*FH, g_model.frsky.voltsSource);
+          other = !g_model.frsky.voltsSource;
+          break;
+        case 2:
+          putsTelemetryChannel(3*FW+6*FW+4, 2*FH, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
+          break;
+        case 3:
+          putsTelemetryChannel(3*FW+6*FW+4, 2*FH, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
+          break;
       }
-      if (g_model.frsky.currentSource != FRSKY_SOURCE_NONE) {
-        if (g_model.frsky.currentSource == FRSKY_SOURCE_HUB)
-          putsTelemetryChannel(2, y, TELEM_CURRENT-1, frskyData.hub.current, LEFT|DBLSIZE);
-        putsTelemetryChannel(3*FW+4+4*FW+FW, y, TELEM_POWER-1, frskyData.power, DBLSIZE);
-        putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, y, TELEM_CONSUMPTION-1, frskyData.currentConsumption, DBLSIZE);
+
+      if (g_model.frsky.currentSource) {
+        lcd_putsiAtt(0, 4*FH, STR_VOLTSRC, g_model.frsky.currentSource, 0);
+        switch(g_model.frsky.currentSource) {
+          case 1:
+          case 2:
+            displayVoltageScreenLine(4*FH, g_model.frsky.currentSource-1);
+            break;
+          case 3:
+            putsTelemetryChannel(3*FW+6*FW+4, 4*FH, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
+            break;
+        }
+
+        putsTelemetryChannel(4*FW+4, 6*FH, TELEM_POWER-1, frskyData.power, DBLSIZE);
+        putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 6*FH, TELEM_CONSUMPTION-1, frskyData.currentConsumption, DBLSIZE);
       }
+      else {
+        displayVoltageScreenLine(other ? 5*FH : 4*FH, other);
+        if (!other) displayVoltageScreenLine(6*FH, 1);
+      }
+
 #ifdef FRSKY_HUB
       // Cells voltage
       if (frskyData.hub.cellsCount > 0) {
