@@ -2436,7 +2436,7 @@ enum menuProcTelemetryItems {
 #endif
 
 #ifdef FRSKY
-#ifdef TRANSLATIONS_FR
+#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
 #define TELEM_COL2 (9*FW)
 #else
 #define TELEM_COL2 (8*FW)
