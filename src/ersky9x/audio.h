@@ -56,6 +56,11 @@ class AudioFragment : public ToneFragment {
 
 extern "C" void DAC_IRQHandler();
 
+#define AUDIO_SLEEPING     0
+#define AUDIO_RESUMING     1
+#define AUDIO_PLAYING_TONE 2
+#define AUDIO_PLAYING_WAV  3
+
 class AudioQueue {
 
   friend void audioTask(void* pdata);
@@ -73,7 +78,7 @@ class AudioQueue {
 
     bool busy()
     {
-      return (state != 0);
+      return (state != AUDIO_SLEEPING);
     }
 
   protected:
@@ -83,6 +88,7 @@ class AudioQueue {
     uint8_t state;
     uint8_t ridx;
     uint8_t widx;
+    int8_t prioIdx;
     AudioFragment fragments[AUDIO_QUEUE_LENGTH];
     ToneFragment background; // for vario
 

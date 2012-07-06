@@ -616,6 +616,8 @@ extern uint8_t  s_eeDirtyMsk;
 #define STORE_MODELVARS eeDirty(EE_MODEL)
 #define STORE_GENERALVARS eeDirty(EE_GENERAL)
 
+extern void backlightOn();
+
 #if defined (PCBARM)
 #define BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)

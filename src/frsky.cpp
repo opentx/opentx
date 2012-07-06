@@ -100,11 +100,19 @@ uint8_t frskyGetUserData(char *buffer, uint8_t bufSize)
 #endif
 
 #ifdef FRSKY_HUB
+void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
+{
+  div_t qr = div(frskyData.hub.gpsLatitude_bp, 100);
+  *latitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + frskyData.hub.gpsLatitude_ap) * 5) / 3;
+
+  qr = div(frskyData.hub.gpsLongitude_bp, 100);
+  *longitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + frskyData.hub.gpsLongitude_ap) * 5) / 3;
+}
+
 inline void getGpsPilotPosition()
 {
-  frskyData.hub.pilotLatitude = ((uint32_t)(frskyData.hub.gpsLatitude_bp / 100) * 1000000) + (((uint32_t)(frskyData.hub.gpsLatitude_bp % 100) * 10000 + frskyData.hub.gpsLatitude_ap) * 5) / 3;
-  frskyData.hub.pilotLongitude = ((uint32_t)(frskyData.hub.gpsLongitude_bp / 100) * 1000000) + (((uint32_t)(frskyData.hub.gpsLongitude_bp % 100) * 10000 + frskyData.hub.gpsLongitude_ap) * 5) / 3;
-  uint32_t lat = (uint32_t)(frskyData.hub.gpsLatitude_bp / 100) * 100 + ((uint32_t)(frskyData.hub.gpsLatitude_bp % 100) * 5) / 3;
+  extractLatitudeLongitude(&frskyData.hub.pilotLatitude, &frskyData.hub.pilotLongitude);
+  uint32_t lat = frskyData.hub.pilotLatitude / 10000;
   uint32_t angle2 = (lat*lat) / 10000;
   uint32_t angle4 = angle2 * angle2;
   frskyData.hub.distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
@@ -113,8 +121,9 @@ inline void getGpsPilotPosition()
 
 inline void getGpsDistance()
 {
-  uint32_t lat = ((uint32_t)(frskyData.hub.gpsLatitude_bp / 100) * 1000000) + (((uint32_t)(frskyData.hub.gpsLatitude_bp % 100) * 10000 + frskyData.hub.gpsLatitude_ap) * 5) / 3;
-  uint32_t lng = ((uint32_t)(frskyData.hub.gpsLongitude_bp / 100) * 1000000) + (((uint32_t)(frskyData.hub.gpsLongitude_bp % 100) * 10000 + frskyData.hub.gpsLongitude_ap) * 5) / 3;
+  uint32_t lat, lng;
+
+  extractLatitudeLongitude(&lat, &lng);
 
   // printf("lat=%d (%d), long=%d (%d)\n", lat, abs(lat - frskyData.hub.pilotLatitude), lng, abs(lng - frskyData.hub.pilotLongitude));
 
@@ -1052,7 +1061,6 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 {
   if (frskyData.hub.gpsFix >= 0) {
     if (!direction) direction = '-';
-
     lcd_outdezAtt(10*FW, y, bp / 100, LEFT); // ddd before '.'
     lcd_putc(lcdLastPos, y, '@');
     uint8_t mn = bp % 100;

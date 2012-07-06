@@ -46,9 +46,8 @@ extern void start_timer1( void ) ;
 extern void initDac( void ) ;
 extern void end_sound( void ) ;
 
-#define WAV_BUFFER_SIZE 1200
-extern uint16_t wavSamplesArray[2*WAV_BUFFER_SIZE]; /* 2 buffers of 100ms at 12kHz */
-extern uint16_t *wavSamplesBuffer;
+extern uint16_t *nextAudioData;
+extern uint16_t nextAudioSize;
 
 inline void toneStart()
 {

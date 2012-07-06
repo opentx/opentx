@@ -643,9 +643,9 @@ void menuProcSd(uint8_t event)
 #if defined(PCBARM)
       else if (result == STR_PLAY_FILE) {
         f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
-        strcat_P(lfn, PSTR("/"));
+        strcat(lfn, "/");
         strcat(lfn, reusableBuffer.sd.lines[index]);
-        audioQueue.playFile(lfn);
+        audioQueue.playFile(lfn, PLAY_NOW);
       }
 #endif
     }

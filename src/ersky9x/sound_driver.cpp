@@ -171,19 +171,21 @@ void initDac()
   NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
-uint16_t wavSamplesArray[2*WAV_BUFFER_SIZE]; /* 2 buffers of 100ms at 12kHz */
-uint16_t *wavSamplesBuffer;
-
 extern "C" void DAC_IRQHandler()
 {
 // Data for PDC must NOT be in flash, PDC needs a RAM source.
-  if (audioQueue.current.file[0]) {
-    CoEnterISR(); // Enter the interrupt
-    CoSetFlag(audioFlag);
-    CoExitISR(); // Exit the interrupt
-    wavSamplesBuffer = (wavSamplesBuffer == wavSamplesArray) ? wavSamplesArray+WAV_BUFFER_SIZE : wavSamplesArray;
-    DACC->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
-    DACC->DACC_TNCR = WAV_BUFFER_SIZE/2;
+  if (audioQueue.state == AUDIO_PLAYING_WAV) {
+    if (nextAudioData) {
+      DACC->DACC_TNPR = CONVERT_PTR(nextAudioData);
+      DACC->DACC_TNCR = nextAudioSize;
+      nextAudioData = NULL;
+      CoEnterISR(); // Enter the interrupt
+      CoSetFlag(audioFlag);
+      CoExitISR(); // Exit the interrupt
+    }
+    else {
+      toneStop();
+    }
   }
   else {
     DACC->DACC_TNPR = CONVERT_PTR(Sine_values);

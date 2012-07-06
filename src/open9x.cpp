@@ -36,9 +36,9 @@ extern "C" {
 #include <CoOS.h>
 }
 
-#define MIXER_STACK_SIZE    300
-#define MENUS_STACK_SIZE    300
-#define AUDIO_STACK_SIZE    300
+#define MIXER_STACK_SIZE    500
+#define MENUS_STACK_SIZE    1000
+#define AUDIO_STACK_SIZE    500
 #define BT_STACK_SIZE       100
 
 OS_TID mixerTaskId;
@@ -2398,7 +2398,7 @@ void perMain()
 
   // TODO port lightOnStickMove from er9x + flash saving, call checkBacklight()
   if(g_LightOffCounter) g_LightOffCounter--;
-  if(evt) g_LightOffCounter = g_eeGeneral.lightAutoOff*500; // on keypress turn the light on 5*100
+  if(evt) backlightOn(); // on keypress turn the light on
 
   if (getSwitch(g_eeGeneral.lightSw,0) || g_LightOffCounter)
     BACKLIGHT_ON;
@@ -2901,7 +2901,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   clearKeyEvents(); //make sure no keys are down before proceeding
 
   lcdSetRefVolt(g_eeGeneral.contrast);
-  g_LightOffCounter = g_eeGeneral.lightAutoOff*500; //turn on light for x seconds - no need to press key Issue 152
+  backlightOn();
 
 #if defined(PCBARM)
 
@@ -2914,6 +2914,11 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   if (check_soft_power() <= e_power_trainer) {
     wdt_enable(WDTO_500MS);
   }
+}
+
+void backlightOn()
+{
+  g_LightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
 }
 
 #if defined(PCBARM)
@@ -2930,7 +2935,7 @@ void mixerTask(void * pdata)
       lastTMR = tmr10ms;
 
       if (s_current_protocol < PROTO_NONE) {
-        checkTrims();
+        if (tick10ms) checkTrims();
         doMixerCalculations(tmr10ms, tick10ms);
       }
 

@@ -1239,12 +1239,14 @@ void deleteExpoMix(uint8_t expo, uint8_t idx)
 {
   pauseMixerCalculations();
   if (expo) {
-    memmove(expoaddress(idx), expoaddress(idx+1), (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
-    memset(expoaddress(MAX_EXPOS-1), 0, sizeof(ExpoData));
+    ExpoData *expo = expoaddress(idx);
+    memmove(expo, expo+1, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
+    memset(&g_model.expoData[MAX_EXPOS-1], 0, sizeof(ExpoData));
   }
   else {
-    memmove(mixaddress(idx), mixaddress(idx+1), (MAX_MIXERS-(idx+1))*sizeof(MixData));
-    memset(mixaddress(MAX_MIXERS-1), 0, sizeof(MixData));
+    MixData *mix = mixaddress(idx);
+    memmove(mix, mix+1, (MAX_MIXERS-(idx+1))*sizeof(MixData));
+    memset(&g_model.mixData[MAX_MIXERS-1], 0, sizeof(MixData));
   }
   resumeMixerCalculations();
   STORE_MODELVARS;
@@ -1257,7 +1259,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
   if (expo) {
     ExpoData *expo = expoaddress(idx);
     memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
-    memset(expo,0,sizeof(ExpoData));
+    memset(expo, 0, sizeof(ExpoData));
     expo->mode = 3; // pos&neg
     expo->chn = s_currCh - 1;
     expo->weight = 100;
@@ -1265,7 +1267,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
   else {
     MixData *mix = mixaddress(idx);
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
-    memset(mix,0,sizeof(MixData));
+    memset(mix, 0, sizeof(MixData));
     mix->destCh = s_currCh-1;
     mix->srcRaw = (s_currCh > 4 ? s_currCh : channel_order(s_currCh));
     mix->weight = 100;
