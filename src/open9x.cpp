@@ -849,6 +849,11 @@ void checkBacklight()
     BACKLIGHT_OFF;
 }
 
+void backlightOn()
+{
+  g_LightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
+}
+
 #ifdef SPLASH
 
 #ifdef DSM2
@@ -856,11 +861,6 @@ void checkBacklight()
 #else
 #define SPLASH_NEEDED() (!g_eeGeneral.disableSplashScreen)
 #endif
-
-void backlightOn()
-{
-  g_LightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
-}
 
 void doSplash()
 {
