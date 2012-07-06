@@ -856,6 +856,11 @@ void checkBacklight()
 #define SPLASH_NEEDED() (!g_eeGeneral.disableSplashScreen)
 #endif
 
+void backlightOn()
+{
+  g_LightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
+}
+
 void doSplash()
 {
   if (SPLASH_NEEDED()) {
@@ -2914,11 +2919,6 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   if (check_soft_power() <= e_power_trainer) {
     wdt_enable(WDTO_500MS);
   }
-}
-
-void backlightOn()
-{
-  g_LightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
 }
 
 #if defined(PCBARM)
