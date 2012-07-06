@@ -636,13 +636,13 @@ void check_frsky()
     voltage += frskyData.hub.cellVolts[i];
   voltage /= 5;
   frskyData.hub.cellsSum = voltage;
-  if (g_model.frsky.voltsSource >= FRSKY_SOURCE_A1) {
-    uint8_t channel = g_model.frsky.voltsSource - FRSKY_SOURCE_A1;
+  if (g_model.frsky.voltsSource <= 1) {
+    uint8_t channel = g_model.frsky.voltsSource;
     voltage = applyChannelRatio(channel, frskyData.analog[channel].value);
   }
 
   uint16_t current = frskyData.hub.current;
-  if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1) {
+  if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1 && g_model.frsky.currentSource <= FRSKY_SOURCE_A2) {
     uint8_t channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
     current = applyChannelRatio(channel, frskyData.analog[channel].value);
   }
@@ -820,7 +820,6 @@ void frskyEvalCurrentConsumptionBoundary()
 
 void resetTelemetry()
 {
-  // TODO these structs could be assembled to have only one memset
   memset(&frskyData, 0, sizeof(frskyData));
 
   frskyEvalCurrentConsumptionBoundary();
@@ -1286,7 +1285,7 @@ void menuProcFrsky(uint8_t event)
             break;
         }
 
-        putsTelemetryChannel(4*FW+4, 6*FH, TELEM_POWER-1, frskyData.power, DBLSIZE);
+        putsTelemetryChannel(4, 6*FH, TELEM_POWER-1, frskyData.power, LEFT|DBLSIZE);
         putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 6*FH, TELEM_CONSUMPTION-1, frskyData.currentConsumption, DBLSIZE);
       }
       else {
