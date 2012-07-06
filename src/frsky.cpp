@@ -963,10 +963,10 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
     }
 
     case TELEM_CELL-1:
-    case TELEM_VFAS-1:
-      putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC1);
+      putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);
       break;
-
+      
+    case TELEM_VFAS-1:
     case TELEM_CELLS_SUM-1:
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC1);
       break;
