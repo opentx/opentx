@@ -265,7 +265,7 @@ void parseTelemHubByte(uint8_t byte)
       break;
       
     case offsetof(FrskyHubData, volts_ap):
-      frskyData.hub.vfas = ((frskyData.hub.volts_bp * 100 + frskyData.hub.volts_bp) * 21) / 11;
+      frskyData.hub.vfas = ((frskyData.hub.volts_bp * 100 + frskyData.hub.volts_ap * 10) * 21) / 110;
       /* TODO later if (!frskyData.hub.minVfas || frskyData.hub.minVfas > frskyData.hub.vfas)
         frskyData.hub.minVfas = frskyData.hub.vfas; */
       break;
@@ -964,7 +964,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 
     case TELEM_CELL-1:
     case TELEM_VFAS-1:
-      putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);
+      putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC1);
       break;
 
     case TELEM_CELLS_SUM-1:
