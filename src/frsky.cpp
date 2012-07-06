@@ -640,6 +640,9 @@ void check_frsky()
     uint8_t channel = g_model.frsky.voltsSource;
     voltage = applyChannelRatio(channel, frskyData.analog[channel].value);
   }
+  else if (g_model.frsky.voltsSource == 2) {
+    voltage = frskyData.hub.vfas;
+  }
 
   uint16_t current = frskyData.hub.current;
   if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1 && g_model.frsky.currentSource <= FRSKY_SOURCE_A2) {
