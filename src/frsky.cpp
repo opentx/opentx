@@ -264,6 +264,12 @@ void parseTelemHubByte(uint8_t byte)
         frskyData.hub.maxCurrent = frskyData.hub.current;
       break;
       
+    case offsetof(FrskyHubData, volts_ap):
+      frskyData.hub.vfas = ((frskyData.hub.volts_bp * 100 + frskyData.hub.volts_bp) * 21) / 11;
+      /* TODO later if (!frskyData.hub.minVfas || frskyData.hub.minVfas > frskyData.hub.vfas)
+        frskyData.hub.minVfas = frskyData.hub.vfas; */
+      break;
+
     case offsetof(FrskyHubData, baroAltitude_bp):
       // First received barometer altitude => Altitude offset
       if (!frskyData.hub.baroAltitudeOffset)
@@ -625,24 +631,25 @@ void check_frsky()
   }
 #endif
 
+  uint16_t voltage = 0;
+  for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
+    voltage += frskyData.hub.cellVolts[i];
+  voltage /= 5;
+  frskyData.hub.cellsSum = voltage;
+  if (g_model.frsky.voltsSource >= FRSKY_SOURCE_A1) {
+    uint8_t channel = g_model.frsky.voltsSource - FRSKY_SOURCE_A1;
+    voltage = applyChannelRatio(channel, frskyData.analog[channel].value);
+  }
+
   uint16_t current = frskyData.hub.current;
   if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1) {
     uint8_t channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
     current = applyChannelRatio(channel, frskyData.analog[channel].value);
   }
-  frskyData.currentPrescale += current;
-  uint16_t voltage = 0;
-  if (g_model.frsky.voltsSource >= FRSKY_SOURCE_A1) {
-    uint8_t channel = g_model.frsky.voltsSource - FRSKY_SOURCE_A1;
-    voltage = applyChannelRatio(channel, frskyData.analog[channel].value);
-  }
-  else {
-    for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
-      voltage += frskyData.hub.cellVolts[i];
-    voltage /= 5;
-  }
-  frskyData.voltage = voltage;
+
   frskyData.power = current * voltage / 100;
+
+  frskyData.currentPrescale += current;
   if (frskyData.currentPrescale >= currentConsumptionBoundary) {
     frskyData.currentConsumption += 1;
     frskyData.currentPrescale -= currentConsumptionBoundary;
@@ -956,10 +963,11 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
     }
 
     case TELEM_CELL-1:
+    case TELEM_VFAS-1:
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);
       break;
 
-    case TELEM_VOLTAGE-1:
+    case TELEM_CELLS_SUM-1:
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC1);
       break;
 

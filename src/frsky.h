@@ -139,6 +139,9 @@ PACK(struct FrskyHubData {
   int16_t  varioSpeed;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
   uint8_t  minCellIdx;
+  uint16_t cellsSum;
+  uint16_t vfas;
+  // TODO later uint16_t minVfas;
 });
 
 #elif defined(WS_HOW_HIGH)
@@ -158,7 +161,6 @@ struct FrskyData {
 #endif
   uint16_t             currentConsumption;
   uint16_t             currentPrescale;
-  uint16_t             voltage;
   uint16_t             power;
 };
 
