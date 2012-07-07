@@ -130,4 +130,6 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
 #define AUDIO_HEARTBEAT()
 
+extern void pushPrompt(uint16_t prompt);
+
 #endif

@@ -412,7 +412,7 @@ extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
 
-#if defined(SOMO)
+#if defined(SOMO) || defined(PCBARM)
 void playNumber(int16_t number, uint8_t unit=0, uint8_t att=0);
 void playDuration(int16_t seconds);
 #endif

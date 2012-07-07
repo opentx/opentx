@@ -66,7 +66,7 @@ enum EnglishPrompts {
   PROMPT_MILLIAMPS = PROMPT_UNITS_BASE+UNIT_MILLIAMPS,
 };
 
-#if defined(SOMO)
+#if defined(SOMO) || defined(PCBARM)
 
 void playNumber(int16_t number, uint8_t unit, uint8_t att)
 {

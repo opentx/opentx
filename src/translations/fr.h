@@ -110,7 +110,7 @@
 #if defined(SDCARD)
 #define TR_SDCLOGS       "[SDCARD Logs]"
 #define TR_PLAY_TRACK    "Play Track\0  "
-#define TR_PLAY_VALUE    "[Play Value]\0"
+#define TR_PLAY_VALUE    "Play Value\0  "
 #else
 #define TR_SDCLOGS       "[SDCARD Logs]"
 #define TR_PLAY_TRACK    "[Play Track]\0"

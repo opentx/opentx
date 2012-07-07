@@ -616,3 +616,15 @@ void audioEvent(uint8_t e, uint8_t f)
     }
   }
 }
+
+void pushPrompt(uint16_t prompt)
+{
+  char filename[] = SYSTEM_SOUNDS_PATH "/0000.wav";
+
+  for (int8_t i=3; i>=0; i++) {
+    filename[sizeof(SYSTEM_SOUNDS_PATH)+i] = '0' + (prompt%10);
+    prompt /= 10;
+  }
+
+  audioQueue.playFile(filename);
+}

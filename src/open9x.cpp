@@ -416,6 +416,7 @@ void applyExpos(int16_t *anas)
   }
 }
 
+#if !defined(PCBARM)
 int16_t calc1000toRESX(int16_t x)
 {
   // return x + x/32 - x/128 + x/512;
@@ -425,6 +426,7 @@ int16_t calc1000toRESX(int16_t x)
   x-=y;
   return x+(y>>2);
 }
+#endif
 
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
@@ -1563,7 +1565,7 @@ void testFunc()
 uint16_t activeFunctions = 0;
 MASK_FSW_TYPE active_switches = 0;
 
-#if defined(SOMO)
+#if defined(PCBARM) || defined(SOMO)
 void playValue(uint8_t idx)
 {
   int16_t val = getValue(idx);
@@ -1716,13 +1718,18 @@ void evalFunctions()
 #endif
 
 #if defined(PCBARM) && defined(SDCARD)
-          else if (sd->func == FUNC_PLAY_TRACK) {
+          else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {
             if (!audioQueue.busy()) {
-              char lfn[32] = SOUNDS_PATH "/";
-              strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
-              lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
-              strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-              audioQueue.playFile(lfn);
+              if (sd->func == FUNC_PLAY_TRACK) {
+                char lfn[] = SOUNDS_PATH "/xxxxxx.wav";
+                strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
+                lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
+                strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
+                audioQueue.playFile(lfn);
+              }
+              else {
+                playValue(FSW_PARAM(sd));
+              }
             }
           }
           else if (sd->func == FUNC_VOLUME) {
