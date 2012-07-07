@@ -647,10 +647,10 @@ void check_frsky()
   uint16_t current = frskyData.hub.current;
   if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1 && g_model.frsky.currentSource <= FRSKY_SOURCE_A2) {
     uint8_t channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
-    current = applyChannelRatio(channel, frskyData.analog[channel].value);
+    current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
   }
 
-  frskyData.power = current * voltage / 100;
+  frskyData.power = (current * voltage) / 100;
 
   frskyData.currentPrescale += current;
   if (frskyData.currentPrescale >= currentConsumptionBoundary) {
