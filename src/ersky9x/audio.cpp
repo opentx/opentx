@@ -619,6 +619,8 @@ void audioEvent(uint8_t e, uint8_t f)
 
 void pushPrompt(uint16_t prompt)
 {
+#if defined(SDCARD)
+
   char filename[] = SYSTEM_SOUNDS_PATH "/0000" SOUNDS_EXT;
 
   for (int8_t i=3; i>=0; i--) {
@@ -627,4 +629,6 @@ void pushPrompt(uint16_t prompt)
   }
 
   audioQueue.playFile(filename);
+
+#endif
 }
