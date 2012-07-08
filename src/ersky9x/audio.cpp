@@ -182,7 +182,7 @@ void AudioQueue::wakeup()
   static FIL wavFile;
 #endif
 
-  if (prioIdx >= 0) {
+  if (prioIdx >= 0 && prioIdx != ridx) {
     ridx = prioIdx;
     prioIdx = -1;
     toneStop();
@@ -304,6 +304,7 @@ void AudioQueue::wakeup()
     CoStartTmr(audioTimer);
   }
   else if (current.pause > 0) {
+    state = AUDIO_PLAYING_TONE;
     CoSetTmrCnt(audioTimer, current.pause*2, 0);
     current.pause = 0;
     toneStop();
@@ -332,6 +333,9 @@ void AudioQueue::wakeup()
     CoStartTmr(audioTimer);
   }
   else {
+#ifndef SIMU
+    CoEnterMutexSection(audioMutex);
+#endif
     state = AUDIO_SLEEPING;
 #ifndef SIMU
     CoLeaveMutexSection(audioMutex);
