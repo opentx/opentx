@@ -1580,7 +1580,7 @@ void playValue(uint8_t idx)
       // no break
     case NUM_XCHNRAW+TELEM_A1-1:
     case NUM_XCHNRAW+TELEM_A2-1:
-      idx -= NUM_XCHNRAW+MAX_TIMERS;
+      idx -= (NUM_XCHNRAW+TELEM_A1-1);
         // A1 and A2
       {
         uint8_t att = 0;

@@ -78,7 +78,11 @@ class AudioQueue {
 
     bool busy()
     {
+#ifdef SIMU
+      return false;
+#else
       return (state != AUDIO_SLEEPING);
+#endif
     }
 
   protected:

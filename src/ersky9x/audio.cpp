@@ -157,7 +157,7 @@ extern uint16_t Sine_values[];
 #define CODEC_ID_PCM_S16LE  1
 #define CODEC_ID_PCM_ALAW   6
 uint8_t pcmCodec;
-uint16_t pcmFreq;
+uint16_t pcmFreq = 8000;
 
 void audioTask(void* pdata)
 {
@@ -182,7 +182,7 @@ void AudioQueue::wakeup()
   static FIL wavFile;
 #endif
 
-  if (prioIdx >= 0 && prioIdx != ridx) {
+  if (prioIdx >= 0) {
     ridx = prioIdx;
     prioIdx = -1;
     toneStop();
@@ -207,6 +207,7 @@ void AudioQueue::wakeup()
     FRESULT result = FR_OK;
     UINT read = 0;
     if (current.file[1]) {
+      pcmFreq = 8000;
       wavSamplesBuffer = wavSamplesArray;
       result = f_open(&wavFile, current.file, FA_OPEN_EXISTING | FA_READ);
       if (result == FR_OK) {
@@ -412,7 +413,9 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
 
 void AudioQueue::playFile(const char *filename, uint8_t flags)
 {
-#ifndef SIMU
+#ifdef SIMU
+  printf("playFile(\"%s\"\n", filename); fflush(stdout);
+#else
   CoEnterMutexSection(audioMutex);
 #endif
 
@@ -635,4 +638,5 @@ void pushPrompt(uint16_t prompt)
   audioQueue.playFile(filename);
 
 #endif
+
 }
