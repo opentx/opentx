@@ -221,6 +221,8 @@ void AudioQueue::wakeup()
         }
         else {
           result = FR_DENIED;
+          state = AUDIO_SLEEPING;
+          toneStop();
         }
       }
     }
