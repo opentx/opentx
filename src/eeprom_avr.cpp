@@ -481,9 +481,9 @@ void RlcFile::nextWriteStep()
     m_write_len = 0;
     m_cur_rlc_len = 0;
   }
-
-  if (!s_sync_write)
+  else if (!s_sync_write) {
     nextRlcWriteStep();
+  }
 }
 
 void RlcFile::create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write)
