@@ -199,6 +199,7 @@ void menuProcModelSelect(uint8_t event)
     eeDeleteModel(m_posVert); // delete file
     s_confirmation = 0;
     s_copyMode = 0;
+    event = EVT_ENTRY_UP;
   }
 
 #if defined(SDCARD)
@@ -309,7 +310,7 @@ void menuProcModelSelect(uint8_t event)
           }
 
           s_copyMode = 0;
-          return;
+          event = EVT_ENTRY_UP;
         }
         else if (_event == EVT_KEY_LONG(KEY_MENU) || IS_RE_NAVIGATION_EVT_TYPE(_event, EVT_KEY_LONG)) {
           s_copyMode = 0;
