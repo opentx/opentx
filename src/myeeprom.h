@@ -289,11 +289,21 @@ PACK(typedef struct t_MixData {
 }) MixData;
 #endif
 
+#if defined(PCBARM)
+PACK(typedef struct t_CustomSwData { // Custom Switches data
+  int8_t  v1; //input
+  int8_t  v2; //offset
+  uint8_t func;
+  uint8_t delay;
+  uint8_t duration;
+}) CustomSwData;
+#else
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 }) CustomSwData;
+#endif
 
 enum Functions {
   FUNC_SAFETY_CH1,
