@@ -67,7 +67,7 @@
 
 #define LEN_EXPLABELS    "\006"
 #ifdef PCBARM
-#define TR_EXPLABEL_NAME "Name  "
+#define TR_EXPLABEL_NAME "Namn  "
 #else
 #define TR_EXPLABEL_NAME
 #endif
@@ -108,15 +108,15 @@
 #endif
 #if defined(PCBARM)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "[SDCARD Logs]"
-#define TR_PLAY_TRACK    "Play Track\0  "
-#define TR_PLAY_VALUE    "[Play Value]\0"
+#define TR_SDCLOGS       "[SDCARD Logg]"
+#define TR_PLAY_TRACK    "Spela Sp\200r\0  "
+#define TR_PLAY_VALUE    "[Spela V\201rde]\0"
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
-#define TR_PLAY_TRACK    "[Play Track]\0"
-#define TR_PLAY_VALUE    "[Play Value]\0"
+#define TR_SDCLOGS       "[SDCARD Logg]"
+#define TR_PLAY_TRACK    "[Spela Sp\200r]\0"
+#define TR_PLAY_VALUE    "[Spela V\201rde]\0"
 #endif
-#define TR_FSW_VOLUME    "Volume\0      "
+#define TR_FSW_VOLUME    "Volym\0       "
 #elif defined(PCBV4)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SDCARD Loggar"
