@@ -296,10 +296,13 @@ void eeprom_read_block (void *pointer_ram,
 #define board_init()
 
 #define CoSetFlag(...)
+#define CoClearFlag(...)
 #define CoSetTmrCnt(...)
 #define CoEnterISR(...)
 #define CoExitISR(...)
 #define CoStartTmr(...)
 #define CoWaitForSingleFlag(...)
+#define CoEnterMutexSection(...)
+#define CoLeaveMutexSection(...)
 
 #endif

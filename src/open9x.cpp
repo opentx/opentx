@@ -1084,12 +1084,12 @@ uint8_t checkTrim(uint8_t event)
 {
   int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
   int8_t s = g_model.trimInc;
-  if (k>=0 && k<8) {
+  if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #else
 void checkTrims()
 {
   uint8_t event = getEvent(true);
-  if (event) {
+  if (event && !IS_KEY_BREAK(event)) {
     int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
     int8_t s = g_model.trimInc;
 #endif
@@ -1597,19 +1597,37 @@ void playValue(uint8_t idx)
             att |= PREC1;
           }
         }
-        playNumber(converted_value, UNIT_VOLTS, att);
+        playNumber(converted_value, 1+UNIT_VOLTS, att);
         break;
       }
 
     case NUM_XCHNRAW+TELEM_CELL-1:
-      playNumber(val, UNIT_VOLTS, PREC2);
+      playNumber(val, 1+UNIT_VOLTS, PREC2);
+      break;
+
+    case NUM_XCHNRAW+TELEM_VFAS-1:
+    case NUM_XCHNRAW+TELEM_CELLS_SUM-1:
+      playNumber(val, 1+UNIT_VOLTS, PREC1);
+      break;
+
+    case NUM_XCHNRAW+TELEM_CURRENT-1:
+    case NUM_XCHNRAW+TELEM_MAX_CURRENT-1:
+      playNumber(val, 1+UNIT_AMPS, PREC1);
       break;
 
     case NUM_XCHNRAW+TELEM_ACCx-1:
     case NUM_XCHNRAW+TELEM_ACCy-1:
     case NUM_XCHNRAW+TELEM_ACCz-1:
     case NUM_XCHNRAW+TELEM_VSPD-1:
-      playNumber(val, UNIT_RAW, PREC2);
+      playNumber(val, 0, PREC2);
+      break;
+
+    case NUM_XCHNRAW+TELEM_CONSUMPTION-1:
+      playNumber(val, 1+UNIT_MAH);
+      break;
+
+    case NUM_XCHNRAW+TELEM_POWER-1:
+      playNumber(val, 1+UNIT_WATTS);
       break;
 
     case NUM_XCHNRAW+TELEM_RSSI_TX-1:
@@ -1617,27 +1635,35 @@ void playValue(uint8_t idx)
       playNumber(val);
       break;
 
-  #if defined(IMPERIAL_UNITS)
+#if defined(IMPERIAL_UNITS)
     case NUM_XCHNRAW+TELEM_ALT-1:
     case NUM_XCHNRAW+TELEM_MIN_ALT-1:
     case NUM_XCHNRAW+TELEM_MAX_ALT-1:
       if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
-        playNumber(val, UNIT_FEET);
+        playNumber(val, 1+UNIT_FEET);
         break;
       }
       // no break
-  #endif
+#endif
 
     default:
     {
       uint8_t unit;
-      if (idx >= NUM_XCHNRAW && idx <= NUM_XCHNRAW+TELEM_GPSALT-1)
-        unit = idx - NUM_XCHNRAW - 6;
+      if (idx >= NUM_XCHNRAW+TELEM_ALT-1 && idx <= NUM_XCHNRAW+TELEM_GPSALT-1)
+        unit = idx - (NUM_XCHNRAW+TELEM_ALT-1);
       else if (idx >= NUM_XCHNRAW+TELEM_MAX_T1-1 && idx <= NUM_XCHNRAW+TELEM_MAX_DIST-1)
-        unit = idx - NUM_XCHNRAW - 22;
+        unit = 3 + idx - (NUM_XCHNRAW+TELEM_MAX_T1-1);
       else
         unit = 1;
-      playNumber(val, pgm_read_byte(bchunit_ar+unit));
+      unit = pgm_read_byte(bchunit_ar+unit);
+#if !defined(IMPERIAL_UNITS)
+      if (unit == UNIT_KTS) {
+        // kts to km/h
+        unit = UNIT_KMH;
+        val = (val * 46) / 25;
+      }
+#endif
+      playNumber(val, unit == UNIT_RAW ? 0 : unit+1);
       break;
     }
   }

@@ -2305,7 +2305,7 @@ void menuProcFunctionSwitches(uint8_t event)
               break;
             }
             else if (sd->func == FUNC_PLAY_VALUE) {
-              val_max = NUM_XCHNPLAY;
+              val_max = NUM_XCHNPLAY-1;
               putsChnRaw(17*FW, y, val_displayed+1, attr);
             }
 #endif
@@ -2320,7 +2320,7 @@ void menuProcFunctionSwitches(uint8_t event)
               lcd_outdezAtt(21*FW, y, val_displayed, attr);
             }
             else if (sd->func == FUNC_PLAY_VALUE) {
-              val_max = NUM_XCHNPLAY;
+              val_max = NUM_XCHNPLAY-1;
               putsChnRaw(17*FW, y, val_displayed+1, attr);
             }
 #endif

@@ -492,7 +492,7 @@ void popMenu()
 void chainMenu(MenuFuncP newMenu)
 {
 #if defined(ROTARY_ENCODERS)
-  s_warning = NULL;
+  s_inflight_enable = false;
 #endif
   g_menuStack[g_menuStackPtr] = newMenu;
   (*newMenu)(EVT_ENTRY);
@@ -502,7 +502,7 @@ void chainMenu(MenuFuncP newMenu)
 void pushMenu(MenuFuncP newMenu)
 {
 #if defined(ROTARY_ENCODERS)
-  s_warning = NULL;
+  s_inflight_enable = false;
 #endif
 
   g_menuPos[g_menuStackPtr] = m_posVert;
@@ -519,6 +519,7 @@ void pushMenu(MenuFuncP newMenu)
   (*newMenu)(EVT_ENTRY);
 }
 
+const pm_char * s_global_warning = 0;
 const pm_char * s_warning = 0;
 const pm_char * s_warning_info;
 uint8_t         s_warning_info_len;
@@ -657,6 +658,7 @@ void drawStatusLine()
 #endif
 
 #if defined(ROTARY_ENCODERS)
+bool s_inflight_enable = false;
 int8_t *s_inflight_value = NULL;
 int8_t s_inflight_min;
 int8_t s_inflight_max;

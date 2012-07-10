@@ -77,6 +77,11 @@ void menuMainView(uint8_t event)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 
+  uint8_t _event = event;
+  if (s_global_warning) {
+    event = 0;
+  }
+
   switch(event)
   {
     /* TODO if timer2 is OFF, it's possible to use this timer2 as in er9x...
@@ -147,9 +152,12 @@ void menuMainView(uint8_t event)
       if(s_timerState[0]==TMR_BEEPING) {
         s_timerState[0] = TMR_STOPPED;
       }
+      else if (s_global_warning) {
+        s_global_warning = NULL;
+      }
 #if defined(ROTARY_ENCODERS)
-      else if (s_warning) {
-        s_warning = NULL;
+      else if (s_inflight_enable) {
+        s_inflight_enable = false;
       }
 #endif
       else if (view == e_timer2) {
@@ -174,8 +182,8 @@ void menuMainView(uint8_t event)
     case EVT_KEY_LONG(BTN_REb):
       if (navigationRotaryEncoder(event)) {
         killEvents(event);
-        if (s_inflight_value && !s_warning) {
-          s_warning = s_inflight_label;
+        if (s_inflight_value && !s_inflight_enable) {
+          s_inflight_enable = true;
           s_editMode = 1;
           break;
         }
@@ -183,7 +191,7 @@ void menuMainView(uint8_t event)
       // no break
     case EVT_KEY_BREAK(BTN_REa):
     case EVT_KEY_BREAK(BTN_REb):
-      s_warning = NULL;
+      s_inflight_enable = false;
       break;
 #endif
   }
@@ -345,15 +353,24 @@ void menuMainView(uint8_t event)
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 
+  if (s_global_warning) {
+    s_warning = s_global_warning;
+    displayWarning(_event);
+    if (!s_warning) s_global_warning = NULL;
+    s_warning = NULL;
+  }
+
 #if defined(ROTARY_ENCODERS)
   check_rotary_encoder();
-  if (s_warning) {
+  if (s_inflight_enable && !s_warning) {
     int8_t value = (((uint8_t)(*s_inflight_value)) >> s_inflight_bitshift) - s_inflight_shift;
     if (p1valdiff) {
       value = checkIncDecModel(event, value, s_inflight_min, s_inflight_max);
       *s_inflight_value = (((uint8_t)(*s_inflight_value)) & ((1 << s_inflight_bitshift) - 1)) + ((s_inflight_shift + value) << s_inflight_bitshift);
     }
+    s_warning = s_inflight_label;
     displayBox();
+    s_warning = 0;
     lcd_outdezAtt(16, 4*FH, value, LEFT);
   }
 #endif

@@ -64,6 +64,10 @@ enum EnglishPrompts {
   PROMPT_DEGREES = PROMPT_UNITS_BASE+UNIT_DEGREES,
   PROMPT_PERCENT = PROMPT_UNITS_BASE+UNIT_PERCENT,
   PROMPT_MILLIAMPS = PROMPT_UNITS_BASE+UNIT_MILLIAMPS,
+  PROMPT_MAH = PROMPT_UNITS_BASE+UNIT_MAH,
+  PROMPT_WATTS = PROMPT_UNITS_BASE+UNIT_WATTS,
+  PROMPT_FEET = PROMPT_UNITS_BASE+UNIT_FEET,
+  PROMPT_KTS = PROMPT_UNITS_BASE+UNIT_KTS,
 };
 
 #if defined(SOMO) || defined(PCBARM)
@@ -79,27 +83,35 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
       prompts.extend(self.getNumberPrompt(temp_digit))
       prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
 */
+
+  if (number < 0) {
+    pushPrompt(PROMPT_MINUS);
+    number = -number;
+  }
+
   if (number >= 1000) {
     playNumber(number / 1000);
     pushPrompt(PROMPT_THOUSAND);
     number %= 1000;
     if (number == 0)
-      return;
+      number = -1;
   }
   if (number >= 100) {
     pushPrompt(PROMPT_ZERO + number/100);
     pushPrompt(PROMPT_HUNDRED);
     number %= 100;
     if (number == 0)
-      return;
+      number = -1;
   }
   if (number >= 20) {
     pushPrompt(PROMPT_TWENTY + (number-20)/10);
     number %= 10;
     if (number == 0)
-      return;
+      number = -1;
   }
-  pushPrompt(PROMPT_ZERO+number);
+  if (number >= 0) {
+    pushPrompt(PROMPT_ZERO+number);
+  }
 
   if (unit) {
     pushPrompt(PROMPT_UNITS_BASE+unit-1);

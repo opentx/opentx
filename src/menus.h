@@ -120,6 +120,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecGen(event,var,min,max)
 
 #if defined(ROTARY_ENCODERS)
+extern bool s_inflight_enable;
 extern int8_t *s_inflight_value;
 extern const pm_char *s_inflight_label;
 extern int8_t s_inflight_min;
@@ -184,6 +185,7 @@ if (!check_submenu_simple(event,(lines_count)-1)) return;
 SIMPLE_SUBMENU_NOTITLE(lines_count); \
 TITLE(title)
 
+extern const pm_char * s_global_warning;
 extern const pm_char * s_warning;
 extern const pm_char * s_warning_info;
 extern uint8_t         s_warning_info_len;
