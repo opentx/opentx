@@ -232,7 +232,7 @@ ifeq ($(UNITS), IMPERIAL)
   CPPDEFS += -DIMPERIAL_UNITS
 endif
 
-# If POT1/POTS/RE1 is used for fields modification
+# If POTS are used for fields modification
 ifeq ($(NAVIGATION), POT1)
   CPPDEFS += -DNAVIGATION_POT1
 endif
@@ -334,7 +334,7 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
-  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM
+  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS
   EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
@@ -346,10 +346,6 @@ ifeq ($(PCB), ARM)
   
   ifeq ($(SDCARD), YES)
     SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
-  endif
-  
-  ifeq ($(ROTARY_ENCODERS), YES)
-    CPPDEFS += -DROTARY_ENCODERS
   endif
 endif
 
