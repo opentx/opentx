@@ -79,6 +79,16 @@
 /* telemetry flags */
 #define NO_UNIT       0x40
 
+#define SURROUNDED    0x100
+
+#if defined(PCBARM)
+#define LcdFlags uint32_t
+#elif defined(PCBV4)
+#define LcdFlags uint16_t
+#else
+#define LcdFlags uint8_t
+#endif
+
 extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 extern uint8_t lcdLastPos;
 
@@ -99,8 +109,8 @@ extern void lcd_putsn(uint8_t x,uint8_t y,const pm_char * s,unsigned char len);
 
 extern void lcd_outhex4(uint8_t x,uint8_t y,uint16_t val);
 
-extern void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode=0);
-extern void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t mode=0, uint8_t len=0);
+extern void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags mode=0);
+extern void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags mode=0, uint8_t len=0);
 extern void lcd_outdez8(uint8_t x, uint8_t y, int8_t val);
 
 extern void putsStrIdx(uint8_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t att=0);

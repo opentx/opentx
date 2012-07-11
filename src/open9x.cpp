@@ -1684,6 +1684,8 @@ void evalFunctions()
 {
   assert((int)(sizeof(activeFunctions)*8) > (int)(FUNC_MAX-NUM_CHNOUT));
 
+  uint16_t newActiveFunctions = 0;
+
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
     safetyCh[i] = -128; // not defined
 
@@ -1783,22 +1785,22 @@ void evalFunctions()
 #endif
 
 #if defined(DEBUG)
-          if (sd->func == FUNC_TEST) {
-            printf("%d ", sd->swtch);
+          else if (sd->func == FUNC_TEST) {
             testFunc();
           }
 #endif
         }
 
-        activeFunctions |= function_mask;
+        newActiveFunctions |= function_mask;
         active_switches |= switch_mask;
       }
       else {
-        activeFunctions &= (~function_mask);
         active_switches &= (~switch_mask);
       }
     }
   }
+
+  activeFunctions = newActiveFunctions;
 }
 
 uint8_t s_perout_flight_phase;

@@ -229,7 +229,7 @@ void lcd_outdez8(uint8_t x, uint8_t y, int8_t val)
   lcd_outdezAtt(x, y, val);
 }
 
-void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags)
+void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags flags)
 {
   lcd_outdezNAtt(x, y, val, flags);
 }
@@ -247,7 +247,7 @@ USAGE:
   LEADING0 means pad 0 to the left of sig. digits up to 'len' total characters
 */
 
-void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t len)
+void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t len)
 {
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
@@ -331,8 +331,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, uint8_t flags, uint8_t le
   if (neg) lcd_putcAtt(x, y, '-', flags);
 
 #if defined(ROTARY_ENCODERS)
-  // TODO review it!
-  if (flags & BOLD) {
+  if (flags & SURROUNDED) {
     xn = lcdLastPos - x + 2;
     if (!neg) { x+=FW; xn-=FW; }
     lcd_rect(x-1, y-1, xn, 9, BLINK_ON_PHASE ? DOTTED : ~DOTTED);
