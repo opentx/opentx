@@ -193,9 +193,17 @@ void check_rotary_encoder()
   if (g_eeGeneral.reNavigation) {
     uint8_t re = g_eeGeneral.reNavigation - 1;
     p1valdiff = 0;
+#if defined(PCBARM)
+    scrollRE = re1valprev - g_rotenc[re] /4;
+#else
     scrollRE = re1valprev - g_rotenc[re];
+#endif   
     if (scrollRE) {
+#if defined(PCBARM)
+      re1valprev = g_rotenc[re] / 4;
+#else
       re1valprev = g_rotenc[re];
+#endif    	
       if (s_editMode > 0) {
         p1valdiff = -scrollRE;
         scrollRE = 0;
@@ -218,8 +226,11 @@ void check_rotary_encoder()
 #else
 #define MAXCOL(row) (horTab ? pgm_read_byte(horTab+min(row, horTabMax)) : (const uint8_t)0)
 #endif
+
 #define INC(val,max) if(val<max) {val++;} else {val=0;}
 #define DEC(val,max) if(val>0  ) {val--;} else {val=max;}
+
+
 bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, uint8_t maxrow)
 {
   int8_t maxcol = MAXCOL(m_posVert);
