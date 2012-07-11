@@ -203,8 +203,8 @@
 #define LEN_VKEYS        "\005"
 #define TR_VKEYS         " Menu"" Exit""  Bas"" Haut""Droit""Gauch"
 
-#define LEN_RE1RE2       "\003"
-#define TR_RE1RE2        "RE1""RE2"
+#define LEN_VRENCODERS       "\003"
+#define TR_VRENCODERS        "REa""REb"
 
 #define LEN_VSWITCHES    "\003"
 #if defined(PCBARM)

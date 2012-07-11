@@ -300,10 +300,10 @@ void menuProcSetup(uint8_t event)
 
 #if defined(ROTARY_ENCODERS)
       case ITEM_SETUP_RE_NAVIGATION:
-        g_eeGeneral.reNavigation = selectMenuItem(y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, 2, attr, event);
+        g_eeGeneral.reNavigation = selectMenuItem(y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, ROTARY_ENCODERS, attr, event);
         if (attr && checkIncDec_Ret) {
-          g_rotenc[0] = 0;
-          g_rotenc[1] = 0;
+          for (uint8_t i=0; i<ROTARY_ENCODERS; i++)
+            g_rotenc[i] = 0;
           p1valdiff = 0;
           scrollRE = 0;
         }
@@ -761,10 +761,10 @@ void menuProcDiagKeys(uint8_t event)
   }
 
 #if defined (ROTARY_ENCODERS)
-  for(uint8_t i=0; i<2; i++) {
+  for(uint8_t i=0; i<ROTARY_ENCODERS; i++) {
     uint8_t y = i*FH + FH;
-    lcd_putsiAtt(14*FW, y, STR_RE1RE2, i, 0);
-    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_RE1+i)) ? INVERS : 0));
+    lcd_putsiAtt(14*FW, y, STR_VRENCODERS, i, 0);
+    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_REa+i)) ? INVERS : 0));
   }
 #endif
 

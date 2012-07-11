@@ -71,8 +71,8 @@ extern const pm_char STR_OPEN9X[];
 #endif
 #if defined(ROTARY_ENCODERS)
 #define OFS_VRENAVIG   (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
-#define OFS_RE1RE2     (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
-#define OFS_VFILTERADC (OFS_RE1RE2 + sizeof(TR_RE1RE2))
+#define OFS_VRENCODERS (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
+#define OFS_VFILTERADC (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
 #else
 #define OFS_VFILTERADC (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
@@ -189,7 +189,7 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(ROTARY_ENCODERS)
 #define STR_VRENAVIG   (STR_OPEN9X + OFS_VRENAVIG)
-#define STR_RE1RE2     (STR_OPEN9X + OFS_RE1RE2)
+#define STR_VRENCODERS     (STR_OPEN9X + OFS_VRENCODERS)
 #endif
 
 #if defined(PCBV4)

@@ -171,6 +171,7 @@ inline void setup_switches()
 
 #ifdef SIMU
 #define end_ppm_capture()
+#define stop_rotary_encoder()
 #define sam_boot()
 #else
 
@@ -444,11 +445,11 @@ extern "C" void PIOC_IRQHandler()
   {
     if ( ( Rotary_position & 0x01 ) ^ ( ( dummy & 0x04) >> 2 ) )
     {
-      incRotaryEncoder(0, -1);
+      incRotaryEncoder(0, +1);
     }
     else
     {
-      incRotaryEncoder(0, +1);
+      incRotaryEncoder(0, -1);
     }
     Rotary_position &= ~0x45 ;
     Rotary_position |= dummy ;
@@ -1023,7 +1024,7 @@ void readKeysAndTrims()
   register uint32_t i;
 
 #if defined(ROTARY_ENCODERS)
-  keys[BTN_RE1].input(PIOB->PIO_PDSR & 0x40, BTN_RE1);
+  keys[BTN_REa].input(PIOB->PIO_PDSR & 0x40, BTN_REa);
 #endif
 
   uint8_t enuk = KEY_MENU;

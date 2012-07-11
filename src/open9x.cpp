@@ -2865,7 +2865,11 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 
 #if defined(ROTARY_ENCODERS)
 // Rotary encoder interrupts
-volatile uint8_t g_rotenc[2] = {0};
+#if defined(PCBARM)
+volatile uint32_t g_rotenc[ROTARY_ENCODERS] = {0};
+#else
+volatile uint8_t g_rotenc[ROTARY_ENCODERS] = {0};
+#endif
 #endif
 
 #ifndef SIMU

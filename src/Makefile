@@ -334,7 +334,7 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
-  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS
+  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
@@ -352,7 +352,7 @@ endif
 ifeq ($(PCB), V4)
   # V4 PCB, so ...
   OPT = 2
-  CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC -DROTARY_ENCODERS
+  CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp

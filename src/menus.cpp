@@ -185,6 +185,13 @@ bool check_submenu_simple(uint8_t event, uint8_t maxrow)
 }
 
 #if defined(ROTARY_ENCODERS)
+
+#if defined(PCBARM)
+#define ROTARY_ENCODER_GRANULARITY 4
+#else
+#define ROTARY_ENCODER_GRANULARITY 1
+#endif
+
 void check_rotary_encoder()
 {
   // check rotary encoder 1 if changed -> cursor down/up
@@ -193,17 +200,9 @@ void check_rotary_encoder()
   if (g_eeGeneral.reNavigation) {
     uint8_t re = g_eeGeneral.reNavigation - 1;
     p1valdiff = 0;
-#if defined(PCBARM)
-    scrollRE = re1valprev - g_rotenc[re] /4;
-#else
-    scrollRE = re1valprev - g_rotenc[re];
-#endif   
+    scrollRE = re1valprev - (g_rotenc[re] / ROTARY_ENCODER_GRANULARITY);
     if (scrollRE) {
-#if defined(PCBARM)
-      re1valprev = g_rotenc[re] / 4;
-#else
-      re1valprev = g_rotenc[re];
-#endif    	
+      re1valprev = (g_rotenc[re] / ROTARY_ENCODER_GRANULARITY);
       if (s_editMode > 0) {
         p1valdiff = -scrollRE;
         scrollRE = 0;
@@ -238,12 +237,12 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
 #if defined(ROTARY_ENCODERS)
   if (!(s_warning || s_sdcard_error || s_menu_count))
     check_rotary_encoder();
-  if (m_posVert < 0 && (event==EVT_KEY_FIRST(BTN_RE1) || event==EVT_KEY_FIRST(BTN_RE2) || event==EVT_KEY_FIRST(KEY_MENU))) {
+  if (m_posVert < 0 && (event==EVT_KEY_FIRST(BTN_REa) || event==EVT_KEY_FIRST(BTN_REb) || event==EVT_KEY_FIRST(KEY_MENU))) {
     popMenu();
     killEvents(event);
     return false;
   }
-  if (g_eeGeneral.reNavigation && event == EVT_KEY_BREAK(BTN_RE1+g_eeGeneral.reNavigation-1)) {
+  if (g_eeGeneral.reNavigation && event == EVT_KEY_BREAK(BTN_REa+g_eeGeneral.reNavigation-1)) {
     if (s_editMode > 0 && (maxcol & ZCHAR)) {
       if (m_posHorz < maxcol-ZCHAR) {
         m_posHorz++;
@@ -681,7 +680,7 @@ void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t
 {
   *value = (((uint8_t)(*value)) & ((1 << bitshift) - 1)) + ((i_shift + checkIncDecModel(event, (((uint8_t)(*value)) >> bitshift)-i_shift, i_min, i_max)) << bitshift);
 
-  if (g_eeGeneral.reNavigation && event == EVT_KEY_LONG(BTN_RE1+g_eeGeneral.reNavigation-1)) {
+  if (g_eeGeneral.reNavigation && event == EVT_KEY_LONG(BTN_REa+g_eeGeneral.reNavigation-1)) {
     if (value == s_inflight_value) {
       s_inflight_value = NULL;
     }

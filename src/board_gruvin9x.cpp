@@ -156,7 +156,7 @@ ISR(USART1_RX_vect)
   resh = (resh >> 1) & 0x01;
   res = ((resh << 8) | resl);  
   if((res == 0x180) | (res == 0x1C0)){         //button REb filter
-    keys[BTN_RE1].input((res & 0x1C0) == 0x1C0, BTN_RE1);
+    keys[BTN_REa].input((res & 0x1C0) == 0x1C0, BTN_REa);
   } else if((res & 0x100) == 0x100){  //rotary filter
     vpotToChange = res & 0xEF;
     vpot_mod_state = 1;
@@ -275,9 +275,9 @@ void readKeysAndTrims()
   uint8_t enuk = KEY_MENU;
 
 #if !defined(EXTRA_ROTARY_ENCODERS)
-  keys[BTN_RE1].input(~PIND & 0x20, BTN_RE1);
+  keys[BTN_REa].input(~PIND & 0x20, BTN_REa);
 #endif //!EXTRA_ROTARY_ENCODERS
-  keys[BTN_RE2].input(~PIND & 0x10, BTN_RE2);
+  keys[BTN_REb].input(~PIND & 0x10, BTN_REb);
 
   uint8_t tin = ~PINL;
   uint8_t in;

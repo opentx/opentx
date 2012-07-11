@@ -310,8 +310,8 @@ enum EnumKeys {
   TRM_RH_DWN  ,
   TRM_RH_UP   ,
 #if defined(ROTARY_ENCODERS)
-  BTN_RE1,
-  BTN_RE2,
+  BTN_REa,
+  BTN_REb,
 #endif
   //SW_NC     ,
   //SW_ON     ,
@@ -546,7 +546,7 @@ int16_t getRotaryEncoder(uint8_t idx);
 void incRotaryEncoder(uint8_t idx, int8_t inc);
 inline bool navigationRotaryEncoder(uint8_t event)
 {
-  return g_eeGeneral.reNavigation == ((event & EVT_KEY_MASK) - BTN_RE1 + 1);
+  return g_eeGeneral.reNavigation == ((event & EVT_KEY_MASK) - BTN_REa + 1);
 }
 #endif
 
@@ -820,9 +820,13 @@ inline bool isFunctionActive(uint8_t func)
 extern char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE]; // text buffer for frsky telem. user data experiments
 #endif
 
-#if defined (ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS)
 // Global rotary encoder registers -- 8-bit, 0-255
-extern volatile uint8_t g_rotenc[2];
+#if defined(PCBARM)
+extern volatile uint32_t g_rotenc[ROTARY_ENCODERS];
+#else
+extern volatile uint8_t g_rotenc[ROTARY_ENCODERS];
+#endif
 #endif
 
 #ifdef JETI
