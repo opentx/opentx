@@ -760,11 +760,11 @@ void menuProcDiagKeys(uint8_t event)
     lcd_putcAtt(5*FW+2, y, t+'0', t);
   }
 
-#if defined (PCBV4)
+#if defined (ROTARY_ENCODERS)
   for(uint8_t i=0; i<2; i++) {
     uint8_t y = i*FH + FH;
     lcd_putsiAtt(14*FW, y, STR_RE1RE2, i, 0);
-    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_REa+i)) ? INVERS : 0));
+    lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(keyState((EnumKeys)(BTN_RE1+i)) ? INVERS : 0));
   }
 #endif
 

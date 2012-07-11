@@ -46,6 +46,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VBEEPMODE)
 #if defined(ROTARY_ENCODERS)
     ISTR(VRENAVIG)
+    ISTR(RE1RE2)
 #endif
     ISTR(VFILTERADC)
     ISTR(TRNMODE)
@@ -88,7 +89,6 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(DSM2MODE)
 #endif
 #if defined(PCBV4)
-    ISTR(RE1RE2)
     ISTR(DATETIME)
 #endif
     ;

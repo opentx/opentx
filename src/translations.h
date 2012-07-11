@@ -71,7 +71,8 @@ extern const pm_char STR_OPEN9X[];
 #endif
 #if defined(ROTARY_ENCODERS)
 #define OFS_VRENAVIG   (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
-#define OFS_VFILTERADC (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
+#define OFS_RE1RE2     (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
+#define OFS_VFILTERADC (OFS_RE1RE2 + sizeof(TR_RE1RE2))
 #else
 #define OFS_VFILTERADC (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
@@ -127,8 +128,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_ENDDSM2    (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #endif
 #if defined(PCBV4)
-#define OFS_RE1RE2     (OFS_ENDDSM2)
-#define OFS_DATETIME   (OFS_RE1RE2 + sizeof(TR_RE1RE2))
+#define OFS_DATETIME   (OFS_ENDDSM2)
 #endif
 
 #define STR_OFFON      (STR_OPEN9X + OFS_OFFON)
@@ -138,7 +138,6 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VBEEPLEN   (STR_OPEN9X + OFS_VBEEPLEN)
 #endif
 #define STR_VBEEPMODE  (STR_OPEN9X + OFS_VBEEPMODE)
-#define STR_VRENAVIG   (STR_OPEN9X + OFS_VRENAVIG)
 #define STR_VFILTERADC (STR_OPEN9X + OFS_VFILTERADC)
 #define STR_TRNMODE    (STR_OPEN9X + OFS_TRNMODE)
 #define STR_TRNCHN     (STR_OPEN9X + OFS_TRNCHN)
@@ -188,8 +187,12 @@ extern const pm_char STR_OPEN9X[];
 #define STR_DSM2MODE   (STR_OPEN9X + OFS_DSM2MODE)
 #endif
 
-#if defined(PCBV4)
+#if defined(ROTARY_ENCODERS)
+#define STR_VRENAVIG   (STR_OPEN9X + OFS_VRENAVIG)
 #define STR_RE1RE2     (STR_OPEN9X + OFS_RE1RE2)
+#endif
+
+#if defined(PCBV4)
 #define STR_DATETIME   (STR_OPEN9X + OFS_DATETIME)
 #endif
 

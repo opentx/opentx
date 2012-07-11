@@ -82,8 +82,8 @@ void menuProcDebug(uint8_t event);
 #if defined(ROTARY_ENCODERS)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
-#define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
-#define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && (event&EVT_KEY_MASK)==(BTN_REa + g_eeGeneral.reNavigation - 1))
+#define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_RE1 + g_eeGeneral.reNavigation - 1))
+#define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && (event&EVT_KEY_MASK)==(BTN_RE1 + g_eeGeneral.reNavigation - 1))
 #else
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (0)
 #define IS_RE_NAVIGATION_EVT(event) (0)

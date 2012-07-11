@@ -178,8 +178,8 @@ void menuMainView(uint8_t event)
       killEvents(KEY_DOWN);
       break;
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_LONG(BTN_REa):
-    case EVT_KEY_LONG(BTN_REb):
+    case EVT_KEY_LONG(BTN_RE1):
+    case EVT_KEY_LONG(BTN_RE2):
       if (navigationRotaryEncoder(event)) {
         killEvents(event);
         if (s_inflight_value && !s_inflight_enable) {
@@ -189,8 +189,8 @@ void menuMainView(uint8_t event)
         }
       }
       // no break
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
+    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_RE2):
       s_inflight_enable = false;
       break;
 #endif

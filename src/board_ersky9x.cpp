@@ -415,6 +415,46 @@ void end_ppm_capture()
   NVIC_DisableIRQ(TC3_IRQn) ;
 }
 
+static void init_rotary_encoder()
+{
+  configure_pins( PIO_PC19 | PIO_PC21, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_PULLUP ) ;        // 19 and 21 are rotary encoder
+  configure_pins( PIO_PB6, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;            // rotary encoder switch
+  PIOC->PIO_IER = PIO_PC19 | PIO_PC21 ;
+  NVIC_EnableIRQ(PIOC_IRQn) ;
+}
+
+static void stop_rotary_encoder()
+{
+  NVIC_DisableIRQ(PIOC_IRQn) ;
+  PIOC->PIO_IDR = PIO_PC19 | PIO_PC21 ;
+}
+
+volatile uint32_t Rotary_position ;
+extern "C" void PIOC_IRQHandler()
+{
+  register uint32_t dummy;
+
+  dummy = PIOC->PIO_ISR ;                 // Read and clear status register
+  (void) dummy ;                          // Discard value - prevents compiler warning
+
+  dummy = PIOC->PIO_PDSR ;                // Read Rotary encoder (PC19, PC21)
+  dummy >>= 19 ;
+  dummy &= 0x05 ;                 // pick out the three bits
+  if ( dummy != ( Rotary_position & 0x05 ) )
+  {
+    if ( ( Rotary_position & 0x01 ) ^ ( ( dummy & 0x04) >> 2 ) )
+    {
+      incRotaryEncoder(0, -1);
+    }
+    else
+    {
+      incRotaryEncoder(0, +1);
+    }
+    Rotary_position &= ~0x45 ;
+    Rotary_position |= dummy ;
+  }
+}
+
 extern "C" void TC2_IRQHandler()
 {
   register uint32_t dummy;
@@ -733,6 +773,8 @@ void board_init()
 
   eeprom_init();
 
+  init_rotary_encoder();
+
   init_SDcard();
 
 }
@@ -980,6 +1022,10 @@ void readKeysAndTrims()
 {
   register uint32_t i;
 
+#if defined(ROTARY_ENCODERS)
+  keys[BTN_RE1].input(PIOB->PIO_PDSR & 0x40, BTN_RE1);
+#endif
+
   uint8_t enuk = KEY_MENU;
   uint8_t in = ~read_keys();
   for (i = 1; i < 7; i++) {
@@ -1106,6 +1152,7 @@ void usb_mode()
   // This might be replaced by a software reset
   // Any interrupts that have been enabled must be disabled here
   // BEFORE calling sam_boot()
+  stop_rotary_encoder();
   endPdcUsartReceive() ;          // Terminate any serial reception
   end_ppm_capture() ;
   end_spi() ;

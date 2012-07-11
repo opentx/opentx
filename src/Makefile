@@ -347,6 +347,10 @@ ifeq ($(PCB), ARM)
   ifeq ($(SDCARD), YES)
     SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
   endif
+  
+  ifeq ($(ROTARY_ENCODERS), YES)
+    CPPDEFS += -DROTARY_ENCODERS
+  endif
 endif
 
 ifeq ($(PCB), V4)

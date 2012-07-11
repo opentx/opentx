@@ -269,13 +269,13 @@ void menuProcModelSelect(uint8_t event)
         }
         break;
 #if defined(ROTARY_ENCODERS)
-      case EVT_KEY_BREAK(BTN_REa):
-      case EVT_KEY_BREAK(BTN_REb):
+      case EVT_KEY_BREAK(BTN_RE1):
+      case EVT_KEY_BREAK(BTN_RE2):
         if (navigationRotaryEncoder(_event))
           s_editMode = (s_editMode == 0 && sub == g_eeGeneral.currModel) ? -1 : 0;
         break;
-      case EVT_KEY_LONG(BTN_REa):
-      case EVT_KEY_LONG(BTN_REb):
+      case EVT_KEY_LONG(BTN_RE1):
+      case EVT_KEY_LONG(BTN_RE2):
         if (!navigationRotaryEncoder(_event))
           break;
 #endif
@@ -518,13 +518,13 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
           if (next<size-1) next++;
           break;
 #if defined(ROTARY_ENCODERS)
-        case EVT_KEY_LONG(BTN_REa):
-        case EVT_KEY_LONG(BTN_REb):
+        case EVT_KEY_LONG(BTN_RE1):
+        case EVT_KEY_LONG(BTN_RE2):
           if (!navigationRotaryEncoder(event))
             break;
           if (v==0) {
             s_editMode = 0;
-            killEvents(BTN_REa);
+            killEvents(BTN_RE1);
             break;
           }
           // no break
@@ -914,10 +914,11 @@ void menuProcPhasesAll(uint8_t event)
 
   switch (event) {
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
+    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_RE2):
       if (!navigationRotaryEncoder(event))
         break;
+      // no break
 #endif
     case EVT_KEY_FIRST(KEY_MENU):
       if (sub == MAX_PHASES) {
@@ -1119,8 +1120,8 @@ void menuProcCurveOne(uint8_t event)
 #endif
       break;
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
+    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_RE2):
       if (!navigationRotaryEncoder(event))
         break;
 #endif
@@ -1713,10 +1714,10 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
       }
       // no break
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-    case EVT_KEY_LONG(BTN_REa):
-    case EVT_KEY_LONG(BTN_REb):
+    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_RE2):
+    case EVT_KEY_LONG(BTN_RE1):
+    case EVT_KEY_LONG(BTN_RE2):
       if (sub == 0)
         break;
 #endif
@@ -2098,8 +2099,8 @@ void menuProcCurvesAll(uint8_t event)
 
   switch (event) {
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
+    case EVT_KEY_BREAK(BTN_RE1):
+    case EVT_KEY_BREAK(BTN_RE2):
       if (!navigationRotaryEncoder(event))
         break;
 #endif

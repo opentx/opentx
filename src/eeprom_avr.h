@@ -38,8 +38,10 @@
 
 #if defined(PCBV4) && !defined(REV0)
 #define WRITE_DELAY_10MS 500
-extern uint16_t s_eeDirtyTime10ms;
+#else
+#define WRITE_DELAY_10MS 200
 #endif
+extern uint16_t s_eeDirtyTime10ms;
 
 //
 // bs=16  128 blocks    verlust link:128  16files:16*8  128     sum 256

@@ -39,9 +39,7 @@
 uint8_t  s_write_err = 0;    // error reasons
 uint8_t  s_sync_write = false;
 uint8_t  s_eeDirtyMsk;
-#if defined(PCBV4) && !defined(REV0)
 uint16_t s_eeDirtyTime10ms;
-#endif
 
 RlcFile theFile;  //used for any file operation
 EeFs eeFs;
@@ -49,9 +47,7 @@ EeFs eeFs;
 void eeDirty(uint8_t msk)
 {
   s_eeDirtyMsk |= msk;
-#if defined(PCBV4) && !defined(REV0)
   s_eeDirtyTime10ms = get_tmr10ms();
-#endif
 }
 
 uint16_t eeprom_pointer;
@@ -164,13 +160,15 @@ static void EeFsFlush()
 
 uint16_t EeFsGetFree()
 {
-  uint16_t  ret = 0;
+  int16_t  ret = 0;
   uint8_t i = eeFs.freeList;
-  while( i ){
+  while (i) {
     ret += BS-1;
     i = EeFsGetLink(i);
   }
-  return ret;
+  ret += eeFs.files[FILE_TMP].size;
+  ret -= eeFs.files[FILE_MODEL(g_eeGeneral.currModel)].size;
+  return (ret > 0 ? ret : 0);
 }
 
 /// free one or more blocks
@@ -867,6 +865,7 @@ void eeLoadModel(uint8_t id)
     }
 
     if (pulsesStarted()) {
+      checkLowEEPROM();
       checkTHR();
       checkSwitches();
       resumePulses();

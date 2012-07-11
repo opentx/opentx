@@ -750,7 +750,7 @@ uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
   return 0;
 }
 
-#if defined(PCBV4)
+#if defined(PCBV4) && defined(ROTARY_ENCODERS)
 uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 {
   uint8_t phase = s_perout_flight_phase;
@@ -797,7 +797,13 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
   *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
   eeDirty(EE_MODEL);
 }
+#endif
 
+#if defined(PCBARM) && defined(ROTARY_ENCODERS)
+void incRotaryEncoder(uint8_t idx, int8_t inc)
+{
+  g_rotenc[idx] += inc;
+}
 #endif
 
 #if defined(FRSKY) || defined(PCBARM)
@@ -934,9 +940,8 @@ void doSplash()
 #if !defined(PCBARM)
 void checkLowEEPROM()
 {
-  if(g_eeGeneral.disableMemoryWarning) return;
-  if(EeFsGetFree() < 200)
-  {
+  if (g_eeGeneral.disableMemoryWarning) return;
+  if (EeFsGetFree() < 100) {
     alert(STR_EEPROMWARN, STR_EEPROMLOWMEM);
   }
 }
@@ -2062,10 +2067,10 @@ void perOut(uint8_t tick10ms)
 char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #endif
 
-#if (defined(PCBARM) && !defined(REVA) && !defined(SIMU)) || (defined(PCBV4) && !defined(REV0) && !defined(SIMU))
-#define TIME_TO_WRITE (s_eeDirtyMsk && (get_tmr10ms() - s_eeDirtyTime10ms) >= WRITE_DELAY_10MS)
-#else
+#if defined(SIMU)
 #define TIME_TO_WRITE s_eeDirtyMsk
+#else
+#define TIME_TO_WRITE (s_eeDirtyMsk && (get_tmr10ms() - s_eeDirtyTime10ms) >= WRITE_DELAY_10MS)
 #endif
 
 #ifdef BOLD_FONT
@@ -2858,14 +2863,15 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   AUDIO_WARNING2();
 }
 
-#if defined (PCBV4)
+#if defined(ROTARY_ENCODERS)
 // Rotary encoder interrupts
 volatile uint8_t g_rotenc[2] = {0};
 #endif
 
 #ifndef SIMU
 
-#if defined (PCBV4)
+#if defined(PCBV4) && defined(ROTARY_ENCODERS)
+
 #if !defined(EXTRA_ROTARY_ENCODERS)
 ISR(INT2_vect)
 {
@@ -2877,7 +2883,7 @@ ISR(INT3_vect)
   uint8_t input = PIND & 0b00001100;
   if (input == 0 || input == 0b00001100) incRotaryEncoder(0, +1);
 }
-#endif //EXTRA_ROTARY_ENCODERS
+#endif //!EXTRA_ROTARY_ENCODERS
 
 ISR(INT5_vect)
 {
@@ -2889,7 +2895,7 @@ ISR(INT6_vect)
   uint8_t input = PINE & 0b01100000;
   if (input == 0 || input == 0b01100000) incRotaryEncoder(1, -1);
 }
-#endif //PCBV4
+#endif //PCBV4+ROTARY_ENCODERS
 
 #if !defined(PCBARM)
 extern unsigned char __bss_end ;
