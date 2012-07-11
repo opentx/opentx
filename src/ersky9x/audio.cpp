@@ -303,7 +303,7 @@ void AudioQueue::wakeup()
       dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
     }
 
-    setFrequency(current.freq * 6100 / 2);
+    setFrequency(current.freq * 6100 / 4);
 
     if (current.freqIncr) {
       CoSetTmrCnt(audioTimer, 2, 0);
@@ -337,7 +337,7 @@ void AudioQueue::wakeup()
     }
     CoSetTmrCnt(audioTimer, background.duration*2, 0);
     background.duration = 0;
-    setFrequency(background.freq * 6100 / 2);
+    setFrequency(background.freq * 6100 / 4);
     toneStart();
     CoClearFlag(audioFlag);
     CoStartTmr(audioTimer);
@@ -411,7 +411,7 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
   CoEnterMutexSection(audioMutex);
 
   if (tFlags & PLAY_SOUND_VARIO) {
-    background.freq = tFreq;
+    background.freq = tFreq * 2;
     background.duration = tLen;
     background.pause = tPause;
     if (!busy()) {
@@ -429,7 +429,7 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
     if (next_widx != ridx) {
       AudioFragment & fragment = fragments[widx];
       memset(&fragment, 0, sizeof(fragment));
-      fragment.freq = tFreq;
+      fragment.freq = tFreq * 2;
       fragment.duration = tLen;
       fragment.pause = tPause;
       fragment.repeat = tFlags & 0x0f;
