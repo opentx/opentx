@@ -2409,8 +2409,9 @@ void perMain()
     if(tsum!=inacSum){
       inacSum = tsum;
       inacCounter=0;
+      backlightOn();
     }
-    if(inacCounter>((uint32_t)g_eeGeneral.inactivityTimer*100*60))
+    if (inacCounter>((uint32_t)g_eeGeneral.inactivityTimer*100*60))
       if((inacCounter&0x3F)==10) AUDIO_INACTIVITY();
   }
 
