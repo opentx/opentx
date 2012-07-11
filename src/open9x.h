@@ -453,6 +453,7 @@ extern Key keys[NUM_KEYS];
 #define _MSK_KEY_REPT      0x40
 #define _MSK_KEY_LONG      0x80
 #define IS_KEY_BREAK(key)  (((key)&0xf0)        ==  0x20)
+#define IS_KEY_FIRST(key)  (((key)&0xf0)        ==  0x60)
 #define EVT_KEY_BREAK(key) ((key)|_MSK_KEY_BREAK)
 #define EVT_KEY_FIRST(key) ((key)|_MSK_KEY_REPT|0x20)
 #define EVT_KEY_REPT(key)  ((key)|_MSK_KEY_REPT)
