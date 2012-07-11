@@ -544,13 +544,21 @@ void menuProcSd(uint8_t event)
 
   SIMPLE_MENU(Cmd_A41_resp & OCR_SD_CCS ? PSTR("SD-HC Card") : PSTR("SD Card"), menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
 
-  s_editMode = 0;
+  if (s_editMode > 0)
+    s_editMode = 0;
 
   switch(event) {
     case EVT_ENTRY:
       f_chdir("/");
       reusableBuffer.sd.offset = 255;
       break;
+#if defined(ROTARY_ENCODERS)
+    case EVT_KEY_FIRST(BTN_REa):
+    case EVT_KEY_FIRST(BTN_REb):
+      if (!navigationRotaryEncoder(event))
+        break;
+      // no break
+#endif
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_MENU):
     {
@@ -566,6 +574,13 @@ void menuProcSd(uint8_t event)
       }
       break;
     }
+#if defined(ROTARY_ENCODERS)
+    case EVT_KEY_LONG(BTN_REa):
+    case EVT_KEY_LONG(BTN_REb):
+      if (!navigationRotaryEncoder(event))
+        break;
+      // no break
+#endif
     case EVT_KEY_LONG(KEY_MENU):
       killEvents(event);
       if (m_posVert > 0) {
