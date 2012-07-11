@@ -501,7 +501,7 @@ void popMenu()
 
 void chainMenu(MenuFuncP newMenu)
 {
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS) && defined(PCBV4)
   s_inflight_enable = false;
 #endif
   g_menuStack[g_menuStackPtr] = newMenu;
@@ -511,7 +511,7 @@ void chainMenu(MenuFuncP newMenu)
 
 void pushMenu(MenuFuncP newMenu)
 {
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS) && defined(PCBV4)
   s_inflight_enable = false;
 #endif
 

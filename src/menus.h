@@ -119,7 +119,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
 
-#if defined(ROTARY_ENCODERS)
+#if defined(PCBV4) && defined(ROTARY_ENCODERS)
 extern bool s_inflight_enable;
 extern int8_t *s_inflight_value;
 extern const pm_char *s_inflight_label;
