@@ -293,13 +293,15 @@ void AudioQueue::wakeup()
   else
 #endif
   if (current.duration > 0) {
-    state = AUDIO_PLAYING_TONE;
+    if (state != AUDIO_PLAYING_TONE) {
+      state = AUDIO_PLAYING_TONE;
 
-    register Dacc *dacptr = DACC;
-    dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
-    dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);
-    dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
-    dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
+      register Dacc *dacptr = DACC;
+      dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
+      dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);
+      dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
+      dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
+    }
 
     setFrequency(current.freq * 6100 / 2);
 
