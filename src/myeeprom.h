@@ -364,7 +364,10 @@ enum TelemetryUnit {
   UNIT_WATTS,
   UNIT_MAX,
   UNIT_FEET,
-  UNIT_KTS
+  UNIT_KTS,
+  UNIT_HOURS,
+  UNIT_MINUTES,
+  UNIT_SECONDS
 };
 
 PACK(typedef struct t_FrSkyChannelData {

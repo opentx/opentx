@@ -36,22 +36,23 @@
 enum FrenchPrompts {
   PROMPT_NUMBERS_BASE = 0,
   PROMPT_ZERO = PROMPT_NUMBERS_BASE+0,
-  /* ... */
-  PROMPT_VINGT = PROMPT_NUMBERS_BASE+20,
-  PROMPT_TRENTE = PROMPT_NUMBERS_BASE+21,
-  /* ... */
-  PROMPT_QUATREVINGTDIX = PROMPT_NUMBERS_BASE+27,
-  PROMPT_CENT = PROMPT_NUMBERS_BASE+28,
-  PROMPT_MILLE = PROMPT_NUMBERS_BASE+29,
+  PROMPT_CENT = PROMPT_NUMBERS_BASE+100,
+  PROMPT_MILLE = PROMPT_NUMBERS_BASE+101,
 
-  PROMPT_HEURE = 40,
-  PROMPT_MINUTE = 41,
-  PROMPT_SECONDE = 42,
+  PROMPT_UNE = 102,
+  PROMPT_ONZE = 103,
+  PROMPT_VINGT_ET_UNE = 104,
+  PROMPT_TRENTE_ET_UNE = 105,
+  PROMPT_QUARANTE_ET_UNE = 106,
+  PROMPT_CINQUANTE_ET_UNE = 107,
+  PROMPT_SOIXANTE_ET_UNE = 108,
+  PROMPT_SOIXANTE_ET_ONZE = 109,
+  PROMPT_QUATRE_VINGT_UNE = 110,
 
-  PROMPT_ET = 47,
-  PROMPT_MOINS = 48,
+  PROMPT_ET = 117,
+  PROMPT_MOINS = 118,
 
-  PROMPT_UNITS_BASE = 50,
+  PROMPT_UNITS_BASE = 120,
   PROMPT_VOLTS = PROMPT_UNITS_BASE+UNIT_VOLTS,
   PROMPT_AMPS = PROMPT_UNITS_BASE+UNIT_AMPS,
   PROMPT_METERS_PER_SECOND = PROMPT_UNITS_BASE+UNIT_METERS_PER_SECOND,
@@ -65,8 +66,11 @@ enum FrenchPrompts {
   PROMPT_WATTS = PROMPT_UNITS_BASE+UNIT_WATTS,
   PROMPT_FEET = PROMPT_UNITS_BASE+UNIT_FEET,
   PROMPT_KTS = PROMPT_UNITS_BASE+UNIT_KTS,
+  PROMPT_HEURE = PROMPT_UNITS_BASE+UNIT_HOURS,
+  PROMPT_MINUTE = PROMPT_UNITS_BASE+UNIT_MINUTES,
+  PROMPT_SECONDE = PROMPT_UNITS_BASE+UNIT_SECONDS,
 
-  PROMPT_LABELS_BASE = 100,
+  PROMPT_LABELS_BASE = 140,
   PROMPT_TIMER1 = PROMPT_LABELS_BASE+TELEM_TM1,
   PROMPT_TIMER2 = PROMPT_LABELS_BASE+TELEM_TM2,
   PROMPT_A1 = PROMPT_LABELS_BASE+TELEM_A1,
@@ -92,9 +96,12 @@ enum FrenchPrompts {
   PROMPT_ACCELz = PROMPT_LABELS_BASE+TELEM_ACCz,
   PROMPT_HDG = PROMPT_LABELS_BASE+TELEM_HDG,
   PROMPT_VARIO = PROMPT_LABELS_BASE+TELEM_VSPD,
+
 };
 
 #if defined(SOMO) || defined(PCBARM)
+
+#define FEMININ 0x80
 
 void playNumber(int16_t number, uint8_t unit, uint8_t att)
 {
@@ -107,13 +114,19 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
       prompts.extend(self.getNumberPrompt(temp_digit))
       prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
 */
+
+  if (number < 0) {
+    pushPrompt(PROMPT_MOINS);
+    number = -number;
+  }
+
   if (number >= 1000) {
     if (number >= 2000)
       playNumber(number / 1000);
     pushPrompt(PROMPT_MILLE);
     number %= 1000;
     if (number == 0)
-      return;
+      number = -1;
   }
   if (number >= 100) {
     if (number >= 200)
@@ -121,15 +134,14 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
     pushPrompt(PROMPT_CENT);
     number %= 100;
     if (number == 0)
-      return;
+      number = -1;
   }
-  if (number >= 20) {
-    pushPrompt(PROMPT_VINGT + (number-20)/10);
-    number %= 10;
-    if (number == 0)
-      return;
+  if (((number % 10) == 1) && number < 90 && (att & FEMININ)) {
+    pushPrompt(PROMPT_UNE+(number/10));
   }
-  pushPrompt(PROMPT_ZERO+number);
+  else if (number >= 0) {
+    pushPrompt(PROMPT_ZERO+number);
+  }
 
   if (unit) {
     pushPrompt(PROMPT_UNITS_BASE+unit-1);
@@ -146,21 +158,21 @@ void playDuration(int16_t seconds)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0) {
-    playNumber(tmp);
+    playNumber(tmp, 0, FEMININ);
     pushPrompt(PROMPT_HEURE);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    playNumber(tmp);
+    playNumber(tmp, 0, FEMININ);
     pushPrompt(PROMPT_MINUTE);
     if (seconds > 0)
       pushPrompt(PROMPT_ET);
   }
 
   if (seconds > 0) {
-    playNumber(seconds);
+    playNumber(seconds, 0, FEMININ);
     pushPrompt(PROMPT_SECONDE);
   }
 }
