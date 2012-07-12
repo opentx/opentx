@@ -1429,9 +1429,14 @@ void menuProcExpoOne(uint8_t event)
 
       case EXPO_FIELD_WIDTH:
         {
+#if defined(PCBARM)
+          lcd_outdezAtt(9*FW+5, y, ed->weight, attr|INFLIGHT(ed->weight));
+          if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->weight, 0, 100, 0, STR_DRWEIGHT);
+#else
           PREPARE_INFLIGHT_BITFIELD(&ed->expo - 1);
           lcd_outdezAtt(9*FW+5, y, ed->weight, attr|INFLIGHT(*bitfield));
           if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, ed->weight, 0, 100, 0, STR_DRWEIGHT, 1);
+#endif
         }
         break;
       case EXPO_FIELD_EXPO:

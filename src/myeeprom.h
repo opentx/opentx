@@ -150,6 +150,8 @@ PACK(typedef struct t_EEGeneral {
 
   EXTRA_ARM_FIELDS
 
+  uint8_t   lightOnStickMove;
+
 }) EEGeneral;
 
 // eeprom modelspec
@@ -160,8 +162,8 @@ PACK(typedef struct t_ExpoData {
   uint8_t chn;
   int8_t  curve;        // 0=no curve, 1-6=std curves, 7-10=CV1-CV4, 11-15=CV9-CV13
   int8_t  swtch;
-  int8_t  phase;        // if negPhase is 0: 0=normal, 5=FP4    if negPhase is 1: 5=!FP4
-  uint8_t weight;
+  int8_t  phase;
+  int8_t  weight;
   int8_t  expo;
   char    name[6];
   uint8_t spare[4];

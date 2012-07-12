@@ -114,8 +114,12 @@ IRPROTOS = NO
 SOMO = NO
 
 # TRANSLATIONS
-# Values = en, fr, se 
+# Values = cz, de, en, fr, it, se  
 TRANSLATIONS = EN
+
+# TTS
+# Values = en, fr
+TTS = $(TRANSLATIONS)
 
 # UNITS
 # Values = imperial, metric 
@@ -196,8 +200,9 @@ FORMAT = ihex
 TARGET = open9x
 
 # List C++ source files here. (C dependencies are automatically generated.)
-SRC = 
-CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp translations.cpp
+SRC =
+TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
+CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp translations.cpp $(TTS_SRC)
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -226,7 +231,7 @@ EXTRAINCDIRS = . translations
 # NOTE: PCB version now overrides all the earlier individual settings
 #       These individual settings work only for PCB=STD
 
-CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
+CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS) -DTTS_$(TTS)
 
 ifeq ($(UNITS), IMPERIAL)
   CPPDEFS += -DIMPERIAL_UNITS

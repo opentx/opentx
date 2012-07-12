@@ -265,7 +265,11 @@ void parseTelemHubByte(uint8_t byte)
       break;
       
     case offsetof(FrskyHubData, volts_ap):
+#if defined(OLDVFAS)
       frskyData.hub.vfas = ((frskyData.hub.volts_bp * 100 + frskyData.hub.volts_ap * 10) * 21) / 110;
+#else
+      frskyData.hub.vfas = (frskyData.hub.volts_bp * 10 + frskyData.hub.volts_ap);
+#endif
       /* TODO later if (!frskyData.hub.minVfas || frskyData.hub.minVfas > frskyData.hub.vfas)
         frskyData.hub.minVfas = frskyData.hub.vfas; */
       break;

@@ -360,9 +360,3 @@ const pm_uchar font_dblsize[] PROGMEM = {
 #include "font_dblsize_fr.lbm"
 #endif
 };
-
-#if defined(TRANSLATIONS_FR)
-#include "translations/fr.cpp"
-#else
-#include "translations/en.cpp"
-#endif
