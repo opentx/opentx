@@ -1,5 +1,21 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+
+# To use this script you need the following installed
+#  Python 2.5  http://www.python.org/download/releases/2.5.4/
+#  Python 2.7   http://www.python.org/download/releases/2.7.3/
+#  PyTTS  http://pypi.python.org/pypi/pyTTS
+#
+#  Note
+#  At the moment, pyTTS is only available for Python 2.3, 2.4 and 2.5. To use it for later versions without having to 
+#  recompile it, a quick and dirty solution is to:
+#  copy the entire pyTTS directory from Python25\Lib\site-packages to Python26 or Python27
+#  replace TTSFast.py with an empty file. This way the version-dependent pyd file isn't loaded.
+
+
+
+
 
 import os, sys, shutil, platform, subprocess, wave, zipfile
 
