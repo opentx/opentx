@@ -2,18 +2,23 @@
 # -*- coding: utf-8 -*-
 
 
-# To use this script you need the following installed
+# To use this script you need the following installed within python
 #  Python 2.5  http://www.python.org/download/releases/2.5.4/
 #  Python 2.7   http://www.python.org/download/releases/2.7.3/
 #  PyTTS  http://pypi.python.org/pypi/pyTTS
 #  PyWin32 http://sourceforge.net/projects/pywin32/files/pywin32/
-
 #
 #  Note
 #  At the moment, pyTTS is only available for Python 2.3, 2.4 and 2.5. To use it for later versions without having to 
 #  recompile it, a quick and dirty solution is to:
 #  copy the entire pyTTS directory from Python25\Lib\site-packages to Python26 or Python27
 #  replace TTSFast.py with an empty file. This way the version-dependent pyd file isn't loaded.
+
+# in addition you will need some tools.  
+#  ffmpeg, sox, adconvertor.
+# have fun!
+
+
 
 import os, sys, shutil, platform, subprocess, wave, zipfile
 
@@ -56,8 +61,13 @@ def generate(str, idx):
                 result = result.replace(".wav", ".ad4")
             elif 'sox' in sys.argv:
             	maxvolume=subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
-		subprocess.Popen(["sox.exe", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];
-            	subprocess.Popen(["sox.exe", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            	if "not sound" in maxvolume:
+            		os.rename(result, temp)  
+			subprocess.Popen(["sox.exe", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
+		else:    	
+			subprocess.Popen(["sox.exe", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];
+			
+		subprocess.Popen(["sox.exe", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
             else:
                 os.rename(result, temp) 
@@ -86,8 +96,22 @@ if __name__ == "__main__":
 
     if "en" in sys.argv:
         if "sapi" in sys.argv:
-            tts.SetVoiceByName("ScanSoftFiona_Full_22kHz")
-            voice = "english-scottish"
+            if "scottish" in sys.argv:
+            	tts.SetVoiceByName("ScanSoftFiona_Full_22kHz")
+            	voice = "english-scottish"
+            elif "american" in sys.argv:	
+            	tts.SetVoiceByName("ScanSoftJennifer_Full_22kHz")       
+            	voice = "english-american"            
+            elif "australian" in sys.argv:	
+            	tts.SetVoiceByName("ScanSoftKaren_Full_22kHz")
+            	voice = "english-australian"   
+            elif "irish" in sys.argv:	
+            	tts.SetVoiceByName("ScanSoftMoira_Full_22kHz")
+            	voice = "english-irish"              	
+            else:
+             	tts.SetVoiceByName("ScanSoftFiona_Full_22kHz")
+            	voice = "english-english"           
+            
         for i in range(20):
             systemSounds.extend(generate(str(i), i))
         for i in range(20, 100, 10):
