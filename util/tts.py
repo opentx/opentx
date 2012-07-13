@@ -52,26 +52,23 @@ def generate(str, idx):
                 os.remove(temp)
                             
         else:
-            #subprocess.Popen(["C:\Program Files\eSpeak\command_line\espeak.exe", "-z", "-w", "%04d.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             subprocess.Popen(["espeak.exe", "-z", "-w", "%04d.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+
         if not "speak" in sys.argv:
             if 'ad4' in sys.argv:
-                #subprocess.Popen(["D:\Perso\workspace\companion9x\AD4CONVERTER.EXE", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 subprocess.Popen(["AD4CONVERTER.EXE", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 result = result.replace(".wav", ".ad4")
             elif 'sox' in sys.argv:
             	maxvolume=subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
-            	if "not sound" in maxvolume:
-            		os.rename(result, temp)  
-			subprocess.Popen(["sox.exe", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
-		else:    	
-			subprocess.Popen(["sox.exe", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];
-			
-		subprocess.Popen(["sox.exe", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                if "not sound" in maxvolume:
+                    os.rename(result, temp)  
+                    subprocess.Popen(["sox.exe", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
+                else:    	
+                    subprocess.Popen(["sox.exe", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];		
+                subprocess.Popen(["sox.exe", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
             else:
                 os.rename(result, temp) 
-                #subprocess.Popen(["C:/Programs/ffmpeg/bin/ffmpeg.exe", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 subprocess.Popen(["ffmpeg.exe", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
                 
