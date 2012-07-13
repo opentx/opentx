@@ -119,6 +119,43 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 40+i))
         for i, s in enumerate(["volts", "amps", "meters per second", "", "km per hour", "meters", "degrees", "percent", "milliamps", "milliamps per hour", "watts", "", "feet", "knots"]):
             systemSounds.extend(generate(s, 50+i))
+
+	for s, f in [(u"trim center", "midtrim"),
+                     (u"maximum trim reached", "endtrim"),
+                     (u"transmitter battery low", "lowbatt"),
+                     ]:
+            systemSounds.extend(generate(s, f))           
+            
+ 	for s, f in [(u"gear up", "gearup"),
+                     (u"gear down", "geardn"),
+                     (u"flaps up", "flapup"),
+                     (u"flaps down", "flapdn"),
+                     (u"landing", "attero"),
+                     (u"trainer on", "trnon"),
+                     (u"trainer off", "trnoff"),
+                     (u"engine off", "engoff"),
+                     (u"too high", "tohigh"),
+                     (u"too low", "tolow"),
+                     (u"low battery", "lowbat"),
+                     (u"crow on", "crowon"),
+                     (u"crow off", "crowof"),
+                     (u"rf signal low!", "siglow"),
+                     (u"rf signal critical", "sigcrt"),
+                     (u"high speed mode active", "spdmod"),
+                     (u"thermal mode active", "thmmod"),
+                     (u"normal mode active", "nrmmod"),
+                     (u"flight mode one", "fltmd1"),
+                     (u"flight mode two", "fltmd2"),
+                     (u"flight mode three", "fltmd3"),
+                     (u"flight mode four", "fltmd4"),
+                     (u"flight mode five", "fltmd5"),
+                     (u"flight mode six", "fltmd6"),
+                     (u"flight mode seven", "fltmd7"),
+                     (u"flight mode eight", "fltmd8"),
+                     (u"flight mode nine", "fltmd9"),
+                     ]:
+            sounds.extend(generate(s, f))
+
     
     elif "fr" in sys.argv:
         if "sapi" in sys.argv:
