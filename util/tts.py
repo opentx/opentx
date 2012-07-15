@@ -119,14 +119,12 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 40+i))
         for i, s in enumerate(["volts", "amps", "meters per second", "", "km per hour", "meters", "degrees", "percent", "milliamps", "milliamps per hour", "watts", "", "feet", "knots"]):
             systemSounds.extend(generate(s, 50+i))
-
-	for s, f in [(u"trim center", "midtrim"),
+        for s, f in [(u"trim center", "midtrim"),
                      (u"maximum trim reached", "endtrim"),
                      (u"transmitter battery low", "lowbatt"),
                      ]:
             systemSounds.extend(generate(s, f))           
-            
- 	for s, f in [(u"gear up", "gearup"),
+        for s, f in [(u"gear up", "gearup"),
                      (u"gear down", "geardn"),
                      (u"flaps up", "flapup"),
                      (u"flaps down", "flapdn"),
