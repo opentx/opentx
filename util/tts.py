@@ -73,7 +73,7 @@ def generate(str, idx):
                 os.remove(temp)
                 
     if result:
-        return [result]
+        return [(result, str)]
     else:
         return []       
 
@@ -166,9 +166,9 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 102+i))
         for i, s in enumerate(["et", "moins"]): 
             systemSounds.extend(generate(s, 117+i))
-        for i, s in enumerate(["timer", "", "tension", "tension", "émission", u"réception", "altitude", "moteur",
-                               "essence", u"température", "température", "vitesse", "distance", "altitude", "élément lipo",
-                               "total lipo", "tension", "courant", "consommation", "puissance", "accelération X", "accelération Y", "accelération Z",
+        for i, s in enumerate(["timer", "", "tension", "tension", u"émission", u"réception", "altitude", "moteur",
+                               "essence", u"température", u"température", "vitesse", "distance", "altitude", u"élément lipo",
+                               "total lipo", "tension", "courant", "consommation", "puissance", u"accelération X", u"accelération Y", u"accelération Z",
                                "orientation", "vario"]):
             systemSounds.extend(generate(s, 141+i))            
         for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "km heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "", "pieds", "knotts", "heure", "minute", "seconde"]):
@@ -183,14 +183,24 @@ if __name__ == "__main__":
                      (u"moteur coupé", "engoff"),
                      ]:
             sounds.extend(generate(s, f))
+
+    if "csv" in sys.argv:
+        csvFile = file(voice + ".csv", "w")
+        for f, s in systemSounds:
+            s = u"9XSOUNDS/SYSTEM;" + f + u";" + s + u"\n"
+            csvFile.write(s.encode("latin-1"))
+        for f, s in sounds:
+            s = u"9XSOUNDS;" + f + u";" + s + u"\n"
+            csvFile.write(s.encode("latin-1"))
+        csvFile.close()
             
     if "zip" in sys.argv:
         zip_name = voice + ".zip"
         zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
-        for f in systemSounds:
+        for f, s in systemSounds:
             zip.write(f, "9XSOUNDS/SYSTEM/" + f)
             os.remove(f)
-        for f in sounds:
+        for f, s in sounds:
             zip.write(f, "9XSOUNDS/" + f)
             os.remove(f)
         zip.close()
