@@ -24,61 +24,53 @@ import os, sys, shutil, platform, subprocess, wave, zipfile
 
 def generate(str, idx):
     result = None
-    if str and platform.system() == "Windows":
-        if "speak" in sys.argv:
-            if "sapi" in sys.argv:
-                tts.Speak(str)
-            else:
-                subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+    if "speak" in sys.argv:
+        if "sapi" in sys.argv:
+            tts.Speak(str)
         else:
-            if isinstance(idx, int):
-                result = "%04d.wav" % idx
-            else:
-                result = idx + ".wav"
-            temp = "_" + result
-                
-            print result, str
-        
-            if "sapi" in sys.argv:
-                tts.SpeakToWave(temp, str)
-                # we remove empty frames at start and end of the file                
-                i = wave.open(temp, "r")
-                n = i.getnframes()
-                f = i.readframes(n)
-                i.close()
-                o = wave.open(result, "w")
-                o.setnchannels(i.getnchannels())
-                o.setsampwidth(i.getsampwidth())
-                o.setframerate(i.getframerate())
-                o.writeframes(f[6400:-6400])
-                o.close()                
-                os.remove(temp)           
-            else:
-                subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", "-w", result, str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-        
-            if 'ad4' in sys.argv:
-                subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-                result = result.replace(".wav", ".ad4")
-            elif 'sox' in sys.argv:
-            	maxvolume=subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
-                if "not sound" in maxvolume:
-                    os.rename(result, temp)  
-                    subprocess.Popen(["sox", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
-                else:    	
-                    subprocess.Popen(["sox", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];		
-                subprocess.Popen(["sox", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-                os.remove(temp)
-            else:
-                os.rename(result, temp) 
-                subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-                os.remove(temp)
+            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
     else:
-	if isinstance(idx, int):
-	    subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", "-w", "%04d.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+        if isinstance(idx, int):
             result = "%04d.wav" % idx
-	else:
-	    subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", "-w", "%s.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-	    result = idx + ".wav";
+        else:
+            result = idx + ".wav"
+        temp = "_" + result
+            
+        print result, str
+    
+        if "sapi" in sys.argv:
+            tts.SpeakToWave(temp, str)
+            # we remove empty frames at start and end of the file                
+            i = wave.open(temp, "r")
+            n = i.getnframes()
+            f = i.readframes(n)
+            i.close()
+            o = wave.open(result, "w")
+            o.setnchannels(i.getnchannels())
+            o.setsampwidth(i.getsampwidth())
+            o.setframerate(i.getframerate())
+            o.writeframes(f[6400:-6400])
+            o.close()                
+            os.remove(temp)           
+        else:
+            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", "-w", result, str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+    
+        if 'ad4' in sys.argv:
+            subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            result = result.replace(".wav", ".ad4")
+        elif 'sox' in sys.argv:
+            maxvolume = subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
+            if "not sound" in maxvolume:
+                os.rename(result, temp)  
+                subprocess.Popen(["sox", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
+            else:    	
+                subprocess.Popen(["sox", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];		
+            subprocess.Popen(["sox", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            os.remove(temp)
+        else:
+            os.rename(result, temp) 
+            subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            os.remove(temp)
 	
     if result:
         return [(result, str)]
