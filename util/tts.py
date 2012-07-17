@@ -29,18 +29,17 @@ def generate(str, idx):
             if "sapi" in sys.argv:
                 tts.Speak(str)
             else:
-                # TODO speak from espeak, possible?
-                subprocess.Popen(["espeak.exe", "-z", "-w", "%04d.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
         else:
             if isinstance(idx, int):
                 result = "%04d.wav" % idx
             else:
                 result = idx + ".wav"
+            temp = "_" + result
                 
             print result, str
         
             if "sapi" in sys.argv:
-                temp = "_" + result
                 tts.SpeakToWave(temp, str)
                 # we remove empty frames at start and end of the file                
                 i = wave.open(temp, "r")
@@ -55,23 +54,23 @@ def generate(str, idx):
                 o.close()                
                 os.remove(temp)           
             else:
-                subprocess.Popen(["espeak.exe", "-z", "-w", result, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", "-w", result, str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
         
             if 'ad4' in sys.argv:
-                subprocess.Popen(["AD4CONVERTER.EXE", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 result = result.replace(".wav", ".ad4")
             elif 'sox' in sys.argv:
             	maxvolume=subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
                 if "not sound" in maxvolume:
                     os.rename(result, temp)  
-                    subprocess.Popen(["sox.exe", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
+                    subprocess.Popen(["sox", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
                 else:    	
-                    subprocess.Popen(["sox.exe", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];		
-                subprocess.Popen(["sox.exe", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                    subprocess.Popen(["sox", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];		
+                subprocess.Popen(["sox", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
             else:
                 os.rename(result, temp) 
-                subprocess.Popen(["ffmpeg.exe", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
                 
     if result:
@@ -109,7 +108,10 @@ if __name__ == "__main__":
             	voice = "english-irish"              	
             else:
              	tts.SetVoiceByName("ScanSoftFiona_Full_22kHz")
-            	voice = "english-english"           
+            	voice = "english-english"
+        else:
+            espeakVoice = "en"
+            voice = "english"      
             
         for i in range(20):
             systemSounds.extend(generate(str(i), i))
@@ -161,6 +163,10 @@ if __name__ == "__main__":
         if "sapi" in sys.argv:
             tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
             voice = "french"
+        else:
+            espeakVoice = "fr-fr"
+            voice = "french"      
+            
         for i in range(101):
             systemSounds.extend(generate(str(i), i))
         systemSounds.extend(generate("1000", 101))
