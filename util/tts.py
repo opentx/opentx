@@ -205,20 +205,25 @@ if __name__ == "__main__":
             systemSounds.extend(generate(str(i), i))
         systemSounds.extend(generate("mila", 101))
         systemSounds.extend(generate("mille", 102))
-        for i, s in enumerate(["ora", "ore", "minuto", "minuti", "secondo", "secondi", "", "e", "meno"]):
+        for i, s in enumerate(["un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
             systemSounds.extend(generate(s, 103+i))
         for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "", "piedi", "nodi"]):
-            systemSounds.extend(generate(s, 113+i))
+            systemSounds.extend(generate(s, 112+i))
         for s, f in [(u"trim centrato", "midtrim"),
                      (u"massimo trim raggiunto", "endtrim"),
                      (u"batteria della radio scarica", "lowbatt"),
                      ]:
-            systemSounds.extend(generate(s, f))           
+            systemSounds.extend(generate(s, f))
+        for i, s in enumerate(["timer", "", "tensione", "tensione", "trasmissione", "ricezione", "altitudine", "motore",
+                               "carburante", "temperatura", "temperatura", "velocita'", "distanza", "altitudine", "cella lipo",
+                               "totale lipo", "tensione", "corrente", "consumo", "potenza", "accelerazione X", "accellerazione Y", "accelerazione Z",
+                               "direzione", "variometro"]):
+            systemSounds.extend(generate(s, 126+i))                
         for s, f in [(u"carrello chiuso", "gearup"),
                      (u"carrello aperto", "geardn"),
                      (u"flap rientrati", "flapup"),
                      (u"flap estesi", "flapdn"),
-                     (u"atterraggioo", "attero"),
+                     (u"atterragggiio", "attero"),
                      (u"modalità maestro attiva", "trnon"),
                      (u"modalità maestro disattiva", "trnoff"),
                      (u"motore spento", "engoff"),
