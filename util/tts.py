@@ -28,7 +28,7 @@ def generate(str, idx):
         if "sapi" in sys.argv:
             tts.Speak(str)
         else:
-            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
     else:
         if isinstance(idx, int):
             result = "%04d.wav" % idx
@@ -53,7 +53,7 @@ def generate(str, idx):
             o.close()                
             os.remove(temp)           
         else:
-            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", "-w", result, str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", "-w", result, str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
     
         if 'ad4' in sys.argv:
             subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
@@ -109,7 +109,8 @@ if __name__ == "__main__":
              	tts.SetVoiceByName("ScanSoftFiona_Full_22kHz")
             	voice = "english-english"
         else:
-            espeakVoice = "en"
+            espeakVoice = "mb-us1"
+            espeakspeed = "150"
             voice = "english"      
             
         for i in range(20):
@@ -163,7 +164,8 @@ if __name__ == "__main__":
             tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
             voice = "french"
         else:
-            espeakVoice = "fr-fr"
+            espeakVoice = "mb-fr4+f4"
+            espeakspeed = "140"
             voice = "french"      
             
         for i in range(101):
@@ -196,6 +198,7 @@ if __name__ == "__main__":
             voice = "italian"
         else:
             espeakVoice = "mb-it4"
+            espeakspeed = "160"
             voice = "italian"
 
         for i in range(101):
