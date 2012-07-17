@@ -25,19 +25,24 @@ import os, sys, shutil, platform, subprocess, wave, zipfile
 def generate(str, idx):
     result = None
     if str and platform.system() == "Windows":
-        if "sapi" in sys.argv:
-            if "speak" in sys.argv:
+        if "speak" in sys.argv:
+            if "sapi" in sys.argv:
                 tts.Speak(str)
             else:
-                if isinstance(idx, int):
-                    result = "%04d.wav" % idx
-                else:
-                    result = idx + ".wav"
-                print result, str
+                # TODO speak from espeak, possible?
+                subprocess.Popen(["espeak.exe", "-z", "-w", "%04d.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+        else:
+            if isinstance(idx, int):
+                result = "%04d.wav" % idx
+            else:
+                result = idx + ".wav"
                 
+            print result, str
+        
+            if "sapi" in sys.argv:
                 temp = "_" + result
                 tts.SpeakToWave(temp, str)
-                
+                # we remove empty frames at start and end of the file                
                 i = wave.open(temp, "r")
                 n = i.getnframes()
                 f = i.readframes(n)
@@ -47,14 +52,11 @@ def generate(str, idx):
                 o.setsampwidth(i.getsampwidth())
                 o.setframerate(i.getframerate())
                 o.writeframes(f[6400:-6400])
-                o.close()
-                
-                os.remove(temp)
-                            
-        else:
-            subprocess.Popen(["espeak.exe", "-z", "-w", "%04d.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-
-        if not "speak" in sys.argv:
+                o.close()                
+                os.remove(temp)           
+            else:
+                subprocess.Popen(["espeak.exe", "-z", "-w", result, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+        
             if 'ad4' in sys.argv:
                 subprocess.Popen(["AD4CONVERTER.EXE", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 result = result.replace(".wav", ".ad4")
