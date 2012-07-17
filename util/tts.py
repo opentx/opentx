@@ -72,7 +72,14 @@ def generate(str, idx):
                 os.rename(result, temp) 
                 subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
-                
+    else:
+	if isinstance(idx, int):
+	    subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", "-w", "%04d.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            result = "%04d.wav" % idx
+	else:
+	    subprocess.Popen(["espeak", "-v", espeakVoice, "-s", "160", "-z", "-w", "%s.wav" % idx, str], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+	    result = idx + ".wav";
+	
     if result:
         return [(result, str)]
     else:
@@ -189,6 +196,56 @@ if __name__ == "__main__":
                      (u"écolage", "trnon"),
                      (u"fin écolage", "trnoff"),
                      (u"moteur coupé", "engoff"),
+                     ]:
+            sounds.extend(generate(s, f))
+    elif "it" in sys.argv:
+        if "sapi" in sys.argv:
+            tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
+            voice = "italian"
+        else:
+            espeakVoice = "mb-it4"
+            voice = "italian"
+
+        for i in range(101):
+            systemSounds.extend(generate(str(i), i))
+        systemSounds.extend(generate("mila", 101))
+        systemSounds.extend(generate("mille", 102))
+        for i, s in enumerate(["ora", "ore", "minuto", "minuti", "secondo", "secondi", "", "e", "meno"]):
+            systemSounds.extend(generate(s, 103+i))
+        for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "", "piedi", "nodi"]):
+            systemSounds.extend(generate(s, 113+i))
+        for s, f in [(u"trim centrato", "midtrim"),
+                     (u"massimo trim raggiunto", "endtrim"),
+                     (u"batteria della radio scarica", "lowbatt"),
+                     ]:
+            systemSounds.extend(generate(s, f))           
+        for s, f in [(u"carrello chiuso", "gearup"),
+                     (u"carrello aperto", "geardn"),
+                     (u"flap rientrati", "flapup"),
+                     (u"flap estesi", "flapdn"),
+                     (u"atterraggioo", "attero"),
+                     (u"modalità maestro attiva", "trnon"),
+                     (u"modalità maestro disattiva", "trnoff"),
+                     (u"motore spento", "engoff"),
+                     (u"troppo alto", "tohigh"),
+                     (u"troppo basso", "tolow"),
+                     (u"batteria scarica", "lowbat"),
+                     (u"crow on", "crowon"),
+                     (u"crow off", "crowof"),
+                     (u"segnale radio basso!", "siglow"),
+                     (u"segnale radio critico", "sigcrt"),
+                     (u"modo velocità", "spdmod"),
+                     (u"modo termica", "thmmod"),
+                     (u"modo volo normale", "nrmmod"),
+                     (u"fase di volo 1", "fltmd1"),
+                     (u"fase di volo 2", "fltmd2"),
+                     (u"fase di volo 3", "fltmd3"),
+                     (u"fase di volo 4", "fltmd4"),
+                     (u"fase di volo 5", "fltmd5"),
+                     (u"fase di volo 6", "fltmd6"),
+                     (u"fase di volo 7", "fltmd7"),
+                     (u"fase di volo 8", "fltmd8"),
+                     (u"fase di volo 9", "fltmd9"),
                      ]:
             sounds.extend(generate(s, f))
 
