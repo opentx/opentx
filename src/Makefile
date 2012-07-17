@@ -231,7 +231,7 @@ EXTRAINCDIRS = . translations
 # NOTE: PCB version now overrides all the earlier individual settings
 #       These individual settings work only for PCB=STD
 
-CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS) -DTTS_$(TTS)
+CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
 
 ifeq ($(UNITS), IMPERIAL)
   CPPDEFS += -DIMPERIAL_UNITS
@@ -469,7 +469,13 @@ ifneq ($(PCB), ARM)
   ifeq ($(GCCVERSIONGTE462),1)
     CPPFLAGS += -flto
   endif
+
   CPPFLAGS += -fno-inline-small-functions
+
+  GCCVERSIONGTE470 := $(shell expr 4.7.0 \<= `$(CC) -dumpversion`)
+  ifeq ($(GCCVERSIONGTE470),1)
+    CPPFLAGS += -mstrict-X
+  endif
 endif
 
 MATH_LIB = -lm
@@ -516,7 +522,7 @@ MSG_CLEANING = Cleaning project:
 ifeq ($(PCB), ARM)
   ALL_CPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -Dat91sam3s4 -DRUN_FROM_FLASH=1 $(CPPFLAGS) $(GENDEPFLAGS)
 else
-  ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program -mstrict-X
+  ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
 endif
 
 MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
