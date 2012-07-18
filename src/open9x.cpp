@@ -1615,6 +1615,7 @@ void playValue(uint8_t idx)
     case NUM_XCHNRAW+TELEM_TM2-1:
       playDuration(val);
       break;
+#if defined(FRSKY)
     case NUM_XCHNRAW+TELEM_MIN_A1-1:
     case NUM_XCHNRAW+TELEM_MIN_A2-1:
       idx -= TELEM_MIN_A1-1-MAX_TIMERS;
@@ -1707,6 +1708,13 @@ void playValue(uint8_t idx)
       playNumber(val, unit == UNIT_RAW ? 0 : unit+1);
       break;
     }
+#else
+    default:
+    {
+      playNumber(val, 0);
+      break;
+    }
+#endif
   }
 }
 #endif
