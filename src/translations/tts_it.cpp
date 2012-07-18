@@ -47,7 +47,7 @@ enum ItalianPrompts {
   PROMPT_MINUTO = 108,
   PROMPT_MINUTI = 109,
   PROMPT_SECONDO = 110,
-  PROMPT_SECONDII = 111,
+  PROMPT_SECONDI = 111,
 
   PROMPT_UNITS_BASE = 112,
   PROMPT_VOLTS = PROMPT_UNITS_BASE+UNIT_VOLTS,
@@ -95,7 +95,7 @@ enum ItalianPrompts {
 
 #if defined(SOMO) || defined(PCBARM)
 
-void playNumber(int16_t number, uint8_t unit)
+void playNumber(int16_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
       temp_digit, digit = divmod(digit, 1000000000)
