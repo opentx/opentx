@@ -2207,7 +2207,7 @@ void menuProcCustomSwitchOne(uint8_t event)
         else if (cstate == CS_VOFS) {
 #if defined(FRSKY)
           if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-            putsTelemetryChannel(6*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), attr|LEFT);
+            putsTelemetryChannel(CSW_2ND_COLUMN, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), attr|LEFT);
             v2_min = -128; v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
             if (cs.v2 > v2_max) {
               cs.v2 = v2_max;
@@ -2218,7 +2218,7 @@ void menuProcCustomSwitchOne(uint8_t event)
 #endif
           {
             v2_min = -125; v2_max = 125;
-            lcd_outdezAtt(CSW_2ND_COLUMN, y, CSW_2ND_COLUMN, attr|LEFT);
+            lcd_outdezAtt(CSW_2ND_COLUMN, y, cs.v2, attr|LEFT);
           }
         }
         else {
