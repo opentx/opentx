@@ -165,7 +165,6 @@ LimitData *limitaddress(uint8_t idx)
 void generalDefault()
 {
   memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
-  g_eeGeneral.lightSw  = SWITCH_ON;
   g_eeGeneral.myVers   = EEPROM_VER;
   g_eeGeneral.contrast = 25;
   g_eeGeneral.vBatWarn = 90;
@@ -527,6 +526,12 @@ volatile bool s_default_switch_value;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 /* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
+
+#if defined(PCBARM)
+uint32_t delays[NUM_CSW];
+uint32_t durations[NUM_CSW];
+#endif
+
 bool __getSwitch(int8_t swtch)
 {
   bool result;
@@ -574,10 +579,11 @@ bool __getSwitch(int8_t swtch)
             break;
         }
       }
+
+#if !defined(PCBARM)
       if (result)
         s_last_switch_value |= ((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
-      else
-        s_last_switch_value &= ~((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
+#endif
     }
     else {
       int16_t x = getValue(cs.v1-1);
@@ -641,6 +647,33 @@ bool __getSwitch(int8_t swtch)
         }
       }
     }
+
+#if defined(PCBARM)
+    if (cs.delay) {
+      if (result) {
+        if (delays[cs_idx] > get_tmr10ms())
+          result = false;
+      }
+      else {
+        delays[cs_idx] = get_tmr10ms() + (cs.delay*50);
+      }
+    }
+    if (cs.duration) {
+      if (result) {
+        if (durations[cs_idx] < get_tmr10ms()) {
+          result = false;
+          if (cs.delay) delays[cs_idx] = get_tmr10ms() + (cs.delay*50);
+        }
+      }
+      else {
+        durations[cs_idx] = get_tmr10ms() + (cs.duration*50);
+      }
+    }
+
+    if (result)
+      s_last_switch_value |= ((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
+#endif
+
   }
 
   return swtch > 0 ? result : !result;
@@ -650,9 +683,11 @@ bool getSwitch(int8_t swtch, bool nc)
 {
 #if defined(PCBARM)
   s_last_switch_used = 0;
+  s_last_switch_value = 0;
   s_default_switch_value = nc;
 #else
   s_last_switch_used = ((GETSWITCH_RECURSIVE_TYPE)nc<<15);
+  s_last_switch_value = 0;
 #endif
   return __getSwitch(swtch);
 }
@@ -861,7 +896,7 @@ uint16_t stickMoveValue()
 
 void checkBacklight()
 {
-  if (getSwitch(g_eeGeneral.lightSw, 0) || g_eeGeneral.lightAutoOff)
+  if (g_eeGeneral.backlightMode == e_backlight_mode_on || g_LightOffCounter || isFunctionActive(FUNC_BACKLIGHT))
     BACKLIGHT_ON;
   else
     BACKLIGHT_OFF;
@@ -1427,7 +1462,8 @@ uint16_t isqrt32(uint32_t n)
 int16_t  anas [NUM_STICKS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
-uint32_t inacCounter = 0;
+uint8_t inacPrescale;
+uint16_t inacCounter = 0;
 uint16_t inacSum = 0;
 BeepANACenter bpanaCenter = 0;
 
@@ -2402,17 +2438,20 @@ void perMain()
 
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
 
-  if (g_eeGeneral.inactivityTimer && g_vbat100mV>50) {
-    inacCounter++;
-    uint16_t tsum = 0;
-    for(uint8_t i=0;i<4;i++) tsum += anaIn(i)/64;  // reduce sensitivity
-    if(tsum!=inacSum){
-      inacSum = tsum;
-      inacCounter=0;
+  uint16_t tsum = stickMoveValue();
+  if (tsum != inacSum) {
+    inacSum = tsum;
+    inacCounter = 0;
+    if (g_eeGeneral.backlightMode & e_backlight_mode_sticks)
       backlightOn();
+  }
+  else if (g_eeGeneral.inactivityTimer && g_vbat100mV>50) {
+    if (++inacPrescale > 15 ) {
+      inacCounter++;
+      inacPrescale = 0;
+      if (inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*100*60/16))
+        if ((inacCounter&0x3F)==10) AUDIO_INACTIVITY();
     }
-    if (inacCounter>((uint32_t)g_eeGeneral.inactivityTimer*100*60))
-      if((inacCounter&0x3F)==10) AUDIO_INACTIVITY();
   }
 
 #if defined(PCBV4) && defined(SDCARD)
@@ -2453,14 +2492,10 @@ void perMain()
   uint8_t evt = getEvent(false);
 #endif
 
-  // TODO port lightOnStickMove from er9x + flash saving, call checkBacklight()
-  if(g_LightOffCounter) g_LightOffCounter--;
-  if(evt) backlightOn(); // on keypress turn the light on
+  if (g_LightOffCounter) g_LightOffCounter--;
+  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
 
-  if (getSwitch(g_eeGeneral.lightSw,0) || g_LightOffCounter)
-    BACKLIGHT_ON;
-  else
-    BACKLIGHT_OFF;
+  checkBacklight();
 
 #if defined(PCBARM) && defined(FRSKY)
   check_frsky();
@@ -2517,15 +2552,20 @@ void perMain()
         uint16_t instant_vbat = anaIn(7);
         instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
 #endif
-        if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] != menuMainView) g_vbat100mV = instant_vbat;
 
         static uint8_t  s_batCheck;
         static uint16_t s_batSum;
+
         s_batCheck += 32;
         s_batSum += instant_vbat;
 
+        if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] == menuProcDiagAna) {
+          g_vbat100mV = instant_vbat;
+          s_batSum = 0;
+        }
+
         if (s_batCheck==0) {
-          g_vbat100mV = s_batSum / 8;
+          if (s_batSum) g_vbat100mV = s_batSum / 8;
           s_batSum = 0;
           if (g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
             AUDIO_TX_BATTERY_LOW();
@@ -2694,7 +2734,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
 
   uint16_t val = (capture - lastCapt) / 2;
 
-  // G: We prcoess g_ppmIns immediately here, to make servo movement as smooth as possible
+  // G: We process g_ppmIns immediately here, to make servo movement as smooth as possible
   //    while under trainee control
   if (val>4000 && val < 16000) // G: Prioritize reset pulse. (Needed when less than 8 incoming pulses)
     ppmInState = 1; // triggered
@@ -3011,21 +3051,392 @@ void mixerTask(void * pdata)
   }
 }
 
+#ifdef MASSSTORAGE
 extern "C" {
+#define TRACE_DEBUG(...)
+#define TRACE_DEBUG_WP(...)
+#define TRACE_INFO(...)
+#define TRACE_WARNING(...)
+#define TRACE_WARNING_WP(...)
+#define TRACE_INFO_WP(...)
+#define TRACE_ERROR(...)
+
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/wdt.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/include/pio.h"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/include/pio_capture.h"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio_capture.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pmc.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio_it.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/tc.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/memories/include/Media.h"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDLun.h"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDescriptors.h"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSD.h"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/USBDDriver.h"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDDriver.h"
+#include "../../Atmel/sam3s/sam3s-ek/examples_usb/usb_massstorage/device_descriptor.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDLun.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDriver.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriver.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBD.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/USBD_HAL.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBDescriptors.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDFunction.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBRequests.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriverCallbacks.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDCallbacks.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDStateMachine.c"
+#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/SBCMethods.c"
+
+/*----------------------------------------------------------------------------
+ *        Local definitions
+ *----------------------------------------------------------------------------*/
+
+/** Maximum number of LUNs which can be defined. */
+#define MAX_LUNS            2
+
+/** Media index for different disks */
+#define DRV_RAMDISK         0    /** RAM disk */
+#define DRV_IFLASH          0    /** Internal flash */
+#define DRV_SDMMC           0    /** SD card */
+#define DRV_NAND            1    /** Nand flash */
+
+/** Delay for pushbutton debouncing (ms) */
+#define DEBOUNCE_TIME       10
+
+/** PIT period value (seconds) */
+#define PIT_PERIOD          1000
+
+/** Delay for display view update (*250ms) */
+#define UPDATE_DELAY        4
+
+/** Delay for waiting DBGU input (*250ms) */
+#define INPUT_DELAY         15
+
+/** Size of one block in bytes. */
+#define BLOCK_SIZE          512
+
+/** Size of the MSD IO buffer in bytes (6K, more the better). */
+#define MSD_BUFFER_SIZE     (12*BLOCK_SIZE)
+
+/* Ramdisk size: 20K (WinXP can not format the disk if lower than 20K) */
+/* #define RAMDISK_SIZE    (20*1024) */
+
+/** Size of the reserved Nand Flash (4M) */
+#define NF_RESERVE_SIZE     (4*1024*1024)
+
+/** Size of the managed Nand Flash (128M) */
+#define NF_MANAGED_SIZE     (128*1024*1024)
+
+/*----------------------------------------------------------------------------
+ *        Global variables
+ *----------------------------------------------------------------------------*/
+
+/** MSD Driver Descriptors List */
+//extern const USBDDriverDescriptors msdDriverDescriptors;
+
+/** Available medias. */
+Media medias[MAX_LUNS];
+
+/*----------------------------------------------------------------------------
+ *        Local variables
+ *----------------------------------------------------------------------------*/
+
+/** Device LUNs. */
+MSDLun luns[MAX_LUNS];
+
+/** LUN read/write buffer. */
+uint8_t msdBuffer[MSD_BUFFER_SIZE];
+
+/** Total data read/write by MSD */
+unsigned int msdReadTotal = 0;
+unsigned int msdWriteTotal = 0;
+unsigned short msdFullCnt = 0;
+unsigned short msdNullCnt = 0;
+
+/** Update delay counter, tick is 250ms */
+uint32_t updateDelay = UPDATE_DELAY;
+
+/** Flag to update Display View */
+uint8_t updateView = 0;
+
+/** Pins used to access to nandflash. */
+static const Pin pPinsNf[] = {PINS_NANDFLASH};
+/** Nandflash device structure. */
+// static struct TranslatedNandFlash translatedNf;
+/** Address for transferring command bytes to the nandflash. */
+static unsigned int cmdBytesAddr = BOARD_NF_COMMAND_ADDR;
+/** Address for transferring address bytes to the nandflash. */
+static unsigned int addrBytesAddr = BOARD_NF_ADDRESS_ADDR;
+/** Address for transferring data bytes to the nandflash. */
+static unsigned int dataBytesAddr = BOARD_NF_DATA_ADDR;
+/** Nandflash chip enable pin. */
+static const Pin nfCePin = BOARD_NF_CE_PIN;
+/** Nandflash ready/busy pin. */
+static const Pin nfRbPin = BOARD_NF_RB_PIN;
+
+/*----------------------------------------------------------------------------
+ *        VBus monitoring (optional)
+ *----------------------------------------------------------------------------*/
+
+/** VBus pin instance. */
+static const Pin pinVbus = PIN_USB_VBUS;
+
+static void _ConfigureUsbClock(void)
+{
+    /* Enable PLLB for USB */
+    PMC->CKGR_PLLBR = CKGR_PLLBR_DIVB(1)
+                    | CKGR_PLLBR_MULB(7)
+                    | CKGR_PLLBR_PLLBCOUNT_Msk;
+    while((PMC->PMC_SR & PMC_SR_LOCKB) == 0);
+    /* USB Clock uses PLLB */
+    PMC->PMC_USB = PMC_USB_USBDIV(1)    /* /2   */
+                 | PMC_USB_USBS;        /* PLLB */
+}
+
+static void _ConfigureTc0(void)
+{
+    uint32_t div;
+    uint32_t tcclks;
+
+    /* Enable peripheral clock */
+    PMC->PMC_PCER0 = 1 << ID_TC0;
+
+    /* Configure TC for a 4Hz frequency and trigger on RC compare */
+    TC_FindMckDivisor(4, BOARD_MCK, &div, &tcclks, BOARD_MCK);
+    TC_Configure(TC0, 0, tcclks | TC_CMR_CPCTRG);
+    TC0->TC_CHANNEL[0].TC_RC = (BOARD_MCK / div) / 4;
+
+    /* Configure and enable interrupt on RC compare */
+    NVIC_EnableIRQ((IRQn_Type)ID_TC0);
+    TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;
+
+    TC_Start(TC0, 0);
+}
+
+/**
+ * Initialize Nand Flash for LUN
+ */
+static void NandFlashInitialize(void)
+{
+    unsigned char nfRc;
+    unsigned short nfBaseBlock = 0;
+    struct RawNandFlash *pRaw = (struct RawNandFlash*)&translatedNf;
+    struct NandFlashModel *pModel = (struct NandFlashModel*)&translatedNf;
+    unsigned int nfMamagedSize;
+
+    /* Configure SMC for NandFlash (8-bit) */
+    BOARD_ConfigureNandFlash(SMC);
+    /* Configure PIO for Nand Flash */
+    PIO_Configure(pPinsNf, PIO_LISTSIZE(pPinsNf));
+
+    /* Nand Flash Initialize (ALL flash mapped) */
+    nfRc = RawNandFlash_Initialize(pRaw,
+                                   0,
+                                   cmdBytesAddr,
+                                   addrBytesAddr,
+                                   dataBytesAddr,
+                                   nfCePin,
+                                   nfRbPin);
+    if (nfRc) {
+        printf("Nand not found\n\r");
+        return;
+    }
+    else {
+        printf("NF\tNb Blocks %d\n\r",
+               NandFlashModel_GetDeviceSizeInBlocks(pModel));
+        printf("\tBlock Size %dK\n\r",
+               NandFlashModel_GetBlockSizeInBytes(pModel)/1024);
+        printf("\tPage Size %d\n\r",
+               NandFlashModel_GetPageDataSize(pModel));
+        nfBaseBlock =
+            NF_RESERVE_SIZE / NandFlashModel_GetBlockSizeInBytes(pModel);
+    }
+    printf("NF disk will use area from %dM(B%d)\n\r",
+           NF_RESERVE_SIZE/1024/1024, nfBaseBlock);
+    printf("!! Erase the NF Disk? (y/n):");
+    updateDelay = INPUT_DELAY;
+    updateView = 0;
+    while(1) {
+        if(UART_IsRxReady()) {
+            char key = UART_GetChar();
+            UART_PutChar(key);
+            if (key == 'y') {
+                if (nfRc == 0) {
+                    unsigned int block;
+                    printf(" Erase from %d ... ", nfBaseBlock);
+                    for (block = nfBaseBlock;
+                     block < NandFlashModel_GetDeviceSizeInBlocks(pModel);
+                     block ++) {
+                        RawNandFlash_EraseBlock(pRaw, block);
+                    }
+                    printf("OK");
+                }
+            }
+            printf("\n\r");
+            break;
+        }
+        if (updateView) {
+            printf("No\n\r");
+            break;
+        }
+    }
+    nfMamagedSize = ((NandFlashModel_GetDeviceSizeInMBytes(pModel) - NF_RESERVE_SIZE/1024/1024) > NF_MANAGED_SIZE/1024/1024) ? \
+                        NF_MANAGED_SIZE/1024/1024 : (NandFlashModel_GetDeviceSizeInMBytes(pModel) - NF_RESERVE_SIZE/1024/1024);
+    if (TranslatedNandFlash_Initialize(&translatedNf,
+                                       0,
+                                       cmdBytesAddr,
+                                       addrBytesAddr,
+                                       dataBytesAddr,
+                                       nfCePin,
+                                       nfRbPin,
+                                       nfBaseBlock, nfMamagedSize * 1024 * 1024/NandFlashModel_GetBlockSizeInBytes(pModel))) {
+        // printf("Nand init error\n\r");
+        return;
+    }
+
+    /* Media initialize */
+    MEDNandFlash_Initialize(&medias[DRV_NAND], &translatedNf);
+
+    /* Initialize LUN */
+    LUN_Init(&(luns[DRV_NAND]), &(medias[DRV_NAND]),
+             msdBuffer, MSD_BUFFER_SIZE,
+             0, 0, 0, 0,
+             MSDCallbacks_Data);
+}
+
+/**
+ * \brief Initialize all medias and LUNs.
+ */
+static void MemoryInitialization(void)
+{
+    uint32_t i;
+    for (i = 0; i < MAX_LUNS; i ++)
+        LUN_Init(&luns[i], 0, 0, 0, 0, 0, 0, 0, 0);
+
+    // TODO: Add LUN Init here
+
+    /* Nand Flash Init */
+    NandFlashInitialize();
+}
+
+static void ISR_Vbus(const Pin *pPin)
+{
+    /* Check current level on VBus */
+    if (PIO_Get(&pinVbus)) {
+
+        TRACE_INFO("VBUS conn\n\r");
+        USBD_Connect();
+    }
+    else {
+
+        TRACE_INFO("VBUS discon\n\r");
+        USBD_Disconnect();
+    }
+}
+
+static void VBus_Configure( void )
+{
+    TRACE_INFO("VBus configuration\n\r");
+
+    /* Configure PIO */
+    PIO_Configure(&pinVbus, 1);
+    PIO_ConfigureIt(&pinVbus, ISR_Vbus);
+    PIO_EnableIt(&pinVbus);
+
+    /* Check current level on VBus */
+    if (PIO_Get(&pinVbus)) {
+      lcd_putcAtt( 48, 24, 'O', DBLSIZE ) ;
+      lcd_putcAtt( 60, 24, 'K', DBLSIZE ) ;
+      refreshDisplay() ;
+
+        /* if VBUS present, force the connect */
+        TRACE_INFO("conn\n\r");
+        USBD_Connect();
+    }
+    else {
+      lcd_putcAtt( 48, 24, 'K', DBLSIZE ) ;
+      lcd_putcAtt( 60, 24, 'O', DBLSIZE ) ;
+      refreshDisplay() ;
+        USBD_Disconnect();
+    }
+}
+
+
 void usbMassStorage()
 {
+  /* Disable watchdog */
+  WDT_Disable( WDT ) ;
+
+  /* If they are present, configure Vbus & Wake-up pins */
+  PIO_InitializeInterrupts(0);
+
+  /* Enable UPLL for USB */
+  _ConfigureUsbClock();
+
+  /* Start TC for timing & status update */
+  _ConfigureTc0();
+
+  /* Initialize memories and LUN */
+  MemoryInitialization();
+
+  /* BOT driver initialization */
+  MSDDriver_Initialize(&msdDriverDescriptors,
+                       luns, MAX_LUNS);
+
+  /* connect if needed */
+  VBus_Configure();
+
+  /* Infinite loop */
+  updateDelay = UPDATE_DELAY;
+  updateView = 0;
+  while (1) {
+
+      /* Mass storage state machine */
+      if (USBD_GetState() < USBD_STATE_CONFIGURED) {
+      }
+      else {
+        MSDDriver_StateMachine();
+      }
+
+      /* Update status view */
+      if (updateView) {
+
+          updateView = 0;
+
+          if (msdWriteTotal < 50 * 1000) {
+           //   MED_Flush(&medias[DRV_NAND]);
+          }
+
+/*          printf("Read %5dK, Write %5dK, IO %5dK; Null %4d, Full %4d\r",
+              msdReadTotal/(UPDATE_DELAY*250),
+              msdWriteTotal/(UPDATE_DELAY*250),
+              (msdReadTotal+msdWriteTotal)/(UPDATE_DELAY*250),
+              msdNullCnt, msdFullCnt);
+*/
+          msdReadTotal = 0;
+          msdWriteTotal = 0;
+          msdNullCnt = 0;
+          msdFullCnt = 0;
+      }
+  }
 }
 }
+#endif
 
 void menusTask(void * pdata)
 {
   register uint32_t shutdown_state = 0;
+#ifdef MASSSTORAGE
+  uint8_t mass_storage = false;
+#endif
 
   open9xInit();
 
   while (1) {
     shutdown_state = check_soft_power();
-#if 0
+#ifdef MASSSTORAGE
     if (shutdown_state == e_power_off) {
       break;
     }
@@ -3042,7 +3453,8 @@ void menusTask(void * pdata)
         if (result == STR_BOOTLOADER)
           break;
         else {
-          usbMassStorage();
+          mass_storage = true;
+          break;
           s_menu_count = 0;
         }
       }
@@ -3081,7 +3493,27 @@ void menusTask(void * pdata)
     lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
     lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
     refreshDisplay() ;
-    usb_mode();
+#ifdef MASSSTORAGE
+    if (mass_storage) {
+      stop_rotary_encoder();
+        endPdcUsartReceive() ;          // Terminate any serial reception
+        end_ppm_capture() ;
+        end_spi() ;
+        end_sound() ;
+        TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
+        NVIC_DisableIRQ(TC2_IRQn) ;
+        //      PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
+        disable_main_ppm() ;
+        //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
+        //      NVIC_DisableIRQ(PWM_IRQn) ;
+        disable_ssc() ;
+        usbMassStorage();
+    }
+    else
+#endif
+    {
+      usb_mode();
+    }
   }
 
   lcdSetRefVolt(0); // TODO before soft_power_off?

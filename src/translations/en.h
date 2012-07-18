@@ -148,7 +148,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME TR_TEST
+#define TR_VFSWFUNC      "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
@@ -324,8 +324,8 @@
 #define TR_MINUTEBEEP   "Minute beep"
 #define TR_BEEPCOUNTDOWN "Beep countdown"
 #define TR_FLASHONBEEP  "Flash on beep"
-#define TR_LIGHTSWITCH  "Light switch"
-#define TR_LIGHTOFFAFTER "Light off after"
+#define TR_BLMODE       "Backlight mode"
+#define TR_BLDELAY      "Backlight delay"
 #define TR_SPLASHSCREEN  "Splash screen"
 #define TR_THROTTLEWARNING "T-Warning"
 #define TR_SWITCHWARNING "S-Warning"

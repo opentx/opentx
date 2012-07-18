@@ -3082,9 +3082,15 @@ typedef struct {
 #define CKGR_PLLAR_MULA (0x7ff << 16) /**< \brief (CKGR_PLLAR) PLLA Multiplier */
 #define CKGR_PLLAR_STUCKTO1 (0x1 << 29) /**< \brief (CKGR_PLLAR)  */
 /* -------- CKGR_PLLBR : (PMC Offset: 0x002C) PLLB Register -------- */
-#define CKGR_PLLBR_DIVB (0xff << 0) /**< \brief (CKGR_PLLBR) Divider */
-#define CKGR_PLLBR_PLLBCOUNT (0x3f << 8) /**< \brief (CKGR_PLLBR) PLLB Counter */
-#define CKGR_PLLBR_MULB (0x7ff << 16) /**< \brief (CKGR_PLLBR) PLLB Multiplier */
+#define CKGR_PLLBR_DIVB_Pos 0
+#define CKGR_PLLBR_DIVB_Msk (0xffu << CKGR_PLLBR_DIVB_Pos) /**< \brief (CKGR_PLLBR) Divider */
+#define CKGR_PLLBR_DIVB(value) ((CKGR_PLLBR_DIVB_Msk & ((value) << CKGR_PLLBR_DIVB_Pos)))
+#define CKGR_PLLBR_PLLBCOUNT_Pos 8
+#define CKGR_PLLBR_PLLBCOUNT_Msk (0x3fu << CKGR_PLLBR_PLLBCOUNT_Pos) /**< \brief (CKGR_PLLBR) PLLB Counter */
+#define CKGR_PLLBR_PLLBCOUNT(value) ((CKGR_PLLBR_PLLBCOUNT_Msk & ((value) << CKGR_PLLBR_PLLBCOUNT_Pos)))
+#define CKGR_PLLBR_MULB_Pos 16
+#define CKGR_PLLBR_MULB_Msk (0x7ffu << CKGR_PLLBR_MULB_Pos) /**< \brief (CKGR_PLLBR) PLLB Multiplier */
+#define CKGR_PLLBR_MULB(value) ((CKGR_PLLBR_MULB_Msk & ((value) << CKGR_PLLBR_MULB_Pos)))
 /* -------- PMC_MCKR : (PMC Offset: 0x0030) Master Clock Register -------- */
 #define PMC_MCKR_CSS (0x3 << 0) /**< \brief (PMC_MCKR) Master Clock Source Selection */
 #define   PMC_MCKR_CSS_SLOW_CLK (0x0 << 0) /**< \brief (PMC_MCKR) Slow Clock is selected */
@@ -3102,8 +3108,10 @@ typedef struct {
 #define PMC_MCKR_PLLADIV2 (0x1 << 12) /**< \brief (PMC_MCKR) PLLA Divisor by 2 */
 #define PMC_MCKR_PLLBDIV2 (0x1 << 13) /**< \brief (PMC_MCKR) PLLB Divisor by 2 */
 /* -------- PMC_USB : (PMC Offset: 0x0038) USB Clock Register -------- */
-#define PMC_USB_USBS (0x1 << 0) /**< \brief (PMC_USB) USB Input Clock Selection */
-#define PMC_USB_USBDIV (0xf << 8) /**< \brief (PMC_USB) Divider for USB Clock. */
+#define PMC_USB_USBS (0x1u << 0) /**< \brief (PMC_USB) USB Input Clock Selection */
+#define PMC_USB_USBDIV_Pos 8
+#define PMC_USB_USBDIV_Msk (0xfu << PMC_USB_USBDIV_Pos) /**< \brief (PMC_USB) Divider for USB Clock. */
+#define PMC_USB_USBDIV(value) ((PMC_USB_USBDIV_Msk & ((value) << PMC_USB_USBDIV_Pos)))
 /* -------- PMC_PCK[3] : (PMC Offset: 0x0040) Programmable Clock 0 Register -------- */
 #define PMC_PCK_CSS (0x7 << 0) /**< \brief (PMC_PCK[3]) Master Clock Source Selection */
 #define PMC_PCK_PRES (0x7 << 4) /**< \brief (PMC_PCK[3]) Programmable Clock Prescaler */
@@ -4927,6 +4935,11 @@ typedef struct {
 } Tc;
 #endif /* __ASSEMBLY__ */
 /* -------- TC_CCR0 : (TC Offset: 0x0) Channel Control Register (channel = 0) -------- */
+
+#define TC_CCR_CLKEN TC_CCR0_CLKEN /**< \brief (TC_CCR) Counter Clock Enable Command */
+#define TC_CCR_CLKDIS TC_CCR0_CLKDIS /**< \brief (TC_CCR) Counter Clock Disable Command */
+#define TC_CCR_SWTRG TC_CCR0_SWTRG /**< \brief (TC_CCR) Software Trigger Command */
+
 #define TC_CCR0_CLKEN (0x1 << 0) /**< \brief (TC_CCR0) Counter Clock Enable Command */
 #define TC_CCR0_CLKDIS (0x1 << 1) /**< \brief (TC_CCR0) Counter Clock Disable Command */
 #define TC_CCR0_SWTRG (0x1 << 2) /**< \brief (TC_CCR0) Software Trigger Command */
@@ -4954,6 +4967,8 @@ typedef struct {
 #define   TC_CMR0_ETRGEDG_FALLING (0x2 << 8) /**< \brief (TC_CMR0) falling edge */
 #define   TC_CMR0_ETRGEDG_BOTH (0x3 << 8) /**< \brief (TC_CMR0) each edge */
 #define TC_CMR0_ABETRG (0x1 << 10) /**< \brief (TC_CMR0) TIOA or TIOB External Trigger Selection */
+
+#define TC_CMR_CPCTRG TC_CMR0_CPCTRG
 #define TC_CMR0_CPCTRG (0x1 << 14) /**< \brief (TC_CMR0) RC Compare Trigger Enable */
 #define TC_CMR0_WAVE (0x1 << 15) /**< \brief (TC_CMR0)  */
 #define TC_CMR0_LDRA (0x3 << 16) /**< \brief (TC_CMR0) RA Loading Selection */
@@ -5001,6 +5016,8 @@ typedef struct {
 #define TC_IER0_LOVRS (0x1 << 1) /**< \brief (TC_IER0) Load Overrun */
 #define TC_IER0_CPAS (0x1 << 2) /**< \brief (TC_IER0) RA Compare */
 #define TC_IER0_CPBS (0x1 << 3) /**< \brief (TC_IER0) RB Compare */
+
+#define TC_IER_CPCS TC_IER0_CPCS
 #define TC_IER0_CPCS (0x1 << 4) /**< \brief (TC_IER0) RC Compare */
 #define TC_IER0_LDRAS (0x1 << 5) /**< \brief (TC_IER0) RA Loading */
 #define TC_IER0_LDRBS (0x1 << 6) /**< \brief (TC_IER0) RB Loading */
@@ -5548,8 +5565,10 @@ typedef struct {
 #define UDP_GLB_STAT_RSMINPR (0x1 << 3) /**< \brief (UDP_GLB_STAT)  */
 #define UDP_GLB_STAT_RMWUPE (0x1 << 4) /**< \brief (UDP_GLB_STAT) Remote Wake Up Enable */
 /* -------- UDP_FADDR : (UDP Offset: 0x008) Function Address Register -------- */
-#define UDP_FADDR_FADD (0x7f << 0) /**< \brief (UDP_FADDR) Function Address Value */
-#define UDP_FADDR_FEN (0x1 << 8) /**< \brief (UDP_FADDR) Function Enable */
+#define UDP_FADDR_FADD_Pos 0
+#define UDP_FADDR_FADD_Msk (0x7fu << UDP_FADDR_FADD_Pos) /**< \brief (UDP_FADDR) Function Address Value */
+#define UDP_FADDR_FADD(value) ((UDP_FADDR_FADD_Msk & ((value) << UDP_FADDR_FADD_Pos)))
+#define UDP_FADDR_FEN (0x1u << 8) /**< \brief (UDP_FADDR) Function Enable */
 /* -------- UDP_IER : (UDP Offset: 0x010) Interrupt Enable Register -------- */
 #define UDP_IER_EP0INT (0x1 << 0) /**< \brief (UDP_IER) Enable Endpoint 0 Interrupt */
 #define UDP_IER_EP1INT (0x1 << 1) /**< \brief (UDP_IER) Enable Endpoint 1 Interrupt */
@@ -5633,17 +5652,20 @@ typedef struct {
 #define UDP_CSR_FORCESTALL (0x1 << 5) /**< \brief (UDP_CSR[8]) Force Stall (used by Control, Bulk and Isochronous Endpoints) */
 #define UDP_CSR_RX_DATA_BK1 (0x1 << 6) /**< \brief (UDP_CSR[8]) Receive Data Bank 1 (only used by endpoints with ping-pong attributes) */
 #define UDP_CSR_DIR (0x1 << 7) /**< \brief (UDP_CSR[8]) Transfer Direction (only available for control endpoints) */
-#define UDP_CSR_EPTYPE (0x7 << 8) /**< \brief (UDP_CSR[8]) Endpoint Type */
-#define   UDP_CSR_EPTYPE_CTRL (0x0 << 8) /**< \brief (UDP_CSR[8]) Control */
-#define   UDP_CSR_EPTYPE_ISO_OUT (0x1 << 8) /**< \brief (UDP_CSR[8]) Isochronous OUT */
-#define   UDP_CSR_EPTYPE_BULK_OUT (0x2 << 8) /**< \brief (UDP_CSR[8]) Bulk OUT */
-#define   UDP_CSR_EPTYPE_INT_OUT (0x3 << 8) /**< \brief (UDP_CSR[8]) Interrupt OUT */
-#define   UDP_CSR_EPTYPE_ISO_IN (0x5 << 8) /**< \brief (UDP_CSR[8]) Isochronous IN */
-#define   UDP_CSR_EPTYPE_BULK_IN (0x6 << 8) /**< \brief (UDP_CSR[8]) Bulk IN */
-#define   UDP_CSR_EPTYPE_INT_IN (0x7 << 8) /**< \brief (UDP_CSR[8]) Interrupt IN */
+#define UDP_CSR_EPTYPE_Pos 8
+#define UDP_CSR_EPTYPE_Msk (0x7u << UDP_CSR_EPTYPE_Pos) /**< \brief (UDP_CSR[8]) Endpoint Type */
+#define   UDP_CSR_EPTYPE_CTRL (0x0u << 8) /**< \brief (UDP_CSR[8]) Control */
+#define   UDP_CSR_EPTYPE_ISO_OUT (0x1u << 8) /**< \brief (UDP_CSR[8]) Isochronous OUT */
+#define   UDP_CSR_EPTYPE_BULK_OUT (0x2u << 8) /**< \brief (UDP_CSR[8]) Bulk OUT */
+#define   UDP_CSR_EPTYPE_INT_OUT (0x3u << 8) /**< \brief (UDP_CSR[8]) Interrupt OUT */
+#define   UDP_CSR_EPTYPE_ISO_IN (0x5u << 8) /**< \brief (UDP_CSR[8]) Isochronous IN */
+#define   UDP_CSR_EPTYPE_BULK_IN (0x6u << 8) /**< \brief (UDP_CSR[8]) Bulk IN */
+#define   UDP_CSR_EPTYPE_INT_IN (0x7u << 8) /**< \brief (UDP_CSR[8]) Interrupt IN */
 #define UDP_CSR_DTGLE (0x1 << 11) /**< \brief (UDP_CSR[8]) Data Toggle */
 #define UDP_CSR_EPEDS (0x1 << 15) /**< \brief (UDP_CSR[8]) Endpoint Enable Disable */
-#define UDP_CSR_RXBYTECNT (0x7ff << 16) /**< \brief (UDP_CSR[8]) Number of Bytes Available in the FIFO */
+#define UDP_CSR_RXBYTECNT_Pos 16
+#define UDP_CSR_RXBYTECNT_Msk (0x7ffu << UDP_CSR_RXBYTECNT_Pos) /**< \brief (UDP_CSR[8]) Number of Bytes Available in the FIFO */
+#define UDP_CSR_RXBYTECNT(value) ((UDP_CSR_RXBYTECNT_Msk & ((value) << UDP_CSR_RXBYTECNT_Pos)))
 /* -------- UDP_FDR[8] : (UDP Offset: 0x4C) Endpoint FIFO Data Register (ept_num = 0) -------- */
 #define UDP_FDR_FIFO_DATA (0xff << 0) /**< \brief (UDP_FDR[8]) FIFO Data Value */
 /* -------- UDP_TXVC : (UDP Offset: 0x074) Transceiver Control Register -------- */

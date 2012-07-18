@@ -142,7 +142,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\201kra\0       ""Trainer\0     ""S\201tt Trim    " TR_SOUND TR_HAPTIC "Nollst\201ll    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME TR_TEST
+#define TR_VFSWFUNC      "S\201kra\0       ""Trainer\0     ""S\201tt Trim    " TR_SOUND TR_HAPTIC "Nollst\201ll    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Allt  ""Telem."
@@ -320,8 +320,8 @@
 #define TR_MINUTEBEEP   "Minutpip"
 #define TR_BEEPCOUNTDOWN "Nedr\201kningspip"
 #define TR_FLASHONBEEP  "Pip vid blink"
-#define TR_LIGHTSWITCH  "Ljusbrytare"
-#define TR_LIGHTOFFAFTER "Ljus av efter"
+#define TR_BLMODE  "Ljusbrytare"
+#define TR_BLDELAY "Ljus av efter"
 #define TR_SPLASHSCREEN  "Bild vid start"
 #define TR_THROTTLEWARNING "Gasvarn."
 #define TR_SWITCHWARNING "Bryt.varn."

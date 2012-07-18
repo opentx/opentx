@@ -145,8 +145,8 @@ enum menuProcSetupItems {
   ITEM_SETUP_MINUTE_BEEP,
   ITEM_SETUP_COUNTDOWN_BEEP,
   ITEM_SETUP_FLASH_BEEP,
-  ITEM_SETUP_LIGHT_SWITCH,
-  ITEM_SETUP_LIGHT_OFF_AFTER,
+  ITEM_SETUP_BACKLIGHT_MODE,
+  ITEM_SETUP_BACKLIGHT_DELAY,
 #if defined(SPLASH)
   ITEM_SETUP_DISABLE_SPLASH,
 #endif
@@ -330,21 +330,14 @@ void menuProcSetup(uint8_t event)
         g_eeGeneral.flashBeep = onoffMenuItem( g_eeGeneral.flashBeep, y, STR_FLASHONBEEP, attr, event ) ;
         break;
 
-      case ITEM_SETUP_LIGHT_SWITCH:
-        lcd_putsLeft( y, STR_LIGHTSWITCH);
-        putsSwitches(GENERAL_PARAM_OFS,y,g_eeGeneral.lightSw,attr ? INVERS : 0);
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightSw, SWITCH_OFF, SWITCH_ON);
+      case ITEM_SETUP_BACKLIGHT_MODE:
+        g_eeGeneral.backlightMode = selectMenuItem(y, STR_BLMODE, PSTR("\004OFF KeysStksBothON\0"), g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
         break;
 
-      case ITEM_SETUP_LIGHT_OFF_AFTER:
-        lcd_putsLeft( y, STR_LIGHTOFFAFTER);
-        if(g_eeGeneral.lightAutoOff) {
-          lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.lightAutoOff*5, attr|LEFT);
-          lcd_putc(lcdLastPos, y, 's');
-        }
-        else {
-          lcd_putsiAtt(GENERAL_PARAM_OFS, y, STR_OFFON, 0, attr);
-        }
+      case ITEM_SETUP_BACKLIGHT_DELAY:
+        lcd_putsLeft( y, STR_BLDELAY);
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.lightAutoOff*5, attr|LEFT);
+        lcd_putc(lcdLastPos, y, 's');
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
         break;
 

@@ -468,7 +468,7 @@ extern uint8_t heartbeat;
 
 #define MAX_ALERT_TIME   60
 
-extern uint32_t inacCounter;
+extern uint16_t inacCounter;
 
 #if defined(PXX)
 extern uint8_t pxxFlag;

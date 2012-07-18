@@ -17,7 +17,6 @@
 
 #include <stdint.h>
 #include "open9x.h"
-#include "stdio.h"
 #include "inttypes.h"
 #include "string.h"
 
@@ -924,7 +923,8 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   strcpy(buf, STR_MODELS_PATH);
   FRESULT result = f_opendir(&archiveFolder, buf);
   if (result != FR_OK) {
-    result = f_mkdir(buf);
+    if (result == FR_NO_PATH)
+      result = f_mkdir(buf);
     if (result != FR_OK)
       return SDCARD_ERROR(result);
   }

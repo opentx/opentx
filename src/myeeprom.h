@@ -106,6 +106,14 @@ enum AdcInput {
   e_adc_filtered
 };
 
+enum BacklightMode {
+  e_backlight_mode_off = 0,
+  e_backlight_mode_keys,
+  e_backlight_mode_sticks,
+  e_backlight_mode_both,
+  e_backlight_mode_on
+};
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   myVers;
@@ -117,7 +125,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   contrast;
   uint8_t   vBatWarn;
   int8_t    vBatCalib;
-  int8_t    lightSw;
+  int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;      //index of subview in main scrren
   uint8_t   spare0:3;
@@ -292,6 +300,8 @@ PACK(typedef struct t_MixData {
 #endif
 
 #if defined(PCBARM)
+#define MAX_CSW_DURATION 120 /*60s*/
+#define MAX_CSW_DELAY    120 /*60s*/
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
@@ -328,6 +338,7 @@ enum Functions {
 #if defined(PCBARM)
   FUNC_VOLUME,
 #endif
+  FUNC_BACKLIGHT,
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif

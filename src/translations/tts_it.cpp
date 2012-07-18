@@ -145,7 +145,7 @@ void playDuration(int16_t seconds)
     seconds = -seconds;
   }
 
-  uint8_t ore;
+  uint8_t ore = 0;
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0) {

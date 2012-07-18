@@ -147,7 +147,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME TR_TEST
+#define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Vse   ""Telem."
@@ -323,8 +323,8 @@
 #define TR_MINUTEBEEP   "P\204pat: Minuta"
 #define TR_BEEPCOUNTDOWN " += Odpo\201et"
 #define TR_FLASHONBEEP  "Podsv\203tl.:Alarm"
-#define TR_LIGHTSWITCH  " += Sp\204na\201"
-#define TR_LIGHTOFFAFTER " += Zhasnout po"
+#define TR_BLMODE  " += Sp\204na\201"
+#define TR_BLDELAY " += Zhasnout po"
 #define TR_SPLASHSCREEN  "\210vodn\204Logo"
 #define TR_THROTTLEWARNING "Upoz:Plyn"
 #define TR_SWITCHWARNING "+=Sp\204na\201e"

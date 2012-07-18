@@ -827,7 +827,7 @@ static uint8_t s_currIdx;
 void menuProcPhaseOne(uint8_t event)
 {
   PhaseData *phase = phaseaddress(s_currIdx);
-  putsFlightPhase(13*FW, 0, s_currIdx+1, 0);
+  putsFlightPhase(13*FW, 0, s_currIdx+1, (getFlightPhase()==s_currIdx ? BOLD : 0));
 
 #define MAX_TRIM_LINE (3+NUM_ROTARY_ENCODERS)
 
@@ -1308,86 +1308,80 @@ void memswap(void *a, void *b, uint8_t size)
   resumeMixerCalculations();
 }
 
-bool swapExpo(uint8_t &idx, uint8_t up)
-{
-  ExpoData *x = expoaddress(idx);
-  int8_t tgt_idx = (up ? idx-1 : idx+1);
-
-  if (tgt_idx < 0) {
-    if (x->chn == 0)
-      return false;
-    x->chn--;
-    return true;
-  }
-
-  if (tgt_idx == MAX_EXPOS) {
-    if (x->chn == NUM_STICKS-1)
-      return false;
-    x->chn++;
-    return true;
-  }
-
-  ExpoData *y = expoaddress(tgt_idx);
-  if(x->chn != y->chn || !y->mode) {
-    if (up) {
-      if (x->chn>0) x->chn--;
-      else return false;
-    }
-    else {
-      if (x->chn<NUM_STICKS-1) x->chn++;
-      else return false;
-    }
-    return true;
-  }
-
-  memswap(x, y, sizeof(ExpoData));
-  idx = tgt_idx;
-  return true;
-}
-
-bool swapMix(uint8_t &idx, uint8_t up)
-{
-  MixData *x = mixaddress(idx);
-  int8_t tgt_idx = (up ? idx-1 : idx+1);
-
-  if (tgt_idx < 0) {
-    if (x->destCh == 0)
-      return false;
-    x->destCh--;
-    return true;
-  }
-
-  if (tgt_idx == MAX_MIXERS) {
-    if (x->destCh == NUM_CHNOUT-1)
-      return false;
-    x->destCh++;
-    return true;
-  }
-
-  MixData *y = mixaddress(tgt_idx);
-  if(x->destCh != y->destCh) {
-    if (up) {
-      if (x->destCh>0) x->destCh--;
-      else return false;
-    }
-    else {
-      if (x->destCh<NUM_CHNOUT-1) x->destCh++;
-      else return false;
-    }
-    return true;
-  }
-
-  memswap(x, y, sizeof(MixData));
-  idx = tgt_idx;
-  return true;
-}
-
 bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 {
-  bool result = (expo ? swapExpo(idx, up) : swapMix(idx, up));
-  if (result)
-    STORE_MODELVARS;
-  return result;
+  void *x, *y;
+  uint8_t size;
+  int8_t tgt_idx = (up ? idx-1 : idx+1);
+
+  if (expo) {
+    x = (ExpoData *)expoaddress(idx);
+
+    if (tgt_idx < 0) {
+      if (((ExpoData *)x)->chn == 0)
+        return false;
+      ((ExpoData *)x)->chn--;
+      return true;
+    }
+
+    if (tgt_idx == MAX_EXPOS) {
+      if (((ExpoData *)x)->chn == NUM_STICKS-1)
+        return false;
+      ((ExpoData *)x)->chn++;
+      return true;
+    }
+
+    y = (ExpoData *)expoaddress(tgt_idx);
+    if(((ExpoData *)x)->chn != ((ExpoData *)y)->chn || !((ExpoData *)y)->mode) {
+      if (up) {
+        if (((ExpoData *)x)->chn>0) ((ExpoData *)x)->chn--;
+        else return false;
+      }
+      else {
+        if (((ExpoData *)x)->chn<NUM_STICKS-1) ((ExpoData *)x)->chn++;
+        else return false;
+      }
+      return true;
+    }
+
+    size = sizeof(ExpoData);
+  }
+  else {
+    x = (MixData *)mixaddress(idx);
+
+    if (tgt_idx < 0) {
+      if (((MixData *)x)->destCh == 0)
+        return false;
+      ((MixData *)x)->destCh--;
+      return true;
+    }
+
+    if (tgt_idx == MAX_MIXERS) {
+      if (((MixData *)x)->destCh == NUM_CHNOUT-1)
+        return false;
+      ((MixData *)x)->destCh++;
+      return true;
+    }
+
+    y = (MixData *)mixaddress(tgt_idx);
+    if(((MixData *)x)->destCh != ((MixData *)y)->destCh) {
+      if (up) {
+        if (((MixData *)x)->destCh>0) ((MixData *)x)->destCh--;
+        else return false;
+      }
+      else {
+        if (((MixData *)x)->destCh<NUM_CHNOUT-1) ((MixData *)x)->destCh++;
+        else return false;
+      }
+      return true;
+    }
+
+    size = sizeof(MixData);
+  }
+
+  memswap(x, y, size);
+  idx = tgt_idx;
+  return true;
 }
 
 enum ExposFields {
@@ -1703,6 +1697,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
             else
               s_copyTgtOfs--;
           } while (s_copyTgtOfs != 0);
+          STORE_MODELVARS;
         }
         sub = m_posVert = s_copySrcRow;
       }
@@ -1778,6 +1773,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
         else {
           // only swap the mix with its neighbor
           if (!swapExpoMix(expo, s_currIdx, key==KEY_UP)) break;
+          STORE_MODELVARS;
         }
 
         s_copyTgtOfs = next_ofs;
@@ -2108,6 +2104,7 @@ void menuProcCurvesAll(uint8_t event)
     case EVT_KEY_BREAK(BTN_REb):
       if (!navigationRotaryEncoder(event))
         break;
+      // no break
 #endif
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_MENU):
@@ -2146,6 +2143,180 @@ void menuProcCurvesAll(uint8_t event)
   if(!m) s_pgOfs++;
 }
 
+#if defined(PCBARM)
+enum CustomSwitchFields {
+  CSW_FIELD_FUNCTION,
+  CSW_FIELD_V1,
+  CSW_FIELD_V2,
+  CSW_FIELD_DURATION,
+  CSW_FIELD_DELAY,
+  CSW_FIELD_COUNT
+};
+#define CSW_2ND_COLUMN (9*FW)
+void menuProcCustomSwitchOne(uint8_t event)
+{
+  TITLEP("CUSTOM SWITCH");
+  CustomSwData &cs = g_model.customSw[s_currIdx];
+  uint8_t sw = DSW_SW1+s_currIdx;
+  putsSwitches(14*FW, 0, sw, (getSwitch(sw, 0) ? BOLD : 0));
+  SIMPLE_SUBMENU_NOTITLE(CSW_FIELD_COUNT);
+
+  int8_t  sub = m_posVert;
+
+  for (uint8_t k=0; k<7; k++) {
+    uint8_t y = (k+2) * FH;
+    uint8_t i = k + s_pgOfs;
+    uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    uint8_t cstate = CS_STATE(cs.func);
+    switch(i) {
+      case CSW_FIELD_FUNCTION:
+        lcd_putsLeft(y, "Func");
+        lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_VCSWFUNC, cs.func, attr);
+        if (attr) {
+          CHECK_INCDEC_MODELVAR(event, cs.func, 0, CS_MAXF);
+          if (cstate != CS_STATE(cs.func)) {
+            cs.v1 = 0;
+            cs.v2 = 0;
+          }
+        }
+        break;
+      case CSW_FIELD_V1:
+      {
+        lcd_putsLeft(y, "V1");
+        int8_t v1_min=0, v1_max=NUM_XCHNCSW;
+        if (cstate == CS_VBOOL) {
+          putsSwitches(CSW_2ND_COLUMN, y, cs.v1, attr);
+          v1_min = SWITCH_OFF; v1_max = SWITCH_ON;
+        }
+        else {
+          putsChnRaw(CSW_2ND_COLUMN, y, cs.v1, attr);
+        }
+        if (attr) {
+          CHECK_INCDEC_MODELVAR(event, cs.v1, v1_min, v1_max);
+        }
+        break;
+      }
+      case CSW_FIELD_V2:
+      {
+        lcd_putsLeft(y, "V2");
+        int8_t v2_min=0, v2_max=NUM_XCHNCSW;
+        if (cstate == CS_VBOOL) {
+          putsSwitches(CSW_2ND_COLUMN, y, cs.v2, attr);
+          v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
+        }
+        else if (cstate == CS_VOFS) {
+#if defined(FRSKY)
+          if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+            putsTelemetryChannel(6*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), attr|LEFT);
+            v2_min = -128; v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
+            if (cs.v2 > v2_max) {
+              cs.v2 = v2_max;
+              eeDirty(EE_MODEL);
+            }
+          }
+          else
+#endif
+          {
+            v2_min = -125; v2_max = 125;
+            lcd_outdezAtt(CSW_2ND_COLUMN, y, CSW_2ND_COLUMN, attr|LEFT);
+          }
+        }
+        else {
+          putsChnRaw(CSW_2ND_COLUMN, y, cs.v2, attr);
+        }
+        if (attr) {
+          CHECK_INCDEC_MODELVAR(event, cs.v2, v2_min, v2_max);
+        }
+        break;
+      }
+      case CSW_FIELD_DURATION:
+        lcd_putsLeft(y, "Duration");
+        lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs.duration, attr|PREC1|LEFT);
+        if (attr) CHECK_INCDEC_MODELVAR(event, cs.duration, 0, MAX_CSW_DURATION);
+        break;
+      case CSW_FIELD_DELAY:
+        lcd_putsLeft(y, "Delay");
+        lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs.delay, attr|PREC1|LEFT);
+        if (attr) CHECK_INCDEC_MODELVAR(event, cs.delay, 0, MAX_CSW_DELAY);
+        break;
+    }
+  }
+}
+
+void menuProcCustomSwitches(uint8_t event)
+{
+  MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, 2/*repeated...*/});
+
+  uint8_t y = 0;
+  uint8_t k = 0;
+  int8_t sub = m_posVert - 1;
+
+  switch (event) {
+#if defined(ROTARY_ENCODERS)
+    case EVT_KEY_BREAK(BTN_REa):
+    case EVT_KEY_BREAK(BTN_REb):
+      if (!navigationRotaryEncoder(event))
+        break;
+      // no break
+#endif
+    case EVT_KEY_FIRST(KEY_RIGHT):
+    case EVT_KEY_FIRST(KEY_MENU):
+      if (sub >= 0) {
+        s_currIdx = sub;
+        pushMenu(menuProcCustomSwitchOne);
+      }
+      break;
+  }
+
+  for (uint8_t i=0; i<7; i++) {
+    y = (i+1)*FH;
+    k = i+s_pgOfs;
+    CustomSwData &cs = g_model.customSw[k];
+
+    // CSW name
+    uint8_t sw = DSW_SW1+k;
+    putsSwitches(0, y, sw, (sub==k ? INVERS : 0) | (getSwitch(sw, 0) ? BOLD : 0));
+
+    if (cs.func > 0) {
+      // CSW func
+      lcd_putsiAtt(4*FW - 2, y, STR_VCSWFUNC, cs.func, 0);
+
+      // CSW params
+      uint8_t cstate = CS_STATE(cs.func);
+
+      if (cstate == CS_VOFS)
+      {
+          putsChnRaw(12*FW-6, y, cs.v1, 0);
+
+#if defined(FRSKY)
+          if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+            putsTelemetryChannel(19*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), 0);
+            int8_t v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
+            if (cs.v2 > v2_max) {
+              cs.v2 = v2_max;
+              eeDirty(EE_MODEL);
+            }
+          }
+          else
+#endif
+          {
+            lcd_outdezAtt(19*FW, y, cs.v2, 0);
+          }
+      }
+      else if (cstate == CS_VBOOL)
+      {
+          putsSwitches(12*FW-6, y, cs.v1, 0);
+          putsSwitches(17*FW, y, cs.v2, 0);
+      }
+      else // cstate == CS_COMP
+      {
+          putsChnRaw(12*FW-6, y, cs.v1, 0);
+          putsChnRaw(17*FW, y, cs.v2, 0);
+      }
+    }
+  }
+}
+#else
 void menuProcCustomSwitches(uint8_t event)
 {
   MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, 2/*repeated...*/});
@@ -2223,6 +2394,7 @@ void menuProcCustomSwitches(uint8_t event)
     }
   }
 }
+#endif
 
 void menuProcFunctionSwitches(uint8_t event)
 {

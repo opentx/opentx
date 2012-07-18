@@ -539,7 +539,6 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
   // check and create folder here
   strcpy_P(buf, STR_MODELS_PATH);
-#ifndef SIMU
   FRESULT result = f_opendir(&archiveFolder, buf);
   if (result != FR_OK) {
     if (result == FR_NO_PATH)
@@ -547,7 +546,6 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     if (result != FR_OK)
       return SDCARD_ERROR(result);
   }
-#endif
 
   buf[sizeof(MODELS_PATH)-1] = '/';
   eeLoadModelName(i_fileSrc, &buf[sizeof(MODELS_PATH)]);
@@ -582,7 +580,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   FRESULT
 #endif
 
-  result = f_open(&archiveFile, buf, FA_OPEN_ALWAYS | FA_WRITE);
+  result = f_open(&archiveFile, buf, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }

@@ -147,7 +147,7 @@
 #else                                                                                                                                                                                                                                                                                              
 #define TR_TEST                                                                                                                                                                                                                                                                                    
 #endif                                                                                                                                                                                                                                                                                             
-#define TR_VFSWFUNC                     "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME TR_TEST
+#define TR_VFSWFUNC                     "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_TEST
                                                                                                                                                                                                                                                                                                    
 #define LEN_VFSWRESET                   "\006"                                                                                                                                                                                                                                                     
 #define TR_VFSWRESET                    "Timer1""Timer2""Alle  ""Telem."                                                                                                                                                                                                                           
@@ -323,8 +323,8 @@
 #define TR_MINUTEBEEP                   "Pieper Minuten"                                  
 #define TR_BEEPCOUNTDOWN                "Pieper Countdown"                                
 #define TR_FLASHONBEEP                  "Pieper+Blinken"                                  
-#define TR_LIGHTSWITCH                  "Licht Steuerung"                                 
-#define TR_LIGHTOFFAFTER                "Licht aus nach"                                  
+#define TR_BLMODE                  "Licht Steuerung"                                 
+#define TR_BLDELAY                "Licht aus nach"                                  
 #define TR_SPLASHSCREEN                 "Startbild"                                       
 #define TR_THROTTLEWARNING              "T-Warnung"                                       
 #define TR_SWITCHWARNING                "S-Warnung"                                

@@ -70,6 +70,7 @@ inline MenuFuncP lastPopMenu()
 
 void doMainScreenGrphics();
 void menuMainView(uint8_t event);
+void menuProcDiagAna(uint8_t event);
 #ifdef FRSKY
 void menuProcFrsky(uint8_t event);
 #endif
