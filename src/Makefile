@@ -466,20 +466,6 @@ CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
 CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 
-ifneq ($(PCB), ARM)
-  GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
-  ifeq ($(GCCVERSIONGTE462),1)
-    CPPFLAGS += -flto
-  endif
-
-  CPPFLAGS += -fno-inline-small-functions
-
-  GCCVERSIONGTE470 := $(shell expr 4.7.0 \<= `$(CC) -dumpversion`)
-  ifeq ($(GCCVERSIONGTE470),1)
-    CPPFLAGS += -mstrict-X
-  endif
-endif
-
 MATH_LIB = -lm
 
 #---------------- External Memory Options ----------------
@@ -521,10 +507,21 @@ MSG_CLEANING = Cleaning project:
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
 
-ifeq ($(PCB), ARM)
-  ALL_CPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -Dat91sam3s4 -DRUN_FROM_FLASH=1 $(CPPFLAGS) $(GENDEPFLAGS)
-else
-  ALL_CPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
+ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -Dat91sam3s4 -DRUN_FROM_FLASH=1 $(CPPFLAGS) $(GENDEPFLAGS)
+AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
+
+ifneq ($(PCB), ARM)
+  GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
+  ifeq ($(GCCVERSIONGTE462),1)
+    CPPFLAGS += -flto
+  endif
+
+  CPPFLAGS += -fno-inline-small-functions
+
+  GCCVERSIONGTE470 := $(shell expr 4.7.0 \<= `$(CC) -dumpversion`)
+  ifeq ($(GCCVERSIONGTE470),1)
+    AVRCPPFLAGS += -mstrict-X
+  endif
 endif
 
 MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
@@ -706,18 +703,18 @@ remallsrc:
 # Link: create ELF output file from object files.
 ifeq ($(PCB), ARM)
 %.o: %.c
-	$(CC) $(ALL_CPPFLAGS) $< -o $@
+	$(CC) $(ARMCPPFLAGS) $< -o $@
 OBJS = $(SRC:.c=.o)
 %.elf: allsrc.cpp $(OBJS)
 	@echo
 	@echo $(MSG_COMPILING) $@
-	$(CC) $(ALL_CPPFLAGS) $< -o allsrc.o
+	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o
 	$(CC) allsrc.o $(OBJS) -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
 else
 %.elf: allsrc.cpp
 	@echo
 	@echo $(MSG_COMPILING) $@
-	$(CC) $(ALL_CPPFLAGS) $< --output $@ $(LDFLAGS)
+	$(CC) $(AVRCPPFLAGS) $< --output $@ $(LDFLAGS)
 endif
 	
 # Target: clean project.
