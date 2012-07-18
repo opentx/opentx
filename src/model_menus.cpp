@@ -477,7 +477,7 @@ void menuProcModelSelect(uint8_t event)
       }
       else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
         if (!listSdFiles(MODELS_PATH, MODELS_EXT)) {
-          s_sdcard_error = PSTR("No Models on SD");
+          s_sdcard_error = STR_NO_MODELS_ON_SD;
           s_menu_flags = 0;
         }
       }
@@ -2155,7 +2155,7 @@ enum CustomSwitchFields {
 #define CSW_2ND_COLUMN (9*FW)
 void menuProcCustomSwitchOne(uint8_t event)
 {
-  TITLEP("CUSTOM SWITCH");
+  TITLEP(STR_MENUCUSTOMSWITCH);
   CustomSwData &cs = g_model.customSw[s_currIdx];
   uint8_t sw = DSW_SW1+s_currIdx;
   putsSwitches(14*FW, 0, sw, (getSwitch(sw, 0) ? BOLD : 0));
@@ -2170,7 +2170,7 @@ void menuProcCustomSwitchOne(uint8_t event)
     uint8_t cstate = CS_STATE(cs.func);
     switch(i) {
       case CSW_FIELD_FUNCTION:
-        lcd_putsLeft(y, "Func");
+        lcd_putsLeft(y, STR_FUNC);
         lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_VCSWFUNC, cs.func, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR(event, cs.func, 0, CS_MAXF);
@@ -2182,7 +2182,7 @@ void menuProcCustomSwitchOne(uint8_t event)
         break;
       case CSW_FIELD_V1:
       {
-        lcd_putsLeft(y, "V1");
+        lcd_putsLeft(y, STR_V1);
         int8_t v1_min=0, v1_max=NUM_XCHNCSW;
         if (cstate == CS_VBOOL) {
           putsSwitches(CSW_2ND_COLUMN, y, cs.v1, attr);
@@ -2198,7 +2198,7 @@ void menuProcCustomSwitchOne(uint8_t event)
       }
       case CSW_FIELD_V2:
       {
-        lcd_putsLeft(y, "V2");
+        lcd_putsLeft(y, STR_V2);
         int8_t v2_min=0, v2_max=NUM_XCHNCSW;
         if (cstate == CS_VBOOL) {
           putsSwitches(CSW_2ND_COLUMN, y, cs.v2, attr);
@@ -2230,13 +2230,19 @@ void menuProcCustomSwitchOne(uint8_t event)
         break;
       }
       case CSW_FIELD_DURATION:
-        lcd_putsLeft(y, "Duration");
-        lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs.duration, attr|PREC1|LEFT);
+        lcd_putsLeft(y, STR_DURATION);
+        if (cs.duration > 0)
+          lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs.duration, attr|PREC1|LEFT);
+        else
+          lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, cs.duration, 0, MAX_CSW_DURATION);
         break;
       case CSW_FIELD_DELAY:
-        lcd_putsLeft(y, "Delay");
-        lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs.delay, attr|PREC1|LEFT);
+        lcd_putsLeft(y, STR_DELAY);
+        if (cs.delay > 0)
+          lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs.delay, attr|PREC1|LEFT);
+        else
+          lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, cs.delay, 0, MAX_CSW_DELAY);
         break;
     }
@@ -2477,7 +2483,7 @@ void menuProcFunctionSwitches(uint8_t event)
               if (active && event==EVT_KEY_BREAK(KEY_MENU)) {
                 s_editMode = 0;
                 if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT)) {
-                  s_warning = PSTR("No Sounds on SD");
+                  s_warning = STR_NO_SOUNDS_ON_SD;
                   s_menu_flags = 0;
                 }
               }
@@ -2554,7 +2560,7 @@ void menuProcFunctionSwitches(uint8_t event)
     if (result) {
       if (result == STR_UPDATE_LIST) {
         if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT)) {
-          s_warning = PSTR("No Sounds on SD");
+          s_warning = STR_NO_SOUNDS_ON_SD;
           s_menu_flags = 0;
         }
       }

@@ -124,7 +124,7 @@ void menuProcDebug(uint8_t event)
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, getCurrent(), UNIT_MILLIAMPS, 0) ;
 #endif
 
-  lcd_putsLeft(3*FH, PSTR("CPU temp.\010>"));
+  lcd_putsLeft(3*FH, STR_CPU_TEMP);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, (((((int32_t)Temperature - 838 ) * 621 ) >> 11 ) - 20), UNIT_DEGREES, 0 ) ;
   putsTelemetryValue(20*FW+2, 3*FH, (((((int32_t)maxTemperature - 838 ) * 621 ) >> 11 ) - 20), UNIT_DEGREES, 0 ) ;
   // TODO mAh, Battery from ersky9x?

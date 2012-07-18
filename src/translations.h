@@ -82,7 +82,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_RETA123    (OFS_VTRIMINC + sizeof(TR_VTRIMINC))
 #define OFS_VPROTOS    (OFS_RETA123 + sizeof(TR_RETA123))
 #define OFS_POSNEG     (OFS_VPROTOS + sizeof(TR_VPROTOS))
-#define OFS_VCURVEFUNC (OFS_POSNEG + sizeof(TR_POSNEG))
+#define OFS_VBLMODE    (OFS_POSNEG + sizeof(TR_POSNEG))
+#define OFS_VCURVEFUNC (OFS_VBLMODE + sizeof(TR_VBLMODE))
 #define OFS_CURVMODES  (OFS_VCURVEFUNC + sizeof(TR_VCURVEFUNC))
 #define OFS_EXPLABELS  (OFS_CURVMODES + sizeof(TR_CURVMODES))
 #define OFS_VMLTPX     (OFS_EXPLABELS + sizeof(TR_EXPLABELS))
@@ -145,6 +146,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_RETA123    (STR_OPEN9X + OFS_RETA123)
 #define STR_VPROTOS    (STR_OPEN9X + OFS_VPROTOS)
 #define STR_POSNEG     (STR_OPEN9X + OFS_POSNEG)
+#define STR_VBLMODE    (STR_OPEN9X + OFS_VBLMODE)
 #define STR_VCURVEFUNC (STR_OPEN9X + OFS_VCURVEFUNC)
 #define STR_VWHEN      STR_VCURVEFUNC
 #define LEN_VWHEN      LEN_VCURVEFUNC
@@ -342,6 +344,7 @@ extern const pm_char STR_MENUDREXPO[];
 extern const pm_char STR_MENULIMITS[];
 extern const pm_char STR_MENUCURVES[];
 extern const pm_char STR_MENUCURVE[];
+extern const pm_char STR_MENUCUSTOMSWITCH[];
 extern const pm_char STR_MENUCUSTOMSWITCHES[];
 extern const pm_char STR_MENUFUNCSWITCHES[];
 extern const pm_char STR_MENUTELEMETRY[];
@@ -414,6 +417,26 @@ extern const pm_char STR_EEPROMWARN[];
 extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
+
+extern const pm_char STR_SPEAKER_VOLUME[];
+extern const pm_char STR_OPTREX_DISPLAY[];
+extern const pm_char STR_BRIGHTNESS[];
+extern const pm_char STR_CPU_TEMP[];
+extern const pm_char STR_FUNC[];
+extern const pm_char STR_V1[];
+extern const pm_char STR_V2[];
+extern const pm_char STR_DURATION[];
+extern const pm_char STR_DELAY[];
+extern const pm_char STR_SD_CARD[];
+extern const pm_char STR_SDHC_CARD[];
+extern const pm_char STR_NO_SOUNDS_ON_SD[];
+extern const pm_char STR_NO_MODELS_ON_SD[];
+extern const pm_char STR_PLAY_FILE[];
+extern const pm_char STR_DELETE_FILE[];
+extern const pm_char STR_COPY_FILE[];
+extern const pm_char STR_RENAME_FILE[];
+extern const pm_char STR_REMOVED[];
+
 
 #if defined(SOMO) || defined(PCBARM)
 void playNumber(int16_t number, uint8_t unit=0, uint8_t att=0);

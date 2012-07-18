@@ -215,7 +215,7 @@ void menuProcSetup(uint8_t event)
 #if defined(PCBARM)
       case ITEM_SETUP_SPEAKER_VOLUME:
       {
-        lcd_putsLeft(y, PSTR("Speaker Volume")); // TODO translations
+        lcd_putsLeft(y, STR_SPEAKER_VOLUME);
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerVolume, attr|LEFT);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerVolume, 0, NUM_VOL_LEVELS-1);
@@ -258,11 +258,11 @@ void menuProcSetup(uint8_t event)
 
 #if defined(PCBARM)
       case ITEM_SETUP_OPTREX_DISPLAY:
-        g_eeGeneral.optrexDisplay = onoffMenuItem( g_eeGeneral.optrexDisplay, y, PSTR("Optrex Display"), attr, event ) ;
+        g_eeGeneral.optrexDisplay = onoffMenuItem( g_eeGeneral.optrexDisplay, y, STR_OPTREX_DISPLAY, attr, event ) ;
         break;
 
       case ITEM_SETUP_BRIGHTNESS:
-        lcd_putsLeft(y, PSTR("Brightness")); // TODO translations in the whole file ...
+        lcd_putsLeft(y, STR_BRIGHTNESS);
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
         if(attr) {
           uint8_t b ;
@@ -331,7 +331,7 @@ void menuProcSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_BACKLIGHT_MODE:
-        g_eeGeneral.backlightMode = selectMenuItem(y, STR_BLMODE, PSTR("\004OFF KeysStksBothON\0"), g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
+        g_eeGeneral.backlightMode = selectMenuItem(y, STR_BLMODE, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:
@@ -512,11 +512,6 @@ extern uint32_t Cmd_A41_resp;
 #define OCR_SD_CCS             (0)
 #endif
 
-const pm_char STR_PLAY_FILE[] PROGMEM = "Play";
-const pm_char STR_DELETE_FILE[] PROGMEM = "Delete";
-const pm_char STR_COPY_FILE[] PROGMEM = "Copy";
-const pm_char STR_RENAME_FILE[] PROGMEM = "Rename";
-
 void menuProcSd(uint8_t event)
 {
   FILINFO fno;
@@ -535,7 +530,7 @@ void menuProcSd(uint8_t event)
     event = 0;
   }
 
-  SIMPLE_MENU(Cmd_A41_resp & OCR_SD_CCS ? PSTR("SD-HC Card") : PSTR("SD Card"), menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
+  SIMPLE_MENU(Cmd_A41_resp & OCR_SD_CCS ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
 
   if (s_editMode > 0)
     s_editMode = 0;
@@ -580,7 +575,7 @@ void menuProcSd(uint8_t event)
 #if defined(PCBARM)
         uint8_t index = m_posVert-1-s_pgOfs;
         char * line = reusableBuffer.sd.lines[index];
-        if (!strcmp(line+strlen(line)-4, ".wav")) {
+        if (!strcmp(line+strlen(line)-4, SOUNDS_EXT)) {
           s_menu[s_menu_count++] = STR_PLAY_FILE;
         }
 #endif
@@ -643,7 +638,7 @@ void menuProcSd(uint8_t event)
         strcat(lfn, reusableBuffer.sd.lines[index]);
         f_unlink(lfn);
         strncpy(statusLineMsg, reusableBuffer.sd.lines[index], 13);
-        strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), PSTR(" removed"));
+        strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
         showStatusLine();
         if ((uint16_t)m_posVert == reusableBuffer.sd.count) m_posVert--;
         reusableBuffer.sd.offset = s_pgOfs-1;
