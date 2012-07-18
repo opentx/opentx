@@ -2535,46 +2535,39 @@ void perMain()
   if (counter-- == 0) {
     counter = 10;
 #else
-  switch( tmr10ms & 0x1f ) { //alle 10ms*32
-
-    case 2:
-    {
+  if ((tmr10ms & 0x1f) == 2 /*every 10ms*32*/ || g_menuStack[g_menuStackPtr] == menuProcDiagAna) {
 #endif
 
 #if defined(PCBARM)
-        int32_t instant_vbat = anaIn(7);
-        instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
-        instant_vbat /= 55296  ;
+    int32_t instant_vbat = anaIn(7);
+    instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
+    instant_vbat /= 55296  ;
 #elif defined(PCBV4)
-        uint16_t instant_vbat = anaIn(7);
-        instant_vbat = ((uint32_t)instant_vbat*1112 + (int32_t)instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
+    uint16_t instant_vbat = anaIn(7);
+    instant_vbat = ((uint32_t)instant_vbat*1112 + (int32_t)instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
 #else
-        uint16_t instant_vbat = anaIn(7);
-        instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
+    uint16_t instant_vbat = anaIn(7);
+    instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
 #endif
 
-        static uint8_t  s_batCheck;
-        static uint16_t s_batSum;
+    static uint8_t  s_batCheck;
+    static uint16_t s_batSum;
 
-        s_batCheck += 32;
-        s_batSum += instant_vbat;
+    s_batCheck += 32;
+    s_batSum += instant_vbat;
 
-        if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] == menuProcDiagAna) {
-          g_vbat100mV = instant_vbat;
-          s_batSum = 0;
-        }
-
-        if (s_batCheck==0) {
-          if (s_batSum) g_vbat100mV = s_batSum / 8;
-          s_batSum = 0;
-          if (g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
-            AUDIO_TX_BATTERY_LOW();
-          }
-        }
-#if !defined(PCBARM)
+    if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] == menuProcDiagAna) {
+      g_vbat100mV = instant_vbat;
+      s_batSum = 0;
+      s_batCheck = 0;
+    }
+    else if (s_batCheck == 0) {
+      g_vbat100mV = s_batSum / 8;
+      s_batSum = 0;
+      if (g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
+        AUDIO_TX_BATTERY_LOW();
       }
-      break;
-#endif
+    }
   }
 }
 
