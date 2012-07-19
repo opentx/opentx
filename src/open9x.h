@@ -777,6 +777,8 @@ extern PhaseData *phaseaddress(uint8_t idx);
 extern ExpoData *expoaddress(uint8_t idx);
 extern MixData *mixaddress(uint8_t idx);
 extern LimitData *limitaddress(uint8_t idx);
+extern int8_t *curveaddress(uint8_t idx);
+extern CustomSwData *cswaddress(uint8_t idx);
 
 extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 
@@ -809,6 +811,13 @@ inline bool isMixActive(uint8_t mix)
 #define isMixActive(x) false
 #endif
 
+#if defined(PCBARM)
+#define MASK_FSW_TYPE uint32_t // current max = 32 function switches
+#else
+#define MASK_FSW_TYPE uint16_t // current max = 16 function switches
+#endif
+
+extern MASK_FSW_TYPE activeFunctionSwitches;
 extern uint16_t activeFunctions;
 inline bool isFunctionActive(uint8_t func)
 {

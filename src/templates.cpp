@@ -53,49 +53,63 @@
 
 #include "open9x.h"
 
-MixData* setDest(uint8_t dch, bool clear=false)
+MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
 {
-    uint8_t i = 0;
-    while (i<MAX_MIXERS && g_model.mixData[i].srcRaw && g_model.mixData[i].destCh <= dch) {
-      if (clear && g_model.mixData[i].destCh == dch)
-        deleteExpoMix(0, i);
-      else
-        i++;
-    }
-    if(i==MAX_MIXERS) return &g_model.mixData[0];
+  uint8_t i = 0;
+  MixData * mix;
 
-    memmove(&g_model.mixData[i+1],&g_model.mixData[i],
-            (MAX_MIXERS-(i+1))*sizeof(MixData) );
-    memset(&g_model.mixData[i],0,sizeof(MixData));
-    g_model.mixData[i].destCh = dch;
-    return &g_model.mixData[i];
+  while (1) {
+    mix = mixaddress(i);
+    if (mix->srcRaw && mix->destCh <= dch) {
+      if (clear && mix->destCh == dch)
+        deleteExpoMix(0, i);
+      else {
+        if (++i==MAX_MIXERS) {
+          // TODO should return null pointer but needs to be tested then
+          mix = mixaddress(0);
+          break;
+        }
+      }
+    }
+    else {
+      break;
+    }
+  }
+
+  memmove(mix+1, mix, (MAX_MIXERS-(i+1))*sizeof(MixData) );
+  memset(mix,0,sizeof(MixData));
+  mix->destCh = dch;
+  mix->srcRaw = src;
+  mix->weight = 100;
+  return mix;
 }
 
 void clearMixes()
 {
-    memset(g_model.mixData,0,sizeof(g_model.mixData)); //clear all mixes
-    STORE_MODELVARS;
+  memset(g_model.mixData, 0, sizeof(g_model.mixData)); //clear all mixes
+  STORE_MODELVARS;
 }
 
 void clearCurves()
 {
-    memset(g_model.curves5,0,sizeof(g_model.curves5)); //clear all curves
-    memset(g_model.curves9,0,sizeof(g_model.curves9)); //clear all curves
+  memset(g_model.curves5, 0, sizeof(g_model.curves5)); //clear all curves
+  memset(g_model.curves9, 0, sizeof(g_model.curves9)); //clear all curves
 }
 
 void setCurve(uint8_t c, const pm_int8_t ar[])
 {
-    if(c<MAX_CURVE5) //5 pt curve
-        for(uint8_t i=0; i<5; i++) g_model.curves5[c][i] = pgm_read_byte(&ar[i]);
-    else  //9 pt curve
-        for(uint8_t i=0; i<9; i++) g_model.curves9[c-MAX_CURVE5][i] = pgm_read_byte(&ar[i]);
+  int8_t * cv = curveaddress(c);
+  for (uint8_t i=0; i<(c<MAX_CURVE5 ? 5 : 9); i++) {
+    cv[i] = pgm_read_byte(&ar[i]);
+  }
 }
 
 void setSwitch(uint8_t idx, uint8_t func, int8_t v1, int8_t v2)
 {
-    g_model.customSw[idx-1].func = func;
-    g_model.customSw[idx-1].v1   = v1;
-    g_model.customSw[idx-1].v2   = v2;
+  CustomSwData *cs = cswaddress(idx-1);
+  cs->func = func;
+  cs->v1   = v1;
+  cs->v2   = v2;
 }
 
 const pm_int8_t heli_ar1[] PROGMEM = {-100, 20, 50, 70, 90};
@@ -106,7 +120,7 @@ const pm_int8_t heli_ar5[] PROGMEM = {-100, 0, 0, 0, 100};
 
 void applyTemplate(uint8_t idx)
 {
-    MixData *md = &g_model.mixData[0];
+    MixData *md;
 
     //CC(STK)   -> vSTK
     //ICC(vSTK) -> STK
@@ -124,43 +138,43 @@ void applyTemplate(uint8_t idx)
       // Simple 4-Ch
       case TMPL_SIMPLE_4CH:
         clearMixes();
-        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_Rud;  md->weight=100;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_Ele;  md->weight=100;
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_Thr;  md->weight=100;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_Ail;  md->weight=100;
+        setDest(ICC(STK_RUD), MIXSRC_Rud);
+        setDest(ICC(STK_ELE), MIXSRC_Ele);
+        setDest(ICC(STK_THR), MIXSRC_Thr);
+        setDest(ICC(STK_AIL), MIXSRC_Ail);
         break;
 
       // T-Cut
       case TMPL_THR_CUT:
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_MAX;  md->weight=-100;  md->swtch=DSW_THR;  md->mltpx=MLTPX_REP;
+        md=setDest(ICC(STK_THR), MIXSRC_MAX);  md->weight=-100;  md->swtch=DSW_THR;  md->mltpx=MLTPX_REP;
         break;
 
       // V-Tail
       case TMPL_V_TAIL:
-        md=setDest(ICC(STK_RUD), true);  md->srcRaw=MIXSRC_Rud;  md->weight= 100;
-        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_Ele;  md->weight=-100;
-        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_Rud;  md->weight= 100;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_Ele;  md->weight= 100;
+        setDest(ICC(STK_RUD), MIXSRC_Rud, true);
+        md=setDest(ICC(STK_RUD), MIXSRC_Ele); md->weight=-100;
+        setDest(ICC(STK_ELE), MIXSRC_Rud, true);
+        setDest(ICC(STK_ELE), MIXSRC_Ele);
         break;
 
       // Elevon\\Delta
       case TMPL_ELEVON_DELTA:
-        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_Ele;  md->weight= 100;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_Ail;  md->weight= 100;
-        md=setDest(ICC(STK_AIL), true);  md->srcRaw=MIXSRC_Ele;  md->weight= 100;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_Ail;  md->weight=-100;
+        setDest(ICC(STK_ELE), MIXSRC_Ele, true);
+        setDest(ICC(STK_ELE), MIXSRC_Ail);
+        setDest(ICC(STK_AIL), MIXSRC_Ele, true);
+        md=setDest(ICC(STK_AIL), MIXSRC_Ail); md->weight=-100;
         break;
 
       // eCCPM
       case TMPL_ECCPM:
-        md=setDest(ICC(STK_ELE), true);  md->srcRaw=MIXSRC_Ele;  md->weight= 72;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_Thr;  md->weight= 55;
-        md=setDest(ICC(STK_AIL), true);  md->srcRaw=MIXSRC_Ele;  md->weight=-36;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_Ail;  md->weight= 62;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_Thr;  md->weight= 55;
-        md=setDest(5, true);       md->srcRaw=MIXSRC_Ele;  md->weight=-36;
-        md=setDest(5);             md->srcRaw=MIXSRC_Ail;  md->weight=-62;
-        md=setDest(5);             md->srcRaw=MIXSRC_Thr;  md->weight= 55;
+        md=setDest(ICC(STK_ELE), MIXSRC_Ele, true); md->weight= 72;
+        md=setDest(ICC(STK_ELE), MIXSRC_Thr);  md->weight= 55;
+        md=setDest(ICC(STK_AIL), MIXSRC_Ele, true);  md->weight=-36;
+        md=setDest(ICC(STK_AIL), MIXSRC_Ail);  md->weight= 62;
+        md=setDest(ICC(STK_AIL), MIXSRC_Thr);  md->weight= 55;
+        md=setDest(5, MIXSRC_Ele, true);       md->weight=-36;
+        md=setDest(5, MIXSRC_Ail);             md->weight=-62;
+        md=setDest(5, MIXSRC_Thr);             md->weight= 55;
         break;
 
       // Heli Setup
@@ -169,34 +183,34 @@ void applyTemplate(uint8_t idx)
         clearCurves();
 
         //Set up Mixes
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_CH9;   md->weight=  50;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_CH10;  md->weight=-100;
-        md=setDest(ICC(STK_AIL));  md->srcRaw=MIXSRC_CH11;  md->weight= 100; md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_AIL), MIXSRC_CH9);   md->weight=  50;
+        md=setDest(ICC(STK_AIL), MIXSRC_CH10);  md->weight=-100;
+        md=setDest(ICC(STK_AIL), MIXSRC_CH11);  md->carryTrim=TRIM_OFF;
 
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_CH9;   md->weight=-100;
-        md=setDest(ICC(STK_ELE));  md->srcRaw=MIXSRC_CH11;  md->weight= 100; md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_ELE), MIXSRC_CH9);   md->weight=-100;
+        md=setDest(ICC(STK_ELE), MIXSRC_CH11);  md->carryTrim=TRIM_OFF;
 
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_Thr;  md->weight= 100; md->swtch=DSW_ID0; md->curve=CV(1); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_Thr;  md->weight= 100; md->swtch=DSW_ID1; md->curve=CV(2); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_Thr;  md->weight= 110; md->swtch=DSW_ID2; md->curve=CV(2); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR));  md->srcRaw=MIXSRC_MAX;      md->weight=-125; md->swtch=DSW_THR;  md->mltpx=MLTPX_REP; md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW_ID0; md->curve=CV(1); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW_ID1; md->curve=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->weight= 110; md->swtch=DSW_ID2; md->curve=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_MAX);   md->weight=-125; md->swtch=DSW_THR;  md->mltpx=MLTPX_REP; md->carryTrim=TRIM_OFF;
 
-        md=setDest(ICC(STK_RUD));  md->srcRaw=MIXSRC_Rud; md->weight=100;
+        md=setDest(ICC(STK_RUD), MIXSRC_Rud);
 
-        md=setDest(4);  md->srcRaw=MIXSRC_MAX; md->weight= 50; md->swtch=-DSW_GEA; md->carryTrim=TRIM_OFF;
-        md=setDest(4);  md->srcRaw=MIXSRC_MAX; md->weight=-50; md->swtch= DSW_GEA; md->carryTrim=TRIM_OFF;
-        md=setDest(4);  md->srcRaw=STK_P3;  md->weight= 40; md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_MAX);  md->weight= 50; md->swtch=-DSW_GEA; md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_MAX);  md->weight=-50; md->swtch= DSW_GEA; md->carryTrim=TRIM_OFF;
+        md=setDest(4, STK_P3);      md->weight= 40; md->carryTrim=TRIM_OFF;
 
-        md=setDest(5);  md->srcRaw=MIXSRC_CH9;   md->weight= -50;
-        md=setDest(5);  md->srcRaw=MIXSRC_CH10;  md->weight=-100;
-        md=setDest(5);  md->srcRaw=MIXSRC_CH11;  md->weight=-100; md->carryTrim=TRIM_OFF;
+        md=setDest(5, MIXSRC_CH9);  md->weight= -50;
+        md=setDest(5, MIXSRC_CH10); md->weight=-100;
+        md=setDest(5, MIXSRC_CH11); md->weight=-100; md->carryTrim=TRIM_OFF;
 
-        md=setDest(8);  md->srcRaw=MIXSRC_Ele;  md->weight= 60;
-        md=setDest(9);  md->srcRaw=MIXSRC_Ail;  md->weight=-52;
-        md=setDest(10); md->srcRaw=MIXSRC_Thr;  md->weight= 70; md->swtch=DSW_ID0; md->curve=CV(3); md->carryTrim=TRIM_OFF;
-        md=setDest(10); md->srcRaw=MIXSRC_Thr;  md->weight= 70; md->swtch=DSW_ID1; md->curve=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10); md->srcRaw=MIXSRC_Thr;  md->weight= 70; md->swtch=DSW_ID2; md->curve=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10); md->srcRaw=MIXSRC_Thr;  md->weight=100; md->swtch=DSW_THR; md->curve=CV(5); md->carryTrim=TRIM_OFF;  md->mltpx=MLTPX_REP;
+        md=setDest(8, MIXSRC_Ele);  md->weight= 60;
+        md=setDest(9, MIXSRC_Ail);  md->weight=-52;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID0; md->curve=CV(3); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID1; md->curve=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID2; md->curve=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->swtch=DSW_THR; md->curve=CV(5); md->carryTrim=TRIM_OFF;  md->mltpx=MLTPX_REP;
 
         //Set up Curves
         setCurve(CURVE5(1), heli_ar1);
@@ -208,8 +222,8 @@ void applyTemplate(uint8_t idx)
 
       // Servo Test
       case TMPL_SERVO_TEST:
-        md=setDest(15, true); md->srcRaw=MIXSRC_SW1;  md->weight=110; md->mltpx=MLTPX_ADD; md->delayUp = 6; md->delayDown = 6; md->speedUp = 8; md->speedDown = 8;
-        setSwitch(1, CS_VNEG, CSW_CHOUT_BASE+16,   0);
+        md=setDest(15, MIXSRC_SW1, true); md->weight=110; md->mltpx=MLTPX_ADD; md->delayUp = 6; md->delayDown = 6; md->speedUp = 8; md->speedDown = 8;
+        setSwitch(1, CS_VNEG, CSW_CHOUT_BASE+16, 0);
         break;
 
     default:

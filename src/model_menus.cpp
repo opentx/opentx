@@ -1105,12 +1105,12 @@ void menuProcCurveOne(uint8_t event)
 
   if (s_curveChan >= MAX_CURVE5) {
     points = 9;
-    crv = g_model.curves9[s_curveChan-MAX_CURVE5];
   }
   else {
     points = 5;
-    crv = g_model.curves5[s_curveChan];
   }
+
+  crv = curveaddress(s_curveChan);
 
   switch(event) {
     case EVT_ENTRY:
@@ -2127,7 +2127,7 @@ void menuProcCurvesAll(uint8_t event)
     if(yd>7) break;
     if(!m) m = attr;
     putsStrIdx(0, y, STR_CV, k+1, attr);
-    int8_t *crv = cv9 ? g_model.curves9[k-MAX_CURVE5] : g_model.curves5[k];
+    int8_t *crv = curveaddress(k);
     for (uint8_t j = 0; j < (5); j++) {
       lcd_outdezAtt( j*(3*FW+3) + 7*FW + 2, y, crv[j], 0);
     }
@@ -2156,7 +2156,7 @@ enum CustomSwitchFields {
 void menuProcCustomSwitchOne(uint8_t event)
 {
   TITLEP(STR_MENUCUSTOMSWITCH);
-  CustomSwData &cs = g_model.customSw[s_currIdx];
+  CustomSwData * cs = cswaddress(s_currIdx);
   uint8_t sw = DSW_SW1+s_currIdx;
   putsSwitches(14*FW, 0, sw, (getSwitch(sw, 0) ? BOLD : 0));
   SIMPLE_SUBMENU_NOTITLE(CSW_FIELD_COUNT);
@@ -2167,16 +2167,16 @@ void menuProcCustomSwitchOne(uint8_t event)
     uint8_t y = (k+2) * FH;
     uint8_t i = k + s_pgOfs;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-    uint8_t cstate = CS_STATE(cs.func);
+    uint8_t cstate = CS_STATE(cs->func);
     switch(i) {
       case CSW_FIELD_FUNCTION:
         lcd_putsLeft(y, STR_FUNC);
-        lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_VCSWFUNC, cs.func, attr);
+        lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_VCSWFUNC, cs->func, attr);
         if (attr) {
-          CHECK_INCDEC_MODELVAR(event, cs.func, 0, CS_MAXF);
-          if (cstate != CS_STATE(cs.func)) {
-            cs.v1 = 0;
-            cs.v2 = 0;
+          CHECK_INCDEC_MODELVAR(event, cs->func, 0, CS_MAXF);
+          if (cstate != CS_STATE(cs->func)) {
+            cs->v1 = 0;
+            cs->v2 = 0;
           }
         }
         break;
@@ -2185,14 +2185,14 @@ void menuProcCustomSwitchOne(uint8_t event)
         lcd_putsLeft(y, STR_V1);
         int8_t v1_min=0, v1_max=NUM_XCHNCSW;
         if (cstate == CS_VBOOL) {
-          putsSwitches(CSW_2ND_COLUMN, y, cs.v1, attr);
+          putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr);
           v1_min = SWITCH_OFF; v1_max = SWITCH_ON;
         }
         else {
-          putsChnRaw(CSW_2ND_COLUMN, y, cs.v1, attr);
+          putsChnRaw(CSW_2ND_COLUMN, y, cs->v1, attr);
         }
         if (attr) {
-          CHECK_INCDEC_MODELVAR(event, cs.v1, v1_min, v1_max);
+          CHECK_INCDEC_MODELVAR(event, cs->v1, v1_min, v1_max);
         }
         break;
       }
@@ -2201,16 +2201,16 @@ void menuProcCustomSwitchOne(uint8_t event)
         lcd_putsLeft(y, STR_V2);
         int8_t v2_min=0, v2_max=NUM_XCHNCSW;
         if (cstate == CS_VBOOL) {
-          putsSwitches(CSW_2ND_COLUMN, y, cs.v2, attr);
+          putsSwitches(CSW_2ND_COLUMN, y, cs->v2, attr);
           v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
         }
         else if (cstate == CS_VOFS) {
 #if defined(FRSKY)
-          if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-            putsTelemetryChannel(CSW_2ND_COLUMN, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), attr|LEFT);
-            v2_min = -128; v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
-            if (cs.v2 > v2_max) {
-              cs.v2 = v2_max;
+          if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+            putsTelemetryChannel(CSW_2ND_COLUMN, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2), attr|LEFT);
+            v2_min = -128; v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
+            if (cs->v2 > v2_max) {
+              cs->v2 = v2_max;
               eeDirty(EE_MODEL);
             }
           }
@@ -2218,32 +2218,32 @@ void menuProcCustomSwitchOne(uint8_t event)
 #endif
           {
             v2_min = -125; v2_max = 125;
-            lcd_outdezAtt(CSW_2ND_COLUMN, y, cs.v2, attr|LEFT);
+            lcd_outdezAtt(CSW_2ND_COLUMN, y, cs->v2, attr|LEFT);
           }
         }
         else {
-          putsChnRaw(CSW_2ND_COLUMN, y, cs.v2, attr);
+          putsChnRaw(CSW_2ND_COLUMN, y, cs->v2, attr);
         }
         if (attr) {
-          CHECK_INCDEC_MODELVAR(event, cs.v2, v2_min, v2_max);
+          CHECK_INCDEC_MODELVAR(event, cs->v2, v2_min, v2_max);
         }
         break;
       }
       case CSW_FIELD_DURATION:
         lcd_putsLeft(y, STR_DURATION);
-        if (cs.duration > 0)
-          lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs.duration, attr|PREC1|LEFT);
+        if (cs->duration > 0)
+          lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs->duration, attr|PREC1|LEFT);
         else
           lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_MMMINV, 0, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, cs.duration, 0, MAX_CSW_DURATION);
+        if (attr) CHECK_INCDEC_MODELVAR(event, cs->duration, 0, MAX_CSW_DURATION);
         break;
       case CSW_FIELD_DELAY:
         lcd_putsLeft(y, STR_DELAY);
-        if (cs.delay > 0)
-          lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs.delay, attr|PREC1|LEFT);
+        if (cs->delay > 0)
+          lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs->delay, attr|PREC1|LEFT);
         else
           lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_MMMINV, 0, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, cs.delay, 0, MAX_CSW_DELAY);
+        if (attr) CHECK_INCDEC_MODELVAR(event, cs->delay, 0, MAX_CSW_DELAY);
         break;
     }
   }
@@ -2277,47 +2277,47 @@ void menuProcCustomSwitches(uint8_t event)
   for (uint8_t i=0; i<7; i++) {
     y = (i+1)*FH;
     k = i+s_pgOfs;
-    CustomSwData &cs = g_model.customSw[k];
+    CustomSwData * cs = cswaddress(k);
 
     // CSW name
     uint8_t sw = DSW_SW1+k;
     putsSwitches(0, y, sw, (sub==k ? INVERS : 0) | (getSwitch(sw, 0) ? BOLD : 0));
 
-    if (cs.func > 0) {
+    if (cs->func > 0) {
       // CSW func
-      lcd_putsiAtt(4*FW - 2, y, STR_VCSWFUNC, cs.func, 0);
+      lcd_putsiAtt(4*FW - 2, y, STR_VCSWFUNC, cs->func, 0);
 
       // CSW params
-      uint8_t cstate = CS_STATE(cs.func);
+      uint8_t cstate = CS_STATE(cs->func);
 
       if (cstate == CS_VOFS)
       {
-          putsChnRaw(12*FW-6, y, cs.v1, 0);
+          putsChnRaw(12*FW-6, y, cs->v1, 0);
 
 #if defined(FRSKY)
-          if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-            putsTelemetryChannel(19*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), 0);
-            int8_t v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
-            if (cs.v2 > v2_max) {
-              cs.v2 = v2_max;
+          if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+            putsTelemetryChannel(19*FW, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2), 0);
+            int8_t v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
+            if (cs->v2 > v2_max) {
+              cs->v2 = v2_max;
               eeDirty(EE_MODEL);
             }
           }
           else
 #endif
           {
-            lcd_outdezAtt(19*FW, y, cs.v2, 0);
+            lcd_outdezAtt(19*FW, y, cs->v2, 0);
           }
       }
       else if (cstate == CS_VBOOL)
       {
-          putsSwitches(12*FW-6, y, cs.v1, 0);
-          putsSwitches(17*FW, y, cs.v2, 0);
+          putsSwitches(12*FW-6, y, cs->v1, 0);
+          putsSwitches(17*FW, y, cs->v2, 0);
       }
       else // cstate == CS_COMP
       {
-          putsChnRaw(12*FW-6, y, cs.v1, 0);
-          putsChnRaw(17*FW, y, cs.v2, 0);
+          putsChnRaw(12*FW-6, y, cs->v1, 0);
+          putsChnRaw(17*FW, y, cs->v2, 0);
       }
     }
   }
@@ -2335,66 +2335,66 @@ void menuProcCustomSwitches(uint8_t event)
     y = (i+1)*FH;
     k = i+s_pgOfs;
     uint8_t attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
-    CustomSwData &cs = g_model.customSw[k];
+    CustomSwData * cs = cswaddress(k);
 
     // CSW name
     uint8_t sw = DSW_SW1+k;
     putsSwitches(0, y, sw, getSwitch(sw, 0) ? BOLD : 0);
 
     // CSW func
-    lcd_putsiAtt(4*FW - 2, y, STR_VCSWFUNC, cs.func, m_posHorz==0 ? attr : 0);
+    lcd_putsiAtt(4*FW - 2, y, STR_VCSWFUNC, cs->func, m_posHorz==0 ? attr : 0);
 
     // CSW params
-    uint8_t cstate = CS_STATE(cs.func);
+    uint8_t cstate = CS_STATE(cs->func);
     int8_t v1_min=0, v1_max=NUM_XCHNCSW, v2_min=0, v2_max=NUM_XCHNCSW;
 
     if (cstate == CS_VOFS)
     {
-        putsChnRaw(12*FW-6, y, cs.v1, (m_posHorz==1 ? attr : 0));
+        putsChnRaw(12*FW-6, y, cs->v1, (m_posHorz==1 ? attr : 0));
 
 #if defined(FRSKY)
-        if (cs.v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-          putsTelemetryChannel(19*FW, y, cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs.v2), m_posHorz==2 ? attr : 0);
-          v2_min = -128; v2_max = maxTelemValue(cs.v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
-          if (cs.v2 > v2_max) {
-            cs.v2 = v2_max;
+        if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+          putsTelemetryChannel(19*FW, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2), m_posHorz==2 ? attr : 0);
+          v2_min = -128; v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
+          if (cs->v2 > v2_max) {
+            cs->v2 = v2_max;
             eeDirty(EE_MODEL);
           }
         }
         else
 #endif
         {
-          lcd_outdezAtt(19*FW, y, cs.v2, m_posHorz==2 ? attr : 0);
+          lcd_outdezAtt(19*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
           v2_min = -125; v2_max = 125;
         }
     }
     else if (cstate == CS_VBOOL)
     {
-        putsSwitches(12*FW-6, y, cs.v1, m_posHorz==1 ? attr : 0);
-        putsSwitches(17*FW, y, cs.v2, m_posHorz==2 ? attr : 0);
+        putsSwitches(12*FW-6, y, cs->v1, m_posHorz==1 ? attr : 0);
+        putsSwitches(17*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
         v1_min = SWITCH_OFF; v1_max = SWITCH_ON;
         v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
     }
     else // cstate == CS_COMP
     {
-        putsChnRaw(12*FW-6, y, cs.v1, m_posHorz==1 ? attr : 0);
-        putsChnRaw(17*FW, y, cs.v2, m_posHorz==2 ? attr : 0);
+        putsChnRaw(12*FW-6, y, cs->v1, m_posHorz==1 ? attr : 0);
+        putsChnRaw(17*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
     }
 
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (m_posHorz) {
         case 0:
-          CHECK_INCDEC_MODELVAR(event, cs.func, 0,CS_MAXF);
-          if (cstate != CS_STATE(cs.func)) {
-            cs.v1 = 0;
-            cs.v2 = 0;
+          CHECK_INCDEC_MODELVAR(event, cs->func, 0,CS_MAXF);
+          if (cstate != CS_STATE(cs->func)) {
+            cs->v1 = 0;
+            cs->v2 = 0;
           }
           break;
         case 1:
-          CHECK_INCDEC_MODELVAR(event, cs.v1, v1_min, v1_max);
+          CHECK_INCDEC_MODELVAR(event, cs->v1, v1_min, v1_max);
           break;
         case 2:
-          CHECK_INCDEC_MODELVAR(event, cs.v2, v2_min, v2_max);
+          CHECK_INCDEC_MODELVAR(event, cs->v2, v2_min, v2_max);
           break;
       }
     }
@@ -2427,9 +2427,9 @@ void menuProcFunctionSwitches(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          putsSwitches(3, y, sd->swtch, attr | ((abs(sd->swtch) <= MAX_SWITCH && getSwitch(sd->swtch, 0) && (sd->func >= 16 || (FSW_PARAM(sd) & 1))) ? BOLD : 0));
+          putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= MAX_SWITCH && getSwitch(sd->swtch, 0) && (sd->func >= 16 || (FSW_PARAM(sd) & 1))) ? BOLD : 0));
           if (active) {
-            CHECK_INCDEC_MODELSWITCH( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH);
+            CHECK_INCDEC_MODELSWITCH( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1);
           }
           break;
         case 1:

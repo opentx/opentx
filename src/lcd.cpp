@@ -528,18 +528,18 @@ void putsSwitches(uint8_t x, uint8_t y, int8_t idx, uint8_t att)
 {
   if (idx == 0)
     return lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
-  if (~att & SWONLY) {
+  if (att & SWONOFF) {
     if (idx == SWITCH_ON)
       return lcd_putsiAtt(x, y, STR_OFFON, 1, att);
     if (idx == SWITCH_OFF)
       return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
   }
-  if (idx<0) {
+  if (idx < 0) {
     lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
     idx = -idx;
   }
   if (idx > MAX_SWITCH) {
-    idx -= ((att & SWONLY) ? MAX_SWITCH : MAX_SWITCH+1);
+    idx -= ((att & SWONOFF) ? MAX_SWITCH+1 : MAX_SWITCH);
     if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, 'm', att);
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
@@ -580,7 +580,7 @@ void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att)
     return;
   }
 
-  putsSwitches(x, y, mode-(TMR_VAROFS-1), att|SWONLY);
+  putsSwitches(x, y, mode-(TMR_VAROFS-1), att);
 }
 
 void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)

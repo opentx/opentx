@@ -162,6 +162,16 @@ LimitData *limitaddress(uint8_t idx)
   return &g_model.limitData[idx];
 }
 
+int8_t *curveaddress(uint8_t idx)
+{
+  return (idx >= MAX_CURVE5 ? g_model.curves9[idx-MAX_CURVE5] : g_model.curves5[idx]);
+}
+
+CustomSwData *cswaddress(uint8_t idx)
+{
+  return &g_model.customSw[idx];
+}
+
 void generalDefault()
 {
   memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
@@ -236,7 +246,7 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
 #define D9 (RESX * 2 / 8)
 #define D5 (RESX * 2 / 4)
   bool    cv9 = idx >= MAX_CURVE5;
-  int8_t *crv = cv9 ? g_model.curves9[idx-MAX_CURVE5] : g_model.curves5[idx];
+  int8_t *crv = curveaddress(idx);
   int16_t erg;
 
   x+=RESXu;
@@ -553,10 +563,10 @@ bool __getSwitch(int8_t swtch)
   }
   else {
     cs_idx -= MAX_PSWITCH+1;
-    volatile CustomSwData &cs = g_model.customSw[cs_idx];
-    if (cs.func == CS_OFF) return false;
+    CustomSwData * cs = cswaddress(cs_idx);
+    if (cs->func == CS_OFF) return false;
 
-    uint8_t s = CS_STATE(cs.func);
+    uint8_t s = CS_STATE(cs->func);
     if (s == CS_VBOOL) {
       GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
       if (s_last_switch_used & mask) {
@@ -564,9 +574,9 @@ bool __getSwitch(int8_t swtch)
       }
       else {
         s_last_switch_used |= mask;
-        bool res1 = __getSwitch(cs.v1);
-        bool res2 = __getSwitch(cs.v2);
-        switch (cs.func) {
+        bool res1 = __getSwitch(cs->v1);
+        bool res2 = __getSwitch(cs->v2);
+        switch (cs->func) {
           case CS_AND:
             result = (res1 && res2);
             break;
@@ -586,26 +596,26 @@ bool __getSwitch(int8_t swtch)
 #endif
     }
     else {
-      int16_t x = getValue(cs.v1-1);
+      int16_t x = getValue(cs->v1-1);
       int16_t y;
       if (s == CS_VOFS) {
 #if defined(FRSKY)
         // Telemetry
-        if (cs.v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
-          y = convertTelemValue(cs.v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs.v2);
-          uint8_t idx = cs.v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT;
+        if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
+          y = convertTelemValue(cs->v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs->v2);
+          uint8_t idx = cs->v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT;
           if (idx < THLD_MAX) {
             // Fill the threshold array
-            barsThresholds[idx] = 128 + cs.v2;
+            barsThresholds[idx] = 128 + cs->v2;
           }
         }
         else
 #endif
         {
-          y = calc100toRESX(cs.v2);
+          y = calc100toRESX(cs->v2);
         }
 
-        switch (cs.func) {
+        switch (cs->func) {
           case CS_VPOS:
             result = (x>y);
             break;
@@ -622,9 +632,9 @@ bool __getSwitch(int8_t swtch)
         }
       }
       else {
-        y = getValue(cs.v2-1);
+        y = getValue(cs->v2-1);
 
-        switch (cs.func) {
+        switch (cs->func) {
           case CS_EQUAL:
             result = (x==y);
             break;
@@ -649,24 +659,24 @@ bool __getSwitch(int8_t swtch)
     }
 
 #if defined(PCBARM)
-    if (cs.delay) {
+    if (cs->delay) {
       if (result) {
         if (delays[cs_idx] > get_tmr10ms())
           result = false;
       }
       else {
-        delays[cs_idx] = get_tmr10ms() + (cs.delay*50);
+        delays[cs_idx] = get_tmr10ms() + (cs->delay*50);
       }
     }
-    if (cs.duration) {
+    if (cs->duration) {
       if (result) {
         if (durations[cs_idx] < get_tmr10ms()) {
           result = false;
-          if (cs.delay) delays[cs_idx] = get_tmr10ms() + (cs.delay*50);
+          if (cs->delay) delays[cs_idx] = get_tmr10ms() + (cs->delay*50);
         }
       }
       else {
-        durations[cs_idx] = get_tmr10ms() + (cs.duration*50);
+        durations[cs_idx] = get_tmr10ms() + (cs->duration*50);
       }
     }
 
@@ -1596,15 +1606,8 @@ void testFunc()
 }
 #endif
 
-
-#if defined(PCBARM)
-#define MASK_FSW_TYPE uint32_t // current max = 32 function switches
-#else
-#define MASK_FSW_TYPE uint16_t // current max = 16 function switches
-#endif
-
 uint16_t activeFunctions = 0;
-MASK_FSW_TYPE active_switches = 0;
+MASK_FSW_TYPE activeFunctionSwitches = 0;
 
 #if defined(PCBARM) || defined(SOMO)
 void playValue(uint8_t idx)
@@ -1764,7 +1767,7 @@ void evalFunctions()
           }
         }
 
-        if (~active_switches & switch_mask) {
+        if (~activeFunctionSwitches & switch_mask) {
           if (sd->func == FUNC_RESET) {
             switch (FSW_PARAM(sd)) {
               case 0:
@@ -1783,7 +1786,7 @@ void evalFunctions()
           }
         }
 
-        if ((!momentary) || (~active_switches & switch_mask)) {
+        if ((!momentary) || (~activeFunctionSwitches & switch_mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
             AUDIO_PLAY(AU_FRSKY_FIRST+FSW_PARAM(sd));
           }
@@ -1835,11 +1838,26 @@ void evalFunctions()
 #endif
         }
 
-        newActiveFunctions |= function_mask;
-        active_switches |= switch_mask;
+        if (momentary) {
+          if (~activeFunctionSwitches & switch_mask) {
+            if (~activeFunctions & function_mask) {
+              newActiveFunctions |= function_mask;
+            }
+          }
+          else {
+            newActiveFunctions |= (activeFunctions & function_mask);
+          }
+        }
+        else {
+          newActiveFunctions |= function_mask;
+        }
+
+        activeFunctionSwitches |= switch_mask;
       }
       else {
-        active_switches &= (~switch_mask);
+        activeFunctionSwitches &= (~switch_mask);
+        if (momentary)
+          newActiveFunctions |= (activeFunctions & function_mask);
       }
     }
   }

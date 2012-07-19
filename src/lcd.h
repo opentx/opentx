@@ -73,7 +73,7 @@
 #define ROUND         0x08
 
 /* switches flags */
-#define SWONLY        0x10 /* means no ON OFF, only switches */
+#define SWONOFF       0x10 /* means inlude ON OFF in switches */
 #define SWCONDENSED   0x20 /* means that THRm will be displayed as THR */
 
 /* telemetry flags */

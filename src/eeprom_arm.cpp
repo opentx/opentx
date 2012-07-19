@@ -503,6 +503,9 @@ void eeLoadModel(uint8_t id)
       clearKeyEvents();
     }
 
+    activeFunctions = 0;
+    activeFunctionSwitches = 0;
+
     resetProto();
     resetAll();
   }
