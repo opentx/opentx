@@ -618,8 +618,8 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     return SDCARD_ERROR(result);
   }
 
-  if (buf[0] != g_eeGeneral.myVers) {
-    // TODO
+  if ((uint8_t)buf[0] != EEPROM_VER) {
+    // TODO conversions
     f_close(&restoreFile);
     return STR_INCOMPATIBLE;
   }
