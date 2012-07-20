@@ -2317,8 +2317,8 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
       }
 
       if (atm>=(TMR_VAROFS+MAX_SWITCH)){ // toggeled switch
-        if(!(sw_toggled[i] | s_sum[i] | s_cnt[i] | lastSwPos[i])) lastSwPos[i] = tm < 0;  // if initializing then init the lastSwPos
-        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+(TMR_VAROFS+MAX_SWITCH-1), 0);
+        if(!(sw_toggled[i] | s_sum[i] | s_cnt[i] | lastSwPos[i])) { lastSwPos[i] = tm < 0; s_sum[i] = 1; }  // if initializing then init the lastSwPos
+        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+MAX_SWITCH, 0);
         if (swPos && !lastSwPos[i]) sw_toggled[i] = !sw_toggled[i];  // if switch is flipped first time -> change counter state
         lastSwPos[i] = swPos;
       }
