@@ -3000,6 +3000,8 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
 #endif
 
+  if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
+
   if (!UNEXPECTED_SHUTDOWN()) {
     doSplash();
 
