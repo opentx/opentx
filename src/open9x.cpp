@@ -987,7 +987,7 @@ void checkLowEEPROM()
 {
   if (g_eeGeneral.disableMemoryWarning) return;
   if (EeFsGetFree() < 100) {
-    alert(STR_EEPROMWARN, STR_EEPROMLOWMEM);
+    ALERT(STR_EEPROMWARN, STR_EEPROMLOWMEM, AU_ERROR);
   }
 }
 #endif
@@ -1010,7 +1010,7 @@ void checkTHR()
   if(v<=lowLim) return;
 
   // first - display warning
-  message(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP);
+  MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
 
   while (1)
   {
@@ -1035,7 +1035,7 @@ void checkTHR()
 void checkAlarm() // added by Gohst
 {
   if (g_eeGeneral.disableAlarmWarning) return;
-  if (g_eeGeneral.beeperMode == e_mode_quiet) alert(STR_ALARMSWARN, STR_ALARMSDISABLED);
+  if (g_eeGeneral.beeperMode == e_mode_quiet) ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
 }
 
 void checkSwitches()
@@ -1055,7 +1055,7 @@ void checkSwitches()
 
     // first - display warning
     if (last_bad_switches != switches_states) {
-      message(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP);
+      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, AU_SWITCH_ALERT);
       uint8_t x = 2;
       for (uint8_t i=1; i<8; i++) {
         uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
@@ -1080,9 +1080,9 @@ void checkSwitches()
   }
 }
 
-void alert(const pm_char * t, const pm_char *s)
+void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 {
-  message(t, s, STR_PRESSANYKEY);
+  MESSAGE(t, s, STR_PRESSANYKEY, sound);
 
   while(1)
   {
@@ -1102,7 +1102,7 @@ void alert(const pm_char * t, const pm_char *s)
   }
 }
 
-void message(const pm_char *title, const pm_char *t, const char *last)
+void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
 {
   lcd_clear();
 
@@ -1122,7 +1122,7 @@ void message(const pm_char *title, const pm_char *t, const char *last)
   if (t) lcd_putsLeft(5*FH, t);
   if (last) {
     lcd_putsLeft(7*FH, last);
-    AUDIO_ERROR();
+    AUDIO_ERROR_MESSAGE(sound);
   }
   refreshDisplay();
   lcdSetRefVolt(g_eeGeneral.contrast);
@@ -1766,6 +1766,12 @@ void evalFunctions()
             instantTrim();
           }
         }
+
+#if defined(SDCARD)
+        if (sd->func == FUNC_LOGS) {
+          logDelay = FSW_PARAM(sd);
+        }
+#endif
 
         if (~activeFunctionSwitches & switch_mask) {
           if (sd->func == FUNC_RESET) {
@@ -2480,7 +2486,17 @@ void perMain()
     }
   }
 
-#if defined(PCBV4) && defined(SDCARD)
+#if defined(SDCARD)
+#if defined(PCBV4)
+  static uint8_t mountTimer;
+  if (mountTimer-- == 0) {
+    mountTimer = 100;
+    if (g_FATFS_Obj.fs_type == 0) {
+      f_mount(0, &g_FATFS_Obj);
+    }
+  }
+#endif
+
   writeLogs();
 #endif
 
@@ -2502,10 +2518,6 @@ void perMain()
       displayBufferIndex = 20;
     }
     userDataDisplayBuf[displayBufferIndex] = userDataRxBuffer[byt];
-
-    // Write the raw byte out to log file, if open
-    if (testLogOpen && (g_oLogFile.fs != 0))
-      f_putc(userDataRxBuffer[byt], &g_oLogFile);
   }
 #endif
 
@@ -3492,6 +3504,14 @@ void menusTask(void * pdata)
     CoTickDelay(5);  // 10ms for now
   }
 
+#if defined(SDCARD)
+  closeLogs();
+#endif
+
+#if defined(HAPTIC)
+  hapticOff();
+#endif
+
   SysTick->CTRL = 0; // turn off systick
 
   lcd_clear() ;
@@ -3499,14 +3519,8 @@ void menusTask(void * pdata)
   g_eeGeneral.unexpectedShutdown=0;
   eeDirty(EE_GENERAL);
   eeCheck(true);
-#if defined(SDCARD) && !defined(PCBARM)
-  closeLogs();
-#endif
   lcd_clear() ;
   refreshDisplay() ;
-#if defined(HAPTIC)
-  hapticOff();
-#endif
   soft_power_off();            // Only turn power off if necessary
 
   if (shutdown_state == e_power_usb) {

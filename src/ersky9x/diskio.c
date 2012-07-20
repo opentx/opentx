@@ -808,7 +808,7 @@ void sdInit()
 }
 
 uint8_t sdErrorCount = 0;
-extern FATFS g_FATFS_Obj;
+FATFS g_FATFS_Obj;
 void sdPoll10mS()
 {
   if (!CardIsConnected()) {

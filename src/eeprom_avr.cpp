@@ -570,7 +570,6 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
 #ifdef SIMU
   printf("SD-card backup filename=%s\n", buf); fflush(stdout);
-  FRESULT
 #endif
 
   result = f_open(&archiveFile, buf, FA_CREATE_ALWAYS | FA_WRITE);
@@ -868,10 +867,6 @@ void eeLoadModel(uint8_t id)
 
     resetProto();
     resetAll();
-
-#ifdef SDCARD
-    openLogs();
-#endif
   }
 }
 
@@ -883,8 +878,8 @@ void eeReadAll()
   {
     generalDefault();
 
-    alert(STR_EEPROMWARN, STR_BADEEPROMDATA);
-    message(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL);
+    ALERT(STR_EEPROMWARN, STR_BADEEPROMDATA, AU_BAD_EEPROM);
+    MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
 
     EeFsFormat();
 

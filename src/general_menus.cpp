@@ -269,9 +269,6 @@ void menuProcSetup(uint8_t event)
           b = 100 - g_eeGeneral.backlightBright;
           CHECK_INCDEC_GENVAR(event, b, 0, 100);
           g_eeGeneral.backlightBright = 100 - b;
-#ifndef SIMU
-          PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright ;
-#endif
         }
         break;
 #endif

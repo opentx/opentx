@@ -172,13 +172,15 @@ void *main_thread(void *)
 
     eeReadAll(); //load general setup and selected model
 
+    if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
+
     if (main_thread_running == 1) {
-#ifdef SPLASH
       doSplash();
-#endif
+
 #if !defined(PCBARM)
       checkLowEEPROM();
 #endif
+
       checkTHR();
       checkSwitches();
       checkAlarm();

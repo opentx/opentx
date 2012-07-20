@@ -64,6 +64,7 @@ extern void beep(uint8_t val);
 #define AUDIO_WARNING1()      beep(3)
 #define AUDIO_TX_BATTERY_LOW() beep(4)
 #define AUDIO_ERROR()         beep(4)
+#define AUDIO_ERROR_MESSAGE(e) beep(4)
 #define AUDIO_TIMER_30()      { beepAgain=2; beep(2); }
 #define AUDIO_TIMER_20()      { beepAgain=1; beep(2); }
 #define AUDIO_TIMER_10()      beep(2)

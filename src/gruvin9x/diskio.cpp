@@ -646,3 +646,4 @@ void sdPoll10mS (void)
 	Stat = s;
 }
 
+FATFS g_FATFS_Obj;

@@ -36,6 +36,10 @@
 const char * audioFilenames[] = {
   "inactiv",
   "lowbatt",
+  "thralert",
+  "swalert",
+  "eebad",
+  "eeformat"
   "error",
   "keyup",
   "keydown",
@@ -509,6 +513,8 @@ void audioEvent(uint8_t e, uint8_t f)
           }
           break;
         // error
+        case AU_THROTTLE_ALERT:
+        case AU_SWITCH_ALERT:
         case AU_ERROR:
           audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2, PLAY_NOW);
           break;

@@ -97,7 +97,7 @@ WS_HOW_HIGH = YES
 # Values = YES, NO
 VARIO = YES
 
-# SDCARD Logs
+# SDCARD
 # Values = YES, NO
 SDCARD = NO
 
@@ -333,7 +333,9 @@ ifeq ($(EEPROM_PROGRESS_BAR), YES)
 endif
 
 ifeq ($(SDCARD), YES)
+  MODS:=${MODS}S
   CPPDEFS += -DSDCARD
+  CPPSRC += logs.cpp 
 endif
 
 RUN_FROM_FLASH = 1
@@ -367,9 +369,8 @@ ifeq ($(PCB), V4)
   CPPSRC += stock/audio.cpp haptic.cpp
 
   ifeq ($(SDCARD), YES)
-    CPPSRC += gruvin9x/logs.cpp FatFs/fattime.c gruvin9x/rtc.cpp gruvin9x/diskio.cpp
+    CPPSRC += FatFs/fattime.c gruvin9x/rtc.cpp gruvin9x/diskio.cpp
     EXTRABOARDSRC += FatFs/ff.c FatFs/option/ccsbcs.c 
-    MODS:=${MODS}S
   endif
     
   ifeq ($(SOMO), YES)

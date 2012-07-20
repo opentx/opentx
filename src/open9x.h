@@ -516,8 +516,18 @@ void readKeysAndTrims();
 
 uint16_t evalChkSum();
 
-extern void alert(const pm_char * t, const pm_char * s);
-extern void message(const pm_char *title, const pm_char *s, const char *last);
+#if defined(PCBARM) || defined(SOMO)
+#define MESSAGE_SOUND_ARG , uint8_t sound
+#define MESSAGE(title, msg, info, sound) message(title, msg, info, sound)
+#define ALERT(title, msg, sound) alert(title, msg, sound)
+#else
+#define MESSAGE_SOUND_ARG
+#define MESSAGE(title, msg, info, sound) message(title, msg, info)
+#define ALERT(title, msg, sound) alert(title, msg)
+#endif
+
+extern void message(const pm_char *title, const pm_char *s, const char *last MESSAGE_SOUND_ARG);
+extern void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG);
 
 void    perMain();
 void    per10ms();
@@ -873,6 +883,12 @@ extern uint16_t jeti_keys;
 enum AUDIO_SOUNDS {
     AU_INACTIVITY,
     AU_TX_BATTERY_LOW,
+#if defined(PCBARM) || defined(SOMO)
+    AU_THROTTLE_ALERT,
+    AU_SWITCH_ALERT,
+    AU_BAD_EEPROM,
+    AU_EEPROM_FORMATTING,
+#endif
     AU_ERROR,
     AU_KEYPAD_UP,
     AU_KEYPAD_DOWN,

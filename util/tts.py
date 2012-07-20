@@ -57,6 +57,7 @@ def generate(str, idx):
     
         if 'ad4' in sys.argv:
             subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            os.remove(result)
             result = result.replace(".wav", ".ad4")
         elif 'sox' in sys.argv:
             maxvolume = subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]

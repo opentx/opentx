@@ -53,10 +53,9 @@
 #define LOGS_EXT     ".csv"
 #define SOUNDS_EXT   ".wav"
 
-extern char g_logFilename[21]; // "/9XLOGS/M00_000.CSV\0" max required length = 21
 extern FATFS g_FATFS_Obj;
-extern FIL g_oLogFile;
 
+extern uint8_t logDelay;
 extern const pm_char * openLogs();
 extern void closeLogs();
 extern void writeLogs();

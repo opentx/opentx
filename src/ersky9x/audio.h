@@ -114,6 +114,7 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 #define AUDIO_WARNING2()    audioEvent(AU_WARNING2)
 #define AUDIO_TX_BATTERY_LOW() audioEvent(AU_TX_BATTERY_LOW)
 #define AUDIO_ERROR()       audioEvent(AU_ERROR)
+#define AUDIO_ERROR_MESSAGE(e) audioEvent(e)
 #define AUDIO_TIMER_30()    audioEvent(AU_TIMER_30)
 #define AUDIO_TIMER_20()    audioEvent(AU_TIMER_20)
 #define AUDIO_TIMER_10()    audioEvent(AU_TIMER_10)

@@ -533,8 +533,8 @@ void eeReadAll()
   {
     generalDefault();
 
-    alert(STR_EEPROMWARN, STR_BADEEPROMDATA);
-    message(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL);
+    ALERT(STR_EEPROMWARN, STR_BADEEPROMDATA, AU_BAD_EEPROM);
+    MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
 
     modelDefault(0);
 
@@ -914,7 +914,6 @@ uint32_t unprotect_eeprom()
 }
 
 #if defined(SDCARD)
-FATFS g_FATFS_Obj; // TODO not here
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.models.mainname;

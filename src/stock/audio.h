@@ -118,6 +118,11 @@ void audioDefevent(uint8_t e);
 #define AUDIO_WARNING2()    audioDefevent(AU_WARNING2)
 #define AUDIO_TX_BATTERY_LOW() audioDefevent(AU_TX_BATTERY_LOW)
 #define AUDIO_ERROR()       audioDefevent(AU_ERROR)
+#if defined(SOMO)
+#define AUDIO_ERROR_MESSAGE(e) audioDefevent(e)
+#else
+#define AUDIO_ERROR_MESSAGE(e) audioDefevent(AU_ERROR)
+#endif
 #define AUDIO_TIMER_30()    audioDefevent(AU_TIMER_30)
 #define AUDIO_TIMER_20()    audioDefevent(AU_TIMER_20)
 #define AUDIO_TIMER_10()    audioDefevent(AU_TIMER_10)

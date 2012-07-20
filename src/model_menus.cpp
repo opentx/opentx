@@ -2453,6 +2453,7 @@ void menuProcFunctionSwitches(uint8_t event)
             lcd_putsiAtt(5*FW-2, y, STR_VFSWFUNC, func_displayed, attr);
             if (active) {
               CHECK_INCDEC_MODELVAR( event, sd->func, 0, FUNC_MAX-1);
+              if (checkIncDec_Ret) FSW_PARAM(sd) = 0;
             }
           }
           else if (attr) {
@@ -2511,6 +2512,17 @@ void menuProcFunctionSwitches(uint8_t event)
             else if (sd->func == FUNC_PLAY_VALUE) {
               val_max = NUM_XCHNPLAY-1;
               putsChnRaw(17*FW, y, val_displayed+1, attr);
+            }
+#endif
+#if defined(SDCARD)
+            else if (sd->func == FUNC_LOGS) {
+              if (val_displayed) {
+                lcd_outdezAtt(21*FW-3, y, val_displayed, attr|PREC1);
+                lcd_putc(lcdLastPos, y, 's');
+              }
+              else {
+                lcd_putsiAtt(19*FW-4, y, STR_MMMINV, 0, attr);
+              }
             }
 #endif
             else if (sd->func == FUNC_RESET) {
