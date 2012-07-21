@@ -773,8 +773,8 @@ void menuProcDiagKeys(uint8_t event)
     uint8_t y=i*FH+FH*4;
     lcd_img(14*FW, y, sticks,i,0);
     bool tm=keyState((EnumKeys)(TRM_BASE+2*i));
-    bool tp=keyState((EnumKeys)(TRM_BASE+2*i+1));
     lcd_putcAtt(18*FW, y, tm+'0', tm ? INVERS : 0);
+    bool tp=keyState((EnumKeys)(TRM_BASE+2*i+1));
     lcd_putcAtt(20*FW, y, tp+'0', tp ? INVERS : 0);
   }
 }
