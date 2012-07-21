@@ -935,7 +935,7 @@ void doSplash()
 #if defined(PCBSTD)
     lcdSetRefVolt(g_eeGeneral.contrast);
 #else
-    uint16_t curTime = get_tmr10ms() + 6;
+    uint16_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
 #endif
@@ -966,7 +966,7 @@ void doSplash()
 
 #if !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {
-        curTime += 6;
+        curTime += 10;
         if (contrast < g_eeGeneral.contrast) {
           contrast += 1;
           lcdSetRefVolt(contrast);
