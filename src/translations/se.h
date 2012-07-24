@@ -109,15 +109,18 @@
 #else
 #define TR_HAPTIC        "[Vibrator]\0  "
 #endif
+#if defined(VOICE)
+#define TR_PLAY_TRACK    "Spela Sp\200r\0  "
+#define TR_PLAY_VALUE    "Spela V\201rde\0 "
+#else
+#define TR_PLAY_TRACK    "[Spela Sp\200r]\0"
+#define TR_PLAY_VALUE    "[Spela V\201rde]\0"
+#endif
 #if defined(PCBARM)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "[SDCARD Logg]"
-#define TR_PLAY_TRACK    "Spela Sp\200r\0  "
-#define TR_PLAY_VALUE    "[Spela V\201rde]\0"
 #else
 #define TR_SDCLOGS       "[SDCARD Logg]"
-#define TR_PLAY_TRACK    "[Spela Sp\200r]\0"
-#define TR_PLAY_VALUE    "[Spela V\201rde]\0"
 #endif
 #define TR_FSW_VOLUME    "Volym\0       "
 #elif defined(PCBV4)
@@ -126,18 +129,9 @@
 #else
 #define TR_SDCLOGS       "[SDCARD Logg]"
 #endif
-#if defined(VOICE)
-#define TR_PLAY_TRACK    "Spela Sp\200r\0  "
-#define TR_PLAY_VALUE    "Spela V\201rde\0 "
-#else
-#define TR_PLAY_TRACK    "[Spela Sp\200r]\0"
-#define TR_PLAY_VALUE    "[Spela V\201rde]\0"
-#endif
 #define TR_FSW_VOLUME
 #else
 #define TR_SDCLOGS
-#define TR_PLAY_TRACK
-#define TR_PLAY_VALUE
 #define TR_FSW_VOLUME
 #endif
 #ifdef DEBUG

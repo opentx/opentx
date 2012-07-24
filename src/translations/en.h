@@ -114,7 +114,6 @@
 #else
 #define TR_HAPTIC        "[Haptic]\0    "
 #endif
-
 #if defined(VOICE)
 #define TR_PLAY_TRACK    "Play Track\0  "
 #define TR_PLAY_VALUE    "Play Value\0  "
@@ -122,7 +121,6 @@
 #define TR_PLAY_TRACK    "[Play Track]\0"
 #define TR_PLAY_VALUE    "[Play Value]\0"
 #endif
-
 #if defined(PCBARM)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SDCARD Logs\0 "

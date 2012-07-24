@@ -109,15 +109,18 @@
 #else
 #define TR_HAPTIC        "[Vibreur]\0   "
 #endif
+#if defined(VOICE)
+#define TR_PLAY_TRACK    "Jouer fichier"
+#define TR_PLAY_VALUE    "Jouer valeur "
+#else
+#define TR_PLAY_TRACK    "[Jouer fich.]"
+#define TR_PLAY_VALUE    "[Jouer val.] "
+#endif
 #if defined(PCBARM)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SDCARD Logs\0 "
-#define TR_PLAY_TRACK    "Play Track\0  "
-#define TR_PLAY_VALUE    "Play Value\0  "
 #else
 #define TR_SDCLOGS       "[SDCARD Logs]"
-#define TR_PLAY_TRACK    "[Play Track]\0"
-#define TR_PLAY_VALUE    "[Play Value]\0"
 #endif
 #define TR_FSW_VOLUME    "Volume\0      "
 #elif defined(PCBV4)
@@ -126,18 +129,9 @@
 #else
 #define TR_SDCLOGS       "[Logs SD]    "
 #endif
-#if defined(VOICE)
-#define TR_PLAY_TRACK    "Jouer fichier"
-#define TR_PLAY_VALUE    "Jouer valeur "
-#else
-#define TR_PLAY_TRACK    "[Jouer fich.]"
-#define TR_PLAY_VALUE    "[Jouer val.] "
-#endif
 #define TR_FSW_VOLUME
 #else
 #define TR_SDCLOGS
-#define TR_PLAY_TRACK
-#define TR_PLAY_VALUE
 #define TR_FSW_VOLUME
 #endif
 #ifdef DEBUG

@@ -114,15 +114,18 @@
 #else
 #define TR_HAPTIC        "[Vibrovat]\0  "
 #endif
-#if defined(PCBARM)
-#if defined(SDCARD)
-#define TR_SDCLOGS       "Logov\200n\204 SD\0 "
+#if defined(VOICE)
 #define TR_PLAY_TRACK    "Hr\200t Stopu\0  "
 #define TR_PLAY_VALUE    "Hr\200t Hodnotu\0"
 #else
-#define TR_SDCLOGS       "[Logov\200n\204 SD]"
 #define TR_PLAY_TRACK    "[Hr\200t Stopu]\0"
 #define TR_PLAY_VALUE    "[Hr\200t Hodn.]\0"
+#endif
+#if defined(PCBARM)
+#if defined(SDCARD)
+#define TR_SDCLOGS       "Logov\200n\204 SD\0 "
+#else
+#define TR_SDCLOGS       "[Logov\200n\204 SD]"
 #endif
 #define TR_FSW_VOLUME    "Hlasitost\0   "
 #elif defined(PCBV4)
@@ -131,18 +134,9 @@
 #else
 #define TR_SDCLOGS       "[Logování SD]"
 #endif
-#if defined(VOICE)
-#define TR_PLAY_TRACK    "Hr\200t Stopu\0  "
-#define TR_PLAY_VALUE    "Hr\200t Hodnotu\0"
-#else
-#define TR_PLAY_TRACK    "[Hr\200t Stopu]\0"
-#define TR_PLAY_VALUE    "[Hr\200t Hodn.]\0"
-#endif
 #define TR_FSW_VOLUME
 #else
 #define TR_SDCLOGS
-#define TR_PLAY_TRACK
-#define TR_PLAY_VALUE
 #define TR_FSW_VOLUME
 #endif
 #ifdef DEBUG
