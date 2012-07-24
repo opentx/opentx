@@ -186,7 +186,7 @@ int8_t EeFsck()
   s_sync_write = true;
 
   uint8_t *bufp = reusableBuffer.eefs_buffer;
-  memset(bufp, 0, BLOCKS);
+  memclear(bufp, BLOCKS);
   uint8_t blk ;
   int8_t ret = 0;
 
@@ -232,7 +232,7 @@ void EeFsFormat()
 {
   s_sync_write = true;
 
-  memset(&eeFs,0, sizeof(eeFs));
+  memclear(&eeFs, sizeof(eeFs));
   eeFs.version  = EEFS_VERS;
   eeFs.mySize   = sizeof(eeFs);
   eeFs.freeList = 0;
@@ -245,7 +245,7 @@ void EeFsFormat()
   s_sync_write = false;
 }
 
-bool EeFsOpen() // TODO inline?
+inline bool EeFsOpen() // TODO inline?
 {
   eeprom_read_block(&eeFs, 0, sizeof(eeFs));
 
@@ -286,7 +286,7 @@ void EFile::swap(uint8_t i_fileId1, uint8_t i_fileId2)
 void EFile::rm(uint8_t i_fileId)
 {
   uint8_t i = eeFs.files[i_fileId].startBlk;
-  memset(&eeFs.files[i_fileId], 0, sizeof(eeFs.files[i_fileId]));
+  memclear(&eeFs.files[i_fileId], sizeof(eeFs.files[i_fileId]));
   s_sync_write = true;
   EeFsFlushDirEnt(i_fileId);
   if (i) EeFsFree(i); //chain in
@@ -343,13 +343,13 @@ uint8_t EFile::read(uint8_t*buf,uint16_t i_len)
 #ifdef TRANSLATIONS
 uint16_t RlcFile::readRlc12(uint8_t*buf,uint16_t i_len, bool rlc2)
 #else
-uint16_t RlcFile::readRlc(uint8_t*buf,uint16_t i_len)
+uint16_t RlcFile::readRlc(uint8_t *buf,uint16_t i_len)
 #endif
 {
   uint16_t i=0;
   for( ; 1; ){
     uint8_t l=min<uint16_t>(m_zeroes,i_len-i);
-    memset(&buf[i],0,l);
+    memclear(&buf[i], l);
     i        += l;
     m_zeroes -= l;
     if(m_zeroes) break;
@@ -801,8 +801,7 @@ bool eeLoadGeneral()
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.myVers == EEPROM_VER) {
     theFile.openRlc(FILE_GENERAL); // TODO include this openRlc inside readRlc
     if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral)) {
-      uint16_t sum = evalChkSum();
-      if (g_eeGeneral.chkSum == sum) {
+      if (g_eeGeneral.variants == EEPROM_VARIANTS && g_eeGeneral.chkSum == evalChkSum()) {
         return true;
       }
     }
@@ -813,7 +812,7 @@ bool eeLoadGeneral()
 
 uint16_t eeLoadModelName(uint8_t id, char *name)
 {
-  memset(name, 0, sizeof(g_model.name));
+  memclear(name, sizeof(g_model.name));
   if (id<MAX_MODELS) {
     theFile.openRlc(FILE_MODEL(id));
     if (theFile.readRlc((uint8_t*)name, sizeof(g_model.name)) == sizeof(g_model.name)) {

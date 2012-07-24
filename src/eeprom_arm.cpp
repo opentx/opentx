@@ -448,7 +448,7 @@ bool ee32LoadGeneral()
     read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size) ;
   }
 
-  if (g_eeGeneral.myVers == EEPROM_VER) {
+  if (g_eeGeneral.myVers == EEPROM_VER && g_eeGeneral.variants == EEPROM_VARIANTS) {
     uint16_t sum = evalChkSum();
     if (g_eeGeneral.chkSum == sum) {
       return true;

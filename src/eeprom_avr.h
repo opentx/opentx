@@ -94,7 +94,6 @@ PACK(struct EeFs{
 #define BLOCKS_OFFSET 0
 #endif
 
-bool EeFsOpen();
 int8_t EeFsck();
 void EeFsFormat();
 uint16_t EeFsGetFree();

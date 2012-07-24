@@ -167,7 +167,7 @@ bool listSdFiles(const char *path, const char *extension)
           break;
         }
         char *menu_entry = &s_bss_menu[s_menu_count*MENU_LINE_LENGTH];
-        memset(menu_entry, 0, MENU_LINE_LENGTH);
+        memclear(menu_entry, MENU_LINE_LENGTH);
         for (uint8_t i=0; i<MENU_LINE_LENGTH-1; i++) {
           if (fn[i] == '.')
             break;
@@ -783,7 +783,6 @@ void menuProcModel(uint8_t event)
             }
           }
         }
-        // TODO port PPM16 ppmDelay from er9x
 #if defined(DSM2) || defined(PXX)
         else if (IS_DSM2_PROTOCOL(protocol) || IS_PXX_PROTOCOL(protocol)) {
           if (attr && m_posHorz > 0 && IS_DSM2_PROTOCOL(protocol))
@@ -1093,6 +1092,155 @@ void DrawCurve(FnFuncP fn)
   }
 }
 
+#if defined(XCURVES)
+bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
+{
+  if (g_model.curves[MAX_CURVES-1] + shift > NUM_POINTS-5*MAX_CURVES) {
+    AUDIO_WARNING2();
+    return false;
+  }
+
+  int8_t *crv = curveaddress(index);
+  if (shift < 0) {
+    for (uint8_t i=0; i<custom; i++)
+      crv[i] = crv[2*i];
+  }
+
+  int8_t *nextCrv = curveaddress(index+1);
+  memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]);
+  if (shift < 0) memclear(&g_model.points[NUM_POINTS-1] + shift, -shift);
+  while (index<MAX_CURVES)
+    g_model.curves[index++] += shift;
+
+  for (uint8_t i=0; i<custom-2; i++)
+    crv[custom+i] = -100 + ((200 * (i+1) + custom/2) / (custom-1)) ;
+
+  eeDirty(EE_MODEL);
+  return true;
+}
+
+void menuProcCurveOne(uint8_t event)
+{
+  TITLE(STR_MENUCURVE);
+  lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
+  DISPLAY_PROGRESS_BAR(20*FW+1);
+
+  CurveInfo crv = curveinfo(s_curveChan);
+
+  switch(event) {
+    case EVT_ENTRY:
+#if defined(ROTARY_ENCODERS)
+      s_editMode = -1;
+#endif
+      killEvents(KEY_MENU);
+      break;
+#if defined(ROTARY_ENCODERS)
+    case EVT_KEY_BREAK(BTN_REa):
+    case EVT_KEY_BREAK(BTN_REb):
+      if (!navigationRotaryEncoder(event))
+        break;
+      // no break
+#endif
+    case EVT_KEY_BREAK(KEY_MENU):
+      if (s_editMode == 0)
+        m_posHorz = 0;
+      if (s_editMode == 1 && crv.custom/* && m_posHorz>0 && m_posHorz<points-1*/)
+        s_editMode = 2;
+      else
+        s_editMode = 1;
+      break;
+    case EVT_KEY_LONG(KEY_MENU):
+      if (s_editMode == 0) {
+        if (++m_posHorz > 4)
+          m_posHorz = -4;
+        for (uint8_t i=0; i<crv.points; i++)
+          crv.crv[i] = (i-(crv.points/2)) * m_posHorz * 50 / (crv.points-1);
+        eeDirty(EE_MODEL);
+        killEvents(event);
+      }
+      break;
+    case EVT_KEY_FIRST(KEY_EXIT):
+      killEvents(event);
+      if (s_editMode>0) {
+        if (--s_editMode == 0)
+          m_posHorz = 0;
+      }
+      else
+        popMenu();
+      break;
+    case EVT_KEY_REPT(KEY_LEFT):
+    case EVT_KEY_FIRST(KEY_LEFT):
+      if (s_editMode==1 && m_posHorz>0) m_posHorz--;
+      if (s_editMode==0) {
+        if (crv.custom) {
+          moveCurve(s_curveChan, -crv.points+2);
+        }
+        else if (crv.points > MIN_POINTS) {
+          moveCurve(s_curveChan, -1, (crv.points+1)/2);
+        }
+        else {
+          AUDIO_WARNING2();
+        }
+        return;
+      }
+      break;
+    case EVT_KEY_REPT(KEY_RIGHT):
+    case EVT_KEY_FIRST(KEY_RIGHT):
+      if (s_editMode==1 && m_posHorz<(crv.points-1)) m_posHorz++;
+      if (s_editMode==0) {
+        if (!crv.custom) {
+          moveCurve(s_curveChan, crv.points-2, crv.points);
+        }
+        else if (crv.points < MAX_POINTS) {
+          if (moveCurve(s_curveChan, 1)) {
+            for (int8_t i=crv.points+crv.points-2; i>=0; i--) {
+              if (i%2)
+                crv.crv[i] = (crv.crv[i/2] + crv.crv[1+i/2]) / 2;
+              else
+                crv.crv[i] = crv.crv[i/2];
+            }
+          }
+        }
+        else {
+          AUDIO_WARNING2();
+        }
+      }
+      break;
+  }
+
+  lcd_putsLeft(7*FH, PSTR("Type"));
+  uint8_t attr = (s_editMode==0 ? INVERS : 0);
+  lcd_outdezAtt(5*FW-2, 7*FH, crv.points, LEFT|attr);
+  lcd_putsAtt(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
+
+  for (uint8_t i=0; i<crv.points; i++) {
+    uint8_t xx = X0-1-WCHART+i*WCHART/(crv.points/2);
+    uint8_t yy = (DISPLAY_H-1) - (100 + crv.crv[i]) * (DISPLAY_H-1) / 200;
+    if (crv.custom && i>0 && i<crv.points-1)
+      xx = X0-1-WCHART + (100 + crv.crv[crv.points+i-1]) * (2*WCHART) / 200;
+
+    lcd_filled_rect(xx, yy-1, 3, 3); // do markup square
+
+    if (s_editMode>0 && m_posHorz==i) {
+      if (s_editMode==1 || !BLINK_ON_PHASE) lcd_filled_rect(xx-1, yy-2, 5, 5); // do selection square
+
+      int8_t x = -100 + 200*i/(crv.points-1);
+      if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
+      lcd_puts(7, 2*FH, PSTR("x=")); lcd_outdezAtt(7+2*FW, 2*FH, x, LEFT);
+      lcd_puts(7, 3*FH, PSTR("y=")); lcd_outdezAtt(7+2*FW, 3*FH, crv.crv[i], LEFT);
+      lcd_rect(3, 1*FH+4, 7*FW-2, 3*FH-2);
+
+      if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP))
+        CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);  // edit Y on up/down
+
+      if (i>0 && i<crv.points-1 && s_editMode==2 && (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_LEFT) || event==EVT_KEY_REPT(KEY_RIGHT)))
+        CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X on left/right
+    }
+  }
+
+  DrawCurve(curveFn);
+}
+#else
 void menuProcCurveOne(uint8_t event)
 {
   uint8_t points;
@@ -1193,6 +1341,7 @@ void menuProcCurveOne(uint8_t event)
 
   DrawCurve(curveFn);
 }
+#endif
 
 uint8_t getExpoMixCount(uint8_t expo)
 {
@@ -1243,12 +1392,12 @@ void deleteExpoMix(uint8_t expo, uint8_t idx)
   if (expo) {
     ExpoData *expo = expoaddress(idx);
     memmove(expo, expo+1, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
-    memset(&g_model.expoData[MAX_EXPOS-1], 0, sizeof(ExpoData));
+    memclear(&g_model.expoData[MAX_EXPOS-1], sizeof(ExpoData));
   }
   else {
     MixData *mix = mixaddress(idx);
     memmove(mix, mix+1, (MAX_MIXERS-(idx+1))*sizeof(MixData));
-    memset(&g_model.mixData[MAX_MIXERS-1], 0, sizeof(MixData));
+    memclear(&g_model.mixData[MAX_MIXERS-1], sizeof(MixData));
   }
   resumeMixerCalculations();
   STORE_MODELVARS;
@@ -1261,7 +1410,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
   if (expo) {
     ExpoData *expo = expoaddress(idx);
     memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
-    memset(expo, 0, sizeof(ExpoData));
+    memclear(expo, sizeof(ExpoData));
     expo->mode = 3; // pos&neg
     expo->chn = s_currCh - 1;
     expo->weight = 100;
@@ -1269,7 +1418,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
   else {
     MixData *mix = mixaddress(idx);
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
-    memset(mix, 0, sizeof(MixData));
+    memclear(mix, sizeof(MixData));
     mix->destCh = s_currCh-1;
     mix->srcRaw = (s_currCh > 4 ? s_currCh : channel_order(s_currCh));
     mix->weight = 100;
@@ -1569,7 +1718,7 @@ void menuProcMixOne(uint8_t event)
       case MIX_FIELD_CURVE:
         lcd_putsLeft(y, STR_CURVES);
         putsCurve(MIXES_2ND_COLUMN, y, md2->curve, attr);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->curve, -MAX_CURVE5-MAX_CURVE9, MAX_CURVE5+MAX_CURVE9+7-1);
+        if(attr) CHECK_INCDEC_MODELVAR( event, md2->curve, -MAX_CURVES, MAX_CURVES+7-1);
         if(attr && event==EVT_KEY_FIRST(KEY_MENU) && (md2->curve<0 || md2->curve>=CURVE_BASE)){
           s_curveChan = (md2->curve<0 ? -md2->curve-1 : md2->curve-CURVE_BASE);
           pushMenu(menuProcCurveOne);
@@ -2092,9 +2241,44 @@ void menuProcLimits(uint8_t _event)
   }
 }
 
+#if defined(XCURVES)
 void menuProcCurvesAll(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVE5+MAX_CURVE9);
+  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
+
+  int8_t  sub    = m_posVert - 1;
+
+  switch (event) {
+#if defined(ROTARY_ENCODERS)
+    case EVT_KEY_BREAK(BTN_REa):
+    case EVT_KEY_BREAK(BTN_REb):
+      if (!navigationRotaryEncoder(event))
+        break;
+      // no break
+#endif
+    case EVT_KEY_FIRST(KEY_RIGHT):
+    case EVT_KEY_FIRST(KEY_MENU):
+      if (sub >= 0) {
+        s_curveChan = sub;
+        pushMenu(menuProcCurveOne);
+      }
+      break;
+  }
+
+  for (uint8_t i = 0; i < 7; i++) {
+    uint8_t y = FH + i*FH;
+    uint8_t k = i + s_pgOfs;
+    uint8_t attr = (sub == k ? INVERS : 0);
+    putsStrIdx(0, y, STR_CV, k+1, attr);
+  }
+
+  s_curveChan = sub;
+  DrawCurve(curveFn);
+}
+#else
+void menuProcCurvesAll(uint8_t event)
+{
+  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
 
   int8_t  sub    = m_posVert - 1;
 
@@ -2121,7 +2305,11 @@ void menuProcCurvesAll(uint8_t event)
   for (uint8_t i = 0; i < 7; i++) {
     uint8_t k = i + s_pgOfs;
     uint8_t attr = sub == k ? INVERS : 0;
+#if defined(XCURVES)
+    bool    cv9 = (getCurvePoints(k) == 9);
+#else
     bool    cv9 = k >= MAX_CURVE5;
+#endif
 
     if(cv9 && (yd>6)) break;
     if(yd>7) break;
@@ -2142,6 +2330,7 @@ void menuProcCurvesAll(uint8_t event)
 
   if(!m) s_pgOfs++;
 }
+#endif
 
 #if defined(PCBARM)
 enum CustomSwitchFields {

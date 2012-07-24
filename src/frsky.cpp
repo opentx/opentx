@@ -827,7 +827,7 @@ void frskyEvalCurrentConsumptionBoundary()
 
 void resetTelemetry()
 {
-  memset(&frskyData, 0, sizeof(frskyData));
+  memclear(&frskyData, sizeof(frskyData));
 
   frskyEvalCurrentConsumptionBoundary();
 

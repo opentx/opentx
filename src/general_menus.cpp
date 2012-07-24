@@ -739,6 +739,7 @@ void menuProcDiagVers(uint8_t event)
   lcd_putsLeft(5*FH, stamp4);
   lcd_putsLeft(7*FH, STR_EEPROMV);
   lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
+  lcd_outdezAtt(15*FW, 7*FH, g_eeGeneral.variants, LEFT);
 }
 
 void menuProcDiagKeys(uint8_t event)

@@ -59,6 +59,9 @@ AUDIO = NO
 # Values = YES, NO 
 HAPTIC = NO
 
+# SmartieParts 2.2 Backlight support (inverted)
+SP22 = NO
+
 # SPLASH on START
 SPLASH = YES
 
@@ -140,6 +143,10 @@ DEBUG = NO
 # Values = YES, NO
 FLIGHT_PHASES = YES
 
+# Customizable Curves
+# Values = YES, NO
+XCURVES = YES
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -154,6 +161,7 @@ ifeq ($(PCB), STD)
   TRGT = avr-
   MCU = atmega64  
   CPPDEFS += -DF_CPU=$(F_CPU)UL
+  XCURVES = NO
 endif
 
 ifeq ($(PCB), V4)
@@ -277,6 +285,10 @@ ifeq ($(FLIGHT_PHASES), YES)
   CPPDEFS += -DFLIGHT_PHASES
 endif
 
+ifeq ($(XCURVES), YES)
+  CPPDEFS += -DXCURVES
+endif
+
 # If STD-Support is enabled
 ifeq ($(EXT), STD)
   CPPDEFS += -DEXTSTD
@@ -382,7 +394,6 @@ ifeq ($(PCB), V4)
     CPPDEFS += -DEXTRA_ROTARY_ENCODERS
     MODS:=${MODS}X
   endif
-  
 endif
 
 ifeq ($(PCB), STD)
@@ -406,6 +417,9 @@ ifeq ($(PCB), STD)
    CPPSRC += haptic.cpp
   endif
   
+  ifeq ($(SP22), YES)
+   CPPDEFS += -DSP22
+  endif
 endif
 
 ### Global Build-Option Directives ###

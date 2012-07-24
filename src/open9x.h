@@ -42,6 +42,16 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#define VARIANT_XCURVES_MASK  0x80
+
+#if defined(XCURVES)
+#define VARIANT_XCURVES VARIANT_XCURVES_MASK
+#else
+#define VARIANT_XCURVES 0x00
+#endif
+
+#define EEPROM_VARIANTS (VARIANT_XCURVES)
+
 #if defined(PCBSTD)
 #define WDT_RESET_STOCK() wdt_reset()
 #else
@@ -601,6 +611,12 @@ uint16_t getTmr16KHz();
 
 uint16_t stack_free();
 
+#if defined(PCBSTD)
+void memclear(void *ptr, uint8_t size);
+#else
+#define memclear(p, s) memset(p, 0, s)
+#endif
+
 #ifdef SPLASH
 void doSplash();
 #endif
@@ -644,6 +660,9 @@ void read_9_adc(void ) ;
 #define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
 #define BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
 #define BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
+#elif defined(SP22)
+#define BACKLIGHT_ON  PORTB &= ~(1 << OUT_B_LIGHT)
+#define BACKLIGHT_OFF PORTB |=  (1 << OUT_B_LIGHT)
 #else
 #define BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
 #define BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
@@ -679,6 +698,9 @@ void read_9_adc(void ) ;
 #ifndef NOINLINE
 #define NOINLINE __attribute__ ((noinline))
 #endif
+
+// Fiddle to force compiler to use a pointer
+#define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
 
 /// liefert Betrag des Arguments
 template<class t> FORCEINLINE t abs(t a) { return a>0?a:-a; }
@@ -789,6 +811,14 @@ extern MixData *mixaddress(uint8_t idx);
 extern LimitData *limitaddress(uint8_t idx);
 extern int8_t *curveaddress(uint8_t idx);
 extern CustomSwData *cswaddress(uint8_t idx);
+#if defined(XCURVES)
+struct CurveInfo {
+  int8_t *crv;
+  uint8_t points;
+  bool custom;
+};
+extern CurveInfo curveinfo(uint8_t idx);
+#endif
 
 extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 

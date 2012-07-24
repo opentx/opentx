@@ -158,7 +158,7 @@ PACK(typedef struct t_EEGeneral {
 
   EXTRA_ARM_FIELDS
 
-  uint8_t   lightOnStickMove;
+  uint8_t   variants;
 
 }) EEGeneral;
 
@@ -589,8 +589,23 @@ PACK(typedef struct t_PhaseData {
 #endif
 
 #define MAX_TIMERS 2
+
+#if defined(XCURVES)
+#define MAX_CURVES 8
+#define NUM_POINTS (112-MAX_CURVES)
+#define MIN_POINTS 3
+#define MAX_POINTS 17
+#define CURVES_DATA \
+  int8_t    curves[MAX_CURVES]; \
+  int8_t    points[NUM_POINTS]
+#else
 #define MAX_CURVE5 8
 #define MAX_CURVE9 8
+#define MAX_CURVES (MAX_CURVE5+MAX_CURVE9)
+#define CURVES_DATA \
+  int8_t    curves5[MAX_CURVE5][5]; \
+  int8_t    curves9[MAX_CURVE9][9]
+#endif
 
 #define TMRMODE_NONE     0
 #define TMRMODE_ABS      1
@@ -666,8 +681,9 @@ PACK(typedef struct t_ModelData {
   MixData   mixData[MAX_MIXERS];
   LimitData limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
-  int8_t    curves5[MAX_CURVE5][5];
-  int8_t    curves9[MAX_CURVE9][9];
+  
+  CURVES_DATA;
+  
   CustomSwData customSw[NUM_CSW];
   FuncSwData   funcSw[NUM_FSW];
   SwashRingData swashR;

@@ -299,7 +299,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t l
     }
     lcd_putcAtt(x, y, c, f);
     if (mode==i) {
-      flags &= ~PREC2; // TODO not needed but removes 64bytes, could be improved for sure, check asm
+      flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
       if (dblsize) {
         xn = x;
         if(c>='1' && c<='3') ln++;

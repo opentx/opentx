@@ -162,20 +162,51 @@ LimitData *limitaddress(uint8_t idx)
   return &g_model.limitData[idx];
 }
 
+#if defined(XCURVES)
+int8_t *curveaddress(uint8_t idx)
+{
+  return &g_model.points[idx==0 ? 0 : 5*idx+g_model.curves[idx-1]];
+}
+CurveInfo curveinfo(uint8_t idx)
+{
+  CurveInfo result;
+  result.crv = curveaddress(idx);
+  int8_t *next = curveaddress(idx+1);
+  uint8_t size = next - result.crv;
+  if (size % 2 == 0) {
+    result.points = (size / 2) + 1;
+    result.custom = true;
+  }
+  else {
+    result.points = size;
+    result.custom = false;
+  }
+  return result;
+}
+#else
 int8_t *curveaddress(uint8_t idx)
 {
   return (idx >= MAX_CURVE5 ? g_model.curves9[idx-MAX_CURVE5] : g_model.curves5[idx]);
 }
+#endif
 
 CustomSwData *cswaddress(uint8_t idx)
 {
   return &g_model.customSw[idx];
 }
 
+#if defined(PCBSTD)
+void memclear(void *ptr, uint8_t size)
+{
+  memset(ptr, 0, size);
+}
+#endif
+
 void generalDefault()
 {
-  memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
+  memclear(&g_eeGeneral, sizeof(g_eeGeneral));
   g_eeGeneral.myVers   = EEPROM_VER;
+  g_eeGeneral.variants = EEPROM_VARIANTS;
   g_eeGeneral.contrast = 25;
   g_eeGeneral.vBatWarn = 90;
   for (int i = 0; i < 7; ++i) {
@@ -241,6 +272,41 @@ void resetProto()
 #endif
 }
 
+#if defined(XCURVES)
+int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
+{
+  CurveInfo crv = curveinfo(idx);
+  int16_t erg = 0;
+
+  x+=RESXu;
+  if (x < 0) {
+    erg = (int16_t)crv.crv[0] * (RESX/4);
+  }
+  else if (x >= (RESX*2)) {
+    erg = (int16_t)crv.crv[crv.points-1] * (RESX/4);
+  }
+  else {
+    uint16_t a=0, b=0; // TODO init not needed
+    uint8_t i;
+    if (crv.custom) {
+      for (i=0; i<crv.points-1; i++) {
+        a = (i==0 ? 0 : (100 * (RESX/4) / 25 + crv.crv[crv.points+i-1] * (RESX/4) / 25));
+        b = (i==crv.points-2 ? 2*RESX : (100 * (RESX/4) / 25 + crv.crv[crv.points+i] * (RESX/4) / 25));
+        if ((uint16_t)x>=a && (uint16_t)x<=b) break;
+      }
+    }
+    else {
+      uint16_t d = (RESX * 2) / (crv.points-1);
+      i = (uint16_t)x / d;
+      a = i * d;
+      b = a + d;
+    }
+    erg = (int16_t)crv.crv[i]*(RESX/4) + ((int32_t)(x-a) * (crv.crv[i+1]-crv.crv[i]) * (RESX/4)) / ((b-a));
+  }
+
+  return erg / 25; // 100*D5/RESX;
+}
+#else
 int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 {
 #define D9 (RESX * 2 / 8)
@@ -270,6 +336,7 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
   }
   return erg / 25; // 100*D5/RESX;
 }
+#endif
 
 int16_t applyCurve(int16_t x, int8_t idx)
 {
@@ -891,7 +958,7 @@ void clearKeyEvents()
 #else
   while (keyDown()) WDT_RESET_STOCK();  // loop until all keys are up
 #endif
-  memset(keys, 0, sizeof(keys));
+  memclear(keys, sizeof(keys));
   putEvent(0);
 }
 
@@ -1948,7 +2015,7 @@ void perOut(uint8_t tick10ms)
 #endif
   }
 
-  memset(chans, 0, sizeof(chans));        // All outputs to 0
+  memclear(chans, sizeof(chans));        // All outputs to 0
 
   //========== MIXER LOOP ===============
   uint8_t lv_mixWarning = 0;
@@ -2201,7 +2268,7 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
   }
 
   if (s_fade_flight_phases) {
-    memset(sum_chans512, 0, sizeof(sum_chans512));
+    memclear(sum_chans512, sizeof(sum_chans512));
     weight = 0;
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {

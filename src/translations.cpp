@@ -57,7 +57,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(POSNEG)
     ISTR(VBLMODE)
     ISTR(VCURVEFUNC)
+#if !defined(XCURVES)
     ISTR(CURVMODES)
+#endif
     ISTR(EXPLABELS)
     ISTR(VMLTPX)
     ISTR(VMLTPX2)

@@ -77,7 +77,7 @@ MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
   }
 
   memmove(mix+1, mix, (MAX_MIXERS-(i+1))*sizeof(MixData) );
-  memset(mix,0,sizeof(MixData));
+  memclear(mix, sizeof(MixData));
   mix->destCh = dch;
   mix->srcRaw = src;
   mix->weight = 100;
@@ -86,20 +86,23 @@ MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
 
 void clearMixes()
 {
-  memset(g_model.mixData, 0, sizeof(g_model.mixData)); //clear all mixes
+  memset(g_model.mixData, 0, sizeof(g_model.mixData)); // clear all mixes
   STORE_MODELVARS;
 }
 
 void clearCurves()
 {
-  memset(g_model.curves5, 0, sizeof(g_model.curves5)); //clear all curves
-  memset(g_model.curves9, 0, sizeof(g_model.curves9)); //clear all curves
+#if defined(XCURVES)
+  memclear(g_model.curves, sizeof(g_model.curves) + sizeof(g_model.points)); // clear all curves
+#else
+  memclear(g_model.curves5, sizeof(g_model.curves5) + sizeof(g_model.curves9)); // clear all curves
+#endif
 }
 
 void setCurve(uint8_t c, const pm_int8_t ar[])
 {
   int8_t * cv = curveaddress(c);
-  for (uint8_t i=0; i<(c<MAX_CURVE5 ? 5 : 9); i++) {
+  for (uint8_t i=0; i<5; i++) {
     cv[i] = pgm_read_byte(&ar[i]);
   }
 }
