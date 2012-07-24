@@ -444,7 +444,7 @@ extern const pm_char STR_RENAME_FILE[];
 extern const pm_char STR_REMOVED[];
 
 
-#if defined(SOMO) || defined(PCBARM)
+#if defined(VOICE)
 void playNumber(int16_t number, uint8_t unit=0, uint8_t att=0);
 void playDuration(int16_t seconds);
 #endif

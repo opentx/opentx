@@ -484,7 +484,11 @@ void applyExpos(int16_t *anas)
         int16_t k = ed.expo;
         v = expo(v, k);
         uint8_t ed_curve = ed.curve;
+#if defined(XCURVES)
+        if (ed_curve) v = applyCurve(v, ed_curve);
+#else
         if (ed_curve) v = applyCurve(v, ed_curve > 10 ? ed_curve + 4 : ed_curve);
+#endif
         v = ((int32_t)v * ed.weight) / 100;
         anas[cur_chn] = v;
       }
@@ -977,6 +981,10 @@ void checkBacklight()
     BACKLIGHT_ON;
   else
     BACKLIGHT_OFF;
+
+#if defined(PCBSTD) && defined(VOICE)
+  Voice.voice_process();
+#endif
 }
 
 void backlightOn()
@@ -998,6 +1006,8 @@ void doSplash()
     lcd_clear();
     lcd_img(0, 0, splash_lbm, 0, 0);
     refreshDisplay();
+
+    AUDIO_TADA();
 
 #if defined(PCBSTD)
     lcdSetRefVolt(g_eeGeneral.contrast);
@@ -1676,7 +1686,7 @@ void testFunc()
 uint16_t activeFunctions = 0;
 MASK_FSW_TYPE activeFunctionSwitches = 0;
 
-#if defined(PCBARM) || defined(SOMO)
+#if defined(VOICE)
 void playValue(uint8_t idx)
 {
   int16_t val = getValue(idx);
@@ -1888,7 +1898,7 @@ void evalFunctions()
           else if (sd->func == FUNC_VOLUME) {
             requiredSpeakerVolume = ((1024 + getValue(FSW_PARAM(sd))) * NUM_VOL_LEVELS) / 2048;
           }
-#elif defined(SOMO)
+#elif defined(VOICE)
           else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {
             if (!isPlaying()) {
               static uint16_t s_last_play = 0;
@@ -2452,7 +2462,7 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
         if(s_timerVal[0]==30) AUDIO_TIMER_30(); //beep three times
         if(s_timerVal[0]==20) AUDIO_TIMER_20(); //beep two times
         if(s_timerVal[0]==10) AUDIO_TIMER_10();
-        if(s_timerVal[0]<= 3) AUDIO_TIMER_LT3();
+        if(s_timerVal[0]<= 3) AUDIO_TIMER_LT3(s_timerVal[0]);
       }
 
       if (g_eeGeneral.minuteBeep && (((g_model.timers[0].val ? g_model.timers[0].val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute

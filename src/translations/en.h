@@ -114,15 +114,20 @@
 #else
 #define TR_HAPTIC        "[Haptic]\0    "
 #endif
-#if defined(PCBARM)
-#if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs\0 "
+
+#if defined(VOICE)
 #define TR_PLAY_TRACK    "Play Track\0  "
 #define TR_PLAY_VALUE    "Play Value\0  "
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
 #define TR_PLAY_TRACK    "[Play Track]\0"
 #define TR_PLAY_VALUE    "[Play Value]\0"
+#endif
+
+#if defined(PCBARM)
+#if defined(SDCARD)
+#define TR_SDCLOGS       "SDCARD Logs\0 "
+#else
+#define TR_SDCLOGS       "[SDCARD Logs]"
 #endif
 #define TR_FSW_VOLUME    "Volume\0      "
 #elif defined(PCBV4)
@@ -131,18 +136,9 @@
 #else
 #define TR_SDCLOGS       "[SDCARD Logs]"
 #endif
-#if defined(SOMO)
-#define TR_PLAY_TRACK    "Play Track\0  "
-#define TR_PLAY_VALUE    "Play Value\0  "
-#else
-#define TR_PLAY_TRACK    "[Play Track]\0"
-#define TR_PLAY_VALUE    "[Play Value]\0"
-#endif
 #define TR_FSW_VOLUME
 #else
 #define TR_SDCLOGS
-#define TR_PLAY_TRACK
-#define TR_PLAY_VALUE
 #define TR_FSW_VOLUME
 
 #endif

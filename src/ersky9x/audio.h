@@ -107,6 +107,7 @@ extern "C" void retrieveAvailableAudioFiles();
 
 void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
+#define AUDIO_TADA()        audioEvent(AU_TADA)
 #define AUDIO_KEYPAD_UP()   audioEvent(AU_KEYPAD_UP)
 #define AUDIO_KEYPAD_DOWN() audioEvent(AU_KEYPAD_DOWN)
 #define AUDIO_MENUS()       audioEvent(AU_MENUS)
@@ -118,7 +119,7 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 #define AUDIO_TIMER_30()    audioEvent(AU_TIMER_30)
 #define AUDIO_TIMER_20()    audioEvent(AU_TIMER_20)
 #define AUDIO_TIMER_10()    audioEvent(AU_TIMER_10)
-#define AUDIO_TIMER_LT3()   audioEvent(AU_TIMER_LT3)
+#define AUDIO_TIMER_LT3(x)   audioEvent(AU_TIMER_LT3)
 #define AUDIO_MINUTE_BEEP() audioEvent(AU_WARNING1)
 #define AUDIO_INACTIVITY()  audioEvent(AU_INACTIVITY)
 #define AUDIO_MIX_WARNING_1() audioEvent(AU_MIX_WARNING_1)

@@ -126,7 +126,7 @@
 #else
 #define TR_SDCLOGS       "[SDCARD Logg]"
 #endif
-#if defined(SOMO)
+#if defined(VOICE)
 #define TR_PLAY_TRACK    "Spela Sp\200r\0  "
 #define TR_PLAY_VALUE    "Spela V\201rde\0 "
 #else

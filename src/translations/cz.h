@@ -131,7 +131,7 @@
 #else
 #define TR_SDCLOGS       "[Logování SD]"
 #endif
-#if defined(SOMO)
+#if defined(VOICE)
 #define TR_PLAY_TRACK    "Hr\200t Stopu\0  "
 #define TR_PLAY_VALUE    "Hr\200t Hodnotu\0"
 #else

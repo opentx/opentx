@@ -93,7 +93,7 @@ enum ItalianPrompts {
 
 };
 
-#if defined(SOMO) || defined(PCBARM)
+#if defined(VOICE)
 
 void playNumber(int16_t number, uint8_t unit, uint8_t att)
 {

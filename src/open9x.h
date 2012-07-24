@@ -232,7 +232,7 @@ extern void board_init();
 #  define INP_B_Trainer  5
 #  define INP_B_ID2      4
 
-#ifdef SOMO
+#if defined(VOICE)
 #  define OUT_H_14DCLK   4
 #  define OUT_H_14DDATA  5
 #  define OUT_H_14DBUSY  6
@@ -526,7 +526,7 @@ void readKeysAndTrims();
 
 uint16_t evalChkSum();
 
-#if defined(PCBARM) || defined(SOMO)
+#if defined(VOICE)
 #define MESSAGE_SOUND_ARG , uint8_t sound
 #define MESSAGE(title, msg, info, sound) message(title, msg, info, sound)
 #define ALERT(title, msg, sound) alert(title, msg, sound)
@@ -646,8 +646,8 @@ extern uint8_t  s_eeDirtyMsk;
 extern void backlightOn();
 
 #if defined (PCBARM)
-#define BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
-#define BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
+#define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
+#define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #ifdef REVB
 #define NUMBER_ANALOG   9
 #else
@@ -658,14 +658,22 @@ void read_9_adc(void ) ;
 #elif defined (PCBV4)
 #define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
 #define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
-#define BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
-#define BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
+#define __BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
+#define __BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
 #elif defined(SP22)
-#define BACKLIGHT_ON  PORTB &= ~(1 << OUT_B_LIGHT)
-#define BACKLIGHT_OFF PORTB |=  (1 << OUT_B_LIGHT)
+#define __BACKLIGHT_ON  PORTB &= ~(1 << OUT_B_LIGHT)
+#define __BACKLIGHT_OFF PORTB |=  (1 << OUT_B_LIGHT)
 #else
-#define BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
-#define BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
+#define __BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
+#define __BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
+#endif
+
+#if defined(PCBSTD) && defined(VOICE)
+#define BACKLIGHT_ON    (Voice.Backlight = 1)
+#define BACKLIGHT_OFF   (Voice.Backlight = 0)
+#else
+#define BACKLIGHT_ON    __BACKLIGHT_ON
+#define BACKLIGHT_OFF   __BACKLIGHT_OFF
 #endif
 
 #define BUZZER_ON     PORTE |=  (1 << OUT_E_BUZZER)
@@ -913,7 +921,7 @@ extern uint16_t jeti_keys;
 enum AUDIO_SOUNDS {
     AU_INACTIVITY,
     AU_TX_BATTERY_LOW,
-#if defined(PCBARM) || defined(SOMO)
+#if defined(VOICE)
     AU_THROTTLE_ALERT,
     AU_SWITCH_ALERT,
     AU_BAD_EEPROM,
@@ -956,6 +964,7 @@ enum AUDIO_SOUNDS {
     AU_FRSKY_TICK,
     AU_FRSKY_LAST,
 };
+
 #if defined(AUDIO)
 #if defined(PCBARM)
 #include "ersky9x/audio.h"
@@ -966,16 +975,20 @@ enum AUDIO_SOUNDS {
 #include "beeper.h"
 #endif
 
+#if defined(PCBSTD) && defined(VOICE)
+#include "stock/voice.h"
+#endif
+
+#if defined(PCBV4) && defined(VOICE)
+#include "gruvin9x/somo14d.h"
+#endif
+
 #if defined(HAPTIC)
 #include "haptic.h"
 #endif
 
 #if defined(SDCARD)
 #include "sdcard.h"
-#endif
-
-#if defined(SOMO)
-#include "gruvin9x/somo14d.h"
 #endif
 
 #if defined(PCBV4)

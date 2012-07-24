@@ -55,6 +55,10 @@ AUTOSWITCH = NO
 # Values = YES, NO 
 AUDIO = NO
 
+# VOICE Mods
+# Values = YES, NO 
+VOICE = NO
+
 # HAPTIC Mods
 # Values = YES, NO 
 HAPTIC = NO
@@ -112,9 +116,6 @@ DSM2 = NO
 
 #IR protocols (SILV / TRAC09 / PICZ / SWIFT)
 IRPROTOS = NO
-
-# SOMO-14D module (V4 board only)
-SOMO = NO
 
 # TRANSLATIONS
 # Values = cz, de, en, fr, it, se  
@@ -194,7 +195,6 @@ OBJDUMP = $(TRGT)objdump
 SIZE    = $(TRGT)size
 NM      = $(TRGT)nm
 
-AVRDUDE = avrdude
 REMOVE = rm -f
 REMOVEDIR = rm -rf
 
@@ -355,7 +355,7 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
-  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DVOICE -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
@@ -385,9 +385,9 @@ ifeq ($(PCB), V4)
     EXTRABOARDSRC += FatFs/ff.c FatFs/option/ccsbcs.c 
   endif
     
-  ifeq ($(SOMO), YES)
+  ifeq ($(VOICE), YES)
     CPPSRC += gruvin9x/somo14d.cpp
-    CPPDEFS += -DSOMO
+    CPPDEFS += -DVOICE
   endif
   
   ifeq ($(EXTRA_ROTARY_ENCODERS), YES)
@@ -410,6 +410,11 @@ ifeq ($(PCB), STD)
     CPPSRC += stock/audio.cpp
   else
     CPPSRC += beeper.cpp 
+  endif
+  
+  ifeq ($(VOICE), YES)
+    CPPSRC += stock/voice.cpp
+    CPPDEFS += -DVOICE
   endif
   
   ifeq ($(HAPTIC), YES)
@@ -569,7 +574,7 @@ stamp_header:
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)-$(MODS)\"" >> stamp-open9x.h
 	@echo "#define SVN_STR  \"open9x-r$(SVNREV)\"" >> stamp-open9x.h
 	@cat stamp-open9x.h
-	
+
 stock-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-stock.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-stock.txt
@@ -583,7 +588,7 @@ v4-stamp:
 	@echo "#define VERS_STR \"$(MAJ_VER).$(MIN_VER)\"" >> stamp-open9x-v4.txt
 	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-v4.txt
 	@cat stamp-open9x-v4.txt
-	
+
 arm-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-arm.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-arm.txt
@@ -711,10 +716,10 @@ endif
 allsrc.cpp: Makefile $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC)
 	@rm -f allsrc.cpp 
 	for f in $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) ; do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
-	
+
 remallsrc:
 	$(REMOVE) allsrc.cpp
-    
+
 # Link: create ELF output file from object files.
 ifeq ($(PCB), ARM)
 %.o: %.c
@@ -731,7 +736,7 @@ else
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(AVRCPPFLAGS) $< --output $@ $(LDFLAGS)
 endif
-	
+
 # Target: clean project.
 clean: begin clean_list end
 
@@ -808,4 +813,3 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 gtests: $(CPPSRC) gtests.cpp simpgmspace.cpp *.h gtest_main.a
 	g++ $(CPPSRC) gtests.cpp simpgmspace.cpp $(CPPFLAGS) -I$(GTEST_DIR) $(ARCH) -o gtests -lpthread -MD -DSIMU gtest_main.a 
-	

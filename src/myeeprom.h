@@ -330,9 +330,9 @@ enum Functions {
   FUNC_HAPTIC,
   FUNC_RESET,
   FUNC_VARIO,
-#if !defined(PCBSTD)
   FUNC_PLAY_TRACK,
   FUNC_PLAY_VALUE,
+#if !defined(PCBSTD)
   FUNC_LOGS,
 #endif
 #if defined(PCBARM)

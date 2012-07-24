@@ -126,7 +126,7 @@
 #else
 #define TR_SDCLOGS       "[Logs SD]    "
 #endif
-#if defined(SOMO)
+#if defined(VOICE)
 #define TR_PLAY_TRACK    "Jouer fichier"
 #define TR_PLAY_VALUE    "Jouer valeur "
 #else

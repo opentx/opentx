@@ -1587,8 +1587,14 @@ void menuProcExpoOne(uint8_t event)
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
         break;
       case EXPO_FIELD_CURVE:
+#if defined(XCURVES)
+        putsCurve(6*FW+5, y, ed->curve, attr);
+        if (attr) CHECK_INCDEC_MODELVAR(event, ed->curve, 0, MAX_CURVES+7-1);
+#else
         putsCurve(6*FW+5, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0), attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, ed->curve, 0, 15);
+#endif
+
         if (attr && ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
           s_curveChan = ed->curve - (ed->curve >= CURVE_BASE+4 ? CURVE_BASE-4 : CURVE_BASE);
           pushMenu(menuProcCurveOne);
@@ -1985,7 +1991,11 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 #endif
               putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
               if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
+#if defined(XCURVES)
+              if (ed->curve) putsCurve(18*FW+2, y, ed->curve);
+#else
               if (ed->curve) putsCurve(18*FW+2, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0));
+#endif
             }
           }
           else {
@@ -2694,7 +2704,7 @@ void menuProcFunctionSwitches(uint8_t event)
               putsChnRaw(17*FW, y, val_displayed+1, attr);
             }
 #endif
-#if defined(SOMO)
+#if defined(VOICE)
             else if (sd->func == FUNC_PLAY_TRACK) {
               lcd_outdezAtt(21*FW, y, val_displayed, attr);
             }

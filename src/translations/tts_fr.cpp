@@ -99,7 +99,7 @@ enum FrenchPrompts {
 
 };
 
-#if defined(SOMO) || defined(PCBARM)
+#if defined(VOICE)
 
 #define FEMININ 0x80
 
