@@ -49,6 +49,7 @@ enum FrenchPrompts {
   PROMPT_SOIXANTE_ET_ONZE = 109,
   PROMPT_QUATRE_VINGT_UNE = 110,
 
+  PROMPT_VIRGULE = 116,
   PROMPT_ET = 117,
   PROMPT_MOINS = 118,
 
@@ -114,6 +115,15 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
       prompts.extend(self.getNumberPrompt(temp_digit))
       prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
 */
+
+  int8_t mode = MODE(att);
+  if (mode > 0) {
+    div_t qr = div(number, (mode == 1 ? 10 : 100));
+    playNumber(qr.quot);
+    pushPrompt(PROMPT_VIRGULE);
+    playNumber(qr.rem, unit);
+    return;
+  }
 
   if (number < 0) {
     pushPrompt(PROMPT_MOINS);

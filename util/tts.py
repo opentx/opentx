@@ -35,8 +35,6 @@ def generate(str, idx):
         else:
             result = idx + ".wav"
         temp = "_" + result
-            
-        print result, str
     
         if "sapi" in sys.argv:
             tts.SpeakToWave(temp, str)
@@ -73,6 +71,8 @@ def generate(str, idx):
             subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             os.remove(temp)
 	
+        print result, str
+        
     if result:
         return [(result, str)]
     else:
@@ -174,8 +174,8 @@ if __name__ == "__main__":
         systemSounds.extend(generate("1000", 101))
         for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante et une", "cinquante et une", "soixante et une", "soixante et onze", "quatre vingt une"]): 
             systemSounds.extend(generate(s, 102+i))
-        for i, s in enumerate(["et", "moins"]): 
-            systemSounds.extend(generate(s, 117+i))
+        for i, s in enumerate(["virgule", "et", "moins"]): 
+            systemSounds.extend(generate(s, 116+i))
         for i, s in enumerate(["timer", "", "tension", "tension", u"émission", u"réception", "altitude", "moteur",
                                "essence", u"température", u"température", "vitesse", "distance", "altitude", u"élément lipo",
                                "total lipo", "tension", "courant", "consommation", "puissance", u"accelération X", u"accelération Y", u"accelération Z",
