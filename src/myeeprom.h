@@ -675,7 +675,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   pulsePol:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
-  uint8_t   spare2:1;
+  uint8_t   frskyFas2111:1;
   int8_t    ppmDelay;
   BeepANACenter   beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData   mixData[MAX_MIXERS];
