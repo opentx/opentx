@@ -9,7 +9,7 @@
 #define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE    "\005"
-#define TR_VBEEPMODE     "Tich\212""Alarm""BezKL""V\207e  "
+#define TR_VBEEPMODE     "Tich\212""Alarm""BezKl""V\207e  "
 
 #define LEN_VBEEPLEN     "\005"
 #define TR_VBEEPLEN      "O====""=O===""==O==""===O=""====O"
@@ -20,8 +20,8 @@
 #define LEN_VFILTERADC   "\004"
 #define TR_VFILTERADC    "SING""OSMP""FILT"
 
-#define LEN_VBLMODE      "\004"
-#define TR_VBLMODE       "OFF ""Keys""Stks""Both""ON\0"
+#define LEN_VBLMODE      "\005"
+#define TR_VBLMODE       "Vyp\0 ""Kl\200v.""P\200ky\0""V\207e\0""Zap\0"
 
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       " X "" +="" :="
@@ -65,7 +65,7 @@
 #define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2 TR_IRPROTOS
 
 #define LEN_POSNEG       "\003"
-#define TR_POSNEG        "POS""NEG"
+#define TR_POSNEG        "POZ""NEG"
 
 #define LEN_VCURVEFUNC   "\003"
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
@@ -75,7 +75,7 @@
 
 #define LEN_EXPLABELS    "\006"
 #ifdef PCBARM
-#define TR_EXPLABEL_NAME "Name  "
+#define TR_EXPLABEL_NAME "Jm\202no "
 #else
 #define TR_EXPLABEL_NAME
 #endif
@@ -100,9 +100,9 @@
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)
-#define TR_VVARIO         "Vario        "
+#define TR_VVARIO         "Vario\0       "
 #else
-#define TR_VVARIO         "[Vario]      "
+#define TR_VVARIO         "[Vario]\0     "
 #endif
 #if defined(AUDIO)
 #define TR_SOUND         "P\206ehr\200t\0     "
@@ -116,27 +116,27 @@
 #endif
 #if defined(PCBARM)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs\0 "
-#define TR_PLAY_TRACK    "Play Track\0  "
-#define TR_PLAY_VALUE    "Play Value\0  "
+#define TR_SDCLOGS       "Logov\200n\204 SD\0 "
+#define TR_PLAY_TRACK    "Hr\200t Stopu\0  "
+#define TR_PLAY_VALUE    "Hr\200t Hodnotu\0"
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
-#define TR_PLAY_TRACK    "[Play Track]\0"
-#define TR_PLAY_VALUE    "[Play Value]\0"
+#define TR_SDCLOGS       "[Logov\200n\204 SD]"
+#define TR_PLAY_TRACK    "[Hr\200t Stopu]\0"
+#define TR_PLAY_VALUE    "[Hr\200t Hodn.]\0"
 #endif
-#define TR_FSW_VOLUME    "Volume\0      "
+#define TR_FSW_VOLUME    "Hlasitost\0   "
 #elif defined(PCBV4)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs  "
+#define TR_SDCLOGS       "Logování SD  "
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_SDCLOGS       "[Logování SD]"
 #endif
 #if defined(SOMO)
 #define TR_PLAY_TRACK    "Hr\200t Stopu\0  "
 #define TR_PLAY_VALUE    "Hr\200t Hodnotu\0"
 #else
 #define TR_PLAY_TRACK    "[Hr\200t Stopu]\0"
-#define TR_PLAY_VALUE    "Hr\200t Hodnotu\0"
+#define TR_PLAY_VALUE    "[Hr\200t Hodn.]\0"
 #endif
 #define TR_FSW_VOLUME
 #else
@@ -150,10 +150,10 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_TEST
+#define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Podsv\203tlen\204\0 " TR_TEST
 
 #define LEN_VFSWRESET    "\006"
-#define TR_VFSWRESET     "Timer1""Timer2""Vse   ""Telem."
+#define TR_VFSWRESET     "Timer1""Timer2""V\207e   ""Telem."
 
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
@@ -213,9 +213,9 @@
 
 #define LEN_VSWITCHES    "\003"
 #if defined(PCBARM)
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"" ON"
+#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW""ZAP"
 #else
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"" ON"
+#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""ZAP"
 #endif
 
 #define LEN_VSRCRAW      "\004"
@@ -391,7 +391,7 @@
 #define TR_MENULIMITS   "LIMITY"
 #define TR_MENUCURVES   "K\215IVKY"
 #define TR_MENUCURVE    "\003CV"
-#define TR_MENUCUSTOMSWITCH   "CUSTOM SWITCH"
+#define TR_MENUCUSTOMSWITCH   "VLASTN\214 SP\214NA\201"
 #define TR_MENUCUSTOMSWITCHES "VLASTN\214 SP\214NA\201E"
 #define TR_MENUFUNCSWITCHES "FUNK\201.SP\214NA\201E"
 #define TR_MENUTELEMETRY "TELEMETRIE"
@@ -428,21 +428,21 @@
 #define TR_ALARMSWARN    "ALARMU"
 #define TR_SWITCHWARN    "POZICE"
 #define TR_INVERT_THR    "Invertovat Plyn?"
-#define TR_SPEAKER_VOLUME      "Speaker Volume"
+#define TR_SPEAKER_VOLUME      "Hlasitost"
 #define TR_OPTREX_DISPLAY      "Optrex Display"
-#define TR_BRIGHTNESS          "Brightness"
-#define TR_CPU_TEMP            "CPU temp.\010>"
-#define TR_FUNC                "Func"
+#define TR_BRIGHTNESS          "Jas"
+#define TR_CPU_TEMP            "tepl. CPU\010>"
+#define TR_FUNC                "Fun."
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
-#define TR_DURATION            "Duration"
-#define TR_DELAY               "Delay"
-#define TR_SD_CARD             "SD Card"
-#define TR_SDHC_CARD           "SD-HC Card"
-#define TR_NO_SOUNDS_ON_SD     "No Sounds on SD"
-#define TR_NO_MODELS_ON_SD     "No Models on SD"
-#define TR_PLAY_FILE           "Play"
-#define TR_DELETE_FILE         "Delete"
-#define TR_COPY_FILE           "Copy"
-#define TR_RENAME_FILE         "Rename"
-#define TR_REMOVED             " removed"
+#define TR_DURATION            "Trv\200n\204"
+#define TR_DELAY               "Zdr\217et"
+#define TR_SD_CARD             "SD Karta"
+#define TR_SDHC_CARD           "SD-HC Karta"
+#define TR_NO_SOUNDS_ON_SD     "\217\200dn\212 zvuk na SD"
+#define TR_NO_MODELS_ON_SD     "\217\200dn\212 model na SD"
+#define TR_PLAY_FILE           "P\206ehr\200t"
+#define TR_DELETE_FILE         "Odstranit"
+#define TR_COPY_FILE           "Kop\204rovat"
+#define TR_RENAME_FILE         "P\206ejmenovat"
+#define TR_REMOVED             " odstran\203n"
