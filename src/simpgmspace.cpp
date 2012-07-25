@@ -323,7 +323,11 @@ FRESULT f_close (FIL*)
 
 FRESULT f_chdir (const TCHAR *name)
 {
+#if defined WIN32 || !defined __GNUC__
+  _chdir(name);
+#else
   chdir(name);
+#endif
   return FR_OK;
 }
 
