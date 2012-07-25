@@ -747,6 +747,7 @@ clean_list :
 	$(REMOVE) gtests
 	$(REMOVE) gtest.a
 	$(REMOVE) gtest_main.a
+	$(REMOVE) $(TARGET).bin
 	$(REMOVE) $(TARGET).hex
 	$(REMOVE) $(TARGET).eep
 	$(REMOVE) $(TARGET).elf
