@@ -22,7 +22,7 @@
 
 import os, sys, shutil, platform, subprocess, wave, zipfile
 
-def generate(str, idx):
+def generate(str, idx, alternate=0):
     result = None
     if "speak" in sys.argv:
         if "sapi" in sys.argv:
@@ -32,6 +32,10 @@ def generate(str, idx):
     else:
         if isinstance(idx, int):
             result = "%04d.wav" % idx
+        elif 'ad4' in sys.argv:
+            if alternate == 0:
+                return []
+            result = "%04d.wav" % alternate
         else:
             result = idx + ".wav"
         temp = "_" + result
@@ -124,12 +128,13 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 40+i))
         for i, s in enumerate(["volts", "amps", "meters per second", "", "km per hour", "meters", "degrees", "percent", "milliamps", "milliamps per hour", "watts", "", "feet", "knots"]):
             systemSounds.extend(generate(s, 50+i))
-        for s, f in [(u"trim center", "midtrim"),
-                     (u"maximum trim reached", "endtrim"),
-                     (u"transmitter battery low", "lowbatt"),
-                     ]:
-            systemSounds.extend(generate(s, f))           
-        for s, f in [(u"gear up", "gearup"),
+        for s, f, a in [(u"trim center", "midtrim", 314),
+                        (u"maximum trim reached", "endtrim", 0),
+                        (u"transmitter battery low", "lowbatt", 301),
+                       ]:
+            systemSounds.extend(generate(s, f, a))
+        for i, (s, f) in enumerate([
+                     (u"gear up", "gearup"),
                      (u"gear down", "geardn"),
                      (u"flaps up", "flapup"),
                      (u"flaps down", "flapdn"),
@@ -156,8 +161,8 @@ if __name__ == "__main__":
                      (u"flight mode seven", "fltmd7"),
                      (u"flight mode eight", "fltmd8"),
                      (u"flight mode nine", "fltmd9"),
-                     ]:
-            sounds.extend(generate(s, f))
+                     ]):
+            sounds.extend(generate(s, f, 400+i))
 
     
     elif "fr" in sys.argv:
@@ -183,7 +188,8 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 141+i))            
         for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "km heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "", "pieds", "knotts", "heure", "minute", "seconde"]):
             systemSounds.extend(generate(s, 120+i))
-        for s, f in [(u"train rentré", "gearup"),
+        for i, (s, f) in enumerate([
+                     (u"train rentré", "gearup"),
                      (u"train sorti", "geardn"),
                      (u"volets rentrés", "flapup"),
                      (u"volets sortis", "flapdn"),
@@ -191,8 +197,8 @@ if __name__ == "__main__":
                      (u"écolage", "trnon"),
                      (u"fin écolage", "trnoff"),
                      (u"moteur coupé", "engoff"),
-                     ]:
-            sounds.extend(generate(s, f))
+                     ]):
+            sounds.extend(generate(s, f, 400+i))
     elif "it" in sys.argv:
         if "sapi" in sys.argv:
             tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
@@ -210,17 +216,18 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 103+i))
         for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "", "piedi", "nodi"]):
             systemSounds.extend(generate(s, 112+i))
-        for s, f in [(u"trim centrato", "midtrim"),
-                     (u"massimo trim raggiunto", "endtrim"),
-                     (u"batteria della radio scarica", "lowbatt"),
+        for a, s, f in [(u"trim centrato", "midtrim", 314),
+                        (u"massimo trim raggiunto", "endtrim", 0),
+                        (u"batteria della radio scarica", "lowbatt", 301),
                      ]:
-            systemSounds.extend(generate(s, f))
+            systemSounds.extend(generate(s, f, a))
         for i, s in enumerate(["timer", "", "tensione", "tensione", "trasmissione", "ricezione", "altitudine", "motore",
                                "carburante", "temperatura", "temperatura", "velocita'", "distanza", "altitudine", "cella lipo",
                                "totale lipo", "tensione", "corrente", "consumo", "potenza", "accelerazione X", "accellerazione Y", "accelerazione Z",
                                "direzione", "variometro"]):
             systemSounds.extend(generate(s, 126+i))                
-        for s, f in [(u"carrello chiuso", "gearup"),
+        for i, (s, f) in enumerate([
+                     (u"carrello chiuso", "gearup"),
                      (u"carrello aperto", "geardn"),
                      (u"flap rientrati", "flapup"),
                      (u"flap estesi", "flapdn"),
@@ -247,27 +254,39 @@ if __name__ == "__main__":
                      (u"fase di volo 7", "fltmd7"),
                      (u"fase di volo 8", "fltmd8"),
                      (u"fase di volo 9", "fltmd9"),
-                     ]:
-            sounds.extend(generate(s, f))
+                     ]):
+            sounds.extend(generate(s, f, 400+i))
 
     if "csv" in sys.argv:
         csvFile = file(voice + ".csv", "w")
         for f, s in systemSounds:
-            s = u"9XSOUNDS/SYSTEM;" + f + u";" + s + u"\n"
-            csvFile.write(s.encode("latin-1"))
+            l = u""
+            if 'ad4' not in sys.argv:
+                l += u"9XSOUNDS/SYSTEM;"
+            l += f + u";" + s + u"\n"
+            csvFile.write(l.encode("latin-1"))
         for f, s in sounds:
-            s = u"9XSOUNDS;" + f + u";" + s + u"\n"
-            csvFile.write(s.encode("latin-1"))
+            l = u""
+            if 'ad4' not in sys.argv:
+                l += u"9XSOUNDS;"
+            l += f + u";" + s + u"\n"
+            csvFile.write(l.encode("latin-1"))
         csvFile.close()
             
     if "zip" in sys.argv:
         zip_name = voice + ".zip"
         zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
         for f, s in systemSounds:
-            zip.write(f, "9XSOUNDS/SYSTEM/" + f)
+            if 'ad4' in sys.argv:
+                zip.write(f, f)
+            else:
+                zip.write(f, "9XSOUNDS/SYSTEM/" + f)
             os.remove(f)
         for f, s in sounds:
-            zip.write(f, "9XSOUNDS/" + f)
+            if 'ad4' in sys.argv:
+                zip.write(f, f)
+            else:
+                zip.write(f, "9XSOUNDS/" + f)
             os.remove(f)
         zip.close()
     
