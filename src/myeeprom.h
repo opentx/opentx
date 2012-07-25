@@ -49,11 +49,11 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBARM)
-#define EEPROM_VER       210
+#define EEPROM_VER       211
 #elif defined(PCBV4)
-#define EEPROM_VER       209
+#define EEPROM_VER       210
 #else
-#define EEPROM_VER       209
+#define EEPROM_VER       210
 #endif
 
 #ifndef PACK
@@ -590,22 +590,16 @@ PACK(typedef struct t_PhaseData {
 
 #define MAX_TIMERS 2
 
-#if defined(XCURVES)
+#if defined(PCBARM)
+#define MAX_CURVES 16
+#define NUM_POINTS 256
+#else
 #define MAX_CURVES 8
 #define NUM_POINTS (112-MAX_CURVES)
+#endif
+
 #define MIN_POINTS 3
 #define MAX_POINTS 17
-#define CURVES_DATA \
-  int8_t    curves[MAX_CURVES]; \
-  int8_t    points[NUM_POINTS]
-#else
-#define MAX_CURVE5 8
-#define MAX_CURVE9 8
-#define MAX_CURVES (MAX_CURVE5+MAX_CURVE9)
-#define CURVES_DATA \
-  int8_t    curves5[MAX_CURVE5][5]; \
-  int8_t    curves9[MAX_CURVE9][9]
-#endif
 
 #define TMRMODE_NONE     0
 #define TMRMODE_ABS      1
@@ -682,7 +676,8 @@ PACK(typedef struct t_ModelData {
   LimitData limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
   
-  CURVES_DATA;
+  int8_t    curves[MAX_CURVES];
+  int8_t    points[NUM_POINTS];
   
   CustomSwData customSw[NUM_CSW];
   FuncSwData   funcSw[NUM_FSW];

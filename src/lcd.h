@@ -92,6 +92,10 @@
 extern uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 extern uint8_t lcdLastPos;
 
+#if defined(PCBSTD) && defined(VOICE)
+extern volatile uint8_t LcdLock ;
+#endif
+
 #if defined(PCBARM)
 extern uint8_t lcdLock ;
 extern uint32_t lcdInputs ;

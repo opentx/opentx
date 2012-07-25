@@ -84,8 +84,10 @@ void retrieveAvailableAudioFiles()
   FILINFO info;
   char filename[32] = SYSTEM_SOUNDS_PATH "/";
 
+#if !defined WIN32 && defined __GNUC__
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableAudioFiles)*8 > AU_FRSKY_FIRST);
+#endif
 
   sdAvailableAudioFiles = 0;
 

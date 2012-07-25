@@ -76,3 +76,43 @@ inline bool isPlaying()
 {
   return Voice.VoiceState != V_IDLE;
 }
+
+/*
+ * Handle the Voice output
+ * Check for LcdLocked (in interrupt), and voice_enabled
+ */
+#define VOICE_DRIVER() \
+  if ( LcdLock == 0 ) /* LCD not in use */ \
+  { \
+    struct t_voice *vptr; \
+    vptr = voiceaddress(); \
+    if ( vptr->VoiceState == V_CLOCKING ) \
+    { \
+      if ( vptr->VoiceTimer ) \
+      { \
+        vptr->VoiceTimer -= 1; \
+      } \
+      else \
+      { \
+        PORTB |= (1<<OUT_B_LIGHT); /* Latch clock high */ \
+        if ( vptr->VoiceCounter & 1 ) \
+        { \
+          vptr->VoiceLatch &= ~VOICE_DATA_BIT; \
+          if ( vptr->VoiceSerial & 0x8000 ) \
+          { \
+            vptr->VoiceLatch |= VOICE_DATA_BIT; \
+          } \
+          vptr->VoiceSerial <<= 1; \
+        } \
+        vptr->VoiceLatch ^= VOICE_CLOCK_BIT; \
+        PORTA_LCD_DAT = vptr->VoiceLatch; /* Latch data set */ \
+        PORTB &= ~(1<<OUT_B_LIGHT); /* Latch clock low */ \
+        if ( --vptr->VoiceCounter == 0 ) \
+        { \
+          vptr->VoiceState = V_WAIT_BUSY_ON; \
+          vptr->VoiceTimer = 5; /* 50 mS */ \
+        } \
+      } \
+    } \
+  }
+

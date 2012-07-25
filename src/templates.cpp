@@ -92,11 +92,7 @@ void clearMixes()
 
 void clearCurves()
 {
-#if defined(XCURVES)
   memclear(g_model.curves, sizeof(g_model.curves) + sizeof(g_model.points)); // clear all curves
-#else
-  memclear(g_model.curves5, sizeof(g_model.curves5) + sizeof(g_model.curves9)); // clear all curves
-#endif
 }
 
 void setCurve(uint8_t c, const pm_int8_t ar[])

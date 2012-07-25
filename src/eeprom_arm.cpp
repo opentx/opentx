@@ -456,7 +456,7 @@ bool ee32LoadGeneral()
   }
 #ifdef SIMU
   else {
-    printf("EEPROM version %d instead of %d\n", g_eeGeneral.myVers, EEPROM_VER);
+    printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.myVers, g_eeGeneral.variants, EEPROM_VER, EEPROM_VARIANTS);
     fflush(stdout);
   }
 #endif

@@ -1092,7 +1092,6 @@ void DrawCurve(FnFuncP fn)
   }
 }
 
-#if defined(XCURVES)
 bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
 {
   if (g_model.curves[MAX_CURVES-1] + shift > NUM_POINTS-5*MAX_CURVES) {
@@ -1240,108 +1239,6 @@ void menuProcCurveOne(uint8_t event)
 
   DrawCurve(curveFn);
 }
-#else
-void menuProcCurveOne(uint8_t event)
-{
-  uint8_t points;
-  int8_t *crv;
-  static int8_t dfltCrv;
-
-  TITLE(STR_MENUCURVE);
-  lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
-  DISPLAY_PROGRESS_BAR(20*FW+1);
-
-  if (s_curveChan >= MAX_CURVE5) {
-    points = 9;
-  }
-  else {
-    points = 5;
-  }
-
-  crv = curveaddress(s_curveChan);
-
-  switch(event) {
-    case EVT_ENTRY:
-      dfltCrv = 0;
-#if defined(ROTARY_ENCODERS)
-      s_editMode = -1;
-#endif
-      break;
-#if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      if (!navigationRotaryEncoder(event))
-        break;
-#endif
-    case EVT_KEY_FIRST(KEY_MENU):
-      if (s_editMode<=0) {
-        switch (m_posHorz) {
-          case 0:
-            s_editMode = 1;
-            break;
-          case 1:
-            if (++dfltCrv > 4)
-              dfltCrv = -4;
-            for (uint8_t i=0; i<points; i++)
-              crv[i] = (i-(points/2)) * dfltCrv * 50 / (points-1);
-            break;
-        }
-      }
-      break;
-    case EVT_KEY_FIRST(KEY_EXIT):
-      killEvents(event);
-      if (s_editMode>0) {
-        m_posHorz = 0;
-        s_editMode = 0;
-      }
-      else {
-        popMenu();
-      }
-      break;
-    case EVT_KEY_REPT(KEY_LEFT):
-    case EVT_KEY_FIRST(KEY_LEFT):
-      if (m_posHorz>0) m_posHorz--;
-      break;
-    case EVT_KEY_REPT(KEY_RIGHT):
-    case EVT_KEY_FIRST(KEY_RIGHT):
-      if (m_posHorz<((s_editMode>0) ? points-1 : 1)) m_posHorz++;
-      break;
-  }
-
-  for (uint8_t i = 0; i < points; i++) {
-    uint8_t x, y;
-    if (i>4) {
-      x = 8*FW; y = (i-4) * FH;
-    }
-    else {
-      x = 4*FW; y = (i+1) * FH;
-    }
-    uint8_t attr = (s_editMode>0 && m_posHorz==i) ? INVERS : 0;
-    lcd_outdezAtt(x, y, crv[i], attr);
-  }
-
-  lcd_putsLeft(7*FH, STR_MODE);
-  lcd_putsiAtt(5*FW-2, 7*FH, STR_CURVMODES, (s_editMode<=0)*m_posHorz, s_editMode>0 ? 0 : INVERS);
-
-  if (s_editMode>0) {
-    for (uint8_t i=0; i<points; i++) {
-      uint8_t xx = X0-1-WCHART+i*WCHART/(points/2);
-      uint8_t yy = (DISPLAY_H-1) - (100 + crv[i]) * (DISPLAY_H-1) / 200;
-
-      if (m_posHorz==i) {
-        lcd_filled_rect(xx-1, yy-2, 5, 5); // do selection square
-        if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP))
-          CHECK_INCDEC_MODELVAR( event, crv[i], -100,100);  // edit on up/down
-      }
-      else {
-        lcd_filled_rect(xx, yy-1, 3, 3); // do markup square
-      }
-    }
-  }
-
-  DrawCurve(curveFn);
-}
-#endif
 
 uint8_t getExpoMixCount(uint8_t expo)
 {
@@ -1587,17 +1484,13 @@ void menuProcExpoOne(uint8_t event)
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
         break;
       case EXPO_FIELD_CURVE:
-#if defined(XCURVES)
         putsCurve(6*FW+5, y, ed->curve, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, ed->curve, 0, MAX_CURVES+7-1);
-#else
-        putsCurve(6*FW+5, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0), attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, ed->curve, 0, 15);
-#endif
-
-        if (attr && ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
-          s_curveChan = ed->curve - (ed->curve >= CURVE_BASE+4 ? CURVE_BASE-4 : CURVE_BASE);
-          pushMenu(menuProcCurveOne);
+        if (attr) {
+          CHECK_INCDEC_MODELVAR(event, ed->curve, 0, MAX_CURVES+7-1);
+          if (ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
+            s_curveChan = ed->curve - (ed->curve >= CURVE_BASE+4 ? CURVE_BASE-4 : CURVE_BASE);
+            pushMenu(menuProcCurveOne);
+          }
         }
         break;
 #ifdef FLIGHT_PHASES
@@ -1991,11 +1884,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
 #endif
               putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
               if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
-#if defined(XCURVES)
               if (ed->curve) putsCurve(18*FW+2, y, ed->curve);
-#else
-              if (ed->curve) putsCurve(18*FW+2, y, ed->curve+(ed->curve >= CURVE_BASE+4 ? 4 : 0));
-#endif
             }
           }
           else {
@@ -2251,7 +2140,6 @@ void menuProcLimits(uint8_t _event)
   }
 }
 
-#if defined(XCURVES)
 void menuProcCurvesAll(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
@@ -2285,62 +2173,6 @@ void menuProcCurvesAll(uint8_t event)
   s_curveChan = sub;
   DrawCurve(curveFn);
 }
-#else
-void menuProcCurvesAll(uint8_t event)
-{
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
-
-  int8_t  sub    = m_posVert - 1;
-
-  switch (event) {
-#if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      if (!navigationRotaryEncoder(event))
-        break;
-      // no break
-#endif
-    case EVT_KEY_FIRST(KEY_RIGHT):
-    case EVT_KEY_FIRST(KEY_MENU):
-      if (sub >= 0) {
-        s_curveChan = sub;
-        pushMenu(menuProcCurveOne);
-      }
-      break;
-  }
-
-  uint8_t y    = 1*FH;
-  uint8_t yd   = 1;
-  uint8_t m    = 0;
-  for (uint8_t i = 0; i < 7; i++) {
-    uint8_t k = i + s_pgOfs;
-    uint8_t attr = sub == k ? INVERS : 0;
-#if defined(XCURVES)
-    bool    cv9 = (getCurvePoints(k) == 9);
-#else
-    bool    cv9 = k >= MAX_CURVE5;
-#endif
-
-    if(cv9 && (yd>6)) break;
-    if(yd>7) break;
-    if(!m) m = attr;
-    putsStrIdx(0, y, STR_CV, k+1, attr);
-    int8_t *crv = curveaddress(k);
-    for (uint8_t j = 0; j < (5); j++) {
-      lcd_outdezAtt( j*(3*FW+3) + 7*FW + 2, y, crv[j], 0);
-    }
-    y += FH;yd++;
-    if(cv9){
-      for (uint8_t j = 0; j < 4; j++) {
-        lcd_outdezAtt( j*(3*FW+3) + 7*FW + 2, y, crv[j+5], 0);
-      }
-      y += FH;yd++;
-    }
-  }
-
-  if(!m) s_pgOfs++;
-}
-#endif
 
 #if defined(PCBARM)
 enum CustomSwitchFields {

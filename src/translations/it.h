@@ -70,9 +70,6 @@
 #define LEN_VCURVEFUNC   "\003"
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
-#define LEN_CURVMODES    "\005"
-#define TR_CURVMODES     "PERS.""PRSET"
-
 #define LEN_EXPLABELS    "\006"
 #ifdef PCBARM
 #define TR_EXPLABEL_NAME "Name  "

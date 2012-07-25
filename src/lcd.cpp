@@ -915,11 +915,21 @@ void lcdSendCtl(uint8_t val)
   PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
 }
 
+#if defined(PCBSTD) && defined(VOICE)
+volatile uint8_t LcdLock ;
+#define LCD_LOCK() LcdLock = 1
+#define LCD_UNLOCK() LcdLock = 0
+#else
+#define LCD_LOCK()
+#define LCD_UNLOCK()
+#endif
+
 inline void lcd_init()
 {
   // /home/thus/txt/datasheets/lcd/KS0713.pdf
   // ~/txt/flieger/ST7565RV17.pdf  from http://www.glyn.de/content.asp?wdid=132&sid=
 
+  LCD_LOCK();
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES);  //LCD_RES
   delay_1us();
   delay_1us();//    f520  call  0xf4ce  delay_1us() ; 0x0xf4ce
@@ -938,17 +948,21 @@ inline void lcd_init()
   lcdSendCtl(0x22); // 24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
   lcdSendCtl(0xAF); //DON = 1: display ON
   g_eeGeneral.contrast = 0x22;
+  LCD_UNLOCK();
 }
 
 void lcdSetRefVolt(uint8_t val)
 {
+  LCD_LOCK();
   lcdSendCtl(0x81);
   lcdSendCtl(val);
+  LCD_UNLOCK();
 }
 
 #ifndef SIMU
 void refreshDisplay()
 {
+  LCD_LOCK();
   uint8_t *p=displayBuf;
   for(uint8_t y=0; y < 8; y++) {
     lcdSendCtl(0x04);
@@ -968,6 +982,7 @@ void refreshDisplay()
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
   }
+  LCD_UNLOCK();
 }
 #endif
 

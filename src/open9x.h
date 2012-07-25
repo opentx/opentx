@@ -42,15 +42,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#define VARIANT_XCURVES_MASK  0x80
-
-#if defined(XCURVES)
-#define VARIANT_XCURVES VARIANT_XCURVES_MASK
-#else
-#define VARIANT_XCURVES 0x00
-#endif
-
-#define EEPROM_VARIANTS (VARIANT_XCURVES)
+#define EEPROM_VARIANTS   (0x00)
 
 #if defined(PCBSTD)
 #define WDT_RESET_STOCK() wdt_reset()
@@ -819,14 +811,13 @@ extern MixData *mixaddress(uint8_t idx);
 extern LimitData *limitaddress(uint8_t idx);
 extern int8_t *curveaddress(uint8_t idx);
 extern CustomSwData *cswaddress(uint8_t idx);
-#if defined(XCURVES)
+
 struct CurveInfo {
   int8_t *crv;
   uint8_t points;
   bool custom;
 };
 extern CurveInfo curveinfo(uint8_t idx);
-#endif
 
 extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 

@@ -162,7 +162,6 @@ LimitData *limitaddress(uint8_t idx)
   return &g_model.limitData[idx];
 }
 
-#if defined(XCURVES)
 int8_t *curveaddress(uint8_t idx)
 {
   return &g_model.points[idx==0 ? 0 : 5*idx+g_model.curves[idx-1]];
@@ -183,12 +182,6 @@ CurveInfo curveinfo(uint8_t idx)
   }
   return result;
 }
-#else
-int8_t *curveaddress(uint8_t idx)
-{
-  return (idx >= MAX_CURVE5 ? g_model.curves9[idx-MAX_CURVE5] : g_model.curves5[idx]);
-}
-#endif
 
 CustomSwData *cswaddress(uint8_t idx)
 {
@@ -272,7 +265,6 @@ void resetProto()
 #endif
 }
 
-#if defined(XCURVES)
 int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 {
   CurveInfo crv = curveinfo(idx);
@@ -306,37 +298,6 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
 
   return erg / 25; // 100*D5/RESX;
 }
-#else
-int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
-{
-#define D9 (RESX * 2 / 8)
-#define D5 (RESX * 2 / 4)
-  bool    cv9 = idx >= MAX_CURVE5;
-  int8_t *crv = curveaddress(idx);
-  int16_t erg;
-
-  x+=RESXu;
-  if (x < 0) {
-    erg = (int16_t)crv[0] * (RESX/4);
-  }
-  else if (x >= (RESX*2)) {
-    erg = (int16_t)crv[(cv9 ? 8 : 4)] * (RESX/4);
-  }
-  else {
-    int16_t a,dx;
-    if (cv9) {
-      a   = (uint16_t)x / D9;
-      dx  =((uint16_t)x % D9) * 2;
-    }
-    else {
-      a   = (uint16_t)x / D5;
-      dx  = (uint16_t)x % D5;
-    }
-    erg  = (int16_t)crv[a]*((D5-dx)/2) + (int16_t)crv[a+1]*(dx/2);
-  }
-  return erg / 25; // 100*D5/RESX;
-}
-#endif
 
 int16_t applyCurve(int16_t x, int8_t idx)
 {
@@ -484,11 +445,7 @@ void applyExpos(int16_t *anas)
         int16_t k = ed.expo;
         v = expo(v, k);
         uint8_t ed_curve = ed.curve;
-#if defined(XCURVES)
         if (ed_curve) v = applyCurve(v, ed_curve);
-#else
-        if (ed_curve) v = applyCurve(v, ed_curve > 10 ? ed_curve + 4 : ed_curve);
-#endif
         v = ((int32_t)v * ed.weight) / 100;
         anas[cur_chn] = v;
       }
@@ -497,7 +454,7 @@ void applyExpos(int16_t *anas)
 }
 
 #if !defined(PCBARM)
-int16_t calc1000toRESX(int16_t x)
+int16_t calc1000toRESX(int16_t x) // improve calc time by Pat MacKenzie
 {
   // return x + x/32 - x/128 + x/512;
   int16_t y = x>>5;
@@ -2771,7 +2728,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #else
   TIMSK &= ~(1<<OCIE0); // stop reentrance
 #if defined (AUDIO)
-  OCR0 += 2; // interrupt every 128 uS
+  OCR0 += 2; // interrupt every 128us
 #else
   static uint8_t accuracyWarble = 4; // because 16M / 1024 / 100 = 156.25. So bump every 4.
   uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
@@ -2781,8 +2738,16 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 
   sei();
 
-#if defined (PCBSTD) && defined (AUDIO)
+#if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
+
+#if defined(AUDIO)
   AUDIO_DRIVER();
+#endif
+
+#if defined(VOICE)
+  VOICE_DRIVER();
+#endif
+
   static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
   if (cnt10ms-- == 0) { // BEGIN { ... every 10ms ... }
     // Begin 10ms event
@@ -2797,7 +2762,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 
     per10ms();
 
-#if defined (PCBV4) && defined(SDCARD)
+#if defined(PCBV4) && defined(SDCARD)
     sdPoll10mS();
 #endif
 
@@ -2806,13 +2771,13 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
 
-#if defined (PCBSTD) && defined (AUDIO)
+#if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
   } // end 10ms event
 #endif
 
   cli();
   
-#if defined (PCBV4)
+#if defined(PCBV4)
   TIMSK2 |= (1<<OCIE2A);
 #else
   TIMSK |= (1<<OCIE0);

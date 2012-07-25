@@ -274,11 +274,16 @@ static void EeFsDump(){
 }
 #endif
 
-#if defined(SDCARD) && !defined WIN32 && defined __GNUC__
+#if defined(SDCARD)
 namespace simu {
 #include <dirent.h>
 }
 #include "FatFs/ff.h"
+
+#if defined WIN32 || !defined __GNUC__
+#include <direct.h>
+#endif
+
 FRESULT f_stat (const TCHAR*, FILINFO*)
 {
   return FR_OK;
@@ -332,7 +337,15 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
 {
   simu::dirent * ent = simu::readdir((simu::DIR *)rep->fs);
   if (!ent) return FR_NO_FILE;
-  if(ent->d_type == simu::DT_DIR) fil->fattrib = AM_DIR; else fil->fattrib = 0;
+
+#if defined WIN32 || !defined __GNUC__
+  if (ent->d_type == DT_DIR)
+#else
+  if (ent->d_type == simu::DT_DIR)
+#endif
+    fil->fattrib = AM_DIR;
+  else
+    fil->fattrib = 0;
   memset(fil->fname, 0, 13);
   memset(fil->lfname, 0, SD_SCREEN_FILE_LENGTH);
   strncpy(fil->fname, ent->d_name, 13-1);
