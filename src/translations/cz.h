@@ -21,7 +21,7 @@
 #define TR_VFILTERADC    "SING""OSMP""FILT"
 
 #define LEN_VBLMODE      "\005"
-#define TR_VBLMODE       "Vyp\0 ""Kl\200v.""P\200ky\0""V\207e\0""Zap\0"
+#define TR_VBLMODE       "Vyp\0 ""Kl\200v.""P\200ky\0""V\207e\0""Zap\0 "
 
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       " X "" +="" :="
@@ -317,7 +317,7 @@
 #define TR_MINUTEBEEP   "P\204pat: Minuta"
 #define TR_BEEPCOUNTDOWN " += Odpo\201et"
 #define TR_FLASHONBEEP  "Podsv\203tl.:Alarm"
-#define TR_BLMODE  " += Sp\204na\201"
+#define TR_BLMODE  " += Zap\204n\200n\204"
 #define TR_BLDELAY " += Zhasnout po"
 #define TR_SPLASHSCREEN  "\210vodn\204Logo"
 #define TR_THROTTLEWARNING "Upoz:Plyn"
