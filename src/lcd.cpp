@@ -384,6 +384,41 @@ void lcd_hline(uint8_t x, uint8_t y, uint8_t w, uint8_t att)
   lcd_hlineStip(x, y, w, 0xff, att);
 }
 
+#if 0
+// allows the att parameter... perhaps will be needed later!
+void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat, uint8_t att)
+{
+  if (x >= DISPLAY_W) return;
+  if (h<0) { y+=h; h=-h; }
+  if (y<0) { h+=y; y=0; }
+  if (y+h > DISPLAY_H) { h = DISPLAY_H - y; }
+
+  if (pat==DOTTED && !(y%2))
+    pat = ~pat;
+
+  uint8_t *p  = &displayBuf[ y / 8 * DISPLAY_W + x ];
+  y = y % 8;
+  if (y) {
+    assert(p >= displayBuf && p < DISPLAY_END);
+    uint8_t msk = ~(BITMASK(y)-1);
+    h -= 8-y;
+    if (h < 0)
+      msk -= ~(BITMASK(8+h)-1);
+    lcd_mask(p, msk & pat, att);
+    p += DISPLAY_W;
+  }
+  while (h>=8) {
+    assert(p >= displayBuf && p < DISPLAY_END);
+    lcd_mask(p, pat, att);
+    p += DISPLAY_W;
+    h -= 8;
+  }
+  if (h>0) {
+    assert(p >= displayBuf && p < DISPLAY_END);
+    lcd_mask(p, (BITMASK(h)-1) & pat, att);
+  }
+}
+#else
 void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat)
 {
   if (x >= DISPLAY_W) return;
@@ -415,6 +450,7 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat)
     *p ^= ~(BITMASK(h)-1) & pat;
   }
 }
+#endif
 
 void lcd_vline(uint8_t x, int8_t y, int8_t h)
 {

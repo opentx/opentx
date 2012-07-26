@@ -50,6 +50,10 @@ void putVoiceQueueUpper( uint8_t value )
 
 void pushPrompt( uint8_t value )
 {
+#ifdef SIMU
+  printf("playFile(\"%04d.ad4\")\n", value); fflush(stdout);
+#endif
+
   struct t_voice *vptr;
   vptr = voiceaddress();
 

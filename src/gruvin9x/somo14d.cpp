@@ -175,5 +175,9 @@ void pushPrompt(uint16_t prompt)
 
 bool isPlaying()
 {
+#if defined(SIMU)
+  return false;
+#else
   return TIMSK4 & (1<<OCIE4A);
+#endif
 }

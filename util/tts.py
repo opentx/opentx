@@ -133,9 +133,9 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 40+i))
         for i, s in enumerate(["volts", "amps", "meters per second", "", "km per hour", "meters", "degrees", "percent", "milliamps", "milliamps per hour", "watts", "", "feet", "knots"]):
             systemSounds.extend(generate(s, 50+i))
-        for s, f, a in [(u"trim center", "midtrim", 314),
+        for s, f, a in [(u"trim center", "midtrim", 184),
                         (u"maximum trim reached", "endtrim", 0),
-                        (u"transmitter battery low", "lowbatt", 301),
+                        (u"transmitter battery low", "lowbatt", 171),
                        ]:
             systemSounds.extend(generate(s, f, a))
         for i, (s, f) in enumerate([
@@ -167,7 +167,7 @@ if __name__ == "__main__":
                      (u"flight mode eight", "fltmd8"),
                      (u"flight mode nine", "fltmd9"),
                      ]):
-            sounds.extend(generate(s, f, 400+i))
+            sounds.extend(generate(s, f, 200+i))
 
     
     elif "fr" in sys.argv:
@@ -203,7 +203,7 @@ if __name__ == "__main__":
                      (u"fin écolage", "trnoff"),
                      (u"moteur coupé", "engoff"),
                      ]):
-            sounds.extend(generate(s, f, 400+i))
+            sounds.extend(generate(s, f, 200+i))
     elif "it" in sys.argv:
         if "sapi" in sys.argv:
             tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
@@ -221,9 +221,9 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 103+i))
         for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "", "piedi", "nodi"]):
             systemSounds.extend(generate(s, 112+i))
-        for a, s, f in [(u"trim centrato", "midtrim", 314),
+        for a, s, f in [(u"trim centrato", "midtrim", 184),
                         (u"massimo trim raggiunto", "endtrim", 0),
-                        (u"batteria della radio scarica", "lowbatt", 301),
+                        (u"batteria della radio scarica", "lowbatt", 171),
                      ]:
             systemSounds.extend(generate(s, f, a))
         for i, s in enumerate(["timer", "", "tensione", "tensione", "trasmissione", "ricezione", "altitudine", "motore",
@@ -260,8 +260,13 @@ if __name__ == "__main__":
                      (u"fase di volo 8", "fltmd8"),
                      (u"fase di volo 9", "fltmd9"),
                      ]):
-            sounds.extend(generate(s, f, 400+i))
+            sounds.extend(generate(s, f, 200+i))
 
+    if 'ad4' in sys.argv:
+        voice += "-stock"
+    else:
+        voice += "-sky9x"
+        
     if "csv" in sys.argv:
         csvFile = file(voice + ".csv", "w")
         for f, s in systemSounds:

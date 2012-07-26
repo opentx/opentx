@@ -350,12 +350,15 @@ PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
   uint8_t func;
   char param[6];
+  uint8_t delay;
+  uint8_t spare;
 }) FuncSwData;
 #define FSW_PARAM(p) (*((uint32_t*)(p)->param))
 #else
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
-  uint8_t func;
+  uint8_t func:5;
+  uint8_t delay:3;
   uint8_t param;
 }) FuncSwData;
 #define FSW_PARAM(p) ((p)->param)
@@ -593,7 +596,7 @@ PACK(typedef struct t_PhaseData {
 #if defined(PCBARM)
 #define MAX_CURVES 16
 #define NUM_POINTS 512
-#define CURVTYPE   uint16_t
+#define CURVTYPE   int16_t
 #else
 #define MAX_CURVES 8
 #define NUM_POINTS (112-MAX_CURVES)

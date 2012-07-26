@@ -31,8 +31,8 @@
  *
  */
 
-#define PROMPT_SYSTEM_BASE      300
-#define PROMPT_CUSTOM_BASE      400
+#define PROMPT_SYSTEM_BASE      170
+#define PROMPT_CUSTOM_BASE      200
 
 extern void pushPrompt(uint16_t prompt);
 extern bool isPlaying();

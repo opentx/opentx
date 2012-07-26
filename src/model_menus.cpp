@@ -1085,22 +1085,30 @@ int16_t curveFn(int16_t x)
 }
 #endif
 
-void DrawCurve(FnFuncP fn)
+void DrawCurve(FnFuncP fn, uint8_t offset=0)
 {
-  lcd_vlineStip(X0, 0, DISPLAY_H, 0xee);
-  lcd_hlineStip(X0-WCHART, Y0, WCHART*2, 0xee);
+  lcd_vlineStip(X0-offset, 0, DISPLAY_H, 0xee);
+  lcd_hlineStip(X0-WCHART-offset, Y0, WCHART*2, 0xee);
 
-  for (int8_t xv=-WCHART+1; xv<WCHART; xv++) {
+  uint8_t prev_yv = 255;
+
+  for (int8_t xv=-WCHART+1; xv<=WCHART; xv++) {
     uint16_t yv = (RESX + fn(xv * (RESX/WCHART))) / 2;
     yv = (DISPLAY_H-1) - yv * (DISPLAY_H-1) / RESX;
-    lcd_plot(X0+xv, yv, BLACK);
+    if (prev_yv != 255) {
+      if (abs((int8_t)yv-prev_yv) <= 1)
+        lcd_plot(X0+xv-offset, prev_yv, BLACK);
+      else
+        lcd_vline(X0+xv-offset, prev_yv < yv ? yv : yv+1, prev_yv-yv);
+    }
+    prev_yv = yv;
   }
 }
 
 #if defined(CURVES)
 bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
 {
-  if (g_model.curves[MAX_CURVES-1] + shift > NUM_POINTS-CURVES_OFFSET_SHIFT(MAX_CURVES)) {
+  if (g_model.curves[MAX_CURVES-1] + shift > NUM_POINTS-5*MAX_CURVES) {
     AUDIO_WARNING2();
     return false;
   }
@@ -1112,7 +1120,7 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
   }
 
   int8_t *nextCrv = curveaddress(index+1);
-  memmove(nextCrv+shift, nextCrv, CURVES_OFFSET_SHIFT(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]);
+  memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]);
   if (shift < 0) memclear(&g_model.points[NUM_POINTS-1] + shift, -shift);
   while (index<MAX_CURVES)
     g_model.curves[index++] += shift;
@@ -1147,7 +1155,7 @@ void menuProcCurveOne(uint8_t event)
       // no break
 #endif
     case EVT_KEY_BREAK(KEY_MENU):
-      if (s_editMode == 0)
+      if (s_editMode <= 0)
         m_posHorz = 0;
       if (s_editMode == 1 && crv.custom/* && m_posHorz>0 && m_posHorz<points-1*/)
         s_editMode = 2;
@@ -1155,7 +1163,7 @@ void menuProcCurveOne(uint8_t event)
         s_editMode = 1;
       break;
     case EVT_KEY_LONG(KEY_MENU):
-      if (s_editMode == 0) {
+      if (s_editMode <= 0) {
         if (++m_posHorz > 4)
           m_posHorz = -4;
         for (uint8_t i=0; i<crv.points; i++)
@@ -1166,7 +1174,7 @@ void menuProcCurveOne(uint8_t event)
       break;
     case EVT_KEY_FIRST(KEY_EXIT):
       killEvents(event);
-      if (s_editMode>0) {
+      if (s_editMode > 0) {
         if (--s_editMode == 0)
           m_posHorz = 0;
       }
@@ -1176,7 +1184,7 @@ void menuProcCurveOne(uint8_t event)
     case EVT_KEY_REPT(KEY_LEFT):
     case EVT_KEY_FIRST(KEY_LEFT):
       if (s_editMode==1 && m_posHorz>0) m_posHorz--;
-      if (s_editMode==0) {
+      if (s_editMode <= 0) {
         if (crv.custom) {
           moveCurve(s_curveChan, -crv.points+2);
         }
@@ -1192,7 +1200,7 @@ void menuProcCurveOne(uint8_t event)
     case EVT_KEY_REPT(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_RIGHT):
       if (s_editMode==1 && m_posHorz<(crv.points-1)) m_posHorz++;
-      if (s_editMode==0) {
+      if (s_editMode <= 0) {
         if (!crv.custom) {
           moveCurve(s_curveChan, crv.points-2, crv.points);
         }
@@ -1214,20 +1222,26 @@ void menuProcCurveOne(uint8_t event)
   }
 
   lcd_putsLeft(7*FH, PSTR("Type"));
-  uint8_t attr = (s_editMode==0 ? INVERS : 0);
+  uint8_t attr = (s_editMode <= 0 ? INVERS : 0);
   lcd_outdezAtt(5*FW-2, 7*FH, crv.points, LEFT|attr);
   lcd_putsAtt(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
+
+  DrawCurve(curveFn);
 
   for (uint8_t i=0; i<crv.points; i++) {
     uint8_t xx = X0-1-WCHART+i*WCHART/(crv.points/2);
     uint8_t yy = (DISPLAY_H-1) - (100 + crv.crv[i]) * (DISPLAY_H-1) / 200;
     if (crv.custom && i>0 && i<crv.points-1)
-      xx = X0-1-WCHART + (100 + crv.crv[crv.points+i-1]) * (2*WCHART) / 200;
+      xx = X0-1-WCHART + (100 + (100 + crv.crv[crv.points+i-1]) * (2*WCHART)) / 200;
 
-    lcd_filled_rect(xx, yy-1, 3, 3); // do markup square
+    lcd_filled_rect(xx, yy-1, 3, 3, SOLID, BLACK); // do markup square
 
     if (s_editMode>0 && m_posHorz==i) {
-      if (s_editMode==1 || !BLINK_ON_PHASE) lcd_filled_rect(xx-1, yy-2, 5, 5); // do selection square
+      if (s_editMode==1 || !BLINK_ON_PHASE) {
+        // do selection square
+        lcd_filled_rect(xx-1, yy-2, 5, 5, SOLID, BLACK);
+        lcd_filled_rect(xx, yy-1, 3, 3, SOLID);
+      }
 
       int8_t x = -100 + 200*i/(crv.points-1);
       if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
@@ -1242,8 +1256,6 @@ void menuProcCurveOne(uint8_t event)
         CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X on left/right
     }
   }
-
-  DrawCurve(curveFn);
 }
 #endif
 
@@ -2187,7 +2199,7 @@ void menuProcCurvesAll(uint8_t event)
   }
 
   s_curveChan = sub;
-  DrawCurve(curveFn);
+  DrawCurve(curveFn, 25);
 }
 #endif
 
@@ -2475,11 +2487,11 @@ void menuProcFunctionSwitches(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          if (sd->func <= FUNC_SAFETY_CH16 && (FSW_PARAM(sd) & 1)) {
+          if (sd->func <= FUNC_SAFETY_CH16 && sd->delay) {
             if (sd->swtch > MAX_SWITCH+1) sd->swtch -= (MAX_SWITCH+1);
             if (sd->swtch < -MAX_SWITCH-1) sd->swtch += (MAX_SWITCH+1);
           }
-          putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func >= 16 || (FSW_PARAM(sd) & 1))) ? BOLD : 0));
+          putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func >= 16 || sd->delay)) ? BOLD : 0));
           if (active) {
             CHECK_INCDEC_MODELSWITCH( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1);
           }
@@ -2578,10 +2590,8 @@ void menuProcFunctionSwitches(uint8_t event)
               lcd_putsiAtt(15*FW, y, STR_VFSWRESET, FSW_PARAM(sd), attr);
             }
             else if (sd->func <= FUNC_SAFETY_CH16) {
-              int8_t value = ((int8_t)FSW_PARAM(sd) >> 1);
-              lcd_outdezAtt(18*FW, y, limit((int8_t)-125, (int8_t)(value * 2), (int8_t)125), attr);
-              if (active) FSW_PARAM(sd) = (FSW_PARAM(sd) & 1) + (checkIncDecModel(event, value, -63, 63) << 1);
-              break;
+              val_min = -125; val_max = 125;
+              lcd_outdezAtt(18*FW, y, FSW_PARAM(sd), attr);
             }
             else {
               if (attr) m_posHorz = 0;
@@ -2600,11 +2610,11 @@ void menuProcFunctionSwitches(uint8_t event)
         case 3:
           if (sd->swtch && sd->func <= FUNC_SAFETY_CH16) {
 #if defined(GRAPHICS)
-            menu_lcd_onoff(20*FW, y, (FSW_PARAM(sd) & 1), attr ) ;
+            menu_lcd_onoff(20*FW, y, sd->delay, attr ) ;
 #else
-            menu_lcd_onoff(18*FW+2, y, (FSW_PARAM(sd) & 1), attr ) ;
+            menu_lcd_onoff(18*FW+2, y, sd->delay, attr ) ;
 #endif
-            if (active) FSW_PARAM(sd) = (FSW_PARAM(sd) & 0xfe) + checkIncDecModel(event, FSW_PARAM(sd) & 1, 0, 1);
+            if (active) CHECK_INCDEC_MODELVAR(event, sd->delay, 0, 1);
           }
           else if (attr) {
             m_posHorz = 0;

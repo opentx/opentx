@@ -162,17 +162,10 @@ LimitData *limitaddress(uint8_t idx)
   return &g_model.limitData[idx];
 }
 
-#if defined(PCBARM)
-int8_t *curveaddress(uint8_t idx)
-{
-  return &g_model.points[idx==0 ? 0 : g_model.curves[idx-1]];
-}
-#else
 int8_t *curveaddress(uint8_t idx)
 {
   return &g_model.points[idx==0 ? 0 : 5*idx+g_model.curves[idx-1]];
 }
-#endif
 
 CurveInfo curveinfo(uint8_t idx)
 {
@@ -1798,8 +1791,8 @@ void evalFunctions()
         swtch += MAX_SWITCH+1;
       }
       if (getSwitch(swtch, 0)) {
-        if (sd->func < FUNC_TRAINER && (FSW_PARAM(sd) & 1)) {
-          safetyCh[sd->func] = limit((int8_t)-125, (int8_t)(((int8_t)FSW_PARAM(sd) >> 1) * 2), (int8_t)125);
+        if (sd->func < FUNC_TRAINER && sd->delay) {
+          safetyCh[sd->func] = FSW_PARAM(sd);
         }
 
         if (~activeFunctions & function_mask) {

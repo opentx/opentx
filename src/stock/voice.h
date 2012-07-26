@@ -48,8 +48,8 @@
 #define V_WAIT_BUSY_OFF         4
 #define V_WAIT_BUSY_DELAY       5
 
-#define PROMPT_SYSTEM_BASE      300
-#define PROMPT_CUSTOM_BASE      400
+#define PROMPT_SYSTEM_BASE      170
+#define PROMPT_CUSTOM_BASE      200
 
 struct t_voice
 {
@@ -74,7 +74,11 @@ extern struct t_voice Voice ;
 
 inline bool isPlaying()
 {
+#if defined(SIMU)
+  return false;
+#else
   return Voice.VoiceState != V_IDLE;
+#endif
 }
 
 /*
