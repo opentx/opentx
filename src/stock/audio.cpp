@@ -221,12 +221,6 @@ void audioQueue::event(uint8_t e, uint8_t f)
         case AU_WARNING3:
           play(BEEP_DEFAULT_FREQ, 30, 1, PLAY_NOW);
           break;
-        // startup tune
-        case AU_TADA:
-          play(50, 10, 5);
-          play(90, 10, 5);
-          play(110, 5, 4, 2);
-          break;
         // pot/stick center
         case AU_POT_STICK_MIDDLE:
           play(BEEP_DEFAULT_FREQ + 50, 10, 1, PLAY_NOW);

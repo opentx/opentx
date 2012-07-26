@@ -127,7 +127,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_TIMER_10()    pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_10)
 #define AUDIO_TIMER_LT3(x)  pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_LT3)
 #else
-#define AUDIO_TADA()        audioDefevent(AU_TADA)
+#define AUDIO_TADA()
 #define AUDIO_TX_BATTERY_LOW() audioDefevent(AU_TX_BATTERY_LOW)
 #define AUDIO_INACTIVITY()  audioDefevent(AU_INACTIVITY)
 #define AUDIO_ERROR_MESSAGE(e) audioDefevent(AU_ERROR)

@@ -103,8 +103,6 @@ class AudioQueue {
 extern AudioQueue audioQueue;
 
 void alawInit();
-extern "C" void retrieveAvailableAudioFiles();
-
 void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
 #define AUDIO_TADA()        audioEvent(AU_TADA)

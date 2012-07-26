@@ -809,6 +809,8 @@ void sdInit()
 
 uint8_t sdErrorCount = 0;
 FATFS g_FATFS_Obj;
+void retrieveAvailableAudioFiles();
+
 void sdPoll10mS()
 {
   if (!CardIsConnected()) {

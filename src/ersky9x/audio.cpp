@@ -79,6 +79,8 @@ const char * audioFilenames[] = {
 uint32_t sdAvailableAudioFiles;
 
 #if defined(SDCARD)
+// TODO enable the assert when it's C++
+extern "C" {
 void retrieveAvailableAudioFiles()
 {
   FILINFO info;
@@ -97,6 +99,7 @@ void retrieveAvailableAudioFiles()
     if (f_stat(filename, &info) == FR_OK)
       sdAvailableAudioFiles |= ((uint32_t)1 << i);
   }
+}
 }
 
 inline bool isAudioFileAvailable(uint8_t i, char * filename)
@@ -555,12 +558,6 @@ void audioEvent(uint8_t e, uint8_t f)
         // warning three
         case AU_WARNING3:
           audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2, PLAY_NOW);
-          break;
-        // startup tune
-        case AU_TADA:
-          audioQueue.play(50, 20, 10);
-          audioQueue.play(90, 20, 10);
-          audioQueue.play(110, 10, 8, 2);
           break;
         // pot/stick center
         case AU_POT_STICK_MIDDLE:
