@@ -2042,7 +2042,7 @@ void perOut(uint8_t tick10ms)
             sDelay[i] = md->delayUp * 50;
           }
           if (sDelay[i] > 0) { // perform delay
-            if (tick10ms) sDelay[i]-=tick10ms;
+            sDelay[i] -= tick10ms;
             if (!md->swtch) {
               v = -1024;
             }
@@ -2063,7 +2063,7 @@ void perOut(uint8_t tick10ms)
           sDelay[i] = md->delayDown * 50;
         }
         if (sDelay[i] > 0) { // perform delay
-          if (tick10ms) sDelay[i]-=tick10ms;
+          sDelay[i] -= tick10ms;
           if (!md->swtch) v = +1024;
           has_delay = true;
         }
