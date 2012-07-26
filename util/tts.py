@@ -27,8 +27,10 @@ def generate(str, idx, alternate=0):
     if "speak" in sys.argv:
         if "sapi" in sys.argv:
             tts.Speak(str)
-        else:
+        elif "espeak" in sys.argv:
             subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+        else:
+            print "which speach engine?"
     else:
         if isinstance(idx, int):
             result = "%04d.wav" % idx
@@ -54,8 +56,11 @@ def generate(str, idx, alternate=0):
             o.writeframes(f[6400:-6400])
             o.close()                
             os.remove(temp)           
-        else:
+        elif "espeak" in sys.argv:
             subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", "-w", result, str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+        else:
+            print "which speach engine?"
+            return []
     
         if 'ad4' in sys.argv:
             subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()

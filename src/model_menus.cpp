@@ -49,7 +49,9 @@ enum EnumTabModel {
   e_ExposAll,
   e_MixAll,
   e_Limits,
+#ifdef CURVES
   e_CurvesAll,
+#endif
   e_CustomSwitches,
   e_FunctionSwitches,
 #ifdef FRSKY
@@ -94,7 +96,9 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuProcExposAll,
   menuProcMixAll,
   menuProcLimits,
+#ifdef CURVES
   menuProcCurvesAll,
+#endif
   menuProcCustomSwitches,
   menuProcFunctionSwitches,
 #ifdef FRSKY
@@ -1062,8 +1066,6 @@ void menuProcHeli(uint8_t event)
 }
 #endif
 
-static uint8_t s_curveChan;
-
 typedef int16_t (*FnFuncP) (int16_t x);
 
 int16_t expoFn(int16_t x)
@@ -1075,10 +1077,13 @@ int16_t expoFn(int16_t x)
   return anas[ed->chn];
 }
 
+#if defined(CURVES)
+static uint8_t s_curveChan;
 int16_t curveFn(int16_t x)
 {
   return intpol(x, s_curveChan);
 }
+#endif
 
 void DrawCurve(FnFuncP fn)
 {
@@ -1092,9 +1097,10 @@ void DrawCurve(FnFuncP fn)
   }
 }
 
+#if defined(CURVES)
 bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
 {
-  if (g_model.curves[MAX_CURVES-1] + shift > NUM_POINTS-5*MAX_CURVES) {
+  if (g_model.curves[MAX_CURVES-1] + shift > NUM_POINTS-CURVES_OFFSET_SHIFT(MAX_CURVES)) {
     AUDIO_WARNING2();
     return false;
   }
@@ -1106,7 +1112,7 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
   }
 
   int8_t *nextCrv = curveaddress(index+1);
-  memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]);
+  memmove(nextCrv+shift, nextCrv, CURVES_OFFSET_SHIFT(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]);
   if (shift < 0) memclear(&g_model.points[NUM_POINTS-1] + shift, -shift);
   while (index<MAX_CURVES)
     g_model.curves[index++] += shift;
@@ -1239,6 +1245,7 @@ void menuProcCurveOne(uint8_t event)
 
   DrawCurve(curveFn);
 }
+#endif
 
 uint8_t getExpoMixCount(uint8_t expo)
 {
@@ -1436,7 +1443,9 @@ enum ExposFields {
 #endif
   EXPO_FIELD_WIDTH,
   EXPO_FIELD_EXPO,
+#ifdef CURVES
   EXPO_FIELD_CURVE,
+#endif
 #ifdef FLIGHT_PHASES
   EXPO_FIELD_FLIGHT_PHASE,
 #endif
@@ -1483,6 +1492,7 @@ void menuProcExpoOne(uint8_t event)
         lcd_outdezAtt(9*FW+5, y, ed->expo, attr|INFLIGHT(ed->expo));
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
         break;
+#ifdef CURVES
       case EXPO_FIELD_CURVE:
         putsCurve(6*FW+5, y, ed->curve, attr);
         if (attr) {
@@ -1493,6 +1503,7 @@ void menuProcExpoOne(uint8_t event)
           }
         }
         break;
+#endif
 #ifdef FLIGHT_PHASES
       case EXPO_FIELD_FLIGHT_PHASE:
         {
@@ -1543,9 +1554,11 @@ enum MixFields {
   MIX_FIELD_DIFFERENTIAL,
   MIX_FIELD_OFFSET,
   MIX_FIELD_TRIM,
+#if defined(CURVES)
   MIX_FIELD_CURVE,
+#endif
   MIX_FIELD_SWITCH,
-#ifdef FLIGHT_PHASES
+#if defined(FLIGHT_PHASES)
   MIX_FIELD_FLIGHT_PHASE,
 #endif
   MIX_FIELD_WARNING,
@@ -1614,6 +1627,7 @@ void menuProcMixOne(uint8_t event)
         if (attr) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         break;
       }
+#if defined(CURVES)
       case MIX_FIELD_CURVE:
         lcd_putsLeft(y, STR_CURVES);
         putsCurve(MIXES_2ND_COLUMN, y, md2->curve, attr);
@@ -1623,12 +1637,13 @@ void menuProcMixOne(uint8_t event)
           pushMenu(menuProcCurveOne);
         }
         break;
+#endif
       case MIX_FIELD_SWITCH:
         lcd_putsLeft(y, STR_SWITCH);
         putsSwitches(MIXES_2ND_COLUMN,  y,md2->swtch,attr);
         if(attr) CHECK_INCDEC_MODELSWITCH( event, md2->swtch, -MAX_SWITCH, MAX_SWITCH);
         break;
-#ifdef FLIGHT_PHASES
+#if defined(FLIGHT_PHASES)
       case MIX_FIELD_FLIGHT_PHASE:
         lcd_putsLeft(y, STR_FPHASE);
         putsFlightPhase(MIXES_2ND_COLUMN, y, md2->phase, attr);
@@ -2140,6 +2155,7 @@ void menuProcLimits(uint8_t _event)
   }
 }
 
+#if defined(CURVES)
 void menuProcCurvesAll(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
@@ -2173,6 +2189,7 @@ void menuProcCurvesAll(uint8_t event)
   s_curveChan = sub;
   DrawCurve(curveFn);
 }
+#endif
 
 #if defined(PCBARM)
 enum CustomSwitchFields {

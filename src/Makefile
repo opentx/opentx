@@ -144,6 +144,10 @@ DEBUG = NO
 # Values = YES, NO
 FLIGHT_PHASES = YES
 
+# Curves
+# Values = YES, NO
+CURVES = YES
+
 # Customizable Curves
 # Values = YES, NO
 XCURVES = YES
@@ -283,6 +287,10 @@ endif
 
 ifeq ($(FLIGHT_PHASES), YES)
   CPPDEFS += -DFLIGHT_PHASES
+endif
+
+ifeq ($(CURVES), YES)
+  CPPDEFS += -DCURVES
 endif
 
 ifeq ($(XCURVES), YES)

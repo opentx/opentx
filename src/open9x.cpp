@@ -162,10 +162,18 @@ LimitData *limitaddress(uint8_t idx)
   return &g_model.limitData[idx];
 }
 
+#if defined(PCBARM)
+int8_t *curveaddress(uint8_t idx)
+{
+  return &g_model.points[idx==0 ? 0 : g_model.curves[idx-1]];
+}
+#else
 int8_t *curveaddress(uint8_t idx)
 {
   return &g_model.points[idx==0 ? 0 : 5*idx+g_model.curves[idx-1]];
 }
+#endif
+
 CurveInfo curveinfo(uint8_t idx)
 {
   CurveInfo result;
@@ -299,6 +307,7 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
   return erg / 25; // 100*D5/RESX;
 }
 
+#if defined(CURVES)
 int16_t applyCurve(int16_t x, int8_t idx)
 {
   /* already tried to have only one return at the end */
@@ -326,6 +335,9 @@ int16_t applyCurve(int16_t x, int8_t idx)
   }
   return intpol(x, idx - 7);
 }
+#else
+#define applyCurve(x, idx) (x)
+#endif
 
 // expo-funktion:
 // ---------------

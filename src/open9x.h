@@ -819,6 +819,12 @@ struct CurveInfo {
 };
 extern CurveInfo curveinfo(uint8_t idx);
 
+#if defined(PCBARM)
+#define CURVES_OFFSET_SHIFT(x) (0)
+#else
+#define CURVES_OFFSET_SHIFT(x) (5*(x))
+#endif
+
 extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 
 extern void incSubtrim(uint8_t idx, int16_t inc);

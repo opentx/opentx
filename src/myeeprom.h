@@ -592,10 +592,12 @@ PACK(typedef struct t_PhaseData {
 
 #if defined(PCBARM)
 #define MAX_CURVES 16
-#define NUM_POINTS 256
+#define NUM_POINTS 512
+#define CURVTYPE   uint16_t
 #else
 #define MAX_CURVES 8
 #define NUM_POINTS (112-MAX_CURVES)
+#define CURVTYPE   int8_t
 #endif
 
 #define MIN_POINTS 3
@@ -676,7 +678,7 @@ PACK(typedef struct t_ModelData {
   LimitData limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
   
-  int8_t    curves[MAX_CURVES];
+  CURVTYPE  curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
   
   CustomSwData customSw[NUM_CSW];
