@@ -666,8 +666,8 @@ void check_frsky()
   static uint16_t s_varioTmr = 0;
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
-    int16_t varioSpeedUpMin = (g_model.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER)*VARIO_SPEED_LIMIT_MUL;
-    int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
+    int16_t varioSpeedUpMin = (g_model.frsky.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER)*VARIO_SPEED_LIMIT_MUL;
+    int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.frsky.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
     int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), frskyData.hub.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
 
     uint8_t SoundVarioBeepNextFreq = 0;
