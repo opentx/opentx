@@ -278,7 +278,7 @@ void parseTelemHubByte(uint8_t byte)
       // First received barometer altitude => Altitude offset
       if (!frskyData.hub.baroAltitudeOffset)
         frskyData.hub.baroAltitudeOffset = -frskyData.hub.baroAltitude_bp;
-      if (g_model.varioSource == VARIO_SOURCE_BARO_V1) {
+      if (g_model.frsky.varioSource == VARIO_SOURCE_BARO_V1) {
         evalVario(frskyData.hub.baroAltitude_bp, 0);
       }
       frskyData.hub.baroAltitude_bp += frskyData.hub.baroAltitudeOffset;
@@ -286,7 +286,7 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskyHubData, baroAltitude_ap):
-      if (g_model.varioSource == VARIO_SOURCE_BARO_V2) {
+      if (g_model.frsky.varioSource == VARIO_SOURCE_BARO_V2) {
         evalVario(frskyData.hub.baroAltitude_bp-frskyData.hub.baroAltitudeOffset, frskyData.hub.baroAltitude_ap);
       }
       break;
@@ -390,8 +390,8 @@ void processFrskyPacket(uint8_t *packet)
       frskyData.rssi[0].set(packet[3]);
       frskyData.rssi[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
-      if (g_model.varioSource >= VARIO_SOURCE_A1) {
-        frskyData.hub.varioSpeed = applyChannelRatio(g_model.varioSource - VARIO_SOURCE_A1, frskyData.analog[g_model.varioSource - VARIO_SOURCE_A1].value);
+      if (g_model.frsky.varioSource >= VARIO_SOURCE_A1) {
+        frskyData.hub.varioSpeed = applyChannelRatio(g_model.frsky.varioSource - VARIO_SOURCE_A1, frskyData.analog[g_model.frsky.varioSource - VARIO_SOURCE_A1].value);
       }
       break;
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
@@ -1108,8 +1108,8 @@ uint8_t getTelemCustomField(uint8_t line, uint8_t col)
 #if defined(PCBARM)
   return g_model.frsky.lines[2*line+col];
 #else
-  uint8_t result = (col==0 ? (g_model.frskyLines[line] & 0x0f) : ((g_model.frskyLines[line] & 0xf0) / 16));
-  result += (((g_model.frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
+  uint8_t result = (col==0 ? (g_model.frsky.lines[line] & 0x0f) : ((g_model.frsky.lines[line] & 0xf0) / 16));
+  result += (((g_model.frsky.linesXtra >> (4*line+2*col)) & 0x03) * 16);
   return result;
 #endif
 }

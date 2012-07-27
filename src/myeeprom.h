@@ -458,7 +458,7 @@ PACK(typedef struct t_FrSkyBarData {
 }) FrSkyBarData;
 #else
 PACK(typedef struct t_FrSkyBarData {
-  uint16_t   source:4;           // TODO modification in next EEPROM
+  uint16_t   source:4;
   uint16_t   barMin:6;           // minimum for bar display
   uint16_t   barMax:6;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
@@ -479,25 +479,38 @@ enum FrskySource {
 };
 
 #if defined(PCBARM)
-#define CUSTOM_TELEMETRY_VIEW \
-  uint8_t lines[4*2*2]; \
-  uint8_t spare[4]
+PACK(typedef struct t_FrSkyData {
+  FrSkyChannelData channels[2];
+  FrSkyRSSIAlarm rssiAlarms[2];
+  uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint8_t voltsSource;
+  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t currentSource;
+  FrSkyBarData bars[4];
+  uint8_t lines[4*2*2];
+  uint8_t varioSource;
+  uint8_t varioSpeedUpMin;    // if increment in 0.2m/s = 3.0m/s max
+  uint8_t varioSpeedDownMin;
+  uint8_t spare[4];
+}) FrSkyData;
 #else
-#define CUSTOM_TELEMETRY_VIEW
-#endif
-
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
-  uint8_t voltsSource:2;
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
-  uint8_t currentSource:2;
+  uint8_t spare1:4;
+  uint8_t voltsSource:3;
+  uint8_t currentSource:3;
+  uint8_t spare2:2;
   FrSkyBarData bars[4];
   FrSkyRSSIAlarm rssiAlarms[2];
-
-  CUSTOM_TELEMETRY_VIEW;
-
+  uint8_t   lines[4];
+  uint16_t  linesXtra;
+  uint8_t   varioSource:3;
+  uint8_t   varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
+  uint8_t   varioSpeedDownMin;
 }) FrSkyData;
+#endif
 
 #ifdef MAVLINK
 #define ROTARY_TYPE_OFF     0
@@ -643,24 +656,15 @@ enum Dsm2Variants {
 };
 
 #ifdef MAVLINK
-#define EXTDATA MavlinkData mavlink
+#define TELEMETRY_DATA MavlinkData mavlink
 #else
-#define EXTDATA FrSkyData frsky
+#define TELEMETRY_DATA FrSkyData frsky
 #endif
 
 #if defined(PCBV4) || defined(PCBARM)
 #define BeepANACenter uint16_t
 #else
 #define BeepANACenter uint8_t
-#endif
-
-#if !defined(PCBARM)
-// TODO modification in next EEPROM
-#define TEMP_CUSTOM_TELEMETRY_VIEW \
-  uint8_t   frskyLines[4]; \
-  uint16_t  frskyLinesXtra
-#else
-#define TEMP_CUSTOM_TELEMETRY_VIEW
 #endif
 
 PACK(typedef struct t_ModelData {
@@ -674,7 +678,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   pulsePol:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
-  uint8_t   frskyFas2111:1;
+  uint8_t   spare1:1;
   int8_t    ppmDelay;
   BeepANACenter   beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData   mixData[MAX_MIXERS];
@@ -689,22 +693,15 @@ PACK(typedef struct t_ModelData {
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
 
-  EXTDATA;
-
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
 
-  TEMP_CUSTOM_TELEMETRY_VIEW;
-
   int8_t    servoCenter[NUM_CHNOUT];
   
-  // TODO:temporary place, need to move to frskydata
-  uint8_t   varioSource:3;
-  uint8_t   varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
-  uint8_t   varioSpeedDownMin;
-
   uint8_t switchWarningStates;
+
+  TELEMETRY_DATA;
 
   ROTARY_ENCODER_ARRAY_EXTRA;
 }) ModelData;

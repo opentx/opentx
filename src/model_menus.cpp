@@ -1144,6 +1144,8 @@ void menuProcCurveOne(uint8_t event)
     case EVT_ENTRY:
 #if defined(ROTARY_ENCODERS)
       s_editMode = -1;
+#else
+      s_editMode = 1;
 #endif
       killEvents(KEY_MENU);
       break;
@@ -2865,25 +2867,25 @@ void menuProcTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_VARIO_SOURCE:
         lcd_puts(4, y, STR_SOURCE);
-        lcd_putsiAtt(TELEM_COL2, y, STR_VARIOSRC, g_model.varioSource, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.varioSource, VARIO_SOURCE_FIRST, VARIO_SOURCE_LAST-1);
+        lcd_putsiAtt(TELEM_COL2, y, STR_VARIOSRC, g_model.frsky.varioSource, attr);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSource, VARIO_SOURCE_FIRST, VARIO_SOURCE_LAST-1);
         break;
 
       case ITEM_TELEMETRY_VARIO_SPEED:
         lcd_puts(4, y, STR_LIMIT);
-        if (!g_model.varioSpeedDownMin)
+        if (!g_model.frsky.varioSpeedDownMin)
           lcd_putsAtt(TELEM_COL2, y, STR_OFF, ((attr && m_posHorz==0) ? blink : 0));
         else
-          lcd_outdezAtt(TELEM_COL2, y, -VARIO_SPEED_LIMIT_MUL*(VARIO_SPEED_LIMIT_DOWN_OFF - g_model.varioSpeedDownMin), ((attr && m_posHorz==0) ? blink : 0)|PREC2|LEFT);
-        lcd_outdezAtt(TELEM_COL2+6*FW, y, VARIO_SPEED_LIMIT_MUL*(g_model.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER), ((attr && m_posHorz==1) ? blink : 0)|PREC2|LEFT);
+          lcd_outdezAtt(TELEM_COL2, y, -VARIO_SPEED_LIMIT_MUL*(VARIO_SPEED_LIMIT_DOWN_OFF - g_model.frsky.varioSpeedDownMin), ((attr && m_posHorz==0) ? blink : 0)|PREC2|LEFT);
+        lcd_outdezAtt(TELEM_COL2+6*FW, y, VARIO_SPEED_LIMIT_MUL*(g_model.frsky.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER), ((attr && m_posHorz==1) ? blink : 0)|PREC2|LEFT);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
-              g_model.varioSpeedDownMin = checkIncDec(event, g_model.varioSpeedDownMin, 0, VARIO_SPEED_LIMIT_DOWN_OFF, EE_MODEL);
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedDownMin, 0, VARIO_SPEED_LIMIT_DOWN_OFF);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.varioSpeedUpMin, 0, VARIO_SPEED_LIMIT_UP_MAX);
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedUpMin, 0, VARIO_SPEED_LIMIT_UP_MAX);
               break;
           }
         }
@@ -2908,11 +2910,11 @@ void menuProcTelemetry(uint8_t event)
 #if defined (PCBARM)
               g_model.frsky.lines[2*j+c] = value;
 #else
-              g_model.frskyLines[j] = (c==0 ? ((g_model.frskyLines[j] & 0xf0) + (value & 0x0f)) : (g_model.frskyLines[j] & 0x0f) + ((value & 0x0f) << 4));
+              g_model.frsky.lines[j] = (c==0 ? ((g_model.frsky.lines[j] & 0xf0) + (value & 0x0f)) : (g_model.frsky.lines[j] & 0x0f) + ((value & 0x0f) << 4));
               uint16_t mask = 0x3 << (4*j+2*c);
-              g_model.frskyLinesXtra &= ~mask;
+              g_model.frsky.linesXtra &= ~mask;
               mask = (value / 16) << (4*j+2*c);
-              g_model.frskyLinesXtra |= mask;
+              g_model.frsky.linesXtra |= mask;
 #endif
             }
           }
