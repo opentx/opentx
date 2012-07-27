@@ -2200,8 +2200,10 @@ void menuProcCurvesAll(uint8_t event)
     putsStrIdx(0, y, STR_CV, k+1, attr);
   }
 
-  s_curveChan = sub;
-  DrawCurve(curveFn, 25);
+  if (sub >= 0) {
+    s_curveChan = sub;
+    DrawCurve(curveFn, 25);
+  }
 }
 #endif
 
