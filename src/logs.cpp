@@ -133,7 +133,7 @@ void writeLogs()
       lastLogTime = tmr10ms;
 
       if (!g_oLogFile.fs) {
-        if (openLogs())
+        if (!sd_card_mounted() || openLogs())
           return;
       }
 

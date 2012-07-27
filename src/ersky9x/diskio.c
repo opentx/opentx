@@ -67,6 +67,7 @@
 #define CARD_SDHCCOMBO  (CARD_TYPE_bmSDIO|CARD_SDHC)
 
 // States for initialising card
+#define SD_ST_ERR               -1
 #define SD_ST_EMPTY             0
 #define SD_ST_INIT1             1
 #define SD_ST_INIT2             2
@@ -76,12 +77,12 @@
 #define SD_ST_STBY              6
 #define SD_ST_TRAN              7
 #define SD_ST_DATA              8
-#define SD_ST_ERR               9
+#define SD_ST_MOUNTED           9
 
 uint32_t Card_ID[4] ;
 uint32_t Card_SCR[2] ;
 uint32_t Card_CSD[4] ;
-uint32_t Card_state = SD_ST_EMPTY ;
+int32_t Card_state = SD_ST_EMPTY ;
 uint32_t Sd_128_resp[4] ;
 uint32_t Sd_rca ;
 uint32_t Cmd_8_resp ;
@@ -857,11 +858,15 @@ void sdPoll10mS()
 
     case SD_ST_TRAN:
       sdAcmd51();
-      Card_state = SD_ST_DATA;
       sdAcmd6(); // Set bus width to 4 bits, and speed to 9 MHz
       // Should check the card can do this ****
+      Card_state = SD_ST_DATA;
+      break;
+
+    case SD_ST_DATA:
       f_mount(0, &g_FATFS_Obj);
       retrieveAvailableAudioFiles();
+      Card_state = SD_ST_MOUNTED;
       break;
 
     case SD_ST_ERR:
@@ -873,14 +878,12 @@ void sdPoll10mS()
 // returns 1 for YES, 0 for NO
 uint32_t sd_card_ready( void )
 {
-        if ( CardIsConnected() )
-        {
-                if ( Card_state == SD_ST_DATA )
-                {
-                        return 1 ;
-                }
-        }
-        return 0 ;
+  return CardIsConnected() && Card_state >= SD_ST_DATA;
+}
+
+uint32_t sd_card_mounted( void )
+{
+  return CardIsConnected() && Card_state == SD_ST_MOUNTED;
 }
 
 uint32_t sd_cmd16()
@@ -917,8 +920,7 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 
   CoEnterMutexSection(sdMutex);
 
-  if (Card_state == SD_ST_DATA) {
-    if (CardIsConnected()) {
+  if (sd_card_ready()) {
       sd_cmd16();
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
@@ -937,8 +939,6 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
           break;
         }
       }
-
-    }
   }
 
   phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
@@ -954,8 +954,7 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 
   CoEnterMutexSection(sdMutex);
 
-  if (Card_state == SD_ST_DATA) {
-    if (CardIsConnected()) {
+  if (sd_card_ready()) {
       sd_cmd16();
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
@@ -974,8 +973,6 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
           break;
         }
       }
-
-    }
   }
 
   phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;

@@ -70,5 +70,16 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
 
 extern void sdPoll10mS();
 
+#if defined(PCBARM)
+extern "C" {
+extern uint32_t sd_card_ready();
+extern uint32_t sd_card_mounted();
+}
+#else
+#define sd_card_ready() (true)
+#define sd_card_mounted() (true)
+#endif
+
+
 #endif
 

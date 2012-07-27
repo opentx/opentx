@@ -921,6 +921,10 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   DIR archiveFolder;
   UINT written;
 
+  if (!sd_card_mounted()) {
+    return STR_NO_SDCARD;
+  }
+
   // check and create folder here
   strcpy(buf, STR_MODELS_PATH);
   FRESULT result = f_opendir(&archiveFolder, buf);
@@ -991,6 +995,10 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   char *buf = reusableBuffer.models.mainname;
   FIL restoreFile;
   UINT read;
+
+  if (!sd_card_mounted()) {
+    return STR_NO_SDCARD;
+  }
 
   strcpy(buf, STR_MODELS_PATH);
   buf[sizeof(MODELS_PATH)-1] = '/';
