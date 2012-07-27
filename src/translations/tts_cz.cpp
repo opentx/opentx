@@ -230,7 +230,7 @@ void playDuration(int16_t seconds)
 
   if (seconds > 0) {
     if (seconds == 1) {
-      pushPrompt(PROMPT_ZERO+tmp);
+      pushPrompt(PROMPT_ZERO+seconds);
       pushPrompt(PROMPT_SEKUNDA);
     }
     else if (seconds >= 2 && seconds < 5) {
