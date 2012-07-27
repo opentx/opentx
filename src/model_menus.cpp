@@ -1512,7 +1512,7 @@ void menuProcExpoOne(uint8_t event)
         if (attr) {
           CHECK_INCDEC_MODELVAR(event, ed->curve, 0, MAX_CURVES+7-1);
           if (ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
-            s_curveChan = ed->curve - (ed->curve >= CURVE_BASE+4 ? CURVE_BASE-4 : CURVE_BASE);
+            s_curveChan = ed->curve - CURVE_BASE;
             pushMenu(menuProcCurveOne);
           }
         }
