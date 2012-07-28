@@ -344,7 +344,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   simu::dirent * ent = simu::readdir((simu::DIR *)rep->fs);
   if (!ent) return FR_NO_FILE;
 
-#if defined WIN32 || !defined __GNUC__
+#if defined(WIN32) || !defined(__GNUC__) || defined(__APPLE__)
   if (ent->d_type == DT_DIR)
 #else
   if (ent->d_type == simu::DT_DIR)
