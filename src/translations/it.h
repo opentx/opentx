@@ -113,10 +113,10 @@
 #endif
 #if defined(VOICE)
 #define TR_PLAY_TRACK    "Brano\0       "
-#define TR_PLAY_VALUE    "Play Value\0  "
+#define TR_PLAY_VALUE    "Esegui Brano\0"
 #else
 #define TR_PLAY_TRACK    "[Brano]\0     "
-#define TR_PLAY_VALUE    "[Play Value]\0"
+#define TR_PLAY_VALUE    "[Esegui Brano]"
 #endif
 #if defined(PCBARM)
 #if defined(SDCARD)
@@ -419,7 +419,7 @@
 #define TR_ALARMSWARN    "ALLARMI"
 #define TR_SWITCHWARN    "SWITCH"
 #define TR_INVERT_THR    "Invert Thr?"
-#define TR_SPEAKER_VOLUME      "Volume Audio  "
+#define TR_SPEAKER_VOLUME      "Volume Audio"
 #define TR_OPTREX_DISPLAY      "Display Optrex"
 #define TR_BRIGHTNESS          "Luminosita'"
 #define TR_CPU_TEMP            "Temp CPU \010>"
@@ -430,8 +430,8 @@
 #define TR_DELAY               "Ritardo"
 #define TR_SD_CARD             "SD Card"
 #define TR_SDHC_CARD           "SD-HC Card"
-#define TR_NO_SOUNDS_ON_SD     "No Sounds on SD"
-#define TR_NO_MODELS_ON_SD     "No Models on SD"
+#define TR_NO_SOUNDS_ON_SD     "No Suoni su SD"
+#define TR_NO_MODELS_ON_SD     "No Model. su SD"
 #define TR_PLAY_FILE           "Suona"
 #define TR_DELETE_FILE         "Cancella"
 #define TR_COPY_FILE           "Copia"
