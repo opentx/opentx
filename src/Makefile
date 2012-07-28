@@ -7,6 +7,8 @@
 #
 # make clean = Clean out built project files.
 #
+# make install = Install the most recently compiled hex file.
+#
 # make filename.s = Just compile filename.c into the assembler code only.
 #
 # make filename.i = Create a preprocessed source file for use in submitting
@@ -14,6 +16,36 @@
 #
 # To rebuild project do "make clean" then "make all".
 #----------------------------------------------------------------------------
+
+#----------- INSTALL OPTIONS ---------------------------
+
+# Data directory we write hex files to.
+DATA_DIR = /tmp
+
+# Backup the old flash (YES, NO)
+BACKUP_FLASH = YES
+
+# Backup the old EEPROM (YES, NO)
+BACKUP_EEPROM = YES
+
+# Restore EEPROM to 9x (YES, NO) (will set BACKUP_EEPROM to YES).
+RESTORE_EEPROM = NO
+
+# Double write OK (YES, NO)
+# Set this *if only if* your programmer can correctly write the EEPROM
+# and FLASH in one command. If it doesn't, try setting the 9x fuse to
+# not erase the eeprom when you erase the flash.
+DOUBLE_WRITE_OK = NO
+
+# Command to read/write FLASH/EEPROM images. Currently
+# Must have avrdude interface
+AVRDUDE = /usr/local/bin/avrdude
+
+# Device options for AVRDUDE Command. 
+AVRDEVICE = -c usbasp -p m64
+
+# Delay to start second AVRDUDE command (required by some).
+DELAY = 5
 
 #----------- BUILD OPTIONS ---------------------------
 
@@ -201,6 +233,8 @@ NM      = $(TRGT)nm
 
 REMOVE = rm -f
 REMOVEDIR = rm -rf
+
+SLEEP = sleep
 
 # Processor frequency.
 F_CPU = 16000000
@@ -771,6 +805,39 @@ clean_list :
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) stamp-open9x.h
+
+#### Install
+
+DATE = ${shell sh -c "date +%F:%T" }
+AVRCOMMAND = $(AVRDUDE) $(AVRDEVICE)
+
+WRITE_COMMAND = $(AVRCOMMAND) -U flash:w:open9x.hex:i
+ifeq ($(RESTORE_EEPROM), YES)
+   BACKUP_EEPROM = YES
+   ifeq ($(DOUBLE_WRITE_OK), YES)
+      WRITE_COMMAND += -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
+   else
+     SECOND_WRITE_COMMAND = -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
+   endif
+endif
+
+ifeq ($(BACKUP_FLASH), YES)
+  BACKUP_ARGS += -U eeprom:r:$(DATA_DIR)/eeprom-$(DATE).hex:i $(BACKUPFLASH)
+endif
+ifeq ($(BACKUP_EEPROM), YES)
+  BACKUP_ARGS += -U flash:r:$(DATA_DIR)/open9x-$(DATE).hex:i
+endif
+
+install: all
+ifdef BACKUP_ARGS
+	$(AVRCOMMAND) $(BACKUP_ARGS)
+	$(SLEEP) $(DELAY)
+endif
+	$(WRITE_COMMAND)
+ifdef	SECOND_WRITE_COMMAND
+	$(SLEEP) $(DELAY)
+	$(SECOND_WRITE_COMMAND)
+endif
 
 #### GOOGLE TESTS 
 
