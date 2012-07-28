@@ -21,7 +21,7 @@
 #define TR_VFILTERADC    "SIMP""OSMP""FILT"
 
 #define LEN_VBLMODE      "\004"
-#define TR_VBLMODE       "OFF ""Keys""Stks""Both""ON\0"
+#define TR_VBLMODE       "OFF ""Btns""Stks""Tout""ON\0"
 
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       "OFF"" +="" :="
@@ -33,7 +33,7 @@
 #define TR_DATETIME      "DATE:""HEURE"
 
 #define LEN_VTRIMINC     "\006"
-#define TR_VTRIMINC      "Exp   ""ExFin ""Fin   ""Moyen ""Gros  "
+#define TR_VTRIMINC      "Expo  ""ExFin ""Fin   ""Moyen ""Gros  "
 
 #define LEN_RETA123      "\001"
 #if defined(PCBV4)
@@ -92,9 +92,9 @@
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)
-#define TR_VVARIO         "Vario        "
+#define TR_VVARIO         "Vario\0       "
 #else
-#define TR_VVARIO         "[Vario]      "
+#define TR_VVARIO         "[Vario]\0     "
 #endif
 #if defined(AUDIO)
 #define TR_SOUND         "Jouer son\0   "
@@ -107,24 +107,24 @@
 #define TR_HAPTIC        "[Vibreur]\0   "
 #endif
 #if defined(VOICE)
-#define TR_PLAY_TRACK    "Jouer fichier"
-#define TR_PLAY_VALUE    "Jouer valeur "
+#define TR_PLAY_TRACK    "Jouer fich\0  "
+#define TR_PLAY_VALUE    "Dire valeur\0 "
 #else
 #define TR_PLAY_TRACK    "[Jouer fich.]"
-#define TR_PLAY_VALUE    "[Jouer val.] "
+#define TR_PLAY_VALUE    "[Dire val.]\0 "
 #endif
 #if defined(PCBARM)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs\0 "
+#define TR_SDCLOGS       "Logs carte SD"
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_SDCLOGS       "[Logs SD]\0   "
 #endif
 #define TR_FSW_VOLUME    "Volume\0      "
 #elif defined(PCBV4)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "Logs carte SD"
 #else
-#define TR_SDCLOGS       "[Logs SD]    "
+#define TR_SDCLOGS       "[Logs SD]\0   "
 #endif
 #define TR_FSW_VOLUME
 #else
@@ -136,7 +136,7 @@
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_TEST
+#define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "R\200tro\200cl.\0   " TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Tout  ""T\200l\200m."
@@ -145,7 +145,7 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Chr1""Chr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Cels""Vfas""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Cur+""Acc\0""Time"
+#define TR_VTELEMCHNS    "---\0""Chr1""Chr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Velm""Vfas""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Cur+""Acc\0""Time"
 
 #ifdef IMPERIAL_UNITS
 #define LENGTH_UNIT "ft\0"
@@ -189,7 +189,7 @@
 
 #define LEN2_VTEMPLATES  15
 #define LEN_VTEMPLATES   "\017"
-#define TR_VTEMPLATES    "Suppr Mixages\0\0""4 Voies simple\0""Coupure Gaz   \0""Empennage V   \0""Elevon\\Delta  \0""eCCPM         \0""Conf. H\200lico  \0""Servo Test    \0"
+#define TR_VTEMPLATES    "Suppr Mixages\0\0""4 Voies simple\0""Coupure Gaz   \0""Empennage V   \0""Elevon\\Delta  \0""eCCPM         \0""Conf. H\200lico  \0""Test Servo    \0"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
@@ -228,7 +228,7 @@
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
 
 #define LEN_DSM2MODE     "\007"
-#define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
+#define TR_DSM2MODE      "LP4/LP5DSMseulDSMX   "
 
 // ZERO TERMINATED STRINGS
 #define TR_POPUPS       "[MENU]\004[QUIT]"
@@ -253,8 +253,8 @@
 #define TR_MS           "ms"
 #define TR_SWITCH       "Inter"
 #define TR_TRIMS        "Trims"
-#define TR_FADEIN       "Fade In"
-#define TR_FADEOUT      "Fade Out"
+#define TR_FADEIN       "Fondu ON"
+#define TR_FADEOUT      "Fondu OFF"
 #define TR_DEFAULT      "(d\200faut)"
 #define TR_CHECKTRIMS   "V\200rif\005Trims"
 #define TR_SWASHTYPE    "Type de Plat."
@@ -312,8 +312,8 @@
 #define TR_RENAVIG      "Navig EncRot"
 #define TR_FILTERADC    "Filtre ADC"
 #define TR_THROTTLEREVERSE "Inversion Gaz"
-#define TR_MINUTEBEEP   "Bip t.minutes"
-#define TR_BEEPCOUNTDOWN "Bip \202 rebours"
+#define TR_MINUTEBEEP   "Bip minutes"
+#define TR_BEEPCOUNTDOWN "Bip cpt. rebours"
 #define TR_FLASHONBEEP  "Flash quand bip"
 #define TR_BLMODE  "Inter \200clairage"
 #define TR_BLDELAY "Dur\200e \200clairage"
@@ -355,7 +355,7 @@
 #define TR_MODEL        "MODELE"
 #define TR_FP           "PV"
 #define TR_EEPROMLOWMEM "EEPROM pleine!"
-#define TR_ALERT        "   ALERTE"
+#define TR_ALERT        "\003ALERTE"
 #define TR_PRESSANYKEYTOSKIP "Touche pour ignorer"
 #define TR_THROTTLENOTIDLE "Gaz pas \202 z\200ro"
 #define TR_ALARMSDISABLED   "Alarmes D\200sactiv\200es"
@@ -380,9 +380,9 @@
 #define TR_MENULIMITS   "LIMITES"
 #define TR_MENUCURVES   "COURBES"
 #define TR_MENUCURVE    "COURBE"
-#define TR_MENUCUSTOMSWITCH   "INTERS PERS"
+#define TR_MENUCUSTOMSWITCH   "INTER PERS"
 #define TR_MENUCUSTOMSWITCHES "INTERS PERS"
-#define TR_MENUFUNCSWITCHES   "INTERS FONCTIONS"
+#define TR_MENUFUNCSWITCHES   "INTERS FONCTION"
 #define TR_MENUTELEMETRY "TELEMESURE"
 #define TR_MENUTEMPLATES "GABARITS"
 #define TR_MENUSTAT      "STATS"
@@ -408,9 +408,9 @@
 #define TR_CREATE_MODEL  "Cr\200er Mod\201le"
 #define TR_BACKUP_MODEL  "Archiver Mod\201le"
 #define TR_DELETE_MODEL  "Supprimer Mod\201le"
-#define TR_RESTORE_MODEL "R\200storer Mod\201le"
-#define TR_SDCARD_ERROR  "SDCARD Error"
-#define TR_NO_SDCARD     "No SDCARD"
+#define TR_RESTORE_MODEL "Restaurer Mod\201le"
+#define TR_SDCARD_ERROR  "Erreur carte SD"
+#define TR_NO_SDCARD     "Pas de carte SD"
 #define TR_INCOMPATIBLE  "Incompatible"
 #define TR_WARNING       "ALERTE"
 #define TR_EEPROMWARN    "EEPROM"
@@ -418,9 +418,9 @@
 #define TR_ALARMSWARN    "ALARMES"
 #define TR_SWITCHWARN    "INTERS"
 #define TR_INVERT_THR    "Inverser Gaz?"
-#define TR_SPEAKER_VOLUME      "Speaker Volume"
+#define TR_SPEAKER_VOLUME      "Volume haut-p."
 #define TR_OPTREX_DISPLAY      "Afficheur Optrex"
-#define TR_BRIGHTNESS          "Brightness"
+#define TR_BRIGHTNESS          "Luminosit\200"
 #define TR_CPU_TEMP            "Temp. CPU\010>"
 #define TR_FUNC                "Fonc"
 #define TR_V1                  "V1"
@@ -429,9 +429,9 @@
 #define TR_DELAY               "D\200lai"
 #define TR_SD_CARD             "Carte SD"
 #define TR_SDHC_CARD           "Carte SD-HC"
-#define TR_NO_SOUNDS_ON_SD     "No Sounds on SD"
-#define TR_NO_MODELS_ON_SD     "No Models on SD"
-#define TR_PLAY_FILE           "Jouer"
+#define TR_NO_SOUNDS_ON_SD     "Aucun son sur SD"
+#define TR_NO_MODELS_ON_SD     "Aucun Mod\201le SD"
+#define TR_PLAY_FILE           "Lire"
 #define TR_DELETE_FILE         "Supprimer"
 #define TR_COPY_FILE           "Copier"
 #define TR_RENAME_FILE         "Renommer"
