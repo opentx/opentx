@@ -546,6 +546,10 @@ void eeReadAll()
       STORE_GENERALVARS;
       STORE_MODELVARS;
     }
+    else {
+      // we don't want to store anything
+      s_eeDirtyMsk = 0;
+    }
   }
   else
   {
