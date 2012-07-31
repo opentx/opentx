@@ -1204,7 +1204,7 @@ void checkTrims()
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
       if (!g_model.extendedTrims) after = before;
-      beepTrim = 2; // no repetition, it could be dangerous
+//      beepTrim = 2; // no repetition, it could be dangerous
     }
 
     if (after < TRIM_EXTENDED_MIN) {
