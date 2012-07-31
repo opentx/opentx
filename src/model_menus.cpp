@@ -2595,7 +2595,7 @@ void menuProcFunctionSwitches(uint8_t event)
             }
             else if (sd->func <= FUNC_SAFETY_CH16) {
               val_min = -125; val_max = 125;
-              lcd_outdezAtt(18*FW, y, FSW_PARAM(sd), attr);
+              lcd_outdezAtt(18*FW, y, (int8_t)FSW_PARAM(sd), attr);
             }
             else {
               if (attr) m_posHorz = 0;
