@@ -6,6 +6,7 @@
  * - Erez Raviv
  * - Jean-Pierre Parisy
  * - Karl Szmutny <shadow@privy.de>
+ * - Martin Hotar <mhotar@gmail.com>
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -35,49 +36,51 @@
 
 enum CzechPrompts {
   PROMPT_NUMBERS_BASE = 0,
-  PROMPT_ZERO = PROMPT_NUMBERS_BASE+0,
+  PROMPT_NULA = PROMPT_NUMBERS_BASE+0,
   /* ... */
-  PROMPT_TWENTY = PROMPT_NUMBERS_BASE+20,
-  PROMPT_THIRTY = PROMPT_NUMBERS_BASE+21,
+  PROMPT_DVACET = PROMPT_NUMBERS_BASE+20,
+  PROMPT_TRICET = PROMPT_NUMBERS_BASE+21,
   /* ... */
-  PROMPT_NINETY = PROMPT_NUMBERS_BASE+27,
+  PROMPT_DEVADESAT = PROMPT_NUMBERS_BASE+27,
   PROMPT_JEDEN = PROMPT_NUMBERS_BASE+28,
-  PROMPT_DVE = PROMPT_NUMBERS_BASE+29,
-  PROMPT_STO = PROMPT_NUMBERS_BASE+30,
-  PROMPT_STA = PROMPT_NUMBERS_BASE+31,
-  PROMPT_SET = PROMPT_NUMBERS_BASE+32,
-  PROMPT_TISIC = PROMPT_NUMBERS_BASE+33,
-  PROMPT_TISICE = PROMPT_NUMBERS_BASE+34,
-  PROMPT_CELA = PROMPT_NUMBERS_BASE+35,
+  PROMPT_JEDNO = PROMPT_NUMBERS_BASE+29,
+  PROMPT_DVE = PROMPT_NUMBERS_BASE+30,
+  PROMPT_STO = PROMPT_NUMBERS_BASE+31,
+  PROMPT_STA = PROMPT_NUMBERS_BASE+32,
+  PROMPT_SET = PROMPT_NUMBERS_BASE+33,
+  PROMPT_TISIC = PROMPT_NUMBERS_BASE+34,
+  PROMPT_TISICE = PROMPT_NUMBERS_BASE+35,
+  PROMPT_CELA = PROMPT_NUMBERS_BASE+36,
+  PROMPT_CELE = PROMPT_NUMBERS_BASE+37,
+  PROMPT_CELYCH = PROMPT_NUMBERS_BASE+38,
+  PROMPT_MINUS = 39,
 
-  PROMPT_HODINA = 40,
-  PROMPT_HODINY = 41,
-  PROMPT_HODIN = 42,
-  PROMPT_MINUTA = 43,
-  PROMPT_MINUTY = 44,
-  PROMPT_MINUT = 45,
-  PROMPT_SEKUNDA = 46,
-  PROMPT_SEKUNDY = 47,
-  PROMPT_SEKUND = 48,
-
-  PROMPT_MINUS = 49,
+  PROMPT_HODINA = 41,
+  PROMPT_HODINY = 42,
+  PROMPT_HODIN = 43,
+  PROMPT_MINUTA = 44,
+  PROMPT_MINUTY = 45,
+  PROMPT_MINUT = 46,
+  PROMPT_SEKUNDA = 47,
+  PROMPT_SEKUNDY = 48,
+  PROMPT_SEKUND = 49,
 
   PROMPT_UNITS_BASE = 50,
-  PROMPT_VOLTS = PROMPT_UNITS_BASE+UNIT_VOLTS,
-  PROMPT_AMPS = PROMPT_UNITS_BASE+UNIT_AMPS,
-  PROMPT_METERS_PER_SECOND = PROMPT_UNITS_BASE+UNIT_METERS_PER_SECOND,
-  PROMPT_SPARE1 = PROMPT_UNITS_BASE+UNIT_RAW,
-  PROMPT_KMH = PROMPT_UNITS_BASE+UNIT_KMH,
-  PROMPT_METERS = PROMPT_UNITS_BASE+UNIT_METERS,
-  PROMPT_DEGREES = PROMPT_UNITS_BASE+UNIT_DEGREES,
-  PROMPT_PERCENT = PROMPT_UNITS_BASE+UNIT_PERCENT,
-  PROMPT_MILLIAMPS = PROMPT_UNITS_BASE+UNIT_MILLIAMPS,
-  PROMPT_MAH = PROMPT_UNITS_BASE+UNIT_MAH,
-  PROMPT_WATTS = PROMPT_UNITS_BASE+UNIT_WATTS,
-  PROMPT_FEET = PROMPT_UNITS_BASE+UNIT_FEET,
-  PROMPT_KTS = PROMPT_UNITS_BASE+UNIT_KTS,
+  PROMPT_VOLTS = PROMPT_UNITS_BASE+UNIT_VOLTS, //(jeden)volt,(dva)volty,(pet)voltu,(desetina)voltu
+  PROMPT_AMPS = PROMPT_UNITS_BASE+(UNIT_AMPS*4),
+  PROMPT_METERS_PER_SECOND = PROMPT_UNITS_BASE+(UNIT_METERS_PER_SECOND*4),
+  PROMPT_SPARE1 = PROMPT_UNITS_BASE+(UNIT_RAW*4),
+  PROMPT_KMH = PROMPT_UNITS_BASE+(UNIT_KMH*4),
+  PROMPT_METERS = PROMPT_UNITS_BASE+(UNIT_METERS*4),
+  PROMPT_DEGREES = PROMPT_UNITS_BASE+(UNIT_DEGREES*4),
+  PROMPT_PERCENT = PROMPT_UNITS_BASE+(UNIT_PERCENT*4),
+  PROMPT_MILLIAMPS = PROMPT_UNITS_BASE+(UNIT_MILLIAMPS*4),
+  PROMPT_MAH = PROMPT_UNITS_BASE+(UNIT_MAH*4),
+  PROMPT_WATTS = PROMPT_UNITS_BASE+(UNIT_WATTS*4),
+  PROMPT_FEET = PROMPT_UNITS_BASE+(UNIT_FEET*4),
+  PROMPT_KTS = PROMPT_UNITS_BASE+(UNIT_KTS*4),
   
-  PROMPT_LABELS_BASE = 70,
+  PROMPT_LABELS_BASE = 110,
   PROMPT_TIMER1 = PROMPT_LABELS_BASE+TELEM_TM1,
   PROMPT_TIMER2 = PROMPT_LABELS_BASE+TELEM_TM2,
   PROMPT_A1 = PROMPT_LABELS_BASE+TELEM_A1,
@@ -109,6 +112,19 @@ enum CzechPrompts {
 
 #if defined(VOICE)
 
+#define MUZSKY 0x80
+#define ZENSKY 0x81
+#define STREDNI 0x82
+
+void pushUnitPrompt(int16_t number, uint8_t unitprompt)
+{
+  if (number == 1)
+    pushPrompt(unitprompt);
+  if (number > 1 && number < 5)
+    pushPrompt(unitprompt+1);
+  if (number > 4)
+    pushPrompt(unitprompt+2);
+}
 
 void playNumber(int16_t number, uint8_t unit, uint8_t att)
 {
@@ -131,13 +147,30 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
     return;
   }
 
-
+  int16_t tmp = number;
+  
+  //TODO: unit reconcile to MUZSKY,ZENSKY,STREDNI -> att
 
   if (number < 0) {
     pushPrompt(PROMPT_MINUS);
     number = -number;
   }
-
+    
+  if ((number == 1) && (att == MUZSKY)) {
+    pushPrompt(PROMPT_JEDEN);
+    return;
+  }
+  
+  if ((number == 1) && (att == STREDNI)) {
+    pushPrompt(PROMPT_JEDNO);
+    return;
+  }
+  
+  if ((number == 2) && ((att == ZENSKY) || (att == STREDNI))) {
+    pushPrompt(PROMPT_DVE);
+    return;
+  }
+  
   if (number >= 1000) {
     if (number >= 2000) 
       playNumber(number / 1000);
@@ -150,34 +183,26 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
       number = -1;
   }
   if (number >= 100) {
-    if (number >= 200) {
-      if (number < 300)
-        pushPrompt(PROMPT_DVE);
-      else
-      pushPrompt(PROMPT_ZERO + number/100);
-      }
-      if (number >= 200 && number < 500)
-        pushPrompt(PROMPT_STA);
-      else if (number >= 500 && number < 1000)
-      	pushPrompt(PROMPT_SET);
-      else
-        pushPrompt(PROMPT_STO);
-    number %= 100;
-    if (number == 0)
-      number = -1;
+    if (number/100 != 1)
+      playNumber(number/100,0,STREDNI);
+    pushUnitPrompt(number/100,PROMPT_STO);
   }
+  number %= 100;
+  if (number == 0)
+    number = -1;
+  
   if (number >= 20) {
-    pushPrompt(PROMPT_TWENTY + (number-20)/10);
+    pushPrompt(PROMPT_DVACET + (number-20)/10);
     number %= 10;
     if (number == 0)
       number = -1;
   }
   if (number >= 0) {
-    pushPrompt(PROMPT_ZERO+number);
+    pushPrompt(PROMPT_NULA+number);
   }
 
   if (unit) {
-    pushPrompt(PROMPT_UNITS_BASE+unit-1);
+    pushUnitPrompt(tmp,(PROMPT_UNITS_BASE+(unit-1)*4));
   }
 }
 
@@ -191,59 +216,20 @@ void playDuration(int16_t seconds)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0) {
-    if (tmp == 1) {
-      pushPrompt(PROMPT_ZERO+tmp);
-      pushPrompt(PROMPT_HODINA);
-    }
-    else if (tmp >= 2 && tmp < 5) {
-      if (tmp == 2)
-        pushPrompt(PROMPT_DVE);
-      else
-        pushPrompt(PROMPT_ZERO+tmp);
-      pushPrompt(PROMPT_HODINY);
-    }
-    else { 
-      playNumber(tmp);
-      pushPrompt(PROMPT_HODIN);
-    }
+    playNumber(tmp,0,ZENSKY);
+    pushUnitPrompt(tmp,PROMPT_HODINA);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    if (tmp == 1) {
-      pushPrompt(PROMPT_ZERO+tmp);
-      pushPrompt(PROMPT_MINUTA);
-    }
-    else if (tmp >= 2 && tmp < 5) {
-      if (tmp == 2)
-        pushPrompt(PROMPT_DVE);
-      else
-        pushPrompt(PROMPT_ZERO+tmp);
-      pushPrompt(PROMPT_MINUTY);
-    }
-    else { 
-      playNumber(tmp);
-      pushPrompt(PROMPT_MINUT);
-    }
+    playNumber(tmp,0,ZENSKY);
+    pushUnitPrompt(tmp,PROMPT_MINUTA);
   }
 
   if (seconds > 0) {
-    if (seconds == 1) {
-      pushPrompt(PROMPT_ZERO+seconds);
-      pushPrompt(PROMPT_SEKUNDA);
-    }
-    else if (seconds >= 2 && seconds < 5) {
-      if (seconds == 2)
-        pushPrompt(PROMPT_DVE);
-      else
-        pushPrompt(PROMPT_ZERO+seconds);
-      pushPrompt(PROMPT_SEKUNDY);
-    }
-    else { 
-      playNumber(seconds);
-      pushPrompt(PROMPT_SEKUND);
-    }
+    playNumber(seconds,0,ZENSKY);
+    pushUnitPrompt(seconds,PROMPT_SEKUNDA);
   }
 }
 
