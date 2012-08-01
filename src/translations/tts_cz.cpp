@@ -142,15 +142,29 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
   if (mode > 0) {
     div_t qr = div(number, (mode == 1 ? 10 : 100));
     playNumber(qr.quot);
-    pushPrompt(PROMPT_CELA);
-    playNumber(qr.rem, unit);
+    pushUnitPrompt(qr.quot,PROMPT_CELA);
+    playNumber(qr.rem,0,ZENSKY);
+    pushPrompt(PROMPT_UNITS_BASE+((unit-1)*4)+3);
     return;
   }
 
   int16_t tmp = number;
   
-  //TODO: unit reconcile to MUZSKY,ZENSKY,STREDNI -> att
-
+  switch(unit) {
+    case 0:
+      break;
+    case 4:
+      att = ZENSKY;
+    case 8:
+      att = STREDNI;
+    case 10:
+      att = ZENSKY;
+    case 12:
+      att = ZENSKY;
+    default:
+      att = MUZSKY;
+  }
+  
   if (number < 0) {
     pushPrompt(PROMPT_MINUS);
     number = -number;
@@ -158,17 +172,17 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
     
   if ((number == 1) && (att == MUZSKY)) {
     pushPrompt(PROMPT_JEDEN);
-    return;
+    number = -1;
   }
   
   if ((number == 1) && (att == STREDNI)) {
     pushPrompt(PROMPT_JEDNO);
-    return;
+    number = -1;
   }
   
   if ((number == 2) && ((att == ZENSKY) || (att == STREDNI))) {
     pushPrompt(PROMPT_DVE);
-    return;
+    number = -1;
   }
   
   if (number >= 1000) {
@@ -186,11 +200,10 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
     if (number/100 != 1)
       playNumber(number/100,0,STREDNI);
     pushUnitPrompt(number/100,PROMPT_STO);
+    number %= 100;
+    if (number == 0)
+      number = -1;
   }
-  number %= 100;
-  if (number == 0)
-    number = -1;
-  
   if (number >= 20) {
     pushPrompt(PROMPT_DVACET + (number-20)/10);
     number %= 10;
@@ -202,7 +215,7 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    pushUnitPrompt(tmp,(PROMPT_UNITS_BASE+(unit-1)*4));
+    pushUnitPrompt(tmp,(PROMPT_UNITS_BASE+((unit-1)*4)));
   }
 }
 
