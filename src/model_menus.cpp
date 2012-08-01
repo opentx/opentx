@@ -2594,8 +2594,9 @@ void menuProcFunctionSwitches(uint8_t event)
               lcd_putsiAtt(15*FW, y, STR_VFSWRESET, FSW_PARAM(sd), attr);
             }
             else if (sd->func <= FUNC_SAFETY_CH16) {
+              val_displayed = (int8_t)FSW_PARAM(sd);
               val_min = -125; val_max = 125;
-              lcd_outdezAtt(18*FW, y, (int8_t)FSW_PARAM(sd), attr);
+              lcd_outdezAtt(18*FW, y, val_displayed, attr);
             }
             else {
               if (attr) m_posHorz = 0;
