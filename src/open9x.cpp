@@ -2152,7 +2152,7 @@ void perOut(uint8_t tick10ms)
       case MLTPX_REP:
         *ptr = dv;
 #ifdef BOLD_FONT
-        for (uint8_t m=i-1; m>=0 && mixaddress(m)->destCh == md->destCh; m--)
+        for (uint8_t m=i-1; m<MAX_MIXERS && mixaddress(m)->destCh == md->destCh; m--)
           activeMixes &= ~((ACTIVE_MIXES_TYPE)1 << m);
 #endif
         break;
