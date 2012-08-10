@@ -39,7 +39,7 @@ const char * audioFilenames[] = {
   "thralert",
   "swalert",
   "eebad",
-  "eeformat"
+  "eeformat",
   "error",
   "keyup",
   "keydown",

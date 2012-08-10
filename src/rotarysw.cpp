@@ -88,7 +88,7 @@ void animRotarySw(uint8_t x) {
 
 	switch (num2Display) {
 	case 0:
-		att1 = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
+		att1 = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK : 0);
 		putsVBat(x + 4 * FW, 2 * FH, att1 | NO_UNIT | DBLSIZE);
 
 		switch (num4Display) {

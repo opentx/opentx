@@ -2107,9 +2107,19 @@ void menuProcLimits(uint8_t _event)
             }
           }
           else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
-            int16_t zero = g_chans512[k];
             pauseMixerCalculations();
+            int32_t zero = (int32_t)g_chans512[k];
+            s_perout_mode = e_perout_mode_nosticks+e_perout_mode_notrainer;
+            perOut(0);
+            int32_t chan = chans[k];
+            int8_t lim = ld->max+100;
+            if (chan < 0) {
+              chan = -chan;
+              lim = ld->min-100;
+            }
+            zero = (zero*100000 - 10*chan*lim) / (102400 - chan);
             ld->offset = (ld->revert) ? -zero : zero;
+            s_perout_mode = e_perout_mode_normal;
             resumeMixerCalculations();
             s_editMode = 0;
             STORE_MODELVARS;

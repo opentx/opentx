@@ -1399,16 +1399,18 @@ void getADC_single()
 void getADC_bandgap()
 {
 #if defined (PCBV4)
-  // For times over-sample with no divide, x2 to end at a half averaged, x8. DON'T ASK mmmkay? :P This is how I want it.
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
-  BandGap=ADCW;
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
-  BandGap+=ADCW;
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
-  BandGap+=ADCW;
-  ADCSRA|=0x40; while ((ADCSRA & 0x10)==0); ADCSRA|=0x10;
-  BandGap+=ADCW;
-  BandGap *= 2;
+  static uint8_t s_bgCheck = 0;
+  static uint16_t s_bgSum = 0;
+  ADCSRA|=0x40; // request sample
+  s_bgCheck += 32;
+  while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // wait for sample
+  if (s_bgCheck == 0) { // 8x over-sample (256/32=8)
+    BandGap = s_bgSum+ADCW;
+    s_bgSum = 0;
+  }
+  else {
+    s_bgSum += ADCW;
+  }
   ADCSRB |= (1<<MUX5);
 #else
   // TODO is the next line needed (because it has been called before perMain)?
@@ -1541,13 +1543,6 @@ FORCEINLINE void evalTrims()
   }
 }
 
-enum PerOutMode {
-  e_perout_mode_normal = 0,
-  e_perout_mode_trims,
-  e_perout_mode_zeros,
-  e_instant_trim
-};
-
 uint8_t s_perout_mode = e_perout_mode_normal;
 
 BeepANACenter evalSticks()
@@ -1599,7 +1594,7 @@ BeepANACenter evalSticks()
     if (tmp <= 1) anaCenter |= (tmp==0 ? (BeepANACenter)1<<ch : bpanaCenter & ((BeepANACenter)1<<ch));
 
     if (ch < NUM_STICKS) { //only do this for sticks
-      if (s_perout_mode==e_perout_mode_normal && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
+      if (s_perout_mode == e_perout_mode_normal && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -1919,72 +1914,72 @@ void perOut(uint8_t tick10ms)
     anaCenter &= g_model.beepANACenter;
     if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_STICK_MIDDLE();
     bpanaCenter = anaCenter;
+  }
 
 #ifdef HELI
-    if(g_model.swashR.value)
+  if(g_model.swashR.value)
+  {
+    uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
+    uint32_t q = (int32_t)RESX*g_model.swashR.value/100;
+    q *= q;
+    if(v>q)
     {
-      uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
-      uint32_t q = (int32_t)RESX*g_model.swashR.value/100;
-      q *= q;
-      if(v>q)
-      {
-        uint16_t d = isqrt32(v);
-        anas[ELE_STICK] = (int32_t)anas[ELE_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
-        anas[AIL_STICK] = (int32_t)anas[AIL_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
-      }
+      uint16_t d = isqrt32(v);
+      anas[ELE_STICK] = (int32_t)anas[ELE_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
+      anas[AIL_STICK] = (int32_t)anas[AIL_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
     }
+  }
 
 #define REZ_SWASH_X(x)  ((x) - (x)/8 - (x)/128 - (x)/512)   //  1024*sin(60) ~= 886
 #define REZ_SWASH_Y(x)  ((x))   //  1024 => 1024
 
-    if(g_model.swashR.type)
+  if(g_model.swashR.type)
+  {
+    int16_t vp = anas[ELE_STICK]+trims[ELE_STICK];
+    int16_t vr = anas[AIL_STICK]+trims[AIL_STICK];
+    int16_t vc = 0;
+    if (g_model.swashR.collectiveSource)
+      vc = getValue(g_model.swashR.collectiveSource-1);
+
+    if(g_model.swashR.invertELE) vp = -vp;
+    if(g_model.swashR.invertAIL) vr = -vr;
+    if(g_model.swashR.invertCOL) vc = -vc;
+
+    switch (g_model.swashR.type)
     {
-      int16_t vp = anas[ELE_STICK]+trims[ELE_STICK];
-      int16_t vr = anas[AIL_STICK]+trims[AIL_STICK];
-      int16_t vc = 0;
-      if (g_model.swashR.collectiveSource)
-        vc = getValue(g_model.swashR.collectiveSource-1);
-
-      if(g_model.swashR.invertELE) vp = -vp;
-      if(g_model.swashR.invertAIL) vr = -vr;
-      if(g_model.swashR.invertCOL) vc = -vc;
-
-      switch (g_model.swashR.type)
-      {
-        case (SWASH_TYPE_120):
-          vp = REZ_SWASH_Y(vp);
-          vr = REZ_SWASH_X(vr);
-          cyc_anas[0] = vc - vp;
-          cyc_anas[1] = vc + vp/2 + vr;
-          cyc_anas[2] = vc + vp/2 - vr;
-          break;
-        case (SWASH_TYPE_120X):
-          vp = REZ_SWASH_X(vp);
-          vr = REZ_SWASH_Y(vr);
-          cyc_anas[0] = vc - vr;
-          cyc_anas[1] = vc + vr/2 + vp;
-          cyc_anas[2] = vc + vr/2 - vp;
-          break;
-        case (SWASH_TYPE_140):
-          vp = REZ_SWASH_Y(vp);
-          vr = REZ_SWASH_Y(vr);
-          cyc_anas[0] = vc - vp;
-          cyc_anas[1] = vc + vp + vr;
-          cyc_anas[2] = vc + vp - vr;
-          break;
-        case (SWASH_TYPE_90):
-          vp = REZ_SWASH_Y(vp);
-          vr = REZ_SWASH_Y(vr);
-          cyc_anas[0] = vc - vp;
-          cyc_anas[1] = vc + vr;
-          cyc_anas[2] = vc - vr;
-          break;
-        default:
-          break;
-      }
+      case SWASH_TYPE_120:
+        vp = REZ_SWASH_Y(vp);
+        vr = REZ_SWASH_X(vr);
+        cyc_anas[0] = vc - vp;
+        cyc_anas[1] = vc + vp/2 + vr;
+        cyc_anas[2] = vc + vp/2 - vr;
+        break;
+      case SWASH_TYPE_120X:
+        vp = REZ_SWASH_X(vp);
+        vr = REZ_SWASH_Y(vr);
+        cyc_anas[0] = vc - vr;
+        cyc_anas[1] = vc + vr/2 + vp;
+        cyc_anas[2] = vc + vr/2 - vp;
+        break;
+      case SWASH_TYPE_140:
+        vp = REZ_SWASH_Y(vp);
+        vr = REZ_SWASH_Y(vr);
+        cyc_anas[0] = vc - vp;
+        cyc_anas[1] = vc + vp + vr;
+        cyc_anas[2] = vc + vp - vr;
+        break;
+      case SWASH_TYPE_90:
+        vp = REZ_SWASH_Y(vp);
+        vr = REZ_SWASH_Y(vr);
+        cyc_anas[0] = vc - vp;
+        cyc_anas[1] = vc + vr;
+        cyc_anas[2] = vc - vr;
+        break;
+      default:
+        break;
     }
-#endif
   }
+#endif
 
   memclear(chans, sizeof(chans));        // All outputs to 0
 
@@ -2016,8 +2011,15 @@ void perOut(uint8_t tick10ms)
     uint8_t k = md->srcRaw-1;
     int16_t v = 0;
     if (s_perout_mode != e_perout_mode_normal) {
-      if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim))
+      if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
+        printf("CONTINUE\n");
         continue;
+      }
+      else {
+        printf("LIGNE AJOUTEE\n");
+        if (!(s_perout_mode & e_perout_mode_nosticks))
+          v = anas[k];
+      }
     }
     else {
       if (k < NUM_STICKS)
@@ -2093,8 +2095,21 @@ void perOut(uint8_t tick10ms)
     //========== OFFSET ===============
     if (apply_offset && md->sOffset) v += calc100toRESX(md->sOffset);
 
+    //========== TRIMS ===============
+    if (!(s_perout_mode & e_perout_mode_notrims)) {
+      int8_t mix_trim = md->carryTrim;
+      if (mix_trim < TRIM_ON)
+        mix_trim = -mix_trim-1;
+      else if (mix_trim == TRIM_ON && k < NUM_STICKS)
+        mix_trim = k;
+      else
+        mix_trim = -1;
+      if (mix_trim >= 0)
+        v += trims[mix_trim];
+    }
+
     //========== SPEED ===============
-    if (s_perout_mode==e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
+    if (s_perout_mode == e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
     {
 #define DEL_MULT 256
 
@@ -2124,19 +2139,6 @@ void perOut(uint8_t tick10ms)
     //========== CURVES ===============
     if (md->curve)
       v = applyCurve(v, md->curve);
-
-    //========== TRIMS ===============
-    if (s_perout_mode < e_perout_mode_zeros) {
-      int8_t mix_trim = md->carryTrim;
-      if (mix_trim < TRIM_ON)
-        mix_trim = -mix_trim-1;
-      else if (mix_trim == TRIM_ON && k < NUM_STICKS)
-        mix_trim = k;
-      else
-        mix_trim = -1;
-      if (mix_trim >= 0)
-        v += trims[mix_trim];
-    }
 
     //========== MULTIPLEX ===============
     int32_t dv = (int32_t)v*md->weight;
@@ -2640,7 +2642,7 @@ void perMain()
     else if (s_batCheck == 0) {
       g_vbat100mV = s_batSum / 8;
       s_batSum = 0;
-      if (g_vbat100mV<g_eeGeneral.vBatWarn && g_vbat100mV>50) {
+      if (g_vbat100mV <= g_eeGeneral.vBatWarn && g_vbat100mV>50) {
         AUDIO_TX_BATTERY_LOW();
       }
     }
@@ -2926,7 +2928,7 @@ void instantTrim()
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(s_perout_flight_phase, i);
-      s_perout_mode = e_instant_trim;
+      s_perout_mode = e_perout_mode_notrainer;
       evalSticks();
       s_perout_mode = e_perout_mode_normal;
       int16_t trim = (anas[i] + trims[i]) / 2;
@@ -2948,13 +2950,13 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 {
   int16_t zeros[NUM_CHNOUT];
 
-  s_perout_mode = e_perout_mode_zeros;
+  s_perout_mode = e_perout_mode_noinput;
   perOut(0); // do output loop - zero input sticks and trims
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
-  s_perout_mode = e_perout_mode_trims;
+  s_perout_mode = e_perout_mode_nosticks+e_perout_mode_notrainer;
   perOut(0); // do output loop - only trims
   s_perout_mode = e_perout_mode_normal;
 

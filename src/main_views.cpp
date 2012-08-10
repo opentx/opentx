@@ -200,7 +200,7 @@ void menuMainView(uint8_t event)
     uint8_t phase = s_perout_flight_phase;
     lcd_putsnAtt(6*FW, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 
-    uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | DBLSIZE;
+    uint8_t att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | DBLSIZE;
     putsModelName(2*FW-2, 0*FH, g_model.name, g_eeGeneral.currModel, DBLSIZE);
     putsVBat(6*FW-1, 2*FH, att|NO_UNIT);
     lcd_putc(6*FW, 3*FH, 'V');

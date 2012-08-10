@@ -531,6 +531,17 @@ uint16_t evalChkSum();
 extern void message(const pm_char *title, const pm_char *s, const char *last MESSAGE_SOUND_ARG);
 extern void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG);
 
+enum PerOutMode {
+  e_perout_mode_normal = 0,
+  e_perout_mode_notrainer = 1,
+  e_perout_mode_notrims = 2,
+  e_perout_mode_nosticks = 4,
+  e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
+};
+
+extern uint8_t s_perout_mode;
+
+void    perOut(uint8_t tick10ms);
 void    perMain();
 void    per10ms();
 
@@ -786,6 +797,7 @@ extern uint8_t            g_beepVal[5];
 
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
 extern int16_t            g_ppmIns[8];
+extern int32_t            chans[NUM_CHNOUT];
 extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain
 extern int16_t            g_chans512[NUM_CHNOUT];
 extern uint16_t           BandGap;
@@ -795,6 +807,7 @@ extern int16_t expo(int16_t x, int16_t k);
 extern int16_t intpol(int16_t, uint8_t);
 extern int16_t applyCurve(int16_t, int8_t);
 extern void applyExpos(int16_t *anas);
+extern int16_t applyLimits(uint8_t channel, int32_t value);
 
 extern uint16_t anaIn(uint8_t chan);
 extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];

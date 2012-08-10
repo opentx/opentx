@@ -178,8 +178,8 @@
 #define LEN_VOLTSRC   "\003"
 #define TR_VOLTSRC    "---""A1\0""A2\0""FAS""Cel"
 
-#define LEN_VARIOSRC     "\006"
-#define TR_VARIOSRC      "BaroV1""BaroV2""A1    ""A2\0"
+#define LEN_VARIOSRC     "\007"
+#define TR_VARIOSRC      "FrSky\0 ""Halcyon""A1\0    ""A2\0"
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
