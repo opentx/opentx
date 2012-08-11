@@ -635,6 +635,9 @@ bool __getSwitch(int8_t swtch)
 #if defined(FRSKY)
         // Telemetry
         if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
+          if (frskyStreaming <= 0 && cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
+            return swtch > 0 ? false : true;
+
           y = convertTelemValue(cs->v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs->v2);
           uint8_t idx = cs->v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT;
           if (idx < THLD_MAX) {
@@ -1726,13 +1729,14 @@ void playValue(uint8_t idx)
 
     default:
     {
-      uint8_t unit;
+      uint8_t unit = 1;
+      if (idx < NUM_XCHNRAW+TELEM_TM1-1)
+        val = (val * 25) / 256;
       if (idx >= NUM_XCHNRAW+TELEM_ALT-1 && idx <= NUM_XCHNRAW+TELEM_GPSALT-1)
         unit = idx - (NUM_XCHNRAW+TELEM_ALT-1);
       else if (idx >= NUM_XCHNRAW+TELEM_MAX_T1-1 && idx <= NUM_XCHNRAW+TELEM_MAX_DIST-1)
         unit = 3 + idx - (NUM_XCHNRAW+TELEM_MAX_T1-1);
-      else
-        unit = 1;
+
       unit = pgm_read_byte(bchunit_ar+unit);
 #if !defined(IMPERIAL_UNITS)
       if (unit == UNIT_KTS) {
@@ -1785,19 +1789,24 @@ void evalFunctions()
         swtch += MAX_SWITCH+1;
       }
       if (getSwitch(swtch, 0)) {
-        if (sd->func < FUNC_TRAINER && sd->delay) {
-          safetyCh[sd->func] = FSW_PARAM(sd);
-        }
+        if (sd->delay) {
+          if (sd->func < FUNC_TRAINER) {
+            safetyCh[sd->func] = FSW_PARAM(sd);
+          }
 
-        if (~activeFunctions & function_mask) {
-          if (sd->func == FUNC_INSTANT_TRIM) {
-            if (g_menuStack[0] == menuMainView
+          if (~activeFunctions & function_mask) {
+            if (sd->func == FUNC_INSTANT_TRIM) {
+              if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
                 || g_menuStack[0] == menuProcFrsky
 #endif
                 )
-            instantTrim();
+                instantTrim();
+            }
           }
+        }
+        else if (sd->func <= FUNC_INSTANT_TRIM) {
+          function_mask = 0;
         }
 
 #if defined(SDCARD)

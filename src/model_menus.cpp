@@ -2501,11 +2501,11 @@ void menuProcFunctionSwitches(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          if (sd->func <= FUNC_SAFETY_CH16 && sd->delay) {
+          if (sd->func <= FUNC_TRAINER_AIL && sd->delay) {
             if (sd->swtch > MAX_SWITCH+1) sd->swtch -= (MAX_SWITCH+1);
             if (sd->swtch < -MAX_SWITCH-1) sd->swtch += (MAX_SWITCH+1);
           }
-          putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func >= 16 || sd->delay)) ? BOLD : 0));
+          putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func > FUNC_INSTANT_TRIM || sd->delay)) ? BOLD : 0));
           if (active) {
             CHECK_INCDEC_MODELSWITCH( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1);
           }
@@ -2609,7 +2609,7 @@ void menuProcFunctionSwitches(uint8_t event)
               lcd_outdezAtt(18*FW, y, val_displayed, attr);
             }
             else {
-              if (attr) m_posHorz = 0;
+              if (attr) m_posHorz = ((event & EVT_KEY_MASK) == KEY_LEFT ? 1 : 3);
               break;
             }
 
@@ -2623,7 +2623,7 @@ void menuProcFunctionSwitches(uint8_t event)
           break;
 
         case 3:
-          if (sd->swtch && sd->func <= FUNC_SAFETY_CH16) {
+          if (sd->swtch && sd->func <= FUNC_INSTANT_TRIM) {
 #if defined(GRAPHICS)
             menu_lcd_onoff(20*FW, y, sd->delay, attr ) ;
 #else

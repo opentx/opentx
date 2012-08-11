@@ -806,7 +806,14 @@ void menuProcDiagAna(uint8_t event)
 
   // Voltage calibration
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
-#if defined (PCBV4)
+#if defined(PCBARM)
+  static uint32_t adcBatt;
+  adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
+  uint32_t batCalV = ( adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
+  batCalV /= 55296  ;
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, (m_posVert==1 ? INVERS : 0));
+  // TODO PREC2 => lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
+#elif defined(PCBV4)
   // Gruvin wants 2 decimal places and instant update of volts calib field when button pressed
   static uint16_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
