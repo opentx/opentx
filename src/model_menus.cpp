@@ -738,7 +738,7 @@ void menuProcModel(uint8_t event)
         }
 #ifdef DSM2
         else if (protocol == PROTO_DSM2) {
-          if (m_posHorz > 1) m_posHorz = 1;
+          if (attr && m_posHorz > 1) m_posHorz = 1;
           int8_t x = limit((int8_t)0, (int8_t)g_model.ppmNCH, (int8_t)2);
           g_model.ppmNCH = x;
           lcd_putsiAtt(MODEL_PARAM_OFS+5*FW, y, STR_DSM2MODE, x, (attr && m_posHorz==1) ? blink : 0);

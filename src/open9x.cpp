@@ -1033,20 +1033,20 @@ void checkLowEEPROM()
 
 void checkTHR()
 {
-  if(g_model.disableThrottleWarning) return;
+  if (g_model.disableThrottleWarning) return;
 
-  int thrchn=(2-(stickMode&1));//stickMode=0123 -> thr=2121
+  int thrchn = (2-(stickMode&1));//stickMode=0123 -> thr=2121
 
 #ifdef SIMU
   int16_t lowLim = THRCHK_DEADBAND - 1024 ;
 #else
   getADC_single();   // if thr is down - do not display warning at all
-  int16_t lowLim = THRCHK_DEADBAND + g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanNeg[thrchn];
+  int16_t lowLim = (g_eeGeneral.throttleReversed ? THRCHK_DEADBAND - g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanPos[thrchn] : THRCHK_DEADBAND + g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanNeg[thrchn]);
 #endif
   int16_t v = anaIn(thrchn);
   if (g_eeGeneral.throttleReversed) v = - v;
 
-  if(v<=lowLim) return;
+  if (v<=lowLim) return;
 
   // first - display warning
   MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
@@ -2012,11 +2012,9 @@ void perOut(uint8_t tick10ms)
     int16_t v = 0;
     if (s_perout_mode != e_perout_mode_normal) {
       if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
-        printf("CONTINUE\n");
         continue;
       }
       else {
-        printf("LIGNE AJOUTEE\n");
         if (!(s_perout_mode & e_perout_mode_nosticks))
           v = anas[k];
       }
