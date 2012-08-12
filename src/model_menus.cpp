@@ -771,7 +771,7 @@ void menuProcModel(uint8_t event)
           lcd_outdezAtt(MODEL_PARAM_OFS, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((attr && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | PREC1|LEFT);
           lcd_putc(MODEL_PARAM_OFS+8*FW+2, y, 'u');
           lcd_outdezAtt(MODEL_PARAM_OFS+8*FW+2, y, (g_model.ppmDelay*50)+300, ((attr && m_posHorz==1) ? blink : 0));
-          lcd_putcAtt(MODEL_PARAM_OFS+10*FW, y, g_model.pulsePol ? '-' : '+', (attr && m_posHorz==2) ? INVERS : 0);
+          lcd_putcAtt(MODEL_PARAM_OFS+10*FW, y, g_model.pulsePol ? '+' : '-', (attr && m_posHorz==2) ? INVERS : 0);
 
           if(attr && (s_editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
