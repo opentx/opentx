@@ -31,6 +31,8 @@
  *
  */
 
+// Here Franck you write this line "#define FRANCK" (without the "")
+
 #if defined(PCBARM) && !defined(SIMU)
 extern "C" {
 #include <CoOS.h>
@@ -478,9 +480,11 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
+#ifndef FRANCK
   if (value) value =
       (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
           -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
+#endif
 
   value += calc1000toRESX(ofs);
   lim_p = calc1000toRESX(lim_p);
@@ -2052,7 +2056,10 @@ void perOut(uint8_t tick10ms)
         swOn[i] = true;
         if (md->delayUp) {
           if (swTog) {
-            sDelay[i] = md->delayUp * 50;
+            if (sDelay[i])
+              sDelay[i] = 0;
+            else
+              sDelay[i] = md->delayUp * 50;
           }
           if (sDelay[i] > 0) { // perform delay
             sDelay[i] -= tick10ms;
@@ -2073,7 +2080,10 @@ void perOut(uint8_t tick10ms)
       swOn[i] = false;
       if (md->delayDown) {
         if (swTog) {
-          sDelay[i] = md->delayDown * 50;
+          if (sDelay[i])
+            sDelay[i] = 0;
+          else
+            sDelay[i] = md->delayDown * 50;
         }
         if (sDelay[i] > 0) { // perform delay
           sDelay[i] -= tick10ms;
@@ -3661,11 +3671,11 @@ int main(void)
 
   sei(); // interrupts needed for FRSKY_Init and eeReadAll.
 
-#if defined (FRSKY) and !defined (DSM2_SERIAL)
+#if defined(FRSKY) and !defined(DSM2_SERIAL)
   FRSKY_Init();
 #endif
 
-#if defined (DSM2_SERIAL) and !defined (FRSKY)
+#if defined(DSM2_SERIAL) and !defined(FRSKY)
   DSM2_Init();
 #endif
 

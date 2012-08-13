@@ -1141,7 +1141,7 @@ uint32_t txPdcPending()
   pUsart->US_PTCR = US_PTCR_TXTDIS ;              // Freeze DMA
   x = pUsart->US_TNCR ;                           // Total
   x += pUsart->US_TCR ;                           // Still to send
-  pUsart->US_PTCR = US_PTCR_TXTEN ;                       // DMA active again
+  pUsart->US_PTCR = US_PTCR_TXTEN ;               // DMA active again
   __enable_irq() ;
 
   return x ;

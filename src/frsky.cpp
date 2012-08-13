@@ -1202,7 +1202,7 @@ void menuProcFrsky(uint8_t event)
         }
       }
       if (fields_count == 0) {
-        // No bars at all!
+        // No custom fields at all!
         putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
       }
       lcd_status_line();
