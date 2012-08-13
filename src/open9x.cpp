@@ -484,6 +484,8 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (value) value =
       (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
           -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
+#else
+  value /= 100;
 #endif
 
   value += calc1000toRESX(ofs);
