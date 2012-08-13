@@ -246,7 +246,7 @@
 #define TR_TIMER               "Timer"
 #define TR_ELIMITS             "E.Limits"
 #define TR_ETRIMS              "E.Trims"
-#define TR_TRIMINC             "Trim Inc"
+#define TR_TRIMINC             "Trim Step"
 #define TR_TTRACE              "T-Trace"
 #define TR_TTRIM               "T-Trim"
 #define TR_BEEPCTR             "Beep Ctr"

@@ -73,9 +73,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 {
   int16_t newval = val;
   
-#ifndef KILRAH
-  uint8_t kother = -1;
-#else
   if (keyState(KEY_RIGHT) && keyState(KEY_LEFT)) {
     newval = -val;
     killEvents(KEY_LEFT);
@@ -97,26 +94,16 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     killEvents(KEY_DOWN);
   }
   else 
-#endif
   
   if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
     newval++;
     AUDIO_KEYPAD_UP();
-    kother = KEY_LEFT;
   }
   else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
     newval--;
     AUDIO_KEYPAD_DOWN();
-    kother = KEY_RIGHT;
   }
 
-#ifndef KILRAH
-  if ((kother != (uint8_t)-1) && keyState((EnumKeys)kother)) {
-    newval = -val;
-    killEvents(KEY_RIGHT);
-    killEvents(KEY_LEFT);
-  }
-#endif
   if (i_min==0 && i_max==1 && event==EVT_KEY_FIRST(KEY_MENU)) {
     s_editMode = 0;
     newval=!val;
