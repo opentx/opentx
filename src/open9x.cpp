@@ -1886,7 +1886,11 @@ void evalFunctions()
               if (tmr10ms - s_last_play >= 100) {
                 s_last_play = tmr10ms;
                 if (sd->func == FUNC_PLAY_TRACK)
+#if defined(TTS_CZ) && defined(PCBSTD)                
+                  putVoiceQueueUpper(PROMPT_CUSTOM_BASE+sd->param);
+#else
                   pushPrompt(PROMPT_CUSTOM_BASE+sd->param);
+#endif                  
                 else
                   playValue(sd->param);
               }

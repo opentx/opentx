@@ -132,11 +132,17 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-    div_t qr = div(number, (mode == 1 ? 10 : 100));
-    playNumber(qr.quot);
-    pushUnitPrompt(qr.quot,PROMPT_CELA);
-    playNumber(qr.rem,0,ZENSKY);
-    pushPrompt(PROMPT_UNITS_BASE+((unit-1)*4)+3);
+    div_t qr = div(number, (mode == 1 ? 10 : 100));   
+      if (qr.rem) {
+        playNumber(qr.quot);
+        pushUnitPrompt(qr.quot,PROMPT_CELA);
+        if (mode != 1 && qr.rem < 10)
+          pushPrompt (PROMPT_NULA);
+        playNumber(qr.rem,0,ZENSKY);
+        pushPrompt(PROMPT_UNITS_BASE+((unit-1)*4)+3);
+      }
+      else
+        playNumber(qr.quot, unit);
     return;
   }
 
