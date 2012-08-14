@@ -1023,7 +1023,7 @@ void readKeysAndTrims()
   register uint32_t i;
 
 #if defined(ROTARY_ENCODERS)
-  keys[BTN_REa].input(PIOB->PIO_PDSR & 0x40, BTN_REa);
+  keys[BTN_REa].input(!(PIOB->PIO_PDSR & 0x40), BTN_REa);
 #endif
 
   uint8_t enuk = KEY_MENU;
