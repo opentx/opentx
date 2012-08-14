@@ -1431,7 +1431,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
     }
 
     y = (MixData *)mixaddress(tgt_idx);
-    if(((MixData *)x)->destCh != ((MixData *)y)->destCh) {
+    if(!((MixData *)y)->srcRaw || ((MixData *)x)->destCh != ((MixData *)y)->destCh) {
       if (up) {
         if (((MixData *)x)->destCh>0) ((MixData *)x)->destCh--;
         else return false;
