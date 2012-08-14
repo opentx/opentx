@@ -118,16 +118,6 @@ void audioDefevent(uint8_t e);
 #define AUDIO_WARNING2()    audioDefevent(AU_WARNING2)
 #define AUDIO_ERROR()       audioDefevent(AU_ERROR)
 #if defined(VOICE)
-#if defined(TTS_CZ) && defined(PCBSTD)
-#define AUDIO_TADA()        putVoiceQueueUpper(PROMPT_SYSTEM_BASE+AU_TADA)
-#define AUDIO_TX_BATTERY_LOW() putVoiceQueueUpper(PROMPT_SYSTEM_BASE+AU_TX_BATTERY_LOW)
-#define AUDIO_INACTIVITY()  putVoiceQueueUpper(PROMPT_SYSTEM_BASE+AU_INACTIVITY)
-#define AUDIO_ERROR_MESSAGE(e) putVoiceQueueUpper(PROMPT_SYSTEM_BASE+e)
-#define AUDIO_TIMER_30()    putVoiceQueueUpper(PROMPT_SYSTEM_BASE+AU_TIMER_30)
-#define AUDIO_TIMER_20()    putVoiceQueueUpper(PROMPT_SYSTEM_BASE+AU_TIMER_20)
-#define AUDIO_TIMER_10()    putVoiceQueueUpper(PROMPT_SYSTEM_BASE+AU_TIMER_10)
-#define AUDIO_TIMER_LT3(x)  putVoiceQueueUpper(PROMPT_SYSTEM_BASE+AU_TIMER_LT3)
-#else
 #define AUDIO_TADA()        pushPrompt(PROMPT_SYSTEM_BASE+AU_TADA)
 #define AUDIO_TX_BATTERY_LOW() pushPrompt(PROMPT_SYSTEM_BASE+AU_TX_BATTERY_LOW)
 #define AUDIO_INACTIVITY()  pushPrompt(PROMPT_SYSTEM_BASE+AU_INACTIVITY)
@@ -136,7 +126,6 @@ void audioDefevent(uint8_t e);
 #define AUDIO_TIMER_20()    pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_20)
 #define AUDIO_TIMER_10()    pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_10)
 #define AUDIO_TIMER_LT3(x)  pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_LT3)
-#endif
 #else
 #define AUDIO_TADA()
 #define AUDIO_TX_BATTERY_LOW() audioDefevent(AU_TX_BATTERY_LOW)
