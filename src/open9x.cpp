@@ -31,7 +31,6 @@
  *
  */
 
-// Here Franck you write this line "#define FRANCK" (without the "")
 // KILRAH: or "#define KILRAH_OFS" for what I think is the right thing we discussed this weekend!
 
 #if defined(PCBARM) && !defined(SIMU)
@@ -481,17 +480,11 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
-#if (!defined(FRANCK) && !defined(KILRAH_OFS)) || (defined(FRANCK) && defined(KILRAH_OFS))
+#if !defined(KILRAH_OFS)
   if (value) value =
       (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
           -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
-#endif
-
-#if defined(FRANCK) && !defined(KILRAH_OFS)
-  value /= 100;
-#endif
-
-#if defined(KILRAH_OFS) && !defined(FRANCK)
+#else
   if (value) value =
       (value > 0) ? value * ((int32_t) lim_p) / 100000 :
           -value * ((int32_t) lim_n) / 100000; //div by 100000 -> output = -1024..1024
