@@ -87,8 +87,8 @@
 #define LEN_VMIXTRIMS    "\003"
 #define TR_VMIXTRIMS     "AV ""P\203 ""Rod""Hjd""Gas""Ske"
 
-#define LEN_VCSWFUNC     "\007"
-#define TR_VCSWFUNC      " ---\0  "" X>Y   "" X<Y   "" (X)>Y "" (X)<Y "" AND   "" OR    "" XOR   "" X=Y   "" X!=Y  "" X>Y   "" X<Y   "" X>=Y  "" X<=Y  "
+#define LEN_VCSWFUNC     "\010"
+#define TR_VCSWFUNC      " ---\0   "" X>Y    "" X<Y    "" (X)>Y  "" (X)<Y  "" AND    "" OR     "" XOR    "" X=Y    "" X!=Y   "" X>Y    "" X<Y    "" X>=Y   "" X<=Y   ""D>=ofs\0 ""|D|>=ofs"
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)

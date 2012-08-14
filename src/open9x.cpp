@@ -590,6 +590,8 @@ uint32_t delays[NUM_CSW];
 uint32_t durations[NUM_CSW];
 #endif
 
+int16_t csLastValue[NUM_CSW];
+
 bool __getSwitch(int8_t swtch)
 {
   bool result;
@@ -646,43 +648,7 @@ bool __getSwitch(int8_t swtch)
     else {
       int16_t x = getValue(cs->v1-1);
       int16_t y;
-      if (s == CS_VOFS) {
-#if defined(FRSKY)
-        // Telemetry
-        if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
-          if (frskyStreaming <= 0 && cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
-            return swtch > 0 ? false : true;
-
-          y = convertTelemValue(cs->v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs->v2);
-          uint8_t idx = cs->v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT;
-          if (idx < THLD_MAX) {
-            // Fill the threshold array
-            barsThresholds[idx] = 128 + cs->v2;
-          }
-        }
-        else
-#endif
-        {
-          y = calc100toRESX(cs->v2);
-        }
-
-        switch (cs->func) {
-          case CS_VPOS:
-            result = (x>y);
-            break;
-          case CS_VNEG:
-            result = (x<y);
-            break;
-          case CS_APOS:
-            result = (abs(x)>y);
-            break;
-          // case CS_ANEG:
-          default:
-            result = (abs(x)<y);
-            break;
-        }
-      }
-      else {
+      if (s == CS_VCOMP) {
         y = getValue(cs->v2-1);
 
         switch (cs->func) {
@@ -705,6 +671,56 @@ bool __getSwitch(int8_t swtch)
           default:
             result = (x<=y);
             break;
+        }
+      }
+      else {
+#if defined(FRSKY)
+        // Telemetry
+        if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
+          if (frskyStreaming <= 0 && cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
+            return swtch > 0 ? false : true;
+          if (s == CS_VOFS) {
+            y = convertTelemValue(cs->v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs->v2);
+            uint8_t idx = cs->v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT;
+            if (idx < THLD_MAX) {
+              // Fill the threshold array
+              barsThresholds[idx] = 128 + cs->v2;
+            }
+          }
+          else {
+            y = cs->v2;
+          }
+        }
+        else
+#endif
+        {
+          y = calc100toRESX(cs->v2);
+        }
+
+        switch (cs->func) {
+          case CS_VPOS:
+            result = (x>y);
+            break;
+          case CS_VNEG:
+            result = (x<y);
+            break;
+          case CS_APOS:
+            result = (abs(x)>y);
+            break;
+          case CS_ANEG:
+            result = (abs(x)<y);
+            break;
+          default:
+          {
+            int16_t diff = x - csLastValue[cs_idx];
+            if (cs->func == CS_DIFFEGREATER)
+              result = (y >= 0 ? (diff >= y) : (diff <= y));
+            else
+              result = (abs(diff) >= y);
+            if (result)
+              csLastValue[cs_idx] = x;
+            break;
+          }
         }
       }
     }
@@ -1886,11 +1902,7 @@ void evalFunctions()
               if (tmr10ms - s_last_play >= 100) {
                 s_last_play = tmr10ms;
                 if (sd->func == FUNC_PLAY_TRACK)
-#if defined(TTS_CZ) && defined(PCBSTD)                
-                  putVoiceQueueUpper(PROMPT_CUSTOM_BASE+sd->param);
-#else
-                  pushPrompt(PROMPT_CUSTOM_BASE+sd->param);
-#endif                  
+                  pushCustomPrompt(sd->param);
                 else
                   playValue(sd->param);
               }

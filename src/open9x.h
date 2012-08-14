@@ -365,26 +365,31 @@ extern Key keys[NUM_KEYS];
 #define SWASH_TYPE_90    4
 #define SWASH_TYPE_NUM   4
 
-#define CS_OFF       0
-#define CS_VPOS      1  //v>offset
-#define CS_VNEG      2  //v<offset
-#define CS_APOS      3  //|v|>offset
-#define CS_ANEG      4  //|v|<offset
-#define CS_AND       5
-#define CS_OR        6
-#define CS_XOR       7
-#define CS_EQUAL     8
-#define CS_NEQUAL    9
-#define CS_GREATER   10
-#define CS_LESS      11
-#define CS_EGREATER  12
-#define CS_ELESS     13
-#define CS_MAXF      13  //max function
+enum CswFunctions {
+  CS_OFF,
+  CS_VPOS,   // v>offset
+  CS_VNEG,   // v<offset
+  CS_APOS,   // |v|>offset
+  CS_ANEG,   // |v|<offset
+  CS_AND,
+  CS_OR,
+  CS_XOR,
+  CS_EQUAL,
+  CS_NEQUAL,
+  CS_GREATER,
+  CS_LESS,
+  CS_EGREATER,
+  CS_ELESS,
+  CS_DIFFEGREATER,
+  CS_ADIFFEGREATER,
+  CS_MAXF = CS_ADIFFEGREATER
+};
 
 #define CS_VOFS       0
 #define CS_VBOOL      1
 #define CS_VCOMP      2
-#define CS_STATE(x)   ((x)<CS_AND ? CS_VOFS : ((x)<CS_EQUAL ? CS_VBOOL : CS_VCOMP))
+#define CS_VDIFF      3
+#define CS_STATE(x)   ((x)<CS_AND ? CS_VOFS : ((x)<CS_EQUAL ? CS_VBOOL : ((x)<CS_DIFFEGREATER ? CS_VCOMP : CS_VDIFF)))
 
 #define SW_BASE      SW_ThrCt
 #define SW_BASE_DIAG SW_ThrCt

@@ -403,7 +403,8 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
         break;
       }
       if (m_posVert==0 || !menuTab) {
-        popMenu();  //beeps itself
+        popMenu();  // beeps itself
+        return false;
       }
       else {
         AUDIO_MENUS();

@@ -2278,11 +2278,22 @@ void menuProcCustomSwitchOne(uint8_t event)
           putsSwitches(CSW_2ND_COLUMN, y, cs->v2, attr);
           v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
         }
-        else if (cstate == CS_VOFS) {
+        else if (cstate == CS_VCOMP) {
+          putsChnRaw(CSW_2ND_COLUMN, y, cs->v2, attr);
+        }
+        else {
 #if defined(FRSKY)
           if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-            putsTelemetryChannel(CSW_2ND_COLUMN, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2), attr|LEFT);
-            v2_min = -128; v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
+            putsTelemetryChannel(CSW_2ND_COLUMN, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), cstate==CS_VOFS ? convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2) : cs->v2, attr|LEFT);
+            v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY));
+            if (cstate == CS_VOFS) {
+              v2_min = -128;
+              v2_max -= 128;
+            }
+            else {
+              v2_max = min((uint8_t)127, (uint8_t)v2_max);
+              v2_min = -v2_max;
+            }
             if (cs->v2 > v2_max) {
               cs->v2 = v2_max;
               eeDirty(EE_MODEL);
@@ -2295,9 +2306,7 @@ void menuProcCustomSwitchOne(uint8_t event)
             lcd_outdezAtt(CSW_2ND_COLUMN, y, cs->v2, attr|LEFT);
           }
         }
-        else {
-          putsChnRaw(CSW_2ND_COLUMN, y, cs->v2, attr);
-        }
+
         if (attr) {
           CHECK_INCDEC_MODELVAR(event, cs->v2, v2_min, v2_max);
         }
@@ -2325,7 +2334,7 @@ void menuProcCustomSwitchOne(uint8_t event)
 
 void menuProcCustomSwitches(uint8_t event)
 {
-  MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, 2/*repeated...*/});
+  SIMPLE_MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1);
 
   uint8_t y = 0;
   uint8_t k = 0;
@@ -2359,39 +2368,31 @@ void menuProcCustomSwitches(uint8_t event)
 
     if (cs->func > 0) {
       // CSW func
-      lcd_putsiAtt(4*FW - 2, y, STR_VCSWFUNC, cs->func, 0);
+      lcd_putsiAtt(4*FW - 4, y, STR_VCSWFUNC, cs->func, 0);
 
       // CSW params
       uint8_t cstate = CS_STATE(cs->func);
 
-      if (cstate == CS_VOFS)
-      {
-          putsChnRaw(12*FW-6, y, cs->v1, 0);
+      if (cstate == CS_VBOOL) {
+        putsSwitches(12*FW-4, y, cs->v1, 0);
+        putsSwitches(17*FW, y, cs->v2, 0);
+      }
+      else if (cstate == CS_VCOMP) {
+        putsChnRaw(12*FW-4, y, cs->v1, 0);
+        putsChnRaw(17*FW, y, cs->v2, 0);
+      }
+      else {
+        putsChnRaw(12*FW-4, y, cs->v1, 0);
 
 #if defined(FRSKY)
-          if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-            putsTelemetryChannel(19*FW, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2), 0);
-            int8_t v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
-            if (cs->v2 > v2_max) {
-              cs->v2 = v2_max;
-              eeDirty(EE_MODEL);
-            }
-          }
-          else
+        if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+          putsTelemetryChannel(19*FW, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), cstate==CS_VOFS ? convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2) : cs->v2, 0);
+        }
+        else
 #endif
-          {
-            lcd_outdezAtt(19*FW, y, cs->v2, 0);
-          }
-      }
-      else if (cstate == CS_VBOOL)
-      {
-          putsSwitches(12*FW-6, y, cs->v1, 0);
-          putsSwitches(17*FW, y, cs->v2, 0);
-      }
-      else // cstate == CS_COMP
-      {
-          putsChnRaw(12*FW-6, y, cs->v1, 0);
-          putsChnRaw(17*FW, y, cs->v2, 0);
+        {
+          lcd_outdezAtt(19*FW, y, cs->v2, 0);
+        }
       }
     }
   }
@@ -2416,49 +2417,54 @@ void menuProcCustomSwitches(uint8_t event)
     putsSwitches(0, y, sw, getSwitch(sw, 0) ? BOLD : 0);
 
     // CSW func
-    lcd_putsiAtt(4*FW - 2, y, STR_VCSWFUNC, cs->func, m_posHorz==0 ? attr : 0);
+    lcd_putsiAtt(4*FW - 4, y, STR_VCSWFUNC, cs->func, m_posHorz==0 ? attr : 0);
 
     // CSW params
     uint8_t cstate = CS_STATE(cs->func);
     int8_t v1_min=0, v1_max=NUM_XCHNCSW, v2_min=0, v2_max=NUM_XCHNCSW;
 
-    if (cstate == CS_VOFS)
-    {
-        putsChnRaw(12*FW-6, y, cs->v1, (m_posHorz==1 ? attr : 0));
+    if (cstate == CS_VBOOL) {
+      putsSwitches(12*FW-4, y, cs->v1, m_posHorz==1 ? attr : 0);
+      putsSwitches(17*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+      v1_min = SWITCH_OFF; v1_max = SWITCH_ON;
+      v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
+    }
+    else if (cstate == CS_VCOMP) {
+      putsChnRaw(12*FW-4, y, cs->v1, m_posHorz==1 ? attr : 0);
+      putsChnRaw(17*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+    }
+    else {
+      putsChnRaw(12*FW-4, y, cs->v1, (m_posHorz==1 ? attr : 0));
 
 #if defined(FRSKY)
-        if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-          putsTelemetryChannel(19*FW, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2), m_posHorz==2 ? attr : 0);
-          v2_min = -128; v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY)) - 128;
-          if (cs->v2 > v2_max) {
-            cs->v2 = v2_max;
-            eeDirty(EE_MODEL);
-          }
+      if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
+        putsTelemetryChannel(19*FW, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), cstate==CS_VOFS ? convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2) : cs->v2, m_posHorz==2 ? attr : 0);
+        v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY));
+        if (cstate == CS_VOFS) {
+          v2_min = -128;
+          v2_max -= 128;
         }
-        else
+        else {
+          v2_max = min((uint8_t)127, (uint8_t)v2_max);
+          v2_min = -v2_max;
+        }
+        if (cs->v2 > v2_max) {
+          cs->v2 = v2_max;
+          eeDirty(EE_MODEL);
+        }
+      }
+      else
 #endif
-        {
-          lcd_outdezAtt(19*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
-          v2_min = -125; v2_max = 125;
-        }
-    }
-    else if (cstate == CS_VBOOL)
-    {
-        putsSwitches(12*FW-6, y, cs->v1, m_posHorz==1 ? attr : 0);
-        putsSwitches(17*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
-        v1_min = SWITCH_OFF; v1_max = SWITCH_ON;
-        v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
-    }
-    else // cstate == CS_COMP
-    {
-        putsChnRaw(12*FW-6, y, cs->v1, m_posHorz==1 ? attr : 0);
-        putsChnRaw(17*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+      {
+        lcd_outdezAtt(19*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+        v2_min = -125; v2_max = 125;
+      }
     }
 
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (m_posHorz) {
         case 0:
-          CHECK_INCDEC_MODELVAR(event, cs->func, 0,CS_MAXF);
+          CHECK_INCDEC_MODELVAR(event, cs->func, 0, CS_MAXF);
           if (cstate != CS_STATE(cs->func)) {
             cs->v1 = 0;
             cs->v2 = 0;

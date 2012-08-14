@@ -34,8 +34,8 @@
 #include "../open9x.h"
 
 struct t_voice Voice ;
-static uint8_t v_ctr ;
-uint8_t v_first[8] ;
+/* TODO why? static uint8_t v_ctr ;
+uint8_t v_first[8] ; */
 
 void putVoiceQueueUpper( uint8_t value )
 {
@@ -48,7 +48,19 @@ void putVoiceQueueUpper( uint8_t value )
   }
 }
 
-void pushPrompt( uint8_t value )
+void pushCustomPrompt(uint8_t value)
+{
+  struct t_voice *vptr ;
+  vptr = voiceaddress() ;
+
+  if (vptr->VoiceQueueCount < VOICE_Q_LENGTH-1)
+  {
+    pushPrompt( 0xFF ) ;
+    pushPrompt( value ) ;
+  }
+}
+
+void pushPrompt(uint8_t value)
 {
 #ifdef SIMU
   printf("playFile(\"%04d.ad4\")\n", value); fflush(stdout);
@@ -62,10 +74,11 @@ void pushPrompt( uint8_t value )
     vptr->VoiceQueueInIndex &= (VOICE_Q_LENGTH - 1);
     vptr->VoiceQueueCount += 1;
   }
+  /* TODO why?
   if (v_ctr < 8) {
     v_first[v_ctr] = value;
     v_ctr += 1;
-  }
+  } */
 }
 
 struct t_voice *voiceaddress()

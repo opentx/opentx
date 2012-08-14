@@ -48,13 +48,8 @@
 #define V_WAIT_BUSY_OFF         4
 #define V_WAIT_BUSY_DELAY       5
 
-#if defined(TTS_CZ) && defined(PCBSTD)
-#define PROMPT_SYSTEM_BASE      0
-#define PROMPT_CUSTOM_BASE      40
-#else
-#define PROMPT_SYSTEM_BASE      170
-#define PROMPT_CUSTOM_BASE      200
-#endif
+#define PROMPT_SYSTEM_BASE      230
+#define PROMPT_CUSTOM_BASE      256
 
 struct t_voice
 {
@@ -72,9 +67,8 @@ struct t_voice
 
     void voice_process( void ) ;
 };
-#if defined(TTS_CZ)
-extern void putVoiceQueueUpper( uint8_t value );
-#endif
+
+extern void pushCustomPrompt( uint8_t value );
 extern void pushPrompt( uint8_t value );
 extern struct t_voice *voiceaddress( void ) ;
 extern struct t_voice Voice ;

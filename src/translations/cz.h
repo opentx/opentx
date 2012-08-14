@@ -92,8 +92,8 @@
 #define LEN_VMIXTRIMS    "\004"
 #define TR_VMIXTRIMS     "VYP\0""ZAP\0""Sm\203r""V\212\207k""Plyn""K\206id"
 
-#define LEN_VCSWFUNC     "\007"
-#define TR_VCSWFUNC      "----\0  ""v>ofs  ""v<ofs  ""|v|>ofs""|v|<ofs""AND    ""OR     ""XOR    ""v1==v2 ""v1!=v2 ""v1>v2  ""v1<v2  ""v1>=v2 ""v1<=v2 "
+#define LEN_VCSWFUNC     "\010"
+#define TR_VCSWFUNC      "---\0    ""v>ofs\0  ""v<ofs\0  ""|v|>ofs\0""|v|<ofs\0""AND\0    ""OR\0     ""XOR\0    ""v1==v2\0 ""v1!=v2\0 ""v1>v2\0  ""v1<v2\0  ""v1>=v2\0 ""v1<=v2\0 ""d>=ofs\0 ""|d|>=ofs"
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)
