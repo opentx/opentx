@@ -150,7 +150,7 @@
 #define TR_FUNCSOUNDS                   "Warn 1""Warn 2""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "                                                                                                                                                   
                                                                                                                                                                                                                                                                                                    
 #define LEN_VTELEMCHNS                  "\004"                                                                                                                                                                                                                                                     
-#define TR_VTELEMCHNS                   "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
+#define TR_VTELEMCHNS                   "---\0""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
                                                                                                                                                                                                                                                                                                    
 #ifdef IMPERIAL_UNITS                                                                                                                                                                                                                                                                              
 #define LENGTH_UNIT                     "ft\0"                                                                                                                                                                                                                                                     
@@ -210,12 +210,12 @@
 #endif                                                                                                                                                                                                                                                                                             
                                                                                                                                                                                                                                                                                                    
 #define LEN_VSRCRAW                     "\004"                                                                                                                                                                                                                                                     
-#if defined(PCBV4)
-#if defined(EXTRA_ROTARY_ENCODERS)
-#define TR_ROTARY_ENCODERS_VSRCRAW      "REa ""REb ""REc ""REd "
-#else
-#define TR_ROTARY_ENCODERS_VSRCRAW      "REa ""REb "
-#endif
+#if defined(PCBARM)
+#define TR_ROTARY_ENCODERS_VSRCRAW "REa "
+#elif defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
+#define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
+#elif defined(PCBV4) && !defined(EXTRA_ROTARY_ENCODERS)
+#define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW
 #endif
@@ -278,7 +278,7 @@
 #define TR_DRWEIGHT                     "DR Weight"                                                           
 #define TR_DREXPO                       "DR Expo"                                                             
 #define TR_TRIM                         "Trim"                                                                
-#define TR_CURVES                       "Kurven"                                                              
+#define TR_CURVE                        "Kurve"
 #define TR_FPHASE                       "F.Phase"                                                             
 #define TR_MIXWARNING                   "Warnung"
 #define TR_OFF                          "AUS"                                                                 

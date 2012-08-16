@@ -316,7 +316,7 @@ void menuMainView(uint8_t event)
       }
     }
     else {
-#if defined(PCBV4)
+#if defined(ROTARY_ENCODERS)
       for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
         int16_t val = getRotaryEncoder(i);
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
@@ -328,7 +328,7 @@ void menuMainView(uint8_t event)
         V_BAR(SCREEN_WIDTH/2-3+V_BAR_W*i, SCREEN_HEIGHT-8, len)
 #endif //EXTRA_ROTARY_ENCODERS
       }
-#endif //PCBV4
+#endif // ROTARY_ENCODERS
 #if defined(PCBARM)
       for (uint8_t i=0; i<NUM_CSW; i++) {
         int8_t len = getSwitch(10+i, 0) ? BAR_HEIGHT : 1;

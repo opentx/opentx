@@ -417,7 +417,7 @@ enum CswFunctions {
 #elif defined(WS_HOW_HIGH)
 #define NUM_TELEMETRY      TELEM_ALT
 #elif defined(FRSKY)
-#define NUM_TELEMETRY      TELEM_RSSI_RX
+#define NUM_TELEMETRY      TELEM_A2
 #elif defined(MAVLINK)
 // Number sw position
 #define NUM_TELEMETRY      4

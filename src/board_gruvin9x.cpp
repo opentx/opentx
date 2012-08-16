@@ -124,7 +124,7 @@ inline void board_init()
   TCCR5B = (1 << WGM52) | (3<<CS50); // CTC OCR1A, 16MHz / 64 (4us ticks)
   TIMSK5 |= (1<<OCIE5A);
 
-#ifdef EXTRA_ROTARY_ENCODERS
+#if defined(EXTRA_ROTARY_ENCODERS)
   //configure uart1 here
   DDRD &= ~(1 << 2);
   PORTD &= ~(1 << 2);

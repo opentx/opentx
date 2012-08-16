@@ -112,6 +112,10 @@ THR_TRACE = YES
 # Values = YES, NO
 PPM_CENTER_ADJUSTABLE = NO
 
+# PPM symetrical limits
+# Values = YES, NO
+PPM_LIMITS_SYMETRICAL = NO
+
 # Limits display in the LIMITS
 # Values = PERCENT, US
 PPM_LIMITS_UNIT = PERCENT
@@ -476,6 +480,11 @@ endif
 
 ifeq ($(PPM_CENTER_ADJUSTABLE), YES)
   CPPDEFS += -DPPM_CENTER_ADJUSTABLE
+endif
+
+
+ifeq ($(PPM_LIMITS_SYMETRICAL), YES)
+  CPPDEFS += -DPPM_LIMITS_SYMETRICAL
 endif
 
 ifeq ($(PPM_LIMITS_UNIT), US)

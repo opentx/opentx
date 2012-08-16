@@ -81,6 +81,7 @@ MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
   mix->destCh = dch;
   mix->srcRaw = src;
   mix->weight = 100;
+  mix->phases = 1;
   return mix;
 }
 
@@ -189,9 +190,9 @@ void applyTemplate(uint8_t idx)
         md=setDest(ICC(STK_ELE), MIXSRC_CH9);   md->weight=-100;
         md=setDest(ICC(STK_ELE), MIXSRC_CH11);  md->carryTrim=TRIM_OFF;
 
-        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW_ID0; md->curve=CV(1); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW_ID1; md->curve=CV(2); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->weight= 110; md->swtch=DSW_ID2; md->curve=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW_ID0; md->curveParam=CV(1); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW_ID1; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->weight= 110; md->swtch=DSW_ID2; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
         md=setDest(ICC(STK_THR), MIXSRC_MAX);   md->weight=-125; md->swtch=DSW_THR;  md->mltpx=MLTPX_REP; md->carryTrim=TRIM_OFF;
 
         md=setDest(ICC(STK_RUD), MIXSRC_Rud);
@@ -206,10 +207,10 @@ void applyTemplate(uint8_t idx)
 
         md=setDest(8, MIXSRC_Ele);  md->weight= 60;
         md=setDest(9, MIXSRC_Ail);  md->weight=-52;
-        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID0; md->curve=CV(3); md->carryTrim=TRIM_OFF;
-        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID1; md->curve=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID2; md->curve=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10, MIXSRC_Thr); md->swtch=DSW_THR; md->curve=CV(5); md->carryTrim=TRIM_OFF;  md->mltpx=MLTPX_REP;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID0; md->curveParam=CV(3); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID1; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID2; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->swtch=DSW_THR; md->curveParam=CV(5); md->carryTrim=TRIM_OFF;  md->mltpx=MLTPX_REP;
 
         //Set up Curves
         setCurve(CURVE5(1), heli_ar1);

@@ -145,7 +145,7 @@
 #define TR_FUNCSOUNDS    "Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Cur+""Acc\0""Tid\0"
+#define TR_VTELEMCHNS    "---\0""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Cur+""Acc\0""Tid\0"
 
 #ifdef IMPERIAL_UNITS
 #define LENGTH_UNIT      "fot"
@@ -208,12 +208,12 @@
 #endif
 
 #define LEN_VSRCRAW      "\004"
-#if defined(PCBV4)
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if defined(PCBARM)
+#define TR_ROTARY_ENCODERS_VSRCRAW "REa "
+#elif defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
-#else
+#elif defined(PCBV4) && !defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "
-#endif
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW
 #endif
@@ -275,7 +275,7 @@
 #define TR_DRWEIGHT     "DR-vikt"
 #define TR_DREXPO       "DR-expo"
 #define TR_TRIM         "Trim"
-#define TR_CURVES       "Kurvor"
+#define TR_CURVE       "Kurvor"
 #define TR_FPHASE       "Flygfas"
 #define TR_MIXWARNING   "Varning"
 #define TR_OFF          "AV "

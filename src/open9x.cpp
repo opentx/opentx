@@ -31,8 +31,6 @@
  *
  */
 
-// KILRAH: or "#define KILRAH_OFS" for what I think is the right thing we discussed this weekend!
-
 #if defined(PCBARM) && !defined(SIMU)
 extern "C" {
 #include <CoOS.h>
@@ -229,6 +227,7 @@ inline void applyDefaultTemplate()
     md->destCh = i;
     md->weight = 100;
     md->srcRaw = channel_order(i+1);
+    md->phases = 1;
   }
 
   STORE_MODELVARS;
@@ -405,7 +404,7 @@ ACTIVE_EXPOS_TYPE activeExpos;
 
 void applyExpos(int16_t *anas)
 {
-  static int16_t anas2[NUM_STICKS]; // values before expo, to ensure same expo base when multiple expo lines are used
+  int16_t anas2[NUM_STICKS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 
   uint8_t phase = s_perout_flight_phase + 1;
@@ -480,14 +479,19 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
-#if !defined(KILRAH_OFS)
-  if (value) value =
-      (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
-          -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
+#if defined(PPM_LIMITS_SYMETRICAL)
+  if (value) {
+    // TODO flash saving
+    if (g_model.limitData[channel].symetrical)
+      value = (value > 0) ? value * ((int32_t) lim_p) / 100000 :
+                           -value * ((int32_t) lim_n) / 100000; //div by 100000 -> output = -1024..1024
+    else
+      value = (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
+                           -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
+  }
 #else
-  if (value) value =
-      (value > 0) ? value * ((int32_t) lim_p) / 100000 :
-          -value * ((int32_t) lim_n) / 100000; //div by 100000 -> output = -1024..1024
+  if (value) value = (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
+                                  -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
 #endif
 
   value += calc1000toRESX(ofs);
@@ -517,7 +521,7 @@ int16_t getValue(uint8_t i)
   /*srcRaw is shifted +1!*/
 
   if(i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
-#if defined(PCBV4)
+#if defined(PCBV4) || defined(PCBARM)
   else if(i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS) return getRotaryEncoder(i-(NUM_STICKS+NUM_POTS));
 #endif
   else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
@@ -534,9 +538,9 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CSW_CHOUT_BASE];
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_TM2) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT];
 #if defined(FRSKY)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_A2) return frskyData.analog[i-CSW_CHOUT_BASE-NUM_CHNOUT-2].value;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyData.rssi[1].value;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyData.rssi[0].value;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_A2) return frskyData.analog[i-CSW_CHOUT_BASE-NUM_CHNOUT-4].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyData.hub.baroAltitude_bp;
 #endif
@@ -855,7 +859,7 @@ uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
   return 0;
 }
 
-#if defined(PCBV4) && defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS)
 uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 {
   uint8_t phase = s_perout_flight_phase;
@@ -901,13 +905,6 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 #endif
   *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
   eeDirty(EE_MODEL);
-}
-#endif
-
-#if defined(PCBARM) && defined(ROTARY_ENCODERS)
-void incRotaryEncoder(uint8_t idx, int8_t inc)
-{
-  g_rotenc[idx] += inc;
 }
 #endif
 
@@ -1536,6 +1533,7 @@ uint16_t isqrt32(uint32_t n)
 
 // static variables used in perOut - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
+int16_t  rawAnas [NUM_STICKS] = {0};
 int16_t  anas [NUM_STICKS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
@@ -1641,6 +1639,7 @@ BeepANACenter evalSticks()
         v = int32_t(v)*g_model.swashR.value*RESX/(int32_t(d)*100);
 #endif
 
+      rawAnas[ch] = v;
       anas[ch] = v; //set values for mixer
     }
   }
@@ -1870,36 +1869,25 @@ void evalFunctions()
 #endif
 
 #if defined(PCBARM) && defined(SDCARD)
-          else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {
-            if (!audioQueue.busy()) {
-              if (sd->func == FUNC_PLAY_TRACK) {
-                char lfn[] = SOUNDS_PATH "/xxxxxx.wav";
-                strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
-                lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
-                strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-                audioQueue.playFile(lfn);
-              }
-              else {
-                playValue(FSW_PARAM(sd));
-              }
-            }
+          else if (sd->func == FUNC_PLAY_TRACK) {
+            char lfn[] = SOUNDS_PATH "/xxxxxx.wav";
+            strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
+            lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
+            strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
+            audioQueue.playFile(lfn);
+          }
+          else if (sd->func == FUNC_PLAY_VALUE) {
+            playValue(FSW_PARAM(sd));
           }
           else if (sd->func == FUNC_VOLUME) {
             requiredSpeakerVolume = ((1024 + getValue(FSW_PARAM(sd))) * NUM_VOL_LEVELS) / 2048;
           }
 #elif defined(VOICE)
-          else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {
-            if (!isPlaying()) {
-              static uint16_t s_last_play = 0;
-              uint16_t tmr10ms = get_tmr10ms();
-              if (tmr10ms - s_last_play >= 100) {
-                s_last_play = tmr10ms;
-                if (sd->func == FUNC_PLAY_TRACK)
-                  pushCustomPrompt(sd->param);
-                else
-                  playValue(sd->param);
-              }
-            }
+          else if (sd->func == FUNC_PLAY_TRACK) {
+            pushCustomPrompt(sd->param);
+          }
+          else if (sd->func == FUNC_PLAY_VALUE) {
+            playValue(sd->param);
           }
 #endif
 
@@ -2018,23 +2006,14 @@ void perOut(uint8_t tick10ms)
 
   //========== MIXER LOOP ===============
   uint8_t lv_mixWarning = 0;
-  uint8_t phase = s_perout_flight_phase + 1;
+
   for (uint8_t i=0; i<MAX_MIXERS; i++) {
 
     MixData *md = mixaddress( i ) ;
 
     if (md->srcRaw==0) break;
 
-    if (md->phase != 0) {
-      if (md->phase > 0) {
-        if (phase != md->phase)
-          continue;
-      }
-      else {
-        if (phase == -md->phase)
-          continue;
-      }
-    }
+    if (!(md->phases & (1<<s_perout_flight_phase))) continue;
 
     //========== SWITCH ===============
     bool sw = getSwitch(md->swtch, 1);
@@ -2054,7 +2033,7 @@ void perOut(uint8_t tick10ms)
     }
     else {
       if (k < NUM_STICKS)
-        v = anas[k]; //Switch is on. MAX=FULL=512 or value.
+        v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
       else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CH16-1 && k-MIXSRC_CH1+1<md->destCh) // if we've already calculated the value - take it instead
         v = chans[k-MIXSRC_CH1+1] / 100;
       else if (k>=MIXSRC_THR-1 && k<=MIXSRC_SWC-1) {
@@ -2174,17 +2153,20 @@ void perOut(uint8_t tick10ms)
     }
 
     //========== CURVES ===============
-    if (md->curve)
-      v = applyCurve(v, md->curve);
+    if (md->curveParam && md->curveMode == MODE_CURVE) {
+      v = applyCurve(v, md->curveParam);
+    }
 
-    //========== MULTIPLEX ===============
+    //========== WEIGHT ===============
     int32_t dv = (int32_t)v*md->weight;
 
-    int8_t differential = md->differential;
-    if (differential>0 && dv<0)
-      dv = (dv * (50-differential)) / 50;
-    else if (differential<0 && dv>0)
-      dv = (dv * (50+differential)) / 50;
+    //========== DIFFERENTIAL =========
+    if (md->curveMode == MODE_DIFFERENTIAL) {
+      if (md->curveParam>0 && dv<0)
+        dv = (dv * (50-md->curveParam)) / 50;
+      else if (md->curveParam<0 && dv>0)
+        dv = (dv * (50+md->curveParam)) / 50;
+    }
 
     int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
     switch(md->mltpx){
@@ -2600,6 +2582,10 @@ void perMain()
 
   lcd_clear();
   
+#if defined(PCBARM) && defined(SIMU)
+  checkTrims();
+#endif
+
 #if defined(PCBSTD)
   uint8_t evt = getEvent();
   evt = checkTrim(evt);
@@ -2961,20 +2947,18 @@ ISR(USART0_UDRE_vect)
 
 void instantTrim()
 {
+  s_perout_mode = e_perout_mode_notrainer;
+  evalSticks();
+  s_perout_mode = e_perout_mode_normal;
+
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(s_perout_flight_phase, i);
-      s_perout_mode = e_perout_mode_notrainer;
-      evalSticks();
-      s_perout_mode = e_perout_mode_normal;
       int16_t trim = (anas[i] + trims[i]) / 2;
-      if (trim < TRIM_EXTENDED_MIN) {
-        trim = TRIM_EXTENDED_MIN;
-      }
-      if (trim > TRIM_EXTENDED_MAX) {
-        trim = TRIM_EXTENDED_MAX;
-      }
+      // TODO limit
+      if (trim < TRIM_EXTENDED_MIN) trim = TRIM_EXTENDED_MIN;
+      if (trim > TRIM_EXTENDED_MAX) trim = TRIM_EXTENDED_MAX;
       setTrimValue(trim_phase, i, trim);
     }
   }

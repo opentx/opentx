@@ -213,7 +213,7 @@ void setupPulsesPPM(uint8_t proto)
     rest += (int32_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=(proto==PROTO_PPM16) ? p-8 : 0; i<p; i++) {
 #ifdef PPM_CENTER_ADJUSTABLE
-      int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*(PPM_CENTER+g_model.servoCenter[i]);
+      int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*(PPM_CENTER+limitaddress(i)->ppmCenter);
 #else
       int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CENTER;
 #endif

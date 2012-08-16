@@ -240,7 +240,7 @@ extern const pm_char STR_WEIGHT[];
 extern const pm_char STR_DIFFERENTIAL[];
 extern const pm_char STR_OFFSET[];
 extern const pm_char STR_TRIM[];
-extern const pm_char STR_CURVES[];
+extern const pm_char STR_CURVE[];
 extern const pm_char STR_FPHASE[];
 extern const pm_char STR_MIXWARNING[];
 extern const pm_char STR_OFF[];

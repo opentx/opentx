@@ -633,7 +633,7 @@ void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
   }
 }
 
-#if defined(PCBV4)
+#if defined(ROTARY_ENCODERS)
 void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
 {
 #if defined(EXTRA_ROTARY_ENCODERS)

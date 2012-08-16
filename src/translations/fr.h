@@ -85,10 +85,10 @@
 #define TR_VMLTPX2       "+=""*="":="
 
 #define LEN_VMIXTRIMS    "\003"
-#define TR_VMIXTRIMS     "OFF""ON ""Dir""Prf""Gaz""Ail"
+#define TR_VMIXTRIMS     "OFF""ON\0""Dir""Prf""Gaz""Ail"
 
 #define LEN_VCSWFUNC     "\010"
-#define TR_VCSWFUNC      "---\0    ""v>ofs\0  ""v<ofs\0  ""|v|>ofs\0""|v|<ofs\0""AND\0    ""OR\0     ""XOR\0    ""v1==v2\0 ""v1!=v2\0 ""v1>v2\0  ""v1<v2\0  ""v1>=v2\0 ""v1<=v2\0 ""d>=ofs\0 ""|d|>=ofs"
+#define TR_VCSWFUNC      "----\0   ""v>ofs\0  ""v<ofs\0  ""|v|>ofs\0""|v|<ofs\0""ET\0     ""OU\0     ""OU Excl\0""v1==v2\0 ""v1!=v2\0 ""v1>v2\0  ""v1<v2\0  ""v1>=v2\0 ""v1<=v2\0 ""d>=ofs\0 ""|d|>=ofs"
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)
@@ -145,7 +145,7 @@
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
-#define TR_VTELEMCHNS    "---\0""Chr1""Chr2""A1\0 ""A2\0 ""Tx\0 ""Rx\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Velm""Vfas""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Cur+""Acc\0""Time"
+#define TR_VTELEMCHNS    "---\0""Chr1""Chr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Velm""Vfas""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Cur+""Acc\0""Time"
 
 #ifdef IMPERIAL_UNITS
 #define LENGTH_UNIT "ft\0"
@@ -208,12 +208,12 @@
 #endif
 
 #define LEN_VSRCRAW      "\004"
-#if defined(PCBV4)
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if defined(PCBARM)
+#define TR_ROTARY_ENCODERS_VSRCRAW "REa "
+#elif defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
-#else
+#elif defined(PCBV4) && !defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "
-#endif
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW
 #endif
@@ -275,8 +275,8 @@
 #define TR_MIXEROFFSET  "Offset Mixage"
 #define TR_DRWEIGHT     "Ratio DR"
 #define TR_DREXPO       "Expo DR"
-#define TR_TRIM         "Trim"
-#define TR_CURVES       "Courbe"
+#define TR_TRIM         "Trim/DR"
+#define TR_CURVE        "Courbe"
 #define TR_FPHASE       "Ph.Vol"
 #define TR_MIXWARNING   "Alerte"
 #define TR_OFF          "OFF"

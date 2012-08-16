@@ -323,8 +323,29 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       if(getApp()->getKeyState(keys2[i])) {
 #if defined(PCBARM)
         switch(i) {
+          case 6:
+            PIOA->PIO_PDSR &= ~0x00800000;
+            break;
+          case 7:
+            PIOB->PIO_PDSR &= ~0x10;
+            break;
+          case 4:
+            PIOA->PIO_PDSR &= ~0x00000002;
+            break;
+          case 5:
+            PIOC->PIO_PDSR &= ~0x00000400;
+            break;
+          case 3:
+            PIOA->PIO_PDSR &= ~0x01000000;
+            break;
+          case 2:
+            PIOC->PIO_PDSR &= ~0x10000000;
+            break;
+          case 1:
+            PIOA->PIO_PDSR &= ~0x00000001;
+            break;
           case 0:
-            PIOA->PIO_PDSR |= 0x00800000;
+            PIOC->PIO_PDSR &= ~0x00000200;
             break;
         }
 #elif defined(PCBV4)

@@ -1222,10 +1222,10 @@ void menuProcFrsky(uint8_t event)
           uint8_t thresholdX = 0;
           if (source <= TELEM_TM2)
             threshold = 0;
-          else if (source <= TELEM_A2)
-            threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
           else if (source <= TELEM_RSSI_RX)
             threshold = getRssiAlarmValue(source-TELEM_RSSI_TX);
+          else if (source <= TELEM_A2)
+            threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
           else
             threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
           int16_t barMin = convertTelemValue(source, bmin);

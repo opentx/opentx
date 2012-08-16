@@ -833,6 +833,7 @@ uint32_t read_trims()
   trims = 0;
 
   trima = PIOA->PIO_PDSR;
+
 // TRIM_LH_DOWN    PA7 (PA23)
 #ifdef REVB
   if ((trima & 0x00800000) == 0)

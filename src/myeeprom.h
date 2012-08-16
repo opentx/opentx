@@ -49,11 +49,11 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBARM)
-#define EEPROM_VER       211
+#define EEPROM_VER       212
 #elif defined(PCBV4)
-#define EEPROM_VER       210
+#define EEPROM_VER       211
 #else
-#define EEPROM_VER       210
+#define EEPROM_VER       211
 #endif
 
 #ifndef PACK
@@ -192,8 +192,10 @@ PACK(typedef struct t_ExpoData {
 PACK(typedef struct t_LimitData {
   int8_t  min;
   int8_t  max;
-  bool    revert;
-  int16_t offset;
+  int8_t  ppmCenter;
+  int16_t offset:14;
+  uint8_t symetrical:1;
+  uint8_t revert:1;
 }) LimitData;
 
 enum MixSources {
@@ -204,7 +206,9 @@ enum MixSources {
     MIXSRC_P1,
     MIXSRC_P2,
     MIXSRC_P3,
-#if defined(PCBV4)
+#if defined(PCBARM)
+    MIXSRC_REa,
+#elif defined(PCBV4)
     MIXSRC_REa,
     MIXSRC_REb,
 #if defined(EXTRA_ROTARY_ENCODERS)
@@ -255,46 +259,52 @@ enum MixSources {
 #define MLTPX_MUL   1
 #define MLTPX_REP   2
 
+#define MODE_CURVE         0
+#define MODE_DIFFERENTIAL  1
+
 #if defined(PCBARM)
 #define MAX_DELAY   60 /* 30 seconds */
 #define MAX_SLOW    60 /* 30 seconds */
 PACK(typedef struct t_MixData {
-  uint8_t destCh;
-  int8_t  phase;
+  uint8_t  destCh;
+  uint16_t phases;
+  uint8_t curveMode:1;       // O=curve, 1=differential
+  uint8_t noExpo:1;
+  int8_t  carryTrim:3;
+  uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t spare:1;
   int8_t  weight;
   int8_t  swtch;
-  uint8_t mltpx;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  int8_t  curve;
+  int8_t  curveParam;
   uint8_t mixWarn;         // mixer warning
   uint8_t delayUp;
   uint8_t delayDown;
-  uint8_t speedUp;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
-  uint8_t speedDown;       // 0 nichts
-  uint8_t srcRaw;         //
-  int8_t  differential;
-  int8_t  carryTrim;
+  uint8_t speedUp;
+  uint8_t speedDown;
+  uint8_t srcRaw;
   int8_t  sOffset;
   char    name[6];
-  uint8_t spare[4];
 }) MixData;
 #else
 #define MAX_DELAY   15 /* 7.5 seconds */
 #define MAX_SLOW    15 /* 7.5 seconds */
 PACK(typedef struct t_MixData {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
-  int8_t  phase:4;           // -5=!FP4, 0=normal, 5=FP4
+  uint8_t curveMode:1;       // O=curve, 1=differential
+  uint8_t noExpo:1;
+  uint8_t spare:2;
   int8_t  weight;
   int8_t  swtch:6;
   uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  int8_t  curve:6;
+  uint8_t phases:5;
+  int8_t  carryTrim:3;
+  uint8_t srcRaw:6;
   uint8_t mixWarn:2;         // mixer warning
   uint8_t delayUp:4;
   uint8_t delayDown:4;
-  uint8_t speedUp:4;         // Servogeschwindigkeit aus Tabelle (10ms Cycle)
-  uint8_t speedDown:4;       // 0 nichts
-  uint16_t srcRaw:6;         //
-  int16_t differential:7;
-  int16_t carryTrim:3;
+  uint8_t speedUp:4;
+  uint8_t speedDown:4;
+  int8_t  curveParam;
   int8_t  sOffset;
 }) MixData;
 #endif
@@ -398,10 +408,10 @@ enum TelemetrySource {
   TELEM_NONE,
   TELEM_TM1,
   TELEM_TM2,
-  TELEM_A1,
-  TELEM_A2,
   TELEM_RSSI_TX,
   TELEM_RSSI_RX,
+  TELEM_A1,
+  TELEM_A2,
   TELEM_ALT,
   TELEM_RPM,
   TELEM_FUEL,
@@ -543,7 +553,14 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define TRIM_MAX 125
 #define TRIM_MIN (-TRIM_MAX)
 
-#if defined(PCBV4)
+#define ROTARY_ENCODER_MAX  1024
+
+#if defined(PCBARM)
+#define NUM_ROTARY_ENCODERS_EXTRA 0
+#define NUM_ROTARY_ENCODERS 1
+#define ROTARY_ENCODER_ARRAY_EXTRA
+#define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
+#elif defined(PCBV4)
 #if defined(EXTRA_ROTARY_ENCODERS)
 #define NUM_ROTARY_ENCODERS_EXTRA 2
 #define NUM_ROTARY_ENCODERS (2+NUM_ROTARY_ENCODERS_EXTRA)
@@ -553,15 +570,13 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define NUM_ROTARY_ENCODERS 2
 #define ROTARY_ENCODER_ARRAY_EXTRA
 #endif //EXTRA_ROTARY_ENCODERS
-#define ROTARY_ENCODER_MAX  1024
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
-
-#else //PCBV4
+#else
 #define NUM_ROTARY_ENCODERS_EXTRA 0
 #define NUM_ROTARY_ENCODERS 0
 #define ROTARY_ENCODER_ARRAY
 #define ROTARY_ENCODER_ARRAY_EXTRA
-#endif //PCBV4
+#endif
 
 #if defined(PCBSTD)
 #define TRIM_ARRAY int8_t trim[4]; int8_t trim_ext:8
@@ -696,10 +711,8 @@ PACK(typedef struct t_ModelData {
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
-
-  int8_t    servoCenter[NUM_CHNOUT];
   
-  uint8_t switchWarningStates;
+  uint8_t   switchWarningStates;
 
   TELEMETRY_DATA;
 

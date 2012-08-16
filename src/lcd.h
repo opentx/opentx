@@ -126,7 +126,7 @@ extern void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
 extern void putsCurve(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
 extern void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att);
 extern void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att);
-#if defined(PCBV4)
+#if defined(ROTARY_ENCODERS)
 void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att);
 #endif
 
