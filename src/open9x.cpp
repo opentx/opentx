@@ -1059,16 +1059,17 @@ void checkTHR()
 {
   if (g_model.disableThrottleWarning) return;
 
-  int8_t thrchn = (2-(stickMode&1)); //stickMode=0123 -> thr=2121
+  uint8_t thrchn = (2-(stickMode&1)); //stickMode=0123 -> thr=2121
 
 #ifdef SIMU
   int16_t lowLim = THRCHK_DEADBAND - 1024 ;
 #else
   getADC_single();   // if thr is down - do not display warning at all
-  int16_t lowLim = (g_eeGeneral.throttleReversed ? THRCHK_DEADBAND - g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanPos[thrchn] : THRCHK_DEADBAND + g_eeGeneral.calibMid[thrchn] - g_eeGeneral.calibSpanNeg[thrchn]);
+  int16_t lowLim = g_eeGeneral.calibMid[thrchn];
+  lowLim = (g_eeGeneral.throttleReversed ? - lowLim - g_eeGeneral.calibSpanPos[thrchn] : lowLim - g_eeGeneral.calibSpanNeg[thrchn]);
+  lowLim += THRCHK_DEADBAND;
 #endif
-  int16_t v = anaIn(thrchn);
-  if (g_eeGeneral.throttleReversed) v = - v;
+  int16_t v = thrAnaIn(thrchn);
 
   if (v<=lowLim) return;
 
@@ -1083,8 +1084,7 @@ void checkTHR()
 #else
       getADC_single();
 #endif
-      int16_t v = anaIn(thrchn);
-      if (g_eeGeneral.throttleReversed) v = - v;
+      int16_t v = thrAnaIn(thrchn);
 
       if (check_soft_power() > e_power_trainer || v<=lowLim || keyDown())
         break;
@@ -1291,6 +1291,12 @@ uint16_t BandGap = 2040 ;
 #elif defined(PCBSTD)
 uint16_t BandGap ;
 #endif
+
+int16_t thrAnaIn(uint8_t chan)
+{
+  int16_t v = anaIn(chan);
+  return (g_eeGeneral.throttleReversed) ? -v : v;
+}
 
 #if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
@@ -1591,14 +1597,14 @@ BeepANACenter evalSticks()
     // normalization [0..2048] -> [-1024..1024]
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i+1) - 1 : i);
 
-#if defined(PCBV4)
+#if defined(ROTARY_ENCODERS)
     int16_t v = ((i < NUM_STICKS+NUM_POTS) ? anaIn(i) : getRotaryEncoder(i-(NUM_STICKS+NUM_POTS)));
 #else
     int16_t v = anaIn(i);
 #endif
 
 #ifndef SIMU
-    if(i < NUM_STICKS+NUM_POTS){
+    if (i < NUM_STICKS+NUM_POTS) {
       v -= g_eeGeneral.calibMid[i];
       v  =  v * (int32_t)RESX /  (max((int16_t)100,(v>0 ?
                                        g_eeGeneral.calibSpanPos[i] :
@@ -1612,11 +1618,16 @@ BeepANACenter evalSticks()
     if (g_eeGeneral.throttleReversed && ch==THR_STICK)
       v = -v;
 
-    if (i < NUM_STICKS+NUM_POTS)
+    if (i < NUM_STICKS+NUM_POTS) {
       calibratedStick[ch] = v; //for show in expo
 
-    uint8_t tmp = (uint16_t)abs(v) / 16;
-    if (tmp <= 1) anaCenter |= (tmp==0 ? (BeepANACenter)1<<ch : bpanaCenter & ((BeepANACenter)1<<ch));
+      // filtering for center beep
+      uint8_t tmp = (uint16_t)abs(v) / 16;
+      if (tmp <= 1) anaCenter |= (tmp==0 ? (BeepANACenter)1<<ch : bpanaCenter & ((BeepANACenter)1<<ch));
+    }
+    else {
+      if (v == 0) anaCenter |= (BeepANACenter)1<<ch;
+    }
 
     if (ch < NUM_STICKS) { //only do this for sticks
       if (s_perout_mode == e_perout_mode_normal && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {

@@ -815,6 +815,7 @@ extern void applyExpos(int16_t *anas);
 extern int16_t applyLimits(uint8_t channel, int32_t value);
 
 extern uint16_t anaIn(uint8_t chan);
+extern int16_t thrAnaIn(uint8_t chan);
 extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
 #define FLASH_DURATION 50
