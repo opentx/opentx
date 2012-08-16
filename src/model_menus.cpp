@@ -1596,7 +1596,12 @@ void menuProcMixOne(uint8_t event)
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
+
+#if defined(PCBARM)
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {sizeof(md2->name), 0, 0, 0, 1, 1, 0, MAX_PHASES-1, 0 /*, ...*/});
+#else
   SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 1, 1, 0, MAX_PHASES-1, 0 /*, ...*/});
+#endif
 
   int8_t  sub = m_posVert;
 
@@ -1648,23 +1653,24 @@ void menuProcMixOne(uint8_t event)
 
         if (attr) {
           if (md2->curveMode==MODE_CURVE) {
-            CHECK_INCDEC_MODELVAR(event, md2->curveParam, -MAX_CURVES, CURVE_BASE+MAX_CURVES);
-            if (md2->curveParam == CURVE_BASE+MAX_CURVES) {
-              md2->curveMode = MODE_DIFFERENTIAL;
-              md2->curveParam = 0;
-            }
-            if (event==EVT_KEY_FIRST(KEY_MENU) && md2->curveMode==MODE_CURVE && (md2->curveParam<0 || md2->curveParam>=CURVE_BASE)){
+            if (event==EVT_KEY_FIRST(KEY_MENU) && (md2->curveParam<0 || md2->curveParam>=CURVE_BASE)){
               s_curveChan = (md2->curveParam<0 ? -md2->curveParam-1 : md2->curveParam-CURVE_BASE);
               pushMenu(menuProcCurveOne);
             }
+            CHECK_INCDEC_MODELVAR(event, md2->curveParam, -MAX_CURVES, CURVE_BASE+MAX_CURVES-1);
+            if (md2->curveParam == 0)
+              md2->curveMode = MODE_DIFFERENTIAL;
             m_posHorz = 0;
             if (s_editMode > 0) s_editMode = 0;
           }
           else if (s_editMode>0) {
             if (m_posHorz==0) {
-              CHECK_INCDEC_MODELVAR(event, md2->curveMode, -1, 1);
-              if (md2->curveMode == MODE_CURVE)
-                md2->curveParam = CURVE_BASE+MAX_CURVES-1;
+              int8_t tmp = 0;
+              CHECK_INCDEC_MODELVAR(event, tmp, -1, 1);
+              if (tmp != 0) {
+                md2->curveMode = MODE_CURVE;
+                md2->curveParam = tmp;
+              }
             }
             else {
               CHECK_INCDEC_MODELVAR(event, md2->curveParam, -100, 100);

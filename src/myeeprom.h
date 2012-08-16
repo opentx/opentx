@@ -259,8 +259,8 @@ enum MixSources {
 #define MLTPX_MUL   1
 #define MLTPX_REP   2
 
-#define MODE_CURVE         0
-#define MODE_DIFFERENTIAL  1
+#define MODE_DIFFERENTIAL  0
+#define MODE_CURVE         1
 
 #if defined(PCBARM)
 #define MAX_DELAY   60 /* 30 seconds */
