@@ -944,7 +944,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       break;
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
-      channel -= TELEM_MIN_A1-1;
+      channel -= TELEM_MIN_A1-TELEM_A1;
       // no break
     case TELEM_A1-1:
     case TELEM_A2-1:
@@ -1122,9 +1122,9 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 void displayVoltageScreenLine(uint8_t y, uint8_t index)
 {
   putsStrIdx(0, y, STR_A, index+1, 0);
-  putsTelemetryChannel(3*FW+6*FW+4, y, index+MAX_TIMERS, frskyData.analog[index].value, DBLSIZE);
-  lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+MAX_TIMERS, frskyData.analog[index].min, NO_UNIT);
-  lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+MAX_TIMERS, frskyData.analog[index].max, NO_UNIT);
+  putsTelemetryChannel(3*FW+6*FW+4, y, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
+  lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
+  lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
 }
 
 void menuProcFrsky(uint8_t event)
