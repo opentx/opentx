@@ -148,6 +148,7 @@ SDCARD = NO
 PXX = NO
 
 # DSM2 (Spektrum) protocol
+# Values = NO, SERIAL, PPM
 DSM2 = NO
 
 #IR protocols (SILV / TRAC09 / PICZ / SWIFT)

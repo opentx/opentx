@@ -944,11 +944,11 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
       break;
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
-      channel -= TELEM_MIN_A1-1-MAX_TIMERS;
+      channel -= TELEM_MIN_A1-1;
       // no break
     case TELEM_A1-1:
     case TELEM_A2-1:
-      channel -= MAX_TIMERS;
+      channel -= TELEM_A1-1;
       // A1 and A2
     {
       int16_t converted_value = applyChannelRatio(channel, val);

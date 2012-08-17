@@ -81,7 +81,6 @@ MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
   mix->destCh = dch;
   mix->srcRaw = src;
   mix->weight = 100;
-  mix->phases = 1;
   return mix;
 }
 

@@ -227,7 +227,6 @@ inline void applyDefaultTemplate()
     md->destCh = i;
     md->weight = 100;
     md->srcRaw = channel_order(i+1);
-    md->phases = 1;
   }
 
   STORE_MODELVARS;
@@ -2024,7 +2023,7 @@ void perOut(uint8_t tick10ms)
 
     if (md->srcRaw==0) break;
 
-    if (!(md->phases & (1<<s_perout_flight_phase))) continue;
+    if (md->phases & (1<<s_perout_flight_phase)) continue;
 
     //========== SWITCH ===============
     bool sw = getSwitch(md->swtch, 1);

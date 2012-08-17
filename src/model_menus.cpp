@@ -1337,7 +1337,6 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     MixData *mix = mixaddress(idx);
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
     memclear(mix, sizeof(MixData));
-    mix->phases = 1 << getFlightPhase();
     mix->destCh = s_currCh-1;
     mix->srcRaw = (s_currCh > 4 ? s_currCh : channel_order(s_currCh));
     mix->weight = 100;
@@ -1696,7 +1695,7 @@ void menuProcMixOne(uint8_t event)
       case MIX_FIELD_FLIGHT_PHASE:
         lcd_putsLeft(y, STR_FPHASE);
         for (uint8_t p=0; p<MAX_PHASES; p++)
-          lcd_putcAtt(MIXES_2ND_COLUMN+p*FW, y, '0'+p, ((m_posHorz==p) && attr) ? BLINK|INVERS : ((md2->phases & (1<<p)) ? INVERS : 0 ));
+          lcd_putcAtt(MIXES_2ND_COLUMN+p*FW, y, '0'+p, ((m_posHorz==p) && attr) ? BLINK|INVERS : ((md2->phases & (1<<p)) ? 0 : INVERS));
         if (attr) {
           if ((event==EVT_KEY_FIRST(KEY_MENU)) || p1valdiff) {
             killEvents(event);
@@ -2840,13 +2839,13 @@ void menuProcTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A2_LABEL:
         lcd_putsLeft(y, STR_ACHANNEL);
         lcd_outdezAtt(2*FW, y, ch+1, 0);
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, ch+MAX_TIMERS, frskyData.analog[ch].value, LEFT);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, TELEM_A1-1+ch, frskyData.analog[ch].value, LEFT);
         break;
 
       case ITEM_TELEMETRY_A1_RANGE:
       case ITEM_TELEMETRY_A2_RANGE:
         lcd_puts(4, y, STR_RANGE);
-        putsTelemetryChannel(TELEM_COL2, y, ch+MAX_TIMERS, 255-channel.offset, ((attr && m_posHorz==0) ? blink : 0)|NO_UNIT|LEFT);
+        putsTelemetryChannel(TELEM_COL2, y, TELEM_A1-1+ch, 255-channel.offset, ((attr && m_posHorz==0) ? blink : 0)|NO_UNIT|LEFT);
         lcd_putsiAtt(lcdLastPos, y, STR_VTELEMUNIT, channel.type, (attr && m_posHorz==1 ? blink : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
           if (m_posHorz == 0) {
@@ -2872,7 +2871,7 @@ void menuProcTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A1_OFFSET:
       case ITEM_TELEMETRY_A2_OFFSET:
         lcd_puts(4, y, STR_OFFSET);
-        putsTelemetryChannel(TELEM_COL2, y, ch+MAX_TIMERS, 0, LEFT|attr);
+        putsTelemetryChannel(TELEM_COL2, y, TELEM_A1-1+ch, 0, LEFT|attr);
         if (attr) channel.offset = checkIncDec(event, channel.offset, -256, 256, EE_MODEL);
         break;
 
@@ -2885,7 +2884,7 @@ void menuProcTelemetry(uint8_t event)
         lcd_puts(4, y, STR_ALARM);
         lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ALARM_LEVEL(ch, j), (attr && m_posHorz==0) ? blink : 0);
         lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, j), (attr && m_posHorz==1) ? blink : 0);
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, ch+MAX_TIMERS, channel.alarms_value[j], (attr && m_posHorz==2 ? blink : 0) | LEFT);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, TELEM_A1-1+ch, channel.alarms_value[j], (attr && m_posHorz==2 ? blink : 0) | LEFT);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           uint8_t t;
