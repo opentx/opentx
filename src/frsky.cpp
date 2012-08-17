@@ -642,7 +642,7 @@ void check_frsky()
   frskyData.hub.cellsSum = voltage;
   if (g_model.frsky.voltsSource <= 1) {
     uint8_t channel = g_model.frsky.voltsSource;
-    voltage = applyChannelRatio(channel, frskyData.analog[channel].value);
+    voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
   }
   else if (g_model.frsky.voltsSource == 2) {
     voltage = frskyData.hub.vfas;
@@ -839,6 +839,7 @@ void resetTelemetry()
 
 #ifdef SIMU
   frskyData.analog[0].set(120, UNIT_VOLTS);
+  frskyData.analog[1].set(240, UNIT_VOLTS);
   frskyData.rssi[0].set(75);
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
