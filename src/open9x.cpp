@@ -1250,11 +1250,14 @@ void checkTrims()
 #endif
 
     if (beepTrim) {
-      killEvents(event);
-      if (beepTrim == 1)
+      if (beepTrim == 1) {
         AUDIO_TRIM_MIDDLE(after);
-      else
+        pauseEvents(event);
+      }
+      else {
         AUDIO_TRIM_END(after);
+        killEvents(event);
+      }
     }
     else {
       AUDIO_TRIM(event, after);
@@ -2759,14 +2762,14 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 {
   cli();
   
-#if defined (PCBV4)
+#if defined(PCBV4)
   static uint8_t accuracyWarble = 4; // because 16M / 1024 / 100 = 156.25. So bump every 4.
   uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
   TIMSK2 &= ~(1<<OCIE2A); // stop reentrance
   OCR2A += bump;
 #else
   TIMSK &= ~(1<<OCIE0); // stop reentrance
-#if defined (AUDIO)
+#if defined(AUDIO) || defined(VOICE)
   OCR0 += 2; // interrupt every 128us
 #else
   static uint8_t accuracyWarble = 4; // because 16M / 1024 / 100 = 156.25. So bump every 4.

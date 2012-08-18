@@ -808,6 +808,7 @@ void setupPulses()
         OCR3A = 50000 ;
         OCR3B = 5000 ;
         set_timer3_ppm() ;
+        PORTB &= ~(1<<OUT_B_PPM);                       // Hold PPM output low
         break ;
 
       default:

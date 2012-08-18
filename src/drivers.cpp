@@ -82,10 +82,6 @@ void Key::input(bool val, EnumKeys enuk)
   if(m_state && m_vals==0){  //gerade eben sprung auf 0
     if(m_state!=KSTATE_KILLED) {
       putEvent(EVT_KEY_BREAK(enuk));
-      if(!( m_state == 16 && m_cnt<16)){
-        m_dblcnt=0;
-      }
-        //      }
     }
     m_cnt   = 0;
     m_state = KSTATE_OFF;
@@ -94,7 +90,6 @@ void Key::input(bool val, EnumKeys enuk)
     case KSTATE_OFF:
       if(m_vals==FFVAL){ //gerade eben sprung auf ff
         m_state = KSTATE_START;
-        if(m_cnt>16) m_dblcnt=0; //pause zu lang fuer double
         m_cnt   = 0;
       }
       break;
@@ -102,7 +97,6 @@ void Key::input(bool val, EnumKeys enuk)
     case KSTATE_START:
       putEvent(EVT_KEY_FIRST(enuk));
       inacCounter = 0;
-      m_dblcnt++;
       m_state   = KSTATE_RPTDELAY;
       m_cnt     = 0;
       break;
@@ -142,13 +136,14 @@ void Key::input(bool val, EnumKeys enuk)
 
 void pauseEvents(uint8_t event)
 {
-  event=event & EVT_KEY_MASK;
-  if(event < (int)DIM(keys))  keys[event].pauseEvents();
+  event = event & EVT_KEY_MASK;
+  if (event < (int)DIM(keys)) keys[event].pauseEvents();
 }
+
 void killEvents(uint8_t event)
 {
-  event=event & EVT_KEY_MASK;
-  if(event < (int)DIM(keys))  keys[event].killEvents();
+  event = event & EVT_KEY_MASK;
+  if (event < (int)DIM(keys)) keys[event].killEvents();
 }
 
 volatile uint16_t g_tmr10ms;
