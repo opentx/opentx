@@ -2833,19 +2833,19 @@ void menuProcTelemetry(uint8_t event)
     uint8_t attr = (sub == k ? blink : 0);
     uint8_t ch = (k >= ITEM_TELEMETRY_A2_LABEL) ? 1 : 0;
     FrSkyChannelData & channel = g_model.frsky.channels[ch];
-
+    uint8_t dest=TELEM_A1-1+ch;
     switch(k) {
       case ITEM_TELEMETRY_A1_LABEL:
       case ITEM_TELEMETRY_A2_LABEL:
         lcd_putsLeft(y, STR_ACHANNEL);
         lcd_outdezAtt(2*FW, y, ch+1, 0);
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, TELEM_A1-1+ch, frskyData.analog[ch].value, LEFT);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, dest, frskyData.analog[ch].value, LEFT);
         break;
 
       case ITEM_TELEMETRY_A1_RANGE:
       case ITEM_TELEMETRY_A2_RANGE:
         lcd_puts(4, y, STR_RANGE);
-        putsTelemetryChannel(TELEM_COL2, y, TELEM_A1-1+ch, 255-channel.offset, ((attr && m_posHorz==0) ? blink : 0)|NO_UNIT|LEFT);
+        putsTelemetryChannel(TELEM_COL2, y, dest, 255-channel.offset, ((attr && m_posHorz==0) ? blink : 0)|NO_UNIT|LEFT);
         lcd_putsiAtt(lcdLastPos, y, STR_VTELEMUNIT, channel.type, (attr && m_posHorz==1 ? blink : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
           if (m_posHorz == 0) {
@@ -2871,7 +2871,7 @@ void menuProcTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A1_OFFSET:
       case ITEM_TELEMETRY_A2_OFFSET:
         lcd_puts(4, y, STR_OFFSET);
-        putsTelemetryChannel(TELEM_COL2, y, TELEM_A1-1+ch, 0, LEFT|attr);
+        putsTelemetryChannel(TELEM_COL2, y, dest, 0, LEFT|attr);
         if (attr) channel.offset = checkIncDec(event, channel.offset, -256, 256, EE_MODEL);
         break;
 
@@ -2884,7 +2884,7 @@ void menuProcTelemetry(uint8_t event)
         lcd_puts(4, y, STR_ALARM);
         lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ALARM_LEVEL(ch, j), (attr && m_posHorz==0) ? blink : 0);
         lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, j), (attr && m_posHorz==1) ? blink : 0);
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, TELEM_A1-1+ch, channel.alarms_value[j], (attr && m_posHorz==2 ? blink : 0) | LEFT);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, dest, channel.alarms_value[j], (attr && m_posHorz==2 ? blink : 0) | LEFT);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           uint8_t t;
