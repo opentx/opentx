@@ -139,7 +139,7 @@
 #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "R\200tro\200cl.\0   " TR_TEST
 
 #define LEN_VFSWRESET    "\006"
-#define TR_VFSWRESET     "Timer1""Timer2""Tout  ""T\200l\200m."
+#define TR_VFSWRESET     "Timer1""Timer2""Timers""T\200l\200m."
 
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
