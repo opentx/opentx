@@ -194,8 +194,8 @@ PACK(typedef struct t_LimitData {
   int8_t  max;
   int8_t  ppmCenter;
   int16_t offset:14;
-  uint8_t symetrical:1;
-  uint8_t revert:1;
+  uint16_t symetrical:1;
+  uint16_t revert:1;
 }) LimitData;
 
 enum MixSources {
