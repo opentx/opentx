@@ -849,7 +849,7 @@ void menuProcPhaseOne(uint8_t event)
       case 1:
         lcd_putsLeft( y, STR_SWITCH);
         putsSwitches(PHASES_EDIT_2ND_COLUMN,  y, phase->swtch, attr);
-        if (attr) CHECK_INCDEC_MODELSWITCH(event, phase->swtch, -MAX_DRSWITCH, MAX_DRSWITCH);
+        if (attr) CHECK_INCDEC_MODELSWITCH(event, phase->swtch, -MAX_SWITCH, MAX_SWITCH);
         break;
       case 2:
         lcd_putsLeft( y, STR_TRIMS);
