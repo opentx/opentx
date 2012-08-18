@@ -129,14 +129,15 @@ void applyTemplate(uint8_t idx)
       for(uint8_t j=0; j<4; j++) if(CC(i+1)==j+1) icc[j]=i;
 
     switch (idx) {
-      // Clear Mixes
       case TMPL_CLEAR_MIXES:
+      case TMPL_SIMPLE_4CH:
+      case TMPL_HELI_SETUP:
         clearMixes();
-        break;
+    }
 
+    switch (idx) {
       // Simple 4-Ch
       case TMPL_SIMPLE_4CH:
-        clearMixes();
         setDest(ICC(STK_RUD), MIXSRC_Rud);
         setDest(ICC(STK_ELE), MIXSRC_Ele);
         setDest(ICC(STK_THR), MIXSRC_Thr);
@@ -178,7 +179,6 @@ void applyTemplate(uint8_t idx)
 
       // Heli Setup
       case TMPL_HELI_SETUP:
-        clearMixes();  //This time we want a clean slate
         clearCurves();
 
         //Set up Mixes
