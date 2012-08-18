@@ -66,22 +66,6 @@ FrskyData frskyData;
 uint8_t barsThresholds[THLD_MAX];
 #endif
 
-void frskyPushValue(uint8_t *&ptr, uint8_t value)
-{
-  // byte stuff the only byte than might need it
-  if (value == START_STOP) {
-    *ptr++ = 0x5e;
-    *ptr++ = BYTESTUFF;
-  }
-  else if (value == BYTESTUFF) {
-    *ptr++ = 0x5d;
-    *ptr++ = BYTESTUFF;
-  }
-  else {
-    *ptr++ = value;
-  }
-}
-
 #ifdef DISPLAY_USER_DATA
 /*
   Copies all available bytes (up to max bufsize) from frskyUserData circular 
@@ -563,15 +547,83 @@ void frskyTransmitBuffer()
 #endif
 
 uint8_t frskyAlarmsSendState = 0 ;
+
+#if defined(PCBARM)
+void frskyPushValue(uint8_t *&ptr, uint8_t value)
+{
+  // byte stuff the only byte than might need it
+  if (value == START_STOP) {
+    *ptr++ = BYTESTUFF;
+    *ptr++ = 0x5e;
+  }
+  else if (value == BYTESTUFF) {
+    *ptr++ = BYTESTUFF;
+    *ptr++ = 0x5d;
+  }
+  else {
+    *ptr++ = value;
+  }
+}
+
 inline void FRSKY10mspoll(void)
 {
-#if defined(PCBARM)
   if (txPdcPending())
-#else
-  if (frskyTxBufferCount)
-#endif
     return; // we only have one buffer. If it's in use, then we can't send yet.
 
+  uint8_t *ptr = &frskyTxBuffer[0];
+
+  *ptr++ = START_STOP;        // Start of packet
+
+  // Now send a packet
+  frskyAlarmsSendState -= 1;
+  uint8_t alarm = 1 - (frskyAlarmsSendState % 2);
+  if (frskyAlarmsSendState < 4) {
+    uint8_t channel = 1 - (frskyAlarmsSendState / 2);
+    *ptr++ = (A22PKT + frskyAlarmsSendState); // fc - fb - fa - f9
+    frskyPushValue(ptr, g_model.frsky.channels[channel].alarms_value[alarm]);
+    *ptr++ = ALARM_GREATER(channel, alarm);
+    *ptr++ = (g_eeGeneral.beeperMode != e_mode_quiet ? ALARM_LEVEL(channel, alarm) : alarm_off);
+  }
+  else {
+    *ptr++ = (RSSI1PKT-alarm);  // f7 - f6
+    frskyPushValue(ptr, getRssiAlarmValue(alarm));
+    *ptr++ = 0x00;
+    *ptr++ = (g_eeGeneral.beeperMode != e_mode_quiet ? ((2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4) : alarm_off);
+  }
+
+  *ptr++ = 0x00;
+  *ptr++ = 0x00;
+  *ptr++ = 0x00;
+  *ptr++ = 0x00;
+  *ptr++ = 0x00;
+  *ptr++ = START_STOP; // End of packet
+
+  frskyTransmitBuffer(ptr - &frskyTxBuffer[0]);
+}
+
+#else
+
+void frskyPushValue(uint8_t *&ptr, uint8_t value)
+{
+  // byte stuff the only byte than might need it
+  bool bytestuff = false;
+
+  if (value == START_STOP) {
+    bytestuff = true;
+    value = 0x5e;
+  }
+  else if (value == BYTESTUFF) {
+    bytestuff = true;
+    value = 0x5d;
+  }
+
+  *ptr++ = value;
+  if (bytestuff)
+    *ptr = BYTESTUFF;
+}
+
+void FRSKY_setTxPacket(uint8_t type, uint8_t value, uint8_t p1, uint8_t p2)
+{
   uint8_t *ptr = &frskyTxBuffer[0];
 
   *ptr++ = START_STOP;        // End of packet
@@ -580,33 +632,33 @@ inline void FRSKY10mspoll(void)
   *ptr++ = 0x00;
   *ptr++ = 0x00;
   *ptr++ = 0x00;
+  *ptr++ = (g_eeGeneral.beeperMode == e_mode_quiet ? alarm_off : p2);
+  *ptr++ = p1;
+  frskyPushValue(ptr, value);
+  *ptr++ = type;
+  *ptr++ = START_STOP; // Start of packet
+
+  frskyTxBufferCount = ptr - &frskyTxBuffer[0];
+  frskyTransmitBuffer();
+}
+
+inline void FRSKY10mspoll(void)
+{
+  if (frskyTxBufferCount)
+    return; // we only have one buffer. If it's in use, then we can't send yet.
 
   // Now send a packet
   frskyAlarmsSendState -= 1;
   uint8_t alarm = 1 - (frskyAlarmsSendState % 2);
   if (frskyAlarmsSendState < 4) {
     uint8_t channel = 1 - (frskyAlarmsSendState / 2);
-    *ptr++ = (g_eeGeneral.beeperMode != e_mode_quiet ? ALARM_LEVEL(channel, alarm) : alarm_off);
-    *ptr++ = ALARM_GREATER(channel, alarm);
-    frskyPushValue(ptr, g_model.frsky.channels[channel].alarms_value[alarm]);
-    *ptr++ = (A22PKT + frskyAlarmsSendState); // fc - fb - fa - f9
+    FRSKY_setTxPacket(A22PKT + frskyAlarmsSendState, g_model.frsky.channels[channel].alarms_value[alarm], ALARM_GREATER(channel, alarm), ALARM_LEVEL(channel, alarm));
   }
   else {
-    *ptr++ = (g_eeGeneral.beeperMode != e_mode_quiet ? ((2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4) : alarm_off);
-    *ptr++ = 0x00 ;
-    frskyPushValue(ptr, getRssiAlarmValue(alarm));
-    *ptr++ = (RSSI1PKT-alarm);  // f7 - f6
+    FRSKY_setTxPacket(RSSI1PKT-alarm, getRssiAlarmValue(alarm), 0, (2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4);
   }
-
-  *ptr++ = START_STOP; // Start of packet
-
-#if defined(PCBARM)
-  frskyTransmitBuffer(ptr - &frskyTxBuffer[0]);
-#else
-  frskyTxBufferCount = ptr - &frskyTxBuffer[0];
-  frskyTransmitBuffer();
-#endif
 }
+#endif
 
 void check_frsky()
 {

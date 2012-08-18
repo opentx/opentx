@@ -96,8 +96,11 @@ enum BeeperMode {
   uint8_t   speakerVolume; \
   uint8_t   backlightBright; \
   int8_t    currentCalib;
+#define EXTRA_NON_ARM_FIELDS
 #else
 #define EXTRA_ARM_FIELDS
+#define EXTRA_NON_ARM_FIELDS \
+  int8_t   speakerVolume;
 #endif
 
 enum AdcInput {
@@ -159,7 +162,8 @@ PACK(typedef struct t_EEGeneral {
   EXTRA_ARM_FIELDS
 
   uint8_t   variants;
-
+  
+  EXTRA_NON_ARM_FIELDS;
 }) EEGeneral;
 
 // eeprom modelspec

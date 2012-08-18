@@ -118,7 +118,7 @@ void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 
 enum menuProcSetupItems {
   ITEM_SETUP_BEEPER_MODE,
-#if defined(PCBARM)
+#if defined(VOICE)
   ITEM_SETUP_SPEAKER_VOLUME,
 #endif
   ITEM_SETUP_BEEPER_LENGTH,
@@ -212,14 +212,27 @@ void menuProcSetup(uint8_t event)
 #endif
         break;
 
-#if defined(PCBARM)
+#if defined(VOICE)
       case ITEM_SETUP_SPEAKER_VOLUME:
       {
         lcd_putsLeft(y, STR_SPEAKER_VOLUME);
+#if defined(PCBARM)
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerVolume, attr|LEFT);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerVolume, 0, NUM_VOL_LEVELS-1);
         }
+#else
+        uint8_t b ;
+        b = g_eeGeneral.speakerVolume+7;
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, b, attr|LEFT);
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, b, 0, 7);
+          if (g_eeGeneral.speakerVolume != (int8_t)b-7) {
+            g_eeGeneral.speakerVolume = (int8_t)b-7;
+            pushPrompt(b | 0xF0);
+          }
+        }
+#endif
         break;
       }
 #endif

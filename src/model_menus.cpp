@@ -1431,13 +1431,14 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
     }
 
     y = (MixData *)mixaddress(tgt_idx);
-    if(!((MixData *)y)->srcRaw || ((MixData *)x)->destCh != ((MixData *)y)->destCh) {
+    uint8_t destCh = ((MixData *)x)->destCh;
+    if(!((MixData *)y)->srcRaw || destCh != ((MixData *)y)->destCh) {
       if (up) {
-        if (((MixData *)x)->destCh>0) ((MixData *)x)->destCh--;
+        if (destCh>0) ((MixData *)x)->destCh--;
         else return false;
       }
       else {
-        if (((MixData *)x)->destCh<NUM_CHNOUT-1) ((MixData *)x)->destCh++;
+        if (destCh<NUM_CHNOUT-1) ((MixData *)x)->destCh++;
         else return false;
       }
       return true;
@@ -1590,6 +1591,15 @@ enum MixFields {
 #else
 #define MIXES_2ND_COLUMN (9*FW)
 #endif
+
+uint8_t editMixDelay(const uint8_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
+{
+  lcd_putsLeft(y, str);
+  lcd_outdezAtt(MIXES_2ND_COLUMN, y, 5*delay, attr|PREC1|LEFT);
+  if (attr) CHECK_INCDEC_MODELVAR(event, delay, 0, MAX_DELAY);
+  return delay;
+}
+
 void menuProcMixOne(uint8_t event)
 {
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
@@ -1651,9 +1661,10 @@ void menuProcMixOne(uint8_t event)
         lcd_putsLeft(y, STR_CURVE);
 
         if (attr) {
+          int8_t curveParam = md2->curveParam;
           if (md2->curveMode==MODE_CURVE) {
-            if (event==EVT_KEY_FIRST(KEY_MENU) && (md2->curveParam<0 || md2->curveParam>=CURVE_BASE)){
-              s_curveChan = (md2->curveParam<0 ? -md2->curveParam-1 : md2->curveParam-CURVE_BASE);
+            if (event==EVT_KEY_FIRST(KEY_MENU) && (curveParam<0 || curveParam>=CURVE_BASE)){
+              s_curveChan = (curveParam<0 ? -curveParam-1 : curveParam-CURVE_BASE);
               pushMenu(menuProcCurveOne);
             }
             CHECK_INCDEC_MODELVAR(event, md2->curveParam, -MAX_CURVES, CURVE_BASE+MAX_CURVES-1);
@@ -1708,11 +1719,11 @@ void menuProcMixOne(uint8_t event)
 #endif
       case MIX_FIELD_WARNING:
         lcd_putsLeft(y, STR_MIXWARNING);
-        if(md2->mixWarn)
-          lcd_outdezAtt(MIXES_2ND_COLUMN,y,md2->mixWarn,attr|LEFT);
+        if (md2->mixWarn)
+          lcd_outdezAtt(MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
         else
           lcd_putsAtt(MIXES_2ND_COLUMN, y, STR_OFF, attr);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->mixWarn, 0,3);
+        if(attr) CHECK_INCDEC_MODELVAR( event, md2->mixWarn, 0, 3);
         break;
       case MIX_FIELD_MLTPX:
         lcd_putsLeft(y, STR_MULTPX);
@@ -1720,24 +1731,16 @@ void menuProcMixOne(uint8_t event)
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->mltpx, 0, 2);
         break;
       case MIX_FIELD_DELAY_UP:
-        lcd_putsLeft(y, STR_DELAYUP);
-        lcd_outdezAtt(MIXES_2ND_COLUMN,y,5*md2->delayUp,attr|PREC1|LEFT);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayUp, 0, MAX_DELAY);
+        md2->delayUp = editMixDelay(y, event, attr, STR_DELAYUP, md2->delayUp);
         break;
       case MIX_FIELD_DELAY_DOWN:
-        lcd_putsLeft(y, STR_DELAYDOWN);
-        lcd_outdezAtt(MIXES_2ND_COLUMN,y,5*md2->delayDown,attr|PREC1|LEFT);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->delayDown, 0, MAX_DELAY);
+        md2->delayDown = editMixDelay(y, event, attr, STR_DELAYDOWN, md2->delayDown);
         break;
       case MIX_FIELD_SLOW_UP:
-        lcd_putsLeft(y, STR_SLOWUP);
-        lcd_outdezAtt(MIXES_2ND_COLUMN,y,5*md2->speedUp,attr|PREC1|LEFT);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedUp, 0, MAX_SLOW);
+        md2->speedUp = editMixDelay(y, event, attr, STR_SLOWUP, md2->speedUp);
         break;
       case MIX_FIELD_SLOW_DOWN:
-        lcd_putsLeft(y, STR_SLOWDOWN);
-        lcd_outdezAtt(MIXES_2ND_COLUMN,y,5*md2->speedDown,attr|PREC1|LEFT);
-        if(attr)  CHECK_INCDEC_MODELVAR( event, md2->speedDown, 0, MAX_SLOW);
+        md2->speedDown = editMixDelay(y, event, attr, STR_SLOWDOWN, md2->speedDown);
         break;
     }
   }

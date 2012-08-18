@@ -2965,10 +2965,7 @@ void instantTrim()
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(s_perout_flight_phase, i);
-      int16_t trim = (anas[i] + trims[i]) / 2;
-      // TODO limit
-      if (trim < TRIM_EXTENDED_MIN) trim = TRIM_EXTENDED_MIN;
-      if (trim > TRIM_EXTENDED_MAX) trim = TRIM_EXTENDED_MAX;
+      int16_t trim = limit((int16_t)TRIM_EXTENDED_MIN, (int16_t)((anas[i] + trims[i]) / 2), (int16_t)TRIM_EXTENDED_MAX);
       setTrimValue(trim_phase, i, trim);
     }
   }

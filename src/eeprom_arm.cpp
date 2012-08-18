@@ -686,7 +686,6 @@ void eeWaitFinished()
 #ifdef SIMU
     sleep(5/*ms*/);
 #endif
-    // TODO perMain()?
   }
 }
 

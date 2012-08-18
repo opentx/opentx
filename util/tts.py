@@ -167,7 +167,7 @@ if __name__ == "__main__":
                      (u"flight mode eight", "fltmd8"),
                      (u"flight mode nine", "fltmd9"),
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, 260+i))
 
     
     elif "fr" in sys.argv:
@@ -204,7 +204,7 @@ if __name__ == "__main__":
                      (u"fin écolage", "trnoff"),
                      (u"moteur coupé", "engoff"),
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, 260+i))
             
             
     elif "it" in sys.argv:
@@ -263,7 +263,7 @@ if __name__ == "__main__":
                      (u"fase di volo 8", "fltmd8"),
                      (u"fase di volo 9", "fltmd9"),
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, 260+i))
 
     if 'ad4' in sys.argv:
         voice += "-stock"
