@@ -107,11 +107,11 @@ void t_voice::voice_process(void)
         VoiceSerial += 260;
       }
       VoiceTimer = 16;
-      if ((VoiceSerial & 0x01F0) == 0xF0) { // Looking for F0-F7 or FF
-        if (VoiceSerial == 0xFF) {
+      if (VoiceSerial == 0xFF) { // Looking for FF
           VoiceShift = 1;
           return;
         }
+      if ((VoiceSerial & 0x01F8) == 0xF0) { // Looking for F0-F7
         VoiceSerial |= 0xFF00;
         VoiceTimer = 40;
       }
