@@ -2176,9 +2176,9 @@ void perOut(uint8_t tick10ms)
     //========== DIFFERENTIAL =========
     if (md->curveMode == MODE_DIFFERENTIAL) {
       if (md->curveParam>0 && dv<0)
-        dv = (dv * (50-md->curveParam)) / 50;
+        dv = (dv * (100-md->curveParam)) / 100;
       else if (md->curveParam<0 && dv>0)
-        dv = (dv * (50+md->curveParam)) / 50;
+        dv = (dv * (100+md->curveParam)) / 100;
     }
 
     int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
