@@ -184,7 +184,7 @@ PACK(typedef struct t_ExpoData {
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t chn:2;
-  uint8_t curve:4;        // 0=no curve, 1-6=std curves, 7-10=CV1-CV4, 11-15=CV9-CV13
+  uint8_t curve:4;        // 0=no curve, 1-6=std curves, 7-14=CV1-CV8
   int8_t  swtch:5;
   uint8_t phase:3;        // if negPhase is 0: 0=normal, 5=FP4    if negPhase is 1: 5=!FP4
   uint8_t negPhase:1;

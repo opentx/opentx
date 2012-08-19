@@ -79,9 +79,13 @@ TEMPLATES = YES
 #          POTS (POT1, POT2, POT3),
 NAVIGATION = NO
 
-# Switches autmatic selection
+# Switches automatic selection
 # Values = YES, NO 
 AUTOSWITCH = NO
+
+# Double keys support (+/- means invert, +/up means max, -/dwn means min, up/down means reset to default)
+# Values = YES, NO 
+DBLKEYS = NO
 
 # AUDIO Mods
 # Values = YES, NO 
@@ -309,6 +313,10 @@ endif
 
 ifeq ($(AUTOSWITCH), YES)
   CPPDEFS += -DAUTOSWITCH
+endif
+
+ifeq ($(DBLKEYS), YES)
+  CPPDEFS += -DDBLKEYS
 endif
 
 ifeq ($(SPLASH), YES)

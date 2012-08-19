@@ -73,6 +73,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 {
   int16_t newval = val;
   
+#if defined(DBLKEYS)
   if (keyState(KEY_RIGHT) && keyState(KEY_LEFT)) {
     newval = -val;
     killEvents(KEY_LEFT);
@@ -93,8 +94,9 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     killEvents(KEY_UP);
     killEvents(KEY_DOWN);
   }
-  else 
-  
+  else
+#endif
+
   if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
     newval++;
     AUDIO_KEYPAD_UP();
@@ -117,10 +119,8 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 
 #if defined(AUTOSWITCH)
   if (s_editMode>0 && (i_flags & INCDEC_SWITCH)) {
-    uint8_t swtch = getMovedSwitch();
-    if (swtch) {
-      newval = (val == swtch ? -swtch : swtch);
-    }
+    int8_t swtch = getMovedSwitch();
+    if (swtch) newval = swtch;
   }
 #endif
 

@@ -819,13 +819,21 @@ void menuProcModel(uint8_t event)
 
 static uint8_t s_currIdx;
 
-#ifdef FLIGHT_PHASES
-
-#if defined(TRANSLATIONS_CZ)
-#define PHASES_EDIT_2ND_COLUMN 12*FW
+#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
+#define MIXES_2ND_COLUMN (13*FW)
 #else
-#define PHASES_EDIT_2ND_COLUMN 10*FW
+#define MIXES_2ND_COLUMN (9*FW)
 #endif
+
+uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
+{
+  lcd_putsLeft(y, str);
+  lcd_outdezAtt(MIXES_2ND_COLUMN, y, 5*delay, attr|PREC1|LEFT);
+  if (attr) CHECK_INCDEC_MODELVAR(event, delay, 0, MAX_DELAY);
+  return delay;
+}
+
+#ifdef FLIGHT_PHASES
 
 void menuProcPhaseOne(uint8_t event)
 {
@@ -844,17 +852,17 @@ void menuProcPhaseOne(uint8_t event)
     switch(i) {
       case 0:
         lcd_putsLeft( y, STR_NAME);
-        EditName(PHASES_EDIT_2ND_COLUMN, y, phase->name, sizeof(phase->name), event, attr, m_posHorz);
+        EditName(MIXES_2ND_COLUMN, y, phase->name, sizeof(phase->name), event, attr, m_posHorz);
         break;
       case 1:
         lcd_putsLeft( y, STR_SWITCH);
-        putsSwitches(PHASES_EDIT_2ND_COLUMN,  y, phase->swtch, attr);
+        putsSwitches(MIXES_2ND_COLUMN,  y, phase->swtch, attr);
         if (attr) CHECK_INCDEC_MODELSWITCH(event, phase->swtch, -MAX_SWITCH, MAX_SWITCH);
         break;
       case 2:
         lcd_putsLeft( y, STR_TRIMS);
         for (uint8_t t=0; t<NUM_STICKS; t++) {
-          putsTrimMode(PHASES_EDIT_2ND_COLUMN+(t*FW), y, s_currIdx, t, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+          putsTrimMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, (attr && m_posHorz==t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
           if (attr && m_posHorz==t && ((s_editMode>0) || p1valdiff)) {
             int16_t v = getRawTrimValue(s_currIdx, t);
             if (v < TRIM_EXTENDED_MAX) v = TRIM_EXTENDED_MAX;
@@ -867,7 +875,7 @@ void menuProcPhaseOne(uint8_t event)
         }
 #if defined(ROTARY_ENCODERS)
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
-          putsRotaryEncoderMode(PHASES_EDIT_2ND_COLUMN+((4+t)*FW)+2, y, s_currIdx, t, (attr && m_posHorz==4+t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+          putsRotaryEncoderMode(MIXES_2ND_COLUMN+((4+t)*FW)+2, y, s_currIdx, t, (attr && m_posHorz==4+t) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
           if (attr && m_posHorz==4+t && ((s_editMode>0) || p1valdiff)) {
 #if defined(EXTRA_ROTARY_ENCODERS)
             int16_t v;
@@ -896,14 +904,10 @@ void menuProcPhaseOne(uint8_t event)
 #endif
         break;
       case 3:
-        lcd_putsLeft(y, STR_FADEIN);
-        lcd_outdezAtt(PHASES_EDIT_2ND_COLUMN, y, phase->fadeIn*5, attr|PREC1|LEFT);
-        if(attr) CHECK_INCDEC_MODELVAR(event, phase->fadeIn, 0, 15);
+        phase->fadeIn = editDelay(y, event, attr, STR_FADEIN, phase->fadeIn);
         break;
       case 4:
-        lcd_putsLeft( y, STR_FADEOUT);
-        lcd_outdezAtt(PHASES_EDIT_2ND_COLUMN, y, phase->fadeOut*5, attr|PREC1|LEFT);
-        if(attr) CHECK_INCDEC_MODELVAR(event, phase->fadeOut, 0, 15);
+        phase->fadeOut = editDelay(y, event, attr, STR_FADEOUT, phase->fadeOut);
         break;
     }
   }
@@ -1584,22 +1588,6 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-#if defined(TRANSLATIONS_FR)
-#define MIXES_2ND_COLUMN (13*FW)
-#elif defined(TRANSLATIONS_CZ)
-#define MIXES_2ND_COLUMN (13*FW)
-#else
-#define MIXES_2ND_COLUMN (9*FW)
-#endif
-
-uint8_t editMixDelay(const uint8_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
-{
-  lcd_putsLeft(y, str);
-  lcd_outdezAtt(MIXES_2ND_COLUMN, y, 5*delay, attr|PREC1|LEFT);
-  if (attr) CHECK_INCDEC_MODELVAR(event, delay, 0, MAX_DELAY);
-  return delay;
-}
-
 void menuProcMixOne(uint8_t event)
 {
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
@@ -1731,16 +1719,16 @@ void menuProcMixOne(uint8_t event)
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->mltpx, 0, 2);
         break;
       case MIX_FIELD_DELAY_UP:
-        md2->delayUp = editMixDelay(y, event, attr, STR_DELAYUP, md2->delayUp);
+        md2->delayUp = editDelay(y, event, attr, STR_DELAYUP, md2->delayUp);
         break;
       case MIX_FIELD_DELAY_DOWN:
-        md2->delayDown = editMixDelay(y, event, attr, STR_DELAYDOWN, md2->delayDown);
+        md2->delayDown = editDelay(y, event, attr, STR_DELAYDOWN, md2->delayDown);
         break;
       case MIX_FIELD_SLOW_UP:
-        md2->speedUp = editMixDelay(y, event, attr, STR_SLOWUP, md2->speedUp);
+        md2->speedUp = editDelay(y, event, attr, STR_SLOWUP, md2->speedUp);
         break;
       case MIX_FIELD_SLOW_DOWN:
-        md2->speedDown = editMixDelay(y, event, attr, STR_SLOWDOWN, md2->speedDown);
+        md2->speedDown = editDelay(y, event, attr, STR_SLOWDOWN, md2->speedDown);
         break;
     }
   }
