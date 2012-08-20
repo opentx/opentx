@@ -406,7 +406,6 @@ void applyExpos(int16_t *anas)
   int16_t anas2[NUM_STICKS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 
-  uint8_t phase = s_perout_flight_phase + 1;
   int8_t cur_chn = -1;
 
 #ifdef BOLD_FONT
@@ -415,31 +414,11 @@ void applyExpos(int16_t *anas)
 
   for (uint8_t i=0; i<MAX_EXPOS; i++) {
     ExpoData &ed = g_model.expoData[i];
-#if defined(PCBARM)
-    int8_t ed_phase = ed.phase;
-#else
-    uint8_t ed_phase = ed.phase;
-#endif
     if (ed.mode==0) break; // end of list
     if (ed.chn == cur_chn)
       continue;
-    if (ed_phase != 0) {
-#if defined(PCBARM)
-      if (ed_phase < 0) {
-        if (phase == -ed_phase)
-          continue;
-      }
-#else
-      if (ed.negPhase) {
-        if (phase == ed_phase)
-          continue;
-      }
-#endif
-      else {
-        if (phase != ed_phase)
-          continue;
-      }
-    }
+    if (!(ed.phases & (1<<s_perout_flight_phase)))
+      continue;
     if (getSwitch(ed.swtch, 1)) {
 #ifdef BOLD_FONT
       activeExpos |= ((ACTIVE_EXPOS_TYPE)1 << i);
@@ -447,10 +426,12 @@ void applyExpos(int16_t *anas)
       int16_t v = anas2[ed.chn];
       if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
         cur_chn = ed.chn;
-        int16_t k = ed.expo;
-        v = expo(v, k);
-        uint8_t ed_curve = ed.curve;
-        if (ed_curve) v = applyCurve(v, ed_curve);
+        if (ed.curveParam) {
+          if (ed.curveMode == MODE_CURVE)
+            v = applyCurve(v, ed.curveParam);
+          else
+            v = expo(v, ed.curveParam);
+        }
         v = ((int32_t)v * ed.weight) / 100;
         anas[cur_chn] = v;
       }

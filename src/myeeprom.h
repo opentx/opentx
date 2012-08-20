@@ -174,22 +174,21 @@ PACK(typedef struct t_ExpoData {
   uint8_t chn;
   int8_t  curve;        // 0=no curve, 1-6=std curves, 7-10=CV1-CV4, 11-15=CV9-CV13
   int8_t  swtch;
-  int8_t  phase;
+  uint16_t phases;
   int8_t  weight;
-  int8_t  expo;
+  uint8_t curveMode;
   char    name[6];
-  uint8_t spare[4];
+  int8_t  curveParam;
 }) ExpoData;
 #else
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
+  int8_t  swtch:6;
   uint8_t chn:2;
-  uint8_t curve:4;        // 0=no curve, 1-6=std curves, 7-14=CV1-CV8
-  int8_t  swtch:5;
-  uint8_t phase:3;        // if negPhase is 0: 0=normal, 5=FP4    if negPhase is 1: 5=!FP4
-  uint8_t negPhase:1;
-  uint8_t weight:7;
-  int8_t  expo;
+  uint8_t phases:5;
+  uint8_t curveMode:1;
+  uint8_t weight;         // we have one bit spare here :)
+  int8_t  curveParam;
 }) ExpoData;
 #endif
 
@@ -264,6 +263,7 @@ enum MixSources {
 #define MLTPX_REP   2
 
 #define MODE_DIFFERENTIAL  0
+#define MODE_EXPO          0
 #define MODE_CURVE         1
 
 #if defined(PCBARM)

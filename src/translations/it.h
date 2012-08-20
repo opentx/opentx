@@ -437,3 +437,4 @@
 #define TR_COPY_FILE           "Copia"
 #define TR_RENAME_FILE         "Rinomomina"
 #define TR_REMOVED             " rimosso"
+#define TR_NA                  "N/A"

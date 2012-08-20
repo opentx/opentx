@@ -434,6 +434,7 @@ extern const pm_char STR_DELETE_FILE[];
 extern const pm_char STR_COPY_FILE[];
 extern const pm_char STR_RENAME_FILE[];
 extern const pm_char STR_REMOVED[];
+extern const pm_char STR_NA[];
 
 
 #if defined(VOICE)

@@ -828,10 +828,12 @@ void menuProcModel(uint8_t event)
 static uint8_t s_currIdx;
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
-#define MIXES_2ND_COLUMN (13*FW)
+#define MIXES_2ND_COLUMN    (13*FW)
 #else
-#define MIXES_2ND_COLUMN (9*FW)
+#define MIXES_2ND_COLUMN    (9*FW)
 #endif
+
+#define EXPO_ONE_2ND_COLUMN (7*FW+2)
 
 uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
@@ -841,7 +843,36 @@ uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, cons
   return delay;
 }
 
-#ifdef FLIGHT_PHASES
+#if defined(FLIGHT_PHASES)
+
+#if defined(PCBARM)
+#define PhasesType uint16_t
+#else
+#define PhasesType uint8_t
+#endif
+
+PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uint8_t attr)
+{
+  for (uint8_t p=0; p<MAX_PHASES; p++) {
+#if defined(PCBARM)
+    if ((x==EXPO_ONE_2ND_COLUMN-2*FW && attr && p < m_posHorz-4) || x > EXPO_ONE_2ND_COLUMN+2*FW)
+      continue;
+#endif
+    lcd_putcAtt(x, y, '0'+p, ((m_posHorz==p) && attr) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS));
+    x += FW;
+  }
+
+  if (attr) {
+    if ((event==EVT_KEY_FIRST(KEY_MENU)) || p1valdiff) {
+      killEvents(event);
+      s_editMode = 0;
+      value ^= (1<<m_posHorz);
+      STORE_MODELVARS;
+    }
+  }
+
+  return value;
+}
 
 void menuProcPhaseOne(uint8_t event)
 {
@@ -1481,12 +1512,28 @@ enum ExposFields {
   EXPO_FIELD_MAX
 };
 
+#if defined(PCBARM)
+#define EXPO_ONE_ARM_ROW sizeof(ed->name),
+#else
+#define EXPO_ONE_ARM_ROW
+#endif
+#if defined(CURVES)
+#define EXPO_ONE_CURVES_ROW 1,
+#else
+#define EXPO_ONE_CURVES_ROW
+#endif
+#if defined(FLIGHT_PHASES)
+#define EXPO_ONE_PHASES_ROW MAX_PHASES-1,
+#else
+#define EXPO_ONE_PHASES_ROW
+#endif
+
 void menuProcExpoOne(uint8_t event)
 {
   ExpoData *ed = expoaddress(s_currIdx);
   putsChnRaw(7*FW+FW/2,0,ed->chn+1,0);
 
-  SIMPLE_SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX);
+  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {EXPO_ONE_ARM_ROW 0, 0, EXPO_ONE_CURVES_ROW EXPO_ONE_PHASES_ROW 0 /*, ...*/});
 
   int8_t sub = m_posVert;
 
@@ -1499,58 +1546,60 @@ void menuProcExpoOne(uint8_t event)
     {
 #if defined(PCBARM)
       case EXPO_FIELD_NAME:
-        EditName(6*FW+5, y, ed->name, sizeof(ed->name), event, attr, m_posHorz);
+        EditName(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->name, sizeof(ed->name), event, attr, m_posHorz);
         break;
 #endif
-
       case EXPO_FIELD_WIDTH:
         {
 #if defined(PCBARM)
-          lcd_outdezAtt(9*FW+5, y, ed->weight, attr|INFLIGHT(ed->weight));
+          lcd_outdezAtt(EXPO_ONE_2ND_COLUMN+3*FW, y, ed->weight, attr|INFLIGHT(ed->weight));
           if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->weight, 0, 100, 0, STR_DRWEIGHT);
 #else
           PREPARE_INFLIGHT_BITFIELD(&ed->expo - 1);
-          lcd_outdezAtt(9*FW+5, y, ed->weight, attr|INFLIGHT(*bitfield));
+          lcd_outdezAtt(EXPO_ONE_2ND_COLUMN+3*FW, y, ed->weight, attr|INFLIGHT(*bitfield));
           if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, ed->weight, 0, 100, 0, STR_DRWEIGHT, 1);
 #endif
         }
         break;
       case EXPO_FIELD_EXPO:
-        lcd_outdezAtt(9*FW+5, y, ed->expo, attr|INFLIGHT(ed->expo));
-        if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
+        if (ed->curveMode==MODE_EXPO || ed->curveParam==0) {
+          ed->curveMode = MODE_EXPO;
+          lcd_outdezAtt(EXPO_ONE_2ND_COLUMN+3*FW, y, ed->curveParam, attr|INFLIGHT(ed->curveParam));
+          if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->curveParam, -100, 100, 0, STR_DREXPO);
+        }
+        else {
+          lcd_putsAtt(EXPO_ONE_2ND_COLUMN, y, STR_NA, attr);
+        }
         break;
 #ifdef CURVES
       case EXPO_FIELD_CURVE:
-        putsCurve(6*FW+5, y, ed->curve, attr);
-        if (attr) {
-          CHECK_INCDEC_MODELVAR(event, ed->curve, 0, MAX_CURVES+7-1);
-          if (ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
-            s_curveChan = ed->curve - CURVE_BASE;
-            pushMenu(menuProcCurveOne);
+        if (ed->curveMode!=MODE_EXPO || ed->curveParam==0) {
+          putsCurve(EXPO_ONE_2ND_COLUMN, y, ed->curveParam, attr);
+          if (attr) {
+            CHECK_INCDEC_MODELVAR(event, ed->curveParam, 0, MAX_CURVES+7-1);
+            if (ed->curveParam) ed->curveMode = MODE_CURVE;
+            if (ed->curveParam>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
+              s_curveChan = ed->curveParam - CURVE_BASE;
+              pushMenu(menuProcCurveOne);
+            }
           }
+        }
+        else {
+          lcd_putsAtt(EXPO_ONE_2ND_COLUMN, y, STR_NA, attr);
         }
         break;
 #endif
 #ifdef FLIGHT_PHASES
       case EXPO_FIELD_FLIGHT_PHASE:
-        {
-#if defined(PCBARM)
-          putsFlightPhase(6*FW+5, y, ed->phase, attr);
-          if (attr) { ed->phase = checkIncDecModel(event, ed->phase, -MAX_PHASES, MAX_PHASES); }
-#else
-          int8_t phase = ed->negPhase ? -ed->phase : +ed->phase;
-          putsFlightPhase(6*FW+5, y, phase, attr);
-          if (attr) { phase = checkIncDecModel(event, phase, -MAX_PHASES, MAX_PHASES); ed->negPhase = (phase < 0); ed->phase = abs(phase); }
-#endif
-        }
+        ed->phases = editPhases(EXPO_ONE_2ND_COLUMN-2*FW, y, event, ed->phases, attr);
         break;
 #endif
       case EXPO_FIELD_SWITCH:
-        putsSwitches(6*FW+5, y, ed->swtch, attr);
-        if (attr) CHECK_INCDEC_MODELSWITCH(event, ed->swtch, -MAX_DRSWITCH, MAX_DRSWITCH);
+        putsSwitches(EXPO_ONE_2ND_COLUMN, y, ed->swtch, attr);
+        if (attr) CHECK_INCDEC_MODELSWITCH(event, ed->swtch, -MAX_SWITCH, MAX_SWITCH);
         break;
       case EXPO_FIELD_WHEN:
-        lcd_putsiAtt(6*FW+5, y, STR_VWHEN, 3-ed->mode, attr);
+        lcd_putsiAtt(EXPO_ONE_2ND_COLUMN, y, STR_VWHEN, 3-ed->mode, attr);
         if (attr) ed->mode = 4 - checkIncDecModel(event, 4-ed->mode, 1, 3);
         break;
     }
@@ -1596,17 +1645,29 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
+#if defined(PCBARM)
+#define MIX_ONE_ARM_ROW sizeof(md2->name),
+#else
+#define MIX_ONE_ARM_ROW
+#endif
+#if defined(CURVES)
+#define MIX_ONE_CURVES_ROW 1,
+#else
+#define MIX_ONE_CURVES_ROW
+#endif
+#if defined(FLIGHT_PHASES)
+#define MIX_ONE_PHASES_ROW MAX_PHASES-1,
+#else
+#define MIX_ONE_PHASES_ROW
+#endif
+
 void menuProcMixOne(uint8_t event)
 {
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
 
-#if defined(PCBARM)
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {sizeof(md2->name), 0, 0, 0, 1, 1, 0, MAX_PHASES-1, 0 /*, ...*/});
-#else
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 1, 1, 0, MAX_PHASES-1, 0 /*, ...*/});
-#endif
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {MIX_ONE_ARM_ROW 0, 0, 0, 1, MIX_ONE_CURVES_ROW 0, MIX_ONE_PHASES_ROW 0 /*, ...*/});
 
   int8_t  sub = m_posVert;
 
@@ -1655,7 +1716,6 @@ void menuProcMixOne(uint8_t event)
 #if defined(CURVES)
       case MIX_FIELD_CURVE:
         lcd_putsLeft(y, STR_CURVE);
-
         if (attr) {
           int8_t curveParam = md2->curveParam;
           if (md2->curveMode==MODE_CURVE) {
@@ -1701,16 +1761,7 @@ void menuProcMixOne(uint8_t event)
 #if defined(FLIGHT_PHASES)
       case MIX_FIELD_FLIGHT_PHASE:
         lcd_putsLeft(y, STR_FPHASE);
-        for (uint8_t p=0; p<MAX_PHASES; p++)
-          lcd_putcAtt(MIXES_2ND_COLUMN+p*FW, y, '0'+p, ((m_posHorz==p) && attr) ? BLINK|INVERS : ((md2->phases & (1<<p)) ? 0 : INVERS));
-        if (attr) {
-          if ((event==EVT_KEY_FIRST(KEY_MENU)) || p1valdiff) {
-            killEvents(event);
-            s_editMode = 0;
-            md2->phases ^= (1<<m_posHorz);
-            STORE_MODELVARS;
-          }
-        }
+        md2->phases = editPhases(MIXES_2ND_COLUMN, y, event, md2->phases, attr);
         break;
 #endif
       case MIX_FIELD_WARNING:
@@ -1933,9 +1984,14 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
             lcd_outdezAtt(EXPO_LINE_WEIGHT_POS, y, ed->weight, attr | (isExpoActive(i) ? BOLD : 0));
-            if (attr != 0)
+            if (attr != 0) {
               CHECK_INCDEC_MODELVAR(_event, ed->weight, 0, 100);
-            lcd_outdezAtt(EXPO_LINE_EXPO_POS, y, ed->expo, 0);
+            }
+
+            if (ed->curveMode == MODE_CURVE)
+              putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
+            else
+              lcd_outdezAtt(EXPO_LINE_EXPO_POS, y, ed->curveParam, 0);
 
 #if defined(PCBARM)
             if (ed->name[0]) {
@@ -1945,16 +2001,8 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
             else
 #endif
             {
-#if defined(FLIGHT_PHASES)
-#if defined(PCBARM)
-              putsFlightPhase(EXPO_LINE_PHASE_POS, y, ed->phase);
-#else
-              putsFlightPhase(EXPO_LINE_PHASE_POS, y, ed->negPhase ? -ed->phase : +ed->phase);
-#endif
-#endif
               putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
               if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
-              if (ed->curve) putsCurve(18*FW+2, y, ed->curve);
             }
           }
           else {

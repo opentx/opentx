@@ -438,3 +438,4 @@
 #define TR_COPY_FILE           "Copy"
 #define TR_RENAME_FILE         "Rename"
 #define TR_REMOVED             " removed"
+#define TR_NA                  "N/A"

@@ -352,6 +352,7 @@ const pm_char STR_DELETE_FILE[] PROGMEM = TR_DELETE_FILE;
 const pm_char STR_COPY_FILE[] PROGMEM = TR_COPY_FILE;
 const pm_char STR_RENAME_FILE[] PROGMEM = TR_RENAME_FILE;
 const pm_char STR_REMOVED[] PROGMEM = TR_REMOVED;
+const pm_char STR_NA[] PROGMEM = TR_NA;
 
 const pm_uchar font[] PROGMEM = {
 #include "font.lbm"
