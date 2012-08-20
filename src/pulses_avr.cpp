@@ -418,10 +418,6 @@ normal:
 
  */
 
-bool s_bind_mode = false;     // Issue 98
-bool s_rangecheck_mode = false;
-uint8_t s_bind_allowed = 255; // Issue 98
-
 FORCEINLINE void setupPulsesDsm2()
 {
   uint16_t *ptr = (uint16_t *)pulses2MHz;

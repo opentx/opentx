@@ -100,6 +100,12 @@ extern void board_init();
 #endif
 
 #if defined(DSM2)
+extern bool s_bind_mode;
+extern bool s_rangecheck_mode;
+extern uint8_t s_bind_allowed;
+#endif
+
+#if defined(DSM2)
 #define IS_DSM2_PROTOCOL(protocol) (protocol==PROTO_DSM2)
 #else
 #define IS_DSM2_PROTOCOL(protocol) (0)

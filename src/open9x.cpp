@@ -95,6 +95,13 @@ uint8_t  g_timeMainLast;
 audioQueue  audio;
 #endif
 
+#if defined(DSM2)
+// TODO port to ARM Bryan's code
+bool s_bind_mode = false;
+bool s_rangecheck_mode = false;
+uint8_t s_bind_allowed = 255;
+#endif
+
 uint8_t heartbeat;
 
 uint8_t stickMode;

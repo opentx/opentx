@@ -266,10 +266,12 @@ void menuMainView(uint8_t event)
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
 #if defined(PCBARM)
-      int16_t val = g_chans512[8*(g_eeGeneral.view / ALTERNATE_VIEW) + i];
+      uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
 #else
-      int16_t val = g_chans512[(g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i];
+      uint8_t chan = (g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i;
 #endif
+
+      int16_t val = g_chans512[chan];
 
       switch(view_base)
       {
@@ -290,7 +292,12 @@ void menuMainView(uint8_t event)
           x0       = i<4 ? 128/4+2 : 128*3/4-2;
           y0       = 38+(i%4)*5;
 
+#ifdef FRANCK
+          uint16_t lim = calc100toRESX(val > 0 ? 100+g_model.limitData[chan].max : +100-g_model.limitData[chan].min);
+          int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
+#else
           int8_t len = (abs(val) * WBAR2 + 512) / 1024;
+#endif
           if(len>WBAR2)  len =  WBAR2;  // prevent bars from going over the end - comment for debugging
           lcd_hlineStip(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
           lcd_vline(x0,y0-2,5);

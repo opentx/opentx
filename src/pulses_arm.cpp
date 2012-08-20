@@ -351,11 +351,6 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 // This is the data stream to send, prepare after 19.5 mS
 // Send after 22.5 mS
 
-// TODO port to ARM Bryan's code
-bool s_bind_mode = false;     // Issue 98
-bool s_rangecheck_mode = false;
-uint8_t s_bind_allowed = 255; // Issue 98
-
 //static uint8_t *Dsm2_pulsePtr = pulses2MHz.pbyte ;
 void setupPulsesDsm2(uint8_t chns)
 {
