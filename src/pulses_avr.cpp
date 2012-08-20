@@ -419,6 +419,7 @@ normal:
  */
 
 bool s_bind_mode = false;     // Issue 98
+bool s_rangecheck_mode = false;
 uint8_t s_bind_allowed = 255; // Issue 98
 
 FORCEINLINE void setupPulsesDsm2()
@@ -430,7 +431,11 @@ FORCEINLINE void setupPulsesDsm2()
     s_bind_mode = true;
     *ptr++ = BIND_BIT;
   }
-  else 
+  else if (s_rangecheck_mode)
+  {
+    *ptr++ = RANGECHECK_BIT;
+  }
+  else
   {
     s_bind_mode = false;
     *ptr++ = 0x00;
