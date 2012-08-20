@@ -28,7 +28,7 @@ def generate(str, idx, alternate=0):
         if "sapi" in sys.argv:
             tts.Speak(str)
         elif "espeak" in sys.argv:
-            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", str.encode("utf-8")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
         else:
             print "which speach engine?"
     else:
@@ -57,7 +57,7 @@ def generate(str, idx, alternate=0):
             o.close()                
             os.remove(temp)           
         elif "espeak" in sys.argv:
-            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", "-w", result, str.encode("latin-1")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", "-w", result, str.encode("utf-8")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
         else:
             print "which speach engine?"
             return []
@@ -264,6 +264,88 @@ if __name__ == "__main__":
                      (u"fase di volo 9", "fltmd9"),
                      ]):
             sounds.extend(generate(s, f, 256+i))
+            
+    elif "cz" in sys.argv:
+        if "sapi" in sys.argv:
+            tts.SetVoiceByName("ScanSoftZuzana_Full_22kHz")
+            voice = "czech"           	
+        else:
+            espeakVoice = "mb-cz2"
+            espeakspeed = "150"
+            voice = "czech"     
+             
+        for i, s in enumerate(["nula", "jedna", "dva"]):
+            systemSounds.extend(generate(s, i))    
+        for i in range(97):
+            systemSounds.extend(generate(str(3+i), 3+i))
+        for i, s in enumerate(["sto", u"dvěsta", u"třista", u"čtyřista", u"pětset", u"šestset", "sedmset", "osmset", 			
+        						u"devětset", u"tisíc"]):
+            systemSounds.extend(generate(s, 100+i))
+        for i, s in enumerate([u"tisíce", "jeden", "jedno", u"dvě", u"celá", u"celé", u"celých", u"mínus"]):
+            systemSounds.extend(generate(s, 110+i))
+        for i, s in enumerate(["hodina", "hodiny", "hodin", "minuta", "minuty", "minut", "sekunda", "sekundy", "sekund"]):
+            systemSounds.extend(generate(s, 118+i))
+            
+        for i, s in enumerate(["volt", "volty", u"voltů", "voltu",
+        					   u"ampér", u"ampéry", u"ampérů", u"ampéru",
+        					   "metr za sekundu", "metry za sekundu", u"metrů za sekundu", "metru za sekundu",
+        					   "jednotka", "jednotky", "jednotek", "jednotky",
+        					   "kilometr za hodinu", "kilometry za hodinu", u"kilometrů za hodinu", "kilometru za hodinu",
+        					   "metr", "metry", u"metrů", "metru",
+        					   u"stupeň", u"stupně", u"stupňů", u"stupně",
+        					   "procento", "procenta", "procento", "procenta",
+        					   u"miliampér", u"miliampéry", u"miliampérů", u"miliampéru",
+        					   u"miliampérhodina", u"miliampérhodiny", u"miliampérhodin", u"miliampérhodiny",
+        					   "vat", "vaty", u"vatů", "vatu",
+        					   "stopa", "stopy", "stop", "stopy",
+        					   "uzel", "uzly", u"uzlů", "uzlu"]):
+            systemSounds.extend(generate(s, 130+i))
+            
+        for i, s in enumerate([u"zapoměl jsi na mé!", u"baterie rádia je vybitá", u"plyn není na nule",
+        					 u"přepínače nejsou ve výchozí poloze"]):
+            systemSounds.extend(generate(s, 230+i))
+        systemSounds.extend(generate(u"tadá", 245))
+        systemSounds.extend(generate(u"ťik ťak", 250))
+        systemSounds.extend(generate(u"deset sekund", 251))
+        systemSounds.extend(generate(u"dvacet sekund", 252))
+        systemSounds.extend(generate(u"třicet sekund", 253))
+            
+        for s, f, a in [(u"střed trimu", "midtrim", 244),
+                        (u"maximum trimu", "endtrim", 0),
+                        (u"baterie rádia je vybitá", "lowbatt", 231),
+                       ]:
+            systemSounds.extend(generate(s, f, a))
+        for i, (s, f) in enumerate([
+                     (u"podvozek je zasunut", "gearup"),
+                     (u"podvozek je vysunut", "geardn"),
+                     (u"klapky jsou zapnuty", "flapup"),
+                     (u"klapky jsou vypnuty", "flapdn"),
+                     (u"přistání", "attero"),
+                     (u"trenér je zapnutý", "trnon"),
+                     (u"trenér je vypnutý", "trnoff"),
+                     (u"motor je vypnutý", "engoff"),
+                     (u"jsi příliš vysoko", "tohigh"),
+                     (u"jsi příliš nízko", "tolow"),
+                     (u"nízká baterie", "lowbat"),
+                     (u"crou zapnutý", "crowon"),
+                     (u"crou vypnutý", "crowof"),
+                     (u"nízký signál!", "siglow"),
+                     (u"kritický signál!", "sigcrt"),
+                     (u"rychlý mód aktivován", "spdmod"),
+                     (u"termický mód aktivován", "thmmod"),
+                     (u"normální mód aktivován", "nrmmod"),
+                     (u"režim jedna", "fltmd1"),
+                     (u"režim dva", "fltmd2"),
+                     (u"režim tři", "fltmd3"),
+                     (u"režim čtyři", "fltmd4"),
+                     (u"režim pět", "fltmd5"),
+                     (u"režim šest", "fltmd6"),
+                     (u"režim sedum", "fltmd7"),
+                     (u"režim osm", "fltmd8"),
+                     (u"režim devět", "fltmd9"),
+                     ]):
+            sounds.extend(generate(s, f, 256+i))
+            
 
     if 'ad4' in sys.argv:
         voice += "-stock"
