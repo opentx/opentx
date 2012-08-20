@@ -417,7 +417,7 @@ void applyExpos(int16_t *anas)
     if (ed.mode==0) break; // end of list
     if (ed.chn == cur_chn)
       continue;
-    if (!(ed.phases & (1<<s_perout_flight_phase)))
+    if (ed.phases & (1<<s_perout_flight_phase))
       continue;
     if (getSwitch(ed.swtch, 1)) {
 #ifdef BOLD_FONT
