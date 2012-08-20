@@ -118,12 +118,12 @@ void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 
 enum menuProcSetupItems {
   ITEM_SETUP_BEEPER_MODE,
-#if defined(VOICE)
-  ITEM_SETUP_SPEAKER_VOLUME,
-#endif
   ITEM_SETUP_BEEPER_LENGTH,
 #if defined(AUDIO)
   ITEM_SETUP_SPEAKER_PITCH,
+#endif
+#if defined(VOICE)
+  ITEM_SETUP_SPEAKER_VOLUME,
 #endif
 #if defined(HAPTIC)
   ITEM_SETUP_HAPTIC_MODE,
@@ -212,6 +212,20 @@ void menuProcSetup(uint8_t event)
 #endif
         break;
 
+      case ITEM_SETUP_BEEPER_LENGTH:
+        SLIDER(y, g_eeGeneral.beeperLength, -2, 2, STR_BEEPERLEN, STR_VBEEPLEN, event, attr);
+        break;
+
+#if defined(AUDIO)
+      case ITEM_SETUP_SPEAKER_PITCH:
+        lcd_putsLeft( y, STR_SPKRPITCH);
+        lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerPitch, attr|LEFT);
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 100);
+        }
+        break;
+#endif
+
 #if defined(VOICE)
       case ITEM_SETUP_SPEAKER_VOLUME:
       {
@@ -229,26 +243,12 @@ void menuProcSetup(uint8_t event)
           CHECK_INCDEC_GENVAR(event, b, 0, 7);
           if (g_eeGeneral.speakerVolume != (int8_t)b-7) {
             g_eeGeneral.speakerVolume = (int8_t)b-7;
-            pushPrompt(b | 0xF0);
+            pushCustomPrompt(b | 0xF0);
           }
         }
 #endif
         break;
       }
-#endif
-
-      case ITEM_SETUP_BEEPER_LENGTH:
-        SLIDER(y, g_eeGeneral.beeperLength, -2, 2, STR_BEEPERLEN, STR_VBEEPLEN, event, attr);
-        break;
-
-#if defined(AUDIO)
-      case ITEM_SETUP_SPEAKER_PITCH:
-        lcd_putsLeft( y, STR_SPKRPITCH);
-        lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerPitch, attr|LEFT);
-        if (attr) {
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 100);
-        }
-        break;
 #endif
 
 #ifdef HAPTIC
@@ -501,6 +501,7 @@ void menuProcTime(uint8_t event)
               break;
             case 2:
               lcd_outdezNAtt(FW*16-2, y, at->tm_sec, attr|LEADING0, 2);
+
               if(attr && (s_editMode>0 || p1valdiff)) at->tm_sec = checkIncDec( event, at->tm_sec, 0, 59, 0);
               break;
           }

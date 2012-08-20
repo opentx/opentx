@@ -49,7 +49,7 @@
 #define V_WAIT_BUSY_DELAY       5
 
 #define PROMPT_SYSTEM_BASE      230
-#define PROMPT_CUSTOM_BASE      260
+#define PROMPT_CUSTOM_BASE      256
 
 struct t_voice
 {

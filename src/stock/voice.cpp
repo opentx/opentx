@@ -37,7 +37,7 @@ struct t_voice Voice ;
 /* TODO why? static uint8_t v_ctr ;
 uint8_t v_first[8] ; */
 
-void putVoiceQueueUpper( uint8_t value )
+/*void putVoiceQueueUpper( uint8_t value )
 {
   struct t_voice *vptr;
   vptr = voiceaddress();
@@ -46,7 +46,7 @@ void putVoiceQueueUpper( uint8_t value )
     pushPrompt(0xFF);
     pushPrompt(value);
   }
-}
+}*/
 
 void pushCustomPrompt(uint8_t value)
 {
@@ -104,14 +104,14 @@ void t_voice::voice_process(void)
       VoiceQueueCount -= 1;
       if (VoiceShift) {
         VoiceShift = 0;
-        VoiceSerial += 260;
+        VoiceSerial += 256;
       }
       VoiceTimer = 16;
-      if (VoiceSerial == 0xFF) { // Looking for FF
+      if (VoiceSerial == 0xFF) { // Looking for Shift FF
           VoiceShift = 1;
           return;
         }
-      if ((VoiceSerial & 0x01F8) == 0xF0) { // Looking for F0-F7
+      if ((VoiceSerial & 0x1F8) == 0x1F0) { // Looking for sound volume 1F0-1F7
         VoiceSerial |= 0xFF00;
         VoiceTimer = 40;
       }
