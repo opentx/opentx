@@ -380,4 +380,8 @@ void menuMainView(uint8_t event)
   DISPLAY_PROGRESS_BAR(20*FW+1);
 #endif
 
+#ifdef DSM2
+  if (s_bind_mode)
+    lcd_putsAtt(15*FW, 0, PSTR("BIND"), 0);
+#endif
 }

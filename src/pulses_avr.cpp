@@ -418,20 +418,27 @@ normal:
 
  */
 
-bool s_bind_allowed = true;
+bool s_bind_mode = false;     // For confirmation display of "BIND" in upper-right of main view screen
+uint8_t s_bind_allowed = 255; // Counter allows trainer switch bind mode during 1st ~4 seconds, after power-on.
+                              // This is needed to give time for DSM module to repliably complete power up.
 
 FORCEINLINE void setupPulsesDsm2()
 {
   uint16_t *ptr = (uint16_t *)pulses2MHz;
-  if (s_bind_allowed) {
-    *ptr++ = (keyState(SW_Trainer) ? BIND_BIT : 0x00);
-    s_bind_allowed = false;
+  if (s_bind_allowed) s_bind_allowed--;
+  if (s_bind_allowed && keyState(SW_Trainer)) 
+  {
+    s_bind_mode = true;
+    *ptr++ = BIND_BIT;
   }
-  else {
+  else 
+  {
+    s_bind_mode = false;
     *ptr++ = 0x00;
   }
   *ptr++ = g_model.modelId;
-  for (uint8_t i=0; i<DSM2_CHANS; i++) {
+  for (uint8_t i=0; i<DSM2_CHANS; i++) 
+  {
     uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
     *ptr++ = (i<<2) | ((pulse>>8)&0x03);
     *ptr++ = pulse & 0xff;
