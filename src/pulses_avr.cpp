@@ -418,9 +418,8 @@ normal:
 
  */
 
-bool s_bind_mode = false;     // For confirmation display of "BIND" in upper-right of main view screen
-uint8_t s_bind_allowed = 255; // Counter allows trainer switch bind mode during 1st ~4 seconds, after power-on.
-                              // This is needed to give time for DSM module to repliably complete power up.
+bool s_bind_mode = false;     // Issue 98
+uint8_t s_bind_allowed = 255; // Issue 98
 
 FORCEINLINE void setupPulsesDsm2()
 {
