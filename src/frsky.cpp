@@ -692,17 +692,17 @@ void check_frsky()
     voltage += frskyData.hub.cellVolts[i];
   voltage /= 5;
   frskyData.hub.cellsSum = voltage;
-  if (g_model.frsky.voltsSource <= 1) {
-    uint8_t channel = g_model.frsky.voltsSource;
+  uint8_t channel = g_model.frsky.voltsSource;
+  if (channel <= 1) {
     voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
   }
-  else if (g_model.frsky.voltsSource == 2) {
+  else if (channel == 2) {
     voltage = frskyData.hub.vfas;
   }
 
   uint16_t current = frskyData.hub.current;
-  if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1 && g_model.frsky.currentSource <= FRSKY_SOURCE_A2) {
-    uint8_t channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
+  channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
+  if (channel <= 1) {
     current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
   }
 
@@ -777,6 +777,8 @@ void check_frsky()
 #endif
 }
 
+#if 0
+// not used any more
 bool FRSKY_alarmRaised(uint8_t idx)
 {
   for (int i=0; i<2; i++) {
@@ -793,6 +795,7 @@ bool FRSKY_alarmRaised(uint8_t idx)
   }
   return false;
 }
+#endif
 
 #if !defined(PCBARM)
 inline void FRSKY_EnableTXD(void)
@@ -869,8 +872,9 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
 void frskyEvalCurrentConsumptionBoundary()
 {
   currentConsumptionBoundary = 3600;
-  if (g_model.frsky.currentSource >= FRSKY_SOURCE_A1 && g_model.frsky.currentSource <= FRSKY_SOURCE_A2) {
-    uint16_t divider = (g_model.frsky.channels[g_model.frsky.currentSource-FRSKY_SOURCE_A1].ratio << g_model.frsky.channels[g_model.frsky.currentSource-FRSKY_SOURCE_A1].multiplier);
+  uint8_t channel = g_model.frsky.currentSource-FRSKY_SOURCE_A1;
+  if (channel <= 1) {
+    uint16_t divider = (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier);
     if (divider > 5) {
       currentConsumptionBoundary = 360000L / divider;
     }
