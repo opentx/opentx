@@ -137,7 +137,7 @@ typedef enum {
 
 int16_t applyChannelRatio(uint8_t channel, int16_t val)
 {
-  return ((int16_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51;
+  return (int16_t)(((int32_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51);
 }
 
 void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
