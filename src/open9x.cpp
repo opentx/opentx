@@ -468,17 +468,18 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
-    // TODO flash saving
+    int32_t tmp;
     if (g_model.limitData[channel].symetrical)
-      value = (value > 0) ? value * ((int32_t) lim_p) / 100000 :
-                           -value * ((int32_t) lim_n) / 100000; //div by 100000 -> output = -1024..1024
+      tmp = (value > 0) ? ((int32_t) lim_p) : ((int32_t) -lim_n);
     else
-      value = (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
-                           -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
+      tmp = (value > 0) ? ((int32_t) lim_p - ofs) : ((int32_t) -lim_n + ofs);
+    value = (value * tmp) / 100000;
   }
 #else
-  if (value) value = (value > 0) ? value * ((int32_t) lim_p - ofs) / 100000 :
-                                  -value * ((int32_t) lim_n - ofs) / 100000; //div by 100000 -> output = -1024..1024
+  if (value) {
+    int32_t tmp = (value > 0) ? ((int32_t) lim_p - ofs) : ((int32_t) -lim_n + ofs);
+    value = (value * tmp) / 100000; //div by 100000 -> output = -1024..1024
+  }
 #endif
 
   value += calc1000toRESX(ofs);
@@ -2751,22 +2752,24 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
   cli();
   
 #if defined(PCBV4)
-  static uint8_t accuracyWarble = 4; // because 16M / 1024 / 100 = 156.25. So bump every 4.
-  uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
   TIMSK2 &= ~(1<<OCIE2A); // stop reentrance
-  OCR2A += bump;
 #else
   TIMSK &= ~(1<<OCIE0); // stop reentrance
-#if defined(AUDIO) || defined(VOICE)
+#endif
+
+  sei();
+
+#if defined(PCBV4)
+  static uint8_t accuracyWarble = 4; // because 16M / 1024 / 100 = 156.25. So bump every 4.
+  uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
+  OCR2A += bump;
+#elif defined(AUDIO) || defined(VOICE)
   OCR0 += 2; // interrupt every 128us
 #else
   static uint8_t accuracyWarble = 4; // because 16M / 1024 / 100 = 156.25. So bump every 4.
   uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
   OCR0 += bump;
 #endif
-#endif
-
-  sei();
 
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
 
@@ -2779,6 +2782,13 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #endif
 
   static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
+
+#if defined(FRSKY)
+  if (cnt10ms == 30) {
+    check_frsky();
+  }
+#endif
+
   if (cnt10ms-- == 0) { // BEGIN { ... every 10ms ... }
     // Begin 10ms event
     cnt10ms = 77;
@@ -2799,7 +2809,6 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 #if !defined(PCBV4)
     heartbeat |= HEART_TIMER10ms; // TODO check heartbeat everywhere!
 #endif
-
 
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
   } // end 10ms event

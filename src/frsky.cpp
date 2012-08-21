@@ -135,9 +135,14 @@ typedef enum {
   TS_XOR = 0x80 // decode stuffed byte
 } TS_STATE;
 
-int16_t applyChannelRatio(uint8_t channel, int16_t val)
+uint16_t getChannelRatio(uint8_t channel)
 {
-  return (int16_t)(((int32_t)val+g_model.frsky.channels[channel].offset) * (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier) * 2 / 51);
+  return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
+}
+
+int16_t applyChannelRatio(uint8_t channel, uint8_t val)
+{
+  return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
 }
 
 void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
@@ -660,7 +665,7 @@ inline void FRSKY10mspoll(void)
 }
 #endif
 
-void check_frsky()
+NOINLINE void check_frsky()
 {
 #if defined(PCBARM)
   rxPdcUsart(processSerialData);              // Receive serial data here
@@ -874,7 +879,7 @@ void frskyEvalCurrentConsumptionBoundary()
   currentConsumptionBoundary = 3600;
   uint8_t channel = g_model.frsky.currentSource-FRSKY_SOURCE_A1;
   if (channel <= 1) {
-    uint16_t divider = (g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier);
+    uint16_t divider = getChannelRatio(channel);
     if (divider > 5) {
       currentConsumptionBoundary = 360000L / divider;
     }

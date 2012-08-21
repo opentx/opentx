@@ -544,9 +544,20 @@ enum PerOutMode {
 
 extern uint8_t s_perout_mode;
 
+#ifndef FORCEINLINE
+#define FORCEINLINE inline __attribute__ ((always_inline))
+#endif
+
+#ifndef NOINLINE
+#define NOINLINE __attribute__ ((noinline))
+#endif
+
+// Fiddle to force compiler to use a pointer
+#define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
+
 void    perOut(uint8_t tick10ms);
 void    perMain();
-void    per10ms();
+NOINLINE void    per10ms();
 
 int16_t getValue(uint8_t i);
 bool    getSwitch(int8_t swtch, bool nc);
@@ -704,17 +715,6 @@ void read_9_adc(void ) ;
 
 /// liefert Dimension eines Arrays
 #define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
-
-#ifndef FORCEINLINE
-#define FORCEINLINE inline __attribute__ ((always_inline))
-#endif
-
-#ifndef NOINLINE
-#define NOINLINE __attribute__ ((noinline))
-#endif
-
-// Fiddle to force compiler to use a pointer
-#define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
 
 /// liefert Betrag des Arguments
 template<class t> FORCEINLINE t abs(t a) { return a>0?a:-a; }
