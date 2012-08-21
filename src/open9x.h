@@ -729,6 +729,42 @@ template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma
 uint16_t isqrt32(uint32_t n);
 #endif
 
+#if defined(PCBARM)
+#if !defined(SIMU)
+extern "C" {
+#include <CoOS.h>
+}
+#endif
+
+extern OS_MutexID mixerMutex;
+inline void pauseMixerCalculations()
+{
+  CoEnterMutexSection(mixerMutex);
+}
+
+inline void resumeMixerCalculations()
+{
+  CoLeaveMutexSection(mixerMutex);
+}
+#elif defined(PCBV4)
+inline void pauseMixerCalculations()
+{
+  cli();
+  TIMSK5 &= ~(1<<OCIE5A);
+  sei();
+}
+
+inline void resumeMixerCalculations()
+{
+  cli();
+  TIMSK5 |= (1<<OCIE5A);
+  sei();
+}
+#else
+#define pauseMixerCalculations()
+#define resumeMixerCalculations()
+#endif
+
 /// Markiert einen EEPROM-Bereich als dirty. der Bereich wird dann in
 /// eeCheck ins EEPROM zurueckgeschrieben.
 void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size);

@@ -295,6 +295,7 @@ void eeprom_read_block (void *pointer_ram,
 #define wdt_reset() sleep(1/*ms*/)
 #define board_init()
 
+#define OS_MutexID int
 #define CoSetFlag(...)
 #define CoClearFlag(...)
 #define CoSetTmrCnt(...)

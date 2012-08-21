@@ -874,6 +874,60 @@ void sdPoll10mS()
   }
 }
 
+void sdInit()
+{
+  Sd_rca = 0;
+  sdErrorCount = 0;
+
+  Card_state = SD_ST_EMPTY;
+  if (!CardIsConnected())
+    return;
+
+  Card_state = SD_ST_INIT1;
+  sdCmd0();
+
+  Card_state = SD_ST_INIT2;
+  sdCmd8(1);
+
+  Card_state = SD_ST_IDLE;
+  sdMemInit(1, &Cmd_A41_resp);
+
+  Card_state = SD_ST_READY;
+  uint8_t retry;
+  for (retry=0; retry<10; retry++) {
+    if (!sdCmd2()) break;
+    CoTickDelay(1);  // 2ms
+  }
+
+  if (retry == 10)
+    return;
+
+  Card_state = SD_ST_IDENT;
+
+  for (retry=0; retry<10; retry++) {
+    if (!sdCmd3()) break;
+    CoTickDelay(1);  // 2ms
+  }
+
+  if (retry == 10)
+    return;
+
+  Card_state = SD_ST_STBY;
+  sdCmd9();
+  sdCmd7(); // Select Card
+
+  Card_state = SD_ST_TRAN;
+  sdAcmd51();
+  sdAcmd6(); // Set bus width to 4 bits, and speed to 9 MHz
+
+  // Should check the card can do this ****
+  Card_state = SD_ST_DATA;
+
+  f_mount(0, &g_FATFS_Obj);
+  retrieveAvailableAudioFiles();
+  Card_state = SD_ST_MOUNTED;
+}
+
 // Checks for card ready for read/write
 // returns 1 for YES, 0 for NO
 uint32_t sd_card_ready( void )

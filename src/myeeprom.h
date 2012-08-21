@@ -172,12 +172,12 @@ PACK(typedef struct t_EEGeneral {
 PACK(typedef struct t_ExpoData {
   uint8_t mode;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t chn;
-  int8_t  curve;        // 0=no curve, 1-6=std curves, 7-22=CV1-CV16
   int8_t  swtch;
   uint16_t phases;
   int8_t  weight;
+  uint8_t curveMode;
   char    name[6];
-  int8_t  expo;
+  int8_t  curveParam;
 }) ExpoData;
 #else
 PACK(typedef struct t_ExpoData {

@@ -68,8 +68,6 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
     return STR_SDCARD_ERROR;
 }
 
-extern void sdPoll10mS();
-
 #if defined(PCBARM) && !(defined(SIMU))
 extern "C" {
 extern uint32_t sd_card_ready();

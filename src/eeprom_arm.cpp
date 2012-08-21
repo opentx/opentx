@@ -466,13 +466,15 @@ bool ee32LoadGeneral()
 
 void eeLoadModel(uint8_t id)
 {
-  uint16_t size ;
+  uint16_t size;
 
   if (id<MAX_MODELS) {
 
     if (pulsesStarted()) {
       pausePulses();
     }
+
+    pauseMixerCalculations();
 
     size =  File_system[id+1].size ;
 
@@ -508,6 +510,9 @@ void eeLoadModel(uint8_t id)
 
     resetProto();
     resetAll();
+
+    resumeMixerCalculations();
+    // TODO pulses should be started after mixer calculations ...
   }
 }
 

@@ -40,6 +40,7 @@
 
 extern "C" {
 extern void init_SDcard();
+extern void sdInit();
 extern void sdPoll10mS();
 }
 

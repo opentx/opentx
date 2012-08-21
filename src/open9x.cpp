@@ -32,10 +32,6 @@
  */
 
 #if defined(PCBARM) && !defined(SIMU)
-extern "C" {
-#include <CoOS.h>
-}
-
 #define MIXER_STACK_SIZE    500
 #define MENUS_STACK_SIZE    1000
 #define AUDIO_STACK_SIZE    500
@@ -54,6 +50,7 @@ OS_FlagID audioFlag;
 
 OS_MutexID sdMutex;
 OS_MutexID audioMutex;
+OS_MutexID mixerMutex;
 
 /*OS_TID btTask;
 OS_STK btStack[BT_STACK_SIZE];
@@ -433,19 +430,12 @@ void applyExpos(int16_t *anas)
       int16_t v = anas2[ed.chn];
       if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
         cur_chn = ed.chn;
-#if defined(PCBARM)
-        if (ed.curve)
-          v = applyCurve(v, ed.curve);
-        if (ed.expo)
-          v = expo(v, ed.expo);
-#else
         if (ed.curveParam) {
           if (ed.curveMode == MODE_CURVE)
             v = applyCurve(v, ed.curveParam);
           else
             v = expo(v, ed.curveParam);
         }
-#endif
         v = ((int32_t)v * ed.weight) / 100;
         anas[cur_chn] = v;
       }
@@ -997,8 +987,6 @@ void doSplash()
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
 #endif
-
-    clearKeyEvents();
 
 #ifndef SIMU
     for(uint8_t i=0; i<32; i++)
@@ -3116,8 +3104,6 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   }
 #endif
 
-  clearKeyEvents(); //make sure no keys are down before proceeding
-
   lcdSetRefVolt(g_eeGeneral.contrast);
   backlightOn();
 
@@ -3149,7 +3135,9 @@ void mixerTask(void * pdata)
 
       if (s_current_protocol < PROTO_NONE) {
         if (tick10ms) checkTrims();
+        CoEnterMutexSection(mixerMutex);
         doMixerCalculations(tmr10ms, tick10ms);
+        CoLeaveMutexSection(mixerMutex);
       }
 
       heartbeat |= HEART_TIMER10ms;
@@ -3717,12 +3705,14 @@ int main(void)
   init_rotary_sw();
 #endif
 
-#ifndef PCBARM
+#if !defined(PCBARM)
   open9xInit(mcusr);
 #endif
 
 #if defined(PCBARM)
   CoInitOS();
+
+  sdInit();
 
   // btFlag = CoCreateFlag(TRUE, FALSE);          // Auto-reset, start FALSE
   // btTimer = CoCreateTmr(TMR_TYPE_PERIODIC, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), btTimerHandle);
@@ -3737,6 +3727,7 @@ int main(void)
 
   sdMutex = CoCreateMutex();
   audioMutex = CoCreateMutex();
+  mixerMutex = CoCreateMutex();
 
   CoStartOS();
 #else
