@@ -433,12 +433,19 @@ void applyExpos(int16_t *anas)
       int16_t v = anas2[ed.chn];
       if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
         cur_chn = ed.chn;
+#if defined(PCBARM)
+        if (ed.curve)
+          v = applyCurve(v, ed.curve);
+        if (ed.expo)
+          v = expo(v, ed.expo);
+#else
         if (ed.curveParam) {
           if (ed.curveMode == MODE_CURVE)
             v = applyCurve(v, ed.curveParam);
           else
             v = expo(v, ed.curveParam);
         }
+#endif
         v = ((int32_t)v * ed.weight) / 100;
         anas[cur_chn] = v;
       }

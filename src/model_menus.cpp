@@ -1553,6 +1553,12 @@ void menuProcExpoOne(uint8_t event)
         lcd_outdezAtt(EXPO_ONE_2ND_COLUMN+3*FW, y, ed->weight, attr|INFLIGHT((int8_t&)ed->weight));
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, (int8_t&)ed->weight, 0, 100, 0, STR_DRWEIGHT);
         break;
+#if defined(PCBARM)
+      case EXPO_FIELD_EXPO:
+        lcd_outdezAtt(EXPO_ONE_2ND_COLUMN+3*FW, y, ed->expo, attr|INFLIGHT(ed->expo));
+        if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, ed->expo, -100, 100, 0, STR_DREXPO);
+        break;
+#else
       case EXPO_FIELD_EXPO:
         if (ed->curveMode==MODE_EXPO || ed->curveParam==0) {
           ed->curveMode = MODE_EXPO;
@@ -1563,12 +1569,25 @@ void menuProcExpoOne(uint8_t event)
           lcd_putsAtt(EXPO_ONE_2ND_COLUMN, y, STR_NA, attr);
         }
         break;
-#ifdef CURVES
+#endif
+#if defined(CURVES)
+#if defined(PCBARM)
+      case EXPO_FIELD_CURVE:
+        putsCurve(EXPO_ONE_2ND_COLUMN, y, ed->curve, attr);
+        if (attr) {
+          CHECK_INCDEC_MODELVAR(event, ed->curve, 0, CURVE_BASE+MAX_CURVES-1);
+          if (ed->curve>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
+            s_curveChan = ed->curve - CURVE_BASE;
+            pushMenu(menuProcCurveOne);
+          }
+        }
+        break;
+#else
       case EXPO_FIELD_CURVE:
         if (ed->curveMode!=MODE_EXPO || ed->curveParam==0) {
           putsCurve(EXPO_ONE_2ND_COLUMN, y, ed->curveParam, attr);
           if (attr) {
-            CHECK_INCDEC_MODELVAR(event, ed->curveParam, 0, MAX_CURVES+7-1);
+            CHECK_INCDEC_MODELVAR(event, ed->curveParam, 0, CURVE_BASE+MAX_CURVES-1);
             if (ed->curveParam) ed->curveMode = MODE_CURVE;
             if (ed->curveParam>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
               s_curveChan = ed->curveParam - CURVE_BASE;
@@ -1581,7 +1600,8 @@ void menuProcExpoOne(uint8_t event)
         }
         break;
 #endif
-#ifdef FLIGHT_PHASES
+#endif
+#if defined(FLIGHT_PHASES)
       case EXPO_FIELD_FLIGHT_PHASE:
         ed->phases = editPhases(EXPO_ONE_2ND_COLUMN-2*FW, y, event, ed->phases, attr);
         break;
@@ -1980,10 +2000,17 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
               CHECK_INCDEC_MODELVAR(_event, ed->weight, 0, 100);
             }
 
+#if defined(PCBARM)
+            if (ed->curve)
+              putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curve);
+            else if (ed->expo)
+              lcd_outdezAtt(EXPO_LINE_EXPO_POS, y, ed->expo, 0);
+#else
             if (ed->curveMode == MODE_CURVE)
               putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
             else
               lcd_outdezAtt(EXPO_LINE_EXPO_POS, y, ed->curveParam, 0);
+#endif
 
 #if defined(PCBARM)
             if (ed->name[0]) {
