@@ -593,13 +593,16 @@ MSG_CLEANING = Cleaning project:
 ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -Dat91sam3s4 -DRUN_FROM_FLASH=1 $(CPPFLAGS) $(GENDEPFLAGS)
 AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
 
+APPLE=NO
 ifneq ($(PCB), ARM)
   GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
   ifeq ($(GCCVERSIONGTE462),1)
     CPPFLAGS += -flto
   endif
 
-  CPPFLAGS += -fno-inline-small-functions
+  ifeq ($(APPLE), NO)
+    CPPFLAGS += -fno-inline-small-functions
+  endif
 
   GCCVERSIONGTE470 := $(shell expr 4.7.0 \<= `$(CC) -dumpversion`)
   ifeq ($(GCCVERSIONGTE470),1)
