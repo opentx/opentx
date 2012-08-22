@@ -711,6 +711,7 @@ const char * sdEnum()
 }
 #endif
 
+#if 0
 void sdInit()
 {
   const char * result;
@@ -807,6 +808,7 @@ void sdInit()
   pSd->accSpeed = clock;
 #endif
 }
+#endif
 
 uint8_t sdErrorCount = 0;
 FATFS g_FATFS_Obj;
