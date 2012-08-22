@@ -89,7 +89,8 @@ void startPulses()
 }
 
 #define PULSES_SIZE       144
-uint8_t pulses2MHz[PULSES_SIZE] = {0}; // TODO check this length, pulled from er9x, perhaps too big
+uint8_t pulses2MHz[PULSES_SIZE] = {0}; // TODO check this length, pulled from er9x, perhaps too big. 
+                                       // G: Yes, too big -- unless we keep the problematic DSM2=PPM code, which will need this size.
 uint8_t *pulses2MHzRPtr = pulses2MHz;
 
 #if defined(DSM2) || defined(PXX) || defined(IRPROTOS)
@@ -105,8 +106,14 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 
 ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 {
-  static uint8_t pulsePol; // TODO strange, it's always 0 at first, shouldn't it be initialized properly in setupPulses?
+  static uint8_t pulsePol; /* TODO strange, it's always 0 at first, shouldn't it be initialized properly in setupPulses?
 
+                              gruvin: Good point. But not quite. pulsePol should be set when we reset to the start of 
+                              the pulse buffer, just as is done below. BUT, it seems to me that this entire function 
+                              is upsidedown.  That check should be done FIRST, before the pulse toggling code. 
+                              So the present situation would have (only) the first frame sent NOT inverted, if inverted 
+                              polarity had been selected. Not critical, but shoul dbe addressed. */ 
+                            
   // Latency -- how far further on from interrupt trigger has the timer counted?
   // (or -- how long did it take to get to this function)
   uint8_t dt = TCNT1L;
@@ -142,7 +149,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
     OCR1B = *((uint16_t*)pulses2MHzRPtr); /* G: Using timer in CTC mode, restricted to using OCR1A for interrupt triggering.
                                                 So we actually have to handle the OCR1B register separately in this way. */
 
-    // We cannot read the status of the PPM_OUT pin when OC1B is connected to it on the ATmega2560.
+    // We cannot read the status of the PPM_OUT pin when OC1B is connected to it on the ATmega2560 (can on ATmega64A!)
     // So the only way to set polarity is to manually control set/reset mode in COM1B0/1
     if (s_current_protocol != PROTO_NONE) {
       if (pulsePol) {
@@ -195,12 +202,14 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
 void setupPulsesPPM(uint8_t proto)
 {
+    // Total frame length is a fixed 22.5msec (more than 9 channels is non-standard and requires this to be extended.)
+    // Each channel's pulse is 0.7 to 1.7ms long, with a 0.3ms stop tail, making each compelte cycle 1 to 2ms.
+
     int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;   //range of 0.7..1.7msec
 
-    //Total frame length = 22.5msec
-    //each pulse is 0.7..1.7ms long with a 0.3ms stop tail
-    //The pulse ISR is 2mhz that's why everything is multiplied by 2
     uint16_t *ptr = (proto == PROTO_PPM ? (uint16_t *)pulses2MHz : (uint16_t *) &pulses2MHz[PULSES_SIZE/2]);
+
+    //The pulse ISR is 2mhz that's why everything is multiplied by 2
     uint8_t p = (proto == PROTO_PPM16 ? 16 : 8) + (g_model.ppmNCH * 2); //Channels *2
     uint16_t q = (g_model.ppmDelay*50+300)*2; // Stoplen *2
     uint32_t rest = 22500u*2 - q; // Minimum Framelen=22.5ms
@@ -221,11 +230,11 @@ void setupPulsesPPM(uint8_t proto)
 #endif
       rest -= v;
       *ptr++ = q;
-      *ptr++ = v - q; /* as Pat MacKenzie suggests, reviewed and modified by Cam */
+      *ptr++ = v - q; // total pulse width includes stop phase
     }
 
-    *ptr = q;       //reverse these two assignments
-    *(ptr+1) = rest;
+    *ptr++ = q;  
+    *ptr++ = rest;
 
     if (proto == PROTO_PPM) {
       pulses2MHzRPtr = pulses2MHz;
@@ -234,7 +243,7 @@ void setupPulsesPPM(uint8_t proto)
       B3_comp_value = rest - 1000 ;               // 500uS before end of sync pulse
     }
 
-    *(ptr+2) = 0;
+    *ptr = 0;
 }
 
 
