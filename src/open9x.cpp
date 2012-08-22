@@ -2483,7 +2483,11 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
 #endif
 
   evalFunctions();
-  
+
+#if defined(DSM2)
+  if (s_rangecheck_mode) AUDIO_PLAY(AU_FRSKY_CHEEP);
+#endif
+      
 #if defined(PCBARM)
   if (currentSpeakerVolume != requiredSpeakerVolume) {
     setVolume(requiredSpeakerVolume);
@@ -2798,7 +2802,7 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
     per10ms();
 
 #if defined(PCBV4) && defined(SDCARD)
-    sdPoll10mS();
+//    sdPoll10mS();
 #endif
 
 #if !defined(PCBV4)
@@ -3632,7 +3636,7 @@ extern void audioTask(void* pdata);
 
 int main(void)
 {
-  // The WDT remains active after a WDT reset -- at maximum clock speed. So it's
+  // G: The WDT remains active after a WDT reset -- at maximum clock speed. So it's
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more wdt_reset()s in. But I don't like that approach
   // during boot up.)
@@ -3643,7 +3647,6 @@ int main(void)
   uint8_t mcusr = MCUCSR;
   MCUCSR = 0;
 #endif
-
 #if !defined(PCBARM)
   // TODO test WDT on ARM
   wdt_disable();
