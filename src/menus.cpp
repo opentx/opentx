@@ -476,6 +476,9 @@ uint8_t m_posHorz;
 void popMenu()
 {
   if (g_menuStackPtr>0) {
+#ifdef DSM2
+    s_rangecheck_mode = 0;
+#endif
     g_menuStackPtr = g_menuStackPtr-1;
     AUDIO_KEYPAD_UP();
     m_posHorz = 0;
