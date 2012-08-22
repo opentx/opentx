@@ -173,7 +173,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
 
       if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
 
-        // cli is not needed because for these 2 protocols interrupts are not enabled when entering here
+        // cli is not needed because for PPM protocols, interrupts are not enabled when entering here
 
 #if defined(PCBV4)
         TIMSK1 |= (1<<OCIE1A);
@@ -206,8 +206,10 @@ void setupPulsesPPM(uint8_t proto)
     uint32_t rest = 22500u*2 - q; // Minimum Framelen=22.5ms
     
 #if defined(PCBV4)
-    OCR5A = (uint16_t)0x7d * (45+g_model.ppmFrameLength-g_timeMainLast-2/*1ms*/);
-    TCNT5 = 0;
+    if (proto == PROTO_PPM) {
+      OCR5A = (uint16_t)0x7d * (45+g_model.ppmFrameLength-g_timeMainLast-2/*1ms*/);
+      TCNT5 = 0;
+    }
 #endif
 
     rest += (int32_t(g_model.ppmFrameLength))*1000;
@@ -782,7 +784,7 @@ void setupPulses()
         TIMSK1 &= ~0x3C; // All interrupts off
         TIMSK1 &= ~(1<<OCIE1C) ;            // COMPC1 off
         TIFR1 = 0x2F;
-        TIMSK1 |= 0x10; // Enable COMPA
+        TIMSK1 |= (1<<OCIE1A);  // Enable COMPA
 #else
         TIMSK &= ~0x3C ;    // All interrupts off
         ETIMSK &= ~(1<<OCIE1C) ;            // COMPC1 off
@@ -826,7 +828,7 @@ void setupPulses()
 #if defined(PCBV4)
         TIMSK1 &= ~0x3C; // All interrupts off
         TIFR1 = 0x2F;
-        TIMSK1 |= 0x10; // Enable COMPA
+        TIMSK1 |= (1<<OCIE1A); // Enable COMPA
 #else
         TIMSK &= ~0x3C; // All interrupts off
         TIFR = 0x3C;
