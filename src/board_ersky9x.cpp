@@ -77,21 +77,33 @@ uint32_t check_soft_power()
   return e_power_on;
 #endif
 
-  if ( PIOC->PIO_PDSR & 0x02000000 )
-  {
-    return e_power_usb ;            // Detected USB
-  }
-
 #ifdef REVB
   if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
   {
     return e_power_on ;
   }
 
+  if ( PIOC->PIO_PDSR & PIO_PC25 )
+  {
+    return e_power_usb ;            // Detected USB
+  }
+
   if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
   {
     return e_power_trainer ;
   }
+#else
+  if ( PIOC->PIO_PDSR & PIO_PC25 )
+  {
+    return e_power_usb ;            // Detected USB
+  }
+
+  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
+  {
+    return e_power_trainer ;
+  }
+
+  return e_power_on;
 #endif
 
   return e_power_off;
