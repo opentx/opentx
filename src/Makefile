@@ -594,8 +594,8 @@ ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ah
 AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
 
 ifneq ($(PCB), ARM)
-  GCCVERSIONGTE421 := $(shell expr 4.2.1 \>= `$(CC) -dumpversion`)
-  ifeq ($(GCCVERSIONGTE421),1)
+  GPPVERSIONGT421 := $(shell expr `g++ -dumpversion` \> 4.2.1)
+  ifeq ($(GPPVERSIONGT421),1)
     CPPFLAGS += -fno-inline-small-functions
   endif
 
