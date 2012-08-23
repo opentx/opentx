@@ -104,33 +104,27 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 
 #ifndef SIMU
 
-ISR(TIMER1_COMPA_vect) //2MHz pulse generation
+ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 {
-  static uint8_t pulsePol; /* TODO strange, it's always 0 at first, shouldn't it be initialized properly in setupPulses?
-
-                              gruvin: Good point. But not quite. pulsePol should be set when we reset to the start of 
-                              the pulse buffer, just as is done below. BUT, it seems to me that this entire function 
-                              is upsidedown.  That check should be done FIRST, before the pulse toggling code. 
-                              So the present situation would have (only) the first frame sent NOT inverted, if inverted 
-                              polarity had been selected. Not critical, but shoul dbe addressed. */ 
+  static uint8_t pulsePol = 0; /* The very first call to this handler will toggle PPM_out high, then 
+                                  call setupPulses() and initialise pulsePol. This is allowed in favour 
+                                  of minimal ongoing PPM toggle latency. */
                             
-  // Latency -- how far further on from interrupt trigger has the timer counted?
-  // (or -- how long did it take to get to this function)
-  uint8_t dt = TCNT1L;
+  uint8_t dt = TCNT1L; // record Timer1 latency for DEBUG stats display
   
 #ifdef DSM2_SERIAL
   if (g_model.protocol == PROTO_DSM2) {
     OCR1A = 40000;
     // sei will be called inside setupPulses()
-    setupPulses();
-    cli();
+    setupPulses(); // will call sei()
+    cli(); // this blocking ISR will autmoatically issue sei at exit
     UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt
   }
   else
 #endif
   {
-    // Original bitbang for PPM
 #if !defined(PCBV4)
+    // Original bitbang for PPM
     if (s_current_protocol != PROTO_NONE) {
       if (pulsePol) {
         PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
@@ -141,53 +135,48 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation
         pulsePol = 1;
       }
     }
-#endif
-
-    OCR1A = *((uint16_t*)pulses2MHzRPtr); // Schedule next interrupt vector (to this handler)
-
-#if defined(PCBV4)
-    OCR1B = *((uint16_t*)pulses2MHzRPtr); /* G: Using timer in CTC mode, restricted to using OCR1A for interrupt triggering.
-                                                So we actually have to handle the OCR1B register separately in this way. */
-
-    // We cannot read the status of the PPM_OUT pin when OC1B is connected to it on the ATmega2560 (can on ATmega64A!)
-    // So the only way to set polarity is to manually control set/reset mode in COM1B0/1
+#else
+    // PCBV4 zero jitter hardware toggled PPM_out
+    OCR1B = *((uint16_t*)pulses2MHzRPtr); // duplicate capture (Timer1 in CTC mode, so restricted to OCR1A for int vector)
+    
+    // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
+    // so need to use pusePol register to keep track of PPM_out polarity.
     if (s_current_protocol != PROTO_NONE) {
       if (pulsePol) {
-        TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B) on next TCNT1==OCR1B
+        TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
         pulsePol = 0;
       }
       else {
-        TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B) on next TCNT1==OCR1B
+        TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
         pulsePol = 1;
       }
     }
 #endif
 
-    pulses2MHzRPtr += sizeof(uint16_t);
+    OCR1A = *((uint16_t*)pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function)
+
+    pulses2MHzRPtr += sizeof(uint16_t); // non PPM protocols use uint8_t pulse buffer
     if (*((uint16_t*)pulses2MHzRPtr) == 0) {
 
       pulsePol = g_model.pulsePol;
 
-#if defined(PCBV4)
-      TIMSK1 &= ~(1<<OCIE1A); //stop reentrance
-#else
-      TIMSK &= ~(1<<OCIE1A); //stop reentrance
-#endif
-
-      // sei will be called inside setupPulses()
-
-      setupPulses();
-
       if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
 
-        // cli is not needed because for PPM protocols, interrupts are not enabled when entering here
+#if defined(PCBV4)
+        TIMSK1 &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
+#else
+        TIMSK &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
+#endif
+
+        sei(); // enable interrupts during setupPulses
+        setupPulses(); // does not sei() for setupPulsesPPM
+        cli();
 
 #if defined(PCBV4)
-        TIMSK1 |= (1<<OCIE1A);
+        TIMSK1 |= (1<<OCIE1A); // re-enable Timer1 interrupt
 #else
-        TIMSK |= (1<<OCIE1A);
+        TIMSK |= (1<<OCIE1A); // re-enable Timer1 interrupt
 #endif
-        sei();
       }
     }
   }
