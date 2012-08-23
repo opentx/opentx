@@ -513,7 +513,7 @@ int16_t getValue(uint8_t i)
   else if(i<MIXSRC_MAX) return 1024;
   else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
   else if(i<MIXSRC_3POS+3)
-#ifdef HELI
+#if defined(HELI)
     return cyc_anas[i-MIXSRC_3POS];
 #else
     return 0;
@@ -3080,6 +3080,10 @@ uint16_t stack_free()
 
 inline void open9xInit(OPEN9X_INIT_ARGS)
 {
+#if defined(PCBARM)
+  sdInit();
+#endif
+
   eeReadAll();
 
 #if defined(PCBARM)
@@ -3112,9 +3116,10 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   backlightOn();
 
 #if defined(PCBARM)
-
   start_ppm_capture();
   // TODO inside startPulses?
+  s_pulses_paused = false;
+  // TODO startPulses should be started after the first doMixerCalculations()
 #endif
 
   startPulses();
@@ -3127,6 +3132,8 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #if defined(PCBARM)
 void mixerTask(void * pdata)
 {
+  s_pulses_paused = true;
+
   while(1) {
 
     if (!s_pulses_paused) {
@@ -3714,8 +3721,6 @@ int main(void)
 
 #if defined(PCBARM)
   CoInitOS();
-
-  sdInit();
 
   // btFlag = CoCreateFlag(TRUE, FALSE);          // Auto-reset, start FALSE
   // btTimer = CoCreateTmr(TMR_TYPE_PERIODIC, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), btTimerHandle);
