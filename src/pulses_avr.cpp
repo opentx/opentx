@@ -433,7 +433,6 @@ FORCEINLINE void setupPulsesDsm2()
       *ptr = 0x18; // DSMX bind mode
       break;
   }
-
   if (s_bind_allowed) s_bind_allowed--;
   if (s_bind_allowed && keyState(SW_Trainer)) 
   {
@@ -446,7 +445,7 @@ FORCEINLINE void setupPulsesDsm2()
   }
   else
     s_bind_mode = false;
-  ++*ptr;
+  ++ptr;
 
   *ptr++ = g_model.modelId;
   for (uint8_t i=0; i<DSM2_CHANS; i++) 
