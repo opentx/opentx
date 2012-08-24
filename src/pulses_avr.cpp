@@ -430,7 +430,7 @@ FORCEINLINE void setupPulsesDsm2()
       *ptr = 0x10;
       break;
     default:
-      *ptr = 0x18; // DSMX bind mode
+      *ptr = 0x18; // DSMX
       break;
   }
   if (s_bind_allowed) s_bind_allowed--;
@@ -451,8 +451,8 @@ FORCEINLINE void setupPulsesDsm2()
   for (uint8_t i=0; i<DSM2_CHANS; i++) 
   {
     uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
-    *ptr++ = (i<<2) | ((pulse>>8)&0x03);
-    *ptr++ = pulse & 0xff;
+    *ptr++ = (i<<2) | ((pulse>>8)&0x03); // high nyble (4-bits) channel encoded
+    *ptr++ = pulse & 0xff; // low byte
   }
 
   pulses2MHzWPtr = (uint8_t *)ptr;
@@ -526,20 +526,17 @@ void setupPulsesDsm2()
   pulses2MHzWPtr = pulses2MHz;
 
   // If more channels needed make sure the pulses union/array is large enough
-  if (dsmDat[0] & BAD_DATA) // first time through, setup header
+  switch(g_model.ppmNCH)
   {
-    switch(g_model.ppmNCH)
-    {
-      case LPXDSM2:
-        dsmDat[0] = 0x00;
-        break;
-      case DSM2only:
-        dsmDat[0] = 0x10;
-        break;
-      default:
-        dsmDat[0] = 0x18; // DSMX bind mode
-        break;
-    }
+    case LPXDSM2:
+      dsmDat[0] = 0x00;
+      break;
+    case DSM2only:
+      dsmDat[0] = 0x10;
+      break;
+    default:
+      dsmDat[0] = 0x18; // DSMX bind mode
+      break;
   }
 
   if (s_bind_allowed) s_bind_allowed--;
@@ -559,8 +556,8 @@ void setupPulsesDsm2()
   for (uint8_t i=0; i<DSM2_CHANS; i++)
   {
     uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
-    dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
-    dsmDat[3+2*i] = pulse & 0xff;
+    dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03); // high nyble (4-bits) channel encoded
+    dsmDat[3+2*i] = pulse & 0xff; // low byte
   }
 
   for (counter=0; counter<14; counter++)
