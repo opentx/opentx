@@ -520,7 +520,7 @@ void setupPulsesDsm2()
     switch(g_model.ppmNCH)
     {
       case LPXDSM2:
-        dsmDat[0] = BIND_BIT;
+        dsmDat[0] = 0x00;
         break;
       case DSM2only:
         dsmDat[0] = 0x90;
@@ -530,9 +530,20 @@ void setupPulsesDsm2()
         break;
     }
   }
-  if ((dsmDat[0] & BIND_BIT) && (!keyState(SW_Trainer))) dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
-  // TODO find a way to do that, FUNC SWITCH: if ((!(dsmDat[0] & BIND_BIT)) && getSwitch(MAX_DRSWITCH-1, 0, 0)) dsmDat[0] |= RANGECHECK_BIT;   // range check function
-  // else dsmDat[0] &= ~RANGECHECK_BIT;
+
+  if (s_bind_allowed) s_bind_allowed--;
+  if (s_bind_allowed && keyState(SW_Trainer)) 
+  {
+    s_bind_mode = true;
+    dsmDat[0] |= BIND_BIT;
+  }
+  else if (s_rangecheck_mode)
+  {
+    dsmDat[0] |= RANGECHECK_BIT;
+  }
+  else
+    s_bind_mode = false;
+
   dsmDat[1] = g_model.modelId; // DSM2 Header second byte for model match
   for (uint8_t i=0; i<DSM2_CHANS; i++)
   {
