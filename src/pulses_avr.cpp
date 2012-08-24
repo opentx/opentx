@@ -421,21 +421,33 @@ normal:
 FORCEINLINE void setupPulsesDsm2()
 {
   uint16_t *ptr = (uint16_t *)pulses2MHz;
+  switch(g_model.ppmNCH)
+  {
+    case LPXDSM2:
+      *ptr = 0x00;
+      break;
+    case DSM2only:
+      *ptr = 0x10;
+      break;
+    default:
+      *ptr = 0x18; // DSMX bind mode
+      break;
+  }
+
   if (s_bind_allowed) s_bind_allowed--;
   if (s_bind_allowed && keyState(SW_Trainer)) 
   {
     s_bind_mode = true;
-    *ptr++ = BIND_BIT;
+    *ptr |= BIND_BIT;
   }
   else if (s_rangecheck_mode)
   {
-    *ptr++ = RANGECHECK_BIT;
+    *ptr |= RANGECHECK_BIT;
   }
   else
-  {
     s_bind_mode = false;
-    *ptr++ = 0x00;
-  }
+  ++*ptr;
+
   *ptr++ = g_model.modelId;
   for (uint8_t i=0; i<DSM2_CHANS; i++) 
   {
@@ -523,10 +535,10 @@ void setupPulsesDsm2()
         dsmDat[0] = 0x00;
         break;
       case DSM2only:
-        dsmDat[0] = 0x90;
+        dsmDat[0] = 0x10;
         break;
       default:
-        dsmDat[0] = 0x98; // DSMX bind mode
+        dsmDat[0] = 0x18; // DSMX bind mode
         break;
     }
   }
