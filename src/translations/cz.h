@@ -372,7 +372,7 @@
 #define TR_MENUDIAG     "DIAG"
 #define TR_MENUANA      "ANALOGY"
 #define TR_MENUCALIBRATION "KALIBRACE"
-#define TR_TRIMS2OFFSETS "Trimy => Offsety"
+#define TR_TRIMS2OFFSETS "Trimy => Subtrimy"
 #define TR_MENUMODELSEL "MODEL"
 #define TR_MENUSETUP    "NASTAVEN\214"
 #define TR_MENUFLIGHTPHASE "F\213ZE LETU"
