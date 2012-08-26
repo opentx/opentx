@@ -90,7 +90,8 @@ void startPulses()
 
 #define PULSES_SIZE       144
 uint8_t pulses2MHz[PULSES_SIZE] = {0}; // TODO check this length, pulled from er9x, perhaps too big. 
-                                       // G: Yes, too big -- unless we keep the problematic DSM2=PPM code, which will need this size.
+                                       // G: Yes, too big. The PPM DSM2 code doesn't even use this any more, far as I can see.
+                                       //    I'm pretty sure the original code put DSM2 bit bang data into here. But not any more?
 uint8_t *pulses2MHzRPtr = pulses2MHz;
 
 #if defined(DSM2) || defined(PXX) || defined(IRPROTOS)
@@ -451,7 +452,7 @@ FORCEINLINE void setupPulsesDsm2()
   for (uint8_t i=0; i<DSM2_CHANS; i++) 
   {
     uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
-    *ptr++ = (i<<2) | ((pulse>>8)&0x03); // high nyble (4-bits) channel encoded
+    *ptr++ = (i<<2) | ((pulse>>8)&0x03); // encoded channel + upper 2 bits pulse width
     *ptr++ = pulse & 0xff; // low byte
   }
 
@@ -556,7 +557,7 @@ void setupPulsesDsm2()
   for (uint8_t i=0; i<DSM2_CHANS; i++)
   {
     uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
-    dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03); // high nyble (4-bits) channel encoded
+    dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03); // encoded channel + upper 2 bits pulse width
     dsmDat[3+2*i] = pulse & 0xff; // low byte
   }
 
