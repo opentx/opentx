@@ -134,8 +134,10 @@ void t_voice::voice_process(void)
     PORTA_LCD_DAT = VoiceLatch; // Latch data set
     PORTB |= (1 << OUT_B_LIGHT); // Drive high,pullup enabled
     DDRB &= ~(1 << OUT_B_LIGHT); // Change to input
+#if !defined(SIMU)
     asm(" nop");
     asm(" nop");
+#endif
     // delay to allow input to settle
     busy = PINB & 0x80;
     DDRB |= (1 << OUT_B_LIGHT); // Change to output
