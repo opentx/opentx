@@ -709,7 +709,9 @@ end:
 ifeq ($(PCB), ARM)
   ELFSIZE = $(SIZE) $(TARGET).elf
 else
-  ELFSIZE = $(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf
+  MCU_FLAG = $(shell $(SIZE) --help | grep -- --mcu > /dev/null && echo --mcu=$(MCU) )
+  FORMAT_FLAG = $(shell $(SIZE) --help | grep -- --format=.*avr > /dev/null && echo --format=avr )
+  ELFSIZE = $(SIZE) $(MCU_FLAG) $(FORMAT_FLAG) $(TARGET).elf
 endif
 
 sizebefore:
