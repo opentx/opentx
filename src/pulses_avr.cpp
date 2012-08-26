@@ -61,37 +61,29 @@ void set_timer3_ppm( void ) ;
 
 void startPulses()
 {
-#ifdef SIMU
-  s_current_protocol = g_model.protocol;
-#else
-  setupPulses();
-
 #ifdef DSM2_SERIAL
   if (g_model.protocol != PROTO_DSM2)
 #endif
 
   {
 #if defined(PCBV4)
+    // TODO g: There has to be a better place for this bug fix
     OCR1B = 0xffff; /* Prevent any PPM_PUT pin toggle before the TCNT1 interrupt
-                      fires for the first time and sets up the pulse period. */
-    // TCCR1A |= (1<<COM1B0); // (COM1B1=0 and COM1B0=1 in TCCR1A)  toogle the state of PB6(OC1B) on each TCNT1==OCR1B
-    TCCR1A = (3<<COM1B0); // Connect OC1B to PPM_OUT pin (SET the state of PB6(OC1B) on next TCNT1==OCR1B)
+                       fires for the first time and sets up the pulse period. 
+                       *** Prevents WDT reset loop. */
 #endif
   }
 
-#if defined(PCBV4)
-  TIMSK1 |= (1<<OCIE1A); // Pulse generator enable immediately before mainloop
+#ifdef SIMU
+  s_current_protocol = g_model.protocol;
 #else
-  TIMSK |= (1<<OCIE1A);  // Pulse generator enable immediately before mainloop
-#endif
+  setupPulses();
 
 #endif // SIMU
 }
 
 #define PULSES_SIZE       144
 uint8_t pulses2MHz[PULSES_SIZE] = {0}; // TODO check this length, pulled from er9x, perhaps too big. 
-                                       // G: Yes, too big. The PPM DSM2 code doesn't even use this any more, far as I can see.
-                                       //    I'm pretty sure the original code put DSM2 bit bang data into here. But not any more?
 uint8_t *pulses2MHzRPtr = pulses2MHz;
 
 #if defined(DSM2) || defined(PXX) || defined(IRPROTOS)
@@ -161,18 +153,19 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 
       pulsePol = g_model.pulsePol;
 
-      if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
 
 #if defined(PCBV4)
-        TIMSK1 &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
+      TIMSK1 &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
 #else
-        TIMSK &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
+      TIMSK &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
 #endif
 
-        sei(); // enable interrupts during setupPulses
-        setupPulses(); // does not sei() for setupPulsesPPM
-        cli();
+      setupPulses(); // does not sei() for setupPulsesPPM
 
+      // if setupPulses changed protocol to one that doesn't use COMPA then don't re-enable.
+      if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
+
+        cli();
 #if defined(PCBV4)
         TIMSK1 |= (1<<OCIE1A); // re-enable Timer1 interrupt
 #else
@@ -749,114 +742,117 @@ void setupPulses()
 
 #if defined(DSM2_PPM)
       case PROTO_DSM2:
-        set_timer3_capture() ;
-        TCCR1B = 0;            // Stop counter
-        OCR1C = 200;           // 100 uS
-        TCNT1 = 300;           // Past the OCR1C value
-        ICR1 = 44000;          // Next frame starts in 22 mS
+        set_timer3_capture(); 
+        TCCR1B = 0;                           // Stop counter
+        OCR1C = 200;                          // 100 uS
+        TCNT1 = 300;                          // Past the OCR1C value
+        ICR1 = 44000;                         // Next frame starts in 22 mS
 #if defined(PCBV4)
-        TIMSK1 &= ~0x3C;       // All interrupts off
+        TIMSK1 &= ~0x2F;                      // All interrupts off
         TIFR1 = 0x2F;
-        TIMSK1 |= 0x28;        // Enable CAPT and COMPC
+        TIMSK1 |= 0x28;                       // Enable CAPT and COMPC
+        TCCR1A = (0 << WGM10);                // Also disconnects OC1B for PPM_OUT bit-bang mode
 #else
-        TIMSK &= ~0x3C;        // All interrupts off
+        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
         TIFR = 0x3C;
-        ETIFR = 0x3F ;
-        TIMSK |= 0x20;         // Enable CAPT
-        ETIMSK |= (1<<OCIE1C); // Enable COMPC
-#endif
+        ETIFR = 0x3F; 
+        TIMSK |= 0x20;                        // Enable CAPT
+        ETIMSK |= (1<<OCIE1C);                // Enable COMPC
         TCCR1A = (0 << WGM10);
-        TCCR1B = (3 << WGM12) | (2 << CS10); // CTC ICR, 16MHz / 8
+#endif
+        TCCR1B = (3 << WGM12) | (2 << CS10);  // CTC ICR, 16MHz / 8
         break;
 #endif
 
 #if defined(PXX)
       case PROTO_PXX:
-        set_timer3_capture() ;
-        TCCR1B = 0 ;           // Stop counter
-        TCNT1 = 0 ;
-        OCR1B = 6000 ;         // Next frame starts in 3 mS
-        OCR1C = 4000 ;         // Next frame setup in 2 mS
+        set_timer3_capture(); 
+        TCCR1B = 0;                           // Stop counter
+        TCNT1 = 0; 
+        OCR1B = 6000;                         // Next frame starts in 3 mS
+        OCR1C = 4000;                         // Next frame setup in 2 mS
 #if defined(PCBV4)
-        TIMSK1 &= ~0x3C; // All interrupts off
+        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIFR1 = 0x2F;
-        TIMSK1 |= (1<<OCIE1B) ; // Enable COMPB
-        TIMSK1 |= (1<<OCIE1C); // Enable COMPC
+        TIMSK1 |= (1<<OCIE1B);                // Enable COMPB
+        TIMSK1 |= (1<<OCIE1C);                // Enable COMPC
+        TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching
 #else
-        TIMSK &= ~0x3C;        // All interrupts off
-        TIFR = 0x3C ;
-        ETIFR = 0x3F ;
-        TIMSK |= (1<<OCIE1B) ; // Enable COMPB
-        ETIMSK |= (1<<OCIE1C); // Enable COMPC
-#endif
+        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
+        TIFR = 0x3C; 
+        ETIFR = 0x3F; 
+        TIMSK |= (1<<OCIE1B);                 // Enable COMPB
+        ETIMSK |= (1<<OCIE1C);                // Enable COMPC
         TCCR1A  = 0;
-        TCCR1B  = (2<<CS10);   //ICNC3 16MHz / 8
+#endif
+        TCCR1B  = (2<<CS10);                  // ICNC3 16MHz / 8
         break;
 #endif
 
-      case PROTO_PPM16 :
-        TCCR1B = 0 ;            // Stop counter
-        OCR1A = 40000 ;         // Next frame starts in 20 mS
-        TCNT1 = 0 ;
+      case PROTO_PPM16:
+        TCCR1B = 0;                           // Stop counter
+        OCR1A = 40000;                        // Next frame starts in 20 mS
+        TCNT1 = 0; 
 #if defined(PCBV4)
-        TIMSK1 &= ~0x3C; // All interrupts off
-        TIMSK1 &= ~(1<<OCIE1C) ;            // COMPC1 off
+        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
+        TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
         TIFR1 = 0x2F;
-        TIMSK1 |= (1<<OCIE1A);  // Enable COMPA
+        TIMSK1 |= (1<<OCIE1A);                // Enable COMPA
+        TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching
 #else
-        TIMSK &= ~0x3C ;    // All interrupts off
-        ETIMSK &= ~(1<<OCIE1C) ;            // COMPC1 off
-        TIFR = 0x3C ;                       // Clear all pending interrupts
-        ETIFR = 0x3F ;                      // Clear all pending interrupts
-        TIMSK |= 0x10 ;         // Enable COMPA
+        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
+        ETIMSK &= ~(1<<OCIE1C);               // COMPC1 off
+        TIFR = 0x3C;                          // Clear all pending interrupts
+        ETIFR = 0x3F;                         // Clear all pending interrupts
+        TIMSK |= 0x10;                        // Enable COMPA
+        TCCR1A = (0<<WGM10);
 #endif
-        TCCR1A = (0<<WGM10) ;
-        TCCR1B = (1 << WGM12) | (2<<CS10) ; // CTC OCRA, 16MHz / 8
+        TCCR1B = (1 << WGM12) | (2<<CS10) ;   // CTC OCRA, 16MHz / 8
         setupPulsesPPM(PROTO_PPM16);
-        OCR3A = 50000 ;
-        OCR3B = 5000 ;
-        set_timer3_ppm() ;
-        break ;
+        OCR3A = 50000;
+        OCR3B = 5000;
+        set_timer3_ppm();
+        break;
 
-      case PROTO_PPMSIM :
-        TCCR1B = 0 ;                        // Stop counter
-        TCNT1 = 0 ;
+      case PROTO_PPMSIM:
+        TCCR1B = 0;                           // Stop counter
+        TCNT1 = 0;
 #if defined(PCBV4)
-        TIMSK1 &= ~0x3C; // All interrupts off
-        TIMSK1 &= ~(1<<OCIE1C) ;            // COMPC1 off
+        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
+        TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
         TIFR1 = 0x2F;
+        TCCR1A = 0;                           // Disconnect OC1B for bit-bang PPM switching
 #else
-        TIMSK &= ~0x3C ;    // All interrupts off
-        ETIMSK &= ~(1<<OCIE1C) ;            // COMPC1 off
-        TIFR = 0x3C ;                       // Clear all pending interrupts
-        ETIFR = 0x3F ;                      // Clear all pending interrupts
+        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
+        ETIMSK &= ~(1<<OCIE1C);               // COMPC1 off
+        TIFR = 0x3C;                          // Clear all pending interrupts
+        ETIFR = 0x3F;                         // Clear all pending interrupts
 #endif
         setupPulsesPPM(PROTO_PPMSIM);
-        OCR3A = 50000 ;
-        OCR3B = 5000 ;
-        set_timer3_ppm() ;
-        PORTB &= ~(1<<OUT_B_PPM);                       // Hold PPM output low
+        OCR3A = 50000; 
+        OCR3B = 5000; 
+        set_timer3_ppm(); 
+        PORTB &= ~(1<<OUT_B_PPM);             // Hold PPM output low
         break ;
 
       default:
-        set_timer3_capture() ;
-        TCCR1B = 0;    // Stop counter
-        OCR1A = 40000; // Next frame starts in 20 mS
+        set_timer3_capture(); 
+        TCCR1B = 0;                           // Stop counter
+        OCR1A = 40000;                        // Next frame starts in 20 mS
         TCNT1 = 0;
 #if defined(PCBV4)
-        TIMSK1 &= ~0x3C; // All interrupts off
+        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIFR1 = 0x2F;
-        TIMSK1 |= (1<<OCIE1A); // Enable COMPA
+        TIMSK1 |= (1<<OCIE1A);                // Enable COMPA
+        TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching
 #else
-        TIMSK &= ~0x3C; // All interrupts off
+        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
         TIFR = 0x3C;
-        ETIFR = 0x3F ; // Clear all pending interrupts
-        TIMSK |= 0x10; // Enable COMPA
-#endif
-        // TCNT1 2MHz counter (auto-cleared) plus Capture Compare int.
-        //       Used for PPM pulse generator
+        ETIFR = 0x3F;                         // Clear all pending interrupts
+        TIMSK |= 0x10;                        // Enable COMPA
         TCCR1A = (0 << WGM10);
-        TCCR1B = (1 << WGM12) | (2 << CS10); // CTC OCRA, 16MHz / 8
+#endif
+        TCCR1B = (1 << WGM12) | (2 << CS10);  // CTC OCRA, 16MHz / 8
         break;
     }
   }
@@ -885,7 +881,7 @@ void setupPulses()
 #endif
 
     default:
-      // no sei here
+      sei(); // no sei here g: why not? breaks for me on V4 board.
       setupPulsesPPM(PROTO_PPM);
       // if PPM16, PPM16 pulses are set up automatically within the interrupts
       break;
