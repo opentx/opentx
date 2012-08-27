@@ -116,6 +116,11 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
       prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
 */
 
+  if (number < 0) {
+    PUSH_PROMPT(PROMPT_MOINS);
+    number = -number;
+  }
+
   int8_t mode = MODE(att);
   if (mode > 0) {
     div_t qr = div(number, (mode == 1 ? 10 : 100));
@@ -130,11 +135,6 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
       PLAY_NUMBER(qr.quot, unit, 0);
     }
     return;
-  }
-
-  if (number < 0) {
-    PUSH_PROMPT(PROMPT_MOINS);
-    number = -number;
   }
 
   if (number >= 1000) {
