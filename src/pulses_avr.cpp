@@ -61,20 +61,19 @@ void set_timer3_ppm( void ) ;
 
 void startPulses()
 {
-#ifdef DSM2_SERIAL
+#if defined(PCBV4)
+#if defined(DSM2_SERIAL)
   if (g_model.protocol != PROTO_DSM2)
 #endif
-
   {
-#if defined(PCBV4)
     // TODO g: There has to be a better place for this bug fix
     OCR1B = 0xffff; /* Prevent any PPM_PUT pin toggle before the TCNT1 interrupt
                        fires for the first time and sets up the pulse period. 
                        *** Prevents WDT reset loop. */
-#endif
   }
+#endif
 
-#ifdef SIMU
+#if defined(SIMU)
   s_current_protocol = g_model.protocol;
 #else
   setupPulses();
@@ -110,7 +109,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
     OCR1A = 40000;
     // sei will be called inside setupPulses()
     setupPulses(); // will call sei()
-    cli(); // this blocking ISR will autmoatically issue sei at exit
+    cli(); // this blocking ISR will automatically issue sei at exit
     UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt
   }
   else
@@ -153,7 +152,6 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 
       pulsePol = g_model.pulsePol;
 
-
 #if defined(PCBV4)
       TIMSK1 &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
 #else
@@ -164,13 +162,13 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 
       // if setupPulses changed protocol to one that doesn't use COMPA then don't re-enable.
       if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
-
-        cli();
+        // cli is not needed because for PPM protocols interrupts are not enabled when entering here
 #if defined(PCBV4)
         TIMSK1 |= (1<<OCIE1A); // re-enable Timer1 interrupt
 #else
         TIMSK |= (1<<OCIE1A); // re-enable Timer1 interrupt
 #endif
+        sei();
       }
     }
   }
@@ -881,7 +879,7 @@ void setupPulses()
 #endif
 
     default:
-      sei(); // no sei here g: why not? breaks for me on V4 board.
+      // no sei here
       setupPulsesPPM(PROTO_PPM);
       // if PPM16, PPM16 pulses are set up automatically within the interrupts
       break;
