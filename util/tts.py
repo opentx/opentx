@@ -149,6 +149,14 @@ if __name__ == "__main__":
         for s, f, a in [(u"trim center", "midtrim", 244),
                         (u"maximum trim reached", "endtrim", 0),
                         (u"transmitter battery low", "lowbatt", 231),
+                        (u"inactivity alarm", "inactiv", 230),
+                        (u"throttle warning", "thralert", 232),
+                        (u"switch warning", "swalert", 233),
+                        (u"tada", "tada", 245),
+                        (u"tick tock", "timerlt3", 250),
+                        (u"ten seconds", "timer10", 251),
+                        (u"twenty seconds", "timer20", 252),
+                        (u"thirty seconds", "timer30", 253),
                        ]:
             systemSounds.extend(generate(s, f, a))
         for i, (s, f) in enumerate([
@@ -314,18 +322,17 @@ if __name__ == "__main__":
         					   "uzel", "uzly", u"uzlů", "uzlu"]):
             systemSounds.extend(generate(s, 130+i))
             
-        systemSounds.extend(generate(u"zapoměl jsi na mé!", 230))    
-        systemSounds.extend(generate(u"plyn není na nule", 232))    
-        systemSounds.extend(generate(u"přepínače nejsou ve výchozí poloze", 233))    
-        systemSounds.extend(generate(u"tadá", 245))
-        systemSounds.extend(generate(u"ťik ťak", 250))
-        systemSounds.extend(generate(u"deset sekund", 251))
-        systemSounds.extend(generate(u"dvacet sekund", 252))
-        systemSounds.extend(generate(u"třicet sekund", 253))
-            
         for s, f, a in [(u"střed trimu", "midtrim", 244),
                         (u"maximum trimu", "endtrim", 0),
                         (u"baterie rádia je vybitá", "lowbatt", 231),
+                        (u"zapoměl jsi na mé!", "inactiv", 230),
+                        (u"plyn není na nule", "thralert", 232),
+                        (u"přepínače nejsou ve výchozí poloze", "swalert", 233),
+                        (u"tadá", "tada", 245),
+                        (u"ťik ťak", "timerlt3", 250),
+                        (u"deset sekund", "timer10", 251),
+                        (u"dvacet sekund", "timer20", 252),
+                        (u"třicet sekund", "timer30", 253),
                        ]:
             systemSounds.extend(generate(s, f, a))
         for i, (s, f) in enumerate([
@@ -339,9 +346,9 @@ if __name__ == "__main__":
                      (u"motor je vypnutý", "engoff"),
                      (u"jsi příliš vysoko", "tohigh"),
                      (u"jsi příliš nízko", "tolow"),
-                     (u"nízká baterie", "lowbat"),
-                     (u"crou zapnutý", "crowon"),
-                     (u"crou vypnutý", "crowof"),
+                     (u"vybitá baterie", "lowbat"),
+                     (u"krou zapnutý", "crowon"),
+                     (u"krou vypnutý", "crowof"),
                      (u"nízký signál!", "siglow"),
                      (u"kritický signál!", "sigcrt"),
                      (u"rychlý mód aktivován", "spdmod"),
