@@ -1188,11 +1188,7 @@ void menuProcCurveOne(uint8_t event)
 
   switch(event) {
     case EVT_ENTRY:
-#if defined(ROTARY_ENCODERS)
-      s_editMode = -1;
-#else
       s_editMode = 1;
-#endif
       killEvents(KEY_MENU);
       break;
 #if defined(ROTARY_ENCODERS)
