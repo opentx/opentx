@@ -241,20 +241,32 @@ if __name__ == "__main__":
             systemSounds.extend(generate(str(i), i))
         systemSounds.extend(generate("mila", 101))
         systemSounds.extend(generate("mille", 102))
-        for i, s in enumerate(["un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
+        for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
             systemSounds.extend(generate(s, 103+i))
         for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "", "piedi", "nodi"]):
-            systemSounds.extend(generate(s, 112+i))
-        for s, f, a in [(u"trim centrato", "midtrim", 244),
-                        (u"massimo trim raggiunto", "endtrim", 0),
+            systemSounds.extend(generate(s, 113+i))            
+        for s, f, a in [(u"radio inattiva controllare", "inactiv", 230),
                         (u"batteria della radio scarica", "lowbatt", 231),
+                        (u"controllo motore non in posizione, verificare", "thralert", 232),
+                        (u"interruttori non in posizione, verificare", "swalert", 233),
+                        (u"eeprom corrotta", "eebad", 0),
+                        (u"formattazone eeprom in corso", "eeformat", 0),
+                        (u"errore", "error", 0),
+                        (u"trim centrato", "midtrim", 244),
+                        (u"tada", "tada", 245),
+                        (u"potenziometro centrato", "midpot", 246),
+                        (u"massimo trim raggiunto", "endtrim", 0),
+                        (u"3 secondi al termine", "timerlt3", 250),
+                        (u"dieci secondi", "timer10", 251),
+                        (u"venti secondi", "timer20", 252),
+                        (u"trenta secondi", "timer30", 253),
                      ]:
             systemSounds.extend(generate(s, f, a))
         for i, s in enumerate(["timer", "", "tensione", "tensione", "trasmissione", "ricezione", "altitudine", "motore",
                                "carburante", "temperatura", "temperatura", "velocita'", "distanza", "altitudine", "cella lipo",
                                "totale lipo", "tensione", "corrente", "consumo", "potenza", "accelerazione X", "accellerazione Y", "accelerazione Z",
                                "direzione", "variometro"]):
-            systemSounds.extend(generate(s, 126+i))                
+            systemSounds.extend(generate(s, 127+i))                
         for i, (s, f) in enumerate([
                      (u"carrello chiuso", "gearup"),
                      (u"carrello aperto", "geardn"),
