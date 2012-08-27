@@ -2689,7 +2689,7 @@ void menuProcFunctionSwitches(uint8_t event)
 #endif
 #if defined(VOICE)
             else if (sd->func == FUNC_PLAY_TRACK) {
-              lcd_outdezAtt(21*FW, y, val_displayed, attr);
+              lcd_outdezAtt(21*FW, y, val_displayed+PROMPT_CUSTOM_BASE, attr);
             }
             else if (sd->func == FUNC_PLAY_VALUE) {
               val_max = NUM_XCHNPLAY-1;
