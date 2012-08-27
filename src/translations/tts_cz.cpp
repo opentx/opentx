@@ -110,12 +110,17 @@ enum CzechPrompts {
 
 void pushUnitPrompt(int16_t number, uint8_t unitprompt)
 {
-  if (number == 1)
+  if (number == 1) {
     pushPrompt(unitprompt);
-  if (number > 1 && number < 5)
-    pushPrompt(unitprompt+1);
-  if (number > 4)
-    pushPrompt(unitprompt+2);
+  }
+  else {
+    if (number > 1 && number < 5) {
+      pushPrompt(unitprompt+1);
+    }  
+    else {
+      pushPrompt(unitprompt+2);
+    }
+  }
 }
 
 void playNumber(int16_t number, uint8_t unit, uint8_t att)
@@ -130,13 +135,23 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
       prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
 */
 
+  if (number < 0) {
+    pushPrompt(PROMPT_MINUS);
+    number = -number;
+  }
+
   int8_t mode = MODE(att);
   if (mode > 0) {
     div_t qr = div(number, (mode == 1 ? 10 : 100));   
       if (qr.rem) {
         playNumber(qr.quot);
+        if (qr.quot == 0) {
+          pushPrompt(PROMPT_CELA);
+        }
+        else {
         pushUnitPrompt(qr.quot,PROMPT_CELA);
-        if (mode != 1 && qr.rem < 10)
+        }
+        if (mode == 2 && qr.rem < 10)
           pushPrompt (PROMPT_NULA);
         playNumber(qr.rem,0,ZENSKY);
         pushPrompt(PROMPT_UNITS_BASE+((unit-1)*4)+3);
@@ -163,10 +178,6 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
       att = MUZSKY;
   }
   
-  if (number < 0) {
-    pushPrompt(PROMPT_MINUS);
-    number = -number;
-  }
     
   if ((number == 1) && (att == MUZSKY)) {
     pushPrompt(PROMPT_JEDEN);
