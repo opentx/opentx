@@ -160,7 +160,7 @@ static void EeFsFlush()
 
 uint16_t EeFsGetFree()
 {
-  int16_t  ret = 0;
+  int16_t ret = 0;
   uint8_t i = eeFs.freeList;
   while (i) {
     ret += BS-1;
@@ -746,14 +746,18 @@ void RlcFile::nextRlcWriteStep()
      }
 
      case WRITE_FINAL_DIRENT_STEP:
+     {
        m_currBlk = eeFs.files[FILE_TMP].startBlk;
-       eeFs.files[FILE_TMP].startBlk = eeFs.files[m_fileId].startBlk;
-       eeFs.files[m_fileId].startBlk = m_currBlk;
-       eeFs.files[m_fileId].size = m_pos;
-       eeFs.files[m_fileId].typ = eeFs.files[FILE_TMP].typ;
+       DirEnt & f = eeFs.files[m_fileId];
+       eeFs.files[FILE_TMP].startBlk = f.startBlk;
+       eeFs.files[FILE_TMP].size = f.size;
+       f.startBlk = m_currBlk;
+       f.size = m_pos;
+       f.typ = eeFs.files[FILE_TMP].typ;
        m_write_step = WRITE_TMP_DIRENT_STEP;
        EeFsFlushDirEnt(m_fileId);
        return;
+     }
 
      case WRITE_TMP_DIRENT_STEP:
        m_write_step = 0;
