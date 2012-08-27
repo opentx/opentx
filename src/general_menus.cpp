@@ -243,7 +243,10 @@ void menuProcSetup(uint8_t event)
           CHECK_INCDEC_GENVAR(event, b, 0, 7);
           if (g_eeGeneral.speakerVolume != (int8_t)b-7) {
             g_eeGeneral.speakerVolume = (int8_t)b-7;
+#if defined(PCBSTD)
+            // TODO do the same on V4 Board with SOMO-14D ... with a #define ...
             pushCustomPrompt(b | 0xF0);
+#endif
           }
         }
 #endif
