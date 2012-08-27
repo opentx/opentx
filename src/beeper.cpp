@@ -53,7 +53,7 @@ static const pm_uint8_t beepTab[] PROGMEM = {
 void beep(uint8_t val)
 {
 #if defined(HAPTIC)
-  haptic.event(val==0 ? 0 : AU_TIMER_10+beepAgain);
+  haptic.event(val==0 ? AU_KEYPAD_UP : (val==4 ? AU_ERROR : AU_TIMER_10+beepAgain));
 #endif
 
   if(g_eeGeneral.flashBeep && val > 1 && g_LightOffCounter < FLASH_DURATION) g_LightOffCounter = FLASH_DURATION;
