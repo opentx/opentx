@@ -2686,8 +2686,7 @@ void menuProcFunctionSwitches(uint8_t event)
               val_max = NUM_XCHNRAW-1;
               putsChnRaw(17*FW, y, val_displayed+1, attr);
             }
-#endif
-#if defined(VOICE)
+#elif defined(VOICE)
             else if (sd->func == FUNC_PLAY_TRACK) {
               lcd_outdezAtt(21*FW, y, val_displayed+PROMPT_CUSTOM_BASE, attr);
             }
