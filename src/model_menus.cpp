@@ -2618,8 +2618,8 @@ void menuProcFunctionSwitches(uint8_t event)
             if (sd->swtch < -MAX_SWITCH-1) sd->swtch += (MAX_SWITCH+1);
           }
           putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func > FUNC_INSTANT_TRIM || sd->delay)) ? BOLD : 0));
-          if (active) {
-            CHECK_INCDEC_MODELSWITCH( event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1);
+          if (active || AUTOSWITCH_MENU_LONG()) {
+            CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1);
           }
           break;
         case 1:

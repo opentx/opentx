@@ -111,9 +111,11 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecModel(event,var,min,max)
 
 #if defined(AUTOSWITCH)
+#define AUTOSWITCH_MENU_LONG() (attr && event==EVT_KEY_LONG(KEY_MENU))
 #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
   var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH)
 #else
+#define AUTOSWITCH_MENU_LONG() (0)
 #define CHECK_INCDEC_MODELSWITCH CHECK_INCDEC_MODELVAR
 #endif
 
