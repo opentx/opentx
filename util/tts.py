@@ -314,9 +314,9 @@ if __name__ == "__main__":
         					   "uzel", "uzly", u"uzlů", "uzlu"]):
             systemSounds.extend(generate(s, 130+i))
             
-        for i, s in enumerate([u"zapoměl jsi na mé!", u"baterie rádia je vybitá", u"plyn není na nule",
-        					 u"přepínače nejsou ve výchozí poloze"]):
-            systemSounds.extend(generate(s, 230+i))
+        systemSounds.extend(generate(u"zapoměl jsi na mé!", 230))    
+        systemSounds.extend(generate(u"plyn není na nule", 232))    
+        systemSounds.extend(generate(u"přepínače nejsou ve výchozí poloze", 233))    
         systemSounds.extend(generate(u"tadá", 245))
         systemSounds.extend(generate(u"ťik ťak", 250))
         systemSounds.extend(generate(u"deset sekund", 251))
