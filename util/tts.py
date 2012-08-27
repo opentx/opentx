@@ -34,12 +34,13 @@ def generate(str, idx, alternate=0):
     else:
         if isinstance(idx, int):
             result = "%04d.wav" % idx
-        elif 'ad4' in sys.argv:
+        elif board == 'arm':
+            result = idx + ".wav"
+        else:
             if alternate == 0:
                 return []
             result = "%04d.wav" % alternate
-        else:
-            result = idx + ".wav"
+            
         temp = "_" + result
     
         if "sapi" in sys.argv:
@@ -62,22 +63,27 @@ def generate(str, idx, alternate=0):
             print "which speach engine?"
             return []
     
-        if 'ad4' in sys.argv:
+        if board == 'arm':
+            if 'sox' in sys.argv:
+                maxvolume = subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
+                if "not sound" in maxvolume:
+                    os.rename(result, temp)  
+                    subprocess.Popen(["sox", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
+                else:    	
+                    subprocess.Popen(["sox", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];		
+                subprocess.Popen(["sox", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                os.remove(temp)
+            else:
+                os.rename(result, temp) 
+                subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                os.remove(temp)
+        elif board == 'v4':
             subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             os.remove(result)
             result = result.replace(".wav", ".ad4")
-        elif 'sox' in sys.argv:
-            maxvolume = subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
-            if "not sound" in maxvolume:
-                os.rename(result, temp)  
-                subprocess.Popen(["sox", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
-            else:    	
-                subprocess.Popen(["sox", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];		
-            subprocess.Popen(["sox", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-            os.remove(temp)
         else:
             os.rename(result, temp) 
-            subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+            subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_u8", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             os.remove(temp)
 	
         print result, str
@@ -92,6 +98,13 @@ if __name__ == "__main__":
     sounds = []
     systemSounds = []
     
+    if "arm" in sys.argv:
+        board = "arm"
+    elif "v4" in sys.argv:
+        board = "v4"
+    else:
+        board = "stock"
+
     if "sapi" in sys.argv:
         import pyTTS
         tts = pyTTS.Create()
@@ -100,7 +113,7 @@ if __name__ == "__main__":
         # tts.SetRate(1)
         if "list" in sys.argv:
             print tts.GetVoiceNames()
-
+            
     if "en" in sys.argv:
         if "sapi" in sys.argv:
             if "scottish" in sys.argv:
@@ -347,22 +360,19 @@ if __name__ == "__main__":
             sounds.extend(generate(s, f, 256+i))
             
 
-    if 'ad4' in sys.argv:
-        voice += "-stock"
-    else:
-        voice += "-sky9x"
+    voice += "-" + board
         
     if "csv" in sys.argv:
         csvFile = file(voice + ".csv", "w")
         for f, s in systemSounds:
             l = u""
-            if 'ad4' not in sys.argv:
+            if board == "arm":
                 l += u"9XSOUNDS/SYSTEM;"
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
         for f, s in sounds:
             l = u""
-            if 'ad4' not in sys.argv:
+            if board == "arm":
                 l += u"9XSOUNDS;"
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
@@ -372,16 +382,16 @@ if __name__ == "__main__":
         zip_name = voice + ".zip"
         zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
         for f, s in systemSounds:
-            if 'ad4' in sys.argv:
-                zip.write(f, f)
-            else:
+            if board == "arm":
                 zip.write(f, "9XSOUNDS/SYSTEM/" + f)
+            else:
+                zip.write(f, f)
             os.remove(f)
         for f, s in sounds:
-            if 'ad4' in sys.argv:
-                zip.write(f, f)
-            else:
+            if board == "arm":
                 zip.write(f, "9XSOUNDS/" + f)
+            else:
+                zip.write(f, f)
             os.remove(f)
         zip.close()
     
