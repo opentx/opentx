@@ -224,7 +224,7 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 103+i))
         for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "", "piedi", "nodi"]):
             systemSounds.extend(generate(s, 112+i))
-        for a, s, f in [(u"trim centrato", "midtrim", 244),
+        for s, f, a in [(u"trim centrato", "midtrim", 244),
                         (u"massimo trim raggiunto", "endtrim", 0),
                         (u"batteria della radio scarica", "lowbatt", 231),
                      ]:
