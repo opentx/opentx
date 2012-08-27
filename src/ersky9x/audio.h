@@ -145,6 +145,6 @@ extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define PLAY_DURATION(d) playDuration((d), id)
 #define IS_PLAYING(id) audioQueue.isPlaying((id))
 #define PLAY_VALUE(v, id) playValue((v), (id))
-#define PLAY_FILE(f, id) audioQueue.playFile((f), (id))
+#define PLAY_FILE(f, id) audioQueue.playFile((f), 0, (id))
 
 #endif

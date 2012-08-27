@@ -688,7 +688,7 @@ void pushPrompt(uint16_t prompt, uint8_t id)
     prompt /= 10;
   }
 
-  audioQueue.playFile(filename, id);
+  audioQueue.playFile(filename, 0, id);
 
 #endif
 }
