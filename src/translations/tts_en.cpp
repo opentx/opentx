@@ -72,7 +72,7 @@ enum EnglishPrompts {
 
 #if defined(VOICE)
 
-void playNumber(int16_t number, uint8_t unit, uint8_t att)
+PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
       temp_digit, digit = divmod(digit, 1000000000)
@@ -85,65 +85,65 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
 */
 
   if (number < 0) {
-    pushPrompt(PROMPT_MINUS);
+    PUSH_PROMPT(PROMPT_MINUS);
     number = -number;
   }
 
   if (number >= 1000) {
-    playNumber(number / 1000);
-    pushPrompt(PROMPT_THOUSAND);
+    PLAY_NUMBER(number / 1000, 0, 0);
+    PUSH_PROMPT(PROMPT_THOUSAND);
     number %= 1000;
     if (number == 0)
       number = -1;
   }
   if (number >= 100) {
-    pushPrompt(PROMPT_ZERO + number/100);
-    pushPrompt(PROMPT_HUNDRED);
+    PUSH_PROMPT(PROMPT_ZERO + number/100);
+    PUSH_PROMPT(PROMPT_HUNDRED);
     number %= 100;
     if (number == 0)
       number = -1;
   }
   if (number >= 20) {
-    pushPrompt(PROMPT_TWENTY + (number-20)/10);
+    PUSH_PROMPT(PROMPT_TWENTY + (number-20)/10);
     number %= 10;
     if (number == 0)
       number = -1;
   }
   if (number >= 0) {
-    pushPrompt(PROMPT_ZERO+number);
+    PUSH_PROMPT(PROMPT_ZERO+number);
   }
 
   if (unit) {
-    pushPrompt(PROMPT_UNITS_BASE+unit-1);
+    PUSH_PROMPT(PROMPT_UNITS_BASE+unit-1);
   }
 }
 
-void playDuration(int16_t seconds)
+PLAY_FUNCTION(playDuration, int16_t seconds)
 {
   if (seconds < 0) {
-    pushPrompt(PROMPT_MINUS);
+    PUSH_PROMPT(PROMPT_MINUS);
     seconds = -seconds;
   }
 
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0) {
-    playNumber(tmp);
-    pushPrompt(tmp == 1 ? PROMPT_HOUR : PROMPT_HOURS);
+    PLAY_NUMBER(tmp, 0, 0);
+    PUSH_PROMPT(tmp == 1 ? PROMPT_HOUR : PROMPT_HOURS);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    playNumber(tmp);
-    pushPrompt(tmp == 1 ? PROMPT_MINUTE : PROMPT_MINUTES);
+    PLAY_NUMBER(tmp, 0, 0);
+    PUSH_PROMPT(tmp == 1 ? PROMPT_MINUTE : PROMPT_MINUTES);
     if (seconds > 0)
-      pushPrompt(PROMPT_AND);
+      PUSH_PROMPT(PROMPT_AND);
   }
 
   if (seconds > 0) {
-    playNumber(seconds);
-    pushPrompt(tmp == 1 ? PROMPT_SECOND : PROMPT_SECONDS);
+    PLAY_NUMBER(seconds, 0, 0);
+    PUSH_PROMPT(tmp == 1 ? PROMPT_SECOND : PROMPT_SECONDS);
   }
 }
 

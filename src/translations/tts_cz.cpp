@@ -104,26 +104,27 @@ enum CzechPrompts {
 
 #if defined(VOICE)
 
+#if defined(PCBSTD)
+#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+#else
+#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u), id)
+#endif
+
 #define MUZSKY 0x80
 #define ZENSKY 0x81
 #define STREDNI 0x82
 
-void pushUnitPrompt(int16_t number, uint8_t unitprompt)
+PLAY_FUNCTION(pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
-  if (number == 1) {
-    pushPrompt(unitprompt);
-  }
-  else {
-    if (number > 1 && number < 5) {
-      pushPrompt(unitprompt+1);
-    }  
-    else {
-      pushPrompt(unitprompt+2);
-    }
-  }
+  if (number == 1)
+    PUSH_PROMPT(unitprompt);
+  else if (number > 1 && number < 5)
+    PUSH_PROMPT(unitprompt+1);
+  else
+    PUSH_PROMPT(unitprompt+2);
 }
 
-void playNumber(int16_t number, uint8_t unit, uint8_t att)
+PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
       temp_digit, digit = divmod(digit, 1000000000)
@@ -135,29 +136,22 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
       prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
 */
 
-  if (number < 0) {
-    pushPrompt(PROMPT_MINUS);
-    number = -number;
-  }
-
   int8_t mode = MODE(att);
   if (mode > 0) {
     div_t qr = div(number, (mode == 1 ? 10 : 100));   
       if (qr.rem) {
-        playNumber(qr.quot);
-        if (qr.quot == 0) {
-          pushPrompt(PROMPT_CELA);
-        }
-        else {
-        pushUnitPrompt(qr.quot,PROMPT_CELA);
-        }
+        PLAY_NUMBER(qr.quot, 0, 0);
+        if (qr.quot == 0)
+          PUSH_PROMPT(PROMPT_CELA);
+        else
+          PUSH_UNIT_PROMPT(qr.quot, PROMPT_CELA);
         if (mode == 2 && qr.rem < 10)
-          pushPrompt (PROMPT_NULA);
-        playNumber(qr.rem,0,ZENSKY);
-        pushPrompt(PROMPT_UNITS_BASE+((unit-1)*4)+3);
+          PUSH_PROMPT(PROMPT_NULA);
+        PLAY_NUMBER(qr.rem, 0, ZENSKY);
+        PUSH_PROMPT(PROMPT_UNITS_BASE+((unit-1)*4)+3);
       }
       else
-        playNumber(qr.quot, unit);
+        PLAY_NUMBER(qr.quot, unit, 0);
     return;
   }
 
@@ -168,83 +162,86 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
       break;
     case 4:
       att = ZENSKY;
+      break;
     case 8:
       att = STREDNI;
+      break;
     case 10:
     case 11:
     case 12:
       att = ZENSKY;
+      break;
     default:
       att = MUZSKY;
+      break;
   }
-  
-    
+
   if ((number == 1) && (att == MUZSKY)) {
-    pushPrompt(PROMPT_JEDEN);
+    PUSH_PROMPT(PROMPT_JEDEN);
     number = -1;
   }
   
   if ((number == 1) && (att == STREDNI)) {
-    pushPrompt(PROMPT_JEDNO);
+    PUSH_PROMPT(PROMPT_JEDNO);
     number = -1;
   }
   
   if ((number == 2) && ((att == ZENSKY) || (att == STREDNI))) {
-    pushPrompt(PROMPT_DVE);
+    PUSH_PROMPT(PROMPT_DVE);
     number = -1;
   }
   
   if (number >= 1000) {
     if (number >= 2000) 
-      playNumber(number / 1000);
+      PLAY_NUMBER(number / 1000, 0, 0);
     if (number >= 2000 && number < 5000)
-      pushPrompt(PROMPT_TISICE);
+      PUSH_PROMPT(PROMPT_TISICE);
     else
-      pushPrompt(PROMPT_TISIC);
+      PUSH_PROMPT(PROMPT_TISIC);
     number %= 1000;
     if (number == 0)
       number = -1;
   }
   if (number >= 100) {
-    pushPrompt(PROMPT_STO + (number/100)-1);
+    PUSH_PROMPT(PROMPT_STO + (number/100)-1);
     number %= 100;
     if (number == 0)
       number = -1;
   }
   
   if (number >= 0) {
-    pushPrompt(PROMPT_NULA+number);
+    PUSH_PROMPT(PROMPT_NULA+number);
   }
 
   if (unit) {
-    pushUnitPrompt(tmp,(PROMPT_UNITS_BASE+((unit-1)*4)));
+    PUSH_UNIT_PROMPT(tmp, (PROMPT_UNITS_BASE+((unit-1)*4)));
   }
 }
 
-void playDuration(int16_t seconds)
+PLAY_FUNCTION(playDuration, int16_t seconds)
 {
   if (seconds < 0) {
-    pushPrompt(PROMPT_MINUS);
+    PUSH_PROMPT(PROMPT_MINUS);
     seconds = -seconds;
   }
 
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0) {
-    playNumber(tmp,0,ZENSKY);
-    pushUnitPrompt(tmp,PROMPT_HODINA);
+    PLAY_NUMBER(tmp, 0, ZENSKY);
+    PUSH_UNIT_PROMPT(tmp, PROMPT_HODINA);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    playNumber(tmp,0,ZENSKY);
-    pushUnitPrompt(tmp,PROMPT_MINUTA);
+    PLAY_NUMBER(tmp, 0, ZENSKY);
+    PUSH_UNIT_PROMPT(tmp, PROMPT_MINUTA);
   }
 
   if (seconds > 0) {
-    playNumber(seconds,0,ZENSKY);
-    pushUnitPrompt(seconds,PROMPT_SEKUNDA);
+    PLAY_NUMBER(seconds, 0, ZENSKY);
+    PUSH_UNIT_PROMPT(seconds, PROMPT_SEKUNDA);
   }
 }
 

@@ -104,7 +104,7 @@ enum FrenchPrompts {
 
 #define FEMININ 0x80
 
-void playNumber(int16_t number, uint8_t unit, uint8_t att)
+PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
       temp_digit, digit = divmod(digit, 1000000000)
@@ -120,77 +120,77 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
   if (mode > 0) {
     div_t qr = div(number, (mode == 1 ? 10 : 100));
     if (qr.rem > 0) {
-      playNumber(qr.quot);
-      pushPrompt(PROMPT_VIRGULE);
+      PLAY_NUMBER(qr.quot, 0, 0);
+      PUSH_PROMPT(PROMPT_VIRGULE);
       if (mode==2 && qr.rem < 10)
-        pushPrompt(PROMPT_ZERO);
-      playNumber(qr.rem, unit);
+        PUSH_PROMPT(PROMPT_ZERO);
+      PLAY_NUMBER(qr.rem, unit, 0);
     }
     else {
-      playNumber(qr.quot, unit);
+      PLAY_NUMBER(qr.quot, unit, 0);
     }
     return;
   }
 
   if (number < 0) {
-    pushPrompt(PROMPT_MOINS);
+    PUSH_PROMPT(PROMPT_MOINS);
     number = -number;
   }
 
   if (number >= 1000) {
     if (number >= 2000)
-      playNumber(number / 1000);
-    pushPrompt(PROMPT_MILLE);
+      PLAY_NUMBER(number / 1000, 0, 0);
+    PUSH_PROMPT(PROMPT_MILLE);
     number %= 1000;
     if (number == 0)
       number = -1;
   }
   if (number >= 100) {
     if (number >= 200)
-      pushPrompt(PROMPT_ZERO + number/100);
-    pushPrompt(PROMPT_CENT);
+      PUSH_PROMPT(PROMPT_ZERO + number/100);
+    PUSH_PROMPT(PROMPT_CENT);
     number %= 100;
     if (number == 0)
       number = -1;
   }
   if (((number % 10) == 1) && number < 90 && (att & FEMININ)) {
-    pushPrompt(PROMPT_UNE+(number/10));
+    PUSH_PROMPT(PROMPT_UNE+(number/10));
   }
   else if (number >= 0) {
-    pushPrompt(PROMPT_ZERO+number);
+    PUSH_PROMPT(PROMPT_ZERO+number);
   }
 
   if (unit) {
-    pushPrompt(PROMPT_UNITS_BASE+unit-1);
+    PUSH_PROMPT(PROMPT_UNITS_BASE+unit-1);
   }
 }
 
-void playDuration(int16_t seconds)
+PLAY_FUNCTION(playDuration, int16_t seconds)
 {
   if (seconds < 0) {
-    pushPrompt(PROMPT_MOINS);
+    PUSH_PROMPT(PROMPT_MOINS);
     seconds = -seconds;
   }
 
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0) {
-    playNumber(tmp, 0, FEMININ);
-    pushPrompt(PROMPT_HEURE);
+    PLAY_NUMBER(tmp, 0, FEMININ);
+    PUSH_PROMPT(PROMPT_HEURE);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    playNumber(tmp, 0, FEMININ);
-    pushPrompt(PROMPT_MINUTE);
+    PLAY_NUMBER(tmp, 0, FEMININ);
+    PUSH_PROMPT(PROMPT_MINUTE);
     if (seconds > 0)
-      pushPrompt(PROMPT_ET);
+      PUSH_PROMPT(PROMPT_ET);
   }
 
   if (seconds > 0) {
-    playNumber(seconds, 0, FEMININ);
-    pushPrompt(PROMPT_SECONDE);
+    PLAY_NUMBER(seconds, 0, FEMININ);
+    PUSH_PROMPT(PROMPT_SECONDE);
   }
 }
 

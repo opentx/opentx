@@ -411,6 +411,16 @@ void AudioQueue::pause(uint8_t tLen)
   play(0, 0, tLen); // a pause
 }	
 
+bool AudioQueue::isPlaying(uint8_t id)
+{
+  for (uint8_t i=0; i<AUDIO_QUEUE_LENGTH; i++) {
+    AudioFragment & fragment = fragments[i];
+    if (fragment.id == id)
+      return true;
+  }
+  return false;
+}
+
 #ifndef SIMU
 extern OS_MutexID audioMutex;
 #endif
@@ -456,7 +466,7 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
   CoLeaveMutexSection(audioMutex);
 }
 
-void AudioQueue::playFile(const char *filename, uint8_t flags)
+void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 {
 #ifdef SIMU
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
@@ -473,6 +483,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags)
     memset(&fragment, 0, sizeof(fragment));
     strcpy(fragment.file, filename);
     fragment.repeat = flags & 0x0f;
+    fragment.id = id;
     if (flags & PLAY_NOW)
       prioIdx = widx;
     widx = next_widx;
@@ -666,7 +677,7 @@ void audioEvent(uint8_t e, uint8_t f)
   }
 }
 
-void pushPrompt(uint16_t prompt)
+void pushPrompt(uint16_t prompt, uint8_t id)
 {
 #if defined(SDCARD)
 
@@ -677,7 +688,7 @@ void pushPrompt(uint16_t prompt)
     prompt /= 10;
   }
 
-  audioQueue.playFile(filename);
+  audioQueue.playFile(filename, id);
 
 #endif
 }

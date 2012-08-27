@@ -438,8 +438,8 @@ extern const pm_char STR_NA[];
 
 
 #if defined(VOICE)
-void playNumber(int16_t number, uint8_t unit=0, uint8_t att=0);
-void playDuration(int16_t seconds);
+PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att);
+PLAY_FUNCTION(playDuration, int16_t seconds);
 #endif
 
 #endif

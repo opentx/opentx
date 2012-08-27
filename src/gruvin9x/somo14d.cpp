@@ -166,8 +166,9 @@ ISR(TIMER4_COMPA_vect) //Every 0.5ms
 }
 #endif
 
-void pushPrompt(uint16_t prompt)
+void pushPrompt(uint16_t prompt, uint8_t id)
 {
+  /* TODO id */
   somo14playlist[somo14WIdx] = prompt;
   somo14WIdx = (somo14WIdx + 1) % QUEUE_LENGTH;
   cli();
@@ -175,8 +176,9 @@ void pushPrompt(uint16_t prompt)
   sei();
 }
 
-bool isPlaying()
+bool isPlaying(uint8_t id)
 {
+  /* TODO id */
 #if defined(SIMU)
   return false;
 #else

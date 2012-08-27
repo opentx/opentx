@@ -47,6 +47,7 @@ class ToneFragment {
     uint8_t pause;
     uint8_t repeat;
     int8_t  freqIncr;
+    uint8_t id;
 };
 
 class AudioFragment : public ToneFragment {
@@ -72,9 +73,11 @@ class AudioQueue {
 
     void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
 
-    void playFile(const char *filename, uint8_t tFlags=0);
+    void playFile(const char *filename, uint8_t flags=0, uint8_t id=0);
 
     void pause(uint8_t tLen);
+
+    bool isPlaying(uint8_t id);
 
     bool busy()
     {
@@ -134,6 +137,14 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
 #define AUDIO_HEARTBEAT()
 
-extern void pushPrompt(uint16_t prompt);
+extern void pushPrompt(uint16_t prompt, uint8_t id=0);
+
+#define PLAY_FUNCTION(x, ...) void x(__VA_ARGS__, uint8_t id)
+#define PUSH_PROMPT(p) pushPrompt((p), id)
+#define PLAY_NUMBER(n, u, a) playNumber((n), (u), (a), id)
+#define PLAY_DURATION(d) playDuration((d), id)
+#define IS_PLAYING(id) audioQueue.isPlaying((id))
+#define PLAY_VALUE(v, id) playValue((v), (id))
+#define PLAY_FILE(f, id) audioQueue.playFile((f), (id))
 
 #endif

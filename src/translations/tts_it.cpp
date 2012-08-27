@@ -95,7 +95,7 @@ enum ItalianPrompts {
 
 #if defined(VOICE)
 
-void playNumber(int16_t number, uint8_t unit, uint8_t att)
+PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
       temp_digit, digit = divmod(digit, 1000000000)
@@ -108,16 +108,16 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
 */
 
   if (number < 0) {
-    pushPrompt(PROMPT_MENO);
+    PUSH_PROMPT(PROMPT_MENO);
     number = -number;
   }
 
   if (number >= 1000) {
     if (number >= 2000) {
-      playNumber(number / 1000);
-      pushPrompt(PROMPT_MILA);
+      PLAY_NUMBER(number / 1000, 0, 0);
+      PUSH_PROMPT(PROMPT_MILA);
     } else {
-      pushPrompt(PROMPT_MILLE);
+      PUSH_PROMPT(PROMPT_MILLE);
     }
     number %= 1000;
     if (number == 0)
@@ -125,23 +125,23 @@ void playNumber(int16_t number, uint8_t unit, uint8_t att)
   }
   if (number >= 100) {
     if (number >= 200)
-      pushPrompt(PROMPT_ZERO + number/100);
-    pushPrompt(PROMPT_CENT);
+      PUSH_PROMPT(PROMPT_ZERO + number/100);
+    PUSH_PROMPT(PROMPT_CENT);
     number %= 100;
     if (number == 0)
       number = -1;
   }
-  pushPrompt(PROMPT_ZERO+number);
+  PUSH_PROMPT(PROMPT_ZERO+number);
 
   if (unit) {
-    pushPrompt(PROMPT_UNITS_BASE+unit-1);
+    PUSH_PROMPT(PROMPT_UNITS_BASE+unit-1);
   }
 }
 
-void playDuration(int16_t seconds)
+PLAY_FUNCTION(playDuration, int16_t seconds)
 {
   if (seconds < 0) {
-    pushPrompt(PROMPT_MENO);
+    PUSH_PROMPT(PROMPT_MENO);
     seconds = -seconds;
   }
 
@@ -151,11 +151,11 @@ void playDuration(int16_t seconds)
   if (tmp > 0) {
     ore=tmp;
     if (tmp > 1) {
-      playNumber(tmp, 0);
-      pushPrompt(PROMPT_ORE);
+      PLAY_NUMBER(tmp, 0, 0);
+      PUSH_PROMPT(PROMPT_ORE);
     } else {
-      pushPrompt(PROMPT_UN);
-      pushPrompt(PROMPT_ORA);
+      PUSH_PROMPT(PROMPT_UN);
+      PUSH_PROMPT(PROMPT_ORA);
     }
   }
 
@@ -163,21 +163,21 @@ void playDuration(int16_t seconds)
   seconds %= 60;
   if (tmp > 0 || ore >0) {
     if (tmp != 1) {
-      playNumber(tmp, 0);
-      pushPrompt(PROMPT_MINUTI);
+      PLAY_NUMBER(tmp, 0, 0);
+      PUSH_PROMPT(PROMPT_MINUTI);
     } else {
-      pushPrompt(PROMPT_UN);
-      pushPrompt(PROMPT_MINUTO);
+      PUSH_PROMPT(PROMPT_UN);
+      PUSH_PROMPT(PROMPT_MINUTO);
     }
-    pushPrompt(PROMPT_E);
+    PUSH_PROMPT(PROMPT_E);
   }
 
   if (seconds != 1) {
-    playNumber(seconds, 0);
-    pushPrompt(PROMPT_SECONDI);
+    PLAY_NUMBER(seconds, 0, 0);
+    PUSH_PROMPT(PROMPT_SECONDI);
   } else {
-    pushPrompt(PROMPT_UN);
-    pushPrompt(PROMPT_SECONDO);
+    PUSH_PROMPT(PROMPT_UN);
+    PUSH_PROMPT(PROMPT_SECONDO);
   }
 }
 

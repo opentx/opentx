@@ -121,3 +121,11 @@ inline bool isPlaying()
     } \
   }
 
+#define PLAY_FUNCTION(x, ...) void x(__VA_ARGS__)
+#define PUSH_PROMPT(p) pushPrompt((p))
+#define PUSH_CUSTOM_PROMPT(p, ...) pushCustomPrompt((p))
+#define PLAY_NUMBER(n, u, a) playNumber((n), (u), (a))
+#define PLAY_DURATION(d) playDuration((d))
+#define IS_PLAYING(id) isPlaying()
+#define PLAY_VALUE(v, id) playValue((v))
+#define PLAY_FILE(f, id) audioQueue.playFile((f))

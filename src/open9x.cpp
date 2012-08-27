@@ -1666,13 +1666,13 @@ uint16_t activeFunctions = 0;
 MASK_FSW_TYPE activeFunctionSwitches = 0;
 
 #if defined(VOICE)
-void playValue(uint8_t idx)
+PLAY_FUNCTION(playValue, uint8_t idx)
 {
   int16_t val = getValue(idx);
   switch (idx) {
     case NUM_XCHNRAW+TELEM_TM1-1:
     case NUM_XCHNRAW+TELEM_TM2-1:
-      playDuration(val);
+      PLAY_DURATION(val);
       break;
 #if defined(FRSKY)
     case NUM_XCHNRAW+TELEM_MIN_A1-1:
@@ -1698,42 +1698,42 @@ void playValue(uint8_t idx)
             att |= PREC1;
           }
         }
-        playNumber(converted_value, 1+UNIT_VOLTS, att);
+        PLAY_NUMBER(converted_value, 1+UNIT_VOLTS, att);
         break;
       }
 
     case NUM_XCHNRAW+TELEM_CELL-1:
-      playNumber(val, 1+UNIT_VOLTS, PREC2);
+      PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC2);
       break;
 
     case NUM_XCHNRAW+TELEM_VFAS-1:
     case NUM_XCHNRAW+TELEM_CELLS_SUM-1:
-      playNumber(val, 1+UNIT_VOLTS, PREC1);
+      PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
       break;
 
     case NUM_XCHNRAW+TELEM_CURRENT-1:
     case NUM_XCHNRAW+TELEM_MAX_CURRENT-1:
-      playNumber(val, 1+UNIT_AMPS, PREC1);
+      PLAY_NUMBER(val, 1+UNIT_AMPS, PREC1);
       break;
 
     case NUM_XCHNRAW+TELEM_ACCx-1:
     case NUM_XCHNRAW+TELEM_ACCy-1:
     case NUM_XCHNRAW+TELEM_ACCz-1:
     case NUM_XCHNRAW+TELEM_VSPD-1:
-      playNumber(val, 0, PREC2);
+      PLAY_NUMBER(val, 0, PREC2);
       break;
 
     case NUM_XCHNRAW+TELEM_CONSUMPTION-1:
-      playNumber(val, 1+UNIT_MAH);
+      PLAY_NUMBER(val, 1+UNIT_MAH, 0);
       break;
 
     case NUM_XCHNRAW+TELEM_POWER-1:
-      playNumber(val, 1+UNIT_WATTS);
+      PLAY_NUMBER(val, 1+UNIT_WATTS, 0);
       break;
 
     case NUM_XCHNRAW+TELEM_RSSI_TX-1:
     case NUM_XCHNRAW+TELEM_RSSI_RX-1:
-      playNumber(val);
+      PLAY_NUMBER(val, 0, 0);
       break;
 
 #if defined(IMPERIAL_UNITS)
@@ -1741,7 +1741,7 @@ void playValue(uint8_t idx)
     case NUM_XCHNRAW+TELEM_MIN_ALT-1:
     case NUM_XCHNRAW+TELEM_MAX_ALT-1:
       if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
-        playNumber(val, 1+UNIT_FEET);
+        PLAY_NUMBER(val, 1+UNIT_FEET, 0);
         break;
       }
       // no break
@@ -1765,13 +1765,13 @@ void playValue(uint8_t idx)
         val = (val * 46) / 25;
       }
 #endif
-      playNumber(val, unit == UNIT_RAW ? 0 : unit+1);
+      PLAY_NUMBER(val, unit == UNIT_RAW ? 0 : unit+1, 0);
       break;
     }
 #else
     default:
     {
-      playNumber(val, 0);
+      PLAY_NUMBER(val, 0, 0);
       break;
     }
 #endif
@@ -1867,24 +1867,32 @@ void evalFunctions()
 
 #if defined(PCBARM) && defined(SDCARD)
           else if (sd->func == FUNC_PLAY_TRACK) {
-            char lfn[] = SOUNDS_PATH "/xxxxxx.wav";
-            strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
-            lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
-            strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-            audioQueue.playFile(lfn);
+            if (!IS_PLAYING(i+1)) {
+              char lfn[] = SOUNDS_PATH "/xxxxxx.wav";
+              strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
+              lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
+              strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
+              PLAY_FILE(lfn, i+1);
+            }
           }
           else if (sd->func == FUNC_PLAY_VALUE) {
-            playValue(FSW_PARAM(sd));
+            if (!IS_PLAYING(i+1)) {
+              PLAY_VALUE(FSW_PARAM(sd), i+1);
+            }
           }
           else if (sd->func == FUNC_VOLUME) {
             requiredSpeakerVolume = ((1024 + getValue(FSW_PARAM(sd))) * NUM_VOL_LEVELS) / 2048;
           }
 #elif defined(VOICE)
           else if (sd->func == FUNC_PLAY_TRACK) {
-            pushCustomPrompt(sd->param);
+            if (!IS_PLAYING(i+1)) {
+              PUSH_CUSTOM_PROMPT(sd->param, i+1);
+            }
           }
           else if (sd->func == FUNC_PLAY_VALUE) {
-            playValue(sd->param);
+            if (!IS_PLAYING(i+1)) {
+              PLAY_VALUE(FSW_PARAM(sd), i+1);
+            }
           }
 #endif
 

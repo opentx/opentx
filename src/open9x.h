@@ -832,8 +832,6 @@ extern volatile uint8_t   g_blinkTmr10ms;
 extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
-#include "translations.h"
-
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
 extern int16_t            g_ppmIns[8];
 extern int32_t            chans[NUM_CHNOUT];
@@ -1026,6 +1024,8 @@ enum AUDIO_SOUNDS {
 #if defined(PCBV4) && defined(VOICE)
 #include "gruvin9x/somo14d.h"
 #endif
+
+#include "translations.h"
 
 #if defined(HAPTIC)
 #include "haptic.h"
