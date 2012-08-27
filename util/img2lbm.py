@@ -6,7 +6,7 @@ from PyQt4 import Qt, QtGui
 image = QtGui.QImage(sys.argv[1])
 width, height = image.size().width(), image.size().height()
 
-f = file(sys.argv[2], "w")
+f = open(sys.argv[2], "w")
 
 if sys.argv[3] == "img":
     rows = 1

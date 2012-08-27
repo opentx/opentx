@@ -370,7 +370,7 @@ if __name__ == "__main__":
     voice += "-" + board
         
     if "csv" in sys.argv:
-        csvFile = file(voice + ".csv", "w")
+        csvFile = open(voice + ".csv", "w")
         for f, s in systemSounds:
             l = u""
             if board == "arm":

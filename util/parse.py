@@ -4,11 +4,11 @@ import sys
 
 filename = sys.argv[1]
 print filename
-fr = file(filename)
-fw = file(filename+".new", "w")
-ew = file(filename+".en", "w")
-hw = file(filename+".stringsh", "w") 
-cw = file(filename+".stringsc", "w")
+fr = open(filename)
+fw = open(filename+".new", "w")
+ew = open(filename+".en", "w")
+hw = open(filename+".stringsh", "w") 
+cw = open(filename+".stringsc", "w")
 
 replacements = {} 
 

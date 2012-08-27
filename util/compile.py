@@ -66,7 +66,7 @@ def upload(binaries, ext, stamp):
         ftp_connection.delete(ftp_directory + zip_name)
     except:
         pass
-    f = file(zip_name, 'rb')
+    f = open(zip_name, 'rb')
     ftp_connection.storbinary('STOR ' + ftp_directory + zip_name, f)
     f.close()
     ftp_connection.quit()
@@ -190,7 +190,7 @@ def multithread_generate(hex, arg, extension, options, languages, maxsize):
         
         
 def generate_c9x_list(filename, hexes, board):
-    f = file(filename, "w")
+    f = open(filename, "w")
     f.write("const char *open9x_%s_binaries[] = {\n" % board)
     for hex in hexes:
         f.write('"%s",\n' % hex)
