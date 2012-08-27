@@ -413,10 +413,12 @@ void AudioQueue::pause(uint8_t tLen)
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
-  for (uint8_t i=0; i<AUDIO_QUEUE_LENGTH; i++) {
+  uint8_t i = ridx;
+  while (i != widx) {
     AudioFragment & fragment = fragments[i];
     if (fragment.id == id)
       return true;
+    i = (i + 1) % AUDIO_QUEUE_LENGTH;
   }
   return false;
 }
