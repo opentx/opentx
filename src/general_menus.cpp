@@ -168,6 +168,11 @@ void menuProcSetup(uint8_t event)
 #else
 #define AUDIO_ZEROS
 #endif
+#ifdef VOICE
+#define VOICE_ZEROS  0,
+#else
+#define VOICE_ZEROS
+#endif
 #ifdef HAPTIC
 #define HAPTIC_ZEROS 0, 0, 0,
 #else
@@ -184,7 +189,7 @@ void menuProcSetup(uint8_t event)
 #define FRSKY_ZEROS
 #endif
 #ifdef PCBARM
-#define ARM_ZEROS  0, 0, 0, 
+#define ARM_ZEROS  0, 0,
 #else
 #define ARM_ZEROS
 #endif
@@ -194,7 +199,7 @@ void menuProcSetup(uint8_t event)
 #define ROTARY_ENCODERS_ZEROS
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+2, {0, 0, AUDIO_ZEROS HAPTIC_ZEROS ARM_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+2, {0, 0, AUDIO_ZEROS VOICE_ZEROS HAPTIC_ZEROS ARM_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
   uint8_t sub = m_posVert - 1;
 
