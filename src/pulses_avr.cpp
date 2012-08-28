@@ -105,7 +105,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
   uint8_t dt = TCNT1L; // record Timer1 latency for DEBUG stats display
   
 #ifdef DSM2_SERIAL
-  if (g_model.protocol == PROTO_DSM2) {
+  if (s_current_protocol == PROTO_DSM2) {
     OCR1A = 40000;
     // sei will be called inside setupPulses()
     setupPulses(); // will call sei()
