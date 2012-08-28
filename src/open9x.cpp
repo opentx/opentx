@@ -3113,7 +3113,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     lcd_clear();
     refreshDisplay();
     sdInit();
-#elif defined(PCBSTD && defined(VOICE) && !defined(SPLASH)
+#elif defined(PCBSTD) && defined(VOICE) && !defined(SPLASH)
     lcd_clear();
     lcd_putsAtt(20, 28, PSTR("Open9x..."), DBLSIZE);
     refreshDisplay();
