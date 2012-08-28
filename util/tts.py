@@ -316,8 +316,6 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 100+i))
         for i, s in enumerate([u"tisíce", "jeden", "jedno", u"dvě", u"celá", u"celé", u"celých", u"mínus"]):
             systemSounds.extend(generate(s, 110+i))
-        for i, s in enumerate(["hodina", "hodiny", "hodin", "minuta", "minuty", "minut", "sekunda", "sekundy", "sekund"]):
-            systemSounds.extend(generate(s, 118+i))
             
         for i, s in enumerate(["volt", "volty", u"voltů", "voltu",
         					   u"ampér", u"ampéry", u"ampérů", u"ampéru",
@@ -330,14 +328,20 @@ if __name__ == "__main__":
         					   u"miliampér", u"miliampéry", u"miliampérů", u"miliampéru",
         					   u"miliampérhodina", u"miliampérhodiny", u"miliampérhodin", u"miliampérhodiny",
         					   "vat", "vaty", u"vatů", "vatu",
+        					   "decibel", "decibely", u"decibelů", "decibelu",
         					   "stopa", "stopy", "stop", "stopy",
-        					   "uzel", "uzly", u"uzlů", "uzlu"]):
-            systemSounds.extend(generate(s, 130+i))
+        					   "uzel", "uzly", u"uzlů", "uzlu",
+        					   "hodina", "hodiny", "hodin", "hodiny",
+        					   "minuta", "minuty", "minut", "minuty",
+        					   "sekunda", "sekundy", "sekund", "sekundy",
+        					   u"otáčka za minutu", u"otáčky za minutu", u"otáček za minutu", u"otáčky za minutu",
+        					   u"gé", u"gé", u"gé", u"gé"]):
+            systemSounds.extend(generate(s, 118+i))
             
         for s, f, a in [(u"střed trimu", "midtrim", 244),
                         (u"maximum trimu", "endtrim", 0),
                         (u"baterie rádia je vybitá", "lowbatt", 231),
-                        (u"zapoměl jsi na mé!", "inactiv", 230),
+                        (u"zapoměl jsi na mě!", "inactiv", 230),
                         (u"plyn není na nule", "thralert", 232),
                         (u"přepínače nejsou ve výchozí poloze", "swalert", 233),
                         (u"tadá", "tada", 245),
