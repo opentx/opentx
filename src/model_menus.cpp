@@ -2881,7 +2881,7 @@ void menuProcTelemetry(uint8_t event)
             }
           }
           else {
-            CHECK_INCDEC_MODELVAR(event, channel.type, 0, UNIT_MAX-1);
+            CHECK_INCDEC_MODELVAR(event, channel.type, 0, UNIT_A1A2_MAX);
           }
         }
         break;

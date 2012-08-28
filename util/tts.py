@@ -144,7 +144,7 @@ if __name__ == "__main__":
         systemSounds.extend(generate("thousand", 29))
         for i, s in enumerate(["hour", "hours", "minute", "minutes", "second", "seconds", "", "and", "minus"]):
             systemSounds.extend(generate(s, 40+i))
-        for i, s in enumerate(["volts", "amps", "meters per second", "", "km per hour", "meters", "degrees", "percent", "milliamps", "milliamps per hour", "watts", "", "feet", "knots"]):
+        for i, s in enumerate(["volts", "amps", "meters per second", "", "km per hour", "meters", "degrees", "percent", "milliamps", "milliamps per hour", "watts", "db", "feet", "knots", "hour", "minute", "second", "r p m", "g"]):
             systemSounds.extend(generate(s, 50+i))
         for s, f, a in [(u"trim center", "midtrim", 244),
                         (u"maximum trim reached", "endtrim", 0),
@@ -213,7 +213,7 @@ if __name__ == "__main__":
                                "total lipo", "tension", "courant", "consommation", "puissance", u"accelération X", u"accelération Y", u"accelération Z",
                                "orientation", "vario"]):
             systemSounds.extend(generate(s, 146+i))            
-        for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "km heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "", "pieds", "knotts", "heure", "minute", "seconde"]):
+        for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "km heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "knotts", "heure", "minute", "seconde", "tours par minute", "g"]):
             systemSounds.extend(generate(s, 125+i))
         for i, (s, f) in enumerate([
                      (u"train rentré", "gearup"),
@@ -243,7 +243,7 @@ if __name__ == "__main__":
         systemSounds.extend(generate("mille", 102))
         for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
             systemSounds.extend(generate(s, 103+i))
-        for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "", "piedi", "nodi"]):
+        for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "touri per minuti", "g"]):
             systemSounds.extend(generate(s, 113+i))            
         for s, f, a in [(u"radio inattiva controllare", "inactiv", 230),
                         (u"batteria della radio scarica", "lowbatt", 231),

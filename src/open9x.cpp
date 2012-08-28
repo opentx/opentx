@@ -1675,9 +1675,13 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       PLAY_DURATION(val);
       break;
 #if defined(FRSKY)
+    case NUM_XCHNRAW+TELEM_RSSI_TX-1:
+    case NUM_XCHNRAW+TELEM_RSSI_RX-1:
+      PLAY_NUMBER(val, 1+UNIT_DB, 0);
+      break;
     case NUM_XCHNRAW+TELEM_MIN_A1-1:
     case NUM_XCHNRAW+TELEM_MIN_A2-1:
-      idx -= TELEM_MIN_A1-1-MAX_TIMERS;
+      idx -= TELEM_MIN_A1-TELEM_A1;
       // no break
     case NUM_XCHNRAW+TELEM_A1-1:
     case NUM_XCHNRAW+TELEM_A2-1:
@@ -1698,7 +1702,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
             att |= PREC1;
           }
         }
-        PLAY_NUMBER(converted_value, 1+UNIT_VOLTS, att);
+        PLAY_NUMBER(converted_value, 1+g_model.frsky.channels[idx].type, att);
         break;
       }
 
@@ -1719,8 +1723,11 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case NUM_XCHNRAW+TELEM_ACCx-1:
     case NUM_XCHNRAW+TELEM_ACCy-1:
     case NUM_XCHNRAW+TELEM_ACCz-1:
+      PLAY_NUMBER(val, 1+UNIT_G, PREC2);
+      break;
+
     case NUM_XCHNRAW+TELEM_VSPD-1:
-      PLAY_NUMBER(val, 0, PREC2);
+      PLAY_NUMBER(val, 1+UNIT_METERS_PER_SECOND, PREC2);
       break;
 
     case NUM_XCHNRAW+TELEM_CONSUMPTION-1:
@@ -1731,21 +1738,25 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       PLAY_NUMBER(val, 1+UNIT_WATTS, 0);
       break;
 
-    case NUM_XCHNRAW+TELEM_RSSI_TX-1:
-    case NUM_XCHNRAW+TELEM_RSSI_RX-1:
-      PLAY_NUMBER(val, 0, 0);
-      break;
-
-#if defined(IMPERIAL_UNITS)
     case NUM_XCHNRAW+TELEM_ALT-1:
     case NUM_XCHNRAW+TELEM_MIN_ALT-1:
     case NUM_XCHNRAW+TELEM_MAX_ALT-1:
-      if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
+#if defined(IMPERIAL_UNITS)
+      if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
         PLAY_NUMBER(val, 1+UNIT_FEET, 0);
-        break;
-      }
-      // no break
+      else
 #endif
+        PLAY_NUMBER(val, 1+UNIT_METERS, 0);
+      break;
+
+    case NUM_XCHNRAW+TELEM_RPM-1:
+    case NUM_XCHNRAW+TELEM_MAX_RPM-1:
+      PLAY_NUMBER(val, 1+UNIT_RPMS, 0);
+      break;
+
+    case NUM_XCHNRAW+TELEM_HDG-1:
+      PLAY_NUMBER(val, 1+UNIT_DEGREES, 0);
+      break;
 
     default:
     {
