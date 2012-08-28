@@ -328,8 +328,7 @@ void menuProcSetup(uint8_t event)
       case ITEM_SETUP_BT_BAUDRATE:
         g_eeGeneral.btBaudrate = selectMenuItem(y, PSTR("BT Baudrate"), PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
-          uint32_t baudrate = (g_eeGeneral.btBaudrate==0 ? 115200 : (g_eeGeneral.btBaudrate==1 ? 9600 : 19200));
-          UART3_Configure(baudrate, Master_frequency);
+          btInit();
         }
         break;
 #endif

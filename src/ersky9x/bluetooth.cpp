@@ -33,6 +33,12 @@
 
 #include "../open9x.h"
 
+void btInit()
+{
+  uint32_t baudrate = (g_eeGeneral.btBaudrate==0 ? 115200 : (g_eeGeneral.btBaudrate==1 ? 9600 : 19200));
+  UART3_Configure(baudrate, Master_frequency);
+}
+
 class Fifo32
 {
   public:

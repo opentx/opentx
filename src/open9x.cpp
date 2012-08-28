@@ -3116,23 +3116,10 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #if defined(PCBARM)
   setVolume(g_eeGeneral.speakerVolume);
   PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
-
-#if defined(BLUETOOTH)
-  uint32_t brate ;
-  switch (g_eeGeneral.btBaudrate) {
-    default :
-    case 0 :
-      brate = 115200 ;
-      break ;
-    case 1 :
-      brate = 9600 ;
-      break ;
-    case 2 :
-      brate = 19200 ;
-      break ;
-  }
-  UART3_Configure(brate, Master_frequency);
 #endif
+
+#if defined(PCBARM) && defined(BLUETOOTH)
+  btInit();
 #endif
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on

@@ -34,6 +34,7 @@
 #ifndef bluetooth_h
 #define bluetooth_h
 
+void btInit();
 void btTask(void* pdata);
 void btPushByte(uint8_t data);
 
