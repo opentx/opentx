@@ -38,6 +38,10 @@
 #include "ersky9x/sound_driver.h"
 #include "ersky9x/haptic_driver.h"
 
+#if defined(BLUETOOTH)
+#include "ersky9x/bluetooth.h"
+#endif
+
 extern "C" {
 extern void init_SDcard();
 extern void sdInit();

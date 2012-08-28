@@ -296,14 +296,21 @@ void eeprom_read_block (void *pointer_ram,
 #define board_init()
 
 #define OS_MutexID int
+#define OS_FlagID int
+
+#define E_OK   0
+
 #define CoSetFlag(...)
 #define CoClearFlag(...)
 #define CoSetTmrCnt(...)
 #define CoEnterISR(...)
 #define CoExitISR(...)
 #define CoStartTmr(...)
-#define CoWaitForSingleFlag(...)
+#define CoWaitForSingleFlag(...) 0
 #define CoEnterMutexSection(...)
 #define CoLeaveMutexSection(...)
+#define CoTickDelay(...)
+#define CoCreateFlag(...) 0
+#define UART3_Configure(a, b) a=a
 
 #endif

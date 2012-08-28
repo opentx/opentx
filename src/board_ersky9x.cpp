@@ -244,16 +244,36 @@ inline void UART3_Configure( uint32_t baudrate, uint32_t masterClock)
 
   /* Configure baudrate */
   /* Asynchronous, no oversampling */
-  pUart->UART_BRGR = (masterClock / baudrate) / 16;
-
-//      baudrate = (masterClock * 8 / baudrate) / 16 ;
-//  pUart->UART_BRGR = ( baudrate / 8 ) || ( ( baudrate & 7 ) << 16 ) ; // Fractional part to allow 152000 baud
+  baudrate = (masterClock * 8 / baudrate) / 16 ;
+  pUart->UART_BRGR = ( baudrate / 8 ) | ( ( baudrate & 7 ) << 16 ) ;    // Fractional part to allow 152000 baud
 //
   /* Disable PDC channel */
   pUart->UART_PTCR = UART_PTCR_RXTDIS | UART_PTCR_TXTDIS;
 
   /* Enable receiver and transmitter */
   pUart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
+
+#if 0
+  // TODO when we will want to be BT receiver
+  pUart->UART_IER = UART_IER_RXRDY ;
+  NVIC_EnableIRQ(UART1_IRQn) ;
+#endif
+}
+
+struct t_serial_tx * Current_bt ;
+
+extern "C" void UART1_IRQHandler()
+{
+  Uart *pUart = BT_USART ;
+  if ( pUart->UART_SR & UART_SR_TXBUFE ) {
+    pUart->UART_IDR = UART_IDR_TXBUFE ;
+    pUart->UART_PTCR = US_PTCR_TXTDIS ;
+    Current_bt->ready = 0 ;
+  }
+  /* TODO
+  if ( pUart->UART_SR & UART_SR_RXRDY ) {
+    put_fifo32( &BtRx_fifo, pUart->UART_RHR ) ;
+  } */
 }
 
 // USART0 configuration

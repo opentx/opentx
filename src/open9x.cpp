@@ -52,10 +52,10 @@ OS_MutexID sdMutex;
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
 
-/*OS_TID btTask;
+#if defined(BLUETOOTH)
+OS_TID btTaskId;
 OS_STK btStack[BT_STACK_SIZE];
-OS_TCID btTimer;
-OS_FlagID btFlag;*/
+#endif
 #endif
 
 #include "open9x.h"
@@ -1677,7 +1677,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 #if defined(FRSKY)
     case NUM_XCHNRAW+TELEM_RSSI_TX-1:
     case NUM_XCHNRAW+TELEM_RSSI_RX-1:
-      PLAY_NUMBER(val, 1+UNIT_DB, 0);
+      PLAY_NUMBER(val, 1+UNIT_DBM, 0);
       break;
     case NUM_XCHNRAW+TELEM_MIN_A1-1:
     case NUM_XCHNRAW+TELEM_MIN_A2-1:
@@ -3116,6 +3116,23 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #if defined(PCBARM)
   setVolume(g_eeGeneral.speakerVolume);
   PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
+
+#if defined(BLUETOOTH)
+  uint32_t brate ;
+  switch (g_eeGeneral.btBaudrate) {
+    default :
+    case 0 :
+      brate = 115200 ;
+      break ;
+    case 1 :
+      brate = 9600 ;
+      break ;
+    case 2 :
+      brate = 19200 ;
+      break ;
+  }
+  UART3_Configure(brate, Master_frequency);
+#endif
 #endif
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
@@ -3764,10 +3781,9 @@ int main(void)
 #if defined(PCBARM)
   CoInitOS();
 
-  // btFlag = CoCreateFlag(TRUE, FALSE);          // Auto-reset, start FALSE
-  // btTimer = CoCreateTmr(TMR_TYPE_PERIODIC, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), btTimerHandle);
-
-  // btTaskId = CoCreateTask(btTask, NULL, 19, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
+#if defined(BLUETOOTH)
+  btTaskId = CoCreateTask(btTask, NULL, 19, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
+#endif
   mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
   menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
 

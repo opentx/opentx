@@ -148,6 +148,10 @@ VARIO = YES
 # Values = YES, NO
 SDCARD = NO
 
+# BLUETOOTH
+# Values = YES, NO
+BLUETOOTH = NO
+
 # PXX (FrSky PCM) protocol
 PXX = NO
 
@@ -426,6 +430,13 @@ ifeq ($(PCB), ARM)
   ifeq ($(SDCARD), YES)
     SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
   endif
+  
+  ifeq ($(BLUETOOTH), YES)
+  	MODS:=${MODS}S
+  	CPPDEFS += -DBLUETOOTH
+  	CPPSRC += ersky9x/bluetooth.cpp 
+endif
+  
 endif
 
 ifeq ($(PCB), V4)

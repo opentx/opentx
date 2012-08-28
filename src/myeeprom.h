@@ -131,7 +131,7 @@ PACK(typedef struct t_EEGeneral {
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;      //index of subview in main scrren
-  uint8_t   spare0:3;
+  uint8_t   btBaudrate:3; // TODO only needed on ARM
   int8_t    beeperMode:2;
   uint8_t   spare1:1;
   uint8_t   disableMemoryWarning:1;
@@ -390,7 +390,7 @@ enum TelemetryUnit {
   UNIT_A1A2_MAX = UNIT_MILLIAMPS,
   UNIT_MAH,
   UNIT_WATTS,
-  UNIT_DB,
+  UNIT_DBM,
   UNIT_FEET,
   UNIT_KTS,
   UNIT_HOURS,

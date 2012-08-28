@@ -645,4 +645,11 @@ extern int32_t Card_state;
 
 extern uint32_t Master_frequency ;
 
+struct t_serial_tx
+{
+  uint8_t *buffer ;
+  uint16_t size ;
+  volatile uint16_t ready ;
+};
+
 #endif

@@ -137,6 +137,9 @@ enum menuProcSetupItems {
   ITEM_SETUP_CONTRAST,
   ITEM_SETUP_BATTERY_WARNING,
   ITEM_SETUP_INACTIVITY_ALARM,
+#if defined(BLUETOOTH)
+  ITEM_SETUP_BT_BAUDRATE,
+#endif
 #if defined(ROTARY_ENCODERS)
   ITEM_SETUP_RE_NAVIGATION,
 #endif
@@ -193,13 +196,18 @@ void menuProcSetup(uint8_t event)
 #else
 #define ARM_ZEROS
 #endif
+#ifdef BLUETOOTH
+#define BLUETOOTH_ZEROS 0,
+#else
+#define BLUETOOTH_ZEROS
+#endif
 #ifdef ROTARY_ENCODERS
 #define ROTARY_ENCODERS_ZEROS 0,
 #else
 #define ROTARY_ENCODERS_ZEROS
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+2, {0, 0, AUDIO_ZEROS VOICE_ZEROS HAPTIC_ZEROS ARM_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+2, {0, 0, AUDIO_ZEROS VOICE_ZEROS HAPTIC_ZEROS ARM_ZEROS BLUETOOTH_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
   uint8_t sub = m_posVert - 1;
 
@@ -315,6 +323,16 @@ void menuProcSetup(uint8_t event)
         lcd_putc(lcdLastPos, y, 'm');
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
+
+#if defined(BLUETOOTH)
+      case ITEM_SETUP_BT_BAUDRATE:
+        g_eeGeneral.btBaudrate = selectMenuItem(y, PSTR("BT Baudrate"), PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
+        if (attr && checkIncDec_Ret) {
+          uint32_t baudrate = (g_eeGeneral.btBaudrate==0 ? 115200 : (g_eeGeneral.btBaudrate==1 ? 9600 : 19200));
+          UART3_Configure(baudrate, Master_frequency);
+        }
+        break;
+#endif
 
 #if defined(ROTARY_ENCODERS)
       case ITEM_SETUP_RE_NAVIGATION:
