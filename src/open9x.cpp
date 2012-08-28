@@ -754,7 +754,7 @@ bool getSwitch(int8_t swtch, bool nc)
 uint8_t switches_states = 0;
 int8_t getMovedSwitch()
 {
-  static uint16_t s_last_time = 0;
+  static tmr10ms_t s_last_time = 0;
 
   int8_t result = 0;
 
@@ -783,7 +783,7 @@ int8_t getMovedSwitch()
     }
   }
 
-  if (get_tmr10ms() - s_last_time > 10)
+  if ((tmr10ms_t)(get_tmr10ms() - s_last_time) > 10)
     result = 0;
 
   s_last_time = get_tmr10ms();
@@ -983,7 +983,7 @@ void doSplash()
 #if defined(PCBSTD)
     lcdSetRefVolt(g_eeGeneral.contrast);
 #else
-    uint16_t curTime = get_tmr10ms() + 10;
+    tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
 #endif
@@ -995,7 +995,7 @@ void doSplash()
 
     uint16_t inacSum = stickMoveValue();
 
-    uint16_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
+    tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
     while (tgtime != get_tmr10ms())
     {
 #ifdef SIMU
@@ -2215,7 +2215,7 @@ char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 #if defined(SIMU)
 #define TIME_TO_WRITE s_eeDirtyMsk
 #else
-#define TIME_TO_WRITE (s_eeDirtyMsk && (get_tmr10ms() - s_eeDirtyTime10ms) >= WRITE_DELAY_10MS)
+#define TIME_TO_WRITE (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 #endif
 
 #ifdef BOLD_FONT
@@ -2517,9 +2517,9 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
 
 void perMain()
 {
-  static uint16_t lastTMR;
-  uint16_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms - lastTMR);
+  static tmr10ms_t lastTMR;
+  tmr10ms_t tmr10ms = get_tmr10ms();
+  uint8_t tick10ms = (tmr10ms > lastTMR ? tmr10ms - lastTMR : 1);
   lastTMR = tmr10ms;
 
 #if defined(PCBSTD) || defined(SIMU)
@@ -2733,9 +2733,9 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK) // mixer interrupt
 
   uint16_t t0 = getTmr16KHz();  
   
-  static uint16_t lastTMR;
-  uint16_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms - lastTMR);
+  static tmr10ms_t lastTMR;
+  tmr10ms_t tmr10ms = get_tmr10ms();
+  uint8_t tick10ms = (tmr10ms > lastTMR ? tmr10ms - lastTMR : 1);
   lastTMR = tmr10ms;
   
   if (s_current_protocol < PROTO_NONE) {
@@ -3158,9 +3158,9 @@ void mixerTask(void * pdata)
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
 
-      static uint16_t lastTMR;
-      uint16_t tmr10ms = get_tmr10ms();
-      uint8_t tick10ms = (tmr10ms - lastTMR);
+      static tmr10ms_t lastTMR;
+      tmr10ms_t tmr10ms = get_tmr10ms();
+      uint8_t tick10ms = (tmr10ms > lastTMR ? tmr10ms - lastTMR : 1);
       lastTMR = tmr10ms;
 
       if (s_current_protocol < PROTO_NONE) {

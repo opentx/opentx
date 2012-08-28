@@ -513,6 +513,7 @@ const char * sdSwReset(uint32_t retry)
 #define OCR_SDIO_MP            (1UL << 27)
 #define OCR_SDIO_NF            (7UL << 28)
 
+#if 0
 const char * sdIdentify()
 {
     uint8_t mem = 0, io = 0, f8 = 0, mp = 1;
@@ -608,7 +609,6 @@ const char * sdIdentify()
     return 0;
 }
 
-#if 0
 const char * sdEnum()
 {
     uint8_t mem , io;
@@ -709,9 +709,7 @@ const char * sdEnum()
     if (bwExec || hsExec) SdMmcUpdateInformation(pSd, hsExec, 1);
     return 0;
 }
-#endif
 
-#if 0
 void sdInit()
 {
   const char * result;

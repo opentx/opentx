@@ -643,30 +643,33 @@ const char * displayMenu(uint8_t event)
 }
 
 char statusLineMsg[STATUS_LINE_LENGTH];
-uint16_t statusLineTimeout = 0;
+tmr10ms_t statusLineTime = 0;
 uint8_t statusLineHeight = 0;
 
 void showStatusLine()
 {
   statusLineHeight = 0;
-  statusLineTimeout = get_tmr10ms() + 3*100; /* 3 seconds */
+  statusLineTime = get_tmr10ms();
 }
 
+#define STATUS_LINE_DELAY (3 * 100) /* 3s */
 void drawStatusLine()
 {
-  if (get_tmr10ms() < statusLineTimeout) {
-    if (statusLineHeight < 8) statusLineHeight++;
-  }
-  else if (statusLineHeight) {
-    statusLineHeight--;
-  }
-  else {
-    return;
-  }
+  if (statusLineTime) {
+    if ((tmr10ms_t)(get_tmr10ms() - statusLineTime) <= (tmr10ms_t)STATUS_LINE_DELAY) {
+      if (statusLineHeight < 8) statusLineHeight++;
+    }
+    else if (statusLineHeight) {
+      statusLineHeight--;
+    }
+    else {
+      statusLineTime = 0;
+    }
 
-  lcd_filled_rect(0, 7*FH+8-statusLineHeight, DISPLAY_W, 8, SOLID, WHITE);
-  lcd_putsAtt(5, 7*FH+1+8-statusLineHeight, statusLineMsg, BSS);
-  lcd_filled_rect(0, 7*FH+8-statusLineHeight, DISPLAY_W, 8, SOLID);
+    lcd_filled_rect(0, 8*FH-statusLineHeight, DISPLAY_W, 8, SOLID, WHITE);
+    lcd_putsAtt(5, 8*FH+1-statusLineHeight, statusLineMsg, BSS);
+    lcd_filled_rect(0, 8*FH-statusLineHeight, DISPLAY_W, 8, SOLID);
+  }
 }
 
 #endif

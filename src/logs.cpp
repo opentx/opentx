@@ -129,7 +129,7 @@ void writeLogs()
 {
   if (isFunctionActive(FUNC_LOGS) && logDelay > 0) {
     uint16_t tmr10ms = get_tmr10ms();
-    if (lastLogTime == 0 || tmr10ms - lastLogTime >= 10*logDelay) {
+    if (lastLogTime == 0 || (tmr10ms_t)(tmr10ms - lastLogTime) >= (tmr10ms_t)logDelay*10) {
       lastLogTime = tmr10ms;
 
       if (!g_oLogFile.fs) {

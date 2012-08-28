@@ -803,12 +803,14 @@ inline int16_t calc100toRESX(int8_t x)
 extern int16_t calc1000toRESX(int16_t x);
 #endif
 
-extern volatile uint16_t g_tmr10ms;
-
 #if defined(PCBARM)
 // This doesn't need protection on this processor
+#define tmr10ms_t uint32_t
+extern volatile tmr10ms_t g_tmr10ms;
 #define get_tmr10ms() g_tmr10ms
 #else
+#define tmr10ms_t uint16_t
+extern volatile tmr10ms_t g_tmr10ms;
 extern inline uint16_t get_tmr10ms()
 {
   uint16_t time  ;
@@ -827,7 +829,6 @@ extern const char stamp3[];
 extern const char stamp4[];
 
 extern uint8_t            g_vbat100mV;
-extern volatile uint16_t  g_tmr10ms;
 extern volatile uint8_t   g_blinkTmr10ms;
 extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];

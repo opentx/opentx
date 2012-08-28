@@ -146,8 +146,8 @@ void killEvents(uint8_t event)
   if (event < (int)DIM(keys)) keys[event].killEvents();
 }
 
-volatile uint16_t g_tmr10ms;
-volatile uint8_t  g_blinkTmr10ms;
+volatile tmr10ms_t g_tmr10ms;
+volatile uint8_t   g_blinkTmr10ms;
 
 void per10ms()
 {
