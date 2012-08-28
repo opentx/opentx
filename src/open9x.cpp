@@ -2234,7 +2234,7 @@ char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
 ACTIVE_MIXES_TYPE activeMixes;
 #endif
 int32_t sum_chans512[NUM_CHNOUT] = {0};
-inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
+inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
 {
 #ifdef BOLD_FONT
   activeMixes = 0;
@@ -2347,11 +2347,11 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
   val += RESX;
   val /= (RESX/16); // calibrate it
 
-  static uint16_t s_time_tot;
+  static tmr10ms_t s_time_tot;
   static uint8_t s_cnt_1s;
   static uint16_t s_sum_1s;
 #if defined(THRTRACE)
-  static uint16_t s_time_trace;
+  static tmr10ms_t s_time_trace;
   static uint16_t s_cnt_10s;
   static uint16_t s_sum_10s;
 #endif
@@ -2359,7 +2359,7 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
   s_cnt_1s++;
   s_sum_1s += val;
 
-  if ((uint16_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
+  if ((tmr10ms_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
     s_time_tot += 100;
     s_timeCumTot += 1;
 
@@ -2371,7 +2371,7 @@ inline void doMixerCalculations(uint16_t tmr10ms, uint8_t tick10ms)
     s_cnt_10s += s_cnt_1s;
     s_sum_10s += s_sum_1s;
 
-    if ((uint16_t)(tmr10ms - s_time_trace) >= 1000) {// 10sec
+    if ((tmr10ms_t)(tmr10ms - s_time_trace) >= 1000) {// 10sec
       s_time_trace += 1000;
       val = s_sum_10s / s_cnt_10s;
       s_sum_10s = 0;
@@ -2531,7 +2531,7 @@ void perMain()
 {
   static tmr10ms_t lastTMR;
   tmr10ms_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms > lastTMR ? tmr10ms - lastTMR : 1);
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
   lastTMR = tmr10ms;
 
 #if defined(PCBSTD) || defined(SIMU)
@@ -2747,7 +2747,7 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK) // mixer interrupt
   
   static tmr10ms_t lastTMR;
   tmr10ms_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms > lastTMR ? tmr10ms - lastTMR : 1);
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
   lastTMR = tmr10ms;
   
   if (s_current_protocol < PROTO_NONE) {
@@ -3121,11 +3121,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
   if (!UNEXPECTED_SHUTDOWN()) {
-#if defined(PCBARM)
-    lcd_clear();
-    refreshDisplay();
-    sdInit();
-#elif 0
+#if 0
     // defined(PCBSTD) && defined(VOICE) && !defined(SPLASH)
     lcd_clear();
     lcd_putsAtt(20, 28, PSTR("Open9x..."), DBLSIZE);
@@ -3135,6 +3131,12 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #endif
 
     doSplash();
+
+#if defined(PCBARM)
+    while (Card_state == SD_ST_STARTUP) {
+      CoTickDelay(1);  // 2ms
+    }
+#endif
 
 #if !defined(PCBARM)
     checkLowEEPROM();
@@ -3181,7 +3183,7 @@ void mixerTask(void * pdata)
 
       static tmr10ms_t lastTMR;
       tmr10ms_t tmr10ms = get_tmr10ms();
-      uint8_t tick10ms = (tmr10ms > lastTMR ? tmr10ms - lastTMR : 1);
+      uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
       lastTMR = tmr10ms;
 
       if (s_current_protocol < PROTO_NONE) {

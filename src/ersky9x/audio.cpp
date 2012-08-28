@@ -76,7 +76,7 @@ const char * audioFilenames[] = {
 #endif
 };
 
-uint32_t sdAvailableAudioFiles;
+uint32_t sdAvailableAudioFiles = (1 << AU_TADA);
 
 #if defined(SDCARD)
 // TODO enable the assert when it's C++
@@ -91,14 +91,16 @@ void retrieveAvailableAudioFiles()
   assert(sizeof(sdAvailableAudioFiles)*8 > AU_FRSKY_FIRST);
 #endif
 
-  sdAvailableAudioFiles = 0;
+  uint32_t availableAudioFiles = 0;
 
   for (uint32_t i=0; i<AU_FRSKY_FIRST; i++) {
     strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
     strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
     if (f_stat(filename, &info) == FR_OK)
-      sdAvailableAudioFiles |= ((uint32_t)1 << i);
+      availableAudioFiles |= ((uint32_t)1 << i);
   }
+
+  sdAvailableAudioFiles = availableAudioFiles;
 }
 }
 
@@ -168,8 +170,11 @@ extern uint16_t Sine_values[];
 uint8_t pcmCodec;
 uint32_t pcmFreq = 8000;
 
+#ifndef SIMU
 void audioTask(void* pdata)
 {
+  sdInit();
+
   while (1) {
 
     CoWaitForSingleFlag(audioFlag, 0);
@@ -178,6 +183,7 @@ void audioTask(void* pdata)
 
   }
 }
+#endif
 
 #define WAV_BUFFER_SIZE 512
 uint16_t wavSamplesArray[3*WAV_BUFFER_SIZE];
@@ -474,7 +480,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
 #endif
 
-  if (!sd_card_mounted())
+  if (!CardIsConnected() || (Card_state != SD_ST_MOUNTED && Card_state != SD_ST_STARTUP))
     return;
 
   CoEnterMutexSection(audioMutex);

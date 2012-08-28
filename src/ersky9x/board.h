@@ -497,6 +497,22 @@
 
 #define CardIsConnected() ( (PIOB->PIO_PDSR & PIO_PB7) == 0 )
 
+// States for initialising card
+#define SD_ST_ERR               -1
+#define SD_ST_STARTUP           0
+#define SD_ST_EMPTY             1
+#define SD_ST_INIT1             2
+#define SD_ST_INIT2             3
+#define SD_ST_IDLE              4
+#define SD_ST_READY             5
+#define SD_ST_IDENT             6
+#define SD_ST_STBY              7
+#define SD_ST_TRAN              8
+#define SD_ST_DATA              9
+#define SD_ST_MOUNTED           10
+
+extern int32_t Card_state;
+
 /*
 #define BOARD_PSRAM_PINS            PIN_EBI_DATA_BUS, PIN_EBI_NCS0, PIN_EBI_NRD, PIN_EBI_NWE, \
                                         PIN_EBI_PSRAM_ADDR_BUS, PIN_EBI_PSRAM_NBS, PIN_EBI_A1

@@ -66,23 +66,10 @@
 /** SDIO Combo, with SDHC embedded (0xB) */
 #define CARD_SDHCCOMBO  (CARD_TYPE_bmSDIO|CARD_SDHC)
 
-// States for initialising card
-#define SD_ST_ERR               -1
-#define SD_ST_EMPTY             0
-#define SD_ST_INIT1             1
-#define SD_ST_INIT2             2
-#define SD_ST_IDLE              3
-#define SD_ST_READY             4
-#define SD_ST_IDENT             5
-#define SD_ST_STBY              6
-#define SD_ST_TRAN              7
-#define SD_ST_DATA              8
-#define SD_ST_MOUNTED           9
-
 uint32_t Card_ID[4] ;
 uint32_t Card_SCR[2] ;
 uint32_t Card_CSD[4] ;
-int32_t Card_state = SD_ST_EMPTY ;
+int32_t Card_state = SD_ST_STARTUP ;
 uint32_t Sd_128_resp[4] ;
 uint32_t Sd_rca ;
 uint32_t Cmd_8_resp ;
@@ -814,6 +801,9 @@ void retrieveAvailableAudioFiles();
 
 void sdPoll10mS()
 {
+  if (Card_state == SD_ST_STARTUP)
+    return;
+
   if (!CardIsConnected()) {
     Card_state = SD_ST_EMPTY;
     Sd_rca = 0;
@@ -879,52 +869,45 @@ void sdInit()
   Sd_rca = 0;
   sdErrorCount = 0;
 
-  Card_state = SD_ST_EMPTY;
-  if (!CardIsConnected())
+  if (!CardIsConnected()) {
+    Card_state = SD_ST_EMPTY;
     return;
+  }
 
-  Card_state = SD_ST_INIT1;
   sdCmd0();
-
-  Card_state = SD_ST_INIT2;
   sdCmd8(1);
-
-  Card_state = SD_ST_IDLE;
   sdMemInit(1, &Cmd_A41_resp);
 
-  Card_state = SD_ST_READY;
   uint8_t retry;
   for (retry=0; retry<10; retry++) {
     if (!sdCmd2()) break;
     CoTickDelay(1);  // 2ms
   }
 
-  if (retry == 10)
+  if (retry == 10) {
+    Card_state = SD_ST_READY;
     return;
-
-  Card_state = SD_ST_IDENT;
+  }
 
   for (retry=0; retry<10; retry++) {
     if (!sdCmd3()) break;
     CoTickDelay(1);  // 2ms
   }
 
-  if (retry == 10)
+  if (retry == 10) {
+    Card_state = SD_ST_IDENT;
     return;
+  }
 
-  Card_state = SD_ST_STBY;
   sdCmd9();
   sdCmd7(); // Select Card
-
-  Card_state = SD_ST_TRAN;
   sdAcmd51();
   sdAcmd6(); // Set bus width to 4 bits, and speed to 9 MHz
 
   // Should check the card can do this ****
-  Card_state = SD_ST_DATA;
-
   f_mount(0, &g_FATFS_Obj);
   retrieveAvailableAudioFiles();
+
   Card_state = SD_ST_MOUNTED;
 }
 

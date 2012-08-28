@@ -745,7 +745,6 @@ void menuProcTrainer(uint8_t event)
   }
 }
 
-extern uint32_t Card_state;
 void menuProcDiagVers(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
