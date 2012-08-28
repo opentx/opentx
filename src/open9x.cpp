@@ -1878,7 +1878,10 @@ void evalFunctions()
 
 #if defined(PCBARM) && defined(SDCARD)
           else if (sd->func == FUNC_PLAY_TRACK) {
-            if (!IS_PLAYING(i+1)) {
+            if (IS_PLAYING(i+1)) {
+              switch_mask = 0;
+            }
+            else {
               char lfn[] = SOUNDS_PATH "/xxxxxx.wav";
               strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
               lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
@@ -1887,7 +1890,10 @@ void evalFunctions()
             }
           }
           else if (sd->func == FUNC_PLAY_VALUE) {
-            if (!IS_PLAYING(i+1)) {
+            if (IS_PLAYING(i+1)) {
+              switch_mask = 0;
+            }
+            else {
               PLAY_VALUE(FSW_PARAM(sd), i+1);
             }
           }
@@ -1896,12 +1902,18 @@ void evalFunctions()
           }
 #elif defined(VOICE)
           else if (sd->func == FUNC_PLAY_TRACK) {
-            if (!IS_PLAYING(i+1)) {
+            if (IS_PLAYING(i+1)) {
+              switch_mask = 0;
+            }
+            else {
               PUSH_CUSTOM_PROMPT(sd->param, i+1);
             }
           }
           else if (sd->func == FUNC_PLAY_VALUE) {
-            if (!IS_PLAYING(i+1)) {
+            if (IS_PLAYING(i+1)) {
+              switch_mask = 0;
+            }
+            else {
               PLAY_VALUE(FSW_PARAM(sd), i+1);
             }
           }
@@ -3113,7 +3125,8 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     lcd_clear();
     refreshDisplay();
     sdInit();
-#elif defined(PCBSTD) && defined(VOICE) && !defined(SPLASH)
+#elif 0
+    // defined(PCBSTD) && defined(VOICE) && !defined(SPLASH)
     lcd_clear();
     lcd_putsAtt(20, 28, PSTR("Open9x..."), DBLSIZE);
     refreshDisplay();
