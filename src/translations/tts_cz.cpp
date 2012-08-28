@@ -162,15 +162,17 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
     case 0:
       break;
     case 4:
+    case 10:
+    case 13:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
       att = ZENSKY;
       break;
     case 8:
+    case 19:
       att = STREDNI;
-      break;
-    case 10:
-    case 11:
-    case 12:
-      att = ZENSKY;
       break;
     default:
       att = MUZSKY;
