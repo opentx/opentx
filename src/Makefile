@@ -599,7 +599,7 @@ ifneq ($(PCB), ARM)
     CPPFLAGS += -flto
   endif
 
-  CPPFLAGS += -fno-inline-small-functions
+  AVRCPPFLAGS += -fno-inline-small-functions
 
   GCCVERSIONGTE470 := $(shell expr 4.7.0 \<= `$(CC) -dumpversion`)
   ifeq ($(GCCVERSIONGTE470),1)
