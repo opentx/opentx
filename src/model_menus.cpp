@@ -856,9 +856,13 @@ uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, cons
 
 PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uint8_t attr)
 {
+#if defined(PCBARM)
+  bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-2*FW);
+#endif
+
   for (uint8_t p=0; p<MAX_PHASES; p++) {
 #if defined(PCBARM)
-    if ((x==EXPO_ONE_2ND_COLUMN-2*FW && attr && p < m_posHorz-4) || x > EXPO_ONE_2ND_COLUMN+2*FW)
+    if (expoMenu && ((attr && p < m_posHorz-4) || (x > EXPO_ONE_2ND_COLUMN+2*FW)))
       continue;
 #endif
     lcd_putcAtt(x, y, '0'+p, ((m_posHorz==p) && attr) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS));
