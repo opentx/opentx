@@ -140,7 +140,7 @@ uint16_t getChannelRatio(uint8_t channel)
   return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
 }
 
-int16_t applyChannelRatio(uint8_t channel, uint8_t val)
+int16_t applyChannelRatio(uint8_t channel, int16_t val)
 {
   return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
 }
