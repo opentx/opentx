@@ -585,7 +585,8 @@ void audioEvent(uint8_t e, uint8_t f)
           break;
         // pot/stick center
         case AU_POT_STICK_MIDDLE:
-          audioQueue.play(BEEP_DEFAULT_FREQ + 50, 20, 2, PLAY_NOW);          break;
+          audioQueue.play(BEEP_DEFAULT_FREQ + 50, 20, 2, PLAY_NOW);
+          break;
         // mix warning 1
         case AU_MIX_WARNING_1:
           audioQueue.play(BEEP_DEFAULT_FREQ + 50, 12, 0, PLAY_NOW);

@@ -3125,15 +3125,6 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
   if (!UNEXPECTED_SHUTDOWN()) {
-#if 0
-    // defined(PCBSTD) && defined(VOICE) && !defined(SPLASH)
-    lcd_clear();
-    lcd_putsAtt(20, 28, PSTR("Open9x..."), DBLSIZE);
-    refreshDisplay();
-    tmr10ms_t tgtime = get_tmr10ms() + (2*100); /* 2 seconds */
-    while (tgtime != get_tmr10ms() && !keyDown());
-#endif
-
     doSplash();
 
 #if defined(PCBARM)
