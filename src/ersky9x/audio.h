@@ -36,13 +36,13 @@
 
 #define AUDIO_QUEUE_LENGTH (20)
 #define BEEP_DEFAULT_FREQ  (70)
-#define BEEP_OFFSET        (18)
+#define BEEP_OFFSET        (10)
 #define BEEP_KEY_UP_FREQ   (BEEP_DEFAULT_FREQ+5)
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
 
 class ToneFragment {
   public:
-    uint8_t freq;
+    uint16_t freq;
     uint8_t duration;
     uint8_t pause;
     uint8_t repeat;
