@@ -3128,7 +3128,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     doSplash();
 
 #if defined(PCBARM)
-    while (Card_state == SD_ST_STARTUP) {
+    while (!Card_initialized) {
       CoTickDelay(1);  // 2ms
     }
 #endif

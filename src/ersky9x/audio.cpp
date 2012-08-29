@@ -481,7 +481,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
 #endif
 
-  if (!CardIsConnected() || (Card_state != SD_ST_MOUNTED && Card_state != SD_ST_STARTUP))
+  if (Card_initialized && !sd_card_mounted())
     return;
 
   CoEnterMutexSection(audioMutex);

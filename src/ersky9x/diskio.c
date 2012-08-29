@@ -70,6 +70,7 @@ uint32_t Card_ID[4] ;
 uint32_t Card_SCR[2] ;
 uint32_t Card_CSD[4] ;
 int32_t Card_state = SD_ST_STARTUP ;
+uint32_t Card_initialized = 0;
 uint32_t Sd_128_resp[4] ;
 uint32_t Sd_rca ;
 uint32_t Cmd_8_resp ;
@@ -801,7 +802,7 @@ void retrieveAvailableAudioFiles();
 
 void sdPoll10mS()
 {
-  if (Card_state == SD_ST_STARTUP)
+  if (!Card_initialized)
     return;
 
   if (!CardIsConnected()) {
@@ -903,21 +904,17 @@ void sdInit()
   sdCmd9();
   sdCmd7(); // Select Card
 
-  CoTickDelay(1);  // 2ms
-
   sdAcmd51();
   sdAcmd6(); // Set bus width to 4 bits, and speed to 9 MHz
 
-  CoTickDelay(1);  // 2ms
-
   // Should check the card can do this ****
-  if (f_mount(0, &g_FATFS_Obj) != FR_OK) {
-    Card_state = SD_ST_DATA;
-    return;
-  }
+  Card_state = SD_ST_DATA;
 
+  f_mount(0, &g_FATFS_Obj);
   retrieveAvailableAudioFiles();
   Card_state = SD_ST_MOUNTED;
+
+  Card_initialized = 1;
 }
 
 // Checks for card ready for read/write
