@@ -437,6 +437,7 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
 {
   CoEnterMutexSection(audioMutex);
 
+
   if (tFlags & PLAY_SOUND_VARIO) {
     background.freq = tFreq * 2;
     background.duration = tLen;
@@ -531,6 +532,7 @@ void audioEvent(uint8_t e, uint8_t f)
         // inactivity timer alert
         case AU_INACTIVITY:
           audioQueue.play(70, 20, 4, 2|PLAY_NOW);
+          audioQueue.pause(200);
           break;
         // low battery in tx
         case AU_TX_BATTERY_LOW:
@@ -583,8 +585,7 @@ void audioEvent(uint8_t e, uint8_t f)
           break;
         // pot/stick center
         case AU_POT_STICK_MIDDLE:
-          audioQueue.play(BEEP_DEFAULT_FREQ + 50, 20, 2, PLAY_NOW);
-          break;
+          audioQueue.play(BEEP_DEFAULT_FREQ + 50, 20, 2, PLAY_NOW);          break;
         // mix warning 1
         case AU_MIX_WARNING_1:
           audioQueue.play(BEEP_DEFAULT_FREQ + 50, 12, 0, PLAY_NOW);

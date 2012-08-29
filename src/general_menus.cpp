@@ -234,7 +234,7 @@ void menuProcSetup(uint8_t event)
         lcd_putsLeft( y, STR_SPKRPITCH);
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerPitch, attr|LEFT);
         if (attr) {
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 100);
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 20);
         }
         break;
 #endif
