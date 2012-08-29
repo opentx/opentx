@@ -124,7 +124,7 @@ void t_voice::voice_process(void)
     }
   }
   else if (VoiceState == V_STARTUP) {
-    if (g_blinkTmr10ms > 200) { // Give module 2.0 secs to initialise
+    if (g_blinkTmr10ms > 150) { // Give module 1.5 secs to initialise
       VoiceState = V_IDLE;
     }
   }
