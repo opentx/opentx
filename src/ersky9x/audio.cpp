@@ -605,19 +605,19 @@ void audioEvent(uint8_t e, uint8_t f)
           break;
         // time 30 seconds left
         case AU_TIMER_30:
-          audioQueue.play(BEEP_DEFAULT_FREQ + 50, 30, 6, 2|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, 2|PLAY_NOW);
           break;
         // time 20 seconds left
         case AU_TIMER_20:
-          audioQueue.play(BEEP_DEFAULT_FREQ + 50, 30, 6, 1|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, 1|PLAY_NOW);
           break;
         // time 10 seconds left
         case AU_TIMER_10:
-          audioQueue.play(BEEP_DEFAULT_FREQ + 50, 30, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, PLAY_NOW);
           break;
         // time <3 seconds left
         case AU_TIMER_LT3:
-          audioQueue.play(BEEP_DEFAULT_FREQ + 50, 30, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ + 5, 30, 6, PLAY_NOW);
           break;
         case AU_FRSKY_WARN1:
           audioQueue.play(BEEP_DEFAULT_FREQ+20,30,10,2);
@@ -655,9 +655,9 @@ void audioEvent(uint8_t e, uint8_t f)
           audioQueue.pause(200);
           break;
         case AU_FRSKY_TADA:
-          audioQueue.play(50,10,10);
-          audioQueue.play(90,10,10);
-          audioQueue.play(110,6,8,2);
+          audioQueue.play(50,20,10);
+          audioQueue.play(90,20,10);
+          audioQueue.play(110,16,8,2);
           audioQueue.pause(200);
           break;
         case AU_FRSKY_CRICKET:
