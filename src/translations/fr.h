@@ -436,4 +436,4 @@
 #define TR_COPY_FILE           "Copier"
 #define TR_RENAME_FILE         "Renommer"
 #define TR_REMOVED             " supprim\200"
-#define TR_NA                  "N/A"
+#define TR_NA                  "N/D"
