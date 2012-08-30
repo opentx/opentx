@@ -1905,11 +1905,9 @@ void evalFunctions()
             if (IS_PLAYING(i+1)) {
               switch_mask = 0;
             }
-#if defined(SDCARD)           
             else {
               PUSH_CUSTOM_PROMPT(sd->param, i+1);
             }
-#endif            
           }
           else if (sd->func == FUNC_PLAY_VALUE) {
             if (IS_PLAYING(i+1)) {
