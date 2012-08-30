@@ -1905,9 +1905,11 @@ void evalFunctions()
             if (IS_PLAYING(i+1)) {
               switch_mask = 0;
             }
+#if defined(SDCARD)           
             else {
               PUSH_CUSTOM_PROMPT(sd->param, i+1);
             }
+#endif            
           }
           else if (sd->func == FUNC_PLAY_VALUE) {
             if (IS_PLAYING(i+1)) {
@@ -3128,9 +3130,11 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     doSplash();
 
 #if defined(PCBARM)
+#if defined(SDCARD) 
     while (!Card_initialized) {
       CoTickDelay(1);  // 2ms
     }
+#endif    
 #endif
 
 #if !defined(PCBARM)

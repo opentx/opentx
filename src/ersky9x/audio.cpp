@@ -173,7 +173,9 @@ uint32_t pcmFreq = 8000;
 #ifndef SIMU
 void audioTask(void* pdata)
 {
+#if defined(SDCARD)	
   sdInit();
+#endif  
 
   while (1) {
 
@@ -481,8 +483,10 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
 #endif
 
+#if defined(SDCARD)
   if (Card_initialized && !sd_card_mounted())
     return;
+#endif 
 
   CoEnterMutexSection(audioMutex);
 
