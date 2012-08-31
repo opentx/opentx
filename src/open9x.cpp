@@ -67,7 +67,7 @@ const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 const pm_uchar * splash_lbm = splashdata+4;
 #endif
 
-#if defined(PCBV4) || defined(PCBARM) || defined(EXTSTD)
+#if defined(PCBV4) || defined(PCBARM) || defined(M128) || defined(EXTSTD)
 const pm_uchar asterisk_lbm[] PROGMEM = {
 #include "asterisk.lbm"
 };
