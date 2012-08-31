@@ -166,6 +166,7 @@ extern void lcd_img(uint8_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uin
 extern void lcdSetRefVolt(unsigned char val);
 extern void lcd_init();
 extern void lcd_clear();
+extern void lcdSetContrast();
 
 extern void refreshDisplay();
 

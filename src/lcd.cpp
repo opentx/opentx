@@ -1032,3 +1032,7 @@ void refreshDisplay()
 }
 #endif
 
+void lcdSetContrast()
+{
+  lcdSetRefVolt(g_eeGeneral.contrast);
+}

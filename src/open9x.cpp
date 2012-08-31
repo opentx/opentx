@@ -954,7 +954,11 @@ void checkBacklight()
     BACKLIGHT_OFF;
 
 #if defined(PCBSTD) && defined(VOICE)
-  Voice.voice_process();
+  static uint8_t tmr10ms ;
+  if (tmr10ms != g_blinkTmr10ms) {
+    tmr10ms = g_blinkTmr10ms ;
+    Voice.voice_process() ;
+  }
 #endif
 }
 
@@ -981,7 +985,7 @@ void doSplash()
     AUDIO_TADA();
 
 #if defined(PCBSTD)
-    lcdSetRefVolt(g_eeGeneral.contrast);
+    lcdSetContrast();
 #else
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
@@ -1171,7 +1175,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
     AUDIO_ERROR_MESSAGE(sound);
   }
   refreshDisplay();
-  lcdSetRefVolt(g_eeGeneral.contrast);
+  lcdSetContrast();
   clearKeyEvents();
 }
 
@@ -3151,7 +3155,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   }
 #endif
 
-  lcdSetRefVolt(g_eeGeneral.contrast);
+  lcdSetContrast();
   backlightOn();
 
 #if defined(PCBARM)

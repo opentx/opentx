@@ -307,7 +307,7 @@ void menuProcSetup(uint8_t event)
         lcd_outdezAtt(GENERAL_PARAM_OFS,y,g_eeGeneral.contrast, attr|LEFT);
         if(attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
-          lcdSetRefVolt(g_eeGeneral.contrast);
+          lcdSetContrast();
         }
         break;
 
