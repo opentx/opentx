@@ -1681,7 +1681,7 @@ void menuProcMixOne(uint8_t event)
         lcd_putsiAtt(MIXES_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
         if (attr && m_posHorz==0 && (not_stick || s_editMode>0)) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         if (!not_stick) {
-          menu_lcd_onoff(MIXES_2ND_COLUMN+4*FW, y, !md2->noExpo, m_posHorz==1 ? attr : 0);
+          menu_lcd_onoff(MIXES_2ND_COLUMN+5*FW, y, !md2->noExpo, m_posHorz==1 ? attr : 0);
           if (attr && m_posHorz==1 && s_editMode>0) md2->noExpo = !checkIncDecModel(event, !md2->noExpo, 0, 1);
         }
         else if (attr) {
