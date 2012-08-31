@@ -243,7 +243,7 @@ if __name__ == "__main__":
         systemSounds.extend(generate("mille", 102))
         for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
             systemSounds.extend(generate(s, 103+i))
-        for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "touri per minuti", "g"]):
+        for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g"]):
             systemSounds.extend(generate(s, 113+i))            
         for s, f, a in [(u"radio inattiva controllare", "inactiv", 230),
                         (u"batteria della radio scarica", "lowbatt", 231),
@@ -266,7 +266,7 @@ if __name__ == "__main__":
                                "carburante", "temperatura", "temperatura", "velocita'", "distanza", "altitudine", "cella lipo",
                                "totale lipo", "tensione", "corrente", "consumo", "potenza", "accelerazione X", "accellerazione Y", "accelerazione Z",
                                "direzione", "variometro"]):
-            systemSounds.extend(generate(s, 127+i))                
+            systemSounds.extend(generate(s, 132+i))                
         for i, (s, f) in enumerate([
                      (u"carrello chiuso", "gearup"),
                      (u"carrello aperto", "geardn"),
