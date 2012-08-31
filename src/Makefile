@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: STD, V4, ARM
+# Values: STD, STD128, V4, ARM
 PCB = STD
 
 # PCB revision
@@ -212,6 +212,12 @@ ifeq ($(PCB), STD)
   MCU = atmega64  
   CPPDEFS += -DF_CPU=$(F_CPU)UL
   XCURVES = NO
+endif
+
+ifeq ($(PCB), STD128)
+  TRGT = avr-
+  MCU = atmega128
+  CPPDEFS += -DF_CPU=$(F_CPU)UL
 endif
 
 ifeq ($(PCB), V4)
@@ -462,6 +468,37 @@ ifeq ($(PCB), V4)
   ifeq ($(EXTRA_ROTARY_ENCODERS), YES)
     CPPDEFS += -DEXTRA_ROTARY_ENCODERS
     MODS:=${MODS}X
+  endif
+endif
+
+ifeq ($(PCB), STD128)
+  # STD PCB with Atmega 128, so ...
+  OPT = 2
+  CPPDEFS += -DPCBSTD -DM128
+  EXTRAINCDIRS += stock
+  BOARDSRC = board_stock.cpp
+  EEPROMSRC = eeprom_avr.cpp
+  PULSESSRC = pulses_avr.cpp  
+    
+  ifeq ($(AUDIO), YES)
+    CPPDEFS += -DAUDIO
+    CPPSRC += stock/audio.cpp
+  else
+    CPPSRC += beeper.cpp 
+  endif
+  
+  ifeq ($(VOICE), YES)
+    CPPSRC += stock/voice.cpp
+    CPPDEFS += -DVOICE
+  endif
+  
+  ifeq ($(HAPTIC), YES)
+   CPPDEFS += -DHAPTIC
+   CPPSRC += haptic.cpp
+  endif
+  
+  ifeq ($(SP22), YES)
+   CPPDEFS += -DSP22
   endif
 endif
 

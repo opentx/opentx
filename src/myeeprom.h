@@ -607,7 +607,7 @@ PACK(typedef struct t_PhaseData {
 #define MAX_EXPOS  32
 #define NUM_CSW    32 // number of custom switches
 #define NUM_FSW    32 // number of functions assigned to switches
-#elif defined(PCBV4)
+#elif defined(PCBV4) || defined(M128)
 #define MAX_MODELS 30
 #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
 #define MAX_PHASES 5

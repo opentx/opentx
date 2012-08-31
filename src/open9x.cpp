@@ -193,7 +193,7 @@ CustomSwData *cswaddress(uint8_t idx)
   return &g_model.customSw[idx];
 }
 
-#if defined(PCBSTD)
+#if defined(PCBSTD) && !defined(M128)
 void memclear(void *ptr, uint8_t size)
 {
   memset(ptr, 0, size);
@@ -1156,7 +1156,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 {
   lcd_clear();
 
-#if defined(PCBV4) || defined(PCBARM) || defined(EXTSTD)
+#if defined(PCBV4) || defined(PCBARM) || defined(M128) || defined(EXTSTD)
   lcd_img(2, 0, asterisk_lbm, 0, 0);
 #else
   lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);

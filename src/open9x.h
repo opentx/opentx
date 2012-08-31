@@ -628,7 +628,7 @@ uint16_t getTmr16KHz();
 
 uint16_t stack_free();
 
-#if defined(PCBSTD)
+#if defined(PCBSTD) && !defined(M128)
 void memclear(void *ptr, uint8_t size);
 #else
 #define memclear(p, s) memset(p, 0, s)

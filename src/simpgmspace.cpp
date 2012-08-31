@@ -177,15 +177,6 @@ void *main_thread(void *)
     if (main_thread_running == 1) {
 #if defined(SPLASH)
       doSplash();
-#elif defined(PCBSTD) && defined(VOICE)
-      lcd_clear();
-      lcd_putsAtt(20, 28, PSTR("Open9x..."), DBLSIZE);
-      refreshDisplay();
-      tmr10ms_t tgtime = get_tmr10ms() + (2*100); /* 2 seconds */
-      while (tgtime != get_tmr10ms()/* && !keyDown()*/) {
-        if (!main_thread_running) break;
-        sleep(1/*ms*/);
-      }
 #endif
 
 #if !defined(PCBARM)
