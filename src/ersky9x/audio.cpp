@@ -33,9 +33,12 @@
 
 #include "../open9x.h"
 
+#if defined(SDCARD)
+
 const char * audioFilenames[] = {
   "inactiv",
   "lowbatt",
+  "hightemp",
   "thralert",
   "swalert",
   "eebad",
@@ -76,9 +79,8 @@ const char * audioFilenames[] = {
 #endif
 };
 
-uint32_t sdAvailableAudioFiles = (1 << AU_TADA);
+uint32_t sdAvailableAudioFiles = 0;
 
-#if defined(SDCARD)
 // TODO enable the assert when it's C++
 extern "C" {
 void retrieveAvailableAudioFiles()
@@ -175,6 +177,7 @@ void audioTask(void* pdata)
 {
 #if defined(SDCARD)	
   sdInit();
+  AUDIO_TADA();
 #endif  
 
   while (1) {
@@ -477,16 +480,15 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
   CoLeaveMutexSection(audioMutex);
 }
 
+#if defined(SDCARD)
 void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 {
 #ifdef SIMU
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
 #endif
 
-#if defined(SDCARD)
   if (Card_initialized && !sd_card_mounted())
     return;
-#endif 
 
   CoEnterMutexSection(audioMutex);
 
@@ -508,6 +510,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 
   CoLeaveMutexSection(audioMutex);
 }
+#endif
 
 void audioEvent(uint8_t e, uint8_t f)
 {
@@ -545,9 +548,18 @@ void audioEvent(uint8_t e, uint8_t f)
             audioQueue.play(80, 40, 6, 2, -1);
           }
           break;
+        case AU_TX_TEMP_HIGH:
+          if (!audioQueue.busy()) {
+            // TODO Rob something better here?
+            audioQueue.play(60, 40, 6, 2, 1);
+            audioQueue.play(80, 40, 6, 2, -1);
+          }
+          break;
         // error
+#if defined(VOICE)
         case AU_THROTTLE_ALERT:
         case AU_SWITCH_ALERT:
+#endif
         case AU_ERROR:
           audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2, PLAY_NOW);
           break;

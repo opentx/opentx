@@ -730,7 +730,7 @@ void lcdSendCtl(uint8_t val)
   pioptr->PIO_SODR = LCD_E ;                      // Start E pulse
   // Need a delay here (250nS)
   TC0->TC_CHANNEL[0].TC_CCR = 5 ; // Enable clock and trigger it (may only need trigger)
-  while ( TC0->TC_CHANNEL[0].TC_CV < 3 )          // Value depends on MCK/2 (used 6MHz)
+  while ( TC0->TC_CHANNEL[0].TC_CV < 9 )          // Value depends on MCK/2 (used 18MHz)
   {
     // Wait
   }
@@ -768,13 +768,13 @@ void lcd_init()
 
   pioptr->PIO_CODR = LCD_RES ;            // Reset LCD
   TC0->TC_CHANNEL[0].TC_CCR = 5 ; // Enable clock and trigger it (may only need trigger)
-  while ( TC0->TC_CHANNEL[0].TC_CV < 12 )         // 2 uS, Value depends on MCK/2 (used 6MHz)
+  while ( TC0->TC_CHANNEL[0].TC_CV < 200 )         // > 10us, Value depends on MCK/2 (used 18MHz)
   {
     // Wait
   }
   pioptr->PIO_SODR = LCD_RES ;            // Remove LCD reset
   TC0->TC_CHANNEL[0].TC_CCR = 5 ; // Enable clock and trigger it (may only need trigger)
-  while ( TC0->TC_CHANNEL[0].TC_CV < 9000 )               // 1500 uS, Value depends on MCK/2 (used 6MHz)
+  while ( TC0->TC_CHANNEL[0].TC_CV < 27000 )               // 1500us, Value depends on MCK/2 (used 18MHz)
   {
     // Wait
   }

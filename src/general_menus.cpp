@@ -136,6 +136,10 @@ enum menuProcSetupItems {
 #endif
   ITEM_SETUP_CONTRAST,
   ITEM_SETUP_BATTERY_WARNING,
+#if defined(PCBARM)
+  ITEM_SETUP_CAPACITY_WARNING,
+  ITEM_SETUP_TEMPERATURE_WARNING,
+#endif
   ITEM_SETUP_INACTIVITY_ALARM,
 #if defined(BLUETOOTH)
   ITEM_SETUP_BT_BAUDRATE,
@@ -192,7 +196,7 @@ void menuProcSetup(uint8_t event)
 #define FRSKY_ZEROS
 #endif
 #ifdef PCBARM
-#define ARM_ZEROS  0, 0,
+#define ARM_ZEROS  0, 0, 0, 0,
 #else
 #define ARM_ZEROS
 #endif
@@ -316,6 +320,20 @@ void menuProcSetup(uint8_t event)
         putsVolts(GENERAL_PARAM_OFS, y, g_eeGeneral.vBatWarn, attr|LEFT);
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
         break;
+
+#if defined(PCBARM)
+      case ITEM_SETUP_CAPACITY_WARNING:
+        lcd_putsLeft(y, STR_CAPAWARNING);
+        putsTelemetryValue(GENERAL_PARAM_OFS, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
+        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
+        break;
+
+      case ITEM_SETUP_TEMPERATURE_WARNING:
+        lcd_putsLeft(y, STR_TEMPWARNING);
+        putsTelemetryValue(GENERAL_PARAM_OFS, y, 80+g_eeGeneral.temperatureWarn, UNIT_DEGREES, attr|LEFT) ;
+        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, -80, 40); // 0-120degrees
+        break;
+#endif
 
       case ITEM_SETUP_INACTIVITY_ALARM:
         lcd_putsLeft( y,STR_INACTIVITYALARM);

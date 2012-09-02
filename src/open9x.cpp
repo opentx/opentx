@@ -924,11 +924,11 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 
 void clearKeyEvents()
 {
-#if defined(PCBARM) && !defined(SIMU)
+#if defined(PCBARM)
   CoTickDelay(100);  // 200ms
 #endif
 
-#ifdef SIMU
+#if defined(SIMU)
   while (keyDown() && main_thread_running) sleep(1/*ms*/);
 #else
   while (keyDown()) WDT_RESET_STOCK();  // loop until all keys are up
@@ -982,7 +982,9 @@ void doSplash()
     lcd_img(0, 0, splash_lbm, 0, 0);
     refreshDisplay();
 
+#if !defined(PCBARM)
     AUDIO_TADA();
+#endif
 
 #if defined(PCBSTD)
     lcdSetContrast();
@@ -992,7 +994,7 @@ void doSplash()
     lcdSetRefVolt(contrast);
 #endif
 
-#ifndef SIMU
+#if !defined(SIMU)
     for(uint8_t i=0; i<32; i++)
       getADC_filt(); // init ADC array
 #endif
@@ -2704,6 +2706,11 @@ void perMain()
       if (g_vbat100mV <= g_eeGeneral.vBatWarn && g_vbat100mV>50) {
         AUDIO_TX_BATTERY_LOW();
       }
+#if defined(PCBARM)
+      if (temperature >= g_eeGeneral.temperatureWarn+80) {
+        AUDIO_TX_TEMP_HIGH();
+      }
+#endif
     }
   }
 }
@@ -3131,12 +3138,10 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   if (!UNEXPECTED_SHUTDOWN()) {
     doSplash();
 
-#if defined(PCBARM)
-#if defined(SDCARD) 
-    while (!Card_initialized) {
+#if defined(PCBARM) && defined(SDCARD)
+    for (int i=0; i<200 && !Card_initialized; i++) {
       CoTickDelay(1);  // 2ms
     }
-#endif    
 #endif
 
 #if !defined(PCBARM)
@@ -3633,19 +3638,21 @@ void menusTask(void * pdata)
   closeLogs();
 #endif
 
+  SysTick->CTRL = 0; // turn off systick
+
 #if defined(HAPTIC)
   hapticOff();
 #endif
 
-  SysTick->CTRL = 0; // turn off systick
+  lcd_clear() ;
 
-  lcd_clear() ;
-  displayPopup(STR_SHUTDOWN);
-  g_eeGeneral.unexpectedShutdown=0;
-  eeDirty(EE_GENERAL);
-  eeCheck(true);
-  lcd_clear() ;
-  refreshDisplay() ;
+  if (shutdown_state != e_power_usb) {
+    displayPopup(STR_SHUTDOWN);
+    g_eeGeneral.unexpectedShutdown=0;
+    eeDirty(EE_GENERAL);
+    eeCheck(true);
+  }
+
   soft_power_off();            // Only turn power off if necessary
 
   if (shutdown_state == e_power_usb) {
@@ -3656,18 +3663,19 @@ void menusTask(void * pdata)
 #ifdef MASSSTORAGE
     if (mass_storage) {
       stop_rotary_encoder();
-        endPdcUsartReceive() ;          // Terminate any serial reception
-        end_ppm_capture() ;
-        end_spi() ;
-        end_sound() ;
-        TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
-        NVIC_DisableIRQ(TC2_IRQn) ;
-        //      PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
-        disable_main_ppm() ;
-        //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
-        //      NVIC_DisableIRQ(PWM_IRQn) ;
-        disable_ssc() ;
-        usbMassStorage();
+      endPdcUsartReceive() ;          // Terminate any serial reception
+      end_bt_tx_interrupt() ;
+      end_ppm_capture() ;
+      end_spi() ;
+      end_sound() ;
+      TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
+      NVIC_DisableIRQ(TC2_IRQn) ;
+      //      PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
+      disable_main_ppm() ;
+      //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
+      //      NVIC_DisableIRQ(PWM_IRQn) ;
+      disable_ssc() ;
+      usbMassStorage();
     }
     else
 #endif

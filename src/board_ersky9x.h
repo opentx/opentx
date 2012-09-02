@@ -72,8 +72,8 @@ extern void sdPoll10mS();
 void configure_pins( uint32_t pins, uint16_t config );
 uint16_t getCurrent();
 
-extern uint16_t Temperature ;           // Raw temp reading
-extern uint16_t maxTemperature ;           // Raw temp reading
+extern uint8_t temperature ;              // Raw temp reading
+extern uint8_t maxTemperature ;           // Raw temp reading
 
 #define strcpy_P strcpy
 #define strcat_P strcat

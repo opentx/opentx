@@ -423,7 +423,7 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
-  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DVOICE -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
@@ -435,13 +435,14 @@ ifeq ($(PCB), ARM)
   
   ifeq ($(SDCARD), YES)
     SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
+    CPPDEFS += -DVOICE
   endif
   
   ifeq ($(BLUETOOTH), YES)
   	MODS:=${MODS}S
   	CPPDEFS += -DBLUETOOTH
   	CPPSRC += ersky9x/bluetooth.cpp 
-endif
+  endif
   
 endif
 

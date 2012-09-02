@@ -70,7 +70,7 @@ uint32_t Card_ID[4] ;
 uint32_t Card_SCR[2] ;
 uint32_t Card_CSD[4] ;
 int32_t Card_state = SD_ST_STARTUP ;
-uint32_t Card_initialized = 0;
+volatile uint32_t Card_initialized = 0;
 uint32_t Sd_128_resp[4] ;
 uint32_t Sd_rca ;
 uint32_t Cmd_8_resp ;
@@ -873,12 +873,20 @@ void sdInit()
 
   if (!CardIsConnected()) {
     Card_state = SD_ST_EMPTY;
+    Card_initialized = 1;
     return;
   }
 
   sdCmd0();
+  CoTickDelay(5);  // 10ms
   sdCmd8(1);
   sdMemInit(1, &Cmd_A41_resp);
+
+#if 0
+  // sdAvailableAudioFiles = 0;
+  Card_state = SD_ST_READY;
+  Card_initialized = 1;
+#else
 
   uint8_t retry;
   for (retry=0; retry<10; retry++) {
@@ -888,6 +896,7 @@ void sdInit()
 
   if (retry == 10) {
     Card_state = SD_ST_READY;
+    Card_initialized = 1;
     return;
   }
 
@@ -898,6 +907,7 @@ void sdInit()
 
   if (retry == 10) {
     Card_state = SD_ST_IDENT;
+    Card_initialized = 1;
     return;
   }
 
@@ -910,10 +920,11 @@ void sdInit()
   // Should check the card can do this ****
   Card_state = SD_ST_DATA;
 
-  f_mount(0, &g_FATFS_Obj);
-  retrieveAvailableAudioFiles();
-  Card_state = SD_ST_MOUNTED;
-
+  if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
+    retrieveAvailableAudioFiles();
+    Card_state = SD_ST_MOUNTED;
+  }
+#endif
   Card_initialized = 1;
 }
 

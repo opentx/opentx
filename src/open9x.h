@@ -964,6 +964,9 @@ extern uint16_t jeti_keys;
 enum AUDIO_SOUNDS {
     AU_INACTIVITY,
     AU_TX_BATTERY_LOW,
+#if defined(PCBARM)
+    AU_TX_TEMP_HIGH,
+#endif
 #if defined(VOICE)
     AU_THROTTLE_ALERT,
     AU_SWITCH_ALERT,

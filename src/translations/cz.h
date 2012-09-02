@@ -423,6 +423,8 @@
 #define TR_OPTREX_DISPLAY      "Optrex Display"
 #define TR_BRIGHTNESS          "Jas"
 #define TR_CPU_TEMP            "tepl. CPU\010>"
+#define TR_CAPAWARNING         "Capacity Warning"
+#define TR_TEMPWARNING         "Temp Warning"
 #define TR_FUNC                "Fun."
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"

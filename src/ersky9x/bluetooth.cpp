@@ -33,10 +33,15 @@
 
 #include "../open9x.h"
 
+void btSetBaudrate(uint32_t index)
+{
+  uint32_t baudrate = (index==0 ? 115200 : (index==1 ? 9600 : 19200));
+  UART3_Configure(baudrate, Master_frequency);
+}
+
 void btInit()
 {
-  uint32_t baudrate = (g_eeGeneral.btBaudrate==0 ? 115200 : (g_eeGeneral.btBaudrate==1 ? 9600 : 19200));
-  UART3_Configure(baudrate, Master_frequency);
+  btSetBaudrate(g_eeGeneral.btBaudrate);
 }
 
 class Fifo32
@@ -74,12 +79,13 @@ class Fifo32
 };
 
 OS_FlagID btFlag;
-Fifo32 btFifo;
+Fifo32 btTxFifo;
+Fifo32 btRxFifo;
 
 struct t_serial_tx btTx ;
 uint8_t btTxBuffer[32] ;
 
-extern struct t_serial_tx * Current_bt ;
+struct t_serial_tx * Current_bt ;
 
 uint32_t txPdcBt(struct t_serial_tx *data)
 {
@@ -100,6 +106,27 @@ uint32_t txPdcBt(struct t_serial_tx *data)
   return 0 ;  // Busy
 }
 
+extern "C" void UART1_IRQHandler()
+{
+  Uart *pUart = BT_USART ;
+  if ( pUart->UART_SR & UART_SR_TXBUFE ) {
+    pUart->UART_IDR = UART_IDR_TXBUFE ;
+    pUart->UART_PTCR = US_PTCR_TXTDIS ;
+    Current_bt->ready = 0 ;
+  }
+  if ( pUart->UART_SR & UART_SR_RXRDY ) {
+    btRxFifo.push(pUart->UART_RHR);
+  }
+}
+
+uint16_t rxBtuart()
+{
+  uint8_t result;
+  if (!btRxFifo.pop(result))
+    return 0xffff;
+
+  return result;
+}
 
 void btSendBuffer()
 {
@@ -111,46 +138,93 @@ void btSendBuffer()
   btTx.size = 0;
 }
 
-void btPollDevice()
+#define BT_POLL_TIMEOUT         500
+
+uint32_t btChangeBaudrate( uint32_t baudIndex )
 {
-#if 0
-  uint16_t x;
-  uint32_t y;
-  uint16_t rxchar;
+  uint16_t x ;
+  uint32_t y ;
+  uint16_t rxchar ;
 
-  x = 'O';
-#endif
-
-  btTxBuffer[0] = 'A';
-  btTxBuffer[1] = 'T';
-  btTx.size = 2;
-  btSendBuffer();
-
-#if 0
-  for (y = 0; y < 300; y += 1) {
-    if ((rxchar = rxBtuart()) != 0xFFFF) {
-      if (rxchar == x) {
-        if (x == 'O') {
-          x = 'K';
+  x = 4 ;         // 9600
+  if ( baudIndex == 0 )
+  {
+    x = 8 ;         // 115200
+  }
+  else if ( baudIndex == 2 )
+  {
+    x = 5 ;         // 19200
+  }
+  btTxBuffer[0] = 'A' ;
+  btTxBuffer[1] = 'T' ;
+  btTxBuffer[2] = '+' ;
+  btTxBuffer[3] = 'B' ;
+  btTxBuffer[4] = 'A' ;
+  btTxBuffer[5] = 'U' ;
+  btTxBuffer[6] = 'D' ;
+  btTxBuffer[7] = '0' + x ;
+  btTx.size = 8 ;
+  btSendBuffer() ;
+  x = 'O' ;
+  for( y = 0 ; y < BT_POLL_TIMEOUT ;  y += 1 ) {
+    if ( ( rxchar = rxBtuart() ) != 0xFFFF ) {
+      if ( rxchar == x ) {
+        if ( x == 'O' ) {
+          x = 'K' ;
         }
         else {
-          break; // Found "OK"
+          break ;                 // Found "OK"
         }
       }
     }
     else {
-      CoTickDelay(1); // 2mS
+      CoTickDelay(1) ;                                        // 2mS
     }
   }
-  if (y < 300) {
-    return 1;
+
+  if ( y < BT_POLL_TIMEOUT ) {
+    return 1 ;
   }
   else {
-    return 0;
+    return 0 ;
   }
-#endif
 }
 
+uint32_t btPollDevice()
+{
+  uint16_t x ;
+  uint32_t y ;
+  uint16_t rxchar ;
+
+  x = 'O' ;
+  btTxBuffer[0] = 'A' ;
+  btTxBuffer[1] = 'T' ;
+  btTx.size = 2 ;
+  btSendBuffer() ;
+
+  for( y = 0 ; y < BT_POLL_TIMEOUT ;  y++) {
+    if ( ( rxchar = rxBtuart() ) != 0xFFFF ) {
+      if ( rxchar == x ) {
+        if ( x == 'O' ) {
+          x = 'K' ;
+        }
+        else {
+          break ;                 // Found "OK"
+        }
+      }
+    }
+    else {
+      CoTickDelay(1) ;                                        // 2mS
+    }
+  }
+
+  if ( y < BT_POLL_TIMEOUT ) {
+    return 1 ;
+  }
+  else {
+    return 0 ;
+  }
+}
 
 /*
 Commands to BT module
@@ -178,6 +252,8 @@ Then we can change the baudrate to the required value.
 Or maybe just AT and get OK back
 */
 
+uint32_t btStatus;
+
 void btTask(void* pdata)
 {
   uint8_t byte;
@@ -185,9 +261,41 @@ void btTask(void* pdata)
   btFlag = CoCreateFlag(true, false);
   btTx.size = 0;
 
-// Look for BT module baudrate, try 115200, and 9600
-// Already initialised to g_eeGeneral.bt_baudrate
-// 0 : 115200, 1 : 9600, 2 : 19200
+  // Look for BT module baudrate, try 115200, and 9600
+  // Already initialised to g_eeGeneral.bt_baudrate
+  // 0 : 115200, 1 : 9600, 2 : 19200
+
+  uint32_t x = g_eeGeneral.btBaudrate;
+
+  btStatus = btPollDevice() ;              // Do we get a response?
+
+  for (int y=0; y<2; y++) {
+    if (btStatus == 0) {
+      x += 1 ;
+      if (x > 2) {
+        x = 0 ;
+      }
+      btSetBaudrate(x) ;
+      CoTickDelay(1) ;                                        // 2mS
+      btStatus = btPollDevice() ;              // Do we get a response?
+    }
+  }
+
+  if (btStatus) {
+    btStatus = x + 1 ;
+    if ( x != g_eeGeneral.btBaudrate ) {
+      x = g_eeGeneral.btBaudrate ;
+      // Need to change Bt Baudrate
+      btChangeBaudrate( x ) ;
+      btStatus += (x+1) * 10 ;
+      btSetBaudrate( x ) ;
+    }
+  }
+  else {
+    btInit();
+  }
+
+  CoTickDelay(1) ;
 
   btPollDevice(); // Do we get a response?
 
@@ -195,7 +303,7 @@ void btTask(void* pdata)
     uint32_t x = CoWaitForSingleFlag(btFlag, 10); // Wait for data in Fifo
     if (x == E_OK) {
       // We have some data in the Fifo
-      while (btFifo.pop(byte)) {
+      while (btTxFifo.pop(byte)) {
         btTxBuffer[btTx.size++] = byte;
         if (btTx.size > 31) {
           btSendBuffer();
@@ -210,6 +318,6 @@ void btTask(void* pdata)
 
 void btPushByte(uint8_t data)
 {
-  btFifo.push(data);
+  btTxFifo.push(data);
   CoSetFlag(btFlag); // Tell the Bt task something to do
 }

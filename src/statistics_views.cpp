@@ -121,12 +121,12 @@ void menuProcDebug(uint8_t event)
 #if defined(PCBARM)
 #if defined(REVB)
   lcd_putsLeft(2*FH, STR_CURRENT);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, getCurrent(), UNIT_MILLIAMPS, 0) ;
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, getCurrent(), UNIT_MILLIAMPS, 0);
 #endif
 
   lcd_putsLeft(3*FH, STR_CPU_TEMP);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, (((((int32_t)Temperature - 838 ) * 621 ) >> 11 ) - 20), UNIT_DEGREES, 0 ) ;
-  putsTelemetryValue(20*FW+2, 3*FH, (((((int32_t)maxTemperature - 838 ) * 621 ) >> 11 ) - 20), UNIT_DEGREES, 0 ) ;
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, temperature, UNIT_DEGREES, 0);
+  putsTelemetryValue(20*FW+2, 3*FH, maxTemperature, UNIT_DEGREES, 0);
   // TODO mAh, Battery from ersky9x?
 #endif
 

@@ -422,6 +422,8 @@
 #define TR_OPTREX_DISPLAY      "Afficheur Optrex"
 #define TR_BRIGHTNESS          "Luminosit\200"
 #define TR_CPU_TEMP            "Temp. CPU\010>"
+#define TR_CAPAWARNING         "Capacity Warning"
+#define TR_TEMPWARNING         "Alarme temp"
 #define TR_FUNC                "Fonc"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"

@@ -244,36 +244,18 @@ inline void UART3_Configure( uint32_t baudrate, uint32_t masterClock)
 
   /* Configure baudrate */
   /* Asynchronous, no oversampling */
-  baudrate = (masterClock * 8 / baudrate) / 16 ;
-  pUart->UART_BRGR = ( baudrate / 8 ) | ( ( baudrate & 7 ) << 16 ) ;    // Fractional part to allow 152000 baud
-//
+  pUart->UART_BRGR = ( (masterClock / baudrate) + 8 ) / 16;
+
   /* Disable PDC channel */
   pUart->UART_PTCR = UART_PTCR_RXTDIS | UART_PTCR_TXTDIS;
 
   /* Enable receiver and transmitter */
   pUart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
-
+  
 #if 0
-  // TODO when we will want to be BT receiver
   pUart->UART_IER = UART_IER_RXRDY ;
   NVIC_EnableIRQ(UART1_IRQn) ;
 #endif
-}
-
-struct t_serial_tx * Current_bt ;
-
-extern "C" void UART1_IRQHandler()
-{
-  Uart *pUart = BT_USART ;
-  if ( pUart->UART_SR & UART_SR_TXBUFE ) {
-    pUart->UART_IDR = UART_IDR_TXBUFE ;
-    pUart->UART_PTCR = US_PTCR_TXTDIS ;
-    Current_bt->ready = 0 ;
-  }
-  /* TODO
-  if ( pUart->UART_SR & UART_SR_RXRDY ) {
-    put_fifo32( &BtRx_fifo, pUart->UART_RHR ) ;
-  } */
 }
 
 // USART0 configuration
@@ -1007,8 +989,8 @@ extern uint32_t keyState(EnumKeys enuk)
 }
 
 uint16_t Analog_values[NUMBER_ANALOG] ;
-uint16_t Temperature ;          // Raw temp reading
-uint16_t maxTemperature ;          // Raw temp reading
+uint8_t temperature ;          // Raw temp reading
+uint8_t maxTemperature ;       // Raw temp reading
 
 // Read 8 (9 for REVB) ADC channels
 // Documented bug, must do them 1 by 1
@@ -1045,9 +1027,9 @@ void read_9_adc()
   Analog_values[8] = ADC->ADC_CDR8 ;
 #endif
 
-  Temperature = ( Temperature * 7 + ADC->ADC_CDR15 ) >> 3 ;     // Filter it
-  if ( Temperature > maxTemperature ) {
-    maxTemperature = Temperature ;
+  temperature = (((int32_t)temperature * 7) + ((((int32_t)ADC->ADC_CDR15 - 838) * 621) >> 11)) >> 3; // Filter it
+  if (temperature > maxTemperature) {
+    maxTemperature = temperature;
   }
 }
 
@@ -1180,6 +1162,13 @@ uint32_t txPdcPending()
   return x ;
 }
 
+void end_bt_tx_interrupt()
+{
+  Uart *pUart = BT_USART ;
+  pUart->UART_IDR = UART_IDR_TXBUFE ;
+  NVIC_DisableIRQ(UART1_IRQn) ;
+}
+
 void usb_mode()
 {
   // This might be replaced by a software reset
@@ -1187,6 +1176,7 @@ void usb_mode()
   // BEFORE calling sam_boot()
   stop_rotary_encoder();
   endPdcUsartReceive() ;          // Terminate any serial reception
+  end_bt_tx_interrupt() ;
   end_ppm_capture() ;
   end_spi() ;
   end_sound() ;

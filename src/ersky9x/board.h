@@ -512,7 +512,7 @@
 #define SD_ST_MOUNTED           10
 
 extern int32_t Card_state;
-extern uint32_t Card_initialized;
+extern volatile uint32_t Card_initialized;
 
 /*
 #define BOARD_PSRAM_PINS            PIN_EBI_DATA_BUS, PIN_EBI_NCS0, PIN_EBI_NRD, PIN_EBI_NWE, \
