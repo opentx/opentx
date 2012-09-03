@@ -204,8 +204,6 @@ inline void FRSKY_setModelAlarms(void)
   frskyAlarmsSendState = SEND_MODEL_ALARMS;
 }
 
-extern void frskyEvalCurrentConsumptionBoundary();
-
 bool FRSKY_alarmRaised(uint8_t idx);
 
 void resetTelemetry();

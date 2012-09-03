@@ -59,7 +59,6 @@ uint8_t FrskyRxBufferReady = 0;
 int8_t frskyStreaming = -1;
 uint8_t frskyUsrStreaming = 0;
 uint8_t link_counter = 0;
-uint16_t currentConsumptionBoundary = 0;
 FrskyData frskyData;
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
@@ -697,7 +696,7 @@ NOINLINE void check_frsky()
   }
 #endif
 
-  uint16_t voltage = 0;
+  uint16_t voltage = 0; /* unit: 1/10 volts */
   for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
     voltage += frskyData.hub.cellVolts[i];
   voltage /= 5;
@@ -710,7 +709,7 @@ NOINLINE void check_frsky()
     voltage = frskyData.hub.vfas;
   }
 
-  uint16_t current = frskyData.hub.current;
+  uint16_t current = frskyData.hub.current; /* unit: 1/10 amps */
   channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
   if (channel <= 1) {
     current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
@@ -719,9 +718,9 @@ NOINLINE void check_frsky()
   frskyData.power = (current * voltage) / 100;
 
   frskyData.currentPrescale += current;
-  if (frskyData.currentPrescale >= currentConsumptionBoundary) {
+  if (frskyData.currentPrescale >= 3600) {
     frskyData.currentConsumption += 1;
-    frskyData.currentPrescale -= currentConsumptionBoundary;
+    frskyData.currentPrescale -= 3600;
   }
 
 #if defined(VARIO)
@@ -879,23 +878,9 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
     max = value;
 }
 
-void frskyEvalCurrentConsumptionBoundary()
-{
-  currentConsumptionBoundary = 3600;
-  uint8_t channel = g_model.frsky.currentSource-FRSKY_SOURCE_A1;
-  if (channel <= 1) {
-    uint16_t divider = getChannelRatio(channel);
-    if (divider > 5) {
-      currentConsumptionBoundary = 360000L / divider;
-    }
-  }
-}
-
 void resetTelemetry()
 {
   memclear(&frskyData, sizeof(frskyData));
-
-  frskyEvalCurrentConsumptionBoundary();
 
 #if defined(FRSKY_HUB)
   frskyData.hub.gpsLatitude_bp = 2;

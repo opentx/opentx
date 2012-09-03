@@ -2842,7 +2842,6 @@ void menuProcTelemetry(uint8_t event)
     case EVT_KEY_BREAK(KEY_UP):
     case EVT_KEY_BREAK(KEY_LEFT):
     case EVT_KEY_BREAK(KEY_RIGHT):
-      frskyEvalCurrentConsumptionBoundary();
       if (s_editMode>0 && sub<=ITEM_TELEMETRY_RSSI_ALARM2)
         FRSKY_setModelAlarms(); // update Fr-Sky module when edit mode exited
       break;
