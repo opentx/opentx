@@ -3670,7 +3670,8 @@ void menusTask(void * pdata)
   if (shutdown_state != e_power_usb) {
     displayPopup(STR_SHUTDOWN);
 
-    MAh_used += Current_used/22/36;
+
+    MAh_used += Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
     if (g_eeGeneral.mAhUsed != MAh_used) {
       g_eeGeneral.mAhUsed = MAh_used;
       STORE_GENERALVARS;
