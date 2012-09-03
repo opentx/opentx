@@ -80,12 +80,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     killEvents(KEY_RIGHT);
   }
   else if (s_editMode && keyState(KEY_RIGHT) && keyState(KEY_UP)) {
-    newval = i_max;
+    newval = (i_max > 100 ? 100 : i_max);
     killEvents(KEY_RIGHT);
     killEvents(KEY_UP);
   }
   else if (s_editMode && keyState(KEY_LEFT) && keyState(KEY_DOWN)) {
-    newval = i_min;
+    newval = (i_min < -100 ? -100 : i_min);
     killEvents(KEY_LEFT);
     killEvents(KEY_DOWN);
   }
