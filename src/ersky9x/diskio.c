@@ -882,12 +882,6 @@ void sdInit()
   sdCmd8(1);
   sdMemInit(1, &Cmd_A41_resp);
 
-#if 0
-  // sdAvailableAudioFiles = 0;
-  Card_state = SD_ST_READY;
-  Card_initialized = 1;
-#else
-
   uint8_t retry;
   for (retry=0; retry<10; retry++) {
     if (!sdCmd2()) break;
@@ -924,7 +918,7 @@ void sdInit()
     retrieveAvailableAudioFiles();
     Card_state = SD_ST_MOUNTED;
   }
-#endif
+
   Card_initialized = 1;
 }
 
