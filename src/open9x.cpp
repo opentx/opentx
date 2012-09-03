@@ -2367,7 +2367,12 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
     val = calibratedStick[THR_STICK]; // get throttle channel value
   }
   else if (g_model.thrTraceSrc > NUM_POTS) {
-    val = ex_chans[g_model.thrTraceSrc-NUM_POTS-1] / 2;
+    uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
+    val = g_chans512[ch];
+    if (g_model.limitData[ch].revert)
+      val = -val + calc100toRESX(g_model.limitData[ch].max + 100) - RESX;
+    else
+      val = val - calc100toRESX(g_model.limitData[ch].min - 100) - RESX;
   }
   else {
     val = calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1];
