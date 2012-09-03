@@ -251,6 +251,18 @@ void audioQueue::event(uint8_t e, uint8_t f)
         case AU_TIMER_LT3:
           play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_NOW);
           break;
+        case AU_FRSKY_BEEP1:
+          play(BEEP_DEFAULT_FREQ,10,1,0);
+          pause(200);
+          break;
+        case AU_FRSKY_BEEP2:
+          play(BEEP_DEFAULT_FREQ,20,1,0);
+          pause(200);
+          break;
+        case AU_FRSKY_BEEP3:
+          play(BEEP_DEFAULT_FREQ,30,1,0);
+          pause(200);
+          break;
         case AU_FRSKY_WARN1:
           play(BEEP_DEFAULT_FREQ+20,15,5,2);
           pause(200);

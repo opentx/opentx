@@ -63,21 +63,6 @@ const char * audioFilenames[] = {
   "timer10",
   "timer20",
   "timer30"
-#if 0
-  AU_FRSKY_WARN1 = AU_FRSKY_FIRST,
-  AU_FRSKY_WARN2,
-  AU_FRSKY_CHEEP,
-  AU_FRSKY_RING,
-  AU_FRSKY_SCIFI,
-  AU_FRSKY_ROBOT,
-  AU_FRSKY_CHIRP,
-  AU_FRSKY_TADA,
-  AU_FRSKY_CRICKET,
-  AU_FRSKY_SIREN,
-  AU_FRSKY_ALARMC,
-  AU_FRSKY_RATATA,
-  AU_FRSKY_TICK,
-#endif
 };
 
 uint32_t sdAvailableAudioFiles = 0;

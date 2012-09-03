@@ -177,7 +177,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
   return checkIncDec(event,i_val,i_min,i_max,EE_GENERAL);
 }
 
-bool check_simple(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, uint8_t maxrow)
+bool check_simple(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, maxrow_t maxrow)
 {
   return check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
 }
@@ -224,16 +224,15 @@ void check_rotary_encoder()
 #define SCROLL_POT1_TH 32
 
 #if defined(ROTARY_ENCODERS)
-#define MAXCOL(row) ((horTab && row >= 0) ? pgm_read_byte(horTab+min(row, (int8_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row) ((horTab && row >= 0) ? pgm_read_byte(horTab+min(row, (maxrow_t)horTabMax)) : (const uint8_t)0)
 #else
-#define MAXCOL(row) (horTab ? pgm_read_byte(horTab+min(row, horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row) (horTab ? pgm_read_byte(horTab+min(row, (maxrow_t)horTabMax)) : (const uint8_t)0)
 #endif
 
 #define INC(val,max) if(val<max) {val++;} else {val=0;}
 #define DEC(val,max) if(val>0  ) {val--;} else {val=max;}
 
-
-bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, uint8_t maxrow)
+bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, maxrow_t maxrow)
 {
   int8_t maxcol = MAXCOL(m_posVert);
 
@@ -481,12 +480,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
 MenuFuncP g_menuStack[5];
 uint8_t g_menuPos[4];
 uint8_t g_menuStackPtr = 0;
-
-#if defined(ROTARY_ENCODERS)
-int8_t m_posVert;
-#else
-uint8_t m_posVert;
-#endif
+maxrow_t m_posVert;
 uint8_t m_posHorz;
 
 void popMenu()

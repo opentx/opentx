@@ -152,15 +152,20 @@ void check_rotary_encoder();
 #endif
 
 // Menus related stuff ...
-#if defined(ROTARY_ENCODERS)
-extern int8_t m_posVert;
+#if defined(SDCARD)
+#define maxrow_t int16_t
+#elif defined(ROTARY_ENCODERS)
+#define maxrow_t int8_t
 #else
-extern uint8_t m_posVert;
+#define maxrow_t uint8_t
 #endif
+
+extern maxrow_t m_posVert;
 extern uint8_t m_posHorz;
+
 inline void minit(){m_posVert=m_posHorz=0;}
-bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, uint8_t maxrow);
-bool check_simple(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, uint8_t maxrow);
+bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, maxrow_t maxrow);
+bool check_simple(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, maxrow_t maxrow);
 bool check_submenu_simple(uint8_t event, uint8_t maxrow);
 
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
