@@ -205,6 +205,10 @@ void menuMainView(uint8_t event)
     putsVBat(6*FW-1, 2*FH, att|NO_UNIT);
     lcd_putc(6*FW, 3*FH, 'V');
 
+    if (unexpectedShutdown) {
+      lcd_putcAtt(20*FW-3, 0*FH, '!', INVERS);
+    }
+
     if (g_model.timers[0].mode) {
       uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
       putsTime(12*FW+3, FH*2, s_timerVal[0], att, att);

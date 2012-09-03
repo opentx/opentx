@@ -614,6 +614,7 @@ extern uint8_t trimsCheckTimer;
 void resetTimer(uint8_t idx);
 void resetAll();
 
+extern uint8_t unexpectedShutdown;
 extern uint8_t g_tmr1Latency_max;
 extern uint8_t g_tmr1Latency_min;
 extern uint16_t g_timeMainMax;

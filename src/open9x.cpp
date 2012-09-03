@@ -83,6 +83,8 @@ uint8_t g_tmr1Latency_max;
 uint8_t g_tmr1Latency_min;
 #endif
 
+uint8_t unexpectedShutdown = 0;
+
 uint16_t g_timeMainMax;
 #if defined(PCBV4)
 uint8_t  g_timeMainLast;
@@ -3161,7 +3163,10 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
-  if (!UNEXPECTED_SHUTDOWN()) {
+  if (UNEXPECTED_SHUTDOWN()) {
+    unexpectedShutdown = 1;
+  }
+  else {
     doSplash();
 
 #if defined(PCBARM) && defined(SDCARD)
