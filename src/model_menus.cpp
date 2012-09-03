@@ -507,7 +507,7 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
     if (s_editMode>0) {
       uint8_t next = cur;
       char c = name[next];
-      char v = c;
+      int8_t v = c;
       if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
           || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
