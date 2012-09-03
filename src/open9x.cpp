@@ -948,18 +948,35 @@ uint16_t stickMoveValue()
 
 void checkBacklight()
 {
-  if (g_eeGeneral.backlightMode == e_backlight_mode_on || g_LightOffCounter || isFunctionActive(FUNC_BACKLIGHT))
-    BACKLIGHT_ON;
-  else
-    BACKLIGHT_OFF;
-
-#if defined(PCBSTD) && defined(VOICE)
   static uint8_t tmr10ms ;
+
   if (tmr10ms != g_blinkTmr10ms) {
     tmr10ms = g_blinkTmr10ms ;
+    uint16_t tsum = stickMoveValue();
+    if (tsum != inacSum) {
+      inacSum = tsum;
+      inacCounter = 0;
+      if (g_eeGeneral.backlightMode & e_backlight_mode_sticks)
+        backlightOn();
+    }
+    else if (g_eeGeneral.inactivityTimer && (!g_vbat100mV || g_vbat100mV>50)) {
+      if (++inacPrescale > 15 ) {
+        inacCounter++;
+        inacPrescale = 0;
+        if (inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*100*60/16))
+          if ((inacCounter&0x1F)==1) AUDIO_INACTIVITY();
+      }
+    }
+
+    if (g_eeGeneral.backlightMode == e_backlight_mode_on || g_LightOffCounter || isFunctionActive(FUNC_BACKLIGHT))
+      BACKLIGHT_ON;
+    else
+      BACKLIGHT_OFF;
+
+#if defined(PCBSTD) && defined(VOICE)
     Voice.voice_process() ;
-  }
 #endif
+  }
 }
 
 void backlightOn()
@@ -1263,6 +1280,10 @@ void checkTrims()
 
 #if defined(PCBARM) && defined(REVB)
 uint16_t Current_analogue;
+uint16_t Current_max;
+uint32_t Current_accumulator;
+uint32_t Current_used;
+uint16_t MAh_used;
 #define NUMBER_ANALOG   9
 #else
 #define NUMBER_ANALOG   8
@@ -2258,6 +2279,8 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
 
 #if defined(PCBARM) && defined(REVB) && !defined(SIMU)
   Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
+  if (Current_analogue > Current_max)
+    Current_max = Current_analogue ;
 #elif defined(PCBV4) && !defined(SIMU)
   // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
   ADCSRB &= ~(1<<MUX5);
@@ -2344,7 +2367,7 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
     val = calibratedStick[THR_STICK]; // get throttle channel value
   }
   else if (g_model.thrTraceSrc > NUM_POTS) {
-    val = g_chans512[g_model.thrTraceSrc-NUM_POTS-1];
+    val = ex_chans[g_model.thrTraceSrc-NUM_POTS-1] / 2;
   }
   else {
     val = calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1];
@@ -2548,10 +2571,20 @@ void perMain()
 #if defined(PCBARM)
   if (Tenms) {
     Tenms = 0 ;
+
     if (Eeprom32_process_state != E32_IDLE)
       ee32_process();
     else if (TIME_TO_WRITE)
       eeCheck();
+
+    Current_accumulator += Current_analogue ;
+    static uint32_t OneSecTimer;
+    if (++OneSecTimer >= 100) {
+      OneSecTimer -= 100 ;
+      Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
+      Current_accumulator = 0 ;
+    }
+
 #if defined(SDCARD) && !defined(SIMU)
     sdPoll10mS();
 #endif
@@ -2566,22 +2599,6 @@ void perMain()
 #endif
 
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
-
-  uint16_t tsum = stickMoveValue();
-  if (tsum != inacSum) {
-    inacSum = tsum;
-    inacCounter = 0;
-    if (g_eeGeneral.backlightMode & e_backlight_mode_sticks)
-      backlightOn();
-  }
-  else if (g_eeGeneral.inactivityTimer && g_vbat100mV>50) {
-    if (++inacPrescale > 15 ) {
-      inacCounter++;
-      inacPrescale = 0;
-      if (inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*100*60/16))
-        if ((inacCounter&0x1F)==1) AUDIO_INACTIVITY();
-    }
-  }
 
 #if defined(SDCARD)
 #if defined(PCBV4)
@@ -2707,8 +2724,11 @@ void perMain()
         AUDIO_TX_BATTERY_LOW();
       }
 #if defined(PCBARM)
-      if (temperature >= g_eeGeneral.temperatureWarn+80) {
+      else if (temperature >= g_eeGeneral.temperatureWarn+80) {
         AUDIO_TX_TEMP_HIGH();
+      }
+      else if (g_eeGeneral.mAhWarn && (MAh_used + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
+        AUDIO_TX_MAH_HIGH();
       }
 #endif
     }
@@ -3127,6 +3147,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #if defined(PCBARM)
   setVolume(g_eeGeneral.speakerVolume);
   PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
+  MAh_used = g_eeGeneral.mAhUsed;
 #endif
 
 #if defined(PCBARM) && defined(BLUETOOTH)
@@ -3648,7 +3669,15 @@ void menusTask(void * pdata)
 
   if (shutdown_state != e_power_usb) {
     displayPopup(STR_SHUTDOWN);
-    g_eeGeneral.unexpectedShutdown=0;
+
+    MAh_used += Current_used/22/36;
+    if (g_eeGeneral.mAhUsed != MAh_used) {
+      g_eeGeneral.mAhUsed = MAh_used;
+      STORE_GENERALVARS;
+    }
+
+    g_eeGeneral.unexpectedShutdown = 0;
+
     eeDirty(EE_GENERAL);
     eeCheck(true);
   }

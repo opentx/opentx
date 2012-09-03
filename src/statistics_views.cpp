@@ -79,12 +79,24 @@ void menuProcStatistic(uint8_t event)
 #endif
 }
 
+#if defined(PCBARM)
+#define MENU_DEBUG_COL_OFS (13*FW)
+#else
 #define MENU_DEBUG_COL_OFS (14*FW)
+#endif
 void menuProcDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
   switch(event)
   {
+#if defined(PCBARM)
+    case EVT_KEY_LONG(KEY_MENU):
+      MAh_used = 0;
+      Current_used = 0;
+      killEvents(event);
+      AUDIO_KEYPAD_UP();
+      break;
+#endif
     case EVT_KEY_FIRST(KEY_MENU):
 #if !defined(PCBARM)
       g_tmr1Latency_min = 0xff;
@@ -111,23 +123,27 @@ void menuProcDebug(uint8_t event)
   lcd_outdez8(MENU_DEBUG_COL_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
 #endif
 
-  lcd_putsLeft(4*FH, STR_TMAINMAXMS);
 #if defined(PCBARM)
-  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMainMax)/20, PREC2);
+  lcd_putsLeft(5*FH, STR_TMAINMAXMS);
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (g_timeMainMax)/20, PREC2);
 #else
+  lcd_putsLeft(4*FH, STR_TMAINMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMainMax*100)/16, PREC2);
 #endif
 
 #if defined(PCBARM)
 #if defined(REVB)
-  lcd_putsLeft(2*FH, STR_CURRENT);
+  lcd_putsLeft(2*FH, STR_CPU_CURRENT);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, getCurrent(), UNIT_MILLIAMPS, 0);
+  uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
+  putsTelemetryValue(20*FW+2, 2*FH, Current_max*10*current_scale/8192, UNIT_RAW, 0);
+  lcd_putsLeft(3*FH, STR_CPU_MAH);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, MAh_used + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
 #endif
 
-  lcd_putsLeft(3*FH, STR_CPU_TEMP);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, temperature, UNIT_DEGREES, 0);
-  putsTelemetryValue(20*FW+2, 3*FH, maxTemperature, UNIT_DEGREES, 0);
-  // TODO mAh, Battery from ersky9x?
+  lcd_putsLeft(4*FH, STR_CPU_TEMP);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, temperature, UNIT_DEGREES, 0);
+  putsTelemetryValue(20*FW+2, 4*FH, maxTemperature, UNIT_DEGREES, 0);
 #endif
 
 #if !defined(PCBARM)

@@ -1198,7 +1198,7 @@ uint16_t getCurrent()
   static uint8_t  Current_count ;
 
   Current_sum += anaIn(NUMBER_ANALOG-1);
-  if ( ++Current_count > 49 ) {
+  if (++Current_count >= 50) {
     Current = Current_sum / 5 ;
     Current_sum = 0 ;
     Current_count = 0 ;

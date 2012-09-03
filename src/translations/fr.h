@@ -346,7 +346,11 @@
 #define STR_US (STR_TMR1LATMAXUS+12)
 #define TR_TMR1LATMINUS "Tmr1Lat min\003us"
 #define TR_TMR1JITTERUS "Tmr1 Jitter\003us"
-#define TR_TMAINMAXMS   "Tmain max\005ms"
+#if defined(PCBARM)
+#define TR_TMAINMAXMS          "Tmain max\004ms"
+#else
+#define TR_TMAINMAXMS          "Tmain max\005ms"
+#endif
 #define TR_T10MSUS      "T10ms\007us"
 #define TR_FREESTACKMINB "Free Stack\004b"
 #define TR_MENUTORESET  "[MENU]pour reset"
@@ -421,7 +425,9 @@
 #define TR_SPEAKER_VOLUME      "Volume haut-p."
 #define TR_OPTREX_DISPLAY      "Afficheur Optrex"
 #define TR_BRIGHTNESS          "Luminosit\200"
-#define TR_CPU_TEMP            "Temp. CPU\010>"
+#define TR_CPU_TEMP            "Temp. CPU\007>"
+#define TR_CPU_CURRENT         "Courant\011>"
+#define TR_CPU_MAH             "Consomm."
 #define TR_CAPAWARNING         "Capacity Warning"
 #define TR_TEMPWARNING         "Alarme temp"
 #define TR_FUNC                "Fonc"

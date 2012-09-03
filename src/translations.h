@@ -420,6 +420,8 @@ extern const pm_char STR_SPEAKER_VOLUME[];
 extern const pm_char STR_OPTREX_DISPLAY[];
 extern const pm_char STR_BRIGHTNESS[];
 extern const pm_char STR_CPU_TEMP[];
+extern const pm_char STR_CPU_CURRENT[];
+extern const pm_char STR_CPU_MAH[];
 extern const pm_char STR_CAPAWARNING[];
 extern const pm_char STR_TEMPWARNING[];
 extern const pm_char STR_FUNC[];

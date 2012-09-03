@@ -38,6 +38,7 @@
 const char * audioFilenames[] = {
   "inactiv",
   "lowbatt",
+  "highmah",
   "hightemp",
   "thralert",
   "swalert",
@@ -544,6 +545,13 @@ void audioEvent(uint8_t e, uint8_t f)
         // low battery in tx
         case AU_TX_BATTERY_LOW:
           if (!audioQueue.busy()) {
+            audioQueue.play(60, 40, 6, 2, 1);
+            audioQueue.play(80, 40, 6, 2, -1);
+          }
+          break;
+        case AU_TX_MAH_HIGH:
+          if (!audioQueue.busy()) {
+            // TODO Rob something better here?
             audioQueue.play(60, 40, 6, 2, 1);
             audioQueue.play(80, 40, 6, 2, -1);
           }

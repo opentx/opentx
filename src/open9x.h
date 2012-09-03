@@ -54,6 +54,14 @@
 #include "board_ersky9x.h"
 #endif
 
+#if defined(PCBARM) && defined(REVB)
+extern uint16_t Current_analogue;
+extern uint16_t Current_max;
+extern uint32_t Current_accumulator;
+extern uint32_t Current_used;
+extern uint16_t MAh_used;
+#endif
+
 #if defined(SIMU)
 #include "simpgmspace.h"
 #elif defined(PCBARM)
@@ -473,7 +481,9 @@ extern uint8_t heartbeat;
 
 #define MAX_ALERT_TIME   60
 
+extern uint8_t inacPrescale;
 extern uint16_t inacCounter;
+extern uint16_t inacSum;
 
 #if defined(PXX)
 extern uint8_t pxxFlag;
@@ -965,6 +975,7 @@ enum AUDIO_SOUNDS {
     AU_INACTIVITY,
     AU_TX_BATTERY_LOW,
 #if defined(PCBARM)
+    AU_TX_MAH_HIGH,
     AU_TX_TEMP_HIGH,
 #endif
 #if defined(VOICE)
