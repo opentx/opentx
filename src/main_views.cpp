@@ -294,13 +294,10 @@ void menuMainView(uint8_t event)
           x0       = i<4 ? 128/4+2 : 128*3/4-2;
           y0       = 38+(i%4)*5;
 
-#ifdef FRANCK
-          uint16_t lim = calc100toRESX(val > 0 ? 100+g_model.limitData[chan].max : +100-g_model.limitData[chan].min);
+          uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
           int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
-#else
-          int8_t len = (abs(val) * WBAR2 + 512) / 1024;
-#endif
-          if(len>WBAR2)  len =  WBAR2;  // prevent bars from going over the end - comment for debugging
+
+          if(len>WBAR2)  len = WBAR2;  // prevent bars from going over the end - comment for debugging
           lcd_hlineStip(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
           lcd_vline(x0,y0-2,5);
           if (val>0){

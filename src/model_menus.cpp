@@ -2128,10 +2128,10 @@ void menuProcLimits(uint8_t _event)
 
   if (sub < NUM_CHNOUT) {
 #if defined(PPM_CENTER_ADJUSTABLE)
-    lcd_outdezAtt(12*FW, 0, PPM_CENTER+limitaddress(sub)->ppmCenter+g_chans512[sub]/2, 0);
-    lcd_puts(12*FW, 0, STR_US);
+    lcd_outdezAtt(13*FW, 0, PPM_CENTER+limitaddress(sub)->ppmCenter+g_chans512[sub]/2, 0);
+    lcd_puts(13*FW, 0, STR_US);
 #else
-    lcd_outdezAtt(12*FW, 0, GPERC(g_chans512[sub]), PREC1);
+    lcd_outdezAtt(13*FW, 0, GPERC(g_chans512[sub]), PREC1);
 #endif
   }
 
@@ -2165,7 +2165,7 @@ void menuProcLimits(uint8_t _event)
 
     LimitData *ld = limitaddress(k) ;
 
-#ifdef PPM_CENTER_ADJUSTABLE
+#if defined(PPM_CENTER_ADJUSTABLE)
     int8_t limit = ((g_model.extendedLimits && !limitaddress(k)->ppmCenter) ? 125 : 100);
 #else
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
@@ -2187,7 +2187,7 @@ void menuProcLimits(uint8_t _event)
       switch(j)
       {
         case ITEM_LIMITS_OFFSET:
-#ifdef PPM_LIMITS_UNIT_US
+#if defined(PPM_LIMITS_UNIT_US)
           lcd_outdezAtt(  8*FW, y,  ((int32_t)ld->offset*128) / 25, attr|PREC1);
 #else
           lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
