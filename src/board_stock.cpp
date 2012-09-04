@@ -81,7 +81,7 @@ bool keyState(EnumKeys enuk)
   uint8_t result = 0 ;
 
   if (enuk < (int)DIM(keys))
-    return keys[enuk].state() ? 1 : 0;
+    return keys[enuk].state();
 
   switch(enuk){
     case SW_ElevDR:

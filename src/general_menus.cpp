@@ -797,23 +797,35 @@ void menuProcDiagVers(uint8_t event)
   lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
 }
 
+void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)
+{
+  uint8_t t = keyState(key);
+  lcd_putcAtt(x, y, t+'0', t ? INVERS : 0);
+}
+
 void menuProcDiagKeys(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUDIAG, menuTabDiag, e_Keys, 1);
 
-  for(uint8_t i=0; i<9; i++) {
-    uint8_t y=i*FH; //+FH;
-    if(i>(SW_ID0-SW_BASE_DIAG)) y-=FH; //overwrite ID0
-    bool t=keyState((EnumKeys)(SW_BASE_DIAG+i));
-    putsSwitches(8*FW, y, i+1, 0); //ohne off,on
-    lcd_putcAtt(11*FW+2, y, t+'0', t ? INVERS : 0);
-  }
+  lcd_puts(14*FW, 3*FH, STR_VTRIM);
 
-  for(uint8_t i=0; i<6; i++) {
-    uint8_t y=(5-i)*FH+2*FH;
-    bool t=keyState((EnumKeys)(KEY_MENU+i));
-    lcd_putsiAtt(0, y, STR_VKEYS, i, 0);
-    lcd_putcAtt(5*FW+2, y, t+'0', t);
+  for(uint8_t i=0; i<9; i++) {
+    uint8_t y = i*FH; //+FH;
+    if(i>(SW_ID0-SW_BASE_DIAG)) y-=FH; //overwrite ID0
+    putsSwitches(8*FW, y, i+1, 0); //ohne off,on
+    displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE_DIAG+i));
+
+    if (i<8) {
+      y = i/2*FH+FH*4;
+      lcd_img(14*FW, y, sticks, i/2, 0);
+      displayKeyState(i&1? 20*FW : 18*FW, y, (EnumKeys)(TRM_BASE+i));
+    }
+
+    if (i<6) {
+      y = (5-i)*FH+2*FH;
+      lcd_putsiAtt(0, y, STR_VKEYS, i, 0);
+      displayKeyState(5*FW+2, y, (EnumKeys)(KEY_MENU+i));
+    }
   }
 
 #if defined (ROTARY_ENCODERS)
@@ -824,15 +836,6 @@ void menuProcDiagKeys(uint8_t event)
   }
 #endif
 
-  lcd_puts(14*FW, 3*FH, STR_VTRIM);
-  for(uint8_t i=0; i<4; i++) {
-    uint8_t y=i*FH+FH*4;
-    lcd_img(14*FW, y, sticks,i,0);
-    bool tm=keyState((EnumKeys)(TRM_BASE+2*i));
-    lcd_putcAtt(18*FW, y, tm+'0', tm ? INVERS : 0);
-    bool tp=keyState((EnumKeys)(TRM_BASE+2*i+1));
-    lcd_putcAtt(20*FW, y, tp+'0', tp ? INVERS : 0);
-  }
 }
 
 void menuProcDiagAna(uint8_t event)
