@@ -624,8 +624,20 @@ void audioEvent(uint8_t e, uint8_t f)
         case AU_TIMER_LT3:
           audioQueue.play(BEEP_DEFAULT_FREQ + 5, 30, 6, PLAY_NOW);
           break;
+        case AU_FRSKY_BEEP1:
+          audioQueue.play(BEEP_DEFAULT_FREQ, 15, 2, 0);
+          pause(200);
+          break;
+        case AU_FRSKY_BEEP2:
+          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 2, 0);
+          pause(200);
+          break;
+        case AU_FRSKY_BEEP3:
+          audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2, 0);
+          pause(200);
+          break;
         case AU_FRSKY_WARN1:
-          audioQueue.play(BEEP_DEFAULT_FREQ+20,30,10,2);
+          audioQueue.play(BEEP_DEFAULT_FREQ+20, 30, 10, 2);
           audioQueue.pause(200);
           break;
         case AU_FRSKY_WARN2:
