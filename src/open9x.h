@@ -477,6 +477,8 @@ enum CswFunctions {
 #define DSW_SW4  13
 #define DSW_SW5  14
 #define DSW_SW6  15
+#define DSW_SWB  20
+#define DSW_SWC  21
 
 #define THRCHK_DEADBAND 16
 #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
