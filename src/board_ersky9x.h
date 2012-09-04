@@ -80,9 +80,9 @@ extern uint8_t maxTemperature ;           // Raw temp reading
 
 extern uint32_t read_keys();
 #define KEYS_PRESSED() (~read_keys())
-#define DBLKEYS_PRESSED_RGT_LFT(i) (in & (0x20 + 0x40))
-#define DBLKEYS_PRESSED_UP_DWN(i)  (in & (0x10 + 0x08))
-#define DBLKEYS_PRESSED_RGT_UP(i)  (in & (0x20 + 0x10))
-#define DBLKEYS_PRESSED_LFT_DWN(i) (in & (0x40 + 0x08))
+#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
+#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
+#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
+#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
 
 #endif

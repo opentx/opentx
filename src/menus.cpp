@@ -75,27 +75,27 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
-  if (DBLKEYS_PRESSED_RGT_LFT(in)) {
-    newval = -val;
-    killEvents(KEY_LEFT);
-    killEvents(KEY_RIGHT);
+  if ((event&EVT_KEY_MASK) && s_editMode) {
+    bool dblkey = true;
+    if (DBLKEYS_PRESSED_RGT_LFT(in))
+      newval = -val;
+    else if (DBLKEYS_PRESSED_RGT_UP(in))
+      newval = (i_max > 100 ? 100 : i_max);
+    else if (DBLKEYS_PRESSED_LFT_DWN(in))
+      newval = (i_min < -100 ? -100 : i_min);
+    else if (DBLKEYS_PRESSED_UP_DWN(in))
+      newval = 0;
+    else
+      dblkey = false;
+
+    if (dblkey) {
+      killEvents(KEY_UP);
+      killEvents(KEY_DOWN);
+      killEvents(KEY_RIGHT);
+      killEvents(KEY_LEFT);
+      event = 0;
+    }
   }
-  else if (s_editMode && DBLKEYS_PRESSED_RGT_UP(in)) {
-    newval = (i_max > 100 ? 100 : i_max);
-    killEvents(KEY_RIGHT);
-    killEvents(KEY_UP);
-  }
-  else if (s_editMode && DBLKEYS_PRESSED_LFT_DWN(in)) {
-    newval = (i_min < -100 ? -100 : i_min);
-    killEvents(KEY_LEFT);
-    killEvents(KEY_DOWN);
-  }
-  else if (s_editMode && DBLKEYS_PRESSED_UP_DWN(in)) {
-    newval = 0;
-    killEvents(KEY_UP);
-    killEvents(KEY_DOWN);
-  }
-  else
 #endif
 
   if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
