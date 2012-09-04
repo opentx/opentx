@@ -383,8 +383,13 @@
 #define TR_MENUFLIGHTPHASE     "FLIGHT PHASE"
 #define TR_MENUFLIGHTPHASES    "FLIGHT PHASES"
 #define TR_MENUHELISETUP       "HELI SETUP"
-#define TR_MENUDREXPO          "DR/EXPO" // TODO flash saving this string is 2 times here
+#if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
+#define TR_MENUDREXPO          "STICKS"
+#define TR_MENULIMITS          "OUTPUTS"
+#else
+#define TR_MENUDREXPO          "DR/EXPO"
 #define TR_MENULIMITS          "LIMITS"
+#endif
 #define TR_MENUCURVES          "CURVES"
 #define TR_MENUCURVE           "CURVE"
 #define TR_MENUCUSTOMSWITCH    "CUSTOM SWITCH"

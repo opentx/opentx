@@ -2127,7 +2127,7 @@ void menuProcLimits(uint8_t _event)
   uint8_t sub = m_posVert - 1;
 
   if (sub < NUM_CHNOUT) {
-#ifdef PPM_CENTER_ADJUSTABLE
+#if defined(PPM_CENTER_ADJUSTABLE)
     lcd_outdezAtt(12*FW, 0, PPM_CENTER+limitaddress(sub)->ppmCenter+g_chans512[sub]/2, 0);
     lcd_puts(12*FW, 0, STR_US);
 #else
@@ -2259,7 +2259,7 @@ void menuProcLimits(uint8_t _event)
               ld->revert = revert_new;
           }
           break;
-#ifdef PPM_CENTER_ADJUSTABLE
+#if defined(PPM_CENTER_ADJUSTABLE)
         case ITEM_LIMITS_PPM_CENTER:
           lcd_outdezAtt(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, attr);
           if (active && ld->max <= 0 && ld->min >= 0) {
@@ -2267,7 +2267,7 @@ void menuProcLimits(uint8_t _event)
           }
           break;
 #endif
-#ifdef PPM_LIMITS_SYMETRICAL
+#if defined(PPM_LIMITS_SYMETRICAL)
         case ITEM_LIMITS_SYMETRICAL:
           lcd_putcAtt(20*FW+2, y, ld->symetrical ? '=' : '^', attr);
           if (active) {
