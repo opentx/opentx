@@ -282,8 +282,6 @@ void menuMainView(uint8_t event)
         case e_outputValues:
           x0 = (i%4*9+3)*FW/2;
           y0 = i/4*FH+40;
-          // *1000/1024 = x - x/32 + x/128
-#define GPERC(x)  (x - x/32 + x/128)
 #if defined (DECIMALS_DISPLAYED)
           lcd_outdezAtt( x0+4*FW , y0, GPERC(val), PREC1);
 #else

@@ -835,6 +835,9 @@ inline int16_t calc100toRESX(int8_t x)
 extern int16_t calc1000toRESX(int16_t x);
 #endif
 
+// *1000/1024 = x - x/32 + x/128
+#define GPERC(x)  (x - x/32 + x/128)
+
 #if defined(PCBARM)
 // This doesn't need protection on this processor
 #define tmr10ms_t uint32_t
