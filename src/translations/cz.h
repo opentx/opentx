@@ -191,7 +191,7 @@
 
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"
-#define TR_VTEMPLATES    "Smazat Mixy\0\0""Z\200kl. 4kan\200l\0"Sticky-T-Cut\0"V-Ocas      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
+#define TR_VTEMPLATES    "Smazat Mixy\0\0""Z\200kl. 4kan\200l\0""Sticky-T-Cut\0""V-Ocas      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
