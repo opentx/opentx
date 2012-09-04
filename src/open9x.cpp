@@ -549,7 +549,7 @@ int16_t getValue(uint8_t i)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyData.hub.accelY;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyData.hub.accelZ;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyData.hub.varioSpeed;
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyData.varioSpeed;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyData.analog[0].min;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyData.analog[1].min;
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
@@ -665,11 +665,13 @@ bool __getSwitch(int8_t swtch)
             return swtch > 0 ? false : true;
           if (s == CS_VOFS) {
             y = convertTelemValue(cs->v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs->v2);
+#if defined(FRSKY_HUB)
             uint8_t idx = cs->v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT;
             if (idx < THLD_MAX) {
               // Fill the threshold array
               barsThresholds[idx] = 128 + cs->v2;
             }
+#endif
           }
           else {
             y = cs->v2;
@@ -1688,6 +1690,10 @@ void testFunc()
 #ifdef SIMU
   printf("testFunc\n"); fflush(stdout);
 #endif
+
+  while(1) {
+
+  }
 }
 #endif
 
@@ -3745,10 +3751,8 @@ int main(void)
   uint8_t mcusr = MCUCSR;
   MCUCSR = 0;
 #endif
-#if !defined(PCBARM)
-  // TODO test WDT on ARM
+
   wdt_disable();
-#endif
 
   board_init();
 

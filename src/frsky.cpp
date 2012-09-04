@@ -61,7 +61,7 @@ uint8_t frskyUsrStreaming = 0;
 uint8_t link_counter = 0;
 FrskyData frskyData;
 
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+#if defined(FRSKY_HUB)
 uint8_t barsThresholds[THLD_MAX];
 #endif
 
@@ -82,7 +82,27 @@ uint8_t frskyGetUserData(char *buffer, uint8_t bufSize)
 }
 #endif
 
-#ifdef FRSKY_HUB
+uint16_t getChannelRatio(uint8_t channel)
+{
+  return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
+}
+
+int16_t applyChannelRatio(uint8_t channel, int16_t val)
+{
+  return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
+}
+
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+void checkMinMaxAltitude()
+{
+  if (frskyData.hub.baroAltitude_bp > frskyData.hub.maxAltitude)
+    frskyData.hub.maxAltitude = frskyData.hub.baroAltitude_bp;
+  if (frskyData.hub.baroAltitude_bp < frskyData.hub.minAltitude)
+    frskyData.hub.minAltitude = frskyData.hub.baroAltitude_bp;
+}
+#endif
+
+#if defined(FRSKY_HUB)
 void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
 {
   div_t qr = div(frskyData.hub.gpsLatitude_bp, 100);
@@ -134,16 +154,6 @@ typedef enum {
   TS_XOR = 0x80 // decode stuffed byte
 } TS_STATE;
 
-uint16_t getChannelRatio(uint8_t channel)
-{
-  return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
-}
-
-int16_t applyChannelRatio(uint8_t channel, int16_t val)
-{
-  return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
-}
-
 void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
 {
 #if defined(VARIO)
@@ -152,19 +162,11 @@ void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
   if (varioAltitudeQueuePointer == VARIO_QUEUE_LENGTH)
     varioAltitudeQueuePointer = 0;
   frskyData.hub.varioAltitudeQueuePointer = varioAltitudeQueuePointer;
-  frskyData.hub.varioSpeed -= frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
+  frskyData.varioSpeed -= frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
   frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] = varioAltitude_cm - frskyData.hub.varioAltitude_cm;
   frskyData.hub.varioAltitude_cm = varioAltitude_cm;
-  frskyData.hub.varioSpeed += frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
+  frskyData.varioSpeed += frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
 #endif
-}
-
-void checkMinMaxAltitude()
-{
-  if (frskyData.hub.baroAltitude_bp > frskyData.hub.maxAltitude)
-    frskyData.hub.maxAltitude = frskyData.hub.baroAltitude_bp;
-  if (frskyData.hub.baroAltitude_bp < frskyData.hub.minAltitude)
-    frskyData.hub.minAltitude = frskyData.hub.baroAltitude_bp;
 }
 
 void parseTelemHubByte(uint8_t byte)
@@ -337,7 +339,7 @@ void parseTelemHubByte(uint8_t byte)
 }
 #endif
 
-#ifdef WS_HOW_HIGH
+#if defined(WS_HOW_HIGH)
 void parseTelemWSHowHighByte(uint8_t byte)
 {
   if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10)) {
@@ -379,7 +381,7 @@ void processFrskyPacket(uint8_t *packet)
       frskyData.rssi[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       if (g_model.frsky.varioSource >= VARIO_SOURCE_A1) {
-        frskyData.hub.varioSpeed = applyChannelRatio(g_model.frsky.varioSource - VARIO_SOURCE_A1, frskyData.analog[g_model.frsky.varioSource - VARIO_SOURCE_A1].value);
+        frskyData.varioSpeed = applyChannelRatio(g_model.frsky.varioSource - VARIO_SOURCE_A1, frskyData.analog[g_model.frsky.varioSource - VARIO_SOURCE_A1].value);
       }
       break;
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
@@ -697,19 +699,30 @@ NOINLINE void check_frsky()
 #endif
 
   uint16_t voltage = 0; /* unit: 1/10 volts */
+
+#if defined(FRSKY_HUB)
   for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
     voltage += frskyData.hub.cellVolts[i];
   voltage /= 5;
   frskyData.hub.cellsSum = voltage;
+#endif
+
   uint8_t channel = g_model.frsky.voltsSource;
   if (channel <= 1) {
     voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
   }
+#if defined(FRSKY_HUB)
   else if (channel == 2) {
     voltage = frskyData.hub.vfas;
   }
+#endif
 
+#if defined(FRSKY_HUB)
   uint16_t current = frskyData.hub.current; /* unit: 1/10 amps */
+#else
+  uint16_t current = 0;
+#endif
+
   channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
   if (channel <= 1) {
     current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
@@ -729,7 +742,7 @@ NOINLINE void check_frsky()
 #if defined(AUDIO)
     int16_t varioSpeedUpMin = (g_model.frsky.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER)*VARIO_SPEED_LIMIT_MUL;
     int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.frsky.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
-    int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), frskyData.hub.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
+    int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), frskyData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
 
     uint8_t SoundVarioBeepNextFreq = 0;
     uint8_t SoundVarioBeepNextTime = 0;
@@ -761,7 +774,7 @@ NOINLINE void check_frsky()
       }
     }
 #else
-    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyData.hub.varioSpeed/10), (int16_t)+100);
+    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyData.varioSpeed/10), (int16_t)+100);
 
     uint16_t interval;
     if (verticalSpeed == 0) {
@@ -1221,6 +1234,7 @@ void menuProcFrsky(uint8_t event)
           if (i==3 && j==0) {
             lcd_vline(63, 8, 48);
             if (frskyStreaming > 0) {
+#if defined(FRSKY_HUB)
               if (field == TELEM_ACC) {
                 lcd_putsLeft(7*FH+1, STR_ACCEL);
                 lcd_outdezNAtt(4*FW, 7*FH+1, frskyData.hub.accelX, LEFT|PREC2);
@@ -1232,6 +1246,7 @@ void menuProcFrsky(uint8_t event)
                 displayGpsTime();
                 return;
               }
+#endif
             }
             else {
               displayRssiLine();
@@ -1278,8 +1293,10 @@ void menuProcFrsky(uint8_t event)
             threshold = getRssiAlarmValue(source-TELEM_RSSI_TX);
           else if (source <= TELEM_A2)
             threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
+#if defined(FRSKY_HUB)
           else
             threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
+#endif
           int16_t barMin = convertTelemValue(source, bmin);
           int16_t barMax = convertTelemValue(source, bmax);
           if (threshold) {
@@ -1324,12 +1341,14 @@ void menuProcFrsky(uint8_t event)
           displayVoltageScreenLine(2*FH, g_model.frsky.voltsSource);
           other = !g_model.frsky.voltsSource;
           break;
+#if defined(FRSKY_HUB)
         case 2:
           putsTelemetryChannel(3*FW+6*FW+4, 2*FH, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
           break;
         case 3:
           putsTelemetryChannel(3*FW+6*FW+4, 2*FH, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
           break;
+#endif
       }
 
       if (g_model.frsky.currentSource) {
@@ -1339,9 +1358,11 @@ void menuProcFrsky(uint8_t event)
           case 2:
             displayVoltageScreenLine(4*FH, g_model.frsky.currentSource-1);
             break;
+#if defined(FRSKY_HUB)
           case 3:
             putsTelemetryChannel(3*FW+6*FW+4, 4*FH, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
             break;
+#endif
         }
 
         putsTelemetryChannel(4, 6*FH, TELEM_POWER-1, frskyData.power, LEFT|DBLSIZE);
@@ -1352,7 +1373,7 @@ void menuProcFrsky(uint8_t event)
         if (!other) displayVoltageScreenLine(6*FH, 1);
       }
 
-#ifdef FRSKY_HUB
+#if defined(FRSKY_HUB)
       // Cells voltage
       if (frskyData.hub.cellsCount > 0) {
         uint8_t y = 1*FH;
@@ -1367,7 +1388,7 @@ void menuProcFrsky(uint8_t event)
 
       displayRssiLine();
     }
-#ifdef FRSKY_HUB
+#if defined(FRSKY_HUB)
     else if (s_frsky_view == e_frsky_after_flight) {
       uint8_t line=1*FH+1;
       if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB) {

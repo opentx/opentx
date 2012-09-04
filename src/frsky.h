@@ -136,7 +136,6 @@ PACK(struct FrskyHubData {
   // end of FrSky Hub data
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
-  int16_t  varioSpeed;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
   uint8_t  minCellIdx;
   uint16_t cellsSum;
@@ -146,10 +145,12 @@ PACK(struct FrskyHubData {
 
 #elif defined(WS_HOW_HIGH)
 
-struct FrskyHubData {
-  uint16_t baroAltitude;     // 0..9,999 meters
+PACK(struct FrskyHubData {
+  int16_t  baroAltitude_bp;     // 0..9,999 meters
   int16_t  baroAltitudeOffset;
-};
+  int16_t  minAltitude;
+  int16_t  maxAltitude;
+});
 
 #endif
 
@@ -162,9 +163,10 @@ struct FrskyData {
   uint16_t             currentConsumption;
   uint16_t             currentPrescale;
   uint16_t             power;
+  int16_t              varioSpeed;
 };
 
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+#if defined(FRSKY_HUB)
 enum BarThresholdIdx {
   THLD_ALT,
   THLD_RPM,

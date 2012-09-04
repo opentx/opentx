@@ -707,8 +707,6 @@ void board_init()
   // Debug variable
   // uint32_t both_on ;
 
-  WDT->WDT_MR = 0x3FFFAFFF ;                      // Disable watchdog
-
   MATRIX->CCFG_SYSIO |= 0x000000F0L ;             // Disable syspins, enable B4,5,6,7
 
   PMC->PMC_PCER0 = (1<<ID_PIOC)|(1<<ID_PIOB)|(1<<ID_PIOA)|(1<<ID_UART0) ;                               // Enable clocks to PIOB and PIOA and PIOC and UART0
