@@ -469,10 +469,9 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
 #if defined(SDCARD)
 void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 {
-#ifdef SIMU
+#if defined(SIMU)
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
-#endif
-
+#else
   if (Card_initialized && !sd_card_mounted())
     return;
 
@@ -495,6 +494,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   }
 
   CoLeaveMutexSection(audioMutex);
+#endif
 }
 #endif
 
