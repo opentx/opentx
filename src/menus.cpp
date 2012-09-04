@@ -75,7 +75,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
-  if ((event&EVT_KEY_MASK) && s_editMode) {
+  if (event & EVT_KEY_MASK) {
     bool dblkey = true;
     if (DBLKEYS_PRESSED_RGT_LFT(in))
       newval = -val;
