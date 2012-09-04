@@ -35,42 +35,51 @@
 
 enum EnglishPrompts {
   PROMPT_NUMBERS_BASE = 0,
-  PROMPT_ZERO = PROMPT_NUMBERS_BASE+0,
-  /* ... */
-  PROMPT_TWENTY = PROMPT_NUMBERS_BASE+20,
-  PROMPT_THIRTY = PROMPT_NUMBERS_BASE+21,
-  /* ... */
-  PROMPT_NINETY = PROMPT_NUMBERS_BASE+27,
-  PROMPT_HUNDRED = PROMPT_NUMBERS_BASE+28,
-  PROMPT_THOUSAND = PROMPT_NUMBERS_BASE+29,
+  PROMPT_ZERO = PROMPT_NUMBERS_BASE+0,       //02-99
+  PROMPT_HUNDRED = PROMPT_NUMBERS_BASE+100,  //100,200 .. 900
+  PROMPT_THOUSAND = PROMPT_NUMBERS_BASE+109, //1000
+  PROMPT_AND = PROMPT_NUMBERS_BASE+110,
+  PROMPT_MINUS = PROMPT_NUMBERS_BASE+111,
+  PROMPT_POINT = PROMPT_NUMBERS_BASE+112,
 
-  PROMPT_HOUR = 40,
-  PROMPT_HOURS = 41,
-  PROMPT_MINUTE = 42,
-  PROMPT_MINUTES = 43,
-  PROMPT_SECOND = 44,
-  PROMPT_SECONDS = 45,
+  PROMPT_UNITS_BASE = 115,
+  PROMPT_VOLTS = PROMPT_UNITS_BASE+UNIT_VOLTS, //(one)volt,(two)volts
+  PROMPT_AMPS = PROMPT_UNITS_BASE+(UNIT_AMPS*2),
+  PROMPT_METERS_PER_SECOND = PROMPT_UNITS_BASE+(UNIT_METERS_PER_SECOND*2),
+  PROMPT_SPARE1 = PROMPT_UNITS_BASE+(UNIT_RAW*2),
+  PROMPT_KMH = PROMPT_UNITS_BASE+(UNIT_KMH*2),
+  PROMPT_METERS = PROMPT_UNITS_BASE+(UNIT_METERS*2),
+  PROMPT_DEGREES = PROMPT_UNITS_BASE+(UNIT_DEGREES*2),
+  PROMPT_PERCENT = PROMPT_UNITS_BASE+(UNIT_PERCENT*2),
+  PROMPT_MILLIAMPS = PROMPT_UNITS_BASE+(UNIT_MILLIAMPS*2),
+  PROMPT_MAH = PROMPT_UNITS_BASE+(UNIT_MAH*2),
+  PROMPT_WATTS = PROMPT_UNITS_BASE+(UNIT_WATTS*2),
+  PROMPT_DB = PROMPT_UNITS_BASE+(UNIT_DBM*2),
+  PROMPT_FEET = PROMPT_UNITS_BASE+(UNIT_FEET*2),
+  PROMPT_KTS = PROMPT_UNITS_BASE+(UNIT_KTS*2),
+  PROMPT_HOURS = PROMPT_UNITS_BASE+(UNIT_HOURS*2),
+  PROMPT_MINUTES = PROMPT_UNITS_BASE+(UNIT_MINUTES*2),
+  PROMPT_SECONDS = PROMPT_UNITS_BASE+(UNIT_SECONDS*2),
+  PROMPT_RPMS = PROMPT_UNITS_BASE+(UNIT_RPMS*2),
+  PROMPT_G = PROMPT_UNITS_BASE+(UNIT_G*2),
 
-  PROMPT_AND = 47,
-  PROMPT_MINUS = 48,
-
-  PROMPT_UNITS_BASE = 50,
-  PROMPT_VOLTS = PROMPT_UNITS_BASE+UNIT_VOLTS,
-  PROMPT_AMPS = PROMPT_UNITS_BASE+UNIT_AMPS,
-  PROMPT_METERS_PER_SECOND = PROMPT_UNITS_BASE+UNIT_METERS_PER_SECOND,
-  PROMPT_SPARE1 = PROMPT_UNITS_BASE+UNIT_RAW,
-  PROMPT_KMH = PROMPT_UNITS_BASE+UNIT_KMH,
-  PROMPT_METERS = PROMPT_UNITS_BASE+UNIT_METERS,
-  PROMPT_DEGREES = PROMPT_UNITS_BASE+UNIT_DEGREES,
-  PROMPT_PERCENT = PROMPT_UNITS_BASE+UNIT_PERCENT,
-  PROMPT_MILLIAMPS = PROMPT_UNITS_BASE+UNIT_MILLIAMPS,
-  PROMPT_MAH = PROMPT_UNITS_BASE+UNIT_MAH,
-  PROMPT_WATTS = PROMPT_UNITS_BASE+UNIT_WATTS,
-  PROMPT_FEET = PROMPT_UNITS_BASE+UNIT_FEET,
-  PROMPT_KTS = PROMPT_UNITS_BASE+UNIT_KTS,
 };
 
 #if defined(VOICE)
+
+#if defined(PCBSTD)
+#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+#else
+#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u), id)
+#endif
+
+PLAY_FUNCTION(pushUnitPrompt, int16_t number, uint8_t unitprompt)
+{
+  if (number == 1)
+    PUSH_PROMPT(unitprompt);
+  else
+    PUSH_PROMPT(unitprompt+1);
+}
 
 PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
@@ -88,6 +97,33 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
     PUSH_PROMPT(PROMPT_MINUS);
     number = -number;
   }
+  
+  int8_t mode = MODE(att);
+  if (mode > 0) {
+    div_t qr = div(number, (mode == 1 ? 10 : 100));   
+      if (qr.rem) {
+        PLAY_NUMBER(qr.quot, 0, 0);
+        PUSH_PROMPT(PROMPT_POINT);
+        if (mode == 2 ) {
+          if (qr.rem < 10)
+            PUSH_PROMPT(PROMPT_ZERO);
+          else
+            PLAY_NUMBER(qr.rem/10, 0, 0);
+          qr.rem %= 10;
+          if (qr.rem)
+            PLAY_NUMBER(qr.rem, 0, 0);
+        }
+        else {
+          PLAY_NUMBER(qr.rem, 0, 0);
+        }
+        PUSH_PROMPT(PROMPT_UNITS_BASE+((unit-1)*2)+1);
+      }
+      else
+        PLAY_NUMBER(qr.quot, unit, 0);
+    return;
+  }
+
+  int16_t tmp = number;
 
   if (number >= 1000) {
     PLAY_NUMBER(number / 1000, 0, 0);
@@ -97,24 +133,17 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
       number = -1;
   }
   if (number >= 100) {
-    PUSH_PROMPT(PROMPT_ZERO + number/100);
-    PUSH_PROMPT(PROMPT_HUNDRED);
+    PUSH_PROMPT(PROMPT_HUNDRED + (number/100)-1);
     number %= 100;
     if (number == 0)
       number = -1;
   }
-  if (number >= 20) {
-    PUSH_PROMPT(PROMPT_TWENTY + (number-20)/10);
-    number %= 10;
-    if (number == 0)
-      number = -1;
-  }
   if (number >= 0) {
-    PUSH_PROMPT(PROMPT_ZERO+number);
+    PUSH_PROMPT(PROMPT_ZERO + number);
   }
-
+  
   if (unit) {
-    PUSH_PROMPT(PROMPT_UNITS_BASE+unit-1);
+    PUSH_UNIT_PROMPT(tmp, (PROMPT_UNITS_BASE+((unit-1)*2)));
   }
 }
 
@@ -128,22 +157,19 @@ PLAY_FUNCTION(playDuration, int16_t seconds)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, 0, 0);
-    PUSH_PROMPT(tmp == 1 ? PROMPT_HOUR : PROMPT_HOURS);
+    PLAY_NUMBER(tmp, UNIT_HOURS+1 , 0);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, 0, 0);
-    PUSH_PROMPT(tmp == 1 ? PROMPT_MINUTE : PROMPT_MINUTES);
+    PLAY_NUMBER(tmp, UNIT_MINUTES+1 , 0);
     if (seconds > 0)
       PUSH_PROMPT(PROMPT_AND);
   }
 
   if (seconds > 0) {
-    PLAY_NUMBER(seconds, 0, 0);
-    PUSH_PROMPT(tmp == 1 ? PROMPT_SECOND : PROMPT_SECONDS);
+    PLAY_NUMBER(seconds, UNIT_SECONDS+1 , 0);
   }
 }
 

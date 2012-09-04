@@ -136,16 +136,32 @@ if __name__ == "__main__":
             espeakspeed = "150"
             voice = "english"      
             
-        for i in range(20):
+        for i in range(100):
             systemSounds.extend(generate(str(i), i))
-        for i in range(20, 100, 10):
-            systemSounds.extend(generate(str(i), 20+(i-20)/10))
-        systemSounds.extend(generate("hundred", 28))
-        systemSounds.extend(generate("thousand", 29))
-        for i, s in enumerate(["hour", "hours", "minute", "minutes", "second", "seconds", "", "and", "minus"]):
-            systemSounds.extend(generate(s, 40+i))
-        for i, s in enumerate(["volts", "amps", "meters per second", "", "km per hour", "meters", "degrees", "percent", "milliamps", "milliamps per hour", "watts", "db", "feet", "knots", "hour", "minute", "second", "r p m", "g"]):
-            systemSounds.extend(generate(s, 50+i))
+        for i in range(9):
+            systemSounds.extend(generate(str(100*(i+1)), 100+i))
+        for i, s in enumerate(["thousand", "and", "minus", "point"]):
+            systemSounds.extend(generate(s, 109+i))
+        for i, s in enumerate(["volt", "volts",
+        					   "amp", "amps",
+        					   "meter per second", "meters per second",
+        					   "", "",
+        					   "kilometer per hour","kilometers per hour",
+        					   "meter", "meters",
+        					   "degree", "degrees",
+        					   "percent", "percent",
+        					   "milliamp", "milliamps",
+        					   "milliamp per hour", "milliamps per hour",
+        					   "watt", "watts",
+        					   "db", "db",
+        					   "feet", "feets",
+        					   "knot", "knots",
+        					   "hour", "hours",
+        					   "minute", "minutes",
+        					   "second", "seconds",
+        					   "r p m", "r p m",
+        					   "g", "g"]):
+            systemSounds.extend(generate(s, 115+i))
         for s, f, a in [(u"trim center", "midtrim", 244),
                         (u"maximum trim reached", "endtrim", 0),
                         (u"transmitter battery low", "lowbatt", 231),
