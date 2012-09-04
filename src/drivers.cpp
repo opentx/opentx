@@ -74,13 +74,13 @@ void Key::input(bool val, EnumKeys enuk)
 {
   uint8_t t_vals = m_vals ;
   t_vals <<= 1 ;
-  if(val) t_vals |= 1; //portbit einschieben
+  if (val) t_vals |= 1; //portbit einschieben
   m_vals = t_vals ;
 
   m_cnt++;
 
-  if(m_state && m_vals==0){  //gerade eben sprung auf 0
-    if(m_state!=KSTATE_KILLED) {
+  if (m_state && m_vals==0) {  //gerade eben sprung auf 0
+    if (m_state != KSTATE_KILLED) {
       putEvent(EVT_KEY_BREAK(enuk));
     }
     m_cnt   = 0;
@@ -88,7 +88,7 @@ void Key::input(bool val, EnumKeys enuk)
   }
   switch(m_state){
     case KSTATE_OFF:
-      if(m_vals==FFVAL){ //gerade eben sprung auf ff
+      if (m_vals == FFVAL) { //gerade eben sprung auf ff
         m_state = KSTATE_START;
         m_cnt   = 0;
       }

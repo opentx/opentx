@@ -244,7 +244,22 @@ extern uint8_t s_bind_allowed;
 #  define OUT_H_14DBUSY  6
 #endif
 
-#else // boards prior to v4 ...
+inline uint8_t KEYS_PRESSED()
+{
+  uint8_t tin = ~PINL;
+  uint8_t in;
+  in = (tin & 0x0f) << 3;
+  in |= (tin & 0x30) >> 3;
+  return in;
+}
+
+#define DBLKEYS_PRESSED_RGT_LFT(i) (in & ((1<<INP_P_KEY_RGT) + (1<<INP_P_KEY_LFT)))
+#define DBLKEYS_PRESSED_UP_DWN(i)  (in & ((1<<INP_P_KEY_UP) + (1<<INP_P_KEY_DWN)))
+#define DBLKEYS_PRESSED_RGT_UP(i)  (in & ((1<<INP_P_KEY_RGT) + (1<<INP_P_KEY_UP)))
+#define DBLKEYS_PRESSED_LFT_DWN(i) (in & ((1<<INP_P_KEY_LFT) + (1<<INP_P_KEY_DWN)))
+
+
+#elif defined(PCBSTD) // stock board ...
 
 #define OUT_B_LIGHT   7
 #define INP_B_KEY_LFT 6
@@ -285,6 +300,12 @@ extern uint8_t s_bind_allowed;
 #define INP_G_HAPTIC   2
 #define INP_G_RF_POW   1
 #define INP_G_RuddDR   0
+
+#define KEYS_PRESSED() (~PINB)
+#define DBLKEYS_PRESSED_RGT_LFT(i) (in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT)))
+#define DBLKEYS_PRESSED_UP_DWN(i)  (in & ((1<<INP_B_KEY_UP) + (1<<INP_B_KEY_DWN)))
+#define DBLKEYS_PRESSED_RGT_UP(i)  (in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))
+#define DBLKEYS_PRESSED_LFT_DWN(i) (in & ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN)))
 
 #endif // defined (PCBV4)
 

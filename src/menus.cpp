@@ -74,22 +74,23 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   int16_t newval = val;
   
 #if defined(DBLKEYS)
-  if (keyState(KEY_RIGHT) && keyState(KEY_LEFT)) {
+  uint8_t in = KEYS_PRESSED();
+  if (DBLKEYS_PRESSED_RGT_LFT(in)) {
     newval = -val;
     killEvents(KEY_LEFT);
     killEvents(KEY_RIGHT);
   }
-  else if (s_editMode && keyState(KEY_RIGHT) && keyState(KEY_UP)) {
+  else if (s_editMode && DBLKEYS_PRESSED_RGT_UP(in)) {
     newval = (i_max > 100 ? 100 : i_max);
     killEvents(KEY_RIGHT);
     killEvents(KEY_UP);
   }
-  else if (s_editMode && keyState(KEY_LEFT) && keyState(KEY_DOWN)) {
+  else if (s_editMode && DBLKEYS_PRESSED_LFT_DWN(in)) {
     newval = (i_min < -100 ? -100 : i_min);
     killEvents(KEY_LEFT);
     killEvents(KEY_DOWN);
   }
-  else if (s_editMode && keyState(KEY_UP) && keyState(KEY_DOWN)) {
+  else if (s_editMode && DBLKEYS_PRESSED_UP_DWN(in)) {
     newval = 0;
     killEvents(KEY_UP);
     killEvents(KEY_DOWN);
