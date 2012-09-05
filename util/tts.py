@@ -154,7 +154,7 @@ if __name__ == "__main__":
         					   "milliamp per hour", "milliamps per hour",
         					   "watt", "watts",
         					   "db", "db",
-        					   "feet", "feets",
+        					   "foot", "feet",
         					   "knot", "knots",
         					   "hour", "hours",
         					   "minute", "minutes",
