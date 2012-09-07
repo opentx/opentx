@@ -34,19 +34,6 @@
 #include "../open9x.h"
 
 struct t_voice Voice ;
-/* TODO why? static uint8_t v_ctr ;
-uint8_t v_first[8] ; */
-
-/*void putVoiceQueueUpper( uint8_t value )
-{
-  struct t_voice *vptr;
-  vptr = voiceaddress();
-
-  if (vptr->VoiceQueueCount < VOICE_Q_LENGTH - 1) {
-    pushPrompt(0xFF);
-    pushPrompt(value);
-  }
-}*/
 
 void pushCustomPrompt(uint8_t value)
 {
@@ -74,11 +61,6 @@ void pushPrompt(uint8_t value)
     vptr->VoiceQueueInIndex &= (VOICE_Q_LENGTH - 1);
     vptr->VoiceQueueCount += 1;
   }
-  /* TODO why?
-  if (v_ctr < 8) {
-    v_first[v_ctr] = value;
-    v_ctr += 1;
-  } */
 }
 
 struct t_voice *voiceaddress()
@@ -134,10 +116,11 @@ void t_voice::voice_process(void)
     PORTB |= (1 << OUT_B_LIGHT); // Drive high,pullup enabled
     DDRB &= ~(1 << OUT_B_LIGHT); // Change to input
 #if !defined(SIMU)
-    asm(" nop");
-    asm(" nop");
-#endif
     // delay to allow input to settle
+    asm(" nop");
+    asm(" nop");
+    asm(" nop") ;
+#endif
     busy = PINB & 0x80;
     DDRB |= (1 << OUT_B_LIGHT); // Change to output
     // The next bit guarantees the backlight output gets clocked out
