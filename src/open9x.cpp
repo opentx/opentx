@@ -2383,7 +2383,7 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
       val = val - calc100toRESX(g_model.limitData[ch].min - 100);
     if (g_model.limitData[ch].symetrical)
       val -= calc1000toRESX(g_model.limitData[ch].offset);
-    val = val * 20 / (20+(g_model.limitData[ch].max-g_model.limitData[ch].min)/10);
+    val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
     val -= RESX;
   }
   else {
