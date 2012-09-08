@@ -175,8 +175,9 @@ uint16_t EeFsGetFree()
 static void EeFsFree(uint8_t blk)
 {
   uint8_t i = blk;
-  while( EeFsGetLink(i)) i = EeFsGetLink(i);
-  EeFsSetLink(i,eeFs.freeList);
+  uint8_t tmp;
+  while ((tmp=EeFsGetLink(i))) i = tmp;
+  EeFsSetLink(i, eeFs.freeList);
   eeFs.freeList = blk; //chain in front
   EeFsFlushFreelist();
 }
