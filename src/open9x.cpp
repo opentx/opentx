@@ -3205,7 +3205,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     doSplash();
 
 #if defined(PCBARM) && defined(SDCARD)
-    for (int i=0; i<200 && !Card_initialized; i++) {
+    for (int i=0; i<500 && !Card_initialized; i++) {
       CoTickDelay(1);  // 2ms
     }
 #endif
