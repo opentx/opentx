@@ -479,16 +479,17 @@ int16_t calcRESXto1000(int16_t x)
 
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
-  int16_t ofs = g_model.limitData[channel].offset;
-  int16_t lim_p = 10 * (g_model.limitData[channel].max + 100);
-  int16_t lim_n = 10 * (g_model.limitData[channel].min - 100); //multiply by 10 to get same range as ofs (-1000..1000)
+  LimitData * limit = limitaddress(channel);
+  int16_t ofs = limit->offset;
+  int16_t lim_p = 10 * (limit->max + 100);
+  int16_t lim_n = 10 * (limit->min - 100); //multiply by 10 to get same range as ofs (-1000..1000)
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
     int32_t tmp;
-    if (g_model.limitData[channel].symetrical)
+    if (limit->symetrical)
       tmp = (value > 0) ? ((int32_t) lim_p) : ((int32_t) -lim_n);
     else
       tmp = (value > 0) ? ((int32_t) lim_p - ofs) : ((int32_t) -lim_n + ofs);
@@ -508,7 +509,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (value < lim_n) value = lim_n;
 
   ofs = value; // we convert value to a 16bit value and reuse ofs
-  if (g_model.limitData[channel].revert) ofs = -ofs; // finally do the reverse.
+  if (limit->revert) ofs = -ofs; // finally do the reverse.
 
   if (safetyCh[channel] != -128) // if safety channel available for channel check
     ofs = calc100toRESX(safetyCh[channel]);
