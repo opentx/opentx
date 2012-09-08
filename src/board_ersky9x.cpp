@@ -221,7 +221,14 @@ inline void UART_Configure( uint32_t baudrate, uint32_t masterClock)
 
   /* Enable receiver and transmitter */
   pUart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
+  pUart->UART_IER = UART_IER_RXRDY ;
+  NVIC_EnableIRQ(UART0_IRQn) ;
+}
 
+void UART_Stop()
+{
+  CONSOLE_USART->UART_IDR = UART_IDR_RXRDY ;
+  NVIC_DisableIRQ(UART0_IRQn) ;
 }
 
 inline void UART3_Configure( uint32_t baudrate, uint32_t masterClock)
@@ -256,6 +263,12 @@ inline void UART3_Configure( uint32_t baudrate, uint32_t masterClock)
   pUart->UART_IER = UART_IER_RXRDY ;
   NVIC_EnableIRQ(UART1_IRQn) ;
 #endif
+}
+
+void UART3_Stop()
+{
+  BT_USART->UART_IDR = UART_IDR_RXRDY ;
+  NVIC_DisableIRQ(UART1_IRQn) ;
 }
 
 // USART0 configuration
@@ -770,7 +783,7 @@ void board_init()
 
   UART_Configure( 9600, Master_frequency ) ;
   UART2_Configure( 9600, Master_frequency ) ;             // Testing
-  UART3_Configure( 9600, Master_frequency ) ;             // Testing
+  UART3_Configure( 9600, Master_frequency ) ;             // TODO not needed, done after ...
 
   start_timer2() ;
   start_timer0() ;
@@ -1178,13 +1191,25 @@ void usb_mode()
   end_ppm_capture() ;
   end_spi() ;
   end_sound() ;
+
   TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
+  TC0->TC_CHANNEL[0].TC_CCR = TC_CCR0_CLKDIS ;
+  TC0->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;
+  TC0->TC_CHANNEL[2].TC_CCR = TC_CCR0_CLKDIS ;
+  TC1->TC_CHANNEL[0].TC_CCR = TC_CCR0_CLKDIS ;
+  TC1->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;
+  TC1->TC_CHANNEL[2].TC_CCR = TC_CCR0_CLKDIS ;
+  PWM->PWM_DIS = PWM_DIS_CHID0 | PWM_DIS_CHID1 | PWM_DIS_CHID2 | PWM_DIS_CHID3 ;  // Disable all
   NVIC_DisableIRQ(TC2_IRQn) ;
-  //      PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
+
   disable_main_ppm() ;
   //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
   //      NVIC_DisableIRQ(PWM_IRQn) ;
   disable_ssc() ;
+
+  UART_Stop();
+  UART3_Stop();
+
   sam_boot() ;
 }
 

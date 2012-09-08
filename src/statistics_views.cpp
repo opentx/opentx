@@ -91,8 +91,11 @@ void menuProcDebug(uint8_t event)
   {
 #if defined(PCBARM)
     case EVT_KEY_LONG(KEY_MENU):
-      MAh_used = 0;
+      g_eeGeneral.mAhUsed = 0;
+      g_eeGeneral.globalTimer = 0;
+      eeDirty(EE_GENERAL);
       Current_used = 0;
+      sessionTimer = 0;
       killEvents(event);
       AUDIO_KEYPAD_UP();
       break;
@@ -138,7 +141,8 @@ void menuProcDebug(uint8_t event)
   uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
   putsTelemetryValue(20*FW+2, 2*FH, Current_max*10*current_scale/8192, UNIT_RAW, 0);
   lcd_putsLeft(3*FH, STR_CPU_MAH);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, MAh_used + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
+  putsTime(17*FW, 3*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
 #endif
 
   lcd_putsLeft(4*FH, STR_CPU_TEMP);

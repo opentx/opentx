@@ -870,6 +870,14 @@ void eeLoadModel(uint8_t id)
 
     resetProto();
     resetAll();
+
+#if defined(PCBV4)
+    for (uint8_t i=0; i<MAX_TIMERS; i++) {
+      if (g_model.timersXtra[i].remanent) {
+        s_timerVal[i] = g_model.timersXtra[i].value;
+      }
+    }
+#endif
   }
 }
 

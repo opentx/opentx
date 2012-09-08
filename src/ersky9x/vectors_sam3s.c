@@ -84,7 +84,7 @@ void DAC_IRQHandler (void) __attribute__((weak));
 void PWM_IRQHandler (void) __attribute__((weak));
 void CRCCU_IRQHandler (void) __attribute__((weak));
 void ACC_IRQHandler (void) __attribute__((weak));
-void USBD_IRQHandler (void) __attribute__((weak));
+extern void USBD_IRQHandler (void);// __attribute__((weak));
 
 /*=========================================================================*/
 /*  DEFINE: All code exported                                              */
@@ -164,7 +164,7 @@ void RTT_IRQHandler (void) { while(1); }
 void WDT_IRQHandler (void) { while(1); }
 void PMC_IRQHandler (void) { while(1); }
 void EEFC_IRQHandler (void) { while(1); }
-void UART0_IRQHandler (void) { while(1); }
+//void UART0_IRQHandler (void) { while(1); }
 void UART1_IRQHandler (void) { while(1); }
 void SMC_IRQHandler (void) { while(1); }
 void PIOA_IRQHandler (void) { while(1); }
@@ -188,6 +188,6 @@ void ADC_IRQHandler (void) { while(1); }
 // void PWM_IRQHandler (void) { while(1); }
 void CRCCU_IRQHandler (void) { while(1); }
 void ACC_IRQHandler (void) { while(1); }
-void USBD_IRQHandler (void) { while(1); }
+// void USBD_IRQHandler (void) { while(1); }
 
 /*** EOF ***/

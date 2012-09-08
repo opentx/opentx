@@ -418,7 +418,7 @@
 #define TR_SELECT_MODEL        "Select Model"
 #define TR_CREATE_MODEL        "Create Model"
 #define TR_BACKUP_MODEL        "Backup Model"
-#define TR_DELETE_MODEL        "Delete Model" // TODO merged into DELETEMODEL?
+#define TR_DELETE_MODEL        "Delete Model"
 #define TR_RESTORE_MODEL       "Restore Model"
 #define TR_SDCARD_ERROR        "SDCARD Error"
 #define TR_NO_SDCARD           "No SDCARD"

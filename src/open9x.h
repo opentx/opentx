@@ -59,7 +59,7 @@ extern uint16_t Current_analogue;
 extern uint16_t Current_max;
 extern uint32_t Current_accumulator;
 extern uint32_t Current_used;
-extern uint16_t MAh_used;
+extern uint16_t sessionTimer;
 #endif
 
 #if defined(SIMU)
@@ -133,7 +133,9 @@ extern uint8_t s_bind_allowed;
 
 #if !defined(SIMU)
 #define assert(x)
+#if !defined(PCBARM) || !defined(DEBUG)
 #define printf printf_not_allowed
+#endif
 #endif
 
 // G: The following comments relate to the original stock PCB only
@@ -799,8 +801,12 @@ inline void resumeMixerCalculations()
 #define resumeMixerCalculations()
 #endif
 
-/// Markiert einen EEPROM-Bereich als dirty. der Bereich wird dann in
-/// eeCheck ins EEPROM zurueckgeschrieben.
+#if defined(PCBARM) || defined(PCBV4)
+void saveTimers();
+#else
+#define saveTimers()
+#endif
+
 void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size);
 void eeDirty(uint8_t msk);
 void eeCheck(bool immediately=false);
@@ -828,16 +834,12 @@ inline int16_t calc1000toRESX( register int32_t x)  // improve calc time by Pat 
     //  return x + x/32 - x/128 + x/512;
 }
 #else
-inline int16_t calc100toRESX(int8_t x)
-{
-  // return (int16_t)x*10 + x/4 - x/64;
-  return ((x*41)>>2) - x/64;
-}
-
+extern int16_t calc100toRESX(int8_t x);
 extern int16_t calc1000toRESX(int16_t x);
 #endif
 
 // *1000/1024 = x - x/32 + x/128
+// TODO flash saving?
 #define GPERC(x)  (x - x/32 + x/128)
 
 #if defined(PCBARM)

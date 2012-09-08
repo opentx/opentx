@@ -136,7 +136,14 @@ extern void putsChnLetter(uint8_t x, uint8_t y, uint8_t idx, uint8_t attr);
 
 extern void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att);
 extern void putsVBat(uint8_t x, uint8_t y, uint8_t att);
-extern void putsTime(uint8_t x,uint8_t y, int16_t tme, uint8_t att, uint8_t att2);
+
+#if defined(PCBARM)
+#define putstime_t int32_t
+#else
+#define putstime_t int16_t
+#endif
+
+extern void putsTime(uint8_t x,uint8_t y, putstime_t tme, uint8_t att, uint8_t att2);
 
 #define SOLID  0xff
 #define DOTTED 0x55

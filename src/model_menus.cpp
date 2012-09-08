@@ -339,6 +339,7 @@ void menuProcModelSelect(uint8_t event)
 #else
           if (g_eeGeneral.currModel != sub) {
             displayPopup(STR_LOADINGMODEL);
+            saveTimers();
             eeCheck(true); // force writing of current model data before this is changed
             g_eeGeneral.currModel = sub;
             STORE_GENERALVARS;
@@ -468,6 +469,7 @@ void menuProcModelSelect(uint8_t event)
       REFRESH(true);
       if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
         displayPopup(STR_LOADINGMODEL);
+        saveTimers();
         eeCheck(true); // force writing of current model data before this is changed
         if (g_eeGeneral.currModel != sub) {
           g_eeGeneral.currModel = sub;
@@ -572,6 +574,12 @@ enum menuProcModelItems {
   ITEM_MODEL_PROTOCOL_PARAMS
 };
 
+#if defined(PCBARM) || defined(PCBV4)
+#define FIELD_TIMER_MAX 3
+#else
+#define FIELD_TIMER_MAX 2
+#endif
+
 #define MODEL_PARAM_OFS (10*FW+2)
 void menuProcModel(uint8_t event)
 {
@@ -584,7 +592,7 @@ void menuProcModel(uint8_t event)
     s_rangecheck_mode = 0;
 #endif
 
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 14 : 13), {0,ZCHAR|(sizeof(g_model.name)-1),2,2,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 14 : 13), {0,ZCHAR|(sizeof(g_model.name)-1),FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
 
   uint8_t  sub = m_posVert - 1;
 
@@ -612,6 +620,9 @@ void menuProcModel(uint8_t event)
         putsTime(15*FW, y, timer->val,
             (attr && m_posHorz==1 ? blink:0),
             (attr && m_posHorz==2 ? blink:0) );
+#if defined(PCBARM) || defined(PCBV4)
+        lcd_putcAtt(20*FW+1, y, g_model.timersXtra[k-ITEM_MODEL_TIMER1].remanent ? 'R' : '-', (attr && m_posHorz==3) ? blink : 0);
+#endif
         if (attr && (s_editMode>0 || p1valdiff)) {
           div_t qr = div(timer->val, 60);
           switch (m_posHorz) {
@@ -619,18 +630,19 @@ void menuProcModel(uint8_t event)
               CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(MAX_PSWITCH+NUM_CSW));
               break;
             case 1:
-            {
               CHECK_INCDEC_MODELVAR(event, qr.quot, 0, 59);
               timer->val = qr.rem + qr.quot*60;
               break;
-            }
             case 2:
-            {
               qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
               timer->val -= qr.rem ;
               if ((int16_t)timer->val < 0) timer->val=0;
               break;
-            }
+#if defined(PCBARM) || defined(PCBV4)
+            case 3:
+              CHECK_INCDEC_MODELVAR(event, g_model.timersXtra[k-ITEM_MODEL_TIMER1].remanent, 0, 1);
+              break;
+#endif
           }
         }
         break;
@@ -807,6 +819,7 @@ void menuProcModel(uint8_t event)
             s_rangecheck_mode = (attr && m_posHorz==1 && s_editMode>0); // [MENU] key toggles range check mode
           }
 #endif
+
           if (attr && (m_posHorz==0 && (s_editMode>0 || p1valdiff)))
             CHECK_INCDEC_MODELVAR(event, g_model.modelId, 0, 99);
 

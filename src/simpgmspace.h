@@ -297,6 +297,8 @@ void eeprom_read_block (void *pointer_ram,
 
 #define OS_MutexID int
 #define OS_FlagID int
+#define OS_TID int
+#define OS_STK char
 
 #define E_OK   0
 

@@ -31,11 +31,14 @@
  *
  */
 
-#if defined(PCBARM) && !defined(SIMU)
+#include "open9x.h"
+
+#if defined(PCBARM)
 #define MIXER_STACK_SIZE    500
-#define MENUS_STACK_SIZE    1000
+#define MENUS_STACK_SIZE    2000
 #define AUDIO_STACK_SIZE    500
-#define BT_STACK_SIZE       100
+#define BT_STACK_SIZE       500
+#define DEBUG_STACK_SIZE    500
 
 OS_TID mixerTaskId;
 OS_STK mixerStack[MIXER_STACK_SIZE];
@@ -45,20 +48,24 @@ OS_STK menusStack[MENUS_STACK_SIZE];
 
 OS_TID audioTaskId;
 OS_STK audioStack[AUDIO_STACK_SIZE];
+
+#if defined(BLUETOOTH)
+OS_TID btTaskId;
+OS_STK btStack[BT_STACK_SIZE];
+#endif
+
+#if defined(DEBUG)
+OS_TID debugTaskId;
+OS_STK debugStack[DEBUG_STACK_SIZE];
+#endif
+
 OS_TCID audioTimer;
 OS_FlagID audioFlag;
 
 OS_MutexID sdMutex;
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
-
-#if defined(BLUETOOTH)
-OS_TID btTaskId;
-OS_STK btStack[BT_STACK_SIZE];
 #endif
-#endif
-
-#include "open9x.h"
 
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
@@ -446,6 +453,12 @@ void applyExpos(int16_t *anas)
 }
 
 #if !defined(PCBARM)
+int16_t calc100toRESX(int8_t x)
+{
+  // return (int16_t)x*10 + x/4 - x/64;
+  return ((x*41)>>2) - x/64;
+}
+
 int16_t calc1000toRESX(int16_t x) // improve calc time by Pat MacKenzie
 {
   // return x + x/32 - x/128 + x/512;
@@ -1287,7 +1300,7 @@ uint16_t Current_analogue;
 uint16_t Current_max;
 uint32_t Current_accumulator;
 uint32_t Current_used;
-uint16_t MAh_used;
+uint16_t sessionTimer;
 #define NUMBER_ANALOG   9
 #else
 #define NUMBER_ANALOG   8
@@ -1690,10 +1703,6 @@ void testFunc()
 #ifdef SIMU
   printf("testFunc\n"); fflush(stdout);
 #endif
-
-  while(1) {
-
-  }
 }
 #endif
 
@@ -2384,7 +2393,7 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
 #if defined(PPM_LIMITS_SYMETRICAL)
     if (g_model.limitData[ch].symetrical)
       val -= calc1000toRESX(g_model.limitData[ch].offset);
-#endif      
+#endif
     val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
     val -= RESX;
   }
@@ -2600,6 +2609,7 @@ void perMain()
     static uint32_t OneSecTimer;
     if (++OneSecTimer >= 100) {
       OneSecTimer -= 100 ;
+      sessionTimer += 1;
       Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
       Current_accumulator = 0 ;
     }
@@ -2746,7 +2756,7 @@ void perMain()
       else if (temperature >= g_eeGeneral.temperatureWarn+80) {
         AUDIO_TX_TEMP_HIGH();
       }
-      else if (g_eeGeneral.mAhWarn && (MAh_used + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
+      else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
         AUDIO_TX_MAH_HIGH();
       }
 #endif
@@ -3093,6 +3103,20 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   AUDIO_WARNING2();
 }
 
+#if defined(PCBARM) || defined(PCBV4)
+void saveTimers()
+{
+  for (uint8_t i=0; i<MAX_TIMERS; i++) {
+    if (g_model.timersXtra[i].remanent) {
+      if (g_model.timersXtra[i].value != s_timerVal[i]) {
+        g_model.timersXtra[i].value = s_timerVal[i];
+        eeDirty(EE_MODEL);
+      }
+    }
+  }
+}
+#endif
+
 #if defined(ROTARY_ENCODERS)
 // Rotary encoder interrupts
 #if defined(PCBARM)
@@ -3166,7 +3190,6 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #if defined(PCBARM)
   setVolume(g_eeGeneral.speakerVolume);
   PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
-  MAh_used = g_eeGeneral.mAhUsed;
 #endif
 
 #if defined(PCBARM) && defined(BLUETOOTH)
@@ -3257,56 +3280,60 @@ void mixerTask(void * pdata)
   }
 }
 
+#define MASSSTORAGE
+
 #ifdef MASSSTORAGE
 extern "C" {
-#define TRACE_DEBUG(...)
-#define TRACE_DEBUG_WP(...)
-#define TRACE_INFO(...)
-#define TRACE_WARNING(...)
-#define TRACE_WARNING_WP(...)
-#define TRACE_INFO_WP(...)
-#define TRACE_ERROR(...)
 
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/wdt.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/include/pio.h"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/include/pio_capture.h"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio_capture.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pmc.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio_it.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/tc.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/memories/include/Media.h"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDLun.h"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDescriptors.h"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSD.h"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/USBDDriver.h"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDDriver.h"
-#include "../../Atmel/sam3s/sam3s-ek/examples_usb/usb_massstorage/device_descriptor.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDLun.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDriver.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriver.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBD.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/USBD_HAL.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBDescriptors.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDFunction.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBRequests.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriverCallbacks.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDCallbacks.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDStateMachine.c"
-#include "../../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/SBCMethods.c"
+#define TRACE_DEBUG(x, ...) debugPuts("-D- " x)
+#define TRACE_DEBUG_WP(x, ...) debugPuts(x)
+#define TRACE_INFO(x, ...) debugPuts("-I- " x)
+#define TRACE_INFO_WP(x, ...) debugPuts(x)
+#define TRACE_WARNING(x, ...) debugPuts("-W- " x)
+#define TRACE_WARNING_WP(x, ...) debugPuts(x)
+#define TRACE_ERROR(x, ...) debugPuts("-W- " x)
+
+//#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/wdt.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libboard_sam3s-ek/source/syscalls.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/include/pio.h"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/include/pio_capture.h"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio_capture.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pmc.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio_it.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/tc.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/memories/include/Media.h"
+#include "../Atmel/sam3s/sam3s-ek/libraries/memories/Media.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/memories/MEDSdcard.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDLun.h"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDescriptors.h"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSD.h"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/USBDDriver.h"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDDriver.h"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDLun.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDriver.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriver.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBD.c"
+// #include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDCallbacks.c"
+// #include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriverCallbacks.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/USBD_HAL.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBDescriptors.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDFunction.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBRequests.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDStateMachine.c"
+#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/SBCMethods.c"
+
+#include "../Atmel/sam3s/sam3s-ek/examples_usb/usb_massstorage/device_descriptor.c"
 
 /*----------------------------------------------------------------------------
  *        Local definitions
  *----------------------------------------------------------------------------*/
 
 /** Maximum number of LUNs which can be defined. */
-#define MAX_LUNS            2
+#define MAX_LUNS            1
 
 /** Media index for different disks */
-#define DRV_RAMDISK         0    /** RAM disk */
-#define DRV_IFLASH          0    /** Internal flash */
 #define DRV_SDMMC           0    /** SD card */
-#define DRV_NAND            1    /** Nand flash */
 
 /** Delay for pushbutton debouncing (ms) */
 #define DEBOUNCE_TIME       10
@@ -3340,7 +3367,7 @@ extern "C" {
  *----------------------------------------------------------------------------*/
 
 /** MSD Driver Descriptors List */
-//extern const USBDDriverDescriptors msdDriverDescriptors;
+extern const USBDDriverDescriptors msdDriverDescriptors;
 
 /** Available medias. */
 Media medias[MAX_LUNS];
@@ -3382,12 +3409,6 @@ static const Pin nfCePin = BOARD_NF_CE_PIN;
 /** Nandflash ready/busy pin. */
 static const Pin nfRbPin = BOARD_NF_RB_PIN;
 
-/*----------------------------------------------------------------------------
- *        VBus monitoring (optional)
- *----------------------------------------------------------------------------*/
-
-/** VBus pin instance. */
-static const Pin pinVbus = PIN_USB_VBUS;
 
 static void _ConfigureUsbClock(void)
 {
@@ -3421,95 +3442,81 @@ static void _ConfigureTc0(void)
     TC_Start(TC0, 0);
 }
 
+
+/*-----------------------------------------------------------------------------
+ *         Callback re-implementation
+ *-----------------------------------------------------------------------------*/
+
 /**
- * Initialize Nand Flash for LUN
+ * Invoked after the USB driver has been initialized. By default, configures
+ * the UDP/UDPHS interrupt.
  */
-static void NandFlashInitialize(void)
+void USBDCallbacks_Initialized(void)
 {
-    unsigned char nfRc;
-    unsigned short nfBaseBlock = 0;
-    struct RawNandFlash *pRaw = (struct RawNandFlash*)&translatedNf;
-    struct NandFlashModel *pModel = (struct NandFlashModel*)&translatedNf;
-    unsigned int nfMamagedSize;
+  TRACE_INFO("USBDCallbacks_Initialized\n\r");
+    NVIC_EnableIRQ(UDP_IRQn);
+}
 
-    /* Configure SMC for NandFlash (8-bit) */
-    BOARD_ConfigureNandFlash(SMC);
-    /* Configure PIO for Nand Flash */
-    PIO_Configure(pPinsNf, PIO_LISTSIZE(pPinsNf));
+/**
+ * Invoked when a new SETUP request is received from the host. Forwards the
+ * request to the Mass Storage device driver handler function.
+ * \param request  Pointer to a USBGenericRequest instance.
+ */
+void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
+{
+  TRACE_INFO("USBDCallbacks_RequestReceived\n\r");
+  MSDDriver_RequestHandler(request);
+}
 
-    /* Nand Flash Initialize (ALL flash mapped) */
-    nfRc = RawNandFlash_Initialize(pRaw,
-                                   0,
-                                   cmdBytesAddr,
-                                   addrBytesAddr,
-                                   dataBytesAddr,
-                                   nfCePin,
-                                   nfRbPin);
-    if (nfRc) {
-        printf("Nand not found\n\r");
-        return;
+/**
+ * Invoked when the configuration of the device changes. Resets the mass
+ * storage driver.
+ * \param cfgnum New configuration number.
+ */
+void USBDDriverCallbacks_ConfigurationChanged(uint8_t cfgnum)
+{
+  TRACE_INFO("USBDDriverCallbacks_ConfigurationChanged\n\r");
+  MSDDriver_ConfigurationChangeHandler(cfgnum);
+}
+
+void USBDDriverCallbacks_InterfaceSettingChanged(
+    uint8_t interface,
+    uint8_t setting)
+{
+    TRACE_INFO("USBDDriverCallbacks_InterfaceSettingChanged\n\r");
+}
+
+void USBDCallbacks_Suspended(void)
+{
+  TRACE_INFO("USBDCallbacks_Suspended");
+}
+
+void USBDCallbacks_Resumed(void)
+{
+  TRACE_INFO("USBDCallbacks_Resumed");
+}
+
+void USBDCallbacks_Reset(void)
+{
+  TRACE_INFO("USBDCallbacks_Reset");
+}
+
+void MSDCallbacks_Data(uint8_t flowDirection,
+    uint32_t  dataLength,
+    uint32_t  fifoNullCount,
+    uint32_t  fifoFullCount)
+{
+    if (flowDirection) {
+
+        msdReadTotal += dataLength;
     }
     else {
-        printf("NF\tNb Blocks %d\n\r",
-               NandFlashModel_GetDeviceSizeInBlocks(pModel));
-        printf("\tBlock Size %dK\n\r",
-               NandFlashModel_GetBlockSizeInBytes(pModel)/1024);
-        printf("\tPage Size %d\n\r",
-               NandFlashModel_GetPageDataSize(pModel));
-        nfBaseBlock =
-            NF_RESERVE_SIZE / NandFlashModel_GetBlockSizeInBytes(pModel);
-    }
-    printf("NF disk will use area from %dM(B%d)\n\r",
-           NF_RESERVE_SIZE/1024/1024, nfBaseBlock);
-    printf("!! Erase the NF Disk? (y/n):");
-    updateDelay = INPUT_DELAY;
-    updateView = 0;
-    while(1) {
-        if(UART_IsRxReady()) {
-            char key = UART_GetChar();
-            UART_PutChar(key);
-            if (key == 'y') {
-                if (nfRc == 0) {
-                    unsigned int block;
-                    printf(" Erase from %d ... ", nfBaseBlock);
-                    for (block = nfBaseBlock;
-                     block < NandFlashModel_GetDeviceSizeInBlocks(pModel);
-                     block ++) {
-                        RawNandFlash_EraseBlock(pRaw, block);
-                    }
-                    printf("OK");
-                }
-            }
-            printf("\n\r");
-            break;
-        }
-        if (updateView) {
-            printf("No\n\r");
-            break;
-        }
-    }
-    nfMamagedSize = ((NandFlashModel_GetDeviceSizeInMBytes(pModel) - NF_RESERVE_SIZE/1024/1024) > NF_MANAGED_SIZE/1024/1024) ? \
-                        NF_MANAGED_SIZE/1024/1024 : (NandFlashModel_GetDeviceSizeInMBytes(pModel) - NF_RESERVE_SIZE/1024/1024);
-    if (TranslatedNandFlash_Initialize(&translatedNf,
-                                       0,
-                                       cmdBytesAddr,
-                                       addrBytesAddr,
-                                       dataBytesAddr,
-                                       nfCePin,
-                                       nfRbPin,
-                                       nfBaseBlock, nfMamagedSize * 1024 * 1024/NandFlashModel_GetBlockSizeInBytes(pModel))) {
-        // printf("Nand init error\n\r");
-        return;
+
+        msdWriteTotal += dataLength;
     }
 
-    /* Media initialize */
-    MEDNandFlash_Initialize(&medias[DRV_NAND], &translatedNf);
-
-    /* Initialize LUN */
-    LUN_Init(&(luns[DRV_NAND]), &(medias[DRV_NAND]),
-             msdBuffer, MSD_BUFFER_SIZE,
-             0, 0, 0, 0,
-             MSDCallbacks_Data);
+    msdFullCnt += fifoFullCount;
+    msdNullCnt += fifoNullCount;
 }
 
 /**
@@ -3519,93 +3526,70 @@ static void MemoryInitialization(void)
 {
     uint32_t i;
     for (i = 0; i < MAX_LUNS; i ++)
-        LUN_Init(&luns[i], 0, 0, 0, 0, 0, 0, 0, 0);
+      LUN_Init(&luns[i], 0, 0, 0, 0, 0, 0, 0, 0);
 
-    // TODO: Add LUN Init here
-
-    /* Nand Flash Init */
-    NandFlashInitialize();
-}
-
-static void ISR_Vbus(const Pin *pPin)
-{
-    /* Check current level on VBus */
-    if (PIO_Get(&pinVbus)) {
-
-        TRACE_INFO("VBUS conn\n\r");
-        USBD_Connect();
+    unsigned char rc;
+    if (1) {
+      // Blocked SD access function
+      rc = MEDSdcard_Initialize(&(medias[DRV_SDMMC]), 0);
+      if(1) {
+        LUN_Init(&(luns[DRV_SDMMC]), &(medias[DRV_SDMMC]),
+            msdBuffer, MSD_BUFFER_SIZE,
+            0, 0, 0, 0,
+            MSDCallbacks_Data);
+      }
     }
     else {
-
-        TRACE_INFO("VBUS discon\n\r");
-        USBD_Disconnect();
+      LUN_Eject(&luns[DRV_SDMMC]);
     }
 }
 
-static void VBus_Configure( void )
-{
-    TRACE_INFO("VBus configuration\n\r");
-
-    /* Configure PIO */
-    PIO_Configure(&pinVbus, 1);
-    PIO_ConfigureIt(&pinVbus, ISR_Vbus);
-    PIO_EnableIt(&pinVbus);
-
-    /* Check current level on VBus */
-    if (PIO_Get(&pinVbus)) {
-      lcd_putcAtt( 48, 24, 'O', DBLSIZE ) ;
-      lcd_putcAtt( 60, 24, 'K', DBLSIZE ) ;
-      refreshDisplay() ;
-
-        /* if VBUS present, force the connect */
-        TRACE_INFO("conn\n\r");
-        USBD_Connect();
-    }
-    else {
-      lcd_putcAtt( 48, 24, 'K', DBLSIZE ) ;
-      lcd_putcAtt( 60, 24, 'O', DBLSIZE ) ;
-      refreshDisplay() ;
-        USBD_Disconnect();
-    }
-}
-
+char usbState;
 
 void usbMassStorage()
 {
-  /* Disable watchdog */
-  WDT_Disable( WDT ) ;
+  static bool initialized = false;
 
-  /* If they are present, configure Vbus & Wake-up pins */
-  PIO_InitializeInterrupts(0);
+  if (!initialized) {
+    /* Disable watchdog */
+    // WDT_Disable( WDT ) ;
 
-  /* Enable UPLL for USB */
-  _ConfigureUsbClock();
+    /* If they are present, configure Vbus & Wake-up pins */
+    // PIO_InitializeInterrupts(0);
 
-  /* Start TC for timing & status update */
-  _ConfigureTc0();
+    /* Enable UPLL for USB */
+    _ConfigureUsbClock();
 
-  /* Initialize memories and LUN */
-  MemoryInitialization();
+    /* Start TC for timing & status update */
+    _ConfigureTc0();
 
-  /* BOT driver initialization */
-  MSDDriver_Initialize(&msdDriverDescriptors,
-                       luns, MAX_LUNS);
+    /* Initialize memories and LUN */
+    MemoryInitialization();
 
-  /* connect if needed */
-  VBus_Configure();
+    /* BOT driver initialization */
+    MSDDriver_Initialize(&msdDriverDescriptors,
+                           luns, MAX_LUNS);
 
-  /* Infinite loop */
-  updateDelay = UPDATE_DELAY;
-  updateView = 0;
-  while (1) {
+    /* connect if needed */
+    USBD_Connect();
 
-      /* Mass storage state machine */
-      if (USBD_GetState() < USBD_STATE_CONFIGURED) {
-      }
-      else {
-        MSDDriver_StateMachine();
-      }
+    /* Infinite loop */
+    updateDelay = UPDATE_DELAY;
+    updateView = 0;
 
+    initialized = true;
+  }
+
+  // while (1) {
+
+  usbState = '0' + USBD_GetState();
+
+  /* Mass storage state machine */
+  if (USBD_GetState() >= USBD_STATE_CONFIGURED) {
+
+    MSDDriver_StateMachine();
+  }
+#if 0
       /* Update status view */
       if (updateView) {
 
@@ -3626,54 +3610,23 @@ void usbMassStorage()
           msdNullCnt = 0;
           msdFullCnt = 0;
       }
-  }
+#endif
+//  }
 }
-}
+} // extern "C"
 #endif
 
 void menusTask(void * pdata)
 {
-  register uint32_t shutdown_state = 0;
-#ifdef MASSSTORAGE
-  uint8_t mass_storage = false;
-#endif
-
   open9xInit();
 
-  while (1) {
-    shutdown_state = check_soft_power();
+  while (check_soft_power() != e_power_off) {
 #ifdef MASSSTORAGE
-    if (shutdown_state == e_power_off) {
-      break;
-    }
-    else if (shutdown_state == e_power_usb) {
-      const char STR_SDCARD[] = "Massstorage"; // TODO translations
-      const char STR_BOOTLOADER[] = "Bootloader";
-      lcd_clear();
-      s_menu_count = 0;
-      s_menu[s_menu_count++] = STR_SDCARD;
-      s_menu[s_menu_count++] = STR_BOOTLOADER;
-      uint8_t event = getEvent(false);
-      const char * result = displayMenu(event);
-      if (result) {
-        if (result == STR_BOOTLOADER)
-          break;
-        else {
-          mass_storage = true;
-          break;
-          s_menu_count = 0;
-        }
-      }
-      refreshDisplay();
-    }
-#else
-    if (shutdown_state >= e_power_usb) {
-      break;
+    if (PIOC->PIO_PDSR & PIO_PC25) {
+      usbMassStorage();
     }
 #endif
-    else {
-      perMain();
-    }
+    perMain();
     CoTickDelay(5);  // 10ms for now
   }
 
@@ -3687,56 +3640,27 @@ void menusTask(void * pdata)
   hapticOff();
 #endif
 
-  lcd_clear() ;
+  lcd_clear();
 
-  if (shutdown_state != e_power_usb) {
-    displayPopup(STR_SHUTDOWN);
+  displayPopup(STR_SHUTDOWN);
 
+  saveTimers();
 
-    MAh_used += Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
-    if (g_eeGeneral.mAhUsed != MAh_used) {
-      g_eeGeneral.mAhUsed = MAh_used;
-      STORE_GENERALVARS;
-    }
+  uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
+  if (g_eeGeneral.mAhUsed != mAhUsed)
+    g_eeGeneral.mAhUsed = mAhUsed;
+  if (sessionTimer > 0)
+    g_eeGeneral.globalTimer += sessionTimer;
+  g_eeGeneral.unexpectedShutdown = 0;
 
-    g_eeGeneral.unexpectedShutdown = 0;
+  eeDirty(EE_GENERAL);
+  eeCheck(true);
 
-    eeDirty(EE_GENERAL);
-    eeCheck(true);
-  }
+  lcd_clear();
+  refreshDisplay();
+  lcdSetRefVolt(0);
 
-  soft_power_off();            // Only turn power off if necessary
-
-  if (shutdown_state == e_power_usb) {
-    lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
-    lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
-    lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
-    refreshDisplay() ;
-#ifdef MASSSTORAGE
-    if (mass_storage) {
-      stop_rotary_encoder();
-      endPdcUsartReceive() ;          // Terminate any serial reception
-      end_bt_tx_interrupt() ;
-      end_ppm_capture() ;
-      end_spi() ;
-      end_sound() ;
-      TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
-      NVIC_DisableIRQ(TC2_IRQn) ;
-      //      PWM->PWM_IDR1 = PWM_IDR1_CHID0 ;
-      disable_main_ppm() ;
-      //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
-      //      NVIC_DisableIRQ(PWM_IRQn) ;
-      disable_ssc() ;
-      usbMassStorage();
-    }
-    else
-#endif
-    {
-      usb_mode();
-    }
-  }
-
-  lcdSetRefVolt(0); // TODO before soft_power_off?
+  soft_power_off(); // Only turn power off if necessary
 }
 
 extern void audioTimerHandle(void);
@@ -3821,11 +3745,37 @@ int main(void)
 #endif
 
 #if defined(PCBARM)
+  if (check_soft_power() == e_power_usb) {
+    soft_power_off(); // Only turn power off if necessary
+
+#if defined(HAPTIC)
+    hapticOff();
+#endif
+
+    BACKLIGHT_ON;
+
+    g_eeGeneral.contrast = 25;
+
+    lcd_clear();
+
+    lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
+    lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
+    lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
+    refreshDisplay() ;
+
+    usb_mode();
+  }
+
   CoInitOS();
 
-#if defined(BLUETOOTH)
-  btTaskId = CoCreateTask(btTask, NULL, 19, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
+#if defined(DEBUG)
+  debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
 #endif
+
+#if defined(BLUETOOTH)
+  btTaskId = CoCreateTask(btTask, NULL, 15, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
+#endif
+
   mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
   menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
 
@@ -3871,6 +3821,7 @@ int main(void)
   // Time to switch off
   lcd_clear() ;
   displayPopup(STR_SHUTDOWN);
+  saveTimers();
   g_eeGeneral.unexpectedShutdown=0;
   eeDirty(EE_GENERAL);
   eeCheck(true);

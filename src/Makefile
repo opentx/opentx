@@ -425,6 +425,7 @@ ifeq ($(PCB), ARM)
   OPT = 2
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
+  EXTRAINCDIRS += ../Atmel/sam3s/sam3s-ek/libraries/usb/include/ ../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/ ../Atmel/sam3s/sam3s-ek/libraries/memories/
   BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
@@ -442,6 +443,10 @@ ifeq ($(PCB), ARM)
   	MODS:=${MODS}S
   	CPPDEFS += -DBLUETOOTH
   	CPPSRC += ersky9x/bluetooth.cpp 
+  endif
+  
+  ifeq ($(DEBUG), YES)
+  	CPPSRC += ersky9x/debug.cpp
   endif
   
 endif
@@ -843,7 +848,7 @@ OBJS = $(SRC:.c=.o)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o
-	$(CC) allsrc.o $(OBJS) -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
+	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
 else
 %.elf: allsrc.cpp
 	@echo

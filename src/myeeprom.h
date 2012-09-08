@@ -95,15 +95,16 @@ enum BeeperMode {
 #define EXTRA_ARM_FIELDS \
   uint8_t   speakerVolume; \
   uint8_t   backlightBright; \
-  int8_t    currentCalib;
+  int8_t    currentCalib
 #define EXTRA_GENERAL_FIELDS \
   int8_t   temperatureWarn; \
   uint8_t  mAhWarn; \
-  uint16_t mAhUsed;
+  uint16_t mAhUsed; \
+  uint32_t globalTimer
 #else
 #define EXTRA_ARM_FIELDS
 #define EXTRA_GENERAL_FIELDS \
-  int8_t   speakerVolume;
+  int8_t   speakerVolume
 #endif
 
 enum AdcInput {
@@ -162,11 +163,11 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   unexpectedShutdown:1;
   uint8_t   speakerPitch;
 
-  EXTRA_ARM_FIELDS
+  EXTRA_ARM_FIELDS;
 
   uint8_t   variants;
   
-  EXTRA_GENERAL_FIELDS
+  EXTRA_GENERAL_FIELDS;
 
 }) EEGeneral;
 
@@ -692,6 +693,16 @@ enum Dsm2Variants {
 #define BeepANACenter uint8_t
 #endif
 
+#if defined(PCBV4) || defined(PCBARM)
+PACK(typedef struct t_TimerDataExtra {
+  uint16_t remanent:1;
+  uint16_t value:15;
+}) TimerDataExtra;
+#define EXTRA_MODEL_FIELDS TimerDataExtra timersXtra[MAX_TIMERS]
+#else
+#define EXTRA_MODEL_FIELDS
+#endif
+
 PACK(typedef struct t_ModelData {
   char      name[10];             // must be first for eeLoadModelName
   TimerData timers[MAX_TIMERS];
@@ -727,6 +738,8 @@ PACK(typedef struct t_ModelData {
   TELEMETRY_DATA;
 
   ROTARY_ENCODER_ARRAY_EXTRA;
+
+  EXTRA_MODEL_FIELDS;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

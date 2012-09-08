@@ -32,6 +32,7 @@
  */
 
 #include "../open9x.h"
+#include "fifo.h"
 
 void btSetBaudrate(uint32_t index)
 {
@@ -43,40 +44,6 @@ void btInit()
 {
   btSetBaudrate(g_eeGeneral.btBaudrate);
 }
-
-class Fifo32
-{
-  public:
-    Fifo32():
-      widx(0),
-      ridx(0)
-    {
-    }
-
-    void push(uint8_t byte) {
-      uint32_t next = (widx+1) & 0x1f;
-      if (next != ridx) {
-        fifo[widx] = byte;
-        widx = next;
-      }
-    }
-
-    bool pop(uint8_t & byte) {
-      if (ridx == widx) {
-        return false;
-      }
-      else {
-        byte = fifo[ridx];
-        ridx = (ridx+1) & 0x1f;
-        return true;
-      }
-    }
-
-  protected:
-    uint8_t fifo[32];
-    volatile uint32_t widx;
-    volatile uint32_t ridx;
-};
 
 OS_FlagID btFlag;
 Fifo32 btTxFifo;

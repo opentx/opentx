@@ -476,7 +476,7 @@ void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t pat, uin
   }
 }
 
-void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
+void putsTime(uint8_t x, uint8_t y, putstime_t tme, uint8_t att, uint8_t att2)
 {
   div_t qr;
 
@@ -488,6 +488,16 @@ void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2)
   }
 
   qr = div(tme, 60);
+
+#if defined(PCBARM)
+  if (tme >= 3600) {
+    qr = div(qr.quot, 60);
+    lcd_outdezAtt(x+2*FWNUM, y, qr.quot, att);
+    lcd_putcAtt(lcdLastPos-((att & DBLSIZE) ? 1 : 0), y, 'h', att&att2);
+    lcd_outdezNAtt(lcdLastPos+FW, y, qr.rem, att2|LEADING0|LEFT, 2);
+    return;
+  }
+#endif
 
   lcd_outdezNAtt(x, y, qr.quot, att|LEADING0|LEFT, 2);
   lcd_putcAtt(lcdLastPos-((att & DBLSIZE) ? 1 : 0), y, ':', att&att2);
