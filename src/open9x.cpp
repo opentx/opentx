@@ -3280,7 +3280,7 @@ void mixerTask(void * pdata)
   }
 }
 
-#define MASSSTORAGE
+// #define MASSSTORAGE
 
 #ifdef MASSSTORAGE
 extern "C" {
