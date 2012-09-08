@@ -682,6 +682,7 @@ void checkLowEEPROM();
 void checkTHR();
 void checkSwitches();
 void checkAlarm();
+void checkAll();
 
 #define ADC_VREF_TYPE 0x40 // AVCC with external capacitor at AREF pin
 

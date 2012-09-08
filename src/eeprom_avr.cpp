@@ -349,7 +349,7 @@ uint16_t RlcFile::readRlc(uint8_t *buf,uint16_t i_len)
 {
   uint16_t i=0;
   for( ; 1; ){
-    uint8_t l=min<uint16_t>(m_zeroes,i_len-i);
+    uint8_t l = min<uint16_t>(m_zeroes,i_len-i);
     memclear(&buf[i], l);
     i        += l;
     m_zeroes -= l;
@@ -736,7 +736,7 @@ void RlcFile::nextRlcWriteStep()
      {
        uint8_t fri=0;
 
-       if (m_currBlk && ( fri = EeFsGetLink(m_currBlk))) {
+       if (m_currBlk && (fri=EeFsGetLink(m_currBlk))) {
          uint8_t prev_freeList = eeFs.freeList;
          eeFs.freeList = fri;
          while( EeFsGetLink(fri)) fri = EeFsGetLink(fri);
@@ -859,9 +859,7 @@ void eeLoadModel(uint8_t id)
     }
 
     if (pulsesStarted()) {
-      checkLowEEPROM();
-      checkTHR();
-      checkSwitches();
+      checkAll();
       resumePulses();
       clearKeyEvents();
     }

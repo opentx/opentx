@@ -941,7 +941,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
     val = (val * 46) / 25;
   }
 #endif
-  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT)); // TODO we could add this test inside lcd_outdezAtt!
+  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT));
   if (~att & NO_UNIT && unit != UNIT_RAW)
     lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
 }
@@ -1075,6 +1075,16 @@ void doSplash()
 #else
 #define doSplash()
 #endif
+
+void checkAll()
+{
+#if !defined(PCBARM)
+  checkLowEEPROM();
+#endif
+
+  checkTHR();
+  checkSwitches();
+}
 
 #if !defined(PCBARM)
 void checkLowEEPROM()
@@ -3218,12 +3228,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     }
 #endif
 
-#if !defined(PCBARM)
-    checkLowEEPROM();
-#endif
-
-    checkTHR();
-    checkSwitches();
+    checkAll();
     checkAlarm();
   }
 
