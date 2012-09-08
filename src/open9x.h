@@ -42,6 +42,10 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#if defined(PCBARM)
+// #define MASSSTORAGE
+#endif
+
 #define EEPROM_VARIANTS   (0x00)
 
 #if defined(PCBSTD)
@@ -836,11 +840,8 @@ inline int16_t calc1000toRESX( register int32_t x)  // improve calc time by Pat 
 #else
 extern int16_t calc100toRESX(int8_t x);
 extern int16_t calc1000toRESX(int16_t x);
+extern int16_t calcRESXto1000(int16_t x);
 #endif
-
-// *1000/1024 = x - x/32 + x/128
-// TODO flash saving?
-#define GPERC(x)  (x - x/32 + x/128)
 
 #if defined(PCBARM)
 // This doesn't need protection on this processor

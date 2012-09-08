@@ -57,7 +57,9 @@ uint8_t frskyTxBufferCount = 0;
 #endif
 uint8_t FrskyRxBufferReady = 0;
 int8_t frskyStreaming = -1;
+#if defined(WS_HOW_HIGH)
 uint8_t frskyUsrStreaming = 0;
+#endif
 uint8_t link_counter = 0;
 FrskyData frskyData;
 
@@ -685,9 +687,11 @@ NOINLINE void check_frsky()
   }
 
 #ifndef SIMU
+#if defined(WS_HOW_HIGH)
   if (frskyUsrStreaming > 0) {
     frskyUsrStreaming--;
   }
+#endif
 
   if (frskyStreaming > 0) {
     frskyStreaming--;

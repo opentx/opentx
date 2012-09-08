@@ -72,7 +72,9 @@ void doMainScreenGrphics()
   }
 }
 
+#if defined(MASSSTORAGE)
 extern char usbState;
+#endif
 
 void menuMainView(uint8_t event)
 {
@@ -210,7 +212,7 @@ void menuMainView(uint8_t event)
     if (unexpectedShutdown) {
       lcd_putcAtt(20*FW-3, 0*FH, '!', INVERS);
     }
-#if defined(PCBARM)
+#if defined(MASSSTORAGE)
     if (usbState >= '0')
       lcd_putcAtt(20*FW-3, 0*FH, usbState, INVERS);
 #endif
@@ -289,9 +291,9 @@ void menuMainView(uint8_t event)
           x0 = (i%4*9+3)*FW/2;
           y0 = i/4*FH+40;
 #if defined (DECIMALS_DISPLAYED)
-          lcd_outdezAtt( x0+4*FW , y0, GPERC(val), PREC1);
+          lcd_outdezAtt( x0+4*FW , y0, calcRESXto1000(val), PREC1);
 #else
-          lcd_outdezAtt( x0+4*FW , y0, GPERC(val)/10, 0); // G: Don't like the decimal part*
+          lcd_outdezAtt( x0+4*FW , y0, calcRESXto1000(val)/10, 0); // G: Don't like the decimal part*
 #endif
           break;
 

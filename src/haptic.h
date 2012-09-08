@@ -34,7 +34,7 @@
 #ifndef haptic_h
 #define haptic_h
 
-#define HAPTIC_QUEUE_LENGTH  3
+#define HAPTIC_QUEUE_LENGTH  2
 
 class hapticQueue
 {

@@ -2145,7 +2145,7 @@ void menuProcLimits(uint8_t _event)
     lcd_outdezAtt(13*FW, 0, PPM_CENTER+limitaddress(sub)->ppmCenter+g_chans512[sub]/2, 0);
     lcd_puts(13*FW, 0, STR_US);
 #else
-    lcd_outdezAtt(13*FW, 0, GPERC(g_chans512[sub]), PREC1);
+    lcd_outdezAtt(13*FW, 0, calcRESXto1000(g_chans512[sub]), PREC1);
 #endif
   }
 

@@ -468,6 +468,13 @@ int16_t calc1000toRESX(int16_t x) // improve calc time by Pat MacKenzie
   x-=y;
   return x+(y>>2);
 }
+
+int16_t calcRESXto1000(int16_t x)
+{
+// *1000/1024 = x - x/32 + x/128
+  return (x - x/32 + x/128);
+}
+
 #endif
 
 int16_t applyLimits(uint8_t channel, int32_t value)
@@ -3280,8 +3287,6 @@ void mixerTask(void * pdata)
   }
 }
 
-// #define MASSSTORAGE
-
 #ifdef MASSSTORAGE
 extern "C" {
 
@@ -3314,8 +3319,6 @@ extern "C" {
 #include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDriver.c"
 #include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriver.c"
 #include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBD.c"
-// #include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDCallbacks.c"
-// #include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriverCallbacks.c"
 #include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/USBD_HAL.c"
 #include "../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBDescriptors.c"
 #include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDFunction.c"
@@ -3454,7 +3457,7 @@ static void _ConfigureTc0(void)
 void USBDCallbacks_Initialized(void)
 {
   TRACE_INFO("USBDCallbacks_Initialized\n\r");
-    NVIC_EnableIRQ(UDP_IRQn);
+  NVIC_EnableIRQ(UDP_IRQn);
 }
 
 /**

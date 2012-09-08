@@ -186,7 +186,9 @@ extern uint8_t barsThresholds[THLD_MAX];
 
 // Global Fr-Sky telemetry data variables
 extern int8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
+#if defined(WS_HOW_HIGH)
 extern uint8_t frskyUsrStreaming;
+#endif
 
 #define SEND_MODEL_ALARMS 6
 extern uint8_t frskyAlarmsSendState;
@@ -195,8 +197,6 @@ extern FrskyData frskyData;
 
 extern uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 extern uint8_t frskyTxBufferCount;
-
-
 
 void FRSKY_Init(void);
 NOINLINE void check_frsky(void);

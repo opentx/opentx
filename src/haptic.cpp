@@ -73,7 +73,7 @@ void hapticQueue::heartbeat()
       buzzTimeLeft = queueHapticLength[t_queueRidx];
       buzzPause = queueHapticPause[t_queueRidx];
       if (!queueHapticRepeat[t_queueRidx]--) {
-        t_queueRidx = (t_queueRidx + 1) % HAPTIC_QUEUE_LENGTH;
+        t_queueRidx = (t_queueRidx + 1) & (HAPTIC_QUEUE_LENGTH-1);
       }
     }
   }
@@ -94,7 +94,7 @@ void hapticQueue::play(uint8_t tLen, uint8_t tPause, uint8_t tFlags)
 
   tFlags &= 0x0f;
   if (tFlags) {
-    uint8_t next_queueWidx = (t_queueWidx + 1) % HAPTIC_QUEUE_LENGTH;
+    uint8_t next_queueWidx = (t_queueWidx + 1) & (HAPTIC_QUEUE_LENGTH-1);
     if (next_queueWidx != t_queueRidx) {
       queueHapticLength[t_queueWidx] = tLen;
       queueHapticPause[t_queueWidx] = tPause;
