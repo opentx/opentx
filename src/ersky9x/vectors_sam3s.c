@@ -84,7 +84,7 @@ void DAC_IRQHandler (void) __attribute__((weak));
 void PWM_IRQHandler (void) __attribute__((weak));
 void CRCCU_IRQHandler (void) __attribute__((weak));
 void ACC_IRQHandler (void) __attribute__((weak));
-extern void USBD_IRQHandler (void);// __attribute__((weak));
+void USBD_IRQHandler (void) __attribute__((weak));
 
 /*=========================================================================*/
 /*  DEFINE: All code exported                                              */
