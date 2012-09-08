@@ -801,11 +801,12 @@ void menuProcModel(uint8_t event)
           lcd_putsLeft(y, STR_RXNUM);
           lcd_outdezNAtt(MODEL_PARAM_OFS-(IS_DSM2_PROTOCOL(protocol) ? 0 : 3*FW), y, g_model.modelId, ((attr && m_posHorz==0) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0) | LEADING0|LEFT, 2);
 
+#if defined(DSM2)
           if (IS_DSM2_PROTOCOL(protocol)) { // RANGE CHECK
             lcd_putsnAtt(MODEL_PARAM_OFS+4*FW, y, PSTR(" RANGE<range")+6*(s_rangecheck_mode), 6, (m_posHorz==1 ? attr : 0));
             s_rangecheck_mode = (attr && m_posHorz==1 && s_editMode>0); // [MENU] key toggles range check mode
           }
-
+#endif
           if (attr && (m_posHorz==0 && (s_editMode>0 || p1valdiff)))
             CHECK_INCDEC_MODELVAR(event, g_model.modelId, 0, 99);
 
