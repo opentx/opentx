@@ -141,16 +141,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   }
 #endif
 
-  if (newval > i_max) {
-    newval = i_max;
+  if (newval > i_max || newval < i_min) {
+    newval = (newval > i_max ? i_max : i_min);
     killEvents(event);
     AUDIO_WARNING2();
   }
-  if (newval < i_min) {
-    newval = i_min;
-    killEvents(event);
-    AUDIO_WARNING2();
-  }
+
   if (newval != val) {
     if ((~i_flags & NO_INCDEC_MARKS) && (newval==0 || newval==-100 || newval==+100)) {
       pauseEvents(event); // delay before auto-repeat continues
