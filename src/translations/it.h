@@ -97,37 +97,37 @@
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)
-#define TR_VVARIO        "Vario\0       "
+#define TR_VVARIO        "Vario\0"
 #else
-#define TR_VVARIO        "[Vario]\0     "
+#define TR_VVARIO        "[Vario]\0"
 #endif
 #if defined(AUDIO)
-#define TR_SOUND         "Suona\0       "
+#define TR_SOUND         "Suona\0"
 #else
-#define TR_SOUND         "Beep\0        "
+#define TR_SOUND         "Beep\0"
 #endif
 #if defined(HAPTIC)
-#define TR_HAPTIC        "Vibrazione\0  "
+#define TR_HAPTIC        "Vibrazione\0"
 #else
 #define TR_HAPTIC        "[Vibrazione]\0"
 #endif
 #if defined(VOICE)
-#define TR_PLAY_TRACK    "Brano\0       "
+#define TR_PLAY_TRACK    "Brano\0"
 #define TR_PLAY_VALUE    "Leggi Valore\0"
 #else
-#define TR_PLAY_TRACK    "[Brano]\0     "
+#define TR_PLAY_TRACK    "[Brano]\0"
 #define TR_PLAY_VALUE    "[Leggi Valore]"
 #endif
 #if defined(PCBARM)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs\0 "
+#define TR_SDCLOGS       "SDCARD Logs\0"
 #else
 #define TR_SDCLOGS       "[SDCARD Logs]"
 #endif
-#define TR_FSW_VOLUME    "Volume\0      "
+#define TR_FSW_VOLUME    "Volume\0"
 #elif defined(PCBV4)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs  "
+#define TR_SDCLOGS       "SDCARD Logs"
 #else
 #define TR_SDCLOGS       "[SDCARD Logs]"
 #endif
@@ -175,7 +175,7 @@
 #if defined(WS_HOW_HIGH)
 #define TR_VTELPROTO     "NoneHub WSHH"
 #elif defined(FRSKY_HUB)
-#define TR_VTELPROTO     "NoneHub "
+#define TR_VTELPROTO     "NoneHub"
 #else
 #define TR_VTELPROTO     ""
 #endif
@@ -244,7 +244,7 @@
 #define TR_NAME         "Nome"
 #define TR_TIMER        "Timer"
 #define TR_ELIMITS      "LimitiEx"
-#define TR_ETRIMS       "TrimEx "
+#define TR_ETRIMS       "TrimEx"
 #define TR_TRIMINC      "Inc Trim"
 #define TR_TTRACE       "T-Trace"
 #define TR_TTRIM        "T-Trim"
@@ -293,8 +293,8 @@
 #define TR_RANGE        "Range"
 #define TR_BAR          "Barra"
 #define TR_ALARM        "Allarme"
-#define TR_USRDATA      "Dati   "
-#define TR_BLADES       "Pale  "
+#define TR_USRDATA      "Dati"
+#define TR_BLADES       "Pale"
 #define TR_BARS         "Barre"
 #define TR_DISPLAY      "Display"
 #ifdef AUDIO
@@ -317,11 +317,11 @@
 #define TR_MINUTEBEEP   "Beep minuto"
 #define TR_BEEPCOUNTDOWN "Beep cont.rov."
 #define TR_FLASHONBEEP  "Lamp. al beep"
-#define TR_BLMODE  "Switch ill. "
+#define TR_BLMODE  "Switch ill."
 #define TR_BLDELAY "Spegni ill.dopo"
 #define TR_SPLASHSCREEN  "Schermata avvio"
-#define TR_THROTTLEWARNING "All. Thr  "
-#define TR_SWITCHWARNING "Avv. SW.      "
+#define TR_THROTTLEWARNING "All. Thr"
+#define TR_SWITCHWARNING "Avv. SW."
 #define TR_MEMORYWARNING "Avviso Memoria"
 #define TR_ALARMWARNING "Avviso Allarme"
 #define TR_TIMEZONE     "Ora locale"
