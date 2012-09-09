@@ -829,7 +829,7 @@ inline int32_t calc100toRESX(register int8_t x)
   return ((uint32_t)x*655)>>6 ;
 }
 
-inline int16_t calc1000toRESX( register int32_t x)  // improve calc time by Pat MacKenzie
+inline int16_t calc1000toRESX(register int32_t x)  // improve calc time by Pat MacKenzie
 {
     register int32_t y = x>>5;
     x+=y;
@@ -838,6 +838,13 @@ inline int16_t calc1000toRESX( register int32_t x)  // improve calc time by Pat 
     return x+(y>>2);
     //  return x + x/32 - x/128 + x/512;
 }
+
+inline int16_t calcRESXto1000(register int32_t x)
+{
+// *1000/1024 = x - x/32 + x/128
+  return (x - x/32 + x/128 - x/512);
+}
+
 #else
 extern int16_t calc100toRESX(int8_t x);
 extern int16_t calc1000toRESX(int16_t x);
