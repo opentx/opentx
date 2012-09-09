@@ -97,34 +97,34 @@
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)
-#define TR_VVARIO        "Vario\0"
+#define TR_VVARIO        "Vario\0       "
 #else
-#define TR_VVARIO        "[Vario]\0"
+#define TR_VVARIO        "[Vario]\0     "
 #endif
 #if defined(AUDIO)
-#define TR_SOUND         "Suona\0"
+#define TR_SOUND         "Suona\0       "
 #else
-#define TR_SOUND         "Beep\0"
+#define TR_SOUND         "Beep\0        "
 #endif
 #if defined(HAPTIC)
-#define TR_HAPTIC        "Vibrazione\0"
+#define TR_HAPTIC        "Vibrazione\0  "
 #else
 #define TR_HAPTIC        "[Vibrazione]\0"
 #endif
 #if defined(VOICE)
-#define TR_PLAY_TRACK    "Brano\0"
+#define TR_PLAY_TRACK    "Brano\0       "
 #define TR_PLAY_VALUE    "Leggi Valore\0"
 #else
-#define TR_PLAY_TRACK    "[Brano]\0"
+#define TR_PLAY_TRACK    "[Brano]\0     "
 #define TR_PLAY_VALUE    "[Leggi Valore]"
 #endif
 #if defined(PCBARM)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs\0"
+#define TR_SDCLOGS       "SDCARD Logs\0 "
 #else
 #define TR_SDCLOGS       "[SDCARD Logs]"
 #endif
-#define TR_FSW_VOLUME    "Volume\0"
+#define TR_FSW_VOLUME    "Volume\0      "
 #elif defined(PCBV4)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SDCARD Logs"
@@ -175,7 +175,7 @@
 #if defined(WS_HOW_HIGH)
 #define TR_VTELPROTO     "NoneHub WSHH"
 #elif defined(FRSKY_HUB)
-#define TR_VTELPROTO     "NoneHub"
+#define TR_VTELPROTO     "NoneHub "
 #else
 #define TR_VTELPROTO     ""
 #endif
