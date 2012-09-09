@@ -815,7 +815,7 @@ void menuProcModel(uint8_t event)
 
 #if defined(DSM2)
           if (IS_DSM2_PROTOCOL(protocol)) { // RANGE CHECK
-            lcd_putsnAtt(MODEL_PARAM_OFS+4*FW, y, PSTR(" RANGE<range")+6*(s_rangecheck_mode), 6, (m_posHorz==1 ? attr : 0));
+            lcd_putsnAtt(MODEL_PARAM_OFS+5*FW, y, PSTR("RANGErange")+5*(s_rangecheck_mode), 5, (m_posHorz==1 ? attr : 0));
             s_rangecheck_mode = (attr && m_posHorz==1 && s_editMode>0); // [MENU] key toggles range check mode
           }
 #endif
