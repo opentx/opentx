@@ -298,6 +298,7 @@ void eeprom_read_block (void *pointer_ram,
 #define OS_MutexID int
 #define OS_FlagID int
 #define OS_TID int
+#define OS_TCID int
 #define OS_STK char
 
 #define E_OK   0
@@ -313,6 +314,8 @@ void eeprom_read_block (void *pointer_ram,
 #define CoLeaveMutexSection(...)
 #define CoTickDelay(...)
 #define CoCreateFlag(...) 0
-#define UART3_Configure(a, b) a=a
+#define UART3_Configure(...)
+#define UART_Stop(...)
+#define UART3_Stop(...)
 
 #endif
