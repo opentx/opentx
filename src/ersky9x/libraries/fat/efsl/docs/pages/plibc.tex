@@ -1,0 +1,62 @@
+This section of the manual describes the minimalistic C library functions that were
+created for EFSL. Since EFSL was designed for ultimate portability, no assumptions about the
+workings or even the presence of a C library could be made. Fortunately only very few functions
+had to be created that mimicked the operations of well known C library functions.
+\\
+\begin{longtable}{|p{0.35\textwidth}|p{0.65\textwidth}|}
+	
+	\hline
+	\multicolumn{2}{|c|}{
+		\textbf{PLibC Functions}
+	} \\
+	\multicolumn{2}{|c|}{} \\
+	\hline
+	\hline
+	\endfirsthead
+	
+	\hline
+	\multicolumn{2}{|c|}{\textbf{PLibC Functions (continued)}} \\
+	\hline
+	\endhead
+
+	\hline
+	\endfoot
+	
+	\hline 
+	\endlastfoot
+
+	\code{strMatch} & \code{euint16 strMatch(eint8* bufa, eint8*bufb,euint32 n)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+	This function compares the strings \code{bufa} and \code{bufb} for \code{n} bytes.
+	It will return the number of bytes in that section that does not match. So if you
+	want to compare two strings the return value should be 0, for the strings to match over
+	the entire \code{n} area.
+	}\\
+	\hline
+	
+	\code{memCpy} & \code{void memCpy(void* psrc, void* pdest, euint32 size)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+	This function will copy the contents at location \code{psrc} to location \code{pdest} over
+	a range of \code{size} bytes.
+	}\\
+	\hline
+
+	\code{memClr} & \code{void memClr(void *pdest,euint32 size)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+	This function will set the memory at \code{pdest} to value \code{0x00} for a range of
+	\code{size} bytes.
+	}\\
+	\hline
+
+	\code{memSet} & \code{void memSet(void *pdest,euint32 size,euint8 data)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+	This function will set the memory at \code{pdest} to value \code{data} for a range of
+	\code{size} bytes.
+	}\\
+	\hline
+\end{longtable}
+

@@ -34,6 +34,8 @@
 ****************************************************************************/
 #define __VECTORS_SAM3S_C__
 
+#include "debug.h"
+
 /*=========================================================================*/
 /*  DEFINE: All extern Data                                                */
 /*=========================================================================*/
@@ -84,7 +86,7 @@ void DAC_IRQHandler (void) __attribute__((weak));
 void PWM_IRQHandler (void) __attribute__((weak));
 void CRCCU_IRQHandler (void) __attribute__((weak));
 void ACC_IRQHandler (void) __attribute__((weak));
-void USBD_IRQHandler (void) __attribute__((weak));
+extern void USBD_IrqHandler (void); //  TODO __attribute__((weak));
 
 /*=========================================================================*/
 /*  DEFINE: All code exported                                              */
@@ -143,7 +145,7 @@ void (* const gVectors[])(void) =
    PWM_IRQHandler,      /*  31 PWM */
    CRCCU_IRQHandler,    /*  32 CRC Calculation Unit */
    ACC_IRQHandler,      /*  33 Analog Comparator */
-   USBD_IRQHandler,     /*  34 USB Device Port */
+   USBD_IrqHandler,     /*  34 USB Device Port */
    0                    /*  35 not used */
 }; /* gVectors */
 
@@ -164,7 +166,6 @@ void RTT_IRQHandler (void) { while(1); }
 void WDT_IRQHandler (void) { while(1); }
 void PMC_IRQHandler (void) { while(1); }
 void EEFC_IRQHandler (void) { while(1); }
-//void UART0_IRQHandler (void) { while(1); }
 void UART1_IRQHandler (void) { while(1); }
 void SMC_IRQHandler (void) { while(1); }
 void PIOA_IRQHandler (void) { while(1); }
@@ -173,21 +174,14 @@ void PIOC_IRQHandler (void) { while(1); }
 void USART0_IRQHandler (void) { while(1); }
 void USART1_IRQHandler (void) { while(1); }
 void MCI_IRQHandler (void) { while(1); }
-// void TWI0_IRQHandler (void) { while(1); }
 void TWI1_IRQHandler (void) { while(1); }
-// void SPI_IRQHandler (void) { while(1); }
 void SSC_IRQHandler (void) { while(1); }
 void TC0_IRQHandler (void) { while(1); }
 void TC1_IRQHandler (void) { while(1); }
-// void TC2_IRQHandler (void) { while(1); }
-// void TC3_IRQHandler (void) { while(1); }
 void TC4_IRQHandler (void) { while(1); }
 void TC5_IRQHandler (void) { while(1); }
 void ADC_IRQHandler (void) { while(1); }
-// void DAC_IRQHandler (void) { while(1); }
-// void PWM_IRQHandler (void) { while(1); }
 void CRCCU_IRQHandler (void) { while(1); }
 void ACC_IRQHandler (void) { while(1); }
-// void USBD_IRQHandler (void) { while(1); }
 
 /*** EOF ***/

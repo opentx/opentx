@@ -1,0 +1,16 @@
+COPT=-g3 -Wall -Os -mmcu=atmega128
+INCLUDEDIRS=-Iinc -Iconf
+CFLAGS=$(COPT) $(INCLUDEDIRS)
+CC=avr-gcc
+AR=avr-ar
+OBJCOPY=avr-objcopy
+OBJ=src/efs.o src/plibc.o src/disc.o src/partition.o src/time.o src/fs.o src/fat.o src/file.o src/dir.o src/mkfs.o src/debug.o src/ioman.o src/ui.o src/extract.o src/interfaces/atmega128.o src/interfaces/sd.o
+
+all: lib
+
+lib: $(OBJ)
+	$(AR) rcs libefsl.a $(OBJ)
+	
+clean :
+	rm -f $(OBJ) libefsl.a
+

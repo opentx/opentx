@@ -35,13 +35,41 @@
 #define debug_h
 
 #if defined(DEBUG)
-void debugPutc(const uint8_t c);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void debugPutc(const char c);
 void debugPuts(const char *string, ...);
+void dump(unsigned char *data, unsigned int size);
+
+#ifdef __cplusplus
+}
+#endif
+
+#define TRACE_DEBUG(...) debugPuts("-D- " __VA_ARGS__)
+#define TRACE_DEBUG_WP(...) debugPuts(__VA_ARGS__)
+#define TRACE_INFO(...) debugPuts("-I- " __VA_ARGS__)
+#define TRACE_INFO_WP(...) debugPuts(__VA_ARGS__)
+#define TRACE_WARNING(...) debugPuts("-W- " __VA_ARGS__)
+#define TRACE_WARNING_WP(...) debugPuts(__VA_ARGS__)
+#define TRACE_ERROR(...) debugPuts("-E- " __VA_ARGS__)
+#define DUMP(data, size) dump(data, size)
+
 void debugTask(void* pdata);
+
 #else
-#define debugPutc(...)
-#define debugPuts(...)
-#define debugTask(...)
+
+#define TRACE_DEBUG(...) { }
+#define TRACE_DEBUG_WP(...) { }
+#define TRACE_INFO(...) { }
+#define TRACE_INFO_WP(...) { }
+#define TRACE_WARNING(...) { }
+#define TRACE_WARNING_WP(...) { }
+#define TRACE_ERROR(...) { }
+#define DUMP(...) { }
+
 #endif
 
 #endif

@@ -41,7 +41,7 @@
  * This function is synchronous (i.e. uses polling).
  * c  Character to send.
  */
-void debugPutc(const uint8_t c)
+void debugPutc(const char c)
 {
   Uart *pUart = CONSOLE_USART;
 
@@ -66,6 +66,21 @@ void debugPuts(const char *format, ...)
   while (*t) {
     debugPutc(*t++);
   }
+}
+
+void dump(unsigned char *data, unsigned int size)
+{
+ debugPuts("DUMP %d bytes ...\n\r", size);
+ unsigned int i = 0, j=0;
+ while (i*32+j < size) {
+   debugPuts("%.2X ", data[i*32+j]);
+   j++;
+   if (j==32) {
+     i++; j=0;
+     debugPuts("\n\r");
+   }
+ }
+ debugPuts("\n\r");
 }
 
 Fifo32 debugFifo;

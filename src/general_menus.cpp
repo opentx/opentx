@@ -81,23 +81,6 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 };
 
 #define GENERAL_PARAM_OFS   (2+16*FW)
-NOINLINE int8_t selectMenuItem(uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event)
-{
-  lcd_putsLeft(y, label);
-  if (values) lcd_putsiAtt(GENERAL_PARAM_OFS, y, values, value-min, attr) ;
-  if (attr) CHECK_INCDEC_GENVAR(event, value, min, max);
-  return value;
-}
-
-NOINLINE uint8_t onoffMenuItem(uint8_t value, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event )
-{
-#if defined(GRAPHICS)
-  menu_lcd_onoff(GENERAL_PARAM_OFS, y, value, attr);
-  return selectMenuItem(y, label, NULL, value, 0, 1, attr, event);
-#else
-  return selectMenuItem(y, label, STR_OFFON, value, 0, 1, attr, event);
-#endif
-}
 
 #if defined(GRAPHICS)
 void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
@@ -109,11 +92,11 @@ void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 #define SLIDER(y, value, min, max, label, values, event, attr) { \
           int8_t tmp = value; \
           displaySlider(GENERAL_PARAM_OFS, y, tmp, attr); \
-          value = selectMenuItem(y, label, NULL, tmp, min, max, attr, event); \
+          value = selectMenuItem(GENERAL_PARAM_OFS, y, label, NULL, tmp, min, max, attr, event); \
         }
 #else
 #define SLIDER(y, value, min, max, label, values, event, attr) \
-          value = selectMenuItem(y, label, values, value, min, max, attr, event)
+          value = selectMenuItem(GENERAL_PARAM_OFS, y, label, values, value, min, max, attr, event)
 #endif
 
 enum menuProcSetupItems {
@@ -223,7 +206,7 @@ void menuProcSetup(uint8_t event)
 
     switch(k) {
       case ITEM_SETUP_BEEPER_MODE:
-        g_eeGeneral.beeperMode = selectMenuItem(y, STR_BEEPERMODE, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, attr, event);
+        g_eeGeneral.beeperMode = selectMenuItem(GENERAL_PARAM_OFS, y, STR_BEEPERMODE, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, attr, event);
 #if defined(FRSKY)
         if (attr && checkIncDec_Ret) FRSKY_setModelAlarms();
 #endif
@@ -273,7 +256,7 @@ void menuProcSetup(uint8_t event)
 
 #ifdef HAPTIC
       case ITEM_SETUP_HAPTIC_MODE:
-        g_eeGeneral.hapticMode = selectMenuItem(y, STR_HAPTICMODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
+        g_eeGeneral.hapticMode = selectMenuItem(GENERAL_PARAM_OFS, y, STR_HAPTICMODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
         break;
 
       case ITEM_SETUP_HAPTIC_LENGTH:
@@ -291,7 +274,7 @@ void menuProcSetup(uint8_t event)
 
 #if defined(PCBARM)
       case ITEM_SETUP_OPTREX_DISPLAY:
-        g_eeGeneral.optrexDisplay = onoffMenuItem( g_eeGeneral.optrexDisplay, y, STR_OPTREX_DISPLAY, attr, event ) ;
+        g_eeGeneral.optrexDisplay = onoffMenuItem( g_eeGeneral.optrexDisplay, GENERAL_PARAM_OFS, y, STR_OPTREX_DISPLAY, attr, event );
         break;
 
       case ITEM_SETUP_BRIGHTNESS:
@@ -344,7 +327,7 @@ void menuProcSetup(uint8_t event)
 
 #if defined(BLUETOOTH)
       case ITEM_SETUP_BT_BAUDRATE:
-        g_eeGeneral.btBaudrate = selectMenuItem(y, PSTR("BT Baudrate"), PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
+        g_eeGeneral.btBaudrate = selectMenuItem(GENERAL_PARAM_OFS, y, PSTR("BT Baudrate"), PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           btInit();
         }
@@ -353,7 +336,7 @@ void menuProcSetup(uint8_t event)
 
 #if defined(ROTARY_ENCODERS)
       case ITEM_SETUP_RE_NAVIGATION:
-        g_eeGeneral.reNavigation = selectMenuItem(y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, ROTARY_ENCODERS, attr, event);
+        g_eeGeneral.reNavigation = selectMenuItem(GENERAL_PARAM_OFS, y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, ROTARY_ENCODERS, attr, event);
         if (attr && checkIncDec_Ret) {
           for (uint8_t i=0; i<ROTARY_ENCODERS; i++)
             g_rotenc[i] = 0;
@@ -364,27 +347,27 @@ void menuProcSetup(uint8_t event)
 #endif
 
       case ITEM_SETUP_FILTER_ADC:
-        g_eeGeneral.filterInput = selectMenuItem(y, STR_FILTERADC, STR_VFILTERADC, g_eeGeneral.filterInput, 0, 2, attr, event);
+        g_eeGeneral.filterInput = selectMenuItem(GENERAL_PARAM_OFS, y, STR_FILTERADC, STR_VFILTERADC, g_eeGeneral.filterInput, 0, 2, attr, event);
         break;
 
       case ITEM_SETUP_THROTTLE_REVERSED:
-        g_eeGeneral.throttleReversed = onoffMenuItem( g_eeGeneral.throttleReversed, y, STR_THROTTLEREVERSE, attr, event ) ;
+        g_eeGeneral.throttleReversed = onoffMenuItem( g_eeGeneral.throttleReversed, GENERAL_PARAM_OFS, y, STR_THROTTLEREVERSE, attr, event ) ;
         break;
 
       case ITEM_SETUP_MINUTE_BEEP:
-        g_eeGeneral.minuteBeep = onoffMenuItem( g_eeGeneral.minuteBeep, y, STR_MINUTEBEEP, attr, event ) ;
+        g_eeGeneral.minuteBeep = onoffMenuItem( g_eeGeneral.minuteBeep, GENERAL_PARAM_OFS, y, STR_MINUTEBEEP, attr, event ) ;
         break;
 
       case ITEM_SETUP_COUNTDOWN_BEEP:
-        g_eeGeneral.preBeep = onoffMenuItem( g_eeGeneral.preBeep, y, STR_BEEPCOUNTDOWN, attr, event ) ;
+        g_eeGeneral.preBeep = onoffMenuItem( g_eeGeneral.preBeep, GENERAL_PARAM_OFS, y, STR_BEEPCOUNTDOWN, attr, event ) ;
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
-        g_eeGeneral.flashBeep = onoffMenuItem( g_eeGeneral.flashBeep, y, STR_FLASHONBEEP, attr, event ) ;
+        g_eeGeneral.flashBeep = onoffMenuItem( g_eeGeneral.flashBeep, GENERAL_PARAM_OFS, y, STR_FLASHONBEEP, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_MODE:
-        g_eeGeneral.backlightMode = selectMenuItem(y, STR_BLMODE, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
+        g_eeGeneral.backlightMode = selectMenuItem(GENERAL_PARAM_OFS, y, STR_BLMODE, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:
@@ -398,7 +381,7 @@ void menuProcSetup(uint8_t event)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
         uint8_t b = 1-g_eeGeneral.disableSplashScreen;
-        g_eeGeneral.disableSplashScreen = 1 - onoffMenuItem( b, y, STR_SPLASHSCREEN, attr, event ) ;
+        g_eeGeneral.disableSplashScreen = 1 - onoffMenuItem( b, GENERAL_PARAM_OFS, y, STR_SPLASHSCREEN, attr, event ) ;
         break;
       }
 #endif
@@ -406,14 +389,14 @@ void menuProcSetup(uint8_t event)
       case ITEM_SETUP_MEMORY_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem( b, y, STR_MEMORYWARNING, attr, event ) ;
+        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem( b, GENERAL_PARAM_OFS, y, STR_MEMORYWARNING, attr, event ) ;
         break;
       }
 
       case ITEM_SETUP_ALARM_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem( b, y, STR_ALARMWARNING, attr, event ) ;
+        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem( b, GENERAL_PARAM_OFS, y, STR_ALARMWARNING, attr, event ) ;
         break;
       }
 
@@ -425,7 +408,7 @@ void menuProcSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_GPSFORMAT:
-        g_eeGeneral.gpsFormat = selectMenuItem(y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
+        g_eeGeneral.gpsFormat = selectMenuItem(GENERAL_PARAM_OFS, y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
         break;
 #endif
 

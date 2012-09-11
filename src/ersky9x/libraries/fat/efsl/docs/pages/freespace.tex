@@ -1,0 +1,35 @@
+\hyphenation{count-Free-Clusters File-System}
+
+To get the free space left on EFSL 0.2 is a bit tricky. This
+feature was implemented after it had gone into stable, so it
+couln't interfere with other library functions.
+
+If the filesystem type is FAT12 of FAT16, you must call\\
+\code{euint32 fat\_countFreeClusters (FileSystem *fs)} to know
+the amount of free clusters. Please note that this is an expensive
+function call in terms of speed. It will also work on FAT32 volumes,
+but there is a better alternative for that.
+
+Usually FAT32 volumes are substantially larger than FAT12 of FAT16 volumes.
+Microsoft, in it's infinite wisdom, decided to use the second sector of
+the partition to dump various statistics about the filesystem. Problem
+is they are inaccurate, so if you want to be really sure, always use the
+beforementioned countFreeClusters function.
+
+To save time, you can also use \code{esint8 fs\_getFsInfo(FileSystem *fs,euint8 force\_update)}.
+If force\_update is set to 0, this function will simply gather the data
+that is stored on the disc regarding free space. If you call it with
+force\_update set to 1, it will gather this data, but correct the result
+with a call to countFreeClusters.
+After that you will find the result in fs->FreeClusterCount.
+
+To save time, call getFsInfo after you mounted the filesystem,
+and just before you umount the filesystem give a call to setFsInfo.
+This will make the updated clustercount get written to disc, so you
+don't have to go through the lenghty verification everytime.
+The functions that have the largest impact on free space (allocClusterChain
+and unlinkClusterChain) keep track of the changes they make and they update
+the fs->FreeClusterCount field accordingly.
+
+This is an ugly ``add-on'', and will be replaced by a decent implementation
+in the 0.3/0.4 series.

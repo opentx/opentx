@@ -1,0 +1,42 @@
+\subsubsection*{Purpose}
+This function opens a directory for viewing, allowing you to iterate through
+it's contents.
+\subsubsection*{Prototype}
+\code{esint8 ls\_openDir(DirList *dlist,FileSystem *fs,eint8* dirname);}
+\subsubsection*{Arguments}
+Objects passed to \code{ls\_openDir}:
+\begin{itemize}
+	\item{\code{dlist}: pointer to a DirList object}
+	\item{\code{fs}: pointer to the FileSystem object}
+	\item{\code{dirname}: C string containing the directorypath}
+\end{itemize}
+\subsubsection*{Return value}
+This function will return 0 when it has opened the directory, and -1 on error.\\
+
+\subsubsection*{Example}
+\lstset{numbers=left, stepnumber=1, numberstyle=\small, numbersep=5pt, tabsize=4}
+\begin{lstlisting}
+#include "efs.h"
+#include "ls.h"
+
+	void main(void)
+	{
+		EmbeddedFileSystem efsl;
+		DirList list;
+
+		/* Initialize efsl */
+		if(efs_init(&efsl,"/dev/sda")!=0){
+			DBG((TXT("Could not initialize filesystem (err \%d).\n"),ret));
+			exit(-1);
+		}
+		
+		/* Open the directory */
+		ls_openDir(list,&(efsl.myFs),"/usr/bin/");
+
+		/* Correctly close the filesystem */
+		fs_umount(&efs.myFs);
+	}
+\end{lstlisting}
+
+Please note that it is not required to close this object, if you wish to switch
+to another directory you can just call \code{ls\_openDir} on the object again.

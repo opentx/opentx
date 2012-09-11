@@ -503,6 +503,8 @@ void menuProcModelSelect(uint8_t event)
 
 void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active, uint8_t & cur)
 {
+  lcd_putsLeft(y, STR_NAME);
+
   lcd_putsnAtt(x, y, name, size, ZCHAR | (active ? ((s_editMode>0) ? 0 : INVERS) : 0));
 
   if (active) {
@@ -604,7 +606,6 @@ void menuProcModel(uint8_t event)
 
     switch(k) {
       case ITEM_MODEL_NAME:
-        lcd_putsLeft(y, STR_NAME);
         EditName(MODEL_PARAM_OFS, y, g_model.name, sizeof(g_model.name), event, attr, m_posHorz);
 #if defined(PCBARM)
         memcpy(ModelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
@@ -649,21 +650,15 @@ void menuProcModel(uint8_t event)
       }
 
       case ITEM_MODEL_EXTENDED_LIMITS:
-        lcd_putsLeft(y, STR_ELIMITS);
-        menu_lcd_onoff( MODEL_PARAM_OFS, y, g_model.extendedLimits, attr ) ;
-        if(attr) CHECK_INCDEC_MODELVAR(event,g_model.extendedLimits,0,1);
+        g_model.extendedLimits = onoffMenuItem(g_model.extendedLimits, MODEL_PARAM_OFS, y, STR_ELIMITS, attr, event);
         break;
 
       case ITEM_MODEL_EXTENDED_TRIMS:
-        lcd_putsLeft(y, STR_ETRIMS);
-        menu_lcd_onoff( MODEL_PARAM_OFS, y, g_model.extendedTrims, attr ) ;
-        if(attr) CHECK_INCDEC_MODELVAR(event,g_model.extendedTrims,0,1);
+        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_PARAM_OFS, y, STR_ETRIMS, attr, event);
         break;
 
       case ITEM_MODEL_TRIM_INC:
-        lcd_putsLeft(y, STR_TRIMINC);
-        lcd_putsiAtt(MODEL_PARAM_OFS, y, STR_VTRIMINC, g_model.trimInc, attr);
-        if(attr) CHECK_INCDEC_MODELVAR(event,g_model.trimInc,0,4);
+        g_model.trimInc = selectMenuItem(MODEL_PARAM_OFS, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, 0, 4, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_TRACE:
@@ -678,18 +673,12 @@ void menuProcModel(uint8_t event)
       }
 
       case ITEM_MODEL_THROTTLE_TRIM:
-        lcd_putsLeft(y, STR_TTRIM);
-        menu_lcd_onoff(MODEL_PARAM_OFS, y, g_model.thrTrim, attr) ;
-        if (attr) CHECK_INCDEC_MODELVAR(event,g_model.thrTrim,0,1);
+        g_model.thrTrim = onoffMenuItem(g_model.thrTrim, MODEL_PARAM_OFS, y, STR_TTRIM, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_WARNING:
-      {
-        lcd_putsLeft(y, STR_THROTTLEWARNING);
-        menu_lcd_onoff(MODEL_PARAM_OFS, y, !g_model.disableThrottleWarning, attr) ;
-        if (attr) g_model.disableThrottleWarning = !checkIncDecModel(event, !g_model.disableThrottleWarning, 0, 1);
+        g_model.disableThrottleWarning = !onoffMenuItem(!g_model.disableThrottleWarning, MODEL_PARAM_OFS, y, STR_THROTTLEWARNING, attr, event);
         break;
-      }
 
       case ITEM_MODEL_SWITCHES_WARNING:
       {
@@ -870,6 +859,8 @@ uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, cons
 
 PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uint8_t attr)
 {
+  lcd_putsLeft(y, STR_FPHASE);
+
 #if defined(PCBARM)
   bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-2*FW);
 #endif
@@ -911,13 +902,10 @@ void menuProcPhaseOne(uint8_t event)
     uint8_t attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
       case 0:
-        lcd_putsLeft( y, STR_NAME);
         EditName(MIXES_2ND_COLUMN, y, phase->name, sizeof(phase->name), event, attr, m_posHorz);
         break;
       case 1:
-        lcd_putsLeft( y, STR_SWITCH);
-        putsSwitches(MIXES_2ND_COLUMN,  y, phase->swtch, attr);
-        if (attr) CHECK_INCDEC_MODELSWITCH(event, phase->swtch, -MAX_SWITCH, MAX_SWITCH);
+        phase->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, phase->swtch, attr, event);
         break;
       case 2:
         lcd_putsLeft( y, STR_TRIMS);
@@ -1065,11 +1053,6 @@ void menuProcPhasesAll(uint8_t event)
 
 #ifdef HELI
 
-void menu_lcd_HYPHINV( uint8_t x,uint8_t y, uint8_t value, uint8_t attr)
-{
-  lcd_putsiAtt(x, y, STR_MMMINV, value, attr) ;
-}
-
 enum menuProcHeliItems {
   ITEM_HELI_SWASHTYPE,
   ITEM_HELI_COLLECTIVE,
@@ -1078,6 +1061,8 @@ enum menuProcHeliItems {
   ITEM_HELI_AILDIRECTION,
   ITEM_HELI_COLDIRECTION
 };
+
+#define HELI_PARAM_OFS (14*FW)
 
 void menuProcHeli(uint8_t event)
 {
@@ -1091,39 +1076,30 @@ void menuProcHeli(uint8_t event)
 
     switch(i) {
       case ITEM_HELI_SWASHTYPE:
-        lcd_putsLeft(y, STR_SWASHTYPE);
-        lcd_putsiAtt(14*FW, y, STR_VSWASHTYPE, g_model.swashR.type, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.type, 0, SWASH_TYPE_NUM);
+        g_model.swashR.type = selectMenuItem(HELI_PARAM_OFS, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_NUM, attr, event);
         break;
 
       case ITEM_HELI_COLLECTIVE:
-        lcd_putsLeft(y, STR_COLLECTIVE);
-        putsChnRaw(14*FW, y, g_model.swashR.collectiveSource, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.collectiveSource, 0, NUM_XCHNRAW);
+        g_model.swashR.collectiveSource = selectMenuItem(HELI_PARAM_OFS, y, STR_COLLECTIVE, NULL, g_model.swashR.collectiveSource, 0, NUM_XCHNRAW, attr, event);
+        putsChnRaw(HELI_PARAM_OFS, y, g_model.swashR.collectiveSource, attr);
         break;
 
       case ITEM_HELI_SWASHRING:
         lcd_putsLeft(y, STR_SWASHRING);
-        lcd_outdezAtt(14*FW, y, g_model.swashR.value,  LEFT|attr);
+        lcd_outdezAtt(HELI_PARAM_OFS, y, g_model.swashR.value,  LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.value, 0, 100);
         break;
 
       case ITEM_HELI_ELEDIRECTION:
-        lcd_putsLeft(y, STR_ELEDIRECTION);
-        menu_lcd_HYPHINV(14*FW, y, g_model.swashR.invertELE, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.invertELE, 0, 1);
+        g_model.swashR.invertELE = selectMenuItem(HELI_PARAM_OFS, y, STR_ELEDIRECTION, STR_MMMINV, g_model.swashR.invertELE, 0, 1, attr, event);
         break;
 
       case ITEM_HELI_AILDIRECTION:
-        lcd_putsLeft(y, STR_AILDIRECTION);
-        menu_lcd_HYPHINV(14*FW, y, g_model.swashR.invertAIL, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.invertAIL, 0, 1);
+        g_model.swashR.invertAIL = selectMenuItem(HELI_PARAM_OFS, y, STR_AILDIRECTION, STR_MMMINV, g_model.swashR.invertAIL, 0, 1, attr, event);
         break;
 
       case ITEM_HELI_COLDIRECTION:
-        lcd_putsLeft(y, STR_COLDIRECTION);
-        menu_lcd_HYPHINV(14*FW, y, g_model.swashR.invertCOL, attr) ;
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.invertCOL, 0, 1);
+        g_model.swashR.invertCOL = selectMenuItem(HELI_PARAM_OFS, y, STR_COLDIRECTION, STR_MMMINV, g_model.swashR.invertCOL, 0, 1, attr, event);
         break;
     }
   }
@@ -1506,7 +1482,7 @@ enum ExposFields {
   EXPO_FIELD_FLIGHT_PHASE,
 #endif
   EXPO_FIELD_SWITCH,
-  EXPO_FIELD_WHEN,
+  EXPO_FIELD_SIDE,
   EXPO_FIELD_MAX
 };
 
@@ -1538,7 +1514,6 @@ void menuProcExpoOne(uint8_t event)
   uint8_t y = FH;
 
   for (uint8_t i=0; i<EXPO_FIELD_MAX+1; i++) {
-    lcd_putsiAtt(0, y, STR_EXPLABELS, i, 0);
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i)
     {
@@ -1548,10 +1523,12 @@ void menuProcExpoOne(uint8_t event)
         break;
 #endif
       case EXPO_FIELD_WIDTH:
+        lcd_putsLeft(y, STR_WEIGHT);
         lcd_outdezAtt(EXPO_ONE_2ND_COLUMN+3*FW, y, ed->weight, attr|INFLIGHT((int8_t&)ed->weight));
         if (attr) CHECK_INFLIGHT_INCDEC_MODELVAR(event, (int8_t&)ed->weight, 0, 100, 0, STR_DRWEIGHT);
         break;
       case EXPO_FIELD_EXPO:
+        lcd_putsLeft(y, STR_EXPO);
         if (ed->curveMode==MODE_EXPO || ed->curveParam==0) {
           ed->curveMode = MODE_EXPO;
           lcd_outdezAtt(EXPO_ONE_2ND_COLUMN+3*FW, y, ed->curveParam, attr|INFLIGHT(ed->curveParam));
@@ -1563,6 +1540,7 @@ void menuProcExpoOne(uint8_t event)
         break;
 #if defined(CURVES)
       case EXPO_FIELD_CURVE:
+        lcd_putsLeft(y, STR_CURVE);
         if (ed->curveMode!=MODE_EXPO || ed->curveParam==0) {
           putsCurve(EXPO_ONE_2ND_COLUMN, y, ed->curveParam, attr);
           if (attr) {
@@ -1585,12 +1563,10 @@ void menuProcExpoOne(uint8_t event)
         break;
 #endif
       case EXPO_FIELD_SWITCH:
-        putsSwitches(EXPO_ONE_2ND_COLUMN, y, ed->swtch, attr);
-        if (attr) CHECK_INCDEC_MODELSWITCH(event, ed->swtch, -MAX_SWITCH, MAX_SWITCH);
+        ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN, y, ed->swtch, attr, event);
         break;
-      case EXPO_FIELD_WHEN:
-        lcd_putsiAtt(EXPO_ONE_2ND_COLUMN, y, STR_VWHEN, 3-ed->mode, attr);
-        if (attr) ed->mode = 4 - checkIncDecModel(event, 4-ed->mode, 1, 3);
+      case EXPO_FIELD_SIDE:
+        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
         break;
     }
     y+=FH;
@@ -1668,7 +1644,6 @@ void menuProcMixOne(uint8_t event)
     switch(i) {
 #if defined(PCBARM)
       case MIX_FIELD_NAME:
-        lcd_putsLeft(y, STR_NAME);
         EditName(MIXES_2ND_COLUMN, y, md2->name, sizeof(md2->name), event, attr, m_posHorz);
         break;
 #endif
@@ -1744,13 +1719,10 @@ void menuProcMixOne(uint8_t event)
         break;
 #endif
       case MIX_FIELD_SWITCH:
-        lcd_putsLeft(y, STR_SWITCH);
-        putsSwitches(MIXES_2ND_COLUMN, y, md2->swtch, attr);
-        if(attr) CHECK_INCDEC_MODELSWITCH( event, md2->swtch, -MAX_SWITCH, MAX_SWITCH);
+        md2->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
         break;
 #if defined(FLIGHT_PHASES)
       case MIX_FIELD_FLIGHT_PHASE:
-        lcd_putsLeft(y, STR_FPHASE);
         md2->phases = editPhases(MIXES_2ND_COLUMN, y, event, md2->phases, attr);
         break;
 #endif
@@ -1763,9 +1735,7 @@ void menuProcMixOne(uint8_t event)
         if(attr) CHECK_INCDEC_MODELVAR( event, md2->mixWarn, 0, 3);
         break;
       case MIX_FIELD_MLTPX:
-        lcd_putsLeft(y, STR_MULTPX);
-        lcd_putsiAtt(MIXES_2ND_COLUMN, y, STR_VMLTPX, md2->mltpx, attr);
-        if(attr) CHECK_INCDEC_MODELVAR( event, md2->mltpx, 0, 2);
+        md2->mltpx = selectMenuItem(MIXES_2ND_COLUMN, y, STR_MULTPX, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
         break;
       case MIX_FIELD_DELAY_UP:
         md2->delayUp = editDelay(y, event, attr, STR_DELAYUP, md2->delayUp);

@@ -70,19 +70,6 @@
 #define LEN_VCURVEFUNC                  "\003"                                                                                                                                                                                                                                                     
 #define TR_VCURVEFUNC                   "---""x>0""x<0""|x|""f>0""f<0""|f|"                                                                                                                                                                                                                        
                                                                                                                                                                                                                                                                                                    
-#define LEN_EXPLABELS                   "\006"
-#ifdef PCBARM
-#define TR_EXPLABEL_NAME                "Name  "
-#else
-#define TR_EXPLABEL_NAME
-#endif
-#ifdef FLIGHT_PHASES                                                                                                                                                                                                                                                                               
-#define TR_EXPLABEL_FP                  "Phase "                                                                                                                                                                                                                                                   
-#else                                                                                                                                                                                                                                                                                              
-#define TR_EXPLABEL_FP                                                                                                                                                                                                                                                                             
-#endif                                                                                                                                                                                                                                                                                             
-#define TR_EXPLABELS                    TR_EXPLABEL_NAME "Gew.  ""Expo  ""Kurve " TR_EXPLABEL_FP "Switch""Seite ""\0"
-                                                                                                                                                                                                                                                                                                   
 #define LEN_VMLTPX                      "\010"                                                                                                                                                                                                                                                     
 #define TR_VMLTPX                       "Add     ""Multiply""Replace "                                                                                                                                                                                                                             
                                                                                                                                                                                                                                                                                                    
@@ -270,7 +257,9 @@
 #define TR_INSERTMIX                    "INSERT MIX "                                                         
 #define TR_EDITMIX                      "MIXER "                                                            
 #define TR_SOURCE                       "Quelle"                                                              
-#define TR_WEIGHT                       "Gewicht"                                                             
+#define TR_WEIGHT                       "Gewicht"
+#define TR_EXPO                "Expo"
+#define TR_SIDE                "Side"
 #define TR_MIXERWEIGHT                  "Mixer Weight"                                                        
 #define TR_DIFFERENTIAL                 "Differ"                                                              
 #define TR_OFFSET                       "Offset"                                                              
@@ -279,7 +268,7 @@
 #define TR_DREXPO                       "DR Expo"                                                             
 #define TR_TRIM                         "Trim"                                                                
 #define TR_CURVE                        "Kurve"
-#define TR_FPHASE                       "F.Phase"                                                             
+#define TR_FPHASE                       "Phase"
 #define TR_MIXWARNING                   "Warnung"
 #define TR_OFF                          "AUS"                                                                 
 #define TR_MULTPX                       "Multpx"                                                              

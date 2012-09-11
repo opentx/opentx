@@ -84,8 +84,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_POSNEG     (OFS_VPROTOS + sizeof(TR_VPROTOS))
 #define OFS_VBLMODE    (OFS_POSNEG + sizeof(TR_POSNEG))
 #define OFS_VCURVEFUNC (OFS_VBLMODE + sizeof(TR_VBLMODE))
-#define OFS_EXPLABELS  (OFS_VCURVEFUNC + sizeof(TR_VCURVEFUNC))
-#define OFS_VMLTPX     (OFS_EXPLABELS + sizeof(TR_EXPLABELS))
+#define OFS_VMLTPX     (OFS_VCURVEFUNC + sizeof(TR_VCURVEFUNC))
 #define OFS_VMLTPX2    (OFS_VMLTPX + sizeof(TR_VMLTPX))
 #define OFS_VMIXTRIMS  (OFS_VMLTPX2 + sizeof(TR_VMLTPX2))
 #define OFS_VCSWFUNC   (OFS_VMIXTRIMS + sizeof(TR_VMIXTRIMS))
@@ -147,9 +146,8 @@ extern const pm_char STR_OPEN9X[];
 #define STR_POSNEG     (STR_OPEN9X + OFS_POSNEG)
 #define STR_VBLMODE    (STR_OPEN9X + OFS_VBLMODE)
 #define STR_VCURVEFUNC (STR_OPEN9X + OFS_VCURVEFUNC)
-#define STR_VWHEN      STR_VCURVEFUNC
-#define LEN_VWHEN      LEN_VCURVEFUNC
-#define STR_EXPLABELS  (STR_OPEN9X + OFS_EXPLABELS)
+#define STR_VSIDE      STR_VCURVEFUNC
+#define LEN_VSIDE      LEN_VCURVEFUNC
 #define STR_VMLTPX     (STR_OPEN9X + OFS_VMLTPX)
 #define STR_VMLTPX2    (STR_OPEN9X + OFS_VMLTPX2)
 #define STR_VMIXTRIMS  (STR_OPEN9X + OFS_VMIXTRIMS)
@@ -237,6 +235,8 @@ extern const pm_char STR_INSERTMIX[];
 extern const pm_char STR_EDITMIX[];
 extern const pm_char STR_SOURCE[];
 extern const pm_char STR_WEIGHT[];
+extern const pm_char STR_EXPO[];
+extern const pm_char STR_SIDE[];
 extern const pm_char STR_DIFFERENTIAL[];
 extern const pm_char STR_OFFSET[];
 extern const pm_char STR_TRIM[];

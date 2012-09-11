@@ -65,19 +65,6 @@
 #define LEN_VCURVEFUNC   "\003"
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
-#define LEN_EXPLABELS    "\006"
-#ifdef PCBARM
-#define TR_EXPLABEL_NAME "Nom   "
-#else
-#define TR_EXPLABEL_NAME
-#endif
-#ifdef FLIGHT_PHASES
-#define TR_EXPLABEL_FP   "Phase "
-#else
-#define TR_EXPLABEL_FP
-#endif
-#define TR_EXPLABELS     TR_EXPLABEL_NAME "Ratio ""Expo  ""Courbe" TR_EXPLABEL_FP "Inter ""Mode  ""\0"
-
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Ajoute  ""Multipl.""Remplace"
 
@@ -269,6 +256,8 @@
 #define TR_EDITMIX      "EDITER MIXAGE"
 #define TR_SOURCE       "Source"
 #define TR_WEIGHT       "Ratio"
+#define TR_EXPO                "Expo"
+#define TR_SIDE                "Cot\200"
 #define TR_MIXERWEIGHT  "Ratio Mixage"
 #define TR_DIFFERENTIAL "Diff\200rentiel"
 #define TR_OFFSET       "D\200calage"
@@ -277,7 +266,7 @@
 #define TR_DREXPO       "Expo DR"
 #define TR_TRIM         "Trim/DR"
 #define TR_CURVE        "Courbe"
-#define TR_FPHASE       "Ph.Vol"
+#define TR_FPHASE       "Phase"
 #define TR_MIXWARNING   "Alerte"
 #define TR_OFF          "OFF"
 #define TR_MULTPX       "Op\200ration"

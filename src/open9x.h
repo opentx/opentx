@@ -42,10 +42,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#if defined(PCBARM)
-// #define MASSSTORAGE
-#endif
-
 #define EEPROM_VARIANTS   (0x00)
 
 #if defined(PCBSTD)

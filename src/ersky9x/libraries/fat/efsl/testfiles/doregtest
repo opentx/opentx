@@ -1,0 +1,49 @@
+#!/bin/bash
+
+echo "Running file READ test on FAT 16 : "
+cp regtest.orig.16 regtest.16
+rm -f REG_FILE_16_OUT
+time ./regtest 0
+echo "a0d4606add9362f5bc550b6f22fb2626 Reference md5sum"
+md5sum REG_FILE_16_OUT
+echo ""
+
+echo "Running file READ test on FAT 32 : "
+cp regtest.orig.32 regtest.32
+rm -f REG_FILE_32_OUT
+time ./regtest 1
+echo "498960730a03a065c090d8c14a17bc61 Reference md5sum"
+md5sum REG_FILE_32_OUT
+echo ""
+
+echo "Running READ/WRITE > REREAD test on FAT32 : "
+cp regtestrw.orig.32 regtestrw.32
+rm -f REG_FILE_RW32_OUT
+time ./regtest 2 512
+echo "adbba484e04d238f0617365415d54364 Reference md5sum"
+md5sum REG_FILE_RW32_OUT
+echo ""
+
+echo "Running READ/WRITE > REREAD test on FAT32 w/ 1001 bpr: "
+cp regtestrw.orig.32 regtestrw.32
+rm -f REG_FILE_RW32_OUT
+time ./regtest 2 1001
+echo "adbba484e04d238f0617365415d54364 Reference md5sum"
+md5sum REG_FILE_RW32_OUT
+echo ""
+
+echo "Running READ test on FAT12: "
+cp regtestrw.orig.12 regtest.12
+rm -f REG_FILE_12_OUT
+time ./regtest 3 
+echo "c49cc8382aaef52f10f0ac4f26213333 Reference md5sum"
+md5sum REG_FILE_12_OUT
+echo ""
+
+echo "Running READ/WRITE > REREAD test on FAT12 w/directory : "
+cp regtestrw.orig.12 regtestrw.12
+rm -f REG_FILE_RW12_OUT
+time ./regtest 4 512
+echo "c49cc8382aaef52f10f0ac4f26213333 Reference md5sum"
+md5sum REG_FILE_RW12_OUT
+echo ""

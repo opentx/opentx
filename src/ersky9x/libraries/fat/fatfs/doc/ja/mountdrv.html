@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="up" title="FatFs" href="../00index_j.html">
+<link rel="stylesheet" href="../css_j.css" type="text/css" media="screen" title="ELM Default">
+<title>FatFs - f_mountdrv</title>
+</head>
+
+<body>
+
+<div class="para">
+<h2>f_mountdrv</h2>
+<p>ファイルシステムを明示的に初期化します。</p>
+<pre>
+FRESULT f_mountdrv (void);
+</pre>
+</div>
+
+<div class="para">
+<h4>戻り値</h4>
+<dl class="ret">
+<dt>FR_OK (0)</dt>
+<dd>正常終了。</dd>
+<dt>FR_NOT_READY</dt>
+<dd>メディアがセットされていないなど、ディスクドライブが動作不能状態。</dd>
+<dt>FR_RW_ERROR</dt>
+<dd>ディスクアクセスでエラーが発生した。</dd>
+<dt>FR_NOT_ENABLED</dt>
+<dd>FatFsモジュールが停止状態。</dd>
+<dt>FR_NO_FILESYSTEM</dt>
+<dd>ディスク上に有効なFATファイルシステムが見つからない。</dd>
+</dl>
+</div>
+
+
+<div class="para">
+<h4>解説</h4>
+<p>ファイルシステムを強制的に初期化（マウント）します。FatFsモジュールではマウント動作はファイル関数呼び出し時に必要に応じて内部で行われるので、通常はこの関数を使用すべきではありません。自動マウント動作中に回復不能エラー（たとえば<tt>FR_INCORRECT_DISK_CHANGE</tt>）が発生した場合、全てのファイル関数が使えなくなるので、そのときはこの関数で再マウントして回復することができます。</p>
+<p>f_mountdrv関数内では次の処理が行われます。</p>
+<br>
+<ul>
+<li>下位レイヤ（ディスクI/Oモジュール）の初期化。</li>
+<li>FATブートレコードの検索。先頭セクタ(SFD)→第一基本区画(FDISK)の順に検索します。</li>
+<li>ファイルシステムオブジェクト構造体の初期化。</li>
+</ul>
+</div>
+
+
+<div class="para">
+<h4>参照</h4>
+<p><tt><a href="sfatfs.html">FATFS</a></tt></p>
+</div>
+
+<p class="foot"><a href="../00index_j.html">戻る</a></p>
+</body>
+</html>

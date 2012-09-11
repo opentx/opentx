@@ -1,0 +1,45 @@
+\subsubsection*{Purpose}
+Initializes the hardware and the software layer.
+\subsubsection*{Prototype}
+\code{esint8 efs\_init(EmbeddedFileSystem *efs, eint8* opts);}
+\subsubsection*{Arguments}
+Objects passed to \code{efs\_init}:
+\begin{itemize}
+	\item{\code{efs}: empty EmbeddedFileSystem object}
+	\item
+	{
+		\code{opts}: character string containing options, depending on what
+		interface you are using:
+		\begin{itemize}
+			\item{Linux: opts points to the path to the device}
+			\item{AVR: opts points to the card enable pin (TODO)}
+			\item{DSP: opts points to the card enable memory address (TODO)}
+		\end{itemize}
+	}
+\end{itemize}
+\subsubsection*{Return value}
+Returns 0 if no errors are detected.\\
+\newline
+Returns non-zero if a low-level error is detected:
+\begin{itemize}
+	\item{Returns -1 if the interface could not be initialized.}
+	\item{Returns -2 if the filesystem could not be initialized.}
+\end{itemize}
+\subsubsection*{Example}
+\lstset{numbers=left, stepnumber=1, numberstyle=\small, numbersep=5pt, tabsize=4}
+\begin{lstlisting}
+	#include "efs.h"
+
+	void main(void)
+	{
+		EmbeddedFileSystem efsl;
+		esint8 ret;
+
+		DBG((TXT("Will init efsl now.\n")));
+		ret=efs_init(&efsl,"/dev/sda");
+		if(ret==0)
+			DBG((TXT("Filesystem correctly initialized.\n")));
+		else
+			DBG((TXT("Could not initialize filesystem (err \%d).\n"),ret));
+	}
+\end{lstlisting}

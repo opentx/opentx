@@ -70,19 +70,6 @@
 #define LEN_VCURVEFUNC   "\003"
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
-#define LEN_EXPLABELS    "\006"
-#ifdef PCBARM
-#define TR_EXPLABEL_NAME "Jm\202no "
-#else
-#define TR_EXPLABEL_NAME
-#endif
-#ifdef FLIGHT_PHASES
-#define TR_EXPLABEL_FP   "F\200ze  "
-#else
-#define TR_EXPLABEL_FP
-#endif
-#define TR_EXPLABELS     TR_EXPLABEL_NAME "V\200ha  ""Expo  ""K\206ivka" TR_EXPLABEL_FP "Sp\204na\201""Strana""\0"
-
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Se\201\204st  ""N\200sobit ""Zam\203nit  "
 
@@ -271,6 +258,8 @@
 #define TR_EDITMIX      "UPRAVIT MIX "
 #define TR_SOURCE       "Zdroj"
 #define TR_WEIGHT       "V\200ha"
+#define TR_EXPO                "Expo"
+#define TR_SIDE                "Side"
 #define TR_MIXERWEIGHT  "V\200ha Mixu"
 #define TR_DIFFERENTIAL "Dif.V\212chylek"
 #define TR_OFFSET       "Ofset"
@@ -278,7 +267,7 @@
 #define TR_DRWEIGHT     "V\200ha DV"
 #define TR_DREXPO       "Expo DV"
 #define TR_TRIM         "Trim&DV/Expo"
-#define TR_CURVE       "K\206ivka"
+#define TR_CURVE        "K\206ivka"
 #define TR_FPHASE       "F\200ze"
 #define TR_MIXWARNING   "Varov\200n\204"
 #define TR_OFF          "VYP"

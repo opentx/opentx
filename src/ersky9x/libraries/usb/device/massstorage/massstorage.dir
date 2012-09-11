@@ -1,0 +1,1005 @@
+/* ----------------------------------------------------------------------------
+ *         ATMEL Microcontroller Software Support 
+ * ----------------------------------------------------------------------------
+ * Copyright (c) 2008, Atmel Corporation
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the disclaimer below.
+ *
+ * Atmel's name may not be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ----------------------------------------------------------------------------
+ */
+
+//------------------------------------------------------------------------------
+/// \dir
+///
+/// !!!Purpose
+///
+/// This directory provides definitions, structs and functions for a USB Mass
+/// Storage %device (MSD) - USB Mass Storage demo.
+///
+/// !!!Contents
+///
+/// There are four things for the implement of the USB MSD driver:
+/// - Implement the MSD driver structs and functions for the %device,
+///   to initialize, to handle MSD-specific requests and dispach
+///   standard requests in USBD callbacks, to read/write through assigned USB
+///   %endpoints,
+/// - Create the MSD device's descriptors that should be passed to
+///   the USBDDriver instance on initialization, so that the host can 
+///   recognize the %device as a USB Mass Storage %device.
+/// - Implement state machine for MSD command/data/status handling.
+/// - Implement storage media interface for MSD disk accessing.
+///
+/// For more information about what a particular group contains, please refer to
+/// "USB MSD Driver".
+//------------------------------------------------------------------------------
+
+/**
+ \page "USB MSD Driver"
+ This page describes how to use the USB framework to produce a USB MSD driver,
+ which appears as a USB Disk on host.
+
+ !!!References
+ - "AT91 USB device framework"
+ - "USB Device Enumeration"
+ - <a href="http://www.usb.org/developers/docs/usb_20_040908.zip">
+   Universal Serial Bus Revision 2.0 specification
+   </a> (.zip file format, size 9.80 MB)
+ - <a href="http://www.usb.org/developers/devclass_docs/usb_msc_overview_1.2.pdf">
+   Mass Storage Overview 1.2</a>
+ - <a href="http://www.usb.org/developers/devclass_docs/usbmassbulk_10.pdf">
+   Mass Storage Bulk Only 1.0</a>
+ - <a href="http://www.t10.org/scsi-3.htm">SCSI Standards</a>
+    - SCSI Block Commands - 3 (SBC-3)
+    - SCSI Primary Commands - 4 (SPC-4)
+
+ !!!Mass Storage Class Basic
+ This section gives generic details on the MSD class.
+
+ See "USB MSD Basic".
+
+ !!!Mass Storage SCSI Disk
+
+ This section describes how to implement a USB disk by using the MSD class with
+ the SCSI transparent command set and the AT91 USB Framework. For more
+ information about the framework, please refer to the "AT91 USB device
+ framework" application note; details about the USB and the Mass Storage class
+ can be found in the USB specification 2.0 and the MSC Bulk-Only Transport
+ specification 1.0 documents, respectively.
+
+ The software example provided with this document uses the ram disk of the chip
+ as its storage medium, but has been designed in a modular way to allow easy
+ modification for any medium, e.g. internal flash, DataFlash, SD card, external
+ Flash chip.
+
+ !!Architecture
+ The MSD driver is based on framework, See "USB Device Framework Architecture".
+
+ The internal architecture of the Application layer is extended for the
+ following factors:
+ - The Command/Data/Status flow described in "USB MSD Basic" requires the use
+   of a #state machine# for non-blocking operation.
+ - The example software has been designed to be easily extended with support
+   for other media.
+ - The example software has been designed to support multiple LUNs on one or
+   more media.
+
+ \image MSDAppArch.png "Application Layer Architecture"
+
+ !!Descriptors
+ There are no class-specific descriptors for a device using the MSD class with
+ the Bulk-only transport protocol. This section thus only details the values
+ which must be set in the standard descriptors.
+
+ !Device Descriptor
+\code
+static const USBDeviceDescriptor deviceDescriptor = {
+
+    sizeof(USBDeviceDescriptor), // bLength: Size of descriptor (18 bytes)
+    USBGenericDescriptor_DEVICE, // bDescriptorType: Device descriptor
+    USBDeviceDescriptor_USB2_00, // bcdUSB: USB 2.00
+    MSDeviceDescriptor_CLASS,    // bDeviceClass: 0
+    MSDeviceDescriptor_SUBCLASS, // bDeviceSubClass: 0
+    MSDeviceDescriptor_PROTOCOL, // bDeviceProtocol: 0
+    BOARD_USB_ENDPOINTS_MAXPACKETSIZE(0), // bMaxPacketSize0: Max Size EP0
+    MSDDriverDescriptors_VENDORID, // idVendor: Vendor ID ATMEL (0x03eb)
+    MSDDriverDescriptors_PRODUCTID,// idProduct: Product ID (0x6202)
+    MSDDriverDescriptors_RELEASE,  // bcdDevice: 0x0001, Version 0.01
+    1, // iManufacturer: Manufacturer string (manufacturerDescriptor) index.
+    2, // iProduct: Product string (productDescriptor) index.
+    3, // iSerialNumber: Serial number string (serialNumberDescriptor) index.
+    1  // bNumConfigurations: Device has one possible configuration.
+};
+\endcode
+ Note that the Vendor ID is a special value attributed by the USB-IF
+ organization. The product ID can be chosen freely by the vendor.
+
+ !Configuration Descriptor
+ The descriptors are defined as:
+\code
+const MSDConfigurationDescriptors configurationDescriptorsFS;
+\endcode
+
+ Configuration descriptor
+\code
+// Standard configuration descriptor.
+{
+    sizeof(USBConfigurationDescriptor), // bLength: 9 bytes
+    USBGenericDescriptor_CONFIGURATION, // bDescriptorType: Configuration
+    sizeof(MSDConfigurationDescriptors),// wTotalLength: Length of all
+    1, // bNumInterface: Configuration has one interface.
+    1, // bConfigurationValue: This is configuration #1.
+    0, // iConfiguration: No string descriptor for configuration.
+    BOARD_USB_BMATTRIBUTES, // bmAttributes: Power and remote wakeup
+    USBConfigurationDescriptor_POWER(100) // 100mA max power
+},
+\endcode
+
+ !Interface Descriptor
+ The interface descriptor must indicate several features:
+ - #Mass Storage Device# class code (08h) in the }bInterfaceClass} field
+ - #Data Transport Protocol# code in the }bInterfaceSubclass} field
+ - #Bulk-Only Transport# protocol code (50h) in the }bInterfaceProtocol} field
+ This example uses the SCSI transparent command set (code 06h). This is the
+ most appropriate setting for a Flash %device, given that the RBC command set
+ is not supported by Microsoft Windows.
+\code
+// Mass Storage interface descriptor.
+{
+    sizeof(USBInterfaceDescriptor), // bLength: Size of descriptor(9 bytes)
+    USBGenericDescriptor_INTERFACE, // bDescriptorType: Interface descriptor
+    0, // bInterfaceNumber: This is interface #0.
+    0, // bAlternateSetting: This is alternate setting #0.
+    2, // bNumEndpoints: Interface uses two endpoints.
+    MSInterfaceDescriptor_CLASS, // bInterfaceClass: Mass Storage Device Class
+    MSInterfaceDescriptor_SCSI, // bInterfaceSubClass: SCSI transparent command
+    MSInterfaceDescriptor_BULKONLY,// bInterfaceProtocol: Bulk-Only transport
+    0 // iInterface: No string descriptor for interface.
+},
+\endcode
+
+ !Endpoint Descriptors
+ No special requirements on these apart from being Bulk-IN and Bulk-OUT.
+\code
+// Bulk-OUT endpoint descriptor
+{
+    sizeof(USBEndpointDescriptor), // bLength: 7 bytes
+    USBGenericDescriptor_ENDPOINT, // bDescriptorType: Endpoint descriptor
+    USBEndpointDescriptor_ADDRESS(
+        USBEndpointDescriptor_OUT,
+        MSDDriverDescriptors_BULKOUT), // bEndpointAddress: OUT 0x01
+    USBEndpointDescriptor_BULK, // bmAttributes: Bulk endpoint
+    MIN(BOARD_USB_ENDPOINTS_MAXPACKETSIZE(MSDDriverDescriptors_BULKOUT),
+        USBEndpointDescriptor_MAXBULKSIZE_FS), // wMaxPacketSize: 64 bytes
+    0 // bInterval: Must be 0 for full-speed Bulk endpoints.
+},
+// Bulk-IN endpoint descriptor
+{
+    sizeof(USBEndpointDescriptor), // bLength: 7 bytes
+    USBGenericDescriptor_ENDPOINT, // bDescriptorType: Endpoint descriptor
+    USBEndpointDescriptor_ADDRESS(
+        USBEndpointDescriptor_IN,
+        MSDDriverDescriptors_BULKIN), // bEndpointAddress: IN 0x82
+    USBEndpointDescriptor_BULK, // bmAttributes: Bulk endpoint
+    MIN(BOARD_USB_ENDPOINTS_MAXPACKETSIZE(MSDDriverDescriptors_BULKIN),
+        USBEndpointDescriptor_MAXBULKSIZE_FS), // wMaxPacketSize: 64
+    0 // bInterval: Must be 0 for full-speed Bulk endpoints.
+}
+\endcode
+
+ !String descriptors
+ Several descriptors can be commented with a String descriptor. The latter are
+ completely optional and do not influence the detection of the device by the
+ operating system. Whether or not to include them is entirely up to the
+ programmer.
+
+ There is one exception to this rule when using the MSD class. According to the
+ specification, there must be a Serial Number string. It must contains at least
+ 12 characters, and these characters must only be either letters (a-z, A-Z) or
+ numbers (0-9). This cause no problem for the driver in practice, but this is a
+ strict requirement for certification. Also remember that string descriptors
+ use the Unicode format.
+
+ See manufacturerDescriptor, productDescriptor, serialNumberDescriptor.
+
+ !!Class-specific Requests
+ There are two Mass Storage-specific requests:
+ - GetMaxLUN
+ - Bulk-Only Mass Storage Reset
+
+ Standard requests can be forwarded to the USBDDriver_RequestHandler, with one
+ exception: #CLEAR_FEATURE#. This is necessary for Reset Recovery sequence.
+
+ !ClearFeature
+ As previously stated, the CLEAR_FEATURE request must be handled in a
+ particular way, depending on whether or not the device is waiting for a Reset
+ Recovery sequence. If it is, then CLEAR_FEATURE requests to unhalt a Bulk
+ endpoint must be discarded.
+
+ In the example software, this behavior is indicated by a boolean field in the
+ driver structure, named waitResetRecovery. The handler only has to check this
+ field value to decide whether to forward the request to the standard handler
+ or to discard it.
+\code
+// Handle requests
+switch (USBGenericRequest_GetRequest(request)) {
+//---------------------
+case USBGenericRequest_CLEARFEATURE:
+//---------------------
+
+    switch (USBFeatureRequest_GetFeatureSelector(request)) {
+
+    //---------------------
+    case USBFeatureRequest_ENDPOINTHALT:
+    //---------------------
+
+        // Do not clear the endpoint halt status if the device is waiting
+        // for a reset recovery sequence
+        if (!msdDriver.waitResetRecovery) {
+
+            // Forward the request to the standard handler
+            USBDDriver_RequestHandler(&usbdDriver, request);
+        }
+
+        USBD_Write(0, 0, 0, 0, 0);
+        break;
+
+    //------
+    default:
+    //------
+        // Forward the request to the standard handler
+        USBDDriver_RequestHandler(&usbdDriver, request);
+    }
+    break;
+}
+\endcode
+
+ !GetMaxLUN
+ Usually, the first request issued by the host right after the enumeration
+ phase will be a GET_MAX_LUN request. It enables it to discover how many
+ different logical units the device has; each of these LUNs can then be queried
+ in turn by the host when needed.
+
+ After the request is received by the device, it should return one byte of data
+ indicating the maximum Logical Unit Number (LUN). It is equal to the number of
+ LUNs used by the device minus one. For example, a device with three LUNs shall
+ return a GET_MAX_LUN value of two.
+
+ Sending this byte is done by calling the USBD_Write method on Control endpoint
+ 0. Note that the data must be held in a permanent buffer (since the transfer
+ is asynchronous); in the software provided with this application note, a
+ dedicated field is used in the driver structure (MSDDriver) to store this
+ value.
+
+ In addition due to the }Mass Storage Bulk-Only Transport} specification the
+ }wValue} should be 0, }wLength} should be 1, }wIndex} should be the interface
+ number also 0. A request which does not comply to these requirements must be
+ STALLed.
+\code
+//-------------------
+case MSD_GET_MAX_LUN:
+//-------------------
+    // Check request parameters
+    if ((request->wValue == 0)
+        && (request->wIndex == 0)
+        && (request->wLength == 1)) {
+        USBD_Write(0, &(msdDriver.maxLun), 1, 0, 0);
+    }
+    else {
+        USBD_Stall(0);
+    }
+    break;
+\endcode
+
+ !Bulk-Only Mass Storage Reset
+ The host issues #RESET# requests to return the MSD driver of the device to its
+ initial state, i.e., ready to receive a new command. However, this request
+ does not impact the USB controller state; in particular, endpoints must not be
+ reset. This means the data toggle bit must not be altered, and Halted endpoint
+ must not be returned to a normal state. After processing the reset, the device
+ must return a Zero-Length Packet (ZLP) to acknowledge the SETUP transfer.
+
+ Like GET_MAX_LUN, this request must be issued with specific parameters -
+ wValue, wIndex and wLength should be zero. A request which does not have valid
+ values in its field must be acknowledged with a STALL handshake from the
+ %device.
+
+ The handler for this request must return the state machine to its initial state.
+\code
+//-----------------------
+case MSD_BULK_ONLY_RESET:
+//-----------------------
+    // Check parameters
+    if ((request->wValue == 0)
+        && (request->wIndex == 0)
+        && (request->wLength == 0)) {
+
+        // Reset the MSD driver
+        MSDDriver_Reset();
+        USBD_Write(0, 0, 0, 0, 0);
+    }
+    else {
+        USBD_Stall(0);
+    }
+    break;
+\endcode
+
+ !!State Machine
+ ...
+
+ !Rationale
+ A state machine is necessary for #non-blocking# operation of the driver. As
+ previously stated, there are three steps when processing a command:
+ - Reception of the CBW
+ - Processing of the command (with data transfers if required)
+ - Emission of the CSW
+
+ Without a state machine, the program execution would be stopped at each step
+ to wait for transfers completion or command processing. For example, reception
+ of a CBW does not always happen immediately (the host does not have to issue
+ commands regularly) and can block the system for a long time.
+
+ Developing an asynchronous design based on a state machine is made easier when
+ using Atmel "AT91 USB device framework", as most methods are asynchronous. For
+ example, a write operation (using the USBD_Write function) returns
+ immediately; a callback function can then be invoked when the transfer
+ actually completes.
+
+ !States
+ Apart from the three states corresponding to the command processing flow (CBW,
+ command processing and CSW), two more can be identified. The
+ reception/emission of CBW/CSW will be broken down into two different states:
+ the first state is used to issue the read/write operation, while the second
+ one waits for the transfer to finish. This can be done by monitoring a
+ "transfer complete" flag which is set using a callback function.
+
+ In addition, some commands can be quite complicated to process: they may
+ require several consecutive data transfers mixed with media access. Each
+ command thus has its own second-tier state machine. During execution of a
+ command, the main state machine remains in the "processing" state, and
+ proceeds to the next one (CSW emission) only when the command is complete.
+
+ Here is the states list:
+ - MSDDriver_STATE_READ_CBW: Start of CBW reception
+   (initial state after reset)
+ - MSDDriver_STATE_WAIT_CBW: Waiting for CBW reception
+ - MSDDriver_STATE_PROCESS_CBW: Command processing
+ - MSDDriver_STATE_SEND_CSW: Start of CSW emission
+ - MSDDriver_STATE_WAIT_CSW: Waiting for CSW emission
+
+ A single function, named MSDDriver_StateMachine, is provided by the driver. It
+ must be called regularly during the program execution. The following
+ subsections describe the actions that must be performed during each state.
+
+ \image MSDDriverStates.png "MSD Driver State Machine"
+
+ #MSDDriver_STATE_READ_CBW#
+
+ As said previously, this state is used to start the reception of a new Command
+ Block Wrapper. This is done using the USB_Read method of the USB framework.
+ The result code of the function is checked for any error; the
+ USB_STATUS_SUCCESS code indicates that the transfer has been successfully
+ started.
+\code
+//----------------------
+case MSDDriver_STATE_READ_CBW:
+//----------------------
+    // Start the CBW read operation
+    transfer->semaphore = 0;
+    status = USBD_Read(MSDDriverDescriptors_BULKOUT,
+                       cbw,
+                       MSD_CBW_SIZE,
+                       (TransferCallback) MSDDriver_Callback,
+                       (void *) transfer);
+
+    // Check operation result code
+    if (status == USBD_STATUS_SUCCESS) {
+
+        // If the command was successful, wait for transfer
+        msdDriver.state = MSDDriver_STATE_WAIT_CBW;
+    }
+    break;
+\endcode
+ A callback function to invoke when the transfer is complete is provided to the
+ USBD_Read method, to update a MSDTransfer structure. This structure
+ indicates the transfer completion, the returned result code and the number of
+ transferred and remaining bytes.
+\code
+typedef struct {
+    unsigned int  transferred; //!< Number of bytes transferred
+    unsigned int  remaining;   //!< Number of bytes not transferred
+    unsigned char semaphore;   //!< Semaphore to indicate transfer completion
+    unsigned char status;      //!< Operation result code
+} MSDTransfer;
+\endcode
+ The callback function is trivial and thus not listed here.
+
+ #MSDDriver_STATE_WAIT_CBW#
+
+ The first step here is to monitor the }semaphore} field of the MSDTransfer
+ structure (see above); this will enable detection of the transfer end. Please
+ note that this field must be declared as volatile in C, or accesses to it
+ might get optimized by the compiler; this can result in endless loops.
+
+ If the transfer is complete, then the result code must be checked to see if
+ there was an error. If the operation is successful, the state machine can
+ proceed to command processing. Otherwise, it returns to the READ_CBW state.
+\code
+//----------------------
+case MSDDriver_STATE_WAIT_CBW:
+//----------------------
+    // Check transfer semaphore
+    if (transfer->semaphore > 0) {
+
+        // Take semaphore and terminate transfer
+        transfer->semaphore--;
+
+        // Check if transfer was successful
+        if (transfer->status == USBD_STATUS_SUCCESS) {
+
+            // Process received command
+            msdDriver.state = MSDDriver_STATE_PROCESS_CBW;
+        }
+        else if (transfer->status == USBD_STATUS_RESET) {
+
+            msdDriver.state = MSDDriver_STATE_READ_CBW;
+        }
+        else {
+
+            msdDriver.state = MSDDriver_STATE_READ_CBW;
+        }
+    }
+    break;
+\endcode
+
+ #MSDDriver_STATE_PROCESS_CBW#
+
+ Once the CBW has been received, its validity must be checked. A CBW is not
+ valid if:
+ - it has not been received right after a CSW was sent or a reset occured or
+ - it is not exactly 31 bytes long or
+ - its signature field is not equal to 43425355h
+
+ The state machine prevents the first case from happening, so only the two
+ other cases have to be verified.
+
+ The number of bytes transferred during a USBD_Read operation is passed as an
+ argument to the callback function, if one has been specified. As stated
+ previously, such a function is used to fill a MSDTransfer structure.
+ Therefore, it is trivial to check that the CBW is indeed 31 bytes by verifying
+ that the number of bytes transferred is 31, and that there are no remaining
+ bytes. The following table illustrates the three cases which may happen:
+||Number of bytes transferred||Number of bytes remaining||Meaning
+|transferred<31|remaining==0|CBW is too short
+|transferred==31|remaining>0|CBW is too long
+|transferred==31|remaining==0|CBW length is correct
+
+ Checking the signature is simply done by comparing the dCBWSignature field
+ with the expected value (43425355h).
+
+ If the CBW is not valid, then the device must immediately halt both Bulk
+ endpoints, to STALL further traffic from the host. In addition, it should stay
+ in this state until a Reset Recovery is performed by the host. This is done by
+ setting the waitResetRecovery flag in the MSDDriver structure. Finally, the
+ CSW status is set to report an error, and the state machine is returned to
+ MSDDriver_STATE_READ_CBW.
+
+ Otherwise, if the CBW is correct, then the command can be processed. Remember
+ the CBW tag must be copied regardless of the validity of the CBW.
+
+ Note that these steps are only necessary for a new command (remember commands
+ are asynchronous and are carried out in several calls, so a check can be
+ performed to avoid useless processing. A value of zero for the internal
+ command state indicates a new command.
+\code
+//-------------------------
+case MSDDriver_STATE_PROCESS_CBW:
+//-------------------------
+    // Check if this is a new command
+    if (commandState->state == 0) {
+
+        // Copy the CBW tag
+        csw->dCSWTag = cbw->dCBWTag;
+
+        // Check that the CBW is 31 bytes long
+        if ((transfer->transferred != MSD_CBW_SIZE) ||
+            (transfer->remaining != 0)) {
+
+            // Wait for a reset recovery
+            msdDriver.waitResetRecovery = 1;
+
+            // Halt the Bulk-IN and Bulk-OUT pipes
+            USBD_Halt(MSDDriverDescriptors_BULKOUT);
+            USBD_Halt(MSDDriverDescriptors_BULKIN);
+
+            csw->bCSWStatus = MSD_CSW_COMMAND_FAILED;
+            msdDriver.state = MSDDriver_STATE_READ_CBW;
+
+        }
+        // Check the CBW Signature
+        else if (cbw->dCBWSignature != MSD_CBW_SIGNATURE) {
+
+            // Wait for a reset recovery
+            msdDriver.waitResetRecovery = 1;
+
+            // Halt the Bulk-IN and Bulk-OUT pipes
+            USBD_Halt(MSDDriverDescriptors_BULKOUT);
+            USBD_Halt(MSDDriverDescriptors_BULKIN);
+
+            csw->bCSWStatus = MSD_CSW_COMMAND_FAILED;
+            msdDriver.state = MSDDriver_STATE_READ_CBW;
+        }
+        else {
+
+            // Pre-process command
+            MSDDriver_PreProcessCommand();
+        }
+    }
+
+    // Process command
+    if (csw->bCSWStatus == MSDDriver_STATUS_SUCCESS) {
+
+        if (MSDDriver_ProcessCommand()) {
+
+            // Post-process command if it is finished
+            MSDDriver_PostProcessCommand();
+            msdDriver.state = MSDDriver_STATE_SEND_CSW;
+        }
+    }
+
+    break;
+\endcode
+
+ #MSDDriver_STATE_SEND_CSW#
+
+ This state is similar to MSDDriver_STATE_READ_CBW, except that a write
+ operation is performed instead of a read and the CSW is sent, not the CBW. The
+ same callback function is used to fill the transfer structure, which is
+ checked in the next state:
+\code
+//----------------------
+case MSDDriver_STATE_SEND_CSW:
+//----------------------
+    // Set signature
+    csw->dCSWSignature = MSD_CSW_SIGNATURE;
+
+    // Start the CSW write operation
+    status = USBD_Write(MSDDriverDescriptors_BULKIN,
+                        csw,
+                        MSD_CSW_SIZE,
+                        (TransferCallback) MSDDriver_Callback,
+                        (void *) transfer);
+
+    // Check operation result code
+    if (status == USBD_STATUS_SUCCESS) {
+
+        // Wait for end of transfer
+        msdDriver.state = MSDDriver_STATE_WAIT_CSW;
+    }
+    break;
+\endcode
+
+ #MSDDriver_STATE_WAIT_CSW#
+
+ Again, this state is very similar to MSDDriver_STATE_WAIT_CBW. The only
+ difference is that the state machine is set to MSDDriver_STATE_READ_CBW
+ regardless of the operation result code:
+\code
+//----------------------
+case MSDDriver_STATE_WAIT_CSW:
+//----------------------
+    // Check transfer semaphore
+    if (transfer->semaphore > 0) {
+
+        // Take semaphore and terminate transfer
+        transfer->semaphore--;
+
+        // Read new CBW
+        msdDriver.state = MSDDriver_STATE_READ_CBW;
+    }
+    break;
+\endcode
+
+ !!Media
+
+ USB MSD Media access is three-level abstraction.
+
+ \image MSDMediaArch.png "Media Architecture"
+
+ The bottom level is the specific driver for each media type (See memories).
+
+ In the middle, a structure Media is used to hide which specific driver a media
+ instance is using. This enables transparent use of any media driver once it
+ has been initialized (See _Media).
+
+ Finally, a LUN abstraction is made over the media structure to allow multiple
+ partitions over one media. This also makes it possible to place the LUN at any
+ address and use any block size. When performing a write or read operation on a
+ LUN, it forwards the operation to the underlying media while translating it to
+ the correct address and length.
+
+ !Media Drivers
+ A media driver must provide several functions for:
+ - Reading data from the media
+ - Writing data on the media
+ - Handling interrupts on the media
+ The last function may be empty if the media does not require interrupts for
+ asynchronous operation, or if synchronous operation produces an acceptable
+ delay.
+
+ In addition, it should also define a function for initializing a Media
+ structure with the correct values, as well as perform the necessary step for
+ the media to be useable.
+
+ For the drivers see:
+ - MEDSdram.h: }Internal Flash Driver}
+ - MEDFlash.h: }SDRAM disk driver}
+
+ !!SCSI Commands
+
+ The example software described in this application note uses SCSI commands
+ with the MSD class, since this is the most appropriate setting for a Flash
+ device. This section details how SCSI commands are processed.
+
+ !Documents
+
+ There are several documents covering SCSI commands. In this application note,
+ the reference document used is SCSI Block Commands - 3 (SBC-3). However, it
+ makes many references to another SCSI document, SCSI Primary Commands - 4
+ (SPC-4). Both are needed for full details on required commands.
+
+ !Endianness
+
+ SCSI commands use the big-endian format for storing word- and double word-
+ sized data. This means the Most Significant Bit (MSB) is stored at the
+ lowest address, and the Least Significant Bit (LSB) at the highest one.
+
+ On ARM Thumb microcontrollers, the endianness of the core is selectable.
+ However, the little-endian mode is most often used. Therefore, SCSI command
+ data must be converted before being usable. This is done by declaring
+ word- and dword-sized fields as byte arrays, and then using a macro for
+ loading or storing data. Several of them are available in the provided
+ software:
+ - Load
+    - WORDB: Converts a big-endian word value to little-endian
+    - DWORDB: Converts a big-endian double-word value to little-endian
+ - Store
+    - STORE_WORDB: Stores a little-endian word value in big-endian format
+    - STORE_DWORDB: Stores a little-endian double-word value in big-endian format
+
+ !Sense Data
+
+ When an error happens during the execution of a command, it is recorded by the
+ device. The host may then issue a Request Sense command to retrieve
+ #Sense Data#, i.e., information about previous errors.
+
+ While the sense data structure has many fields, only three are really
+ important. The first one is the Sense Key. It indicates the result of the last
+ command performed: success, media not ready, hardware error, etc. Two other
+ fields can then be specified to give a more accurate description of the
+ problem. They are named }Additional Sense Code} and }Additional Sense Code
+ Qualifier}.
+
+ In the example application, each LUN has its own sense data. It is updated
+ during command execution if there is any error.
+
+ !Commands
+
+ The SBC-3 specification gives a list of mandatory and optional commands that
+ are relevant for a block device (like a Flash drive). In practice, only a
+ subset of the mandatory commands is effectively used by operating systems;
+ conversely, several commands which are supposed to be optional are required.
+ The software provided with this application note implements the following list
+ of commands:
+ - SBC-3
+    - Prevent/Allow Medium Removal
+    - Read (10)
+    - Read Capacity (10)
+    - Verify (10)
+    - Write (10)
+ - SPC-4
+    - Inquiry
+    - Mode Sense (6)
+    - Request Sense
+    - Test Unit Ready
+ The commands are actually processed in SBC_ProcessCommand.
+
+ }Internal State Machine}
+
+ As previously stated, most commands have an internal state machine to prevent
+ blocking the whole system during a data transfer (on the USB or when accessing
+ a media). A result code is used to indicate that the corresponding function
+ must be called again for the command to complete (MSDDriver_STATUS_SUCCESS).
+
+ A command state structure is used by the driver to record several parameters
+ during command processing:
+\code
+typedef struct {
+
+    MSDTransfer transfer;       //!< Current transfer status
+    MSCbw      cbw;             //!< Received CBW
+    MSCsw      csw;             //!< CSW to send
+    unsigned char  state;       //!< Current command state
+    unsigned char  postprocess; //!< Actions to perform when command is complete
+    unsigned int   length;      //!< Remaining length of command
+
+} MSDCommandState;
+\endcode
+
+ Note that the }state} field must be initialized when the command is first
+ called. A value of 0 means that no command is currently being executed.
+
+ For the commands descriptions and implementation, please reffer to the SCSI
+ spec. and source code.
+
+ Functions to handle SCSI commands:
+ - SBC_Inquiry
+ - SBC_Read10
+ - SBC_ReadCapacity10
+ - SBC_RequestSense
+ - SBC_TestUnitReady
+ - SBC_Write10
+ - SBC_ModeSense6
+
+ !Command Processing
+
+ }Flow}
+
+ Command processing is actually divided into three phases in the example
+ software:
+ - Pre-processing: MSDDriver_PreProcessCommand
+ - Processing: MSDDriver_ProcessCommand
+ - Post-processing: MSDDriver_PostProcessCommand
+
+ }The Thirteen Cases}
+
+ There are basically three actions that should be performed depending on the
+ case:
+ - STALL the Bulk-IN endpoint
+ - STALL the Bulk-OUT endpoint
+ - Report a Phase Error in the CSW
+
+ The table below lists all cases along with the actions which must be taken
+ after the command, including the correct length/direction of the transfer. The
+ following notation is used to characterize host and %device expectations:
+
+ Data %Transfer Characterization
+||Notation||Meaning||Notation||Meaning
+|Hn|Host expects no data transfer|Dn|Device expects no data transfer
+|Hi|Host expects to #receive# data|Di|Device expects to #send# data
+|Ho|Host expects to #send# data|Do|Device expects to #receive# data
+|Lh|Length of data expected by the host|Ld|Length of data expected by the %device
+
+|Hx=Dx|Host and %device agree on transfer length and direction (x is either n, i or o)
+|Hx>Dx|Host and %device agree on transfer direction, host expects a larger transfer than %device
+|Hx<Dx|Host and %device agree on transfer direction, %device expects a larger transfer than host
+|Hx<>Dx|Host and %device disagree on transfer direction
+
+ The Thirteen Cases
+||\#||Case||Length||Residue||Direction||STALL IN?||STALL OUT?||Phase Error?
+|1|Hn = Dn|0|0|Irrelevant| | | 
+|2|Hn < Di|0|Ld - Lh|Irrelevant| | |X
+|3|Hn < Do|0|Ld - Lh|Irrelevant| | |X
+|4|Hi > Dn|0|Lh|Irrelevant|X| | 
+|5|Hi > Di|Ld|Lh - Ld|In|X| | 
+|6|Hi = Di|Ld|0|In| | | 
+|7|Hi < Di|Lh|Ld - Lh|In| | |X
+|8|Hi <> Do|0|0|Irrelevant|X| |X
+|9|Ho > Dn|0|Lh|Irrelevant| |X| 
+|10|Ho <> Di|0|0|Irrelevant| |X|X
+|11|Ho > Do|Ld|Lh - Ld|Out| |X| 
+|12|Ho = Do|Ld|0|Out| | | 
+|13|Ho < Do|Lh|Lh - Ld|Out| | |X
+
+ !!Main Application
+ After the MSD driver and the media have been initialized using the
+ corresponding functions, the only requirement for the main application is to
+ regularly call the state machine function. This is necessary for processing
+ received commands in a fully asynchronous way.
+
+ The application is otherwise free of doing any other task; for example, it
+ could implement a filesystem and a serial port interface to be accessed with a
+ standard terminal. An MP3 player could also continue playing a song while its
+ memory is accessed like an external hard disk.
+
+ \image MSDDriverClasses.png "Driver Class Diagram"
+
+*/
+/**
+ \page "USB MSD Basic"
+
+ This page gives generic details on the MSD class.
+
+ !!!Purpose
+
+ The MSD class defines how devices such as a hard disk, a USB floppy disk drive
+ or a disk-on-key shall operate on the USB. These devices are referred to as
+ mass storage devices, since they usually offer a high storage capacity. When
+ plugged to a PC, a %device complying to the MSD specification is accessed like
+ any other disk on the system.
+
+ In practice, the specification only defines a way to wrap existing data
+ transfer protocols, such as SCSI or the Reduced Block Commands (RBC) set. A
+ list of the supported protocols and their uses will be given in the following
+ section.
+
+ !!!Data Transfer Protocols
+
+ The }Mass Storagae Class Specification Overview 1.2} supports the following
+ set of %devices:
+
+ Protocols for MSD %devices
+||Subclass Code||Command Block Spec.||Used by
+|01h|Reduced Block Commands(RBC)|Flash %devices
+|02h|SFF-8020i, MMC-2|CD & DVD %devices
+|03h|QIC-157|Tape %devices
+|04h|UFI|Floppy disk drives
+|05h|SFF-8070i|Floppy disk drives
+|06h|SCSI transparent command set|Any
+
+ The SCSI transparent command set comprises all SCSI-related specifications,
+ such as SCSI Primary Commands (SPC), SCSI Block Commands (SBC), and so on. A
+ command will be issued by the host to determine exactly with which standard
+ the %device is compliant.
+
+ The protocol used by the %device is specified in its Interface descriptor, in
+ the }bInterfaceSubclass} field.
+
+ !!!Transfer Protocols
+
+ There are actually two different transport protocols for the MSD class:
+ - Control/Bulk/Interface (CBI) transport
+ - Bulk-Only Transport (BOT)
+
+ These two methods are described in two separate stand-alone documents. CBI can
+ be considered obsolete and is being completely replaced by BOT. It was
+ originally targeted at full-speed floppy disk drives. Therefore, the rest of
+ this document will talk about Bulk-Only Transport exclusively.
+
+ Transport Protocol Codes
+||bInterfaceProtocol||Protocol Implementation
+|00h|Control/Bulk/Interrupt protocol (with command completion interrupt)
+|01h|Control/Bulk/Interrupt protocol (without command completion interrupt)
+|50h|Bulk-only transport
+
+ !!!Architecture
+ ...
+
+ !!Interfaces & Endpoints
+
+ An MSD %device only needs one single interface. The bInterfaceClass field of
+ the interface descriptor should be set to MSD class code (0x08), the
+ corresponding data transfer protocol code in the }bInterfaceSubclass} field
+ and transport protocol code in the }bInterfaceProtocol} field can be found in
+ the tables on above.
+
+ Exactly three %endpoints (when using the Bulk-Only Transport protocol) are
+ necessary for MSD %devices.
+
+ The first one is the Control endpoint 0, and is used for class-specific
+ requests and for clearing Halt conditions on the other two %endpoints.
+ Endpoints are halted in response to errors and host bad behavior during data
+ transfers, and the CLEAR_FEATURE request is consequently used to return them
+ to a functional state.
+
+ The other two %endpoints, which are of type Bulk, are used for transferring
+ commands and data over the bus. There must be one Bulk-IN and one Bulk-OUT
+ endpoint.
+
+ \image MSDDriverArch.png "Mass Storage Device Driver Architecture"
+
+ !!Class-Specific Descriptors
+ No class-specific descriptors for an MSD %device using the Bulk-only transfport
+ protocol.
+
+ !!Class-Specific Requests
+ Two class specific requests should be handled.
+
+ !GetMaxLUN
+ A %device can feature one or more Logical Unit (LU). Each of these units will
+ be treated as a separate disk when plugged to a computer. A %device can have up
+ to 15 logical units.
+
+ The GET_MAX_LUN request is issued by the host to determine the maximum Logical
+ Unit Number (LUN) supported by the %device. This is not equivalent to the
+ number of LU on the %device; since units are numbered starting from 0, a %device
+ with 5 LUs should report a value of 4, which will be the index of the fifth
+ unit.
+
+ Optionally, a %device with only one LUN may STALL this request instead of
+ returning a value of zero.
+
+ !Bulk-Only Mass Storage Reset
+ This request is used to reset the state of the %device and prepare it to
+ receive commands and data. Note that the data toggle bits must not be altered
+ by a RESET command; same for the Halt state of %endpoints, i.e., halted
+ %endpoints must not be reset to a normal state.
+
+ !!Command/Data/Status
+ Each MSD transaction is divided into three steps:
+ - Command stage
+ - Data stage (optional)
+ - Status stage
+
+ During the command stage, a Command Block Wrapper (CBW) is transmitted by the
+ host to the %device. The CBW describes several parameters of the transaction
+ (direction, length, LUN) and carries a variable-length command block. The
+ command block contains data in the format defined by the transfer protocol
+ used by the %device.
+
+ Command Block Wrapper Data Format
+||Offset||Field Name||Length||Comment
+|0|dCBWSignature|4 bytes|Signature to identify CBW, must be 43425355h
+|4|dCBWTag|4 bytes|Tag sent by the host, echoed in the CSW
+|8|dCBWTransferLength|4 bytes|Length of transfer during the data stage
+|12|bmCBWFlags|1 byte|Bits 0-6: Reserved/obsolete\n
+                      Bit 7: Transfer direction (0 = OUT, 1 = IN)
+|13|bCBWLUN|1 byte|Bits 0-3: LUN to which the command is sent\n
+                   Bits 4-7: Reserved
+|14|bCBWCBLength|1 byte|Bits 0-5: Length of command block in bytes\n
+                        Bits 6-7: Reserved
+|15|CBWCB|0-16 bytes|Command block to be executed by the %device
+
+ After the %device has received and interpreted the command, an optional data
+ stage may take place if the command requires it. During this step, data is
+ transferred either to or from the %device depending on the command, in several
+ IN/OUT transfers.
+
+ Once the data stage is complete, the host issues a final IN request on the
+ Bulk-IN endpoint of the %device to request the Command Status Wrapper (CSW).
+ The CSW is used to report correct or incorrect execution of the command, as
+ well as indicating the length of remaining data that has not been transferred.
+
+ Command Status Wrapper
+||Offset||Field Name||Length||Comment
+|0|dCSWSignature|4 bytes|Signature to identify CSW, must be 53425355h
+|4|dCSWTag|4 bytes|Copy of previous CBW tag
+|8|dCSWDataResidue|4 bytes|Difference between expected and real transfer length
+|12|bCSWStatus|1 byte|Indicates the success or failure of the command
+
+ These steps are all performed on the two Bulk %endpoints, and do not involve
+ Control endpoint 0 at all.
+
+ !!Reset Recovery
+ When severe errors occur during command or data transfers (as defined in the
+ }Mass Storage Bulk-only Transport 1.0} document), the %device must halt both
+ Bulk %endpoints and wait for a #Reset Recovery# procedure. The Reset Recovery
+ sequence goes as follows:
+ - The host issues a Bulk-Only Mass Storage Reset request
+ - The host issues two #CLEAR_FEATURE# requests to unhalt each endpoint
+
+ A %device waiting for a Reset Recovery must not carry out CLEAR_FEATURE
+ requests trying to unhalt either Bulk endpoint until after a Reset request has
+ been received. This enables the host to distinguish between severe and minor
+ errors.
+
+ The only major error defined by the Bulk-Only Transport standard is when a CBW
+ is not valid. This means one or more of the following:
+ - The CBW is not received after a CSW has been sent or a reset.
+ - The CBW is not exactly 31 bytes in length.
+ - The dCBWSignature field of the CBW is not equal to 43425355h.
+
+ !!!Host Drivers
+ Almost all operating systems now provide a generic driver for the MSD class.
+ However, the set of supported data transfer protocols may vary. For example,
+ Microsoft Windows does not currently support the Reduced Block Command set.
+
+*/

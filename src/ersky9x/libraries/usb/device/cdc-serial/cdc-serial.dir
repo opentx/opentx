@@ -1,0 +1,646 @@
+/* ----------------------------------------------------------------------------
+ *         ATMEL Microcontroller Software Support 
+ * ----------------------------------------------------------------------------
+ * Copyright (c) 2008, Atmel Corporation
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the disclaimer below.
+ *
+ * Atmel's name may not be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ----------------------------------------------------------------------------
+ */
+
+//------------------------------------------------------------------------------
+/// \dir
+///
+/// !!!Purpose
+///
+/// This directory provides definitions, structs and functions for a USB CDC
+/// %device - USB CDC Serial Converter demo, to implement an USB Serial COM port
+/// driver.
+///
+/// !!!Contents
+///
+/// There are two things for the implement of the USB CDC Serial %device driver:
+/// - Implement the CDC Serial driver structs and functions for the %device,
+///   to initialize, to handle CDC-specific requests and dispach
+///   standard requests in USBD callbacks, to read/write through assigned USB
+///   endpoints,
+/// - Create the CDC Serial device's descriptors that should be passed to
+///   the USBDDriver instance on initialization, so that the host can 
+///   recognize the %device as a USB CDC Serial COM port %device.
+///
+/// For more information about what a particular group contains, please refer to
+/// "USB CDC Serial Device".
+//------------------------------------------------------------------------------
+
+/**
+ \page "USB CDC Serial Device"
+ This page describes how to use the USB framework to produce a USB CDC Serial
+ Device driver, which appears as a virtual COM port on host.
+
+ !!!References
+ - "AT91 USB device framework"
+ - "USB Device Enumeration"
+ - <a href="http://www.usb.org/developers/docs/usb_20_040908.zip">
+   Universal Serial Bus Revision 2.0 specification
+   </a> (.zip file format, size 9.80 MB)
+ - <a href="http://www.usb.org/developers/devclass_docs/CDC1.2_WMC1.1.zip">
+   Communication Device Class Documents</a> (.zip file format)
+ - Abstract Control Model Serial Emulation (USB Class Definitions for
+   Communication Devices, section 3.6.2.1).
+
+ !!!Communication Device Class
+
+ You can get some basic information about the Communication Device Class.
+
+ !!Purpose
+
+ CDC is used to connect communication devices, such as modems (digital or
+ analog), telephones or networking devices. Its generic framework supports a
+ wide variety of physical layers (xDSL, ATM, etc.) and protocols.
+
+ In this document, CDC is used to implement a USB to a serial data converter.
+ A USB to serial converter can be used in this case to bridge a legacy RS-232
+ interface with a USB port.
+
+ !!Architecture
+ ...
+ 
+ !Communication Class Interface
+ The #Communication Class Interface# is used for %device management. It
+ includes requests to manage the %device state, its responses, as well as
+ event notifications. This interface can also be optionally used for call
+ management, i.e., setting up and terminating calls as well as managing
+ their parameters.
+
+ The interface requires at least one endpoint (#Default EP0#) to used for
+ %device management. Optionally, another endpoint can be dedicated to
+ event notification. This will usually be an #Interrupt IN# endpoint.
+
+ !Data Class Interface
+ The #Data Class Interface# is used for generic data transmissions. It provides
+ a means for a communication %device to actually transfer data to and from the
+ host. In addition, it also enables the multiplexing of data and commands on
+ the same interface, through the use of wrappers.
+
+ %Endpoints for this interface must exist in pairs of the same type. This is
+ necessary to allow both IN and OUT communication. Only the #Bulk# and
+ #Isochronous# types can be used for these %endpoints.
+
+ \image CDCArchitecture.png "CDC Class Driver Architecture"
+
+ !Models
+ To account for the wide variety of existing communication devices, several
+ #models# have been defined, for more details you can refer to CDC spec. 1.1.
+ - POTS (Plain Old Telephone Service)
+    - Direct Line Control Model
+    - Datapump Model
+    - Abstract Control Model (ACM)
+ - Telephone
+    - Telephone Control Model
+ - ISDN
+    - Multi-Channel Model
+    - USB CAPI Model
+ - Networking
+    - Ethernet Networking Model
+    - ATM Networking Control Model
+
+ !Class-specific Descriptors
+ CDC-specific information is described using Functional Descriptors. They
+ define various parameters of an interface, such as how the %device handles
+ call management, or model-specific attributes.
+
+ Since the CDC specification defines quite a number of functional descriptors,
+ they are not detailed here. Instead, they are presented in the various case
+ studies of this document in which they are used.
+
+ !!Host Drivers
+ Most Operating Systems (OS) now include generic drivers for a wide variety of
+ USB classes. This makes developing a %device simpler, since the host complexity
+ is now handled by the OS. Manufacturers can thus concentrate on the %device
+ itself, not on developing specific host drivers.
+
+ Here is a brief list of the various CDC implementations supported by several
+ OS:
+ - Windows
+     - Abstract Control Model
+     - Remote NDIS
+ - Linux
+     - Abstract Control Model
+     - Ethernet Model
+
+ !!!USB to Serial Converter
+ This section describes the implementation of the USB to serial converter using
+ the CDC class and the AT91 USB Device Framework.
+
+ !!Bridging a Legacy Device and a Host with USB-Serial Converter
+ \image USB-SerialConverter.png
+
+ !!Model
+ The CDC specification defines a model which suits this application perfectly:
+ the #Abstract Control Model (ACM)#. It implements the requests and
+ notifications necessary to communicate with an RS-232 interface.
+
+ The Abstract Control Model requires two interfaces, one #Communication Class
+ Interface# and one #Data Class Interface#. Each of them must have two
+ associated endpoints. The former shall have one endpoint dedicated to %device
+ management (default Control endpoint 0) and one for events notification
+ (additional Interrupt IN endpoint).
+
+ The Data Class Interface needs two endpoints through which to carry data to
+ and from the host. Depending on the application, these endpoints can either
+ be Bulk or Isochronous. In the case of a USB to serial converter, using Bulk
+ endpoints is probably more appropriate, since the reliability of the
+ transmission is important and the data transfers are not time-critical.
+
+ !!Descriptors
+ The descriptors are modtly standard ones. The following code examples thus
+ use the structures described in the "AT91 USB device framework".
+
+ For CDC-specific descriptors, some new types are defined:
+ - CDCHeaderDescriptor
+ - CDCCallManagementDescriptor
+ - CDCAbstractControlManagementDescriptor
+ - CDCUnionDescriptor
+
+ All the descriptors can be found in CDCDSerialDriverDescriptors.c.
+
+ !Device Descriptor
+ \code
+const USBDeviceDescriptor deviceDescriptor = {
+    sizeof(USBDeviceDescriptor),
+    USBGenericDescriptor_DEVICE,
+    USBDeviceDescriptor_USB2_00,
+    CDCDeviceDescriptor_CLASS,
+    CDCDeviceDescriptor_SUBCLASS,
+    CDCDeviceDescriptor_PROTOCOL,
+    BOARD_USB_ENDPOINTS_MAXPACKETSIZE(0),
+    CDCDSerialDriverDescriptors_VENDORID,
+    CDCDSerialDriverDescriptors_PRODUCTID,
+    CDCDSerialDriverDescriptors_RELEASE,
+    0, // No string descriptor for manufacturer
+    1, // Index of product string descriptor is #1
+    0, // No string descriptor for serial number
+    1 // Device has 1 possible configuration
+};
+ \endcode
+ The Vendor ID and Product ID fields are used to determine which driver to use
+ when the %device is enumerated. The Vendor ID is provided by the USB-IF
+ organization after registration; the product ID is completely vendor-specific.
+ In the example implementation provided with this document, the Atmel vendor ID
+ (03EBh) is used along with a custom product ID (6119h).
+
+ The configuration descriptor is followed by interface, endpoint and class-
+ specific descriptors.
+\code
+const CDCDSerialDriverConfigurationDescriptors configurationDescriptors[];
+\endcode
+
+ !Configuration Descriptor
+\code
+    {
+        sizeof(USBConfigurationDescriptor),
+        USBGenericDescriptor_CONFIGURATION,
+        sizeof(CDCDSerialDriverConfigurationDescriptors),
+        2, // There are two interfaces in this configuration
+        1, // This is configuration #1
+        0, // No string descriptor for this configuration
+        BOARD_USB_BMATTRIBUTES,
+        USBConfigurationDescriptor_POWER(100)
+    },
+\endcode
+
+ !Communication Class Interface Descriptor
+ The bInterfaceClass should be set to 0x02 and bInterfaceSubClass should be set
+ to 0x02.
+\code
+    {
+        sizeof(USBInterfaceDescriptor),
+        USBGenericDescriptor_INTERFACE,
+        0, // This is interface #0
+        0, // This is alternate setting #0 for this interface
+        1, // This interface uses 1 endpoint
+        CDCCommunicationInterfaceDescriptor_CLASS,
+        CDCCommunicationInterfaceDescriptor_ABSTRACTCONTROLMODEL,
+        CDCCommunicationInterfaceDescriptor_NOPROTOCOL,
+        0  // No string descriptor for this interface
+    },
+\endcode
+
+ !Functional - Header Descriptor
+\code
+    {
+        sizeof(CDCHeaderDescriptor),
+        CDCGenericDescriptor_INTERFACE,
+        CDCGenericDescriptor_HEADER,
+        CDCGenericDescriptor_CDC1_10
+    },
+\endcode
+
+ !Functional - Call Management Descriptor
+\code
+    {
+        sizeof(CDCCallManagementDescriptor),
+        CDCGenericDescriptor_INTERFACE,
+        CDCGenericDescriptor_CALLMANAGEMENT,
+        CDCCallManagementDescriptor_SELFCALLMANAGEMENT,
+        0 // No associated data interface
+    },
+\endcode
+
+ !Functional - Abstract Control Management Descriptor
+\code
+    {
+        sizeof(CDCAbstractControlManagementDescriptor),
+        CDCGenericDescriptor_INTERFACE,
+        CDCGenericDescriptor_ABSTRACTCONTROLMANAGEMENT,
+        CDCAbstractControlManagementDescriptor_LINE
+    },
+\endcode
+
+ !Functional - Union Descriptor
+\code
+    {
+        sizeof(CDCUnionDescriptor),
+        CDCGenericDescriptor_INTERFACE,
+        CDCGenericDescriptor_UNION,
+        0, // Number of master interface is #0
+        1 // First slave interface is #1
+    },
+\endcode
+
+ !Notification Endpoint Descriptor
+ The EP is defined as CDCDSerialDriverDescriptors_NOTIFICATION.
+\code
+    {
+        sizeof(USBEndpointDescriptor), 
+        USBGenericDescriptor_ENDPOINT,
+        USBEndpointDescriptor_ADDRESS(USBEndpointDescriptor_IN,
+                     CDCDSerialDriverDescriptors_NOTIFICATION),
+        USBEndpointDescriptor_INTERRUPT,
+        MIN(BOARD_USB_ENDPOINTS_MAXPACKETSIZE(
+                     CDCDSerialDriverDescriptors_NOTIFICATION),
+            USBEndpointDescriptor_MAXINTERRUPTSIZE_FS),
+        10 // Endpoint is polled every 10ms
+    },
+\endcode
+
+ !Data Class Interface Descriptor
+\code
+    {
+        sizeof(USBInterfaceDescriptor),
+        USBGenericDescriptor_INTERFACE,
+        1, // This is interface #1
+        0, // This is alternate setting #0 for this interface
+        2, // This interface uses 2 endpoints
+        CDCDataInterfaceDescriptor_CLASS,
+        CDCDataInterfaceDescriptor_SUBCLASS,
+        CDCDataInterfaceDescriptor_NOPROTOCOL,
+        0  // No string descriptor for this interface
+    },
+\endcode
+
+ !Data Endpoint Descriptors
+ The EPs are defined as CDCDSerialDriverDescriptors_DATAOUT &
+ CDCDSerialDriverDescriptors_DATAIN.
+\code
+    // Bulk-OUT endpoint standard descriptor
+    {
+        sizeof(USBEndpointDescriptor), 
+        USBGenericDescriptor_ENDPOINT,
+        USBEndpointDescriptor_ADDRESS(USBEndpointDescriptor_OUT,
+                           CDCDSerialDriverDescriptors_DATAOUT),
+        USBEndpointDescriptor_BULK,
+        MIN(BOARD_USB_ENDPOINTS_MAXPACKETSIZE(
+            CDCDSerialDriverDescriptors_DATAOUT),
+            USBEndpointDescriptor_MAXBULKSIZE_FS),
+        0 // Must be 0 for full-speed bulk endpoints
+    },
+    // Bulk-IN endpoint descriptor
+    {
+        sizeof(USBEndpointDescriptor),
+        USBGenericDescriptor_ENDPOINT,
+        USBEndpointDescriptor_ADDRESS(USBEndpointDescriptor_IN,
+                           CDCDSerialDriverDescriptors_DATAIN),
+        USBEndpointDescriptor_BULK,
+        MIN(BOARD_USB_ENDPOINTS_MAXPACKETSIZE(
+            CDCDSerialDriverDescriptors_DATAIN),
+            USBEndpointDescriptor_MAXBULKSIZE_FS),
+        0 // Must be 0 for full-speed bulk endpoints
+    },
+\endcode
+
+ !String Descriptors
+ Several descriptors (device, configuration, interface, etc.) can specify the
+ index of a string descriptor to comment their use.
+
+ The actual string code is defined:
+ productStringDescriptor.
+
+ !!Class-specific Requests
+ The CDC specification defines a set of #class-specific requests# for devices
+ implementing the ACM. This section details these requests. Please refer to
+ section 3.6.2.1 of the CDC spec. 1.1 for more information.
+
+ !SetLineCoding, GetLineCoding
+ These requests are sent by the host to modify or retrieve the configuration of
+ the serial line, which includes:
+ - Baudrate
+ - Number of stop bits
+ - Parity check
+ - Number of data bits
+
+ When the terminal application (such as HyperTerminal) on the host (PC) side
+ changes the setting of the COM port, a SetLineCoding request is sent with the
+ new parameters. The host may also retrieve the current setting using
+ GetLineCoding, not modifying them if they are correct.
+
+ When a SET_LINE_CODING request is received, the %device should read the new
+ parameters. Then program the new parameters in the USART. A callback must be
+ provided to the USBD_Read function.
+ See CDCDSerialDriver_SetLineCoding.
+
+ The code handling GET_LINE_CODING shall simply invoke the USBD_Write function
+ to send the current settings of the USART to the host.
+ See CDCDSerialDriver_GetLineCoding.
+
+ !SetControlLineState
+ This request is sent by the host to notify the %device of two state changes.
+ The first bit (D0) of the wValue field of the request indicates whether or not
+ a terminal is connected to the virtual COM port. Bit D1 indicates that the
+ USART should enable/disable its carrier signal to start/stop receiving and
+ transmitting data.
+
+ In practice, the USB to serial converter should operate only when those two
+ bits are set. Otherwise, it should not transmit or receive data.
+
+ Since the SET_CONTROL_LINE_STATE request does not have a data payload, the
+ %device only has to acknowledge the request by sending a ZLP (zero-length
+ packet), using the USBD_Write method.
+ See CDCDSerialDriver_SetControlLineState.
+
+ Before that, the wValue field should be parsed to retrieve the new control
+ line state. A single boolean variable can be used to keep track of the
+ connection state. If both the D0 and D1 bits are set, then the converter
+ should operate normally, i.e., forward data between the USART and the USB
+ host. Otherwise, it should stop its activity.
+
+ !!Notifications
+ Notifications are sent by the %device when an event, such as a serial line
+ state change, has occurred. In this example, they are transmitted through a
+ dedicated Interrupt IN endpoint. A special header must precede the data
+ payload of each notification. This header has the same format of a SETUP
+ request, so the USBGenericRequest structure defined in the
+ "AT91 USB device framework" can be used.
+
+ Note that the %device should only send a notification when there is a state
+ change, and not continuously. This does not really matter in practice, but
+ only sending notifications sporadically will reduce the stress on the %device.
+
+ When the serial state is changed by CDCDSerialDriver_SetSerialState, the
+ notification is sent to the host.
+
+ !!!CDC Serial Driver API
+ - CDCDSerialDriver_Initialize
+ - CDCDSerialDriver_RequestHandler
+ - CDCDSerialDriver_Read
+ - CDCDSerialDriver_Write
+ - CDCDSerialDriver_GetSerialState
+ - CDCDSerialDriver_SetSerialState
+
+ !!!Main Application
+ The job of the main application is to bridge the USART and the USB. This means
+ that data read from one end must be forwarded to the other end. This section
+ describes several possibilities to do this.
+
+ !!USB Operation
+ Reading data coming from the host is done using the CDCDSerialDriver_Read.
+ Since this is an asynchronous function, it does not block the execution flow.
+ This means that other actions (like reading data from the USART) can be
+ performed while the transfer is going on. Whenever some data is sent by the
+ host, the transfer terminates and the associated callback function is invoked.
+ This callback (UsbDataReceived) can be programmed to forward the received data
+ through the USART.
+
+ Likewise, the CDCDSerialDriver_Write function can be called as soon as there
+ is data to transmit, again without block the program flow. However, there
+ cannot be two write operations at the same time, so the program must check
+ whether or not the last transfer is complete. This can be done by checking the
+ result code of the CDCDSerialDriver_Write method. If USB_STATUS_LOCKED is
+ returned, then there is already another operation in progress. The %device
+ will have to buffer the data retrieved from the USART until the endpoint
+ becomes free again.
+
+ !!USART Operation
+ The USART peripheral present on AT91 chips can be used in two different ways.
+ The classic way is to read and write one byte at a time in the correct
+ registers to send and receive data.
+
+ A more powerful method is available on AT91SAM chips, by using the embedded
+ Peripheral DMA Controller (PDC). The PDC can take care of transfers between
+ the processor, memory and %peripherals, thus freeing the processor to perform
+ other tasks. Since the PDC interrupt happens on the buffer full, Some timer
+ can be used to check if there is any data frags input from the USART.
+
+ !!!Using a Generic Host Driver
+ See "USB CDC Serial Host Driver".
+
+ !!!Add two or more ports in one USB device
+ See "USB Dual Port CDC Serial Device".
+
+*/
+
+/**
+ \page "USB CDC Serial Host Driver"
+ Both Microsoft Windows and Linux offer a generic driver for using a USB to
+ serial converter %device. This page details the steps required to make use
+ of them.
+
+ !!!Windows
+ On Microsoft Windows, the standard USB serial driver is named usbser.sys and
+ is part of the standard set of drivers. It has been available since Windows
+ 98SE. However, conversely to other generic driver such as the one for Mass
+ Storage Devices (MSD), usbser.sys is not automatically loaded when a CDC
+ %device is plugged in.
+
+ !!Writing a Windows Driver File
+ For Windows to recognize the %device correctly, it is necessary to write a
+ .inf file. The Windows Driver Development Kit (DDK) contains information on
+ this topic. A basic driver, named 6119.inf in the example software provided,
+ will now be described. The driver file is made up of several sections.
+
+ The first section of the .inf file must be the #[Version]# section. It
+ contains information about the driver version, provider, release data, and so
+ on.
+\code
+[Version]
+Signature="$Chicago$"
+Class=Ports
+ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider=%ATMEL%
+DriverVer=09/12/2006,1.1.1.1
+\endcode
+
+ The Signature attribute is mandatory and can be either "$Windows 95$",
+ "$Windows NT$" or "$Chicago$", depending on which Windows version(s) the
+ driver supports. "$Chicago$" is used to notify that every Windows version is
+ supported. Since in this example, the USB to serial converter is a virtual COM
+ port, the Class attribute should be equal to "Ports". The value of ClassGuid
+ depends on which class the %device uses. The Provider value indicates that the
+ string descriptor for the driver provider will be defined further, under the
+ tag ATMEL. Finally, the last tag show the driver version and release date. For
+ the version number, each digit is optional (except the first one), but must
+ not be null if present.
+
+ Next come two sections, #[SourceDisksNames]# and #[SourceDisksFiles]#. They
+ are used to specify the installation disks required and the location of each
+ needed files on these disks. But they are not implemented because the file
+ is offered by windows or its install disk automatically.
+\code
+;[SourceDisksNames]
+;1="Windows Install CD"
+;[SourceDisksFiles]
+;usbser.sys=1
+\endcode
+
+ The driver file must now specify where copied files will be stored, using the
+ #[DestinationDirs]# section.
+\code
+[DestinationDirs]
+DefaultDestDir=12
+\endcode
+ The target directory must be identified by its ID, which is system-defined.
+ The ID for the drivers directory is 12.
+
+ The #[Manufacturer]# section lists the possible manufacturers for all devices
+ supported by this driver. In this case, the only supported %device is an ATMEL
+ one, so this will be the only value.
+\code
+[Manufacturer]
+%ATMEL%=AtmelMfg
+\endcode
+
+ The attribute must be a string tag; its value must be the name of the Models
+ section in which all supported devices from this manufacturer will be listed.
+ In this case, it will be named AtmelMfg, which is the next section.
+
+ Each Models section must list the hardware ID of each supported %device. For
+ USB devices, the hardware ID is made up of the Vendor ID, the Product ID and
+ (optionally) the Device Release Number. Those values are extracted from the
+ %device descriptor provided during the enumeration phase.
+\code
+[AtmelMfg]
+%USBtoSerialConverter%=USBtoSer.Install,USB\VID_03EB&PID_6119
+\endcode
+
+ The attribute name is again a string tag, which will be used to describe the
+ %device. The value is comprised of both the %device install section name
+ (USBtoSer.Install) and the hardware ID. The hardware ID is the same as the one
+ defined in "CDC Serial Device IDs".
+
+ Now, the .inf file must detail the install section of each %device previously
+ listed. In this example, there is only one install section, named
+ #[USBtoSer.Install]#:
+\code
+[USBtoSer.Install]
+CopyFiles=USBtoSer.CopyFiles
+AddReg=USBtoSer.AddReg
+
+[USBtoSer.CopyFiles]
+usbser.sys,,,0x00000002
+
+[USBtoSer.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+
+[USBtoSer.Install.Services]
+AddService=usbser,0x00000002,USBtoSer.AddService
+
+[USBtoSer.AddService]
+DisplayName=%USBSer%
+ServiceType=1r
+StartType=3
+ServiceBinary=%12%\usbser.sys
+\endcode
+
+ The install section is actually divided in five. In the first section, two
+ other section names are specified: one for the list of files to copy, and one
+ for the keys to add to the Windows registry. There is only one file to copy,
+ usbser.sys; a flag (0x00000002) is used to specify that the user cannot skip
+ copying it. The registry keys are needed to install the driver on older
+ versions of Windows (such as Windows 98). For newer versions, the
+ #[USBtoSer.Install.Services]# registers the needed kernel services; each
+ service is actually listed in a section on its own.
+
+ Finally, the last section, [Strings], defines all the string constants used
+ through this file:
+\code
+[Strings]
+ATMEL="ATMEL Corp."
+USBtoSerialConverter="AT91 USB to Serial Converter"
+USBSer="USB Serial Driver"
+\endcode
+
+ !!Using the Driver
+ When a new %device is plugged in for the first time, Windows looks for an
+ appropriate specific or generic driver to use it. If it does not find one, the
+ user is asked what to do.
+
+ This is the case with the USB to serial converter, since there is no generic
+ driver for it. To install the custom driver given in the previous section,
+ Windows must be told where to look for it. This can be done by selecting the
+ second option, "Install from a list or specific location", when the driver
+ installation wizards pops up. It will then ask for the directory where the
+ driver is located. After that, it should recognize the "AT91 USB to Serial
+ Converter" driver as an appropriate one and display it in the list.
+
+ During the installation, the wizard asks for the location of the usbser.sys
+ file. If it is already installed on the system, it can be found in
+ "C:\Windows\System32\Drivers\". Otherwise, it is present on the Windows
+ installation CD.
+
+ Once the driver is installed properly, a new COM port is added to the system
+ and can be used with HyperTerminal, for example.
+
+ !!!Linux
+ Linux has two different generic drivers which are appropriate for a USB to
+ serial converter. The first one is an Abstract Control Model driver designed
+ for modem devices, and is simply named #acm#. The other one is a generic USB
+ to serial driver named #usbserial#.
+
+ If the support for the #acm# driver has been compiled in the kernel, Linux
+ will automatically load it. A new terminal %device will be created under
+ /dev/ttyACMx.
+
+ The usbserial driver must be loaded manually by using the modprobe command
+ with the vendor ID and product ID values used by the %device:
+\code
+ modprobe usbserial vendor=0x03EB product=0x6119
+\endcode
+
+ Once the driver is loaded, a new terminal entry appears and should be named
+ /dev/ttyUSBx.
+*/
+
+/**
+ \page "USB Dual Port CDC Serial Device"
+
+*/

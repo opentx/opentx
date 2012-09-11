@@ -1,0 +1,153 @@
+> "make" all
+
+-------- begin --------
+arm-elf-gcc (GCC) 4.0.1 (WinARM)
+Copyright (C) 2005 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+Assembling (ARM-only): crt0.S
+arm-elf-gcc -c -mcpu=arm7tdmi-s -mthumb-interwork -I. -x assembler-with-cpp -DROM_RUN -Wa,-adhlns=crt0.lst,-gdwarf-2 crt0.S -o crt0.o
+
+Compiling C: main.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=main.lst  -I../../inc -I../../conf -MD -MP -MF .dep/main.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 main.c -o main.o 
+
+Compiling C: uart.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=uart.lst  -I../../inc -I../../conf -MD -MP -MF .dep/uart.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 uart.c -o uart.o 
+
+Compiling C: ../../src/efs.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/efs.lst  -I../../inc -I../../conf -MD -MP -MF .dep/efs.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/efs.c -o ../../src/efs.o 
+
+Compiling C: ../../src/plibc.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/plibc.lst  -I../../inc -I../../conf -MD -MP -MF .dep/plibc.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/plibc.c -o ../../src/plibc.o 
+
+Compiling C: ../../src/disc.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/disc.lst  -I../../inc -I../../conf -MD -MP -MF .dep/disc.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/disc.c -o ../../src/disc.o 
+
+Compiling C: ../../src/partition.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/partition.lst  -I../../inc -I../../conf -MD -MP -MF .dep/partition.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/partition.c -o ../../src/partition.o 
+
+Compiling C: ../../src/time.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/time.lst  -I../../inc -I../../conf -MD -MP -MF .dep/time.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/time.c -o ../../src/time.o 
+../../src/time.c:27: warning: no previous prototype for 'fs_makeDate'
+../../src/time.c:48: warning: no previous prototype for 'fs_makeTime'
+
+Compiling C: ../../src/fs.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/fs.lst  -I../../inc -I../../conf -MD -MP -MF .dep/fs.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/fs.c -o ../../src/fs.o 
+
+Compiling C: ../../src/fat.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/fat.lst  -I../../inc -I../../conf -MD -MP -MF .dep/fat.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/fat.c -o ../../src/fat.o 
+../../src/fat.c: In function 'fat_getNextClusterAddress':
+../../src/fat.c:112: warning: cast increases required alignment of target type
+../../src/fat.c:116: warning: cast increases required alignment of target type
+../../src/fat.c: In function 'fat_setNextClusterAddress':
+../../src/fat.c:175: warning: cast increases required alignment of target type
+../../src/fat.c:180: warning: cast increases required alignment of target type
+../../src/fat.c: In function 'fat_getNextClusterAddressWBuf':
+../../src/fat.c:279: warning: cast increases required alignment of target type
+../../src/fat.c:283: warning: cast increases required alignment of target type
+../../src/fat.c: In function 'fat_setNextClusterAddressWBuf':
+../../src/fat.c:332: warning: cast increases required alignment of target type
+../../src/fat.c:336: warning: cast increases required alignment of target type
+
+Compiling C: ../../src/file.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/file.lst  -I../../inc -I../../conf -MD -MP -MF .dep/file.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/file.c -o ../../src/file.o 
+
+Compiling C: ../../src/dir.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/dir.lst  -I../../inc -I../../conf -MD -MP -MF .dep/dir.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/dir.c -o ../../src/dir.o 
+../../src/dir.c: In function 'dir_getFileStructure':
+../../src/dir.c:38: warning: cast increases required alignment of target type
+../../src/dir.c: In function 'dir_setFirstCluster':
+../../src/dir.c:95: warning: cast increases required alignment of target type
+../../src/dir.c:96: warning: cast increases required alignment of target type
+../../src/dir.c: In function 'dir_setFileSize':
+../../src/dir.c:112: warning: cast increases required alignment of target type
+../../src/dir.c: In function 'dir_findFileinBuf':
+../../src/dir.c:150: warning: cast increases required alignment of target type
+../../src/dir.c: In function 'dir_findFreeEntryinBuf':
+../../src/dir.c:186: warning: cast increases required alignment of target type
+
+Compiling C: ../../src/ls.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/ls.lst  -I../../inc -I../../conf -MD -MP -MF .dep/ls.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/ls.c -o ../../src/ls.o 
+
+Compiling C: ../../src/mkfs.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/mkfs.lst  -I../../inc -I../../conf -MD -MP -MF .dep/mkfs.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/mkfs.c -o ../../src/mkfs.o 
+../../src/mkfs.c: In function 'mkfs_makevfat':
+../../src/mkfs.c:85: warning: cast increases required alignment of target type
+../../src/mkfs.c:91: warning: cast increases required alignment of target type
+../../src/mkfs.c:97: warning: cast increases required alignment of target type
+../../src/mkfs.c:100: warning: cast increases required alignment of target type
+../../src/mkfs.c:106: warning: cast increases required alignment of target type
+../../src/mkfs.c:109: warning: cast increases required alignment of target type
+../../src/mkfs.c:112: warning: cast increases required alignment of target type
+../../src/mkfs.c:115: warning: cast increases required alignment of target type
+../../src/mkfs.c:118: warning: cast increases required alignment of target type
+../../src/mkfs.c:135: warning: cast increases required alignment of target type
+../../src/mkfs.c:136: warning: cast increases required alignment of target type
+../../src/mkfs.c:137: warning: cast increases required alignment of target type
+
+Compiling C: ../../src/debug.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/debug.lst  -I../../inc -I../../conf -MD -MP -MF .dep/debug.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/debug.c -o ../../src/debug.o 
+
+Compiling C: ../../src/ioman.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/ioman.lst  -I../../inc -I../../conf -MD -MP -MF .dep/ioman.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/ioman.c -o ../../src/ioman.o 
+
+Compiling C: ../../src/ui.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/ui.lst  -I../../inc -I../../conf -MD -MP -MF .dep/ui.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/ui.c -o ../../src/ui.o 
+../../src/ui.c: In function 'listFiles':
+../../src/ui.c:74: warning: cast increases required alignment of target type
+../../src/ui.c:89: warning: cast increases required alignment of target type
+
+Compiling C: ../../src/extract.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/extract.lst  -I../../inc -I../../conf -MD -MP -MF .dep/extract.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/extract.c -o ../../src/extract.o 
+
+Compiling C: ../../src/interfaces/lpc2000_spi.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/interfaces/lpc2000_spi.lst  -I../../inc -I../../conf -MD -MP -MF .dep/lpc2000_spi.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/interfaces/lpc2000_spi.c -o ../../src/interfaces/lpc2000_spi.o 
+
+Compiling C: ../../src/interfaces/sd.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/interfaces/sd.lst  -I../../inc -I../../conf -MD -MP -MF .dep/sd.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/interfaces/sd.c -o ../../src/interfaces/sd.o 
+
+Compiling C: ../../src/interfaces/lpc2000_dbg_printf.c
+arm-elf-gcc -c -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=../../src/interfaces/lpc2000_dbg_printf.lst  -I../../inc -I../../conf -MD -MP -MF .dep/lpc2000_dbg_printf.o.d -Wstrict-prototypes -Wmissing-declarations -Wmissing-prototypes -Wnested-externs  -std=gnu99 ../../src/interfaces/lpc2000_dbg_printf.c -o ../../src/interfaces/lpc2000_dbg_printf.o 
+
+Linking: main.elf
+arm-elf-gcc -mthumb -mcpu=arm7tdmi-s -mthumb-interwork -I. -gdwarf-2 -DROM_RUN  -Os -Wall -Wcast-align -Wcast-qual -Wimplicit  -Wpointer-arith -Wswitch -Wredundant-decls -Wreturn-type -Wshadow -Wunused -Wa,-adhlns=crt0.lst  -I../../inc -I../../conf -MD -MP -MF .dep/main.elf.d crt0.o    main.o  uart.o  ../../src/efs.o ../../src/plibc.o ../../src/disc.o ../../src/partition.o  ../../src/time.o ../../src/fs.o ../../src/fat.o ../../src/file.o ../../src/dir.o ../../src/ls.o ../../src/mkfs.o ../../src/debug.o ../../src/ioman.o ../../src/ui.o ../../src/extract.o  ../../src/interfaces/lpc2000_spi.o ../../src/interfaces/sd.o ../../src/interfaces/lpc2000_dbg_printf.o     --output main.elf -nostartfiles -Wl,-Map=main.map,--cref -lc -lnewlib-lpc -lm -lc -lgcc  -lstdc++ -TLPC2138-ROM.ld
+
+Creating load file for Flash: main.hex
+arm-elf-objcopy -O ihex main.elf main.hex
+
+Creating Extended Listing: main.lss
+arm-elf-objdump -h -S -C main.elf > main.lss
+
+Creating Symbol Table: main.sym
+arm-elf-nm -n main.elf > main.sym
+
+Size after:
+main.elf  :
+section            size         addr
+.text             17198            0
+.ctors                0        17198
+.dtors                0        17198
+.data                12   1073741824
+.bss               4168   1073741836
+.stack             1024   1073746176
+.comment            594            0
+.debug_aranges      800            0
+.debug_pubnames    3606            0
+.debug_info       29533            0
+.debug_abbrev      6363            0
+.debug_line        5750            0
+.debug_frame       4396            0
+.debug_str         4948            0
+.debug_loc        16626            0
+.debug_ranges        72            0
+Total             95090
+
+
+
+Errors: none
+-------- end --------
+
+
+> Process Exit Code: 0

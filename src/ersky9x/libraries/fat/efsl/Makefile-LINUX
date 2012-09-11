@@ -1,0 +1,51 @@
+COPT=-g3 -ansi -Wall -pedantic -O0
+#COPT=-O3 -march=pentium3 -g3 
+INCLUDEDIRS=-Iinc -Iconf
+CFLAGS=$(COPT) $(INCLUDEDIRS)
+CC=gcc
+AR=ar
+OBJ=src/efs.o
+	OBJ+=src/plibc.o
+	OBJ+=src/disc.o 
+	OBJ+=src/partition.o 
+	OBJ+=src/fs.o 
+	OBJ+=src/fat.o 
+	OBJ+=src/time.o 
+	OBJ+=src/file.o 
+	OBJ+=src/dir.o 
+	OBJ+=src/mkfs.o 
+	OBJ+=src/debug.o 
+	OBJ+=src/ioman.o 
+	OBJ+=src/ui.o 
+	OBJ+=src/ls.o
+	OBJ+=src/extract.o 
+	OBJ+=src/interfaces/helper.o 
+	OBJ+=src/interfaces/linuxfile.o
+
+all: lib
+
+lib: $(OBJ)
+	$(AR) rcs libefsl.a $(OBJ)
+
+len: src/len.o lib
+	$(CC) $(CFLAGS) -o test src/len.o -L. -lefsl
+	
+regtest: clean src/regressiontest.o $(OBJ) 
+	$(CC) $(CFLAGS) -o regtest src/regressiontest.o $(OBJ)
+	mv regtest testfiles
+	
+clean:
+	rm -f $(OBJ) src/len.o src/flex.o src/regressiontest.o test libefsl.a
+	@cd linuxutils ; make clean
+
+clearscreen:
+	clear
+
+utils: lib
+	@cd linuxutils ; make all
+
+purge: clean clearscreen len
+
+image: clearscreen
+	dd if=/dev/zero of=./image32 bs=1M count=50
+	/sbin/mkfs.vfat -F32 -v ./image32

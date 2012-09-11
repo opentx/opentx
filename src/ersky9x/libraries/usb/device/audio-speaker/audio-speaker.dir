@@ -1,0 +1,617 @@
+/* ----------------------------------------------------------------------------
+ *         ATMEL Microcontroller Software Support 
+ * ----------------------------------------------------------------------------
+ * Copyright (c) 2008, Atmel Corporation
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the disclaimer below.
+ *
+ * Atmel's name may not be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ----------------------------------------------------------------------------
+ */
+
+//------------------------------------------------------------------------------
+/// \dir
+///
+/// !!!Purpose
+///
+/// This directory provides definitions, structs and functions for a USB Audio
+/// Class device - USB audio-speaker demo, to implement an USB desktop speaker.
+///
+/// !!!Contents
+/// There are two things for the implement of the audio-speaker device driver:
+/// - Implement the audio-speaker driver structs and functions for the device,
+///   to initialize, to handle audio class specific requests and dispach
+///   standard requests in USBD callbacks, to read/write through assigned USB
+///   endpoints,
+/// - Create the audio-speaker device's descriptors that should be passed to
+///   the USBDDriver instance on initialization, so that the host can 
+///   recognize the device as a USB audio "desktop speaker" device.
+///
+/// For more information about what a particular group contains, please refer to
+/// "USB Audio Speaker Device".
+//------------------------------------------------------------------------------
+
+/**
+ \page "USB Audio Speaker Device"
+ This page describes how to use the USB framework to produce a USB Audio Class
+ Device driver.
+
+ !!!References
+ - "AT91 USB device framework"
+ - "USB Device Enumeration"
+ - <a href="http://www.usb.org/developers/docs/usb_20_040908.zip">
+   Universal Serial Bus Revision 2.0 specification
+   </a> (.zip file format, size 9.80 MB)
+ - <a href="http://www.usb.org/developers/devclass_docs/audio10.pdf">
+   Audio Device Document 1.0</a>
+ - <a href="http://www.usb.org/developers/devclass_docs/frmts10.pdf">
+   Audio Data Formats 1.0</a>
+ - <a href="http://www.usb.org/developers/devclass_docs/termt10.pdf">
+   Autio Terminal Types 1.0</a>
+
+ !!!Audio Speaker Driver API
+ - AUDDSpeakerDriver_Initialize
+ - AUDDSpeakerDriver_RequestHandler
+ - AUDDSpeakerDriver_Read
+
+ !!!Audio Desktop Speaker Description
+ The %device described here is a USB desktop speaker. It receives a stero
+ %audio data stream from the Host over its Audio Streaming interface. The used
+ Audio Data Format is 16-bit 48KHz 2-channel PCM (or mono 16-bit 32KHz PCM for
+ sam7s chips). The following is the internal topology of the speaker.
+
+ \image USBAudioSpeaker.png "USB Desktop Speaker Topology"
+
+ The %audio function contains one Onput Terminal that represents the actual
+ speaker output element, followed by the Digital-to-Analog Converter (DAC).
+ The digital input stream of the host enters the %audio function through the
+ single Input %Pin of the Output terminal. There is a Feature Unit on the
+ %audio stream, to mute or unmute the speaker. The Input Terminal is the
+ representation within the %audio fucntion of the USB OUT endpoint that
+ eventually receives the %audio data stream from the Host. The internals of the
+ %audio function are presented to the Host through the (mandatory) AudioControl
+ interface wheras the USB OUT endpoint resides in the AudioStreaming interface.
+
+ !!!Descriptor Hierarchy
+ This USB Desktop Speaker %device includes the AudioControl interface
+ (interface 0) and a single AudioStreaming interface (interface 1). The
+ AudioStreaming interface features two alternate settings. The first alternate
+ setting (Alternate Setting 0) has zero bandwidth associated with it so that
+ switching to this alternate setting effectively frees all allocated bandwidth
+ on the USB for this device. Zero bandwidth is indicated by the lack of a
+ streaming endpoint. Alternate Setting 1 is the operational part of the
+ interface and it has one isochronous OUT endpoint. Figure presents the
+ descriptor hierarchy.
+
+ \image UsbAudioSpeakerDescriptors.png "USB Desktop Speaker Hierarchy"
+
+ !!!Descriptors
+ The following sections present all the descriptors that are used to describe
+ the %device.
+
+ All descriptors are combined into a list and pass to USBDDriver_Initialize
+ invoked in AUDDSpeakerDriver_Initialize.
+
+\code
+const USBDDriverDescriptors auddSpeakerDriverDescriptors;
+\endcode
+
+ !!Device Descriptor
+\code
+const USBDeviceDescriptor deviceDescriptor;
+\endcode
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x12|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x01|DEVICE descriptor (USBGenericDescriptor_DEVICE).
+|2|bcdUSB|2|0x0200|2.00 - current revision of USB specification.
+|4|bDeviceClass|1|0x00|Device defined at interface level.
+|5|bDeviceSubClass|1|0x00|Unused.
+|6|bDeviceProtocol|1|0x00|Unused.
+|7|bMaxPacketSize0|1|0x08|8 bytes (BOARD_USB_ENDPOINTS_MAXPACKETSIZE(0)).
+|8|idVendor|2|0x03EB|Atmel Vendor ID (AUDDSpeakerDriverDescriptors_VENDORID).
+|10|idProduct|2|0x6128|Product ID (AUDDSpeakerDriverDescriptors_PRODUCTID).
+|12|bcdDevice|2|0x0100|Device Release Code\n
+                      (AUDDSpeakerDriverDescriptors_RELEASE).
+|14|iManufacturer|1|0x01|Index to manufacture name in Unicode\n
+                         (manufacturerDescriptor).
+|15|iProduct|1|0x02|Index to product name in Unicode (productDescriptor).
+|16|iSerialNumber|1|0x03|Index to serial number in Unicode\n
+                         (serialNumberDescriptor).
+|17|bNumConfigurations|1|0x01|One configuration.
+
+ !!Configuration Descriptor
+\code
+const AUDDSpeakerDriverConfigurationDescriptors configurationDescriptors;
+\endcode
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x02|CONFIGURATION descriptor\n
+                         (USBGenericDescriptor_CONFIGURATION).
+|2|wTotalLength|2|0x????|Length of the total configuration block in bytes\n
+                         including this descriptor\n
+                         (AUDDSpeakerDriverConfigurationDescriptors)
+|4|bNumInterfaces|1|0x02|Two interfaces.
+|5|bConfigurationValue|1|0x01|ID of this configuration.
+|6|iConfiguration|1|0x00|Unused.
+|7|bmAttributes|1|0x??|BOARD_USB_BMATTRIBUTES
+|8|bMaxPower|1|0x32|100mA Max. %power consumption.\n
+                    USBConfigurationDescriptor_POWER(100)
+
+ !!AudioControl Interface Descriptor
+ The AudioControl interface describes the %device structure (%audio function
+ topology) and is used to manipulate the Audio Controls.
+
+ !Standard AC Interface Descriptor
+ The AudioControl interface has no dedicated endpoints associated with it. It
+ uses the default pipe (endpoint 0) for all communication purposes. Class-
+ specific AudioControl Requests are sent using the default pipe. There is no
+ Status Interrupt endpoint provided.
+
+ See USBInterfaceDescriptor.
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x04|INTERFACE descriptor\n
+                          (USBGenericDescriptor_INTERFACE).
+|2|bInterfaceNumber|1|0x00|Index of this interface.
+|3|bAlternateSetting|1|0x00|Index of this setting.
+|4|bNumEndpoints|1|0x00|0 endpoints.
+|5|bInterfaceClass|1|0x01|AUDIO (AUDControlInterfaceDescriptor_CLASS).
+|6|bInterfaceSubClass|1|0x01|AUDIO_CONTROL\n
+                             (AUDControlInterfaceDescriptor_SUBCLASS).
+|7|bInterfaceProtocol|1|0x00|Unused.
+|8|iInterface|1|0x00|Unused.
+
+ !Class-specific AC Interface Descriptor
+ The Class-specific AC interface descriptor is always headed by a Header
+ descriptor that contains general information about the AudioControl interface.
+ It contains all the pointers needed to describe the AudioInterface Collection,
+ associated with the described %audio function.
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                          (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubtype|1|0x01|HEADER subtype (AUDGenericDescriptor_HEADER).
+|3|bcdADC|2|0x0100|Revision of class specification - 1.0
+|5|wTotalLength|2|0x????|Total size of class specific descriptors\n
+                         (AUDDSpeakerDriverAudioControlDescriptors).
+|7|bInCollection|1|0x01|Number of streaming interfaces.
+|8|baInterfaceNr(1)|1|0x01|AudioStreaming interface 1 belongs to this AudioControl interface.
+
+ !Input Terminal Descriptor for playback
+ This descriptor describes the Input Terminal that represents the USB pipe from
+ the Host PC. Its Output Pin is connected to the Input Pin of the Feature Unit
+ ...
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x0C|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                         (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x02|INPUT_TERMINAL subtype\n
+                             (AUDGenericDescriptor_INPUTTERMINAL).
+|3|bTerminalID|1|0x00|ID of this Input Terminal\n
+                     (AUDDSpeakerDriverDescriptors_INPUTTERMINAL).
+|4|wTerminalType|2|0x0101|Terminal is USB stream\n
+                         (AUDInputTerminalDescriptor_USBSTREAMING).
+|6|bAssocTerminal|1|0x01|Associated to Output Terminal\n
+                         (AUDDSpeakerDriverDescriptors_OUTPUTTERMINAL).
+|7|bNrChannels|1|0x02|Two channel.
+|8|wChannelConfig|2|0x0003|Left plus right front channel.
+|10|iChannelNames|1|0x00|Unused.
+|11|iTerminal|1|0x00|Unused.
+
+ !Output Terminal Descriptor for playback
+ ...
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                         (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x03|OUTPUT_TERMINAL subtype\n
+                             (AUDGenericDescriptor_OUTPUTTERMINAL).
+|3|bTerminalID|1|0x01|ID of this Output Terminal\n
+                     (AUDDSpeakerDriverDescriptors_OUTPUTTERMINAL).
+|4|wTerminalType|2|0x0301|Terminal is Desktop speaker.
+|6|bAssocTerminal|1|0x01|Associated to Input Terminal\n
+                         (AUDDSpeakerDriverDescriptors_INPUTTERMINAL).
+|7|bSourceID|1|0x02|From Feature Unit\n
+                     (AUDDSpeakerDriverDescriptors_FEATUREUNIT).
+|8|iTerminal|1|0x00|Unused.
+
+ !Feature Unit Descriptor for playback
+ ...
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x0A|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                         (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x02|FEATURE_UNIT subtype\n
+                             (AUDGenericDescriptor_FEATUREUNIT).
+|3|bUnitID|1|0x02|ID of this Feature Unit\n
+                  (AUDDSpeakerDriverDescriptors_FEATUREUNIT).
+|4|bSourceID|1|0x00|From Input Terminal\n
+                    (AUDDSpeakerDriverDescriptors_INPUTTERMINAL).
+|5|bControlSize|1|0x01|1 byte per channel for controls
+|6|bmaControls|3|0x000001|Master channel mute control, no other controls.
+|9|iFeature|1|0x00|Unused.
+
+ !!AudioStreaming Interface Descriptor
+ The AudioStreaming interface has two possible alternate settings.
+
+ !Zero-bandwidth Alternate Setting 0
+ Alternate setting 0 is a zero-bandwidth setting, used to relinquish the
+ claimed bandwidth on the bus when the microphone is not in use. It is the
+ default setting after power-up. The zero bandwidth is implemented by
+ specifying that this alternate setting of the interface has no endpoints
+ associated with it (bNumEndpoints=0). The collection of descriptors for this
+ alternate setting reduces to the standard interface descriptor.
+
+ Standard AS Interface Descriptor (USBInterfaceDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x04|INTERFACE descriptor\n
+                          (USBGenericDescriptor_INTERFACE).
+|2|bInterfaceNumber|1|0x01|Index of this interface.
+|3|bAlternateSetting|1|0x00|Index of this setting.
+|4|bNumEndpoints|1|0x00|0 endpoint.
+|5|bInterfaceClass|1|0x01|AUDIO (AUDStreamingInterfaceDescriptor_CLASS).
+|6|bInterfaceSubClass|1|0x02|AUDIO_STREAMING\n
+                             (AUDStreamingInterfaceDescriptor_SUBCLASS).
+|7|bInterfaceProtocol|1|0x00|Unused (AUDStreamingInterfaceDescriptor_PROTOCOL).
+|8|iInterface|1|0x00|Unused.
+
+ !Operational Alternate Setting 1
+ Alternate setting 1 is the operational setting of the interface. It contains
+ the standard and class-specific interface and endpoint descriptors.
+
+ Standard AS Interface Descriptor (USBInterfaceDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of USBInterfaceDescriptor in bytes.
+|1|bDescriptorType|1|0x04|INTERFACE descriptor\n
+                          (USBGenericDescriptor_INTERFACE).
+|2|bInterfaceNumber|1|0x01|Index of this interface.
+|3|bAlternateSetting|1|0x01|Index of this setting.
+|4|bNumEndpoints|1|0x01|1 endpoint.
+|5|bInterfaceClass|1|0x01|AUDIO (AUDStreamingInterfaceDescriptor_CLASS).
+|6|bInterfaceSubClass|1|0x02|AUDIO_STREAMING\n
+                             (AUDStreamingInterfaceDescriptor_SUBCLASS).
+|7|bInterfaceProtocol|1|0x00|Unused (AUDStreamingInterfaceDescriptor_PROTOCOL).
+|8|iInterface|1|0x00|Unused.
+
+ Class-specific AS General Interface Descriptor (AUDStreamingInterfaceDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x06|Size of AUDStreamingInterfaceDescriptor in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                          (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x01|GENERAL subtype\n
+                             (AUDStreamingInterfaceDescriptor_GENERAL).
+|3|bTerminalLink|1|0x02|Unit ID of the Input Terminal\n
+                        (AUDDSpeakerDriverDescriptors_INPUTTERMINAL).
+|4|bDelay|1|0x00|No interface delay.
+|5|wFormatTag|2|0x0001|PCM Format (AUDFormatTypeOneDescriptor_PCM).
+
+ Type I Format Type Descriptor (AUDFormatTypeOneDescriptor1)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x0B|Size of AUDFormatTypeOneDescriptor1 in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\
+                         (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x02|FORMAT_TYPE subtype\n
+                             (AUDStreamingInterfaceDescriptor_FORMATTYPE).
+|3|bFormatType|1|0x01|FORMAT_TYPE_I (AUDFormatTypeOneDescriptor_FORMATTYPEONE).
+|4|bNrChannels|1|0x02|2 channels (AUDDSpeakerDriver_NUMCHANNELS).
+|5|bSubFrameSize|1|0x02|Two bytes per audio subframe\n
+                        (AUDDSpeakerDriver_BYTESPERSAMPLE).
+|6|bBitResolution|1|0x10|16 bits per sample\n
+                         (AUDDSpeakerDriver_BYTESPERSAMPLE * 2).
+|7|bSamFreqType|1|0x01|One frequency supported.
+|8|tSamFreq|3|4800|4800Hz (AUDDSpeakerDriver_SAMPLERATE).
+
+ Standard %Endpoint Descriptor (AUDEndpointDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of AUDFormatTypeOneDescriptor1 in bytes.
+|1|bDescriptorType|1|0x24|ENDPOINT descriptor (USBGenericDescriptor_ENDPOINT).
+|2|bEndpointAddress|1|0x04\nTest|OUT endpoint 4\n
+                           See USBEndpointDescriptor_ADDRESS\n
+                           See AUDDSpeakerDriverDescriptors_DATAOUT.
+|3|bmAttributes|1|0x01|Isochronous, not shared\n
+                       (USBEndpointDescriptor_ISOCHRONOUS).
+|4|wMaxPacketSize|2|0x????|BOARD_USB_ENDPOINTS_MAXPACKETSIZE().
+|6|bInterval|1|0x01|One packet per frame.
+|7|bRefresh|1|0x00|Unused.
+|8|bSynchAddress|1|0x00|Unused.
+
+ Class-specific Isochronous Audio Data Endpoint Descriptor
+ (AUDDataEndpointDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x07|Size of AUDDataEndpointDescriptor in bytes.
+|1|bDescriptorType|1|0x25|CS_ENDPOINT descriptor\n
+                          (AUDGenericDescriptor_ENDPOINT).
+|2|bDescriptorSubType|1|0x01|GENERAL subtype\n
+                             (AUDDataEndpointDescriptor_SUBTYPE).
+|3|bmAttributes|1|0x00|No sampling frequency control\n
+                       no pitch control\n
+                       no packet padding.
+|4|bLockDelayUnits|1|0x00|Unused.
+|5|wLockDelay|2|0x0000|Unused.
+
+ !!String Descriptors
+ There are three string descriptors available. The Manufacturer, Product and
+ Serial Number descriptor.
+
+ See manufacturerDescriptor, productDescriptor, serialNumberDescriptor.
+
+ !!!Requests
+ The Audio Speaker Driver supports all necessary standard requests, and some
+ class-specific requests.
+
+ USBDCallbacks_RequestReceived is used to filter all requests,
+ AUDDSpeakerDriver_RequestHandler is invoked to handle Audio Class requests
+ and forward standard request to AUDDSpeakerDriver_RequestHandler.
+
+ !!Standard requests
+ Set Interface request should be processed to control bandwidth allocation.
+
+ !Set Interface
+ USBDDriverCallbacks_InterfaceSettingChanged is re-implemented to handle the
+ event.
+||Offset||Field||Size||Value||Description
+|0|bmRequestType|1|0x01|D7:0=Host to Device.\n
+                        D6..5:00=Standard Request.\n
+                        D4..0:00001=Recipient is interface.
+|1|bRequest|1|0x0B|SET_INTERFACE.
+|2|wValue|2|0x0000\n
+              or\n
+            0x0001|Zero bandwidth or normal isochronous operation.
+|4|wIndex|2|0x0001|Interface number of the AudioStreaming interface.
+|6|wLength|2|0x0000|No Parameter Block.
+
+ !!Class-specific requests
+ The only class-specific Request supported is the Set/Get Feature Unit Control
+ Request. For mute control of the Feature Unit.
+
+ !Set Feature Unit Control Request
+||Offset||Field||Size||Value||Description
+|0|bmRequestType|1|0x01|D7:0=Host to Device.\n
+                        D6..5:01=Class Request.\n
+                        D4..0:00001=Recipient is interface.
+|1|bRequest|1|0x01|SET_CUR.
+|2|wValue|2|0x0100|Mute control (AUDFeatureUnitRequest_MUTE) of\n
+                   Master channel (AUDDSpeakerDriver_MASTERCHANNEL).
+|4|wIndex|2|0x0200|Feature Unit (AUDDSpeakerDriverDescriptors_FEATUREUNIT)\n
+                and\n
+                AudioControl Interface (AUDDSpeakerDriverDescriptors_CONTROL).
+|6|wLength|2|0x0001|Paramter Block Length
+ 
+ The one-byte Parameter Block contains the new bMuted value for Feature
+ Control.
+
+ !Get Feature Unit Control Request
+||Offset||Field||Size||Value||Description
+|0|bmRequestType|1|0x01|D7:0=Host to Device.\n
+                        D6..5:01=Class Request.\n
+                        D4..0:00001=Recipient is interface.
+|1|bRequest|1|0x81|GET_CUR.
+|2|wValue|2|0x0100|Mute control (AUDFeatureUnitRequest_MUTE) of\n
+                   Master channel (AUDDSpeakerDriver_MASTERCHANNEL).
+|4|wIndex|2|0x0200|Feature Unit (AUDDSpeakerDriverDescriptors_FEATUREUNIT)\n
+                and\n
+                AudioControl Interface (AUDDSpeakerDriverDescriptors_CONTROL).
+|6|wLength|2|0x0001|Paramter Block Length
+ 
+ The one-byte Parameter Block contains the new bMuted value for Feature
+ Control.
+
+ !!!Modify the Device Driver
+ You can modify your project from the USB Audio Demoes:
+ - usb-device-audio-speaker-ac97-project
+ - usb-device-audio-speaker-project
+
+ !!Change Device ID and Display
+ All Device ID and Display Strings are in AUDDSpeakerDriverDescriptors.c.
+
+ !Device IDs
+ You can find "Audio Speaker Device Codes"
+ - AUDDSpeakerDriverDescriptors_VENDORID
+ - AUDDSpeakerDriverDescriptors_PRODUCTID
+ - AUDDSpeakerDriverDescriptors_RELEASE
+
+ !Display Strings
+ You can modify the string descriptors
+ - manufacturerDescriptor
+ - productDescriptor
+ - serialNumberDescriptor
+
+ !!!Add Recorder Function
+ See "USB Audio Recorder".
+
+*/
+
+/**
+ \page "USB Audio Recorder"
+ This page describes how to add recorder function into the
+ "USB Audio Speaker Device", So that you can learn how to extend your audio
+ device driver from current Audio Speaker demo.
+
+ !!!Description
+ To add %audio record function, new Input Terminal, Output Termnial and Feature
+ Unit is added.
+
+ \image UsbAudioSpeakerRecorder.png "USB Desktop Speaker Hierarchy"
+
+
+ !!!Modify the configuration descriptor:
+ New descriptor for the terminals and unit should be added, and according
+ interface, too.
+
+ \image UsbAudioSpeakerRecorderDescriptors.png "USB Desktop Speaker Descriptors"
+
+
+
+ !!Terminal Descriptors and Unit Descriptor
+ ...
+ !Input Terminal Descriptor for recording
+ ...
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x0C|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                          (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x03|INPUT_TERMINAL subtype\n
+                             (AUDGenericDescriptor_INPUTTERMINAL).
+|3|bTerminalID|1|0x03|ID of this Input Terminal\n
+                      (AUDDSpeakerDriverDescriptors_INPUTTERMINAL_REC).
+|4|wTerminalType|2|0x0403|Terminal is Speaker Phone\n
+                         (AUDInputTerminalDescriptor_SPEAKERPHONE).
+|6|bAssocTerminal|1|0x04|Associated to Output Terminal\n
+                         (AUDDSpeakerDriverDescriptors_OUTPUTTERMINAL_REC).
+|7|bNrChannels|1|0x02|Two channel.
+|8|wChannelConfig|2|0x0003|Left plus right front channel.
+|10|iChannelNames|1|0x00|Unused.
+|11|iTerminal|1|0x00|Unused.
+
+ !Output Terminal Descriptor for recording
+ ...
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                          (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x04|OUTPUT_TERMINAL subtype\n
+                             (AUDGenericDescriptor_OUTPUTTERMINAL).
+|3|bTerminalID|1|0x04|ID of this Output Terminal\n
+                     (AUDDSpeakerDriverDescriptors_OUTPUTTERMINAL_REC).
+|4|wTerminalType|2|0x0301|Terminal is USB stream\n
+                         (AUDOutputTerminalDescriptor_USBTREAMING).
+|6|bAssocTerminal|1|0x03|Associated to Input Terminal\n
+                         (AUDDSpeakerDriverDescriptors_INPUTTERMINAL_REC).
+|7|bSourceID|1|0x05|From Feature Unit\n
+                     (AUDDSpeakerDriverDescriptors_FEATUREUNIT_REC).
+|8|iTerminal|1|0x00|Unused.
+
+ !Feature Unit Descriptor for recording
+ ...
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x0A|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                          (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x02|FEATURE_UNIT subtype\n
+                             (AUDGenericDescriptor_FEATUREUNIT).
+|3|bUnitID|1|0x05|ID of this Feature Unit\n
+                   (AUDDSpeakerDriverDescriptors_FEATUREUNIT_REC).
+|4|bSourceID|1|0x03|From Input Terminal\n
+                     (AUDDSpeakerDriverDescriptors_INPUTTERMINAL_REC).
+|5|bControlSize|1|0x01|1 byte per channel for controls
+|6|bmaControls|3|0x000001|Master channel mute control, no other controls.
+|9|iFeature|1|0x00|Unused.
+
+ !!Interface Descriptor and Endpoint Descriptor for recording
+ ...
+
+ !Zero-bandwidth Alternate Setting 0
+ Standard AS Interface Descriptor (USBInterfaceDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of this descriptor, in bytes.
+|1|bDescriptorType|1|0x04|INTERFACE descriptor\n
+                         (USBGenericDescriptor_INTERFACE).
+|2|bInterfaceNumber|1|0x02|Index of this interface.
+|3|bAlternateSetting|1|0x00|Index of this setting.
+|4|bNumEndpoints|1|0x00|0 endpoint.
+|5|bInterfaceClass|1|0x01|AUDIO (AUDStreamingInterfaceDescriptor_CLASS).
+|6|bInterfaceSubClass|1|0x02|AUDIO_STREAMING\n
+                             (AUDStreamingInterfaceDescriptor_SUBCLASS).
+|7|bInterfaceProtocol|1|0x00|Unused (AUDStreamingInterfaceDescriptor_PROTOCOL).
+|8|iInterface|1|0x00|Unused.
+
+ !Operational Alternate Setting 1
+ Standard AS Interface Descriptor (USBInterfaceDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of USBInterfaceDescriptor in bytes.
+|1|bDescriptorType|1|0x04|INTERFACE descriptor\n
+                         (USBGenericDescriptor_INTERFACE).
+|2|bInterfaceNumber|1|0x02|Index of this interface.
+|3|bAlternateSetting|1|0x01|Index of this setting.
+|4|bNumEndpoints|1|0x01|1 endpoint.
+|5|bInterfaceClass|1|0x01|AUDIO (AUDStreamingInterfaceDescriptor_CLASS).
+|6|bInterfaceSubClass|1|0x02|AUDIO_STREAMING\n
+                             (AUDStreamingInterfaceDescriptor_SUBCLASS).
+|7|bInterfaceProtocol|1|0x00|Unused (AUDStreamingInterfaceDescriptor_PROTOCOL).
+|8|iInterface|1|0x00|Unused.
+
+ Class-specific AS General Interface Descriptor (AUDStreamingInterfaceDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x06|Size of AUDStreamingInterfaceDescriptor in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                         (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x01|GENERAL subtype\n
+                             (AUDStreamingInterfaceDescriptor_GENERAL).
+|3|bTerminalLink|1|0x02|Unit ID of the Input Terminal\n
+                        (AUDDSpeakerDriverDescriptors_INPUTTERMINAL).
+|4|bDelay|1|0x00|No interface delay.
+|5|wFormatTag|2|0x0001|PCM Format (AUDFormatTypeOneDescriptor_PCM).
+
+ Type I Format Type Descriptor (AUDFormatTypeOneDescriptor1)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x0B|Size of AUDFormatTypeOneDescriptor1 in bytes.
+|1|bDescriptorType|1|0x24|CS_INTERFACE descriptor\n
+                          (AUDGenericDescriptor_INTERFACE).
+|2|bDescriptorSubType|1|0x02|FORMAT_TYPE subtype\n
+                             (AUDStreamingInterfaceDescriptor_FORMATTYPE).
+|3|bFormatType|1|0x01|FORMAT_TYPE_I (AUDFormatTypeOneDescriptor_FORMATTYPEONE).
+|4|bNrChannels|1|0x02|2 channels (AUDDSpeakerDriver_NUMCHANNELS).
+|5|bSubFrameSize|1|0x02|Two bytes per audio subframe\n
+                        (AUDDSpeakerDriver_BYTESPERSAMPLE).
+|6|bBitResolution|1|0x10|16 bits per sample\n
+                         (AUDDSpeakerDriver_BYTESPERSAMPLE * 2).
+|7|bSamFreqType|1|0x01|One frequency supported.
+|8|tSamFreq|3|4800|4800Hz (AUDDSpeakerDriver_SAMPLERATE).
+
+ Standard %Endpoint Descriptor (AUDEndpointDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x09|Size of AUDFormatTypeOneDescriptor1 in bytes.
+|1|bDescriptorType|1|0x24|ENDPOINT descriptor (USBGenericDescriptor_ENDPOINT).
+|2|bEndpointAddress|1|0x85|IN endpoint 5\n
+                           USBEndpointDescriptor_ADDRESS()\n
+                           AUDDSpeakerDriverDescriptors_DATAIN
+|3|bmAttributes|1|0x01|Isochronous, not shared\n
+                       (USBEndpointDescriptor_ISOCHRONOUS).
+|4|wMaxPacketSize|2|0x????|BOARD_USB_ENDPOINTS_MAXPACKETSIZE(5).
+|6|bInterval|1|0x01|One packet per frame.
+|7|bRefresh|1|0x00|Unused.
+|8|bSynchAddress|1|0x00|Unused.
+
+ Class-specific Isochronous Audio Data Endpoint Descriptor
+ (AUDDataEndpointDescriptor)
+||Offset||Field||Size||Value||Description
+|0|bLength|1|0x07|Size of AUDDataEndpointDescriptor in bytes.
+|1|bDescriptorType|1|0x25|CS_ENDPOINT descriptor\n
+                          (AUDGenericDescriptor_ENDPOINT).
+|2|bDescriptorSubType|1|0x01|GENERAL subtype\n
+                             (AUDDataEndpointDescriptor_SUBTYPE).
+|3|bmAttributes|1|0x00|No sampling frequency control\n
+                       no pitch control\n
+                       no packet padding
+|4|bLockDelayUnits|1|0x00|Unused.
+|5|wLockDelay|2|0x0000|Unused.
+
+ !!!Modified methods for new function
+ Several methods modified for new recorder function.
+
+ !!Request handlers callbacks
+ Add handler for new Interface, Terminal and Unit IDs.
+ See AUDDSpeakerDriver_RequestHandler.
+
+ !!Add function for recording USB stream
+ See AUDDSpeakerDriver_Write.
+*/

@@ -3295,66 +3295,13 @@ void mixerTask(void * pdata)
 
 #ifdef MASSSTORAGE
 extern "C" {
+/* Include AT91SAM3S-EK definitions and initialization API */
+#include <board/board.h>
+#include <board/board_memories.h>
+#include <pio/pio_it.h>
 
-#define TRACE_DEBUG(x, ...) debugPuts("-D- " x)
-#define TRACE_DEBUG_WP(x, ...) debugPuts(x)
-#define TRACE_INFO(x, ...) debugPuts("-I- " x)
-#define TRACE_INFO_WP(x, ...) debugPuts(x)
-#define TRACE_WARNING(x, ...) debugPuts("-W- " x)
-#define TRACE_WARNING_WP(x, ...) debugPuts(x)
-#define TRACE_ERROR(x, ...) debugPuts("-W- " x)
-
-//#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/wdt.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libboard_sam3s-ek/source/syscalls.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/include/pio.h"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/include/pio_capture.h"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio_capture.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pmc.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio_it.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/tc.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/memories/include/Media.h"
-#include "../Atmel/sam3s/sam3s-ek/libraries/memories/Media.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/memories/MEDSdcard.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDLun.h"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDescriptors.h"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSD.h"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/USBDDriver.h"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/include/MSDDriver.h"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/pio.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDLun.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDriver.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBDDriver.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/core/USBD.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/libchip_sam3s/source/USBD_HAL.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBDescriptors.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDFunction.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/common/core/USBRequests.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/MSDDStateMachine.c"
-#include "../Atmel/sam3s/sam3s-ek/libraries/usb/device/massstorage/SBCMethods.c"
-
-#include "../Atmel/sam3s/sam3s-ek/examples_usb/usb_massstorage/device_descriptor.c"
-
-/*----------------------------------------------------------------------------
- *        Local definitions
- *----------------------------------------------------------------------------*/
-
-/** Maximum number of LUNs which can be defined. */
-#define MAX_LUNS            1
-
-/** Media index for different disks */
-#define DRV_SDMMC           0    /** SD card */
-
-/** Delay for pushbutton debouncing (ms) */
-#define DEBOUNCE_TIME       10
-
-/** PIT period value (seconds) */
-#define PIT_PERIOD          1000
-
-/** Delay for display view update (*250ms) */
-#define UPDATE_DELAY        4
-
-/** Delay for waiting DBGU input (*250ms) */
-#define INPUT_DELAY         15
+/* Include USB definitions */
+#include <usb/device/massstorage/MSDDriver.h>
 
 /** Size of one block in bytes. */
 #define BLOCK_SIZE          512
@@ -3362,23 +3309,61 @@ extern "C" {
 /** Size of the MSD IO buffer in bytes (6K, more the better). */
 #define MSD_BUFFER_SIZE     (12*BLOCK_SIZE)
 
-/* Ramdisk size: 20K (WinXP can not format the disk if lower than 20K) */
-/* #define RAMDISK_SIZE    (20*1024) */
+/** LUN read/write buffer. */
+unsigned char msdBuffer[MSD_BUFFER_SIZE];
 
-/** Size of the reserved Nand Flash (4M) */
-#define NF_RESERVE_SIZE     (4*1024*1024)
-
-/** Size of the managed Nand Flash (128M) */
-#define NF_MANAGED_SIZE     (128*1024*1024)
+static void ConfigureUsbClock(void)
+{
+    /* Enable PLLB for USB */
+    PMC->CKGR_PLLBR = CKGR_PLLBR_DIVB(1)
+                    | CKGR_PLLBR_MULB(7)
+                    | CKGR_PLLBR_PLLBCOUNT_Msk;
+    while((PMC->PMC_SR & PMC_SR_LOCKB) == 0); // TODO  && (timeout++ < CLOCK_TIMEOUT));
+    /* USB Clock uses PLLB */
+    PMC->PMC_USB = PMC_USB_USBDIV(1)    /* /2   */
+                 | PMC_USB_USBS;        /* PLLB */
+}
 
 /*----------------------------------------------------------------------------
- *        Global variables
+ *        VBus monitoring (optional)
  *----------------------------------------------------------------------------*/
 
-/** MSD Driver Descriptors List */
-extern const USBDDriverDescriptors msdDriverDescriptors;
+/** VBus pin instance. */
+const Pin gPinVbus = PIN_USB_VBUS;
 
-/** Available medias. */
+/**
+ * \brief Configures the VBus Pin
+ *
+ * To trigger an interrupt when the level on that pin changes.
+ */
+static void VBus_Configure( void )
+{
+    TRACE_INFO("VBus configuration\n\r");
+
+    /* Configure PIO */
+    PIO_Configure(&gPinVbus, 1);
+
+    /* Enable PIO interrupt */
+    PIO_EnableIt(&gPinVbus);
+
+    /* Check current level on VBus */
+    if (PIO_Get(&gPinVbus)) {
+
+        /* if VBUS present, force the connect */
+        TRACE_INFO("conn\n\r");
+        USBD_Connect();
+    }
+    else {
+        USBD_Disconnect();
+    }
+}
+
+/** Maximum number of LUNs which can be defined. */
+#define MAX_LUNS            1
+
+/** Media index for different disks */
+#define DRV_SDMMC           0    /** SD card */
+
 Media medias[MAX_LUNS];
 
 /*----------------------------------------------------------------------------
@@ -3388,205 +3373,172 @@ Media medias[MAX_LUNS];
 /** Device LUNs. */
 MSDLun luns[MAX_LUNS];
 
-/** LUN read/write buffer. */
-uint8_t msdBuffer[MSD_BUFFER_SIZE];
+char usbState;
 
-/** Total data read/write by MSD */
-unsigned int msdReadTotal = 0;
-unsigned int msdWriteTotal = 0;
-unsigned short msdFullCnt = 0;
-unsigned short msdNullCnt = 0;
+//------------------------------------------------------------------------------
+/// Initializes a Media instance and the associated physical interface
+/// \param  media Pointer to the Media instance to initialize
+/// \return 1 if success.
+//------------------------------------------------------------------------------
+#define SD_BLOCK_SIZE           512
 
-/** Update delay counter, tick is 250ms */
-uint32_t updateDelay = UPDATE_DELAY;
-
-/** Flag to update Display View */
-uint8_t updateView = 0;
-
-/** Pins used to access to nandflash. */
-static const Pin pPinsNf[] = {PINS_NANDFLASH};
-/** Nandflash device structure. */
-// static struct TranslatedNandFlash translatedNf;
-/** Address for transferring command bytes to the nandflash. */
-static unsigned int cmdBytesAddr = BOARD_NF_COMMAND_ADDR;
-/** Address for transferring address bytes to the nandflash. */
-static unsigned int addrBytesAddr = BOARD_NF_ADDRESS_ADDR;
-/** Address for transferring data bytes to the nandflash. */
-static unsigned int dataBytesAddr = BOARD_NF_DATA_ADDR;
-/** Nandflash chip enable pin. */
-static const Pin nfCePin = BOARD_NF_CE_PIN;
-/** Nandflash ready/busy pin. */
-static const Pin nfRbPin = BOARD_NF_RB_PIN;
-
-
-static void _ConfigureUsbClock(void)
+static unsigned char MEDSdcard_Read(Media         *media,
+                                    unsigned int  address,
+                                    void          *data,
+                                    unsigned int  length,
+                                    MediaCallback callback,
+                                    void          *argument)
 {
-    /* Enable PLLB for USB */
-    PMC->CKGR_PLLBR = CKGR_PLLBR_DIVB(1)
-                    | CKGR_PLLBR_MULB(7)
-                    | CKGR_PLLBR_PLLBCOUNT_Msk;
-    while((PMC->PMC_SR & PMC_SR_LOCKB) == 0);
-    /* USB Clock uses PLLB */
-    PMC->PMC_USB = PMC_USB_USBDIV(1)    /* /2   */
-                 | PMC_USB_USBS;        /* PLLB */
+  TRACE_INFO("FAKE MEDSdcard_Read\n\r");
+  return 0;
 }
 
-static void _ConfigureTc0(void)
+static unsigned char MEDSdcard_Write(Media         *media,
+                                    unsigned int  address,
+                                    void          *data,
+                                    unsigned int  length,
+                                    MediaCallback callback,
+                                    void          *argument)
 {
-    uint32_t div;
-    uint32_t tcclks;
-
-    /* Enable peripheral clock */
-    PMC->PMC_PCER0 = 1 << ID_TC0;
-
-    /* Configure TC for a 4Hz frequency and trigger on RC compare */
-    TC_FindMckDivisor(4, BOARD_MCK, &div, &tcclks, BOARD_MCK);
-    TC_Configure(TC0, 0, tcclks | TC_CMR_CPCTRG);
-    TC0->TC_CHANNEL[0].TC_RC = (BOARD_MCK / div) / 4;
-
-    /* Configure and enable interrupt on RC compare */
-    NVIC_EnableIRQ((IRQn_Type)ID_TC0);
-    TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;
-
-    TC_Start(TC0, 0);
+  TRACE_INFO("FAKE MEDSdcard_Write\n\r");
+  return 0;
 }
 
-
-/*-----------------------------------------------------------------------------
- *         Callback re-implementation
- *-----------------------------------------------------------------------------*/
-
-/**
- * Invoked after the USB driver has been initialized. By default, configures
- * the UDP/UDPHS interrupt.
- */
-void USBDCallbacks_Initialized(void)
+uint8_t MEDSdcard_Initialize(Media *media, uint8_t mciID)
 {
-  TRACE_INFO("USBDCallbacks_Initialized\n\r");
-  NVIC_EnableIRQ(UDP_IRQn);
+    TRACE_INFO("MEDSdcard init\n\r");
+
+    // Initialize SDcard
+    //--------------------------------------------------------------------------
+
+    if ( !CardIsConnected(  ) )
+    {
+        return 0;
+    }
+
+    // Configure SDcard pins
+    // ConfigurePIO(mciID);
+
+#if defined(MCI2_INTERFACE)
+    // DMAD_Initialize(BOARD_MCI_DMA_CHANNEL, DMAD_NO_DEFAULT_IT);
+#endif
+
+#if 0
+    // Initialize the MCI driver
+    if ( mciID == 0 )
+    {
+        IRQ_ConfigureIT(BOARD_SD_MCI_ID,  1, MCI0_IrqHandler);
+        MCI_Init(mciDrv, BOARD_SD_MCI_BASE, BOARD_SD_MCI_ID, BOARD_SD_SLOT, BOARD_MCK );
+        IRQ_EnableIT(BOARD_SD_MCI_ID);
+    }
+    else
+    {
+        #ifdef BOARD_SD_MCI1_ID
+        IRQ_ConfigureIT(BOARD_SD_MCI1_ID,  1, MCI0_IrqHandler);
+        MCI_Init(mciDrv, BOARD_SD_MCI1_BASE, BOARD_SD_MCI1_ID, BOARD_SD_MCI1_SLOT, BOARD_MCK );
+        IRQ_EnableIT(BOARD_SD_MCI1_ID);
+        #else
+        TRACE_ERROR("SD/MMC card initialization failed (MCI1 not supported)\n\r");
+        #endif
+    }
+#if MCI_BUSY_CHECK_FIX && defined(BOARD_SD_DAT0)
+    MCI_SetBusyFix(mciDrv, &pinSdDAT0);
+#endif
+
+    // Initialize the SD card driver
+    if (SD_Init(sdDrv, (SdDriver *)mciDrv))
+    {
+        TRACE_ERROR("SD/MMC card initialization failed\n\r");
+        return 0;
+    }
+    else
+    {
+        //SD_DisplayRegisterCSD(&sdDrv);
+        TRACE_INFO("SD/MMC card initialization successful\n\r");
+        TRACE_INFO("Card size: %d MB\n\r", (int)(MMC_GetTotalSizeKB(sdDrv)/1024));
+    }
+    MCI_SetSpeed(mciDrv, sdDrv->transSpeed, sdDrv->transSpeed, BOARD_MCK);
+#endif
+
+    // Initialize media fields
+    //--------------------------------------------------------------------------
+    // media->interface = sdDrv;
+    #if !defined(OP_BOOTSTRAP_MCI_on)
+    media->write = MEDSdcard_Write;
+    #else
+    media->write = 0;
+    #endif
+    media->read = MEDSdcard_Read;
+    media->lock = 0;
+    media->unlock = 0;
+    media->handler = 0;
+    media->flush = 0;
+
+    media->blockSize = SD_BLOCK_SIZE;
+    media->baseAddress = 0;
+    media->size = SD_BLOCK_SIZE * 1000; // TODO BSS SD_TOTAL_BLOCK(sdDrv);
+
+    media->mappedRD  = 0;
+    media->mappedWR  = 0;
+    media->protectd = false; // TODO BSS CardIsProtected(mciID);
+    media->removable = 1;
+
+    media->state = MED_STATE_READY;
+
+    media->transfer.data = 0;
+    media->transfer.address = 0;
+    media->transfer.length = 0;
+    media->transfer.callback = 0;
+    media->transfer.argument = 0;
+
+    return 1;
 }
 
-/**
- * Invoked when a new SETUP request is received from the host. Forwards the
- * request to the Mass Storage device driver handler function.
- * \param request  Pointer to a USBGenericRequest instance.
- */
-void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
+static void MSDCallbacks_Data( unsigned char flowDirection, unsigned int dataLength,
+                               unsigned int fifoNullCount, unsigned int fifoFullCount )
 {
-  TRACE_INFO("USBDCallbacks_RequestReceived\n\r");
-  MSDDriver_RequestHandler(request);
-}
-
-/**
- * Invoked when the configuration of the device changes. Resets the mass
- * storage driver.
- * \param cfgnum New configuration number.
- */
-void USBDDriverCallbacks_ConfigurationChanged(uint8_t cfgnum)
-{
-  TRACE_INFO("USBDDriverCallbacks_ConfigurationChanged\n\r");
-  MSDDriver_ConfigurationChangeHandler(cfgnum);
-}
-
-void USBDDriverCallbacks_InterfaceSettingChanged(
-    uint8_t interface,
-    uint8_t setting)
-{
-    TRACE_INFO("USBDDriverCallbacks_InterfaceSettingChanged\n\r");
-}
-
-void USBDCallbacks_Suspended(void)
-{
-  TRACE_INFO("USBDCallbacks_Suspended");
-}
-
-void USBDCallbacks_Resumed(void)
-{
-  TRACE_INFO("USBDCallbacks_Resumed");
-}
-
-void USBDCallbacks_Reset(void)
-{
-  TRACE_INFO("USBDCallbacks_Reset");
-}
-
-void MSDCallbacks_Data(uint8_t flowDirection,
-    uint32_t  dataLength,
-    uint32_t  fifoNullCount,
-    uint32_t  fifoFullCount)
-{
-    if (flowDirection) {
-
+  TRACE_INFO("MSDCallbacks_Data\n\r");
+/*  if ( flowDirection )
+    {
         msdReadTotal += dataLength;
     }
-    else {
-
+    else
+    {
         msdWriteTotal += dataLength;
     }
 
     msdFullCnt += fifoFullCount;
-    msdNullCnt += fifoNullCount;
+    msdNullCnt += fifoNullCount;*/
 }
 
-/**
- * \brief Initialize all medias and LUNs.
- */
-static void MemoryInitialization(void)
-{
-    uint32_t i;
-    for (i = 0; i < MAX_LUNS; i ++)
-      LUN_Init(&luns[i], 0, 0, 0, 0, 0, 0, 0, 0);
-
-    unsigned char rc;
-    if (1) {
-      // Blocked SD access function
-      rc = MEDSdcard_Initialize(&(medias[DRV_SDMMC]), 0);
-      if(1) {
-        LUN_Init(&(luns[DRV_SDMMC]), &(medias[DRV_SDMMC]),
-            msdBuffer, MSD_BUFFER_SIZE,
-            0, 0, 0, 0,
-            MSDCallbacks_Data);
-      }
-    }
-    else {
-      LUN_Eject(&luns[DRV_SDMMC]);
-    }
-}
-
-char usbState;
 
 void usbMassStorage()
 {
   static bool initialized = false;
 
+  TRACE_DEBUG("usbMassStorage\n\r");
+
   if (!initialized) {
-    /* Disable watchdog */
-    // WDT_Disable( WDT ) ;
 
-    /* If they are present, configure Vbus & Wake-up pins */
-    // PIO_InitializeInterrupts(0);
+    ConfigureUsbClock();
 
-    /* Enable UPLL for USB */
-    _ConfigureUsbClock();
+    /* Initialize LUN */
+    MEDSdcard_Initialize(&(medias[DRV_SDMMC]), 0);
 
-    /* Start TC for timing & status update */
-    _ConfigureTc0();
-
-    /* Initialize memories and LUN */
-    MemoryInitialization();
+    LUN_Init(&(luns[DRV_SDMMC]), &(medias[DRV_SDMMC]),
+          msdBuffer, MSD_BUFFER_SIZE,
+          0, 0, 0, 0,
+          MSDCallbacks_Data);
 
     /* BOT driver initialization */
-    MSDDriver_Initialize(&msdDriverDescriptors,
-                           luns, MAX_LUNS);
+    MSDDriver_Initialize(luns, 1);
 
-    /* connect if needed */
+    // VBus_Configure();
     USBD_Connect();
 
-    /* Infinite loop */
-    updateDelay = UPDATE_DELAY;
-    updateView = 0;
-
     initialized = true;
+
+    TRACE_DEBUG("usbMassStorage initialized\n\r");
   }
 
   // while (1) {
@@ -3594,10 +3546,9 @@ void usbMassStorage()
   usbState = '0' + USBD_GetState();
 
   /* Mass storage state machine */
-  if (USBD_GetState() >= USBD_STATE_CONFIGURED) {
+  TRACE_DEBUG("MSDDriver_StateMachine\n\r");
+  MSDDriver_StateMachine();
 
-    MSDDriver_StateMachine();
-  }
 #if 0
       /* Update status view */
       if (updateView) {
@@ -3633,6 +3584,7 @@ void menusTask(void * pdata)
 #ifdef MASSSTORAGE
     if (PIOC->PIO_PDSR & PIO_PC25) {
       usbMassStorage();
+      TRACE_DEBUG("Apres usbMassStorage\n\r");
     }
 #endif
     perMain();

@@ -1,0 +1,31 @@
+\subsection{Project aims}
+The EFSL project aims to create a library for filesystems, to be used on 
+various embedded systems. Currently we support the Microsoft FAT filesystem 
+family. It is our intention to create pure ANSI C code that compiles on 
+anything that bears the name 'C compiler'. We don't make assumptions about 
+endianness or how the memory alignment is arranged on your architecture.
+\newline\newline
+Adding code for your specific hardware is straightforward, just add code that 
+fetches or writes a 512 byte sector, and the library will do the rest. 
+Existing code can be used, writing your own code is only required when you 
+have hardware for which no target exists.
+\subsection{Project status}
+Efsl currently supports FAT12, FAT16 and FAT32. Read and write has been tested 
+and is stable. Efsl runs on PC (GNU/Linux, development environment), 
+TMS C6000 DSP's from Texas instruments, and ATMega's from Atmel.
+You can use this code with as little as 1 kilobyte RAM, however if you have 
+more at your disposal, an infinite amount can be used as cache memory. 
+The more memory you commit, the better the performance will be.
+\subsection{License}
+This project is released under the Lesser General Public license, which 
+means that you may use the library and it's sourcecode for any purpose you want, 
+that you may link with it and use it commercially, but that ANY change to the 
+code must be released under the same license. We would appreciate if you would  send
+us a patch when you add support for new hardware, but this is not obligatory, since it
+falls under linking as far as the LGPL is concerned.
+\subsection{Contact}
+You can reach us by email:\\
+\begin{tabular}{ll}
+    Michael De Nil & michael@flex-it.be\\
+    Lennart Yseboodt & len@belf.be\\
+\end{tabular}

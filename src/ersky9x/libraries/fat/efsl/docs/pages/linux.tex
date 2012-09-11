@@ -1,0 +1,138 @@
+Debugging efsl on embedded devices is a rather hard job, because
+you can't just printf debug strings or watch memory maps easily. 
+Because of that, core development has been performed under the 
+Linux operating system. Under Linux, efsl can be compiled as 
+library and used as a userspace filesystem handler. On Unix-
+style operating system (like Linux), all devices (usb stick, disc, \ldots)
+can be seen as a file, and as such been opened by efsl.\newline
+\newline
+In the following section, we will explain how to get started using
+efsl as userspace filesystem handler. However, please note that the main
+focus for efsl is to support embedded systems, which usually don't even
+have 1\% of the memory you have on a PC. Accessing files on a FAT-filesystem
+with efsl will be much slower than when accessing these files with the Linux
+FAT kernel modules.
+\subsubsection{Download \& Compile}
+Let's get started:
+\begin{enumerate}
+	\item{Get the latest release of efsl on http://www.sf.net/projects/efsl/ 
+		and put it in your homedir}
+	\item{Unpack the library (tar xvfj efsl-version.tar.bz2)}
+	\item{Get inside the directory (cd $\sim$/efsl)}
+	\item{Create a symlink from \filename{Makefile-LINUX} to \filename{Makefile} 
+		(ln -s Makefile-LINUX Makefile)}
+	\item{Copy \filename{conf/config-sample-linux.h} to \filename{conf/config.h}
+		(cp conf/config-sample-linux.h conf/config.h)}
+	\item{Compile the library (make lib)}
+	\item{Find the compiled filesystem library (libefsl.a) in the current 
+		directory}
+\end{enumerate}
+If you got any errors with the steps above, please check that that you have
+the following packages installed: tar, gcc, libgcc, binutils \& make.
+\subsubsection{Example}
+Since efsl itself is only a library, it's not supposed to do anything
+out of the box, than just compile. To get started, we'll show here a small
+example program that opens a file on a disc/usb-stick/floppy that contains
+a FAT-filesystem and prints it's content to stdout.\newline
+\newline
+First, create a new directory in which you put the compiled efsl-library
+(\filename{libefsl.a}) and create a new file called \filename{linuxtest.c} containing:
+\lstset{numbers=left, stepnumber=1, numberstyle=\small, numbersep=5pt, tabsize=4}
+\begin{lstlisting}
+	#include <stdio.h>
+	#include <efs.h>
+ 
+	int main(void)
+	{
+		EmbeddedFileSystem efs;
+		EmbeddedFile file;
+		unsigned short i,e;
+		char buf[512];
+	
+		if(efs_init(&efs,"/dev/sda")!=0){
+			printf("Could not open filesystem.\n");
+			return(-1);
+		}
+	
+		if(file_fopen(&file,&efs.myFs,"group",'r')!=0){
+			printf("Could not open file.\n");
+			return(-2);
+		}
+
+		while(e=file_read(&file,512,buf)){
+			for(i=0;i<e;i++)
+			printf("\%c",buf[i]);
+		}
+	
+		return(0);
+	}
+\end{lstlisting}
+$ $\newline
+Some extra information on the code above:
+\begin{itemize}
+	\item{Line 1-2: The header files for stdio (used for printf) and efsl 
+		are included. When using the basic efsl functions, \filename{efs.h} is
+		the only header file of the efsl library that needs to be included.}
+	\item{Line 6: The object efs is created, this object will contain 
+		information about the hardware layer, the partition table and
+		the disc.}
+	\item{Line 7: The object file is created, this object will contain
+		information about the file that we will open on the efs-object.}
+	\item{Line 9: A buffer of 512 bytes is allocated. This buffer will
+	 	be filled by fread with data.}
+	\item{Line 11-14: Call of \code{efs\_init}, which will initialize the efs-object.
+		To this function we pass:
+		\begin{enumerate}
+			\item{A pointer to the efs-object.}
+			\item{A pointer to the file that contains the partition table /
+				file system (in this example, we select a device as file).}
+		\end{enumerate}
+		If this function returns 0, it means that a valid fat partition is
+		found on the device given. 
+		If no valid fat-filesystem is found, or the file does not exist, the 
+		function returns a negative value. In this example we then print an
+		error message and quit.}
+	\item{Line 16-19: Call of \code{file\_fopen()}, which will initialize the 
+		file-object. To this function we pass:
+		\begin{enumerate}
+			\item{A pointer to the file-object.}
+			\item{A pointer to the filesystem-object.} 
+			\item{A pointer to the filename.}
+			\item{A char containing the the mode (read, write, append).}
+		\end{enumerate}
+		If this function returns 0, it means the file has successfully been
+		opened for reading / writing / appending.
+		If the file could not be opened, a negative value is returned.
+	}
+	\item{Line 21-24: Call of \code{file\_read()}, which will read a given value of
+		bytes (in this example 512) from a file and put it's content into
+		the buffer passed (in this example called buf). This function returns
+		the amount of bytes read, so the while-loop will be executed as long
+		as there are bytes left in the file. The code inside the while-loop
+		will print all characters in the buffer.}
+\end{itemize}
+\subsubsection{Testing}
+So now let's test the program:
+\begin{enumerate}
+	\item{Compile the program 
+		(gcc -I/home/user/efsl/inc/ -I/home/user/efsl/conf -o linuxtest 
+		linuxtest.c -L./ -lefsl).}
+	\item{Insert a usb-disc, floppy, mp3-stick, \ldots with a valid 
+		fat-filesystem on it.}
+	\item{Mount the device, copy the file /etc/group on it's root dir \& umount
+		it.}
+	\item{Check that you have permission to access the device
+		(chown username /dev/sda*)}
+	\item{Run the program (./linuxtest)}
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+

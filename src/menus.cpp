@@ -580,6 +580,32 @@ void displayConfirmation(uint8_t event)
   }
 }
 
+int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event)
+{
+  lcd_putsLeft(y, label);
+  if (values) lcd_putsiAtt(x, y, values, value-min, attr);
+  if (attr) value = checkIncDec(event, value, min, max, (g_menuStack[0] >= menuProcSetup && g_menuStack[0] <= menuProcDiagCalib) ? EE_GENERAL : EE_MODEL);
+  return value;
+}
+
+uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event )
+{
+#if defined(GRAPHICS)
+  menu_lcd_onoff(x, y, value, attr);
+  return selectMenuItem(x, y, label, NULL, value, 0, 1, attr, event);
+#else
+  return selectMenuItem(x, y, label, STR_OFFON, value, 0, 1, attr, event);
+#endif
+}
+
+int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t event)
+{
+  lcd_putsLeft(y, STR_SWITCH);
+  putsSwitches(x,  y, value, attr);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, -MAX_SWITCH, MAX_SWITCH);
+  return value;
+}
+
 #if defined(SDCARD)
 const char *s_menu[MENU_MAX_LINES];
 char s_bss_menu[MENU_MAX_LINES*MENU_LINE_LENGTH];

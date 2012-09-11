@@ -896,6 +896,7 @@ void eeReadAll()
     theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL,(uint8_t*)&g_eeGeneral,sizeof(EEGeneral), true);
 
     modelDefault(0);
+
     theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
   }
 

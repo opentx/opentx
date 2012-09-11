@@ -65,19 +65,6 @@
 #define LEN_VCURVEFUNC   "\003"
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
-#define LEN_EXPLABELS    "\006"
-#ifdef PCBARM
-#define TR_EXPLABEL_NAME "Namn  "
-#else
-#define TR_EXPLABEL_NAME
-#endif
-#ifdef FLIGHT_PHASES
-#define TR_EXPLABEL_FP   "Fas   "
-#else
-#define TR_EXPLABEL_FP
-#endif
-#define TR_EXPLABELS     TR_EXPLABEL_NAME "Vikt  ""Expo  ""Kurva " TR_EXPLABEL_FP "Brytar""N\201r   ""\0"
-
 #define LEN_VMLTPX       "\010"
 #define TR_VMLTPX        "Addera  ""F\202rst\201rk""Ers\201tt\0"
 
@@ -268,6 +255,8 @@
 #define TR_EDITMIX      "EDITERA MIX"
 #define TR_SOURCE       "K\201lla"
 #define TR_WEIGHT       "Vikt"
+#define TR_EXPO                "Expo"
+#define TR_SIDE                "Side"
 #define TR_MIXERWEIGHT  "Mixer-vikt"
 #define TR_DIFFERENTIAL "Diff."
 #define TR_OFFSET       "Offset"
@@ -275,8 +264,8 @@
 #define TR_DRWEIGHT     "DR-vikt"
 #define TR_DREXPO       "DR-expo"
 #define TR_TRIM         "Trim"
-#define TR_CURVE       "Kurvor"
-#define TR_FPHASE       "Flygfas"
+#define TR_CURVE        "Kurvor"
+#define TR_FPHASE       "Flygf"
 #define TR_MIXWARNING   "Varning"
 #define TR_OFF          "AV "
 #define TR_MULTPX       "Multpx"

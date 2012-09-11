@@ -1,0 +1,655 @@
+/* ----------------------------------------------------------------------------
+ *         ATMEL Microcontroller Software Support 
+ * ----------------------------------------------------------------------------
+ * Copyright (c) 2008, Atmel Corporation
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the disclaimer below.
+ *
+ * Atmel's name may not be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ----------------------------------------------------------------------------
+ */
+
+//------------------------------------------------------------------------------
+/// \dir
+/// !!!Purpose
+///
+/// This directory provides definitions, structs and functions for USB %device
+/// applications with Atmel AT91 microcontrollers and USB %device framework.
+///
+/// You can develop your own USB %device products based on the class-specific
+/// driver code provided, or just take them as a refference.
+///
+/// !!!Contents
+/// There are two groups for the implement:
+///    -# The hardware interface driver for USB peripheral on AT91
+///       microcontrollers (UDP or UDPHS), this is a part of the "AT91 USB
+///       framework".
+///       - "core": hardware interface driver for AT91 USB peripheral
+///    -# The %device class driver to class-specific %device.
+///       - "audio-speaker"
+///       - "ccid"
+///       - "cdc-serial"
+///       - "hid-keyboard"
+///       - "massstorage"
+///
+/// For more information about what a particular group contains, please refer to
+/// its documentation page.
+///
+/// \note
+/// Depending on the project, not all the subdirectories will be available
+///  (i.e. the #ccid# directory will not be in projects without USB CCID
+///  function).
+//------------------------------------------------------------------------------
+
+/**
+ \page "USBD API"
+
+ See "USBD API Structures" and "USBD API Methods".\n
+
+ !!!USBD API Structures
+
+ Several specific structures are used by the USBD API to perform various
+ operations, such as invoking callbacks or accessing the USBD controller.
+ 
+ There are two %main structures:
+ - USBDDriver:
+ It is the %main structure of the USB API. It should be instanciated
+ in class-specific USB %device driver or user application.
+ - USBDDriverDescriptors:
+ It is a list of all descriptors used by a USB %device driver. It
+ should be instanciated in class-specific USB %device driver or
+ user application and passed to USBD by USBDDriver_Initialize.
+
+ !!!USBD API Methods
+ 
+ The USB API provides serveral methods to perform the following operations:
+ - Changing the %device state
+    - USBD_Init
+    - USBD_Connect, USBD_Disconnect
+    - USBD_SetAddress
+    - USBD_SetConfiguration
+    - USBD_GetState
+    - "USB Device State Diagram"
+ - Handling events coming from the USB controller
+    - USBD_IrqHandler
+ - Modifying the behavior of an endpoint
+    - USBD_ConfigureEndpoint
+    - USBD_Stall
+    - USBD_Halt
+    - USBD_Unhalt
+    - USBD_IsHalted
+ - Transferring data
+    - USBD_Write
+    - USBD_Read
+    - USBD_IsoWrite
+ - Special functions
+    - USBD_RemoteWakeUp
+
+ See "USBD API Methods" for detailed informations.
+
+*/
+
+/**
+ \page "USBD API Structures"
+
+ !!!USBD API Structures
+
+ Several specific structures are used by the USBD API to perform various
+ operations, such as invoking callbacks or accessing the USBD controller.
+ 
+ There are two %main structures:
+ - USBDDriver:
+ It is the %main structure of the USB API. It should be instanciated
+ in class-specific USB %device driver or user application.
+ - USBDDriverDescriptors:
+ It is a list of all descriptors used by a USB %device driver. It
+ should be instanciated in class-specific USB %device driver or
+ user application and passed to USBD by USBDDriver_Initialize.
+
+ */
+
+/**
+ \page "USBD API Methods"
+
+ !!!USB API methods
+ 
+ The USB API provides serveral methods to perform the following operations:
+ - Changing the %device state
+    - USBD_Init
+    - USBD_Connect, USBD_Disconnect
+    - USBD_SetAddress
+    - USBD_SetConfiguration
+    - USBD_GetState
+    - "USB Device State Diagram"
+ - Handling events coming from the USB controller
+    - USBD_IrqHandler
+ - Modifying the behavior of an endpoint
+    - USBD_ConfigureEndpoint
+    - USBD_Stall
+    - USBD_Halt
+    - USBD_Unhalt
+    - USBD_IsHalted
+ - Transferring data
+    - USBD_Write
+    - USBD_Read
+    - USBD_IsoWrite
+ - Special functions
+    - USBD_RemoteWakeUp
+
+ !!!Controlling the Device State
+
+ Chapter 9 of the USB specification 2.0 describes the various states a %device
+ can be in. Most of the methods of this API are used to change between those
+ states.
+
+ !!USBD_Init
+
+ USBD_Init is the first method to call in a user application. Technically, it
+ must occur just before entering the Attached state. It performs the following
+ actions:
+    - USB Device driver and endpoint state initialization
+    - D+ pull-up configuration and disabling
+    - UDP hardware initialization (Peripheral and clock init)
+
+ A USB %device uses a pull-up on the D+ line to signal its connection to the
+ host. Depending on the USB controller present on the chip, either an
+ internal or external pull-up is used. In both cases, its configuration is
+ performed directly by this method. Please refer to the documentation of a
+ particular controller for more information about the D+ pull-up.
+
+ The ini callback has to perform several mandatory operations at this point.
+ You can find the default operations in USBDCallbacks_Initialized.
+
+ !!USBD_Connect, USBD_Disconnect
+
+ These two methods control the state of the D+ upll-up. This makes it possible
+ to connect of disconnect the %device by software when needed. USBD_Connect
+ changes the %device state from Powered to Default, while USBD_Disconnect
+ changes from either Default, Address or Configured to Powered.
+
+ !!USBD_SetAddress
+
+ USBD_SetAddress extracts the information from the last received
+ SETUP packet to either change the %device state from Default to
+ Address or from Address to Default. The difference is made
+ depending on the value of the wValue field of the request.
+ 
+ This method must only be called right after the SET_ADDRESS
+ request is received.
+ 
+ !!USBD_SetConfiguration
+
+ This function operates in a way similar to USBD_SetAddress. When the SETUP
+ packet containing a SET_CONFIGURATION request is received,
+ USBD_SetConfiguration should be called to extract the new configuration
+ value to adopt. If the wValue field of the request is non-zero, then the
+ %device must adopt the new configuration and enter the Configuration state;
+ otherwise, it returns (or stays) in the Address state.
+
+ !!USBD_GetState
+
+ As its name implies, USBD_GetState simply returns the current state of the USB
+ driver. See state definitions on "USB %device states".
+ - USBD_STATE_SUSPENDED
+ - USBD_STATE_ATTACHED
+ - USBD_STATE_POWERED
+ - USBD_STATE_DEFAULT
+ - USBD_STATE_ADDRESS
+ - USBD_STATE_CONFIGURED
+
+ !!Device State Diagram
+ See "USB Device State Diagram"
+
+ !!!Event Handling (USBD_IrqHandler)
+ Several events can occur at the USB controller level:
+ - End of bus reset
+ - Reception of a SETUP packet
+ - Change of bus activity (active -> idle -> active ..)
+ - Completin of an endpoint operation
+ - ...
+
+ Whenever such an event occurs, it must be forwarded to the USBD API to be
+ handled in an appropriate way. The USBD_IrqHandler performs this
+ functionality, so the controller interrupt must be configured to call it.
+
+ Several #callbacks# can be triggered depending on the event notified by
+ the controller:
+ - Suspend, when the bus is idle
+ - Resume, when the bus becomes active again
+ - NewRequest, when a setup packet is received on a control endpoint
+ - StartOfFrame, every 1 ms (for full-speed controllers) or 125us (for high-
+   speed controllers)
+
+ More information about these callbacks and their expected behavior can be
+ found in "USBD Callback API".
+
+ !!!Endpoint Behavior Modification
+
+ The USBD API offers following functions to control how an endpoint operates.
+ - USBD_ConfigureEndpoint
+ - USBD_Stall
+ - USBD_Halt
+ - USBD_Unhalt
+ - USBD_IsHalted
+
+ !!USBD_ConfigureEndpoint
+ USBD_ConfigureEndpoint is used to configure an endpoint at the USB controller
+ level. An appropriate endpoint descriptor must be provided to do that. The
+ descriptor is used to configure the endpoint type (either Control, Bulk,
+ Interrupt or Isochronous), direction (IN or OUT) and address.
+
+ Control endpoint 0 is automatically configured by the USBD API when the End of
+ bus reset event is signalled by the USB controller. Therefore, there is no need
+ to do it manually.
+
+ !!USBD_Stall
+ The USBD_Stall method causes and endpoint to acknowledge its next received
+ packet with a STALL handshake. Further packets are then handled normally.
+
+ Most of the time, this method should be used with endpoint 0 to signal the
+ host that the %device cannot process a command.
+
+ !!USBD_Halt, USBD_Unhalt, USBD_IsHalted
+ USBD_Halt sets the Halt status of an endpoint. When in Halt mode, every
+ received packet is acknowledged with a STALL handshake instead of being
+ handled normally.
+
+ #}USB_Halt#} can be called either with the USB_SET_FEATURE, USB_CLEAR_FEATURE
+ or USB_GET_STATUS parameter to modify the endpoint Halt state.
+
+ USBD_Unhalt clears the Halt status of an endpoint.
+
+ USBD_IsHalted gets the Halt status of an endpoint.
+
+ !!!Data Transfer
+ Data transfer (IN or OUT) on an endpoint can be performed by calling two
+ methods, USBD_Write and USBD_Read.
+
+ !!USBD_Write
+ The USBD_Write function sends a data payload on a specific endpoint. If the
+ data payload equals or exceeds the maximum packet size of the endpoint, then
+ several IN transactions are necessary. This method should only be called on an
+ IN or Control endpoint.
+
+ The write is performed #asynchronously#, i.e., the function returns immediately
+ without waiting for the transfer to finish. When the transfer is complete, an
+ optional user-provided callback function is called. This makes it possible to
+ create an #OS-friendly synchronous function# by locking and unlocking a
+ semaphore before and after each write.
+
+ This function handles double-buffering, if it is supported by the USB
+ controller and if it has been enabled for the endpoint. Do not forget that
+ using double-buffering is mandatory for isochronous transactions.
+
+ - #Note#
+       The double-buffering this function supported is only in period of each
+       write action. That is, when the function is invoked to start transfer
+       trunk of data, the data is automatically splitted to several IN
+       transactions and ping-pong is started on the 2nd transaction. But when
+       all the data of the trunk is finished the ping-pong is stopped. So it can
+       not process the list of buffer that should use double-buffering all the
+       time. See USBD_IsoWrite for such kind of operations.
+
+ !!USBD_Read
+ The USBD_Read reads incoming data on an endpoint. The transfer stops either
+ when the provided buffer is full, or a short packet (size inferior to the
+ endpoint maximum packet size) is received. This method must only be called on
+ an OUT or Control endpoint.
+
+ The read is performed #asynchronously#, i.e., the function returns immediately
+ without waiting for the transfer to finish. When the transfer is complete, an
+ optional user-provided callback function is called. This makes it possible to
+ create an #OS-friendly synchronous function# by locking and unlocking a
+ semaphore before and after each read.
+
+ This function handles #double-buffering#, if it is supported by the USB
+ controller and if it has been enabled for the endpoint. Do not forget that
+ using double-buffering is mandatory for isochronous transactions.
+
+ !!USBD_IsoWrite
+ The USBD_IsoWrite function sends a buffer list on a specific endpoint. The each
+ buffer's payload should be equals or less than the maximum packet size of the
+ endpoint. The transfer ends when all buffera are sent out. And the buffer is
+ previously sent can be filled with new data before the transfer ends. To
+ maitain a ring buffer for the outgoing stream. This method should only be
+ called on an ISO IN endpoint.
+
+ The write is performed #asynchronously#, i.e., the function returns immediately
+ without waiting for the transfer to finish. When the transfer is complete, an
+ optional user-provided callback function is called. This makes it possible to
+ create an #OS-friendly synchronous function# by locking and unlocking a
+ semaphore before and after each write.
+
+ This function handles double-buffering, if it is supported by the USB
+ controller and if it has been enabled for the endpoint. Do not forget that
+ using double-buffering is mandatory for isochronous transactions.
+
+ !!!Special Functions
+
+ - USBD_RemoteWakeUp: This method starts a remote wakeup procedure. This makes
+ it possible for a suspended %device to wake a host with may itself be
+ suspended.
+
+*/
+
+/**
+ \page "USB Device State Diagram"
+
+ \image USBDeviceStateDiagram.png "Changing the Device State"
+
+*/
+
+/* (Image Link Backup)
+<img src="USBDeviceStateDiagram.png" border=0 alt="USBDeviceStateDiagram.png" usemap="#USBD_ST_DIA">
+<MAP NAME="USBD_ST_DIA">
+<AREA shape="poly" coords="172,0,330,0,330,26,172,26,172,0" onmouseover="link('_member','core/USBD_Init53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_Init&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Initializes the specified USB driver            This<BR>function initializes the current FIFO bank of<BR>endpoints,            configures the pull-up and VBus<BR>lines, disconnects the pull-up and            then<BR>trigger the Init callback.');" onmouseout="return nd();">
+<AREA shape="poly" coords="269,390,425,390,425,416,269,416,269,390" onmouseover="link('_member','core/USBD_SetAddress2593655934',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_SetAddress&nbsp;&nbsp;(unsigned char address)',CAPTION,'<strong>Brief description</strong><BR>Sets the device address.');" onmouseout="return nd();">
+<AREA shape="poly" coords="76,390,233,390,233,416,76,416,76,390" onmouseover="link('_member','core/USBD_SetAddress2593655934',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_SetAddress&nbsp;&nbsp;(0)',CAPTION,'<strong>Brief description</strong><BR>Unsets the device address.');" onmouseout="return nd();">
+<AREA shape="poly" coords="76,509,233,509,233,535,76,535,76,509" onmouseover="link('_member','core/USBD_SetConfiguration2593655934',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_SetConfiguration&nbsp;&nbsp;(0)',CAPTION,'<strong>Brief description</strong><BR>Changes the device state from Configured to Address.');" onmouseout="return nd();">
+<AREA shape="poly" coords="261,509,418,509,418,535,261,535,261,509" onmouseover="link('_member','core/USBD_SetConfiguration2593655934',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_SetConfiguration&nbsp;&nbsp;(unsigned char cfgnum)',CAPTION,'<strong>Brief description</strong><BR>Changes the device state from Address to Configured.');" onmouseout="return nd();">
+<AREA shape="poly" coords="284,242,440,242,440,269,284,269,284,242" onmouseover="link('_member','core/USBD_Connect53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_Connect&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Enables the pull-up on the D+ line to connect the device to the USB.');" onmouseout="return nd();">
+<AREA shape="poly" coords="60,242,217,242,217,269,60,269,60,242" onmouseover="link('_member','core/USBD_Disconnect53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_Disconnect&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Disables the pull-up on the D+ line to disconnect the<BR>device from the bus.');" onmouseout="return nd();">
+</MAP>
+
+<MAP NAME="usbd_cb_invo_fc">
+<AREA shape="poly" coords="436,739,600,739,600,765,436,765,436,739" onmouseover="link('_member','core/USBDCallbacks_Resumed53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBDCallbacks_Resumed&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Invoked when the USB device leaves the Suspended state.');" onmouseout="return nd();">
+<AREA shape="poly" coords="436,406,600,406,600,432,436,432,436,406" onmouseover="link('_member','core/USBDCallbacks_Resumed53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBDCallbacks_Resumed&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Invoked when the USB device leaves the Suspended state.');" onmouseout="return nd();">
+<AREA shape="poly" coords="436,605,600,605,600,632,436,632,436,605" onmouseover="link('_member','core/USBDCallbacks_Suspended53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBDCallbacks_Suspended&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Invoked when the USB device gets suspended. By default,<BR>turns off all LEDs.');" onmouseout="return nd();">
+<AREA shape="poly" coords="436,339,600,339,600,365,436,365,436,339" onmouseover="link('_member','coreUSBDCallbacks_Suspended53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBDCallbacks_Suspended&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Invoked when the USB device gets suspended. By default,<BR>turns off all LEDs.');" onmouseout="return nd();">
+<AREA shape="poly" coords="436,272,600,272,600,299,436,299,436,272" onmouseover="link('_member','core/USBDCallbacks_RequestReceived2520836348',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBDCallbacks_RequestReceived&nbsp;&nbsp;(const USBGenericRequest * request)',CAPTION,'<strong>Brief description</strong><BR>Triggered when the USB host emits a new SETUP request.');" onmouseout="return nd();">
+<AREA shape="poly" coords="436,206,600,206,600,232,436,232,436,206" onmouseover="link('_member','core/USBDCallbacks_Reset53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBDCallbacks_Reset&nbsp;&nbsp;( void )',CAPTION,'<strong>Brief description</strong><BR>Triggered when the USB host emits a RESET.')">
+<AREA shape="poly" coords="436,102,600,102,600,129,436,129,436,102" onmouseover="link('_member','core/USBDCallbacks_Initialized53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBDCallbacks_Initialized&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Invoked after the USB driver has been initialized.');" onmouseout="return nd();">
+<AREA shape="poly" coords="221,374,384,374,384,400,221,400,221,374" onmouseover="link('_member','core/USBD_IrqHandler53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_IrqHandler&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>UDP interrupt handler. Manages device status changes.');" onmouseout="return nd();">
+<AREA shape="poly" coords="221,307,384,307,384,333,221,333,221,307" onmouseover="link('_member','core/USBD_IrqHandler53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_IrqHandler&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>UDP interrupt handler. Manages device status changes.');" onmouseout="return nd();">
+<AREA shape="poly" coords="221,240,384,240,384,266,221,266,221,240" onmouseover="link('_member','core/USBD_IrqHandler53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_IrqHandler&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>UDP interrupt handler. Manages device status changes.');" onmouseout="return nd();">
+<AREA shape="poly" coords="221,173,384,173,384,199,221,199,221,173" onmouseover="link('_member','core/USBD_IrqHandler53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_IrqHandler&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>UDP interrupt handler. Manages device status changes.');" onmouseout="return nd();">
+<AREA shape="poly" coords="221,36,384,36,384,62,221,62,221,36" onmouseover="link('_member','core/USBD_Init53616',this);overLibDiagram();return overlib('<strong>Syntax</strong><BR>void&nbsp;&nbsp;USBD_Init&nbsp;&nbsp;(void )',CAPTION,'<strong>Brief description</strong><BR>Initializes the USB driver.');" onmouseout="return nd();">
+<AREA shape="poly" coords="0,407,163,407,163,434,0,434,0,407" onmouseover="overLibDiagram();return overlib('UDP_ISR: AT91C_UDP_SOFINT')" onmouseout="return nd();">
+<AREA shape="poly" coords="0,340,163,340,163,367,0,367,0,340" onmouseover="overLibDiagram();return overlib('UDP_ISR: AT91C_UDP_WAKEUP | AT91C_UDP_RXRSM')" onmouseout="return nd();">
+<AREA shape="poly" coords="0,273,163,273,163,300,0,300,0,273" onmouseover="overLibDiagram();return overlib('UDP_ISR: AT91C_UDP_RXSUSP')" onmouseout="return nd();">
+<AREA shape="poly" coords="0,139,163,139,163,165,0,165,0,139" onmouseover="overLibDiagram();return overlib('UDP_ISR: AT91C_UDP_ENDBUSRES')" onmouseout="return nd();">
+<AREA shape="poly" coords="0,206,163,206,163,232,0,232,0,206" onmouseover="overLibDiagram();return overlib('UDP_CSR: AT91C_UDP_RXSETUP')" onmouseout="return nd();">
+<AREA shape="poly" coords="436,672,600,672,600,698,436,698,436,672" title="ISR_Vbus">
+<AREA shape="poly" coords="436,539,600,539,600,565,436,565,436,539" title="ISR_Vbus">
+<AREA shape="poly" coords="482,0,554,0,554,13,482,13,482,0" title="Applications">
+<AREA shape="poly" coords="278,0,331,0,331,13,278,13,278,0" title="USBD API">
+<AREA shape="poly" coords="36,0,128,0,128,13,36,13,36,0" title="UDP_, UDPHS_">
+</MAP>
+<IMG SRC="USBDCallbackInvocationFlowchart.png" border=0 ALT="USBDCallbackInvocationFlowchart.png" usemap="#usbd_cb_invo_fc">
+*/
+
+/**
+ \page "USBD Callback API"
+
+ !!!Callback API
+
+ The callback API is a means of communication between the user application and
+ the USBD API. When particular operations must be performed, the USB driver
+ calls serveral external functions, refferred to as #callbacks#. They can also
+ be invoked to notify the user application of pending events.
+
+ Defining all callbacks is not mandatory. For example, if the %device shall not
+ enter low-power mode, then it is appropriate not to provide a Suspend callback.
+ If a callback is mandatory, this is notified in its description.
+
+ See USBDCallbacks.h for callback definitions.
+
+ !!!Callback Invocation
+ The following events can trigger a callback:
+ - USB initialization: USBDCallbacks_Initialized
+ - End of bus reset: USBDCallbacks_Reset
+ - Device suspend: USBDCallbacks_Suspended
+ - Device resume: USBDCallbacks_Resumed
+ - SETUP request received: USBDCallbacks_RequestReceived
+ - Start of a new USB frame
+
+ \image USBDCallbackInvocationFlowchart.png "Callback Invocation Flowchart"
+
+ !!Init
+ The USBDCallbacks_Initialized callback is invoked when the USBD_Init method is
+ called. It has to perform several mandatory steps to make it possible to use
+ the API:
+ - If an OS is used, perform any specific operation to install the driver
+ - Configure USB controller interrupt
+ - Configure Vbus monitoring PIO and interrupt ( but it's in app layer now )
+ The USB controller interrupt must be configured to #call the
+ USBD_IrqHandler# API function when triggered. This is necessary to have
+ events happening at the USB controller level handled appropriately by the API.
+
+ If a PIO pin is connected to VBus, it is possible to monitor it by configuring
+ the pin as an input and enabling the PIO interrupt. The interrupt service
+ routine should simply check the Vbus status and then %call the USBD_Connect
+ and USBD_Disconnect$ function to put %device into right state.
+
+ Finally, if an OS is being used, then the driver should probably be installed
+ prior to use. Interrupt configuration may also be done differently. Please
+ refer to the documentation of the OS for more information.
+
+ This callback is #mandatory#.
+
+ !!Reset
+ When an End of bus reset has been detected, the USBDCallbacks_Reset callback
+ is triggered. The callback should perform #initialization# or #re-
+ initialization# of the user-level application. For example, a class driver
+ like MSD should re-initialize its internal state when a USB reset is performed.
+
+ !!Suspend
+ When the USB %device enters the Suspended state, the USB API notifies this state
+ change by invoking the USBDCallbacks_Suspended callback. This can happen either
+ when the bus is idle or when the %device is disconnected from the USB.
+
+ If the %device should enter low-power mode when suspended, then this callback
+ must perform the required operations to do so, e.g., switching to a slow clock,
+ disabling PLLs, etc.
+
+ - }Note: The electrical specification of the USB 2.0 defines a maximum current
+    consumption of 500uA for suspended %device. This includes the current passing
+    through pull-ups and upll-downs.}
+
+ !!Resume
+ The USBDCallbacks_Resumed callback is invoked when the USB %device leaves the
+ Suspended state and returns to its previous state (either Powered, Default,
+ Address or Configured). This may happen when activity is detected on the USB,
+ or when the %device gets connected.
+
+ If the %device was in low-power mode because of the Suspend callback, then this
+ callback must perform the necessary poerations to return the %device into a
+ normal operation mode, e.g., switching to a fast clock.
+
+ !!NewRequest
+ When a SETUP request is received on a control endpoint, the USBD API layer
+ triggers the USBDCallbacks_RequestReceived callback to notify the user
+ application. The received request can then be accessed through the
+ corresponding USBGenericRequest structure.
+
+ SETUP packets are used for class-specific requests (e.g. }GetMaxLUN} in MSD)
+ as well as standard USB requests (e.g. }SetConfiguration}). The former are
+ described in }USB Device Class Documents}, such as the }Mass Storage Bulk
+ Only 1.0}, the latter are defined in the USB Specification 2.0.
+
+ - }Note: that SETUP requests which are not understood by the %device should
+   be acknowledged with a STALL handshake. This notifies the host that the
+   %device cannot process the command.}
+
+ This callback is #mandatory#.
+
+ !!StartOfFrame
+ Every 1ms (for a full-speed %device) or 125us (for a high-speed %device) a
+ new USB frame starts. A callback can be invoked whenever this occurs.
+
+ Because the start-of-frame interrupt %puts some stress on the processor
+ (since it is called a lot), it is only activated the corresponding
+ callback is defined (#now it's NOT defined in current framework#).
+
+*/
+
+/**
+ \page "USBD Standard Request Handler"
+
+ !!!Standard Request Handler
+
+ Chapter 9 of the USB specification 2.0 defines a set of standard requests
+ which have to be implemented by all devices. Since most class drivers treat
+ those requests in the standard way, the USB framework provides a way to easily
+ do that.
+
+ !!!USBDDriver_RequestHandler
+
+ USBDDriver_RequestHandler handles the standard requests in an appropriate way.
+ It can answer the following commands:
+
+ - GET_DESCRIPTOR
+ - SET_ADDRESS
+ - SET_CONFIGURATION
+ - GET_CONFIGURATION
+ - CLEAR_FEATURE
+ - SET_FEATURE
+ - GET_STATUS
+
+ Simply using this standard request handler enables a %device to be enumerated
+ correctly.
+
+ !!Get Descriptor
+ The GET_DESCRIPTOR request is used by the host to retrieve information about
+ the %device by means of several descriptors.
+
+ The standard request handler simply sends the corresponding descriptor to the
+ host. How these descriptors are provided to the function is discussed in
+ Structures.
+
+ !!Set Address
+ Whenever the host wants to change the %device state from Default to Address, or
+ vice-versa, it sends a SET_ADDRESS request. The wValue field contains the new
+ address of the %device; if it is null, then the %device returns to the Default
+ state.
+
+ The USBD_SetAddress function is called to perform this operation. Note that a
+ zero-length packet must be sent prior to doing that, to acknowledge the SETUP
+ transfer.
+
+ !!Set Configuration & GetConfiguration
+ The SET_CONFIGURATION request makes it possible for the host to select between
+ one or more configurations for the %device. GET_CONFIGURATION is used to
+ retrieve the currently selected one.
+
+ Those two requests are handled in a very basic way by
+ USBDDriver_RequestHandler: it assumes that the %device has only one
+ configuration. Therefore, the SET_CONFIGURATION request is simply acknowledged
+ with a zero-length packet, and GET_CONFIGURATION is answered with either 0
+ or 1. If the user application needs more than one configuration, it will be
+ the duty of the class driver handler to service those requests.
+
+ In addition, when the SET_CONFIGURATION request causes the %device to enter the
+ Configured state, the standard request handler calls the USBD_ConfigureEndpoint
+ method for each endpoint used by the %device;
+
+ !!Clear Feature, Set Feature & Get Status
+ Several features of a %device can either be activated or deactivated by the USB
+ host:
+ - Remote wakeup
+ - Endpoint Halt state
+ Three requests can be used to either set, clear or get the status of these two
+ features: SET_FEATURE, CLEAR_FEATURE and GET_STATUS.
+ 
+ The USBDDriver_RequestHandler method answers a Halt state operation by calling
+ the USBD_Halt method on the endpoint with the request.
+
+ !!!Structures
+ Several pieces of information must be known to the USBDDriver_RequestHandler
+ to be able to process some SETUP commands. For example, all the descriptors
+ (configuration, etc.) used by the %device are needed since they must be sent
+ to the host when a GET_DESCRIPTOR is received.
+
+ The USBGenericRequest structure is a "standard USB class driver" object used
+ to hold the required information. It must be passed as an argument to the
+ USBDDriver_RequestHandler method. Another structure, USBDDriverDescriptors, is
+ used to store the descriptors list.
+
+ !!!Usage
+ The NewRequest callback is used to notify the user application that a new SETUP
+ request has been received. SETUP request can either be class-specific or
+ standard.
+
+ The correct way to handle incoming requests is to first process class-specific
+ requests using a class handler. For example, a Mass Storage implementation will
+ define the NewRequest callback to call MSDDriver_RequestHandler. This function
+ will handle the necessary requests, and forward the rest to
+ USBDDriver_RequestHandler.
+
+ If a request cannot be processed, USBDDriver_RequestHandler will STALL control
+ endpoint 0.
+
+*/
+
+/**
+ \page "VID, PID, SN & Strings"
+
+ This page collects the definition for USB %device to indicate the Vendor and
+ Product information.
+
+
+ If you need only the functions in demo %driver, you can easily modify these
+ definitions to change your device's Identification and Display strings.
+
+ They are defined in the driver c code file that suffixed with
+ "DriverDescriptors" under the driver directory.
+
+ !!!VID, PID & SN in Device Descriptor
+
+ Defined as const and used in USBDeviceDescriptor instance initialization.
+ Gives identivication to the USB %device by VID and PID. The INF installation
+ file should mach the VID & PID so that the %device can be installed.
+
+\code
+const USBDeviceDescriptor deviceDescriptor = {...};
+\endcode
+
+ - "audio-speaker": "Audio Speaker Device Codes"
+ - ccid: "CCID Device IDs"
+ - "cdc-serial": "CDC Serial Device IDs"
+ - "hid-keyboard": "HID Device Descriptor IDs"
+ - massstorage: "MSD Device Descriptor IDs"
+
+ !!!Strings
+
+ The strings gives additional information on the USB %device, normally string
+ description about the vendor, product and serial number.
+
+ The strings are defined as a list to initialize the driver's
+ USBDDriverDescriptors instance:
+
+ - "audio-speaker": auddSpeakerDriverDescriptors
+ - ccid: ccidDriverDescriptors
+ - "cdc-serial": cdcdSerialDriverDescriptors
+ - "hid-keyboard": hiddKeyboardDriverDescriptors
+ - massstorage: msdDriverDescriptors
+
+\code
+// String descriptors
+const unsigned char *stringDescriptors[] = {
+
+    languageIdDescriptor,
+    manufacturerDescriptor,
+    productDescriptor,
+    serialNumberDescriptor,
+};
+\endcode
+*/
