@@ -121,8 +121,6 @@ static unsigned char MEDSdcard_Read(Media         *media,
 {
   TRACE_DEBUG("MEDSdcard_Read(address=%d length=%d)\n\r", address, length);
 
-//    unsigned char error;
-
     // Check that the media is ready
     if (media->state != MED_STATE_READY) {
 
@@ -142,8 +140,6 @@ static unsigned char MEDSdcard_Read(Media         *media,
     media->state = MED_STATE_BUSY;
 
     disk_read (0, data, address, length);
-
-    // SD_ReadBlock((SdCard*)media->interface, address, length, data);
 
     // Leave the Busy state
     media->state = MED_STATE_READY;
@@ -180,8 +176,6 @@ static unsigned char MEDSdcard_Write(Media         *media,
 
   TRACE_DEBUG("MEDSdcard_Write(address=%d length=%d)\n\r", address, length);
 
-    unsigned char error;
-
     // Check that the media if ready
     if (media->state != MED_STATE_READY) {
 
@@ -199,7 +193,7 @@ static unsigned char MEDSdcard_Write(Media         *media,
     // Put the media in Busy state
     media->state = MED_STATE_BUSY;
 
-    // TODO BSS error = SD_WriteBlock((SdCard*)media->interface, address, length, data);
+    disk_write(0, data, address, length);
 
     // Leave the Busy state
     media->state = MED_STATE_READY;
@@ -213,173 +207,15 @@ static unsigned char MEDSdcard_Write(Media         *media,
     return MED_STATUS_SUCCESS;
 }
 
-#if 0
-//------------------------------------------------------------------------------
-//! \brief Callback invoked when SD/MMC transfer done
-//------------------------------------------------------------------------------
-static void SdMmcCallback( unsigned char status, void *pCommand )
-{
-    SdCmd       * pCmd = (SdCmd*)pCommand;
-    Media       * pMed = (Media *)pCmd->pArg;
-    MEDTransfer * pXfr = &pMed->transfer;
-
-    TRACE_INFO_WP("SDCb ");
-
-    // Error
-    if (status == SD_ERROR_BUSY) {
-        status = MED_STATUS_BUSY;
-    }
-    else if (status) {
-        status = MED_STATUS_ERROR;
-    }
-
-    pMed->state = MED_STATE_READY;
-    if (pXfr->callback) {
-        pXfr->callback(pXfr->argument,
-                       status,
-                       pXfr->length * pMed->blockSize,
-                       0);
-    }
-}
-#endif
-
-#if 0
-//------------------------------------------------------------------------------
-//! \brief  Reads a specified amount of data from a SDCARD memory
-//! \param  media    Pointer to a Media instance
-//! \param  address  Address of the data to read
-//! \param  data     Pointer to the buffer in which to store the retrieved
-//!                   data
-//! \param  length   Length of the buffer
-//! \param  callback Optional pointer to a callback function to invoke when
-//!                   the operation is finished
-//! \param  argument Optional pointer to an argument for the callback
-//! \return Operation result code
-//------------------------------------------------------------------------------
-static unsigned char MEDSdusb_Read(Media         *media,
-                                   unsigned int   address,
-                                   void          *data,
-                                   unsigned int   length,
-                                   MediaCallback callback,
-                                   void          *argument)
-{
-    MEDTransfer * pXfr;
-    unsigned char error;
-
-    TRACE_INFO_WP("SDuRd(%d,%d) ", (int)address, (int)length);
-
-    // Check that the media is ready
-    if (media->state != MED_STATE_READY) {
-        TRACE_INFO("MEDSdusb_Read: Busy\n\r");
-        return MED_STATUS_BUSY;
-    }
-    // Check that the data to read is not too big
-    if ((length + address) > media->size) {
-        TRACE_WARNING("MEDSdusb_Read: Data too big: %d, %d\n\r",
-                      (int)length, (int)address);
-        return MED_STATUS_ERROR;
-    }
-    // Enter Busy state
-    media->state = MED_STATE_BUSY;
-
-    // Start media transfer
-    pXfr = &media->transfer;
-    pXfr->data     = data;
-    pXfr->address  = address;
-    pXfr->length   = length;
-    pXfr->callback = callback;
-    pXfr->argument = argument;
-
-    /* TODO BSS error = SD_Read((SdCard*)media->interface,
-                     address,
-                     data,
-                     length,
-                     SdMmcCallback,
-                     media); */
-
-    return (error ? MED_STATUS_ERROR : MED_STATUS_SUCCESS);
-}
-#endif
-
-#if 0
-//------------------------------------------------------------------------------
-//! \brief  Writes data on a SDRAM media
-//! \param  media    Pointer to a Media instance
-//! \param  address  Address at which to write
-//! \param  data     Pointer to the data to write
-//! \param  length   Size of the data buffer
-//! \param  callback Optional pointer to a callback function to invoke when
-//!                   the write operation terminates
-//! \param  argument Optional argument for the callback function
-//! \return Operation result code
-//! \see    Media
-//! \see    MediaCallback
-//------------------------------------------------------------------------------
-static unsigned char MEDSdusb_Write(Media         *media,
-                                    unsigned int   address,
-                                    void          *data,
-                                    unsigned int   length,
-                                    MediaCallback callback,
-                                    void          *argument)
-{
-    MEDTransfer * pXfr;
-    unsigned char error;
-    TRACE_INFO_WP("SDuWr(%d,%d) ", (int)address, (int)length);
-
-    // Check that the media if ready
-    if (media->state != MED_STATE_READY)
-    {
-        TRACE_INFO("MEDSdusb_Write: Busy\n\r");
-        return MED_STATUS_BUSY;
-    }
-
-    // Check that the data to write is not too big
-    if ((length + address) > media->size)
-    {
-        TRACE_WARNING("MEDSdcard_Write: Data too big\n\r");
-        return MED_STATUS_ERROR;
-    }
-    // Put the media in Busy state
-    media->state = MED_STATE_BUSY;
-
-    // Start media transfer
-    pXfr = &media->transfer;
-    pXfr->data = data;
-    pXfr->address = address;
-    pXfr->length = length;
-    pXfr->callback = callback;
-    pXfr->argument = argument;
-
-    /* TODO BSS error = SD_Write((SdCard*)media->interface,
-                      address,
-                      data,
-                      length,
-                      SdMmcCallback,
-                      media); */
-
-    return (error ? MED_STATUS_ERROR : MED_STATUS_SUCCESS);
-}
-#endif
-
-//------------------------------------------------------------------------------
-//      Exported Functions
-//------------------------------------------------------------------------------
-
-#if 0
-//------------------------------------------------------------------------------
-/// Detect if there is SD card in socket
-//------------------------------------------------------------------------------
-unsigned char MEDSdcard_Detect( Media * media, unsigned char mciID )
-{
-    return CardIsConnected(  ) ;
-}
-#endif
 
 //------------------------------------------------------------------------------
 /// Initializes a Media instance and the associated physical interface
 /// \param  media Pointer to the Media instance to initialize
 /// \return 1 if success.
 //------------------------------------------------------------------------------
+
+extern uint32_t Card_CSD[4];
+
 unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
 {
     TRACE_INFO("MEDSdcard init\n\r");
@@ -436,14 +272,8 @@ unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
     MCI_SetSpeed(mciDrv, sdDrv->transSpeed, sdDrv->transSpeed, BOARD_MCK);
 #endif
 
-    // Initialize media fields
-    //--------------------------------------------------------------------------
-    // media->interface = sdDrv;
-    #if !defined(OP_BOOTSTRAP_MCI_on)
+
     media->write = MEDSdcard_Write;
-    #else
-    media->write = 0;
-    #endif
     media->read = MEDSdcard_Read;
     media->lock = 0;
     media->unlock = 0;
@@ -452,7 +282,14 @@ unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
 
     media->blockSize = SD_BLOCK_SIZE;
     media->baseAddress = 0;
-    media->size = SD_BLOCK_SIZE * 1000; // TODO BSS SD_TOTAL_BLOCK(sdDrv);
+
+#define SD_CSD(csd, bitfield, bits)   ((csd[3-(bitfield)/32] >> ((bitfield)%32)) & ((1 << (bits)) - 1))
+
+#define SD_CSD_C_SIZE_HC(csd)          ((SD_CSD(csd, 64,  6) << 16) + \
+                                        (SD_CSD(csd, 56,  8) << 8)  + \
+                                        SD_CSD(csd, 48,  8)) ///< Device size v2.0 High Capacity
+
+    media->size = ((SD_CSD_C_SIZE_HC(Card_CSD) + 1) * 1024);
 
     media->mappedRD  = 0;
     media->mappedWR  = 0;

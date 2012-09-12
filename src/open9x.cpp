@@ -3573,15 +3573,17 @@ void menusTask(void * pdata)
   open9xInit();
 
   while (check_soft_power() != e_power_off) {
-#ifdef MASSSTORAGE
-    if (PIOC->PIO_PDSR & PIO_PC25) {
-      for (uint8_t i=0; i<10; i++)
-        usbMassStorage();
-      TRACE_DEBUG("Apres usbMassStorage\n\r");
-    }
-#endif
     perMain();
-    CoTickDelay(5);  // 10ms for now
+    for (uint8_t i=0; i<5; i++) {
+#ifdef MASSSTORAGE
+      if (PIOC->PIO_PDSR & PIO_PC25) {
+        for (uint8_t i=0; i<10; i++)
+          usbMassStorage();
+        TRACE_DEBUG("Apres usbMassStorage\n\r");
+      }
+#endif
+      CoTickDelay(1);  // 10ms for now
+    }
   }
 
 #if defined(SDCARD)

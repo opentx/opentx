@@ -990,6 +990,8 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
   }
 
   phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+  /* Disable PDC */
+  phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
 
   CoLeaveMutexSection(sdMutex);
   return result;
@@ -1023,7 +1025,13 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
       }
   }
 
-  phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+  /* Disable PDC */
+  phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
+
+  /* Disable interrupts */
+  // phsmci->HSMCI_IDR = phsmci->HSMCI_IMR;
+
+   phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
 
   CoLeaveMutexSection(sdMutex);
 
