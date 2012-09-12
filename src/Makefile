@@ -424,7 +424,7 @@ ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
-  # CPPDEFS += -DMASSSTORAGE -DDEBUG # Both must come together today!
+  CPPDEFS += -DMASSSTORAGE
   EXTRAINCDIRS += ersky9x ersky9x/libraries ersky9x/libraries/drivers CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
@@ -434,7 +434,7 @@ ifeq ($(PCB), ARM)
   SRC += ersky9x/libraries/usb/device/core/USBDCallbacks_Resumed.c ersky9x/libraries/usb/device/core/USBDCallbacks_Reset.c ersky9x/libraries/usb/device/core/USBDCallbacks_Suspended.c ersky9x/libraries/usb/device/core/USBDCallbacks_Initialized.c ersky9x/libraries/usb/device/core/USBDDriverCb_IfSettingChanged.c # TODO remove them
   SRC += ersky9x/libraries/usb/device/massstorage/MSDLun.c ersky9x/libraries/usb/device/massstorage/MSDDriverDescriptors.c 
   SRC += ersky9x/syscalls.c
-  SRC += ersky9x/libraries/usb/device/massstorage/SBCMethods.c
+  SRC += ersky9x/libraries/usb/device/massstorage/SBCMethods.c ersky9x/libraries/memories/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
@@ -884,6 +884,9 @@ clean_list :
 	$(REMOVE) *.o
 	$(REMOVE) */*.o
 	$(REMOVE) */*/*.o
+	$(REMOVE) */*/*/*.o
+	$(REMOVE) */*/*/*/*.o
+	$(REMOVE) */*/*/*/*/*.o
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp

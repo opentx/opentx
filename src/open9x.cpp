@@ -3375,6 +3375,7 @@ MSDLun luns[MAX_LUNS];
 
 char usbState;
 
+#if 0
 //------------------------------------------------------------------------------
 /// Initializes a Media instance and the associated physical interface
 /// \param  media Pointer to the Media instance to initialize
@@ -3493,24 +3494,15 @@ uint8_t MEDSdcard_Initialize(Media *media, uint8_t mciID)
 
     return 1;
 }
+#endif
 
 static void MSDCallbacks_Data( unsigned char flowDirection, unsigned int dataLength,
                                unsigned int fifoNullCount, unsigned int fifoFullCount )
 {
   TRACE_INFO("MSDCallbacks_Data\n\r");
-/*  if ( flowDirection )
-    {
-        msdReadTotal += dataLength;
-    }
-    else
-    {
-        msdWriteTotal += dataLength;
-    }
-
-    msdFullCnt += fifoFullCount;
-    msdNullCnt += fifoNullCount;*/
 }
 
+unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID);
 
 void usbMassStorage()
 {
@@ -3583,7 +3575,8 @@ void menusTask(void * pdata)
   while (check_soft_power() != e_power_off) {
 #ifdef MASSSTORAGE
     if (PIOC->PIO_PDSR & PIO_PC25) {
-      usbMassStorage();
+      for (uint8_t i=0; i<10; i++)
+        usbMassStorage();
       TRACE_DEBUG("Apres usbMassStorage\n\r");
     }
 #endif
