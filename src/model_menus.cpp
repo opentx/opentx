@@ -1688,11 +1688,12 @@ void menuProcMixOne(uint8_t event)
               s_curveChan = (curveParam<0 ? -curveParam-1 : curveParam-CURVE_BASE);
               pushMenu(menuProcCurveOne);
             }
-            CHECK_INCDEC_MODELVAR(event, md2->curveParam, -MAX_CURVES, CURVE_BASE+MAX_CURVES-1);
-            if (md2->curveParam == 0)
-              md2->curveMode = MODE_DIFFERENTIAL;
-            m_posHorz = 0;
-            if (s_editMode > 0) s_editMode = 0;
+            else {
+              CHECK_INCDEC_MODELVAR(event, md2->curveParam, -MAX_CURVES, CURVE_BASE+MAX_CURVES-1);
+              if (md2->curveParam == 0)
+                md2->curveMode = MODE_DIFFERENTIAL;
+              m_posHorz = 0;
+            }
           }
           else if (s_editMode>0) {
             if (m_posHorz==0) {
