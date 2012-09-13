@@ -72,10 +72,6 @@ void doMainScreenGrphics()
   }
 }
 
-#if defined(MASSSTORAGE)
-extern char usbState;
-#endif
-
 void menuMainView(uint8_t event)
 {
   uint8_t view = g_eeGeneral.view;
@@ -212,10 +208,6 @@ void menuMainView(uint8_t event)
     if (unexpectedShutdown) {
       lcd_putcAtt(20*FW-3, 0*FH, '!', INVERS);
     }
-#if defined(MASSSTORAGE)
-    if (usbState >= '0')
-      lcd_putcAtt(20*FW-3, 0*FH, usbState, INVERS);
-#endif
 
     if (g_model.timers[0].mode) {
       uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);

@@ -424,7 +424,6 @@ ifeq ($(PCB), ARM)
   # V4 ARM, so ...
   OPT = 2
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
-  CPPDEFS += -DMASSSTORAGE
   EXTRAINCDIRS += ersky9x ersky9x/libraries ersky9x/libraries/drivers CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c

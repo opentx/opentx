@@ -3293,7 +3293,7 @@ void mixerTask(void * pdata)
   }
 }
 
-#ifdef MASSSTORAGE
+// TODO move this code elsewhere
 extern "C" {
 /* Include AT91SAM3S-EK definitions and initialization API */
 #include <board/board.h>
@@ -3324,40 +3324,6 @@ static void ConfigureUsbClock(void)
                  | PMC_USB_USBS;        /* PLLB */
 }
 
-/*----------------------------------------------------------------------------
- *        VBus monitoring (optional)
- *----------------------------------------------------------------------------*/
-
-/** VBus pin instance. */
-const Pin gPinVbus = PIN_USB_VBUS;
-
-/**
- * \brief Configures the VBus Pin
- *
- * To trigger an interrupt when the level on that pin changes.
- */
-static void VBus_Configure( void )
-{
-    TRACE_INFO("VBus configuration\n\r");
-
-    /* Configure PIO */
-    PIO_Configure(&gPinVbus, 1);
-
-    /* Enable PIO interrupt */
-    PIO_EnableIt(&gPinVbus);
-
-    /* Check current level on VBus */
-    if (PIO_Get(&gPinVbus)) {
-
-        /* if VBUS present, force the connect */
-        TRACE_INFO("conn\n\r");
-        USBD_Connect();
-    }
-    else {
-        USBD_Disconnect();
-    }
-}
-
 /** Maximum number of LUNs which can be defined. */
 #define MAX_LUNS            1
 
@@ -3372,129 +3338,6 @@ Media medias[MAX_LUNS];
 
 /** Device LUNs. */
 MSDLun luns[MAX_LUNS];
-
-char usbState;
-
-#if 0
-//------------------------------------------------------------------------------
-/// Initializes a Media instance and the associated physical interface
-/// \param  media Pointer to the Media instance to initialize
-/// \return 1 if success.
-//------------------------------------------------------------------------------
-#define SD_BLOCK_SIZE           512
-
-static unsigned char MEDSdcard_Read(Media         *media,
-                                    unsigned int  address,
-                                    void          *data,
-                                    unsigned int  length,
-                                    MediaCallback callback,
-                                    void          *argument)
-{
-  TRACE_INFO("FAKE MEDSdcard_Read\n\r");
-  return 0;
-}
-
-static unsigned char MEDSdcard_Write(Media         *media,
-                                    unsigned int  address,
-                                    void          *data,
-                                    unsigned int  length,
-                                    MediaCallback callback,
-                                    void          *argument)
-{
-  TRACE_INFO("FAKE MEDSdcard_Write\n\r");
-  return 0;
-}
-
-uint8_t MEDSdcard_Initialize(Media *media, uint8_t mciID)
-{
-    TRACE_INFO("MEDSdcard init\n\r");
-
-    // Initialize SDcard
-    //--------------------------------------------------------------------------
-
-    if ( !CardIsConnected(  ) )
-    {
-        return 0;
-    }
-
-    // Configure SDcard pins
-    // ConfigurePIO(mciID);
-
-#if defined(MCI2_INTERFACE)
-    // DMAD_Initialize(BOARD_MCI_DMA_CHANNEL, DMAD_NO_DEFAULT_IT);
-#endif
-
-#if 0
-    // Initialize the MCI driver
-    if ( mciID == 0 )
-    {
-        IRQ_ConfigureIT(BOARD_SD_MCI_ID,  1, MCI0_IrqHandler);
-        MCI_Init(mciDrv, BOARD_SD_MCI_BASE, BOARD_SD_MCI_ID, BOARD_SD_SLOT, BOARD_MCK );
-        IRQ_EnableIT(BOARD_SD_MCI_ID);
-    }
-    else
-    {
-        #ifdef BOARD_SD_MCI1_ID
-        IRQ_ConfigureIT(BOARD_SD_MCI1_ID,  1, MCI0_IrqHandler);
-        MCI_Init(mciDrv, BOARD_SD_MCI1_BASE, BOARD_SD_MCI1_ID, BOARD_SD_MCI1_SLOT, BOARD_MCK );
-        IRQ_EnableIT(BOARD_SD_MCI1_ID);
-        #else
-        TRACE_ERROR("SD/MMC card initialization failed (MCI1 not supported)\n\r");
-        #endif
-    }
-#if MCI_BUSY_CHECK_FIX && defined(BOARD_SD_DAT0)
-    MCI_SetBusyFix(mciDrv, &pinSdDAT0);
-#endif
-
-    // Initialize the SD card driver
-    if (SD_Init(sdDrv, (SdDriver *)mciDrv))
-    {
-        TRACE_ERROR("SD/MMC card initialization failed\n\r");
-        return 0;
-    }
-    else
-    {
-        //SD_DisplayRegisterCSD(&sdDrv);
-        TRACE_INFO("SD/MMC card initialization successful\n\r");
-        TRACE_INFO("Card size: %d MB\n\r", (int)(MMC_GetTotalSizeKB(sdDrv)/1024));
-    }
-    MCI_SetSpeed(mciDrv, sdDrv->transSpeed, sdDrv->transSpeed, BOARD_MCK);
-#endif
-
-    // Initialize media fields
-    //--------------------------------------------------------------------------
-    // media->interface = sdDrv;
-    #if !defined(OP_BOOTSTRAP_MCI_on)
-    media->write = MEDSdcard_Write;
-    #else
-    media->write = 0;
-    #endif
-    media->read = MEDSdcard_Read;
-    media->lock = 0;
-    media->unlock = 0;
-    media->handler = 0;
-    media->flush = 0;
-
-    media->blockSize = SD_BLOCK_SIZE;
-    media->baseAddress = 0;
-    media->size = SD_BLOCK_SIZE * 1000; // TODO BSS SD_TOTAL_BLOCK(sdDrv);
-
-    media->mappedRD  = 0;
-    media->mappedWR  = 0;
-    media->protectd = false; // TODO BSS CardIsProtected(mciID);
-    media->removable = 1;
-
-    media->state = MED_STATE_READY;
-
-    media->transfer.data = 0;
-    media->transfer.address = 0;
-    media->transfer.length = 0;
-    media->transfer.callback = 0;
-    media->transfer.argument = 0;
-
-    return 1;
-}
-#endif
 
 static void MSDCallbacks_Data( unsigned char flowDirection, unsigned int dataLength,
                                unsigned int fifoNullCount, unsigned int fifoFullCount )
@@ -3533,40 +3376,11 @@ void usbMassStorage()
     TRACE_DEBUG("usbMassStorage initialized\n\r");
   }
 
-  // while (1) {
-
-  usbState = '0' + USBD_GetState();
-
   /* Mass storage state machine */
   TRACE_DEBUG("MSDDriver_StateMachine\n\r");
   MSDDriver_StateMachine();
-
-#if 0
-      /* Update status view */
-      if (updateView) {
-
-          updateView = 0;
-
-          if (msdWriteTotal < 50 * 1000) {
-           //   MED_Flush(&medias[DRV_NAND]);
-          }
-
-/*          printf("Read %5dK, Write %5dK, IO %5dK; Null %4d, Full %4d\r",
-              msdReadTotal/(UPDATE_DELAY*250),
-              msdWriteTotal/(UPDATE_DELAY*250),
-              (msdReadTotal+msdWriteTotal)/(UPDATE_DELAY*250),
-              msdNullCnt, msdFullCnt);
-*/
-          msdReadTotal = 0;
-          msdWriteTotal = 0;
-          msdNullCnt = 0;
-          msdFullCnt = 0;
-      }
-#endif
-//  }
 }
 } // extern "C"
-#endif
 
 void menusTask(void * pdata)
 {
@@ -3575,13 +3389,11 @@ void menusTask(void * pdata)
   while (check_soft_power() != e_power_off) {
     perMain();
     for (uint8_t i=0; i<5; i++) {
-#ifdef MASSSTORAGE
       if (PIOC->PIO_PDSR & PIO_PC25) {
         for (uint8_t i=0; i<10; i++)
           usbMassStorage();
         TRACE_DEBUG("Apres usbMassStorage\n\r");
       }
-#endif
       CoTickDelay(1);  // 10ms for now
     }
   }
