@@ -39,6 +39,7 @@
 /*-----------------------------------------------------------------------*/
 
 #include "board.h"
+#include "debug.h"
 #include "../FatFs/diskio.h"
 #include "../FatFs/ff.h"
 #include "../CoOS/kernel/CoOS.h"
@@ -965,6 +966,7 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 {
   uint32_t result = 0;
   Hsmci *phsmci = HSMCI;
+  int32_t retry;
 
   CoEnterMutexSection(sdMutex);
 
@@ -979,8 +981,8 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
       phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTEN;
       phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
         
-      uint8_t retry = 100;
-      while (retry-- > 0) {
+      retry = 500;
+      while (--retry >= 0) {
         CoTickDelay(1); // 2ms
         if (phsmci->HSMCI_SR & HSMCI_SR_ENDRX) {
           result = 1;
@@ -1001,11 +1003,25 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 {
   uint32_t result = 0;
   Hsmci *phsmci = HSMCI;
+  int32_t retry;
 
   CoEnterMutexSection(sdMutex);
 
   if (sd_card_ready()) {
+
+    TRACE_ERROR("Sector %d ", block_no);
+
+    retry = 500;
+    while (--retry >= 0) {
+      if (phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY) {
+        break;
+      }
+      CoTickDelay(1); // 2ms
+    }
+
+    if (retry >= 0) {
       sd_cmd16();
+
       // Block size = 512, nblocks = 1
       phsmci->HSMCI_BLKR = ((512) << 16) | 1;
       phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
@@ -1015,14 +1031,25 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
       phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
       phsmci->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
       
-      uint8_t retry = 100;
-      while (retry-- > 0) {
+      retry = 500;
+      while (--retry >= 0) {
         CoTickDelay(1); // 2ms
         if (phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY) {
           result = 1;
           break;
         }
       }
+
+      if (retry < 0) {
+        TRACE_ERROR("ko (data=%d)\n\r", (uint32_t)data);
+      }
+      else {
+        TRACE_ERROR("ok\n\r");
+      }
+    }
+    else {
+      TRACE_ERROR("wait ko\n\r");
+    }
   }
 
   /* Disable PDC */
