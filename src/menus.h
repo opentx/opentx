@@ -203,9 +203,9 @@ if (!check_submenu_simple(event,(lines_count)-1)) return;
 SIMPLE_SUBMENU_NOTITLE(lines_count); \
 TITLE(title)
 
-int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t event);
-uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event );
 int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event);
+uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event );
+int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t event);
 
 extern const pm_char * s_global_warning;
 extern const pm_char * s_warning;

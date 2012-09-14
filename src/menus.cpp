@@ -352,7 +352,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
         if (++m_posHorz > maxcol) {
           if (m_posVert < maxrow) {
             ++m_posVert;
-            maxcol = MAXCOL(m_posVert); // TODO not stored into maxcol?
+            maxcol = MAXCOL(m_posVert);
             if (maxcol < 0) m_posVert++;
             m_posHorz = 0;
           }
@@ -410,7 +410,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
       popMenu();
       break;
     case EVT_KEY_BREAK(KEY_EXIT):
-      if(s_editMode>0) {
+      if (s_editMode>0) {
         s_editMode = 0;
         break;
       }
@@ -424,27 +424,27 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
         BLINK_SYNC;
       }
       break;
-
     case EVT_KEY_REPT(KEY_RIGHT):  //inc
-      if(m_posHorz==maxcol) break;
+      if (m_posHorz==maxcol) break;
+      // no break
     case EVT_KEY_FIRST(KEY_RIGHT)://inc
-      if(!horTab || s_editMode>0)break;
+      if (!horTab || s_editMode>0) break;
       INC(m_posHorz,maxcol);
       BLINK_SYNC;
       break;
-
     case EVT_KEY_REPT(KEY_LEFT):  //dec
-      if(m_posHorz==0) break;
+      if (m_posHorz==0) break;
+      // no break
     case EVT_KEY_FIRST(KEY_LEFT)://dec
-      if(!horTab || s_editMode>0)break;
+      if (!horTab || s_editMode>0) break;
       DEC(m_posHorz,maxcol);
       BLINK_SYNC;
       break;
-
     case EVT_KEY_REPT(KEY_DOWN):  //inc
-      if(m_posVert==maxrow) break;
+      if (m_posVert==maxrow) break;
+      // no break
     case EVT_KEY_FIRST(KEY_DOWN): //inc
-      if(s_editMode>0)break;
+      if (s_editMode>0) break;
       do {
         INC(m_posVert, maxrow);
       } while(MAXCOL(m_posVert) == (uint8_t)-1);
@@ -454,9 +454,9 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
       m_posHorz = min(m_posHorz, MAXCOL(m_posVert));
       BLINK_SYNC;
       break;
-
     case EVT_KEY_REPT(KEY_UP):  //dec
-      if(m_posVert==0) break;
+      if (m_posVert==0) break;
+      // no break
     case EVT_KEY_FIRST(KEY_UP): //dec
       if(s_editMode>0)break;
       do {
@@ -468,9 +468,9 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
   }
 
   uint8_t max = menuTab ? 7 : 6;
-  if(m_posVert<1) s_pgOfs=0;
-  else if(m_posVert-s_pgOfs>max) s_pgOfs = m_posVert-max;
-  else if(m_posVert-s_pgOfs<1) s_pgOfs = m_posVert-1;
+  if (m_posVert<1) s_pgOfs=0;
+  else if (m_posVert-s_pgOfs>max) s_pgOfs = m_posVert-max;
+  else if (m_posVert-s_pgOfs<1) s_pgOfs = m_posVert-1;
   return true;
 }
 
@@ -482,16 +482,13 @@ uint8_t m_posHorz;
 
 void popMenu()
 {
-  if (g_menuStackPtr>0) {
-    g_menuStackPtr = g_menuStackPtr-1;
-    AUDIO_KEYPAD_UP();
-    m_posHorz = 0;
-    m_posVert = g_menuPos[g_menuStackPtr];
-    (*g_menuStack[g_menuStackPtr])(EVT_ENTRY_UP);
-  }
-  else {
-    assert(!"Menus overflow!");
-  }
+  assert(g_menuStackPtr>0);
+
+  g_menuStackPtr = g_menuStackPtr-1;
+  AUDIO_KEYPAD_UP();
+  m_posHorz = 0;
+  m_posVert = g_menuPos[g_menuStackPtr];
+  (*g_menuStack[g_menuStackPtr])(EVT_ENTRY_UP);
 }
 
 void chainMenu(MenuFuncP newMenu)
@@ -510,15 +507,20 @@ void pushMenu(MenuFuncP newMenu)
   s_inflight_enable = false;
 #endif
 
-  g_menuPos[g_menuStackPtr] = m_posVert;
+  if (g_menuStackPtr == 0) {
+    if (newMenu == menuProcSetup)
+      g_menuPos[0] = 1;
+    if (newMenu == menuProcModelSelect)
+      g_menuPos[0] = 0;
+  }
+  else {
+    g_menuPos[g_menuStackPtr] = m_posVert;
+  }
 
   g_menuStackPtr++;
-  if(g_menuStackPtr >= DIM(g_menuStack))
-  {
-    g_menuStackPtr--;
-    assert(!"Menus overflow!");
-    return;
-  }
+
+  assert(g_menuStackPtr < DIM(g_menuStack));
+
   AUDIO_MENUS();
   g_menuStack[g_menuStackPtr] = newMenu;
   (*newMenu)(EVT_ENTRY);
@@ -584,7 +586,7 @@ int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char 
 {
   lcd_putsLeft(y, label);
   if (values) lcd_putsiAtt(x, y, values, value-min, attr);
-  if (attr) value = checkIncDec(event, value, min, max, (g_menuStack[0] >= menuProcSetup && g_menuStack[0] <= menuProcDiagCalib) ? EE_GENERAL : EE_MODEL);
+  if (attr) value = checkIncDec(event, value, min, max, (g_menuPos[0] == 0) ? EE_MODEL : EE_GENERAL);
   return value;
 }
 
