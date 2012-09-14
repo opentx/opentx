@@ -119,7 +119,8 @@ void t_voice::voice_process(void)
     // delay to allow input to settle
     asm(" nop");
     asm(" nop");
-    asm(" nop") ;
+    asm(" nop");
+    asm(" nop");
 #endif
     busy = PINB & 0x80;
     DDRB |= (1 << OUT_B_LIGHT); // Change to output

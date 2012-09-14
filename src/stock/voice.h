@@ -73,6 +73,8 @@ extern void pushPrompt( uint8_t value );
 extern struct t_voice *voiceaddress( void ) ;
 extern struct t_voice Voice ;
 
+#define SET_VOLUME(v) pushCustomPrompt((v) | 0xF0)
+
 inline bool isPlaying()
 {
 #if defined(SIMU)

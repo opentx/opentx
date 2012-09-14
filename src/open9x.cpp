@@ -3208,6 +3208,8 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #if defined(PCBARM)
   setVolume(g_eeGeneral.speakerVolume);
   PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
+#elif defined(VOICE)
+  SET_VOLUME(g_eeGeneral.speakerVolume+7);
 #endif
 
 #if defined(PCBARM) && defined(BLUETOOTH)

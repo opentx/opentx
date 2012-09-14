@@ -44,3 +44,5 @@ extern bool isPlaying(uint8_t id);
 #define PLAY_DURATION(d) playDuration((d), id)
 #define IS_PLAYING(id) isPlaying((id))
 #define PLAY_VALUE(v, id) playValue((v), (id))
+
+#define SET_VOLUME(v)

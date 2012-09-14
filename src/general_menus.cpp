@@ -241,12 +241,9 @@ void menuProcSetup(uint8_t event)
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, b, attr|LEFT);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, b, 0, 7);
-          if (g_eeGeneral.speakerVolume != (int8_t)b-7) {
+          if (checkIncDec_Ret) {
             g_eeGeneral.speakerVolume = (int8_t)b-7;
-#if defined(PCBSTD)
-            // TODO do the same on V4 Board with SOMO-14D ... with a #define ...
-            pushCustomPrompt(b | 0xF0);
-#endif
+            SET_VOLUME(b);
           }
         }
 #endif
@@ -254,7 +251,7 @@ void menuProcSetup(uint8_t event)
       }
 #endif
 
-#ifdef HAPTIC
+#if defined(HAPTIC)
       case ITEM_SETUP_HAPTIC_MODE:
         g_eeGeneral.hapticMode = selectMenuItem(GENERAL_PARAM_OFS, y, STR_HAPTICMODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
         break;
