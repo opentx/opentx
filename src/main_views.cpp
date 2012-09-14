@@ -197,25 +197,42 @@ void menuMainView(uint8_t event)
   }
 
   {
+    // Flight Phase Name
     uint8_t phase = s_perout_flight_phase;
     lcd_putsnAtt(6*FW, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 
-    uint8_t att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | DBLSIZE;
+    // Model Name
     putsModelName(2*FW-2, 0*FH, g_model.name, g_eeGeneral.currModel, DBLSIZE);
-    putsVBat(6*FW-1, 2*FH, att|NO_UNIT);
-    lcd_putc(6*FW, 3*FH, 'V');
 
+    // Voltage (or alarm if any)
+#if defined(PCBARM)
+    if (g_vbat100mV > g_eeGeneral.vBatWarn && temperature >= g_eeGeneral.temperatureWarn+80) {
+      putsTelemetryValue(6*FW-1, 3*FH, temperature, UNIT_DEGREES, BLINK|INVERS|DBLSIZE);
+    }
+    else if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
+      putsTelemetryValue(6*FW-1, 3*FH, g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36, UNIT_MAH, BLINK|INVERS|DBLSIZE|PREC1);
+    }
+    else
+#endif
+    {
+      uint8_t att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | DBLSIZE;
+      putsVBat(6*FW-1, 2*FH, att|NO_UNIT);
+      lcd_putc(6*FW, 3*FH, 'V');
+    }
+
+    // And ! in case of unexpected shutdown
     if (unexpectedShutdown) {
       lcd_putcAtt(20*FW-3, 0*FH, '!', INVERS);
     }
 
+    // Main timer
     if (g_model.timers[0].mode) {
       uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
       putsTime(12*FW+3, FH*2, s_timerVal[0], att, att);
       putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timers[0].mode, SWCONDENSED);
     }
 
-    // trim sliders
+    // Trim sliders
     for(uint8_t i=0; i<4; i++)
     {
 #define TL 27
