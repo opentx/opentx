@@ -432,7 +432,7 @@ typedef struct {
                   bReserved3:7;            //!< Reserved bits
     unsigned char bControl;                //!< 0x00
 
-} SBCReadCapacity10;
+} __attribute__ ((packed)) SBCReadCapacity10;
 
 //------------------------------------------------------------------------------
 /// \brief  Data returned by the device after a READ CAPACITY (10) command
@@ -443,7 +443,7 @@ typedef struct {
     unsigned char pLogicalBlockAddress[4]; //!< Address of last logical block
     unsigned char pLogicalBlockLength[4];  //!< Length of each logical block
 
-} SBCReadCapacity10Data;
+} __attribute__ ((packed)) SBCReadCapacity10Data;
 
 //------------------------------------------------------------------------------
 /// \brief  Structure for the REQUEST SENSE command
@@ -458,7 +458,7 @@ typedef struct {
     unsigned char bAllocationLength; //!< Size of host buffer
     unsigned char bControl;          //!< 0x00
 
-} SBCRequestSense;
+} __attribute__ ((packed)) SBCRequestSense;
 
 //------------------------------------------------------------------------------
 /// \brief  Fixed format sense data returned after a REQUEST SENSE command has
@@ -485,7 +485,7 @@ typedef struct {
                   isSKSV           :1;            //!< Is sense key specific valid?
     unsigned char pSenseKeySpecific[2];           //!< Additional exception info
 
-} SBCRequestSenseData;
+} __attribute__ ((packed)) SBCRequestSenseData;
 
 //------------------------------------------------------------------------------
 /// \brief  Data structure for the TEST UNIT READY command
@@ -518,7 +518,7 @@ typedef struct {
     unsigned char pTransferLength[2];      //!< Number of blocks to write
     unsigned char bControl;                //!< 0x00
 
-} SBCWrite10;
+} __attribute__ ((packed)) SBCWrite10;
 
 //------------------------------------------------------------------------------
 /// \brief  Structure for the PREVENT/ALLOW MEDIUM REMOVAL command
