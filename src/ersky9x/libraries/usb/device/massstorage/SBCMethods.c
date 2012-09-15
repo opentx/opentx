@@ -1430,6 +1430,7 @@ unsigned char SBC_GetCommandInformation(void          *command,
 
     //------------------------------------
     case SBC_PREVENT_ALLOW_MEDIUM_REMOVAL:
+    case 0x1B:
     //------------------------------------
         (*type) = MSDD_NO_TRANSFER;
         break;
@@ -1589,23 +1590,28 @@ unsigned char SBC_ProcessCommand(MSDLun               *lun,
 
     //------------------------------------
     case SBC_PREVENT_ALLOW_MEDIUM_REMOVAL:
+    case 0x1B:
     //------------------------------------
         TRACE_INFO_WP("PrevAllowRem ");
 
         // Check parameter
         result = command->mediumRemoval.bPrevent ?
                     MSDD_STATUS_PARAMETER : MSDD_STATUS_SUCCESS;
+        result = MSDD_STATUS_SUCCESS;
         break;
+
   #if 0
     //------------------------------------
     case SBC_READ_FORMAT_CAPACITIES:
     //------------------------------------
         TRACE_INFO_WP("RdFmtCap ");
-        if (!SBCLunIsReady(lun)) {
+        result = MSDD_STATUS_RW;
+        break;
+        /* TODO BSS Added if (!SBCLunIsReady(lun)) {
 
             result = MSDD_STATUS_RW;
             break;
-        }
+        } */
   #endif
     //------
     default:

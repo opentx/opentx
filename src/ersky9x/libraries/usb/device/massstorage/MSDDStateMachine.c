@@ -144,6 +144,8 @@ static unsigned char MSDD_PreProcessCommand(MSDDriver *pMsdDriver)
             }
             else if(deviceType == MSDD_DEVICE_TO_HOST) {
 
+                TRACE_ERROR("cmd=0x%0x h=%d d=%d", cbw->pCommand[0], hostLength, deviceLength);
+
                 if(hostLength > deviceLength) {
 
                     // Case 5  (Hi > Di)
