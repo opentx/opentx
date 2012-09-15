@@ -722,7 +722,7 @@ void read_9_adc(void ) ;
 #define __BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
 #endif
 
-#if defined(PCBSTD) && defined(VOICE) && not defined(SIMU)
+#if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
 #define BACKLIGHT_ON    (Voice.Backlight = 1)
 #define BACKLIGHT_OFF   (Voice.Backlight = 0)
 #else
