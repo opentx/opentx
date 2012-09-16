@@ -3341,10 +3341,34 @@ Media medias[MAX_LUNS];
 /** Device LUNs. */
 MSDLun luns[MAX_LUNS];
 
+char *bytes2Str(char *str, uint32_t bytes)
+{
+  if (bytes < 1024*100)
+    sprintf(str, "%lu.%luK", bytes / 1024, (bytes % 1024) / 103);
+  else if (bytes < 1024*1024)
+    sprintf(str, "%luK", bytes / 1024);
+  else if (bytes < 1024*1024*100)
+    sprintf(str, "%lu.%luM", bytes / (1024*1024), (bytes % (1024*1024)) / 104858);
+  else
+    sprintf(str, "%luM", bytes / (1024*1024));
+  return str;
+}
+
+unsigned int msdReadTotal=0, msdWriteTotal=0;
+
 static void MSDCallbacks_Data( unsigned char flowDirection, unsigned int dataLength,
                                unsigned int fifoNullCount, unsigned int fifoFullCount )
 {
-  TRACE_INFO("MSDCallbacks_Data\n\r");
+  if (flowDirection)
+    msdReadTotal += dataLength;
+  else
+    msdWriteTotal += dataLength;
+
+  char rdStr[10];
+  char wrStr[10];
+
+  sprintf(statusLineMsg, "USB Rd:%s Wr:%s", bytes2Str(rdStr, msdReadTotal), bytes2Str(wrStr, msdWriteTotal));
+  showStatusLine();
 }
 
 unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID);
@@ -3379,8 +3403,8 @@ void usbMassStorage()
   }
 
   /* Mass storage state machine */
-  TRACE_DEBUG("MSDDriver_StateMachine\n\r");
-  MSDDriver_StateMachine();
+  for (uint8_t i=0; i<20; i++)
+    MSDDriver_StateMachine();
 }
 } // extern "C"
 
@@ -3392,9 +3416,11 @@ void menusTask(void * pdata)
     perMain();
     for (uint8_t i=0; i<5; i++) {
       if (PIOC->PIO_PDSR & PIO_PC25) {
-        for (uint8_t i=0; i<10; i++)
-          usbMassStorage();
-        TRACE_DEBUG("Apres usbMassStorage\n\r");
+        usbMassStorage();
+      }
+      else {
+        msdReadTotal = 0;
+        msdWriteTotal = 0;
       }
       CoTickDelay(1);  // 10ms for now
     }

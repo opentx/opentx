@@ -34,6 +34,7 @@
 #ifndef board_ersky9x_h
 #define board_ersky9x_h
 
+#include <stdio.h>
 #include "ersky9x/board.h"
 #include "ersky9x/sound_driver.h"
 #include "ersky9x/haptic_driver.h"

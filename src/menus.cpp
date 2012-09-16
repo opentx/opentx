@@ -667,7 +667,6 @@ uint8_t statusLineHeight = 0;
 
 void showStatusLine()
 {
-  statusLineHeight = 0;
   statusLineTime = get_tmr10ms();
 }
 
