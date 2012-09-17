@@ -833,10 +833,10 @@ void menuProcModel(uint8_t event)
 
 static uint8_t s_currIdx;
 
-#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
+#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ) || defined(TRANSLATIONS_SE) || defined(TRANSLATIONS_DE)
 #define MIXES_2ND_COLUMN    (13*FW)
 #else
-#define MIXES_2ND_COLUMN    (9*FW)
+#define MIXES_2ND_COLUMN    (10*FW)
 #endif
 
 #define EXPO_ONE_2ND_COLUMN (7*FW+2)
@@ -1667,9 +1667,10 @@ void menuProcMixOne(uint8_t event)
         uint8_t not_stick = (md2->srcRaw > NUM_STICKS);
         int8_t carryTrim = -md2->carryTrim;
         lcd_putsLeft(y, STR_TRIM);
-        lcd_putsiAtt(MIXES_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
+        lcd_putsiAtt((not_stick ? MIXES_2ND_COLUMN : MIXES_2ND_COLUMN-5*FW), y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
         if (attr && m_posHorz==0 && (not_stick || s_editMode>0)) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         if (!not_stick) {
+          lcd_puts(MIXES_2ND_COLUMN, y, STR_DREX);
           menu_lcd_onoff(MIXES_2ND_COLUMN+5*FW, y, !md2->noExpo, m_posHorz==1 ? attr : 0);
           if (attr && m_posHorz==1 && s_editMode>0) md2->noExpo = !checkIncDecModel(event, !md2->noExpo, 0, 1);
         }

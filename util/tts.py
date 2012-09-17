@@ -151,7 +151,7 @@ if __name__ == "__main__":
         					   "degree", "degrees",
         					   "percent", "percent",
         					   "milliamp", "milliamps",
-        					   "milliamp per hour", "milliamps per hour",
+        					   "milliamp-hour", "milliamp-hours",
         					   "watt", "watts",
         					   "db", "db",
         					   "foot", "feet",

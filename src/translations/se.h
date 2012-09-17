@@ -264,6 +264,7 @@
 #define TR_DRWEIGHT     "DR-vikt"
 #define TR_DREXPO       "DR-expo"
 #define TR_TRIM         "Trim"
+#define TR_DREX         "DRex"
 #define TR_CURVE        "Kurvor"
 #define TR_FPHASE       "Fl.Fas"
 #define TR_MIXWARNING   "Varning"

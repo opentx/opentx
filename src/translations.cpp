@@ -137,6 +137,7 @@ const pm_char STR_SIDE[] PROGMEM = TR_SIDE;
 const pm_char STR_DIFFERENTIAL[] PROGMEM = TR_DIFFERENTIAL;
 const pm_char STR_OFFSET[] PROGMEM = TR_OFFSET;
 const pm_char STR_TRIM[] PROGMEM = TR_TRIM;
+const pm_char STR_DREX[] PROGMEM = TR_DREX;
 const pm_char STR_CURVE[] PROGMEM = TR_CURVE;
 const pm_char STR_FPHASE[] PROGMEM = TR_FPHASE;
 const pm_char STR_MIXWARNING[] PROGMEM = TR_MIXWARNING;
