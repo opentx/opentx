@@ -72,11 +72,16 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
 void sdInit();
 void sdLoad();
 void usbMassStorage();
-bool sdIsHC();
 #else
 void sdPoll10mS();
 #define sdIsHC() 0
 #define CardIsMounted() (true)
+#endif
+
+#if defined(PCBARM) && !defined(SIMU)
+bool sdIsHC();
+#else
+#define sdIsHC() 0
 #endif
 
 #endif
