@@ -298,7 +298,7 @@ void parseTelemHubByte(uint8_t byte)
         // First received GPS position => Pilot GPS position
         getGpsPilotPosition();
       }
-      else if (frskyData.hub.gpsDistNeeded || g_menuStack[0] == menuProcFrsky) {
+      else if (frskyData.hub.gpsDistNeeded || g_menuStack[g_menuStackPtr] == menuProcFrsky) {
         getGpsDistance();
       }
       break;
