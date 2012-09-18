@@ -891,7 +891,7 @@ void refreshDisplay()
 #else
     x = lookup[*p];
 #endif
-    for (z = 0; z < 128; z += 1) {
+    for (z = 0; z < DISPLAY_W; z += 1) {
 
 // The following 7 lines replaces by a lookup table
 //                      x = __RBIT( *p++ ) ;
@@ -1020,7 +1020,7 @@ void refreshDisplay()
 #endif
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
     PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);
-    for(uint8_t x=128; x>0; --x) {
+    for(uint8_t x=DISPLAY_W; x>0; --x) {
       PORTA_LCD_DAT = *p++;
       PORTC_LCD_CTRL |= (1<<OUT_C_LCD_E);
       PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);

@@ -67,17 +67,13 @@ const char * audioFilenames[] = {
 
 uint32_t sdAvailableAudioFiles = 0;
 
-// TODO enable the assert when it's C++
-extern "C" {
 void retrieveAvailableAudioFiles()
 {
   FILINFO info;
   char filename[32] = SYSTEM_SOUNDS_PATH "/";
 
-#if !defined WIN32 && defined __GNUC__
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableAudioFiles)*8 > AU_FRSKY_FIRST);
-#endif
 
   uint32_t availableAudioFiles = 0;
 
@@ -89,7 +85,6 @@ void retrieveAvailableAudioFiles()
   }
 
   sdAvailableAudioFiles = availableAudioFiles;
-}
 }
 
 inline bool isAudioFileAvailable(uint8_t i, char * filename)
@@ -161,10 +156,21 @@ uint32_t pcmFreq = 8000;
 #ifndef SIMU
 void audioTask(void* pdata)
 {
-#if defined(SDCARD)	
-  sdInit();
-  AUDIO_TADA();
-#endif  
+#if defined(SDCARD)
+  if (CardIsConnected() && sdState==SD_STATE_CONNECTED) {
+    // We lower the priority to allow the splash to be displayed...
+    CoSetPriority(audioTaskId, MENUS_PRIO+1);
+    if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
+      retrieveAvailableAudioFiles();
+      sdState = SD_STATE_MOUNTED;
+    }
+    else {
+      sdState = SD_STATE_ERROR;
+    }
+    CoSetPriority(audioTaskId, AUDIO_PRIO);
+    AUDIO_TADA();
+  }
+#endif
 
   while (1) {
 
@@ -428,7 +434,6 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
 {
   CoEnterMutexSection(audioMutex);
 
-
   if (tFlags & PLAY_SOUND_VARIO) {
     background.freq = tFreq * 2;
     background.duration = tLen;
@@ -472,7 +477,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 #if defined(SIMU)
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
 #else
-  if (Card_initialized && !sd_card_mounted())
+  if (!CardIsMounted())
     return;
 
   CoEnterMutexSection(audioMutex);

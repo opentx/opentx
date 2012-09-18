@@ -76,11 +76,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#if defined(at91sam3s4)
-    #include "at91sam3s4/chip.h"
-    #include "at91sam3s4/AT91SAM3S4.h"
+#ifdef REVA
+// TODO
+#include "AT91SAM3S2.h"
 #else
-    #error Board does not support the specified chip.
+#include "at91sam3s4/chip.h"
+#include "at91sam3s4/AT91SAM3S4.h"
 #endif
 
 //------------------------------------------------------------------------------
@@ -121,7 +122,6 @@
 #define BOARD_MAINOSC           12000000
 
 /// Master clock frequency (when using board_lowlevel.c).
-//#define BOARD_MCK               48000000
 #define BOARD_MCK               64000000
 
 //------------------------------------------------------------------------------
@@ -293,17 +293,10 @@
 /** List of all LEDs definitions. */
 #define PINS_LEDS   PIN_LED_0, PIN_LED_1, PIN_LED_2
 
-#if 0
-// TODO check BSS
-/// MCI pins definition.
-#define PINS_MCI  {0x1f8, PIOA, ID_PIOA, PIO_PERIPH_A, PIO_PULLUP}, \
-                      {1 << 3, PIOA, ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
-
-/// MCI pin Card Detect
-#define PIN_MCI_CD \
-    {AT91C_PIO_PA25, PIOA, ID_PIOA, PIO_INPUT, PIO_PULLUP}
-#endif
-
+/** MCI pins definition. */
+#define PINS_MCI   {0x3fUL << 26, PIOA, ID_PIOA, PIO_PERIPH_C, PIO_PULLUP}
+/** MCI pin Card Detect. */
+#define PIN_MCI_CD {PIO_PB7, PIOB, ID_PIOB, PIO_INPUT, PIO_PULLUP}
 /** Push button #0 definition. Attributes = pull-up + debounce + interrupt on rising edge. */
 #define PIN_PUSHBUTTON_1    {1 << 3, PIOB, ID_PIOB, PIO_INPUT, PIO_PULLUP | PIO_DEBOUNCE}
 /** Push button #1 definition. Attributes = pull-up + debounce + interrupt on falling edge. */
@@ -388,8 +381,6 @@
 #define PIN_USART1_CTS    {0x1 << 25, PIOA, ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
 #define PIN_USART1_RTS    {0x1 << 24, PIOA, ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
 #define PIN_USART1_EN     {0x1 << 23, PIOA, ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
-
-
 
 /// USB VBus monitoring pin definition.
 #ifdef BOARD_REV_A
@@ -527,13 +518,8 @@
 #define MCI2_INTERFACE
 /// Base address of the MCI peripheral connected to the SD card.
 #define BOARD_SD_MCI_BASE           MCI0//MCI
-
-#if 0
-// TODO check BSS
 ///// Peripheral identifier of the MCI connected to the SD card.
-#define BOARD_SD_MCI_ID             ID_MCI0 //ID_MCI
-#endif
-
+#define BOARD_SD_MCI_ID             AT91C_ID_MCI0 ID_MCI0 //ID_MCI
 ///// MCI pins that shall be configured to access the SD card.
 #define BOARD_SD_PINS               PINS_MCI
 ///// MCI slot to which the SD card is connected to.

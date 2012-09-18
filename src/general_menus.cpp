@@ -564,7 +564,7 @@ void menuProcSd(uint8_t event)
     event = 0;
   }
 
-  SIMPLE_MENU(Cmd_A41_resp & OCR_SD_CCS ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
+  SIMPLE_MENU(sdIsHC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
 
   if (s_editMode > 0)
     s_editMode = 0;

@@ -1019,7 +1019,7 @@ static void UDPHS_DmaHandler( unsigned char bEndpoint )
 /// Manages device resume, suspend, end of bus reset. 
 /// Forwards endpoint interrupts to the appropriate handler.
 //------------------------------------------------------------------------------
-void USBD_IrqHandler(void)
+void USBD_IRQHandler(void)
 {
     unsigned int  status;
     unsigned char numIT;

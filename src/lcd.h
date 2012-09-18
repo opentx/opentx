@@ -34,8 +34,14 @@
 #ifndef lcd_h
 #define lcd_h
 
+#if defined(PCBX9D)
+#define DISPLAY_W 192
+#define DISPLAY_H  64
+#else
 #define DISPLAY_W 128
 #define DISPLAY_H  64
+#endif
+
 #define FW          6
 #define FWNUM       5
 #define FH          8

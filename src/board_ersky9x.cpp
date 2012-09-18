@@ -32,7 +32,6 @@
  */
 
 #include "open9x.h"
-#include "ersky9x/board.h"
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
@@ -83,7 +82,7 @@ uint32_t check_soft_power()
     return e_power_on ;
   }
 
-  if ( PIOC->PIO_PDSR & PIO_PC25 )
+  if (usbPlugged())
   {
     return e_power_usb ;            // Detected USB
   }
@@ -800,8 +799,7 @@ void board_init()
 
   init_rotary_encoder();
 
-  init_SDcard();
-
+  sdInit();
 }
 
 #endif
@@ -1231,3 +1229,29 @@ uint16_t getCurrent()
   return (current_scale * Current) / 8192;
 }
 #endif
+
+// CooCox global variables
+OS_TID mixerTaskId;
+OS_STK mixerStack[MIXER_STACK_SIZE];
+
+OS_TID menusTaskId;
+OS_STK menusStack[MENUS_STACK_SIZE];
+
+OS_TID audioTaskId;
+OS_STK audioStack[AUDIO_STACK_SIZE];
+
+#if defined(BLUETOOTH)
+OS_TID btTaskId;
+OS_STK btStack[BT_STACK_SIZE];
+#endif
+
+#if defined(DEBUG)
+OS_TID debugTaskId;
+OS_STK debugStack[DEBUG_STACK_SIZE];
+#endif
+
+OS_TCID audioTimer;
+OS_FlagID audioFlag;
+
+OS_MutexID audioMutex;
+OS_MutexID mixerMutex;

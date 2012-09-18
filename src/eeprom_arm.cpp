@@ -935,7 +935,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   DIR archiveFolder;
   UINT written;
 
-  if (!sd_card_mounted()) {
+  if (!CardIsMounted()) {
     return STR_NO_SDCARD;
   }
 
@@ -1010,7 +1010,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   FIL restoreFile;
   UINT read;
 
-  if (!sd_card_mounted()) {
+  if (!CardIsMounted()) {
     return STR_NO_SDCARD;
   }
 

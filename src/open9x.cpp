@@ -33,40 +33,6 @@
 
 #include "open9x.h"
 
-#if defined(PCBARM)
-#define MIXER_STACK_SIZE    500
-#define MENUS_STACK_SIZE    2000
-#define AUDIO_STACK_SIZE    500
-#define BT_STACK_SIZE       500
-#define DEBUG_STACK_SIZE    500
-
-OS_TID mixerTaskId;
-OS_STK mixerStack[MIXER_STACK_SIZE];
-
-OS_TID menusTaskId;
-OS_STK menusStack[MENUS_STACK_SIZE];
-
-OS_TID audioTaskId;
-OS_STK audioStack[AUDIO_STACK_SIZE];
-
-#if defined(BLUETOOTH)
-OS_TID btTaskId;
-OS_STK btStack[BT_STACK_SIZE];
-#endif
-
-#if defined(DEBUG)
-OS_TID debugTaskId;
-OS_STK debugStack[DEBUG_STACK_SIZE];
-#endif
-
-OS_TCID audioTimer;
-OS_FlagID audioFlag;
-
-OS_MutexID sdMutex;
-OS_MutexID audioMutex;
-OS_MutexID mixerMutex;
-#endif
-
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 #include "s9xsplash.lbm"
@@ -1046,12 +1012,14 @@ void doSplash()
     tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
     while (tgtime != get_tmr10ms())
     {
-#ifdef SIMU
+#if defined(SIMU)
       if (!main_thread_running) return;
       sleep(1/*ms*/);
-#else
-      getADC_filt();
+#elif defined(PCBARM)
+      CoTickDelay(1);
 #endif
+      getADC_filt();
+
       uint16_t tsum = stickMoveValue();
 
       if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
@@ -2633,7 +2601,7 @@ void perMain()
     }
 
 #if defined(SDCARD) && !defined(SIMU)
-    sdPoll10mS();
+    // sdPoll10mS();
 #endif
   }
 #else
@@ -3225,8 +3193,8 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     doSplash();
 
 #if defined(PCBARM) && defined(SDCARD)
-    for (int i=0; i<500 && !Card_initialized; i++) {
-      CoTickDelay(1);  // 2ms
+    for (int i=0; i<500 && sdState==SD_STATE_CONNECTED; i++) {
+      CoTickDelay(1); // 2ms
     }
 #endif
 
@@ -3295,119 +3263,6 @@ void mixerTask(void * pdata)
   }
 }
 
-// TODO move this code elsewhere
-extern "C" {
-/* Include AT91SAM3S-EK definitions and initialization API */
-#include <board/board.h>
-#include <board/board_memories.h>
-#include <pio/pio_it.h>
-
-/* Include USB definitions */
-#include <usb/device/massstorage/MSDDriver.h>
-
-/** Size of one block in bytes. */
-#define BLOCK_SIZE          512
-
-/** Size of the MSD IO buffer in bytes (6K, more the better). */
-#define MSD_BUFFER_SIZE     (12*BLOCK_SIZE)
-
-/** LUN read/write buffer. */
-unsigned char msdBuffer[MSD_BUFFER_SIZE];
-
-static void ConfigureUsbClock(void)
-{
-    /* Enable PLLB for USB */
-    PMC->CKGR_PLLBR = CKGR_PLLBR_DIVB(1)
-                    | CKGR_PLLBR_MULB(7)
-                    | CKGR_PLLBR_PLLBCOUNT_Msk;
-    while((PMC->PMC_SR & PMC_SR_LOCKB) == 0); // TODO  && (timeout++ < CLOCK_TIMEOUT));
-    /* USB Clock uses PLLB */
-    PMC->PMC_USB = PMC_USB_USBDIV(1)    /* /2   */
-                 | PMC_USB_USBS;        /* PLLB */
-}
-
-/** Maximum number of LUNs which can be defined. */
-#define MAX_LUNS            1
-
-/** Media index for different disks */
-#define DRV_SDMMC           0    /** SD card */
-
-Media medias[MAX_LUNS];
-
-/*----------------------------------------------------------------------------
- *        Local variables
- *----------------------------------------------------------------------------*/
-
-/** Device LUNs. */
-MSDLun luns[MAX_LUNS];
-
-char *bytes2Str(char *str, uint32_t bytes)
-{
-  if (bytes < 1024*100)
-    sprintf(str, "%lu.%luK", bytes / 1024, (bytes % 1024) / 103);
-  else if (bytes < 1024*1024)
-    sprintf(str, "%luK", bytes / 1024);
-  else if (bytes < 1024*1024*100)
-    sprintf(str, "%lu.%luM", bytes / (1024*1024), (bytes % (1024*1024)) / 104858);
-  else
-    sprintf(str, "%luM", bytes / (1024*1024));
-  return str;
-}
-
-unsigned int msdReadTotal=0, msdWriteTotal=0;
-
-static void MSDCallbacks_Data( unsigned char flowDirection, unsigned int dataLength,
-                               unsigned int fifoNullCount, unsigned int fifoFullCount )
-{
-  if (flowDirection)
-    msdReadTotal += dataLength;
-  else
-    msdWriteTotal += dataLength;
-
-  char rdStr[10];
-  char wrStr[10];
-
-  sprintf(statusLineMsg, "USB Rd:%s Wr:%s", bytes2Str(rdStr, msdReadTotal), bytes2Str(wrStr, msdWriteTotal));
-  showStatusLine();
-}
-
-unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID);
-
-void usbMassStorage()
-{
-  static bool initialized = false;
-
-  TRACE_DEBUG("usbMassStorage\n\r");
-
-  if (!initialized) {
-
-    ConfigureUsbClock();
-
-    /* Initialize LUN */
-    MEDSdcard_Initialize(&(medias[DRV_SDMMC]), 0);
-
-    LUN_Init(&(luns[DRV_SDMMC]), &(medias[DRV_SDMMC]),
-          msdBuffer, MSD_BUFFER_SIZE,
-          0, 0, 0, 0,
-          MSDCallbacks_Data);
-
-    /* BOT driver initialization */
-    MSDDriver_Initialize(luns, 1);
-
-    // VBus_Configure();
-    USBD_Connect();
-
-    initialized = true;
-
-    TRACE_DEBUG("usbMassStorage initialized\n\r");
-  }
-
-  /* Mass storage state machine */
-  for (uint8_t i=0; i<20; i++)
-    MSDDriver_StateMachine();
-}
-} // extern "C"
-
 void menusTask(void * pdata)
 {
   open9xInit();
@@ -3415,13 +3270,7 @@ void menusTask(void * pdata)
   while (check_soft_power() != e_power_off) {
     perMain();
     for (uint8_t i=0; i<5; i++) {
-      if (PIOC->PIO_PDSR & PIO_PC25) {
-        usbMassStorage();
-      }
-      else {
-        msdReadTotal = 0;
-        msdWriteTotal = 0;
-      }
+      usbMassStorage();
       CoTickDelay(1);  // 10ms for now
     }
   }
@@ -3565,21 +3414,20 @@ int main(void)
   CoInitOS();
 
 #if defined(DEBUG)
-  debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
+  debugTaskId = CoCreateTaskEx(debugTask, NULL, DEBUG_PRIO, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
 #endif
 
 #if defined(BLUETOOTH)
-  btTaskId = CoCreateTask(btTask, NULL, 15, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
+  btTaskId = CoCreateTask(btTask, NULL, BT_PRIO, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
 #endif
 
-  mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
-  menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
+  mixerTaskId = CoCreateTask(mixerTask, NULL, MIXER_PRIO, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
+  menusTaskId = CoCreateTask(menusTask, NULL, MENUS_PRIO, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
 
   audioFlag = CoCreateFlag(true, false);          // Auto-reset, start FALSE
   audioTimer = CoCreateTmr(TMR_TYPE_ONE_SHOT, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), audioTimerHandle);
-  audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
+  audioTaskId = CoCreateTask(audioTask, NULL, AUDIO_PRIO, &audioStack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
 
-  sdMutex = CoCreateMutex();
   audioMutex = CoCreateMutex();
   mixerMutex = CoCreateMutex();
 

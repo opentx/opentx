@@ -54,14 +54,6 @@
 #include "board_ersky9x.h"
 #endif
 
-#if defined(PCBARM) && defined(REVB)
-extern uint16_t Current_analogue;
-extern uint16_t Current_max;
-extern uint32_t Current_accumulator;
-extern uint32_t Current_used;
-extern uint16_t sessionTimer;
-#endif
-
 #if defined(SIMU)
 #include "simpgmspace.h"
 #elif defined(PCBARM)
@@ -767,13 +759,6 @@ uint16_t isqrt32(uint32_t n);
 #endif
 
 #if defined(PCBARM)
-#if !defined(SIMU)
-extern "C" {
-#include <CoOS.h>
-}
-#endif
-
-extern OS_MutexID mixerMutex;
 inline void pauseMixerCalculations()
 {
   CoEnterMutexSection(mixerMutex);

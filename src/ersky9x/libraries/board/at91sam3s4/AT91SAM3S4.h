@@ -207,8 +207,8 @@ typedef struct {
 typedef struct {
   WoReg ADC_CR;        /**< \brief (Adc Offset: 0x00) Control Register */
   RwReg ADC_MR;        /**< \brief (Adc Offset: 0x04) Mode Register */
-  RwReg ADC_SEQ1R;     /**< \brief (Adc Offset: 0x08) Channel Sequence 1Register */
-  RwReg ADC_SEQ2R;     /**< \brief (Adc Offset: 0x0C) Channel Sequence 2 Register */
+  RwReg ADC_SEQR1;     /**< \brief (Adc Offset: 0x08) Channel Sequence 1Register */
+  RwReg ADC_SEQR2;     /**< \brief (Adc Offset: 0x0C) Channel Sequence 2 Register */
   WoReg ADC_CHER;      /**< \brief (Adc Offset: 0x10) Channel Enable Register */
   WoReg ADC_CHDR;      /**< \brief (Adc Offset: 0x14) Channel Disable Register */
   RoReg ADC_CHSR;      /**< \brief (Adc Offset: 0x18) Channel Status Register */
@@ -918,40 +918,121 @@ typedef struct {
 #define HSMCI_CR_PWSDIS (0x1 << 3) /**< \brief (HSMCI_CR) Power Save Mode Disable */
 #define HSMCI_CR_SWRST (0x1 << 7) /**< \brief (HSMCI_CR) Software Reset */
 /* -------- HSMCI_MR : (HSMCI Offset: 0x04) Mode Register -------- */
-#define HSMCI_MR_CLKDIV (0xff << 0) /**< \brief (HSMCI_MR) Clock Divider */
-#define HSMCI_MR_PWSDIV (0x7 << 8) /**< \brief (HSMCI_MR) Power Saving Divider */
-#define HSMCI_MR_RDPROOF (0x1 << 11) /**< \brief (HSMCI_MR)  */
-#define HSMCI_MR_WRPROOF (0x1 << 12) /**< \brief (HSMCI_MR)  */
-#define HSMCI_MR_FBYTE (0x1 << 13) /**< \brief (HSMCI_MR) Force Byte Transfer */
-#define HSMCI_MR_PADV (0x1 << 14) /**< \brief (HSMCI_MR) Padding Value */
-#define HSMCI_MR_PDCMODE (0x1 << 15) /**< \brief (HSMCI_MR) PDC-oriented Mode */
-#define HSMCI_MR_BLKLEN (0xffff << 16) /**< \brief (HSMCI_MR) Data Block Length */
+#define HSMCI_MR_CLKDIV_Pos 0
+#define HSMCI_MR_CLKDIV_Msk (0xffu << HSMCI_MR_CLKDIV_Pos) /**< \brief (HSMCI_MR) Clock Divider */
+#define HSMCI_MR_CLKDIV(value) ((HSMCI_MR_CLKDIV_Msk & ((value) << HSMCI_MR_CLKDIV_Pos)))
+#define HSMCI_MR_PWSDIV_Pos 8
+#define HSMCI_MR_PWSDIV_Msk (0x7u << HSMCI_MR_PWSDIV_Pos) /**< \brief (HSMCI_MR) Power Saving Divider */
+#define HSMCI_MR_PWSDIV(value) ((HSMCI_MR_PWSDIV_Msk & ((value) << HSMCI_MR_PWSDIV_Pos)))
+#define HSMCI_MR_RDPROOF (0x1u << 11) /**< \brief (HSMCI_MR)  */
+#define HSMCI_MR_WRPROOF (0x1u << 12) /**< \brief (HSMCI_MR)  */
+#define HSMCI_MR_FBYTE (0x1u << 13) /**< \brief (HSMCI_MR) Force Byte Transfer */
+#define HSMCI_MR_PADV (0x1u << 14) /**< \brief (HSMCI_MR) Padding Value */
+#define HSMCI_MR_PDCMODE (0x1u << 15) /**< \brief (HSMCI_MR) PDC-oriented Mode */
+#define HSMCI_MR_BLKLEN_Pos 16
+#define HSMCI_MR_BLKLEN_Msk (0xffffu << HSMCI_MR_BLKLEN_Pos) /**< \brief (HSMCI_MR) Data Block Length */
+#define HSMCI_MR_BLKLEN(value) ((HSMCI_MR_BLKLEN_Msk & ((value) << HSMCI_MR_BLKLEN_Pos)))
 /* -------- HSMCI_DTOR : (HSMCI Offset: 0x08) Data Timeout Register -------- */
-#define HSMCI_DTOR_DTOCYC (0xf << 0) /**< \brief (HSMCI_DTOR) Data Timeout Cycle Number */
-#define HSMCI_DTOR_DTOMUL (0x7 << 4) /**< \brief (HSMCI_DTOR) Data Timeout Multiplier */
+#define HSMCI_DTOR_DTOCYC_Pos 0
+#define HSMCI_DTOR_DTOCYC_Msk (0xfu << HSMCI_DTOR_DTOCYC_Pos) /**< \brief (HSMCI_DTOR) Data Timeout Cycle Number */
+#define HSMCI_DTOR_DTOCYC(value) ((HSMCI_DTOR_DTOCYC_Msk & ((value) << HSMCI_DTOR_DTOCYC_Pos)))
+#define HSMCI_DTOR_DTOMUL_Pos 4
+#define HSMCI_DTOR_DTOMUL_Msk (0x7u << HSMCI_DTOR_DTOMUL_Pos) /**< \brief (HSMCI_DTOR) Data Timeout Multiplier */
+#define HSMCI_DTOR_DTOMUL_1 (0x0u << 4) /**< \brief (HSMCI_DTOR) DTOCYC */
+#define HSMCI_DTOR_DTOMUL_16 (0x1u << 4) /**< \brief (HSMCI_DTOR) DTOCYC x 16 */
+#define HSMCI_DTOR_DTOMUL_128 (0x2u << 4) /**< \brief (HSMCI_DTOR) DTOCYC x 128 */
+#define HSMCI_DTOR_DTOMUL_256 (0x3u << 4) /**< \brief (HSMCI_DTOR) DTOCYC x 256 */
+#define HSMCI_DTOR_DTOMUL_1024 (0x4u << 4) /**< \brief (HSMCI_DTOR) DTOCYC x 1024 */
+#define HSMCI_DTOR_DTOMUL_4096 (0x5u << 4) /**< \brief (HSMCI_DTOR) DTOCYC x 4096 */
+#define HSMCI_DTOR_DTOMUL_65536 (0x6u << 4) /**< \brief (HSMCI_DTOR) DTOCYC x 65536 */
+#define HSMCI_DTOR_DTOMUL_1048576 (0x7u << 4) /**< \brief (HSMCI_DTOR) DTOCYC x 1048576 */
 /* -------- HSMCI_SDCR : (HSMCI Offset: 0x0C) SD/SDIO Card Register -------- */
-#define HSMCI_SDCR_SDCSEL (0x3 << 0) /**< \brief (HSMCI_SDCR) SDCard/SDIO Slot */
-#define HSMCI_SDCR_SDCBUS (0x3 << 6) /**< \brief (HSMCI_SDCR) SDCard/SDIO Bus Width */
+#define HSMCI_SDCR_SDCSEL_Pos 0
+#define HSMCI_SDCR_SDCSEL_Msk (0x3u << HSMCI_SDCR_SDCSEL_Pos) /**< \brief (HSMCI_SDCR) SDCard/SDIO Slot */
+#define HSMCI_SDCR_SDCSEL_SLOTA (0x0u << 0) /**< \brief (HSMCI_SDCR) Slot A is selected. */
+#define HSMCI_SDCR_SDCSEL_SLOTB (0x1u << 0) /**< \brief (HSMCI_SDCR) - */
+#define HSMCI_SDCR_SDCSEL_SLOTC (0x2u << 0) /**< \brief (HSMCI_SDCR) - */
+#define HSMCI_SDCR_SDCSEL_SLOTD (0x3u << 0) /**< \brief (HSMCI_SDCR) - */
+#define HSMCI_SDCR_SDCBUS_Pos 6
+#define HSMCI_SDCR_SDCBUS_Msk (0x3u << HSMCI_SDCR_SDCBUS_Pos) /**< \brief (HSMCI_SDCR) SDCard/SDIO Bus Width */
+#define HSMCI_SDCR_SDCBUS_1 (0x0u << 6) /**< \brief (HSMCI_SDCR) 1 bit */
+#define HSMCI_SDCR_SDCBUS_4 (0x2u << 6) /**< \brief (HSMCI_SDCR) 4 bit */
+#define HSMCI_SDCR_SDCBUS_8 (0x3u << 6) /**< \brief (HSMCI_SDCR) 8 bit */
 /* -------- HSMCI_ARGR : (HSMCI Offset: 0x10) Argument Register -------- */
 #define HSMCI_ARGR_ARG (0xffffffff << 0) /**< \brief (HSMCI_ARGR) Command Argument */
 /* -------- HSMCI_CMDR : (HSMCI Offset: 0x14) Command Register -------- */
-#define HSMCI_CMDR_CMDNB (0x3f << 0) /**< \brief (HSMCI_CMDR) Command Number */
-#define HSMCI_CMDR_RSPTYP (0x3 << 6) /**< \brief (HSMCI_CMDR) Response Type */
-#define HSMCI_CMDR_SPCMD (0x7 << 8) /**< \brief (HSMCI_CMDR) Special Command */
-#define HSMCI_CMDR_OPDCMD (0x1 << 11) /**< \brief (HSMCI_CMDR) Open Drain Command */
-#define HSMCI_CMDR_MAXLAT (0x1 << 12) /**< \brief (HSMCI_CMDR) Max Latency for Command to Response */
-#define HSMCI_CMDR_TRCMD (0x3 << 16) /**< \brief (HSMCI_CMDR) Transfer Command */
-#define HSMCI_CMDR_TRDIR (0x1 << 18) /**< \brief (HSMCI_CMDR) Transfer Direction */
-#define HSMCI_CMDR_TRTYP (0x7 << 19) /**< \brief (HSMCI_CMDR) Transfer Type */
-#define HSMCI_CMDR_IOSPCMD (0x3 << 24) /**< \brief (HSMCI_CMDR) SDIO Special Command */
-#define HSMCI_CMDR_ATACS (0x1 << 26) /**< \brief (HSMCI_CMDR) ATA with Command Completion Signal */
-#define HSMCI_CMDR_BOOT_ACK (0x1 << 27) /**< \brief (HSMCI_CMDR) Boot Operation Acknowledge. */
+#define HSMCI_CMDR_CMDNB_Pos 0
+#define HSMCI_CMDR_CMDNB_Msk (0x3fu << HSMCI_CMDR_CMDNB_Pos) /**< \brief (HSMCI_CMDR) Command Number */
+#define HSMCI_CMDR_CMDNB(value) ((HSMCI_CMDR_CMDNB_Msk & ((value) << HSMCI_CMDR_CMDNB_Pos)))
+#define HSMCI_CMDR_RSPTYP_Pos 6
+#define HSMCI_CMDR_RSPTYP_Msk (0x3u << HSMCI_CMDR_RSPTYP_Pos) /**< \brief (HSMCI_CMDR) Response Type */
+#define HSMCI_CMDR_RSPTYP_NORESP (0x0u << 6) /**< \brief (HSMCI_CMDR) No response. */
+#define HSMCI_CMDR_RSPTYP_48_BIT (0x1u << 6) /**< \brief (HSMCI_CMDR) 48-bit response. */
+#define HSMCI_CMDR_RSPTYP_136_BIT (0x2u << 6) /**< \brief (HSMCI_CMDR) 136-bit response. */
+#define HSMCI_CMDR_RSPTYP_R1B (0x3u << 6) /**< \brief (HSMCI_CMDR) R1b response type */
+#define HSMCI_CMDR_SPCMD_Pos 8
+#define HSMCI_CMDR_SPCMD_Msk (0x7u << HSMCI_CMDR_SPCMD_Pos) /**< \brief (HSMCI_CMDR) Special Command */
+#define HSMCI_CMDR_SPCMD_STD (0x0u << 8) /**< \brief (HSMCI_CMDR) Not a special CMD. */
+#define HSMCI_CMDR_SPCMD_INIT (0x1u << 8) /**< \brief (HSMCI_CMDR) Initialization CMD:74 clock cycles for initialization sequence. */
+#define HSMCI_CMDR_SPCMD_SYNC (0x2u << 8) /**< \brief (HSMCI_CMDR) Synchronized CMD:Wait for the end of the current data block transfer before sending the pending command. */
+#define HSMCI_CMDR_SPCMD_CE_ATA (0x3u << 8) /**< \brief (HSMCI_CMDR) CE-ATA Completion Signal disable Command.The host cancels the ability for the device to return a command completion signal on the command line. */
+#define HSMCI_CMDR_SPCMD_IT_CMD (0x4u << 8) /**< \brief (HSMCI_CMDR) Interrupt command:Corresponds to the Interrupt Mode (CMD40). */
+#define HSMCI_CMDR_SPCMD_IT_RESP (0x5u << 8) /**< \brief (HSMCI_CMDR) Interrupt response:Corresponds to the Interrupt Mode (CMD40). */
+#define HSMCI_CMDR_SPCMD_BOR (0x6u << 8) /**< \brief (HSMCI_CMDR) Boot Operation Request.Start a boot operation mode, the host processor can read boot data from the MMC device directly. */
+#define HSMCI_CMDR_SPCMD_EBO (0x7u << 8) /**< \brief (HSMCI_CMDR) End Boot Operation.This command allows the host processor to terminate the boot operation mode. */
+#define HSMCI_CMDR_OPDCMD (0x1u << 11) /**< \brief (HSMCI_CMDR) Open Drain Command */
+#define HSMCI_CMDR_OPDCMD_PUSHPULL (0x0u << 11) /**< \brief (HSMCI_CMDR) Push pull command. */
+#define HSMCI_CMDR_OPDCMD_OPENDRAIN (0x1u << 11) /**< \brief (HSMCI_CMDR) Open drain command. */
+#define HSMCI_CMDR_MAXLAT (0x1u << 12) /**< \brief (HSMCI_CMDR) Max Latency for Command to Response */
+#define HSMCI_CMDR_MAXLAT_5 (0x0u << 12) /**< \brief (HSMCI_CMDR) 5-cycle max latency. */
+#define HSMCI_CMDR_MAXLAT_64 (0x1u << 12) /**< \brief (HSMCI_CMDR) 64-cycle max latency. */
+#define HSMCI_CMDR_TRCMD_Pos 16
+#define HSMCI_CMDR_TRCMD_Msk (0x3u << HSMCI_CMDR_TRCMD_Pos) /**< \brief (HSMCI_CMDR) Transfer Command */
+#define HSMCI_CMDR_TRCMD_NO_DATA (0x0u << 16) /**< \brief (HSMCI_CMDR) No data transfer */
+#define HSMCI_CMDR_TRCMD_START_DATA (0x1u << 16) /**< \brief (HSMCI_CMDR) Start data transfer */
+#define HSMCI_CMDR_TRCMD_STOP_DATA (0x2u << 16) /**< \brief (HSMCI_CMDR) Stop data transfer */
+#define HSMCI_CMDR_TRDIR (0x1u << 18) /**< \brief (HSMCI_CMDR) Transfer Direction */
+#define HSMCI_CMDR_TRDIR_WRITE (0x0u << 18) /**< \brief (HSMCI_CMDR) Write. */
+#define HSMCI_CMDR_TRDIR_READ (0x1u << 18) /**< \brief (HSMCI_CMDR) Read. */
+#define HSMCI_CMDR_TRTYP_Pos 19
+#define HSMCI_CMDR_TRTYP_Msk (0x7u << HSMCI_CMDR_TRTYP_Pos) /**< \brief (HSMCI_CMDR) Transfer Type */
+#define HSMCI_CMDR_TRTYP_SINGLE (0x0u << 19) /**< \brief (HSMCI_CMDR) MMC/SDCard Single Block */
+#define HSMCI_CMDR_TRTYP_MULTIPLE (0x1u << 19) /**< \brief (HSMCI_CMDR) MMC/SDCard Multiple Block */
+#define HSMCI_CMDR_TRTYP_STREAM (0x2u << 19) /**< \brief (HSMCI_CMDR) MMC Stream */
+#define HSMCI_CMDR_TRTYP_BYTE (0x4u << 19) /**< \brief (HSMCI_CMDR) SDIO Byte */
+#define HSMCI_CMDR_TRTYP_BLOCK (0x5u << 19) /**< \brief (HSMCI_CMDR) SDIO Block */
+#define HSMCI_CMDR_IOSPCMD_Pos 24
+#define HSMCI_CMDR_IOSPCMD_Msk (0x3u << HSMCI_CMDR_IOSPCMD_Pos) /**< \brief (HSMCI_CMDR) SDIO Special Command */
+#define HSMCI_CMDR_IOSPCMD_STD (0x0u << 24) /**< \brief (HSMCI_CMDR) Not an SDIO Special Command */
+#define HSMCI_CMDR_IOSPCMD_SUSPEND (0x1u << 24) /**< \brief (HSMCI_CMDR) SDIO Suspend Command */
+#define HSMCI_CMDR_IOSPCMD_RESUME (0x2u << 24) /**< \brief (HSMCI_CMDR) SDIO Resume Command */
+#define HSMCI_CMDR_ATACS (0x1u << 26) /**< \brief (HSMCI_CMDR) ATA with Command Completion Signal */
+#define HSMCI_CMDR_ATACS_NORMAL (0x0u << 26) /**< \brief (HSMCI_CMDR) Normal operation mode. */
+#define HSMCI_CMDR_ATACS_COMPLETION (0x1u << 26) /**< \brief (HSMCI_CMDR) This bit indicates that a completion signal is expected within a programmed amount of time (HSMCI_CSTOR). */
+#define HSMCI_CMDR_BOOT_ACK (0x1u << 27) /**< \brief (HSMCI_CMDR) Boot Operation Acknowledge. */
 /* -------- HSMCI_BLKR : (HSMCI Offset: 0x18) Block Register -------- */
-#define HSMCI_BLKR_BCNT (0xffff << 0) /**< \brief (HSMCI_BLKR) MMC/SDIO Block Count - SDIO Byte Count */
-#define HSMCI_BLKR_BLKLEN (0xffff << 16) /**< \brief (HSMCI_BLKR) Data Block Length */
+#define HSMCI_BLKR_BCNT_Pos 0
+#define HSMCI_BLKR_BCNT_Msk (0xffffu << HSMCI_BLKR_BCNT_Pos) /**< \brief (HSMCI_BLKR) MMC/SDIO Block Count - SDIO Byte Count */
+#define HSMCI_BLKR_BCNT_MULTIPLE (0x0u << 0) /**< \brief (HSMCI_BLKR) MMC/SDCARD Multiple BlockFrom 1 to 65635: Value 0 corresponds to an infinite block transfer. */
+#define HSMCI_BLKR_BCNT_BYTE (0x4u << 0) /**< \brief (HSMCI_BLKR) SDIO ByteFrom 1 to 512 bytes: Value 0 corresponds to a 512-byte transfer.Values from 0x200 to 0xFFFF are forbidden. */
+#define HSMCI_BLKR_BCNT_BLOCK (0x5u << 0) /**< \brief (HSMCI_BLKR) SDIO BlockFrom 1 to 511 blocks: Value 0 corresponds to an infinite block transfer.Values from 0x200 to 0xFFFF are forbidden. */
+#define HSMCI_BLKR_BLKLEN_Pos 16
+#define HSMCI_BLKR_BLKLEN_Msk (0xffffu << HSMCI_BLKR_BLKLEN_Pos) /**< \brief (HSMCI_BLKR) Data Block Length */
+#define HSMCI_BLKR_BLKLEN(value) ((HSMCI_BLKR_BLKLEN_Msk & ((value) << HSMCI_BLKR_BLKLEN_Pos)))
 /* -------- HSMCI_CSTOR : (HSMCI Offset: 0x1C) Completion Signal Timeout Register -------- */
-#define HSMCI_CSTOR_CSTOCYC (0xf << 0) /**< \brief (HSMCI_CSTOR) Completion Signal Timeout Cycle Number */
-#define HSMCI_CSTOR_CSTOMUL (0x7 << 4) /**< \brief (HSMCI_CSTOR) Completion Signal Timeout Multiplier */
+#define HSMCI_CSTOR_CSTOCYC_Pos 0
+#define HSMCI_CSTOR_CSTOCYC_Msk (0xfu << HSMCI_CSTOR_CSTOCYC_Pos) /**< \brief (HSMCI_CSTOR) Completion Signal Timeout Cycle Number */
+#define HSMCI_CSTOR_CSTOCYC(value) ((HSMCI_CSTOR_CSTOCYC_Msk & ((value) << HSMCI_CSTOR_CSTOCYC_Pos)))
+#define HSMCI_CSTOR_CSTOMUL_Pos 4
+#define HSMCI_CSTOR_CSTOMUL_Msk (0x7u << HSMCI_CSTOR_CSTOMUL_Pos) /**< \brief (HSMCI_CSTOR) Completion Signal Timeout Multiplier */
+#define HSMCI_CSTOR_CSTOMUL_1 (0x0u << 4) /**< \brief (HSMCI_CSTOR) CSTOCYC x 1 */
+#define HSMCI_CSTOR_CSTOMUL_16 (0x1u << 4) /**< \brief (HSMCI_CSTOR) CSTOCYC x 16 */
+#define HSMCI_CSTOR_CSTOMUL_128 (0x2u << 4) /**< \brief (HSMCI_CSTOR) CSTOCYC x 128 */
+#define HSMCI_CSTOR_CSTOMUL_256 (0x3u << 4) /**< \brief (HSMCI_CSTOR) CSTOCYC x 256 */
+#define HSMCI_CSTOR_CSTOMUL_1024 (0x4u << 4) /**< \brief (HSMCI_CSTOR) CSTOCYC x 1024 */
+#define HSMCI_CSTOR_CSTOMUL_4096 (0x5u << 4) /**< \brief (HSMCI_CSTOR) CSTOCYC x 4096 */
+#define HSMCI_CSTOR_CSTOMUL_65536 (0x6u << 4) /**< \brief (HSMCI_CSTOR) CSTOCYC x 65536 */
+#define HSMCI_CSTOR_CSTOMUL_1048576 (0x7u << 4) /**< \brief (HSMCI_CSTOR) CSTOCYC x 1048576 */
 /* -------- HSMCI_RSPR[4] : (HSMCI Offset: 0x20) Response Register -------- */
 #define HSMCI_RSPR_RSP (0xffffffff << 0) /**< \brief (HSMCI_RSPR[4]) Response */
 /* -------- HSMCI_RDR : (HSMCI Offset: 0x30) Receive Data Register -------- */
@@ -1322,6 +1403,7 @@ typedef struct {
   RoReg PIO_PCIMR;      /**< \brief (Pio Offset: 0x15C) Parallel Capture Interrupt Mask Register */
   RoReg PIO_PCISR;      /**< \brief (Pio Offset: 0x160) Parallel Capture Interrupt Status Register */
   RoReg PIO_PCRHR;      /**< \brief (Pio Offset: 0x164) Parallel Capture Reception Holding Register */
+  RwReg Reserved14[38];
 } Pio;
 #endif /* __ASSEMBLY__ */
 /* -------- PIO_PER : (PIO Offset: 0x0000) PIO Enable Register -------- */
@@ -3000,9 +3082,15 @@ typedef struct {
 #define CKGR_PLLAR_MULA (0x7ff << 16) /**< \brief (CKGR_PLLAR) PLLA Multiplier */
 #define CKGR_PLLAR_STUCKTO1 (0x1 << 29) /**< \brief (CKGR_PLLAR)  */
 /* -------- CKGR_PLLBR : (PMC Offset: 0x002C) PLLB Register -------- */
-#define CKGR_PLLBR_DIVB (0xff << 0) /**< \brief (CKGR_PLLBR) Divider */
-#define CKGR_PLLBR_PLLBCOUNT (0x3f << 8) /**< \brief (CKGR_PLLBR) PLLB Counter */
-#define CKGR_PLLBR_MULB (0x7ff << 16) /**< \brief (CKGR_PLLBR) PLLB Multiplier */
+#define CKGR_PLLBR_DIVB_Pos 0
+#define CKGR_PLLBR_DIVB_Msk (0xffu << CKGR_PLLBR_DIVB_Pos) /**< \brief (CKGR_PLLBR) Divider */
+#define CKGR_PLLBR_DIVB(value) ((CKGR_PLLBR_DIVB_Msk & ((value) << CKGR_PLLBR_DIVB_Pos)))
+#define CKGR_PLLBR_PLLBCOUNT_Pos 8
+#define CKGR_PLLBR_PLLBCOUNT_Msk (0x3fu << CKGR_PLLBR_PLLBCOUNT_Pos) /**< \brief (CKGR_PLLBR) PLLB Counter */
+#define CKGR_PLLBR_PLLBCOUNT(value) ((CKGR_PLLBR_PLLBCOUNT_Msk & ((value) << CKGR_PLLBR_PLLBCOUNT_Pos)))
+#define CKGR_PLLBR_MULB_Pos 16
+#define CKGR_PLLBR_MULB_Msk (0x7ffu << CKGR_PLLBR_MULB_Pos) /**< \brief (CKGR_PLLBR) PLLB Multiplier */
+#define CKGR_PLLBR_MULB(value) ((CKGR_PLLBR_MULB_Msk & ((value) << CKGR_PLLBR_MULB_Pos)))
 /* -------- PMC_MCKR : (PMC Offset: 0x0030) Master Clock Register -------- */
 #define PMC_MCKR_CSS (0x3 << 0) /**< \brief (PMC_MCKR) Master Clock Source Selection */
 #define   PMC_MCKR_CSS_SLOW_CLK (0x0 << 0) /**< \brief (PMC_MCKR) Slow Clock is selected */
@@ -3020,8 +3108,10 @@ typedef struct {
 #define PMC_MCKR_PLLADIV2 (0x1 << 12) /**< \brief (PMC_MCKR) PLLA Divisor by 2 */
 #define PMC_MCKR_PLLBDIV2 (0x1 << 13) /**< \brief (PMC_MCKR) PLLB Divisor by 2 */
 /* -------- PMC_USB : (PMC Offset: 0x0038) USB Clock Register -------- */
-#define PMC_USB_USBS (0x1 << 0) /**< \brief (PMC_USB) USB Input Clock Selection */
-#define PMC_USB_USBDIV (0xf << 8) /**< \brief (PMC_USB) Divider for USB Clock. */
+#define PMC_USB_USBS (0x1u << 0) /**< \brief (PMC_USB) USB Input Clock Selection */
+#define PMC_USB_USBDIV_Pos 8
+#define PMC_USB_USBDIV_Msk (0xfu << PMC_USB_USBDIV_Pos) /**< \brief (PMC_USB) Divider for USB Clock. */
+#define PMC_USB_USBDIV(value) ((PMC_USB_USBDIV_Msk & ((value) << PMC_USB_USBDIV_Pos)))
 /* -------- PMC_PCK[3] : (PMC Offset: 0x0040) Programmable Clock 0 Register -------- */
 #define PMC_PCK_CSS (0x7 << 0) /**< \brief (PMC_PCK[3]) Master Clock Source Selection */
 #define PMC_PCK_PRES (0x7 << 4) /**< \brief (PMC_PCK[3]) Programmable Clock Prescaler */
@@ -3239,8 +3329,8 @@ typedef struct {
   RwReg      PWM_CMR;       /**< \brief (PwmCh_num Offset: 0x0) PWM Channel Mode Register */
   RwReg      PWM_CDTY;      /**< \brief (PwmCh_num Offset: 0x4) PWM Channel Duty Cycle Register */
   RwReg      PWM_CDTYUPD;   /**< \brief (PwmCh_num Offset: 0x8) PWM Channel Duty Cycle Update Register */
-  RwReg      PWM_CPRD;      /**< \brief (PwmCh_num Offset: 0xC) PWM Channel Period Register */
-  RwReg      PWM_CPRDUPD;   /**< \brief (PwmCh_num Offset: 0x10) PWM Channel Period Update Register */
+  RwReg      PWM_CPDR;      /**< \brief (PwmCh_num Offset: 0xC) PWM Channel Period Register */
+  RwReg      PWM_CPDRUPD;   /**< \brief (PwmCh_num Offset: 0x10) PWM Channel Period Update Register */
   RwReg      PWM_CCNT;      /**< \brief (PwmCh_num Offset: 0x14) PWM Channel Counter Register */
   RwReg      PWM_DT;        /**< \brief (PwmCh_num Offset: 0x18) PWM Channel Dead Time Register */
   RwReg      PWM_DTUPD;     /**< \brief (PwmCh_num Offset: 0x1C) PWM Channel Dead Time Update Register */
@@ -4233,7 +4323,7 @@ typedef struct {
   RwReg SPI_TNCR;      /**< \brief (Spi Offset: 0x11C) Transmit Next Counter Register */
   WoReg SPI_PTCR;      /**< \brief (Spi Offset: 0x120) Transfer Control Register */
   RoReg SPI_PTSR;      /**< \brief (Spi Offset: 0x124) Transfer Status Register */
-} Spi;
+} Spi, AT91S_SPI, *AT91PS_SPI;
 #endif /* __ASSEMBLY__ */
 /* -------- SPI_CR : (SPI Offset: 0x00) Control Register -------- */
 #define SPI_CR_SPIEN (0x1 << 0) /**< \brief (SPI_CR) SPI Enable */
@@ -4845,6 +4935,11 @@ typedef struct {
 } Tc;
 #endif /* __ASSEMBLY__ */
 /* -------- TC_CCR0 : (TC Offset: 0x0) Channel Control Register (channel = 0) -------- */
+
+#define TC_CCR_CLKEN TC_CCR0_CLKEN /**< \brief (TC_CCR) Counter Clock Enable Command */
+#define TC_CCR_CLKDIS TC_CCR0_CLKDIS /**< \brief (TC_CCR) Counter Clock Disable Command */
+#define TC_CCR_SWTRG TC_CCR0_SWTRG /**< \brief (TC_CCR) Software Trigger Command */
+
 #define TC_CCR0_CLKEN (0x1 << 0) /**< \brief (TC_CCR0) Counter Clock Enable Command */
 #define TC_CCR0_CLKDIS (0x1 << 1) /**< \brief (TC_CCR0) Counter Clock Disable Command */
 #define TC_CCR0_SWTRG (0x1 << 2) /**< \brief (TC_CCR0) Software Trigger Command */
@@ -4872,6 +4967,8 @@ typedef struct {
 #define   TC_CMR0_ETRGEDG_FALLING (0x2 << 8) /**< \brief (TC_CMR0) falling edge */
 #define   TC_CMR0_ETRGEDG_BOTH (0x3 << 8) /**< \brief (TC_CMR0) each edge */
 #define TC_CMR0_ABETRG (0x1 << 10) /**< \brief (TC_CMR0) TIOA or TIOB External Trigger Selection */
+
+#define TC_CMR_CPCTRG TC_CMR0_CPCTRG
 #define TC_CMR0_CPCTRG (0x1 << 14) /**< \brief (TC_CMR0) RC Compare Trigger Enable */
 #define TC_CMR0_WAVE (0x1 << 15) /**< \brief (TC_CMR0)  */
 #define TC_CMR0_LDRA (0x3 << 16) /**< \brief (TC_CMR0) RA Loading Selection */
@@ -4919,6 +5016,8 @@ typedef struct {
 #define TC_IER0_LOVRS (0x1 << 1) /**< \brief (TC_IER0) Load Overrun */
 #define TC_IER0_CPAS (0x1 << 2) /**< \brief (TC_IER0) RA Compare */
 #define TC_IER0_CPBS (0x1 << 3) /**< \brief (TC_IER0) RB Compare */
+
+#define TC_IER_CPCS TC_IER0_CPCS
 #define TC_IER0_CPCS (0x1 << 4) /**< \brief (TC_IER0) RC Compare */
 #define TC_IER0_LDRAS (0x1 << 5) /**< \brief (TC_IER0) RA Loading */
 #define TC_IER0_LDRBS (0x1 << 6) /**< \brief (TC_IER0) RB Loading */
@@ -5466,8 +5565,10 @@ typedef struct {
 #define UDP_GLB_STAT_RSMINPR (0x1 << 3) /**< \brief (UDP_GLB_STAT)  */
 #define UDP_GLB_STAT_RMWUPE (0x1 << 4) /**< \brief (UDP_GLB_STAT) Remote Wake Up Enable */
 /* -------- UDP_FADDR : (UDP Offset: 0x008) Function Address Register -------- */
-#define UDP_FADDR_FADD (0x7f << 0) /**< \brief (UDP_FADDR) Function Address Value */
-#define UDP_FADDR_FEN (0x1 << 8) /**< \brief (UDP_FADDR) Function Enable */
+#define UDP_FADDR_FADD_Pos 0
+#define UDP_FADDR_FADD_Msk (0x7fu << UDP_FADDR_FADD_Pos) /**< \brief (UDP_FADDR) Function Address Value */
+#define UDP_FADDR_FADD(value) ((UDP_FADDR_FADD_Msk & ((value) << UDP_FADDR_FADD_Pos)))
+#define UDP_FADDR_FEN (0x1u << 8) /**< \brief (UDP_FADDR) Function Enable */
 /* -------- UDP_IER : (UDP Offset: 0x010) Interrupt Enable Register -------- */
 #define UDP_IER_EP0INT (0x1 << 0) /**< \brief (UDP_IER) Enable Endpoint 0 Interrupt */
 #define UDP_IER_EP1INT (0x1 << 1) /**< \brief (UDP_IER) Enable Endpoint 1 Interrupt */
@@ -5551,17 +5652,20 @@ typedef struct {
 #define UDP_CSR_FORCESTALL (0x1 << 5) /**< \brief (UDP_CSR[8]) Force Stall (used by Control, Bulk and Isochronous Endpoints) */
 #define UDP_CSR_RX_DATA_BK1 (0x1 << 6) /**< \brief (UDP_CSR[8]) Receive Data Bank 1 (only used by endpoints with ping-pong attributes) */
 #define UDP_CSR_DIR (0x1 << 7) /**< \brief (UDP_CSR[8]) Transfer Direction (only available for control endpoints) */
-#define UDP_CSR_EPTYPE (0x7 << 8) /**< \brief (UDP_CSR[8]) Endpoint Type */
-#define   UDP_CSR_EPTYPE_CTRL (0x0 << 8) /**< \brief (UDP_CSR[8]) Control */
-#define   UDP_CSR_EPTYPE_ISO_OUT (0x1 << 8) /**< \brief (UDP_CSR[8]) Isochronous OUT */
-#define   UDP_CSR_EPTYPE_BULK_OUT (0x2 << 8) /**< \brief (UDP_CSR[8]) Bulk OUT */
-#define   UDP_CSR_EPTYPE_INT_OUT (0x3 << 8) /**< \brief (UDP_CSR[8]) Interrupt OUT */
-#define   UDP_CSR_EPTYPE_ISO_IN (0x5 << 8) /**< \brief (UDP_CSR[8]) Isochronous IN */
-#define   UDP_CSR_EPTYPE_BULK_IN (0x6 << 8) /**< \brief (UDP_CSR[8]) Bulk IN */
-#define   UDP_CSR_EPTYPE_INT_IN (0x7 << 8) /**< \brief (UDP_CSR[8]) Interrupt IN */
+#define UDP_CSR_EPTYPE_Pos 8
+#define UDP_CSR_EPTYPE_Msk (0x7u << UDP_CSR_EPTYPE_Pos) /**< \brief (UDP_CSR[8]) Endpoint Type */
+#define   UDP_CSR_EPTYPE_CTRL (0x0u << 8) /**< \brief (UDP_CSR[8]) Control */
+#define   UDP_CSR_EPTYPE_ISO_OUT (0x1u << 8) /**< \brief (UDP_CSR[8]) Isochronous OUT */
+#define   UDP_CSR_EPTYPE_BULK_OUT (0x2u << 8) /**< \brief (UDP_CSR[8]) Bulk OUT */
+#define   UDP_CSR_EPTYPE_INT_OUT (0x3u << 8) /**< \brief (UDP_CSR[8]) Interrupt OUT */
+#define   UDP_CSR_EPTYPE_ISO_IN (0x5u << 8) /**< \brief (UDP_CSR[8]) Isochronous IN */
+#define   UDP_CSR_EPTYPE_BULK_IN (0x6u << 8) /**< \brief (UDP_CSR[8]) Bulk IN */
+#define   UDP_CSR_EPTYPE_INT_IN (0x7u << 8) /**< \brief (UDP_CSR[8]) Interrupt IN */
 #define UDP_CSR_DTGLE (0x1 << 11) /**< \brief (UDP_CSR[8]) Data Toggle */
 #define UDP_CSR_EPEDS (0x1 << 15) /**< \brief (UDP_CSR[8]) Endpoint Enable Disable */
-#define UDP_CSR_RXBYTECNT (0x7ff << 16) /**< \brief (UDP_CSR[8]) Number of Bytes Available in the FIFO */
+#define UDP_CSR_RXBYTECNT_Pos 16
+#define UDP_CSR_RXBYTECNT_Msk (0x7ffu << UDP_CSR_RXBYTECNT_Pos) /**< \brief (UDP_CSR[8]) Number of Bytes Available in the FIFO */
+#define UDP_CSR_RXBYTECNT(value) ((UDP_CSR_RXBYTECNT_Msk & ((value) << UDP_CSR_RXBYTECNT_Pos)))
 /* -------- UDP_FDR[8] : (UDP Offset: 0x4C) Endpoint FIFO Data Register (ept_num = 0) -------- */
 #define UDP_FDR_FIFO_DATA (0xff << 0) /**< \brief (UDP_FDR[8]) FIFO Data Value */
 /* -------- UDP_TXVC : (UDP Offset: 0x074) Transceiver Control Register -------- */
@@ -6744,6 +6848,11 @@ typedef struct {
 #define WDT        CAST(Wdt       , 0x400E1450U) /**< \brief (WDT       ) Base Address */
 #define RTC        CAST(Rtc       , 0x400E1460U) /**< \brief (RTC       ) Base Address */
 #define GPBR       CAST(Gpbr      , 0x400E1490U) /**< \brief (GPBR      ) Base Address */
+
+// indices for three pio structures
+#define iPIOA		0
+#define iPIOB		1
+#define iPIOC		2
 /*@}*/
 
 /* ***************************************************************************** */
