@@ -3411,6 +3411,8 @@ int main(void)
     usb_mode();
   }
 
+  sdInit();
+
   CoInitOS();
 
 #if defined(DEBUG)

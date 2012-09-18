@@ -799,7 +799,6 @@ void board_init()
 
   init_rotary_encoder();
 
-  sdInit();
 }
 
 #endif
