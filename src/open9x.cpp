@@ -954,7 +954,7 @@ void checkBacklight()
       if (++inacPrescale > 15 ) {
         inacCounter++;
         inacPrescale = 0;
-        if (inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*100*60/16))
+        if (inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*25*15))
           if ((inacCounter&0x1F)==1) AUDIO_INACTIVITY();
       }
     }
