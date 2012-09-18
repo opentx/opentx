@@ -164,7 +164,7 @@ extern volatile int8_t sdState;
 #define CardIsConnected() ( (PIOB->PIO_PDSR & PIO_PB7) == 0 )
 #define CardIsMounted()   (CardIsConnected() && sdState==SD_STATE_MOUNTED)
 
-#include "debug.h"
+#include "ersky9x/debug.h"
 
 #ifdef SIMU
 #define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
