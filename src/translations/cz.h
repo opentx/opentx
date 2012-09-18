@@ -21,7 +21,7 @@
 #define TR_VFILTERADC    "SING""OSMP""FILT"
 
 #define LEN_VBLMODE      "\005"
-#define TR_VBLMODE       "Vyp\0 ""Kl\200v.""P\200ky\0""V\207e\0""Zap\0 "
+#define TR_VBLMODE       "Vyp\0 ""Kl\200v.""P\200ky\0""Kl+P\200""Zap\0 "
 
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       " X "" +="" :="
@@ -353,7 +353,7 @@
 #define TR_EEPROMLOWMEM "Doch\200z\204 EEPROM"
 #define TR_ALERT        "\003(!)POZOR"
 #define TR_PRESSANYKEYTOSKIP "Kl\200vesa >>> p\206esko\201it"
-#define TR_THROTTLENOTIDLE "P\200ka plynu je pohnut\200."
+#define TR_THROTTLENOTIDLE "P\200ka plynu je pohnut\200"
 #define TR_ALARMSDISABLED "Alarmy jsou zak\200z\200ny"
 #define TR_PRESSANYKEY  "\003Stiskni Kl\200vesu"
 #define TR_BADEEPROMDATA "\003Chyba dat EEprom"
