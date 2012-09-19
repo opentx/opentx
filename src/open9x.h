@@ -238,15 +238,7 @@ extern uint8_t s_bind_allowed;
 #  define OUT_H_14DBUSY  6
 #endif
 
-inline uint8_t KEYS_PRESSED()
-{
-  uint8_t tin = ~PINL;
-  uint8_t in;
-  in = (tin & 0x0f) << 3;
-  in |= (tin & 0x30) >> 3;
-  return in;
-}
-
+#define KEYS_PRESSED() (~PINL) // used only for DBLKEYS code.
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT))) == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT)))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN)))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))  == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))
