@@ -180,14 +180,14 @@ extern uint8_t s_bind_allowed;
 
 #if defined (PCBV4)
 
-#  define INP_P_SPARE6    7
-#  define INP_P_SPARE5    6
-#  define INP_P_KEY_EXT   5
-#  define INP_P_KEY_MEN   4
-#  define INP_P_KEY_LFT   3
-#  define INP_P_KEY_RGT   2
-#  define INP_P_KEY_UP    1
-#  define INP_P_KEY_DWN   0
+#  define INP_L_SPARE6    7
+#  define INP_L_SPARE5    6
+#  define INP_L_KEY_EXT   5
+#  define INP_L_KEY_MEN   4
+#  define INP_L_KEY_LFT   3
+#  define INP_L_KEY_RGT   2
+#  define INP_L_KEY_UP    1
+#  define INP_L_KEY_DWN   0
 
 #  define INP_J_TRM_RH_UP   7
 #  define INP_J_TRM_RH_DWN  6
@@ -247,10 +247,10 @@ inline uint8_t KEYS_PRESSED()
   return in;
 }
 
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_P_KEY_RGT) + (1<<INP_P_KEY_LFT))) == ((1<<INP_P_KEY_RGT) + (1<<INP_P_KEY_LFT)))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_P_KEY_UP)  + (1<<INP_P_KEY_DWN))) == ((1<<INP_P_KEY_UP)  + (1<<INP_P_KEY_DWN)))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_P_KEY_RGT) + (1<<INP_P_KEY_UP)))  == ((1<<INP_P_KEY_RGT) + (1<<INP_P_KEY_UP)))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_P_KEY_LFT) + (1<<INP_P_KEY_DWN))) == ((1<<INP_P_KEY_LFT) + (1<<INP_P_KEY_DWN)))
+#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT))) == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT)))
+#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN)))
+#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))  == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))
+#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_L_KEY_LFT) + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_LFT) + (1<<INP_L_KEY_DWN)))
 
 
 #elif defined(PCBSTD) // stock board ...
