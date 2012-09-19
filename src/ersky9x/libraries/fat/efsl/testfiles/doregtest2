@@ -1,0 +1,195 @@
+#!/bin/sh
+
+#######################################################
+curdir=`pwd`
+workdir="/tmp/regtest"
+copydir="/usr/src/linux/drivers/firmware/"
+mkfs_vfat="/usr/sbin/mkfs.vfat"
+efsdir="/home/len/prg/efsl/efsl-0.2/"
+conffile=$efsdir/conf/config.h
+RANDMAX=32767
+
+sizestart=10
+sizestepmax=1500
+sizestop=5000
+
+iomanstart=1
+iomanstepmax=10
+iomanstop=50
+
+preallocstart=0
+preallocstepmax=40
+preallocstop=5
+#######################################################
+
+mountfail()
+{
+	echo ""
+	echo "Could not mount filesystems correctly."
+	echo "Please make sure the following lines are in your /etc/fstab:"
+	echo -e "\t$workdir/read.bin\t$workdir/read\tmsdos\trw,user,noauto,loop\t0\t0"
+	echo -e "\t$workdir/write.bin\t$workdir/write\tmsdos\trw,user,noauto,loop\t0\t0"
+	echo ""
+	exit -1
+}
+
+sizetest()
+{
+	cd $workdir
+	rm -rf $workdir/write/*
+	for file in $(ls $workdir/read/)
+	do
+		# Read
+		if $efsdir/linuxutils/cpo $workdir/read.bin $file $workdir/out $1; then a=1; else 
+			echo "cpo returned error."
+			exit -1
+		fi
+		checksum1=$(/usr/bin/md5sum $workdir/read/$file | cut -d ' ' -f 1)
+		checksum2=$(/usr/bin/md5sum $workdir/out | cut -d ' ' -f 1)
+		if [ $checksum1 = $checksum2 ]
+		then
+#			echo -ne "\nReading $file from $workdir/read.bin with bufsize $1: "
+#			echo -e "Ok :-)"
+			a=1
+		else
+			echo -ne "\nReading $file from $workdir/read.bin with bufsize $1: "
+			echo -e "FAILED :-("
+			exit -1
+		fi
+
+		# Write
+		umount $workdir/write
+		if $efsdir/linuxutils/cpi $workdir/write.bin $workdir/read/$file $file $1; then a=1; else
+			echo "cpi returned error"
+			exit -1
+		fi
+		mount $workdir/write
+		checksum1=$(/usr/bin/md5sum $workdir/read/$file | cut -d ' ' -f 1)
+		checksum2=$(/usr/bin/md5sum $workdir/write/$file | cut -d ' ' -f 1)
+		if [ $checksum1 = $checksum2 ]
+		then
+#			echo -ne "\nWriting of $file into $workdir/write.bin with bufsize $1: "
+#			echo -e "Ok :-)"
+			a=1
+		else
+			echo -ne "\nWriting of $file into $workdir/write.bin with bufsize $1: "
+			echo -e "FAILED :-("
+			exit -1
+ 		fi
+	done
+}
+
+runtest()
+{
+	echo -e "\nTesting with on FAT$2 with IOMAN_NUMBUFFER = $1 & CLUSTER_PREALLOC = $3."
+	echo -e "--------------------------------------------------------------------------"
+	/bin/rm -f $conffile
+	/bin/touch $conffile
+	echo "#ifndef __EFSL_CONFIG_H__" >> $conffile
+	echo "#define __EFSL_CONFIG_H__" >> $conffile
+	echo "#define HW_ENDPOINT_LINUX64" >> $conffile
+	echo "#define IOMAN_NUMBUFFER $1" >> $conffile
+	echo "#define CLUSTER_PREALLOC_FILE $3" >> $conffile
+	echo "#define CLUSTER_PREALLOC_DIRECTORY" $3 >> $conffile 
+	echo "#define IOMAN_NUMITERATIONS 3" >> $conffile
+	echo "#define IOMAN_DO_MEMALLOC" >> $conffile
+	echo "#define LITTLE_ENDIAN" >> $conffile
+	echo "#define LIST_MAXLENFILENAME 100" >> $conffile
+	#echo "#define DEBUG" >> $conffile
+	echo "#endif" >> $conffile
+	
+	tmp=`pwd`
+	cd $efsdir
+	/usr/bin/make -f $efsdir/Makefile-LINUX clean lib utils > /dev/null
+	cd $tmp
+	
+	size=$sizestart
+	while [ "$size" -le $sizestop ]
+	do
+		echo -n "Copying all files on FAT$2 with bufsize=$size:  ";
+		sizetest $size
+#		if [ "$size" -le 1024 ]
+#		then
+#			if [ "$size" -eq 1024 ]; then size=4096; fi
+#			if [ "$size" -eq 512 ]; then size=1024; fi
+#			if [ "$size" -eq 1 ]; then size=512; fi
+#		else
+			sizestep=$sizestepmax*$RANDOM/$RANDMAX
+			size=$(($size+$sizestep))
+#		fi
+		echo "Ok :-)"
+	done
+}
+
+iomantest()
+{
+	prealloc=$preallocstart
+	while [ "$prealloc" -le $preallocstop ]
+	do
+		runtest $1 $2 $prealloc
+#		if [ "$prealloc" -le 3 ]
+#		then
+#			prealloc=$(($prealloc+1))
+#		else
+			preallocstep=$preallocstepmax*$RANDOM/$RANDMAX
+			prealloc=$(($prealloc+$preallocstep))
+#		fi
+	done
+}
+
+echo "#################################################"
+echo "#              EFSL -- REGTEST 2                #"
+echo "#           -----------------------             #"
+echo "# This test will create a FAT12/16/32 fs on     #"
+echo "# which it will copy some files and read them   #"
+echo "# back in with the efs library.                 #"
+echo "#################################################"
+echo ""
+
+/bin/umount $workdir/read 2> /dev/null
+/bin/umount $workdir/write 2> /dev/null
+rm -rf $workdir
+/bin/mkdir $workdir
+/bin/mkdir $workdir/read
+/bin/mkdir $workdir/write
+cd $workdir
+
+for fs in 32 16 12
+do
+	echo ""
+	echo "#################################################"
+	echo "#                  FAT$fs                        #"
+	echo "#################################################"
+	echo ""
+	if [ "$fs" -eq 12 ]; then fssize=25; else fssize=42; fi
+	/bin/dd if=/dev/zero of=./read.bin bs=1024 count=$((1024*$fssize)) > /dev/null 2> /dev/null
+	/bin/dd if=/dev/zero of=./write.bin bs=1024 count=$((1024*$fssize)) > /dev/null 2> /dev/null
+	$mkfs_vfat -F$fs read.bin > /dev/null
+	$mkfs_vfat -F$fs write.bin > /dev/null
+
+	if /bin/mount $workdir/read; then echo "$workdir/read mounted correctly"; else mountfail; fi
+	if /bin/mount $workdir/write; then echo "$workdir/write mounted correctly"; else mountfail; fi
+	
+	# Copy files in read
+	/bin/cp $copydir/* $workdir/read/ 
+	/bin/umount $workdir/read 
+	/bin/mount $workdir/read
+
+	iomansize=$iomanstart
+	while [ "$iomansize" -le $iomanstop ]
+	do
+		iomantest $iomansize $fs
+		if [ "$iomansize" -le 5 ]
+		then
+			iomansize=$(($iomansize+1))
+		else
+			iomanstep=$iomanstepmax*$RANDOM/$RANDMAX
+			iomansize=$(($iomansize+$iomanstep))
+		fi
+	done
+	
+	/bin/umount $workdir/read
+	/bin/umount $workdir/write
+done
+
+cd $curdir

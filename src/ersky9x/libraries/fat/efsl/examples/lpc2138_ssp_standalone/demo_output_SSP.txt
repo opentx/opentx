@@ -1,0 +1,67 @@
+MMC/SD Card Filesystem Test (P:LPC2138 L:EFSL)
+efsl LPC2000-port and this Demo-Application
+done by Martin Thomas, Kaiserslautern, Germany
+CARD init...spiInit for SSP/SPI1
+Card is initialising.
+Card is initialising.
+Card is initialising.
+CSD: 00 26 00 32 1F 59 83 C4 FE FA CF 92 40 40 C1 40
+Drive Size is 252968960 Bytes (494080 Sectors)
+Init done...
+ok
+Directory of 'root':
+SD          ( 0 bytes )
+MARTIN  TXT ( 2475 bytes )
+LOGDAT  TXT ( 200 bytes )
+LOGDAT2 TXT ( 825 bytes )
+LOGDAT3 TXT ( 650 bytes )
+LOGDAT4 TXT ( 1525 bytes )
+LOG1    TXT ( 112 bytes )
+LOGDAT5 TXT ( 325 bytes )
+19992211TXT ( 75 bytes )
+19700318TXT ( 56 bytes )
+19700319TXT ( 112 bytes )
+19851018TXT ( 170 bytes )
+19851019TXT ( 2040 bytes )
+19881018TXT ( 340 bytes )
+19881019TXT ( 1020 bytes )
+LOGDAT9 TXT ( 475 bytes )
+LOGDATA TXT ( 400 bytes )
+File logdatA.txt open. Content:
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+
+File logdatA.txt open for append. Appending...ok
+File logdatA.txt open. Content:
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+Martin hat's angehaengt
+

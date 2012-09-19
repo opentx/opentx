@@ -78,9 +78,6 @@ void t_voice::voice_process(void)
   if (VoiceState == V_IDLE) {
     PORTB |= (1 << OUT_B_LIGHT); // Latch clock high
     if (VoiceQueueCount) {
-      VoiceLatch &= ~VOICE_CLOCK_BIT;
-      PORTA_LCD_DAT = VoiceLatch; // Latch data set
-      PORTB &= ~(1 << OUT_B_LIGHT); // Latch clock low
       VoiceSerial = VoiceQueue[VoiceQueueOutIndex++];
       VoiceQueueOutIndex &= (VOICE_Q_LENGTH - 1);
       VoiceQueueCount -= 1;
@@ -97,6 +94,12 @@ void t_voice::voice_process(void)
         VoiceSerial |= 0xFF00;
         VoiceTimer = 40;
       }
+      VoiceLatch &= ~VOICE_CLOCK_BIT & ~VOICE_DATA_BIT ;
+      if (VoiceSerial & 0x8000) {
+        VoiceLatch |= VOICE_DATA_BIT;
+      }
+      PORTA_LCD_DAT = VoiceLatch ;                    // Latch data set
+      PORTB &= ~(1<<OUT_B_LIGHT) ;                    // Latch clock low
       VoiceCounter = 31;
       VoiceState = V_CLOCKING;
     }

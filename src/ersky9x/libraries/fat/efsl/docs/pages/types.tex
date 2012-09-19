@@ -1,0 +1,26 @@
+Standard C data types have the annoying tendency to have different sizes on difference compilers
+and platforms. Therefore we have created 9 new types that are used everywhere throughout the library.
+When you implement your platform you should check if any of the existing one matches your hardware,
+or create a new one.\\
+\\
+Here's an overview:\\\\
+\begin{tabular}{|p{4cm}|l|l|}
+	\hline
+	\textbf{Type} & \textbf{Size} & \textbf{Signedness}\\
+	\hline
+	\hline
+	\texttt{eint8} & 1 byte & default to platform \\
+	\texttt{esint8} & 1 byte & signed \\
+	\texttt{euint8} & 1 byte & unsigned \\
+	\hline
+	\texttt{eint16} & 2 bytes & default to platform \\
+	\texttt{esint16} & 2 bytes & signed \\
+	\texttt{euint16} & 2 bytes & unsigned \\
+	\hline
+	\texttt{eint32} & 4 bytes & default to platform \\
+	\texttt{esint32} & 4 bytes & signed \\
+	\texttt{euint32} & 4 bytes & unsigned \\
+	\hline
+\end{tabular}
+$ $\\\\\\
+You will find the relevant code in the file \filename{types.h} in the directory \filename{inc/}.

@@ -1,0 +1,34 @@
+\label{dateandtime}
+The EFSL library supports setting and updating all date and time fields
+supported by the filesystem. In order to do this the library must 
+know the current time and date at all times. Since it has to run everywhere,
+there is no standard mechanism to get the date/time, and some systems do
+not have a clock.
+
+With default configuration there is no date or time support, you have to
+turn it on manually in the configuration file \filename{config.h}.
+You will have to uncomment the field named \code{\#define DATE\_TIME\_SUPPORT},
+in order to activate date/time support.
+
+Furthermore you will have to provide the library with date and time information.
+A set of defines was used for this, when date/time support is not enabled,
+the defines automatically return \code{0x0000} for all time and date fields,
+so there is no performance suffer when you do not need date/time support.
+If you do need it you will have to provide 6 functions to the library
+that will tell it the time. Since these functions may get called often,
+it is highly recommended that you cache the time result somewhere so
+you can serve the library directly from ram. If you do not do this and
+your RTC request take a lot of time, you may suffer large losses in read
+or write operations depending on your hardware.
+
+The six functions are:
+\begin{itemize}
+    \item\code{euint16 efsl\_getYear(void)} 
+    \item\code{euint8 efsl\_getMonth(void)} 
+    \item\code{euint8 efsl\_getDay(void)} 
+    \item\code{euint8 efsl\_getHour(void)} 
+    \item\code{euint8 efsl\_getMinute(void)} 
+    \item\code{euint8 efsl\_getSecond(void)}
+\end{itemize}
+Internally the library will recalculate these numbers to match the
+filesystem that is currently in use. 

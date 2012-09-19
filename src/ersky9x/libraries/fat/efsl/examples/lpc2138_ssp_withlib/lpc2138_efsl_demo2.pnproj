@@ -1,0 +1,1 @@
+<Project name="lpc2138_efsl_demo2"><File path="crt0.S"></File><File path="inttypes.h"></File><File path="lpc_config.h"></File><File path="LPC2138-ROM.ld"></File><File path="LPC213x.h"></File><File path="lpcUART.h"></File><File path="main.c"></File><File path="Makefile"></File><File path="uart.c"></File><File path="uart.h"></File></Project>

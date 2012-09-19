@@ -1,0 +1,40 @@
+Since debugging on every device is completely different, a DBG macro is 
+implemented. On Linux for example, this macro will print the string given
+to the screen (using printf). On AVR, it will send debug strings through the
+UART. For compatibility with other devices, it is necessary that you always use
+the DBG-macro instead of a device-specific debugging commands.\newline
+\newline
+Because AVR-GCC puts strings in sram memory by default, every string should be
+surrounded by the TXT-macro. On AVR, this macro will put the string in program
+memory (flash), on any other device, this macro will be ignored.\newline
+\newline
+Example of a debug string:\\ 
+\code{DBG((TXT("This is test nr \%d of \%d.$\backslash$n"),id,total));}
+
+\subsubsection{Debugging on Linux}
+On linux, debugging strings are sent to stdout using printf.\newline
+\newline
+To enable debugging, set DEBUG in \filename{config.h}.
+\subsubsection{Debugging on AVR}
+On AVR, debugging strings are sent through the UART and can be read using
+a terminal like minicom (linux) or hyperterminal (windows). Standard, the
+first UART is used, but this can be changed in \filename{debug.c} to the
+second UART.\newline
+\newline
+To enable debugging:
+\begin{itemize}
+	\item{Set DEBUG in \filename{config.h}}
+	\item{Set DEBUG\_PORT to the number of the UART efsl may use for debugging 
+		in \filename{config.h}}
+	\item{Set DEBUG\_UBRR according to your baudrate \& clock speed in 
+		\filename{config.h} (see the avr datasheet for this value)}
+	\item{Initialize debugging in your program by calling \code{debug\_init()}}
+\end{itemize}
+Remark: when you use the serial port in your main program, make sure you
+use a different UART than the one efsl is using when sending debug string.
+\subsubsection{Debugging on DSP}
+On DSP, debugging strings are sent to Code Composer using the printf function.
+\newline\newline
+To enable debugging, set DEBUG in \filename{config.h}.\newline
+\newline
+Remark: this will only work when using a DSK-kit.

@@ -64,5 +64,6 @@ extern volatile uint8_t Buzzer_count ;
 
 extern void init_twi( void ) ;
 extern void setVolume( register uint8_t volume ) ;
+extern "C" void TWI0_IRQHandler (void) ;
 
 #endif

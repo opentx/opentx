@@ -102,10 +102,10 @@ inline bool isPlaying()
       else \
       { \
         PORTB |= (1<<OUT_B_LIGHT); /* Latch clock high */ \
-        if ( vptr->VoiceCounter & 1 ) \
+        if ((vptr->VoiceCounter & 1) == 0) \
         { \
           vptr->VoiceLatch &= ~VOICE_DATA_BIT; \
-          if ( vptr->VoiceSerial & 0x8000 ) \
+          if ( vptr->VoiceSerial & 0x4000 ) \
           { \
             vptr->VoiceLatch |= VOICE_DATA_BIT; \
           } \

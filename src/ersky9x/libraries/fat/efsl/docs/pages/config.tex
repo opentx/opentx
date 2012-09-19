@@ -1,0 +1,194 @@
+In this section we're going to talk about the configuration file (\filename{config.h}),
+that defines the behavior of the library. In the configuration files there are many
+settings, most of which default to safe or 'standard' compliant settings.
+
+For every platform we try to deliver a sample configuration, with setting tweaked for
+that architecture. This documentation only refers to the general elements which are
+tied to the library rather that the target hardware.
+
+\subsection{Hardware target}
+Here you will define what kind of hardware you will be using. Please refer to
+section \ref{hwdriver} to learn how to write a hardware endpoint.
+Here you must \code{\#define} the name of your hardware endpoint.
+The following list contains the endpoints that the library ships with.\\
+\begin{tabular}{|l|p{8cm}|}
+	\hline
+	\code{HW\_ENDPOINT\_LINUX}& This endpoint uses a regular file as
+	a "disc" containing a filesystem. This is a great endpoint for
+	testing and debugging. All development is done using this emulation.\\
+	\code{HW\_ENDPOINT\_ATMEGA128\_SD}& This endpoint is for the Atmel ATMega 128
+	with an SD card attached to the SPI pins of the device. Several settings
+	that are specific for this endpoint can be found in the AVR sample 
+	configuration. A Makefile is also provided for compiling the EFSL library
+	using avr-gcc.\\
+	\code{HW\_ENDPOINT\_DSP\_TI6713\_SD}& This endpoint is for a TI DSP, it should
+	work with any McBSP port, due to the infinite amount of options, you should
+	refer to the source code of this endpoint for fine tuning, or selecting what
+	port to use (defaults to McBSP0).\\
+	\hline
+\end{tabular}
+
+\subsection{Memory configuration}
+This section only has one option, called \code{BYTE\_ALIGNMENT}. If you define
+this keyword the library will assume that your CPU is capable of accessing the
+memory in any way it sees fit. This is the case on AVR, because they are 8 bit
+processors, and it is also the case on Intel x86 hardware. Both architectures can
+read and write words, or double words on any location in memory, be it word aligned
+or not.
+
+However, some CPU's, are not capable of doing this, and require that all double words
+are aligned on a double word boundary, and all word are aligned on a word boundary.
+This causes problems with some of the casts that are performed in EFSL. If you have such
+a CPU, then you must comment this option out. The effect is that special functions
+will be used to copy or cast memory. These functions work around the problem by
+using memCpy, or manually copying elements of the structs that are normally cast when
+\code{BYTE\_ALIGNMENT} is defined.
+
+If you have an 8 bit architecture, or are running on PC, there is no need to turn this
+off. If you do, the library will work fine, and maybe even without slowdown.
+On architectures that do have the alignment problem, you should turn this flag off.
+Failure to do so will result in undefined behavior.
+
+\subsection{Cache configuration}
+This section is dedicated to configuring the cache memory for the library. Caching
+is performed by the IOMan object, see section \ref{ioman}.
+\subsubsection*{IOMAN\_NUMBUFFER}
+This number determines how much memory will be used for caching. Since this
+is sector based one \code{IOMAN\_NUMBUFFER} equals to 512 byes of memory, plus
+a small overhead in settings (approximately 8 bytes). This number is also affected
+by \code{IOMAN\_NUMITERATIONS}. 
+
+You should carefully consider how much memory you will dedicate to caching. A too
+low number will cause excessive data transfer to and from the disc, where a too high
+number will simply be a waste of memory.
+
+A good rule of thumb is to use 1 buffer per filesystem you create, and 2 buffers
+per file you want to use simultaneously. So for a simple application with
+one filesystem, and one file operation, 2 or 3 buffers will be fine. If you have memory
+to spare, you can use 6 buffers. Using more buffers will have a minimal effect on
+performance.
+
+If you want to seek and rewrite portions of a file, add an extra buffer for that file.
+Using the list function or creating directories will be disc intensive, try to smoothen
+it by using an extra 3 buffer for either operation.
+
+It is perfectly possible to have multiple files op for reading and writing, on different
+filesystems, with listing etc and only using 1 buffer. It will be a tough blow on
+performance though.
+\subsubsection*{IOMAN\_NUMITERATION}
+This number controls how many stack places each cache place gets. Refer to the IOMan 
+section for an explanation. In short, if you only have 1 buffer, leave it at 3. If you
+use more than 4 buffers try decreasing the number to 2 or 1 for a small memory gain.
+
+If you get errors, it means you have set it too low (see error support). It is best
+to leave this at the default setting (do not increase it), unless you know what you
+are doing.
+\subsubsection*{IOMAN\_DOMEMALLOC}
+This configures how IOMan will get it's memory. If you leave it enable, the memory 
+will be allocated by IOMan itself. That means that when you declare the IOMan object
+it will have a member the size of $512 \cdot \mathrm{IOMAN\_NUMBUFFER}$. 
+That also means that that huge lump of memory will reside on the stack. On a true embedded platform with no malloc, this is your best option.
+The last argument of \code{ioman\_init} will be ignored.
+
+If you comment this out,IOMan will take a \code{euint8*} pointer as it's third
+argument to \code{ioman\_init}. It will use the memory pointed to as cache.
+You will have to make sure it's reserved and of the correct size.
+This allows you to put the memory on the heap, or perform special tricks like
+deallocating it without having to umount your filesystem and open files.
+On systems with malloc, this is the recommended setting. 
+
+If you use the efs wrapper object, please look at the \code{efs\_init} documentation
+on how to pass the ioman pointer.
+
+\subsection{Pre-allocation}
+Our VFAT module supports the concept of pre-allocation. When writing files, for
+example log files, it is usually done with tiny bits a time. That is not the
+most efficient way, but it is usually the only solution that works on embedded
+systems. Every time you cross a cluster boundary with your write, the library 
+has to search a new cluster (reading the FAT), allocate it (write to the FAT).
+
+Clearly, this is a waste. The solution we came up with was preallocating. This means
+that when you write to a file, and fwrite sees that it needs to allocate more clusters,
+it will allocate too many of them. Since this is done in one operation, it requires
+usually only one read and one write to the FAT. This can save up to 50\% disc I/O
+in some applications. 
+
+The drawback is that the allocation happens in larger chunks, if you do this with
+many files, you might end up with larger than normal amounts of slackspace.
+
+We have also implemented this feature for directories. This is very useful if you
+have to create a lot of small files, since the directories grow by larger portions
+then.
+
+\subsubsection*{CLUSTER\_PREALLOC\_FILE}
+This number determines the default value of extra clusters that will be allocated
+with every sizeincrease. For example, if fwrite calculates that it needs 7 clusters,
+and \code{CLUSTER\_PREALLOC\_FILE} is 30 then efsl will allocate 37 clusters.
+This means (assuming every write needs 7 clusters) that the next 4 writes won't 
+require any write operation to the FAT (and due to the cluster cache the FAT will probably have to be read only once).
+
+The value you put here will be the default value, it can be changed per file
+object. (not yet implemented).
+
+\subsubsection*{CLUSTER\_PREALLOC\_DIRECTORY}
+The same explanation as above counts, only this value is used for directories.
+Generally you should not put this above 10 (unless your speed tests prove otherwise
+off course).
+
+\subsection{Endianness}
+The Microsoft FAT filesystem was originally created to be run on Intel compatible hardware.
+Therefore the Microsoft programmers decided to record all data on the disc in little endian
+format. Our library supports running on big endian devices. Here you can select whether your
+target CPU is little or big endian.
+
+Running on big endian will cause some performance lose because (rather simple) calculations have
+to be made to all numbers that have to interpreted by the library. This does not apply to
+data within the files off course.
+
+If the flag \code{\#LITTLE\_ENDIAN} is set, efsl will assume that your hardware is little endian.
+If you have a big endian system, you should comment this out. The function \code{fs\_checkEndian}
+will tell you if you have selected the right endianness, this is a check you might want to use.
+
+\subsection{Date and time}
+This flag determines if you want to have date and time support. With date and time support we
+mean that when you create or update a file the directory entry will receive the correct date and
+time stamp.
+
+Please refer to section \ref{dateandtime} to learn more about how this works.
+
+If you disable date and time support by commenting the \code{\#DATE\_TIME\_SUPPORT} then
+all dates and times that need to be created or updated will be set to zero, which in FAT land corresponds to the first of January of the year 1970.
+
+\subsection{Errors}
+When the library encounters an error, there be an error cascade moving from the error-causing object
+to the topmost object where the request started. Seen from userland this gives you extremely little
+information, usually nothing more than fail or success.
+
+Every object in the library has an optional error field, that contains a unique number that
+corresponds to a specific error. If you examine every error field you can see exactly where the
+error was started and what the effect was on the higher level objects.
+
+In a more practical sense you can display an error number or explanation to your users, giving
+yourself or them a better chance to correct or avoid the problem.
+Please see the section on error on what every value means.
+
+\subsection{Debug}
+In the config, debugging can be turned on or off by defining DEBUG. This can be 
+very useful when hacking on the efsl library, or when something goes wrong. 
+In applications this option should be turned off.
+
+The debugging behaviour will depend on the platform you are using:
+\begin{itemize}
+	\item{On Linux debug lines will printed to the console}
+	\item{On AVR debug will be sent over a selected UART\\
+		Make sure you set the following two values in your config.h:
+		\begin{itemize}
+			\item{DEBUG\_PORT: here you need to set which UART the library
+				may use}
+			\item{DEBUG\_UBRR: here you need to select the UBRR-value 
+				(see the avr-datasheets for these values)}
+		\end{itemize}
+	}
+	\item{On DSP debug will call the printf function 
+		(can only be used with a dsk-board)}
+\end{itemize}

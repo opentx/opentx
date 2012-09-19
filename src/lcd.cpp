@@ -291,7 +291,8 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t l
   x -= fw + 1;
 
   for (uint8_t i=1; i<=len; i++) {
-    char c = ((uint16_t)val % 10) + '0';
+    div_t qr = div(val, 10);
+    char c = qr.rem + '0';
     uint8_t f = flags;
     if (dblsize) {
       if (c=='1' && i==len && xn>x+10) { x+=2; f|=CONDENSED; }
@@ -303,7 +304,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t l
       if (dblsize) {
         xn = x;
         if(c>='1' && c<='3') ln++;
-        uint8_t tn = ((uint16_t)val/10) % 10;
+        uint8_t tn = (qr.quot) % 10;
         if (tn==2 || tn==4) {
           if (c=='4') { xn++; }
           else { xn--; ln++; }
@@ -318,7 +319,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t l
       }
     }
     if (dblsize && val >= 1000 && val < 10000) x-=2;
-    val = ((uint16_t)val) / 10;
+    val = qr.quot;
     x-=fw;
   }
 

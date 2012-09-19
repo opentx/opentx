@@ -751,6 +751,13 @@ uint16_t isqrt32(uint32_t n);
 #endif
 
 #if defined(PCBARM)
+#if !defined(SIMU)
+extern "C" {
+#include <CoOS.h>
+}
+#endif
+
+extern OS_MutexID mixerMutex;
 inline void pauseMixerCalculations()
 {
   CoEnterMutexSection(mixerMutex);

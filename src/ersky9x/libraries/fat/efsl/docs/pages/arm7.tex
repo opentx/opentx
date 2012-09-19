@@ -1,0 +1,120 @@
+This section describes how the ARM7 port of EFSL works. This documentation was written
+by Martin Thomas, as is the port to the ARM7 and the examples included with EFSL.
+The examples are pretty large, so we will not print them here, they have their own
+subdirectory in the examples sections and should be quite understandable.
+
+Please note that the LPC2000 interface is Copyright (c) by Martin Thomas, Kaiserslautern, Germany.
+
+\subsubsection{License}
+The LPC2000-interface inherits the 
+LGPL-license from the main efsl-source.
+
+
+\subsubsection{General information about the ARM7 port}
+	\begin{itemize}
+\item A GNU arm-elf toolchain/cross-compiler
+must be available to build the examples
+and the library.
+
+\item The interface supports SD-Cards
+connected to the LPC2000 SPI ("SPI0") 
+and SSP ("SPI1") interface. The SPI-
+interface is hardcoded by the value 
+defined in config.h and can not be 
+changed during runtime.
+
+\item Only some parts of the LPC2000-family
+have the fast SSP-Interface (i.e. LPC213x,
+LPC214x) others only provide the slower 
+SPI interface.
+
+\item \code{\#define BYTE\_ALIGNMENT} is disabled
+for the LPC-interace in config.h 
+It didn't work with alignment enabled.
+
+\item Buffers can be configured as
+described in the efsl-manual.
+
+\item To build the library libefsl.a for 
+LPCs use the makefile Makefile-LPC2000 
+in the efsl-root-directory.
+
+\item The hardware connection is similar 
+to the connection described
+in the efsl-manual for Atmel AVRs.
+(I have mounted the pullups in my
+test-system but initial test have
+been done successfully without the
+pull-up resistors)
+
+\item So far the interface has only been
+tested with a LPC2138-controller
+and the SPI(0) and SSP-Interface.
+Other LPC2000-ARM7 controllers 
+should be supported too. Verify
+that the register-adresses in 
+inc/interfaces/LPC2000\_regs.h
+match the used controller and the
+maximum speed defined in lpc2000\_spi.c
+is available for the part.
+Verify the pin-connections in lpc2000\_spi.c.
+	\end{itemize}
+
+\subsubsection{Example code}
+
+There are two LPC demo-applications
+provided in the examples-directory:
+
+\begin{enumerate}
+\item Example lpc2138\_ssp\_standalone:
+
+This application gets build with
+the efsl source-code. The library
+libefsl.a is not needed.
+
+The application demonstrates:
+- Init of the efsl LPC2000 debug-system
+- Init of the efsl-library
+- List contents of the SD-Card's
+  root directory
+- Open a file and type the content
+- Append a line of text to a file
+- "cat/type" the file's content again
+
+The application prints status- and
+debug-messages to the LPC UART1
+(115200,8,N,1,no FC)
+
+\item Example lpc2138\_ssp\_withlib:
+
+Same functions as the standalone
+applications but the libefsl.a must
+be available for linking.
+\end{enumerate}
+
+\subsubsection{Test Hard- and Software}
+\begin{itemize}
+\item Keil (keil.com) MCB2130 board
+\item SD/MMC-connector from Buerklin.de
+\item SanDisk "standard" SD-Card 256MB
+  (not the "highspeed"-version)
+
+\item WinARM (arm-elf GNU toolchain)
+\item Bray++ Terminal
+\end{itemize}
+
+\subsubsection{Credits}
+\begin{itemize}
+\item The LPC2000 debug-printf routine
+is based on code from Holger Klabunde
+and has been modified to support
+a "fdevopen"-function. The original
+code has no copyright-notice and
+is derived from an free code by
+Volker Oth.
+
+\item Register-defintions based on
+a header-file from Keil GmbH (supplied
+with the DKARM trial-version)
+
+\end{itemize}

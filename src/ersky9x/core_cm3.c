@@ -21,8 +21,6 @@
  *
  ******************************************************************************/
 
-// TODO duplicated file
-
 #include <stdint.h>
 
 /* define compiler specific symbols */

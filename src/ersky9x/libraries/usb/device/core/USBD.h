@@ -211,7 +211,7 @@ typedef void (*MblTransferCallback)(void *pArg,
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern void USBD_IRQHandler(void);
+extern void USBD_IrqHandler(void);
 
 extern void USBD_Init(void);
 

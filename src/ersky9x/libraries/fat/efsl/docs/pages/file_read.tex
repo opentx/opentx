@@ -1,0 +1,51 @@
+\subsubsection*{Purpose}
+Reads a file and puts it's content in a buffer.
+\subsubsection*{Prototype}
+\code{euint32 file\_read (File *file, euint32 size, euint8 *buf);}
+\subsubsection*{Arguments}
+Objects passed to \code{file\_read}:
+\begin{itemize}
+	\item{\code{file}: pointer to a File object}
+	\item{\code{size}: amount of bytes you want to read / put in buf}
+	\item{\code{buf}: pointer to the buffer you want to store the data}
+\end{itemize}
+\subsubsection*{Return value}
+Returns the amount of bytes read.
+\subsubsection*{Example}
+\lstset{numbers=left, stepnumber=1, numberstyle=\small, numbersep=5pt, tabsize=4}
+\begin{lstlisting}
+	#include "efs.h"
+
+	void main(void)
+	{
+		EmbeddedFileSystem efsl;
+		euint8 buffer[512];
+		euint16 e, f;
+		File file;
+
+		/* Initialize efsl */
+		DBG((TXT("Will init efsl now.\n")));
+		if(efs_init(&efsl,"/dev/sda")!=0){
+			DBG((TXT("Could not initialize filesystem (err \%d).\n"),ret));
+			exit(-1);
+		}
+		DBG((TXT("Filesystem correctly initialized.\n")));
+
+		/* Open file for reading */
+		if(file_fopen(&file, &efsl.myFs, "read.txt", 'r')!=0){
+			DBG((TXT("Could not open file for reading.\n")));
+			exit(-1);
+		}
+		DBG((TXT("File opened for reading.\n")));
+
+		/* Read file and print content */
+		while((e=file_read(&file,512,buffer))){
+			for(f=0;f<e;f++)
+				DBG((TXT("\%c"),buffer[f]));
+		}
+
+		/* Close file & filesystem */
+		fclose(&file);
+		fs_umount(&efs.myFs);
+	}
+\end{lstlisting}

@@ -1,0 +1,236 @@
+\label{ioman}
+The IOManager that is the second lowest layer of the embedded filesystems library is
+responsible for coordinating disk input and output, as well as managing a caching 
+system. This documentation describes the second implementation of IOMan, which includes
+features such as :
+\begin{itemize}
+	\item Delayed write
+	\item Buffer reference statistics
+	\item Buffer exportable to users
+	\item Support for cached direct I/O as well as indirect I/O
+	\item Can allocate memory itself (on the stack), or you can do it yourself (heap)
+\end{itemize}
+
+\subsubsection{General operation}
+Because of the limited memory nature of most embedded devices for which this library is
+intended several design decisions were made to minimize memory usage. Some of these required
+that some concessions be made. One of them is that there is no memory protection, since
+most devices don't have the memory to support this, or lack the ability to protect memory.
+
+When IOMan receives a request for a sector, it will make sure it has the sector in it's
+own memory cache and then give the caller a \code{euint8*} pointer to that cache. The
+user is then free to do operations on that memory, and when it is done it should tell
+IOMan so. Several things can go wrong with this: you can request a sector for reading,
+and then write in the cache, thereby corrupting it. Or you can request a sector, but never
+release it (sort of a memory leak), which may result in very bad performance, and a deadlocked
+I/O manager.
+
+But, taking into account that very little memory is required for operation, if you follow the I/O man rules, you will get a pretty clever caching object that will make writing new filesystems
+a simple job.
+
+\subsubsection{Cache decisions}
+Whenever ioman receives a request to fetch a sector, be it read or write, it will have to make sure
+it has, or can get the sector you want. It follows a certain path to do this.\label{cachemethod}
+\begin{enumerate}
+	\item First of all it will scan it's cache range to see if it already has the sector.
+		If it is found, and it was a write request, the cache is marked writable. Usage and
+		reference get incremented and a pointer	is then returned to the requester. If the
+		buffer cannot be found, ioman proceeds to step 2.
+	\item When an item is not in cache, it has to be fetched from the disc, the best place to
+		store it is in memory that does not contain anything useful yet. Ioman will search for
+		a place that is currently not occupied by anything. If it is found, the sector will be 
+		placed on that spot and a pointer returned. Else, ioman proceeds to step 3.
+	\item Since there is no other choice than to overwrite an already existing cache, ioman will
+		try to find one that is the least interesting. First it will search for caches that
+		are marked not writable, and have no users. Ioman will then select the one that has the
+		least references. If there are none, it will search for caches that don't have users and
+		are writable. Once again the one with the least references is returned. Since it is 
+		writable ioman will flush it to disc first. After that the requested sector is put there
+		and a pointer returned. If it cannot find any caches that have no users it will go to
+		step 4.
+	\item Since every cache spot is in use ioman will have to select one for overallocation.
+		Since this selection is dependant on many factors and is rather complex, a points
+		system is used. The algorithm considers every cache place and allocated a certain number
+		of points to it, lower means that it is a better candidate for overallocation. Fifty 
+		percent of the points goes to the cache being marked writable, since having to write
+		a sector is expensive. Another 35 percent goes to how many overallocations have 
+		already been done on that spot. It doesn't make sense to always overalloc the same buffer,
+		it is better to spread this. The remaining 15 percent is determined by the number of 
+		references to the sector. 
+		
+		After a function has selected the best candidate, ioman will overwrite that spot with
+		the new sector. It will also push the status and sectornumber onto that cache's 
+		retrieval stack, so that when the sector is released, the older sector can be retrieved.
+		If this fails go to step 5.
+	\item When ioman gets here it will return a (nil) pointer and flag an error.
+\end{enumerate}
+
+\subsubsection{Functions}
+
+\begin{longtable}{|p{0.35\textwidth}|p{0.65\textwidth}|}
+	
+	\hline
+	\multicolumn{2}{|c|}{
+		\textbf{I/O Manager Functions}
+	} \\
+	\multicolumn{2}{|c|}{} \\
+	\hline
+	\hline
+	\endfirsthead
+	
+	\hline
+	\multicolumn{2}{|c|}{\textbf{I/O Manager Functions (continued)}} \\
+	\hline
+	\endhead
+
+	\hline
+	\endfoot
+	
+	\hline 
+	\endlastfoot
+
+	\code{ioman\_init} & \code{esint8 (IOManager *ioman, hwInterface *iface, euint8* bufferarea)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function is called to initialize the internal state of the I/O manager. It should be the
+		first function you call on an ioman object. Failure to do so will result in undefined behavior.
+		The function clears all internal variables to a default safe state, and sets up it's memory region.
+		
+		There are two possibilities, if you supply a 0 pointer then a function will be called that contains
+		a static variable with a size of 512 * \code{IOMAN\_NUMBUFFERS}, else, it will be assumed that
+		you allocated that memory yourself and the pointer you provided will be used.
+	}\\
+	\hline
+
+	\code{\external{ioman\_reset}} & \code{void (IOManager *ioman)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function is called from the initialization function, it does the actual reset of all variables.
+	}\\
+	\hline
+
+	\code{ioman\_pop} & \code{esint8 (IOManager *ioman,euint16 bufplace)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function fetches settings (sector number, usage and status register) from stack \code{bufplace}
+		and puts it back on the main registers. It will return 0 on succesful pop, and -1 on error, or when
+		there are no elements to pop.
+	}\\
+	\hline
+
+	\code{ioman\_push} & \code{esint8 (IOManager *ioman,euint16 bufplace)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function pushes the settings of cache \code{bufplace} onto that cache's stack. It does not 
+		destroy the data in the main registers. It will return 0 for a successful push, and -1 on error, or
+		when there is no more space to push a new element.
+	}\\
+	\hline
+
+	\code{ioman\_readSector} & \code{esint8 (IOManager *ioman,euint32 address,euint8* buf)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function does the actual reading from the hardware, it is the one and only function that
+		calls \code{if\_readBuf()}, here a retry on failure policy could be implemented. This function
+		will correctly stream errors upwards. All calls made to this function in the iomanager are checked
+		for their return value, so errors propagate correctly upwards. 
+		
+		The address it receives is relative to the beginning of the disc, no assumptions about \code{buf}
+		may be made, it can be withing ioman's cache memory range, but it could also be a buffer from userspace.
+		
+		The function will return 0 on success and -1 on failure.
+	}\\
+	\hline
+
+	\code{ioman\_writeSector} & \code{esint8 (IOManager *ioman, euint32 address, euint8* buf)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function does the actual writing to the hardware, it is the one and only function that
+		calls \code{if\_writeBuf()}, here a retry on failure policy could be implemented. This function
+		will correctly stream errors upwards. All calls made to this function in the iomanager are checked
+		for their return value, so errors propagate correctly upwards. 
+		
+		The address it receives is relative to the beginning of the disc, no assumptions about \code{buf}
+		may be made, it can be withing ioman's cache memory range, but it could also be a buffer from userspace.
+		
+		The function will return 0 on success and -1 on failure.
+	}\\
+	\hline
+
+	\code{\external{ioman\_getSector}} & \code{euint8* (IOManager *ioman,euint32 address, euint8 mode)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function is the one that is called most from the higher library routines. It is the function
+		that will present you with a pointer to memory containing sector number \code{address}. There are
+		several modes that you can select or combine.\newline
+		\begin{tabular}{|l|p{.6\textwidth}|}
+		\hline
+		\code{IOM\_MODE\_READONLY} & This attribute says to ioman that it needs a buffer only for reading.
+		This does not mean that you are allowed to write to it, doing so results in undefined behavior.
+		You cannot combine this option with the \code{IOM\_MODE\_READWRITE} option.\\
+		\code{IOM\_MODE\_READWRITE} & This attribute says to ioman that it would like not only to read from
+		but also to write to that buffer. When you release the sector your changes will be written to disc.
+		This may not happen immediately though, if you want to force it take a look at the 
+		\code{ioman\_flushRange()} function. This option cannot be combined with the 
+		\code{IOM\_MODE\_READONLY} option.\\
+		\code{IOM\_MODE\_EXP\_REQ} & This option tell the iomanager that the request is exceptional, for
+		example that the request is unlikely to happen again. The library adds this flags to the options
+		when requesting the bootrecord, to prevent it from getting a high rating, which should prevent it
+		from being removed from the cache.\\
+		\hline
+		\end{tabular}\newline
+		These options can be combined by ORing them together.
+	}\\
+	\hline
+
+	\code{ioman\_releaseSector} & \code{esint8 (IOManager *ioman,euint8* buf)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function tells ioman that you are done with one of the cache elements and that it can do
+		it's bidding with it. Forgetting to call this function may result in deadlocked iomanagers.
+	}\\
+	\hline
+
+	\code{ioman\_directSectorRead} & \code{esint8 (IOManager *ioman,euint32 address, euint8* buf)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This is a variant of the normal getsector. Sometimes you need a sector from the disc, but all
+		you want to do with it is export it directly to userbuffers. It would be foolish to force a
+		caching of that sector if there is external space available for it.
+		
+		This function will fetch sector \code{address} from disc and place it in the memory pointed to
+		by \code{buf}. Should there be a free spot available the sector will be cached there, so that
+		it may be used in the future. If the sector was available from cache in the first place, it
+		will simply be \code{memCpy()}'d from the cache to the userspace buffer.
+	}\\
+	\hline
+
+	\code{ioman\_directSectorWrite} & \code{esint8 (IOManager *ioman,euint32 address, euint8* buf)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function is based on the same philosophy as \code{ioman\_directSectorRead()}, however,
+		contrary to what the name may lead to believe it also passes through a caching layer. If
+		there is an unused spot (or the sector is in cache), the userbuffer will be copied to that
+		spot and will remain there until the space is needed or a flush is forced.
+	}\\
+	\hline
+
+	\code{ioman\_flushRange} & \code{esint8 (IOManager *ioman,euint32 address\_low, euint32 address\_high)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+		This function is used to ask ioman to flush all sectors to disc that are in a specific
+		range. For example you might want to flush a specific range of your filesystem without
+		needlessly disturb other parts. The range is \code{address\_low <= n => address\_high}.
+		Off course only sectors that are marked as writable are flushed to disc.
+	}\\
+	\hline
+
+	\code{ioman\_flushAll} & \code{esint8 (IOManager *ioman)} \\
+	\hline
+	\multicolumn{2}{|p{\textwidth}|}{
+	This function will cause ioman to flush out all cache units that are marked writable. If
+	they do not have any users, they will lose their writable mark.
+	}\\
+	\hline
+\end{longtable}
+

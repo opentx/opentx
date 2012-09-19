@@ -150,10 +150,7 @@ struct _Media {
 };
 
 /// Available medias.
-#define MAX_MEDS    1
-#define DRV_SDMMC   0 /** SD card */
-
-extern Media medias[MAX_MEDS];
+extern Media medias[];
 
 /// Number of medias which are effectively used.
 /// Defined by Media, shared usage by USB MSD & FS ...

@@ -68,21 +68,19 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
     return STR_SDCARD_ERROR;
 }
 
-#if defined(PCBARM)
-void sdInit();
-void sdLoad();
-void usbMassStorage();
+// TODO move the ARM function definition here (when cpp)
+extern void sdPoll10mS();
+
+#if defined(PCBARM) && !(defined(SIMU))
+extern "C" {
+extern uint32_t sd_card_ready();
+extern uint32_t sd_card_mounted();
+}
 #else
-void sdPoll10mS();
-#define sdIsHC() 0
-#define CardIsMounted() (true)
+#define sd_card_ready() (true)
+#define sd_card_mounted() (true)
 #endif
 
-#if defined(PCBARM) && !defined(SIMU)
-bool sdIsHC();
-#else
-#define sdIsHC() 0
-#endif
 
 #endif
 

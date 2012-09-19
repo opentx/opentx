@@ -428,12 +428,11 @@ endif
 RUN_FROM_FLASH = 1
 
 ifeq ($(PCB), X9D)
-  # V4 ARM, so ...
+  # X9D, so ...
   OPT = 2
   CPPDEFS += -DPCBX9D -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
-  EXTRAINCDIRS += ersky9x ersky9x/libraries ersky9x/libraries/board ersky9x/libraries/drivers CoOS/kernel CoOS/portable
+  EXTRAINCDIRS += ersky9x ersky9x/libraries ersky9x/libraries/drivers CoOS/kernel CoOS/portable
   BOARDSRC = board_ersky9x.cpp 
-  SRC += ersky9x/libraries/usb/device/massstorage/SBCMethods.c ersky9x/libraries/memories/mci_cmd_pdc.c
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += ersky9x/libraries/usb/device/core/USBD_UDP.c ersky9x/libraries/drivers/pmc/pmc.c ersky9x/libraries/drivers/pio/pio.c ersky9x/libraries/drivers/pio/pio_it.c ersky9x/libraries/usb/common/core/USBEndpointDescriptor.c ersky9x/libraries/usb/common/core/USBGenericRequest.c ersky9x/libraries/usb/device/massstorage/MSDDriver.c ersky9x/libraries/usb/device/core/USBDDriver.c ersky9x/libraries/usb/common/core/USBFeatureRequest.c ersky9x/libraries/usb/device/massstorage/MSDDStateMachine.c
@@ -441,10 +440,11 @@ ifeq ($(PCB), X9D)
   SRC += ersky9x/libraries/usb/device/core/USBDCallbacks_Resumed.c ersky9x/libraries/usb/device/core/USBDCallbacks_Reset.c ersky9x/libraries/usb/device/core/USBDCallbacks_Suspended.c ersky9x/libraries/usb/device/core/USBDCallbacks_Initialized.c ersky9x/libraries/usb/device/core/USBDDriverCb_IfSettingChanged.c # TODO remove them
   SRC += ersky9x/libraries/usb/device/massstorage/MSDLun.c ersky9x/libraries/usb/device/massstorage/MSDDriverDescriptors.c 
   SRC += ersky9x/syscalls.c
+  SRC += ersky9x/libraries/usb/device/massstorage/SBCMethods.c ersky9x/libraries/memories/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
-  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard.cpp
+  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp
   
   ifeq ($(SDCARD), YES)
     SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
@@ -463,19 +463,11 @@ ifeq ($(PCB), X9D)
 endif
 
 ifeq ($(PCB), ARM)
-  # Sky9x, so ...
+  # ARM, so ...
   OPT = 2
   CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
-  EXTRAINCDIRS += ersky9x ersky9x/libraries ersky9x/libraries/board ersky9x/libraries/drivers CoOS/kernel CoOS/portable
-  BOARDSRC = board_ersky9x.cpp
-  
-  ifeq ($(SDCARD), YES)
-    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
-    CPPDEFS += -DVOICE
-  endif
-  
-  SRC += ersky9x/libraries/usb/device/massstorage/SBCMethods.c ersky9x/libraries/memories/Media.c ersky9x/libraries/memories/MEDSdmmc.c ersky9x/libraries/memories/mci_cmd_pdc.c
-  SRC += ersky9x/libraries/memories/sdmmc.c ersky9x/libraries/drivers/hsmci/hsmci_pdc.c 
+  EXTRAINCDIRS += ersky9x ersky9x/libraries ersky9x/libraries/drivers CoOS/kernel CoOS/portable
+  BOARDSRC = board_ersky9x.cpp 
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += ersky9x/libraries/usb/device/core/USBD_UDP.c ersky9x/libraries/drivers/pmc/pmc.c ersky9x/libraries/drivers/pio/pio.c ersky9x/libraries/drivers/pio/pio_it.c ersky9x/libraries/usb/common/core/USBEndpointDescriptor.c ersky9x/libraries/usb/common/core/USBGenericRequest.c ersky9x/libraries/usb/device/massstorage/MSDDriver.c ersky9x/libraries/usb/device/core/USBDDriver.c ersky9x/libraries/usb/common/core/USBFeatureRequest.c ersky9x/libraries/usb/device/massstorage/MSDDStateMachine.c
@@ -483,11 +475,16 @@ ifeq ($(PCB), ARM)
   SRC += ersky9x/libraries/usb/device/core/USBDCallbacks_Resumed.c ersky9x/libraries/usb/device/core/USBDCallbacks_Reset.c ersky9x/libraries/usb/device/core/USBDCallbacks_Suspended.c ersky9x/libraries/usb/device/core/USBDCallbacks_Initialized.c ersky9x/libraries/usb/device/core/USBDDriverCb_IfSettingChanged.c # TODO remove them
   SRC += ersky9x/libraries/usb/device/massstorage/MSDLun.c ersky9x/libraries/usb/device/massstorage/MSDDriverDescriptors.c 
   SRC += ersky9x/syscalls.c
+  SRC += ersky9x/libraries/usb/device/massstorage/SBCMethods.c ersky9x/libraries/memories/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
-  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard.cpp
+  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp
   
+  ifeq ($(SDCARD), YES)
+    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
+    CPPDEFS += -DVOICE
+  endif
   
   ifeq ($(BLUETOOTH), YES)
   	MODS:=${MODS}S

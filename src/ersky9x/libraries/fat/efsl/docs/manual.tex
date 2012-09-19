@@ -1,0 +1,132 @@
+\documentclass[a4paper,fleqn]{article}
+
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{array}
+\usepackage{verbatim}
+\usepackage{longtable}
+
+\newcommand{\filename}[1]{
+	\textsf{#1}
+}
+\newcommand{\code}[1]{
+	\texttt{#1}
+}
+\newcommand{\external}[1]{
+	\textbf{#1}
+}
+
+\newcommand{\thead}[1]{
+	\textbf{#1}
+}
+
+%\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
+
+\lstset{language=C}
+
+\begin{document}
+\title{\Huge{EFSL}\\\Large{Embedded Filesystem Library}}
+\author{Lennart Ysboodt - Michael De Nil}
+\date{$\copyright$ 2005}
+\maketitle
+
+\newpage
+\tableofcontents
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\newpage
+\section{Preface}
+\input{pages/preface}
+
+\newpage
+\section{Getting started}
+\subsection{On Linux (file)}
+	\input{pages/linux}
+\newpage
+\subsection{On AVR (SD-Card)}
+	\input{pages/avr}
+\newpage
+\subsection{On DSP (SD-Card)}
+	\input{pages/tms6713}
+\newpage
+\subsection{On ARM7 (SD-Card)}
+	\input{pages/arm7}
+\newpage
+\section{Configuring EFSL}
+	\input{pages/config}
+	
+\newpage
+\section{EFSL Functions}
+\subsection{Date and time support}
+	\input{pages/dateandtime}
+	\newpage
+\subsection{efs\_init}
+	\input{pages/efs_init}
+	\newpage
+\subsection{file\_fopen}
+	\input{pages/file_fopen}
+	\newpage
+\subsection{file\_fclose}
+	\input{pages/file_fclose}
+	\newpage
+\subsection{file\_read}
+	\input{pages/file_read}
+	\newpage
+\subsection{file\_write}
+	\input{pages/file_write}
+	\newpage
+\subsection{mkdir}
+	\input{pages/mkdir}
+	\newpage
+\subsection{ls\_openDir}
+	\input{pages/lsopendir}
+	\newpage
+\subsection{ls\_getNext}
+	\input{pages/lsgetnext}
+	\newpage
+\subsection{rmfile}
+	\input{pages/rmfile}
+	\newpage
+\subsection{Getting the free space}
+	\input{pages/freespace}
+	\newpage
+
+\newpage
+\section{EFSL utilities}
+	\input{pages/utils}
+	\newpage
+
+\newpage
+\section{Developer notes}
+\subsection{Integer types}
+	\input{pages/types}
+\subsection{Debugging}
+	\input{pages/debug}
+\subsection{Adding support for a new endpoint}
+	\input{pages/driver}
+\subsection{I/O Manager}
+	\input{pages/ioman}
+\subsection{C library for EFSL}
+	\input{pages/plibc}
+	
+\newpage
+\section{Legal notes}
+	\input{pages/license}
+
+%\newpage
+%\section{Internals}
+%\subsection{Overview}
+%\subsection{Flowcharts}
+%\subsection{Portability}
+%
+%\section{Examples}
+%\subsection{Example 1}
+%\subsection{Example 2}
+%
+\end{document}

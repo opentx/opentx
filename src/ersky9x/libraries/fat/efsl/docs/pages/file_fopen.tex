@@ -1,0 +1,70 @@
+\subsubsection*{Purpose}
+Searches for file and initializes the file object.
+\subsubsection*{Prototype}
+\code{esint8 file\_fopen(File *file, FileSystem *fs, eint8 *filename, eint8 mode);}
+\subsubsection*{Arguments}
+Objects passed to \code{file\_fopen}:
+\begin{itemize}
+	\item{\code{file}: pointer to a File object}
+	\item{\code{fs}: pointer to the FileSystem object}
+	\item{\code{filename}: pointer to the path + filename}
+	\item
+	{
+		\code{mode}: mode of opening, this can be:
+		\begin{itemize}
+			\item{'r': open file for reading}
+			\item{'w': open file for writing}
+			\item{'a': open file for appending}
+		\end{itemize}
+	}
+\end{itemize}
+\subsubsection*{Return value}
+Returns 0 if no errors are detected.\\
+\newline
+Returns non-zero if an error is detected:
+\begin{itemize}
+	\item{Returns -1 if the file you are trying to open for reading could not 
+		be found.}
+	\item{Returns -2 if the file you are trying to open for writing already
+		exists.}
+	\item{Returns -3 if no free spot could be found for writing or appending.}
+	\item{Returns -4 if mode is not correct (if it is not 'r', 'w' or 'a').}
+\end{itemize}
+\subsubsection*{Example}
+\lstset{numbers=left, stepnumber=1, numberstyle=\small, numbersep=5pt, tabsize=4}
+\begin{lstlisting}
+	#include "efs.h"
+
+	void main(void)
+	{
+		EmbeddedFileSystem efsl;
+		File file_read, file_write;
+
+		/* Initialize efsl */
+		DBG((TXT("Will init efsl now.\n")));
+		if(efs_init(&efsl,"/dev/sda")!=0){
+			DBG((TXT("Could not initialize filesystem (err \%d).\n"),ret));
+			exit(-1);
+		}
+		DBG((TXT("Filesystem correctly initialized.\n")));
+
+		/* Open file for reading */
+		if(file_fopen(&file_read, &efsl.myFs, "read.txt", 'r')!=0){
+			DBG((TXT("Could not open file for reading.\n")));
+			exit(-1);
+		}
+		DBG((TXT("File opened for reading.\n")));
+
+		/* Open file for writing */
+		if(file_fopen(&file_write, &efsl.myFs, "write.txt", 'w')!=0){
+			DBG((TXT("Could not open file for writing.\n")));
+			exit(-2);
+		}
+		DBG((TXT("File opened for writing.\n")));
+
+		/* Close files & filesystem */
+		fclose(&file_read);
+		fclose(&file_write);
+		fs_umount(&efs.myFs);
+	}
+\end{lstlisting}

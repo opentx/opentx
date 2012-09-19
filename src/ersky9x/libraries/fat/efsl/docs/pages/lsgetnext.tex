@@ -1,0 +1,52 @@
+\subsubsection*{Purpose}
+This function fetches the next valid file in the current directory and copies
+all relevant information to \code{dirlist->currentEntry}.
+\subsubsection*{Prototype}
+\code{esint8 ls\_getNext(DirList *dlist);}
+\subsubsection*{Arguments}
+Objects passed to \code{ls\_getNext}:
+\begin{itemize}
+	\item{\code{dlist}: pointer to a DirList object}
+\end{itemize}
+\subsubsection*{Return value}
+This function will return 0 when it has found a next file in the directory, and
+was successful in copying it to \code{dirlist->currentEntry}. It will return -1
+when there are no more files in the directory.
+
+\subsubsection*{Example}
+To browse through a directory you should first open it with \code{ls\_openDir} and
+then you can call \code{ls\_getNext} in a loop to iterate through the files. Please
+note that they are unsorted.
+\lstset{numbers=left, stepnumber=1, numberstyle=\small, numbersep=5pt, tabsize=4}
+\begin{lstlisting}
+#include "efs.h"
+#include "ls.h"
+
+	void main(void)
+{
+		EmbeddedFileSystem efsl;
+		DirList list;
+
+		/* Initialize efsl */
+		if(efs_init(&efsl,"/dev/sda")!=0){
+			DBG((TXT("Could not initialize filesystem (err \%d).\n"),ret));
+			exit(-1);
+}
+		
+		/* Open the directory */
+		ls_openDir(list,&(efsl.myFs),"/usr/bin/");
+		
+		/* Print a list of all files and their filesize */
+		while(ls_getNext(list)==0){
+			DBG((TXT("%s (%li bytes)\n"),
+			list->currentEntry.FileName,
+			list->currentEntry.FileSize));
+		}
+
+		/* Correctly close the filesystem */
+		fs_umount(&efs.myFs);
+}
+\end{lstlisting}
+
+Please note that it is not required to close this object, if you wish to switch
+to another directory you can just call \code{ls\_openDir} on the object again.

@@ -1,0 +1,84 @@
+\subsection{Notations}
+The utilities can be compiled and run on any POSIX compliant system.
+Although not tested on Windows, they should work there as well. In order
+to be able to make the utilities, you should have run make in the main directory,
+so that an libefsl.a has been made. These utilities link against that library.
+
+You can run the binaries without arguments to get a short help, which is repeated
+here in the 'usage` section of the utilities.
+
+All utilities take an image, or a device as their first argument. If the image/device
+is a partition, and hence does not contain a partition table, it will be recognised and treated
+as such.
+If a partition table is found, the first partition with a FAT signature will be used. 
+
+Arguments between $<>$ brackets are mandatory, arguments between $[]$ brackets are optional.
+
+
+\subsection{cpo}
+    \subsubsection*{Usage}
+	cpo $<$fs$>$ $<$file\_read$>$ $<$local\_write$>$ [bufsize]
+    \subsubsection*{Operation}
+	Cpo copies a file residing in a fat filesystem to your local file system. It copies
+	outwards. The first argument \code{fs} is the image or device on which the source
+	filesystem resides. The second argument (\code{file\_read} is the path and filename
+	of the sourcefile in \code{fs}. The third argument (\code{local\_write}) is the
+	local file to which you want to write the contents.
+	
+	The fourth, optional, arguments (\code{bufsize}) says cpo what size of copy buffers
+	to use. This operates the same as dd. This is used in testing the library, the
+	default value is 4096 bytes.
+    
+\subsection{cpi}
+    \subsubsection*{Usage}
+	cpi $<$fs$>$ $<$local\_read$>$ $<$file\_write$>$ [bufsize]
+    \subsubsection*{Operation}
+	Cpi copies a file from your local filesystem to a fat filesystem. It copies inwards.
+        The first argument \code{fs} is the image or device on which the source
+        filesystem resides. The second argument (\code{local\_read} is the path and filename
+        of the sourcefile on your local filesystem. The third argument (\code{file\_write}) is the
+        path and filename to which you want to write the contents.
+
+        Cpi will bail out when the destination target already exists.
+
+        The fourth, optional, arguments (\code{bufsize}) says cpi what size of copy buffers
+        to use. This operates the same as dd. This is used in testing the library, the
+        default value is 4096 bytes.                                                
+	
+\subsection{cpa}
+    \subsubsection*{Usage}
+	cpa $<$fs$>$ $<$local\_read$>$ $<$file\_append$>$ [bufsize]
+    \subsubsection*{Operation}
+	Cpa copies a file from your local filesystem to a fat filesystem. It copies inwards.
+        The first argument \code{fs} is the image or device on which the source
+        filesystem resides. The second argument (\code{local\_read} is the path and filename
+        of the sourcefile on your local filesystem. The third argument (\code{file\_append}) is the
+        path and filename to which you want to write the contents.
+
+        Cpa will append to the destination target, or create it if it doesn't exist yet.
+
+        The fourth, optional, arguments (\code{bufsize}) says cpi what size of copy buffers
+        to use. This operates the same as dd. This is used in testing the library, the
+        default value is 4096 bytes.                                                
+    
+\subsection{list}
+    \subsubsection*{Usage}
+	list $<$fs$>$ $<$directory$>$
+    \subsubsection*{Operation}
+	List will give a listing of existing files on a given filesystem \code{fs}, that
+	reside in the directory \code{directory}. To get the contents of the root directory,
+	give a forward slash (/) as the directory argument.
+    
+\subsection{mkdir}
+    \subsubsection*{Usage}
+	mkdir $<$fs$>$ $<$dirname$>$
+    \subsubsection*{Operation}
+	Mkdir will create a new directory in the filesystem \code{fs}. You must provide the full path
+	of the new directory as an argument.
+    
+\subsection{rmfile}
+    \subsubsection*{Usage}
+	rmfile $<$fs$>$ $<$filename$>$
+    \subsubsection*{Operation}
+	Rmfile will delete a file from a filesystem \code{fs}.
+    
