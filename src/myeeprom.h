@@ -464,11 +464,10 @@ enum TelemetrySource {
 
 enum VarioSource {
   VARIO_SOURCE_FIRST = 0,
-  VARIO_SOURCE_BARO_V1 = 0,
-  VARIO_SOURCE_BARO_V2,
+  VARIO_SOURCE_DATA = VARIO_SOURCE_FIRST,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-  VARIO_SOURCE_LAST
+  VARIO_SOURCE_LAST = VARIO_SOURCE_A2,
 };
 
 #if defined(PCBARM)
@@ -488,7 +487,8 @@ PACK(typedef struct t_FrSkyBarData {
 enum FrskyUsrProtocols {
   USR_PROTO_NONE,
   USR_PROTO_FRSKY_HUB,
-  USR_PROTO_WS_HOW_HIGH
+  USR_PROTO_WS_HOW_HIGH,
+  USR_PROTO_HALCYON,
 };
 
 enum FrskySource {
@@ -517,7 +517,7 @@ PACK(typedef struct t_FrSkyData {
 #else
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
-  uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint8_t spare1:4;
   uint8_t voltsSource:3;

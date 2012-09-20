@@ -197,8 +197,12 @@ extern "C" {
 /      ff_req_grant, ff_rel_grant, ff_del_syncobj and ff_cre_syncobj
 /      function must be added to the project. */
 
+#if defined(PCBARM)
+#define	_FS_SHARE	3	/* 0:Disable or >=1:Enable */
+#else
+#define _FS_SHARE       2       /* 0:Disable or >=1:Enable */
+#endif
 
-#define	_FS_SHARE	0	/* 0:Disable or >=1:Enable */
 /* To enable file shareing feature, set _FS_SHARE to 1 or greater. The value
    defines how many files can be opened simultaneously. */
 

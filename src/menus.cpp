@@ -234,7 +234,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
   int8_t maxcol = MAXCOL(m_posVert);
 
 #if defined(ROTARY_ENCODERS)
-  if (!(s_warning || s_sdcard_error || s_menu_count))
+  if (!(s_warning || s_menu_count))
     check_rotary_encoder();
   if (m_posVert < 0 && (event==EVT_KEY_FIRST(BTN_REa) || event==EVT_KEY_FIRST(BTN_REb) || event==EVT_KEY_FIRST(KEY_MENU))) {
     popMenu();
@@ -526,12 +526,13 @@ void pushMenu(MenuFuncP newMenu)
   (*newMenu)(EVT_ENTRY);
 }
 
-const pm_char * s_global_warning = 0;
 const pm_char * s_warning = 0;
 const pm_char * s_warning_info;
 uint8_t         s_warning_info_len;
 // uint8_t s_warning_info_att not needed now
-uint8_t         s_confirmation = 0;
+uint8_t         s_warning_type;
+uint8_t         s_warning_result = 0;
+const pm_char * s_global_warning = 0;
 
 void displayBox()
 {
@@ -551,33 +552,21 @@ void displayPopup(const pm_char * pstr)
 
 void displayWarning(uint8_t event)
 {
-  if (s_warning) {
-    displayBox();
-    lcd_puts(16, 5*FH, STR_EXIT);
-    switch(event) {
-      case EVT_KEY_FIRST(KEY_EXIT):
-        killEvents(event);
-        s_warning = 0;
-        break;
-    }
-  }
-}
-
-void displayConfirmation(uint8_t event)
-{
-  s_confirmation = false;
+  s_warning_result = false;
   displayBox();
   if (s_warning_info)
     lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
-  lcd_puts(16, 5*FH, STR_POPUPS);
-
+  lcd_puts(16, 5*FH, s_warning_type == WARNING_TYPE_CONFIRM ? STR_POPUPS : STR_EXIT);
   switch(event) {
     case EVT_KEY_FIRST(KEY_MENU):
-      s_confirmation = true;
+      if (s_warning_type == WARNING_TYPE_ASTERISK)
+        break;
+      s_warning_result = true;
       // no break
     case EVT_KEY_FIRST(KEY_EXIT):
       killEvents(event);
       s_warning = 0;
+      s_warning_type = WARNING_TYPE_ASTERISK;
       break;
   }
 }

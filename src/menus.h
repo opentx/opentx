@@ -207,16 +207,20 @@ int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char 
 uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event );
 int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t event);
 
-extern const pm_char * s_global_warning;
+#define WARNING_TYPE_ASTERISK  0
+#define WARNING_TYPE_CONFIRM   1
+
 extern const pm_char * s_warning;
 extern const pm_char * s_warning_info;
 extern uint8_t         s_warning_info_len;
-extern uint8_t         s_confirmation;
+extern uint8_t         s_warning_result;
+extern uint8_t         s_warning_type;
+
+extern const pm_char * s_global_warning;
 
 void displayBox();
 void displayPopup(const pm_char * pstr);
 void displayWarning(uint8_t event);
-void displayConfirmation(uint8_t event);
 
 #if defined(SDCARD)
 #define MENU_MAX_LINES 4
@@ -233,14 +237,13 @@ extern uint8_t s_menu_flags;
 extern uint8_t s_menu_offset;
 extern bool s_menu_more;
 const char * displayMenu(uint8_t event);
-extern const pm_char * s_sdcard_error;
+
 #define STATUS_LINE_LENGTH 22
 extern char statusLineMsg[STATUS_LINE_LENGTH];
 void showStatusLine();
 void drawStatusLine();
 #else
 #define s_menu_count 0
-#define s_sdcard_error 0
 #define drawStatusLine()
 #endif
 

@@ -158,20 +158,14 @@
 #define LEN_VALARMFN     "\001"
 #define TR_VALARMFN      "<>"
 
-#define LEN_VTELPROTO    "\004"
-#if defined(WS_HOW_HIGH)
-#define TR_VTELPROTO     "NoneHub WSHH"
-#elif defined(FRSKY_HUB)
-#define TR_VTELPROTO     "NoneHub "
-#else
-#define TR_VTELPROTO     ""
-#endif
+#define LEN_VTELPROTO    "\007"
+#define TR_VTELPROTO     "---\0   ""Hub\0   ""WSHHigh""Halcyon"
 
-#define LEN_VOLTSRC   "\003"
-#define TR_VOLTSRC    "---""A1\0""A2\0""FAS""Cel"
+#define LEN_VOLTSRC      "\003"
+#define TR_VOLTSRC       "---""A1\0""A2\0""FAS""Cel"
 
-#define LEN_VARIOSRC     "\007"
-#define TR_VARIOSRC      "FrSky\0 ""Halcyon""A1\0    ""A2\0"
+#define LEN_VARIOSRC     "\004"
+#define TR_VARIOSRC      "Data""A1\0 ""A2\0"
 
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"

@@ -127,9 +127,6 @@ inline uint8_t eeFindEmptyModel(uint8_t id, bool down)
 }
 
 #if defined(SDCARD)
-// TODO to be elsewhere if common to many menus
-const pm_char * s_sdcard_error = NULL;
-
 bool listSdFiles(const char *path, const char *extension)
 {
   FILINFO fno;
@@ -199,25 +196,23 @@ void menuProcModelSelect(uint8_t event)
 #define refresh event
 #endif
 
-  if (s_confirmation) {
+  if (s_warning_result) {
     eeDeleteModel(m_posVert); // delete file
-    s_confirmation = 0;
+    s_warning_result = 0;
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
   }
 
 #if defined(SDCARD)
   uint8_t _event = event;
-  if (s_warning || s_sdcard_error || s_menu_count) {
-    _event = 0;
+  if (s_menu_count) {
+    event = 0;
   }
-#else
-  uint8_t _event = s_warning ? 0 : event;
 #endif
-  uint8_t _event_ = (IS_RE_NAVIGATION_EVT(_event) ? 0 : _event);
+  uint8_t _event_ = (IS_RE_NAVIGATION_EVT(event) ? 0 : event);
 
   if (s_copyMode || !eeModelExists(g_eeGeneral.currModel)) {
-    if ((_event & 0x1f) == KEY_EXIT)
+    if ((event & 0x1f) == KEY_EXIT)
       _event_ -= KEY_EXIT;
   }
 
@@ -250,7 +245,7 @@ void menuProcModelSelect(uint8_t event)
   }
 #endif
 
-  switch(_event)
+  switch(event)
   {
       case EVT_ENTRY:
         m_posVert = sub = g_eeGeneral.currModel;
@@ -261,7 +256,8 @@ void menuProcModelSelect(uint8_t event)
       case EVT_KEY_LONG(KEY_EXIT):
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
           s_warning = STR_DELETEMODEL;
-          killEvents(_event);
+          s_warning_type = WARNING_TYPE_CONFIRM;
+          killEvents(event);
           break;
         }
         // no break
@@ -269,18 +265,18 @@ void menuProcModelSelect(uint8_t event)
         if (s_copyMode) {
           sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
           s_copyMode = 0;
-          killEvents(_event);
+          killEvents(event);
         }
         break;
 #if defined(ROTARY_ENCODERS)
       case EVT_KEY_BREAK(BTN_REa):
       case EVT_KEY_BREAK(BTN_REb):
-        if (navigationRotaryEncoder(_event))
+        if (navigationRotaryEncoder(event))
           s_editMode = (s_editMode == 0 && sub == g_eeGeneral.currModel) ? -1 : 0;
         break;
       case EVT_KEY_LONG(BTN_REa):
       case EVT_KEY_LONG(BTN_REb):
-        if (!navigationRotaryEncoder(_event))
+        if (!navigationRotaryEncoder(event))
           break;
 #endif
       case EVT_KEY_LONG(KEY_MENU):
@@ -316,7 +312,7 @@ void menuProcModelSelect(uint8_t event)
           s_copyMode = 0;
           event = EVT_ENTRY_UP;
         }
-        else if (_event == EVT_KEY_LONG(KEY_MENU) || IS_RE_NAVIGATION_EVT_TYPE(_event, EVT_KEY_LONG)) {
+        else if (event == EVT_KEY_LONG(KEY_MENU) || IS_RE_NAVIGATION_EVT_TYPE(event, EVT_KEY_LONG)) {
           s_copyMode = 0;
           killEvents(event);
 #if defined(SDCARD)
@@ -356,7 +352,7 @@ void menuProcModelSelect(uint8_t event)
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
         if (sub == g_eeGeneral.currModel) {
-          chainMenu(_event == EVT_KEY_FIRST(KEY_RIGHT) ? menuProcModel : menuTabModel[DIM(menuTabModel)-1]);
+          chainMenu(event == EVT_KEY_FIRST(KEY_RIGHT) ? menuProcModel : menuTabModel[DIM(menuTabModel)-1]);
           return;
         }
         AUDIO_WARNING2();
@@ -364,14 +360,14 @@ void menuProcModelSelect(uint8_t event)
       case EVT_KEY_FIRST(KEY_UP):
       case EVT_KEY_FIRST(KEY_DOWN):
         if (s_copyMode) {
-          int8_t next_ofs = (_event == EVT_KEY_FIRST(KEY_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
+          int8_t next_ofs = (event == EVT_KEY_FIRST(KEY_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
             next_ofs = 0;
 
           if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
             s_copySrcRow = oldSub;
             // find a hole (in the first empty slot above / below)
-            m_posVert = eeFindEmptyModel(s_copySrcRow, _event==EVT_KEY_FIRST(KEY_DOWN));
+            m_posVert = eeFindEmptyModel(s_copySrcRow, event==EVT_KEY_FIRST(KEY_DOWN));
             if ((uint8_t)m_posVert == 0xff) {
               // no free room for duplicating the model
               AUDIO_ERROR();
@@ -382,7 +378,7 @@ void menuProcModelSelect(uint8_t event)
             sub = m_posVert;
           }
           s_copyTgtOfs = next_ofs;
-          killEvents(_event);
+          killEvents(event);
         }
         break;
   }
@@ -449,22 +445,14 @@ void menuProcModelSelect(uint8_t event)
     s_warning_info = name;
 #endif
     s_warning_info_len = sizeof(g_model.name);
-    displayConfirmation(event);
+    displayWarning(event);
   }
 
 #if defined(SDCARD)
   REFRESH(false);
-  if (s_sdcard_error) {
-    s_warning = s_sdcard_error;
-    displayWarning(event);
-    if (s_warning)
-      s_warning = NULL;
-    else
-      s_sdcard_error = NULL;
-  }
 
   if (s_menu_count) {
-    const char * result = displayMenu(event);
+    const char * result = displayMenu(_event);
     if (result) {
       REFRESH(true);
       if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
@@ -479,21 +467,22 @@ void menuProcModelSelect(uint8_t event)
       }
       else if (result == STR_BACKUP_MODEL) {
         eeCheck(true); // force writing of current model data before this is changed
-        s_sdcard_error = eeBackupModel(sub);
+        s_warning = eeBackupModel(sub);
       }
       else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
         if (!listSdFiles(MODELS_PATH, MODELS_EXT)) {
-          s_sdcard_error = STR_NO_MODELS_ON_SD;
+          s_warning = STR_NO_MODELS_ON_SD;
           s_menu_flags = 0;
         }
       }
       else if (result == STR_DELETE_MODEL) {
         s_warning = STR_DELETEMODEL;
+        s_warning_type = WARNING_TYPE_CONFIRM;
       }
       else {
         // The user choosed a file on SD to restore
-        s_sdcard_error = eeRestoreModel(sub, (char *)result);
-        if (!s_sdcard_error && g_eeGeneral.currModel == sub)
+        s_warning = eeRestoreModel(sub, (char *)result);
+        if (!s_warning && g_eeGeneral.currModel == sub)
           eeLoadModel(sub);
       }
     }
@@ -1776,9 +1765,8 @@ static uint8_t s_copySrcCh;
 #define EXPO_LINE_SELECT_POS 18
 #endif
 
-void menuProcExpoMix(uint8_t expo, uint8_t _event_)
+void menuProcExpoMix(uint8_t expo, uint8_t _event)
 {
-  uint8_t _event = (s_warning ? 0 : _event_);
   uint8_t event = _event;
   uint8_t key = (event & 0x1f);
 
@@ -2043,7 +2031,6 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event_)
   }
   s_maxLines = cur;
   if (sub >= s_maxLines-1) m_posVert = s_maxLines-1;
-  displayWarning(_event_);
 }
 
 void menuProcExposAll(uint8_t event)
@@ -2104,10 +2091,8 @@ enum LimitsItems {
 #endif
 
 
-void menuProcLimits(uint8_t _event)
+void menuProcLimits(uint8_t event)
 {
-  uint8_t event = (s_warning ? 0 : _event);
-
   MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, 0});
 
   uint8_t sub = m_posVert - 1;
@@ -2121,10 +2106,10 @@ void menuProcLimits(uint8_t _event)
 #endif
   }
 
-  if (s_confirmation) {
+  if (s_warning_result) {
     LimitData *ld = limitaddress(sub);
     ld->revert = !ld->revert;
-    s_confirmation = 0;
+    s_warning_result = 0;
     AUDIO_WARNING2();
   }
 
@@ -2238,8 +2223,8 @@ void menuProcLimits(uint8_t _event)
             bool revert_new = checkIncDecModel(event, ld->revert, 0, 1);
             if (checkIncDec_Ret && thrOutput(k)) {
               s_warning = STR_INVERT_THR;
+              s_warning_type = WARNING_TYPE_CONFIRM;
               killEvents(event);
-              _event = 0;
             }
             else
               ld->revert = revert_new;
@@ -2261,13 +2246,8 @@ void menuProcLimits(uint8_t _event)
           }
           break;
 #endif
-
       }
     }
-  }
-
-  if (s_warning) {
-    displayConfirmation(_event);
   }
 }
 
@@ -2578,7 +2558,7 @@ void menuProcFunctionSwitches(uint8_t event)
 {
 #if defined(PCBARM) && defined(SDCARD)
   uint8_t _event = event;
-  if (s_warning || s_menu_count) {
+  if (s_menu_count) {
     event = 0;
   }
 #endif
@@ -2737,10 +2717,6 @@ void menuProcFunctionSwitches(uint8_t event)
   }
 
 #if defined(PCBARM) && defined(SDCARD)
-  if (s_warning) {
-    displayConfirmation(_event);
-  }
-
   if (s_menu_count) {
     const char * result = displayMenu(_event);
     if (result) {
@@ -2977,7 +2953,7 @@ void menuProcTelemetry(uint8_t event)
       case ITEM_TELEMETRY_VARIO_SOURCE:
         lcd_puts(4, y, STR_SOURCE);
         lcd_putsiAtt(TELEM_COL2, y, STR_VARIOSRC, g_model.frsky.varioSource, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSource, VARIO_SOURCE_FIRST, VARIO_SOURCE_LAST-1);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSource, VARIO_SOURCE_FIRST, VARIO_SOURCE_LAST);
         break;
 
       case ITEM_TELEMETRY_VARIO_SPEED:
@@ -3075,18 +3051,16 @@ void menuProcTelemetry(uint8_t event)
 #endif
 
 #ifdef TEMPLATES
-void menuProcTemplates(uint8_t _event)
+void menuProcTemplates(uint8_t event)
 {
-  uint8_t event = (s_warning ? 0 : _event);
-
   SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+TMPL_COUNT);
 
   uint8_t sub = m_posVert - 1;
 
-  if (s_confirmation) {
+  if (s_warning_result) {
     if (sub<TMPL_COUNT)
       applyTemplate(sub);
-    s_confirmation = 0;
+    s_warning_result = 0;
     AUDIO_WARNING2();
   }
 
@@ -3095,9 +3069,9 @@ void menuProcTemplates(uint8_t _event)
     case EVT_KEY_FIRST(KEY_MENU):
       if (sub!=255) {
         s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
+        s_warning_type = WARNING_TYPE_CONFIRM;
       }
       killEvents(event);
-      _event = 0;
       s_editMode = 0;
       break;
   }
@@ -3109,10 +3083,6 @@ void menuProcTemplates(uint8_t _event)
     lcd_outdezNAtt(3*FW, y, k, (sub==k ? INVERS : 0)|LEADING0, 2);
     lcd_putsiAtt(4*FW, y, STR_VTEMPLATES, k, (sub==k ? INVERS  : 0));
     y+=FH;
-  }
-
-  if (s_warning) {
-    displayConfirmation(_event);
   }
 }
 #endif

@@ -697,11 +697,17 @@ bool __getSwitch(int8_t swtch)
             y = cs->v2;
           }
         }
-        else
-#endif
-        {
+        else {
           y = calc100toRESX(cs->v2);
         }
+#else
+        if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
+          y = cs->v2; // it's a timer
+        }
+        else {
+          y = calc100toRESX(cs->v2);
+        }
+#endif
 
         switch (cs->func) {
           case CS_VPOS:
@@ -718,11 +724,14 @@ bool __getSwitch(int8_t swtch)
             break;
           default:
           {
+            if (csLastValue[cs_idx] == -32668)
+              csLastValue[cs_idx] = x;
             int16_t diff = x - csLastValue[cs_idx];
             if (cs->func == CS_DIFFEGREATER)
               result = (y >= 0 ? (diff >= y) : (diff <= y));
             else
               result = (abs(diff) >= y);
+            printf("x=%d last=%d y=%d diff=%d result=%d\n", x, csLastValue[cs_idx], y, diff, result); fflush(stdout);
             if (result)
               csLastValue[cs_idx] = x;
             break;
@@ -1555,6 +1564,8 @@ void resetAll()
 #ifdef FRSKY
   resetTelemetry();
 #endif
+  for (uint8_t i=0; i<NUM_CSW; i++)
+    csLastValue[i] = -32668;
 }
 
 static uint8_t lastSwPos[2] = {0, 0};
@@ -1930,6 +1941,7 @@ void evalFunctions()
 
         if ((!momentary) || (~activeFunctionSwitches & switch_mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
+            printf("BEEP\n"); fflush(stdout);
             AUDIO_PLAY(AU_FRSKY_FIRST+FSW_PARAM(sd));
           }
 
@@ -2705,7 +2717,9 @@ void perMain()
   check_frsky();
 #endif
 
-  g_menuStack[g_menuStackPtr](evt);
+  const char *warn = s_warning;
+  g_menuStack[g_menuStackPtr](warn ? 0 : evt);
+  if (warn) displayWarning(evt);
   drawStatusLine();
   refreshDisplay();
 
@@ -3547,12 +3561,17 @@ int main(void)
     hapticOff();
 #endif
 
-    BACKLIGHT_ON;
+    g_eeGeneral.optrexDisplay = 1;
+    lcd_clear();
+    refreshDisplay();
 
+    g_eeGeneral.optrexDisplay = 0;
+    g_eeGeneral.backlightBright = 0;
     g_eeGeneral.contrast = 25;
 
-    lcd_clear();
+    BACKLIGHT_ON;
 
+    lcd_clear();
     lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
     lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
     lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
