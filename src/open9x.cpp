@@ -731,7 +731,6 @@ bool __getSwitch(int8_t swtch)
               result = (y >= 0 ? (diff >= y) : (diff <= y));
             else
               result = (abs(diff) >= y);
-            printf("x=%d last=%d y=%d diff=%d result=%d\n", x, csLastValue[cs_idx], y, diff, result); fflush(stdout);
             if (result)
               csLastValue[cs_idx] = x;
             break;
