@@ -1940,7 +1940,6 @@ void evalFunctions()
 
         if ((!momentary) || (~activeFunctionSwitches & switch_mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
-            printf("BEEP\n"); fflush(stdout);
             AUDIO_PLAY(AU_FRSKY_FIRST+FSW_PARAM(sd));
           }
 
