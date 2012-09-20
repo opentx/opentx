@@ -88,13 +88,11 @@ uint8_t Other_general_block_blank ;
 
 struct t_eeprom_header
 {
-	uint32_t sequence_no ;		// sequence # to decide which block is most recent
-	uint16_t data_size ;			// # bytes in data area
-	uint8_t flags ;
-	uint8_t hcsum ;
-} ;
-
-#define EEPROM_BUFFER_SIZE ((sizeof(ModelData) + sizeof( struct t_eeprom_header ) + 3)/4)
+    uint32_t sequence_no ;		// sequence # to decide which block is most recent
+    uint16_t data_size ;			// # bytes in data area
+    uint8_t flags ;
+    uint8_t hcsum ;
+};
 
 struct t_eeprom_buffer
 {
@@ -103,11 +101,9 @@ struct t_eeprom_buffer
     {
         EEGeneral general_data ;
         ModelData model_data ;
-        uint32_t words[ EEPROM_BUFFER_SIZE ] ;
+        uint8_t   bytes[4096-sizeof(t_eeprom_header)];
     } data ;
 } Eeprom_buffer ;
-
-#define EEPROM_BUFFER_SIZE ((sizeof(ModelData) + sizeof( struct t_eeprom_header ) + 3)/4)
 
 void eeDeleteModel(uint8_t id)
 {
