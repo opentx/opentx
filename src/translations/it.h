@@ -100,10 +100,10 @@
 #endif
 #if defined(VOICE)
 #define TR_PLAY_TRACK    "Brano\0       "
-#define TR_PLAY_VALUE    "Leggi Valore\0"
+#define TR_PLAY_VALUE    "LeggiValore\0 "
 #else
 #define TR_PLAY_TRACK    "[Brano]\0     "
-#define TR_PLAY_VALUE    "[Leggi Valore]"
+#define TR_PLAY_VALUE    "[LeggiValore]"
 #endif
 #if defined(PCBARM)
 #if defined(SDCARD)
