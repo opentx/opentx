@@ -34,7 +34,6 @@
 #include "open9x.h"
 #include "FatFs/ff.h"
 
-char g_logFilename[21]; //
 FIL g_oLogFile;
 const pm_char * g_logError = NULL;
 uint8_t logDelay;
@@ -92,7 +91,7 @@ const pm_char * openLogs()
     return SDCARD_ERROR(result);
   }
 
-  if (g_oLogFile.fsize == 0) {
+  if (f_size(&g_oLogFile) == 0) {
 #if defined(PCBV4)
     f_puts("Date,Time,", &g_oLogFile);
 #endif
@@ -108,16 +107,17 @@ const pm_char * openLogs()
 
     f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n", &g_oLogFile);
   }
-
-  result = f_lseek(&g_oLogFile, g_oLogFile.fsize); // append
-  if (result != FR_OK) {
-    return SDCARD_ERROR(result);
+  else {
+    result = f_lseek(&g_oLogFile, f_size(&g_oLogFile)); // append
+    if (result != FR_OK) {
+      return SDCARD_ERROR(result);
+    }
   }
 
   return NULL;
 }
 
-uint16_t lastLogTime = 0;
+tmr10ms_t lastLogTime = 0;
 
 void closeLogs()
 {
@@ -128,12 +128,12 @@ void closeLogs()
 void writeLogs()
 {
   if (isFunctionActive(FUNC_LOGS) && logDelay > 0) {
-    uint16_t tmr10ms = get_tmr10ms();
+    tmr10ms_t tmr10ms = get_tmr10ms();
     if (lastLogTime == 0 || (tmr10ms_t)(tmr10ms - lastLogTime) >= (tmr10ms_t)logDelay*10) {
       lastLogTime = tmr10ms;
 
       if (!g_oLogFile.fs) {
-        if (!sd_card_mounted() || openLogs())
+        if (!sd_card_mounted() || openLogs() != 0)
           return;
       }
 
