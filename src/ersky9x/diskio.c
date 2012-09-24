@@ -89,31 +89,6 @@ uint8_t  cardType;
 const uint8_t SpeedTable[] = { 1, 10, 12, 13, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80 } ;
 uint32_t sdSpeedAllowed ;
 
-/*-----------------------------------------------------------------------*/
-/* Lock / unlock functions                                               */
-/*-----------------------------------------------------------------------*/
-int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
-{
-  *mutex = CoCreateMutex();
-  return 1;
-}
-
-int ff_req_grant (_SYNC_t mutex)
-{
-  CoEnterMutexSection(mutex);
-  return 1;
-}
-
-void ff_rel_grant (_SYNC_t mutex)
-{
-  CoLeaveMutexSection(mutex);
-}
-
-int ff_del_syncobj (_SYNC_t mutex)
-{
-  return 1;
-}
-
 /**
  * Configure the  MCI CLKDIV in the MCI_MR register. The max. for MCI clock is
  * MCK/2 and corresponds to CLKDIV = 0
@@ -1015,11 +990,15 @@ uint32_t sd_cmd16()
 #endif
 }
 
+extern OS_MutexID sdMutex;
+
 uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 {
   uint32_t result = 0;
   Hsmci *phsmci = HSMCI;
   int32_t retry;
+
+  CoEnterMutexSection(sdMutex);
 
   if (sd_card_ready()) {
       sd_cmd16();
@@ -1046,6 +1025,7 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
   /* Disable PDC */
   phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
 
+  CoLeaveMutexSection(sdMutex);
   return result;
 }
 
@@ -1054,6 +1034,8 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
   uint32_t result = 0;
   Hsmci *phsmci = HSMCI;
   int32_t retry;
+
+  CoEnterMutexSection(sdMutex);
 
   if (sd_card_ready()) {
 
@@ -1076,10 +1058,9 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
       phsmci->HSMCI_ARGR = (Cmd_A41_resp & OCR_SD_CCS ? block_no : (block_no << 9));
       phsmci->HSMCI_TPR  = (uint32_t)data;
       phsmci->HSMCI_TCR  = 512 / 4;
-      phsmci->HSMCI_TNCR = 0;
       phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
       phsmci->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
-
+      
       retry = 500;
       while (--retry >= 0) {
         CoTickDelay(1); // 2ms
@@ -1105,6 +1086,8 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
   phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
 
   phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+
+  CoLeaveMutexSection(sdMutex);
 
   return result;
 }
