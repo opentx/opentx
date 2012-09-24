@@ -1057,11 +1057,9 @@ void doSplash()
 #if defined(SIMU)
       if (!main_thread_running) return;
       sleep(1/*ms*/);
-#elif defined(PCBARM)
-      CoTickDelay(1);
-#endif
+#else
       getADC_filt();
-
+#endif
       uint16_t tsum = stickMoveValue();
 
       if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
