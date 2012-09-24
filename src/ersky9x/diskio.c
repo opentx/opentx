@@ -86,8 +86,6 @@ uint32_t Sd_rca ;
 uint32_t Cmd_8_resp ;
 uint32_t Cmd_A41_resp ;
 uint8_t  cardType;
-const uint8_t SpeedTable[] = { 1, 10, 12, 13, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80 } ;
-uint32_t sdSpeedAllowed ;
 
 /**
  * Configure the  MCI CLKDIV in the MCI_MR register. The max. for MCI clock is
@@ -341,24 +339,6 @@ const char * sdCmd9()
   Card_CSD[1] = phsmci->HSMCI_RSPR[1] ;
   Card_CSD[2] = phsmci->HSMCI_RSPR[2] ;
   Card_CSD[3] = phsmci->HSMCI_RSPR[3] ;
-
-  // Calc transmission speed
-  uint32_t i = Card_CSD[0] & 0x0000007F ;
-  uint32_t j ;
-  j = i >> 3 ;
-  j = SpeedTable[j] ;
-  j *= 10000 ;
-  i &= 7 ;
-  if ( i-- )
-    j *= 10 ;
-  if ( i-- )
-    j *= 10 ;
-  if ( i )
-    j *= 10 ;
-  if ( j > 9000000 )
-    j = 9000000 ;
-  sdSpeedAllowed = j ;
-
   return 0;
 }
 
@@ -448,8 +428,8 @@ const char * sdAcmd6()
   if (result)
     return result;
 
-  sdSetBusWidth(HSMCI_SDCR_SDCBUS_4);
-  sdSetSpeed(sdSpeedAllowed);
+  sdSetBusWidth( HSMCI_SDCR_SDCBUS_4 ) ;
+  sdSetSpeed(9000000);
   return 0;
 }
 
