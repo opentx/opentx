@@ -34,6 +34,7 @@
 #include "open9x.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <stdarg.h>
 
 volatile uint8_t pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
@@ -296,9 +297,9 @@ FRESULT f_mount (BYTE, FATFS*)
   return FR_OK;
 }
 
-FRESULT f_open (FIL* fil, const TCHAR*name, BYTE)
+FRESULT f_open (FIL * fil, const TCHAR *name, BYTE)
 {
-  //fil->fs = (FATFS*)fopen(name);
+  fil->fs = (FATFS*)fopen(name, "w+");
   return FR_OK;
 }
 
@@ -318,8 +319,10 @@ FRESULT f_lseek (FIL*, DWORD)
   return FR_OK;
 }
 
-FRESULT f_close (FIL*)
+FRESULT f_close (FIL * fil)
 {
+  if (fil->fs)
+    fclose((FILE*)fil->fs);
   return FR_OK;
 }
 
@@ -369,13 +372,27 @@ FRESULT f_unlink (const TCHAR*)
   return FR_OK;
 }
 
-int f_puts (const TCHAR*, FIL*)
+int f_putc (TCHAR c, FIL * fil)
 {
-  return 0;                                        /* Put a string to the file */
+  fwrite(&c, 1, 1, (FILE*)fil->fs);
+  return FR_OK;
 }
 
-int f_printf (FIL*, const TCHAR*, ...)                         /* Put a formatted string to the file */
+int f_puts (const TCHAR * str, FIL * fil)
 {
+  int n;
+  for (n = 0; *str; str++, n++) {
+    if (f_putc(*str, fil) == EOF) return EOF;
+  }
+  return n;
+}
+
+int f_printf (FIL *f, const TCHAR * format, ...)
+{
+  va_list arglist;
+  va_start(arglist, format);
+  vfprintf((FILE*)f->fs, format, arglist);
+  va_end(arglist);
   return 0;
 }
 
