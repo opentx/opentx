@@ -130,8 +130,7 @@ extern "C" void sam_boot( void ) ;
 inline void config_free_pins()
 {
 #ifdef REVB
-  configure_pins( PIO_PB6 | PIO_PB14, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
-  configure_pins( PIO_PC19 | PIO_PC21, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_PULLUP ) ;
+  configure_pins( PIO_PB14, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
 #else
   register Pio * pioptr = PIOA ;
   pioptr->PIO_PER = 0x03800000L ;         // Enable bits A25,24,23
