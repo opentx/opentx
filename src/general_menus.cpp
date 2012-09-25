@@ -536,6 +536,10 @@ void menuProcTime(uint8_t event)
 }
 #endif
 
+#if defined(PCBARM)
+extern uint32_t sdAvailableAudioFiles; // TODO move that!
+#endif
+
 #if defined(SDCARD)
 #if defined(PCBARM) && !defined(SIMU)
 // TODO rewrite this ...
@@ -545,6 +549,21 @@ extern uint32_t Cmd_A41_resp;
 #define Cmd_A41_resp 0
 #define OCR_SD_CCS             (0)
 #endif
+
+void menuProcSdInfo(uint8_t event)
+{
+  SIMPLE_SUBMENU(PSTR("SD INFO"), 1);
+
+  lcd_putsLeft(2*FH, PSTR("Type:"));
+  lcd_putsLeft(3*FH, PSTR("Size:"));
+
+  lcd_putsLeft(4*FH, PSTR("Sectors:"));
+  lcd_outdezAtt(10*FW, 4*FH, ((SD_CSD_C_SIZE_HC(Card_CSD) + 1)), LEFT);
+  lcd_putc(lcdLastPos, 4*FH, 'k');
+
+  lcd_putsLeft(5*FH, PSTR("Speed:"));
+  lcd_putsLeft(7*FH, PSTR("CSD:"));
+}
 
 void menuProcSd(uint8_t event)
 {
@@ -646,6 +665,8 @@ void menuProcSd(uint8_t event)
     }
 
     memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
+    memset(reusableBuffer.sd.flags, 0, sizeof(reusableBuffer.sd.flags));
+
     reusableBuffer.sd.count = 0;
 
     FRESULT res = f_opendir(&dir, ".");        /* Open the directory */
@@ -742,9 +763,12 @@ void menuProcSd(uint8_t event)
     const char * result = displayMenu(_event);
     if (result) {
       uint8_t index = m_posVert-1-s_pgOfs;
-      if (result == STR_SD_FORMAT) {
+      if (result == STR_SD_INFO) {
+        pushMenu(menuProcSdInfo);
+      }
+      else if (result == STR_SD_FORMAT) {
         f_mkfs(0, 0, 0);
-        f_mount(0, &g_FATFS_Obj);
+        sdAvailableAudioFiles = 0;
         f_chdir("/");
         reusableBuffer.sd.offset = -1;
       }
