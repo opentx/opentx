@@ -62,7 +62,6 @@ OS_STK debugStack[DEBUG_STACK_SIZE];
 OS_TCID audioTimer;
 OS_FlagID audioFlag;
 
-OS_MutexID sdMutex;
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
 #endif
@@ -1057,9 +1056,11 @@ void doSplash()
 #if defined(SIMU)
       if (!main_thread_running) return;
       sleep(1/*ms*/);
-#else
-      getADC_filt();
+#elif defined(PCBARM)
+      CoTickDelay(1);
 #endif
+      getADC_filt();
+
       uint16_t tsum = stickMoveValue();
 
       if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
@@ -3594,7 +3595,6 @@ int main(void)
   audioTimer = CoCreateTmr(TMR_TYPE_ONE_SHOT, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), audioTimerHandle);
   audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
 
-  sdMutex = CoCreateMutex();
   audioMutex = CoCreateMutex();
   mixerMutex = CoCreateMutex();
 

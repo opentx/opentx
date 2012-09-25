@@ -9,6 +9,15 @@
 #ifndef _FFCONF
 #define _FFCONF 6502	/* Revision ID */
 
+#if defined(PCBARM) && !defined(SIMU)
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "../CoOS/kernel/CoOS.h"
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 /*---------------------------------------------------------------------------/
 / Functions and Buffer Configurations
@@ -89,8 +98,11 @@
 /	1    - ASCII only (Valid for non LFN cfg.)
 */
 
-
-#define	_USE_LFN	1		/* 0 to 3 */
+#if defined(PCBARM)
+#define	_USE_LFN	2		/* 0 to 3 */
+#else
+#define _USE_LFN        1               /* 0 to 3 */
+#endif
 #define	_MAX_LFN	255		/* Maximum LFN length to handle (12 to 255) */
 /* The _USE_LFN option switches the LFN support.
 /
@@ -170,9 +182,13 @@
 /* A header file that defines sync object types on the O/S, such as
 /  windows.h, ucos_ii.h and semphr.h, must be included prior to ff.h. */
 
-#define _FS_REENTRANT	0		/* 0:Disable or 1:Enable */
-#define _FS_TIMEOUT		1000	/* Timeout period in unit of time ticks */
-#define	_SYNC_t			HANDLE	/* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
+#if defined(PCBARM)
+#define _FS_REENTRANT		1	   /* 0:Disable or 1:Enable */
+#else
+#define _FS_REENTRANT		0	   /* 0:Disable or 1:Enable */
+#endif
+#define _FS_TIMEOUT		1000	   /* Timeout period in unit of time ticks */
+#define	_SYNC_t			OS_MutexID /* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
 
 /* The _FS_REENTRANT option switches the reentrancy (thread safe) of the FatFs module.
 /
@@ -181,8 +197,12 @@
 /      ff_req_grant, ff_rel_grant, ff_del_syncobj and ff_cre_syncobj
 /      function must be added to the project. */
 
+#if defined(PCBARM)
+#define	_FS_SHARE	3	/* 0:Disable or >=1:Enable */
+#else
+#define _FS_SHARE       2       /* 0:Disable or >=1:Enable */
+#endif
 
-#define	_FS_SHARE	0	/* 0:Disable or >=1:Enable */
 /* To enable file shareing feature, set _FS_SHARE to 1 or greater. The value
    defines how many files can be opened simultaneously. */
 
