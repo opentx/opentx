@@ -116,6 +116,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #if defined (ROTARY_ENCODERS) || defined(NAVIGATION_POT1)
   //change values based on P1
   newval -= p1valdiff;
+  p1valdiff = 0;
 #endif
 
 #if defined(AUTOSWITCH)
@@ -558,6 +559,12 @@ void displayWarning(uint8_t event)
     lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
   lcd_puts(16, 5*FH, s_warning_type == WARNING_TYPE_CONFIRM ? STR_POPUPS : STR_EXIT);
   switch(event) {
+#if defined(ROTARY_ENCODERS)
+    case EVT_KEY_FIRST(BTN_REa):
+    case EVT_KEY_FIRST(BTN_REb):
+      if (!navigationRotaryEncoder(event))
+        break;
+#endif
     case EVT_KEY_FIRST(KEY_MENU):
       if (s_warning_type == WARNING_TYPE_ASTERISK)
         break;
