@@ -1290,9 +1290,6 @@ DRESULT disk_ioctl (
                         )
 {
         DRESULT res;
-        BYTE *csd = (BYTE*)&Card_CSD[0];
-        BYTE n; // csd[16], *ptr = buff;
-        WORD csize;
 
         if (drv) return RES_PARERR;
 
@@ -1324,17 +1321,8 @@ DRESULT disk_ioctl (
                                 break;
 
                         case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
-                                // if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {
-                                        if ((csd[0] >> 6) == 1) {       /* SDC ver 2.00 */
-                                                csize = csd[9] + ((WORD)csd[8] << 8) + 1;
-                                                *(DWORD*)buff = (DWORD)csize << 10;
-                                        } else {                                        /* SDC ver 1.XX or MMC*/
-                                                n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
-                                                csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
-                                                *(DWORD*)buff = (DWORD)csize << (n - 9);
-                                        }
-                                        res = RES_OK;
-                                // }
+                                *(DWORD*)buff = ((SD_CSD_C_SIZE_HC(Card_CSD) + 1) * 1024);
+                                res = RES_OK;
                                 break;
 
                         case GET_SECTOR_SIZE :  /* Get R/W sector size (WORD) */

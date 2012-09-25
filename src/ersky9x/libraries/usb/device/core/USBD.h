@@ -49,7 +49,7 @@
 //         Headers
 //------------------------------------------------------------------------------
 
-#include <board.h>
+// #include <board.h>
 #include <usb/common/core/USBEndpointDescriptor.h>
 #include <usb/common/core/USBGenericRequest.h>
 

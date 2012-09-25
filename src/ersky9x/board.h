@@ -513,6 +513,13 @@
 
 extern int32_t Card_state;
 extern volatile uint32_t Card_initialized;
+extern uint32_t Card_CSD[4];
+
+#define SD_CSD(csd, bitfield, bits)   ((csd[3-(bitfield)/32] >> ((bitfield)%32)) & ((1 << (bits)) - 1))
+
+#define SD_CSD_C_SIZE_HC(csd)          ((SD_CSD(csd, 64,  6) << 16) + \
+                                        (SD_CSD(csd, 56,  8) << 8)  + \
+                                        SD_CSD(csd, 48,  8)) ///< Device size v2.0 High Capacity
 
 /*
 #define BOARD_PSRAM_PINS            PIN_EBI_DATA_BUS, PIN_EBI_NCS0, PIN_EBI_NRD, PIN_EBI_NWE, \

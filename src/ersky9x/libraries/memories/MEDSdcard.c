@@ -214,8 +214,6 @@ static unsigned char MEDSdcard_Write(Media         *media,
 /// \return 1 if success.
 //------------------------------------------------------------------------------
 
-extern uint32_t Card_CSD[4];
-
 unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
 {
     TRACE_INFO("MEDSdcard init\n\r");
