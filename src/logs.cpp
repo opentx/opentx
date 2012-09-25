@@ -34,7 +34,7 @@
 #include "open9x.h"
 #include "FatFs/ff.h"
 
-FIL g_oLogFile;
+static FIL g_oLogFile = {0};
 const pm_char * g_logError = NULL;
 uint8_t logDelay;
 
