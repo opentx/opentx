@@ -429,4 +429,6 @@
 #define TR_COPY_FILE           "Kop\204rovat"
 #define TR_RENAME_FILE         "P\206ejmenovat"
 #define TR_REMOVED             " odstran\203n"
+#define TR_SD_INFO             "Infos"
+#define TR_SD_FORMAT           "Format"
 #define TR_NA                  "[X]"

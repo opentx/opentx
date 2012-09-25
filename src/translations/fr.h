@@ -428,4 +428,6 @@
 #define TR_COPY_FILE           "Copier"
 #define TR_RENAME_FILE         "Renommer"
 #define TR_REMOVED             " supprim\200"
+#define TR_SD_INFO             "Infos"
+#define TR_SD_FORMAT           "Formatter"
 #define TR_NA                  "N/D"

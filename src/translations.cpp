@@ -357,6 +357,8 @@ const pm_char STR_PLAY_FILE[] PROGMEM = TR_PLAY_FILE;
 const pm_char STR_DELETE_FILE[] PROGMEM = TR_DELETE_FILE;
 const pm_char STR_COPY_FILE[] PROGMEM = TR_COPY_FILE;
 const pm_char STR_RENAME_FILE[] PROGMEM = TR_RENAME_FILE;
+const pm_char STR_SD_INFO[] PROGMEM = TR_SD_INFO;
+const pm_char STR_SD_FORMAT[] PROGMEM = TR_SD_FORMAT;
 const pm_char STR_REMOVED[] PROGMEM = TR_REMOVED;
 const pm_char STR_NA[] PROGMEM = TR_NA;
 

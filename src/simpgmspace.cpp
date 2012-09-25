@@ -287,6 +287,8 @@ namespace simu {
 #include <direct.h>
 #endif
 
+FATFS g_FATFS_Obj;
+
 FRESULT f_stat (const TCHAR*, FILINFO*)
 {
   return FR_OK;
@@ -359,6 +361,12 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   memset(fil->lfname, 0, SD_SCREEN_FILE_LENGTH);
   strncpy(fil->fname, ent->d_name, 13-1);
   strcpy(fil->lfname, ent->d_name);
+  return FR_OK;
+}
+
+FRESULT f_mkfs (unsigned char, unsigned char, unsigned int)
+{
+  printf("Format SD...\n"); fflush(stdout);
   return FR_OK;
 }
 

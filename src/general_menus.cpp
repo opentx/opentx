@@ -572,7 +572,7 @@ void menuProcSd(uint8_t event)
   switch(event) {
     case EVT_ENTRY:
       f_chdir("/");
-      reusableBuffer.sd.offset = 255;
+      reusableBuffer.sd.offset = 65535;
       break;
 #if defined(ROTARY_ENCODERS)
     case EVT_KEY_FIRST(BTN_REa):
@@ -605,7 +605,11 @@ void menuProcSd(uint8_t event)
 #endif
     case EVT_KEY_LONG(KEY_MENU):
       killEvents(event);
-      if (m_posVert > 0) {
+      if (m_posVert == 0) {
+        s_menu[s_menu_count++] = STR_SD_INFO;
+        s_menu[s_menu_count++] = STR_SD_FORMAT;
+      }
+      else {
 #if defined(PCBARM)
         uint8_t index = m_posVert-1-s_pgOfs;
         char * line = reusableBuffer.sd.lines[index];
@@ -620,6 +624,75 @@ void menuProcSd(uint8_t event)
       break;
   }
 
+#define SD_ALPHABETICAL_ORDER
+#ifdef SD_ALPHABETICAL_ORDER
+  if (reusableBuffer.sd.offset != s_pgOfs) {
+    char hidden_line[SD_SCREEN_FILE_LENGTH+1] = "";
+    uint8_t hidden_flag = 0;
+
+    if (s_pgOfs == 0) {
+      reusableBuffer.sd.offset = 0;
+    }
+    else if (s_pgOfs >= reusableBuffer.sd.count-7) {
+      reusableBuffer.sd.offset = s_pgOfs+1;
+    }
+    else if (s_pgOfs > reusableBuffer.sd.offset) {
+      memcpy(hidden_line, reusableBuffer.sd.lines[0], sizeof(hidden_line));
+      hidden_flag = reusableBuffer.sd.flags[0];
+    }
+    else {
+      memcpy(hidden_line, reusableBuffer.sd.lines[6], sizeof(hidden_line));
+      hidden_flag = reusableBuffer.sd.flags[6];
+    }
+
+    memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
+    reusableBuffer.sd.count = 0;
+
+    FRESULT res = f_opendir(&dir, ".");        /* Open the directory */
+    if (res == FR_OK) {
+      for (;;) {
+        res = f_readdir(&dir, &fno);                   /* Read a directory item */
+        if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+        if (fno.fname[0] == '.' && fno.fname[1] == '\0') continue;             /* Ignore dot entry */
+#if _USE_LFN
+        fn = *fno.lfname ? fno.lfname : fno.fname;
+#else
+        fn = fno.fname;
+#endif
+        reusableBuffer.sd.count++;
+
+        bool isdir = (fno.fattrib & AM_DIR);
+
+        for (uint8_t i=0; i<7; i++) {
+          if (s_pgOfs >= reusableBuffer.sd.offset) {
+            char *line = reusableBuffer.sd.lines[i];
+            if ((!hidden_line[0] || (!isdir && hidden_flag) || (strcmp(hidden_line, fn) < 0)) && (line[0] == '\0' || (isdir&&!reusableBuffer.sd.flags[i]) || strcmp(fn, line) < 0)) {
+              if (i < 7-1) {
+                memmove(reusableBuffer.sd.lines[i+1], line, sizeof(reusableBuffer.sd.lines[i]) * (7-1-i));
+                memmove(&reusableBuffer.sd.flags[i+1], &reusableBuffer.sd.flags[i], sizeof(reusableBuffer.sd.flags[i]) * (7-1-i));
+              }
+              strncpy(line, fn, SD_SCREEN_FILE_LENGTH);
+              reusableBuffer.sd.flags[i] = isdir;
+              break;
+            }
+          }
+          else {
+            char *line = reusableBuffer.sd.lines[6-i];
+            if ((!hidden_line[0] || (isdir && !hidden_flag) || (strcmp(hidden_line, fn) > 0)) && (line[0] == '\0' || (!isdir&&reusableBuffer.sd.flags[6-i]) || strcmp(fn, line) > 0)) {
+              if (i < 7-1) {
+                memmove(reusableBuffer.sd.lines, reusableBuffer.sd.lines[1], sizeof(reusableBuffer.sd.lines[0]) * (6-i));
+                memmove(&reusableBuffer.sd.flags, &reusableBuffer.sd.flags[1], sizeof(reusableBuffer.sd.flags[0]) * (6-i));
+              }
+              strncpy(line, fn, SD_SCREEN_FILE_LENGTH);
+              reusableBuffer.sd.flags[6-i] = isdir;
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+#else
   if (reusableBuffer.sd.offset != s_pgOfs) {
     memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
     memset(reusableBuffer.sd.flags, 0, sizeof(reusableBuffer.sd.flags));
@@ -652,6 +725,9 @@ void menuProcSd(uint8_t event)
       }
     }
   }
+#endif
+
+  reusableBuffer.sd.offset = s_pgOfs;
 
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = FH+i*FH;
@@ -666,7 +742,13 @@ void menuProcSd(uint8_t event)
     const char * result = displayMenu(_event);
     if (result) {
       uint8_t index = m_posVert-1-s_pgOfs;
-      if (result == STR_DELETE_FILE) {
+      if (result == STR_SD_FORMAT) {
+        f_mkfs(0, 0, 0);
+        f_mount(0, &g_FATFS_Obj);
+        f_chdir("/");
+        reusableBuffer.sd.offset = -1;
+      }
+      else if (result == STR_DELETE_FILE) {
         f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
         strcat_P(lfn, PSTR("/"));
         strcat(lfn, reusableBuffer.sd.lines[index]);

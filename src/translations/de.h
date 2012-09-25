@@ -429,4 +429,6 @@
 #define TR_COPY_FILE           "Copy"
 #define TR_RENAME_FILE         "Rename"
 #define TR_REMOVED             " removed"
+#define TR_SD_INFO             "Infos"
+#define TR_SD_FORMAT           "Format"
 #define TR_NA                  "N/A"
