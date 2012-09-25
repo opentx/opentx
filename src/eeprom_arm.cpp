@@ -466,6 +466,10 @@ void eeLoadModel(uint8_t id)
 
   if (id<MAX_MODELS) {
 
+#if defined(SDCARD)
+    closeLogs();
+#endif
+
     if (pulsesStarted()) {
       pausePulses();
     }
@@ -812,7 +816,7 @@ void ee32_process()
     p += x; // Add offset
     x = total_size % 256; // Size of last bit
     if (x == 0) // Last bit empty
-        {
+    {
       x = 256;
       p -= x;
       eeAddress -= x;
