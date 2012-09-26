@@ -105,6 +105,11 @@ const pm_char * openLogs()
       f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,Temp1,Temp2,RPM,Fuel,Volts,AccelX,AccelY,AccelZ,", &g_oLogFile);
 #endif
 
+#if defined(WS_HOW_HIGH)
+    if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
+      f_puts("WSHH Alt,", &g_oLogFile);
+#endif
+
     f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n", &g_oLogFile);
   }
   else {
@@ -175,6 +180,11 @@ void writeLogs()
         f_printf(&g_oLogFile, "%d,", frskyData.hub.accelY);
         f_printf(&g_oLogFile, "%d,", frskyData.hub.accelZ);
       }
+#endif
+
+#if defined(WS_HOW_HIGH)
+    if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
+        f_printf(&g_oLogFile, "%d,", frskyData.hub.baroAltitude_bp);
 #endif
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++)
