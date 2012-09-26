@@ -411,4 +411,5 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 }
 
 int32_t Card_state = SD_ST_MOUNTED;
+uint32_t Card_CSD[4]; // TODO elsewhere
 #endif
