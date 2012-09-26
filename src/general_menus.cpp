@@ -767,10 +767,14 @@ void menuProcSd(uint8_t event)
         pushMenu(menuProcSdInfo);
       }
       else if (result == STR_SD_FORMAT) {
-        f_mkfs(0, 0, 0);
-        sdAvailableAudioFiles = 0;
-        f_chdir("/");
-        reusableBuffer.sd.offset = -1;
+        if (f_mkfs(0, 1, 0) == FR_OK) {
+          sdAvailableAudioFiles = 0;
+          f_chdir("/");
+          reusableBuffer.sd.offset = -1;
+        }
+        else {
+          s_warning = STR_SDCARD_ERROR;
+        }
       }
       else if (result == STR_DELETE_FILE) {
         f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
