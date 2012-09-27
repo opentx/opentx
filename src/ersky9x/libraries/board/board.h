@@ -122,7 +122,7 @@
 
 /// Master clock frequency (when using board_lowlevel.c).
 //#define BOARD_MCK               48000000
-#define BOARD_MCK               64000000
+//#define BOARD_MCK               64000000
 
 //------------------------------------------------------------------------------
 // ADC

@@ -385,34 +385,27 @@ static const unsigned char languageIdDescriptor[] = {
 /// Manufacturer string descriptor.
 static const unsigned char manufacturerDescriptor[] = {
 
-    USBStringDescriptor_LENGTH(5),
+    USBStringDescriptor_LENGTH(7),
     USBGenericDescriptor_STRING,
-    USBStringDescriptor_UNICODE('A'),
+    USBStringDescriptor_UNICODE('9'),
+    USBStringDescriptor_UNICODE('X'),
+    USBStringDescriptor_UNICODE(' '),
     USBStringDescriptor_UNICODE('T'),
-    USBStringDescriptor_UNICODE('M'),
     USBStringDescriptor_UNICODE('E'),
-    USBStringDescriptor_UNICODE('L')
+    USBStringDescriptor_UNICODE('A'),
+    USBStringDescriptor_UNICODE('M'),
 };
 
 /// Product string descriptor.
 static const unsigned char productDescriptor[] = {
 
-    USBStringDescriptor_LENGTH(14),
+    USBStringDescriptor_LENGTH(5),
     USBGenericDescriptor_STRING,
-    USBStringDescriptor_UNICODE('A'),
-    USBStringDescriptor_UNICODE('T'),
-    USBStringDescriptor_UNICODE('M'),
-    USBStringDescriptor_UNICODE('E'),
-    USBStringDescriptor_UNICODE('L'),
-    USBStringDescriptor_UNICODE(' '),
-    USBStringDescriptor_UNICODE('A'),
-    USBStringDescriptor_UNICODE('T'),
-    USBStringDescriptor_UNICODE('9'),
-    USBStringDescriptor_UNICODE('1'),
-    USBStringDescriptor_UNICODE(' '),
-    USBStringDescriptor_UNICODE('M'),
     USBStringDescriptor_UNICODE('S'),
-    USBStringDescriptor_UNICODE('D')
+    USBStringDescriptor_UNICODE('K'),
+    USBStringDescriptor_UNICODE('Y'),
+    USBStringDescriptor_UNICODE('9'),
+    USBStringDescriptor_UNICODE('X'),
 };
 
 /// Serial number string descriptor. The serial number must be at least 12

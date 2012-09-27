@@ -558,10 +558,19 @@ void menuProcSdInfo(uint8_t event)
   lcd_putsLeft(3*FH, PSTR("Size:"));
 
   lcd_putsLeft(4*FH, PSTR("Sectors:"));
-  lcd_outdezAtt(10*FW, 4*FH, ((SD_CSD_C_SIZE_HC(Card_CSD) + 1)), LEFT);
-  lcd_putc(lcdLastPos, 4*FH, 'k');
+#if defined(PCBARM)
+  if (Cmd_A41_resp & OCR_SD_CCS) {
+    lcd_outdezAtt(10*FW, 4*FH, (SD_CSD_C_SIZE_HC(Card_CSD) + 1), LEFT);
+    lcd_putc(lcdLastPos, 4*FH, 'k');
+  }
+  else {
+    lcd_outdezAtt(10*FW, 4*FH, SD_CSD_C_SIZE(Card_CSD), LEFT);
+  }
+#endif
 
   lcd_putsLeft(5*FH, PSTR("Speed:"));
+  // lcd_outdezAtt(10*FW, 5*FH, transSpeed/1000, LEFT);
+
   lcd_putsLeft(7*FH, PSTR("CSD:"));
 }
 

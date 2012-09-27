@@ -511,15 +511,33 @@
 #define SD_ST_DATA              9
 #define SD_ST_MOUNTED           10
 
+extern uint32_t Cmd_A41_resp;
 extern int32_t Card_state;
 extern volatile uint32_t Card_initialized;
 extern uint32_t Card_CSD[4];
+extern uint32_t transSpeed;
+
+#define OCR_SD_CCS             (1UL << 30)
 
 #define SD_CSD(csd, bitfield, bits)   ((csd[3-(bitfield)/32] >> ((bitfield)%32)) & ((1 << (bits)) - 1))
+
+#define SD_CSD_TRAN_SPEED(pSd)         SD_CSD(pSd, 96,  8) ///< Max. data transfer rate
+
+#define SD_CSD_C_SIZE(pSd)             ((SD_CSD(pSd, 72,  2) << 10) + \
+                                        (SD_CSD(pSd, 64,  8) << 2)  + \
+                                        SD_CSD(pSd, 62,  2)) ///< Device size
 
 #define SD_CSD_C_SIZE_HC(csd)          ((SD_CSD(csd, 64,  6) << 16) + \
                                         (SD_CSD(csd, 56,  8) << 8)  + \
                                         SD_CSD(csd, 48,  8)) ///< Device size v2.0 High Capacity
+
+#define SD_CSD_C_SIZE_MULT(pSd)        SD_CSD(pSd, 47,  3) ///< Device size multiplier
+
+#define SD_CSD_MULT(pSd)               (1 << (SD_CSD_C_SIZE_MULT(pSd) + 2))
+
+#define SD_CSD_BLOCKNR(pSd)            ((SD_CSD_C_SIZE(pSd) + 1) * SD_CSD_MULT(pSd))
+
+#define SD_CSD_BLOCKNR_HC(pSd)         ((SD_CSD_C_SIZE_HC(pSd) + 1) * 1024)
 
 /*
 #define BOARD_PSRAM_PINS            PIN_EBI_DATA_BUS, PIN_EBI_NCS0, PIN_EBI_NRD, PIN_EBI_NWE, \

@@ -67,6 +67,10 @@
 /** SDIO Combo, with SDHC embedded (0xB) */
 #define CARD_SDHCCOMBO  (CARD_TYPE_bmSDIO|CARD_SDHC)
 
+#define STATUS_READY_FOR_DATA   (1UL << 8)
+#define STATUS_TRAN             (4UL << 9)
+#define STATUS_STATE          (0xFUL << 9)
+
 /** Bit mask for data errors */
 #define STATUS_ERRORS_DATA ((uint32_t)(HSMCI_SR_UNRE \
                             | HSMCI_SR_OVRE \
@@ -208,7 +212,7 @@ const char * sdCommand(uint32_t cmd, uint32_t arg)
     phsmci->HSMCI_ARGR = arg;
     phsmci->HSMCI_CMDR = cmd;
 
-    for (i = 0; i < 30000; i += 1) {
+    for (i = 0; i < 50000; i += 1) {
       if (phsmci->HSMCI_SR & HSMCI_SR_CMDRDY) {
         return 0;
       }
@@ -237,7 +241,7 @@ const char * sdCmd0()
   return sdCommand(SDMMC_GO_IDLE_STATE, 0);
 }
 
-#if 0
+#if 1
 #define SDIO_SEND_OP_COND           (5 | HSMCI_CMDR_SPCMD_STD \
                                        | HSMCI_CMDR_TRCMD_NO_DATA \
                                        | HSMCI_CMDR_RSPTYP_48_BIT \
@@ -245,7 +249,7 @@ const char * sdCmd0()
 
 const char * sdCmd5(uint32_t *pIo)
 {
-  const char * result = sdCommand(SDIO_SEND_OP_COND, *pIo);
+  const char * result = sdCommand(SDIO_SEND_OP_COND, 0);
   if (result)
     return result;
   *pIo = HSMCI->HSMCI_RSPR[0];
@@ -272,6 +276,51 @@ const char * sdCmd8(uint8_t supplyVoltage)
 const char * sdCmd55()
 {
   return sdCommand(SDMMC_APP_CMD, Sd_rca);
+}
+
+#define   SDMMC_SEND_STATUS_CMD       (13 | HSMCI_CMDR_TRCMD_NO_DATA \
+                                          | HSMCI_CMDR_SPCMD_STD \
+                                          | HSMCI_CMDR_RSPTYP_48_BIT \
+                                          | HSMCI_CMDR_MAXLAT )
+
+const char * sdCmd13(unsigned int *status)
+{
+  const char *result = sdCommand(SDMMC_SEND_STATUS_CMD, Sd_rca);
+  if (result)
+    return result;
+  *status = HSMCI->HSMCI_RSPR[0];
+  return 0;
+}
+
+#define SDMMC_SET_BLOCKLEN       (16 | HSMCI_CMDR_TRCMD_NO_DATA \
+                                     | HSMCI_CMDR_SPCMD_STD \
+                                     | HSMCI_CMDR_RSPTYP_48_BIT \
+                                     | HSMCI_CMDR_MAXLAT_64 )
+
+uint32_t sdCmd16()
+{
+#if 1
+
+  Hsmci *phsmci = HSMCI;
+
+  if (CardIsConnected()) {
+    phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
+    phsmci->HSMCI_ARGR = 512;
+    phsmci->HSMCI_CMDR = SDMMC_SET_BLOCKLEN;
+
+    while(1) {
+      if (phsmci->HSMCI_SR & HSMCI_SR_CMDRDY) {
+        break;
+      }
+    }
+    return phsmci->HSMCI_RSPR[0];
+  }
+  else {
+    return 0;
+  }
+#else
+  return 0;
+#endif
 }
 
 #define SD_SD_SEND_OP_COND          (41| HSMCI_CMDR_SPCMD_STD \
@@ -303,8 +352,6 @@ const char * sdCmd41(uint32_t arg, uint32_t * status)
                                       OCR_VDD_31_32 +\
                                       OCR_VDD_32_33 +\
                                       OCR_VDD_32_33) /* not in SAM3S reference code */
-
-#define OCR_SD_CCS             (1UL << 30)
 
 #define OCR_POWER_UP_BUSY      (1UL << 31)
 
@@ -382,11 +429,6 @@ const char * sdCmd7()
                          | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
                          | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
 
-#define SDMMC_SET_BLOCKLEN       (16 | HSMCI_CMDR_TRCMD_NO_DATA \
-                                     | HSMCI_CMDR_SPCMD_STD \
-                                     | HSMCI_CMDR_RSPTYP_48_BIT \
-                                     | HSMCI_CMDR_MAXLAT_64 )
-
 #define SD_READ_SINGLE_BLOCK     (17 | HSMCI_CMDR_SPCMD_STD | HSMCI_CMDR_RSPTYP_48_BIT \
                                      | HSMCI_CMDR_TRCMD_START_DATA | HSMCI_CMDR_TRDIR_READ \
                                      | HSMCI_CMDR_TRTYP_SINGLE | HSMCI_CMDR_MAXLAT)
@@ -454,7 +496,12 @@ const char * sdAcmd6()
     return result;
 
   sdSetBusWidth( HSMCI_SDCR_SDCBUS_4 ) ;
-  sdSetSpeed(9000000);
+  sdSetSpeed(21000000);
+  sdEnableHsMode(1);
+
+  if (Cmd_A41_resp & OCR_SD_CCS)
+    sdCmd16();
+
   return 0;
 }
 
@@ -833,15 +880,15 @@ void sdInit()
 #endif
 
 uint8_t sdErrorCount = 0;
-FATFS g_FATFS_Obj;
+static FATFS g_FATFS_Obj = { 0 };
 void retrieveAvailableAudioFiles();
 
 void sdPoll10mS()
 {
-  if (!Card_initialized)
-    return;
+  //if (!Card_initialized)
+    //return;
 
-  if (!CardIsConnected()) {
+  if (!CardIsConnected() || Card_state == SD_ST_STARTUP) {
     Card_state = SD_ST_EMPTY;
     Sd_rca = 0;
     sdErrorCount = 0;
@@ -904,6 +951,8 @@ void sdPoll10mS()
 
 void sdInit()
 {
+  uint8_t i;
+
   Sd_rca = 0;
   sdErrorCount = 0;
 
@@ -916,6 +965,13 @@ void sdInit()
   sdCmd0();
   CoTickDelay(5);  // 10ms
   sdCmd8(1);
+
+#if 0
+  uint32_t status;
+  for (i=0; i<100; i++)
+    sdCmd5(&status);
+#endif
+
   sdMemInit(1, &Cmd_A41_resp);
 
   uint8_t retry;
@@ -970,61 +1026,48 @@ uint32_t sd_card_mounted( void )
   return CardIsConnected() && Card_state == SD_ST_MOUNTED;
 }
 
-uint32_t sd_cmd16()
-{
-#if 0
-  Hsmci *phsmci = HSMCI;
-
-  if (CardIsConnected()) {
-    phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
-    phsmci->HSMCI_ARGR = 512;
-    phsmci->HSMCI_CMDR = SDMMC_SET_BLOCKLEN;
-
-    while(1) {
-      if (phsmci->HSMCI_SR & HSMCI_SR_CMDRDY) {
-        break;
-      }
-    }
-    return phsmci->HSMCI_RSPR[0];
-  }
-  else {
-    return 0;
-  }
-#else
-  return 0;
-#endif
-}
-
 uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 {
   uint32_t result = 0;
-  Hsmci *phsmci = HSMCI;
-  int32_t retry;
+//  int32_t retry;
+  unsigned int status = 0;
+
+  // TRACE_ERROR("read block %d", block_no);
 
   if (sd_card_ready()) {
-      sd_cmd16();
+
+      // Wait for card to be ready for data transfers
+      do {
+        sdCmd13(&status);
+      }
+      while (((status & STATUS_READY_FOR_DATA) == 0)
+          || ((status & STATUS_STATE) != STATUS_TRAN) );
+
+
       // Block size = 512, nblocks = 1
-      phsmci->HSMCI_BLKR = ((512) << 16) | 1;
-      phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
-      phsmci->HSMCI_ARGR = (Cmd_A41_resp & OCR_SD_CCS ? block_no : (block_no << 9));
-      phsmci->HSMCI_RPR  = (uint32_t)data;
-      phsmci->HSMCI_RCR  = 512 / 4;
-      phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTEN;
-      phsmci->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
+      HSMCI->HSMCI_BLKR = ((512) << 16) | 1;
+      HSMCI->HSMCI_MR   = (HSMCI->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
+      HSMCI->HSMCI_ARGR = (Cmd_A41_resp & OCR_SD_CCS ? block_no : (block_no << 9));
+      HSMCI->HSMCI_RPR  = (uint32_t)data;
+      HSMCI->HSMCI_RCR  = 512 / 4;
+      HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTEN;
+      HSMCI->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
         
-      retry = 500;
-      while (--retry >= 0) {
-        CoTickDelay(1); // 2ms
-        if (phsmci->HSMCI_SR & HSMCI_SR_ENDRX) {
+      while (1) {
+        if ((HSMCI->HSMCI_SR & (HSMCI_SR_ENDRX|HSMCI_SR_XFRDONE|HSMCI_SR_CMDRDY)) == (HSMCI_SR_ENDRX|HSMCI_SR_XFRDONE|HSMCI_SR_CMDRDY)) {
           result = 1;
           break;
         }
       }
   }
 
-  phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
   /* Disable PDC */
-  phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
+  HSMCI->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+  HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
+
+  (void) HSMCI->HSMCI_RSPR[0];
+
+  // TRACE_ERROR("ok %.2X %.4Xd\n\r", HSMCI->HSMCI_SR, HSMCI->HSMCI_RSPR[0]);
 
   return result;
 }
@@ -1032,58 +1075,43 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 {
   uint32_t result = 0;
-  Hsmci *phsmci = HSMCI;
-  int32_t retry;
+  unsigned int status = 0;
 
   if (sd_card_ready()) {
 
-    // TRACE_ERROR("Sector %d ", block_no);
+//    TRACE_ERROR("write block %d", block_no);
 
-    retry = 500;
-    while (--retry >= 0) {
-      if (phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY) {
+    // Wait for card to be ready for data transfers
+    do {
+      sdCmd13(&status);
+    } while ((status & STATUS_READY_FOR_DATA) == 0);
+
+    // Block size = 512, nblocks = 1
+    HSMCI->HSMCI_BLKR = ((512) << 16) | 1;
+    HSMCI->HSMCI_MR   = (HSMCI->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF) | (512 << 16);
+    HSMCI->HSMCI_ARGR = (Cmd_A41_resp & OCR_SD_CCS ? block_no : (block_no << 9));
+    HSMCI->HSMCI_TPR  = (uint32_t)data;
+    HSMCI->HSMCI_TCR  = 512 / 4;
+    // HSMCI->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
+    HSMCI->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
+
+    while (!(HSMCI->HSMCI_SR & HSMCI_SR_CMDRDY));
+
+    HSMCI->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
+
+    while (1) {
+      if ((HSMCI->HSMCI_SR & (HSMCI_SR_NOTBUSY|HSMCI_SR_XFRDONE|HSMCI_SR_CMDRDY)) == (HSMCI_SR_NOTBUSY|HSMCI_SR_XFRDONE|HSMCI_SR_CMDRDY)) {
+        result = 1;
         break;
       }
-      CoTickDelay(1); // 2ms
     }
 
-    if (retry >= 0) {
-      sd_cmd16();
-
-      // Block size = 512, nblocks = 1
-      phsmci->HSMCI_BLKR = ((512) << 16) | 1;
-      phsmci->HSMCI_MR   = (phsmci->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
-      phsmci->HSMCI_ARGR = (Cmd_A41_resp & OCR_SD_CCS ? block_no : (block_no << 9));
-      phsmci->HSMCI_TPR  = (uint32_t)data;
-      phsmci->HSMCI_TCR  = 512 / 4;
-      phsmci->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
-      phsmci->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
-      
-      retry = 500;
-      while (--retry >= 0) {
-        CoTickDelay(1); // 2ms
-        if (phsmci->HSMCI_SR & HSMCI_SR_NOTBUSY) {
-          result = 1;
-          break;
-        }
-      }
-
-      if (retry < 0) {
-        TRACE_ERROR("ko (data=%d)\n\r", (uint32_t)data);
-      }
-      else {
-        TRACE_ERROR("ok\n\r");
-      }
-    }
-    else {
-      TRACE_ERROR("wait ko\n\r");
-    }
+    (void) HSMCI->HSMCI_RSPR[0];
   }
 
   /* Disable PDC */
-  phsmci->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
-
-  phsmci->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+  HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
+  HSMCI->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
 
   return result;
 }
@@ -1240,6 +1268,8 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
+extern const char * s_warning;
+
 DRESULT disk_write (
                                         BYTE drv,                       /* Physical drive nmuber (0) */
                                         const BYTE *buff,       /* Pointer to the data to be written */
@@ -1248,6 +1278,8 @@ DRESULT disk_write (
                                         )
 {
         uint32_t result ;
+        BYTE copy[512];
+
 
         if (drv || !count) return RES_PARERR;
 
@@ -1256,7 +1288,29 @@ DRESULT disk_write (
         // TODO if (Stat & STA_PROTECT) return RES_WRPRT;
 
         do {
-          result = sd_write_block( sector, ( uint32_t *)buff ) ;
+
+          while  (1) {
+
+            memcpy(copy, buff, 512);
+
+            result = sd_write_block( sector, ( uint32_t *)copy ) ;
+
+            if (memcmp(copy, buff, 512))
+              s_warning = "Mem overflow";
+
+            sd_read_block( sector, ( uint32_t *)copy ) ;
+
+            if (!memcmp(copy, buff, 512))
+              /*s_warning = "Read != Write";
+            else*/
+              break;
+            else {
+              TRACE_ERROR("Block %d ko SR=%.2X\r\n", sector, HSMCI->HSMCI_SR);
+              // DUMP(buff, 512);
+              // DUMP(copy, 512);
+            }
+          }
+
           if (result) {
             sector += 1 ;
             buff += 512 ;
@@ -1314,14 +1368,14 @@ DRESULT disk_ioctl (
         else {
                 switch (ctrl) {
                         case CTRL_SYNC :                /* Make sure that no pending write process. Do not remove this or written sector might not left updated. */
-                               /* BSS if (select()) {
-                                        deselect(); */
-                                        res = RES_OK;
-                               // }
+                                res = RES_OK;
                                 break;
 
                         case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
-                                *(DWORD*)buff = ((SD_CSD_C_SIZE_HC(Card_CSD) + 1) * 1024);
+                                if (Cmd_A41_resp & OCR_SD_CCS)
+                                  *(DWORD*)buff = SD_CSD_BLOCKNR_HC(Card_CSD);
+                                else
+                                  *(DWORD*)buff = SD_CSD_BLOCKNR(Card_CSD);
                                 res = RES_OK;
                                 break;
 
@@ -1331,28 +1385,8 @@ DRESULT disk_ioctl (
                                 break;
 
                         case GET_BLOCK_SIZE :   /* Get erase block size in unit of sector (DWORD) */
-                          // only used in f_mkfs
-#if 0
-                                if (CardType & CT_SD2) {        /* SDv2? */
-                                        if (send_cmd(ACMD13, 0) == 0) { /* Read SD status */
-                                                rcvr_spi();
-                                                if (rcvr_datablock(csd, 16)) {                          /* Read partial block */
-                                                        for (n = 64 - 16; n; n--) rcvr_spi();   /* Purge trailing data */
-                                                        *(DWORD*)buff = 16UL << (csd[10] >> 4);
-                                                        res = RES_OK;
-                                                }
-                                        }
-                                } else {                                        /* SDv1 or MMCv3 */
-                                        if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {      /* Read CSD */
-                                                if (CardType & CT_SD1) {        /* SDv1 */
-                                                        *(DWORD*)buff = (((csd[10] & 63) << 1) + ((WORD)(csd[11] & 128) >> 7) + 1) << ((csd[13] >> 6) - 1);
-                                                } else {                                        /* MMCv3 */
-                                                        *(DWORD*)buff = ((WORD)((csd[10] & 124) >> 2) + 1) * (((csd[11] & 3) << 3) + ((csd[11] & 224) >> 5) + 1);
-                                                }
-                                                res = RES_OK;
-                                        }
-                                }
-#endif
+                                *(WORD*)buff = 1;
+                                res = RES_OK;
                                 break;
 
 #if 0

@@ -281,13 +281,10 @@ unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
     media->blockSize = SD_BLOCK_SIZE;
     media->baseAddress = 0;
 
-#define SD_CSD(csd, bitfield, bits)   ((csd[3-(bitfield)/32] >> ((bitfield)%32)) & ((1 << (bits)) - 1))
-
-#define SD_CSD_C_SIZE_HC(csd)          ((SD_CSD(csd, 64,  6) << 16) + \
-                                        (SD_CSD(csd, 56,  8) << 8)  + \
-                                        SD_CSD(csd, 48,  8)) ///< Device size v2.0 High Capacity
-
-    media->size = ((SD_CSD_C_SIZE_HC(Card_CSD) + 1) * 1024);
+    if (Cmd_A41_resp & OCR_SD_CCS)
+      media->size = SD_CSD_BLOCKNR_HC(Card_CSD);
+    else
+      media->size = SD_CSD_BLOCKNR(Card_CSD);
 
     media->mappedRD  = 0;
     media->mappedWR  = 0;

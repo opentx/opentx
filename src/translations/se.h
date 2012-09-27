@@ -427,6 +427,6 @@
 #define TR_COPY_FILE           "Kopia"
 #define TR_RENAME_FILE         "Byt namn"
 #define TR_REMOVED             " raderad"
-#define TR_SD_INFO             "Infos"
+#define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Format"
 #define TR_NA                  "N/A"

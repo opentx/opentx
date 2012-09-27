@@ -50,14 +50,14 @@ void init_SDcard()
   pMciHw->HSMCI_DTOR = HSMCI_DTOR_DTOCYC_Msk | HSMCI_DTOR_DTOMUL_Msk ;  /* Set the Data Timeout Register */
   pMciHw->HSMCI_CSTOR = HSMCI_CSTOR_CSTOCYC_Msk | HSMCI_CSTOR_CSTOMUL_Msk ;  /* CSTOR ? */
   /* Set the Mode Register: 400KHz for MCK = 48MHz (CLKDIV = 58) */
-  clkDiv = (Master_frequency / (MCI_INITIAL_SPEED * 2)) - 1;
+  clkDiv = 45; // (Master_frequency / (MCI_INITIAL_SPEED * 2)) - 1;
   pMciHw->HSMCI_MR = clkDiv | (7 << 8) ;
 
   /* Set the SDCard Register 1-bit, slot A */
   pMciHw->HSMCI_SDCR = HSMCI_SDCR_SDCSEL_SLOTA | HSMCI_SDCR_SDCBUS_1 ;
   /* Enable the MCI and the Power Saving */
-  pMciHw->HSMCI_CR = HSMCI_CR_MCIEN | HSMCI_CR_PWSEN ;
+  pMciHw->HSMCI_CR = HSMCI_CR_MCIEN/* | HSMCI_CR_PWSEN */;
   /* Configure MCI */
-  pMciHw->HSMCI_CFG = HSMCI_CFG_FIFOMODE | ((1 << 4) & HSMCI_CFG_FERRCTRL);
+  pMciHw->HSMCI_CFG = HSMCI_CFG_FIFOMODE | HSMCI_CFG_FERRCTRL;
 #endif
 }
