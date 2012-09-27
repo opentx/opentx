@@ -777,7 +777,9 @@ void menuProcSd(uint8_t event)
       }
       else if (result == STR_SD_FORMAT) {
         if (f_mkfs(0, 1, 0) == FR_OK) {
+#if defined(PCBARM)
           sdAvailableAudioFiles = 0;
+#endif
           f_chdir("/");
           reusableBuffer.sd.offset = -1;
         }
