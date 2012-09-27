@@ -569,7 +569,10 @@ void menuProcSdInfo(uint8_t event)
 #endif
 
   lcd_putsLeft(5*FH, PSTR("Speed:"));
-  // lcd_outdezAtt(10*FW, 5*FH, transSpeed/1000, LEFT);
+#if defined(PCBARM)
+  lcd_outdezAtt(10*FW, 5*FH, transSpeed/1000, LEFT);
+  lcd_puts(lcdLastPos, 5*FH, "kb/s");
+#endif
 
   lcd_putsLeft(7*FH, PSTR("CSD:"));
 }

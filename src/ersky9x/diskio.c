@@ -90,6 +90,7 @@ uint32_t Sd_rca ;
 uint32_t Cmd_8_resp ;
 uint32_t Cmd_A41_resp ;
 uint8_t  cardType;
+uint32_t transSpeed;
 
 /*-----------------------------------------------------------------------*/
 /* Lock / unlock functions                                               */
@@ -116,6 +117,69 @@ int ff_del_syncobj (_SYNC_t mutex)
   return 1;
 }
 
+//------------------------------------------------------------------------------
+/// Get Trans Speed Value (Kbit/s)
+/// \param tranSpeed The TRAN_SPEED value from SD(IO)/MMC enum information.
+/// \param unitList  Transfer rate units (Kbit/s), 4 units listed.
+/// \param nbUnits   Transfer rate units list size.
+/// \param codeList  Time value codes list, 16 codes listed.
+//------------------------------------------------------------------------------
+static unsigned int MmcGetTranSpeed(unsigned int tranSpeed,
+                            const unsigned int* unitList, unsigned int nbUnits,
+                            const unsigned int* codeList)
+{
+    unsigned int unit, value;
+    unit = tranSpeed & 0x7;
+    if (unit < nbUnits) unit = unitList[unit];
+    else                return 0;
+    value = (tranSpeed >> 3) & 0xF;
+    if (value < 16)   value = codeList[value];
+    else                return 0;
+    return (unit * value);
+}
+
+//------------------------------------------------------------------------------
+/// Get Trans Speed Value
+/// \param pSd
+//------------------------------------------------------------------------------
+uint32_t GetTransSpeedValue()
+{
+    // CSD register, TRANS_SPEED bit
+    const unsigned int units[4] = {10, 100, 1000, 10000 }; // *Kbit/s
+    const unsigned int values_emmc[16] = {0, 10, 12, 13, 15, 20,
+                                          26, 30, 35, 40, 45, 52,
+                                          55, 60, 70, 80};
+    const unsigned int values_sdmmc[16] = {0, 10, 12, 13, 15, 20,
+                                           25, 30, 35, 40, 45, 50,
+                                           55, 60, 70, 80};
+  #if 0
+    unsigned int unit, value;
+    unit = (SD_CSD_TRAN_SPEED(pSd) & 0x7);
+    if(unit < 4)    unit  = units[unit];
+    else            return;
+    value = (SD_CSD_TRAN_SPEED(pSd) >> 3) & 0xF;
+    if (value < 16) {
+        if (pSd->cardType >= CARD_MMC && SD_CID_BGA(pSd) == 1) {
+            value = values_emmc[value];
+        }
+        else
+            value = values_sdmmc[value];
+    }
+    else            return;
+    pSd->transSpeed = (unit * value);
+  #else
+    transSpeed = MmcGetTranSpeed(SD_CSD_TRAN_SPEED(Card_CSD),
+                                      units, 4,
+                                      values_sdmmc);
+  #endif
+    /*if (pSd->cardType >= CARD_MMC && SD_EXTCSD_HS_TIMING(pSd)) {
+        pSd->transSpeed *= 2;
+    }*/
+    TRACE_ERROR("-I- SD/MMC TRANS SPEED %d KBit/s\r\n", transSpeed);
+    transSpeed *= 1000;
+    return transSpeed;
+}
+
 /**
  * Configure the  MCI CLKDIV in the MCI_MR register. The max. for MCI clock is
  * MCK/2 and corresponds to CLKDIV = 0
@@ -125,22 +189,33 @@ int ff_del_syncobj (_SYNC_t mutex)
 uint32_t sdSetSpeed(uint32_t mciSpeed )
 {
   uint32_t mciMr;
-  uint32_t clkdiv;
+  uint32_t clkdiv, divLimit;
 
-  mciMr = HSMCI->HSMCI_MR & (~(uint32_t) HSMCI_MR_CLKDIV_Msk);
+  mciMr = HSMCI->HSMCI_MR & (~(uint32_t)HSMCI_MR_CLKDIV_Msk);
   /* Multimedia Card Interface clock (MCCK or MCI_CK) is Master Clock (MCK)
    * divided by (2*(CLKDIV+1))
    * mciSpeed = MCK / (2*(CLKDIV+1)) */
   if (mciSpeed > 0) {
+
+#if 1
+    divLimit = (Master_frequency / 2 / mciSpeed);
+    if ((Master_frequency / 2) % mciSpeed) divLimit ++;
+
+    clkdiv = (Master_frequency / 2 / mciSpeed);
+    if (mciSpeed && clkdiv < divLimit)
+      clkdiv = divLimit;
+    if (clkdiv > 0)
+      clkdiv -= 1;
+#else
     clkdiv = (Master_frequency / 2 / mciSpeed);
     /* Speed should not bigger than expired one */
     if (mciSpeed < Master_frequency / 2 / clkdiv) {
       clkdiv++;
     }
-
     if (clkdiv > 0) {
       clkdiv -= 1;
     }
+#endif
   }
   else {
     clkdiv = 0;
@@ -241,7 +316,7 @@ const char * sdCmd0()
   return sdCommand(SDMMC_GO_IDLE_STATE, 0);
 }
 
-#if 1
+#if 0
 #define SDIO_SEND_OP_COND           (5 | HSMCI_CMDR_SPCMD_STD \
                                        | HSMCI_CMDR_TRCMD_NO_DATA \
                                        | HSMCI_CMDR_RSPTYP_48_BIT \
@@ -249,7 +324,7 @@ const char * sdCmd0()
 
 const char * sdCmd5(uint32_t *pIo)
 {
-  const char * result = sdCommand(SDIO_SEND_OP_COND, 0);
+  const char * result = sdCommand(SDIO_SEND_OP_COND, *pIo);
   if (result)
     return result;
   *pIo = HSMCI->HSMCI_RSPR[0];
@@ -299,8 +374,6 @@ const char * sdCmd13(unsigned int *status)
 
 uint32_t sdCmd16()
 {
-#if 1
-
   Hsmci *phsmci = HSMCI;
 
   if (CardIsConnected()) {
@@ -318,9 +391,6 @@ uint32_t sdCmd16()
   else {
     return 0;
   }
-#else
-  return 0;
-#endif
 }
 
 #define SD_SD_SEND_OP_COND          (41| HSMCI_CMDR_SPCMD_STD \
@@ -496,8 +566,11 @@ const char * sdAcmd6()
     return result;
 
   sdSetBusWidth( HSMCI_SDCR_SDCBUS_4 ) ;
-  sdSetSpeed(21000000);
-  sdEnableHsMode(1);
+  
+  GetTransSpeedValue();
+  sdSetSpeed(transSpeed/*9000000*/);
+  
+  // TODO + Cmd6? sdEnableHsMode(1);
 
   if (Cmd_A41_resp & OCR_SD_CCS)
     sdCmd16();
@@ -885,10 +958,10 @@ void retrieveAvailableAudioFiles();
 
 void sdPoll10mS()
 {
-  //if (!Card_initialized)
-    //return;
+  if (!Card_initialized)
+    return;
 
-  if (!CardIsConnected() || Card_state == SD_ST_STARTUP) {
+  if (!CardIsConnected()) {
     Card_state = SD_ST_EMPTY;
     Sd_rca = 0;
     sdErrorCount = 0;
@@ -951,8 +1024,6 @@ void sdPoll10mS()
 
 void sdInit()
 {
-  uint8_t i;
-
   Sd_rca = 0;
   sdErrorCount = 0;
 
@@ -967,6 +1038,7 @@ void sdInit()
   sdCmd8(1);
 
 #if 0
+  uint8_t i;
   uint32_t status;
   for (i=0; i<100; i++)
     sdCmd5(&status);
