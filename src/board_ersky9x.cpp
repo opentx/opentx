@@ -55,9 +55,6 @@ volatile uint32_t Tenms ;
 /** Pins description corresponding to Rxd,Txd, (UART pins) */
 #define SECOND_PINS        {PINS_USART0}
 
-#define BT_USART       UART1
-#define BT_ID          ID_UART1
-
 #define CPU_INT         int32_t
 #define CPU_UINT        uint32_t
 

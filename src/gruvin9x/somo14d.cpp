@@ -40,9 +40,7 @@
  old DSM2 code) which seemed to much for the interrupt. 
  */
 
-#ifndef SIMU
-#include "open9x.h"
-#endif
+#include "../open9x.h"
 
 // Start and stop bits need to be 2ms in duration. Start bit is low, stop bit is high
 #define SOMOSSBIT    4 //The 2ms of a stop/start bit

@@ -604,6 +604,10 @@ extern uint32_t transSpeed;
 #define BOARD_USART_BASE           USART1
 #define BOARD_ID_USART             ID_USART1
 
+// BlueTooth
+#define BT_USART       UART1
+#define BT_ID          ID_UART1
+
 //------------------------------------------------------------------------------
 
 

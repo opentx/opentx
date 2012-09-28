@@ -287,7 +287,9 @@ namespace simu {
 #include <direct.h>
 #endif
 
+#if defined(PCBARM)
 FATFS g_FATFS_Obj;
+#endif
 
 FRESULT f_stat (const TCHAR*, FILINFO*)
 {
@@ -410,6 +412,9 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
   return FR_OK;
 }
 
+#if defined(PCBARM)
 int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
+#endif
+
 #endif
