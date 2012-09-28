@@ -548,7 +548,7 @@ extern uint32_t transSpeed;
 
 #define SD_GET_SPEED()                 (transSpeed)
 
-#define SD_GET_SIZE_MB()               (SD_GET_BLOCKNR() / 2)
+#define SD_GET_SIZE_MB()               (SD_GET_BLOCKNR() / 2048)
 
 //------------------------------------------------------------------------------
 
