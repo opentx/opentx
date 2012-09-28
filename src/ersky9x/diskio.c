@@ -38,6 +38,7 @@
 /* are platform dependent.                                               */
 /*-----------------------------------------------------------------------*/
 
+#include <string.h>
 #include "board.h"
 #include "debug.h"
 #include "../FatFs/diskio.h"
@@ -146,9 +147,9 @@ uint32_t GetTransSpeedValue()
 {
     // CSD register, TRANS_SPEED bit
     const unsigned int units[4] = {10, 100, 1000, 10000 }; // *Kbit/s
-    const unsigned int values_emmc[16] = {0, 10, 12, 13, 15, 20,
+/*    const unsigned int values_emmc[16] = {0, 10, 12, 13, 15, 20,
                                           26, 30, 35, 40, 45, 52,
-                                          55, 60, 70, 80};
+                                          55, 60, 70, 80}; */
     const unsigned int values_sdmmc[16] = {0, 10, 12, 13, 15, 20,
                                            25, 30, 35, 40, 45, 50,
                                            55, 60, 70, 80};
@@ -1011,7 +1012,7 @@ void sdPoll10mS()
       break;
 
     case SD_ST_DATA:
-      if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
+      if (!usbPlugged() && f_mount(0, &g_FATFS_Obj) == FR_OK) {
         retrieveAvailableAudioFiles();
         Card_state = SD_ST_MOUNTED;
       }
@@ -1115,7 +1116,6 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
       while (((status & STATUS_READY_FOR_DATA) == 0)
           || ((status & STATUS_STATE) != STATUS_TRAN) );
 
-
       // Block size = 512, nblocks = 1
       HSMCI->HSMCI_BLKR = ((512) << 16) | 1;
       HSMCI->HSMCI_MR   = (HSMCI->HSMCI_MR & (~(HSMCI_MR_BLKLEN_Msk|HSMCI_MR_FBYTE))) | (HSMCI_MR_PDCMODE|HSMCI_MR_WRPROOF|HSMCI_MR_RDPROOF) | (512 << 16);
@@ -1124,9 +1124,13 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
       HSMCI->HSMCI_RCR  = 512 / 4;
       HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTEN;
       HSMCI->HSMCI_CMDR = SD_READ_SINGLE_BLOCK;
-        
+
+      while (!(HSMCI->HSMCI_SR & HSMCI_SR_CMDRDY));
+
+      (void) HSMCI->HSMCI_RSPR[0];
+
       while (1) {
-        if ((HSMCI->HSMCI_SR & (HSMCI_SR_ENDRX|HSMCI_SR_XFRDONE|HSMCI_SR_CMDRDY)) == (HSMCI_SR_ENDRX|HSMCI_SR_XFRDONE|HSMCI_SR_CMDRDY)) {
+        if ((HSMCI->HSMCI_SR & (HSMCI_SR_ENDRX|HSMCI_SR_XFRDONE)) == (HSMCI_SR_ENDRX|HSMCI_SR_XFRDONE)) {
           result = 1;
           break;
         }
@@ -1136,8 +1140,6 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
   /* Disable PDC */
   HSMCI->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
   HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
-
-  (void) HSMCI->HSMCI_RSPR[0];
 
   // TRACE_ERROR("ok %.2X %.4Xd\n\r", HSMCI->HSMCI_SR, HSMCI->HSMCI_RSPR[0]);
 
@@ -1169,16 +1171,16 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 
     while (!(HSMCI->HSMCI_SR & HSMCI_SR_CMDRDY));
 
+    (void) HSMCI->HSMCI_RSPR[0];
+
     HSMCI->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
 
     while (1) {
-      if ((HSMCI->HSMCI_SR & (HSMCI_SR_NOTBUSY|HSMCI_SR_XFRDONE|HSMCI_SR_CMDRDY)) == (HSMCI_SR_NOTBUSY|HSMCI_SR_XFRDONE|HSMCI_SR_CMDRDY)) {
+      if ((HSMCI->HSMCI_SR & (HSMCI_SR_NOTBUSY|HSMCI_SR_XFRDONE)) == (HSMCI_SR_NOTBUSY|HSMCI_SR_XFRDONE)) {
         result = 1;
         break;
       }
     }
-
-    (void) HSMCI->HSMCI_RSPR[0];
   }
 
   /* Disable PDC */
@@ -1309,13 +1311,16 @@ DRESULT disk_read (
                                    )
 {
         uint32_t result ;
+        BYTE copy[512];
+
         if (drv || !count) return RES_PARERR;
 
         if ( sd_card_ready() == 0 ) return RES_NOTRDY;
 
         do {
-          result = sd_read_block( sector, ( uint32_t *)buff ) ;
+          result = sd_read_block( sector, (uint32_t *)copy) ;
           if (result) {
+            memcpy(buff, copy, 512);
             sector += 1 ;
             buff += 512 ;
             count -= 1 ;
@@ -1352,7 +1357,6 @@ DRESULT disk_write (
         uint32_t result ;
         BYTE copy[512];
 
-
         if (drv || !count) return RES_PARERR;
 
         if ( sd_card_ready() == 0 ) return RES_NOTRDY;
@@ -1367,14 +1371,9 @@ DRESULT disk_write (
 
             result = sd_write_block( sector, ( uint32_t *)copy ) ;
 
-            if (memcmp(copy, buff, 512))
-              s_warning = "Mem overflow";
-
             sd_read_block( sector, ( uint32_t *)copy ) ;
 
             if (!memcmp(copy, buff, 512))
-              /*s_warning = "Read != Write";
-            else*/
               break;
             else {
               TRACE_ERROR("Block %d ko SR=%.2X\r\n", sector, HSMCI->HSMCI_SR);

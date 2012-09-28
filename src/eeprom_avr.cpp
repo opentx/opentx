@@ -578,17 +578,24 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     return SDCARD_ERROR(result);
   }
 
-  result = f_write(&archiveFile, &g_eeGeneral.myVers, 1, &written);
-  if (result != FR_OK) {
-    return SDCARD_ERROR(result);
-  }
-
   EFile theFile2;
   theFile2.openRd(FILE_MODEL(i_fileSrc));
 
+  *(uint32_t*)&buf[0] = O9X_FOURCC;
+  buf[4] = g_eeGeneral.myVers;
+  buf[5] = 'M';
+  *(uint16_t*)&buf[6] = theFile2.size();
+
+  result = f_write(&archiveFile, buf, 8, &written);
+  if (result != FR_OK || written != 8) {
+    f_close(&archiveFile);
+    return SDCARD_ERROR(result);
+  }
+
   while ((len=theFile2.read((uint8_t *)buf, 15))) {
     result = f_write(&archiveFile, (uint8_t *)buf, len, &written);
-    if (result != FR_OK) {
+    if (result != FR_OK || written != len) {
+      f_close(&archiveFile);
       return SDCARD_ERROR(result);
     }
   }
@@ -613,13 +620,18 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     return SDCARD_ERROR(result);
   }
 
-  result = f_read(&restoreFile, (uint8_t *)buf, 1, &read);
-  if (result != FR_OK || read != 1) {
+  if (f_size(&restoreFile) < 8) {
+    f_close(&restoreFile);
+    return STR_INCOMPATIBLE;
+  }
+
+  result = f_read(&restoreFile, (uint8_t *)buf, 8, &read);
+  if (result != FR_OK || read != 8) {
+    f_close(&restoreFile);
     return SDCARD_ERROR(result);
   }
 
-  if ((uint8_t)buf[0] != EEPROM_VER) {
-    // TODO conversions
+  if (*(uint32_t*)&buf[0] != O9X_FOURCC || (uint8_t)buf[4] != EEPROM_VER || buf[5] != 'M') {
     f_close(&restoreFile);
     return STR_INCOMPATIBLE;
   }
@@ -634,12 +646,14 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     result = f_read(&restoreFile, (uint8_t *)buf, 15, &read);
     if (result != FR_OK) {
       s_sync_write = false;
+      f_close(&restoreFile);
       return SDCARD_ERROR(result);
     }
     if (read > 0) {
       theFile.write((uint8_t *)buf, read);
       if (write_errno() != 0) {
         s_sync_write = false;
+        f_close(&restoreFile);
         return STR_EEPROMOVERFLOW;
       }
     }

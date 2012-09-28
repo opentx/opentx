@@ -541,40 +541,26 @@ extern uint32_t sdAvailableAudioFiles; // TODO move that!
 #endif
 
 #if defined(SDCARD)
-#if defined(PCBARM) && !defined(SIMU)
-// TODO rewrite this ...
-extern uint32_t Cmd_A41_resp;
-#define OCR_SD_CCS             (1UL << 30)
-#else
-#define Cmd_A41_resp 0
-#define OCR_SD_CCS             (0)
-#endif
-
 void menuProcSdInfo(uint8_t event)
 {
   SIMPLE_SUBMENU(PSTR("SD INFO"), 1);
 
   lcd_putsLeft(2*FH, PSTR("Type:"));
+  lcd_puts(10*FW, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
+
   lcd_putsLeft(3*FH, PSTR("Size:"));
+  lcd_outdezAtt(10*FW, 3*FH, SD_GET_SIZE_MB(), LEFT);
+  lcd_putc(lcdLastPos, 3*FH, 'M');
 
   lcd_putsLeft(4*FH, PSTR("Sectors:"));
-#if defined(PCBARM)
-  if (Cmd_A41_resp & OCR_SD_CCS) {
-    lcd_outdezAtt(10*FW, 4*FH, (SD_CSD_C_SIZE_HC(Card_CSD) + 1), LEFT);
-    lcd_putc(lcdLastPos, 4*FH, 'k');
-  }
-  else {
-    lcd_outdezAtt(10*FW, 4*FH, SD_CSD_C_SIZE(Card_CSD), LEFT);
-  }
-#endif
+  lcd_outdezAtt(10*FW, 4*FH, SD_GET_BLOCKNR()/1000, LEFT);
+  lcd_putc(lcdLastPos, 4*FH, 'k');
 
   lcd_putsLeft(5*FH, PSTR("Speed:"));
-#if defined(PCBARM)
-  lcd_outdezAtt(10*FW, 5*FH, transSpeed/1000, LEFT);
+  lcd_outdezAtt(10*FW, 5*FH, SD_GET_SPEED()/1000, LEFT);
   lcd_puts(lcdLastPos, 5*FH, "kb/s");
-#endif
 
-  lcd_putsLeft(7*FH, PSTR("CSD:"));
+  // lcd_putsLeft(7*FH, PSTR("CSD:"));
 }
 
 void menuProcSd(uint8_t event)
@@ -595,7 +581,7 @@ void menuProcSd(uint8_t event)
     event = 0;
   }
 
-  SIMPLE_MENU(Cmd_A41_resp & OCR_SD_CCS ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
+  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
 
   if (s_editMode > 0)
     s_editMode = 0;

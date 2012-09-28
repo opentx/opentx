@@ -81,6 +81,18 @@ extern uint32_t sd_card_mounted();
 #define sd_card_mounted() (true)
 #endif
 
+#if defined(PCBARM)
+#define O9X_FOURCC 0x32783967 // o9x for sky9x
+#elif defined(PCBV4)
+#define O9X_FOURCC 0x31783967 // o9x for gruvin9x
+#endif
+
+#if defined(PCBV4)
+#define SD_IS_HC() (0)
+#define SD_GET_BLOCKNR() (0)
+#define SD_GET_SIZE_MB() (0)
+#define SD_GET_SPEED() (0)
+#endif
 
 #endif
 

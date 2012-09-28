@@ -428,7 +428,6 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
 {
   CoEnterMutexSection(audioMutex);
 
-
   if (tFlags & PLAY_SOUND_VARIO) {
     background.freq = tFreq * 2;
     background.duration = tLen;
@@ -495,6 +494,17 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 
   CoLeaveMutexSection(audioMutex);
 #endif
+}
+
+void AudioQueue::stopSD()
+{
+  sdAvailableAudioFiles = 0;
+
+  CoEnterMutexSection(audioMutex);
+  widx = ridx;                      // clean the queue
+  CoLeaveMutexSection(audioMutex);
+
+  play(0, 0, 100, PLAY_NOW);        // insert a 100ms pause
 }
 #endif
 

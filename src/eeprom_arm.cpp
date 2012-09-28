@@ -982,20 +982,25 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     return SDCARD_ERROR(result);
   }
 
-  result = f_write(&archiveFile, &g_eeGeneral.myVers, 1, &written);
-  if (result != FR_OK) {
+  uint16_t size = File_system[i_fileSrc+1].size;
+
+  *(uint32_t*)&buf[0] = O9X_FOURCC;
+  buf[4] = g_eeGeneral.myVers;
+  buf[5] = 'M';
+  *(uint16_t*)&buf[6] = size;
+
+  result = f_write(&archiveFile, buf, 8, &written);
+  if (result != FR_OK || written != 8) {
+    f_close(&archiveFile);
     return SDCARD_ERROR(result);
   }
 
-  uint16_t size = File_system[i_fileSrc+1].size ;
   read32_eeprom_data( (File_system[i_fileSrc+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, size) ;
-
   result = f_write(&archiveFile, (uint8_t *)&Eeprom_buffer.data.model_data, size, &written);
-  if (result != FR_OK) {
+  f_close(&archiveFile);
+  if (result != FR_OK || written != size) {
     return SDCARD_ERROR(result);
   }
-
-  f_close(&archiveFile);
 
   strcpy(statusLineMsg, PSTR("File "));
   strcpy(statusLineMsg+5, &buf[sizeof(MODELS_PATH)]);
@@ -1024,26 +1029,34 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     return SDCARD_ERROR(result);
   }
 
-  result = f_read(&restoreFile, (uint8_t *)buf, 1, &read);
-  if (result != FR_OK || read != 1) {
-    return SDCARD_ERROR(result);
-  }
-
-  if ((uint8_t)buf[0] != EEPROM_VER) {
-    // TODO conversions
+  if (f_size(&restoreFile) < 8) {
     f_close(&restoreFile);
     return STR_INCOMPATIBLE;
   }
+
+  result = f_read(&restoreFile, (uint8_t *)buf, 8, &read);
+  if (result != FR_OK || read != 8) {
+    f_close(&restoreFile);
+    return SDCARD_ERROR(result);
+  }
+
+  if (*(uint32_t*)&buf[0] != O9X_FOURCC || (uint8_t)buf[4] != EEPROM_VER || buf[5] != 'M') {
+    f_close(&restoreFile);
+    return STR_INCOMPATIBLE;
+  }
+
+  uint16_t size = max((uint16_t)sizeof(g_model), *(uint16_t*)&buf[6]);
 
   if (eeModelExists(i_fileDst)) {
     eeDeleteModel(i_fileDst);
   }
 
-  result = f_read(&restoreFile, ( uint8_t *)&Eeprom_buffer.data.model_data, sizeof(g_model), &read);
+  memset((uint8_t *)&Eeprom_buffer.data.model_data, 0, sizeof(g_model));
+  result = f_read(&restoreFile, ( uint8_t *)&Eeprom_buffer.data.model_data, size, &read);
   f_close(&restoreFile);
 
-  if (result != FR_OK) {
-    return SDCARD_ERROR(result);
+  if (result != FR_OK || read != read) {
+    return STR_INCOMPATIBLE;
   }
 
   // TODO flash saving ...
@@ -1053,9 +1066,9 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     memset(ModelNames[i_fileDst], 0, sizeof(g_model.name));
 
   Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
-  Eeprom32_data_size = sizeof(g_model) ;                                  // This much
-  Eeprom32_file_index = i_fileDst + 1 ;                                         // This file system entry
-  Eeprom32_process_state = E32_BLANKCHECK ;
+  Eeprom32_data_size = sizeof(g_model);                                   // This much
+  Eeprom32_file_index = i_fileDst + 1;                                    // This file system entry
+  Eeprom32_process_state = E32_BLANKCHECK;
   eeWaitFinished();
 
   return NULL;

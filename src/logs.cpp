@@ -45,8 +45,8 @@ const pm_char * openLogs()
   DIR folder;
   char filename[24];
 
-  // close any file left open. E.G. Changing models with log switch still on.
-  if (g_oLogFile.fs) f_close(&g_oLogFile);
+  if (!sd_card_mounted())
+    return STR_NO_SDCARD;
 
   strcpy_P(filename, STR_LOGS_PATH);
 
@@ -130,16 +130,25 @@ void closeLogs()
   lastLogTime = 0;
 }
 
+// when disk full
 void writeLogs()
 {
+  static const pm_char * error_displayed = NULL;
+
   if (isFunctionActive(FUNC_LOGS) && logDelay > 0) {
     tmr10ms_t tmr10ms = get_tmr10ms();
     if (lastLogTime == 0 || (tmr10ms_t)(tmr10ms - lastLogTime) >= (tmr10ms_t)logDelay*10) {
       lastLogTime = tmr10ms;
 
       if (!g_oLogFile.fs) {
-        if (!sd_card_mounted() || openLogs() != 0)
+        const pm_char * result = openLogs();
+        if (result != NULL) {
+          if (result != error_displayed) {
+            error_displayed = result;
+            s_global_warning = result;
+          }
           return;
+        }
       }
 
 #if defined(PCBV4)
@@ -183,12 +192,14 @@ void writeLogs()
 #endif
 
 #if defined(WS_HOW_HIGH)
-    if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
+      if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
         f_printf(&g_oLogFile, "%d,", frskyData.hub.baroAltitude_bp);
+      }
 #endif
 
-      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++)
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
+      }
 
       f_printf(&g_oLogFile, "%d,", keyState(SW_ThrCt));
       f_printf(&g_oLogFile, "%d,", keyState(SW_RuddDR));
@@ -198,8 +209,16 @@ void writeLogs()
       f_printf(&g_oLogFile, "%d,", keyState(SW_ID2));
       f_printf(&g_oLogFile, "%d,", keyState(SW_AileDR));
       f_printf(&g_oLogFile, "%d,", keyState(SW_Gear));
-      f_printf(&g_oLogFile, "%d\n", keyState(SW_Trainer));
+      if (f_printf(&g_oLogFile, "%d\n", keyState(SW_Trainer)) < 0 && !error_displayed) {
+        error_displayed = STR_SDCARD_ERROR;
+        s_global_warning = STR_SDCARD_ERROR;
+      }
     }
+  }
+  else {
+    error_displayed = NULL;
+    if (g_oLogFile.fs)
+      closeLogs();
   }
 }
 

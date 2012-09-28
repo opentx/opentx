@@ -31,6 +31,8 @@
  *
  */
 
+// TODO merge this file with board_ersky9x.h
+
 #ifndef board_h
 #define board_h
 
@@ -89,7 +91,7 @@
 #define BOARD_MAINOSC           12000000
 
 /// Master clock frequency (when using board_lowlevel.c).
-#define BOARD_MCK               64000000
+// #define BOARD_MCK               64000000
 
 //------------------------------------------------------------------------------
 // ADC
@@ -358,6 +360,8 @@
 #define PIN_USB_VBUS    {1 << 21, PIOC, ID_PIOC, PIO_INPUT, PIO_DEFAULT}
 #endif
 
+#define usbPlugged() (PIOC->PIO_PDSR & PIO_PC25)
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -539,56 +543,12 @@ extern uint32_t transSpeed;
 
 #define SD_CSD_BLOCKNR_HC(pSd)         ((SD_CSD_C_SIZE_HC(pSd) + 1) * 1024)
 
-/*
-#define BOARD_PSRAM_PINS            PIN_EBI_DATA_BUS, PIN_EBI_NCS0, PIN_EBI_NRD, PIN_EBI_NWE, \
-                                        PIN_EBI_PSRAM_ADDR_BUS, PIN_EBI_PSRAM_NBS, PIN_EBI_A1
-*/
+#define SD_IS_HC()                     (Cmd_A41_resp & OCR_SD_CCS)
+#define SD_GET_BLOCKNR()               (SD_IS_HC() ? (SD_CSD_BLOCKNR_HC(Card_CSD)) : (SD_CSD_BLOCKNR(Card_CSD)))
 
-/** Indicates board has an ILI9325 external component to manage LCD. */
-#define BOARD_LCD_ILI9325
+#define SD_GET_SPEED()                 (transSpeed)
 
-/** LCD pins definition. */
-#define BOARD_LCD_PINS              PIN_EBI_DATA_BUS, PIN_EBI_NRD, PIN_EBI_NWE, \
-                                        PIN_EBI_NCS1, PIN_EBI_LCD_RS
-/** Backlight pin definition. */
-#define BOARD_BACKLIGHT_PIN         {1 << 13, PIOC, ID_PIOC, PIO_OUTPUT_0, PIO_DEFAULT}
-/** Define ILI9325 base address. */
-#define BOARD_LCD_BASE              0x61000000
-/** Define ILI9325 register select signal. */
-#define BOARD_LCD_RS                (1 << 1)
-/** Display width in pixels. */
-#define BOARD_LCD_WIDTH             240
-/** Display height in pixels. */
-#define BOARD_LCD_HEIGHT            320
-
-/** Indicates board has an ADS7843 external component to manage Touch Screen */
-#define BOARD_TSC_ADS7843
-
-#ifdef BOARD_REV_A
-/** Touchscreen controller IRQ pin definition. */
-#define PIN_TCS_IRQ        {PIO_PA4, PIOA, ID_PIOA, PIO_INPUT, PIO_DEBOUNCE | PIO_IT_AIME | PIO_IT_EDGE}
-#define PIN_TCS_IRQ_WUP_ID (1 << 3)
-/** Touchscreen controller Busy pin definition. */
-#define PIN_TCS_BUSY {PIO_PA5, PIOA, ID_PIOA, PIO_INPUT, PIO_PULLUP}
-#endif
-#ifdef BOARD_REV_B
-/** Touchscreen controller IRQ pin definition. */
-#define PIN_TCS_IRQ        {PIO_PA16, PIOA, ID_PIOA, PIO_INPUT, PIO_DEBOUNCE | PIO_IT_AIME | PIO_IT_EDGE}
-#define PIN_TCS_IRQ_WUP_ID (1 << 15)
-/** Touchscreen controller Busy pin definition. */
-#define PIN_TCS_BUSY {PIO_PA17, PIOA, ID_PIOA, PIO_INPUT, PIO_PULLUP}
-#endif
-
-/** Base address of SPI peripheral connected to the touchscreen controller. */
-#define BOARD_TSC_SPI_BASE         SPI
-/** Identifier of SPI peripheral connected to the touchscreen controller. */
-#define BOARD_TSC_SPI_ID           ID_SPI
-/** Pins of the SPI peripheral connected to the touchscreen controller. */
-#define BOARD_TSC_SPI_PINS         PINS_SPI
-/** Chip select connected to the touchscreen controller. */
-#define BOARD_TSC_NPCS             0
-/** Chip select pin connected to the touchscreen controller. */
-#define BOARD_TSC_NPCS_PIN         PIN_SPI_NPCS0_PA11
+#define SD_GET_SIZE_MB()               (SD_GET_BLOCKNR() / 2)
 
 //------------------------------------------------------------------------------
 

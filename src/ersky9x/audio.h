@@ -77,6 +77,8 @@ class AudioQueue {
 
     void pause(uint8_t tLen);
 
+    void stopSD();
+
     bool isPlaying(uint8_t id);
 
     bool busy()

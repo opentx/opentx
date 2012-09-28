@@ -50,6 +50,8 @@ extern void sdInit();
 extern void sdPoll10mS();
 }
 
+void usbMassStorage();
+
 #define PIN_ENABLE           0x001
 #define PIN_PERIPHERAL       0x000
 #define PIN_INPUT            0x002
@@ -86,8 +88,6 @@ extern uint32_t read_keys();
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
-
-#define usbPlugged() (PIOC->PIO_PDSR & PIO_PC25)
 
 #if defined(REVB)
 extern uint16_t Current_analogue;
