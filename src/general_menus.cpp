@@ -544,7 +544,7 @@ extern uint32_t sdAvailableAudioFiles; // TODO move that!
 void menuProcSdInfo(uint8_t event)
 {
   SIMPLE_SUBMENU(PSTR("SD INFO"), 1);
-#if !defined(SIMU)
+
   lcd_putsLeft(2*FH, PSTR("Type:"));
   lcd_puts(10*FW, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
 
@@ -561,7 +561,6 @@ void menuProcSdInfo(uint8_t event)
   lcd_puts(lcdLastPos, 5*FH, "kb/s");
 
   // lcd_putsLeft(7*FH, PSTR("CSD:"));
-#endif  
 }
 
 void menuProcSd(uint8_t event)
@@ -582,9 +581,7 @@ void menuProcSd(uint8_t event)
     event = 0;
   }
 
-#if !defined(SIMU)
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
-#endif  
 
   if (s_editMode > 0)
     s_editMode = 0;

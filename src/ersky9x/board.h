@@ -543,12 +543,14 @@ extern uint32_t transSpeed;
 
 #define SD_CSD_BLOCKNR_HC(pSd)         ((SD_CSD_C_SIZE_HC(pSd) + 1) * 1024)
 
+#if !defined(SIMU)
 #define SD_IS_HC()                     (Cmd_A41_resp & OCR_SD_CCS)
 #define SD_GET_BLOCKNR()               (SD_IS_HC() ? (SD_CSD_BLOCKNR_HC(Card_CSD)) : (SD_CSD_BLOCKNR(Card_CSD)))
 
 #define SD_GET_SPEED()                 (transSpeed)
 
 #define SD_GET_SIZE_MB()               (SD_GET_BLOCKNR() / 2048)
+#endif
 
 //------------------------------------------------------------------------------
 

@@ -87,7 +87,7 @@ extern uint32_t sd_card_mounted();
 #define O9X_FOURCC 0x31783967 // o9x for gruvin9x
 #endif
 
-#if defined(PCBV4)
+#if defined(PCBV4) || defined(SIMU)
 #define SD_IS_HC() (0)
 #define SD_GET_BLOCKNR() (0)
 #define SD_GET_SIZE_MB() (0)
