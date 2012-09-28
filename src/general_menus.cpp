@@ -765,6 +765,7 @@ void menuProcSd(uint8_t event)
         pushMenu(menuProcSdInfo);
       }
       else if (result == STR_SD_FORMAT) {
+        displayPopup(PSTR("Formatting...")); // TODO translations
         if (f_mkfs(0, 1, 0) == FR_OK) {
 #if defined(PCBARM)
           sdAvailableAudioFiles = 0;
