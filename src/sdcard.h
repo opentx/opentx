@@ -82,9 +82,9 @@ extern uint32_t sd_card_mounted();
 #endif
 
 #if defined(PCBARM)
-#define O9X_FOURCC 0x32783967 // o9x for sky9x
+#define O9X_FOURCC 0x3278396F // o9x for sky9x
 #elif defined(PCBV4)
-#define O9X_FOURCC 0x31783967 // o9x for gruvin9x
+#define O9X_FOURCC 0x3178396F // o9x for gruvin9x
 #endif
 
 #if defined(PCBV4) || defined(SIMU)
