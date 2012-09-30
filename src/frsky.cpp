@@ -760,7 +760,7 @@ NOINLINE void check_frsky()
       SoundVarioBeepNextTime = (0);
     }
     else {
-      if((varioSpeedUpMin < 0) & (verticalSpeed >= varioSpeedUpMin)){
+      if (varioSpeedUpMin < 0 && verticalSpeed >= varioSpeedUpMin) {
         verticalSpeed -= varioSpeedUpMin;
       }		  
       SoundVarioBeepNextFreq = (verticalSpeed * 10 + 16000) >> 8;
