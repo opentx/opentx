@@ -87,7 +87,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #if defined(DSM2)
     ISTR(DSM2MODE)
 #endif
-#if defined(PCBV4)
+#if defined(PCBV4) || defined (PCBARM)
     ISTR(DATETIME)
 #endif
     ;
@@ -233,7 +233,7 @@ const pm_char STR_EEPROMOVERFLOW[] PROGMEM = TR_EEPROMOVERFLOW;
 const pm_char STR_TRIMS2OFFSETS[] PROGMEM = TR_TRIMS2OFFSETS;
 const pm_char STR_MENURADIOSETUP[] PROGMEM = TR_MENURADIOSETUP;
 
-#ifdef PCBV4
+#if defined(PCBV4) || defined(PCBARM)
 const pm_char STR_MENUDATEANDTIME[] PROGMEM = TR_MENUDATEANDTIME;
 #endif
 

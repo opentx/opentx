@@ -87,6 +87,8 @@ ModelData  g_model;
 #if !defined(PCBARM)
 uint8_t g_tmr1Latency_max;
 uint8_t g_tmr1Latency_min;
+#else
+t_time Time;
 #endif
 
 uint8_t unexpectedShutdown = 0;

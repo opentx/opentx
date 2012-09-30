@@ -126,7 +126,7 @@ extern const pm_char STR_OPEN9X[];
 #else
 #define OFS_ENDDSM2    (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #endif
-#if defined(PCBV4)
+#if defined(PCBV4) || defined (PCBARM) 
 #define OFS_DATETIME   (OFS_ENDDSM2)
 #endif
 
@@ -190,7 +190,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VRENCODERS     (STR_OPEN9X + OFS_VRENCODERS)
 #endif
 
-#if defined(PCBV4)
+#if defined(PCBV4) || defined(PCBARM)
 #define STR_DATETIME   (STR_OPEN9X + OFS_DATETIME)
 #endif
 

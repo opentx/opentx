@@ -904,6 +904,19 @@ extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 extern void incSubtrim(uint8_t idx, int16_t inc);
 extern void instantTrim();
 extern void moveTrimsToOffsets();
+#if defined(PCBARM)
+typedef struct 
+{ 
+  unsigned char second;   //enter the current time, date, month, and year
+  unsigned char minute;
+  unsigned char hour;
+  unsigned char date;
+  unsigned char month;
+  unsigned int year;
+} t_time ;
+
+extern t_time Time ;
+#endif
 
 #if defined(PCBARM)
 #define ACTIVE_EXPOS_TYPE uint32_t

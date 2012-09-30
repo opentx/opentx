@@ -37,9 +37,17 @@ const pm_uchar sticks[] PROGMEM = {
 #include "sticks.lbm"
 };
 
+#if defined(PCBARM)
+struct t_i2cTime
+{
+  uint8_t setCode ;
+  uint8_t Time[7] ;
+} I2CTime ;
+#endif
+
 enum EnumTabDiag {
   e_Setup,
-#if defined(PCBV4) && defined(SDCARD)
+#if (defined(PCBV4) && defined(SDCARD)) || defined(PCBARM)
   e_FrskyTime,
 #endif
 #if defined(SDCARD)
@@ -53,7 +61,7 @@ enum EnumTabDiag {
 };
 
 void menuProcSetup(uint8_t event);
-#if defined(PCBV4) && defined(SDCARD)
+#if (defined(PCBV4) && defined(SDCARD)) || defined (PCBARM)
 void menuProcTime(uint8_t event);
 #endif
 #if defined(SDCARD)
@@ -67,7 +75,7 @@ void menuProcDiagCalib(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcSetup,
-#if defined(PCBV4) && defined(SDCARD)
+#if (defined(PCBV4) && defined(SDCARD)) || defined (PCBARM)
   menuProcTime,
 #endif
 #if defined(SDCARD)
@@ -439,7 +447,7 @@ void menuProcSetup(uint8_t event)
 }
 
 
-#if defined(PCBV4) && defined(SDCARD)
+#if (defined(PCBV4) && defined(SDCARD)) || defined(PCBARM)
 // SD card interface contains Real-Time-Clock chip
 void menuProcTime(uint8_t event)
 {
@@ -459,9 +467,9 @@ void menuProcTime(uint8_t event)
     case EVT_KEY_FIRST(KEY_MENU):
       if (sub >= 0 && s_editMode<=0) // set the date and time into RTC chip
       {
-        g_ms100 = 0; // start of next second begins now
+#if (defined(PCBV4) && defined(SDCARD))
         g_unixTime = gmktime(&t); // update local timestamp and get wday calculated
-
+        g_ms100 = 0; // start of next second begins now
         RTC rtc;
         rtc.year = t.tm_year + 1900;
         rtc.month = t.tm_mon + 1;
@@ -470,14 +478,25 @@ void menuProcTime(uint8_t event)
         rtc.min = t.tm_min;
         rtc.sec = t.tm_sec;
         rtc.wday = t.tm_wday + 1;
-
         rtc_settime(&rtc);
-
+#else
+        I2CTime.setCode = 0x74 ;    // Tiny SET TIME CODE command
+        I2CTime.Time[0] = t.tm_sec ;
+        I2CTime.Time[1] = t.tm_min ;
+        I2CTime.Time[2] = t.tm_hour ;
+        I2CTime.Time[3] = t.tm_mday ;
+        I2CTime.Time[4] = t.tm_mon+1 ;
+        I2CTime.Time[5] = (uint8_t) (t.tm_year+1900) ;
+        I2CTime.Time[6] = (t.tm_year+1900) >> 8 ;
+        write_coprocessor( (uint8_t *) &I2CTime, 8 ) ;
+#endif
       }
       break;
   }
 
+#if (defined(PCBV4) && defined(SDCARD))
   if (s_editMode<=0) filltm(&g_unixTime, &t);
+#endif
 
   lcd_putc(FW*10+2, FH*2, '-'); lcd_putc(FW*13, FH*2, '-');
   lcd_putc(FW*10+1, FH*4, ':'); lcd_putc(FW*13-1, FH*4, ':');
