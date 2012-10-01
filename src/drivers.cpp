@@ -164,7 +164,11 @@ void per10ms()
 #if defined(RTCLOCK)
   /* Update gloabal Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100) {
-    g_rtcTime++; // inc global unix timestamp one second
+    if (g_rtcTime!=0) {
+      g_rtcTime++; // inc global unix timestamp one second
+    } else {
+      rtc_init();
+    }
     g_ms100 = 0;
   }
 #endif
