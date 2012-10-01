@@ -97,6 +97,8 @@ void menuProcDebug(uint8_t event)
       Current_used = 0;
       sessionTimer = 0;
       killEvents(event);
+      rtc_init();
+      CoTickDelay(5);
       AUDIO_KEYPAD_UP();
       break;
 #endif
@@ -135,6 +137,8 @@ void menuProcDebug(uint8_t event)
 #endif
 
 #if defined(PCBARM)
+  lcd_putsLeft(1*FH, STR_COPROC);
+  lcd_outhex4(10*FW-3, 1*FH, (Coproc_valid << 8) + Coproc_read);
 #if defined(REVB)
   lcd_putsLeft(2*FH, STR_CPU_CURRENT);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, getCurrent(), UNIT_MILLIAMPS, 0);

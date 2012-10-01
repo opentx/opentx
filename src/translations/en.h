@@ -419,6 +419,7 @@
 #define TR_CPU_TEMP            "CPU Temp.\007>"
 #define TR_CPU_CURRENT         "Current\011>"
 #define TR_CPU_MAH             "Consumpt."
+#define TR_COPROC              "CoProc."
 #define TR_CAPAWARNING         "Capacity Warning"
 #define TR_TEMPWARNING         "Temp Warning"
 #define TR_FUNC                "Func"
