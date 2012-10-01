@@ -3253,7 +3253,12 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     eeDirty(EE_GENERAL);
   }
 #endif
-
+#if defined(PCBARM)
+  rtc_init();
+  CoTickDelay(10);  // 20ms
+  rtc_init();
+#endif
+  
   lcdSetContrast();
   backlightOn();
 
