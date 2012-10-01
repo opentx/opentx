@@ -52,6 +52,8 @@
 
 #if defined(PCBARM)
 #include "board_ersky9x.h"
+#elif defined(PCBV4)
+#include "board_gruvin9x.h"
 #endif
 
 #if defined(SIMU)
@@ -904,19 +906,6 @@ extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 extern void incSubtrim(uint8_t idx, int16_t inc);
 extern void instantTrim();
 extern void moveTrimsToOffsets();
-#if defined(PCBARM)
-typedef struct 
-{ 
-  unsigned char second;   //enter the current time, date, month, and year
-  unsigned char minute;
-  unsigned char hour;
-  unsigned char date;
-  unsigned char month;
-  unsigned int year;
-} t_time ;
-
-extern t_time Time ;
-#endif
 
 #if defined(PCBARM)
 #define ACTIVE_EXPOS_TYPE uint32_t
@@ -1084,9 +1073,8 @@ enum AUDIO_SOUNDS {
 #include "sdcard.h"
 #endif
 
-#if defined(PCBV4)
-#include "gruvin9x/rtc.h"
-extern uint8_t g_ms100; // global to allow time set function to reset to zero
+#if defined(RTCLOCK)
+#include "rtc.h"
 #endif
 
 // Re-useable byte array to save having multiple buffers

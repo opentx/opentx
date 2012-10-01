@@ -35,7 +35,6 @@
 #define sdcard_h
 
 #include "FatFs/ff.h"
-#include "FatFs/fattime.h"
 
 #ifdef SIMU
 #define MODELS_PATH  "."

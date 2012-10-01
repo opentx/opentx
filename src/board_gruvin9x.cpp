@@ -33,10 +33,6 @@
 
 #include "open9x.h"
 
-#ifdef SDCARD
-uint8_t g_ms100 = 0; // global to allow time set function to reset to zero
-#endif
-
 #ifndef SIMU
 inline void board_init()
 {
@@ -76,19 +72,9 @@ inline void board_init()
   TCCR0B  = (1<<WGM02) | (0b011 << CS00);
   TCCR0A  = (0b01<<WGM00);
 
-#if defined(SDCARD)
+#if defined(RTCLOCK)
   // Initialise global unix timestamp with current time from RTC chip on SD card interface
-  RTC rtc = {0,0,0,0,0,0,0};
-  struct gtm utm;
-  rtc_gettime(&rtc);
-  utm.tm_year = rtc.year - 1900;
-  utm.tm_mon =  rtc.month - 1;
-  utm.tm_mday = rtc.mday;
-  utm.tm_hour = rtc.hour;
-  utm.tm_min =  rtc.min;
-  utm.tm_sec =  rtc.sec;
-  utm.tm_wday = rtc.wday - 1;
-  g_unixTime = gmktime(&utm);
+  rtc_init();
 #endif
 
   /***************************************************/

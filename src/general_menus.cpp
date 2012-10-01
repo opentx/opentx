@@ -37,19 +37,8 @@ const pm_uchar sticks[] PROGMEM = {
 #include "sticks.lbm"
 };
 
-#if defined(PCBARM)
-struct t_i2cTime
-{
-  uint8_t setCode ;
-  uint8_t Time[7] ;
-} I2CTime ;
-#endif
-
 enum EnumTabDiag {
   e_Setup,
-#if (defined(PCBV4) && defined(SDCARD)) || defined(PCBARM)
-  e_FrskyTime,
-#endif
 #if defined(SDCARD)
   e_Sd,
 #endif
@@ -57,13 +46,13 @@ enum EnumTabDiag {
   e_Vers,
   e_Keys,
   e_Ana,
+#if defined(PCBARM)
+  e_Hardware,
+#endif
   e_Calib
 };
 
 void menuProcSetup(uint8_t event);
-#if (defined(PCBV4) && defined(SDCARD)) || defined (PCBARM)
-void menuProcTime(uint8_t event);
-#endif
 #if defined(SDCARD)
 void menuProcSd(uint8_t event);
 #endif
@@ -71,13 +60,11 @@ void menuProcTrainer(uint8_t event);
 void menuProcDiagVers(uint8_t event);
 void menuProcDiagKeys(uint8_t event);
 void menuProcDiagAna(uint8_t event);
+void menuProcHardware(uint8_t event);
 void menuProcDiagCalib(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcSetup,
-#if (defined(PCBV4) && defined(SDCARD)) || defined (PCBARM)
-  menuProcTime,
-#endif
 #if defined(SDCARD)
   menuProcSd,
 #endif
@@ -85,6 +72,9 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcDiagVers,
   menuProcDiagKeys,
   menuProcDiagAna,
+#if defined(PCBARM)
+  menuProcHardware,
+#endif
   menuProcDiagCalib
 };
 
@@ -108,6 +98,9 @@ void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 #endif
 
 enum menuProcSetupItems {
+#if defined(RTCLOCK)
+  ITEM_SETUP_RTC,
+#endif
   ITEM_SETUP_BEEPER_MODE,
   ITEM_SETUP_BEEPER_LENGTH,
 #if defined(AUDIO)
@@ -122,7 +115,6 @@ enum menuProcSetupItems {
   ITEM_SETUP_HAPTIC_STRENGTH,
 #endif
 #if defined(PCBARM)
-  ITEM_SETUP_OPTREX_DISPLAY,
   ITEM_SETUP_BRIGHTNESS,
 #endif
   ITEM_SETUP_CONTRAST,
@@ -155,12 +147,18 @@ enum menuProcSetupItems {
   ITEM_SETUP_GPSFORMAT,
 #endif
   ITEM_SETUP_RX_CHANNEL_ORD,
+  ITEM_SETUP_STICK_MODE_LABELS,
   ITEM_SETUP_STICK_MODE,
   ITEM_SETUP_MAX
 };
 
 void menuProcSetup(uint8_t event)
 {
+#ifdef RTCLOCK
+#define RTC_ZEROS 5,
+#else
+#define RTC_ZEROS
+#endif
 #ifdef AUDIO
 #define AUDIO_ZEROS  0,
 #else
@@ -187,7 +185,7 @@ void menuProcSetup(uint8_t event)
 #define FRSKY_ZEROS
 #endif
 #ifdef PCBARM
-#define ARM_ZEROS  0, 0, 0, 0,
+#define ARM_ZEROS  0, 0, 0,
 #else
 #define ARM_ZEROS
 #endif
@@ -202,9 +200,13 @@ void menuProcSetup(uint8_t event)
 #define ROTARY_ENCODERS_ZEROS
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+2, {0, 0, AUDIO_ZEROS VOICE_ZEROS HAPTIC_ZEROS ARM_ZEROS BLUETOOTH_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, RTC_ZEROS 0, 0, AUDIO_ZEROS VOICE_ZEROS HAPTIC_ZEROS ARM_ZEROS BLUETOOTH_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
   uint8_t sub = m_posVert - 1;
+
+#if defined(RTCLOCK)
+  static struct gtm t;
+#endif
 
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = 1*FH + i*FH;
@@ -213,6 +215,57 @@ void menuProcSetup(uint8_t event)
     uint8_t attr = (sub == k ? blink : 0);
 
     switch(k) {
+#if defined(RTCLOCK)
+      case ITEM_SETUP_RTC:
+        lcd_putsLeft(y, PSTR("Time"));
+        lcd_putc(FW*7+6, y, '-'); lcd_putc(FW*10+4, y, '-');
+        lcd_putc(FW*15+5, y, ':'); lcd_putc(FW*18+3, y, ':');
+        for (uint8_t j=0; j<6; j++) { // 3 settings each for date and time (YMD and HMS)
+          uint8_t rowattr = (m_posHorz==j) ? attr : 0;
+          switch (j) {
+            case 0:
+              lcd_outdezAtt(FW*7+6, y, t.tm_year+1900, rowattr);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
+              break;
+            case 1:
+              lcd_outdezNAtt(FW*10+4, y, t.tm_mon+1, rowattr|LEADING0, 2);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
+              break;
+            case 2:
+            {
+              int16_t year = 1900 + t.tm_year;
+              int8_t dlim = (((((year%4==0) && (year %100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
+              int8_t dmon[] = {31,28,31,30,31,30,31,31,30,31,30,31}; // TODO in flash
+              dlim += dmon[t.tm_mon];
+              lcd_outdezNAtt(FW*13+2, y, t.tm_mday, rowattr|LEADING0, 2);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
+              break;
+            }
+            case 3:
+              lcd_outdezNAtt(FW*15+5, y, t.tm_hour, rowattr|LEADING0, 2);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_hour = checkIncDec( event, t.tm_hour, 0, 23, 0);
+              break;
+            case 4:
+              lcd_outdezNAtt(FW*18+3, y, t.tm_min, rowattr|LEADING0, 2);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_min = checkIncDec( event, t.tm_min, 0, 59, 0);
+              break;
+            case 5:
+              lcd_outdezNAtt(FW*21+2, y, t.tm_sec, rowattr|LEADING0, 2);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_sec = checkIncDec( event, t.tm_sec, 0, 59, 0);
+              break;
+          }
+        }
+
+        if (attr && s_editMode<=0 && event == EVT_KEY_FIRST(KEY_MENU)) {
+          // set the date and time into RTC chip
+          rtc_settime(&t);
+        }
+        else if (sub!=ITEM_SETUP_RTC || s_editMode<=0) {
+          gettime(&t);
+        }
+        break;
+#endif
+
       case ITEM_SETUP_BEEPER_MODE:
         g_eeGeneral.beeperMode = selectMenuItem(GENERAL_PARAM_OFS, y, STR_BEEPERMODE, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, attr, event);
 #if defined(FRSKY)
@@ -278,10 +331,6 @@ void menuProcSetup(uint8_t event)
 #endif
 
 #if defined(PCBARM)
-      case ITEM_SETUP_OPTREX_DISPLAY:
-        g_eeGeneral.optrexDisplay = onoffMenuItem( g_eeGeneral.optrexDisplay, GENERAL_PARAM_OFS, y, STR_OPTREX_DISPLAY, attr, event );
-        break;
-
       case ITEM_SETUP_BRIGHTNESS:
         lcd_putsLeft(y, STR_BRIGHTNESS);
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
@@ -421,17 +470,18 @@ void menuProcSetup(uint8_t event)
         lcd_putsLeft( y,STR_RXCHANNELORD);//   RAET->AETR
         for (uint8_t i=1; i<=4; i++)
           putsChnLetter(GENERAL_PARAM_OFS - FW + i*FW, y, channel_order(i), attr);
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
+        break;
+
+      case ITEM_SETUP_STICK_MODE_LABELS:
+        lcd_putsLeft(y, STR_MODE);
+        for (uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks, i, 0);
         break;
 
       case ITEM_SETUP_STICK_MODE:
-        lcd_puts( 1*FW, y, STR_MODE);
-        for(uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks,i,0);
-        if((y+=FH)>7*FH) return;
-        lcd_putcAtt( 3*FW, y, '1'+g_eeGeneral.stickMode,(sub==k+1) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-        for(uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
-
-        if (sub==k+1 && s_editMode>0) {
+        lcd_putcAtt(2*FW, y, '1'+g_eeGeneral.stickMode, attr);
+        for (uint8_t i=0; i<4; i++) putsChnRaw( (6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
+        if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
         }
         else if (stickMode != g_eeGeneral.stickMode) {
@@ -445,119 +495,6 @@ void menuProcSetup(uint8_t event)
     }
   }
 }
-
-
-#if (defined(PCBV4) && defined(SDCARD)) || defined(PCBARM)
-// SD card interface contains Real-Time-Clock chip
-void menuProcTime(uint8_t event)
-{
-  MENU(STR_MENUDATEANDTIME, menuTabDiag, e_FrskyTime, 3, {0, 2/*, 2*/});
-
-  int8_t  sub    = m_posVert - 1; // vertical position (1 = page counter, top/right)
-  uint8_t subSub = m_posHorz;     // horizontal position
-  static struct gtm t;
-  struct gtm *at = &t;
-
-  switch(event)
-  {
-    case EVT_KEY_LONG(KEY_MENU):
-      // get data time from RTC chip (may not implement)
-      killEvents(event);
-      break;
-    case EVT_KEY_FIRST(KEY_MENU):
-      if (sub >= 0 && s_editMode<=0) // set the date and time into RTC chip
-      {
-#if (defined(PCBV4) && defined(SDCARD))
-        g_unixTime = gmktime(&t); // update local timestamp and get wday calculated
-        g_ms100 = 0; // start of next second begins now
-        RTC rtc;
-        rtc.year = t.tm_year + 1900;
-        rtc.month = t.tm_mon + 1;
-        rtc.mday = t.tm_mday;
-        rtc.hour = t.tm_hour;
-        rtc.min = t.tm_min;
-        rtc.sec = t.tm_sec;
-        rtc.wday = t.tm_wday + 1;
-        rtc_settime(&rtc);
-#else
-        I2CTime.setCode = 0x74 ;    // Tiny SET TIME CODE command
-        I2CTime.Time[0] = t.tm_sec ;
-        I2CTime.Time[1] = t.tm_min ;
-        I2CTime.Time[2] = t.tm_hour ;
-        I2CTime.Time[3] = t.tm_mday ;
-        I2CTime.Time[4] = t.tm_mon+1 ;
-        I2CTime.Time[5] = (uint8_t) (t.tm_year+1900) ;
-        I2CTime.Time[6] = (t.tm_year+1900) >> 8 ;
-        write_coprocessor( (uint8_t *) &I2CTime, 8 ) ;
-#endif
-      }
-      break;
-  }
-
-#if (defined(PCBV4) && defined(SDCARD))
-  if (s_editMode<=0) filltm(&g_unixTime, &t);
-#endif
-
-  lcd_putc(FW*10+2, FH*2, '-'); lcd_putc(FW*13, FH*2, '-');
-  lcd_putc(FW*10+1, FH*4, ':'); lcd_putc(FW*13-1, FH*4, ':');
-
-  for(uint8_t i=0; i<2; i++) // 2 rows, date then time
-  {
-    uint8_t y=(i*2+2)*FH;
-
-    lcd_putsiAtt(0, y, STR_DATETIME, i, 0);
-
-    for(uint8_t j=0; j<3;j++) // 3 settings each for date and time (YMD and HMS)
-    {
-      uint8_t attr = (sub==i && subSub==j) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0;
-      switch(i)
-      {
-        case 0: // DATE
-          switch(j)
-          {
-            case 0:
-              lcd_outdezAtt(FW*10+2, y, at->tm_year+1900, attr);
-              if(attr && (s_editMode>0 || p1valdiff)) at->tm_year = checkIncDec( event, at->tm_year, 112, 200, 0);
-              break;
-            case 1:
-              lcd_outdezNAtt(FW*13, y, at->tm_mon+1, attr|LEADING0, 2);
-              if(attr && (s_editMode>0 || p1valdiff)) at->tm_mon = checkIncDec( event, at->tm_mon, 0, 11, 0);
-              break;
-            case 2:
-              int16_t year=1900 + at->tm_year;
-              int8_t dlim = (((((year%4==0) && (year %100!=0)) || (year%400==0)) && (at->tm_mon==1)) ? 1 : 0);
-              int8_t dmon[]={31,28,31,30,31,30,31,31,30,31,30,31};
-              dlim+=dmon[at->tm_mon];
-              lcd_outdezNAtt(FW*16-2, y, at->tm_mday, attr|LEADING0, 2);
-              if(attr && (s_editMode>0 || p1valdiff)) at->tm_mday = checkIncDec( event, at->tm_mday, 1, dlim, 0);
-              break;
-          }
-          break;
-
-        case 1:
-          switch (j)
-          {
-            case 0:
-              lcd_outdezNAtt(FW*10+1, y, at->tm_hour, attr|LEADING0, 2);
-              if(attr && (s_editMode>0 || p1valdiff)) at->tm_hour = checkIncDec( event, at->tm_hour, 0, 23, 0);
-              break;
-            case 1:
-              lcd_outdezNAtt(FW*13-1, y, at->tm_min, attr|LEADING0, 2);
-              if(attr && (s_editMode>0 || p1valdiff)) at->tm_min = checkIncDec( event, at->tm_min, 0, 59, 0);
-              break;
-            case 2:
-              lcd_outdezNAtt(FW*16-2, y, at->tm_sec, attr|LEADING0, 2);
-
-              if(attr && (s_editMode>0 || p1valdiff)) at->tm_sec = checkIncDec( event, at->tm_sec, 0, 59, 0);
-              break;
-          }
-          break;
-
-      }
-    }
-  }
-}
-#endif
 
 #if defined(PCBARM)
 extern uint32_t sdAvailableAudioFiles; // TODO move that!
@@ -1004,6 +941,35 @@ void menuProcDiagAna(uint8_t event)
 #endif
 
 }
+
+#if defined(PCBARM)
+enum menuProcHwItems {
+  ITEM_SETUP_HW_OPTREX_DISPLAY,
+  ITEM_SETUP_HW_MAX
+};
+
+#define GENERAL_HW_PARAM_OFS (2+(15*FW))
+void menuProcHardware(uint8_t event)
+{
+  MENU(PSTR("Hardware"), menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0});
+
+  uint8_t sub = m_posVert - 1;
+
+  for (uint8_t i=0; i<7; i++) {
+    uint8_t y = 1*FH + i*FH;
+    uint8_t k = i+s_pgOfs;
+    uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    uint8_t attr = (sub == k ? blink : 0);
+
+    switch(k) {
+      case ITEM_SETUP_HW_OPTREX_DISPLAY:
+        // TODO remove STR_OPTREX_DISPLAY + translations here
+        g_eeGeneral.optrexDisplay = selectMenuItem(GENERAL_HW_PARAM_OFS, y, PSTR("LCD"), PSTR("\006NormalOptrex"), g_eeGeneral.optrexDisplay, 0, 1, attr, event);
+        break;
+    }
+  }
+}
+#endif
 
 void menuProcDiagCalib(uint8_t event)
 {

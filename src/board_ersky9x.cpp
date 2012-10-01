@@ -792,6 +792,8 @@ void board_init()
 
   alawInit();
 
+  rtc_init();
+
   eeprom_init();
 
   init_rotary_encoder();

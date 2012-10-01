@@ -227,7 +227,7 @@ void init_twi()
   NVIC_EnableIRQ(TWI0_IRQn) ;
   setVolume(2) ;
 }
-extern t_time Time;
+
 static int8_t Volume_required ;
 static uint8_t Volume_read_pending ;
 static uint8_t CoProc_read_pending ;
@@ -413,25 +413,24 @@ extern "C" void TWI0_IRQHandler()
   {
     Coproc_valid = 1 ;
     Coproc_read = Co_proc_status[0] ;
-    if ( Coproc_read & 0x80 )     // Bootloader
-    {
+    if ( Coproc_read & 0x80 ) {
+      // Bootloader
       CoProc_appgo_pending = 1 ;  // Action application
     }
-    else
-    { // Got data from tiny app
+    else {
+      // Got data from tiny app
       // Set the date and time
-      t_time *p = &Time ;
-
-      p->second = Co_proc_status[1] ;
-      p->minute = Co_proc_status[2] ;
-      p->hour = Co_proc_status[3] ;
-      p->date= Co_proc_status[4] ;
-      p->month = Co_proc_status[5] ;
-      p->year = Co_proc_status[6] + ( Co_proc_status[7] << 8 ) ;
+      struct gtm utm;
+      utm.tm_sec = Co_proc_status[1] ;
+      utm.tm_min = Co_proc_status[2] ;
+      utm.tm_hour = Co_proc_status[3] ;
+      utm.tm_mday = Co_proc_status[4] ;
+      utm.tm_mon = Co_proc_status[5] - 1;
+      utm.tm_year = (Co_proc_status[6] + ( Co_proc_status[7] << 8 )) - 1900;
+      g_rtcTime = gmktime(&utm);
     }
     TWI0->TWI_PTCR = TWI_PTCR_RXTDIS ;  // Stop transfers
-    if ( TWI0->TWI_SR & TWI_SR_RXRDY )
-    {
+    if ( TWI0->TWI_SR & TWI_SR_RXRDY ) {
       (void) TWI0->TWI_RHR ;      // Discard any rubbish data
     }
   }

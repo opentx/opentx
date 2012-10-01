@@ -35,7 +35,7 @@
 
 #if defined(PCBARM)
 #define MIXER_STACK_SIZE    500
-#define MENUS_STACK_SIZE    2000
+#define MENUS_STACK_SIZE    2500
 #define AUDIO_STACK_SIZE    500
 #define BT_STACK_SIZE       500
 #define DEBUG_STACK_SIZE    500
@@ -87,8 +87,6 @@ ModelData  g_model;
 #if !defined(PCBARM)
 uint8_t g_tmr1Latency_max;
 uint8_t g_tmr1Latency_min;
-#else
-t_time Time;
 #endif
 
 uint8_t unexpectedShutdown = 0;

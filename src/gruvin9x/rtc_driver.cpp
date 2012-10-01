@@ -36,7 +36,17 @@
 /*  RTC controls                                                            */
 
 #include "../open9x.h"
-#include "rtc.h"
+#include "../FatFs/integer.h"
+
+typedef struct {
+        WORD    year;   /* 2000..2099 */
+        BYTE    month;  /* 1..12 */
+        BYTE    mday;   /* 1.. 31 */
+        BYTE    wday;   /* 1..7 */
+        BYTE    hour;   /* 0..23 */
+        BYTE    min;    /* 0..59 */
+        BYTE    sec;    /* 0..59 */
+} RTC;
 
 #define SCL_LOW()	DDRD |=	0x01		/* SCL = LOW */
 #define SCL_HIGH()	DDRD &=	~0x01		/* SCL = High-Z */
@@ -224,10 +234,9 @@ int iic_write (
 /* RTC functions                                   */
 
 
-int rtc_gettime (RTC *rtc)
+int g9x_rtc_gettime (RTC *rtc)
 {
 	BYTE buf[8];
-
 
 	if (!iic_read(0xD0, 0, 7, buf)) return 0;
 
@@ -242,14 +251,9 @@ int rtc_gettime (RTC *rtc)
 	return 1;
 }
 
-
-
-
-int rtc_settime (const RTC *rtc)
+int g9x_rtc_settime (const RTC *rtc)
 {
-
 	BYTE buf[8];
-
 
 	buf[0] = rtc->sec / 10 * 16 + rtc->sec % 10;
 	buf[1] = rtc->min / 10 * 16 + rtc->min % 10;
@@ -264,14 +268,45 @@ int rtc_settime (const RTC *rtc)
 
 
 
-int rtc_init (void)
+void rtc_gettime(struct gtm * utm)
+{
+  RTC rtc = {0,0,0,0,0,0,0};
+
+  g9x_rtc_gettime(&rtc);
+
+  utm->tm_year = rtc.year - 1900;
+  utm->tm_mon =  rtc.month - 1;
+  utm->tm_mday = rtc.mday;
+  utm->tm_hour = rtc.hour;
+  utm->tm_min =  rtc.min;
+  utm->tm_sec =  rtc.sec;
+  utm->tm_wday = rtc.wday - 1;
+}
+
+void rtc_settime(struct gtm * t)
+{
+  g_rtcTime = gmktime(t); // update local timestamp and get wday calculated
+  g_ms100 = 0; // start of next second begins now
+
+  RTC rtc;
+  rtc.year = t->tm_year + 1900;
+  rtc.month = t->tm_mon + 1;
+  rtc.mday = t->tm_mday;
+  rtc.hour = t->tm_hour;
+  rtc.min = t->tm_min;
+  rtc.sec = t->tm_sec;
+  rtc.wday = t->tm_wday + 1;
+  g9x_rtc_settime(&rtc);
+}
+
+void rtc_init (void)
 {
 	BYTE buf[8];	/* RTC R/W buffer */
 	UINT adr;
 
 
 	/* Read RTC registers */
-	if (!iic_read(0xD0, 0, 8, buf)) return 0;	/* IIC error */
+	if (!iic_read(0xD0, 0, 8, buf)) return;	/* IIC error */
 
 	if (buf[7] & 0x20) {	/* When data has been volatiled, set default time */
 		/* Clear nv-ram. Reg[8..63] */
@@ -282,6 +317,9 @@ int rtc_init (void)
 		buf[4] = 1; buf[5] = 1; buf[6] = 8;
 		iic_write(0x0D, 0, 8, buf);
 	}
-	return 1;
+
+	struct gtm utm;
+	rtc_gettime(&utm);
+	g_rtcTime = gmktime(&utm);
 }
 

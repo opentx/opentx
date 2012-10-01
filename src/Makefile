@@ -464,9 +464,9 @@ endif
 ifeq ($(PCB), ARM)
   # ARM, so ...
   OPT = 2
-  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
-  BOARDSRC = board_ersky9x.cpp 
+  BOARDSRC = board_ersky9x.cpp
   SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += ersky9x/usb/device/core/USBD_UDP.c ersky9x/usb/device/core/USBDDriver.c ersky9x/usb/device/core/USBDCallbacks.c
@@ -476,6 +476,7 @@ ifeq ($(PCB), ARM)
   SRC += ersky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
+  CPPSRC += rtc.cpp ersky9x/rtc_driver.cpp
   CPPSRC += ersky9x/audio.cpp haptic.cpp
   CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp ersky9x/massstorage.cpp
   
@@ -506,8 +507,9 @@ ifeq ($(PCB), V4)
   CPPSRC += stock/audio.cpp haptic.cpp
 
   ifeq ($(SDCARD), YES)
-    CPPSRC += FatFs/fattime.c gruvin9x/rtc.cpp gruvin9x/diskio.cpp
-    EXTRABOARDSRC += FatFs/ff.c FatFs/option/ccsbcs.c 
+    CPPDEFS += -DRTCLOCK
+    CPPSRC += rtc.cpp gruvin9x/rtc_driver.cpp gruvin9x/diskio.cpp
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c 
   endif
     
   ifeq ($(VOICE), YES)

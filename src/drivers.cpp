@@ -161,10 +161,10 @@ void per10ms()
   Tenms |= 1 ;                    // 10 mS has passed
 #endif
 
-#if defined (PCBV4) && defined(SDCARD)
+#if defined(RTCLOCK)
   /* Update gloabal Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100) {
-    g_unixTime++; // inc global unix timestamp one second
+    g_rtcTime++; // inc global unix timestamp one second
     g_ms100 = 0;
   }
 #endif

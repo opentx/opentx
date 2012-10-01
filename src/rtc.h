@@ -34,23 +34,34 @@
 #ifndef RTC_H
 #define RTC_H
 
-#include "../FatFs/integer.h"
+#include <inttypes.h>
 
-typedef struct {
-	WORD	year;	/* 2000..2099 */
-	BYTE	month;	/* 1..12 */
-	BYTE	mday;	/* 1.. 31 */
-	BYTE	wday;	/* 1..7 */
-	BYTE	hour;	/* 0..23 */
-	BYTE	min;	/* 0..59 */
-	BYTE	sec;	/* 0..59 */
-} RTC;
+typedef long int gtime_t;
 
-int iic_write (BYTE, UINT, UINT, const void*);	/* Write to IIC device */
-int iic_read (BYTE, UINT, UINT, void*);		/* Read from IIC device */
+struct gtm
+{
+  int8_t tm_sec;                   /* Seconds.     [0-60] (1 leap second) */
+  int8_t tm_min;                   /* Minutes.     [0-59] */
+  int8_t tm_hour;                  /* Hours.       [0-23] */
+  int8_t tm_mday;                  /* Day.         [1-31] */
+  int8_t tm_mon;                   /* Month.       [0-11] */
+  int8_t tm_year;                  /* Year - 1900. Limited to the year 2115. Oh no! :P */
+  int8_t tm_wday;                  /* Day of week. [0-6] */
+  int16_t tm_yday;                 /* Day of year. [0-365] Needed internally for calculations */
+};
 
-int rtc_init (void);				/* Initialize RTC */
-int rtc_gettime (RTC*);				/* Get time */
-int rtc_settime (const RTC*);			/* Set time */
+extern gtime_t g_rtcTime;
+extern uint8_t g_ms100; // global to allow time set function to reset to zero
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern void rtc_init();
+extern void rtc_settime(struct gtm * tm);
+extern void gettime(struct gtm * tm);
+extern gtime_t gmktime (struct gtm *tm);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -238,7 +238,7 @@ extern uint8_t s_menu_offset;
 extern bool s_menu_more;
 const char * displayMenu(uint8_t event);
 
-#define STATUS_LINE_LENGTH 22
+#define STATUS_LINE_LENGTH 32
 extern char statusLineMsg[STATUS_LINE_LENGTH];
 void showStatusLine();
 void drawStatusLine();

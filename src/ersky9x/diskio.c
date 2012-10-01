@@ -1303,6 +1303,8 @@ DSTATUS disk_status (
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
+uint32_t dma_sd_buffer[512/4];
+
 DRESULT disk_read (
                                    BYTE drv,                    /* Physical drive nmuber (0) */
                                    BYTE *buff,                  /* Pointer to the data buffer to store read data */
@@ -1311,16 +1313,15 @@ DRESULT disk_read (
                                    )
 {
         uint32_t result ;
-        BYTE copy[512];
 
         if (drv || !count) return RES_PARERR;
 
         if ( sd_card_ready() == 0 ) return RES_NOTRDY;
 
         do {
-          result = sd_read_block( sector, (uint32_t *)copy) ;
+          result = sd_read_block(sector, dma_sd_buffer) ;
           if (result) {
-            memcpy(buff, copy, 512);
+            memcpy(buff, dma_sd_buffer, 512);
             sector += 1 ;
             buff += 512 ;
             count -= 1 ;
@@ -1355,7 +1356,6 @@ DRESULT disk_write (
                                         )
 {
         uint32_t result ;
-        BYTE copy[512];
 
         if (drv || !count) return RES_PARERR;
 
@@ -1367,13 +1367,13 @@ DRESULT disk_write (
 
           while  (1) {
 
-            memcpy(copy, buff, 512);
+            memcpy(dma_sd_buffer, buff, 512);
 
-            result = sd_write_block( sector, ( uint32_t *)copy ) ;
+            result = sd_write_block(sector, dma_sd_buffer) ;
 
-            sd_read_block( sector, ( uint32_t *)copy ) ;
+            sd_read_block(sector, dma_sd_buffer) ;
 
-            if (!memcmp(copy, buff, 512))
+            if (!memcmp(dma_sd_buffer, buff, 512))
               break;
             else {
               TRACE_ERROR("Block %d ko SR=%.2X\r\n", sector, HSMCI->HSMCI_SR);

@@ -92,7 +92,7 @@ const pm_char * openLogs()
   }
 
   if (f_size(&g_oLogFile) == 0) {
-#if defined(PCBV4)
+#if defined(RTCLOCK)
     f_puts("Date,Time,", &g_oLogFile);
 #endif
 
@@ -151,21 +151,18 @@ void writeLogs()
         }
       }
 
-#if defined(PCBV4)
-      static struct gtm t;
-      struct gtm *at = &t;
-      filltm(&g_unixTime, &t);
-
-      f_printf(&g_oLogFile, "%4d-%02d-%02d,", at->tm_year+1900, at->tm_mon+1, at->tm_mday);
-      f_printf(&g_oLogFile, "%02d:%02d:%02d,", at->tm_hour, at->tm_min, at->tm_sec);
+#if defined(RTCLOCK)
+      struct gtm utm;
+      gettime(&utm);
+      f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d,", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec);
 #endif
 
 #if defined(FRSKY)
-      f_printf(&g_oLogFile, "%d,", frskyStreaming);
-      f_printf(&g_oLogFile, "%d,", frskyData.rssi[0].value);
-      f_printf(&g_oLogFile, "%d,", frskyData.rssi[1].value);
-      f_printf(&g_oLogFile, "%d,", frskyData.analog[0].value);
-      f_printf(&g_oLogFile, "%d,", frskyData.analog[1].value);
+      f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, frskyData.rssi[0].value, frskyData.rssi[1].value);
+      for (uint8_t i=0; i<2; i++) {
+        int16_t converted_value = applyChannelRatio(i, frskyData.analog[i].value);
+        f_printf(&g_oLogFile, "%d.%02d,", converted_value/100, converted_value%100);
+      }
 #endif
 
 #if defined(FRSKY_HUB)
@@ -180,14 +177,11 @@ void writeLogs()
         f_printf(&g_oLogFile, "%d.%d,", frskyData.hub.gpsSpeed_bp, frskyData.hub.gpsSpeed_ap);
         f_printf(&g_oLogFile, "%03d.%d,", frskyData.hub.gpsAltitude_bp, frskyData.hub.gpsAltitude_ap);
         f_printf(&g_oLogFile, "%d.%d,", frskyData.hub.baroAltitude_bp, frskyData.hub.baroAltitude_ap);
-        f_printf(&g_oLogFile, "%d,", frskyData.hub.temperature1);
-        f_printf(&g_oLogFile, "%d,", frskyData.hub.temperature2);
+        f_printf(&g_oLogFile, "%d,%d,", frskyData.hub.temperature1, frskyData.hub.temperature2);
         f_printf(&g_oLogFile, "%d,", frskyData.hub.rpm);
         f_printf(&g_oLogFile, "%d,", frskyData.hub.fuelLevel);
         f_printf(&g_oLogFile, "%d,", frskyData.hub.volts);
-        f_printf(&g_oLogFile, "%d,", frskyData.hub.accelX);
-        f_printf(&g_oLogFile, "%d,", frskyData.hub.accelY);
-        f_printf(&g_oLogFile, "%d,", frskyData.hub.accelZ);
+        f_printf(&g_oLogFile, "%d,%d,%d,", frskyData.hub.accelX, frskyData.hub.accelY, frskyData.hub.accelZ);
       }
 #endif
 
@@ -201,15 +195,7 @@ void writeLogs()
         f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
       }
 
-      f_printf(&g_oLogFile, "%d,", keyState(SW_ThrCt));
-      f_printf(&g_oLogFile, "%d,", keyState(SW_RuddDR));
-      f_printf(&g_oLogFile, "%d,", keyState(SW_ElevDR));
-      f_printf(&g_oLogFile, "%d,", keyState(SW_ID0));
-      f_printf(&g_oLogFile, "%d,", keyState(SW_ID1));
-      f_printf(&g_oLogFile, "%d,", keyState(SW_ID2));
-      f_printf(&g_oLogFile, "%d,", keyState(SW_AileDR));
-      f_printf(&g_oLogFile, "%d,", keyState(SW_Gear));
-      if (f_printf(&g_oLogFile, "%d\n", keyState(SW_Trainer)) < 0 && !error_displayed) {
+      if (f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,%d\n", keyState(SW_ThrCt), keyState(SW_RuddDR), keyState(SW_ElevDR), keyState(SW_ID0), keyState(SW_ID1), keyState(SW_ID2), keyState(SW_AileDR), keyState(SW_Gear), keyState(SW_Trainer)) < 0  && !error_displayed) {
         error_displayed = STR_SDCARD_ERROR;
         s_global_warning = STR_SDCARD_ERROR;
       }
