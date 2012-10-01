@@ -517,15 +517,19 @@ void menuProcTime(uint8_t event)
           {
             case 0:
               lcd_outdezAtt(FW*10+2, y, at->tm_year+1900, attr);
-              if(attr && (s_editMode>0 || p1valdiff)) at->tm_year = checkIncDec( event, at->tm_year, 110, 200, 0);
+              if(attr && (s_editMode>0 || p1valdiff)) at->tm_year = checkIncDec( event, at->tm_year, 112, 200, 0);
               break;
             case 1:
               lcd_outdezNAtt(FW*13, y, at->tm_mon+1, attr|LEADING0, 2);
               if(attr && (s_editMode>0 || p1valdiff)) at->tm_mon = checkIncDec( event, at->tm_mon, 0, 11, 0);
               break;
             case 2:
+              int16_t year=1900 + at->tm_year;
+              int8_t dlim = (((((year%4==0) && (year %100!=0)) || (year%400==0)) && (at->tm_mon==1)) ? 1 : 0);
+              int8_t dmon[]={31,28,31,30,31,30,31,31,30,31,30,31};
+              dlim+=dmon[at->tm_mon];
               lcd_outdezNAtt(FW*16-2, y, at->tm_mday, attr|LEADING0, 2);
-              if(attr && (s_editMode>0 || p1valdiff)) at->tm_mday = checkIncDec( event, at->tm_mday, 1, 31, 0);
+              if(attr && (s_editMode>0 || p1valdiff)) at->tm_mday = checkIncDec( event, at->tm_mday, 1, dlim, 0);
               break;
           }
           break;
