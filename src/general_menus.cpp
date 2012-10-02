@@ -959,7 +959,7 @@ enum menuProcHwItems {
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
 void menuProcHardware(uint8_t event)
 {
-  MENU(PSTR("Hardware"), menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, -1, 0});
+  MENU(PSTR("Hardware"), menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, (uint8_t)-1, 0});
 
   uint8_t sub = m_posVert - 1;
 
