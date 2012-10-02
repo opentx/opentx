@@ -175,7 +175,7 @@ void per10ms()
   check_mavlink();
 #endif
 
-#if defined (FRSKY) && !defined(PCBSKY9X) && !defined(AUDIO) && !defined(VOICE)
+#if defined (FRSKY) && !defined(PCBSKY9X) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
   check_frsky();
 #endif
 
