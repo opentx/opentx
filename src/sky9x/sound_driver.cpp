@@ -382,6 +382,7 @@ void appgo_coprocessor()
   __enable_irq() ;
 } 
 
+#if !defined(SIMU)
 extern "C" void TWI0_IRQHandler()
 {
   if ( TwiOperation == TWI_READ_VOL )
@@ -458,5 +459,6 @@ extern "C" void TWI0_IRQHandler()
   TwiOperation = TWI_NONE ; 
   i2c_check_for_request() ;
 }
+#endif
 
 
