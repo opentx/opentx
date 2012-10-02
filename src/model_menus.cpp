@@ -187,9 +187,9 @@ void menuProcModelSelect(uint8_t event)
 {
   TITLE(STR_MENUMODELSEL);
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   #define REFRESH(x)
-#elif defined(PCBV4) && defined(SDCARD)
+#elif defined(PCBGRUVIN9X) && defined(SDCARD)
   static bool refresh = true;
   #define REFRESH(x) refresh = (x)
 #else
@@ -223,7 +223,7 @@ void menuProcModelSelect(uint8_t event)
 #endif
   if (s_editMode > 0) s_editMode = 0;
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
   if (event
 #if defined(ROTARY_ENCODERS)
       || oldSub != m_posVert
@@ -383,7 +383,7 @@ void menuProcModelSelect(uint8_t event)
         break;
   }
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
   lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
@@ -418,7 +418,7 @@ void menuProcModelSelect(uint8_t event)
     k %= MAX_MODELS;
 
     if (eeModelExists(k)) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       putsModelName(4*FW, y, ModelNames[k], k, 0);
 #else
       uint16_t & size = reusableBuffer.models.listsizes[i];
@@ -437,7 +437,7 @@ void menuProcModelSelect(uint8_t event)
   }
 
   if (s_warning) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     s_warning_info = ModelNames[sub];
 #else
     char * name = reusableBuffer.models.mainname;
@@ -565,7 +565,7 @@ enum menuProcModelItems {
   ITEM_MODEL_PROTOCOL_PARAMS
 };
 
-#if defined(PCBARM) || defined(PCBV4)
+#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
 #define FIELD_TIMER_MAX 3
 #else
 #define FIELD_TIMER_MAX 2
@@ -596,7 +596,7 @@ void menuProcModel(uint8_t event)
     switch(k) {
       case ITEM_MODEL_NAME:
         EditName(MODEL_PARAM_OFS, y, g_model.name, sizeof(g_model.name), event, attr, m_posHorz);
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
         memcpy(ModelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
 #endif
         break;
@@ -610,7 +610,7 @@ void menuProcModel(uint8_t event)
         putsTime(15*FW, y, timer->val,
             (attr && m_posHorz==1 ? blink:0),
             (attr && m_posHorz==2 ? blink:0) );
-#if defined(PCBARM) || defined(PCBV4)
+#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
         lcd_putcAtt(20*FW+1, y, g_model.timersXtra[k-ITEM_MODEL_TIMER1].remanent ? 'R' : '-', (attr && m_posHorz==3) ? blink : 0);
 #endif
         if (attr && (s_editMode>0 || p1valdiff)) {
@@ -628,7 +628,7 @@ void menuProcModel(uint8_t event)
               timer->val -= qr.rem ;
               if ((int16_t)timer->val < 0) timer->val=0;
               break;
-#if defined(PCBARM) || defined(PCBV4)
+#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
             case 3:
               CHECK_INCDEC_MODELVAR(event, g_model.timersXtra[k-ITEM_MODEL_TIMER1].remanent, 0, 1);
               break;
@@ -840,7 +840,7 @@ uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, cons
 
 #if defined(FLIGHT_PHASES)
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define PhasesType uint16_t
 #else
 #define PhasesType uint8_t
@@ -850,12 +850,12 @@ PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uin
 {
   lcd_putsLeft(y, STR_FPHASE);
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-2*FW);
 #endif
 
   for (uint8_t p=0; p<MAX_PHASES; p++) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     if (expoMenu && ((attr && p < m_posHorz-4) || (x > EXPO_ONE_2ND_COLUMN+2*FW)))
       continue;
 #endif
@@ -980,7 +980,7 @@ void menuProcPhasesAll(uint8_t event)
 
   uint8_t att;
   for (uint8_t i=0; i<MAX_PHASES; i++) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     int8_t y = (1+i-s_pgOfs)*FH;
     if (y<1*FH || y>7*FH) continue;
 #else
@@ -1019,7 +1019,7 @@ void menuProcPhasesAll(uint8_t event)
       for (uint8_t t=0; t<NUM_STICKS; t++) {
         putsTrimMode((15+t)*FW+TRIMS_OFS, y, i, t, 0);
       }
-#if defined PCBV4
+#if defined PCBGRUVIN9X
       for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
         putsRotaryEncoderMode((19+t)*FW+TRIMS_OFS+ROTARY_ENC_OFS, y, i, t, 0);
       }
@@ -1029,7 +1029,7 @@ void menuProcPhasesAll(uint8_t event)
       lcd_putc(20*FW+2, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
   }
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   if (s_pgOfs != MAX_PHASES-6) return;
 #endif
 
@@ -1459,7 +1459,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 }
 
 enum ExposFields {
-#ifdef PCBARM
+#ifdef PCBSKY9X
   EXPO_FIELD_NAME,
 #endif
   EXPO_FIELD_WIDTH,
@@ -1475,7 +1475,7 @@ enum ExposFields {
   EXPO_FIELD_MAX
 };
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define EXPO_ONE_ARM_ROW sizeof(ed->name),
 #else
 #define EXPO_ONE_ARM_ROW
@@ -1506,7 +1506,7 @@ void menuProcExpoOne(uint8_t event)
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i)
     {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       case EXPO_FIELD_NAME:
         EditName(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->name, sizeof(ed->name), event, attr, m_posHorz);
         break;
@@ -1577,7 +1577,7 @@ void menuProcExpoOne(uint8_t event)
 }
 
 enum MixFields {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   MIX_FIELD_NAME,
 #endif
   MIX_FIELD_SOURCE,
@@ -1600,7 +1600,7 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define MIX_ONE_ARM_ROW sizeof(md2->name),
 #else
 #define MIX_ONE_ARM_ROW
@@ -1631,7 +1631,7 @@ void menuProcMixOne(uint8_t event)
     uint8_t i = k + s_pgOfs;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       case MIX_FIELD_NAME:
         EditName(MIXES_2ND_COLUMN, y, md2->name, sizeof(md2->name), event, attr, m_posHorz);
         break;
@@ -1943,7 +1943,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event)
             else
               lcd_outdezAtt(EXPO_LINE_EXPO_POS, y, ed->curveParam, 0);
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
             if (ed->name[0]) {
               putsSwitches(11*FW, y, ed->swtch, 0);
               lcd_putsnAtt(15*FW+2, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
@@ -1965,7 +1965,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event)
             if (attr != 0)
               CHECK_INCDEC_MODELVAR(_event, md->weight, -125, 125);
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
             if (md->name[0]) {
               lcd_putsnAtt(15*FW+2, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
             }
@@ -2165,7 +2165,7 @@ void menuProcLimits(uint8_t event)
 #endif
           if (active) {
             int16_t new_offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS);
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
             if (checkIncDec_Ret)
 #endif
             {
@@ -2289,7 +2289,7 @@ void menuProcCurvesAll(uint8_t event)
 }
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 enum CustomSwitchFields {
   CSW_FIELD_FUNCTION,
   CSW_FIELD_V1,
@@ -2556,7 +2556,7 @@ void menuProcCustomSwitches(uint8_t event)
 
 void menuProcFunctionSwitches(uint8_t event)
 {
-#if defined(PCBARM) && defined(SDCARD)
+#if defined(PCBSKY9X) && defined(SDCARD)
   uint8_t _event = event;
   if (s_menu_count) {
     event = 0;
@@ -2631,7 +2631,7 @@ void menuProcFunctionSwitches(uint8_t event)
               lcd_outdezAtt(21*FW, y, val_displayed, attr);
             }
 #endif
-#if defined(PCBARM) && defined(SDCARD)
+#if defined(PCBSKY9X) && defined(SDCARD)
             else if (sd->func == FUNC_PLAY_TRACK) {
               if (sd->param[0] && sd->param[1])
                 lcd_putsnAtt(15*FW, y, sd->param, sizeof(sd->param), attr);
@@ -2651,7 +2651,7 @@ void menuProcFunctionSwitches(uint8_t event)
               putsChnRaw(17*FW, y, val_displayed+1, attr);
             }
 #endif
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
             else if (sd->func == FUNC_VOLUME) {
               val_max = NUM_XCHNRAW-1;
               putsChnRaw(17*FW, y, val_displayed+1, attr);
@@ -2716,7 +2716,7 @@ void menuProcFunctionSwitches(uint8_t event)
     }
   }
 
-#if defined(PCBARM) && defined(SDCARD)
+#if defined(PCBSKY9X) && defined(SDCARD)
   if (s_menu_count) {
     const char * result = displayMenu(_event);
     if (result) {
@@ -2992,7 +2992,7 @@ void menuProcTelemetry(uint8_t event)
           if (attr && m_posHorz==c && (s_editMode>0 || p1valdiff)) {
             CHECK_INCDEC_MODELVAR(event, value, 0, (j==3 && c==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX);
             if (checkIncDec_Ret) {
-#if defined (PCBARM)
+#if defined (PCBSKY9X)
               g_model.frsky.lines[2*j+c] = value;
 #else
               g_model.frsky.lines[j] = (c==0 ? ((g_model.frsky.lines[j] & 0xf0) + (value & 0x0f)) : (g_model.frsky.lines[j] & 0x0f) + ((value & 0x0f) << 4));

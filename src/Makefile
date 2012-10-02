@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: STD, STD128, V4, ARM, X9D
+# Values: STD, STD128, GRUVIN9X, SKY9X, X9D
 PCB = STD
 
 # PCB revision
@@ -178,7 +178,7 @@ UNITS = METRIC
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
 
-# Enable extra rotary encoders (V4 board only)
+# Enable extra rotary encoders (Gruvin9x board only)
 # Values = YES, NO
 EXTRA_ROTARY_ENCODERS = NO
 
@@ -220,7 +220,7 @@ ifeq ($(PCB), STD128)
   CPPDEFS += -DF_CPU=$(F_CPU)UL
 endif
 
-ifeq ($(PCB), V4)
+ifeq ($(PCB), GRUVIN9X)
   ifeq ($(PCBREV), REV0)
     CPPDEFS += -DREV0
   else
@@ -231,13 +231,13 @@ ifeq ($(PCB), V4)
   CPPDEFS += -DF_CPU=$(F_CPU)UL
 endif
 
-ifeq ($(PCB), ARM)
+ifeq ($(PCB), SKY9X)
   ifeq ($(PCBREV), REVA)
     CPPDEFS += -DREVA
-    LDSCRIPT = ersky9x/sam3s2c_flash.ld
+    LDSCRIPT = sky9x/sam3s2c_flash.ld
   else
     CPPDEFS += -DREVB
-    LDSCRIPT = ersky9x/sam3s4c_flash.ld
+    LDSCRIPT = sky9x/sam3s4c_flash.ld
   endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
@@ -245,7 +245,7 @@ endif
 
 ifeq ($(PCB), X9D)
   CPPDEFS += -DREVB
-  LDSCRIPT = ersky9x/sam3s4c_flash.ld
+  LDSCRIPT = sky9x/sam3s4c_flash.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m4
 endif
@@ -430,76 +430,76 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), X9D)
   # X9D, so ...
   OPT = 2
-  CPPDEFS += -DPCBX9D -DPCBARM -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
-  EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
-  BOARDSRC = board_ersky9x.cpp 
-  SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
+  CPPDEFS += -DPCBX9D -DPCBSKY9X -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
+  BOARDSRC = board_sky9x.cpp 
+  SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  SRC += ersky9x/usb/device/core/USBD_UDP.c ersky9x/usb/device/core/USBDDriver.c ersky9x/usb/device/core/USBDCallbacks.c
-  SRC += ersky9x/usb/device/massstorage/MSDDriver.c ersky9x/usb/device/massstorage/MSDDStateMachine.c ersky9x/usb/device/massstorage/MSDLun.c ersky9x/usb/device/massstorage/MSDDriverDescriptors.c ersky9x/usb/device/massstorage/SBCMethods.c  
-  SRC += ersky9x/usb/common/core/USBEndpointDescriptor.c ersky9x/usb/common/core/USBGenericRequest.c ersky9x/usb/common/core/USBFeatureRequest.c ersky9x/usb/common/core/USBInterfaceRequest.c ersky9x/usb/common/core/USBGetDescriptorRequest.c ersky9x/usb/common/core/USBSetAddressRequest.c ersky9x/usb/common/core/USBSetConfigurationRequest.c ersky9x/usb/common/core/USBConfigurationDescriptor.c ersky9x/usb/common/core/USBGenericDescriptor.c 
-  SRC += ersky9x/syscalls.c
-  SRC += ersky9x/MEDSdcard.c
+  SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
+  SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
+  SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
+  SRC += sky9x/syscalls.c
+  SRC += sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += ersky9x/audio.cpp haptic.cpp
-  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp
+  CPPSRC += sky9x/audio.cpp haptic.cpp
+  CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp
   
   ifeq ($(SDCARD), YES)
-    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
+    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.c
     CPPDEFS += -DVOICE
   endif
   
   ifeq ($(BLUETOOTH), YES)
   	MODS:=${MODS}S
   	CPPDEFS += -DBLUETOOTH
-  	CPPSRC += ersky9x/bluetooth.cpp 
+  	CPPSRC += sky9x/bluetooth.cpp 
   endif
   
   ifeq ($(DEBUG), YES)
-  	CPPSRC += ersky9x/debug.cpp
+  	CPPSRC += sky9x/debug.cpp
   endif
 endif
 
-ifeq ($(PCB), ARM)
-  # ARM, so ...
+ifeq ($(PCB), SKY9X)
+  # SKY9X, so ...
   OPT = 2
-  CPPDEFS += -DPCBARM -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
-  EXTRAINCDIRS += ersky9x CoOS/kernel CoOS/portable
-  BOARDSRC = board_ersky9x.cpp
-  SRC += ersky9x/core_cm3.c ersky9x/board_lowlevel.c ersky9x/crt.c ersky9x/vectors_sam3s.c
+  CPPDEFS += -DPCBSKY9X -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
+  BOARDSRC = board_sky9x.cpp
+  SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  SRC += ersky9x/usb/device/core/USBD_UDP.c ersky9x/usb/device/core/USBDDriver.c ersky9x/usb/device/core/USBDCallbacks.c
-  SRC += ersky9x/usb/device/massstorage/MSDDriver.c ersky9x/usb/device/massstorage/MSDDStateMachine.c ersky9x/usb/device/massstorage/MSDLun.c ersky9x/usb/device/massstorage/MSDDriverDescriptors.c ersky9x/usb/device/massstorage/SBCMethods.c  
-  SRC += ersky9x/usb/common/core/USBEndpointDescriptor.c ersky9x/usb/common/core/USBGenericRequest.c ersky9x/usb/common/core/USBFeatureRequest.c ersky9x/usb/common/core/USBInterfaceRequest.c ersky9x/usb/common/core/USBGetDescriptorRequest.c ersky9x/usb/common/core/USBSetAddressRequest.c ersky9x/usb/common/core/USBSetConfigurationRequest.c ersky9x/usb/common/core/USBConfigurationDescriptor.c ersky9x/usb/common/core/USBGenericDescriptor.c 
-  SRC += ersky9x/syscalls.c
-  SRC += ersky9x/MEDSdcard.c
+  SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
+  SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
+  SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
+  SRC += sky9x/syscalls.c
+  SRC += sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += rtc.cpp ersky9x/rtc_driver.cpp
-  CPPSRC += ersky9x/audio.cpp haptic.cpp
-  CPPSRC += ersky9x/sound_driver.cpp ersky9x/haptic_driver.cpp ersky9x/sdcard_driver.cpp ersky9x/massstorage.cpp
+  CPPSRC += rtc.cpp sky9x/rtc_driver.cpp
+  CPPSRC += sky9x/audio.cpp haptic.cpp
+  CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
-    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c ersky9x/diskio.c
+    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.c
     CPPDEFS += -DVOICE
   endif
   
   ifeq ($(BLUETOOTH), YES)
   	MODS:=${MODS}S
   	CPPDEFS += -DBLUETOOTH
-  	CPPSRC += ersky9x/bluetooth.cpp 
+  	CPPSRC += sky9x/bluetooth.cpp 
   endif
   
   ifeq ($(DEBUG), YES)
-  	CPPSRC += ersky9x/debug.cpp
+  	CPPSRC += sky9x/debug.cpp
   endif
 endif
 
-ifeq ($(PCB), V4)
-  # V4 PCB, so ...
+ifeq ($(PCB), GRUVIN9X)
+  # Gruvin9x PCB, so ...
   OPT = 2
-  CPPDEFS += -DPCBV4 -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2
+  CPPDEFS += -DPCBGRUVIN9X -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
@@ -693,7 +693,7 @@ MSG_CLEANING = Cleaning project:
 ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -Dat91sam3s4 -DRUN_FROM_FLASH=1 $(CPPFLAGS) $(GENDEPFLAGS)
 AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
 
-ifneq ($(PCB), ARM)
+ifneq ($(PCB), SKY9X)
   GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
   ifeq ($(GCCVERSIONGTE462),1)
     CPPFLAGS += -flto
@@ -714,7 +714,7 @@ MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
 all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
-ifeq ($(PCB), ARM)
+ifeq ($(PCB), SKY9X)
   build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm asterisk.lbm allsrc.cpp elf remallsrc bin hex lss
 else
   build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm asterisk.lbm allsrc.cpp elf remallsrc hex eep lss sym
@@ -806,7 +806,7 @@ end:
 	@echo
 
 # Display size of file.
-ifeq ($(PCB), ARM)
+ifeq ($(PCB), SKY9X)
   ELFSIZE = $(SIZE) $(TARGET).elf
 else
   MCU_FLAG = $(shell $(SIZE) --help | grep -- --mcu > /dev/null && echo --mcu=$(MCU) )
@@ -842,7 +842,7 @@ eeprom.bin:
 
 
 # Create final output files (.hex, .eep) from ELF output file.
-ifeq ($(PCB), ARM)
+ifeq ($(PCB), SKY9X)
 %.hex: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
@@ -886,7 +886,7 @@ remallsrc:
 	$(REMOVE) allsrc.cpp
 
 # Link: create ELF output file from object files.
-ifeq ($(PCB), ARM)
+ifeq ($(PCB), SKY9X)
 %.o: %.c
 	$(CC) $(ARMCPPFLAGS) $< -o $@
 OBJS = $(SRC:.c=.o)

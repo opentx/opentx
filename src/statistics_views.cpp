@@ -79,7 +79,7 @@ void menuProcStatistic(uint8_t event)
 #endif
 }
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define MENU_DEBUG_COL_OFS (13*FW)
 #else
 #define MENU_DEBUG_COL_OFS (14*FW)
@@ -89,7 +89,7 @@ void menuProcDebug(uint8_t event)
   TITLE(STR_MENUDEBUG);
   switch(event)
   {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
@@ -97,13 +97,11 @@ void menuProcDebug(uint8_t event)
       Current_used = 0;
       sessionTimer = 0;
       killEvents(event);
-      rtc_init();
-      CoTickDelay(5);
       AUDIO_KEYPAD_UP();
       break;
 #endif
     case EVT_KEY_FIRST(KEY_MENU):
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
 #endif
@@ -119,7 +117,7 @@ void menuProcDebug(uint8_t event)
       break;
   }
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
   lcd_outdez8(MENU_DEBUG_COL_OFS , 1*FH, g_tmr1Latency_max/2 );
   lcd_putsLeft(2*FH, STR_TMR1LATMINUS);
@@ -128,7 +126,7 @@ void menuProcDebug(uint8_t event)
   lcd_outdez8(MENU_DEBUG_COL_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   lcd_putsLeft(5*FH, STR_TMAINMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (g_timeMainMax)/20, PREC2);
 #else
@@ -136,9 +134,7 @@ void menuProcDebug(uint8_t event)
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMainMax*100)/16, PREC2);
 #endif
 
-#if defined(PCBARM)
-  lcd_putsLeft(1*FH, STR_COPROC);
-  lcd_outhex4(10*FW-3, 1*FH, (Coproc_valid << 8) + Coproc_read);
+#if defined(PCBSKY9X)
 #if defined(REVB)
   lcd_putsLeft(2*FH, STR_CPU_CURRENT);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, getCurrent(), UNIT_MILLIAMPS, 0);
@@ -150,11 +146,11 @@ void menuProcDebug(uint8_t event)
 #endif
 
   lcd_putsLeft(4*FH, STR_CPU_TEMP);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, temperature, UNIT_DEGREES, 0);
-  putsTelemetryValue(20*FW+2, 4*FH, maxTemperature, UNIT_DEGREES, 0);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, getTemperature(), UNIT_DEGREES, 0);
+  putsTelemetryValue(20*FW+2, 4*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
 #endif
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
   lcd_puts( 0*FW,  5*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(14*FW,  5*FH, stack_free(), UNSIGN) ;
 #endif

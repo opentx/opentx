@@ -63,7 +63,7 @@ uint8_t getEvent(bool trim)
 }
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define KEY_LONG_DELAY 32
 #else
 #define KEY_LONG_DELAY 24
@@ -157,33 +157,25 @@ void per10ms()
   if (s_noHi) s_noHi--;
   if (trimsCheckTimer) trimsCheckTimer --;
 
-#if defined (PCBARM)
+#if defined (PCBSKY9X)
   Tenms |= 1 ;                    // 10 mS has passed
 #endif
 
 #if defined(RTCLOCK)
-  /* Update gloabal Date/Time every 100 per10ms cycles */
+  /* Update global Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100) {
-#if defined(PCBARM)
-    if (g_rtcTime!=0) {
-      g_rtcTime++; // inc global unix timestamp one second
-    } else {
-      rtc_init();  // try to get a valid time from the coprocessor
-    }
-#else
     g_rtcTime++;   // inc global unix timestamp one second
-#endif    
     g_ms100 = 0;
   }
 #endif
 
   readKeysAndTrims();
 
-#if defined(MAVLINK) && !defined(PCBARM)
+#if defined(MAVLINK) && !defined(PCBSKY9X)
   check_mavlink();
 #endif
 
-#if defined (FRSKY) && !defined(PCBARM) && !defined(AUDIO) && !defined(VOICE)
+#if defined (FRSKY) && !defined(PCBSKY9X) && !defined(AUDIO) && !defined(VOICE)
   check_frsky();
 #endif
 

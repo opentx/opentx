@@ -92,7 +92,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VFSWRESET  (OFS_VFSWFUNC + sizeof(TR_VFSWFUNC))
 #define OFS_FUNCSOUNDS (OFS_VFSWRESET + sizeof(TR_VFSWRESET))
 #define OFS_VTELEMCHNS (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
-#if defined(FRSKY) || defined(PCBARM)
+#if defined(FRSKY) || defined(PCBSKY9X)
 #define OFS_VTELEMUNIT (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
 #define OFS_VALARM     (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
 #define OFS_VALARMFN   (OFS_VALARM + sizeof(TR_VALARM))
@@ -126,7 +126,7 @@ extern const pm_char STR_OPEN9X[];
 #else
 #define OFS_ENDDSM2    (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #endif
-#if defined(PCBV4) || defined (PCBARM) 
+#if defined(PCBGRUVIN9X) || defined (PCBSKY9X) 
 #define OFS_DATETIME   (OFS_ENDDSM2)
 #endif
 
@@ -157,7 +157,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_FUNCSOUNDS (STR_OPEN9X + OFS_FUNCSOUNDS)
 #define STR_VTELEMCHNS (STR_OPEN9X + OFS_VTELEMCHNS)
 
-#if defined(FRSKY) || defined(PCBARM)
+#if defined(FRSKY) || defined(PCBSKY9X)
 #define STR_VTELEMUNIT (STR_OPEN9X + OFS_VTELEMUNIT)
 #define STR_VALARM     (STR_OPEN9X + OFS_VALARM)
 #define STR_VALARMFN   (STR_OPEN9X + OFS_VALARMFN)
@@ -190,7 +190,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VRENCODERS     (STR_OPEN9X + OFS_VRENCODERS)
 #endif
 
-#if defined(PCBV4) || defined(PCBARM)
+#if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
 #define STR_DATETIME   (STR_OPEN9X + OFS_DATETIME)
 #endif
 
@@ -374,18 +374,18 @@ extern const pm_char STR_LATITUDE[];
 extern const pm_char STR_LONGITUDE[];
 #endif
 
-#if defined(PCBARM) || defined(PCBV4)
+#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
 extern const pm_char STR_SHUTDOWN[];
 #endif
 
 extern const pm_char STR_BATT_CALIB[];
 
-#if defined(PCBARM) || defined(FRSKY)
+#if defined(PCBSKY9X) || defined(FRSKY)
 extern const pm_char STR_VOLTAGE[];
 extern const pm_char STR_CURRENT[];
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 extern const pm_char STR_CURRENT_CALIB[];
 #define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
 #else

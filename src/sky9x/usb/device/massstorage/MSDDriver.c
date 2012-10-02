@@ -39,9 +39,7 @@
 #include <usb/common/core/USBGenericRequest.h>
 #include <usb/common/core/USBFeatureRequest.h>
 #include <usb/device/core/USBD.h>
-#include <usb/device/core/USBDCallbacks.h>
 #include <usb/device/core/USBDDriver.h>
-#include <usb/device/core/USBDDriverCallbacks.h>
 
 //-----------------------------------------------------------------------------
 //         Internal variables

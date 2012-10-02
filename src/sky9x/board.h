@@ -31,7 +31,7 @@
  *
  */
 
-// TODO merge this file with board_ersky9x.h
+// TODO merge this file with board_sky9x.h
 
 #ifndef board_h
 #define board_h

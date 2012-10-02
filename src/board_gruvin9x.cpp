@@ -72,11 +72,6 @@ inline void board_init()
   TCCR0B  = (1<<WGM02) | (0b011 << CS00);
   TCCR0A  = (0b01<<WGM00);
 
-#if defined(RTCLOCK)
-  // Initialise global unix timestamp with current time from RTC chip on SD card interface
-  rtc_init();
-#endif
-
   /***************************************************/
   /* Rotary encoder interrupt set-up (V4 board only) */
 

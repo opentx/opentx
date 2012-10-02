@@ -87,9 +87,9 @@
 
 #define SURROUNDED    0x100
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define LcdFlags uint32_t
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
 #define LcdFlags uint16_t
 #else
 #define LcdFlags uint8_t
@@ -102,7 +102,7 @@ extern uint8_t lcdLastPos;
 extern volatile uint8_t LcdLock ;
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 extern uint8_t lcdLock ;
 extern uint32_t lcdInputs ;
 #endif
@@ -143,7 +143,7 @@ extern void putsChnLetter(uint8_t x, uint8_t y, uint8_t idx, uint8_t attr);
 extern void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att);
 extern void putsVBat(uint8_t x, uint8_t y, uint8_t att);
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define putstime_t int32_t
 #else
 #define putstime_t int16_t

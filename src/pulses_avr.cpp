@@ -61,7 +61,7 @@ void set_timer3_ppm( void ) ;
 
 void startPulses()
 {
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
 #if defined(DSM2_SERIAL)
   if (g_model.protocol != PROTO_DSM2)
 #endif
@@ -115,7 +115,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
   else
 #endif
   {
-#if !defined(PCBV4)
+#if !defined(PCBGRUVIN9X)
     // Original bitbang for PPM
     if (s_current_protocol != PROTO_NONE) {
       if (pulsePol) {
@@ -128,7 +128,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
       }
     }
 #else
-    // PCBV4 zero jitter hardware toggled PPM_out
+    // PCBGRUVIN9X zero jitter hardware toggled PPM_out
     OCR1B = *((uint16_t*)pulses2MHzRPtr); // duplicate capture (Timer1 in CTC mode, so restricted to OCR1A for int vector)
     
     // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
@@ -152,7 +152,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 
       pulsePol = g_model.pulsePol;
 
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
       TIMSK1 &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
 #else
       TIMSK &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
@@ -163,7 +163,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
       // if setupPulses changed protocol to one that doesn't use COMPA then don't re-enable.
       if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
         // cli is not needed because for PPM protocols interrupts are not enabled when entering here
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
         TIMSK1 |= (1<<OCIE1A); // re-enable Timer1 interrupt
 #else
         TIMSK |= (1<<OCIE1A); // re-enable Timer1 interrupt
@@ -195,7 +195,7 @@ void setupPulsesPPM(uint8_t proto)
     uint16_t q = (g_model.ppmDelay*50+300)*2; // Stoplen *2
     uint32_t rest = 22500u*2 - q; // Minimum Framelen=22.5ms
     
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
     if (proto == PROTO_PPM) {
       OCR5A = (uint16_t)0x7d * (45+g_model.ppmFrameLength-g_timeMainLast-2/*1ms*/);
       TCNT5 = 0;
@@ -745,7 +745,7 @@ void setupPulses()
         OCR1C = 200;                          // 100 uS
         TCNT1 = 300;                          // Past the OCR1C value
         ICR1 = 44000;                         // Next frame starts in 22 mS
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
         TIMSK1 &= ~0x2F;                      // All interrupts off
         TIFR1 = 0x2F;
         TIMSK1 |= 0x28;                       // Enable CAPT and COMPC
@@ -769,7 +769,7 @@ void setupPulses()
         TCNT1 = 0; 
         OCR1B = 6000;                         // Next frame starts in 3 mS
         OCR1C = 4000;                         // Next frame setup in 2 mS
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
         TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIFR1 = 0x2F;
         TIMSK1 |= (1<<OCIE1B);                // Enable COMPB
@@ -791,7 +791,7 @@ void setupPulses()
         TCCR1B = 0;                           // Stop counter
         OCR1A = 40000;                        // Next frame starts in 20 mS
         TCNT1 = 0; 
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
         TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
         TIFR1 = 0x2F;
@@ -815,7 +815,7 @@ void setupPulses()
       case PROTO_PPMSIM:
         TCCR1B = 0;                           // Stop counter
         TCNT1 = 0;
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
         TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
         TIFR1 = 0x2F;
@@ -838,7 +838,7 @@ void setupPulses()
         TCCR1B = 0;                           // Stop counter
         OCR1A = 40000;                        // Next frame starts in 20 mS
         TCNT1 = 0;
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
         TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIFR1 = 0x2F;
         TIMSK1 |= (1<<OCIE1A);                // Enable COMPA
@@ -969,7 +969,7 @@ ISR(TIMER1_COMPC_vect) // DSM2 or PXX end of frame
 void set_timer3_capture()
 {
 #ifndef SIMU
-#if defined (PCBV4)
+#if defined (PCBGRUVIN9X)
     TIMSK3 &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
 #else
     ETIMSK &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
@@ -980,7 +980,7 @@ void set_timer3_capture()
     TCCR3A = 0;
     // Noise Canceller enabled, neg. edge, clock at 16MHz / 8 (2MHz) (Correct for PCB V4.x+ also)
     TCCR3B  = (1<<ICNC3) | (0b010 << CS30);
-#if defined (PCBV4)
+#if defined (PCBGRUVIN9X)
     TIMSK3 |= (1<<ICIE3);
 #else
     ETIMSK |= (1<<TICIE3);
@@ -991,7 +991,7 @@ void set_timer3_capture()
 void set_timer3_ppm()
 {
 #ifndef SIMU
-#if defined (PCBV4)
+#if defined (PCBGRUVIN9X)
     TIMSK3 &= ~(1<<ICIE3);
 #else
     ETIMSK &= ~(1<<TICIE3) ;   // Stop capture interrupt
@@ -1002,7 +1002,7 @@ void set_timer3_ppm()
     TCCR3A = (0<<WGM10);
     TCCR3B = (1 << WGM12) | (2<<CS10); // CTC OCR1A, 16MHz / 8
 
-#if defined (PCBV4)
+#if defined (PCBGRUVIN9X)
     TIMSK3 |= ( (1<<OCIE3A) | (1<<OCIE3B) );                    // enable immediately before mainloop
 #else
     ETIMSK |= ( (1<<OCIE3A) | (1<<OCIE3B) );                    // enable immediately before mainloop

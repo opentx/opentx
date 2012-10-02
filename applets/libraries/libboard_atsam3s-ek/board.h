@@ -127,7 +127,7 @@
 #define BOARD_MAINOSC           12000000
 
 /** Master clock frequency (when using board_lowlevel.c) */
-#define BOARD_MCK               64000000
+// #define BOARD_MCK               64000000
 
 /*----------------------------------------------------------------------------*/
 /**

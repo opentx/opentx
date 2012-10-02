@@ -32,7 +32,6 @@
 //------------------------------------------------------------------------------
 
 #include "USBDDriver.h"
-#include "USBDDriverCallbacks.h"
 #include "USBD.h"
 #include <board.h>
 #include "debug.h"
@@ -370,7 +369,7 @@ static void SetInterface(
         if (pDriver->pInterfaces[infnum] != setting) {
 
             pDriver->pInterfaces[infnum] = setting;
-            USBDDriverCallbacks_InterfaceSettingChanged(infnum, setting);
+            // USBDDriverCallbacks_InterfaceSettingChanged(infnum, setting);
         }
 
         // Acknowledge the request

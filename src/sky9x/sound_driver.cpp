@@ -225,7 +225,6 @@ void init_twi()
   TWI0->TWI_CR = TWI_CR_MSEN | TWI_CR_SVDIS ;		// Master mode enable
   TWI0->TWI_MMR = 0x002F0000 ;		// Device 5E (>>1) and master is writing
   NVIC_EnableIRQ(TWI0_IRQn) ;
-  setVolume(2) ;
 }
 
 static int8_t Volume_required ;

@@ -187,7 +187,7 @@ bool check_submenu_simple(uint8_t event, uint8_t maxrow)
 
 #if defined(ROTARY_ENCODERS)
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define ROTARY_ENCODER_GRANULARITY 4
 #else
 #define ROTARY_ENCODER_GRANULARITY 1

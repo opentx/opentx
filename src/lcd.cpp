@@ -67,7 +67,7 @@ void lcd_img(uint8_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mo
 
 uint8_t lcdLastPos;
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 uint8_t lcdLock;
 uint32_t lcdInputs;
 #endif
@@ -490,7 +490,7 @@ void putsTime(uint8_t x, uint8_t y, putstime_t tme, uint8_t att, uint8_t att2)
 
   qr = div(tme, 60);
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   if (tme >= 3600) {
     qr = div(qr.quot, 60);
     lcd_outdezAtt(x+2*FWNUM, y, qr.quot, att);
@@ -668,7 +668,7 @@ void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uin
 }
 #endif
 
-#ifdef PCBARM
+#ifdef PCBSKY9X
 
 // LCD i/o pins
 // LCD_RES     PC27

@@ -31,17 +31,17 @@
  *
  */
 
-#ifndef board_ersky9x_h
-#define board_ersky9x_h
+#ifndef board_sky9x_h
+#define board_sky9x_h
 
 #include <stdio.h>
-#include "ersky9x/board.h"
-#include "ersky9x/sound_driver.h"
-#include "ersky9x/haptic_driver.h"
-#include "ersky9x/debug.h"
+#include "sky9x/board.h"
+#include "sky9x/sound_driver.h"
+#include "sky9x/haptic_driver.h"
+#include "sky9x/debug.h"
 
 #if defined(BLUETOOTH)
-#include "ersky9x/bluetooth.h"
+#include "sky9x/bluetooth.h"
 #endif
 
 extern "C" {
@@ -78,6 +78,7 @@ uint16_t getCurrent();
 
 extern uint8_t temperature ;              // Raw temp reading
 extern uint8_t maxTemperature ;           // Raw temp reading
+uint8_t getTemperature();
 
 #define strcpy_P strcpy
 #define strcat_P strcat

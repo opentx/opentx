@@ -132,14 +132,14 @@ extern int8_t s_inflight_min;
 extern int8_t s_inflight_max;
 extern int8_t s_inflight_shift;
 extern uint8_t s_inflight_bitshift;
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
 #define PREPARE_INFLIGHT_BITFIELD(a) int8_t *bitfield = (a)
 #endif
 #define INFLIGHT(val) (s_inflight_value==&val ? SURROUNDED : 0)
 void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t i_max, int8_t i_shift, const pm_char *label, uint8_t bitshift=0);
 #define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, imin, imax, ishift, label) \
   checkInFlightIncDecModel(event, &var, imin, imax, ishift, label)
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
 #define CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, var, imin, imax, ishift, label, bitshift) \
   checkInFlightIncDecModel(event, bitfield, imin, imax, ishift, label, bitshift);
 #endif

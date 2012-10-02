@@ -36,7 +36,7 @@
 
 #include <inttypes.h>
 
-#if defined(PCBV4) && !defined(REV0)
+#if defined(PCBGRUVIN9X) && !defined(REV0)
 #define WRITE_DELAY_10MS 500
 #else
 #define WRITE_DELAY_10MS 200
@@ -47,7 +47,7 @@ extern uint16_t s_eeDirtyTime10ms;
 // bs=16  128 blocks    verlust link:128  16files:16*8  128     sum 256
 // bs=32   64 blocks    verlust link: 64  16files:16*16 256     sum 320
 //
-#if defined(PCBV4) || defined(M128)
+#if defined(PCBGRUVIN9X) || defined(M128)
 #define EESIZE     4096
 #define EEFS_VERS  5
 #define MAXFILES   36
@@ -84,7 +84,7 @@ PACK(struct EeFs{
 
 #define RESV     sizeof(EeFs)  //reserv for eeprom header with directory (eeFs)
 
-#if defined(PCBV4) || defined(M128)
+#if defined(PCBGRUVIN9X) || defined(M128)
 #define FIRSTBLK      1
 #define BLOCKS        (1+(EESIZE-RESV)/BS)
 #define BLOCKS_OFFSET (RESV-BS)

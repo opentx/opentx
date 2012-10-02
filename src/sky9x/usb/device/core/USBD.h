@@ -271,5 +271,20 @@ extern unsigned char USBD_IsHighSpeed(void);
 
 extern void USBD_Test(unsigned char bIndex);
 
+/* USBD Callbacks */
+
+#define USBDCallbacks_Reset()
+
+#define USBDCallbacks_Suspended()
+
+#define USBDCallbacks_Resumed()
+
+extern void USBDCallbacks_RequestReceived(const USBGenericRequest *request);
+
+extern void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum);
+
+extern void USBDDriverCallbacks_InterfaceSettingChanged(unsigned char interface,
+                                                        unsigned char setting);
+
 #endif //#ifndef USBD_H
 

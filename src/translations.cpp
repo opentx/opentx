@@ -65,7 +65,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VFSWRESET)
     ISTR(FUNCSOUNDS)
     ISTR(VTELEMCHNS)
-#if defined(FRSKY) || defined(PCBARM)
+#if defined(FRSKY) || defined(PCBSKY9X)
     ISTR(VTELEMUNIT)
     ISTR(VALARM)
     ISTR(VALARMFN)
@@ -87,7 +87,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #if defined(DSM2)
     ISTR(DSM2MODE)
 #endif
-#if defined(PCBV4) || defined (PCBARM)
+#if defined(PCBGRUVIN9X) || defined (PCBSKY9X)
     ISTR(DATETIME)
 #endif
     ;
@@ -233,7 +233,7 @@ const pm_char STR_EEPROMOVERFLOW[] PROGMEM = TR_EEPROMOVERFLOW;
 const pm_char STR_TRIMS2OFFSETS[] PROGMEM = TR_TRIMS2OFFSETS;
 const pm_char STR_MENURADIOSETUP[] PROGMEM = TR_MENURADIOSETUP;
 
-#if defined(PCBV4) || defined(PCBARM)
+#if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
 const pm_char STR_MENUDATEANDTIME[] PROGMEM = TR_MENUDATEANDTIME;
 #endif
 
@@ -300,18 +300,18 @@ const pm_char STR_LATITUDE[] PROGMEM = TR_LATITUDE;
 const pm_char STR_LONGITUDE[] PROGMEM = TR_LONGITUDE;
 #endif
 
-#if defined(PCBARM) || defined(PCBV4)
+#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
 const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 #endif
 
 const pm_char STR_BATT_CALIB[] PROGMEM = TR_BATT_CALIB;
 
-#if defined(PCBARM) || defined(FRSKY)
+#if defined(PCBSKY9X) || defined(FRSKY)
 const pm_char STR_VOLTAGE[] PROGMEM = TR_VOLTAGE;
 const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
 #endif
 

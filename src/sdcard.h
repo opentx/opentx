@@ -70,7 +70,7 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
 // TODO move the ARM function definition here (when cpp)
 extern void sdPoll10mS();
 
-#if defined(PCBARM) && !(defined(SIMU))
+#if defined(PCBSKY9X) && !(defined(SIMU))
 extern "C" {
 extern uint32_t sd_card_ready();
 extern uint32_t sd_card_mounted();
@@ -80,13 +80,13 @@ extern uint32_t sd_card_mounted();
 #define sd_card_mounted() (true)
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define O9X_FOURCC 0x3278396F // o9x for sky9x
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
 #define O9X_FOURCC 0x3178396F // o9x for gruvin9x
 #endif
 
-#if defined(PCBV4) || defined(SIMU)
+#if defined(PCBGRUVIN9X) || defined(SIMU)
 #define SD_IS_HC() (0)
 #define SD_GET_BLOCKNR() (0)
 #define SD_GET_SIZE_MB() (0)

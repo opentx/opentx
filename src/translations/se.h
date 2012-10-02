@@ -36,7 +36,7 @@
 #define TR_VTRIMINC      "Exp   ""xFin  ""Fin   ""Medium""Grov  "
 
 #define LEN_RETA123      "\001"
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
 #if defined(EXTRA_ROTARY_ENCODERS)
 #define TR_RETA123       "RHGS123abcd"
 #else //EXTRA_ROTARY_ENCODERS
@@ -100,14 +100,14 @@
 #define TR_PLAY_TRACK    "[Spela Sp\200r]\0"
 #define TR_PLAY_VALUE    "[Spela V\201rde]\0"
 #endif
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "[SDCARD Logg]"
 #else
 #define TR_SDCLOGS       "[SDCARD Logg]"
 #endif
 #define TR_FSW_VOLUME    "Volym\0       "
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SDCARD Loggar"
 #else
@@ -182,18 +182,18 @@
 #define TR_VRENCODERS        "REa""REb"
 
 #define LEN_VSWITCHES    "\003"
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define TR_VSWITCHES     "GAS""ROD""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC""BRD""BRE""BRF""BRG""BRH""BRI""BRJ""BRK""BRL""BRM""BRN""BRO""BRP""BRQ""BRR""BRS""BRT""BRU""BRV""BRW"" P\203"
 #else
 #define TR_VSWITCHES     "GAS""ROD""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC"" P\203"
 #endif
 
 #define LEN_VSRCRAW      "\004"
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa "
-#elif defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
-#elif defined(PCBV4) && !defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && !defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW
@@ -329,7 +329,7 @@
 #define STR_US (STR_TMR1LATMAXUS+12)
 #define TR_TMR1LATMINUS "Tmr1Lat min\003us"
 #define TR_TMR1JITTERUS "Tmr1 Jitter\003us"
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define TR_TMAINMAXMS          "Tmain max\004ms"
 #else
 #define TR_TMAINMAXMS          "Tmain max\005ms"

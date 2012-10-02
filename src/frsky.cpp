@@ -52,7 +52,7 @@
 
 uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
 uint8_t frskyTxBufferCount = 0;
 #endif
 uint8_t FrskyRxBufferReady = 0;
@@ -428,7 +428,7 @@ void processFrskyPacket(uint8_t *packet)
    a second buffer to receive data while one buffer is being processed (slowly).
 */
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 void processSerialData(uint8_t data)
 #else
 NOINLINE void processSerialData(uint8_t stat, uint8_t data)
@@ -442,7 +442,7 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
   btPushByte(data);
 #endif
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
   if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0))) {
     // discard buffer and start fresh on any comms error
     FrskyRxBufferReady = 0;
@@ -498,7 +498,7 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
   }
 }
 
-#if !defined(PCBARM) && !defined(SIMU)
+#if !defined(PCBSKY9X) && !defined(SIMU)
 ISR(USART0_RX_vect)
 {
   uint8_t stat;
@@ -549,7 +549,7 @@ ISR(USART0_RX_vect)
 #endif
 
 /******************************************/
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 void frskyTransmitBuffer( uint32_t size )
 {
   txPdcUsart( frskyTxBuffer, size ) ;
@@ -564,7 +564,7 @@ void frskyTransmitBuffer()
 
 uint8_t frskyAlarmsSendState = 0 ;
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 void frskyPushValue(uint8_t *&ptr, uint8_t value)
 {
   // byte stuff the only byte than might need it
@@ -678,7 +678,7 @@ inline void FRSKY10mspoll(void)
 
 NOINLINE void check_frsky()
 {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   rxPdcUsart(processSerialData);              // Receive serial data here
 #endif
 
@@ -826,7 +826,7 @@ bool FRSKY_alarmRaised(uint8_t idx)
 }
 #endif
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
 inline void FRSKY_EnableTXD(void)
 {
   frskyTxBufferCount = 0;
@@ -845,7 +845,7 @@ void FRSKY_Init(void)
   // clear frsky variables
   resetTelemetry();
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   startPdcUsartReceive() ;
 #elif !defined(SIMU)
 
@@ -1177,7 +1177,7 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 
 uint8_t getTelemCustomField(uint8_t line, uint8_t col)
 {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   return g_model.frsky.lines[2*line+col];
 #else
   uint8_t result = (col==0 ? (g_model.frsky.lines[line] & 0x0f) : ((g_model.frsky.lines[line] & 0xf0) / 16));

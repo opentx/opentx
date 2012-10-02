@@ -42,7 +42,7 @@ uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 Pio Pioa, Piob, Pioc;
 Pwm pwm;
 Twi Twio;
@@ -66,10 +66,10 @@ void setSwitch(int8_t swtch)
 {
   switch (swtch) {
     case DSW_ID0:
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       PIOC->PIO_PDSR &= ~0x00004000;
       PIOC->PIO_PDSR |= 0x00000800;
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
       ping |=  (1<<INP_G_ID1);
       pinb &= ~(1<<INP_B_ID2);
 #else
@@ -78,9 +78,9 @@ void setSwitch(int8_t swtch)
 #endif
       break;
     case DSW_ID1:
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       PIOC->PIO_PDSR |= 0x00004800;
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
       ping &= ~(1<<INP_G_ID1);
       pinb &= ~(1<<INP_B_ID2);
 #else
@@ -89,10 +89,10 @@ void setSwitch(int8_t swtch)
 #endif
       break;
     case DSW_ID2:
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       PIOC->PIO_PDSR &= ~0x00000800;
       PIOC->PIO_PDSR |= 0x00004000;
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
       ping &= ~(1<<INP_G_ID1);
       pinb |=  (1<<INP_B_ID2);
 #else
@@ -111,7 +111,7 @@ void *eeprom_write_function(void *)
   while (!sem_wait(eeprom_write_sem)) {
     if (!eeprom_thread_running)
       return NULL;
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     if (eeprom_read_operation) {
       assert(eeprom_buffer_size);
       eeprom_read_block(eeprom_buffer_data, (const void *)(int64_t)eeprom_pointer, eeprom_buffer_size);
@@ -128,7 +128,7 @@ void *eeprom_write_function(void *)
       if (fp) {
         if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
           perror("error in fwrite");
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
         sleep(5/*ms*/);
 #endif
       }
@@ -142,7 +142,7 @@ void *eeprom_write_function(void *)
         fflush(fp);
       }
     }
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     }
     Spi_complete = 1;
 #endif
@@ -167,7 +167,7 @@ void *main_thread(void *)
     g_menuStack[0] = menuMainView;
     g_menuStack[1] = menuProcModelSelect;
 
-#ifdef PCBARM
+#ifdef PCBSKY9X
     eeprom_init();
 #endif
 
@@ -180,7 +180,7 @@ void *main_thread(void *)
       doSplash();
 #endif
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
       checkLowEEPROM();
 #endif
 
@@ -287,7 +287,7 @@ namespace simu {
 #include <direct.h>
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 FATFS g_FATFS_Obj;
 #endif
 
@@ -412,7 +412,7 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
   return FR_OK;
 }
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #endif

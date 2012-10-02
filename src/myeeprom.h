@@ -48,9 +48,9 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define EEPROM_VER       212
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
 #define EEPROM_VER       211
 #else
 #define EEPROM_VER       211
@@ -91,8 +91,8 @@ enum BeeperMode {
   e_mode_all
 };
 
-#if defined(PCBARM)
-#define EXTRA_ARM_FIELDS \
+#if defined(PCBSKY9X)
+#define EXTRA_SKY9X_FIELDS \
   uint8_t   speakerVolume; \
   uint8_t   backlightBright; \
   int8_t    currentCalib
@@ -100,9 +100,10 @@ enum BeeperMode {
   int8_t   temperatureWarn; \
   uint8_t  mAhWarn; \
   uint16_t mAhUsed; \
-  uint32_t globalTimer
+  uint32_t globalTimer; \
+  int8_t   temperatureCalib;
 #else
-#define EXTRA_ARM_FIELDS
+#define EXTRA_SKY9X_FIELDS
 #define EXTRA_GENERAL_FIELDS \
   int8_t   speakerVolume
 #endif
@@ -135,7 +136,7 @@ PACK(typedef struct t_EEGeneral {
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;      //index of subview in main scrren
-  uint8_t   btBaudrate:3; // TODO only needed on ARM
+  uint8_t   btBaudrate:3; // TODO only needed on SKY9X
   int8_t    beeperMode:2;
   uint8_t   spare1:1;
   uint8_t   disableMemoryWarning:1;
@@ -163,7 +164,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   unexpectedShutdown:1;
   uint8_t   speakerPitch;
 
-  EXTRA_ARM_FIELDS;
+  EXTRA_SKY9X_FIELDS;
 
   uint8_t   variants;
   
@@ -173,7 +174,7 @@ PACK(typedef struct t_EEGeneral {
 
 // eeprom modelspec
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 PACK(typedef struct t_ExpoData {
   uint8_t mode;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t chn;
@@ -213,9 +214,9 @@ enum MixSources {
     MIXSRC_P1,
     MIXSRC_P2,
     MIXSRC_P3,
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     MIXSRC_REa,
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
     MIXSRC_REa,
     MIXSRC_REb,
 #if defined(EXTRA_ROTARY_ENCODERS)
@@ -270,7 +271,7 @@ enum MixSources {
 #define MODE_EXPO          0
 #define MODE_CURVE         1
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define MAX_DELAY   60 /* 30 seconds */
 #define MAX_SLOW    60 /* 30 seconds */
 PACK(typedef struct t_MixData {
@@ -317,7 +318,7 @@ PACK(typedef struct t_MixData {
 }) MixData;
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define MAX_CSW_DURATION 120 /*60s*/
 #define MAX_CSW_DELAY    120 /*60s*/
 PACK(typedef struct t_CustomSwData { // Custom Switches data
@@ -353,7 +354,7 @@ enum Functions {
 #if !defined(PCBSTD)
   FUNC_LOGS,
 #endif
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   FUNC_VOLUME,
 #endif
   FUNC_BACKLIGHT,
@@ -363,7 +364,7 @@ enum Functions {
   FUNC_MAX
 };
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
   uint8_t func;
@@ -470,7 +471,7 @@ enum VarioSource {
   VARIO_SOURCE_LAST = VARIO_SOURCE_A2,
 };
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 PACK(typedef struct t_FrSkyBarData {
   uint8_t    source;
   uint8_t    barMin;           // minimum for bar display
@@ -499,7 +500,7 @@ enum FrskySource {
   FRSKY_SOURCE_CELLS,
 };
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   FrSkyRSSIAlarm rssiAlarms[2];
@@ -566,12 +567,12 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 
 #define ROTARY_ENCODER_MAX  1024
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define NUM_ROTARY_ENCODERS_EXTRA 0
 #define NUM_ROTARY_ENCODERS 1
 #define ROTARY_ENCODER_ARRAY_EXTRA
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
 #if defined(EXTRA_ROTARY_ENCODERS)
 #define NUM_ROTARY_ENCODERS_EXTRA 2
 #define NUM_ROTARY_ENCODERS (2+NUM_ROTARY_ENCODERS_EXTRA)
@@ -604,7 +605,7 @@ PACK(typedef struct t_PhaseData {
   ROTARY_ENCODER_ARRAY
 }) PhaseData;
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define MAX_MODELS 60
 #define NUM_CHNOUT 32 // number of real output channels CH1-CH32
 #define MAX_PHASES 9
@@ -612,7 +613,7 @@ PACK(typedef struct t_PhaseData {
 #define MAX_EXPOS  32
 #define NUM_CSW    32 // number of custom switches
 #define NUM_FSW    32 // number of functions assigned to switches
-#elif defined(PCBV4) || defined(M128)
+#elif defined(PCBGRUVIN9X) || defined(M128)
 #define MAX_MODELS 30
 #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
 #define MAX_PHASES 5
@@ -632,7 +633,7 @@ PACK(typedef struct t_PhaseData {
 
 #define MAX_TIMERS 2
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define MAX_CURVES 16
 #define NUM_POINTS 512
 #define CURVTYPE   int16_t
@@ -687,13 +688,13 @@ enum Dsm2Variants {
 #define TELEMETRY_DATA FrSkyData frsky
 #endif
 
-#if defined(PCBV4) || defined(PCBARM)
+#if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
 #define BeepANACenter uint16_t
 #else
 #define BeepANACenter uint8_t
 #endif
 
-#if defined(PCBV4) || defined(PCBARM)
+#if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
 PACK(typedef struct t_TimerDataExtra {
   uint16_t remanent:1;
   uint16_t value:15;

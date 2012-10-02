@@ -96,7 +96,7 @@ typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
 extern sem_t *eeprom_write_sem;
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
 extern Dacc dacc;
@@ -263,7 +263,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define UPE0    0
 #define FE0     0
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 extern volatile uint32_t Tenms;
 extern uint32_t Master_frequency;
 #define NVIC_EnableIRQ(x)

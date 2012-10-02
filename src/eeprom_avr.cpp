@@ -60,7 +60,7 @@ inline void eeprom_write_byte()
 {
   EEAR = eeprom_pointer;
   EEDR = *eeprom_buffer_data;
-#if defined (PCBV4)
+#if defined (PCBGRUVIN9X)
   EECR |= 1<<EEMPE;
   EECR |= 1<<EEPE;
 #else
@@ -77,7 +77,7 @@ ISR(EE_READY_vect)
     eeprom_write_byte();
   }
   else {
-#if defined (PCBV4)
+#if defined (PCBGRUVIN9X)
     EECR &= ~(1<<EERIE);
 #else
     EECR &= ~(1<<EERIE);
@@ -97,9 +97,9 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 
 #ifdef SIMU
   sem_post(eeprom_write_sem);
-#elif defined (PCBARM)
+#elif defined (PCBSKY9X)
 
-#elif defined (PCBV4)
+#elif defined (PCBGRUVIN9X)
   EECR |= (1<<EERIE);
 #else
   EECR |= (1<<EERIE);
@@ -884,7 +884,7 @@ void eeLoadModel(uint8_t id)
     resetProto();
     resetAll();
 
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
       if (g_model.timersXtra[i].remanent) {
         s_timerVal[i] = g_model.timersXtra[i].value;

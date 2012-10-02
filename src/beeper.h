@@ -44,8 +44,8 @@ extern bool warbleC;
 extern uint8_t hapticTick;
 #endif
 
-#if defined(PCBARM)
-#include "ersky9x/sound.h"
+#if defined(PCBSKY9X)
+#include "sky9x/sound.h"
 inline void _beep(uint8_t b) {
   buzzer_sound(b);
 }
@@ -85,7 +85,7 @@ extern void beep(uint8_t val);
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
 FORCEINLINE void AUDIO_HEARTBEAT()
 {
     if(g_beepCnt) {

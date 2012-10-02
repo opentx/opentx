@@ -9,7 +9,7 @@
 #ifndef _FFCONF
 #define _FFCONF 6502	/* Revision ID */
 
-#if defined(PCBARM) && !defined(SIMU)
+#if defined(PCBSKY9X) && !defined(SIMU)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -98,7 +98,7 @@ extern "C" {
 /	1    - ASCII only (Valid for non LFN cfg.)
 */
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define	_USE_LFN	2		/* 0 to 3 */
 #else
 #define _USE_LFN        1               /* 0 to 3 */
@@ -182,7 +182,7 @@ extern "C" {
 /* A header file that defines sync object types on the O/S, such as
 /  windows.h, ucos_ii.h and semphr.h, must be included prior to ff.h. */
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define _FS_REENTRANT		1	   /* 0:Disable or 1:Enable */
 #else
 #define _FS_REENTRANT		0	   /* 0:Disable or 1:Enable */
@@ -197,7 +197,7 @@ extern "C" {
 /      ff_req_grant, ff_rel_grant, ff_del_syncobj and ff_cre_syncobj
 /      function must be added to the project. */
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define	_FS_SHARE	3	/* 0:Disable or >=1:Enable */
 #else
 #define _FS_SHARE       2       /* 0:Disable or >=1:Enable */

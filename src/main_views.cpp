@@ -99,7 +99,7 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
       if (view_base <= e_inputs) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
         if (view_base == e_inputs)
           g_eeGeneral.view ^= ALTERNATE_VIEW;
         else
@@ -205,9 +205,9 @@ void menuMainView(uint8_t event)
     putsModelName(2*FW-2, 0*FH, g_model.name, g_eeGeneral.currModel, DBLSIZE);
 
     // Voltage (or alarm if any)
-#if defined(PCBARM)
-    if (g_vbat100mV > g_eeGeneral.vBatWarn && temperature >= g_eeGeneral.temperatureWarn+80) {
-      putsTelemetryValue(6*FW-1, 3*FH, temperature, UNIT_DEGREES, BLINK|INVERS|DBLSIZE);
+#if defined(PCBSKY9X)
+    if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
+      putsTelemetryValue(6*FW-1, 3*FH, getTemperature(), UNIT_DEGREES, BLINK|INVERS|DBLSIZE);
     }
     else if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
       putsTelemetryValue(7*FW-1, 3*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
@@ -278,7 +278,7 @@ void menuMainView(uint8_t event)
   if (view_base < e_inputs) {
     // scroll bar
     lcd_hlineStip(38, 34, 54, DOTTED);
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     lcd_hline(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 #else
     lcd_hline((g_eeGeneral.view & ALTERNATE_VIEW) ? 64 : 38, 34, 26, SOLID);
@@ -286,7 +286,7 @@ void menuMainView(uint8_t event)
 
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
 #else
       uint8_t chan = (g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i;
@@ -352,16 +352,16 @@ void menuMainView(uint8_t event)
 #endif //EXTRA_ROTARY_ENCODERS
       }
 #endif // ROTARY_ENCODERS
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       for (uint8_t i=0; i<NUM_CSW; i++) {
         int8_t len = getSwitch(10+i, 0) ? BAR_HEIGHT : 1;
         lcd_vline(16+3*i-1,SCREEN_HEIGHT-8-len,len);
         lcd_vline(16+3*i  ,SCREEN_HEIGHT-8-len,len);
       }
-#elif defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
       for (uint8_t i=0; i<NUM_CSW; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
       for (uint8_t i=0; i<NUM_CSW; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
 #else

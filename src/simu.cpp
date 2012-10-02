@@ -269,7 +269,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       KEY_Left,      INP_B_KEY_LFT, INP_L_KEY_LFT, (uint64_t)PIOC, ERSKY9X_LEFT_MASK,
     };
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     PIOC->PIO_PDSR |= ERSKY9X_DOWN_MASK | ERSKY9X_UP_MASK | ERSKY9X_RIGHT_MASK | ERSKY9X_LEFT_MASK ;
     ERSKY9X_EXIT_PIO->PIO_PDSR |= ERSKY9X_EXIT_MASK;
     PIOB->PIO_PDSR |= ERSKY9X_MENU_MASK;
@@ -277,7 +277,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     temperature = 67;
     maxTemperature = 70;
 
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
     uint8_t pin = (pinl & ~0x3f);
 #else
     uint8_t pin = (pinb & ~0x7e);
@@ -285,9 +285,9 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 
     for(unsigned i=0; i<DIM(keys1);i+=5) {
       if (getApp()->getKeyState(keys1[i])) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
         ((Pio*)keys1[i+3])->PIO_PDSR &= ~(keys1[i+4]);
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
         pin |= (1<<keys1[i+2]);
 #else
         pin |= (1<<keys1[i+1]);
@@ -295,8 +295,8 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       }
     }
 
-#if defined(PCBARM)
-#elif defined(PCBV4)
+#if defined(PCBSKY9X)
+#elif defined(PCBGRUVIN9X)
     pinl = pin;
 #else
     pinb = pin;
@@ -310,18 +310,18 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #else
     static FXuint keys2[]={KEY_F8, KEY_F7, KEY_F4, KEY_F3, KEY_F6, KEY_F5, KEY_F1, KEY_F2  };
 #endif
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     PIOA->PIO_PDSR |= (0x00800000 | 0x01000000 | 0x00000002 | 0x00000001);
     PIOB->PIO_PDSR |= (0x00000010);
     PIOC->PIO_PDSR |= (0x10000000 | 0x00000400 | 0x00000200);
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
     pinj = 0;
 #else
     pind  = 0;
 #endif
     for(unsigned i=0; i<DIM(keys2);i++){
       if(getApp()->getKeyState(keys2[i])) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
         switch(i) {
           case 6:
             PIOA->PIO_PDSR &= ~0x00800000;
@@ -348,7 +348,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
             PIOC->PIO_PDSR &= ~0x00000200;
             break;
         }
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
         pinj |= (1<<i);
 #else
         pind |= (1<<i);
@@ -356,7 +356,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       }
     }
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     struct SwitchKey {
         FXuint key;
         volatile uint32_t & pin;
@@ -373,7 +373,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #endif
     
     static SwitchKey keys3[] = {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       { KEY_1, PIOC->PIO_PDSR,  20, 0 },
       { KEY_6, PIOA->PIO_PDSR,  2, 0 },
       { KEY_2, PIOA->PIO_PDSR,  15, 0 },
@@ -381,7 +381,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       { KEY_7, PIOC->PIO_PDSR,  16, 0 },
       { KEY_8, PIOC->PIO_PDSR,  8, 0 } };
 #else
-#if defined(PCBV4) || defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
+#if defined(PCBGRUVIN9X) || defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
       { KEY_1, pinc,  INP_C_ThrCt, 0 },
       { KEY_6, pinc,  INP_C_AileDR, 0 },
 #else
@@ -437,9 +437,9 @@ void Open9xSim::refreshDiplay()
 {
   if (lcd_refresh) {
     lcd_refresh = false;
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     if (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
     if (portc & 1<<OUT_C_LIGHT)
 #else
     if (portb & 1<<OUT_B_LIGHT)
@@ -526,7 +526,7 @@ int main(int argc,char **argv)
 uint16_t anaIn(uint8_t chan)
 {
   if (chan == 7)
-#ifdef PCBV4
+#ifdef PCBGRUVIN9X
     return 150;
 #else
     return 1500;

@@ -46,7 +46,7 @@ enum EnumTabDiag {
   e_Vers,
   e_Keys,
   e_Ana,
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   e_Hardware,
 #endif
   e_Calib
@@ -72,7 +72,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuProcDiagVers,
   menuProcDiagKeys,
   menuProcDiagAna,
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   menuProcHardware,
 #endif
   menuProcDiagCalib
@@ -114,12 +114,12 @@ enum menuProcSetupItems {
   ITEM_SETUP_HAPTIC_LENGTH,
   ITEM_SETUP_HAPTIC_STRENGTH,
 #endif
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   ITEM_SETUP_BRIGHTNESS,
 #endif
   ITEM_SETUP_CONTRAST,
   ITEM_SETUP_BATTERY_WARNING,
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
   ITEM_SETUP_CAPACITY_WARNING,
   ITEM_SETUP_TEMPERATURE_WARNING,
 #endif
@@ -184,7 +184,7 @@ void menuProcSetup(uint8_t event)
 #else
 #define FRSKY_ZEROS
 #endif
-#ifdef PCBARM
+#ifdef PCBSKY9X
 #define ARM_ZEROS  0, 0, 0,
 #else
 #define ARM_ZEROS
@@ -291,7 +291,7 @@ void menuProcSetup(uint8_t event)
       case ITEM_SETUP_SPEAKER_VOLUME:
       {
         lcd_putsLeft(y, STR_SPEAKER_VOLUME);
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, g_eeGeneral.speakerVolume, attr|LEFT);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerVolume, 0, NUM_VOL_LEVELS-1);
@@ -330,7 +330,7 @@ void menuProcSetup(uint8_t event)
         break;
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       case ITEM_SETUP_BRIGHTNESS:
         lcd_putsLeft(y, STR_BRIGHTNESS);
         lcd_outdezAtt(GENERAL_PARAM_OFS, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
@@ -358,7 +358,7 @@ void menuProcSetup(uint8_t event)
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
         break;
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       case ITEM_SETUP_CAPACITY_WARNING:
         lcd_putsLeft(y, STR_CAPAWARNING);
         putsTelemetryValue(GENERAL_PARAM_OFS, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
@@ -367,8 +367,8 @@ void menuProcSetup(uint8_t event)
 
       case ITEM_SETUP_TEMPERATURE_WARNING:
         lcd_putsLeft(y, STR_TEMPWARNING);
-        putsTelemetryValue(GENERAL_PARAM_OFS, y, 80+g_eeGeneral.temperatureWarn, UNIT_DEGREES, attr|LEFT) ;
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, -80, 40); // 0-120degrees
+        putsTelemetryValue(GENERAL_PARAM_OFS, y, g_eeGeneral.temperatureWarn, UNIT_DEGREES, attr|LEFT) ;
+        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
         break;
 #endif
 
@@ -496,7 +496,7 @@ void menuProcSetup(uint8_t event)
   }
 }
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 extern uint32_t sdAvailableAudioFiles; // TODO move that!
 #endif
 
@@ -587,7 +587,7 @@ void menuProcSd(uint8_t event)
         s_menu[s_menu_count++] = STR_SD_FORMAT;
       }
       else {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
         uint8_t index = m_posVert-1-s_pgOfs;
         char * line = reusableBuffer.sd.lines[index];
         if (!strcmp(line+strlen(line)-4, SOUNDS_EXT)) {
@@ -727,7 +727,7 @@ void menuProcSd(uint8_t event)
       else if (result == STR_SD_FORMAT) {
         displayPopup(PSTR("Formatting...")); // TODO translations
         if (f_mkfs(0, 1, 0) == FR_OK) {
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
           sdAvailableAudioFiles = 0;
 #endif
           f_chdir("/");
@@ -748,7 +748,7 @@ void menuProcSd(uint8_t event)
         if ((uint16_t)m_posVert == reusableBuffer.sd.count) m_posVert--;
         reusableBuffer.sd.offset = s_pgOfs-1;
       }
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
       else if (result == STR_PLAY_FILE) {
         f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
         strcat(lfn, "/");
@@ -891,7 +891,9 @@ void menuProcDiagKeys(uint8_t event)
 
 void menuProcDiagAna(uint8_t event)
 {
-#if defined(PCBARM) && defined(REVB)
+#if defined(PCBSKY9X) && defined(REVB)
+#define ANAS_ITEMS_COUNT 4
+#elif defined(PCBSKY9X)
 #define ANAS_ITEMS_COUNT 3
 #else
 #define ANAS_ITEMS_COUNT 2
@@ -908,42 +910,48 @@ void menuProcDiagAna(uint8_t event)
     lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i+1)-1]*25/256);
   }
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
   // Display raw BandGap result (debug)
   lcd_puts(64+5, 1+4*FH, STR_BG);
   lcd_outdezAtt(64+5+6*FW-3, 1+4*FH, BandGap, 0);
 #endif
 
-  // Voltage calibration
-  lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
+  lcd_putsLeft(5*FH, STR_BATT_CALIB);
   static uint32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ( adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
   batCalV /= 55296  ;
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, (m_posVert==1 ? INVERS : 0));
-  // TODO PREC2 => lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
-#elif defined(PCBV4)
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 5*FH, batCalV, (m_posVert==1 ? INVERS : 0));
+#elif defined(PCBGRUVIN9X)
+  lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   // Gruvin wants 2 decimal places and instant update of volts calib field when button pressed
   static uint16_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.vBatCalib)/8) / BandGap;
   lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
 #else
+  lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
 #endif
   if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
 
-#if defined(PCBARM) && defined(REVB)
-  lcd_putsLeft(7*FH-2, STR_CURRENT_CALIB);
-  putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH-2, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
+#if defined(PCBSKY9X) && defined(REVB)
+  lcd_putsLeft(6*FH, STR_CURRENT_CALIB);
+  putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 6*FH, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
   if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);
 #endif
 
+#if defined(PCBSKY9X)
+  lcd_putsLeft(7*FH, PSTR("Temp. Calib"));
+  putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH, getTemperature(), UNIT_DEGREES, (m_posVert==3 ? INVERS : 0)) ;
+  if (m_posVert==3) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
+#endif
 }
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 enum menuProcHwItems {
+  ITEM_SETUP_HW_COPROC,
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   ITEM_SETUP_HW_MAX
 };
@@ -951,7 +959,7 @@ enum menuProcHwItems {
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
 void menuProcHardware(uint8_t event)
 {
-  MENU(PSTR("Hardware"), menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0});
+  MENU(PSTR("Hardware"), menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, -1, 0});
 
   uint8_t sub = m_posVert - 1;
 
@@ -962,6 +970,11 @@ void menuProcHardware(uint8_t event)
     uint8_t attr = (sub == k ? blink : 0);
 
     switch(k) {
+      case ITEM_SETUP_HW_COPROC:
+        lcd_putsLeft(y, STR_COPROC);
+        lcd_outhex4(GENERAL_HW_PARAM_OFS, y, (Coproc_valid << 8) + Coproc_read);
+        break;
+
       case ITEM_SETUP_HW_OPTREX_DISPLAY:
         // TODO remove STR_OPTREX_DISPLAY + translations here
         g_eeGeneral.optrexDisplay = selectMenuItem(GENERAL_HW_PARAM_OFS, y, PSTR("LCD"), PSTR("\006NormalOptrex"), g_eeGeneral.optrexDisplay, 0, 1, attr, event);

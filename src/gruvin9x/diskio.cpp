@@ -69,7 +69,7 @@
 
 /* Port Controls  (Platform dependent) */
 // GCC optimisation should result in a single CBI/SBI instructions here
-#if defined (PCBV4)
+#if defined (PCBGRUVIN9X)
 #  define CS_LOW()  PORTB &= ~0x01    /* MMC CS = L */
 #  define CS_HIGH() PORTB |= 0x01     /* MMC CS = H */
 #else

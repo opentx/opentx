@@ -31,10 +31,6 @@
  *
  */
 
-#if defined(PCBARM)
-#include "ersky9x/sound.h"
-#endif
-
 #if defined(PCBSTD)
 #define SPEAKER_ON   BUZZER_ON
 #define SPEAKER_OFF  toneFreq=0; BUZZER_OFF

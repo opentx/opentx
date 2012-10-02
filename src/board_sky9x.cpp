@@ -32,7 +32,7 @@
  */
 
 #include "open9x.h"
-#include "ersky9x/board.h"
+#include "sky9x/board.h"
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
@@ -792,8 +792,6 @@ void board_init()
 
   alawInit();
 
-  rtc_init();
-
   eeprom_init();
 
   init_rotary_encoder();
@@ -998,8 +996,8 @@ extern uint32_t keyState(EnumKeys enuk)
 }
 
 uint16_t Analog_values[NUMBER_ANALOG] ;
-uint8_t temperature ;          // Raw temp reading
-uint8_t maxTemperature ;       // Raw temp reading
+uint8_t temperature = 0;          // Raw temp reading
+uint8_t maxTemperature = 0 ;       // Raw temp reading
 
 // Read 8 (9 for REVB) ADC channels
 // Documented bug, must do them 1 by 1
@@ -1037,7 +1035,7 @@ void read_9_adc()
 #endif
 
   temperature = (((int32_t)temperature * 7) + ((((int32_t)ADC->ADC_CDR15 - 838) * 621) >> 11)) >> 3; // Filter it
-  if (temperature > maxTemperature) {
+  if (temperature < 200 && temperature > maxTemperature) {
     maxTemperature = temperature;
   }
 }
@@ -1229,3 +1227,9 @@ uint16_t getCurrent()
   return (current_scale * Current) / 8192;
 }
 #endif
+
+uint8_t getTemperature()
+{
+  return temperature + g_eeGeneral.temperatureCalib;
+}
+

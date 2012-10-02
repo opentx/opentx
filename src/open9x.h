@@ -50,15 +50,15 @@
 #define WDT_RESET_STOCK()
 #endif
 
-#if defined(PCBARM)
-#include "board_ersky9x.h"
-#elif defined(PCBV4)
+#if defined(PCBSKY9X)
+#include "board_sky9x.h"
+#elif defined(PCBGRUVIN9X)
 #include "board_gruvin9x.h"
 #endif
 
 #if defined(SIMU)
 #include "simpgmspace.h"
-#elif defined(PCBARM)
+#elif defined(PCBSKY9X)
 typedef const unsigned char pm_uchar;
 typedef const char pm_char;
 typedef const uint16_t pm_uint16_t;
@@ -93,7 +93,7 @@ extern void board_init();
 
 #define PPM_CENTER 1500
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #include "eeprom_arm.h"
 #include "pulses_arm.h"
 #else
@@ -127,7 +127,7 @@ extern uint8_t s_bind_allowed;
 
 #if !defined(SIMU)
 #define assert(x)
-#if !defined(PCBARM) || !defined(DEBUG)
+#if !defined(PCBSKY9X) || !defined(DEBUG)
 #define printf printf_not_allowed
 #endif
 #endif
@@ -180,7 +180,7 @@ extern uint8_t s_bind_allowed;
 #define OUT_C_LCD_RES   2
 #define OUT_C_LCD_CS1   1
 
-#if defined (PCBV4)
+#if defined (PCBGRUVIN9X)
 
 #  define INP_L_SPARE6    7
 #  define INP_L_SPARE5    6
@@ -295,9 +295,9 @@ extern uint8_t s_bind_allowed;
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))  == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN)))
 
-#endif // defined (PCBV4)
+#endif // defined (PCBGRUVIN9X)
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define SLAVE_MODE (check_soft_power() == e_power_trainer)
 #else
 #define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
@@ -526,11 +526,11 @@ enum PowerState {
   e_power_off
 };
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 uint32_t keyState(EnumKeys enuk);
 uint32_t check_soft_power();
 #else
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
 uint8_t check_soft_power();
 #else
 #define check_soft_power() (e_power_on)
@@ -629,7 +629,7 @@ extern uint8_t unexpectedShutdown;
 extern uint8_t g_tmr1Latency_max;
 extern uint8_t g_tmr1Latency_min;
 extern uint16_t g_timeMainMax;
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
 extern uint8_t  g_timeMainLast;
 #endif
 
@@ -642,7 +642,7 @@ extern int8_t s_traceCnt;
 
 extern int8_t *s_trimPtr[NUM_STICKS];
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
 uint16_t getTmr16KHz();
@@ -685,7 +685,7 @@ extern uint8_t  s_eeDirtyMsk;
 
 extern void backlightOn();
 
-#if defined (PCBARM)
+#if defined (PCBSKY9X)
 #define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #ifdef REVB
@@ -695,7 +695,7 @@ extern void backlightOn();
 extern uint16_t Analog_values[NUMBER_ANALOG] ;
 void read_9_adc(void ) ;
 #endif
-#elif defined (PCBV4)
+#elif defined (PCBGRUVIN9X)
 #define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
 #define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
 #define __BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
@@ -720,9 +720,9 @@ void read_9_adc(void ) ;
 #define BUZZER_OFF    PORTE &= ~(1 << OUT_E_BUZZER)
 
 #if defined(HAPTIC)
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define HAPTIC_OFF    hapticOff()
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
 #define HAPTIC_ON     PORTD &= ~(1 << INP_D_HAPTIC)
 #define HAPTIC_OFF    PORTD |=  (1 << INP_D_HAPTIC)
 #else
@@ -752,7 +752,7 @@ template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma
 uint16_t isqrt32(uint32_t n);
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #if !defined(SIMU)
 extern "C" {
 #include <CoOS.h>
@@ -769,7 +769,7 @@ inline void resumeMixerCalculations()
 {
   CoLeaveMutexSection(mixerMutex);
 }
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
 inline void pauseMixerCalculations()
 {
   cli();
@@ -788,7 +788,7 @@ inline void resumeMixerCalculations()
 #define resumeMixerCalculations()
 #endif
 
-#if defined(PCBARM) || defined(PCBV4)
+#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
 void saveTimers();
 #else
 #define saveTimers()
@@ -805,7 +805,7 @@ void generalDefault();
 void modelDefault(uint8_t id);
 void resetProto();
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 inline int32_t calc100toRESX(register int8_t x)
 {
   return ((uint32_t)x*655)>>6 ;
@@ -833,7 +833,7 @@ extern int16_t calc1000toRESX(int16_t x);
 extern int16_t calcRESXto1000(int16_t x);
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 // This doesn't need protection on this processor
 #define tmr10ms_t uint32_t
 extern volatile tmr10ms_t g_tmr10ms;
@@ -907,7 +907,7 @@ extern void incSubtrim(uint8_t idx, int16_t inc);
 extern void instantTrim();
 extern void moveTrimsToOffsets();
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define ACTIVE_EXPOS_TYPE uint32_t
 #define ACTIVE_MIXES_TYPE uint64_t
 #else
@@ -932,7 +932,7 @@ inline bool isMixActive(uint8_t mix)
 #define isMixActive(x) false
 #endif
 
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define MASK_FSW_TYPE uint32_t // current max = 32 function switches
 #else
 #define MASK_FSW_TYPE uint16_t // current max = 16 function switches
@@ -952,7 +952,7 @@ extern char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE]; // text buffer for frs
 
 #if defined(ROTARY_ENCODERS)
 // Global rotary encoder registers -- 8-bit, 0-255
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 extern volatile uint32_t g_rotenc[ROTARY_ENCODERS];
 #else
 extern volatile uint8_t g_rotenc[ROTARY_ENCODERS];
@@ -994,7 +994,7 @@ extern uint16_t jeti_keys;
 enum AUDIO_SOUNDS {
     AU_INACTIVITY,
     AU_TX_BATTERY_LOW,
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     AU_TX_MAH_HIGH,
     AU_TX_TEMP_HIGH,
 #endif
@@ -1013,7 +1013,7 @@ enum AUDIO_SOUNDS {
     AU_WARNING2,
     AU_WARNING3,
     AU_TRIM_MIDDLE,
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
     AU_TRIM_END,
 #endif
     AU_TADA,
@@ -1046,8 +1046,8 @@ enum AUDIO_SOUNDS {
 };
 
 #if defined(AUDIO)
-#if defined(PCBARM)
-#include "ersky9x/audio.h"
+#if defined(PCBSKY9X)
+#include "sky9x/audio.h"
 #else
 #include "stock/audio.h"
 #endif
@@ -1059,7 +1059,7 @@ enum AUDIO_SOUNDS {
 #include "stock/voice.h"
 #endif
 
-#if defined(PCBV4) && defined(VOICE)
+#if defined(PCBGRUVIN9X) && defined(VOICE)
 #include "gruvin9x/somo14d.h"
 #endif
 
@@ -1083,7 +1083,7 @@ union ReusableBuffer
 {
     /* 128 bytes on stock */
 
-#if !defined(PCBARM)
+#if !defined(PCBSKY9X)
     uint8_t eefs_buffer[BLOCKS];           // used by EeFsck
 #endif
 
@@ -1118,7 +1118,7 @@ extern union ReusableBuffer reusableBuffer;
 
 void checkFlashOnBeep();
 
-#if defined(FRSKY) || defined(PCBARM)
+#if defined(FRSKY) || defined(PCBSKY9X)
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
 #endif
 

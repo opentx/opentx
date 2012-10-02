@@ -42,15 +42,10 @@
 //------------------------------------------------------------------------------
 
 #include "USBD.h"
-#include "USBDCallbacks.h"
 #include <board.h>
-//#include <pio/pio.h>
 #include "debug.h"
-//#include <pmc.h>
-//#include <utility/led.h>
 #include <usb/common/core/USBEndpointDescriptor.h>
 #include <usb/common/core/USBGenericRequest.h>
-
 
 //------------------------------------------------------------------------------
 //        Local definitions
@@ -1713,7 +1708,7 @@ void USBD_Init(void)
     UDP->UDP_IER = UDP_IER_WAKEUP;
 
     // Configure interrupts
-    USBDCallbacks_Initialized();
+    NVIC_EnableIRQ(UDP_IRQn);
 }
 
 //------------------------------------------------------------------------------

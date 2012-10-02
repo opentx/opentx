@@ -36,7 +36,7 @@
 #define TR_VTRIMINC                     "Expo. ""X-Fein""Fein  ""Mittel""Grob  "                                                                      
                                                                                                                                                       
 #define LEN_RETA123                     "\001"                                                                                                        
-#if defined(PCBV4)
+#if defined(PCBGRUVIN9X)
 #if defined(EXTRA_ROTARY_ENCODERS)
 #define TR_RETA123                      "RETA123abcd"
 #else //EXTRA_ROTARY_ENCODERS
@@ -105,14 +105,14 @@
 #define TR_PLAY_TRACK                   "[Play Track]\0"
 #define TR_PLAY_VALUE                   "[Play Value]\0"
 #endif
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SDCARD Logs\0 "
 #else
 #define TR_SDCLOGS       "[SDCARD Logs]"
 #endif
 #define TR_FSW_VOLUME    "Volume\0      "
-#elif defined(PCBV4)
+#elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)                                                                                                                                                                                                                                                                                
 #define TR_SDCLOGS                      "SDcard Logs  "                                                                                                                                                                                                                                            
 #else                                                                                                                                                                                                                                                                                              
@@ -184,18 +184,18 @@
 #define TR_VRENCODERS                       "REa""REb"                                                                                                                                                                                                                                                 
                                                                                                                                                                                                                                                                                                    
 #define LEN_VSWITCHES                   "\003"                                                                                                                                                                                                                                                     
-#if defined(PCBARM)                                                                                                                                                                                                                                                                                
+#if defined(PCBSKY9X)                                                                                                                                                                                                                                                                                
 #define TR_VSWITCHES                    "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC""SWD""SWE""SWF""SWG""SWH""SWI""SWJ""SWK""SWL""SWM""SWN""SWO""SWP""SWQ""SWR""SWS""SWT""SWU""SWV""SWW"" ON"
 #else                                                                                                                                                                                                                                                                                              
 #define TR_VSWITCHES                    "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"" ON"
 #endif                                                                                                                                                                                                                                                                                             
                                                                                                                                                                                                                                                                                                    
 #define LEN_VSRCRAW                     "\004"                                                                                                                                                                                                                                                     
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa "
-#elif defined(PCBV4) && defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
-#elif defined(PCBV4) && !defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && !defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW
@@ -332,7 +332,7 @@
 #define STR_US (STR_TMR1LATMAXUS+12)
 #define TR_TMR1LATMINUS                 "Tmr1Lat min\003us"                                                               
 #define TR_TMR1JITTERUS                 "Tmr1 Jitter\003us"                                                               
-#if defined(PCBARM)
+#if defined(PCBSKY9X)
 #define TR_TMAINMAXMS          "Tmain max\004ms"
 #else
 #define TR_TMAINMAXMS          "Tmain max\005ms"
