@@ -945,11 +945,6 @@ inline bool isFunctionActive(uint8_t func)
   return activeFunctions & (1 << (func-FUNC_TRAINER));
 }
 
-#ifdef DISPLAY_USER_DATA
-#define TELEM_SCREEN_BUFFER_SIZE 21
-extern char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE]; // text buffer for frsky telem. user data experiments
-#endif
-
 #if defined(ROTARY_ENCODERS)
 // Global rotary encoder registers -- 8-bit, 0-255
 #if defined(PCBSKY9X)

@@ -72,6 +72,12 @@ extern "C" {
 void retrieveAvailableAudioFiles()
 {
   FILINFO info;
+#if _USE_LFN
+  TCHAR lfn[_MAX_LFN + 1];
+  info.lfname = lfn;
+  info.lfsize = sizeof(lfn);
+#endif
+
   char filename[32] = SYSTEM_SOUNDS_PATH "/";
 
 #if !defined WIN32 && defined __GNUC__

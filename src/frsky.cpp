@@ -67,23 +67,6 @@ FrskyData frskyData;
 uint8_t barsThresholds[THLD_MAX];
 #endif
 
-#ifdef DISPLAY_USER_DATA
-/*
-  Copies all available bytes (up to max bufsize) from frskyUserData circular 
-  buffer into supplied *buffer. Returns number of bytes copied (or zero)
-*/
-uint8_t frskyGetUserData(char *buffer, uint8_t bufSize)
-{
-  uint8_t i = 0;
-  while (!frskyUserData.isEmpty())
-  {
-    buffer[i] = frskyUserData.get();
-    i++;
-  }
-  return i;
-}
-#endif
-
 uint16_t getChannelRatio(uint8_t channel)
 {
   return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;

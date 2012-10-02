@@ -35,7 +35,7 @@
 
 #if defined(PCBSKY9X)
 #define MIXER_STACK_SIZE    500
-#define MENUS_STACK_SIZE    2500
+#define MENUS_STACK_SIZE    1000
 #define AUDIO_STACK_SIZE    500
 #define BT_STACK_SIZE       500
 #define DEBUG_STACK_SIZE    500
@@ -2293,10 +2293,6 @@ void perOut(uint8_t tick10ms)
   mixWarning = lv_mixWarning;
 }
 
-#ifdef DISPLAY_USER_DATA
-char userDataDisplayBuf[TELEM_SCREEN_BUFFER_SIZE];
-#endif
-
 #if defined(SIMU)
 #define TIME_TO_WRITE s_eeDirtyMsk
 #else
@@ -2670,27 +2666,6 @@ void perMain()
 #endif
 
   writeLogs();
-#endif
-
-#if defined(FRSKY) && defined(DISPLAY_USER_DATA)
-  char userDataRxBuffer[21]; // Temp buffer used to collect fr-sky user data
-
-  // retrieve bytes from user data buffer and insert into display string,
-  // scrolling at the 21 character mark (edge of screen)
-  uint8_t numbytes = frskyGetUserData(userDataRxBuffer, 21); // Get as many bytes as we can
-
-  static uint8_t displayBufferIndex;
-  for (uint8_t byt=0; byt < numbytes; byt++) 
-  {
-    displayBufferIndex++;
-    if (displayBufferIndex > 20)
-    {
-      for (int xx=0; xx<20; xx++) // scroll one char left
-        userDataDisplayBuf[xx] = userDataDisplayBuf[xx+1];
-      displayBufferIndex = 20;
-    }
-    userDataDisplayBuf[displayBufferIndex] = userDataRxBuffer[byt];
-  }
 #endif
 
   lcd_clear();
@@ -3186,8 +3161,35 @@ ISR(INT6_vect)
 }
 #endif //PCBGRUVIN9X+ROTARY_ENCODERS
 
-#if !defined(PCBSKY9X)
+#if defined(PCBSKY9X)
+void stack_paint()
+{
+  for (uint16_t i=0; i<MENUS_STACK_SIZE; i++)
+    menusStack[i] = 0x55555555;
+}
+
+uint16_t stack_free()
+{
+  for (uint16_t i=0; i<MENUS_STACK_SIZE; i++)
+    if (menusStack[i] != 0x55555555)
+      return i;
+  return MENUS_STACK_SIZE;
+}
+#else
 extern unsigned char __bss_end ;
+#define STACKPTR     _SFR_IO16(0x3D)
+void stack_paint()
+{
+  // Init Stack while interrupts are disabled
+  unsigned char *p ;
+  unsigned char *q ;
+
+  p = (unsigned char *) STACKPTR ;
+  q = &__bss_end ;
+  p -= 2 ;
+  while ( p > q )
+    *p-- = 0x55 ;
+}
 
 uint16_t stack_free()
 {
@@ -3200,7 +3202,6 @@ uint16_t stack_free()
   }
   return p - &__bss_end ;
 }
-
 #endif
 
 #if defined(PCBGRUVIN9X)
@@ -3382,22 +3383,7 @@ int main(void)
 
   lcd_init();
 
-#if !defined(PCBSKY9X)
-  // Init Stack while interrupts are disabled
-#define STACKPTR     _SFR_IO16(0x3D)
-  {
-    unsigned char *p ;
-    unsigned char *q ;
-
-    p = (unsigned char *) STACKPTR ;
-    q = &__bss_end ;
-    p -= 2 ;
-    while ( p > q )
-    {
-      *p-- = 0x55 ;
-    }
-  }
-#endif
+  stack_paint();
 
   g_menuStack[0] = menuMainView;
   g_menuStack[1] = menuProcModelSelect;

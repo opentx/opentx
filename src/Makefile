@@ -128,10 +128,6 @@ PPM_LIMITS_UNIT = PERCENT
 # Values = YES, NO
 DECIMALS = YES
 
-# DISPLAY_USER_DATA to display on screen data from FrSky module (testing/demo purpose)
-# Values = YES, NO
-DISPLAY_USER_DATA = NO
-
 # FrSky Hub 
 # Values = YES, NO
 FRSKY_HUB = YES
@@ -438,7 +434,6 @@ ifeq ($(PCB), X9D)
   SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
   SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
   SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
-  SRC += sky9x/syscalls.c
   SRC += sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
@@ -458,6 +453,7 @@ ifeq ($(PCB), X9D)
   
   ifeq ($(DEBUG), YES)
   	CPPSRC += sky9x/debug.cpp
+  	SRC += sky9x/syscalls.c
   endif
 endif
 
@@ -472,7 +468,6 @@ ifeq ($(PCB), SKY9X)
   SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
   SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
   SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
-  SRC += sky9x/syscalls.c
   SRC += sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp
   PULSESSRC = pulses_arm.cpp
@@ -493,6 +488,7 @@ ifeq ($(PCB), SKY9X)
   
   ifeq ($(DEBUG), YES)
   	CPPSRC += sky9x/debug.cpp
+  	SRC += sky9x/syscalls.c
   endif
 endif
 
@@ -612,10 +608,6 @@ endif
 ifeq ($(TEMPLATES), YES)
   CPPDEFS += -DTEMPLATES
   CPPSRC += templates.cpp
-endif
-
-ifeq ($(DISPLAY_USER_DATA), YES)
-  CPPDEFS += -DDISPLAY_USER_DATA
 endif
 
 ifeq ($(PXX), YES)

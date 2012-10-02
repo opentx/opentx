@@ -128,11 +128,12 @@ SECTIONS
       *(.bss.*)
       
       . = ALIGN(4);        /* Align the end of the section */
-      *(.ram.b)
-      _end = .;
-      __end = .;
    } > RAM
    _ebss = .;              /* Provide the name for the end of this section */  
+   
+   . = ALIGN(4);           /* Align the end of the section */
+   __end = .;
+   _end = .;
    
    /* 
     * The ".stack" section is our stack.

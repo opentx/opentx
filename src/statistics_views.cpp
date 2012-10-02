@@ -117,43 +117,34 @@ void menuProcDebug(uint8_t event)
       break;
   }
 
-#if !defined(PCBSKY9X)
+#if defined(PCBSKY9X)
+#if defined(REVB)
+  lcd_putsLeft(1*FH, STR_CPU_CURRENT);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 1*FH, getCurrent(), UNIT_MILLIAMPS, 0);
+  uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
+  putsTelemetryValue(20*FW+2, 1*FH, Current_max*10*current_scale/8192, UNIT_RAW, 0);
+  lcd_putsLeft(2*FH, STR_CPU_MAH);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
+  putsTime(17*FW, 2*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
+#endif
+  lcd_putsLeft(3*FH, STR_CPU_TEMP);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_DEGREES, 0);
+  putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
+  lcd_putsLeft(4*FH, STR_TMAINMAXMS);
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMainMax)/20, PREC2);
+#else
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
   lcd_outdez8(MENU_DEBUG_COL_OFS , 1*FH, g_tmr1Latency_max/2 );
   lcd_putsLeft(2*FH, STR_TMR1LATMINUS);
   lcd_outdez8(MENU_DEBUG_COL_OFS , 2*FH, g_tmr1Latency_min/2 );
   lcd_putsLeft(3*FH, STR_TMR1JITTERUS);
   lcd_outdez8(MENU_DEBUG_COL_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
-#endif
-
-#if defined(PCBSKY9X)
-  lcd_putsLeft(5*FH, STR_TMAINMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (g_timeMainMax)/20, PREC2);
-#else
   lcd_putsLeft(4*FH, STR_TMAINMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMainMax*100)/16, PREC2);
 #endif
 
-#if defined(PCBSKY9X)
-#if defined(REVB)
-  lcd_putsLeft(2*FH, STR_CPU_CURRENT);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, getCurrent(), UNIT_MILLIAMPS, 0);
-  uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
-  putsTelemetryValue(20*FW+2, 2*FH, Current_max*10*current_scale/8192, UNIT_RAW, 0);
-  lcd_putsLeft(3*FH, STR_CPU_MAH);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
-  putsTime(17*FW, 3*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
-#endif
+  lcd_putsLeft(5*FH, STR_FREESTACKMINB);
+  lcd_outdezAtt(14*FW, 5*FH, stack_free(), UNSIGN) ;
 
-  lcd_putsLeft(4*FH, STR_CPU_TEMP);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, getTemperature(), UNIT_DEGREES, 0);
-  putsTelemetryValue(20*FW+2, 4*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
-#endif
-
-#if !defined(PCBSKY9X)
-  lcd_puts( 0*FW,  5*FH, STR_FREESTACKMINB);
-  lcd_outdezAtt(14*FW,  5*FH, stack_free(), UNSIGN) ;
-#endif
-
-  lcd_puts( 3*FW,  7*FH, STR_MENUTORESET);
+  lcd_puts(3*FW, 7*FH, STR_MENUTORESET);
 }

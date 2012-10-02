@@ -38,6 +38,7 @@
 
 uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 #define DISPLAY_END (displayBuf+sizeof(displayBuf))
+#define ASSERT_IN_DISPLAY(p) assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 #ifdef SIMU
 bool lcd_refresh = true;
@@ -60,6 +61,7 @@ void lcd_img(uint8_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mo
     uint8_t *p = &displayBuf[ (y / 8 + yb) * DISPLAY_W + x ];
     for (uint8_t i=0; i<w; i++){
       uint8_t b = pgm_read_byte(q++);
+      ASSERT_IN_DISPLAY(p);
       *p++ = inv ? ~b : b;
     }
   }
@@ -102,11 +104,13 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
         b1 = pgm_read_byte(q++); /*top byte*/
         b2 = pgm_read_byte(q++); /*top byte*/
       }
-      if(inv) {
+      if (inv) {
         b1=~b1;
         b2=~b2;
       }   
       if(&p[DISPLAY_W+1] < DISPLAY_END) {
+        ASSERT_IN_DISPLAY(p);
+        ASSERT_IN_DISPLAY(p+DISPLAY_W);
         p[0]=b1;
         p[DISPLAY_W] = b2;
         p++;
@@ -133,10 +137,16 @@ void lcd_putcAtt(uint8_t x, uint8_t y, const unsigned char c, uint8_t mode)
       }
 
       if (p<DISPLAY_END) {
+        ASSERT_IN_DISPLAY(p);
         *p = (*p & (~(0xff << ym8))) + (b << ym8);
-        if (ym8) { uint8_t *r = p + DISPLAY_W; if (r<DISPLAY_END) *r = (*r & (~(0xff >> (8-ym8)))) + (b >> (8-ym8)); }
+        if (ym8) {
+          uint8_t *r = p + DISPLAY_W;
+          if (r<DISPLAY_END)
+            *r = (*r & (~(0xff >> (8-ym8)))) + (b >> (8-ym8));
+        }
 #ifdef BOLD_FONT
         if (mode & BOLD) {
+          ASSERT_IN_DISPLAY(p+1);
           if (inv)
             *(p+1) &= (b << ym8);
           else
@@ -342,7 +352,7 @@ void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t l
 
 void lcd_mask(uint8_t *p, uint8_t mask, uint8_t att)
 {
-  assert(p >= displayBuf && p < DISPLAY_END);
+  ASSERT_IN_DISPLAY(p);
 
   if (att & BLACK)
     *p |= mask;
@@ -354,7 +364,7 @@ void lcd_mask(uint8_t *p, uint8_t mask, uint8_t att)
 
 void lcd_plot(uint8_t x,uint8_t y, uint8_t att)
 {
-  uint8_t *p   = &displayBuf[ y / 8 * DISPLAY_W + x ];
+  uint8_t *p = &displayBuf[ y / 8 * DISPLAY_W + x ];
   if (p<DISPLAY_END)
     lcd_mask(p, BITMASK(y%8), att);
 }
@@ -400,7 +410,7 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat, uint8_t att)
   uint8_t *p  = &displayBuf[ y / 8 * DISPLAY_W + x ];
   y = y % 8;
   if (y) {
-    assert(p >= displayBuf && p < DISPLAY_END);
+    ASSERT_IN_DISPLAY(p);
     uint8_t msk = ~(BITMASK(y)-1);
     h -= 8-y;
     if (h < 0)
@@ -409,13 +419,13 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat, uint8_t att)
     p += DISPLAY_W;
   }
   while (h>=8) {
-    assert(p >= displayBuf && p < DISPLAY_END);
+    ASSERT_IN_DISPLAY(p);
     lcd_mask(p, pat, att);
     p += DISPLAY_W;
     h -= 8;
   }
   if (h>0) {
-    assert(p >= displayBuf && p < DISPLAY_END);
+    ASSERT_IN_DISPLAY(p);
     lcd_mask(p, (BITMASK(h)-1) & pat, att);
   }
 }
@@ -433,13 +443,13 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat)
   uint8_t *p  = &displayBuf[ y / 8 * DISPLAY_W + x ];
   y = y % 8;
   if (y) {
-    assert(p >= displayBuf && p < DISPLAY_END);
+    ASSERT_IN_DISPLAY(p);
     *p ^= ~(BITMASK(y)-1) & pat;
     p += DISPLAY_W;
     h -= 8-y;
   }
   while (h>0) {
-    assert(p >= displayBuf && p < DISPLAY_END);
+    ASSERT_IN_DISPLAY(p);
     *p ^= pat;
     p += DISPLAY_W;
     h -= 8;
@@ -447,7 +457,7 @@ void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat)
   if (h < 0) h += 8;
   if (h) {
     p -= DISPLAY_W;
-    assert(p >= displayBuf && p < DISPLAY_END);
+    ASSERT_IN_DISPLAY(p);
     *p ^= ~(BITMASK(h)-1) & pat;
   }
 }
