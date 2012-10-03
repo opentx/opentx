@@ -46,7 +46,7 @@ extern void start_timer1( void ) ;
 extern void initDac( void ) ;
 extern void end_sound( void ) ;
 extern void write_coprocessor( uint8_t *ptr, uint32_t count ) ;
-extern void read_coprocessor( void ) ;
+extern void read_coprocessor( bool onlytemp=false ) ;
 extern uint8_t Coproc_read ;
 extern int8_t Coproc_valid ;
 extern int8_t Coproc_temp ;

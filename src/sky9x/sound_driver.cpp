@@ -236,6 +236,7 @@ uint8_t Volume_read ;
 uint8_t Coproc_read ;
 int8_t Coproc_temp ;
 int8_t Coproc_valid ;
+bool get_onlytemp;
 static uint8_t *Twi_read_address ;
 static uint8_t TwiOperation ;
 
@@ -357,8 +358,13 @@ void read_volume()
   __enable_irq() ;
 }
 
-void read_coprocessor()
+void read_coprocessor(bool onlytemp)
 {
+  if (onlytemp) {
+    get_onlytemp=true;
+  } else {
+    get_onlytemp=false;
+  }
   CoProc_read_pending = 1 ;
   __disable_irq() ;
   i2c_check_for_request() ;
@@ -422,14 +428,16 @@ extern "C" void TWI0_IRQHandler()
       // Got data from tiny app
       // Set the date and time
       struct gtm utm;
-      utm.tm_sec = Co_proc_status[1] ;
-      utm.tm_min = Co_proc_status[2] ;
-      utm.tm_hour = Co_proc_status[3] ;
-      utm.tm_mday = Co_proc_status[4] ;
-      utm.tm_mon = Co_proc_status[5] - 1;
-      utm.tm_year = (Co_proc_status[6] + ( Co_proc_status[7] << 8 )) - 1900;
+      if (!get_onlytemp) {
+        utm.tm_sec = Co_proc_status[1] ;
+        utm.tm_min = Co_proc_status[2] ;
+        utm.tm_hour = Co_proc_status[3] ;
+        utm.tm_mday = Co_proc_status[4] ;
+        utm.tm_mon = Co_proc_status[5] - 1;
+        utm.tm_year = (Co_proc_status[6] + ( Co_proc_status[7] << 8 )) - 1900;
+        g_rtcTime = gmktime(&utm);
+      }
       Coproc_temp = Co_proc_status[8];
-      g_rtcTime = gmktime(&utm);
     }
     TWI0->TWI_PTCR = TWI_PTCR_RXTDIS ;  // Stop transfers
     if ( TWI0->TWI_SR & TWI_SR_RXRDY ) {

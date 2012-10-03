@@ -1035,6 +1035,8 @@ void read_9_adc()
 #endif
 
   temperature = (((int32_t)temperature * 7) + ((((int32_t)ADC->ADC_CDR15 - 838) * 621) >> 11)) >> 3; // Filter it
+  if (get_tmr10ms()<100)
+    return;
   if (temperature < 200 && temperature > maxTemperature) {
     maxTemperature = temperature;
   }
