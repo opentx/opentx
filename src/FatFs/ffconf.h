@@ -197,8 +197,9 @@ extern "C" {
 /      ff_req_grant, ff_rel_grant, ff_del_syncobj and ff_cre_syncobj
 /      function must be added to the project. */
 
+// TODO needed?
 #if defined(PCBSKY9X)
-#define	_FS_SHARE	3	/* 0:Disable or >=1:Enable */
+#define	_FS_SHARE	4	/* 0:Disable or >=1:Enable */
 #else
 #define _FS_SHARE       2       /* 0:Disable or >=1:Enable */
 #endif

@@ -609,7 +609,7 @@ void init_pwm()
   pwmptr->PWM_CH_NUM[2].PWM_CDTYUPD = 40 ;                // Duty
   pwmptr->PWM_OOV &= ~0x00040000 ;      // Force low
   pwmptr->PWM_OSS = 0x00040000 ;  // Force low
-  // pwmptr->PWM_ENA = PWM_ENA_CHID2 ;                                               // Enable channel 2 // TODO on REVA?
+  // pwmptr->PWM_ENA = PWM_ENA_CHID2 ;                   // Enable channel 2 // TODO on REVA?
 #endif
 }
 
@@ -1035,9 +1035,7 @@ void read_9_adc()
 #endif
 
   temperature = (((int32_t)temperature * 7) + ((((int32_t)ADC->ADC_CDR15 - 838) * 621) >> 11)) >> 3; // Filter it
-  if (get_tmr10ms()<100)
-    return;
-  if (temperature < 200 && temperature > maxTemperature) {
+  if (get_tmr10ms() >= 100 && temperature > maxTemperature) {
     maxTemperature = temperature;
   }
 }

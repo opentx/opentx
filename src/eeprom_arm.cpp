@@ -798,7 +798,6 @@ void ee32_process()
     p = Eeprom32_source_address;
     q = (uint8_t *) &Eeprom_buffer.data;
     if (p != q) {
-      // TODO why not memcpy
       for (x = 0; x < Eeprom32_data_size; x += 1) {
         *q++ = *p++; // Copy the data to temp buffer
       }

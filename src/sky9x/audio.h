@@ -62,6 +62,8 @@ extern "C" void DAC_IRQHandler();
 #define AUDIO_PLAYING_TONE 2
 #define AUDIO_PLAYING_WAV  3
 
+extern bool playingBackground;
+
 class AudioQueue {
 
   friend void audioTask(void* pdata);
@@ -75,6 +77,8 @@ class AudioQueue {
 
     void playFile(const char *filename, uint8_t flags=0, uint8_t id=0);
 
+    void stopPlay(uint8_t id);
+
     void pause(uint8_t tLen);
 
     void stopSD();
@@ -86,7 +90,7 @@ class AudioQueue {
 #ifdef SIMU
       return false;
 #else
-      return (state != AUDIO_SLEEPING);
+      return (state != AUDIO_SLEEPING && !playingBackground);
 #endif
     }
 
@@ -99,7 +103,7 @@ class AudioQueue {
     uint8_t widx;
     int8_t prioIdx;
     AudioFragment fragments[AUDIO_QUEUE_LENGTH];
-    ToneFragment background; // for vario
+    AudioFragment background; // for background music / vario
 
     AudioFragment current;
 
@@ -141,7 +145,7 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 #define AUDIO_TRIM_END(f)    audioEvent(AU_TRIM_END, f)
 #define AUDIO_TRIM(event, f) audioEvent(AU_TRIM_MOVE, f)
 #define AUDIO_PLAY(p)        audioEvent(p)
-#define AUDIO_VARIO(f, t)    audioQueue.play(f, t, 0, PLAY_SOUND_VARIO)
+#define AUDIO_VARIO(f, t)    audioQueue.play(f, t, 0, PLAY_BACKGROUND)
 
 #define AUDIO_HEARTBEAT()
 
@@ -153,6 +157,7 @@ extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define PLAY_DURATION(d) playDuration((d), id)
 #define IS_PLAYING(id) audioQueue.isPlaying((id))
 #define PLAY_VALUE(v, id) playValue((v), (id))
-#define PLAY_FILE(f, id) audioQueue.playFile((f), 0, (id))
+#define PLAY_FILE(f, flags, id) audioQueue.playFile((f), (flags), (id))
+#define STOP_PLAY(id) audioQueue.stopPlay((id))
 
 #endif

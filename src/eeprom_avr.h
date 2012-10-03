@@ -114,7 +114,7 @@ class EFile
     static bool exists(uint8_t i_fileId);
 
     ///return size of compressed file without block overhead
-    uint16_t size(); // TODO static ?
+    uint16_t size();
 
     ///open file for reading, no close necessary
     void openRd(uint8_t i_fileId);

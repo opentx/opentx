@@ -173,7 +173,7 @@ void initDac()
 
 extern "C" void DAC_IRQHandler()
 {
-// Data for PDC must NOT be in flash, PDC needs a RAM source.
+  // Data for PDC must NOT be in flash, PDC needs a RAM source.
   if (audioQueue.state == AUDIO_PLAYING_WAV) {
     if (nextAudioData) {
       DACC->DACC_TNPR = CONVERT_PTR(nextAudioData);

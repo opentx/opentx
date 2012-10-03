@@ -115,7 +115,6 @@ void *eeprom_write_function(void *)
     if (eeprom_read_operation) {
       assert(eeprom_buffer_size);
       eeprom_read_block(eeprom_buffer_data, (const void *)(int64_t)eeprom_pointer, eeprom_buffer_size);
-      // TODO sleep()
     }
     else {
 #endif

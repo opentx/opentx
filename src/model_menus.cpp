@@ -2632,7 +2632,7 @@ void menuProcFunctionSwitches(uint8_t event)
             }
 #endif
 #if defined(PCBSKY9X) && defined(SDCARD)
-            else if (sd->func == FUNC_PLAY_TRACK) {
+            else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_BACKGND_MUSIC) {
               if (sd->param[0] && sd->param[1])
                 lcd_putsnAtt(15*FW, y, sd->param, sizeof(sd->param), attr);
               else

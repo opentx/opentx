@@ -358,6 +358,9 @@ enum Functions {
   FUNC_VOLUME,
 #endif
   FUNC_BACKLIGHT,
+#if defined(PCBSKY9X)
+  FUNC_BACKGND_MUSIC,
+#endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif

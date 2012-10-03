@@ -1950,7 +1950,7 @@ void evalFunctions()
 #endif
 
 #if defined(PCBSKY9X) && defined(SDCARD)
-          else if (sd->func == FUNC_PLAY_TRACK) {
+          else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_BACKGND_MUSIC) {
             if (IS_PLAYING(i+1)) {
               switch_mask = 0;
             }
@@ -1959,7 +1959,7 @@ void evalFunctions()
               strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
               lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
               strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-              PLAY_FILE(lfn, i+1);
+              PLAY_FILE(lfn, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, i+1);
             }
           }
           else if (sd->func == FUNC_PLAY_VALUE) {
@@ -2016,6 +2016,11 @@ void evalFunctions()
         activeFunctionSwitches |= switch_mask;
       }
       else {
+#if defined(PCBSKY9X) && defined(SDCARD)
+        if (sd->func == FUNC_BACKGND_MUSIC) {
+          STOP_PLAY(i+1);
+        }
+#endif
         activeFunctionSwitches &= (~switch_mask);
         if (momentary)
           newActiveFunctions |= (activeFunctions & function_mask);

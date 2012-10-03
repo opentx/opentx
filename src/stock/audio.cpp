@@ -124,7 +124,7 @@ void audioQueue::pause(uint8_t tLen)
 void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     uint8_t tFlags, int8_t tFreqIncr)
 {
-  if (tFlags & PLAY_SOUND_VARIO) {
+  if (tFlags & PLAY_BACKGROUND) {
     tone2Freq = tFreq;
     tone2TimeLeft = tLen;
     tone2Pause = tPause;

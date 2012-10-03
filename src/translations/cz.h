@@ -112,6 +112,7 @@
 #define TR_SDCLOGS       "[Logov\200n\204 SD]"
 #endif
 #define TR_FSW_VOLUME    "Hlasitost\0   "
+#define TR_FSW_BG_MUSIC  "Bg Music\0    "
 #elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "Logování SD  "
@@ -119,16 +120,18 @@
 #define TR_SDCLOGS       "[Logování SD]"
 #endif
 #define TR_FSW_VOLUME
+#define TR_FSW_BG_MUSIC
 #else
 #define TR_SDCLOGS
 #define TR_FSW_VOLUME
+#define TR_FSW_BG_MUSIC
 #endif
 #ifdef DEBUG
 #define TR_TEST          "Test\0        "
 #else
 #define TR_TEST
 #endif
-#define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Podsv\203tlen\204\0 " TR_TEST
+#define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Podsv\203tlen\204\0 " TR_FSW_BG_MUSIC TR_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""V\207e   ""Telem."

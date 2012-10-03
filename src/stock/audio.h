@@ -144,7 +144,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_TRIM_END(f)    AUDIO_TRIM_MIDDLE(f)
 #define AUDIO_TRIM(event, f) audio.event(AU_TRIM_MOVE, f)
 #define AUDIO_PLAY(p)       audio.event(p)
-#define AUDIO_VARIO(f, t)   audio.play(f, t, 0, PLAY_SOUND_VARIO)
+#define AUDIO_VARIO(f, t)   audio.play(f, t, 0, PLAY_BACKGROUND)
 
 #define AUDIO_DRIVER()      audio.driver()
 #define AUDIO_HEARTBEAT()   audio.heartbeat()

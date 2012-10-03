@@ -226,51 +226,6 @@ unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
         return 0;
     }
 
-    // Configure SDcard pins
-    // ConfigurePIO(mciID);
-
-#if defined(MCI2_INTERFACE)
-    // DMAD_Initialize(BOARD_MCI_DMA_CHANNEL, DMAD_NO_DEFAULT_IT);
-#endif
-
-#if 0
-    // Initialize the MCI driver
-    if ( mciID == 0 )
-    {
-        IRQ_ConfigureIT(BOARD_SD_MCI_ID,  1, MCI0_IrqHandler);
-        MCI_Init(mciDrv, BOARD_SD_MCI_BASE, BOARD_SD_MCI_ID, BOARD_SD_SLOT, BOARD_MCK );
-        IRQ_EnableIT(BOARD_SD_MCI_ID);
-    }
-    else
-    {
-        #ifdef BOARD_SD_MCI1_ID
-        IRQ_ConfigureIT(BOARD_SD_MCI1_ID,  1, MCI0_IrqHandler);
-        MCI_Init(mciDrv, BOARD_SD_MCI1_BASE, BOARD_SD_MCI1_ID, BOARD_SD_MCI1_SLOT, BOARD_MCK );
-        IRQ_EnableIT(BOARD_SD_MCI1_ID);
-        #else
-        TRACE_ERROR("SD/MMC card initialization failed (MCI1 not supported)\n\r");
-        #endif
-    }
-#if MCI_BUSY_CHECK_FIX && defined(BOARD_SD_DAT0)
-    MCI_SetBusyFix(mciDrv, &pinSdDAT0);
-#endif
-
-    // Initialize the SD card driver
-    if (SD_Init(sdDrv, (SdDriver *)mciDrv))
-    {
-        TRACE_ERROR("SD/MMC card initialization failed\n\r");
-        return 0;
-    }
-    else
-    {
-        //SD_DisplayRegisterCSD(&sdDrv);
-        TRACE_INFO("SD/MMC card initialization successful\n\r");
-        TRACE_INFO("Card size: %d MB\n\r", (int)(MMC_GetTotalSizeKB(sdDrv)/1024));
-    }
-    MCI_SetSpeed(mciDrv, sdDrv->transSpeed, sdDrv->transSpeed, BOARD_MCK);
-#endif
-
-
     media->write = MEDSdcard_Write;
     media->read = MEDSdcard_Read;
     media->lock = 0;
@@ -281,14 +236,11 @@ unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
     media->blockSize = SD_BLOCK_SIZE;
     media->baseAddress = 0;
 
-    if (Cmd_A41_resp & OCR_SD_CCS)
-      media->size = SD_CSD_BLOCKNR_HC(Card_CSD);
-    else
-      media->size = SD_CSD_BLOCKNR(Card_CSD);
+    media->size = SD_GET_BLOCKNR();
 
     media->mappedRD  = 0;
     media->mappedWR  = 0;
-    media->protected = 0; // TODO BSS CardIsProtected(mciID);
+    media->protected = 0;
     media->removable = 1;
 
     media->state = MED_STATE_READY;
@@ -302,148 +254,3 @@ unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
     return 1;
 }
 
-#if 0
-//------------------------------------------------------------------------------
-/// Initializes a Media instance and the associated physical interface
-/// \param  media Pointer to the Media instance to initialize
-/// \return 1 if success.
-//------------------------------------------------------------------------------
-unsigned char MEDSdusb_Initialize(Media *media, unsigned char mciID)
-{
-    TRACE_INFO("MEDSdusb init\n\r");
-
-    // Initialize SDcard
-    //--------------------------------------------------------------------------
-
-    if (!CardIsConnected()) return 0;
-#if 0
-    // Configure SDcard pins
-    ConfigurePIO(mciID);
-
-#if defined(MCI2_INTERFACE)
-    DMAD_Initialize(BOARD_MCI_DMA_CHANNEL, DMAD_NO_DEFAULT_IT);
-#endif
-    // Initialize the MCI driver
-    if ( mciID == 0 )
-    {
-        IRQ_ConfigureIT(BOARD_SD_MCI_ID,  1, MCI0_IrqHandler);
-        MCI_Init(mciDrv, BOARD_SD_MCI_BASE, BOARD_SD_MCI_ID, BOARD_SD_SLOT, BOARD_MCK );
-        IRQ_EnableIT(BOARD_SD_MCI_ID);
-    }
-    else
-    {
-#ifdef BOARD_SD_MCI1_ID
-        IRQ_ConfigureIT(BOARD_SD_MCI1_ID,  1, MCI0_IrqHandler);
-        MCI_Init(mciDrv, BOARD_SD_MCI1_BASE, BOARD_SD_MCI1_ID, BOARD_SD_SLOT, BOARD_MCK );
-        IRQ_EnableIT(BOARD_SD_MCI1_ID);
-#else
-        TRACE_ERROR("SD/MMC card initialization failed (MCI1 not supported)\n\r");
-#endif
-    }
-#if MCI_BUSY_CHECK_FIX && defined(BOARD_SD_DAT0)
-    MCI_SetBusyFix(mciDrv, &pinSdDAT0);
-#endif
-
-    // Initialize the SD card driver
-    if (SD_Init(sdDrv, (SdDriver *)mciDrv))
-    {
-        TRACE_ERROR("SD/MMC card initialization failed\n\r");
-        return 0;
-    }
-    else
-    {
-        TRACE_INFO("SD/MMC card initialization successful\n\r");
-        TRACE_INFO("Card size: %d MB\n\r", (int)(MMC_GetTotalSizeKB(sdDrv)/1024));
-    }
-    MCI_SetSpeed(mciDrv, sdDrv->transSpeed, sdDrv->transSpeed, BOARD_MCK);
-#endif
-    // Initialize media fields
-    //--------------------------------------------------------------------------
-    //media->interface = sdDrv;
-    media->write = MEDSdusb_Write;
-    media->read = MEDSdusb_Read;
-    media->lock = 0;
-    media->unlock = 0;
-    media->handler = 0;
-    media->flush = 0;
-
-    media->blockSize = SD_BLOCK_SIZE;
-    media->baseAddress = 0;
-    media->size = 1024*1024; // TODO BSS SD_TOTAL_BLOCK(sdDrv);
-
-    media->mappedRD  = 0;
-    media->mappedWR  = 0;
-    media->protectedd = false; // TODO BSS CardIsProtected(mciID);
-    media->removable = 1;
-
-    media->state = MED_STATE_READY;
-
-    media->transfer.data = 0;
-    media->transfer.address = 0;
-    media->transfer.length = 0;
-    media->transfer.callback = 0;
-    media->transfer.argument = 0;
-
-    return 1;
-}
-#endif
-
-#if 0
-//------------------------------------------------------------------------------
-/// erase all the Sdcard
-/// \param  media Pointer to the Media instance to initialize
-//------------------------------------------------------------------------------
-void MEDSdcard_EraseAll(Media *media)
-{
-    unsigned char buffer[SD_BLOCK_SIZE];
-    unsigned int  block;
-    unsigned int  multiBlock = 1; // change buffer size for multiblocks
-    unsigned char error;
-
-    TRACE_INFO("MEDSdcard Erase All ...\n\r");
-
-    // Clear the block buffer
-    memset(buffer, 0, media->blockSize * multiBlock);
-
-    for (block=0;
-         block < (SD_TOTAL_BLOCK((SdCard*)media->interface)-multiBlock);
-         block += multiBlock)
-    {
-        // TODO BSS error = SD_WriteBlock((SdCard*)media->interface, block, multiBlock, buffer);
-        assert( !error ); /* "\n\r-F- Failed to write block (%d) #%u\n\r", error, block */
-    }
-}
-#endif
-
-//------------------------------------------------------------------------------
-/// erase block
-/// \param  media Pointer to the Media instance to initialize
-/// \param  block to erase
-//------------------------------------------------------------------------------
-#if 0
-void MEDSdcard_EraseBlock(Media *media, unsigned int  block)
-{
-    unsigned char buffer[SD_BLOCK_SIZE];
-    unsigned char error;
-
-    // Clear the block buffer
-    memset(buffer, 0, media->blockSize);
-
-    // TODO BSS error = SD_WriteBlock((SdCard*)media->interface, block, 1, buffer);
-    assert( !error ) ; /* "\n\r-F- Failed to write block (%d) #%u\n\r", error, block */
-}
-#endif
-//------------------------------------------------------------------------------
-/// Get driver pointer
-//------------------------------------------------------------------------------
-#if 0
-SdCard* MEDSdcard_GetDriver( unsigned int  slot )
-{
-    if (slot >= NUM_SD_SLOTS)
-    {
-        return 0;
-    }
-
-    return &sdDrv[slot];
-}
-#endif

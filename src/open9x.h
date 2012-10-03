@@ -983,7 +983,7 @@ extern uint16_t jeti_keys;
 
 // REPEAT uses 0x01 to 0x0f
 #define PLAY_NOW                  0x10
-#define PLAY_SOUND_VARIO          0x20
+#define PLAY_BACKGROUND           0x20
 
 /* make sure the defines below always go in numeric order */
 enum AUDIO_SOUNDS {
