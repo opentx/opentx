@@ -973,6 +973,8 @@ void menuProcHardware(uint8_t event)
       case ITEM_SETUP_HW_COPROC:
         lcd_putsLeft(y, STR_COPROC);
         lcd_outhex4(GENERAL_HW_PARAM_OFS, y, (Coproc_valid << 8) + Coproc_read);
+        lcd_putsLeft(y+FH*2, "Coproc temp");
+        putsTelemetryValue(GENERAL_HW_PARAM_OFS+3*FW-2, y+FH*2, Coproc_temp, UNIT_DEGREES,0) ;
         break;
 
       case ITEM_SETUP_HW_OPTREX_DISPLAY:

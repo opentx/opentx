@@ -49,6 +49,7 @@ extern void write_coprocessor( uint8_t *ptr, uint32_t count ) ;
 extern void read_coprocessor( void ) ;
 extern uint8_t Coproc_read ;
 extern int8_t Coproc_valid ;
+extern int8_t Coproc_temp ;
 
 extern uint16_t *nextAudioData;
 extern uint16_t nextAudioSize;

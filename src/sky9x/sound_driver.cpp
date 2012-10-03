@@ -234,6 +234,7 @@ static uint8_t CoProc_write_pending ;
 static uint8_t CoProc_appgo_pending ;
 uint8_t Volume_read ;
 uint8_t Coproc_read ;
+int8_t Coproc_temp ;
 int8_t Coproc_valid ;
 static uint8_t *Twi_read_address ;
 static uint8_t TwiOperation ;
@@ -427,6 +428,7 @@ extern "C" void TWI0_IRQHandler()
       utm.tm_mday = Co_proc_status[4] ;
       utm.tm_mon = Co_proc_status[5] - 1;
       utm.tm_year = (Co_proc_status[6] + ( Co_proc_status[7] << 8 )) - 1900;
+      Coproc_temp = Co_proc_status[8];
       g_rtcTime = gmktime(&utm);
     }
     TWI0->TWI_PTCR = TWI_PTCR_RXTDIS ;  // Stop transfers
