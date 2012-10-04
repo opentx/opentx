@@ -417,6 +417,7 @@
 #define TR_CPU_CURRENT         "Corrente\011>"
 #define TR_CPU_MAH             "Consumo"
 #define TR_COPROC              "CoProc."  
+#define TR_COPROC_TEMP         "Temp. MB \007>"
 #define TR_CAPAWARNING         "Avviso Capacita'"
 #define TR_TEMPWARNING         "Avviso Temp."
 #define TR_FUNC                "Funz"

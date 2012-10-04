@@ -274,9 +274,10 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     ERSKY9X_EXIT_PIO->PIO_PDSR |= ERSKY9X_EXIT_MASK;
     PIOB->PIO_PDSR |= ERSKY9X_MENU_MASK;
 //    PIOA->PIO_PDSR = 0xFFFFFFFF;
-    temperature = 67;
-    Coproc_temp = 45;
-    maxTemperature = 70;
+    temperature = 31;
+    Coproc_temp = 23;
+    Coproc_maxtemp = 28;
+    maxTemperature = 42;
 
 #elif defined(PCBGRUVIN9X)
     uint8_t pin = (pinl & ~0x3f);

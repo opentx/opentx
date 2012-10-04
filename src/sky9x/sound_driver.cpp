@@ -249,6 +249,7 @@ static uint8_t CoProc_appgo_pending ;
 uint8_t Volume_read ;
 uint8_t Coproc_read ;
 int8_t Coproc_temp ;
+int8_t Coproc_maxtemp=-127 ;
 int8_t Coproc_valid ;
 bool get_onlytemp;
 static uint8_t *Twi_read_address ;
@@ -452,6 +453,8 @@ extern "C" void TWI0_IRQHandler()
         g_rtcTime = gmktime(&utm);
       }
       Coproc_temp = Co_proc_status[8];
+      if (Coproc_temp > Coproc_maxtemp)
+        Coproc_maxtemp=Coproc_temp;
     }
     TWI0->TWI_PTCR = TWI_PTCR_RXTDIS ;  // Stop transfers
     if ( TWI0->TWI_SR & TWI_SR_RXRDY ) {

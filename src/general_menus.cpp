@@ -776,6 +776,14 @@ void menuGeneralVersion(uint8_t event)
   lcd_putsLeft(3*FH, stamp2);
   lcd_putsLeft(4*FH, stamp3);
   lcd_putsLeft(5*FH, stamp4);
+#if defined(PCBSKY9X)
+  if (Coproc_valid!=1) {
+     lcd_putsLeft(6*FH, PSTR("CoPr:")); 
+     lcd_outdez8(10*FW, 6*FH, Coproc_read);
+  } else {
+     lcd_putsLeft(6*FH, PSTR("CoPr: ---"));
+  }
+#endif  
   lcd_putsLeft(7*FH, STR_EEPROMV);
   lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
 }
@@ -883,7 +891,6 @@ void menuGeneralDiagAna(uint8_t event)
 
 #if defined(PCBSKY9X)
 enum menuGeneralHwItems {
-  ITEM_SETUP_HW_COPROC,
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   ITEM_SETUP_HW_MAX
 };
@@ -902,13 +909,6 @@ void menuGeneralHardware(uint8_t event)
     uint8_t attr = (sub == k ? blink : 0);
 
     switch(k) {
-      case ITEM_SETUP_HW_COPROC:
-        lcd_putsLeft(y, STR_COPROC);
-        lcd_outhex4(GENERAL_HW_PARAM_OFS, y, (Coproc_valid << 8) + Coproc_read);
-        lcd_putsLeft(y+FH*2, "Coproc temp");
-        putsTelemetryValue(GENERAL_HW_PARAM_OFS+3*FW-2, y+FH*2, Coproc_temp, UNIT_DEGREES,0) ;
-        break;
-
       case ITEM_SETUP_HW_OPTREX_DISPLAY:
         // TODO remove STR_OPTREX_DISPLAY + translations here
         g_eeGeneral.optrexDisplay = selectMenuItem(GENERAL_HW_PARAM_OFS, y, PSTR("LCD"), PSTR("\006NormalOptrex"), g_eeGeneral.optrexDisplay, 0, 1, attr, event);

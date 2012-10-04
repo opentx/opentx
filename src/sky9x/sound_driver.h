@@ -51,6 +51,7 @@ extern void read_coprocessor( bool onlytemp=false ) ;
 extern uint8_t Coproc_read ;
 extern int8_t Coproc_valid ;
 extern int8_t Coproc_temp ;
+extern int8_t Coproc_maxtemp ;
 
 extern uint16_t *nextAudioData;
 extern uint16_t nextAudioSize;
