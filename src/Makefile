@@ -441,8 +441,9 @@ ifeq ($(PCB), X9D)
   CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp
   
   ifeq ($(SDCARD), YES)
-    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.c
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
     CPPDEFS += -DVOICE
+    EXTRAINCDIRS += FatFs FatFs/option
   endif
   
   ifeq ($(BLUETOOTH), YES)
@@ -476,7 +477,8 @@ ifeq ($(PCB), SKY9X)
   CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
-    SRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.c
+    EXTRAINCDIRS += FatFs FatFs/option
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
     CPPDEFS += -DVOICE
   endif
   

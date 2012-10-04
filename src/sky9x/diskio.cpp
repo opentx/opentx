@@ -615,7 +615,6 @@ static const char * sdCmd52(uint8_t wrFlag,
   *status = HSMCI->HSMCI_RSPR[0];
   return 0;
 }
-#endif
 
 const char * sdSwReset(uint32_t retry)
 {
@@ -629,6 +628,7 @@ const char * sdSwReset(uint32_t retry)
     }
     return result;
 }
+#endif
 
 /**
  * \brief Run the SD/MMC/SDIO Mode initialization sequence.
@@ -954,8 +954,9 @@ void sdInit()
 #endif
 
 uint8_t sdErrorCount = 0;
-static FATFS g_FATFS_Obj = { 0 };
-void retrieveAvailableAudioFiles();
+FATFS g_FATFS_Obj = { 0 };
+
+extern void retrieveAvailableAudioFiles();
 
 void sdPoll10mS()
 {

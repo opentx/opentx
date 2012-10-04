@@ -26,6 +26,10 @@ typedef enum {
 /*---------------------------------------*/
 /* Prototypes for disk control functions */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int assign_drives (int, int);
 DSTATUS disk_initialize (BYTE);
 DSTATUS disk_status (BYTE);
@@ -35,6 +39,9 @@ DRESULT disk_write (BYTE, const BYTE*, DWORD, BYTE);
 #endif
 DRESULT disk_ioctl (BYTE, BYTE, void*);
 
+#ifdef __cplusplus
+}
+#endif
 
 
 /* Disk Status Bits (DSTATUS) */

@@ -34,7 +34,6 @@
 #include "../open9x.h"
 
 #if defined(SDCARD)
-
 const char * audioFilenames[] = {
   "inactiv",
   "lowbatt",
@@ -67,8 +66,6 @@ const char * audioFilenames[] = {
 
 uint32_t sdAvailableAudioFiles = 0;
 
-// TODO enable the assert when it's C++
-extern "C" {
 void retrieveAvailableAudioFiles()
 {
   FILINFO info;
@@ -80,10 +77,8 @@ void retrieveAvailableAudioFiles()
 
   char filename[32] = SYSTEM_SOUNDS_PATH "/";
 
-#if !defined WIN32 && defined __GNUC__
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableAudioFiles)*8 > AU_FRSKY_FIRST);
-#endif
 
   uint32_t availableAudioFiles = 0;
 
@@ -95,7 +90,6 @@ void retrieveAvailableAudioFiles()
   }
 
   sdAvailableAudioFiles = availableAudioFiles;
-}
 }
 
 inline bool isAudioFileAvailable(uint8_t i, char * filename)
