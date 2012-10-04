@@ -84,6 +84,7 @@ extern void beep(uint8_t val);
 #define AUDIO_PLAY(p)         beep(3)
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
+#define AUDIO_RESET()
 
 #if !defined(PCBSKY9X)
 FORCEINLINE void AUDIO_HEARTBEAT()

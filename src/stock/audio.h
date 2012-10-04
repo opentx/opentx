@@ -149,4 +149,4 @@ void audioDefevent(uint8_t e);
 #define AUDIO_DRIVER()      audio.driver()
 #define AUDIO_HEARTBEAT()   audio.heartbeat()
 #define IS_AUDIO_BUSY()     audio.busy()
-
+#define AUDIO_RESET()

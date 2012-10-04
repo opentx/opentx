@@ -527,14 +527,20 @@ void AudioQueue::stopPlay(uint8_t id)
 void AudioQueue::stopSD()
 {
   sdAvailableAudioFiles = 0;
-
-  CoEnterMutexSection(audioMutex);
-  widx = ridx;                      // clean the queue
-  CoLeaveMutexSection(audioMutex);
-
+  reset();
   play(0, 0, 100, PLAY_NOW);        // insert a 100ms pause
 }
+
 #endif
+
+void AudioQueue::reset()
+{
+  CoEnterMutexSection(audioMutex);
+  widx = ridx;                      // clean the queue
+  memset(&currentContext.fragment, 0, sizeof(AudioFragment));
+  memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));
+  CoLeaveMutexSection(audioMutex);
+}
 
 void audioEvent(uint8_t e, uint8_t f)
 {

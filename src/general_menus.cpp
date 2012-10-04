@@ -422,10 +422,6 @@ void menuGeneralSetup(uint8_t event)
   }
 }
 
-#if defined(PCBSKY9X)
-extern uint32_t sdAvailableAudioFiles; // TODO move that!
-#endif
-
 #if defined(SDCARD)
 void menuGeneralSdManagerInfo(uint8_t event)
 {
@@ -650,10 +646,12 @@ void menuGeneralSdManager(uint8_t event)
       }
       else if (result == STR_SD_FORMAT) {
         displayPopup(STR_FORMATTING);
-        if (f_mkfs(0, 1, 0) == FR_OK) {
+        closeLogs();
 #if defined(PCBSKY9X)
-          sdAvailableAudioFiles = 0;
+        Card_state = SD_ST_DATA;
+        audioQueue.stopSD();
 #endif
+        if (f_mkfs(0, 1, 0) == FR_OK) {
           f_chdir("/");
           reusableBuffer.sd.offset = -1;
         }

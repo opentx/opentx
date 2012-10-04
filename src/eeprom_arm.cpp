@@ -498,6 +498,8 @@ void eeLoadModel(uint8_t id)
       read32_eeprom_data( ( File_system[id+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_model, size) ;
     }
 
+    resetAll();
+
     if (pulsesStarted()) {
       checkTHR();
       checkSwitches();
@@ -509,7 +511,6 @@ void eeLoadModel(uint8_t id)
     activeFunctionSwitches = 0;
 
     resetProto();
-    resetAll();
 
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
       if (g_model.timersXtra[i].remanent) {

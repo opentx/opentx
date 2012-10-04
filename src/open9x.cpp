@@ -1557,14 +1557,20 @@ void resetTimer(uint8_t idx)
 
 void resetAll()
 {
-  // TODO s_traceCnt to be reset?
+  AUDIO_RESET();
+
   resetTimer(0);
   resetTimer(1);
-#ifdef FRSKY
+#if defined(FRSKY)
   resetTelemetry();
 #endif
   for (uint8_t i=0; i<NUM_CSW; i++)
     csLastValue[i] = -32668;
+
+#if defined(THRTRACE)
+  s_traceCnt = 0;
+  s_traceWr = 0;
+#endif
 }
 
 static uint8_t lastSwPos[2] = {0, 0};

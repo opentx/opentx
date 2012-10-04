@@ -111,6 +111,8 @@ class AudioQueue {
       return ridx == widx;
     }
 
+    void reset();
+
   protected:
 
     void wakeup();
@@ -178,5 +180,6 @@ extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define PLAY_VALUE(v, id) playValue((v), (id))
 #define PLAY_FILE(f, flags, id) audioQueue.playFile((f), (flags), (id))
 #define STOP_PLAY(id) audioQueue.stopPlay((id))
+#define AUDIO_RESET() audioQueue.reset()
 
 #endif

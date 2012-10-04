@@ -489,7 +489,7 @@ const char * sdCmd9()
 #define SDMMC_SELECT_CARD       (7 | HSMCI_CMDR_TRCMD_NO_DATA \
                                    | HSMCI_CMDR_SPCMD_STD \
                                    | HSMCI_CMDR_RSPTYP_R1B \
-                                   | HSMCI_CMDR_MAXLAT /* TODO not the same */ )
+                                   | HSMCI_CMDR_MAXLAT )
 
 const char * sdCmd7()
 {
@@ -1361,8 +1361,6 @@ DRESULT disk_write (
         if (drv || !count) return RES_PARERR;
 
         if ( sd_card_ready() == 0 ) return RES_NOTRDY;
-
-        // TODO if (Stat & STA_PROTECT) return RES_WRPRT;
 
         do {
 

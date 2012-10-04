@@ -868,6 +868,8 @@ void eeLoadModel(uint8_t id)
       eeCheck(true);
     }
 
+    resetAll();
+
     if (pulsesStarted()) {
       checkAll();
       resumePulses();
@@ -878,7 +880,6 @@ void eeLoadModel(uint8_t id)
     activeFunctionSwitches = 0;
 
     resetProto();
-    resetAll();
 
 #if defined(PCBGRUVIN9X)
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
