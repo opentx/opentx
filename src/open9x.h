@@ -36,13 +36,90 @@
 
 #define MAJ_VERS 2
 #define MIN_VERS 00
+#define EEPROM_VARIANTS   (0x00)
 
 #include <inttypes.h>
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
 
-#define EEPROM_VARIANTS   (0x00)
+#if defined(PCBSKY9X)
+#define IF_PCBSKY9X(x) x,
+#else
+#define IF_PCBSKY9X(x)
+#endif
+
+#if defined(RTCLOCK)
+#define IF_RTCLOCK(x) x,
+#else
+#define IF_RTCLOCK(x)
+#endif
+
+#if defined(AUDIO)
+#define IF_AUDIO(x) x,
+#else
+#define IF_AUDIO(x)
+#endif
+
+#if defined(VOICE)
+#define IF_VOICE(x) x,
+#else
+#define IF_VOICE(x)
+#endif
+
+#if defined(HAPTIC)
+#define IF_HAPTIC(x) x,
+#else
+#define IF_HAPTIC(x)
+#endif
+
+#if defined(SPLASH)
+#define IF_SPLASH(x) x,
+#else
+#define IF_SPLASH(x)
+#endif
+
+#if defined(FRSKY)
+#define IF_FRSKY(x) x,
+#else
+#define IF_FRSKY(x)
+#endif
+
+#if defined(ROTARY_ENCODERS)
+#define IF_ROTARY_ENCODERS(x) x,
+#else
+#define IF_ROTARY_ENCODERS(x)
+#endif
+
+#if defined(BLUETOOTH)
+#define IF_BLUETOOTH(x) x,
+#else
+#define IF_BLUETOOTH(x)
+#endif
+
+#if defined(HELI)
+#define IF_HELI(x) x,
+#else
+#define IF_HELI(x)
+#endif
+
+#if defined(TEMPLATES)
+#define IF_TEMPLATES(x) x,
+#else
+#define IF_TEMPLATES(x)
+#endif
+
+#if defined(FLIGHT_PHASES)
+#define IF_FLIGHT_PHASES(x) x,
+#else
+#define IF_FLIGHT_PHASES(x)
+#endif
+
+#if defined(CURVES)
+#define IF_CURVES(x) x,
+#else
+#define IF_CURVES(x)
+#endif
 
 #if defined(PCBSTD)
 #define WDT_RESET_STOCK() wdt_reset()

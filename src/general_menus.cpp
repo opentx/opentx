@@ -98,38 +98,22 @@ void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 #endif
 
 enum menuGeneralSetupItems {
-#if defined(RTCLOCK)
-  ITEM_SETUP_RTC,
-#endif
+  IF_RTCLOCK(ITEM_SETUP_RTC)
   ITEM_SETUP_BEEPER_MODE,
   ITEM_SETUP_BEEPER_LENGTH,
-#if defined(AUDIO)
-  ITEM_SETUP_SPEAKER_PITCH,
-#endif
-#if defined(VOICE)
-  ITEM_SETUP_SPEAKER_VOLUME,
-#endif
-#if defined(HAPTIC)
-  ITEM_SETUP_HAPTIC_MODE,
-  ITEM_SETUP_HAPTIC_LENGTH,
-  ITEM_SETUP_HAPTIC_STRENGTH,
-#endif
-#if defined(PCBSKY9X)
-  ITEM_SETUP_BRIGHTNESS,
-#endif
+  IF_AUDIO(ITEM_SETUP_SPEAKER_PITCH)
+  IF_VOICE(ITEM_SETUP_SPEAKER_VOLUME)
+  IF_HAPTIC(ITEM_SETUP_HAPTIC_MODE)
+  IF_HAPTIC(ITEM_SETUP_HAPTIC_LENGTH)
+  IF_HAPTIC(ITEM_SETUP_HAPTIC_STRENGTH)
+  IF_PCBSKY9X(ITEM_SETUP_BRIGHTNESS)
   ITEM_SETUP_CONTRAST,
   ITEM_SETUP_BATTERY_WARNING,
-#if defined(PCBSKY9X)
-  ITEM_SETUP_CAPACITY_WARNING,
-  ITEM_SETUP_TEMPERATURE_WARNING,
-#endif
+  IF_PCBSKY9X(ITEM_SETUP_CAPACITY_WARNING)
+  IF_PCBSKY9X(ITEM_SETUP_TEMPERATURE_WARNING)
   ITEM_SETUP_INACTIVITY_ALARM,
-#if defined(BLUETOOTH)
-  ITEM_SETUP_BT_BAUDRATE,
-#endif
-#if defined(ROTARY_ENCODERS)
-  ITEM_SETUP_RE_NAVIGATION,
-#endif
+  IF_BLUETOOTH(ITEM_SETUP_BT_BAUDRATE)
+  IF_ROTARY_ENCODERS(ITEM_SETUP_RE_NAVIGATION)
   ITEM_SETUP_FILTER_ADC,
   ITEM_SETUP_THROTTLE_REVERSED,
   ITEM_SETUP_MINUTE_BEEP,
@@ -137,15 +121,11 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_FLASH_BEEP,
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
-#if defined(SPLASH)
-  ITEM_SETUP_DISABLE_SPLASH,
-#endif
+  IF_SPLASH(ITEM_SETUP_DISABLE_SPLASH)
   ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
-#if defined(FRSKY)
-  ITEM_SETUP_TIMEZONE,
-  ITEM_SETUP_GPSFORMAT,
-#endif
+  IF_FRSKY(ITEM_SETUP_TIMEZONE)
+  IF_FRSKY(ITEM_SETUP_GPSFORMAT)
   ITEM_SETUP_RX_CHANNEL_ORD,
   ITEM_SETUP_STICK_MODE_LABELS,
   ITEM_SETUP_STICK_MODE,
@@ -154,53 +134,7 @@ enum menuGeneralSetupItems {
 
 void menuGeneralSetup(uint8_t event)
 {
-#ifdef RTCLOCK
-#define RTC_ZEROS 5,
-#else
-#define RTC_ZEROS
-#endif
-#ifdef AUDIO
-#define AUDIO_ZEROS  0,
-#else
-#define AUDIO_ZEROS
-#endif
-#ifdef VOICE
-#define VOICE_ZEROS  0,
-#else
-#define VOICE_ZEROS
-#endif
-#ifdef HAPTIC
-#define HAPTIC_ZEROS 0, 0, 0,
-#else
-#define HAPTIC_ZEROS
-#endif
-#ifdef SPLASH
-#define SPLASH_ZEROS 0,
-#else
-#define SPLASH_ZEROS
-#endif
-#ifdef FRSKY
-#define FRSKY_ZEROS  0, 0,
-#else
-#define FRSKY_ZEROS
-#endif
-#ifdef PCBSKY9X
-#define ARM_ZEROS  0, 0, 0,
-#else
-#define ARM_ZEROS
-#endif
-#ifdef BLUETOOTH
-#define BLUETOOTH_ZEROS 0,
-#else
-#define BLUETOOTH_ZEROS
-#endif
-#ifdef ROTARY_ENCODERS
-#define ROTARY_ENCODERS_ZEROS 0,
-#else
-#define ROTARY_ENCODERS_ZEROS
-#endif
-
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, RTC_ZEROS 0, 0, AUDIO_ZEROS VOICE_ZEROS HAPTIC_ZEROS ARM_ZEROS 0, 0, 0, BLUETOOTH_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(5) 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, IF_BLUETOOTH(0) IF_ROTARY_ENCODERS(0) 0, 0, 0, 0, 0, 0, 0, IF_SPLASH(0) 0, 0, IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, 1});
 
   uint8_t sub = m_posVert - 1;
 
@@ -431,7 +365,7 @@ void menuGeneralSetup(uint8_t event)
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
         break;
 
-#ifdef SPLASH
+#if defined(SPLASH)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
         uint8_t b = 1-g_eeGeneral.disableSplashScreen;
@@ -519,8 +453,6 @@ void menuGeneralSdManagerInfo(uint8_t event)
   lcd_putsLeft(5*FH, PSTR("Speed:"));
   lcd_outdezAtt(10*FW, 5*FH, SD_GET_SPEED()/1000, LEFT);
   lcd_puts(lcdLastPos, 5*FH, "kb/s");
-
-  // lcd_putsLeft(7*FH, PSTR("CSD:"));
 }
 
 void menuGeneralSdManager(uint8_t event)

@@ -40,26 +40,16 @@
 enum EnumTabModel {
   e_ModelSelect,
   e_Model,
-#ifdef HELI
-  e_Heli,
-#endif
-#ifdef FLIGHT_PHASES
-  e_PhasesAll,
-#endif
+  IF_HELI(e_Heli)
+  IF_FLIGHT_PHASES(e_PhasesAll)
   e_ExposAll,
   e_MixAll,
   e_Limits,
-#ifdef CURVES
-  e_CurvesAll,
-#endif
+  IF_CURVES(e_CurvesAll)
   e_CustomSwitches,
   e_FunctionSwitches,
-#ifdef FRSKY
-  e_Telemetry,
-#endif
-#ifdef TEMPLATES
-  e_Templates
-#endif
+  IF_FRSKY(e_Telemetry)
+  IF_TEMPLATES(e_Templates)
 };
 
 void menuModelSelect(uint8_t event);
@@ -87,26 +77,16 @@ void menuModelExpoOne(uint8_t event);
 const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelSelect,
   menuModelSetup,
-#ifdef HELI
-  menuModelHeli,
-#endif
-#ifdef FLIGHT_PHASES
-  menuModelPhasesAll,
-#endif
+  IF_HELI(menuModelHeli)
+  IF_FLIGHT_PHASES(menuModelPhasesAll)
   menuModelExposAll,
   menuModelMixAll,
   menuModelLimits,
-#ifdef CURVES
-  menuModelCurvesAll,
-#endif
+  IF_CURVES(menuModelCurvesAll)
   menuModelCustomSwitches,
   menuModelFunctionSwitches,
-#ifdef FRSKY
-  menuModelTelemetry,
-#endif
-#ifdef TEMPLATES
-  menuModelTemplates
-#endif
+  IF_FRSKY(menuModelTelemetry)
+  IF_TEMPLATES(menuModelTemplates)
 };
 
 #define COPY_MODE 1
@@ -1459,44 +1439,22 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 }
 
 enum ExposFields {
-#ifdef PCBSKY9X
-  EXPO_FIELD_NAME,
-#endif
+  IF_PCBSKY9X(EXPO_FIELD_NAME)
   EXPO_FIELD_WIDTH,
   EXPO_FIELD_EXPO,
-#ifdef CURVES
-  EXPO_FIELD_CURVE,
-#endif
-#ifdef FLIGHT_PHASES
-  EXPO_FIELD_FLIGHT_PHASE,
-#endif
+  IF_CURVES(EXPO_FIELD_CURVE)
+  IF_FLIGHT_PHASES(EXPO_FIELD_FLIGHT_PHASE)
   EXPO_FIELD_SWITCH,
   EXPO_FIELD_SIDE,
   EXPO_FIELD_MAX
 };
-
-#if defined(PCBSKY9X)
-#define EXPO_ONE_ARM_ROW sizeof(ed->name),
-#else
-#define EXPO_ONE_ARM_ROW
-#endif
-#if defined(CURVES)
-#define EXPO_ONE_CURVES_ROW 1,
-#else
-#define EXPO_ONE_CURVES_ROW
-#endif
-#if defined(FLIGHT_PHASES)
-#define EXPO_ONE_PHASES_ROW MAX_PHASES-1,
-#else
-#define EXPO_ONE_PHASES_ROW
-#endif
 
 void menuModelExpoOne(uint8_t event)
 {
   ExpoData *ed = expoaddress(s_currIdx);
   putsChnRaw(7*FW+FW/2,0,ed->chn+1,0);
 
-  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {EXPO_ONE_ARM_ROW 0, 0, EXPO_ONE_CURVES_ROW EXPO_ONE_PHASES_ROW 0 /*, ...*/});
+  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_PCBSKY9X(sizeof(ed->name)) 0, 0, IF_CURVES(1) IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 
   int8_t sub = m_posVert;
 
@@ -1577,20 +1535,14 @@ void menuModelExpoOne(uint8_t event)
 }
 
 enum MixFields {
-#if defined(PCBSKY9X)
-  MIX_FIELD_NAME,
-#endif
+  IF_PCBSKY9X(MIX_FIELD_NAME)
   MIX_FIELD_SOURCE,
   MIX_FIELD_WEIGHT,
   MIX_FIELD_OFFSET,
   MIX_FIELD_TRIM,
-#if defined(CURVES)
-  MIX_FIELD_CURVE,
-#endif
+  IF_CURVES(MIX_FIELD_CURVE)
   MIX_FIELD_SWITCH,
-#if defined(FLIGHT_PHASES)
-  MIX_FIELD_FLIGHT_PHASE,
-#endif
+  IF_FLIGHT_PHASES(MIX_FIELD_FLIGHT_PHASE)
   MIX_FIELD_WARNING,
   MIX_FIELD_MLTPX,
   MIX_FIELD_DELAY_UP,
@@ -1600,29 +1552,13 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-#if defined(PCBSKY9X)
-#define MIX_ONE_ARM_ROW sizeof(md2->name),
-#else
-#define MIX_ONE_ARM_ROW
-#endif
-#if defined(CURVES)
-#define MIX_ONE_CURVES_ROW 1,
-#else
-#define MIX_ONE_CURVES_ROW
-#endif
-#if defined(FLIGHT_PHASES)
-#define MIX_ONE_PHASES_ROW MAX_PHASES-1,
-#else
-#define MIX_ONE_PHASES_ROW
-#endif
-
 void menuModelMixOne(uint8_t event)
 {
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
 
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {MIX_ONE_ARM_ROW 0, 0, 0, 1, MIX_ONE_CURVES_ROW 0, MIX_ONE_PHASES_ROW 0 /*, ...*/});
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(sizeof(md2->name)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 
   int8_t  sub = m_posVert;
 
@@ -2089,7 +2025,6 @@ enum LimitsItems {
 #define LIMITS_DIRECTION_POS  12*FW+5
 #endif
 #endif
-
 
 void menuModelLimits(uint8_t event)
 {
@@ -3050,7 +2985,7 @@ void menuModelTelemetry(uint8_t event)
 }
 #endif
 
-#ifdef TEMPLATES
+#if defined(TEMPLATES)
 void menuModelTemplates(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+TMPL_COUNT);
