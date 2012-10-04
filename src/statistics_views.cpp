@@ -131,15 +131,14 @@ void menuStatisticsDebug(uint8_t event)
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_DEGREES, 0);
   putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
   lcd_putsLeft(4*FH, STR_COPROC_TEMP);
-  if (Coproc_read>2) {
+  if (Coproc_read > 2)
     putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, Coproc_temp, UNIT_DEGREES, 0);
-  } else {
-    lcd_puts(MENU_DEBUG_COL_OFS-2*FW,4*FH,PSTR("---"));
-  }
-  if (Coproc_maxtemp!=-127) {
+  else
+    lcd_puts(MENU_DEBUG_COL_OFS-2*FW,4*FH, PSTR("---"));
+  if (Coproc_maxtemp != -127)
     putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_DEGREES, 0);
-  } else {
-    lcd_puts(18*FW+2,4*FH,PSTR("---"));
+  else
+    lcd_puts(18*FW+2, 4*FH, PSTR("---"));
   }
   lcd_putsLeft(5*FH, STR_TMAINMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (g_timeMainMax)/20, PREC2);
@@ -157,5 +156,6 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(5*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(14*FW, 5*FH, stack_free(), UNSIGN) ;
 #endif
-  lcd_puts(3*FW, 7*FH, STR_MENUTORESET);
+  lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
+  lcd_status_line();
 }
