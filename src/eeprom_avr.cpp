@@ -246,7 +246,7 @@ void EeFsFormat()
   s_sync_write = false;
 }
 
-inline bool EeFsOpen() // TODO inline?
+inline bool EeFsOpen()
 {
   eeprom_read_block(&eeFs, 0, sizeof(eeFs));
 
@@ -436,7 +436,7 @@ void RlcFile::nextWriteStep()
           s_write_err = ERR_FULL;
           break;
         }
-        m_write_step += WRITE_NEXT_LINK_1; // TODO review all these names
+        m_write_step += WRITE_NEXT_LINK_1;
         EeFsSetLink(m_currBlk, eeFs.freeList);
         return;
       }
@@ -451,12 +451,8 @@ void RlcFile::nextWriteStep()
         return;
       case WRITE_NEXT_LINK_2:
         m_write_step -= WRITE_NEXT_LINK_2;
-        EeFsSetLink(m_currBlk, 0); // TODO needed?
+        EeFsSetLink(m_currBlk, 0);
         return;
-    }
-    if (!m_currBlk) { // TODO needed?
-      s_write_err = ERR_FULL;
-      break;
     }
     uint8_t tmp = BS-1-m_ofs; if(tmp>m_write_len) tmp=m_write_len;
     m_write_buf += tmp;
@@ -818,7 +814,7 @@ bool eeLoadGeneral()
 {
   theFile.openRlc(FILE_GENERAL);
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.myVers == EEPROM_VER) {
-    theFile.openRlc(FILE_GENERAL); // TODO include this openRlc inside readRlc
+    theFile.openRlc(FILE_GENERAL);
     if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral)) {
       if (g_eeGeneral.variants == EEPROM_VARIANTS && g_eeGeneral.chkSum == evalChkSum()) {
         return true;
