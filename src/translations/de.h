@@ -20,8 +20,8 @@
 #define LEN_VFILTERADC                  "\004"                                                                                                        
 #define TR_VFILTERADC                   "SING""OSMP""FILT"                                                                                            
                                                                                                                                                       
-#define LEN_VBLMODE      "\004"
-#define TR_VBLMODE       "OFF ""Keys""Stks""Both""ON\0"
+#define LEN_VBLMODE                     "\004"
+#define TR_VBLMODE                      "OFF ""Keys""Stks""Both""ON\0"
 
 #define LEN_TRNMODE                     "\003"                                                                                                        
 #define TR_TRNMODE                      "AUS"" +="" :="                                                                                               
@@ -32,6 +32,9 @@
 #define LEN_DATETIME                    "\005"                                                                                                        
 #define TR_DATETIME                     "DATE:""TIME:"                                                                                                
                                                                                                                                                       
+#define LEN_VLCD                        "\006"
+#define TR_VLCD                         "NormalOptrex"
+
 #define LEN_VTRIMINC                    "\006"                                                                                                        
 #define TR_VTRIMINC                     "Expo. ""X-Fein""Fein  ""Mittel""Grob  "                                                                      
                                                                                                                                                       
@@ -107,12 +110,12 @@
 #endif
 #if defined(PCBSKY9X)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs\0 "
+#define TR_SDCLOGS                      "SDCARD Logs\0 "
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_SDCLOGS                      "[SDCARD Logs]"
 #endif
-#define TR_FSW_VOLUME    "Volume\0      "
-#define TR_FSW_BG_MUSIC  "Bg Music\0    "
+#define TR_FSW_VOLUME                   "Volume\0      "
+#define TR_FSW_BG_MUSIC                 "Bg Music\0    "
 #elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)                                                                                                                                                                                                                                                                                
 #define TR_SDCLOGS                      "SDcard Logs  "                                                                                                                                                                                                                                            
@@ -161,14 +164,14 @@
 #define LEN_VALARMFN                    "\001"                                                                                                                                                                                                                                                     
 #define TR_VALARMFN                     "<>"                                                                                                                                                                                                                                                       
                                                                                                                                                                                                                                                                                                    
-#define LEN_VTELPROTO    "\007"
-#define TR_VTELPROTO     "---\0   ""Hub\0   ""WSHHigh""Halcyon"
+#define LEN_VTELPROTO                   "\007"
+#define TR_VTELPROTO                    "---\0   ""Hub\0   ""WSHHigh""Halcyon"
 
-#define LEN_VOLTSRC      "\003"
-#define TR_VOLTSRC       "---""A1\0""A2\0""FAS""Cel"
+#define LEN_VOLTSRC                     "\003"
+#define TR_VOLTSRC                      "---""A1\0""A2\0""FAS""Cel"
 
-#define LEN_VARIOSRC     "\004"
-#define TR_VARIOSRC      "Data""A1\0 ""A2\0"
+#define LEN_VARIOSRC                    "\004"
+#define TR_VARIOSRC                     "Data""A1\0 ""A2\0"
                                                                                                                                                                                                                                                                                                    
 #define LEN_GPSFORMAT                   "\004"                                                                                                                                                                                                                                                     
 #define TR_GPSFORMAT                    "HMS NMEA"                                                                                                                                                                                                                                                 
@@ -255,8 +258,8 @@
 #define TR_EDITMIX                      "MIXER "                                                            
 #define TR_SOURCE                       "Quelle"                                                              
 #define TR_WEIGHT                       "Gewicht"
-#define TR_EXPO                "Expo"
-#define TR_SIDE                "Side"
+#define TR_EXPO                         "Expo"
+#define TR_SIDE                         "Side"
 #define TR_MIXERWEIGHT                  "Mixer Weight"                                                        
 #define TR_DIFFERENTIAL                 "Differ"                                                              
 #define TR_OFFSET                       "Offset"                                                              
@@ -304,8 +307,8 @@
 #define TR_MINUTEBEEP                   "Pieper Minuten"                                  
 #define TR_BEEPCOUNTDOWN                "Pieper Countdown"                                
 #define TR_FLASHONBEEP                  "Pieper+Blinken"                                  
-#define TR_BLMODE                  "Licht Steuerung"                                 
-#define TR_BLDELAY                "Licht aus nach"                                  
+#define TR_BLMODE                       "Licht Steuerung"
+#define TR_BLDELAY                      "Licht aus nach"
 #define TR_SPLASHSCREEN                 "Startbild"                                       
 #define TR_THROTTLEWARNING              "T-Warnung"                                       
 #define TR_SWITCHWARNING                "S-Warnung"                                
@@ -336,9 +339,9 @@
 #define TR_TMR1LATMINUS                 "Tmr1Lat min\003us"                                                               
 #define TR_TMR1JITTERUS                 "Tmr1 Jitter\003us"                                                               
 #if defined(PCBSKY9X)
-#define TR_TMAINMAXMS          "Tmain max\004ms"
+#define TR_TMAINMAXMS                   "Tmain max\004ms"
 #else
-#define TR_TMAINMAXMS          "Tmain max\005ms"
+#define TR_TMAINMAXMS                   "Tmain max\005ms"
 #endif
 #define TR_T10MSUS                      "T10ms\007us"                                                                     
 #define TR_FREESTACKMINB                "Free Stack\004b"                                                                 
@@ -411,7 +414,7 @@
 #define TR_SWITCHWARN                   "SCHALTER"
 #define TR_INVERT_THR                   "Invert Thr?"
 #define TR_SPEAKER_VOLUME      "Speaker Volume"
-#define TR_OPTREX_DISPLAY      "Optrex Display"
+#define TR_LCD                 "LCD"
 #define TR_BRIGHTNESS          "Brightness"
 #define TR_CPU_TEMP            "CPU temp.\007>"
 #define TR_CPU_CURRENT         "Current\011>"
@@ -437,3 +440,14 @@
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Format"
 #define TR_NA                  "N/A"
+#define TR_HARDWARE            "HARDWARE"
+#define TR_FORMATTING          "Formatting..."
+#define TR_TEMP_CALIB          "Temp. Calib"
+#define TR_TIME                "Time"
+#define TR_BAUDRATE            "BT Baudrate"
+#define TR_SD_INFO_TITLE       "SD INFO"
+#define TR_SD_TYPE             "Type:"
+#define TR_SD_SPEED            "Speed:"
+#define TR_SD_SECTORS          "Sectors:"
+#define TR_SD_SIZE             "Size:"
+#define TR_CURVE_TYPE          "Type"

@@ -260,7 +260,11 @@ void eeprom_read_block (void *pointer_ram,
   }
 }
 
+#if defined(PCBSKY9X)
+uint16_t stack_free(uint8_t)
+#else
 uint16_t stack_free()
+#endif
 {
   return 500;
 }

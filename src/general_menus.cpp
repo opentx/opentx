@@ -39,16 +39,12 @@ const pm_uchar sticks[] PROGMEM = {
 
 enum EnumTabDiag {
   e_Setup,
-#if defined(SDCARD)
-  e_Sd,
-#endif
+  IF_SDCARD(e_Sd)
   e_Trainer,
   e_Vers,
   e_Keys,
   e_Ana,
-#if defined(PCBSKY9X)
-  e_Hardware,
-#endif
+  IF_PCBSKY9X(e_Hardware)
   e_Calib
 };
 
@@ -65,16 +61,12 @@ void menuGeneralCalib(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuGeneralSetup,
-#if defined(SDCARD)
-  menuGeneralSdManager,
-#endif
+  IF_SDCARD(menuGeneralSdManager)
   menuGeneralTrainer,
   menuGeneralVersion,
   menuGeneralDiagKeys,
   menuGeneralDiagAna,
-#if defined(PCBSKY9X)
-  menuGeneralHardware,
-#endif
+  IF_PCBSKY9X(menuGeneralHardware)
   menuGeneralCalib
 };
 
@@ -151,7 +143,7 @@ void menuGeneralSetup(uint8_t event)
     switch(k) {
 #if defined(RTCLOCK)
       case ITEM_SETUP_RTC:
-        lcd_putsLeft(y, PSTR("Time"));
+        lcd_putsLeft(y, STR_TIME);
         lcd_putc(FW*7+6, y, '-'); lcd_putc(FW*10+4, y, '-');
         lcd_putc(FW*15+5, y, ':'); lcd_putc(FW*18+3, y, ':');
         for (uint8_t j=0; j<6; j++) { // 3 settings each for date and time (YMD and HMS)
@@ -315,7 +307,7 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(BLUETOOTH)
       case ITEM_SETUP_BT_BAUDRATE:
-        g_eeGeneral.btBaudrate = selectMenuItem(GENERAL_PARAM_OFS, y, PSTR("BT Baudrate"), PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
+        g_eeGeneral.btBaudrate = selectMenuItem(GENERAL_PARAM_OFS, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           btInit();
         }
@@ -437,20 +429,20 @@ extern uint32_t sdAvailableAudioFiles; // TODO move that!
 #if defined(SDCARD)
 void menuGeneralSdManagerInfo(uint8_t event)
 {
-  SIMPLE_SUBMENU(PSTR("SD INFO"), 1);
+  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, 1);
 
-  lcd_putsLeft(2*FH, PSTR("Type:"));
+  lcd_putsLeft(2*FH, STR_SD_TYPE);
   lcd_puts(10*FW, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
 
-  lcd_putsLeft(3*FH, PSTR("Size:"));
+  lcd_putsLeft(3*FH, STR_SD_SIZE);
   lcd_outdezAtt(10*FW, 3*FH, SD_GET_SIZE_MB(), LEFT);
   lcd_putc(lcdLastPos, 3*FH, 'M');
 
-  lcd_putsLeft(4*FH, PSTR("Sectors:"));
+  lcd_putsLeft(4*FH, STR_SD_SECTORS);
   lcd_outdezAtt(10*FW, 4*FH, SD_GET_BLOCKNR()/1000, LEFT);
   lcd_putc(lcdLastPos, 4*FH, 'k');
 
-  lcd_putsLeft(5*FH, PSTR("Speed:"));
+  lcd_putsLeft(5*FH, STR_SD_SPEED);
   lcd_outdezAtt(10*FW, 5*FH, SD_GET_SPEED()/1000, LEFT);
   lcd_puts(lcdLastPos, 5*FH, "kb/s");
 }
@@ -657,7 +649,7 @@ void menuGeneralSdManager(uint8_t event)
         pushMenu(menuGeneralSdManagerInfo);
       }
       else if (result == STR_SD_FORMAT) {
-        displayPopup(PSTR("Formatting...")); // TODO translations
+        displayPopup(STR_FORMATTING);
         if (f_mkfs(0, 1, 0) == FR_OK) {
 #if defined(PCBSKY9X)
           sdAvailableAudioFiles = 0;
@@ -777,10 +769,11 @@ void menuGeneralVersion(uint8_t event)
   lcd_putsLeft(4*FH, stamp3);
   lcd_putsLeft(5*FH, stamp4);
 #if defined(PCBSKY9X)
-  if (Coproc_valid!=1) {
+  if (Coproc_valid != 1) {
      lcd_putsLeft(6*FH, PSTR("CoPr:")); 
      lcd_outdez8(10*FW, 6*FH, Coproc_read);
-  } else {
+  }
+  else {
      lcd_putsLeft(6*FH, PSTR("CoPr: ---"));
   }
 #endif  
@@ -883,7 +876,7 @@ void menuGeneralDiagAna(uint8_t event)
 #endif
 
 #if defined(PCBSKY9X)
-  lcd_putsLeft(7*FH, PSTR("Temp. Calib"));
+  lcd_putsLeft(7*FH, STR_TEMP_CALIB);
   putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH, getTemperature(), UNIT_DEGREES, (m_posVert==3 ? INVERS : 0)) ;
   if (m_posVert==3) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
@@ -898,7 +891,7 @@ enum menuGeneralHwItems {
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
 void menuGeneralHardware(uint8_t event)
 {
-  MENU(PSTR("Hardware"), menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, (uint8_t)-1, 0});
+  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0});
 
   uint8_t sub = m_posVert - 1;
 
@@ -910,8 +903,7 @@ void menuGeneralHardware(uint8_t event)
 
     switch(k) {
       case ITEM_SETUP_HW_OPTREX_DISPLAY:
-        // TODO remove STR_OPTREX_DISPLAY + translations here
-        g_eeGeneral.optrexDisplay = selectMenuItem(GENERAL_HW_PARAM_OFS, y, PSTR("LCD"), PSTR("\006NormalOptrex"), g_eeGeneral.optrexDisplay, 0, 1, attr, event);
+        g_eeGeneral.optrexDisplay = selectMenuItem(GENERAL_HW_PARAM_OFS, y, STR_LCD, STR_VLCD, g_eeGeneral.optrexDisplay, 0, 1, attr, event);
         break;
     }
   }

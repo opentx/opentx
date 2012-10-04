@@ -32,6 +32,9 @@
 #define LEN_DATETIME     "\005"
 #define TR_DATETIME      "DATE:""HEURE"
 
+#define LEN_VLCD         "\006"
+#define TR_VLCD          "NormalOptrex"
+
 #define LEN_VTRIMINC     "\006"
 #define TR_VTRIMINC      "Expo  ""ExFin ""Fin   ""Moyen ""Gros  "
 
@@ -410,7 +413,7 @@
 #define TR_SWITCHWARN    "INTERS"
 #define TR_INVERT_THR    "Inverser Gaz?"
 #define TR_SPEAKER_VOLUME      "Volume haut-p."
-#define TR_OPTREX_DISPLAY      "Afficheur Optrex"
+#define TR_LCD                 "Afficheur"
 #define TR_BRIGHTNESS          "Luminosit\200"
 #define TR_CPU_TEMP            "Temp. CPU\007>"
 #define TR_CPU_CURRENT         "Courant\011>"
@@ -436,3 +439,14 @@
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Formatter"
 #define TR_NA                  "N/D"
+#define TR_HARDWARE            "HARDWARE"
+#define TR_FORMATTING          "Formatting..."
+#define TR_TEMP_CALIB          "Temp. Calib"
+#define TR_TIME                "Time"
+#define TR_BAUDRATE            "BT Baudrate"
+#define TR_SD_INFO_TITLE       "SD INFO"
+#define TR_SD_TYPE             "Type:"
+#define TR_SD_SPEED            "Speed:"
+#define TR_SD_SECTORS          "Sectors:"
+#define TR_SD_SIZE             "Size:"
+#define TR_CURVE_TYPE          "Type"

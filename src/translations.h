@@ -129,6 +129,9 @@ extern const pm_char STR_OPEN9X[];
 #if defined(PCBGRUVIN9X) || defined (PCBSKY9X) 
 #define OFS_DATETIME   (OFS_ENDDSM2)
 #endif
+#if defined(PCBSKY9X)
+#define OFS_VLCD       (OFS_DATETIME + sizeof(TR_DATETIME))
+#endif
 
 #define STR_OFFON      (STR_OPEN9X + OFS_OFFON)
 #define STR_MMMINV     (STR_OPEN9X + OFS_MMMINV)
@@ -192,6 +195,10 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
 #define STR_DATETIME   (STR_OPEN9X + OFS_DATETIME)
+#endif
+
+#if defined(PCBSKY9X)
+#define STR_VLCD       (STR_OPEN9X + OFS_VLCD)
 #endif
 
 // The 0-terminated-strings
@@ -418,7 +425,7 @@ extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
 
 extern const pm_char STR_SPEAKER_VOLUME[];
-extern const pm_char STR_OPTREX_DISPLAY[];
+extern const pm_char STR_LCD[];
 extern const pm_char STR_BRIGHTNESS[];
 extern const pm_char STR_CPU_TEMP[];
 extern const pm_char STR_CPU_CURRENT[];
@@ -444,7 +451,17 @@ extern const pm_char STR_REMOVED[];
 extern const pm_char STR_SD_INFO[];
 extern const pm_char STR_SD_FORMAT[];
 extern const pm_char STR_NA[];
-
+extern const pm_char STR_HARDWARE[];
+extern const pm_char STR_FORMATTING[];
+extern const pm_char STR_TEMP_CALIB[];
+extern const pm_char STR_TIME[];
+extern const pm_char STR_BAUDRATE[];
+extern const pm_char STR_SD_INFO_TITLE[];
+extern const pm_char STR_SD_TYPE[];
+extern const pm_char STR_SD_SPEED[];
+extern const pm_char STR_SD_SECTORS[];
+extern const pm_char STR_SD_SIZE[];
+extern const pm_char STR_CURVE_TYPE[];
 
 #if defined(VOICE)
 PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att);

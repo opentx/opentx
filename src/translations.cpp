@@ -90,6 +90,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #if defined(PCBGRUVIN9X) || defined (PCBSKY9X)
     ISTR(DATETIME)
 #endif
+#if defined(PCBSKY9X)
+    ISTR(VLCD)
+#endif
     ;
 
 // The 0-terminated-strings
@@ -337,7 +340,7 @@ const pm_char STR_ALARMSWARN[] PROGMEM = TR_ALARMSWARN;
 const pm_char STR_SWITCHWARN[] PROGMEM = TR_SWITCHWARN;
 
 const pm_char STR_SPEAKER_VOLUME[] PROGMEM = TR_SPEAKER_VOLUME;
-const pm_char STR_OPTREX_DISPLAY[] PROGMEM = TR_OPTREX_DISPLAY;
+const pm_char STR_LCD[] PROGMEM = TR_LCD;
 const pm_char STR_BRIGHTNESS[] PROGMEM = TR_BRIGHTNESS;
 const pm_char STR_CPU_TEMP[] PROGMEM = TR_CPU_TEMP;
 const pm_char STR_CPU_CURRENT[] PROGMEM = TR_CPU_CURRENT;
@@ -363,6 +366,17 @@ const pm_char STR_SD_INFO[] PROGMEM = TR_SD_INFO;
 const pm_char STR_SD_FORMAT[] PROGMEM = TR_SD_FORMAT;
 const pm_char STR_REMOVED[] PROGMEM = TR_REMOVED;
 const pm_char STR_NA[] PROGMEM = TR_NA;
+const pm_char STR_HARDWARE[] PROGMEM = TR_HARDWARE;
+const pm_char STR_FORMATTING[] PROGMEM = TR_FORMATTING;
+const pm_char STR_TEMP_CALIB[] PROGMEM = TR_TEMP_CALIB;
+const pm_char STR_TIME[] PROGMEM = TR_TIME;
+const pm_char STR_BAUDRATE[] PROGMEM = TR_BAUDRATE;
+const pm_char STR_SD_INFO_TITLE[] PROGMEM = TR_SD_INFO_TITLE;
+const pm_char STR_SD_TYPE[] PROGMEM = TR_SD_TYPE;
+const pm_char STR_SD_SPEED[] PROGMEM = TR_SD_SPEED;
+const pm_char STR_SD_SECTORS[] PROGMEM = TR_SD_SECTORS;
+const pm_char STR_SD_SIZE[] PROGMEM = TR_SD_SIZE;
+const pm_char STR_CURVE_TYPE[] PROGMEM = TR_CURVE_TYPE;
 
 const pm_uchar font[] PROGMEM = {
 #include "font.lbm"

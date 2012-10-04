@@ -3171,15 +3171,47 @@ void stack_paint()
 {
   for (uint16_t i=0; i<MENUS_STACK_SIZE; i++)
     menusStack[i] = 0x55555555;
+  for (uint16_t i=0; i<MIXER_STACK_SIZE; i++)
+    mixerStack[i] = 0x55555555;
+  for (uint16_t i=0; i<AUDIO_STACK_SIZE; i++)
+    audioStack[i] = 0x55555555;
 }
 
-uint16_t stack_free()
+uint16_t stack_free(uint8_t tid)
+{
+  OS_STK *stack;
+  uint16_t size;
+
+  switch(tid) {
+    case 1:
+      stack = mixerStack;
+      size = MIXER_STACK_SIZE;
+      break;
+    case 2:
+      stack = audioStack;
+      size = AUDIO_STACK_SIZE;
+      break;
+    default:
+      stack = menusStack;
+      size = MENUS_STACK_SIZE;
+      break;
+  }
+
+  uint16_t i=0;
+  for (; i<size; i++)
+    if (stack[i] != 0x55555555)
+      return i;
+  return i;
+}
+
+uint16_t mixer_stack_free()
 {
   for (uint16_t i=0; i<MENUS_STACK_SIZE; i++)
     if (menusStack[i] != 0x55555555)
       return i;
   return MENUS_STACK_SIZE;
 }
+
 #else
 extern unsigned char __bss_end ;
 #define STACKPTR     _SFR_IO16(0x3D)

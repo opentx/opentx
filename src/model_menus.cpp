@@ -1228,7 +1228,7 @@ void menuModelCurveOne(uint8_t event)
       break;
   }
 
-  lcd_putsLeft(7*FH, PSTR("Type"));
+  lcd_putsLeft(7*FH, STR_CURVE_TYPE);
   uint8_t attr = (s_editMode <= 0 ? INVERS : 0);
   lcd_outdezAtt(5*FW-2, 7*FH, crv.points, LEFT|attr);
   lcd_putsAtt(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);

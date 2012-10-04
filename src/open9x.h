@@ -85,6 +85,12 @@
 #define IF_FRSKY(x)
 #endif
 
+#if defined(SDCARD)
+#define IF_SDCARD(x) x,
+#else
+#define IF_SDCARD(x)
+#endif
+
 #if defined(ROTARY_ENCODERS)
 #define IF_ROTARY_ENCODERS(x) x,
 #else
@@ -725,7 +731,11 @@ static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 uint16_t getTmr16KHz();
 #endif
 
+#if defined(PCBSKY9X)
+uint16_t stack_free(uint8_t tid);
+#else
 uint16_t stack_free();
+#endif
 
 #if defined(PCBSTD) && !defined(M128)
 void memclear(void *ptr, uint8_t size);

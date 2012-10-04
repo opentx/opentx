@@ -123,6 +123,7 @@ void menuStatisticsDebug(uint8_t event)
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 1*FH, getCurrent(), UNIT_MILLIAMPS, 0);
   uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
   putsTelemetryValue(20*FW+2, 1*FH, Current_max*10*current_scale/8192, UNIT_RAW, 0);
+
   lcd_putsLeft(2*FH, STR_CPU_MAH);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
   putsTime(17*FW, 2*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
@@ -130,6 +131,7 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(3*FH, STR_CPU_TEMP);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_DEGREES, 0);
   putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
+
   lcd_putsLeft(4*FH, STR_COPROC_TEMP);
   if (Coproc_read > 2)
     putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, Coproc_temp, UNIT_DEGREES, 0);
@@ -139,10 +141,16 @@ void menuStatisticsDebug(uint8_t event)
     putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_DEGREES, 0);
   else
     lcd_puts(18*FW+2, 4*FH, PSTR("---"));
+
   lcd_putsLeft(5*FH, STR_TMAINMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (g_timeMainMax)/20, PREC2);
+
   lcd_putsLeft(6*FH, STR_FREESTACKMINB);
-  lcd_outdezAtt(14*FW, 6*FH, stack_free(), UNSIGN) ;
+  lcd_outdezAtt(13*FW, 6*FH, stack_free(0), UNSIGN);
+  lcd_putc(13*FW, 6*FH, '/');
+  lcd_outdezAtt(13*FW+FWNUM, 6*FH, stack_free(1), UNSIGN|LEFT);
+  lcd_putc(lcdLastPos, 6*FH, '/');
+  lcd_outdezAtt(lcdLastPos+FWNUM, 6*FH, stack_free(2), UNSIGN|LEFT);
 #else
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
   lcd_outdez8(MENU_DEBUG_COL_OFS , 1*FH, g_tmr1Latency_max/2 );
