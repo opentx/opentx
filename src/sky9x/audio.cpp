@@ -161,10 +161,6 @@ extern uint16_t Sine_values[];
 
 #define CODEC_ID_PCM_S16LE  1
 #define CODEC_ID_PCM_ALAW   6
-uint8_t pcmCodec;
-uint32_t pcmFreq = 8000;
-uint8_t backgroundCodec;
-uint32_t backgroundFreq = 8000;
 
 #ifndef SIMU
 void audioTask(void* pdata)
@@ -189,128 +185,127 @@ uint16_t wavSamplesArray[3*WAV_BUFFER_SIZE];
 uint16_t * wavSamplesBuffer = &wavSamplesArray[0];
 uint16_t * nextAudioData = NULL;
 uint16_t nextAudioSize = 0;
-bool playingBackground = false;
+
+#if defined(SDCARD) && !defined(SIMU)
+void AudioQueue::sdWakeup(AudioContext & context)
+{
+  if (!nextAudioData) {
+    AudioFragment & fragment = context.fragment;
+    FRESULT result = FR_OK;
+    UINT read = 0;
+    if (fragment.file[1]) {
+      result = f_open(&context.wavFile, fragment.file, FA_OPEN_EXISTING | FA_READ);
+      fragment.file[1] = 0;
+      if (result == FR_OK) {
+        result = f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, WAV_HEADER_SIZE, &read);
+        if (result == FR_OK && read == WAV_HEADER_SIZE && !memcmp(wavSamplesBuffer, "RIFF", 4)) {
+          context.pcmCodec = wavSamplesBuffer[10];
+          context.pcmFreq = wavSamplesBuffer[12];
+          if (context.pcmCodec != CODEC_ID_PCM_S16LE) {
+            result = f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, 12, &read);
+          }
+        }
+        else {
+          result = FR_DENIED;
+        }
+      }
+    }
+
+    read = 0;
+    uint16_t bufsize = (context.pcmCodec == CODEC_ID_PCM_S16LE ? WAV_BUFFER_SIZE * sizeof(uint16_t) : WAV_BUFFER_SIZE);
+    if (result == FR_OK) {
+      result = f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, bufsize, &read);
+    }
+
+    if (result != FR_OK) {
+      toneStop();
+      memset(&fragment, 0, sizeof(fragment));
+      f_close(&context.wavFile);
+      CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 1000) / context.pcmFreq, 0);
+      CoStartTmr(audioTimer);
+      CoClearFlag(audioFlag);
+      state = AUDIO_RESUMING;
+    }
+    else {
+      if (read != bufsize) {
+        memset(&fragment, 0, sizeof(fragment));
+        f_close(&context.wavFile);
+      }
+
+      setFrequency(context.pcmFreq);
+
+      if (context.pcmCodec == CODEC_ID_PCM_S16LE) {
+        read /= 2;
+        uint32_t i = 0;
+        for (; i < read; i++)
+          wavSamplesBuffer[i] = ((uint16_t) 0x8000 + ((int16_t) (wavSamplesBuffer[i]))) >> 4;
+        for (; i < WAV_BUFFER_SIZE; i++)
+          wavSamplesBuffer[i] = 0x8000;
+      }
+      else if (context.pcmCodec == CODEC_ID_PCM_ALAW) {
+        int32_t i;
+        for (i = read - 1; i >= 0; i--)
+          wavSamplesBuffer[i] = alawTable[((uint8_t *) wavSamplesBuffer)[i]];
+        for (i = read; i < WAV_BUFFER_SIZE; i++)
+          wavSamplesBuffer[i] = 0x8000;
+      }
+
+      read /= 2;
+      register Dacc *dacptr = DACC;
+
+      if (read) {
+        state = AUDIO_PLAYING_WAV;
+
+        if (dacptr->DACC_ISR & DACC_ISR_TXBUFE) {
+          dacptr->DACC_TPR = CONVERT_PTR(wavSamplesBuffer);
+          dacptr->DACC_TCR = read;
+          CoSetFlag(audioFlag);
+        }
+        else if (dacptr->DACC_TNCR == 0) {
+          dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
+          dacptr->DACC_TNCR = read;
+          CoSetFlag(audioFlag);
+        }
+        else {
+          nextAudioSize = read;
+          nextAudioData = wavSamplesBuffer;
+          toneStart();
+          CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 500) / context.pcmFreq, 0);
+          CoStartTmr(audioTimer);
+        }
+
+        wavSamplesBuffer += WAV_BUFFER_SIZE;
+        if (wavSamplesBuffer >= wavSamplesArray + 3 * WAV_BUFFER_SIZE)
+          wavSamplesBuffer = wavSamplesArray;
+      }
+      else {
+        state = AUDIO_RESUMING;
+        CoSetFlag(audioFlag);
+      }
+    }
+  }
+  else {
+    CoSetTmrCnt(audioTimer, 5/*10ms*/, 0);
+    CoStartTmr(audioTimer);
+  }
+}
+#endif
 
 void AudioQueue::wakeup()
 {
-#if defined(SDCARD) && !defined(SIMU)
-  static FIL wavFile;
-  static FIL backgroundFile;
-#endif
-
-  bool lv_playingBackground = false;
+  AudioFragment & fragment = currentContext.fragment;
 
   if (prioIdx >= 0) {
-    memset(&current, 0, sizeof(current));
-    background.duration = 0;
+    memset(&fragment, 0, sizeof(fragment));
   }
 
 #if defined(SDCARD) && !defined(SIMU)
-  if (current.file[0]) {
-    if (!nextAudioData || DACC->DACC_ISR & DACC_ISR_TXBUFE) {
-      FRESULT result = FR_OK;
-      UINT read = 0;
-      if (current.file[1]) {
-        result = f_open(&wavFile, current.file, FA_OPEN_EXISTING | FA_READ);
-        current.file[1] = 0;
-        if (result == FR_OK) {
-          result = f_read(&wavFile, (uint8_t *) wavSamplesBuffer,
-              WAV_HEADER_SIZE, &read);
-          if (result == FR_OK && read == WAV_HEADER_SIZE
-              && !memcmp(wavSamplesBuffer, "RIFF", 4)) {
-            pcmCodec = wavSamplesBuffer[10];
-            pcmFreq = wavSamplesBuffer[12];
-            if (pcmCodec != CODEC_ID_PCM_S16LE) {
-              result = f_read(&wavFile, (uint8_t *) wavSamplesBuffer, 12,
-                  &read);
-            }
-            setFrequency(pcmFreq);
-          }
-          else {
-            result = FR_DENIED;
-          }
-        }
-      }
-
-      read = 0;
-      uint16_t bufsize = (pcmCodec == CODEC_ID_PCM_S16LE ? WAV_BUFFER_SIZE * sizeof(uint16_t) : WAV_BUFFER_SIZE);
-      if (result == FR_OK) {
-        result = f_read(&wavFile, (uint8_t *) wavSamplesBuffer, bufsize, &read);
-      }
-
-      if (result != FR_OK) {
-        toneStop();
-        current.file[0] = 0;
-        f_close(&wavFile);
-        CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 1000) / pcmFreq, 0);
-        CoClearFlag(audioFlag);
-        CoStartTmr(audioTimer);
-        state = AUDIO_RESUMING;
-      }
-      else {
-        if (read != bufsize) {
-          current.file[0] = 0;
-          f_close(&wavFile);
-        }
-
-        if (pcmCodec == CODEC_ID_PCM_S16LE) {
-          read /= 2;
-          uint32_t i = 0;
-          for (; i < read; i++)
-            wavSamplesBuffer[i] = ((uint16_t) 0x8000 + ((int16_t) (wavSamplesBuffer[i]))) >> 4;
-          for (; i < WAV_BUFFER_SIZE; i++)
-            wavSamplesBuffer[i] = 0x8000;
-        }
-        else if (pcmCodec == CODEC_ID_PCM_ALAW) {
-          int32_t i;
-          for (i = read - 1; i >= 0; i--)
-            wavSamplesBuffer[i] = alawTable[((uint8_t *) wavSamplesBuffer)[i]];
-          for (i = read; i < WAV_BUFFER_SIZE; i++)
-            wavSamplesBuffer[i] = 0x8000;
-        }
-
-        read /= 2;
-        register Dacc *dacptr = DACC;
-
-        if (read) {
-          state = AUDIO_PLAYING_WAV;
-          if (dacptr->DACC_ISR & DACC_ISR_TXBUFE) {
-            dacptr->DACC_TPR = CONVERT_PTR(wavSamplesBuffer);
-            dacptr->DACC_TCR = read;
-            nextAudioData = NULL;
-            CoSetFlag(audioFlag);
-          }
-          else if (dacptr->DACC_TNCR == 0) {
-            dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
-            dacptr->DACC_TNCR = read;
-            nextAudioData = NULL;
-            CoSetFlag(audioFlag);
-          }
-          else {
-            nextAudioSize = read;
-            nextAudioData = wavSamplesBuffer;
-            toneStart();
-            CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 500) / pcmFreq, 0);
-            CoStartTmr(audioTimer);
-          }
-
-          wavSamplesBuffer += WAV_BUFFER_SIZE;
-          if (wavSamplesBuffer >= wavSamplesArray + 3 * WAV_BUFFER_SIZE)
-            wavSamplesBuffer = wavSamplesArray;
-        }
-        else {
-          CoSetFlag(audioFlag);
-        }
-      }
-    }
-    else {
-      CoSetTmrCnt(audioTimer, 5/*10ms*/, 0);
-      CoStartTmr(audioTimer);
-    }
+  if (fragment.file[0]) {
+    sdWakeup(currentContext);
   }
   else
 #endif
-  if (current.duration > 0) {
+  if (fragment.duration > 0) {
     if (state != AUDIO_PLAYING_TONE) {
       state = AUDIO_PLAYING_TONE;
 
@@ -321,30 +316,35 @@ void AudioQueue::wakeup()
       dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
     }
 
-    setFrequency(current.freq * 6100 / 4);
+    setFrequency(fragment.freq * 6100 / 4);
 
-    if (current.freqIncr) {
+    if (fragment.freqIncr) {
       CoSetTmrCnt(audioTimer, 2, 0);
-      current.freq += current.freqIncr;
-      current.duration--;
+      fragment.freq += fragment.freqIncr;
+      fragment.duration--;
     }
     else {
-      CoSetTmrCnt(audioTimer, current.duration*2, 0);
-      current.duration = 0;
+      CoSetTmrCnt(audioTimer, fragment.duration*2, 0);
+      fragment.duration = 0;
     }
     toneStart();
     CoClearFlag(audioFlag);
     CoStartTmr(audioTimer);
   }
-  else if (current.pause > 0) {
+  else if (fragment.pause > 0) {
     state = AUDIO_PLAYING_TONE;
-    CoSetTmrCnt(audioTimer, current.pause*2, 0);
-    current.pause = 0;
+    CoSetTmrCnt(audioTimer, fragment.pause*2, 0);
+    fragment.pause = 0;
     toneStop();
     CoClearFlag(audioFlag);
     CoStartTmr(audioTimer);
   }
-  else if (ridx == widx && prioIdx < 0 && background.duration > 0) {
+#if defined(SDCARD) && !defined(SIMU)
+  else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.file[0]) {
+    sdWakeup(backgroundContext);
+  }
+#endif
+  else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.duration > 0) {
     if (state != AUDIO_PLAYING_TONE) {
       state = AUDIO_PLAYING_TONE;
       register Dacc *dacptr = DACC;
@@ -353,120 +353,13 @@ void AudioQueue::wakeup()
       dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
       dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
     }
-    CoSetTmrCnt(audioTimer, background.duration*2, 0);
-    background.duration = 0;
-    setFrequency(background.freq * 6100 / 4);
+    CoSetTmrCnt(audioTimer, backgroundContext.fragment.duration*2, 0);
+    backgroundContext.fragment.duration = 0;
+    setFrequency(backgroundContext.fragment.freq * 6100 / 4);
     toneStart();
     CoClearFlag(audioFlag);
     CoStartTmr(audioTimer);
   }
-#if defined(SDCARD) && !defined(SIMU)
-  else if (ridx == widx && prioIdx < 0 && background.file[0]) {
-    if (!nextAudioData || DACC->DACC_ISR & DACC_ISR_TXBUFE) {
-      FRESULT result = FR_OK;
-      UINT read = 0;
-      if (background.file[1]) {
-        f_close(&backgroundFile);
-        result = f_open(&backgroundFile, background.file, FA_OPEN_EXISTING | FA_READ);
-        background.file[1] = 0;
-        if (result == FR_OK) {
-          result = f_read(&backgroundFile, (uint8_t *)wavSamplesBuffer, WAV_HEADER_SIZE, &read);
-          if (result == FR_OK && read == WAV_HEADER_SIZE && !memcmp(wavSamplesBuffer, "RIFF", 4)) {
-            backgroundCodec = wavSamplesBuffer[10];
-            backgroundFreq = wavSamplesBuffer[12];
-            if (backgroundCodec != CODEC_ID_PCM_S16LE) {
-              result = f_read(&backgroundFile, (uint8_t *)wavSamplesBuffer, 12, &read);
-            }
-            setFrequency(backgroundFreq);
-          }
-          else {
-            result = FR_DENIED;
-          }
-        }
-      }
-      else if (!playingBackground) {
-        setFrequency(backgroundFreq);
-      }
-
-      lv_playingBackground = true;
-
-      read = 0;
-      uint16_t bufsize = (backgroundCodec == CODEC_ID_PCM_S16LE ? WAV_BUFFER_SIZE * sizeof(uint16_t) : WAV_BUFFER_SIZE);
-      if (result == FR_OK) {
-        result = f_read(&backgroundFile, (uint8_t *)wavSamplesBuffer, bufsize, &read);
-      }
-
-      if (result != FR_OK) {
-        toneStop();
-        background.file[0] = 0;
-        f_close(&backgroundFile);
-        CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 1000) / backgroundFreq, 0);
-        CoClearFlag(audioFlag);
-        CoStartTmr(audioTimer);
-        state = AUDIO_RESUMING;
-      }
-      else {
-        if (read != bufsize) {
-          background.file[0] = 0;
-          f_close(&backgroundFile);
-        }
-
-        if (backgroundCodec == CODEC_ID_PCM_S16LE) {
-          read /= 2;
-          uint32_t i = 0;
-          for (; i < read; i++)
-            wavSamplesBuffer[i] = ((uint16_t) 0x8000 + ((int16_t) (wavSamplesBuffer[i]))) >> 4;
-          for (; i < WAV_BUFFER_SIZE; i++)
-            wavSamplesBuffer[i] = 0x8000;
-        }
-        else if (backgroundCodec == CODEC_ID_PCM_ALAW) {
-          int32_t i;
-          for (i = read - 1; i >= 0; i--)
-            wavSamplesBuffer[i] = alawTable[((uint8_t *) wavSamplesBuffer)[i]];
-          for (i = read; i < WAV_BUFFER_SIZE; i++)
-            wavSamplesBuffer[i] = 0x8000;
-        }
-
-        read /= 2;
-        register Dacc *dacptr = DACC;
-
-        if (read) {
-          state = AUDIO_PLAYING_WAV;
-          if (dacptr->DACC_ISR & DACC_ISR_TXBUFE) {
-            dacptr->DACC_TPR = CONVERT_PTR(wavSamplesBuffer);
-            dacptr->DACC_TCR = read;
-            nextAudioData = NULL;
-            CoSetFlag(audioFlag);
-          }
-          else if (dacptr->DACC_TNCR == 0) {
-            dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
-            dacptr->DACC_TNCR = read;
-            nextAudioData = NULL;
-            CoSetFlag(audioFlag);
-          }
-          else {
-            nextAudioSize = read;
-            nextAudioData = wavSamplesBuffer;
-            toneStart();
-            CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 500) / pcmFreq, 0);
-            CoStartTmr(audioTimer);
-          }
-
-          wavSamplesBuffer += WAV_BUFFER_SIZE;
-          if (wavSamplesBuffer >= wavSamplesArray + 3 * WAV_BUFFER_SIZE)
-            wavSamplesBuffer = wavSamplesArray;
-        }
-        else {
-          CoSetFlag(audioFlag);
-        }
-      }
-    }
-    else {
-      CoSetTmrCnt(audioTimer, 5/*10ms*/, 0);
-      CoStartTmr(audioTimer);
-    }
-  }
-#endif
   else {
     CoEnterMutexSection(audioMutex);
 
@@ -477,10 +370,9 @@ void AudioQueue::wakeup()
         toneStop();
         CoClearFlag(audioFlag);
         nextAudioData = NULL;
-        memset(&current, 0, sizeof(current));
         if (state == AUDIO_PLAYING_WAV) {
           state = AUDIO_RESUMING;
-          CoSetTmrCnt(audioTimer, 1/*2ms*/ + (WAV_BUFFER_SIZE * 1000) / pcmFreq, 0);
+          CoSetTmrCnt(audioTimer, 1/*2ms*/ + (WAV_BUFFER_SIZE * 1000) / getFrequency(), 0);
           CoStartTmr(audioTimer);
         }
         else if (state == AUDIO_PLAYING_TONE) {
@@ -496,20 +388,19 @@ void AudioQueue::wakeup()
         CoSetFlag(audioFlag);
       }
 
-      memcpy(&current, &fragments[ridx], sizeof(current));
+      memcpy(&fragment, &fragments[ridx], sizeof(fragment));
       if (!fragments[ridx].repeat--) {
         ridx = (ridx + 1) % AUDIO_QUEUE_LENGTH;
       }
     }
     else {
+      memset(&fragment, 0, sizeof(fragment));
       state = AUDIO_SLEEPING;
       toneStop();
     }
 
     CoLeaveMutexSection(audioMutex);
   }
-
-  playingBackground = lv_playingBackground;
 }
 
 inline uint8_t getToneLength(uint8_t tLen)
@@ -531,6 +422,9 @@ void AudioQueue::pause(uint8_t tLen)
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
+  if (currentContext.fragment.id == id || backgroundContext.fragment.id == id)
+    return true;
+
   uint8_t i = ridx;
   while (i != widx) {
     AudioFragment & fragment = fragments[i];
@@ -538,10 +432,6 @@ bool AudioQueue::isPlaying(uint8_t id)
       return true;
     i = (i + 1) % AUDIO_QUEUE_LENGTH;
   }
-
-  if (background.id == id)
-    return true;
-
   return false;
 }
 
@@ -554,9 +444,9 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
   CoEnterMutexSection(audioMutex);
 
   if (tFlags & PLAY_BACKGROUND) {
-    background.freq = tFreq * 2;
-    background.duration = tLen;
-    background.pause = tPause;
+    backgroundContext.fragment.freq = tFreq * 2;
+    backgroundContext.fragment.duration = tLen;
+    backgroundContext.fragment.pause = tPause;
     if (!busy()) {
       state = AUDIO_RESUMING;
       CoSetFlag(audioFlag);
@@ -602,9 +492,9 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   CoEnterMutexSection(audioMutex);
 
   if (flags & PLAY_BACKGROUND) {
-    memset(&background, 0, sizeof(background));
-    strcpy(background.file, filename); // TODO strncpy
-    background.id = id;
+    memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));
+    strcpy(backgroundContext.fragment.file, filename); // TODO strncpy
+    backgroundContext.fragment.id = id;
     if (!busy()) {
       state = AUDIO_RESUMING;
       CoSetFlag(audioFlag);
@@ -635,8 +525,8 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 void AudioQueue::stopPlay(uint8_t id)
 {
   // For the moment it's only needed to stop the background music
-  if (background.id == id) {
-    memset(&background, 0, sizeof(background));
+  if (backgroundContext.fragment.id == id) {
+    memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));
   }
 }
 
@@ -674,7 +564,7 @@ void audioEvent(uint8_t e, uint8_t f)
     }
     else
 #endif
-    if (e < AU_FRSKY_FIRST || !audioQueue.busy()) {
+    if (e < AU_FRSKY_FIRST || audioQueue.empty()) {
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:

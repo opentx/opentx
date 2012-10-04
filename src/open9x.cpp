@@ -1902,7 +1902,7 @@ void evalFunctions()
             if (sd->func == FUNC_INSTANT_TRIM) {
               if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
-                || g_menuStack[0] == menuProcFrsky
+                || g_menuStack[0] == menuTelemetryFrsky
 #endif
                 )
                 instantTrim();
@@ -2731,7 +2731,7 @@ void perMain()
   if (counter-- == 0) {
     counter = 10;
 #else
-  if ((tmr10ms & 0x1f) == 2 /*every 10ms*32*/ || g_menuStack[g_menuStackPtr] == menuProcDiagAna) {
+  if ((tmr10ms & 0x1f) == 2 /*every 10ms*32*/ || g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
 #endif
 
 #if defined(PCBSKY9X)
@@ -2752,7 +2752,7 @@ void perMain()
     s_batCheck += 32;
     s_batSum += instant_vbat;
 
-    if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] == menuProcDiagAna) {
+    if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
       g_vbat100mV = instant_vbat;
       s_batSum = 0;
       s_batCheck = 0;
@@ -3391,7 +3391,7 @@ int main(void)
   stack_paint();
 
   g_menuStack[0] = menuMainView;
-  g_menuStack[1] = menuProcModelSelect;
+  g_menuStack[1] = menuModelSelect;
 
   lcdSetRefVolt(25);
 

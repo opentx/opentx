@@ -25,8 +25,6 @@ extern void putsRotarySwPos(uint8_t x, uint8_t y, uint8_t idx1, uint8_t att);
 extern void setRotarySwIdx(int8_t idx);
 extern void setRotarySwDisplay(int8_t idx);
 extern void animRotarySw(uint8_t x);
-extern void menuProcRotarySwitches(uint8_t event);
-
 
 // Control mode define from arducoper
 enum CONTROL_MODE {

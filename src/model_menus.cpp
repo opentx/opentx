@@ -62,50 +62,50 @@ enum EnumTabModel {
 #endif
 };
 
-void menuProcModelSelect(uint8_t event);
-void menuProcModel(uint8_t event);
+void menuModelSelect(uint8_t event);
+void menuModelSetup(uint8_t event);
 #ifdef HELI
-void menuProcHeli(uint8_t event);
+void menuModelHeli(uint8_t event);
 #endif
 #ifdef FLIGHT_PHASES
-void menuProcPhasesAll(uint8_t event);
+void menuModelPhasesAll(uint8_t event);
 #endif
-void menuProcExposAll(uint8_t event);
-void menuProcMixAll(uint8_t event);
-void menuProcLimits(uint8_t event);
-void menuProcCurvesAll(uint8_t event);
-void menuProcCustomSwitches(uint8_t event);
-void menuProcFunctionSwitches(uint8_t event);
+void menuModelExposAll(uint8_t event);
+void menuModelMixAll(uint8_t event);
+void menuModelLimits(uint8_t event);
+void menuModelCurvesAll(uint8_t event);
+void menuModelCustomSwitches(uint8_t event);
+void menuModelFunctionSwitches(uint8_t event);
 #ifdef FRSKY
-void menuProcTelemetry(uint8_t event);
+void menuModelTelemetry(uint8_t event);
 #endif
 #ifdef TEMPLATES
-void menuProcTemplates(uint8_t event);
+void menuModelTemplates(uint8_t event);
 #endif
-void menuProcExpoOne(uint8_t event);
+void menuModelExpoOne(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
-  menuProcModelSelect,
-  menuProcModel,
+  menuModelSelect,
+  menuModelSetup,
 #ifdef HELI
-  menuProcHeli,
+  menuModelHeli,
 #endif
 #ifdef FLIGHT_PHASES
-  menuProcPhasesAll,
+  menuModelPhasesAll,
 #endif
-  menuProcExposAll,
-  menuProcMixAll,
-  menuProcLimits,
+  menuModelExposAll,
+  menuModelMixAll,
+  menuModelLimits,
 #ifdef CURVES
-  menuProcCurvesAll,
+  menuModelCurvesAll,
 #endif
-  menuProcCustomSwitches,
-  menuProcFunctionSwitches,
+  menuModelCustomSwitches,
+  menuModelFunctionSwitches,
 #ifdef FRSKY
-  menuProcTelemetry,
+  menuModelTelemetry,
 #endif
 #ifdef TEMPLATES
-  menuProcTemplates
+  menuModelTemplates
 #endif
 };
 
@@ -183,7 +183,7 @@ bool listSdFiles(const char *path, const char *extension)
 }
 #endif
 
-void menuProcModelSelect(uint8_t event)
+void menuModelSelect(uint8_t event)
 {
   TITLE(STR_MENUMODELSEL);
 
@@ -240,7 +240,7 @@ void menuProcModelSelect(uint8_t event)
 
 #if defined(ROTARY_ENCODERS)
   if (scrollRE > 0 && s_editMode < 0) {
-    chainMenu(menuProcModel);
+    chainMenu(menuModelSetup);
     return;
   }
 #endif
@@ -352,7 +352,7 @@ void menuProcModelSelect(uint8_t event)
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
         if (sub == g_eeGeneral.currModel) {
-          chainMenu(event == EVT_KEY_FIRST(KEY_RIGHT) ? menuProcModel : menuTabModel[DIM(menuTabModel)-1]);
+          chainMenu(event == EVT_KEY_FIRST(KEY_RIGHT) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
           return;
         }
         AUDIO_WARNING2();
@@ -549,7 +549,7 @@ void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
   }
 }
 
-enum menuProcModelItems {
+enum menuModelSetupItems {
   ITEM_MODEL_NAME,
   ITEM_MODEL_TIMER1,
   ITEM_MODEL_TIMER2,
@@ -572,7 +572,7 @@ enum menuProcModelItems {
 #endif
 
 #define MODEL_PARAM_OFS (10*FW+2)
-void menuProcModel(uint8_t event)
+void menuModelSetup(uint8_t event)
 {
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
 
@@ -875,7 +875,7 @@ PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uin
   return value;
 }
 
-void menuProcPhaseOne(uint8_t event)
+void menuModelPhaseOne(uint8_t event)
 {
   PhaseData *phase = phaseaddress(s_currIdx);
   putsFlightPhase(13*FW, 0, s_currIdx+1, (getFlightPhase()==s_currIdx ? BOLD : 0));
@@ -950,7 +950,7 @@ void menuProcPhaseOne(uint8_t event)
   }
 }
 
-void menuProcPhasesAll(uint8_t event)
+void menuModelPhasesAll(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_PhasesAll, 1+MAX_PHASES+1);
 
@@ -973,7 +973,7 @@ void menuProcPhasesAll(uint8_t event)
     case EVT_KEY_FIRST(KEY_RIGHT):
       if (sub >= 0 && sub < MAX_PHASES) {
         s_currIdx = sub;
-        pushMenu(menuProcPhaseOne);
+        pushMenu(menuModelPhaseOne);
       }
       break;
   }
@@ -1042,7 +1042,7 @@ void menuProcPhasesAll(uint8_t event)
 
 #ifdef HELI
 
-enum menuProcHeliItems {
+enum menuModelHeliItems {
   ITEM_HELI_SWASHTYPE,
   ITEM_HELI_COLLECTIVE,
   ITEM_HELI_SWASHRING,
@@ -1053,7 +1053,7 @@ enum menuProcHeliItems {
 
 #define HELI_PARAM_OFS (14*FW)
 
-void menuProcHeli(uint8_t event)
+void menuModelHeli(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, 7);
 
@@ -1161,7 +1161,7 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
   return true;
 }
 
-void menuProcCurveOne(uint8_t event)
+void menuModelCurveOne(uint8_t event)
 {
   TITLE(STR_MENUCURVE);
   lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
@@ -1491,7 +1491,7 @@ enum ExposFields {
 #define EXPO_ONE_PHASES_ROW
 #endif
 
-void menuProcExpoOne(uint8_t event)
+void menuModelExpoOne(uint8_t event)
 {
   ExpoData *ed = expoaddress(s_currIdx);
   putsChnRaw(7*FW+FW/2,0,ed->chn+1,0);
@@ -1537,7 +1537,7 @@ void menuProcExpoOne(uint8_t event)
             if (ed->curveParam) ed->curveMode = MODE_CURVE;
             if (ed->curveParam>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
               s_curveChan = ed->curveParam - CURVE_BASE;
-              pushMenu(menuProcCurveOne);
+              pushMenu(menuModelCurveOne);
             }
           }
         }
@@ -1616,7 +1616,7 @@ enum MixFields {
 #define MIX_ONE_PHASES_ROW
 #endif
 
-void menuProcMixOne(uint8_t event)
+void menuModelMixOne(uint8_t event)
 {
   TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
@@ -1676,7 +1676,7 @@ void menuProcMixOne(uint8_t event)
           if (md2->curveMode==MODE_CURVE) {
             if (event==EVT_KEY_FIRST(KEY_MENU) && (curveParam<0 || curveParam>=CURVE_BASE)){
               s_curveChan = (curveParam<0 ? -curveParam-1 : curveParam-CURVE_BASE);
-              pushMenu(menuProcCurveOne);
+              pushMenu(menuModelCurveOne);
             }
             else {
               CHECK_INCDEC_MODELVAR(event, md2->curveParam, -MAX_CURVES, CURVE_BASE+MAX_CURVES-1);
@@ -1765,7 +1765,7 @@ static uint8_t s_copySrcCh;
 #define EXPO_LINE_SELECT_POS 18
 #endif
 
-void menuProcExpoMix(uint8_t expo, uint8_t _event)
+void menuModelExpoMix(uint8_t expo, uint8_t _event)
 {
   uint8_t event = _event;
   uint8_t key = (event & 0x1f);
@@ -1852,7 +1852,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event)
           if (reachExpoMixCountLimit(expo)) break;
           insertExpoMix(expo, s_currIdx);
         }
-        pushMenu(expo ? menuProcExpoOne : menuProcMixOne);
+        pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
         s_copyMode = 0;
         return;
       }
@@ -1864,7 +1864,7 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event)
         s_currCh = (expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh+1);
         if (_event == EVT_KEY_LONG(KEY_RIGHT)) s_currIdx++;
         insertExpoMix(expo, s_currIdx);
-        pushMenu(expo ? menuProcExpoOne : menuProcMixOne);
+        pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
         s_copyMode = 0;
         killEvents(_event);
         return;
@@ -2033,14 +2033,14 @@ void menuProcExpoMix(uint8_t expo, uint8_t _event)
   if (sub >= s_maxLines-1) m_posVert = s_maxLines-1;
 }
 
-void menuProcExposAll(uint8_t event)
+void menuModelExposAll(uint8_t event)
 {
-  return menuProcExpoMix(1, event);
+  return menuModelExpoMix(1, event);
 }
 
-void menuProcMixAll(uint8_t event)
+void menuModelMixAll(uint8_t event)
 {
-  return menuProcExpoMix(0, event);
+  return menuModelExpoMix(0, event);
 }
 
 bool thrOutput(uint8_t ch)
@@ -2091,7 +2091,7 @@ enum LimitsItems {
 #endif
 
 
-void menuProcLimits(uint8_t event)
+void menuModelLimits(uint8_t event)
 {
   MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, 0});
 
@@ -2252,7 +2252,7 @@ void menuProcLimits(uint8_t event)
 }
 
 #if defined(CURVES)
-void menuProcCurvesAll(uint8_t event)
+void menuModelCurvesAll(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
 
@@ -2270,7 +2270,7 @@ void menuProcCurvesAll(uint8_t event)
     case EVT_KEY_FIRST(KEY_MENU):
       if (sub >= 0) {
         s_curveChan = sub;
-        pushMenu(menuProcCurveOne);
+        pushMenu(menuModelCurveOne);
       }
       break;
   }
@@ -2299,7 +2299,7 @@ enum CustomSwitchFields {
   CSW_FIELD_COUNT
 };
 #define CSW_2ND_COLUMN (9*FW)
-void menuProcCustomSwitchOne(uint8_t event)
+void menuModelCustomSwitchOne(uint8_t event)
 {
   TITLEP(STR_MENUCUSTOMSWITCH);
   CustomSwData * cs = cswaddress(s_currIdx);
@@ -2404,7 +2404,7 @@ void menuProcCustomSwitchOne(uint8_t event)
   }
 }
 
-void menuProcCustomSwitches(uint8_t event)
+void menuModelCustomSwitches(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1);
 
@@ -2424,7 +2424,7 @@ void menuProcCustomSwitches(uint8_t event)
     case EVT_KEY_FIRST(KEY_MENU):
       if (sub >= 0) {
         s_currIdx = sub;
-        pushMenu(menuProcCustomSwitchOne);
+        pushMenu(menuModelCustomSwitchOne);
       }
       break;
   }
@@ -2470,7 +2470,7 @@ void menuProcCustomSwitches(uint8_t event)
   }
 }
 #else
-void menuProcCustomSwitches(uint8_t event)
+void menuModelCustomSwitches(uint8_t event)
 {
   MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, 2/*repeated...*/});
 
@@ -2554,7 +2554,7 @@ void menuProcCustomSwitches(uint8_t event)
 }
 #endif
 
-void menuProcFunctionSwitches(uint8_t event)
+void menuModelFunctionSwitches(uint8_t event)
 {
 #if defined(PCBSKY9X) && defined(SDCARD)
   uint8_t _event = event;
@@ -2736,7 +2736,7 @@ void menuProcFunctionSwitches(uint8_t event)
 #endif
 }
 
-enum menuProcTelemetryItems {
+enum menuModelTelemetryItems {
   ITEM_TELEMETRY_A1_LABEL,
   ITEM_TELEMETRY_A1_RANGE,
   ITEM_TELEMETRY_A1_OFFSET,
@@ -2793,7 +2793,7 @@ enum menuProcTelemetryItems {
 #define TELEM_COL2 (8*FW)
 #endif
 
-void menuProcTelemetry(uint8_t event)
+void menuModelTelemetry(uint8_t event)
 {
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES 0, 0, VARIO_LINES (uint8_t)-1, 1, 1, 1, 1, (uint8_t)-1, 2, 2, 2, 2});
 
@@ -3051,7 +3051,7 @@ void menuProcTelemetry(uint8_t event)
 #endif
 
 #ifdef TEMPLATES
-void menuProcTemplates(uint8_t event)
+void menuModelTemplates(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+TMPL_COUNT);
 

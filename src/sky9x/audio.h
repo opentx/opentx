@@ -34,6 +34,8 @@
 #ifndef audio_h
 #define audio_h
 
+#include "../FatFs/ff.h"
+
 #define AUDIO_QUEUE_LENGTH (20)
 #define BEEP_DEFAULT_FREQ  (70)
 #define BEEP_OFFSET        (10)
@@ -64,6 +66,16 @@ extern "C" void DAC_IRQHandler();
 
 extern bool playingBackground;
 
+class AudioContext {
+  public:
+    AudioFragment fragment;
+#if defined(SDCARD)
+    FIL wavFile;
+#endif
+    uint8_t pcmCodec;
+    uint32_t pcmFreq;
+};
+
 class AudioQueue {
 
   friend void audioTask(void* pdata);
@@ -90,23 +102,30 @@ class AudioQueue {
 #ifdef SIMU
       return false;
 #else
-      return (state != AUDIO_SLEEPING && !playingBackground);
+      return (state != AUDIO_SLEEPING);
 #endif
+    }
+
+    bool empty()
+    {
+      return ridx == widx;
     }
 
   protected:
 
     void wakeup();
 
+    void sdWakeup(AudioContext & context);
+
     uint8_t state;
     uint8_t ridx;
     uint8_t widx;
     int8_t prioIdx;
+
     AudioFragment fragments[AUDIO_QUEUE_LENGTH];
-    AudioFragment background; // for background music / vario
 
-    AudioFragment current;
-
+    AudioContext currentContext;
+    AudioContext backgroundContext; // for background music / vario
 };
 
 extern AudioQueue audioQueue;

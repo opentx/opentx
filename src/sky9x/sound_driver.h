@@ -42,6 +42,7 @@ extern void buzzer_on( void ) ;
 extern void buzzer_off( void ) ;
 extern void buzzer_sound( uint8_t time ) ;
 extern void setFrequency( uint32_t frequency ) ;
+extern uint32_t getFrequency();
 extern void start_timer1( void ) ;
 extern void initDac( void ) ;
 extern void end_sound( void ) ;

@@ -173,10 +173,10 @@ $GPRMC - Recommended Minimum Navigation Information
 #define WAIT_VAL_END	7
 #define READ_VALUE      8
 
-void menuProcNMEA1(uint8_t event);
-void menuProcNMEA2(uint8_t event);
-void menuProcNMEA3(uint8_t event);
-void menuProcNMEA4(uint8_t event);
+void menuTelemetryNMEA1(uint8_t event);
+void menuTelemetryNMEA2(uint8_t event);
+void menuTelemetryNMEA3(uint8_t event);
+void menuTelemetryNMEA4(uint8_t event);
 void title(char x);
 void initval(uint8_t num, uint8_t pack, uint8_t val);
 int32_t binary (char *str);
@@ -381,26 +381,26 @@ void NMEA_EnableRXD (void)
     UCSR0B |=  (1 << RXCIE0);				// enable Interrupt
 }
 
-void menuProcNMEA(uint8_t event)
+void menuTelemetryNMEA(uint8_t event)
 {
-    menuProcNMEA1(event);
+    menuTelemetryNMEA1(event);
 }
 
 // Start of NMEA menus 1-4 <<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void menuProcNMEA1(uint8_t event)
+void menuTelemetryNMEA1(uint8_t event)
 {
     switch(event)						// new event received, branch accordingly
     {
     case EVT_KEY_BREAK(KEY_LEFT):
-        chainMenu(menuProcNMEA4);
+        chainMenu(menuTelemetryNMEA4);
         break;
     case EVT_KEY_BREAK(KEY_RIGHT):
-        chainMenu(menuProcNMEA2);
+        chainMenu(menuTelemetryNMEA2);
         break;
     case EVT_KEY_LONG(KEY_UP):
         NMEA_DisableRXD();
-        chainMenu(menuProcStatistic);
+        chainMenu(menuStatisticsView);
         break;
     case EVT_KEY_LONG(KEY_DOWN):
         NMEA_DisableRXD();
@@ -494,7 +494,7 @@ void menuProcNMEA1(uint8_t event)
 
 
 
-void menuProcNMEA2(uint8_t event)
+void menuTelemetryNMEA2(uint8_t event)
 {
     static uint8_t ignore_break;
 
@@ -506,17 +506,17 @@ void menuProcNMEA2(uint8_t event)
         if (ignore_break==1)  {
 		    ignore_break=0;
                 break;}
-        chainMenu(menuProcNMEA1);
+        chainMenu(menuTelemetryNMEA1);
         break;
     case EVT_KEY_BREAK(KEY_RIGHT):
           if (ignore_break==1) {
 		     ignore_break=0;
                  break;}
-        chainMenu(menuProcNMEA3);
+        chainMenu(menuTelemetryNMEA3);
         break;
     case EVT_KEY_LONG(KEY_UP):
         NMEA_DisableRXD();
-        chainMenu(menuProcStatistic);
+        chainMenu(menuStatisticsView);
         break;
     case EVT_KEY_LONG(KEY_DOWN):
         NMEA_DisableRXD();
@@ -656,19 +656,19 @@ void menuProcNMEA2(uint8_t event)
 
 
 
-void menuProcNMEA3(uint8_t event)
+void menuTelemetryNMEA3(uint8_t event)
 {
     switch(event)
     {
     case EVT_KEY_BREAK(KEY_LEFT):
-        chainMenu(menuProcNMEA2);
+        chainMenu(menuTelemetryNMEA2);
         break;
     case EVT_KEY_BREAK(KEY_RIGHT):
-        chainMenu(menuProcNMEA4);
+        chainMenu(menuTelemetryNMEA4);
         break;
     case EVT_KEY_LONG(KEY_UP):
         NMEA_DisableRXD();
-        chainMenu(menuProcStatistic);
+        chainMenu(menuStatisticsView);
         break;
     case EVT_KEY_LONG(KEY_DOWN):
         NMEA_DisableRXD();
@@ -705,19 +705,19 @@ void menuProcNMEA3(uint8_t event)
 
 
 
-void menuProcNMEA4(uint8_t event)
+void menuTelemetryNMEA4(uint8_t event)
 {
     switch(event)						// new event received, branch accordingly
     {
     case EVT_KEY_BREAK(KEY_LEFT):
-        chainMenu(menuProcNMEA3);
+        chainMenu(menuTelemetryNMEA3);
         break;
     case EVT_KEY_BREAK(KEY_RIGHT):
-        chainMenu(menuProcNMEA1);
+        chainMenu(menuTelemetryNMEA1);
         break;
     case EVT_KEY_LONG(KEY_UP):
         NMEA_DisableRXD();
-        chainMenu(menuProcStatistic);
+        chainMenu(menuStatisticsView);
         break;
     case EVT_KEY_LONG(KEY_DOWN):
         NMEA_DisableRXD();

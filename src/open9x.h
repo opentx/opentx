@@ -1084,7 +1084,7 @@ union ReusableBuffer
 
     struct
     {
-        char mainname[42]; // used by menuProcModelSelect and for SD card archive / restore
+        char mainname[42]; // used by menuModelSelect and for SD card archive / restore
         char listnames[7][10];
         uint16_t listsizes[7];
         uint16_t eepromfree;
@@ -1095,7 +1095,7 @@ union ReusableBuffer
         int16_t midVals[7];
         int16_t loVals[7];
         int16_t hiVals[7];
-    } calib;                               // used by menuProcDiagCalib
+    } calib;                               // used by menuGeneralCalib
 
 #if defined(SDCARD)
     struct

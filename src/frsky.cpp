@@ -281,7 +281,7 @@ void parseTelemHubByte(uint8_t byte)
         // First received GPS position => Pilot GPS position
         getGpsPilotPosition();
       }
-      else if (frskyData.hub.gpsDistNeeded || g_menuStack[g_menuStackPtr] == menuProcFrsky) {
+      else if (frskyData.hub.gpsDistNeeded || g_menuStack[g_menuStackPtr] == menuTelemetryFrsky) {
         getGpsDistance();
       }
       break;
@@ -1182,7 +1182,7 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
   lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
 }
 
-void menuProcFrsky(uint8_t event)
+void menuTelemetryFrsky(uint8_t event)
 {
   switch (event) {
     case EVT_KEY_BREAK(KEY_UP):

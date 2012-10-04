@@ -70,17 +70,17 @@ inline MenuFuncP lastPopMenu()
 
 void doMainScreenGrphics();
 void menuMainView(uint8_t event);
-void menuProcDiagAna(uint8_t event);
+void menuGeneralDiagAna(uint8_t event);
 #ifdef FRSKY
-void menuProcFrsky(uint8_t event);
+void menuTelemetryFrsky(uint8_t event);
 #endif
-void menuProcSetup(uint8_t event);
-void menuProcDiagCalib(uint8_t event);
+void menuGeneralSetup(uint8_t event);
+void menuGeneralCalib(uint8_t event);
 
-void menuProcModelSelect(uint8_t event);
-void menuProcFunctionSwitches(uint8_t event);
-void menuProcStatistic(uint8_t event);
-void menuProcDebug(uint8_t event);
+void menuModelSelect(uint8_t event);
+void menuModelFunctionSwitches(uint8_t event);
+void menuStatisticsView(uint8_t event);
+void menuStatisticsDebug(uint8_t event);
 
 #if defined(ROTARY_ENCODERS)
 extern int8_t scrollRE;

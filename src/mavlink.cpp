@@ -745,7 +745,7 @@ void MAVLINK_ReqMode(uint8_t mode, uint8_t send) {
 	}
 }
 
-void menuProcMavlinkInfos(void) {
+void menuTelemetryMavlinkInfos(void) {
 
 	mav_title(PSTR("INFOS"), MAVLINK_menu);
 
@@ -788,7 +788,7 @@ void menuProcMavlinkInfos(void) {
 
 }
 
-void menuProcMavlinkGPS(void) {
+void menuTelemetryMavlinkGPS(void) {
 	mav_title(PSTR("GPS"), MAVLINK_menu);
 
 	uint8_t x1, x2, xnum, y;
@@ -847,7 +847,7 @@ void lcd_outhex2(uint8_t x, uint8_t y, uint8_t val) {
 	}
 }
 
-void menuProcMavlinkDump(uint8_t event) {
+void menuTelemetryMavlinkDump(uint8_t event) {
 	uint8_t x = 0;
 	uint8_t y = FH;
 	uint16_t count = 0;
@@ -885,7 +885,7 @@ void menuProcMavlinkDump(uint8_t event) {
 }
 #endif
 
-void menuProcMavlink(uint8_t event) {
+void menuTelemetryMavlink(uint8_t event) {
 
 	switch (event) // new event received, branch accordingly
 	{
@@ -908,15 +908,15 @@ void menuProcMavlink(uint8_t event) {
 
 	switch (MAVLINK_menu) {
 	case MENU_INFO:
-	  menuProcMavlinkInfos();
+	  menuTelemetryMavlinkInfos();
 	  break;
 	case MENU_GPS:
-	  menuProcMavlinkGPS();
+	  menuTelemetryMavlinkGPS();
 	  break;
 #ifdef DUMP_RX_TX
 	case MENU_DUMP_TX:
 	case MENU_DUMP_RX:
-	  menuProcMavlinkDump(event);
+	  menuTelemetryMavlinkDump(event);
 	  break;
 #endif
 

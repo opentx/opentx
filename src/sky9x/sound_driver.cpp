@@ -101,22 +101,33 @@ void buzzer_sound( uint8_t time )
   Buzzer_count = time ;
 }
 
-void setFrequency( uint32_t frequency )
+uint32_t currentFrequency = 0;
+
+uint32_t getFrequency()
 {
-  register Tc *ptc ;
-  register uint32_t timer ;
+  return currentFrequency;
+}
 
-  timer = Master_frequency / (8 * frequency) ;		// MCK/8 and 100 000 Hz
-  if (timer > 65535)
-    timer = 65535 ;
-  if (timer < 2)
-    timer = 2 ;
+void setFrequency(uint32_t frequency)
+{
+  if (currentFrequency != frequency) {
+    currentFrequency = frequency;
 
-  ptc = TC0 ;		// Tc block 0 (TC0-2)
-  ptc->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;		// Stop clock
-  ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
-  ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
-  ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
+    register Tc *ptc ;
+    register uint32_t timer ;
+
+    timer = Master_frequency / (8 * frequency) ;		// MCK/8 and 100 000 Hz
+    if (timer > 65535)
+      timer = 65535 ;
+    if (timer < 2)
+      timer = 2 ;
+
+    ptc = TC0 ;		// Tc block 0 (TC0-2)
+    ptc->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;		// Stop clock
+    ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
+    ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
+    ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
+  }
 }
 
 // Start TIMER1 at 100000Hz, used for DACC trigger
@@ -184,9 +195,12 @@ extern "C" void DAC_IRQHandler()
       toneStop();
     }
   }
-  else {
+  else if (audioQueue.state == AUDIO_PLAYING_TONE){
     DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
     DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
+  }
+  else {
+    toneStop();
   }
 }
 

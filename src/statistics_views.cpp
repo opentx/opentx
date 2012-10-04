@@ -33,13 +33,13 @@
 
 #include "open9x.h"
 
-void menuProcStatistic(uint8_t event)
+void menuStatisticsView(uint8_t event)
 {
   TITLE(STR_MENUSTAT);
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_UP):
-      chainMenu(menuProcDebug);
+      chainMenu(menuStatisticsDebug);
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -84,7 +84,7 @@ void menuProcStatistic(uint8_t event)
 #else
 #define MENU_DEBUG_COL_OFS (14*FW)
 #endif
-void menuProcDebug(uint8_t event)
+void menuStatisticsDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
   switch(event)
@@ -109,7 +109,7 @@ void menuProcDebug(uint8_t event)
       AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
-      chainMenu(menuProcStatistic);
+      chainMenu(menuStatisticsView);
       break;
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_FIRST(KEY_EXIT):

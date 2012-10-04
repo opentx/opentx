@@ -52,30 +52,30 @@ enum EnumTabDiag {
   e_Calib
 };
 
-void menuProcSetup(uint8_t event);
+void menuGeneralSetup(uint8_t event);
 #if defined(SDCARD)
-void menuProcSd(uint8_t event);
+void menuGeneralSdManager(uint8_t event);
 #endif
-void menuProcTrainer(uint8_t event);
-void menuProcDiagVers(uint8_t event);
-void menuProcDiagKeys(uint8_t event);
-void menuProcDiagAna(uint8_t event);
-void menuProcHardware(uint8_t event);
-void menuProcDiagCalib(uint8_t event);
+void menuGeneralTrainer(uint8_t event);
+void menuGeneralVersion(uint8_t event);
+void menuGeneralDiagKeys(uint8_t event);
+void menuGeneralDiagAna(uint8_t event);
+void menuGeneralHardware(uint8_t event);
+void menuGeneralCalib(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
-  menuProcSetup,
+  menuGeneralSetup,
 #if defined(SDCARD)
-  menuProcSd,
+  menuGeneralSdManager,
 #endif
-  menuProcTrainer,
-  menuProcDiagVers,
-  menuProcDiagKeys,
-  menuProcDiagAna,
+  menuGeneralTrainer,
+  menuGeneralVersion,
+  menuGeneralDiagKeys,
+  menuGeneralDiagAna,
 #if defined(PCBSKY9X)
-  menuProcHardware,
+  menuGeneralHardware,
 #endif
-  menuProcDiagCalib
+  menuGeneralCalib
 };
 
 #define GENERAL_PARAM_OFS   (2+16*FW)
@@ -97,7 +97,7 @@ void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
           value = selectMenuItem(GENERAL_PARAM_OFS, y, label, values, value, min, max, attr, event)
 #endif
 
-enum menuProcSetupItems {
+enum menuGeneralSetupItems {
 #if defined(RTCLOCK)
   ITEM_SETUP_RTC,
 #endif
@@ -152,7 +152,7 @@ enum menuProcSetupItems {
   ITEM_SETUP_MAX
 };
 
-void menuProcSetup(uint8_t event)
+void menuGeneralSetup(uint8_t event)
 {
 #ifdef RTCLOCK
 #define RTC_ZEROS 5,
@@ -200,7 +200,7 @@ void menuProcSetup(uint8_t event)
 #define ROTARY_ENCODERS_ZEROS
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, RTC_ZEROS 0, 0, AUDIO_ZEROS VOICE_ZEROS HAPTIC_ZEROS ARM_ZEROS BLUETOOTH_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, RTC_ZEROS 0, 0, AUDIO_ZEROS VOICE_ZEROS HAPTIC_ZEROS ARM_ZEROS 0, 0, 0, BLUETOOTH_ZEROS ROTARY_ENCODERS_ZEROS 0, 0, 0, 0, 0, 0, 0, SPLASH_ZEROS 0, 0, FRSKY_ZEROS 0, (uint8_t)-1, 1});
 
   uint8_t sub = m_posVert - 1;
 
@@ -501,7 +501,7 @@ extern uint32_t sdAvailableAudioFiles; // TODO move that!
 #endif
 
 #if defined(SDCARD)
-void menuProcSdInfo(uint8_t event)
+void menuGeneralSdManagerInfo(uint8_t event)
 {
   SIMPLE_SUBMENU(PSTR("SD INFO"), 1);
 
@@ -523,7 +523,7 @@ void menuProcSdInfo(uint8_t event)
   // lcd_putsLeft(7*FH, PSTR("CSD:"));
 }
 
-void menuProcSd(uint8_t event)
+void menuGeneralSdManager(uint8_t event)
 {
   FILINFO fno;
   DIR dir;
@@ -722,7 +722,7 @@ void menuProcSd(uint8_t event)
     if (result) {
       uint8_t index = m_posVert-1-s_pgOfs;
       if (result == STR_SD_INFO) {
-        pushMenu(menuProcSdInfo);
+        pushMenu(menuGeneralSdManagerInfo);
       }
       else if (result == STR_SD_FORMAT) {
         displayPopup(PSTR("Formatting...")); // TODO translations
@@ -761,7 +761,7 @@ void menuProcSd(uint8_t event)
 }
 #endif
 
-void menuProcTrainer(uint8_t event)
+void menuGeneralTrainer(uint8_t event)
 {
   uint8_t y;
   bool slave = SLAVE_MODE;
@@ -836,7 +836,7 @@ void menuProcTrainer(uint8_t event)
   }
 }
 
-void menuProcDiagVers(uint8_t event)
+void menuGeneralVersion(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
 
@@ -854,7 +854,7 @@ void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)
   lcd_putcAtt(x, y, t+'0', t ? INVERS : 0);
 }
 
-void menuProcDiagKeys(uint8_t event)
+void menuGeneralDiagKeys(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUDIAG, menuTabDiag, e_Keys, 1);
 
@@ -889,7 +889,7 @@ void menuProcDiagKeys(uint8_t event)
 
 }
 
-void menuProcDiagAna(uint8_t event)
+void menuGeneralDiagAna(uint8_t event)
 {
 #if defined(PCBSKY9X) && defined(REVB)
 #define ANAS_ITEMS_COUNT 4
@@ -950,14 +950,14 @@ void menuProcDiagAna(uint8_t event)
 }
 
 #if defined(PCBSKY9X)
-enum menuProcHwItems {
+enum menuGeneralHwItems {
   ITEM_SETUP_HW_COPROC,
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   ITEM_SETUP_HW_MAX
 };
 
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
-void menuProcHardware(uint8_t event)
+void menuGeneralHardware(uint8_t event)
 {
   MENU(PSTR("Hardware"), menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, (uint8_t)-1, 0});
 
@@ -986,7 +986,7 @@ void menuProcHardware(uint8_t event)
 }
 #endif
 
-void menuProcDiagCalib(uint8_t event)
+void menuGeneralCalib(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUCALIBRATION, menuTabDiag, e_Calib, 1);
 

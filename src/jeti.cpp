@@ -179,7 +179,7 @@ void JETI_put_stop (void)
 
 extern void menuMainView(uint8_t event);
 
-void menuProcJeti(uint8_t event)
+void menuTelemetryJeti(uint8_t event)
 {
   TITLE("JETI");
 

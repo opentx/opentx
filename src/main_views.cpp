@@ -112,11 +112,11 @@ void menuMainView(uint8_t event)
       }
       break;
     case EVT_KEY_LONG(KEY_RIGHT):
-      pushMenu(menuProcModelSelect);
+      pushMenu(menuModelSelect);
       killEvents(event);
       break;
     case EVT_KEY_LONG(KEY_LEFT):
-      pushMenu(menuProcSetup);
+      pushMenu(menuGeneralSetup);
       killEvents(event);
       break;
     case EVT_KEY_BREAK(KEY_UP):
@@ -126,25 +126,25 @@ void menuMainView(uint8_t event)
       AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_LONG(KEY_UP):
-      chainMenu(menuProcStatistic);
+      chainMenu(menuStatisticsView);
       killEvents(event);
       break;
     case EVT_KEY_LONG(KEY_DOWN):
 #if defined(FRSKY)
-      chainMenu(menuProcFrsky);
+      chainMenu(menuTelemetryFrsky);
 #elif defined(JETI)
       JETI_EnableRXD(); // enable JETI-Telemetry reception
-      chainMenu(menuProcJeti);
+      chainMenu(menuTelemetryJeti);
 #elif defined(ARDUPILOT)
       ARDUPILOT_EnableRXD(); // enable ArduPilot-Telemetry reception
-      chainMenu(menuProcArduPilot);
+      chainMenu(menuTelemetryArduPilot);
 #elif defined(NMEA)
       NMEA_EnableRXD(); // enable NMEA-Telemetry reception
-      chainMenu(menuProcNMEA);
+      chainMenu(menuTelemetryNMEA);
 #elif defined(MAVLINK)
-      chainMenu(menuProcMavlink);
+      chainMenu(menuTelemetryMavlink);
 #else
-      chainMenu(menuProcDebug);
+      chainMenu(menuStatisticsDebug);
 #endif
       killEvents(event);
       break;

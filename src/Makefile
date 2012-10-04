@@ -707,7 +707,7 @@ all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
 ifeq ($(PCB), SKY9X)
-  build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm asterisk.lbm allsrc.cpp elf remallsrc bin hex lss
+  build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm asterisk.lbm allsrc.cpp elf remallsrc bin lss
 else
   build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm asterisk.lbm allsrc.cpp elf remallsrc hex eep lss sym
 endif

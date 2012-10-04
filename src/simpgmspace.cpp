@@ -164,7 +164,7 @@ void *main_thread(void *)
 
     g_menuStackPtr = 0;
     g_menuStack[0] = menuMainView;
-    g_menuStack[1] = menuProcModelSelect;
+    g_menuStack[1] = menuModelSelect;
 
 #ifdef PCBSKY9X
     eeprom_init();

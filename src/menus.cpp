@@ -509,9 +509,9 @@ void pushMenu(MenuFuncP newMenu)
 #endif
 
   if (g_menuStackPtr == 0) {
-    if (newMenu == menuProcSetup)
+    if (newMenu == menuGeneralSetup)
       g_menuPos[0] = 1;
-    if (newMenu == menuProcModelSelect)
+    if (newMenu == menuModelSelect)
       g_menuPos[0] = 0;
   }
   else {
