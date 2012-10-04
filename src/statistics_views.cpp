@@ -139,7 +139,6 @@ void menuStatisticsDebug(uint8_t event)
     putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_DEGREES, 0);
   else
     lcd_puts(18*FW+2, 4*FH, PSTR("---"));
-  }
   lcd_putsLeft(5*FH, STR_TMAINMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (g_timeMainMax)/20, PREC2);
   lcd_putsLeft(6*FH, STR_FREESTACKMINB);
