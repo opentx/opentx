@@ -68,7 +68,11 @@ OS_MutexID mixerMutex;
 
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
-#include "s9xsplash.lbm"
+#if defined(PCBX9D)
+#include "splash_X9D.lbm"
+#else
+#include "splash_9x.lbm"
+#endif
 	'S','P','E',0};
 const pm_uchar * splash_lbm = splashdata+4;
 #endif
@@ -291,13 +295,13 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
     erg = (int16_t)crv.crv[crv.points-1] * (RESX/4);
   }
   else {
-    uint16_t a=0, b=0; // TODO init not needed
+    uint16_t a=0, b=0;
     uint8_t i;
     if (crv.custom) {
       for (i=0; i<crv.points-1; i++) {
-        a = (i==0 ? 0 : (100 * (RESX/4) / 25 + crv.crv[crv.points+i-1] * (RESX/4) / 25));
+        a = b;
         b = (i==crv.points-2 ? 2*RESX : (100 * (RESX/4) / 25 + crv.crv[crv.points+i] * (RESX/4) / 25));
-        if ((uint16_t)x>=a && (uint16_t)x<=b) break;
+        if ((uint16_t)x<=b) break;
       }
     }
     else {
@@ -1219,6 +1223,9 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 {
   lcd_clear();
 
+#if defined(PCBX9D)
+  lcd_img(DISPLAY_W-29, 0, asterisk_lbm, 0, 0);
+#endif
 #if defined(PCBGRUVIN9X) || defined(PCBSKY9X) || defined(M128) || defined(EXTSTD)
   lcd_img(2, 0, asterisk_lbm, 0, 0);
 #else
@@ -1231,7 +1238,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   lcd_putsAtt(6*FW, 0, title, DBLSIZE);
   lcd_putsAtt(6*FW, 2*FH, STR_WARNING, DBLSIZE);
 #endif
-  lcd_filled_rect(0, 0, 128, 32);
+  lcd_filled_rect(0, 0, DISPLAY_W, 32);
   if (t) lcd_putsLeft(5*FH, t);
   if (last) {
     lcd_putsLeft(7*FH, last);
@@ -3429,7 +3436,9 @@ int main(void)
   stack_paint();
 
   g_menuStack[0] = menuMainView;
+#if !defined(READONLY)
   g_menuStack[1] = menuModelSelect;
+#endif
 
   lcdSetRefVolt(25);
 

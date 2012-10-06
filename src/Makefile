@@ -709,9 +709,9 @@ all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
 ifeq ($(PCB), SKY9X)
-  build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm asterisk.lbm allsrc.cpp elf remallsrc bin lss
+  build: stamp_header lbm allsrc.cpp elf remallsrc bin lss
 else
-  build: stamp_header font.lbm font_dblsize.lbm sticks.lbm s9xsplash.lbm asterisk.lbm allsrc.cpp elf remallsrc hex eep lss sym
+  build: stamp_header lbm allsrc.cpp elf remallsrc hex eep lss sym
 endif
 
 elf: $(TARGET).elf
@@ -720,6 +720,8 @@ hex: $(TARGET).hex
 eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
+
+lbm: font.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -777,9 +779,14 @@ sticks.lbm: sticks_4x1.xbm
 	@echo "Convert sticks from xbm to lbm:"
 	$(IMG2LBM) $< $@ img 4
 
-s9xsplash.lbm: s9xsplash.xbm
+splash_9x.lbm: splash_9x.xbm
 	@echo
-	@echo "Convert splash from xbm to lbm:"
+	@echo "Convert 9x splash from xbm to lbm:"
+	$(IMG2LBM) $< $@ img
+	
+splash_X9D.lbm: splash_X9D.xbm
+	@echo
+	@echo "Convert X9D splash from xbm to lbm:"
 	$(IMG2LBM) $< $@ img
 
 asterisk.lbm: asterisk.xbm

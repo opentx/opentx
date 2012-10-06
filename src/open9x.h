@@ -584,7 +584,7 @@ extern uint8_t pxxFlag;
 #endif
 
 #define PXX_SEND_RXNUM     0x01
-#define PXX_SEND_FAILSAFE  0x02 // TODO where is it used?
+#define PXX_SEND_FAILSAFE  0x02
 
 #define ZCHAR_MAX (40 + LEN_SPECIAL_CHARS)
 

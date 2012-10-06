@@ -538,7 +538,6 @@ void frskyTransmitBuffer( uint32_t size )
   txPdcUsart( frskyTxBuffer, size ) ;
 }
 #else
-// TODO inline ? pass parameter? to avoid #ifdef?
 void frskyTransmitBuffer()
 {
   UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt

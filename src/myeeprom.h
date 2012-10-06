@@ -136,7 +136,7 @@ PACK(typedef struct t_EEGeneral {
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;      //index of subview in main scrren
-  uint8_t   btBaudrate:3; // TODO only needed on SKY9X
+  uint8_t   btBaudrate:3; // only used on SKY9X board
   int8_t    beeperMode:2;
   uint8_t   spare1:1;
   uint8_t   disableMemoryWarning:1;
@@ -157,7 +157,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
   int8_t    hapticLength;
-  uint8_t   reNavigation; // TODO not needed on stock board
+  uint8_t   reNavigation; // not used on STOCK board
   int8_t    beeperLength:3;
   uint8_t   hapticStrength:3;
   uint8_t   gpsFormat:1;
@@ -174,6 +174,16 @@ PACK(typedef struct t_EEGeneral {
 
 // eeprom modelspec
 
+#if defined(PCBX9D)
+#define LEN_EXPOMIX_NAME   10
+#define LEN_FP_NAME        10
+#elif defined(PCBSKY9X)
+#define LEN_EXPOMIX_NAME   6
+#define LEN_FP_NAME        6
+#else
+#define LEN_FP_NAME        6
+#endif
+
 #if defined(PCBSKY9X)
 PACK(typedef struct t_ExpoData {
   uint8_t mode;         // 0=end, 1=pos, 2=neg, 3=both
@@ -182,7 +192,7 @@ PACK(typedef struct t_ExpoData {
   uint16_t phases;
   int8_t  weight;
   uint8_t curveMode;
-  char    name[6];
+  char    name[LEN_EXPOMIX_NAME];
   int8_t  curveParam;
 }) ExpoData;
 #else
@@ -292,7 +302,7 @@ PACK(typedef struct t_MixData {
   uint8_t speedDown;
   uint8_t srcRaw;
   int8_t  sOffset;
-  char    name[6];
+  char    name[LEN_EXPOMIX_NAME];
 }) MixData;
 #else
 #define MAX_DELAY   15 /* 7.5 seconds */
@@ -602,7 +612,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 PACK(typedef struct t_PhaseData {
   TRIM_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
-  char name[6];
+  char name[LEN_FP_NAME];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
   ROTARY_ENCODER_ARRAY

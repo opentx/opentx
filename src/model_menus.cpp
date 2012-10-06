@@ -34,7 +34,7 @@
 #include "open9x.h"
 
 #define WCHART 32
-#define X0     (128-WCHART-2)
+#define X0     (DISPLAY_W-WCHART-2)
 #define Y0     32
 
 enum EnumTabModel {
@@ -123,6 +123,21 @@ bool listSdFiles(const char *path, const char *extension)
   s_menu_flags = BSS;
   uint8_t offset = 0;
 
+#if 0
+  static uint16_t s_last_menu_offset = 65535;
+  char hidden_line[MENU_LINE_LENGTH] = "";
+
+  if (s_menu_offset == 0)
+    s_last_menu_offset = 0;
+/*      else if (s_menu_offset >= reusableBuffer.sd.count-7)
+        s_last_menu_offset = s_pgOfs+1; */
+  else if (s_menu_offset > s_last_menu_offset)
+    memcpy(hidden_line, &s_bss_menu[0], MENU_LINE_LENGTH);
+  else
+    memcpy(hidden_line, &s_bss_menu[MENU_MAX_LINES-1], MENU_LINE_LENGTH);
+
+  memset(s_bss_menu, 0, sizeof(s_bss_menu));
+
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
   if (res == FR_OK) {
     for (;;) {
@@ -136,28 +151,73 @@ bool listSdFiles(const char *path, const char *extension)
 #endif
 
       uint8_t len = strlen(fn);
-      if (len < 5 || strcmp(fn+len-4, extension)) continue;
+      if (len < 5 || strcmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
 
-      if (~fno.fattrib & AM_DIR) {                   /* It is a file. */
-        if (offset < s_menu_offset) {
-          offset++;
-          continue;
-        }
-        if (s_menu_count == MENU_MAX_LINES) {
-          s_menu_more = true;
-          break;
-        }
-        char *menu_entry = &s_bss_menu[s_menu_count*MENU_LINE_LENGTH];
-        memclear(menu_entry, MENU_LINE_LENGTH);
-        for (uint8_t i=0; i<MENU_LINE_LENGTH-1; i++) {
-          if (fn[i] == '.')
+      printf("Fichier %s\n", fn);
+
+      for (uint8_t i=0; i<MENU_MAX_LINES; i++) {
+        char *line;
+        if (s_menu_offset >= s_last_menu_offset) {
+          line = s_bss_menu[i];
+          if ((!hidden_line[0] || (strcmp(hidden_line, fn) < 0)) && (line[0] == '\0' || strcmp(fn, line) < 0)) {
+            if (i < MENU_MAX_LINES-1) {
+              memmove(s_bss_menu[i+1], line, sizeof(s_bss_menu[i]) * (MENU_MAX_LINES-1-i));
+            }
+            strncpy(line, fn, MENU_LINE_LENGTH);
             break;
-          menu_entry[i] = fn[i];
+          }
         }
-        s_menu[s_menu_count++] = menu_entry;
+        else {
+          line = s_bss_menu[MENU_MAX_LINES-1-i];
+          if ((!hidden_line[0] || (strcmp(hidden_line, fn) > 0)) && (line[0] == '\0' || strcmp(fn, line) > 0)) {
+            if (i < MENU_MAX_LINES-1) {
+              memmove(s_bss_menu, s_bss_menu[1], sizeof(s_bss_menu[0]) * (MENU_MAX_LINES-1-i));
+            }
+            strncpy(line, fn, MENU_LINE_LENGTH);
+            break;
+          }
+        }
+        s_menu[i] = line;
       }
     }
+    s_menu_count = MENU_MAX_LINES;
+    s_menu_more = true;
   }
+#else
+  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+
+#if _USE_LFN
+      fn = *fno.lfname ? fno.lfname : fno.fname;
+#else
+      fn = fno.fname;
+#endif
+
+      uint8_t len = strlen(fn);
+      if (len < 5 || strcmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
+
+      if (offset < s_menu_offset) {
+        offset++;
+        continue;
+      }
+      if (s_menu_count == MENU_MAX_LINES) {
+        s_menu_more = true;
+        break;
+      }
+      char *menu_entry = s_bss_menu[s_menu_count];
+      memclear(menu_entry, MENU_LINE_LENGTH);
+      for (uint8_t i=0; i<MENU_LINE_LENGTH-1; i++) {
+        if (fn[i] == '.')
+          break;
+        menu_entry[i] = fn[i];
+      }
+      s_menu[s_menu_count++] = menu_entry;
+    }
+  }
+#endif
 
   return s_menu_count;
 }
@@ -383,7 +443,7 @@ void menuModelSelect(uint8_t event)
       if (k == sub) {
         if (s_copyMode == COPY_MODE) {
           k = s_copySrcRow;
-          lcd_putc(20*FW+2, y, '+');
+          lcd_putc(DISPLAY_W-FW, y, '+');
         }
         else {
           k = sub + s_copyTgtOfs;
@@ -470,7 +530,7 @@ void menuModelSelect(uint8_t event)
 #endif
 }
 
-void EditName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active, uint8_t & cur)
+void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active, uint8_t & cur)
 {
   lcd_putsLeft(y, STR_NAME);
 
@@ -575,7 +635,7 @@ void menuModelSetup(uint8_t event)
 
     switch(k) {
       case ITEM_MODEL_NAME:
-        EditName(MODEL_PARAM_OFS, y, g_model.name, sizeof(g_model.name), event, attr, m_posHorz);
+        editName(MODEL_PARAM_OFS, y, g_model.name, sizeof(g_model.name), event, attr, m_posHorz);
 #if defined(PCBSKY9X)
         memcpy(ModelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
 #endif
@@ -585,7 +645,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_TIMER2:
       {
         TimerData *timer = &g_model.timers[k-ITEM_MODEL_TIMER1];
-        putsStrIdx(0*FW, y, STR_TIMER, k-ITEM_MODEL_TIMER1+1); // TODO keep that?
+        putsStrIdx(0*FW, y, STR_TIMER, k-ITEM_MODEL_TIMER1+1);
         putsTmrMode(MODEL_PARAM_OFS, y, timer->mode, (attr && m_posHorz==0) ? blink : 0);
         putsTime(15*FW, y, timer->val,
             (attr && m_posHorz==1 ? blink:0),
@@ -808,7 +868,13 @@ static uint8_t s_currIdx;
 #define MIXES_2ND_COLUMN    (10*FW)
 #endif
 
+#if defined(PCBX9D)
+#define EXPO_ONE_2ND_COLUMN (DISPLAY_W - 88)
+#define EXPO_ONE_FP_WIDTH   (9*FW)
+#else
 #define EXPO_ONE_2ND_COLUMN (7*FW+2)
+#define EXPO_ONE_FP_WIDTH   (5*FW)
+#endif
 
 uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
@@ -830,12 +896,12 @@ PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uin
 {
   lcd_putsLeft(y, STR_FPHASE);
 
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(PCBX9D)
   bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-2*FW);
 #endif
 
   for (uint8_t p=0; p<MAX_PHASES; p++) {
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(PCBX9D)
     if (expoMenu && ((attr && p < m_posHorz-4) || (x > EXPO_ONE_2ND_COLUMN+2*FW)))
       continue;
 #endif
@@ -871,7 +937,7 @@ void menuModelPhaseOne(uint8_t event)
     uint8_t attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
       case 0:
-        EditName(MIXES_2ND_COLUMN, y, phase->name, sizeof(phase->name), event, attr, m_posHorz);
+        editName(MIXES_2ND_COLUMN, y, phase->name, sizeof(phase->name), event, attr, m_posHorz);
         break;
       case 1:
         phase->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, phase->swtch, attr, event);
@@ -992,21 +1058,21 @@ void menuModelPhasesAll(uint8_t event)
 #endif
     lcd_putsnAtt(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
     if (i == 0) {
-      lcd_puts(11*FW+SWITCH_OFS, y, STR_DEFAULT);
+      lcd_puts((5+LEN_FP_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
     }
     else {
-      putsSwitches(11*FW+SWITCH_OFS, y, p->swtch, 0);
+      putsSwitches((5+LEN_FP_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
       for (uint8_t t=0; t<NUM_STICKS; t++) {
-        putsTrimMode((15+t)*FW+TRIMS_OFS, y, i, t, 0);
+        putsTrimMode((9+LEN_FP_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
       }
-#if defined PCBGRUVIN9X
+#if defined(PCBGRUVIN9X)
       for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
-        putsRotaryEncoderMode((19+t)*FW+TRIMS_OFS+ROTARY_ENC_OFS, y, i, t, 0);
+        putsRotaryEncoderMode((13+LEN_FP_NAME+t)*FW+TRIMS_OFS+ROTARY_ENC_OFS, y, i, t, 0);
       }
 #endif
     }
     if (p->fadeIn || p->fadeOut) 
-      lcd_putc(20*FW+2, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
+      lcd_putc(DISPLAY_W-FW, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
   }
 
 #if defined(PCBSKY9X)
@@ -1466,7 +1532,7 @@ void menuModelExpoOne(uint8_t event)
     {
 #if defined(PCBSKY9X)
       case EXPO_FIELD_NAME:
-        EditName(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->name, sizeof(ed->name), event, attr, m_posHorz);
+        editName(EXPO_ONE_2ND_COLUMN+3*FW-sizeof(ed->name)*FW, y, ed->name, sizeof(ed->name), event, attr, m_posHorz);
         break;
 #endif
       case EXPO_FIELD_WIDTH:
@@ -1506,7 +1572,7 @@ void menuModelExpoOne(uint8_t event)
 #endif
 #if defined(FLIGHT_PHASES)
       case EXPO_FIELD_FLIGHT_PHASE:
-        ed->phases = editPhases(EXPO_ONE_2ND_COLUMN-2*FW, y, event, ed->phases, attr);
+        ed->phases = editPhases(EXPO_ONE_2ND_COLUMN+3*FW-EXPO_ONE_FP_WIDTH, y, event, ed->phases, attr);
         break;
 #endif
       case EXPO_FIELD_SWITCH:
@@ -1524,8 +1590,8 @@ void menuModelExpoOne(uint8_t event)
   int16_t x512 = calibratedStick[ed->chn];
   int16_t y512 = expoFn(x512);
 
-  lcd_outdezAtt(20*FW, 6*FH, x512*25/256, 0);
-  lcd_outdezAtt(14*FW, 1*FH, y512*25/256, 0);
+  lcd_outdezAtt(DISPLAY_W-8, 6*FH, x512*25/256, 0);
+  lcd_outdezAtt(DISPLAY_W-8-6*FW, 1*FH, y512*25/256, 0);
 
   x512 = X0+x512/(RESXu/WCHART);
   y512 = (DISPLAY_H-1) - (uint16_t)((y512+RESX)/2) * (DISPLAY_H-1) / RESX;
@@ -1569,7 +1635,7 @@ void menuModelMixOne(uint8_t event)
     switch(i) {
 #if defined(PCBSKY9X)
       case MIX_FIELD_NAME:
-        EditName(MIXES_2ND_COLUMN, y, md2->name, sizeof(md2->name), event, attr, m_posHorz);
+        editName(MIXES_2ND_COLUMN, y, md2->name, sizeof(md2->name), event, attr, m_posHorz);
         break;
 #endif
       case MIX_FIELD_SOURCE:
@@ -2175,7 +2241,7 @@ void menuModelLimits(uint8_t event)
 #endif
 #if defined(PPM_LIMITS_SYMETRICAL)
         case ITEM_LIMITS_SYMETRICAL:
-          lcd_putcAtt(20*FW+2, y, ld->symetrical ? '=' : '^', attr);
+          lcd_putcAtt(DISPLAY_W-FW, y, ld->symetrical ? '=' : '^', attr);
           if (active) {
             CHECK_INCDEC_MODELVAR(event, ld->symetrical, 0, 1);
           }

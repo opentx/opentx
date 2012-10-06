@@ -37,9 +37,11 @@
 #if defined(PCBX9D)
 #define DISPLAY_W 192
 #define DISPLAY_H  64
+#define xcoord_t uint16_t
 #else
 #define DISPLAY_W 128
 #define DISPLAY_H  64
+#define xcoord_t uint8_t
 #endif
 
 #define FW          6
@@ -107,41 +109,41 @@ extern uint8_t lcdLock ;
 extern uint32_t lcdInputs ;
 #endif
 
-extern void lcd_putc(uint8_t x,uint8_t y,const unsigned char c);
-extern void lcd_putcAtt(uint8_t x,uint8_t y,const unsigned char c,uint8_t mode);
+extern void lcd_putc(xcoord_t x,uint8_t y,const unsigned char c);
+extern void lcd_putcAtt(xcoord_t x,uint8_t y,const unsigned char c,uint8_t mode);
 
-extern void lcd_putsAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t mode);
-extern void lcd_putsiAtt(uint8_t x,uint8_t y,const pm_char * s,uint8_t idx, uint8_t mode);
-extern void lcd_putsnAtt(uint8_t x,uint8_t y,const pm_char * s,unsigned char len,uint8_t mode);
-extern void lcd_puts(uint8_t x,uint8_t y,const pm_char * s);
+extern void lcd_putsAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t mode);
+extern void lcd_putsiAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t idx, uint8_t mode);
+extern void lcd_putsnAtt(xcoord_t x,uint8_t y,const pm_char * s,unsigned char len,uint8_t mode);
+extern void lcd_puts(xcoord_t x,uint8_t y,const pm_char * s);
 extern void lcd_putsLeft(uint8_t y, const pm_char * s);
-extern void lcd_putsn(uint8_t x,uint8_t y,const pm_char * s,unsigned char len);
+extern void lcd_putsn(xcoord_t x,uint8_t y,const pm_char * s,unsigned char len);
 
-extern void lcd_outhex4(uint8_t x,uint8_t y,uint16_t val);
+extern void lcd_outhex4(xcoord_t x,uint8_t y,uint16_t val);
 
-extern void lcd_outdezAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags mode=0);
-extern void lcd_outdezNAtt(uint8_t x, uint8_t y, int16_t val, LcdFlags mode=0, uint8_t len=0);
-extern void lcd_outdez8(uint8_t x, uint8_t y, int8_t val);
+extern void lcd_outdezAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags mode=0);
+extern void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags mode=0, uint8_t len=0);
+extern void lcd_outdez8(xcoord_t x, uint8_t y, int8_t val);
 
-extern void putsStrIdx(uint8_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t att=0);
+extern void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t att=0);
 
-extern void putsModelName(uint8_t x, uint8_t y, char *name, uint8_t id, uint8_t att);
-extern void putsSwitches(uint8_t x, uint8_t y, int8_t swtch, uint8_t att=0);
-extern void putsMixerSource(uint8_t x, uint8_t y, uint8_t idx, uint8_t att=0);
-extern void putsFlightPhase(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
-extern void putsCurve(uint8_t x, uint8_t y, int8_t idx, uint8_t att=0);
-extern void putsTmrMode(uint8_t x, uint8_t y, int8_t mode, uint8_t att);
-extern void putsTrimMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att);
+extern void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, uint8_t att);
+extern void putsSwitches(xcoord_t x, uint8_t y, int8_t swtch, uint8_t att=0);
+extern void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att=0);
+extern void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, uint8_t att=0);
+extern void putsCurve(xcoord_t x, uint8_t y, int8_t idx, uint8_t att=0);
+extern void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, uint8_t att);
+extern void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att);
 #if defined(ROTARY_ENCODERS)
-void putsRotaryEncoderMode(uint8_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att);
+void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att);
 #endif
 
-extern void putsChnRaw(uint8_t x,uint8_t y,uint8_t idx1,uint8_t att);
-extern void putsChn(uint8_t x,uint8_t y,uint8_t idx1,uint8_t att);
-extern void putsChnLetter(uint8_t x, uint8_t y, uint8_t idx, uint8_t attr);
+extern void putsChnRaw(xcoord_t x,uint8_t y,uint8_t idx1,uint8_t att);
+extern void putsChn(xcoord_t x,uint8_t y,uint8_t idx1,uint8_t att);
+extern void putsChnLetter(xcoord_t x, uint8_t y, uint8_t idx, uint8_t attr);
 
-extern void putsVolts(uint8_t x, uint8_t y, uint16_t volts, uint8_t att);
-extern void putsVBat(uint8_t x, uint8_t y, uint8_t att);
+extern void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, uint8_t att);
+extern void putsVBat(xcoord_t x, uint8_t y, uint8_t att);
 
 #if defined(PCBSKY9X)
 #define putstime_t int32_t
@@ -149,21 +151,21 @@ extern void putsVBat(uint8_t x, uint8_t y, uint8_t att);
 #define putstime_t int16_t
 #endif
 
-extern void putsTime(uint8_t x,uint8_t y, putstime_t tme, uint8_t att, uint8_t att2);
+extern void putsTime(xcoord_t x, uint8_t y, putstime_t tme, uint8_t att, uint8_t att2);
 
 #define SOLID  0xff
 #define DOTTED 0x55
 
-extern void lcd_plot(uint8_t x, uint8_t y, uint8_t att=0);
-extern void lcd_hline(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0);
-extern void lcd_hlineStip(int8_t x, uint8_t y, uint8_t w, uint8_t pat, uint8_t att=0);
-extern void lcd_vline(uint8_t x, int8_t y, int8_t h);
-extern void lcd_vlineStip(uint8_t x, int8_t y, int8_t h, uint8_t pat);
+extern void lcd_plot(xcoord_t x, uint8_t y, uint8_t att=0);
+extern void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att=0);
+extern void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, uint8_t att=0);
+extern void lcd_vline(xcoord_t x, int8_t y, int8_t h);
+extern void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat);
 
-extern void lcd_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
-extern void lcd_filled_rect(uint8_t x, int8_t y, uint8_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
+extern void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
+extern void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
 #define lcd_status_line() lcd_filled_rect(0, 7*FH, DISPLAY_W, 8)
-inline void lcd_square(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0) { lcd_rect(x, y, w, w, SOLID, att); }
+inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att=0) { lcd_rect(x, y, w, w, SOLID, att); }
 
 #define DO_CROSS(xx,yy,ww)          \
     lcd_vline(xx,yy-ww/2,ww);  \
@@ -175,7 +177,7 @@ inline void lcd_square(uint8_t x, uint8_t y, uint8_t w, uint8_t att=0) { lcd_rec
     lcd_vline(xx  ,yy-ll,ll); \
     lcd_vline(xx+1,yy-ll,ll);
 
-extern void lcd_img(uint8_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mode);
+extern void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mode);
 extern void lcdSetRefVolt(unsigned char val);
 extern void lcd_init();
 extern void lcd_clear();

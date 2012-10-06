@@ -56,9 +56,9 @@ void menu_lcd_onoff(uint8_t x,uint8_t y, uint8_t value, uint8_t attr)
 
 void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
-  lcd_outdezAtt(128,0,count,attr);
-  lcd_putcAtt(1+128-FW*(count>9 ? 3 : 2),0,'/',attr);
-  lcd_outdezAtt(1+128-FW*(count>9 ? 3 : 2),0,index+1,attr);
+  lcd_outdezAtt(DISPLAY_W,0,count,attr);
+  lcd_putcAtt(1+DISPLAY_W-FW*(count>9 ? 3 : 2),0,'/',attr);
+  lcd_outdezAtt(1+DISPLAY_W-FW*(count>9 ? 3 : 2),0,index+1,attr);
 }
 
 #if defined(ROTARY_ENCODERS)
@@ -537,8 +537,8 @@ const pm_char * s_global_warning = 0;
 
 void displayBox()
 {
-  lcd_filled_rect(10, 16, 108, 40, SOLID, WHITE);
-  lcd_rect(10, 16, 108, 40);
+  lcd_filled_rect(10, 16, DISPLAY_W-20, 40, SOLID, WHITE);
+  lcd_rect(10, 16, DISPLAY_W-20, 40);
   lcd_puts(16, 3*FH, s_warning);
   // could be a place for a s_warning_info
 }
@@ -606,7 +606,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t 
 
 #if defined(SDCARD)
 const char *s_menu[MENU_MAX_LINES];
-char s_bss_menu[MENU_MAX_LINES*MENU_LINE_LENGTH];
+char s_bss_menu[MENU_MAX_LINES][MENU_LINE_LENGTH]; // TODO in reusable buffer?
 uint8_t s_menu_item = 0;
 uint8_t s_menu_count = 0;
 uint8_t s_menu_flags = 0;
@@ -616,12 +616,12 @@ const char * displayMenu(uint8_t event)
 {
   const char * result = NULL;
 
-  lcd_filled_rect(10, 16, 108, s_menu_count * (FH+1) + 2, SOLID, WHITE);
-  lcd_rect(10, 16, 108, s_menu_count * (FH+1) + 2);
+  lcd_filled_rect(10, 16, DISPLAY_W-20, s_menu_count * (FH+1) + 2, SOLID, WHITE);
+  lcd_rect(10, 16, DISPLAY_W-20, s_menu_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<s_menu_count; i++) {
     lcd_putsAtt(16, i*(FH+1) + 2*FH + 2, s_menu[i], s_menu_flags);
-    if (i == s_menu_item) lcd_filled_rect(11, i*(FH+1) + 2*FH + 1, 106, 9);
+    if (i == s_menu_item) lcd_filled_rect(11, i*(FH+1) + 2*FH + 1, DISPLAY_W-22, 9);
   }
 
   switch(event) {

@@ -231,7 +231,7 @@ void displayWarning(uint8_t event);
 #  define MENU_LINE_LENGTH (8+1)
 #endif
 extern const char *s_menu[MENU_MAX_LINES];
-extern char s_bss_menu[MENU_MAX_LINES*MENU_LINE_LENGTH];
+extern char s_bss_menu[MENU_MAX_LINES][MENU_LINE_LENGTH];
 extern uint8_t s_menu_count;
 extern uint8_t s_menu_flags;
 extern uint8_t s_menu_offset;

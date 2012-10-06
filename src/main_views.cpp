@@ -36,13 +36,11 @@
 #define BOX_WIDTH     23
 #define BAR_HEIGHT    (BOX_WIDTH-1l)
 #define MARKER_WIDTH  5
-#define SCREEN_WIDTH  128
-#define SCREEN_HEIGHT 64
 #define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
-#define LBOX_CENTERX  (  SCREEN_WIDTH/4 + 10)
-#define LBOX_CENTERY  (SCREEN_HEIGHT-9-BOX_WIDTH/2)
-#define RBOX_CENTERX  (3*SCREEN_WIDTH/4 - 10)
-#define RBOX_CENTERY  (SCREEN_HEIGHT-9-BOX_WIDTH/2)
+#define LBOX_CENTERX  (DISPLAY_W/4 + 10)
+#define LBOX_CENTERY  (DISPLAY_H-9-BOX_WIDTH/2)
+#define RBOX_CENTERX  (3*DISPLAY_W/4 - 10)
+#define RBOX_CENTERY  (DISPLAY_H-9-BOX_WIDTH/2)
 
 void doMainScreenGrphics()
 {
@@ -67,7 +65,7 @@ void doMainScreenGrphics()
     for( x = -5, y = 4 ; y < 7 ; x += 5, y += 1 )
     {
       len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-      V_BAR(SCREEN_WIDTH/2+x,SCREEN_HEIGHT-8, len)
+      V_BAR(DISPLAY_W/2+x,DISPLAY_H-8, len)
     }
   }
 }
@@ -92,10 +90,14 @@ void menuMainView(uint8_t event)
       }
     break;
     */
+
+#if !defined(READONLY)
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
       killEvents(event);
       break;
+#endif
+
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
       if (view_base <= e_inputs) {
@@ -111,6 +113,8 @@ void menuMainView(uint8_t event)
         AUDIO_KEYPAD_UP();
       }
       break;
+
+#if !defined(READONLY)
     case EVT_KEY_LONG(KEY_RIGHT):
       pushMenu(menuModelSelect);
       killEvents(event);
@@ -119,6 +123,8 @@ void menuMainView(uint8_t event)
       pushMenu(menuGeneralSetup);
       killEvents(event);
       break;
+#endif
+
     case EVT_KEY_BREAK(KEY_UP):
     case EVT_KEY_BREAK(KEY_DOWN):
       g_eeGeneral.view = (event == EVT_KEY_BREAK(KEY_UP) ? (view_base == MAIN_VIEW_MAX ? 0 : view_base + 1) : (view_base == 0 ? MAIN_VIEW_MAX : view_base - 1));
@@ -199,7 +205,12 @@ void menuMainView(uint8_t event)
   {
     // Flight Phase Name
     uint8_t phase = s_perout_flight_phase;
+#if defined(PCBX9D)
+    lcd_putsnAtt(21*FW-1, 5, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
+    lcd_rect(21*FW-3, 5-2, lcdLastPos-20*FW, FH+3);
+#else
     lcd_putsnAtt(6*FW, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
+#endif
 
     // Model Name
     putsModelName(2*FW-2, 0*FH, g_model.name, g_eeGeneral.currModel, DBLSIZE);
@@ -225,19 +236,35 @@ void menuMainView(uint8_t event)
       lcd_putcAtt(20*FW-3, 0*FH, '!', INVERS);
     }
 
+#if defined(PCBX9D)
+    // Main timer
+    if (g_model.timers[0].mode) {
+      uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
+      putsTime(12*FW-2, FH*2, s_timerVal[0], att, att);
+      putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2 : 9*FW-FW/2-7, FH*3, g_model.timers[0].mode, SWCONDENSED);
+    }
+
+    // Second timer
+    if (g_model.timers[1].mode) {
+      uint8_t att = DBLSIZE | (s_timerState[1]==TMR_BEEPING ? BLINK|INVERS : 0);
+      putsTime(23*FW+1, FH*2, s_timerVal[1], att, att);
+      putsTmrMode(s_timerVal[1] >= 0 ? 20*FW-FW/2+4 : 20*FW-FW/2-3, FH*3, g_model.timers[1].mode, SWCONDENSED);
+    }
+#else
     // Main timer
     if (g_model.timers[0].mode) {
       uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
       putsTime(12*FW+3, FH*2, s_timerVal[0], att, att);
       putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timers[0].mode, SWCONDENSED);
     }
+#endif
 
     // Trim sliders
     for(uint8_t i=0; i<4; i++)
     {
 #define TL 27
       //                        LH LV RV RH
-      static uint8_t x[4]    = {128*1/4+2, 3, 128-4, 128*3/4-2};
+      static uint8_t x[4]    = {DISPLAY_W*1/4+2, 3, DISPLAY_W-4, DISPLAY_W*3/4-2};
       static uint8_t vert[4] = {0,1,1,0};
       uint8_t xm, ym;
       xm = x[CONVERT_MODE(i+1)-1];
@@ -308,7 +335,7 @@ void menuMainView(uint8_t event)
 
         case e_outputBars:
 #define WBAR2 (50/2)
-          x0       = i<4 ? 128/4+2 : 128*3/4-2;
+          x0       = i<4 ? DISPLAY_W/4+2 : DISPLAY_W*3/4-2;
           y0       = 38+(i%4)*5;
 
           uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
@@ -345,18 +372,18 @@ void menuMainView(uint8_t event)
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
 #if defined(EXTRA_ROTARY_ENCODERS)
 #define V_BAR_W 5
-        V_BAR(SCREEN_WIDTH/2-8+V_BAR_W*i, SCREEN_HEIGHT-8, len)
+        V_BAR(DISPLAY_W/2-8+V_BAR_W*i, DISPLAY_H-8, len)
 #else //EXTRA_ROTARY_ENCODERS
 #define V_BAR_W 5
-        V_BAR(SCREEN_WIDTH/2-3+V_BAR_W*i, SCREEN_HEIGHT-8, len)
+        V_BAR(DISPLAY_W/2-3+V_BAR_W*i, DISPLAY_H-8, len)
 #endif //EXTRA_ROTARY_ENCODERS
       }
 #endif // ROTARY_ENCODERS
 #if defined(PCBSKY9X)
       for (uint8_t i=0; i<NUM_CSW; i++) {
         int8_t len = getSwitch(10+i, 0) ? BAR_HEIGHT : 1;
-        lcd_vline(16+3*i-1,SCREEN_HEIGHT-8-len,len);
-        lcd_vline(16+3*i  ,SCREEN_HEIGHT-8-len,len);
+        lcd_vline(16+3*i-1,DISPLAY_H-8-len,len);
+        lcd_vline(16+3*i  ,DISPLAY_H-8-len,len);
       }
 #elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
       for (uint8_t i=0; i<NUM_CSW; i++)
