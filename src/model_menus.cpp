@@ -119,22 +119,19 @@ bool listSdFiles(const char *path, const char *extension)
 #endif
 
   s_menu_count = 0;
-  s_menu_more = false;
   s_menu_flags = BSS;
-  uint8_t offset = 0;
 
-#if 0
   static uint16_t s_last_menu_offset = 65535;
   char hidden_line[MENU_LINE_LENGTH] = "";
 
   if (s_menu_offset == 0)
     s_last_menu_offset = 0;
-/*      else if (s_menu_offset >= reusableBuffer.sd.count-7)
-        s_last_menu_offset = s_pgOfs+1; */
+/*  else if (s_menu_offset >= s_menu_count-MENU_MAX_LINES)
+      s_last_menu_offset = s_menu_offset+1; */
   else if (s_menu_offset > s_last_menu_offset)
-    memcpy(hidden_line, &s_bss_menu[0], MENU_LINE_LENGTH);
+    memcpy(hidden_line, s_bss_menu[0], MENU_LINE_LENGTH);
   else
-    memcpy(hidden_line, &s_bss_menu[MENU_MAX_LINES-1], MENU_LINE_LENGTH);
+    memcpy(hidden_line, s_bss_menu[MENU_MAX_LINES-1], MENU_LINE_LENGTH);
 
   memset(s_bss_menu, 0, sizeof(s_bss_menu));
 
@@ -153,71 +150,37 @@ bool listSdFiles(const char *path, const char *extension)
       uint8_t len = strlen(fn);
       if (len < 5 || strcmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
 
-      printf("Fichier %s\n", fn);
+      fn[len-4] = '\0';
+      s_menu_count++;
 
       for (uint8_t i=0; i<MENU_MAX_LINES; i++) {
         char *line;
         if (s_menu_offset >= s_last_menu_offset) {
           line = s_bss_menu[i];
           if ((!hidden_line[0] || (strcmp(hidden_line, fn) < 0)) && (line[0] == '\0' || strcmp(fn, line) < 0)) {
-            if (i < MENU_MAX_LINES-1) {
+            if (i < MENU_MAX_LINES-1)
               memmove(s_bss_menu[i+1], line, sizeof(s_bss_menu[i]) * (MENU_MAX_LINES-1-i));
-            }
-            strncpy(line, fn, MENU_LINE_LENGTH);
+            strcpy(line, fn);
             break;
           }
         }
         else {
           line = s_bss_menu[MENU_MAX_LINES-1-i];
           if ((!hidden_line[0] || (strcmp(hidden_line, fn) > 0)) && (line[0] == '\0' || strcmp(fn, line) > 0)) {
-            if (i < MENU_MAX_LINES-1) {
+            if (i < MENU_MAX_LINES-1)
               memmove(s_bss_menu, s_bss_menu[1], sizeof(s_bss_menu[0]) * (MENU_MAX_LINES-1-i));
-            }
-            strncpy(line, fn, MENU_LINE_LENGTH);
+            strcpy(line, fn);
             break;
           }
         }
-        s_menu[i] = line;
       }
     }
-    s_menu_count = MENU_MAX_LINES;
-    s_menu_more = true;
+
+    for (uint8_t i=0; i<min(s_menu_count, (uint8_t)MENU_MAX_LINES); i++)
+      s_menu[i] = s_bss_menu[i];
   }
-#else
-  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
-  if (res == FR_OK) {
-    for (;;) {
-      res = f_readdir(&dir, &fno);                   /* Read a directory item */
-      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
 
-#if _USE_LFN
-      fn = *fno.lfname ? fno.lfname : fno.fname;
-#else
-      fn = fno.fname;
-#endif
-
-      uint8_t len = strlen(fn);
-      if (len < 5 || strcmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
-
-      if (offset < s_menu_offset) {
-        offset++;
-        continue;
-      }
-      if (s_menu_count == MENU_MAX_LINES) {
-        s_menu_more = true;
-        break;
-      }
-      char *menu_entry = s_bss_menu[s_menu_count];
-      memclear(menu_entry, MENU_LINE_LENGTH);
-      for (uint8_t i=0; i<MENU_LINE_LENGTH-1; i++) {
-        if (fn[i] == '.')
-          break;
-        menu_entry[i] = fn[i];
-      }
-      s_menu[s_menu_count++] = menu_entry;
-    }
-  }
-#endif
+  s_last_menu_offset = s_menu_offset;
 
   return s_menu_count;
 }

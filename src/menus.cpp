@@ -611,15 +611,16 @@ uint8_t s_menu_item = 0;
 uint8_t s_menu_count = 0;
 uint8_t s_menu_flags = 0;
 uint8_t s_menu_offset = 0;
-bool s_menu_more = false;
 const char * displayMenu(uint8_t event)
 {
   const char * result = NULL;
 
-  lcd_filled_rect(10, 16, DISPLAY_W-20, s_menu_count * (FH+1) + 2, SOLID, WHITE);
-  lcd_rect(10, 16, DISPLAY_W-20, s_menu_count * (FH+1) + 2);
+  uint8_t display_count = min(s_menu_count, (uint8_t)MENU_MAX_LINES);
 
-  for (uint8_t i=0; i<s_menu_count; i++) {
+  lcd_filled_rect(10, 16, DISPLAY_W-20, display_count * (FH+1) + 2, SOLID, WHITE);
+  lcd_rect(10, 16, DISPLAY_W-20, display_count * (FH+1) + 2);
+
+  for (uint8_t i=0; i<display_count; i++) {
     lcd_putsAtt(16, i*(FH+1) + 2*FH + 2, s_menu[i], s_menu_flags);
     if (i == s_menu_item) lcd_filled_rect(11, i*(FH+1) + 2*FH + 1, DISPLAY_W-22, 9);
   }
@@ -634,9 +635,9 @@ const char * displayMenu(uint8_t event)
       }
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
-      if (s_menu_item < s_menu_count - 1)
+      if (s_menu_item < display_count - 1)
         s_menu_item++;
-      else if (s_menu_more) {
+      else if (s_menu_count > s_menu_offset + display_count) {
         s_menu_offset++;
         result = STR_UPDATE_LIST;
       }
@@ -650,7 +651,6 @@ const char * displayMenu(uint8_t event)
       s_menu_item = 0;
       s_menu_flags = 0;
       s_menu_offset = 0;
-      s_menu_more = false;
       break;
   }
 

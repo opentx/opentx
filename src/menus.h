@@ -235,7 +235,6 @@ extern char s_bss_menu[MENU_MAX_LINES][MENU_LINE_LENGTH];
 extern uint8_t s_menu_count;
 extern uint8_t s_menu_flags;
 extern uint8_t s_menu_offset;
-extern bool s_menu_more;
 const char * displayMenu(uint8_t event);
 
 #define STATUS_LINE_LENGTH 32
