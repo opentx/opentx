@@ -490,8 +490,6 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, uint8_t att, uint8_t att2)
 {
   div_t qr;
 
-  tme+=32660;
-
   if (att & LEFT) x+=3*FW;
 
   if (tme<0) {
