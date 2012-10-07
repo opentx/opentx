@@ -71,7 +71,10 @@ ISR (USART0_RX_vect)
         {       // data
                 if (jbp < 32)
                 {
-                        JetiBuffer[jbp++] = rl;
+                  if(rl==0xDF)
+                    JetiBuffer[jbp++] = '@'; //@ => °  Issue 163
+                  else
+                    JetiBuffer[jbp++] = rl;
                 }
         }
 
