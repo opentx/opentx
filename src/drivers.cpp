@@ -148,6 +148,7 @@ void killEvents(uint8_t event)
 
 volatile tmr10ms_t g_tmr10ms;
 volatile uint8_t   g_blinkTmr10ms;
+volatile uint8_t   rtc_count=0;
 
 void per10ms()
 {
@@ -166,8 +167,9 @@ void per10ms()
   if (++g_ms100 == 100) {
     g_rtcTime++;   // inc global unix timestamp one second
 #if defined (PCBSKY9X)
-    if (g_rtcTime < 120) { 
+    if (g_rtcTime < 60 || rtc_count<5) { 
       rtc_init();
+      rtc_count++;
     } else {
       read_coprocessor(true);
     }

@@ -767,7 +767,7 @@ void menuGeneralVersion(uint8_t event)
   lcd_putsLeft(4*FH, stamp3);
   lcd_putsLeft(5*FH, stamp4);
 #if defined(PCBSKY9X)
-  if (Coproc_valid != 1) {
+  if (Coproc_valid == 1) {
      lcd_putsLeft(6*FH, PSTR("CoPr:")); 
      lcd_outdez8(10*FW, 6*FH, Coproc_read);
   }
