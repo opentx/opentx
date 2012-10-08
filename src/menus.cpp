@@ -606,16 +606,15 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t 
 
 #if defined(SDCARD)
 const char *s_menu[MENU_MAX_LINES];
-char s_bss_menu[MENU_MAX_LINES][MENU_LINE_LENGTH]; // TODO in reusable buffer?
 uint8_t s_menu_item = 0;
-uint8_t s_menu_count = 0;
+uint16_t s_menu_count = 0;
 uint8_t s_menu_flags = 0;
-uint8_t s_menu_offset = 0;
+uint16_t s_menu_offset = 0;
 const char * displayMenu(uint8_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min(s_menu_count, (uint8_t)MENU_MAX_LINES);
+  uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
 
   lcd_filled_rect(10, 16, DISPLAY_W-20, display_count * (FH+1) + 2, SOLID, WHITE);
   lcd_rect(10, 16, DISPLAY_W-20, display_count * (FH+1) + 2);
@@ -623,6 +622,17 @@ const char * displayMenu(uint8_t event)
   for (uint8_t i=0; i<display_count; i++) {
     lcd_putsAtt(16, i*(FH+1) + 2*FH + 2, s_menu[i], s_menu_flags);
     if (i == s_menu_item) lcd_filled_rect(11, i*(FH+1) + 2*FH + 1, DISPLAY_W-22, 9);
+  }
+
+  if (s_menu_count > display_count) {
+    // scroll bar
+    lcd_vlineStip(DISPLAY_W-11, 16, MENU_MAX_LINES * (FH+1) + 2, SOLID, WHITE);
+    lcd_vlineStip(DISPLAY_W-11, 16, MENU_MAX_LINES * (FH+1) + 2, DOTTED);
+    uint8_t ofs = (MENU_MAX_LINES * (FH+1) * s_menu_offset) / s_menu_count;
+    uint8_t hgt = (MENU_MAX_LINES * (FH+1) * MENU_MAX_LINES) / s_menu_count;
+    if (hgt + ofs > MENU_MAX_LINES * (FH+1))
+      hgt = MENU_MAX_LINES * (FH+1) - ofs;
+    lcd_vlineStip(DISPLAY_W-11, 16 + ofs, 2 + hgt, SOLID, BLACK);
   }
 
   switch(event) {
@@ -635,7 +645,7 @@ const char * displayMenu(uint8_t event)
       }
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
-      if (s_menu_item < display_count - 1)
+      if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count)
         s_menu_item++;
       else if (s_menu_count > s_menu_offset + display_count) {
         s_menu_offset++;

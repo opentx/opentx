@@ -107,7 +107,7 @@ inline uint8_t eeFindEmptyModel(uint8_t id, bool down)
 }
 
 #if defined(SDCARD)
-bool listSdFiles(const char *path, const char *extension)
+bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection)
 {
   FILINFO fno;
   DIR dir;
@@ -118,22 +118,39 @@ bool listSdFiles(const char *path, const char *extension)
   fno.lfsize = sizeof(lfn);
 #endif
 
+  static uint16_t s_last_menu_offset = 0;
+
+#if defined(PCBSKY9X)
+  if (selection) {
+    memset(reusableBuffer.models.menu_bss, 0, sizeof(reusableBuffer.models.menu_bss));
+    strcpy(reusableBuffer.models.menu_bss[0], path);
+    strcat(reusableBuffer.models.menu_bss[0], "/");
+    strncat(reusableBuffer.models.menu_bss[0], selection, maxlen);
+    strcat(reusableBuffer.models.menu_bss[0], SOUNDS_EXT);
+    if (f_stat(reusableBuffer.models.menu_bss[0], &fno) != FR_OK) {
+      selection = NULL;
+    }
+  }
+#endif
+
+  if (s_menu_offset == 0) {
+    s_last_menu_offset = 0;
+    memset(reusableBuffer.models.menu_bss, 0, sizeof(reusableBuffer.models.menu_bss));
+  }
+  else if (s_menu_offset == s_last_menu_offset) {
+    return true; // should not happen, only there because of Murphy's law
+  }
+  else if (s_menu_offset > s_last_menu_offset) {
+    memmove(reusableBuffer.models.menu_bss[0], reusableBuffer.models.menu_bss[1], (MENU_MAX_LINES-1)*MENU_LINE_LENGTH);
+    memset(reusableBuffer.models.menu_bss[MENU_MAX_LINES-1], 0xff, MENU_LINE_LENGTH);
+  }
+  else {
+    memmove(reusableBuffer.models.menu_bss[1], reusableBuffer.models.menu_bss[0], (MENU_MAX_LINES-1)*MENU_LINE_LENGTH);
+    memset(reusableBuffer.models.menu_bss[0], 0, MENU_LINE_LENGTH);
+  }
+
   s_menu_count = 0;
   s_menu_flags = BSS;
-
-  static uint16_t s_last_menu_offset = 65535;
-  char hidden_line[MENU_LINE_LENGTH] = "";
-
-  if (s_menu_offset == 0)
-    s_last_menu_offset = 0;
-/*  else if (s_menu_offset >= s_menu_count-MENU_MAX_LINES)
-      s_last_menu_offset = s_menu_offset+1; */
-  else if (s_menu_offset > s_last_menu_offset)
-    memcpy(hidden_line, s_bss_menu[0], MENU_LINE_LENGTH);
-  else
-    memcpy(hidden_line, s_bss_menu[MENU_MAX_LINES-1], MENU_LINE_LENGTH);
-
-  memset(s_bss_menu, 0, sizeof(s_bss_menu));
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
   if (res == FR_OK) {
@@ -148,39 +165,48 @@ bool listSdFiles(const char *path, const char *extension)
 #endif
 
       uint8_t len = strlen(fn);
-      if (len < 5 || strcmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
+      if (len < 5 || len > maxlen+4 || strcmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
 
-      fn[len-4] = '\0';
       s_menu_count++;
+      fn[len-4] = '\0';
 
-      for (uint8_t i=0; i<MENU_MAX_LINES; i++) {
-        char *line;
-        if (s_menu_offset >= s_last_menu_offset) {
-          line = s_bss_menu[i];
-          if ((!hidden_line[0] || (strcmp(hidden_line, fn) < 0)) && (line[0] == '\0' || strcmp(fn, line) < 0)) {
-            if (i < MENU_MAX_LINES-1)
-              memmove(s_bss_menu[i+1], line, sizeof(s_bss_menu[i]) * (MENU_MAX_LINES-1-i));
-            strcpy(line, fn);
-            break;
-          }
+      if (s_menu_offset == 0) {
+        if (selection && strncmp(fn, selection, maxlen) < 0) {
+          s_last_menu_offset++;
         }
         else {
-          line = s_bss_menu[MENU_MAX_LINES-1-i];
-          if ((!hidden_line[0] || (strcmp(hidden_line, fn) > 0)) && (line[0] == '\0' || strcmp(fn, line) > 0)) {
-            if (i < MENU_MAX_LINES-1)
-              memmove(s_bss_menu, s_bss_menu[1], sizeof(s_bss_menu[0]) * (MENU_MAX_LINES-1-i));
-            strcpy(line, fn);
-            break;
+          for (uint8_t i=0; i<MENU_MAX_LINES; i++) {
+            char *line = reusableBuffer.models.menu_bss[i];
+            if (line[0] == '\0' || strcmp(fn, line) < 0) {
+              if (i < MENU_MAX_LINES-1) memmove(reusableBuffer.models.menu_bss[i+1], line, sizeof(reusableBuffer.models.menu_bss[i]) * (MENU_MAX_LINES-1-i));
+              memset(line, 0, MENU_LINE_LENGTH);
+              strcpy(line, fn);
+              break;
+            }
           }
+        }
+        for (uint8_t i=0; i<min(s_menu_count, (uint16_t)MENU_MAX_LINES); i++)
+          s_menu[i] = reusableBuffer.models.menu_bss[i];
+      }
+      else if (s_menu_offset > s_last_menu_offset) {
+        if (strcmp(fn, reusableBuffer.models.menu_bss[MENU_MAX_LINES-2]) > 0 && strcmp(fn, reusableBuffer.models.menu_bss[MENU_MAX_LINES-1]) < 0) {
+          memset(reusableBuffer.models.menu_bss[MENU_MAX_LINES-1], 0, MENU_LINE_LENGTH);
+          strcpy(reusableBuffer.models.menu_bss[MENU_MAX_LINES-1], fn);
+        }
+      }
+      else {
+        if (strcmp(fn, reusableBuffer.models.menu_bss[1]) < 0 && strcmp(fn, reusableBuffer.models.menu_bss[0]) > 0) {
+          memset(reusableBuffer.models.menu_bss[0], 0, MENU_LINE_LENGTH);
+          strcpy(reusableBuffer.models.menu_bss[0], fn);
         }
       }
     }
-
-    for (uint8_t i=0; i<min(s_menu_count, (uint8_t)MENU_MAX_LINES); i++)
-      s_menu[i] = s_bss_menu[i];
   }
 
-  s_last_menu_offset = s_menu_offset;
+  if (s_menu_offset > 0)
+    s_last_menu_offset = s_menu_offset;
+  else
+    s_menu_offset = s_last_menu_offset;
 
   return s_menu_count;
 }
@@ -473,7 +499,7 @@ void menuModelSelect(uint8_t event)
         s_warning = eeBackupModel(sub);
       }
       else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-        if (!listSdFiles(MODELS_PATH, MODELS_EXT)) {
+        if (!listSdFiles(MODELS_PATH, MODELS_EXT, 10, NULL)) {
           s_warning = STR_NO_MODELS_ON_SD;
           s_menu_flags = 0;
         }
@@ -2603,7 +2629,7 @@ void menuModelFunctionSwitches(uint8_t event)
                 lcd_putsiAtt(15*FW, y, STR_VCSWFUNC, 0, attr);
               if (active && event==EVT_KEY_BREAK(KEY_MENU)) {
                 s_editMode = 0;
-                if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT)) {
+                if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, 6, sd->param)) {
                   s_warning = STR_NO_SOUNDS_ON_SD;
                   s_menu_flags = 0;
                 }
@@ -2685,7 +2711,7 @@ void menuModelFunctionSwitches(uint8_t event)
     const char * result = displayMenu(_event);
     if (result) {
       if (result == STR_UPDATE_LIST) {
-        if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT)) {
+        if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, 6, NULL)) {
           s_warning = STR_NO_SOUNDS_ON_SD;
           s_menu_flags = 0;
         }

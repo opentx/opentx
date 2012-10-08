@@ -183,50 +183,6 @@ inline void setup_switches()
 #define sam_boot()
 #else
 
-/**
- * Configures a UART peripheral with the specified parameters.
- *
- * baudrate  Baudrate at which the UART should operate (in Hz).
- * masterClock  Frequency of the system master clock (in Hz).
- * uses PA9 and PA10, RXD2 and TXD2
- */
-inline void UART_Configure( uint32_t baudrate, uint32_t masterClock)
-{
-//    const Pin pPins[] = CONSOLE_PINS;
-  register Uart *pUart = CONSOLE_USART;
-
-  /* Configure PIO */
-  configure_pins( (PIO_PA9 | PIO_PA10), PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
-
-  /* Configure PMC */
-  PMC->PMC_PCER0 = 1 << CONSOLE_ID;
-
-  /* Reset and disable receiver & transmitter */
-  pUart->UART_CR = UART_CR_RSTRX | UART_CR_RSTTX
-                 | UART_CR_RXDIS | UART_CR_TXDIS;
-
-  /* Configure mode */
-  pUart->UART_MR =  0x800 ;  // NORMAL, No Parity
-
-  /* Configure baudrate */
-  /* Asynchronous, no oversampling */
-  pUart->UART_BRGR = (masterClock / baudrate) / 16;
-
-  /* Disable PDC channel */
-  pUart->UART_PTCR = UART_PTCR_RXTDIS | UART_PTCR_TXTDIS;
-
-  /* Enable receiver and transmitter */
-  pUart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
-  pUart->UART_IER = UART_IER_RXRDY ;
-  NVIC_EnableIRQ(UART0_IRQn) ;
-}
-
-void UART_Stop()
-{
-  CONSOLE_USART->UART_IDR = UART_IDR_RXRDY ;
-  NVIC_DisableIRQ(UART0_IRQn) ;
-}
-
 inline void UART3_Configure( uint32_t baudrate, uint32_t masterClock)
 {
 //    const Pin pPins[] = CONSOLE_PINS;
@@ -777,7 +733,7 @@ void board_init()
   PMC->PMC_SCER |= 0x0400 ;                                                               // PCK2 enabled
   PMC->PMC_PCK[2] = 2 ;                                                                           // PCK2 is PLLA
 
-  UART_Configure( 9600, Master_frequency ) ;
+  DEBUG_UART_Configure( 9600, Master_frequency ) ;
   UART2_Configure( 9600, Master_frequency ) ;             // Testing
   UART3_Configure( 9600, Master_frequency ) ;             // TODO not needed, done after ...
 
@@ -1203,7 +1159,7 @@ void usb_mode()
   //      NVIC_DisableIRQ(PWM_IRQn) ;
   disable_ssc() ;
 
-  UART_Stop();
+  DEBUG_UART_Stop();
   UART3_Stop();
 
   sam_boot() ;

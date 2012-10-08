@@ -174,6 +174,8 @@ PACK(typedef struct t_EEGeneral {
 
 // eeprom modelspec
 
+#define LEN_MODEL_NAME     10
+
 #if defined(PCBX9D)
 #define LEN_EXPOMIX_NAME   10
 #define LEN_FP_NAME        10
@@ -718,7 +720,7 @@ PACK(typedef struct t_TimerDataExtra {
 #endif
 
 PACK(typedef struct t_ModelData {
-  char      name[10];             // must be first for eeLoadModelName
+  char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
   TimerData timers[MAX_TIMERS];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim

@@ -34,6 +34,8 @@
 #ifndef debug_h
 #define debug_h
 
+#include <inttypes.h>
+
 #if defined(DEBUG)
 
 #ifdef __cplusplus
@@ -57,6 +59,9 @@ void dump(unsigned char *data, unsigned int size);
 #define TRACE_ERROR(...) debugPuts("-E- " __VA_ARGS__)
 #define DUMP(data, size) dump(data, size)
 
+void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock);
+void DEBUG_UART_Stop();
+
 void debugTask(void* pdata);
 
 #else
@@ -69,6 +74,9 @@ void debugTask(void* pdata);
 #define TRACE_WARNING_WP(...) { }
 #define TRACE_ERROR(...) { }
 #define DUMP(...) { }
+
+#define DEBUG_UART_Configure(...)
+#define DEBUG_UART_Stop(...)
 
 #endif
 

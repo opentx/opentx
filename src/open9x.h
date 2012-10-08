@@ -154,8 +154,8 @@ typedef const int8_t pm_int8_t;
 #define pgm_read_adr(x) *(x)
 #define cli()
 #define sei()
-#define wdt_disable() WDT->WDT_MR = WDT_MR_WDDIS;
-#define wdt_enable(x) WDT->WDT_MR = 0x3FFF2FFF
+#define wdt_disable()
+#define wdt_enable(x) WDT->WDT_MR = 0x3FFF217F;
 #define wdt_reset()   WDT->WDT_CR = 0xA5000001
 extern void board_init();
 #else
@@ -1166,23 +1166,28 @@ union ReusableBuffer
     /* 128 bytes on stock */
 
 #if !defined(PCBSKY9X)
-    uint8_t eefs_buffer[BLOCKS];           // used by EeFsck
+    uint8_t eefs_buffer[BLOCKS];           // 128bytes used by EeFsck
 #endif
 
     struct
     {
-        char mainname[42]; // used by menuModelSelect and for SD card archive / restore
-        char listnames[7][10];
+        char mainname[42];
+        char listnames[7][LEN_MODEL_NAME];
         uint16_t listsizes[7];
         uint16_t eepromfree;
-    } models;
+
+#if defined(SDCARD)
+        char menu_bss[MENU_MAX_LINES][MENU_LINE_LENGTH];
+#endif
+
+    } models;                              // 128bytes used by menuModelSelect (mainname reused for SD card archive / restore)
 
     struct
     {
         int16_t midVals[7];
         int16_t loVals[7];
         int16_t hiVals[7];
-    } calib;                               // used by menuGeneralCalib
+    } calib;                               // 42 bytes used by menuGeneralCalib
 
 #if defined(SDCARD)
     struct

@@ -1564,7 +1564,11 @@ void resetTimer(uint8_t idx)
 
 void resetAll()
 {
-  AUDIO_RESET();
+  static bool firstReset = true;
+  if (firstReset)
+    firstReset = false;
+  else
+    AUDIO_RESET();
 
   resetTimer(0);
   resetTimer(1);
@@ -1745,6 +1749,8 @@ void testFunc()
 #ifdef SIMU
   printf("testFunc\n"); fflush(stdout);
 #endif
+
+  while (1);
 }
 #endif
 

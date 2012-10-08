@@ -86,9 +86,7 @@ uint32_t Card_SCR[2] ;
 uint32_t Card_CSD[4] ;
 int32_t Card_state = SD_ST_STARTUP ;
 volatile uint32_t Card_initialized = 0;
-uint32_t Sd_128_resp[4] ;
 uint32_t Sd_rca ;
-uint32_t Cmd_8_resp ;
 uint32_t Cmd_A41_resp ;
 uint8_t  cardType;
 uint32_t transSpeed;
@@ -1102,8 +1100,6 @@ uint32_t sd_card_mounted( void )
 
 uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 {
-  uint32_t result = 0;
-//  int32_t retry;
   unsigned int status = 0;
 
   // TRACE_ERROR("read block %d", block_no);
@@ -1132,24 +1128,24 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
 
       while (1) {
         if ((HSMCI->HSMCI_SR & (HSMCI_SR_ENDRX|HSMCI_SR_XFRDONE)) == (HSMCI_SR_ENDRX|HSMCI_SR_XFRDONE)) {
-          result = 1;
           break;
         }
       }
-  }
 
-  /* Disable PDC */
-  HSMCI->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
-  HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
+      /* Disable PDC */
+      HSMCI->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+      HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
+
+      return 1;
+  }
 
   // TRACE_ERROR("ok %.2X %.4Xd\n\r", HSMCI->HSMCI_SR, HSMCI->HSMCI_RSPR[0]);
 
-  return result;
+  return 0;
 }
 
 uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 {
-  uint32_t result = 0;
   unsigned int status = 0;
 
   if (sd_card_ready()) {
@@ -1167,7 +1163,6 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
     HSMCI->HSMCI_ARGR = (Cmd_A41_resp & OCR_SD_CCS ? block_no : (block_no << 9));
     HSMCI->HSMCI_TPR  = (uint32_t)data;
     HSMCI->HSMCI_TCR  = 512 / 4;
-    // HSMCI->HSMCI_PTCR = HSMCI_PTCR_TXTEN;
     HSMCI->HSMCI_CMDR = SD_WRITE_SINGLE_BLOCK;
 
     while (!(HSMCI->HSMCI_SR & HSMCI_SR_CMDRDY));
@@ -1178,17 +1173,18 @@ uint32_t sd_write_block( uint32_t block_no, uint32_t *data )
 
     while (1) {
       if ((HSMCI->HSMCI_SR & (HSMCI_SR_NOTBUSY|HSMCI_SR_XFRDONE)) == (HSMCI_SR_NOTBUSY|HSMCI_SR_XFRDONE)) {
-        result = 1;
         break;
       }
     }
+
+    /* Disable PDC */
+    HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
+    HSMCI->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
+
+    return 1;
   }
 
-  /* Disable PDC */
-  HSMCI->HSMCI_PTCR = HSMCI_PTCR_RXTDIS | HSMCI_PTCR_TXTDIS;
-  HSMCI->HSMCI_MR &= ~(uint32_t)HSMCI_MR_PDCMODE;
-
-  return result;
+  return 0;
 }
 
 /*
@@ -1237,54 +1233,6 @@ DSTATUS disk_initialize (
   if (drv) return STA_NOINIT;             /* Supports only single drive */
   if ( sd_card_ready() == 0 ) return RES_NOTRDY;
   return RES_OK;
-
-#if 0
-  BYTE n, cmd, ty, ocr[4];
-
-
-        if (drv) return STA_NOINIT;             /* Supports only single drive */
-
-        if (Stat & STA_NODISK) return Stat;     /* No card in the socket */
-
-        power_on();                             /* Force socket power on */
-        FCLK_SLOW();
-        for (n = 10; n; n--) rcvr_spi();        /* 80 dummy clocks */
-
-        ty = 0;
-        if (send_cmd(CMD0, 0) == 1) {           /* Enter Idle state */
-                Timer1 = 100;                   /* Initialization timeout of 1000 msec */
-                if (send_cmd(CMD8, 0x1AA) == 1) {       /* SDv2? */
-                        for (n = 0; n < 4; n++) ocr[n] = rcvr_spi();  /* Get trailing return value of R7 resp */
-                        if (ocr[2] == 0x01 && ocr[3] == 0xAA) {       /* The card can work at vdd range of 2.7-3.6V */
-                                while (Timer1 && send_cmd(ACMD41, 1UL << 30));  /* Wait for leaving idle state (ACMD41 with HCS bit) */
-                                if (Timer1 && send_cmd(CMD58, 0) == 0) {  /* Check CCS bit in the OCR */
-                                        for (n = 0; n < 4; n++) ocr[n] = rcvr_spi();
-                                        ty = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2;      /* SDv2 */
-                                }
-                        }
-                } else {                                                        /* SDv1 or MMCv3 */
-                        if (send_cmd(ACMD41, 0) <= 1)   {
-                                ty = CT_SD1; cmd = ACMD41;      /* SDv1 */
-                        } else {
-                                ty = CT_MMC; cmd = CMD1;        /* MMCv3 */
-                        }
-                        while (Timer1 && send_cmd(cmd, 0));     /* Wait for leaving idle state */
-                        if (!Timer1 || send_cmd(CMD16, 512) != 0)       /* Set R/W block length to 512 */
-                                ty = 0;
-                }
-        }
-        CardType = ty;
-        deselect();
-
-        if (ty) {                       /* Initialization succeded */
-                Stat &= ~STA_NOINIT;    /* Clear STA_NOINIT */
-                FCLK_FAST();
-        } else {                        /* Initialization failed */
-                power_off();
-        }
-
-        return Stat;
-#endif
 }
 
 /*-----------------------------------------------------------------------*/

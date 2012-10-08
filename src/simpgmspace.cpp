@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
+#include <sys/stat.h>
 
 volatile uint8_t pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
@@ -294,9 +295,11 @@ namespace simu {
 FATFS g_FATFS_Obj;
 #endif
 
-FRESULT f_stat (const TCHAR*, FILINFO*)
+FRESULT f_stat (const TCHAR * path, FILINFO *)
 {
-  return FR_OK;
+  struct stat tmp;
+  // printf("f_stat(%s)\n", path); fflush(stdout);
+  return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 
 FRESULT f_mount (BYTE, FATFS*)
@@ -312,7 +315,6 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE)
 
 FRESULT f_read (FIL*, void*, UINT, UINT*)
 {
-
   return FR_OK;
 }
 

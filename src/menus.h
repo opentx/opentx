@@ -224,17 +224,11 @@ void displayWarning(uint8_t event);
 
 #if defined(SDCARD)
 #define MENU_MAX_LINES 4
-#include "FatFs/ffconf.h"
-#ifdef _USE_LFN
-#  define MENU_LINE_LENGTH (16+1)
-#else
-#  define MENU_LINE_LENGTH (8+1)
-#endif
+#define MENU_LINE_LENGTH (LEN_MODEL_NAME+1)
 extern const char *s_menu[MENU_MAX_LINES];
-extern char s_bss_menu[MENU_MAX_LINES][MENU_LINE_LENGTH];
-extern uint8_t s_menu_count;
+extern uint16_t s_menu_count;
 extern uint8_t s_menu_flags;
-extern uint8_t s_menu_offset;
+extern uint16_t s_menu_offset;
 const char * displayMenu(uint8_t event);
 
 #define STATUS_LINE_LENGTH 32

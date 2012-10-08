@@ -394,8 +394,40 @@ void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att)
   lcd_hlineStip(x, y, w, 0xff, att);
 }
 
-#if 0
-// allows the att parameter... perhaps will be needed later!
+#if defined(PCBSTD)
+void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat)
+{
+  if (x >= DISPLAY_W) return;
+  if (h<0) { y+=h; h=-h; }
+  if (y<0) { h+=y; y=0; }
+  if (y+h > DISPLAY_H) { h = DISPLAY_H - y; }
+
+  if (pat==DOTTED && !(y%2))
+    pat = ~pat;
+
+  uint8_t *p  = &displayBuf[ y / 8 * DISPLAY_W + x ];
+  y = y % 8;
+  if (y) {
+    ASSERT_IN_DISPLAY(p);
+    *p ^= ~(BITMASK(y)-1) & pat;
+    p += DISPLAY_W;
+    h -= 8-y;
+  }
+  while (h>0) {
+    ASSERT_IN_DISPLAY(p);
+    *p ^= pat;
+    p += DISPLAY_W;
+    h -= 8;
+  }
+  if (h < 0) h += 8;
+  if (h) {
+    p -= DISPLAY_W;
+    ASSERT_IN_DISPLAY(p);
+    *p ^= ~(BITMASK(h)-1) & pat;
+  }
+}
+#else
+// allows the att parameter...
 void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, uint8_t att)
 {
   if (x >= DISPLAY_W) return;
@@ -426,38 +458,6 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, uint8_t att)
   if (h>0) {
     ASSERT_IN_DISPLAY(p);
     lcd_mask(p, (BITMASK(h)-1) & pat, att);
-  }
-}
-#else
-void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat)
-{
-  if (x >= DISPLAY_W) return;
-  if (h<0) { y+=h; h=-h; }
-  if (y<0) { h+=y; y=0; }
-  if (y+h > DISPLAY_H) { h = DISPLAY_H - y; }
-
-  if (pat==DOTTED && !(y%2))
-    pat = ~pat;
-
-  uint8_t *p  = &displayBuf[ y / 8 * DISPLAY_W + x ];
-  y = y % 8;
-  if (y) {
-    ASSERT_IN_DISPLAY(p);
-    *p ^= ~(BITMASK(y)-1) & pat;
-    p += DISPLAY_W;
-    h -= 8-y;
-  }
-  while (h>0) {
-    ASSERT_IN_DISPLAY(p);
-    *p ^= pat;
-    p += DISPLAY_W;
-    h -= 8;
-  }
-  if (h < 0) h += 8;
-  if (h) {
-    p -= DISPLAY_W;
-    ASSERT_IN_DISPLAY(p);
-    *p ^= ~(BITMASK(h)-1) & pat;
   }
 }
 #endif

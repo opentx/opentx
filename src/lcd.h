@@ -160,7 +160,11 @@ extern void lcd_plot(xcoord_t x, uint8_t y, uint8_t att=0);
 extern void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att=0);
 extern void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, uint8_t att=0);
 extern void lcd_vline(xcoord_t x, int8_t y, int8_t h);
+#if defined(PCBSTD)
 extern void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat);
+#else
+extern void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, uint8_t att=0);
+#endif
 
 extern void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
 extern void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
