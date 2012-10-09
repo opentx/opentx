@@ -1009,7 +1009,7 @@ void checkBacklight()
     else
       BACKLIGHT_OFF;
 
-#if defined(PCBSTD) && defined(VOICE)
+#if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
     Voice.voice_process() ;
 #endif
   }
