@@ -47,7 +47,11 @@ typedef void (*MenuFuncP)(uint8_t event);
 
 void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 
+#if defined(SDCARD)
+extern uint16_t s_pgOfs;
+#else
 extern uint8_t s_pgOfs;
+#endif
 extern uint8_t s_noHi;
 extern uint8_t s_noScroll;
 

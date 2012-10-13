@@ -314,7 +314,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #endif
 #if defined(PCBSKY9X)
     PIOA->PIO_PDSR |= (0x00800000 | 0x01000000 | 0x00000002 | 0x00000001);
-    PIOB->PIO_PDSR |= (0x00000010);
+    PIOB->PIO_PDSR |= (0x00000050);
     PIOC->PIO_PDSR |= (0x10000000 | 0x00000400 | 0x00000200);
 #elif defined(PCBGRUVIN9X)
     pinj = 0;

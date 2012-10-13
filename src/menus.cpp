@@ -33,7 +33,11 @@
 
 #include "open9x.h"
 
+#if defined(SDCARD)
+uint16_t s_pgOfs;
+#else
 uint8_t s_pgOfs;
+#endif
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t s_noScroll;

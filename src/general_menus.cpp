@@ -90,7 +90,8 @@ void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
 #endif
 
 enum menuGeneralSetupItems {
-  IF_RTCLOCK(ITEM_SETUP_RTC)
+  IF_RTCLOCK(ITEM_SETUP_DATE)
+  IF_RTCLOCK(ITEM_SETUP_TIME)
   ITEM_SETUP_BEEPER_MODE,
   ITEM_SETUP_BEEPER_LENGTH,
   IF_AUDIO(ITEM_SETUP_SPEAKER_PITCH)
@@ -104,7 +105,6 @@ enum menuGeneralSetupItems {
   IF_PCBSKY9X(ITEM_SETUP_CAPACITY_WARNING)
   IF_PCBSKY9X(ITEM_SETUP_TEMPERATURE_WARNING)
   ITEM_SETUP_INACTIVITY_ALARM,
-  IF_BLUETOOTH(ITEM_SETUP_BT_BAUDRATE)
   IF_ROTARY_ENCODERS(ITEM_SETUP_RE_NAVIGATION)
   ITEM_SETUP_FILTER_ADC,
   ITEM_SETUP_THROTTLE_REVERSED,
@@ -126,12 +126,15 @@ enum menuGeneralSetupItems {
 
 void menuGeneralSetup(uint8_t event)
 {
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(5) 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, IF_BLUETOOTH(0) IF_ROTARY_ENCODERS(0) 0, 0, 0, 0, 0, 0, 0, IF_SPLASH(0) 0, 0, IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, IF_ROTARY_ENCODERS(0) 0, 0, 0, 0, 0, 0, 0, IF_SPLASH(0) 0, 0, IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, 1});
 
   uint8_t sub = m_posVert - 1;
 
 #if defined(RTCLOCK)
   static struct gtm t;
+  if ((sub!=ITEM_SETUP_DATE && sub!=ITEM_SETUP_TIME) || s_editMode<=0) {
+    gettime(&t);
+  }
 #endif
 
   for (uint8_t i=0; i<7; i++) {
@@ -142,19 +145,18 @@ void menuGeneralSetup(uint8_t event)
 
     switch(k) {
 #if defined(RTCLOCK)
-      case ITEM_SETUP_RTC:
-        lcd_putsLeft(y, STR_TIME);
-        lcd_putc(FW*7+6, y, '-'); lcd_putc(FW*10+4, y, '-');
-        lcd_putc(FW*15+5, y, ':'); lcd_putc(FW*18+3, y, ':');
-        for (uint8_t j=0; j<6; j++) { // 3 settings each for date and time (YMD and HMS)
+      case ITEM_SETUP_DATE:
+        lcd_putsLeft(y, PSTR("Date"));
+        lcd_putc(FW*15+5, y, '-'); lcd_putc(FW*18+3, y, '-');
+        for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j) ? attr : 0;
           switch (j) {
             case 0:
-              lcd_outdezAtt(FW*7+6, y, t.tm_year+1900, rowattr);
+              lcd_outdezAtt(FW*15+5, y, t.tm_year+1900, rowattr);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
               break;
             case 1:
-              lcd_outdezNAtt(FW*10+4, y, t.tm_mon+1, rowattr|LEADING0, 2);
+              lcd_outdezNAtt(FW*18+3, y, t.tm_mon+1, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
               break;
             case 2:
@@ -163,19 +165,34 @@ void menuGeneralSetup(uint8_t event)
               int8_t dlim = (((((year%4==0) && (year %100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
               int8_t dmon[] = {31,28,31,30,31,30,31,31,30,31,30,31}; // TODO in flash
               dlim += dmon[t.tm_mon];
-              lcd_outdezNAtt(FW*13+2, y, t.tm_mday, rowattr|LEADING0, 2);
+              lcd_outdezNAtt(FW*21+2, y, t.tm_mday, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
               break;
             }
-            case 3:
+          }
+        }
+
+        if (attr && s_editMode<=0 && event == EVT_KEY_FIRST(KEY_MENU)) {
+          // set the date and time into RTC chip
+          rtc_settime(&t);
+        }
+        break;
+
+      case ITEM_SETUP_TIME:
+        lcd_putsLeft(y, STR_TIME);
+        lcd_putc(FW*15+5, y, ':'); lcd_putc(FW*18+3, y, ':');
+        for (uint8_t j=0; j<3; j++) {
+          uint8_t rowattr = (m_posHorz==j) ? attr : 0;
+          switch (j) {
+            case 0:
               lcd_outdezNAtt(FW*15+5, y, t.tm_hour, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_hour = checkIncDec( event, t.tm_hour, 0, 23, 0);
               break;
-            case 4:
+            case 1:
               lcd_outdezNAtt(FW*18+3, y, t.tm_min, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_min = checkIncDec( event, t.tm_min, 0, 59, 0);
               break;
-            case 5:
+            case 2:
               lcd_outdezNAtt(FW*21+2, y, t.tm_sec, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_sec = checkIncDec( event, t.tm_sec, 0, 59, 0);
               break;
@@ -185,9 +202,6 @@ void menuGeneralSetup(uint8_t event)
         if (attr && s_editMode<=0 && event == EVT_KEY_FIRST(KEY_MENU)) {
           // set the date and time into RTC chip
           rtc_settime(&t);
-        }
-        else if (sub!=ITEM_SETUP_RTC || s_editMode<=0) {
-          gettime(&t);
         }
         break;
 #endif
@@ -304,15 +318,6 @@ void menuGeneralSetup(uint8_t event)
         lcd_putc(lcdLastPos, y, 'm');
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
-
-#if defined(BLUETOOTH)
-      case ITEM_SETUP_BT_BAUDRATE:
-        g_eeGeneral.btBaudrate = selectMenuItem(GENERAL_PARAM_OFS, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
-        if (attr && checkIncDec_Ret) {
-          btInit();
-        }
-        break;
-#endif
 
 #if defined(ROTARY_ENCODERS)
       case ITEM_SETUP_RE_NAVIGATION:
@@ -443,6 +448,16 @@ void menuGeneralSdManagerInfo(uint8_t event)
   lcd_puts(lcdLastPos, 5*FH, "kb/s");
 }
 
+inline bool isFilenameGreater(bool isfile, const char * fn, const char * line)
+{
+  return (isfile && !line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcmp(fn, line) > 0);
+}
+
+inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
+{
+  return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcmp(fn, line) < 0);
+}
+
 void menuGeneralSdManager(uint8_t event)
 {
   FILINFO fno;
@@ -483,12 +498,12 @@ void menuGeneralSdManager(uint8_t event)
     {
       if (m_posVert > 0) {
         uint8_t index = m_posVert-1-s_pgOfs;
-        if (reusableBuffer.sd.flags[index]) {
+        if (!reusableBuffer.sd.lines[index][SD_SCREEN_FILE_LENGTH+1]) {
           killEvents(event);
           f_chdir(reusableBuffer.sd.lines[index]);
           s_pgOfs = 0;
           m_posVert = 1;
-          reusableBuffer.sd.offset = 255;
+          reusableBuffer.sd.offset = 65535;
         }
       }
       break;
@@ -521,29 +536,24 @@ void menuGeneralSdManager(uint8_t event)
       break;
   }
 
-#define SD_ALPHABETICAL_ORDER
-#ifdef SD_ALPHABETICAL_ORDER
   if (reusableBuffer.sd.offset != s_pgOfs) {
-    char hidden_line[SD_SCREEN_FILE_LENGTH+1] = "";
-    uint8_t hidden_flag = 0;
-
     if (s_pgOfs == 0) {
       reusableBuffer.sd.offset = 0;
+      memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
     }
-    else if (s_pgOfs >= reusableBuffer.sd.count-7) {
-      reusableBuffer.sd.offset = s_pgOfs+1;
+    else if (s_pgOfs == reusableBuffer.sd.count-7) {
+      reusableBuffer.sd.offset = s_pgOfs;
+      memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
     }
     else if (s_pgOfs > reusableBuffer.sd.offset) {
-      memcpy(hidden_line, reusableBuffer.sd.lines[0], sizeof(hidden_line));
-      hidden_flag = reusableBuffer.sd.flags[0];
+      memmove(reusableBuffer.sd.lines[0], reusableBuffer.sd.lines[1], 6*sizeof(reusableBuffer.sd.lines[0]));
+      memset(reusableBuffer.sd.lines[6], 0xff, SD_SCREEN_FILE_LENGTH);
+      reusableBuffer.sd.lines[6][SD_SCREEN_FILE_LENGTH+1] = 1;
     }
     else {
-      memcpy(hidden_line, reusableBuffer.sd.lines[6], sizeof(hidden_line));
-      hidden_flag = reusableBuffer.sd.flags[6];
+      memmove(reusableBuffer.sd.lines[1], reusableBuffer.sd.lines[0], 6*sizeof(reusableBuffer.sd.lines[0]));
+      memset(reusableBuffer.sd.lines[0], 0, sizeof(reusableBuffer.sd.lines[0]));
     }
-
-    memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
-    memset(reusableBuffer.sd.flags, 0, sizeof(reusableBuffer.sd.flags));
 
     reusableBuffer.sd.count = 0;
 
@@ -558,73 +568,53 @@ void menuGeneralSdManager(uint8_t event)
 #else
         fn = fno.fname;
 #endif
+        if (strlen(fn) > SD_SCREEN_FILE_LENGTH) continue;
+
         reusableBuffer.sd.count++;
 
-        bool isdir = (fno.fattrib & AM_DIR);
+        bool isfile = !(fno.fattrib & AM_DIR);
 
-        for (uint8_t i=0; i<7; i++) {
-          if (s_pgOfs >= reusableBuffer.sd.offset) {
+        if (s_pgOfs == 0) {
+          for (uint8_t i=0; i<7; i++) {
             char *line = reusableBuffer.sd.lines[i];
-            if ((!hidden_line[0] || (!isdir && hidden_flag) || (strcmp(hidden_line, fn) < 0)) && (line[0] == '\0' || (isdir&&!reusableBuffer.sd.flags[i]) || strcmp(fn, line) < 0)) {
-              if (i < 7-1) {
-                memmove(reusableBuffer.sd.lines[i+1], line, sizeof(reusableBuffer.sd.lines[i]) * (7-1-i));
-                memmove(&reusableBuffer.sd.flags[i+1], &reusableBuffer.sd.flags[i], sizeof(reusableBuffer.sd.flags[i]) * (7-1-i));
-              }
-              strncpy(line, fn, SD_SCREEN_FILE_LENGTH);
-              reusableBuffer.sd.flags[i] = isdir;
+            if (line[0] == '\0' || isFilenameLower(isfile, fn, line)) {
+              if (i < 6) memmove(reusableBuffer.sd.lines[i+1], line, sizeof(reusableBuffer.sd.lines[i]) * (6-i));
+              memset(line, 0, sizeof(reusableBuffer.sd.lines[i]));
+              strcpy(line, fn);
+              line[SD_SCREEN_FILE_LENGTH+1] = isfile;
               break;
             }
           }
-          else {
-            char *line = reusableBuffer.sd.lines[6-i];
-            if ((!hidden_line[0] || (isdir && !hidden_flag) || (strcmp(hidden_line, fn) > 0)) && (line[0] == '\0' || (!isdir&&reusableBuffer.sd.flags[6-i]) || strcmp(fn, line) > 0)) {
-              if (i < 7-1) {
-                memmove(reusableBuffer.sd.lines, reusableBuffer.sd.lines[1], sizeof(reusableBuffer.sd.lines[0]) * (6-i));
-                memmove(&reusableBuffer.sd.flags, &reusableBuffer.sd.flags[1], sizeof(reusableBuffer.sd.flags[0]) * (6-i));
-              }
-              strncpy(line, fn, SD_SCREEN_FILE_LENGTH);
-              reusableBuffer.sd.flags[6-i] = isdir;
+        }
+        else if (reusableBuffer.sd.offset == s_pgOfs) {
+          for (int8_t i=6; i>=0; i--) {
+            char *line = reusableBuffer.sd.lines[i];
+            if (line[0] == '\0' || isFilenameGreater(isfile, fn, line)) {
+              if (i > 0) memmove(reusableBuffer.sd.lines[0], reusableBuffer.sd.lines[1], sizeof(reusableBuffer.sd.lines[0]) * i);
+              memset(line, 0, sizeof(reusableBuffer.sd.lines[i]));
+              strcpy(line, fn);
+              line[SD_SCREEN_FILE_LENGTH+1] = isfile;
               break;
             }
+          }
+        }
+        else if (s_pgOfs > reusableBuffer.sd.offset) {
+          if (isFilenameGreater(isfile, fn, reusableBuffer.sd.lines[5]) && isFilenameLower(isfile, fn, reusableBuffer.sd.lines[6])) {
+            memset(reusableBuffer.sd.lines[6], 0, sizeof(reusableBuffer.sd.lines[0]));
+            strcpy(reusableBuffer.sd.lines[6], fn);
+            reusableBuffer.sd.lines[6][SD_SCREEN_FILE_LENGTH+1] = isfile;
+          }
+        }
+        else {
+          if (isFilenameLower(isfile, fn, reusableBuffer.sd.lines[1]) && isFilenameGreater(isfile, fn, reusableBuffer.sd.lines[0])) {
+            memset(reusableBuffer.sd.lines[0], 0, sizeof(reusableBuffer.sd.lines[0]));
+            strcpy(reusableBuffer.sd.lines[0], fn);
+            reusableBuffer.sd.lines[0][SD_SCREEN_FILE_LENGTH+1] = isfile;
           }
         }
       }
     }
   }
-#else
-  if (reusableBuffer.sd.offset != s_pgOfs) {
-    memset(reusableBuffer.sd.lines, 0, sizeof(reusableBuffer.sd.lines));
-    memset(reusableBuffer.sd.flags, 0, sizeof(reusableBuffer.sd.flags));
-    reusableBuffer.sd.offset = s_pgOfs;
-    reusableBuffer.sd.count = 0;
-    uint16_t offset = 0;
-    uint8_t count = 0;
-    FRESULT res = f_opendir(&dir, ".");        /* Open the directory */
-    if (res == FR_OK) {
-      for (;;) {
-        res = f_readdir(&dir, &fno);                   /* Read a directory item */
-        if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-        if (fno.fname[0] == '.' && fno.fname[1] == '\0') continue;             /* Ignore dot entry */
-#if _USE_LFN
-        fn = *fno.lfname ? fno.lfname : fno.fname;
-#else
-        fn = fno.fname;
-#endif
-        reusableBuffer.sd.count++;
-        if (offset < s_pgOfs) {
-          offset++;
-          continue;
-        }
-
-        if (count < 7) {
-          reusableBuffer.sd.flags[count] = (fno.fattrib & AM_DIR);
-          strncpy(reusableBuffer.sd.lines[count], fn, SD_SCREEN_FILE_LENGTH);
-          count++;
-        }
-      }
-    }
-  }
-#endif
 
   reusableBuffer.sd.offset = s_pgOfs;
 
@@ -632,9 +622,11 @@ void menuGeneralSdManager(uint8_t event)
     uint8_t y = FH+i*FH;
     uint8_t x = 0;
     uint8_t attr = (m_posVert-1-s_pgOfs == i ? BSS|INVERS : BSS);
-    if (reusableBuffer.sd.flags[i]) { lcd_putcAtt(0, y, '[', attr); x += FW; }
-    lcd_putsAtt(x, y, reusableBuffer.sd.lines[i], attr);
-    if (reusableBuffer.sd.flags[i]) { lcd_putcAtt(lcdLastPos, y, ']', attr); }
+    if (reusableBuffer.sd.lines[i][0]) {
+      if (!reusableBuffer.sd.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', attr); x += FW; }
+      lcd_putsAtt(x, y, reusableBuffer.sd.lines[i], attr);
+      if (!reusableBuffer.sd.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdLastPos, y, ']', attr); }
+    }
   }
 
   if (s_menu_count) {
@@ -883,13 +875,14 @@ void menuGeneralDiagAna(uint8_t event)
 #if defined(PCBSKY9X)
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_OPTREX_DISPLAY,
+  IF_BLUETOOTH(ITEM_SETUP_HW_BT_BAUDRATE)
   ITEM_SETUP_HW_MAX
 };
 
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
 void menuGeneralHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0});
+  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0, IF_BLUETOOTH(0)});
 
   uint8_t sub = m_posVert - 1;
 
@@ -903,6 +896,16 @@ void menuGeneralHardware(uint8_t event)
       case ITEM_SETUP_HW_OPTREX_DISPLAY:
         g_eeGeneral.optrexDisplay = selectMenuItem(GENERAL_HW_PARAM_OFS, y, STR_LCD, STR_VLCD, g_eeGeneral.optrexDisplay, 0, 1, attr, event);
         break;
+
+#if defined(BLUETOOTH)
+      case ITEM_SETUP_HW_BT_BAUDRATE:
+        g_eeGeneral.btBaudrate = selectMenuItem(GENERAL_PARAM_OFS, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
+        if (attr && checkIncDec_Ret) {
+          btInit();
+        }
+        break;
+#endif
+
     }
   }
 }

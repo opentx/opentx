@@ -596,7 +596,18 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, uint8_t att)
   }
   if (idx > MAX_SWITCH) {
     idx -= ((att & SWONOFF) ? MAX_SWITCH+1 : MAX_SWITCH);
-    if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, 'm', att);
+    char suffix = 'm';
+#if defined(PCBSKY9X)
+    if (idx > MAX_SWITCH+1) {
+      suffix = 's';
+      idx -= MAX_SWITCH+1;
+      if (idx > MAX_PSWITCH) {
+        suffix = 'l';
+        idx -= MAX_PSWITCH;
+      }
+    }
+#endif
+    if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, suffix, att);
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }

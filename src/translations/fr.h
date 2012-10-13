@@ -110,7 +110,7 @@
 #define TR_SDCLOGS       "[Logs SD]\0   "
 #endif
 #define TR_FSW_VOLUME    "Volume\0      "
-#define TR_FSW_BG_MUSIC  "Bg Music\0    "
+#define TR_FSW_BG_MUSIC  "BgMusic\0     ""BgMusic Pause"
 #elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "Logs carte SD"

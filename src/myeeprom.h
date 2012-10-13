@@ -372,6 +372,7 @@ enum Functions {
   FUNC_BACKLIGHT,
 #if defined(PCBSKY9X)
   FUNC_BACKGND_MUSIC,
+  FUNC_BACKGND_MUSIC_PAUSE,
 #endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
@@ -719,6 +720,14 @@ PACK(typedef struct t_TimerDataExtra {
 #define EXTRA_MODEL_FIELDS
 #endif
 
+#if defined(REGISTERS)
+#define MAX_REGISTERS 2
+#define EXTRA_REGISTERS uint8_t registers[MAX_REGISTERS]
+#else
+#define MAX_REGISTERS 0
+#define EXTRA_REGISTERS
+#endif
+
 PACK(typedef struct t_ModelData {
   char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
   TimerData timers[MAX_TIMERS];
@@ -756,6 +765,8 @@ PACK(typedef struct t_ModelData {
   ROTARY_ENCODER_ARRAY_EXTRA;
 
   EXTRA_MODEL_FIELDS;
+
+  EXTRA_REGISTERS;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

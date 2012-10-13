@@ -193,6 +193,10 @@ CURVES = YES
 # Values = YES, NO
 XCURVES = YES
 
+# Registers
+# Values = YES, NO
+REGISTERS = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -358,6 +362,10 @@ endif
 
 ifeq ($(XCURVES), YES)
   CPPDEFS += -DXCURVES
+endif
+
+ifeq ($(REGISTERS), YES)
+  CPPDEFS += -DREGISTERS
 endif
 
 # If STD-Support is enabled

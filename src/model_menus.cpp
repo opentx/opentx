@@ -2244,7 +2244,7 @@ void menuModelLimits(uint8_t event)
 #if defined(CURVES)
 void menuModelCurvesAll(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
+  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES+MAX_REGISTERS);
 
   int8_t  sub    = m_posVert - 1;
 
@@ -2258,7 +2258,11 @@ void menuModelCurvesAll(uint8_t event)
 #endif
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_MENU):
-      if (sub >= 0) {
+      if (sub >= 0
+#if defined(REGISTERS)
+      && sub < MAX_CURVES
+#endif
+      ) {
         s_curveChan = sub;
         pushMenu(menuModelCurveOne);
       }
@@ -2269,10 +2273,26 @@ void menuModelCurvesAll(uint8_t event)
     uint8_t y = FH + i*FH;
     uint8_t k = i + s_pgOfs;
     uint8_t attr = (sub == k ? INVERS : 0);
+#if defined(REGISTERS)
+    if (k < MAX_CURVES) {
+      putsStrIdx(0, y, STR_CV, k+1, attr);
+    }
+    else {
+      if (attr && s_editMode>0) attr |= BLINK;
+      putsStrIdx(0, y, PSTR("Reg.X"), k-MAX_CURVES+1, 0);
+      lcd_outdezAtt(10*FW, y, g_model.registers[k-MAX_CURVES], attr);
+      if (attr) CHECK_INCDEC_MODELVAR(event, g_model.registers[k-MAX_CURVES], -125, 125);
+    }
+#else
     putsStrIdx(0, y, STR_CV, k+1, attr);
+#endif
   }
 
-  if (sub >= 0) {
+  if (sub >= 0
+#if defined(REGISTERS)
+      && sub < MAX_CURVES
+#endif
+      ) {
     s_curveChan = sub;
     DrawCurve(curveFn, 25);
   }
@@ -2575,7 +2595,11 @@ void menuModelFunctionSwitches(uint8_t event)
           }
           putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func > FUNC_INSTANT_TRIM || sd->delay)) ? BOLD : 0));
           if (active || AUTOSWITCH_MENU_LONG()) {
-            CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1);
+#if defined(PCBSKY9X)
+            CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1+2*MAX_PSWITCH);
+#else
+            CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1);            
+#endif
           }
           break;
         case 1:

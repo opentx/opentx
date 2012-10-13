@@ -1005,9 +1005,9 @@ void checkBacklight()
     }
 
     if (g_eeGeneral.backlightMode == e_backlight_mode_on || g_LightOffCounter || isFunctionActive(FUNC_BACKLIGHT))
-      BACKLIGHT_ON;
+      BACKLIGHT_ON();
     else
-      BACKLIGHT_OFF;
+      BACKLIGHT_OFF();
 
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
     Voice.voice_process() ;
@@ -1754,7 +1754,7 @@ void testFunc()
 }
 #endif
 
-uint16_t activeFunctions = 0;
+MASK_FUNC_TYPE activeFunctions = 0;
 MASK_FSW_TYPE activeFunctionSwitches = 0;
 
 #if defined(VOICE)
@@ -1885,13 +1885,18 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 #if defined(PCBSKY9X)
 static uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume;
+uint8_t fnSwitchDuration[NUM_FSW] = { 0 };
+#define FSW_PRESSLONG_DURATION   100
+#define COMPLEX_SWITCH (momentary || shrt || lng)
+#else
+#define COMPLEX_SWITCH (momentary)
 #endif
 
 void evalFunctions()
 {
-  assert((int)(sizeof(activeFunctions)*8) > (int)(FUNC_MAX-NUM_CHNOUT));
+  assert((int)(sizeof(activeFunctions)*8) > (int)(FUNC_MAX-FUNC_TRAINER));
 
-  uint16_t newActiveFunctions = 0;
+  MASK_FUNC_TYPE newActiveFunctions = 0;
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
     safetyCh[i] = -128; // not defined
@@ -1900,9 +1905,21 @@ void evalFunctions()
     FuncSwData *sd = &g_model.funcSw[i];
     int8_t swtch = sd->swtch;
     if (swtch) {
-      uint16_t function_mask = (sd->func >= FUNC_TRAINER ? (1 << (sd->func-FUNC_TRAINER)) : 0);
+      MASK_FUNC_TYPE function_mask = (sd->func >= FUNC_TRAINER ? ((MASK_FUNC_TYPE)1 << (sd->func-FUNC_TRAINER)) : 0);
       MASK_FSW_TYPE switch_mask = ((MASK_FSW_TYPE)1 << i);
       uint8_t momentary = 0;
+#if defined(PCBSKY9X)
+      uint8_t shrt=0, lng=0;
+      if (swtch > MAX_SWITCH+1+MAX_SWITCH+1+MAX_PSWITCH) {
+        lng = 1;
+        swtch -= MAX_SWITCH+1+MAX_SWITCH+1+MAX_PSWITCH;
+      }
+      else if (swtch > MAX_SWITCH+1+MAX_SWITCH+1) {
+        shrt = 1;
+        swtch -= MAX_SWITCH+1+MAX_SWITCH+1;
+      }
+      else
+#endif
       if (swtch > MAX_SWITCH+1) {
         momentary = 1;
         swtch -= MAX_SWITCH+1;
@@ -1911,7 +1928,23 @@ void evalFunctions()
         momentary = 1;
         swtch += MAX_SWITCH+1;
       }
+#if defined(PCBSKY9X)
+      bool sw;
+      if ((sw=getSwitch(swtch, 0)) || (shrt&&fnSwitchDuration[i]>0&&fnSwitchDuration[i]<FSW_PRESSLONG_DURATION) || (lng&&fnSwitchDuration[i]>=(uint8_t)FSW_PRESSLONG_DURATION)) {
+        if (shrt || lng) {
+          if (sw) {
+            if (fnSwitchDuration[i] < 255)
+              fnSwitchDuration[i]++;
+            newActiveFunctions |= (activeFunctions & function_mask);
+            continue;
+          }
+          else {
+            fnSwitchDuration[i] = 0;
+          }
+        }
+#else
       if (getSwitch(swtch, 0)) {
+#endif
         if (sd->delay) {
           if (sd->func < FUNC_TRAINER) {
             safetyCh[sd->func] = FSW_PARAM(sd);
@@ -1948,7 +1981,7 @@ void evalFunctions()
               case 2:
                 resetAll();
                 break;
-#ifdef FRSKY
+#if defined(FRSKY)
               case 3:
                 resetTelemetry();
                 break;
@@ -1957,7 +1990,16 @@ void evalFunctions()
           }
         }
 
-        if ((!momentary) || (~activeFunctionSwitches & switch_mask)) {
+#if defined(PCBSKY9X)
+        if ((shrt || lng) && (activeFunctions & function_mask)) {
+          if (sd->func == FUNC_BACKGND_MUSIC) {
+            STOP_PLAY(i+1);
+          }
+        }
+        else
+#endif
+
+        if (!COMPLEX_SWITCH || (~activeFunctionSwitches & switch_mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
             AUDIO_PLAY(AU_FRSKY_FIRST+FSW_PARAM(sd));
           }
@@ -2018,7 +2060,7 @@ void evalFunctions()
 #endif
         }
 
-        if (momentary) {
+        if (COMPLEX_SWITCH) {
           if (~activeFunctionSwitches & switch_mask) {
             if (~activeFunctions & function_mask) {
               newActiveFunctions |= function_mask;
@@ -2035,13 +2077,16 @@ void evalFunctions()
         activeFunctionSwitches |= switch_mask;
       }
       else {
+#if defined(PCBSKY9X)
+        fnSwitchDuration[i] = 0;
+#endif
 #if defined(PCBSKY9X) && defined(SDCARD)
-        if (sd->func == FUNC_BACKGND_MUSIC) {
+        if (!COMPLEX_SWITCH && sd->func == FUNC_BACKGND_MUSIC) {
           STOP_PLAY(i+1);
         }
 #endif
         activeFunctionSwitches &= (~switch_mask);
-        if (momentary)
+        if (COMPLEX_SWITCH)
           newActiveFunctions |= (activeFunctions & function_mask);
       }
     }
@@ -3498,7 +3543,7 @@ int main(void)
     g_eeGeneral.backlightBright = 0;
     g_eeGeneral.contrast = 25;
 
-    BACKLIGHT_ON;
+    BACKLIGHT_ON();
 
     lcd_clear();
     lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;

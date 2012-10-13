@@ -796,11 +796,11 @@ void read_9_adc(void ) ;
 #endif
 
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
-#define BACKLIGHT_ON    (Voice.Backlight = 1)
-#define BACKLIGHT_OFF   (Voice.Backlight = 0)
+#define BACKLIGHT_ON()    (Voice.Backlight = 1)
+#define BACKLIGHT_OFF()   (Voice.Backlight = 0)
 #else
-#define BACKLIGHT_ON    __BACKLIGHT_ON
-#define BACKLIGHT_OFF   __BACKLIGHT_OFF
+#define BACKLIGHT_ON()    __BACKLIGHT_ON
+#define BACKLIGHT_OFF()   __BACKLIGHT_OFF
 #endif
 
 #define BUZZER_ON     PORTE |=  (1 << OUT_E_BUZZER)
@@ -1021,15 +1021,17 @@ inline bool isMixActive(uint8_t mix)
 
 #if defined(PCBSKY9X)
 #define MASK_FSW_TYPE uint32_t // current max = 32 function switches
+#define MASK_FUNC_TYPE uint32_t // current max = 32 functions
 #else
 #define MASK_FSW_TYPE uint16_t // current max = 16 function switches
+#define MASK_FUNC_TYPE uint16_t // current max = 16 functions
 #endif
 
 extern MASK_FSW_TYPE activeFunctionSwitches;
-extern uint16_t activeFunctions;
+extern MASK_FUNC_TYPE activeFunctions;
 inline bool isFunctionActive(uint8_t func)
 {
-  return activeFunctions & (1 << (func-FUNC_TRAINER));
+  return activeFunctions & ((MASK_FUNC_TYPE)1 << (func-FUNC_TRAINER));
 }
 
 #if defined(ROTARY_ENCODERS)
@@ -1180,20 +1182,19 @@ union ReusableBuffer
         char menu_bss[MENU_MAX_LINES][MENU_LINE_LENGTH];
 #endif
 
-    } models;                              // 128bytes used by menuModelSelect (mainname reused for SD card archive / restore)
+    } models;                                     // 128bytes used by menuModelSelect (mainname reused for SD card archive / restore)
 
     struct
     {
         int16_t midVals[7];
         int16_t loVals[7];
         int16_t hiVals[7];
-    } calib;                               // 42 bytes used by menuGeneralCalib
+    } calib;                                      // 42 bytes used by menuGeneralCalib
 
 #if defined(SDCARD)
     struct
     {
-        char lines[7][SD_SCREEN_FILE_LENGTH+1];
-        uint8_t flags[7];
+        char lines[7][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
         uint32_t available;
         uint16_t offset;
         uint16_t count;

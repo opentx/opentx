@@ -335,7 +335,13 @@ void AudioQueue::wakeup()
   }
 #if defined(SDCARD) && !defined(SIMU)
   else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.file[0]) {
-    sdWakeup(backgroundContext);
+    if (!isFunctionActive(FUNC_BACKGND_MUSIC_PAUSE)) {
+      sdWakeup(backgroundContext);
+    }
+    else {
+      CoSetTmrCnt(audioTimer, 5/*10ms*/, 0);
+      CoStartTmr(audioTimer);
+    }
   }
 #endif
   else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.duration > 0) {
