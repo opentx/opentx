@@ -934,8 +934,8 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 int8_t REG(int8_t x, int8_t min, int8_t max)
 {
   int8_t result = x;
-  if (x >= 126) {
-    x -= 126;
+  if (x >= 126 || x <= -126) {
+    x = (uint8_t)x - 126;
     result = REG_VALUE(x);
     if (result < min) {
       REG_VALUE(x) = result = min;
@@ -2112,12 +2112,12 @@ void evalFunctions()
 #endif
 
 #if defined(GVARS)
-          else if (sd->func >= FUNC_GVAR_X1) {
+          else if (sd->func >= FUNC_ADJUST_GV1) {
             if (FSW_PARAM(sd) >= MIXSRC_TrimRud-1 && FSW_PARAM(sd) <= MIXSRC_TrimAil-1) {
-              trimPtr[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = &REG_VALUE(sd->func-FUNC_GVAR_X1);
+              trimPtr[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = &REG_VALUE(sd->func-FUNC_ADJUST_GV1);
             }
             else {
-              REG_VALUE(sd->func-FUNC_GVAR_X1) = limit((int16_t)-1250, getValue(FSW_PARAM(sd)), (int16_t)1250) / 10;
+              REG_VALUE(sd->func-FUNC_ADJUST_GV1) = limit((int16_t)-1250, getValue(FSW_PARAM(sd)), (int16_t)1250) / 10;
             }
           }
 #endif

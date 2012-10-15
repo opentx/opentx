@@ -375,8 +375,8 @@ enum Functions {
   FUNC_BACKGND_MUSIC_PAUSE,
 #endif
 #if defined(GVARS)
-  FUNC_GVAR_X1,
-  FUNC_GVAR_X2,
+  FUNC_ADJUST_GV1,
+  FUNC_ADJUST_GV5 = FUNC_ADJUST_GV1 + 4,
 #endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
@@ -736,7 +736,7 @@ typedef int8_t model_gvar_t;
 #endif
 
 #if defined(GVARS)
-#define MAX_GVARS 2
+#define MAX_GVARS 5
 #define EXTRA_GVARS model_gvar_t gvars[MAX_GVARS]
 #else
 #define MAX_GVARS 0

@@ -631,12 +631,12 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
 {
   bool invers = attr&INVERS;
   if (invers && event == EVT_KEY_LONG(KEY_MENU)) {
-    value = (value >= 126 ? REG_VALUE(value-126) : 126);
+    value = ((value >= 126 || value <= -126) ? REG_VALUE((uint8_t)value-126) : 126);
     eeDirty(EE_MODEL);
   }
-  if (value >= 126) {
-    putsStrIdx(attr&LEFT?x:x-FW-FWNUM, y, STR_GV, value - 126 + 1, attr);
-    if (invers) CHECK_INCDEC_MODELVAR(event, value, 126, 127);
+  if (value >= 126 || value <= -126) {
+    putsStrIdx(attr&LEFT?x:x-FW-FWNUM, y, STR_GV, (uint8_t)value - 125, attr);
+    if (invers) value = checkIncDec(event, (uint8_t)value, 126, 130, EE_MODEL);
   }
   else {
     lcd_outdezAtt(x, y, value, attr);
@@ -647,8 +647,8 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
 
 void displayGVar(uint8_t x, uint8_t y, int8_t value)
 {
-  if (value > 125) {
-    putsStrIdx(x-FW-FWNUM, y, STR_GV, value - 125, 0);
+  if (value >= 126 || value <= -126) {
+    putsStrIdx(x-FW-FWNUM, y, STR_GV, (uint8_t)value - 125, 0);
   }
   else {
     lcd_outdezAtt(x, y, value, 0);

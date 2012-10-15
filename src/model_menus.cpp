@@ -2651,9 +2651,9 @@ void menuModelFunctionSwitches(uint8_t event)
             }
 #endif
 #if defined(GVARS)
-            else if (sd->func >= FUNC_GVAR_X1) {
-              func_displayed = FUNC_GVAR_X1 - 16 - NUM_STICKS + 1;
-              putsStrIdx(12*FW-2, y, STR_GV, sd->func-FUNC_GVAR_X1+1, attr);
+            else if (sd->func >= FUNC_ADJUST_GV1) {
+              func_displayed = FUNC_ADJUST_GV1 - 16 - NUM_STICKS + 1;
+              putsStrIdx(12*FW-2, y, STR_GV, sd->func-FUNC_ADJUST_GV1+1, attr);
             }
 #endif
             else {
@@ -2743,7 +2743,7 @@ void menuModelFunctionSwitches(uint8_t event)
               lcd_outdezAtt(18*FW, y, val_displayed, attr);
             }
 #if defined(GVARS)
-            else if (sd->func >= FUNC_GVAR_X1
+            else if (sd->func >= FUNC_ADJUST_GV1
 #if defined(DEBUG)
                 && sd->func != FUNC_TEST
 #endif
