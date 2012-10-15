@@ -129,12 +129,17 @@
 #define TR_FSW_VOLUME
 #define TR_FSW_BG_MUSIC
 #endif
-#ifdef DEBUG
-#define TR_TEST          "Test\0        "
+#ifdef GVARS
+#define TR_FSW_ADJUST_GVAR  "Adjust \0     "
 #else
-#define TR_TEST
+#define TR_FSW_ADJUST_GVAR
 #endif
-#define TR_VFSWFUNC      "Blocco\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_FSW_BG_MUSIC TR_TEST
+#ifdef DEBUG
+#define TR_FSW_TEST          "Test\0        "
+#else
+#define TR_FSW_TEST
+#endif
+#define TR_VFSWFUNC      "Blocco\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Tutto ""Telem."
@@ -244,7 +249,8 @@
 #define TR_FADEIN       "Diss.In"
 #define TR_FADEOUT      "Diss.Out"
 #define TR_DEFAULT      "(default)"
-#define TR_CHECKTRIMS   "Contr.\003 Trim"
+#define TR_CHECKTRIMS   "\003Contr.\004Trim"
+#define OFS_CHECKTRIMS  (9*FW)
 #define TR_SWASHTYPE    "Tipo Ciclico"
 #define TR_COLLECTIVE   "Collettivo"
 #define TR_SWASHRING    "AnelloCiclico"
@@ -279,6 +285,7 @@
 #define TR_SLOWUP       "Rall. S\200"
 #define TR_MIXER        "MIXER"
 #define TR_CV           "CV"
+#define TR_GV           "GV"
 #define TR_ACHANNEL     "A\002ingresso"
 #define TR_RANGE        "Range"
 #define TR_BAR          "Barra"

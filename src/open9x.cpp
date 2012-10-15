@@ -442,13 +442,14 @@ void applyExpos(int16_t *anas)
       int16_t v = anas2[ed.chn];
       if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
         cur_chn = ed.chn;
-        if (ed.curveParam) {
+        int8_t curveParam = ed.curveParam;
+        if (curveParam) {
           if (ed.curveMode == MODE_CURVE)
-            v = applyCurve(v, ed.curveParam);
+            v = applyCurve(v, curveParam);
           else
-            v = expo(v, ed.curveParam);
+            v = expo(v, REG(curveParam, -100, 100));
         }
-        v = ((int32_t)v * ed.weight) / 100;
+        v = ((int32_t)v * REG(ed.weight, 0, 100)) / 100;
         anas[cur_chn] = v;
       }
     }
@@ -929,6 +930,26 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 }
 #endif
 
+#if defined(GVARS)
+int8_t REG(int8_t x, int8_t min, int8_t max)
+{
+  int8_t result = x;
+  if (x >= 126) {
+    x -= 126;
+    result = REG_VALUE(x);
+    if (result < min) {
+      REG_VALUE(x) = result = min;
+      eeDirty(EE_MODEL);
+    }
+    if (result > max) {
+      REG_VALUE(x) = result = max;
+      eeDirty(EE_MODEL);
+    }
+  }
+  return result;
+}
+#endif
+
 #if defined(FRSKY) || defined(PCBSKY9X)
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
 {
@@ -1249,6 +1270,10 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   clearKeyEvents();
 }
 
+#if defined(GVARS)
+int8_t *trimPtr[NUM_STICKS] = { NULL, NULL, NULL, NULL };
+#endif
+
 #if defined(PCBSTD)
 uint8_t checkTrim(uint8_t event)
 {
@@ -1266,9 +1291,24 @@ void checkTrims()
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
     uint8_t phase = getTrimFlightPhase(s_perout_flight_phase, idx);
+#if defined(GVARS)
+#define TRIM_REUSED() trimPtr[idx]
+    int16_t before;
+    bool thro;
+    if (TRIM_REUSED()) {
+      before = *trimPtr[idx];
+      thro = false;
+    }
+    else {
+      before = getRawTrimValue(phase, idx);
+      thro = (idx==THR_STICK && g_model.thrTrim);
+    }
+#else
+#define TRIM_REUSED() 0
     int16_t before = getRawTrimValue(phase, idx);
-    int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
     bool thro = (idx==THR_STICK && g_model.thrTrim);
+#endif
+    int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 #if defined(PCBSKY9X)
@@ -1284,7 +1324,7 @@ void checkTrims()
     }
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
-      if (!g_model.extendedTrims) after = before;
+      if (!g_model.extendedTrims || TRIM_REUSED()) after = before;
     }
 
     if (after < TRIM_EXTENDED_MIN) {
@@ -1294,7 +1334,14 @@ void checkTrims()
       after = TRIM_EXTENDED_MAX;
     }
 
+#if defined(GVARS)
+    if (TRIM_REUSED())
+      *trimPtr[idx] = after;
+    else
+      setTrimValue(phase, idx, after);
+#else
     setTrimValue(phase, idx, after);
+#endif
 
 #if defined (AUDIO)
     // toneFreq higher/lower according to trim position
@@ -1901,6 +1948,11 @@ void evalFunctions()
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
     safetyCh[i] = -128; // not defined
 
+#if defined(GVARS)
+  for (uint8_t i=0; i<4; i++)
+    trimPtr[i] = NULL;
+#endif
+
   for (uint8_t i=0; i<NUM_FSW; i++) {
     FuncSwData *sd = &g_model.funcSw[i];
     int8_t swtch = sd->swtch;
@@ -1990,7 +2042,7 @@ void evalFunctions()
           }
         }
 
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && defined(SDCARD)
         if ((shrt || lng) && (activeFunctions & function_mask)) {
           if (sd->func == FUNC_BACKGND_MUSIC) {
             STOP_PLAY(i+1);
@@ -2056,6 +2108,17 @@ void evalFunctions()
 #if defined(DEBUG)
           else if (sd->func == FUNC_TEST) {
             testFunc();
+          }
+#endif
+
+#if defined(GVARS)
+          else if (sd->func >= FUNC_GVAR_X1) {
+            if (FSW_PARAM(sd) >= MIXSRC_TrimRud-1 && FSW_PARAM(sd) <= MIXSRC_TrimAil-1) {
+              trimPtr[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = &REG_VALUE(sd->func-FUNC_GVAR_X1);
+            }
+            else {
+              REG_VALUE(sd->func-FUNC_GVAR_X1) = limit((int16_t)-1250, getValue(FSW_PARAM(sd)), (int16_t)1250) / 10;
+            }
           }
 #endif
         }
@@ -2279,7 +2342,10 @@ void perOut(uint8_t tick10ms)
 #endif
 
     //========== OFFSET ===============
-    if (apply_offset && md->sOffset) v += calc100toRESX(md->sOffset);
+    if (apply_offset) {
+      int8_t offset = REG(md->sOffset, -125, 125);
+      if (offset) v += calc100toRESX(offset);
+    }
 
     //========== TRIMS ===============
     if (!(s_perout_mode & e_perout_mode_notrims)) {
@@ -2294,6 +2360,8 @@ void perOut(uint8_t tick10ms)
         v += trims[mix_trim];
     }
 
+    int8_t weight = REG(md->weight, -125, 125);
+
     //========== SPEED ===============
     if (s_perout_mode == e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
     {
@@ -2307,7 +2375,7 @@ void perOut(uint8_t tick10ms)
         //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 since it's asymmetrical
         if (tick10ms) {
             int32_t rate = (int32_t)DEL_MULT*2048*100*tick10ms;
-            if(md->weight) rate /= abs(md->weight);
+            if (weight) rate /= abs(weight);
 
             act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)50*md->speedUp)   :  (int32_t)v*DEL_MULT) :
                                 ((md->speedDown>0) ? act[i]-(rate)/((int16_t)50*md->speedDown) :  (int32_t)v*DEL_MULT) ;
@@ -2328,14 +2396,15 @@ void perOut(uint8_t tick10ms)
     }
 
     //========== WEIGHT ===============
-    int32_t dv = (int32_t)v*md->weight;
+    int32_t dv = (int32_t)v*weight;
 
     //========== DIFFERENTIAL =========
     if (md->curveMode == MODE_DIFFERENTIAL) {
-      if (md->curveParam>0 && dv<0)
-        dv = (dv * (100-md->curveParam)) / 100;
-      else if (md->curveParam<0 && dv>0)
-        dv = (dv * (100+md->curveParam)) / 100;
+      int8_t curveParam = REG(md->curveParam, -100, 100);
+      if (curveParam>0 && dv<0)
+        dv = (dv * (100-curveParam)) / 100;
+      else if (curveParam<0 && dv>0)
+        dv = (dv * (100+curveParam)) / 100;
     }
 
     int32_t *ptr = &chans[md->destCh]; // Save calculating address several times

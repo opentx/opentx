@@ -58,12 +58,25 @@ void menu_lcd_onoff(uint8_t x,uint8_t y, uint8_t value, uint8_t attr)
 #endif
 }
 
-void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
+void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
   lcd_outdezAtt(DISPLAY_W,0,count,attr);
   lcd_putcAtt(1+DISPLAY_W-FW*(count>9 ? 3 : 2),0,'/',attr);
   lcd_outdezAtt(1+DISPLAY_W-FW*(count>9 ? 3 : 2),0,index+1,attr);
 }
+
+#if !defined(PCBSTD)
+void displayScrollbar(uint8_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_t count, uint8_t visible)
+{
+  lcd_vlineStip(x, y, h, SOLID, WHITE);
+  lcd_vlineStip(x, y, h, DOTTED);
+  uint8_t yofs = (h * offset) / count;
+  uint8_t yhgt = (h * visible) / count;
+  if (yhgt + yofs > h)
+    yhgt = h - yofs;
+  lcd_vlineStip(x, y + yofs, yhgt, SOLID, BLACK);
+}
+#endif
 
 #if defined(ROTARY_ENCODERS)
 int8_t scrollRE;
@@ -326,7 +339,12 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
       }
     }
     s_noScroll = 0;
-    DisplayScreenIndex(curr, menuTabSize, attr);
+    displayScreenIndex(curr, menuTabSize, attr);
+
+#if defined(PCBX9D)
+    if (maxrow > 7)
+      displayScrollbar(DISPLAY_W-1, FH, DISPLAY_H-FH, s_pgOfs, maxrow, 7);
+#endif
   }
 #if defined(ROTARY_ENCODERS)
   else if (m_posVert < 0) {
@@ -608,6 +626,43 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t 
   return value;
 }
 
+#if defined(GVARS)
+int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event)
+{
+  bool invers = attr&INVERS;
+  if (invers && event == EVT_KEY_LONG(KEY_MENU)) {
+    value = (value >= 126 ? REG_VALUE(value-126) : 126);
+    eeDirty(EE_MODEL);
+  }
+  if (value >= 126) {
+    putsStrIdx(attr&LEFT?x:x-FW-FWNUM, y, STR_GV, value - 126 + 1, attr);
+    if (invers) CHECK_INCDEC_MODELVAR(event, value, 126, 127);
+  }
+  else {
+    lcd_outdezAtt(x, y, value, attr);
+    if (invers) CHECK_INCDEC_MODELVAR(event, value, min, max);
+  }
+  return value;
+}
+
+void displayGVar(uint8_t x, uint8_t y, int8_t value)
+{
+  if (value > 125) {
+    putsStrIdx(x-FW-FWNUM, y, STR_GV, value - 125, 0);
+  }
+  else {
+    lcd_outdezAtt(x, y, value, 0);
+  }
+}
+#else
+int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event)
+{
+  lcd_outdezAtt(x, y, value, attr);
+  if (attr&INVERS) CHECK_INCDEC_MODELVAR(event, value, min, max);
+  return value;
+}
+#endif
+
 #if defined(SDCARD)
 const char *s_menu[MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
@@ -629,14 +684,7 @@ const char * displayMenu(uint8_t event)
   }
 
   if (s_menu_count > display_count) {
-    // scroll bar
-    lcd_vlineStip(DISPLAY_W-11, 16, MENU_MAX_LINES * (FH+1) + 2, SOLID, WHITE);
-    lcd_vlineStip(DISPLAY_W-11, 16, MENU_MAX_LINES * (FH+1) + 2, DOTTED);
-    uint8_t ofs = (MENU_MAX_LINES * (FH+1) * s_menu_offset) / s_menu_count;
-    uint8_t hgt = (MENU_MAX_LINES * (FH+1) * MENU_MAX_LINES) / s_menu_count;
-    if (hgt + ofs > MENU_MAX_LINES * (FH+1))
-      hgt = MENU_MAX_LINES * (FH+1) - ofs;
-    lcd_vlineStip(DISPLAY_W-11, 16 + ofs, 2 + hgt, SOLID, BLACK);
+    displayScrollbar(DISPLAY_W-11, 17, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
   }
 
   switch(event) {

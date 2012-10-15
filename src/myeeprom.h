@@ -374,6 +374,10 @@ enum Functions {
   FUNC_BACKGND_MUSIC,
   FUNC_BACKGND_MUSIC_PAUSE,
 #endif
+#if defined(GVARS)
+  FUNC_GVAR_X1,
+  FUNC_GVAR_X2,
+#endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif
@@ -720,12 +724,23 @@ PACK(typedef struct t_TimerDataExtra {
 #define EXTRA_MODEL_FIELDS
 #endif
 
-#if defined(REGISTERS)
-#define MAX_REGISTERS 2
-#define EXTRA_REGISTERS uint8_t registers[MAX_REGISTERS]
+#if defined(PCBSKY9X)
+PACK(typedef struct {
+  int8_t value;
+  char name[6];
+}) model_gvar_t;
+#define REG_VALUE(x) g_model.gvars[x].value
 #else
-#define MAX_REGISTERS 0
-#define EXTRA_REGISTERS
+typedef int8_t model_gvar_t;
+#define REG_VALUE(x) g_model.gvars[x]
+#endif
+
+#if defined(GVARS)
+#define MAX_GVARS 2
+#define EXTRA_GVARS model_gvar_t gvars[MAX_GVARS]
+#else
+#define MAX_GVARS 0
+#define EXTRA_GVARS
 #endif
 
 PACK(typedef struct t_ModelData {
@@ -766,7 +781,7 @@ PACK(typedef struct t_ModelData {
 
   EXTRA_MODEL_FIELDS;
 
-  EXTRA_REGISTERS;
+  EXTRA_GVARS;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

@@ -34,6 +34,8 @@
 #include "../open9x.h"
 #include <stdarg.h>
 
+#if !defined(SIMU)
+
 /*
  * Outputs a character on the UART line.
  *
@@ -142,3 +144,5 @@ void debugTask(void* pdata)
 
   }
 }
+
+#endif

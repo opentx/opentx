@@ -259,6 +259,7 @@ extern const pm_char STR_SLOWDOWN[];
 extern const pm_char STR_SLOWUP[];
 extern const pm_char STR_MIXER[];
 extern const pm_char STR_CV[];
+extern const pm_char STR_GV[];
 extern const pm_char STR_ACHANNEL[];
 extern const pm_char STR_RANGE[];
 extern const pm_char STR_BAR[];

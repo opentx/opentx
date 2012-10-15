@@ -624,7 +624,7 @@ void check_mavlink() {
 }
 
 // Start of Mavlink menus <<<<<<<<<<<<<<<<<<<<<<<<<<<
-void DisplayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
+void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 
 enum mavlink_menu_ {
 	MENU_INFO = 0, //
@@ -656,7 +656,7 @@ inline mavlink_menu_ operator--(mavlink_menu_ &eDOW, int) {
 void mav_title(const pm_char * s, uint8_t index) {
 	lcd_putsAtt(0, 0, PSTR("MAVLINK"), INVERS);
 	lcd_putsAtt(10 * FW, 0, s, 0);
-	DisplayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
+	displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
 	lcd_putcAtt(8 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ', 0);
 }
 

@@ -124,12 +124,17 @@
 #define TR_FSW_VOLUME
 #define TR_FSW_BG_MUSIC
 #endif
-#ifdef DEBUG
-#define TR_TEST          "Test\0        "
+#ifdef GVARS
+#define TR_FSW_ADJUST_GVAR  "Adjust \0     "
 #else
-#define TR_TEST
+#define TR_FSW_ADJUST_GVAR
 #endif
-#define TR_VFSWFUNC      "S\201kra\0       ""Trainer\0     ""S\201tt Trim    " TR_SOUND TR_HAPTIC "Nollst\201ll    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Bakgrundsljus" TR_FSW_BG_MUSIC TR_TEST
+#ifdef DEBUG
+#define TR_FSW_TEST          "Test\0        "
+#else
+#define TR_FSW_TEST
+#endif
+#define TR_VFSWFUNC      "S\201kra\0       ""Trainer\0     ""S\201tt Trim    " TR_SOUND TR_HAPTIC "Nollst\201ll    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Bakgrundsljus" TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Allt  ""Telem."
@@ -241,7 +246,8 @@
 #define TR_FADEIN       "Tona In"
 #define TR_FADEOUT      "Tona Ut"
 #define TR_DEFAULT      "Standard"
-#define TR_CHECKTRIMS   "Kolla\005Trimmar"
+#define TR_CHECKTRIMS   "\003Kolla\005Trimmar"
+#define OFS_CHECKTRIMS  (9*FW)
 #define TR_SWASHTYPE    "Swashtyp"
 #define TR_COLLECTIVE   "Kollektiv"
 #define TR_SWASHRING    "Swashring"
@@ -276,6 +282,7 @@
 #define TR_SLOWUP       "Tr\202ghet Upp"
 #define TR_MIXER        "MIXAR"
 #define TR_CV           "KU"
+#define TR_GV           "GV"
 #define TR_ACHANNEL     "A\002kanal  "
 #define TR_RANGE        "Omr\200de"
 #define TR_BAR          "Data"

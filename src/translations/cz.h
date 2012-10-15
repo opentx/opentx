@@ -129,12 +129,17 @@
 #define TR_FSW_VOLUME
 #define TR_FSW_BG_MUSIC
 #endif
-#ifdef DEBUG
-#define TR_TEST          "Test\0        "
+#ifdef GVARS
+#define TR_FSW_ADJUST_GVAR  "Adjust \0     "
 #else
-#define TR_TEST
+#define TR_FSW_ADJUST_GVAR
 #endif
-#define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Podsv\203tlen\204\0 " TR_FSW_BG_MUSIC TR_TEST
+#ifdef DEBUG
+#define TR_FSW_TEST          "Test\0        "
+#else
+#define TR_FSW_TEST
+#endif
+#define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Podsv\203tlen\204\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""V\207e   ""Telem."
@@ -244,7 +249,8 @@
 #define TR_FADEIN       "P\206echod Zap"
 #define TR_FADEOUT      "P\206echod Vyp"
 #define TR_DEFAULT      "(v\212choz\204)"
-#define TR_CHECKTRIMS   "Kont. \002  Trimy"
+#define TR_CHECKTRIMS   "\003Kont.\005Trimy"
+#define OFS_CHECKTRIMS  (9*FW)
 #define TR_SWASHTYPE    "Typ Cykliky"
 #define TR_COLLECTIVE   "Kolektiv"
 #define TR_SWASHRING    "Cyklika"
@@ -279,6 +285,7 @@
 #define TR_SLOWUP       "Zpomalen\204(+)"
 #define TR_MIXER        "MIXER"
 #define TR_CV           "CV"
+#define TR_GV           "GV"
 #define TR_ACHANNEL     "A\002Kan\200l"
 #define TR_RANGE        "Rozsah"
 #define TR_BAR          "Bar"

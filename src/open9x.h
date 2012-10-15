@@ -661,7 +661,7 @@ extern uint8_t s_perout_mode;
 
 void    perOut(uint8_t tick10ms);
 void    perMain();
-NOINLINE void    per10ms();
+NOINLINE void per10ms();
 
 int16_t getValue(uint8_t i);
 bool    getSwitch(int8_t swtch, bool nc);
@@ -689,6 +689,12 @@ inline bool navigationRotaryEncoder(uint8_t event)
 {
   return g_eeGeneral.reNavigation == ((event & EVT_KEY_MASK) - BTN_REa + 1);
 }
+#endif
+
+#if defined(GVARS)
+int8_t REG(int8_t x, int8_t min, int8_t max);
+#else
+#define REG(x, min, max) (x)
 #endif
 
 extern uint16_t s_timeCumTot;

@@ -193,9 +193,9 @@ CURVES = YES
 # Values = YES, NO
 XCURVES = YES
 
-# Registers
+# Global Vars
 # Values = YES, NO
-REGISTERS = NO
+GVARS = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -364,8 +364,8 @@ ifeq ($(XCURVES), YES)
   CPPDEFS += -DXCURVES
 endif
 
-ifeq ($(REGISTERS), YES)
-  CPPDEFS += -DREGISTERS
+ifeq ($(GVARS), YES)
+  CPPDEFS += -DGVARS
 endif
 
 # If STD-Support is enabled

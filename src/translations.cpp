@@ -152,6 +152,7 @@ const pm_char STR_SLOWDOWN[] PROGMEM = TR_SLOWDOWN;
 const pm_char STR_SLOWUP[] PROGMEM = TR_SLOWUP;
 const pm_char STR_MIXER[] PROGMEM = TR_MIXER;
 const pm_char STR_CV[] PROGMEM = TR_CV;
+const pm_char STR_GV[] PROGMEM = TR_GV;
 const pm_char STR_ACHANNEL[] PROGMEM = TR_ACHANNEL;
 const pm_char STR_RANGE[] PROGMEM = TR_RANGE;
 const pm_char STR_BAR[] PROGMEM = TR_BAR;
@@ -286,7 +287,7 @@ const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
 
 #if defined(ROTARY_ENCODERS)
 const pm_char STR_BACK[] PROGMEM = TR_BACK;
-const pm_char STR_MIXERWEIGHT[] PROGMEM = TR_MIXERWEIGHT;
+const pm_char STR_MIXERWEIGHT[] PROGMEM = TR_MIXERWEIGHT; // TODO remove them
 const pm_char STR_MIXEROFFSET[] PROGMEM = TR_MIXEROFFSET;
 const pm_char STR_DRWEIGHT[] PROGMEM = TR_DRWEIGHT;
 const pm_char STR_DREXPO[] PROGMEM = TR_DREXPO;

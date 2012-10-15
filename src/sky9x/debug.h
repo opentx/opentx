@@ -36,7 +36,7 @@
 
 #include <inttypes.h>
 
-#if defined(DEBUG)
+#if defined(DEBUG) && !defined(SIMU)
 
 #ifdef __cplusplus
 extern "C" {
