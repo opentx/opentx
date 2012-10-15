@@ -1941,8 +1941,6 @@ uint8_t fnSwitchDuration[NUM_FSW] = { 0 };
 
 void evalFunctions()
 {
-  assert((int)(sizeof(activeFunctions)*8) > (int)(FUNC_MAX-FUNC_TRAINER));
-
   MASK_FUNC_TYPE newActiveFunctions = 0;
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
