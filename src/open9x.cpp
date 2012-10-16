@@ -1982,7 +1982,7 @@ void evalFunctions()
 #else
       if (getSwitch(swtch, 0)) {
 #endif
-        if (sd->delay) {
+        if (sd->active) {
           if (sd->func < FUNC_TRAINER) {
             safetyCh[sd->func] = FSW_PARAM(sd);
           }

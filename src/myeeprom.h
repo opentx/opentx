@@ -389,15 +389,15 @@ PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
   uint8_t func;
   char param[6];
-  uint8_t delay;
+  uint8_t active;
   uint8_t spare;
 }) FuncSwData;
 #define FSW_PARAM(p) (*((uint32_t*)(p)->param))
 #else
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
-  uint8_t func:5;
-  uint8_t delay:3;
+  uint8_t func:7;
+  uint8_t active:1;
   uint8_t param;
 }) FuncSwData;
 #define FSW_PARAM(p) ((p)->param)

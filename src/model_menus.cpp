@@ -2620,11 +2620,11 @@ void menuModelFunctionSwitches(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          if (sd->func <= FUNC_TRAINER_AIL && sd->delay) {
+          if (sd->func <= FUNC_TRAINER_AIL && sd->active) {
             if (sd->swtch > MAX_SWITCH+1) sd->swtch -= (MAX_SWITCH+1);
             if (sd->swtch < -MAX_SWITCH-1) sd->swtch += (MAX_SWITCH+1);
           }
-          putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func > FUNC_INSTANT_TRIM || sd->delay)) ? BOLD : 0));
+          putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func > FUNC_INSTANT_TRIM || sd->active)) ? BOLD : 0));
           if (active || AUTOSWITCH_MENU_LONG()) {
 #if defined(PCBSKY9X)
             CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1+2*MAX_PSWITCH);
@@ -2769,11 +2769,11 @@ void menuModelFunctionSwitches(uint8_t event)
         case 3:
           if (sd->swtch && sd->func <= FUNC_INSTANT_TRIM) {
 #if defined(GRAPHICS)
-            menu_lcd_onoff(20*FW, y, sd->delay, attr);
+            menu_lcd_onoff(20*FW, y, sd->active, attr);
 #else
-            menu_lcd_onoff(18*FW+2, y, sd->delay, attr) ;
+            menu_lcd_onoff(18*FW+2, y, sd->active, attr) ;
 #endif
-            if (active) CHECK_INCDEC_MODELVAR(event, sd->delay, 0, 1);
+            if (active) CHECK_INCDEC_MODELVAR(event, sd->active, 0, 1);
           }
           else if (attr) {
             m_posHorz = 0;

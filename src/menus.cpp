@@ -634,6 +634,7 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
 {
   bool invers = attr&INVERS;
   if (invers && event == EVT_KEY_LONG(KEY_MENU)) {
+    s_editMode = !s_editMode;
     value = ((value >= 126 || value <= -126) ? REG(value, min, max) : 126);
     eeDirty(EE_MODEL);
   }
