@@ -218,7 +218,7 @@ uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label,
 int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t event);
 int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event);
 #if defined(GVARS)
-void displayGVar(uint8_t x, uint8_t y, int8_t value);
+#define displayGVar(x, y, v) gvarMenuItem(x, y, v, 0, 0, 0, 0)
 #else
 #define displayGVar(x, y, v) lcd_outdez8(x, y, v)
 #endif

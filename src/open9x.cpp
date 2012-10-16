@@ -933,20 +933,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 #if defined(GVARS)
 int8_t REG(int8_t x, int8_t min, int8_t max)
 {
-  int8_t result = x;
-  if (x >= 126 || x <= -126) {
-    x = (uint8_t)x - 126;
-    result = REG_VALUE(x);
-    if (result < min) {
-      REG_VALUE(x) = result = min;
-      eeDirty(EE_MODEL);
-    }
-    if (result > max) {
-      REG_VALUE(x) = result = max;
-      eeDirty(EE_MODEL);
-    }
-  }
-  return result;
+  return (x >= 126 || x <= -126) ? limit(min, REG_VALUE((uint8_t)x - 126), max) : x;
 }
 #endif
 
