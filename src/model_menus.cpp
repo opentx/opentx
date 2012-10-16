@@ -456,10 +456,10 @@ void menuModelSelect(uint8_t event)
       putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, size, 0);
 #endif
-      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=sub)) lcd_putc(1, y, '*');
+      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=(pgofs_t)sub)) lcd_putc(1, y, '*');
     }
 
-    if (s_copyMode && sub==i+s_pgOfs) {
+    if (s_copyMode && (pgofs_t)sub==i+s_pgOfs) {
       lcd_filled_rect(9, y, DISPLAY_W-1-9, 7);
       lcd_rect(8, y-1, DISPLAY_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
@@ -2173,23 +2173,19 @@ void menuModelLimits(uint8_t event)
           break;
         case ITEM_LIMITS_MIN:
 #ifdef PPM_LIMITS_UNIT_US
-          lcd_outdezAtt(12*FW+1, y, (((int16_t)ld->min-100)*128) / 25, attr | INFLIGHT(ld->min));
+          lcd_outdezAtt(12*FW+1, y, (((int16_t)ld->min-100)*128) / 25, attr);
 #else
-          lcd_outdezAtt(12*FW, y, (int8_t)(ld->min-100), attr | INFLIGHT(ld->min));
+          lcd_outdezAtt(12*FW, y, (int8_t)(ld->min-100), attr);
 #endif
-          if (active) {
-            CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->min, -limit, 25, +100, STR_MINLIMIT);
-          }
+          if (active) ld->min = 100 + checkIncDec(event, ld->min-100, -limit, 25, EE_MODEL);
           break;
         case ITEM_LIMITS_MAX:
 #ifdef PPM_LIMITS_UNIT_US
-          lcd_outdezAtt(LIMITS_MAX_POS, y, (((int16_t)ld->max+100)*128) / 25, attr | INFLIGHT(ld->max));
+          lcd_outdezAtt(LIMITS_MAX_POS, y, (((int16_t)ld->max+100)*128) / 25, attr);
 #else
-          lcd_outdezAtt(LIMITS_MAX_POS, y, (int8_t)(ld->max+100), attr | INFLIGHT(ld->max));
+          lcd_outdezAtt(LIMITS_MAX_POS, y, (int8_t)(ld->max+100), attr);
 #endif
-          if (active) {
-            CHECK_INFLIGHT_INCDEC_MODELVAR(event, ld->max, -25, limit, -100, STR_MAXLIMIT);
-          }
+          if (active) ld->max = -100 + checkIncDec(event, ld->max+100, -25, limit, EE_MODEL);
           break;
         case ITEM_LIMITS_DIRECTION:
 #ifdef PPM_CENTER_ADJUSTABLE
@@ -2306,14 +2302,14 @@ void menuModelCurvesAll(uint8_t event)
 #if defined(PCBSKY9X)
       putsStrIdx(0, y, STR_GV, k-MAX_CURVES+1, attr);
       if (sub >= MAX_CURVES) {
-        lcd_outdezAtt(10*FW, y, REG_VALUE(k-MAX_CURVES));
+        lcd_outdezAtt(10*FW, y, GVAR_VALUE(k-MAX_CURVES));
         lcd_putsnAtt(12*FW, y, g_model.gvars[k-MAX_CURVES].name, sizeof(g_model.gvars[k-MAX_CURVES].name), ZCHAR);
       }
 #else
       putsStrIdx(0, y, STR_GV, k-MAX_CURVES+1);
       if (sub >= MAX_CURVES) {
         if (attr && s_editMode>0) attr |= BLINK;
-        lcd_outdezAtt(10*FW, y, REG_VALUE(k-MAX_CURVES), attr);
+        lcd_outdezAtt(10*FW, y, GVAR_VALUE(k-MAX_CURVES), attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.gvars[k-MAX_CURVES], -125, 125);
       }
 #endif

@@ -54,10 +54,12 @@ void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 #endif
 
 #if defined(SDCARD)
-extern uint16_t s_pgOfs;
+typedef uint16_t pgofs_t;
 #else
-extern uint8_t s_pgOfs;
+typedef uint8_t pgofs_t;
 #endif
+
+extern pgofs_t s_pgOfs;
 extern uint8_t s_noHi;
 extern uint8_t s_noScroll;
 
@@ -135,32 +137,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecGen(event,var,min,max)
 
 #if defined(ROTARY_ENCODERS)
-extern bool s_inflight_enable;
-extern int8_t *s_inflight_value;
-extern const pm_char *s_inflight_label;
-extern int8_t s_inflight_min;
-extern int8_t s_inflight_max;
-extern int8_t s_inflight_shift;
-extern uint8_t s_inflight_bitshift;
-#if defined(PCBGRUVIN9X)
-#define PREPARE_INFLIGHT_BITFIELD(a) int8_t *bitfield = (a)
-#endif
-#define INFLIGHT(val) (s_inflight_value==&val ? SURROUNDED : 0)
-void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t i_max, int8_t i_shift, const pm_char *label, uint8_t bitshift=0);
-#define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, imin, imax, ishift, label) \
-  checkInFlightIncDecModel(event, &var, imin, imax, ishift, label)
-#if defined(PCBGRUVIN9X)
-#define CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, var, imin, imax, ishift, label, bitshift) \
-  checkInFlightIncDecModel(event, bitfield, imin, imax, ishift, label, bitshift);
-#endif
 void check_rotary_encoder();
-#else
-#define PREPARE_INFLIGHT_BITFIELD(a)
-#define INFLIGHT(val) 0
-#define CHECK_INFLIGHT_INCDEC_MODELVAR(event, var, min, max, shift, label) \
-  var = shift+checkIncDecModel(event,var-(shift),min,max)
-#define CHECK_INFLIGHT_INCDEC_MODELVAR_BITFIELD(event, var, min, max, shift, label, bitshift) \
-    var = shift+checkIncDecModel(event,var-(shift),min,max)
 #endif
 
 // Menus related stuff ...

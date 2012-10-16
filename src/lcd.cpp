@@ -214,12 +214,12 @@ void lcd_putsAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t mode)
 
 void lcd_puts(xcoord_t x,uint8_t y,const pm_char * s)
 {
-  lcd_putsAtt( x, y, s, 0);
+  lcd_putsAtt(x, y, s, 0);
 }
 
 void lcd_putsLeft(uint8_t y, const pm_char * s)
 {
-  lcd_putsAtt(0, y, s, 0);
+  lcd_puts(0, y, s);
 }
 
 void lcd_outhex4(xcoord_t x,uint8_t y,uint16_t val)
@@ -243,19 +243,6 @@ void lcd_outdezAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags)
 {
   lcd_outdezNAtt(x, y, val, flags);
 }
-
-// TODO use doxygen style comments here
-
-/*
-USAGE:
-  lcd_outdezNAtt(x-coord, y-coord, (un)signed-value{0..65535|0..+/-32768}, 
-                  mode_flags, length)
-
-  Available mode_flas: PREC{1..3}, UNSIGN (for programmer selected signed numbers
-                  to allow for unsigned values up to the ful 65535 16-bit limt))
-
-  LEADING0 means pad 0 to the left of sig. digits up to 'len' total characters
-*/
 
 void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t len)
 {
@@ -340,14 +327,6 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   }
 
   if (neg) lcd_putcAtt(x, y, '-', flags);
-
-#if defined(ROTARY_ENCODERS)
-  if (flags & SURROUNDED) {
-    xn = lcdLastPos - x + 2;
-    if (!neg) { x+=FW; xn-=FW; }
-    lcd_rect(x-1, y-1, xn, 9, BLINK_ON_PHASE ? DOTTED : ~DOTTED);
-  }
-#endif
 }
 
 void lcd_mask(uint8_t *p, uint8_t mask, uint8_t att)
@@ -469,13 +448,11 @@ void lcd_vline(xcoord_t x, int8_t y, int8_t h)
 
 void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat, uint8_t att)
 {
-  if (!((att & BLINK) && BLINK_ON_PHASE)) {
-    lcd_vlineStip(x, y, h, pat);
-    lcd_vlineStip(x+w-1, y, h, pat);
-    if (~att & ROUND) { x+=1; w-=2; }
-    lcd_hlineStip(x, y+h-1, w, pat);
-    lcd_hlineStip(x, y, w, pat);
-  }
+  lcd_vlineStip(x, y, h, pat);
+  lcd_vlineStip(x+w-1, y, h, pat);
+  if (~att & ROUND) { x+=1; w-=2; }
+  lcd_hlineStip(x, y+h-1, w, pat);
+  lcd_hlineStip(x, y, w, pat);
 }
 
 void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat, uint8_t att)
@@ -528,9 +505,9 @@ void putsVBat(xcoord_t x, uint8_t y, uint8_t att)
 
 void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t att)
 {
-  lcd_putsAtt(x, y, str, att & ~BSS); // TODO use something else than BSS for LEADING0
+  lcd_putsAtt(x, y, str, att);
   lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
-  lcd_putsAtt(x, y, str, att & ~BSS); // TODO use something else than BSS for LEADING0
+  lcd_putsAtt(x, y, str, att);
 }
 
 void putsChnRaw(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att)
@@ -545,12 +522,6 @@ void putsChnRaw(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att)
     putsStrIdx(x, y, STR_CH, idx - (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM), att);
   else
     lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM+NUM_CHNOUT), att);
-}
-
-void putsChn(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att)
-{
-  if (idx > 0 && idx <= NUM_CHNOUT)
-    putsChnRaw(x, y, idx+(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM), att);
 }
 
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att)

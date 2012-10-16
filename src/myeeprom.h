@@ -729,10 +729,10 @@ PACK(typedef struct {
   int8_t value;
   char name[6];
 }) model_gvar_t;
-#define REG_VALUE(x) g_model.gvars[x].value
+#define GVAR_VALUE(x) g_model.gvars[x].value
 #else
 typedef int8_t model_gvar_t;
-#define REG_VALUE(x) g_model.gvars[x]
+#define GVAR_VALUE(x) g_model.gvars[x]
 #endif
 
 #if defined(GVARS)

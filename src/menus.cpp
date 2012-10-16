@@ -33,11 +33,7 @@
 
 #include "open9x.h"
 
-#if defined(SDCARD)
-uint16_t s_pgOfs;
-#else
-uint8_t s_pgOfs;
-#endif
+pgofs_t s_pgOfs;
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t s_noScroll;
@@ -206,24 +202,18 @@ bool check_submenu_simple(uint8_t event, uint8_t maxrow)
 }
 
 #if defined(ROTARY_ENCODERS)
-
-#if defined(PCBSKY9X)
-#define ROTARY_ENCODER_GRANULARITY 4
-#else
-#define ROTARY_ENCODER_GRANULARITY 1
-#endif
-
 void check_rotary_encoder()
 {
   // check rotary encoder 1 if changed -> cursor down/up
-  static int16_t re1valprev;
+  static int16_t rePreviousValue;
 
   if (g_eeGeneral.reNavigation) {
     uint8_t re = g_eeGeneral.reNavigation - 1;
     p1valdiff = 0;
-    scrollRE = re1valprev - (g_rotenc[re] / ROTARY_ENCODER_GRANULARITY);
+    int16_t reNewValue = (g_rotenc[re] / ROTARY_ENCODER_GRANULARITY);
+    scrollRE = rePreviousValue - reNewValue;
     if (scrollRE) {
-      re1valprev = (g_rotenc[re] / ROTARY_ENCODER_GRANULARITY);
+      rePreviousValue = reNewValue;
       if (s_editMode > 0) {
         p1valdiff = -scrollRE;
         scrollRE = 0;
@@ -231,7 +221,7 @@ void check_rotary_encoder()
     }
   }
   else {
-    re1valprev = 0;
+    rePreviousValue = 0;
     p1valdiff = 0;
     scrollRE = 0;
   }
@@ -519,9 +509,6 @@ void popMenu()
 
 void chainMenu(MenuFuncP newMenu)
 {
-#if defined(ROTARY_ENCODERS)
-  s_inflight_enable = false;
-#endif
   g_menuStack[g_menuStackPtr] = newMenu;
   (*newMenu)(EVT_ENTRY);
   AUDIO_MENUS();
@@ -529,10 +516,6 @@ void chainMenu(MenuFuncP newMenu)
 
 void pushMenu(MenuFuncP newMenu)
 {
-#if defined(ROTARY_ENCODERS)
-  s_inflight_enable = false;
-#endif
-
   if (g_menuStackPtr == 0) {
     if (newMenu == menuGeneralSetup)
       g_menuPos[0] = 1;
@@ -635,7 +618,7 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
   bool invers = attr&INVERS;
   if (invers && event == EVT_KEY_LONG(KEY_MENU)) {
     s_editMode = !s_editMode;
-    value = ((value >= 126 || value <= -126) ? REG(value, min, max) : 126);
+    value = ((value >= 126 || value <= -126) ? GVAR(value, min, max) : 126);
     eeDirty(EE_MODEL);
   }
   if (value >= 126 || value <= -126) {
@@ -744,34 +727,5 @@ void drawStatusLine()
 
 #endif
 
-#if defined(ROTARY_ENCODERS)
-bool s_inflight_enable = false;
-int8_t *s_inflight_value = NULL;
-int8_t s_inflight_min;
-int8_t s_inflight_max;
-int8_t s_inflight_shift;
-uint8_t s_inflight_bitshift;
-const pm_char *s_inflight_label;
-
-void checkInFlightIncDecModel(uint8_t event, int8_t *value, int8_t i_min, int8_t i_max, int8_t i_shift, const pm_char *label, uint8_t bitshift)
-{
-  *value = (((uint8_t)(*value)) & ((1 << bitshift) - 1)) + ((i_shift + checkIncDecModel(event, (((uint8_t)(*value)) >> bitshift)-i_shift, i_min, i_max)) << bitshift);
-
-  if (g_eeGeneral.reNavigation && event == EVT_KEY_LONG(BTN_REa+g_eeGeneral.reNavigation-1)) {
-    if (value == s_inflight_value) {
-      s_inflight_value = NULL;
-    }
-    else {
-      s_inflight_value = value;
-      s_inflight_min = i_min;
-      s_inflight_max = i_max;
-      s_inflight_shift = i_shift;
-      s_inflight_label = label;
-      s_inflight_bitshift = bitshift;
-    }
-  }
-}
-
-#endif
 
 

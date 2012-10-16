@@ -161,11 +161,6 @@ void menuMainView(uint8_t event)
       else if (s_global_warning) {
         s_global_warning = NULL;
       }
-#if defined(ROTARY_ENCODERS)
-      else if (s_inflight_enable) {
-        s_inflight_enable = false;
-      }
-#endif
       else if (view == e_timer2) {
         resetTimer(1);
       }
@@ -183,23 +178,6 @@ void menuMainView(uint8_t event)
       killEvents(KEY_UP);
       killEvents(KEY_DOWN);
       break;
-#if defined(ROTARY_ENCODERS)
-    case EVT_KEY_LONG(BTN_REa):
-    case EVT_KEY_LONG(BTN_REb):
-      if (navigationRotaryEncoder(event)) {
-        killEvents(event);
-        if (s_inflight_value && !s_inflight_enable) {
-          s_inflight_enable = true;
-          s_editMode = 1;
-          break;
-        }
-      }
-      // no break
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      s_inflight_enable = false;
-      break;
-#endif
   }
 
   {
@@ -403,25 +381,25 @@ void menuMainView(uint8_t event)
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 
-  if (s_global_warning) {
+  if (s_warning) {
+    // Nothing here
+  }
+  else if (s_global_warning) {
     s_warning = s_global_warning;
     displayWarning(_event);
     if (!s_warning) s_global_warning = NULL;
     s_warning = NULL;
   }
 
-#if defined(ROTARY_ENCODERS)
-  check_rotary_encoder();
-  if (s_inflight_enable && !s_warning) {
-    int8_t value = (((uint8_t)(*s_inflight_value)) >> s_inflight_bitshift) - s_inflight_shift;
-    if (p1valdiff) {
-      value = checkIncDecModel(event, value, s_inflight_min, s_inflight_max);
-      *s_inflight_value = (((uint8_t)(*s_inflight_value)) & ((1 << s_inflight_bitshift) - 1)) + ((s_inflight_shift + value) << s_inflight_bitshift);
-    }
-    s_warning = s_inflight_label;
+#if defined(GVARS) && defined(PCBSKY9X)
+  else if (s_gvar_timer > 0) {
+    s_gvar_timer--;
+    s_warning = PSTR("Global Variable");
     displayBox();
-    s_warning = 0;
-    lcd_outdezAtt(16, 4*FH, value, LEFT);
+    lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, sizeof(g_model.gvars[s_gvar_last].name), ZCHAR);
+    lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\004]"), BOLD);
+    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, g_model.gvars[s_gvar_last].value, BOLD);
+    s_warning = NULL;
   }
 #endif
 

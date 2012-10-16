@@ -64,7 +64,7 @@
 #define CONDENSED     0x08
 
 /* lcd puts flags */
-#define BSS           0x10
+#define BSS           0x80 /* no 0x10 here to save flash as it is possible to have LEADING0 (putsStrIdx) */
 #define ZCHAR         0x20
 
 /* lcd outdez flags */
@@ -86,8 +86,6 @@
 
 /* telemetry flags */
 #define NO_UNIT       0x40
-
-#define SURROUNDED    0x100
 
 #if defined(PCBSKY9X)
 #define LcdFlags uint32_t
@@ -139,7 +137,7 @@ void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, ui
 #endif
 
 extern void putsChnRaw(xcoord_t x,uint8_t y,uint8_t idx1,uint8_t att);
-extern void putsChn(xcoord_t x,uint8_t y,uint8_t idx1,uint8_t att);
+#define putsChn(x, y, idx, att) putsChnRaw(x, y, (idx)+(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM), att)
 extern void putsChnLetter(xcoord_t x, uint8_t y, uint8_t idx, uint8_t attr);
 
 extern void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, uint8_t att);

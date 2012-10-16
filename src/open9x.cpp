@@ -447,9 +447,9 @@ void applyExpos(int16_t *anas)
           if (ed.curveMode == MODE_CURVE)
             v = applyCurve(v, curveParam);
           else
-            v = expo(v, REG(curveParam, -100, 100));
+            v = expo(v, GVAR(curveParam, -100, 100));
         }
-        v = ((int32_t)v * REG(ed.weight, 0, 100)) / 100;
+        v = ((int32_t)v * GVAR(ed.weight, 0, 100)) / 100;
         anas[cur_chn] = v;
       }
     }
@@ -931,9 +931,26 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 #endif
 
 #if defined(GVARS)
-int8_t REG(int8_t x, int8_t min, int8_t max)
+int8_t GVAR(int8_t x, int8_t min, int8_t max)
 {
-  return (x >= 126 || x <= -126) ? limit(min, REG_VALUE((uint8_t)x - 126), max) : x;
+  return (x >= 126 || x <= -126) ? limit(min, GVAR_VALUE((uint8_t)x - 126), max) : x;
+}
+
+#if defined(PCBSKY9X)
+uint8_t s_gvar_timer = 0;
+uint8_t s_gvar_last = 0;
+#endif
+
+void setGVarValue(uint8_t x, int8_t value)
+{
+  if (GVAR_VALUE(x) != value) {
+    GVAR_VALUE(x) = value;
+    eeDirty(EE_MODEL);
+#if defined(PCBSKY9X)
+    s_gvar_last = x;
+    s_gvar_timer = GVAR_DISPLAY_TIME;
+#endif
+  }
 }
 #endif
 
@@ -1322,10 +1339,17 @@ void checkTrims()
     }
 
 #if defined(GVARS)
-    if (TRIM_REUSED())
+    if (TRIM_REUSED()) {
       *trimPtr[idx] = after;
-    else
+      eeDirty(EE_MODEL);
+#if defined(PCBSKY9X)
+      s_gvar_last = (trimPtr[idx] - &g_model.gvars[0].value) / sizeof(g_model.gvars[0]);
+      s_gvar_timer = GVAR_DISPLAY_TIME;
+#endif
+    }
+    else {
       setTrimValue(phase, idx, after);
+    }
 #else
     setTrimValue(phase, idx, after);
 #endif
@@ -1930,6 +1954,10 @@ void evalFunctions()
 {
   MASK_FUNC_TYPE newActiveFunctions = 0;
 
+#if defined(ROTARY_ENCODERS) && defined(GVARS)
+  static rotenc_t rePreviousValues[ROTARY_ENCODERS];
+#endif
+
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
     safetyCh[i] = -128; // not defined
 
@@ -2099,10 +2127,18 @@ void evalFunctions()
 #if defined(GVARS)
           else if (sd->func >= FUNC_ADJUST_GV1) {
             if (FSW_PARAM(sd) >= MIXSRC_TrimRud-1 && FSW_PARAM(sd) <= MIXSRC_TrimAil-1) {
-              trimPtr[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = &REG_VALUE(sd->func-FUNC_ADJUST_GV1);
+              trimPtr[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = &GVAR_VALUE(sd->func-FUNC_ADJUST_GV1);
             }
+#if defined(ROTARY_ENCODERS)
+            else if (FSW_PARAM(sd) >= MIXSRC_REa-1 && FSW_PARAM(sd) < MIXSRC_TrimRud-1) {
+              int8_t scroll = rePreviousValues[FSW_PARAM(sd)-MIXSRC_REa+1] - (g_rotenc[FSW_PARAM(sd)-MIXSRC_REa+1] / ROTARY_ENCODER_GRANULARITY);
+              if (scroll) {
+                setGVarValue(sd->func-FUNC_ADJUST_GV1, GVAR_VALUE(sd->func-FUNC_ADJUST_GV1) + scroll);
+              }
+            }
+#endif
             else {
-              REG_VALUE(sd->func-FUNC_ADJUST_GV1) = limit((int16_t)-1250, getValue(FSW_PARAM(sd)), (int16_t)1250) / 10;
+              setGVarValue(sd->func-FUNC_ADJUST_GV1, limit((int16_t)-1250, getValue(FSW_PARAM(sd)), (int16_t)1250) / 10);
             }
           }
 #endif
@@ -2141,6 +2177,11 @@ void evalFunctions()
   }
 
   activeFunctions = newActiveFunctions;
+
+#if defined(ROTARY_ENCODERS) && defined(GVARS)
+  for (uint8_t i=0; i<ROTARY_ENCODERS; i++)
+    rePreviousValues[i] = (g_rotenc[i] / ROTARY_ENCODER_GRANULARITY);
+#endif
 }
 
 uint8_t s_perout_flight_phase;
@@ -2328,7 +2369,7 @@ void perOut(uint8_t tick10ms)
 
     //========== OFFSET ===============
     if (apply_offset) {
-      int8_t offset = REG(md->sOffset, -125, 125);
+      int8_t offset = GVAR(md->sOffset, -125, 125);
       if (offset) v += calc100toRESX(offset);
     }
 
@@ -2345,7 +2386,7 @@ void perOut(uint8_t tick10ms)
         v += trims[mix_trim];
     }
 
-    int8_t weight = REG(md->weight, -125, 125);
+    int8_t weight = GVAR(md->weight, -125, 125);
 
     //========== SPEED ===============
     if (s_perout_mode == e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
@@ -2385,7 +2426,7 @@ void perOut(uint8_t tick10ms)
 
     //========== DIFFERENTIAL =========
     if (md->curveMode == MODE_DIFFERENTIAL) {
-      int8_t curveParam = REG(md->curveParam, -100, 100);
+      int8_t curveParam = GVAR(md->curveParam, -100, 100);
       if (curveParam>0 && dv<0)
         dv = (dv * (100-curveParam)) / 100;
       else if (curveParam<0 && dv>0)
@@ -3247,12 +3288,7 @@ void saveTimers()
 #endif
 
 #if defined(ROTARY_ENCODERS)
-// Rotary encoder interrupts
-#if defined(PCBSKY9X)
-volatile uint32_t g_rotenc[ROTARY_ENCODERS] = {0};
-#else
-volatile uint8_t g_rotenc[ROTARY_ENCODERS] = {0};
-#endif
+volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};
 #endif
 
 #ifndef SIMU

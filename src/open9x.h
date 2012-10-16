@@ -689,12 +689,22 @@ inline bool navigationRotaryEncoder(uint8_t event)
 {
   return g_eeGeneral.reNavigation == ((event & EVT_KEY_MASK) - BTN_REa + 1);
 }
+#if defined(PCBSKY9X)
+#define ROTARY_ENCODER_GRANULARITY 4
+#else
+#define ROTARY_ENCODER_GRANULARITY 1
+#endif
 #endif
 
 #if defined(GVARS)
-int8_t REG(int8_t x, int8_t min, int8_t max);
+int8_t GVAR(int8_t x, int8_t min, int8_t max);
+#if defined(PCBSKY9X)
+#define GVAR_DISPLAY_TIME     100 /*1 second*/;
+extern uint8_t s_gvar_timer;
+extern uint8_t s_gvar_last;
+#endif
 #else
-#define REG(x, min, max) (x)
+#define GVAR(x, min, max) (x)
 #endif
 
 extern uint16_t s_timeCumTot;
@@ -1041,12 +1051,13 @@ inline bool isFunctionActive(uint8_t func)
 }
 
 #if defined(ROTARY_ENCODERS)
-// Global rotary encoder registers -- 8-bit, 0-255
+// Global rotary encoder registers
 #if defined(PCBSKY9X)
-extern volatile uint32_t g_rotenc[ROTARY_ENCODERS];
+typedef uint32_t rotenc_t;
 #else
-extern volatile uint8_t g_rotenc[ROTARY_ENCODERS];
+typedef uint8_t rotenc_t;
 #endif
+extern volatile rotenc_t g_rotenc[ROTARY_ENCODERS];
 #endif
 
 #ifdef JETI

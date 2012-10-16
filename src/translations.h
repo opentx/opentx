@@ -365,15 +365,10 @@ extern const pm_char STR_INVERT_THR[];
 #if defined(ROTARY_ENCODERS)
 extern const pm_char STR_BACK[];
 #define LEN_BACK PSIZE(TR_BACK)
-extern const pm_char STR_MIXERWEIGHT[];
-extern const pm_char STR_MIXEROFFSET[];
-extern const pm_char STR_DRWEIGHT[];
-extern const pm_char STR_DREXPO[];
-extern const pm_char STR_MAXLIMIT[];
 #endif
 
-#if defined(ROTARY_ENCODERS) || defined(FRSKY)
-extern const pm_char STR_MINLIMIT[];
+#if defined(FRSKY)
+extern const pm_char STR_LIMIT[];
 #endif
 
 #ifdef FRSKY_HUB
