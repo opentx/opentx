@@ -137,25 +137,28 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
 
 #if defined(AUTOSWITCH)
-  if (s_editMode>0 && (i_flags & INCDEC_SWITCH)) {
-    int8_t swtch = getMovedSwitch();
-    if (swtch) {
-      if (newval == DSW_TRN && swtch == DSW_TRN)
-        newval = -newval;
-      else
-        newval = swtch;
+  if (i_flags & INCDEC_SWITCH) {
+    if (s_editMode>0) {
+      int8_t swtch = getMovedSwitch();
+      if (swtch) {
+        if (newval == DSW_TRN && swtch == DSW_TRN)
+          newval = -newval;
+        else
+          newval = swtch;
+      }
     }
-  }
-  if (event == EVT_KEY_LONG(KEY_MENU) && i_max > SWITCH_ON) {
-    s_editMode = !s_editMode;
-    if (newval > SWITCH_ON)
-      newval -= (MAX_SWITCH+1);
-    else if (newval > 0)
-      newval += (MAX_SWITCH+1);
-    else if (newval < SWITCH_OFF)
-      newval += (MAX_SWITCH+1);
-    else if (newval < 0)
-      newval -= (MAX_SWITCH+1);
+
+    if (event == EVT_KEY_LONG(KEY_MENU) && i_max > SWITCH_ON) {
+      s_editMode = !s_editMode;
+      if (newval > SWITCH_ON)
+        newval -= (MAX_SWITCH+1);
+      else if (newval > 0)
+        newval += (MAX_SWITCH+1);
+      else if (newval < SWITCH_OFF)
+        newval += (MAX_SWITCH+1);
+      else if (newval < 0)
+        newval -= (MAX_SWITCH+1);
+    }
   }
 #endif
 
