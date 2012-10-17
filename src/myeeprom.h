@@ -528,7 +528,7 @@ enum FrskySource {
 };
 
 #if defined(PCBSKY9X)
-#define MAX_FRSKY_SCREENS 4
+#define MAX_FRSKY_SCREENS 3
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   FrSkyRSSIAlarm rssiAlarms[2];
@@ -536,6 +536,7 @@ PACK(typedef struct t_FrSkyData {
   uint8_t voltsSource;
   uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint8_t currentSource;
+  uint8_t screensType;
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
   uint8_t varioSource;
   uint8_t varioSpeedUpMin;    // if increment in 0.2m/s = 3.0m/s max
