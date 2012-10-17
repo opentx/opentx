@@ -100,7 +100,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_GPSFORMAT  (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
 #define OFS_VOLTSRC (OFS_GPSFORMAT + sizeof(TR_GPSFORMAT))
 #define OFS_VARIOSRC   (OFS_VOLTSRC + sizeof(TR_VOLTSRC))
-#define OFS_ENDTELEM   (OFS_VARIOSRC + sizeof(TR_VARIOSRC))
+#define OFS_VSCREEN    (OFS_VARIOSRC + sizeof(TR_VARIOSRC))
+#define OFS_ENDTELEM   (OFS_VSCREEN + sizeof(TR_VSCREEN))
 #else
 #define OFS_ENDTELEM   (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
 #endif
@@ -168,6 +169,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_GPSFORMAT  (STR_OPEN9X + OFS_GPSFORMAT)
 #define STR_VOLTSRC (STR_OPEN9X + OFS_VOLTSRC)
 #define STR_VARIOSRC   (STR_OPEN9X + OFS_VARIOSRC)
+#define STR_VSCREEN    (STR_OPEN9X + OFS_VSCREEN)
 #define STR_TELEMCHNS  (STR_OPEN9X + OFS_TELEMCHNS)
 #endif
 
@@ -266,8 +268,7 @@ extern const pm_char STR_BAR[];
 extern const pm_char STR_ALARM[];
 extern const pm_char STR_USRDATA[];
 extern const pm_char STR_BLADES[];
-extern const pm_char STR_BARS[];
-extern const pm_char STR_DISPLAY[];
+extern const pm_char STR_SCREEN[];
 extern const pm_char STR_BEEPERMODE[];
 extern const pm_char STR_BEEPERLEN[];
 extern const pm_char STR_SPKRPITCH[];

@@ -939,6 +939,11 @@ uint8_t maxTelemValue(uint8_t channel)
   }
 }
 
+int16_t convertBarValue(uint8_t bar, uint8_t value)
+{
+  return convertTelemValue(bar, (uint16_t)value * maxTelemValue(bar) / 31);
+}
+
 int16_t convertTelemValue(uint8_t channel, uint8_t value)
 {
   int16_t result;
@@ -1083,14 +1088,16 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 }
 
 enum FrskyViews {
-  e_frsky_custom,
-  e_frsky_bars,
+  e_frsky_custom_screen_1,
+  e_frsky_custom_screen_2,
+  IF_PCBSKY9X(e_frsky_custom_screen_3)
+  IF_PCBSKY9X(e_frsky_custom_screen_4)
   e_frsky_voltages,
   e_frsky_after_flight,
   FRSKY_VIEW_MAX = e_frsky_after_flight
 };
 
-static uint8_t s_frsky_view = e_frsky_custom;
+static uint8_t s_frsky_view = e_frsky_custom_screen_1;
 
 void displayRssiLine()
 {
@@ -1157,17 +1164,6 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 }
 #endif
 
-uint8_t getTelemCustomField(uint8_t line, uint8_t col)
-{
-#if defined(PCBSKY9X)
-  return g_model.frsky.lines[2*line+col];
-#else
-  uint8_t result = (col==0 ? (g_model.frsky.lines[line] & 0x0f) : ((g_model.frsky.lines[line] & 0xf0) / 16));
-  result += (((g_model.frsky.linesXtra >> (4*line+2*col)) & 0x03) * 16);
-  return result;
-#endif
-}
-
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 {
   return (50 + g_model.frsky.rssiAlarms[alarm].value);
@@ -1179,6 +1175,11 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
   putsTelemetryChannel(3*FW+6*FW+4, y, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
   lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
   lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
+}
+
+uint8_t barCoord(int16_t value, int16_t min, int16_t max)
+{
+  return limit((uint8_t)0, (uint8_t)(((int32_t)99 * (value - min)) / (max - min)), (uint8_t)100);
 }
 
 void menuTelemetryFrsky(uint8_t event)
@@ -1214,111 +1215,112 @@ void menuTelemetryFrsky(uint8_t event)
   lcd_filled_rect(0, 0, DISPLAY_W, 8);
 
   if (frskyStreaming >= 0) {
-    if (s_frsky_view == e_frsky_custom) {
-      // The custom view
-      uint8_t fields_count = 0;
-      for (uint8_t i=0; i<4; i++) {
-        for (uint8_t j=0; j<2; j++) {
-          uint8_t field = getTelemCustomField(i, j);
-          if (i==3 && j==0) {
-            lcd_vline(63, 8, 48);
-            if (frskyStreaming > 0) {
+    if (s_frsky_view < MAX_FRSKY_SCREENS) {
+      FrSkyScreenData & screen = g_model.frsky.screens[s_frsky_view];
+      if (g_model.frsky.screensType & (1<<s_frsky_view)) {
+        // Custom Screen with gauges
+        uint8_t barHeight = 5;
+        for (int8_t i=3; i>=0; i--) {
+          FrSkyBarData & bar = screen.bars[i];
+          uint8_t source = bar.source;
+          int16_t barMin = convertBarValue(source, bar.barMin);
+          int16_t barMax = convertBarValue(source, 31-bar.barMax);
+          if (source && barMax > barMin) {
+            uint8_t y = barHeight+6+i*(barHeight+6);
+            lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
+            lcd_rect(25, y, 101, barHeight+2);
+            int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+source-1);
+            int16_t threshold = 0;
+            uint8_t thresholdX = 0;
+            if (source <= TELEM_TM2)
+              threshold = 0;
+            else if (source <= TELEM_RSSI_RX)
+              threshold = getRssiAlarmValue(source-TELEM_RSSI_TX);
+            else if (source <= TELEM_A2)
+              threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
+  #if defined(FRSKY_HUB)
+            else
+              threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
+  #endif
+
+            if (threshold) {
+              thresholdX = barCoord(threshold, barMin, barMax);
+              if (thresholdX == 100)
+                thresholdX = 0;
+            }
+
+            uint8_t width = barCoord(value, barMin, barMax);
+
+            // reversed barshade for T1/T2
+            uint8_t barShade;
+            if (source == TELEM_T1 || source == TELEM_T2)
+              barShade = ((threshold < value) ? DOTTED : SOLID);
+            else
+              barShade = ((threshold > value) ? DOTTED : SOLID);
+
+            lcd_filled_rect(26, y+1, width, barHeight, barShade);
+
+            for (uint8_t j=50; j<125; j+=25)
+              if (j>26+thresholdX || j>26+width) lcd_vline(j, y+1, barHeight);
+
+            if (thresholdX) {
+              lcd_vlineStip(26+thresholdX, y-2, barHeight+3, DOTTED);
+              lcd_hline(25+thresholdX, y-2, 3);
+            }
+          }
+          else {
+            barHeight += 2;
+          }
+        }
+        displayRssiLine();
+      }
+      else {
+        // Custom Screen with numbers
+        uint8_t fields_count = 0;
+        for (uint8_t i=0; i<4; i++) {
+          for (uint8_t j=0; j<2; j++) {
+            uint8_t field = screen.lines[i].sources[j];
+            if (i==3 && j==0) {
+              lcd_vline(63, 8, 48);
+              if (frskyStreaming > 0) {
 #if defined(FRSKY_HUB)
-              if (field == TELEM_ACC) {
-                lcd_putsLeft(7*FH+1, STR_ACCEL);
-                lcd_outdezNAtt(4*FW, 7*FH+1, frskyData.hub.accelX, LEFT|PREC2);
-                lcd_outdezNAtt(10*FW, 7*FH+1, frskyData.hub.accelY, LEFT|PREC2);
-                lcd_outdezNAtt(16*FW, 7*FH+1, frskyData.hub.accelZ, LEFT|PREC2);
-                break;
+                if (field == TELEM_ACC) {
+                  lcd_putsLeft(7*FH+1, STR_ACCEL);
+                  lcd_outdezNAtt(4*FW, 7*FH+1, frskyData.hub.accelX, LEFT|PREC2);
+                  lcd_outdezNAtt(10*FW, 7*FH+1, frskyData.hub.accelY, LEFT|PREC2);
+                  lcd_outdezNAtt(16*FW, 7*FH+1, frskyData.hub.accelZ, LEFT|PREC2);
+                  break;
+                }
+                else if (field == TELEM_GPS_TIME) {
+                  displayGpsTime();
+                  return;
+                }
+#endif
               }
-              else if (field == TELEM_GPS_TIME) {
-                displayGpsTime();
+              else {
+                displayRssiLine();
                 return;
               }
-#endif
             }
-            else {
-              displayRssiLine();
-              return;
-            }
-          }
-          if (field) {
-            fields_count++;
-            int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+field-1);
-            uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
-            if (field <= TELEM_TM2) {
-              uint8_t x = (i==3 ? j?80:20 : j?74:10);
-              putsTime(x, 1+FH+2*FH*i, value, att, att);
-            }
-            else {
-              putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
-              lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
+            if (field) {
+              fields_count++;
+              int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+field-1);
+              uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+              if (field <= TELEM_TM2) {
+                uint8_t x = (i==3 ? j?80:20 : j?74:10);
+                putsTime(x, 1+FH+2*FH*i, value, att, att);
+              }
+              else {
+                putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
+                lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
+              }
             }
           }
         }
+        lcd_status_line();
+        if (fields_count == 0)
+          putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
       }
-      if (fields_count == 0) {
-        // No custom fields at all!
-        putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
-      }
-      lcd_status_line();
-    }
-    else if (s_frsky_view == e_frsky_bars) {
-      // The bars
-      uint8_t bars_height = 5;
-      for (int8_t i=3; i>=0; i--) {
-        uint8_t source = g_model.frsky.bars[i].source;
-        uint8_t bmin = g_model.frsky.bars[i].barMin * 5;
-        uint8_t bmax = (51 - g_model.frsky.bars[i].barMax) * 5;
-        if (source && bmax > bmin) {
-          lcd_putsiAtt(0, bars_height+bars_height+1+i*(bars_height+6), STR_VTELEMCHNS, source, 0);
-          lcd_rect(25, bars_height+6+i*(bars_height+6), 101, bars_height+2);
-          int16_t value = getValue(CSW_CHOUT_BASE+NUM_CHNOUT+source-1);
-          int16_t threshold = 0;
-          uint8_t thresholdX = 0;
-          if (source <= TELEM_TM2)
-            threshold = 0;
-          else if (source <= TELEM_RSSI_RX)
-            threshold = getRssiAlarmValue(source-TELEM_RSSI_TX);
-          else if (source <= TELEM_A2)
-            threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
-#if defined(FRSKY_HUB)
-          else
-            threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
-#endif
-          int16_t barMin = convertTelemValue(source, bmin);
-          int16_t barMax = convertTelemValue(source, bmax);
-          if (threshold) {
-            thresholdX = (uint8_t)(((int32_t)(threshold - barMin) * (int32_t)100) / (barMax - barMin));
-            if (thresholdX > 100)
-              thresholdX = 0;
-          }
-          uint8_t width = (uint8_t)limit((int16_t)0, (int16_t)(((int32_t)100 * (value - barMin)) / (barMax - barMin)), (int16_t)100);
-
-	   // reversed barshade for T1/T2
-	  uint8_t barShade;
-	  if (source == TELEM_T1 || source == TELEM_T2)
-		barShade = ((threshold < value) ? DOTTED : SOLID);
-	  else
-		barShade = ((threshold > value) ? DOTTED : SOLID);
-	  lcd_filled_rect(26, bars_height+6+1+i*(bars_height+6), width, bars_height, barShade);
-	  
-          for (uint8_t j=50; j<125; j+=25)
-            if (j>26+thresholdX || j>26+width) lcd_vline(j, bars_height+6+1+i*(bars_height+6), bars_height);
-          if (thresholdX) {
-            lcd_vlineStip(26+thresholdX, bars_height+4+i*(bars_height+6), bars_height+3, DOTTED);
-            lcd_hline(25+thresholdX, bars_height+4+i*(bars_height+6), 3);
-          }
-        }
-        else {
-          bars_height += 2;
-        }
-      }
-      if (bars_height == 13) {
-        // No bars at all!
-        putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
-      }
-      displayRssiLine();
     }
     else if (s_frsky_view == e_frsky_voltages) {
       // Volts / Amps / Watts / mAh

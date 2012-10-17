@@ -936,20 +936,15 @@ int8_t GVAR(int8_t x, int8_t min, int8_t max)
   return (x >= 126 || x <= -126) ? limit(min, GVAR_VALUE((uint8_t)x - 126), max) : x;
 }
 
-#if defined(PCBSKY9X)
 uint8_t s_gvar_timer = 0;
 uint8_t s_gvar_last = 0;
-#endif
-
 void setGVarValue(uint8_t x, int8_t value)
 {
   if (GVAR_VALUE(x) != value) {
     GVAR_VALUE(x) = value;
     eeDirty(EE_MODEL);
-#if defined(PCBSKY9X)
     s_gvar_last = x;
     s_gvar_timer = GVAR_DISPLAY_TIME;
-#endif
   }
 }
 #endif
@@ -1342,10 +1337,8 @@ void checkTrims()
     if (TRIM_REUSED()) {
       *trimPtr[idx] = after;
       eeDirty(EE_MODEL);
-#if defined(PCBSKY9X)
-      s_gvar_last = (trimPtr[idx] - &g_model.gvars[0].value) / sizeof(g_model.gvars[0]);
+      s_gvar_last = (trimPtr[idx] - &GVAR_VALUE(0)) / sizeof(g_model.gvars[0]);
       s_gvar_timer = GVAR_DISPLAY_TIME;
-#endif
     }
     else {
       setTrimValue(phase, idx, after);

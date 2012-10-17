@@ -49,11 +49,11 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBSKY9X)
-#define EEPROM_VER       212
+#define EEPROM_VER       213
 #elif defined(PCBGRUVIN9X)
-#define EEPROM_VER       211
+#define EEPROM_VER       212
 #else
-#define EEPROM_VER       211
+#define EEPROM_VER       212
 #endif
 
 #ifndef PACK
@@ -475,10 +475,8 @@ enum TelemetrySource {
   TELEM_MAX_CURRENT,
   TELEM_ACC,
   TELEM_GPS_TIME,
-  TELEM_BAR_MAX = TELEM_CELL,
-  TELEM_NOUSR_BAR_MAX = TELEM_A2,
   TELEM_CSW_MAX = TELEM_POWER,
-  TELEM_NOUSR_CSW_MAX = TELEM_A2,
+  TELEM_NOUSR_MAX = TELEM_A2,
   TELEM_DISPLAY_MAX = TELEM_MAX_CURRENT,
   TELEM_STATUS_MAX = TELEM_GPS_TIME
 };
@@ -499,11 +497,20 @@ PACK(typedef struct t_FrSkyBarData {
 }) FrSkyBarData;
 #else
 PACK(typedef struct t_FrSkyBarData {
-  uint16_t   source:4;
-  uint16_t   barMin:6;           // minimum for bar display
-  uint16_t   barMax:6;           // ditto for max display (would usually = ratio)
+  uint16_t   source:6;
+  uint16_t   barMin:5;           // minimum for bar display
+  uint16_t   barMax:5;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
 #endif
+
+PACK(typedef struct t_FrSkyLineData {
+  uint8_t    sources[2];
+}) FrSkyLineData;
+
+typedef union t_FrSkyScreenData {
+  FrSkyBarData  bars[4];
+  FrSkyLineData lines[4];
+} FrSkyScreenData;
 
 enum FrskyUsrProtocols {
   USR_PROTO_NONE,
@@ -521,6 +528,7 @@ enum FrskySource {
 };
 
 #if defined(PCBSKY9X)
+#define MAX_FRSKY_SCREENS 4
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   FrSkyRSSIAlarm rssiAlarms[2];
@@ -528,14 +536,14 @@ PACK(typedef struct t_FrSkyData {
   uint8_t voltsSource;
   uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint8_t currentSource;
-  FrSkyBarData bars[4];
-  uint8_t lines[4*2*2];
+  FrSkyScreenData screens[MAX_FRSKY_SCREENS];
   uint8_t varioSource;
   uint8_t varioSpeedUpMin;    // if increment in 0.2m/s = 3.0m/s max
   uint8_t varioSpeedDownMin;
   uint8_t spare[4];
 }) FrSkyData;
 #else
+#define MAX_FRSKY_SCREENS 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
@@ -543,11 +551,9 @@ PACK(typedef struct t_FrSkyData {
   uint8_t spare1:4;
   uint8_t voltsSource:3;
   uint8_t currentSource:3;
-  uint8_t spare2:2;
-  FrSkyBarData bars[4];
+  uint8_t screensType:2;
   FrSkyRSSIAlarm rssiAlarms[2];
-  uint8_t   lines[4];
-  uint16_t  linesXtra;
+  FrSkyScreenData screens[MAX_FRSKY_SCREENS];
   uint8_t   varioSource:3;
   uint8_t   varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
   uint8_t   varioSpeedDownMin;

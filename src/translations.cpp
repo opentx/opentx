@@ -73,6 +73,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(GPSFORMAT)
     ISTR(VOLTSRC)
     ISTR(VARIOSRC)
+    ISTR(VSCREEN)
 #endif
 #ifdef TEMPLATES
     ISTR(VTEMPLATES)
@@ -159,8 +160,7 @@ const pm_char STR_BAR[] PROGMEM = TR_BAR;
 const pm_char STR_ALARM[] PROGMEM = TR_ALARM;
 const pm_char STR_USRDATA[] PROGMEM = TR_USRDATA;
 const pm_char STR_BLADES[] PROGMEM = TR_BLADES;
-const pm_char STR_BARS[] PROGMEM = TR_BARS;
-const pm_char STR_DISPLAY[] PROGMEM = TR_DISPLAY;
+const pm_char STR_SCREEN[] PROGMEM = TR_SCREEN;
 const pm_char STR_BEEPERMODE[] PROGMEM = TR_BEEPERMODE;
 const pm_char STR_BEEPERLEN[] PROGMEM = TR_BEEPERLEN;
 #if defined(AUDIO)

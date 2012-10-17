@@ -67,6 +67,12 @@
 #define IF_VOICE(x)
 #endif
 
+#if defined(VARIO)
+#define IF_VARIO(x) x,
+#else
+#define IF_VARIO(x)
+#endif
+
 #if defined(HAPTIC)
 #define IF_HAPTIC(x) x,
 #else
@@ -698,11 +704,9 @@ inline bool navigationRotaryEncoder(uint8_t event)
 
 #if defined(GVARS)
 int8_t GVAR(int8_t x, int8_t min, int8_t max);
-#if defined(PCBSKY9X)
 #define GVAR_DISPLAY_TIME     100 /*1 second*/;
 extern uint8_t s_gvar_timer;
 extern uint8_t s_gvar_last;
-#endif
 #else
 #define GVAR(x, min, max) (x)
 #endif

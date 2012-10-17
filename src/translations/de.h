@@ -178,6 +178,9 @@
 #define LEN_VARIOSRC                    "\004"
 #define TR_VARIOSRC                     "Data""A1\0 ""A2\0"
                                                                                                                                                                                                                                                                                                    
+#define LEN_VSCREEN      "\004"
+#define TR_VSCREEN       "Nums""Bars"
+
 #define LEN_GPSFORMAT                   "\004"                                                                                                                                                                                                                                                     
 #define TR_GPSFORMAT                    "HMS NMEA"                                                                                                                                                                                                                                                 
                                                                                                                                                                                                                                                                                                    
@@ -288,8 +291,7 @@
 #define TR_ALARM                        "Alarm"                                                               
 #define TR_USRDATA                      "UsrData"                                                             
 #define TR_BLADES                       "Blades"                                                              
-#define TR_BARS                         "Bars"                                                                
-#define TR_DISPLAY                      "Display"                                                             
+#define TR_SCREEN                       "Screen "
 #ifdef AUDIO                                                                                                  
 #define TR_BEEPERMODE                   "Speaker Modus"                                                       
 #define TR_BEEPERLEN                    "Speaker L\201nge"                                                    

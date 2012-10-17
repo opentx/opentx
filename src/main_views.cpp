@@ -391,14 +391,19 @@ void menuMainView(uint8_t event)
     s_warning = NULL;
   }
 
-#if defined(GVARS) && defined(PCBSKY9X)
+#if defined(GVARS)
   else if (s_gvar_timer > 0) {
     s_gvar_timer--;
     s_warning = PSTR("Global Variable");
     displayBox();
+#if defined(PCBSKY9X)
     lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, sizeof(g_model.gvars[s_gvar_last].name), ZCHAR);
     lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\004]"), BOLD);
-    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, g_model.gvars[s_gvar_last].value, BOLD);
+    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last), BOLD);
+#else
+    lcd_putsAtt(16+4*FW, 5*FH, PSTR("[\004]"), BOLD);
+    lcd_outdezAtt(16+4*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last), BOLD);
+#endif
     s_warning = NULL;
   }
 #endif

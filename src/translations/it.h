@@ -178,6 +178,9 @@
 #define LEN_VARIOSRC     "\004"
 #define TR_VARIOSRC      "Data""A1\0 ""A2\0"
 
+#define LEN_VSCREEN      "\004"
+#define TR_VSCREEN       "Nums""Bars"
+
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
 
@@ -288,8 +291,7 @@
 #define TR_ALARM        "Allarme"
 #define TR_USRDATA      "Dati"
 #define TR_BLADES       "Pale"
-#define TR_BARS         "Barre"
-#define TR_DISPLAY      "Display"
+#define TR_SCREEN       "Screen "
 #ifdef AUDIO
 #define TR_BEEPERMODE   "Modo Audio"
 #define TR_BEEPERLEN    "Durata Audio"
