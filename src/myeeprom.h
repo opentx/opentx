@@ -124,7 +124,8 @@ enum BacklightMode {
 
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
-  uint8_t   myVers;
+  uint8_t   version;
+  uint16_t  variant;
   int16_t   calibMid[7];
   int16_t   calibSpanNeg[7];
   int16_t   calibSpanPos[7];
@@ -166,8 +167,6 @@ PACK(typedef struct t_EEGeneral {
 
   EXTRA_SKY9X_FIELDS;
 
-  uint8_t   variants;
-  
   EXTRA_GENERAL_FIELDS;
 
 }) EEGeneral;
@@ -678,10 +677,20 @@ PACK(typedef struct t_PhaseData {
 #define TMRMODE_THR      2
 #define TMRMODE_THR_REL  3
 #define TMRMODE_THR_TRG  4
+
+#if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
 PACK(typedef struct t_TimerData {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint16_t  val;
+  uint16_t  start;
+  uint16_t  remanent:1;
+  uint16_t  value:15;
 }) TimerData;
+#else
+PACK(typedef struct t_TimerData {
+  int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
+  uint16_t  start;
+}) TimerData;
+#endif
 
 enum Protocols {
   PROTO_PPM,
@@ -721,16 +730,6 @@ enum Dsm2Variants {
 #define BeepANACenter uint8_t
 #endif
 
-#if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
-PACK(typedef struct t_TimerDataExtra {
-  uint16_t remanent:1;
-  uint16_t value:15;
-}) TimerDataExtra;
-#define EXTRA_MODEL_FIELDS TimerDataExtra timersXtra[MAX_TIMERS]
-#else
-#define EXTRA_MODEL_FIELDS
-#endif
-
 #if defined(PCBSKY9X)
 PACK(typedef struct {
   int8_t value;
@@ -744,10 +743,10 @@ typedef int8_t model_gvar_t;
 
 #if defined(GVARS)
 #define MAX_GVARS 5
-#define EXTRA_GVARS model_gvar_t gvars[MAX_GVARS]
+#define GVARS_DATA model_gvar_t gvars[MAX_GVARS]
 #else
 #define MAX_GVARS 0
-#define EXTRA_GVARS
+#define GVARS_DATA
 #endif
 
 PACK(typedef struct t_ModelData {
@@ -782,13 +781,12 @@ PACK(typedef struct t_ModelData {
   
   uint8_t   switchWarningStates;
 
+  GVARS_DATA;
+
   TELEMETRY_DATA;
 
   ROTARY_ENCODER_ARRAY_EXTRA;
 
-  EXTRA_MODEL_FIELDS;
-
-  EXTRA_GVARS;
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

@@ -215,8 +215,8 @@ void memclear(void *ptr, uint8_t size)
 void generalDefault()
 {
   memclear(&g_eeGeneral, sizeof(g_eeGeneral));
-  g_eeGeneral.myVers   = EEPROM_VER;
-  g_eeGeneral.variants = EEPROM_VARIANTS;
+  g_eeGeneral.version  = EEPROM_VER;
+  g_eeGeneral.variant = EEPROM_VARIANT;
   g_eeGeneral.contrast = 25;
   g_eeGeneral.vBatWarn = 90;
   for (int i = 0; i < 7; ++i) {
@@ -1609,7 +1609,7 @@ uint8_t  trimsCheckTimer = 0;
 void resetTimer(uint8_t idx)
 {
   s_timerState[idx] = TMR_OFF; // is changed to RUNNING dep from mode
-  s_timerVal[idx] = g_model.timers[idx].val;
+  s_timerVal[idx] = g_model.timers[idx].start;
   s_timerVal_10ms[idx] = 0 ;
 }
 
@@ -2629,7 +2629,7 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
   // Timers start
   for (uint8_t i=0; i<2; i++) {
     int8_t tm = g_model.timers[i].mode;
-    uint16_t tv = g_model.timers[i].val;
+    uint16_t tv = g_model.timers[i].start;
 
     if (tm) {
       if (s_timerState[i] == TMR_OFF) {
@@ -2707,14 +2707,14 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
   static int16_t last_tmr;
   if (last_tmr != s_timerVal[0]) { // beep only if seconds advance
     if (s_timerState[0] == TMR_RUNNING) {
-      if (g_eeGeneral.preBeep && g_model.timers[0].val) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
+      if (g_eeGeneral.preBeep && g_model.timers[0].start) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
         if(s_timerVal[0]==30) AUDIO_TIMER_30(); //beep three times
         if(s_timerVal[0]==20) AUDIO_TIMER_20(); //beep two times
         if(s_timerVal[0]==10) AUDIO_TIMER_10();
         if(s_timerVal[0]<= 3) AUDIO_TIMER_LT3(s_timerVal[0]);
       }
 
-      if (g_eeGeneral.minuteBeep && (((g_model.timers[0].val ? g_model.timers[0].val-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
+      if (g_eeGeneral.minuteBeep && (((g_model.timers[0].start ? g_model.timers[0].start-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
         AUDIO_MINUTE_BEEP();
       }
     }
@@ -3270,9 +3270,9 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 void saveTimers()
 {
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
-    if (g_model.timersXtra[i].remanent) {
-      if (g_model.timersXtra[i].value != s_timerVal[i]) {
-        g_model.timersXtra[i].value = s_timerVal[i];
+    if (g_model.timers[i].remanent) {
+      if (g_model.timers[i].value != s_timerVal[i]) {
+        g_model.timers[i].value = s_timerVal[i];
         eeDirty(EE_MODEL);
       }
     }

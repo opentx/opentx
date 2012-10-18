@@ -638,30 +638,30 @@ void menuModelSetup(uint8_t event)
         TimerData *timer = &g_model.timers[k-ITEM_MODEL_TIMER1];
         putsStrIdx(0*FW, y, STR_TIMER, k-ITEM_MODEL_TIMER1+1);
         putsTmrMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, (attr && m_posHorz==0) ? blink : 0);
-        putsTime(MODEL_SETUP_2ND_COLUMN+5*FW-2, y, timer->val,
+        putsTime(MODEL_SETUP_2ND_COLUMN+5*FW-2, y, timer->start,
             (attr && m_posHorz==1 ? blink:0),
             (attr && m_posHorz==2 ? blink:0) );
 #if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
-        lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW-1, y, g_model.timersXtra[k-ITEM_MODEL_TIMER1].remanent ? 'R' : '-', (attr && m_posHorz==3) ? blink : 0);
+        lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW-1, y, g_model.timers[k-ITEM_MODEL_TIMER1].remanent ? 'R' : '-', (attr && m_posHorz==3) ? blink : 0);
 #endif
         if (attr && (editMode>0 || p1valdiff)) {
-          div_t qr = div(timer->val, 60);
+          div_t qr = div(timer->start, 60);
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(MAX_PSWITCH+NUM_CSW));
               break;
             case 1:
               CHECK_INCDEC_MODELVAR(event, qr.quot, 0, 59);
-              timer->val = qr.rem + qr.quot*60;
+              timer->start = qr.rem + qr.quot*60;
               break;
             case 2:
               qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
-              timer->val -= qr.rem ;
-              if ((int16_t)timer->val < 0) timer->val=0;
+              timer->start -= qr.rem ;
+              if ((int16_t)timer->start < 0) timer->start=0;
               break;
 #if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
             case 3:
-              CHECK_INCDEC_MODELVAR(event, g_model.timersXtra[k-ITEM_MODEL_TIMER1].remanent, 0, 1);
+              CHECK_INCDEC_MODELVAR(event, g_model.timers[k-ITEM_MODEL_TIMER1].remanent, 0, 1);
               break;
 #endif
           }

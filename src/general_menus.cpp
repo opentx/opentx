@@ -757,18 +757,18 @@ void menuGeneralVersion(uint8_t event)
   lcd_putsLeft(2*FH, stamp1);
   lcd_putsLeft(3*FH, stamp2);
   lcd_putsLeft(4*FH, stamp3);
-  lcd_putsLeft(5*FH, stamp4);
 #if defined(PCBSKY9X)
   if (Coproc_valid == 1) {
-     lcd_putsLeft(6*FH, PSTR("CoPr:")); 
-     lcd_outdez8(10*FW, 6*FH, Coproc_read);
+     lcd_putsLeft(5*FH, PSTR("CoPr:"));
+     lcd_outdez8(10*FW, 5*FH, Coproc_read);
   }
   else {
-     lcd_putsLeft(6*FH, PSTR("CoPr: ---"));
+     lcd_putsLeft(5*FH, PSTR("CoPr: ---"));
   }
 #endif  
   lcd_putsLeft(7*FH, STR_EEPROMV);
-  lcd_outdezAtt(8*FW, 7*FH, g_eeGeneral.myVers, LEFT);
+  lcd_outdezAtt(6*FW+1, 7*FH, g_eeGeneral.version, LEFT);
+  lcd_outhex4(10*FW+1, 7*FH, g_eeGeneral.variant);
 }
 
 void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)

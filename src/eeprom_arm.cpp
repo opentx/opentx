@@ -444,17 +444,16 @@ bool ee32LoadGeneral()
     read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size) ;
   }
 
-  if (g_eeGeneral.myVers == EEPROM_VER && g_eeGeneral.variants == EEPROM_VARIANTS) {
+  if (g_eeGeneral.version == EEPROM_VER && g_eeGeneral.variant == EEPROM_VARIANT) {
     uint16_t sum = evalChkSum();
     if (g_eeGeneral.chkSum == sum) {
       return true;
     }
   }
+
 #ifdef SIMU
-  else {
-    printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.myVers, g_eeGeneral.variants, EEPROM_VER, EEPROM_VARIANTS);
-    fflush(stdout);
-  }
+  printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.version, g_eeGeneral.variant, EEPROM_VER, EEPROM_VARIANT);
+  fflush(stdout);
 #endif
 
   return false;
@@ -513,8 +512,8 @@ void eeLoadModel(uint8_t id)
     resetProto();
 
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
-      if (g_model.timersXtra[i].remanent) {
-        s_timerVal[i] = g_model.timersXtra[i].value;
+      if (g_model.timers[i].remanent) {
+        s_timerVal[i] = g_model.timers[i].value;
       }
     }
 
@@ -985,7 +984,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   uint16_t size = File_system[i_fileSrc+1].size;
 
   *(uint32_t*)&buf[0] = O9X_FOURCC;
-  buf[4] = g_eeGeneral.myVers;
+  buf[4] = g_eeGeneral.version;
   buf[5] = 'M';
   *(uint16_t*)&buf[6] = size;
 

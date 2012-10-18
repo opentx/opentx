@@ -578,7 +578,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   theFile2.openRd(FILE_MODEL(i_fileSrc));
 
   *(uint32_t*)&buf[0] = O9X_FOURCC;
-  buf[4] = g_eeGeneral.myVers;
+  buf[4] = g_eeGeneral.version;
   buf[5] = 'M';
   *(uint16_t*)&buf[6] = theFile2.size();
 
@@ -813,14 +813,20 @@ void RlcFile::DisplayProgressBar(uint8_t x)
 bool eeLoadGeneral()
 {
   theFile.openRlc(FILE_GENERAL);
-  if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.myVers == EEPROM_VER) {
+  if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.version == EEPROM_VER) {
     theFile.openRlc(FILE_GENERAL);
     if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral)) {
-      if (g_eeGeneral.variants == EEPROM_VARIANTS && g_eeGeneral.chkSum == evalChkSum()) {
+      if (g_eeGeneral.variant == EEPROM_VARIANT && g_eeGeneral.chkSum == evalChkSum()) {
         return true;
       }
     }
   }
+
+#ifdef SIMU
+  printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.version, g_eeGeneral.variant, EEPROM_VER, EEPROM_VARIANT);
+  fflush(stdout);
+#endif
+
   return false;
 }
 
@@ -883,8 +889,8 @@ void eeLoadModel(uint8_t id)
 
 #if defined(PCBGRUVIN9X)
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
-      if (g_model.timersXtra[i].remanent) {
-        s_timerVal[i] = g_model.timersXtra[i].value;
+      if (g_model.timers[i].remanent) {
+        s_timerVal[i] = g_model.timers[i].value;
       }
     }
 #endif
