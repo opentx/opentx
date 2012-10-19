@@ -444,7 +444,7 @@ bool ee32LoadGeneral()
     read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size) ;
   }
 
-  if (g_eeGeneral.version == EEPROM_VER && g_eeGeneral.variant == EEPROM_VARIANT) {
+  if (g_eeGeneral.version == EEPROM_VER) {
     uint16_t sum = evalChkSum();
     if (g_eeGeneral.chkSum == sum) {
       return true;
@@ -452,7 +452,7 @@ bool ee32LoadGeneral()
   }
 
 #ifdef SIMU
-  printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.version, g_eeGeneral.variant, EEPROM_VER, EEPROM_VARIANT);
+  printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.version, g_eeGeneral.variant, EEPROM_VER, VARIANT);
   fflush(stdout);
 #endif
 

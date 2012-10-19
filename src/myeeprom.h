@@ -622,13 +622,45 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define TRIM_ARRAY int16_t trim[4]
 #endif
 
+#if defined(PCBSKY9X)
+PACK(typedef struct {
+  int8_t value;
+  char name[6];
+}) gvar_t;
+#define GVAR_VALUE(x) g_model.gvars[x].value
+#else
+typedef int8_t gvar_t;
+#define GVAR_VALUE(x) g_model.gvars[x]
+#endif
+
+#if defined(PCBSTD)
+#define PHASE_GVARS_DATA
+#if defined(GVARS)
+#define MAX_GVARS 5
+#define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS]
+#else
+#define MAX_GVARS 0
+#define MODEL_GVARS_DATA
+#endif
+#else
+#define PHASE_GVARS_DATA
+#if defined(GVARS)
+#define MAX_GVARS 5
+#define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS]
+#else
+#define MAX_GVARS 0
+#define MODEL_GVARS_DATA gvar_t gvars[5]
+#endif
+#endif
+
 PACK(typedef struct t_PhaseData {
   TRIM_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
-  ROTARY_ENCODER_ARRAY
+  ROTARY_ENCODER_ARRAY;
+  PHASE_GVARS_DATA;
 }) PhaseData;
 
 #if defined(PCBSKY9X)
@@ -718,35 +750,18 @@ enum Dsm2Variants {
   DSM2_DSMX
 };
 
-#ifdef MAVLINK
+#if defined(MAVLINK)
 #define TELEMETRY_DATA MavlinkData mavlink
-#else
+#elif defined(FRSKY) || !defined(PCBSTD)
 #define TELEMETRY_DATA FrSkyData frsky
+#else
+#define TELEMETRY_DATA
 #endif
 
 #if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
 #define BeepANACenter uint16_t
 #else
 #define BeepANACenter uint8_t
-#endif
-
-#if defined(PCBSKY9X)
-PACK(typedef struct {
-  int8_t value;
-  char name[6];
-}) model_gvar_t;
-#define GVAR_VALUE(x) g_model.gvars[x].value
-#else
-typedef int8_t model_gvar_t;
-#define GVAR_VALUE(x) g_model.gvars[x]
-#endif
-
-#if defined(GVARS)
-#define MAX_GVARS 5
-#define GVARS_DATA model_gvar_t gvars[MAX_GVARS]
-#else
-#define MAX_GVARS 0
-#define GVARS_DATA
 #endif
 
 PACK(typedef struct t_ModelData {
@@ -781,7 +796,7 @@ PACK(typedef struct t_ModelData {
   
   uint8_t   switchWarningStates;
 
-  GVARS_DATA;
+  MODEL_GVARS_DATA;
 
   TELEMETRY_DATA;
 

@@ -2230,7 +2230,7 @@ void menuModelLimits(uint8_t event)
 #if defined(GVARS) && defined(PCBSKY9X)
 void menuModelRegisterOne(uint8_t event)
 {
-  model_gvar_t *reg = &g_model.gvars[s_curveChan];
+  gvar_t *reg = &g_model.gvars[s_curveChan];
 
   putsStrIdx(11*FW, 0, STR_GV, s_curveChan+1);
 
@@ -2835,6 +2835,13 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_SCREEN_LINE6,
   ITEM_TELEMETRY_SCREEN_LINE7,
   ITEM_TELEMETRY_SCREEN_LINE8,
+#if defined(PCBSKY9X)
+  ITEM_TELEMETRY_SCREEN_LABEL3,
+  ITEM_TELEMETRY_SCREEN_LINE9,
+  ITEM_TELEMETRY_SCREEN_LINE10,
+  ITEM_TELEMETRY_SCREEN_LINE11,
+  ITEM_TELEMETRY_SCREEN_LINE12,
+#endif
   ITEM_TELEMETRY_MAX
 };
 
@@ -2853,7 +2860,7 @@ enum menuModelTelemetryItems {
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(1) 0, 2, 2, 2, 2, 0, 2, 2, 2, 2});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(1) 0, 2, 2, 2, 2, 0, 2, 2, 2, IF_PCBSKY9X(2) IF_PCBSKY9X(0) IF_PCBSKY9X(2) IF_PCBSKY9X(2) IF_PCBSKY9X(2) 2 });
 
   uint8_t sub = m_posVert - 1;
 
@@ -3038,14 +3045,27 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_SCREEN_LABEL1:
       case ITEM_TELEMETRY_SCREEN_LABEL2:
+
+#if defined(PCBSKY9X)
+      case ITEM_TELEMETRY_SCREEN_LABEL3:
+      {
+        uint8_t screenIndex = (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 0 : (k < ITEM_TELEMETRY_SCREEN_LABEL3 ? 1 : 2));
+        bool screenType = IS_BARS_SCREEN(screenIndex);
+        putsStrIdx(0*FW, y, STR_SCREEN, screenIndex+1);
+        if (screenType != selectMenuItem(10*FW, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
+          g_model.frsky.screensType ^= (1 << screenIndex);
+        break;
+      }
+#else
       {
         uint8_t screenIndex = (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 1 : 2);
-        putsStrIdx(0*FW, y, STR_SCREEN, screenIndex);
         bool screenType = g_model.frsky.screensType & screenIndex;
+        putsStrIdx(0*FW, y, STR_SCREEN, screenIndex);
         if (screenType != selectMenuItem(10*FW, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= screenIndex;
         break;
       }
+#endif
 
       case ITEM_TELEMETRY_SCREEN_LINE1:
       case ITEM_TELEMETRY_SCREEN_LINE2:
@@ -3055,17 +3075,31 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_SCREEN_LINE6:
       case ITEM_TELEMETRY_SCREEN_LINE7:
       case ITEM_TELEMETRY_SCREEN_LINE8:
+
+#if defined(PCBSKY9X)
+      case ITEM_TELEMETRY_SCREEN_LINE9:
+      case ITEM_TELEMETRY_SCREEN_LINE10:
+      case ITEM_TELEMETRY_SCREEN_LINE11:
+      case ITEM_TELEMETRY_SCREEN_LINE12:
+#endif
+
       {
         uint8_t screenIndex, lineIndex;
         if (k < ITEM_TELEMETRY_SCREEN_LABEL2) {
           screenIndex = 0;
           lineIndex = k-ITEM_TELEMETRY_SCREEN_LINE1;
         }
+#if defined(PCBSKY9X)
+        else if (k >= ITEM_TELEMETRY_SCREEN_LABEL3) {
+          screenIndex = 2;
+          lineIndex = k-ITEM_TELEMETRY_SCREEN_LINE9;
+        }
+#endif
         else {
           screenIndex = 1;
           lineIndex = k-ITEM_TELEMETRY_SCREEN_LINE5;
         }
-        if (g_model.frsky.screensType & (screenIndex+1)) {
+        if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           uint8_t barSource = bar.source;
           lcd_putsiAtt(4, y, STR_VTELEMCHNS, barSource, (attr && m_posHorz==0) ? blink : 0);

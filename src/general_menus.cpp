@@ -126,16 +126,16 @@ enum menuGeneralSetupItems {
 
 void menuGeneralSetup(uint8_t event)
 {
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, IF_ROTARY_ENCODERS(0) 0, 0, 0, 0, 0, 0, 0, IF_SPLASH(0) 0, 0, IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, 1});
-
-  uint8_t sub = m_posVert - 1;
-
 #if defined(RTCLOCK)
   static struct gtm t;
-  if ((sub!=ITEM_SETUP_DATE && sub!=ITEM_SETUP_TIME) || s_editMode<=0) {
+  if ((m_posVert!=ITEM_SETUP_DATE+1 && m_posVert!=ITEM_SETUP_TIME+1) || s_editMode<=0) {
     gettime(&t);
   }
 #endif
+
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, IF_ROTARY_ENCODERS(0) 0, 0, 0, 0, 0, 0, 0, IF_SPLASH(0) 0, 0, IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, 1});
+
+  uint8_t sub = m_posVert - 1;
 
   for (uint8_t i=0; i<7; i++) {
     uint8_t y = 1*FH + i*FH;
@@ -766,9 +766,8 @@ void menuGeneralVersion(uint8_t event)
      lcd_putsLeft(5*FH, PSTR("CoPr: ---"));
   }
 #endif  
-  lcd_putsLeft(7*FH, STR_EEPROMV);
-  lcd_outdezAtt(6*FW+1, 7*FH, g_eeGeneral.version, LEFT);
-  lcd_outhex4(10*FW+1, 7*FH, g_eeGeneral.variant);
+  lcd_putsLeft(7*FH, eeprom_stamp);
+  // TODO remove lcd_putsLeft(7*FH, STR_EEPROMV);
 }
 
 void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)

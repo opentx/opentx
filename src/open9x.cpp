@@ -216,7 +216,7 @@ void generalDefault()
 {
   memclear(&g_eeGeneral, sizeof(g_eeGeneral));
   g_eeGeneral.version  = EEPROM_VER;
-  g_eeGeneral.variant = EEPROM_VARIANT;
+  g_eeGeneral.variant = VARIANT;
   g_eeGeneral.contrast = 25;
   g_eeGeneral.vBatWarn = 90;
   for (int i = 0; i < 7; ++i) {

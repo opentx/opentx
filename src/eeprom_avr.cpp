@@ -816,14 +816,20 @@ bool eeLoadGeneral()
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.version == EEPROM_VER) {
     theFile.openRlc(FILE_GENERAL);
     if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral)) {
-      if (g_eeGeneral.variant == EEPROM_VARIANT && g_eeGeneral.chkSum == evalChkSum()) {
+#if defined(PCBSTD)
+      if (g_eeGeneral.variant == VARIANT && g_eeGeneral.chkSum == evalChkSum()) {
         return true;
       }
+#else
+      if (g_eeGeneral.chkSum == evalChkSum()) {
+        return true;
+      }
+#endif
     }
   }
 
 #ifdef SIMU
-  printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.version, g_eeGeneral.variant, EEPROM_VER, EEPROM_VARIANT);
+  printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.version, g_eeGeneral.variant, EEPROM_VER, VARIANT);
   fflush(stdout);
 #endif
 

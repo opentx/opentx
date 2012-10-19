@@ -1090,7 +1090,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 enum FrskyViews {
   e_frsky_custom_screen_1,
   e_frsky_custom_screen_2,
-// TODO IF_PCBSKY9X(e_frsky_custom_screen_3)
+  IF_PCBSKY9X(e_frsky_custom_screen_3)
   e_frsky_voltages,
   e_frsky_after_flight,
   FRSKY_VIEW_MAX = e_frsky_after_flight
@@ -1214,7 +1214,7 @@ void menuTelemetryFrsky(uint8_t event)
   lcd_filled_rect(0, 0, DISPLAY_W, 8);
 
   if (frskyStreaming >= 0) {
-    if (s_frsky_view < 2/* TODO MAX_FRSKY_SCREENS*/) {
+    if (s_frsky_view < MAX_FRSKY_SCREENS) {
       FrSkyScreenData & screen = g_model.frsky.screens[s_frsky_view];
       if (g_model.frsky.screensType & (1<<s_frsky_view)) {
         // Custom Screen with gauges

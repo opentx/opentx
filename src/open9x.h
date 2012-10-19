@@ -85,10 +85,8 @@
 #endif
 
 #if defined(FRSKY)
-#define FRSKY_VARIANT  0x0002
 #define IF_FRSKY(x) x,
 #else
-#define FRSKY_VARIANT  0x0000
 #define IF_FRSKY(x)
 #endif
 
@@ -135,10 +133,8 @@
 #endif
 
 #if defined(GVARS)
-#define GVARS_VARIANT  0x0001
 #define IF_GVARS(x) x,
 #else
-#define GVARS_VARIANT  0x0000
 #define IF_GVARS(x)
 #endif
 
@@ -148,15 +144,14 @@
 #define WDT_RESET_STOCK()
 #endif
 
-/* #define HELI_VARIANT   0x0004
+/*
+#define HELI_VARIANT   0x0004
 #define VOICE_VARIANT  0x0008
 #define PHASES_VARIANT 0x0010
 #define PXX_VARIANT    0x0020
 #define DSM2_VARIANT   0x0040
 #define VARIO_VARIANT  0x0080
 #define HAPTIC_VARIANT 0x0100 */
-
-#define EEPROM_VARIANT   (GVARS_VARIANT + FRSKY_VARIANT)
 
 #if defined(PCBSKY9X)
 #include "board_sky9x.h"
@@ -982,6 +977,7 @@ extern inline uint16_t get_tmr10ms()
 extern const char stamp1[];
 extern const char stamp2[];
 extern const char stamp3[];
+extern const char eeprom_stamp[];
 
 extern uint8_t            g_vbat100mV;
 extern volatile uint8_t   g_blinkTmr10ms;
