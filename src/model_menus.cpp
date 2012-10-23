@@ -1905,6 +1905,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
       s_copyTgtOfs = 0;
       break;
     case EVT_KEY_BREAK(KEY_MENU):
+      if (sub == 0) break;
       if (!s_currCh || (s_copyMode && !s_copyTgtOfs)) {
         s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
         s_copySrcIdx = s_currIdx;
@@ -1918,10 +1919,10 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
     case EVT_KEY_BREAK(BTN_REb):
     case EVT_KEY_LONG(BTN_REa):
     case EVT_KEY_LONG(BTN_REb):
-      if (sub == 0)
-        break;
 #endif
     case EVT_KEY_LONG(KEY_MENU):
+      if (sub == 0)
+        break;
       killEvents(_event);
       if (s_copyTgtOfs) {
         s_copyMode = 0;
