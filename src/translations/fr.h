@@ -1,15 +1,15 @@
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"
-#define TR_OFFON         "OFF""ON "
+#define TR_OFFON         "OFF""ON\0"
 
 #define LEN_MMMINV       "\003"
-#define TR_MMMINV        "---""INV"
+#define TR_MMMINV        "NOR""INV"
 
 #define LEN_NCHANNELS    "\004"
-#define TR_NCHANNELS     "4CH 6CH 8CH 10CH12CH14CH16CH"
+#define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE    "\005"
-#define TR_VBEEPMODE     "Aucun""Alarm""NoKey""Tout "
+#define TR_VBEEPMODE     "Aucun""Alarm""NoKey""Tout\0"
 
 #define LEN_VBEEPLEN     "\005"
 #define TR_VBEEPLEN      "0====""=0===""==0==""===0=""====0"
@@ -60,7 +60,12 @@
 #else
 #define TR_DSM2 "[DSM2]"
 #endif
-#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2
+#ifdef IRPROTOS
+#define TR_IRPROTOS "SILV  TRAC09PICZ  SWIFT\0"
+#else
+#define TR_IRPROTOS
+#endif
+#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2 TR_IRPROTOS
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -125,15 +130,16 @@
 #define TR_FSW_BG_MUSIC
 #endif
 #ifdef GVARS
-#define TR_FSW_ADJUST_GVAR  "Adjust \0     "
+#define TR_FSW_ADJUST_GVAR  "Ajuster\0     "
 #else
 #define TR_FSW_ADJUST_GVAR
 #endif
 #ifdef DEBUG
-#define TR_FSW_TEST          "Test\0        "
+#define TR_FSW_TEST          "Test\0"
 #else
 #define TR_FSW_TEST
 #endif
+
 #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "R\200tro\200cl.\0   " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
 #define LEN_VFSWRESET    "\006"
@@ -165,7 +171,7 @@
 #define TR_VALARMFN      "<>"
 
 #define LEN_VTELPROTO    "\007"
-#define TR_VTELPROTO     "---\0   ""Hub\0   ""WSHHigh""Halcyon"
+#define TR_VTELPROTO     "Aucun  ""Hub\0   ""WSHHigh""Halcyon"
 
 #define LEN_VOLTSRC      "\003"
 #define TR_VOLTSRC       "---""A1\0""A2\0""FAS""Cel"
@@ -179,9 +185,6 @@
 #define LEN_GPSFORMAT    "\004"
 #define TR_GPSFORMAT     "HMS NMEA"
 
-#define LEN_VUNITSFORMAT "\004"
-#define TR_VUNITSFORMAT  "M\200trImpr"
-
 #define LEN2_VTEMPLATES  15
 #define LEN_VTEMPLATES   "\017"
 #define TR_VTEMPLATES    "Suppr Mixages\0\0""4 Voies simple\0""Coupure Gaz   \0""Empennage V   \0""Elevon\\Delta  \0""eCCPM         \0""Conf. H\200lico  \0""Test Servo    \0"
@@ -192,14 +195,14 @@
 #define LEN_VKEYS        "\005"
 #define TR_VKEYS         " Menu"" Exit""  Bas"" Haut""Droit""Gauch"
 
-#define LEN_VRENCODERS       "\003"
-#define TR_VRENCODERS        "REa""REb"
+#define LEN_VRENCODERS   "\003"
+#define TR_VRENCODERS    "REa""REb"
 
 #define LEN_VSWITCHES    "\003"
 #if defined(PCBSKY9X)
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC""SWD""SWE""SWF""SWG""SWH""SWI""SWJ""SWK""SWL""SWM""SWN""SWO""SWP""SWQ""SWR""SWS""SWT""SWU""SWV""SWW"" ON"
+#define TR_VIPITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""IP1""IP2""IP3""IP4""IP5""IP6""IP7""IP8""IP9""IPA""IPB""IPC""IPD""IPE""IPF""IPG""IPH""IPI""IPJ""IPK""IPL""IPM""IPN""IPO""IPP""IPQ""IPR""IPS""IPT""IPU""IPV""IPW"" ON"
 #else
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"" ON"
+#define TR_VIPITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""IP1""IP2""IP3""IP4""IP5""IP6""IP7""IP8""IP9""IPA""IPB""IPC"" ON"
 #endif
 
 #define LEN_VSRCRAW      "\004"
@@ -226,7 +229,11 @@
 #define TR_DSM2MODE      "LP4/LP5DSMseulDSMX   "
 
 // ZERO TERMINATED STRINGS
-#define TR_POPUPS       "[MENU]\004[QUIT]"
+#define INDENT                 "\001"
+#define LEN_INDENT             1
+#define INDENT_WIDTH           (FW/2)
+
+#define TR_POPUPS       "[MENU]\010[QUIT]"
 #define OFS_EXIT        7
 #define TR_MENUWHENDONE "[MENU]QUAND PRET"
 #define TR_FREE         "libre"
@@ -241,9 +248,8 @@
 #define TR_TRIMINC      "Pas Trim"
 #define TR_TTRACE       "Source Gaz"
 #define TR_TTRIM        "Trim Gaz"
-#define TR_THROTTLEWARNING "Alerte Gaz"
 #define TR_BEEPCTR      "Bips Centr"
-#define TR_PROTO        "Proto."
+#define TR_PROTO        INDENT"Proto."
 #define TR_PPMFRAME     "Trame PPM"
 #define TR_MS           "ms"
 #define TR_SWITCH       "Inter"
@@ -251,7 +257,7 @@
 #define TR_FADEIN       "Fondu ON"
 #define TR_FADEOUT      "Fondu OFF"
 #define TR_DEFAULT      "(d\200faut)"
-#define TR_CHECKTRIMS   "\003V\200rif\005Trims"
+#define TR_CHECKTRIMS   "\006V\200rif\012Trims"
 #define OFS_CHECKTRIMS  (9*FW)
 #define TR_SWASHTYPE    "Type de Plat."
 #define TR_COLLECTIVE   "Collectif"
@@ -259,16 +265,17 @@
 #define TR_ELEDIRECTION "Direction PRF"
 #define TR_AILDIRECTION "Direction AIL"
 #define TR_COLDIRECTION "Direction COL"
+#define TR_MODE         INDENT"Mode"
 #define TR_NOFREEEXPO   "Max expos atteint!"
 #define TR_NOFREEMIXER  "Max mixages atteint!"
 #define TR_INSERTMIX    "INSERER MIXAGE"
 #define TR_EDITMIX      "EDITER MIXAGE"
-#define TR_SOURCE       "Source"
+#define TR_SOURCE       INDENT"Source"
 #define TR_WEIGHT       "Ratio"
-#define TR_EXPO                "Expo"
-#define TR_SIDE                "Cot\200"
+#define TR_EXPO         "Expo"
+#define TR_SIDE         "Cot\200"
 #define TR_DIFFERENTIAL "Diff\200rentiel"
-#define TR_OFFSET       "D\200calage"
+#define TR_OFFSET       INDENT"D\200calage"
 #define TR_TRIM         "Trim"
 #define TR_DREX         "DRex"
 #define TR_CURVE        "Courbe"
@@ -284,77 +291,72 @@
 #define TR_CV           "CB"
 #define TR_GV           "GV"
 #define TR_ACHANNEL     "A"
-#define TR_RANGE        "Plage"
+#define TR_RANGE        INDENT"Plage"
 #define TR_BAR          "Barre"
-#define TR_ALARM        "Alarme"
+#define TR_ALARM        INDENT"Alarme"
 #define TR_USRDATA      "Donn\200es"
-#define TR_BLADES       "Pales"
+#define TR_BLADES       INDENT"Pales"
 #define TR_SCREEN       "Ecran "
-#ifdef AUDIO
-#define TR_BEEPERMODE   "Choix mode sons"
-#define TR_BEEPERLEN    "Dur\200e sons"
-#define TR_SPKRPITCH    "Tonalit\200 sons"
-#else
-#define TR_BEEPERMODE   "Mode bipeur"
-#define TR_BEEPERLEN    "Longueur bips"
-#endif
-#define TR_HAPTICMODE   "Mode vibreur"
-#define TR_HAPTICSTRENGTH "Force vibreur"
-#define TR_HAPTICLENGTH "Dur\200e vibreur"
+#define TR_SOUND_LABEL  "Son"
+#define TR_LENGTH	      INDENT"Dur\200e"
+#define TR_SPKRPITCH    INDENT"Tonalit\200"
+#define TR_HAPTIC_LABEL "Vibreur"
+#define TR_HAPTICSTRENGTH INDENT"Force"
 #define TR_CONTRAST     "Contraste"
-#define TR_BATTERYWARNING "Alarme batterie"
-#define TR_INACTIVITYALARM "Alarme inactiv."
+#define TR_ALARMS_LABEL "Alarmes"
+#define TR_BATTERYWARNING  INDENT"Batterie faible"
+#define TR_INACTIVITYALARM INDENT"Inactivit\200"
+#define TR_MEMORYWARNING   INDENT"M\200moire faible"
+#define TR_ALARMWARNING    INDENT"Sons d\200sactiv\200s"
 #define TR_RENAVIG      "Navig EncRot"
 #define TR_FILTERADC    "Filtre ADC"
 #define TR_THROTTLEREVERSE "Inversion Gaz"
-#define TR_MINUTEBEEP   "Bip minutes"
-#define TR_BEEPCOUNTDOWN "Bip cpt. rebours"
-#define TR_FLASHONBEEP  "Flash quand bip"
-#define TR_BLMODE  "Inter \200clairage"
-#define TR_BLDELAY "Dur\200e \200clairage"
+#define TR_BEEP_LABEL      "Bips Chronos"
+#define TR_MINUTEBEEP   INDENT"Minutes"
+#define TR_BEEPCOUNTDOWN INDENT"Compte \202 rebours"
+#define TR_BACKLIGHT_LABEL  "R\200tro\200clairage"
+#define TR_BLDELAY             INDENT"Dur\200e"
 #define TR_SPLASHSCREEN  "Ecran d'accueil"
+#define TR_THROTTLEWARNING "Alerte Gaz"
 #define TR_SWITCHWARNING "Alerte Int"
-#define TR_MEMORYWARNING "Alerte m\200moire"
-#define TR_ALARMWARNING "Alerte alarmes"
 #define TR_TIMEZONE     "Fuseau horaire"
 #define TR_RXCHANNELORD "Ordre voies RX"
-#define TR_MODE         "Mode"
 #define TR_SLAVE        "Esclave"
-#define TR_MODESRC      "Mode\003% Source"
+#define TR_MODESRC      "Mode\006% Source"
 #define TR_MULTIPLIER   "Multiplieur"
 #define TR_CAL          "Cal"
-#define TR_EEPROMV      "EEpr:\004-"
+#define TR_EEPROMV      "EEpr:\010-"
 #define TR_VTRIM        "Trim- +"
 #define TR_BG           "BG:"
 #define TR_MENUTOSTART  "[MENU]POUR DEBUT"
 #define TR_SETMIDPOINT  "REGLER NEUTRES"
 #define TR_MOVESTICKSPOTS "BOUGER STICKS/POTS"
-#define TR_RXBATT       "Rx Batt:"
+#define TR_RXBATT       "Batt.RX"
 #define TR_TXnRX        "Tx:\0Rx:"
 #define OFS_RX          4
 #define TR_ACCEL        "Acc:"
 #define TR_NODATA       "NO DATA"
-#define TR_TM1TM2       "TM1\015TM2"
-#define TR_THRTHP       "THR\015TH%"
+#define TR_TM1TM2       "TM1\032TM2"
+#define TR_THRTHP       "THR\032TH%"
 #define TR_TOT          "TOT"
-#define TR_TMR1LATMAXUS "Tmr1Lat max\003us"
+#define TR_TMR1LATMAXUS "Tmr1Lat max\006us"
 #define STR_US (STR_TMR1LATMAXUS+12)
-#define TR_TMR1LATMINUS "Tmr1Lat min\003us"
-#define TR_TMR1JITTERUS "Tmr1 Jitter\003us"
+#define TR_TMR1LATMINUS "Tmr1Lat min\006us"
+#define TR_TMR1JITTERUS "Tmr1 Jitter\006us"
 #if defined(PCBSKY9X)
-#define TR_TMAINMAXMS          "Tmain max\004ms"
+#define TR_TMAINMAXMS          "Tmain max\010ms"
 #else
-#define TR_TMAINMAXMS          "Tmain max\005ms"
+#define TR_TMAINMAXMS          "Tmain max\010ms"
 #endif
-#define TR_T10MSUS      "T10ms\007us"
-#define TR_FREESTACKMINB "Free Stack\004b"
+#define TR_T10MSUS      "T10ms\016us"
+#define TR_FREESTACKMINB "Free Stack\010b"
 #define TR_MENUTORESET  "[MENU]pour reset"
 #define TR_PPM          "PPM"
 #define TR_CH           "CH"
 #define TR_MODEL        "MODELE"
 #define TR_FP           "PV"
 #define TR_EEPROMLOWMEM "EEPROM pleine!"
-#define TR_ALERT        "\003ALERTE"
+#define TR_ALERT        "\014ALERTE"
 #define TR_PRESSANYKEYTOSKIP "Touche pour ignorer"
 #define TR_THROTTLENOTIDLE "Gaz pas \202 z\200ro"
 #define TR_ALARMSDISABLED   "Alarmes D\200sactiv\200es"
@@ -375,8 +377,13 @@
 #define TR_MENUFLIGHTPHASE "PHASE DE VOL"
 #define TR_MENUFLIGHTPHASES "PHASES DE VOL"
 #define TR_MENUHELISETUP "CONF.HELI"
+#if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
+#define TR_MENUDREXPO          "MANCHES"
+#define TR_MENULIMITS          "SORTIES"
+#else
 #define TR_MENUDREXPO   "DR/EXPO"
 #define TR_MENULIMITS   "LIMITES"
+#endif
 #define TR_MENUCURVES   "COURBES"
 #define TR_MENUCURVE    "COURBE"
 #define TR_MENUCUSTOMSWITCH   "INTER PERS"
@@ -389,18 +396,17 @@
 #define TR_RXNUM         "NumRx"
 #define TR_SYNCMENU      "Sync [MENU]"
 #define TR_BACK          "Ret."
-#define TR_LIMIT         "Limit"
+#define TR_LIMIT         INDENT"Limit"
 #define TR_MINRSSI       "RSSI Min."
 #define TR_LATITUDE      "Latitude"
 #define TR_LONGITUDE     "Longitude"
 #define TR_GPSCOORD      "Coordonn\200es GPS"
 #define TR_VARIO         "Vario"
-#define TR_UNITSFORMAT   "Format Unit\200s"
 #define TR_SHUTDOWN      "ARRET EN COURS"
 #define TR_BATT_CALIB    "Calib. Batterie"
 #define TR_CURRENT_CALIB "Calib. Courant"
-#define TR_VOLTAGE       "Voltage"
-#define TR_CURRENT       "Courant"
+#define TR_VOLTAGE       INDENT"Voltage"
+#define TR_CURRENT       INDENT"Courant"
 #define TR_SELECT_MODEL  "S\200lect Mod\201le"
 #define TR_CREATE_MODEL  "Cr\200er Mod\201le"
 #define TR_BACKUP_MODEL  "Archiver Mod\201le"
@@ -412,19 +418,19 @@
 #define TR_WARNING       "ALERTE"
 #define TR_EEPROMWARN    "EEPROM"
 #define TR_THROTTLEWARN  "GAZ"
-#define TR_ALARMSWARN    "ALARMES"
+#define TR_ALARMSWARN    "SON"
 #define TR_SWITCHWARN    "INTERS"
 #define TR_INVERT_THR    "Inverser Gaz?"
-#define TR_SPEAKER_VOLUME      "Volume haut-p."
+#define TR_SPEAKER_VOLUME      INDENT"Volume"
 #define TR_LCD                 "Afficheur"
 #define TR_BRIGHTNESS          "Luminosit\200"
-#define TR_CPU_TEMP            "Temp. CPU\007>"
-#define TR_CPU_CURRENT         "Courant\011>"
+#define TR_CPU_TEMP            "Temp. CPU\016>"
+#define TR_CPU_CURRENT         "Courant\022>"
 #define TR_CPU_MAH             "Consomm."
 #define TR_COPROC              "CoProc."
-#define TR_COPROC_TEMP         "Temp. MB \007>"
-#define TR_CAPAWARNING         "Capacity Warning"
-#define TR_TEMPWARNING         "Alarme temp"
+#define TR_COPROC_TEMP         "Temp. MB \016>"
+#define TR_CAPAWARNING         "Alerte capacit\200"
+#define TR_TEMPWARNING         "Alerte temp"
 #define TR_FUNC                "Fonc"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"

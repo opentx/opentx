@@ -3,7 +3,7 @@
 #define TR_OFFON         "OFF""ON\0"
 
 #define LEN_MMMINV       "\003"
-#define TR_MMMINV        "---""INV"
+#define TR_MMMINV        "NOR""INV"
 
 #define LEN_NCHANNELS    "\004"
 #define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
@@ -24,10 +24,10 @@
 #define TR_VBLMODE       "OFF ""Keys""Stks""Both""ON\0"
 
 #define LEN_TRNMODE      "\003"
-#define TR_TRNMODE       "off"" +="" :="
+#define TR_TRNMODE       "OFF"" +="" :="
 
 #define LEN_TRNCHN       "\003"
-#define TR_TRNCHN        "ch1ch2ch3ch4"
+#define TR_TRNCHN        "CH1CH2CH3CH4"
 
 #define LEN_DATETIME     "\005"
 #define TR_DATETIME      "DATE:""TIME:"
@@ -36,7 +36,7 @@
 #define TR_VLCD          "NormalOptrex"
 
 #define LEN_VTRIMINC     "\006"
-#define TR_VTRIMINC      "Exp   ""ExFine""Fine  ""Medium""Coarse"
+#define TR_VTRIMINC      "Expo  ""ExFine""Fine  ""Medium""Coarse"
 
 #define LEN_RETA123      "\001"
 #if defined(PCBGRUVIN9X)
@@ -248,7 +248,7 @@
 #define TR_TRIMINC             "Trim Step"
 #define TR_TTRACE              "T-Trace"
 #define TR_TTRIM               "T-Trim"
-#define TR_BEEPCTR             "Beep Ctr"
+#define TR_BEEPCTR             "Ctr Beep"
 #define TR_PROTO               INDENT"Proto"
 #define TR_PPMFRAME            "PPM frame"
 #define TR_MS                  "ms"
@@ -308,21 +308,21 @@
 #define TR_INACTIVITYALARM     INDENT"Inactivity"
 #define TR_MEMORYWARNING       INDENT"Memory Low"
 #define TR_ALARMWARNING        INDENT"Sound Off"
-#define TR_RENAVIG             "Navig RotEnc"
-#define TR_FILTERADC           "Filter ADC"
+#define TR_RENAVIG             "RotEnc Navig"
+#define TR_FILTERADC           "ADC Filter"
 #define TR_THROTTLEREVERSE     "Thr reverse"
 #define TR_BEEP_LABEL          "Timer events"
-#define TR_MINUTEBEEP          INDENT"Minute "
+#define TR_MINUTEBEEP          INDENT"Minute"
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_BACKLIGHT_LABEL     "Backlight"
-#define TR_BLDELAY             INDENT"Delay"
+#define TR_BLDELAY             INDENT"Duration"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     "T-Warning"
 #define TR_SWITCHWARNING       "S-Warning"
 #define TR_TIMEZONE            "Time Zone"
 #define TR_RXCHANNELORD        "Rx Channel Ord"
 #define TR_SLAVE               "Slave"
-#define TR_MODESRC             "mode\006% src"
+#define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplier"
 #define TR_CAL                 "Cal"
 #define TR_EEPROMV             "EEpr:\010-"
