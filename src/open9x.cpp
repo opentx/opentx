@@ -77,7 +77,7 @@ const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 const pm_uchar * splash_lbm = splashdata+4;
 #endif
 
-#if defined(PCBGRUVIN9X) || defined(PCBSKY9X) || defined(M128) || defined(EXTSTD)
+#if !defined(M64) || defined(EXTSTD)
 const pm_uchar asterisk_lbm[] PROGMEM = {
 #include "asterisk.lbm"
 };
@@ -205,7 +205,7 @@ CustomSwData *cswaddress(uint8_t idx)
   return &g_model.customSw[idx];
 }
 
-#if defined(PCBSTD) && !defined(M128)
+#if defined(M64)
 void memclear(void *ptr, uint8_t size)
 {
   memset(ptr, 0, size);
@@ -317,6 +317,7 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
 }
 
 #if defined(CURVES)
+// TODO use an enum here and replace CURVE_BASE
 int16_t applyCurve(int16_t x, int8_t idx)
 {
   /* already tried to have only one return at the end */
@@ -447,9 +448,9 @@ void applyExpos(int16_t *anas)
           if (ed.curveMode == MODE_CURVE)
             v = applyCurve(v, curveParam);
           else
-            v = expo(v, GVAR(curveParam, -100, 100));
+            v = expo(v, GET_GVAR(curveParam, -100, 100, s_perout_flight_phase));
         }
-        v = ((int32_t)v * GVAR(ed.weight, 0, 100)) / 100;
+        v = ((int32_t)v * GET_GVAR(ed.weight, 0, 100, s_perout_flight_phase)) / 100;
         anas[cur_chn] = v;
       }
     }
@@ -829,11 +830,12 @@ int8_t getMovedSwitch()
 }
 
 #ifdef FLIGHT_PHASES
+// TODO int8_t?
 uint8_t getFlightPhase()
 {
   for (uint8_t i=1; i<MAX_PHASES; i++) {
     PhaseData *phase = &g_model.phaseData[i];
-    if (phase->swtch && getSwitch(phase->swtch, 0)) {
+    if (phase->swtch && getSwitch(phase->swtch, 0)) { // TODO phase->swtch needed?
       return i;
     }
   }
@@ -844,7 +846,7 @@ uint8_t getFlightPhase()
 int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
   PhaseData *p = phaseaddress(phase);
-#if defined(PCBSTD)
+#if defined(M64)
   return (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
 #else
   return p->trim[idx];
@@ -859,7 +861,7 @@ int16_t getTrimValue(uint8_t phase, uint8_t idx)
 void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 {
   PhaseData *p = phaseaddress(phase);
-#if defined(PCBSTD)
+#if defined(M64)
   p->trim[idx] = (int8_t)(trim >> 2);
   p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
 #else
@@ -931,22 +933,59 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 #endif
 
 #if defined(GVARS)
-int8_t GVAR(int8_t x, int8_t min, int8_t max)
-{
-  return (x >= 126 || x <= -126) ? limit(min, GVAR_VALUE((uint8_t)x - 126), max) : x;
-}
-
 uint8_t s_gvar_timer = 0;
 uint8_t s_gvar_last = 0;
-void setGVarValue(uint8_t x, int8_t value)
+
+#if defined(M64)
+int16_t getGVarValue(int8_t x, int16_t min, int16_t max)
 {
-  if (GVAR_VALUE(x) != value) {
-    GVAR_VALUE(x) = value;
+  return (x >= 126 || x <= -126) ? limit(min, GVAR_VALUE((uint8_t)x - 126, -1), max) : x;
+}
+
+void setGVarValue(uint8_t idx, int8_t value)
+{
+  if (GVAR_VALUE(idx, -1) != value) {
+    GVAR_VALUE(idx, -1) = value;
     eeDirty(EE_MODEL);
-    s_gvar_last = x;
+    s_gvar_last = idx;
     s_gvar_timer = GVAR_DISPLAY_TIME;
   }
 }
+#else
+uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
+{
+  for (uint8_t i=0; i<MAX_PHASES; i++) {
+    if (phase == 0) return 0;
+    int16_t trim = GVAR_VALUE(idx, phase); // TODO phase at the end everywhere to be consistent!
+    if (trim <= GVAR_MAX) return phase;
+    uint8_t result = trim-GVAR_MAX-1;
+    if (result >= phase) result++;
+    phase = result;
+  }
+  return 0;
+}
+
+int16_t getGVarValue(int8_t x, int16_t min, int16_t max, int8_t phase)
+{
+  if (x >= -125 && x <= 125)
+    return x;
+
+  uint8_t idx = (uint8_t)x - 126;
+  return limit(min, GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)), max);
+}
+
+void setGVarValue(uint8_t idx, int8_t value, int8_t phase)
+{
+  phase = getGVarFlightPhase(phase, idx);
+  if (GVAR_VALUE(idx, phase) != value) {
+    GVAR_VALUE(idx, phase) = value;
+    eeDirty(EE_MODEL);
+    s_gvar_last = idx;
+    s_gvar_timer = GVAR_DISPLAY_TIME;
+  }
+}
+#endif
+
 #endif
 
 #if defined(FRSKY) || defined(PCBSKY9X)
@@ -1246,7 +1285,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 #if defined(PCBX9D)
   lcd_img(DISPLAY_W-29, 0, asterisk_lbm, 0, 0);
 #endif
-#if defined(PCBGRUVIN9X) || defined(PCBSKY9X) || defined(M128) || defined(EXTSTD)
+#if !defined(M64) || defined(EXTSTD)
   lcd_img(2, 0, asterisk_lbm, 0, 0);
 #else
   lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
@@ -1270,7 +1309,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 }
 
 #if defined(GVARS)
-int8_t *trimPtr[NUM_STICKS] = { NULL, NULL, NULL, NULL };
+int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
 #endif
 
 #if defined(PCBSTD)
@@ -1289,21 +1328,29 @@ void checkTrims()
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
-    uint8_t phase = getTrimFlightPhase(s_perout_flight_phase, idx);
+
 #if defined(GVARS)
-#define TRIM_REUSED() trimPtr[idx]
-    int16_t before;
+#define TRIM_REUSED() trimGvar[idx] >= 0
+    uint8_t phase;
+    int16_t before; // TODO declarations outside #ifdef
     bool thro;
     if (TRIM_REUSED()) {
-      before = *trimPtr[idx];
+#if defined(M64)
+      phase = 0;
+#else
+      phase = getGVarFlightPhase(s_perout_flight_phase, trimGvar[idx]);
+#endif
+      before = GVAR_VALUE(trimGvar[idx], phase);
       thro = false;
     }
     else {
+      phase = getTrimFlightPhase(s_perout_flight_phase, idx);
       before = getRawTrimValue(phase, idx);
       thro = (idx==THR_STICK && g_model.thrTrim);
     }
 #else
 #define TRIM_REUSED() 0
+    uint8_t phase = getTrimFlightPhase(s_perout_flight_phase, idx);
     int16_t before = getRawTrimValue(phase, idx);
     bool thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
@@ -1335,9 +1382,9 @@ void checkTrims()
 
 #if defined(GVARS)
     if (TRIM_REUSED()) {
-      *trimPtr[idx] = after;
+      GVAR_VALUE(trimGvar[idx], phase) = after;
       eeDirty(EE_MODEL);
-      s_gvar_last = (trimPtr[idx] - &GVAR_VALUE(0)) / sizeof(g_model.gvars[0]);
+      s_gvar_last = trimGvar[idx];
       s_gvar_timer = GVAR_DISPLAY_TIME;
     }
     else {
@@ -1956,7 +2003,7 @@ void evalFunctions()
 
 #if defined(GVARS)
   for (uint8_t i=0; i<4; i++)
-    trimPtr[i] = NULL;
+    trimGvar[i] = -1;
 #endif
 
   for (uint8_t i=0; i<NUM_FSW; i++) {
@@ -2120,18 +2167,18 @@ void evalFunctions()
 #if defined(GVARS)
           else if (sd->func >= FUNC_ADJUST_GV1) {
             if (FSW_PARAM(sd) >= MIXSRC_TrimRud-1 && FSW_PARAM(sd) <= MIXSRC_TrimAil-1) {
-              trimPtr[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = &GVAR_VALUE(sd->func-FUNC_ADJUST_GV1);
+              trimGvar[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = sd->func-FUNC_ADJUST_GV1;
             }
 #if defined(ROTARY_ENCODERS)
             else if (FSW_PARAM(sd) >= MIXSRC_REa-1 && FSW_PARAM(sd) < MIXSRC_TrimRud-1) {
               int8_t scroll = rePreviousValues[FSW_PARAM(sd)-MIXSRC_REa+1] - (g_rotenc[FSW_PARAM(sd)-MIXSRC_REa+1] / ROTARY_ENCODER_GRANULARITY);
               if (scroll) {
-                setGVarValue(sd->func-FUNC_ADJUST_GV1, GVAR_VALUE(sd->func-FUNC_ADJUST_GV1) + scroll);
+                SET_GVAR(sd->func-FUNC_ADJUST_GV1, GVAR_VALUE(sd->func-FUNC_ADJUST_GV1, s_perout_flight_phase) + scroll, s_perout_flight_phase);
               }
             }
 #endif
             else {
-              setGVarValue(sd->func-FUNC_ADJUST_GV1, limit((int16_t)-1250, getValue(FSW_PARAM(sd)), (int16_t)1250) / 10);
+              SET_GVAR(sd->func-FUNC_ADJUST_GV1, limit((int16_t)-1250, getValue(FSW_PARAM(sd)), (int16_t)1250) / 10, s_perout_flight_phase);
             }
           }
 #endif
@@ -2362,7 +2409,7 @@ void perOut(uint8_t tick10ms)
 
     //========== OFFSET ===============
     if (apply_offset) {
-      int8_t offset = GVAR(md->sOffset, -125, 125);
+      int8_t offset = GET_GVAR(md->offset, -125, 125, s_perout_flight_phase);
       if (offset) v += calc100toRESX(offset);
     }
 
@@ -2379,7 +2426,7 @@ void perOut(uint8_t tick10ms)
         v += trims[mix_trim];
     }
 
-    int8_t weight = GVAR(md->weight, -125, 125);
+    int16_t weight = GET_GVAR(md->weight, -500, 500, s_perout_flight_phase);
 
     //========== SPEED ===============
     if (s_perout_mode == e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
@@ -2419,7 +2466,7 @@ void perOut(uint8_t tick10ms)
 
     //========== DIFFERENTIAL =========
     if (md->curveMode == MODE_DIFFERENTIAL) {
-      int8_t curveParam = GVAR(md->curveParam, -100, 100);
+      int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
       if (curveParam>0 && dv<0)
         dv = (dv * (100-curveParam)) / 100;
       else if (curveParam<0 && dv>0)
@@ -2974,8 +3021,8 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK) // mixer interrupt
   lastTMR = tmr10ms;
   
   if (s_current_protocol < PROTO_NONE) {
-    checkTrims();
     doMixerCalculations(tmr10ms, tick10ms);
+    checkTrims();
   }
 
   heartbeat |= HEART_TIMER10ms;
@@ -3476,10 +3523,10 @@ void mixerTask(void * pdata)
       lastTMR = tmr10ms;
 
       if (s_current_protocol < PROTO_NONE) {
-        if (tick10ms) checkTrims();
         CoEnterMutexSection(mixerMutex);
         doMixerCalculations(tmr10ms, tick10ms);
         CoLeaveMutexSection(mixerMutex);
+        if (tick10ms) checkTrims();
       }
 
       heartbeat |= HEART_TIMER10ms;

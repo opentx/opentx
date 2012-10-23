@@ -159,7 +159,7 @@ DSM2 = NO
 IRPROTOS = NO
 
 # TRANSLATIONS
-# Values = cz, de, en, fr, it, se  
+# Values = cz, de, en, fr, it, se, es 
 TRANSLATIONS = EN
 
 # TTS
@@ -560,7 +560,7 @@ ifeq ($(PCB), STD)
   # STD PCB, so ...
   OPT = s
   EXTRAINCDIRS += stock
-  CPPDEFS += -DPCBSTD -DVARIANT=$(shell echo ${VARIANT} | bc)
+  CPPDEFS += -DPCBSTD -DM64 -DVARIANT=$(shell echo ${VARIANT} | bc)
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp
@@ -754,7 +754,7 @@ arm-stamp:
 	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-arm.txt
 	@cat stamp-open9x-arm.txt
 
-font.lbm: font_6x1.xbm
+font.lbm: font_6x1.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
 	$(IMG2LBM) $< $@ char
@@ -763,8 +763,9 @@ font.lbm: font_6x1.xbm
 	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm char
 	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm char
 	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm char
+	$(IMG2LBM) translations/font_es.xbm translations/font_es.lbm char
 
-font_dblsize.lbm: font_dblsize.xbm
+font_dblsize.lbm: font_dblsize.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
 	$(IMG2LBM) $< $@ dblsize
@@ -772,6 +773,7 @@ font_dblsize.lbm: font_dblsize.xbm
 	$(IMG2LBM) translations/font_dblsize_de.xbm translations/font_dblsize_de.lbm dblsize
 	$(IMG2LBM) translations/font_dblsize_it.xbm translations/font_dblsize_it.lbm dblsize
 	$(IMG2LBM) translations/font_dblsize_fr.xbm translations/font_dblsize_fr.lbm dblsize
+	$(IMG2LBM) translations/font_dblsize_es.xbm translations/font_dblsize_es.lbm dblsize
 
 sticks.lbm: sticks_4x1.xbm
 	@echo

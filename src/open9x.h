@@ -312,7 +312,7 @@ extern uint8_t s_bind_allowed;
 #  define INP_E_TELEM_RX    1
 #  define OUT_E_TELEM_TX    0
 
-#  define INP_D_HAPTIC         7
+#  define OUT_D_HAPTIC         7
 #  define INP_D_SPARE4         6
 #  define INP_D_ROT_ENC_2_PUSH 5
 #  define INP_D_ROT_ENC_1_PUSH 4
@@ -388,7 +388,7 @@ extern uint8_t s_bind_allowed;
 
 #define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
 #define INP_G_ID1      3
-#define INP_G_HAPTIC   2
+#define OUT_G_HAPTIC   2
 #define INP_G_RF_POW   1
 #define INP_G_RuddDR   0
 
@@ -679,6 +679,8 @@ extern uint8_t s_perout_mode;
 // Fiddle to force compiler to use a pointer
 #define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
 
+extern uint8_t s_perout_flight_phase;
+
 void    perOut(uint8_t tick10ms);
 void    perMain();
 NOINLINE void per10ms();
@@ -700,8 +702,6 @@ extern int16_t getRawTrimValue(uint8_t phase, uint8_t idx);
 extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
 extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
-extern uint8_t s_perout_flight_phase;
-
 #if defined(ROTARY_ENCODERS)
 int16_t getRotaryEncoder(uint8_t idx);
 void incRotaryEncoder(uint8_t idx, int8_t inc);
@@ -717,12 +717,23 @@ inline bool navigationRotaryEncoder(uint8_t event)
 #endif
 
 #if defined(GVARS)
-int8_t GVAR(int8_t x, int8_t min, int8_t max);
+#if defined(M64)
+int16_t getGVarValue(int8_t x, int16_t min, int16_t max);
+void setGVarValue(uint8_t x, int8_t value);
+#define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
+#define SET_GVAR(idx, val, p) setGVarValue(idx, val)
+#else
+uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx);
+int16_t getGVarValue(int8_t x, int16_t min, int16_t max, int8_t phase);
+void setGVarValue(uint8_t x, int8_t value, int8_t phase);
+#define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
+#define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)
+#endif
 #define GVAR_DISPLAY_TIME     100 /*1 second*/;
 extern uint8_t s_gvar_timer;
 extern uint8_t s_gvar_last;
 #else
-#define GVAR(x, min, max) (x)
+#define GET_GVAR(x, ...) (x)
 #endif
 
 extern uint16_t s_timeCumTot;
@@ -757,8 +768,6 @@ extern uint8_t s_traceWr;
 extern int8_t s_traceCnt;
 #endif
 
-extern int8_t *s_trimPtr[NUM_STICKS];
-
 #if defined(PCBSKY9X)
 static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
@@ -771,13 +780,13 @@ uint16_t stack_free(uint8_t tid);
 uint16_t stack_free();
 #endif
 
-#if defined(PCBSTD) && !defined(M128)
+#if defined(M64)
 void memclear(void *ptr, uint8_t size);
 #else
 #define memclear(p, s) memset(p, 0, s)
 #endif
 
-#ifdef SPLASH
+#if defined(SPLASH)
 void doSplash();
 #endif
 
@@ -844,11 +853,11 @@ void read_9_adc(void ) ;
 #if defined(PCBSKY9X)
 #define HAPTIC_OFF    hapticOff()
 #elif defined(PCBGRUVIN9X)
-#define HAPTIC_ON     PORTD &= ~(1 << INP_D_HAPTIC)
-#define HAPTIC_OFF    PORTD |=  (1 << INP_D_HAPTIC)
+#define HAPTIC_ON     PORTD &= ~(1 << OUT_D_HAPTIC)
+#define HAPTIC_OFF    PORTD |=  (1 << OUT_D_HAPTIC)
 #else
-#define HAPTIC_ON     PORTG |=  (1 << INP_G_HAPTIC)
-#define HAPTIC_OFF    PORTG &= ~(1 << INP_G_HAPTIC)
+#define HAPTIC_ON     PORTG |=  (1 << OUT_G_HAPTIC)
+#define HAPTIC_OFF    PORTG &= ~(1 << OUT_G_HAPTIC)
 #endif
 #else
 #define HAPTIC_ON

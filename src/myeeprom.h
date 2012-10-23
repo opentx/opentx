@@ -302,7 +302,7 @@ PACK(typedef struct t_MixData {
   uint8_t speedUp;
   uint8_t speedDown;
   uint8_t srcRaw;
-  int8_t  sOffset;
+  int8_t  offset;
   char    name[LEN_EXPOMIX_NAME];
 }) MixData;
 #else
@@ -325,7 +325,7 @@ PACK(typedef struct t_MixData {
   uint8_t speedUp:4;
   uint8_t speedDown:4;
   int8_t  curveParam;
-  int8_t  sOffset;
+  int8_t  offset;
 }) MixData;
 #endif
 
@@ -616,41 +616,37 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define ROTARY_ENCODER_ARRAY_EXTRA
 #endif
 
-#if defined(PCBSTD)
+#if defined(M64)
 #define TRIM_ARRAY int8_t trim[4]; int8_t trim_ext:8
 #else
 #define TRIM_ARRAY int16_t trim[4]
 #endif
 
-#if defined(PCBSKY9X)
-PACK(typedef struct {
-  int8_t value;
-  char name[6];
-}) gvar_t;
-#define GVAR_VALUE(x) g_model.gvars[x].value
-#else
-typedef int8_t gvar_t;
-#define GVAR_VALUE(x) g_model.gvars[x]
+typedef int16_t gvar_t;
+
+#if !defined(M64)
+typedef char gvar_name_t[6];
+#define GVAR_MAX  1024
 #endif
 
-#if defined(PCBSTD)
-#define PHASE_GVARS_DATA
-#if defined(GVARS)
+#if defined(M64) && defined(GVARS)
 #define MAX_GVARS 5
 #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS]
+#define PHASE_GVARS_DATA
+#define GVAR_VALUE(x, p) g_model.gvars[x]
+#elif defined(M64)
+#define MAX_GVARS 0
+#define MODEL_GVARS_DATA
+#define PHASE_GVARS_DATA
+#elif defined(GVARS)
+#define MAX_GVARS 5
+#define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS]
+#define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
+#define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
 #else
 #define MAX_GVARS 0
 #define MODEL_GVARS_DATA
-#endif
-#else
-#define PHASE_GVARS_DATA
-#if defined(GVARS)
-#define MAX_GVARS 5
-#define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS]
-#else
-#define MAX_GVARS 0
-#define MODEL_GVARS_DATA gvar_t gvars[5]
-#endif
+#define PHASE_GVARS_DATA gvar_t gvars[5]
 #endif
 
 PACK(typedef struct t_PhaseData {
@@ -752,7 +748,7 @@ enum Dsm2Variants {
 
 #if defined(MAVLINK)
 #define TELEMETRY_DATA MavlinkData mavlink
-#elif defined(FRSKY) || !defined(PCBSTD)
+#elif defined(FRSKY) || !defined(M64)
 #define TELEMETRY_DATA FrSkyData frsky
 #else
 #define TELEMETRY_DATA

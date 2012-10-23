@@ -194,7 +194,7 @@ void lcd_putsnAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mod
       if (mode&DBLSIZE) x += FW-1;
     }
     else {
-      x += (c*FW);
+      x += (c*FW/2);
     }
     s++;
     len--;

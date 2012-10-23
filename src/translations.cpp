@@ -161,34 +161,34 @@ const pm_char STR_ALARM[] PROGMEM = TR_ALARM;
 const pm_char STR_USRDATA[] PROGMEM = TR_USRDATA;
 const pm_char STR_BLADES[] PROGMEM = TR_BLADES;
 const pm_char STR_SCREEN[] PROGMEM = TR_SCREEN;
-const pm_char STR_BEEPERMODE[] PROGMEM = TR_BEEPERMODE;
-const pm_char STR_BEEPERLEN[] PROGMEM = TR_BEEPERLEN;
+const pm_char STR_SOUND_LABEL[] PROGMEM = TR_SOUND_LABEL;
+const pm_char STR_LENGTH[] PROGMEM = TR_LENGTH;
 #if defined(AUDIO)
 const pm_char STR_SPKRPITCH[] PROGMEM = TR_SPKRPITCH;
 #endif
 #if defined(HAPTIC)
-const pm_char STR_HAPTICMODE[] PROGMEM = TR_HAPTICMODE;
+const pm_char STR_HAPTIC_LABEL[] PROGMEM = TR_HAPTIC_LABEL;
 const pm_char STR_HAPTICSTRENGTH[] PROGMEM = TR_HAPTICSTRENGTH;
-const pm_char STR_HAPTICLENGTH[] PROGMEM = TR_HAPTICLENGTH;
 #endif
 const pm_char STR_CONTRAST[] PROGMEM = TR_CONTRAST;
+const pm_char STR_ALARMS_LABEL[] PROGMEM = TR_ALARMS_LABEL;
 const pm_char STR_BATTERYWARNING[] PROGMEM = TR_BATTERYWARNING;
 const pm_char STR_INACTIVITYALARM[] PROGMEM = TR_INACTIVITYALARM;
+const pm_char STR_MEMORYWARNING[] PROGMEM = TR_MEMORYWARNING;
+const pm_char STR_ALARMWARNING[] PROGMEM = TR_ALARMWARNING;
 #if defined(ROTARY_ENCODERS)
 const pm_char STR_RENAVIG[] PROGMEM = TR_RENAVIG;
 #endif
 const pm_char STR_FILTERADC[] PROGMEM = TR_FILTERADC;
 const pm_char STR_THROTTLEREVERSE[] PROGMEM = TR_THROTTLEREVERSE;
+const pm_char STR_BEEP_LABEL[] PROGMEM = TR_BEEP_LABEL;
 const pm_char STR_MINUTEBEEP[] PROGMEM = TR_MINUTEBEEP;
 const pm_char STR_BEEPCOUNTDOWN[] PROGMEM = TR_BEEPCOUNTDOWN;
-const pm_char STR_FLASHONBEEP[] PROGMEM = TR_FLASHONBEEP;
-const pm_char STR_BLMODE[] PROGMEM = TR_BLMODE;
+const pm_char STR_BACKLIGHT_LABEL[] PROGMEM = TR_BACKLIGHT_LABEL;
 const pm_char STR_BLDELAY[] PROGMEM = TR_BLDELAY;
 const pm_char STR_SPLASHSCREEN[] PROGMEM = TR_SPLASHSCREEN;
 const pm_char STR_THROTTLEWARNING[] PROGMEM = TR_THROTTLEWARNING;
 const pm_char STR_SWITCHWARNING[] PROGMEM = TR_SWITCHWARNING;
-const pm_char STR_MEMORYWARNING[] PROGMEM = TR_MEMORYWARNING;
-const pm_char STR_ALARMWARNING[] PROGMEM = TR_ALARMWARNING;
 #ifdef FRSKY
 const pm_char STR_TIMEZONE[] PROGMEM = TR_TIMEZONE;
 const pm_char STR_GPSCOORD[] PROGMEM = TR_GPSCOORD;
@@ -383,6 +383,8 @@ const pm_uchar font[] PROGMEM = {
 #include "font_cz.lbm"
 #elif defined(TRANSLATIONS_FR)
 #include "font_fr.lbm"
+#elif defined(TRANSLATIONS_ES)
+#include "font_es.lbm"
 #endif
 };
 
@@ -396,5 +398,7 @@ const pm_uchar font_dblsize[] PROGMEM = {
 #include "font_dblsize_it.lbm"
 #elif defined(TRANSLATIONS_FR)
 #include "font_dblsize_fr.lbm"
+#elif defined(TRANSLATIONS_ES)
+#include "font_dblsize_es.lbm"
 #endif
 };

@@ -49,6 +49,9 @@
 #elif defined(TRANSLATIONS_CZ)
 #include "translations/cz.h"
 #define LEN_SPECIAL_CHARS 0
+#elif defined(TRANSLATIONS_ES)
+#include "translations/es.h"
+#define LEN_SPECIAL_CHARS 0
 #else
 #include "translations/en.h"
 #define LEN_SPECIAL_CHARS 0
@@ -204,6 +207,7 @@ extern const pm_char STR_OPEN9X[];
 #endif
 
 // The 0-terminated-strings
+#define NO_INDENT(x) (x)+LEN_INDENT
 
 extern const pm_char STR_POPUPS[];
 #define STR_EXIT (STR_POPUPS + OFS_EXIT)
@@ -269,28 +273,28 @@ extern const pm_char STR_ALARM[];
 extern const pm_char STR_USRDATA[];
 extern const pm_char STR_BLADES[];
 extern const pm_char STR_SCREEN[];
-extern const pm_char STR_BEEPERMODE[];
-extern const pm_char STR_BEEPERLEN[];
+extern const pm_char STR_SOUND_LABEL[];
+extern const pm_char STR_LENGTH[];
 extern const pm_char STR_SPKRPITCH[];
-extern const pm_char STR_HAPTICMODE[];
+extern const pm_char STR_HAPTIC_LABEL[];
 extern const pm_char STR_HAPTICSTRENGTH[];
-extern const pm_char STR_HAPTICLENGTH[];
 extern const pm_char STR_CONTRAST[];
+extern const pm_char STR_ALARMS_LABEL[];
 extern const pm_char STR_BATTERYWARNING[];
 extern const pm_char STR_INACTIVITYALARM[];
+extern const pm_char STR_MEMORYWARNING[];
+extern const pm_char STR_ALARMWARNING[];
 extern const pm_char STR_RENAVIG[];
 extern const pm_char STR_FILTERADC[];
 extern const pm_char STR_THROTTLEREVERSE[];
+extern const pm_char STR_BEEP_LABEL[];
 extern const pm_char STR_MINUTEBEEP[];
 extern const pm_char STR_BEEPCOUNTDOWN[];
-extern const pm_char STR_FLASHONBEEP[];
-extern const pm_char STR_BLMODE[];
+extern const pm_char STR_BACKLIGHT_LABEL[];
 extern const pm_char STR_BLDELAY[];
 extern const pm_char STR_SPLASHSCREEN[];
 extern const pm_char STR_THROTTLEWARNING[];
 extern const pm_char STR_SWITCHWARNING[];
-extern const pm_char STR_MEMORYWARNING[];
-extern const pm_char STR_ALARMWARNING[];
 extern const pm_char STR_TIMEZONE[];
 extern const pm_char STR_GPSCOORD[];
 extern const pm_char STR_VARIO[];
