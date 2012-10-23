@@ -3,7 +3,7 @@
 #define TR_OFFON         "OFF""ON\0"
 
 #define LEN_MMMINV       "\003"
-#define TR_MMMINV        "NOR""INV"
+#define TR_MMMINV        "---""INV"
 
 #define LEN_NCHANNELS    "\004"
 #define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
