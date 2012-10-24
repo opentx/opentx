@@ -64,8 +64,10 @@
 #define CONDENSED     0x08
 
 /* lcd puts flags */
-#define BSS           0x80 /* no 0x10 here to save flash as it is possible to have LEADING0 (putsStrIdx) */
-#define ZCHAR         0x20
+/* no 0x80 here because of "GV"1 which is aligned LEFT */
+/* no 0x10 here because of "MODEL"01 which uses LEADING0 */
+#define BSS           0x20
+#define ZCHAR         0x80
 
 /* lcd outdez flags */
 #define UNSIGN        0x08

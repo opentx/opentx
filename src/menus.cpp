@@ -627,7 +627,11 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
     eeDirty(EE_MODEL);
   }
   if (value >= 126 || value <= -126) {
-    putsStrIdx(attr&LEFT?x:x-2*FW-FWNUM, y, STR_GV, (uint8_t)value - 125, attr);
+    if (attr & LEFT) {
+      attr -= LEFT; /* because of ZCHAR */
+      x -= 2*FW+FWNUM;
+    }
+    putsStrIdx(x, y, STR_GV, (uint8_t)value - 125, attr);
     if (invers) value = checkIncDec(event, (uint8_t)value, 126, 130, EE_MODEL);
   }
   else {
