@@ -829,12 +829,11 @@ int8_t getMovedSwitch()
 }
 
 #ifdef FLIGHT_PHASES
-// TODO int8_t?
 uint8_t getFlightPhase()
 {
   for (uint8_t i=1; i<MAX_PHASES; i++) {
     PhaseData *phase = &g_model.phaseData[i];
-    if (phase->swtch && getSwitch(phase->swtch, 0)) { // TODO phase->swtch needed?
+    if (phase->swtch && getSwitch(phase->swtch, 0)) {
       return i;
     }
   }
@@ -1327,12 +1326,12 @@ void checkTrims()
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
+    uint8_t phase;
+    int16_t before;
+    bool thro;
 
 #if defined(GVARS)
 #define TRIM_REUSED() trimGvar[idx] >= 0
-    uint8_t phase;
-    int16_t before; // TODO declarations outside #ifdef
-    bool thro;
     if (TRIM_REUSED()) {
 #if defined(M64)
       phase = 0;
@@ -1349,9 +1348,9 @@ void checkTrims()
     }
 #else
 #define TRIM_REUSED() 0
-    uint8_t phase = getTrimFlightPhase(s_perout_flight_phase, idx);
-    int16_t before = getRawTrimValue(phase, idx);
-    bool thro = (idx==THR_STICK && g_model.thrTrim);
+    phase = getTrimFlightPhase(s_perout_flight_phase, idx);
+    before = getRawTrimValue(phase, idx);
+    thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
@@ -2656,7 +2655,7 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
     s_cnt_10s += s_cnt_1s;
     s_sum_10s += s_sum_1s;
 
-    if ((tmr10ms_t)(tmr10ms - s_time_trace) >= 1000) {// 10sec
+    if ((tmr10ms_t)(tmr10ms - s_time_trace) >= 1000) { // 10s
       s_time_trace += 1000;
       val = s_sum_10s / s_cnt_10s;
       s_sum_10s = 0;
@@ -2664,7 +2663,7 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
 
       s_traceBuf[s_traceWr++] = val;
       if (s_traceWr >= MAXTRACE) s_traceWr = 0;
-      if (s_traceCnt >= 0) s_traceCnt++; // TODO to be checked
+      if (s_traceCnt >= 0) s_traceCnt++;
     }
 #endif
 

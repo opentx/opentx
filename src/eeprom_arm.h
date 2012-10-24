@@ -44,8 +44,8 @@ extern uint8_t Eeprom32_process_state ;
 extern void eeprom_init( void ) ;
 extern void end_spi(); // TODO not public
 extern void ee32_process( void ) ;
-extern bool ee32LoadGeneral( void ) ;
-
+extern bool eeLoadGeneral( void ) ;
+extern bool eeConvert();
 extern void eeWaitFinished();
 
 extern void eeDeleteModel( uint8_t id ) ;
@@ -57,11 +57,19 @@ extern void eeSwapModels(uint8_t id1, uint8_t id2);
 
 struct t_file_entry
 {
-	uint32_t block_no ;
-	uint32_t sequence_no ;
-	uint16_t size ;
-	uint8_t flags ;
+    uint32_t block_no ;
+    uint32_t sequence_no ;
+    uint16_t size ;
+    uint8_t flags ;
 } ;
+
+struct t_eeprom_header
+{
+    uint32_t sequence_no ;              // sequence # to decide which block is most recent
+    uint16_t data_size ;                        // # bytes in data area
+    uint8_t flags ;
+    uint8_t hcsum ;
+};
 
 extern struct t_file_entry File_system[] ;
 extern char ModelNames[][sizeof(g_model.name)] ;		// Allow for general
@@ -71,6 +79,8 @@ extern ModelData  g_model;
 
 extern uint8_t Spi_tx_buf[] ;
 extern uint8_t Spi_rx_buf[] ;
+
+void read32_eeprom_data(uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0);
 
 #if defined(SDCARD)
 const pm_char * eeBackupModel(uint8_t i_fileSrc);

@@ -101,7 +101,8 @@ enum BeeperMode {
   uint8_t  mAhWarn; \
   uint16_t mAhUsed; \
   uint32_t globalTimer; \
-  int8_t   temperatureCalib;
+  int8_t   temperatureCalib; \
+  uint8_t  btBaudrate
 #else
 #define EXTRA_SKY9X_FIELDS
 #define EXTRA_GENERAL_FIELDS \
@@ -137,9 +138,9 @@ PACK(typedef struct t_EEGeneral {
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;      //index of subview in main scrren
-  uint8_t   btBaudrate:3; // only used on SKY9X board
+  int8_t    spare1:3;
   int8_t    beeperMode:2;
-  uint8_t   spare1:1;
+  uint8_t   spare2:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
@@ -151,7 +152,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   preBeep:1;
   uint8_t   flashBeep:1;
   uint8_t   disableSplashScreen:1;
-  uint8_t   spare2:1;
+  uint8_t   spare3:1;
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   filterInput;
   uint8_t   lightAutoOff;
@@ -293,7 +294,7 @@ PACK(typedef struct t_MixData {
   int8_t  carryTrim:3;
   uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
   uint8_t spare:1;
-  int8_t  weight;
+  int16_t weight;
   int8_t  swtch;
   int8_t  curveParam;
   uint8_t mixWarn;         // mixer warning

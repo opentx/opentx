@@ -70,7 +70,6 @@ void eeDirty(uint8_t msk)
 void handle_serial( void ) ;
 
 uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t *p_seq ) ;
-void read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0 ) ;
 void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0 ) ;
 void ee32_read_model_names( void ) ;
 void ee32LoadModelName(uint8_t id, char *buf, uint8_t len) ;
@@ -85,14 +84,6 @@ void ee32LoadModelName(uint8_t id, char *buf, uint8_t len) ;
 
 uint8_t Current_general_block ;		// 0 or 1 is active block
 uint8_t Other_general_block_blank ;
-
-struct t_eeprom_header
-{
-    uint32_t sequence_no ;		// sequence # to decide which block is most recent
-    uint16_t data_size ;			// # bytes in data area
-    uint8_t flags ;
-    uint8_t hcsum ;
-};
 
 struct t_eeprom_buffer
 {
@@ -273,7 +264,7 @@ uint32_t eeprom_read_status()
 }
 
 // Read eeprom data starting at random address
-void read32_eeprom_data( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate )
+void read32_eeprom_data(uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate)
 {
 #ifdef SIMU
   assert(size);
@@ -428,11 +419,9 @@ uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t
   return block_no ;
 }
 
-bool ee32LoadGeneral()
+bool eeLoadGeneral()
 {
-  uint16_t size ;
-	
-  size = File_system[0].size ;
+  uint16_t size = File_system[0].size;
 
   memset(&g_eeGeneral, 0, sizeof(EEGeneral));
 
@@ -444,11 +433,14 @@ bool ee32LoadGeneral()
     read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size) ;
   }
 
-  if (g_eeGeneral.version == EEPROM_VER) {
-    uint16_t sum = evalChkSum();
-    if (g_eeGeneral.chkSum == sum) {
-      return true;
-    }
+  if (g_eeGeneral.version != EEPROM_VER) {
+    if (!eeConvert())
+      return false;
+  }
+
+  uint16_t sum = evalChkSum();
+  if (g_eeGeneral.chkSum == sum) {
+    return true;
   }
 
 #ifdef SIMU
@@ -540,7 +532,7 @@ void ee32LoadModelName(uint8_t id, char *buf, uint8_t len)
 
 void eeReadAll()
 {
-  if (!ee32LoadGeneral() )
+  if (!eeLoadGeneral() )
   {
     generalDefault();
 

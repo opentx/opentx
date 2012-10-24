@@ -442,7 +442,7 @@ ifeq ($(PCB), X9D)
   SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
   SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
   SRC += sky9x/MEDSdcard.c
-  EEPROMSRC = eeprom_arm.cpp
+  EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += sky9x/audio.cpp haptic.cpp
   CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp
@@ -476,7 +476,7 @@ ifeq ($(PCB), SKY9X)
   SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
   SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
   SRC += sky9x/MEDSdcard.c
-  EEPROMSRC = eeprom_arm.cpp
+  EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += rtc.cpp sky9x/rtc_driver.cpp
   CPPSRC += sky9x/audio.cpp haptic.cpp
