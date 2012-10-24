@@ -228,6 +228,11 @@ void check_rotary_encoder()
 }
 #endif
 
+void title(const pm_char * s)
+{
+  lcd_putsAtt(0, 0, s, INVERS);
+}
+
 #define SCROLL_TH      64
 #define SCROLL_POT1_TH 32
 

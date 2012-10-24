@@ -159,8 +159,8 @@ bool check_submenu_simple(uint8_t event, uint8_t maxrow);
 
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 
-#define TITLEP(pstr) lcd_putsAtt(0,0,pstr,INVERS)
-#define TITLE(str)   TITLEP(str)
+void title(const pm_char * s);
+#define TITLE(str) title(str)
 
 #define MENU(title, tab, menu, lines_count, ...) \
 static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \

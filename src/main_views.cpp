@@ -155,12 +155,17 @@ void menuMainView(uint8_t event)
       killEvents(event);
       break;
     case EVT_KEY_FIRST(KEY_EXIT):
-      if(s_timerState[0]==TMR_BEEPING) {
+      if (s_timerState[0]==TMR_BEEPING) {
         s_timerState[0] = TMR_STOPPED;
       }
       else if (s_global_warning) {
         s_global_warning = NULL;
       }
+#if defined(GVARS)
+      else if (s_gvar_timer > 0) {
+        s_gvar_timer = 0;
+      }
+#endif
       else if (view == e_timer2) {
         resetTimer(1);
       }
@@ -381,10 +386,7 @@ void menuMainView(uint8_t event)
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 
-  if (s_warning) {
-    // Nothing here
-  }
-  else if (s_global_warning) {
+  if (s_global_warning) {
     s_warning = s_global_warning;
     displayWarning(_event);
     if (!s_warning) s_global_warning = NULL;

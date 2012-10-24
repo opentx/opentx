@@ -1706,7 +1706,7 @@ enum MixFields {
 
 void menuModelMixOne(uint8_t event)
 {
-  TITLEP(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
+  TITLE(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
 
@@ -1856,7 +1856,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
       event -= KEY_EXIT;
   }
 
-  TITLEP(expo ? STR_MENUDREXPO : STR_MIXER);
+  TITLE(expo ? STR_MENUDREXPO : STR_MIXER);
   lcd_outdezAtt(lcdLastPos+2*FW+FW/2, 0, getExpoMixCount(expo));
   lcd_puts(lcdLastPos, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
   SIMPLE_MENU_NOTITLE(menuTabModel, expo ? e_ExposAll : e_MixAll, s_maxLines);
@@ -2396,7 +2396,7 @@ enum CustomSwitchFields {
 #define CSW_2ND_COLUMN (9*FW)
 void menuModelCustomSwitchOne(uint8_t event)
 {
-  TITLEP(STR_MENUCUSTOMSWITCH);
+  TITLE(STR_MENUCUSTOMSWITCH);
   CustomSwData * cs = cswaddress(s_currIdx);
   uint8_t sw = DSW_SW1+s_currIdx;
   putsSwitches(14*FW, 0, sw, (getSwitch(sw, 0) ? BOLD : 0));
