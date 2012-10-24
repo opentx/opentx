@@ -233,7 +233,7 @@
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
-#define LEN_INDENT             1
+#define LEN_INDENT             2
 #define INDENT_WIDTH           (FW/2)
 
 #define TR_POPUPS              "[MENU]\010[EXIT]"
@@ -282,14 +282,14 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Kurvor"
-#define TR_FPHASE              "Fl.Fas"
+#define TR_FPHASE              "FlFas"
 #define TR_MIXWARNING          "Varning"
 #define TR_OFF                 "AV "
 #define TR_MULTPX              "Multpx"
-#define TR_DELAYDOWN           "F\202rdr\202jn.Ned"
-#define TR_DELAYUP             "F\202rdr\202jn.Upp"
-#define TR_SLOWDOWN            "Tr\202ghet Ned"
-#define TR_SLOWUP              "Tr\202ghet Upp"
+#define TR_DELAYDOWN           "Dr\202j Ned"
+#define TR_DELAYUP             "Dr\202j Upp"
+#define TR_SLOWDOWN            "Tr\202g Ned"
+#define TR_SLOWUP              "Tr\202g Upp"
 #define TR_MIXER               "MIXAR"
 #define TR_CV                  "KU"
 #define TR_GV                  "GV"
