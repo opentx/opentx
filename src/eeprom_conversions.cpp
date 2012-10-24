@@ -99,7 +99,6 @@ bool eeConvert()
     memmove(((uint8_t*)&g_eeGeneral)+2, ((uint8_t*)&g_eeGeneral)+1, 81);
     g_eeGeneral.variant = 0;
     g_eeGeneral.version = 213;
-    g_eeGeneral.disableSplashSkip = 0;
 
     for (uint8_t id=0; id<MAX_MODELS; id++) {
       uint16_t size = File_system[id+1].size;
