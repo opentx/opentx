@@ -738,8 +738,8 @@ void setupPulses()
 
     switch (required_protocol) {
 
-      case PROTO_DSM2:
 #if defined(DSM2_PPM)
+      case PROTO_DSM2:
         set_timer3_capture(); 
         TCCR1B = 0;                           // Stop counter
         OCR1C = 200;                          // 100 uS
