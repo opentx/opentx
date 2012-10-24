@@ -317,26 +317,25 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 10
 }
 
 #if defined(CURVES)
-// TODO use an enum here and replace CURVE_BASE
 int16_t applyCurve(int16_t x, int8_t idx)
 {
   /* already tried to have only one return at the end */
   switch(idx) {
-    case 0:
+    case CURVE_NONE:
       return x;
-    case 1:
+    case CURVE_X_GT0:
       if (x < 0) x = 0; //x|x>0
       return x;
-    case 2:
+    case CURVE_X_LT0:
       if (x > 0) x = 0; //x|x<0
       return x;
-    case 3: // x|abs(x)
+    case CURVE_ABS_X: // x|abs(x)
       return abs(x);
-    case 4: //f|f>0
+    case CURVE_F_GT0: //f|f>0
       return x > 0 ? RESX : 0;
-    case 5: //f|f<0
+    case CURVE_F_LT0: //f|f<0
       return x < 0 ? -RESX : 0;
-    case 6: //f|abs(f)
+    case CURVE_ABS_F: //f|abs(f)
       return x > 0 ? RESX : -RESX;
   }
   if (idx < 0) {
@@ -1754,7 +1753,7 @@ BeepANACenter evalSticks()
 {
   BeepANACenter anaCenter = 0;
 
-#ifdef HELI
+#if defined(HELI)
   uint16_t d = 0;
   if (g_model.swashR.value) {
     uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] +

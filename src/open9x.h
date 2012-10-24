@@ -480,7 +480,16 @@ public:
 
 extern Key keys[NUM_KEYS];
 
-#define CURVE_BASE 7
+enum BaseCurves {
+  CURVE_NONE,
+  CURVE_X_GT0,
+  CURVE_X_LT0,
+  CURVE_ABS_X,
+  CURVE_F_GT0,
+  CURVE_F_LT0,
+  CURVE_ABS_F,
+  CURVE_BASE
+};
 
 #define SWASH_TYPE_120   1
 #define SWASH_TYPE_120X  2
