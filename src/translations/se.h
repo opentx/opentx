@@ -301,8 +301,8 @@
 #define TR_BLADES              INDENT"Blad"
 #define TR_SCREEN              "Screen "
 #define TR_SOUND_LABEL         "Ljud "
-#define TR_LENGTH              INDENT"Tid
-#define TR_SPKRPITCH           INDENT"Ton
+#define TR_LENGTH              INDENT"Tid"
+#define TR_SPKRPITCH           INDENT"Ton"
 #define TR_HAPTIC_LABEL        "Vibrator"
 #define TR_HAPTICSTRENGTH      INDENT"Styrka"
 #define TR_CONTRAST            "Kontrast"
