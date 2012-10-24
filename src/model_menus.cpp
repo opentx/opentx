@@ -1073,7 +1073,7 @@ void menuModelPhaseOne(uint8_t event)
         uint8_t p = getGVarFlightPhase(s_currIdx, idx);
         lcd_outdezAtt(21*FW, y, GVAR_VALUE(idx, p), !editingName && m_posHorz==2 ? attr : 0);
         if (attr && !editingName && m_posHorz==2 && ((editMode>0) || p1valdiff))
-          CHECK_INCDEC_MODELVAR(event, GVAR_VALUE(idx, p), -125, +125);
+          GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -1024, +1024, EE_MODEL);
 
         break;
       }
