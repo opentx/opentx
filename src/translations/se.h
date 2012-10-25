@@ -21,7 +21,7 @@
 #define TR_VFILTERADC          "SING""OSMP""FILT"
 
 #define LEN_VBLMODE            "\004"
-#define TR_VBLMODE             "AV\0""Knpp""Spak""B\200da""P\203\0"
+#define TR_VBLMODE             "AV  ""Knpp""Spak""B\200da""P\203  "
 
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             " AV"" +="" :="
@@ -233,7 +233,7 @@
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
-#define LEN_INDENT             2
+#define LEN_INDENT             1
 #define INDENT_WIDTH           (FW/2)
 
 #define TR_POPUPS              "[MENU]\010[EXIT]"
@@ -268,7 +268,7 @@
 #define TR_ELEDIRECTION        "H\205JD Riktning"
 #define TR_AILDIRECTION        "SKEV Riktning"
 #define TR_COLDIRECTION        "KOLL.Riktning"
-#define TR_MODE                INDENT"Mod"
+#define TR_MODE                INDENT"L\201ge"
 #define TR_NOFREEEXPO          "Expo saknas!"
 #define TR_NOFREEMIXER         "Mixer saknas!"
 #define TR_INSERTMIX           "ADDERA MIX"
@@ -314,9 +314,9 @@
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_FILTERADC           "ADC-filter"
 #define TR_THROTTLEREVERSE     "Reverserad Gas"
-#define TR_BEEP_LABEL          "Signaler"
-#define TR_MINUTEBEEP          INDENT"Minut"
-#define TR_BEEPCOUNTDOWN       INDENT"Nedr\201knings"
+#define TR_BEEP_LABEL          "Pip"
+#define TR_MINUTEBEEP          INDENT"Varje Minut"
+#define TR_BEEPCOUNTDOWN       INDENT"R\201kna Ned"
 #define TR_BACKLIGHT_LABEL     "Belysning"
 #define TR_BLDELAY             INDENT"Av efter"
 #define TR_SPLASHSCREEN        "Bild vid start"
@@ -437,8 +437,8 @@
 #define TR_FUNC                "Funk"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
-#define TR_DURATION            "Tidlängd"
-#define TR_DELAY               "Fördröj"
+#define TR_DURATION            "Tidl\201ngd"
+#define TR_DELAY               "F\202rdr\202j"
 #define TR_SD_CARD             "SD-kord"
 #define TR_SDHC_CARD           "SD/HC-kort"
 #define TR_NO_SOUNDS_ON_SD     "Inga ljud i SD"
