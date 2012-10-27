@@ -162,6 +162,10 @@ if __name__ == "__main__":
         					   "r p m", "r p m",
         					   "g", "g"]):
             systemSounds.extend(generate(s, 115+i))
+        for i, s in enumerate(["point one", "point two", "point three",
+                               "point four", "point five", "point six",
+                               "point seven", "point eight", "point nine"]):
+            systemSounds.extend(generate(s, 160+i))
         for s, f, a in [(u"trim center", "midtrim", 244),
                         (u"maximum trim reached", "endtrim", 0),
                         (u"transmitter battery low", "lowbatt", 231),
