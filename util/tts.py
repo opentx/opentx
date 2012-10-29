@@ -34,7 +34,7 @@ def generate(str, idx, alternate=0):
     else:
         if isinstance(idx, int):
             result = "%04d.wav" % idx
-        elif board == 'arm':
+        elif board == 'sky9x':
             result = idx + ".wav"
         else:
             if alternate == 0:
@@ -78,7 +78,7 @@ def generate(str, idx, alternate=0):
             print "which speach engine?"
             return []
     
-        if board == 'arm':
+        if board == 'sky9x':
             if 'sox' in sys.argv:
                 maxvolume = subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
                 if "not sound" in maxvolume:
@@ -92,7 +92,7 @@ def generate(str, idx, alternate=0):
                 os.rename(result, temp) 
                 subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
-        elif board == 'v4':
+        elif board == 'gruvin9x':
             subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             os.remove(result)
             result = result.replace(".wav", ".ad4")
@@ -114,10 +114,10 @@ if __name__ == "__main__":
     sounds = []
     systemSounds = []
     
-    if "arm" in sys.argv:
-        board = "arm"
-    elif "v4" in sys.argv:
-        board = "v4"
+    if "sky9x" in sys.argv:
+        board = "sky9x"
+    elif "gruvin9x" in sys.argv:
+        board = "gruvin9x"
     else:
         board = "stock"
 
@@ -425,13 +425,13 @@ if __name__ == "__main__":
         csvFile = open(voice + ".csv", "w")
         for f, s in systemSounds:
             l = u""
-            if board == "arm":
+            if board == "sky9x":
                 l += u"9XSOUNDS/SYSTEM;"
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
         for f, s in sounds:
             l = u""
-            if board == "arm":
+            if board == "sky9x":
                 l += u"9XSOUNDS;"
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
@@ -441,13 +441,13 @@ if __name__ == "__main__":
         zip_name = voice + ".zip"
         zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
         for f, s in systemSounds:
-            if board == "arm":
+            if board == "sky9x":
                 zip.write(f, "9XSOUNDS/SYSTEM/" + f)
             else:
                 zip.write(f, f)
             os.remove(f)
         for f, s in sounds:
-            if board == "arm":
+            if board == "sky9x":
                 zip.write(f, "9XSOUNDS/" + f)
             else:
                 zip.write(f, f)
