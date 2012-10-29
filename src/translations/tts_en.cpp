@@ -118,7 +118,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
         PLAY_NUMBER(qr.quot, unit, 0);
     return;
   }
-#elif 
+#else
   int8_t mode = MODE(att);
   if (mode > 0) {
     div_t qr = div(number, (mode == 1 ? 10 : 100));   
