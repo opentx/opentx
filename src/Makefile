@@ -103,6 +103,7 @@ HAPTIC = NO
 SP22 = NO
 
 # SPLASH on START
+# Values = YES, NO, FIXED
 SPLASH = YES
 
 # GRAPHICS (sliders / checkboxes / bold)
@@ -201,7 +202,7 @@ GVARS = NO
 
 # Define programs and commands.
 SHELL = sh
-IMG2LBM = python ../util/img2lbm.py
+IMG2LBM = -python ../util/img2lbm.py
 SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 
 CPPDEFS = 
@@ -340,6 +341,10 @@ endif
 
 ifeq ($(SPLASH), YES)
   CPPDEFS += -DSPLASH
+endif
+
+ifeq ($(SPLASH), FIXED)
+  CPPDEFS += -DSPLASH -DFSPLASH
 endif
 
 ifeq ($(GRAPHICS), YES)
