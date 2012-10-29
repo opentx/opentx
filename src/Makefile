@@ -311,7 +311,7 @@ CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
 # TTS language
 CPPDEFS += -DTTS_$(TTS)
 
-VARIANT = 0
+EEPROM_VARIANT = 0
 
 ifeq ($(UNITS), IMPERIAL)
   CPPDEFS += -DIMPERIAL_UNITS
@@ -373,7 +373,7 @@ endif
 
 ifeq ($(GVARS), YES)
   CPPDEFS += -DGVARS
-  VARIANT += +1
+  EEPROM_VARIANT += +1
 endif
 
 # If STD-Support is enabled
@@ -417,7 +417,7 @@ ifeq ($(EXT), FRSKY)
   ifeq ($(VARIO), YES)
     CPPDEFS += -DVARIO
   endif
-  VARIANT += +2
+  EEPROM_VARIANT += +2
 endif
 
 ifeq ($(DEBUG), YES)
@@ -438,7 +438,7 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), X9D)
   # X9D, so ...
   OPT = 2
-  CPPDEFS += -DPCBX9D -DPCBSKY9X -DVARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  CPPDEFS += -DPCBX9D -DPCBSKY9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_sky9x.cpp 
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
@@ -472,7 +472,7 @@ endif
 ifeq ($(PCB), SKY9X)
   # SKY9X, so ...
   OPT = 2
-  CPPDEFS += -DPCBSKY9X -DVARIANT=0 -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  CPPDEFS += -DPCBSKY9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_sky9x.cpp
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
@@ -507,7 +507,7 @@ endif
 ifeq ($(PCB), GRUVIN9X)
   # Gruvin9x PCB, so ...
   OPT = 2
-  CPPDEFS += -DPCBGRUVIN9X -DVARIANT=0 -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2 
+  CPPDEFS += -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2 
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
   BOARDSRC += board_gruvin9x.cpp
   EEPROMSRC = eeprom_avr.cpp
@@ -533,7 +533,7 @@ endif
 ifeq ($(PCB), STD128)
   # STD PCB with Atmega 128, so ...
   OPT = 2
-  CPPDEFS += -DPCBSTD -DM128 -DVARIANT=0
+  CPPDEFS += -DPCBSTD -DM128 -DEEPROM_VARIANT=0
   EXTRAINCDIRS += stock
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp
@@ -565,7 +565,7 @@ ifeq ($(PCB), STD)
   # STD PCB, so ...
   OPT = s
   EXTRAINCDIRS += stock
-  CPPDEFS += -DPCBSTD -DM64 -DVARIANT=$(shell echo ${VARIANT} | bc)
+  CPPDEFS += -DPCBSTD -DM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp
