@@ -54,7 +54,7 @@
 
 struct t_voice
 {
-    uint8_t VoiceQueue[VOICE_Q_LENGTH] ;
+    uint16_t VoiceQueue[VOICE_Q_LENGTH] ;
     uint8_t Backlight ;
     uint8_t VoiceLatch ;
     uint8_t VoiceCounter ;
