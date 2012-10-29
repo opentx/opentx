@@ -289,7 +289,7 @@
 #define TR_SLOWUP              "Ralenti Bas"
 #define TR_MIXER               "MIXEUR"
 #define TR_CV                  "CB"
-#define TR_GV                  "GV"
+#define TR_GV                  "VG"
 #define TR_ACHANNEL            "A"
 #define TR_RANGE               INDENT"Plage"
 #define TR_BAR                 "Barre"
