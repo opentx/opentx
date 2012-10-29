@@ -54,7 +54,22 @@ def generate(str, idx, alternate=0):
             o.setnchannels(i.getnchannels())
             o.setsampwidth(i.getsampwidth())
             o.setframerate(i.getframerate())
-            o.writeframes(f[6400:-6400])
+            start = 0
+            end = 0
+            for i in range(n/2):
+                sample = ord(f[2*i+1])
+                # print sample,
+                if sample != 0xFF and sample != 0x00:
+                    start = i
+                    break
+            for i in range(n/2):
+                sample = ord(f[-2*i-1])
+                # print sample,
+                if sample != 0xFF and sample != 0x00:
+                    end = i
+                    break
+            # print 2*start, 2*end,  
+            o.writeframes(f[2*start:-2*end])
             o.close()                
             os.remove(temp)           
         elif "espeak" in sys.argv:
@@ -87,11 +102,12 @@ def generate(str, idx, alternate=0):
             os.remove(temp)
 	
         print result, str
-        
+    
     if result:
         return [(result, str)]
     else:
         return []       
+
 
 if __name__ == "__main__":
     
