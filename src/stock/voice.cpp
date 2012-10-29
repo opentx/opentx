@@ -53,7 +53,7 @@ void pushPrompt16(uint16_t value)
 
 void pushCustomPrompt(uint8_t value)
 {
-  pushPrompt16(260+value);
+  pushPrompt16(PROMPT_CUSTOM_BASE + value);
 }
 
 void pushPrompt(uint8_t value)
