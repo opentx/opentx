@@ -581,7 +581,11 @@ enum CswFunctions {
 #define DSW_SWC  21
 
 #define THRCHK_DEADBAND 16
+#if defined(FSPLASH) || defined(XSPLASH)
+#define SPLASH_TIMEOUT  (g_eeGeneral.splashMode == 0 ? 60000/*infinite=10mn*/ : ((4*100) * (g_eeGeneral.splashMode & 0x03)))
+#else
 #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
+#endif
 
 #define TRM_BASE TRM_LH_DWN
 

@@ -1077,13 +1077,9 @@ void backlightOn()
   g_LightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
 }
 
-#ifdef SPLASH
+#if defined(SPLASH)
 
-#ifdef DSM2
-#define SPLASH_NEEDED() (g_model.protocol != PROTO_DSM2 && !g_eeGeneral.disableSplashScreen)
-#else
-#define SPLASH_NEEDED() (!g_eeGeneral.disableSplashScreen)
-#endif
+#define SPLASH_NEEDED() (!IS_DSM2_PROTOCOL(g_model.protocol) && !g_eeGeneral.splashMode)
 
 void doSplash()
 {
@@ -1105,7 +1101,7 @@ void doSplash()
 #endif
 
 #if !defined(SIMU)
-    for(uint8_t i=0; i<32; i++)
+    for (uint8_t i=0; i<32; i++)
       getADC_filt(); // init ADC array
 #endif
 
@@ -1124,9 +1120,12 @@ void doSplash()
 
       uint16_t tsum = stickMoveValue();
 
-      if(keyDown() || (tsum!=inacSum)) return;  //wait for key release
+#if defined(FSPLASH) || defined(XSPLASH)
+      if (!(g_eeGeneral.splashMode & 0x04))
+#endif
+      if (keyDown() || (tsum!=inacSum)) return;  // wait for key release
 
-      if (check_soft_power() > e_power_trainer) return; // Usb on or power off
+      if (check_soft_power() > e_power_trainer) return; // usb and power off
 
 #if !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {

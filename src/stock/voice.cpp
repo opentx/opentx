@@ -35,19 +35,7 @@
 
 struct t_voice Voice ;
 
-void pushCustomPrompt(uint8_t value)
-{
-  struct t_voice *vptr ;
-  vptr = voiceaddress() ;
-
-  if (vptr->VoiceQueueCount < VOICE_Q_LENGTH-1)
-  {
-    pushPrompt( 0xFF ) ;
-    pushPrompt( value ) ;
-  }
-}
-
-void pushPrompt(uint8_t value)
+void pushPrompt16(uint16_t value)
 {
 #ifdef SIMU
   printf("playFile(\"%04d.ad4\")\n", value); fflush(stdout);
@@ -58,9 +46,19 @@ void pushPrompt(uint8_t value)
 
   if (vptr->VoiceQueueCount < VOICE_Q_LENGTH) {
     vptr->VoiceQueue[vptr->VoiceQueueInIndex++] = value;
-    vptr->VoiceQueueInIndex &= (VOICE_Q_LENGTH - 1);
+    vptr->VoiceQueueInIndex &= (VOICE_Q_LENGTH - 1); // TODO flash saving?
     vptr->VoiceQueueCount += 1;
   }
+}
+
+void pushCustomPrompt(uint8_t value)
+{
+  pushPrompt16(260+value);
+}
+
+void pushPrompt(uint8_t value)
+{
+  pushPrompt16(value);
 }
 
 struct t_voice *voiceaddress()
@@ -79,19 +77,10 @@ void t_voice::voice_process(void)
     PORTB |= (1 << OUT_B_LIGHT); // Latch clock high
     if (VoiceQueueCount) {
       VoiceSerial = VoiceQueue[VoiceQueueOutIndex++];
-      VoiceQueueOutIndex &= (VOICE_Q_LENGTH - 1);
+      VoiceQueueOutIndex &= (VOICE_Q_LENGTH - 1); // TODO flash saving
       VoiceQueueCount -= 1;
-      if (VoiceShift) {
-        VoiceShift = 0;
-        VoiceSerial += 256;
-      }
-      VoiceTimer = 16;
-      if (VoiceSerial == 0xFF) { // Looking for Shift FF
-          VoiceShift = 1;
-          return;
-        }
-      if ((VoiceSerial & 0x1F8) == 0x1F0) { // Looking for sound volume 1F0-1F7
-        VoiceSerial |= 0xFF00;
+      VoiceTimer = 17;
+      if (VoiceSerial & 0x8000) { // Looking for sound volume 1F0-1F7
         VoiceTimer = 40;
       }
       VoiceLatch &= ~VOICE_CLOCK_BIT & ~VOICE_DATA_BIT ;
@@ -109,9 +98,13 @@ void t_voice::voice_process(void)
     }
   }
   else if (VoiceState == V_STARTUP) {
-    if (g_blinkTmr10ms > 150) { // Give module 1.5 secs to initialise
-      VoiceState = V_IDLE;
+    PORTB |= (1<<OUT_B_LIGHT) ;      // Latch clock high
+    VoiceLatch |= VOICE_CLOCK_BIT | VOICE_DATA_BIT ;
+    PORTA_LCD_DAT = VoiceLatch ;     // Latch data set
+    if (g_blinkTmr10ms > 60) { // Give module 1.4 secs to initialise
+      VoiceState = V_WAIT_START_BUSY_OFF ;
     }
+    PORTB &= ~(1<<OUT_B_LIGHT) ;     // Latch clock low
   }
   else if (VoiceState != V_CLOCKING) {
     uint8_t busy;
@@ -123,7 +116,7 @@ void t_voice::voice_process(void)
     asm(" nop");
     asm(" nop");
     asm(" nop");
-    asm(" nop");
+    asm(" nop"); // 4th nop added for Thomas9x (compared to er9x)
 #endif
     busy = PINB & 0x80;
     DDRB |= (1 << OUT_B_LIGHT); // Change to output
@@ -140,13 +133,19 @@ void t_voice::voice_process(void)
     }
     else if (VoiceState == V_WAIT_BUSY_OFF) { // check for busy processing here
       if (busy) { // Busy is inactive
-        VoiceTimer = 2;
+        VoiceTimer = 3;
         VoiceState = V_WAIT_BUSY_DELAY;
       }
     }
     else if (VoiceState == V_WAIT_BUSY_DELAY) {
       if (--VoiceTimer == 0) {
         VoiceState = V_IDLE;
+      }
+    }
+    else if (VoiceState == V_WAIT_START_BUSY_OFF) {   // check for busy processing here
+      if (busy) {                                     // Busy is inactive
+        VoiceTimer = 20 ;
+        VoiceState = V_WAIT_BUSY_DELAY ;
       }
     }
     PORTB &= ~(1 << OUT_B_LIGHT); // Latch clock low

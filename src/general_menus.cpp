@@ -401,11 +401,11 @@ void menuGeneralSetup(uint8_t event)
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
         break;
 
-#if defined(SPLASH)
+#if defined(SPLASH) && !defined(FSPLASH)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
-        uint8_t b = 1-g_eeGeneral.disableSplashScreen;
-        g_eeGeneral.disableSplashScreen = 1 - onoffMenuItem( b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event ) ;
+        uint8_t b = 1-g_eeGeneral.splashMode;
+        g_eeGeneral.splashMode = 1 - onoffMenuItem( b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event ) ;
         break;
       }
 #endif

@@ -102,7 +102,8 @@ enum BeeperMode {
   uint16_t mAhUsed; \
   uint32_t globalTimer; \
   int8_t   temperatureCalib; \
-  uint8_t  btBaudrate
+  uint8_t  btBaudrate; \
+  uint8_t  optrexDisplay
 #else
 #define EXTRA_SKY9X_FIELDS
 #define EXTRA_GENERAL_FIELDS \
@@ -123,6 +124,13 @@ enum BacklightMode {
   e_backlight_mode_on
 };
 
+#if defined(FSPLASH) || defined(XSPLASH)
+#define SPLASH_MODE uint8_t splashMode:3
+#else
+#define SPLASH_MODE uint8_t splashMode:1; \
+uint8_t spare4:2
+#endif
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   version;
@@ -140,19 +148,17 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   view;      //index of subview in main scrren
   int8_t    spare1:3;
   int8_t    beeperMode:2;
-  uint8_t   spare2:1;
+  uint8_t   flashBeep:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
   int8_t    timezone:5;
-  uint8_t   optrexDisplay:1;
+  uint8_t   spare2:1;
   uint8_t   inactivityTimer;
   uint8_t   throttleReversed:1;
   uint8_t   minuteBeep:1;
   uint8_t   preBeep:1;
-  uint8_t   flashBeep:1;
-  uint8_t   disableSplashScreen:1;
-  uint8_t   spare3:1;
+  SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   filterInput;
   uint8_t   lightAutoOff;

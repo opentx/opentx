@@ -38,7 +38,7 @@
 #define BACKLIGHT_BIT           0x04
 #define SPARE_BIT               0x08
 
-#define VOICE_Q_LENGTH          16
+#define VOICE_Q_LENGTH          8
 
 // Voice states
 #define V_STARTUP               0
@@ -47,33 +47,34 @@
 #define V_WAIT_BUSY_ON          3
 #define V_WAIT_BUSY_OFF         4
 #define V_WAIT_BUSY_DELAY       5
+#define V_WAIT_START_BUSY_OFF   6
 
 #define PROMPT_SYSTEM_BASE      230
 #define PROMPT_CUSTOM_BASE      256
 
 struct t_voice
 {
+    uint8_t VoiceQueue[VOICE_Q_LENGTH] ;
     uint8_t Backlight ;
     uint8_t VoiceLatch ;
     uint8_t VoiceCounter ;
     uint8_t VoiceTimer ;
     uint16_t VoiceSerial ;
     uint8_t VoiceState ;
-    uint8_t VoiceShift ;
     uint8_t VoiceQueueCount ;
     uint8_t VoiceQueueInIndex ;
     uint8_t VoiceQueueOutIndex ;
-    uint8_t VoiceQueue[VOICE_Q_LENGTH] ;
 
     void voice_process( void ) ;
 };
 
 extern void pushCustomPrompt( uint8_t value );
 extern void pushPrompt( uint8_t value );
+extern void pushPrompt16(uint16_t value);
 extern struct t_voice *voiceaddress( void ) ;
 extern struct t_voice Voice ;
 
-#define SET_VOLUME(v) pushCustomPrompt((v) | 0xF0)
+#define SET_VOLUME(v) pushPrompt16((v) | 0xFFF0)
 
 inline bool isPlaying()
 {
