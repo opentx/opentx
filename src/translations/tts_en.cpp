@@ -100,7 +100,6 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if defined (PCBSTD)
   int8_t mode = MODE(att);
   if (mode > 0) {
     div_t qr = div(number, (mode == 1 ? 10 : 100));   
@@ -108,42 +107,17 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
         PLAY_NUMBER(qr.quot, 0, 0);
         if (mode == 2 ) {
           if (qr.rem >= 10)
-            PUSH_PROMPT(PROMPT_POINT_NUMBER + (qr.rem/10) -1);
+            PUSH_PROMPT(PROMPT_POINT_NUMBER + (qr.rem/10));
         }
         else
-          PUSH_PROMPT(PROMPT_POINT_NUMBER + qr.rem -1);
+          PUSH_PROMPT(PROMPT_POINT_NUMBER + qr.rem);
         PUSH_PROMPT(PROMPT_UNITS_BASE+((unit-1)*2)+1);
       }
       else
         PLAY_NUMBER(qr.quot, unit, 0);
     return;
   }
-#else
-  int8_t mode = MODE(att);
-  if (mode > 0) {
-    div_t qr = div(number, (mode == 1 ? 10 : 100));   
-      if (qr.rem) {
-        PLAY_NUMBER(qr.quot, 0, 0);
-        PUSH_PROMPT(PROMPT_POINT);
-        if (mode == 2 ) {
-          if (qr.rem < 10)
-            PUSH_PROMPT(PROMPT_ZERO);
-          else
-            PLAY_NUMBER(qr.rem/10, 0, 0);
-          qr.rem %= 10;
-          if (qr.rem)
-            PLAY_NUMBER(qr.rem, 0, 0);
-        }
-        else {
-          PLAY_NUMBER(qr.rem, 0, 0);
-        }
-        PUSH_PROMPT(PROMPT_UNITS_BASE+((unit-1)*2)+1);
-      }
-      else
-        PLAY_NUMBER(qr.quot, unit, 0);
-    return;
-  }
-#endif
+
   int16_t tmp = number;
 
   if (number >= 1000) {
