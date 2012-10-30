@@ -1390,7 +1390,7 @@ DRESULT disk_ioctl (
                                 break;
 
                         case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
-                                *DWORD*)buff = SD_GET_BLOCKNR();
+                                *(DWORD*)buff = SD_GET_BLOCKNR();
                                 res = RES_OK;
                                 break;
 
