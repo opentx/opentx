@@ -1390,10 +1390,7 @@ DRESULT disk_ioctl (
                                 break;
 
                         case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
-                                if (Cmd_A41_resp & OCR_SD_CCS)
-                                  *(DWORD*)buff = SD_CSD_BLOCKNR_HC(Card_CSD);
-                                else
-                                  *(DWORD*)buff = SD_CSD_BLOCKNR(Card_CSD);
+                                *DWORD*)buff = SD_GET_BLOCKNR();
                                 res = RES_OK;
                                 break;
 
