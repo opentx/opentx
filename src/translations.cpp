@@ -199,7 +199,6 @@ const pm_char STR_SLAVE[] PROGMEM = TR_SLAVE;
 const pm_char STR_MODESRC[] PROGMEM = TR_MODESRC;
 const pm_char STR_MULTIPLIER[] PROGMEM = TR_MULTIPLIER;
 const pm_char STR_CAL[] PROGMEM = TR_CAL;
-const pm_char STR_EEPROMV[] PROGMEM = TR_EEPROMV;
 const pm_char STR_VTRIM[] PROGMEM = TR_VTRIM;
 const pm_char STR_BG[] PROGMEM = TR_BG;
 const pm_char STR_MENUTOSTART[] PROGMEM = TR_MENUTOSTART;

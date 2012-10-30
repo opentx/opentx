@@ -322,7 +322,6 @@
 #define TR_MODESRC             "modo\006% src"
 #define TR_MULTIPLIER          "Multiplicar"
 #define TR_CAL                 "Cal"
-#define TR_EEPROMV             "EEpr:\010-"
 #define TR_VTRIM               "Ajte- +"
 #define TR_BG                  "BG:"
 #define TR_MENUTOSTART         "[MENU] INICIAR"

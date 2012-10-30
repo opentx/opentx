@@ -325,7 +325,6 @@
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplier"
 #define TR_CAL                 "Cal"
-#define TR_EEPROMV             "EEpr:\010-"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
 #define TR_MENUTOSTART         "[MENU] TO START"

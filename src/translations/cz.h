@@ -324,7 +324,6 @@
 #define TR_MODESRC             " M\205d\006% Zdroj"
 #define TR_MULTIPLIER          "N\200sobi\201"
 #define TR_CAL                 "Kal."
-#define TR_EEPROMV             "EEpr:\010-"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
 #define TR_MENUTOSTART         "\001[MENU] = START"

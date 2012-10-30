@@ -328,7 +328,6 @@
 #define TR_MODESRC             " l\201ge\006% k\201lla"
 #define TR_MULTIPLIER          "Styrka"
 #define TR_CAL                 "Kalib."
-#define TR_EEPROMV             "EEpr:\010-"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
 #define TR_MENUTOSTART         "[MENU] STARTAR"

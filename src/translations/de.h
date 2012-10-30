@@ -325,7 +325,6 @@
 #define TR_MODESRC                      "MODE\003% QUELLE"                                
 #define TR_MULTIPLIER                   "Multiplikator"                                   
 #define TR_CAL                          "Kal."                                            
-#define TR_EEPROMV                      "EEpr:\004-"
 #define TR_VTRIM                        "Trim- +"                                         
 #define TR_BG                           "BG:"                                             
 #define TR_MENUTOSTART                  "[MENU] > Starten"                                

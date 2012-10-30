@@ -792,7 +792,6 @@ void menuGeneralVersion(uint8_t event)
   }
 #endif  
   lcd_putsLeft(7*FH, eeprom_stamp);
-  // TODO remove lcd_putsLeft(7*FH, STR_EEPROMV);
 }
 
 void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)
