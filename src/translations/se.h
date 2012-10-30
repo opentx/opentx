@@ -461,3 +461,5 @@
 #define TR_SD_SECTORS          "Sektorer:"
 #define TR_SD_SIZE             "Strl:"
 #define TR_CURVE_TYPE          "Typ "
+#define TR_GLOBAL_VARS         "Global Variables"
+#define TR_OWN                 "Own"

@@ -1037,7 +1037,7 @@ void menuModelPhaseOne(uint8_t event)
 #if defined(GVARS) && !defined(M64)
 
       case ITEM_MODEL_PHASE_GVARS_LABEL:
-        lcd_putsLeft(y, PSTR("Global Variables"));
+        lcd_putsLeft(y, STR_GLOBAL_VARS);
         break;
 
       default:
@@ -1059,7 +1059,7 @@ void menuModelPhaseOne(uint8_t event)
           putsFlightPhase(MIXES_2ND_COLUMN, y, p+1, !editingName && m_posHorz==1 ? attr : 0);
         }
         else {
-          lcd_putsAtt(MIXES_2ND_COLUMN, y, PSTR("Own"), !editingName && m_posHorz==1 ? attr : 0);
+          lcd_putsAtt(MIXES_2ND_COLUMN, y, STR_OWN, !editingName && m_posHorz==1 ? attr : 0);
         }
         if (attr && !editingName && s_currIdx>0 && m_posHorz==1 && ((editMode>0) || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;
