@@ -44,7 +44,15 @@ inline void board_init()
   DDRE = 0b00001010;  PORTE = 0b11110100; // 7:PPM_IN, 6: RENC1_B, 5:RENC1_A, 4:USB_DNEG, 3:BUZZER, 2:USB_DPOS, 1:TELEM_TX, 0:TELEM_RX(pull-up off)
   DDRF = 0x00;  PORTF = 0x00; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
   DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
-  DDRH = 0b00110000;  PORTH = 0b11011111; // 7:0 Spare port [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK] [2:VIB_OPTION -- setting to input for now]
+
+#ifdef PORTH_TIMING
+  DDRH = 0b11110000;  PORTH = 0b11011111; // PORTH:7-6 enabled for timing analysis output ... see below ...
+#else
+  DDRH = 0b10110000;  PORTH = 0b11011111; // [7:0 DSM/PPM TX-caddy control. 1=PPM, 0=DSM ]
+                                          // [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK] [2:VIB_OPTION -- setting to input for now]
+                                          // [1:TxD 0:RxD Spare serial port]
+#endif
+
   DDRJ = 0x00;  PORTJ = 0xff; // 7-0:Trim switch inputs
   DDRK = 0x00;  PORTK = 0x00; // anain. No pull-ups!
 #ifdef REV0

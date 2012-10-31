@@ -198,6 +198,17 @@ XCURVES = YES
 # Values = YES, NO
 GVARS = NO
 
+#------- TIMING DEBUG OPTIONS ------------------------
+
+# Enable debug code to output signals on PORTH for logic analyser timing analysis
+# G9X V4 board only. **WARNING** Not compatible with TX_CADDY=YES or SOMO14 (VOICE=YES)
+#
+# PORTH:7 --> Transistion LOW to HIGH = start of setupPulses(). Transistion HIGH to LOW = end of setupPulses().
+# PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
+#
+# Values = YES, NO
+PORTH_TIMING=YES
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -424,8 +435,8 @@ ifeq ($(DEBUG), YES)
   CPPDEFS += -DDEBUG
 endif
 
-ifeq ($(EEPROM_PROGRESS_BAR), YES)
-  CPPDEFS += -DEEPROM_PROGRESS_BAR
+ifeq ($(PORTH_TIMING), YES)
+  CPPDEFS += -DPORTH_TIMING
 endif
 
 ifeq ($(SDCARD), YES)
@@ -527,6 +538,10 @@ ifeq ($(PCB), GRUVIN9X)
   
   ifeq ($(EXTRA_ROTARY_ENCODERS), YES)
     CPPDEFS += -DEXTRA_ROTARY_ENCODERS
+  endif
+
+  ifeq ($(EEPROM_PROGRESS_BAR), YES)
+    CPPDEFS += -DEEPROM_PROGRESS_BAR
   endif
 endif
 

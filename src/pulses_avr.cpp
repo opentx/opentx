@@ -729,6 +729,11 @@ static void setupPulsesPiccoZ(uint8_t chn)
 void setupPulses()
 {
   uint8_t required_protocol = g_model.protocol;
+
+#ifdef PORTH_TIMING
+    PORTH |= 0x80; // PORTH:7 LOW->HIGH signals start of setupPulses()
+#endif
+
   if (s_pulses_paused)
     required_protocol = PROTO_NONE;
 
@@ -884,6 +889,11 @@ void setupPulses()
       // if PPM16, PPM16 pulses are set up automatically within the interrupts
       break;
   }
+
+#ifdef PORTH_TIMING
+    PORTH &= ~0x80; // PORTH:7 HIGH->LOW signals end of setupPulses()
+#endif
+
 }
 
 #ifndef SIMU

@@ -2996,6 +2996,11 @@ uint16_t getTmr16KHz()
 #if defined (PCBGRUVIN9X)
 ISR(TIMER5_COMPA_vect, ISR_NOBLOCK) // mixer interrupt
 {
+
+#ifdef PORTH_TIMING
+    PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
+#endif
+
   cli();
   TIMSK5 &= ~(1<<OCIE5A); //stop reentrance
   OCR5A = 0x7d * 40; /* 20ms */
@@ -3027,6 +3032,11 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK) // mixer interrupt
   cli();
   TIMSK5 |= (1<<OCIE5A); //stop reentrance
   sei();
+
+#ifdef PORTH_TIMING
+  PORTH &= ~0x40; // PORTH:6 HIGH->LOW signals end of mixer interrupt
+#endif
+
 }
 #endif
 
