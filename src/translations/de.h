@@ -382,7 +382,7 @@
 #define TR_MENUCURVE                    "KURVE"
 #define TR_MENUCUSTOMSWITCH             "CUSTOM SWITCH"
 #define TR_MENUCUSTOMSWITCHES           "CUSTOM SWITCHES"                                                                 
-#define TR_MENUFUNCSWITCHES             "FUNC SWITCHES"                                                                   
+#define TR_MENUCUSTOMFUNC             "FUNC SWITCHES"                                                                   
 #define TR_MENUTELEMETRY                "TELEMETRY"                                                                       
 #define TR_MENUTEMPLATES                "TEMPLATES"                                                                       
 #define TR_MENUSTAT                     "STATS"                                                                           

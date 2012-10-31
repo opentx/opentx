@@ -47,7 +47,7 @@ enum EnumTabModel {
   e_Limits,
   IF_CURVES(e_CurvesAll)
   e_CustomSwitches,
-  e_FunctionSwitches,
+  e_CustomFunctions,
   IF_FRSKY(e_Telemetry)
   IF_TEMPLATES(e_Templates)
 };
@@ -65,7 +65,7 @@ void menuModelMixAll(uint8_t event);
 void menuModelLimits(uint8_t event);
 void menuModelCurvesAll(uint8_t event);
 void menuModelCustomSwitches(uint8_t event);
-void menuModelFunctionSwitches(uint8_t event);
+void menuModelCustomFunctions(uint8_t event);
 #ifdef FRSKY
 void menuModelTelemetry(uint8_t event);
 #endif
@@ -84,7 +84,7 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelLimits,
   IF_CURVES(menuModelCurvesAll)
   menuModelCustomSwitches,
-  menuModelFunctionSwitches,
+  menuModelCustomFunctions,
   IF_FRSKY(menuModelTelemetry)
   IF_TEMPLATES(menuModelTemplates)
 };
@@ -2649,7 +2649,9 @@ void menuModelCustomSwitches(uint8_t event)
 }
 #endif
 
-void menuModelFunctionSwitches(uint8_t event)
+#define MODEL_CUSTOM_FUNC_3RD_COLUMN (15*FW+2)
+
+void menuModelCustomFunctions(uint8_t event)
 {
 #if defined(PCBSKY9X) && defined(SDCARD)
   uint8_t _event = event;
@@ -2658,7 +2660,7 @@ void menuModelFunctionSwitches(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENUFUNCSWITCHES, menuTabModel, e_FunctionSwitches, NUM_FSW+1, {0, 3/*repeated*/});
+  MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_FSW+1, {0, 3/*repeated*/});
 
   uint8_t y = 0;
   uint8_t k = 0;
@@ -2731,7 +2733,7 @@ void menuModelFunctionSwitches(uint8_t event)
             if (sd->func == FUNC_PLAY_SOUND) {
 #if defined(AUDIO)
               val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
-              lcd_putsiAtt(15*FW, y, STR_FUNCSOUNDS, val_displayed, attr);
+              lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_FUNCSOUNDS, val_displayed, attr);
 #else
               break;
 #endif
@@ -2739,15 +2741,15 @@ void menuModelFunctionSwitches(uint8_t event)
 #if defined(HAPTIC)
             else if (sd->func == FUNC_HAPTIC) {
               val_max = 3;
-              lcd_outdezAtt(21*FW, y, val_displayed, attr);
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
             }
 #endif
 #if defined(PCBSKY9X) && defined(SDCARD)
             else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_BACKGND_MUSIC) {
               if (sd->param[0] && sd->param[1])
-                lcd_putsnAtt(15*FW, y, sd->param, sizeof(sd->param), attr);
+                lcd_putsnAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, sd->param, sizeof(sd->param), attr);
               else
-                lcd_putsiAtt(15*FW, y, STR_VCSWFUNC, 0, attr);
+                lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VCSWFUNC, 0, attr);
               if (active && event==EVT_KEY_BREAK(KEY_MENU)) {
                 s_editMode = 0;
                 if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, 6, sd->param)) {
@@ -2759,42 +2761,42 @@ void menuModelFunctionSwitches(uint8_t event)
             }
             else if (sd->func == FUNC_PLAY_VALUE) {
               val_max = NUM_XCHNPLAY-1;
-              putsChnRaw(17*FW, y, val_displayed+1, attr);
+              putsChnRaw(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+1, attr);
             }
 #endif
 #if defined(PCBSKY9X)
             else if (sd->func == FUNC_VOLUME) {
               val_max = NUM_XCHNRAW-1;
-              putsChnRaw(17*FW, y, val_displayed+1, attr);
+              putsChnRaw(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+1, attr);
             }
 #elif defined(VOICE)
             else if (sd->func == FUNC_PLAY_TRACK) {
-              lcd_outdezAtt(21*FW, y, val_displayed+PROMPT_CUSTOM_BASE, attr);
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+PROMPT_CUSTOM_BASE, attr|LEFT);
             }
             else if (sd->func == FUNC_PLAY_VALUE) {
               val_max = NUM_XCHNPLAY-1;
-              putsChnRaw(17*FW, y, val_displayed+1, attr);
+              putsChnRaw(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+1, attr);
             }
 #endif
 #if defined(SDCARD)
             else if (sd->func == FUNC_LOGS) {
               if (val_displayed) {
-                lcd_outdezAtt(21*FW-3, y, val_displayed, attr|PREC1);
+                lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT);
                 lcd_putc(lcdLastPos, y, 's');
               }
               else {
-                lcd_putsiAtt(19*FW-4, y, STR_MMMINV, 0, attr);
+                lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
               }
             }
 #endif
             else if (sd->func == FUNC_RESET) {
               val_max = 3;
-              lcd_putsiAtt(15*FW, y, STR_VFSWRESET, FSW_PARAM(sd), attr);
+              lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, FSW_PARAM(sd), attr);
             }
             else if (sd->func <= FUNC_SAFETY_CH16) {
               val_displayed = (int8_t)FSW_PARAM(sd);
               val_min = -125; val_max = 125;
-              lcd_outdezAtt(18*FW, y, val_displayed, attr);
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
             }
 #if defined(GVARS)
             else if (sd->func >= FUNC_ADJUST_GV1
@@ -2803,7 +2805,7 @@ void menuModelFunctionSwitches(uint8_t event)
 #endif
                 ) {
               val_max = NUM_XCHNRAW-1;
-              putsChnRaw(17*FW, y, val_displayed+1, attr);
+              putsChnRaw(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+1, attr);
             }
 #endif
             else {

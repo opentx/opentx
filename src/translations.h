@@ -357,7 +357,7 @@ extern const pm_char STR_MENUCURVES[];
 extern const pm_char STR_MENUCURVE[];
 extern const pm_char STR_MENUCUSTOMSWITCH[];
 extern const pm_char STR_MENUCUSTOMSWITCHES[];
-extern const pm_char STR_MENUFUNCSWITCHES[];
+extern const pm_char STR_MENUCUSTOMFUNC[];
 extern const pm_char STR_MENUTELEMETRY[];
 extern const pm_char STR_MENUTEMPLATES[];
 extern const pm_char STR_MENUSTAT[];

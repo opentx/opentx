@@ -87,9 +87,9 @@
 
 #define LEN_VFSWFUNC     "\015"
 #if defined(VARIO)
-#define TR_VVARIO        "Vario        "
+#define TR_VVARIO        "Vario\0       "
 #else
-#define TR_VVARIO        "[Vario]      "
+#define TR_VVARIO        "[Vario]\0     "
 #endif
 #if defined(AUDIO)
 #define TR_SOUND         "Play Sound\0  "
@@ -110,17 +110,17 @@
 #endif
 #if defined(PCBSKY9X)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs\0 "
+#define TR_SDCLOGS       "SD Logs\0     "
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_SDCLOGS       "[SD Logs]\0   "
 #endif
 #define TR_FSW_VOLUME    "Volume\0      "
 #define TR_FSW_BG_MUSIC  "BgMusic\0     ""BgMusic Pause"
 #elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SDCARD Logs  "
+#define TR_SDCLOGS       "SD Logs\0     "
 #else
-#define TR_SDCLOGS       "[SDCARD Logs]"
+#define TR_SDCLOGS       "[SD Logs]\0   "
 #endif
 #define TR_FSW_VOLUME
 #define TR_FSW_BG_MUSIC
@@ -135,12 +135,12 @@
 #define TR_FSW_ADJUST_GVAR
 #endif
 #ifdef DEBUG
-#define TR_FSW_TEST          "Test\0"
+#define TR_FSW_TEST         "Test\0"
 #else
 #define TR_FSW_TEST
 #endif
 
-#define TR_VFSWFUNC      "Safety\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
+#define TR_VFSWFUNC      "Safety\0      ""Trainer \0    ""Instant Trim\0" TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
@@ -220,7 +220,7 @@
 #else
 #define TR_CYC_VSRCRAW   "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
+#define TR_VSRCRAW       "Rud\0""Ele\0""Thr\0""Ail\0""P1\0 ""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
@@ -387,7 +387,7 @@
 #define TR_MENUCURVE           "CURVE"
 #define TR_MENUCUSTOMSWITCH    "CUSTOM SWITCH"
 #define TR_MENUCUSTOMSWITCHES  "CUSTOM SWITCHES"
-#define TR_MENUFUNCSWITCHES    "FUNC SWITCHES"
+#define TR_MENUCUSTOMFUNC      "CUSTOM FUNCTIONS"
 #define TR_MENUTELEMETRY       "TELEMETRY"
 #define TR_MENUTEMPLATES       "TEMPLATES"
 #define TR_MENUSTAT            "STATS"

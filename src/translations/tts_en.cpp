@@ -63,7 +63,7 @@ enum EnglishPrompts {
   PROMPT_RPMS = PROMPT_UNITS_BASE+(UNIT_RPMS*2),
   PROMPT_G = PROMPT_UNITS_BASE+(UNIT_G*2),
   
-  PROMPT_POINT_NUMBER = PROMPT_NUMBERS_BASE+160, //.1 - .9
+  PROMPT_POINT_BASE = 160, //.0 - .9
 
 };
 
@@ -85,16 +85,6 @@ PLAY_FUNCTION(pushUnitPrompt, int16_t number, uint8_t unitprompt)
 
 PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
-/*  if digit >= 1000000000:
-      temp_digit, digit = divmod(digit, 1000000000)
-      prompts.extend(self.getNumberPrompt(temp_digit))
-      prompts.append(Prompt(GUIDE_00_BILLION, dir=2))
-  if digit >= 1000000:
-      temp_digit, digit = divmod(digit, 1000000)
-      prompts.extend(self.getNumberPrompt(temp_digit))
-      prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
-*/
-
   if (number < 0) {
     PUSH_PROMPT(PROMPT_MINUS);
     number = -number;
@@ -102,20 +92,16 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-    div_t qr = div(number, (mode == 1 ? 10 : 100));   
-      if (qr.rem) {
-        PLAY_NUMBER(qr.quot, 0, 0);
-        if (mode == 2 ) {
-          if (qr.rem >= 10)
-            PUSH_PROMPT(PROMPT_POINT_NUMBER + (qr.rem/10));
-        }
-        else
-          PUSH_PROMPT(PROMPT_POINT_NUMBER + qr.rem);
-        PUSH_PROMPT(PROMPT_UNITS_BASE+((unit-1)*2)+1);
-      }
-      else
-        PLAY_NUMBER(qr.quot, unit, 0);
-    return;
+    // we assume that we are PREC1
+    div_t qr = div(number, 10);
+    if (qr.rem) {
+      PLAY_NUMBER(qr.quot, 0, 0);
+      PUSH_PROMPT(PROMPT_POINT_BASE + qr.rem);
+      number = -1;
+    }
+    else {
+      number = qr.quot;
+    }
   }
 
   int16_t tmp = number;

@@ -90,7 +90,7 @@ void menuGeneralSetup(uint8_t event);
 void menuGeneralCalib(uint8_t event);
 
 void menuModelSelect(uint8_t event);
-void menuModelFunctionSwitches(uint8_t event);
+void menuModelCustomFunctions(uint8_t event);
 void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
 

@@ -1876,25 +1876,16 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         // A1 and A2
       {
         uint8_t att = 0;
-        int16_t converted_value = applyChannelRatio(idx, val);
-        if (g_model.frsky.channels[idx].type >= UNIT_RAW) {
-          converted_value /= 10;
-        }
-        else {
-          if (converted_value < 1000) {
-            att |= PREC2;
-          }
-          else {
-            converted_value /= 10;
-            att |= PREC1;
-          }
+        int16_t converted_value = applyChannelRatio(idx, val) / 10;
+        if (g_model.frsky.channels[idx].type < UNIT_RAW) {
+          att = PREC1;
         }
         PLAY_NUMBER(converted_value, 1+g_model.frsky.channels[idx].type, att);
         break;
       }
 
     case NUM_XCHNRAW+TELEM_CELL-1:
-      PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC2);
+      PLAY_NUMBER(val/10, 1+UNIT_VOLTS, PREC1);
       break;
 
     case NUM_XCHNRAW+TELEM_VFAS-1:
@@ -1910,11 +1901,11 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case NUM_XCHNRAW+TELEM_ACCx-1:
     case NUM_XCHNRAW+TELEM_ACCy-1:
     case NUM_XCHNRAW+TELEM_ACCz-1:
-      PLAY_NUMBER(val, 1+UNIT_G, PREC2);
+      PLAY_NUMBER(val/10, 1+UNIT_G, PREC1);
       break;
 
     case NUM_XCHNRAW+TELEM_VSPD-1:
-      PLAY_NUMBER(val, 1+UNIT_METERS_PER_SECOND, PREC2);
+      PLAY_NUMBER(val/10, 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 
     case NUM_XCHNRAW+TELEM_CONSUMPTION-1:

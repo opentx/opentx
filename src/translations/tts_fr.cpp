@@ -98,6 +98,8 @@ enum FrenchPrompts {
   PROMPT_ACCELz = PROMPT_LABELS_BASE+TELEM_ACCz,
   PROMPT_HDG = PROMPT_LABELS_BASE+TELEM_HDG,
   PROMPT_VARIO = PROMPT_LABELS_BASE+TELEM_VSPD,
+
+  PROMPT_VIRGULE_BASE = 180, //,0 - ,9
 };
 
 #if defined(VOICE)
@@ -123,18 +125,16 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-    div_t qr = div(number, (mode == 1 ? 10 : 100));
-    if (qr.rem > 0) {
+    // we assume that we are PREC1
+    div_t qr = div(number, 10);
+    if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, 0);
-      PUSH_PROMPT(PROMPT_VIRGULE);
-      if (mode==2 && qr.rem < 10)
-        PUSH_PROMPT(PROMPT_ZERO);
-      PLAY_NUMBER(qr.rem, unit, 0);
+      PUSH_PROMPT(PROMPT_VIRGULE_BASE + qr.rem);
+      number = -1;
     }
     else {
-      PLAY_NUMBER(qr.quot, unit, 0);
+      number = qr.quot;
     }
-    return;
   }
 
   if (number >= 1000) {
