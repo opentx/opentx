@@ -207,11 +207,11 @@
 
 #define LEN_VSRCRAW      "\004"
 #if defined(PCBSKY9X)
-#define TR_ROTARY_ENCODERS_VSRCRAW "REa "
+#define TR_ROTARY_ENCODERS_VSRCRAW "REa\0"
 #elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
-#define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
+#define TR_ROTARY_ENCODERS_VSRCRAW "REa\0""REb\0""REc\0""REd\0"
 #elif defined(PCBGRUVIN9X) && !defined(EXTRA_ROTARY_ENCODERS)
-#define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "
+#define TR_ROTARY_ENCODERS_VSRCRAW "REa\0""REb\0"
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW
 #endif
@@ -220,7 +220,7 @@
 #else
 #define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "Dir ""Prf ""Gaz ""Ail ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
+#define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""P1\0 ""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3POS" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
@@ -372,7 +372,7 @@
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #define TR_TRIMS2OFFSETS       "Trims => Offsets"
 #define TR_MENUMODELSEL        "MODELES"
-#define TR_MENUSETUP           "SETUP"
+#define TR_MENUSETUP           "CONF."
 #define TR_MENUFLIGHTPHASE     "PHASE DE VOL"
 #define TR_MENUFLIGHTPHASES    "PHASES DE VOL"
 #define TR_MENUHELISETUP       "CONF.HELI"
@@ -386,8 +386,8 @@
 #define TR_MENUCURVES          "COURBES"
 #define TR_MENUCURVE           "COURBE"
 #define TR_MENUCUSTOMSWITCH    "INTER PERS"
-#define TR_MENUCUSTOMSWITCHES  "INTERS PERS"
-#define TR_MENUCUSTOMFUNC    "INTERS FONCTION"
+#define TR_MENUCUSTOMSWITCHES  "INTERS PERS."
+#define TR_MENUCUSTOMFUNC      "FONCTIONS PERS."
 #define TR_MENUTELEMETRY       "TELEMESURE"
 #define TR_MENUTEMPLATES       "GABARITS"
 #define TR_MENUSTAT            "STATS"
