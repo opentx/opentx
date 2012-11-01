@@ -571,11 +571,11 @@ void setupPulsesDsm2()
 
   pulses2MHzWPtr -= 1; //remove last stopbits and
 
-//G: Removed to get waveform correct on analyser
-//_send_1(255); //prolong them
-
+#if !defined(GRUVIN9XPCB)
+//G: Removed to get waveform correct on analyser. Leave in for stock board until tests can be done.
   _send_1(0); //end of pulse stream
-
+#endif
+  
   pulses2MHzRPtr = pulses2MHz;
 }
 #endif
