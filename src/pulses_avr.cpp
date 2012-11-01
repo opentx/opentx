@@ -501,7 +501,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
         if(lev == nlev){
             len += BITLEN_DSM2;
         }else{
-#if defined (GRUVIN9XPCB)
+#if defined (PCBGRUVIN9X)
             // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
             // NOTE: This is probably required for the stock board (S/W bit-bang mode) also, 
             //       but I did not want to commit that to trunk without testing it first.
@@ -517,7 +517,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
         }
         b = (b>>1) | 0x80; //shift in stop bit
     }
-#if defined (GRUVIN9XPCB)
+#if defined (PCBGRUVIN9X)
     _send_1(len+BITLEN_DSM2+3); // 2 stop bits
 #else
     _send_1(len+BITLEN_DSM2-1); // 2 stop bits
@@ -571,7 +571,7 @@ void setupPulsesDsm2()
 
   pulses2MHzWPtr -= 1; //remove last stopbits and
 
-#if !defined(GRUVIN9XPCB)
+#if !defined(PCBGRUVIN9X)
 //G: Removed to get waveform correct on analyser. Leave in for stock board until tests can be done.
   _send_1(255); // prolong them
 #endif
