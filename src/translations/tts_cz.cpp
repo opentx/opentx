@@ -122,15 +122,6 @@ PLAY_FUNCTION(pushUnitPrompt, int16_t number, uint8_t unitprompt)
 
 PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
-/*  if digit >= 1000000000:
-      temp_digit, digit = divmod(digit, 1000000000)
-      prompts.extend(self.getNumberPrompt(temp_digit))
-      prompts.append(Prompt(GUIDE_00_BILLION, dir=2))
-  if digit >= 1000000:
-      temp_digit, digit = divmod(digit, 1000000)
-      prompts.extend(self.getNumberPrompt(temp_digit))
-      prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
-*/
 
   if (number < 0) {
     PUSH_PROMPT(PROMPT_MINUS);
@@ -139,21 +130,20 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-    div_t qr = div(number, (mode == 1 ? 10 : 100));   
+    // we assume that we are PREC1
+    div_t qr = div(number, 10);   
       if (qr.rem) {
-        PLAY_NUMBER(qr.quot, 0, 0);
+        PLAY_NUMBER(qr.quot, 0, ZENSKY);
         if (qr.quot == 0)
           PUSH_PROMPT(PROMPT_CELA);
         else
           PUSH_UNIT_PROMPT(qr.quot, PROMPT_CELA);
-        if (mode == 2 && qr.rem < 10)
-          PUSH_PROMPT(PROMPT_NULA);
         PLAY_NUMBER(qr.rem, 0, ZENSKY);
         PUSH_PROMPT(PROMPT_UNITS_BASE+((unit-1)*4)+3);
+        return;
       }
       else
-        PLAY_NUMBER(qr.quot, unit, 0);
-    return;
+        number = qr.quot;
   }
 
   int16_t tmp = number;
@@ -231,20 +221,17 @@ PLAY_FUNCTION(playDuration, int16_t seconds)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, 0, ZENSKY);
-    PUSH_UNIT_PROMPT(tmp, PROMPT_HOURS);
+    PLAY_NUMBER(tmp, UNIT_HOURS+1, ZENSKY);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, 0, ZENSKY);
-    PUSH_UNIT_PROMPT(tmp, PROMPT_MINUTES);
+    PLAY_NUMBER(tmp, UNIT_MINUTES+1, ZENSKY);
   }
 
   if (seconds > 0) {
-    PLAY_NUMBER(seconds, 0, ZENSKY);
-    PUSH_UNIT_PROMPT(seconds, PROMPT_SECONDS);
+    PLAY_NUMBER(seconds, UNIT_SECONDS+1, ZENSKY);
   }
 }
 

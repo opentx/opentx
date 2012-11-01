@@ -122,15 +122,6 @@ PLAY_FUNCTION(pushUnitPrompt, int16_t number, uint8_t unitprompt)
 
 PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
-/*  if digit >= 1000000000:
-      temp_digit, digit = divmod(digit, 1000000000)
-      prompts.extend(self.getNumberPrompt(temp_digit))
-      prompts.append(Prompt(GUIDE_00_BILLION, dir=2))
-  if digit >= 1000000:
-      temp_digit, digit = divmod(digit, 1000000)
-      prompts.extend(self.getNumberPrompt(temp_digit))
-      prompts.append(Prompt(GUIDE_00_MILLION, dir=2))
-*/
 
   if (number < 0) {
     PUSH_PROMPT(PROMPT_MINUS);
@@ -139,21 +130,20 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-    div_t qr = div(number, (mode == 1 ? 10 : 100));   
+    // we assume that we are PREC1
+    div_t qr = div(number, 10);   
       if (qr.rem) {
-        PLAY_NUMBER(qr.quot, 0, 0);
+        PLAY_NUMBER(qr.quot, 0, ZENSKY);
         if (qr.quot == 0)
           PUSH_PROMPT(PROMPT_CELA);
         else
           PUSH_UNIT_PROMPT(qr.quot, PROMPT_CELA);
-        if (mode == 2 && qr.rem < 10)
-          PUSH_PROMPT(PROMPT_NULA);
         PLAY_NUMBER(qr.rem, 0, ZENSKY);
         PUSH_PROMPT(PROMPT_UNITS_BASE+((unit-1)*4)+3);
+        return;
       }
       else
-        PLAY_NUMBER(qr.quot, unit, 0);
-    return;
+        number = qr.quot;
   }
 
   int16_t tmp = number;
@@ -197,7 +187,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
   if (number >= 1000) { 
     if (number >= 3000)
       PLAY_NUMBER(number / 1000, 0, 0);     
-    if (number >= 2000)
+    if (number >= 2000 && number < 3000)
       PUSH_PROMPT(PROMPT_DVETISIC);
     else
       PUSH_PROMPT(PROMPT_TISIC);

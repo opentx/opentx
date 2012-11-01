@@ -103,10 +103,10 @@
 #endif
 #if defined(VOICE)
 #define TR_PLAY_TRACK          "Hr\200t Stopu\0  "
-#define TR_PLAY_VALUE          "Hr\200t Hodnotu\0"
+#define TR_PLAY_VALUE          "Hr\200t TTS\0    "
 #else
 #define TR_PLAY_TRACK          "[Hr\200t Stopu]\0"
-#define TR_PLAY_VALUE          "[Hr\200t Hodn.]\0"
+#define TR_PLAY_VALUE          "[Hr\200t TTS]\0  "
 #endif
 #if defined(PCBSKY9X)
 #if defined(SDCARD)
@@ -115,10 +115,10 @@
 #define TR_SDCLOGS             "[Logov\200n\204 SD]"
 #endif
 #define TR_FSW_VOLUME          "Hlasitost\0   "
-#define TR_FSW_BG_MUSIC        "Hudba BG\0    ""BgMusic Pause"
+#define TR_FSW_BG_MUSIC        "BgHudba\0     ""BgHudba Pauza"
 #elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)
-#define TR_SDCLOGS             "Logování SD  "
+#define TR_SDCLOGS             "Logování SD\0 "
 #else
 #define TR_SDCLOGS             "[Logování SD]"
 #endif
@@ -139,7 +139,7 @@
 #else
 #define TR_FSW_TEST
 #endif
-#define TR_VFSWFUNC            "Bezpe\201\0      ""Tren\202r\0      ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Podsv\203tlen\204\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
+#define TR_VFSWFUNC            "Bezpe\201\0      ""Tren\202r  \0    ""Instant Trim\0" TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Podsv\203tlen\204\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
 #define LEN_VFSWRESET          "\006"
 #define TR_VFSWRESET           "Timer1""Timer2""V\207e   ""Telem."
@@ -347,7 +347,7 @@
 #define TR_TMAINMAXMS          "Tmain max\012ms"
 #endif
 #define TR_T10MSUS             "T10ms\016us"
-#define TR_FREESTACKMINB        "Free Stack\010b"
+#define TR_FREESTACKMINB       "Free Stack\010b"
 #define TR_MENUTORESET         "[MENU] >> Reset"
 #define TR_PPM                 "PPM"
 #define TR_CH                  "CH"
@@ -364,7 +364,7 @@
 #define TR_EEPROMOVERFLOW      "P\206etekla EEPROM"
 #define TR_MENURADIOSETUP      "NASTAVEN\214 R\213DIA"
 #define TR_MENUDATEANDTIME     "DATUM A \201AS"
-#define TR_MENUTRAINER         "TRENER"
+#define TR_MENUTRAINER         "TREN\220R"
 #define TR_MENUVERSION         "VERZE"
 #define TR_MENUDIAG            "DIAG"
 #define TR_MENUANA             "ANALOGY"
@@ -372,16 +372,16 @@
 #define TR_TRIMS2OFFSETS       "Trimy => Subtrimy"
 #define TR_MENUMODELSEL        "MODEL"
 #define TR_MENUSETUP           "NASTAVEN\214"
-#define TR_MENUFLIGHTPHASE     "F\213ZE LETU"
-#define TR_MENUFLIGHTPHASES    "F\213ZE LETU"
-#define TR_MENUHELISETUP       "NASTAVEN\214 HELI"
-#define TR_MENUDREXPO          "DV/EXPO" // TODO flash saving this string is 2 times here
-#define TR_MENULIMITS          "LIMITY"
+#define TR_MENUFLIGHTPHASE     "LETOV\213 F\213ZE"
+#define TR_MENUFLIGHTPHASES    "LETOV\220 F\213ZE"
+#define TR_MENUHELISETUP       "HELI"
+#define TR_MENUDREXPO          "DV/EXPO"
+#define TR_MENULIMITS          "SERVA"
 #define TR_MENUCURVES          "K\215IVKY"
 #define TR_MENUCURVE           "\003CV"
 #define TR_MENUCUSTOMSWITCH    "VLASTN\214 SP\214NA\201"
 #define TR_MENUCUSTOMSWITCHES  "VLASTN\214 SP\214NA\201E"
-#define TR_MENUCUSTOMFUNC    "FUNK\201.SP\214NA\201E"
+#define TR_MENUCUSTOMFUNC      "FUNKCE"
 #define TR_MENUTELEMETRY       "TELEMETRIE"
 #define TR_MENUTEMPLATES       "\207ABLONY"
 #define TR_MENUSTAT            "STATISTIKA"
@@ -452,5 +452,5 @@
 #define TR_SD_SECTORS          "Sektor\211 :"
 #define TR_SD_SIZE             "Velikost:"
 #define TR_CURVE_TYPE          TR_SD_TYPE
-#define TR_GLOBAL_VARS         "Global Variables"
-#define TR_OWN                 "Own"
+#define TR_GLOBAL_VARS         "Glob\200ln\204 prom\203nn\202"
+#define TR_OWN                 "Sv\200"
