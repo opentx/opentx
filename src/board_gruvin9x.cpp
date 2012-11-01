@@ -45,11 +45,12 @@ inline void board_init()
   DDRF = 0x00;  PORTF = 0x00; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
   DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
 
-#ifdef PORTH_TIMING
+#if defined(DEBUG) && !defined(VOICE)
   DDRH = 0b11110000;  PORTH = 0b11011111; // PORTH:7-6 enabled for timing analysis output ... see below ...
 #else
   DDRH = 0b10110000;  PORTH = 0b11011111; // [7:0 DSM/PPM TX-caddy control. 1=PPM, 0=DSM ]
-                                          // [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK] [2:VIB_OPTION -- setting to input for now]
+                                          // [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK]
+                                          // [2:VIB_OPTION -- setting to input for now]
                                           // [1:TxD 0:RxD Spare serial port]
 #endif
 

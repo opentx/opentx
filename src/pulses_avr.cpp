@@ -730,7 +730,7 @@ void setupPulses()
 {
   uint8_t required_protocol = g_model.protocol;
 
-#ifdef PORTH_TIMING
+#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
     PORTH |= 0x80; // PORTH:7 LOW->HIGH signals start of setupPulses()
 #endif
 
@@ -890,10 +890,9 @@ void setupPulses()
       break;
   }
 
-#ifdef PORTH_TIMING
+#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
     PORTH &= ~0x80; // PORTH:7 HIGH->LOW signals end of setupPulses()
 #endif
-
 }
 
 #ifndef SIMU

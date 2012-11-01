@@ -179,7 +179,10 @@ EEPROM_PROGRESS_BAR = NO
 # Values = YES, NO
 EXTRA_ROTARY_ENCODERS = NO
 
-# DEBUG mode
+# Activates the DEBUG Mode (all boards)
+# On G9X V4 board, when VOICE=NO:
+#  PORTH:7 --> Transistion LOW to HIGH = start of setupPulses(). Transistion HIGH to LOW = end of setupPulses().
+#  PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
 DEBUG = NO
 
 # Flight Phases
@@ -197,17 +200,6 @@ XCURVES = YES
 # Global Vars
 # Values = YES, NO
 GVARS = NO
-
-#------- TIMING DEBUG OPTIONS ------------------------
-
-# Enable debug code to output signals on PORTH for logic analyser timing analysis
-# G9X V4 board only. **WARNING** Not compatible with TX_CADDY=YES or SOMO14 (VOICE=YES)
-#
-# PORTH:7 --> Transistion LOW to HIGH = start of setupPulses(). Transistion HIGH to LOW = end of setupPulses().
-# PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
-#
-# Values = YES, NO
-PORTH_TIMING=YES
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -435,8 +427,8 @@ ifeq ($(DEBUG), YES)
   CPPDEFS += -DDEBUG
 endif
 
-ifeq ($(PORTH_TIMING), YES)
-  CPPDEFS += -DPORTH_TIMING
+ifeq ($(EEPROM_PROGRESS_BAR), YES)
+  CPPDEFS += -DEEPROM_PROGRESS_BAR
 endif
 
 ifeq ($(SDCARD), YES)
@@ -538,10 +530,6 @@ ifeq ($(PCB), GRUVIN9X)
   
   ifeq ($(EXTRA_ROTARY_ENCODERS), YES)
     CPPDEFS += -DEXTRA_ROTARY_ENCODERS
-  endif
-
-  ifeq ($(EEPROM_PROGRESS_BAR), YES)
-    CPPDEFS += -DEEPROM_PROGRESS_BAR
   endif
 endif
 
