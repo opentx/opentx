@@ -501,13 +501,27 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
         if(lev == nlev){
             len += BITLEN_DSM2;
         }else{
+#if defined (GRUVIN9XPCB)
+            // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
+            // NOTE: This is probably required for the stock board (S/W bit-bang mode) also, 
+            //       but I did not want to commit that to trunk without testing it first.
+            if (nlev)
+              _send_1(len-5);// -1);
+            else
+              _send_1(len+3);
+#else
             _send_1(len -1);
+#endif
             len  = BITLEN_DSM2;
             lev  = nlev;
         }
         b = (b>>1) | 0x80; //shift in stop bit
     }
+#if defined (GRUVIN9XPCB)
+    _send_1(len+BITLEN_DSM2+3); // 2 stop bits
+#else
     _send_1(len+BITLEN_DSM2-1); // 2 stop bits
+#endif
 }
 
 void setupPulsesDsm2()
@@ -556,7 +570,10 @@ void setupPulsesDsm2()
     sendByteDsm2(dsmDat[counter]);
 
   pulses2MHzWPtr -= 1; //remove last stopbits and
-  _send_1(255); //prolong them
+
+//G: Removed to get waveform correct on analyser
+//_send_1(255); //prolong them
+
   _send_1(0); //end of pulse stream
 
   pulses2MHzRPtr = pulses2MHz;
@@ -730,7 +747,7 @@ void setupPulses()
 {
   uint8_t required_protocol = g_model.protocol;
 
-#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
+#if defined(DEBUG) && !defined(VOICE)
     PORTH |= 0x80; // PORTH:7 LOW->HIGH signals start of setupPulses()
 #endif
 
@@ -751,10 +768,12 @@ void setupPulses()
         TCNT1 = 300;                          // Past the OCR1C value
         ICR1 = 44000;                         // Next frame starts in 22 mS
 #if defined(PCBGRUVIN9X)
-        TIMSK1 &= ~0x2F;                      // All interrupts off
+        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIFR1 = 0x2F;
-        TIMSK1 |= 0x28;                       // Enable CAPT and COMPC
-        TCCR1A = (0 << WGM10);                // Also disconnects OC1B for PPM_OUT bit-bang mode
+        TIMSK1 |= 0x28;                       // Enable COMPC and CAPT interrupts
+        TCCR1A = (0 << WGM10);                // Set output waveform mode to normal, for now. Note that
+                                              // WGM will be set to toggle OCR1B pin on compare capture, 
+                                              // in next switch(required_protocol) {...}, below
 #else
         TIMSK &= ~0x3C;                       // All Timer1 interrupts off
         TIFR = 0x3C;
@@ -873,6 +892,12 @@ void setupPulses()
     case PROTO_DSM2:
       sei();
       setupPulsesDsm2();
+#if defined(PCBGRUVIN9X)
+      // Ensure each DSM packet starts out with the correct bit polarity
+      TCCR1A = (0 << WGM10) | (3<<COM1B1);  // Have Waveform Generator Mode 'SET' OCR1B pin on next compare event and ...
+      TCCR1C = (1<<FOC1B);                  // ... force compare event, to set OCR1B pin high now.
+      TCCR1A = (1<<COM1B0);                 // Output is ready. Initiate OCR1B pin *TOGGLE* mode (H/W switching.)
+#endif
       break;
 #endif
 
@@ -890,9 +915,10 @@ void setupPulses()
       break;
   }
 
-#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
+#if defined(DEBUG) && !defined(VOICE)
     PORTH &= ~0x80; // PORTH:7 HIGH->LOW signals end of setupPulses()
 #endif
+
 }
 
 #ifndef SIMU
@@ -900,12 +926,35 @@ void setupPulses()
 #if defined(DSM2_PPM) || defined(PXX)
 ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
 {
+#if defined (PCBGRUVIN9X)
+
+  /*** G9X V4 hardware toggled PPM_out avoids interrupt latency jitter on the output.
+
+    In most (but not all) foreseeable cases, the jitter removal afforded by this is 
+    inside the bit timing tolerances of async serial data at 125,000bps. But I cannot 
+    afford to crash models. So I like to have the extra assurance. Gruvin.  
+    (It can be done on the stock board's PB7 too. Nove LED BL to PB0.)       ***/
+
+  // OCR1B output pin (PPM_OUT) is pre-set to HIGH in setupPulses -- for safety, on each 
+  // and every frame -- and configured to toggle on each OCR1B / TC1 count register match.
+  // All we need to do here then, is update the compare regisiter(s) ...
   uint8_t x ;
-  PORTB ^= (1<<OUT_B_PPM);
+  x = *pulses2MHzRPtr++;  // Byte size
+  ICR1 = x;
+  OCR1B = (uint16_t)x;    // Duplicate capture compare value for OCR1B, because Timer1 is in CTC mode
+                          // and thus we cannot use the OCR1B INT vector. (Should have put PPM_OUT 
+                          // pin on OCR1A. Oh well.)
+
+#else
+
+  uint8_t x ;
+  PORTB ^= (1<<OUT_B_PPM);    // Toggle PPM_OUT
   x = *pulses2MHzRPtr++;      // Byte size
   ICR1 = x ;
-  if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up
-  heartbeat |= HEART_TIMER_PULSES; // TODO why not in TIMER1_COMPB_vect (in setupPulses)?
+  if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up.
+
+#endif
+
 }
 
 #if defined(PXX)
@@ -954,6 +1003,9 @@ ISR(TIMER1_COMPC_vect) // DSM2 or PXX end of frame
       // sei will be called inside setupPulses()
       setupPulses();
     }
+
+    heartbeat |= HEART_TIMER_PULSES;
+
 #endif
 
 #if defined(DSM2_PPM) && defined(PXX)

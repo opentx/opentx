@@ -183,6 +183,7 @@ EXTRA_ROTARY_ENCODERS = NO
 # On G9X V4 board, when VOICE=NO:
 #  PORTH:7 --> Transistion LOW to HIGH = start of setupPulses(). Transistion HIGH to LOW = end of setupPulses().
 #  PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
+# Values = YES, NO
 DEBUG = NO
 
 # Flight Phases
