@@ -573,8 +573,9 @@ void setupPulsesDsm2()
 
 #if !defined(GRUVIN9XPCB)
 //G: Removed to get waveform correct on analyser. Leave in for stock board until tests can be done.
-  _send_1(0); //end of pulse stream
+  _send_1(255); // prolong them
 #endif
+  _send_1(0); //end of pulse stream
   
   pulses2MHzRPtr = pulses2MHz;
 }
