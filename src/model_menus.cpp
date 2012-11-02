@@ -3176,12 +3176,16 @@ void menuModelTelemetry(uint8_t event)
             switch (m_posHorz) {
               case 0:
                 bar.source = checkIncDecModel(event, barSource, 0, g_model.frsky.usrProto ? TELEM_DISPLAY_MAX : TELEM_NOUSR_MAX);
+                if (checkIncDec_Ret) {
+                  bar.barMin = 0;
+                  bar.barMax = 255-maxTelemValue(bar.source);
+                }
                 break;
               case 1:
                 bar.barMin = checkIncDec(event, bar.barMin, 0, 254-bar.barMax, EE_MODEL|NO_INCDEC_MARKS);
                 break;
               case 2:
-                bar.barMax = 255 - checkIncDec(event, 255-bar.barMax, bar.barMin+1, 255, EE_MODEL|NO_INCDEC_MARKS);
+                bar.barMax = 255 - checkIncDec(event, 255-bar.barMax, bar.barMin+1, maxTelemValue(barSource), EE_MODEL|NO_INCDEC_MARKS);
                 break;
             }
           }

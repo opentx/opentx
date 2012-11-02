@@ -158,6 +158,18 @@ char idx2char(int8_t idx)
   return ' ';
 }
 
+#if defined(PCBX9D)
+uint8_t zlen(const char *str, uint8_t size)
+{
+  while (size > 0) {
+    if (str[size-1] != 0)
+      return size;
+    size--;
+  }
+  return size;
+}
+#endif
+
 PhaseData *phaseaddress(uint8_t idx)
 {
   return &g_model.phaseData[idx];

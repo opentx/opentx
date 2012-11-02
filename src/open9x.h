@@ -1267,5 +1267,10 @@ void checkFlashOnBeep();
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
 #endif
 
-#endif // gruvin9x_h
-/*eof*/
+#if defined(PCBX9D)
+uint8_t zlen(const char *str, uint8_t size);
+#define ZLEN(s) zlen(s, sizeof(s))
+#endif
+
+#endif
+

@@ -189,8 +189,12 @@ void menuMainView(uint8_t event)
     // Flight Phase Name
     uint8_t phase = s_perout_flight_phase;
 #if defined(PCBX9D)
-    lcd_putsnAtt(21*FW-1, 5, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
-    lcd_rect(21*FW-3, 5-2, lcdLastPos-20*FW, FH+3);
+    uint8_t len = ZLEN(g_model.phaseData[phase].name);
+    if (len > 0) {
+      uint8_t tmp = (DISPLAY_W - 6*FW - 2 - len*FW/2);
+      lcd_putsnAtt(tmp, 5, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
+      lcd_rect(tmp-2, 5-2, 3+FW*len, FH+3);
+    }
 #else
     lcd_putsnAtt(6*FW, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 #endif
