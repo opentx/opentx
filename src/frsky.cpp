@@ -953,7 +953,7 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
     case TELEM_GPSALT:
     case TELEM_MAX_ALT:
     case TELEM_MIN_ALT:
-      result = value * 4;
+      result = value * 8 - 500;
       break;
     case TELEM_RPM:
     case TELEM_MAX_RPM:

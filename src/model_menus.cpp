@@ -2024,9 +2024,11 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
 #if defined(PCBSKY9X)
             if (ed->name[0]) {
               putsSwitches(11*FW, y, ed->swtch, 0);
-              lcd_putsnAtt(15*FW+2, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
+              lcd_putsnAtt(DISPLAY_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
             }
+#if !defined(PCBX9D)
             else
+#endif
 #endif
             {
               putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
@@ -2043,9 +2045,11 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
 
 #if defined(PCBSKY9X)
             if (md->name[0]) {
-              lcd_putsnAtt(15*FW+2, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
+              lcd_putsnAtt(DISPLAY_W-sizeof(md->name)*FW-MENUS_SCROLLBAR_WIDTH, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
             }
+#if !defined(PCBX9D)
             else
+#endif
 #endif
             {
               if (md->curveParam) {
