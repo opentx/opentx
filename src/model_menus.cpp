@@ -3162,8 +3162,8 @@ void menuModelTelemetry(uint8_t event)
           uint8_t barSource = bar.source;
           lcd_putsiAtt(INDENT_WIDTH, y, STR_VTELEMCHNS, barSource, (attr && m_posHorz==0) ? blink : 0);
           if (barSource) {
-            putsTelemetryChannel(56-3*FW, y, barSource-1, convertBarValue(barSource, bar.barMin), (attr && m_posHorz==1 ? blink : 0) | LEFT);
-            putsTelemetryChannel(14*FW-3, y, barSource-1, convertBarValue(barSource, 31-bar.barMax), (attr && m_posHorz==2 ? blink : 0) | LEFT);
+            putsTelemetryChannel(56-3*FW, y, barSource-1, convertTelemValue(barSource, bar.barMin), (attr && m_posHorz==1 ? blink : 0) | LEFT);
+            putsTelemetryChannel(14*FW-3, y, barSource-1, convertTelemValue(barSource, 255-bar.barMax), (attr && m_posHorz==2 ? blink : 0) | LEFT);
           }
           else {
             if (attr) m_posHorz = 0;
@@ -3174,10 +3174,10 @@ void menuModelTelemetry(uint8_t event)
                 bar.source = checkIncDecModel(event, barSource, 0, g_model.frsky.usrProto ? TELEM_DISPLAY_MAX : TELEM_NOUSR_MAX);
                 break;
               case 1:
-                CHECK_INCDEC_MODELVAR(event, bar.barMin, 0, 30-bar.barMax);
+                bar.barMin = checkIncDec(event, bar.barMin, 0, 254-bar.barMax, EE_MODEL|NO_INCDEC_MARKS);
                 break;
               case 2:
-                bar.barMax = 31 - checkIncDecModel(event, 31-bar.barMax, bar.barMin+1, 31);
+                bar.barMax = 255 - checkIncDec(event, 255-bar.barMax, bar.barMin+1, 255, EE_MODEL|NO_INCDEC_MARKS);
                 break;
             }
           }

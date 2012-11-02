@@ -211,7 +211,6 @@ bool FRSKY_alarmRaised(uint8_t idx);
 void resetTelemetry();
 uint8_t maxTelemValue(uint8_t channel);
 int16_t convertTelemValue(uint8_t channel, uint8_t value);
-int16_t convertBarValue(uint8_t bar, uint8_t value);
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
 
 extern const pm_uint8_t bchunit_ar[];

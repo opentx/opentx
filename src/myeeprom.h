@@ -495,19 +495,11 @@ enum VarioSource {
   VARIO_SOURCE_LAST = VARIO_SOURCE_A2,
 };
 
-#if defined(PCBSKY9X)
 PACK(typedef struct t_FrSkyBarData {
   uint8_t    source;
   uint8_t    barMin;           // minimum for bar display
   uint8_t    barMax;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
-#else
-PACK(typedef struct t_FrSkyBarData {
-  uint16_t   source:6;
-  uint16_t   barMin:5;           // minimum for bar display
-  uint16_t   barMax:5;           // ditto for max display (would usually = ratio)
-}) FrSkyBarData;
-#endif
 
 PACK(typedef struct t_FrSkyLineData {
   uint8_t    sources[2];

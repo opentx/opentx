@@ -244,13 +244,15 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 110+i))
         for i, s in enumerate(["virgule", "et", "moins"]): 
             systemSounds.extend(generate(s, 119+i))
+        for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "km heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "knotts", "heure", "minute", "seconde", "tours par minute", "g"]):
+            systemSounds.extend(generate(s, 125+i))
         for i, s in enumerate(["timer", "", "tension", "tension", u"émission", u"réception", "altitude", "moteur",
                                "essence", u"température", u"température", "vitesse", "distance", "altitude", u"élément lipo",
                                "total lipo", "tension", "courant", "consommation", "puissance", u"accelération X", u"accelération Y", u"accelération Z",
                                "orientation", "vario"]):
             systemSounds.extend(generate(s, 146+i))            
-        for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "km heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "knotts", "heure", "minute", "seconde", "tours par minute", "g"]):
-            systemSounds.extend(generate(s, 125+i))
+        for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
+            systemSounds.extend(generate(s, 180+i))
         for i, (s, f) in enumerate([
                      (u"train rentré", "gearup"),
                      (u"train sorti", "geardn"),

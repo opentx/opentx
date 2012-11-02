@@ -941,11 +941,6 @@ uint8_t maxTelemValue(uint8_t channel)
   }
 }
 
-int16_t convertBarValue(uint8_t bar, uint8_t value)
-{
-  return convertTelemValue(bar, (uint16_t)value * maxTelemValue(bar) / 31);
-}
-
 int16_t convertTelemValue(uint8_t channel, uint8_t value)
 {
   int16_t result;
@@ -1233,8 +1228,8 @@ void menuTelemetryFrsky(uint8_t event)
         for (int8_t i=3; i>=0; i--) {
           FrSkyBarData & bar = screen.bars[i];
           uint8_t source = bar.source;
-          int16_t barMin = convertBarValue(source, bar.barMin);
-          int16_t barMax = convertBarValue(source, 31-bar.barMax);
+          int16_t barMin = convertTelemValue(source, bar.barMin);
+          int16_t barMax = convertTelemValue(source, 255-bar.barMax);
           if (source && barMax > barMin) {
             uint8_t y = barHeight+6+i*(barHeight+6);
             lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
