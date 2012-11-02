@@ -934,6 +934,8 @@ uint8_t maxTelemValue(uint8_t channel)
     case TELEM_RSSI_TX:
     case TELEM_RSSI_RX:
       return 100;
+    case TELEM_HDG:
+      return 180;
     default:
       return 255;
   }
@@ -954,19 +956,26 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
       break;
     case TELEM_ALT:
     case TELEM_GPSALT:
+    case TELEM_MAX_ALT:
+    case TELEM_MIN_ALT:
       result = value * 4;
       break;
     case TELEM_RPM:
+    case TELEM_MAX_RPM:
       result = value * 50;
       break;
     case TELEM_T1:
     case TELEM_T2:
+    case TELEM_MAX_T1:
+    case TELEM_MAX_T2:
       result = (int16_t)value - 30;
       break;
     case TELEM_CELL:
+    case TELEM_HDG:
       result = value * 2;
       break;
     case TELEM_DIST:
+    case TELEM_MAX_DIST:
       result = value * 8;
       break;
     case TELEM_CURRENT:
@@ -1074,13 +1083,15 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 
     default:
     {
-      uint8_t unit;
+      uint8_t unit = 1;
+      if (channel >= TELEM_MAX_T1-1 && channel <= TELEM_MAX_DIST-1)
+        channel -= TELEM_MAX_T1 - TELEM_T1;
       if (channel <= TELEM_GPSALT-1)
         unit = channel - 6;
-      else if (channel >= TELEM_MAX_T1-1 && channel <= TELEM_MAX_DIST-1)
-        unit = channel - 22;
-      else
-        unit = 1;
+      if (channel >= TELEM_MIN_ALT-1 && channel <= TELEM_MAX_ALT-1)
+        unit = 0;
+      if (channel == TELEM_HDG-1)
+        unit = 3;
       putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+unit), att);
       break;
     }
