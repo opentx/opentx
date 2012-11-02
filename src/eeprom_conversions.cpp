@@ -87,6 +87,9 @@ PACK(typedef struct {
 bool eeConvert()
 {
   if (g_eeGeneral.version == 212) {
+    g_eeGeneral.optrexDisplay = 0;
+    g_eeGeneral.backlightBright = 0;
+    g_eeGeneral.contrast = 25;
     ALERT(STR_EEPROMWARN, PSTR("EEprom Data v212"), AU_BAD_EEPROM);
   }
   else {
@@ -96,9 +99,15 @@ bool eeConvert()
   MESSAGE(STR_EEPROMWARN, PSTR("EEPROM Converting"), NULL, AU_EEPROM_FORMATTING); // TODO translations
 
   if (g_eeGeneral.version == 212) {
-    memmove(((uint8_t*)&g_eeGeneral)+2, ((uint8_t*)&g_eeGeneral)+1, 81);
+    memmove(((uint8_t*)&g_eeGeneral)+3, ((uint8_t*)&g_eeGeneral)+1, 81);
     g_eeGeneral.variant = 0;
     g_eeGeneral.version = 213;
+
+    Eeprom32_source_address = (uint8_t *)&g_eeGeneral ;               // Get data from here
+    Eeprom32_data_size = sizeof(g_eeGeneral) ;                        // This much
+    Eeprom32_file_index = 0 ;                                         // This file system entry
+    Eeprom32_process_state = E32_BLANKCHECK ;
+    eeWaitFinished();
 
     for (uint8_t id=0; id<MAX_MODELS; id++) {
       uint16_t size = File_system[id+1].size;
@@ -188,6 +197,12 @@ bool eeConvert()
           g_model.frsky.channels[i] = oldModel.frsky.channels[i];
           g_model.frsky.rssiAlarms[i] = oldModel.frsky.rssiAlarms[i];
         }
+
+        Eeprom32_source_address = (uint8_t *)&g_model ;           // Get data from here
+        Eeprom32_data_size = sizeof(g_model) ;                    // This much
+        Eeprom32_file_index = g_eeGeneral.currModel + 1 ;         // This file system entry
+        Eeprom32_process_state = E32_BLANKCHECK ;
+        eeWaitFinished();
       }
     }
   }
