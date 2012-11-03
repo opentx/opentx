@@ -1283,7 +1283,7 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
   }
 
   int8_t *nextCrv = curveaddress(index+1);
-  memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]);
+  memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]-g_model.curves[index]);
   if (shift < 0) memclear(&g_model.points[NUM_POINTS-1] + shift, -shift);
   while (index<MAX_CURVES)
     g_model.curves[index++] += shift;
