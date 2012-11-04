@@ -376,7 +376,7 @@
 #define TR_MENUFLIGHTPHASES    "LETOV\220 F\213ZE"
 #define TR_MENUHELISETUP       "HELI"
 #define TR_MENUDREXPO          "DV/EXPO"
-#define TR_MENULIMITS          "SERVA"
+#define TR_MENULIMITS          "LIMITY"
 #define TR_MENUCURVES          "K\215IVKY"
 #define TR_MENUCURVE           "\003CV"
 #define TR_MENUCUSTOMSWITCH    "VLASTN\214 SP\214NA\201"
