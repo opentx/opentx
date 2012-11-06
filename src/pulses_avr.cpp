@@ -503,8 +503,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
         }else{
 #if defined (PCBGRUVIN9X)
             // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
-            // NOTE: This is probably required for the stock board (S/W bit-bang mode) also, 
-            //       but I did not want to commit that to trunk without testing it first.
+            // NOTE: This has now been tested as NOT required on the stock board, with the ATmega64A chip.
             if (nlev)
               _send_1(len-5);// -1);
             else
