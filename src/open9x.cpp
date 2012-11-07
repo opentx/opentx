@@ -1562,7 +1562,7 @@ void getADC_filt()
       while ((ADCSRA & 0x10)==0);
       ADCSRA|=0x10;
 
-      t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADCW) >> 1;
+      t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADC) >> 1;
   }
 }
 
@@ -1579,7 +1579,7 @@ void getADC_osmp()
       // Wait for the AD conversion to complete
       while ((ADCSRA & 0x10)==0);
       ADCSRA|=0x10;
-      temp_ana += ADCW;
+      temp_ana += ADC;
     }
     s_anaFilt[adc_input] = temp_ana / 2; // divide by 2^n to normalize result.
   }
@@ -1594,7 +1594,7 @@ void getADC_single()
       // Wait for the AD conversion to complete
       while ((ADCSRA & 0x10)==0);
       ADCSRA|=0x10;
-      s_anaFilt[adc_input]= ADCW * 2; // use 11 bit numbers
+      s_anaFilt[adc_input]= ADC * 2; // use 11 bit numbers
     }
 }
 #endif
@@ -1609,11 +1609,11 @@ void getADC_bandgap()
   s_bgCheck += 32;
   while ((ADCSRA & 0x10)==0); ADCSRA|=0x10; // wait for sample
   if (s_bgCheck == 0) { // 8x over-sample (256/32=8)
-    BandGap = s_bgSum+ADCW;
+    BandGap = s_bgSum+ADC;
     s_bgSum = 0;
   }
   else {
-    s_bgSum += ADCW;
+    s_bgSum += ADC;
   }
   ADCSRB |= (1<<MUX5);
 #else
@@ -1622,7 +1622,7 @@ void getADC_bandgap()
   ADCSRA|=0x40;
   while ((ADCSRA & 0x10)==0);
   ADCSRA|=0x10; // take sample
-  BandGap=ADCW;
+  BandGap=ADC;
 #endif
 }
 #endif
