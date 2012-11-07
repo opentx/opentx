@@ -184,7 +184,7 @@ extern void menuMainView(uint8_t event);
 
 void menuTelemetryJeti(uint8_t event)
 {
-  TITLE("JETI");
+  TITLE(PSTR("JETI"));
 
   switch(event)
   {
