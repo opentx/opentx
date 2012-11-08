@@ -174,9 +174,9 @@ if (!check_simple(event,menu,tab,DIM(tab),(lines_count)-1)) return;
 SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \
 TITLE(title)
 
-#define SUBMENU_NOTITLE(lines_count, ...) \
+#define SUBMENU_NOTITLE(lines_count, ...) { \
 static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
-if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return;
+if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; }
 
 #define SUBMENU(title, lines_count, ...) \
 static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \

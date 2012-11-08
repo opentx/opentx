@@ -335,7 +335,13 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
         chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
         return false;
       }
+
+#if defined(ROTARY_ENCODERS)
+      if (g_eeGeneral.reNavigation && s_editMode < 0)
+        attr = INVERS|BLINK;
+#endif
     }
+
     s_noScroll = 0;
     displayScreenIndex(curr, menuTabSize, attr);
 

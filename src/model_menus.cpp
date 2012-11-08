@@ -418,7 +418,11 @@ void menuModelSelect(uint8_t event)
   lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
 #endif
 
+#if defined(ROTARY_ENCODERS)
+  displayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((g_eeGeneral.reNavigation && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
+#else
   displayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
+#endif
 
   if (sub-s_pgOfs < 1) s_pgOfs = max(0, sub-1);
   else if (sub-s_pgOfs > 5)  s_pgOfs = min(MAX_MODELS-7, sub-4);
@@ -1710,7 +1714,14 @@ void menuModelMixOne(uint8_t event)
   MixData *md2 = mixaddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
 
+#if defined(ROTARY_ENCODERS)
+  if (m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS)
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 0, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/})
+  else
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
+#else
   SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
+#endif
 
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;
