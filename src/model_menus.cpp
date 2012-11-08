@@ -1608,7 +1608,7 @@ void menuModelExpoOne(uint8_t event)
   ExpoData *ed = expoaddress(s_currIdx);
   putsChnRaw(7*FW+FW/2,0,ed->chn+1,0);
 
-  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_PCBSKY9X(sizeof(ed->name)) 0, 0, IF_CURVES(1) IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
+  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_PCBSKY9X(ZCHAR|(sizeof(ed->name)-1)) 0, 0, IF_CURVES(1) IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 
   int8_t sub = m_posVert;
 
@@ -1710,7 +1710,7 @@ void menuModelMixOne(uint8_t event)
   MixData *md2 = mixaddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
 
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(sizeof(md2->name)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;

@@ -259,7 +259,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
   }
   if (g_eeGeneral.reNavigation && event == EVT_KEY_BREAK(BTN_REa+g_eeGeneral.reNavigation-1)) {
     if (s_editMode > 0 && (maxcol & ZCHAR)) {
-      if (m_posHorz < maxcol-ZCHAR) {
+      if (m_posHorz < (uint8_t)maxcol-ZCHAR) {
         m_posHorz++;
       }
       else {
@@ -374,6 +374,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
           if (m_posVert < maxrow) {
             ++m_posVert;
             maxcol = MAXCOL(m_posVert);
+            if (maxcol & ZCHAR) maxcol = 0;
             if (maxcol < 0) m_posVert++;
             m_posHorz = 0;
           }
@@ -393,7 +394,8 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
           }
           else {
             maxcol = MAXCOL(m_posVert);
-            if (maxcol < 0) { --m_posVert; maxcol = MAXCOL(m_posVert); }
+            if (maxcol & ZCHAR) maxcol = 0;
+            if (maxcol < 0) { --m_posVert; maxcol = MAXCOL(m_posVert); if (maxcol & ZCHAR) maxcol = 0; }
             m_posHorz = maxcol;
           }
         }
