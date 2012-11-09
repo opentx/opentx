@@ -85,42 +85,42 @@
 #define LEN_VCSWFUNC     "\010"
 #define TR_VCSWFUNC      "---\0    ""v>ofs\0  ""v<ofs\0  ""|v|>ofs\0""|v|<ofs\0""AND\0    ""OR\0     ""XOR\0    ""v1==v2\0 ""v1!=v2\0 ""v1>v2\0  ""v1<v2\0  ""v1>=v2\0 ""v1<=v2\0 ""d>=ofs\0 ""|d|>=ofs"
 
-#define LEN_VFSWFUNC     "\015"
+#define LEN_VFSWFUNC     "\013"
 #if defined(VARIO)
-#define TR_VVARIO        "Vario\0       "
+#define TR_VVARIO        "Vario\0     "
 #else
-#define TR_VVARIO        "[Vario]\0     "
+#define TR_VVARIO        "[Vario]\0   "
 #endif
 #if defined(AUDIO)
-#define TR_SOUND         "Play Sound\0  "
+#define TR_SOUND         "Play Sound\0"
 #else
-#define TR_SOUND         "Beep\0        "
+#define TR_SOUND         "Beep\0      "
 #endif
 #if defined(HAPTIC)
-#define TR_HAPTIC        "Haptic\0      "
+#define TR_HAPTIC        "Haptic\0    "
 #else
-#define TR_HAPTIC        "[Haptic]\0    "
+#define TR_HAPTIC        "[Haptic]\0  "
 #endif
 #if defined(VOICE)
-#define TR_PLAY_TRACK    "Play Track\0  "
-#define TR_PLAY_VALUE    "Play Value\0  "
+#define TR_PLAY_TRACK    "Play Track\0"
+#define TR_PLAY_VALUE    "Play Value\0"
 #else
-#define TR_PLAY_TRACK    "[Play Track]\0"
-#define TR_PLAY_VALUE    "[Play Value]\0"
+#define TR_PLAY_TRACK    "[PlayTrack]"
+#define TR_PLAY_VALUE    "[PlayValue]"
 #endif
 #if defined(PCBSKY9X)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SD Logs\0     "
+#define TR_SDCLOGS       "SD Logs\0   "
 #else
-#define TR_SDCLOGS       "[SD Logs]\0   "
+#define TR_SDCLOGS       "[SD Logs]\0 "
 #endif
-#define TR_FSW_VOLUME    "Volume\0      "
-#define TR_FSW_BG_MUSIC  "BgMusic\0     ""BgMusic Pause"
+#define TR_FSW_VOLUME    "Volume\0    "
+#define TR_FSW_BG_MUSIC  "BgMusic\0   ""BgMusic ||\0"
 #elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)
-#define TR_SDCLOGS       "SD Logs\0     "
+#define TR_SDCLOGS       "SD Logs\0   "
 #else
-#define TR_SDCLOGS       "[SD Logs]\0   "
+#define TR_SDCLOGS       "[SD Logs]\0 "
 #endif
 #define TR_FSW_VOLUME
 #define TR_FSW_BG_MUSIC
@@ -130,7 +130,7 @@
 #define TR_FSW_BG_MUSIC
 #endif
 #ifdef GVARS
-#define TR_FSW_ADJUST_GVAR  "Adjust \0     "
+#define TR_FSW_ADJUST_GVAR  "Adjust \0   "
 #else
 #define TR_FSW_ADJUST_GVAR
 #endif
@@ -140,7 +140,7 @@
 #define TR_FSW_TEST
 #endif
 
-#define TR_VFSWFUNC      "Safety\0      ""Trainer \0    ""Instant Trim\0" TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0   " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
+#define TR_VFSWFUNC      "Safety\0    ""Trainer \0  ""Inst. Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
