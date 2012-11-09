@@ -771,7 +771,7 @@ extern uint8_t g_tmr1Latency_max;
 extern uint8_t g_tmr1Latency_min;
 extern uint16_t g_timeMainMax;
 #if defined(PCBGRUVIN9X)
-extern uint8_t  g_timeMainLast;
+extern uint8_t  lastMixerDuration;
 #endif
 
 #if defined(THRTRACE)

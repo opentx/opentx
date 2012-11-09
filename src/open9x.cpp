@@ -97,7 +97,7 @@ uint8_t unexpectedShutdown = 0;
 
 uint16_t g_timeMainMax;
 #if defined(PCBGRUVIN9X)
-uint8_t  g_timeMainLast;
+uint8_t  lastMixerDuration;
 #endif
 
 #if defined(AUDIO) && !defined(PCBSKY9X)
@@ -3040,7 +3040,7 @@ ISR(TIMER5_COMPA_vect, ISR_NOBLOCK) // mixer interrupt
   }
 
   t0 = getTmr16KHz() - t0;
-  g_timeMainLast = t0 / 8;
+  lastMixerDuration = t0 / 8;
   if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
 
   cli();
