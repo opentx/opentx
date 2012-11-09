@@ -973,6 +973,9 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     return SDCARD_ERROR(result);
   }
 
+  strcpy(statusLineMsg, PSTR("File "));
+  strcpy(statusLineMsg+5, &buf[sizeof(MODELS_PATH)]);
+
   uint16_t size = File_system[i_fileSrc+1].size;
 
   *(uint32_t*)&buf[0] = O9X_FOURCC;
@@ -993,8 +996,6 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     return SDCARD_ERROR(result);
   }
 
-  strcpy(statusLineMsg, PSTR("File "));
-  strcpy(statusLineMsg+5, &buf[sizeof(MODELS_PATH)]);
   showStatusLine();
 
   return NULL;

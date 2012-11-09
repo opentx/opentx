@@ -307,19 +307,27 @@ FRESULT f_mount (BYTE, FATFS*)
   return FR_OK;
 }
 
-FRESULT f_open (FIL * fil, const TCHAR *name, BYTE)
+FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
-  fil->fs = (FATFS*)fopen(name, "w+");
+  struct stat tmp;
+  if (stat(name, &tmp))
+    return FR_INVALID_NAME;
+  fil->fsize = tmp.st_size;
+  fil->fs = (FATFS*)fopen(name, (flag & FA_WRITE) ? "w+" : "r+");
   return FR_OK;
 }
 
-FRESULT f_read (FIL*, void*, UINT, UINT*)
+FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 {
+  fread(data, size, 1, (FILE*)fil->fs);
+  *read = size;
   return FR_OK;
 }
 
-FRESULT f_write (FIL*, const void*, UINT, UINT*)
+FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
 {
+  fwrite(data, size, 1, (FILE*)fil->fs);
+  *written = size;
   return FR_OK;
 }
 
