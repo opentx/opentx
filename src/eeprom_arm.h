@@ -40,6 +40,9 @@ extern uint16_t s_eeDirtyTime10ms;
 #define E32_BLANKCHECK                          8
 #define E32_WRITESTART                          9
 extern uint8_t Eeprom32_process_state ;
+extern uint8_t *Eeprom32_source_address ;
+extern uint8_t Eeprom32_file_index ;
+extern uint32_t Eeprom32_data_size ;
 
 extern void eeprom_init( void ) ;
 extern void end_spi(); // TODO not public
