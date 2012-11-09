@@ -890,6 +890,10 @@ void setupPulses()
 
 #ifdef DSM2
     case PROTO_DSM2:
+#if defined(PCBGRUVIN9X)
+      OCR5A = (uint16_t)0x7d * (40-g_timeMainLast-2/*1ms*/);
+      TCNT5 = 0;
+#endif
       sei();
       setupPulsesDsm2();
 #if defined(PCBGRUVIN9X)
