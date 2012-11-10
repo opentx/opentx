@@ -448,11 +448,11 @@ void applyExpos(int16_t *anas)
     if (ed.phases & (1<<s_perout_flight_phase))
       continue;
     if (getSwitch(ed.swtch, 1)) {
-#ifdef BOLD_FONT
-      activeExpos |= ((ACTIVE_EXPOS_TYPE)1 << i);
-#endif
       int16_t v = anas2[ed.chn];
       if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
+#ifdef BOLD_FONT
+        activeExpos |= ((ACTIVE_EXPOS_TYPE)1 << i);
+#endif
         cur_chn = ed.chn;
         int8_t curveParam = ed.curveParam;
         if (curveParam) {
