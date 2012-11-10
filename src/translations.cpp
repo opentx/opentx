@@ -371,6 +371,8 @@ const pm_char STR_SD_SIZE[] PROGMEM = TR_SD_SIZE;
 const pm_char STR_CURVE_TYPE[] PROGMEM = TR_CURVE_TYPE;
 const pm_char STR_GLOBAL_VARS[] PROGMEM = TR_GLOBAL_VARS;
 const pm_char STR_OWN[] PROGMEM = TR_OWN;
+const pm_char STR_ROTARY_ENCODER[] PROGMEM = TR_ROTARY_ENCODER;
+const pm_char STR_DATE[] PROGMEM = TR_DATE;
 
 const pm_uchar font[] PROGMEM = {
 #include "font.lbm"

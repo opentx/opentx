@@ -460,3 +460,5 @@
 #define TR_CURVE_TYPE          "Type"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_OWN                 "Own"
+#define TR_DATE                "Date"
+#define TR_ROTARY_ENCODER      "R.Encs"

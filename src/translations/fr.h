@@ -455,3 +455,5 @@
 #define TR_CURVE_TYPE          "Type"
 #define TR_GLOBAL_VARS         "Variables Globales"
 #define TR_OWN                 "Pers"
+#define TR_DATE                "Date"
+#define TR_ROTARY_ENCODER      "Enc.Rot."

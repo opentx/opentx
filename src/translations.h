@@ -464,6 +464,8 @@ extern const pm_char STR_SD_SIZE[];
 extern const pm_char STR_CURVE_TYPE[];
 extern const pm_char STR_GLOBAL_VARS[];
 extern const pm_char STR_OWN[];
+extern const pm_char STR_ROTARY_ENCODER[];
+extern const pm_char STR_DATE[];
 
 #if defined(VOICE)
 PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att);

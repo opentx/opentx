@@ -153,7 +153,7 @@ void menuGeneralSetup(uint8_t event)
     switch(k) {
 #if defined(RTCLOCK)
       case ITEM_SETUP_DATE:
-        lcd_putsLeft(y, PSTR("Date"));
+        lcd_putsLeft(y, STR_DATE);
         lcd_putc(FW*15+5, y, '-'); lcd_putc(FW*18+3, y, '-');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j) ? attr : 0;

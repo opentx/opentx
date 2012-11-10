@@ -454,3 +454,5 @@
 #define TR_CURVE_TYPE          TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Glob\200ln\204 prom\203nn\202"
 #define TR_OWN                 "Sv\200"
+#define TR_DATE                "Date"
+#define TR_ROTARY_ENCODER      "R.Encs"

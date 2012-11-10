@@ -15,7 +15,7 @@
 #define TR_VBEEPLEN                     "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG                    "\003"                                                                                                        
-#define TR_VRENAVIG                     "AUSDKaDKb"                                                                                                   
+#define TR_VRENAVIG                     "AUSDGaDGb"                                                                                                   
                                                                                                                                                       
 #define LEN_VFILTERADC                  "\004"                                                                                                        
 #define TR_VFILTERADC                   "SING""OSMP""FILT"                                                                                            
@@ -196,7 +196,7 @@
 #define TR_VKEYS                        " Menu"" Exit""Unten"" Oben""  Re.""  Li."                                                                                                                                                                                                                 
                                                                                                                                                                                                                                                                                                    
 #define LEN_VRENCODERS                  "\003"                                                                                                                                                                                                                                                     
-#define TR_VRENCODERS                   "DKa""DKb"                                                                                                                                                                                                                                                 
+#define TR_VRENCODERS                   "DGa""DGb"                                                                                                                                                                                                                                                 
                                                                                                                                                                                                                                                                                                    
 #define LEN_VSWITCHES                   "\003"                                                                                                                                                                                                                                                     
 #if defined(PCBSKY9X)                                                                                                                                                                                                                                                                                
@@ -207,11 +207,11 @@
                                                                                                                                                                                                                                                                                                    
 #define LEN_VSRCRAW                     "\004"                                                                                                                                                                                                                                                     
 #if defined(PCBSKY9X)
-#define TR_ROTARY_ENCODERS_VSRCRAW 			"DKa\0"
+#define TR_ROTARY_ENCODERS_VSRCRAW 			"DGa\0"
 #elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
-#define TR_ROTARY_ENCODERS_VSRCRAW "DKa ""DKb ""DKc ""DKd "
+#define TR_ROTARY_ENCODERS_VSRCRAW "DGa ""DGb ""DGc ""DGd "
 #elif defined(PCBGRUVIN9X) && !defined(EXTRA_ROTARY_ENCODERS)
-#define TR_ROTARY_ENCODERS_VSRCRAW "DKa ""DKb "
+#define TR_ROTARY_ENCODERS_VSRCRAW "DGa ""DGb "
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW
 #endif
@@ -308,7 +308,7 @@
 #define TR_INACTIVITYALARM              INDENT"Inaktivit\201t"  
 #define TR_MEMORYWARNING       					INDENT"Speicher voll"
 #define TR_ALARMWARNING        					INDENT"Ton aus"  
-#define TR_RENAVIG                      "Drehkn\205p. Navig."                                    
+#define TR_RENAVIG                      "Drehgeb. Navig."                                    
 #define TR_FILTERADC                    "ADC Filter"                                      
 #define TR_THROTTLEREVERSE              "Gasumkehrung"  
 #define TR_BEEP_LABEL          					"Stoppuhrpieper"                                    
@@ -455,3 +455,5 @@
 #define TR_CURVE_TYPE          "Typ"
 #define TR_GLOBAL_VARS         "Globale Variablen"
 #define TR_OWN                 "Eigen"
+#define TR_DATE                "Datum"
+#define TR_ROTARY_ENCODER      "Drehgeber"

@@ -1000,7 +1000,7 @@ void menuModelPhaseOne(uint8_t event)
 
 #if defined(ROTARY_ENCODERS)
       case ITEM_MODEL_PHASE_ROTARY_ENCODERS:
-        lcd_putsLeft(y, PSTR("R.Encs"));
+        lcd_putsLeft(y, STR_ROTARY_ENCODER);
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
           putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, (attr && m_posHorz==t) ? ((editMode>0) ? BLINK|INVERS : INVERS) : 0);
           if (attr && m_posHorz==t && ((editMode>0) || p1valdiff)) {
