@@ -9,7 +9,7 @@
 #define TR_NCHANNELS           "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE          "\005"
-#define TR_VBEEPMODE           "Tich\212""Alarm""BezKl""V\207e  "
+#define TR_VBEEPMODE           "Tich\212""Alarm""BezKl""V\207e\0"
 
 #define LEN_VBEEPLEN           "\005"
 #define TR_VBEEPLEN            "O====""=O===""==O==""===O=""====O"
@@ -36,7 +36,7 @@
 #define TR_VLCD                "NormalOptrex"
 
 #define LEN_VTRIMINC           "\007"
-#define TR_VTRIMINC            "Expo   ""ExJemn\212""Jemn\212  ""St\206edn\204""Hrub\212  "
+#define TR_VTRIMINC            "Expo\0  ""ExJemn\212""Jemn\212\0 ""St\206edn\204""Hrub\212\0 "
 
 #define LEN_RETA123            "\001"
 #if defined(PCBGRUVIN9X)
@@ -294,7 +294,7 @@
 #define TR_BAR                 "Ukazatel"
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             "U\217ivData"
-#define TR_BLADES              INDENT"ListyVr"
+#define TR_BLADES              INDENT"ListyVrt"
 #define TR_SCREEN              "Panel "
 #define TR_SOUND_LABEL         "Zvuk"
 #define TR_LENGTH              INDENT"D\202lka"
@@ -422,8 +422,8 @@
 #define TR_CPU_MAH             "Spot\206eba"
 #define TR_COPROC              "CoProc."
 #define TR_COPROC_TEMP         "Tepl. MB \016>"
-#define TR_CAPAWARNING         INDENT "Kapacity Low"
-#define TR_TEMPWARNING         INDENT "Teploty High"
+#define TR_CAPAWARNING         INDENT "Kapacita"
+#define TR_TEMPWARNING         INDENT "Teplota"
 #define TR_FUNC                "Fce."
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
