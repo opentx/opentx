@@ -345,7 +345,7 @@
 #if defined(PCBSKY9X)
 #define TR_TMAINMAXMS          "Tmain max\010ms"
 #else
-#define TR_TMAINMAXMS          "Tmain max\010ms"
+#define TR_TMAINMAXMS          "Tmain max\012ms"
 #endif
 #define TR_T10MSUS             "T10ms\016us"
 #define TR_FREESTACKMINB       "Free Stack\010b"
@@ -376,8 +376,13 @@
 #define TR_MENUFLIGHTPHASE     "PHASE DE VOL"
 #define TR_MENUFLIGHTPHASES    "PHASES DE VOL"
 #define TR_MENUHELISETUP       "CONF.HELI"
+#if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
 #define TR_MENUDREXPO          "MANCHES"
 #define TR_MENULIMITS          "SORTIES"
+#else
+#define TR_MENUDREXPO          "DR/EXPO"
+#define TR_MENULIMITS          "LIMITES"
+#endif
 #define TR_MENUCURVES          "COURBES"
 #define TR_MENUCURVE           "COURBE"
 #define TR_MENUCUSTOMSWITCH    "INTER PERS"
