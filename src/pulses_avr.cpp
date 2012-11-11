@@ -1023,9 +1023,9 @@ ISR(TIMER1_COMPC_vect) // DSM2 or PXX end of frame
   }
 #endif
 }
-#endif
+#endif // defined(DSM2_PPM) || defined(PXX)
 
-#endif
+#endif // ifndef SIMU
 
 
 void set_timer3_capture()
