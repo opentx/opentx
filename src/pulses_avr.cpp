@@ -451,9 +451,6 @@ void DSM2_Init(void)
 {
 #ifndef SIMU
 
-  DDRE &= ~(1 << DDE0);    // set RXD0 pin as input
-  PORTE |= (1 << PORTE0);  // enable pullup on RXD0 pin
-
 #undef BAUD
 #define BAUD 125000
 
