@@ -863,10 +863,14 @@ void setupPulses()
 
       default: // PPM and DSM2=SERIAL modes
         set_timer3_capture(); 
-        TCCR1B = 0;                           // Stop counter
+        TCCR1B = 0;                           // Stop counter 1
         TCNT1 = 0;                            // Must reset counter frist, to prevent possible immediate COMPA int. (sometimes).
-        OCR1A = 44000;                        // Next frame starts in 22ms -- DSM mode.  PPM mode will adjust to the frame rate 
-                                              // set in model SETUP menu, when setupPulsesPPM() is called, below. 
+        OCR1A = 44000;                        // Next frame starts in 22ms -- DSM mode. 
+                                              //    This is arbitrary and for the first frame only. In fact, ... 
+                                              //    DSM2 mode will set frame timing again at each ISR(TIMER1_COMPC_vect)    
+                                              //       and
+                                              //    PPM mode will dynamically adjust to the frame rate set in model SETUP menu, 
+                                              //    from within setupPulsesPPM().
 #if defined(PCBGRUVIN9X)
         TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIFR1 = 0x2F;
@@ -1008,7 +1012,7 @@ ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
 #if defined(DSM2_PPM)
     ICR1 = 41536 ; // next frame starts in 22ms 41536 = 2*(22000 - 14*11*8)
     if (OCR1C < 255) {
-      OCR1C = 39000;  // delay setup pulses by 19.5ms to reduce system latency
+      OCR1C = 41000;  // delay setup pulses by 20.5ms to reduce system latency
     }
     else {
       OCR1C = 200;
