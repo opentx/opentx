@@ -398,6 +398,7 @@ normal:
 
  */
 
+// DSM2=SERIAL mode
 FORCEINLINE void setupPulsesDsm2()
 {
   uint16_t *ptr = (uint16_t *)pulses2MHz;
@@ -439,11 +440,13 @@ FORCEINLINE void setupPulsesDsm2()
   pulses2MHzRPtr = pulses2MHz;
 }
 
+// DSM2=SERIAL mode
 void DSM2_Done()
 {
   UCSR0B &= ~((1 << TXEN0) | (1 << UDRIE0)); // disable UART TX and interrupt
 }
 
+// DSM2=SERIAL mode
 void DSM2_Init(void)
 {
 #ifndef SIMU
@@ -471,7 +474,17 @@ void DSM2_Init(void)
 
 #endif // SIMU
 }
-#endif
+#endif // ifdef DSM2_SERIAL
+
+/****** END DSM2=SERIAL ********/
+
+
+
+/////////////////////////////////////////////////////////////
+
+
+
+/******* BEGIN DSM2=PPM ********/
 
 #if defined(DSM2_PPM)
 inline void _send_1(uint8_t v)
@@ -511,6 +524,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 #endif
 }
 
+// DSM2=PPM mode
 void setupPulsesDsm2()
 {
   static uint8_t dsmDat[2+6*2] = {0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
@@ -567,6 +581,11 @@ void setupPulsesDsm2()
   pulses2MHzRPtr = pulses2MHz;
 }
 #endif
+
+/****** END DSM2=PPM ********/
+
+
+
 
 #if defined(IRPROTOS)
 static void _send_u8(uint8_t u8)
@@ -748,7 +767,7 @@ void setupPulses()
 
     switch (required_protocol) {
 
-#if defined(DSM2_PPM)
+#if defined(DSM2_PPM) // Nothing done here for DSM2=SERIAL. See second switch() {...}, below
       case PROTO_DSM2:
         set_timer3_capture(); 
         TCCR1B = 0;                           // Stop counter
@@ -758,9 +777,9 @@ void setupPulses()
 #if defined(PCBGRUVIN9X)
         TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIFR1 = 0x2F;
-        TIMSK1 |= 0x28;                       // Enable COMPC and CAPT interrupts
+        TIMSK1 |= 0x28;                       // Enable Timer1 COMPC and CAPT interrupts
         TCCR1A = (0 << WGM10);                // Set output waveform mode to normal, for now. Note that
-                                              // WGM will be set to toggle OCR1B pin on compare capture, 
+                                              // WGM will be changed to toggle OCR1B pin on compare capture, 
                                               // in next switch(required_protocol) {...}, below
 #else
         TIMSK &= ~0x3C;                       // All Timer1 interrupts off
@@ -772,7 +791,7 @@ void setupPulses()
 #endif
         TCCR1B = (3 << WGM12) | (2 << CS10);  // CTC ICR, 16MHz / 8
         break;
-#endif
+#endif // defined(DSM2_PPM)
 
 #if defined(PXX)
       case PROTO_PXX:
@@ -879,16 +898,17 @@ void setupPulses()
 #ifdef DSM2
     case PROTO_DSM2:
 #if defined(PCBGRUVIN9X)
+      // schedule next Mixer interrupt
       OCR5A = (uint16_t)0x7d * (44-lastMixerDuration-2/*1ms*/);
       TCNT5 = 0;
 #endif
       sei();
       setupPulsesDsm2();
-#if defined(PCBGRUVIN9X)
+#if defined(PCBGRUVIN9X) && defined(DSM2_PPM)
       // Ensure each DSM packet starts out with the correct bit polarity
-      TCCR1A = (0 << WGM10) | (3<<COM1B1);  // Have Waveform Generator Mode 'SET' OCR1B pin on next compare event and ...
-      TCCR1C = (1<<FOC1B);                  // ... force compare event, to set OCR1B pin high now.
-      TCCR1A = (1<<COM1B0);                 // Output is ready. Initiate OCR1B pin *TOGGLE* mode (H/W switching.)
+      TCCR1A = (0 << WGM10) | (3<<COM1B1);  // Make Waveform Generator 'SET' OCR1B pin on next compare event and ...
+      TCCR1C = (1<<FOC1B);                  // ... force compare event, to set OCR1B pin high.
+      TCCR1A = (1<<COM1B0);                 // Output is ready. Now configure OCR1B pin into 'TOGGLE' mode.
 #endif
       break;
 #endif
@@ -903,6 +923,7 @@ void setupPulses()
     default: // standard PPM protocol
       g_ppmPulsePolarity = g_model.pulsePol;
 #if defined(PCBGRUVIN9X)
+      // schedule next Mixer interrupt
       OCR5A = (uint16_t)0x7d * (45+g_model.ppmFrameLength-lastMixerDuration-2/*1ms*/);
       TCNT5 = 0;
 #endif
@@ -1032,6 +1053,8 @@ void set_timer3_capture()
 #else
     ETIMSK &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
 #endif
+    // TODO G: This can't work with V3.2/4.x boards. Select and use a different pin
+    //         for secondary 8-ch PPM output (PORTH or Spare1 or Spare2 maybe?)
     DDRE &= ~0x80;  PORTE |= 0x80 ;     // Bit 7 input + pullup
 
     TCCR3B = 0 ;                        // Stop counter
@@ -1070,6 +1093,8 @@ void set_timer3_ppm()
 
 #ifndef SIMU
 
+// G: TIMER3_COMPA and COMPB int. vectors are used for PPM16 (8+8, actually)  
+// and PPMSIM modes
 ISR(TIMER3_COMPA_vect) //2MHz pulse generation
 {
     static uint8_t   pulsePol;
