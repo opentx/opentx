@@ -67,7 +67,7 @@ void startPulses()
 #endif
   {
     // TODO g: There has to be a better place for this bug fix
-    OCR1B = 0xffff; /* Prevent any PPM_PUT pin toggle before the TCNT1 interrupt
+    OCR1B = 0xffff; /* Prevent any PPM_OUT pin toggle before the TCNT1 interrupt
                        fires for the first time and sets up the pulse period. 
                        *** Prevents WDT reset loop. */
   }
@@ -96,12 +96,9 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 
 #ifndef SIMU
 
+uint8_t g_ppmPulsePolarity = 0;
 ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 {
-  static uint8_t pulsePol = 0; /* The very first call to this handler will toggle PPM_out high, then 
-                                  call setupPulses() and initialise pulsePol. This is allowed in favour 
-                                  of minimal ongoing PPM toggle latency. */
-                            
   uint8_t dt = TCNT1L; // record Timer1 latency for DEBUG stats display
   
 #ifdef DSM2_SERIAL
@@ -118,13 +115,13 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 #if !defined(PCBGRUVIN9X)
     // Original bitbang for PPM
     if (s_current_protocol != PROTO_NONE) {
-      if (pulsePol) {
+      if (g_ppmPulsePolarity) {
         PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
-        pulsePol = 0;
+        g_ppmPulsePolarity = 0;
       }
       else {
         PORTB &= ~(1<<OUT_B_PPM);
-        pulsePol = 1;
+        g_ppmPulsePolarity = 1;
       }
     }
 #else
@@ -134,13 +131,13 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
     // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
     // so need to use pusePol register to keep track of PPM_out polarity.
     if (s_current_protocol != PROTO_NONE) {
-      if (pulsePol) {
+      if (g_ppmPulsePolarity) {
         TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
-        pulsePol = 0;
+        g_ppmPulsePolarity = 0;
       }
       else {
         TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
-        pulsePol = 1;
+        g_ppmPulsePolarity = 1;
       }
     }
 #endif
@@ -149,8 +146,6 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 
     pulses2MHzRPtr += sizeof(uint16_t); // non PPM protocols use uint8_t pulse buffer
     if (*((uint16_t*)pulses2MHzRPtr) == 0) {
-
-      pulsePol = g_model.pulsePol;
 
 #if defined(PCBGRUVIN9X)
       TIMSK1 &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
@@ -905,7 +900,8 @@ void setupPulses()
       break;
 #endif
 
-    default:
+    default: // standard PPM protocol
+      g_ppmPulsePolarity = g_model.pulsePol;
 #if defined(PCBGRUVIN9X)
       OCR5A = (uint16_t)0x7d * (45+g_model.ppmFrameLength-lastMixerDuration-2/*1ms*/);
       TCNT5 = 0;
