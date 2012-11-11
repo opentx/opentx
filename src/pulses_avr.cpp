@@ -864,7 +864,7 @@ void setupPulses()
       default: // PPM and DSM2=SERIAL modes
         set_timer3_capture(); 
         TCCR1B = 0;                           // Stop counter 1
-        TCNT1 = 0;                            // Must reset counter frist, to prevent possible immediate COMPA int. (sometimes).
+        TCNT1 = 0;                            // Must reset counter first, to prevent possible immediate COMPA int. (sometimes).
         OCR1A = 44000;                        // Next frame starts in 22ms -- DSM mode. 
                                               //    This is arbitrary and for the first frame only. In fact, ... 
                                               //    DSM2 mode will set frame timing again at each ISR(TIMER1_COMPC_vect)    
