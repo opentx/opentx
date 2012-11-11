@@ -220,7 +220,7 @@
 #else
 #define TR_CYC_VSRCRAW                  "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW                      "StR\0""H\203R\0""Gas\0""QuR\0""P1\0 ""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX\0""3POS" TR_CYC_VSRCRAW
+#define TR_VSRCRAW                      "StR\0""H\203R\0""Gas\0""QuR\0""P1\0 ""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmH" "TrmG" "TrmQ" "MAX\0""3POS" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES                   "\003"
 #define TR_VTMRMODES                    "AUS""ABS""GSs""GS%""GSt"
@@ -303,7 +303,7 @@
 #define TR_HAPTIC_LABEL        					"Vibration"
 #define TR_HAPTICSTRENGTH               INDENT"St\201rke"
 #define TR_CONTRAST                     "Kontrast"
-#define TR_ALARMS_LABEL        					"Alarm bei:"
+#define TR_ALARMS_LABEL        					"Alarm bei"
 #define TR_BATTERYWARNING               INDENT"Batterie leer"
 #define TR_INACTIVITYALARM              INDENT"Inaktivit\201t"
 #define TR_MEMORYWARNING       					INDENT"Speicher voll"
@@ -390,7 +390,7 @@
 #define TR_MENUCUSTOMFUNC             	"SPEZ. FUNKTIONEN"
 #define TR_MENUTELEMETRY                "TELEMETRIE"
 #define TR_MENUTEMPLATES                "VORLAGEN"
-#define TR_MENUSTAT                     "STAT."
+#define TR_MENUSTAT                     "STAT"
 #define TR_MENUDEBUG                    "DEBUG"
 #define TR_RXNUM                        "RxNum"
 #define TR_SYNCMENU                     "Sync [MENU]"
