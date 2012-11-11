@@ -104,11 +104,10 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
   
 #ifdef DSM2_SERIAL
   if (s_current_protocol == PROTO_DSM2) {
-    OCR1A = 44000; // next frame in 22ms
-    // sei will be called inside setupPulses()
-    setupPulses(); // will call sei()
-    cli(); // this blocking ISR will automatically issue sei at exit
-    UCSR0B |= (1 << UDRIE0); // enable  UDRE0 interrupt
+    setupPulses(); // includes scheduling of next COMPA int. vector (this ISR). 
+                   // also re-enables interrupts at and for a safe time. (G: Only if in DSM2_SERIAL mode. Why?)
+    cli(); // re-disable interrupts to prevent reentrance here. (This ISR will automatically issue sei upon exit.)
+    UCSR0B |= (1 << UDRIE0); // enable UDRE0 interrupt to start transmitting DSM2 data bytes from buffer
   }
   else
 #endif
@@ -865,8 +864,9 @@ void setupPulses()
       default: // PPM and DSM2=SERIAL modes
         set_timer3_capture(); 
         TCCR1B = 0;                           // Stop counter
-        OCR1A = 40000;                        // Next frame starts in 20 mS
-        TCNT1 = 0;
+        TCNT1 = 0;                            // Must reset counter frist, to prevent possible immediate COMPA int. (sometimes).
+        OCR1A = 44000;                        // Next frame starts in 22ms -- DSM mode.  PPM mode will adjust to the frame rate 
+                                              // set in model SETUP menu, when setupPulsesPPM() is called, below. 
 #if defined(PCBGRUVIN9X)
         TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
         TIFR1 = 0x2F;

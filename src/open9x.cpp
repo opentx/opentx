@@ -3010,7 +3010,7 @@ uint16_t getTmr16KHz()
 
 #if defined (PCBGRUVIN9X)
 
-/**** SCHDULED MIXER INTERRUPT ****/ 
+/**** SCHEDULED MIXER INTERRUPT ****/ 
 
 // On G9X board, we use TIMER5 to schedule mixer execution, to achieve
 // minimal system latency between reading sticks and outputting data.
@@ -3246,11 +3246,7 @@ FORCEINLINE void DSM2_USART0_vect()
 
   pulses2MHzRPtr += sizeof(uint16_t);
 
-#if defined (DSM2_SERIAL)
-  heartbeat |= HEART_TIMER_PULSES; // G: WDT will time out before 22ms (no bit-banging int. to flag heartbeat)
-#endif
-
-  if (pulses2MHzRPtr == pulses2MHzWPtr) { // if at end of read buffer ...
+  if (pulses2MHzRPtr == pulses2MHzWPtr) { // if reached end of DSM2 data buffer ...
     UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
   }
 }
