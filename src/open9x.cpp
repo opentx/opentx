@@ -3009,7 +3009,12 @@ uint16_t getTmr16KHz()
 }
 
 #if defined (PCBGRUVIN9X)
-ISR(TIMER5_COMPA_vect, ISR_NOBLOCK) // mixer interrupt
+
+/**** SCHDULED MIXER INTERRUPT ****/ 
+
+// On G9X board, we use TIMER5 to schedule mixer execution, to achieve
+// minimal system latency between reading sticks and outputting data.
+ISR(TIMER5_COMPA_vect, ISR_NOBLOCK)
 {
 #if defined(DEBUG) && !defined(VOICE)
   PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
@@ -3237,10 +3242,15 @@ FORCEINLINE void FRSKY_USART0_vect()
 #if defined (DSM2_SERIAL) && !defined(PCBSKY9X)
 FORCEINLINE void DSM2_USART0_vect()
 {
-  UDR0 = *((uint16_t*)pulses2MHzRPtr);
+  UDR0 = *((uint16_t*)pulses2MHzRPtr); // transmit next byte
 
   pulses2MHzRPtr += sizeof(uint16_t);
-  if (pulses2MHzRPtr == pulses2MHzWPtr) {
+
+#if defined (DSM2_SERIAL)
+  heartbeat |= HEART_TIMER_PULSES; // G: WDT will time out before 22ms (no bit-banging int. to flag heartbeat)
+#endif
+
+  if (pulses2MHzRPtr == pulses2MHzWPtr) { // if at end of read buffer ...
     UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
   }
 }
