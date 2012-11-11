@@ -94,11 +94,11 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 #define CTRL_REP_1CMD -3
 #define CTRL_REP_2CMD -6
 
-uint8_t g_ppmPulsePolarity = 0;
 
 #ifndef SIMU
 
 // TIMER1_COMPA_vect used for PPM and DSM2=SERIAL
+uint8_t g_ppmPulsePolarity = 0;
 ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 {
   uint8_t dt = TCNT1L; // record Timer1 latency for DEBUG stats display
@@ -925,7 +925,9 @@ void setupPulses()
 #endif
 
     default: // standard PPM protocol
+#ifndef SIMU
       g_ppmPulsePolarity = g_model.pulsePol;
+#endif
 #if defined(PCBGRUVIN9X)
       // schedule next Mixer interrupt
       OCR5A = (uint16_t)0x7d * (45+g_model.ppmFrameLength-lastMixerDuration-2/*1ms*/);
