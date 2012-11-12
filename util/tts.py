@@ -17,6 +17,12 @@
 # in addition you will need some tools.  
 #  ffmpeg, sox, adconvertor.
 # have fun!
+# Sound pack maintainers (incomplete list)
+# French  : Bertrand Songis & André Bernet
+# English : Rob Thompson & Martin Hotar 
+# German  : Romolo Manfredini (Some corrections by Peer)
+# Italian : Romolo Manfredini
+# Czeck   : Martin Hotar
 
 
 
@@ -352,17 +358,17 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, 102+i))
         for i, s in enumerate(["Volt", "Ampere", "Meter pro sekunde", "", "kilometer pro stunde", "Meter", "Grad", "Prozent", "Milliampere", "Milliampere pro stunde", "Watt", "db", "Fuesse", "Knoten", "Uhr", "Minuten", "Secunden", "R P M", "g"]):
             systemSounds.extend(generate(s, 110+i))            
-        for s, f, a in [(u"Sender inaktiv ist, überprüfen Sie bitte", "inactiv", 230),
+        for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 230),
                         (u"Senderakku niedrig", "lowbatt", 231),
-                        (u"Motorsteuerung fehlpositioniert, überprüfen Sie bitte", "thralert", 232),
-                        (u"Schalten fehlpositioniert, überprüfen Sie bitte", "swalert", 233),
+                        (u"Gaskanal nicht Null, bitte pruefen", "thralert", 232),
+                        (u"Schalten fehlpositioniert, bitte pruefen", "swalert", 233),
                         (u"Das EEPROM ist fehlerhaft", "eebad", 0),
                         (u"Das EEPROM ist immer formatiert", "eeformat", 0),
                         (u"fehler", "error", 0),
                         (u"Trim zentriert", "midtrim", 244),
                         (u"tada", "tada", 245),
-                        (u"Potentiometer zentriert", "midpot", 246),
-                        (u"Maximale trim erreicht", "endtrim", 0),
+                        (u"Poti zentriert", "midpot", 246),
+                        (u"Maximale trimmung erreicht", "endtrim", 0),
                         (u"Noch drei sekunden", "timerlt3", 250),
                         (u"10 sekunden", "timer10", 251),
                         (u"20 sekunden", "timer20", 252),
@@ -371,27 +377,27 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, f, a))
         for i, s in enumerate(["Timer", "",  "Sendung", "Empfang", "A1", "A2", "Hoehe", "Motor",
                                "Treibstoff", "Temperatur", "Temperatur", "Geschwindigkeit", "Ferne", "Hoehe", "Lipo-Zelle",
-                               "Zellen insgesamt", "Spannung", "Strom", "Verbrauch", "Power", "Beschleunigung X", "Beschleunigung Y", "Beschleunigung Z",
+                               "Zellen gesamt", "Spannung", "Strom", "Verbrauch", "Power", "Beschleunigung X", "Beschleunigung Y", "Beschleunigung Z",
                                "Richtung", "Variometer","Minimum","Maximum"]):
             systemSounds.extend(generate(s, 132+i))
         for i, (s, f) in enumerate([
-                     (u"Fahrwerk geschlossen", "gearup"),
-                     (u"Fahrwerk offen", "geardn"),
+                     (u"Fahrwerk eingezogen", "gearup"),
+                     (u"Fahrwerk ausgefahren", "geardn"),
                      (u"Klappen eingefahren", "flapup"),
                      (u"Klappen ausgefahren", "flapdn"),
                      (u"Landung", "attero"),
-                     (u"Trainer-Modus auf", "trnon"),
+                     (u"Trainer-Modus ein", "trnon"),
                      (u"Trainer-Modus aus", "trnoff"),
                      (u"Motor aus", "engoff"),
                      (u"zu hoch", "tohigh"),
                      (u"zu niedrig", "tolow"),
-                     (u"Schwache Batterie", "lowbat"),
-                     (u"crow auf", "crowon"),
+                     (u"Batterie schwach", "lowbat"),
+                     (u"crow ein", "crowon"),
                      (u"crow aus", "crowof"),
-                     (u"nidrieg Funksignal!", "siglow"),
-                     (u"kritish Funksignal!", "sigcrt"),
+                     (u"Funksignal schlecht!", "siglow"),
+                     (u"Funksignal kritisch!", "sigcrt"),
                      (u"Schnell-Modus ist aktiviert", "spdmod"),
-                     (u"Thermische-Modus ist aktiviert", "thmmod"),
+                     (u"Thermik-Modus ist aktiviert", "thmmod"),
                      (u"Normal-Modus ist aktiviert", "nrmmod"),
                      (u"Regime 1", "fltmd1"),
                      (u"Regime 2", "fltmd2"),
