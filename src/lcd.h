@@ -168,7 +168,8 @@ extern void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, uint8_t a
 
 extern void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
 extern void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
-#define lcd_status_line() lcd_filled_rect(0, 7*FH, DISPLAY_W, 8)
+extern void lcd_invert_line(int8_t y);
+#define lcd_status_line() lcd_invert_line(7)
 inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att=0) { lcd_rect(x, y, w, w, SOLID, att); }
 
 #define DO_CROSS(xx,yy,ww)          \

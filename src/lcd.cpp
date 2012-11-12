@@ -463,6 +463,15 @@ void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat, u
   }
 }
 
+void lcd_invert_line(int8_t y)
+{
+  uint8_t *p  = &displayBuf[y * DISPLAY_W];
+  for (xcoord_t x=0; x<DISPLAY_W; x++) {
+    ASSERT_IN_DISPLAY(p);
+    *p++ ^= 0xff;
+  }
+}
+
 void putsTime(xcoord_t x, uint8_t y, putstime_t tme, uint8_t att, uint8_t att2)
 {
   div_t qr;

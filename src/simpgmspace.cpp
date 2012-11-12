@@ -309,10 +309,12 @@ FRESULT f_mount (BYTE, FATFS*)
 
 FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
-  struct stat tmp;
-  if (stat(name, &tmp))
-    return FR_INVALID_NAME;
-  fil->fsize = tmp.st_size;
+  if (!(flag & FA_WRITE)) {
+    struct stat tmp;
+    if (stat(name, &tmp))
+      return FR_INVALID_NAME;
+    fil->fsize = tmp.st_size;
+  }
   fil->fs = (FATFS*)fopen(name, (flag & FA_WRITE) ? "w+" : "r+");
   return FR_OK;
 }
@@ -421,7 +423,7 @@ int f_printf (FIL *f, const TCHAR * format, ...)
 
 FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
-  getcwd(path, sz_path);
+  strcpy(path, ".");
   return FR_OK;
 }
 

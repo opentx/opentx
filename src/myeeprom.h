@@ -92,20 +92,18 @@ enum BeeperMode {
 };
 
 #if defined(PCBSKY9X)
-#define EXTRA_SKY9X_FIELDS \
-  uint8_t   speakerVolume; \
-  uint8_t   backlightBright; \
-  int8_t    currentCalib
 #define EXTRA_GENERAL_FIELDS \
+  uint8_t  speakerVolume; \
+  uint8_t  backlightBright; \
+  int8_t   currentCalib; \
   int8_t   temperatureWarn; \
   uint8_t  mAhWarn; \
   uint16_t mAhUsed; \
   uint32_t globalTimer; \
   int8_t   temperatureCalib; \
   uint8_t  btBaudrate; \
-  uint8_t  optrexDisplay
+  uint8_t  optrexDisplay;
 #else
-#define EXTRA_SKY9X_FIELDS
 #define EXTRA_GENERAL_FIELDS \
   int8_t   speakerVolume
 #endif
@@ -139,7 +137,7 @@ PACK(typedef struct t_EEGeneral {
   int16_t   calibSpanNeg[7];
   int16_t   calibSpanPos[7];
   uint16_t  chkSum;
-  uint8_t   currModel; //0..15
+  int8_t    currModel;
   uint8_t   contrast;
   uint8_t   vBatWarn;
   int8_t    vBatCalib;
@@ -171,8 +169,6 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   gpsFormat:1;
   uint8_t   unexpectedShutdown:1;
   uint8_t   speakerPitch;
-
-  EXTRA_SKY9X_FIELDS;
 
   EXTRA_GENERAL_FIELDS;
 

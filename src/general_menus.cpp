@@ -510,7 +510,7 @@ void menuGeneralSdManager(uint8_t event)
 
   switch(event) {
     case EVT_ENTRY:
-      f_chdir("/");
+      f_chdir(ROOT_PATH);
       reusableBuffer.sd.offset = 65535;
       break;
 #if defined(ROTARY_ENCODERS)
@@ -551,8 +551,12 @@ void menuGeneralSdManager(uint8_t event)
       else {
 #if defined(PCBSKY9X)
         uint8_t index = m_posVert-1-s_pgOfs;
-        char * line = reusableBuffer.sd.lines[index];
-        if (!strcmp(line+strlen(line)-4, SOUNDS_EXT)) {
+        char * ext = reusableBuffer.sd.lines[index];
+        ext += strlen(ext) - 4;
+        /* TODO if (!strcmp(ext, MODELS_EXT)) {
+          s_menu[s_menu_count++] = STR_LOAD_FILE;
+        }
+        else */ if (!strcmp(ext, SOUNDS_EXT)) {
           s_menu[s_menu_count++] = STR_PLAY_FILE;
         }
 #endif
@@ -690,7 +694,13 @@ void menuGeneralSdManager(uint8_t event)
         reusableBuffer.sd.offset = s_pgOfs-1;
       }
 #if defined(PCBSKY9X)
-      else if (result == STR_PLAY_FILE) {
+      /* TODO else if (result == STR_LOAD_FILE) {
+        f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
+        strcat(lfn, "/");
+        strcat(lfn, reusableBuffer.sd.lines[index]);
+        s_warning = eeLoadModelSD(lfn);
+      }
+      else */ if (result == STR_PLAY_FILE) {
         f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
         strcat(lfn, "/");
         strcat(lfn, reusableBuffer.sd.lines[index]);
