@@ -321,7 +321,7 @@
 #define TR_SWITCHWARNING       "Alerte Int"
 #define TR_TIMEZONE            "Fuseau horaire"
 #define TR_RXCHANNELORD        "Ordre voies RX"
-#define TR_SLAVE               "Esclave"
+#define TR_SLAVE               "El\201ve"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplieur"
 #define TR_CAL                 "Cal"
