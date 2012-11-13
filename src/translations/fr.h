@@ -404,7 +404,7 @@
 #define TR_SHUTDOWN            "ARRET EN COURS"
 #define TR_BATT_CALIB          "Calib. Batterie"
 #define TR_CURRENT_CALIB       "Calib. Courant"
-#define TR_VOLTAGE             INDENT"Voltage"
+#define TR_VOLTAGE             INDENT"Tension"
 #define TR_CURRENT             INDENT"Courant"
 #define TR_SELECT_MODEL        "S\200lect Mod\201le"
 #define TR_CREATE_MODEL        "Cr\200er Mod\201le"
