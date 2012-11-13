@@ -160,7 +160,7 @@ DSM2 = NO
 IRPROTOS = NO
 
 # TRANSLATIONS
-# Values = cz, de, en, fr, it, se, es 
+# Values = cz, de, en, fr, it, se, es, pt
 TRANSLATIONS = EN
 
 # TTS

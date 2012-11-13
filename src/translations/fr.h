@@ -135,7 +135,7 @@
 #define TR_FSW_ADJUST_GVAR
 #endif
 #ifdef DEBUG
-#define TR_FSW_TEST          "Test\0"
+#define TR_FSW_TEST          "Test\0        "
 #else
 #define TR_FSW_TEST
 #endif
