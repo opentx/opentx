@@ -152,7 +152,6 @@ void check_rotary_encoder();
 extern maxrow_t m_posVert;
 extern uint8_t m_posHorz;
 
-inline void minit(){m_posVert=m_posHorz=0;}
 bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, maxrow_t maxrow);
 bool check_simple(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, maxrow_t maxrow);
 bool check_submenu_simple(uint8_t event, uint8_t maxrow);
