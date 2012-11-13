@@ -423,37 +423,55 @@ extern uint8_t stickMode;
 extern uint8_t channel_order(uint8_t x);
 
 enum EnumKeys {
-  KEY_MENU ,
-  KEY_EXIT ,
-  KEY_DOWN ,
-  KEY_UP  ,
-  KEY_RIGHT ,
-  KEY_LEFT ,
-  TRM_LH_DWN  ,
-  TRM_LH_UP   ,
-  TRM_LV_DWN  ,
-  TRM_LV_UP   ,
-  TRM_RV_DWN  ,
-  TRM_RV_UP   ,
-  TRM_RH_DWN  ,
-  TRM_RH_UP   ,
+  KEY_MENU,
+  KEY_EXIT,
+#if defined(PCBX9D)
+  KEY_ENTER,
+  KEY_PAGE,
+  KEY_PLUS,
+  KEY_MINUS,
+#else
+  KEY_DOWN,
+  KEY_UP,
+  KEY_RIGHT,
+  KEY_LEFT,
+#endif
+  TRM_LH_DWN,
+  TRM_LH_UP,
+  TRM_LV_DWN,
+  TRM_LV_UP,
+  TRM_RV_DWN,
+  TRM_RV_UP,
+  TRM_RH_DWN,
+  TRM_RH_UP,
 #if defined(ROTARY_ENCODERS)
   BTN_REa,
   BTN_REb,
 #endif
-  //SW_NC     ,
-  //SW_ON     ,
-  SW_ThrCt  ,
-  SW_RuddDR ,
-  SW_ElevDR ,
-  SW_ID0    ,
-  SW_ID1    ,
-  SW_ID2    ,
-  SW_AileDR ,
-  SW_Gear   ,
+  //SW_NC,
+  //SW_ON,
+  SW_ThrCt,
+  SW_RuddDR,
+  SW_ElevDR,
+  SW_ID0,
+  SW_ID1,
+  SW_ID2,
+  SW_AileDR,
+  SW_Gear,
   SW_Trainer,
   NUM_KEYS = SW_ThrCt
 };
+
+#if defined(PCBX9D)
+#define KEY_RIGHT  KEY_PLUS
+#define KEY_UP     KEY_PLUS
+#define KEY_LEFT   KEY_MINUS
+#define KEY_DOWN   KEY_MINUS
+#else
+#define KEY_ENTER  KEY_MENU
+#define KEY_PLUS   KEY_RIGHT
+#define KEY_MINUS  KEY_LEFT
+#endif
 
 class Key
 {

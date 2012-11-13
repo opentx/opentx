@@ -35,7 +35,7 @@
 #define lcd_h
 
 #if defined(PCBX9D)
-#define DISPLAY_W 192
+#define DISPLAY_W 212
 #define DISPLAY_H  64
 #define xcoord_t uint16_t
 #else

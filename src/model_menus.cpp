@@ -378,6 +378,7 @@ void menuModelSelect(uint8_t event)
           s_copySrcRow = -1;
         }
         break;
+#if !defined(PCBX9D)
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
         if (sub == g_eeGeneral.currModel) {
@@ -410,6 +411,7 @@ void menuModelSelect(uint8_t event)
           killEvents(event);
         }
         break;
+#endif
   }
 
 #if !defined(PCBSKY9X)
@@ -2940,8 +2942,10 @@ void menuModelTelemetry(uint8_t event)
   switch (event) {
     case EVT_KEY_BREAK(KEY_DOWN):
     case EVT_KEY_BREAK(KEY_UP):
+#if !defined(PCBX9D)
     case EVT_KEY_BREAK(KEY_LEFT):
     case EVT_KEY_BREAK(KEY_RIGHT):
+#endif
       if (s_editMode>0 && sub<=ITEM_TELEMETRY_RSSI_ALARM2)
         FRSKY_setModelAlarms(); // update FrSky module when edit mode exited
       break;

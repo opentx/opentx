@@ -774,19 +774,32 @@ uint32_t read_keys()
 
   x = lcdLock ? lcdInputs : PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
   x <<= 1;
-
-#ifdef REVB
+#if defined(PCBX9D)
+  y = 0;
+  if (x & 0x00000020)
+    y |= 0x02 << KEY_PLUS;
+  if (x & 0x00000004)
+    y |= 0x02 << KEY_MENU;
+  if (x & 0x00000010)
+    y |= 0x02 << KEY_MINUS;
+  if (x & 0x00000040)
+    y |= 0x02 << KEY_PAGE;
+  if (x & 0x02000000)
+    y |= 0x02 << KEY_EXIT;
+  if (PIOB->PIO_PDSR & 0x000000020)
+    y |= 0x02 << KEY_ENTER;
+#elif defined(REVB)
   y = (x & 0x00000020); // RIGHT
   if (x & 0x00000004)
-    y |= 0x10; // UP
+    y |= 0x02 << KEY_UP; // UP
   if (x & 0x00000010)
-    y |= 0x40; // LEFT
+    y |= 0x02 << KEY_LEFT; // LEFT
   if (x & 0x00000040)
-    y |= 0x08; // DOWN
+    y |= 0x02 << KEY_DOWN; // DOWN
   if (x & 0x02000000)
-    y |= 0x04; // EXIT
+    y |= 0x02 << KEY_EXIT; // EXIT
   if (PIOB->PIO_PDSR & 0x000000020)
-    y |= 0x02; // MENU
+    y |= 0x02 << KEY_MENU; // MENU
 #else
   y = (x & 0x00000060);
   if (x & 0x00000008)

@@ -458,12 +458,14 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
         BLINK_SYNC;
       }
       break;
+
+#if !defined(PCBX9D)
     case EVT_KEY_REPT(KEY_RIGHT):  //inc
       if (l_posHorz==maxcol) break;
       // no break
     case EVT_KEY_FIRST(KEY_RIGHT)://inc
       if (!horTab || s_editMode>0) break;
-      INC(l_posHorz,maxcol);
+      INC(l_posHorz, maxcol);
       BLINK_SYNC;
       break;
     case EVT_KEY_REPT(KEY_LEFT):  //dec
@@ -471,7 +473,7 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
       // no break
     case EVT_KEY_FIRST(KEY_LEFT)://dec
       if (!horTab || s_editMode>0) break;
-      DEC(l_posHorz,maxcol);
+      DEC(l_posHorz, maxcol);
       BLINK_SYNC;
       break;
     case EVT_KEY_REPT(KEY_DOWN):  //inc
@@ -494,11 +496,12 @@ bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTa
     case EVT_KEY_FIRST(KEY_UP): //dec
       if(s_editMode>0)break;
       do {
-        DEC(l_posVert,maxrow);
+        DEC(l_posVert, maxrow);
       } while(MAXCOL(l_posVert) == (uint8_t)-1);
       l_posHorz = min(l_posHorz, MAXCOL(l_posVert));
       BLINK_SYNC;
       break;
+#endif
   }
 
   uint8_t max = menuTab ? 7 : 6;

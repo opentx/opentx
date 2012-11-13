@@ -70,6 +70,16 @@ void doMainScreenGrphics()
   }
 }
 
+#if defined(PCBX9D)
+#define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
+#define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
+#define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
+#else
+#define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
+#define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
+#define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
+#endif
+
 void menuMainView(uint8_t event)
 {
   uint8_t view = g_eeGeneral.view;
@@ -91,21 +101,25 @@ void menuMainView(uint8_t event)
     break;
     */
 
-#if !defined(READONLY)
+#if !defined(PCBX9D) && !defined(READONLY)
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
       killEvents(event);
       break;
 #endif
 
+#if defined(PCBX9D)
+    case EVT_KEY_BREAK(KEY_PAGE):
+#else
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
+#endif
       if (view_base <= e_inputs) {
 #if defined(PCBSKY9X)
         if (view_base == e_inputs)
           g_eeGeneral.view ^= ALTERNATE_VIEW;
         else
-          g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_BREAK(KEY_RIGHT)) ? ALTERNATE_VIEW : -ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
+          g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_BREAK(KEY_LEFT)) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
 #else
         g_eeGeneral.view ^= ALTERNATE_VIEW;
 #endif
@@ -115,11 +129,11 @@ void menuMainView(uint8_t event)
       break;
 
 #if !defined(READONLY)
-    case EVT_KEY_LONG(KEY_RIGHT):
+    case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
       killEvents(event);
       break;
-    case EVT_KEY_LONG(KEY_LEFT):
+    case EVT_KEY_GENERAL_MENU:
       pushMenu(menuGeneralSetup);
       killEvents(event);
       break;
@@ -135,7 +149,7 @@ void menuMainView(uint8_t event)
       chainMenu(menuStatisticsView);
       killEvents(event);
       break;
-    case EVT_KEY_LONG(KEY_DOWN):
+    case EVT_KEY_TELEMETRY:
 #if defined(FRSKY)
       chainMenu(menuTelemetryFrsky);
 #elif defined(JETI)
