@@ -202,7 +202,7 @@
 #if defined(PCBSKY9X)
 #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CE1""CE2""CE3""CE4""CE5""CE6""CE7""CE8""CE9""CEA""CEB""CEC""CED""CEE""CEF""CEG""CEH""CEI""CEJ""CEK""CEL""CEM""CEN""CEO""CEP""CEQ""CER""CES""CET""CEU""CEV""CEW"" ON"
 #else
-#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CE1""CE2""CE3""CE4""CE5""CE6""CE7""CE8""CE9""CEA""CE""CEC"" ON"
+#define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CE1""CE2""CE3""CE4""CE5""CE6""CE7""CE8""CE9""CEA""CEB""CEC"" ON"
 #endif
 
 #define LEN_VSRCRAW      "\004"
@@ -404,8 +404,8 @@
 #define TR_SHUTDOWN            "DESLIGANDOo"
 #define TR_BATT_CALIB          "CALIBRAR BATT"
 #define TR_CURRENT_CALIB       "Corrente Calib"
-#define TR_VOLTAGE             INDENT"Voltagem"
-#define TR_CURRENT             INDENT"Corrente"
+#define TR_VOLTAGE             INDENT"Volts"
+#define TR_CURRENT             INDENT"Amperes"
 #define TR_SELECT_MODEL        "Selec. Modelo"
 #define TR_CREATE_MODEL        "Criar Modelo"
 #define TR_BACKUP_MODEL        "Salvar Modelo"
