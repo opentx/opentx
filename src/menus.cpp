@@ -248,7 +248,7 @@ void title(const pm_char * s)
 bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, maxrow_t maxrow)
 {
   maxrow_t l_posVert = m_posVert;
-  maxrow_t l_posHorz = m_posHorz;
+  uint8_t  l_posHorz = m_posHorz;
 
   int8_t maxcol = MAXCOL(l_posVert);
 
