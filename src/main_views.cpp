@@ -74,10 +74,12 @@ void doMainScreenGrphics()
 #define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
 #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
 #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
+#define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_ENTER)
 #else
 #define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
 #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
 #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
+#define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
 #endif
 
 void menuMainView(uint8_t event)
@@ -108,12 +110,8 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
-#if defined(PCBX9D)
-    case EVT_KEY_BREAK(KEY_PAGE):
-#else
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
-#endif
       if (view_base <= e_inputs) {
 #if defined(PCBSKY9X)
         if (view_base == e_inputs)
@@ -139,13 +137,17 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
+#if defined(PCBX9D)
+    case EVT_KEY_BREAK(KEY_PAGE):
+#else
     case EVT_KEY_BREAK(KEY_UP):
     case EVT_KEY_BREAK(KEY_DOWN):
+#endif
       g_eeGeneral.view = (event == EVT_KEY_BREAK(KEY_UP) ? (view_base == MAIN_VIEW_MAX ? 0 : view_base + 1) : (view_base == 0 ? MAIN_VIEW_MAX : view_base - 1));
       eeDirty(EE_GENERAL);
       AUDIO_KEYPAD_UP();
       break;
-    case EVT_KEY_LONG(KEY_UP):
+    case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
       killEvents(event);
       break;
