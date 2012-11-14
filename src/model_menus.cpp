@@ -307,9 +307,10 @@ void menuModelSelect(uint8_t event)
       case EVT_KEY_LONG(BTN_REb):
         if (!navigationRotaryEncoder(event))
           break;
+        // no break
 #endif
-      case EVT_KEY_LONG(KEY_MENU):
-      case EVT_KEY_BREAK(KEY_MENU):
+      case EVT_KEY_LONG(KEY_ENTER):
+      case EVT_KEY_BREAK(KEY_ENTER):
         s_editMode = 0;
         if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
           displayPopup(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
