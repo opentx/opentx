@@ -410,6 +410,84 @@ if __name__ == "__main__":
                      (u"Regime 9", "fltmd9"),
                      ]):
             sounds.extend(generate(s, f, 256+i))
+
+    elif "pt" in sys.argv:
+        if "sapi" in sys.argv:
+            tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
+            voice = "portuguese"
+        else:
+            espeakVoice = "mb-pt4"
+            espeakspeed = "160"
+            voice = "portuguese"
+
+        for i in range(101):
+            systemSounds.extend(generate(str(i), i))
+        systemSounds.extend(generate("cento", 101))
+        systemSounds.extend(generate("duzentos", 102))
+        systemSounds.extend(generate("trezcentos", 103))
+        systemSounds.extend(generate("quatrocentoc", 104))
+        systemSounds.extend(generate("quinhentos", 105))
+        systemSounds.extend(generate("seiscentos", 106))
+        systemSounds.extend(generate("setecentos", 107))
+        systemSounds.extend(generate("oitocentos", 108))
+        systemSounds.extend(generate("nuevecentos", 109))
+        systemSounds.extend(generate("mil", 110))
+        for i, s in enumerate(["virgula", "uma", "duas", "e", "menos", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
+            systemSounds.extend(generate(s, 111+i))
+        for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"quilômetros por hora", "metros", "graus", "cento", "miliamperes", "miliamperes por hora", "watt", "db", "estar", "nós", "horas", "minutos", "segundos", "RPM", "g"]):
+            systemSounds.extend(generate(s, 122+i))            
+        for s, f, a in [(u"comando rádio inativo", "inatividade", 230),
+                        (u"descarregamento da bateria de rádio", "mensagem LowBatt", 231),
+                        (u"controle não motor em posição, verifique", "thralert", 232),
+                        (u"não muda de posição, verificar", "swalert", 233),
+                        (u"eeprom corrompido", "eebad", 0),
+                        (u"formattazone eeprom em andamento", "eeformat", 0),
+                        (u"erro", "erro", 0),
+                        (u"trim centrada", "midtrim", 244),
+                        (u"tada", "tada", 245),
+                        (u"potenciómetro centrado", "midpot", 246),
+                        (u"atingiu máximo de compensação", "endtrim", 0),
+                        (u"3 segundos a final", "timerlt3", 250),
+                        (u"10 segondos", "timer10", 251),
+                        (u"20 segondos", "timer20", 252),
+                        (u"30 segondos", "timer30", 253),
+                     ]:
+            systemSounds.extend(generate(s, f, a))
+        for i, s in enumerate([u"Tiempo", u"Tiempo", u"transmissão", u"recepção", u"A1", u"A2", u"altitude", u"motor",
+                                u"Fuel", u"temperatura", u"temperatura", u"velocidade", u"distância", u"altitude", u"célula lipo"
+                                u"Total lipo", u"tensão", u"corrente", u"consumo", u"poder", u"aceleração X", u"Y aceleração", u"aceleração Z"
+                                u"Direção", u"vario", u"mínimo", u"máximo"]):
+            systemSounds.extend(generate(s, 135+i))
+        for i, (s, f) in enumerate([
+                      (u"carro fechado", "GearUp")
+                      (u"carro aberto", "geardn")
+                      (u"flaps recolhidos", "flapup"),
+                      (u"flaps estendidos", "flapdn"),
+                      (u"aterragem", "Attero"),
+                      (u"modo principal ativo", "trnon")
+                      (u"modo master off", "trnoff")
+                      (u"motor desligado", "engoff")
+                      (u"muito alto", "tohigh")
+                      (u"muito baixo", "tolow"),
+                      (u"bateria fraca", "LOWBAT")
+                      (u"corvo on", "crowon")
+                      (u"corvo off", "crowof")
+                      (u"sinal de rádio de baixa", "siglow")
+                      (u"sinal de rádio crítica", "sigcrt"),
+                      (u"modo de velocidade", "spdmod")
+                      (u"modo de térmica", "thmmod"),
+                      (u"modo de voo normal", "nrmmod"),
+                      (u"fase de voo 1", "fltmd1"),
+                      (u"fase de voo 2", "fltmd2")
+                      (u"fase de voo 3", "fltmd3")
+                      (u"fase de voo 4", "fltmd4")
+                      (u"fase de voo 5", "fltmd5")
+                      (u"fase de vôo 6", "fltmd6")
+                      (u"fase de voo 7", "fltmd7"),
+                      (u"fase de voo 8", "fltmd8")
+                      (u"fase de voo 9", "fltmd9"
+                     ]):
+            sounds.extend(generate(s, f, 256+i))
             
     elif "cz" in sys.argv:
         if "sapi" in sys.argv:
