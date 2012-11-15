@@ -379,7 +379,6 @@ void menuModelSelect(uint8_t event)
           s_copySrcRow = -1;
         }
         break;
-#if !defined(PCBX9D)
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
         if (sub == g_eeGeneral.currModel) {
@@ -388,6 +387,7 @@ void menuModelSelect(uint8_t event)
         }
         AUDIO_WARNING2();
         break;
+#if !defined(PCBX9D)
       case EVT_KEY_FIRST(KEY_UP):
       case EVT_KEY_FIRST(KEY_DOWN):
         if (s_copyMode) {
@@ -555,9 +555,13 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
         case EVT_KEY_LONG(BTN_REb):
           if (!navigationRotaryEncoder(event))
             break;
+          // no break
+#if defined(PCBX9D)
+        case EVT_KEY_LONG(KEY_ENTER):
+#endif
           if (v==0) {
             s_editMode = 0;
-            killEvents(BTN_REa);
+            killEvents(event);
             break;
           }
           // no break
@@ -1103,13 +1107,15 @@ void menuModelPhasesAll(uint8_t event)
         break;
       // no break
 #endif
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_ENTER):
       if (sub == MAX_PHASES) {
         s_editMode = 0;
         trimsCheckTimer = 200; // 2 seconds
       }
       // no break
+#if !defined(PCBX9D)
     case EVT_KEY_FIRST(KEY_RIGHT):
+#endif
       if (sub >= 0 && sub < MAX_PHASES) {
         s_currIdx = sub;
         pushMenu(menuModelPhaseOne);
@@ -1313,7 +1319,6 @@ void menuModelCurveOne(uint8_t event)
   switch(event) {
     case EVT_ENTRY:
       s_editMode = 1;
-      killEvents(KEY_MENU);
       break;
 #if defined(ROTARY_ENCODERS)
     case EVT_KEY_BREAK(BTN_REa):
@@ -2184,7 +2189,11 @@ enum LimitsItems {
 
 void menuModelLimits(uint8_t event)
 {
+#if defined(PCBSKY9X)
+  MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, 0});
+#else
   MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, 0});
+#endif
 
   uint8_t sub = m_posVert - 1;
 
@@ -2365,8 +2374,10 @@ void menuModelCurvesAll(uint8_t event)
         break;
       // no break
 #endif
+#if !defined(PCBX9D)
     case EVT_KEY_FIRST(KEY_RIGHT):
-    case EVT_KEY_FIRST(KEY_MENU):
+#endif
+    case EVT_KEY_FIRST(KEY_ENTER):
       if (CURVE_SELECTED()) {
         s_curveChan = sub;
         pushMenu(menuModelCurveOne);
@@ -2415,6 +2426,7 @@ enum CustomSwitchFields {
 void menuModelCustomSwitchOne(uint8_t event)
 {
   TITLE(STR_MENUCUSTOMSWITCH);
+
   CustomSwData * cs = cswaddress(s_currIdx);
   uint8_t sw = DSW_SW1+s_currIdx;
   putsSwitches(14*FW, 0, sw, (getSwitch(sw, 0) ? BOLD : 0));
@@ -2533,8 +2545,10 @@ void menuModelCustomSwitches(uint8_t event)
         break;
       // no break
 #endif
+#if !defined(PCBX9D)
     case EVT_KEY_FIRST(KEY_RIGHT):
-    case EVT_KEY_FIRST(KEY_MENU):
+#endif
+    case EVT_KEY_FIRST(KEY_ENTER):
       if (sub >= 0) {
         s_currIdx = sub;
         pushMenu(menuModelCustomSwitchOne);
@@ -3230,23 +3244,18 @@ void menuModelTemplates(uint8_t event)
 
   uint8_t sub = m_posVert - 1;
 
-  if (s_warning_result) {
-    if (sub<TMPL_COUNT)
+  if (sub < TMPL_COUNT) {
+    if (s_warning_result) {
+      s_warning_result = 0;
       applyTemplate(sub);
-    s_warning_result = 0;
-    AUDIO_WARNING2();
-  }
-
-  switch(event)
-  {
-    case EVT_KEY_FIRST(KEY_MENU):
-      if (sub!=255) {
-        s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
-        s_warning_type = WARNING_TYPE_CONFIRM;
-      }
+      AUDIO_WARNING2();
+    }
+    if (event==EVT_KEY_FIRST(KEY_ENTER)) {
+      s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
+      s_warning_type = WARNING_TYPE_CONFIRM;
       killEvents(event);
       s_editMode = 0;
-      break;
+    }
   }
 
   uint8_t y = 1*FH;

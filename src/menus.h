@@ -136,8 +136,12 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
 
-#if defined(ROTARY_ENCODERS)
+#if defined(PCBX9D)
+void check_rotary_encoder(uint8_t & event);
+#define CHECK_ROTARY_ENCODER(event) check_rotary_encoder(event)
+#elif defined(ROTARY_ENCODERS)
 void check_rotary_encoder();
+#define CHECK_ROTARY_ENCODER(event) check_rotary_encoder()
 #endif
 
 // Menus related stuff ...
@@ -152,9 +156,15 @@ void check_rotary_encoder();
 extern maxrow_t m_posVert;
 extern uint8_t m_posHorz;
 
-bool check(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, maxrow_t maxrow);
-bool check_simple(uint8_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, maxrow_t maxrow);
-bool check_submenu_simple(uint8_t event, uint8_t maxrow);
+#if defined(PCBX9D)
+typedef uint8_t & check_event_t;
+#else
+typedef uint8_t check_event_t;
+#endif
+
+bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, maxrow_t maxrow);
+bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, maxrow_t maxrow);
+bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 
