@@ -750,6 +750,12 @@ stock-stamp:
 	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-stock.txt
 	@cat stamp-open9x-stock.txt
 
+stock128-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-stock128.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-stock28.txt
+	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-stock128.txt
+	@cat stamp-open9x-stock128.txt
+
 v4-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-v4.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-v4.txt
