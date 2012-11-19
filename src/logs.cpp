@@ -34,7 +34,7 @@
 #include "open9x.h"
 #include "FatFs/ff.h"
 
-static FIL g_oLogFile = {0};
+FIL g_oLogFile = {0};
 const pm_char * g_logError = NULL;
 uint8_t logDelay;
 
@@ -130,7 +130,7 @@ void closeLogs()
   lastLogTime = 0;
 }
 
-// when disk full
+// TODO test when disk full
 void writeLogs()
 {
   static const pm_char * error_displayed = NULL;

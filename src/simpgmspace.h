@@ -185,19 +185,19 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define RXCIE0 dummyport
 #define OCR0A dummyport
 #define OCR1A dummyport16
+#define OCR1B dummyport16
+#define OCR1C dummyport16
+#define OCR2 dummyport
 #define OCR3A dummyport16
 #define OCR3B dummyport16
 #define OCR4A dummyport
 #define OCR5A dummyport
-#define OCR1B dummyport16
-#define OCR1C dummyport16
 #define TCCR0A dummyport
 #define TCCR1A dummyport
 #define TCCR1B dummyport
 #define TCCR1C dummyport
 #define COM1B0 dummyport
 #define COM0A0 dummyport
-
 #define TCNT1 dummyport16
 #define TCNT5 dummyport16
 #define ICR1 dummyport16

@@ -44,7 +44,7 @@ TEST(trims, greaterTrimLink)
  memset(&g_model, 0, sizeof(g_model));
  setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
  setTrimValue(3, 0, 32);
- EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 1), 0), 32);
+ EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(1, 0), 0), 32);
 }
 
 TEST(trims, chainedTrims)
@@ -66,7 +66,8 @@ TEST(trims, infiniteChainedTrims)
  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
 }
 
-TEST(outdezNAtt, test_unsigned) {
+TEST(outdezNAtt, test_unsigned)
+{
   uint16_t altitude = 65530;
 
   uint8_t refBuf[sizeof(displayBuf)];
@@ -84,7 +85,8 @@ TEST(outdezNAtt, test_unsigned) {
   EXPECT_EQ(memcmp(refBuf, displayBuf, sizeof(displayBuf)), 0) << "Unsigned numbers will be bad displayed";
 }
 
-TEST(EEPROM, 1000_random_writes) {
+TEST(EEPROM, 1000_random_writes)
+{
   eepromFile = NULL; // in memory
   RlcFile f;
   uint8_t buf[1000];
@@ -106,7 +108,8 @@ TEST(EEPROM, 1000_random_writes) {
   }
 }
 
-TEST(EEPROM, test2) {
+TEST(EEPROM, test2)
+{
   eepromFile = NULL; // in memory
   RlcFile f;
   uint8_t buf[1000];
@@ -128,7 +131,8 @@ TEST(EEPROM, test2) {
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, eeCheckImmediately) {
+TEST(EEPROM, eeCheckImmediately)
+{
   eepromFile = NULL; // in memory
   // RlcFile f;
   uint8_t buf[1000];
@@ -152,7 +156,8 @@ TEST(EEPROM, eeCheckImmediately) {
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, copy) {
+TEST(EEPROM, copy)
+{
   eepromFile = NULL; // in memory
 
   uint8_t buf[1000];
@@ -176,7 +181,8 @@ TEST(EEPROM, copy) {
   EXPECT_EQ(sz, 300);
 }
 
-TEST(EEPROM, rm) {
+TEST(EEPROM, rm)
+{
   eepromFile = NULL; // in memory
 
   uint8_t buf[1000];
@@ -206,7 +212,8 @@ TEST(EEPROM, rm) {
 
 extern void processFrskyPacket(uint8_t *packet);
 
-TEST(FrSky, gpsNfuel) {
+TEST(FrSky, gpsNfuel)
+{
   g_model.frsky.usrProto = 1;
   frskyData.hub.gpsFix = 1;
 
@@ -234,7 +241,8 @@ TEST(FrSky, gpsNfuel) {
   EXPECT_EQ(frskyData.hub.fuelLevel, 100);
 }
 
-TEST(FrSky, dateNtime) {
+TEST(FrSky, dateNtime)
+{
   uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x15, 0x0f, 0x07, 0x5e, 0x16, 0x0b };
   uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x17, 0x06, 0x12, 0x5e, 0x18 };
   uint8_t pkt3[] = { 0xfd, 0x03, 0x00, 0x32, 0x00, 0x5e };
@@ -249,13 +257,15 @@ TEST(FrSky, dateNtime) {
   EXPECT_EQ(frskyData.hub.sec, 50);
 }
 
-TEST(getSwitch, undefCSW) {
+TEST(getSwitch, undefCSW)
+{
   memset(&g_model, 0, sizeof(g_model));
-  EXPECT_EQ(getSwitch(MAX_SWITCH-NUM_CSW, 0), false);
-  EXPECT_EQ(getSwitch(-(MAX_SWITCH-NUM_CSW), 0), false);
+  EXPECT_EQ(getSwitch(MAX_PSWITCH, 0), false);
+  EXPECT_EQ(getSwitch(-MAX_PSWITCH, 0), true); // no good answer there!
 }
 
-TEST(getSwitch, circularCSW) {
+TEST(getSwitch, circularCSW)
+{
   memset(&g_model, 0, sizeof(g_model));
   g_model.customSw[0] = { MAX_SWITCH-NUM_CSW, MAX_SWITCH-NUM_CSW, CS_OR };
   g_model.customSw[1] = { MAX_SWITCH-NUM_CSW, MAX_SWITCH-NUM_CSW, CS_AND };
@@ -265,14 +275,16 @@ TEST(getSwitch, circularCSW) {
   EXPECT_EQ(getSwitch(-(1+MAX_SWITCH-NUM_CSW), 0), true);
 }
 
-TEST(getSwitch, nullSW) {
+TEST(getSwitch, nullSW)
+{
   memset(&g_model, 0, sizeof(g_model));
   EXPECT_EQ(getSwitch(0, 0), false);
   EXPECT_EQ(getSwitch(0, true), true);
   EXPECT_EQ(getSwitch(0, 0), false);
 }
 
-TEST(phases, nullFadeOut_posFadeIn) {
+TEST(phases, nullFadeOut_posFadeIn)
+{
   memset(&g_model, 0, sizeof(g_model));
   g_model.phaseData[1].swtch = DSW_ID1;
   g_model.phaseData[1].fadeIn = 15;
@@ -283,6 +295,8 @@ TEST(phases, nullFadeOut_posFadeIn) {
 
 int main(int argc, char **argv) {
   StartEepromThread(NULL);
+  g_menuStackPtr = 0;
+  g_menuStack[0] = menuMainView;
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

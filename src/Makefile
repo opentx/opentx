@@ -851,7 +851,7 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
-	g++ $(CPPFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp $(ARCH) -MD -DSIMU -o simu $(FOXINC) $(FOXLIB) -pthread
+	g++ $(CPPFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O1 -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -1029,5 +1029,5 @@ gtest_main.a : gtest-all.o gtest_main.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-gtests: $(CPPSRC) gtests.cpp simpgmspace.cpp *.h gtest_main.a
-	g++ $(CPPSRC) gtests.cpp simpgmspace.cpp $(CPPFLAGS) -I$(GTEST_DIR) $(ARCH) -o gtests -lpthread -MD -DSIMU gtest_main.a 
+gtests: $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp *.h gtest_main.a
+	g++ -std=gnu++0x $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp -I$(GTEST_DIR) -o gtests -lpthread -MD -DSIMU gtest_main.a 
