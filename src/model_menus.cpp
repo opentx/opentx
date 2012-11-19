@@ -1327,15 +1327,22 @@ void menuModelCurveOne(uint8_t event)
         break;
       // no break
 #endif
-    case EVT_KEY_BREAK(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_ENTER):
       if (s_editMode <= 0)
         m_posHorz = 0;
-      if (s_editMode == 1 && crv.custom/* && m_posHorz>0 && m_posHorz<points-1*/)
+#if defined(PCBX9D)
+      else if (s_editMode == 1)
+        s_editMode = (crv.custom && m_posHorz>0 && m_posHorz<crv.points-1) ? 2 : 3;
+      else if (s_editMode == 2)
+        s_editMode = 3;
+#else
+      if (s_editMode == 1 && crv.custom)
         s_editMode = 2;
+#endif
       else
         s_editMode = 1;
       break;
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_LONG(KEY_ENTER):
       if (s_editMode <= 0) {
         if (++m_posHorz > 4)
           m_posHorz = -4;
@@ -1418,15 +1425,30 @@ void menuModelCurveOne(uint8_t event)
 
       int8_t x = -100 + 200*i/(crv.points-1);
       if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
+#if defined(PCBX9D)
+      lcd_puts(7, 2*FH, PSTR("x=")); lcd_outdezAtt(7+2*FW, 2*FH, x, LEFT|(s_editMode==2 ? BLINK|INVERS : 0));
+      lcd_puts(7, 3*FH, PSTR("y=")); lcd_outdezAtt(7+2*FW, 3*FH, crv.crv[i], LEFT|(s_editMode==3 ? BLINK|INVERS : 0));
+#else
       lcd_puts(7, 2*FH, PSTR("x=")); lcd_outdezAtt(7+2*FW, 2*FH, x, LEFT);
       lcd_puts(7, 3*FH, PSTR("y=")); lcd_outdezAtt(7+2*FW, 3*FH, crv.crv[i], LEFT);
+#endif
       lcd_rect(3, 1*FH+4, 7*FW-2, 3*FH-2);
 
+#if defined(PCBX9D)
+      if (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_MINUS) || event==EVT_KEY_REPT(KEY_PLUS)) {
+        if (s_editMode == 2)
+          CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X
+        else if (s_editMode == 3)
+          CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);  // edit Y
+      }
+#else
       if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP))
         CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);  // edit Y on up/down
 
+
       if (i>0 && i<crv.points-1 && s_editMode==2 && (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_LEFT) || event==EVT_KEY_REPT(KEY_RIGHT)))
         CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X on left/right
+#endif
     }
   }
 }
