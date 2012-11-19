@@ -1039,7 +1039,7 @@ void clearKeyEvents()
 #if defined(SIMU)
   while (keyDown() && main_thread_running) sleep(1/*ms*/);
 #else
-  while (keyDown()) WDT_RESET_STOCK();  // loop until all keys are up
+  while (keyDown()) wdt_reset();  // loop until all keys are up
 #endif
   memclear(keys, sizeof(keys));
   putEvent(0);
@@ -1216,7 +1216,7 @@ void checkTHR()
 
       checkBacklight();
 
-      WDT_RESET_STOCK();
+      wdt_reset();
   }
 }
 
