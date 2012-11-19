@@ -520,12 +520,15 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 }
 
 #if defined(SDCARD)
+extern FIL g_oLogFile;
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
   char *buf = reusableBuffer.models.mainname;
-  FIL archiveFile;
   DIR archiveFolder;
   UINT written;
+
+  // we must close the logs as we reuse the same FIL structure
+  closeLogs();
 
   // check and create folder here
   strcpy_P(buf, STR_MODELS_PATH);
@@ -569,7 +572,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   printf("SD-card backup filename=%s\n", buf); fflush(stdout);
 #endif
 
-  result = f_open(&archiveFile, buf, FA_CREATE_ALWAYS | FA_WRITE);
+  result = f_open(&g_oLogFile, buf, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
@@ -582,53 +585,55 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   buf[5] = 'M';
   *(uint16_t*)&buf[6] = theFile2.size();
 
-  result = f_write(&archiveFile, buf, 8, &written);
+  result = f_write(&g_oLogFile, buf, 8, &written);
   if (result != FR_OK || written != 8) {
-    f_close(&archiveFile);
+    f_close(&g_oLogFile);
     return SDCARD_ERROR(result);
   }
 
   while ((len=theFile2.read((uint8_t *)buf, 15))) {
-    result = f_write(&archiveFile, (uint8_t *)buf, len, &written);
+    result = f_write(&g_oLogFile, (uint8_t *)buf, len, &written);
     if (result != FR_OK || written != len) {
-      f_close(&archiveFile);
+      f_close(&g_oLogFile);
       return SDCARD_ERROR(result);
     }
   }
 
-  f_close(&archiveFile);
+  f_close(&g_oLogFile);
   return NULL;
 }
 
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 {
   char *buf = reusableBuffer.models.mainname;
-  FIL restoreFile;
   UINT read;
+
+  // we must close the logs as we reuse the same FIL structure
+  closeLogs();
 
   strcpy_P(buf, STR_MODELS_PATH);
   buf[sizeof(MODELS_PATH)-1] = '/';
   strcpy(&buf[sizeof(MODELS_PATH)], model_name);
   strcpy_P(&buf[strlen(buf)], STR_MODELS_EXT);
 
-  FRESULT result = f_open(&restoreFile, buf, FA_OPEN_EXISTING | FA_READ);
+  FRESULT result = f_open(&g_oLogFile, buf, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
 
-  if (f_size(&restoreFile) < 8) {
-    f_close(&restoreFile);
+  if (f_size(&g_oLogFile) < 8) {
+    f_close(&g_oLogFile);
     return STR_INCOMPATIBLE;
   }
 
-  result = f_read(&restoreFile, (uint8_t *)buf, 8, &read);
+  result = f_read(&g_oLogFile, (uint8_t *)buf, 8, &read);
   if (result != FR_OK || read != 8) {
-    f_close(&restoreFile);
+    f_close(&g_oLogFile);
     return SDCARD_ERROR(result);
   }
 
   if (*(uint32_t*)&buf[0] != O9X_FOURCC || (uint8_t)buf[4] != EEPROM_VER || buf[5] != 'M') {
-    f_close(&restoreFile);
+    f_close(&g_oLogFile);
     return STR_INCOMPATIBLE;
   }
 
@@ -639,17 +644,17 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   theFile.create(FILE_MODEL(i_fileDst), FILE_TYP_MODEL, true);
 
   do {
-    result = f_read(&restoreFile, (uint8_t *)buf, 15, &read);
+    result = f_read(&g_oLogFile, (uint8_t *)buf, 15, &read);
     if (result != FR_OK) {
       s_sync_write = false;
-      f_close(&restoreFile);
+      f_close(&g_oLogFile);
       return SDCARD_ERROR(result);
     }
     if (read > 0) {
       theFile.write((uint8_t *)buf, read);
       if (write_errno() != 0) {
         s_sync_write = false;
-        f_close(&restoreFile);
+        f_close(&g_oLogFile);
         return STR_EEPROMOVERFLOW;
       }
     }
@@ -664,7 +669,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   eeFs.files[FILE_TMP].size = theFile.m_pos;
   EFile::swap(theFile.m_fileId, FILE_TMP); // s_sync_write is set to false in swap();
 
-  f_close(&restoreFile);
+  f_close(&g_oLogFile);
   return NULL;
 }
 #endif
