@@ -106,6 +106,11 @@ void setSwitch(int8_t swtch)
   }
 }
 
+uint16_t getTmr16KHz()
+{
+  return get_tmr10ms() * 160;
+}
+
 bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
 {
