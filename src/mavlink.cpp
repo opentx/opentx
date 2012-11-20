@@ -903,7 +903,7 @@ void menuTelemetryMavlink(uint8_t event) {
 	case EVT_KEY_FIRST(KEY_EXIT):
 		//MAVLINK_Quit();
 		chainMenu(menuMainView);
-		break;
+		return;
 	}
 
 	switch (MAVLINK_menu) {

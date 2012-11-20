@@ -95,10 +95,9 @@ uint8_t g_tmr1Latency_min;
 
 uint8_t unexpectedShutdown = 0;
 
-uint16_t g_timeMainMax;
-#if defined(PCBGRUVIN9X)
-uint8_t  lastMixerDuration;
-#endif
+/* mixer duration in 1/16ms */
+uint16_t maxMixerDuration;
+uint16_t lastMixerDuration;
 
 #if defined(AUDIO) && !defined(PCBSKY9X)
 audioQueue  audio;
@@ -1259,7 +1258,7 @@ void checkSwitches()
 
     checkBacklight();
 
-    WDT_RESET_STOCK();
+    wdt_reset();
 
 #ifdef SIMU
     if (!main_thread_running) return;
@@ -1286,7 +1285,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 
     checkBacklight();
 
-    WDT_RESET_STOCK();
+    wdt_reset();
   }
 }
 
@@ -1324,19 +1323,19 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
 #endif
 
-#if defined(PCBSTD)
-uint8_t checkTrim(uint8_t event)
-{
-  int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
-  int8_t s = g_model.trimInc;
-  if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
-#else
+#if defined(PCBSKY9X)
 void checkTrims()
 {
   uint8_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
     int8_t s = g_model.trimInc;
+#else
+uint8_t checkTrim(uint8_t event)
+{
+  int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
+  int8_t s = g_model.trimInc;
+  if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE(1+k/2) - 1;
@@ -1430,11 +1429,11 @@ void checkTrims()
     else {
       AUDIO_TRIM(event, after);
     }
-#if defined(PCBSTD)
+#if !defined(PCBSKY9X)
     return 0;
 #endif
   }
-#if defined(PCBSTD)
+#if !defined(PCBSKY9X)
   return event;
 #endif
 }
@@ -1631,30 +1630,6 @@ void getADC_bandgap()
 
 uint8_t g_vbat100mV = 0;
 uint16_t g_LightOffCounter;
-
-#if !defined(PCBSKY9X)
-FORCEINLINE bool checkSlaveMode()
-{
-  // no power -> only phone jack = slave mode
-
-#if defined(PCBGRUVIN9X)
-  return SLAVE_MODE;
-#else
-  static bool lastSlaveMode = false;
-  static uint8_t checkDelay = 0;
-  if (IS_AUDIO_BUSY()) {
-    checkDelay = 20;
-  }
-  else if (checkDelay) {
-    --checkDelay;
-  }
-  else {
-    lastSlaveMode = SLAVE_MODE;
-  }
-  return lastSlaveMode;
-#endif
-}
-#endif
 
 uint16_t s_timeCumTot;
 uint16_t s_timeCumThr;    // THR in 1/16 sec
@@ -2363,7 +2338,7 @@ void perOut(uint8_t tick10ms)
               sDelay[i] = md->delayUp * 50;
           }
           if (sDelay[i] > 0) { // perform delay
-            sDelay[i] -= tick10ms;
+            sDelay[i] = max(0, sDelay[i]-tick10ms);
             if (!md->swtch) {
               v = -1024;
             }
@@ -2387,7 +2362,7 @@ void perOut(uint8_t tick10ms)
             sDelay[i] = md->delayDown * 50;
         }
         if (sDelay[i] > 0) { // perform delay
-          sDelay[i] -= tick10ms;
+          sDelay[i] = max(0, sDelay[i]-tick10ms);
           if (!md->swtch) v = +1024;
           has_delay = true;
         }
@@ -2510,9 +2485,24 @@ void perOut(uint8_t tick10ms)
 ACTIVE_MIXES_TYPE activeMixes;
 #endif
 int32_t sum_chans512[NUM_CHNOUT] = {0};
-inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
+
+#if defined(PCBSKY9X)
+inline bool doMixerCalculations()
+#else
+inline void doMixerCalculations()
+#endif
 {
-#ifdef BOLD_FONT
+#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
+  PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
+#endif
+
+  static tmr10ms_t lastTMR;
+
+  tmr10ms_t tmr10ms = get_tmr10ms();
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
+  lastTMR = tmr10ms;
+
+#if defined(BOLD_FONT)
   activeMixes = 0;
 #endif
 
@@ -2602,12 +2592,20 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
     sei();
   }
 
+#if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
+  PORTH &= ~0x40; // PORTH:6 HIGH->LOW signals end of mixer interrupt
+#endif
+
   // Bandgap has had plenty of time to settle...
 #if !defined(PCBSKY9X)
   getADC_bandgap();
 #endif
 
+#if defined(PCBSKY9X)
+  if (!tick10ms) return false; //make sure the rest happen only every 10ms.
+#else
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
+#endif
 
   /* Throttle trace */
   int16_t val;
@@ -2813,43 +2811,48 @@ inline void doMixerCalculations(tmr10ms_t tmr10ms, uint8_t tick10ms)
     setVolume(requiredSpeakerVolume);
     currentSpeakerVolume = requiredSpeakerVolume;
   }
+
+  return true;
 #endif
 }
 
 void perMain()
 {
-  static tmr10ms_t lastTMR;
-  tmr10ms_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
-  lastTMR = tmr10ms;
+#if defined(SIMU)
+  doMixerCalculations();
+#elif !defined(PCBSKY9X)
+  uint16_t t0 = getTmr16KHz();
+  int16_t delta = t0 - nextMixerTime;
+  if (delta < 0) return;
 
-#if defined(PCBSTD) || defined(SIMU)
-  doMixerCalculations(tmr10ms, tick10ms);
+  nextMixerTime = t0 + 20*16;
+  doMixerCalculations();
+
+  t0 = getTmr16KHz() - t0;
+  lastMixerDuration = t0;
+  if (t0 > maxMixerDuration) maxMixerDuration = t0;
 #endif
 
 // TODO same code here + integrate the timer which could be common
 #if defined(PCBSKY9X)
-  if (Tenms) {
-    Tenms = 0 ;
+  if (!Tenms) return;
+  Tenms = 0 ;
 
-    if (Eeprom32_process_state != E32_IDLE)
-      ee32_process();
-    else if (TIME_TO_WRITE)
-      eeCheck();
-
-    Current_accumulator += Current_analogue ;
-    static uint32_t OneSecTimer;
-    if (++OneSecTimer >= 100) {
-      OneSecTimer -= 100 ;
-      sessionTimer += 1;
-      Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
-      Current_accumulator = 0 ;
-    }
-
-#if defined(SDCARD) && !defined(SIMU)
-    sdPoll10mS();
-#endif
+  Current_accumulator += Current_analogue ;
+  static uint32_t OneSecTimer;
+  if (++OneSecTimer >= 100) {
+    OneSecTimer -= 100 ;
+    sessionTimer += 1;
+    Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
+    Current_accumulator = 0 ;
   }
+#endif
+
+#if defined(PCBSKY9X)
+  if (Eeprom32_process_state != E32_IDLE)
+    ee32_process();
+  else if (TIME_TO_WRITE)
+    eeCheck();
 #else
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
@@ -2859,33 +2862,20 @@ void perMain()
   }
 #endif
 
-  if (!tick10ms) return; //make sure the rest happen only every 10ms.
-
 #if defined(SDCARD)
-#if defined(PCBGRUVIN9X)
-  static uint8_t mountTimer;
-  if (mountTimer-- == 0) {
-    mountTimer = 100;
-    if (g_FATFS_Obj.fs_type == 0) {
-      f_mount(0, &g_FATFS_Obj);
-    }
-  }
-#endif
-
+  sdMountPoll();
   writeLogs();
 #endif
 
-  lcd_clear();
-  
 #if defined(PCBSKY9X) && defined(SIMU)
   checkTrims();
 #endif
 
-#if defined(PCBSTD)
+#if defined(PCBSKY9X)
+  uint8_t evt = getEvent(false);
+#else
   uint8_t evt = getEvent();
   evt = checkTrim(evt);
-#else
-  uint8_t evt = getEvent(false);
 #endif
 
   if (g_LightOffCounter) g_LightOffCounter--;
@@ -2897,44 +2887,27 @@ void perMain()
   check_frsky();
 #endif
 
+  lcd_clear();
   const char *warn = s_warning;
   g_menuStack[g_menuStackPtr](warn ? 0 : evt);
   if (warn) displayWarning(evt);
   drawStatusLine();
   refreshDisplay();
 
-#if defined(PCBSKY9X)
-  if ( check_soft_power() == e_power_trainer ) {          // On trainer power
-    PIOC->PIO_PDR = PIO_PC22 ;                            // Disable bit C22 Assign to peripheral
+  if (SLAVE_MODE()) {
+    JACK_PPM_OUT();
   }
   else {
-    PIOC->PIO_PER = PIO_PC22 ;                            // Enable bit C22 as input
+    JACK_PPM_IN();
   }
-#elif defined(PCBGRUVIN9X)
-  // PPM signal on phono-jack. In or out? ...
-  if(checkSlaveMode()) {
-    PORTG |= (1<<OUT_G_SIM_CTL); // 1=ppm out
-  }
-  else{
-    PORTG &=  ~(1<<OUT_G_SIM_CTL); // 0=ppm in
-  }
-#elif defined(PCBSTD)
-  // PPM signal on phono-jack. In or out? ...
-  if(checkSlaveMode()) {
-    PORTG &= ~(1<<OUT_G_SIM_CTL); // 0=ppm out
-  }
-  else{
-    PORTG |=  (1<<OUT_G_SIM_CTL); // 1=ppm-in
-  }
-#endif
 
-#if defined(PCBSKY9X)
   static uint8_t counter = 0;
+  if (g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
+    g_vbat100mV = 0;
+    counter = 0;
+  }
   if (counter-- == 0) {
     counter = 10;
-#else
-  if ((tmr10ms & 0x1f) == 2 /*every 10ms*32*/ || g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
-#endif
 
 #if defined(PCBSKY9X)
     int32_t instant_vbat = anaIn(7);
@@ -2954,7 +2927,7 @@ void perMain()
     s_batCheck += 32;
     s_batSum += instant_vbat;
 
-    if (g_vbat100mV == 0 || g_menuStack[g_menuStackPtr] == menuGeneralDiagAna) {
+    if (g_vbat100mV == 0) {
       g_vbat100mV = instant_vbat;
       s_batSum = 0;
       s_batCheck = 0;
@@ -2983,11 +2956,7 @@ uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
 #if !defined(SIMU) && !defined(PCBSKY9X)
 
 volatile uint8_t g_tmr16KHz; //continuous timer 16ms (16MHz/1024/256) -- 8-bit counter overflow
-#if defined (PCBGRUVIN9X)
-ISR(TIMER2_OVF_vect)
-#else
-ISR(TIMER0_OVF_vect) // TODO now NOBLOCK in er9x
-#endif
+ISR(TIMER_16KHZ_VECT, ISR_NOBLOCK)
 {
   g_tmr16KHz++; // gruvin: Not 16KHz. Overflows occur at 61.035Hz (1/256th of 15.625KHz)
                 // to give *16.384ms* intervals. Kind of matters for accuracy elsewhere. ;)
@@ -2999,80 +2968,15 @@ uint16_t getTmr16KHz()
 {
   while(1){
     uint8_t hb  = g_tmr16KHz;
-#if defined (PCBGRUVIN9X)
-    uint8_t lb  = TCNT2;
-#else
-    uint8_t lb  = TCNT0;
-#endif
+    uint8_t lb  = COUNTER_16KHZ;
     if(hb-g_tmr16KHz==0) return (hb<<8)|lb;
   }
 }
 
-#if defined (PCBGRUVIN9X)
-
-/**** SCHEDULED MIXER INTERRUPT ****/ 
-
-// On G9X board, we use TIMER5 to schedule mixer execution, to achieve
-// minimal system latency between reading sticks and outputting data.
-ISR(TIMER5_COMPA_vect, ISR_NOBLOCK)
-{
-#if defined(DEBUG) && !defined(VOICE)
-  PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
-#endif
-
-  cli();
-  TIMSK5 &= ~(1<<OCIE5A); //stop reentrance
-  OCR5A = 0x7d * 40; /* 20ms */
-  sei();
-
-  uint16_t t0 = getTmr16KHz();  
-  
-  static tmr10ms_t lastTMR;
-  tmr10ms_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
-  lastTMR = tmr10ms;
-  
-  if (s_current_protocol < PROTO_NONE) {
-    doMixerCalculations(tmr10ms, tick10ms);
-    checkTrims();
-  }
-
-  heartbeat |= HEART_TIMER10ms;
-
-  if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
-    wdt_reset();
-    heartbeat = 0;
-  }
-
-  t0 = getTmr16KHz() - t0;
-  lastMixerDuration = t0 / 8;
-  if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
-
-  cli();
-  TIMSK5 |= (1<<OCIE5A); //stop reentrance
-  sei();
-
-#if defined(DEBUG) && !defined(VOICE)
-  PORTH &= ~0x40; // PORTH:6 HIGH->LOW signals end of mixer interrupt
-#endif
-}
-#endif
-
-#if defined (PCBGRUVIN9X)
-ISR(TIMER2_COMPA_vect, ISR_NOBLOCK) //10ms timer
-#else
-// Clocks every 64 uS
-ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
-#endif
+ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
 {
   cli();
-  
-#if defined(PCBGRUVIN9X)
-  TIMSK2 &= ~(1<<OCIE2A); // stop reentrance
-#else
-  TIMSK &= ~(1<<OCIE0); // stop reentrance
-#endif
-
+  PAUSE_10MS_INTERRUPT();
   sei();
 
 #if defined(PCBGRUVIN9X)
@@ -3112,32 +3016,24 @@ ISR(TIMER0_COMP_vect, ISR_NOBLOCK) //10ms timer
 
     AUDIO_HEARTBEAT();
 
-#ifdef HAPTIC
+#if defined(HAPTIC)
     HAPTIC_HEARTBEAT();
 #endif
 
     per10ms();
 
-#if defined(PCBGRUVIN9X) && defined(SDCARD)
-    sdPoll10mS();
+#if defined(SDCARD)
+    sdPoll10ms();
 #endif
 
-#if !defined(PCBGRUVIN9X)
-    heartbeat |= HEART_TIMER10ms; // TODO check heartbeat everywhere!
-#endif
+    heartbeat |= HEART_TIMER10ms;
 
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
   } // end 10ms event
 #endif
 
   cli();
-  
-#if defined(PCBGRUVIN9X)
-  TIMSK2 |= (1<<OCIE2A);
-#else
-  TIMSK |= (1<<OCIE0);
-#endif
-
+  RESUME_10MS_INTERRUPT();
   sei();
 }
 
@@ -3153,11 +3049,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   uint16_t capture=ICR3;
 
   // Prevent rentrance for this IRQ only
-#if defined (PCBGRUVIN9X)
-  TIMSK3 &= ~(1<<ICIE3);
-#else
-  ETIMSK &= ~(1<<TICIE3);
-#endif
+  PAUSE_PPMIN_INTERRUPT();
   sei(); // enable other interrupts
 
   uint16_t val = (capture - lastCapt) / 2;
@@ -3183,11 +3075,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   lastCapt = capture;
 
   cli(); // disable other interrupts for stack pops before this function's RETI
-#if defined (PCBGRUVIN9X)
-  TIMSK3 |= (1<<ICIE3);
-#else
-  ETIMSK |= (1<<TICIE3);
-#endif
+  RESUME_PPMIN_INTERRUPT();
 }
 
 /*
@@ -3534,19 +3422,14 @@ void mixerTask(void * pdata)
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
 
-      static tmr10ms_t lastTMR;
-      tmr10ms_t tmr10ms = get_tmr10ms();
-      uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
-      lastTMR = tmr10ms;
-
       if (s_current_protocol < PROTO_NONE) {
         CoEnterMutexSection(mixerMutex);
-        doMixerCalculations(tmr10ms, tick10ms);
+        bool tick10ms = doMixerCalculations();
         CoLeaveMutexSection(mixerMutex);
         if (tick10ms) checkTrims();
       }
 
-      heartbeat |= HEART_TIMER10ms;
+      heartbeat |= HEART_TIMER10ms; // TODO not here but in 10ms interrupt!
 
       if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
         wdt_reset();
@@ -3554,7 +3437,7 @@ void mixerTask(void * pdata)
       }
 
       t0 = getTmr2MHz() - t0;
-      if (t0 > g_timeMainMax) g_timeMainMax = t0 ;
+      if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
     }
 
     CoTickDelay(1);  // 2ms for now
@@ -3733,20 +3616,13 @@ int main(void)
       break;
 #endif
 
-#if defined(PCBSTD)
-    uint16_t t0 = getTmr16KHz();
-#endif
-  
     perMain();
 
-#if defined(PCBSTD)
+#if !defined(PCBSKY9X)
     if(heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
       wdt_reset();
       heartbeat = 0;
     }
-
-    t0 = getTmr16KHz() - t0;
-    if (t0 > g_timeMainMax) g_timeMainMax = t0;
 #endif
   }
 #endif // PCBSKY9X

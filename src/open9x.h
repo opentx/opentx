@@ -138,12 +138,6 @@
 #define IF_GVARS(x)
 #endif
 
-#if defined(PCBSTD)
-#define WDT_RESET_STOCK() wdt_reset()
-#else
-#define WDT_RESET_STOCK()
-#endif
-
 /*
 #define HELI_VARIANT   0x0004
 #define VOICE_VARIANT  0x0008
@@ -157,6 +151,8 @@
 #include "board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
 #include "board_gruvin9x.h"
+#else
+#include "board_stock.h"
 #endif
 
 #if defined(SIMU)
@@ -400,12 +396,6 @@ extern uint8_t s_bind_allowed;
 
 #endif // defined (PCBGRUVIN9X)
 
-#if defined(PCBSKY9X)
-#define SLAVE_MODE (check_soft_power() == e_power_trainer)
-#else
-#define SLAVE_MODE (PING & (1<<INP_G_RF_POW))
-#endif
-
 extern const pm_uint8_t bchout_ar[];
 extern const pm_uint8_t modn12x3[];
 
@@ -644,10 +634,10 @@ extern char idx2char(int8_t idx);
 void clearKeyEvents();
 void pauseEvents(uint8_t enuk);
 void killEvents(uint8_t enuk);
-#if defined(PCBSTD)
-uint8_t getEvent();
-#else
+#if defined(PCBSKY9X)
 uint8_t getEvent(bool trim);
+#else
+uint8_t getEvent();
 #endif
 void putEvent(uint8_t evt);
 
@@ -787,10 +777,8 @@ void resetAll();
 extern uint8_t unexpectedShutdown;
 extern uint8_t g_tmr1Latency_max;
 extern uint8_t g_tmr1Latency_min;
-extern uint16_t g_timeMainMax;
-#if defined(PCBGRUVIN9X)
-extern uint8_t  lastMixerDuration;
-#endif
+extern uint16_t maxMixerDuration;
+extern uint16_t lastMixerDuration;
 
 #if defined(THRTRACE)
 #define MAXTRACE 120
@@ -929,20 +917,6 @@ inline void pauseMixerCalculations()
 inline void resumeMixerCalculations()
 {
   CoLeaveMutexSection(mixerMutex);
-}
-#elif defined(PCBGRUVIN9X)
-inline void pauseMixerCalculations()
-{
-  cli();
-  TIMSK5 &= ~(1<<OCIE5A);
-  sei();
-}
-
-inline void resumeMixerCalculations()
-{
-  cli();
-  TIMSK5 |= (1<<OCIE5A);
-  sei();
 }
 #else
 #define pauseMixerCalculations()

@@ -40,11 +40,11 @@ void menuStatisticsView(uint8_t event)
   {
     case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuStatisticsDebug);
-      break;
+      return;
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-      break;
+      return;
   }
 
   lcd_puts(  1*FW, FH*1, STR_TM1TM2);
@@ -105,16 +105,16 @@ void menuStatisticsDebug(uint8_t event)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
 #endif
-      g_timeMainMax    = 0;
+      maxMixerDuration  = 0;
       AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuStatisticsView);
-      break;
+      return;
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-      break;
+      return;
   }
 
 #if defined(PCBSKY9X)
@@ -143,8 +143,8 @@ void menuStatisticsDebug(uint8_t event)
     putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_DEGREES, 0);
   }
 
-  lcd_putsLeft(5*FH, STR_TMAINMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (g_timeMainMax)/20, PREC2);
+  lcd_putsLeft(5*FH, STR_TMIXMAXMS);
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (maxMixerDuration)/20, PREC2);
 
   lcd_putsLeft(6*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(13*FW, 6*FH, stack_free(0), UNSIGN);
@@ -159,8 +159,8 @@ void menuStatisticsDebug(uint8_t event)
   lcd_outdez8(MENU_DEBUG_COL_OFS , 2*FH, g_tmr1Latency_min/2 );
   lcd_putsLeft(3*FH, STR_TMR1JITTERUS);
   lcd_outdez8(MENU_DEBUG_COL_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
-  lcd_putsLeft(4*FH, STR_TMAINMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (g_timeMainMax*100)/16, PREC2);
+  lcd_putsLeft(4*FH, STR_TMIXMAXMS);
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, (maxMixerDuration*100)/16, PREC2);
   lcd_putsLeft(5*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(14*FW, 5*FH, stack_free(), UNSIGN) ;
 #endif

@@ -31,26 +31,29 @@
  *
  */
 
-#ifndef board_gruvin9x_h
-#define board_gruvin9x_h
+#ifndef board_stock_h
+#define board_stock_h
 
 extern uint16_t nextMixerTime;
 
-#define TIMER_16KHZ_VECT TIMER2_OVF_vect
-#define COUNTER_16KHZ TCNT2
-#define TIMER_10MS_VECT  TIMER2_COMPA_vect
-#define PAUSE_10MS_INTERRUPT() TIMSK2 &= ~(1<<OCIE2A)
-#define RESUME_10MS_INTERRUPT() TIMSK2 |= (1<<OCIE2A)
+#define TIMER_16KHZ_VECT TIMER0_OVF_vect
+#define COUNTER_16KHZ TCNT0
+
+#define TIMER_10MS_VECT  TIMER0_COMP_vect
+#define PAUSE_10MS_INTERRUPT() TIMSK &= ~(1<<OCIE0)
+#define RESUME_10MS_INTERRUPT() TIMSK |= (1<<OCIE0)
+
+#define PAUSE_PULSES_INTERRUPT() TIMSK &= ~(1<<OCIE1A);
+#define RESUME_PULSES_INTERRUPT() TIMSK |= (1<<OCIE1A)
+
 #define SCHEDULE_MIXER(delay) nextMixerTime = getTmr16KHz() + (delay)
-#define PAUSE_PULSES_INTERRUPT() TIMSK1 &= ~(1<<OCIE1A)
-#define RESUME_PULSES_INTERRUPT() TIMSK1 |= (1<<OCIE1A)
-#define PAUSE_PPMIN_INTERRUPT() TIMSK3 &= ~(1<<ICIE3)
-#define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
 
-#define SLAVE_MODE() (PING & (1<<INP_G_RF_POW))
-#define JACK_PPM_OUT() PORTG |= (1<<OUT_G_SIM_CTL)
-#define JACK_PPM_IN() PORTG &= ~(1<<OUT_G_SIM_CTL)
+#define PAUSE_PPMIN_INTERRUPT() ETIMSK &= ~(1<<TICIE3)
+#define RESUME_PPMIN_INTERRUPT() ETIMSK |= (1<<TICIE3)
 
-extern void sdPoll10ms();
+bool checkSlaveMode();
+#define SLAVE_MODE() checkSlaveMode()
+#define JACK_PPM_OUT() PORTG &= ~(1<<OUT_G_SIM_CTL)
+#define JACK_PPM_IN() PORTG |=  (1<<OUT_G_SIM_CTL)
 
 #endif

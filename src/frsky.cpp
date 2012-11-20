@@ -1189,6 +1189,11 @@ uint8_t barCoord(int16_t value, int16_t min, int16_t max)
 
 void menuTelemetryFrsky(uint8_t event)
 {
+  if (event == EVT_KEY_FIRST(KEY_EXIT)) {
+    chainMenu(menuMainView);
+    return;
+  }
+
   switch (event) {
     case EVT_KEY_BREAK(KEY_UP):
       if (s_frsky_view-- == 0)
@@ -1198,10 +1203,6 @@ void menuTelemetryFrsky(uint8_t event)
     case EVT_KEY_BREAK(KEY_DOWN):
       if (s_frsky_view++ == FRSKY_VIEW_MAX)
         s_frsky_view = 0;
-      break;
-
-    case EVT_KEY_FIRST(KEY_EXIT):
-      chainMenu(menuMainView);
       break;
 
     case EVT_KEY_FIRST(KEY_MENU):

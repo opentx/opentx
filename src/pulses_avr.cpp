@@ -147,23 +147,13 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 
     pulses2MHzRPtr += sizeof(uint16_t); // non PPM protocols use uint8_t pulse buffer
     if (*((uint16_t*)pulses2MHzRPtr) == 0) {
-
-#if defined(PCBGRUVIN9X)
-      TIMSK1 &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
-#else
-      TIMSK &= ~(1<<OCIE1A); // stop reentrance (disable Timer1 interrupt)
-#endif
-
+      PAUSE_PULSES_INTERRUPT();
       setupPulses(); // does not sei() for setupPulsesPPM
 
       // if setupPulses changed protocol to one that doesn't use COMPA then don't re-enable.
       if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
         // cli is not needed because for PPM protocols interrupts are not enabled when entering here
-#if defined(PCBGRUVIN9X)
-        TIMSK1 |= (1<<OCIE1A); // re-enable Timer1 interrupt
-#else
-        TIMSK |= (1<<OCIE1A); // re-enable Timer1 interrupt
-#endif
+        RESUME_PULSES_INTERRUPT();
         sei();
       }
     }
@@ -495,23 +485,21 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 {
     bool    lev = 0;
     uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
-    for( uint8_t i=0; i<=8; i++){ //8Bits + Stop=1
+    for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
         bool nlev = b & 1; //lsb first
-        if(lev == nlev){
-            len += BITLEN_DSM2;
-        }else{
-#if defined (PCBGRUVIN9X)
-            // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
-            // NOTE: This has now been tested as NOT required on the stock board, with the ATmega64A chip.
-            if (nlev)
-              _send_1(len-5);// -1);
-            else
-              _send_1(len+3);
+        if (lev == nlev){
+          len += BITLEN_DSM2;
+        }
+        else {
+#if defined(PCBGRUVIN9X)
+          // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
+          // NOTE: This has now been tested as NOT required on the stock board, with the ATmega64A chip.
+          _send_1(nlev ? len-5 : len+3);
 #else
-            _send_1(len -1);
+          _send_1(len -1);
 #endif
-            len  = BITLEN_DSM2;
-            lev  = nlev;
+          len  = BITLEN_DSM2;
+          lev  = nlev;
         }
         b = (b>>1) | 0x80; //shift in stop bit
     }
@@ -894,6 +882,8 @@ void setupPulses()
 
 #ifdef PXX
     case PROTO_PXX:
+      // schedule next Mixer calculations
+      SCHEDULE_MIXER(20*16-lastMixerDuration-2*16/*1ms*/);
       sei();
       setupPulsesPXX();
       break;
@@ -901,11 +891,8 @@ void setupPulses()
 
 #ifdef DSM2
     case PROTO_DSM2:
-#if defined(PCBGRUVIN9X)
-      // schedule next Mixer interrupt
-      OCR5A = (uint16_t)0x7d * (44-lastMixerDuration-2/*1ms*/);
-      TCNT5 = 0;
-#endif
+      // schedule next Mixer calculations
+      SCHEDULE_MIXER(22*16-lastMixerDuration-2*16/*1ms*/);
       sei();
       setupPulsesDsm2(); // Different versions for DSM2=SERIAL vs. DSM2=PPM
 #if defined(PCBGRUVIN9X) && defined(DSM2_PPM)
@@ -917,7 +904,7 @@ void setupPulses()
       break;
 #endif
 
-#ifdef IRPROTOS
+#if defined(IRPROTOS)
     case PROTO_PICZ:
       setupPulsesPiccoZ(g_model.ppmNCH);
       // TODO BSS stbyLevel = 0; //start with 1
@@ -925,14 +912,11 @@ void setupPulses()
 #endif
 
     default: // standard PPM protocol
-#ifndef SIMU
+#if !defined(SIMU)
       g_ppmPulsePolarity = g_model.pulsePol;
 #endif
-#if defined(PCBGRUVIN9X)
-      // schedule next Mixer interrupt
-      OCR5A = (uint16_t)0x7d * (45+g_model.ppmFrameLength-lastMixerDuration-2/*1ms*/);
-      TCNT5 = 0;
-#endif
+      // schedule next Mixer calculations
+      SCHEDULE_MIXER(45*8+g_model.ppmFrameLength*8-lastMixerDuration-2*16/*1ms*/);
       // no sei here
       setupPulsesPPM(PROTO_PPM);
       // if PPM16, PPM16 pulses are set up automatically within the interrupts

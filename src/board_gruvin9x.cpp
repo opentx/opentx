@@ -109,11 +109,6 @@ inline void board_init()
   OCR4A = 0x7d;
   TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
 
-  /* Mixer interrupt */
-  OCR5A = 0x7d * 40; /* 20ms */
-  TCCR5B = (1 << WGM52) | (3<<CS50); // CTC OCR1A, 16MHz / 64 (4us ticks)
-  TIMSK5 |= (1<<OCIE5A);
-
 #if defined(EXTRA_ROTARY_ENCODERS)
   //configure uart1 here
   DDRD &= ~(1 << 2);
@@ -301,3 +296,5 @@ void readKeysAndTrims()
     ++enuk;
   }
 }
+
+uint16_t nextMixerTime = 0;

@@ -34,7 +34,7 @@
 /*-----------------------------------------------------------------------*/
 /* MMCv3/SDv1/SDv2 (in SPI mode) control module  (C)ChaN, 2010           */
 /*-----------------------------------------------------------------------*/
-/* Only rcvr_spi(), xmit_spi(), sdPoll10mS() and some macros         */
+/* Only rcvr_spi(), xmit_spi(), sdPoll10ms() and some macros         */
 /* are platform dependent.                                               */
 /*-----------------------------------------------------------------------*/
 
@@ -956,7 +956,7 @@ FATFS g_FATFS_Obj = { 0 };
 
 extern void retrieveAvailableAudioFiles();
 
-void sdPoll10mS()
+void sdMountPoll()
 {
   if (!Card_initialized)
     return;

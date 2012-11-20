@@ -520,8 +520,8 @@ ifeq ($(PCB), GRUVIN9X)
 
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp gruvin9x/rtc_driver.cpp gruvin9x/diskio.cpp
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c 
+    CPPSRC += rtc.cpp gruvin9x/rtc_driver.cpp 
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c gruvin9x/diskio.cpp
   endif
     
   ifeq ($(VOICE), YES)

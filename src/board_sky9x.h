@@ -47,8 +47,9 @@
 extern "C" {
 extern void init_SDcard();
 extern void sdInit();
-extern void sdPoll10mS();
 }
+
+#define sdPoll10ms()
 
 void usbMassStorage();
 
@@ -97,5 +98,9 @@ extern uint32_t Current_accumulator;
 extern uint32_t Current_used;
 extern uint16_t sessionTimer;
 #endif
+
+#define SLAVE_MODE() (check_soft_power() == e_power_trainer)
+#define JACK_PPM_OUT() PIOC->PIO_PDR = PIO_PC22
+#define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
 
 #endif

@@ -39,14 +39,7 @@ void putEvent(uint8_t evt)
   s_evt = evt;
 }
 
-#if defined(PCBSTD)
-uint8_t getEvent()
-{
-  uint8_t evt = s_evt;
-  s_evt = 0;
-  return evt;
-}
-#else
+#if defined(PCBSKY9X)
 uint8_t getEvent(bool trim)
 {
   uint8_t evt = s_evt;
@@ -60,6 +53,13 @@ uint8_t getEvent(bool trim)
   else {
     return 0;
   }
+}
+#else
+uint8_t getEvent()
+{
+  uint8_t evt = s_evt;
+  s_evt = 0;
+  return evt;
 }
 #endif
 

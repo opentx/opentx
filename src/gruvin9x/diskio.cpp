@@ -99,12 +99,31 @@ volatile BYTE Timer1, Timer2;	/* 100Hz decrement timer */
 static
 BYTE CardType;			/* Card type flags */
 
+#if defined(SIMU)
+#define loop_mixer_until_bit_is_set loop_until_bit_is_set
+#else
+inline void checkMixer()
+{
+  uint16_t t0 = getTmr16KHz();
+  int16_t delta = t0 - nextMixerTime;
+  if (delta < 0) return;
+
+  nextMixerTime = t0 + 20*16;
+  doMixerCalculations();
+
+  t0 = getTmr16KHz() - t0;
+  lastMixerDuration = t0;
+  if (t0 > maxMixerDuration) maxMixerDuration = t0;
+}
+
+#define loop_mixer_until_bit_is_set(sfr, bit) do { checkMixer(); wdt_reset(); } while (bit_is_clear(sfr, bit))
+#endif
 
 /*-----------------------------------------------------------------------*/
 /* Transmit a byte to MMC via SPI  (Platform dependent)                  */
 /*-----------------------------------------------------------------------*/
 
-#define xmit_spi(dat) 	SPDR=(dat); loop_until_bit_is_set(SPSR,SPIF)
+#define xmit_spi(dat) 	SPDR=(dat); loop_mixer_until_bit_is_set(SPSR,SPIF)
 
 
 
@@ -116,12 +135,12 @@ static
 BYTE rcvr_spi (void)
 {
 	SPDR = 0xFF;
-	loop_until_bit_is_set(SPSR, SPIF);
+	loop_mixer_until_bit_is_set(SPSR, SPIF);
 	return SPDR;
 }
 
 /* Alternative macro to receive data fast */
-#define rcvr_spi_m(dst)	SPDR=0xFF; loop_until_bit_is_set(SPSR,SPIF); *(dst)=SPDR
+#define rcvr_spi_m(dst)	SPDR=0xFF; loop_mixer_until_bit_is_set(SPSR,SPIF); *(dst)=SPDR
 
 
 
@@ -615,35 +634,48 @@ DRESULT disk_ioctl (
 /*-----------------------------------------------------------------------*/
 /* This function must be called in period of 10ms                        */
 
-void sdPoll10mS (void)
+void sdPoll10ms()
 {
-	BYTE s;
-	
-        /*
-	n = Timer1;			// 100Hz decrement timer 
-	if (n) Timer1 = --n;
-	n = Timer2;
-	if (n) Timer2 = --n;
-	*/
-        if (Timer1) Timer1--;
-        if (Timer2) Timer2--;
+  BYTE s;
 
-	s = Stat;
-	
-        /* G: Not implemented 
-	if (SOCKWP)			// Write protected
-		s |= STA_PROTECT;
-	else				// Write enabled 
-		s &= ~STA_PROTECT;
-	if (SOCKINS)			// Card inserted
-		s &= ~STA_NODISK;
-	else				// Socket empty
-		s |= (STA_NODISK | STA_NOINIT);
-	*/
-        s &= ~STA_NODISK;
-        s &= ~STA_PROTECT;
+  /*
+  n = Timer1;			// 100Hz decrement timer
+  if (n) Timer1 = --n;
+  n = Timer2;
+  if (n) Timer2 = --n;
+  */
+  if (Timer1) Timer1--;
+  if (Timer2) Timer2--;
 
-	Stat = s;
+  s = Stat;
+
+  /* G: Not implemented
+  if (SOCKWP)			// Write protected
+          s |= STA_PROTECT;
+  else				// Write enabled
+          s &= ~STA_PROTECT;
+  if (SOCKINS)			// Card inserted
+          s &= ~STA_NODISK;
+  else				// Socket empty
+          s |= (STA_NODISK | STA_NOINIT);
+  */
+  s &= ~STA_NODISK;
+  s &= ~STA_PROTECT;
+
+  Stat = s;
 }
+
+#if !defined(SIMU)
+void sdMountPoll()
+{
+  static uint8_t mountTimer;
+  if (mountTimer-- == 0) {
+    mountTimer = 100;
+    if (g_FATFS_Obj.fs_type == 0) {
+      f_mount(0, &g_FATFS_Obj);
+    }
+  }
+}
+#endif
 
 FATFS g_FATFS_Obj;

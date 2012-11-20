@@ -150,7 +150,7 @@ void menuMainView(uint8_t event)
     case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
       killEvents(event);
-      break;
+      return;
     case EVT_KEY_TELEMETRY:
 #if defined(FRSKY)
       chainMenu(menuTelemetryFrsky);
@@ -169,7 +169,7 @@ void menuMainView(uint8_t event)
       chainMenu(menuStatisticsDebug);
 #endif
       killEvents(event);
-      break;
+      return;
     case EVT_KEY_FIRST(KEY_EXIT):
       if (s_timerState[0]==TMR_BEEPING) {
         s_timerState[0] = TMR_STOPPED;

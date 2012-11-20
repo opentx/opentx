@@ -182,3 +182,23 @@ void readKeysAndTrims()
     ++enuk;
   }
 }
+
+bool checkSlaveMode()
+{
+  // no power -> only phone jack = slave mode
+  static bool lastSlaveMode = false;
+  static uint8_t checkDelay = 0;
+  if (IS_AUDIO_BUSY()) {
+    checkDelay = 20;
+  }
+  else if (checkDelay) {
+    --checkDelay;
+  }
+  else {
+    lastSlaveMode = (PING & (1<<INP_G_RF_POW));
+  }
+  return lastSlaveMode;
+}
+
+uint16_t nextMixerTime = 0;
+

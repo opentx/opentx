@@ -69,8 +69,11 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
     return STR_SDCARD_ERROR;
 }
 
-// TODO move the ARM function definition here (when cpp)
-extern void sdPoll10mS();
+#if defined(SIMU)
+#define sdMountPoll()
+#else
+extern void sdMountPoll();
+#endif
 
 #if defined(PCBSKY9X) && !(defined(SIMU))
 extern "C" {
