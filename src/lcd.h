@@ -38,8 +38,8 @@
 #define DISPLAY_W 212
 #define DISPLAY_H  64
 #define xcoord_t uint16_t
-#define CENTER      "\016"
-#define CENTER_OFS  (7*FW)
+#define CENTER      "\015"
+#define CENTER_OFS  (7*FW-FW/2)
 #else
 #define DISPLAY_W 128
 #define DISPLAY_H  64
