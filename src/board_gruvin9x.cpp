@@ -296,5 +296,3 @@ void readKeysAndTrims()
     ++enuk;
   }
 }
-
-uint16_t nextMixerTime = 0;

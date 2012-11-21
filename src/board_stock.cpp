@@ -199,6 +199,3 @@ bool checkSlaveMode()
   }
   return lastSlaveMode;
 }
-
-uint16_t nextMixerTime = 0;
-

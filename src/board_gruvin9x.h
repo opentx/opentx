@@ -34,14 +34,11 @@
 #ifndef board_gruvin9x_h
 #define board_gruvin9x_h
 
-extern uint16_t nextMixerTime;
-
 #define TIMER_16KHZ_VECT TIMER2_OVF_vect
 #define COUNTER_16KHZ TCNT2
 #define TIMER_10MS_VECT  TIMER2_COMPA_vect
 #define PAUSE_10MS_INTERRUPT() TIMSK2 &= ~(1<<OCIE2A)
 #define RESUME_10MS_INTERRUPT() TIMSK2 |= (1<<OCIE2A)
-#define SCHEDULE_MIXER(delay) nextMixerTime = getTmr16KHz() + (delay)
 #define PAUSE_PULSES_INTERRUPT() TIMSK1 &= ~(1<<OCIE1A)
 #define RESUME_PULSES_INTERRUPT() TIMSK1 |= (1<<OCIE1A)
 #define PAUSE_PPMIN_INTERRUPT() TIMSK3 &= ~(1<<ICIE3)

@@ -34,8 +34,6 @@
 #ifndef board_stock_h
 #define board_stock_h
 
-extern uint16_t nextMixerTime;
-
 #define TIMER_16KHZ_VECT TIMER0_OVF_vect
 #define COUNTER_16KHZ TCNT0
 
@@ -45,8 +43,6 @@ extern uint16_t nextMixerTime;
 
 #define PAUSE_PULSES_INTERRUPT() TIMSK &= ~(1<<OCIE1A);
 #define RESUME_PULSES_INTERRUPT() TIMSK |= (1<<OCIE1A)
-
-#define SCHEDULE_MIXER(delay) nextMixerTime = getTmr16KHz() + (delay)
 
 #define PAUSE_PPMIN_INTERRUPT() ETIMSK &= ~(1<<TICIE3)
 #define RESUME_PPMIN_INTERRUPT() ETIMSK |= (1<<TICIE3)

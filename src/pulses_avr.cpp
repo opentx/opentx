@@ -33,6 +33,9 @@
 
 #include "open9x.h"
 
+uint16_t nextMixerEndTime = 0;
+#define SCHEDULE_MIXER_END(delay) nextMixerEndTime = getTmr16KHz() + (delay) - 2*16/*2ms*/
+
 #if defined(DSM2)
 // DSM2 control bits
 #define DSM2_CHANS     6
@@ -883,7 +886,7 @@ void setupPulses()
 #ifdef PXX
     case PROTO_PXX:
       // schedule next Mixer calculations
-      SCHEDULE_MIXER(20*16-lastMixerDuration-2*16/*1ms*/);
+      SCHEDULE_MIXER_END(20*16);
       sei();
       setupPulsesPXX();
       break;
@@ -892,7 +895,7 @@ void setupPulses()
 #ifdef DSM2
     case PROTO_DSM2:
       // schedule next Mixer calculations
-      SCHEDULE_MIXER(22*16-lastMixerDuration-2*16/*1ms*/);
+      SCHEDULE_MIXER_END(22*16);
       sei();
       setupPulsesDsm2(); // Different versions for DSM2=SERIAL vs. DSM2=PPM
 #if defined(PCBGRUVIN9X) && defined(DSM2_PPM)
@@ -916,7 +919,7 @@ void setupPulses()
       g_ppmPulsePolarity = g_model.pulsePol;
 #endif
       // schedule next Mixer calculations
-      SCHEDULE_MIXER(45*8+g_model.ppmFrameLength*8-lastMixerDuration-2*16/*1ms*/);
+      SCHEDULE_MIXER_END(45*8+g_model.ppmFrameLength*8);
       // no sei here
       setupPulsesPPM(PROTO_PPM);
       // if PPM16, PPM16 pulses are set up automatically within the interrupts

@@ -2822,10 +2822,11 @@ void perMain()
   doMixerCalculations();
 #elif !defined(PCBSKY9X)
   uint16_t t0 = getTmr16KHz();
-  int16_t delta = t0 - nextMixerTime;
-  if (delta < 0) return;
+  int16_t delta = (nextMixerEndTime - lastMixerDuration) - t0;
+  if (delta > 0 && delta < MAX_MIXER_DELTA) return;
 
-  nextMixerTime = t0 + 20*16;
+  nextMixerEndTime = t0 + MAX_MIXER_DELTA;
+
   doMixerCalculations();
 
   t0 = getTmr16KHz() - t0;
