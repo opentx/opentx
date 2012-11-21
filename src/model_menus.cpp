@@ -1895,20 +1895,20 @@ static uint8_t s_copySrcCh;
 #define EXPO_LINE_SELECT_POS 18
 #endif
 
-void menuModelExpoMix(uint8_t expo, uint8_t _event)
+void menuModelExpoMix(uint8_t expo, uint8_t event)
 {
-  uint8_t event = _event;
   uint8_t key = (event & 0x1f);
 
-  if (s_copyMode) {
-    if (key == KEY_EXIT)
-      event -= KEY_EXIT;
-  }
+  if (s_copyMode && key==KEY_EXIT)
+    event -= KEY_EXIT;
 
   TITLE(expo ? STR_MENUDREXPO : STR_MIXER);
   lcd_outdezAtt(lcdLastPos+2*FW+FW/2, 0, getExpoMixCount(expo));
   lcd_puts(lcdLastPos, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
   SIMPLE_MENU_NOTITLE(menuTabModel, expo ? e_ExposAll : e_MixAll, s_maxLines);
+
+  if (s_copyMode && key==KEY_EXIT)
+    event += KEY_EXIT;
 
 #if defined(ROTARY_ENCODERS)
   int8_t sub = m_posVert;
@@ -1919,7 +1919,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
   if (s_editMode > 0)
     s_editMode = 0;
 
-  switch(_event)
+  switch(event)
   {
     case EVT_ENTRY:
     case EVT_ENTRY_UP:
@@ -1930,7 +1930,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
       if (s_copyMode && s_copyTgtOfs == 0) {
         deleteExpoMix(expo, s_currIdx);
       }
-      killEvents(_event);
+      killEvents(event);
       // no break
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_copyTgtOfs) {
@@ -1953,7 +1953,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
       s_copyMode = 0;
       s_copyTgtOfs = 0;
       break;
-    case EVT_KEY_BREAK(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_ENTER):
       if (sub == 0) break;
       if (!s_currCh || (s_copyMode && !s_copyTgtOfs)) {
         s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
@@ -1968,11 +1968,14 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
     case EVT_KEY_BREAK(BTN_REb):
     case EVT_KEY_LONG(BTN_REa):
     case EVT_KEY_LONG(BTN_REb):
+      if (!navigationRotaryEncoder(event))
+        break;
+      // no break
 #endif
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_LONG(KEY_ENTER):
       if (sub == 0)
         break;
-      killEvents(_event);
+      killEvents(event);
       if (s_copyTgtOfs) {
         s_copyMode = 0;
         s_copyTgtOfs = 0;
@@ -1993,11 +1996,11 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
       if (s_copyMode && !s_copyTgtOfs) {
         if (reachExpoMixCountLimit(expo)) break;
         s_currCh = (expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh+1);
-        if (_event == EVT_KEY_LONG(KEY_RIGHT)) s_currIdx++;
+        if (event == EVT_KEY_LONG(KEY_RIGHT)) s_currIdx++;
         insertExpoMix(expo, s_currIdx);
         pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
         s_copyMode = 0;
-        killEvents(_event);
+        killEvents(event);
         return;
       }
       break;
@@ -2063,7 +2066,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
         if (s_pgOfs < cur && cur-s_pgOfs < 8) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
-            ed->weight = gvarMenuItem(EXPO_LINE_WEIGHT_POS, y, ed->weight, 0, 100, attr | (isExpoActive(i) ? BOLD : 0), _event);
+            ed->weight = gvarMenuItem(EXPO_LINE_WEIGHT_POS, y, ed->weight, 0, 100, attr | (isExpoActive(i) ? BOLD : 0), event);
 
             if (ed->curveMode == MODE_CURVE)
               putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
@@ -2090,7 +2093,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t _event)
 
             putsMixerSource(4*FW+0, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
 
-            md->weight = gvarMenuItem(11*FW+3, y, md->weight, -125, 125, attr, _event);
+            md->weight = gvarMenuItem(11*FW+3, y, md->weight, -125, 125, attr, event);
 
 #if defined(PCBSKY9X)
             if (md->name[0]) {
