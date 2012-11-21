@@ -1966,9 +1966,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 #if defined(ROTARY_ENCODERS)
     case EVT_KEY_BREAK(BTN_REa):
     case EVT_KEY_BREAK(BTN_REb):
-    case EVT_KEY_LONG(BTN_REa):
-    case EVT_KEY_LONG(BTN_REb):
-      if (!navigationRotaryEncoder(event))
+      if (event!=EVT_KEY_BREAK(KEY_ENTER) && !navigationRotaryEncoder(event))
         break;
       // no break
 #endif
