@@ -1293,7 +1293,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 {
   lcd_clear();
 
-#if defined(PCBX9D)
+#if defined(LCD212)
   lcd_img(DISPLAY_W-29, 0, asterisk_lbm, 0, 0);
 #endif
 #if !defined(M64) || defined(EXTSTD)
@@ -1735,9 +1735,7 @@ FORCEINLINE void evalTrims()
   }
 }
 
-uint8_t s_perout_mode = e_perout_mode_normal;
-
-BeepANACenter evalSticks()
+BeepANACenter evalSticks(uint8_t mode)
 {
   BeepANACenter anaCenter = 0;
 
@@ -1791,7 +1789,7 @@ BeepANACenter evalSticks()
     }
 
     if (ch < NUM_STICKS) { //only do this for sticks
-      if (s_perout_mode == e_perout_mode_normal && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
+      if (mode == e_perout_mode_normal && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -2203,11 +2201,11 @@ void evalFunctions()
 }
 
 uint8_t s_perout_flight_phase;
-void perOut(uint8_t tick10ms)
+void perOut(uint8_t mode, uint8_t tick10ms)
 {
-  BeepANACenter anaCenter = evalSticks();
+  BeepANACenter anaCenter = evalSticks(mode);
 
-  if (s_perout_mode == e_perout_mode_normal) {
+  if (mode == e_perout_mode_normal) {
     //===========BEEP CENTER================
     anaCenter &= g_model.beepANACenter;
     if(((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_STICK_MIDDLE();
@@ -2299,12 +2297,12 @@ void perOut(uint8_t tick10ms)
     //Notice 0 = NC switch means not used -> always on line
     uint8_t k = md->srcRaw-1;
     int16_t v = 0;
-    if (s_perout_mode != e_perout_mode_normal) {
+    if (mode != e_perout_mode_normal) {
       if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
         continue;
       }
       else {
-        if (!(s_perout_mode & e_perout_mode_nosticks))
+        if (!(mode & e_perout_mode_nosticks))
           v = anas[k];
       }
     }
@@ -2328,7 +2326,7 @@ void perOut(uint8_t tick10ms)
     bool apply_offset = true;
     if (sw) { // switch on?  (if no switch selected => on)
       swTog = !swOn[i];
-      if (s_perout_mode == e_perout_mode_normal) {
+      if (mode == e_perout_mode_normal) {
         swOn[i] = true;
         if (md->delayUp) {
           if (swTog) {
@@ -2392,7 +2390,7 @@ void perOut(uint8_t tick10ms)
     }
 
     //========== TRIMS ===============
-    if (!(s_perout_mode & e_perout_mode_notrims)) {
+    if (!(mode & e_perout_mode_notrims)) {
       int8_t mix_trim = md->carryTrim;
       if (mix_trim < TRIM_ON)
         mix_trim = -mix_trim-1;
@@ -2407,7 +2405,7 @@ void perOut(uint8_t tick10ms)
     int16_t weight = GET_GVAR(md->weight, -500, 500, s_perout_flight_phase);
 
     //========== SPEED ===============
-    if (s_perout_mode == e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
+    if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
     {
 #define DEL_MULT 256
 
@@ -2561,7 +2559,7 @@ inline void doMixerCalculations()
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & (1<<p)) {
         s_perout_flight_phase = p;
-        perOut(tick10ms);
+        perOut(e_perout_mode_normal, tick10ms);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
           sum_chans512[i] += (chans[i] / 16) * fp_act[p];
         weight += fp_act[p];
@@ -2572,7 +2570,7 @@ inline void doMixerCalculations()
   }
   else {
     s_perout_flight_phase = phase;
-    perOut(tick10ms);
+    perOut(e_perout_mode_normal, tick10ms);
   }
 
   //========== LIMITS ===============
@@ -3163,9 +3161,7 @@ ISR(USART0_UDRE_vect)
 
 void instantTrim()
 {
-  s_perout_mode = e_perout_mode_notrainer;
-  evalSticks();
-  s_perout_mode = e_perout_mode_normal;
+  evalSticks(e_perout_mode_notrainer);
 
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK) {
@@ -3184,15 +3180,14 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 {
   int16_t zeros[NUM_CHNOUT];
 
-  s_perout_mode = e_perout_mode_noinput;
-  perOut(0); // do output loop - zero input sticks and trims
+  pauseMixerCalculations();
+
+  perOut(e_perout_mode_noinput, 0); // do output loop - zero input sticks and trims
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
-  s_perout_mode = e_perout_mode_nosticks+e_perout_mode_notrainer;
-  perOut(0); // do output loop - only trims
-  s_perout_mode = e_perout_mode_normal;
+  perOut(e_perout_mode_nosticks+e_perout_mode_notrainer, 0); // do output loop - only trims
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     int16_t output = applyLimits(i, chans[i]) - zeros[i];
@@ -3214,6 +3209,8 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
       }
     }
   }
+
+  resumeMixerCalculations();
 
   STORE_MODELVARS;
   AUDIO_WARNING2();

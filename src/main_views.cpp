@@ -204,7 +204,7 @@ void menuMainView(uint8_t event)
   {
     // Flight Phase Name
     uint8_t phase = s_perout_flight_phase;
-#if defined(PCBX9D)
+#if defined(LCD212)
     uint8_t len = ZLEN(g_model.phaseData[phase].name);
     if (len > 0) {
       uint8_t tmp = (DISPLAY_W - 6*FW - 2 - len*FW/2);
@@ -239,7 +239,7 @@ void menuMainView(uint8_t event)
       lcd_putcAtt(20*FW-3, 0*FH, '!', INVERS);
     }
 
-#if defined(PCBX9D)
+#if defined(LCD212)
     // Main timer
     if (g_model.timers[0].mode) {
       uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);

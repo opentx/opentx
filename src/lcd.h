@@ -34,14 +34,18 @@
 #ifndef lcd_h
 #define lcd_h
 
-#if defined(PCBX9D)
+#if defined(LCD212)
 #define DISPLAY_W 212
 #define DISPLAY_H  64
 #define xcoord_t uint16_t
+#define CENTER      "\016"
+#define CENTER_OFS  (7*FW)
 #else
 #define DISPLAY_W 128
 #define DISPLAY_H  64
 #define xcoord_t uint8_t
+#define CENTER
+#define CENTER_OFS 0
 #endif
 
 #define FW          6

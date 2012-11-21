@@ -482,7 +482,7 @@ class Key
 public:
   void input(bool val, EnumKeys enuk);
   bool state()       { return m_vals > 0; }
-  void pauseEvents() { m_state = KSTATE_PAUSE;  m_cnt = 0;}
+  void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
   void killEvents()  { m_state = KSTATE_KILLED; }
 };
 
@@ -687,8 +687,6 @@ enum PerOutMode {
   e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
 };
 
-extern uint8_t s_perout_mode;
-
 #ifndef FORCEINLINE
 #define FORCEINLINE inline __attribute__ ((always_inline))
 #endif
@@ -702,8 +700,8 @@ extern uint8_t s_perout_mode;
 
 extern uint8_t s_perout_flight_phase;
 
-void    perOut(uint8_t tick10ms);
-void    perMain();
+void perOut(uint8_t mode, uint8_t tick10ms);
+void perMain();
 NOINLINE void per10ms();
 
 int16_t getValue(uint8_t i);

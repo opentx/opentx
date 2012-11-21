@@ -257,8 +257,8 @@
 #define TR_FADEIN              "Fade In"
 #define TR_FADEOUT             "Fade Out"
 #define TR_DEFAULT             "(default)"
-#define TR_CHECKTRIMS          "\006Check\012Trims"
-#define OFS_CHECKTRIMS         (9*FW)
+#define TR_CHECKTRIMS          CENTER"\006Check\012Trims"
+#define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Swash Type"
 #define TR_COLLECTIVE          "Collective"
 #define TR_SWASHRING           "Swash Ring"

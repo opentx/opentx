@@ -96,7 +96,7 @@ def generate(str, idx, alternate=0):
                 os.remove(temp)
             else:
                 os.rename(result, temp) 
-                subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", "pcm_alaw", "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", defaultcodec, "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
         elif board == 'gruvin9x':
             subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
@@ -135,7 +135,12 @@ if __name__ == "__main__":
         # tts.SetRate(1)
         if "list" in sys.argv:
             print tts.GetVoiceNames()
-            
+    
+    if "mulaw" in sys.argv:
+        defaultcodec = "pcm_mulaw"
+    else:
+        defaultcodec = "pcm_alaw"
+    
     if "en" in sys.argv:
         if "sapi" in sys.argv:
             if "scottish" in sys.argv:
@@ -147,7 +152,7 @@ if __name__ == "__main__":
             elif "australian" in sys.argv:	
             	tts.SetVoiceByName("ScanSoftKaren_Full_22kHz")
             	voice = "english-australian"   
-            elif "irish" in sys.argv:	
+            elif "irish" in sys.argv:
             	tts.SetVoiceByName("ScanSoftMoira_Full_22kHz")
             	voice = "english-irish"              	
             else:

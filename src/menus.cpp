@@ -120,10 +120,9 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     AUDIO_KEYPAD_DOWN();
   }
 
-  if (i_min==0 && i_max==1 && event==EVT_KEY_FIRST(KEY_MENU)) {
+  if (i_min==0 && i_max==1 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = 0;
-    newval=!val;
-    killEvents(event);
+    newval = !val;
   }
 
 #if defined (ROTARY_ENCODERS) || defined(NAVIGATION_POT1)
@@ -165,7 +164,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   }
 
   if (newval != val) {
-    if ((~i_flags & NO_INCDEC_MARKS) && (newval==0 || newval==-100 || newval==+100)) {
+    if ((~i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && (newval==0 || newval==-100 || newval==+100)) {
       pauseEvents(event); // delay before auto-repeat continues
       if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
         AUDIO_KEYPAD_UP();
@@ -286,9 +285,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #if defined(ROTARY_ENCODERS)
   if (!(s_warning || s_menu_count))
     CHECK_ROTARY_ENCODER(event);
-  if (l_posVert < 0 && (event==EVT_KEY_FIRST(RE_NAV_ENTER) || event==EVT_KEY_FIRST(KEY_MENU))) {
+  if (l_posVert < 0 && (event==EVT_KEY_BREAK(RE_NAV_ENTER) || event==EVT_KEY_BREAK(KEY_MENU))) {
     popMenu();
-    killEvents(event);
     return false;
   }
   if (RE_NAV_ENABLE && event==EVT_KEY_BREAK(RE_NAV_ENTER)) {
@@ -379,7 +377,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     s_noScroll = 0;
     displayScreenIndex(curr, menuTabSize, attr);
 
-#if defined(PCBX9D)
+#if defined(LCD212)
     if (maxrow > 7)
       displayScrollbar(DISPLAY_W-1, FH, DISPLAY_H-FH, s_pgOfs, maxrow, 7);
 #endif
@@ -632,19 +630,18 @@ void displayWarning(uint8_t event)
   lcd_puts(16, 5*FH, s_warning_type == WARNING_TYPE_CONFIRM ? STR_POPUPS : STR_EXIT);
   switch(event) {
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_FIRST(BTN_REa):
-    case EVT_KEY_FIRST(BTN_REb):
+    case EVT_KEY_BREAK(BTN_REa):
+    case EVT_KEY_BREAK(BTN_REb):
       if (!navigationRotaryEncoder(event))
         break;
       // no break
 #endif
-    case EVT_KEY_FIRST(KEY_ENTER):
+    case EVT_KEY_BREAK(KEY_ENTER):
       if (s_warning_type == WARNING_TYPE_ASTERISK)
         break;
       s_warning_result = true;
       // no break
-    case EVT_KEY_FIRST(KEY_EXIT):
-      killEvents(event);
+    case EVT_KEY_BREAK(KEY_EXIT):
       s_warning = 0;
       s_warning_type = WARNING_TYPE_ASTERISK;
       break;
@@ -734,7 +731,7 @@ const char * displayMenu(uint8_t event)
   }
 
   switch(event) {
-    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_BREAK(KEY_UP):
       if (s_menu_item > 0)
         s_menu_item--;
       else if (s_menu_offset > 0) {
@@ -742,7 +739,7 @@ const char * displayMenu(uint8_t event)
         result = STR_UPDATE_LIST;
       }
       break;
-    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_BREAK(KEY_DOWN):
       if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count)
         s_menu_item++;
       else if (s_menu_count > s_menu_offset + display_count) {
@@ -750,11 +747,10 @@ const char * displayMenu(uint8_t event)
         result = STR_UPDATE_LIST;
       }
       break;
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_MENU):
       result = s_menu[s_menu_item];
       // no break
-    case EVT_KEY_FIRST(KEY_EXIT):
-      killEvents(event);
+    case EVT_KEY_BREAK(KEY_EXIT):
       s_menu_count = 0;
       s_menu_item = 0;
       s_menu_flags = 0;

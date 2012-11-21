@@ -526,7 +526,6 @@ void menuGeneralSdManager(uint8_t event)
       if (m_posVert > 0) {
         uint8_t index = m_posVert-1-s_pgOfs;
         if (!reusableBuffer.sd.lines[index][SD_SCREEN_FILE_LENGTH+1]) {
-          killEvents(event);
           f_chdir(reusableBuffer.sd.lines[index]);
           s_pgOfs = 0;
           m_posVert = 1;
