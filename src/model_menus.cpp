@@ -2195,15 +2195,21 @@ enum LimitsItems {
   ITEM_LIMITS_MAXROW = ITEM_LIMITS_COUNT-1
 };
 
+#if defined(PCBX9D)
+#define LIMITS_DIRECTION_POS  12*FW+4
+#define LIMITS_MAX_POS        16*FW+4
+#define LIMITS_REVERT_POS     18*FW
+#define LIMITS_PPM_CENTER_POS 25*FW
+#else
 #ifdef PPM_LIMITS_SYMETRICAL
 #ifdef PPM_CENTER_ADJUSTABLE
 #define LIMITS_MAX_POS        15*FW
 #define LIMITS_REVERT_POS     16*FW-3
 #define LIMITS_PPM_CENTER_POS 20*FW+1
 #else
+#define LIMITS_DIRECTION_POS  12*FW+4
 #define LIMITS_MAX_POS        16*FW+4
 #define LIMITS_REVERT_POS     17*FW
-#define LIMITS_DIRECTION_POS  12*FW+4
 #endif
 #else
 #ifdef PPM_CENTER_ADJUSTABLE
@@ -2214,6 +2220,7 @@ enum LimitsItems {
 #define LIMITS_MAX_POS        17*FW
 #define LIMITS_REVERT_POS     18*FW
 #define LIMITS_DIRECTION_POS  12*FW+5
+#endif
 #endif
 #endif
 
@@ -2250,7 +2257,7 @@ void menuModelLimits(uint8_t event)
     if (k==NUM_CHNOUT) {
       // last line available - add the "copy trim menu" line
       uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
-      lcd_putsAtt(3*FW, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
+      lcd_putsAtt(3*FW+CENTER_OFS, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
       if (attr) {
         s_editMode = 0;
         if (event==EVT_KEY_LONG(KEY_MENU)) {
@@ -2264,9 +2271,7 @@ void menuModelLimits(uint8_t event)
 
     LimitData *ld = limitaddress(k) ;
 
-#if defined(PPM_CENTER_ADJUSTABLE)
-    int8_t limit = ((g_model.extendedLimits && !limitaddress(k)->ppmCenter) ? 125 : 100);
-#else
+#if defined(LCD212) || !defined(PPM_CENTER_ADJUSTABLE)
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
 
     char swVal = '-';  // '-', '<', '>'
@@ -2274,7 +2279,11 @@ void menuModelLimits(uint8_t event)
     if((g_chans512[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
     putsChn(0, y, k+1, 0);
     lcd_putcAtt(LIMITS_DIRECTION_POS, y, swVal, 0);
+#endif
 
+#if defined(PPM_CENTER_ADJUSTABLE)
+    int8_t limit = ((g_model.extendedLimits && !limitaddress(k)->ppmCenter) ? 125 : 100);
+#else
     int8_t limit = (g_model.extendedLimits ? 125 : 100);
 #endif
 
@@ -2312,7 +2321,7 @@ void menuModelLimits(uint8_t event)
           }
           break;
         case ITEM_LIMITS_MIN:
-#ifdef PPM_LIMITS_UNIT_US
+#if defined(PPM_LIMITS_UNIT_US)
           lcd_outdezAtt(12*FW+1, y, (((int16_t)ld->min-100)*128) / 25, attr);
 #else
           lcd_outdezAtt(12*FW, y, (int8_t)(ld->min-100), attr);
@@ -2320,7 +2329,7 @@ void menuModelLimits(uint8_t event)
           if (active) ld->min = 100 + checkIncDecModel(event, ld->min-100, -limit, 25);
           break;
         case ITEM_LIMITS_MAX:
-#ifdef PPM_LIMITS_UNIT_US
+#if defined(PPM_LIMITS_UNIT_US)
           lcd_outdezAtt(LIMITS_MAX_POS, y, (((int16_t)ld->max+100)*128) / 25, attr);
 #else
           lcd_outdezAtt(LIMITS_MAX_POS, y, (int8_t)(ld->max+100), attr);
@@ -2328,7 +2337,7 @@ void menuModelLimits(uint8_t event)
           if (active) ld->max = -100 + checkIncDecModel(event, ld->max+100, -25, limit);
           break;
         case ITEM_LIMITS_DIRECTION:
-#ifdef PPM_CENTER_ADJUSTABLE
+#if defined(PPM_CENTER_ADJUSTABLE) && !defined(LCD212)
           lcd_putcAtt(LIMITS_REVERT_POS, y, ld->revert ? 127 : 126, attr);
 #else
           lcd_putsiAtt(LIMITS_REVERT_POS, y, STR_MMMINV, ld->revert, attr);
@@ -3267,7 +3276,7 @@ void menuModelTemplates(uint8_t event)
       applyTemplate(sub);
       AUDIO_WARNING2();
     }
-    if (event==EVT_KEY_FIRST(KEY_ENTER)) {
+    if (event==EVT_KEY_BREAK(KEY_ENTER)) {
       s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
       s_warning_type = WARNING_TYPE_CONFIRM;
       s_editMode = 0;
