@@ -549,12 +549,17 @@ int16_t getValue(uint8_t i)
 #endif
   else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
   else if(i<MIXSRC_MAX) return 1024;
+#if defined(PCBX9D)
+  // TODO
+#else
   else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
+  // here the switches are skipped
   else if(i<MIXSRC_3POS+3)
 #if defined(HELI)
     return cyc_anas[i-MIXSRC_3POS];
 #else
     return 0;
+#endif
 #endif
   else if(i<CSW_PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-CSW_PPM_BASE] - g_eeGeneral.trainer.calib[i-CSW_PPM_BASE])*2;
   else if(i<CSW_PPM_BASE+NUM_PPM) return g_ppmIns[i-CSW_PPM_BASE]*2;
@@ -2311,6 +2316,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
       else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CH16-1 && k-MIXSRC_CH1+1<md->destCh) // if we've already calculated the value - take it instead
         v = chans[k-MIXSRC_CH1+1] / 100;
+#if defined(PCBX9D)
+      // TODO
+#else
       else if (k>=MIXSRC_THR-1 && k<=MIXSRC_SWC-1) {
         v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
         if (v<0 && !md->swtch)
@@ -2319,6 +2327,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       else {
         v = getValue(k <= MIXSRC_3POS ? k : k-MAX_SWITCH);
       }
+#endif
     }
 
     //========== DELAYS ===============

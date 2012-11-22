@@ -421,6 +421,11 @@ extern const pm_char STR_MODELS_EXT[];
 extern const pm_uchar font[];
 extern const pm_uchar font_dblsize[];
 
+#if defined(PCBX9D)
+extern const pm_uchar font_extra[];
+extern const pm_uchar font_extra_dblsize[];
+#endif
+
 extern const pm_char STR_WARNING[];
 extern const pm_char STR_EEPROMWARN[];
 extern const pm_char STR_THROTTLEWARN[];

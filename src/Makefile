@@ -768,10 +768,11 @@ arm-stamp:
 	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-arm.txt
 	@cat stamp-open9x-arm.txt
 
-font.lbm: font_6x1.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm
+font.lbm: font_6x1.xbm font_extra_6x1.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
 	$(IMG2LBM) $< $@ char
+	$(IMG2LBM) font_extra_6x1.xbm font_extra.lbm char
 	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm char
 	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm char
 	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm char
@@ -779,10 +780,11 @@ font.lbm: font_6x1.xbm translations/font_se.xbm translations/font_de.xbm transla
 	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm char
 	$(IMG2LBM) translations/font_es.xbm translations/font_es.lbm char
 
-font_dblsize.lbm: font_dblsize.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
+font_dblsize.lbm: font_dblsize.xbm font_extra_dblsize.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
 	$(IMG2LBM) $< $@ dblsize
+	$(IMG2LBM) font_extra_dblsize.xbm font_extra_dblsize.lbm dblsize
 	$(IMG2LBM) translations/font_dblsize_se.xbm translations/font_dblsize_se.lbm dblsize
 	$(IMG2LBM) translations/font_dblsize_de.xbm translations/font_dblsize_de.lbm dblsize
 	$(IMG2LBM) translations/font_dblsize_it.xbm translations/font_dblsize_it.lbm dblsize

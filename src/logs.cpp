@@ -110,7 +110,11 @@ const pm_char * openLogs()
       f_puts("WSHH Alt,", &g_oLogFile);
 #endif
 
+#if defined(PCBX9D)
+    // TODO
+#else
     f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n", &g_oLogFile);
+#endif
   }
   else {
     result = f_lseek(&g_oLogFile, f_size(&g_oLogFile)); // append
@@ -191,6 +195,9 @@ void writeLogs()
       }
 #endif
 
+#if defined(PCBX9D)
+      // TODO
+#else
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
       }
@@ -199,6 +206,7 @@ void writeLogs()
         error_displayed = STR_SDCARD_ERROR;
         s_global_warning = STR_SDCARD_ERROR;
       }
+#endif
     }
   }
   else {

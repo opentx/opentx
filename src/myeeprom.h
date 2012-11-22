@@ -225,9 +225,16 @@ enum MixSources {
     MIXSRC_Ele,
     MIXSRC_Thr,
     MIXSRC_Ail,
+#if defined(PCBX9D)
+    MIXSRC_S1,
+    MIXSRC_S2,
+    MIXSRC_S3,
+    MIXSRC_S4,
+#else
     MIXSRC_P1,
     MIXSRC_P2,
     MIXSRC_P3,
+#endif
 #if defined(PCBSKY9X)
     MIXSRC_REa,
 #elif defined(PCBGRUVIN9X)
@@ -243,6 +250,16 @@ enum MixSources {
     MIXSRC_TrimThr,
     MIXSRC_TrimAil,
     MIXSRC_MAX ,
+#if defined(PCBX9D)
+    MIXSRC_SA,
+    MIXSRC_SB,
+    MIXSRC_SC,
+    MIXSRC_SD,
+    MIXSRC_SE,
+    MIXSRC_SF,
+    MIXSRC_SG,
+    MIXSRC_SH,
+#else
     MIXSRC_3POS,
     MIXSRC_THR,
     MIXSRC_RUD,
@@ -253,6 +270,7 @@ enum MixSources {
     MIXSRC_AIL,
     MIXSRC_GEA,
     MIXSRC_TRN,
+#endif
     MIXSRC_SW1,
     MIXSRC_SW9 = MIXSRC_SW1 + 8,
     MIXSRC_SWA,

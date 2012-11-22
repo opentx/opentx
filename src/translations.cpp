@@ -405,3 +405,14 @@ const pm_uchar font_dblsize[] PROGMEM = {
 #include "font_dblsize_es.lbm"
 #endif
 };
+
+#if defined(PCBX9D)
+const pm_uchar font_extra[] PROGMEM = {
+#include "font_extra.lbm"
+};
+
+const pm_uchar font_extra_dblsize[] PROGMEM = {
+#include "font_extra_dblsize.lbm"
+};
+#endif
+

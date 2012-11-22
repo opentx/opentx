@@ -819,9 +819,11 @@ void menuGeneralDiagKeys(uint8_t event)
 
   for(uint8_t i=0; i<9; i++) {
     uint8_t y = i*FH; //+FH;
-    if(i>(SW_ID0-SW_BASE_DIAG)) y-=FH; //overwrite ID0
+#if !defined(PCBX9D)
+    if(i>(SW_ID0-SW_BASE)) y-=FH; //overwrite ID0
     putsSwitches(8*FW, y, i+1, 0); //ohne off,on
-    displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE_DIAG+i));
+    displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
+#endif
 
     if (i<8) {
       y = i/2*FH+FH*4;

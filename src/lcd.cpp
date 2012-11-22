@@ -33,9 +33,6 @@
 
 #include "open9x.h"
 
-#define font_5x8_x20_x7f (font)
-#define font_10x16_x20_x7f (font_dblsize)
-
 uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
 #define DISPLAY_END (displayBuf+sizeof(displayBuf))
 #define ASSERT_IN_DISPLAY(p) assert((p) >= displayBuf && (p) < DISPLAY_END)
@@ -78,7 +75,11 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, uint8_t mode)
 {
   uint8_t *p = &displayBuf[ y / 8 * DISPLAY_W + x ];
 
-  const pm_uchar *q = &font_5x8_x20_x7f[(c-0x20)*5+4];
+#if defined(PCBX9D)
+  const pm_uchar *q = (c < 0xC0) ? &font[(c-0x20)*5+4] : &font_extra[(c-0xC0)*5+4];
+#else
+  const pm_uchar *q = &font[(c-0x20)*5+4];
+#endif
 
   bool inv = false;
   if (mode & BLINK) {
@@ -96,7 +97,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, uint8_t mode)
   if (mode & DBLSIZE) {
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
-    q = &font_10x16_x20_x7f[((uint16_t)c-0x20)*20];
+    q = &font_dblsize[((uint16_t)c-0x20)*20];
     for (int8_t i=11; i>=0; i--) {
       if (mode & CONDENSED && i<=1) break;
       uint8_t b1=0, b2=0;

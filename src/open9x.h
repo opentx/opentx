@@ -438,9 +438,35 @@ enum EnumKeys {
   BTN_REa,
   BTN_REb,
 #endif
+
+  NUM_KEYS,
+  SW_BASE=NUM_KEYS,
+
   //SW_NC,
   //SW_ON,
-  SW_ThrCt,
+#if defined(PCBX9D)
+  SW_SA=SW_BASE,
+  SW_SB0,
+  SW_SB1,
+  SW_SB2,
+  SW_SC0,
+  SW_SC1,
+  SW_SC2,
+  SW_SD0,
+  SW_SD1,
+  SW_SD2,
+  SW_SE0,
+  SW_SE1,
+  SW_SE2,
+  SW_SF0,
+  SW_SF1,
+  SW_SF2,
+  SW_SG0,
+  SW_SG1,
+  SW_SG2,
+  SW_SH,
+#else
+  SW_ThrCt=SW_BASE,
   SW_RuddDR,
   SW_ElevDR,
   SW_ID0,
@@ -449,7 +475,7 @@ enum EnumKeys {
   SW_AileDR,
   SW_Gear,
   SW_Trainer,
-  NUM_KEYS = SW_ThrCt
+#endif
 };
 
 #if defined(PCBX9D)
@@ -531,18 +557,25 @@ enum CswFunctions {
 #define CS_VDIFF      3
 #define CS_STATE(x)   ((x)<CS_AND ? CS_VOFS : ((x)<CS_EQUAL ? CS_VBOOL : ((x)<CS_DIFFEGREATER ? CS_VCOMP : CS_VDIFF)))
 
-#define SW_BASE      SW_ThrCt
-#define SW_BASE_DIAG SW_ThrCt
+#define NUM_STICKS      4
 
+#if defined(PCBX9D)
+#define MAX_PSWITCH   (SW_SH-SW_SA+1)
+#define NUM_POTS        4
+#else
 #define MAX_PSWITCH   (SW_Trainer-SW_ThrCt+1)  // 9 physical switches
+#define NUM_POTS        3
+#endif
 #define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
 #define SWITCH_ON     (1+MAX_SWITCH)
 #define SWITCH_OFF    (-SWITCH_ON)
 
-#define NUM_STICKS      4
-#define NUM_POTS        3
 #define NUM_CYC         3
+#if defined(PCBX9D)
+#define CSW_PPM_BASE    24 // TODO garbage to compile ...
+#else
 #define CSW_PPM_BASE    (MIXSRC_3POS+NUM_CYC) // because srcRaw is shifted +1!
+#endif
 #define NUM_CAL_PPM     4
 #define NUM_PPM         8
 #define CSW_CHOUT_BASE  (CSW_PPM_BASE+NUM_PPM)

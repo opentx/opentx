@@ -199,14 +199,23 @@
 #define TR_VRENCODERS    "REa""REb"
 
 #define LEN_VSWITCHES    "\003"
-#if defined(PCBSKY9X)
+#if defined(PCBX9D)
+#define TR_VSWITCHES     "SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF-""SF\301""SG\300""SG-""SG\301""SH\301""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"" ON"
+#elif defined(PCBSKY9X)
 #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"" ON"
 #else
 #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"" ON"
 #endif
 
 #define LEN_VSRCRAW      "\004"
-#if defined(PCBSKY9X)
+#if defined(PCBX9D)
+#define TR_POTS_VSRCRAW  "S1\0 ""S2\0 ""S3\0 ""S4\0 "
+#else
+#define TR_POTS_VSRCRAW  "P1\0 ""P2\0 ""P3\0 "
+#endif
+#if defined(PCBX9D)
+#define TR_ROTARY_ENCODERS_VSRCRAW
+#elif defined(PCBSKY9X)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa "
 #elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
 #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
@@ -220,7 +229,7 @@
 #else
 #define TR_CYC_VSRCRAW   "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "Rud\0""Ele\0""Thr\0""Ail\0""P1\0 ""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
+#define TR_VSRCRAW       "Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"

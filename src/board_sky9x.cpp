@@ -905,6 +905,7 @@ extern uint32_t keyState(EnumKeys enuk)
   a = PIOA->PIO_PDSR ;
   c = PIOC->PIO_PDSR ;
 
+#if !defined(PCBX9D)
   switch ((uint8_t) enuk) {
 #ifdef REVB
     case SW_ElevDR:
@@ -957,6 +958,7 @@ extern uint32_t keyState(EnumKeys enuk)
     default:
       break;
   }
+#endif
 
   if (xxx) {
     return 1;

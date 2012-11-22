@@ -379,7 +379,12 @@ void setupPulsesDsm2(uint8_t chns)
         break;
     }
   }
+#if defined(PCBX9D)
+  // TODO
+#else
   if ((dsmDat[0] & BIND_BIT) && (!keyState(SW_Trainer))) dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
+#endif
+
   // TODO find a way to do that, FUNC SWITCH: if ((!(dsmDat[0] & BIND_BIT)) && getSwitch(MAX_DRSWITCH-1, 0, 0)) dsmDat[0] |= RANGECHECK_BIT;   // range check function
   // else dsmDat[0] &= ~RANGECHECK_BIT;
   dsmDat[1]=g_eeGeneral.currModel+1;  //DSM2 Header second byte for model match
