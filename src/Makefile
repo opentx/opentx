@@ -537,7 +537,7 @@ endif
 ifeq ($(PCB), STD128)
   # STD PCB with Atmega 128, so ...
   OPT = 2
-  CPPDEFS += -DPCBSTD -DM128 -DEEPROM_VARIANT=0
+  CPPDEFS += -DPCBSTD -DM128 -DEEPROM_VARIANT=0x8000
   EXTRAINCDIRS += stock
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp
