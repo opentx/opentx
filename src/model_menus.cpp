@@ -1360,13 +1360,14 @@ void menuModelCurveOne(uint8_t event)
         killEvents(event);
       }
       break;
-    case EVT_KEY_FIRST(KEY_EXIT):
+    case EVT_KEY_BREAK(KEY_EXIT):
       if (s_editMode > 0) {
         if (--s_editMode == 0)
           m_posHorz = 0;
       }
-      else
+      else {
         popMenu();
+      }
       break;
     case EVT_KEY_REPT(KEY_LEFT):
     case EVT_KEY_FIRST(KEY_LEFT):
