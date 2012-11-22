@@ -420,8 +420,13 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
             l_posHorz = 0;
           }
           else {
+#if defined(PCBX9D)
+            l_posVert = 0;
+            l_posHorz = 0;
+#else
             --l_posHorz;
             scrollRE = 0;
+#endif
           }
         }
       }
@@ -431,11 +436,21 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
           do {
             --l_posVert;
           } while(MAXCOL(l_posVert) == (uint8_t)-1);
+#if defined(PCBX9D)
+          if (l_posVert < (menuTab ? 0 : -1)) {
+            l_posVert = maxrow;
+            l_posHorz = MAXCOL(l_posVert);
+          }
+          else if (l_posVert == (menuTab ? 0 : -1)) {
+            l_posHorz = 0;
+          }
+#else
           if (l_posVert <= (menuTab ? 0 : -1)) {
             l_posVert = menuTab ? 0 : -1;
             l_posHorz = 0;
             scrollRE = 0;
           }
+#endif
           else {
             maxcol = MAXCOL(l_posVert);
             if (maxcol & ZCHAR) maxcol = 0;
