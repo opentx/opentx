@@ -1002,7 +1002,7 @@ ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
 #if defined(DSM2_PPM)
     ICR1 = 41536 ; // next frame starts in 22ms 41536 = 2*(22000 - 14*11*8)
     if (OCR1C < 255) {
-      OCR1C = 41000;  // delay setup pulses by 20.5ms to reduce system latency
+      OCR1C = 39000;  // delay setup pulses by 19.5ms to reduce system latency
     }
     else {
       OCR1C = 200;
