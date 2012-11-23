@@ -1005,7 +1005,7 @@ void menuModelPhaseOne(uint8_t event)
         }
         break;
 
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS) && NUM_ROTARY_ENCODERS > 0
       case ITEM_MODEL_PHASE_ROTARY_ENCODERS:
         lcd_putsLeft(y, STR_ROTARY_ENCODER);
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
@@ -1754,8 +1754,8 @@ void menuModelMixOne(uint8_t event)
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
 
 #if defined(ROTARY_ENCODERS)
-  if (m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS)
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 0, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/})
+  if ((m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS) || (m_posVert == MIX_FIELD_CURVE && md2->curveMode == MODE_CURVE))
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 0, IF_CURVES(0) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/})
   else
     SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_PCBSKY9X(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 #else

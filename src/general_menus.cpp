@@ -44,7 +44,9 @@ enum EnumTabDiag {
   e_Vers,
   e_Keys,
   e_Ana,
+#if !defined(PCBX9D) // TODO
   IF_PCBSKY9X(e_Hardware)
+#endif
   e_Calib
 };
 
@@ -66,7 +68,9 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuGeneralVersion,
   menuGeneralDiagKeys,
   menuGeneralDiagAna,
+#if !defined(PCBX9D) // TODO
   IF_PCBSKY9X(menuGeneralHardware)
+#endif
   menuGeneralCalib
 };
 
@@ -140,7 +144,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) (uint8_t)-1, 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC((uint8_t)-1) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, (uint8_t)-1, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, 0, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, 1});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) (uint8_t)-1, 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC((uint8_t)-1) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, (uint8_t)-1, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, 0, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, IF_PCBX9D(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -352,9 +356,9 @@ void menuGeneralSetup(uint8_t event)
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
 
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS) && NUM_ROTARY_ENCODERS > 0
       case ITEM_SETUP_RE_NAVIGATION:
-        g_eeGeneral.reNavigation = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, ROTARY_ENCODERS, attr, event);
+        g_eeGeneral.reNavigation = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, NUM_ROTARY_ENCODERS, attr, event);
         if (attr && checkIncDec_Ret) {
           for (uint8_t i=0; i<ROTARY_ENCODERS; i++)
             g_rotenc[i] = 0;
@@ -908,7 +912,7 @@ void menuGeneralDiagAna(uint8_t event)
 #endif
 }
 
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(PCBX9D)
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   IF_BLUETOOTH(ITEM_SETUP_HW_BT_BAUDRATE)

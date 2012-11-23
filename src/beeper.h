@@ -69,7 +69,7 @@ extern void beep(uint8_t val);
 #define AUDIO_TIMER_30()      { beepAgain=2; beep(2); }
 #define AUDIO_TIMER_20()      { beepAgain=1; beep(2); }
 #define AUDIO_TIMER_10()      beep(2)
-#define AUDIO_TIMER_LT3(x)     beep(2)
+#define AUDIO_TIMER_LT3(x)    beep(2)
 #define AUDIO_MINUTE_BEEP()   beep(2)
 #define AUDIO_INACTIVITY()    beep(3)
 #define AUDIO_MIX_WARNING_1() beep(1)
@@ -80,7 +80,7 @@ extern void beep(uint8_t val);
 #define AUDIO_VARIO_DOWN()    _beep(1)
 #define AUDIO_TRIM(event, f)  { if (!IS_KEY_FIRST(event)) warble = true; beep(1); }
 #define AUDIO_TRIM_MIDDLE(f)  beep(2)
-#define AUDIO_TRIM_END(f)  beep(2)
+#define AUDIO_TRIM_END(f)     beep(2)
 #define AUDIO_PLAY(p)         beep(3)
 
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)

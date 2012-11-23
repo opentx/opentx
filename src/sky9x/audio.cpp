@@ -559,8 +559,8 @@ void audioEvent(uint8_t e, uint8_t f)
 #endif
 
   if (g_eeGeneral.flashBeep && (e <= AU_ERROR || e >= AU_WARNING1)) {
-    if (g_LightOffCounter < FLASH_DURATION)
-      g_LightOffCounter = FLASH_DURATION;
+    if (lightOffCounter < FLASH_DURATION)
+      lightOffCounter = FLASH_DURATION;
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
@@ -575,7 +575,6 @@ void audioEvent(uint8_t e, uint8_t f)
         // inactivity timer alert
         case AU_INACTIVITY:
           audioQueue.play(70, 20, 4, 2|PLAY_NOW);
-          audioQueue.pause(200);
           break;
         // low battery in tx
         case AU_TX_BATTERY_LOW:

@@ -210,8 +210,10 @@
 #define LEN_VSRCRAW      "\004"
 #if defined(PCBX9D)
 #define TR_POTS_VSRCRAW  "S1\0 ""S2\0 ""S3\0 ""S4\0 "
+#define TR_SW_VSRCRAW    "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 "
 #else
 #define TR_POTS_VSRCRAW  "P1\0 ""P2\0 ""P3\0 "
+#define TR_SW_VSRCRAW    "3POS"
 #endif
 #if defined(PCBX9D)
 #define TR_ROTARY_ENCODERS_VSRCRAW
@@ -229,7 +231,7 @@
 #else
 #define TR_CYC_VSRCRAW   "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
+#define TR_VSRCRAW       "Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX " TR_SW_VSRCRAW TR_CYC_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"

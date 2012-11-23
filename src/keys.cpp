@@ -146,51 +146,17 @@ void killEvents(uint8_t event)
   if (event < (int)DIM(keys)) keys[event].killEvents();
 }
 
-volatile tmr10ms_t g_tmr10ms;
-volatile uint8_t   g_blinkTmr10ms;
-volatile uint8_t   rtc_count=0;
-
-void per10ms()
+void clearKeyEvents()
 {
-  g_tmr10ms++;
-  g_blinkTmr10ms++;
-  
-  if (s_noHi) s_noHi--;
-  if (trimsCheckTimer) trimsCheckTimer --;
-
-#if defined (PCBSKY9X)
-  Tenms |= 1 ;                    // 10 mS has passed
+#if defined(PCBSKY9X)
+  CoTickDelay(100);  // 200ms
 #endif
 
-#if defined(RTCLOCK)
-  /* Update global Date/Time every 100 per10ms cycles */
-  if (++g_ms100 == 100) {
-    g_rtcTime++;   // inc global unix timestamp one second
-#if defined (PCBSKY9X)
-    if (g_rtcTime < 60 || rtc_count<5) { 
-      rtc_init();
-      rtc_count++;
-    } else {
-      read_coprocessor(true);
-    }
-#endif    
-    g_ms100 = 0;
-  }
+#if defined(SIMU)
+  while (keyDown() && main_thread_running) sleep(1/*ms*/);
+#else
+  while (keyDown()) wdt_reset();  // loop until all keys are up
 #endif
-
-  readKeysAndTrims();
-
-#if defined(MAVLINK) && !defined(PCBSKY9X)
-  check_mavlink();
-#endif
-
-#if defined (FRSKY) && !defined(PCBSKY9X) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
-  check_frsky();
-#endif
-
-  // These moved here from perOut() to improve beep trigger reliability.
-  if(mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) AUDIO_MIX_WARNING_1();
-  if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_2();
-  if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
-
+  memclear(keys, sizeof(keys));
+  putEvent(0);
 }

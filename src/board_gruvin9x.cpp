@@ -157,9 +157,8 @@ ISR(USART1_RX_vect)
     }
   }
 }
-#endif //EXTRA_ROTARY_ENCODERS
-
-#endif
+#endif // EXTRA_ROTARY_ENCODERS
+#endif // !SIMU
 
 uint8_t check_soft_power()
 {
@@ -177,10 +176,7 @@ void soft_power_off()
 #endif
 }
 
-#ifndef SIMU
-FORCEINLINE
-#endif
-uint8_t keyDown()
+FORCEINLINE uint8_t keyDown()
 {
   return (~PINL) & 0x3F;
 }
@@ -239,10 +235,7 @@ bool keyState(EnumKeys enuk)
   return result;
 }
 
-#ifndef SIMU
-FORCEINLINE
-#endif
-void readKeysAndTrims()
+FORCEINLINE void readKeysAndTrims()
 {
   /* Original keys were connected to PORTB as follows:
 
@@ -296,3 +289,32 @@ void readKeysAndTrims()
     ++enuk;
   }
 }
+
+#if defined(ROTARY_ENCODERS)
+
+#if !defined(EXTRA_ROTARY_ENCODERS)
+ISR(INT2_vect)
+{
+  uint8_t input = PIND & 0b00001100;
+  if (input == 0 || input == 0b00001100) incRotaryEncoder(0, -1);
+}
+
+ISR(INT3_vect)
+{
+  uint8_t input = PIND & 0b00001100;
+  if (input == 0 || input == 0b00001100) incRotaryEncoder(0, +1);
+}
+#endif // !EXTRA_ROTARY_ENCODERS
+
+ISR(INT5_vect)
+{
+  uint8_t input = PINE & 0b01100000;
+  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, +1);
+}
+ISR(INT6_vect)
+{
+  uint8_t input = PINE & 0b01100000;
+  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, -1);
+}
+
+#endif // ROTARY_ENCODERS

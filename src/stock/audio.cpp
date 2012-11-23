@@ -134,7 +134,7 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
       tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     }
     tLen = getToneLength(tLen);
-    if (tFlags & PLAY_NOW || (!busy() && empty())) {
+    if ((tFlags & PLAY_NOW) || (!busy() && empty())) {
       toneFreq = tFreq;
       toneTimeLeft = tLen;
       tonePause = tPause;
@@ -167,8 +167,8 @@ void audioQueue::event(uint8_t e, uint8_t f)
 #endif
 
   if (g_eeGeneral.flashBeep && (e <= AU_ERROR || e >= AU_WARNING1)) {
-    if (g_LightOffCounter < FLASH_DURATION)
-      g_LightOffCounter = FLASH_DURATION;
+    if (lightOffCounter < FLASH_DURATION)
+      lightOffCounter = FLASH_DURATION;
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {

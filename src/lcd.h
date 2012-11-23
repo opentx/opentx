@@ -143,7 +143,7 @@ void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, ui
 #endif
 
 extern void putsChnRaw(xcoord_t x,uint8_t y,uint8_t idx1,uint8_t att);
-#define putsChn(x, y, idx, att) putsChnRaw(x, y, (idx)+(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+NUM_CYC+NUM_PPM), att)
+#define putsChn(x, y, idx, att) putsChnRaw(x, y, (idx)+(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1+NUM_SW_SRCRAW+NUM_CYC+NUM_PPM), att)
 extern void putsChnLetter(xcoord_t x, uint8_t y, uint8_t idx, uint8_t attr);
 
 extern void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, uint8_t att);
@@ -195,7 +195,6 @@ extern void lcdSetContrast();
 extern void refreshDisplay();
 
 #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
-#define BLINK_SYNC      g_blinkTmr10ms = (3<<5)
 
 #ifdef SIMU
 extern bool lcd_refresh;

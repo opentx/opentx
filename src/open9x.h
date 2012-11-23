@@ -48,6 +48,12 @@
 #define IF_PCBSKY9X(x)
 #endif
 
+#if defined(PCBX9D)
+#define IF_PCBX9D(x) x,
+#else
+#define IF_PCBX9D(x)
+#endif
+
 #if defined(RTCLOCK)
 #define IF_RTCLOCK(x) x,
 #else
@@ -94,12 +100,6 @@
 #define IF_SDCARD(x) x,
 #else
 #define IF_SDCARD(x)
-#endif
-
-#if defined(ROTARY_ENCODERS)
-#define IF_ROTARY_ENCODERS(x) x,
-#else
-#define IF_ROTARY_ENCODERS(x)
 #endif
 
 #if defined(BLUETOOTH)
@@ -189,6 +189,12 @@ extern void board_init();
 #endif
 
 #include "myeeprom.h"
+
+#if defined(ROTARY_ENCODERS) && NUM_ROTARY_ENCODERS > 0
+#define IF_ROTARY_ENCODERS(x) x,
+#else
+#define IF_ROTARY_ENCODERS(x)
+#endif
 
 #define PPM_CENTER 1500
 
@@ -557,15 +563,18 @@ enum CswFunctions {
 #define CS_VDIFF      3
 #define CS_STATE(x)   ((x)<CS_AND ? CS_VOFS : ((x)<CS_EQUAL ? CS_VBOOL : ((x)<CS_DIFFEGREATER ? CS_VCOMP : CS_VDIFF)))
 
-#define NUM_STICKS      4
+#define NUM_STICKS    4
 
 #if defined(PCBX9D)
 #define MAX_PSWITCH   (SW_SH-SW_SA+1)
-#define NUM_POTS        4
+#define NUM_POTS      4
+#define NUM_SW_SRCRAW 8
 #else
 #define MAX_PSWITCH   (SW_Trainer-SW_ThrCt+1)  // 9 physical switches
-#define NUM_POTS        3
+#define NUM_POTS      3
+#define NUM_SW_SRCRAW 1
 #endif
+
 #define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
 #define SWITCH_ON     (1+MAX_SWITCH)
 #define SWITCH_OFF    (-SWITCH_ON)
@@ -598,10 +607,17 @@ enum CswFunctions {
 #define NUM_TELEMETRY      TELEM_TM2
 #endif
 
-#define NUM_XCHNRAW  (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1/*MAX*/+1/*ID3*/+NUM_CYC+NUM_PPM+NUM_CHNOUT)
-#define NUM_XCHNCSW  (NUM_XCHNRAW+NUM_TELEMETRY)
+#define NUM_XCHNRAW  (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1/*MAX*/+NUM_SW_SRCRAW+NUM_CYC+NUM_PPM+NUM_CHNOUT)
+
+#if defined(PCBX9D)
+#define NUM_XCHNMIX  (NUM_XCHNRAW+NUM_CSW)
+#define NUM_XCHNCSW  (NUM_XCHNRAW+NUM_CSW+NUM_TELEMETRY)
+#define NUM_XCHNPLAY (NUM_XCHNRAW+NUM_CSW+TELEM_DISPLAY_MAX)
+#else
 #define NUM_XCHNMIX  (NUM_XCHNRAW+MAX_SWITCH)
+#define NUM_XCHNCSW  (NUM_XCHNRAW+NUM_TELEMETRY)
 #define NUM_XCHNPLAY (NUM_XCHNRAW+TELEM_DISPLAY_MAX)
+#endif
 
 #define DSW_THR  1
 #define DSW_RUD  2
@@ -720,12 +736,13 @@ enum PerOutMode {
   e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
 };
 
-#ifndef FORCEINLINE
+#ifdef SIMU
+#define FORCEINLINE
+#define NOINLINE
+#else
 #define FORCEINLINE inline __attribute__ ((always_inline))
-#endif
-
-#ifndef NOINLINE
 #define NOINLINE __attribute__ ((noinline))
+#define SIMU_SLEEP(x)
 #endif
 
 // Fiddle to force compiler to use a pointer
@@ -1025,7 +1042,7 @@ extern const char stamp3[];
 extern const char eeprom_stamp[];
 
 extern uint8_t            g_vbat100mV;
-extern volatile uint8_t   g_blinkTmr10ms;
+#define g_blinkTmr10ms (*(uint8_t*)&g_tmr10ms)
 extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
@@ -1047,10 +1064,10 @@ extern uint16_t anaIn(uint8_t chan);
 extern int16_t thrAnaIn(uint8_t chan);
 extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
-#define FLASH_DURATION 50
+#define FLASH_DURATION 50 /*500ms*/
 
-extern uint8_t  beepAgain;
-extern uint16_t g_LightOffCounter;
+extern uint8_t beepAgain;
+extern uint16_t lightOffCounter;
 extern uint8_t mixWarning;
 
 extern PhaseData *phaseaddress(uint8_t idx);

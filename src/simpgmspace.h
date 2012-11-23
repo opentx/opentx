@@ -263,6 +263,8 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define UPE0    0
 #define FE0     0
 
+#define ISR(x)     void x()
+
 #if defined(PCBSKY9X)
 extern volatile uint32_t Tenms;
 extern uint32_t Master_frequency;
@@ -281,6 +283,8 @@ extern uint8_t main_thread_running;
 #define getADC_single()
 #define getADC_osmp()
 #define getADC_bandgap()
+
+#define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
 
 extern void setSwitch(int8_t swtch);
 

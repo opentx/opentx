@@ -100,7 +100,12 @@ VOICE = NO
 HAPTIC = NO
 
 # SmartieParts 2.2 Backlight support (inverted)
+# Values = YES, NO 
 SP22 = NO
+
+# TelemetrEZ
+# Values = YES, NO 
+TELEMETREZ = NO
 
 # SPLASH on START
 # Values = YES, NO, FIXED
@@ -281,7 +286,7 @@ SRC =
 STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
 TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 
-CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp drivers.cpp translations.cpp $(TTS_SRC)
+CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp keys.cpp translations.cpp $(TTS_SRC)
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -563,6 +568,10 @@ ifeq ($(PCB), STD128)
   ifeq ($(SP22), YES)
    CPPDEFS += -DSP22
   endif
+  
+  ifeq ($(TELEMETREZ), YES)
+   CPPDEFS += -DTELEMETREZ
+  endif
 endif
 
 ifeq ($(PCB), STD)
@@ -593,6 +602,10 @@ ifeq ($(PCB), STD)
   
   ifeq ($(SP22), YES)
    CPPDEFS += -DSP22
+  endif
+  
+  ifeq ($(TELEMETREZ), YES)
+   CPPDEFS += -DTELEMETREZ
   endif
 endif
 

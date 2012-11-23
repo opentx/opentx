@@ -50,6 +50,10 @@
 #define BYTESTUFF       0x7d
 #define STUFF_MASK      0x20
 
+#if defined(TELEMETREZ)
+#define PRIVATE         0x1B
+#endif
+
 uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
 #if !defined(PCBSKY9X)
@@ -392,11 +396,23 @@ void processFrskyPacket(uint8_t *packet)
   FrskyRxBufferReady = 0;
 }
 
-// Receive buffer state machine state defs
-#define frskyDataIdle    0
-#define frskyDataStart   1
-#define frskyDataInFrame 2
-#define frskyDataXOR     3
+// Receive buffer state machine state enum
+enum FrSkyDataState {
+  STATE_DATA_IDLE,
+  STATE_DATA_START,
+  STATE_DATA_IN_FRAME,
+  STATE_DATA_XOR,
+#if defined(TELEMETREZ)
+  STATE_DATA_PRIVATE_LEN,
+  STATE_DATA_PRIVATE_VALUE
+#endif
+};
+
+#if defined(TELEMETREZ)
+uint8_t privateDataLen;
+uint8_t privateDataPos;
+#endif
+
 /*
    Receive serial (RS-232) characters, detecting and storing each Fr-Sky 
    0x7e-framed packet as it arrives.  When a complete packet has been 
@@ -418,7 +434,7 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
 #endif
 {
   static uint8_t numPktBytes = 0;
-  static uint8_t dataState = frskyDataIdle;
+  static uint8_t dataState = STATE_DATA_IDLE;
 
 #if defined(BLUETOOTH)
   // TODO if (g_model.bt_telemetry)
@@ -438,44 +454,70 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
     {
       switch (dataState)
       {
-        case frskyDataStart:
+        case STATE_DATA_START:
           if (data == START_STOP) break; // Remain in userDataStart if possible 0x7e,0x7e doublet found.
 
           if (numPktBytes < FRSKY_RX_PACKET_SIZE)
             frskyRxBuffer[numPktBytes++] = data;
-          dataState = frskyDataInFrame;
+          dataState = STATE_DATA_IN_FRAME;
           break;
 
-        case frskyDataInFrame:
+        case STATE_DATA_IN_FRAME:
           if (data == BYTESTUFF)
           {
-              dataState = frskyDataXOR; // XOR next byte
+              dataState = STATE_DATA_XOR; // XOR next byte
               break;
           }
           if (data == START_STOP) // end of frame detected
           {
             processFrskyPacket(frskyRxBuffer); // FrskyRxBufferReady = 1;
-            dataState = frskyDataIdle;
+            dataState = STATE_DATA_IDLE;
             break;
           }
           if (numPktBytes < FRSKY_RX_PACKET_SIZE)
             frskyRxBuffer[numPktBytes++] = data;
           break;
 
-        case frskyDataXOR:
+        case STATE_DATA_XOR:
           if (numPktBytes < FRSKY_RX_PACKET_SIZE)
             frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
-          dataState = frskyDataInFrame;
+          dataState = STATE_DATA_IN_FRAME;
           break;
 
-        case frskyDataIdle:
-          if (data == START_STOP)
-          {
+        case STATE_DATA_IDLE:
+          if (data == START_STOP) {
             numPktBytes = 0;
-            dataState = frskyDataStart;
+            dataState = STATE_DATA_START;
+          }
+#if defined(TELEMETREZ)
+          if (data == PRIVATE) {
+            dataState = STATE_DATA_PRIVATE_LEN;
+          }
+#endif
+          break;
+
+#if defined(TELEMETREZ)
+        case STATE_DATA_PRIVATE_LEN:
+          dataState = STATE_DATA_PRIVATE_VALUE;
+          privateDataLen = data; // Count of bytes to receive
+          privateDataPos = 0;
+          break;
+
+        case STATE_DATA_PRIVATE_VALUE :
+          if (privateDataPos++ == 0) {
+            // process first private data byte
+            // PC6, PC7
+            if ((data & 0x3F) == 0) // check byte is valid
+            {
+              DDRC |= 0xC0; // set as outputs
+              PORTC = ( PORTC & 0x3F ) | ( data & 0xC0 ); // update outputs
+            }
+          }
+          if (privateDataPos == privateDataLen) {
+            dataState = STATE_DATA_IDLE;
           }
           break;
-
+#endif
       } // switch
     } // if (FrskyRxBufferReady == 0)
   }

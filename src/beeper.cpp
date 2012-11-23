@@ -56,7 +56,7 @@ void beep(uint8_t val)
   haptic.event(val==0 ? AU_KEYPAD_UP : (val==4 ? AU_ERROR : AU_TIMER_10+beepAgain));
 #endif
 
-  if(g_eeGeneral.flashBeep && val > 1 && g_LightOffCounter < FLASH_DURATION) g_LightOffCounter = FLASH_DURATION;
+  if (g_eeGeneral.flashBeep && val>1 && lightOffCounter<FLASH_DURATION) lightOffCounter = FLASH_DURATION;
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && val!=0) || (g_eeGeneral.beeperMode==-1 && val>=3)) {
     _beep(pgm_read_byte(beepTab+5*(2+g_eeGeneral.beeperLength)+val));

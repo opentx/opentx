@@ -37,7 +37,7 @@
 #endif
 
 //audio
-#define AUDIO_QUEUE_LENGTH (8)  //8 seems to suit most alerts
+#define AUDIO_QUEUE_LENGTH (8)  // 8 seems to suit most alerts
 #define BEEP_DEFAULT_FREQ  (70)
 #define BEEP_OFFSET        (10)
 #define BEEP_KEY_UP_FREQ   (BEEP_DEFAULT_FREQ+5)

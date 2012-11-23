@@ -169,6 +169,63 @@ uint8_t zlen(const char *str, uint8_t size)
 }
 #endif
 
+volatile tmr10ms_t g_tmr10ms;
+
+#if defined(PCBSKY9X)
+volatile uint8_t rtc_count=0;
+#endif
+
+void per10ms()
+{
+  g_tmr10ms++;
+
+  if (lightOffCounter) lightOffCounter--;
+  if (s_noHi) s_noHi--;
+  if (trimsCheckTimer) trimsCheckTimer --;
+  if ((g_blinkTmr10ms & 0x1F) == 0) {
+    inacCounter++;
+    if ((((uint8_t)inacCounter)&0x0F)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*187))
+      AUDIO_INACTIVITY();
+  }
+
+#if defined (PCBSKY9X)
+  Tenms |= 1 ;                    // 10 mS has passed
+#endif
+
+#if defined(RTCLOCK)
+  /* Update global Date/Time every 100 per10ms cycles */
+  if (++g_ms100 == 100) {
+    g_rtcTime++;   // inc global unix timestamp one second
+#if defined (PCBSKY9X)
+    if (g_rtcTime < 60 || rtc_count<5) {
+      rtc_init();
+      rtc_count++;
+    }
+    else {
+      read_coprocessor(true);
+    }
+#endif
+    g_ms100 = 0;
+  }
+#endif
+
+  readKeysAndTrims();
+
+#if defined(MAVLINK) && !defined(PCBSKY9X)
+  check_mavlink();
+#endif
+
+#if defined (FRSKY) && !defined(PCBSKY9X) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
+  check_frsky();
+#endif
+
+  // These moved here from perOut() to improve beep trigger reliability.
+  if(mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) AUDIO_MIX_WARNING_1();
+  if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_2();
+  if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
+
+}
+
 PhaseData *phaseaddress(uint8_t idx)
 {
   return &g_model.phaseData[idx];
@@ -1034,22 +1091,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 }
 #endif
 
-void clearKeyEvents()
-{
-#if defined(PCBSKY9X)
-  CoTickDelay(100);  // 200ms
-#endif
-
-#if defined(SIMU)
-  while (keyDown() && main_thread_running) sleep(1/*ms*/);
-#else
-  while (keyDown()) wdt_reset();  // loop until all keys are up
-#endif
-  memclear(keys, sizeof(keys));
-  putEvent(0);
-}
-
-#define INAC_DEVISOR 256   // Bypass splash screen with stick movement
+#define INAC_DEVISOR 1024   // Bypass splash screen with stick movement
 uint16_t stickMoveValue()
 {
   uint16_t sum = 0;
@@ -1063,7 +1105,7 @@ void checkBacklight()
   static uint8_t tmr10ms ;
 
   if (tmr10ms != g_blinkTmr10ms) {
-    tmr10ms = g_blinkTmr10ms ;
+    tmr10ms = g_blinkTmr10ms;
     uint16_t tsum = stickMoveValue();
     if (tsum != inacSum) {
       inacSum = tsum;
@@ -1071,16 +1113,8 @@ void checkBacklight()
       if (g_eeGeneral.backlightMode & e_backlight_mode_sticks)
         backlightOn();
     }
-    else if (g_eeGeneral.inactivityTimer && (!g_vbat100mV || g_vbat100mV>50)) {
-      if (++inacPrescale > 15 ) {
-        inacCounter++;
-        inacPrescale = 0;
-        if (inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*25*15))
-          if ((inacCounter&0x1F)==1) AUDIO_INACTIVITY();
-      }
-    }
 
-    if (g_eeGeneral.backlightMode == e_backlight_mode_on || g_LightOffCounter || isFunctionActive(FUNC_BACKLIGHT))
+    if (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNC_BACKLIGHT))
       BACKLIGHT_ON();
     else
       BACKLIGHT_OFF();
@@ -1093,7 +1127,7 @@ void checkBacklight()
 
 void backlightOn()
 {
-  g_LightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
+  lightOffCounter = ((uint16_t)g_eeGeneral.lightAutoOff*250) << 1;
 }
 
 #if defined(SPLASH)
@@ -1119,10 +1153,8 @@ void doSplash()
     lcdSetRefVolt(contrast);
 #endif
 
-#if !defined(SIMU)
     for (uint8_t i=0; i<32; i++)
       getADC_filt(); // init ADC array
-#endif
 
     uint16_t inacSum = stickMoveValue();
 
@@ -1130,11 +1162,11 @@ void doSplash()
     while (tgtime != get_tmr10ms())
     {
 #if defined(SIMU)
-      if (!main_thread_running) return;
-      sleep(1/*ms*/);
+      SIMU_SLEEP(1);
 #elif defined(PCBSKY9X)
       CoTickDelay(1);
 #endif
+
       getADC_filt();
 
       uint16_t tsum = stickMoveValue();
@@ -1207,12 +1239,10 @@ void checkTHR()
 
   while (1)
   {
-#ifdef SIMU
-      if (!main_thread_running) return;
-      sleep(1/*ms*/);
-#else
+      SIMU_SLEEP(1);
+
       getADC_single();
-#endif
+
       int16_t v = thrAnaIn(thrchn);
 
       if (check_soft_power() > e_power_trainer || v<=lowLim || keyDown())
@@ -1265,10 +1295,7 @@ void checkSwitches()
 
     wdt_reset();
 
-#ifdef SIMU
-    if (!main_thread_running) return;
-    sleep(1/*ms*/);
-#endif
+    SIMU_SLEEP(1);
   }
 }
 
@@ -1278,11 +1305,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 
   while(1)
   {
-#ifdef SIMU
-    if (!main_thread_running) return;
-    sleep(1/*ms*/);
-#endif
-
+    SIMU_SLEEP(1);
 
     if (check_soft_power() >= e_power_usb) return; // Usb on or power off
 
@@ -1634,7 +1657,7 @@ void getADC_bandgap()
 #endif // SIMU
 
 uint8_t g_vbat100mV = 0;
-uint16_t g_LightOffCounter;
+uint16_t lightOffCounter;
 
 uint16_t s_timeCumTot;
 uint16_t s_timeCumThr;    // THR in 1/16 sec
@@ -2886,7 +2909,6 @@ void perMain()
   evt = checkTrim(evt);
 #endif
 
-  if (g_LightOffCounter) g_LightOffCounter--;
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
 
   checkBacklight();
@@ -3244,33 +3266,6 @@ volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};
 #endif
 
 #ifndef SIMU
-
-#if defined(PCBGRUVIN9X) && defined(ROTARY_ENCODERS)
-
-#if !defined(EXTRA_ROTARY_ENCODERS)
-ISR(INT2_vect)
-{
-  uint8_t input = PIND & 0b00001100;
-  if (input == 0 || input == 0b00001100) incRotaryEncoder(0, -1);
-}
-ISR(INT3_vect)
-{
-  uint8_t input = PIND & 0b00001100;
-  if (input == 0 || input == 0b00001100) incRotaryEncoder(0, +1);
-}
-#endif //!EXTRA_ROTARY_ENCODERS
-
-ISR(INT5_vect)
-{
-  uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, +1);
-}
-ISR(INT6_vect)
-{
-  uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, -1);
-}
-#endif //PCBGRUVIN9X+ROTARY_ENCODERS
 
 #if defined(PCBSKY9X)
 void stack_paint()
