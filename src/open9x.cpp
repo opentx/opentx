@@ -1091,7 +1091,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 }
 #endif
 
-#define INAC_DEVISOR 1024   // Bypass splash screen with stick movement
+#define INAC_DEVISOR 512   // Bypass splash screen with stick movement
 uint16_t stickMoveValue()
 {
   uint16_t sum = 0;
