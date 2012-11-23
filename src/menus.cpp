@@ -270,7 +270,7 @@ void title(const pm_char * s)
 #if defined(PCBX9D)
 #define RE_NAV_ENTER  (KEY_ENTER)
 #define RE_NAV_ENABLE true
-#define SCROLL(min, val, max) (int8_t(val) > int8_t(max) ? (int8_t(min) + int8_t(val) - int8_t(max) - 1) : (int8_t(val) < int8_t(min) ? (int8_t(max) - int8_t(min) + int8_t(val) + 1) : int8_t(val)))
+#define SCROLL(min, val, max) ((val) > (max) ? ((min) + (val) - (max) - 1) : ((val) < (min) ? ((max) - (min) + (val) + 1) : (val)))
 #else
 #define RE_NAV_ENTER  (BTN_REa+g_eeGeneral.reNavigation-1)
 #define RE_NAV_ENABLE g_eeGeneral.reNavigation
@@ -354,9 +354,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       int8_t cc = curr;
 
       if (scrollLR || (scrollRE && s_editMode < 0)) {
-        printf("tab size=%d cur=%d scrollLR=%d scrollRE=%d\n", menuTabSize, cc, scrollLR, scrollRE); fflush(stdout);
         cc = SCROLL((int8_t)0, (int8_t)(cc - scrollLR + scrollRE), (int8_t)(menuTabSize-1));
-        printf("cc=%d\n", cc); fflush(stdout);
       }
 
       switch(event) {
