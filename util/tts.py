@@ -236,7 +236,7 @@ if __name__ == "__main__":
                      (u"flight. mode!, eight", "fltmd8"),
                      (u"flight. mode!, nine", "fltmd9"),
                      (u"vario!, on", "vrion"),
-                     (u"vario!, on", "vrioff"),
+                     (u"vario!, off", "vrioff"),
                      ]):
             sounds.extend(generate(s, f, 256+i))
 
