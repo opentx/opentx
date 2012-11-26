@@ -116,7 +116,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
     div_t qr = div(number, (mode == 1 ? 10 : 100));
     if (qr.rem > 0) {
       PLAY_NUMBER(qr.quot, 0, 0);
-      PUSH_PROMPT(PROMPT_VIRGOLA);
+      PUSH_PROMPT(PROMPT_VIRGULA);
       if (mode==2 && qr.rem < 10)
         PUSH_PROMPT(PROMPT_ZERO);
       PLAY_NUMBER(qr.rem, unit, 0);
@@ -139,7 +139,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
       number = -1;
   }
   if (number >= 100) {
-    PUSH_PROMPT(PROMPT_CIENTO + number/100);
+    PUSH_PROMPT(PROMPT_CENTO + number/100);
     number %= 100;
     if (number == 0)
       number = -1;
@@ -154,7 +154,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 PLAY_FUNCTION(playDuration, int16_t seconds)
 {
   if (seconds < 0) {
-    PUSH_PROMPT(PROMPT_MENO);
+    PUSH_PROMPT(PROMPT_MENOS);
     seconds = -seconds;
   }
 
@@ -182,17 +182,17 @@ PLAY_FUNCTION(playDuration, int16_t seconds)
       PLAY_NUMBER(tmp, 0, 0);
       PUSH_PROMPT(PROMPT_MINUTOS);
     } else {
-      PUSH_PROMPT(PROMPT_UN);
+      PUSH_PROMPT(PROMPT_NUMBERS_BASE+1);
       PUSH_PROMPT(PROMPT_MINUTO);
     }
-    PUSH_PROMPT(PROMPT_Y);
+    PUSH_PROMPT(PROMPT_E);
   }
 
   if (seconds != 1) {
     PLAY_NUMBER(seconds, 0, 0);
     PUSH_PROMPT(PROMPT_SEGUNDOS);
   } else {
-    PUSH_PROMPT(PROMPT_UN);
+    PUSH_PROMPT(PROMPT_NUMBERS_BASE+1);
     PUSH_PROMPT(PROMPT_SEGUNDO);
   }
 }
