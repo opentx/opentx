@@ -119,7 +119,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags mode)
     }   
   }
 #if defined(PCBX9D)
-  if (mode & MIDSIZE) {
+  else if (mode & MIDSIZE) {
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
     q = &font_8x10[((uint16_t)c-0x20)*16];
