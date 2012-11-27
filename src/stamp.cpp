@@ -40,7 +40,7 @@
 const pm_char stamp1[] PROGMEM = " SVN: " SVN_STR;
 const pm_char stamp2[] PROGMEM = "DATE: " DATE_STR;
 const pm_char stamp3[] PROGMEM = "TIME: " TIME_STR;
-#if defined(M64)
+#if defined(CPUM64)
 const pm_char eeprom_stamp[] PROGMEM = "EEPR: " DEFNUMSTR(EEPROM_VER) "-" DEFNUMSTR(EEPROM_VARIANT);
 #else
 const pm_char eeprom_stamp[] PROGMEM = "EEPR: " DEFNUMSTR(EEPROM_VER);

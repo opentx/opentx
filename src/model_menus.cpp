@@ -932,7 +932,7 @@ enum menuModelPhaseItems {
   IF_ROTARY_ENCODERS(ITEM_MODEL_PHASE_ROTARY_ENCODERS)
   ITEM_MODEL_PHASE_FADE_IN,
   ITEM_MODEL_PHASE_FADE_OUT,
-#if defined(GVARS) && !defined(M64)
+#if defined(GVARS) && !defined(CPUM64)
   ITEM_MODEL_PHASE_GVARS_LABEL,
   ITEM_MODEL_PHASE_GV1,
   ITEM_MODEL_PHASE_GV2,
@@ -948,7 +948,7 @@ void menuModelPhaseOne(uint8_t event)
   PhaseData *phase = phaseaddress(s_currIdx);
   putsFlightPhase(13*FW, 0, s_currIdx+1, (getFlightPhase()==s_currIdx ? BOLD : 0));
 
-#if defined(GVARS) && !defined(M64)
+#if defined(GVARS) && !defined(CPUM64)
   static bool editingName = false;
   if (editingName && s_editMode <= 0) editingName = false;
   if (!editingName && s_editMode > 0 && m_posHorz == 0) editingName = true;
@@ -969,7 +969,7 @@ void menuModelPhaseOne(uint8_t event)
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;
 
-#if defined(GVARS) && !defined(M64)
+#if defined(GVARS) && !defined(CPUM64)
   if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
 
   for (uint8_t k=0; k<7; k++) {
@@ -1045,7 +1045,7 @@ void menuModelPhaseOne(uint8_t event)
         phase->fadeOut = editDelay(y, event, attr, STR_FADEOUT, phase->fadeOut);
         break;
 
-#if defined(GVARS) && !defined(M64)
+#if defined(GVARS) && !defined(CPUM64)
 
       case ITEM_MODEL_PHASE_GVARS_LABEL:
         lcd_putsLeft(y, STR_GLOBAL_VARS);
@@ -2388,7 +2388,7 @@ void menuModelLimits(uint8_t event)
 
 void menuModelCurvesAll(uint8_t event)
 {
-#if defined(GVARS) && defined(M64)
+#if defined(GVARS) && defined(CPUM64)
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES+MAX_GVARS);
 #else
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
@@ -2419,7 +2419,7 @@ void menuModelCurvesAll(uint8_t event)
     uint8_t y = FH + i*FH;
     uint8_t k = i + s_pgOfs;
     uint8_t attr = (sub == k ? INVERS : 0);
-#if defined(GVARS) && defined(M64)
+#if defined(GVARS) && defined(CPUM64)
     if (k < MAX_CURVES) {
       putsStrIdx(0, y, STR_CV, k+1, attr);
     }

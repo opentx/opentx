@@ -71,14 +71,14 @@ uint8_t lcdLock;
 uint32_t lcdInputs;
 #endif
 
-void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, uint8_t mode)
+void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags mode)
 {
   uint8_t *p = &displayBuf[ y / 8 * DISPLAY_W + x ];
 
 #if defined(PCBX9D)
-  const pm_uchar *q = (c < 0xC0) ? &font[(c-0x20)*5+4] : &font_extra[(c-0xC0)*5+4];
+  const pm_uchar *q = (c < 0xC0) ? &font_5x7[(c-0x20)*5+4] : &font_5x7_extra[(c-0xC0)*5+4];
 #else
-  const pm_uchar *q = &font[(c-0x20)*5+4];
+  const pm_uchar *q = &font_5x7[(c-0x20)*5+4];
 #endif
 
   bool inv = false;
@@ -97,7 +97,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, uint8_t mode)
   if (mode & DBLSIZE) {
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
-    q = &font_dblsize[((uint16_t)c-0x20)*20];
+    q = &font_10x14[((uint16_t)c-0x20)*20];
     for (int8_t i=11; i>=0; i--) {
       if (mode & CONDENSED && i<=1) break;
       uint8_t b1=0, b2=0;
@@ -118,6 +118,43 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, uint8_t mode)
       }   
     }   
   }
+#if defined(PCBX9D)
+  if (mode & MIDSIZE) {
+    /* each letter consists of ten top bytes followed by
+     * by ten bottom bytes (20 bytes per * char) */
+    q = &font_8x10[((uint16_t)c-0x20)*16];
+    for (int8_t i=9; i>=0; i--) {
+      // TODO? if (mode & CONDENSED && i<=1) break;
+      uint8_t b1=0, b2=0;
+      if (i!=0 && i!= 9) {
+        b1 = pgm_read_byte(q++); /*top byte*/
+        b2 = pgm_read_byte(q++); /*top byte*/
+      }
+      if (inv) {
+        b1=~b1;
+        b2=~b2;
+      }
+      uint8_t ym8 = (y % 8);
+      if (&p[DISPLAY_W+1] < DISPLAY_END) {
+        ASSERT_IN_DISPLAY(p);
+        ASSERT_IN_DISPLAY(p+DISPLAY_W);
+        *p = (*p & (~(0xff << ym8))) + (b1 << ym8);
+        uint8_t *r = p + DISPLAY_W;
+        if (r<DISPLAY_END) {
+          if (ym8)
+            *r = (*r & (~(0xff >> (8-ym8)))) + (b1 >> (8-ym8));
+          *r = (*r & (~(0x0f << ym8))) + ((b2&0x0f) << ym8);
+          if (ym8) {
+            r = r + DISPLAY_W;
+            if (r<DISPLAY_END)
+              *r = (*r & (~(0x0f >> (8-ym8)))) + ((b2&0x0f) >> (8-ym8));
+          }
+        }
+        p++;
+      }
+    }
+  }
+#endif
   else {
     uint8_t condense=0;
 
@@ -152,7 +189,6 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, uint8_t mode)
             *(p+1) &= (b << ym8);
           else
             *(p+1) |= (b << ym8);
-
         }
 #endif
       }
@@ -166,14 +202,14 @@ void lcd_putc(xcoord_t x, uint8_t y, const unsigned char c)
   lcd_putcAtt(x,y,c,0);
 }
 
-void lcd_putsiAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t idx, uint8_t flags)
+void lcd_putsiAtt(xcoord_t x, uint8_t y,const pm_char * s,uint8_t idx, LcdFlags flags)
 {
   uint8_t length;
   length = pgm_read_byte(s++) ;
   lcd_putsnAtt(x,y,s+length*idx,length,flags & ~(BSS|ZCHAR));
 }
 
-void lcd_putsnAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mode)
+void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlags mode)
 {
   while(len!=0) {
     unsigned char c;
@@ -191,8 +227,9 @@ void lcd_putsnAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mod
     if (!c || x>DISPLAY_W-6) break;
     if (c >= 0x20) {
       lcd_putcAtt(x,y,c,mode);
-      x += FW;
+      x += FW - (mode&CONDENSED ? 1 : 0);
       if (mode&DBLSIZE) x += FW-1;
+      else if (mode&MIDSIZE) x += FW-3;
     }
     else {
       x += (c*FW/2);
@@ -203,17 +240,17 @@ void lcd_putsnAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t len,uint8_t mod
   lcdLastPos = x;
 }
 
-void lcd_putsn(xcoord_t x,uint8_t y,const pm_char * s,uint8_t len)
+void lcd_putsn(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len)
 {
   lcd_putsnAtt(x, y, s, len, 0);
 }
 
-void lcd_putsAtt(xcoord_t x,uint8_t y,const pm_char * s,uint8_t mode)
+void lcd_putsAtt(xcoord_t x, uint8_t y, const pm_char * s, LcdFlags flags)
 {
-  lcd_putsnAtt(x, y, s, 255, mode);
+  lcd_putsnAtt(x, y, s, 255, flags);
 }
 
-void lcd_puts(xcoord_t x,uint8_t y,const pm_char * s)
+void lcd_puts(xcoord_t x, uint8_t y, const pm_char * s)
 {
   lcd_putsAtt(x, y, s, 0);
 }
@@ -223,7 +260,7 @@ void lcd_putsLeft(uint8_t y, const pm_char * s)
   lcd_puts(0, y, s);
 }
 
-void lcd_outhex4(xcoord_t x,uint8_t y,uint16_t val)
+void lcd_outhex4(xcoord_t x, uint8_t y, uint16_t val)
 {
   x+=FWNUM*4;
   for(int i=0; i<4; i++)
@@ -235,6 +272,7 @@ void lcd_outhex4(xcoord_t x,uint8_t y,uint16_t val)
     val>>=4;
   }
 }
+
 void lcd_outdez8(xcoord_t x, uint8_t y, int8_t val)
 {
   lcd_outdezAtt(x, y, val);
@@ -250,6 +288,11 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
   bool dblsize = flags & DBLSIZE;
+#if defined(PCBX9D)
+  bool midsize = flags & MIDSIZE;
+#else
+#define midsize 0
+#endif
 
   bool neg = false;
   if (flags & UNSIGN) { flags -= UNSIGN; }
@@ -272,6 +315,9 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   if (dblsize) {
     fw += FWNUM;
   }
+  else if (midsize) {
+    fw += FWNUM-1;
+  }
   else {
     if (flags & LEFT) {
       if (mode > 0)
@@ -282,7 +328,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   if (flags & LEFT) {
     x += len * fw;
     if (neg)
-      x += (dblsize ? 7 : FWNUM);
+      x += ((dblsize|midsize) ? 7 : FWNUM);
   }
 
   lcdLastPos = x;
@@ -291,7 +337,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   for (uint8_t i=1; i<=len; i++) {
     div_t qr = div((uint16_t)val, 10);
     char c = qr.rem + '0';
-    uint8_t f = flags;
+    LcdFlags f = flags;
     if (dblsize) {
       if (c=='1' && i==len && xn>x+10) { x+=2; f|=CONDENSED; }
       if ((uint16_t)val >= 1000) { x+=FWNUM; f&=~DBLSIZE; }
@@ -308,6 +354,10 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
           else { xn--; ln++; }
         }
       }
+      else if (midsize) {
+        x -= 2;
+        xn = x;
+      }
       else {
         x--;
         lcd_plot(x, y+6);
@@ -322,9 +372,17 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   }
 
   if (xn) {
-    y &= ~0x07;
-    lcd_hline(xn, (y & ~0x07)+2*FH-3, ln);
-    lcd_hline(xn, y+2*FH-2, ln);
+    if (midsize) {
+      if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE))
+        lcd_vline(xn+1, y, 12);
+      lcd_hline(xn, y+9, 2);
+      lcd_hline(xn, y+10, 2);
+    }
+    else {
+      y &= ~0x07;
+      lcd_hline(xn, (y & ~0x07)+2*FH-3, ln);
+      lcd_hline(xn, y+2*FH-2, ln);
+    }
   }
 
   if (neg) lcd_putcAtt(x, y, '-', flags);
@@ -342,7 +400,7 @@ void lcd_mask(uint8_t *p, uint8_t mask, uint8_t att)
     *p ^= mask;
 }
 
-void lcd_plot(xcoord_t x,uint8_t y, uint8_t att)
+void lcd_plot(xcoord_t x, uint8_t y, uint8_t att)
 {
   uint8_t *p = &displayBuf[ y / 8 * DISPLAY_W + x ];
   if (p<DISPLAY_END)
@@ -473,14 +531,12 @@ void lcd_invert_line(int8_t y)
   }
 }
 
-void putsTime(xcoord_t x, uint8_t y, putstime_t tme, uint8_t att, uint8_t att2)
+void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {
   div_t qr;
 
-  if (att & LEFT) x+=3*FW;
-
   if (tme<0) {
-    lcd_putcAtt(x - ((att & DBLSIZE) ? FW+1 : FWNUM), y, '-', att);
+    lcd_putcAtt(x - ((att & DBLSIZE) ? FW+3 : ((att & MIDSIZE) ? FW+1 : FWNUM)), y, '-', att);
     tme = -tme;
   }
 
@@ -496,31 +552,45 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, uint8_t att, uint8_t att2)
   }
 #endif
 
+  uint8_t x2, x3;
+  if (att&DBLSIZE) {
+    x2 = x+2*(FW+FWNUM)-3;
+    x3 = x+2*(FW+FWNUM)+FW-2;
+  }
+  else if (att&MIDSIZE) {
+    x2 = x+2*8-1;
+    x3 = x+2*8+7;
+  }
+  else {
+    x2 = x+2*FWNUM-1;
+    x3 = x+2*FWNUM-1+FW;
+  }
+
+  lcd_putcAtt(x2, y, ':', att&att2);
   lcd_outdezNAtt(x, y, qr.quot, att|LEADING0|LEFT, 2);
-  lcd_putcAtt(lcdLastPos-((att & DBLSIZE) ? 1 : 0), y, ':', att&att2);
-  lcd_outdezNAtt(lcdLastPos+FW, y, qr.rem, att2|LEADING0|LEFT, 2);
+  lcd_outdezNAtt(x3, y, qr.rem, att2|LEADING0|LEFT, 2);
 }
 
 // TODO to be optimized with putsTelemetryValue
-void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, uint8_t att)
+void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, LcdFlags att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
   if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att&(~INVERS));
 }
 
-void putsVBat(xcoord_t x, uint8_t y, uint8_t att)
+void putsVBat(xcoord_t x, uint8_t y, LcdFlags att)
 {
   putsVolts(x, y, g_vbat100mV, att);
 }
 
-void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, uint8_t att)
+void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags att)
 {
   lcd_putsAtt(x, y, str, att);
   lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
   lcd_putsAtt(x, y, str, att);
 }
 
-void putsChnRaw(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att)
+void putsChnRaw(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
 {
   if (idx==0)
     lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
@@ -534,7 +604,7 @@ void putsChnRaw(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att)
     lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1+NUM_SW_SRCRAW+NUM_CYC+NUM_PPM+NUM_CHNOUT), att);
 }
 
-void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att)
+void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
 {
 #if defined(PCBX9D)
   if (idx<=NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1+NUM_SW_SRCRAW)
@@ -553,12 +623,12 @@ void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, uint8_t att)
 #endif
 }
 
-void putsChnLetter(xcoord_t x, uint8_t y, uint8_t idx, uint8_t attr)
+void putsChnLetter(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags attr)
 {
   lcd_putsiAtt(x, y, STR_RETA123, idx-1, attr);
 }
 
-void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
+void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, LcdFlags att)
 {
   uint8_t len = sizeof(g_model.name);
   while (len>0 && !name[len-1]) --len;
@@ -570,7 +640,7 @@ void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, uint8_t att)
   }
 }
 
-void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, uint8_t att)
+void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 {
   if (idx == 0)
     return lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
@@ -597,13 +667,13 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, uint8_t att)
       }
     }
 #endif
-    if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, suffix, att);
+    if (~att & CONDENSED) lcd_putcAtt(x+3*FW, y, suffix, att);
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
 
 #ifdef FLIGHT_PHASES
-void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, uint8_t att)
+void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 {
   if (idx==0) { lcd_putsiAtt(x, y, STR_MMMINV, 0, att); return; }
   if (idx < 0) { lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/); idx = -idx; }
@@ -614,7 +684,7 @@ void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, uint8_t att)
 }
 #endif
 
-void putsCurve(xcoord_t x, uint8_t y, int8_t idx, uint8_t att)
+void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 {
   if (idx < 0) {
     lcd_putcAtt(x-1*FW, y, '!', att);
@@ -626,7 +696,7 @@ void putsCurve(xcoord_t x, uint8_t y, int8_t idx, uint8_t att)
     putsStrIdx(x, y, PSTR("c"), idx-CURVE_BASE+1, att);
 }
 
-void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, uint8_t att)
+void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att)
 {
   if (mode < 0) {
     mode = TMR_VAROFS - mode - 1;
@@ -640,7 +710,7 @@ void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, uint8_t att)
   putsSwitches(x, y, mode-(TMR_VAROFS-1), att);
 }
 
-void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
+void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
   int16_t v = getRawTrimValue(phase, idx);
 
@@ -655,7 +725,7 @@ void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att
 }
 
 #if defined(ROTARY_ENCODERS)
-void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, uint8_t att)
+void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
 #if defined(EXTRA_ROTARY_ENCODERS)
   int16_t v;

@@ -80,7 +80,7 @@ inline MenuFuncP lastPopMenu()
   return g_menuStack[g_menuStackPtr+1];
 }
 
-void doMainScreenGrphics();
+void doMainScreenGraphics();
 void menuMainView(uint8_t event);
 void menuGeneralDiagAna(uint8_t event);
 #ifdef FRSKY

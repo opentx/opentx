@@ -136,8 +136,8 @@ Open9xSim::Open9xSim(FXApp* a)
   arrow[2]= new FXArrowButton(hf10,this,1000,ARROW_RIGHT);
   for(int i=4; i<8; i++){
     knobs[i]= new FXKnob(hf11,NULL,0,KNOB_TICKS|LAYOUT_LEFT);
-    knobs[i]->setRange(0,1023);
-    knobs[i]->setValue(512);
+    knobs[i]->setRange(-1024, 1024);
+    knobs[i]->setValue(0);
   }
   
   arrow2[0]= new FXArrowButton(hf00,this,1000,ARROW_LEFT);
@@ -239,7 +239,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 
 
   if(hasFocus()) {
-#ifdef REVB
+#if defined(PCBX9D) || defined(REVB)
 #define ERSKY9X_RETURN_MASK (0x20)
 #define ERSKY9X_EXIT_MASK   (0x01000000)
 #define ERSKY9X_EXIT_PIO    PIOC
@@ -530,13 +530,17 @@ int main(int argc,char **argv)
 
 uint16_t anaIn(uint8_t chan)
 {
+#if defined(PCBX9D)
+  if (chan == 8)
+    return 1500;
+#elif defined(PCBGRUVIN9X)
   if (chan == 7)
-#ifdef PCBGRUVIN9X
     return 150;
 #else
+  if (chan == 7)
     return 1500;
 #endif
-  else if (chan<4)
+  else if (chan<NUM_STICKS)
     return th9xSim->sliders[chan]->getValue();
   else
     return th9xSim->knobs[chan]->getValue();

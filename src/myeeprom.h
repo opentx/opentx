@@ -174,17 +174,16 @@ PACK(typedef struct t_EEGeneral {
 
 }) EEGeneral;
 
-// eeprom modelspec
-
-#define LEN_MODEL_NAME     10
-
 #if defined(PCBX9D)
+#define LEN_MODEL_NAME     12
 #define LEN_EXPOMIX_NAME   10
 #define LEN_FP_NAME        10
 #elif defined(PCBSKY9X)
+#define LEN_MODEL_NAME     10
 #define LEN_EXPOMIX_NAME   6
 #define LEN_FP_NAME        6
 #else
+#define LEN_MODEL_NAME     10
 #define LEN_FP_NAME        6
 #endif
 
@@ -633,7 +632,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define ROTARY_ENCODER_ARRAY_EXTRA
 #endif
 
-#if defined(M64)
+#if defined(CPUM64)
 #define TRIM_ARRAY int8_t trim[4]; int8_t trim_ext:8
 #else
 #define TRIM_ARRAY int16_t trim[4]
@@ -641,17 +640,17 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 
 typedef int16_t gvar_t;
 
-#if !defined(M64)
+#if !defined(CPUM64)
 typedef char gvar_name_t[6];
 #define GVAR_MAX  1024
 #endif
 
-#if defined(M64) && defined(GVARS)
+#if defined(CPUM64) && defined(GVARS)
 #define MAX_GVARS 5
 #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS]
 #define PHASE_GVARS_DATA
 #define GVAR_VALUE(x, p) g_model.gvars[x]
-#elif defined(M64)
+#elif defined(CPUM64)
 #define MAX_GVARS 0
 #define MODEL_GVARS_DATA
 #define PHASE_GVARS_DATA
@@ -684,7 +683,7 @@ PACK(typedef struct t_PhaseData {
 #define MAX_EXPOS  32
 #define NUM_CSW    32 // number of custom switches
 #define NUM_FSW    32 // number of functions assigned to switches
-#elif defined(PCBGRUVIN9X) || defined(M128)
+#elif defined(PCBGRUVIN9X) || defined(CPUM128)
 #define MAX_MODELS 30
 #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
 #define MAX_PHASES 5
@@ -765,7 +764,7 @@ enum Dsm2Variants {
 
 #if defined(MAVLINK)
 #define TELEMETRY_DATA MavlinkData mavlink
-#elif defined(FRSKY) || !defined(M64)
+#elif defined(FRSKY) || !defined(CPUM64)
 #define TELEMETRY_DATA FrSkyData frsky
 #else
 #define TELEMETRY_DATA

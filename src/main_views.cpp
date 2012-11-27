@@ -33,22 +33,50 @@
 
 #include "open9x.h"
 
+#if defined(LCD212)
+#define BOX_WIDTH     31
+#define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
+#define LBOX_CENTERY  (DISPLAY_H-BOX_WIDTH/2-10)
+#define RBOX_CENTERX  (DISPLAY_W-LBOX_CENTERX)
+#define RBOX_CENTERY  LBOX_CENTERY
+#define MODELNAME_X   (13)
+#define VBATT_X       (MODELNAME_X+30)
+#define VBATT_Y       (FH+3)
+#define VBATTUNIT_X   (VBATT_X-2)
+#define VBATTUNIT_Y   VBATT_Y
+#define BITMAP_X      ((DISPLAY_W-64)/2)
+#define BITMAP_Y      (DISPLAY_H/2)
+#define PHASE_X       BITMAP_X
+#define PHASE_Y       (3*FH)
+#define TIMERS_X      (24*FW+9)
+#define REBOOT_X      (DISPLAY_W-FW)
+#else
 #define BOX_WIDTH     23
-#define BAR_HEIGHT    (BOX_WIDTH-1l)
-#define MARKER_WIDTH  5
-#define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
 #define LBOX_CENTERX  (DISPLAY_W/4 + 10)
 #define LBOX_CENTERY  (DISPLAY_H-9-BOX_WIDTH/2)
 #define RBOX_CENTERX  (3*DISPLAY_W/4 - 10)
-#define RBOX_CENTERY  (DISPLAY_H-9-BOX_WIDTH/2)
+#define RBOX_CENTERY  LBOX_CENTERY
+#define MODELNAME_X   (2*FW-2)
+#define PHASE_X       (6*FW)
+#define PHASE_Y       (2*FH)
+#define VBATT_X       (6*FW)
+#define VBATT_Y       (2*FH)
+#define VBATTUNIT_X   (VBATT_X-1)
+#define VBATTUNIT_Y   (3*FH)
+#define REBOOT_X      (20*FW-3)
+#endif
 
-void doMainScreenGrphics()
+#define BAR_HEIGHT    (BOX_WIDTH-1l)
+#define MARKER_WIDTH  5
+#define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
+
+void doMainScreenGraphics()
 {
   lcd_square(LBOX_CENTERX-BOX_WIDTH/2, LBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
   lcd_square(RBOX_CENTERX-BOX_WIDTH/2, RBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
 
-  DO_CROSS(LBOX_CENTERX,LBOX_CENTERY,3)
-  DO_CROSS(RBOX_CENTERX,RBOX_CENTERY,3)
+  DO_CROSS(LBOX_CENTERX, LBOX_CENTERY, 3)
+  DO_CROSS(RBOX_CENTERX, RBOX_CENTERY, 3)
 
   int16_t calibStickVert = calibratedStick[CONVERT_MODE(1+1)-1];
   if (g_eeGeneral.throttleReversed && CONVERT_MODE(1+1)-1 == THR_STICK)
@@ -59,15 +87,26 @@ void doMainScreenGrphics()
     calibStickVert = -calibStickVert;
   lcd_square(RBOX_CENTERX+(calibratedStick[CONVERT_MODE(3+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, RBOX_CENTERY-(calibStickVert*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
 
+#if defined(PCBX9D)
+  for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
+    xcoord_t x = (i>NUM_STICKS+1 ? DISPLAY_W-5 : 3);
+    int8_t y = (i%2 ? DISPLAY_H/2+1 : 1);
+    lcd_vline(x, y, DISPLAY_H/2-2);
+    lcd_vline(x+1, y, DISPLAY_H/2-2);
+    y += ((calibratedStick[i]+RESX)*(DISPLAY_H/2-4)/(RESX*2));  // calculate once per loop
+    lcd_vline(x-1, y, 2);
+    lcd_vline(x+2, y, 2);
+  }
+#else
   // Optimization by Mike Blandford
   {
     uint8_t x, y, len ;  // declare temporary variables
-    for( x = -5, y = 4 ; y < 7 ; x += 5, y += 1 )
-    {
+    for (x = -5, y = 4 ; y < 7 ; x += 5, y += 1) {
       len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-      V_BAR(DISPLAY_W/2+x,DISPLAY_H-8, len)
+      V_BAR(DISPLAY_W/2+x, DISPLAY_H-8, len)
     }
   }
+#endif
 }
 
 #if defined(PCBX9D)
@@ -204,19 +243,10 @@ void menuMainView(uint8_t event)
   {
     // Flight Phase Name
     uint8_t phase = s_perout_flight_phase;
-#if defined(LCD212)
-    uint8_t len = ZLEN(g_model.phaseData[phase].name);
-    if (len > 0) {
-      uint8_t tmp = (DISPLAY_W - 6*FW - 2 - len*FW/2);
-      lcd_putsnAtt(tmp, 5, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
-      lcd_rect(tmp-2, 5-2, 3+FW*len, FH+3);
-    }
-#else
-    lcd_putsnAtt(6*FW, 2*FH, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
-#endif
+    lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 
     // Model Name
-    putsModelName(2*FW-2, 0*FH, g_model.name, g_eeGeneral.currModel, DBLSIZE);
+    putsModelName(MODELNAME_X, 0*FH, g_model.name, g_eeGeneral.currModel, MIDSIZE);
 
     // Voltage (or alarm if any)
 #if defined(PCBSKY9X)
@@ -229,45 +259,49 @@ void menuMainView(uint8_t event)
     else
 #endif
     {
-      uint8_t att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | DBLSIZE;
-      putsVBat(6*FW-1, 2*FH, att|NO_UNIT);
-      lcd_putc(6*FW, 3*FH, 'V');
-    }
-
-    // And ! in case of unexpected shutdown
-    if (unexpectedShutdown) {
-      lcd_putcAtt(20*FW-3, 0*FH, '!', INVERS);
+      LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | MIDSIZE;
+      putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
+#if defined(PCBX9D)
+      lcd_putcAtt(VBATTUNIT_X, VBATTUNIT_Y, 'v', MIDSIZE);
+#else
+      lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
+#endif
     }
 
 #if defined(LCD212)
     // Main timer
     if (g_model.timers[0].mode) {
-      uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
-      putsTime(12*FW-2, FH*2, s_timerVal[0], att, att);
-      putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2 : 9*FW-FW/2-7, FH*3, g_model.timers[0].mode, SWCONDENSED);
+      LcdFlags att = MIDSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
+      putsTime(TIMERS_X, 0, s_timerVal[0], att, att);
+      putsTmrMode(TIMERS_X-23, 4, g_model.timers[0].mode, CONDENSED);
+      if (g_model.timers[0].remanent) lcd_putc(TIMERS_X+42, 1, 'R');
     }
 
     // Second timer
     if (g_model.timers[1].mode) {
-      uint8_t att = DBLSIZE | (s_timerState[1]==TMR_BEEPING ? BLINK|INVERS : 0);
-      putsTime(23*FW+1, FH*2, s_timerVal[1], att, att);
-      putsTmrMode(s_timerVal[1] >= 0 ? 20*FW-FW/2+4 : 20*FW-FW/2-3, FH*3, g_model.timers[1].mode, SWCONDENSED);
+      LcdFlags att = MIDSIZE | (s_timerState[1]==TMR_BEEPING ? BLINK|INVERS : 0);
+      putsTime(TIMERS_X, (FH+3), s_timerVal[1], att, att);
+      putsTmrMode(TIMERS_X-23, FH+7, g_model.timers[1].mode, CONDENSED);
+      if (g_model.timers[1].remanent) lcd_putc(TIMERS_X+42, FH+4, 'R');
     }
 #else
     // Main timer
     if (g_model.timers[0].mode) {
       uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
-      putsTime(12*FW+3, FH*2, s_timerVal[0], att, att);
-      putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timers[0].mode, SWCONDENSED);
+      putsTime(12*FW+2, FH*2, s_timerVal[0], att, att);
+      putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timers[0].mode, CONDENSED);
     }
 #endif
 
     // Trim sliders
-    for(uint8_t i=0; i<4; i++)
-    {
+    for (uint8_t i=0; i<4; i++) {
 #define TL 27
       //                        LH LV RV RH
-      static uint8_t x[4]    = {DISPLAY_W*1/4+2, 3, DISPLAY_W-4, DISPLAY_W*3/4-2};
+#if defined(LCD212)
+      static xcoord_t x[4] = {32+9, 10, DISPLAY_W-11, DISPLAY_W-32-9};
+#else
+      static uint8_t x[4]  = {DISPLAY_W*1/4+2, 3, DISPLAY_W-4, DISPLAY_W*3/4-2};
+#endif
       static uint8_t vert[4] = {0,1,1,0};
       uint8_t xm, ym;
       xm = x[CONVERT_MODE(i+1)-1];
@@ -304,6 +338,10 @@ void menuMainView(uint8_t event)
       lcd_square(xm-3, ym-3, 7, att);
     }
   }
+
+#if defined(PCBX9D)
+  lcd_img(BITMAP_X, BITMAP_Y, modelBitmap, 0, 0);
+#endif
 
   if (view_base < e_inputs) {
     // scroll bar
@@ -347,11 +385,10 @@ void menuMainView(uint8_t event)
           if(len>WBAR2)  len = WBAR2;  // prevent bars from going over the end - comment for debugging
           lcd_hlineStip(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
           lcd_vline(x0,y0-2,5);
-          if (val>0){
+          if (val>0)
             x0+=1;
-          }else{
+          else
             x0-=len;
-          }
           lcd_hline(x0,y0+1,len);
           lcd_hline(x0,y0-1,len);
           break;
@@ -361,12 +398,33 @@ void menuMainView(uint8_t event)
   else if (view_base == e_inputs) {
     if (view == e_inputs) {
       // hardware inputs
-      doMainScreenGrphics();
+      doMainScreenGraphics();
+#if defined(PCBX9D)
+      for (uint8_t i=0; i<8; i++) {
+        uint8_t sw;
+        switch(i) {
+          case 0:
+            sw = getValue(MIXSRC_SA) > 0 ? 2 : 1;
+            break;
+          case 7:
+            sw = getValue(MIXSRC_SH) > 0 ? 2+2+3*6 : 1+3*6;
+            break;
+          default:
+          {
+            int8_t val = getValue(MIXSRC_SA+i);
+            sw = ((val > 0) ? 3*i+2 : ((val < 0) ? 3*i+1 : 3*i));
+            break;
+          }
+        }
+        putsSwitches(i<4 ? 8*FW+3: 24*FW+1, (i%4)*FH+3*FH, sw, 0);
+      }
+#else
       for (uint8_t i=0; i<6; i++) {
         int8_t sw1 = (i<3 ? 1+i : 4+i);
         int8_t sw2 = (sw1 == 9 ? (getSwitch(4, 0) ? 4 : (getSwitch(5, 0) ? 5 : 6)) : sw1);
-        putsSwitches(i<3 ? 2*FW-2: 17*FW-1, (i%3)*FH+4*FH+1, sw2, getSwitch(sw1, 0) ? INVERS : 0);
+        putsSwitches(i<3 ? 2*FW-3: 17*FW+2, (i%3)*FH+4*FH+1, sw2, getSwitch(sw1, 0) ? INVERS : 0);
       }
+#endif
     }
     else {
 #if defined(ROTARY_ENCODERS)
@@ -402,8 +460,13 @@ void menuMainView(uint8_t event)
   }
   else { // timer2
     putsTime(33+FW+2, FH*5, s_timerVal[1], DBLSIZE, DBLSIZE);
-    putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, SWCONDENSED);
+    putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, CONDENSED);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
+  }
+
+  // And ! in case of unexpected shutdown
+  if (unexpectedShutdown) {
+    lcd_putcAtt(REBOOT_X, 0*FH, '!', INVERS);
   }
 
   if (s_global_warning) {
@@ -418,7 +481,7 @@ void menuMainView(uint8_t event)
     s_gvar_timer--;
     s_warning = PSTR("Global Variable");
     displayBox();
-#if defined(M64)
+#if defined(CPUM64)
     lcd_putsAtt(16+4*FW, 5*FH, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(16+4*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
 #else
@@ -430,8 +493,9 @@ void menuMainView(uint8_t event)
   }
 #endif
 
-#ifdef DSM2
+#if defined(DSM2)
   if (s_bind_mode) // Issue 98
     lcd_putsAtt(15*FW, 0, PSTR("BIND"), 0);
 #endif
+
 }

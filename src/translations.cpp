@@ -374,7 +374,7 @@ const pm_char STR_OWN[] PROGMEM = TR_OWN;
 const pm_char STR_ROTARY_ENCODER[] PROGMEM = TR_ROTARY_ENCODER;
 const pm_char STR_DATE[] PROGMEM = TR_DATE;
 
-const pm_uchar font[] PROGMEM = {
+const pm_uchar font_5x7[] PROGMEM = {
 #include "font.lbm"
 #if defined(TRANSLATIONS_SE)
 #include "font_se.lbm"
@@ -391,7 +391,7 @@ const pm_uchar font[] PROGMEM = {
 #endif
 };
 
-const pm_uchar font_dblsize[] PROGMEM = {
+const pm_uchar font_10x14[] PROGMEM = {
 #include "font_dblsize.lbm"
 #if defined(TRANSLATIONS_SE)
 #include "font_dblsize_se.lbm"
@@ -407,12 +407,16 @@ const pm_uchar font_dblsize[] PROGMEM = {
 };
 
 #if defined(PCBX9D)
-const pm_uchar font_extra[] PROGMEM = {
+const pm_uchar font_8x10[] PROGMEM = {
+#include "font_midsize.lbm"
+};
+
+const pm_uchar font_5x7_extra[] PROGMEM = {
 #include "font_extra.lbm"
 };
 
-const pm_uchar font_extra_dblsize[] PROGMEM = {
-#include "font_extra_dblsize.lbm"
+const pm_uchar font_10x14_extra[] PROGMEM = {
+#include "font_dblsize_extra.lbm"
 };
 #endif
 

@@ -87,7 +87,7 @@ extern void beep(uint8_t val);
 #define AUDIO_RESET()
 
 #if !defined(PCBSKY9X)
-FORCEINLINE void AUDIO_HEARTBEAT()
+inline void AUDIO_HEARTBEAT()
 {
     if(g_beepCnt) {
         if(!beepAgainOrig) {

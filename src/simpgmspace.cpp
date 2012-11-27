@@ -338,8 +338,9 @@ FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
   return FR_OK;
 }
 
-FRESULT f_lseek (FIL*, DWORD)
+FRESULT f_lseek (FIL* fil, DWORD offset)
 {
+  fseek((FILE*)fil->fs, offset, SEEK_SET);
   return FR_OK;
 }
 

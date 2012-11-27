@@ -418,12 +418,13 @@ extern const pm_char STR_MODELS_EXT[];
 #define STR_UPDATE_LIST STR_DELAYDOWN
 #endif
 
-extern const pm_uchar font[];
-extern const pm_uchar font_dblsize[];
+extern const pm_uchar font_5x7[];
+extern const pm_uchar font_10x14[];
 
 #if defined(PCBX9D)
-extern const pm_uchar font_extra[];
-extern const pm_uchar font_extra_dblsize[];
+extern const pm_uchar font_8x10[];
+extern const pm_uchar font_5x7_extra[];
+extern const pm_uchar font_10x14_extra[];
 #endif
 
 extern const pm_char STR_WARNING[];

@@ -254,7 +254,6 @@ ifeq ($(PCB), SKY9X)
 endif
 
 ifeq ($(PCB), X9D)
-  CPPDEFS += -DREVB
   LDSCRIPT = sky9x/sam3s4c_flash.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m4
@@ -447,7 +446,7 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), X9D)
   # X9D, so ...
   OPT = 2
-  CPPDEFS += -DPCBX9D -DPCBSKY9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
+  CPPDEFS += -DPCBX9D -DPCBSKY9X -DREVB -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_sky9x.cpp 
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
@@ -460,6 +459,7 @@ ifeq ($(PCB), X9D)
   PULSESSRC = pulses_arm.cpp
   CPPSRC += sky9x/audio.cpp haptic.cpp
   CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp
+  CPPSRC += bmp.cpp
   
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
@@ -481,7 +481,7 @@ endif
 ifeq ($(PCB), SKY9X)
   # SKY9X, so ...
   OPT = 2
-  CPPDEFS += -DPCBSKY9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_sky9x.cpp
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
@@ -542,7 +542,7 @@ endif
 ifeq ($(PCB), STD128)
   # STD PCB with Atmega 128, so ...
   OPT = 2
-  CPPDEFS += -DPCBSTD -DM128 -DEEPROM_VARIANT=0x8000
+  CPPDEFS += -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=0x8000
   EXTRAINCDIRS += stock
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp
@@ -578,7 +578,7 @@ ifeq ($(PCB), STD)
   # STD PCB, so ...
   OPT = s
   EXTRAINCDIRS += stock
-  CPPDEFS += -DPCBSTD -DM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
+  CPPDEFS += -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = board_stock.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp
@@ -745,7 +745,7 @@ eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-lbm: font.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
+lbm: font.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -781,28 +781,33 @@ arm-stamp:
 	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-arm.txt
 	@cat stamp-open9x-arm.txt
 
-font.lbm: font_6x1.xbm font_extra_6x1.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm
+font.lbm: font.xbm font_extra.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(IMG2LBM) $< $@ char
-	$(IMG2LBM) font_extra_6x1.xbm font_extra.lbm char
-	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm char
-	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm char
-	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm char
-	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm char
-	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm char
-	$(IMG2LBM) translations/font_es.xbm translations/font_es.lbm char
+	$(IMG2LBM) font.xbm font.lbm 5x7
+	$(IMG2LBM) font_extra.xbm font_extra.lbm 5x7
+	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm 5x7
+	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm 5x7
+	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm 5x7
+	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm 5x7
+	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm 5x7
+	$(IMG2LBM) translations/font_es.xbm translations/font_es.lbm 5x7
 
-font_dblsize.lbm: font_dblsize.xbm font_extra_dblsize.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
+font_midsize.lbm: font_midsize.xbm
 	@echo
 	@echo "Convert font from xbm to lbm:"
-	$(IMG2LBM) $< $@ dblsize
-	$(IMG2LBM) font_extra_dblsize.xbm font_extra_dblsize.lbm dblsize
-	$(IMG2LBM) translations/font_dblsize_se.xbm translations/font_dblsize_se.lbm dblsize
-	$(IMG2LBM) translations/font_dblsize_de.xbm translations/font_dblsize_de.lbm dblsize
-	$(IMG2LBM) translations/font_dblsize_it.xbm translations/font_dblsize_it.lbm dblsize
-	$(IMG2LBM) translations/font_dblsize_fr.xbm translations/font_dblsize_fr.lbm dblsize
-	$(IMG2LBM) translations/font_dblsize_es.xbm translations/font_dblsize_es.lbm dblsize
+	$(IMG2LBM) $< $@ 8x10
+	
+font_dblsize.lbm: font_dblsize.xbm font_dblsize_extra.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
+	@echo
+	@echo "Convert font from xbm to lbm:"
+	$(IMG2LBM) font_dblsize.xbm font_dblsize.lbm 10x14
+	$(IMG2LBM) font_dblsize_extra.xbm font_dblsize_extra.lbm 10x14
+	$(IMG2LBM) translations/font_dblsize_se.xbm translations/font_dblsize_se.lbm 10x14
+	$(IMG2LBM) translations/font_dblsize_de.xbm translations/font_dblsize_de.lbm 10x14
+	$(IMG2LBM) translations/font_dblsize_it.xbm translations/font_dblsize_it.lbm 10x14
+	$(IMG2LBM) translations/font_dblsize_fr.xbm translations/font_dblsize_fr.lbm 10x14
+	$(IMG2LBM) translations/font_dblsize_es.xbm translations/font_dblsize_es.lbm 10x14
 
 sticks.lbm: sticks_4x1.xbm
 	@echo
@@ -866,7 +871,7 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
-	g++ $(CPPFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O1 -o simu $(FOXINC) $(FOXLIB) -pthread
+	g++ $(CPPFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048

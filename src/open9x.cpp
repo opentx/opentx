@@ -77,7 +77,7 @@ const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 const pm_uchar * splash_lbm = splashdata+4;
 #endif
 
-#if !defined(M64) || defined(EXTSTD)
+#if !defined(CPUM64) || defined(EXTSTD)
 const pm_uchar asterisk_lbm[] PROGMEM = {
 #include "asterisk.lbm"
 };
@@ -87,6 +87,10 @@ const pm_uchar asterisk_lbm[] PROGMEM = {
 
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
+
+#if defined(PCBX9D)
+uint8_t modelBitmap[64*32/8];
+#endif
 
 #if !defined(PCBSKY9X)
 uint8_t g_tmr1Latency_max;
@@ -273,7 +277,7 @@ CustomSwData *cswaddress(uint8_t idx)
   return &g_model.customSw[idx];
 }
 
-#if defined(M64)
+#if defined(CPUM64)
 void memclear(void *ptr, uint8_t size)
 {
   memset(ptr, 0, size);
@@ -917,7 +921,7 @@ uint8_t getFlightPhase()
 int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
   PhaseData *p = phaseaddress(phase);
-#if defined(M64)
+#if defined(CPUM64)
   return (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
 #else
   return p->trim[idx];
@@ -932,7 +936,7 @@ int16_t getTrimValue(uint8_t phase, uint8_t idx)
 void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 {
   PhaseData *p = phaseaddress(phase);
-#if defined(M64)
+#if defined(CPUM64)
   p->trim[idx] = (int8_t)(trim >> 2);
   p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
 #else
@@ -1007,7 +1011,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 uint8_t s_gvar_timer = 0;
 uint8_t s_gvar_last = 0;
 
-#if defined(M64)
+#if defined(CPUM64)
 int16_t getGVarValue(int8_t x, int16_t min, int16_t max)
 {
   return (x >= 126 || x <= -126) ? limit(min, GVAR_VALUE((uint8_t)x - 126, -1), max) : x;
@@ -1324,7 +1328,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 #if defined(LCD212)
   lcd_img(DISPLAY_W-29, 0, asterisk_lbm, 0, 0);
 #endif
-#if !defined(M64) || defined(EXTSTD)
+#if !defined(CPUM64) || defined(EXTSTD)
   lcd_img(2, 0, asterisk_lbm, 0, 0);
 #else
   lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
@@ -1374,7 +1378,7 @@ uint8_t checkTrim(uint8_t event)
 #if defined(GVARS)
 #define TRIM_REUSED() trimGvar[idx] >= 0
     if (TRIM_REUSED()) {
-#if defined(M64)
+#if defined(CPUM64)
       phase = 0;
 #else
       phase = getGVarFlightPhase(s_perout_flight_phase, trimGvar[idx]);
@@ -2938,8 +2942,11 @@ void perMain()
   }
   if (counter-- == 0) {
     counter = 10;
-
-#if defined(PCBSKY9X)
+#if defined(PCBX9D)
+    int32_t instant_vbat = anaIn(8);
+    instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
+    instant_vbat /= 55296  ;
+#elif defined(PCBSKY9X)
     int32_t instant_vbat = anaIn(7);
     instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
     instant_vbat /= 55296  ;

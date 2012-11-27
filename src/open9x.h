@@ -206,6 +206,10 @@ extern void board_init();
 #include "pulses_avr.h"
 #endif
 
+#if defined(PCBX9D)
+extern uint8_t modelBitmap[64*32/8];
+#endif
+
 #if defined(DSM2)
 extern bool s_bind_mode;
 extern bool s_rangecheck_mode;
@@ -451,7 +455,8 @@ enum EnumKeys {
   //SW_NC,
   //SW_ON,
 #if defined(PCBX9D)
-  SW_SA=SW_BASE,
+  SW_SA0=SW_BASE,
+  SW_SA2,
   SW_SB0,
   SW_SB1,
   SW_SB2,
@@ -470,7 +475,8 @@ enum EnumKeys {
   SW_SG0,
   SW_SG1,
   SW_SG2,
-  SW_SH,
+  SW_SH0,
+  SW_SH2,
 #else
   SW_ThrCt=SW_BASE,
   SW_RuddDR,
@@ -566,7 +572,7 @@ enum CswFunctions {
 #define NUM_STICKS    4
 
 #if defined(PCBX9D)
-#define MAX_PSWITCH   (SW_SH-SW_SA+1)
+#define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
 #define NUM_POTS      4
 #define NUM_SW_SRCRAW 8
 #else
@@ -786,7 +792,7 @@ inline bool navigationRotaryEncoder(uint8_t event)
 #endif
 
 #if defined(GVARS)
-#if defined(M64)
+#if defined(CPUM64)
 int16_t getGVarValue(int8_t x, int16_t min, int16_t max);
 void setGVarValue(uint8_t x, int8_t value);
 #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
@@ -847,7 +853,7 @@ uint16_t stack_free(uint8_t tid);
 uint16_t stack_free();
 #endif
 
-#if defined(M64)
+#if defined(CPUM64)
 void memclear(void *ptr, uint8_t size);
 #else
 #define memclear(p, s) memset(p, 0, s)

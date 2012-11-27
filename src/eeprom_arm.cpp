@@ -14,7 +14,6 @@
  *
  */
 
-
 #include <stdint.h>
 #include "open9x.h"
 #include "inttypes.h"
@@ -486,7 +485,7 @@ void eeLoadModel(uint8_t id)
       eeCheck(true);
     }
     else {
-      read32_eeprom_data( ( File_system[id+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_model, size) ;
+      read32_eeprom_data((File_system[id+1].block_no << 12) + sizeof(struct t_eeprom_header), (uint8_t *)&g_model, size) ;
     }
 
     resetAll();
@@ -511,6 +510,11 @@ void eeLoadModel(uint8_t id)
 
     resumeMixerCalculations();
     // TODO pulses should be started after mixer calculations ...
+
+#if defined(PCBX9D)
+    // TODO BMP_DIR
+    bmpLoad(modelBitmap, "./f16.bmp");
+#endif
   }
 }
 
