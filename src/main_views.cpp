@@ -273,7 +273,7 @@ void menuMainView(uint8_t event)
     if (g_model.timers[0].mode) {
       LcdFlags att = MIDSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
       putsTime(TIMERS_X, 0, s_timerVal[0], att, att);
-      putsTmrMode(TIMERS_X-23, 4, g_model.timers[0].mode, CONDENSED);
+      putsTmrMode(TIMERS_X-25, 4, g_model.timers[0].mode, SWCONDENSED);
       if (g_model.timers[0].remanent) lcd_putc(TIMERS_X+42, 1, 'R');
     }
 
@@ -281,7 +281,7 @@ void menuMainView(uint8_t event)
     if (g_model.timers[1].mode) {
       LcdFlags att = MIDSIZE | (s_timerState[1]==TMR_BEEPING ? BLINK|INVERS : 0);
       putsTime(TIMERS_X, (FH+3), s_timerVal[1], att, att);
-      putsTmrMode(TIMERS_X-23, FH+7, g_model.timers[1].mode, CONDENSED);
+      putsTmrMode(TIMERS_X-25, FH+7, g_model.timers[1].mode, SWCONDENSED);
       if (g_model.timers[1].remanent) lcd_putc(TIMERS_X+42, FH+4, 'R');
     }
 #else
@@ -289,7 +289,7 @@ void menuMainView(uint8_t event)
     if (g_model.timers[0].mode) {
       uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
       putsTime(12*FW+2, FH*2, s_timerVal[0], att, att);
-      putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+5 : 9*FW-FW/2-2, FH*3, g_model.timers[0].mode, CONDENSED);
+      putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode, SWCONDENSED);
     }
 #endif
 
@@ -460,7 +460,7 @@ void menuMainView(uint8_t event)
   }
   else { // timer2
     putsTime(33+FW+2, FH*5, s_timerVal[1], DBLSIZE, DBLSIZE);
-    putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, CONDENSED);
+    putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, SWCONDENSED);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 

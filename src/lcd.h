@@ -88,6 +88,7 @@
 
 /* switches flags */
 #define SWONOFF       0x10 /* means inlude ON OFF in switches */
+#define SWCONDENSED   0x20 /* means that THRm will be displayed as THR */
 
 /* telemetry flags */
 #define NO_UNIT       0x40

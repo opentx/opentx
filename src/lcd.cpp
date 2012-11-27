@@ -227,7 +227,7 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
     if (!c || x>DISPLAY_W-6) break;
     if (c >= 0x20) {
       lcd_putcAtt(x,y,c,mode);
-      x += FW - (mode&CONDENSED ? 1 : 0);
+      x += FW;
       if (mode&DBLSIZE) x += FW-1;
       else if (mode&MIDSIZE) x += FW-3;
     }
@@ -667,7 +667,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
       }
     }
 #endif
-    if (~att & CONDENSED) lcd_putcAtt(x+3*FW, y, suffix, att);
+    if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, suffix, att);
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
