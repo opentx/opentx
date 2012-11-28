@@ -328,7 +328,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   }
   else if (midsize) {
     flags |= CONDENSED;
-    fw += FWNUM-2;
+    fw += FWNUM-3;
   }
   else {
     if (flags & LEFT) {
@@ -367,8 +367,8 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
         }
       }
       else if (midsize) {
-        x -= 2;
-        xn = x;
+        x -= 3;
+        xn = x+1;
       }
       else {
         x--;
@@ -557,9 +557,9 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #if defined(PCBX9D)
   if (att & MIDSIZE) {
     div_t qr2 = div(qr.quot, 60);
-    LCD_2DOTS(x+2*8-5, y, att);
+    LCD_2DOTS(x+2*8-6, y, att);
     lcd_outdezNAtt(x, y, qr2.quot, att|LEADING0|LEFT, 2);
-    x += 2*8+2;
+    x += 2*8+1;
   }
 #define separator ':'
 #elif defined(PCBSKY9X)
@@ -578,8 +578,8 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
     x3 = x+2*(FW+FWNUM)+FW-2;
   }
   else if (att&MIDSIZE) {
-    x2 = x+2*8-5;
-    x3 = x+2*8+2;
+    x2 = x+2*8-6;
+    x3 = x+2*8+1;
   }
   else {
     x2 = x+2*FWNUM-1;

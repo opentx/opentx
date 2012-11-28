@@ -48,7 +48,7 @@
 #define BITMAP_Y      (DISPLAY_H/2)
 #define PHASE_X       BITMAP_X
 #define PHASE_Y       (3*FH)
-#define TIMERS_X      141
+#define TIMERS_X      144
 #define TIMERS_R      192
 #define REBOOT_X      (DISPLAY_W-FW)
 #define VSWITCH_X(i)  ((i >= NUM_CSW/2 ? BITMAP_X+26 : 19) + 3*i)
@@ -275,7 +275,7 @@ void menuMainView(uint8_t event)
         lcd_hline(TIMERS_X-6, 2, 4);
         // lcd_hline(TIMERS_X-6, 3, 4);
         if (BLINK_ON_PHASE)
-          lcd_filled_rect(TIMERS_X-17, 0, 72, 12);
+          lcd_filled_rect(TIMERS_X-17, 0, 69, 12);
       }
     }
 
@@ -288,7 +288,7 @@ void menuMainView(uint8_t event)
         lcd_hline(TIMERS_X-6, FH+5, 4);
         // lcd_hline(TIMERS_X-6, FH+6, 4);
         if (BLINK_ON_PHASE)
-          lcd_filled_rect(TIMERS_X-17, FH+3, 72, 12);
+          lcd_filled_rect(TIMERS_X-17, FH+3, 69, 12);
       }
     }
 #else
