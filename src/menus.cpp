@@ -136,7 +136,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     if (s_editMode>0) {
       int8_t swtch = getMovedSwitch();
       if (swtch) {
-        if (newval == DSW_TRN && swtch == DSW_TRN)
+        if (newval == DSW(SW_TRN) && swtch == DSW(SW_TRN))
           newval = -newval;
         else
           newval = swtch;
@@ -749,7 +749,7 @@ const char * displayMenu(uint8_t event)
   }
 
   switch(event) {
-    case EVT_KEY_BREAK(KEY_UP):
+    case EVT_KEY_BREAK(KEY_MOVE_UP):
       if (s_menu_item > 0)
         s_menu_item--;
       else if (s_menu_offset > 0) {
@@ -757,7 +757,7 @@ const char * displayMenu(uint8_t event)
         result = STR_UPDATE_LIST;
       }
       break;
-    case EVT_KEY_BREAK(KEY_DOWN):
+    case EVT_KEY_BREAK(KEY_MOVE_DOWN):
       if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count)
         s_menu_item++;
       else if (s_menu_count > s_menu_offset + display_count) {
@@ -765,7 +765,7 @@ const char * displayMenu(uint8_t event)
         result = STR_UPDATE_LIST;
       }
       break;
-    case EVT_KEY_BREAK(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_ENTER):
       result = s_menu[s_menu_item];
       // no break
     case EVT_KEY_BREAK(KEY_EXIT):

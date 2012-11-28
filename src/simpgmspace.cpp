@@ -66,7 +66,7 @@ sem_t *eeprom_write_sem;
 void setSwitch(int8_t swtch)
 {
   switch (swtch) {
-    case DSW_ID0:
+    case DSW(SW_ID0):
 #if defined(PCBSKY9X)
       PIOC->PIO_PDSR &= ~0x00004000;
       PIOC->PIO_PDSR |= 0x00000800;
@@ -78,7 +78,7 @@ void setSwitch(int8_t swtch)
       pine &= ~(1<<INP_E_ID2);
 #endif
       break;
-    case DSW_ID1:
+    case DSW(SW_ID1):
 #if defined(PCBSKY9X)
       PIOC->PIO_PDSR |= 0x00004800;
 #elif defined(PCBGRUVIN9X)
@@ -89,7 +89,7 @@ void setSwitch(int8_t swtch)
       pine &= ~(1<<INP_E_ID2);
 #endif
       break;
-    case DSW_ID2:
+    case DSW(SW_ID2):
 #if defined(PCBSKY9X)
       PIOC->PIO_PDSR &= ~0x00000800;
       PIOC->PIO_PDSR |= 0x00004000;

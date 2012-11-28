@@ -409,7 +409,7 @@ FORCEINLINE void setupPulsesDsm2()
       break;
   }
   if (s_bind_allowed) s_bind_allowed--;
-  if (s_bind_allowed && keyState(SW_Trainer)) 
+  if (s_bind_allowed && keyState(SW_TRN)) 
   {
     s_bind_mode = true;
     *ptr |= BIND_BIT;
@@ -536,7 +536,7 @@ void setupPulsesDsm2()
   }
 
   if (s_bind_allowed) s_bind_allowed--;
-  if (s_bind_allowed && keyState(SW_Trainer)) 
+  if (s_bind_allowed && keyState(SW_TRN)) 
   {
     s_bind_mode = true;
     dsmDat[0] |= BIND_BIT;

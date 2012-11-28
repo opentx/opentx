@@ -133,6 +133,7 @@ void applyTemplate(uint8_t idx)
       case TMPL_SIMPLE_4CH:
       case TMPL_HELI_SETUP:
         clearMixes();
+        break;
     }
 
     switch (idx) {
@@ -146,10 +147,10 @@ void applyTemplate(uint8_t idx)
 
       // Sticky-T-Cut
       case TMPL_STI_THR_CUT:
-        md=setDest(ICC(STK_THR), MIXSRC_MAX);  md->weight=-100;  md->swtch=DSW_SWC;  md->mltpx=MLTPX_REP;
+        md=setDest(ICC(STK_THR), MIXSRC_MAX);  md->weight=-100;  md->swtch=DSW(SW_SWC);  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_CH11+3); md->weight= 100;
-        md=setDest(13, MIXSRC_MAX); md->weight=-100;  md->swtch=DSW_SWB;  md->mltpx=MLTPX_REP;
-        md=setDest(13, MIXSRC_MAX); md->weight= 100;  md->swtch=DSW_THR;  md->mltpx=MLTPX_REP;
+        md=setDest(13, MIXSRC_MAX); md->weight=-100;  md->swtch=DSW(SW_SWB);  md->mltpx=MLTPX_REP;
+        md=setDest(13, MIXSRC_MAX); md->weight= 100;  md->swtch=DSW(SW_THR);  md->mltpx=MLTPX_REP;
         setSwitch(11, CS_VNEG, STK_THR, -99);
         setSwitch(12, CS_VPOS, 38, 0);
         break;
@@ -194,15 +195,15 @@ void applyTemplate(uint8_t idx)
         md=setDest(ICC(STK_ELE), MIXSRC_CH9);   md->weight=-100;
         md=setDest(ICC(STK_ELE), MIXSRC_CH11);  md->carryTrim=TRIM_OFF;
 
-        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(1); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->weight= 110; md->swtch=DSW_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
-        md=setDest(ICC(STK_THR), MIXSRC_MAX);   md->weight=-125; md->swtch=DSW_THR;  md->mltpx=MLTPX_REP; md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW(SW_ID0); md->curveMode=MODE_CURVE; md->curveParam=CV(1); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->swtch=DSW(SW_ID1); md->curveMode=MODE_CURVE; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_Thr);   md->weight= 110; md->swtch=DSW(SW_ID2); md->curveMode=MODE_CURVE; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(ICC(STK_THR), MIXSRC_MAX);   md->weight=-125; md->swtch=DSW(SW_THR);  md->mltpx=MLTPX_REP; md->carryTrim=TRIM_OFF;
 
         md=setDest(ICC(STK_RUD), MIXSRC_Rud);
 
-        md=setDest(4, MIXSRC_MAX);  md->weight= 50; md->swtch=-DSW_GEA; md->carryTrim=TRIM_OFF;
-        md=setDest(4, MIXSRC_MAX);  md->weight=-50; md->swtch= DSW_GEA; md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_MAX);  md->weight= 50; md->swtch=-DSW(SW_GEA); md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_MAX);  md->weight=-50; md->swtch= DSW(SW_GEA); md->carryTrim=TRIM_OFF;
         md=setDest(4, STK_P3);      md->weight= 40; md->carryTrim=TRIM_OFF;
 
         md=setDest(5, MIXSRC_CH9);  md->weight= -50;
@@ -211,10 +212,10 @@ void applyTemplate(uint8_t idx)
 
         md=setDest(8, MIXSRC_Ele);  md->weight= 60;
         md=setDest(9, MIXSRC_Ail);  md->weight=-52;
-        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(3); md->carryTrim=TRIM_OFF;
-        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10, MIXSRC_Thr); md->swtch=DSW_THR; md->curveMode=MODE_CURVE; md->curveParam=CV(5); md->carryTrim=TRIM_OFF;  md->mltpx=MLTPX_REP;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW(SW_ID0); md->curveMode=MODE_CURVE; md->curveParam=CV(3); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW(SW_ID1); md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->weight= 70; md->swtch=DSW(SW_ID2); md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); md->swtch=DSW(SW_THR); md->curveMode=MODE_CURVE; md->curveParam=CV(5); md->carryTrim=TRIM_OFF;  md->mltpx=MLTPX_REP;
 
         //Set up Curves
         setCurve(CURVE5(1), heli_ar1);

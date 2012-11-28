@@ -425,9 +425,9 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     }
 
     switch(id){
-      case 0: setSwitch(DSW_ID0); break;
-      case 1: setSwitch(DSW_ID1); break;
-      case 2: setSwitch(DSW_ID2); break;
+      case 0: setSwitch(DSW(SW_ID0)); break;
+      case 1: setSwitch(DSW(SW_ID1)); break;
+      case 2: setSwitch(DSW(SW_ID2)); break;
     }
   }
 
@@ -544,4 +544,17 @@ uint16_t anaIn(uint8_t chan)
     return th9xSim->sliders[chan]->getValue();
   else
     return th9xSim->knobs[chan]->getValue();
+}
+
+bool lcd_refresh = true;
+uint8_t lcd_buf[DISPLAY_W*DISPLAY_H/8];
+
+void lcdSetRefVolt(uint8_t val)
+{
+}
+
+void refreshDisplay()
+{
+  memcpy(lcd_buf, displayBuf, sizeof(displayBuf));
+  lcd_refresh = true;
 }

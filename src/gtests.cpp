@@ -286,10 +286,10 @@ TEST(getSwitch, nullSW)
 TEST(phases, nullFadeOut_posFadeIn)
 {
   memset(&g_model, 0, sizeof(g_model));
-  g_model.phaseData[1].swtch = DSW_ID1;
+  g_model.phaseData[1].swtch = DSW(SW_ID1);
   g_model.phaseData[1].fadeIn = 15;
   perMain();
-  setSwitch(DSW_ID1);
+  setSwitch(DSW(SW_ID1));
   perMain();
 }
 

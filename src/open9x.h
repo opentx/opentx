@@ -208,6 +208,10 @@ extern void board_init();
 
 #if defined(PCBX9D)
 extern uint8_t modelBitmap[64*32/8];
+void loadModelBitmap();
+#define LOAD_MODEL_BITMAP() loadModelBitmap()
+#else
+#define LOAD_MODEL_BITMAP()
 #endif
 
 #if defined(DSM2)
@@ -478,23 +482,48 @@ enum EnumKeys {
   SW_SH0,
   SW_SH2,
 #else
-  SW_ThrCt=SW_BASE,
-  SW_RuddDR,
-  SW_ElevDR,
+  SW_THR=SW_BASE,
+  SW_RUD,
+  SW_ELE,
   SW_ID0,
   SW_ID1,
   SW_ID2,
-  SW_AileDR,
-  SW_Gear,
-  SW_Trainer,
+  SW_AIL,
+  SW_GEA,
+  SW_TRN,
 #endif
+
+  SW_SW1,
+  SW_SW2,
+  SW_SW3,
+  SW_SW4,
+  SW_SW5,
+  SW_SW6,
+  SW_SW7,
+  SW_SW8,
+  SW_SW9,
+  SW_SWA,
+  SW_SWB,
+  SW_SWC,
 };
+
+#define DSW(x)   (1+(x)-SW_BASE)
 
 #if defined(PCBX9D)
 #define KEY_RIGHT  KEY_PLUS
 #define KEY_UP     KEY_PLUS
 #define KEY_LEFT   KEY_MINUS
 #define KEY_DOWN   KEY_MINUS
+/* mapping of 9x switches */
+#define SW_THR     SW_SA2
+#define SW_RUD     SW_SB2
+#define SW_ELE     SW_SC2
+#define SW_ID0     SW_SD0
+#define SW_ID1     SW_SD1
+#define SW_ID2     SW_SD2
+#define SW_AIL     SW_SF2
+#define SW_GEA     SW_SG2
+#define SW_TRN     SW_SH2
 #else
 #define KEY_ENTER  KEY_MENU
 #define KEY_PLUS   KEY_RIGHT
@@ -576,7 +605,7 @@ enum CswFunctions {
 #define NUM_POTS      4
 #define NUM_SW_SRCRAW 8
 #else
-#define MAX_PSWITCH   (SW_Trainer-SW_ThrCt+1)  // 9 physical switches
+#define MAX_PSWITCH   (SW_TRN-SW_THR+1)  // 9 physical switches
 #define NUM_POTS      3
 #define NUM_SW_SRCRAW 1
 #endif
@@ -624,24 +653,6 @@ enum CswFunctions {
 #define NUM_XCHNCSW  (NUM_XCHNRAW+NUM_TELEMETRY)
 #define NUM_XCHNPLAY (NUM_XCHNRAW+TELEM_DISPLAY_MAX)
 #endif
-
-#define DSW_THR  1
-#define DSW_RUD  2
-#define DSW_ELE  3
-#define DSW_ID0  4
-#define DSW_ID1  5
-#define DSW_ID2  6
-#define DSW_AIL  7
-#define DSW_GEA  8
-#define DSW_TRN  9
-#define DSW_SW1  10
-#define DSW_SW2  11
-#define DSW_SW3  12
-#define DSW_SW4  13
-#define DSW_SW5  14
-#define DSW_SW6  15
-#define DSW_SWB  20
-#define DSW_SWC  21
 
 #define THRCHK_DEADBAND 16
 #if defined(FSPLASH) || defined(XSPLASH)
@@ -1313,9 +1324,17 @@ void checkFlashOnBeep();
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
 #endif
 
-#if defined(PCBX9D)
+#if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 #define ZLEN(s) zlen(s, sizeof(s))
+#endif
+
+#if defined(PCBX9D)
+#define KEY_MOVE_UP    KEY_MINUS
+#define KEY_MOVE_DOWN  KEY_PLUS
+#else
+#define KEY_MOVE_UP    KEY_UP
+#define KEY_MOVE_DOWN  KEY_DOWN
 #endif
 
 #endif

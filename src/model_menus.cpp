@@ -504,7 +504,7 @@ void menuModelSelect(uint8_t event)
         s_warning = eeBackupModel(sub);
       }
       else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-        if (!listSdFiles(MODELS_PATH, MODELS_EXT, 10, NULL)) {
+        if (!listSdFiles(MODELS_PATH, MODELS_EXT, sizeof(g_model.name), NULL)) {
           s_warning = STR_NO_MODELS_ON_SD;
           s_menu_flags = 0;
         }
@@ -589,6 +589,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 
 enum menuModelSetupItems {
   ITEM_MODEL_NAME,
+  IF_PCBX9D(ITEM_MODEL_BITMAP)
   ITEM_MODEL_TIMER1,
   ITEM_MODEL_TIMER2,
   ITEM_MODEL_EXTENDED_LIMITS,
@@ -617,11 +618,18 @@ enum menuModelSetupItems {
 
 void menuModelSetup(uint8_t event)
 {
+#if defined(PCBX9D) && defined(SDCARD)
+  uint8_t _event = event;
+  if (s_menu_count) {
+    event = 0;
+  }
+#endif
+
   lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
 
   uint8_t protocol = g_model.protocol;
 
-#ifdef DSM2
+#if defined(DSM2)
   if (event == EVT_KEY_LONG(KEY_EXIT))
     s_rangecheck_mode = 0;
 #endif
@@ -644,6 +652,25 @@ void menuModelSetup(uint8_t event)
         memcpy(ModelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
 #endif
         break;
+
+#if defined(PCBX9D)
+      case ITEM_MODEL_BITMAP:
+        lcd_putsLeft(y, STR_BITMAP);
+        if (ZLEN(g_model.bitmap) > 0)
+          lcd_putsnAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.bitmap, sizeof(g_model.bitmap), attr);
+        else
+          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr);
+        if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
+          s_editMode = 0;
+          _event = 0;
+          if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), g_model.bitmap)) {
+            s_warning = STR_NO_BITMAPS_ON_SD;
+            s_menu_flags = 0;
+          }
+        }
+
+        break;
+#endif
 
       case ITEM_MODEL_TIMER1:
       case ITEM_MODEL_TIMER2:
@@ -861,6 +888,26 @@ void menuModelSetup(uint8_t event)
         break;
     }
   }
+
+#if defined(PCBX9D) && defined(SDCARD)
+  if (s_menu_count) {
+    const char * result = displayMenu(_event);
+    if (result) {
+      if (result == STR_UPDATE_LIST) {
+        if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), NULL)) {
+          s_warning = STR_NO_BITMAPS_ON_SD;
+          s_menu_flags = 0;
+        }
+      }
+      else {
+        // The user choosed a bmp file in the list
+        memcpy(g_model.bitmap, result, sizeof(g_model.bitmap));
+        LOAD_MODEL_BITMAP();
+        eeDirty(EE_MODEL);
+      }
+    }
+  }
+#endif
 }
 
 static uint8_t s_currIdx;
@@ -1896,14 +1943,6 @@ static uint8_t s_copySrcCh;
 #define EXPO_LINE_SELECT_POS 18
 #endif
 
-#if defined(PCBX9D)
-#define KEY_MIX_MOVE_UP    KEY_MINUS
-#define KEY_MIX_MOVE_DOWN  KEY_PLUS
-#else
-#define KEY_MIX_MOVE_UP    KEY_UP
-#define KEY_MIX_MOVE_DOWN  KEY_DOWN
-#endif
-
 void menuModelExpoMix(uint8_t expo, uint8_t event)
 {
 #if defined(ROTARY_ENCODERS)
@@ -1998,29 +2037,29 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         return;
       }
       break;
-    case EVT_KEY_FIRST(KEY_MIX_MOVE_UP):
-    case EVT_KEY_REPT(KEY_MIX_MOVE_UP):
-    case EVT_KEY_FIRST(KEY_MIX_MOVE_DOWN):
-    case EVT_KEY_REPT(KEY_MIX_MOVE_DOWN):
+    case EVT_KEY_FIRST(KEY_MOVE_UP):
+    case EVT_KEY_REPT(KEY_MOVE_UP):
+    case EVT_KEY_FIRST(KEY_MOVE_DOWN):
+    case EVT_KEY_REPT(KEY_MOVE_DOWN):
       if (s_copyMode) {
         uint8_t key = (event & 0x1f);
-        uint8_t next_ofs = (key == KEY_MIX_MOVE_UP ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
+        uint8_t next_ofs = (key == KEY_MOVE_UP ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
 
         if (s_copyTgtOfs==0 && s_copyMode==COPY_MODE) {
           // insert a mix on the same channel (just above / just below)
           if (reachExpoMixCountLimit(expo)) break;
           copyExpoMix(expo, s_currIdx);
-          if (key==KEY_MIX_MOVE_DOWN) s_currIdx++;
+          if (key==KEY_MOVE_DOWN) s_currIdx++;
           else if (sub-s_pgOfs >= 6) s_pgOfs++;
         }
         else if (next_ofs==0 && s_copyMode==COPY_MODE) {
           // delete the mix
           deleteExpoMix(expo, s_currIdx);
-          if (key==KEY_MIX_MOVE_UP) s_currIdx--;
+          if (key==KEY_MOVE_UP) s_currIdx--;
         }
         else {
           // only swap the mix with its neighbor
-          if (!swapExpoMix(expo, s_currIdx, key==KEY_MIX_MOVE_UP)) break;
+          if (!swapExpoMix(expo, s_currIdx, key==KEY_MOVE_UP)) break;
           STORE_MODELVARS;
         }
 
@@ -2458,7 +2497,7 @@ void menuModelCustomSwitchOne(uint8_t event)
   TITLE(STR_MENUCUSTOMSWITCH);
 
   CustomSwData * cs = cswaddress(s_currIdx);
-  uint8_t sw = DSW_SW1+s_currIdx;
+  uint8_t sw = DSW(SW_SW1)+s_currIdx;
   putsSwitches(14*FW, 0, sw, (getSwitch(sw, 0) ? BOLD : 0));
   SIMPLE_SUBMENU_NOTITLE(CSW_FIELD_COUNT);
 
@@ -2592,7 +2631,8 @@ void menuModelCustomSwitches(uint8_t event)
     CustomSwData * cs = cswaddress(k);
 
     // CSW name
-    uint8_t sw = DSW_SW1+k;
+    uint8_t sw = DSW(SW_SW1)+k;
+
     putsSwitches(0, y, sw, (sub==k ? INVERS : 0) | (getSwitch(sw, 0) ? BOLD : 0));
 
     if (cs->func > 0) {
@@ -2642,7 +2682,7 @@ void menuModelCustomSwitches(uint8_t event)
     CustomSwData * cs = cswaddress(k);
 
     // CSW name
-    uint8_t sw = DSW_SW1+k;
+    uint8_t sw = DSW(SW_SW1)+k;
     putsSwitches(0, y, sw, getSwitch(sw, 0) ? BOLD : 0);
 
     // CSW func
@@ -2808,13 +2848,14 @@ void menuModelCustomFunctions(uint8_t event)
 #endif
 #if defined(PCBSKY9X) && defined(SDCARD)
             else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_BACKGND_MUSIC) {
-              if (sd->param[0] && sd->param[1])
+              if (ZLEN(sd->param))
                 lcd_putsnAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, sd->param, sizeof(sd->param), attr);
               else
                 lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VCSWFUNC, 0, attr);
-              if (active && event==EVT_KEY_BREAK(KEY_MENU)) {
+              if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
                 s_editMode = 0;
-                if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, 6, sd->param)) {
+                _event = 0;
+                if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(sd->param), sd->param)) {
                   s_warning = STR_NO_SOUNDS_ON_SD;
                   s_menu_flags = 0;
                 }
@@ -2906,7 +2947,7 @@ void menuModelCustomFunctions(uint8_t event)
     const char * result = displayMenu(_event);
     if (result) {
       if (result == STR_UPDATE_LIST) {
-        if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, 6, NULL)) {
+        if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(g_model.funcSw[sub].param), NULL)) {
           s_warning = STR_NO_SOUNDS_ON_SD;
           s_menu_flags = 0;
         }

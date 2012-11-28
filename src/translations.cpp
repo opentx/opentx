@@ -105,6 +105,7 @@ const pm_char STR_COPYINGMODEL[] PROGMEM = TR_COPYINGMODEL;
 const pm_char STR_MOVINGMODEL[] PROGMEM = TR_MOVINGMODEL;
 const pm_char STR_LOADINGMODEL[] PROGMEM = TR_LOADINGMODEL;
 const pm_char STR_NAME[] PROGMEM = TR_NAME;
+const pm_char STR_BITMAP[] PROGMEM = TR_BITMAP;
 const pm_char STR_TIMER[] PROGMEM = TR_TIMER;
 const pm_char STR_ELIMITS[] PROGMEM = TR_ELIMITS;
 const pm_char STR_ETRIMS[] PROGMEM = TR_ETRIMS;
@@ -350,6 +351,7 @@ const pm_char STR_SD_CARD[] PROGMEM = TR_SD_CARD;
 const pm_char STR_SDHC_CARD[] PROGMEM = TR_SDHC_CARD;
 const pm_char STR_NO_SOUNDS_ON_SD[] PROGMEM = TR_NO_SOUNDS_ON_SD;
 const pm_char STR_NO_MODELS_ON_SD[] PROGMEM = TR_NO_MODELS_ON_SD;
+const pm_char STR_NO_BITMAPS_ON_SD[] PROGMEM = TR_NO_BITMAPS_ON_SD;
 const pm_char STR_PLAY_FILE[] PROGMEM = TR_PLAY_FILE;
 const pm_char STR_DELETE_FILE[] PROGMEM = TR_DELETE_FILE;
 const pm_char STR_COPY_FILE[] PROGMEM = TR_COPY_FILE;
@@ -407,6 +409,10 @@ const pm_uchar font_10x14[] PROGMEM = {
 };
 
 #if defined(PCBX9D)
+const pm_uchar font_4x6[] PROGMEM = {
+#include "font_small.lbm"
+};
+
 const pm_uchar font_8x10[] PROGMEM = {
 #include "font_midsize.lbm"
 };

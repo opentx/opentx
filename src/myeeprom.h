@@ -76,13 +76,21 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
+#if defined(LCD212)
 enum MainViews {
-  e_outputValues,
-  e_outputBars,
-  e_inputs,
-  e_timer2,
-  MAIN_VIEW_MAX = e_timer2
+  VIEW_OUTPUTS,
+  VIEW_INPUTS,
+  VIEW_COUNT
 };
+#else
+enum MainViews {
+  VIEW_OUTPUTS_VALUES,
+  VIEW_OUTPUTS_BARS,
+  VIEW_INPUTS,
+  VIEW_TIMER2,
+  VIEW_COUNT
+};
+#endif
 
 enum BeeperMode {
   e_mode_quiet = -2,
@@ -776,6 +784,12 @@ enum Dsm2Variants {
 #define BeepANACenter uint8_t
 #endif
 
+#if defined(PCBX9D)
+#define MODELDATA_EXTRA char bitmap[10]
+#else
+#define MODELDATA_EXTRA
+#endif
+
 PACK(typedef struct t_ModelData {
   char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
   TimerData timers[MAX_TIMERS];
@@ -813,6 +827,8 @@ PACK(typedef struct t_ModelData {
   TELEMETRY_DATA;
 
   ROTARY_ENCODER_ARRAY_EXTRA;
+
+  MODELDATA_EXTRA;
 
 }) ModelData;
 

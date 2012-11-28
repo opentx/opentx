@@ -36,6 +36,8 @@
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
+volatile uint8_t lcdLock;
+volatile uint32_t lcdInputs;
 
 /** Console baudrate 9600. */
 #define CONSOLE_BAUDRATE    9600
@@ -908,19 +910,19 @@ extern uint32_t keyState(EnumKeys enuk)
 #if !defined(PCBX9D)
   switch ((uint8_t) enuk) {
 #ifdef REVB
-    case SW_ElevDR:
+    case SW_ELE:
       xxx = c & 0x80000000; // ELE_DR   PC31
 #else
-    case SW_ElevDR:
+    case SW_ELE:
       xxx = a & 0x00000100; // ELE_DR   PA8
 #endif
       break;
 
-    case SW_AileDR:
+    case SW_AIL:
       xxx = a & 0x00000004; // AIL-DR  PA2
       break;
 
-    case SW_RuddDR:
+    case SW_RUD:
       xxx = a & 0x00008000; // RUN_DR   PA15
       break;
       //     INP_G_ID1 INP_E_ID2
@@ -938,20 +940,20 @@ extern uint32_t keyState(EnumKeys enuk)
       xxx = ~c & 0x00000800; // SW_IDL2     PC11
       break;
 
-    case SW_Gear:
+    case SW_GEA:
       xxx = c & 0x00010000; // SW_GEAR     PC16
       break;
 
 #ifdef REVB
-    case SW_ThrCt:
+    case SW_THR:
       xxx = c & 0x00100000; // SW_TCUT     PC20
 #else
-    case SW_ThrCt:
+    case SW_THR:
       xxx = a & 0x10000000; // SW_TCUT     PA28
 #endif
       break;
 
-    case SW_Trainer:
+    case SW_TRN:
       xxx = c & 0x00000100; // SW-TRAIN    PC8
       break;
 

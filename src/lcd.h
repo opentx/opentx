@@ -95,8 +95,10 @@
 
 #if defined(PCBX9D)
 #define MIDSIZE       0x0100
+#define SMLSIZE       0x0200
 #else
 #define MIDSIZE       DBLSIZE
+#define SMLSIZE       0x00
 #endif
 
 #if defined(CPUARM)
@@ -113,8 +115,8 @@ extern volatile uint8_t LcdLock ;
 #endif
 
 #if defined(PCBSKY9X)
-extern uint8_t lcdLock ;
-extern uint32_t lcdInputs ;
+extern volatile uint8_t lcdLock ;
+extern volatile uint32_t lcdInputs ;
 #endif
 
 extern void lcd_putc(xcoord_t x, uint8_t y, const unsigned char c);
@@ -181,11 +183,17 @@ inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att=0) { lcd_r
     lcd_vline(xx,yy-ww/2,ww);  \
     lcd_hline(xx-ww/2,yy,ww);
 
-// TODO optimization here!!!
 #define V_BAR(xx,yy,ll)       \
     lcd_vline(xx-1,yy-ll,ll); \
     lcd_vline(xx  ,yy-ll,ll); \
     lcd_vline(xx+1,yy-ll,ll);
+
+#define LCD_2DOTS(x, y, att)     \
+    lcd_putcAtt(x, y, ' ', att); \
+    lcd_vline(x+4, y+3, 2);      \
+    lcd_vline(x+5, y+3, 2);      \
+    lcd_vline(x+4, y+8, 2);      \
+    lcd_vline(x+5, y+8, 2);
 
 extern void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mode);
 extern void lcdSetRefVolt(unsigned char val);

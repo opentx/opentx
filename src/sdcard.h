@@ -42,17 +42,20 @@
 #define LOGS_PATH    "."
 #define SOUNDS_PATH  "."
 #define SYSTEM_SOUNDS_PATH "."
+#define BITMAPS_PATH  "."
 #else
 #define ROOT_PATH           "/"
 #define MODELS_PATH         "/9XMODELS"
 #define LOGS_PATH           "/9XLOGS"   // no trailing slash = important
 #define SOUNDS_PATH         "/9XSOUNDS" // no trailing slash = important
 #define SYSTEM_SOUNDS_PATH  "/9XSOUNDS/SYSTEM" // no trailing slash = important
+#define BITMAPS_PATH        MODELS_PATH
 #endif
 
 #define MODELS_EXT   ".bin"
 #define LOGS_EXT     ".csv"
 #define SOUNDS_EXT   ".wav"
+#define BITMAPS_EXT  ".bmp"
 
 extern FATFS g_FATFS_Obj;
 

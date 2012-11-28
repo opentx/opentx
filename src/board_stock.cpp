@@ -84,21 +84,21 @@ bool keyState(EnumKeys enuk)
     return keys[enuk].state();
 
   switch(enuk){
-    case SW_ElevDR:
+    case SW_ELE:
       result = PINE & (1<<INP_E_ElevDR);
       break;
 
 #if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
-    case SW_AileDR:
+    case SW_AIL:
       result = PINC & (1<<INP_C_AileDR); //shad974: rerouted inputs to free up UART0
       break;
 #else
-    case SW_AileDR:
+    case SW_AIL:
       result = PINE & (1<<INP_E_AileDR);
       break;
 #endif
 
-    case SW_RuddDR:
+    case SW_RUD:
       result = PING & (1<<INP_G_RuddDR);
       break;
       //     INP_G_ID1 INP_E_ID2
@@ -117,24 +117,24 @@ bool keyState(EnumKeys enuk)
       result = !(PINE & (1<<INP_E_ID2));
       break;
 
-    case SW_Gear:
+    case SW_GEA:
       result = PINE & (1<<INP_E_Gear);
       break;
 
-    //case SW_ThrCt  : return PINE & (1<<INP_E_ThrCt);
+    //case SW_THR  : return PINE & (1<<INP_E_ThrCt);
 
 #if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
-    case SW_ThrCt:
+    case SW_THR:
       result = PINC & (1<<INP_C_ThrCt); //shad974: rerouted inputs to free up UART0
       break;
 
 #else
-    case SW_ThrCt:
+    case SW_THR:
       result = PINE & (1<<INP_E_ThrCt);
       break;
 #endif
 
-    case SW_Trainer:
+    case SW_TRN:
       result = PINE & (1<<INP_E_Trainer);
       break;
 

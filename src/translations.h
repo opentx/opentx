@@ -222,6 +222,7 @@ extern const pm_char STR_COPYINGMODEL[];
 extern const pm_char STR_MOVINGMODEL[];
 extern const pm_char STR_LOADINGMODEL[];
 extern const pm_char STR_NAME[];
+extern const pm_char STR_BITMAP[];
 extern const pm_char STR_TIMER[];
 extern const pm_char STR_ELIMITS[];
 extern const pm_char STR_ETRIMS[];
@@ -422,6 +423,7 @@ extern const pm_uchar font_5x7[];
 extern const pm_uchar font_10x14[];
 
 #if defined(PCBX9D)
+extern const pm_uchar font_4x6[];
 extern const pm_uchar font_8x10[];
 extern const pm_uchar font_5x7_extra[];
 extern const pm_uchar font_10x14_extra[];
@@ -452,6 +454,7 @@ extern const pm_char STR_SD_CARD[];
 extern const pm_char STR_SDHC_CARD[];
 extern const pm_char STR_NO_SOUNDS_ON_SD[];
 extern const pm_char STR_NO_MODELS_ON_SD[];
+extern const pm_char STR_NO_BITMAPS_ON_SD[];
 extern const pm_char STR_PLAY_FILE[];
 extern const pm_char STR_DELETE_FILE[];
 extern const pm_char STR_COPY_FILE[];

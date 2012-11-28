@@ -90,6 +90,14 @@ ModelData  g_model;
 
 #if defined(PCBX9D)
 uint8_t modelBitmap[64*32/8];
+void loadModelBitmap()
+{
+  char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
+  strncpy(lfn+sizeof(BITMAPS_PATH), g_model.bitmap, sizeof(g_model.bitmap));
+  lfn[sizeof(BITMAPS_PATH)+sizeof(g_model.bitmap)] = '\0';
+  strcat(lfn+sizeof(BITMAPS_PATH), BITMAPS_EXT);
+  bmpLoad(modelBitmap, lfn);
+}
 #endif
 
 #if !defined(PCBSKY9X)
@@ -161,7 +169,7 @@ char idx2char(int8_t idx)
   return ' ';
 }
 
-#if defined(PCBX9D)
+#if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size)
 {
   while (size > 0) {

@@ -511,10 +511,7 @@ void eeLoadModel(uint8_t id)
     resumeMixerCalculations();
     // TODO pulses should be started after mixer calculations ...
 
-#if defined(PCBX9D)
-    // TODO BMP_DIR
-    bmpLoad(modelBitmap, "./f16.bmp");
-#endif
+    LOAD_MODEL_BITMAP();
   }
 }
 

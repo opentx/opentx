@@ -189,15 +189,15 @@ bool keyState(EnumKeys enuk)
     return keys[enuk].state() ? 1 : 0;
 
   switch(enuk){
-    case SW_ElevDR:
+    case SW_ELE:
       result = PINC & (1<<INP_C_ElevDR);
       break;
 
-    case SW_AileDR:
+    case SW_AIL:
       result = PINC & (1<<INP_C_AileDR);
       break;
 
-    case SW_RuddDR:
+    case SW_RUD:
       result = PING & (1<<INP_G_RuddDR);
       break;
       //     INP_G_ID1 INP_B_ID2
@@ -216,15 +216,15 @@ bool keyState(EnumKeys enuk)
       result = !(PINB & (1<<INP_B_ID2));
       break;
 
-    case SW_Gear:
+    case SW_GEA:
       result = PING & (1<<INP_G_Gear);
       break;
 
-    case SW_ThrCt:
+    case SW_THR:
       result = PING & (1<<INP_G_ThrCt);
       break;
 
-    case SW_Trainer:
+    case SW_TRN:
       result = PINB & (1<<INP_B_Trainer);
       break;
 

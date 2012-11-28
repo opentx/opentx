@@ -449,6 +449,7 @@ ifeq ($(PCB), X9D)
   CPPDEFS += -DPCBX9D -DPCBSKY9X -DREVB -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_sky9x.cpp 
+  EXTRABOARDSRC += sky9x/lcd_driver.cpp
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
@@ -484,6 +485,7 @@ ifeq ($(PCB), SKY9X)
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_sky9x.cpp
+  EXTRABOARDSRC += sky9x/lcd_driver.cpp
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
@@ -519,6 +521,7 @@ ifeq ($(PCB), GRUVIN9X)
   CPPDEFS += -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2 
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
   BOARDSRC += board_gruvin9x.cpp
+  EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += stock/audio.cpp haptic.cpp
@@ -545,8 +548,9 @@ ifeq ($(PCB), STD128)
   CPPDEFS += -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=0x8000
   EXTRAINCDIRS += stock
   BOARDSRC = board_stock.cpp
+  EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
-  PULSESSRC = pulses_avr.cpp  
+  PULSESSRC = pulses_avr.cpp
     
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
@@ -580,6 +584,7 @@ ifeq ($(PCB), STD)
   EXTRAINCDIRS += stock
   CPPDEFS += -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = board_stock.cpp
+  EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp
    
@@ -745,7 +750,7 @@ eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-lbm: font.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
+lbm: font.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -792,6 +797,11 @@ font.lbm: font.xbm font_extra.xbm translations/font_se.xbm translations/font_de.
 	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm 5x7
 	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm 5x7
 	$(IMG2LBM) translations/font_es.xbm translations/font_es.lbm 5x7
+
+font_small.lbm: font_small.xbm
+	@echo
+	@echo "Convert font from xbm to lbm:"
+	$(IMG2LBM) $< $@ 4x6
 
 font_midsize.lbm: font_midsize.xbm
 	@echo
