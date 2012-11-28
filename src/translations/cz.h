@@ -253,6 +253,7 @@
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Sp\204na\201"
 #define TR_TRIMS               "Trimy"
+#define TR_BITMAP              "Bitmap"
 #define TR_FADEIN              "P\206echod Zap"
 #define TR_FADEOUT             "P\206echod Vyp"
 #define TR_DEFAULT             "(v\212choz\204)"
@@ -450,6 +451,7 @@
 #define TR_SD_TYPE             "Typ:"
 #define TR_SD_SPEED            "Rychlost:"
 #define TR_SD_SECTORS          "Sektor\211 :"
+#define TR_NO_BITMAPS_ON_SD    "No Bitmaps on SD"
 #define TR_SD_SIZE             "Velikost:"
 #define TR_CURVE_TYPE          TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Glob\200ln\204 prom\203nn\202"

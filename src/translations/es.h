@@ -253,6 +253,7 @@
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Ciclico Tipo"
 #define TR_COLLECTIVE          "Colectivo"
+#define TR_BITMAP              "Bitmap"
 #define TR_SWASHRING           "Anillo Cvo"
 #define TR_ELEDIRECTION        "ELE Direccion"
 #define TR_AILDIRECTION        "ALE Direccion"
@@ -450,6 +451,7 @@
 #define TR_SD_TYPE             "Type:"
 #define TR_SD_SPEED            "Speed:"
 #define TR_SD_SECTORS          "Sectors:"
+#define TR_NO_BITMAPS_ON_SD    "No Bitmaps on SD"
 #define TR_SD_SIZE             "Size:"
 #define TR_CURVE_TYPE          "Type"
 #define TR_GLOBAL_VARS         "Global Variables"
