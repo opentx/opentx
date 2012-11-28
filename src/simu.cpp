@@ -545,16 +545,3 @@ uint16_t anaIn(uint8_t chan)
   else
     return th9xSim->knobs[chan]->getValue();
 }
-
-bool lcd_refresh = true;
-uint8_t lcd_buf[DISPLAY_W*DISPLAY_H/8];
-
-void lcdSetRefVolt(uint8_t val)
-{
-}
-
-void refreshDisplay()
-{
-  memcpy(lcd_buf, displayBuf, sizeof(displayBuf));
-  lcd_refresh = true;
-}
