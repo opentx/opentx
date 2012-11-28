@@ -236,7 +236,14 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
     }
     if (!c || x>DISPLAY_W-6) break;
     if (c >= 0x20) {
-      lcd_putcAtt(x,y,c,mode);
+#if defined(PCBX9D)
+      if ((mode & MIDSIZE) && ((c>='a'&&c<='z')||(c>='0'&&c<='9'))) {
+        lcd_putcAtt(x, y, c, mode);
+        x-=1;
+      }
+      else
+#endif
+      lcd_putcAtt(x, y, c, mode);
       x += FW;
       if (mode&DBLSIZE) x += FW-1;
       else if (mode&MIDSIZE) x += FW-3;
