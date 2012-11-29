@@ -449,7 +449,11 @@ void Open9xSim::refreshDiplay()
 #else
     if (portb & 1<<OUT_B_LIGHT)
 #endif
+#if defined(PCBX9D)
+      bmf->setOffColor(FXRGB(47,123,227));
+#else
       bmf->setOffColor(FXRGB(150,200,152));
+#endif
     else
       bmf->setOffColor(FXRGB(200,200,200));
 

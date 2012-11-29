@@ -52,7 +52,7 @@ void menuChannelsMonitor(uint8_t event)
     uint8_t x = col*DISPLAY_W/4;
 
     // Column title
-    lcd_outdezNAtt(col==0 ? 25 : (col == 1 ? 73 : x+DISPLAY_W/8-5*FWNUM/2+2), 1*FH+1, ch+1, LEFT|SMLSIZE);
+    lcd_outdezNAtt(col==0 ? 28 : (col == 1 ? 81 : x+DISPLAY_W/8-5*FWNUM/2+9), 1*FH+1, ch+1, LEFT|SMLSIZE);
     lcd_putcAtt(lcdLastPos-1, 1*FH+1, '-', SMLSIZE);
     lcd_outdezNAtt(lcdLastPos+FW-1, 1*FH+1, ch+8, LEFT|SMLSIZE);
 
