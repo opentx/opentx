@@ -724,6 +724,14 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
 }
 #endif
 
+#if defined(LCD212)
+#define MENU_X   30
+#define MENU_W   DISPLAY_W-60
+#else
+#define MENU_X   10
+#define MENU_W   DISPLAY_W-20
+#endif
+
 #if defined(SDCARD)
 const char *s_menu[MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
@@ -736,16 +744,16 @@ const char * displayMenu(uint8_t event)
 
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
 
-  lcd_filled_rect(10, 16, DISPLAY_W-20, display_count * (FH+1) + 2, SOLID, WHITE);
-  lcd_rect(10, 16, DISPLAY_W-20, display_count * (FH+1) + 2);
+  lcd_filled_rect(MENU_X, 16, MENU_W, display_count * (FH+1) + 2, SOLID, WHITE);
+  lcd_rect(MENU_X, 16, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-    lcd_putsAtt(16, i*(FH+1) + 2*FH + 2, s_menu[i], s_menu_flags);
-    if (i == s_menu_item) lcd_filled_rect(11, i*(FH+1) + 2*FH + 1, DISPLAY_W-22, 9);
+    lcd_putsAtt(MENU_X+6, i*(FH+1) + 2*FH + 2, s_menu[i], s_menu_flags);
+    if (i == s_menu_item) lcd_filled_rect(MENU_X+1, i*(FH+1) + 2*FH + 1, MENU_W-2, 9);
   }
 
   if (s_menu_count > display_count) {
-    displayScrollbar(DISPLAY_W-11, 17, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
+    displayScrollbar(MENU_W-1, 17, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
   }
 
   switch(event) {

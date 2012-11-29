@@ -40,7 +40,7 @@
 #define RBOX_CENTERX  (DISPLAY_W-LBOX_CENTERX)
 #define RBOX_CENTERY  LBOX_CENTERY
 #define MODELNAME_X   (13)
-#define VBATT_X       (MODELNAME_X+28)
+#define VBATT_X       (MODELNAME_X+26)
 #define VBATT_Y       (FH+3)
 #define VBATTUNIT_X   (VBATT_X-2)
 #define VBATTUNIT_Y   VBATT_Y
