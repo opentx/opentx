@@ -164,6 +164,26 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags mode)
       p--;
     }
   }
+  else if (mode & TINSIZE) {
+    q = &font_3x5[((uint16_t)c-0x2D)*3+2];
+    uint8_t ym8 = (y % 8);
+    p += 2;
+    for (int8_t i=2; i>=0; i--) {
+      uint8_t b = pgm_read_byte(q--);
+      if (inv) b = ~b & 0x3f;
+
+      if (p<DISPLAY_END) {
+        ASSERT_IN_DISPLAY(p);
+        *p = (*p & (~(0x3f << ym8))) + (b << ym8);
+        if (ym8) {
+          uint8_t *r = p + DISPLAY_W;
+          if (r<DISPLAY_END)
+            *r = (*r & (~(0x3f >> (8-ym8)))) + (b >> (8-ym8));
+        }
+      }
+      p--;
+    }
+  }
 #endif
   else {
     uint8_t condense=0;
@@ -308,8 +328,10 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   bool dblsize = flags & DBLSIZE;
 #if defined(PCBX9D)
   bool midsize = flags & MIDSIZE;
+  bool tinsize = flags & TINSIZE;
 #else
 #define midsize 0
+#define tinsize 0
 #endif
 
   bool neg = false;
@@ -336,6 +358,9 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   else if (midsize) {
     flags |= CONDENSED;
     fw += FWNUM-3;
+  }
+  else if (tinsize) {
+    fw -= 1;
   }
   else {
     if (flags & LEFT) {

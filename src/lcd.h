@@ -96,9 +96,11 @@
 #if defined(PCBX9D)
 #define MIDSIZE       0x0100
 #define SMLSIZE       0x0200
+#define TINSIZE       0x0400
 #else
 #define MIDSIZE       DBLSIZE
 #define SMLSIZE       0x00
+#define TINSIZE       0x00
 #endif
 
 #if defined(CPUARM)
@@ -125,8 +127,9 @@ extern void lcd_putsAtt(xcoord_t x, uint8_t y, const pm_char * s, LcdFlags mode)
 extern void lcd_putsiAtt(xcoord_t x, uint8_t y, const pm_char * s,uint8_t idx, LcdFlags mode);
 extern void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s,unsigned char len, LcdFlags mode);
 extern void lcd_puts(xcoord_t x, uint8_t y, const pm_char * s);
-extern void lcd_putsLeft(uint8_t y, const pm_char * s);
 extern void lcd_putsn(xcoord_t x, uint8_t y, const pm_char * s, unsigned char len);
+extern void lcd_putsLeft(uint8_t y, const pm_char * s);
+#define lcd_putsCenter(y, s) lcd_puts((DISPLAY_W-sizeof(TR_##s)*FW+FW-2)/2, y, STR_##s)
 
 extern void lcd_outhex4(xcoord_t x, uint8_t y, uint16_t val);
 extern void lcd_outdezAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags mode=0);

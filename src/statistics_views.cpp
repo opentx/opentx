@@ -36,6 +36,7 @@
 void menuStatisticsView(uint8_t event)
 {
   TITLE(STR_MENUSTAT);
+
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_UP):
@@ -84,9 +85,11 @@ void menuStatisticsView(uint8_t event)
 #else
 #define MENU_DEBUG_COL_OFS (14*FW)
 #endif
+
 void menuStatisticsDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
+
   switch(event)
   {
 #if defined(PCBSKY9X)

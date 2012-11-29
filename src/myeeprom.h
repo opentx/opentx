@@ -78,8 +78,8 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
 
 #if defined(LCD212)
 enum MainViews {
-  VIEW_OUTPUTS,
   VIEW_INPUTS,
+  VIEW_SWITCHES,
   VIEW_COUNT
 };
 #else

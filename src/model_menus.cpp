@@ -1796,6 +1796,14 @@ enum MixFields {
 
 void menuModelMixOne(uint8_t event)
 {
+#if defined(PCBX9D)
+  if (event == EVT_KEY_LONG(KEY_PAGE)) {
+    pushMenu(menuChannelsMonitor);
+    killEvents(event);
+    return;
+  }
+#endif
+
   TITLE(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
@@ -2210,6 +2218,14 @@ void menuModelExposAll(uint8_t event)
 
 void menuModelMixAll(uint8_t event)
 {
+#if defined(PCBX9D)
+  if (event == EVT_KEY_LONG(KEY_PAGE)) {
+    pushMenu(menuChannelsMonitor);
+    killEvents(event);
+    return;
+  }
+#endif
+
   return menuModelExpoMix(0, event);
 }
 

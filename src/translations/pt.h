@@ -464,4 +464,4 @@
 #define TR_OWN                 "Propr."
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
-
+#define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"

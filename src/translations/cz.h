@@ -458,3 +458,4 @@
 #define TR_OWN                 "Sv\200"
 #define TR_DATE                "Date"
 #define TR_ROTARY_ENCODER      "R.Encs"
+#define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"

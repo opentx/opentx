@@ -464,3 +464,4 @@
 #define TR_OWN                 "Eigen"
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "Drehgeber"
+#define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"

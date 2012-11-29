@@ -467,3 +467,4 @@
 #define TR_OWN                 "Egen"
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
+#define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"

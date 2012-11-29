@@ -464,3 +464,4 @@
 #define TR_OWN                 "Pers"
 #define TR_DATE                "Date"
 #define TR_ROTARY_ENCODER      "Enc.Rot."
+#define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"

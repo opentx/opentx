@@ -242,4 +242,6 @@ void drawStatusLine();
 #define drawStatusLine()
 #endif
 
+void menuChannelsMonitor(uint8_t event);
+
 #endif

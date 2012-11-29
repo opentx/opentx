@@ -1008,23 +1008,22 @@ void resetProto();
 #if defined(PCBSKY9X)
 inline int32_t calc100toRESX(register int8_t x)
 {
-  return ((uint32_t)x*655)>>6 ;
+  return x * 1024 / 100;
 }
 
 inline int16_t calc1000toRESX(register int32_t x)  // improve calc time by Pat MacKenzie
 {
-    register int32_t y = x>>5;
-    x+=y;
-    y=y>>2;
-    x-=y;
-    return x+(y>>2);
-    //  return x + x/32 - x/128 + x/512;
+  return x * 1024 / 1000;
 }
 
 inline int16_t calcRESXto1000(register int32_t x)
 {
-// *1000/1024 = x - x/32 + x/128
-  return (x - x/32 + x/128 - x/512);
+  return x * 1000 / 1024;
+}
+
+inline int16_t calcRESXto100(register int32_t x)
+{
+  return x * 100 / 1024;
 }
 
 #else

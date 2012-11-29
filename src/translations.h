@@ -423,6 +423,7 @@ extern const pm_uchar font_5x7[];
 extern const pm_uchar font_10x14[];
 
 #if defined(PCBX9D)
+extern const pm_uchar font_3x5[];
 extern const pm_uchar font_4x6[];
 extern const pm_uchar font_8x10[];
 extern const pm_uchar font_5x7_extra[];
@@ -478,6 +479,7 @@ extern const pm_char STR_GLOBAL_VARS[];
 extern const pm_char STR_OWN[];
 extern const pm_char STR_ROTARY_ENCODER[];
 extern const pm_char STR_DATE[];
+extern const pm_char STR_CHANNELS_MONITOR[];
 
 #if defined(VOICE)
 PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att);

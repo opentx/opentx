@@ -375,6 +375,7 @@ const pm_char STR_GLOBAL_VARS[] PROGMEM = TR_GLOBAL_VARS;
 const pm_char STR_OWN[] PROGMEM = TR_OWN;
 const pm_char STR_ROTARY_ENCODER[] PROGMEM = TR_ROTARY_ENCODER;
 const pm_char STR_DATE[] PROGMEM = TR_DATE;
+const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
 
 const pm_uchar font_5x7[] PROGMEM = {
 #include "font.lbm"
@@ -409,6 +410,10 @@ const pm_uchar font_10x14[] PROGMEM = {
 };
 
 #if defined(PCBX9D)
+const pm_uchar font_3x5[] PROGMEM = {
+#include "font_tiny.lbm"
+};
+
 const pm_uchar font_4x6[] PROGMEM = {
 #include "font_small.lbm"
 };

@@ -460,7 +460,7 @@ ifeq ($(PCB), X9D)
   PULSESSRC = pulses_arm.cpp
   CPPSRC += sky9x/audio.cpp haptic.cpp
   CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp
-  CPPSRC += bmp.cpp
+  CPPSRC += bmp.cpp monitors_views.cpp
   
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
@@ -750,7 +750,7 @@ eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-lbm: font.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
+lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -797,6 +797,11 @@ font.lbm: font.xbm font_extra.xbm translations/font_se.xbm translations/font_de.
 	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm 5x7
 	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm 5x7
 	$(IMG2LBM) translations/font_es.xbm translations/font_es.lbm 5x7
+
+font_tiny.lbm: font_tiny.xbm
+	@echo
+	@echo "Convert font from xbm to lbm:"
+	$(IMG2LBM) $< $@ 3x5
 
 font_small.lbm: font_small.xbm
 	@echo

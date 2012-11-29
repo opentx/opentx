@@ -602,7 +602,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 }
 
 int16_t calibratedStick[NUM_STICKS+NUM_POTS];
-int16_t g_chans512[NUM_CHNOUT];
+int16_t g_chans512[NUM_CHNOUT] = {0};
 int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain
 #ifdef HELI
 int16_t cyc_anas[3] = {0};
