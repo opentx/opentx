@@ -2821,7 +2821,11 @@ void menuModelCustomFunctions(uint8_t event)
             }
 #if defined(DEBUG)
             else if (sd->func == FUNC_TEST) {
+#if defined(GVARS)
               func_displayed = FUNC_TEST - 16 - NUM_STICKS - MAX_GVARS + 2;
+#else
+              func_displayed = FUNC_TEST - 16 - NUM_STICKS + 1;
+#endif
             }
 #endif
 #if defined(GVARS)

@@ -619,7 +619,9 @@ int16_t getValue(uint8_t i)
   else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
   else if(i<MIXSRC_MAX) return 1024;
 #if defined(PCBX9D)
-  // TODO
+  else if(i==MIXSRC_SA) return (keyState(SW_SA0) ? -1024 : 1024);
+  else if(i==MIXSRC_SB) return (keyState(SW_SB0) ? -1024 : (keyState(SW_SB1) ? 0 : 1024));
+  else if(i==MIXSRC_SC) return (keyState(SW_SC0) ? -1024 : (keyState(SW_SC1) ? 0 : 1024));
 #else
   else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
   // here the switches are skipped
@@ -1872,8 +1874,6 @@ void testFunc()
 #ifdef SIMU
   printf("testFunc\n"); fflush(stdout);
 #endif
-
-  while (1);
 }
 #endif
 
