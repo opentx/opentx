@@ -50,8 +50,7 @@ void audioQueue::heartbeat()
 {
 #if defined(SIMU)
   return;
-#endif
-
+#else
   if (toneTimeLeft > 0) {
     if (toneFreq == 0) {  //pause only events
       SPEAKER_OFF;
@@ -102,6 +101,7 @@ void audioQueue::heartbeat()
       }
     }
   }
+#endif // defined(SIMU)
 }
 
 inline uint8_t audioQueue::getToneLength(uint8_t tLen)
