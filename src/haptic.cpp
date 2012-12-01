@@ -48,8 +48,7 @@ void hapticQueue::heartbeat()
 {
 #if defined(SIMU)
   return;
-#endif
-
+#else
   if (buzzTimeLeft > 0) {
     buzzTimeLeft--; // time gets counted down
 #if defined(PCBSKY9X)
@@ -77,6 +76,7 @@ void hapticQueue::heartbeat()
       }
     }
   }
+#endif // defined(SIMU)
 }
 
 void hapticQueue::play(uint8_t tLen, uint8_t tPause, uint8_t tFlags)
