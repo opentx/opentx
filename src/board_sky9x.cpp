@@ -895,6 +895,7 @@ uint8_t keyDown()
   return ~read_keys() & 0x7E ;
 }
 
+#if defined(PCBX9D)
 extern uint32_t keyState(EnumKeys enuk)
 {
   register uint32_t a ;
@@ -907,7 +908,63 @@ extern uint32_t keyState(EnumKeys enuk)
   a = PIOA->PIO_PDSR ;
   c = PIOC->PIO_PDSR ;
 
-#if !defined(PCBX9D)
+  // printf("c=%x\n", c); fflush(stdout);
+
+  switch ((uint8_t) enuk) {
+    case SW_SA0:
+      xxx = c & 0x80000000;
+      break;
+
+    case SW_SA2:
+      xxx = c & 0x40000000;
+      break;
+
+    case SW_SB0:
+      xxx = c & 0x08000000;
+      break;
+
+    case SW_SB1:
+      xxx = c & 0x04000000;
+      break;
+
+    case SW_SB2:
+      xxx = c & 0x02000000;
+      break;
+
+    case SW_SC0:
+      xxx = c & 0x00800000;
+      break;
+
+    case SW_SC1:
+      xxx = c & 0x00400000;
+      break;
+
+    case SW_SC2:
+      xxx = c & 0x00200000;
+      break;
+
+    default:
+      break;
+  }
+
+  if (xxx) {
+    return 1;
+  }
+  return 0;
+}
+#else
+extern uint32_t keyState(EnumKeys enuk)
+{
+  register uint32_t a ;
+  register uint32_t c ;
+
+  CPU_UINT xxx = 0;
+
+  if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
+
+  a = PIOA->PIO_PDSR ;
+  c = PIOC->PIO_PDSR ;
+
   switch ((uint8_t) enuk) {
 #ifdef REVB
     case SW_ELE:
@@ -960,13 +1017,13 @@ extern uint32_t keyState(EnumKeys enuk)
     default:
       break;
   }
-#endif
 
   if (xxx) {
     return 1;
   }
   return 0;
 }
+#endif
 
 uint16_t Analog_values[NUMBER_ANALOG] ;
 uint8_t temperature = 0;          // Raw temp reading

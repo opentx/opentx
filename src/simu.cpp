@@ -324,6 +324,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #else
     pind  = 0;
 #endif
+
     for(unsigned i=0; i<DIM(keys2);i++){
       if(getApp()->getKeyState(keys2[i])) {
 #if defined(PCBSKY9X)
@@ -378,7 +379,16 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #endif
     
     static SwitchKey keys3[] = {
-#if defined(PCBSKY9X)
+#if defined(PCBX9D)
+      { KEY_A, PIOC->PIO_PDSR,  31, 0 },
+      { KEY_B, PIOC->PIO_PDSR,  27, 0 },
+      { KEY_C, PIOC->PIO_PDSR,  23, 0 },
+      { KEY_D, PIOC->PIO_PDSR,  17, 0 },
+      { KEY_E, PIOC->PIO_PDSR,  16, 0 },
+      { KEY_F, PIOC->PIO_PDSR,  15, 0 },
+      { KEY_G, PIOC->PIO_PDSR,  15, 0 },
+      { KEY_H, PIOC->PIO_PDSR,  15, 0 } };
+#elif defined(PCBSKY9X)
       { KEY_1, PIOC->PIO_PDSR,  20, 0 },
       { KEY_6, PIOA->PIO_PDSR,  2, 0 },
       { KEY_2, PIOA->PIO_PDSR,  15, 0 },
