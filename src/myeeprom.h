@@ -227,73 +227,6 @@ PACK(typedef struct t_LimitData {
   uint16_t revert:1;
 }) LimitData;
 
-enum MixSources {
-    MIXSRC_Rud = 1,
-    MIXSRC_Ele,
-    MIXSRC_Thr,
-    MIXSRC_Ail,
-#if defined(PCBX9D)
-    MIXSRC_S1,
-    MIXSRC_S2,
-    MIXSRC_S3,
-    MIXSRC_S4,
-#else
-    MIXSRC_P1,
-    MIXSRC_P2,
-    MIXSRC_P3,
-#endif
-#if defined(PCBSKY9X)
-    MIXSRC_REa,
-#elif defined(PCBGRUVIN9X)
-    MIXSRC_REa,
-    MIXSRC_REb,
-#if defined(EXTRA_ROTARY_ENCODERS)
-    MIXSRC_REc,
-    MIXSRC_REd,
-#endif
-#endif
-    MIXSRC_TrimRud,
-    MIXSRC_TrimEle,
-    MIXSRC_TrimThr,
-    MIXSRC_TrimAil,
-    MIXSRC_MAX ,
-#if defined(PCBX9D)
-    MIXSRC_SA,
-    MIXSRC_SB,
-    MIXSRC_SC,
-    MIXSRC_SD,
-    MIXSRC_SE,
-    MIXSRC_SF,
-    MIXSRC_SG,
-    MIXSRC_SH,
-#else
-    MIXSRC_3POS,
-    MIXSRC_THR,
-    MIXSRC_RUD,
-    MIXSRC_ELE,
-    MIXSRC_ID0,
-    MIXSRC_ID1,
-    MIXSRC_ID2,
-    MIXSRC_AIL,
-    MIXSRC_GEA,
-    MIXSRC_TRN,
-#endif
-    MIXSRC_SW1,
-    MIXSRC_SW9 = MIXSRC_SW1 + 8,
-    MIXSRC_SWA,
-    MIXSRC_SWB,
-    MIXSRC_SWC,
-    MIXSRC_CYC1,
-    MIXSRC_CYC2,
-    MIXSRC_CYC3,
-    MIXSRC_PPM1,
-    MIXSRC_PPM8 = MIXSRC_PPM1 + 7,
-    MIXSRC_CH1,
-    MIXSRC_CH9 = MIXSRC_CH1 + 8,
-    MIXSRC_CH10,
-    MIXSRC_CH11,
-    MIXSRC_CH16 = MIXSRC_CH11 + 5
-};
 
 #define TRIM_OFF    1
 #define TRIM_ON     0
@@ -720,6 +653,75 @@ PACK(typedef struct t_PhaseData {
 #define NUM_POINTS (112-MAX_CURVES)
 #define CURVTYPE   int8_t
 #endif
+
+enum MixSources {
+    MIXSRC_Rud = 1,
+    MIXSRC_Ele,
+    MIXSRC_Thr,
+    MIXSRC_Ail,
+#if defined(PCBX9D)
+    MIXSRC_S1,
+    MIXSRC_S2,
+    MIXSRC_S3,
+    MIXSRC_S4,
+#else
+    MIXSRC_P1,
+    MIXSRC_P2,
+    MIXSRC_P3,
+#endif
+#if defined(PCBSKY9X)
+    MIXSRC_REa,
+#elif defined(PCBGRUVIN9X)
+    MIXSRC_REa,
+    MIXSRC_REb,
+#if defined(EXTRA_ROTARY_ENCODERS)
+    MIXSRC_REc,
+    MIXSRC_REd,
+#endif
+#endif
+    MIXSRC_TrimRud,
+    MIXSRC_TrimEle,
+    MIXSRC_TrimThr,
+    MIXSRC_TrimAil,
+    MIXSRC_MAX ,
+#if defined(PCBX9D)
+    MIXSRC_SA,
+    MIXSRC_SB,
+    MIXSRC_SC,
+    MIXSRC_SD,
+    MIXSRC_SE,
+    MIXSRC_SF,
+    MIXSRC_SG,
+    MIXSRC_SH,
+#else
+    MIXSRC_3POS,
+    MIXSRC_THR,
+    MIXSRC_RUD,
+    MIXSRC_ELE,
+    MIXSRC_ID0,
+    MIXSRC_ID1,
+    MIXSRC_ID2,
+    MIXSRC_AIL,
+    MIXSRC_GEA,
+    MIXSRC_TRN,
+#endif
+    MIXSRC_SW1,
+    MIXSRC_SW9 = MIXSRC_SW1 + 8,
+    MIXSRC_SWA,
+    MIXSRC_SWB,
+    MIXSRC_SWC,
+    MIXSRC_CYC1,
+    MIXSRC_CYC2,
+    MIXSRC_CYC3,
+    MIXSRC_PPM1,
+    MIXSRC_PPM8 = MIXSRC_PPM1 + 7,
+    MIXSRC_CH1,
+    MIXSRC_CH9 = MIXSRC_CH1 + 8,
+    MIXSRC_CH10,
+    MIXSRC_CH11,
+    MIXSRC_CH16 = MIXSRC_CH11 + 5,
+    MIXSRC_CHMAX = MIXSRC_CH1+NUM_CHNOUT-1
+};
 
 #define MIN_POINTS 3
 #define MAX_POINTS 17
