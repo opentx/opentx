@@ -669,7 +669,7 @@ enum MixSources {
     MIXSRC_P2,
     MIXSRC_P3,
 #endif
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(PCBX9D)
     MIXSRC_REa,
 #elif defined(PCBGRUVIN9X)
     MIXSRC_REa,

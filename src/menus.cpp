@@ -164,7 +164,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   }
 
   if (newval != val) {
-    if ((~i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && (newval==0 || newval==-100 || newval==+100)) {
+    if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && (newval==0 || newval==-100 || newval==+100)) {
       pauseEvents(event); // delay before auto-repeat continues
       if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
         AUDIO_KEYPAD_UP();

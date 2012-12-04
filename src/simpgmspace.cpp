@@ -63,44 +63,179 @@ extern const char* eeprom_buffer_data;
 uint8_t eeprom[EESIZE];
 sem_t *eeprom_write_sem;
 
+#if defined(PCBSKY9X)
+#define SWITCH_CASE(swtch, pin, bit) \
+    case -DSW(swtch): \
+      pin &= ~(1<<bit); \
+      break; \
+    case DSW(swtch): \
+      pin |= (1<<bit); \
+      break;
+#else
+#define SWITCH_CASE(swtch, pin, bit) \
+    case DSW(swtch): \
+      pin &= ~(1<<bit); \
+      break; \
+    case -DSW(swtch): \
+      pin |= (1<<bit); \
+      break;
+#endif
+
 void setSwitch(int8_t swtch)
 {
   switch (swtch) {
+#if defined(PCBX9D)
+    case DSW(SW_SA0):
+      PIOC->PIO_PDSR &= ~(1<<31);
+      break;
+    case DSW(SW_SA2):
+      PIOC->PIO_PDSR |= (1<<31);
+      break;
+    case DSW(SW_SB0):
+      PIOC->PIO_PDSR &= ~(1<<26);
+      PIOC->PIO_PDSR &= ~(1<<27);
+      break;
+    case DSW(SW_SB1):
+      PIOC->PIO_PDSR |= (1<<27);
+      PIOC->PIO_PDSR &= ~(1<<26);
+      break;
+    case DSW(SW_SB2):
+      PIOC->PIO_PDSR |= (1<<26);
+      PIOC->PIO_PDSR &= ~(1<<27);
+      break;
+    case DSW(SW_SC0):
+      PIOC->PIO_PDSR &= ~(1<<22);
+      PIOC->PIO_PDSR &= ~(1<<23);
+      break;
+    case DSW(SW_SC1):
+      PIOC->PIO_PDSR |= (1<<23);
+      PIOC->PIO_PDSR &= ~(1<<22);
+      break;
+    case DSW(SW_SC2):
+      PIOC->PIO_PDSR |= (1<<22);
+      PIOC->PIO_PDSR &= ~(1<<23);
+      break;
+    case DSW(SW_SD0):
+      PIOC->PIO_PDSR &= ~(1<<20);
+      PIOC->PIO_PDSR &= ~(1<<21);
+      break;
+    case DSW(SW_SD1):
+      PIOC->PIO_PDSR |= (1<<21);
+      PIOC->PIO_PDSR &= ~(1<<20);
+      break;
+    case DSW(SW_SD2):
+      PIOC->PIO_PDSR |= (1<<20);
+      PIOC->PIO_PDSR &= ~(1<<21);
+      break;
+    case DSW(SW_SE0):
+      PIOC->PIO_PDSR &= ~(1<<18);
+      PIOC->PIO_PDSR &= ~(1<<19);
+      break;
+    case DSW(SW_SE1):
+      PIOC->PIO_PDSR |= (1<<19);
+      PIOC->PIO_PDSR &= ~(1<<18);
+      break;
+    case DSW(SW_SE2):
+      PIOC->PIO_PDSR |= (1<<18);
+      PIOC->PIO_PDSR &= ~(1<<19);
+      break;
+    case DSW(SW_SF0):
+      PIOC->PIO_PDSR &= ~(1<<16);
+      PIOC->PIO_PDSR &= ~(1<<17);
+      break;
+    case DSW(SW_SF1):
+      PIOC->PIO_PDSR |= (1<<17);
+      PIOC->PIO_PDSR &= ~(1<<16);
+      break;
+    case DSW(SW_SF2):
+      PIOC->PIO_PDSR |= (1<<16);
+      PIOC->PIO_PDSR &= ~(1<<17);
+      break;
+    case DSW(SW_SG0):
+      PIOC->PIO_PDSR &= ~(1<<14);
+      PIOC->PIO_PDSR &= ~(1<<15);
+      break;
+    case DSW(SW_SG1):
+      PIOC->PIO_PDSR |= (1<<15);
+      PIOC->PIO_PDSR &= ~(1<<14);
+      break;
+    case DSW(SW_SG2):
+      PIOC->PIO_PDSR |= (1<<14);
+      PIOC->PIO_PDSR &= ~(1<<15);
+      break;
+    case DSW(SW_SH0):
+      PIOC->PIO_PDSR &= ~(1<<13);
+      break;
+    case DSW(SW_SH2):
+      PIOC->PIO_PDSR |= (1<<13);
+      break;
+#elif defined(PCBSKY9X)
     case DSW(SW_ID0):
-#if defined(PCBSKY9X)
       PIOC->PIO_PDSR &= ~0x00004000;
       PIOC->PIO_PDSR |= 0x00000800;
-#elif defined(PCBGRUVIN9X)
-      ping |=  (1<<INP_G_ID1);
-      pinb &= ~(1<<INP_B_ID2);
-#else
-      ping |=  (1<<INP_G_ID1);
-      pine &= ~(1<<INP_E_ID2);
-#endif
       break;
     case DSW(SW_ID1):
-#if defined(PCBSKY9X)
       PIOC->PIO_PDSR |= 0x00004800;
-#elif defined(PCBGRUVIN9X)
-      ping &= ~(1<<INP_G_ID1);
-      pinb &= ~(1<<INP_B_ID2);
-#else
-      ping &= ~(1<<INP_G_ID1);
-      pine &= ~(1<<INP_E_ID2);
-#endif
       break;
     case DSW(SW_ID2):
-#if defined(PCBSKY9X)
       PIOC->PIO_PDSR &= ~0x00000800;
       PIOC->PIO_PDSR |= 0x00004000;
+      break;
+
+    SWITCH_CASE(SW_THR, PIOC->PIO_PDSR, 20)
+    SWITCH_CASE(SW_RUD, PIOA->PIO_PDSR, 15)
+    SWITCH_CASE(SW_ELE, PIOC->PIO_PDSR, 31)
+    SWITCH_CASE(SW_AIL, PIOA->PIO_PDSR, 2)
+    SWITCH_CASE(SW_GEA, PIOC->PIO_PDSR, 16)
+    SWITCH_CASE(SW_TRN, PIOC->PIO_PDSR, 8)
 #elif defined(PCBGRUVIN9X)
+    SWITCH_CASE(SW_THR, ping, INP_G_ThrCt)
+    SWITCH_CASE(SW_RUD, ping, INP_G_RuddDR)
+    SWITCH_CASE(SW_ELE, pinc, INP_C_ElevDR)
+
+    case DSW(SW_ID0):
+      ping |=  (1<<INP_G_ID1);
+      pinb &= ~(1<<INP_B_ID2);
+      break;
+    case DSW(SW_ID1):
+      ping &= ~(1<<INP_G_ID1);
+      pinb &= ~(1<<INP_B_ID2);
+      break;
+    case DSW(SW_ID2):
       ping &= ~(1<<INP_G_ID1);
       pinb |=  (1<<INP_B_ID2);
+      break;
+
+    SWITCH_CASE(SW_AIL, pinc, INP_C_AileDR)
+    SWITCH_CASE(SW_GEA, ping, INP_G_Gear)
+    SWITCH_CASE(SW_TRN, pinb, INP_B_Trainer)
+#else // STOCK
+#if defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
+    SWITCH_CASE(SW_THR, pinc, INP_C_ThrCt)
+    SWITCH_CASE(SW_AIL, pinc, INP_C_AileDR)
 #else
+    SWITCH_CASE(SW_THR, pine, INP_E_ThrCt)
+    SWITCH_CASE(SW_AIL, pine, INP_E_AileDR)
+#endif
+    case DSW(SW_ID0):
+      ping |=  (1<<INP_G_ID1);
+      pine &= ~(1<<INP_E_ID2);
+      break;
+    case DSW(SW_ID1):
+      ping &= ~(1<<INP_G_ID1);
+      pine &= ~(1<<INP_E_ID2);
+      break;
+    case DSW(SW_ID2):
       ping &= ~(1<<INP_G_ID1);
       pine |=  (1<<INP_E_ID2);
-#endif
       break;
+
+    SWITCH_CASE(SW_RUD, ping, INP_G_RuddDR)
+    SWITCH_CASE(SW_ELE, pine, INP_E_ElevDR)
+    SWITCH_CASE(SW_GEA, pine, INP_E_Gear)
+    SWITCH_CASE(SW_TRN, pine, INP_E_Trainer)
+#endif
+
     default:
       break;
   }

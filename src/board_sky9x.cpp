@@ -898,49 +898,103 @@ uint8_t keyDown()
 #if defined(PCBX9D)
 extern uint32_t keyState(EnumKeys enuk)
 {
-  register uint32_t a ;
   register uint32_t c ;
 
   CPU_UINT xxx = 0;
 
   if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
 
-  a = PIOA->PIO_PDSR ;
   c = PIOC->PIO_PDSR ;
 
   // printf("c=%x\n", c); fflush(stdout);
 
   switch ((uint8_t) enuk) {
     case SW_SA0:
-      xxx = c & 0x80000000;
+      xxx = !(c & 0x80000000);
       break;
 
     case SW_SA2:
-      xxx = c & 0x40000000;
+      xxx = c & 0x80000000;
       break;
 
     case SW_SB0:
-      xxx = c & 0x08000000;
+      xxx = !(c & 0x08000000) && !(c & 0x04000000);
       break;
 
     case SW_SB1:
-      xxx = c & 0x04000000;
+      xxx = (c & 0x08000000) && !(c & 0x04000000);
       break;
 
     case SW_SB2:
-      xxx = c & 0x02000000;
+      xxx = !(c & 0x08000000) && (c & 0x04000000);
       break;
 
     case SW_SC0:
-      xxx = c & 0x00800000;
+      xxx = !(c & 0x00800000) && !(c & 0x00400000);
       break;
 
     case SW_SC1:
-      xxx = c & 0x00400000;
+      xxx = (c & 0x00800000) && !(c & 0x00400000);
       break;
 
     case SW_SC2:
-      xxx = c & 0x00200000;
+      xxx = !(c & 0x00800000) && (c & 0x00400000);
+      break;
+
+    case SW_SD0:
+      xxx = !(c & 0x00200000) && !(c & 0x00100000);
+      break;
+
+    case SW_SD1:
+      xxx = (c & 0x00200000) && !(c & 0x00100000);
+      break;
+
+    case SW_SD2:
+      xxx = !(c & 0x00200000) && (c & 0x00100000);
+      break;
+
+    case SW_SE0:
+      xxx = !(c & 0x00080000) && !(c & 0x00040000);
+      break;
+
+    case SW_SE1:
+      xxx = (c & 0x00080000) && !(c & 0x00040000);
+      break;
+
+    case SW_SE2:
+      xxx = !(c & 0x00080000) && (c & 0x00040000);
+      break;
+
+    case SW_SF0:
+      xxx = !(c & 0x00020000) && !(c & 0x00010000);
+      break;
+
+    case SW_SF1:
+      xxx = (c & 0x00020000) && !(c & 0x00010000);
+      break;
+
+    case SW_SF2:
+      xxx = !(c & 0x00020000) && (c & 0x00010000);
+      break;
+
+    case SW_SG0:
+      xxx = !(c & 0x00008000) && !(c & 0x00004000);
+      break;
+
+    case SW_SG1:
+      xxx = (c & 0x00008000) && !(c & 0x00004000);
+      break;
+
+    case SW_SG2:
+      xxx = !(c & 0x00008000) && (c & 0x00004000);
+      break;
+
+    case SW_SH0:
+      xxx = !(c & 0x00002000);
+      break;
+
+    case SW_SH2:
+      xxx = c & 0x00002000;
       break;
 
     default:

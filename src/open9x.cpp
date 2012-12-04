@@ -88,7 +88,7 @@ const pm_uchar asterisk_lbm[] PROGMEM = {
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) && defined(SDCARD)
 uint8_t modelBitmap[64*32/8];
 void loadModelBitmap()
 {
@@ -619,9 +619,14 @@ int16_t getValue(uint8_t i)
   else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
   else if(i<MIXSRC_MAX) return 1024;
 #if defined(PCBX9D)
-  else if(i==MIXSRC_SA) return (keyState(SW_SA0) ? -1024 : 1024);
-  else if(i==MIXSRC_SB) return (keyState(SW_SB0) ? -1024 : (keyState(SW_SB1) ? 0 : 1024));
-  else if(i==MIXSRC_SC) return (keyState(SW_SC0) ? -1024 : (keyState(SW_SC1) ? 0 : 1024));
+  else if(i<MIXSRC_SA) return (keyState(SW_SA0) ? -1024 : 1024);
+  else if(i<MIXSRC_SB) return (keyState(SW_SB0) ? -1024 : (keyState(SW_SB1) ? 0 : 1024));
+  else if(i<MIXSRC_SC) return (keyState(SW_SC0) ? -1024 : (keyState(SW_SC1) ? 0 : 1024));
+  else if(i<MIXSRC_SD) return (keyState(SW_SD0) ? -1024 : (keyState(SW_SD1) ? 0 : 1024));
+  else if(i<MIXSRC_SE) return (keyState(SW_SE0) ? -1024 : (keyState(SW_SE1) ? 0 : 1024));
+  else if(i<MIXSRC_SF) return (keyState(SW_SF0) ? -1024 : (keyState(SW_SF1) ? 0 : 1024));
+  else if(i<MIXSRC_SG) return (keyState(SW_SG0) ? -1024 : (keyState(SW_SG1) ? 0 : 1024));
+  else if(i<MIXSRC_SH) return (keyState(SW_SH0) ? -1024 : 1024);
 #else
   else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
   // here the switches are skipped
@@ -1100,7 +1105,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
   }
 #endif
   lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT));
-  if (~att & NO_UNIT && unit != UNIT_RAW)
+  if (!(att & NO_UNIT) && unit != UNIT_RAW)
     lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
 }
 #endif
@@ -2071,7 +2076,7 @@ void evalFunctions()
             safetyCh[sd->func] = FSW_PARAM(sd);
           }
 
-          if (~activeFunctions & function_mask) {
+          if (!(activeFunctions & function_mask)) {
             if (sd->func == FUNC_INSTANT_TRIM) {
               if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
@@ -2092,7 +2097,7 @@ void evalFunctions()
         }
 #endif
 
-        if (~activeFunctionSwitches & switch_mask) {
+        if (!(activeFunctionSwitches & switch_mask)) {
           if (sd->func == FUNC_RESET) {
             switch (FSW_PARAM(sd)) {
               case 0:
@@ -2120,7 +2125,7 @@ void evalFunctions()
         else
 #endif
 
-        if (!COMPLEX_SWITCH || (~activeFunctionSwitches & switch_mask)) {
+        if (!COMPLEX_SWITCH || !(activeFunctionSwitches & switch_mask)) {
           if (sd->func == FUNC_PLAY_SOUND) {
             AUDIO_PLAY(AU_FRSKY_FIRST+FSW_PARAM(sd));
           }
@@ -2201,8 +2206,8 @@ void evalFunctions()
         }
 
         if (COMPLEX_SWITCH) {
-          if (~activeFunctionSwitches & switch_mask) {
-            if (~activeFunctions & function_mask) {
+          if (!(activeFunctionSwitches & switch_mask)) {
+            if (!(activeFunctions & function_mask)) {
               newActiveFunctions |= function_mask;
             }
           }
@@ -2317,202 +2322,231 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   }
 #endif
 
-  memclear(chans, sizeof(chans));        // All outputs to 0
-
   //========== MIXER LOOP ===============
   uint8_t lv_mixWarning = 0;
 
-  for (uint8_t i=0; i<MAX_MIXERS; i++) {
+  uint8_t pass = 0;
 
-    MixData *md = mixaddress( i ) ;
+  bitfield_channels_t dirtyChannels = (bitfield_channels_t)-1; // all dirty when mixer starts
 
-    if (md->srcRaw==0) break;
+  do {
 
-    if (md->phases & (1<<s_perout_flight_phase)) continue;
+    // printf("[pass %d]\n", pass); fflush(stdout);
 
-    //========== SWITCH ===============
-    bool sw = getSwitch(md->swtch, 1);
+    bitfield_channels_t passDirtyChannels = 0;
 
-    //========== VALUE ===============
-    //Notice 0 = NC switch means not used -> always on line
-    uint8_t k = md->srcRaw-1;
-    int16_t v = 0;
-    if (mode != e_perout_mode_normal) {
-      if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
-        continue;
+    for (uint8_t i = 0; i < MAX_MIXERS; i++) {
+
+      MixData *md = mixaddress(i);
+
+      if (md->srcRaw == 0) break;
+
+      uint8_t k = md->srcRaw - 1;
+
+      if (!(dirtyChannels & ((bitfield_channels_t) 1 << md->destCh))) continue;
+
+      if (md->phases & (1 << s_perout_flight_phase)) continue;
+
+      //========== SWITCH ===============
+      bool sw = getSwitch(md->swtch, 1);
+
+      //========== VALUE ===============
+      int16_t v = 0;
+      if (mode != e_perout_mode_normal) {
+        if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
+          continue;
+        }
+        else {
+          if (!(mode & e_perout_mode_nosticks)) v = anas[k];
+        }
       }
       else {
-        if (!(mode & e_perout_mode_nosticks))
-          v = anas[k];
-      }
-    }
-    else {
-      if (k < NUM_STICKS)
-        v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
-      else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CH16-1 && k-MIXSRC_CH1+1<md->destCh) // if we've already calculated the value - take it instead
-        v = chans[k-MIXSRC_CH1+1] / 100;
+        if (k < NUM_STICKS)
+          v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
 #if defined(PCBX9D)
-      // TODO
+              // TODO
 #else
-      else if (k>=MIXSRC_THR-1 && k<=MIXSRC_SWC-1) {
-        v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
-        if (v<0 && !md->swtch)
-          sw = false;
+        else if (k >= MIXSRC_THR - 1 && k <= MIXSRC_SWC - 1) {
+          v = getSwitch(k - MIXSRC_THR + 1 + 1, 0) ? +1024 : -1024;
+          if (v < 0 && !md->swtch) sw = false;
+        }
+        else {
+          v = getValue(k <= MIXSRC_3POS ? k : k - MAX_SWITCH);
+          if (k >= MIXSRC_CH1 - 1 && k <= MIXSRC_CHMAX - 1
+              && md->destCh != k - MIXSRC_CH1 + 1) {
+            if (dirtyChannels
+                & ((bitfield_channels_t) 1 << (k - MIXSRC_CH1 + 1))
+                & (passDirtyChannels
+                    | ~(((bitfield_channels_t) 1 << md->destCh) - 1))) passDirtyChannels |=
+                (bitfield_channels_t) 1 << md->destCh;
+            if (k - MIXSRC_CH1 + 1 < md->destCh || pass > 0) v = chans[k
+                - MIXSRC_CH1 + 1] / 100;
+          }
+        }
+#endif
+      }
+
+      //========== DELAYS ===============
+      uint8_t swTog;
+      bool apply_offset = true;
+      if (sw) { // switch on?  (if no switch selected => on)
+        swTog = !swOn[i];
+        if (mode == e_perout_mode_normal) {
+          swOn[i] = true;
+          if (md->delayUp) {
+            if (swTog) {
+              if (sDelay[i])
+                sDelay[i] = 0;
+              else
+                sDelay[i] = md->delayUp * 50;
+            }
+            if (sDelay[i] > 0) { // perform delay
+              sDelay[i] = max(0, sDelay[i] - tick10ms);
+              if (!md->swtch) {
+                v = -1024;
+              }
+              else {
+                continue;
+              }
+            }
+          }
+          if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1); // Mix warning
+        }
       }
       else {
-        v = getValue(k <= MIXSRC_3POS ? k : k-MAX_SWITCH);
-      }
-#endif
-    }
-
-    //========== DELAYS ===============
-    uint8_t swTog;
-    bool apply_offset = true;
-    if (sw) { // switch on?  (if no switch selected => on)
-      swTog = !swOn[i];
-      if (mode == e_perout_mode_normal) {
-        swOn[i] = true;
-        if (md->delayUp) {
+        bool has_delay = false;
+        swTog = swOn[i];
+        swOn[i] = false;
+        if (md->delayDown) {
           if (swTog) {
             if (sDelay[i])
               sDelay[i] = 0;
             else
-              sDelay[i] = md->delayUp * 50;
+              sDelay[i] = md->delayDown * 50;
           }
           if (sDelay[i] > 0) { // perform delay
-            sDelay[i] = max(0, sDelay[i]-tick10ms);
-            if (!md->swtch) {
-              v = -1024;
-            }
-            else {
-              continue;
-            }
+            sDelay[i] = max(0, sDelay[i] - tick10ms);
+            if (!md->swtch) v = +1024;
+            has_delay = true;
+          }
+          else if (!md->swtch) {
+            v = -1024;
           }
         }
-        if (md->mixWarn) lv_mixWarning |= 1<<(md->mixWarn-1); // Mix warning
-      }
-    }
-    else {
-      bool has_delay = false;
-      swTog = swOn[i];
-      swOn[i] = false;
-      if (md->delayDown) {
-        if (swTog) {
-          if (sDelay[i])
-            sDelay[i] = 0;
-          else
-            sDelay[i] = md->delayDown * 50;
-        }
-        if (sDelay[i] > 0) { // perform delay
-          sDelay[i] = max(0, sDelay[i]-tick10ms);
-          if (!md->swtch) v = +1024;
-          has_delay = true;
-        }
-        else if (!md->swtch) {
-          v = -1024;
+        if (!has_delay) {
+          if (md->speedDown) {
+            if (md->mltpx == MLTPX_REP) continue;
+            if (md->swtch) {
+              v = 0;
+              apply_offset = false;
+            }
+          }
+          else if (md->swtch) {
+            continue;
+          }
         }
       }
-      if (!has_delay) {
-        if (md->speedDown) {
-          if (md->mltpx==MLTPX_REP) continue;
-          if (md->swtch) { v = 0; apply_offset = false; }
-        }
-        else if (md->swtch) {
-          continue;
-        }
-      }
-    }
 
 #ifdef BOLD_FONT
-    activeMixes |= ((ACTIVE_MIXES_TYPE)1 << i);
+      activeMixes |= ((ACTIVE_MIXES_TYPE) 1 << i);
 #endif
 
-    //========== OFFSET ===============
-    if (apply_offset) {
-      int8_t offset = GET_GVAR(md->offset, -125, 125, s_perout_flight_phase);
-      if (offset) v += calc100toRESX(offset);
-    }
+      //========== OFFSET ===============
+      if (apply_offset) {
+        int8_t offset = GET_GVAR(md->offset, -125, 125, s_perout_flight_phase);
+        if (offset) v += calc100toRESX(offset);
+      }
 
-    //========== TRIMS ===============
-    if (!(mode & e_perout_mode_notrims)) {
-      int8_t mix_trim = md->carryTrim;
-      if (mix_trim < TRIM_ON)
-        mix_trim = -mix_trim-1;
-      else if (mix_trim == TRIM_ON && k < NUM_STICKS)
-        mix_trim = k;
-      else
-        mix_trim = -1;
-      if (mix_trim >= 0)
-        v += trims[mix_trim];
-    }
+      //========== TRIMS ===============
+      if (!(mode & e_perout_mode_notrims)) {
+        int8_t mix_trim = md->carryTrim;
+        if (mix_trim < TRIM_ON)
+          mix_trim = -mix_trim - 1;
+        else if (mix_trim == TRIM_ON && k < NUM_STICKS)
+          mix_trim = k;
+        else
+          mix_trim = -1;
+        if (mix_trim >= 0) v += trims[mix_trim];
+      }
 
-    int16_t weight = GET_GVAR(md->weight, -500, 500, s_perout_flight_phase);
+      int16_t weight = GET_GVAR(md->weight, -500, 500, s_perout_flight_phase);
 
-    //========== SPEED ===============
-    if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown))  // there are delay values
-    {
+      //========== SPEED ===============
+      if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
+      
 #define DEL_MULT 256
 
-      int16_t diff = v-act[i]/DEL_MULT;
+        int16_t diff = v - act[i] / DEL_MULT;
 
-      if (diff) {
-        //rate = steps/sec => 32*1024/100*md->speedUp/Down
-        //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
-        //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 since it's asymmetrical
-        if (tick10ms) {
-            int32_t rate = (int32_t)DEL_MULT*2048*100*tick10ms;
+        if (diff) {
+          //rate = steps/sec => 32*1024/100*md->speedUp/Down
+          //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
+          //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 since it's asymmetrical
+          if (tick10ms) {
+            int32_t rate = (int32_t) DEL_MULT * 2048 * 100 * tick10ms;
             if (weight) rate /= abs(weight);
 
             act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)50*md->speedUp)   :  (int32_t)v*DEL_MULT) :
                                 ((md->speedDown>0) ? act[i]-(rate)/((int16_t)50*md->speedDown) :  (int32_t)v*DEL_MULT) ;
-        }
+          }
 
-        {
-          int32_t tmp = act[i]/DEL_MULT ;
-          if(((diff>0) && (v<tmp)) || ((diff<0) && (v>tmp))) act[i]=(int32_t)v*DEL_MULT; //deal with overflow
-        }
+          {
+            int32_t tmp = act[i] / DEL_MULT;
+            if (((diff > 0) && (v < tmp)) || ((diff < 0) && (v > tmp))) act[i] = (int32_t) v * DEL_MULT; //deal with overflow
+          }
 
-        v = act[i]/DEL_MULT;
+          v = act[i] / DEL_MULT;
+        }
       }
-    }
 
-    //========== CURVES ===============
-    if (md->curveParam && md->curveMode == MODE_CURVE) {
-      v = applyCurve(v, md->curveParam);
-    }
+      //========== CURVES ===============
+      if (md->curveParam && md->curveMode == MODE_CURVE) {
+        v = applyCurve(v, md->curveParam);
+      }
 
-    //========== WEIGHT ===============
-    int32_t dv = (int32_t)v*weight;
+      //========== WEIGHT ===============
+      int32_t dv = (int32_t) v * weight;
 
-    //========== DIFFERENTIAL =========
-    if (md->curveMode == MODE_DIFFERENTIAL) {
-      int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
-      if (curveParam>0 && dv<0)
-        dv = (dv * (100-curveParam)) / 100;
-      else if (curveParam<0 && dv>0)
-        dv = (dv * (100+curveParam)) / 100;
-    }
+      //========== DIFFERENTIAL =========
+      if (md->curveMode == MODE_DIFFERENTIAL) {
+        int8_t curveParam =
+            GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
+        if (curveParam > 0 && dv < 0)
+          dv = (dv * (100 - curveParam)) / 100;
+        else if (curveParam < 0 && dv > 0) dv = (dv * (100 + curveParam)) / 100;
+      }
 
-    int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
-    switch(md->mltpx){
-      case MLTPX_REP:
-        *ptr = dv;
+      int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
+
+      if (i == 0 || md->destCh != (md - 1)->destCh) {
+        *ptr = 0;
+      }
+
+      switch (md->mltpx) {
+        case MLTPX_REP:
+          *ptr = dv;
 #ifdef BOLD_FONT
-        for (uint8_t m=i-1; m<MAX_MIXERS && mixaddress(m)->destCh == md->destCh; m--)
-          activeMixes &= ~((ACTIVE_MIXES_TYPE)1 << m);
+          for (uint8_t m = i - 1;
+              m < MAX_MIXERS && mixaddress(m)->destCh == md->destCh; m--)
+            activeMixes &= ~((ACTIVE_MIXES_TYPE) 1 << m);
 #endif
-        break;
-      case MLTPX_MUL:
-        dv /= 100;
-        dv *= *ptr;
-        dv /= RESXl;
-        *ptr = dv;
-        break;
-      default:  // MLTPX_ADD
-        *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
-        break;
+          break;
+        case MLTPX_MUL:
+          dv /= 100;
+          dv *= *ptr;
+          dv /= RESXl;
+          *ptr = dv;
+          break;
+        default: // MLTPX_ADD
+          *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
+          break;
       }
-  }
+    }
+
+    tick10ms = 0;
+    dirtyChannels &= passDirtyChannels;
+
+  } while (++pass < 3 && dirtyChannels);
 
   mixWarning = lv_mixWarning;
 }
@@ -2529,9 +2563,9 @@ ACTIVE_MIXES_TYPE activeMixes;
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 
 #if defined(PCBSKY9X)
-inline bool doMixerCalculations()
+FORCEINLINE bool doMixerCalculations()
 #else
-inline void doMixerCalculations()
+FORCEINLINE void doMixerCalculations()
 #endif
 {
 #if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
@@ -2584,14 +2618,16 @@ inline void doMixerCalculations()
     }
     else {
       uint8_t fadeTime = max(g_model.phaseData[s_last_phase].fadeOut, g_model.phaseData[phase].fadeIn);
+      uint8_t transitionMask = (1<<s_last_phase) + (1<<phase);
       if (fadeTime) {
-        s_fade_flight_phases |= (1<<s_last_phase) + (1<<phase);
+        s_fade_flight_phases |= transitionMask;
         delta = (MAX_ACT / 50) / fadeTime;
+        delta *= tick10ms;
       }
       else {
+        s_fade_flight_phases &= ~transitionMask;
         fp_act[s_last_phase] = 0;
         fp_act[phase] = MAX_ACT;
-        s_fade_flight_phases &= ~((1<<s_last_phase) + (1<<phase));
       }
     }
     s_last_phase = phase;
@@ -2618,7 +2654,7 @@ inline void doMixerCalculations()
   }
 
   //========== LIMITS ===============
-  for (uint8_t i=0;i<NUM_CHNOUT;i++) {
+  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*100
     // later we multiply by the limit (up to 100) and then we need to normalize
     // at the end chans[i] = chans[i]/100 =>  -1024..1024
@@ -2626,6 +2662,7 @@ inline void doMixerCalculations()
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
     int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) * 16 : chans[i]);
     ex_chans[i] = q / 100; // for the next perMain
+
 
     int16_t value = applyLimits(i, q);
 
@@ -2817,21 +2854,24 @@ inline void doMixerCalculations()
 
   if (s_fade_flight_phases) {
     for (uint8_t p=0; p<MAX_PHASES; p++) {
-      if (s_fade_flight_phases & (1<<p)) {
+      uint8_t phaseMask = (1<<p);
+      if (s_fade_flight_phases & phaseMask) {
+
+
         if (p == phase) {
-          if (MAX_ACT - fp_act[p] > delta * tick10ms)
-            fp_act[p] += delta * tick10ms;
+          if (MAX_ACT - fp_act[p] > delta)
+            fp_act[p] += delta;
           else {
             fp_act[p] = MAX_ACT;
-            s_fade_flight_phases -= (1<<p);
+            s_fade_flight_phases -= phaseMask;
           }
         }
         else {
-          if (fp_act[p] > delta * tick10ms)
-            fp_act[p] -= delta * tick10ms;
+          if (fp_act[p] > delta)
+            fp_act[p] -= delta;
           else {
             fp_act[p] = 0;
-            s_fade_flight_phases -= (1<<p);
+            s_fade_flight_phases -= phaseMask;
           }
         }
       }

@@ -767,6 +767,12 @@ enum PerOutMode {
 
 extern uint8_t s_perout_flight_phase;
 
+#if defined(CPUARM)
+#define bitfield_channels_t uint32_t
+#else
+#define bitfield_channels_t uint16_t
+#endif
+
 void perOut(uint8_t mode, uint8_t tick10ms);
 void perMain();
 NOINLINE void per10ms();

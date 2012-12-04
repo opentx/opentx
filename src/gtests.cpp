@@ -34,36 +34,44 @@
 #include <gtest/gtest.h>
 #include "open9x.h"
 
+void doMixerCalculations();
+
+#define MODEL_RESET() memset(&g_model, 0, sizeof(g_model))
+
+#define MIXER_RESET() \
+  memset(g_chans512, 0, sizeof(g_chans512)); \
+  memset(ex_chans, 0, sizeof(ex_chans))
+
 uint16_t anaIn(uint8_t chan)
 {
   return 0;
 }
 
-TEST(trims, greaterTrimLink)
+TEST(Trims, greaterTrimLink)
 {
- memset(&g_model, 0, sizeof(g_model));
- setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
- setTrimValue(3, 0, 32);
- EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(1, 0), 0), 32);
+  MODEL_RESET();
+  setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
+  setTrimValue(3, 0, 32);
+  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(1, 0), 0), 32);
 }
 
-TEST(trims, chainedTrims)
+TEST(Trims, chainedTrims)
 {
- memset(&g_model, 0, sizeof(g_model));
- setTrimValue(0, 0, 32);
- setTrimValue(1, 0, TRIM_EXTENDED_MAX+1); // link to FP0 trim
- setTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
- EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
+  MODEL_RESET();
+  setTrimValue(0, 0, 32);
+  setTrimValue(1, 0, TRIM_EXTENDED_MAX+1); // link to FP0 trim
+  setTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
+  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
 }
 
-TEST(trims, infiniteChainedTrims)
+TEST(Trims, infiniteChainedTrims)
 {
- memset(&g_model, 0, sizeof(g_model));
- setTrimValue(0, 0, 32);
- setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
- setTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
- setTrimValue(3, 0, TRIM_EXTENDED_MAX+3); // link to FP2 trim
- EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
+  MODEL_RESET();
+  setTrimValue(0, 0, 32);
+  setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
+  setTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
+  setTrimValue(3, 0, TRIM_EXTENDED_MAX+3); // link to FP2 trim
+  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
 }
 
 TEST(outdezNAtt, test_unsigned)
@@ -259,14 +267,14 @@ TEST(FrSky, dateNtime)
 
 TEST(getSwitch, undefCSW)
 {
-  memset(&g_model, 0, sizeof(g_model));
+  MODEL_RESET();
   EXPECT_EQ(getSwitch(MAX_PSWITCH, 0), false);
   EXPECT_EQ(getSwitch(-MAX_PSWITCH, 0), true); // no good answer there!
 }
 
 TEST(getSwitch, circularCSW)
 {
-  memset(&g_model, 0, sizeof(g_model));
+  MODEL_RESET();
   g_model.customSw[0] = { MAX_SWITCH-NUM_CSW, MAX_SWITCH-NUM_CSW, CS_OR };
   g_model.customSw[1] = { MAX_SWITCH-NUM_CSW, MAX_SWITCH-NUM_CSW, CS_AND };
   EXPECT_EQ(getSwitch(MAX_SWITCH-NUM_CSW, 0), false);
@@ -277,21 +285,159 @@ TEST(getSwitch, circularCSW)
 
 TEST(getSwitch, nullSW)
 {
-  memset(&g_model, 0, sizeof(g_model));
+  MODEL_RESET();
   EXPECT_EQ(getSwitch(0, 0), false);
   EXPECT_EQ(getSwitch(0, true), true);
   EXPECT_EQ(getSwitch(0, 0), false);
 }
 
-TEST(phases, nullFadeOut_posFadeIn)
+TEST(Phases, nullFadeOut_posFadeIn)
 {
-  memset(&g_model, 0, sizeof(g_model));
+  MODEL_RESET();
   g_model.phaseData[1].swtch = DSW(SW_ID1);
   g_model.phaseData[1].fadeIn = 15;
   perMain();
   setSwitch(DSW(SW_ID1));
   perMain();
 }
+
+TEST(Mixer, Cascaded3Channels)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].srcRaw = MIXSRC_CH2;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[1].destCh = 1;
+  g_model.mixData[1].srcRaw = MIXSRC_CH3;
+  g_model.mixData[1].weight = 100;
+  g_model.mixData[2].destCh = 2;
+  g_model.mixData[2].srcRaw = MIXSRC_ID1;
+  g_model.mixData[2].weight = 100;
+  setSwitch(DSW(SW_ID1));
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 102400);
+  EXPECT_EQ(chans[1], 102400);
+  EXPECT_EQ(chans[2], 102400);
+}
+
+TEST(Mixer, CascadedOrderedChannels)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].srcRaw = MIXSRC_ID1;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[1].destCh = 1;
+  g_model.mixData[1].srcRaw = MIXSRC_CH1;
+  g_model.mixData[1].weight = 100;
+  setSwitch(DSW(SW_ID1));
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 102400);
+  EXPECT_EQ(chans[1], 102400);
+}
+
+TEST(Mixer, Cascaded5Channels)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].srcRaw = MIXSRC_CH2;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[1].destCh = 1;
+  g_model.mixData[1].srcRaw = MIXSRC_CH3;
+  g_model.mixData[1].weight = 100;
+  g_model.mixData[2].destCh = 2;
+  g_model.mixData[2].srcRaw = MIXSRC_CH4;
+  g_model.mixData[2].weight = 100;
+  g_model.mixData[3].destCh = 3;
+  g_model.mixData[3].srcRaw = MIXSRC_CH5;
+  g_model.mixData[3].weight = 100;
+  g_model.mixData[4].destCh = 4;
+  g_model.mixData[4].srcRaw = MIXSRC_ID1;
+  g_model.mixData[4].weight = 100;
+  int32_t lastVal = 0;
+  for (uint8_t i=0; i<10; i++) {
+    setSwitch(DSW(SW_ID1));
+    doMixerCalculations();
+    EXPECT_EQ(chans[0], lastVal);
+    EXPECT_EQ(chans[1], lastVal);
+    EXPECT_EQ(chans[2], 102400);
+    EXPECT_EQ(chans[3], 102400);
+    EXPECT_EQ(chans[4], 102400);
+    doMixerCalculations();
+    EXPECT_EQ(chans[0], 102400);
+    EXPECT_EQ(chans[1], 102400);
+    EXPECT_EQ(chans[2], 102400);
+    EXPECT_EQ(chans[3], 102400);
+    EXPECT_EQ(chans[4], 102400);
+    setSwitch(DSW(SW_ID0));
+    doMixerCalculations();
+    EXPECT_EQ(chans[0], 102400);
+    EXPECT_EQ(chans[1], 102400);
+    EXPECT_EQ(chans[2], -102400);
+    EXPECT_EQ(chans[3], -102400);
+    EXPECT_EQ(chans[4], -102400);
+    doMixerCalculations();
+    EXPECT_EQ(chans[0], -102400);
+    EXPECT_EQ(chans[1], -102400);
+    EXPECT_EQ(chans[2], -102400);
+    EXPECT_EQ(chans[3], -102400);
+    EXPECT_EQ(chans[4], -102400);
+    lastVal = -102400;
+  }
+}
+
+TEST(Mixer, InfiniteRecursiveChannels)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].srcRaw = MIXSRC_CH2;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[1].destCh = 1;
+  g_model.mixData[1].srcRaw = MIXSRC_CH3;
+  g_model.mixData[1].weight = 100;
+  g_model.mixData[2].destCh = 2;
+  g_model.mixData[2].srcRaw = MIXSRC_CH1;
+  g_model.mixData[2].weight = 100;
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[2], 0);
+  EXPECT_EQ(chans[1], 0);
+  EXPECT_EQ(chans[0], 0);
+}
+
+TEST(Mixer, BlockingChannel)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].srcRaw = MIXSRC_CH1;
+  g_model.mixData[0].weight = 100;
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+}
+
+TEST(Mixer, RecursiveAddChannel)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 50;
+  g_model.mixData[1].destCh = 0;
+  g_model.mixData[1].mltpx = MLTPX_ADD;
+  g_model.mixData[1].srcRaw = MIXSRC_CH2;
+  g_model.mixData[1].weight = 100;
+  g_model.mixData[2].destCh = 1;
+  g_model.mixData[2].srcRaw = MIXSRC_Rud;
+  g_model.mixData[2].weight = 100;
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 102400/2);
+  EXPECT_EQ(chans[1], 0);
+}
+
 
 int main(int argc, char **argv) {
   StartEepromThread(NULL);

@@ -362,85 +362,58 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       }
     }
 
-#if defined(PCBSKY9X)
-    struct SwitchKey {
-        FXuint key;
-        volatile uint32_t & pin;
-        uint32_t shift;
-        uint32_t value;
-    };
-#else
-    struct SwitchKey {
-      FXuint key;
-      volatile unsigned char& pin;
-      unsigned char shift;
-      unsigned char value;
-    };
-#endif
-    
-    static SwitchKey keys3[] = {
 #if defined(PCBX9D)
-      { KEY_A, PIOC->PIO_PDSR,  31, 0 },
-      { KEY_B, PIOC->PIO_PDSR,  27, 0 },
-      { KEY_C, PIOC->PIO_PDSR,  23, 0 },
-      { KEY_D, PIOC->PIO_PDSR,  17, 0 },
-      { KEY_E, PIOC->PIO_PDSR,  16, 0 },
-      { KEY_F, PIOC->PIO_PDSR,  15, 0 },
-      { KEY_G, PIOC->PIO_PDSR,  15, 0 },
-      { KEY_H, PIOC->PIO_PDSR,  15, 0 } };
-#elif defined(PCBSKY9X)
-      { KEY_1, PIOC->PIO_PDSR,  20, 0 },
-      { KEY_6, PIOA->PIO_PDSR,  2, 0 },
-      { KEY_2, PIOA->PIO_PDSR,  15, 0 },
-      { KEY_3, PIOC->PIO_PDSR,  31, 0 },
-      { KEY_7, PIOC->PIO_PDSR,  16, 0 },
-      { KEY_8, PIOC->PIO_PDSR,  8, 0 } };
+#define SWITCH_KEY(key, swtch, states) \
+    static bool state##key = 0; \
+    static uint8_t state##swtch = 0; \
+    if (getApp()->getKeyState(KEY_##key)) { \
+      if (!state##key) { \
+        state##swtch = (state##swtch+1) % states; \
+        setSwitch(DSW(SW_##swtch+state##swtch)); \
+        state##key = true; \
+      } \
+    } \
+    else { \
+      state##key = false; \
+    }
 #else
-#if defined(PCBGRUVIN9X) || defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
-      { KEY_1, pinc,  INP_C_ThrCt, 0 },
-      { KEY_6, pinc,  INP_C_AileDR, 0 },
-#else
-      { KEY_1, pine,  INP_E_ThrCt, 0 },
-      { KEY_6, pine,  INP_E_AileDR, 0 },
-#endif
-      { KEY_2, ping,  INP_G_RuddDR, 0 },
-      { KEY_3, pine,  INP_E_ElevDR, 0 },
-      //KEY_4, ping,  INP_G_ID1, 0,
-      //KEY_5, pine,  INP_E_ID2, 0,
-      { KEY_7, pine,  INP_E_Gear, 0 },
-      { KEY_8, pine,  INP_E_Trainer, 0 } };
+#define SWITCH_KEY(key, swtch, states) \
+    static bool state##key = 0; \
+    static uint8_t state##swtch = 0; \
+    if (getApp()->getKeyState(KEY_##key)) { \
+      if (!state##key) { \
+        state##swtch = (state##swtch+1) % states; \
+        if (states > 2) \
+          setSwitch(DSW(SW_##swtch+state##swtch)); \
+        else \
+          setSwitch(state##swtch ? DSW(SW_##swtch) : -DSW(SW_##swtch)); \
+        state##key = true; \
+      } \
+    } \
+    else { \
+      state##key = false; \
+    }
 #endif
 
-    for(unsigned i=0; i<DIM(keys3); i++){
-      bool ks = getApp()->getKeyState(keys3[i].key);
-      if (ks != keys3[i].value) {
-        if (ks) keys3[i].pin ^= (1<<keys3[i].shift);
-        keys3[i].value = ks;
-      }
-    }
-      //     INP_G_ID1 INP_E_ID2
-      // id0    0        1
-      // id1    1        1
-      // id2    1        0
-    static FXuint id=0,k4st=0,k5st=0;
-    bool ks=getApp()->getKeyState(KEY_4);
-    if(ks != k4st){
-      if(ks && id>0) id--;
-      k4st = ks;
-    }
-    ks=getApp()->getKeyState(KEY_5);
-    if(ks != k5st){
-      if(ks && id<2) id++;
-      k5st = ks;
-    }
-
-    switch(id){
-      case 0: setSwitch(DSW(SW_ID0)); break;
-      case 1: setSwitch(DSW(SW_ID1)); break;
-      case 2: setSwitch(DSW(SW_ID2)); break;
-    }
+#if defined(PCBX9D)
+    SWITCH_KEY(A, SA0, 2);
+    SWITCH_KEY(B, SB0, 3);
+    SWITCH_KEY(C, SC0, 3);
+    SWITCH_KEY(D, SD0, 3);
+    SWITCH_KEY(E, SE0, 3);
+    SWITCH_KEY(F, SF0, 3);
+    SWITCH_KEY(G, SG0, 3);
+    SWITCH_KEY(H, SH0, 2);
+#else
+    SWITCH_KEY(1, THR, 2);
+    SWITCH_KEY(2, RUD, 2);
+    SWITCH_KEY(3, ELE, 2);
+    SWITCH_KEY(4, ID0, 3);
+    SWITCH_KEY(5, AIL, 2);
+    SWITCH_KEY(6, GEA, 2);
+    SWITCH_KEY(7, TRN, 2);
+#endif
   }
-
 
   per10ms();
   refreshDiplay();
@@ -514,6 +487,10 @@ int main(int argc,char **argv)
   // This opens up the display as well, and reads the registry database
   // so that persistent settings are now available.
   application.init(argc,argv);
+
+#if !defined(PCBX9D)
+  setSwitch(DSW(SW_ID0));
+#endif
 
   // This creates the main window. We pass in the title to be displayed
   // above the window, and possibly some icons for when its iconified.

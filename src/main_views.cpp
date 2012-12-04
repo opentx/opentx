@@ -433,15 +433,15 @@ void menuMainView(uint8_t event)
     uint8_t sw;
     switch(i) {
       case 0:
-        sw = getValue(MIXSRC_SA) > 0 ? 2 : 1;
+        sw = getValue(MIXSRC_SA-1) > 0 ? 2 : 1;
         break;
       case 7:
-        sw = getValue(MIXSRC_SH) > 0 ? 2+2+3*6 : 1+3*6;
+        sw = getValue(MIXSRC_SH-1) > 0 ? 2+2+3*6 : 1+2+3*6;
         break;
       default:
       {
-        int8_t val = getValue(MIXSRC_SA+i);
-        sw = ((val > 0) ? 3*i+2 : ((val < 0) ? 3*i+1 : 3*i));
+        int16_t val = getValue(MIXSRC_SA+i-1);
+        sw = ((val < 0) ? 3*i : ((val == 0) ? 3*i+1 : 3*i+2));
         break;
       }
     }
