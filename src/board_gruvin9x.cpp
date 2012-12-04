@@ -46,10 +46,10 @@ inline void board_init()
   DDRG = 0b00010000;  PORTG = 0xff; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:IDL1_Sw, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
 
 #if defined(DEBUG) && !defined(VOICE)
-  DDRH = 0b11110000;  PORTH = 0b11011111; // PORTH:7-6 enabled for timing analysis output ... see below ...
+  DDRH = 0b11111000;  PORTH = 0b11010111; // PORTH:7-6 enabled for timing analysis output ... see below ...
 #else
-  DDRH = 0b10110000;  PORTH = 0b11011111; // [7:0 DSM/PPM TX-caddy control. 1=PPM, 0=DSM ]
-                                          // [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK]
+  DDRH = 0b10111000;  PORTH = 0b11010111; // [7:0 DSM/PPM TX-caddy control. 1=PPM, 0=DSM ]
+                                          // [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK 3:SOMO14D-RESET]
                                           // [2:VIB_OPTION -- setting to input for now]
                                           // [1:TxD 0:RxD Spare serial port]
 #endif
@@ -106,8 +106,9 @@ inline void board_init()
   /*
    * SOMO set-up (V4 board only)
    */
-  OCR4A = 0x7d;
+  OCR4A = 0x1F4; //2ms
   TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
+  TIMSK4 |= (1<<OCIE4A); // Start the interrupt so the unit reset can occur
 
 #if defined(EXTRA_ROTARY_ENCODERS)
   //configure uart1 here

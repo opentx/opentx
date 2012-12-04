@@ -348,9 +348,10 @@ extern uint8_t s_bind_allowed;
 #  define INP_B_ID2      4
 
 #if defined(VOICE)
+#  define OUT_H_14DRESET 3
 #  define OUT_H_14DCLK   4
 #  define OUT_H_14DDATA  5
-#  define OUT_H_14DBUSY  6
+#  define INP_H_14DBUSY  6
 #endif
 
 #define KEYS_PRESSED() (~PINL) // used only for DBLKEYS code.

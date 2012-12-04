@@ -43,7 +43,7 @@
 #include "../open9x.h"
 
 // Start and stop bits need to be 2ms in duration. Start bit is low, stop bit is high
-#define SOMOSSBIT    4 //The 2ms of a stop/start bit
+#define SOMOSSBIT    5 //The 2ms of a stop/start bit
 #define SOMOSTOP    48 //This is the needed 2ms (4) + 20ms (40) to allow for the 
                        //point at which the busy flag is checkable + 2ms for saftey (4)
 #define SOMOSTART   60 //This is the needed 2ms (4) + 2ms (4) for safety + 26ms (52) for the 
@@ -133,8 +133,8 @@ NOINLINE uint8_t SomoWakeup()
       }
       somo14_current = (somo14_current<<1);
       i++;
-      // Strictly speaking there should be a data setup delay in here of 1us
-      // Be we don't like no stinking delays !
+      // Data setup delay
+	  _delay_us(1);
       PORTH |= (1<<OUT_H_14DCLK); // CLK high
     }
 
@@ -148,19 +148,24 @@ NOINLINE uint8_t SomoWakeup()
 }
 
 #ifndef SIMU
-ISR(TIMER4_COMPA_vect) //Every 0.5ms
+ISR(TIMER4_COMPA_vect) //Every 0.5ms normally, every 2ms during startup reset
 {
-  OCR4A = 0x7d; // another 0.5ms
-
-  TIMSK4 &= ~(1<<OCIE4A); // stop reentrance
-
-  sei();
-
-  uint8_t finished = SomoWakeup();
-
-  cli();
-
-  if (!finished) TIMSK4 |= (1<<OCIE4A);
+  static uint8_t reset_dly=4;
+  static uint8_t reset_pause=150;
+  
+  if (reset_dly) 
+	{OCR4A=0x1f4; reset_dly--; PORTH &= ~(1<<OUT_H_14DRESET);} // CLK low
+  else if (reset_pause)
+	{OCR4A=0x1f4; reset_pause--; PORTH |= (1<<OUT_H_14DRESET);} // RESET high
+  else 
+	{
+	OCR4A = 0x7d; // another 0.5ms
+	TIMSK4 &= ~(1<<OCIE4A); // stop reentrance
+	sei();
+	uint8_t finished = SomoWakeup();
+	cli();
+	if (!finished) TIMSK4 |= (1<<OCIE4A);
+	}
 }
 #endif
 
