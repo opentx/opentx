@@ -2366,21 +2366,17 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #if defined(PCBX9D)
               // TODO
 #else
-        else if (k >= MIXSRC_THR - 1 && k <= MIXSRC_SWC - 1) {
-          v = getSwitch(k - MIXSRC_THR + 1 + 1, 0) ? +1024 : -1024;
+        else if (k >= MIXSRC_THR-1 && k <= MIXSRC_SWC-1) {
+          v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
           if (v < 0 && !md->swtch) sw = false;
         }
         else {
           v = getValue(k <= MIXSRC_3POS ? k : k - MAX_SWITCH);
           if (k >= MIXSRC_CH1 - 1 && k <= MIXSRC_CHMAX - 1
               && md->destCh != k - MIXSRC_CH1 + 1) {
-            if (dirtyChannels
-                & ((bitfield_channels_t) 1 << (k - MIXSRC_CH1 + 1))
-                & (passDirtyChannels
-                    | ~(((bitfield_channels_t) 1 << md->destCh) - 1))) passDirtyChannels |=
-                (bitfield_channels_t) 1 << md->destCh;
-            if (k - MIXSRC_CH1 + 1 < md->destCh || pass > 0) v = chans[k
-                - MIXSRC_CH1 + 1] / 100;
+            if (dirtyChannels & ((bitfield_channels_t) 1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+              passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
+            if (k - MIXSRC_CH1 + 1 < md->destCh || pass > 0) v = chans[k-MIXSRC_CH1+1] / 100;
           }
         }
 #endif
@@ -2662,7 +2658,6 @@ FORCEINLINE void doMixerCalculations()
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
     int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) * 16 : chans[i]);
     ex_chans[i] = q / 100; // for the next perMain
-
 
     int16_t value = applyLimits(i, q);
 
