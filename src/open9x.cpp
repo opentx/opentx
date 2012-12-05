@@ -2322,6 +2322,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   }
 #endif
 
+  memclear(chans, sizeof(chans));        // All outputs to 0
+  
   //========== MIXER LOOP ===============
   uint8_t lv_mixWarning = 0;
 
