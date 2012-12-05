@@ -1306,9 +1306,9 @@ union ReusableBuffer
 
     struct
     {
-        int16_t midVals[7];
-        int16_t loVals[7];
-        int16_t hiVals[7];
+        int16_t midVals[NUM_STICKS+NUM_POTS];
+        int16_t loVals[NUM_STICKS+NUM_POTS];
+        int16_t hiVals[NUM_STICKS+NUM_POTS];
     } calib;                                      // 42 bytes used by menuGeneralCalib
 
 #if defined(SDCARD)

@@ -957,11 +957,10 @@ void menuGeneralCalib(uint8_t event)
 
   static uint8_t idxState;
 
-  for (uint8_t i=0; i<7; i++) { //get low and high vals for sticks and trims
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { //get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
-    //if(i>=4) midVals[i] = (loVals[i] + hiVals[i])/2;
   }
 
   s_noScroll = idxState; // make sure we don't scroll while calibrating
@@ -972,7 +971,7 @@ void menuGeneralCalib(uint8_t event)
       idxState = 0;
       break;
 
-    case EVT_KEY_BREAK(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_ENTER):
       idxState++;
       if (idxState==3) {
         STORE_GENERALVARS;
@@ -985,15 +984,15 @@ void menuGeneralCalib(uint8_t event)
   switch (idxState) {
     case 0:
       // START CALIBRATION
-      lcd_puts(3*FW, 3*FH, STR_MENUTOSTART);
+      lcd_putsLeft(3*FH, STR_MENUTOSTART);
       break;
 
     case 1:
       // SET MIDPOINT
       lcd_putsAtt(5*FW, 2*FH, STR_SETMIDPOINT, s_noScroll ? INVERS : 0);
-      lcd_puts(3*FW, 3*FH, STR_MENUWHENDONE);
+      lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
-      for (uint8_t i=0; i<7; i++) {
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
         reusableBuffer.calib.midVals[i] = anaIn(i);
@@ -1003,9 +1002,9 @@ void menuGeneralCalib(uint8_t event)
     case 2:
       // MOVE STICKS/POTS
       lcd_putsAtt(3*FW, 2*FH, STR_MOVESTICKSPOTS, s_noScroll ? INVERS : 0);
-      lcd_puts(3*FW, 3*FH, STR_MENUWHENDONE);
+      lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
-      for (uint8_t i=0; i<7; i++) {
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i])>50) {
           g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
@@ -1020,4 +1019,7 @@ void menuGeneralCalib(uint8_t event)
   }
 
   doMainScreenGraphics();
+#if defined(PCBX9D)
+  drawPotsBars();
+#endif
 }

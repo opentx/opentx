@@ -234,7 +234,7 @@
 
 #define TR_POPUPS              "[MENU]\010[EXIT]"
 #define OFS_EXIT               7
-#define TR_MENUWHENDONE        "\001[MENU] > DAL\207\214"
+#define TR_MENUWHENDONE        CENTER"\007[MENU] > DAL\207\214"
 #define TR_FREE                "voln\202:"
 #define TR_DELETEMODEL         "SMAZAT MODEL"
 #define TR_COPYINGMODEL        "Kop\204ruji model.."
@@ -327,9 +327,9 @@
 #define TR_CAL                 "Kal."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         "\001[MENU] = START"
-#define TR_SETMIDPOINT         "NASTAV ST\215EDY"
-#define TR_MOVESTICKSPOTS      "H\216BEJ P\213KY/POTY"
+#define TR_MENUTOSTART         CENTER"\007[MENU] = START"
+#define TR_SETMIDPOINT         CENTER"NASTAV ST\215EDY"
+#define TR_MOVESTICKSPOTS      CENTER"H\216BEJ P\213KY/POTY"
 #define TR_RXBATT              "Rx Bat.:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4

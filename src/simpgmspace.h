@@ -199,6 +199,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define COM1B0 dummyport
 #define COM0A0 dummyport
 #define TCNT1 dummyport16
+#define TCNT1L dummyport
 #define TCNT5 dummyport16
 #define ICR1 dummyport16
 #define TIFR dummyport

@@ -227,7 +227,7 @@
 
 #define TR_POPUPS              "[MENU]\010[SALIR]"
 #define OFS_EXIT               7
-#define TR_MENUWHENDONE        "[MENU]AL FINAL"
+#define TR_MENUWHENDONE        CENTER"\006[MENU]AL FINAL"
 #define TR_FREE                "Libre"
 #define TR_DELETEMODEL         "BORRA MODELO"
 #define TR_COPYINGMODEL        "Copiando modelo."
@@ -322,9 +322,9 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Ajte- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         "[MENU] INICIAR"
-#define TR_SETMIDPOINT         "AJUSTAR CENTROS"
-#define TR_MOVESTICKSPOTS      "MOVER STICK/POT"
+#define TR_MENUTOSTART         CENTER"\006[MENU] INICIAR"
+#define TR_SETMIDPOINT         CENTER"AJUSTAR CENTROS"
+#define TR_MOVESTICKSPOTS      CENTER"MOVER STICK/POT"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4

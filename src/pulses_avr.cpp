@@ -55,7 +55,7 @@ uint16_t B3_comp_value;
 inline void DSM2_EnableTXD(void)
 {
   UCSR0B |= (1 << TXEN0); // enable TX
-  // UCSR0B |= (1 << UDRIE0); // don't enable UDRE0 interrupt, it will be enabled during next setupPulses
+  // don't enable UDRE0 interrupt now, it will be enabled during next setupPulses
 }
 #endif
 
@@ -97,8 +97,11 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 #define CTRL_REP_1CMD -3
 #define CTRL_REP_2CMD -6
 
-
-#ifndef SIMU
+#if defined(DSM2_SERIAL)
+#define DSM2_SERIAL_INTERRUPT() (s_current_protocol == PROTO_DSM2)
+#else
+#define DSM2_SERIAL_INTERRUPT() (0)
+#endif
 
 // TIMER1_COMPA_vect used for PPM and DSM2=SERIAL
 uint8_t g_ppmPulsePolarity = 0;
@@ -106,69 +109,53 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 {
   uint8_t dt = TCNT1L; // record Timer1 latency for DEBUG stats display
   
-#ifdef DSM2_SERIAL
-  if (s_current_protocol == PROTO_DSM2) {
-    setupPulses(); // includes scheduling of next COMPA int. vector (this ISR). 
-                   // also re-enables interrupts at and for a safe time. (G: Only if in DSM2_SERIAL mode. Why?)
-    cli(); // re-disable interrupts to prevent reentrance here. (This ISR will automatically issue sei upon exit.)
-    UCSR0B |= (1 << UDRIE0); // enable UDRE0 interrupt to start transmitting DSM2 data bytes from buffer
+  // Call setupPulses only after REST pulse had been sent.
+  // Must do this before toggle PORTB to keep timing accurate
+  if (DSM2_SERIAL_INTERRUPT() || *((uint16_t*)pulses2MHzRPtr) == 0) {
+    setupPulses(); // does not sei() for setupPulsesPPM
+    heartbeat |= HEART_TIMER_PULSES;
+    if (IS_PXX_PROTOCOL(s_current_protocol) || IS_DSM2_PROTOCOL(s_current_protocol)) {
+      // !PPM protocols interrupts don't need COMPA
+      return;
+    }
   }
-  else
-#endif
-  {
+
 #if !defined(PCBGRUVIN9X)
-    // Original bitbang for PPM
-    if (s_current_protocol != PROTO_NONE) {
-      if (g_ppmPulsePolarity) {
-        PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
-        g_ppmPulsePolarity = 0;
-      }
-      else {
-        PORTB &= ~(1<<OUT_B_PPM);
-        g_ppmPulsePolarity = 1;
-      }
+  // Original bitbang for PPM
+  if (s_current_protocol != PROTO_NONE) {
+    if (g_ppmPulsePolarity) {
+      PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
+      g_ppmPulsePolarity = 0;
     }
-#else
-    // PCBGRUVIN9X zero jitter hardware toggled PPM_out
-    OCR1B = *((uint16_t*)pulses2MHzRPtr); // duplicate capture (Timer1 in CTC mode, so restricted to OCR1A for int vector)
+    else {
+      PORTB &= ~(1<<OUT_B_PPM);
+      g_ppmPulsePolarity = 1;
+    }
+  }
+#else // defined(PCBGRUVIN9X)
+  // PCBGRUVIN9X zero jitter hardware toggled PPM_out
+  OCR1B = *((uint16_t*)pulses2MHzRPtr); // duplicate capture (Timer1 in CTC mode, so restricted to OCR1A for int vector)
     
-    // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
-    // so need to use pusePol register to keep track of PPM_out polarity.
-    if (s_current_protocol != PROTO_NONE) {
-      if (g_ppmPulsePolarity) {
-        TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
-        g_ppmPulsePolarity = 0;
-      }
-      else {
-        TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
-        g_ppmPulsePolarity = 1;
-      }
+  // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
+  // so need to use pusePol register to keep track of PPM_out polarity.
+  if (s_current_protocol != PROTO_NONE) {
+    if (g_ppmPulsePolarity) {
+      TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
+      g_ppmPulsePolarity = 0;
     }
+    else {
+      TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
+      g_ppmPulsePolarity = 1;
+    }
+  }
 #endif
 
-    OCR1A = *((uint16_t*)pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function)
-
-    pulses2MHzRPtr += sizeof(uint16_t); // non PPM protocols use uint8_t pulse buffer
-    if (*((uint16_t*)pulses2MHzRPtr) == 0) {
-      PAUSE_PULSES_INTERRUPT();
-      setupPulses(); // does not sei() for setupPulsesPPM
-
-      // if setupPulses changed protocol to one that doesn't use COMPA then don't re-enable.
-      if (!IS_PXX_PROTOCOL(s_current_protocol) && !IS_DSM2_PROTOCOL(s_current_protocol)) {
-        // cli is not needed because for PPM protocols interrupts are not enabled when entering here
-        RESUME_PULSES_INTERRUPT();
-        sei();
-      }
-    }
-  } // [else] if (s_current_protocol == PROTO_DSM2)
+  OCR1A = *((uint16_t*)pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function)
+  pulses2MHzRPtr += sizeof(uint16_t); // non PPM protocols use uint8_t pulse buffer
   
   if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
   if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
-    
-  heartbeat |= HEART_TIMER_PULSES;
 }
-
-#endif
 
 void setupPulsesPPM(uint8_t proto)
 {
@@ -432,6 +419,8 @@ FORCEINLINE void setupPulsesDsm2()
 
   pulses2MHzWPtr = (uint8_t *)ptr;
   pulses2MHzRPtr = pulses2MHz;
+
+  UCSR0B |= (1 << UDRIE0); // enable UDRE0 interrupt to start transmitting DSM2 data bytes from buffer
 }
 
 // DSM2=SERIAL mode
@@ -754,26 +743,34 @@ void setupPulses()
 
     s_current_protocol = required_protocol;
 
+    TCCR1B = 0;                           // Stop counter
+    TCNT1 = 0;
+
+#if defined(PCBGRUVIN9X)
+    TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
+    TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
+    TIFR1 = 0x2F;
+#else
+    TIMSK &= ~0x3C ;            // All interrupts off
+    ETIMSK &= ~(1<<OCIE1C) ;    // COMPC1 off
+    TIFR = 0x3C ;               // Clear all pending interrupts
+    ETIFR = 0x3F ;              // Clear all pending interrupts
+#endif
+
     switch (required_protocol) {
 
 #if defined(DSM2_PPM) // For DSM2=SERIAL, the default: case is executed, below
       case PROTO_DSM2:
         set_timer3_capture(); 
-        TCCR1B = 0;                           // Stop counter
         OCR1C = 200;                          // 100 uS
         TCNT1 = 300;                          // Past the OCR1C value
         ICR1 = 44000;                         // Next frame starts in 22 mS
 #if defined(PCBGRUVIN9X)
-        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
-        TIFR1 = 0x2F;
         TIMSK1 |= 0x28;                       // Enable Timer1 COMPC and CAPT interrupts
         TCCR1A = (0 << WGM10);                // Set output waveform mode to normal, for now. Note that
                                               // WGM will be changed to toggle OCR1B pin on compare capture, 
                                               // in next switch(required_protocol) {...}, below
 #else
-        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
-        TIFR = 0x3C;
-        ETIFR = 0x3F; 
         TIMSK |= 0x20;                        // Enable CAPT
         ETIMSK |= (1<<OCIE1C);                // Enable COMPC
         TCCR1A = (0 << WGM10);
@@ -785,20 +782,13 @@ void setupPulses()
 #if defined(PXX)
       case PROTO_PXX:
         set_timer3_capture(); 
-        TCCR1B = 0;                           // Stop counter
-        TCNT1 = 0; 
         OCR1B = 6000;                         // Next frame starts in 3 mS
         OCR1C = 4000;                         // Next frame setup in 2 mS
 #if defined(PCBGRUVIN9X)
-        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
-        TIFR1 = 0x2F;
         TIMSK1 |= (1<<OCIE1B);                // Enable COMPB
         TIMSK1 |= (1<<OCIE1C);                // Enable COMPC
         TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching
 #else
-        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
-        TIFR = 0x3C; 
-        ETIFR = 0x3F; 
         TIMSK |= (1<<OCIE1B);                 // Enable COMPB
         ETIMSK |= (1<<OCIE1C);                // Enable COMPC
         TCCR1A  = 0;
@@ -808,20 +798,11 @@ void setupPulses()
 #endif
 
       case PROTO_PPM16:
-        TCCR1B = 0;                           // Stop counter
         OCR1A = 40000;                        // Next frame starts in 20 mS
-        TCNT1 = 0; 
 #if defined(PCBGRUVIN9X)
-        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
-        TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
-        TIFR1 = 0x2F;
         TIMSK1 |= (1<<OCIE1A);                // Enable COMPA
         TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching
 #else
-        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
-        ETIMSK &= ~(1<<OCIE1C);               // COMPC1 off
-        TIFR = 0x3C;                          // Clear all pending interrupts
-        ETIFR = 0x3F;                         // Clear all pending interrupts
         TIMSK |= 0x10;                        // Enable COMPA
         TCCR1A = (0<<WGM10);
 #endif
@@ -833,18 +814,8 @@ void setupPulses()
         break;
 
       case PROTO_PPMSIM:
-        TCCR1B = 0;                           // Stop counter
-        TCNT1 = 0;
 #if defined(PCBGRUVIN9X)
-        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
-        TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
-        TIFR1 = 0x2F;
         TCCR1A = 0;                           // Disconnect OC1B for bit-bang PPM switching
-#else
-        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
-        ETIMSK &= ~(1<<OCIE1C);               // COMPC1 off
-        TIFR = 0x3C;                          // Clear all pending interrupts
-        ETIFR = 0x3F;                         // Clear all pending interrupts
 #endif
         setupPulsesPPM(PROTO_PPMSIM);
         OCR3A = 50000; 
@@ -855,8 +826,6 @@ void setupPulses()
 
       default: // PPM and DSM2=SERIAL modes
         set_timer3_capture(); 
-        TCCR1B = 0;                           // Stop counter 1
-        TCNT1 = 0;                            // Must reset counter first, to prevent possible immediate COMPA int. (sometimes).
         OCR1A = 44000;                        // Next frame starts in 22ms -- DSM mode. 
                                               //    This is arbitrary and for the first frame only. In fact, ... 
                                               //    DSM2 mode will set frame timing again at each ISR(TIMER1_COMPC_vect)    
@@ -864,15 +833,10 @@ void setupPulses()
                                               //    PPM mode will dynamically adjust to the frame rate set in model SETUP menu, 
                                               //    from within setupPulsesPPM().
 #if defined(PCBGRUVIN9X)
-        TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
-        TIFR1 = 0x2F;
         TIMSK1 |= (1<<OCIE1A);                // Enable COMPA
         TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching. G: Not needed
                                               // for DSM2=SERIAL. But OK.
 #else
-        TIMSK &= ~0x3C;                       // All Timer1 interrupts off
-        TIFR = 0x3C;
-        ETIFR = 0x3F;                         // Clear all pending interrupts
         TIMSK |= 0x10;                        // Enable COMPA
         TCCR1A = (0 << WGM10);
 #endif
@@ -883,7 +847,7 @@ void setupPulses()
 
   switch(required_protocol) {
 
-#ifdef PXX
+#if defined(PXX)
     case PROTO_PXX:
       // schedule next Mixer calculations
       SCHEDULE_MIXER_END(20*16);
@@ -892,11 +856,13 @@ void setupPulses()
       break;
 #endif
 
-#ifdef DSM2
+#if defined(DSM2)
     case PROTO_DSM2:
       // schedule next Mixer calculations
       SCHEDULE_MIXER_END(22*16);
+#if defined(DSM2_PPM)
       sei();
+#endif
       setupPulsesDsm2(); // Different versions for DSM2=SERIAL vs. DSM2=PPM
 #if defined(PCBGRUVIN9X) && defined(DSM2_PPM)
       // Ensure each DSM2=PPM serial packet starts out with the correct bit polarity

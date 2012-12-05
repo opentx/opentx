@@ -238,7 +238,7 @@
 
 #define TR_POPUPS              "[MENU]\010[EXIT]"
 #define OFS_EXIT               7
-#define TR_MENUWHENDONE        "[MENU] Avslutar"
+#define TR_MENUWHENDONE        CENTER"\006[MENU] Avslutar"
 #define TR_FREE                "Ledigt"
 #define TR_DELETEMODEL         "Radera Modell"
 #define TR_COPYINGMODEL        "Kopierar Modell"
@@ -331,9 +331,9 @@
 #define TR_CAL                 "Kalib."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         "[MENU] Startar"
-#define TR_SETMIDPOINT         "Centrera Allt"
-#define TR_MOVESTICKSPOTS      "R\202r Rattar/Spakar"
+#define TR_MENUTOSTART         CENTER"\006[MENU] Startar"
+#define TR_SETMIDPOINT         CENTER"Centrera Allt"
+#define TR_MOVESTICKSPOTS      CENTER"R\202r Rattar/Spakar"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4

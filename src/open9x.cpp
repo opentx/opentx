@@ -2542,7 +2542,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
     tick10ms = 0;
     dirtyChannels &= passDirtyChannels;
 
-  } while (++pass < 3 && dirtyChannels);
+  } while (++pass < 5 && dirtyChannels);
 
   mixWarning = lv_mixWarning;
 }

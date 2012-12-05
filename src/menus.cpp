@@ -312,6 +312,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       scrollRE = 0;
       if (s_editMode++ > 0) s_editMode = 0;
       if (s_editMode > 0 && l_posVert == 0 && menuTab) s_editMode = -1;
+      if (maxrow == 0) s_editMode = -1;
     }
   }
 #else

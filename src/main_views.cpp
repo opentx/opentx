@@ -85,6 +85,16 @@
 #define MARKER_WIDTH  5
 #define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
 
+void drawPotsBars()
+{
+  // Optimization by Mike Blandford
+  uint8_t x, y, len ;  // declare temporary variables
+  for (x=DISPLAY_W/2-5, y=NUM_STICKS; y<NUM_STICKS+NUM_POTS; x+=5, y++) {
+    len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+    V_BAR(x, DISPLAY_H-8, len)
+  }
+}
+
 void doMainScreenGraphics()
 {
   lcd_square(LBOX_CENTERX-BOX_WIDTH/2, LBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
@@ -103,14 +113,7 @@ void doMainScreenGraphics()
   lcd_square(RBOX_CENTERX+(calibratedStick[CONVERT_MODE(3+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, RBOX_CENTERY-(calibStickVert*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
 
 #if !defined(PCBX9D)
-  // Optimization by Mike Blandford
-  {
-    uint8_t x, y, len ;  // declare temporary variables
-    for (x = -5, y = 4 ; y < 7 ; x += 5, y += 1) {
-      len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-      V_BAR(DISPLAY_W/2+x, DISPLAY_H-8, len)
-    }
-  }
+  drawPotsBars();
 #endif
 }
 
