@@ -298,26 +298,26 @@ FORCEINLINE void readKeysAndTrims()
 #if !defined(EXTRA_ROTARY_ENCODERS)
 ISR(INT2_vect)
 {
-  uint8_t input = PIND & 0b00001100;
-  if (input == 0 || input == 0b00001100) incRotaryEncoder(0, -1);
+  uint8_t input = (PIND & 0x0C);
+  if (input == 0 || input == 0x0C) incRotaryEncoder(0, -1);
 }
 
 ISR(INT3_vect)
 {
-  uint8_t input = PIND & 0b00001100;
-  if (input == 0 || input == 0b00001100) incRotaryEncoder(0, +1);
+  uint8_t input = (PIND & 0x0C);
+  if (input == 0 || input == 0x0C) incRotaryEncoder(0, +1);
 }
-#endif // !EXTRA_ROTARY_ENCODERS
+#endif // !defined(EXTRA_ROTARY_ENCODERS)
 
 ISR(INT5_vect)
 {
-  uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, +1);
-}
-ISR(INT6_vect)
-{
-  uint8_t input = PINE & 0b01100000;
-  if (input == 0 || input == 0b01100000) incRotaryEncoder(1, -1);
+  uint8_t input = (PINE & 0x60);
+  if (input == 0 || input == 0x60) incRotaryEncoder(1, +1);
 }
 
-#endif // ROTARY_ENCODERS
+ISR(INT6_vect)
+{
+  uint8_t input = (PINE & 0x60);
+  if (input == 0 || input == 0x60) incRotaryEncoder(1, -1);
+}
+#endif // defined(ROTARY_ENCODERS)
