@@ -369,7 +369,7 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
       case ITEM_SETUP_FILTER_ADC:
-        g_eeGeneral.filterInput = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_FILTERADC, STR_VFILTERADC, g_eeGeneral.filterInput, 0, 2, attr, event);
+        g_eeGeneral.filterInput = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_FILTERADC, STR_VFILTERADC, g_eeGeneral.filterInput, 0, 1, attr, event);
         break;
 
       case ITEM_SETUP_BEEP_LABEL:

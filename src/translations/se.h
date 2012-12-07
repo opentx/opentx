@@ -18,7 +18,7 @@
 #define TR_VRENAVIG            "No REaREb"
 
 #define LEN_VFILTERADC         "\004"
-#define TR_VFILTERADC          "SING""OSMP""FILT"
+#define TR_VFILTERADC          "SING""OSMP"
 
 #define LEN_VBLMODE            "\004"
 #define TR_VBLMODE             "AV  ""Knpp""Spak""B\200da""P\203  "

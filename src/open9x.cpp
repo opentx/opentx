@@ -1172,8 +1172,7 @@ void doSplash()
     lcdSetRefVolt(contrast);
 #endif
 
-    for (uint8_t i=0; i<32; i++)
-      getADC_filt(); // init ADC array
+    getADC_single(); // init ADC array
 
     uint16_t inacSum = stickMoveValue();
 
@@ -1186,7 +1185,7 @@ void doSplash()
       CoTickDelay(1);
 #endif
 
-      getADC_filt();
+      getADC_single();
 
       uint16_t tsum = stickMoveValue();
 
@@ -1540,19 +1539,6 @@ uint16_t anaIn(uint8_t chan)
 }
 
 #if defined(PCBSKY9X)
-void getADC_filt()
-{
-        register uint32_t x ;
-        static uint16_t t_ana[2][NUMBER_ANALOG] ;
-
-        read_9_adc() ;
-        for( x = 0 ; x < NUMBER_ANALOG ; x += 1 )
-        {
-                s_anaFilt[x] = s_anaFilt[x]/2 + (t_ana[1][x] >> 2 ) ;
-                t_ana[1][x] = ( t_ana[1][x] + t_ana[0][x] ) >> 1 ;
-                t_ana[0][x] = ( t_ana[0][x] + Analog_values[x] ) >> 1 ;
-        }
-}
 
 void getADC_osmp()
 {
@@ -1589,29 +1575,7 @@ void getADC_single()
     s_anaFilt[x] = Analog_values[x] >> 1 ;
   }
 }
-
 #else
-
-void getADC_filt()
-{
-  static uint16_t t_ana[2][8];
-  for (uint8_t adc_input=0; adc_input<8; adc_input++) {
-      ADMUX=adc_input|ADC_VREF_TYPE;
-      // Start the AD conversion
-      ADCSRA|=0x40;
-
-    // Do this while waiting
-    s_anaFilt[adc_input] = (s_anaFilt[adc_input]/2 + t_ana[1][adc_input]) & 0xFFFE; //gain of 2 on last conversion - clear last bit
-    t_ana[1][adc_input]  = (t_ana[1][adc_input] + t_ana[0][adc_input]) >> 1;
-
-      // Wait for the AD conversion to complete
-      while ((ADCSRA & 0x10)==0);
-      ADCSRA|=0x10;
-
-      t_ana[0][adc_input]  = (t_ana[0][adc_input]  + ADC) >> 1;
-  }
-}
-
 void getADC_osmp()
 {
   uint16_t temp_ana;
@@ -2580,15 +2544,10 @@ FORCEINLINE void doMixerCalculations()
   activeMixes = 0;
 #endif
 
-  if (g_eeGeneral.filterInput == 1) {
-    getADC_filt() ;
-  }
-  else if ( g_eeGeneral.filterInput == 2) {
-    getADC_osmp() ;
-  }
-  else {
-    getADC_single() ;
-  }
+  if (g_eeGeneral.filterInput == 0)
+    getADC_single();
+  else
+    getADC_osmp();
 
 #if defined(PCBSKY9X) && defined(REVB) && !defined(SIMU)
   Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
@@ -3223,10 +3182,10 @@ FORCEINLINE void DSM2_USART0_vect()
 #endif
 
 #if !defined(SIMU) && !defined(PCBSKY9X)
-#if defined (FRSKY) or defined(DSM2_SERIAL)
+#if defined (FRSKY) || defined(DSM2_SERIAL)
 ISR(USART0_UDRE_vect)
 {
-#if defined (FRSKY) and defined (DSM2_SERIAL)
+#if defined(FRSKY) && defined(DSM2_SERIAL)
   if (g_model.protocol == PROTO_DSM2) {
     DSM2_USART0_vect();
   }

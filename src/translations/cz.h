@@ -18,7 +18,7 @@
 #define TR_VRENAVIG            "Ne REaREb"
 
 #define LEN_VFILTERADC         "\004"
-#define TR_VFILTERADC          "SING""OSMP""FILT"
+#define TR_VFILTERADC          "SING""OSMP"
 
 #define LEN_VBLMODE            "\005"
 #define TR_VBLMODE             "Vyp\0 ""Kl\200v.""P\200ky\0""Kl+P\200""Zap\0 "

@@ -18,7 +18,7 @@
 #define TR_VRENAVIG      "No REaREb"
 
 #define LEN_VFILTERADC   "\004"
-#define TR_VFILTERADC    "SING""OSMP""FILT"
+#define TR_VFILTERADC    "SING""OSMP"
 
 #define LEN_VBLMODE      "\004"
 #define TR_VBLMODE       "OFF ""Keys""Stks""Both""ON\0"

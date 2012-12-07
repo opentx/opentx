@@ -348,7 +348,7 @@ void setupPulsesPXX()
 }
 #endif
 
-#ifdef DSM2_SERIAL
+#if defined(DSM2_SERIAL)
 
 // DSM2 protocol pulled from th9x - Thanks thus!!!
 
@@ -454,7 +454,7 @@ void DSM2_Init(void)
 
 #endif // SIMU
 }
-#endif // ifdef DSM2_SERIAL
+#endif // defined(DSM2_SERIAL)
 
 /****** END DSM2=SERIAL ********/
 

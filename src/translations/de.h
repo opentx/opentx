@@ -18,7 +18,7 @@
 #define TR_VRENAVIG                     "AUSDGaDGb"
 
 #define LEN_VFILTERADC                  "\004"
-#define TR_VFILTERADC                   "SING""OSMP""FILT"
+#define TR_VFILTERADC                   "SING""OSMP"
 
 #define LEN_VBLMODE                     "\004"
 #define TR_VBLMODE                      "OFF ""Tast""Knpl""Alle""ON\0"

@@ -280,7 +280,6 @@ extern uint8_t portb, portc, porth, dummyport;
 extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
 
-#define getADC_filt()
 #define getADC_single()
 #define getADC_osmp()
 #define getADC_bandgap()
