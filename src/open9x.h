@@ -898,8 +898,7 @@ void checkAll();
 #define GETADC_FILT = 2
 
 #if !defined(SIMU)
-void getADC_single();
-void getADC_osmp();
+void getADC();
 #endif
 
 extern uint8_t  s_eeDirtyMsk;

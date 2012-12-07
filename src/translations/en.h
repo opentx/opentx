@@ -17,9 +17,6 @@
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "No REaREb"
 
-#define LEN_VFILTERADC   "\004"
-#define TR_VFILTERADC    "SING""OSMP"
-
 #define LEN_VBLMODE      "\004"
 #define TR_VBLMODE       "OFF ""Keys""Stks""Both""ON\0"
 
@@ -321,7 +318,6 @@
 #define TR_MEMORYWARNING       INDENT"Memory Low"
 #define TR_ALARMWARNING        INDENT"Sound Off"
 #define TR_RENAVIG             "RotEnc Navig"
-#define TR_FILTERADC           "ADC Filter"
 #define TR_THROTTLEREVERSE     "Thr reverse"
 #define TR_BEEP_LABEL          "Timer events"
 #define TR_MINUTEBEEP          INDENT"Minute"

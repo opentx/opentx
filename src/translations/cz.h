@@ -17,9 +17,6 @@
 #define LEN_VRENAVIG           "\003"
 #define TR_VRENAVIG            "Ne REaREb"
 
-#define LEN_VFILTERADC         "\004"
-#define TR_VFILTERADC          "SING""OSMP"
-
 #define LEN_VBLMODE            "\005"
 #define TR_VBLMODE             "Vyp\0 ""Kl\200v.""P\200ky\0""Kl+P\200""Zap\0 "
 
@@ -309,7 +306,6 @@
 #define TR_MEMORYWARNING       INDENT"Pln\200 Pam\203t'"
 #define TR_ALARMWARNING        INDENT"Vypnut\212 Zvuk"
 #define TR_RENAVIG             "Navig. RotEnc"
-#define TR_FILTERADC           "Filtr ADC"
 #define TR_THROTTLEREVERSE     "Revers Plynu"
 #define TR_BEEP_LABEL          "Upozorn\203n\204 Stopek"
 #define TR_MINUTEBEEP          INDENT"Cel\200 minuta"

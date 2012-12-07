@@ -203,7 +203,7 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow)
 #if defined(PCBX9D)
 void check_rotary_encoder(uint8_t & event)
 {
-  if (event==EVT_KEY_REPT(KEY_LEFT) || event==EVT_KEY_BREAK(KEY_LEFT)) {
+  if (event==EVT_KEY_REPT(KEY_LEFT) || event==EVT_KEY_FIRST(KEY_LEFT)) {
     scrollRE = -1;
   }
   else if (event==EVT_KEY_REPT(KEY_RIGHT) || event==EVT_KEY_FIRST(KEY_RIGHT)) {

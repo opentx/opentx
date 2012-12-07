@@ -17,9 +17,6 @@
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "NonREaREb"
 
-#define LEN_VFILTERADC   "\004"
-#define TR_VFILTERADC    "SIMP""OSMP"
-
 #define LEN_VBLMODE      "\004"
 #define TR_VBLMODE       "OFF\0""Btns""Stks""Tout""ON\0"
 
@@ -310,7 +307,6 @@
 #define TR_MEMORYWARNING       INDENT"M\200moire faible"
 #define TR_ALARMWARNING        INDENT"Sons d\200sactiv\200s"
 #define TR_RENAVIG             "Navig EncRot"
-#define TR_FILTERADC           "Filtre ADC"
 #define TR_THROTTLEREVERSE     "Inversion Gaz"
 #define TR_BEEP_LABEL          "Bips Chronos"
 #define TR_MINUTEBEEP          INDENT"Minutes"

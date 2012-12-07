@@ -247,7 +247,9 @@ void menuModelSelect(uint8_t event)
 
   int8_t oldSub = m_posVert;
   if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
-#if defined(ROTARY_ENCODERS)
+#if defined(PCBX9D)
+  if (m_posVert < 0) m_posVert = MAX_MODELS-1;
+#elif defined(ROTARY_ENCODERS)
   if (m_posVert < 0) m_posVert = 0;
 #endif
   if (s_editMode > 0) s_editMode = 0;
@@ -310,6 +312,12 @@ void menuModelSelect(uint8_t event)
 #endif
       case EVT_KEY_LONG(KEY_ENTER):
       case EVT_KEY_BREAK(KEY_ENTER):
+#if defined(PCBX9D)
+        if (s_editMode < 0) {
+          s_editMode = 0;
+          break;
+        }
+#endif
         s_editMode = 0;
         if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
           displayPopup(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
@@ -378,6 +386,8 @@ void menuModelSelect(uint8_t event)
           s_copySrcRow = -1;
         }
         break;
+
+#if !defined(PCBX9D)
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
         if (sub == g_eeGeneral.currModel) {
@@ -386,18 +396,25 @@ void menuModelSelect(uint8_t event)
         }
         AUDIO_WARNING2();
         break;
-#if !defined(PCBX9D)
-      case EVT_KEY_FIRST(KEY_UP):
-      case EVT_KEY_FIRST(KEY_DOWN):
+#endif
+
+      case EVT_KEY_FIRST(KEY_MOVE_UP):
+      case EVT_KEY_FIRST(KEY_MOVE_DOWN):
+#if defined(PCBX9D)
+        if (s_editMode == -1) {
+          chainMenu(event == EVT_KEY_FIRST(KEY_RIGHT) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
+          return;
+        }
+#endif
         if (s_copyMode) {
-          int8_t next_ofs = (event == EVT_KEY_FIRST(KEY_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
+          int8_t next_ofs = (event == EVT_KEY_FIRST(KEY_MOVE_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
             next_ofs = 0;
 
           if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
             s_copySrcRow = oldSub;
             // find a hole (in the first empty slot above / below)
-            m_posVert = eeFindEmptyModel(s_copySrcRow, event==EVT_KEY_FIRST(KEY_DOWN));
+            m_posVert = eeFindEmptyModel(s_copySrcRow, event==EVT_KEY_FIRST(KEY_MOVE_DOWN));
             if ((uint8_t)m_posVert == 0xff) {
               // no free room for duplicating the model
               AUDIO_ERROR();
@@ -410,7 +427,7 @@ void menuModelSelect(uint8_t event)
           s_copyTgtOfs = next_ofs;
         }
         break;
-#endif
+
   }
 
 #if !defined(PCBSKY9X)

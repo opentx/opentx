@@ -17,9 +17,6 @@
 #define LEN_VRENAVIG                    "\003"
 #define TR_VRENAVIG                     "AUSDGaDGb"
 
-#define LEN_VFILTERADC                  "\004"
-#define TR_VFILTERADC                   "SING""OSMP"
-
 #define LEN_VBLMODE                     "\004"
 #define TR_VBLMODE                      "OFF ""Tast""Knpl""Alle""ON\0"
 
@@ -310,7 +307,6 @@
 #define TR_MEMORYWARNING       					INDENT"Speicher voll"
 #define TR_ALARMWARNING        					INDENT"Ton aus"
 #define TR_RENAVIG                      "Drehgeb. Navig."
-#define TR_FILTERADC                    "ADC Filter"
 #define TR_THROTTLEREVERSE              "Gasumkehrung"
 #define TR_BEEP_LABEL          					"Stoppuhrpieper"
 #define TR_MINUTEBEEP                   INDENT"Minuten"

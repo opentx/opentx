@@ -78,11 +78,10 @@ extern const pm_char STR_OPEN9X[];
 #if defined(ROTARY_ENCODERS)
 #define OFS_VRENAVIG   (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #define OFS_VRENCODERS (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
-#define OFS_VFILTERADC (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
+#define OFS_TRNMODE    (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
 #else
-#define OFS_VFILTERADC (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
+#define OFS_TRNMODE    (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
-#define OFS_TRNMODE    (OFS_VFILTERADC + sizeof(TR_VFILTERADC))
 #define OFS_TRNCHN     (OFS_TRNMODE + sizeof(TR_TRNMODE))
 #define OFS_VTRIMINC   (OFS_TRNCHN + sizeof(TR_TRNCHN))
 #define OFS_RETA123    (OFS_VTRIMINC + sizeof(TR_VTRIMINC))
@@ -147,7 +146,6 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VBEEPLEN   (STR_OPEN9X + OFS_VBEEPLEN)
 #endif
 #define STR_VBEEPMODE  (STR_OPEN9X + OFS_VBEEPMODE)
-#define STR_VFILTERADC (STR_OPEN9X + OFS_VFILTERADC)
 #define STR_TRNMODE    (STR_OPEN9X + OFS_TRNMODE)
 #define STR_TRNCHN     (STR_OPEN9X + OFS_TRNCHN)
 #define STR_VTRIMINC   (STR_OPEN9X + OFS_VTRIMINC)
@@ -289,7 +287,6 @@ extern const pm_char STR_INACTIVITYALARM[];
 extern const pm_char STR_MEMORYWARNING[];
 extern const pm_char STR_ALARMWARNING[];
 extern const pm_char STR_RENAVIG[];
-extern const pm_char STR_FILTERADC[];
 extern const pm_char STR_THROTTLEREVERSE[];
 extern const pm_char STR_BEEP_LABEL[];
 extern const pm_char STR_MINUTEBEEP[];

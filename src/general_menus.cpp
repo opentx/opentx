@@ -115,7 +115,6 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
   IF_ROTARY_ENCODERS(ITEM_SETUP_RE_NAVIGATION)
-  ITEM_SETUP_FILTER_ADC,
   ITEM_SETUP_THROTTLE_REVERSED,
   ITEM_SETUP_BEEP_LABEL,
   ITEM_SETUP_MINUTE_BEEP,
@@ -144,7 +143,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) (uint8_t)-1, 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC((uint8_t)-1) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, (uint8_t)-1, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, 0, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, IF_PCBX9D(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) (uint8_t)-1, 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC((uint8_t)-1) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, (uint8_t)-1, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, IF_PCBX9D(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -367,10 +366,6 @@ void menuGeneralSetup(uint8_t event)
         }
         break;
 #endif
-
-      case ITEM_SETUP_FILTER_ADC:
-        g_eeGeneral.filterInput = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_FILTERADC, STR_VFILTERADC, g_eeGeneral.filterInput, 0, 1, attr, event);
-        break;
 
       case ITEM_SETUP_BEEP_LABEL:
         lcd_putsLeft(y, STR_BEEP_LABEL);

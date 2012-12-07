@@ -95,7 +95,12 @@ void menuModelCustomFunctions(uint8_t event);
 void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
 
-#if defined(ROTARY_ENCODERS)
+#if defined(PCBX9D)
+extern int8_t scrollRE;
+extern int16_t p1valdiff;
+#define IS_RE_NAVIGATION_EVT_TYPE(event, type) (event==type(KEY_ENTER))
+#define IS_RE_NAVIGATION_EVT(event) ((event&EVT_KEY_MASK)==KEY_ENTER)
+#elif defined(ROTARY_ENCODERS)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))

@@ -1172,7 +1172,7 @@ void doSplash()
     lcdSetRefVolt(contrast);
 #endif
 
-    getADC_single(); // init ADC array
+    getADC(); // init ADC array
 
     uint16_t inacSum = stickMoveValue();
 
@@ -1185,7 +1185,7 @@ void doSplash()
       CoTickDelay(1);
 #endif
 
-      getADC_single();
+      getADC();
 
       uint16_t tsum = stickMoveValue();
 
@@ -1243,7 +1243,7 @@ void checkTHR()
 #ifdef SIMU
   int16_t lowLim = THRCHK_DEADBAND - 1024 ;
 #else
-  getADC_single();   // if thr is down - do not display warning at all
+  getADC();   // if thr is down - do not display warning at all
   int16_t lowLim = g_eeGeneral.calibMid[thrchn];
   lowLim = (g_eeGeneral.throttleReversed ? - lowLim - g_eeGeneral.calibSpanPos[thrchn] : lowLim - g_eeGeneral.calibSpanNeg[thrchn]);
   lowLim += THRCHK_DEADBAND;
@@ -1259,7 +1259,7 @@ void checkTHR()
   {
       SIMU_SLEEP(1);
 
-      getADC_single();
+      getADC();
 
       int16_t v = thrAnaIn(thrchn);
 
@@ -1539,51 +1539,34 @@ uint16_t anaIn(uint8_t chan)
 }
 
 #if defined(PCBSKY9X)
-
-void getADC_osmp()
+void getADC()
 {
   register uint32_t x;
   register uint32_t y;
-  uint16_t temp[NUMBER_ANALOG];
+  uint16_t temp[NUMBER_ANALOG] = { 0 };
 
-  for( x = 0; x < NUMBER_ANALOG; x += 1 )
-  {
-    temp[x] = 0;
-  }
-  for( y = 0; y < 4; y += 1 )
-  {
+  for( y = 0; y < 4; y += 1 ) {
     read_9_adc();
     for( x = 0; x < NUMBER_ANALOG; x += 1 )
     {
       temp[x] += Analog_values[x];
     }
   }
+
   for( x = 0; x < NUMBER_ANALOG; x += 1 )
   {
     s_anaFilt[x] = temp[x] >> 3;
   }
 }
-
-void getADC_single()
-{
-  register uint32_t x ;
-
-  read_9_adc() ;
-
-  for( x = 0 ; x < NUMBER_ANALOG ; x += 1 )
-  {
-    s_anaFilt[x] = Analog_values[x] >> 1 ;
-  }
-}
 #else
-void getADC_osmp()
+void getADC()
 {
   uint16_t temp_ana;
 
   for (uint8_t adc_input=0; adc_input<8; adc_input++) {
     temp_ana = 0;
     ADMUX = adc_input|ADC_VREF_TYPE;
-    for (uint8_t i=0; i<4;i++) {  // Going from 10bits to 11 bits.  Addition = n.  Loop 4^n times
+    for (uint8_t i=0; i<2;i++) {  // Going from 10bits to 11 bits.
       // Start the AD conversion
       ADCSRA|=0x40;
       // Wait for the AD conversion to complete
@@ -1591,21 +1574,8 @@ void getADC_osmp()
       ADCSRA|=0x10;
       temp_ana += ADC;
     }
-    s_anaFilt[adc_input] = temp_ana / 2; // divide by 2^n to normalize result.
+    s_anaFilt[adc_input] = temp_ana;
   }
-}
-
-void getADC_single()
-{
-  for (uint8_t adc_input=0; adc_input<8; adc_input++) {
-      ADMUX=adc_input|ADC_VREF_TYPE;
-      // Start the AD conversion
-      ADCSRA|=0x40;
-      // Wait for the AD conversion to complete
-      while ((ADCSRA & 0x10)==0);
-      ADCSRA|=0x10;
-      s_anaFilt[adc_input]= ADC * 2; // use 11 bit numbers
-    }
 }
 #endif
 
@@ -2544,10 +2514,7 @@ FORCEINLINE void doMixerCalculations()
   activeMixes = 0;
 #endif
 
-  if (g_eeGeneral.filterInput == 0)
-    getADC_single();
-  else
-    getADC_osmp();
+  getADC();
 
 #if defined(PCBSKY9X) && defined(REVB) && !defined(SIMU)
   Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
