@@ -755,8 +755,12 @@ enum PerOutMode {
 };
 
 #ifdef SIMU
+#ifndef FORCEINLINE
 #define FORCEINLINE
+#endif
+#ifndef NOINLINE
 #define NOINLINE
+#endif
 #else
 #define FORCEINLINE inline __attribute__ ((always_inline))
 #define NOINLINE __attribute__ ((noinline))
