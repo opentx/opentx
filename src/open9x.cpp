@@ -1562,19 +1562,14 @@ void getADC()
 void getADC()
 {
   uint16_t temp_ana;
-
   for (uint8_t adc_input=0; adc_input<8; adc_input++) {
-    temp_ana = 0;
     ADMUX = adc_input|ADC_VREF_TYPE;
-    for (uint8_t i=0; i<2;i++) {  // Going from 10bits to 11 bits.
-      // Start the AD conversion
-      ADCSRA|=0x40;
-      // Wait for the AD conversion to complete
-      while ((ADCSRA & 0x10)==0);
-      ADCSRA|=0x10;
-      temp_ana += ADC;
-    }
-    s_anaFilt[adc_input] = temp_ana;
+    ADCSRA|=0x40; // Start the AD conversion
+    while (ADCSRA & 0x40); // Wait for the AD conversion to complete
+    temp_ana = ADC;
+    ADCSRA|=0x40; // Start the second AD conversion
+    while (ADCSRA & 0x40); // Wait for the AD conversion to complete
+    s_anaFilt[adc_input] = temp_ana + ADC;
   }
 }
 #endif
