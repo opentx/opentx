@@ -281,6 +281,7 @@ extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
 
 #define getADC()
+#define getADC_bandgap()
 
 #define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
 
