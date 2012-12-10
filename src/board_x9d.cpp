@@ -36,8 +36,6 @@
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
-volatile uint8_t lcdLock;
-volatile uint32_t lcdInputs;
 
 /** Console baudrate 9600. */
 #define CONSOLE_BAUDRATE    9600
@@ -73,19 +71,7 @@ uint32_t check_soft_power()
 {
 #ifdef SIMU
   return e_power_on;
-#endif
-
-#if defined(REVC)
-  if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
-  {
-    return e_power_on ;
-  }
-
-  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
-  {
-    return e_power_trainer ;
-  }
-#elif defined(REVB)
+#else
   if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
   {
     return e_power_on ;
@@ -100,29 +86,15 @@ uint32_t check_soft_power()
   {
     return e_power_trainer ;
   }
-#else
-  if ( PIOC->PIO_PDSR & PIO_PC25 )
-  {
-    return e_power_usb ;            // Detected USB
-  }
-
-  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
-  {
-    return e_power_trainer ;
-  }
-
-  return e_power_on;
-#endif
 
   return e_power_off;
+#endif
 }
 
 // turn off soft power
 void soft_power_off()
 {
-#if !defined(REVA)
   configure_pins( PIO_PA8, PIN_ENABLE | PIN_OUTPUT | PIN_LOW | PIN_PORTA | PIN_NO_PULLUP ) ;
-#endif
 }
 
 extern "C" void sam_boot( void ) ;
@@ -184,7 +156,6 @@ inline void setup_switches()
 
 #ifdef SIMU
 #define end_ppm_capture()
-#define stop_rotary_encoder()
 #define sam_boot()
 #else
 
@@ -397,46 +368,6 @@ void end_ppm_capture()
 {
   TC1->TC_CHANNEL[0].TC_IDR = TC_IDR0_LDRAS ;
   NVIC_DisableIRQ(TC3_IRQn) ;
-}
-
-static void init_rotary_encoder()
-{
-  configure_pins( PIO_PC19 | PIO_PC21, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_PULLUP ) ;        // 19 and 21 are rotary encoder
-  configure_pins( PIO_PB6, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;            // rotary encoder switch
-  PIOC->PIO_IER = PIO_PC19 | PIO_PC21 ;
-  NVIC_EnableIRQ(PIOC_IRQn) ;
-}
-
-static void stop_rotary_encoder()
-{
-  NVIC_DisableIRQ(PIOC_IRQn) ;
-  PIOC->PIO_IDR = PIO_PC19 | PIO_PC21 ;
-}
-
-volatile uint32_t Rotary_position ;
-extern "C" void PIOC_IRQHandler()
-{
-  register uint32_t dummy;
-
-  dummy = PIOC->PIO_ISR ;                 // Read and clear status register
-  (void) dummy ;                          // Discard value - prevents compiler warning
-
-  dummy = PIOC->PIO_PDSR ;                // Read Rotary encoder (PC19, PC21)
-  dummy >>= 19 ;
-  dummy &= 0x05 ;                 // pick out the three bits
-  if ( dummy != ( Rotary_position & 0x05 ) )
-  {
-    if ( ( Rotary_position & 0x01 ) ^ ( ( dummy & 0x04) >> 2 ) )
-    {
-      incRotaryEncoder(0, +1);
-    }
-    else
-    {
-      incRotaryEncoder(0, -1);
-    }
-    Rotary_position &= ~0x45 ;
-    Rotary_position |= dummy ;
-  }
 }
 
 extern "C" void TC2_IRQHandler()
@@ -755,8 +686,6 @@ void board_init()
 
   eeprom_init();
 
-  init_rotary_encoder();
-
   init_SDcard();
 
 }
@@ -776,32 +705,22 @@ uint32_t read_keys()
   register uint32_t x;
   register uint32_t y;
 
-  x = lcdLock ? lcdInputs : PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+  x = PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
   x <<= 1;
 
-#if defined(REVA)
-  y = (x & 0x00000060);
-  if (x & 0x00000008)
-    y |= 0x10;
-  if (x & 0x00000010)
-    y |= 0x08;
-  if (PIOA->PIO_PDSR & 0x80000000)
-    y |= 0x04; // EXIT
-  if (PIOB->PIO_PDSR & 0x000000040)
-    y |= 0x02; // MENU
-#else
-  y = (x & 0x00000020); // RIGHT
+  y = 0;
+  if (x & 0x00000020)
+    y |= 0x02 << KEY_PLUS;
   if (x & 0x00000004)
-    y |= 0x02 << KEY_UP; // UP
+    y |= 0x02 << KEY_MENU;
   if (x & 0x00000010)
-    y |= 0x02 << KEY_LEFT; // LEFT
+    y |= 0x02 << KEY_MINUS;
   if (x & 0x00000040)
-    y |= 0x02 << KEY_DOWN; // DOWN
+    y |= 0x02 << KEY_PAGE;
   if (x & 0x02000000)
-    y |= 0x02 << KEY_EXIT; // EXIT
+    y |= 0x02 << KEY_EXIT;
   if (PIOB->PIO_PDSR & 0x000000020)
-    y |= 0x02 << KEY_MENU; // MENU
-#endif
+    y |= 0x02 << KEY_ENTER;
 
   return y ;
 }
@@ -886,63 +805,103 @@ uint8_t keyDown()
 
 extern uint32_t keyState(EnumKeys enuk)
 {
-  register uint32_t a ;
   register uint32_t c ;
 
   CPU_UINT xxx = 0;
 
   if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
 
-  a = PIOA->PIO_PDSR ;
   c = PIOC->PIO_PDSR ;
 
+  // printf("c=%x\n", c); fflush(stdout);
+
   switch ((uint8_t) enuk) {
-#if defined(REVA)
-    case SW_ELE:
-      xxx = a & 0x00000100; // ELE_DR   PA8
-#else
-    case SW_ELE:
-      xxx = c & 0x80000000; // ELE_DR   PC31
-#endif
+    case SW_SA0:
+      xxx = !(c & 0x80000000);
       break;
 
-    case SW_AIL:
-      xxx = a & 0x00000004; // AIL-DR  PA2
+    case SW_SA2:
+      xxx = c & 0x80000000;
       break;
 
-    case SW_RUD:
-      xxx = a & 0x00008000; // RUN_DR   PA15
-      break;
-      //     INP_G_ID1 INP_E_ID2
-      // id0    0        1
-      // id1    1        1
-      // id2    1        0
-    case SW_ID0:
-      xxx = ~c & 0x00004000; // SW_IDL1     PC14
-      break;
-    case SW_ID1:
-      xxx = (c & 0x00004000);
-      if (xxx) xxx = (c & 0x00000800);
-      break;
-    case SW_ID2:
-      xxx = ~c & 0x00000800; // SW_IDL2     PC11
+    case SW_SB0:
+      xxx = !(c & 0x08000000) && !(c & 0x04000000);
       break;
 
-    case SW_GEA:
-      xxx = c & 0x00010000; // SW_GEAR     PC16
+    case SW_SB1:
+      xxx = (c & 0x08000000) && !(c & 0x04000000);
       break;
 
-#if defined(REVA)
-    case SW_THR:
-      xxx = a & 0x10000000; // SW_TCUT     PA28
-#else
-    case SW_THR:
-      xxx = c & 0x00100000; // SW_TCUT     PC20
-#endif
+    case SW_SB2:
+      xxx = !(c & 0x08000000) && (c & 0x04000000);
       break;
 
-    case SW_TRN:
-      xxx = c & 0x00000100; // SW-TRAIN    PC8
+    case SW_SC0:
+      xxx = !(c & 0x00800000) && !(c & 0x00400000);
+      break;
+
+    case SW_SC1:
+      xxx = (c & 0x00800000) && !(c & 0x00400000);
+      break;
+
+    case SW_SC2:
+      xxx = !(c & 0x00800000) && (c & 0x00400000);
+      break;
+
+    case SW_SD0:
+      xxx = !(c & 0x00200000) && !(c & 0x00100000);
+      break;
+
+    case SW_SD1:
+      xxx = (c & 0x00200000) && !(c & 0x00100000);
+      break;
+
+    case SW_SD2:
+      xxx = !(c & 0x00200000) && (c & 0x00100000);
+      break;
+
+    case SW_SE0:
+      xxx = !(c & 0x00080000) && !(c & 0x00040000);
+      break;
+
+    case SW_SE1:
+      xxx = (c & 0x00080000) && !(c & 0x00040000);
+      break;
+
+    case SW_SE2:
+      xxx = !(c & 0x00080000) && (c & 0x00040000);
+      break;
+
+    case SW_SF0:
+      xxx = !(c & 0x00020000) && !(c & 0x00010000);
+      break;
+
+    case SW_SF1:
+      xxx = (c & 0x00020000) && !(c & 0x00010000);
+      break;
+
+    case SW_SF2:
+      xxx = !(c & 0x00020000) && (c & 0x00010000);
+      break;
+
+    case SW_SG0:
+      xxx = !(c & 0x00008000) && !(c & 0x00004000);
+      break;
+
+    case SW_SG1:
+      xxx = (c & 0x00008000) && !(c & 0x00004000);
+      break;
+
+    case SW_SG2:
+      xxx = !(c & 0x00008000) && (c & 0x00004000);
+      break;
+
+    case SW_SH0:
+      xxx = !(c & 0x00002000);
+      break;
+
+    case SW_SH2:
+      xxx = c & 0x00002000;
       break;
 
     default:
@@ -1141,7 +1100,6 @@ void usbBootloader()
   // This might be replaced by a software reset
   // Any interrupts that have been enabled must be disabled here
   // BEFORE calling sam_boot()
-  stop_rotary_encoder();
   endPdcUsartReceive() ;          // Terminate any serial reception
   end_bt_tx_interrupt() ;
   end_ppm_capture() ;

@@ -33,7 +33,7 @@
 
 #include "open9x.h"
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define MIXER_STACK_SIZE    500
 #define MENUS_STACK_SIZE    1000
 #define AUDIO_STACK_SIZE    500
@@ -100,7 +100,7 @@ void loadModelBitmap()
 }
 #endif
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
 uint8_t g_tmr1Latency_max;
 uint8_t g_tmr1Latency_min;
 #endif
@@ -111,7 +111,7 @@ uint8_t unexpectedShutdown = 0;
 uint16_t maxMixerDuration;
 uint16_t lastMixerDuration;
 
-#if defined(AUDIO) && !defined(PCBSKY9X)
+#if defined(AUDIO) && !defined(CPUARM)
 audioQueue  audio;
 #endif
 
@@ -183,7 +183,7 @@ uint8_t zlen(const char *str, uint8_t size)
 
 volatile tmr10ms_t g_tmr10ms;
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 volatile uint8_t rtc_count=0;
 #endif
 
@@ -200,7 +200,7 @@ void per10ms()
       AUDIO_INACTIVITY();
   }
 
-#if defined (PCBSKY9X)
+#if defined(CPUARM)
   Tenms |= 1 ;                    // 10 mS has passed
 #endif
 
@@ -208,7 +208,7 @@ void per10ms()
   /* Update global Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100) {
     g_rtcTime++;   // inc global unix timestamp one second
-#if defined (PCBSKY9X)
+#if defined(CPUARM)
     if (g_rtcTime < 60 || rtc_count<5) {
       rtc_init();
       rtc_count++;
@@ -223,11 +223,11 @@ void per10ms()
 
   readKeysAndTrims();
 
-#if defined(MAVLINK) && !defined(PCBSKY9X)
+#if defined(MAVLINK) && !defined(CPUARM)
   check_mavlink();
 #endif
 
-#if defined (FRSKY) && !defined(PCBSKY9X) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
+#if defined(FRSKY) && !defined(CPUARM) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
   check_frsky();
 #endif
 
@@ -509,7 +509,7 @@ void applyExpos(int16_t *anas)
   }
 }
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
 int16_t calc100toRESX(int8_t x)
 {
   // return (int16_t)x*10 + x/4 - x/64;
@@ -531,7 +531,6 @@ int16_t calcRESXto1000(int16_t x)
 // *1000/1024 = x - x/32 + x/128
   return (x - x/32 + x/128);
 }
-
 #endif
 
 int16_t applyLimits(uint8_t channel, int32_t value)
@@ -648,7 +647,7 @@ int16_t getValue(uint8_t i)
   else return 0;
 }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define GETSWITCH_RECURSIVE_TYPE uint32_t
 volatile bool s_default_switch_value;
 #else
@@ -659,7 +658,7 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 /* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 uint32_t delays[NUM_CSW];
 uint32_t durations[NUM_CSW];
 #endif
@@ -671,7 +670,7 @@ bool __getSwitch(int8_t swtch)
   bool result;
 
   if (swtch == 0)
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     return s_default_switch_value;
 #else
     return s_last_switch_used & ((GETSWITCH_RECURSIVE_TYPE)1<<15);
@@ -714,7 +713,7 @@ bool __getSwitch(int8_t swtch)
         }
       }
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
       if (result)
         s_last_switch_value |= ((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
 #endif
@@ -809,7 +808,7 @@ bool __getSwitch(int8_t swtch)
       }
     }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     if (cs->delay) {
       if (result) {
         if (delays[cs_idx] > get_tmr10ms())
@@ -842,7 +841,7 @@ bool __getSwitch(int8_t swtch)
 
 bool getSwitch(int8_t swtch, bool nc)
 {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   s_last_switch_used = 0;
   s_last_switch_value = 0;
   s_default_switch_value = nc;
@@ -1051,7 +1050,7 @@ void setGVarValue(uint8_t idx, int8_t value, int8_t phase)
 
 #endif
 
-#if defined(FRSKY) || defined(PCBSKY9X)
+#if defined(FRSKY) || defined(CPUARM)
 void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att)
 {
 #ifdef IMPERIAL_UNITS
@@ -1133,7 +1132,7 @@ void doSplash()
     lcd_img(0, 0, splash_lbm, 0, 0);
     refreshDisplay();
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
     AUDIO_TADA();
 #endif
 
@@ -1154,7 +1153,7 @@ void doSplash()
     {
 #if defined(SIMU)
       SIMU_SLEEP(1);
-#elif defined(PCBSKY9X)
+#elif defined(CPUARM)
       CoTickDelay(1);
 #endif
 
@@ -1189,7 +1188,7 @@ void doSplash()
 
 void checkAll()
 {
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
   checkLowEEPROM();
 #endif
 
@@ -1197,7 +1196,7 @@ void checkAll()
   checkSwitches();
 }
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
 void checkLowEEPROM()
 {
   if (g_eeGeneral.disableMemoryWarning) return;
@@ -1342,7 +1341,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 void checkTrims()
 {
   uint8_t event = getEvent(true);
@@ -1387,7 +1386,7 @@ uint8_t checkTrim(uint8_t event)
     int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     uint8_t beepTrim = 0;
 #else
     bool beepTrim = false;
@@ -1448,16 +1447,16 @@ uint8_t checkTrim(uint8_t event)
     else {
       AUDIO_TRIM(event, after);
     }
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
     return 0;
 #endif
   }
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
   return event;
 #endif
 }
 
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(CPUARM) && !defined(REVA)
 uint16_t Current_analogue;
 uint16_t Current_max;
 uint32_t Current_accumulator;
@@ -1496,7 +1495,7 @@ uint16_t anaIn(uint8_t chan)
   //                     ana-in:   3 1 2 0 4 5 6 7
   //static pm_char crossAna[] PROGMEM ={4,2,3,1,5,6,7,0}; // wenn schon Tabelle, dann muss sich auch lohnen
   //                        Google Translate (German): // if table already, then it must also be worthwhile
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3,8};
 #if !defined(REVA)
   if ( chan == 8 ) {
@@ -1511,7 +1510,7 @@ uint16_t anaIn(uint8_t chan)
   return *p;
 }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 void getADC()
 {
   register uint32_t x;
@@ -1547,7 +1546,7 @@ void getADC()
 }
 #endif
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
 void getADC_bandgap()
 {
 #if defined (PCBGRUVIN9X)
@@ -1903,7 +1902,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 }
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 static uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume;
 uint8_t fnSwitchDuration[NUM_FSW] = { 0 };
@@ -1936,7 +1935,7 @@ void evalFunctions()
       MASK_FUNC_TYPE function_mask = (sd->func >= FUNC_TRAINER ? ((MASK_FUNC_TYPE)1 << (sd->func-FUNC_TRAINER)) : 0);
       MASK_FSW_TYPE switch_mask = ((MASK_FSW_TYPE)1 << i);
       uint8_t momentary = 0;
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       uint8_t shrt=0, lng=0;
       if (swtch > MAX_SWITCH+1+MAX_SWITCH+1+MAX_PSWITCH) {
         lng = 1;
@@ -1956,7 +1955,7 @@ void evalFunctions()
         momentary = 1;
         swtch += MAX_SWITCH+1;
       }
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       bool sw;
       if ((sw=getSwitch(swtch, 0)) || (shrt&&fnSwitchDuration[i]>0&&fnSwitchDuration[i]<FSW_PRESSLONG_DURATION) || (lng&&fnSwitchDuration[i]>=(uint8_t)FSW_PRESSLONG_DURATION)) {
         if (shrt || lng) {
@@ -2018,7 +2017,7 @@ void evalFunctions()
           }
         }
 
-#if defined(PCBSKY9X) && defined(SDCARD)
+#if defined(CPUARM) && defined(SDCARD)
         if ((shrt || lng) && (activeFunctions & function_mask)) {
           if (sd->func == FUNC_BACKGND_MUSIC) {
             STOP_PLAY(i+1);
@@ -2038,7 +2037,7 @@ void evalFunctions()
           }
 #endif
 
-#if defined(PCBSKY9X) && defined(SDCARD)
+#if defined(CPUARM) && defined(SDCARD)
           else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_BACKGND_MUSIC) {
             if (IS_PLAYING(i+1)) {
               switch_mask = 0;
@@ -2124,10 +2123,10 @@ void evalFunctions()
         activeFunctionSwitches |= switch_mask;
       }
       else {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
         fnSwitchDuration[i] = 0;
 #endif
-#if defined(PCBSKY9X) && defined(SDCARD)
+#if defined(CPUARM) && defined(SDCARD)
         if (!COMPLEX_SWITCH && sd->func == FUNC_BACKGND_MUSIC) {
           STOP_PLAY(i+1);
         }
@@ -2462,7 +2461,7 @@ ACTIVE_MIXES_TYPE activeMixes;
 #endif
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 FORCEINLINE bool doMixerCalculations()
 #else
 FORCEINLINE void doMixerCalculations()
@@ -2484,7 +2483,7 @@ FORCEINLINE void doMixerCalculations()
 
   getADC();
 
-#if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
+#if defined(CPUARM) && !defined(REVA) && !defined(SIMU)
   Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
   if (Current_analogue > Current_max)
     Current_max = Current_analogue ;
@@ -2567,11 +2566,11 @@ FORCEINLINE void doMixerCalculations()
 #endif
 
   // Bandgap has had plenty of time to settle...
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
   getADC_bandgap();
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   if (!tick10ms) return false; //make sure the rest happen only every 10ms.
 #else
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
@@ -2769,7 +2768,7 @@ FORCEINLINE void doMixerCalculations()
     }
   }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   requiredSpeakerVolume = g_eeGeneral.speakerVolume;
 #endif
 
@@ -2779,7 +2778,7 @@ FORCEINLINE void doMixerCalculations()
   if (s_rangecheck_mode) AUDIO_PLAY(AU_FRSKY_CHEEP);
 #endif
       
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   if (currentSpeakerVolume != requiredSpeakerVolume) {
     setVolume(requiredSpeakerVolume);
     currentSpeakerVolume = requiredSpeakerVolume;
@@ -2793,7 +2792,7 @@ void perMain()
 {
 #if defined(SIMU)
   doMixerCalculations();
-#elif !defined(PCBSKY9X)
+#elif !defined(CPUARM)
   uint16_t t0 = getTmr16KHz();
   int16_t delta = (nextMixerEndTime - lastMixerDuration) - t0;
   if (delta > 0 && delta < MAX_MIXER_DELTA) return;
@@ -2808,7 +2807,7 @@ void perMain()
 #endif
 
 // TODO same code here + integrate the timer which could be common
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   if (!Tenms) return;
   Tenms = 0 ;
 
@@ -2822,7 +2821,7 @@ void perMain()
   }
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   if (Eeprom32_process_state != E32_IDLE)
     ee32_process();
   else if (TIME_TO_WRITE)
@@ -2841,11 +2840,11 @@ void perMain()
   writeLogs();
 #endif
 
-#if defined(PCBSKY9X) && defined(SIMU)
+#if defined(CPUARM) && defined(SIMU)
   checkTrims();
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   uint8_t evt = getEvent(false);
 #else
   uint8_t evt = getEvent();
@@ -2856,7 +2855,7 @@ void perMain()
 
   checkBacklight();
 
-#if defined(PCBSKY9X) && defined(FRSKY)
+#if defined(CPUARM) && defined(FRSKY)
   check_frsky();
 #endif
 
@@ -2914,7 +2913,7 @@ void perMain()
       if (g_vbat100mV <= g_eeGeneral.vBatWarn && g_vbat100mV>50) {
         AUDIO_TX_BATTERY_LOW();
       }
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
         AUDIO_TX_TEMP_HIGH();
       }
@@ -2929,7 +2928,7 @@ void perMain()
 int16_t g_ppmIns[8];
 uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
 
-#if !defined(SIMU) && !defined(PCBSKY9X)
+#if !defined(SIMU) && !defined(CPUARM)
 
 volatile uint8_t g_tmr16KHz; //continuous timer 16ms (16MHz/1024/256) -- 8-bit counter overflow
 ISR(TIMER_16KHZ_VECT, ISR_NOBLOCK)
@@ -3096,7 +3095,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
 
 // TODO serial_arm and serial_avr
 
-#if defined (FRSKY) && !defined(PCBSKY9X)
+#if defined(FRSKY) && !defined(CPUARM)
 FORCEINLINE void FRSKY_USART0_vect()
 {
   if (frskyTxBufferCount > 0) {
@@ -3108,7 +3107,7 @@ FORCEINLINE void FRSKY_USART0_vect()
 }
 #endif
 
-#if defined (DSM2_SERIAL) && !defined(PCBSKY9X)
+#if defined(DSM2_SERIAL) && !defined(CPUARM)
 FORCEINLINE void DSM2_USART0_vect()
 {
   UDR0 = *((uint16_t*)pulses2MHzRPtr); // transmit next byte
@@ -3121,7 +3120,7 @@ FORCEINLINE void DSM2_USART0_vect()
 }
 #endif
 
-#if !defined(SIMU) && !defined(PCBSKY9X)
+#if !defined(SIMU) && !defined(CPUARM)
 #if defined (FRSKY) || defined(DSM2_SERIAL)
 ISR(USART0_UDRE_vect)
 {
@@ -3198,7 +3197,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   AUDIO_WARNING2();
 }
 
-#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(PCBGRUVIN9X)
 void saveTimers()
 {
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
@@ -3218,7 +3217,7 @@ volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};
 
 #ifndef SIMU
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 void stack_paint()
 {
   for (uint16_t i=0; i<MENUS_STACK_SIZE; i++)
@@ -3308,14 +3307,14 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 {
   eeReadAll();
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   setVolume(g_eeGeneral.speakerVolume);
   PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
 #elif defined(VOICE)
   SET_VOLUME(g_eeGeneral.speakerVolume+7);
 #endif
 
-#if defined(PCBSKY9X) && defined(BLUETOOTH)
+#if defined(BLUETOOTH)
   btInit();
 #endif
 
@@ -3331,7 +3330,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   else {
     doSplash();
 
-#if defined(PCBSKY9X) && defined(SDCARD)
+#if defined(CPUARM) && defined(SDCARD)
     for (int i=0; i<500 && !Card_initialized; i++) {
       CoTickDelay(1);  // 2ms
     }
@@ -3341,7 +3340,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     checkAlarm();
   }
 
-#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(PCBGRUVIN9X)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     eeDirty(EE_GENERAL);
@@ -3351,7 +3350,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   lcdSetContrast();
   backlightOn();
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   start_ppm_capture();
   // TODO inside startPulses?
   s_pulses_paused = false;
@@ -3363,7 +3362,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   wdt_enable(WDTO_500MS);
 }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 void mixerTask(void * pdata)
 {
   s_pulses_paused = true;
@@ -3504,11 +3503,11 @@ int main(void)
   init_rotary_sw();
 #endif
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
   open9xInit(mcusr);
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   if (BOOTLOADER_REQUEST()) {
     soft_power_off(); // Only turn power off if necessary
 
@@ -3569,14 +3568,12 @@ int main(void)
 
     perMain();
 
-#if !defined(PCBSKY9X)
-    if(heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
+    if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
       wdt_reset();
       heartbeat = 0;
     }
-#endif
   }
-#endif // PCBSKY9X
+#endif
 
 #if defined(PCBGRUVIN9X)
   // Time to switch off

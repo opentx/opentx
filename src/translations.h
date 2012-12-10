@@ -97,7 +97,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VFSWRESET  (OFS_VFSWFUNC + sizeof(TR_VFSWFUNC))
 #define OFS_FUNCSOUNDS (OFS_VFSWRESET + sizeof(TR_VFSWRESET))
 #define OFS_VTELEMCHNS (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
-#if defined(FRSKY) || defined(PCBSKY9X)
+#if defined(FRSKY) || defined(CPUARM)
 #define OFS_VTELEMUNIT (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
 #define OFS_VALARM     (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
 #define OFS_VALARMFN   (OFS_VALARM + sizeof(TR_VALARM))
@@ -132,10 +132,10 @@ extern const pm_char STR_OPEN9X[];
 #else
 #define OFS_ENDDSM2    (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #endif
-#if defined(PCBGRUVIN9X) || defined (PCBSKY9X) 
+#if defined(PCBGRUVIN9X) || defined(CPUARM)
 #define OFS_DATETIME   (OFS_ENDDSM2)
 #endif
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define OFS_VLCD       (OFS_DATETIME + sizeof(TR_DATETIME))
 #endif
 
@@ -165,7 +165,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_FUNCSOUNDS (STR_OPEN9X + OFS_FUNCSOUNDS)
 #define STR_VTELEMCHNS (STR_OPEN9X + OFS_VTELEMCHNS)
 
-#if defined(FRSKY) || defined(PCBSKY9X)
+#if defined(FRSKY) || defined(CPUARM)
 #define STR_VTELEMUNIT (STR_OPEN9X + OFS_VTELEMUNIT)
 #define STR_VALARM     (STR_OPEN9X + OFS_VALARM)
 #define STR_VALARMFN   (STR_OPEN9X + OFS_VALARMFN)
@@ -199,11 +199,11 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VRENCODERS     (STR_OPEN9X + OFS_VRENCODERS)
 #endif
 
-#if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
+#if defined(PCBGRUVIN9X) || defined(CPUARM)
 #define STR_DATETIME   (STR_OPEN9X + OFS_DATETIME)
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define STR_VLCD       (STR_OPEN9X + OFS_VLCD)
 #endif
 
@@ -382,18 +382,18 @@ extern const pm_char STR_LATITUDE[];
 extern const pm_char STR_LONGITUDE[];
 #endif
 
-#if defined(PCBSKY9X) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(PCBGRUVIN9X)
 extern const pm_char STR_SHUTDOWN[];
 #endif
 
 extern const pm_char STR_BATT_CALIB[];
 
-#if defined(PCBSKY9X) || defined(FRSKY)
+#if defined(CPUARM) || defined(FRSKY)
 extern const pm_char STR_VOLTAGE[];
 extern const pm_char STR_CURRENT[];
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 extern const pm_char STR_CURRENT_CALIB[];
 #define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
 #else

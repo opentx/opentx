@@ -80,7 +80,7 @@ void menuStatisticsView(uint8_t event)
 #endif
 }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define MENU_DEBUG_COL_OFS (13*FW)
 #else
 #define MENU_DEBUG_COL_OFS (14*FW)
@@ -92,7 +92,7 @@ void menuStatisticsDebug(uint8_t event)
 
   switch(event)
   {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
@@ -104,7 +104,7 @@ void menuStatisticsDebug(uint8_t event)
       break;
 #endif
     case EVT_KEY_FIRST(KEY_MENU):
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
 #endif
@@ -120,7 +120,7 @@ void menuStatisticsDebug(uint8_t event)
       return;
   }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #if !defined(REVA)
   lcd_putsLeft(1*FH, STR_CPU_CURRENT);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 1*FH, getCurrent(), UNIT_MILLIAMPS, 0);

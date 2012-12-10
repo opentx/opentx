@@ -77,7 +77,7 @@ ISR(EE_READY_vect)
     eeprom_write_byte();
   }
   else {
-#if defined (PCBGRUVIN9X)
+#if defined(PCBGRUVIN9X)
     EECR &= ~(1<<EERIE);
 #else
     EECR &= ~(1<<EERIE);
@@ -95,10 +95,8 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
   eeprom_buffer_data = (const char*)i_pointer_ram;
   eeprom_buffer_size = size+1;
 
-#ifdef SIMU
+#if defined(SIMU)
   sem_post(eeprom_write_sem);
-#elif defined (PCBSKY9X)
-
 #elif defined (PCBGRUVIN9X)
   EECR |= (1<<EERIE);
 #else

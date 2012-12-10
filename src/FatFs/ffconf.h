@@ -9,7 +9,7 @@
 #ifndef _FFCONF
 #define _FFCONF 6502	/* Revision ID */
 
-#if defined(PCBSKY9X) && !defined(SIMU)
+#if defined(CPUARM) && !defined(SIMU)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -98,7 +98,7 @@ extern "C" {
 /	1    - ASCII only (Valid for non LFN cfg.)
 */
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define	_USE_LFN	2		/* 0 to 3 */
 #define _MAX_LFN        255             /* Maximum LFN length to handle (12 to 255) */
 #else
@@ -184,7 +184,7 @@ extern "C" {
 /* A header file that defines sync object types on the O/S, such as
 /  windows.h, ucos_ii.h and semphr.h, must be included prior to ff.h. */
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define _FS_REENTRANT		1	   /* 0:Disable or 1:Enable */
 #else
 #define _FS_REENTRANT		0	   /* 0:Disable or 1:Enable */

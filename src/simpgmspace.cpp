@@ -43,7 +43,7 @@ uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 Pio Pioa, Piob, Pioc;
 Pwm pwm;
 Twi Twio;
@@ -63,7 +63,7 @@ extern const char* eeprom_buffer_data;
 uint8_t eeprom[EESIZE];
 sem_t *eeprom_write_sem;
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define SWITCH_CASE(swtch, pin, bit) \
     case -DSW(swtch): \
       pin &= ~(1<<bit); \
@@ -252,7 +252,7 @@ void *eeprom_write_function(void *)
   while (!sem_wait(eeprom_write_sem)) {
     if (!eeprom_thread_running)
       return NULL;
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     if (eeprom_read_operation) {
       assert(eeprom_buffer_size);
       eeprom_read_block(eeprom_buffer_data, (const void *)(int64_t)eeprom_pointer, eeprom_buffer_size);
@@ -268,7 +268,7 @@ void *eeprom_write_function(void *)
       if (fp) {
         if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
           perror("error in fwrite");
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
         sleep(5/*ms*/);
 #endif
       }
@@ -282,7 +282,7 @@ void *eeprom_write_function(void *)
         fflush(fp);
       }
     }
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     }
     Spi_complete = 1;
 #endif
@@ -307,7 +307,7 @@ void *main_thread(void *)
     g_menuStack[0] = menuMainView;
     g_menuStack[1] = menuModelSelect;
 
-#ifdef PCBSKY9X
+#if defined(CPUARM)
     eeprom_init();
 #endif
 
@@ -320,7 +320,7 @@ void *main_thread(void *)
       doSplash();
 #endif
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
       checkLowEEPROM();
 #endif
 
@@ -401,7 +401,7 @@ void eeprom_read_block (void *pointer_ram,
   }
 }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 uint16_t stack_free(uint8_t)
 #else
 uint16_t stack_free()
@@ -431,7 +431,7 @@ namespace simu {
 #include <direct.h>
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 FATFS g_FATFS_Obj;
 #endif
 
@@ -568,7 +568,7 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
   return FR_OK;
 }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #endif

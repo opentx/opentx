@@ -44,9 +44,7 @@ enum EnumTabDiag {
   e_Vers,
   e_Keys,
   e_Ana,
-#if !defined(PCBX9D) // TODO
   IF_PCBSKY9X(e_Hardware)
-#endif
   e_Calib
 };
 
@@ -68,9 +66,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuGeneralVersion,
   menuGeneralDiagKeys,
   menuGeneralDiagAna,
-#if !defined(PCBX9D) // TODO
   IF_PCBSKY9X(menuGeneralHardware)
-#endif
   menuGeneralCalib
 };
 
@@ -110,7 +106,7 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_ALARMS_LABEL,
   ITEM_SETUP_BATTERY_WARNING,
   IF_PCBSKY9X(ITEM_SETUP_CAPACITY_WARNING)
-  IF_PCBSKY9X(ITEM_SETUP_TEMPERATURE_WARNING)
+  IF_CPUARM(ITEM_SETUP_TEMPERATURE_WARNING)
   ITEM_SETUP_INACTIVITY_ALARM,
   ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
@@ -143,7 +139,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) (uint8_t)-1, 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC((uint8_t)-1) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, (uint8_t)-1, 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, IF_PCBX9D(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) (uint8_t)-1, 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC((uint8_t)-1) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, (uint8_t)-1, 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, IF_PCBX9D(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -245,7 +241,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_SPEAKER_VOLUME:
       {
         lcd_putsLeft(y, STR_SPEAKER_VOLUME);
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.speakerVolume, attr|LEFT);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerVolume, 0, NUM_VOL_LEVELS-1);
@@ -340,7 +336,9 @@ void menuGeneralSetup(uint8_t event)
         putsTelemetryValue(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
         break;
+#endif
 
+#if defined(CPUARM)
       case ITEM_SETUP_TEMPERATURE_WARNING:
         lcd_putsLeft(y, STR_TEMPWARNING);
         putsTelemetryValue(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_DEGREES, attr|LEFT) ;
@@ -547,7 +545,7 @@ void menuGeneralSdManager(uint8_t event)
         s_menu[s_menu_count++] = STR_SD_FORMAT;
       }
       else {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
         uint8_t index = m_posVert-1-s_pgOfs;
         char * ext = reusableBuffer.sd.lines[index];
         ext += strlen(ext) - 4;
@@ -668,7 +666,7 @@ void menuGeneralSdManager(uint8_t event)
       else if (result == STR_SD_FORMAT) {
         displayPopup(STR_FORMATTING);
         closeLogs();
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
         Card_state = SD_ST_DATA;
         audioQueue.stopSD();
 #endif
@@ -691,7 +689,7 @@ void menuGeneralSdManager(uint8_t event)
         if ((uint16_t)m_posVert == reusableBuffer.sd.count) m_posVert--;
         reusableBuffer.sd.offset = s_pgOfs-1;
       }
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       /* TODO else if (result == STR_LOAD_FILE) {
         f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
         strcat(lfn, "/");
@@ -792,7 +790,7 @@ void menuGeneralVersion(uint8_t event)
   lcd_putsLeft(2*FH, stamp1);
   lcd_putsLeft(3*FH, stamp2);
   lcd_putsLeft(4*FH, stamp3);
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(REVA)
   if (Coproc_valid == 1) {
      lcd_putsLeft(5*FH, PSTR("CoPr:"));
      lcd_outdez8(10*FW, 5*FH, Coproc_read);
@@ -851,7 +849,7 @@ void menuGeneralDiagAna(uint8_t event)
 {
 #if defined(PCBSKY9X) && !defined(REVA)
 #define ANAS_ITEMS_COUNT 4
-#elif defined(PCBSKY9X)
+#elif defined(CPUARM)
 #define ANAS_ITEMS_COUNT 3
 #else
 #define ANAS_ITEMS_COUNT 2
@@ -868,13 +866,13 @@ void menuGeneralDiagAna(uint8_t event)
     lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i+1)-1]*25/256);
   }
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
   // Display raw BandGap result (debug)
   lcd_puts(64+5, 1+4*FH, STR_BG);
   lcd_outdezAtt(64+5+6*FW-3, 1+4*FH, BandGap, 0);
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   lcd_putsLeft(5*FH, STR_BATT_CALIB);
   static uint32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
@@ -900,14 +898,14 @@ void menuGeneralDiagAna(uint8_t event)
   if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   lcd_putsLeft(7*FH, STR_TEMP_CALIB);
   putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH, getTemperature(), UNIT_DEGREES, (m_posVert==3 ? INVERS : 0)) ;
   if (m_posVert==3) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
 }
 
-#if defined(PCBSKY9X) && !defined(PCBX9D)
+#if defined(PCBSKY9X)
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   IF_BLUETOOTH(ITEM_SETUP_HW_BT_BAUDRATE)

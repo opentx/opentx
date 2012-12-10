@@ -213,7 +213,7 @@ void displayTimers()
 #endif
 
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 void displayVoltage()
 {
   if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {

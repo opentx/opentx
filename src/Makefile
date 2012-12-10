@@ -449,10 +449,10 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), X9D)
   # X9D, so ...
   OPT = 2
-  CPPDEFS += -DPCBX9D -DPCBSKY9X -DREVB -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
+  CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
-  BOARDSRC = board_sky9x.cpp 
-  EXTRABOARDSRC += sky9x/lcd_driver.cpp
+  BOARDSRC = board_x9d.cpp 
+  EXTRABOARDSRC += x9d/lcd_driver.cpp
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
@@ -462,7 +462,7 @@ ifeq ($(PCB), X9D)
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += sky9x/audio.cpp haptic.cpp
-  CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp
+  CPPSRC += sky9x/sound_driver.cpp sky9x/sdcard_driver.cpp
   CPPSRC += bmp.cpp monitors_views.cpp
   
   ifeq ($(SDCARD), YES)

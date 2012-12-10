@@ -105,7 +105,7 @@
 #define TR_PLAY_TRACK    "[PlayTrack]"
 #define TR_PLAY_VALUE    "[PlayValue]"
 #endif
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "SD Logs\0   "
 #else
@@ -350,7 +350,7 @@
 #define STR_US (STR_TMR1LATMAXUS+12)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\006us"
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\006us"
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define TR_TMIXMAXMS           "Tmix max\012ms"
 #else
 #define TR_TMIXMAXMS           "Tmix max\014ms"

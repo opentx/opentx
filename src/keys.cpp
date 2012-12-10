@@ -39,7 +39,7 @@ void putEvent(uint8_t evt)
   s_evt = evt;
 }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 uint8_t getEvent(bool trim)
 {
   uint8_t evt = s_evt;
@@ -63,7 +63,7 @@ uint8_t getEvent()
 }
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 #define KEY_LONG_DELAY 32
 #else
 #define KEY_LONG_DELAY 24

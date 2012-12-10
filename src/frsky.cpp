@@ -56,7 +56,7 @@
 
 uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
 uint8_t frskyTxBufferCount = 0;
 #endif
 uint8_t FrskyRxBufferReady = 0;
@@ -427,7 +427,7 @@ uint8_t privateDataPos;
    a second buffer to receive data while one buffer is being processed (slowly).
 */
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 void processSerialData(uint8_t data)
 #else
 NOINLINE void processSerialData(uint8_t stat, uint8_t data)
@@ -441,7 +441,7 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
   btPushByte(data);
 #endif
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
   if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0))) {
     // discard buffer and start fresh on any comms error
     FrskyRxBufferReady = 0;
@@ -523,7 +523,7 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
   }
 }
 
-#if !defined(PCBSKY9X) && !defined(SIMU)
+#if !defined(CPUARM) && !defined(SIMU)
 ISR(USART0_RX_vect)
 {
   uint8_t stat;
@@ -574,7 +574,7 @@ ISR(USART0_RX_vect)
 #endif
 
 /******************************************/
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 void frskyTransmitBuffer( uint32_t size )
 {
   txPdcUsart( frskyTxBuffer, size ) ;
@@ -588,7 +588,7 @@ void frskyTransmitBuffer()
 
 uint8_t frskyAlarmsSendState = 0 ;
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 void frskyPushValue(uint8_t *&ptr, uint8_t value)
 {
   // byte stuff the only byte than might need it
@@ -702,7 +702,7 @@ inline void FRSKY10mspoll(void)
 
 NOINLINE void check_frsky()
 {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   rxPdcUsart(processSerialData);              // Receive serial data here
 #endif
 
@@ -850,7 +850,7 @@ bool FRSKY_alarmRaised(uint8_t idx)
 }
 #endif
 
-#if !defined(PCBSKY9X)
+#if !defined(CPUARM)
 inline void FRSKY_EnableTXD(void)
 {
   frskyTxBufferCount = 0;
@@ -869,7 +869,7 @@ void FRSKY_Init(void)
   // clear frsky variables
   resetTelemetry();
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   startPdcUsartReceive() ;
 #elif !defined(SIMU)
 
@@ -1138,7 +1138,7 @@ void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, ui
 enum FrskyViews {
   e_frsky_custom_screen_1,
   e_frsky_custom_screen_2,
-  IF_PCBSKY9X(e_frsky_custom_screen_3)
+  IF_CPUARM(e_frsky_custom_screen_3)
   e_frsky_voltages,
   e_frsky_after_flight,
   FRSKY_VIEW_MAX = e_frsky_after_flight

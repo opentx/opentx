@@ -594,7 +594,7 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
     x += 2*8+1;
   }
 #define separator ':'
-#elif defined(PCBSKY9X)
+#elif defined(CPUARM)
   char separator = ':';
   if (tme >= 3600 && (~att & DBLSIZE)) {
     qr = div(qr.quot, 60);
@@ -715,7 +715,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
   if (idx > MAX_SWITCH) {
     idx -= ((att & SWONOFF) ? MAX_SWITCH+1 : MAX_SWITCH);
     char suffix = 'm';
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     if (idx > MAX_SWITCH+1) {
       suffix = 's';
       idx -= MAX_SWITCH+1;

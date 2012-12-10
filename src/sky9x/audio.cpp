@@ -108,11 +108,13 @@ inline bool isAudioFileAvailable(uint8_t i, char * filename)
 #endif
 
 uint16_t alawTable[256];
+uint16_t ulawTable[256];
 
 #define         SIGN_BIT        (0x80)      /* Sign bit for a A-law byte. */
 #define         QUANT_MASK      (0xf)       /* Quantization field mask. */
 #define         SEG_SHIFT       (4)         /* Left shift for segment number. */
 #define         SEG_MASK        (0x70)      /* Segment field mask. */
+#define         BIAS            (0x84)      /* Bias for linear code. */
 
 static short alaw2linear(unsigned char a_val)
 {
@@ -129,10 +131,29 @@ static short alaw2linear(unsigned char a_val)
   return (a_val & SIGN_BIT) ? t : -t;
 }
 
-void alawInit()
+static short ulaw2linear(unsigned char u_val)
 {
-  for (uint32_t i=0; i<256; i++)
+  int t;
+
+  /* Complement to obtain normal u-law value. */
+  u_val = ~u_val;
+
+  /*
+   * Extract and bias the quantization bits. Then
+   * shift up by the segment number and subtract out the bias.
+   */
+  t = ((u_val & QUANT_MASK) << 3) + BIAS;
+  t <<= ((unsigned)u_val & SEG_MASK) >> SEG_SHIFT;
+
+  return (u_val & SIGN_BIT) ? (BIAS - t) : (t - BIAS);
+}
+
+void codecsInit()
+{
+  for (uint32_t i=0; i<256; i++) {
     alawTable[i] = (0x8000 + alaw2linear(i)) >> 4;
+    ulawTable[i] = (0x8000 + ulaw2linear(i)) >> 4;
+  }
 }
 
 AudioQueue audioQueue;
@@ -155,6 +176,7 @@ extern uint16_t Sine_values[];
 
 #define CODEC_ID_PCM_S16LE  1
 #define CODEC_ID_PCM_ALAW   6
+#define CODEC_ID_PCM_MULAW  7
 
 #ifndef SIMU
 void audioTask(void* pdata)
@@ -240,6 +262,13 @@ void AudioQueue::sdWakeup(AudioContext & context)
         int32_t i;
         for (i = read - 1; i >= 0; i--)
           wavSamplesBuffer[i] = alawTable[((uint8_t *) wavSamplesBuffer)[i]];
+        for (i = read; i < WAV_BUFFER_SIZE; i++)
+          wavSamplesBuffer[i] = 0x8000;
+      }
+      else if (context.pcmCodec == CODEC_ID_PCM_MULAW) {
+        int32_t i;
+        for (i = read - 1; i >= 0; i--)
+          wavSamplesBuffer[i] = ulawTable[((uint8_t *) wavSamplesBuffer)[i]];
         for (i = read; i < WAV_BUFFER_SIZE; i++)
           wavSamplesBuffer[i] = 0x8000;
       }
