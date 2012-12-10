@@ -3500,11 +3500,11 @@ int main(void)
 
   sei(); // interrupts needed for FRSKY_Init and eeReadAll.
 
-#if defined(FRSKY) and !defined(DSM2_SERIAL)
+#if defined(FRSKY)
   FRSKY_Init();
 #endif
 
-#if defined(DSM2_SERIAL) and !defined(FRSKY)
+#if defined(DSM2_SERIAL)
   DSM2_Init();
 #endif
 
