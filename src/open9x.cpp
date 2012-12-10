@@ -335,33 +335,6 @@ void modelDefault(uint8_t id)
   applyDefaultTemplate();
 }
 
-void resetProto()
-{
-#if defined(DSM2_SERIAL)
-  if (g_model.protocol == PROTO_DSM2) {
-    cli();
-#if defined(FRSKY)
-    DSM2_Init();
-#endif
-    sei();
-  }
-  else {
-    cli();
-#if defined(FRSKY)
-    FRSKY_Init();
-#else
-    DSM2_Done();
-#endif
-    sei();
-#if defined(FRSKY)
-    FRSKY_setModelAlarms();
-#endif
-  }
-#elif defined(FRSKY)
-  FRSKY_setModelAlarms();
-#endif
-}
-
 int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 {
   CurveInfo crv = curveinfo(idx);
@@ -1192,9 +1165,9 @@ void doSplash()
 #if defined(FSPLASH) || defined(XSPLASH)
       if (!(g_eeGeneral.splashMode & 0x04))
 #endif
-      if (keyDown() || (tsum!=inacSum)) return;  // wait for key release
+      if (keyDown() || tsum!=inacSum) return;  // wait for key release
 
-      if (SKIP_INIT()) return;
+      if (check_soft_power()==e_power_off) return;
 
 #if !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {
@@ -1263,7 +1236,7 @@ void checkTHR()
 
       int16_t v = thrAnaIn(thrchn);
 
-      if (SKIP_INIT() || v<=lowLim || keyDown())
+      if (check_soft_power()==e_power_off || keyDown() || v<=lowLim)
         break;
 
       checkBacklight();
@@ -1307,7 +1280,7 @@ void checkSwitches()
       last_bad_switches = switches_states;
     }
 
-    if (keyDown() || SKIP_INIT()) return; // Usb on or power off
+    if (check_soft_power()==e_power_off || keyDown()) return; // Usb on or power off
 
     checkBacklight();
 
@@ -1325,7 +1298,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
   {
     SIMU_SLEEP(1);
 
-    if (SKIP_INIT()) return;
+    if (check_soft_power() == e_power_off) return;
 
     if (keyDown()) return;  // wait for key release
 
@@ -3008,7 +2981,12 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
 
 #if defined(FRSKY)
   if (cnt10ms == 30) {
+#if defined(DSM2_SERIAL)
+    if (s_current_protocol != PROTO_DSM2)
+      check_frsky();
+#else
     check_frsky();
+#endif
   }
 #endif
 
@@ -3382,9 +3360,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 
   startPulses();
 
-  if (!SKIP_INIT()) {
-    wdt_enable(WDTO_500MS);
-  }
+  wdt_enable(WDTO_500MS);
 }
 
 #if defined(PCBSKY9X)
@@ -3500,11 +3476,11 @@ int main(void)
 
   sei(); // interrupts needed for FRSKY_Init and eeReadAll.
 
-#if defined(FRSKY)
+#if defined(FRSKY) && !defined(DSM2_SERIAL)
   FRSKY_Init();
 #endif
 
-#if defined(DSM2_SERIAL)
+#if defined(DSM2_SERIAL) && !defined(FRSKY)
   DSM2_Init();
 #endif
 
@@ -3533,7 +3509,7 @@ int main(void)
 #endif
 
 #if defined(PCBSKY9X)
-  if (BOOTLOADER_REQ()) {
+  if (BOOTLOADER_REQUEST()) {
     soft_power_off(); // Only turn power off if necessary
 
 #if defined(HAPTIC)
@@ -3556,7 +3532,7 @@ int main(void)
     lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
     refreshDisplay() ;
 
-    usb_mode();
+    usbBootloader();
   }
 
   CoInitOS();

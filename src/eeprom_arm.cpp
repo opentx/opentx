@@ -500,8 +500,6 @@ void eeLoadModel(uint8_t id)
     activeFunctions = 0;
     activeFunctionSwitches = 0;
 
-    resetProto();
-
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
       if (g_model.timers[i].remanent) {
         s_timerVal[i] = g_model.timers[i].value;
@@ -510,6 +508,10 @@ void eeLoadModel(uint8_t id)
 
     resumeMixerCalculations();
     // TODO pulses should be started after mixer calculations ...
+
+#if defined(FRSKY)
+    FRSKY_setModelAlarms();
+#endif
 
     LOAD_MODEL_BITMAP();
   }
@@ -542,17 +544,17 @@ void eeReadAll()
 
     modelDefault(0);
 
-    if (!SKIP_INIT()) {
+    if (check_soft_power()==e_power_off) {
+      // we don't want to store anything
+      s_eeDirtyMsk = 0;
+    }
+    else {
       /* we remove all models */
       for (uint32_t i=0; i<MAX_MODELS; i++)
         eeDeleteModel(i);
 
       STORE_GENERALVARS;
       STORE_MODELVARS;
-    }
-    else {
-      // we don't want to store anything
-      s_eeDirtyMsk = 0;
     }
   }
   else

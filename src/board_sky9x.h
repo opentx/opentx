@@ -100,12 +100,9 @@ extern uint16_t sessionTimer;
 #endif
 
 #if defined(REVC)
-extern bool bootloader_allowed;
-#define SKIP_INIT() (check_soft_power() == e_power_off || (bootloader_allowed && usbPlugged()))
-#define BOOTLOADER_REQ() (bootloader_allowed && usbPlugged())
+#define BOOTLOADER_REQUEST() (usbPlugged())
 #else
-#define SKIP_INIT() (check_soft_power() >= e_power_usb)
-#define BOOTLOADER_REQ() (check_soft_power() == e_power_usb)
+#define BOOTLOADER_REQUEST() (check_soft_power() == e_power_usb)
 #endif
 
 #define SLAVE_MODE() (check_soft_power() == e_power_trainer)

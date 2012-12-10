@@ -741,6 +741,12 @@ void setupPulses()
 
   if (s_current_protocol != required_protocol) {
 
+#if defined(DSM2_SERIAL) && defined(FRSKY)
+    if (s_current_protocol == PROTO_DSM2) {
+      FRSKY_Init();
+    }
+#endif
+
     s_current_protocol = required_protocol;
 
     TCCR1B = 0;                           // Stop counter
@@ -823,6 +829,12 @@ void setupPulses()
         set_timer3_ppm(); 
         PORTB &= ~(1<<OUT_B_PPM);             // Hold PPM output low
         break ;
+
+#if defined(DSM2_SERIAL) && defined(FRSKY)
+      case PROTO_DSM2:
+        DSM2_Init();
+        // no break
+#endif
 
       default: // PPM and DSM2=SERIAL modes
         set_timer3_capture(); 

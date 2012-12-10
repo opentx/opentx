@@ -69,10 +69,6 @@ inline void init_soft_power()
 }
 #endif
 
-#if defined(REVC)
-bool bootloader_allowed = true;
-#endif
-
 uint32_t check_soft_power()
 {
 #ifdef SIMU
@@ -1267,7 +1263,7 @@ void end_bt_tx_interrupt()
   NVIC_DisableIRQ(UART1_IRQn) ;
 }
 
-void usb_mode()
+void usbBootloader()
 {
   // This might be replaced by a software reset
   // Any interrupts that have been enabled must be disabled here

@@ -1012,7 +1012,6 @@ uint16_t eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
 void generalDefault();
 void modelDefault(uint8_t id);
-void resetProto();
 
 #if defined(PCBSKY9X)
 inline int32_t calc100toRESX(register int8_t x)

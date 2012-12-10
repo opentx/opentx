@@ -834,9 +834,6 @@ void menuModelSetup(uint8_t event)
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.protocol, 0, PROTO_MAX-1);
-#if defined(DSM2_SERIAL)
-              if (checkIncDec_Ret) resetProto();
-#endif
               break;
             case 1:
 #if defined(DSM2)
