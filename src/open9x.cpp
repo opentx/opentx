@@ -228,7 +228,12 @@ void per10ms()
 #endif
 
 #if defined(FRSKY) && !defined(CPUARM) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
+#if defined(DSM2_SERIAL)
+  if (s_current_protocol != PROTO_DSM2)
+    check_frsky();
+#else
   check_frsky();
+#endif
 #endif
 
   // These moved here from perOut() to improve beep trigger reliability.

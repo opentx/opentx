@@ -742,7 +742,7 @@ void setupPulses()
   if (s_current_protocol != required_protocol) {
 
 #if defined(DSM2_SERIAL) && defined(FRSKY)
-    if (s_current_protocol == PROTO_DSM2) {
+    if (s_current_protocol == 255 || s_current_protocol == PROTO_DSM2) {
       FRSKY_Init();
     }
 #endif
