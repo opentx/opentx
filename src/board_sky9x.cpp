@@ -60,14 +60,17 @@ volatile uint32_t lcdInputs;
 #define CPU_INT         int32_t
 #define CPU_UINT        uint32_t
 
-#ifdef REVB
+#if !defined(REVA)
 inline void init_soft_power()
 {
   // Configure RF_power (PC17)
   configure_pins( PIO_PC17, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_NO_PULLUP | PIN_PULLDOWN ) ;
   configure_pins( PIO_PA8, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP ) ; // Enable bit A8 (Soft Power)
 }
+#endif
 
+#if defined(REVC)
+bool bootloader_allowed = true;
 #endif
 
 uint32_t check_soft_power()
@@ -76,7 +79,17 @@ uint32_t check_soft_power()
   return e_power_on;
 #endif
 
-#ifdef REVB
+#if defined(REVC)
+  if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
+  {
+    return e_power_on ;
+  }
+
+  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
+  {
+    return e_power_trainer ;
+  }
+#elif defined(REVB)
   if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
   {
     return e_power_on ;
@@ -111,7 +124,7 @@ uint32_t check_soft_power()
 // turn off soft power
 void soft_power_off()
 {
-#ifdef REVB
+#if !defined(REVA)
   configure_pins( PIO_PA8, PIN_ENABLE | PIN_OUTPUT | PIN_LOW | PIN_PORTA | PIN_NO_PULLUP ) ;
 #endif
 }
@@ -128,9 +141,7 @@ extern "C" void sam_boot( void ) ;
 // PC21, PC19, PC15 (PPM2 output)
 inline void config_free_pins()
 {
-#ifdef REVB
-  configure_pins( PIO_PB14, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
-#else
+#if defined(REVA)
   register Pio * pioptr = PIOA ;
   pioptr->PIO_PER = 0x03800000L ;         // Enable bits A25,24,23
   pioptr->PIO_ODR = 0x03800000L ;         // Set as input
@@ -145,37 +156,33 @@ inline void config_free_pins()
   pioptr->PIO_PER = 0x01700000L ;         // Enable bits C24,22,21,20
   pioptr->PIO_ODR = 0x01700000L ;         // Set as input
   pioptr->PIO_PUER = 0x01700000L ;        // Enable pullups
+#else
+  configure_pins( PIO_PB14, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
 #endif
 }
 
 // Assumes PMC has already enabled clocks to ports
 inline void setup_switches()
 {
-#ifdef REVB
-  configure_pins( 0x01808087, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP ) ;
-#else
+#if defined(REVA)
   register Pio *pioptr = PIOA ;
   pioptr->PIO_PER = 0xF8008184 ;          // Enable bits
   pioptr->PIO_ODR = 0xF8008184 ;          // Set bits input
   pioptr->PIO_PUER = 0xF8008184 ;         // Set bits with pullups
-#endif
 
-#ifdef REVB
-  configure_pins( 0x00000030, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
-#else
   pioptr = PIOB ;
   pioptr->PIO_PER = 0x00000010 ;          // Enable bits
   pioptr->PIO_ODR = 0x00000010 ;          // Set bits input
   pioptr->PIO_PUER = 0x00000010 ;         // Set bits with pullups
-#endif
 
-#ifdef REVB
-  configure_pins( 0x91114900, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_PULLUP ) ;
-#else
   pioptr = PIOC ;
   pioptr->PIO_PER = 0x10014900 ;          // Enable bits
   pioptr->PIO_ODR = 0x10014900 ;          // Set bits input
   pioptr->PIO_PUER = 0x10014900 ;         // Set bits with pullups
+#else
+  configure_pins( 0x01808087, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP ) ;
+  configure_pins( 0x00000030, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
+  configure_pins( 0x91114900, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_PULLUP ) ;
 #endif
 }
 
@@ -484,10 +491,10 @@ inline void init_adc()
   padc = ADC ;
   padc->ADC_MR = 0x14110000 | timer ;  // 0001 0100 0001 0001 xxxx xxxx 0000 0000
   padc->ADC_ACR = ADC_ACR_TSON ;                        // Turn on temp sensor
-#ifdef REVB
-  padc->ADC_CHER = 0x0000E33E ;  // channels 1,2,3,4,5,8,9,13,14,15
-#else
+#if defined(REVA)
   padc->ADC_CHER = 0x0000E23E ;  // channels 1,2,3,4,5,9,13,14,15
+#else
+  padc->ADC_CHER = 0x0000E33E ;  // channels 1,2,3,4,5,8,9,13,14,15
 #endif
   padc->ADC_CGR = 0 ;  // Gain = 1, all channels
   padc->ADC_COR = 0 ;  // Single ended, 0 offset, all channels
@@ -517,17 +524,17 @@ void init_pwm()
   MATRIX->CCFG_SYSIO |= 0x00000020L ;                             // Disable TDO let PB5 work!
 
   /* Configure PIO */
-#ifdef REVB
-  configure_pins( PIO_PA16, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_C | PIN_PORTA | PIN_NO_PULLUP ) ;
-#else
+#if defined(REVA)
   register Pio *pioptr = PIOB ;
   pioptr->PIO_PER = 0x00000020L ;         // Enable bit B5
   pioptr->PIO_ODR = 0x00000020L ;         // set as input
+#else
+  configure_pins( PIO_PA16, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_C | PIN_PORTA | PIN_NO_PULLUP ) ;
 #endif
 
   configure_pins( PIO_PC18, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
 
-#ifdef REVB
+#if !defined(REVA)
   configure_pins( PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
   configure_pins( PIO_PC22, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
 #endif
@@ -548,7 +555,7 @@ void init_pwm()
   pwmptr->PWM_CH_NUM[0].PWM_CDTYUPD = 40 ;                // Duty
   pwmptr->PWM_ENA = PWM_ENA_CHID0 ;                                               // Enable channel 0
 
-#ifdef REVB
+#if !defined(REVA)
   // PWM1 for PPM2 output 100Hz test
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000C ;    // CLKB
   pwmptr->PWM_CH_NUM[1].PWM_CPDR = 100 ;                  // Period
@@ -558,7 +565,7 @@ void init_pwm()
   pwmptr->PWM_ENA = PWM_ENA_CHID1 ;                                               // Enable channel 1
 #endif
 
-#ifdef REVB
+#if !defined(REVA)
   // PWM2 for HAPTIC drive 100Hz test
   pwmptr->PWM_CH_NUM[2].PWM_CMR = 0x0000000C ;    // CLKB
   pwmptr->PWM_CH_NUM[2].PWM_CPDR = 100 ;                  // Period
@@ -587,10 +594,10 @@ void init_pwm()
 // LCD_D7      PC1
 
 #define LCD_DATA        0x000000FFL
-#ifdef REVB
-#define LCD_A0    0x00000080L
-#else
+#if defined(REVA)
 #define LCD_A0    0x00008000L
+#else
+#define LCD_A0    0x00000080L
 #endif
 #define LCD_RnW   0x00002000L
 #define LCD_E     0x00001000L
@@ -678,13 +685,13 @@ void board_init()
 
   PMC->PMC_PCER0 = (1<<ID_PIOC)|(1<<ID_PIOB)|(1<<ID_PIOA)|(1<<ID_UART0) ;                               // Enable clocks to PIOB and PIOA and PIOC and UART0
   pioptr = PIOA ;
-#ifdef REVB
-  init_soft_power() ;
-#else
+#if defined(REVA)
   // On REVB, PA21 is used as AD8, and measures current consumption.
   pioptr->PIO_PER = PIO_PA21 ;            // Enable bit A21 (EXT3)
   pioptr->PIO_OER = PIO_PA21 ;            // Set bit A21 as output
   pioptr->PIO_SODR = PIO_PA21 ;   // Set bit A21 ON
+#else
+  init_soft_power() ;
 #endif
 
   // pioptr->PIO_PUER = 0x80000000 ;         // Enable pullup on bit A31 (EXIT)
@@ -695,7 +702,7 @@ void board_init()
   // pioptr->PIO_OER = 0x80000000L ;         // Set bit C31 as output
   // pioptr->PIO_SODR = 0x80000000L ;        // Set bit C31
 
-#ifndef REVB
+#if defined(REVA)
   // Configure RF_power (PC17) and PPM-jack-in (PC19), neither need pullups
   pioptr->PIO_PER = 0x000A0000L ;         // Enable bit C19, C17
   pioptr->PIO_ODR = 0x000A0000L ;         // Set bits C19 and C17 as input
@@ -704,25 +711,25 @@ void board_init()
   config_free_pins() ;
 
   // Next section configures the key inputs on the LCD data
-#ifdef REVB
-  pioptr->PIO_PER = 0x0000003BL ;         // Enable bits 1,3,4,5, 0
-  pioptr->PIO_OER = PIO_PC0 ;             // Set bit 0 output
-  pioptr->PIO_ODR = 0x0000003AL ;         // Set bits 1, 3, 4, 5 input
-  pioptr->PIO_PUER = 0x0000003AL ;                // Set bits 1, 3, 4, 5 with pullups
-#else
+#if defined(REVA)
   pioptr->PIO_PER = 0x0000003DL ;         // Enable bits 2,3,4,5, 0
   pioptr->PIO_OER = PIO_PC0 ;             // Set bit 0 output
   pioptr->PIO_ODR = 0x0000003CL ;         // Set bits 2, 3, 4, 5 input
   pioptr->PIO_PUER = 0x0000003CL ;                // Set bits 2, 3, 4, 5 with pullups
+#else
+  pioptr->PIO_PER = 0x0000003BL ;         // Enable bits 1,3,4,5, 0
+  pioptr->PIO_OER = PIO_PC0 ;             // Set bit 0 output
+  pioptr->PIO_ODR = 0x0000003AL ;         // Set bits 1, 3, 4, 5 input
+  pioptr->PIO_PUER = 0x0000003AL ;                // Set bits 1, 3, 4, 5 with pullups
 #endif
 
   pioptr = PIOB ;
-#ifdef REVB
-  pioptr->PIO_PUER = PIO_PB5 ;                                    // Enable pullup on bit B5 (MENU)
-  pioptr->PIO_PER = PIO_PB5 ;                                     // Enable bit B5
-#else
+#if defined(REVA)
   pioptr->PIO_PUER = PIO_PB6 ;                                    // Enable pullup on bit B6 (MENU)
   pioptr->PIO_PER = PIO_PB6 ;                                     // Enable bit B6
+#else
+  pioptr->PIO_PUER = PIO_PB5 ;                                    // Enable pullup on bit B5 (MENU)
+  pioptr->PIO_PER = PIO_PB5 ;                                     // Enable bit B5
 #endif
 
   setup_switches() ;
@@ -790,7 +797,17 @@ uint32_t read_keys()
     y |= 0x02 << KEY_EXIT;
   if (PIOB->PIO_PDSR & 0x000000020)
     y |= 0x02 << KEY_ENTER;
-#elif defined(REVB)
+#elif defined(REVA)
+  y = (x & 0x00000060);
+  if (x & 0x00000008)
+    y |= 0x10;
+  if (x & 0x00000010)
+    y |= 0x08;
+  if (PIOA->PIO_PDSR & 0x80000000)
+    y |= 0x04; // EXIT
+  if (PIOB->PIO_PDSR & 0x000000040)
+    y |= 0x02; // MENU
+#else
   y = (x & 0x00000020); // RIGHT
   if (x & 0x00000004)
     y |= 0x02 << KEY_UP; // UP
@@ -802,16 +819,6 @@ uint32_t read_keys()
     y |= 0x02 << KEY_EXIT; // EXIT
   if (PIOB->PIO_PDSR & 0x000000020)
     y |= 0x02 << KEY_MENU; // MENU
-#else
-  y = (x & 0x00000060);
-  if (x & 0x00000008)
-    y |= 0x10;
-  if (x & 0x00000010)
-    y |= 0x08;
-  if (PIOA->PIO_PDSR & 0x80000000)
-    y |= 0x04; // EXIT
-  if (PIOB->PIO_PDSR & 0x000000040)
-    y |= 0x02; // MENU
 #endif
 
   return y ;
@@ -827,40 +834,40 @@ uint32_t read_trims()
   trima = PIOA->PIO_PDSR;
 
 // TRIM_LH_DOWN    PA7 (PA23)
-#ifdef REVB
-  if ((trima & 0x00800000) == 0)
-#else
+#if defined(REVA)
   if ( ( trima & 0x0080 ) == 0 )
+#else
+    if ((trima & 0x00800000) == 0)
 #endif
   {
     trims |= 1;
   }
 
 // TRIM_LV_DOWN  PA27 (PA24)
-#ifdef REVB
-  if ((trima & 0x01000000) == 0)
-#else
+#if defined(REVA)
   if ( ( trima & 0x08000000 ) == 0 )
+#else
+  if ((trima & 0x01000000) == 0)
 #endif
   {
     trims |= 4;
   }
 
 // TRIM_RV_UP    PA30 (PA1)
-#ifdef REVB
-  if ((trima & 0x00000002) == 0)
-#else
+#if defined(REVA)
   if ( ( trima & 0x40000000 ) == 0 )
+#else
+  if ((trima & 0x00000002) == 0)
 #endif
   {
     trims |= 0x20;
   }
 
 // TRIM_RH_DOWN    PA29 (PA0)
-#ifdef REVB
-  if ((trima & 0x00000001) == 0)
-#else
+#if defined(REVA)
   if ( ( trima & 0x20000000 ) == 0 )
+#else
+  if ((trima & 0x00000001) == 0)
 #endif
   {
     trims |= 0x40;
@@ -1020,12 +1027,12 @@ extern uint32_t keyState(EnumKeys enuk)
   c = PIOC->PIO_PDSR ;
 
   switch ((uint8_t) enuk) {
-#ifdef REVB
-    case SW_ELE:
-      xxx = c & 0x80000000; // ELE_DR   PC31
-#else
+#if defined(REVA)
     case SW_ELE:
       xxx = a & 0x00000100; // ELE_DR   PA8
+#else
+    case SW_ELE:
+      xxx = c & 0x80000000; // ELE_DR   PC31
 #endif
       break;
 
@@ -1055,12 +1062,12 @@ extern uint32_t keyState(EnumKeys enuk)
       xxx = c & 0x00010000; // SW_GEAR     PC16
       break;
 
-#ifdef REVB
-    case SW_THR:
-      xxx = c & 0x00100000; // SW_TCUT     PC20
-#else
+#if defined(REVA)
     case SW_THR:
       xxx = a & 0x10000000; // SW_TCUT     PA28
+#else
+    case SW_THR:
+      xxx = c & 0x00100000; // SW_TCUT     PC20
 #endif
       break;
 
@@ -1114,7 +1121,7 @@ void read_9_adc()
   Analog_values[6] = ADC->ADC_CDR13;
   Analog_values[7] = ADC->ADC_CDR14;
 
-#ifdef REVB
+#if defined(REVA)
   Analog_values[8] = ADC->ADC_CDR8 ;
 #endif
 
@@ -1293,7 +1300,7 @@ void usb_mode()
   sam_boot() ;
 }
 
-#if defined(REVB)
+#if !defined(REVA)
 uint16_t getCurrent()
 {
   static uint16_t Current ;

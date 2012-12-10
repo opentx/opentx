@@ -1194,7 +1194,7 @@ void doSplash()
 #endif
       if (keyDown() || (tsum!=inacSum)) return;  // wait for key release
 
-      if (check_soft_power() > e_power_trainer) return; // usb and power off
+      if (SKIP_INIT()) return;
 
 #if !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {
@@ -1263,7 +1263,7 @@ void checkTHR()
 
       int16_t v = thrAnaIn(thrchn);
 
-      if (check_soft_power() > e_power_trainer || v<=lowLim || keyDown())
+      if (SKIP_INIT() || v<=lowLim || keyDown())
         break;
 
       checkBacklight();
@@ -1307,7 +1307,7 @@ void checkSwitches()
       last_bad_switches = switches_states;
     }
 
-    if (keyDown() || check_soft_power() > e_power_trainer) return; // Usb on or power off
+    if (keyDown() || SKIP_INIT()) return; // Usb on or power off
 
     checkBacklight();
 
@@ -1325,7 +1325,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
   {
     SIMU_SLEEP(1);
 
-    if (check_soft_power() >= e_power_usb) return; // Usb on or power off
+    if (SKIP_INIT()) return;
 
     if (keyDown()) return;  // wait for key release
 
@@ -1484,7 +1484,7 @@ uint8_t checkTrim(uint8_t event)
 #endif
 }
 
-#if defined(PCBSKY9X) && defined(REVB)
+#if defined(PCBSKY9X) && !defined(REVA)
 uint16_t Current_analogue;
 uint16_t Current_max;
 uint32_t Current_accumulator;
@@ -1525,7 +1525,7 @@ uint16_t anaIn(uint8_t chan)
   //                        Google Translate (German): // if table already, then it must also be worthwhile
 #if defined(PCBSKY9X)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3,8};
-#if defined(REVB)
+#if !defined(REVA)
   if ( chan == 8 ) {
     return Current_analogue ;
   }
@@ -2511,7 +2511,7 @@ FORCEINLINE void doMixerCalculations()
 
   getADC();
 
-#if defined(PCBSKY9X) && defined(REVB) && !defined(SIMU)
+#if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
   if (Current_analogue > Current_max)
     Current_max = Current_analogue ;
@@ -3382,7 +3382,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 
   startPulses();
 
-  if (check_soft_power() <= e_power_trainer) {
+  if (!SKIP_INIT()) {
     wdt_enable(WDTO_500MS);
   }
 }
@@ -3533,7 +3533,7 @@ int main(void)
 #endif
 
 #if defined(PCBSKY9X)
-  if (check_soft_power() == e_power_usb) {
+  if (BOOTLOADER_REQ()) {
     soft_power_off(); // Only turn power off if necessary
 
 #if defined(HAPTIC)

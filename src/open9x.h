@@ -721,14 +721,14 @@ enum PowerState {
 uint32_t keyState(EnumKeys enuk);
 uint32_t check_soft_power();
 #else
+bool keyState(EnumKeys enuk);
 #if defined(PCBGRUVIN9X)
 uint8_t check_soft_power();
 #else
 #define check_soft_power() (e_power_on)
 #endif
-
-bool keyState(EnumKeys enuk);
 #endif
+
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
@@ -911,13 +911,13 @@ extern void backlightOn();
 #if defined (PCBSKY9X)
 #define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
-#ifdef REVB
-#define NUMBER_ANALOG   9
-#else
+#if defined(REVA)
 #define NUMBER_ANALOG   8
+#else
+#define NUMBER_ANALOG   9
+#endif
 extern uint16_t Analog_values[NUMBER_ANALOG] ;
 void read_9_adc(void ) ;
-#endif
 #elif defined (PCBGRUVIN9X)
 #define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
 #define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)

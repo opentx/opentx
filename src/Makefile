@@ -55,7 +55,7 @@ PCB = STD
 
 # PCB revision
 # Values: REVA, REVB
-PCBREV = REVB
+PCBREV =
 
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
@@ -245,8 +245,11 @@ ifeq ($(PCB), SKY9X)
   ifeq ($(PCBREV), REVA)
     CPPDEFS += -DREVA
     LDSCRIPT = sky9x/sam3s2c_flash.ld
-  else
+  else ifeq ($(PCBREV), REVB)
     CPPDEFS += -DREVB
+    LDSCRIPT = sky9x/sam3s4c_flash.ld
+  else
+    CPPDEFS += -DREVC
     LDSCRIPT = sky9x/sam3s4c_flash.ld
   endif
   TRGT = arm-none-eabi-

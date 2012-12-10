@@ -121,7 +121,7 @@ void menuStatisticsDebug(uint8_t event)
   }
 
 #if defined(PCBSKY9X)
-#if defined(REVB)
+#if !defined(REVA)
   lcd_putsLeft(1*FH, STR_CPU_CURRENT);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 1*FH, getCurrent(), UNIT_MILLIAMPS, 0);
   uint32_t current_scale = 488 + g_eeGeneral.currentCalib;

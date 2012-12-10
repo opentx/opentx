@@ -819,7 +819,7 @@ void menuModelSetup(uint8_t event)
         if (protocol <= PROTO_PPMSIM) {
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+7*FW, y, STR_NCHANNELS, g_model.ppmNCH+2, (attr && m_posHorz==1) ? blink : 0);
         }
-#ifdef DSM2
+#if defined(DSM2)
         else if (protocol == PROTO_DSM2) {
           if (attr && m_posHorz > 1) m_posHorz = 1;
           int8_t x = limit((int8_t)0, (int8_t)g_model.ppmNCH, (int8_t)2);
@@ -833,10 +833,13 @@ void menuModelSetup(uint8_t event)
         if (attr && (editMode>0 || p1valdiff || (protocol>PROTO_PPMSIM && !IS_DSM2_PROTOCOL(protocol)))) {
           switch (m_posHorz) {
             case 0:
-              CHECK_INCDEC_MODELVAR(event, g_model.protocol,0, PROTO_MAX-1);
+              CHECK_INCDEC_MODELVAR(event, g_model.protocol, 0, PROTO_MAX-1);
+#if defined(DSM2_SERIAL)
+              if (checkIncDec_Ret) resetProto();
+#endif
               break;
             case 1:
-#ifdef DSM2
+#if defined(DSM2)
               if (protocol == PROTO_DSM2)
                 CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, 0, 2);
               else

@@ -91,12 +91,21 @@ extern uint32_t read_keys();
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
 
-#if defined(REVB)
+#if !defined(REVA)
 extern uint16_t Current_analogue;
 extern uint16_t Current_max;
 extern uint32_t Current_accumulator;
 extern uint32_t Current_used;
 extern uint16_t sessionTimer;
+#endif
+
+#if defined(REVC)
+extern bool bootloader_allowed;
+#define SKIP_INIT() (check_soft_power() == e_power_off || (bootloader_allowed && usbPlugged()))
+#define BOOTLOADER_REQ() (bootloader_allowed && usbPlugged())
+#else
+#define SKIP_INIT() (check_soft_power() >= e_power_usb)
+#define BOOTLOADER_REQ() (check_soft_power() == e_power_usb)
 #endif
 
 #define SLAVE_MODE() (check_soft_power() == e_power_trainer)

@@ -542,7 +542,7 @@ void eeReadAll()
 
     modelDefault(0);
 
-    if (check_soft_power() < e_power_usb) { // Usb on or power off
+    if (!SKIP_INIT()) {
       /* we remove all models */
       for (uint32_t i=0; i<MAX_MODELS; i++)
         eeDeleteModel(i);

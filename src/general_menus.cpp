@@ -849,7 +849,7 @@ void menuGeneralDiagKeys(uint8_t event)
 
 void menuGeneralDiagAna(uint8_t event)
 {
-#if defined(PCBSKY9X) && defined(REVB)
+#if defined(PCBSKY9X) && !defined(REVA)
 #define ANAS_ITEMS_COUNT 4
 #elif defined(PCBSKY9X)
 #define ANAS_ITEMS_COUNT 3
@@ -894,7 +894,7 @@ void menuGeneralDiagAna(uint8_t event)
 #endif
   if (m_posVert==1) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatCalib, -127, 127);
 
-#if defined(PCBSKY9X) && defined(REVB)
+#if defined(PCBSKY9X) && !defined(REVA)
   lcd_putsLeft(6*FH, STR_CURRENT_CALIB);
   putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 6*FH, getCurrent(), UNIT_MILLIAMPS, (m_posVert==2 ? INVERS : 0)) ;
   if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);

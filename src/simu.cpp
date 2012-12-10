@@ -239,7 +239,15 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 
 
   if(hasFocus()) {
-#if defined(PCBX9D) || defined(REVB)
+#if defined(PCBSKY9X) && defined(REVA)
+#define ERSKY9X_RETURN_MASK (0x40)
+#define ERSKY9X_EXIT_MASK   (0x80000000)
+#define ERSKY9X_EXIT_PIO    PIOA
+#define ERSKY9X_UP_MASK     (0x08 >> 1)
+#define ERSKY9X_RIGHT_MASK  (0x20 >> 1)
+#define ERSKY9X_DOWN_MASK   (0x10 >> 1)
+#define ERSKY9X_LEFT_MASK   (0x40 >> 1)
+#else
 #define ERSKY9X_RETURN_MASK (0x20)
 #define ERSKY9X_EXIT_MASK   (0x01000000)
 #define ERSKY9X_EXIT_PIO    PIOC
@@ -249,14 +257,6 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #define ERSKY9X_LEFT_MASK   (0x10 >> 1)
 #define ERSKY9X_MENU_MASK   (0x04 >> 1)
 #define ERSKY9X_PAGE_MASK   (0x40 >> 1)
-#else
-#define ERSKY9X_RETURN_MASK (0x40)
-#define ERSKY9X_EXIT_MASK   (0x80000000)
-#define ERSKY9X_EXIT_PIO    PIOA
-#define ERSKY9X_UP_MASK     (0x08 >> 1)
-#define ERSKY9X_RIGHT_MASK  (0x20 >> 1)
-#define ERSKY9X_DOWN_MASK   (0x10 >> 1)
-#define ERSKY9X_LEFT_MASK   (0x40 >> 1)
 #endif
     static uint64_t keys1[]={
       KEY_Return,    INP_B_KEY_MEN, INP_L_KEY_MEN, (uint64_t)PIOB, ERSKY9X_RETURN_MASK,
