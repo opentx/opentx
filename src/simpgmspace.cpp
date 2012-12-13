@@ -481,8 +481,10 @@ FRESULT f_lseek (FIL* fil, DWORD offset)
 
 FRESULT f_close (FIL * fil)
 {
-  if (fil->fs)
+  if (fil->fs) {
     fclose((FILE*)fil->fs);
+    fil->fs=NULL;
+  }
   return FR_OK;
 }
 
