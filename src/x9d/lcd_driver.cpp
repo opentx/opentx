@@ -8,11 +8,8 @@
   * *
   ******************************************************************************
 */
-#include <stdint.h>
-#include "lcd.h"
-#include "spi.h"
-#include "hal.h"
-#include "Macro_define.h" 
+
+#include "open9x.h"
 
 #define	WriteData(x)	 AspiData(x)
 #define	WriteCommand(x)	 AspiCmd(x)
@@ -26,26 +23,14 @@ void Set_Address(u8 x, u8 y)
   WriteCommand(((y>>4)&0x0F)|0x70);    //Set Row Address MSB RA [7:4]
 }
 
-/**6 ponits in one line share the same address,3 bytes in the buffer.
-3 bytes wrote in one time */
 void refreshDisplay()
 {  
-  u8 _x1,_x0,temp_x0,temp_x00;
-    
-  _x1 =( DISPLAY_W>>1) + 1;
-	
-  temp_x0 = 0;
-  temp_x00 = temp_x0/3;
-
-  for(uint32_t y0=0; y0<=y1; y0++)
-  {
-    Set_Address(0, y0);//change the address every column
+  for (uint8_t y=0; y<DISPLAY_H; y++) {
+    Set_Address(0, y);
     AspiCmd(0xAF);
-    for(uint_32_t x=0; x_x0<=_x1; _x0++)
-    {
-      WriteData(lcd_buffer[_x0][y0]);
-      //WriteData(lcd_buffer[_x0][y0]);
-      //WriteData(lcd_buffer[_x0][y0]);
+    for (uint8_t x=0; x<DISPLAY_W; x+=2) {
+      uint8_t data = (displayBuf[x*(y/8)] & (1 << (y%8)) ? 0x0F : 0) + (displayBuf[(x+1)*(y/8)] & (1 << (y%8)) ? 0xF0 : 0);
+      WriteData(data);
     }
   }
 }
@@ -88,11 +73,6 @@ static void LCD_Hardware_Init()
   
   GPIO_Init(GPIO_LCD, &GPIO_InitStructure);
 }
-
-#if 0
-void Delay(uint32_t ms);
-/* Initialize the LCD */
-#endif
 
 static void LCD_Init()
 {
@@ -138,60 +118,3 @@ void lcd_init()
   LCD_Hardware_Init();
   LCD_Init();
 }
-
-#if 0
-/***************************************************************
-***********FOR Test
-**********************************************************************/
-void Delay(uint32_t ms)
-{
-  u8 i;
-  while(ms != 0)
-  {
-    for(i=0;i<250;i++) {}
-    for(i=0;i<75;i++) {}
-    ms--;
-  }
-}
-
-
-void TEST_LCD()
-{
-        //static u32 cnt;
-        //CCÖÐ¶Ï
-        GPIO_SetBits(GPIOB,GPIO_Pin_8);//BACKLIGHT
-        
-        //Delay(3000);
-        //paintScreen();
-        clearScreen();
-        drawPoint(0,0,1);
-        paintRect(0,0,0,0);
-        reversePoint(0,0);
-        paintRect(0,0,0,0);
-        Delay(3000);
-        drawPoint(1,0,1);
-        paintRect(0,0,1,0);
-        Delay(3000);
-        reversePoint(1,0);
-        paintRect(0,0,1,0);
-        Delay(3000);
-        drawPoint(0,1,1);
-        paintRect(0,1,0,1);
-        Delay(3000);
-        reversePoint(0,1);
-        paintRect(0,1,0,1);
-        
-        drawPoint(211,0,1);
-        paintRect(0,0,211,0);
-        Delay(3000);
-        reversePoint(211,0);
-        paintRect(0,0,211,0);   
-                
-        drawPoint(211,63,1);
-        paintRect(211,63,211,63);
-        Delay(3000);
-        reversePoint(211,63);
-        paintRect(211,63,211,63);
-        
-}
-#endif
