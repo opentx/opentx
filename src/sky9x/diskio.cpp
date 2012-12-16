@@ -954,8 +954,6 @@ void sdInit()
 uint8_t sdErrorCount = 0;
 FATFS g_FATFS_Obj = { 0 };
 
-extern void retrieveAvailableAudioFiles();
-
 void sdMountPoll()
 {
   if (!Card_initialized)
@@ -1012,7 +1010,7 @@ void sdMountPoll()
 
     case SD_ST_DATA:
       if (!usbPlugged() && f_mount(0, &g_FATFS_Obj) == FR_OK) {
-        retrieveAvailableAudioFiles();
+        refreshSystemAudioFiles();
         Card_state = SD_ST_MOUNTED;
       }
       break;
@@ -1079,7 +1077,7 @@ void sdInit()
   Card_state = SD_ST_DATA;
 
   if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
-    retrieveAvailableAudioFiles();
+    refreshSystemAudioFiles();
     Card_state = SD_ST_MOUNTED;
   }
 

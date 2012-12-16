@@ -182,4 +182,7 @@ extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define STOP_PLAY(id) audioQueue.stopPlay((id))
 #define AUDIO_RESET() audioQueue.reset()
 
+extern void refreshSystemAudioFiles();
+extern void refreshModelAudioFiles();
+
 #endif

@@ -362,6 +362,7 @@
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
 #define TR_FP                  "FP"
+#define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM low mem"
 #define TR_ALERT               "\016ALERT"
 #define TR_PRESSANYKEYTOSKIP   CENTER"Press any key to skip"

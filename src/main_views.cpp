@@ -494,10 +494,12 @@ void menuMainView(uint8_t event)
         case VIEW_OUTPUTS_VALUES:
           x0 = (i%4*9+3)*FW/2;
           y0 = i/4*FH+40;
-#if defined (DECIMALS_DISPLAYED)
-          lcd_outdezAtt( x0+4*FW , y0, calcRESXto1000(val), PREC1);
+#if defined(PPM_UNIT_US)
+          lcd_outdezAtt(x0+4*FW , y0, PPM_CENTER+calcRESXto1000(val)/5*64/25, 0);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+          lcd_outdezAtt(x0+4*FW , y0, calcRESXto1000(val), PREC1);
 #else
-          lcd_outdezAtt( x0+4*FW , y0, calcRESXto1000(val)/10, 0); // G: Don't like the decimal part*
+          lcd_outdezAtt(x0+4*FW , y0, calcRESXto1000(val)/10, 0); // G: Don't like the decimal part*
 #endif
           break;
 

@@ -179,6 +179,35 @@ uint8_t zlen(const char *str, uint8_t size)
   }
   return size;
 }
+
+char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
+{
+  memcpy(dest, name, size);
+  dest[size] = '\0';
+
+  int8_t i = size-1;
+  int8_t len = 0;
+  while (i>=0) {
+    if (!len && dest[i])
+      len = i+1;
+    if (len) {
+      if (dest[i])
+        dest[i] = idx2char(dest[i]);
+      else
+        dest[i] = '_';
+    }
+    i--;
+  }
+
+  if (len == 0) {
+    strcpy(dest, defaultName);
+    dest[defaultNameSize] = (char)((defaultIdx / 10) + '0');
+    dest[defaultNameSize + 1] = (char)((defaultIdx % 10) + '0');
+    len = defaultNameSize + 2;
+  }
+
+  return &dest[len];
+}
 #endif
 
 volatile tmr10ms_t g_tmr10ms;
@@ -1503,7 +1532,7 @@ uint16_t anaIn(uint8_t chan)
 #if defined(CPUARM)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3,8};
 #if !defined(REVA)
-  if ( chan == 8 ) {
+  if (chan == 8) {
     return Current_analogue ;
   }
 #endif
@@ -2251,7 +2280,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       uint8_t k = md->srcRaw - 1;
 
-      if (!(dirtyChannels & ((bitfield_channels_t) 1 << md->destCh))) continue;
+      if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
       if (md->phases & (1 << s_perout_flight_phase)) continue;
 
@@ -2413,26 +2442,24 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== DIFFERENTIAL =========
       if (md->curveMode == MODE_DIFFERENTIAL) {
-        int8_t curveParam =
-            GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
+        int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
         if (curveParam > 0 && dv < 0)
           dv = (dv * (100 - curveParam)) / 100;
-        else if (curveParam < 0 && dv > 0) dv = (dv * (100 + curveParam)) / 100;
+        else if (curveParam < 0 && dv > 0)
+          dv = (dv * (100 + curveParam)) / 100;
       }
 
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
 
-      if (i == 0 || md->destCh != (md - 1)->destCh) {
+      if (i == 0 || md->destCh != (md - 1)->destCh)
         *ptr = 0;
-      }
 
       switch (md->mltpx) {
         case MLTPX_REP:
           *ptr = dv;
 #ifdef BOLD_FONT
-          for (uint8_t m = i - 1;
-              m < MAX_MIXERS && mixaddress(m)->destCh == md->destCh; m--)
-            activeMixes &= ~((ACTIVE_MIXES_TYPE) 1 << m);
+          for (uint8_t m=i-1; m<MAX_MIXERS && mixaddress(m)->destCh==md->destCh; m--)
+            activeMixes &= ~((ACTIVE_MIXES_TYPE)1 << m);
 #endif
           break;
         case MLTPX_MUL:
@@ -2489,7 +2516,7 @@ FORCEINLINE void doMixerCalculations()
   getADC();
 
 #if defined(CPUARM) && !defined(REVA) && !defined(SIMU)
-  Current_analogue = ( Current_analogue * 31 + s_anaFilt[8] ) >> 5 ;
+  Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
   if (Current_analogue > Current_max)
     Current_max = Current_analogue ;
 #elif defined(PCBGRUVIN9X) && !defined(SIMU)
@@ -3317,6 +3344,11 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
 #elif defined(VOICE)
   SET_VOLUME(g_eeGeneral.speakerVolume+7);
+#endif
+
+#if defined(PCBSKY9X)
+  // Set ADC gains here
+  setSticksGain(g_eeGeneral.sticksGain);
 #endif
 
 #if defined(BLUETOOTH)

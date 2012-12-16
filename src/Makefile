@@ -126,13 +126,9 @@ PPM_CENTER_ADJUSTABLE = NO
 # Values = YES, NO
 PPM_LIMITS_SYMETRICAL = NO
 
-# Limits display in the LIMITS
-# Values = PERCENT, US
-PPM_LIMITS_UNIT = PERCENT
-
-# Decimals display in the main view / PPM calibration, 
-# Values = YES, NO
-DECIMALS = YES
+# PPM display unit
+# Values = PERCENT_PREC1, PERCENT_PREC0, US
+PPM_UNIT = PERCENT_PREC1
 
 # FrSky Hub 
 # Values = YES, NO
@@ -218,6 +214,7 @@ CPPDEFS =
 
 # MCU name
 ifeq ($(PCB), STD)
+  ARCH = AVR
   TRGT = avr-
   MCU = atmega64  
   CPPDEFS += -DF_CPU=$(F_CPU)UL
@@ -225,12 +222,14 @@ ifeq ($(PCB), STD)
 endif
 
 ifeq ($(PCB), STD128)
+  ARCH = AVR
   TRGT = avr-
   MCU = atmega128
   CPPDEFS += -DF_CPU=$(F_CPU)UL
 endif
 
 ifeq ($(PCB), GRUVIN9X)
+  ARCH = AVR
   ifeq ($(PCBREV), REV0)
     CPPDEFS += -DREV0
   else
@@ -242,6 +241,7 @@ ifeq ($(PCB), GRUVIN9X)
 endif
 
 ifeq ($(PCB), SKY9X)
+  ARCH = ARM
   ifeq ($(PCBREV), REVA)
     CPPDEFS += -DREVA
     LDSCRIPT = sky9x/sam3s2c_flash.ld
@@ -257,9 +257,10 @@ ifeq ($(PCB), SKY9X)
 endif
 
 ifeq ($(PCB), X9D)
+  ARCH = ARM
   LDSCRIPT = sky9x/sam3s4c_flash.ld
   TRGT = arm-none-eabi-
-  MCU  = cortex-m4
+  MCU  = cortex-m3
 endif
 
 CC      = $(TRGT)gcc
@@ -628,12 +629,16 @@ ifeq ($(PPM_LIMITS_SYMETRICAL), YES)
   CPPDEFS += -DPPM_LIMITS_SYMETRICAL
 endif
 
-ifeq ($(PPM_LIMITS_UNIT), US)
-  CPPDEFS += -DPPM_LIMITS_UNIT_US
+ifeq ($(PPM_UNIT), US)
+  CPPDEFS += -DPPM_UNIT_US
 endif
 
-ifeq ($(DECIMALS), YES)
-  CPPDEFS += -DDECIMALS_DISPLAYED
+ifeq ($(PPM_UNIT), PERCENT_PREC1)
+  CPPDEFS += -DPPM_UNIT_PERCENT_PREC1
+endif
+
+ifeq ($(PPM_UNIT), PERCENT_PREC0)
+  CPPDEFS += -DPPM_UNIT_PERCENT_PREC0
 endif
 
 ifeq ($(HELI), YES)
@@ -719,7 +724,7 @@ MSG_CLEANING = Cleaning project:
 ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -Dat91sam3s4 -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS)
 AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
 
-ifneq ($(PCB), SKY9X)
+ifeq ($(ARCH), AVR)
   GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
   ifeq ($(GCCVERSIONGTE462),1)
     CPPFLAGS += -flto
@@ -740,10 +745,10 @@ MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
 all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
-ifeq ($(PCB), SKY9X)
-  build: stamp_header lbm allsrc.cpp elf remallsrc bin lss
-else
+ifeq ($(ARCH), AVR)
   build: stamp_header lbm allsrc.cpp elf remallsrc hex eep lss sym
+else
+  build: stamp_header lbm allsrc.cpp elf remallsrc bin lss
 endif
 
 elf: $(TARGET).elf
@@ -860,12 +865,12 @@ end:
 	@echo
 
 # Display size of file.
-ifeq ($(PCB), SKY9X)
-  ELFSIZE = $(SIZE) $(TARGET).elf
-else
+ifeq ($(ARCH), AVR)
   MCU_FLAG = $(shell $(SIZE) --help | grep -- --mcu > /dev/null && echo --mcu=$(MCU) )
   FORMAT_FLAG = $(shell $(SIZE) --help | grep -- --format=.*avr > /dev/null && echo --format=avr )
   ELFSIZE = $(SIZE) $(MCU_FLAG) $(FORMAT_FLAG) $(TARGET).elf
+else
+  ELFSIZE = $(SIZE) $(TARGET).elf
 endif
 
 sizebefore:
@@ -896,16 +901,16 @@ eeprom.bin:
 
 
 # Create final output files (.hex, .eep) from ELF output file.
-ifeq ($(PCB), SKY9X)
-%.hex: %.elf
-	@echo
-	@echo $(MSG_FLASH) $@
-	 $(OBJCOPY) -O ihex open9x.elf open9x.hex
-else
+ifeq ($(ARCH), AVR)
 %.hex: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
 	$(OBJCOPY) -O $(FORMAT) -R .eeprom $< $@
+else
+%.hex: %.elf
+	@echo
+	@echo $(MSG_FLASH) $@
+	 $(OBJCOPY) -O ihex open9x.elf open9x.hex
 endif
 
 %.bin: %.elf
@@ -940,7 +945,12 @@ remallsrc:
 	$(REMOVE) allsrc.cpp
 
 # Link: create ELF output file from object files.
-ifeq ($(PCB), SKY9X)
+ifeq ($(ARCH), AVR)
+%.elf: allsrc.cpp
+	@echo
+	@echo $(MSG_COMPILING) $@
+	$(CC) $(AVRCPPFLAGS) $< --output $@ $(LDFLAGS)
+else
 %.o: %.c
 	$(CC) $(ARMCPPFLAGS) $< -o $@
 OBJS = $(SRC:.c=.o)
@@ -949,11 +959,6 @@ OBJS = $(SRC:.c=.o)
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o
 	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch -o $@
-else
-%.elf: allsrc.cpp
-	@echo
-	@echo $(MSG_COMPILING) $@
-	$(CC) $(AVRCPPFLAGS) $< --output $@ $(LDFLAGS)
 endif
 
 # Target: clean project.

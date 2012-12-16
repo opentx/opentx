@@ -351,6 +351,7 @@
 #define TR_CH                           "CH"
 #define TR_MODEL                        "MODELL"
 #define TR_FP                           "FP"
+#define TR_MIX                          "MIX"
 #define TR_EEPROMLOWMEM                 "EEPROM voll"
 #define TR_ALERT                        "WARNUNG"
 #define TR_PRESSANYKEYTOSKIP            "Taste dr\205cken"

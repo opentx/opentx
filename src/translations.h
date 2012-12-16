@@ -329,6 +329,9 @@ extern const pm_char STR_PPM[];
 extern const pm_char STR_CH[];
 extern const pm_char STR_MODEL[];
 extern const pm_char STR_FP[];
+#if defined(CPUARM)
+extern const pm_char STR_MIX[];
+#endif
 extern const pm_char STR_EEPROMLOWMEM[];
 extern const pm_char STR_ALERT[];
 extern const pm_char STR_PRESSANYKEYTOSKIP[];

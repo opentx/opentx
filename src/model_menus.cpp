@@ -2371,7 +2371,7 @@ void menuModelLimits(uint8_t event)
       switch(j)
       {
         case ITEM_LIMITS_OFFSET:
-#if defined(PPM_LIMITS_UNIT_US)
+#if defined(PPM_UNIT_US)
           lcd_outdezAtt(  8*FW, y,  ((int32_t)ld->offset*128) / 25, attr|PREC1);
 #else
           lcd_outdezAtt(  8*FW, y,  ld->offset, attr|PREC1);
@@ -2397,7 +2397,7 @@ void menuModelLimits(uint8_t event)
           }
           break;
         case ITEM_LIMITS_MIN:
-#if defined(PPM_LIMITS_UNIT_US)
+#if defined(PPM_UNIT_US)
           lcd_outdezAtt(12*FW+1, y, (((int16_t)ld->min-100)*128) / 25, attr);
 #else
           lcd_outdezAtt(12*FW, y, (int8_t)(ld->min-100), attr);
@@ -2405,7 +2405,7 @@ void menuModelLimits(uint8_t event)
           if (active) ld->min = 100 + checkIncDecModel(event, ld->min-100, -limit, 25);
           break;
         case ITEM_LIMITS_MAX:
-#if defined(PPM_LIMITS_UNIT_US)
+#if defined(PPM_UNIT_US)
           lcd_outdezAtt(LIMITS_MAX_POS, y, (((int16_t)ld->max+100)*128) / 25, attr);
 #else
           lcd_outdezAtt(LIMITS_MAX_POS, y, (int8_t)(ld->max+100), attr);

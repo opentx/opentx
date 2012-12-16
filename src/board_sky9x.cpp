@@ -1176,7 +1176,7 @@ uint16_t getCurrent()
   static uint32_t Current_sum ;
   static uint8_t  Current_count ;
 
-  Current_sum += anaIn(NUMBER_ANALOG-1);
+  Current_sum += anaIn(NUMBER_ANALOG-1); // TODO enum
   if (++Current_count >= 50) {
     Current = Current_sum / 5 ;
     Current_sum = 0 ;
@@ -1193,3 +1193,48 @@ uint8_t getTemperature()
   return temperature + g_eeGeneral.temperatureCalib;
 }
 
+#define STICK_LV_GAIN 0x01
+#define STICK_LH_GAIN 0x02
+#define STICK_RV_GAIN 0x04
+#define STICK_RH_GAIN 0x08
+
+#define GAIN_LV  0x00080000
+#define GAIN_LH  0x00000020
+#define GAIN_RV  0x20000000
+#define GAIN_RH  0x00000008
+
+#define OFF_LV   0x00000200
+#define OFF_LH   0x00000004
+#define OFF_RV   0x00004000
+#define OFF_RH   0x00000002
+
+void setSticksGain(uint8_t gains)
+{
+  register Adc *padc ;
+  uint32_t gain ;
+  uint32_t offset ;
+
+  gain = 0 ;
+  offset = 0 ;
+  padc = ADC ;
+
+  if ( gains & STICK_LV_GAIN ) {
+    gain |= GAIN_LV ;
+    offset |= OFF_LV ;
+  }
+  if ( gains & STICK_LH_GAIN ) {
+    gain |= GAIN_LH ;
+    offset |= OFF_LH ;
+  }
+  if ( gains & STICK_RV_GAIN ) {
+    gain |= GAIN_RV ;
+    offset |= OFF_RV ;
+  }
+  if ( gains & STICK_RH_GAIN ) {
+    gain |= GAIN_RH ;
+    offset |= OFF_RH ;
+  }
+
+  padc->ADC_CGR = gain;
+  padc->ADC_COR = offset;
+}

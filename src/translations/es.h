@@ -345,6 +345,7 @@
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODELO"
 #define TR_FP                  "FP"
+#define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM Baja mem"
 #define TR_ALERT               "\016ALERTA"
 #define TR_PRESSANYKEYTOSKIP   "Pulsa tecla x omitir"

@@ -350,6 +350,7 @@
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
 #define TR_FP                  "FP"
+#define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Doch\200z\204 EEPROM"
 #define TR_ALERT               "\006(!)POZOR"
 #define TR_PRESSANYKEYTOSKIP   "Kl\200vesa >>> p\206esko\201it"

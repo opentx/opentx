@@ -223,6 +223,7 @@ const pm_char STR_PPM[] PROGMEM = TR_PPM;
 const pm_char STR_CH[] PROGMEM = TR_CH;
 const pm_char STR_MODEL[] PROGMEM = TR_MODEL;
 const pm_char STR_FP[] PROGMEM = TR_FP;
+const pm_char STR_MIX[] PROGMEM = TR_MIX;
 const pm_char STR_EEPROMLOWMEM[] PROGMEM = TR_EEPROMLOWMEM;
 const pm_char STR_ALERT[] PROGMEM = TR_ALERT;
 const pm_char STR_PRESSANYKEYTOSKIP[] PROGMEM = TR_PRESSANYKEYTOSKIP;

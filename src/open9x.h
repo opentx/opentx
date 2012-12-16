@@ -1341,6 +1341,10 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 
 #if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
+char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
+#define strcat_modelname(dest, idx) strcat_zchar(dest, ModelNames[idx], sizeof(g_model.name), STR_MODEL, PSIZE(TR_MODEL), idx+1)
+#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, sizeof(PhaseData), STR_FP, PSIZE(TR_FP), idx+1)
+#define strcat_mixername(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, sizeof(MixData), STR_MIX, PSIZE(TR_MIX), idx+1)
 #define ZLEN(s) zlen(s, sizeof(s))
 #endif
 

@@ -349,6 +349,7 @@
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODELLO"
 #define TR_FP                  "FV"
+#define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM quasi piena!"
 #define TR_ALERT               "\016ALERT"
 #define TR_PRESSANYKEYTOSKIP   "\010Premi un tasto"

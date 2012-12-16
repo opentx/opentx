@@ -354,6 +354,7 @@
 #define TR_CH                  "KN"
 #define TR_MODEL               "Modell"
 #define TR_FP                  "FF"
+#define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM low mem"
 #define TR_ALERT               "\016OBS"
 #define TR_PRESSANYKEYTOSKIP   "Tryck ned en knapp"

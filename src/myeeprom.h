@@ -112,7 +112,8 @@ enum BeeperMode {
   uint32_t globalTimer; \
   int8_t   temperatureCalib; \
   uint8_t  btBaudrate; \
-  uint8_t  optrexDisplay;
+  uint8_t  optrexDisplay; \
+  uint8_t  sticksGain;
 #else
 #define EXTRA_GENERAL_FIELDS \
   int8_t   speakerVolume

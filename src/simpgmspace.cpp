@@ -49,6 +49,7 @@ Pwm pwm;
 Twi Twio;
 Usart Usart0;
 Dacc dacc;
+Adc Adc0;
 uint32_t eeprom_pointer;
 char* eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;

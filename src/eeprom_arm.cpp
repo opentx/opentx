@@ -513,6 +513,8 @@ void eeLoadModel(uint8_t id)
     FRSKY_setModelAlarms();
 #endif
 
+    refreshModelAudioFiles();
+
     LOAD_MODEL_BITMAP();
   }
 }
@@ -944,32 +946,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   }
 
   buf[sizeof(MODELS_PATH)-1] = '/';
-  memcpy(&buf[sizeof(MODELS_PATH)], ModelNames[i_fileSrc], sizeof(g_model.name));
-  buf[sizeof(MODELS_PATH)+sizeof(g_model.name)] = '\0';
-
-  uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.name)-1;
-  uint8_t len = 0;
-  while (i>sizeof(MODELS_PATH)-1) {
-    if (!len && buf[i])
-      len = i+1;
-    if (len) {
-      if (buf[i])
-        buf[i] = idx2char(buf[i]);
-      else
-        buf[i] = '_';
-    }
-    i--;
-  }
-
-  if (len == 0) {
-    uint8_t num = i_fileSrc + 1;
-    strcpy(&buf[sizeof(MODELS_PATH)], STR_MODEL);
-    buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL)] = (char)((num / 10) + '0');
-    buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 1] = (char)((num % 10) + '0');
-    len = sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 2;
-  }
-
-  strcpy(&buf[len], STR_MODELS_EXT);
+  strcpy(strcat_modelname(&buf[sizeof(MODELS_PATH)], i_fileSrc), STR_MODELS_EXT);
 
   result = f_open(&archiveFile, buf, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {

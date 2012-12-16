@@ -101,6 +101,9 @@ extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
 extern Dacc dacc;
 extern Usart Usart0;
+extern Adc Adc0;
+#undef ADC
+#define ADC (&Adc0)
 #undef USART0
 #define USART0 (&Usart0)
 #undef PIOA

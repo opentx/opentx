@@ -64,9 +64,12 @@ const char * audioFilenames[] = {
   "timer30"
 };
 
-uint32_t sdAvailableAudioFiles = 0;
 
-void retrieveAvailableAudioFiles()
+uint32_t sdAvailableSystemAudioFiles = 0;
+uint8_t sdAvailablePhaseAudioFiles[MAX_PHASES] = { 0 };
+uint8_t sdAvailableMixerAudioFiles[MAX_MIXERS] = { 0 };
+
+void refreshSystemAudioFiles()
 {
   FILINFO info;
 #if _USE_LFN
@@ -78,7 +81,7 @@ void retrieveAvailableAudioFiles()
   char filename[32] = SYSTEM_SOUNDS_PATH "/";
 
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
-  assert(sizeof(sdAvailableAudioFiles)*8 > AU_FRSKY_FIRST);
+  assert(sizeof(sdAvailableSystemAudioFiles)*8 > AU_FRSKY_FIRST);
 
   uint32_t availableAudioFiles = 0;
 
@@ -89,18 +92,62 @@ void retrieveAvailableAudioFiles()
       availableAudioFiles |= ((uint32_t)1 << i);
   }
 
-  sdAvailableAudioFiles = availableAudioFiles;
+  sdAvailableSystemAudioFiles = availableAudioFiles;
 }
 
-inline bool isAudioFileAvailable(uint8_t i, char * filename)
+inline uint8_t getAvailableFiles(char *prefix, FILINFO &info, char *filename)
 {
-  if (sdAvailableAudioFiles & ((uint32_t)1 << i)) {
-    strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
-    strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
-    return true;
+  const char * suffixes[] = { "-ON", "-OFF", NULL };
+  uint8_t result = 0;
+
+  for (uint8_t i=0; suffixes[i]; i++) {
+    strcpy(prefix, suffixes[i]);
+    strcat(prefix, SOUNDS_EXT);
+    if (f_stat(filename, &info) == FR_OK)
+      result |= ((uint8_t)1 << i);
   }
-  else {
-    return false;
+
+  return result;
+}
+
+void refreshModelAudioFiles()
+{
+  FILINFO info;
+#if _USE_LFN
+  TCHAR lfn[_MAX_LFN + 1];
+  info.lfname = lfn;
+  info.lfsize = sizeof(lfn);
+#endif
+
+  char filename[32] = SOUNDS_PATH "/";
+  char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
+  *buf++ = '/';
+
+  for (uint32_t i=0; i<MAX_PHASES; i++)
+    sdAvailablePhaseAudioFiles[i] = getAvailableFiles(strcat_phasename(buf, i), info, filename);
+
+  for (uint32_t i=0; i<MAX_MIXERS; i++)
+    sdAvailableMixerAudioFiles[i] = getAvailableFiles(strcat_mixername(buf, i), info, filename);
+}
+
+#define SYSTEM_AUDIO_CATEGORY 0
+#define MODEL_AUDIO_CATEGORY  1
+#define PHASE_AUDIO_CATEGORY  2
+#define MIXER_AUDIO_CATEGORY  3
+
+inline bool isAudioFileAvailable(uint32_t i, char * filename)
+{
+  uint8_t category = (i >> 24);
+
+  if (category == SYSTEM_AUDIO_CATEGORY) {
+    if (sdAvailableSystemAudioFiles & ((uint32_t)1 << i)) {
+      strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
+      strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
 #else
@@ -561,7 +608,7 @@ void AudioQueue::stopPlay(uint8_t id)
 
 void AudioQueue::stopSD()
 {
-  sdAvailableAudioFiles = 0;
+  sdAvailableSystemAudioFiles = 0;
   reset();
   play(0, 0, 100, PLAY_NOW);        // insert a 100ms pause
 }

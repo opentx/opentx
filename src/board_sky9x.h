@@ -109,4 +109,6 @@ extern uint16_t sessionTimer;
 #define JACK_PPM_OUT() PIOC->PIO_PDR = PIO_PC22
 #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
 
+void setSticksGain(uint8_t gains);
+
 #endif
