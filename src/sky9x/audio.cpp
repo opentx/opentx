@@ -112,6 +112,9 @@ inline uint8_t getAvailableFiles(char *prefix, FILINFO &info, char *filename)
 
 void refreshModelAudioFiles()
 {
+#if 0
+  // TODO not finished!
+
   FILINFO info;
 #if _USE_LFN
   TCHAR lfn[_MAX_LFN + 1];
@@ -128,6 +131,8 @@ void refreshModelAudioFiles()
 
   for (uint32_t i=0; i<MAX_MIXERS; i++)
     sdAvailableMixerAudioFiles[i] = getAvailableFiles(strcat_mixername(buf, i), info, filename);
+
+#endif
 }
 
 #define SYSTEM_AUDIO_CATEGORY 0
