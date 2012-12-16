@@ -2530,7 +2530,7 @@ FORCEINLINE void doMixerCalculations()
 #define MAX_ACT 0xffff
   static uint16_t fp_act[MAX_PHASES] = {0};
   static uint16_t delta = 0;
-  static uint8_t s_fade_flight_phases = 0;
+  static ACTIVE_PHASES_TYPE s_fade_flight_phases = 0;
   static uint8_t s_last_phase = 255;
   uint8_t phase = getFlightPhase();
   int32_t weight = 0;
@@ -2541,11 +2541,10 @@ FORCEINLINE void doMixerCalculations()
     }
     else {
       uint8_t fadeTime = max(g_model.phaseData[s_last_phase].fadeOut, g_model.phaseData[phase].fadeIn);
-      uint8_t transitionMask = (1<<s_last_phase) + (1<<phase);
+      ACTIVE_PHASES_TYPE transitionMask = ((ACTIVE_PHASES_TYPE)1 << s_last_phase) + ((ACTIVE_PHASES_TYPE)1 << phase);
       if (fadeTime) {
         s_fade_flight_phases |= transitionMask;
         delta = (MAX_ACT / 50) / fadeTime;
-        delta *= tick10ms;
       }
       else {
         s_fade_flight_phases &= ~transitionMask;
@@ -2560,7 +2559,7 @@ FORCEINLINE void doMixerCalculations()
     memclear(sum_chans512, sizeof(sum_chans512));
     weight = 0;
     for (uint8_t p=0; p<MAX_PHASES; p++) {
-      if (s_fade_flight_phases & (1<<p)) {
+      if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
         s_perout_flight_phase = p;
         perOut(e_perout_mode_normal, tick10ms);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
@@ -2775,22 +2774,21 @@ FORCEINLINE void doMixerCalculations()
   // Timers end
 
   if (s_fade_flight_phases) {
+    uint16_t tick_delta = delta * tick10ms;
     for (uint8_t p=0; p<MAX_PHASES; p++) {
-      uint8_t phaseMask = (1<<p);
+      ACTIVE_PHASES_TYPE phaseMask = ((ACTIVE_PHASES_TYPE)1 << p);
       if (s_fade_flight_phases & phaseMask) {
-
-
         if (p == phase) {
-          if (MAX_ACT - fp_act[p] > delta)
-            fp_act[p] += delta;
+          if (MAX_ACT - fp_act[p] > tick_delta)
+            fp_act[p] += tick_delta;
           else {
             fp_act[p] = MAX_ACT;
             s_fade_flight_phases -= phaseMask;
           }
         }
         else {
-          if (fp_act[p] > delta)
-            fp_act[p] -= delta;
+          if (fp_act[p] > tick_delta)
+            fp_act[p] -= tick_delta;
           else {
             fp_act[p] = 0;
             s_fade_flight_phases -= phaseMask;

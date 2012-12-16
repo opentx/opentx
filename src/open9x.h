@@ -1125,9 +1125,11 @@ extern void moveTrimsToOffsets();
 #if defined(CPUARM)
 #define ACTIVE_EXPOS_TYPE uint32_t
 #define ACTIVE_MIXES_TYPE uint64_t
+#define ACTIVE_PHASES_TYPE uint16_t
 #else
 #define ACTIVE_EXPOS_TYPE uint16_t
 #define ACTIVE_MIXES_TYPE uint32_t
+#define ACTIVE_PHASES_TYPE uint8_t
 #endif
 
 #ifdef BOLD_FONT
