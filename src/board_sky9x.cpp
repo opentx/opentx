@@ -990,7 +990,7 @@ void read_9_adc()
   Analog_values[6] = ADC->ADC_CDR13;
   Analog_values[7] = ADC->ADC_CDR14;
 
-#if defined(REVA)
+#if !defined(REVA)
   Analog_values[8] = ADC->ADC_CDR8 ;
 #endif
 
