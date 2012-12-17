@@ -2312,7 +2312,7 @@ void menuModelLimits(uint8_t event)
 
   if (sub < NUM_CHNOUT) {
 #if defined(PPM_CENTER_ADJUSTABLE)
-    lcd_outdezAtt(13*FW, 0, PPM_CENTER+limitaddress(sub)->ppmCenter+g_chans512[sub]/2, 0);
+    lcd_outdezAtt(13*FW, 0, PPM_CH_CENTER(sub)+g_chans512[sub]/2, 0);
     lcd_puts(13*FW, 0, STR_US);
 #else
     lcd_outdezAtt(13*FW, 0, calcRESXto1000(g_chans512[sub]), PREC1);

@@ -23,7 +23,7 @@ void Set_Address(u8 x, u8 y)
   WriteCommand(((y>>4)&0x0F)|0x70);    //Set Row Address MSB RA [7:4]
 }
 
-void refreshDisplay()
+void lcdRefresh()
 {  
   for (uint8_t y=0; y<DISPLAY_H; y++) {
     Set_Address(0, y);
@@ -112,7 +112,7 @@ static void LCD_Init()
 	
 }
 
-void lcd_init()
+void lcdInit()
 {
   LCD_BL_Config();
   LCD_Hardware_Init();

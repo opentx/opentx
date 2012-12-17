@@ -117,7 +117,7 @@ void lcdSendCtl(uint8_t val)
   pioptr->PIO_SODR = LCD_CS1 ;                    // Deselect LCD
 }
 
-void lcd_init()
+void lcdInit()
 {
   register Pio *pioptr ;
   // /home/thus/txt/datasheets/lcd/KS0713.pdf
@@ -207,7 +207,7 @@ void lcdSetRefVolt(uint8_t val)
   lcdLock = 0 ;
 }
 
-void refreshDisplay()
+void lcdRefresh()
 {
   register Pio *pioptr;
   register uint8_t *p = displayBuf;

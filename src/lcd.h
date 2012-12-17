@@ -200,11 +200,11 @@ inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att=0) { lcd_r
 
 extern void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mode);
 extern void lcdSetRefVolt(unsigned char val);
-extern void lcd_init();
+extern void lcdInit();
 extern void lcd_clear();
 extern void lcdSetContrast();
 
-extern void refreshDisplay();
+extern void lcdRefresh();
 
 #if defined(PCBX9D)
 const pm_char * bmpLoad(uint8_t *dest, const char *filename);

@@ -540,17 +540,17 @@ void eeReadAll()
   if (!eeLoadGeneral() )
   {
     generalDefault();
+    modelDefault(0);
 
     ALERT(STR_EEPROMWARN, STR_BADEEPROMDATA, AU_BAD_EEPROM);
-    MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
-
-    modelDefault(0);
 
     if (check_soft_power()==e_power_off) {
       // we don't want to store anything
-      s_eeDirtyMsk = 0;
+      soft_power_off(); // turn power off now
     }
     else {
+      MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);
+
       /* we remove all models */
       for (uint32_t i=0; i<MAX_MODELS; i++)
         eeDeleteModel(i);
@@ -561,7 +561,6 @@ void eeReadAll()
   }
   else
   {
-    eeLoadModel(g_eeGeneral.currModel);
     ee32_read_model_names() ;
   }
 

@@ -41,6 +41,8 @@
 #else
 #define WRITE_DELAY_10MS 200
 #endif
+
+extern uint8_t  s_eeDirtyMsk;
 extern uint16_t s_eeDirtyTime10ms;
 
 //

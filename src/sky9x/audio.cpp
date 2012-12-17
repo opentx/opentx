@@ -95,9 +95,10 @@ void refreshSystemAudioFiles()
   sdAvailableSystemAudioFiles = availableAudioFiles;
 }
 
+const char * suffixes[] = { "-OFF", "-ON", "-BG", NULL };
+
 inline uint8_t getAvailableFiles(char *prefix, FILINFO &info, char *filename)
 {
-  const char * suffixes[] = { "-ON", "-OFF", NULL };
   uint8_t result = 0;
 
   for (uint8_t i=0; suffixes[i]; i++) {
@@ -113,8 +114,6 @@ inline uint8_t getAvailableFiles(char *prefix, FILINFO &info, char *filename)
 void refreshModelAudioFiles()
 {
 #if 0
-  // TODO not finished!
-
   FILINFO info;
 #if _USE_LFN
   TCHAR lfn[_MAX_LFN + 1];
@@ -122,38 +121,94 @@ void refreshModelAudioFiles()
   info.lfsize = sizeof(lfn);
 #endif
 
-  char filename[32] = SOUNDS_PATH "/";
-  char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
-  *buf++ = '/';
+  char filename[32] = SOUNDS_PATH "/"; // TODO not 32!
 
-  for (uint32_t i=0; i<MAX_PHASES; i++)
-    sdAvailablePhaseAudioFiles[i] = getAvailableFiles(strcat_phasename(buf, i), info, filename);
+  if (sd_card_mounted()) {
+    char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
+    *buf++ = '/';
 
-  for (uint32_t i=0; i<MAX_MIXERS; i++)
-    sdAvailableMixerAudioFiles[i] = getAvailableFiles(strcat_mixername(buf, i), info, filename);
+    for (uint32_t i=0; i<MAX_PHASES; i++) {
+      sdAvailablePhaseAudioFiles[i] = getAvailableFiles(strcat_phasename_default(buf, i), info, filename) << 4;
+      char *tmp = strcat_phasename_nodefault(buf, i);
+      if (tmp != buf) sdAvailablePhaseAudioFiles[i] += getAvailableFiles(tmp, info, filename);
+    }
 
+    for (uint32_t i=0; i<MAX_MIXERS; i++) {
+      sdAvailableMixerAudioFiles[i] = getAvailableFiles(strcat_mixername_default(buf, i), info, filename) << 4;
+      char *tmp = strcat_mixername_nodefault(buf, i);
+      if (tmp != buf) sdAvailableMixerAudioFiles[i] += getAvailableFiles(tmp, info, filename);
+    }
+  }
 #endif
 }
 
-#define SYSTEM_AUDIO_CATEGORY 0
-#define MODEL_AUDIO_CATEGORY  1
-#define PHASE_AUDIO_CATEGORY  2
-#define MIXER_AUDIO_CATEGORY  3
-
-inline bool isAudioFileAvailable(uint32_t i, char * filename)
+bool isAudioFileAvailable(uint32_t i, char * filename)
 {
   uint8_t category = (i >> 24);
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
     if (sdAvailableSystemAudioFiles & ((uint32_t)1 << i)) {
+      strcpy(filename, SYSTEM_SOUNDS_PATH "/");
       strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
       strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
       return true;
     }
-    else {
-      return false;
+  }
+#if 0
+  else if (category == PHASE_AUDIO_CATEGORY) {
+    uint8_t index = (i >> 16) & 0xFF;
+    uint8_t event = i & 0xFF;
+    if (sdAvailablePhaseAudioFiles[index] & (1 << event)) {
+      strcpy(filename, SOUNDS_PATH "/");
+      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+      *str++ = '/';
+      char * tmp = strcat_phasename_nodefault(str, i);
+      if (tmp != str) {
+        strcpy(tmp, suffixes[event]);
+        strcat(tmp, SOUNDS_EXT);
+        return true;
+      }
+    }
+    else if ((sdAvailablePhaseAudioFiles[index] >> 4) & (1 << event)) {
+      strcpy(filename, SOUNDS_PATH "/");
+      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+      *str++ = '/';
+      char * tmp = strcat_phasename_default(str, i);
+      if (tmp != str) {
+        strcpy(tmp, suffixes[event]);
+        strcat(tmp, SOUNDS_EXT);
+        return true;
+      }
     }
   }
+  else if (category == MIXER_AUDIO_CATEGORY) {
+    uint8_t index = (i >> 16) & 0xFF;
+    uint8_t event = i & 0xFF;
+    if (sdAvailableMixerAudioFiles[index] & (1 << event)) {
+      strcpy(filename, SOUNDS_PATH "/");
+      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+      *str++ = '/';
+      char * tmp = strcat_mixername_nodefault(str, i);
+      if (tmp != str) {
+        strcpy(tmp, suffixes[event]);
+        strcat(tmp, SOUNDS_EXT);
+        return true;
+      }
+    }
+    else if ((sdAvailableMixerAudioFiles[index] >> 4) & (1 << event)) {
+      strcpy(filename, SOUNDS_PATH "/");
+      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+      *str++ = '/';
+      char * tmp = strcat_mixername_default(str, i);
+      if (tmp != str) {
+        strcpy(tmp, suffixes[event]);
+        strcat(tmp, SOUNDS_EXT);
+        return true;
+      }
+    }
+  }
+#endif
+  return false;
 }
 #else
 #define isAudioFileAvailable(i, f) false
@@ -632,7 +687,7 @@ void AudioQueue::reset()
 void audioEvent(uint8_t e, uint8_t f)
 {
 #ifdef SDCARD
-  char filename[32] = SYSTEM_SOUNDS_PATH "/";
+  char filename[32];
 #endif
 
 #ifdef HAPTIC

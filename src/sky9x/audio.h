@@ -170,6 +170,15 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
 #define AUDIO_HEARTBEAT()
 
+#define SYSTEM_AUDIO_CATEGORY 0
+#define MODEL_AUDIO_CATEGORY  1
+#define PHASE_AUDIO_CATEGORY  2
+#define MIXER_AUDIO_CATEGORY  3
+
+#define AUDIO_EVENT_OFF       0
+#define AUDIO_EVENT_ON        1
+#define AUDIO_EVENT_BG        2
+
 extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 
 #define PLAY_FUNCTION(x, ...) void x(__VA_ARGS__, uint8_t id)
@@ -181,8 +190,13 @@ extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define PLAY_FILE(f, flags, id) audioQueue.playFile((f), (flags), (id))
 #define STOP_PLAY(id) audioQueue.stopPlay((id))
 #define AUDIO_RESET() audioQueue.reset()
+#define PLAY_PHASE_OFF(phase)
+// do { char filename[42/*TODO check*/]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_OFF, filename)) audioQueue.playFile(filename); } while (0)
+#define PLAY_PHASE_ON(phase)
+// do { char filename[42]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_ON, filename)) audioQueue.playFile(filename); } while (0)
 
 extern void refreshSystemAudioFiles();
 extern void refreshModelAudioFiles();
+extern bool isAudioFileAvailable(uint32_t i, char * filename);
 
 #endif

@@ -182,24 +182,30 @@ uint8_t zlen(const char *str, uint8_t size)
 
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
 {
-  memcpy(dest, name, size);
-  dest[size] = '\0';
+  // TODO review if all if are needed
 
-  int8_t i = size-1;
   int8_t len = 0;
-  while (i>=0) {
-    if (!len && dest[i])
-      len = i+1;
-    if (len) {
-      if (dest[i])
-        dest[i] = idx2char(dest[i]);
-      else
-        dest[i] = '_';
+
+  if (name) {
+    memcpy(dest, name, size);
+    dest[size] = '\0';
+
+    int8_t i = size-1;
+
+    while (i>=0) {
+      if (!len && dest[i])
+        len = i+1;
+      if (len) {
+        if (dest[i])
+          dest[i] = idx2char(dest[i]);
+        else
+          dest[i] = '_';
+      }
+      i--;
     }
-    i--;
   }
 
-  if (len == 0) {
+  if (len == 0 && defaultName) {
     strcpy(dest, defaultName);
     dest[defaultNameSize] = (char)((defaultIdx / 10) + '0');
     dest[defaultNameSize + 1] = (char)((defaultIdx % 10) + '0');
@@ -1164,7 +1170,7 @@ void doSplash()
   if (SPLASH_NEEDED()) {
     lcd_clear();
     lcd_img(0, 0, splash_lbm, 0, 0);
-    refreshDisplay();
+    lcdRefresh();
 
 #if !defined(CPUARM)
     AUDIO_TADA();
@@ -1309,7 +1315,7 @@ void checkSwitches()
         if (i == 4 && attr) i++;
         if (i != 4) x += 3*FW+FW/2;
       }
-      refreshDisplay();
+      lcdRefresh();
       last_bad_switches = switches_states;
     }
 
@@ -1366,7 +1372,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
     lcd_putsLeft(7*FH, last);
     AUDIO_ERROR_MESSAGE(sound);
   }
-  refreshDisplay();
+  lcdRefresh();
   lcdSetContrast();
   clearKeyEvents();
 }
@@ -2536,6 +2542,9 @@ FORCEINLINE void doMixerCalculations()
   int32_t weight = 0;
 
   if (s_last_phase != phase) {
+    // PLAY_PHASE_OFF(s_last_phase);
+    // PLAY_PHASE_ON(phase);
+
     if (s_last_phase == 255) {
       fp_act[phase] = MAX_ACT;
     }
@@ -2894,7 +2903,7 @@ void perMain()
   g_menuStack[g_menuStackPtr](warn ? 0 : evt);
   if (warn) displayWarning(evt);
   drawStatusLine();
-  refreshDisplay();
+  lcdRefresh();
 
   if (SLAVE_MODE()) {
     JACK_PPM_OUT();
@@ -3361,6 +3370,9 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 
   if (UNEXPECTED_SHUTDOWN()) {
     unexpectedShutdown = 1;
+#if defined(CPUARM)
+    eeLoadModel(g_eeGeneral.currModel);
+#endif
   }
   else {
     doSplash();
@@ -3369,6 +3381,10 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     for (int i=0; i<500 && !Card_initialized; i++) {
       CoTickDelay(1);  // 2ms
     }
+#endif
+
+#if defined(CPUARM)
+    eeLoadModel(g_eeGeneral.currModel);
 #endif
 
     checkAll();
@@ -3468,7 +3484,7 @@ void menusTask(void * pdata)
   eeCheck(true);
 
   lcd_clear();
-  refreshDisplay();
+  lcdRefresh();
   lcdSetRefVolt(0);
 
   soft_power_off(); // Only turn power off if necessary
@@ -3497,7 +3513,7 @@ int main(void)
 
   board_init();
 
-  lcd_init();
+  lcdInit();
 
   stack_paint();
 
@@ -3552,7 +3568,7 @@ int main(void)
 
     g_eeGeneral.optrexDisplay = 1;
     lcd_clear();
-    refreshDisplay();
+    lcdRefresh();
 
     g_eeGeneral.optrexDisplay = 0;
     g_eeGeneral.backlightBright = 0;
@@ -3564,7 +3580,7 @@ int main(void)
     lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
     lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
     lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
-    refreshDisplay() ;
+    lcdRefresh() ;
 
     usbBootloader();
   }
@@ -3622,7 +3638,7 @@ int main(void)
   closeLogs();
 #endif
   lcd_clear() ;
-  refreshDisplay() ;
+  lcdRefresh() ;
   soft_power_off();            // Only turn power off if necessary
   wdt_disable();
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.

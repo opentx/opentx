@@ -541,9 +541,9 @@ extern uint32_t transSpeed;
 
 #define SD_CSD_READ_BL_LEN(pSd)        SD_CSD(pSd, 80,  4) ///< Max. read data block length
 
-#define SD_CSD_BLOCK_LEN(pSd)          (1 << SD_CSD_READ_BL_LEN(pSd))
+#define SD_CSD_BLKLEN(pSd)             (1 << (SD_CSD_READ_BL_LEN(pSd) - 9))
 
-#define SD_CSD_BLOCKNR(pSd)            ((SD_CSD_C_SIZE(pSd) + 1) * SD_CSD_MULT(pSd))
+#define SD_CSD_BLOCKNR(pSd)            ((SD_CSD_C_SIZE(pSd) + 1) * SD_CSD_MULT(pSd)) * SD_CSD_BLKLEN(pSd)
 
 #define SD_CSD_BLOCKNR_HC(pSd)         ((SD_CSD_C_SIZE_HC(pSd) + 1) * 1024)
 

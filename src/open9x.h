@@ -206,6 +206,12 @@ extern void board_init();
 
 #define PPM_CENTER 1500
 
+#if defined(PPM_CENTER_ADJUSTABLE)
+#define PPM_CH_CENTER(ch) (PPM_CENTER+limitaddress(ch)->ppmCenter)
+#else
+#define PPM_CH_CENTER(ch) (PPM_CENTER)
+#endif
+
 #if defined(CPUARM)
 #include "eeprom_arm.h"
 #include "pulses_arm.h"
@@ -909,8 +915,6 @@ void checkAll();
 void getADC();
 #endif
 
-extern uint8_t  s_eeDirtyMsk;
-
 #define STORE_MODELVARS eeDirty(EE_MODEL)
 #define STORE_GENERALVARS eeDirty(EE_GENERAL)
 
@@ -1345,8 +1349,10 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 uint8_t zlen(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
 #define strcat_modelname(dest, idx) strcat_zchar(dest, ModelNames[idx], sizeof(g_model.name), STR_MODEL, PSIZE(TR_MODEL), idx+1)
-#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, sizeof(PhaseData), STR_FP, PSIZE(TR_FP), idx+1)
-#define strcat_mixername(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, sizeof(MixData), STR_MIX, PSIZE(TR_MIX), idx+1)
+#define strcat_phasename_default(dest, idx) strcat_zchar(dest, NULL, 0, STR_FP, PSIZE(TR_FP), idx+1)
+#define strcat_phasename_nodefault(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, sizeof(PhaseData), NULL, 0, 0)
+#define strcat_mixername_default(dest, idx) strcat_zchar(dest, NULL, 0, STR_MIX, PSIZE(TR_MIX), idx+1)
+#define strcat_mixername_nodefault(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, sizeof(MixData), NULL, 0, 0)
 #define ZLEN(s) zlen(s, sizeof(s))
 #endif
 

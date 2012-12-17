@@ -585,7 +585,7 @@ void lcdSetRefVolt(uint8_t val)
 {
 }
 
-void refreshDisplay()
+void lcdRefresh()
 {
   memcpy(lcd_buf, displayBuf, sizeof(displayBuf));
   lcd_refresh = true;

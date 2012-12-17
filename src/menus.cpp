@@ -637,7 +637,7 @@ void displayPopup(const pm_char * pstr)
   s_warning = pstr;
   displayBox();
   s_warning = 0;
-  refreshDisplay();
+  lcdRefresh();
 }
 
 void displayWarning(uint8_t event)
