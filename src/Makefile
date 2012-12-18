@@ -157,6 +157,11 @@ PXX = NO
 # Values = NO, SERIAL, PPM
 DSM2 = NO
 
+# DSM/PPM TX caddy PCB (Gruvin)
+# For auto-switching switching between DSM2/X and Fr-Sky transmitter modules
+# Values = YES, NO
+TX_CADDY = NO
+
 #IR protocols (SILV / TRAC09 / PICZ / SWIFT)
 IRPROTOS = NO
 
@@ -660,6 +665,10 @@ endif
 
 ifeq ($(DSM2), PPM)
   CPPDEFS += -DDSM2 -DDSM2_PPM
+endif
+
+ifeq ($(TX_CADDY), YES)
+  CPPDEFS += -DTX_CADDY
 endif
 
 ifeq ($(IRPROTOS), YES)

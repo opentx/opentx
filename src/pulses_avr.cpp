@@ -736,6 +736,13 @@ void setupPulses()
     PORTH |= 0x80; // PORTH:7 LOW->HIGH signals start of setupPulses()
 #endif
 
+#if defined (PCBGRUVIN9X) && defined(TX_CADDY)
+    if (required_protocol == PROTO_DSM2)
+      PORTH &= ~0x80;
+    else
+      PORTH |= 0x80;
+#endif
+
   if (s_pulses_paused)
     required_protocol = PROTO_NONE;
 
