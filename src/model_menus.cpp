@@ -2311,7 +2311,7 @@ void menuModelLimits(uint8_t event)
   uint8_t sub = m_posVert - 1;
 
   if (sub < NUM_CHNOUT) {
-#if defined(PPM_CENTER_ADJUSTABLE)
+#if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_UNIT_US)
     lcd_outdezAtt(13*FW, 0, PPM_CH_CENTER(sub)+g_chans512[sub]/2, 0);
     lcd_puts(13*FW, 0, STR_US);
 #else
@@ -2349,7 +2349,6 @@ void menuModelLimits(uint8_t event)
 
 #if defined(LCD212) || !defined(PPM_CENTER_ADJUSTABLE)
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
-
     char swVal = '-';  // '-', '<', '>'
     if((g_chans512[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
     if((g_chans512[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
