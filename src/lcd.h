@@ -34,7 +34,13 @@
 #ifndef lcd_h
 #define lcd_h
 
-#if defined(LCD212)
+#if defined(LCD260)
+#define DISPLAY_W 260
+#define DISPLAY_H  75
+#define xcoord_t uint16_t
+#define CENTER      "\015"
+#define CENTER_OFS  (7*FW-FW/2)
+#elif defined(LCD212)
 #define DISPLAY_W 212
 #define DISPLAY_H  64
 #define xcoord_t uint16_t

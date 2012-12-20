@@ -146,6 +146,11 @@ VARIO = YES
 # Values = YES, NO
 SDCARD = NO
 
+# RTCLOCK
+# Values = YES, NO
+# default = YES (means enabled when available)
+RTCLOCK = YES
+
 # BLUETOOTH
 # Values = YES, NO
 BLUETOOTH = NO
@@ -452,46 +457,71 @@ endif
 
 RUN_FROM_FLASH = 1
 
-ifeq ($(PCB), X9D)
-  # X9D, so ...
+ifeq ($(PCB), ACT)
+  # ACT, so ...
   OPT = 2
-  CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
+  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD260
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
+  EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
   BOARDSRC = board_x9d.cpp 
   EXTRABOARDSRC += x9d/lcd_driver.cpp
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
-  SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
-  SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
-  SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
-  SRC += sky9x/MEDSdcard.c
+#  SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
+#  SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
+#  SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
+#  SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
+#  SRC += sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += sky9x/audio.cpp haptic.cpp
-  CPPSRC += sky9x/sound_driver.cpp sky9x/sdcard_driver.cpp
+#  CPPSRC += sky9x/audio.cpp haptic.cpp
+#  CPPSRC += sky9x/sound_driver.cpp sky9x/sdcard_driver.cpp
   CPPSRC += bmp.cpp monitors_views.cpp
   
   ifeq ($(SDCARD), YES)
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c # sky9x/diskio.cpp
     CPPDEFS += -DVOICE
     EXTRAINCDIRS += FatFs FatFs/option
   endif
-  
-  ifeq ($(BLUETOOTH), YES)
-  	CPPDEFS += -DBLUETOOTH
-  	CPPSRC += sky9x/bluetooth.cpp 
-  endif
-  
+    
   ifeq ($(DEBUG), YES)
   	CPPSRC += sky9x/debug.cpp
   	SRC += sky9x/syscalls.c
   endif
 endif
 
+ifeq ($(PCB), X9D)
+  # X9D, so ...
+  OPT = 2
+  CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
+  EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
+  EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
+  BOARDSRC = board_x9d.cpp
+  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp
+  SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
+  EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
+  PULSESSRC = pulses_arm.cpp
+  CPPSRC += sky9x/audio.cpp
+  CPPSRC += x9d/eeprom_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/audio_driver.cpp
+  CPPSRC += bmp.cpp monitors_views.cpp
+  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
+  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
+  
+  ifeq ($(SDCARD), YES)
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c x9d/diskio.cpp
+    CPPDEFS += -DVOICE
+    EXTRAINCDIRS += FatFs FatFs/option
+  endif
+    
+  ifeq ($(RTCLOCK), YES)
+    CPPDEFS += -DRTCLOCK
+    CPPSRC += rtc.cpp x9d/rtc_driver.cpp
+  endif
+endif
+
 ifeq ($(PCB), SKY9X)
   # SKY9X, so ...
   OPT = 2
-  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DRTCLOCK -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
+  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   BOARDSRC = board_sky9x.cpp
   EXTRABOARDSRC += sky9x/lcd_driver.cpp
@@ -503,14 +533,18 @@ ifeq ($(PCB), SKY9X)
   SRC += sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += rtc.cpp sky9x/rtc_driver.cpp
   CPPSRC += sky9x/audio.cpp haptic.cpp
-  CPPSRC += sky9x/sound_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
+  CPPSRC += sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp  sky9x/audio_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
     EXTRAINCDIRS += FatFs FatFs/option
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
     CPPDEFS += -DVOICE
+  endif
+  
+  ifeq ($(RTCLOCK), YES)
+    CPPDEFS += -DRTCLOCK
+    CPPSRC += rtc.cpp sky9x/rtc_driver.cpp
   endif
   
   ifeq ($(BLUETOOTH), YES)

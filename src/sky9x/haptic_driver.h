@@ -31,5 +31,10 @@
  *
  */
 
+#ifndef haptic_driver_h
+#define haptic_driver_h
+
 extern void hapticOff(void) ;
 extern void hapticOn( uint32_t pwmPercent ) ;
+
+#endif

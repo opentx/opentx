@@ -1,0 +1,66 @@
+/**
+  @page note Note for TrueSTUDIO
+  
+  @verbatim
+  ******************** (C) COPYRIGHT 2012 STMicroelectronics ********************
+  * @file    note.txt
+  * @author  MCD Application Team
+  * @version V1.1.0
+  * @date    13-April-2012
+  * @brief   This file contains the needed step to use "printf" with TrueSTUDIO 
+  *          toolchain.
+  ******************************************************************************
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  @endverbatim
+
+The C runtime library include many functions, including some that typically 
+handle I/O. The I/O related runtime functions include printf(), fopen(), fclose(),
+and many others.
+
+It is common to redirect the I/O from these functions to the actual embedded 
+platform, such as redirecting printf() output to an LCD display or a serial cable,
+or to redirect file operations like fopen() and fclose() to some Flash file 
+system middleware.
+
+The free Lite version of TrueSTUDIO do not support I/O redirection, and instead 
+have do-nothing stubs compiled into the C runtime library.
+
+To support printf() redirection in the professional version, you should do the following:
+ - Open TrueSTUDIO professional and load your project. 
+ - In the Project explorer, Right click on the project and select New->Other...
+ - Expand System calls
+ - Select Minimal System Calls Implementation and click next.
+ - Click on Finish and verify that "syscalls.c" is added to your project.
+ - Add the following code in the _write() function in "syscalls.c". 
+
+  @code
+   /*****************************************/
+   int Index;
+  
+   for (Index = 0; Index < len; Index++)
+   {
+      __io_putchar( *ptr++ );
+   }
+
+   return len;
+   /*****************************************/
+   @endcode
+   
+ - Finally, Rebuild your project.
+
+
+ * <h3><center>&copy; COPYRIGHT STMicroelectronics</center></h3>
+ */

@@ -43,13 +43,19 @@ uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 
-#if defined(CPUARM)
+#if defined(PCBX9D)
+GPIO_TypeDef gpiob;
+GPIO_TypeDef gpioc;
+#elif defined(PCBSKY9X)
 Pio Pioa, Piob, Pioc;
 Pwm pwm;
 Twi Twio;
 Usart Usart0;
 Dacc dacc;
 Adc Adc0;
+#endif
+
+#if defined(CPUARM)
 uint32_t eeprom_pointer;
 char* eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;
@@ -82,93 +88,94 @@ sem_t *eeprom_write_sem;
       break;
 #endif
 
+
 void setSwitch(int8_t swtch)
 {
   switch (swtch) {
 #if defined(PCBX9D)
     case DSW(SW_SA0):
-      PIOC->PIO_PDSR &= ~(1<<31);
+    GPIOB->IDR &= ~(1<<31);
       break;
     case DSW(SW_SA2):
-      PIOC->PIO_PDSR |= (1<<31);
+      GPIOB->IDR |= (1<<31);
       break;
     case DSW(SW_SB0):
-      PIOC->PIO_PDSR &= ~(1<<26);
-      PIOC->PIO_PDSR &= ~(1<<27);
+      GPIOB->IDR &= ~(1<<26);
+      GPIOB->IDR &= ~(1<<27);
       break;
     case DSW(SW_SB1):
-      PIOC->PIO_PDSR |= (1<<27);
-      PIOC->PIO_PDSR &= ~(1<<26);
+      GPIOB->IDR |= (1<<27);
+      GPIOB->IDR &= ~(1<<26);
       break;
     case DSW(SW_SB2):
-      PIOC->PIO_PDSR |= (1<<26);
-      PIOC->PIO_PDSR &= ~(1<<27);
+      GPIOB->IDR |= (1<<26);
+      GPIOB->IDR &= ~(1<<27);
       break;
     case DSW(SW_SC0):
-      PIOC->PIO_PDSR &= ~(1<<22);
-      PIOC->PIO_PDSR &= ~(1<<23);
+      GPIOB->IDR &= ~(1<<22);
+      GPIOB->IDR &= ~(1<<23);
       break;
     case DSW(SW_SC1):
-      PIOC->PIO_PDSR |= (1<<23);
-      PIOC->PIO_PDSR &= ~(1<<22);
+      GPIOB->IDR |= (1<<23);
+      GPIOB->IDR &= ~(1<<22);
       break;
     case DSW(SW_SC2):
-      PIOC->PIO_PDSR |= (1<<22);
-      PIOC->PIO_PDSR &= ~(1<<23);
+      GPIOB->IDR |= (1<<22);
+      GPIOB->IDR &= ~(1<<23);
       break;
     case DSW(SW_SD0):
-      PIOC->PIO_PDSR &= ~(1<<20);
-      PIOC->PIO_PDSR &= ~(1<<21);
+      GPIOB->IDR &= ~(1<<20);
+      GPIOB->IDR &= ~(1<<21);
       break;
     case DSW(SW_SD1):
-      PIOC->PIO_PDSR |= (1<<21);
-      PIOC->PIO_PDSR &= ~(1<<20);
+      GPIOB->IDR |= (1<<21);
+      GPIOB->IDR &= ~(1<<20);
       break;
     case DSW(SW_SD2):
-      PIOC->PIO_PDSR |= (1<<20);
-      PIOC->PIO_PDSR &= ~(1<<21);
+      GPIOB->IDR |= (1<<20);
+      GPIOB->IDR &= ~(1<<21);
       break;
     case DSW(SW_SE0):
-      PIOC->PIO_PDSR &= ~(1<<18);
-      PIOC->PIO_PDSR &= ~(1<<19);
+      GPIOB->IDR &= ~(1<<18);
+      GPIOB->IDR &= ~(1<<19);
       break;
     case DSW(SW_SE1):
-      PIOC->PIO_PDSR |= (1<<19);
-      PIOC->PIO_PDSR &= ~(1<<18);
+      GPIOB->IDR |= (1<<19);
+      GPIOB->IDR &= ~(1<<18);
       break;
     case DSW(SW_SE2):
-      PIOC->PIO_PDSR |= (1<<18);
-      PIOC->PIO_PDSR &= ~(1<<19);
+      GPIOB->IDR |= (1<<18);
+      GPIOB->IDR &= ~(1<<19);
       break;
     case DSW(SW_SF0):
-      PIOC->PIO_PDSR &= ~(1<<16);
-      PIOC->PIO_PDSR &= ~(1<<17);
+      GPIOB->IDR &= ~(1<<16);
+      GPIOB->IDR &= ~(1<<17);
       break;
     case DSW(SW_SF1):
-      PIOC->PIO_PDSR |= (1<<17);
-      PIOC->PIO_PDSR &= ~(1<<16);
+      GPIOB->IDR |= (1<<17);
+      GPIOB->IDR &= ~(1<<16);
       break;
     case DSW(SW_SF2):
-      PIOC->PIO_PDSR |= (1<<16);
-      PIOC->PIO_PDSR &= ~(1<<17);
+      GPIOB->IDR |= (1<<16);
+      GPIOB->IDR &= ~(1<<17);
       break;
     case DSW(SW_SG0):
-      PIOC->PIO_PDSR &= ~(1<<14);
-      PIOC->PIO_PDSR &= ~(1<<15);
+      GPIOB->IDR &= ~(1<<14);
+      GPIOB->IDR &= ~(1<<15);
       break;
     case DSW(SW_SG1):
-      PIOC->PIO_PDSR |= (1<<15);
-      PIOC->PIO_PDSR &= ~(1<<14);
+      GPIOB->IDR |= (1<<15);
+      GPIOB->IDR &= ~(1<<14);
       break;
     case DSW(SW_SG2):
-      PIOC->PIO_PDSR |= (1<<14);
-      PIOC->PIO_PDSR &= ~(1<<15);
+      GPIOB->IDR |= (1<<14);
+      GPIOB->IDR &= ~(1<<15);
       break;
     case DSW(SW_SH0):
-      PIOC->PIO_PDSR &= ~(1<<13);
+      GPIOB->IDR &= ~(1<<13);
       break;
     case DSW(SW_SH2):
-      PIOC->PIO_PDSR |= (1<<13);
+      GPIOB->IDR |= (1<<13);
       break;
 #elif defined(PCBSKY9X)
     case DSW(SW_ID0):
@@ -325,6 +332,10 @@ void *main_thread(void *)
       checkLowEEPROM();
 #endif
 
+#if defined(CPUARM)
+      eeLoadModel(g_eeGeneral.currModel);
+#endif
+
       checkTHR();
       checkSwitches();
       checkAlarm();
@@ -439,7 +450,7 @@ FATFS g_FATFS_Obj;
 FRESULT f_stat (const TCHAR * path, FILINFO *)
 {
   struct stat tmp;
-  // printf("f_stat(%s)\n", path); fflush(stdout);
+  printf("f_stat(%s)\n", path); fflush(stdout);
   return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 

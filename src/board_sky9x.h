@@ -36,7 +36,7 @@
 
 #include <stdio.h>
 #include "sky9x/board.h"
-#include "sky9x/sound_driver.h"
+#include "sky9x/audio_driver.h"
 #include "sky9x/haptic_driver.h"
 #include "sky9x/debug.h"
 
@@ -84,8 +84,8 @@ uint8_t getTemperature();
 #define strcpy_P strcpy
 #define strcat_P strcat
 
-extern uint32_t read_keys();
-#define KEYS_PRESSED() (~read_keys())
+extern uint32_t readKeys();
+#define KEYS_PRESSED() (~readKeys())
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
@@ -99,6 +99,8 @@ extern uint32_t Current_used;
 extern uint16_t sessionTimer;
 #endif
 
+void soft_power_off();
+
 #if defined(REVC)
 #define BOOTLOADER_REQUEST() (usbPlugged())
 #else
@@ -110,5 +112,13 @@ extern uint16_t sessionTimer;
 #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
 
 void setSticksGain(uint8_t gains);
+
+uint32_t spi_operation( register uint8_t *tx, register uint8_t *rx, register uint32_t count );
+
+#define wdt_disable()
+#define wdt_enable(x) WDT->WDT_MR = 0x3FFF217F;
+#define wdt_reset()   WDT->WDT_CR = 0xA5000001
+
+#define setBacklight(xx) PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx;
 
 #endif

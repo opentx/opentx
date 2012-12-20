@@ -577,7 +577,9 @@ ISR(USART0_RX_vect)
 #if defined(CPUARM)
 void frskyTransmitBuffer( uint32_t size )
 {
+#if defined(PCBSKY9X)
   txPdcUsart( frskyTxBuffer, size ) ;
+#endif
 }
 #else
 void frskyTransmitBuffer()
@@ -607,8 +609,10 @@ void frskyPushValue(uint8_t *&ptr, uint8_t value)
 
 inline void FRSKY10mspoll(void)
 {
+#if defined(PCBSKY9X)
   if (txPdcPending())
     return; // we only have one buffer. If it's in use, then we can't send yet.
+#endif
 
   uint8_t *ptr = &frskyTxBuffer[0];
 
@@ -702,7 +706,7 @@ inline void FRSKY10mspoll(void)
 
 NOINLINE void check_frsky()
 {
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
   rxPdcUsart(processSerialData);              // Receive serial data here
 #endif
 
@@ -869,7 +873,9 @@ void FRSKY_Init(void)
   // clear frsky variables
   resetTelemetry();
 
-#if defined(CPUARM)
+#if defined(PCBX9D)
+  // TODO
+#elif defined(PCBSKY9X)
   startPdcUsartReceive() ;
 #elif !defined(SIMU)
 

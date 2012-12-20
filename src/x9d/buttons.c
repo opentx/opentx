@@ -1,9 +1,6 @@
-#include "stm32f2xx.h"
-#include "hal.h"
-#include "buttons.h"
+#include "../open9x.h"
 
-
-void Buttons_Init() //上拉输入状态
+void Buttons_Init()
 {
     GPIO_InitTypeDef GPIO_InitStructure;
     /* GPIOC GPIOD clock enable */
@@ -56,7 +53,7 @@ void detect_buttons()
 {
 				/*short t_pin;short t_pin1;
 				static short key_down_interval;
-				key_down_interval++;//计数循环多少次有键按下
+				key_down_interval++;
                 
 				t_pin = (~(GPIOC->IDR)) &(PIN_BUTTON_UP | PIN_BUTTON_ENTER | PIN_BUTTON_DOWN);
 				t_pin1=(~(GPIOB->IDR)) &(PIN_POWER | PIN_BIND); 

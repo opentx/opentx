@@ -87,6 +87,9 @@ extern void beep(uint8_t val);
 #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
 #define AUDIO_RESET()
 
+#define PLAY_PHASE_OFF(phase)
+#define PLAY_PHASE_ON(phase)
+
 #if !defined(CPUARM)
 inline void AUDIO_HEARTBEAT()
 {

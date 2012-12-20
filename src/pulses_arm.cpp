@@ -60,87 +60,17 @@ void setupPulsesPPM();
 void setupPulsesDsm2(uint8_t chns);
 void setupPulsesPXX();
 
-static void init_main_ppm( uint32_t period, uint32_t out_enable )
-{
-  register Pio *pioptr ;
-  register Pwm *pwmptr ;
-
-  setupPulsesPPM() ;
-
-  if ( out_enable )
-  {
-    pioptr = PIOA ;
-    pioptr->PIO_ABCDSR[0] &= ~PIO_PA17 ;            // Peripheral C
-    pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
-    pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
-  }
-
-  pwmptr = PWM ;
-  // PWM3 for PPM output
-  pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0000000B ;                  // CLKA
-  if (g_model.pulsePol)
-    pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;               // CPOL
-  pwmptr->PWM_CH_NUM[3].PWM_CPDR = period ;                     // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period ;                  // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.ppmDelay*100+600;    // Duty in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.ppmDelay*100+600; // Duty in half uS
-  pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
-
-  NVIC_EnableIRQ(PWM_IRQn) ;
-  pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
-}
-
-void disable_main_ppm()
-{
-  register Pio *pioptr ;
-
-  pioptr = PIOA ;
-  pioptr->PIO_PER = PIO_PA17 ;                                            // Assign A17 to PIO
-
-  PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
-  NVIC_DisableIRQ(PWM_IRQn) ;
-}
-
-// Initialise the SSC to allow PXX output.
-// TD is on PA17, peripheral A
-void init_ssc()
-{
-  register Ssc *sscptr ;
-
-  PMC->PMC_PCER0 |= 0x00400000L ;               // Enable peripheral clock to SSC
-
-  configure_pins( PIO_PA17, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
-
-  sscptr = SSC ;
-  sscptr->SSC_CMR = Master_frequency / (125000*2) ;               // 8uS per bit
-  sscptr->SSC_TCMR = 0 ;          //  0000 0000 0000 0000 0000 0000 0000 0000
-  sscptr->SSC_TFMR = 0x00000027 ;         //  0000 0000 0000 0000 0000 0000 1010 0111 (8 bit data, lsb)
-  sscptr->SSC_CR = SSC_CR_TXEN ;
-}
-
-void disable_ssc()
-{
-  register Pio *pioptr ;
-  register Ssc *sscptr ;
-
-  // Revert back to pwm output
-  pioptr = PIOA ;
-  pioptr->PIO_PER = PIO_PA17 ;                                         // Assign A17 to PIO
-
-  sscptr = SSC ;
-  sscptr->SSC_CR = SSC_CR_TXDIS ;
-}
-
 void startPulses()
 {
-  init_main_ppm( 3000, 1 ) ;            // Default for now, initial period 1.5 mS, output on
+  init_main_ppm(3000, 1) ;            // Default for now, initial period 1.5 mS, output on
 }
 
 void setupPulsesPPM()                   // Don't enable interrupts through here
 {
-  register Pwm *pwmptr;
+#if !defined(PCBX9D)
+  register Pwm *pwmptr = PWM;
+#endif
 
-  pwmptr = PWM;
   // Now set up pulses
 
   int16_t PPM_range = g_model.extendedLimits ? 640 * 2 : 512 * 2; //range of 0.7..1.7msec
@@ -152,11 +82,13 @@ void setupPulsesPPM()                   // Don't enable interrupts through here
   ptr = Pulses;
   uint32_t p = 8 + g_model.ppmNCH * 2; //Channels *2
 
+#if !defined(PCBX9D)
   pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = (g_model.ppmDelay * 50 + 300) * 2; //Stoplen *2
   if (g_model.pulsePol)
     pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;   // CPOL
   else
     pwmptr->PWM_CH_NUM[3].PWM_CMR &= ~0x00000200 ;  // CPOL
+#endif
 
   uint32_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
   rest += (int32_t(g_model.ppmFrameLength)) * 1000;
@@ -405,6 +337,7 @@ void setupPulsesDsm2(uint8_t chns)
   }
 }
 
+#if !defined(SIMU) && !defined(PCBX9D)
 extern "C" void PWM_IRQHandler(void)
 {
   register Pwm *pwmptr;
@@ -418,24 +351,21 @@ extern "C" void PWM_IRQHandler(void)
       case PROTO_PXX:
         // Alternate periods of 15.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
-        if (period == 5000) // 2.5 mS
-            {
+        if (period == 5000) { // 2.5 mS
           period = 15500 * 2;
         }
         else {
           period = 5000;
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
-        if (period != 5000) // 2.5 mS
-            {
+        if (period != 5000) { // 2.5 mS
           setupPulses();
         }
         else {
+
           // Kick off serial output here
           sscptr = SSC;
-#ifndef SIMU
           sscptr->SSC_TPR = (uint32_t) Bit_pulses;
-#endif
           sscptr->SSC_TCR = Serial_byte_count;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
@@ -459,9 +389,7 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           sscptr = SSC;
-#ifndef SIMU
           sscptr->SSC_TPR = (uint32_t) Bit_pulses;
-#endif
           sscptr->SSC_TCR = Serial_byte_count;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
@@ -478,6 +406,7 @@ extern "C" void PWM_IRQHandler(void)
     }
   }
 }
+#endif
 
 void setupPulses()
 {

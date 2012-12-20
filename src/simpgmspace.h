@@ -95,8 +95,14 @@ typedef const uint8_t pm_uint8_t;
 typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
-extern sem_t *eeprom_write_sem;
-#if defined(CPUARM)
+#if defined(PCBX9D)
+extern GPIO_TypeDef gpiob;
+#undef GPIOB
+#define GPIOB (&gpiob)
+extern GPIO_TypeDef gpioc;
+#undef GPIOC
+#define GPIOC (&gpioc)
+#elif defined(PCBSKY9X)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
 extern Dacc dacc;
@@ -119,6 +125,10 @@ extern Adc Adc0;
 extern Pwm pwm;
 #undef PWM
 #define PWM (&pwm)
+#endif
+
+extern sem_t *eeprom_write_sem;
+#if defined(CPUARM)
 extern uint32_t eeprom_pointer;
 extern char* eeprom_buffer_data;
 extern volatile int32_t eeprom_buffer_size;

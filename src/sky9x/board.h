@@ -39,17 +39,14 @@
 #include <stdint.h>
 #include "chip.h"
 
-#ifdef REVA
+#if defined(REVA)
 #include "AT91SAM3S2.h"
 #else
 #include "AT91SAM3S4.h"
 #endif
 
-#ifdef SIMU
-#define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
-#else
+#if !defined(SIMU)
 #include "core_cm3.h"
-#define CONVERT_PTR(x) ((uint32_t)(x))
 #endif
 
 //------------------------------------------------------------------------------

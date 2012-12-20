@@ -243,7 +243,7 @@ void per10ms()
   /* Update global Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100) {
     g_rtcTime++;   // inc global unix timestamp one second
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
     if (g_rtcTime < 60 || rtc_count<5) {
       rtc_init();
       rtc_count++;
@@ -1496,15 +1496,15 @@ uint8_t checkTrim(uint8_t event)
 #endif
 }
 
-#if defined(CPUARM) && !defined(REVA)
+#if defined(PCBSKY9X) && !defined(REVA)
 uint16_t Current_analogue;
 uint16_t Current_max;
 uint32_t Current_accumulator;
 uint32_t Current_used;
+#endif
+
+#if defined(CPUARM) && !defined(REVA)
 uint16_t sessionTimer;
-#define NUMBER_ANALOG   9
-#else
-#define NUMBER_ANALOG   8
 #endif
 
 #if !defined(SIMU)
@@ -1535,13 +1535,15 @@ uint16_t anaIn(uint8_t chan)
   //                     ana-in:   3 1 2 0 4 5 6 7
   //static pm_char crossAna[] PROGMEM ={4,2,3,1,5,6,7,0}; // wenn schon Tabelle, dann muss sich auch lohnen
   //                        Google Translate (German): // if table already, then it must also be worthwhile
-#if defined(CPUARM)
-  static const uint8_t crossAna[]={1,5,7,0,4,6,2,3,8};
-#if !defined(REVA)
+
+#if defined(PCBSKY9X) && !defined(REVA)
   if (chan == 8) {
     return Current_analogue ;
   }
 #endif
+
+#if defined(CPUARM)
+  static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
 #else
   static const pm_char crossAna[] PROGMEM ={3,1,2,0,4,5,6,7};
 #endif
@@ -1558,6 +1560,7 @@ void getADC()
   uint16_t temp[NUMBER_ANALOG] = { 0 };
 
   for( y = 0; y < 4; y += 1 ) {
+    // TODO change this function!
     read_9_adc();
     for( x = 0; x < NUMBER_ANALOG; x += 1 )
     {
@@ -1956,7 +1959,8 @@ void evalFunctions()
 {
   MASK_FUNC_TYPE newActiveFunctions = 0;
 
-#if defined(ROTARY_ENCODERS) && defined(GVARS)
+#if defined(ROTARY_ENCODERS) && defined(GVARS) && !defined(PCBX9D)
+  // TODO modify the PCBX9D ifdef
   static rotenc_t rePreviousValues[ROTARY_ENCODERS];
 #endif
 
@@ -2131,7 +2135,8 @@ void evalFunctions()
             if (FSW_PARAM(sd) >= MIXSRC_TrimRud-1 && FSW_PARAM(sd) <= MIXSRC_TrimAil-1) {
               trimGvar[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = sd->func-FUNC_ADJUST_GV1;
             }
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS) && !defined(PCBX9D)
+            // TODO modify these ifdef
             else if (FSW_PARAM(sd) >= MIXSRC_REa-1 && FSW_PARAM(sd) < MIXSRC_TrimRud-1) {
               int8_t scroll = rePreviousValues[FSW_PARAM(sd)-MIXSRC_REa+1] - (g_rotenc[FSW_PARAM(sd)-MIXSRC_REa+1] / ROTARY_ENCODER_GRANULARITY);
               if (scroll) {
@@ -2180,7 +2185,8 @@ void evalFunctions()
 
   activeFunctions = newActiveFunctions;
 
-#if defined(ROTARY_ENCODERS) && defined(GVARS)
+#if defined(ROTARY_ENCODERS) && defined(GVARS) && !defined(PCBX9D)
+  // TODO review #ifdef PCBX9D
   for (uint8_t i=0; i<ROTARY_ENCODERS; i++)
     rePreviousValues[i] = (g_rotenc[i] / ROTARY_ENCODER_GRANULARITY);
 #endif
@@ -2521,7 +2527,7 @@ FORCEINLINE void doMixerCalculations()
 
   getADC();
 
-#if defined(CPUARM) && !defined(REVA) && !defined(SIMU)
+#if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
   if (Current_analogue > Current_max)
     Current_max = Current_analogue ;
@@ -2537,13 +2543,13 @@ FORCEINLINE void doMixerCalculations()
   static uint16_t fp_act[MAX_PHASES] = {0};
   static uint16_t delta = 0;
   static ACTIVE_PHASES_TYPE s_fade_flight_phases = 0;
-  static uint8_t s_last_phase = 255;
+  static uint8_t s_last_phase = 255; // TODO reinit everything here when the model changes, no???
   uint8_t phase = getFlightPhase();
   int32_t weight = 0;
 
   if (s_last_phase != phase) {
-    // PLAY_PHASE_OFF(s_last_phase);
-    // PLAY_PHASE_ON(phase);
+    if (s_last_phase != 255) PLAY_PHASE_OFF(s_last_phase);
+    PLAY_PHASE_ON(phase);
 
     if (s_last_phase == 255) {
       fp_act[phase] = MAX_ACT;
@@ -2849,7 +2855,9 @@ void perMain()
 #if defined(CPUARM)
   if (!Tenms) return;
   Tenms = 0 ;
+#endif
 
+#if defined(PCBSKY9X)
   Current_accumulator += Current_analogue ;
   static uint32_t OneSecTimer;
   if (++OneSecTimer >= 100) {
@@ -2920,7 +2928,7 @@ void perMain()
   if (counter-- == 0) {
     counter = 10;
 #if defined(PCBX9D)
-    int32_t instant_vbat = anaIn(8);
+    int32_t instant_vbat = anaIn(7);
     instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
     instant_vbat /= 55296  ;
 #elif defined(PCBSKY9X)
@@ -2956,6 +2964,8 @@ void perMain()
       else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
         AUDIO_TX_TEMP_HIGH();
       }
+#endif
+#if defined(PCBSKY9X)
       else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
         AUDIO_TX_MAH_HIGH();
       }
@@ -3348,7 +3358,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 
 #if defined(CPUARM)
   setVolume(g_eeGeneral.speakerVolume);
-  PWM->PWM_CH_NUM[0].PWM_CDTYUPD = g_eeGeneral.backlightBright;
+  setBacklight(g_eeGeneral.backlightBright);
 #elif defined(VOICE)
   SET_VOLUME(g_eeGeneral.speakerVolume+7);
 #endif
@@ -3473,11 +3483,15 @@ void menusTask(void * pdata)
 
   saveTimers();
 
+#if defined(PCBSKY9X)
   uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
   if (g_eeGeneral.mAhUsed != mAhUsed)
     g_eeGeneral.mAhUsed = mAhUsed;
+#endif
+
   if (sessionTimer > 0)
     g_eeGeneral.globalTimer += sessionTimer;
+
   g_eeGeneral.unexpectedShutdown = 0;
 
   eeDirty(EE_GENERAL);

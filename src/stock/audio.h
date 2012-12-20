@@ -31,6 +31,9 @@
  *
  */
 
+#ifndef audio_h
+#define audio_h
+
 #if defined(PCBSTD)
 #define SPEAKER_ON   BUZZER_ON
 #define SPEAKER_OFF  toneFreq=0; BUZZER_OFF
@@ -107,46 +110,51 @@ extern audioQueue audio;
 
 void audioDefevent(uint8_t e);
 
-#define AUDIO_KEYPAD_UP()   audioDefevent(AU_KEYPAD_UP)
-#define AUDIO_KEYPAD_DOWN() audioDefevent(AU_KEYPAD_DOWN)
-#define AUDIO_MENUS()       audioDefevent(AU_MENUS)
-#define AUDIO_WARNING1()    audioDefevent(AU_WARNING1)
-#define AUDIO_WARNING2()    audioDefevent(AU_WARNING2)
-#define AUDIO_ERROR()       audioDefevent(AU_ERROR)
+#define AUDIO_KEYPAD_UP()      audioDefevent(AU_KEYPAD_UP)
+#define AUDIO_KEYPAD_DOWN()    audioDefevent(AU_KEYPAD_DOWN)
+#define AUDIO_MENUS()          audioDefevent(AU_MENUS)
+#define AUDIO_WARNING1()       audioDefevent(AU_WARNING1)
+#define AUDIO_WARNING2()       audioDefevent(AU_WARNING2)
+#define AUDIO_ERROR()          audioDefevent(AU_ERROR)
 #if defined(VOICE)
-#define AUDIO_TADA()        pushPrompt(PROMPT_SYSTEM_BASE+AU_TADA)
+#define AUDIO_TADA()           pushPrompt(PROMPT_SYSTEM_BASE+AU_TADA)
 #define AUDIO_TX_BATTERY_LOW() pushPrompt(PROMPT_SYSTEM_BASE+AU_TX_BATTERY_LOW)
-#define AUDIO_INACTIVITY()  pushPrompt(PROMPT_SYSTEM_BASE+AU_INACTIVITY)
+#define AUDIO_INACTIVITY()     pushPrompt(PROMPT_SYSTEM_BASE+AU_INACTIVITY)
 #define AUDIO_ERROR_MESSAGE(e) pushPrompt(PROMPT_SYSTEM_BASE+(e))
-#define AUDIO_TIMER_30()    pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_30)
-#define AUDIO_TIMER_20()    pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_20)
-#define AUDIO_TIMER_10()    pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_10)
-#define AUDIO_TIMER_LT3(x)  pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_LT3)
+#define AUDIO_TIMER_30()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_30)
+#define AUDIO_TIMER_20()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_20)
+#define AUDIO_TIMER_10()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_10)
+#define AUDIO_TIMER_LT3(x)     pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_LT3)
 #else
 #define AUDIO_TADA()
 #define AUDIO_TX_BATTERY_LOW() audioDefevent(AU_TX_BATTERY_LOW)
-#define AUDIO_INACTIVITY()  audioDefevent(AU_INACTIVITY)
+#define AUDIO_INACTIVITY()     audioDefevent(AU_INACTIVITY)
 #define AUDIO_ERROR_MESSAGE(e) audioDefevent(AU_ERROR)
-#define AUDIO_TIMER_30()    audioDefevent(AU_TIMER_30)
-#define AUDIO_TIMER_20()    audioDefevent(AU_TIMER_20)
-#define AUDIO_TIMER_10()    audioDefevent(AU_TIMER_10)
-#define AUDIO_TIMER_LT3(x)  audioDefevent(AU_TIMER_LT3)
+#define AUDIO_TIMER_30()       audioDefevent(AU_TIMER_30)
+#define AUDIO_TIMER_20()       audioDefevent(AU_TIMER_20)
+#define AUDIO_TIMER_10()       audioDefevent(AU_TIMER_10)
+#define AUDIO_TIMER_LT3(x)     audioDefevent(AU_TIMER_LT3)
 #endif
 
-#define AUDIO_MINUTE_BEEP() audioDefevent(AU_WARNING1)
-#define AUDIO_MIX_WARNING_1() audioDefevent(AU_MIX_WARNING_1)
-#define AUDIO_MIX_WARNING_2() audioDefevent(AU_MIX_WARNING_2)
-#define AUDIO_MIX_WARNING_3() audioDefevent(AU_MIX_WARNING_3)
+#define AUDIO_MINUTE_BEEP()    audioDefevent(AU_WARNING1)
+#define AUDIO_MIX_WARNING_1()  audioDefevent(AU_MIX_WARNING_1)
+#define AUDIO_MIX_WARNING_2()  audioDefevent(AU_MIX_WARNING_2)
+#define AUDIO_MIX_WARNING_3()  audioDefevent(AU_MIX_WARNING_3)
 #define AUDIO_POT_STICK_MIDDLE() audioDefevent(AU_POT_STICK_MIDDLE)
-#define AUDIO_VARIO_UP()    audioDefevent(AU_KEYPAD_UP)
-#define AUDIO_VARIO_DOWN()  audioDefevent(AU_KEYPAD_DOWN)
-#define AUDIO_TRIM_MIDDLE(f) audio.event(AU_TRIM_MIDDLE, f)
-#define AUDIO_TRIM_END(f)    AUDIO_TRIM_MIDDLE(f)
-#define AUDIO_TRIM(event, f) audio.event(AU_TRIM_MOVE, f)
-#define AUDIO_PLAY(p)       audio.event(p)
-#define AUDIO_VARIO(f, t)   audio.play(f, t, 0, PLAY_BACKGROUND)
+#define AUDIO_VARIO_UP()       audioDefevent(AU_KEYPAD_UP)
+#define AUDIO_VARIO_DOWN()     audioDefevent(AU_KEYPAD_DOWN)
+#define AUDIO_TRIM_MIDDLE(f)   audio.event(AU_TRIM_MIDDLE, f)
+#define AUDIO_TRIM_END(f)      AUDIO_TRIM_MIDDLE(f)
+#define AUDIO_TRIM(event, f)   audio.event(AU_TRIM_MOVE, f)
+#define AUDIO_PLAY(p)          audio.event(p)
+#define AUDIO_VARIO(f, t)      audio.play(f, t, 0, PLAY_BACKGROUND)
 
-#define AUDIO_DRIVER()      audio.driver()
-#define AUDIO_HEARTBEAT()   audio.heartbeat()
-#define IS_AUDIO_BUSY()     audio.busy()
+#define AUDIO_DRIVER()         audio.driver()
+#define AUDIO_HEARTBEAT()      audio.heartbeat()
+#define IS_AUDIO_BUSY()        audio.busy()
 #define AUDIO_RESET()
+
+#define PLAY_PHASE_OFF(phase)
+#define PLAY_PHASE_ON(phase)
+
+#endif

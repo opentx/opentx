@@ -113,7 +113,6 @@ inline uint8_t getAvailableFiles(char *prefix, FILINFO &info, char *filename)
 
 void refreshModelAudioFiles()
 {
-#if 0
   FILINFO info;
 #if _USE_LFN
   TCHAR lfn[_MAX_LFN + 1];
@@ -121,7 +120,7 @@ void refreshModelAudioFiles()
   info.lfsize = sizeof(lfn);
 #endif
 
-  char filename[32] = SOUNDS_PATH "/"; // TODO not 32!
+  char filename[64] = SOUNDS_PATH "/";
 
   if (sd_card_mounted()) {
     char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
@@ -134,17 +133,19 @@ void refreshModelAudioFiles()
     }
 
     for (uint32_t i=0; i<MAX_MIXERS; i++) {
-      sdAvailableMixerAudioFiles[i] = getAvailableFiles(strcat_mixername_default(buf, i), info, filename) << 4;
       char *tmp = strcat_mixername_nodefault(buf, i);
-      if (tmp != buf) sdAvailableMixerAudioFiles[i] += getAvailableFiles(tmp, info, filename);
+      sdAvailableMixerAudioFiles[i] = (tmp != buf ? getAvailableFiles(tmp, info, filename) : 0);
     }
   }
-#endif
 }
 
 bool isAudioFileAvailable(uint32_t i, char * filename)
 {
   uint8_t category = (i >> 24);
+
+#if defined(SIMU)
+  printf("isAudioFileAvailable(%08x)\n", i); fflush(stdout);
+#endif
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
     if (sdAvailableSystemAudioFiles & ((uint32_t)1 << i)) {
@@ -154,7 +155,6 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
       return true;
     }
   }
-#if 0
   else if (category == PHASE_AUDIO_CATEGORY) {
     uint8_t index = (i >> 16) & 0xFF;
     uint8_t event = i & 0xFF;
@@ -162,7 +162,7 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
       strcpy(filename, SOUNDS_PATH "/");
       char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
       *str++ = '/';
-      char * tmp = strcat_phasename_nodefault(str, i);
+      char * tmp = strcat_phasename_nodefault(str, index);
       if (tmp != str) {
         strcpy(tmp, suffixes[event]);
         strcat(tmp, SOUNDS_EXT);
@@ -173,7 +173,7 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
       strcpy(filename, SOUNDS_PATH "/");
       char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
       *str++ = '/';
-      char * tmp = strcat_phasename_default(str, i);
+      char * tmp = strcat_phasename_default(str, index);
       if (tmp != str) {
         strcpy(tmp, suffixes[event]);
         strcat(tmp, SOUNDS_EXT);
@@ -188,18 +188,7 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
       strcpy(filename, SOUNDS_PATH "/");
       char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
       *str++ = '/';
-      char * tmp = strcat_mixername_nodefault(str, i);
-      if (tmp != str) {
-        strcpy(tmp, suffixes[event]);
-        strcat(tmp, SOUNDS_EXT);
-        return true;
-      }
-    }
-    else if ((sdAvailableMixerAudioFiles[index] >> 4) & (1 << event)) {
-      strcpy(filename, SOUNDS_PATH "/");
-      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-      *str++ = '/';
-      char * tmp = strcat_mixername_default(str, i);
+      char * tmp = strcat_mixername_nodefault(str, index);
       if (tmp != str) {
         strcpy(tmp, suffixes[event]);
         strcat(tmp, SOUNDS_EXT);
@@ -207,7 +196,7 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
       }
     }
   }
-#endif
+
   return false;
 }
 #else
@@ -381,11 +370,11 @@ void AudioQueue::sdWakeup(AudioContext & context)
       }
 
       read /= 2;
-      register Dacc *dacptr = DACC;
 
+#if defined(PCBSKY9X)
+      register Dacc *dacptr = DACC;
       if (read) {
         state = AUDIO_PLAYING_WAV;
-
         if (dacptr->DACC_ISR & DACC_ISR_TXBUFE) {
           dacptr->DACC_TPR = CONVERT_PTR(wavSamplesBuffer);
           dacptr->DACC_TCR = read;
@@ -403,7 +392,6 @@ void AudioQueue::sdWakeup(AudioContext & context)
           CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 500) / context.pcmFreq, 0);
           CoStartTmr(audioTimer);
         }
-
         wavSamplesBuffer += WAV_BUFFER_SIZE;
         if (wavSamplesBuffer >= wavSamplesArray + 3 * WAV_BUFFER_SIZE)
           wavSamplesBuffer = wavSamplesArray;
@@ -412,6 +400,7 @@ void AudioQueue::sdWakeup(AudioContext & context)
         state = AUDIO_RESUMING;
         CoSetFlag(audioFlag);
       }
+#endif
     }
   }
   else {
@@ -439,11 +428,13 @@ void AudioQueue::wakeup()
     if (state != AUDIO_PLAYING_TONE) {
       state = AUDIO_PLAYING_TONE;
 
+#if !defined(PCBX9D)
       register Dacc *dacptr = DACC;
       dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
       dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);
       dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
       dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
+#endif
     }
 
     setFrequency(fragment.freq * 6100 / 4);
@@ -483,11 +474,13 @@ void AudioQueue::wakeup()
   else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.duration > 0) {
     if (state != AUDIO_PLAYING_TONE) {
       state = AUDIO_PLAYING_TONE;
+#if !defined(PCBX9D)
       register Dacc *dacptr = DACC;
       dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
       dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);
       dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
       dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
+#endif
     }
     CoSetTmrCnt(audioTimer, backgroundContext.fragment.duration*2, 0);
     backgroundContext.fragment.duration = 0;

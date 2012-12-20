@@ -178,9 +178,6 @@ typedef const int8_t pm_int8_t;
 #define pgm_read_adr(x) *(x)
 #define cli()
 #define sei()
-#define wdt_disable()
-#define wdt_enable(x) WDT->WDT_MR = 0x3FFF217F;
-#define wdt_reset()   WDT->WDT_CR = 0xA5000001
 extern void board_init();
 #else
 #include <avr/io.h>
@@ -768,17 +765,19 @@ enum PerOutMode {
   e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
 };
 
-#ifdef SIMU
+#if defined(SIMU)
 #ifndef FORCEINLINE
 #define FORCEINLINE
 #endif
 #ifndef NOINLINE
 #define NOINLINE
 #endif
+#define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
 #else
 #define FORCEINLINE inline __attribute__ ((always_inline))
 #define NOINLINE __attribute__ ((noinline))
 #define SIMU_SLEEP(x)
+#define CONVERT_PTR(x) ((uint32_t)(x))
 #endif
 
 // Fiddle to force compiler to use a pointer
@@ -877,7 +876,9 @@ extern uint8_t s_traceWr;
 extern int8_t s_traceCnt;
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBX9D)
+static inline uint16_t getTmr2MHz() { return 0; }
+#elif defined(PCBSKY9X)
 static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
 uint16_t getTmr16KHz();
@@ -920,16 +921,23 @@ void getADC();
 
 extern void backlightOn();
 
-#if defined (CPUARM)
+#if defined(PCBSKY9X) && !defined(REVA)
+#define NUMBER_ANALOG   9
+#else
+#define NUMBER_ANALOG   8
+#endif
+
+#if defined(PCBSKY9X)
+// TODO remove
+void read_9_adc(void);
+#endif
+
+#if defined(PCBX9D)
+#define __BACKLIGHT_ON
+#define __BACKLIGHT_OFF
+#elif defined (PCBSKY9X)
 #define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
-#if defined(REVA)
-#define NUMBER_ANALOG   8
-#else
-#define NUMBER_ANALOG   9
-#endif
-extern uint16_t Analog_values[NUMBER_ANALOG] ;
-void read_9_adc(void ) ;
 #elif defined (PCBGRUVIN9X)
 #define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
 #define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
@@ -1348,11 +1356,10 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 #if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
-#define strcat_modelname(dest, idx) strcat_zchar(dest, ModelNames[idx], sizeof(g_model.name), STR_MODEL, PSIZE(TR_MODEL), idx+1)
-#define strcat_phasename_default(dest, idx) strcat_zchar(dest, NULL, 0, STR_FP, PSIZE(TR_FP), idx+1)
-#define strcat_phasename_nodefault(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, sizeof(PhaseData), NULL, 0, 0)
-#define strcat_mixername_default(dest, idx) strcat_zchar(dest, NULL, 0, STR_MIX, PSIZE(TR_MIX), idx+1)
-#define strcat_mixername_nodefault(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, sizeof(MixData), NULL, 0, 0)
+#define strcat_modelname(dest, idx) strcat_zchar(dest, ModelNames[idx], LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
+#define strcat_phasename_default(dest, idx) strcat_zchar(dest, NULL, 0, STR_FP, PSIZE(TR_FP), idx)
+#define strcat_phasename_nodefault(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
+#define strcat_mixername_nodefault(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
 #define ZLEN(s) zlen(s, sizeof(s))
 #endif
 

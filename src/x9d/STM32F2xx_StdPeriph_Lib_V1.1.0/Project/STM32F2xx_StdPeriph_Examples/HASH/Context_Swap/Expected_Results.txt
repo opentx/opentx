@@ -1,0 +1,57 @@
+ ====================================== 
+ ====    Context Swap Example      ==== 
+ ====================================== 
+
+ --------------------------------------- 
+ MD5 Text to be Hashed : 
+ ---------------------------------------
+ The hash processor is a fully compliant implementation of the secure hash algorithm (SHA-1), the MD5 (message-digest algorithm 5) hash algorithm and the HMAC (keyed-hash message authentication code) algorithm suitable for a variety of applications.*** STM32 ***The hash processor is a fully compliant implementation of the secure hash algorithm (SHA-1), the MD5 (message-digest algorithm 5) hash algorithm and the HMAC (keyed-hash message authentication code) algorithm suitable for a variety of applications.*** STM32 ***The hash processor is a fully compliant implementation of the secure hash algorithm (SHA-1), the MD5 (message-digest algorithm 5) hash algorithm and the HMAC (keyed-hash message authentication code) algorithm suitable for a variety of applications.*** STM32 ***
+
+ --------------------------------------- 
+ SHA1 Text to be Hashed : 
+ ---------------------------------------
+testing123
+
+>> MD5 Digest Computation without context swap 
+>>> Start 
+>>> Done 
+ --------------------------------------- 
+     MD5 Message Digest (128 bits): 
+ ---------------------------------------
+ A = [0x8aea9a70]
+ B = [0x04fc0592]
+ C = [0xc81dce1b]
+ D = [0xabe64da6]
+
+>> SHA1 Digest Computation without context swap 
+>>> Start 
+>>> Done 
+ --------------------------------------- 
+   SHA1 Message Digest (160 bits): 
+ ---------------------------------------
+ H0 = [0x4c0d2b95]
+ H1 = [0x1ffabd6f]
+ H2 = [0x9a10489d]
+ H3 = [0xc40fc356]
+ H4 = [0xec1d26d5]
+
+>> MD5 Digest Computation with context swap 
+>>> Start 
+ ====> During MD5 digest calculation, the context is saved and restored (15) times to calculate the SHA1 digest 
+>>> Done 
+ --------------------------------------- 
+     MD5 Message Digest (128 bits): 
+ ---------------------------------------
+ A = [0x8aea9a70]
+ B = [0x04fc0592]
+ C = [0xc81dce1b]
+ D = [0xabe64da6]
+>> SHA1 Digest computed during MD5 context swap 
+ --------------------------------------- 
+   SHA1 Message Digest (160 bits): 
+ ---------------------------------------
+ H0 = [0x4c0d2b95]
+ H1 = [0x1ffabd6f]
+ H2 = [0x9a10489d]
+ H3 = [0xc40fc356]
+ H4 = [0xec1d26d5]

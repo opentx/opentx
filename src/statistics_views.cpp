@@ -97,7 +97,9 @@ void menuStatisticsDebug(uint8_t event)
       g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
       eeDirty(EE_GENERAL);
+#if defined(PCBSKY9X)
       Current_used = 0;
+#endif
       sessionTimer = 0;
       killEvents(event);
       AUDIO_KEYPAD_UP();
@@ -120,8 +122,7 @@ void menuStatisticsDebug(uint8_t event)
       return;
   }
 
-#if defined(CPUARM)
-#if !defined(REVA)
+#if defined(PCBSKY9X) && !defined(REVA)
   lcd_putsLeft(1*FH, STR_CPU_CURRENT);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 1*FH, getCurrent(), UNIT_MILLIAMPS, 0);
   uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
@@ -131,21 +132,32 @@ void menuStatisticsDebug(uint8_t event)
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
   putsTime(17*FW, 2*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
 #endif
+
+#if defined(CPUARM)
   lcd_putsLeft(3*FH, STR_CPU_TEMP);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_DEGREES, 0);
   putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
+#endif
+
+#if defined(PCBSKY9X)
   lcd_putsLeft(4*FH, STR_COPROC_TEMP);
+
   if (Coproc_read==0) {
     lcd_putsAtt(9*FW+2, 4*FH, PSTR("Co Proc NACK"),INVERS);
-  } else if (Coproc_read==0x81) {
+  }
+  else if (Coproc_read==0x81) {
     lcd_putsAtt(9*FW+2, 4*FH, PSTR("Inst.TinyApp"),INVERS);
-  } else if (Coproc_read<3) {
+  }
+  else if (Coproc_read<3) {
     lcd_putsAtt(9*FW+2, 4*FH, PSTR("Upgr.TinyApp"),INVERS);
-  } else {
+  }
+  else {
     putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, Coproc_temp, UNIT_DEGREES, 0);
     putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_DEGREES, 0);
   }
+#endif
 
+#if defined(CPUARM)
   lcd_putsLeft(5*FH, STR_TMIXMAXMS);
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (maxMixerDuration)/20, PREC2);
 
@@ -167,6 +179,7 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(5*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(14*FW, 5*FH, stack_free(), UNSIGN) ;
 #endif
+
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();
 }

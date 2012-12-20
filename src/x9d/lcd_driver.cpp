@@ -9,7 +9,7 @@
   ******************************************************************************
 */
 
-#include "open9x.h"
+#include "../open9x.h"
 
 #define	WriteData(x)	 AspiData(x)
 #define	WriteCommand(x)	 AspiCmd(x)
@@ -117,4 +117,8 @@ void lcdInit()
   LCD_BL_Config();
   LCD_Hardware_Init();
   LCD_Init();
+}
+
+void lcdSetRefVolt(uint8_t val)
+{
 }
