@@ -1,4 +1,0 @@
-
-<Project Header="Project 'STM322xG_EVAL'" Path=".\Project.rprj" Project="Yes" OutputFile="" sate="96" ActiveApp="STM322xG_EVAL" >
-	<ApplicationBuild Header="STM322xG_EVAL" Extern=".\Project.rapp" Path=".\Project.rapp" OutputFile=".\STM322xG_EVAL\Project.elf" sate="96" Config="STM322xG_EVAL" />
-</Project>
