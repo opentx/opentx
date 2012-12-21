@@ -34,7 +34,7 @@
 #include "open9x.h"
 
 #ifndef SIMU
-inline void board_init()
+inline void boardInit()
 {
   // Set up I/O port data directions and initial states
   DDRA = 0xff;  PORTA = 0x00; // LCD data

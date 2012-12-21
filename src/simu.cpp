@@ -50,22 +50,22 @@ int g_snapshot_idx = 0;
 uint64_t toto = 0;
 
 #if defined(PCBX9D) || defined(PCBACT)
-#define ERSKY9X_RETURN_PIO  GPIOC->IDR
-#define ERSKY9X_RETURN_MASK 0x20
-#define ERSKY9X_EXIT_PIO    GPIOC->IDR
-#define ERSKY9X_EXIT_MASK   (0x01000000)
+#define ERSKY9X_RETURN_PIO  GPIOE->IDR
+#define ERSKY9X_RETURN_MASK PIN_BUTTON_ENTER
+#define ERSKY9X_EXIT_PIO    GPIOD->IDR
+#define ERSKY9X_EXIT_MASK   PIN_BUTTON_EXIT
 #define ERSKY9X_UP_PIO      GPIOC->IDR
 #define ERSKY9X_UP_MASK     0x00
 #define ERSKY9X_DOWN_PIO    GPIOC->IDR
 #define ERSKY9X_DOWN_MASK   0x00
-#define ERSKY9X_RIGHT_PIO   GPIOC->IDR
-#define ERSKY9X_RIGHT_MASK  0x10
-#define ERSKY9X_LEFT_PIO    GPIOC->IDR
-#define ERSKY9X_LEFT_MASK   0x08
-#define KEY_MENU_PIO        GPIOC->IDR
-#define KEY_MENU_MASK       0x02
-#define KEY_PAGE_PIO        GPIOC->IDR
-#define KEY_PAGE_MASK       0x40
+#define ERSKY9X_RIGHT_PIO   GPIOE->IDR
+#define ERSKY9X_RIGHT_MASK  PIN_BUTTON_PLUS
+#define ERSKY9X_LEFT_PIO    GPIOE->IDR
+#define ERSKY9X_LEFT_MASK   PIN_BUTTON_MINUS
+#define KEY_MENU_PIO        GPIOD->IDR
+#define KEY_MENU_MASK       PIN_BUTTON_MENU
+#define KEY_PAGE_PIO        GPIOD->IDR
+#define KEY_PAGE_MASK       PIN_BUTTON_PAGE
 #elif defined(PCBSKY9X) && defined(REVA)
 #define ERSKY9X_RETURN_PIO  PIOB->PIO_PDSR
 #define ERSKY9X_RETURN_MASK (0x40)
@@ -471,25 +471,18 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
   return 0;
 }
 
+#if defined(PCBX9D) || defined(PCBACT)
+#define BL_COLOR FXRGB(47,123,227)
+#else
+#define BL_COLOR FXRGB(150,200,152)
+#endif
+
 void Open9xSim::refreshDiplay()
 {
   if (lcd_refresh) {
     lcd_refresh = false;
-#if defined(PCBX9D)
-    if (1)
-    // TODO here a define
-#elif defined(PCBSKY9X)
-    if (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
-#elif defined(PCBGRUVIN9X)
-    if (portc & 1<<OUT_C_LIGHT)
-#else
-    if (portb & 1<<OUT_B_LIGHT)
-#endif
-#if defined(PCBX9D)
-      bmf->setOffColor(FXRGB(47,123,227));
-#else
-      bmf->setOffColor(FXRGB(150,200,152));
-#endif
+    if (IS_BACKLIGHT_ON())
+      bmf->setOffColor(BL_COLOR);
     else
       bmf->setOffColor(FXRGB(200,200,200));
 
@@ -513,7 +506,6 @@ void Open9xSim::refreshDiplay()
     bmp->render();
     bmf->setBitmap( bmp );
   }
-
 }
 
 Open9xSim *th9xSim;

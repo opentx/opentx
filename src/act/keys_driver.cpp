@@ -33,63 +33,37 @@
 
 #include "../open9x.h"
 
-// TODO FrSky code included PIN_BIND and PIN_POWER
-
 uint32_t readKeys()
 {
-  register uint32_t d = GPIOD->IDR;
-  register uint32_t e = GPIOE->IDR;
-  register uint32_t result = 0;
+  register uint32_t x = GPIOC->IDR;
+  register uint32_t y = 0;
 
-  if (e & PIN_BUTTON_ENTER)
-    result |= 0x02 << KEY_ENTER;
-  if (e & PIN_BUTTON_PLUS)
-    result |= 0x02 << KEY_PLUS;
-  if (e & PIN_BUTTON_MINUS)
-    result |= 0x02 << KEY_MINUS;
+  if (x & 0x00000020)
+    y |= 0x02 << KEY_ENTER;
+  if (x & 0x00000010)
+    y |= 0x02 << KEY_PLUS;
+  if (x & 0x00000008)
+    y |= 0x02 << KEY_MINUS;
+  if (x & 0x00000002)
+    y |= 0x02 << KEY_MENU;
+  if (x & 0x00000040)
+    y |= 0x02 << KEY_PAGE;
+  if (x & 0x01000000)
+    y |= 0x02 << KEY_EXIT;
 
-  if (d & PIN_BUTTON_MENU)
-    result |= 0x02 << KEY_MENU;
-  if (d & PIN_BUTTON_PAGE)
-    result |= 0x02 << KEY_PAGE;
-  if (d & PIN_BUTTON_EXIT)
-    result |= 0x02 << KEY_EXIT;
+  // printf("readKeys(): %x => %x\n", x, y); fflush(stdout);
 
-  // printf("readKeys(): %x %x => %x\n", d, e, result); fflush(stdout);
-
-  return result;
+  return y ;
 }
 
 uint32_t readTrims()
 {
-  register uint32_t c = GPIOC->IDR;
-  register uint32_t e = GPIOE->IDR;
-  register uint32_t result = 0;
-
-  if (c & PIN_TRIM1_UP)
-    result |= 0x02;
-  if (c & PIN_TRIM1_DN)
-    result |= 0x01;
-  if (c & PIN_TRIM2_UP)
-    result |= 0x04;
-  if (c & PIN_TRIM2_DN)
-    result |= 0x03;
-
-  if (e & PIN_TRIM3_UP)
-    result |= 0x06;
-  if (e & PIN_TRIM3_DN)
-    result |= 0x05;
-  if (e & PIN_TRIM4_UP)
-    result |= 0x08;
-  if (e & PIN_TRIM4_DN)
-    result |= 0x07;
-
-  return result;
+  return 0;
 }
 
 uint8_t keyDown()
 {
-  return ~readKeys() & 0x7E ;
+  return ~readKeys() & 0x6C ;
 }
 
 /* TODO common to ARM */
@@ -120,16 +94,16 @@ void keysInit()
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBUTTON, ENABLE);
 
     /* GPIO  Configuration*/
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM3_UP | PIN_TRIM3_DN
+    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_UP | PIN_BUTTON_ENTER | PIN_BUTTON_DOWN | PIN_TRIM3_UP | PIN_TRIM3_DN
                                   | PIN_TRIM4_UP |PIN_TRIM4_DN | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F_H | PIN_SW_G_H
-                                  | PIN_SW_G_L | PIN_SW_H_L;
+                                    | PIN_SW_G_L | PIN_SW_H_L;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOE, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE;
+    GPIO_InitStructure.GPIO_Pin = PIN_HOME | PIN_ESC | PIN_PAGE;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;

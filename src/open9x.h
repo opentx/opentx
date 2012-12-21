@@ -178,7 +178,7 @@ typedef const int8_t pm_int8_t;
 #define pgm_read_adr(x) *(x)
 #define cli()
 #define sei()
-extern void board_init();
+extern void boardInit();
 #else
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -935,20 +935,25 @@ void read_9_adc(void);
 #if defined(PCBX9D) || defined(PCBACT)
 #define __BACKLIGHT_ON
 #define __BACKLIGHT_OFF
+#define IS_BACKLIGHT_ON() (1)
 #elif defined (PCBSKY9X)
 #define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
+#define IS_BACKLIGHT_ON() (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 #elif defined (PCBGRUVIN9X)
 #define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
 #define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
 #define __BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
 #define __BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
+#define IS_BACKLIGHT_ON() (PORTC & (1<<OUT_C_LIGHT))
 #elif defined(SP22)
 #define __BACKLIGHT_ON  PORTB &= ~(1 << OUT_B_LIGHT)
 #define __BACKLIGHT_OFF PORTB |=  (1 << OUT_B_LIGHT)
+#define IS_BACKLIGHT_ON() (~PORTB & (1<<OUT_B_LIGHT))
 #else
 #define __BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
 #define __BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
+#define IS_BACKLIGHT_ON() (PORTB & (1<<OUT_B_LIGHT))
 #endif
 
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)

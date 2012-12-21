@@ -474,7 +474,7 @@ ifeq ($(PCB), ACT)
   EXTRABOARDSRC += x9d/lcd_driver.cpp
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
-  CPPSRC += x9d/eeprom_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/audio_driver.cpp
+  CPPSRC += x9d/eeprom_driver.cpp x9d/pulses_driver.cpp act/keys_driver.cpp x9d/audio_driver.cpp
   CPPSRC += sky9x/audio.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += monitors_views.cpp
@@ -492,10 +492,12 @@ ifeq ($(PCB), X9D)
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += sky9x/audio.cpp
-  CPPSRC += x9d/eeprom_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/audio_driver.cpp
+  CPPSRC += x9d/pwr_driver.cpp x9d/eeprom_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/audio_driver.cpp
   CPPSRC += bmp.cpp monitors_views.cpp
+  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
+  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
   
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c x9d/diskio.cpp
@@ -884,7 +886,7 @@ splash_X9D.lbm: splash_X9D.xbm
 splash_ACT.lbm: splash_ACT.xbm
 	@echo
 	@echo "Convert ACT splash from xbm to lbm:"
-	$(IMG2LBM) $< $@ img
+	$(IMG2LBM) $< $@ largimg
 
 asterisk.lbm: asterisk.xbm
 	@echo
@@ -992,7 +994,10 @@ ifeq ($(ARCH), AVR)
 else
 %.o: %.c
 	$(CC) $(ARMCPPFLAGS) $< -o $@
-OBJS = $(SRC:.c=.o)
+%.o: %.s
+	$(AS) $< -o $@
+TMP = $(SRC:.c=.o)
+OBJS =  $(TMP:.s=.o)
 %.elf: allsrc.cpp $(OBJS)
 	@echo
 	@echo $(MSG_COMPILING) $@

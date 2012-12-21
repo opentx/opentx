@@ -8,7 +8,20 @@ width, height = image.size().width(), image.size().height()
 
 f = open(sys.argv[2], "w")
 
-if sys.argv[3] == "img":
+if sys.argv[3] == "largimg":
+    rows = 1
+    if len(sys.argv) > 4:
+        rows = int(sys.argv[4])
+    f.write("255,%d, %d,\n" % (width-255, height/rows))
+    for y in range(0, height, 8):
+        for x in range(width):
+            value = 0
+            for z in range(8):
+                if y+z < height and image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
+                    value += 1 << z            
+            f.write("0x%02x," % value)
+        f.write("\n")
+elif sys.argv[3] == "img":
     rows = 1
     if len(sys.argv) > 4:
         rows = int(sys.argv[4])
@@ -17,8 +30,8 @@ if sys.argv[3] == "img":
         for x in range(width):
             value = 0
             for z in range(8):
-                if image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
-                    value += 1 << z
+                if y+z < height and image.pixel(x, y+z) == Qt.qRgb(0, 0, 0):
+                    value += 1 << z            
             f.write("0x%02x," % value)
         f.write("\n")
 elif sys.argv[3] == "3x5":
@@ -67,7 +80,6 @@ elif sys.argv[3] == "10x14":
                     if image.pixel(x, y+l+z) == Qt.qRgb(0, 0, 0):
                         value += 1 << z
                 f.write("0x%02x," % value)
-        f.write("\n")
-        
+        f.write("\n")   
 else:
-    print "wrong arg"
+    print "wrong argument", sys.argv[3]

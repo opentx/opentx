@@ -46,6 +46,8 @@ FILE *fp = NULL;
 #if defined(PCBX9D) || defined(PCBACT)
 GPIO_TypeDef gpiob;
 GPIO_TypeDef gpioc;
+GPIO_TypeDef gpiod;
+GPIO_TypeDef gpioe;
 #elif defined(PCBSKY9X)
 Pio Pioa, Piob, Pioc;
 Pwm pwm;

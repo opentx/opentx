@@ -61,7 +61,7 @@ volatile uint32_t lcdInputs;
 #define CPU_UINT        uint32_t
 
 #if !defined(REVA)
-inline void init_soft_power()
+inline void pwrInit()
 {
   // Configure RF_power (PC17)
   configure_pins( PIO_PC17, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_NO_PULLUP | PIN_PULLDOWN ) ;
@@ -670,7 +670,7 @@ void configure_pins( uint32_t pins, uint16_t config )
         }
 }
 
-void board_init()
+void boardInit()
 {
   // register uint32_t goto_usb ;
   register Pio *pioptr ;
@@ -687,7 +687,7 @@ void board_init()
   pioptr->PIO_OER = PIO_PA21 ;            // Set bit A21 as output
   pioptr->PIO_SODR = PIO_PA21 ;   // Set bit A21 ON
 #else
-  init_soft_power() ;
+  pwrInit() ;
 #endif
 
   // pioptr->PIO_PUER = 0x80000000 ;         // Enable pullup on bit A31 (EXIT)

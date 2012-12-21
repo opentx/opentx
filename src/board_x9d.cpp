@@ -39,20 +39,7 @@ uint8_t maxTemperature = 0 ;       // Raw temp reading
 volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
 
 void keysInit();
-
-inline void init_soft_power()
-{
-}
-
-uint32_t check_soft_power()
-{
-  return e_power_on;
-}
-
-// turn off soft power
-void soft_power_off()
-{
-}
+void pwrInit();
 
 uint8_t getTemperature()
 {
@@ -171,8 +158,9 @@ void usbMassStorage()
 }
 
 #if !defined(SIMU)
-void board_init()
+void boardInit()
 {
+  pwrInit();
   keysInit();
 }
 #endif

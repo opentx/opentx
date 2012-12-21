@@ -33,7 +33,7 @@
 
 #include "open9x.h"
 
-uint8_t displayBuf[DISPLAY_W*DISPLAY_H/8];
+uint8_t displayBuf[DISPLAY_W*(DISPLAY_H+7)/8];
 #define DISPLAY_END (displayBuf+sizeof(displayBuf))
 #define ASSERT_IN_DISPLAY(p) assert((p) >= displayBuf && (p) < DISPLAY_END)
 
@@ -45,13 +45,18 @@ void lcd_clear()
 void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mode)
 {
   const pm_uchar *q = img;
+#if defined(LCD260)
+  xcoord_t w   = pgm_read_byte(q++);
+  if (w == 255) w += pgm_read_byte(q++);
+#else
   uint8_t w    = pgm_read_byte(q++);
+#endif
   uint8_t hb   = (pgm_read_byte(q++)+7)/8;
   bool    inv  = (mode & INVERS) ? true : (mode & BLINK ? BLINK_ON_PHASE : false);
   q += idx*w*hb;
   for (uint8_t yb = 0; yb < hb; yb++) {
     uint8_t *p = &displayBuf[ (y / 8 + yb) * DISPLAY_W + x ];
-    for (uint8_t i=0; i<w; i++){
+    for (xcoord_t i=0; i<w; i++){
       uint8_t b = pgm_read_byte(q++);
       ASSERT_IN_DISPLAY(p);
       *p++ = inv ? ~b : b;

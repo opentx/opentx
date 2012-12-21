@@ -1,46 +1,47 @@
 #ifndef _HAL_
 #define _HAL_
 
-/********************************
-GPIOS----所有涉及GPIO的定义
-*******************************************/
+/*
+ * GPIOS
+ */
 
 #define RCC_AHB1Periph_GPIOBUTTON       (RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
-//Button
-#define	PIN_BUTTON_UP		            GPIO_Pin_0	//SW3 PE.10
-#define	PIN_BUTTON_ENTER	            GPIO_Pin_1	//SW2 PE.11
-#define	PIN_BUTTON_DOWN		            GPIO_Pin_2	//SW1 PE.12
-#define PIN_HOME			            GPIO_Pin_11	//SW4 PD.07
-#define	PIN_ESC			                GPIO_Pin_12	//SW5 PD.03
-#define PIN_PAGE                        GPIO_Pin_10 //SW6 PD.02
 
-//Trim
-#define	PIN_TRIM1_UP		            GPIO_Pin_3	//PC.03
+// Keys
+#define	PIN_BUTTON_PLUS		        GPIO_Pin_0	//SW3 PE.10
+#define	PIN_BUTTON_ENTER	        GPIO_Pin_1	//SW2 PE.11
+#define	PIN_BUTTON_MINUS	        GPIO_Pin_2	//SW1 PE.12
+#define PIN_BUTTON_MENU		        GPIO_Pin_11	//SW4 PD.07
+#define	PIN_BUTTON_EXIT                 GPIO_Pin_12	//SW5 PD.03
+#define PIN_BUTTON_PAGE                 GPIO_Pin_10     //SW6 PD.02
+
+// Trims
+#define	PIN_TRIM1_UP		        GPIO_Pin_3	//PC.03
 #define	PIN_TRIM1_DN	                GPIO_Pin_2	//PC.02
-#define	PIN_TRIM2_UP		            GPIO_Pin_1	//PC.01
-#define PIN_TRIM2_DN		            GPIO_Pin_13	//PC.13
-#define	PIN_TRIM3_UP		            GPIO_Pin_4	//PE.04
-#define PIN_TRIM3_DN                    GPIO_Pin_3  //PE.03
-#define PIN_TRIM4_UP                    GPIO_Pin_6  //PE.06
-#define PIN_TRIM4_DN                    GPIO_Pin_5  //PE.05
+#define	PIN_TRIM2_UP		        GPIO_Pin_1	//PC.01
+#define PIN_TRIM2_DN		        GPIO_Pin_13	//PC.13
+#define	PIN_TRIM3_UP		        GPIO_Pin_4	//PE.04
+#define PIN_TRIM3_DN                    GPIO_Pin_3      //PE.03
+#define PIN_TRIM4_UP                    GPIO_Pin_6      //PE.06
+#define PIN_TRIM4_DN                    GPIO_Pin_5      //PE.05
 
-//Switch
-#define	PIN_SW_A_L		                GPIO_Pin_14	//PE.14
-#define	PIN_SW_B_H		                GPIO_Pin_3	//PB.03
-#define	PIN_SW_B_L		                GPIO_Pin_4	//PB.04
-#define	PIN_SW_C_H		                GPIO_Pin_5	//PB.05
-#define	PIN_SW_C_L		                GPIO_Pin_6	//PB.06
-#define	PIN_SW_D_H		                GPIO_Pin_7	//PB.07
-#define	PIN_SW_D_L		                GPIO_Pin_2	//PE.02
-#define	PIN_SW_E_H		                GPIO_Pin_0	//PB.00
-#define	PIN_SW_E_L		                GPIO_Pin_5	//PA.05
-#define	PIN_SW_F_H		                GPIO_Pin_7	//PE.07
-#define	PIN_SW_F_L		                GPIO_Pin_1	//PB.01
-#define	PIN_SW_G_H		                GPIO_Pin_9	//PE.09
-#define	PIN_SW_G_L		                GPIO_Pin_8	//PE.08
-#define	PIN_SW_H_L		                GPIO_Pin_13	//PE.13
+// Switchs
+#define	PIN_SW_A_L		        GPIO_Pin_14	//PE.14
+#define	PIN_SW_B_H		        GPIO_Pin_3	//PB.03
+#define	PIN_SW_B_L		        GPIO_Pin_4	//PB.04
+#define	PIN_SW_C_H		        GPIO_Pin_5	//PB.05
+#define	PIN_SW_C_L		        GPIO_Pin_6	//PB.06
+#define	PIN_SW_D_H		        GPIO_Pin_7	//PB.07
+#define	PIN_SW_D_L		        GPIO_Pin_2	//PE.02
+#define	PIN_SW_E_H		        GPIO_Pin_0	//PB.00
+#define	PIN_SW_E_L		        GPIO_Pin_5	//PA.05
+#define	PIN_SW_F_H		        GPIO_Pin_7	//PE.07
+#define	PIN_SW_F_L		        GPIO_Pin_1	//PB.01
+#define	PIN_SW_G_H		        GPIO_Pin_9	//PE.09
+#define	PIN_SW_G_L		        GPIO_Pin_8	//PE.08
+#define	PIN_SW_H_L		        GPIO_Pin_13	//PE.13
 
-//ADC---8个
+// ADC
 #define PIN_STK_J1                      GPIO_Pin_0  //PA.00              
 #define PIN_STK_J2                      GPIO_Pin_1  //PA.01
 #define PIN_STK_J3                      GPIO_Pin_2  //PA.02
@@ -52,10 +53,10 @@ GPIOS----所有涉及GPIO的定义
 #define PIN_MVOLT                       GPIO_Pin_0  //PC.00  
 #define RCC_AHB1Periph_GPIOADC          RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC
 
-//DAC---1个
+// DAC
 #define PIN_AUDIO_DAC                   GPIO_Pin_4  //PA.04
 
-//Power_OFF Delay and LED
+// Power_OFF Delay and LED
 #define PIN_PWR_LED                     GPIO_Pin_6  //PC.06
 #define PIN_PWR_STATUS                  GPIO_Pin_1  //PD.01
 #define PIN_MCU_PWR                     GPIO_Pin_0  //PD.00
@@ -63,40 +64,41 @@ GPIOS----所有涉及GPIO的定义
 #define GPIOPWRLED                      GPIOC
 #define GPIOPWR                         GPIOD
 
-//Smart-Port
+// Smart-Port
 #define PIN_SPORT_ON                    GPIO_Pin_4  //PD.04
 #define PIN_SPORT_TX                    GPIO_Pin_5  //PD.05
 #define PIN_SPORT_RX                    GPIO_Pin_6  //PD.06
 
-//Trainer Port
+// Trainer Port
 #define PIN_TR_PPM_IN                   GPIO_Pin_8  //PC.08
 #define PIN_TR_PPM_OUT                  GPIO_Pin_9  //PC.09
 
-//Cppm
+// Cppm
 #define RCC_AHB1Periph_GPIOCPPM         RCC_AHB1Periph_GPIOA
 #define PIN_CPPM_OUT                    GPIO_Pin_8  //PA.08
 #define GPIOCPPM                        GPIOA
 #define GPIO_PinSource_CPPM             GPIO_PinSource8
-//Heart Beat 
+
+// Heart Beat
 #define PIN_HEART_BEAT                  GPIO_Pin_7  //PC.07
 
-//Update UART----RS232 ---UART3
+// Update UART----RS232 ---UART3
 #define PIN_UPDATE_UART_TX              GPIO_Pin_10 //PB.10
 #define PIN_UPDATE_UART_RX              GPIO_Pin_11 //PB.11
 
-//USB_OTG
+// USB_OTG
 #define PIN_FS_VBUS                     GPIO_Pin_9  //PA.09
 #define PIN_FS_ID                       GPIO_Pin_10 //PA.10
 #define PIN_FS_DM                       GPIO_Pin_11 //PA.11
 #define PIN_FS_DP                       GPIO_Pin_12 //PA.12
 
-//BackLight PB8
+// BackLight PB8
 #define RCC_AHB1Periph_GPIOBL           RCC_AHB1Periph_GPIOB
 #define GPIO_Pin_BL                     GPIO_Pin_8  //PB.08
 #define GPIOBL                          GPIOB
 #define GPIO_PinSource_BL               GPIO_PinSource8
 
-//LCD GPIOD 10-14 模拟spi
+// LCD GPIOD 10-14
 #define RCC_AHB1Periph_LCD              RCC_AHB1Periph_GPIOD
 #define GPIO_LCD                        GPIOD
 #define PIN_LCD_MOSI                    GPIO_Pin_10 //PD.10
@@ -105,7 +107,7 @@ GPIOS----所有涉及GPIO的定义
 #define PIN_LCD_A0                      GPIO_Pin_13 //PD.13
 #define PIN_LCD_RST                     //GPIO_Pin_12  //pd12 test //RESET occurs when powered up,but should delay before initialize
 
-//Audio----I2S3
+// Audio----I2S3
 //#define CODEC_I2S_ADDRESS              0x4000380C
 #define CODEC_I2S                       SPI3
 #define CODEC_I2S_CLK                   RCC_APB1Periph_SPI3
@@ -127,7 +129,7 @@ GPIOS----所有涉及GPIO的定义
 //#define CODEC_I2S_FLT                  GPIO_Pin_  //IIR/FIR
 //#define CODEC_I2S_MODE                 GPIO_Pin_  //Connect to GND=I2S_STANDARD
 
-//Eeprom与cat5137
+// Eeprom 5137
 #define I2C_EE_GPIO                     GPIOE
 #define I2C_EE_WP_GPIO                  GPIOB
 #define I2C_EE_GPIO_CLK                 RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE
@@ -135,7 +137,7 @@ GPIOS----所有涉及GPIO的定义
 #define I2C_EE_SDA                      GPIO_Pin_0  //PE0
 #define I2C_EE_WP                       GPIO_Pin_9  //PB9
 
-//SD卡---spi2
+// SD---spi2
 #define SPI_SD                          SPI2
 #define GPIO_AF_SD                      GPIO_AF_SPI2
 #define RCC_AHB1Periph_GPIO_CS          RCC_AHB1Periph_GPIOB
@@ -157,28 +159,14 @@ GPIOS----所有涉及GPIO的定义
 #define GPIO_Pin_WP                     GPIO_Pin_8  //PD.08
 #define GPIO_Pin_CP                     GPIO_Pin_9  //PD.09
 #define GPIO_CTL_SD                     GPIOD
-/*****************************************************************************
-**************************************************************************
-*******************************************************************************/
 
-//其他接口涉及的可修改的宏定义
-/******************************
-lcd用
-**************************************/
-#define	HIGHT	                        (64)
-#define WIDTH	                        (212)
-
-/*****************************************
-Audio----I2S3-----SPI3
-***************************************************************/
-//#define CODEC_MCLK_ENABLED
+// Audio----I2S3-----SPI3
 #define CODEC_MCLK_DISABLED
 #define CODEC_USE_INT
 //#define CODEC_USE_DMA 
 #define AudioFreq                       I2S_AudioFreq_44k 
-/*************************************************
-模拟I2C---EEPROM and CAT5137共用
-********************************************************/
+
+// EEPROM and CAT5137
 #define EE_M24C08                       /* Support the device: M24C08. */
 //#define EE_M24C64_32                  /* Support the devices: M24C32 and M24C64 */
 #define I2C_Speed                       200000
@@ -204,16 +192,14 @@ Audio----I2S3-----SPI3
 #define I2C_CAT5137_ADDRESS             0x5C//0101110
 #endif
 
-
-/*****************************************
-SD card----SPI2
-***************************************************************/
+// SD card----SPI2
 // demo uses a command line option to define this (see Makefile):
 // #define STM32_SD_USE_DMA
 #ifdef STM32_SD_USE_DMA
 // #warning "Information only: using DMA"
 #pragma message "*** Using DMA ***"
 #endif
+
 /* set to 1 to provide a disk_ioctrl function even if not needed by the FatFs */
 #define STM32_SD_DISK_IOCTRL_FORCE      (0)
 
@@ -223,33 +209,11 @@ SD card----SPI2
 
 #define SPI_BaudRatePrescaler_SPI_SD    SPI_BaudRatePrescaler_4 // - for SPI1 and full-speed APB2: 60MHz/4 =15MHZ < 20MHZ
 
-//selectable
-//DMA相关未作修改
+// Selectable
+// DMA
 #define DMA_Channel_SPI_SD_RX           DMA1_Channel2
 #define DMA_Channel_SPI_SD_TX           DMA1_Channel3
 #define DMA_FLAG_SPI_SD_TC_RX           DMA1_FLAG_TC2
 #define DMA_FLAG_SPI_SD_TC_TX           DMA1_FLAG_TC3
-
-/******************************************
-
-***************************************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

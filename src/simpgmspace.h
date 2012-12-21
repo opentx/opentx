@@ -102,6 +102,12 @@ extern GPIO_TypeDef gpiob;
 extern GPIO_TypeDef gpioc;
 #undef GPIOC
 #define GPIOC (&gpioc)
+extern GPIO_TypeDef gpiod;
+#undef GPIOD
+#define GPIOD (&gpiod)
+extern GPIO_TypeDef gpioe;
+#undef GPIOE
+#define GPIOE (&gpioe)
 #elif defined(PCBSKY9X)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
@@ -309,7 +315,7 @@ void eeprom_read_block (void *pointer_ram,
                         size_t size);
 
 #define wdt_reset() sleep(1/*ms*/)
-#define board_init()
+#define boardInit()
 
 #define OS_MutexID int
 #define OS_FlagID int
@@ -333,5 +339,10 @@ void eeprom_read_block (void *pointer_ram,
 #define UART3_Configure(...)
 #define UART_Stop(...)
 #define UART3_Stop(...)
+#define GPIO_Init(...)
+#define GPIO_SetBits(...)
+#define GPIO_ResetBits(...)
+#define RCC_AHB1PeriphClockCmd(...)
+#define GPIO_ReadInputDataBit(...) true
 
 #endif

@@ -68,7 +68,9 @@ OS_MutexID mixerMutex;
 
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
-#if defined(PCBX9D)
+#if defined(PCBACT)
+#include "splash_ACT.lbm"
+#elif defined(PCBX9D)
 #include "splash_X9D.lbm"
 #else
 #include "splash_9x.lbm"
@@ -3525,7 +3527,7 @@ int main(void)
 
   wdt_disable();
 
-  board_init();
+  boardInit();
 
   lcdInit();
 
