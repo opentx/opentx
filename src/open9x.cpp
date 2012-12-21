@@ -3542,6 +3542,11 @@ int main(void)
 
   sei(); // interrupts needed for FRSKY_Init and eeReadAll.
 
+#if defined(PCBX9D) || defined(PCBACT)
+  // TEST CODE FOR CHECKING THE LCD AND THE KEYS
+  doSplash();
+#endif
+
 #if defined(FRSKY) && !defined(DSM2_SERIAL)
   FRSKY_Init();
 #endif
@@ -3568,11 +3573,6 @@ int main(void)
 
 #ifdef MENU_ROTARY_SW
   init_rotary_sw();
-#endif
-
-#if defined(PCBX9D) || defined(PCBACT)
-  // TEST CODE FOR CHECKING THE LCD AND THE KEYS
-  doSplash();
 #endif
 
 #if !defined(CPUARM)
