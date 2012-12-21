@@ -425,7 +425,9 @@ void eeLoadModel(uint8_t id)
     FRSKY_setModelAlarms();
 #endif
 
+#if defined(SDCARD)
     refreshModelAudioFiles();
+#endif
 
     LOAD_MODEL_BITMAP();
   }

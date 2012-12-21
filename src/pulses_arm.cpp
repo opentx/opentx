@@ -67,7 +67,7 @@ void startPulses()
 
 void setupPulsesPPM()                   // Don't enable interrupts through here
 {
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
   register Pwm *pwmptr = PWM;
 #endif
 
@@ -82,7 +82,7 @@ void setupPulsesPPM()                   // Don't enable interrupts through here
   ptr = Pulses;
   uint32_t p = 8 + g_model.ppmNCH * 2; //Channels *2
 
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
   pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = (g_model.ppmDelay * 50 + 300) * 2; //Stoplen *2
   if (g_model.pulsePol)
     pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;   // CPOL

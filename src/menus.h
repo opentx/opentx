@@ -142,7 +142,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 void check_rotary_encoder(uint8_t & event);
 #define CHECK_ROTARY_ENCODER(event) check_rotary_encoder(event)
 #elif defined(ROTARY_ENCODERS)

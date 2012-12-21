@@ -48,7 +48,9 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#if defined(PCBX9D)
+#if defined(PCBACT)
+#define EEPROM_VER       213
+#elif defined(PCBX9D)
 #define EEPROM_VER       213
 #elif defined(PCBSKY9X)
 #define EEPROM_VER       213
@@ -78,7 +80,7 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
-#if defined(LCD212)
+#if defined(LCD212) || defined(LCD260)
 enum MainViews {
   VIEW_INPUTS,
   VIEW_SWITCHES,
@@ -185,7 +187,7 @@ PACK(typedef struct t_EEGeneral {
 
 }) EEGeneral;
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define LEN_MODEL_NAME     12
 #define LEN_EXPOMIX_NAME   10
 #define LEN_FP_NAME        10
@@ -549,7 +551,11 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 
 #define ROTARY_ENCODER_MAX  1024
 
-#if defined(PCBX9D)
+#if defined(PCBACT)
+#define NUM_ROTARY_ENCODERS 1
+#define ROTARY_ENCODER_ARRAY_EXTRA
+#define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
+#elif defined(PCBX9D)
 #define NUM_ROTARY_ENCODERS_EXTRA 0
 #define NUM_ROTARY_ENCODERS 0
 #define ROTARY_ENCODER_ARRAY_EXTRA
@@ -662,7 +668,7 @@ enum MixSources {
     MIXSRC_Ele,
     MIXSRC_Thr,
     MIXSRC_Ail,
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
     MIXSRC_S1,
     MIXSRC_S2,
     MIXSRC_S3,
@@ -687,7 +693,7 @@ enum MixSources {
     MIXSRC_TrimThr,
     MIXSRC_TrimAil,
     MIXSRC_MAX ,
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
     MIXSRC_SA,
     MIXSRC_SB,
     MIXSRC_SC,
@@ -800,7 +806,7 @@ enum Dsm2Variants {
 #define BeepANACenter uint8_t
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define MODELDATA_EXTRA char bitmap[10]
 #else
 #define MODELDATA_EXTRA

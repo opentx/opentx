@@ -43,7 +43,7 @@ uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 GPIO_TypeDef gpiob;
 GPIO_TypeDef gpioc;
 #elif defined(PCBSKY9X)
@@ -92,7 +92,7 @@ sem_t *eeprom_write_sem;
 void setSwitch(int8_t swtch)
 {
   switch (swtch) {
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
     case DSW(SW_SA0):
     GPIOB->IDR &= ~(1<<31);
       break;

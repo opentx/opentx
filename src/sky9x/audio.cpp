@@ -428,7 +428,7 @@ void AudioQueue::wakeup()
     if (state != AUDIO_PLAYING_TONE) {
       state = AUDIO_PLAYING_TONE;
 
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
       register Dacc *dacptr = DACC;
       dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
       dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);
@@ -474,7 +474,7 @@ void AudioQueue::wakeup()
   else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.duration > 0) {
     if (state != AUDIO_PLAYING_TONE) {
       state = AUDIO_PLAYING_TONE;
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
       register Dacc *dacptr = DACC;
       dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
       dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);

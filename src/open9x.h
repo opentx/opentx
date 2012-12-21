@@ -153,7 +153,7 @@
 #define VARIO_VARIANT  0x0080
 #define HAPTIC_VARIANT 0x0100 */
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #include "board_x9d.h"
 #elif defined(PCBSKY9X)
 #include "board_sky9x.h"
@@ -441,7 +441,7 @@ extern uint8_t channel_order(uint8_t x);
 enum EnumKeys {
   KEY_MENU,
   KEY_EXIT,
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   KEY_ENTER,
   KEY_PAGE,
   KEY_PLUS,
@@ -470,7 +470,7 @@ enum EnumKeys {
 
   //SW_NC,
   //SW_ON,
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   SW_SA0=SW_BASE,
   SW_SA2,
   SW_SB0,
@@ -521,7 +521,7 @@ enum EnumKeys {
 
 #define DSW(x)   (1+(x)-SW_BASE)
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define KEY_RIGHT  KEY_PLUS
 #define KEY_UP     KEY_PLUS
 #define KEY_LEFT   KEY_MINUS
@@ -612,7 +612,7 @@ enum CswFunctions {
 
 #define NUM_STICKS    4
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
 #define NUM_POTS      4
 #define NUM_SW_SRCRAW 8
@@ -627,7 +627,7 @@ enum CswFunctions {
 #define SWITCH_OFF    (-SWITCH_ON)
 
 #define NUM_CYC         3
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define CSW_PPM_BASE    24 // TODO garbage to compile ...
 #else
 #define CSW_PPM_BASE    (MIXSRC_3POS+NUM_CYC) // because srcRaw is shifted +1!
@@ -656,7 +656,7 @@ enum CswFunctions {
 
 #define NUM_XCHNRAW  (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1/*MAX*/+NUM_SW_SRCRAW+NUM_CYC+NUM_PPM+NUM_CHNOUT)
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define NUM_XCHNMIX  (NUM_XCHNRAW+NUM_CSW)
 #define NUM_XCHNCSW  (NUM_XCHNRAW+NUM_CSW+NUM_TELEMETRY)
 #define NUM_XCHNPLAY (NUM_XCHNRAW+NUM_CSW+TELEM_DISPLAY_MAX)
@@ -876,7 +876,7 @@ extern uint8_t s_traceWr;
 extern int8_t s_traceCnt;
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 static inline uint16_t getTmr2MHz() { return 0; }
 #elif defined(PCBSKY9X)
 static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
@@ -932,7 +932,7 @@ extern void backlightOn();
 void read_9_adc(void);
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define __BACKLIGHT_ON
 #define __BACKLIGHT_OFF
 #elif defined (PCBSKY9X)
@@ -1363,7 +1363,7 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
 #define ZLEN(s) zlen(s, sizeof(s))
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define KEY_MOVE_UP    KEY_MINUS
 #define KEY_MOVE_DOWN  KEY_PLUS
 #else

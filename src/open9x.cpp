@@ -630,7 +630,7 @@ int16_t getValue(uint8_t i)
 #endif
   else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
   else if(i<MIXSRC_MAX) return 1024;
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   else if(i<MIXSRC_SA) return (keyState(SW_SA0) ? -1024 : 1024);
   else if(i<MIXSRC_SB) return (keyState(SW_SB0) ? -1024 : (keyState(SW_SB1) ? 0 : 1024));
   else if(i<MIXSRC_SC) return (keyState(SW_SC0) ? -1024 : (keyState(SW_SC1) ? 0 : 1024));
@@ -2312,7 +2312,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       else {
         if (k < NUM_STICKS)
           v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
               // TODO
 #else
         else if (k >= MIXSRC_THR-1 && k <= MIXSRC_SWC-1) {

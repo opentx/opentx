@@ -49,12 +49,14 @@
 int g_snapshot_idx = 0;
 uint64_t toto = 0;
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define ERSKY9X_RETURN_PIO  GPIOC->IDR
 #define ERSKY9X_RETURN_MASK 0x20
 #define ERSKY9X_EXIT_PIO    GPIOC->IDR
 #define ERSKY9X_EXIT_MASK   (0x01000000)
+#define ERSKY9X_UP_PIO      GPIOC->IDR
 #define ERSKY9X_UP_MASK     0x00
+#define ERSKY9X_DOWN_PIO    GPIOC->IDR
 #define ERSKY9X_DOWN_MASK   0x00
 #define ERSKY9X_RIGHT_PIO   GPIOC->IDR
 #define ERSKY9X_RIGHT_MASK  0x10
@@ -69,9 +71,11 @@ uint64_t toto = 0;
 #define ERSKY9X_RETURN_MASK (0x40)
 #define ERSKY9X_EXIT_PIO    PIOA->PIO_PDSR
 #define ERSKY9X_EXIT_MASK   (0x80000000)
+#define ERSKY9X_UP_PIO      PIOC
 #define ERSKY9X_UP_MASK     (0x08 >> 1)
 #define ERSKY9X_RIGHT_PIO   PIOC->PIO_PDSR
 #define ERSKY9X_RIGHT_MASK  (0x20 >> 1)
+#define ERSKY9X_DOWN_PIO    PIOC->PIO_PDSR
 #define ERSKY9X_DOWN_MASK   (0x10 >> 1)
 #define ERSKY9X_LEFT_PIO    PIOC->PIO_PDSR
 #define ERSKY9X_LEFT_MASK   (0x40 >> 1)
@@ -80,9 +84,11 @@ uint64_t toto = 0;
 #define ERSKY9X_RETURN_MASK (0x20)
 #define ERSKY9X_EXIT_MASK   (0x01000000)
 #define ERSKY9X_EXIT_PIO    PIOC->PIO_PDSR
+#define ERSKY9X_UP_PIO      PIOC
 #define ERSKY9X_UP_MASK     (0x04 >> 1)
 #define ERSKY9X_RIGHT_PIO   PIOC->PIO_PDSR
 #define ERSKY9X_RIGHT_MASK  (0x20 >> 1)
+#define ERSKY9X_DOWN_PIO    PIOC->PIO_PDSR
 #define ERSKY9X_DOWN_MASK   (0x40 >> 1)
 #define ERSKY9X_LEFT_PIO    PIOC->PIO_PDSR
 #define ERSKY9X_LEFT_MASK   (0x10 >> 1)
@@ -93,9 +99,11 @@ uint64_t toto = 0;
 #define ERSKY9X_RETURN_MASK toto
 #define ERSKY9X_EXIT_MASK   toto
 #define ERSKY9X_EXIT_PIO    toto
+#define ERSKY9X_UP_PIO      toto
 #define ERSKY9X_UP_MASK     toto
 #define ERSKY9X_RIGHT_PIO   toto
 #define ERSKY9X_RIGHT_MASK  toto
+#define ERSKY9X_DOWN_PIO    toto
 #define ERSKY9X_DOWN_MASK   toto
 #define ERSKY9X_LEFT_PIO    toto
 #define ERSKY9X_LEFT_MASK   toto
@@ -304,8 +312,8 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       KEY_Page_Up,   INP_B_KEY_MEN, INP_L_KEY_MEN, (uint64_t)&KEY_MENU_PIO, KEY_MENU_MASK,
       KEY_Page_Down, INP_B_KEY_EXT, INP_L_KEY_EXT, (uint64_t)&KEY_PAGE_PIO, KEY_PAGE_MASK,
 #else
-      KEY_Up,        INP_B_KEY_UP,  INP_L_KEY_UP,  (uint64_t)PIOC, ERSKY9X_UP_MASK,
-      KEY_Down,      INP_B_KEY_DWN, INP_L_KEY_DWN, (uint64_t)PIOC, ERSKY9X_DOWN_MASK,
+      KEY_Up,        INP_B_KEY_UP,  INP_L_KEY_UP,  (uint64_t)&ERSKY9X_UP_PIO, ERSKY9X_UP_MASK,
+      KEY_Down,      INP_B_KEY_DWN, INP_L_KEY_DWN, (uint64_t)&ERSKY9X_DOWN_PIO, ERSKY9X_DOWN_MASK,
 #endif
     };
 

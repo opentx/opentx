@@ -88,7 +88,9 @@ extern uint32_t sd_card_mounted();
 #define sd_card_mounted() (true)
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBACT)
+#define O9X_FOURCC 0x3478396F // o9x for ACT
+#elif defined(PCBX9D)
 #define O9X_FOURCC 0x3378396F // o9x for X9D
 #elif defined(PCBSKY9X)
 #define O9X_FOURCC 0x3278396F // o9x for sky9x

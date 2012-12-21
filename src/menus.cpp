@@ -200,7 +200,7 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow)
   return check_simple(event, 0, 0, 0, maxrow);
 }
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 void check_rotary_encoder(uint8_t & event)
 {
   if (event==EVT_KEY_REPT(KEY_LEFT) || event==EVT_KEY_FIRST(KEY_LEFT)) {
@@ -286,7 +286,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
 #if defined(ROTARY_ENCODERS)
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   if (!(s_warning || s_menu_count || s_editMode<0))
     CHECK_ROTARY_ENCODER(event);
 #else
@@ -519,7 +519,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       }
       break;
 
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
     case EVT_KEY_REPT(KEY_RIGHT):  //inc
       if (l_posHorz==maxcol) break;
       // no break

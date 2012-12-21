@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: STD, STD128, GRUVIN9X, SKY9X, X9D
+# Values: STD, STD128, GRUVIN9X, SKY9X, X9D, ACT
 PCB = STD
 
 # PCB revision
@@ -268,7 +268,14 @@ endif
 
 ifeq ($(PCB), X9D)
   ARCH = ARM
-  LDSCRIPT = sky9x/sam3s4c_flash.ld
+  LDSCRIPT = x9d/stm32_flash.ld
+  TRGT = arm-none-eabi-
+  MCU  = cortex-m3
+endif
+
+ifeq ($(PCB), ACT)
+  ARCH = ARM
+  LDSCRIPT = x9d/stm32_flash.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
 endif
@@ -458,39 +465,23 @@ endif
 RUN_FROM_FLASH = 1
 
 ifeq ($(PCB), ACT)
-  # ACT, so ...
+  # ACT radio
   OPT = 2
-  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD260
+  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD260
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
   BOARDSRC = board_x9d.cpp 
   EXTRABOARDSRC += x9d/lcd_driver.cpp
-  SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
-#  SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-#  SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
-#  SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
-#  SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
-#  SRC += sky9x/MEDSdcard.c
+  SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
+  CPPSRC += x9d/eeprom_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/audio_driver.cpp
+  CPPSRC += sky9x/audio.cpp
   PULSESSRC = pulses_arm.cpp
-#  CPPSRC += sky9x/audio.cpp haptic.cpp
-#  CPPSRC += sky9x/sound_driver.cpp sky9x/sdcard_driver.cpp
-  CPPSRC += bmp.cpp monitors_views.cpp
-  
-  ifeq ($(SDCARD), YES)
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c # sky9x/diskio.cpp
-    CPPDEFS += -DVOICE
-    EXTRAINCDIRS += FatFs FatFs/option
-  endif
-    
-  ifeq ($(DEBUG), YES)
-  	CPPSRC += sky9x/debug.cpp
-  	SRC += sky9x/syscalls.c
-  endif
+  CPPSRC += monitors_views.cpp
 endif
 
 ifeq ($(PCB), X9D)
-  # X9D, so ...
+  # X9D radio
   OPT = 2
   CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
@@ -519,7 +510,7 @@ ifeq ($(PCB), X9D)
 endif
 
 ifeq ($(PCB), SKY9X)
-  # SKY9X, so ...
+  # 9x radio with a sky9x replacement board
   OPT = 2
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
@@ -559,7 +550,7 @@ ifeq ($(PCB), SKY9X)
 endif
 
 ifeq ($(PCB), GRUVIN9X)
-  # Gruvin9x PCB, so ...
+  # 9x radio with a gruvin9x replacement board
   OPT = 2
   CPPDEFS += -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2 
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
@@ -586,7 +577,7 @@ ifeq ($(PCB), GRUVIN9X)
 endif
 
 ifeq ($(PCB), STD128)
-  # STD PCB with Atmega 128, so ...
+  # 9x radio with Atmega 64 replace by Atmega 128
   OPT = 2
   CPPDEFS += -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=0x8000
   EXTRAINCDIRS += stock
@@ -622,7 +613,7 @@ ifeq ($(PCB), STD128)
 endif
 
 ifeq ($(PCB), STD)
-  # STD PCB, so ...
+  # 9x radio
   OPT = s
   EXTRAINCDIRS += stock
   CPPDEFS += -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
@@ -801,7 +792,7 @@ eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
+lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm splash_ACT.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -888,6 +879,11 @@ splash_9x.lbm: splash_9x.xbm
 splash_X9D.lbm: splash_X9D.xbm
 	@echo
 	@echo "Convert X9D splash from xbm to lbm:"
+	$(IMG2LBM) $< $@ img
+
+splash_ACT.lbm: splash_ACT.xbm
+	@echo
+	@echo "Convert ACT splash from xbm to lbm:"
 	$(IMG2LBM) $< $@ img
 
 asterisk.lbm: asterisk.xbm

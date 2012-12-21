@@ -247,7 +247,7 @@ void menuModelSelect(uint8_t event)
 
   int8_t oldSub = m_posVert;
   if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   if (m_posVert < 0) m_posVert = MAX_MODELS-1;
 #elif defined(ROTARY_ENCODERS)
   if (m_posVert < 0) m_posVert = 0;
@@ -312,7 +312,7 @@ void menuModelSelect(uint8_t event)
 #endif
       case EVT_KEY_LONG(KEY_ENTER):
       case EVT_KEY_BREAK(KEY_ENTER):
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
         if (s_editMode < 0) {
           s_editMode = 0;
           break;
@@ -387,7 +387,7 @@ void menuModelSelect(uint8_t event)
         }
         break;
 
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
         if (sub == g_eeGeneral.currModel) {
@@ -400,7 +400,7 @@ void menuModelSelect(uint8_t event)
 
       case EVT_KEY_FIRST(KEY_MOVE_UP):
       case EVT_KEY_FIRST(KEY_MOVE_DOWN):
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
         if (s_editMode == -1) {
           chainMenu(event == EVT_KEY_FIRST(KEY_RIGHT) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
           return;
@@ -571,7 +571,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
           if (!navigationRotaryEncoder(event))
             break;
           // no break
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
         case EVT_KEY_LONG(KEY_ENTER):
 #endif
           if (v==0) {
@@ -1402,7 +1402,7 @@ void menuModelCurveOne(uint8_t event)
     case EVT_KEY_BREAK(KEY_ENTER):
       if (s_editMode <= 0)
         m_posHorz = 0;
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
       else if (s_editMode == 1)
         s_editMode = (crv.custom && m_posHorz>0 && m_posHorz<crv.points-1) ? 2 : 3;
       else if (s_editMode == 2)
@@ -1497,7 +1497,7 @@ void menuModelCurveOne(uint8_t event)
 
       int8_t x = -100 + 200*i/(crv.points-1);
       if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
       lcd_puts(7, 2*FH, PSTR("x=")); lcd_outdezAtt(7+2*FW, 2*FH, x, LEFT|(s_editMode==2 ? BLINK|INVERS : 0));
       lcd_puts(7, 3*FH, PSTR("y=")); lcd_outdezAtt(7+2*FW, 3*FH, crv.crv[i], LEFT|(s_editMode==3 ? BLINK|INVERS : 0));
 #else
@@ -1506,7 +1506,7 @@ void menuModelCurveOne(uint8_t event)
 #endif
       lcd_rect(3, 1*FH+4, 7*FW-2, 3*FH-2);
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
       if (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_MINUS) || event==EVT_KEY_REPT(KEY_PLUS)) {
         if (s_editMode == 2)
           CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X
@@ -1813,7 +1813,7 @@ enum MixFields {
 
 void menuModelMixOne(uint8_t event)
 {
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   if (event == EVT_KEY_LONG(KEY_PAGE)) {
     pushMenu(menuChannelsMonitor);
     killEvents(event);
@@ -2235,7 +2235,7 @@ void menuModelExposAll(uint8_t event)
 
 void menuModelMixAll(uint8_t event)
 {
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   if (event == EVT_KEY_LONG(KEY_PAGE)) {
     pushMenu(menuChannelsMonitor);
     killEvents(event);
@@ -2271,7 +2271,7 @@ enum LimitsItems {
   ITEM_LIMITS_MAXROW = ITEM_LIMITS_COUNT-1
 };
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define LIMITS_DIRECTION_POS  12*FW+4
 #define LIMITS_MAX_POS        16*FW+4
 #define LIMITS_REVERT_POS     18*FW
@@ -3064,7 +3064,7 @@ void menuModelTelemetry(uint8_t event)
   switch (event) {
     case EVT_KEY_BREAK(KEY_DOWN):
     case EVT_KEY_BREAK(KEY_UP):
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
     case EVT_KEY_BREAK(KEY_LEFT):
     case EVT_KEY_BREAK(KEY_RIGHT):
 #endif

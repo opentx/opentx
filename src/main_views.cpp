@@ -33,7 +33,7 @@
 
 #include "open9x.h"
 
-#if defined(LCD212)
+#if defined(LCD212) || defined(LCD260)
 #define BOX_WIDTH     31
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
 #define LBOX_CENTERY  (DISPLAY_H-BOX_WIDTH/2-10)
@@ -158,7 +158,7 @@ void displayTrims(uint8_t phase)
   }
 }
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 void displaySliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
@@ -227,7 +227,7 @@ void displayVoltage()
   else {
     LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | MIDSIZE;
     putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
     lcd_putcAtt(VBATTUNIT_X, VBATTUNIT_Y, 'v', MIDSIZE);
 #else
     lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
@@ -243,7 +243,7 @@ void displayVoltage()
 }
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 #define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
 #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
 #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
@@ -255,7 +255,7 @@ void displayVoltage()
 #define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 void menuMainViewChannelsMonitor(uint8_t event)
 {
   switch(event) {
@@ -317,7 +317,7 @@ void menuMainView(uint8_t event)
 #endif
 
 #if !defined(READONLY)
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
       killEvents(event);
@@ -335,7 +335,7 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
     case EVT_KEY_BREAK(KEY_PAGE):
       eeDirty(EE_GENERAL);
       g_eeGeneral.view += 1;
@@ -391,7 +391,7 @@ void menuMainView(uint8_t event)
         s_gvar_timer = 0;
       }
 #endif
-#if !defined(LCD212)
+#if !defined(LCD212) && !defined(LCD260)
       else if (view == VIEW_TIMER2) {
         resetTimer(1);
       }
@@ -426,12 +426,14 @@ void menuMainView(uint8_t event)
     displayTrims(phase);
   }
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   // Sliders (Pots / Sliders)
   displaySliders();
 
+#if defined(PCBX9D)
   // Model Bitmap
   lcd_img(BITMAP_X, BITMAP_Y, modelBitmap, 0, 0);
+#endif
 
   // Switches
   for (uint8_t i=0; i<8; i++) {
