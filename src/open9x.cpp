@@ -3570,6 +3570,11 @@ int main(void)
   init_rotary_sw();
 #endif
 
+#if defined(PCBX9D) || defined(PCBACT)
+  // TEST CODE FOR CHECKING THE LCD AND THE KEYS
+  doSplash();
+#endif
+
 #if !defined(CPUARM)
   open9xInit(mcusr);
 #endif
