@@ -719,6 +719,9 @@ enum MixSources {
     MIXSRC_SWA,
     MIXSRC_SWB,
     MIXSRC_SWC,
+#if defined(CPUARM)
+    MIXSRC_SWW=MIXSRC_SWC+'W'-'C',
+#endif
     MIXSRC_CYC1,
     MIXSRC_CYC2,
     MIXSRC_CYC3,

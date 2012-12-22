@@ -2322,12 +2322,12 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           if (v < 0 && !md->swtch) sw = false;
         }
         else {
-          v = getValue(k <= MIXSRC_3POS ? k : k - MAX_SWITCH);
-          if (k >= MIXSRC_CH1 - 1 && k <= MIXSRC_CHMAX - 1
-              && md->destCh != k - MIXSRC_CH1 + 1) {
-            if (dirtyChannels & ((bitfield_channels_t) 1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+          v = getValue(k<=MIXSRC_3POS ? k : k-MAX_SWITCH);
+          if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
+            if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (k - MIXSRC_CH1 + 1 < md->destCh || pass > 0) v = chans[k-MIXSRC_CH1+1] / 100;
+            if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
+              v = chans[k-MIXSRC_CH1+1] / 100;
           }
         }
 #endif
