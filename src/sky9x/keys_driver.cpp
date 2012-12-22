@@ -178,3 +178,74 @@ void readKeysAndTrims()
     ++enuk;
   }
 }
+
+extern uint32_t keyState(EnumKeys enuk)
+{
+  register uint32_t a;
+  register uint32_t c;
+
+  uint32_t xxx = 0;
+
+  if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
+
+  a = PIOA->PIO_PDSR ;
+  c = PIOC->PIO_PDSR ;
+
+  switch ((uint8_t) enuk) {
+#if defined(REVA)
+    case SW_ELE:
+      xxx = a & 0x00000100; // ELE_DR   PA8
+#else
+    case SW_ELE:
+      xxx = c & 0x80000000; // ELE_DR   PC31
+#endif
+      break;
+
+    case SW_AIL:
+      xxx = a & 0x00000004; // AIL-DR  PA2
+      break;
+
+    case SW_RUD:
+      xxx = a & 0x00008000; // RUN_DR   PA15
+      break;
+      //     INP_G_ID1 INP_E_ID2
+      // id0    0        1
+      // id1    1        1
+      // id2    1        0
+    case SW_ID0:
+      xxx = ~c & 0x00004000; // SW_IDL1     PC14
+      break;
+    case SW_ID1:
+      xxx = (c & 0x00004000);
+      if (xxx) xxx = (c & 0x00000800);
+      break;
+    case SW_ID2:
+      xxx = ~c & 0x00000800; // SW_IDL2     PC11
+      break;
+
+    case SW_GEA:
+      xxx = c & 0x00010000; // SW_GEAR     PC16
+      break;
+
+#if defined(REVA)
+    case SW_THR:
+      xxx = a & 0x10000000; // SW_TCUT     PA28
+#else
+    case SW_THR:
+      xxx = c & 0x00100000; // SW_TCUT     PC20
+#endif
+      break;
+
+    case SW_TRN:
+      xxx = c & 0x00000100; // SW-TRAIN    PC8
+      break;
+
+    default:
+      break;
+  }
+
+  if (xxx) {
+    return 1;
+  }
+  return 0;
+}

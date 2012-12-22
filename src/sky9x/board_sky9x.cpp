@@ -31,8 +31,9 @@
  *
  */
 
-#include "open9x.h"
-#include "sky9x/board.h"
+#include "../open9x.h"
+
+void pwrInit();
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
@@ -56,74 +57,6 @@ volatile uint32_t lcdInputs;
 #define SECOND_ID          ID_USART0
 /** Pins description corresponding to Rxd,Txd, (UART pins) */
 #define SECOND_PINS        {PINS_USART0}
-
-#define CPU_INT         int32_t
-#define CPU_UINT        uint32_t
-
-#if !defined(REVA)
-inline void pwrInit()
-{
-  // Configure RF_power (PC17)
-  configure_pins( PIO_PC17, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_NO_PULLUP | PIN_PULLDOWN ) ;
-  configure_pins( PIO_PA8, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP ) ; // Enable bit A8 (Soft Power)
-}
-#endif
-
-uint32_t check_soft_power()
-{
-#ifdef SIMU
-  return e_power_on;
-#endif
-
-#if defined(REVC)
-  if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
-  {
-    return e_power_on ;
-  }
-
-  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
-  {
-    return e_power_trainer ;
-  }
-#elif defined(REVB)
-  if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
-  {
-    return e_power_on ;
-  }
-
-  if (usbPlugged())
-  {
-    return e_power_usb ;            // Detected USB
-  }
-
-  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
-  {
-    return e_power_trainer ;
-  }
-#else
-  if ( PIOC->PIO_PDSR & PIO_PC25 )
-  {
-    return e_power_usb ;            // Detected USB
-  }
-
-  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
-  {
-    return e_power_trainer ;
-  }
-
-  return e_power_on;
-#endif
-
-  return e_power_off;
-}
-
-// turn off soft power
-void soft_power_off()
-{
-#if !defined(REVA)
-  configure_pins( PIO_PA8, PIN_ENABLE | PIN_OUTPUT | PIN_LOW | PIN_PORTA | PIN_NO_PULLUP ) ;
-#endif
-}
 
 extern "C" void sam_boot( void ) ;
 
@@ -733,10 +666,10 @@ void boardInit()
   // Enable PCK2 on PB3, This is for testing of Timer 2 working
   // It will be used as serial data to the Bluetooth module
   pioptr->PIO_ABCDSR[0] |=  PIO_PB3 ;     // Peripheral B
-  pioptr->PIO_ABCDSR[1] &= ~PIO_PB3 ;   // Peripheral B
-  pioptr->PIO_PDR = PIO_PB3 ;                                   // Assign to peripheral
-  PMC->PMC_SCER |= 0x0400 ;                                                               // PCK2 enabled
-  PMC->PMC_PCK[2] = 2 ;                                                                           // PCK2 is PLLA
+  pioptr->PIO_ABCDSR[1] &= ~PIO_PB3 ;     // Peripheral B
+  pioptr->PIO_PDR = PIO_PB3 ;             // Assign to peripheral
+  PMC->PMC_SCER |= 0x0400 ;               // PCK2 enabled
+  PMC->PMC_PCK[2] = 2 ;                   // PCK2 is PLLA
 
   DEBUG_UART_Configure( 9600, Master_frequency ) ;
   UART2_Configure( 9600, Master_frequency ) ;             // Testing
@@ -761,77 +694,6 @@ void boardInit()
 
 }
 #endif
-
-extern uint32_t keyState(EnumKeys enuk)
-{
-  register uint32_t a ;
-  register uint32_t c ;
-
-  CPU_UINT xxx = 0;
-
-  if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
-
-  a = PIOA->PIO_PDSR ;
-  c = PIOC->PIO_PDSR ;
-
-  switch ((uint8_t) enuk) {
-#if defined(REVA)
-    case SW_ELE:
-      xxx = a & 0x00000100; // ELE_DR   PA8
-#else
-    case SW_ELE:
-      xxx = c & 0x80000000; // ELE_DR   PC31
-#endif
-      break;
-
-    case SW_AIL:
-      xxx = a & 0x00000004; // AIL-DR  PA2
-      break;
-
-    case SW_RUD:
-      xxx = a & 0x00008000; // RUN_DR   PA15
-      break;
-      //     INP_G_ID1 INP_E_ID2
-      // id0    0        1
-      // id1    1        1
-      // id2    1        0
-    case SW_ID0:
-      xxx = ~c & 0x00004000; // SW_IDL1     PC14
-      break;
-    case SW_ID1:
-      xxx = (c & 0x00004000);
-      if (xxx) xxx = (c & 0x00000800);
-      break;
-    case SW_ID2:
-      xxx = ~c & 0x00000800; // SW_IDL2     PC11
-      break;
-
-    case SW_GEA:
-      xxx = c & 0x00010000; // SW_GEAR     PC16
-      break;
-
-#if defined(REVA)
-    case SW_THR:
-      xxx = a & 0x10000000; // SW_TCUT     PA28
-#else
-    case SW_THR:
-      xxx = c & 0x00100000; // SW_TCUT     PC20
-#endif
-      break;
-
-    case SW_TRN:
-      xxx = c & 0x00000100; // SW-TRAIN    PC8
-      break;
-
-    default:
-      break;
-  }
-
-  if (xxx) {
-    return 1;
-  }
-  return 0;
-}
 
 uint16_t Analog_values[NUMBER_ANALOG] ;
 uint8_t temperature = 0;          // Raw temp reading

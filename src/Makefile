@@ -527,7 +527,7 @@ ifeq ($(PCB), SKY9X)
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += sky9x/audio.cpp haptic.cpp
-  CPPSRC += sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp  sky9x/audio_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
+  CPPSRC += sky9x/pwr_driver.cpp sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp  sky9x/audio_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
     EXTRAINCDIRS += FatFs FatFs/option
