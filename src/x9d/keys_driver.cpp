@@ -112,6 +112,102 @@ void readKeysAndTrims()
   }
 }
 
+uint32_t keyState(EnumKeys enuk)
+{
+  register uint32_t a = GPIOA->IDR;
+  register uint32_t b = GPIOB->IDR;
+  register uint32_t e = GPIOE->IDR;
+
+  register uint32_t xxx = 0;
+
+  if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
+
+  switch ((uint8_t) enuk) {
+    case SW_SA0:
+      xxx = ~e & PIN_SW_A_L;
+      break;
+    case SW_SA2:
+      xxx = e & PIN_SW_A_L;
+      break;
+
+    case SW_SB0:
+      xxx = !(b & (PIN_SW_B_L | PIN_SW_B_H));
+      break;
+    case SW_SB1:
+      xxx = (b & PIN_SW_B_H) && (~b & PIN_SW_B_L);
+      break;
+    case SW_SB2:
+      xxx = (~b & PIN_SW_B_H) && (b & PIN_SW_B_L);
+      break;
+
+    case SW_SC0:
+      xxx = !(b & (PIN_SW_C_L | PIN_SW_C_H));
+      break;
+    case SW_SC1:
+      xxx = (b & PIN_SW_C_H) && (~b & PIN_SW_C_L);
+      break;
+    case SW_SC2:
+      xxx = (~b & PIN_SW_C_H) && (b & PIN_SW_C_L);
+      break;
+
+    case SW_SD0:
+      xxx = (~e & PIN_SW_D_L) && (~b & PIN_SW_D_H);
+      break;
+    case SW_SD1:
+      xxx = (b & PIN_SW_D_H) && (~e & PIN_SW_D_L);
+      break;
+    case SW_SD2:
+      xxx = (~b & PIN_SW_D_H) && (e & PIN_SW_D_L);
+      break;
+
+    case SW_SE0:
+      xxx = (~a & PIN_SW_E_L) && (~b & PIN_SW_E_H);
+      break;
+    case SW_SE1:
+      xxx = (b & PIN_SW_E_H) && (~a & PIN_SW_E_L);
+      break;
+    case SW_SE2:
+      xxx = (~b & PIN_SW_E_H) && (a & PIN_SW_E_L);
+      break;
+
+    case SW_SF0:
+      xxx = (~b & PIN_SW_F_L) && (~e & PIN_SW_F_H);
+      break;
+    case SW_SF1:
+      xxx = (e & PIN_SW_F_H) && (~b & PIN_SW_F_L);
+      break;
+    case SW_SF2:
+      xxx = (~e & PIN_SW_F_H) && (b & PIN_SW_F_L);
+      break;
+
+    case SW_SG0:
+      xxx = !(e & (PIN_SW_G_L | PIN_SW_G_H));
+      break;
+    case SW_SG1:
+      xxx = (e & PIN_SW_G_H) && (~e & PIN_SW_G_L);
+      break;
+    case SW_SG2:
+      xxx = (~e & PIN_SW_G_H) && (e & PIN_SW_G_L);
+      break;
+
+    case SW_SH0:
+      xxx = ~e & PIN_SW_H_L;
+      break;
+    case SW_SH2:
+      xxx = e & PIN_SW_H_L;
+      break;
+
+    default:
+      break;
+  }
+
+  if (xxx) {
+    return 1;
+  }
+
+  return 0;
+}
+
 #if !defined(SIMU)
 void keysInit()
 {

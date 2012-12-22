@@ -154,15 +154,15 @@
 #define HAPTIC_VARIANT 0x0100 */
 
 #if defined(PCBACT)
-#include "board_act.h"
+#include "act/board_act.h"
 #elif defined(PCBX9D)
-#include "board_x9d.h"
+#include "x9d/board_x9d.h"
 #elif defined(PCBSKY9X)
-#include "board_sky9x.h"
+#include "sky9x/board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
-#include "board_gruvin9x.h"
+#include "gruvin9x/board_gruvin9x.h"
 #else
-#include "board_stock.h"
+#include "stock/board_stock.h"
 #endif
 
 #if defined(SIMU)

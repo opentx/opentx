@@ -470,7 +470,7 @@ ifeq ($(PCB), ACT)
   CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD260 -DSTM32F10X_LD
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   EXTRAINCDIRS += act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/STM32F10x_StdPeriph_Driver/inc act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
-  BOARDSRC = board_x9d.cpp 
+  BOARDSRC = x9d/board_x9d.cpp 
   EXTRABOARDSRC += x9d/lcd_driver.cpp
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
@@ -486,7 +486,7 @@ ifeq ($(PCB), X9D)
   CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD212
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
-  BOARDSRC = board_x9d.cpp
+  BOARDSRC = x9d/board_x9d.cpp
   EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
@@ -516,7 +516,7 @@ ifeq ($(PCB), SKY9X)
   OPT = 2
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
-  BOARDSRC = board_sky9x.cpp
+  BOARDSRC = sky9x/board_sky9x.cpp
   EXTRABOARDSRC += sky9x/lcd_driver.cpp
   SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
@@ -556,7 +556,7 @@ ifeq ($(PCB), GRUVIN9X)
   OPT = 2
   CPPDEFS += -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2 
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
-  BOARDSRC += board_gruvin9x.cpp
+  BOARDSRC += gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
@@ -583,7 +583,7 @@ ifeq ($(PCB), STD128)
   OPT = 2
   CPPDEFS += -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=0x8000
   EXTRAINCDIRS += stock
-  BOARDSRC = board_stock.cpp
+  BOARDSRC = stock/board_stock.cpp
   EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp
@@ -619,7 +619,7 @@ ifeq ($(PCB), STD)
   OPT = s
   EXTRAINCDIRS += stock
   CPPDEFS += -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  BOARDSRC = board_stock.cpp
+  BOARDSRC = stock/board_stock.cpp
   EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp

@@ -96,6 +96,9 @@ typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
 #if defined(PCBX9D) || defined(PCBACT)
+extern GPIO_TypeDef gpioa;
+#undef GPIOA
+#define GPIOA (&gpioa)
 extern GPIO_TypeDef gpiob;
 #undef GPIOB
 #define GPIOB (&gpiob)
