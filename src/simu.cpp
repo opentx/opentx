@@ -84,7 +84,7 @@ uint64_t toto = 0;
 #define ERSKY9X_RETURN_MASK (0x20)
 #define ERSKY9X_EXIT_MASK   (0x01000000)
 #define ERSKY9X_EXIT_PIO    PIOC->PIO_PDSR
-#define ERSKY9X_UP_PIO      PIOC
+#define ERSKY9X_UP_PIO      PIOC->PIO_PDSR
 #define ERSKY9X_UP_MASK     (0x04 >> 1)
 #define ERSKY9X_RIGHT_PIO   PIOC->PIO_PDSR
 #define ERSKY9X_RIGHT_MASK  (0x20 >> 1)
@@ -278,6 +278,7 @@ long Open9xSim::onArrowPress(FXObject*sender,FXSelector sel,void*v)
   }
   return 0;
 }
+
 long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
 {
   FXEvent *evt=(FXEvent*)v;
@@ -298,7 +299,6 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       }
     }
   }
-
 
   if(hasFocus()) {
     static uint64_t keys1[]={
