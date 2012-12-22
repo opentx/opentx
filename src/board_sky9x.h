@@ -115,9 +115,11 @@ void setSticksGain(uint8_t gains);
 
 uint32_t spi_operation( register uint8_t *tx, register uint8_t *rx, register uint32_t count );
 
+#if !defined(SIMU)
 #define wdt_disable()
 #define wdt_enable(x) WDT->WDT_MR = 0x3FFF217F;
 #define wdt_reset()   WDT->WDT_CR = 0xA5000001
+#endif
 
 #define setBacklight(xx) PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx;
 

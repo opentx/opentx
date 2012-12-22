@@ -1,0 +1,1031 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head>
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="File-List" href="Library_files/filelist.xml">
+<link rel="Edit-Time-Data" href="Library_files/editdata.mso"><!--[if !mso]> <style> v\:* {behavior:url(#default#VML);} o\:* {behavior:url(#default#VML);} w\:* {behavior:url(#default#VML);} .shape {behavior:url(#default#VML);} </style> <![endif]--><title>Release Notes for STM32F10x Standard Peripherals Library</title><!--[if gte mso 9]><xml> <o:DocumentProperties> <o:Author>STMicroelectronics</o:Author> <o:LastAuthor>STMicroelectronics</o:LastAuthor> <o:Revision>37</o:Revision> <o:TotalTime>136</o:TotalTime> <o:Created>2009-02-27T19:26:00Z</o:Created> <o:LastSaved>2009-03-01T17:56:00Z</o:LastSaved> <o:Pages>1</o:Pages> <o:Words>522</o:Words> <o:Characters>2977</o:Characters> <o:Company>STMicroelectronics</o:Company> <o:Lines>24</o:Lines> <o:Paragraphs>6</o:Paragraphs> <o:CharactersWithSpaces>3493</o:CharactersWithSpaces> <o:Version>11.6568</o:Version> </o:DocumentProperties> </xml><![endif]--><!--[if gte mso 9]><xml> <w:WordDocument> <w:Zoom>110</w:Zoom> <w:ValidateAgainstSchemas/> <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid> <w:IgnoreMixedContent>false</w:IgnoreMixedContent> <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText> <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel> </w:WordDocument> </xml><![endif]--><!--[if gte mso 9]><xml> <w:LatentStyles DefLockedState="false" LatentStyleCount="156"> </w:LatentStyles> </xml><![endif]-->
+
+
+
+<style>
+<!--
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+{mso-style-parent:"";
+margin:0in;
+margin-bottom:.0001pt;
+mso-pagination:widow-orphan;
+font-size:12.0pt;
+font-family:"Times New Roman";
+mso-fareast-font-family:"Times New Roman";}
+h2
+{mso-style-next:Normal;
+margin-top:12.0pt;
+margin-right:0in;
+margin-bottom:3.0pt;
+margin-left:0in;
+mso-pagination:widow-orphan;
+page-break-after:avoid;
+mso-outline-level:2;
+font-size:14.0pt;
+font-family:Arial;
+font-weight:bold;
+font-style:italic;}
+a:link, span.MsoHyperlink
+{color:blue;
+text-decoration:underline;
+text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+{color:blue;
+text-decoration:underline;
+text-underline:single;}
+p
+{mso-margin-top-alt:auto;
+margin-right:0in;
+mso-margin-bottom-alt:auto;
+margin-left:0in;
+mso-pagination:widow-orphan;
+font-size:12.0pt;
+font-family:"Times New Roman";
+mso-fareast-font-family:"Times New Roman";}
+@page Section1
+{size:8.5in 11.0in;
+margin:1.0in 1.25in 1.0in 1.25in;
+mso-header-margin:.5in;
+mso-footer-margin:.5in;
+mso-paper-source:0;}
+div.Section1
+{page:Section1;}
+-->
+</style><!--[if gte mso 10]> <style> /* Style Definitions */ table.MsoNormalTable {mso-style-name:"Table Normal"; mso-tstyle-rowband-size:0; mso-tstyle-colband-size:0; mso-style-noshow:yes; mso-style-parent:""; mso-padding-alt:0in 5.4pt 0in 5.4pt; mso-para-margin:0in; mso-para-margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:10.0pt; font-family:"Times New Roman"; mso-ansi-language:#0400; mso-fareast-language:#0400; mso-bidi-language:#0400;} </style> <![endif]--><!--[if gte mso 9]><xml> <o:shapedefaults v:ext="edit" spidmax="5122"/> </xml><![endif]--><!--[if gte mso 9]><xml> <o:shapelayout v:ext="edit"> <o:idmap v:ext="edit" data="1"/> </o:shapelayout></xml><![endif]--></head><body lang="EN-US" link="blue" vlink="blue">
+<div class="Section1">
+<p class="MsoNormal"><span style="font-family: Arial;"><o:p><br></o:p></span><a href="../../../DOC/Others/FWLib/CHM_Generator/Library_html/index.html"></a></p>
+<div align="center">
+<table class="MsoNormalTable" style="width: 675pt;" border="0" cellpadding="0" cellspacing="0" width="900">
+<tbody>
+<tr style="">
+<td style="padding: 0cm;" valign="top">
+<table class="MsoNormalTable" style="width: 675pt;" border="0" cellpadding="0" cellspacing="0" width="900">
+<tbody>
+<tr style="">
+<td style="padding: 1.5pt;">
+<h1 style="margin-bottom: 18pt; text-align: center;" align="center"><span style="font-size: 20pt; font-family: Verdana; color: rgb(51, 102, 255);">Release
+Notes for STM32F10x Standard Peripherals Library (StdPeriph_Lib)</span><span style="font-size: 20pt; font-family: Verdana;"><o:p></o:p></span></h1>
+
+<p class="MsoNormal" style="text-align: center;" align="center"><span style="font-size: 10pt; font-family: Arial; color: black;">Copyright 2011 STMicroelectronics</span><span style="color: black;"><u1:p></u1:p><o:p></o:p></span></p>
+<p class="MsoNormal" style="text-align: center;" align="center"><span style="font-size: 10pt; font-family: Arial; color: black;"><img id="_x0000_i1025" src="_htmresc/logo.bmp" style="border-style: solid; border-width: 0px; height: 65px; width: 86px;" height="65" width="86"></span><span style="font-size: 10pt;"><o:p></o:p></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal"><span style="font-family: Arial; display: none;"><o:p>&nbsp;</o:p></span></p>
+<table class="MsoNormalTable" style="width: 675pt;" border="0" cellpadding="0" width="900">
+<tbody>
+<tr style="">
+<td style="padding: 0cm;" valign="top">
+<h2 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;"><span style="font-size: 12pt; color: white;">Contents<o:p></o:p></span></h2>
+<ol style="margin-top: 0cm;" start="1" type="1">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"><a href="#History">STM32F10x Standard Peripherals Library
+update History</a><o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"><a href="#License">License</a><o:p></o:p></span></li>
+</ol>
+<span style="font-family: &quot;Times New Roman&quot;;"></span>
+<h2 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;"><a name="History"></a><span style="font-size: 12pt; color: white;">STM32F10x Standard
+Peripherals Library update History</span></h2><br>
+            <h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 500pt; width: 167px;"><span style="font-size: 10pt; font-family: Arial; color: white;">V3.5.0 / 08-April-2011<o:p></o:p></span></h3>
+            <p class="MsoNormal" style="margin: 4.5pt 0cm 4.5pt 18pt;"><b style=""><u><span style="font-size: 10pt; font-family: Verdana; color: black;">Main
+Changes<o:p></o:p></span></u></b></p>
+
+            <ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Specific system_stm32f10x.c file provided for each example</span></li>
+              <li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">HTML file containing the examples list, with main features, provided in the root folder (allow search on key word/feature)</span></li>
+              <li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Template projects updated to save configuration time and easy the examples use</span></li>
+              <li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Refreshed example list vs. previous version:</span></li>
+              <ul>
+                <li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add two new Examples: MPU and TIM DMA Burst &nbsp;&nbsp;&nbsp; <br>
+                  </span></li>
+                <li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">xWDG examples enhanced, ex. accurate IWDG timeout thanks to LSI freq measure w/ Timer</span></li>
+                <li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">NVIC and SysTick examples enhanced to provide more details how to use them w/ CMSIS layer<br>
+                  </span></li>
+              </ul>
+
+            </ul>
+            
+
+            <span style="font-size: 10pt; font-family: Verdana; color: black;"><o:p></o:p></span>
+            <p class="MsoNormal" style="margin: 4.5pt 0cm 4.5pt 23px; width: 868px;"><b style=""><u><span style="font-size: 10pt; font-family: Verdana; color: black;">Contents<o:p></o:p></span></u></b></p>
+
+            <ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">ARM CM3 CMSIS V1.30 (<a href="Libraries%5CCMSIS%5CCMSIS_changes.htm">release
+notes</a>)</span><br>
+<span style="font-size: 10pt; font-family: Verdana;"></span></li>
+              <li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">STM32F10x CMSIS V3.5.0 (<a href="Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/Release_Notes.html">release
+notes</a>)</span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"></span><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Driver V3.5.0 (<a href="Libraries/STM32F10x_StdPeriph_Driver/Release_Notes.html">release
+notes</a>)</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Examples V3.5.0 (<a href="Project/STM32F10x_StdPeriph_Examples/Release_Notes.html">release
+notes</a>)</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Template V3.5.0 (<a href="Project/STM32F10x_StdPeriph_Template/Release_Notes.html">release
+notes</a>)</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">STM32_EVAL V4.5.0 (<a href="Utilities/STM32_EVAL/Release_Notes.html">release
+notes</a>)</span></li>
+            </ul>
+            
+            <span style="font-size: 10pt; font-family: Verdana;"><span style="text-decoration: underline;"><span style="font-weight: bold;"></span></span></span>
+            <p class="MsoNormal" style="margin: 4.5pt 0cm 4.5pt 23px; width: 868px;"><b style=""><u><span style="font-size: 10pt; font-family: Verdana; color: black;">Development Toolchains and Compilers<o:p></o:p></span></u></b></p>
+
+            
+            
+            
+            <ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">IAR Embedded Workbench for ARM (EWARM) toolchain V5.50.5<br>
+</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Hitex&nbsp;IDE/Debugger 
+                </span><span style="font-size: 10pt; font-family: Verdana;">(</span><span style="font-size: 10pt; font-family: Verdana;">HiTOP</span><span style="font-size: 10pt; font-family: Verdana;">)&nbsp;toolchain V5.40.0051</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">RealView Microcontroller 
+Development Kit (MDK-ARM)&nbsp;toolchain V4.13
+  </span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Raisonance IDE RIDE7 
+(RIDE)&nbsp;toolchain (RIDE7 IDE:7.30.10, RKitARM for RIDE7:1.30.10)</span></li>
+              <li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"></span><span style="font-size: 10pt; font-family: Verdana;">Atollic TrueSTUDIO STM32 
+(TrueSTUDIO)&nbsp;toolchain V1.4.0</span></li>
+
+            </ul>
+
+            
+
+            
+            
+
+            <h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">3.4.0 - 10/15/2010</span></h3>
+
+    
+            <ol style="margin-top: 0in;" start="1" type="1">
+<li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">General</span></i></b><i><span style="font-size: 10pt; font-family: Verdana;"> </span></i><i><span style="font-size: 10pt;"><o:p></o:p></span></i></li>
+            </ol>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add support for <span style="font-weight: bold;">STM32F10x High-density Value line</span> devices. <br>
+</span></li>
+              <li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add 3 examples: FSMC OneNAND, I2C TSENSOR (Temperature Sensro) and I2C IOExpander.<br>
+</span></li>
+              <li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Utilities STM32&nbsp; EVAL drivers enhancements:</span></li>
+              <ul>
+                <li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">I2C EEPROM, Temperature Sensor and IO Expander drivers updated to use the DMA for read/write transfer and add more robustness.</span></li>
+                <li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">SD Card (SDIO) driver updated to add more robustness.<br>
+</span></li>
+              </ul>
+
+            </ul>
+
+    
+            <ol style="margin-top: 0in;" start="2" type="1">
+<li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Libraries</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li>
+            </ol>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">CMSIS</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li>
+            </ul>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See <a href="Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/Release_Notes.html">Release Notes for STM32F10x CMSIS</a></span></li></ul>
+            </ul>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Drive</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;">r</span></u><u><span style="font-size: 10pt;"></span></u></li>
+            </ul>
+
+    
+    
+            <ul style="margin-top: 0in;" type="disc">
+<ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See <a href="Libraries/STM32F10x_StdPeriph_Driver/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Driver</a></span><b><i><span style="font-size: 10pt; font-family: Verdana;"></span></i></b></li></ul>
+            </ul>
+            <ol start="3">
+<li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Project</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li>
+            </ol>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Examples</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li>
+            </ul>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Project/STM32F10x_StdPeriph_Examples/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Examples</a></span></li></ul>
+            </ul>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Template</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;"></span></u><u><span style="font-size: 10pt;"></span></u></li>
+            </ul>
+
+    
+    
+            <ul>
+<ul><li><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Project/STM32F10x_StdPeriph_Template/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Template</a></span></li></ul>
+            </ul>
+            <ol start="4">
+<li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Utilities</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li>
+            </ol>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32_EVAL</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li>
+            </ul>
+
+    
+            <ul style="margin-top: 0in;" type="disc">
+<ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Utilities/STM32_EVAL/Release_Notes.html">Release Notes_for_STM32_EVAL</a></span></li></ul>
+            </ul>
+            <br>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">3.3.0 - 04/16/2010</span></h3>
+    <ol style="margin-top: 0in;" start="1" type="1"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">General</span></i></b><i><span style="font-size: 10pt; font-family: Verdana;"> </span></i><i><span style="font-size: 10pt;"><o:p></o:p></span></i></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add support for <span style="font-weight: bold;">STM32F10x XL-density</span> devices.&nbsp;</span></li><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add template project for <span style="font-weight: bold;">TrueSTUDIO</span> toolchain. </span><span style="font-size: 10pt;"><o:p></o:p></span></li></ul>
+    <ol style="margin-top: 0in;" start="2" type="1"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Libraries</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">CMSIS</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See <a href="Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/Release_Notes.html">Release Notes for STM32F10x CMSIS</a></span></li></ul></ul>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Drive</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;">r</span></u><u><span style="font-size: 10pt;"></span></u></li></ul>
+    
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See <a href="Libraries/STM32F10x_StdPeriph_Driver/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Driver</a></span><b><i><span style="font-size: 10pt; font-family: Verdana;"></span></i></b></li></ul></ul><ol start="3"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Project</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Examples</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Project/STM32F10x_StdPeriph_Examples/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Examples</a></span></li></ul></ul>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Template</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;"></span></u><u><span style="font-size: 10pt;"></span></u></li></ul>
+    
+    <ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Project/STM32F10x_StdPeriph_Template/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Template</a></span></li></ul></ul><ol start="4"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Utilities</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32_EVAL</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Utilities/STM32_EVAL/Release_Notes.html">Release Notes_for_STM32_EVAL</a></span></li></ul></ul><h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">3.2.0 - 03/01/2010</span></h3>
+    <ol style="margin-top: 0in;" start="1" type="1"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">General</span></i></b><i><span style="font-size: 10pt; font-family: Verdana;"> </span></i><i><span style="font-size: 10pt;"><o:p></o:p></span></i></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add support for&nbsp;<b>STM32 Low-density Value line (STM32F100x4/6) and Medium-density Value line (STM32F100x8/B) devices</b>.</span></li>
+              <li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">New <span style="font-weight: bold;">CMSIS V1.30</span> release </span><span style="font-size: 10pt;"><o:p></o:p></span></li>
+</ul>
+    <ol style="margin-top: 0in;" start="2" type="1"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Libraries</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">CMSIS</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See <a href="Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/Release_Notes.html">Release Notes for STM32F10x CMSIS</a></span></li></ul></ul>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Drive</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;">r</span></u><u><span style="font-size: 10pt;"></span></u></li></ul>
+    
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See <a href="Libraries/STM32F10x_StdPeriph_Driver/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Driver</a></span><b><i><span style="font-size: 10pt; font-family: Verdana;"></span></i></b></li></ul></ul><ol start="3"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Project</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Examples</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Project/STM32F10x_StdPeriph_Examples/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Examples</a></span></li></ul></ul>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Template</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;"></span></u><u><span style="font-size: 10pt;"></span></u></li></ul>
+    
+    <ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Project/STM32F10x_StdPeriph_Template/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Template</a></span></li></ul></ul><ol start="4"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Utilities</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32_EVAL</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">See&nbsp;<a href="Utilities/STM32_EVAL/Release_Notes.html">Release Notes for STM32F10x_StdPeriph_Utilities</a></span></li></ul></ul>
+    <h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V3.1.2 -
+    09/28/2009</span></h3>
+    <ol style="margin-top: 0in;" start="1" type="1"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">General</span></i></b><i><span style="font-size: 10pt; font-family: Verdana;"> </span></i><i><span style="font-size: 10pt;"><o:p></o:p></span></i></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">Add support for <b>Hitex
+         Development Tools HiTOP</b>. </span><span style="font-size: 10pt;"><o:p></o:p></span></li></ul>
+    <ol style="margin-top: 0in;" start="2" type="1"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Libraries</span></i></b><b><i><span style="font-size: 10pt;"><o:p></o:p></span></i></b></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">CMSIS</span></u></i><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">system_stm32f10x.c: <i>SetSysClockTo56()</i>
+          function, change the flash latency to 2&nbsp;instead of 1</span><span style="font-size: 10pt;"><o:p></o:p></span></li></ul></ul>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Drive</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;">r</span></u><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_tim.c: in <i>TIM_OCxInit()</i>&nbsp;functions,
+          add new instruction to set the <i>CCxS</i> bits&nbsp;(x= 1, 2, 3, 4)
+          to 0, i.e. the channel CCx is configured as output. In the previous
+          version these functions was assuming that the<i> CCxS</i> bits are
+          reset; if a channel was previously configured in input, a call to
+          this function doesn't allow using it in output mode. This is resolved
+          with this modification.&nbsp;</span><span style="font-size: 10pt;"><o:p></o:p></span></li></ul></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_spi.h: <i>I2S_InitTypeDef</i>
+          structure, change the&nbsp;type of&nbsp;<i>I2S_AudioFreq</i> field
+          to&nbsp;uint32_t instead of&nbsp;uint16_t. This modification is
+          needed to support I2S 96KHz frequency (available in&nbsp;Connectivity
+          Line devices). </span><span style="font-size: 10pt;"><o:p></o:p></span></li></ul></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_flash.c: <i>FLASH_EraseOptionBytes()</i>
+          function, add&nbsp;note to clarify this function behavior.</span><span style="font-size: 10pt;"><o:p></o:p></span></li></ul></ul>
+    <ol style="margin-top: 0in;" start="3" type="1"><li class="MsoNormal" style=""><b><i><span style="font-size: 10pt; font-family: Verdana;">Project</span></i></b><i><span style="font-size: 10pt; font-family: Verdana;"> </span></i><i><span style="font-size: 10pt;"><o:p></o:p></span></i></li></ol>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">STM32F10x_StdPeriph_Examples</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;"> </span></u><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">I2C\EEPROM example</span><span style="font-size: 10pt;"><o:p></o:p></span></li><ul style="margin-top: 0in;" type="square"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">i2c_ee.c: <i>I2C_EE_BufferRead()</i>
+           function, the following line was removed &nbsp; &nbsp; &nbsp; &nbsp;
+           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+           &nbsp; &nbsp; &nbsp;</span><span style="font-size: 10pt; font-family: &quot;Courier New&quot;;"><span style=""></span><span style=""></span><span style=""></span><span style=""></span><span style=""></span><span style=""></span></span></li></ul></ul></ul><p class="MsoNormal" style="margin-left: 1.25in;"><span style="font-size: 10pt;"><span style="">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span style="font-size: 10pt; font-family: &quot;Courier New&quot;;">/* Clear EV6 by setting
+    again the PE bit */<br>
+    &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; I2C_Cmd(I2C_EE, ENABLE);</span><span style="font-size: 10pt;"><o:p></o:p></span></p>
+    <ul style="margin-top: 0in;" type="disc"><ul style="margin-top: 0in;" type="circle"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">RCC example</span><span style="font-size: 10pt;"><o:p></o:p></span></li><ul style="margin-top: 0in;" type="square"><li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">main.c:&nbsp;<i>SetSysClockTo56()</i>
+           function, change the flash latency to 2&nbsp;instead of 1</span><span style="font-size: 10pt;"><o:p></o:p></span></li></ul></ul></ul>
+    <ul style="margin-top: 0in;" type="disc"><li class="MsoNormal" style=""><i><u><span style="font-size: 10pt; font-family: Verdana;">Template</span></u></i><u><span style="font-size: 10pt; font-family: Verdana;"> </span></u><u><span style="font-size: 10pt;"><o:p></o:p></span></u></li></ul>
+    <ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Add template projects
+          for <span style="font-weight: bold;">HiTOP</span> toolchain to support <span style="font-style: italic;">Medium-density</span> (Template\HiTOP\STM3210B-EVAL),
+          <span style="font-style: italic;">High-density</span> (Template\HiTOP\STM3210E-EVAL) and <span style="font-style: italic;">Connectivity line</span>
+          (Template\HiTOP\STM3210C-EVAL) devices.</span></li></ul></ul>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V3.1.0
+- 06/19/2009</span></h3><ol style="font-style: italic;"><li><big><span style="font-size: 10pt; font-family: Verdana;"><span style="font-weight: bold;">General</span> </span></big></li></ol><ul><li><span style="font-size: 10pt; font-family: Verdana;">Update to support the additional peripherals and features embedded in the <span style="font-weight: bold;">STM32F10x Connectivity Line devices</span>. </span></li><li><span style="font-size: 10pt; font-family: Verdana;">Doxygen
+documentation enhanced to give more detail about driver function&#8217;s
+parameters: description, allowed values and required preconditions.
+This is mainly relevant for peripheral initialization structure&#8217;s
+members (PPP_InitTypeDef). </span></li><li><span style="font-size: 10pt; font-family: Verdana;">C++ support </span></li></ul><span style="font-size: 10pt; font-family: Verdana;"></span><ol style="font-weight: bold; font-style: italic;" start="2"><li><span style="font-size: 10pt; font-family: Verdana;">Libraries</span></li></ol><ul style="text-decoration: underline;"><li><span style="font-size: 10pt; font-family: Verdana;"><span style="font-style: italic;">CMSIS</span></span></li></ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">stm32f10x.h</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Add new define STM32F10X_CL to configure the library for Connectivity Line devices (default configuration)</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Interrupt Number Definition (IRQn)</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Add definition for Connectivity Line devices peripheral&#8217;s interrupts</span></li><li><span style="font-size: 10pt; font-family: Verdana;">For STM32 Low Density Devices, the SPI2_IRQn was removed since there is no SPI2 in these devices.</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Add register's definitions, bits definitions and memory mapping for new peripherals (Ethernet and CAN2) </span></li><li><span style="font-size: 10pt; font-family: Verdana;">RCC, DBGMCU, EXTI, CAN, GPIO and AFIO bits definitions updated</span></li><li><span style="font-size: 10pt; font-family: Verdana;">AFIO_MAPR_SPI1 _REMAP define declaration corrected to AFIO_MAPR_SPI1_REMAP</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Tailor HSE_Value to the to the selected device</span></li></ul></ul></ul><span style="font-size: 10pt; font-family: Verdana;"></span><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">system_stm32f10x.c</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Clock configuration functions updated to support Connectivity line devices</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Change SetSysClockTo20 function to SetSysClockTo24</span></li></ul></ul></ul><span style="font-size: 10pt; font-family: Verdana;"></span><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">startup</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Add new startup files startup_stm32f10x_cl.s&nbsp; for Connectivity Line devices</span></li><li><span style="font-size: 10pt; font-family: Verdana;">For STM32 Low Density Devices, the SPI2_IRQHandler was removed since there is no SPI2 in these devices.</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Use CMSIS Core Peripheral Access Layer V1.20</span></li></ul></ul></ul><span style="font-size: 10pt; font-family: Verdana;"></span><ul style="text-decoration: underline;"><li><span style="font-size: 10pt; font-family: Verdana;"><span style="font-style: italic;">STM32F10x_StdPeriph_Drive</span>r</span></li></ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">CAN: update to support CAN2 peripheral, with no impact on the API</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Add new instance CAN2 </span></li><li><span style="font-size: 10pt; font-family: Verdana;">Filter number updated</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Add new function CAN_SlaveStartBank</span></li></ul></ul></ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC: update to support Connectivity Line devices, with no impact on the API</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC_DeInit and RCC_GetSYSCLKSource functions updated</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Function&#8217;s parameters list updated </span></li><li><span style="font-size: 10pt; font-family: Verdana;">Add new functions</span></li></ul></ul></ul><ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC_PREDIV1Config, RCC_PREDIV2Config</span></li></ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC_PLL2Config, RCC_PLL2Cmd</span></li></ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC_PLL3Config, RCC_PLL3Cmd</span></li></ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC_OTGFSCLKConfig </span></li></ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC_I2S2CLKConfig, RCC_I2S3CLKConfig</span></li></ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC_AHBPeriphResetCmd</span></li></ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">RCC_APB2Periph_ALL and RCC_APB1Periph_ALL parameters removed</span></li></ul></ul></ul></ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">GPIO</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Update GPIO_PinRemapConfig function with 4 new AF remap</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Add new function GPIO_ETH_MediaInterfaceConfig</span></li></ul></ul></ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">EXTI</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Add new internal EXTI Line 19 connected to ETH wakeup</span></li></ul></ul></ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">DBGMCU</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Add new define DBGMCU_CAN2_STOP</span></li></ul><li><span style="font-size: 10pt; font-family: Verdana;"></span><span style="font-size: 10pt; font-family: Verdana;">DAC</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Add
+new define DAC_Trigger_T3_TRGO (to be used instead of
+DAC_Trigger_T8_TRGO, since TIM8 not available in Connectivity Line
+devices)</span></li></ul></ul></ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">SPI/I2S</span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">I2S_Init function updated to support new clock scheme implemented in Connectivity Line devices</span></li><li><span style="font-size: 10pt; font-family: Verdana;">Update I2S_AudioFreq defines to support frequency up to 96 KHz</span></li></ul></ul></ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">FLASH </span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Update FLASH_EnableWriteProtection function header and parameter list&nbsp; to support Connectivity Line devices</span></li></ul></ul></ul><ol start="3" style="font-style: italic;"><li><span style="font-size: 10pt; font-family: Verdana;"><span style="font-weight: bold;">Project</span> </span></li></ol><ul style="text-decoration: underline;"><ul><li><span style="font-size: 10pt; font-family: Verdana;"><span style="font-style: italic;">STM32F10x_StdPeriph_Examples</span> </span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Almost
+examples updated to run on Connectivity Line devices and
+STMicroelectronics STM3210C-EVAL evaluation board. Refer to the readme
+file provided within each example for more information on how to use
+the example with a specific board.</span></li><li><span style="font-size: 10pt; font-family: Verdana;">TIM: add new example TIM_Input_Capture</span></li><li><span style="font-size: 10pt; font-family: Verdana;">I2C: M24C08_EEPROM example renamed to EEPROM</span></li></ul></ul></ul><ul style="text-decoration: underline;"><ul><li><span style="font-size: 10pt; font-family: Verdana;"><span style="font-style: italic;">Template</span> </span></li></ul></ul><ul><ul><ul><li><span style="font-size: 10pt; font-family: Verdana;">Template
+projects for EWARMv5, RIDE and RVMDK updated to support Connectivity
+Line devices and STMicroelectronics STM3210C-EVAL evaluation board. </span></li></ul></ul></ul><span style="font-size: 10pt; font-family: Verdana;"> </span><ol start="4" style="font-style: italic;"><li><span style="font-size: 10pt; font-family: Verdana;"><span style="font-weight: bold;">Utilities</span></span></li></ol><ul><li><span style="font-size: 10pt; font-family: Verdana;">Implement
+a new abstraction layer to interact with the Human Interface resources;
+buttons, LEDs, LCD and COM ports (USARTs) available on
+STMicroelectronics STM3210C-EVAL (Connectivity line), STM3210E-EVAL
+(High-Density) and STM3210B-EVAL (Medium-Density) evaluation boards.
+The stm32_eval.c driver provides a common API to interact with buttons,
+LEDs and COM ports, while these resources hardware&nbsp; definitions is
+made in the header file of each evaluation board (stm3210x_eval.h). A
+common API is provided to manage the LCD across the supported boards,
+with a separate driver for each board stm3210x_eval_lcd.c.</span></li></ul><span style="font-size: 10pt; font-family: Verdana;"></span>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V3.0.0
+- 04/06/2009<o:p></o:p></span></h3>
+<ol style="font-weight: bold; font-style: italic;"><li><span style="color: black;"><o:p></o:p></span><span style="font-size: 10pt; font-family: Verdana;">General</span></li></ol><ul style="margin-top: 0cm;" type="square"><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"><span class="SpellE"><span class="spelle"><span style="font-family: Verdana;"></span></span></span></span><span style="font-size: 10pt; font-family: Verdana;">STM3210x FW Library renamed to STM32F10x Standard Peripherals Library (<span style="font-weight: bold; font-style: italic;">StdPeriph_Lib</span>)</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"></span><span style="font-size: 10pt; font-family: Verdana;">STM32F10x Standard Peripherals Library is full CMSIS compliant</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"></span><span style="font-size: 10pt; font-family: Verdana;">STM32F10x Standard Peripherals Library Structure is updated.</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"></span><span style="font-size: 10pt; font-family: Verdana;">STM32F10x Standard Peripherals Package Architecture is enhanced</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"></span><span style="font-size: 10pt; font-family: Verdana;">STM32F10x Standard Peripherals Library User Manual&nbsp; with *.chm format</span></li></ul><ol style="font-weight: bold; font-style: italic;" start="2"><li><span style="font-size: 10pt; font-family: Verdana;">library</span></li></ol><ul style="margin-top: 0cm;" type="square"><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">CAN driver updated</span></li><ul><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">CAN driver was updated to support STM32F10xxx connectivity line products.</span><span style="font-size: 10pt; font-family: Verdana;"></span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">CAN peripheral was renamed as CAN1. All occurrences related to CAN were also renamed as CAN1 in the different drivers.</span></li></ul><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C driver</span></li><ul><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C event assert macro missing in stm32f10x_i2c.h file.<br></span></li></ul><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">DBGMCU</span></li><ul><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Wrong
+defines in stm32f10x_dbgmcu.h: DBGMCU_TIM5_STOP, DBGMCU_TIM6_STOP,
+DBGMCU_TIM7_STOP and&nbsp; DBGMCU_TIM8_STOP defines values are wrong.<br><br></span></li></ul><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">FSMC</span></li><ul><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Remove the FSMC AddressLowMapping configuration</span><span style="font-size: 10pt; font-family: Verdana;"></span></li></ul></ul><ol start="3" style="font-weight: bold; font-style: italic;"><li><span style="font-size: 10pt; font-family: Verdana;">examples</span></li></ol><ul style="margin-top: 0cm;" type="square"><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"></span><span style="font-size: 10pt; font-family: Verdana;">FSMC NOR driver Timings are updated.</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add CAN "Normal" example</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">TIM "6Steps" example wave forms updated</span></li><li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">NVIC "CM3_LPModes" and "System_Handlers" examples removed<br></span></li></ul><p class="MsoNormal"></p><p class="MsoNormal"><span style="font-size: 10pt; font-family: Verdana; color: black;">For more details, please
+refer to <a href="http://www.st.com/mcu/familiesdocs-110.html" target="_blank">AN2953</a> "How to migrate from the STM32F10xxx firmware library
+V2.0.3 to the STM32F10xxx standard peripheral library V3.0.0".</span></p>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V2.0.3
+- 09/22/2008<o:p></o:p></span></h3>
+<ol style="margin-top: 0cm; font-weight: bold; font-style: italic;" start="1" type="1">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">General</span><span style="font-size: 10pt; font-family: Verdana;"><o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10xfwlib_contents_html
+file updated:<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Description
+of firmware library package content<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Easy-to-use
+firmware library examples: add description of how to use the project
+template to run the selected example<o:p></o:p></span></li>
+</ul>
+</ul>
+<ol style="font-weight: bold; font-style: italic;" start="2" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">library</span><span style="font-size: 10pt;"><o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_map.h:
+add all STM32 Hardware registers bits definitions<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_conf.h:
+add a define for <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">HSEStartUp_TimeOut</span></span></span><o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_fsmc.h/.c:<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">FSMC_MemoryType_CRAM</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> is changed
+to <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">FSMC_MemoryType_PSRAM</span></span></span><o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">FSMC_AsyncWait</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> member
+removed from <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">FSMC_NORSRAMInitTypeDef</span></span></span>
+structure<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">FSMC_BusTurnAroundDuration</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> parameter
+removed in case of write configuration<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_rcc.h/.c:<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">RCC_FLAG_HSIRDY
+define value changed to 0x21.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">StartUpCounterand</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">HSEStatus</span></span></span>
+variables are now local for <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">RCC_WaitForHSEStartUp</span></span></span>
+function. <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_i2c.h/.c:
+<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add new
+event: EV8: I2C_EVENT_MASTER_BYTE_TRANSMITTING<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_tim.c:
+<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">"=" operator
+changed to "|=" inside <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_SelectOCxM</span></span></span>
+function<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_can.c:
+Definitions names changed<o:p></o:p></span></li>
+</ul>
+<ol style="font-style: italic; font-weight: bold;" start="3" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">examples</span><span style="font-size: 10pt;"><o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C Interrupt
+example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Example
+updated according to I2C driver update<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C
+M24C08_EEPROM example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">i2c_ee.c
+file: add a loop on I2C_FLAG_BUSY in I2C_EE_PageWrite and<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C_EE_BufferRead
+functions<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">i2c_ee.c
+file: add STOP condition in I2C_EE_WaitEepromStandbyState function<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">SDIO example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Example
+updated to support SD Card V2.0 and SD High Capacity cards.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">USART Polling
+example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">USART TC flag
+check changed by USART TXE flag check<o:p></o:p></span></li>
+</ul>
+</ul>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V2.0.2
+- 07/11/2008<o:p></o:p></span></h3>
+<ol style="font-style: italic; font-weight: bold;" start="1" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">library</span><span style="font-size: 10pt;"><o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_spi.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">SPI_I2S_ClearFlag
+function: some flags are removed from the possible flags parameters
+list. This function can clear only CRCERR flag.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">SPI_I2S_ClearITPendingBit
+function: some pending bits are removed from&nbsp;the possible
+pending bits parameters list. This function can clear only CRCERR
+pending
+bit.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_i2c.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C_ClearFlag
+function: some flags are removed from the possible flags parameters
+list. This function can clear only SMBALER, TIMEOUT, PECERR, OVR, AF,
+ARLO and BERR flags. The passed parameter can be any combination of
+above flags.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C_GetITStatus
+function checks on interrupt pending bit and the interrupt enable bit.<o:p></o:p></span></li>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C_ClearITPendingBit
+function: some pending bits are removed from the possible pending bits
+parameters list. This function can clear only SMBALER, TIMEOUT, PECERR,
+OVR, AF, ARLO and BERR pending bits. The passed parameter can be any
+combination of above pending bits.&nbsp;<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">&nbsp;stm32f10x_usart.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">&nbsp;<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">USART_ClearFlag</span></span></span>
+function: some flags are removed from the possible flags parameters
+list. This function can clear only CTS, LBD, TC and RXNE
+flags.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">USART_GetITStatus</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> function:
+IS_USART_IT macro is changed to IS_USART_GET_IT<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">USART_ClearITPendingBit</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> function:
+some pending bits are removed from the possible pending bits parameters
+list. This function can clear only CTS, LBD, TC and RXNE pending
+bits.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_tim.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">remove</span></span></span><span style="font-size: 10pt; font-family: Verdana;">
+IS_TIM_PERIPH_FLAG(<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIMx</span></span></span>,
+TIM_FLAG) macro from <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_ClearFlag</span></span></span>&nbsp;function.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_wwdg.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">use</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> register
+direct access in the <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">WWDG_GetFlagStatus</span></span></span>
+function instead of bit banding access.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_gpio.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">GPIO_Init</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> function
+update.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ol style="font-style: italic; font-weight: bold;" start="2" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">examples</span><span style="font-size: 10pt;"><o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C Interrupt
+example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">The example
+is changed to provide a description of how to manage
+data&nbsp;transfer from master transmitter to slave receiver and
+from slave transmitter to master receiver using interrupts.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">add</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">main.h</span></span></span>
+file.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C
+10bitAddress example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Updated
+according to the I2C driver update.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">DualAddress</span></span></span>
+example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Updated
+according to the I2C driver update.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">SMBus</span></span></span>
+example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Updated
+according to the I2C driver update<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">USART <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">DMA_Interrupt</span></span></span>
+example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Updated
+according to the USART driver update.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">USART
+Smartcard example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Updated
+according to the USART driver update.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">DAC Examples<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;"><span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">GPIO_Configuration</span></span></span>
+function updated: Once the DAC channel is enabled, the corresponding
+GPIO pin is automatically connected to the DAC converter. In order to
+avoid parasitic consumption, the GPIO pin should<span class="GramE"><span class="grame"><span style="font-family: Verdana;">&nbsp;
+be</span></span></span> configured in analog.<o:p></o:p></span></li>
+</ul>
+</ul>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">RTC <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">LSI_Calib</span></span></span>
+example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Example
+Update: add <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">main.h</span></span></span>
+file.<o:p></o:p></span></li>
+</ul>
+</ul>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V2.0.1
+- 06/13/2008<o:p></o:p></span></h3>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Remove the
+Firmware License Agreement file.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Update the
+source <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">files's</span></span></span>
+header to remove reference to the License.<o:p></o:p></span></li>
+</ul>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V2.0
+- 05/23/2008<o:p></o:p></span></h3>
+<ol style="font-style: italic; font-weight: bold;" start="1" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">General</span><span style="font-size: 10pt;"><o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">The <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">FWLib</span></span></span>
+V2.0 is an update of the V1.0 to support the extra peripherals and
+features embedded in the STM32 High-density
+devices.&nbsp;&nbsp;&nbsp; <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add Firmware
+License Agreement file.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">For more
+details about the Firmware Library, please refer to the User. <span class="GramE"><span class="grame"><span style="font-family: Verdana;">manual</span></span></span>
+"UM0427 ARM«-based 32-bit MCU STM32F101xx and STM32F103xx
+Firmware&nbsp; Library"&nbsp; available for download from the
+ST microcontrollers website: <a href="http://www.st.com/stm32">www.st.com/stm32</a>.
+<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Glossary<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Medium-density
+devices are STM32F101xx and STM32F103xx microcontrollers where the
+Flash memory density ranges between 32 and 128 Kbytes.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">High-density
+devices are STM32F101xx and STM32F103xx microcontrollers where the
+Flash memory density ranges between 256 and 512
+Kbytes.&nbsp;&nbsp;&nbsp; <o:p></o:p></span></li>
+</ul>
+</ul>
+<ol style="font-style: italic; font-weight: bold;" start="2" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">library</span><span style="font-size: 10pt;"><o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add driver
+for new peripherals: FSMC, SDIO and DAC.&nbsp;<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_spi.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">driver</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> update to
+support new I2S functionality.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add driver
+for DBGMCU and CRC modules&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_dma.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">driver</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> update to
+support DMA2 channels.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_adc.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">driver</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> update to
+support ADC3. <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_usart.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">driver</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> update to
+support UART4 and UART5.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">new</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">USART_ClockInitTypeDef</span></span></span>
+structure derived from <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">USART_InitTypeDef</span></span></span>
+one (for USART synchronous parameters). <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Timer
+peripherals driver<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_tim1.c
+/.h and stm32f10x_tim.c /.h drivers merged in one single driver:
+stm32f10x_tim.c /.h<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">update</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> to support
+new timer peripherals: TIM5, TIM6, TIM7 and TIM8.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">add</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> new macro
+for function parameters test. <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">TIM_TimeBaseInit</span></span></span><span style="font-size: 10pt; font-family: Verdana;">, <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_PrescalerConfig</span></span></span>
+and <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_GenerateEvent</span></span></span>
+functions updated.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">TIM_TIxExternalClockConfig</span></span></span><span style="font-size: 10pt; font-family: Verdana;">,
+TIM_ETRClockMode1Config, TIM_ETRClockMode2Config, <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_ETRConfig</span></span></span>,
+TIM_SetIC1Prescaler, TIM_SetIC2Prescaler, TIM_SetIC3Prescaler and
+TIM_SetIC4Prescaler functions prototype update.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_gpio.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">driver</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> update to
+support GPIOF and GPIOG. <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_lib.c
+/.h, stm32f10x_map.h, stm32f10x_conf.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">update</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> to add new
+peripherals register declarations and header files inclusion.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_nvic.c
+/.h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">&nbsp;stm32f10x_itc.c
+/.h<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_vector.c
+/.s&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">update</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> to support
+the new peripherals interrupt vector.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_rcc.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">driver</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> update to
+support new peripherals clock &amp; reset enable/disable. <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">HSE
+Oscillator start up timeout increased to 0x01FF.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">RCC_DeInit</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> function
+update. <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_bkp.c
+/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">driver</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> update to
+support the new 32 backup registers. <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_map.h<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_can.c
+<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">CAN register
+numbering update<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_flash.h
+<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">update</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> macro
+"IS_FLASH_ADDRESS" to support memory size up to 512KB.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_flash.c
+<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">FLASH_EnableWriteProtection</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> function:
+update "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">FLASH_Pages</span></span></span>"
+<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">paramter</span></span></span>
+values<span class="GramE"><span class="grame"><span style="font-family: Verdana;">&nbsp; description</span></span></span>.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_exti.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">EXTI_Init</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> function
+update.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_type.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">'S32_MIN'
+type corrected to "#define S32_MIN ((s32)-2147483648)".<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_ppp.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">in</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> all macros,
+put the passed parameter between parenthesis.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_can.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">extended</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> ID coded in
+29-bit long.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">CAN
+initialization acknowledge error fixed.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_usart.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">change</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> "&amp;="
+instead of "="&nbsp; in <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">USART_ClearITPendingBit</span></span></span>&nbsp;
+and <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">USART_ClearFlag</span></span></span>
+functions.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_adc.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">replace</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> "&amp;="
+by "="&nbsp; in <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">ADC_ClearITPendingBit</span></span></span>
+and <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">ADC_ClearFlag</span></span></span>
+functions.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_i2c.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">replace</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> "&amp;="
+by "="&nbsp; in I2C_ClearITPendingBit and I2C_ClearFlag functions. <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_tim.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">replace</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> "&amp;="
+by "="&nbsp; in <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_ClearITPendingBit</span></span></span>
+and <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_ClearFlag</span></span></span>
+functions. <o:p></o:p></span></li>
+</ul>
+</ul>
+<ol style="font-style: italic; font-weight: bold;" start="3" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">project<o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_it.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">update</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> file
+description. <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add template
+projects for EWARM v5 and <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">HiTOP</span></span></span>
+<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">toolchains</span></span></span>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></li>
+</ul>
+<ol style="font-style: italic; font-weight: bold;" start="4" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">examples<o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="SpellE"><span class="spelle"><span style="font-size: 10pt; font-family: Verdana;">FWLib</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> V1.0
+examples ported to run on STMicroelectronics STM3210E-EVAL evaluation
+board (in addition to STM3210B-EVAL)<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add new
+examples for FSMC, SDIO, DAC and I2S (run only on High-density
+devices). <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add new
+examples for ADC, DMA and RTC peripherals.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add new
+example for CRC module. <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Examples
+folder renamed, use of short name instead of <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">examplex</span></span></span>
+(x: 1 2 ...).<o:p></o:p></span></li>
+</ul>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V1.0
+- 10/08/2007<o:p></o:p></span></h3>
+<ol style="font-style: italic; font-weight: bold;" start="1" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">library<o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add template
+project with RIDE <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">toolchain</span></span></span>.
+<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">In all
+stm32f10x_ppp.c and stm32f10x_conf.h files: change "assert" macro name
+to "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">assert_param</span></span></span>".<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">&nbsp;
+Note: If you are using the FW Library V0.3 in your application and you
+want to migrate to V1.0, you have to update your applications
+ôstm32f10x_conf.h file with the latest one (provided with V1.0).<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_conf.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Remove '#<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">undef</span></span></span>
+assert' <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Change
+'#define DEBUG' by '#define DEBUG&nbsp;&nbsp;&nbsp; 1'<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_type.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add new
+types: sc32, sc16, sc8, vsc32, vsc16 and vsc8&nbsp; <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_it.c
+<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add basic
+fault exception handling: in "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">HardFaultException</span></span></span>",
+"<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">MemManageException</span></span></span>",&nbsp;
+"<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">BusFaultException</span></span></span>"
+and "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">UsageFaultException</span></span></span>"
+ISR the following code was added:<o:p></o:p></span></li>
+</ul>
+</ul>
+<div style="margin-left: 150pt;">
+<p class="MsoNormal"><span style="font-size: 10pt; font-family: Arial; color: black;">&nbsp;&nbsp;&nbsp;&nbsp;
+/* Go to infinite loop when exception occurs */<br>
+&nbsp;&nbsp;&nbsp;&nbsp; while (1)<br>
+&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp; }</span><span style="font-family: Arial; color: black;"><o:p></o:p></span></p>
+</div>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_rcc.c<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">"<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">RCC_</span></span><span class="GramE"><span class="grame"><span style="font-family: Verdana;">WaitForHSEStartUp</span></span></span></span><span class="GramE"><span class="grame"><span style="font-family: Verdana;">(</span></span></span>)"
+function updated to resolve issue with high GNU compiler optimization. <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_gpio.h<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">'#define
+GPIO_Remap1_CAN ((u32)0x001D2000)' changed to '#define GPIO_Remap1_CAN
+((u32)0x001D4000)'.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_rtc.c/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">"<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">RTC_GetPrescaler</span></span></span>"
+function removed.<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_bkp.c/.h<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span class="GramE"><span class="grame"><span style="font-size: 10pt; font-family: Verdana;">add</span></span></span><span style="font-size: 10pt; font-family: Verdana;"> "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">BKP_RTCOutputConfig</span></span></span>()"
+function to allow to select the RTC output source(<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">Calib</span></span></span>
+clock, RTC Alarm or RTC Second) to output on Tamper pin and remove "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">BKP_RTCCalibrationClockOutputCmd</span></span></span>()"
+function.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_can.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">CAN
+synchronization jump width defines updated<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">'#define
+CAN_SJW_0tq' ==&gt; '#define CAN_SJW_1tq'<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">'#define
+CAN_SJW_1tq' ==&gt; '#define CAN_SJW_2tq'<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">'#define
+CAN_SJW_2tq' ==&gt; '#define CAN_SJW_3tq'<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">'#define
+CAN_SJW_3tq' ==&gt; '#define CAN_SJW_4tq'<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_tim1.c/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">"TIM1_OCxNPolarityConfig(u16
+TIM1_OCPolarity)" function: change parameter name to 'TIM1_OCNPolarity'
+<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">change
+'TIM1_ICSelection_TRGI' by 'TIM1_ICSelection_TRC'<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">stm32f10x_tim.c/.h<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">change '<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_ICSelection_TRGI</span></span></span>'
+by '<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">TIM_ICSelection_TRC</span></span></span>'<o:p></o:p></span></li>
+</ul>
+</ul>
+<ol style="font-style: italic; font-weight: bold;" start="2" type="1">
+<li class="MsoNormal" style=""><span style="font-size: 10pt; font-family: Verdana;">examples<o:p></o:p></span></li>
+</ol>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">ADC examples
+3 &amp; 4 updated&nbsp;&nbsp;&nbsp; <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">DEBUG example<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Example
+modified to support RIDE specific <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">printf</span></span></span>
+function implementation<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">I2C example5<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">i2c_ee.c: add
+the following function prototypes: "void <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">GPIO_Configuration</span></span></span>(void)"&nbsp;
+add "void I2C_Configuration(void)"<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Add GPIO pin
+toggle example.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">BKP, CAN,
+DMA, NVIC and I2C examples readme files updated.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Use decimal
+(instead of hexadecimal) values constants in TIM, TIM1 and IWDG
+examples.<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">USART<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">example 12<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">USART3 ISR
+updated <o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Timeout
+define "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">SC_Receive_Timeout</span></span></span>"
+updated to 0x4000<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">example 7<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Example
+modified to support RIDE specific <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">printf</span></span></span>
+function implementation<o:p></o:p></span></li>
+</ul>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">RTC example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Example
+modified to support RIDE specific <span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">printf</span></span></span>
+function implementation<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Change "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">BKP_RTCCalibrationClockOutputCmd</span></span></span>()"
+function&nbsp; by "<span class="SpellE"><span class="spelle"><span style="font-family: Verdana;">RTC_ClockOutput</span></span></span>()"<o:p></o:p></span></li>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">LSI removed
+as RTC clock source<o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">IWDG example<o:p></o:p></span></li>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">LSI frequency
+value changed from 32 KHz to 40 KHz&nbsp; <o:p></o:p></span></li>
+</ul>
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Update the
+STM32F10x evaluation board name from STM32F10x-EVAL to STM3210B-EVAL <o:p></o:p></span></li>
+</ul>
+<h3 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; margin-right: 558.05pt;"><span style="font-size: 10pt; font-family: Arial; color: white;">V0.3
+- 05/21/2007<o:p></o:p></span></h3>
+<ul style="margin-top: 0cm;" type="square">
+<li class="MsoNormal" style="color: black; margin-top: 4.5pt; margin-bottom: 4.5pt;"><span style="font-size: 10pt; font-family: Verdana;">Created.<o:p></o:p></span></li>
+</ul>
+<h2 style="background: rgb(51, 102, 255) none repeat scroll 0% 50%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;"><a name="License"></a><span style="font-size: 12pt; color: white;">License<o:p></o:p></span></h2>
+<p class="MsoNormal" style="margin: 4.5pt 0cm;"><span style="font-size: 10pt; font-family: Verdana; color: black;">The
+enclosed firmware and all the related documentation are not covered by
+a License Agreement, if you need such License you can contact your
+local STMicroelectronics office.<u1:p></u1:p><o:p></o:p></span></p>
+<p class="MsoNormal"><b style=""><span style="font-size: 10pt; font-family: Verdana; color: black;">THE
+PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO
+SAVE TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR
+ANY DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY
+CLAIMS ARISING FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY
+CUSTOMERS OF THE CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH
+THEIR PRODUCTS. <o:p></o:p></span></b></p>
+<p class="MsoNormal"><span style="color: black;"><o:p>&nbsp;</o:p></span></p>
+<div class="MsoNormal" style="text-align: center;" align="center"><span style="color: black;">
+<hr align="center" size="2" width="100%"></span></div>
+<p class="MsoNormal" style="margin: 4.5pt 0cm 4.5pt 18pt; text-align: center;" align="center"><span style="font-size: 10pt; font-family: Verdana; color: black;">For complete documentation on </span><span style="font-size: 10pt; font-family: Verdana;">STM32(<span style="color: black;">CORTEX M3) 32-Bit Microcontrollers
+visit </span><u><span style="color: blue;"><a href="http://www.st.com/stm32" target="_blank">www.st.com/STM32</a></span></u></span><span style="color: black;"><o:p></o:p></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal"><span style="font-size: 10pt;"><o:p></o:p></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</body></html>

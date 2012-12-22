@@ -73,6 +73,7 @@ FORCEINLINE
 #endif
 uint8_t keyDown()
 {
+  // printf("PINB=%x\n", PINB & 0x7E); fflush(stdout);
   return (~PINB) & 0x7E;
 }
 
