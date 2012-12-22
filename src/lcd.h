@@ -115,7 +115,8 @@
 #define LcdFlags uint8_t
 #endif
 
-extern uint8_t displayBuf[DISPLAY_W*(DISPLAY_H+7)/8];
+#define DISPLAY_BUF_SIZE (DISPLAY_W*((DISPLAY_H+7)/8))
+extern uint8_t displayBuf[DISPLAY_BUF_SIZE];
 extern uint8_t lcdLastPos;
 
 #if defined(PCBSTD) && defined(VOICE)

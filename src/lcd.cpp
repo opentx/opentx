@@ -33,7 +33,7 @@
 
 #include "open9x.h"
 
-uint8_t displayBuf[DISPLAY_W*(DISPLAY_H+7)/8];
+uint8_t displayBuf[DISPLAY_BUF_SIZE];
 #define DISPLAY_END (displayBuf+sizeof(displayBuf))
 #define ASSERT_IN_DISPLAY(p) assert((p) >= displayBuf && (p) < DISPLAY_END)
 
