@@ -31,8 +31,8 @@
  *
  */
 
-#ifndef board_sky9x_h
-#define board_sky9x_h
+#ifndef board_x9d_h
+#define board_x9d_h
 
 #include <stdio.h>
 
@@ -105,5 +105,7 @@ extern uint16_t sessionTimer;
 #endif
 
 #define setBacklight(xx)
+
+uint32_t check_soft_power();
 
 #endif

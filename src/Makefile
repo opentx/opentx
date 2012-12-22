@@ -467,9 +467,9 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), ACT)
   # ACT radio
   OPT = 2
-  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD260
+  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD260 -DSTM32F10X_LD
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
-  EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
+  EXTRAINCDIRS += act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/STM32F10x_StdPeriph_Driver/inc act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
   BOARDSRC = board_x9d.cpp 
   EXTRABOARDSRC += x9d/lcd_driver.cpp
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c

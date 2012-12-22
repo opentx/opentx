@@ -153,7 +153,9 @@
 #define VARIO_VARIANT  0x0080
 #define HAPTIC_VARIANT 0x0100 */
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBACT)
+#include "board_act.h"
+#elif defined(PCBX9D)
 #include "board_x9d.h"
 #elif defined(PCBSKY9X)
 #include "board_sky9x.h"
@@ -730,7 +732,6 @@ enum PowerState {
 
 #if defined(CPUARM)
 uint32_t keyState(EnumKeys enuk);
-uint32_t check_soft_power();
 #else
 bool keyState(EnumKeys enuk);
 #if defined(PCBGRUVIN9X)

@@ -31,18 +31,29 @@
  *
  */
 
-#ifndef board_sky9x_h
-#define board_sky9x_h
+#ifndef board_act_h
+#define board_act_h
 
 #include <stdio.h>
-#include "sky9x/board.h"
-#include "sky9x/audio_driver.h"
-#include "sky9x/haptic_driver.h"
-#include "sky9x/debug.h"
+/* #include "stm32f2xx_rcc.h" */
+#include "stm32f10x_gpio.h"
+#include "stm32f10x.h"
 
-#if defined(BLUETOOTH)
-#include "sky9x/bluetooth.h"
+// Keys
+#define PIN_BUTTON_PLUS                 GPIO_Pin_0      //SW3 PE.10
+#define PIN_BUTTON_ENTER                GPIO_Pin_1      //SW2 PE.11
+#define PIN_BUTTON_MINUS                GPIO_Pin_2      //SW1 PE.12
+#define PIN_BUTTON_MENU                 GPIO_Pin_11     //SW4 PD.07
+#define PIN_BUTTON_EXIT                 GPIO_Pin_12     //SW5 PD.03
+#define PIN_BUTTON_PAGE                 GPIO_Pin_10     //SW6 PD.02
+
+#include "x9d/audio_driver.h"
+
+// TODO elsewhere
+#if !defined(SIMU)
+#define SD_IS_HC()                     (1)
 #endif
+
 
 extern "C" {
 extern void init_SDcard();
@@ -53,26 +64,9 @@ extern void sdInit();
 
 void usbMassStorage();
 
-#define PIN_ENABLE           0x001
-#define PIN_PERIPHERAL       0x000
-#define PIN_INPUT            0x002
-#define PIN_OUTPUT           0x000
-#define PIN_PULLUP           0x004
-#define PIN_NO_PULLUP        0x000
-#define PIN_PULLDOWN         0x008
-#define PIN_NO_PULLDOWN      0x000
-#define PIN_PERI_MASK_L      0x010
-#define PIN_PERI_MASK_H      0x020
-#define PIN_PER_A            0x000
-#define PIN_PER_B            0x010
-#define PIN_PER_C            0x020
-#define PIN_PER_D            0x030
-#define PIN_PORT_MASK        0x0C0
-#define PIN_PORTA            0x000
-#define PIN_PORTB            0x040
-#define PIN_PORTC            0x080
-#define PIN_LOW              0x000
-#define PIN_HIGH             0x100
+void setVolume( register uint8_t volume );
+#define JACK_PPM_OUT()
+#define JACK_PPM_IN()
 
 void configure_pins( uint32_t pins, uint16_t config );
 uint16_t getCurrent();
@@ -80,6 +74,17 @@ uint16_t getCurrent();
 extern uint8_t temperature ;              // Raw temp reading
 extern uint8_t maxTemperature ;           // Raw temp reading
 uint8_t getTemperature();
+
+extern int32_t Card_state;
+extern volatile uint32_t Card_initialized;
+#define SD_ST_DATA              9
+#define SD_ST_MOUNTED           10
+
+#define SD_GET_SIZE_MB()        (0)
+#define SD_GET_BLOCKNR()        (0)
+#define SD_GET_SPEED()          (0)
+
+void soft_power_off();
 
 #define strcpy_P strcpy
 #define strcat_P strcat
@@ -91,38 +96,20 @@ extern uint32_t readKeys();
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
 
-#if !defined(REVA)
-extern uint16_t Current_analogue;
-extern uint16_t Current_max;
-extern uint32_t Current_accumulator;
-extern uint32_t Current_used;
 extern uint16_t sessionTimer;
-#endif
 
-void soft_power_off();
+#define BOOTLOADER_REQUEST() (0/*usbPlugged()*/)
 
-#if defined(REVC)
-#define BOOTLOADER_REQUEST() (usbPlugged())
-#else
-#define BOOTLOADER_REQUEST() (check_soft_power() == e_power_usb)
-#endif
-
-#define SLAVE_MODE() (check_soft_power() == e_power_trainer)
-#define JACK_PPM_OUT() PIOC->PIO_PDR = PIO_PC22
-#define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
-
-void setSticksGain(uint8_t gains);
-
-uint32_t spi_operation( register uint8_t *tx, register uint8_t *rx, register uint32_t count );
+#define SLAVE_MODE() (0/*check_soft_power() == e_power_trainer*/)
 
 #if !defined(SIMU)
 #define wdt_disable()
-#define wdt_enable(x) WDT->WDT_MR = 0x3FFF217F;
-#define wdt_reset()   WDT->WDT_CR = 0xA5000001
+#define wdt_enable(x)
+#define wdt_reset()
 #endif
 
-#define setBacklight(xx) PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx;
+#define setBacklight(xx)
 
-uint32_t check_soft_power();
+#define check_soft_power() (e_power_on)
 
 #endif
