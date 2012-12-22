@@ -31,7 +31,7 @@
  *
  */
 
-#include "open9x.h"
+#include "../open9x.h"
 
 #ifndef SIMU
 inline void boardInit()
