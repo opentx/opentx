@@ -342,7 +342,7 @@ void eeprom_read_block (void *pointer_ram,
 #define UART3_Configure(...)
 #define UART_Stop(...)
 #define UART3_Stop(...)
-#define GPIO_Init(...)
+inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
 #define GPIO_SetBits(...)
 #define GPIO_ResetBits(...)
 #define RCC_AHB1PeriphClockCmd(...)
