@@ -132,10 +132,10 @@ void refreshModelAudioFiles()
       if (tmp != buf) sdAvailablePhaseAudioFiles[i] += getAvailableFiles(tmp, info, filename);
     }
 
-    for (uint32_t i=0; i<MAX_MIXERS; i++) {
+    /* for (uint32_t i=0; i<MAX_MIXERS; i++) {
       char *tmp = strcat_mixername_nodefault(buf, i);
       sdAvailableMixerAudioFiles[i] = (tmp != buf ? getAvailableFiles(tmp, info, filename) : 0);
-    }
+    } */
   }
 }
 
