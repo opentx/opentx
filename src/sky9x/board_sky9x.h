@@ -35,13 +35,13 @@
 #define board_sky9x_h
 
 #include <stdio.h>
-#include "sky9x/board.h"
-#include "sky9x/audio_driver.h"
-#include "sky9x/haptic_driver.h"
-#include "sky9x/debug.h"
+#include "board.h"
+#include "audio_driver.h"
+#include "haptic_driver.h"
+#include "debug.h"
 
 #if defined(BLUETOOTH)
-#include "sky9x/bluetooth.h"
+#include "bluetooth.h"
 #endif
 
 extern "C" {
