@@ -861,9 +861,9 @@ bool __getSwitch(int8_t swtch)
       }
     }
     if (cs->duration) {
-      if (result) {
-        if (durations[cs_idx] < get_tmr10ms()) {
-          result = false;
+      if (!result) {
+        if (durations[cs_idx] > get_tmr10ms()) {
+          result = true;
           if (cs->delay) delays[cs_idx] = get_tmr10ms() + (cs->delay*50);
         }
       }
