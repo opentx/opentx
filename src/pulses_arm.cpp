@@ -93,7 +93,7 @@ void setupPulsesPPM()                   // Don't enable interrupts through here
   uint32_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
   rest += (int32_t(g_model.ppmFrameLength)) * 1000;
   for (uint32_t i = 0; i < p; i++) { //NUM_CHNOUT
-    int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CENTER;
+    int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= (v);
     *ptr++ = v; /* as Pat MacKenzie suggests */
   }
