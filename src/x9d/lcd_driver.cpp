@@ -26,10 +26,11 @@ void Set_Address(u8 x, u8 y)
 void lcdRefresh()
 {  
   for (uint8_t y=0; y<DISPLAY_H; y++) {
+    uint8_t *p = &displayBuf[y*DISPLAY_W];
     Set_Address(0, y);
     AspiCmd(0xAF);
     for (uint8_t x=0; x<DISPLAY_W; x+=2) {
-      uint8_t data = (displayBuf[x*(y/8)] & (1 << (y%8)) ? 0x0F : 0) + (displayBuf[(x+1)*(y/8)] & (1 << (y%8)) ? 0xF0 : 0);
+      uint8_t data = (p[x] & (1 << (y%8)) ? 0x0F : 0) + (p[x+1] & (1 << (y%8)) ? 0xF0 : 0);
       WriteData(data);
     }
   }
