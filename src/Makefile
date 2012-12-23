@@ -264,6 +264,7 @@ ifeq ($(PCB), SKY9X)
   endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
+  CPPDEFS += -Dat91sam3s4 
 endif
 
 ifeq ($(PCB), X9D)
@@ -271,6 +272,7 @@ ifeq ($(PCB), X9D)
   LDSCRIPT = x9d/stm32_flash.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
+  CPPDEFS += -DHSE_VALUE=12000000
 endif
 
 ifeq ($(PCB), ACT)
@@ -757,7 +759,7 @@ MSG_CLEANING = Cleaning project:
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
 
-ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -Dat91sam3s4 -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS)
+ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS)
 AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
 
 ifeq ($(ARCH), AVR)
