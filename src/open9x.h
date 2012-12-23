@@ -933,10 +933,14 @@ extern void backlightOn();
 void read_9_adc(void);
 #endif
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBACT)
 #define __BACKLIGHT_ON
 #define __BACKLIGHT_OFF
 #define IS_BACKLIGHT_ON() (1)
+#elif defined(PCBX9D)
+#define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
+#define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
+#define IS_BACKLIGHT_ON() (GPIOB & GPIO_Pin_BL)
 #elif defined (PCBSKY9X)
 #define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
