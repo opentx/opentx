@@ -58,7 +58,7 @@ OS_STK *InitTaskContext(FUNCPtr task,void *param,OS_STK *pstk)
  * @note       CoOS may schedule when exiting this ISR. 
  *******************************************************************************
  */ 
-void SysTickk_Handler(void)
+void SysTick_Handler(void)
 {
     OSSchedLock++;                  /* Lock scheduler.                        */
     OSTickCnt++;                    /* Increment systerm time.                */
