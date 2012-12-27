@@ -104,8 +104,11 @@ extern uint16_t sessionTimer;
 #define wdt_reset()
 #endif
 
-#define setBacklight(xx)
-
 uint32_t check_soft_power();
+
+#define setBacklight(xx)
+#define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
+#define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
+#define IS_BACKLIGHT_ON() (GPIOB & GPIO_Pin_BL)
 
 #endif

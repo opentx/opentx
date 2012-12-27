@@ -50,4 +50,10 @@
 
 extern void sdPoll10ms();
 
+#define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
+#define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
+#define __BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
+#define __BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
+#define IS_BACKLIGHT_ON() (PORTC & (1<<OUT_C_LIGHT))
+
 #endif

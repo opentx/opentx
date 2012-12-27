@@ -121,8 +121,13 @@ uint32_t spi_operation( register uint8_t *tx, register uint8_t *rx, register uin
 #define wdt_reset()   WDT->WDT_CR = 0xA5000001
 #endif
 
-#define setBacklight(xx) PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx;
-
 uint32_t check_soft_power();
+
+#define setBacklight(xx)  PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx
+#define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
+#define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
+#define IS_BACKLIGHT_ON() (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
+
+void read_9_adc(void);
 
 #endif

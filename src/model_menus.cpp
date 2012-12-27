@@ -1345,7 +1345,7 @@ void DrawCurve(FnFuncP fn, uint8_t offset=0)
     yv = (DISPLAY_H-1) - yv * (DISPLAY_H-1) / RESX;
     if (prev_yv != 255) {
       if (abs((int8_t)yv-prev_yv) <= 1)
-        lcd_plot(X0+xv-offset, prev_yv, BLACK);
+        lcd_plot(X0+xv-offset, prev_yv, FORCE);
       else
         lcd_vline(X0+xv-offset, prev_yv < yv ? yv : yv+1, prev_yv-yv);
     }
@@ -1486,12 +1486,12 @@ void menuModelCurveOne(uint8_t event)
     if (crv.custom && i>0 && i<crv.points-1)
       xx = X0-1-WCHART + (100 + (100 + crv.crv[crv.points+i-1]) * (2*WCHART)) / 200;
 
-    lcd_filled_rect(xx, yy-1, 3, 3, SOLID, BLACK); // do markup square
+    lcd_filled_rect(xx, yy-1, 3, 3, SOLID, FORCE); // do markup square
 
     if (s_editMode>0 && m_posHorz==i) {
       if (s_editMode==1 || !BLINK_ON_PHASE) {
         // do selection square
-        lcd_filled_rect(xx-1, yy-2, 5, 5, SOLID, BLACK);
+        lcd_filled_rect(xx-1, yy-2, 5, 5, SOLID, FORCE);
         lcd_filled_rect(xx, yy-1, 3, 3, SOLID);
       }
 

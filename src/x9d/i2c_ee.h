@@ -27,13 +27,9 @@
 #include "stm32f2xx_conf.h"
 #include "stdint.h"
 
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-
-
-#define	EE_CMD_WRITE	(0)
-#define	EE_CMD_READ	    (1)
-#define	I2C_delay()		do{delayUsec(5);}while(0)
+#define	EE_CMD_WRITE  (0)
+#define	EE_CMD_READ   (1)
+#define	I2C_delay()   do { delayUsec(5); } while(0)
 
 #define SCL_H         do{GPIOB->BSRRL = I2C_EE_SCL;}while(0)
 #define SCL_L         do{GPIOB->BSRRH  = I2C_EE_SCL;}while(0)

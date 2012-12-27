@@ -505,9 +505,9 @@ void Open9xSim::refreshDiplay()
       }
     }
 
-    bmp->setData (buf2,0);
+    bmp->setData(buf2,0);
     bmp->render();
-    bmf->setBitmap( bmp );
+    bmf->setBitmap(bmp);
   }
 }
 

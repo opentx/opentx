@@ -234,13 +234,13 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags mode)
 
 void lcd_putc(xcoord_t x, uint8_t y, const unsigned char c)
 {
-  lcd_putcAtt(x,y,c,0);
+  lcd_putcAtt(x, y, c, 0);
 }
 
 void lcd_putsiAtt(xcoord_t x, uint8_t y,const pm_char * s,uint8_t idx, LcdFlags flags)
 {
   uint8_t length;
-  length = pgm_read_byte(s++) ;
+  length = pgm_read_byte(s++);
   lcd_putsnAtt(x,y,s+length*idx,length,flags & ~(BSS|ZCHAR));
 }
 
@@ -437,26 +437,54 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   if (neg) lcd_putcAtt(x, y, '-', flags);
 }
 
-void lcd_mask(uint8_t *p, uint8_t mask, uint8_t att)
+#if defined(PCBX9D)
+void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 {
   ASSERT_IN_DISPLAY(p);
 
-  if (att & BLACK)
+  if (!(att & GREY1)) {
+    if (att & FORCE)
+      *p |= mask;
+    else if (att & ERASE)
+      *p &= ~mask;
+    else
+      *p ^= mask;
+  }
+
+  if (!(att & GREY2)) {
+    p += DISPLAY_PLAN_SIZE;
+    ASSERT_IN_DISPLAY(p);
+
+    if (att & FORCE)
+      *p |= mask;
+    else if (att & ERASE)
+      *p &= ~mask;
+    else
+      *p ^= mask;
+  }
+}
+#else
+void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
+{
+  ASSERT_IN_DISPLAY(p);
+
+  if (att & FORCE)
     *p |= mask;
-  else if (att & WHITE)
+  else if (att & ERASE)
     *p &= ~mask;
   else
     *p ^= mask;
 }
+#endif
 
-void lcd_plot(xcoord_t x, uint8_t y, uint8_t att)
+void lcd_plot(xcoord_t x, uint8_t y, LcdFlags att)
 {
   uint8_t *p = &displayBuf[ y / 8 * DISPLAY_W + x ];
   if (p<DISPLAY_END)
     lcd_mask(p, BITMASK(y%8), att);
 }
 
-void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, uint8_t att)
+void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att)
 {
   if (y >= DISPLAY_H) return;
   if (x+w > DISPLAY_W) { w = DISPLAY_W - x; }
@@ -476,7 +504,7 @@ void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, uint8_t att)
   }
 }
 
-void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att)
+void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att)
 {
   lcd_hlineStip(x, y, w, 0xff, att);
 }
@@ -515,7 +543,7 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat)
 }
 #else
 // allows the att parameter...
-void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, uint8_t att)
+void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
 {
   if (x >= DISPLAY_W) return;
   if (h<0) { y+=h; h=-h; }
@@ -554,7 +582,7 @@ void lcd_vline(xcoord_t x, int8_t y, int8_t h)
   lcd_vlineStip(x, y, h, 0xff);
 }
 
-void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat, uint8_t att)
+void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat, LcdFlags att)
 {
   lcd_vlineStip(x, y, h, pat);
   lcd_vlineStip(x+w-1, y, h, pat);
@@ -563,10 +591,10 @@ void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat, uint8_t
   lcd_hlineStip(x, y, w, pat);
 }
 
-void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat, uint8_t att)
+void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat, LcdFlags att)
 {
   for (int8_t i=y; i<y+h; i++) {
-    if (i>=0 && i<64) lcd_hlineStip(x, i, w, pat, att);
+    if (i>=0 && i<DISPLAY_H) lcd_hlineStip(x, i, w, pat, att);
     pat = (pat >> 1) + ((pat & 1) << 7);
   }
 }

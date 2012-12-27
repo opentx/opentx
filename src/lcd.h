@@ -88,8 +88,8 @@
 #define LEFT          0x80 /* align left */
 
 /* line, rect, square flags */
-#define BLACK         0x02
-#define WHITE         0x04
+#define FORCE         0x02
+#define ERASE         0x04
 #define ROUND         0x08
 
 /* switches flags */
@@ -103,6 +103,8 @@
 #define MIDSIZE       0x0100
 #define SMLSIZE       0x0200
 #define TINSIZE       0x0400
+#define GREY1         0x1000
+#define GREY2         0x2000
 #else
 #define MIDSIZE       DBLSIZE
 #define SMLSIZE       0x00
@@ -115,7 +117,14 @@
 #define LcdFlags uint8_t
 #endif
 
-#define DISPLAY_BUF_SIZE (DISPLAY_W*((DISPLAY_H+7)/8))
+#define DISPLAY_PLAN_SIZE (DISPLAY_W*((DISPLAY_H+7)/8))
+
+#if defined(PCBX9D)
+#define DISPLAY_BUF_SIZE   (2*DISPLAY_PLAN_SIZE)
+#else
+#define DISPLAY_BUF_SIZE   DISPLAY_PLAN_SIZE
+#endif
+
 extern uint8_t displayBuf[DISPLAY_BUF_SIZE];
 extern uint8_t lcdLastPos;
 
@@ -173,21 +182,21 @@ extern void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFla
 #define SOLID  0xff
 #define DOTTED 0x55
 
-extern void lcd_plot(xcoord_t x, uint8_t y, uint8_t att=0);
-extern void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att=0);
-extern void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, uint8_t att=0);
+extern void lcd_plot(xcoord_t x, uint8_t y, LcdFlags att=0);
+extern void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att=0);
+extern void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att=0);
 extern void lcd_vline(xcoord_t x, int8_t y, int8_t h);
 #if defined(PCBSTD)
 extern void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat);
 #else
-extern void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, uint8_t att=0);
+extern void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att=0);
 #endif
 
-extern void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
-extern void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, uint8_t att=0);
+extern void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, LcdFlags att=0);
+extern void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, LcdFlags att=0);
 extern void lcd_invert_line(int8_t y);
 #define lcd_status_line() lcd_invert_line(7)
-inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, uint8_t att=0) { lcd_rect(x, y, w, w, SOLID, att); }
+inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
 
 #define DO_CROSS(xx,yy,ww)          \
     lcd_vline(xx,yy-ww/2,ww);  \
@@ -221,7 +230,7 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename);
 
 #ifdef SIMU
 extern bool lcd_refresh;
-extern uint8_t lcd_buf[DISPLAY_W*DISPLAY_H/8];
+extern uint8_t lcd_buf[DISPLAY_BUF_SIZE];
 #endif
 
 #endif

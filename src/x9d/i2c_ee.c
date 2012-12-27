@@ -15,13 +15,7 @@
 #include "hal.h"
 #include "Macro_define.h" 
 
-
-
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
 uint16_t EEPROM_ADDRESS;
-
-/* Private functions ---------------------------------------------------------*/
 
 /**
   * @brief  Configure the used I/O ports pin
@@ -63,95 +57,117 @@ void I2C_Configuration(void)
 
 short I2C_START()
 {
-	SDA_H;	I2C_delay();
-	SCL_H;	I2C_delay();
-	//if(!SDA_read)return 0; //SDA线为低电平则总线忙,退出
-	SDA_L;	I2C_delay();
-	//if(SDA_read) return 0; //SDA线为高电平则总线出错,退出
-	SCL_L;	I2C_delay(); 
-	return 1;
+  SDA_H;
+  I2C_delay();
+  SCL_H;
+  I2C_delay();
+  // if (!SDA_read) return 0;
+  SDA_L;
+  I2C_delay();
+  // if (SDA_read) return 0;
+  SCL_L;
+  I2C_delay();
+  return 1;
 }
 
 void I2C_STOP()
 {
-	SCL_L;	I2C_delay();
-	SDA_L;	I2C_delay();
-	SCL_H;	I2C_delay();
-	SDA_H;	I2C_delay(); 
+  SCL_L;
+  I2C_delay();
+  SDA_L;
+  I2C_delay();
+  SCL_H;
+  I2C_delay();
+  SDA_H;
+  I2C_delay();
 }
 
 void I2C_ACK()
 {
-	SCL_L;	I2C_delay();
-	SDA_L;	I2C_delay();
-	SCL_H;	I2C_delay();
-	SCL_L;	I2C_delay();
+  SCL_L;
+  I2C_delay();
+  SDA_L;
+  I2C_delay();
+  SCL_H;
+  I2C_delay();
+  SCL_L;
+  I2C_delay();
 }
 void I2C_NO_ACK()
 {
-	SCL_L;	I2C_delay();
-	SDA_H;	I2C_delay();
-	SCL_H;	I2C_delay();
-	SCL_L;	I2C_delay();
+  SCL_L;
+  I2C_delay();
+  SDA_H;
+  I2C_delay();
+  SCL_H;
+  I2C_delay();
+  SCL_L;
+  I2C_delay();
 }
-short I2C_WAIT_ACK()   //返回为:=1有ACK,=0无ACK
-{
-	short i=50;
-	SCL_L;	I2C_delay();
-	SDA_H;	I2C_delay();
-	SCL_H;	I2C_delay();
-	while(i){
-		if(SDA_read)
-		{
-	      I2C_delay();
-		  i--;
-		}else{
-			i=2;
-			break;
-		}
-	}
-	SCL_L;	I2C_delay();
 
-	return i;
+short I2C_WAIT_ACK()
+{
+  short i=50;
+  SCL_L;
+  I2C_delay();
+  SDA_H;
+  I2C_delay();
+  SCL_H;
+  I2C_delay();
+  while(i) {
+    if(SDA_read) {
+      I2C_delay();
+      i--;
+    }
+    else {
+      i=2;
+      break;
+    }
+  }
+  SCL_L;
+  I2C_delay();
+
+  return i;
 } 
 
 void I2C_SEND_DATA(char SendByte)
 {
-	short i=8;
-	while(i--)
-    {
-		SCL_L;	I2C_delay();
-		if(SendByte&0x80)
-			SDA_H;  
-		else 
-			SDA_L;   
-		SendByte<<=1;		I2C_delay();
-		SCL_H;		I2C_delay();
-	}
-	SCL_L;	I2C_delay();
+  short i=8;
+  while (i--) {
+    SCL_L;
+    I2C_delay();
+    if (SendByte&0x80)
+      SDA_H;
+    else
+      SDA_L;
+    SendByte<<=1;
+    I2C_delay();
+    SCL_H;
+    I2C_delay();
+  }
+  SCL_L;
+  I2C_delay();
 }
-char I2C_READ()  //数据从高位到低位//
+
+char I2C_READ()
 { 
-	short i=8;
-	char ReceiveByte=0;
+  short i=8;
+  char ReceiveByte=0;
 
-	SDA_H;
-	while(i--)
-	{
-		ReceiveByte<<=1;      
-		SCL_L;		I2C_delay();
-		SCL_H;		I2C_delay();
-		if(SDA_read)
-		{
-			ReceiveByte|=0x01;
-		}
-	}
-	SCL_L;
-	return ReceiveByte;
+  SDA_H;
+  while (i--) {
+    ReceiveByte <<= 1;
+    SCL_L;
+    I2C_delay();
+    SCL_H;
+    I2C_delay();
+    if (SDA_read) {
+      ReceiveByte|=0x01;
+    }
+  }
+  SCL_L;
+  return ReceiveByte;
 } 
-
-
-
 
 void I2C_EE_Init()
 {
@@ -186,9 +202,7 @@ void I2C_EE_Init()
   EEPROM_ADDRESS = EEPROM_Block3_ADDRESS;
  #endif
 #endif /* EE_M24C64_32 */
-
 }
-
 
 /**
   * @brief  Writes one byte to the I2C EEPROM.
@@ -199,21 +213,21 @@ void I2C_EE_Init()
   */
 void I2C_EE_ByteWrite(uint8_t* pBuffer, uint16_t WriteAddr)
 {
-	I2C_START();
-	I2C_SEND_DATA(EEPROM_ADDRESS | EE_CMD_WRITE);
-	I2C_WAIT_ACK();
+  I2C_START();
+  I2C_SEND_DATA(EEPROM_ADDRESS | EE_CMD_WRITE);
+  I2C_WAIT_ACK();
 #ifdef	EE_M24C08
-	I2C_SEND_DATA(WriteAddr);
-	I2C_WAIT_ACK();
+  I2C_SEND_DATA(WriteAddr);
+  I2C_WAIT_ACK();
 #elif defined(EE_M24C64_32)
-	I2C_SEND_DATA((uint8_t)((WriteAddr&0xFF00)>>8) );
-	I2C_WAIT_ACK();
-	I2C_SEND_DATA((uint8_t)(WriteAddr&0xFF));
-	I2C_WAIT_ACK();
+  I2C_SEND_DATA((uint8_t)((WriteAddr&0xFF00)>>8) );
+  I2C_WAIT_ACK();
+  I2C_SEND_DATA((uint8_t)(WriteAddr&0xFF));
+  I2C_WAIT_ACK();
 #endif
-	I2C_SEND_DATA(*pBuffer);
-	I2C_WAIT_ACK();
-	I2C_STOP();
+  I2C_SEND_DATA(*pBuffer);
+  I2C_WAIT_ACK();
+  I2C_STOP();
 }
 
 /**
@@ -226,37 +240,37 @@ void I2C_EE_ByteWrite(uint8_t* pBuffer, uint16_t WriteAddr)
   */
 void I2C_EE_BufferRead(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
 {
-	I2C_START();
-	I2C_SEND_DATA(EEPROM_ADDRESS |EE_CMD_WRITE);
-	I2C_WAIT_ACK();
+  I2C_START();
+  I2C_SEND_DATA(EEPROM_ADDRESS |EE_CMD_WRITE);
+  I2C_WAIT_ACK();
 
 #ifdef	EE_M24C08
-	I2C_SEND_DATA(ReadAddr);
-	I2C_WAIT_ACK();
+  I2C_SEND_DATA(ReadAddr);
+  I2C_WAIT_ACK();
 #elif defined(EE_M24C64_32)
-	I2C_SEND_DATA((uint8_t)((ReadAddr & 0xFF00) >> 8));
-	I2C_WAIT_ACK();
-	I2C_SEND_DATA((uint8_t)(ReadAddr & 0x00FF));
-	I2C_WAIT_ACK();
+  I2C_SEND_DATA((uint8_t)((ReadAddr & 0xFF00) >> 8));
+  I2C_WAIT_ACK();
+  I2C_SEND_DATA((uint8_t)(ReadAddr & 0x00FF));
+  I2C_WAIT_ACK();
 #endif
-	I2C_STOP();
+  I2C_STOP();
 	
-	I2C_START();
-	I2C_SEND_DATA(EEPROM_ADDRESS | EE_CMD_READ);
-	I2C_WAIT_ACK();
-	while(NumByteToRead)
-	{
-		if(NumByteToRead ==1){
-			*pBuffer =I2C_READ();
-			I2C_NO_ACK();
-			I2C_STOP();
-		}else{
-			*pBuffer =I2C_READ();
-			I2C_ACK();
-			pBuffer++;
-		}
-		NumByteToRead--;
-	}
+  I2C_START();
+  I2C_SEND_DATA(EEPROM_ADDRESS | EE_CMD_READ);
+  I2C_WAIT_ACK();
+  while (NumByteToRead) {
+    if (NumByteToRead == 1) {
+      *pBuffer =I2C_READ();
+      I2C_NO_ACK();
+      I2C_STOP();
+    }
+    else {
+      *pBuffer =I2C_READ();
+      I2C_ACK();
+      pBuffer++;
+    }
+    NumByteToRead--;
+  }
 }
 
 /**
@@ -267,7 +281,6 @@ void I2C_EE_BufferRead(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRe
   * @param  NumByteToWrite : number of bytes to write to the EEPROM.
   * @retval None
   */
-//整页的整页写  其他多字节写
 void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWrite)
 {
   uint8_t NumOfPage = 0, NumOfSingle = 0, count = 0;
@@ -279,42 +292,34 @@ void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteTo
   NumOfSingle = NumByteToWrite % I2C_FLASH_PAGESIZE;
 
   /* If WriteAddr is I2C_FLASH_PAGESIZE aligned  */
-  if(Addr == 0)
-  {
+  if (Addr == 0) {
     /* If NumByteToWrite < I2C_FLASH_PAGESIZE */
-    if(NumOfPage == 0)
-    {
+    if (NumOfPage == 0) {
       I2C_EE_PageWrite(pBuffer, WriteAddr, NumOfSingle);
       I2C_EE_WaitEepromStandbyState();
     }
     /* If NumByteToWrite > I2C_FLASH_PAGESIZE */
-    else
-    {
-      while(NumOfPage--)
-      {
+    else {
+      while (NumOfPage--) {
         I2C_EE_PageWrite(pBuffer, WriteAddr, I2C_FLASH_PAGESIZE);
         I2C_EE_WaitEepromStandbyState();
-        WriteAddr +=  I2C_FLASH_PAGESIZE;
+        WriteAddr += I2C_FLASH_PAGESIZE;
         pBuffer += I2C_FLASH_PAGESIZE;
       }
 
-      if(NumOfSingle!=0)
-      {
+      if (NumOfSingle != 0) {
         I2C_EE_PageWrite(pBuffer, WriteAddr, NumOfSingle);
         I2C_EE_WaitEepromStandbyState();
       }
     }
   }
   /* If WriteAddr is not I2C_FLASH_PAGESIZE aligned  */
-  else
-  {
+  else {
     /* If NumByteToWrite < I2C_FLASH_PAGESIZE */
-    if(NumOfPage== 0)
-    {
+    if (NumOfPage== 0) {
       /* If the number of data to be written is more than the remaining space
       in the current page: */
-      if (NumByteToWrite > count)
-      {
+      if (NumByteToWrite > count) {
         /* Write the data conained in same page */
         I2C_EE_PageWrite(pBuffer, WriteAddr, count);
         I2C_EE_WaitEepromStandbyState();
@@ -323,42 +328,36 @@ void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteTo
         I2C_EE_PageWrite((uint8_t*)(pBuffer + count), (WriteAddr + count), (NumByteToWrite - count));
         I2C_EE_WaitEepromStandbyState();
       }
-      else
-      {
+      else {
         I2C_EE_PageWrite(pBuffer, WriteAddr, NumOfSingle);
         I2C_EE_WaitEepromStandbyState();
       }
     }
     /* If NumByteToWrite > I2C_FLASH_PAGESIZE */
-    else
-    {
+    else {
       NumByteToWrite -= count;
       NumOfPage =  NumByteToWrite / I2C_FLASH_PAGESIZE;
       NumOfSingle = NumByteToWrite % I2C_FLASH_PAGESIZE;
 
-      if(count != 0)
-      {
+      if (count != 0) {
         I2C_EE_PageWrite(pBuffer, WriteAddr, count);
         I2C_EE_WaitEepromStandbyState();
         WriteAddr += count;
         pBuffer += count;
       }
 
-      while(NumOfPage--)
-      {
+      while (NumOfPage--) {
         I2C_EE_PageWrite(pBuffer, WriteAddr, I2C_FLASH_PAGESIZE);
         I2C_EE_WaitEepromStandbyState();
         WriteAddr +=  I2C_FLASH_PAGESIZE;
         pBuffer += I2C_FLASH_PAGESIZE;
       }
-      if(NumOfSingle != 0)
-      {
+      if (NumOfSingle != 0) {
         I2C_EE_PageWrite(pBuffer, WriteAddr, NumOfSingle);
         I2C_EE_WaitEepromStandbyState();
       }
     }
   }
-  //I2C_EE_WaitEepromStandbyState();
 }
 
 /**
@@ -372,28 +371,27 @@ void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteTo
   */
 void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
 {
-	I2C_START();
-	I2C_SEND_DATA(EEPROM_ADDRESS|EE_CMD_WRITE);
-	I2C_WAIT_ACK();
+  I2C_START();
+  I2C_SEND_DATA(EEPROM_ADDRESS|EE_CMD_WRITE);
+  I2C_WAIT_ACK();
 
 #ifdef EE_M24C08
-	I2C_SEND_DATA(WriteAddr);
-	I2C_WAIT_ACK();
+  I2C_SEND_DATA(WriteAddr);
+  I2C_WAIT_ACK();
 #elif defined(EE_M24C64_32)
-	I2C_SEND_DATA((uint8_t)((WriteAddr & 0xFF00) >> 8));
-	I2C_WAIT_ACK();
-	I2C_SEND_DATA((uint8_t)(WriteAddr & 0x00FF));
-	I2C_WAIT_ACK();
+  I2C_SEND_DATA((uint8_t)((WriteAddr & 0xFF00) >> 8));
+  I2C_WAIT_ACK();
+  I2C_SEND_DATA((uint8_t)(WriteAddr & 0x00FF));
+  I2C_WAIT_ACK();
 #endif /* EE_M24C08 */
 
-	/* While there is data to be written */
-	while(NumByteToWrite--)
-	{
-		I2C_SEND_DATA(*pBuffer);
-		I2C_WAIT_ACK();
-		pBuffer++;
-	}
-	I2C_STOP();
+  /* While there is data to be written */
+  while (NumByteToWrite--) {
+    I2C_SEND_DATA(*pBuffer);
+    I2C_WAIT_ACK();
+    pBuffer++;
+  }
+  I2C_STOP();
 }
 
 /**
@@ -405,22 +403,10 @@ void I2C_EE_WaitEepromStandbyState(void)
 {
   /*__IO*/ volatile uint16_t SR1_Tmp = 0;
 
-  do
-  {
-	  I2C_START();
-	  I2C_SEND_DATA(EEPROM_ADDRESS|EE_CMD_WRITE);
+  do {
+    I2C_START();
+    I2C_SEND_DATA(EEPROM_ADDRESS|EE_CMD_WRITE);
+  } while (0 == I2C_WAIT_ACK());
 
-  }while(0== I2C_WAIT_ACK());
   I2C_STOP();
-
 }
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/******************* (C) COPYRIGHT 2009 STMicroelectronics *****END OF FILE****/

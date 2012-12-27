@@ -26,14 +26,15 @@ void Set_Address(u8 x, u8 y)
 void lcdRefresh()
 {  
   for (uint8_t y=0; y<DISPLAY_H; y++) {
-    uint8_t *p = &displayBuf[y*DISPLAY_W];
+    uint8_t *p = &displayBuf[(y>>3)*DISPLAY_W];
     uint8_t mask = (1 << (y%8));
     Set_Address(0, y);
     AspiCmd(0xAF);
     for (uint8_t x=0; x<DISPLAY_W; x+=2) {
-      uint8_t data = (p[x] & mask ? 0x0F : 0) + (p[x+1] & mask ? 0xF0 : 0);
+      uint8_t data = (p[x] & mask ? 0xC0 : 0) + (p[x+1] & mask ? 0x0C : 0) + (p[DISPLAY_PLAN_SIZE+x] & mask ? 0x30 : 0) + (p[DISPLAY_PLAN_SIZE+x+1] & mask ? 0x03 : 0);
       WriteData(data);
     }
+    WriteData(0);
   }
 }
 
@@ -110,8 +111,7 @@ static void LCD_Init()
   AspiCmd(0xF7);   //ending row address of RAM program window.
   AspiCmd(0x9F);
 
-  AspiCmd(0xAF);	//dc2=1,IC into exit SLEEP MODE,	 dc3=1  gray=ON 开灰阶	,dc4=1  Green Enhanc mode disabled	  绿色增强模式关
-	
+  AspiCmd(0xAF);	//dc2=1, IC into exit SLEEP MODE, dc3=1 gray=ON, dc4=1 Green Enhanc mode disabled
 }
 
 void lcdInit()

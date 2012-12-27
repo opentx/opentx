@@ -52,4 +52,14 @@ bool checkSlaveMode();
 #define JACK_PPM_OUT() PORTG &= ~(1<<OUT_G_SIM_CTL)
 #define JACK_PPM_IN() PORTG |=  (1<<OUT_G_SIM_CTL)
 
+#if defined(SP22)
+#define __BACKLIGHT_ON  PORTB &= ~(1 << OUT_B_LIGHT)
+#define __BACKLIGHT_OFF PORTB |=  (1 << OUT_B_LIGHT)
+#define IS_BACKLIGHT_ON() (~PORTB & (1<<OUT_B_LIGHT))
+#else
+#define __BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
+#define __BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
+#define IS_BACKLIGHT_ON() (PORTB & (1<<OUT_B_LIGHT))
+#endif
+
 #endif

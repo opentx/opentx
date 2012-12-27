@@ -928,39 +928,6 @@ extern void backlightOn();
 #define NUMBER_ANALOG   8
 #endif
 
-#if defined(PCBSKY9X)
-// TODO remove
-void read_9_adc(void);
-#endif
-
-#if defined(PCBACT)
-#define __BACKLIGHT_ON
-#define __BACKLIGHT_OFF
-#define IS_BACKLIGHT_ON() (1)
-#elif defined(PCBX9D)
-#define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
-#define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
-#define IS_BACKLIGHT_ON() (GPIOB & GPIO_Pin_BL)
-#elif defined (PCBSKY9X)
-#define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
-#define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
-#define IS_BACKLIGHT_ON() (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
-#elif defined (PCBGRUVIN9X)
-#define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
-#define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
-#define __BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
-#define __BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
-#define IS_BACKLIGHT_ON() (PORTC & (1<<OUT_C_LIGHT))
-#elif defined(SP22)
-#define __BACKLIGHT_ON  PORTB &= ~(1 << OUT_B_LIGHT)
-#define __BACKLIGHT_OFF PORTB |=  (1 << OUT_B_LIGHT)
-#define IS_BACKLIGHT_ON() (~PORTB & (1<<OUT_B_LIGHT))
-#else
-#define __BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
-#define __BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
-#define IS_BACKLIGHT_ON() (PORTB & (1<<OUT_B_LIGHT))
-#endif
-
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
 #define BACKLIGHT_ON()    (Voice.Backlight = 1)
 #define BACKLIGHT_OFF()   (Voice.Backlight = 0)

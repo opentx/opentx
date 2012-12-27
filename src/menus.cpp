@@ -64,13 +64,13 @@ void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 #if !defined(PCBSTD)
 void displayScrollbar(uint8_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
-  lcd_vlineStip(x, y, h, SOLID, WHITE);
+  lcd_vlineStip(x, y, h, SOLID, ERASE);
   lcd_vlineStip(x, y, h, DOTTED);
   uint8_t yofs = (h * offset) / count;
   uint8_t yhgt = (h * visible) / count;
   if (yhgt + yofs > h)
     yhgt = h - yofs;
-  lcd_vlineStip(x, y + yofs, yhgt, SOLID, BLACK);
+  lcd_vlineStip(x, y + yofs, yhgt, SOLID, FORCE);
 }
 #endif
 
@@ -626,7 +626,7 @@ const pm_char * s_global_warning = 0;
 
 void displayBox()
 {
-  lcd_filled_rect(10, 16, DISPLAY_W-20, 40, SOLID, WHITE);
+  lcd_filled_rect(10, 16, DISPLAY_W-20, 40, SOLID, ERASE);
   lcd_rect(10, 16, DISPLAY_W-20, 40);
   lcd_puts(16, 3*FH, s_warning);
   // could be a place for a s_warning_info
@@ -745,7 +745,7 @@ const char * displayMenu(uint8_t event)
 
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
 
-  lcd_filled_rect(MENU_X, 16, MENU_W, display_count * (FH+1) + 2, SOLID, WHITE);
+  lcd_filled_rect(MENU_X, 16, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcd_rect(MENU_X, 16, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
@@ -811,7 +811,7 @@ void drawStatusLine()
       statusLineTime = 0;
     }
 
-    lcd_filled_rect(0, 8*FH-statusLineHeight, DISPLAY_W, 8, SOLID, WHITE);
+    lcd_filled_rect(0, 8*FH-statusLineHeight, DISPLAY_W, 8, SOLID, ERASE);
     lcd_putsAtt(5, 8*FH+1-statusLineHeight, statusLineMsg, BSS);
     lcd_filled_rect(0, 8*FH-statusLineHeight, DISPLAY_W, 8, SOLID);
   }

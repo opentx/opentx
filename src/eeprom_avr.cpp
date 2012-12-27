@@ -807,7 +807,7 @@ void RlcFile::DisplayProgressBar(uint8_t x)
 {
   if (s_eeDirtyMsk || isWriting() || eeprom_buffer_size) {
     uint8_t len = s_eeDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);
-    lcd_filled_rect(x+1, 0, 5, FH, SOLID, WHITE);
+    lcd_filled_rect(x+1, 0, 5, FH, SOLID, ERASE);
     lcd_filled_rect(x+2, 7-len, 3, len);
   }
 }
