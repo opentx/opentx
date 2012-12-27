@@ -2855,8 +2855,8 @@ void menuModelCustomFunctions(uint8_t event)
             }
             lcd_putsiAtt(5*FW-2, y, STR_VFSWFUNC, func_displayed, attr);
             if (active) {
-              CHECK_INCDEC_MODELVAR( event, sd->func, 0, FUNC_MAX-1);
-              if (checkIncDec_Ret) FSW_PARAM(sd) = 0;
+              CHECK_INCDEC_MODELVAR(event, sd->func, 0, FUNC_MAX-1);
+              if (checkIncDec_Ret) FSW_RESET_PARAM(sd);
             }
           }
           else if (attr) {

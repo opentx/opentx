@@ -357,7 +357,8 @@ PACK(typedef struct t_FuncSwData { // Function Switches data
   uint8_t active;
   uint8_t spare;
 }) FuncSwData;
-#define FSW_PARAM(p) (*((uint32_t*)(p)->param))
+#define FSW_PARAM(p)       (*((uint32_t*)(p)->param))
+#define FSW_RESET_PARAM(p) memset(p->param, 0, sizeof(p->param))
 #else
 PACK(typedef struct t_FuncSwData { // Function Switches data
   int8_t  swtch; //input
@@ -365,7 +366,8 @@ PACK(typedef struct t_FuncSwData { // Function Switches data
   uint8_t active:1;
   uint8_t param;
 }) FuncSwData;
-#define FSW_PARAM(p) ((p)->param)
+#define FSW_PARAM(p)       ((p)->param)
+#define FSW_RESET_PARAM(p) FSW_PARAM(p) = 0
 #endif
 
 enum TelemetryUnit {
