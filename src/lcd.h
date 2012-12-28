@@ -214,7 +214,7 @@ inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att=0) { lcd_
     lcd_vline(x+4, y+8, 2);      \
     lcd_vline(x+5, y+8, 2);
 
-extern void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mode);
+extern void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 extern void lcdSetRefVolt(unsigned char val);
 extern void lcdInit();
 extern void lcd_clear();

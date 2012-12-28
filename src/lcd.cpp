@@ -42,7 +42,7 @@ void lcd_clear()
   memset(displayBuf, 0, sizeof(displayBuf));
 }
 
-void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t mode)
+void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
 #if defined(LCD260)
@@ -52,14 +52,23 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, uint8_t m
   uint8_t w    = pgm_read_byte(q++);
 #endif
   uint8_t hb   = (pgm_read_byte(q++)+7)/8;
-  bool    inv  = (mode & INVERS) ? true : (mode & BLINK ? BLINK_ON_PHASE : false);
+  bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
   q += idx*w*hb;
   for (uint8_t yb = 0; yb < hb; yb++) {
     uint8_t *p = &displayBuf[ (y / 8 + yb) * DISPLAY_W + x ];
     for (xcoord_t i=0; i<w; i++){
       uint8_t b = pgm_read_byte(q++);
       ASSERT_IN_DISPLAY(p);
+#if defined(PCBX9D)
+      uint8_t val = inv ? ~b : b;
+      if (!(att & GREY1))
+        *p = val;
+      if (!(att & GREY2))
+        *(p+DISPLAY_PLAN_SIZE) = val;
+      p++;
+#else
       *p++ = inv ? ~b : b;
+#endif
     }
   }
 }
