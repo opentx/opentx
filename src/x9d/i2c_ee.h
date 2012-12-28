@@ -22,10 +22,8 @@
 #ifndef __I2C_EE_H
 #define __I2C_EE_H
 
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f2xx.h"
-#include "stm32f2xx_conf.h"
-#include "stdint.h"
+// #include "stm32f2xx.h"
+// #include "stm32f2xx_conf.h"
 
 #define	EE_CMD_WRITE  (0)
 #define	EE_CMD_READ   (1)

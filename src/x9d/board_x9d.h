@@ -42,7 +42,7 @@
 
 #include "x9d/hal.h"
 #include "x9d/aspi.h"
-
+#include "x9d/i2c_ee.h"
 #include "x9d/audio_driver.h"
 
 // TODO elsewhere

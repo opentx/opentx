@@ -489,7 +489,7 @@ ifeq ($(PCB), X9D)
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
   BOARDSRC = x9d/board_x9d.cpp
-  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp
+  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c_ee.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
