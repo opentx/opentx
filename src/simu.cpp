@@ -122,13 +122,11 @@ public:
   void makeSnapshot(const FXDrawable* drawable);
   void doEvents();
   void refreshDiplay();
+
 private:
-
-
-  FX::FXuchar    buf2[W2*H2/8]; 
-  FXBitmap      *bmp;
-  FXBitmapFrame *bmf;
-  bool          firstTime;
+  FXImage       *bmp;
+  FXImageFrame  *bmf;
+  bool           firstTime;
 
 public:
   FXSlider      *sliders[8];
@@ -149,15 +147,13 @@ FXDEFMAP(Open9xSim) Open9xSimMap[]={
 
 FXIMPLEMENT(Open9xSim,FXMainWindow,Open9xSimMap,ARRAYNUMBER(Open9xSimMap))
 
-
 Open9xSim::Open9xSim(FXApp* a)
 :FXMainWindow(a,"Open9xSim",NULL,NULL,DECOR_ALL,20,90,0,0)
 {
 
   firstTime=true;
   for(int i=0; i<(W*H/8); i++) displayBuf[i]=0;//rand();
-  for(int i=0; i<(W2*H2/8); i++) buf2[i]=0;//rand();
-  bmp = new FXBitmap(a,&buf2,BITMAP_KEEP,W2,H2);
+  bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
   FXHorizontalFrame *hf00=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
   FXHorizontalFrame *hf01=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
@@ -213,8 +209,7 @@ Open9xSim::Open9xSim(FXApp* a)
   }
 
 
-  bmf = new FXBitmapFrame(this,bmp,0,0,0,0,0,0,0,0,0);
-  bmf->setOnColor(FXRGB(0,0,0));
+  bmf = new FXImageFrame(this,bmp);
 
   getApp()->addTimeout(this,2,100);
 }
@@ -484,30 +479,53 @@ void Open9xSim::refreshDiplay()
 {
   if (lcd_refresh) {
     lcd_refresh = false;
-    if (IS_BACKLIGHT_ON())
-      bmf->setOffColor(BL_COLOR);
-    else
-      bmf->setOffColor(FXRGB(200,200,200));
+    FXColor offColor = IS_BACKLIGHT_ON() ? BL_COLOR : FXRGB(200,200,200);
+    FXColor onColor = FXRGB(0,0,0);
+#if defined(PCBX9D)
+    FXColor grey1Color = FXRGB(0xC0,0xC0,0xC0);
+    FXColor grey2Color = FXRGB(0xA0,0xA0,0xA0);
+#endif
 
-    for(int x=0;x<W;x++){
-      for(int y=0;y<H;y++)
-      {
-        int o2 = x/4 + y*W*2*2/8;
-        if( lcd_buf[x+(y/8)*W] & (1<<(y%8))) {
-          buf2[o2]      |=   3<<(x%4*2);
-          buf2[o2+W2/8] |=   3<<(x%4*2);
+    for (int x=0;x<W;x++) {
+      for (int y=0; y<H; y++) {
+#if defined(PCBX9D)
+        if ((lcd_buf[x+(y/8)*W] & (1<<(y%8))) && (lcd_buf[DISPLAY_PLAN_SIZE+x+(y/8)*W] & (1<<(y%8)))) {
+          bmp->setPixel(2*x, 2*y, onColor);
+          bmp->setPixel(2*x+1, 2*y, onColor);
+          bmp->setPixel(2*x, 2*y+1, onColor);
+          bmp->setPixel(2*x+1, 2*y+1, onColor);
         }
+        else if (lcd_buf[DISPLAY_PLAN_SIZE+x+(y/8)*W] & (1<<(y%8))) {
+          bmp->setPixel(2*x, 2*y, grey1Color);
+          bmp->setPixel(2*x+1, 2*y, grey1Color);
+          bmp->setPixel(2*x, 2*y+1, grey1Color);
+          bmp->setPixel(2*x+1, 2*y+1, grey1Color);
+        }
+        else if (lcd_buf[x+(y/8)*W] & (1<<(y%8))) {
+          bmp->setPixel(2*x, 2*y, grey2Color);
+          bmp->setPixel(2*x+1, 2*y, grey2Color);
+          bmp->setPixel(2*x, 2*y+1, grey2Color);
+          bmp->setPixel(2*x+1, 2*y+1, grey2Color);
+        }
+#else
+        if (lcd_buf[x+(y/8)*W] & (1<<(y%8))) {
+          bmp->setPixel(2*x, 2*y, onColor);
+          bmp->setPixel(2*x+1, 2*y, onColor);
+          bmp->setPixel(2*x, 2*y+1, onColor);
+          bmp->setPixel(2*x+1, 2*y+1, onColor);
+        }
+#endif
         else {
-          buf2[o2]      &= ~(3<<(x%4*2));
-          buf2[o2+W2/8] &= ~(3<<(x%4*2));
-          //buf2[x2/8+y2*W2/8] &= ~(3<<(x%8));
+          bmp->setPixel(2*x, 2*y, offColor);
+          bmp->setPixel(2*x+1, 2*y, offColor);
+          bmp->setPixel(2*x, 2*y+1, offColor);
+          bmp->setPixel(2*x+1, 2*y+1, offColor);
         }
       }
     }
 
-    bmp->setData(buf2,0);
     bmp->render();
-    bmf->setBitmap(bmp);
+    bmf->setImage(bmp);
   }
 }
 
