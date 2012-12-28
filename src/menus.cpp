@@ -57,8 +57,9 @@ void menu_lcd_onoff(uint8_t x,uint8_t y, uint8_t value, uint8_t attr)
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
   lcd_outdezAtt(DISPLAY_W,0,count,attr);
-  lcd_putcAtt(1+DISPLAY_W-FW*(count>9 ? 3 : 2),0,'/',attr);
-  lcd_outdezAtt(1+DISPLAY_W-FW*(count>9 ? 3 : 2),0,index+1,attr);
+  xcoord_t x = 1+DISPLAY_W-FW*(count>9 ? 3 : 2);
+  lcd_putcAtt(x,0,'/',attr);
+  lcd_outdezAtt(x,0,index+1,attr);
 }
 
 #if !defined(PCBSTD)
