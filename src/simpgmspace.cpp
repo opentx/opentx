@@ -318,10 +318,6 @@ void *main_thread(void *)
     g_menuStack[0] = menuMainView;
     g_menuStack[1] = menuModelSelect;
 
-#if defined(CPUARM)
-    eeprom_init();
-#endif
-
     eeReadAll(); //load general setup and selected model
 
     if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on

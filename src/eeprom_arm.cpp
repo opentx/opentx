@@ -66,7 +66,7 @@ struct t_file_entry File_system[MAX_MODELS+1] ;
 char ModelNames[MAX_MODELS][sizeof(g_model.name)] ;		// Allow for general
 
 // TODO check everything here
-uint8_t	Eeprom32_process_state ;
+uint8_t	Eeprom32_process_state = E32_IDLE;
 uint8_t	Eeprom32_state_after_erase ;
 uint8_t	Eeprom32_write_pending ;
 uint8_t Eeprom32_file_index ;
@@ -449,8 +449,18 @@ void ee32LoadModelName(uint8_t id, char *buf, uint8_t len)
   }
 }
 
+void fill_file_index()
+{
+  for (uint32_t i = 0 ; i < MAX_MODELS + 1 ; i += 1 )
+  {
+    File_system[i].block_no = get_current_block_number( i * 2, &File_system[i].size, &File_system[i].sequence_no ) ;
+  }
+}
+
 void eeReadAll()
 {
+  fill_file_index() ;
+
   if (!eeLoadGeneral() )
   {
     generalDefault();
@@ -677,29 +687,12 @@ void ee32_process()
   }
 }
 
-void fill_file_index()
-{
-  for (uint32_t i = 0 ; i < MAX_MODELS + 1 ; i += 1 )
-  {
-    File_system[i].block_no = get_current_block_number( i * 2, &File_system[i].size, &File_system[i].sequence_no ) ;
-  }
-}
-
 void ee32_read_model_names()
 {
   for (uint32_t i=0; i<MAX_MODELS; i++)
   {
     ee32LoadModelName(i, ModelNames[i], sizeof(g_model.name));
   }
-}
-
-void eeprom_init()
-{
-#ifndef SIMU
-  init_spi();
-#endif
-  fill_file_index() ;
-  Eeprom32_process_state = E32_IDLE ;
 }
 
 #if defined(SDCARD)

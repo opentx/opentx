@@ -345,8 +345,9 @@ void eeprom_read_block (void *pointer_ram,
 
 #if defined(PCBX9D) || defined(PCBACT)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
-#define GPIO_SetBits(...)
-#define GPIO_ResetBits(...)
+#define GPIO_SetBits(GPIOx, pin) GPIOx->BSRRL |= pin
+#define GPIO_ResetBits(GPIOx, pin) GPIOx->BSRRL &= ~pin
+#define GPIO_IsSet(GPIOx, pin) (GPIOx->BSRRL & pin)
 #define RCC_AHB1PeriphClockCmd(...)
 #define GPIO_ReadInputDataBit(...) true
 #endif

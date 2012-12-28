@@ -194,7 +194,7 @@ uint32_t eeprom_read_status()
 // MOSI PA13 (peripheral A)
 // SCK  PA14 (peripheral A)
 // Set clock to 3 MHz, AT25 device is rated to 70MHz, 18MHz would be better
-void init_spi()
+void eepromInit()
 {
   register Spi *spiptr ;
   register uint32_t timer ;

@@ -686,7 +686,7 @@ void boardInit()
 
   codecsInit();
 
-  eeprom_init();
+  eepromInit();
 
   init_rotary_encoder();
 

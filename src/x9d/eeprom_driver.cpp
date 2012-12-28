@@ -33,8 +33,11 @@
 
 #include "../open9x.h"
 
-void init_spi()
+void eepromInit()
 {
+#if !defined(SIMU)
+  I2C_EE_Init();
+#endif
 }
 
 void eeprom_write_enable()

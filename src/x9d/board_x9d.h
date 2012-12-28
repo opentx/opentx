@@ -109,6 +109,9 @@ uint32_t check_soft_power();
 #define setBacklight(xx)
 #define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
 #define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
-#define IS_BACKLIGHT_ON() (GPIOB & GPIO_Pin_BL)
+#define IS_BACKLIGHT_ON() GPIO_IsSet(GPIOB, GPIO_Pin_BL)
+
+#define udelay(x)       do { uint32_t temp; temp=((x+0)<<3); while(--temp); } while (0)
+#define delayUsec(x)    udelay(x)
 
 #endif

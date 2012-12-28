@@ -44,7 +44,6 @@ extern uint8_t *Eeprom32_source_address ;
 extern uint8_t Eeprom32_file_index ;
 extern uint32_t Eeprom32_data_size ;
 
-extern void eeprom_init( void ) ;
 extern void end_spi(); // TODO not public
 extern void ee32_process( void ) ;
 extern bool eeLoadGeneral( void ) ;

@@ -10,10 +10,7 @@
   ******************************************************************************
 */
 
-/* Includes ------------------------------------------------------------------*/
-#include "i2c_ee.h"
-#include "hal.h"
-#include "Macro_define.h" 
+#include "../open9x.h"
 
 uint16_t EEPROM_ADDRESS;
 
@@ -136,11 +133,11 @@ void I2C_SEND_DATA(char SendByte)
   while (i--) {
     SCL_L;
     I2C_delay();
-    if (SendByte&0x80)
+    if (SendByte & 0x80)
       SDA_H;
     else
       SDA_L;
-    SendByte<<=1;
+    SendByte <<= 1;
     I2C_delay();
     SCL_H;
     I2C_delay();
