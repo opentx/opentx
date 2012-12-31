@@ -1826,7 +1826,11 @@ void menuModelMixOne(uint8_t event)
   putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
 
 #if defined(ROTARY_ENCODERS)
+#if defined(CURVES)
   if ((m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS) || (m_posVert == MIX_FIELD_CURVE && md2->curveMode == MODE_CURVE))
+#else
+  if (m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS)
+#endif  
     SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 0, IF_CURVES(0) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/})
   else
     SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
