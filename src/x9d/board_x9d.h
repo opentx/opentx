@@ -36,14 +36,14 @@
 
 #include <stdio.h>
 
-#include "stm32f2xx_rcc.h"
-#include "stm32f2xx_gpio.h"
-#include "stm32f2xx.h"
+#include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rcc.h"
+#include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
+#include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
 
-#include "x9d/hal.h"
-#include "x9d/aspi.h"
-#include "x9d/i2c_ee.h"
-#include "x9d/audio_driver.h"
+#include "hal.h"
+#include "aspi.h"
+#include "i2c_ee.h"
+#include "audio_driver.h"
 
 // TODO elsewhere
 #if !defined(SIMU)

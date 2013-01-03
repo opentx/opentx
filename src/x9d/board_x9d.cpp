@@ -31,7 +31,7 @@
  *
  */
 
-#include "open9x.h"
+#include "../open9x.h"
 
 uint16_t Analog_values[NUMBER_ANALOG] ;
 uint8_t temperature = 0;          // Raw temp reading

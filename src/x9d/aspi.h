@@ -11,7 +11,7 @@
 #ifndef _ASPI_H_
 #define _ASPI_H_
 
-#include "stm32f2xx.h"
+#include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
 
 #define	LCD_NCS_HIGH()		    do{GPIO_SetBits(GPIO_LCD, PIN_LCD_NCS);}while(0)
 #define	LCD_NCS_LOW()		    do{GPIO_ResetBits(GPIO_LCD, PIN_LCD_NCS);}while(0)
