@@ -580,15 +580,13 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
   strcpy(path, ".");
   return FR_OK;
 }
+#endif
 
 #if defined(CPUARM)
 int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #else
 int32_t Card_state; // TODO quick and dirty!
-#endif
-
-
 #endif
 
 bool lcd_refresh = true;
