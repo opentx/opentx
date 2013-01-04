@@ -74,7 +74,6 @@ struct t_eeprom_header
 };
 
 extern struct t_file_entry File_system[] ;
-extern char ModelNames[][sizeof(g_model.name)] ;		// Allow for general
 
 extern EEGeneral  g_eeGeneral;
 extern ModelData  g_model;

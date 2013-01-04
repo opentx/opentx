@@ -50,7 +50,6 @@
 #define SD_IS_HC()                     (1)
 #endif
 
-
 extern "C" {
 extern void init_SDcard();
 extern void sdInit();
@@ -113,5 +112,12 @@ uint32_t check_soft_power();
 
 #define udelay(x)       do { uint32_t temp; temp=((x+0)<<3); while(--temp); } while (0)
 #define delayUsec(x)    udelay(x)
+
+#if !defined(SIMU)
+#define eeprom_read_block I2C_EE_BufferRead
+#define eeWriteBlockCmp   I2C_EE_BufferWrite
+#else
+void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
+#endif
 
 #endif

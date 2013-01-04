@@ -40,7 +40,7 @@ volatile uint32_t Spi_complete; // TODO in the driver ?
 uint8_t  s_eeDirtyMsk;
 uint16_t s_eeDirtyTime10ms;
 
-// Logic for storing to EERPOM/loading from EEPROM
+// Logic for storing to EEPROM/loading from EEPROM
 // If main needs to wait for the eeprom, call mainsequence without actioning menus
 // General configuration
 // 'main' set flag STORE_GENERAL
@@ -62,8 +62,6 @@ uint8_t Spi_tx_buf[24] ;
 uint8_t Spi_rx_buf[24] ;
 
 struct t_file_entry File_system[MAX_MODELS+1] ;
-
-char ModelNames[MAX_MODELS][sizeof(g_model.name)] ;		// Allow for general
 
 // TODO check everything here
 uint8_t	Eeprom32_process_state = E32_IDLE;
@@ -89,8 +87,8 @@ void handle_serial( void ) ;
 
 uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t *p_seq ) ;
 void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0 ) ;
-void ee32_read_model_names( void ) ;
-void ee32LoadModelName(uint8_t id, char *buf, uint8_t len) ;
+void eeLoadModelNames( void ) ;
+uint16_t eeLoadModelName(uint8_t id, char *name);
 
 // New file system
 
@@ -118,7 +116,7 @@ void eeDeleteModel(uint8_t id)
 {
   eeCheck(true);
 
-  memset(ModelNames[id], 0, sizeof(g_model.name));
+  memset(modelNames[id], 0, sizeof(g_model.name));
 
   Eeprom32_source_address = (uint8_t *)&g_model ;   // Get data from here
   Eeprom32_data_size = 0 ;                          // This much
@@ -135,9 +133,9 @@ bool eeCopyModel(uint8_t dst, uint8_t src)
   read32_eeprom_data( (File_system[src+1].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, size) ;
 
   if (size > sizeof(g_model.name))
-    memcpy(ModelNames[dst], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+    memcpy(modelNames[dst], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
   else
-    memset(ModelNames[dst], 0, sizeof(g_model.name));
+    memset(modelNames[dst], 0, sizeof(g_model.name));
 
   Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
   Eeprom32_data_size = sizeof(g_model) ;                                  // This much
@@ -161,10 +159,10 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
   // TODO flash saving with function above ...
   if (id2_size > sizeof(g_model.name)) {
     read32_eeprom_data( (id2_block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&Eeprom_buffer.data.model_data, id2_size);
-    memcpy(ModelNames[id1], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+    memcpy(modelNames[id1], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
   }
   else {
-    memset(ModelNames[id1], 0, sizeof(g_model.name));
+    memset(modelNames[id1], 0, sizeof(g_model.name));
   }
 
   Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
@@ -403,8 +401,7 @@ void eeLoadModel(uint8_t id)
     resetAll();
 
     if (pulsesStarted()) {
-      checkTHR();
-      checkSwitches();
+      checkAll();
       resumePulses();
       clearKeyEvents();
     }
@@ -438,14 +435,23 @@ bool eeModelExists(uint8_t id)
   return ( File_system[id+1].size > 0 ) ;
 }
 
-void ee32LoadModelName(uint8_t id, char *buf, uint8_t len)
+uint16_t eeLoadModelName(uint8_t id, char *name)
 {
+  memclear(name, sizeof(g_model.name));
   if (id < MAX_MODELS) {
     id += 1;
-    memset(buf, 0, len);
     if (File_system[id].size > sizeof(g_model.name) ) {
-      read32_eeprom_data( ( File_system[id].block_no << 12) + 8, ( uint8_t *)buf, sizeof(g_model.name)) ;
+      read32_eeprom_data( ( File_system[id].block_no << 12) + 8, ( uint8_t *)name, sizeof(g_model.name));
+      return File_system[id].size;
     }
+  }
+  return 0;
+}
+
+void eeLoadModelNames()
+{
+  for (uint32_t i=0; i<MAX_MODELS; i++) {
+    eeLoadModelName(i, modelNames[i]);
   }
 }
 
@@ -483,9 +489,8 @@ void eeReadAll()
       STORE_MODELVARS;
     }
   }
-  else
-  {
-    ee32_read_model_names() ;
+  else {
+    eeLoadModelNames() ;
   }
 
   stickMode = g_eeGeneral.stickMode; // TODO common!
@@ -687,14 +692,6 @@ void ee32_process()
   }
 }
 
-void ee32_read_model_names()
-{
-  for (uint32_t i=0; i<MAX_MODELS; i++)
-  {
-    ee32LoadModelName(i, ModelNames[i], sizeof(g_model.name));
-  }
-}
-
 #if defined(SDCARD)
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
@@ -805,9 +802,9 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   // TODO flash saving ...
   if (read > sizeof(g_model.name))
-    memcpy(ModelNames[i_fileDst], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
+    memcpy(modelNames[i_fileDst], Eeprom_buffer.data.model_data.name, sizeof(g_model.name));
   else
-    memset(ModelNames[i_fileDst], 0, sizeof(g_model.name));
+    memset(modelNames[i_fileDst], 0, sizeof(g_model.name));
 
   Eeprom32_source_address = (uint8_t *)&Eeprom_buffer.data.model_data;    // Get data from here
   Eeprom32_data_size = sizeof(g_model);                                   // This much

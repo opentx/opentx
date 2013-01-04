@@ -22,9 +22,6 @@
 #ifndef __I2C_EE_H
 #define __I2C_EE_H
 
-// #include "stm32f2xx.h"
-// #include "stm32f2xx_conf.h"
-
 #define	EE_CMD_WRITE  (0)
 #define	EE_CMD_READ   (1)
 #define	I2C_delay()   do { delayUsec(5); } while(0)

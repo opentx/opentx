@@ -64,7 +64,13 @@ OS_FlagID audioFlag;
 
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
+
+char modelNames[MAX_MODELS][sizeof(g_model.name)];
+#if defined(PCBX9D)
+uint16_t modelSizes[MAX_MODELS];
 #endif
+
+#endif // defined(CPUARM)
 
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
@@ -2870,10 +2876,14 @@ void perMain()
   }
 #endif
 
-#if defined(CPUARM)
+// TODO merge these 2 branches
+#if defined(PCBSKY9X)
   if (Eeprom32_process_state != E32_IDLE)
     ee32_process();
   else if (TIME_TO_WRITE)
+    eeCheck();
+#elif defined(CPUARM)
+  if (TIME_TO_WRITE)
     eeCheck();
 #else
   if (!eeprom_buffer_size) {

@@ -45,33 +45,40 @@
 extern uint8_t  s_eeDirtyMsk;
 extern uint16_t s_eeDirtyTime10ms;
 
-//
-// bs=16  128 blocks    verlust link:128  16files:16*8  128     sum 256
-// bs=32   64 blocks    verlust link: 64  16files:16*16 256     sum 320
-//
-#if defined(PCBGRUVIN9X) || defined(CPUM128)
+#if defined(CPUARM)
+#define blkid_t    uint16_t
+#define EESIZE     (32*1024)
+#define EEFS_VERS  5
+#define MAXFILES   62
+#define BS         64
+#elif defined(PCBGRUVIN9X) || defined(CPUM128)
+#define blkid_t    uint8_t
 #define EESIZE     4096
 #define EEFS_VERS  5
 #define MAXFILES   36
+#define BS         16
 #else
+#define blkid_t    uint8_t
 #define EESIZE     2048
 #define EEFS_VERS  4
 #define MAXFILES   20
+#define BS         16
 #endif
 
-#define BS       16
-
 PACK(struct DirEnt{
-  uint8_t  startBlk;
+  blkid_t  startBlk;
   uint16_t size:12;
   uint16_t typ:4;
 });
 
 PACK(struct EeFs{
   uint8_t  version;
-  uint8_t  mySize;
-  uint8_t  freeList;
+  blkid_t  mySize;
+  blkid_t  freeList;
   uint8_t  bs;
+#if defined(CPUARM)
+  uint8_t  spare[2];
+#endif
   DirEnt   files[MAXFILES];
 });
 
@@ -84,23 +91,25 @@ PACK(struct EeFs{
 #define FILE_MODEL(n) (1+(n))
 #define FILE_TMP      (1+MAX_MODELS)
 
-#define RESV     sizeof(EeFs)  //reserv for eeprom header with directory (eeFs)
+#define RESV          sizeof(EeFs)  //reserv for eeprom header with directory (eeFs)
 
-#if defined(PCBGRUVIN9X) || defined(CPUM128)
-#define FIRSTBLK      1
-#define BLOCKS        (1+(EESIZE-RESV)/BS)
-#define BLOCKS_OFFSET (RESV-BS)
-#else
+#if defined(CPUM64)
 #define FIRSTBLK      (RESV/BS)
 #define BLOCKS        (EESIZE/BS)
 #define BLOCKS_OFFSET 0
+#else
+#define FIRSTBLK      1
+#define BLOCKS        (1+(EESIZE-RESV)/BS)
+#define BLOCKS_OFFSET (RESV-BS)
 #endif
 
 int8_t EeFsck();
 void EeFsFormat();
 uint16_t EeFsGetFree();
 
+#if !defined(CPUARM)
 extern volatile int8_t eeprom_buffer_size;
+#endif
 
 class EFile
 {
@@ -110,7 +119,7 @@ class EFile
     static void rm(uint8_t i_fileId);
 
     ///swap contents of file1 with them of file2
-    static void swap(uint8_t i_fileId1,uint8_t i_fileId2);
+    static void swap(uint8_t i_fileId1, uint8_t i_fileId2);
 
     ///return true if the file with given fileid exists
     static bool exists(uint8_t i_fileId);
@@ -121,20 +130,28 @@ class EFile
     ///open file for reading, no close necessary
     void openRd(uint8_t i_fileId);
 
-    uint8_t read(uint8_t*buf, uint16_t i_len);
+    uint8_t read(uint8_t *buf, uint8_t len);
 
 //  protected:
 
     uint8_t  m_fileId;    //index of file in directory = filename
     uint16_t m_pos;       //over all filepos
-    uint8_t  m_currBlk;   //current block.id
+    blkid_t  m_currBlk;   //current block.id
     uint8_t  m_ofs;       //offset inside of the current block
 };
 
 #define ERR_NONE 0
 #define ERR_FULL 1
 extern uint8_t  s_write_err;    // error reasons
+
+#if defined(CPUARM)
+#define ENABLE_SYNC_WRITE(val)
+#define IS_SYNC_WRITE_ENABLE() true
+#else
 extern uint8_t  s_sync_write;
+#define ENABLE_SYNC_WRITE(val) s_sync_write = val;
+#define IS_SYNC_WRITE_ENABLE() s_sync_write
+#endif
 
 ///deliver current errno, this is reset in open
 inline uint8_t write_errno() { return s_write_err; }
@@ -170,31 +187,23 @@ public:
 
   void create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write);
 
-  ///copy contents of i_fileSrc to i_fileDst
+  /// copy contents of i_fileSrc to i_fileDst
   bool copy(uint8_t i_fileDst, uint8_t i_fileSrc);
 
   inline bool isWriting() { return m_write_step != 0; }
-  void write(uint8_t*buf, uint8_t i_len);
+  void write(uint8_t *buf, uint8_t i_len);
   void write1(uint8_t b);
   void nextWriteStep();
   void nextRlcWriteStep();
   void writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_len, uint8_t sync_write);
-  void flush();
 
-  ///read from opened file and decode rlc-coded data
-#ifdef TRANSLATIONS
-  uint16_t readRlc12(uint8_t*buf,uint16_t i_len,bool rlc2);
-  inline uint16_t readRlc1(uint8_t*buf,uint16_t i_len)
-  {
-    return readRlc12(buf,i_len,false);
-  }
-  inline uint16_t readRlc(uint8_t*buf, uint16_t i_len)
-  {
-    return readRlc12(buf,i_len,true);
-  }
-#else
-  uint16_t readRlc(uint8_t*buf, uint16_t i_len); // TODO should be like writeRlc?
+#if !defined(CPUARM)
+  // flush the current write operation if any
+  void flush();
 #endif
+
+  // read from opened file and decode rlc-coded data
+  uint16_t readRlc(uint8_t *buf, uint16_t i_len);
 
 #if defined (EEPROM_PROGRESS_BAR)
   void DisplayProgressBar(uint8_t x);
@@ -203,7 +212,11 @@ public:
 
 extern RlcFile theFile;  //used for any file operation
 
+#if defined(CPUARM)
+#define eeFlush()
+#else
 inline void eeFlush() { theFile.flush(); }
+#endif
 
 #if defined (EEPROM_PROGRESS_BAR)
 #define DISPLAY_PROGRESS_BAR(x) theFile.DisplayProgressBar(x)
@@ -223,4 +236,3 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 #endif
 
 #endif
-/*eof*/

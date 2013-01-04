@@ -137,12 +137,16 @@ extern Pwm pwm;
 #endif
 
 extern sem_t *eeprom_write_sem;
-#if defined(CPUARM)
+
+#if defined(PCBSKY9X)
 extern uint32_t eeprom_pointer;
 extern char* eeprom_buffer_data;
 extern volatile int32_t eeprom_buffer_size;
 extern bool eeprom_read_operation;
 extern volatile uint32_t Spi_complete;
+#endif
+
+#if defined(CPUARM)
 extern void startPdcUsartReceive() ;
 extern uint32_t txPdcUsart( uint8_t *buffer, uint32_t size );
 extern uint32_t txPdcPending();
@@ -313,9 +317,11 @@ void StartMainThread(bool tests=true);
 void StartEepromThread(const char *filename="eeprom.bin");
 
 extern const char *eepromFile;
-void eeprom_read_block (void *pointer_ram,
-                   const void *pointer_eeprom,
-                        size_t size);
+#if defined(PCBX9D)
+void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
+#else
+void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size);
+#endif
 
 #define wdt_reset() sleep(1/*ms*/)
 #define boardInit()

@@ -167,30 +167,10 @@
 #define AudioFreq                       I2S_AudioFreq_44k 
 
 // EEPROM and CAT5137
-#define EE_M24C08                       /* Support the device: M24C08. */
-//#define EE_M24C64_32                  /* Support the devices: M24C32 and M24C64 */
 #define I2C_Speed                       200000
-
-#if defined (EE_M24C08)
- #define I2C_FLASH_PAGESIZE             (16)
-#elif defined (EE_M24C64_32)
- #define I2C_FLASH_PAGESIZE             (32)
-#endif
-
-#ifdef EE_M24C64_32
- #define EEPROM_HW_ADDRESS              0xA0   /* E0 = E1 = E2 = 0 */
-#elif defined (EE_M24C08)
-//#define EEPROM_Block0_ADDRESS            0xA0   /* 000*/
-#define EEPROM_Block1_ADDRESS           0xA2 /* E3 E2 E1= 001 */
-//#define EEPROM_Block2_ADDRESS            0xA4 /* 010 */
-//#define EEPROM_Block3_ADDRESS            0xA6 /* 011 */
-#endif 
-
-#define USE_CAT5137 /*Support the Volume Control*/
-
-#ifdef USE_CAT5137
-#define I2C_CAT5137_ADDRESS             0x5C//0101110
-#endif
+#define I2C_FLASH_PAGESIZE              (64)
+#define I2C_EEPROM_ADDRESS              0xA0
+#define I2C_CAT5137_ADDRESS             0x5C //0101110
 
 // SD card----SPI2
 // demo uses a command line option to define this (see Makefile):

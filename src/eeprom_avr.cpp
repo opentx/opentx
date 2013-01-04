@@ -37,12 +37,11 @@
 #include "string.h"
 
 uint8_t  s_write_err = 0;    // error reasons
-uint8_t  s_sync_write = false;
 uint8_t  s_eeDirtyMsk;
 uint16_t s_eeDirtyTime10ms;
 
-RlcFile theFile;  //used for any file operation
-EeFs eeFs;
+RlcFile  theFile;  //used for any file operation
+EeFs     eeFs;
 
 void eeDirty(uint8_t msk)
 {
@@ -50,16 +49,18 @@ void eeDirty(uint8_t msk)
   s_eeDirtyTime10ms = get_tmr10ms();
 }
 
+#if !defined(CPUARM)
+uint8_t  s_sync_write = false;
 uint16_t eeprom_pointer;
-const char* eeprom_buffer_data;
+const char * eeprom_buffer_data;
 volatile int8_t eeprom_buffer_size = 0;
 
 #if !defined(SIMU)
-
 inline void eeprom_write_byte()
 {
   EEAR = eeprom_pointer;
   EEDR = *eeprom_buffer_data;
+// TODO add some define here
 #if defined (PCBGRUVIN9X)
   EECR |= 1<<EEMPE;
   EECR |= 1<<EEPE;
@@ -84,7 +85,6 @@ ISR(EE_READY_vect)
 #endif
   }
 }
-
 #endif
 
 void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size)
@@ -107,11 +107,14 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
     while (eeprom_buffer_size > 0) wdt_reset();
   }
 }
+#endif
 
-static uint8_t EeFsRead(uint8_t blk, uint8_t ofs)
+static uint8_t EeFsRead(blkid_t blk, uint8_t ofs)
 {
   uint8_t ret;
-#ifdef SIMU
+#if defined(PCBX9D)
+  eeprom_read_block(&ret, (uint16_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
+#elif defined(SIMU)
   eeprom_read_block(&ret, (const void*)(uint64_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
 #else
   eeprom_read_block(&ret, (const void*)(blk*BS+ofs+BLOCKS_OFFSET), 1);
@@ -119,47 +122,53 @@ static uint8_t EeFsRead(uint8_t blk, uint8_t ofs)
   return ret;
 }
 
-static uint8_t EeFsGetLink(uint8_t blk)
+static blkid_t EeFsGetLink(blkid_t blk)
 {
+#if defined(CPUARM)
+  blkid_t ret;
+  eeprom_read_block((uint8_t *)&ret, blk*BS+BLOCKS_OFFSET, sizeof(blkid_t));
+  return ret;
+#else
   return EeFsRead(blk, 0);
+#endif
 }
 
-static void EeFsSetLink(uint8_t blk, uint8_t val)
+static void EeFsSetLink(blkid_t blk, blkid_t val)
 {
-  static uint8_t s_link; // we write asynchronously, then nothing on the stack!
+  static blkid_t s_link; // we write asynchronously, then nothing on the stack!
   s_link = val;
-  eeWriteBlockCmp(&s_link, (blk*BS)+BLOCKS_OFFSET, 1);
+  eeWriteBlockCmp((uint8_t *)&s_link, (blk*BS)+BLOCKS_OFFSET, sizeof(blkid_t));
 }
 
-static uint8_t EeFsGetDat(uint8_t blk,uint8_t ofs)
+static uint8_t EeFsGetDat(blkid_t blk, uint8_t ofs)
 {
-  return EeFsRead(blk, ofs+1);
+  return EeFsRead(blk, ofs+sizeof(blkid_t));
 }
 
-static void EeFsSetDat(uint8_t blk,uint8_t ofs,uint8_t*buf,uint8_t len)
+static void EeFsSetDat(blkid_t blk, uint8_t ofs, uint8_t *buf, uint8_t len)
 {
-  eeWriteBlockCmp(buf, blk*BS+ofs+1+BLOCKS_OFFSET, len);
+  eeWriteBlockCmp(buf, (blk*BS)+ofs+sizeof(blkid_t)+BLOCKS_OFFSET, len);
 }
 
 static void EeFsFlushFreelist()
 {
-  eeWriteBlockCmp(&eeFs.freeList, offsetof(EeFs, freeList), sizeof(eeFs.freeList));
+  eeWriteBlockCmp((uint8_t *)&eeFs.freeList, offsetof(EeFs, freeList), sizeof(eeFs.freeList));
 }
 
 static void EeFsFlushDirEnt(uint8_t i_fileId)
 {
-  eeWriteBlockCmp(&eeFs.files[i_fileId], offsetof(EeFs, files) + sizeof(DirEnt)*i_fileId, sizeof(DirEnt));
+  eeWriteBlockCmp((uint8_t *)&eeFs.files[i_fileId], offsetof(EeFs, files) + sizeof(DirEnt)*i_fileId, sizeof(DirEnt));
 }
 
 static void EeFsFlush()
 {
-  eeWriteBlockCmp(&eeFs, 0, sizeof(eeFs));
+  eeWriteBlockCmp((uint8_t *)&eeFs, 0, sizeof(eeFs));
 }
 
 uint16_t EeFsGetFree()
 {
   int16_t ret = 0;
-  uint8_t i = eeFs.freeList;
+  blkid_t i = eeFs.freeList;
   while (i) {
     ret += BS-1;
     i = EeFsGetLink(i);
@@ -170,10 +179,10 @@ uint16_t EeFsGetFree()
 }
 
 /// free one or more blocks
-static void EeFsFree(uint8_t blk)
+static void EeFsFree(blkid_t blk)
 {
-  uint8_t i = blk;
-  uint8_t tmp;
+  blkid_t i = blk;
+  blkid_t tmp;
   while ((tmp=EeFsGetLink(i))) i = tmp;
   EeFsSetLink(i, eeFs.freeList);
   eeFs.freeList = blk; //chain in front
@@ -182,16 +191,15 @@ static void EeFsFree(uint8_t blk)
 
 int8_t EeFsck()
 {
-  s_sync_write = true;
+  ENABLE_SYNC_WRITE(true);
 
   uint8_t *bufp = reusableBuffer.eefs_buffer;
   memclear(bufp, BLOCKS);
-  uint8_t blk ;
-  int8_t ret = 0;
+  blkid_t blk ;
 
-  for(uint8_t i = 0; i <= MAXFILES; i++) {
-    uint8_t *startP = (i==MAXFILES ? &eeFs.freeList : &eeFs.files[i].startBlk);
-    uint8_t lastBlk = 0;
+  for (uint8_t i=0; i<=MAXFILES; i++) {
+    blkid_t *startP = (i==MAXFILES ? &eeFs.freeList : &eeFs.files[i].startBlk);
+    blkid_t lastBlk = 0;
     blk = *startP;
     while (blk) {
       if (blk < FIRSTBLK || // bad blk index
@@ -222,31 +230,31 @@ int8_t EeFsck()
     }
   }
 
-  s_sync_write = false;
+  ENABLE_SYNC_WRITE(false);
 
-  return ret;
+  return 0;
 }
 
 void EeFsFormat()
 {
-  s_sync_write = true;
+  ENABLE_SYNC_WRITE(true);
 
   memclear(&eeFs, sizeof(eeFs));
   eeFs.version  = EEFS_VERS;
   eeFs.mySize   = sizeof(eeFs);
   eeFs.freeList = 0;
   eeFs.bs       = BS;
-  for(uint8_t i = FIRSTBLK; i < BLOCKS-1; i++) EeFsSetLink(i,i+1);
+  for (blkid_t i=FIRSTBLK; i<BLOCKS-1; i++) EeFsSetLink(i, i+1);
   EeFsSetLink(BLOCKS-1, 0);
   eeFs.freeList = FIRSTBLK;
   EeFsFlush();
 
-  s_sync_write = false;
+  ENABLE_SYNC_WRITE(false);
 }
 
 inline bool EeFsOpen()
 {
-  eeprom_read_block(&eeFs, 0, sizeof(eeFs));
+  eeprom_read_block((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
 #ifdef SIMU
   if (eeFs.version != EEFS_VERS) {
@@ -276,20 +284,20 @@ void EFile::swap(uint8_t i_fileId1, uint8_t i_fileId2)
   eeFs.files[i_fileId1] = eeFs.files[i_fileId2];
   eeFs.files[i_fileId2] = tmp;
 
-  s_sync_write = true;
+  ENABLE_SYNC_WRITE(true);
   EeFsFlushDirEnt(i_fileId1);
   EeFsFlushDirEnt(i_fileId2);
-  s_sync_write = false;
+  ENABLE_SYNC_WRITE(false);
 }
 
 void EFile::rm(uint8_t i_fileId)
 {
-  uint8_t i = eeFs.files[i_fileId].startBlk;
+  blkid_t i = eeFs.files[i_fileId].startBlk;
   memclear(&eeFs.files[i_fileId], sizeof(eeFs.files[i_fileId]));
-  s_sync_write = true;
+  ENABLE_SYNC_WRITE(true);
   EeFsFlushDirEnt(i_fileId);
   if (i) EeFsFree(i); //chain in
-  s_sync_write = false;
+  ENABLE_SYNC_WRITE(false);
 }
 
 uint16_t EFile::size()
@@ -317,72 +325,59 @@ void RlcFile::openRlc(uint8_t i_fileId)
   m_bRlc     = 0;
 }
 
-uint8_t EFile::read(uint8_t*buf,uint16_t i_len)
+uint8_t EFile::read(uint8_t *buf, uint8_t i_len)
 {
   uint16_t len = eeFs.files[m_fileId].size - m_pos;
-  if(len < i_len) i_len = len;
-  len = i_len;
-  while(len)
-  {
-    if(!m_currBlk) break;
+  if (i_len > len) i_len = len;
+
+  uint8_t remaining = i_len;
+  while (remaining) {
+    if (!m_currBlk) break;
+  
     *buf++ = EeFsGetDat(m_currBlk, m_ofs++);
-    if(m_ofs>=(BS-1)){
-      m_ofs=0;
-      m_currBlk=EeFsGetLink(m_currBlk);
+    if (m_ofs >= BS-sizeof(blkid_t)) {
+      m_ofs = 0;
+      m_currBlk = EeFsGetLink(m_currBlk);
     }
-    len--;
+    remaining--;
   }
-  m_pos += i_len - len;
-  return i_len - len;
+
+  i_len -= remaining;
+  m_pos += i_len;
+  return i_len;
 }
 
 /*
  * Read runlength (RLE) compressed bytes into buf.
  */
-#ifdef TRANSLATIONS
-uint16_t RlcFile::readRlc12(uint8_t*buf,uint16_t i_len, bool rlc2)
-#else
-uint16_t RlcFile::readRlc(uint8_t *buf,uint16_t i_len)
-#endif
+uint16_t RlcFile::readRlc(uint8_t *buf, uint16_t i_len)
 {
-  uint16_t i=0;
-  for( ; 1; ){
-    uint8_t l = min<uint16_t>(m_zeroes,i_len-i);
-    memclear(&buf[i], l);
-    i        += l;
-    m_zeroes -= l;
-    if(m_zeroes) break;
+  uint16_t i = 0;
+  for( ; 1; ) {
+    uint8_t ln = min<uint16_t>(m_zeroes, i_len-i);
+    memclear(&buf[i], ln);
+    i        += ln;
+    m_zeroes -= ln;
+    if (m_zeroes) break;
 
-    l=min<uint16_t>(m_bRlc,i_len-i);
-    uint8_t lr = read(&buf[i],l); 
+    ln = min<uint16_t>(m_bRlc, i_len-i);
+    uint8_t lr = read(&buf[i], ln);
     i        += lr ;
     m_bRlc   -= lr;
     if(m_bRlc) break;
 
-    if(read(&m_bRlc,1)!=1) break; //read how many bytes to read
+    if (read(&m_bRlc, 1) !=1) break; // read how many bytes to read
 
     assert(m_bRlc & 0x7f);
-#ifdef TRANSLATIONS
-    if (rlc2) {
-#endif
-      if(m_bRlc&0x80){ // if contains high byte
-        m_zeroes  =(m_bRlc>>4) & 0x7;
-        m_bRlc    = m_bRlc & 0x0f;
-      }
-      else if(m_bRlc&0x40){
-        m_zeroes  = m_bRlc & 0x3f;
-        m_bRlc    = 0;
-      }
-      //else   m_bRlc
-#ifdef TRANSLATIONS
+
+    if (m_bRlc&0x80) { // if contains high byte
+      m_zeroes  =(m_bRlc>>4) & 0x7;
+      m_bRlc    = m_bRlc & 0x0f;
     }
-    else {
-      if(m_bRlc&0x80){ // if contains high byte
-        m_zeroes  = m_bRlc & 0x7f;
-        m_bRlc    = 0;
-      }
+    else if(m_bRlc&0x40) {
+      m_zeroes  = m_bRlc & 0x3f;
+      m_bRlc    = 0;
     }
-#endif
   }
   return i;
 }
@@ -400,7 +395,7 @@ void RlcFile::write(uint8_t *buf, uint8_t i_len)
 
   do {
     nextWriteStep();
-  } while (s_sync_write && m_write_len && !s_write_err);
+  } while (IS_SYNC_WRITE_ENABLE() && m_write_len && !s_write_err);
 }
 
 void RlcFile::nextWriteStep()
@@ -426,9 +421,9 @@ void RlcFile::nextWriteStep()
       s_write_err = ERR_FULL;
       break;
     }
-    if (m_ofs >= (BS-1)) {
+    if (m_ofs >= (BS-sizeof(blkid_t))) {
       m_ofs = 0;
-      uint8_t nextBlk = EeFsGetLink(m_currBlk);
+      blkid_t nextBlk = EeFsGetLink(m_currBlk);
       if (!nextBlk) {
         if (!eeFs.freeList) {
           s_write_err = ERR_FULL;
@@ -452,7 +447,7 @@ void RlcFile::nextWriteStep()
         EeFsSetLink(m_currBlk, 0);
         return;
     }
-    uint8_t tmp = BS-1-m_ofs; if(tmp>m_write_len) tmp=m_write_len;
+    uint8_t tmp = BS-sizeof(blkid_t)-m_ofs; if(tmp>m_write_len) tmp = m_write_len;
     m_write_buf += tmp;
     m_write_len -= tmp;
     m_ofs += tmp;
@@ -467,7 +462,7 @@ void RlcFile::nextWriteStep()
     m_write_len = 0;
     m_cur_rlc_len = 0;
   }
-  else if (!s_sync_write) {
+  else if (!IS_SYNC_WRITE_ENABLE()) {
     nextRlcWriteStep();
   }
 }
@@ -479,7 +474,7 @@ void RlcFile::create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write)
   eeFs.files[FILE_TMP].typ      = typ;
   eeFs.files[FILE_TMP].size     = 0;
   m_fileId = i_fileId;
-  s_sync_write = sync_write;
+  ENABLE_SYNC_WRITE(sync_write);
 }
 
 /*
@@ -491,18 +486,19 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
   theFile2.openRd(i_fileSrc);
 
   create(i_fileDst, FILE_TYP_MODEL/*optimization, only model files are copied. should be eeFs.files[i_fileSrc].typ*/, true);
-  uint8_t buf[15];
+
+  uint8_t buf[BS-sizeof(blkid_t)];
   uint8_t len;
-  while ((len=theFile2.read(buf, 15)))
+  while ((len=theFile2.read(buf, BS-sizeof(blkid_t))))
   {
     write(buf, len);
     if (write_errno() != 0) {
-      s_sync_write = false;
+      ENABLE_SYNC_WRITE(false);
       return false;
     }
   }
 
-  uint8_t fri=0;
+  blkid_t fri=0;
   if (m_currBlk && (fri=EeFsGetLink(m_currBlk)))
     EeFsSetLink(m_currBlk, 0);
 
@@ -644,21 +640,21 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   do {
     result = f_read(&g_oLogFile, (uint8_t *)buf, 15, &read);
     if (result != FR_OK) {
-      s_sync_write = false;
+      ENABLE_SYNC_WRITE(false);
       f_close(&g_oLogFile);
       return SDCARD_ERROR(result);
     }
     if (read > 0) {
       theFile.write((uint8_t *)buf, read);
       if (write_errno() != 0) {
-        s_sync_write = false;
+        ENABLE_SYNC_WRITE(false);
         f_close(&g_oLogFile);
         return STR_EEPROMOVERFLOW;
       }
     }
   } while (read == 15);
 
-  uint8_t fri=0;
+  blkid_t fri=0;
   if (theFile.m_currBlk && (fri=EeFsGetLink(theFile.m_currBlk)))
     EeFsSetLink(theFile.m_currBlk, 0);
 
@@ -672,7 +668,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 }
 #endif
 
-void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t*buf, uint16_t i_len, uint8_t sync_write)
+void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_len, uint8_t sync_write)
 {
   create(i_fileId, typ, sync_write);
 
@@ -686,7 +682,7 @@ void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t*buf, uint16_t i_le
 
   do {
     nextRlcWriteStep();
-  } while (s_sync_write && m_write_step && !s_write_err);
+  } while (IS_SYNC_WRITE_ENABLE() && m_write_step && !s_write_err);
 }
 
 void RlcFile::nextRlcWriteStep()
@@ -704,14 +700,14 @@ void RlcFile::nextRlcWriteStep()
     return;
   }
 
-  bool    run0   = m_rlc_buf[0] == 0;
+  bool run0 = (m_rlc_buf[0] == 0);
 
-  if(m_rlc_len==0) goto close;
+  if (m_rlc_len==0) goto close;
 
   for (i=1; 1; i++) // !! laeuft ein byte zu weit !!
   {
     bool cur0 = m_rlc_buf[i] == 0;
-    if (cur0 != run0 || cnt==0x3f || (cnt0 && cnt==0xf)|| i==m_rlc_len){
+    if (cur0 != run0 || cnt==0x3f || (cnt0 && cnt==0x0f) || i==m_rlc_len) {
       if (run0) {
         assert(cnt0==0);
         if (cnt<8 && i!=m_rlc_len)
@@ -747,10 +743,10 @@ void RlcFile::nextRlcWriteStep()
    switch(m_write_step) {
      case WRITE_START_STEP:
      {
-       uint8_t fri=0;
+       blkid_t fri=0;
 
        if (m_currBlk && (fri=EeFsGetLink(m_currBlk))) {
-         uint8_t prev_freeList = eeFs.freeList;
+         blkid_t prev_freeList = eeFs.freeList;
          eeFs.freeList = fri;
          while( EeFsGetLink(fri)) fri = EeFsGetLink(fri);
          m_write_step = WRITE_FREE_UNUSED_BLOCKS_STEP1;
@@ -790,17 +786,19 @@ void RlcFile::nextRlcWriteStep()
    }
 }
 
+#if !defined(CPUARM)
 void RlcFile::flush()
 {
   while (eeprom_buffer_size > 0) wdt_reset();
 
-  s_sync_write = true;
+  ENABLE_SYNC_WRITE(true);
   while (m_write_len && !s_write_err)
     nextWriteStep();
   while (isWriting() && !s_write_err)
     nextRlcWriteStep();
-  s_sync_write = false;
+  ENABLE_SYNC_WRITE(false);
 }
+#endif
 
 #if defined (EEPROM_PROGRESS_BAR)
 void RlcFile::DisplayProgressBar(uint8_t x)
@@ -843,7 +841,7 @@ bool eeLoadGeneral()
 uint16_t eeLoadModelName(uint8_t id, char *name)
 {
   memclear(name, sizeof(g_model.name));
-  if (id<MAX_MODELS) {
+  if (id < MAX_MODELS) {
     theFile.openRlc(FILE_MODEL(id));
     if (theFile.readRlc((uint8_t*)name, sizeof(g_model.name)) == sizeof(g_model.name)) {
       return theFile.size();
@@ -852,22 +850,37 @@ uint16_t eeLoadModelName(uint8_t id, char *name)
   return 0;
 }
 
+#if defined(CPUARM)
+// TODO same function in eeprom_arm.cpp
+void eeLoadModelNames()
+{
+  for (uint32_t i=0; i<MAX_MODELS; i++) {
+    modelSizes[i] = eeLoadModelName(i, modelNames[i]);
+  }
+}
+#else
+#define eeLoadModelNames()
+#endif
+
 bool eeModelExists(uint8_t id)
 {
     return EFile::exists(FILE_MODEL(id));
 }
 
+// TODO Now the 2 functions in eeprom_avr.cpp and eeprom_arm.cpp are really close, should be merged.
 void eeLoadModel(uint8_t id)
 {
   if (id<MAX_MODELS) {
 
-#ifdef SDCARD
+#if defined(SDCARD)
     closeLogs();
 #endif
 
     if (pulsesStarted()) {
       pausePulses();
     }
+
+    pauseMixerCalculations();
 
     theFile.openRlc(FILE_MODEL(id));
     uint16_t sz = theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
@@ -894,7 +907,7 @@ void eeLoadModel(uint8_t id)
     activeFunctions = 0;
     activeFunctionSwitches = 0;
 
-#if defined(PCBGRUVIN9X)
+#if !defined(PCBSTD)
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
       if (g_model.timers[i].remanent) {
         s_timerVal[i] = g_model.timers[i].value;
@@ -902,17 +915,27 @@ void eeLoadModel(uint8_t id)
     }
 #endif
 
+    resumeMixerCalculations();
+    // TODO pulses should be started after mixer calculations ...
+
 #if defined(FRSKY)
     FRSKY_setModelAlarms();
 #endif
+
+#if defined(SDCARD)
+    refreshModelAudioFiles();
+#endif
+
+    LOAD_MODEL_BITMAP();
   }
 }
 
+// TODO merge this code with eeprom_arm.cpp one
 void eeReadAll()
 {
-  if(!EeFsOpen() ||
-     EeFsck() < 0 ||
-     !eeLoadGeneral())
+  if (!EeFsOpen() ||
+       EeFsck() < 0 ||
+      !eeLoadGeneral())
   {
     generalDefault();
 
@@ -921,11 +944,14 @@ void eeReadAll()
 
     EeFsFormat();
 
-    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL,(uint8_t*)&g_eeGeneral,sizeof(EEGeneral), true);
+    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), true);
 
     modelDefault(0);
 
     theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
+  }
+  else {
+    eeLoadModelNames();
   }
 
   stickMode = g_eeGeneral.stickMode;

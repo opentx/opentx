@@ -216,13 +216,14 @@ void menuModelSelect(uint8_t event)
 {
   TITLE(STR_MENUMODELSEL);
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
   #define REFRESH(x)
 #elif defined(PCBGRUVIN9X) && defined(SDCARD)
   static bool refresh = true;
   #define REFRESH(x) refresh = (x)
 #else
-#define refresh event
+  #define refresh event
+  #define REFRESH(x)
 #endif
 
   if (s_warning_result) {
@@ -430,7 +431,7 @@ void menuModelSelect(uint8_t event)
 
   }
 
-#if !defined(CPUARM)
+#if !defined(PCBSKY9X)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
   lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
@@ -470,7 +471,7 @@ void menuModelSelect(uint8_t event)
 
     if (eeModelExists(k)) {
 #if defined(CPUARM)
-      putsModelName(4*FW, y, ModelNames[k], k, 0);
+      putsModelName(4*FW, y, modelNames[k], k, 0);
 #else
       uint16_t & size = reusableBuffer.models.listsizes[i];
       char * name = reusableBuffer.models.listnames[i];
@@ -489,7 +490,7 @@ void menuModelSelect(uint8_t event)
 
   if (s_warning) {
 #if defined(CPUARM)
-    s_warning_info = ModelNames[sub];
+    s_warning_info = modelNames[sub];
 #else
     char * name = reusableBuffer.models.mainname;
     if (refresh) eeLoadModelName(sub, name);
@@ -666,7 +667,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_NAME:
         editName(MODEL_SETUP_2ND_COLUMN, y, g_model.name, sizeof(g_model.name), event, attr, m_posHorz);
 #if defined(CPUARM)
-        memcpy(ModelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
+        memcpy(modelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
 #endif
         break;
 

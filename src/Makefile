@@ -469,7 +469,7 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), ACT)
   # ACT radio
   OPT = 2
-  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD260 -DSTM32F10X_LD
+  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD260 -DSTM32F10X_HD
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   EXTRAINCDIRS += act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/STM32F10x_StdPeriph_Driver/inc act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
   BOARDSRC = x9d/board_x9d.cpp 
@@ -491,7 +491,7 @@ ifeq ($(PCB), X9D)
   BOARDSRC = x9d/board_x9d.cpp
   EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c_ee.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
+  EEPROMSRC = eeprom_avr.cpp # TODO later eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += sky9x/audio.cpp
   CPPSRC += x9d/pwr_driver.cpp x9d/eeprom_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/audio_driver.cpp

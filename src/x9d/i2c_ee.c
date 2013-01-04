@@ -12,15 +12,12 @@
 
 #include "../open9x.h"
 
-uint16_t EEPROM_ADDRESS;
-
 /**
   * @brief  Configure the used I/O ports pin
   * @param  None
   * @retval None
   */
-static 
-void I2C_GPIO_Configuration(void)
+static void I2C_GPIO_Configuration(void)
 {
   GPIO_InitTypeDef  GPIO_InitStructure;
 
@@ -40,17 +37,6 @@ void I2C_GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(I2C_EE_GPIO, &GPIO_InitStructure);
 }
-
-/**
-  * @brief  I2C Configuration
-  * @param  None
-  * @retval None
-  */
-//when use harware I2C
-void I2C_Configuration(void)
-{
-}
-
 
 short I2C_START()
 {
@@ -173,32 +159,6 @@ void I2C_EE_Init()
 
   /* GPIO configuration */
   I2C_GPIO_Configuration();
-
-#if defined (EE_M24C64_32)
-  /* Select the EEPROM address according to the state of E0, E1, E2 pins */
-  EEPROM_ADDRESS = EEPROM_HW_ADDRESS;
-#elif defined (EE_M24C08)
-  /* depending on the EEPROM Address selected in the i2c_ee.h file */
- #ifdef EEPROM_Block0_ADDRESS
-  /* Select the EEPROM Block0 to write on */
-  EEPROM_ADDRESS = EEPROM_Block0_ADDRESS;
- #endif
-
- #ifdef EEPROM_Block1_ADDRESS
-  /* Select the EEPROM Block1 to write on */
-  EEPROM_ADDRESS = EEPROM_Block1_ADDRESS;
- #endif
-
- #ifdef EEPROM_Block2_ADDRESS
-  /* Select the EEPROM Block2 to write on */
-  EEPROM_ADDRESS = EEPROM_Block2_ADDRESS;
- #endif
-
- #ifdef EEPROM_Block3_ADDRESS
-  /* Select the EEPROM Block3 to write on */
-  EEPROM_ADDRESS = EEPROM_Block3_ADDRESS;
- #endif
-#endif /* EE_M24C64_32 */
 }
 
 /**
@@ -211,12 +171,12 @@ void I2C_EE_Init()
 void I2C_EE_ByteWrite(uint8_t* pBuffer, uint16_t WriteAddr)
 {
   I2C_START();
-  I2C_SEND_DATA(EEPROM_ADDRESS | EE_CMD_WRITE);
+  I2C_SEND_DATA(I2C_EEPROM_ADDRESS|EE_CMD_WRITE);
   I2C_WAIT_ACK();
-#ifdef	EE_M24C08
+#ifdef EE_M24C08
   I2C_SEND_DATA(WriteAddr);
   I2C_WAIT_ACK();
-#elif defined(EE_M24C64_32)
+#else
   I2C_SEND_DATA((uint8_t)((WriteAddr&0xFF00)>>8) );
   I2C_WAIT_ACK();
   I2C_SEND_DATA((uint8_t)(WriteAddr&0xFF));
@@ -238,13 +198,12 @@ void I2C_EE_ByteWrite(uint8_t* pBuffer, uint16_t WriteAddr)
 void I2C_EE_BufferRead(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRead)
 {
   I2C_START();
-  I2C_SEND_DATA(EEPROM_ADDRESS |EE_CMD_WRITE);
+  I2C_SEND_DATA(I2C_EEPROM_ADDRESS|EE_CMD_WRITE);
   I2C_WAIT_ACK();
-
-#ifdef	EE_M24C08
+#ifdef EE_M24C08
   I2C_SEND_DATA(ReadAddr);
   I2C_WAIT_ACK();
-#elif defined(EE_M24C64_32)
+#else
   I2C_SEND_DATA((uint8_t)((ReadAddr & 0xFF00) >> 8));
   I2C_WAIT_ACK();
   I2C_SEND_DATA((uint8_t)(ReadAddr & 0x00FF));
@@ -253,7 +212,7 @@ void I2C_EE_BufferRead(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRe
   I2C_STOP();
 	
   I2C_START();
-  I2C_SEND_DATA(EEPROM_ADDRESS | EE_CMD_READ);
+  I2C_SEND_DATA(I2C_EEPROM_ADDRESS|EE_CMD_READ);
   I2C_WAIT_ACK();
   while (NumByteToRead) {
     if (NumByteToRead == 1) {
@@ -369,13 +328,13 @@ void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteTo
 void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
 {
   I2C_START();
-  I2C_SEND_DATA(EEPROM_ADDRESS|EE_CMD_WRITE);
+  I2C_SEND_DATA(I2C_EEPROM_ADDRESS|EE_CMD_WRITE);
   I2C_WAIT_ACK();
 
 #ifdef EE_M24C08
   I2C_SEND_DATA(WriteAddr);
   I2C_WAIT_ACK();
-#elif defined(EE_M24C64_32)
+#else
   I2C_SEND_DATA((uint8_t)((WriteAddr & 0xFF00) >> 8));
   I2C_WAIT_ACK();
   I2C_SEND_DATA((uint8_t)(WriteAddr & 0x00FF));
@@ -398,11 +357,9 @@ void I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWri
   */
 void I2C_EE_WaitEepromStandbyState(void)
 {
-  /*__IO*/ volatile uint16_t SR1_Tmp = 0;
-
   do {
     I2C_START();
-    I2C_SEND_DATA(EEPROM_ADDRESS|EE_CMD_WRITE);
+    I2C_SEND_DATA(I2C_EEPROM_ADDRESS|EE_CMD_WRITE);
   } while (0 == I2C_WAIT_ACK());
 
   I2C_STOP();

@@ -58,7 +58,7 @@ Dacc dacc;
 Adc Adc0;
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
 uint32_t eeprom_pointer;
 char* eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;
@@ -257,6 +257,7 @@ uint16_t getTmr16KHz()
   return get_tmr10ms() * 160;
 }
 
+#if !defined(PCBX9D)
 bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
 {
@@ -300,6 +301,7 @@ void *eeprom_write_function(void *)
   }
   return 0;
 }
+#endif
 
 uint8_t main_thread_running = 0;
 char * main_thread_error = NULL;
@@ -385,32 +387,56 @@ void StartEepromThread(const char *filename)
   eeprom_write_sem = (sem_t *)malloc(sizeof(sem_t));
   sem_init(eeprom_write_sem, 0, 0);
 #endif
+
+#if !defined(PCBX9D)
   eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
+#endif
 }
 
 void StopEepromThread()
 {
+#if !defined(PCBX9D)
   eeprom_thread_running = false;
   sem_post(eeprom_write_sem);
   pthread_join(eeprom_thread_pid, NULL);
+#endif
 }
 
-void eeprom_read_block (void *pointer_ram,
-    const void *pointer_eeprom,
-    size_t size)
+#if defined(PCBX9D)
+void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size)
+#else
+void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size)
+#endif
 {
   assert(size);
 
   if (fp) {
-    memset(pointer_ram, 0, size);
-    if (fseek(fp, (long) pointer_eeprom, SEEK_SET)==-1) perror("error in seek");
-    if (fread(pointer_ram, size, 1, fp) <= 0) perror("error in read");
+    // printf("EEPROM read (pos=%d, size=%d)\n", pointer_eeprom, size); fflush(stdout);
+    if (fseek(fp, (long)pointer_eeprom, SEEK_SET)==-1) perror("error in fseek");
+    if (fread(pointer_ram, size, 1, fp) <= 0) perror("error in fread");
   }
   else {
     memcpy(pointer_ram, &eeprom[(uint64_t)pointer_eeprom], size);
   }
 }
+
+#if defined(PCBX9D)
+void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size)
+{
+  assert(size);
+
+  if (fp) {
+    // printf("EEPROM write (pos=%d, size=%d)\n", pointer_eeprom, size); fflush(stdout);
+    if (fseek(fp, (long)pointer_eeprom, SEEK_SET)==-1) perror("error in fseek");
+    if (fwrite(pointer_ram, size, 1, fp) <= 0) perror("error in fwrite");
+  }
+  else {
+    memcpy(&eeprom[(uint64_t)pointer_eeprom], pointer_ram, size);
+  }
+}
+
+#endif
 
 #if defined(CPUARM)
 uint16_t stack_free(uint8_t)

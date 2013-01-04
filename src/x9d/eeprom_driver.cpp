@@ -39,17 +39,3 @@ void eepromInit()
   I2C_EE_Init();
 #endif
 }
-
-void eeprom_write_enable()
-{
-}
-
-uint32_t eeprom_read_status()
-{
-  return !Spi_complete;
-}
-
-uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
-{
-  return 0;
-}

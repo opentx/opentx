@@ -212,10 +212,23 @@ extern void boardInit();
 #endif
 
 #if defined(CPUARM)
+extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
+#endif
+
+#if defined(PCBX9D)
+extern uint16_t modelSizes[MAX_MODELS];
+#endif
+
+// TODO try to merge the 2 include files
+#if defined(PCBSKY9X)
 #include "eeprom_arm.h"
-#include "pulses_arm.h"
 #else
 #include "eeprom_avr.h"
+#endif
+
+#if defined(CPUARM)
+#include "pulses_arm.h"
+#else
 #include "pulses_avr.h"
 #endif
 
@@ -1000,7 +1013,6 @@ void saveTimers();
 #define saveTimers()
 #endif
 
-void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_t size);
 void eeDirty(uint8_t msk);
 void eeCheck(bool immediately=false);
 void eeReadAll();
@@ -1287,7 +1299,7 @@ union ReusableBuffer
 {
     /* 128 bytes on stock */
 
-#if !defined(CPUARM)
+#if !defined(PCBSKY9X)
     uint8_t eefs_buffer[BLOCKS];           // 128bytes used by EeFsck
 #endif
 
@@ -1333,7 +1345,7 @@ void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t
 #if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
-#define strcat_modelname(dest, idx) strcat_zchar(dest, ModelNames[idx], LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
+#define strcat_modelname(dest, idx) strcat_zchar(dest, modelNames[idx], LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
 #define strcat_phasename_default(dest, idx) strcat_zchar(dest, NULL, 0, STR_FP, PSIZE(TR_FP), idx)
 #define strcat_phasename_nodefault(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
 #define strcat_mixername_nodefault(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
