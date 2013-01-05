@@ -735,14 +735,14 @@ void setupPulses()
   if (s_pulses_paused)
     required_protocol = PROTO_NONE;
 
-  if (s_current_protocol != required_protocol) {
-
-#if defined(PCBGRUVIN9X) && defined(TX_CADDY)
+#if defined(PCBGRUVIN9X) && defined(DSM2) && defined(TX_CADDY)
     if (required_protocol == PROTO_DSM2)
       PORTH &= ~0x80;
     else
       PORTH |= 0x80;
 #endif
+
+  if (s_current_protocol != required_protocol) {
 
 #if defined(DSM2_SERIAL) && defined(FRSKY)
     if (s_current_protocol == 255 || s_current_protocol == PROTO_DSM2) {
