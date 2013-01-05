@@ -735,7 +735,7 @@ void setupPulses()
   if (s_pulses_paused)
     required_protocol = PROTO_NONE;
 
-#if defined(PCBGRUVIN9X) && defined(DSM2) && defined(TX_CADDY)
+#if defined(PCBGRUVIN9X) && defined(DSM2_SERIAL) && defined(TX_CADDY)
     if (required_protocol == PROTO_DSM2)
       PORTH &= ~0x80;
     else
