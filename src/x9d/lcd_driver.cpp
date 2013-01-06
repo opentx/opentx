@@ -31,7 +31,7 @@ void lcdRefresh()
     Set_Address(0, y);
     AspiCmd(0xAF);
     for (uint8_t x=0; x<DISPLAY_W; x+=2) {
-      uint8_t data = (p[x] & mask ? 0xC0 : 0) + (p[x+1] & mask ? 0x0C : 0) + (p[DISPLAY_PLAN_SIZE+x] & mask ? 0x30 : 0) + (p[DISPLAY_PLAN_SIZE+x+1] & mask ? 0x03 : 0);
+      uint8_t data = (p[x] & mask ? 0x80 : 0) + (p[x+1] & mask ? 0x08 : 0) + (p[DISPLAY_PLAN_SIZE+x] & mask ? 0x40 : 0) + (p[DISPLAY_PLAN_SIZE+x+1] & mask ? 0x04 : 0);
       WriteData(data);
     }
     WriteData(0);
