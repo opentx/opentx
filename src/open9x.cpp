@@ -234,6 +234,10 @@ void per10ms()
 {
   g_tmr10ms++;
 
+#if defined(CPUARM)
+  Tenms |= 1 ;                    // 10 mS has passed
+#endif
+
   if (lightOffCounter) lightOffCounter--;
   if (s_noHi) s_noHi--;
   if (trimsCheckTimer) trimsCheckTimer --;
@@ -242,10 +246,6 @@ void per10ms()
     if ((((uint8_t)inacCounter)&0x0F)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*187))
       AUDIO_INACTIVITY();
   }
-
-#if defined(CPUARM)
-  Tenms |= 1 ;                    // 10 mS has passed
-#endif
 
 #if defined(RTCLOCK)
   /* Update global Date/Time every 100 per10ms cycles */

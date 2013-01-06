@@ -98,18 +98,18 @@ void readKeysAndTrims()
   register uint32_t i;
 
   uint8_t enuk = KEY_MENU;
-  uint8_t in = ~readKeys();
+  uint32_t in = ~readKeys();
   for (i = 1; i < 7; i++) {
     keys[enuk].input(in & (1 << i), (EnumKeys) enuk);
     ++enuk;
   }
 
-  in = readTrims();
+/*  in = readTrims();
 
   for (i = 1; i < 256; i <<= 1) {
     keys[enuk].input(in & i, (EnumKeys) enuk);
     ++enuk;
-  }
+  }*/
 }
 
 uint32_t keyState(EnumKeys enuk)
