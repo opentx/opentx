@@ -639,12 +639,12 @@ int16_t getValue(uint8_t i)
   else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
   else if(i<MIXSRC_MAX) return 1024;
 #if defined(PCBX9D) || defined(PCBACT)
-  else if(i<MIXSRC_SA) return (keyState(SW_SA0) ? -1024 : 1024);
+  else if(i<MIXSRC_SA) return (keyState(SW_SA0) ? -1024 : (keyState(SW_SA1) ? 0 : 1024));  
   else if(i<MIXSRC_SB) return (keyState(SW_SB0) ? -1024 : (keyState(SW_SB1) ? 0 : 1024));
   else if(i<MIXSRC_SC) return (keyState(SW_SC0) ? -1024 : (keyState(SW_SC1) ? 0 : 1024));
   else if(i<MIXSRC_SD) return (keyState(SW_SD0) ? -1024 : (keyState(SW_SD1) ? 0 : 1024));
   else if(i<MIXSRC_SE) return (keyState(SW_SE0) ? -1024 : (keyState(SW_SE1) ? 0 : 1024));
-  else if(i<MIXSRC_SF) return (keyState(SW_SF0) ? -1024 : (keyState(SW_SF1) ? 0 : 1024));
+  else if(i<MIXSRC_SF) return (keyState(SW_SF0) ? -1024 : 1024);
   else if(i<MIXSRC_SG) return (keyState(SW_SG0) ? -1024 : (keyState(SW_SG1) ? 0 : 1024));
   else if(i<MIXSRC_SH) return (keyState(SW_SH0) ? -1024 : 1024);
 #else

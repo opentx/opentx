@@ -26,20 +26,20 @@
 #define PIN_TRIM4_DN                    GPIO_Pin_5      //PE.05
 
 // Switchs
-#define	PIN_SW_A_L		        GPIO_Pin_14	//PE.14
-#define	PIN_SW_B_H		        GPIO_Pin_3	//PB.03
-#define	PIN_SW_B_L		        GPIO_Pin_4	//PB.04
-#define	PIN_SW_C_H		        GPIO_Pin_5	//PB.05
-#define	PIN_SW_C_L		        GPIO_Pin_6	//PB.06
-#define	PIN_SW_D_H		        GPIO_Pin_7	//PB.07
-#define	PIN_SW_D_L		        GPIO_Pin_2	//PE.02
-#define	PIN_SW_E_H		        GPIO_Pin_0	//PB.00
-#define	PIN_SW_E_L		        GPIO_Pin_5	//PA.05
-#define	PIN_SW_F_H		        GPIO_Pin_7	//PE.07
-#define	PIN_SW_F_L		        GPIO_Pin_1	//PB.01
-#define	PIN_SW_G_H		        GPIO_Pin_9	//PE.09
-#define	PIN_SW_G_L		        GPIO_Pin_8	//PE.08
-#define	PIN_SW_H_L		        GPIO_Pin_13	//PE.13
+#define	PIN_SW_F		          GPIO_Pin_14	//PE.14
+#define	PIN_SW_E_L		        GPIO_Pin_3	//PB.03
+#define	PIN_SW_E_H		        GPIO_Pin_4	//PB.04
+#define	PIN_SW_B_H		        GPIO_Pin_5	//PB.05
+#define	PIN_SW_B_L		        GPIO_Pin_6	//PB.06
+#define	PIN_SW_A_H		        GPIO_Pin_7	//PB.07
+#define	PIN_SW_A_L		        GPIO_Pin_2	//PE.02
+#define	PIN_SW_G_L		        GPIO_Pin_0	//PB.00
+#define	PIN_SW_G_H		        GPIO_Pin_5	//PA.05
+#define	PIN_SW_C_L		        GPIO_Pin_7	//PE.07
+#define	PIN_SW_C_H		        GPIO_Pin_1	//PB.01
+#define	PIN_SW_D_H		        GPIO_Pin_9	//PE.09
+#define	PIN_SW_D_L		        GPIO_Pin_8	//PE.08
+#define	PIN_SW_H		          GPIO_Pin_13	//PE.13
 
 // ADC
 #define PIN_STK_J1                      GPIO_Pin_0  //PA.00              

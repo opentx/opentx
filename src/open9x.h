@@ -487,6 +487,7 @@ enum EnumKeys {
   //SW_ON,
 #if defined(PCBX9D) || defined(PCBACT)
   SW_SA0=SW_BASE,
+  SW_SA1,
   SW_SA2,
   SW_SB0,
   SW_SB1,
@@ -501,7 +502,6 @@ enum EnumKeys {
   SW_SE1,
   SW_SE2,
   SW_SF0,
-  SW_SF1,
   SW_SF2,
   SW_SG0,
   SW_SG1,

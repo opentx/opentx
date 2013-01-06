@@ -124,77 +124,77 @@ uint32_t keyState(EnumKeys enuk)
 
   switch ((uint8_t) enuk) {
     case SW_SA0:
-      xxx = ~e & PIN_SW_A_L;
+      xxx = (~b & PIN_SW_A_H) && (b & PIN_SW_A_L);
+      break;
+    case SW_SA1:
+      xxx = (b & PIN_SW_A_H) && (b & PIN_SW_A_L);
       break;
     case SW_SA2:
-      xxx = e & PIN_SW_A_L;
+      xxx = (b & PIN_SW_A_H) && (~b & PIN_SW_A_L);
       break;
 
     case SW_SB0:
-      xxx = !(b & (PIN_SW_B_L | PIN_SW_B_H));
+      xxx = (~b & PIN_SW_B_H) && (b & PIN_SW_B_L);
       break;
     case SW_SB1:
-      xxx = (b & PIN_SW_B_H) && (~b & PIN_SW_B_L);
+      xxx = (b & PIN_SW_B_H) && (b & PIN_SW_B_L);
       break;
     case SW_SB2:
-      xxx = (~b & PIN_SW_B_H) && (b & PIN_SW_B_L);
+      xxx = (b & PIN_SW_B_H) && (~b & PIN_SW_B_L);
       break;
 
     case SW_SC0:
-      xxx = !(b & (PIN_SW_C_L | PIN_SW_C_H));
+      xxx = (~b & PIN_SW_C_H) && (e & PIN_SW_C_L);
       break;
     case SW_SC1:
-      xxx = (b & PIN_SW_C_H) && (~b & PIN_SW_C_L);
+      xxx = (b & PIN_SW_C_H) && (e & PIN_SW_C_L);
       break;
     case SW_SC2:
-      xxx = (~b & PIN_SW_C_H) && (b & PIN_SW_C_L);
+      xxx = (b & PIN_SW_C_H) && (~e & PIN_SW_C_L);
       break;
 
     case SW_SD0:
-      xxx = (~e & PIN_SW_D_L) && (~b & PIN_SW_D_H);
+      xxx = (~e & PIN_SW_D_H) && (e & PIN_SW_D_L);
       break;
     case SW_SD1:
-      xxx = (b & PIN_SW_D_H) && (~e & PIN_SW_D_L);
+      xxx = (e & PIN_SW_D_H) && (e & PIN_SW_D_L);
       break;
     case SW_SD2:
-      xxx = (~b & PIN_SW_D_H) && (e & PIN_SW_D_L);
+      xxx = (e & PIN_SW_D_H) && (~e & PIN_SW_D_L);
       break;
 
     case SW_SE0:
-      xxx = (~a & PIN_SW_E_L) && (~b & PIN_SW_E_H);
+      xxx = (~b & PIN_SW_E_H) && (b & PIN_SW_E_L);
       break;
     case SW_SE1:
-      xxx = (b & PIN_SW_E_H) && (~a & PIN_SW_E_L);
+      xxx = (b & PIN_SW_E_H) && (b & PIN_SW_E_L);
       break;
     case SW_SE2:
-      xxx = (~b & PIN_SW_E_H) && (a & PIN_SW_E_L);
+      xxx = (b & PIN_SW_E_H) && (~b & PIN_SW_E_L);
       break;
 
     case SW_SF0:
-      xxx = (~b & PIN_SW_F_L) && (~e & PIN_SW_F_H);
-      break;
-    case SW_SF1:
-      xxx = (e & PIN_SW_F_H) && (~b & PIN_SW_F_L);
+      xxx = ~e & PIN_SW_F;
       break;
     case SW_SF2:
-      xxx = (~e & PIN_SW_F_H) && (b & PIN_SW_F_L);
+      xxx = e & PIN_SW_F;
       break;
 
     case SW_SG0:
-      xxx = !(e & (PIN_SW_G_L | PIN_SW_G_H));
+      xxx = (~a & PIN_SW_G_H) && (b & PIN_SW_G_L);
       break;
     case SW_SG1:
-      xxx = (e & PIN_SW_G_H) && (~e & PIN_SW_G_L);
+      xxx = (a & PIN_SW_G_H) && (b & PIN_SW_G_L);
       break;
     case SW_SG2:
-      xxx = (~e & PIN_SW_G_H) && (e & PIN_SW_G_L);
+      xxx = (a & PIN_SW_G_H) && (~b & PIN_SW_G_L);
       break;
 
     case SW_SH0:
-      xxx = ~e & PIN_SW_H_L;
+      xxx = ~e & PIN_SW_H;
       break;
     case SW_SH2:
-      xxx = e & PIN_SW_H_L;
+      xxx = e & PIN_SW_H;
       break;
 
     default:
@@ -217,8 +217,8 @@ void keysInit()
 
     /* GPIO  Configuration*/
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM3_UP | PIN_TRIM3_DN
-                                  | PIN_TRIM4_UP |PIN_TRIM4_DN | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F_H | PIN_SW_G_H
-                                  | PIN_SW_G_L | PIN_SW_H_L;
+                                  | PIN_TRIM4_UP |PIN_TRIM4_DN | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F | PIN_SW_C_L
+                                  | PIN_SW_D_H | PIN_SW_H;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -239,14 +239,14 @@ void keysInit()
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_C_L | PIN_SW_D_H | PIN_SW_E_H | PIN_SW_F_L;
+    GPIO_InitStructure.GPIO_Pin = PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H | PIN_SW_G_L;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = PIN_SW_E_L;
+    GPIO_InitStructure.GPIO_Pin = PIN_SW_G_H;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
