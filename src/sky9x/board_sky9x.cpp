@@ -34,6 +34,7 @@
 #include "../open9x.h"
 
 void pwrInit();
+void eepromInit();
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
