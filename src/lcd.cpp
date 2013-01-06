@@ -300,6 +300,10 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
     len--;
   }
   lcdLastPos = x;
+#if defined(PCBX9D)
+  if (mode&MIDSIZE)
+    lcdLastPos += 1;
+#endif
 }
 
 void lcd_putsn(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len)
