@@ -434,7 +434,12 @@ void menuModelSelect(uint8_t event)
 #if !defined(PCBSKY9X)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
+#if defined(PCBX9D)
+  lcd_outdezAtt(18*FW, 0, reusableBuffer.models.eepromfree, 0);
+  lcd_puts(18*FW, 0, "bytes"); // TODO translations
+#else
   lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
+#endif
 #endif
 
 #if defined(ROTARY_ENCODERS)
