@@ -2883,8 +2883,8 @@ void perMain()
   else if (TIME_TO_WRITE)
     eeCheck();
 #elif defined(CPUARM)
-  /*if (TIME_TO_WRITE)
-    eeCheck();*/
+  if (TIME_TO_WRITE)
+    eeCheck();
 #else
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
