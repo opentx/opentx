@@ -169,7 +169,7 @@
 // EEPROM and CAT5137
 #define I2C_Speed                       200000
 #define I2C_FLASH_PAGESIZE              64
-#define I2C_EEPROM_ADDRESS              0xA0
+#define I2C_EEPROM_ADDRESS              0xA2
 #define I2C_CAT5137_ADDRESS             0x5C //0101110
 
 // SD card----SPI2

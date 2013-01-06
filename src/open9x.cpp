@@ -2883,8 +2883,8 @@ void perMain()
   else if (TIME_TO_WRITE)
     eeCheck();
 #elif defined(CPUARM)
-  if (TIME_TO_WRITE)
-    eeCheck();
+  /*if (TIME_TO_WRITE)
+    eeCheck();*/
 #else
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
@@ -3366,7 +3366,7 @@ uint16_t stack_free()
 
 inline void open9xInit(OPEN9X_INIT_ARGS)
 {
-  eeReadAll();
+  // eeReadAll();
 
 #if defined(CPUARM)
   setVolume(g_eeGeneral.speakerVolume);

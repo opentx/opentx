@@ -372,14 +372,9 @@ extern "C" void PIOC_IRQHandler()
   }
 }
 
-extern "C" void TC2_IRQHandler()
+void interrupt5ms()
 {
-  register uint32_t dummy;
   static uint32_t pre_scale ;             // Used to get 10 Hz counter
-
-  /* Clear status bit to acknowledge interrupt */
-  dummy = TC0->TC_CHANNEL[2].TC_SR;
-  (void) dummy ;          // Discard value - prevents compiler warning
 
   HAPTIC_HEARTBEAT();
   AUDIO_HEARTBEAT();
@@ -393,6 +388,17 @@ extern "C" void TC2_IRQHandler()
      pre_scale = 0 ;
      per10ms();
   }
+}
+
+extern "C" void TC2_IRQHandler()
+{
+  register uint32_t dummy;
+
+  /* Clear status bit to acknowledge interrupt */
+  dummy = TC0->TC_CHANNEL[2].TC_SR;
+  (void) dummy ;          // Discard value - prevents compiler warning
+
+  interrupt5ms();
 }
 
 // Settings for mode register ADC_MR

@@ -148,8 +148,9 @@
 
 
 /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
-#define PLL_M      25
-#define PLL_N      240
+// Gives 60MHz
+#define PLL_M      12
+#define PLL_N      120
 
 /* SYSCLK = PLL_VCO / PLL_P */
 #define PLL_P      2
@@ -184,6 +185,10 @@
 /** @addtogroup STM32F2xx_System_Private_FunctionPrototypes
   * @{
   */
+
+extern uint32_t Master_frequency ;
+uint32_t Peri1_frequency ;
+uint32_t Peri2_frequency ;
 
 static void SetSysClock(void);
 #ifdef DATA_IN_ExtSRAM
@@ -400,6 +405,9 @@ static void SetSysClock(void)
          configuration. User can add here some code to deal with this error */
   }
 
+  Master_frequency = 60000000 ;
+  Peri1_frequency = 30000000 ;
+  Peri2_frequency = 15000000 ;
 }
 
 /**

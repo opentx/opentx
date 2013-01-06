@@ -252,7 +252,19 @@ void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteTo
     /* If NumByteToWrite < I2C_FLASH_PAGESIZE */
     if (NumOfPage == 0) {
       I2C_EE_PageWrite(pBuffer, WriteAddr, NumOfSingle);
+
+      lcd_clear();
+      lcd_putsAtt(100, 10, "WaitStdby", GREY1);
+      lcd_putsAtt(100, 20, "WaitStdby", GREY2);
+      lcd_putsAtt(100, 30, "WaitStdby", 0);
+      lcdRefresh();
+
       I2C_EE_WaitEepromStandbyState();
+
+      lcd_clear();
+      lcd_putsAtt(100, 10, "Fin WaitStdby", GREY2);
+      lcdRefresh();
+
     }
     /* If NumByteToWrite > I2C_FLASH_PAGESIZE */
     else {
