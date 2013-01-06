@@ -3,8 +3,8 @@
 **
 **  File        : stm32_flash.ld
 **
-**  Abstract    : Linker script for STM32F207IG Device with
-**                1MByte FLASH, 128KByte SRAM
+**  Abstract    : Linker script for STM32F205 Device with
+**                0.5MByte FLASH, 128KByte SRAM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -42,7 +42,7 @@ _Min_Stack_Size = 0x200; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-  FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 1024K
+  FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 512K
   RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 128K
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
 }
@@ -51,17 +51,12 @@ MEMORY
 SECTIONS
 {
   /* The startup code goes first into FLASH */
-  .isr_vector :
-  {
-    . = ALIGN(4);
-    KEEP(*(.isr_vector)) /* Startup code */
-    . = ALIGN(4);
-  } >FLASH
 
   /* The program code and other data goes into FLASH */
   .text :
   {
     . = ALIGN(4);
+    KEEP(*(.isr_vector)) /* Startup code */
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */

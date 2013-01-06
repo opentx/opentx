@@ -41,9 +41,12 @@ void soft_power_off()
 
 uint32_t check_soft_power()
 {
-  if (GPIO_ReadInputDataBit(GPIOPWR,PIN_PWR_STATUS) == Bit_RESET)
+#if 0
+  // TODO doesn't work :(
+  if (GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET)
     return e_power_off;
   else
+#endif
     return e_power_on;
 }
 
