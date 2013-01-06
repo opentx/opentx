@@ -735,7 +735,11 @@ void setupPulses()
   if (s_pulses_paused)
     required_protocol = PROTO_NONE;
 
-#if defined(PCBGRUVIN9X) && defined(DSM2_SERIAL) && defined(TX_CADDY)
+#if defined(PCBGRUVIN9X) && defined(DSM2_PPM) && defined(TX_CADDY)
+// This should be here, executed on every loop, to ensure re-setting of the 
+// TX moudle power control output register, in case of electrical glitch.
+// (Following advice of Atmel for MCU's used  in industrial / mission cricital 
+// applications.)
     if (required_protocol == PROTO_DSM2)
       PORTH &= ~0x80;
     else
