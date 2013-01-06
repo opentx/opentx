@@ -97,88 +97,88 @@ void setSwitch(int8_t swtch)
   switch (swtch) {
 #if defined(PCBX9D) || defined(PCBACT)
     case DSW(SW_SA0):
-      GPIOE->IDR &= ~PIN_SW_A_L;
+      GPIOE->IDR |= PIN_SW_A_L;
+      GPIOB->IDR &= ~PIN_SW_A_H;
+      break;
+    case DSW(SW_SA1):
+      GPIOE->IDR |= PIN_SW_A_H;
+      GPIOB->IDR |= PIN_SW_A_L;
       break;
     case DSW(SW_SA2):
-      GPIOE->IDR |= PIN_SW_A_L;
+      GPIOE->IDR &= ~PIN_SW_A_L;
+      GPIOB->IDR |= PIN_SW_A_H;
       break;
     case DSW(SW_SB0):
-      GPIOB->IDR &= ~PIN_SW_B_L;
+      GPIOB->IDR |= PIN_SW_B_L;
       GPIOB->IDR &= ~PIN_SW_B_H;
       break;
     case DSW(SW_SB1):
       GPIOB->IDR |= PIN_SW_B_H;
-      GPIOB->IDR &= ~PIN_SW_B_L;
+      GPIOB->IDR |= PIN_SW_B_L;
       break;
     case DSW(SW_SB2):
-      GPIOB->IDR |= PIN_SW_B_L;
-      GPIOB->IDR &= ~PIN_SW_B_H;
+      GPIOB->IDR &= ~PIN_SW_B_L;
+      GPIOB->IDR |= PIN_SW_B_H;
       break;
     case DSW(SW_SC0):
-      GPIOB->IDR &= ~PIN_SW_C_L;
+      GPIOE->IDR |= PIN_SW_C_L;
       GPIOB->IDR &= ~PIN_SW_C_H;
       break;
     case DSW(SW_SC1):
       GPIOB->IDR |= PIN_SW_C_H;
-      GPIOB->IDR &= ~PIN_SW_C_L;
+      GPIOE->IDR |= PIN_SW_C_L;
       break;
     case DSW(SW_SC2):
-      GPIOB->IDR |= PIN_SW_C_L;
-      GPIOB->IDR &= ~PIN_SW_C_H;
+      GPIOE->IDR &= ~PIN_SW_C_L;
+      GPIOB->IDR |= PIN_SW_C_H;
       break;
     case DSW(SW_SD0):
-      GPIOE->IDR &= ~PIN_SW_D_L;
-      GPIOB->IDR &= ~PIN_SW_D_H;
+      GPIOE->IDR |= PIN_SW_D_L;
+      GPIOE->IDR &= ~PIN_SW_D_H;
       break;
     case DSW(SW_SD1):
-      GPIOB->IDR |= PIN_SW_D_H;
-      GPIOE->IDR &= ~PIN_SW_D_L;
+      GPIOE->IDR |= PIN_SW_D_H;
+      GPIOE->IDR |= PIN_SW_D_L;
       break;
     case DSW(SW_SD2):
-      GPIOE->IDR |= PIN_SW_D_L;
-      GPIOB->IDR &= ~PIN_SW_D_H;
+      GPIOE->IDR &= ~PIN_SW_D_L;
+      GPIOE->IDR |= PIN_SW_D_H;
       break;
     case DSW(SW_SE0):
-      GPIOA->IDR &= ~PIN_SW_E_L;
+      GPIOB->IDR |= PIN_SW_E_L;
       GPIOB->IDR &= ~PIN_SW_E_H;
       break;
     case DSW(SW_SE1):
       GPIOB->IDR |= PIN_SW_E_H;
-      GPIOA->IDR &= ~PIN_SW_E_L;
+      GPIOB->IDR |= PIN_SW_E_L;
       break;
     case DSW(SW_SE2):
-      GPIOA->IDR |= PIN_SW_E_L;
-      GPIOB->IDR &= ~PIN_SW_E_H;
+      GPIOB->IDR &= ~PIN_SW_E_L;
+      GPIOB->IDR |= PIN_SW_E_H;
       break;
     case DSW(SW_SF0):
-      GPIOB->IDR &= ~PIN_SW_F_L;
-      GPIOE->IDR &= ~PIN_SW_F_H;
-      break;
-    case DSW(SW_SF1):
-      GPIOE->IDR |= PIN_SW_F_H;
-      GPIOB->IDR &= ~PIN_SW_F_L;
+      GPIOE->IDR &= ~PIN_SW_F;
       break;
     case DSW(SW_SF2):
-      GPIOB->IDR |= PIN_SW_F_L;
-      GPIOE->IDR &= ~PIN_SW_F_H;
+      GPIOE->IDR |= PIN_SW_F;
       break;
     case DSW(SW_SG0):
-      GPIOE->IDR &= ~PIN_SW_G_L;
-      GPIOE->IDR &= ~PIN_SW_G_H;
+      GPIOE->IDR |= PIN_SW_G_L;
+      GPIOA->IDR &= ~PIN_SW_G_H;
       break;
     case DSW(SW_SG1):
-      GPIOE->IDR |= PIN_SW_G_H;
-      GPIOE->IDR &= ~PIN_SW_G_L;
+      GPIOA->IDR |= PIN_SW_G_H;
+      GPIOE->IDR |= PIN_SW_G_L;
       break;
     case DSW(SW_SG2):
-      GPIOE->IDR |= PIN_SW_G_L;
-      GPIOE->IDR &= ~PIN_SW_G_H;
+      GPIOE->IDR &= ~PIN_SW_G_L;
+      GPIOA->IDR |= PIN_SW_G_H;
       break;
     case DSW(SW_SH0):
-      GPIOE->IDR &= ~PIN_SW_H_L;
+      GPIOE->IDR &= ~PIN_SW_H;
       break;
     case DSW(SW_SH2):
-      GPIOE->IDR |= PIN_SW_H_L;
+      GPIOE->IDR |= PIN_SW_H;
       break;
 #elif defined(PCBSKY9X)
     case DSW(SW_ID0):
