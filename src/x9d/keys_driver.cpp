@@ -73,16 +73,16 @@ uint32_t readTrims()
   if (c & PIN_TRIM2_UP)
     result |= 0x04;
   if (c & PIN_TRIM2_DN)
-    result |= 0x03;
+    result |= 0x08;
 
   if (e & PIN_TRIM3_UP)
-    result |= 0x06;
+    result |= 0x10;
   if (e & PIN_TRIM3_DN)
-    result |= 0x05;
+    result |= 0x20;
   if (e & PIN_TRIM4_UP)
-    result |= 0x08;
+    result |= 0x40;
   if (e & PIN_TRIM4_DN)
-    result |= 0x07;
+    result |= 0x80;
 
   return result;
 }
@@ -104,12 +104,12 @@ void readKeysAndTrims()
     ++enuk;
   }
 
-/*  in = readTrims();
+  in = readTrims();
 
-  for (i = 1; i < 256; i <<= 1) {
-    keys[enuk].input(in & i, (EnumKeys) enuk);
+  /* for (i = 1; i < 256; i <<= 1) {
+    keys[enuk].input(in & i, (EnumKeys)enuk);
     ++enuk;
-  }*/
+  } */
 }
 
 uint32_t keyState(EnumKeys enuk)

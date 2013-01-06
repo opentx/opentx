@@ -3430,6 +3430,11 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   // TODO startPulses should be started after the first doMixerCalculations()
 #endif
 
+#if defined(PCBX9D)
+  // TODO remove this line, it only allows the Mixer to run (until pulses are there!)
+  s_current_protocol = PROTO_PPM;
+#endif
+
   startPulses();
 
   wdt_enable(WDTO_500MS);
