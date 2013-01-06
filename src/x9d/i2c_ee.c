@@ -36,6 +36,10 @@ static void I2C_GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(I2C_EE_GPIO, &GPIO_InitStructure);
+  
+  //Set Idle levels
+  SDA_H;
+  SCL_H;
 }
 
 short I2C_START()
@@ -209,7 +213,6 @@ void I2C_EE_BufferRead(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRe
   I2C_SEND_DATA((uint8_t)(ReadAddr & 0x00FF));
   I2C_WAIT_ACK();
 #endif
-  I2C_STOP();
 	
   I2C_START();
   I2C_SEND_DATA(I2C_EEPROM_ADDRESS|EE_CMD_READ);
