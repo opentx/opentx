@@ -24,7 +24,7 @@
 
 #define	EE_CMD_WRITE  (0)
 #define	EE_CMD_READ   (1)
-#define	I2C_delay()   do { delayUsec(5); } while(0)
+//#define	I2C_delay() //do { delayUsec(5); } while(0)
 
 #define SCL_H         do{I2C_EE_GPIO->BSRRL = I2C_EE_SCL;}while(0)
 #define SCL_L         do{I2C_EE_GPIO->BSRRH  = I2C_EE_SCL;}while(0)

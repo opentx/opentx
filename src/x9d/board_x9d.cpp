@@ -46,6 +46,7 @@ extern uint32_t Peri2_frequency ;
 void keysInit();
 void pwrInit();
 void eepromInit(); // TODO check it's not in another include
+void delaysInit();
 
 uint8_t getTemperature()
 {
@@ -126,6 +127,7 @@ void boardInit()
   __enable_irq() ;
 
   eepromInit();
+  delaysInit();
 }
 #endif
 

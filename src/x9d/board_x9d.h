@@ -44,6 +44,7 @@
 #include "aspi.h"
 #include "i2c_ee.h"
 #include "audio_driver.h"
+#include "delays.h"
 
 // TODO elsewhere
 #if !defined(SIMU)
@@ -111,7 +112,7 @@ uint32_t check_soft_power();
 #define IS_BACKLIGHT_ON() GPIO_IsSet(GPIOB, GPIO_Pin_BL)
 
 #define udelay(x)       do { uint32_t temp; temp=((x+0)<<3); while(--temp); } while (0)
-#define delayUsec(x)    udelay(x)
+#define delayUsec(x)    CoTickDelay(1);
 
 #if !defined(SIMU)
 #define eeprom_read_block I2C_EE_BufferRead

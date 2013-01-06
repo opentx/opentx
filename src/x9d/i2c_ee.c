@@ -12,6 +12,8 @@
 
 #include "../open9x.h"
 
+#define	I2C_delay()   delay_01us(15);
+
 /**
   * @brief  Configure the used I/O ports pin
   * @param  None
@@ -255,6 +257,7 @@ void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteTo
     /* If NumByteToWrite < I2C_FLASH_PAGESIZE */
     if (NumOfPage == 0) {
       I2C_EE_PageWrite(pBuffer, WriteAddr, NumOfSingle);
+
       I2C_EE_WaitEepromStandbyState();
     }
     /* If NumByteToWrite > I2C_FLASH_PAGESIZE */
