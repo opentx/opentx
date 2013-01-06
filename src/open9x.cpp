@@ -1236,7 +1236,7 @@ void doSplash()
 
 void checkAll()
 {
-#if !defined(CPUARM)
+#if !defined(PCBSKY9X)
   checkLowEEPROM();
 #endif
 
@@ -1244,7 +1244,7 @@ void checkAll()
   checkSwitches();
 }
 
-#if !defined(CPUARM)
+#if !defined(PCBSKY9X)
 void checkLowEEPROM()
 {
   if (g_eeGeneral.disableMemoryWarning) return;
@@ -3366,7 +3366,7 @@ uint16_t stack_free()
 
 inline void open9xInit(OPEN9X_INIT_ARGS)
 {
-  // eeReadAll();
+  eeReadAll();
 
 #if defined(CPUARM)
   setVolume(g_eeGeneral.speakerVolume);
