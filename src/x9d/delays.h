@@ -35,7 +35,7 @@
 #define __DELAYS_H
 
 void delaysInit(void);
-void delay_01us(uint32_t us);
+void delay_01us(uint16_t nb);
 
 
 #endif //__DELAYS_H

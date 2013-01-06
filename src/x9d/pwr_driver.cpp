@@ -35,19 +35,16 @@
 
 void soft_power_off()
 {
-  GPIO_SetBits(GPIOPWR,PIN_MCU_PWR);
   GPIO_ResetBits(GPIOPWR,PIN_MCU_PWR);
 }
 
 uint32_t check_soft_power()
 {
-#if 0
   // TODO doesn't work :(
   if (GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET)
-    return e_power_off;
-  else
-#endif
     return e_power_on;
+  else
+    return e_power_off;
 }
 
 void pwrInit()
@@ -57,7 +54,7 @@ void pwrInit()
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOPWR, ENABLE);
 
   /* GPIO  Configuration*/
-  GPIO_InitStructure.GPIO_Pin = PIN_MCU_PWR | PIN_PWR_LED;
+  GPIO_InitStructure.GPIO_Pin = PIN_MCU_PWR;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -66,6 +63,9 @@ void pwrInit()
 
   GPIO_InitStructure.GPIO_Pin = PIN_PWR_STATUS;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
   GPIO_Init(GPIOPWR, &GPIO_InitStructure);
   
   GPIO_InitStructure.GPIO_Pin = PIN_PWR_LED;
@@ -74,4 +74,7 @@ void pwrInit()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
   GPIO_Init(GPIOPWRLED, &GPIO_InitStructure);
+  
+  // Soft power ON
+  GPIO_SetBits(GPIOPWR,PIN_MCU_PWR);
 }

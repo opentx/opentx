@@ -37,18 +37,16 @@ void delaysInit(void) {
 	
 	// Timer13
   RCC->APB1ENR |= RCC_APB1ENR_TIM13EN;           // Enable clock
-  //TIM14->ARR = 4999;     // 5mS
   TIM13->PSC = Peri1_frequency / 100000;                // 0.1uS from 30MHz
   TIM13->CCER = 0;
   TIM13->CCMR1 = 0;
   TIM13->EGR = 0;
   TIM13->CR1 = 0x03;
   TIM13->DIER = 0;
-  //NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn) ;
 }
 	
 	
-void delay_01us(uint32_t nb){
+void delay_01us(uint16_t nb){
 	TIM13->CNT = 0;
 	while(TIM13->CNT < nb);
 }
