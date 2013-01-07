@@ -71,7 +71,7 @@
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
 #define LEN_VMLTPX       "\010"
-#define TR_VMLTPX        "Agregar ""Multipl.""Cambiar "
+#define TR_VMLTPX        "Añadir  ""Multipl.""Cambiar "
 
 #define LEN_VMLTPX2      "\002"
 #define TR_VMLTPX2       "+=""*="":="
@@ -306,8 +306,8 @@
 #define TR_BLMODE              "Modo P.Luminoso"
 #define TR_BLDELAY             "Tiempo de Luz"
 #define TR_SPLASHSCREEN        "Pantalla Inicio"
-#define TR_THROTTLEWARNING     "Aviso Acelerdor"
-#define TR_SWITCHWARNING       "Aviso de Llaves"
+#define TR_THROTTLEWARNING     "A Acel"
+#define TR_SWITCHWARNING       "A Llaves"
 #define TR_MEMORYWARNING       "Aviso Memoria"
 #define TR_ALARMWARNING        "Aviso de alarma"
 #define TR_TIMEZONE            "Zona Horaria"
@@ -379,7 +379,7 @@
 #define TR_MENUCURVE           "CURVA"
 #define TR_MENUCUSTOMSWITCH    "AJUSTES PROPIOS"
 #define TR_MENUCUSTOMSWITCHES  "AJUSTE PROPIO"
-#define TR_MENUCUSTOMFUNC    "AJUSTAR FUNCIONES"
+#define TR_MENUCUSTOMFUNC      "AJUSTAR FUNCIONES"
 #define TR_MENUTELEMETRY       "TELEMETRIA"
 #define TR_MENUTEMPLATES       "PLANTILLAS"
 #define TR_MENUSTAT            "REGISTRO"
