@@ -40,10 +40,14 @@ void soft_power_off()
 
 uint32_t check_soft_power()
 {
+#if defined(SIMU)
+  return e_power_on;
+#else
   if (GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET)
     return e_power_on;
   else
     return e_power_off;
+#endif
 }
 
 void pwrInit()

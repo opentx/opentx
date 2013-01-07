@@ -1445,11 +1445,3 @@ DRESULT disk_ioctl (
 
         return res;
 }
-
-
-
-
-
-
-
-

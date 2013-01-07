@@ -284,6 +284,11 @@ void per10ms()
   if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_2();
   if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
 
+#if defined(SDCARD)
+  sdPoll10ms();
+#endif
+
+  heartbeat |= HEART_TIMER10ms;
 }
 
 PhaseData *phaseaddress(uint8_t idx)
@@ -3053,12 +3058,6 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
 
     per10ms();
 
-#if defined(SDCARD)
-    sdPoll10ms();
-#endif
-
-    heartbeat |= HEART_TIMER10ms;
-
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
   } // end 10ms event
 #endif
@@ -3389,7 +3388,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   else {
     doSplash();
 
-#if defined(CPUARM) && defined(SDCARD)
+#if defined(PCBSKY9X) && defined(SDCARD)
     for (int i=0; i<500 && !Card_initialized; i++) {
       CoTickDelay(1);  // 2ms
     }
@@ -3446,8 +3445,6 @@ void mixerTask(void * pdata)
         CoLeaveMutexSection(mixerMutex);
         if (tick10ms) checkTrims();
       }
-
-      heartbeat |= HEART_TIMER10ms; // TODO not here but in 10ms interrupt!
 
       if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
         wdt_reset();

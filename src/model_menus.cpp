@@ -676,7 +676,7 @@ void menuModelSetup(uint8_t event)
 #endif
         break;
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) && defined(SDCARD)
       case ITEM_MODEL_BITMAP:
         lcd_putsLeft(y, STR_BITMAP);
         if (ZLEN(g_model.bitmap) > 0)

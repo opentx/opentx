@@ -74,17 +74,18 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
 
 #if defined(SIMU)
 #define sdMountPoll()
+#define sdPoll10ms()
 #else
 extern void sdMountPoll();
 #endif
 
-#if defined(CPUARM) && !(defined(SIMU))
+#if defined(CPUARM) && !defined(SIMU)
 extern "C" {
 extern uint32_t sd_card_ready();
 extern uint32_t sd_card_mounted();
 }
 #else
-#define sd_card_ready() (true)
+#define sd_card_ready()   (true)
 #define sd_card_mounted() (true)
 #endif
 

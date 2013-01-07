@@ -615,7 +615,8 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 #if defined(SIMU)
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
 #else
-  if (Card_initialized && !sd_card_mounted())
+
+  if (!sd_card_mounted())
     return;
 
   CoEnterMutexSection(audioMutex);

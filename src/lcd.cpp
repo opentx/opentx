@@ -34,7 +34,7 @@
 #include "open9x.h"
 
 uint8_t displayBuf[DISPLAY_BUF_SIZE];
-#define DISPLAY_END (displayBuf+sizeof(displayBuf))
+#define DISPLAY_END (displayBuf+DISPLAY_PLAN_SIZE)
 #define ASSERT_IN_DISPLAY(p) assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 void lcd_clear()
@@ -78,8 +78,6 @@ uint8_t lcdLastPos;
 #if defined(PCBX9D)
 #define LCD_BYTE_FILTER(p, keep, add) \
   do { \
-    ASSERT_IN_DISPLAY(p); \
-    ASSERT_IN_DISPLAY(p+DISPLAY_W); \
     if (!(flags & GREY1)) \
       *(p) = (*(p) & (keep)) + (add); \
     if (!(flags & GREY2)) \
@@ -178,7 +176,6 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       uint8_t b = pgm_read_byte(q--);
       if (inv) b = ~b & 0x7f;
       if (p<DISPLAY_END) {
-        ASSERT_IN_DISPLAY(p);
         LCD_BYTE_FILTER(p, ~(0x7f << ym8), b << ym8);
         if (ym8) {
           uint8_t *r = p + DISPLAY_W;
@@ -197,7 +194,6 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       uint8_t b = pgm_read_byte(q--);
       if (inv) b = ~b & 0x3f;
       if (p<DISPLAY_END) {
-        ASSERT_IN_DISPLAY(p);
         LCD_BYTE_FILTER(p, ~(0x3f << ym8), b << ym8);
         if (ym8) {
           uint8_t *r = p + DISPLAY_W;
@@ -229,7 +225,6 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       }
 
       if (p<DISPLAY_END) {
-        ASSERT_IN_DISPLAY(p);
         LCD_BYTE_FILTER(p, ~(0xff << ym8), b << ym8);
         if (ym8) {
           uint8_t *r = p + DISPLAY_W;
@@ -478,7 +473,6 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 
   if (!(att & GREY2)) {
     p += DISPLAY_PLAN_SIZE;
-    ASSERT_IN_DISPLAY(p);
 
     if (att & FORCE)
       *p |= mask;

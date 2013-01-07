@@ -609,13 +609,11 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
   return FR_OK;
 }
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
 int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #endif
 
-#else // TODO no SD quick and dirty!
-int32_t Card_state;
 #endif
 
 bool lcd_refresh = true;

@@ -40,8 +40,6 @@ volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
 
 // TODO why not here the Peri1_frequency ... (to avoid modifications in system_stm32f2xx.c)
 uint32_t Master_frequency ;
-extern uint32_t Peri1_frequency ;
-extern uint32_t Peri2_frequency ;
 
 #define PIN_MODE_MASK           0x0003
 #define PIN_INPUT               0x0000

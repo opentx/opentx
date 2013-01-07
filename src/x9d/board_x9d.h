@@ -38,6 +38,7 @@
 
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rcc.h"
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
+#include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_spi.h"
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
 
 #include "hal.h"
@@ -46,17 +47,15 @@
 #include "audio_driver.h"
 #include "delays.h"
 
+extern uint32_t Peri1_frequency ;
+extern uint32_t Peri2_frequency ;
+
 // TODO elsewhere
 #if !defined(SIMU)
 #define SD_IS_HC()                     (1)
 #endif
 
-extern "C" {
-extern void init_SDcard();
-extern void sdInit();
-}
-
-#define sdPoll10ms()
+void sdPoll10ms();
 
 void usbMassStorage();
 
@@ -70,11 +69,6 @@ uint16_t getCurrent();
 extern uint8_t temperature ;              // Raw temp reading
 extern uint8_t maxTemperature ;           // Raw temp reading
 uint8_t getTemperature();
-
-extern int32_t Card_state;
-extern volatile uint32_t Card_initialized;
-#define SD_ST_DATA              9
-#define SD_ST_MOUNTED           10
 
 #define SD_GET_SIZE_MB()        (0)
 #define SD_GET_BLOCKNR()        (0)

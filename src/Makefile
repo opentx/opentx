@@ -142,10 +142,6 @@ WS_HOW_HIGH = YES
 # Values = YES, NO
 VARIO = YES
 
-# SDCARD
-# Values = YES, NO
-SDCARD = NO
-
 # RTCLOCK
 # Values = YES, NO
 # default = YES (means enabled when available)
@@ -229,6 +225,7 @@ ifeq ($(PCB), STD)
   MCU = atmega64  
   CPPDEFS += -DF_CPU=$(F_CPU)UL
   XCURVES = NO
+  SDCARD = NO
 endif
 
 ifeq ($(PCB), STD128)
@@ -236,6 +233,7 @@ ifeq ($(PCB), STD128)
   TRGT = avr-
   MCU = atmega128
   CPPDEFS += -DF_CPU=$(F_CPU)UL
+  SDCARD = NO
 endif
 
 ifeq ($(PCB), GRUVIN9X)
@@ -248,6 +246,7 @@ ifeq ($(PCB), GRUVIN9X)
   TRGT = avr-
   MCU = atmega2560
   CPPDEFS += -DF_CPU=$(F_CPU)UL
+  SDCARD = NO
 endif
 
 ifeq ($(PCB), SKY9X)
@@ -265,6 +264,7 @@ ifeq ($(PCB), SKY9X)
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
   CPPDEFS += -Dat91sam3s4 
+  SDCARD = YES
 endif
 
 ifeq ($(PCB), X9D)
@@ -273,6 +273,7 @@ ifeq ($(PCB), X9D)
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
   CPPDEFS += -DHSE_VALUE=12000000
+  SDCARD = YES
 endif
 
 ifeq ($(PCB), ACT)
@@ -280,6 +281,7 @@ ifeq ($(PCB), ACT)
   LDSCRIPT = x9d/stm32_flash.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
+  SDCARD = NO
 endif
 
 CC      = $(TRGT)gcc
@@ -499,6 +501,7 @@ ifeq ($(PCB), X9D)
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
+  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
   
   ifeq ($(SDCARD), YES)

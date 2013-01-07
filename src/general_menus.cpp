@@ -666,8 +666,10 @@ void menuGeneralSdManager(uint8_t event)
       else if (result == STR_SD_FORMAT) {
         displayPopup(STR_FORMATTING);
         closeLogs();
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
         Card_state = SD_ST_DATA;
+#endif
+#if defined(CPUARM)
         audioQueue.stopSD();
 #endif
         if (f_mkfs(0, 1, 0) == FR_OK) {
