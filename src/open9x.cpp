@@ -2935,18 +2935,18 @@ void perMain()
   if (counter-- == 0) {
     counter = 10;
 #if defined(PCBX9D)
-    int32_t instant_vbat = anaIn(7);
+    int32_t instant_vbat = anaIn(TX_VOLTAGE);
     instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
     instant_vbat /= 55296  ;
 #elif defined(PCBSKY9X)
-    int32_t instant_vbat = anaIn(7);
+    int32_t instant_vbat = anaIn(TX_VOLTAGE);
     instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
     instant_vbat /= 55296  ;
 #elif defined(PCBGRUVIN9X)
-    uint16_t instant_vbat = anaIn(7);
+    uint16_t instant_vbat = anaIn(TX_VOLTAGE);
     instant_vbat = ((uint32_t)instant_vbat*1112 + (int32_t)instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
 #else
-    uint16_t instant_vbat = anaIn(7);
+    uint16_t instant_vbat = anaIn(TX_VOLTAGE);
     instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
 #endif
 
