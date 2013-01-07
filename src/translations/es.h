@@ -71,7 +71,7 @@
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
 #define LEN_VMLTPX       "\010"
-#define TR_VMLTPX        "Añadir  ""Multipl.""Cambiar "
+#define TR_VMLTPX        "A\201adir  ""Multipl.""Cambiar "
 
 #define LEN_VMLTPX2      "\002"
 #define TR_VMLTPX2       "+=""*="":="
