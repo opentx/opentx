@@ -44,6 +44,8 @@ const char *eepromFile = NULL;
 FILE *fp = NULL;
 
 #if defined(PCBX9D) || defined(PCBACT)
+uint32_t Peri1_frequency ;
+uint32_t Peri2_frequency ;
 GPIO_TypeDef gpioa;
 GPIO_TypeDef gpiob;
 GPIO_TypeDef gpioc;
@@ -628,3 +630,4 @@ void lcdRefresh()
   memcpy(lcd_buf, displayBuf, DISPLAY_BUF_SIZE);
   lcd_refresh = true;
 }
+
