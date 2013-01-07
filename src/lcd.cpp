@@ -640,6 +640,8 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 {
   div_t qr;
 
+  if (att & LEFT) x+=3*FW;
+
   if (tme<0) {
     lcd_putcAtt(x - ((att & DBLSIZE) ? FW+3 : ((att & MIDSIZE) ? FW+1 : FWNUM)), y, '-', att);
     tme = -tme;
