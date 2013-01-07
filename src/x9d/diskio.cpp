@@ -985,10 +985,6 @@ void sdPoll10ms()
         }
 }
 
-void sdInit()
-{
-}
-
 FATFS g_FATFS_Obj;
 
 void sdMountPoll()
