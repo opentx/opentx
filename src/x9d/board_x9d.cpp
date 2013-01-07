@@ -33,7 +33,7 @@
 
 #include "../open9x.h"
 
-uint16_t Analog_values[NUMBER_ANALOG] ;
+// TODO needed?
 uint8_t temperature = 0;          // Raw temp reading
 uint8_t maxTemperature = 0 ;       // Raw temp reading
 volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
@@ -43,19 +43,69 @@ uint32_t Master_frequency ;
 extern uint32_t Peri1_frequency ;
 extern uint32_t Peri2_frequency ;
 
-void keysInit();
-void pwrInit();
-void eepromInit(); // TODO check it's not in another include
-void delaysInit();
+#define PIN_MODE_MASK           0x0003
+#define PIN_INPUT               0x0000
+#define PIN_OUTPUT              0x0001
+#define PIN_PERIPHERAL          0x0002
+#define PIN_ANALOG              0x0003
+#define PIN_PULL_MASK           0x000C
+#define PIN_PULLUP              0x0004
+#define PIN_NO_PULLUP           0x0000
+#define PIN_PULLDOWN            0x0008
+#define PIN_NO_PULLDOWN         0x0000
+#define PIN_PERI_MASK           0x00F0
+#define PIN_PUSHPULL            0x0000
+#define PIN_ODRAIN              0x8000
+#define PIN_PORT_MASK           0x0700
+#define PIN_SPEED_MASK          0x6000
+
+void configure_pins( uint32_t pins, uint16_t config )
+{
+  uint32_t address ;
+  GPIO_TypeDef *pgpio ;
+  uint32_t thispin ;
+  uint32_t pos ;
+
+  address = ( config & PIN_PORT_MASK ) >> 8 ;
+  address *= (GPIOB_BASE-GPIOA_BASE) ;
+  address += GPIOA_BASE ;
+  pgpio = (GPIO_TypeDef* ) address ;
+
+  /* -------------------------Configure the port pins---------------- */
+  /*-- GPIO Mode Configuration --*/
+  for (thispin = 0x0001, pos = 0; thispin < 0x10000; thispin <<= 1, pos +=1 )
+  {
+    if ( pins & thispin)
+    {
+      pgpio->MODER  &= ~(GPIO_MODER_MODER0 << (pos * 2)) ;
+      pgpio->MODER |= (config & PIN_MODE_MASK) << (pos * 2) ;
+
+      if ( ( (config & PIN_MODE_MASK ) == PIN_OUTPUT) || ( (config & PIN_MODE_MASK) == PIN_PERIPHERAL) )
+      {
+        /* Speed mode configuration */
+        pgpio->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR0 << (pos * 2) ;
+        pgpio->OSPEEDR |= ((config & PIN_SPEED_MASK) >> 13 ) << (pos * 2) ;
+
+        /* Output mode configuration*/
+        pgpio->OTYPER  &= ~((GPIO_OTYPER_OT_0) << ((uint16_t)pos)) ;
+        if ( config & PIN_ODRAIN )
+        {
+          pgpio->OTYPER |= (GPIO_OTYPER_OT_0) << pos ;
+        }
+      }
+      /* Pull-up Pull down resistor configuration*/
+      pgpio->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << ((uint16_t)pos * 2));
+      pgpio->PUPDR |= ((config & PIN_PULL_MASK) >> 2) << (pos * 2) ;
+
+      pgpio->AFR[pos >> 3] &= ~(0x000F << (pos & 7)) ;
+      pgpio->AFR[pos >> 3] |= ((config & PIN_PERI_MASK) >> 4) << (pos & 7) ;
+    }
+  }
+}
 
 uint8_t getTemperature()
 {
   return temperature + g_eeGeneral.temperatureCalib;
-}
-
-// TODO change this function!
-void read_9_adc()
-{
 }
 
 void start_ppm_capture()
@@ -121,12 +171,14 @@ void boardInit()
 {
   pwrInit();
   keysInit();
+  adcInit();
+  delaysInit();
+
   init5msTimer();
 
   __enable_irq() ;
 
   eepromInit();
-  delaysInit();
 }
 #endif
 

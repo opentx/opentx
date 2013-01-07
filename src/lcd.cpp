@@ -629,6 +629,9 @@ void lcd_invert_line(int8_t y)
   uint8_t *p  = &displayBuf[y * DISPLAY_W];
   for (xcoord_t x=0; x<DISPLAY_W; x++) {
     ASSERT_IN_DISPLAY(p);
+#if defined(PCBX9D)
+    *(p+DISPLAY_PLAN_SIZE) ^= 0xff;
+#endif
     *p++ ^= 0xff;
   }
 }

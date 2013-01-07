@@ -33,9 +33,9 @@
 
 #include "../open9x.h"
 
-void delaysInit(void) {
-	
-	// Timer13
+void delaysInit(void)
+{
+  // Timer13
   RCC->APB1ENR |= RCC_APB1ENR_TIM13EN;           // Enable clock
   TIM13->PSC = Peri1_frequency / 100000;                // 0.1uS from 30MHz
   TIM13->CCER = 0;
@@ -46,9 +46,10 @@ void delaysInit(void) {
 }
 	
 	
-void delay_01us(uint16_t nb){
-	TIM13->CNT = 0;
-	TIM13->EGR = 1;
-	while(((uint16_t)TIM13->CNT) < nb);
-	TIM13->EGR = 0;
+void delay_01us(uint16_t nb)
+{
+  TIM13->CNT = 0;
+  TIM13->EGR = 1;
+  while(((uint16_t)TIM13->CNT) < nb);
+  TIM13->EGR = 0;
 }

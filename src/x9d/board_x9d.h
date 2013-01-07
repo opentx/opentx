@@ -118,4 +118,15 @@ uint32_t check_soft_power();
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #endif
 
+void keysInit();
+void pwrInit();
+void eepromInit(); // TODO check it's not in another include
+void delaysInit();
+void adcInit();
+void adcRead();
+
+extern volatile uint16_t Analog_values[];
+
+void configure_pins( uint32_t pins, uint16_t config );
+
 #endif

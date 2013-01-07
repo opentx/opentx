@@ -707,7 +707,7 @@ uint8_t maxTemperature = 0 ;       // Raw temp reading
 
 // Read 8 (9 for REVB) ADC channels
 // Documented bug, must do them 1 by 1
-void read_9_adc()
+void adcRead()
 {
   register Adc *padc;
   register uint32_t y;

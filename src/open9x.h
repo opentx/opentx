@@ -935,11 +935,27 @@ void getADC();
 
 extern void backlightOn();
 
-#if defined(PCBSKY9X) && !defined(REVA)
-#define NUMBER_ANALOG   9
+enum Analogs {
+  STICK1,
+  STICK2,
+  STICK3,
+  STICK4,
+#if defined(PCBX9D)
+  POT1,
+  POT2,
+  SLIDER1,
+  SLIDER2,
 #else
-#define NUMBER_ANALOG   8
+  POT1,
+  POT2,
+  POT3,
 #endif
+  TX_VOLTAGE,
+#if defined(PCBSKY9X) && !defined(REVA)
+  TX_CURRENT,
+#endif
+  NUMBER_ANALOG
+};
 
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
 #define BACKLIGHT_ON()    (Voice.Backlight = 1)

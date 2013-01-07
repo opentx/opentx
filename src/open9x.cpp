@@ -1563,21 +1563,16 @@ uint16_t anaIn(uint8_t chan)
 #if defined(CPUARM)
 void getADC()
 {
-  register uint32_t x;
-  register uint32_t y;
   uint16_t temp[NUMBER_ANALOG] = { 0 };
 
-  for( y = 0; y < 4; y += 1 ) {
-    // TODO change this function!
-    read_9_adc();
-    for( x = 0; x < NUMBER_ANALOG; x += 1 )
-    {
+  for (uint32_t i=0; i<4; i++) {
+    adcRead();
+    for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
       temp[x] += Analog_values[x];
     }
   }
 
-  for( x = 0; x < NUMBER_ANALOG; x += 1 )
-  {
+  for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
     s_anaFilt[x] = temp[x] >> 3;
   }
 }
