@@ -1544,14 +1544,13 @@ uint16_t anaIn(uint8_t chan)
   //static pm_char crossAna[] PROGMEM ={4,2,3,1,5,6,7,0}; // wenn schon Tabelle, dann muss sich auch lohnen
   //                        Google Translate (German): // if table already, then it must also be worthwhile
 
-#if defined(PCBSKY9X) && !defined(REVA)
-  if (chan == 8) {
+#if defined(PCBX9D)
+  static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
+#elif defined(PCBSKY9X) && !defined(REVA)
+  static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
+  if (chan == TX_CURRENT) {
     return Current_analogue ;
   }
-#endif
-
-#if defined(CPUARM)
-  static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
 #else
   static const pm_char crossAna[] PROGMEM ={3,1,2,0,4,5,6,7};
 #endif
