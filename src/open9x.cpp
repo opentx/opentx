@@ -1540,10 +1540,6 @@ int16_t thrAnaIn(uint8_t chan)
 #if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
 {
-  //                     ana-in:   3 1 2 0 4 5 6 7
-  //static pm_char crossAna[] PROGMEM ={4,2,3,1,5,6,7,0}; // wenn schon Tabelle, dann muss sich auch lohnen
-  //                        Google Translate (German): // if table already, then it must also be worthwhile
-
 #if defined(PCBX9D)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
 #elif defined(PCBSKY9X) && !defined(REVA)
