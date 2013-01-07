@@ -103,8 +103,8 @@ void setSwitch(int8_t swtch)
       GPIOB->IDR &= ~PIN_SW_A_H;
       break;
     case DSW(SW_SA1):
-      GPIOE->IDR |= PIN_SW_A_H;
-      GPIOB->IDR |= PIN_SW_A_L;
+      GPIOB->IDR |= PIN_SW_A_H;
+      GPIOE->IDR |= PIN_SW_A_L;
       break;
     case DSW(SW_SA2):
       GPIOE->IDR &= ~PIN_SW_A_L;
@@ -165,15 +165,15 @@ void setSwitch(int8_t swtch)
       GPIOE->IDR |= PIN_SW_F;
       break;
     case DSW(SW_SG0):
-      GPIOE->IDR |= PIN_SW_G_L;
+      GPIOB->IDR |= PIN_SW_G_L;
       GPIOA->IDR &= ~PIN_SW_G_H;
       break;
     case DSW(SW_SG1):
       GPIOA->IDR |= PIN_SW_G_H;
-      GPIOE->IDR |= PIN_SW_G_L;
+      GPIOB->IDR |= PIN_SW_G_L;
       break;
     case DSW(SW_SG2):
-      GPIOE->IDR &= ~PIN_SW_G_L;
+      GPIOB->IDR &= ~PIN_SW_G_L;
       GPIOA->IDR |= PIN_SW_G_H;
       break;
     case DSW(SW_SH0):

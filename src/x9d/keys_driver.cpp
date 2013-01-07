@@ -124,13 +124,13 @@ uint32_t keyState(EnumKeys enuk)
 
   switch ((uint8_t) enuk) {
     case SW_SA0:
-      xxx = (~b & PIN_SW_A_H) && (b & PIN_SW_A_L);
+      xxx = (~b & PIN_SW_A_H) && (e & PIN_SW_A_L);
       break;
     case SW_SA1:
-      xxx = (b & PIN_SW_A_H) && (b & PIN_SW_A_L);
+      xxx = (b & PIN_SW_A_H) && (e & PIN_SW_A_L);
       break;
     case SW_SA2:
-      xxx = (b & PIN_SW_A_H) && (~b & PIN_SW_A_L);
+      xxx = (b & PIN_SW_A_H) && (~e & PIN_SW_A_L);
       break;
 
     case SW_SB0:

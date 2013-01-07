@@ -438,17 +438,22 @@ void menuMainView(uint8_t event)
   // Switches
   for (uint8_t i=0; i<8; i++) {
     uint8_t sw;
+    int16_t val;
     switch(i) {
-      case 0:
-        sw = getValue(MIXSRC_SA-1) > 0 ? 2 : 1;
+      case 5:
+        sw = getValue(MIXSRC_SF-1) > 0 ? 3*i+2 : 3*i+1;
         break;
+      case 6:
+        val = getValue(MIXSRC_SG-1);
+        sw = ((val < 0) ? 3*i : ((val == 0) ? 3*i+1 : 3*i+2));
+        break;     
       case 7:
-        sw = getValue(MIXSRC_SH-1) > 0 ? 2+2+3*6 : 1+2+3*6;
+        sw = getValue(MIXSRC_SH-1) > 0 ? 3*i+1 : 3*i;
         break;
       default:
       {
-        int16_t val = getValue(MIXSRC_SA+i-1);
-        sw = ((val < 0) ? 3*i : ((val == 0) ? 3*i+1 : 3*i+2));
+        val = getValue(MIXSRC_SA+i-1);
+        sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
         break;
       }
     }

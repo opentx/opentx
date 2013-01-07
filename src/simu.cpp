@@ -444,12 +444,12 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #endif
 
 #if defined(PCBX9D)
-    SWITCH_KEY(A, SA0, 2);
+    SWITCH_KEY(A, SA0, 3);
     SWITCH_KEY(B, SB0, 3);
     SWITCH_KEY(C, SC0, 3);
     SWITCH_KEY(D, SD0, 3);
     SWITCH_KEY(E, SE0, 3);
-    SWITCH_KEY(F, SF0, 3);
+    SWITCH_KEY(F, SF0, 2);
     SWITCH_KEY(G, SG0, 3);
     SWITCH_KEY(H, SH0, 2);
 #else
