@@ -146,9 +146,15 @@ uint8_t spare4:2
 PACK(typedef struct t_EEGeneral {
   uint8_t   version;
   uint16_t  variant;
+#if defined(PCBX9D)
+  int16_t   calibMid[8];
+  int16_t   calibSpanNeg[8];
+  int16_t   calibSpanPos[8];
+#else
   int16_t   calibMid[7];
   int16_t   calibSpanNeg[7];
   int16_t   calibSpanPos[7];
+#endif
   uint16_t  chkSum;
   int8_t    currModel;
   uint8_t   contrast;

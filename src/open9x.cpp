@@ -352,18 +352,19 @@ void generalDefault()
   g_eeGeneral.variant = EEPROM_VARIANT;
   g_eeGeneral.contrast = 25;
   g_eeGeneral.vBatWarn = 90;
-  for (int i = 0; i < 7; ++i) {
+
+  for (int i = 0; i < NUM_STICKS+NUM_POTS; ++i) {
     g_eeGeneral.calibMid[i]     = 0x200;
     g_eeGeneral.calibSpanNeg[i] = 0x180;
     g_eeGeneral.calibSpanPos[i] = 0x180;
   }
-  g_eeGeneral.chkSum = (0x200 * 7) + (0x180 * 5);
+  g_eeGeneral.chkSum = (0x200 * NUM_STICKS+NUM_POTS) + (0x180 * 5);
 }
 
 uint16_t evalChkSum()
 {
   uint16_t sum=0;
-  for (int i=0; i<12;i++)
+  for (int i=0; i<NUM_STICKS+NUM_POTS+5;i++)
     sum += g_eeGeneral.calibMid[i];
   return sum;
 }
@@ -1546,7 +1547,9 @@ int16_t thrAnaIn(uint8_t chan)
 uint16_t anaIn(uint8_t chan)
 {
 #if defined(PCBX9D)
-  static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
+  // crossAna[]={LH,LV,RH,RV,S1,LS,S2,RS,BAT 
+  // s_anaFilt[]={LH,LV,RH,RV,S1,S2,LS,RS,_BAT
+  static const uint8_t crossAna[]={0,1,2,3,4,6,5,7,8};
 #elif defined(PCBSKY9X) && !defined(REVA)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
   if (chan == TX_CURRENT) {
@@ -1767,6 +1770,11 @@ BeepANACenter evalSticks(uint8_t mode)
 
     if(v < -RESX) v = -RESX;
     if(v >  RESX) v =  RESX;
+    	
+ #if defined(PCBX9D)
+    if(i == 2 || i == 3 || i == 6 || i == 7)
+    	v = -v;
+ #endif
 
     if (g_eeGeneral.throttleReversed && ch==THR_STICK)
       v = -v;
