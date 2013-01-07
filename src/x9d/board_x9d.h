@@ -55,6 +55,7 @@ extern uint32_t Peri2_frequency ;
 #define SD_IS_HC()                     (1)
 #endif
 
+#define sdInit()
 void sdPoll10ms();
 
 void usbMassStorage();
