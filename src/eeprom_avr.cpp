@@ -924,7 +924,7 @@ void eeLoadModel(uint8_t id)
     FRSKY_setModelAlarms();
 #endif
 
-#if defined(SDCARD)
+#if defined(PCBX9D) && defined(SDCARD)
     refreshModelAudioFiles();
 #endif
 
