@@ -162,11 +162,12 @@ void displayTrims(uint8_t phase)
 void displaySliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
-    xcoord_t x = (i>NUM_STICKS+1 ? DISPLAY_W-5 : 3);
-    int8_t y = (i%2 ? DISPLAY_H/2+1 : 1);
+    xcoord_t x = (i%2 ? DISPLAY_W-5 : 3);
+    int8_t y = (i>NUM_STICKS+1 ? DISPLAY_H/2+1 : 1);
     lcd_vline(x, y, DISPLAY_H/2-2);
     lcd_vline(x+1, y, DISPLAY_H/2-2);
-    y += ((calibratedStick[i]+RESX)*(DISPLAY_H/2-4)/(RESX*2));  // calculate once per loop
+    y += DISPLAY_H/2-4;
+    y -= ((calibratedStick[i]+RESX)*(DISPLAY_H/2-4)/(RESX*2));  // calculate once per loop
     lcd_vline(x-1, y, 2);
     lcd_vline(x+2, y, 2);
   }

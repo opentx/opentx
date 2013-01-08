@@ -206,7 +206,7 @@
 
 #define LEN_VSRCRAW      "\004"
 #if defined(PCBX9D)
-#define TR_POTS_VSRCRAW  "S1\0 ""S2\0 ""S3\0 ""S4\0 "
+#define TR_POTS_VSRCRAW  "S1\0 ""S2\0 ""LS\0 ""RS\0 "
 #define TR_SW_VSRCRAW    "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 "
 #else
 #define TR_POTS_VSRCRAW  "P1\0 ""P2\0 ""P3\0 "
@@ -241,9 +241,17 @@
 #define LEN_INDENT             1
 #define INDENT_WIDTH           (FW/2)
 
+#if defined(PCBX9D)
+#define TR_POPUPS              "[ENTER]\010[EXIT]"
+#else
 #define TR_POPUPS              "[MENU]\010[EXIT]"
+#endif
 #define OFS_EXIT               7
+#if defined(PCBX9D)
+#define TR_MENUWHENDONE        CENTER"\006[ENTER] WHEN DONE"
+#else
 #define TR_MENUWHENDONE        CENTER"\006[MENU] WHEN DONE"
+#endif
 #define TR_FREE                "free"
 #define TR_DELETEMODEL         "DELETE MODEL"
 #define TR_COPYINGMODEL        "Copying model..."
@@ -335,7 +343,11 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
+#if defined(PCBX9D)
+#define TR_MENUTOSTART         CENTER"\006[ENTER] TO START"
+#else
 #define TR_MENUTOSTART         CENTER"\006[MENU] TO START"
+#endif
 #define TR_SETMIDPOINT         CENTER"SET MIDPOINT"
 #define TR_MOVESTICKSPOTS      CENTER"MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"

@@ -1547,9 +1547,9 @@ int16_t thrAnaIn(uint8_t chan)
 uint16_t anaIn(uint8_t chan)
 {
 #if defined(PCBX9D)
-  // crossAna[]={LH,LV,RH,RV,S1,LS,S2,RS,BAT 
+  // crossAna[]={LH,LV,RH,RV,S1,S2,LS,RS,BAT 
   // s_anaFilt[]={LH,LV,RH,RV,S1,S2,LS,RS,_BAT
-  static const uint8_t crossAna[]={0,1,2,3,4,6,5,7,8};
+  static const uint8_t crossAna[]={0,1,2,3,4,5,6,7,8};
 #elif defined(PCBSKY9X) && !defined(REVA)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
   if (chan == TX_CURRENT) {
@@ -1772,7 +1772,7 @@ BeepANACenter evalSticks(uint8_t mode)
     if(v >  RESX) v =  RESX;
     	
  #if defined(PCBX9D)
-    if(i == 2 || i == 3 || i == 6 || i == 7)
+    if(i == 2 || i == 3 || i == 4 || i == 6)
     	v = -v;
  #endif
 
