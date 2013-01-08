@@ -2944,8 +2944,8 @@ void perMain()
     counter = 10;
 #if defined(PCBX9D)
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
-    instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 33 ;
-    instant_vbat /= 512  ;
+    instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 15 ;
+    instant_vbat /= 256  ;
 #elif defined(PCBSKY9X)
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
     instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
