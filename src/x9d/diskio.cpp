@@ -451,25 +451,6 @@ void power_on (void)
 
         for (Timer1 = 25; Timer1; );    /* Wait for 250ms */
 
-        /* Configure I/O for Flash Chip select */
-        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_SPI_SD_CS;
-        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
-
-        /* De-select the Card: Chip Select high */
-        DESELECT();
-
-        /* Configure SPI pins: SCK MISO and MOSI with alternate function push-down */
-        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_SPI_SD_SCK | GPIO_Pin_SPI_SD_MOSI | GPIO_Pin_SPI_SD_MISO;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-        GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
-
         /* SPI configuration */
         SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
         SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
@@ -485,10 +466,25 @@ void power_on (void)
         SPI_CalculateCRC(SPI_SD, DISABLE);
         SPI_Cmd(SPI_SD, ENABLE);
 
-        /* drain SPI */
-        while (SPI_I2S_GetFlagStatus(SPI_SD, SPI_I2S_FLAG_TXE) == RESET) { ; }
-        dummyread = SPI_I2S_ReceiveData(SPI_SD);
+        /* De-select the Card: Chip Select high */
+        DESELECT();
 
+        /* Configure I/O for Flash Chip select */
+        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_SPI_SD_CS;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+        GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
+
+        /* Configure SPI pins: SCK MISO and MOSI with alternate function push-down */
+        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_SPI_SD_SCK | GPIO_Pin_SPI_SD_MOSI | GPIO_Pin_SPI_SD_MISO;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+        GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+        GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
+        
 #ifdef STM32_SD_USE_DMA
         /* enable DMA clock */
         RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
