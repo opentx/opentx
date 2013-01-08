@@ -2324,7 +2324,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         if (k < NUM_STICKS)
           v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
 #if defined(PCBX9D) || defined(PCBACT)
-              // TODO
+      if(k < MIXSRC_SH) v = getValue(k);        // TODO
 #else
         else if (k >= MIXSRC_THR-1 && k <= MIXSRC_SWC-1) {
           v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
@@ -2944,8 +2944,8 @@ void perMain()
     counter = 10;
 #if defined(PCBX9D)
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
-    instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
-    instant_vbat /= 55296  ;
+    instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 33 ;
+    instant_vbat /= 512  ;
 #elif defined(PCBSKY9X)
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
     instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
