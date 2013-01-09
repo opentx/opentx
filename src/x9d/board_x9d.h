@@ -47,10 +47,9 @@
 #include "audio_driver.h"
 #include "delays.h"
 
-extern uint32_t SystemCoreClock;
-extern uint32_t Peri1_frequency;
-extern uint32_t Peri2_frequency;
-extern uint32_t Timer_mult;
+#define PERI1_FREQUENCY 30000000
+#define PERI2_FREQUENCY 60000000
+#define TIMER_MULT 2
 
 // TODO elsewhere
 #if !defined(SIMU)

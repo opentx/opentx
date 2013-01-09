@@ -37,7 +37,7 @@ void delaysInit(void)
 {
   // Timer13
   RCC->APB1ENR |= RCC_APB1ENR_TIM13EN;           // Enable clock
-  TIM13->PSC = (Peri1_frequency * Timer_mult) / 10000000 - 1;      // 0.1uS 
+  TIM13->PSC = (PERI1_FREQUENCY * TIMER_MULT) / 10000000 - 1;      // 0.1uS 
   TIM13->CCER = 0;
   TIM13->CCMR1 = 0;
   TIM13->CR1 = 0x02;
