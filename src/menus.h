@@ -63,7 +63,7 @@ extern pgofs_t s_pgOfs;
 extern uint8_t s_noHi;
 extern uint8_t s_noScroll;
 
-void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, uint8_t mode);
+void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr);
 
 extern MenuFuncP g_menuStack[5];
 extern uint8_t g_menuStackPtr;
@@ -98,11 +98,13 @@ void menuStatisticsDebug(uint8_t event);
 #if defined(PCBX9D)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
+#define IS_RE_NAVIGATION_ENABLE()   true
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (event==type(KEY_ENTER))
 #define IS_RE_NAVIGATION_EVT(event) ((event&EVT_KEY_MASK)==KEY_ENTER)
 #elif defined(ROTARY_ENCODERS)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
+#define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
 #define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && (event&EVT_KEY_MASK)==(BTN_REa + g_eeGeneral.reNavigation - 1))
 #else
@@ -205,14 +207,16 @@ if (!check_submenu_simple(event,(lines_count)-1)) return;
 SIMPLE_SUBMENU_NOTITLE(lines_count); \
 TITLE(title)
 
-int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event);
-uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event );
-int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t event);
-int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event);
+int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
+uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, LcdFlags attr, uint8_t event );
+int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event);
+int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
 #if defined(GVARS)
-#define displayGVar(x, y, v) gvarMenuItem(x, y, v, 0, 0, 0, 0)
+#define displayGVar(x, y, v, a) gvarMenuItem(x, y, v, 0, 0, a, 0)
+#elif defined(PCBX9D)
+#define displayGVar(x, y, v, a) lcd_outdezAtt(x, y, v, a)
 #else
-#define displayGVar(x, y, v) lcd_outdez8(x, y, v)
+#define displayGVar(x, y, v, a) lcd_outdez8(x, y, v)
 #endif
 
 #define WARNING_TYPE_ASTERISK  0

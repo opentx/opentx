@@ -1091,7 +1091,7 @@ uint32_t sd_card_ready( void )
   return CardIsConnected() && Card_state >= SD_ST_DATA;
 }
 
-uint32_t sd_card_mounted( void )
+uint32_t sdMounted( void )
 {
   return CardIsConnected() && Card_state == SD_ST_MOUNTED;
 }

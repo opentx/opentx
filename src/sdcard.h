@@ -82,11 +82,11 @@ extern void sdMountPoll();
 #if defined(CPUARM) && !defined(SIMU)
 extern "C" {
 extern uint32_t sd_card_ready();
-extern uint32_t sd_card_mounted();
+extern uint32_t sdMounted();
 }
 #else
 #define sd_card_ready()   (true)
-#define sd_card_mounted() (true)
+#define sdMounted() (true)
 #endif
 
 #if defined(PCBACT)

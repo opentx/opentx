@@ -122,7 +122,7 @@ void refreshModelAudioFiles()
 
   char filename[64] = SOUNDS_PATH "/";
 
-  if (sd_card_mounted()) {
+  if (sdMounted()) {
     char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
     *buf++ = '/';
 
@@ -616,7 +616,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   printf("playFile(\"%s\")\n", filename); fflush(stdout);
 #else
 
-  if (!sd_card_mounted())
+  if (!sdMounted())
     return;
 
   CoEnterMutexSection(audioMutex);

@@ -107,8 +107,7 @@
 #define PIN_LCD_A0                      GPIO_Pin_13 //PD.13
 #define PIN_LCD_RST                     //GPIO_Pin_12  //pd12 test //RESET occurs when powered up,but should delay before initialize
 
-// Audio----I2S3
-//#define CODEC_I2S_ADDRESS              0x4000380C
+// Audio - I2S3
 #define CODEC_I2S                       SPI3
 #define CODEC_I2S_CLK                   RCC_APB1Periph_SPI3
 #define CODEC_I2S_GPIO_AF               GPIO_AF_SPI3
@@ -137,7 +136,7 @@
 #define I2C_EE_SDA                      GPIO_Pin_0  //PE0
 #define I2C_EE_WP                       GPIO_Pin_9  //PB9
 
-// SD---spi2
+// SD - SPI2
 #define SPI_SD                          SPI2
 #define GPIO_AF_SD                      GPIO_AF_SPI2
 #define RCC_AHB1Periph_GPIO_CS          RCC_AHB1Periph_GPIOB
@@ -182,8 +181,7 @@
 
 /* set to 1 to provide a disk_ioctrl function even if not needed by the FatFs */
 #define STM32_SD_DISK_IOCTRL_FORCE      (0)
-
-#define CARD_SUPPLY_SWITCHABLE          (0) //0£¬power on not depend any IO
+#define CARD_SUPPLY_SWITCHABLE          (0) // power on not depend any IO
 #define SOCKET_WP_CONNECTED             (0)
 #define SOCKET_CP_CONNECTED             (0)
 

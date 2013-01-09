@@ -38,7 +38,7 @@ int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t s_noScroll;
 
-void menu_lcd_onoff(uint8_t x,uint8_t y, uint8_t value, uint8_t attr)
+void menu_lcd_onoff(uint8_t x,uint8_t y, uint8_t value, LcdFlags attr)
 {
 #if defined(GRAPHICS)
   if (value) {
@@ -668,7 +668,7 @@ void displayWarning(uint8_t event)
   }
 }
 
-int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event)
+int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event)
 {
   lcd_putsLeft(y, label);
   if (values) lcd_putsiAtt(x, y, values, value-min, attr);
@@ -676,7 +676,7 @@ int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char 
   return value;
 }
 
-uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, uint8_t attr, uint8_t event )
+uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, LcdFlags attr, uint8_t event )
 {
 #if defined(GRAPHICS)
   menu_lcd_onoff(x, y, value, attr);
@@ -686,7 +686,7 @@ uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label,
 #endif
 }
 
-int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t event)
+int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event)
 {
   lcd_putsLeft(y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
@@ -695,7 +695,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, uint8_t attr, uint8_t 
 }
 
 #if defined(GVARS)
-int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event)
+int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event)
 {
   bool invers = attr&INVERS;
   if (invers && event == EVT_KEY_LONG(KEY_MENU)) {
@@ -718,7 +718,7 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
   return value;
 }
 #else
-int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, uint8_t attr, uint8_t event)
+int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event)
 {
   lcd_outdezAtt(x, y, value, attr);
   if (attr&INVERS) CHECK_INCDEC_MODELVAR(event, value, min, max);

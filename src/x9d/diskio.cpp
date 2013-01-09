@@ -140,27 +140,6 @@ static void interface_speed( enum speed_setting speed )
         SPI_SD->CR1 = tmp;
 }
 
-#if SOCKET_WP_CONNECTED
-/* Socket's Write-Protection Pin: high = write-protected, low = writable */
-
-static void socket_wp_init(void)
-{
-        GPIO_InitTypeDef GPIO_InitStructure;
-
-        /* Configure I/O for write-protect */
-        RCC_AHB1PeriphClockCmd(RCC_AHBxPeriph_GPIO_WP, ENABLE);
-        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_WP;
-        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_WP;
-        GPIO_Init(GPIO_CTL_SD, &GPIO_InitStructure);
-}
-
-static DWORD socket_is_write_protected(void)
-{
-        return ( GPIO_ReadInputData(GPIO_CTL_SD) & GPIO_Pin_WP ) ? socket_state_mask_wp : 0;
-}
-
-#else
-
 static void socket_wp_init(void)
 {
         return;
@@ -171,30 +150,6 @@ static inline DWORD socket_is_write_protected(void)
         return 0; /* fake not protected */
 }
 
-#endif /* SOCKET_WP_CONNECTED */
-
-
-#if SOCKET_CP_CONNECTED
-/* Socket's Card-Present Pin: high = socket empty, low = card inserted */
-
-static void socket_cp_init(void)
-{
-        GPIO_InitTypeDef GPIO_InitStructure;
-
-        /* Configure I/O for card-present */
-        RCC_AHB1PeriphClockCmd(RCC_AHBxPeriph_GPIO_CP, ENABLE);
-        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_CP;
-        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_CP;
-        GPIO_Init(GPIO_CTL_SD, &GPIO_InitStructure);
-}
-
-static inline DWORD socket_is_empty(void)
-{
-        return ( GPIO_ReadInputData(GPIO_CTL_SD) & GPIO_Pin_CP ) ? socket_state_mask_cp : FALSE;
-}
-
-#else
-
 static void socket_cp_init(void)
 {
         return;
@@ -204,46 +159,6 @@ static inline DWORD socket_is_empty(void)
 {
         return 0; /* fake inserted */
 }
-
-#endif /* SOCKET_CP_CONNECTED */
-
-
-#if CARD_SUPPLY_SWITCHABLE
-
-static void card_power(BOOL on)         /* switch FET for card-socket VCC */
-{
-        GPIO_InitTypeDef GPIO_InitStructure;
-
-        /* Turn on GPIO for power-control pin connected to FET's gate */
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIO_PWR, ENABLE);
-        /* Configure I/O for Power FET */
-        GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_PWR;
-        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_PWR;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-        GPIO_Init(GPIO_PWR, &GPIO_InitStructure);
-        if (on) {
-                GPIO_ResetBits(GPIO_PWR, GPIO_Pin_PWR);
-        } else {
-                /* Chip select internal pull-down (to avoid parasite powering) */
-                GPIO_InitStructure.GPIO_Pin = GPIO_Pin_CS;
-                GPIO_Init(GPIO_CS, &GPIO_InitStructure);
-
-                GPIO_SetBits(GPIO_PWR, GPIO_Pin_PWR);
-        }
-}
-
-#if (STM32_SD_DISK_IOCTRL == 1)
-static int chk_power(void)              /* Socket power state: 0=off, 1=on */
-{
-        if ( GPIO_ReadOutputDataBit(GPIO_PWR, GPIO_Pin_PWR) == Bit_SET ) {
-                return 0;
-        } else {
-                return 1;
-        }
-}
-#endif
-
-#else
 
 static void card_power(BYTE on)
 {
@@ -256,9 +171,6 @@ static int chk_power(void)
         return 1; /* fake powered */
 }
 #endif
-
-#endif /* CARD_SUPPLY_SWITCHABLE */
-
 
 /*-----------------------------------------------------------------------*/
 /* Transmit/Receive a byte to MMC via SPI  (Platform dependent)          */
@@ -983,18 +895,25 @@ void sdPoll10ms()
 
 FATFS g_FATFS_Obj;
 
+void sdInit()
+{
+  if (f_mount(0, &g_FATFS_Obj) == FR_OK)
+    refreshSystemAudioFiles();
+}
+
+uint32_t sdMounted()
+{
+  return g_FATFS_Obj.fs_type != 0;
+}
+
 void sdMountPoll()
 {
   static uint8_t mountTimer;
   if (mountTimer-- == 0) {
     mountTimer = 100;
-    if (g_FATFS_Obj.fs_type == 0) {
-      f_mount(0, &g_FATFS_Obj);
+    if (!sdMounted()) {
+      sdInit();
     }
   }
 }
 
-uint32_t sd_card_mounted(void)
-{
-  return g_FATFS_Obj.fs_type != 0;
-}

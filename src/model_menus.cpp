@@ -241,7 +241,12 @@ void menuModelSelect(uint8_t event)
 #endif
   uint8_t _event_ = (IS_RE_NAVIGATION_EVT(event) ? 0 : event);
 
-  if (s_copyMode || !eeModelExists(g_eeGeneral.currModel)) {
+  if (s_copyMode
+      /* TODO how is it possible? || !eeModelExists(g_eeGeneral.currModel)*/
+#if defined(PCBX9D)
+      || s_editMode >= 0
+#endif
+      ) {
     if ((event & 0x1f) == KEY_EXIT)
       _event_ -= KEY_EXIT;
   }
@@ -298,6 +303,12 @@ void menuModelSelect(uint8_t event)
           sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
           s_copyMode = 0;
         }
+#if defined(PCBX9D)
+        else {
+          m_posVert = sub = g_eeGeneral.currModel;
+          s_editMode = -1;
+        }
+#endif
         break;
 #if defined(ROTARY_ENCODERS)
       case EVT_KEY_BREAK(BTN_REa):
@@ -431,19 +442,19 @@ void menuModelSelect(uint8_t event)
 
   }
 
-#if !defined(PCBSKY9X)
+#if defined(PCBX9D)
+  lcd_puts(11*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
+  if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
+  lcd_outdezAtt(20*FW, 0, reusableBuffer.models.eepromfree, 0);
+  lcd_puts(20*FW, 0, "bytes"); // TODO translations
+#elif !defined(PCBSKY9X)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
-#if defined(PCBX9D)
-  lcd_outdezAtt(18*FW, 0, reusableBuffer.models.eepromfree, 0);
-  lcd_puts(18*FW, 0, "bytes"); // TODO translations
-#else
   lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
-#endif
 #endif
 
 #if defined(ROTARY_ENCODERS)
-  displayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((g_eeGeneral.reNavigation && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
+  displayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_RE_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
 #else
   displayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
 #endif
@@ -475,14 +486,16 @@ void menuModelSelect(uint8_t event)
     k %= MAX_MODELS;
 
     if (eeModelExists(k)) {
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
       putsModelName(4*FW, y, modelNames[k], k, 0);
+#elif defined(CPUARM)
+      putsModelName(4*FW, y, modelNames[k], k, 0);
+      lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
 #else
-      uint16_t & size = reusableBuffer.models.listsizes[i];
       char * name = reusableBuffer.models.listnames[i];
-      if (refresh) size = eeLoadModelName(k, name);
+      if (refresh) eeLoadModelName(k, name);
       putsModelName(4*FW, y, name, k, 0);
-      lcd_outdezAtt(20*FW, y, size, 0);
+      lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
 #endif
       if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=(pgofs_t)sub)) lcd_putc(1, y, '*');
     }
@@ -2113,6 +2126,15 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
   uint8_t cur = 1;
   uint8_t i = 0;
 
+#if defined(PCBX9D)
+  #define mixsrcattr     allattr
+  #define expoweightattr allattr
+#else
+  #define allattr 0
+  #define mixsrcattr     (isMixActive(i) ? BOLD : 0)
+  #define expoweightattr (isExpoActive(i) ? BOLD : 0)
+#endif
+
   for (uint8_t ch=1; ch<=(expo ? NUM_STICKS : NUM_CHNOUT); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
     uint8_t y = (cur-s_pgOfs)*FH;
@@ -2141,38 +2163,50 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         if (s_pgOfs < cur && cur-s_pgOfs < 8) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
-            ed->weight = gvarMenuItem(EXPO_LINE_WEIGHT_POS, y, ed->weight, 0, 100, attr | (isExpoActive(i) ? BOLD : 0), event);
+#if defined(PCBX9D)
+            uint32_t allattr = isMixActive(i) ? 0 : GREY2;
+#endif
+            ed->weight = gvarMenuItem(EXPO_LINE_WEIGHT_POS, y, ed->weight, 0, 100, attr | expoweightattr, event);
 
             if (ed->curveMode == MODE_CURVE)
-              putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
+              putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam, allattr);
             else
-              displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam);
+              displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, allattr);
 
 #if defined(CPUARM)
             if (ed->name[0]) {
-              putsSwitches(11*FW, y, ed->swtch, 0);
-              lcd_putsnAtt(DISPLAY_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
+              putsSwitches(11*FW, y, ed->swtch, allattr);
+              lcd_putsnAtt(DISPLAY_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | expoweightattr);
             }
 #if !defined(LCD212)
             else
 #endif
 #endif
             {
-              putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
-              if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
+              putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, allattr); // normal switches
+              if (ed->mode!=3) {
+#if defined(PCBX9D)
+                lcd_putcAtt(17*FW, y, ed->mode == 2 ? 126 : 127, allattr);
+#else
+                lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);
+#endif
+              }
             }
           }
           else {
+#if defined(PCBX9D)
+            uint32_t allattr = isMixActive(i) ? 0 : GREY2;
+#endif
             if (mixCnt > 0)
-              lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, 0);
+              lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, allattr);
 
-            putsMixerSource(4*FW+0, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
+            putsMixerSource(4*FW+0, y, md->srcRaw, mixsrcattr);
 
-            md->weight = gvarMenuItem(11*FW+3, y, md->weight, -125, 125, attr, event);
+            md->weight = gvarMenuItem(11*FW+3, y, md->weight, -125, 125, attr|allattr, event);
 
 #if defined(CPUARM)
             if (md->name[0]) {
-              lcd_putsnAtt(DISPLAY_W-sizeof(md->name)*FW-MENUS_SCROLLBAR_WIDTH, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
+              lcd_putsnAtt(DISPLAY_W-sizeof(md->name)*FW-MENUS_SCROLLBAR_WIDTH, y, md->name, sizeof(md->name), ZCHAR | mixsrcattr);
             }
 #if !defined(LCD212)
             else
@@ -2181,18 +2215,22 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             {
               if (md->curveParam) {
                 if (md->curveMode == MODE_CURVE)
-                  putsCurve(12*FW+2, y, md->curveParam);
+                  putsCurve(12*FW+2, y, md->curveParam, allattr);
                 else
-                  displayGVar(15*FW+2, y, md->curveParam);
+                  displayGVar(15*FW+2, y, md->curveParam, allattr);
               }
-              if (md->swtch) putsSwitches(16*FW, y, md->swtch);
+              if (md->swtch) putsSwitches(16*FW, y, md->swtch, allattr);
 
               char cs = ' ';
               if (md->speedDown || md->speedUp)
                 cs = 'S';
               if ((md->delayUp || md->delayDown))
                 cs = (cs =='S' ? '*' : 'D');
-              lcd_putcAtt(19*FW+7, y, cs, 0);
+#if defined(PCBX9D)
+              lcd_putcAtt(19*FW+7, y, cs, allattr);
+#else
+              lcd_putc(19*FW+7, y, cs);
+#endif
             }
           }
           if (s_copyMode) {
@@ -2363,7 +2401,7 @@ void menuModelLimits(uint8_t event)
     if((g_chans512[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
     if((g_chans512[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
     putsChn(0, y, k+1, 0);
-    lcd_putcAtt(LIMITS_DIRECTION_POS, y, swVal, 0);
+    lcd_putc(LIMITS_DIRECTION_POS, y, swVal);
 #endif
 
 #if defined(PPM_CENTER_ADJUSTABLE)

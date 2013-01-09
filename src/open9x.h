@@ -215,10 +215,6 @@ extern void boardInit();
 extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
 #endif
 
-#if defined(PCBX9D)
-extern uint16_t modelSizes[MAX_MODELS];
-#endif
-
 // TODO try to merge the 2 include files
 #if defined(PCBSKY9X)
 #include "eeprom_arm.h"
@@ -1033,7 +1029,7 @@ void eeDirty(uint8_t msk);
 void eeCheck(bool immediately=false);
 void eeReadAll();
 bool eeModelExists(uint8_t id);
-uint16_t eeLoadModelName(uint8_t id, char *name);
+void eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
 void generalDefault();
 void modelDefault(uint8_t id);
@@ -1323,7 +1319,6 @@ union ReusableBuffer
     {
         char mainname[42];
         char listnames[7][LEN_MODEL_NAME];
-        uint16_t listsizes[7];
         uint16_t eepromfree;
 
 #if defined(SDCARD)

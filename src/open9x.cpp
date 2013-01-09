@@ -66,9 +66,6 @@ OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
 
 char modelNames[MAX_MODELS][sizeof(g_model.name)];
-#if defined(PCBX9D)
-uint16_t modelSizes[MAX_MODELS];
-#endif
 
 #endif // defined(CPUARM)
 
@@ -358,7 +355,7 @@ void generalDefault()
     g_eeGeneral.calibSpanNeg[i] = 0x180;
     g_eeGeneral.calibSpanPos[i] = 0x180;
   }
-  g_eeGeneral.chkSum = (0x200 * NUM_STICKS+NUM_POTS) + (0x180 * 5);
+  g_eeGeneral.chkSum = 0x200 * (NUM_STICKS+NUM_POTS) + 0x180 * 5;
 }
 
 uint16_t evalChkSum()
@@ -1248,6 +1245,8 @@ void checkAll()
 
   checkTHR();
   checkSwitches();
+
+  clearKeyEvents();
 }
 
 #if !defined(PCBSKY9X)
@@ -1772,6 +1771,7 @@ BeepANACenter evalSticks(uint8_t mode)
     if(v >  RESX) v =  RESX;
     	
  #if defined(PCBX9D)
+    // TODO constants
     if(i == 2 || i == 3 || i == 4 || i == 6)
     	v = -v;
  #endif
@@ -2324,7 +2324,16 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         if (k < NUM_STICKS)
           v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
 #if defined(PCBX9D) || defined(PCBACT)
-      if(k < MIXSRC_SH) v = getValue(k);        // TODO
+        else {
+          v = getValue(k);
+          // TODO switches: if (v < 0 && !md->swtch) sw = false;
+          if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
+            if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+              passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
+            if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
+              v = chans[k-MIXSRC_CH1+1] / 100;
+          }
+        }
 #else
         else if (k >= MIXSRC_THR-1 && k <= MIXSRC_SWC-1) {
           v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
@@ -2404,7 +2413,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       }
 
 #ifdef BOLD_FONT
-      activeMixes |= ((ACTIVE_MIXES_TYPE) 1 << i);
+      activeMixes |= ((ACTIVE_MIXES_TYPE)1 << i);
 #endif
 
       //========== OFFSET ===============
@@ -3406,8 +3415,8 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     eeLoadModel(g_eeGeneral.currModel);
 #endif
 
-    checkAll();
     checkAlarm();
+    checkAll();
   }
 
 #if defined(CPUARM) || defined(PCBGRUVIN9X)

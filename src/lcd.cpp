@@ -79,12 +79,12 @@ uint8_t lcdLastPos;
 #define LCD_BYTE_FILTER(p, keep, add) \
   do { \
     if (!(flags & GREY1)) \
-      *(p) = (*(p) & (keep)) + (add); \
+      *(p) = ((*(p)) & (keep)) | (add); \
     if (!(flags & GREY2)) \
-      *(p+DISPLAY_PLAN_SIZE) = (*(p+DISPLAY_PLAN_SIZE) & (keep)) + (add); \
+      *(p+DISPLAY_PLAN_SIZE) = ((*(p+DISPLAY_PLAN_SIZE)) & (keep)) | (add); \
   } while (0)
 #else
-#define LCD_BYTE_FILTER(p, keep, add) *(p) = (*(p) & (keep)) + (add)
+#define LCD_BYTE_FILTER(p, keep, add) *(p) = (*(p) & (keep)) | (add)
 #endif
 
 void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
@@ -122,13 +122,13 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
         b2 = pgm_read_byte(q++); /*top byte*/
       }
       if (inv) {
-        b1=~b1;
-        b2=~b2;
+        b1 = ~b1;
+        b2 = ~b2;
       }   
       if(&p[DISPLAY_W+1] < DISPLAY_END) {
         ASSERT_IN_DISPLAY(p);
         ASSERT_IN_DISPLAY(p+DISPLAY_W);
-        p[0]=b1;
+        p[0] = b1;
         p[DISPLAY_W] = b2;
         p++;
       }   
@@ -231,13 +231,13 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           if (r<DISPLAY_END)
             LCD_BYTE_FILTER(r, ~(0xff >> (8-ym8)), b >> (8-ym8));
         }
-#ifdef BOLD_FONT
+#if defined(BOLD_FONT)
         if (flags & BOLD) {
           ASSERT_IN_DISPLAY(p+1);
           if (inv)
-            *(p+1) &= (b << ym8);
+            LCD_BYTE_FILTER(p+1, b << ym8, 0);
           else
-            *(p+1) |= (b << ym8);
+            LCD_BYTE_FILTER(p+1, 0xff, b << ym8);
         }
 #endif
       }

@@ -302,11 +302,6 @@ void EFile::rm(uint8_t i_fileId)
   ENABLE_SYNC_WRITE(false);
 }
 
-uint16_t EFile::size()
-{
-  return eeFs.files[m_fileId].size;
-}
-
 /*
  * Open file i_fileId for reading.
  * Return the file's type
@@ -579,7 +574,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   *(uint32_t*)&buf[0] = O9X_FOURCC;
   buf[4] = g_eeGeneral.version;
   buf[5] = 'M';
-  *(uint16_t*)&buf[6] = theFile2.size();
+  *(uint16_t*)&buf[6] = eeModelSize(i_fileSrc);
 
   result = f_write(&g_oLogFile, buf, 8, &written);
   if (result != FR_OK || written != 8) {
@@ -840,16 +835,13 @@ bool eeLoadGeneral()
 }
 
 
-uint16_t eeLoadModelName(uint8_t id, char *name)
+void eeLoadModelName(uint8_t id, char *name)
 {
   memclear(name, sizeof(g_model.name));
   if (id < MAX_MODELS) {
     theFile.openRlc(FILE_MODEL(id));
-    if (theFile.readRlc((uint8_t*)name, sizeof(g_model.name)) == sizeof(g_model.name)) {
-      return theFile.size();
-    }
+    theFile.readRlc((uint8_t*)name, sizeof(g_model.name));
   }
-  return 0;
 }
 
 #if defined(CPUARM)
@@ -857,7 +849,7 @@ uint16_t eeLoadModelName(uint8_t id, char *name)
 void eeLoadModelNames()
 {
   for (uint32_t i=0; i<MAX_MODELS; i++) {
-    modelSizes[i] = eeLoadModelName(i, modelNames[i]);
+    eeLoadModelName(i, modelNames[i]);
   }
 }
 #else
@@ -903,7 +895,6 @@ void eeLoadModel(uint8_t id)
     if (pulsesStarted()) {
       checkAll();
       resumePulses();
-      clearKeyEvents();
     }
 
     activeFunctions = 0;

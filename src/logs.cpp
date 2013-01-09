@@ -45,7 +45,7 @@ const pm_char * openLogs()
   DIR folder;
   char filename[24];
 
-  if (!sd_card_mounted())
+  if (!sdMounted())
     return STR_NO_SDCARD;
 
   strcpy_P(filename, STR_LOGS_PATH);

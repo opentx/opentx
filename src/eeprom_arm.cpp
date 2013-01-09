@@ -88,7 +88,6 @@ void handle_serial( void ) ;
 uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t *p_seq ) ;
 void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0 ) ;
 void eeLoadModelNames( void ) ;
-uint16_t eeLoadModelName(uint8_t id, char *name);
 
 // New file system
 
@@ -403,7 +402,6 @@ void eeLoadModel(uint8_t id)
     if (pulsesStarted()) {
       checkAll();
       resumePulses();
-      clearKeyEvents();
     }
 
     activeFunctions = 0;
@@ -435,17 +433,15 @@ bool eeModelExists(uint8_t id)
   return ( File_system[id+1].size > 0 ) ;
 }
 
-uint16_t eeLoadModelName(uint8_t id, char *name)
+void eeLoadModelName(uint8_t id, char *name)
 {
   memclear(name, sizeof(g_model.name));
   if (id < MAX_MODELS) {
     id += 1;
     if (File_system[id].size > sizeof(g_model.name) ) {
       read32_eeprom_data( ( File_system[id].block_no << 12) + 8, ( uint8_t *)name, sizeof(g_model.name));
-      return File_system[id].size;
     }
   }
-  return 0;
 }
 
 void eeLoadModelNames()
@@ -700,7 +696,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   DIR archiveFolder;
   UINT written;
 
-  if (!sd_card_mounted()) {
+  if (!sdMounted()) {
     return STR_NO_SDCARD;
   }
 
@@ -756,7 +752,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   FIL restoreFile;
   UINT read;
 
-  if (!sd_card_mounted()) {
+  if (!sdMounted()) {
     return STR_NO_SDCARD;
   }
 

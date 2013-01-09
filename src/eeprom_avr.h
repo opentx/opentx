@@ -82,6 +82,8 @@ PACK(struct EeFs{
   DirEnt   files[MAXFILES];
 });
 
+extern EeFs eeFs;
+
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
 
@@ -124,9 +126,6 @@ class EFile
     ///return true if the file with given fileid exists
     static bool exists(uint8_t i_fileId);
 
-    ///return size of compressed file without block overhead
-    uint16_t size();
-
     ///open file for reading, no close necessary
     void openRd(uint8_t i_fileId);
 
@@ -139,6 +138,9 @@ class EFile
     blkid_t  m_currBlk;   //current block.id
     uint8_t  m_ofs;       //offset inside of the current block
 };
+
+#define eeFileSize(f)   eeFs.files[f].size
+#define eeModelSize(id) eeFileSize(FILE_MODEL(id))
 
 #define ERR_NONE 0
 #define ERR_FULL 1
