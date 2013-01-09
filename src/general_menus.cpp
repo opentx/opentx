@@ -518,7 +518,7 @@ void menuGeneralSdManager(uint8_t event)
       // no break
 #endif
     case EVT_KEY_FIRST(KEY_RIGHT):
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_ENTER):
     {
       if (m_posVert > 0) {
         uint8_t index = m_posVert-1-s_pgOfs;
@@ -538,7 +538,7 @@ void menuGeneralSdManager(uint8_t event)
         break;
       // no break
 #endif
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
       if (m_posVert == 0) {
         s_menu[s_menu_count++] = STR_SD_INFO;
