@@ -204,10 +204,10 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow)
 #if defined(PCBX9D) || defined(PCBACT)
 void check_rotary_encoder(uint8_t & event)
 {
-  if (event==EVT_KEY_REPT(KEY_LEFT) || event==EVT_KEY_FIRST(KEY_LEFT)) {
+  if (event==EVT_KEY_REPT(KEY_MOVE_UP) || event==EVT_KEY_FIRST(KEY_MOVE_UP)) {
     scrollRE = -1;
   }
-  else if (event==EVT_KEY_REPT(KEY_RIGHT) || event==EVT_KEY_FIRST(KEY_RIGHT)) {
+  else if (event==EVT_KEY_REPT(KEY_MOVE_DOWN) || event==EVT_KEY_FIRST(KEY_MOVE_DOWN)) {
     scrollRE = 1;
   }
   else {
@@ -215,7 +215,7 @@ void check_rotary_encoder(uint8_t & event)
   }
 
   if (s_editMode > 0) {
-    p1valdiff = -scrollRE;
+    p1valdiff = scrollRE;
     scrollRE = 0;
   }
 

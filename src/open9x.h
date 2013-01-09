@@ -1364,8 +1364,8 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
 #endif
 
 #if defined(PCBX9D) || defined(PCBACT)
-#define KEY_MOVE_UP    KEY_MINUS
-#define KEY_MOVE_DOWN  KEY_PLUS
+#define KEY_MOVE_UP    KEY_PLUS
+#define KEY_MOVE_DOWN  KEY_MINUS
 #else
 #define KEY_MOVE_UP    KEY_UP
 #define KEY_MOVE_DOWN  KEY_DOWN
