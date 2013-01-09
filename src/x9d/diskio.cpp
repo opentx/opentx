@@ -132,10 +132,10 @@ static void interface_speed( enum speed_setting speed )
         tmp = SPI_SD->CR1;
         if ( speed == INTERFACE_SLOW ) {
                 /* Set slow clock (100k-400k) */
-                tmp = ( tmp | SPI_BaudRatePrescaler_256 );
+                tmp = ( tmp | SPI_BaudRatePrescaler_128 );
         } else {
                 /* Set fast clock (depends on the CSD) */
-                tmp = ( tmp & ~SPI_BaudRatePrescaler_256 ) | SPI_BaudRatePrescaler_SPI_SD;
+                tmp = ( tmp & ~SPI_BaudRatePrescaler_128 ) | SPI_BaudRatePrescaler_SPI_SD;
         }
         SPI_SD->CR1 = tmp;
 }
@@ -345,7 +345,6 @@ void power_on (void)
 {
         SPI_InitTypeDef  SPI_InitStructure;
         GPIO_InitTypeDef GPIO_InitStructure;
-        volatile BYTE dummyread;
 
         /* Enable GPIO clock for CS */
         RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_CS, ENABLE);
@@ -533,7 +532,6 @@ BYTE send_cmd (
         }
 
         /* Select the card and wait for ready */
-        DESELECT();
         SELECT();
         if (wait_ready() != 0xFF) {
                 return 0xFF;

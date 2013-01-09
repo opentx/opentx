@@ -38,8 +38,9 @@ uint8_t temperature = 0;          // Raw temp reading
 uint8_t maxTemperature = 0 ;       // Raw temp reading
 volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
 
-// TODO why not here the Peri1_frequency ... (to avoid modifications in system_stm32f2xx.c)
-uint32_t Master_frequency ;
+uint32_t Peri1_frequency = 30000000;
+uint32_t Peri2_frequency = 30000000;
+uint32_t Timer_mult = 2;
 
 #define PIN_MODE_MASK           0x0003
 #define PIN_INPUT               0x0000
@@ -124,7 +125,7 @@ void init5msTimer()
   // Timer14
   RCC->APB1ENR |= RCC_APB1ENR_TIM14EN ;           // Enable clock
   TIM14->ARR = 4999 ;     // 5mS
-  TIM14->PSC = Peri1_frequency / 1000000 ;                // 1uS from 30MHz
+  TIM14->PSC = (Peri1_frequency * Timer_mult) / 1000000 - 1 ;                // 1uS from 30MHz
   TIM14->CCER = 0 ;
   TIM14->CCMR1 = 0 ;
   TIM14->EGR = 0 ;

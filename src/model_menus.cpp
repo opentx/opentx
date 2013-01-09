@@ -2164,7 +2164,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
 #if defined(PCBX9D)
-            uint32_t allattr = isMixActive(i) ? 0 : GREY2;
+            uint32_t allattr = isMixActive(i) ? 0 : GREY1;
 #endif
             ed->weight = gvarMenuItem(EXPO_LINE_WEIGHT_POS, y, ed->weight, 0, 100, attr | expoweightattr, event);
 

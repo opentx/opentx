@@ -37,19 +37,19 @@ void delaysInit(void)
 {
   // Timer13
   RCC->APB1ENR |= RCC_APB1ENR_TIM13EN;           // Enable clock
-  TIM13->PSC = Peri1_frequency / 100000;                // 0.1uS from 30MHz
+  TIM13->PSC = (Peri1_frequency * Timer_mult) / 10000000 - 1;      // 0.1uS 
   TIM13->CCER = 0;
   TIM13->CCMR1 = 0;
-  TIM13->EGR = 0;
-  TIM13->CR1 = 0x03;
+  TIM13->CR1 = 0x02;
   TIM13->DIER = 0;
 }
 	
 	
 void delay_01us(uint16_t nb)
 {
+	TIM13->EGR = 1;
   TIM13->CNT = 0;
-  TIM13->EGR = 1;
-  while(((uint16_t)TIM13->CNT) < nb);
-  TIM13->EGR = 0;
+  TIM13->CR1 = 0x03;
+  while(TIM13->CNT < nb);
+  TIM13->CR1 = 0x02;
 }

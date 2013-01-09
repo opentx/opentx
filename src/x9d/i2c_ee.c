@@ -12,7 +12,7 @@
 
 #include "../open9x.h"
 
-#define	I2C_delay()   delay_01us(15);
+#define	I2C_delay()   delay_01us(100);
 
 /**
   * @brief  Configure the used I/O ports pin
