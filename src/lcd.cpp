@@ -128,8 +128,8 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       if(&p[DISPLAY_W+1] < DISPLAY_END) {
         ASSERT_IN_DISPLAY(p);
         ASSERT_IN_DISPLAY(p+DISPLAY_W);
-        p[0] = b1;
-        p[DISPLAY_W] = b2;
+        LCD_BYTE_FILTER(p, 0, b1);
+        LCD_BYTE_FILTER(p+DISPLAY_W, 0, b2);
         p++;
       }   
     }   
