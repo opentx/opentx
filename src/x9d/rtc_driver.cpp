@@ -60,7 +60,7 @@ void rtc_gettime(struct gtm * t)
 	t->tm_hour = RTC_TimeStruct.RTC_Hours;
 	t->tm_min  = RTC_TimeStruct.RTC_Minutes;
 	t->tm_sec  = RTC_TimeStruct.RTC_Seconds;
-	t->tm_year = RTC_DateStruct.RTC_Year;
+	t->tm_year = RTC_DateStruct.RTC_Year + 100;
 	t->tm_mon  = RTC_DateStruct.RTC_Month;
 	t->tm_mday = RTC_DateStruct.RTC_Date;
 }
