@@ -80,7 +80,6 @@ void startPulses()
   s_current_protocol = g_model.protocol;
 #else
   setupPulses();
-
 #endif // SIMU
 }
 

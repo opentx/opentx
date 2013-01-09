@@ -3441,6 +3441,10 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   s_current_protocol = PROTO_PPM;
 #endif
 
+#if !defined(CPUARM)
+  doMixerCalculations();
+#endif
+
   startPulses();
 
   wdt_enable(WDTO_500MS);
