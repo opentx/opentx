@@ -2526,9 +2526,9 @@ ACTIVE_MIXES_TYPE activeMixes;
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 
 #if defined(CPUARM)
-FORCEINLINE bool doMixerCalculations()
+bool doMixerCalculations()
 #else
-FORCEINLINE void doMixerCalculations()
+void doMixerCalculations()
 #endif
 {
 #if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
