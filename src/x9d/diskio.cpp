@@ -360,7 +360,8 @@ void power_on (void)
         socket_cp_init();//Empty return
         socket_wp_init();//Empty return.
 
-        for (Timer1 = 25; Timer1; );    /* Wait for 250ms */
+        CoTickDelay(125);
+        // for (Timer1 = 25; Timer1; );    /* Wait for 250ms */
 
         /* SPI configuration */
         SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
@@ -906,12 +907,13 @@ uint32_t sdMounted()
 
 void sdMountPoll()
 {
+  /* TODO a define
   static uint8_t mountTimer;
   if (mountTimer-- == 0) {
     mountTimer = 100;
     if (!sdMounted()) {
       sdInit();
     }
-  }
+  }*/
 }
 

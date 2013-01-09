@@ -2126,15 +2126,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
   uint8_t cur = 1;
   uint8_t i = 0;
 
-#if defined(PCBX9D)
-  #define mixsrcattr     allattr
-  #define expoweightattr allattr
-#else
-  #define allattr 0
-  #define mixsrcattr     (isMixActive(i) ? BOLD : 0)
-  #define expoweightattr (isExpoActive(i) ? BOLD : 0)
-#endif
-
   for (uint8_t ch=1; ch<=(expo ? NUM_STICKS : NUM_CHNOUT); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
     uint8_t y = (cur-s_pgOfs)*FH;
@@ -2163,50 +2154,38 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         if (s_pgOfs < cur && cur-s_pgOfs < 8) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
-#if defined(PCBX9D)
-            uint32_t allattr = isMixActive(i) ? 0 : GREY1;
-#endif
-            ed->weight = gvarMenuItem(EXPO_LINE_WEIGHT_POS, y, ed->weight, 0, 100, attr | expoweightattr, event);
+            ed->weight = gvarMenuItem(EXPO_LINE_WEIGHT_POS, y, ed->weight, 0, 100, attr | (isExpoActive(i) ? BOLD : 0), event);
 
             if (ed->curveMode == MODE_CURVE)
-              putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam, allattr);
+              putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
             else
-              displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, allattr);
+              displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam);
 
 #if defined(CPUARM)
             if (ed->name[0]) {
-              putsSwitches(11*FW, y, ed->swtch, allattr);
-              lcd_putsnAtt(DISPLAY_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | expoweightattr);
+              putsSwitches(11*FW, y, ed->swtch, 0);
+              lcd_putsnAtt(DISPLAY_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
             }
 #if !defined(LCD212)
             else
 #endif
 #endif
             {
-              putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, allattr); // normal switches
-              if (ed->mode!=3) {
-#if defined(PCBX9D)
-                lcd_putcAtt(17*FW, y, ed->mode == 2 ? 126 : 127, allattr);
-#else
-                lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);
-#endif
-              }
+              putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
+              if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
             }
           }
           else {
-#if defined(PCBX9D)
-            uint32_t allattr = isMixActive(i) ? 0 : GREY2;
-#endif
             if (mixCnt > 0)
-              lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, allattr);
+              lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, 0);
 
-            putsMixerSource(4*FW+0, y, md->srcRaw, mixsrcattr);
+            putsMixerSource(4*FW+0, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
 
-            md->weight = gvarMenuItem(11*FW+3, y, md->weight, -125, 125, attr|allattr, event);
+            md->weight = gvarMenuItem(11*FW+3, y, md->weight, -125, 125, attr, event);
 
 #if defined(CPUARM)
             if (md->name[0]) {
-              lcd_putsnAtt(DISPLAY_W-sizeof(md->name)*FW-MENUS_SCROLLBAR_WIDTH, y, md->name, sizeof(md->name), ZCHAR | mixsrcattr);
+              lcd_putsnAtt(DISPLAY_W-sizeof(md->name)*FW-MENUS_SCROLLBAR_WIDTH, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
             }
 #if !defined(LCD212)
             else
@@ -2215,22 +2194,18 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             {
               if (md->curveParam) {
                 if (md->curveMode == MODE_CURVE)
-                  putsCurve(12*FW+2, y, md->curveParam, allattr);
+                  putsCurve(12*FW+2, y, md->curveParam);
                 else
-                  displayGVar(15*FW+2, y, md->curveParam, allattr);
+                  displayGVar(15*FW+2, y, md->curveParam);
               }
-              if (md->swtch) putsSwitches(16*FW, y, md->swtch, allattr);
+              if (md->swtch) putsSwitches(16*FW, y, md->swtch);
 
               char cs = ' ';
               if (md->speedDown || md->speedUp)
                 cs = 'S';
               if ((md->delayUp || md->delayDown))
                 cs = (cs =='S' ? '*' : 'D');
-#if defined(PCBX9D)
-              lcd_putcAtt(19*FW+7, y, cs, allattr);
-#else
               lcd_putc(19*FW+7, y, cs);
-#endif
             }
           }
           if (s_copyMode) {

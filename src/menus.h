@@ -212,11 +212,9 @@ uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label,
 int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event);
 int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
 #if defined(GVARS)
-#define displayGVar(x, y, v, a) gvarMenuItem(x, y, v, 0, 0, a, 0)
-#elif defined(PCBX9D)
-#define displayGVar(x, y, v, a) lcd_outdezAtt(x, y, v, a)
+#define displayGVar(x, y, v) gvarMenuItem(x, y, v, 0, 0, 0, 0)
 #else
-#define displayGVar(x, y, v, a) lcd_outdez8(x, y, v)
+#define displayGVar(x, y, v) lcd_outdez8(x, y, 0)
 #endif
 
 #define WARNING_TYPE_ASTERISK  0
