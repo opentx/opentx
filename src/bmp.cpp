@@ -116,7 +116,7 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename)
     return STR_INCOMPATIBLE;
   }
 
-  if (width > 64 || height > 32) {
+  if (width > MODEL_BITMAP_WIDTH  || height > MODEL_BITMAP_HEIGHT) {
     f_close(&bmpFile);
     return STR_INCOMPATIBLE;
   }

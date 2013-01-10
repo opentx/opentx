@@ -94,7 +94,7 @@ EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
 #if defined(PCBX9D) && defined(SDCARD)
-uint8_t modelBitmap[64*32/8];
+uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 void loadModelBitmap()
 {
   char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";

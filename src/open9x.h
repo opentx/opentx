@@ -229,7 +229,10 @@ extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
 #endif
 
 #if defined(PCBX9D)
-extern uint8_t modelBitmap[64*32/8];
+#define MODEL_BITMAP_WIDTH  64
+#define MODEL_BITMAP_HEIGHT 32
+#define MODEL_BITMAP_SIZE   (2+MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8)
+extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 void loadModelBitmap();
 #define LOAD_MODEL_BITMAP() loadModelBitmap()
 #else
