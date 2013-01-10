@@ -126,7 +126,7 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
     strcpy(reusableBuffer.models.menu_bss[0], path);
     strcat(reusableBuffer.models.menu_bss[0], "/");
     strncat(reusableBuffer.models.menu_bss[0], selection, maxlen);
-    strcat(reusableBuffer.models.menu_bss[0], SOUNDS_EXT);
+    strcat(reusableBuffer.models.menu_bss[0], extension);
     if (f_stat(reusableBuffer.models.menu_bss[0], &fno) != FR_OK) {
       selection = NULL;
     }
