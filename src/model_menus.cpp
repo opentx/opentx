@@ -647,7 +647,7 @@ enum menuModelSetupItems {
 #endif
 
 #if defined(LCD212)
-#define MODEL_SETUP_2ND_COLUMN (DISPLAY_W-15*FW-MENUS_SCROLLBAR_WIDTH)
+#define MODEL_SETUP_2ND_COLUMN (DISPLAY_W-17*FW-MENUS_SCROLLBAR_WIDTH)
 #else
 #define MODEL_SETUP_2ND_COLUMN (DISPLAY_W-11*FW-MENUS_SCROLLBAR_WIDTH)
 #endif
@@ -779,18 +779,18 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_SWITCHES_WARNING:
       {
         lcd_putsLeft(y, STR_SWITCHWARNING);
-        uint8_t states = g_model.switchWarningStates;
+        swstate_t states = g_model.switchWarningStates;
         char c = !(states & 1);
         menu_lcd_onoff(MODEL_SETUP_2ND_COLUMN, y, c, attr);
         if (attr) {
           s_editMode = 0;
           switch(event) {
-            case EVT_KEY_LONG(KEY_MENU):
+            case EVT_KEY_LONG(KEY_ENTER):
               killEvents(event);
               getMovedSwitch();
               g_model.switchWarningStates = 0x01 + (switches_states << 1);
               // no break
-            case EVT_KEY_BREAK(KEY_MENU):
+            case EVT_KEY_BREAK(KEY_ENTER):
             case EVT_KEY_BREAK(KEY_LEFT):
             case EVT_KEY_BREAK(KEY_RIGHT):
               g_model.switchWarningStates ^= 0x01;
@@ -800,9 +800,15 @@ void menuModelSetup(uint8_t event)
         }
         if (c) {
           states >>= 1;
-          for (uint8_t i=1; i<7; i++) {
+          for (uint8_t i=1; i<NUM_SWITCHES; i++) {
+#if defined(PCBX9D)
+            c = "\300-\301"[states & 0x03];
+            lcd_putc(MODEL_SETUP_2ND_COLUMN+3+i*(2*FW), y, 'A'+i-1);
+            lcd_putc(MODEL_SETUP_2ND_COLUMN+3+i*(2*FW)+FWNUM, y, c);
+            states >>= 2;
+#else
             attr = 0;
-            if (i == 4) {
+            if (IS_3POS(i-1)) {
               c = '0'+(states & 0x03);
               states >>= 2;
             }
@@ -813,6 +819,7 @@ void menuModelSetup(uint8_t event)
               states >>= 1;
             }
             lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+2*FW+i*FW, y, c, attr);
+#endif
           }
         }
         break;

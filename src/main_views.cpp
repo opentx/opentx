@@ -440,6 +440,7 @@ void menuMainView(uint8_t event)
   for (uint8_t i=0; i<8; i++) {
     uint8_t sw;
     int16_t val;
+    // TODO simplify this + reuse code in checkSwitches() + Menu MODELSETUP
     switch(i) {
       case 5:
         sw = getValue(MIXSRC_SF-1) > 0 ? 3*i+2 : 3*i+1;

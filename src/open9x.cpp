@@ -903,16 +903,34 @@ bool getSwitch(int8_t swtch, bool nc)
   return __getSwitch(swtch);
 }
 
-uint8_t switches_states = 0;
+swstate_t switches_states = 0;
 int8_t getMovedSwitch()
 {
   static tmr10ms_t s_last_time = 0;
 
   int8_t result = 0;
 
+#if defined(PCBX9D)
+  for (uint8_t i=0; i<NUM_SWITCHES; i++) {
+    swstate_t mask = (0x03 << (i*2));
+    uint8_t prev = (switches_states & mask) >> (i*2);
+    uint8_t next = (1024+getValue(MIXSRC_SA+i-1)) / 1024;
+    if (prev != next) {
+      switches_states = (switches_states & (~mask)) | (next << (i*2));
+      if (i<5)
+        result = 1+(3*i)+next;
+      else if (i==5)
+        result = 1+(3*5)+(next!=0);
+      else if (i==6)
+        result = 1+(3*5)+2+next;
+      else
+        result = 1+(3*5)+2+3+next;
+    }
+  }
+#else
   for (uint8_t i=MAX_PSWITCH; i>0; i--) {
     bool prev;
-    uint8_t mask = 0;
+    swstate_t mask = 0;
     if (i <= 3) {
       mask = (1<<(i-1));
       prev = (switches_states & mask);
@@ -934,6 +952,7 @@ int8_t getMovedSwitch()
         switches_states = (switches_states & 0xE7) | ((i-4) << 3);
     }
   }
+#endif
 
   if ((tmr10ms_t)(get_tmr10ms() - s_last_time) > 10)
     result = 0;
@@ -1305,8 +1324,8 @@ void checkAlarm() // added by Gohst
 
 void checkSwitches()
 {
-  uint8_t last_bad_switches = 0xff;
-  uint8_t states = g_model.switchWarningStates;
+  swstate_t last_bad_switches = 0xff;
+  swstate_t states = g_model.switchWarningStates;
 
   while (1) {
 
@@ -1321,6 +1340,15 @@ void checkSwitches()
     // first - display warning
     if (last_bad_switches != switches_states) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, AU_SWITCH_ALERT);
+#if defined(PCBX9D)
+      for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
+        swstate_t mask = (0x03 << (1+i*2));
+        uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
+        char c = "\300-\301"[(states & mask) >> (1+i*2)];
+        lcd_putcAtt(50+i*(2*FW+FW/2), 5*FH, 'A'+i, attr);
+        lcd_putcAtt(50+i*(2*FW+FW/2)+FW, 5*FH, c, attr);
+      }
+#else
       uint8_t x = 2;
       for (uint8_t i=1; i<8; i++) {
         uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
@@ -1328,6 +1356,7 @@ void checkSwitches()
         if (i == 4 && attr) i++;
         if (i != 4) x += 3*FW+FW/2;
       }
+#endif
       lcdRefresh();
       last_bad_switches = switches_states;
     }

@@ -292,13 +292,12 @@ void start_timer4()
 
 extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
 {
-  uint16_t capture ;
   static uint16_t lastCapt ;
 
-  capture = TC1->TC_CHANNEL[0].TC_RA ;
-  (void) TC1->TC_CHANNEL[0].TC_SR ;               // Acknowledgethe interrupt
+  uint16_t capture = TC1->TC_CHANNEL[0].TC_RA ;
+  (void) TC1->TC_CHANNEL[0].TC_SR ;               // Acknowledge the interrupt
 
-  uint16_t val = (capture - lastCapt) / 2;
+  uint16_t val = ((uint16_t)(capture - lastCapt)) / 2;
 
   // G: We process g_ppmIns immediately here, to make servo movement as smooth as possible
   //    while under trainee control

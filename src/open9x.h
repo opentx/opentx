@@ -627,10 +627,14 @@ enum CswFunctions {
 #define NUM_STICKS    4
 
 #if defined(PCBX9D) || defined(PCBACT)
+#define NUM_SWITCHES  8
+#define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
 #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
 #define NUM_POTS      4
 #define NUM_SW_SRCRAW 8
 #else
+#define NUM_SWITCHES  7
+#define IS_3POS(sw)   ((sw) == 3)
 #define MAX_PSWITCH   (SW_TRN-SW_THR+1)  // 9 physical switches
 #define NUM_POTS      3
 #define NUM_SW_SRCRAW 1
@@ -811,7 +815,7 @@ NOINLINE void per10ms();
 int16_t getValue(uint8_t i);
 bool    getSwitch(int8_t swtch, bool nc);
 
-extern uint8_t switches_states;
+extern swstate_t switches_states;
 int8_t  getMovedSwitch();
 
 #ifdef FLIGHT_PHASES

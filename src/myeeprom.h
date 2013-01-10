@@ -819,8 +819,10 @@ enum Dsm2Variants {
 
 #if defined(PCBX9D) || defined(PCBACT)
 #define MODELDATA_EXTRA char bitmap[10]
+#define swstate_t uint16_t
 #else
 #define MODELDATA_EXTRA
+#define swstate_t uint8_t
 #endif
 
 PACK(typedef struct t_ModelData {
@@ -853,7 +855,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
   
-  uint8_t   switchWarningStates;
+  swstate_t switchWarningStates;
 
   MODEL_GVARS_DATA;
 
