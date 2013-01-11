@@ -41,6 +41,7 @@
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_spi.h"
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rtc.h"
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_pwr.h"
+#include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_usart.h"
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
 
 #include "hal.h"
@@ -48,10 +49,12 @@
 #include "i2c_ee.h"
 #include "audio_driver.h"
 #include "delays.h"
+#include "uart.h"
 
 #define PERI1_FREQUENCY 30000000
 #define PERI2_FREQUENCY 60000000
-#define TIMER_MULT 2
+#define TIMER_MULT_APB1 2
+#define TIMER_MULT_APB2 1
 
 // TODO elsewhere
 #if !defined(SIMU)

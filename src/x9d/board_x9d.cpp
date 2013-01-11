@@ -121,7 +121,7 @@ void init5msTimer()
   // Timer14
   RCC->APB1ENR |= RCC_APB1ENR_TIM14EN ;           // Enable clock
   TIM14->ARR = 4999 ;     // 5mS
-  TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT) / 1000000 - 1 ;                // 1uS from 30MHz
+  TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;                // 1uS from 30MHz
   TIM14->CCER = 0 ;
   TIM14->CCMR1 = 0 ;
   TIM14->EGR = 0 ;
@@ -174,6 +174,7 @@ void boardInit()
   __enable_irq() ;
 
   eepromInit();
+  uartInit();
 }
 #endif
 
