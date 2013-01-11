@@ -46,8 +46,8 @@ void rtc_settime(struct gtm * t)
   RTC_DateStruct.RTC_Month = t->tm_mon;
   RTC_DateStruct.RTC_Date = t->tm_mday;
 
-  RTC_SetTime(RTC_Format_BIN, &RTC_TimeStruct);
-  RTC_SetDate(RTC_Format_BIN, &RTC_DateStruct);
+  RTC_SetTime(RTC_Format_BCD, &RTC_TimeStruct);
+  RTC_SetDate(RTC_Format_BCD, &RTC_DateStruct);
 }
 
 void rtc_gettime(struct gtm * t)
@@ -55,8 +55,8 @@ void rtc_gettime(struct gtm * t)
   RTC_TimeTypeDef RTC_TimeStruct;
   RTC_DateTypeDef RTC_DateStruct;
 
-  RTC_GetTime(RTC_Format_BIN, &RTC_TimeStruct);
-  RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
+  RTC_GetTime(RTC_Format_BCD, &RTC_TimeStruct);
+  RTC_GetDate(RTC_Format_BCD, &RTC_DateStruct);
 
   t->tm_hour = RTC_TimeStruct.RTC_Hours;
   t->tm_min  = RTC_TimeStruct.RTC_Minutes;
@@ -72,16 +72,18 @@ void rtcInit()
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
   PWR_BackupAccessCmd(ENABLE);
-
+  RCC_LSEConfig(RCC_LSE_ON);
+  while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET);
   RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
   RCC_RTCCLKCmd(ENABLE);
+  RTC_WaitForSynchro();
 
+  // RTC time base = LSE / ((AsynchPrediv+1) * (SynchPrediv+1)) = 1 Hz*/
   RTC_InitStruct.RTC_HourFormat = RTC_HourFormat_24;
-  RTC_InitStruct.RTC_AsynchPrediv = 128;
-  RTC_InitStruct.RTC_SynchPrediv = 256;
-
+  RTC_InitStruct.RTC_AsynchPrediv = 127;
+  RTC_InitStruct.RTC_SynchPrediv = 255;
   RTC_Init(&RTC_InitStruct);
-
+  
   struct gtm utm;
   rtc_gettime(&utm);
   g_rtcTime = gmktime(&utm);

@@ -67,23 +67,23 @@ uint32_t readTrims()
   register uint32_t e = GPIOE->IDR;
   register uint32_t result = 0;
 
-  if (e & PIN_TRIM1_DN)
-    result |= 0x01;
-  if (e & PIN_TRIM1_UP)
-    result |= 0x02;
-  if (e & PIN_TRIM2_UP)
-    result |= 0x04;
-  if (e & PIN_TRIM2_DN)
-    result |= 0x08;
+  if (~e & PIN_TRIM_LH_L)
+    result |= 0x01;         // LH_L
+  if (~e & PIN_TRIM_LH_R)
+    result |= 0x02;         // LH_R
+  if (~e & PIN_TRIM_LV_DN)
+    result |= 0x04;         // LV_DN
+  if (~e & PIN_TRIM_LV_UP)
+    result |= 0x08;         // LV_UP
 
-  if (c & PIN_TRIM3_UP)
-    result |= 0x10;
-  if (c & PIN_TRIM3_DN)
-    result |= 0x20;
-  if (c & PIN_TRIM4_UP)
-    result |= 0x80;
-  if (c & PIN_TRIM4_DN)
-    result |= 0x40;
+  if (~c & PIN_TRIM_RV_DN)
+    result |= 0x10;         // RV_DN
+  if (~c & PIN_TRIM_RV_UP)
+    result |= 0x20;         // RV_UP
+  if (~c & PIN_TRIM_RH_L)
+    result |= 0x40;         // RH_L
+  if (~c & PIN_TRIM_RH_R)
+    result |= 0x80;         // RH_R
 
   return result;
 }
@@ -217,8 +217,8 @@ void keysInit()
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBUTTON, ENABLE);
 
     /* GPIO  Configuration*/
-    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM3_UP | PIN_TRIM3_DN
-                                  | PIN_TRIM4_UP |PIN_TRIM4_DN | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F | PIN_SW_C_L
+    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
+                                  | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F | PIN_SW_C_L
                                   | PIN_SW_D_H | PIN_SW_H;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
@@ -233,7 +233,7 @@ void keysInit()
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = PIN_TRIM1_UP | PIN_TRIM1_DN | PIN_TRIM2_UP | PIN_TRIM2_DN;
+    GPIO_InitStructure.GPIO_Pin = PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
