@@ -1,5 +1,6 @@
 /*
  * Authors (alphabetical order)
+ * - Andre Bernet <bernet.andre@gmail.com>
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
@@ -143,7 +144,15 @@ void menuGeneralSetup(uint8_t event)
 {
 #if defined(RTCLOCK)
   static struct gtm t;
-  if ((m_posVert!=ITEM_SETUP_DATE+1 && m_posVert!=ITEM_SETUP_TIME+1) || s_editMode<=0) {
+  if (m_posVert==ITEM_SETUP_DATE+1 || m_posVert!=ITEM_SETUP_TIME+1) {
+    if (s_editMode<=0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
+      // set the date and time into RTC chip
+      rtc_settime(&t);
+      g_rtcTime = gmktime(t); // update local timestamp and get wday calculated
+      g_ms100 = 0; // start of next second begins now
+    }
+  }
+  else if (s_editMode<=0) {
     gettime(&t);
   }
 #endif
@@ -186,11 +195,6 @@ void menuGeneralSetup(uint8_t event)
             }
           }
         }
-
-        if (attr && s_editMode<=0 && event == EVT_KEY_FIRST(KEY_MENU)) {
-          // set the date and time into RTC chip
-          rtc_settime(&t);
-        }
         break;
 
       case ITEM_SETUP_TIME:
@@ -212,11 +216,6 @@ void menuGeneralSetup(uint8_t event)
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_sec = checkIncDec(event, t.tm_sec, 0, 59, 0);
               break;
           }
-        }
-
-        if (attr && s_editMode<=0 && event == EVT_KEY_FIRST(KEY_MENU)) {
-          // set the date and time into RTC chip
-          rtc_settime(&t);
         }
         break;
 #endif
