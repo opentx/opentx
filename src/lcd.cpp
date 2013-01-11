@@ -45,7 +45,7 @@ void lcd_clear()
 void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
-#if defined(LCD260)
+#if LCD >= 260
   xcoord_t w   = pgm_read_byte(q++);
   if (w == 255) w += pgm_read_byte(q++);
 #else

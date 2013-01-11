@@ -34,29 +34,29 @@
 #ifndef lcd_h
 #define lcd_h
 
-#if defined(LCD260)
-#define DISPLAY_W 260
-#define DISPLAY_H  75
-#define xcoord_t uint16_t
-#define CENTER      "\015"
-#define CENTER_OFS  (7*FW-FW/2)
+#if LCD >= 260
+#define DISPLAY_W     260
+#define DISPLAY_H     75
+#define xcoord_t      uint16_t
+#define CENTER        "\015"
+#define CENTER_OFS    (7*FW-FW/2)
 #elif LCD >= 212
-#define DISPLAY_W 212
-#define DISPLAY_H  64
-#define xcoord_t uint16_t
-#define CENTER      "\015"
-#define CENTER_OFS  (7*FW-FW/2)
+#define DISPLAY_W     212
+#define DISPLAY_H     64
+#define xcoord_t      uint16_t
+#define CENTER        "\015"
+#define CENTER_OFS    (7*FW-FW/2)
 #else
-#define DISPLAY_W 128
-#define DISPLAY_H  64
-#define xcoord_t uint8_t
+#define DISPLAY_W     128
+#define DISPLAY_H     64
+#define xcoord_t      uint8_t
 #define CENTER
-#define CENTER_OFS 0
+#define CENTER_OFS    0
 #endif
 
-#define FW          6
-#define FWNUM       5
-#define FH          8
+#define FW            6
+#define FWNUM         5
+#define FH            8
 
 /* lcd common flags */
 #define BLINK         0x01
