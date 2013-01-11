@@ -67,23 +67,23 @@ uint32_t readTrims()
   register uint32_t e = GPIOE->IDR;
   register uint32_t result = 0;
 
-  if (c & PIN_TRIM1_UP)
-    result |= 0x02;
-  if (c & PIN_TRIM1_DN)
+  if (e & PIN_TRIM1_DN)
     result |= 0x01;
-  if (c & PIN_TRIM2_UP)
+  if (e & PIN_TRIM1_UP)
+    result |= 0x02;
+  if (e & PIN_TRIM2_UP)
     result |= 0x04;
-  if (c & PIN_TRIM2_DN)
+  if (e & PIN_TRIM2_DN)
     result |= 0x08;
 
-  if (e & PIN_TRIM3_UP)
+  if (c & PIN_TRIM3_UP)
     result |= 0x10;
-  if (e & PIN_TRIM3_DN)
+  if (c & PIN_TRIM3_DN)
     result |= 0x20;
-  if (e & PIN_TRIM4_UP)
-    result |= 0x40;
-  if (e & PIN_TRIM4_DN)
+  if (c & PIN_TRIM4_UP)
     result |= 0x80;
+  if (c & PIN_TRIM4_DN)
+    result |= 0x40;
 
   return result;
 }
@@ -107,10 +107,10 @@ void readKeysAndTrims()
 
   in = readTrims();
 
-  /* for (i = 1; i < 256; i <<= 1) {
+  for (i = 1; i < 256; i <<= 1) {
     keys[enuk].input(in & i, (EnumKeys)enuk);
     ++enuk;
-  } */
+  }
 }
 
 uint32_t keyState(EnumKeys enuk)

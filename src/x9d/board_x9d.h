@@ -127,8 +127,6 @@ void adcRead();
 
 extern volatile uint16_t Analog_values[];
 
-void configure_pins( uint32_t pins, uint16_t config );
-
 #define DEBUG_UART_BAUDRATE 115200
 
 void uartInit(void);

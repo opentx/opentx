@@ -16,14 +16,14 @@
 #define PIN_BUTTON_EXIT                 GPIO_Pin_2      //SW5 PD.03
 
 // Trims
-#define	PIN_TRIM1_UP		        GPIO_Pin_3	//PC.03
-#define	PIN_TRIM1_DN	                GPIO_Pin_2	//PC.02
-#define	PIN_TRIM2_UP		        GPIO_Pin_1	//PC.01
-#define PIN_TRIM2_DN		        GPIO_Pin_13	//PC.13
-#define	PIN_TRIM3_UP		        GPIO_Pin_4	//PE.04
-#define PIN_TRIM3_DN                    GPIO_Pin_3      //PE.03
-#define PIN_TRIM4_UP                    GPIO_Pin_6      //PE.06
-#define PIN_TRIM4_DN                    GPIO_Pin_5      //PE.05
+#define	PIN_TRIM1_UP		        GPIO_Pin_3	//PE.03
+#define	PIN_TRIM1_DN	                GPIO_Pin_4	//PE.04
+#define	PIN_TRIM2_UP		        GPIO_Pin_6	//PE.06
+#define PIN_TRIM2_DN		        GPIO_Pin_5	//PE.05
+#define	PIN_TRIM3_UP		        GPIO_Pin_2	//PC.02
+#define PIN_TRIM3_DN                    GPIO_Pin_3      //PC.03
+#define PIN_TRIM4_UP                    GPIO_Pin_1      //PC.01
+#define PIN_TRIM4_DN                    GPIO_Pin_13     //PC.13
 
 // Switchs
 #define	PIN_SW_F		          GPIO_Pin_14	//PE.14
