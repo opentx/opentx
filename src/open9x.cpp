@@ -250,7 +250,7 @@ void per10ms()
     g_rtcTime++;   // inc global unix timestamp one second
 #if defined(PCBSKY9X)
     if (g_rtcTime < 60 || rtc_count<5) {
-      rtc_init();
+      rtcInit();
       rtc_count++;
     }
     else {
@@ -3420,7 +3420,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #endif
 
 #if defined(RTCLOCK)
-  rtc_init();
+  rtcInit();
 #endif
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on

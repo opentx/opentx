@@ -53,13 +53,14 @@ struct gtm
 extern gtime_t g_rtcTime;
 extern uint8_t g_ms100; // global to allow time set function to reset to zero
 
+void rtcInit();
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern void rtc_init();
-extern void rtc_settime(struct gtm * tm);
-extern void gettime(struct gtm * tm);
-extern gtime_t gmktime (struct gtm *tm);
+void rtc_settime(struct gtm * tm);
+void gettime(struct gtm * tm);
+gtime_t gmktime (struct gtm *tm);
 #ifdef __cplusplus
 }
 #endif

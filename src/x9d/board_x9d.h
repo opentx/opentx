@@ -48,8 +48,6 @@
 #include "aspi.h"
 #include "i2c_ee.h"
 #include "audio_driver.h"
-#include "delays.h"
-#include "uart.h"
 
 #define PERI1_FREQUENCY 30000000
 #define PERI2_FREQUENCY 60000000
@@ -129,5 +127,13 @@ void adcRead();
 extern volatile uint16_t Analog_values[];
 
 void configure_pins( uint32_t pins, uint16_t config );
+
+#define DEBUG_UART_BAUDRATE 115200
+
+void uartInit(void);
+void uartSendChar(uint8_t c);
+
+void delaysInit(void);
+void delay_01us(uint16_t nb);
 
 #endif

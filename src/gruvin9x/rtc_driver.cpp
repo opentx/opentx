@@ -228,45 +228,39 @@ int iic_write (
 	return cnt ? 0 : 1;
 }
 
-
-
 /*-------------------------------------------------*/
 /* RTC functions                                   */
 
-
 int g9x_rtc_gettime (RTC *rtc)
 {
-	BYTE buf[8];
+  BYTE buf[8];
 
-	if (!iic_read(0xD0, 0, 7, buf)) return 0;
+  if (!iic_read(0xD0, 0, 7, buf)) return 0;
 
-	rtc->sec = (buf[0] & 0x0F) + ((buf[0] >> 4) & 7) * 10;
-	rtc->min = (buf[1] & 0x0F) + (buf[1] >> 4) * 10;
-	rtc->hour = (buf[2] & 0x0F) + ((buf[2] >> 4) & 3) * 10;
-	rtc->wday = (buf[2] & 0x07);
-	rtc->mday = (buf[4] & 0x0F) + ((buf[4] >> 4) & 3) * 10;
-	rtc->month = (buf[5] & 0x0F) + ((buf[5] >> 4) & 1) * 10;
-	rtc->year = 2000 + (buf[6] & 0x0F) + (buf[6] >> 4) * 10;
+  rtc->sec = (buf[0] & 0x0F) + ((buf[0] >> 4) & 7) * 10;
+  rtc->min = (buf[1] & 0x0F) + (buf[1] >> 4) * 10;
+  rtc->hour = (buf[2] & 0x0F) + ((buf[2] >> 4) & 3) * 10;
+  rtc->wday = (buf[2] & 0x07);
+  rtc->mday = (buf[4] & 0x0F) + ((buf[4] >> 4) & 3) * 10;
+  rtc->month = (buf[5] & 0x0F) + ((buf[5] >> 4) & 1) * 10;
+  rtc->year = 2000 + (buf[6] & 0x0F) + (buf[6] >> 4) * 10;
 
-	return 1;
+  return 1;
 }
 
 int g9x_rtc_settime (const RTC *rtc)
 {
-	BYTE buf[8];
+  BYTE buf[8];
 
-	buf[0] = rtc->sec / 10 * 16 + rtc->sec % 10;
-	buf[1] = rtc->min / 10 * 16 + rtc->min % 10;
-	buf[2] = rtc->hour / 10 * 16 + rtc->hour % 10;
-	buf[3] = rtc->wday & 7;
-	buf[4] = rtc->mday / 10 * 16 + rtc->mday % 10;
-	buf[5] = rtc->month / 10 * 16 + rtc->month % 10;
-	buf[6] = (rtc->year - 2000) / 10 * 16 + (rtc->year - 2000) % 10;
-	return iic_write(0xD0, 0, 7, buf);
+  buf[0] = rtc->sec / 10 * 16 + rtc->sec % 10;
+  buf[1] = rtc->min / 10 * 16 + rtc->min % 10;
+  buf[2] = rtc->hour / 10 * 16 + rtc->hour % 10;
+  buf[3] = rtc->wday & 7;
+  buf[4] = rtc->mday / 10 * 16 + rtc->mday % 10;
+  buf[5] = rtc->month / 10 * 16 + rtc->month % 10;
+  buf[6] = (rtc->year - 2000) / 10 * 16 + (rtc->year - 2000) % 10;
+  return iic_write(0xD0, 0, 7, buf);
 }
-
-
-
 
 void rtc_gettime(struct gtm * utm)
 {
@@ -299,27 +293,27 @@ void rtc_settime(struct gtm * t)
   g9x_rtc_settime(&rtc);
 }
 
-void rtc_init (void)
+void rtcInit (void)
 {
-	BYTE buf[8];	/* RTC R/W buffer */
-	UINT adr;
+  BYTE buf[8];	/* RTC R/W buffer */
+  UINT adr;
 
 
-	/* Read RTC registers */
-	if (!iic_read(0xD0, 0, 8, buf)) return;	/* IIC error */
+  /* Read RTC registers */
+  if (!iic_read(0xD0, 0, 8, buf)) return;	/* IIC error */
 
-	if (buf[7] & 0x20) {	/* When data has been volatiled, set default time */
-		/* Clear nv-ram. Reg[8..63] */
-		memset(buf, 0, 8);
-		for (adr = 8; adr < 64; adr += 8)
-			iic_write(0x0D, adr, 8, buf);
-		/* Reset time to Jan 1, '08. Reg[0..7] */
-		buf[4] = 1; buf[5] = 1; buf[6] = 8;
-		iic_write(0x0D, 0, 8, buf);
-	}
+  if (buf[7] & 0x20) {	/* When data has been volatiled, set default time */
+          /* Clear nv-ram. Reg[8..63] */
+          memset(buf, 0, 8);
+          for (adr = 8; adr < 64; adr += 8)
+                  iic_write(0x0D, adr, 8, buf);
+          /* Reset time to Jan 1, '08. Reg[0..7] */
+          buf[4] = 1; buf[5] = 1; buf[6] = 8;
+          iic_write(0x0D, 0, 8, buf);
+  }
 
-	struct gtm utm;
-	rtc_gettime(&utm);
-	g_rtcTime = gmktime(&utm);
+  struct gtm utm;
+  rtc_gettime(&utm);
+  g_rtcTime = gmktime(&utm);
 }
 

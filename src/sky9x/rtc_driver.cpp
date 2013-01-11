@@ -55,7 +55,7 @@ void rtc_settime(struct gtm * t)
   write_coprocessor( (uint8_t *) &I2CTime, 8 ) ;
 }
 
-void rtc_init()
+void rtcInit()
 {
   read_coprocessor();
 }

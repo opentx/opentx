@@ -372,11 +372,7 @@ void read_volume()
 
 void read_coprocessor(bool onlytemp)
 {
-  if (onlytemp) {
-    get_onlytemp=true;
-  } else {
-    get_onlytemp=false;
-  }
+  get_onlytemp = onlytemp;
   CoProc_read_pending = 1 ;
   __disable_irq() ;
   i2c_check_for_request() ;

@@ -630,3 +630,19 @@ void lcdRefresh()
   lcd_refresh = true;
 }
 
+#if defined(PCBX9D)
+ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }
+ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
+void RTC_GetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { }
+void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { }
+void PWR_BackupAccessCmd(FunctionalState NewState) { }
+void RCC_RTCCLKConfig(uint32_t RCC_RTCCLKSource) { }
+void RCC_APB1PeriphClockCmd(uint32_t RCC_APB1Periph, FunctionalState NewState) { }
+void RCC_RTCCLKCmd(FunctionalState NewState) { }
+ErrorStatus RTC_Init(RTC_InitTypeDef* RTC_InitStruct) { return SUCCESS; }
+void USART_SendData(USART_TypeDef* USARTx, uint16_t Data) { }
+FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG) { return SET; }
+void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
+void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
+void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
+#endif

@@ -70,7 +70,15 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuGeneralCalib
 };
 
+#if LCD >= 212
+#define RADIO_SETUP_2ND_COLUMN  (DISPLAY_W-10*FW-MENUS_SCROLLBAR_WIDTH)
+#define RADIO_SETUP_DATE_COLUMN RADIO_SETUP_2ND_COLUMN + 4*FWNUM
+#define RADIO_SETUP_TIME_COLUMN RADIO_SETUP_2ND_COLUMN + 2*FWNUM
+#else
 #define RADIO_SETUP_2ND_COLUMN  (DISPLAY_W-5*FW-MENUS_SCROLLBAR_WIDTH)
+#define RADIO_SETUP_TIME_COLUMN (FW*15+5)
+#define RADIO_SETUP_DATE_COLUMN (FW*15+5)
+#endif
 
 #if defined(GRAPHICS)
 void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
@@ -102,7 +110,7 @@ enum menuGeneralSetupItems {
   IF_HAPTIC(ITEM_SETUP_HAPTIC_LENGTH)
   IF_HAPTIC(ITEM_SETUP_HAPTIC_STRENGTH)
   IF_PCBSKY9X(ITEM_SETUP_BRIGHTNESS)
-  ITEM_SETUP_CONTRAST,
+  IF_9X(ITEM_SETUP_CONTRAST)
   ITEM_SETUP_ALARMS_LABEL,
   ITEM_SETUP_BATTERY_WARNING,
   IF_PCBSKY9X(ITEM_SETUP_CAPACITY_WARNING)
@@ -130,6 +138,7 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_MAX
 };
 
+
 void menuGeneralSetup(uint8_t event)
 {
 #if defined(RTCLOCK)
@@ -139,7 +148,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) (uint8_t)-1, 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC((uint8_t)-1) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) 0, (uint8_t)-1, 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, (uint8_t)-1, 0, 0, (uint8_t)-1, 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, (uint8_t)-1, IF_PCBX9D(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) LABEL(SOUND), 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(TIMER_EVENTS), 0, 0, LABEL(BACKLIGHT), 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, LABEL(TX_MODE), IF_PCBX9D(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -153,16 +162,16 @@ void menuGeneralSetup(uint8_t event)
 #if defined(RTCLOCK)
       case ITEM_SETUP_DATE:
         lcd_putsLeft(y, STR_DATE);
-        lcd_putc(FW*15+5, y, '-'); lcd_putc(FW*18+3, y, '-');
+        lcd_putc(RADIO_SETUP_DATE_COLUMN, y, '-'); lcd_putc(RADIO_SETUP_DATE_COLUMN+3*FW-1, y, '-');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j) ? attr : 0;
           switch (j) {
             case 0:
-              lcd_outdezAtt(FW*15+5, y, t.tm_year+1900, rowattr);
+              lcd_outdezAtt(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+1900, rowattr);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
               break;
             case 1:
-              lcd_outdezNAtt(FW*18+3, y, t.tm_mon+1, rowattr|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+3*FW-1, y, t.tm_mon+1, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
               break;
             case 2:
@@ -171,7 +180,7 @@ void menuGeneralSetup(uint8_t event)
               int8_t dlim = (((((year%4==0) && (year %100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
               int8_t dmon[] = {31,28,31,30,31,30,31,31,30,31,30,31}; // TODO in flash
               dlim += dmon[t.tm_mon];
-              lcd_outdezNAtt(FW*21+2, y, t.tm_mday, rowattr|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+6*FW-2, y, t.tm_mday, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
               break;
             }
@@ -186,21 +195,21 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_TIME:
         lcd_putsLeft(y, STR_TIME);
-        lcd_putc(FW*15+5, y, ':'); lcd_putc(FW*18+3, y, ':');
+        lcd_putc(RADIO_SETUP_TIME_COLUMN-1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-4, y, ':');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j) ? attr : 0;
           switch (j) {
             case 0:
-              lcd_outdezNAtt(FW*15+5, y, t.tm_hour, rowattr|LEADING0, 2);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_hour = checkIncDec( event, t.tm_hour, 0, 23, 0);
+              lcd_outdezNAtt(RADIO_SETUP_TIME_COLUMN, y, t.tm_hour, rowattr|LEADING0, 2);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_hour = checkIncDec(event, t.tm_hour, 0, 23, 0);
               break;
             case 1:
-              lcd_outdezNAtt(FW*18+3, y, t.tm_min, rowattr|LEADING0, 2);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_min = checkIncDec( event, t.tm_min, 0, 59, 0);
+              lcd_outdezNAtt(RADIO_SETUP_TIME_COLUMN+3*FWNUM, y, t.tm_min, rowattr|LEADING0, 2);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_min = checkIncDec(event, t.tm_min, 0, 59, 0);
               break;
             case 2:
-              lcd_outdezNAtt(FW*21+2, y, t.tm_sec, rowattr|LEADING0, 2);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_sec = checkIncDec( event, t.tm_sec, 0, 59, 0);
+              lcd_outdezNAtt(RADIO_SETUP_TIME_COLUMN+6*FWNUM, y, t.tm_sec, rowattr|LEADING0, 2);
+              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_sec = checkIncDec(event, t.tm_sec, 0, 59, 0);
               break;
           }
         }
@@ -297,6 +306,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 #endif
 
+#if !defined(PCBX9D) && !defined(PCBACT)
       case ITEM_SETUP_CONTRAST:
         lcd_putsLeft( y, STR_CONTRAST);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN,y,g_eeGeneral.contrast, attr|LEFT);
@@ -305,6 +315,7 @@ void menuGeneralSetup(uint8_t event)
           lcdSetContrast();
         }
         break;
+#endif
 
       case ITEM_SETUP_ALARMS_LABEL:
         lcd_putsLeft(y, STR_ALARMS_LABEL);

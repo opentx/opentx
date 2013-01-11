@@ -42,6 +42,12 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#if defined(PCBX9D) || defined(PCBACT)
+#define IF_9X(x)
+#else
+#define IF_9X(x) x,
+#endif
+
 #if defined(PCBSKY9X)
 #define IF_PCBSKY9X(x) x,
 #else

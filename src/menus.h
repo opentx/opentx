@@ -252,4 +252,6 @@ void drawStatusLine();
 
 void menuChannelsMonitor(uint8_t event);
 
+#define LABEL(...) (uint8_t)-1
+
 #endif
