@@ -33,7 +33,7 @@
 
 #include "open9x.h"
 
-#if defined(LCD212) || defined(LCD260)
+#if LCD >= 212
 #define BOX_WIDTH     31
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
 #define LBOX_CENTERY  (DISPLAY_H-BOX_WIDTH/2-10)
@@ -174,7 +174,7 @@ void displaySliders()
 }
 #endif
 
-#if defined(LCD212)
+#if LCD >= 212
 void displayTimers()
 {
   // Main timer
@@ -392,7 +392,7 @@ void menuMainView(uint8_t event)
         s_gvar_timer = 0;
       }
 #endif
-#if !defined(LCD212) && !defined(LCD260)
+#if LCD < 212
       else if (view == VIEW_TIMER2) {
         resetTimer(1);
       }

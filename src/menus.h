@@ -47,7 +47,7 @@ typedef void (*MenuFuncP)(uint8_t event);
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 
-#if defined(LCD212)
+#if LCD >= 212
 #define MENUS_SCROLLBAR_WIDTH 2
 #else
 #define MENUS_SCROLLBAR_WIDTH 0

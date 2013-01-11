@@ -63,7 +63,7 @@ void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 }
 
 #if !defined(PCBSTD)
-void displayScrollbar(uint8_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_t count, uint8_t visible)
+void displayScrollbar(xcoord_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   lcd_vlineStip(x, y, h, SOLID, ERASE);
   lcd_vlineStip(x, y, h, DOTTED);
@@ -389,7 +389,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     s_noScroll = 0;
     displayScreenIndex(curr, menuTabSize, attr);
 
-#if defined(LCD212)
+#if LCD >= 212
     if (maxrow > 7)
       displayScrollbar(DISPLAY_W-1, FH, DISPLAY_H-FH, s_pgOfs, maxrow, 7);
 #endif
@@ -726,7 +726,7 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
 }
 #endif
 
-#if defined(LCD212)
+#if LCD >= 212
 #define MENU_X   30
 #define MENU_W   DISPLAY_W-60
 #else

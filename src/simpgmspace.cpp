@@ -97,7 +97,8 @@ sem_t *eeprom_write_sem;
 void setSwitch(int8_t swtch)
 {
   switch (swtch) {
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBACT)
+#elif defined(PCBX9D)
     case DSW(SW_SA0):
       GPIOE->IDR |= PIN_SW_A_L;
       GPIOB->IDR &= ~PIN_SW_A_H;
@@ -259,7 +260,7 @@ uint16_t getTmr16KHz()
   return get_tmr10ms() * 160;
 }
 
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
 bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
 {
@@ -390,7 +391,7 @@ void StartEepromThread(const char *filename)
   sem_init(eeprom_write_sem, 0, 0);
 #endif
 
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
   eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
 #endif
@@ -398,14 +399,14 @@ void StartEepromThread(const char *filename)
 
 void StopEepromThread()
 {
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
   eeprom_thread_running = false;
   sem_post(eeprom_write_sem);
   pthread_join(eeprom_thread_pid, NULL);
 #endif
 }
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size)
 #else
 void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size)
@@ -423,7 +424,7 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
   }
 }
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size)
 {
   assert(size);

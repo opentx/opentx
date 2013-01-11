@@ -1393,7 +1393,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 {
   lcd_clear();
 
-#if defined(LCD212)
+#if LCD >= 212
   lcd_img(DISPLAY_W-29, 0, asterisk_lbm, 0, 0);
 #endif
 #if !defined(CPUM64) || defined(EXTSTD)

@@ -112,7 +112,7 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 static uint8_t EeFsRead(blkid_t blk, uint8_t ofs)
 {
   uint8_t ret;
-#if defined(PCBX9D)
+#if defined(CPUARM)
   eeprom_read_block(&ret, (uint16_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
 #elif defined(SIMU)
   eeprom_read_block(&ret, (const void*)(uint64_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
@@ -915,7 +915,7 @@ void eeLoadModel(uint8_t id)
     FRSKY_setModelAlarms();
 #endif
 
-#if defined(PCBX9D) && defined(SDCARD)
+#if defined(CPUARM) && defined(SDCARD)
     refreshModelAudioFiles();
 #endif
 

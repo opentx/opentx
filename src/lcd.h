@@ -40,7 +40,7 @@
 #define xcoord_t uint16_t
 #define CENTER      "\015"
 #define CENTER_OFS  (7*FW-FW/2)
-#elif defined(LCD212)
+#elif LCD >= 212
 #define DISPLAY_W 212
 #define DISPLAY_H  64
 #define xcoord_t uint16_t

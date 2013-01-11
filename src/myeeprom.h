@@ -80,7 +80,7 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
-#if defined(LCD212) || defined(LCD260)
+#if LCD >= 212 || defined(LCD260)
 enum MainViews {
   VIEW_INPUTS,
   VIEW_SWITCHES,

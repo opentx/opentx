@@ -108,11 +108,18 @@ extern uint16_t sessionTimer;
 #define wdt_reset()
 #endif
 
-uint32_t check_soft_power();
+#define check_soft_power() e_power_on
 
 #define setBacklight(xx)
 #define __BACKLIGHT_ON
 #define __BACKLIGHT_OFF
 #define IS_BACKLIGHT_ON() (1)
+
+#if !defined(SIMU)
+#define eeprom_read_block(...)
+#define eeWriteBlockCmp(...)
+#else
+void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
+#endif
 
 #endif

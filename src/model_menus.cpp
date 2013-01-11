@@ -646,7 +646,7 @@ enum menuModelSetupItems {
 #define FIELD_TIMER_MAX 2
 #endif
 
-#if defined(LCD212)
+#if LCD >= 212
 #define MODEL_SETUP_2ND_COLUMN (DISPLAY_W-17*FW-MENUS_SCROLLBAR_WIDTH)
 #else
 #define MODEL_SETUP_2ND_COLUMN (DISPLAY_W-11*FW-MENUS_SCROLLBAR_WIDTH)
@@ -961,7 +961,7 @@ static uint8_t s_currIdx;
 #define MIXES_2ND_COLUMN    (11*FW)
 #endif
 
-#if defined(LCD212)
+#if LCD >= 212
 #define EXPO_ONE_2ND_COLUMN (DISPLAY_W - 88)
 #define EXPO_ONE_FP_WIDTH   (9*FW)
 #else
@@ -991,12 +991,12 @@ PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uin
 
   uint8_t posHorz = m_posHorz;
 
-#if defined(CPUARM) && !defined(LCD212)
+#if defined(CPUARM) && LCD < 212
   bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-2*FW);
 #endif
 
   for (uint8_t p=0; p<MAX_PHASES; p++) {
-#if defined(CPUARM) && !defined(LCD212)
+#if defined(CPUARM) && LCD < 212
     if (expoMenu && ((attr && p < posHorz-4) || (x > EXPO_ONE_2ND_COLUMN+2*FW)))
       continue;
 #endif
@@ -1260,7 +1260,7 @@ void menuModelPhasesAll(uint8_t event)
       }
 #endif
     }
-#if defined(LCD212)
+#if LCD >= 212
     if (p->fadeIn || p->fadeOut) {
       lcd_outdezAtt(24*FW, y, 5*p->fadeIn, PREC1|LEFT);
       lcd_putc(lcdLastPos, y, '/');
@@ -2173,7 +2173,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
               putsSwitches(11*FW, y, ed->swtch, 0);
               lcd_putsnAtt(DISPLAY_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
             }
-#if !defined(LCD212)
+#if LCD < 212
             else
 #endif
 #endif
@@ -2194,7 +2194,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             if (md->name[0]) {
               lcd_putsnAtt(DISPLAY_W-sizeof(md->name)*FW-MENUS_SCROLLBAR_WIDTH, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
             }
-#if !defined(LCD212)
+#if LCD < 212
             else
 #endif
 #endif
@@ -2377,7 +2377,7 @@ void menuModelLimits(uint8_t event)
 
     LimitData *ld = limitaddress(k) ;
 
-#if defined(LCD212) || !defined(PPM_CENTER_ADJUSTABLE)
+#if LCD >= 212 || !defined(PPM_CENTER_ADJUSTABLE)
     int16_t v = (ld->revert) ? -ld->offset : ld->offset;
     char swVal = '-';  // '-', '<', '>'
     if((g_chans512[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
@@ -2442,7 +2442,7 @@ void menuModelLimits(uint8_t event)
           if (active) ld->max = -100 + checkIncDecModel(event, ld->max+100, -25, limit);
           break;
         case ITEM_LIMITS_DIRECTION:
-#if defined(PPM_CENTER_ADJUSTABLE) && !defined(LCD212)
+#if defined(PPM_CENTER_ADJUSTABLE) && LCD < 212
           lcd_putcAtt(LIMITS_REVERT_POS, y, ld->revert ? 127 : 126, attr);
 #else
           lcd_putsiAtt(LIMITS_REVERT_POS, y, STR_MMMINV, ld->revert, attr);
