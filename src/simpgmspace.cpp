@@ -67,7 +67,6 @@ char* eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;
 bool eeprom_read_operation;
 #define EESIZE (128*4096)
-void configure_pins( uint32_t pins, uint16_t config ) { }
 #else
 extern uint16_t eeprom_pointer;
 extern const char* eeprom_buffer_data;
@@ -646,4 +645,14 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG) { ret
 void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
 void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
+void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR) { }
+void RCC_PLLI2SCmd(FunctionalState NewState) { }
+void RCC_I2SCLKConfig(uint32_t RCC_I2SCLKSource) { }
+void SPI_I2S_DeInit(SPI_TypeDef* SPIx) { }
+void I2S_Init(SPI_TypeDef* SPIx, I2S_InitTypeDef* I2S_InitStruct) { }
+void I2S_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
+void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState NewState) { }
+void RCC_LSEConfig(uint8_t RCC_LSE) { }
+FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return RESET; }
+ErrorStatus RTC_WaitForSynchro(void) { return ERROR; }
 #endif

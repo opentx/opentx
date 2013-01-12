@@ -55,6 +55,7 @@ volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
 #define PIN_PORT_MASK           0x0700
 #define PIN_SPEED_MASK          0x6000
 
+#if !defined(SIMU)
 void configure_pins( uint32_t pins, uint16_t config )
 {
   uint32_t address ;
@@ -98,6 +99,7 @@ void configure_pins( uint32_t pins, uint16_t config )
     }
   }
 }
+#endif
 
 uint8_t getTemperature()
 {

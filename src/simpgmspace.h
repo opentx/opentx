@@ -359,4 +359,6 @@ inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { 
 #define GPIO_ReadInputDataBit(...) true
 #endif
 
+#define configure_pins(...)
+
 #endif
