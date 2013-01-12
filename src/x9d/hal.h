@@ -70,8 +70,15 @@
 #define PIN_SPORT_RX                    GPIO_Pin_6  //PD.06
 
 // Trainer Port
-#define PIN_TR_PPM_IN                   GPIO_Pin_8  //PC.08
+#define PIN_TR_PPM_IN                   GPIO_Pin_5  //PC.08
 #define PIN_TR_PPM_OUT                  GPIO_Pin_9  //PC.09
+
+// TODO merge these constants
+#define PIN_PER_3                       0x030
+// #define PIN_OS2                         0x0000
+#define PIN_OS25                        0x2000
+// #define PIN_OS50                        0x4000
+// #define PIN_OS100                       0x6000
 
 // Cppm
 #define RCC_AHB1Periph_GPIOCPPM         RCC_AHB1Periph_GPIOA

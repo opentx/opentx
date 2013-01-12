@@ -123,8 +123,11 @@ void pwrInit();
 void eepromInit(); // TODO check it's not in another include
 void delaysInit();
 void adcInit();
-void adcRead();
+void audioInit();
 
+void adcRead();
+void init_trainer_ppm();
+void init_trainer_capture();
 extern volatile uint16_t Analog_values[];
 
 #define DEBUG_UART_BAUDRATE 115200

@@ -169,6 +169,13 @@ void boardInit()
   keysInit();
   adcInit();
   delaysInit();
+  audioInit();
+
+  // TODO init_ppm() ;
+
+  init_trainer_ppm() ;
+
+  init_trainer_capture() ;
 
   init5msTimer();
 
