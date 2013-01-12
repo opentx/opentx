@@ -2364,7 +2364,7 @@ void menuModelLimits(uint8_t event)
     if (k==NUM_CHNOUT) {
       // last line available - add the "copy trim menu" line
       uint8_t attr = (sub==NUM_CHNOUT) ? INVERS : 0;
-      lcd_putsAtt(3*FW+CENTER_OFS, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
+      lcd_putsAtt(CENTER_OFS, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
       if (attr) {
         s_editMode = 0;
         if (event==EVT_KEY_LONG(KEY_MENU)) {

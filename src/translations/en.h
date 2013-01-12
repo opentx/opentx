@@ -348,8 +348,8 @@
 #else
 #define TR_MENUTOSTART         CENTER"\006[MENU] TO START"
 #endif
-#define TR_SETMIDPOINT         CENTER"SET MIDPOINT"
-#define TR_MOVESTICKSPOTS      CENTER"MOVE STICKS/POTS"
+#define TR_SETMIDPOINT         CENTER"\012SET MIDPOINT"
+#define TR_MOVESTICKSPOTS      CENTER"\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
@@ -391,7 +391,7 @@
 #define TR_MENUDIAG            "DIAG"
 #define TR_MENUANA             "ANAS"
 #define TR_MENUCALIBRATION     "CALIBRATION"
-#define TR_TRIMS2OFFSETS       "Trims => Offsets"
+#define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
 #define TR_MENUMODELSEL        "MODELSEL"
 #define TR_MENUSETUP           "SETUP"
 #define TR_MENUFLIGHTPHASE     "FLIGHT PHASE"

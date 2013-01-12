@@ -1030,7 +1030,7 @@ void menuGeneralCalib(uint8_t event)
 
     case 1:
       // SET MIDPOINT
-      lcd_putsAtt(5*FW, 2*FH, STR_SETMIDPOINT, s_noScroll ? INVERS : 0);
+      lcd_putsAtt(0*FW, 2*FH, STR_SETMIDPOINT, s_noScroll ? INVERS : 0);
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
@@ -1042,7 +1042,7 @@ void menuGeneralCalib(uint8_t event)
 
     case 2:
       // MOVE STICKS/POTS
-      lcd_putsAtt(3*FW, 2*FH, STR_MOVESTICKSPOTS, s_noScroll ? INVERS : 0);
+      lcd_putsAtt(0*FW, 2*FH, STR_MOVESTICKSPOTS, s_noScroll ? INVERS : 0);
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
