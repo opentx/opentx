@@ -42,6 +42,8 @@
 #else //EXTRA_ROTARY_ENCODERS
 #define TR_RETA123       "RETA123ab"
 #endif //EXTRA_ROTARY_ENCODERS
+#elif defined(PCBX9D)
+#define TR_RETA123       "RETA1234"
 #else
 #define TR_RETA123       "RETA123"
 #endif

@@ -638,7 +638,8 @@ enum menuModelSetupItems {
   ITEM_MODEL_SWITCHES_WARNING,
   ITEM_MODEL_BEEP_CENTER,
   ITEM_MODEL_PROTOCOL,
-  ITEM_MODEL_PROTOCOL_PARAMS
+  ITEM_MODEL_PROTOCOL_PARAMS,
+  ITEM_MODEL_SETUP_MAX
 };
 
 #if defined(CPUARM) || defined(PCBGRUVIN9X)
@@ -662,7 +663,7 @@ void menuModelSetup(uint8_t event)
   }
 #endif
 
-  lcd_outdezNAtt(7*FW,0,g_eeGeneral.currModel+1,INVERS+LEADING0,2);
+  lcd_outdezNAtt(7*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
 
   uint8_t protocol = g_model.protocol;
 
@@ -671,7 +672,7 @@ void menuModelSetup(uint8_t event)
     s_rangecheck_mode = 0;
 #endif
 
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 14 : 13), {0,ZCHAR|(sizeof(g_model.name)-1),IF_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), {0,ZCHAR|(sizeof(g_model.name)-1),IF_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
 
   uint8_t  sub = m_posVert - 1;
   int8_t editMode = s_editMode;
