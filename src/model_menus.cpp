@@ -1428,14 +1428,18 @@ void menuModelCurveOne(uint8_t event)
       // no break
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_editMode <= 0)
-        m_posHorz = 0;
 #if defined(PCBX9D) || defined(PCBACT)
+      if (s_editMode <= 0) {
+        s_editMode = 1;
+        m_posHorz = 0;
+      }
       else if (s_editMode == 1)
         s_editMode = (crv.custom && m_posHorz>0 && m_posHorz<crv.points-1) ? 2 : 3;
       else if (s_editMode == 2)
         s_editMode = 3;
 #else
+      if (s_editMode <= 0)
+        m_posHorz = 0;
       if (s_editMode == 1 && crv.custom)
         s_editMode = 2;
 #endif
@@ -1454,6 +1458,10 @@ void menuModelCurveOne(uint8_t event)
       break;
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_editMode > 0) {
+#if defined(PCBX9D) || defined(PCBACT)
+        if (s_editMode == 3 && !(crv.custom && m_posHorz>0 && m_posHorz<crv.points-1))
+          s_editMode = 2;
+#endif
         if (--s_editMode == 0)
           m_posHorz = 0;
       }
@@ -1743,7 +1751,7 @@ void menuModelExpoOne(uint8_t event)
   ExpoData *ed = expoaddress(s_currIdx);
   putsChnRaw(7*FW+FW/2,0,ed->chn+1,0);
 
-  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_CPUARM(ZCHAR|(sizeof(ed->name)-1)) 0, 0, IF_CURVES(1) IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
+  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_CPUARM(ZCHAR|(sizeof(ed->name)-1)) 0, 0, IF_CURVES(0) IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 
   int8_t sub = m_posVert;
 
