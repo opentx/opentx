@@ -75,8 +75,8 @@ void adcInit()
   ADC->CCR = 0 ; //ADC_CCR_ADCPRE_0 ;             // Clock div 2
 
   DMA2_Stream0->CR = DMA_SxCR_PL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC ;
-  DMA2_Stream0->PAR = (uint32_t) &ADC1->DR ;
-  DMA2_Stream0->M0AR = (uint32_t)Analog_values;
+  DMA2_Stream0->PAR = CONVERT_PTR(&ADC1->DR);
+  DMA2_Stream0->M0AR = CONVERT_PTR(Analog_values);
   DMA2_Stream0->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 }
 
@@ -87,7 +87,7 @@ void adcRead()
   DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
   ADC1->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR ) ;
   DMA2->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 |DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0 ; // Write ones to clear bits
-  DMA2_Stream0->M0AR = (uint32_t)Analog_values ;
+  DMA2_Stream0->M0AR = CONVERT_PTR(Analog_values);
   DMA2_Stream0->NDTR = NUMBER_ANALOG ;
   DMA2_Stream0->CR |= DMA_SxCR_EN ;               // Enable DMA
   ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART ;
