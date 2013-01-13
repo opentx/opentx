@@ -31,7 +31,13 @@ void lcdRefresh()
     Set_Address(0, y);
     AspiCmd(0xAF);
     for (uint8_t x=0; x<DISPLAY_W; x+=2) {
+#if 1
       uint8_t data = (p[x] & mask ? 0x80 : 0) + (p[x+1] & mask ? 0x08 : 0) + (p[DISPLAY_PLAN_SIZE+x] & mask ? 0x40 : 0) + (p[DISPLAY_PLAN_SIZE+x+1] & mask ? 0x04 : 0);
+#else
+      // this code shows the 16 grey tones...
+      uint8_t data = (x * 16) / 212;
+      data += (data << 4);
+#endif
       WriteData(data);
     }
     WriteData(0);
