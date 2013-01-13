@@ -99,12 +99,14 @@ void menuStatisticsDebug(uint8_t event);
 #if defined(PCBX9D)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
+extern int8_t lastCursorMove;
 #define IS_RE_NAVIGATION_ENABLE()   true
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (event==type(KEY_ENTER))
 #define IS_RE_NAVIGATION_EVT(event) ((event&EVT_KEY_MASK)==KEY_ENTER)
 #elif defined(ROTARY_ENCODERS)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
+extern int8_t lastCursorMove;
 #define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
 #define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && (event&EVT_KEY_MASK)==(BTN_REa + g_eeGeneral.reNavigation - 1))
@@ -134,11 +136,11 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecModel(event,var,min,max)
 
 #if defined(AUTOSWITCH)
-#define AUTOSWITCH_MENU_LONG() (attr && event==EVT_KEY_LONG(KEY_MENU))
+#define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
 #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
   var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH)
 #else
-#define AUTOSWITCH_MENU_LONG() (0)
+#define AUTOSWITCH_ENTER_LONG() (0)
 #define CHECK_INCDEC_MODELSWITCH CHECK_INCDEC_MODELVAR
 #endif
 
@@ -254,5 +256,15 @@ void drawStatusLine();
 void menuChannelsMonitor(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
+
+#if defined(ROTARY_ENCODERS)
+#define CURSOR_MOVED_LEFT(event)  ((event & EVT_KEY_MASK) == KEY_LEFT || lastCursorMove < 0)
+#define CURSOR_MOVED_RIGHT(event) ((event & EVT_KEY_MASK) == KEY_RIGHT || lastCursorMove > 0)
+#define REPEAT_LAST_CURSOR_MOVE() if (lastCursorMove) lastCursorMove *= 2; else m_posHorz = 0
+#else
+#define CURSOR_MOVED_LEFT(event)  ((event & EVT_KEY_MASK) == KEY_LEFT)
+#define CURSOR_MOVED_RIGHT(event) ((event & EVT_KEY_MASK) == KEY_RIGHT)
+#define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
+#endif
 
 #endif

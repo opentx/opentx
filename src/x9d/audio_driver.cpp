@@ -184,7 +184,7 @@ void audioInit()
 
     /* Initialize the I2S peripheral with the structure above */
     I2S_Init(CODEC_I2S, &I2S_InitStructure);
-    I2S_Cmd(CODEC_I2S,ENABLE);
+    I2S_Cmd(CODEC_I2S, ENABLE);
     //interrupt
 #ifdef CODEC_USE_INT
     SPI_I2S_ITConfig(CODEC_I2S,SPI_I2S_IT_TXE,ENABLE);

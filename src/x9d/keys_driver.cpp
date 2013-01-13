@@ -105,12 +105,14 @@ void readKeysAndTrims()
     ++enuk;
   }
 
+#if !defined(SIMU)
   in = readTrims();
 
   for (i = 1; i < 256; i <<= 1) {
     keys[enuk].input(in & i, (EnumKeys)enuk);
     ++enuk;
   }
+#endif
 }
 
 uint32_t keyState(EnumKeys enuk)

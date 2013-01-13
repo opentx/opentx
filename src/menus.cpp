@@ -79,6 +79,7 @@ void displayScrollbar(xcoord_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_
 #if defined(ROTARY_ENCODERS)
 int8_t scrollRE;
 int16_t p1valdiff;
+int8_t lastCursorMove;
 #elif defined(NAVIGATION_POT1)
 int16_t p1valdiff;
 #endif
@@ -205,10 +206,10 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow)
 #if defined(PCBX9D) || defined(PCBACT)
 void check_rotary_encoder(uint8_t & event)
 {
-  if (event==EVT_KEY_REPT(KEY_MOVE_UP) || event==EVT_KEY_FIRST(KEY_MOVE_UP)) {
+  if (lastCursorMove < -1 || event==EVT_KEY_REPT(KEY_MOVE_UP) || event==EVT_KEY_FIRST(KEY_MOVE_UP)) {
     scrollRE = -1;
   }
-  else if (event==EVT_KEY_REPT(KEY_MOVE_DOWN) || event==EVT_KEY_FIRST(KEY_MOVE_DOWN)) {
+  else if (lastCursorMove > 1 || event==EVT_KEY_REPT(KEY_MOVE_DOWN) || event==EVT_KEY_FIRST(KEY_MOVE_DOWN)) {
     scrollRE = 1;
   }
   else {
@@ -414,11 +415,13 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     }
 
 #if defined(ROTARY_ENCODERS)
+    lastCursorMove = 0;
     while (!s_editMode && scrollRE) {
       if (scrollRE > 0) {
         --scrollRE;
         maxcol = MAXCOL(l_posVert);
         if (maxcol & ZCHAR) maxcol = 0;
+        lastCursorMove = +1;
         if (++l_posHorz > maxcol) {
           if (l_posVert < maxrow) {
             do {
@@ -441,6 +444,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       }
       else {
         ++scrollRE;
+        lastCursorMove = -1;
         if (l_posHorz-- == 0) {
           do {
             --l_posVert;

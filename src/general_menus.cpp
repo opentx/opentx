@@ -139,21 +139,15 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_MAX
 };
 
-
 void menuGeneralSetup(uint8_t event)
 {
 #if defined(RTCLOCK)
-  static struct gtm t;
-  if (m_posVert==ITEM_SETUP_DATE+1 || m_posVert!=ITEM_SETUP_TIME+1) {
-    if (s_editMode<=0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
-      // set the date and time into RTC chip
-      rtc_settime(&t);
-      g_rtcTime = gmktime(t); // update local timestamp and get wday calculated
-      g_ms100 = 0; // start of next second begins now
-    }
-  }
-  else if (s_editMode<=0) {
-    gettime(&t);
+  struct gtm t;
+  gettime(&t);
+
+  if ((m_posVert==ITEM_SETUP_DATE+1 || m_posVert==ITEM_SETUP_TIME+1) && s_editMode>0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
+    // set the date and time into RTC chip
+    rtc_settime(&t);
   }
 #endif
 
@@ -186,7 +180,7 @@ void menuGeneralSetup(uint8_t event)
             case 2:
             {
               int16_t year = 1900 + t.tm_year;
-              int8_t dlim = (((((year%4==0) && (year %100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
+              int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
               int8_t dmon[] = {31,28,31,30,31,30,31,31,30,31,30,31}; // TODO in flash
               dlim += dmon[t.tm_mon];
               lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+6*FW-2, y, t.tm_mday, rowattr|LEADING0, 2);
@@ -195,6 +189,8 @@ void menuGeneralSetup(uint8_t event)
             }
           }
         }
+        if (attr && checkIncDec_Ret)
+          g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
         break;
 
       case ITEM_SETUP_TIME:
@@ -217,6 +213,8 @@ void menuGeneralSetup(uint8_t event)
               break;
           }
         }
+        if (attr && checkIncDec_Ret)
+          g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
         break;
 #endif
 
@@ -297,8 +295,7 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, STR_BRIGHTNESS);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
         if(attr) {
-          uint8_t b ;
-          b = 100 - g_eeGeneral.backlightBright;
+          uint8_t b = 100 - g_eeGeneral.backlightBright;
           CHECK_INCDEC_GENVAR(event, b, 0, 100);
           g_eeGeneral.backlightBright = 100 - b;
         }

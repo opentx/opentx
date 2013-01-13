@@ -2814,7 +2814,19 @@ void menuModelCustomSwitches(uint8_t event)
 }
 #endif
 
-#define MODEL_CUSTOM_FUNC_3RD_COLUMN (15*FW+2)
+#if LCD >= 212
+#define MODEL_CUSTOM_FUNC_2ND_COLUMN  (6*FW-2)
+#define MODEL_CUSTOM_FUNC_3RD_COLUMN  (20*FW+2)
+#define MODEL_CUSTOM_FUNC_4TH_COLUMN  (25*FW)
+#elif defined(GRAPHICS)
+#define MODEL_CUSTOM_FUNC_2ND_COLUMN  (5*FW-2)
+#define MODEL_CUSTOM_FUNC_3RD_COLUMN  (15*FW+2)
+#define MODEL_CUSTOM_FUNC_4TH_COLUMN  (20*FW)
+#else
+#define MODEL_CUSTOM_FUNC_2ND_COLUMN  (5*FW-2)
+#define MODEL_CUSTOM_FUNC_3RD_COLUMN  (15*FW+2)
+#define MODEL_CUSTOM_FUNC_4TH_COLUMN  (18*FW+2)
+#endif
 
 void menuModelCustomFunctions(uint8_t event)
 {
@@ -2845,26 +2857,30 @@ void menuModelCustomFunctions(uint8_t event)
             if (sd->swtch > MAX_SWITCH+1) sd->swtch -= (MAX_SWITCH+1);
             if (sd->swtch < -MAX_SWITCH-1) sd->swtch += (MAX_SWITCH+1);
           }
+          // printf("ICI switch=%d [%d:%d]\n", sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1+2*MAX_PSWITCH); fflush(stdout);
           putsSwitches(3, y, sd->swtch, SWONOFF | attr | ((abs(sd->swtch) <= (MAX_SWITCH+1) && getSwitch(sd->swtch, 0) && (sd->func > FUNC_INSTANT_TRIM || sd->active)) ? BOLD : 0));
-          if (active || AUTOSWITCH_MENU_LONG()) {
-#if defined(CPUARM)
+          if (active || AUTOSWITCH_ENTER_LONG()) {
+#if defined(PCBX9D)
+            CHECK_INCDEC_MODELSWITCH(event, sd->swtch, -127, +127);
+#elif defined(CPUARM)
             CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1+2*MAX_PSWITCH);
 #else
             CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWITCH_OFF-MAX_SWITCH, SWITCH_ON+MAX_SWITCH+1);            
 #endif
           }
           break;
+
         case 1:
           if (sd->swtch) {
             uint8_t func_displayed;
             if (sd->func < FUNC_TRAINER) {
               func_displayed = 0;
-              putsChnRaw(11*FW-2, y, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+3+NUM_PPM+sd->func+1, attr);
+              putsChn(MODEL_CUSTOM_FUNC_2ND_COLUMN+6*FW, y, sd->func+1, attr);
             }
             else if (sd->func < 16 + NUM_STICKS + 1) {
               func_displayed = 1;
               if (sd->func != FUNC_TRAINER)
-                putsChnRaw(13*FW-2, y, sd->func-FUNC_TRAINER, attr);
+                putsChnRaw(MODEL_CUSTOM_FUNC_2ND_COLUMN+8*FW, y, sd->func-FUNC_TRAINER, attr);
             }
 #if defined(DEBUG)
             else if (sd->func == FUNC_TEST) {
@@ -2878,22 +2894,23 @@ void menuModelCustomFunctions(uint8_t event)
 #if defined(GVARS)
             else if (sd->func >= FUNC_ADJUST_GV1) {
               func_displayed = FUNC_ADJUST_GV1 - 16 - NUM_STICKS + 1;
-              putsStrIdx(12*FW-2, y, STR_GV, sd->func-FUNC_ADJUST_GV1+1, attr);
+              putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, STR_GV, sd->func-FUNC_ADJUST_GV1+1, attr);
             }
 #endif
             else {
               func_displayed = 2 + sd->func - 16 - NUM_STICKS - 1;
             }
-            lcd_putsiAtt(5*FW-2, y, STR_VFSWFUNC, func_displayed, attr);
+            lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func_displayed, attr);
             if (active) {
               CHECK_INCDEC_MODELVAR(event, sd->func, 0, FUNC_MAX-1);
               if (checkIncDec_Ret) FSW_RESET_PARAM(sd);
             }
           }
           else if (attr) {
-            m_posHorz = 0;
+            REPEAT_LAST_CURSOR_MOVE();
           }
           break;
+
         case 2:
           if (sd->swtch) {
             int16_t val_displayed = FSW_PARAM(sd);
@@ -2979,7 +2996,7 @@ void menuModelCustomFunctions(uint8_t event)
             }
 #endif
             else {
-              if (attr) m_posHorz = ((event & EVT_KEY_MASK) == KEY_LEFT ? 1 : 3);
+              if (attr) m_posHorz = (CURSOR_MOVED_LEFT(event) ? 1 : 3);
               break;
             }
 
@@ -2988,21 +3005,17 @@ void menuModelCustomFunctions(uint8_t event)
             }
           }
           else if (attr) {
-            m_posHorz = 0;
+            REPEAT_LAST_CURSOR_MOVE();
           }
           break;
 
         case 3:
           if (sd->swtch && sd->func <= FUNC_INSTANT_TRIM) {
-#if defined(GRAPHICS)
-            menu_lcd_onoff(20*FW, y, sd->active, attr);
-#else
-            menu_lcd_onoff(18*FW+2, y, sd->active, attr) ;
-#endif
+            menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN, y, sd->active, attr);
             if (active) CHECK_INCDEC_MODELVAR(event, sd->active, 0, 1);
           }
           else if (attr) {
-            m_posHorz = 0;
+            REPEAT_LAST_CURSOR_MOVE();
           }
           break;
       }

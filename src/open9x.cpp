@@ -1196,12 +1196,17 @@ void backlightOn()
 
 #define SPLASH_NEEDED() (!IS_DSM2_PROTOCOL(g_model.protocol) && !g_eeGeneral.splashMode)
 
+inline void Splash()
+{
+  lcd_clear();
+  lcd_img(0, 0, splash_lbm, 0, 0);
+  lcdRefresh();
+}
+
 void doSplash()
 {
   if (SPLASH_NEEDED()) {
-    lcd_clear();
-    lcd_img(0, 0, splash_lbm, 0, 0);
-    lcdRefresh();
+    Splash();
 
 #if !defined(CPUARM)
     AUDIO_TADA();
@@ -1209,7 +1214,7 @@ void doSplash()
 
 #if defined(PCBSTD)
     lcdSetContrast();
-#else
+#elif !defined(PCBX9D)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -1239,7 +1244,7 @@ void doSplash()
 
       if (check_soft_power()==e_power_off) return;
 
-#if !defined(PCBSTD)
+#if !defined(PCBSTD) && !defined(PCBX9D)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
         if (contrast < g_eeGeneral.contrast) {
@@ -3402,6 +3407,10 @@ uint16_t stack_free()
 
 inline void open9xInit(OPEN9X_INIT_ARGS)
 {
+#if defined(PCBX9D)
+  Splash();
+#endif
+
   eeReadAll();
 
 #if defined(CPUARM)
