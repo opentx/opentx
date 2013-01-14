@@ -63,6 +63,13 @@
 
 #define PSIZE(x) ( sizeof(x) - 1 )
 #define EOFS(x)  ( OFS_##x + sizeof(TR_##x) )
+
+#if LCD >= 212
+#define TR(x,y) y
+#else
+#define TR(x,y) x
+#endif
+
 // The non-0-terminated-strings
 
 extern const pm_char STR_OPEN9X[];

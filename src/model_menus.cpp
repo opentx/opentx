@@ -444,10 +444,10 @@ void menuModelSelect(uint8_t event)
   }
 
 #if defined(PCBX9D)
-  lcd_puts(11*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
+  lcd_puts(27*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
   lcd_outdezAtt(20*FW, 0, reusableBuffer.models.eepromfree, 0);
-  lcd_puts(20*FW, 0, "bytes"); // TODO translations
+  lcd_puts(21*FW, 0, "bytes"); // TODO translations
 #elif !defined(PCBSKY9X)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
@@ -464,7 +464,7 @@ void menuModelSelect(uint8_t event)
   else if (sub-s_pgOfs > 5)  s_pgOfs = min(MAX_MODELS-7, sub-4);
 
   for (uint8_t i=0; i<7; i++) {
-    uint8_t y=(i+1)*FH;
+    uint8_t y=(i+1)*FH+1;
     uint8_t k=i+s_pgOfs;
     lcd_outdezNAtt(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
 
@@ -3102,7 +3102,9 @@ enum menuModelTelemetryItems {
 #endif
 
 #ifdef FRSKY
-#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
+#if LCD >= 212
+#define TELEM_COL2 (DISPLAY_W-17*FW-MENUS_SCROLLBAR_WIDTH)
+#elif defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
 #define TELEM_COL2 (9*FW)
 #else
 #define TELEM_COL2 (8*FW)

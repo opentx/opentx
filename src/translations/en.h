@@ -32,8 +32,8 @@
 #define LEN_VLCD         "\006"
 #define TR_VLCD          "NormalOptrex"
 
-#define LEN_VTRIMINC     "\006"
-#define TR_VTRIMINC      "Expo  ""ExFine""Fine  ""Medium""Coarse"
+#define LEN_VTRIMINC     TR("\006","\013")
+#define TR_VTRIMINC      TR("Expo  ""ExFine""Fine  ""Medium""Coarse","Exponential""Extra Fine ""Fine       ""Medium     ""Coarse     ")
 
 #define LEN_RETA123      "\001"
 #if defined(PCBGRUVIN9X)
@@ -43,7 +43,7 @@
 #define TR_RETA123       "RETA123ab"
 #endif //EXTRA_ROTARY_ENCODERS
 #elif defined(PCBX9D)
-#define TR_RETA123       "RETA1234"
+#define TR_RETA123       "RETA12LR"
 #else
 #define TR_RETA123       "RETA123"
 #endif
@@ -141,8 +141,8 @@
 
 #define TR_VFSWFUNC      "Safety\0    ""Trainer \0  ""Inst. Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
-#define LEN_VFSWRESET    "\006"
-#define TR_VFSWRESET     "Timer1""Timer2""All   ""Telem."
+#define LEN_VFSWRESET    TR("\006","\012")
+#define TR_VFSWRESET     "Timer 1  ""Timer 2  ""All      ""Telemetry"
 
 #define LEN_FUNCSOUNDS   "\006"
 #define TR_FUNCSOUNDS    "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
@@ -261,14 +261,14 @@
 #define TR_LOADINGMODEL        "Loading model..."
 #define TR_NAME                "Name"
 #define TR_BITMAP              "Bitmap"
-#define TR_TIMER               "Timer"
-#define TR_ELIMITS             "E.Limits"
-#define TR_ETRIMS              "E.Trims"
+#define TR_TIMER               TR("Timer","Timer ")
+#define TR_ELIMITS             TR("E.Limits","Extended Limits")
+#define TR_ETRIMS              TR("E.Trims","Extended Trims")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              "T-Trace"
-#define TR_TTRIM               "T-Trim"
-#define TR_BEEPCTR             "Ctr Beep"
-#define TR_PROTO               INDENT"Proto"
+#define TR_TTRACE              TR("T-Trace","Throttle Trace")
+#define TR_TTRIM               TR("T-Trim","Throttle Trim")
+#define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
+#define TR_PROTO               TR(INDENT"Proto",INDENT"Protocol")
 #define TR_PPMFRAME            "PPM frame"
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Switch"
@@ -335,10 +335,10 @@
 #define TR_BACKLIGHT_LABEL     "Backlight"
 #define TR_BLDELAY             INDENT"Duration"
 #define TR_SPLASHSCREEN        "Splash screen"
-#define TR_THROTTLEWARNING     "T-Warning"
-#define TR_SWITCHWARNING       "S-Warning"
+#define TR_THROTTLEWARNING     TR("T-Warning","Throttle Warning")
+#define TR_SWITCHWARNING       TR("S-Warning","Switch Warning")
 #define TR_TIMEZONE            "Time Zone"
-#define TR_RXCHANNELORD        "Rx Channel Ord"
+#define TR_RXCHANNELORD        TR("Rx Channel Ord","Receiver channel order")
 #define TR_SLAVE               "Slave"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplier"
@@ -394,7 +394,7 @@
 #define TR_MENUANA             "ANAS"
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
-#define TR_MENUMODELSEL        "MODELSEL"
+#define TR_MENUMODELSEL        TR("MODELSEL","MODEL SELECTION")
 #define TR_MENUSETUP           "SETUP"
 #define TR_MENUFLIGHTPHASE     "FLIGHT PHASE"
 #define TR_MENUFLIGHTPHASES    "FLIGHT PHASES"
@@ -415,7 +415,7 @@
 #define TR_MENUTEMPLATES       "TEMPLATES"
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_RXNUM               "RxNum"
+#define TR_RXNUM               TR("RxNum","Receiver Number")
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_BACK                "Back"
 #define TR_LIMIT               INDENT"Limit"
@@ -442,7 +442,7 @@
 #define TR_THROTTLEWARN        "THROTTLE"
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          "SWITCH"
-#define TR_INVERT_THR          "Invert Thr?"
+#define TR_INVERT_THR          TR("Invert Thr?","Invert Throttle?")
 #define TR_SPEAKER_VOLUME      INDENT"Volume"
 #define TR_LCD                 "LCD"
 #define TR_BRIGHTNESS          "Brightness"
@@ -451,8 +451,8 @@
 #define TR_CPU_MAH             "Consumpt."
 #define TR_COPROC              "CoProc."
 #define TR_COPROC_TEMP         "MB Temp. \016>"
-#define TR_CAPAWARNING         INDENT "Capacity Low"
-#define TR_TEMPWARNING         INDENT "Temp High"
+#define TR_CAPAWARNING         INDENT"Capacity Low"
+#define TR_TEMPWARNING         "Temp High"
 #define TR_FUNC                "Func"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
