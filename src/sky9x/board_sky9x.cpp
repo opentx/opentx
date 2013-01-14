@@ -888,8 +888,10 @@ void usbBootloader()
   //      NVIC_DisableIRQ(PWM_IRQn) ;
   disable_ssc() ;
 
+#if !defined(SIMU)
   DEBUG_UART_Stop();
   UART3_Stop();
+#endif
 
   sam_boot() ;
 }
