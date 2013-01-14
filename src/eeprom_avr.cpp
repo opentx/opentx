@@ -37,9 +37,9 @@
 #include "inttypes.h"
 #include "string.h"
 
-uint8_t  s_write_err = 0;    // error reasons
-uint8_t  s_eeDirtyMsk;
-uint16_t s_eeDirtyTime10ms;
+uint8_t   s_write_err = 0;    // error reasons
+uint8_t   s_eeDirtyMsk;
+tmr10ms_t s_eeDirtyTime10ms;
 
 RlcFile  theFile;  //used for any file operation
 EeFs     eeFs;

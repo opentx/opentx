@@ -60,9 +60,6 @@ void dump(unsigned char *data, unsigned int size);
 #define TRACE_ERROR(...) debugPuts("-E- " __VA_ARGS__)
 #define DUMP(data, size) dump(data, size)
 
-void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock);
-void DEBUG_UART_Stop();
-
 void debugTask(void* pdata);
 
 #else

@@ -20,14 +20,16 @@
 #include <inttypes.h>
 #include <stdint.h>
 
-#ifdef REV0
-#define WRITE_DELAY_10MS 100
+#if defined(SIMU)
+#define WRITE_DELAY_10MS 200
+#elif defined(PCBSKY9X) && defined(REV0)
+#define WRITE_DELAY_10MS 200
 #else
 #define WRITE_DELAY_10MS 500
 #endif
 
-extern uint8_t  s_eeDirtyMsk;
-extern uint16_t s_eeDirtyTime10ms;
+extern uint8_t   s_eeDirtyMsk;
+extern tmr10ms_t s_eeDirtyTime10ms;
 
 // States in Eeprom32_process_state
 #define E32_IDLE                                                        1

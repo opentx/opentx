@@ -172,6 +172,9 @@ void boardInit()
   adcInit();
   delaysInit();
   audioInit();
+#if defined(DEBUG)
+  debugInit();
+#endif
 
   // TODO init_ppm() ;
 
@@ -184,7 +187,6 @@ void boardInit()
   __enable_irq() ;
 
   eepromInit();
-  uartInit();
 }
 #endif
 

@@ -381,7 +381,13 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #else
     static FXuint keys2[]={KEY_F8, KEY_F7, KEY_F4, KEY_F3, KEY_F6, KEY_F5, KEY_F1, KEY_F2  };
 #endif
-#if defined(PCBSKY9X)
+#if defined(PCBX9D)
+    GPIOE->IDR |= PIN_TRIM_LH_L | PIN_TRIM_LH_R | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP;
+    GPIOC->IDR |= PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
+    GPIOE->IDR |= 0xFFFFFFFF;
+    GPIOB->IDR |= 0xFFFFFFFF;
+    GPIOC->IDR |= 0xFFFFFFFF;
+#elif defined(PCBSKY9X)
     PIOA->PIO_PDSR |= (0x00800000 | 0x01000000 | 0x00000002 | 0x00000001);
     PIOB->PIO_PDSR |= (0x00000050);
     PIOC->PIO_PDSR |= (0x10000000 | 0x00000400 | 0x00000200);
@@ -393,7 +399,8 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 
     for(unsigned i=0; i<DIM(keys2);i++){
       if(getApp()->getKeyState(keys2[i])) {
-#if defined(PCBSKY9X)
+#if defined(PCBX9D)
+#elif defined(PCBSKY9X)
         switch(i) {
           case 6:
             PIOA->PIO_PDSR &= ~0x00800000;
@@ -498,32 +505,25 @@ void Open9xSim::refreshDiplay()
   if (lcd_refresh) {
     lcd_refresh = false;
     FXColor offColor = IS_BACKLIGHT_ON() ? BL_COLOR : FXRGB(200,200,200);
+#if !defined(PCBX9D)
     FXColor onColor = FXRGB(0,0,0);
-#if defined(PCBX9D)
-    FXColor grey1Color = FXRGB(0xC0,0xC0,0xC0);
-    FXColor grey2Color = FXRGB(0xA0,0xA0,0xA0);
 #endif
-
     for (int x=0;x<W;x++) {
       for (int y=0; y<H; y++) {
 #if defined(PCBX9D)
-        if ((lcd_buf[x+(y/8)*W] & (1<<(y%8))) && (lcd_buf[DISPLAY_PLAN_SIZE+x+(y/8)*W] & (1<<(y%8)))) {
-          bmp->setPixel(2*x, 2*y, onColor);
-          bmp->setPixel(2*x+1, 2*y, onColor);
-          bmp->setPixel(2*x, 2*y+1, onColor);
-          bmp->setPixel(2*x+1, 2*y+1, onColor);
-        }
-        else if (lcd_buf[DISPLAY_PLAN_SIZE+x+(y/8)*W] & (1<<(y%8))) {
-          bmp->setPixel(2*x, 2*y, grey1Color);
-          bmp->setPixel(2*x+1, 2*y, grey1Color);
-          bmp->setPixel(2*x, 2*y+1, grey1Color);
-          bmp->setPixel(2*x+1, 2*y+1, grey1Color);
-        }
-        else if (lcd_buf[x+(y/8)*W] & (1<<(y%8))) {
-          bmp->setPixel(2*x, 2*y, grey2Color);
-          bmp->setPixel(2*x+1, 2*y, grey2Color);
-          bmp->setPixel(2*x, 2*y+1, grey2Color);
-          bmp->setPixel(2*x+1, 2*y+1, grey2Color);
+        #define PALETTE_IDX(p, x, mask) ((((p)[(x)] & (mask)) ? 0x1 : 0) + (((p)[DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x2 : 0) + (((p)[2*DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x4 : 0) + (((p)[3*DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x8 : 0))
+        uint8_t mask = (1 << (y%8));
+        uint32_t z = PALETTE_IDX(lcd_buf, (y/8)*W+x, mask);
+        if (z) {
+          FXColor color;
+          if (IS_BACKLIGHT_ON())
+            color = FXRGB(47-(z*47)/15, 123-(z*123)/15, 227-(z*227)/15);
+          else
+            color = FXRGB(200-(z*200)/15, 200-(z*200)/15, 200-(z*200)/15);
+          bmp->setPixel(2*x, 2*y, color);
+          bmp->setPixel(2*x+1, 2*y, color);
+          bmp->setPixel(2*x, 2*y+1, color);
+          bmp->setPixel(2*x+1, 2*y+1, color);
         }
 #else
         if (lcd_buf[x+(y/8)*W] & (1<<(y%8))) {

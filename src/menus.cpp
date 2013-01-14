@@ -223,7 +223,7 @@ void check_rotary_encoder(uint8_t & event)
 
   // TODO remove later...
   uint8_t key = event & EVT_KEY_MASK;
-  if (key==KEY_LEFT || key==KEY_RIGHT)
+  if (key==KEY_MOVE_UP || key==KEY_MOVE_DOWN)
     event = 0;
 }
 #elif defined(ROTARY_ENCODERS)

@@ -33,7 +33,7 @@
  */
 
 #include "../open9x.h"
-#include "fifo.h"
+#include "../fifo.h"
 
 void btSetBaudrate(uint32_t index)
 {

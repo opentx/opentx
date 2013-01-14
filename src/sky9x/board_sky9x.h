@@ -39,7 +39,6 @@
 #include "board.h"
 #include "audio_driver.h"
 #include "haptic_driver.h"
-#include "debug.h"
 
 #if defined(BLUETOOTH)
 #include "bluetooth.h"

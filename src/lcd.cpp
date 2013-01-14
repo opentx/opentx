@@ -62,10 +62,14 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags 
       ASSERT_IN_DISPLAY(p);
 #if defined(PCBX9D)
       uint8_t val = inv ? ~b : b;
-      if (!(att & GREY1))
+      if (!(att & GREY(1)))
         *p = val;
-      if (!(att & GREY2))
+      if (!(att & GREY(2)))
         *(p+DISPLAY_PLAN_SIZE) = val;
+      if (!(att & GREY(4)))
+        *(p+2*DISPLAY_PLAN_SIZE) = val;
+      if (!(att & GREY(8)))
+        *(p+3*DISPLAY_PLAN_SIZE) = val;
       p++;
 #else
       *p++ = inv ? ~b : b;
@@ -79,10 +83,14 @@ uint8_t lcdLastPos;
 #if defined(PCBX9D)
 #define LCD_BYTE_FILTER(p, keep, add) \
   do { \
-    if (!(flags & GREY1)) \
+    if (!(flags & GREY(1))) \
       *(p) = ((*(p)) & (keep)) | (add); \
-    if (!(flags & GREY2)) \
+    if (!(flags & GREY(2))) \
       *(p+DISPLAY_PLAN_SIZE) = ((*(p+DISPLAY_PLAN_SIZE)) & (keep)) | (add); \
+    if (!(flags & GREY(4))) \
+      *(p+2*DISPLAY_PLAN_SIZE) = ((*(p+2*DISPLAY_PLAN_SIZE)) & (keep)) | (add); \
+    if (!(flags & GREY(8))) \
+      *(p+3*DISPLAY_PLAN_SIZE) = ((*(p+3*DISPLAY_PLAN_SIZE)) & (keep)) | (add); \
   } while (0)
 #else
 #define LCD_BYTE_FILTER(p, keep, add) *(p) = (*(p) & (keep)) | (add)
@@ -463,7 +471,7 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 {
   ASSERT_IN_DISPLAY(p);
 
-  if (!(att & GREY1)) {
+  if (!(att & GREY(1))) {
     if (att & FORCE)
       *p |= mask;
     else if (att & ERASE)
@@ -472,9 +480,28 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
       *p ^= mask;
   }
 
-  if (!(att & GREY2)) {
-    p += DISPLAY_PLAN_SIZE;
+  p += DISPLAY_PLAN_SIZE;
+  if (!(att & GREY(2))) {
+    if (att & FORCE)
+      *p |= mask;
+    else if (att & ERASE)
+      *p &= ~mask;
+    else
+      *p ^= mask;
+  }
 
+  p += DISPLAY_PLAN_SIZE;
+  if (!(att & GREY(4))) {
+    if (att & FORCE)
+      *p |= mask;
+    else if (att & ERASE)
+      *p &= ~mask;
+    else
+      *p ^= mask;
+  }
+
+  p += DISPLAY_PLAN_SIZE;
+  if (!(att & GREY(8))) {
     if (att & FORCE)
       *p |= mask;
     else if (att & ERASE)
@@ -625,6 +652,8 @@ void lcd_invert_line(int8_t y)
   for (xcoord_t x=0; x<DISPLAY_W; x++) {
     ASSERT_IN_DISPLAY(p);
 #if defined(PCBX9D)
+    *(p+3*DISPLAY_PLAN_SIZE) ^= 0xff;
+    *(p+2*DISPLAY_PLAN_SIZE) ^= 0xff;
     *(p+DISPLAY_PLAN_SIZE) ^= 0xff;
 #endif
     *p++ ^= 0xff;

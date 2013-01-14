@@ -104,8 +104,8 @@
 #define MIDSIZE       0x0100
 #define SMLSIZE       0x0200
 #define TINSIZE       0x0400
-#define GREY1         0x1000
-#define GREY2         0x2000
+#define GREY(x)       ((x)*0x1000)
+#define GREY_MASK(x)  ((x) & 0xF000)
 #else
 #define MIDSIZE       DBLSIZE
 #define SMLSIZE       0x00
@@ -121,7 +121,7 @@
 #define DISPLAY_PLAN_SIZE (DISPLAY_W*((DISPLAY_H+7)/8))
 
 #if defined(PCBX9D)
-#define DISPLAY_BUF_SIZE   (2*DISPLAY_PLAN_SIZE)
+#define DISPLAY_BUF_SIZE   (4*DISPLAY_PLAN_SIZE)
 #else
 #define DISPLAY_BUF_SIZE   DISPLAY_PLAN_SIZE
 #endif
@@ -216,6 +216,7 @@ inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att=0) { lcd_
     lcd_vline(x+5, y+8, 2);
 
 extern void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
+extern void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img);
 extern void lcdSetRefVolt(unsigned char val);
 extern void lcdInit();
 extern void lcd_clear();
@@ -224,7 +225,7 @@ extern void lcdSetContrast();
 extern void lcdRefresh();
 
 #if defined(PCBX9D)
-const pm_char * bmpLoad(uint8_t *dest, const char *filename);
+const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t width, const uint8_t height);
 #endif
 
 #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))

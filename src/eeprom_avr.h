@@ -37,14 +37,18 @@
 
 #include <inttypes.h>
 
-#if defined(PCBGRUVIN9X) && !defined(REV0)
+#if defined(SIMU)
+#define WRITE_DELAY_10MS 200
+#elif defined(PCBX9D)
+#define WRITE_DELAY_10MS 1000
+#elif defined(PCBGRUVIN9X) && !defined(REV0)
 #define WRITE_DELAY_10MS 500
 #else
 #define WRITE_DELAY_10MS 200
 #endif
 
-extern uint8_t  s_eeDirtyMsk;
-extern uint16_t s_eeDirtyTime10ms;
+extern uint8_t   s_eeDirtyMsk;
+extern tmr10ms_t s_eeDirtyTime10ms;
 
 #if defined(CPUARM)
 #define blkid_t    uint16_t

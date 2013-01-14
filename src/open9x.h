@@ -172,6 +172,10 @@
 #include "stock/board_stock.h"
 #endif
 
+#if defined(CPUARM) && defined(DEBUG)
+#include "debug.h"
+#endif
+
 #if defined(SIMU)
 #include "simpgmspace.h"
 #elif defined(CPUARM)
@@ -222,6 +226,24 @@ extern void boardInit();
 extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
 #endif
 
+#if defined(CPUARM)
+// This doesn't need protection on this processor
+#define tmr10ms_t uint32_t
+extern volatile tmr10ms_t g_tmr10ms;
+#define get_tmr10ms() g_tmr10ms
+#else
+#define tmr10ms_t uint16_t
+extern volatile tmr10ms_t g_tmr10ms;
+extern inline uint16_t get_tmr10ms()
+{
+  uint16_t time  ;
+  cli();
+  time = g_tmr10ms ;
+  sei();
+  return time ;
+}
+#endif
+
 // TODO try to merge the 2 include files
 #if defined(PCBSKY9X)
 #include "eeprom_arm.h"
@@ -238,7 +260,7 @@ extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
 #if defined(PCBX9D)
 #define MODEL_BITMAP_WIDTH  64
 #define MODEL_BITMAP_HEIGHT 32
-#define MODEL_BITMAP_SIZE   (2+MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8)
+#define MODEL_BITMAP_SIZE   (2+4*(MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8))
 extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 void loadModelBitmap();
 #define LOAD_MODEL_BITMAP() loadModelBitmap()
@@ -1073,24 +1095,6 @@ inline int16_t calcRESXto100(register int32_t x)
 extern int16_t calc100toRESX(int8_t x);
 extern int16_t calc1000toRESX(int16_t x);
 extern int16_t calcRESXto1000(int16_t x);
-#endif
-
-#if defined(CPUARM)
-// This doesn't need protection on this processor
-#define tmr10ms_t uint32_t
-extern volatile tmr10ms_t g_tmr10ms;
-#define get_tmr10ms() g_tmr10ms
-#else
-#define tmr10ms_t uint16_t
-extern volatile tmr10ms_t g_tmr10ms;
-extern inline uint16_t get_tmr10ms()
-{
-  uint16_t time  ;
-  cli();
-  time = g_tmr10ms ;
-  sei();
-  return time ;
-}
 #endif
 
 #define TMR_VAROFS  5

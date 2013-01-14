@@ -433,8 +433,8 @@ void menuMainView(uint8_t event)
   displaySliders();
 
 #if defined(PCBX9D)
-  // Model Bitmap
-  lcd_img(BITMAP_X, BITMAP_Y, modelBitmap, 0, 0);
+  // Model bitmap
+  lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
 #endif
 
   // Switches

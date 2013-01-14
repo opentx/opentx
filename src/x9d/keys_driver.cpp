@@ -85,6 +85,8 @@ uint32_t readTrims()
   if (~c & PIN_TRIM_RH_R)
     result |= 0x80;         // RH_R
 
+  // printf("readTrims(): %x %x => %x\n", c, e, result); fflush(stdout);
+
   return result;
 }
 
@@ -105,14 +107,12 @@ void readKeysAndTrims()
     ++enuk;
   }
 
-#if !defined(SIMU)
   in = readTrims();
 
   for (i = 1; i < 256; i <<= 1) {
     keys[enuk].input(in & i, (EnumKeys)enuk);
     ++enuk;
   }
-#endif
 }
 
 uint32_t keyState(EnumKeys enuk)

@@ -26,7 +26,7 @@
 #define PIN_TRIM_LV_UP        GPIO_Pin_5  //PE.05
 
 // Switchs
-#define	PIN_SW_F		          GPIO_Pin_14	//PE.14
+#define	PIN_SW_F		        GPIO_Pin_14	//PE.14
 #define	PIN_SW_E_L		        GPIO_Pin_3	//PB.03
 #define	PIN_SW_E_H		        GPIO_Pin_4	//PB.04
 #define	PIN_SW_B_H		        GPIO_Pin_5	//PB.05

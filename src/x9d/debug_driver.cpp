@@ -34,16 +34,7 @@
 
 #include "../open9x.h"
 
-void uartSendChar(uint8_t c)
-{
-  USART_SendData(UART_DEBUG, c);
-
-  /* Wait for end of previous transfer */
-  while (USART_GetFlagStatus(UART_DEBUG, USART_FLAG_TC) == RESET);
-}
-
-
-void uartInit(void)
+void debugInit(void)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -72,3 +63,10 @@ void uartInit(void)
   USART_Cmd(UART_DEBUG, ENABLE);
 }
 
+void debugPutc(const char c)
+{
+  USART_SendData(UART_DEBUG, c);
+
+  /* Wait for end of previous transfer */
+  while (USART_GetFlagStatus(UART_DEBUG, USART_FLAG_TC) == RESET);
+}

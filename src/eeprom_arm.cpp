@@ -37,9 +37,9 @@
 #include "inttypes.h"
 #include "string.h"
 
-volatile uint32_t Spi_complete; // TODO in the driver ?
-uint8_t  s_eeDirtyMsk;
-uint16_t s_eeDirtyTime10ms;
+volatile  uint32_t Spi_complete; // TODO in the driver ?
+uint8_t   s_eeDirtyMsk;
+tmr10ms_t s_eeDirtyTime10ms;
 
 // Logic for storing to EEPROM/loading from EEPROM
 // If main needs to wait for the eeprom, call mainsequence without actioning menus

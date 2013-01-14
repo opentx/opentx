@@ -124,6 +124,7 @@ void eepromInit(); // TODO check it's not in another include
 void delaysInit();
 void adcInit();
 void audioInit();
+void debugInit();
 
 void adcRead();
 void init_trainer_ppm();

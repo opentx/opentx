@@ -144,7 +144,7 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
 {
   uint8_t category = (i >> 24);
 
-#if defined(SIMU)
+#if 0
   printf("isAudioFileAvailable(%08x)\n", i); fflush(stdout);
 #endif
 

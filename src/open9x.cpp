@@ -55,7 +55,7 @@ OS_TID btTaskId;
 OS_STK btStack[BT_STACK_SIZE];
 #endif
 
-#if defined(DEBUG)
+#if defined(PCBSKY9X) && defined(DEBUG)
 OS_TID debugTaskId;
 OS_STK debugStack[DEBUG_STACK_SIZE];
 #endif
@@ -102,7 +102,7 @@ void loadModelBitmap()
   strncpy(lfn+sizeof(BITMAPS_PATH), g_model.bitmap, sizeof(g_model.bitmap));
   lfn[sizeof(BITMAPS_PATH)+sizeof(g_model.bitmap)] = '\0';
   strcat(lfn+sizeof(BITMAPS_PATH), BITMAPS_EXT);
-  bmpLoad(modelBitmap, lfn);
+  bmpLoad(modelBitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT);
 }
 #endif
 
@@ -2549,11 +2549,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   mixWarning = lv_mixWarning;
 }
 
-#if defined(SIMU)
-#define TIME_TO_WRITE s_eeDirtyMsk
-#else
-#define TIME_TO_WRITE (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
-#endif
+#define TIME_TO_WRITE() (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
 #ifdef BOLD_FONT
 ACTIVE_MIXES_TYPE activeMixes;
@@ -2927,16 +2923,16 @@ void perMain()
 #if defined(PCBSKY9X)
   if (Eeprom32_process_state != E32_IDLE)
     ee32_process();
-  else if (TIME_TO_WRITE)
+  else if (TIME_TO_WRITE())
     eeCheck();
 #elif defined(CPUARM)
-  if (TIME_TO_WRITE)
+  if (TIME_TO_WRITE())
     eeCheck();
 #else
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
-    else if (TIME_TO_WRITE)
+    else if (TIME_TO_WRITE())
       eeCheck();
   }
 #endif
@@ -3665,7 +3661,7 @@ int main(void)
 
   CoInitOS();
 
-#if defined(DEBUG)
+#if defined(PCBSKY9X) && defined(DEBUG)
   debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
 #endif
 

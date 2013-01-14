@@ -36,6 +36,8 @@
 
 void pwrInit();
 void eepromInit();
+void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock);
+void DEBUG_UART_Stop();
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;

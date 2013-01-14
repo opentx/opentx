@@ -37,6 +37,8 @@
 
 #if !defined(SIMU)
 
+extern Fifo32 debugFifo;
+
 /*
  * Outputs a character on the UART line.
  *
@@ -52,37 +54,6 @@ void debugPutc(const char c)
 
   /* Send character */
   pUart->UART_THR = c;
-}
-
-// Outputs a string to the UART
-void debugPuts(const char *format, ...)
-{
-  va_list arglist;
-  char tmp[256];
-
-  va_start(arglist, format);
-  vsnprintf(tmp, 256, format, arglist);
-  va_end(arglist);
-
-  const char *t = tmp;
-  while (*t) {
-    debugPutc(*t++);
-  }
-}
-
-void dump(unsigned char *data, unsigned int size)
-{
- debugPuts("DUMP %d bytes ...\n\r", size);
- unsigned int i = 0, j=0;
- while (i*32+j < size) {
-   debugPuts("%.2X ", data[i*32+j]);
-   j++;
-   if (j==32) {
-     i++; j=0;
-     debugPuts("\n\r");
-   }
- }
- debugPuts("\n\r");
 }
 
 /**
@@ -128,22 +99,9 @@ void DEBUG_UART_Stop()
   NVIC_DisableIRQ(UART0_IRQn) ;
 }
 
-Fifo32 debugFifo;
-
 extern "C" void UART0_IRQHandler()
 {
   debugFifo.push(CONSOLE_USART->UART_RHR);
-}
-
-void debugTask(void* pdata)
-{
-  uint8_t rxchar ;
-
-  for (;;) {
-    while (!debugFifo.pop(rxchar))
-      CoTickDelay(5); // 10ms
-
-  }
 }
 
 #endif
