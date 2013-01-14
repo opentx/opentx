@@ -663,7 +663,11 @@ void menuModelSetup(uint8_t event)
   }
 #endif
 
+#if LCD >= 212
+  lcd_outdezNAtt(13*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
+#else
   lcd_outdezNAtt(7*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
+#endif
 
   uint8_t protocol = g_model.protocol;
 

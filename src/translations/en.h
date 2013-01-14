@@ -259,8 +259,8 @@
 #define TR_COPYINGMODEL        "Copying model..."
 #define TR_MOVINGMODEL         "Moving model..."
 #define TR_LOADINGMODEL        "Loading model..."
-#define TR_NAME                "Name"
-#define TR_BITMAP              "Bitmap"
+#define TR_NAME                TR("Name","Model Name")
+#define TR_BITMAP              "Model Image"
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("E.Limits","Extended Limits")
 #define TR_ETRIMS              TR("E.Trims","Extended Trims")
@@ -395,7 +395,7 @@
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
 #define TR_MENUMODELSEL        TR("MODELSEL","MODEL SELECTION")
-#define TR_MENUSETUP           "SETUP"
+#define TR_MENUSETUP           TR("SETUP","MODEL SETUP")
 #define TR_MENUFLIGHTPHASE     "FLIGHT PHASE"
 #define TR_MENUFLIGHTPHASES    "FLIGHT PHASES"
 #define TR_MENUHELISETUP       "HELI SETUP"
