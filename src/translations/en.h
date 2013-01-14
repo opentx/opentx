@@ -328,17 +328,17 @@
 #define TR_MEMORYWARNING       INDENT"Memory Low"
 #define TR_ALARMWARNING        INDENT"Sound Off"
 #define TR_RENAVIG             "RotEnc Navig"
-#define TR_THROTTLEREVERSE     "Thr reverse"
-#define TR_BEEP_LABEL          "Timer events"
-#define TR_MINUTEBEEP          INDENT"Minute"
+#define TR_THROTTLEREVERSE     TR("Thr reverse","Throttle reverse")
+#define TR_BEEP_LABEL          "Timer beeps"
+#define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Every minute")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_BACKLIGHT_LABEL     "Backlight"
 #define TR_BLDELAY             INDENT"Duration"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning","Throttle Warning")
 #define TR_SWITCHWARNING       TR("S-Warning","Switch Warning")
-#define TR_TIMEZONE            "Time Zone"
-#define TR_RXCHANNELORD        TR("Rx Channel Ord","Receiver channel order")
+#define TR_TIMEZONE            TR("Time Zone","GPS Time zone")
+#define TR_RXCHANNELORD        TR("Rx Channel Ord","Default channel order")
 #define TR_SLAVE               "Slave"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplier"
@@ -422,8 +422,8 @@
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitude"
 #define TR_LONGITUDE           "Longitude"
-#define TR_GPSCOORD            "Gps Coords"
-#define TR_VARIO               "Vario"
+#define TR_GPSCOORD            TR("GPS Coords","GPS coordinate format")
+#define TR_VARIO               TR("Vario","Variometer")
 #define TR_SHUTDOWN            "SHUTTING DOWN"
 #define TR_BATT_CALIB          "Battery Calib"
 #define TR_CURRENT_CALIB       "Current Calib"
@@ -452,7 +452,7 @@
 #define TR_COPROC              "CoProc."
 #define TR_COPROC_TEMP         "MB Temp. \016>"
 #define TR_CAPAWARNING         INDENT"Capacity Low"
-#define TR_TEMPWARNING         "Temp High"
+#define TR_TEMPWARNING         TR(INDENT"Temp High",INDENT"Temperature High")
 #define TR_FUNC                "Func"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
