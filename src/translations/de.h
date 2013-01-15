@@ -37,11 +37,11 @@
 
 #define LEN_RETA123                     "\001"
 #if defined(PCBGRUVIN9X)
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
 #define TR_RETA123                      "SHGQ123abcd"
-#else //EXTRA_ROTARY_ENCODERS
+#else
 #define TR_RETA123                      "SHGQ123ab"
-#endif //EXTRA_ROTARY_ENCODERS
+#endif
 #else
 #define TR_RETA123                      "SHGQ123"
 #endif
@@ -205,9 +205,9 @@
 #define LEN_VSRCRAW                     "\004"
 #if defined(PCBSKY9X)
 #define TR_ROTARY_ENCODERS_VSRCRAW 			"DGa\0"
-#elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
 #define TR_ROTARY_ENCODERS_VSRCRAW "DGa ""DGb ""DGc ""DGd "
-#elif defined(PCBGRUVIN9X) && !defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS <= 2
 #define TR_ROTARY_ENCODERS_VSRCRAW "DGa ""DGb "
 #else
 #define TR_ROTARY_ENCODERS_VSRCRAW

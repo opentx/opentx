@@ -203,7 +203,7 @@ void writeLogs()
         f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
       }
 
-      if (f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,%d\n", keyState(SW_THR), keyState(SW_RUD), keyState(SW_ELE), keyState(SW_ID0), keyState(SW_ID1), keyState(SW_ID2), keyState(SW_AIL), keyState(SW_GEA), keyState(SW_TRN)) < 0  && !error_displayed) {
+      if (f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,%d\n", switchState(SW_THR), switchState(SW_RUD), switchState(SW_ELE), switchState(SW_ID0), switchState(SW_ID1), switchState(SW_ID2), switchState(SW_AIL), switchState(SW_GEA), switchState(SW_TRN)) < 0  && !error_displayed) {
         error_displayed = STR_SDCARD_ERROR;
         s_global_warning = STR_SDCARD_ERROR;
       }

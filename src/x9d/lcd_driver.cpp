@@ -28,12 +28,12 @@ const uint8_t lcdPalette[4] = { 0, 0x03, 0x06, 0x0F };
 
 void lcdRefresh()
 {  
-  for (uint8_t y=0; y<DISPLAY_H; y++) {
-    uint8_t *p = &displayBuf[(y>>3)*DISPLAY_W];
+  for (uint8_t y=0; y<LCD_H; y++) {
+    uint8_t *p = &displayBuf[(y>>3)*LCD_W];
     uint8_t mask = (1 << (y%8));
     Set_Address(0, y);
     AspiCmd(0xAF);
-    for (uint8_t x=0; x<DISPLAY_W; x+=2) {
+    for (uint8_t x=0; x<LCD_W; x+=2) {
 #if 0
       uint8_t data = (p[x] & mask ? 0x80 : 0) + (p[x+1] & mask ? 0x08 : 0) + (p[DISPLAY_PLAN_SIZE+x] & mask ? 0x40 : 0) + (p[DISPLAY_PLAN_SIZE+x+1] & mask ? 0x04 : 0);
 #elif 1

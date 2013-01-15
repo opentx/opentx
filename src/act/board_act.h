@@ -41,14 +41,16 @@
 #include "stm32f10x.h"
 
 // Keys
-#define PIN_BUTTON_PLUS                 GPIO_Pin_0      //SW3 PE.10
-#define PIN_BUTTON_ENTER                GPIO_Pin_1      //SW2 PE.11
-#define PIN_BUTTON_MINUS                GPIO_Pin_2      //SW1 PE.12
-#define PIN_BUTTON_MENU                 GPIO_Pin_11     //SW4 PD.07
-#define PIN_BUTTON_EXIT                 GPIO_Pin_12     //SW5 PD.03
-#define PIN_BUTTON_PAGE                 GPIO_Pin_10     //SW6 PD.02
-
-#include "x9d/audio_driver.h"
+#define GPIO_BUTTON_MENU                GPIOC->IDR
+#define GPIO_BUTTON_EXIT                GPIOC->IDR
+#define GPIO_BUTTON_CLR                 GPIOC->IDR
+#define GPIO_BUTTON_PAGE                GPIOC->IDR
+#define GPIO_BUTTON_ENTER               GPIOC->IDR
+#define PIN_BUTTON_MENU                 GPIO_Pin_11
+#define PIN_BUTTON_EXIT                 GPIO_Pin_12
+#define PIN_BUTTON_CLR                  GPIO_Pin_13
+#define PIN_BUTTON_PAGE                 GPIO_Pin_10
+#define PIN_BUTTON_ENTER                GPIO_Pin_14
 
 // TODO elsewhere
 #if !defined(SIMU)
@@ -122,5 +124,28 @@ extern uint16_t sessionTimer;
 #else
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #endif
+
+#define NUM_VOL_LEVELS  24
+
+void startSound( void ) ;
+void setFrequency( uint32_t frequency );
+uint32_t getFrequency();
+void start_timer1( void );
+void initDac( void ) ;
+void end_sound( void ) ;
+
+extern uint16_t *nextAudioData;
+extern uint16_t nextAudioSize;
+
+inline void toneStart()
+{
+}
+
+inline void toneStop()
+{
+}
+
+extern void init_twi( void ) ;
+extern void setVolume( register uint8_t volume ) ;
 
 #endif

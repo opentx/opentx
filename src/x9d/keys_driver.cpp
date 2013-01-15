@@ -115,7 +115,7 @@ void readKeysAndTrims()
   }
 }
 
-uint32_t keyState(EnumKeys enuk)
+uint32_t switchState(EnumKeys enuk)
 {
   register uint32_t a = GPIOA->IDR;
   register uint32_t b = GPIOB->IDR;

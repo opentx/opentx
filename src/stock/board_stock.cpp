@@ -78,7 +78,7 @@ uint8_t keyDown()
   return (~PINB) & 0x7E;
 }
 
-bool keyState(EnumKeys enuk)
+bool switchState(EnumKeys enuk)
 {
   uint8_t result = 0 ;
 

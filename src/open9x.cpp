@@ -643,16 +643,16 @@ int16_t getValue(uint8_t i)
   else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
   else if(i<MIXSRC_MAX) return 1024;
 #if defined(PCBX9D) || defined(PCBACT)
-  else if(i<MIXSRC_SA) return (keyState(SW_SA0) ? -1024 : (keyState(SW_SA1) ? 0 : 1024));  
-  else if(i<MIXSRC_SB) return (keyState(SW_SB0) ? -1024 : (keyState(SW_SB1) ? 0 : 1024));
-  else if(i<MIXSRC_SC) return (keyState(SW_SC0) ? -1024 : (keyState(SW_SC1) ? 0 : 1024));
-  else if(i<MIXSRC_SD) return (keyState(SW_SD0) ? -1024 : (keyState(SW_SD1) ? 0 : 1024));
-  else if(i<MIXSRC_SE) return (keyState(SW_SE0) ? -1024 : (keyState(SW_SE1) ? 0 : 1024));
-  else if(i<MIXSRC_SF) return (keyState(SW_SF0) ? -1024 : 1024);
-  else if(i<MIXSRC_SG) return (keyState(SW_SG0) ? -1024 : (keyState(SW_SG1) ? 0 : 1024));
-  else if(i<MIXSRC_SH) return (keyState(SW_SH0) ? -1024 : 1024);
+  else if(i<MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));  
+  else if(i<MIXSRC_SB) return (switchState(SW_SB0) ? -1024 : (switchState(SW_SB1) ? 0 : 1024));
+  else if(i<MIXSRC_SC) return (switchState(SW_SC0) ? -1024 : (switchState(SW_SC1) ? 0 : 1024));
+  else if(i<MIXSRC_SD) return (switchState(SW_SD0) ? -1024 : (switchState(SW_SD1) ? 0 : 1024));
+  else if(i<MIXSRC_SE) return (switchState(SW_SE0) ? -1024 : (switchState(SW_SE1) ? 0 : 1024));
+  else if(i<MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
+  else if(i<MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
+  else if(i<MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
 #else
-  else if(i<MIXSRC_3POS) return (keyState(SW_ID0) ? -1024 : (keyState(SW_ID1) ? 0 : 1024));
+  else if(i<MIXSRC_3POS) return (switchState(SW_ID0) ? -1024 : (switchState(SW_ID1) ? 0 : 1024));
   // here the switches are skipped
   else if(i<MIXSRC_3POS+3)
 #if defined(HELI)
@@ -734,7 +734,7 @@ bool __getSwitch(int8_t swtch)
     result = true;
   }
   else if (cs_idx <= MAX_PSWITCH) {
-    result = keyState((EnumKeys)(SW_BASE+cs_idx-1));
+    result = switchState((EnumKeys)(SW_BASE+cs_idx-1));
   }
   else {
     cs_idx -= MAX_PSWITCH+1;
@@ -1022,7 +1022,7 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
   uint8_t phase = s_perout_flight_phase;
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     if (phase == 0) return 0;
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
     int16_t value;
     if(idx<(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
       value = phaseaddress(phase)->rotaryEncoders[idx];
@@ -1041,7 +1041,7 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 
 int16_t getRotaryEncoder(uint8_t idx)
 {
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
   if(idx >= (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
     return g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
 #endif
@@ -1051,7 +1051,7 @@ int16_t getRotaryEncoder(uint8_t idx)
 void incRotaryEncoder(uint8_t idx, int8_t inc)
 {
   g_rotenc[idx] += inc;
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
   int16_t *value;
   if (idx < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
     value = &(phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
@@ -1399,8 +1399,8 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 {
   lcd_clear();
 
-#if LCD >= 212
-  lcd_img(DISPLAY_W-29, 0, asterisk_lbm, 0, 0);
+#if LCD_W >= 212
+  lcd_img(LCD_W-29, 0, asterisk_lbm, 0, 0);
 #endif
 #if !defined(CPUM64) || defined(EXTSTD)
   lcd_img(2, 0, asterisk_lbm, 0, 0);
@@ -1414,7 +1414,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   lcd_putsAtt(6*FW, 0, title, DBLSIZE);
   lcd_putsAtt(6*FW, 2*FH, STR_WARNING, DBLSIZE);
 #endif
-  lcd_filled_rect(0, 0, DISPLAY_W, 32);
+  lcd_filled_rect(0, 0, LCD_W, 32);
   if (t) lcd_putsLeft(5*FH, t);
   if (last) {
     lcd_putsLeft(7*FH, last);
@@ -2398,7 +2398,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
               if (sDelay[i])
                 sDelay[i] = 0;
               else
-                sDelay[i] = md->delayUp * 50;
+                sDelay[i] = md->delayUp * (100/DELAY_STEP);
             }
             if (sDelay[i] > 0) { // perform delay
               sDelay[i] = max(0, sDelay[i] - tick10ms);
@@ -2422,7 +2422,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             if (sDelay[i])
               sDelay[i] = 0;
             else
-              sDelay[i] = md->delayDown * 50;
+              sDelay[i] = md->delayDown * (100/DELAY_STEP);
           }
           if (sDelay[i] > 0) { // perform delay
             sDelay[i] = max(0, sDelay[i] - tick10ms);
@@ -2486,8 +2486,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             int32_t rate = (int32_t) DEL_MULT * 2048 * 100 * tick10ms;
             if (weight) rate /= abs(weight);
 
-            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)50*md->speedUp)   :  (int32_t)v*DEL_MULT) :
-                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)50*md->speedDown) :  (int32_t)v*DEL_MULT) ;
+            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)(100/SLOW_STEP)*md->speedUp)   :  (int32_t)v*DEL_MULT) :
+                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)(100/SLOW_STEP)*md->speedDown) :  (int32_t)v*DEL_MULT) ;
           }
 
           {
@@ -2610,7 +2610,7 @@ void doMixerCalculations()
       ACTIVE_PHASES_TYPE transitionMask = ((ACTIVE_PHASES_TYPE)1 << s_last_phase) + ((ACTIVE_PHASES_TYPE)1 << phase);
       if (fadeTime) {
         s_fade_flight_phases |= transitionMask;
-        delta = (MAX_ACT / 50) / fadeTime;
+        delta = (MAX_ACT / (100/SLOW_STEP)) / fadeTime;
       }
       else {
         s_fade_flight_phases &= ~transitionMask;
@@ -3309,7 +3309,9 @@ void saveTimers()
 }
 #endif
 
-#if defined(ROTARY_ENCODERS)
+#if defined(PCBACT)
+volatile rotenc_t g_rotenc[1] = {0};
+#elif defined(ROTARY_ENCODERS)
 volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};
 #endif
 

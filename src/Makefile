@@ -182,10 +182,6 @@ UNITS = METRIC
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
 
-# Enable extra rotary encoders (Gruvin9x board only)
-# Values = YES, NO
-EXTRA_ROTARY_ENCODERS = NO
-
 # Activates the DEBUG Mode (all boards)
 # On G9X V4 board, when VOICE=NO:
 #  PORTH:7 --> Transistion LOW to HIGH = start of setupPulses(). Transistion HIGH to LOW = end of setupPulses().
@@ -471,14 +467,14 @@ RUN_FROM_FLASH = 1
 ifeq ($(PCB), ACT)
   # ACT radio
   OPT = 2
-  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD=260 -DSTM32F10X_HD
+  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DSTM32F10X_HD
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   EXTRAINCDIRS += act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/STM32F10x_StdPeriph_Driver/inc act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
   BOARDSRC = act/board_act.cpp 
   EXTRABOARDSRC += x9d/lcd_driver.cpp
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_avr.cpp # TODO later eeprom_conversions.cpp
-  CPPSRC += x9d/eeprom_driver.cpp x9d/pulses_driver.cpp act/keys_driver.cpp x9d/audio_driver.cpp
+  CPPSRC += x9d/eeprom_driver.cpp x9d/pulses_driver.cpp act/keys_driver.cpp act/audio_driver.cpp
   CPPSRC += sky9x/audio.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += monitors_views.cpp
@@ -487,7 +483,7 @@ endif
 ifeq ($(PCB), X9D)
   # X9D radio
   OPT = 2
-  CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1 -DLCD=212
+  CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM
   EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
   EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
   BOARDSRC = x9d/board_x9d.cpp
@@ -541,7 +537,7 @@ ifeq ($(PCB), SKY9X)
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += sky9x/audio.cpp haptic.cpp
-  CPPSRC += sky9x/pwr_driver.cpp sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp  sky9x/audio_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
+  CPPSRC += sky9x/pwr_driver.cpp sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp sky9x/audio_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
     EXTRAINCDIRS += FatFs FatFs/option
@@ -569,7 +565,7 @@ endif
 ifeq ($(PCB), GRUVIN9X)
   # 9x radio with a gruvin9x replacement board
   OPT = 2
-  CPPDEFS += -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DROTARY_ENCODERS=2 
+  CPPDEFS += -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
   BOARDSRC += gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC += stock/lcd_driver.cpp
@@ -588,9 +584,10 @@ ifeq ($(PCB), GRUVIN9X)
     CPPDEFS += -DVOICE
   endif
   
-  ifeq ($(EXTRA_ROTARY_ENCODERS), YES)
-    CPPDEFS += -DEXTRA_ROTARY_ENCODERS
-  endif
+  # Enable extra rotary encoders (Gruvin9x board only)
+  # Values = YES, NO
+  ROTARY_ENCODERS = 2
+  CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}
 endif
 
 ifeq ($(PCB), STD128)

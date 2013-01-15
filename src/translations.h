@@ -64,7 +64,7 @@
 #define PSIZE(x) ( sizeof(x) - 1 )
 #define EOFS(x)  ( OFS_##x + sizeof(TR_##x) )
 
-#if LCD >= 212
+#if LCD_W >= 212
 #define TR(x,y) y
 #else
 #define TR(x,y) x
@@ -378,7 +378,7 @@ extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
 extern const pm_char STR_INVERT_THR[];
 
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODER_NAVIGATION)
 extern const pm_char STR_BACK[];
 #define LEN_BACK PSIZE(TR_BACK)
 #endif
@@ -430,7 +430,7 @@ extern const pm_char STR_MODELS_EXT[];
 extern const pm_uchar font_5x7[];
 extern const pm_uchar font_10x14[];
 
-#if defined(PCBX9D)
+#if defined(CPUARM)
 extern const pm_uchar font_3x5[];
 extern const pm_uchar font_4x6[];
 extern const pm_uchar font_8x10[];

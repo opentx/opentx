@@ -81,7 +81,7 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
-#if LCD >= 212
+#if defined(PCBX9D) || defined(PCBACT)
 enum MainViews {
   VIEW_INPUTS,
   VIEW_SWITCHES,
@@ -256,8 +256,10 @@ PACK(typedef struct t_LimitData {
 #define MODE_CURVE         1
 
 #if defined(CPUARM)
-#define MAX_DELAY   60 /* 30 seconds */
-#define MAX_SLOW    60 /* 30 seconds */
+#define DELAY_STEP  10
+#define SLOW_STEP   10
+#define DELAY_MAX   (25*DELAY_STEP) /* 25 seconds */
+#define SLOW_MAX    (25*SLOW_STEP)  /* 25 seconds */
 PACK(typedef struct t_MixData {
   uint8_t  destCh;
   uint16_t phases;
@@ -279,8 +281,10 @@ PACK(typedef struct t_MixData {
   char    name[LEN_EXPOMIX_NAME];
 }) MixData;
 #else
-#define MAX_DELAY   15 /* 7.5 seconds */
-#define MAX_SLOW    15 /* 7.5 seconds */
+#define DELAY_STEP  2
+#define SLOW_STEP   2
+#define DELAY_MAX   15 /* 7.5 seconds */
+#define SLOW_MAX    15 /* 7.5 seconds */
 PACK(typedef struct t_MixData {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
@@ -561,12 +565,12 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define ROTARY_ENCODER_MAX  1024
 
 #if defined(PCBACT)
-#define NUM_ROTARY_ENCODERS 1
+#define NUM_ROTARY_ENCODERS 0
 #define ROTARY_ENCODER_ARRAY_EXTRA
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
 #elif defined(PCBX9D)
-#define NUM_ROTARY_ENCODERS_EXTRA 0
 #define NUM_ROTARY_ENCODERS 0
+#define NUM_ROTARY_ENCODERS_EXTRA 0
 #define ROTARY_ENCODER_ARRAY_EXTRA
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
 #elif defined(PCBSKY9X)
@@ -574,12 +578,12 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define NUM_ROTARY_ENCODERS 1
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
 #define ROTARY_ENCODER_ARRAY_EXTRA
-#elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
 #define NUM_ROTARY_ENCODERS_EXTRA 2
 #define NUM_ROTARY_ENCODERS (2+NUM_ROTARY_ENCODERS_EXTRA)
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
 #define ROTARY_ENCODER_ARRAY_EXTRA int16_t rotaryEncodersExtra[MAX_PHASES][NUM_ROTARY_ENCODERS_EXTRA];
-#elif defined(PCBGRUVIN9X) && !defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS <= 2
 #define NUM_ROTARY_ENCODERS_EXTRA 0
 #define NUM_ROTARY_ENCODERS 2
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
@@ -692,7 +696,7 @@ enum MixSources {
 #elif defined(PCBGRUVIN9X)
     MIXSRC_REa,
     MIXSRC_REb,
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
     MIXSRC_REc,
     MIXSRC_REd,
 #endif

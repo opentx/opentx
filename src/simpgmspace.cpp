@@ -75,26 +75,63 @@ extern const char* eeprom_buffer_data;
 uint8_t eeprom[EESIZE];
 sem_t *eeprom_write_sem;
 
+
 #if defined(CPUARM)
-#define SWITCH_CASE(swtch, pin, bit) \
+#define SWITCH_CASE(swtch, pin, mask) \
     case -DSW(swtch): \
-      pin &= ~(1<<bit); \
+      pin &= ~mask; \
       break; \
     case DSW(swtch): \
-      pin |= (1<<bit); \
+      pin |= mask; \
+      break;
+#define KEY_CASE(key, pin, mask) \
+    case -1-key: \
+      pin |= mask; \
+      break; \
+    case 1+key: \
+      pin &= ~mask; \
       break;
 #else
-#define SWITCH_CASE(swtch, pin, bit) \
+#define SWITCH_CASE(swtch, pin, mask) \
     case DSW(swtch): \
-      pin &= ~(1<<bit); \
+      pin &= ~mask; \
       break; \
     case -DSW(swtch): \
-      pin |= (1<<bit); \
+      pin |= mask; \
+      break;
+#define KEY_CASE(key, pin, mask) \
+    case 1+key: \
+      pin |= mask; \
+      break; \
+    case -1-key: \
+      pin &= ~mask; \
       break;
 #endif
 
+void simuSetKey(int8_t key)
+{
+  switch (key) {
+    KEY_CASE(KEY_MENU, GPIO_BUTTON_MENU, PIN_BUTTON_MENU)
+    KEY_CASE(KEY_EXIT, GPIO_BUTTON_EXIT, PIN_BUTTON_EXIT)
+#if defined(PCBACT)
+    KEY_CASE(KEY_CLR, GPIO_BUTTON_CLR, PIN_BUTTON_CLR)
+    KEY_CASE(KEY_PAGE, GPIO_BUTTON_PAGE, PIN_BUTTON_PAGE)
+    KEY_CASE(BTN_REa, GPIO_BUTTON_ENTER, PIN_BUTTON_ENTER)
+#elif defined(PCBX9D)
+    KEY_CASE(KEY_ENTER, GPIO_BUTTON_ENTER, PIN_BUTTON_ENTER)
+    KEY_CASE(KEY_PAGE, GPIO_BUTTON_PAGE, PIN_BUTTON_PAGE)
+    KEY_CASE(KEY_MINUS, GPIO_BUTTON_MINUS, PIN_BUTTON_MINUS)
+    KEY_CASE(KEY_PLUS, GPIO_BUTTON_PLUS, PIN_BUTTON_PLUS)
+#else
+    KEY_CASE(KEY_RIGHT, GPIO_BUTTON_RIGHT, PIN_BUTTON_RIGHT)
+    KEY_CASE(KEY_LEFT, GPIO_BUTTON_LEFT, PIN_BUTTON_LEFT)
+    KEY_CASE(KEY_UP, GPIO_BUTTON_UP, PIN_BUTTON_UP)
+    KEY_CASE(KEY_DOWN, GPIO_BUTTON_DOWN, PIN_BUTTON_DOWN)
+#endif
+  }
+}
 
-void setSwitch(int8_t swtch)
+void simuSetSwitch(int8_t swtch)
 {
   switch (swtch) {
 #if defined(PCBACT)
@@ -196,16 +233,16 @@ void setSwitch(int8_t swtch)
       PIOC->PIO_PDSR |= 0x00004000;
       break;
 
-    SWITCH_CASE(SW_THR, PIOC->PIO_PDSR, 20)
-    SWITCH_CASE(SW_RUD, PIOA->PIO_PDSR, 15)
-    SWITCH_CASE(SW_ELE, PIOC->PIO_PDSR, 31)
-    SWITCH_CASE(SW_AIL, PIOA->PIO_PDSR, 2)
-    SWITCH_CASE(SW_GEA, PIOC->PIO_PDSR, 16)
-    SWITCH_CASE(SW_TRN, PIOC->PIO_PDSR, 8)
+    SWITCH_CASE(SW_THR, PIOC->PIO_PDSR, 1<<20)
+    SWITCH_CASE(SW_RUD, PIOA->PIO_PDSR, 1<<15)
+    SWITCH_CASE(SW_ELE, PIOC->PIO_PDSR, 1<<31)
+    SWITCH_CASE(SW_AIL, PIOA->PIO_PDSR, 1<<2)
+    SWITCH_CASE(SW_GEA, PIOC->PIO_PDSR, 1<<16)
+    SWITCH_CASE(SW_TRN, PIOC->PIO_PDSR, 1<<8)
 #elif defined(PCBGRUVIN9X)
-    SWITCH_CASE(SW_THR, ping, INP_G_ThrCt)
-    SWITCH_CASE(SW_RUD, ping, INP_G_RuddDR)
-    SWITCH_CASE(SW_ELE, pinc, INP_C_ElevDR)
+    SWITCH_CASE(SW_THR, ping, 1<<INP_G_ThrCt)
+    SWITCH_CASE(SW_RUD, ping, 1<<INP_G_RuddDR)
+    SWITCH_CASE(SW_ELE, pinc, 1<<INP_C_ElevDR)
 
     case DSW(SW_ID0):
       ping |=  (1<<INP_G_ID1);
@@ -220,13 +257,13 @@ void setSwitch(int8_t swtch)
       pinb |=  (1<<INP_B_ID2);
       break;
 
-    SWITCH_CASE(SW_AIL, pinc, INP_C_AileDR)
-    SWITCH_CASE(SW_GEA, ping, INP_G_Gear)
-    SWITCH_CASE(SW_TRN, pinb, INP_B_Trainer)
+    SWITCH_CASE(SW_AIL, pinc, 1<<INP_C_AileDR)
+    SWITCH_CASE(SW_GEA, ping, 1<<INP_G_Gear)
+    SWITCH_CASE(SW_TRN, pinb, 1<<INP_B_Trainer)
 #else // STOCK
 #if defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
-    SWITCH_CASE(SW_THR, pinc, INP_C_ThrCt)
-    SWITCH_CASE(SW_AIL, pinc, INP_C_AileDR)
+    SWITCH_CASE(SW_THR, pinc, 1<<INP_C_ThrCt)
+    SWITCH_CASE(SW_AIL, pinc, 1<<INP_C_AileDR)
 #else
     SWITCH_CASE(SW_THR, pine, INP_E_ThrCt)
     SWITCH_CASE(SW_AIL, pine, INP_E_AileDR)
@@ -244,10 +281,10 @@ void setSwitch(int8_t swtch)
       pine |=  (1<<INP_E_ID2);
       break;
 
-    SWITCH_CASE(SW_RUD, ping, INP_G_RuddDR)
-    SWITCH_CASE(SW_ELE, pine, INP_E_ElevDR)
-    SWITCH_CASE(SW_GEA, pine, INP_E_Gear)
-    SWITCH_CASE(SW_TRN, pine, INP_E_Trainer)
+    SWITCH_CASE(SW_RUD, ping, 1<<INP_G_RuddDR)
+    SWITCH_CASE(SW_ELE, pine, 1<<INP_E_ElevDR)
+    SWITCH_CASE(SW_GEA, pine, 1<<INP_E_Gear)
+    SWITCH_CASE(SW_TRN, pine, 1<<INP_E_Trainer)
 #endif
 
     default:

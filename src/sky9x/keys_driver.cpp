@@ -47,36 +47,41 @@
 uint32_t readKeys()
 {
   register uint32_t x;
-  register uint32_t y;
+  register uint32_t result = 0;
 
   x = lcdLock ? lcdInputs : PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
-  x <<= 1;
 
 #if defined(REVA)
-  y = (x & 0x00000060);
-  if (x & 0x00000008)
-    y |= 0x10;
-  if (x & 0x00000010)
-    y |= 0x08;
-  if (PIOA->PIO_PDSR & 0x80000000)
-    y |= 0x04; // EXIT
-  if (PIOB->PIO_PDSR & 0x000000040)
-    y |= 0x02; // MENU
+  if (x & PIN_BUTTON_RIGHT)
+    result |= 0x02 << KEY_RIGHT;
+  if (x & PIN_BUTTON_LEFT)
+    result |= 0x02 << KEY_LEFT;
+  if (x & PIN_BUTTON_UP)
+    result |= 0x02 << KEY_UP;
+  if (x & PIN_BUTTON_DOWN)
+    result |= 0x02 << KEY_DOWN;
+  if (GPIO_BUTTON_EXIT & PIN_BUTTON_EXIT)
+    result |= 0x02 << KEY_EXIT;
+  if (GPIO_BUTTON_MENU & 0x000000040)
+    result |= 0x02 << KEY_MENU;
 #else
-  y = (x & 0x00000020); // RIGHT
-  if (x & 0x00000004)
-    y |= 0x02 << KEY_UP; // UP
-  if (x & 0x00000010)
-    y |= 0x02 << KEY_LEFT; // LEFT
-  if (x & 0x00000040)
-    y |= 0x02 << KEY_DOWN; // DOWN
-  if (x & 0x02000000)
-    y |= 0x02 << KEY_EXIT; // EXIT
-  if (PIOB->PIO_PDSR & 0x000000020)
-    y |= 0x02 << KEY_MENU; // MENU
+  if (x & PIN_BUTTON_RIGHT)
+    result |= 0x02 << KEY_RIGHT;
+  if (x & PIN_BUTTON_UP)
+    result |= 0x02 << KEY_UP;
+  if (x & PIN_BUTTON_LEFT)
+    result |= 0x02 << KEY_LEFT;
+  if (x & PIN_BUTTON_DOWN)
+    result |= 0x02 << KEY_DOWN;
+  if (x & PIN_BUTTON_EXIT)
+    result |= 0x02 << KEY_EXIT;
+  if (GPIO_BUTTON_MENU & PIN_BUTTON_MENU)
+    result |= 0x02 << KEY_MENU;
 #endif
 
-  return y ;
+  // printf("readKeys(): %x => %x\n", x, result); fflush(stdout);
+
+  return result;
 }
 
 uint32_t readTrims()
@@ -180,7 +185,7 @@ void readKeysAndTrims()
   }
 }
 
-extern uint32_t keyState(EnumKeys enuk)
+uint32_t switchState(EnumKeys enuk)
 {
   register uint32_t a;
   register uint32_t c;

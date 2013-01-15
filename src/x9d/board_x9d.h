@@ -48,7 +48,6 @@
 #include "hal.h"
 #include "aspi.h"
 #include "i2c_ee.h"
-#include "audio_driver.h"
 
 #define PERI1_FREQUENCY 30000000
 #define PERI2_FREQUENCY 60000000
@@ -138,5 +137,28 @@ void uartSendChar(uint8_t c);
 
 void delaysInit(void);
 void delay_01us(uint16_t nb);
+
+#define NUM_VOL_LEVELS  24
+
+void startSound( void ) ;
+void setFrequency( uint32_t frequency );
+uint32_t getFrequency();
+void start_timer1( void );
+void initDac( void ) ;
+void end_sound( void ) ;
+
+extern uint16_t *nextAudioData;
+extern uint16_t nextAudioSize;
+
+inline void toneStart()
+{
+}
+
+inline void toneStop()
+{
+}
+
+extern void init_twi( void ) ;
+extern void setVolume( register uint8_t volume ) ;
 
 #endif

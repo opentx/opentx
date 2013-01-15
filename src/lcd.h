@@ -35,25 +35,32 @@
 #ifndef lcd_h
 #define lcd_h
 
-#if LCD >= 260
-#define DISPLAY_W     260
-#define DISPLAY_H     75
+#if defined(PCBACT)
+#define LCD_W         260
+#define LCD_H         75
 #define xcoord_t      uint16_t
 #define CENTER        "\015"
 #define CENTER_OFS    (7*FW-FW/2)
-#elif LCD >= 212
-#define DISPLAY_W     212
-#define DISPLAY_H     64
+#elif defined(PCBX9D)
+#define LCD_W         212
+#define LCD_H         64
 #define xcoord_t      uint16_t
 #define CENTER        "\015"
 #define CENTER_OFS    (7*FW-FW/2)
 #else
-#define DISPLAY_W     128
-#define DISPLAY_H     64
+#define LCD_W         128
+#define LCD_H         64
 #define xcoord_t      uint8_t
 #define CENTER
 #define CENTER_OFS    0
 #endif
+
+#if LCD_H > 64
+#define LCD_LINES     9
+#else
+#define LCD_LINES     8
+#endif
+
 
 #define FW            6
 #define FWNUM         5
@@ -100,16 +107,19 @@
 /* telemetry flags */
 #define NO_UNIT       0x40
 
-#if defined(PCBX9D)
+#if defined(CPUARM)
 #define MIDSIZE       0x0100
 #define SMLSIZE       0x0200
 #define TINSIZE       0x0400
-#define GREY(x)       ((x)*0x1000)
-#define GREY_MASK(x)  ((x) & 0xF000)
 #else
 #define MIDSIZE       DBLSIZE
 #define SMLSIZE       0x00
 #define TINSIZE       0x00
+#endif
+
+#if defined(PCBX9D)
+#define GREY(x)       ((x) * 0x1000)
+#define GREY_MASK(x)  ((x) & 0xF000)
 #endif
 
 #if defined(CPUARM)
@@ -118,7 +128,7 @@
 #define LcdFlags uint8_t
 #endif
 
-#define DISPLAY_PLAN_SIZE (DISPLAY_W*((DISPLAY_H+7)/8))
+#define DISPLAY_PLAN_SIZE (LCD_W*((LCD_H+7)/8))
 
 #if defined(PCBX9D)
 #define DISPLAY_BUF_SIZE   (4*DISPLAY_PLAN_SIZE)
@@ -146,7 +156,7 @@ extern void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s,unsigned char 
 extern void lcd_puts(xcoord_t x, uint8_t y, const pm_char * s);
 extern void lcd_putsn(xcoord_t x, uint8_t y, const pm_char * s, unsigned char len);
 extern void lcd_putsLeft(uint8_t y, const pm_char * s);
-#define lcd_putsCenter(y, s) lcd_puts((DISPLAY_W-sizeof(TR_##s)*FW+FW-2)/2, y, STR_##s)
+#define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW-2)/2, y, STR_##s)
 
 extern void lcd_outhex4(xcoord_t x, uint8_t y, uint16_t val);
 extern void lcd_outdezAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags mode=0);
@@ -196,7 +206,7 @@ extern void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags 
 extern void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, LcdFlags att=0);
 extern void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, LcdFlags att=0);
 extern void lcd_invert_line(int8_t y);
-#define lcd_status_line() lcd_invert_line(7)
+#define lcd_status_line() lcd_invert_line(LCD_LINES-1)
 inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
 
 #define DO_CROSS(xx,yy,ww)          \

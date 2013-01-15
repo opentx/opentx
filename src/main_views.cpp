@@ -34,36 +34,36 @@
 
 #include "open9x.h"
 
-#if LCD >= 212
+#if LCD_W >= 212
 #define BOX_WIDTH     31
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
-#define LBOX_CENTERY  (DISPLAY_H-BOX_WIDTH/2-10)
-#define RBOX_CENTERX  (DISPLAY_W-LBOX_CENTERX)
+#define LBOX_CENTERY  (LCD_H-BOX_WIDTH/2-10)
+#define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
 #define RBOX_CENTERY  LBOX_CENTERY
 #define MODELNAME_X   (13)
 #define VBATT_X       (MODELNAME_X+26)
 #define VBATT_Y       (FH+3)
 #define VBATTUNIT_X   (VBATT_X-2)
 #define VBATTUNIT_Y   VBATT_Y
-#define BITMAP_X      ((DISPLAY_W-64)/2)
-#define BITMAP_Y      (DISPLAY_H/2)
+#define BITMAP_X      ((LCD_W-64)/2)
+#define BITMAP_Y      (LCD_H/2)
 #define PHASE_X       BITMAP_X
 #define PHASE_Y       (3*FH)
 #define TIMERS_X      144
 #define TIMERS_R      192
-#define REBOOT_X      (DISPLAY_W-FW)
+#define REBOOT_X      (LCD_W-FW)
 #define VSWITCH_X(i)  (((i>=NUM_CSW*3/4) ? BITMAP_X+28 : ((i>=NUM_CSW/2) ? BITMAP_X+25 : ((i>=NUM_CSW/4) ? 21 : 18))) + 3*i)
-#define VSWITCH_Y     (DISPLAY_H-9)
+#define VSWITCH_Y     (LCD_H-9)
 #define BAR_HEIGHT    (31-9)
 #define TRIM_LH_X     (32+9)
 #define TRIM_LV_X     10
-#define TRIM_RV_X     (DISPLAY_W-11)
-#define TRIM_RH_X     (DISPLAY_W-32-9)
+#define TRIM_RV_X     (LCD_W-11)
+#define TRIM_RH_X     (LCD_W-32-9)
 #else
 #define BOX_WIDTH     23
-#define LBOX_CENTERX  (DISPLAY_W/4 + 10)
-#define LBOX_CENTERY  (DISPLAY_H-9-BOX_WIDTH/2)
-#define RBOX_CENTERX  (3*DISPLAY_W/4 - 10)
+#define LBOX_CENTERX  (LCD_W/4 + 10)
+#define LBOX_CENTERY  (LCD_H-9-BOX_WIDTH/2)
+#define RBOX_CENTERX  (3*LCD_W/4 - 10)
 #define RBOX_CENTERY  LBOX_CENTERY
 #define MODELNAME_X   (2*FW-2)
 #define PHASE_X       (6*FW)
@@ -74,12 +74,12 @@
 #define VBATTUNIT_Y   (3*FH)
 #define REBOOT_X      (20*FW-3)
 #define VSWITCH_X(i)  (16 + 3*i)
-#define VSWITCH_Y     (DISPLAY_H-8)
+#define VSWITCH_Y     (LCD_H-8)
 #define BAR_HEIGHT    (BOX_WIDTH-1l)
-#define TRIM_LH_X     (DISPLAY_W*1/4+2)
+#define TRIM_LH_X     (LCD_W*1/4+2)
 #define TRIM_LV_X     3
-#define TRIM_RV_X     (DISPLAY_W-4)
-#define TRIM_RH_X     (DISPLAY_W*3/4-2)
+#define TRIM_RV_X     (LCD_W-4)
+#define TRIM_RH_X     (LCD_W*3/4-2)
 #endif
 
 #define TRIM_LEN 27
@@ -90,9 +90,9 @@ void drawPotsBars()
 {
   // Optimization by Mike Blandford
   uint8_t x, y, len ;  // declare temporary variables
-  for (x=DISPLAY_W/2-5, y=NUM_STICKS; y<NUM_STICKS+NUM_POTS; x+=5, y++) {
+  for (x=LCD_W/2-5, y=NUM_STICKS; y<NUM_STICKS+NUM_POTS; x+=5, y++) {
     len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-    V_BAR(x, DISPLAY_H-8, len)
+    V_BAR(x, LCD_H-8, len)
   }
 }
 
@@ -163,19 +163,19 @@ void displayTrims(uint8_t phase)
 void displaySliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
-    xcoord_t x = (i%2 ? DISPLAY_W-5 : 3);
-    int8_t y = (i>NUM_STICKS+1 ? DISPLAY_H/2+1 : 1);
-    lcd_vline(x, y, DISPLAY_H/2-2);
-    lcd_vline(x+1, y, DISPLAY_H/2-2);
-    y += DISPLAY_H/2-4;
-    y -= ((calibratedStick[i]+RESX)*(DISPLAY_H/2-4)/(RESX*2));  // calculate once per loop
+    xcoord_t x = (i%2 ? LCD_W-5 : 3);
+    int8_t y = (i>NUM_STICKS+1 ? LCD_H/2+1 : 1);
+    lcd_vline(x, y, LCD_H/2-2);
+    lcd_vline(x+1, y, LCD_H/2-2);
+    y += LCD_H/2-4;
+    y -= ((calibratedStick[i]+RESX)*(LCD_H/2-4)/(RESX*2));  // calculate once per loop
     lcd_vline(x-1, y, 2);
     lcd_vline(x+2, y, 2);
   }
 }
 #endif
 
-#if LCD >= 212
+#if LCD_W >= 212
 void displayTimers()
 {
   // Main timer
@@ -273,7 +273,7 @@ void menuMainViewChannelsMonitor(uint8_t event)
 
 void menuMainView(uint8_t event)
 {
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 #endif
@@ -291,7 +291,7 @@ void menuMainView(uint8_t event)
       killEvents(KEY_DOWN);
       break;
 
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) && !defined(PCBACT)
     /* TODO if timer2 is OFF, it's possible to use this timer2 as in er9x...
     case EVT_KEY_BREAK(KEY_MENU):
       if (view_base == VIEW_TIMER2) {
@@ -393,7 +393,7 @@ void menuMainView(uint8_t event)
         s_gvar_timer = 0;
       }
 #endif
-#if LCD < 212
+#if LCD_W < 212
       else if (view == VIEW_TIMER2) {
         resetTimer(1);
       }
@@ -472,8 +472,8 @@ void menuMainView(uint8_t event)
     uint8_t sw = 0;
     for (uint8_t line=0; line<4; line++) {
       for (uint8_t col=0; col<8; col++) {
-        uint8_t x = DISPLAY_W/2+7*FW+col*FW;
-        uint8_t y = DISPLAY_H/2-7+line*8;
+        uint8_t x = LCD_W/2+7*FW+col*FW;
+        uint8_t y = LCD_H/2-7+line*8;
         lcd_putcAtt(x, y, sw>=9 ? 'A'+sw-9 : '1'+sw, SMLSIZE);
         if (getSwitch(DSW(SW_SW1+sw), 0))
           lcd_filled_rect(x-1, y-1, 6, 8);
@@ -517,7 +517,7 @@ void menuMainView(uint8_t event)
 
         case VIEW_OUTPUTS_BARS:
 #define WBAR2 (50/2)
-          x0       = i<4 ? DISPLAY_W/4+2 : DISPLAY_W*3/4-2;
+          x0       = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
           y0       = 38+(i%4)*5;
 
           uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
@@ -553,13 +553,13 @@ void menuMainView(uint8_t event)
       for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
         int16_t val = getRotaryEncoder(i);
         int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
 #define V_BAR_W 5
-        V_BAR(DISPLAY_W/2-8+V_BAR_W*i, DISPLAY_H-8, len)
-#else //EXTRA_ROTARY_ENCODERS
+        V_BAR(LCD_W/2-8+V_BAR_W*i, LCD_H-8, len)
+#else
 #define V_BAR_W 5
-        V_BAR(DISPLAY_W/2-3+V_BAR_W*i, DISPLAY_H-8, len)
-#endif //EXTRA_ROTARY_ENCODERS
+        V_BAR(LCD_W/2-3+V_BAR_W*i, LCD_H-8, len)
+#endif
       }
 #endif // PCBGRUVIN9X && ROTARY_ENCODERS
 
@@ -571,7 +571,7 @@ void menuMainView(uint8_t event)
         lcd_vline(x-1, VSWITCH_Y-len, len);
         lcd_vline(x,   VSWITCH_Y-len, len);
       }
-#elif defined(PCBGRUVIN9X) && defined(EXTRA_ROTARY_ENCODERS)
+#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
       for (uint8_t i=0; i<NUM_CSW; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
 #elif defined(PCBGRUVIN9X)

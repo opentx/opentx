@@ -42,77 +42,14 @@
 #include <time.h>
 #include <ctype.h>
 
-#define W  DISPLAY_W
-#define H  DISPLAY_H
-#define W2 W*2
-#define H2 H*2
+#define W2 LCD_W*2
+#define H2 LCD_H*2
 
 int g_snapshot_idx = 0;
-uint64_t toto = 0;
 
-#if defined(PCBACT)
-#define ERSKY9X_RETURN_PIO  GPIOC->IDR
-#define ERSKY9X_RETURN_MASK 0x00000020
-#define ERSKY9X_EXIT_PIO    GPIOC->IDR
-#define ERSKY9X_EXIT_MASK   0x01000000
-#define ERSKY9X_UP_PIO      GPIOC->IDR
-#define ERSKY9X_UP_MASK     0x00
-#define ERSKY9X_DOWN_PIO    GPIOC->IDR
-#define ERSKY9X_DOWN_MASK   0x00
-#define ERSKY9X_RIGHT_PIO   GPIOC->IDR
-#define ERSKY9X_RIGHT_MASK  0x00000010
-#define ERSKY9X_LEFT_PIO    GPIOC->IDR
-#define ERSKY9X_LEFT_MASK   0x00000008
-#define KEY_MENU_PIO        GPIOC->IDR
-#define KEY_MENU_MASK       0x00000002
-#define KEY_PAGE_PIO        GPIOC->IDR
-#define KEY_PAGE_MASK       0x00000040
-#elif defined(PCBX9D)
-#define ERSKY9X_RETURN_PIO  GPIOE->IDR
-#define ERSKY9X_RETURN_MASK PIN_BUTTON_ENTER
-#define ERSKY9X_EXIT_PIO    GPIOD->IDR
-#define ERSKY9X_EXIT_MASK   PIN_BUTTON_EXIT
-#define ERSKY9X_UP_PIO      GPIOC->IDR
-#define ERSKY9X_UP_MASK     0x00
-#define ERSKY9X_DOWN_PIO    GPIOC->IDR
-#define ERSKY9X_DOWN_MASK   0x00
-#define ERSKY9X_RIGHT_PIO   GPIOE->IDR
-#define ERSKY9X_RIGHT_MASK  PIN_BUTTON_PLUS
-#define ERSKY9X_LEFT_PIO    GPIOE->IDR
-#define ERSKY9X_LEFT_MASK   PIN_BUTTON_MINUS
-#define KEY_MENU_PIO        GPIOD->IDR
-#define KEY_MENU_MASK       PIN_BUTTON_MENU
-#define KEY_PAGE_PIO        GPIOD->IDR
-#define KEY_PAGE_MASK       PIN_BUTTON_PAGE
-#elif defined(PCBSKY9X) && defined(REVA)
-#define ERSKY9X_RETURN_PIO  PIOB->PIO_PDSR
-#define ERSKY9X_RETURN_MASK (0x40)
-#define ERSKY9X_EXIT_PIO    PIOA->PIO_PDSR
-#define ERSKY9X_EXIT_MASK   (0x80000000)
-#define ERSKY9X_UP_PIO      PIOC
-#define ERSKY9X_UP_MASK     (0x08 >> 1)
-#define ERSKY9X_RIGHT_PIO   PIOC->PIO_PDSR
-#define ERSKY9X_RIGHT_MASK  (0x20 >> 1)
-#define ERSKY9X_DOWN_PIO    PIOC->PIO_PDSR
-#define ERSKY9X_DOWN_MASK   (0x10 >> 1)
-#define ERSKY9X_LEFT_PIO    PIOC->PIO_PDSR
-#define ERSKY9X_LEFT_MASK   (0x40 >> 1)
-#elif defined(PCBSKY9X)
-#define ERSKY9X_RETURN_PIO  PIOB->PIO_PDSR
-#define ERSKY9X_RETURN_MASK (0x20)
-#define ERSKY9X_EXIT_MASK   (0x01000000)
-#define ERSKY9X_EXIT_PIO    PIOC->PIO_PDSR
-#define ERSKY9X_UP_PIO      PIOC->PIO_PDSR
-#define ERSKY9X_UP_MASK     (0x04 >> 1)
-#define ERSKY9X_RIGHT_PIO   PIOC->PIO_PDSR
-#define ERSKY9X_RIGHT_MASK  (0x20 >> 1)
-#define ERSKY9X_DOWN_PIO    PIOC->PIO_PDSR
-#define ERSKY9X_DOWN_MASK   (0x40 >> 1)
-#define ERSKY9X_LEFT_PIO    PIOC->PIO_PDSR
-#define ERSKY9X_LEFT_MASK   (0x10 >> 1)
-#define ERSKY9X_MENU_MASK   (0x04 >> 1)
-#else
-// TODO to remove
+#if !defined(CPUARM)
+// TODO remove!
+uint64_t toto = 0;
 #define ERSKY9X_RETURN_PIO  toto
 #define ERSKY9X_RETURN_MASK toto
 #define ERSKY9X_EXIT_MASK   toto
@@ -170,7 +107,7 @@ Open9xSim::Open9xSim(FXApp* a)
 {
 
   firstTime=true;
-  for(int i=0; i<(W*H/8); i++) displayBuf[i]=0;//rand();
+  for(int i=0; i<(LCD_W*LCD_H/8); i++) displayBuf[i]=0;//rand();
   bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
   FXHorizontalFrame *hf00=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
@@ -314,19 +251,27 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
   }
 
   if(hasFocus()) {
-    static uint64_t keys1[]={
-// TODO change everything here!
-      KEY_Return,    INP_B_KEY_MEN, INP_L_KEY_MEN, (uint64_t)&ERSKY9X_RETURN_PIO, ERSKY9X_RETURN_MASK,
-      KEY_BackSpace, INP_B_KEY_EXT, INP_L_KEY_EXT, (uint64_t)&ERSKY9X_EXIT_PIO, ERSKY9X_EXIT_MASK,
-      KEY_KP_0,      INP_B_KEY_EXT, INP_L_KEY_EXT, (uint64_t)&ERSKY9X_EXIT_PIO, ERSKY9X_EXIT_MASK,
-      KEY_Right,     INP_B_KEY_RGT, INP_L_KEY_RGT, (uint64_t)&ERSKY9X_RIGHT_PIO, ERSKY9X_RIGHT_MASK,
-      KEY_Left,      INP_B_KEY_LFT, INP_L_KEY_LFT, (uint64_t)&ERSKY9X_LEFT_PIO, ERSKY9X_LEFT_MASK,
-#if defined(PCBX9D)
-      KEY_Page_Up,   INP_B_KEY_MEN, INP_L_KEY_MEN, (uint64_t)&KEY_MENU_PIO, KEY_MENU_MASK,
-      KEY_Page_Down, INP_B_KEY_EXT, INP_L_KEY_EXT, (uint64_t)&KEY_PAGE_PIO, KEY_PAGE_MASK,
+    static int keys1[]={
+#if defined(PCBACT)
+      KEY_Page_Up,   KEY_MENU,
+      KEY_BackSpace, KEY_EXIT,
+      KEY_Page_Down, KEY_PAGE,
+      KEY_Clear,     KEY_CLR,
+      KEY_Return,    BTN_REa,
+#elif defined(PCBX9D)
+      KEY_Page_Up,   KEY_MENU,
+      KEY_Page_Down, KEY_PAGE,
+      KEY_Return,    KEY_ENTER,
+      KEY_BackSpace, KEY_EXIT,
+      KEY_Right,     KEY_PLUS,
+      KEY_Left,      KEY_MINUS,
 #else
-      KEY_Up,        INP_B_KEY_UP,  INP_L_KEY_UP,  (uint64_t)&ERSKY9X_UP_PIO, ERSKY9X_UP_MASK,
-      KEY_Down,      INP_B_KEY_DWN, INP_L_KEY_DWN, (uint64_t)&ERSKY9X_DOWN_PIO, ERSKY9X_DOWN_MASK,
+      KEY_Return,    KEY_MENU,
+      KEY_BackSpace, KEY_EXIT,
+      KEY_Right,     KEY_RIGHT,
+      KEY_Left,      KEY_LEFT,
+      KEY_Up,        KEY_UP,
+      KEY_Down,      KEY_DOWN,
 #endif
     };
 
@@ -336,41 +281,31 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #endif
 
 #if defined(CPUARM)
-    ERSKY9X_UP_PIO |= ERSKY9X_UP_MASK;
-    ERSKY9X_DOWN_PIO |= ERSKY9X_DOWN_MASK;
-    ERSKY9X_LEFT_PIO |= ERSKY9X_LEFT_MASK;
-    ERSKY9X_RIGHT_PIO |= ERSKY9X_RIGHT_MASK;
-    ERSKY9X_EXIT_PIO |= ERSKY9X_EXIT_MASK;
-    ERSKY9X_RETURN_PIO |= ERSKY9X_RETURN_MASK;
-#if defined(PCBX9D)
-    KEY_MENU_PIO |= KEY_MENU_MASK;
-    KEY_PAGE_PIO |= KEY_PAGE_MASK;
-#endif
     temperature = 31;
     maxTemperature = 42;
-#elif defined(PCBGRUVIN9X)
-    uint8_t pin = (pinl & ~0x3f);
-#else
-    uint8_t pin = (pinb & ~0x7e);
 #endif
 
-    for(unsigned i=0; i<DIM(keys1);i+=5) {
-      if (getApp()->getKeyState(keys1[i])) {
-#if defined(CPUARM)
-        *((uint32_t*)keys1[i+3]) &= ~(keys1[i+4]);
-#elif defined(PCBGRUVIN9X)
-        pin |= (1<<keys1[i+2]);
-#else
-        pin |= (1<<keys1[i+1]);
-#endif
-      }
+    for (unsigned int i=0; i<DIM(keys1); i+=2) {
+      if (getApp()->getKeyState(keys1[i]))
+        simuSetKey(1+keys1[i+1]);
+      else
+        simuSetKey(-1-keys1[i+1]);
     }
 
-#if defined(CPUARM)
-#elif defined(PCBGRUVIN9X)
-    pinl = pin;
-#else
-    pinb = pin;
+#if defined(PCBACT)
+    static bool rotencState = false;
+    if (rotencState) {
+      if (!getApp()->getKeyState(KEY_Right) && !getApp()->getKeyState(KEY_Left))
+        rotencState = false;
+    }
+    else if (getApp()->getKeyState(KEY_Right)) {
+      g_rotenc[0] -= 1;
+      rotencState = true;
+    }
+    else if (getApp()->getKeyState(KEY_Left)) {
+      g_rotenc[0] += 1;
+      rotencState = true;
+    }
 #endif
 
 #ifdef __APPLE__
@@ -384,9 +319,9 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #if defined(PCBX9D)
     GPIOE->IDR |= PIN_TRIM_LH_L | PIN_TRIM_LH_R | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP;
     GPIOC->IDR |= PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
-    GPIOE->IDR |= 0xFFFFFFFF;
-    GPIOB->IDR |= 0xFFFFFFFF;
-    GPIOC->IDR |= 0xFFFFFFFF;
+    // GPIOE->IDR |= 0xFFFFFFFF;
+    // GPIOB->IDR |= 0xFFFFFFFF;
+    // GPIOC->IDR |= 0xFFFFFFFF;
 #elif defined(PCBSKY9X)
     PIOA->PIO_PDSR |= (0x00800000 | 0x01000000 | 0x00000002 | 0x00000001);
     PIOB->PIO_PDSR |= (0x00000050);
@@ -442,7 +377,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     if (getApp()->getKeyState(KEY_##key)) { \
       if (!state##key) { \
         state##swtch = (state##swtch+1) % states; \
-        setSwitch(DSW(SW_##swtch+state##swtch)); \
+        simuSetSwitch(DSW(SW_##swtch+state##swtch)); \
         state##key = true; \
       } \
     } \
@@ -457,9 +392,9 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       if (!state##key) { \
         state##swtch = (state##swtch+1) % states; \
         if (states > 2) \
-          setSwitch(DSW(SW_##swtch+state##swtch)); \
+          simuSetSwitch(DSW(SW_##swtch+state##swtch)); \
         else \
-          setSwitch(state##swtch ? DSW(SW_##swtch) : -DSW(SW_##swtch)); \
+          simuSetSwitch(state##swtch ? DSW(SW_##swtch) : -DSW(SW_##swtch)); \
         state##key = true; \
       } \
     } \
@@ -468,7 +403,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     }
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
     SWITCH_KEY(A, SA0, 3);
     SWITCH_KEY(B, SB0, 3);
     SWITCH_KEY(C, SC0, 3);
@@ -508,12 +443,12 @@ void Open9xSim::refreshDiplay()
 #if !defined(PCBX9D)
     FXColor onColor = FXRGB(0,0,0);
 #endif
-    for (int x=0;x<W;x++) {
-      for (int y=0; y<H; y++) {
+    for (int x=0;x<LCD_W;x++) {
+      for (int y=0; y<LCD_H; y++) {
 #if defined(PCBX9D)
         #define PALETTE_IDX(p, x, mask) ((((p)[(x)] & (mask)) ? 0x1 : 0) + (((p)[DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x2 : 0) + (((p)[2*DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x4 : 0) + (((p)[3*DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x8 : 0))
         uint8_t mask = (1 << (y%8));
-        uint32_t z = PALETTE_IDX(lcd_buf, (y/8)*W+x, mask);
+        uint32_t z = PALETTE_IDX(lcd_buf, (y/8)*LCD_W+x, mask);
         if (z) {
           FXColor color;
           if (IS_BACKLIGHT_ON())
@@ -526,7 +461,7 @@ void Open9xSim::refreshDiplay()
           bmp->setPixel(2*x+1, 2*y+1, color);
         }
 #else
-        if (lcd_buf[x+(y/8)*W] & (1<<(y%8))) {
+        if (lcd_buf[x+(y/8)*LCD_W] & (1<<(y%8))) {
           bmp->setPixel(2*x, 2*y, onColor);
           bmp->setPixel(2*x+1, 2*y, onColor);
           bmp->setPixel(2*x, 2*y+1, onColor);
@@ -572,8 +507,8 @@ int main(int argc,char **argv)
   // so that persistent settings are now available.
   application.init(argc,argv);
 
-#if !defined(PCBX9D)
-  setSwitch(DSW(SW_ID0));
+#if !defined(PCBX9D) && !defined(PCBACT)
+  simuSetSwitch(DSW(SW_ID0));
 #endif
 
   // This creates the main window. We pass in the title to be displayed

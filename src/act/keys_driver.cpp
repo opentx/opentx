@@ -37,24 +37,20 @@
 uint32_t readKeys()
 {
   register uint32_t x = GPIOC->IDR;
-  register uint32_t y = 0;
+  register uint32_t result = 0;
 
-  if (x & 0x00000020)
-    y |= 0x02 << KEY_ENTER;
-  if (x & 0x00000010)
-    y |= 0x02 << KEY_PLUS;
-  if (x & 0x00000008)
-    y |= 0x02 << KEY_MINUS;
-  if (x & 0x00000002)
-    y |= 0x02 << KEY_MENU;
-  if (x & 0x00000040)
-    y |= 0x02 << KEY_PAGE;
-  if (x & 0x01000000)
-    y |= 0x02 << KEY_EXIT;
+  if (x & PIN_BUTTON_MENU)
+    result |= 0x02 << KEY_MENU;
+  if (x & PIN_BUTTON_EXIT)
+    result |= 0x02 << KEY_EXIT;
+  if (x & PIN_BUTTON_CLR)
+    result |= 0x02 << KEY_CLR;
+  if (x & PIN_BUTTON_PAGE)
+    result |= 0x02 << KEY_PAGE;
 
-  // printf("readKeys(): %x => %x\n", x, y); fflush(stdout);
+  // printf("readKeys(): %x => %x\n", x, result); fflush(stdout);
 
-  return y ;
+  return result;
 }
 
 uint32_t readTrims()
@@ -64,7 +60,7 @@ uint32_t readTrims()
 
 uint8_t keyDown()
 {
-  return ~readKeys() & 0x6C ;
+  return ~readKeys() & 0x1e ;
 }
 
 /* TODO common to ARM */
@@ -74,7 +70,7 @@ void readKeysAndTrims()
 
   uint8_t enuk = KEY_MENU;
   uint8_t in = ~readKeys();
-  for (i = 1; i < 7; i++) {
+  for (i = 1; i < 5; i++) {
     keys[enuk].input(in & (1 << i), (EnumKeys) enuk);
     ++enuk;
   }
@@ -85,9 +81,11 @@ void readKeysAndTrims()
     keys[enuk].input(in & i, (EnumKeys) enuk);
     ++enuk;
   } */
+
+  keys[BTN_REa].input(!(GPIO_BUTTON_ENTER & PIN_BUTTON_ENTER), BTN_REa);
 }
 
-uint32_t keyState(EnumKeys enuk)
+uint32_t switchState(EnumKeys enuk)
 {
   return 0;
 }

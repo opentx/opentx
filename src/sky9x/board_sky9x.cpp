@@ -36,8 +36,14 @@
 
 void pwrInit();
 void eepromInit();
+
+#if defined(DEBUG) && !defined(SIMU)
 void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock);
 void DEBUG_UART_Stop();
+#else
+#define DEBUG_UART_Stop()
+#define DEBUG_UART_Configure(...)
+#endif
 
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;

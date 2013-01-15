@@ -312,10 +312,10 @@ void setupPulsesDsm2(uint8_t chns)
         break;
     }
   }
-#if defined(PCBX9D)
+#if defined(PCBX9D) || defined(PCBACT)
   // TODO
 #else
-  if ((dsmDat[0] & BIND_BIT) && (!keyState(SW_TRN))) dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
+  if ((dsmDat[0] & BIND_BIT) && (!switchState(SW_TRN))) dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
 #endif
 
   // TODO find a way to do that, FUNC SWITCH: if ((!(dsmDat[0] & BIND_BIT)) && getSwitch(MAX_DRSWITCH-1, 0, 0)) dsmDat[0] |= RANGECHECK_BIT;   // range check function

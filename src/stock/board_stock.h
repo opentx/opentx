@@ -35,6 +35,19 @@
 #ifndef board_stock_h
 #define board_stock_h
 
+#define GPIO_BUTTON_MENU       pinb
+#define GPIO_BUTTON_EXIT       pinb
+#define GPIO_BUTTON_RIGHT      pinb
+#define GPIO_BUTTON_LEFT       pinb
+#define GPIO_BUTTON_UP         pinb
+#define GPIO_BUTTON_DOWN       pinb
+#define PIN_BUTTON_MENU        (1<<INP_B_KEY_MEN)
+#define PIN_BUTTON_EXIT        (1<<INP_B_KEY_EXT)
+#define PIN_BUTTON_UP          (1<<INP_B_KEY_UP)
+#define PIN_BUTTON_DOWN        (1<<INP_B_KEY_DWN)
+#define PIN_BUTTON_RIGHT       (1<<INP_B_KEY_RGT)
+#define PIN_BUTTON_LEFT        (1<<INP_B_KEY_LFT)
+
 #define TIMER_16KHZ_VECT TIMER0_OVF_vect
 #define COUNTER_16KHZ TCNT0
 

@@ -48,7 +48,7 @@ void delaysInit(void)
 	
 void delay_01us(uint16_t nb)
 {
-	TIM13->EGR = 1;
+  TIM13->EGR = 1;
   TIM13->CNT = 0;
   TIM13->CR1 = 0x03;
   while(TIM13->CNT < nb);

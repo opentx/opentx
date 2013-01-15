@@ -73,9 +73,6 @@ void debugTask(void* pdata);
 #define TRACE_ERROR(...) { }
 #define DUMP(...) { }
 
-#define DEBUG_UART_Configure(...)
-#define DEBUG_UART_Stop(...)
-
 #endif
 
 #endif

@@ -286,7 +286,7 @@ const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
 
 const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
 
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODER_NAVIGATION)
 const pm_char STR_BACK[] PROGMEM = TR_BACK;
 #endif
 
@@ -409,7 +409,7 @@ const pm_uchar font_10x14[] PROGMEM = {
 #endif
 };
 
-#if defined(PCBX9D)
+#if defined(CPUARM)
 const pm_uchar font_3x5[] PROGMEM = {
 #include "font_tiny.lbm"
 };

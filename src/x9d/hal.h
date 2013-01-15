@@ -8,6 +8,12 @@
 #define RCC_AHB1Periph_GPIOBUTTON       (RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
 
 // Keys
+#define GPIO_BUTTON_ENTER               GPIOE->IDR
+#define GPIO_BUTTON_PLUS                GPIOE->IDR
+#define GPIO_BUTTON_MINUS               GPIOE->IDR
+#define GPIO_BUTTON_MENU                GPIOD->IDR
+#define GPIO_BUTTON_EXIT                GPIOD->IDR
+#define GPIO_BUTTON_PAGE                GPIOD->IDR
 #define	PIN_BUTTON_PLUS       GPIO_Pin_10	//SW3 PE.10
 #define PIN_BUTTON_MINUS      GPIO_Pin_11 //SW1 PE.12
 #define	PIN_BUTTON_ENTER      GPIO_Pin_12	//SW2 PE.11

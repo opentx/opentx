@@ -50,16 +50,16 @@ void menuChannelsMonitor(uint8_t event)
 
   for (uint8_t col=0; col<4; col++) {
 
-    uint8_t x = col*DISPLAY_W/4;
+    uint8_t x = col*LCD_W/4;
 
     // Column title
-    lcd_outdezNAtt(col==0 ? 28 : (col == 1 ? 81 : x+DISPLAY_W/8-5*FWNUM/2+9), 1*FH+1, ch+1, LEFT|SMLSIZE);
+    lcd_outdezNAtt(col==0 ? 28 : (col == 1 ? 81 : x+LCD_W/8-5*FWNUM/2+9), 1*FH+1, ch+1, LEFT|SMLSIZE);
     lcd_putcAtt(lcdLastPos-1, 1*FH+1, '-', SMLSIZE);
     lcd_outdezNAtt(lcdLastPos+FW-1, 1*FH+1, ch+8, LEFT|SMLSIZE);
 
     // Column separator
     if (col != 0)
-      lcd_vline(x, FH, DISPLAY_H-FH);
+      lcd_vline(x, FH, LCD_H-FH);
 
     // Channels
     for (uint8_t line=0; line<8; line++) {

@@ -151,6 +151,10 @@
 #define IF_GVARS(x)
 #endif
 
+#if defined(PCBX9D) || defined(PCBACT) || ROTARY_ENCODERS > 0
+#define ROTARY_ENCODER_NAVIGATION
+#endif
+
 /*
 #define HELI_VARIANT   0x0004
 #define VOICE_VARIANT  0x0008
@@ -172,7 +176,7 @@
 #include "stock/board_stock.h"
 #endif
 
-#if defined(CPUARM) && defined(DEBUG)
+#if defined(CPUARM)
 #include "debug.h"
 #endif
 
@@ -208,7 +212,7 @@ extern void boardInit();
 
 #include "myeeprom.h"
 
-#if defined(ROTARY_ENCODERS) && NUM_ROTARY_ENCODERS > 0
+#if ROTARY_ENCODERS > 0
 #define IF_ROTARY_ENCODERS(x) x,
 #else
 #define IF_ROTARY_ENCODERS(x)
@@ -484,7 +488,12 @@ extern uint8_t channel_order(uint8_t x);
 enum EnumKeys {
   KEY_MENU,
   KEY_EXIT,
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBACT)
+  KEY_CLR,
+  KEY_PAGE,
+  KEY_PLUS,  /* Fake, used for rotary encoder */
+  KEY_MINUS, /* Fake, used for rotary encoder */
+#elif defined(PCBX9D)
   KEY_ENTER,
   KEY_PAGE,
   KEY_PLUS,
@@ -503,8 +512,11 @@ enum EnumKeys {
   TRM_RV_UP,
   TRM_RH_DWN,
   TRM_RH_UP,
-#if defined(ROTARY_ENCODERS)
+
+#if ROTARY_ENCODERS > 0 || defined(ROTARY_ENCODER_NAVIGATION)
   BTN_REa,
+#endif
+#if ROTARY_ENCODERS > 0
   BTN_REb,
 #endif
 
@@ -564,11 +576,24 @@ enum EnumKeys {
 
 #define DSW(x)   (1+(x)-SW_BASE)
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBACT)
+#define KEY_ENTER  BTN_REa
 #define KEY_RIGHT  KEY_PLUS
-#define KEY_UP     KEY_PLUS
 #define KEY_LEFT   KEY_MINUS
+#define KEY_UP     KEY_MINUS
+#define KEY_DOWN   KEY_PLUS
+#elif defined(PCBX9D)
+#define KEY_RIGHT  KEY_PLUS
+#define KEY_LEFT   KEY_MINUS
+#define KEY_UP     KEY_PLUS
 #define KEY_DOWN   KEY_MINUS
+#else
+#define KEY_ENTER  KEY_MENU
+#define KEY_PLUS   KEY_RIGHT
+#define KEY_MINUS  KEY_LEFT
+#endif
+
+#if defined(PCBX9D) || defined(PCBACT)
 /* mapping of 9x switches */
 #define SW_THR     SW_SA2
 #define SW_RUD     SW_SB2
@@ -579,10 +604,6 @@ enum EnumKeys {
 #define SW_AIL     SW_SF2
 #define SW_GEA     SW_SG2
 #define SW_TRN     SW_SH2
-#else
-#define KEY_ENTER  KEY_MENU
-#define KEY_PLUS   KEY_RIGHT
-#define KEY_MINUS  KEY_LEFT
 #endif
 
 class Key
@@ -776,9 +797,9 @@ enum PowerState {
 };
 
 #if defined(CPUARM)
-uint32_t keyState(EnumKeys enuk);
+uint32_t switchState(EnumKeys enuk);
 #else
-bool keyState(EnumKeys enuk);
+bool switchState(EnumKeys enuk);
 #if defined(PCBGRUVIN9X)
 uint8_t check_soft_power();
 #else
@@ -865,11 +886,12 @@ inline bool navigationRotaryEncoder(uint8_t event)
 {
   return g_eeGeneral.reNavigation == ((event & EVT_KEY_MASK) - BTN_REa + 1);
 }
+#endif
+
 #if defined(PCBSKY9X)
 #define ROTARY_ENCODER_GRANULARITY 4
 #else
 #define ROTARY_ENCODER_GRANULARITY 1
-#endif
 #endif
 
 #if defined(GVARS)
@@ -1195,13 +1217,16 @@ inline bool isFunctionActive(uint8_t func)
   return activeFunctions & ((MASK_FUNC_TYPE)1 << (func-FUNC_TRAINER));
 }
 
-#if defined(ROTARY_ENCODERS)
-// Global rotary encoder registers
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
 typedef uint32_t rotenc_t;
 #else
 typedef uint8_t rotenc_t;
 #endif
+
+#if defined(PCBACT)
+extern volatile rotenc_t g_rotenc[1];
+#elif defined(ROTARY_ENCODERS)
+// Global rotary encoder registers
 extern volatile rotenc_t g_rotenc[ROTARY_ENCODERS];
 #endif
 
@@ -1336,7 +1361,7 @@ union ReusableBuffer
     struct
     {
         char mainname[42];
-        char listnames[7][LEN_MODEL_NAME];
+        char listnames[LCD_LINES-1][LEN_MODEL_NAME];
         uint16_t eepromfree;
 
 #if defined(SDCARD)
@@ -1355,7 +1380,7 @@ union ReusableBuffer
 #if defined(SDCARD)
     struct
     {
-        char lines[7][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
+        char lines[LCD_LINES-1][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
         uint32_t available;
         uint16_t offset;
         uint16_t count;

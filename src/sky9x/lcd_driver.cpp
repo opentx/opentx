@@ -253,7 +253,7 @@ void lcdRefresh()
 #else
     x = *p;
 #endif
-    for (z = 0; z < DISPLAY_W; z += 1) {
+    for (z = 0; z < LCD_W; z += 1) {
 
 // The following 7 lines replaces by a lookup table
 //                      x = __RBIT( *p++ ) ;

@@ -48,7 +48,7 @@ typedef void (*MenuFuncP)(uint8_t event);
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 
-#if LCD >= 212
+#if LCD_W >= 212
 #define MENUS_SCROLLBAR_WIDTH 2
 #else
 #define MENUS_SCROLLBAR_WIDTH 0
@@ -96,28 +96,29 @@ void menuModelCustomFunctions(uint8_t event);
 void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
 
-#if defined(PCBX9D)
+#if defined(ROTARY_ENCODER_NAVIGATION)
 extern int8_t scrollRE;
 extern int16_t p1valdiff;
 extern int8_t lastCursorMove;
+#elif defined(NAVIGATION_POT1)
+extern int16_t p1valdiff;
+#else
+#define p1valdiff 0
+#endif
+
+#if defined(PCBX9D) || defined(PCBACT)
 #define IS_RE_NAVIGATION_ENABLE()   true
+#define NAVIGATION_RE_IDX()         0
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (event==type(KEY_ENTER))
 #define IS_RE_NAVIGATION_EVT(event) ((event&EVT_KEY_MASK)==KEY_ENTER)
 #elif defined(ROTARY_ENCODERS)
-extern int8_t scrollRE;
-extern int16_t p1valdiff;
-extern int8_t lastCursorMove;
+#define NAVIGATION_RE_IDX()         (g_eeGeneral.reNavigation - 1)
 #define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
 #define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && (event&EVT_KEY_MASK)==(BTN_REa + g_eeGeneral.reNavigation - 1))
 #else
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (0)
 #define IS_RE_NAVIGATION_EVT(event) (0)
-#if defined(NAVIGATION_POT1)
-extern int16_t p1valdiff;
-#else
-#define p1valdiff 0
-#endif
 #endif
 
 extern int8_t checkIncDec_Ret;  // global helper vars
@@ -147,10 +148,10 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 void check_rotary_encoder(uint8_t & event);
 #define CHECK_ROTARY_ENCODER(event) check_rotary_encoder(event)
-#elif defined(ROTARY_ENCODERS)
+#elif defined(ROTARY_ENCODER_NAVIGATION)
 void check_rotary_encoder();
 #define CHECK_ROTARY_ENCODER(event) check_rotary_encoder()
 #endif
@@ -158,7 +159,7 @@ void check_rotary_encoder();
 // Menus related stuff ...
 #if defined(SDCARD)
 #define maxrow_t int16_t
-#elif defined(ROTARY_ENCODERS)
+#elif defined(ROTARY_ENCODER_NAVIGATION)
 #define maxrow_t int8_t
 #else
 #define maxrow_t uint8_t

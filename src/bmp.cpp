@@ -213,7 +213,7 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t widt
 void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img)
 {
   const pm_uchar *q = img;
-#if LCD >= 260
+#if LCD_W >= 260
   xcoord_t w   = pgm_read_byte(q++);
   if (w == 255) w += pgm_read_byte(q++);
 #else
@@ -221,7 +221,7 @@ void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img)
 #endif
   uint8_t hb   = (pgm_read_byte(q++)+7)/8;
   for (uint8_t yb = 0; yb < hb; yb++) {
-    uint8_t *p = &displayBuf[ (y / 8 + yb) * DISPLAY_W + x ];
+    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
     for (xcoord_t i=0; i<w; i++){
       *(p+0*DISPLAY_PLAN_SIZE) = pgm_read_byte(q++);
       *(p+1*DISPLAY_PLAN_SIZE) = pgm_read_byte(q++);

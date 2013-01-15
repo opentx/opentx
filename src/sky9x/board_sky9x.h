@@ -49,6 +49,34 @@ extern void init_SDcard();
 extern void sdInit();
 }
 
+#if defined(REVA)
+#define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
+#define GPIO_BUTTON_EXIT                PIOA->PIO_PDSR
+#define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
+#define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
+#define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
+#define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
+#define PIN_BUTTON_MENU                 0x00000040
+#define PIN_BUTTON_EXIT                 0x80000000
+#define PIN_BUTTON_UP                   0x00000004
+#define PIN_BUTTON_DOWN                 0x00000008
+#define PIN_BUTTON_RIGHT                0x00000010
+#define PIN_BUTTON_LEFT                 0x00000020
+#else
+#define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
+#define GPIO_BUTTON_EXIT                PIOC->PIO_PDSR
+#define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
+#define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
+#define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
+#define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
+#define PIN_BUTTON_MENU                 0x00000020
+#define PIN_BUTTON_EXIT                 0x01000000
+#define PIN_BUTTON_UP                   0x00000002
+#define PIN_BUTTON_DOWN                 0x00000020
+#define PIN_BUTTON_RIGHT                0x00000010
+#define PIN_BUTTON_LEFT                 0x00000008
+#endif
+
 #define sdPoll10ms()
 
 void usbMassStorage();

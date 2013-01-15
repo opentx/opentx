@@ -97,7 +97,7 @@ inline void boardInit()
   EICRA = (1<<ISC30) | (1<<ISC20); // do the same for encoder 1
   EIFR = (3<<INTF2);
 
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
   EIMSK = (3<<INT5); // enable the ONE rot. enc. ext. int. pairs.
 #else
   EIMSK = (3<<INT5) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
@@ -113,7 +113,7 @@ inline void boardInit()
   TIMSK4 |= (1<<OCIE4A); // Start the interrupt so the unit reset can occur
 #endif
 
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
   //configure uart1 here
   DDRD &= ~(1 << 2);
   PORTD &= ~(1 << 2);
@@ -123,10 +123,10 @@ inline void boardInit()
   UCSR1C = (1<<USBS1)|(3<<UCSZ10);
   UCSR1B = (1<<RXEN1)|(0<<TXEN1)|(1<<UCSZ12);
   UCSR1B |= 1 << RXCIE1; //enable interrupt on rx
-#endif //EXTRA_ROTARY_ENCODERS
+#endif
 }
 
-#if defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
 
 uint8_t vpotToChange = 0;
 uint8_t vpot_mod_state = 0;
@@ -161,7 +161,7 @@ ISR(USART1_RX_vect)
     }
   }
 }
-#endif // EXTRA_ROTARY_ENCODERS
+#endif
 #endif // !SIMU
 
 uint8_t check_soft_power()
@@ -185,7 +185,7 @@ FORCEINLINE uint8_t keyDown()
   return (~PINL) & 0x3F;
 }
 
-bool keyState(EnumKeys enuk)
+bool switchState(EnumKeys enuk)
 {
   uint8_t result = 0 ;
 
@@ -256,9 +256,9 @@ FORCEINLINE void readKeysAndTrims()
 
   uint8_t enuk = KEY_MENU;
 
-#if !defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS <= 2
   keys[BTN_REa].input(~PIND & 0x20, BTN_REa);
-#endif //!EXTRA_ROTARY_ENCODERS
+#endif
   keys[BTN_REb].input(~PIND & 0x10, BTN_REb);
 
   uint8_t tin = ~PINL;
@@ -294,9 +294,7 @@ FORCEINLINE void readKeysAndTrims()
   }
 }
 
-#if defined(ROTARY_ENCODERS)
-
-#if !defined(EXTRA_ROTARY_ENCODERS)
+#if ROTARY_ENCODERS <= 2
 ISR(INT2_vect)
 {
   uint8_t input = (PIND & 0x0C);
@@ -308,7 +306,7 @@ ISR(INT3_vect)
   uint8_t input = (PIND & 0x0C);
   if (input == 0 || input == 0x0C) incRotaryEncoder(0, +1);
 }
-#endif // !defined(EXTRA_ROTARY_ENCODERS)
+#endif
 
 ISR(INT5_vect)
 {
@@ -321,4 +319,3 @@ ISR(INT6_vect)
   uint8_t input = (PINE & 0x60);
   if (input == 0 || input == 0x60) incRotaryEncoder(1, -1);
 }
-#endif // defined(ROTARY_ENCODERS)

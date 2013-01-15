@@ -35,6 +35,19 @@
 #ifndef board_gruvin9x_h
 #define board_gruvin9x_h
 
+#define GPIO_BUTTON_MENU       pinl
+#define GPIO_BUTTON_EXIT       pinl
+#define GPIO_BUTTON_RIGHT      pinl
+#define GPIO_BUTTON_LEFT       pinl
+#define GPIO_BUTTON_UP         pinl
+#define GPIO_BUTTON_DOWN       pinl
+#define PIN_BUTTON_MENU        (1<<INP_L_KEY_MEN)
+#define PIN_BUTTON_EXIT        (1<<INP_L_KEY_EXT)
+#define PIN_BUTTON_UP          (1<<INP_L_KEY_UP)
+#define PIN_BUTTON_DOWN        (1<<INP_L_KEY_DWN)
+#define PIN_BUTTON_RIGHT       (1<<INP_L_KEY_RGT)
+#define PIN_BUTTON_LEFT        (1<<INP_L_KEY_LFT)
+
 #define TIMER_16KHZ_VECT TIMER2_OVF_vect
 #define COUNTER_16KHZ TCNT2
 #define TIMER_10MS_VECT  TIMER2_COMPA_vect
