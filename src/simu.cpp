@@ -286,10 +286,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #endif
 
     for (unsigned int i=0; i<DIM(keys1); i+=2) {
-      if (getApp()->getKeyState(keys1[i]))
-        simuSetKey(1+keys1[i+1]);
-      else
-        simuSetKey(-1-keys1[i+1]);
+      simuSetKey(keys1[i+1], getApp()->getKeyState(keys1[i]));
     }
 
 #if defined(PCBACT)

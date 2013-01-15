@@ -312,7 +312,7 @@ extern uint8_t main_thread_running;
 
 #define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
 
-void simuSetKey(int8_t key);
+void simuSetKey(uint8_t key, bool state);
 void simuSetSwitch(int8_t swtch);
 
 void StartMainThread(bool tests=true);

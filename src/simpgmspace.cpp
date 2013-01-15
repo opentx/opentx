@@ -85,11 +85,8 @@ sem_t *eeprom_write_sem;
       pin |= mask; \
       break;
 #define KEY_CASE(key, pin, mask) \
-    case -1-key: \
-      pin |= mask; \
-      break; \
-    case 1+key: \
-      pin &= ~mask; \
+    case key: \
+      if (state) pin &= ~mask; else pin |= mask;\
       break;
 #else
 #define SWITCH_CASE(swtch, pin, mask) \
@@ -100,15 +97,12 @@ sem_t *eeprom_write_sem;
       pin |= mask; \
       break;
 #define KEY_CASE(key, pin, mask) \
-    case 1+key: \
-      pin |= mask; \
-      break; \
-    case -1-key: \
-      pin &= ~mask; \
+    case key: \
+      if (state) pin |= mask; else pin &= ~mask;\
       break;
 #endif
 
-void simuSetKey(int8_t key)
+void simuSetKey(uint8_t key, bool state)
 {
   switch (key) {
     KEY_CASE(KEY_MENU, GPIO_BUTTON_MENU, PIN_BUTTON_MENU)
