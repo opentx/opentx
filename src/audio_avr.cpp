@@ -32,7 +32,7 @@
  *
  */
 
-#include "../open9x.h"
+#include "open9x.h"
 
 audioQueue::audioQueue()
 {
