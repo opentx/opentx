@@ -471,9 +471,9 @@ void eeReadAll()
 
     ALERT(STR_EEPROMWARN, STR_BADEEPROMDATA, AU_BAD_EEPROM);
 
-    if (check_soft_power()==e_power_off) {
+    if (pwrCheck()==e_power_off) {
       // we don't want to store anything
-      soft_power_off(); // turn power off now
+      pwrOff(); // turn power off now
     }
     else {
       MESSAGE(STR_EEPROMWARN, STR_EEPROMFORMATTING, NULL, AU_EEPROM_FORMATTING);

@@ -34,7 +34,7 @@
 
 #include "../open9x.h"
 
-uint32_t check_soft_power()
+uint32_t pwrCheck()
 {
 #ifdef SIMU
   return e_power_on;
@@ -83,7 +83,7 @@ uint32_t check_soft_power()
 }
 
 // turn off soft power
-void soft_power_off()
+void pwrOff()
 {
 #if !defined(REVA)
   configure_pins( PIO_PA8, PIN_ENABLE | PIN_OUTPUT | PIN_LOW | PIN_PORTA | PIN_NO_PULLUP ) ;

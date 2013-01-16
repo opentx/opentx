@@ -37,40 +37,53 @@
 
 #define NUM_VOL_LEVELS	24
 
-extern void startSound( void ) ;
-extern void buzzer_on( void ) ;
-extern void buzzer_off( void ) ;
-extern void buzzer_sound( uint8_t time ) ;
-extern void setFrequency( uint32_t frequency ) ;
-extern uint32_t getFrequency();
-extern void start_timer1( void ) ;
-extern void initDac( void ) ;
-extern void end_sound( void ) ;
-extern void write_coprocessor( uint8_t *ptr, uint32_t count ) ;
-extern void read_coprocessor( bool onlytemp=false ) ;
-extern uint8_t Coproc_read ;
-extern int8_t Coproc_valid ;
-extern int8_t Coproc_temp ;
-extern int8_t Coproc_maxtemp ;
+void audioInit( void ) ;
+void audioEnd( void ) ;
+
+void setFrequency( uint32_t frequency ) ;
+uint32_t getFrequency();
 
 extern uint16_t *nextAudioData;
 extern uint16_t nextAudioSize;
 
-inline void toneStart()
+inline void dacStart()
 {
   PMC->PMC_PCER0 |= 0x40000000L ; // Enable peripheral clock to DAC
   DACC->DACC_IER = DACC_IER_ENDTX ;
 }
 
-inline void toneStop()
+inline void dacStop()
 {
   DACC->DACC_IDR = DACC_IDR_ENDTX ; // Disable interrupt
 }
 
-extern volatile uint8_t Buzzer_count ;
+void setVolume(uint8_t volume);
 
-extern void init_twi( void ) ;
-extern void setVolume( register uint8_t volume ) ;
-extern "C" void TWI0_IRQHandler (void) ;
+inline void dacFill(uint16_t *data, uint16_t size)
+{
+  register Dacc *dacptr = DACC;
+  dacptr->DACC_TPR = CONVERT_PTR(data);
+  dacptr->DACC_TNPR = CONVERT_PTR(data);
+  dacptr->DACC_TCR = size;       // words
+  dacptr->DACC_TNCR = size;      // words
+}
+
+inline uint16_t dacQueue(uint16_t *data, uint16_t size)
+{
+  register Dacc *dacptr = DACC;
+  if (dacptr->DACC_ISR & DACC_ISR_TXBUFE) {
+    dacptr->DACC_TPR = CONVERT_PTR(data);
+    dacptr->DACC_TCR = size;
+    return size;
+  }
+  else if (dacptr->DACC_TNCR == 0) {
+    dacptr->DACC_TNPR = CONVERT_PTR(data);
+    dacptr->DACC_TNCR = size;
+    return size;
+  }
+  else {
+    return 0;
+  }
+}
 
 #endif

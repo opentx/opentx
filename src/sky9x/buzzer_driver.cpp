@@ -32,11 +32,42 @@
  *
  */
 
-#ifndef bluetooth_h
-#define bluetooth_h
+#include "../open9x.h"
 
-void btInit();
-void btTask(void* pdata);
-void btPushByte(uint8_t data);
+volatile uint8_t buzzerCount ;
 
+#if defined(REVA)
+void buzzerOn()
+{
+  PIOA->PIO_SODR = 0x00010000L ;        // Set bit A16 ON
+}
+
+void buzzerOff()
+{
+  PIOA->PIO_CODR = 0x00010000L ;        // Set bit A16 ON
+}
+#else
+void buzzerOn()
+{
+  PIOA->PIO_SODR = 0x02000000L ;        // Set bit A25 ON
+}
+
+void buzzerOff()
+{
+  PIOA->PIO_CODR = 0x02000000L ;        // Set bit A25 ON
+}
 #endif
+
+void buzzerSound(uint8_t duration)
+{
+  buzzerOn();
+  buzzerCount = duration;
+}
+
+void buzzerHeartbeat()
+{
+  if (buzzerCount) {
+    if (--buzzerCount == 0)
+      buzzerOff();
+  }
+}

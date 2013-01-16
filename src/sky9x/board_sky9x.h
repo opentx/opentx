@@ -38,11 +38,6 @@
 #include <stdio.h>
 #include "board.h"
 #include "audio_driver.h"
-#include "haptic_driver.h"
-
-#if defined(BLUETOOTH)
-#include "bluetooth.h"
-#endif
 
 extern "C" {
 extern void init_SDcard();
@@ -127,35 +122,74 @@ extern uint32_t Current_used;
 extern uint16_t sessionTimer;
 #endif
 
-void soft_power_off();
-
 #if defined(REVC)
 #define BOOTLOADER_REQUEST() (usbPlugged())
 #else
-#define BOOTLOADER_REQUEST() (check_soft_power() == e_power_usb)
+#define BOOTLOADER_REQUEST() (pwrCheck() == e_power_usb)
 #endif
 
-#define SLAVE_MODE() (check_soft_power() == e_power_trainer)
+#define SLAVE_MODE() (pwrCheck() == e_power_trainer)
 #define JACK_PPM_OUT() PIOC->PIO_PDR = PIO_PC22
 #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
 
 void setSticksGain(uint8_t gains);
 
-uint32_t spi_operation( register uint8_t *tx, register uint8_t *rx, register uint32_t count );
-
+// WDT driver
 #if !defined(SIMU)
 #define wdt_disable()
 #define wdt_enable(x) WDT->WDT_MR = 0x3FFF217F;
 #define wdt_reset()   WDT->WDT_CR = 0xA5000001
 #endif
 
-uint32_t check_soft_power();
-
+// Backlight driver
 #define setBacklight(xx)  PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx
 #define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #define IS_BACKLIGHT_ON() (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 
+// ADC driver
+void adcInit();
 void adcRead(void);
+extern uint16_t Analog_values[];
+
+// Buzzer driver
+void buzzerSound(uint8_t duration);
+void buzzerHeartbeat();
+#define BUZZER_HEARTBEAT buzzerHeartbeat
+
+// Coproc driver
+void coprocInit();
+void coprocWriteData(uint8_t *data, uint32_t size);
+void coprocReadData(bool onlytemp=false);
+void coprocCheck();
+extern int8_t coprocVolumeRequired;
+extern uint8_t coprocVolumeReadPending;
+extern uint8_t Coproc_read;
+extern int8_t Coproc_valid;
+extern int8_t Coproc_temp;
+extern int8_t Coproc_maxtemp;
+
+// Haptic driver
+void hapticOff(void) ;
+void hapticOn(uint32_t pwmPercent);
+
+// BlueTooth driver
+#if defined(BLUETOOTH)
+void btInit();
+void btTask(void* pdata);
+void btPushByte(uint8_t data);
+#endif
+
+// Power driver
+void pwrInit();
+void pwrOff();
+uint32_t pwrCheck();
+
+// EEPROM driver
+void eepromInit();
+
+// Rotary Encoder driver
+void rotencInit();
+void rotencEnd();
 
 #endif

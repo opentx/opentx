@@ -34,7 +34,7 @@
 
 #include "../open9x.h"
 
-void rtc_settime(struct gtm * t)
+void rtcSetTime(struct gtm * t)
 {
   RTC_TimeTypeDef RTC_TimeStruct;
   RTC_DateTypeDef RTC_DateStruct;

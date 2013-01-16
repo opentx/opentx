@@ -147,7 +147,7 @@ void menuGeneralSetup(uint8_t event)
 
   if ((m_posVert==ITEM_SETUP_DATE+1 || m_posVert==ITEM_SETUP_TIME+1) && s_editMode>0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
     // set the date and time into RTC chip
-    rtc_settime(&t);
+    rtcSetTime(&t);
   }
 #endif
 

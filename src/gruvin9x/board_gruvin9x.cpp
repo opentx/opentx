@@ -164,7 +164,7 @@ ISR(USART1_RX_vect)
 #endif
 #endif // !SIMU
 
-uint8_t check_soft_power()
+uint8_t pwrCheck()
 {
 #if !defined(SIMU) && !defined(REV0)
   if ((PING & 0b00000010) && (~PINL & 0b01000000))
@@ -173,7 +173,7 @@ uint8_t check_soft_power()
   return e_power_on;
 }
 
-void soft_power_off()
+void pwrOff()
 {
 #ifndef REV0
   PORTL = 0x7f;

@@ -43,6 +43,8 @@
 #define BEEP_KEY_UP_FREQ   (BEEP_DEFAULT_FREQ+5)
 #define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
 
+extern uint16_t Sine_values[];
+
 class ToneFragment {
   public:
     uint16_t freq;

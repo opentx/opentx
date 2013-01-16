@@ -45,7 +45,6 @@ void delaysInit(void)
   TIM13->DIER = 0;
 }
 	
-	
 void delay_01us(uint16_t nb)
 {
   TIM13->EGR = 1;

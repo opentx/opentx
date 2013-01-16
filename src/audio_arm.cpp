@@ -34,6 +34,22 @@
 
 #include "../open9x.h"
 
+// Must NOT be in flash, PDC needs a RAM source.
+// Amplitude reduced to 30% to allow for voice volume
+uint16_t Sine_values[] =
+{
+  2048,2085,2123,2160,2197,2233,2268,2303,2336,2369,
+  2400,2430,2458,2485,2510,2533,2554,2573,2590,2605,
+  2618,2629,2637,2643,2646,2648,2646,2643,2637,2629,
+  2618,2605,2590,2573,2554,2533,2510,2485,2458,2430,
+  2400,2369,2336,2303,2268,2233,2197,2160,2123,2085,
+  2048,2010,1972,1935,1898,1862,1826,1792,1758,1726,
+  1695,1665,1637,1610,1585,1562,1541,1522,1505,1490,
+  1477,1466,1458,1452,1448,1448,1448,1452,1458,1466,
+  1477,1490,1505,1522,1541,1562,1585,1610,1637,1665,
+  1695,1726,1758,1792,1826,1862,1898,1935,1972,2010
+};
+
 #if defined(SDCARD)
 const char * audioFilenames[] = {
   "inactiv",
@@ -331,7 +347,7 @@ void AudioQueue::sdWakeup(AudioContext & context)
     }
 
     if (result != FR_OK) {
-      toneStop();
+      dacStop();
       memset(&fragment, 0, sizeof(fragment));
       f_close(&context.wavFile);
       CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 1000) / context.pcmFreq, 0);
@@ -372,24 +388,15 @@ void AudioQueue::sdWakeup(AudioContext & context)
 
       read /= 2;
 
-#if defined(PCBSKY9X)
-      register Dacc *dacptr = DACC;
       if (read) {
         state = AUDIO_PLAYING_WAV;
-        if (dacptr->DACC_ISR & DACC_ISR_TXBUFE) {
-          dacptr->DACC_TPR = CONVERT_PTR(wavSamplesBuffer);
-          dacptr->DACC_TCR = read;
-          CoSetFlag(audioFlag);
-        }
-        else if (dacptr->DACC_TNCR == 0) {
-          dacptr->DACC_TNPR = CONVERT_PTR(wavSamplesBuffer);
-          dacptr->DACC_TNCR = read;
+        if (dacQueue(wavSamplesBuffer, read)) {
           CoSetFlag(audioFlag);
         }
         else {
           nextAudioSize = read;
           nextAudioData = wavSamplesBuffer;
-          toneStart();
+          dacStart();
           CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 500) / context.pcmFreq, 0);
           CoStartTmr(audioTimer);
         }
@@ -401,7 +408,6 @@ void AudioQueue::sdWakeup(AudioContext & context)
         state = AUDIO_RESUMING;
         CoSetFlag(audioFlag);
       }
-#endif
     }
   }
   else {
@@ -428,14 +434,7 @@ void AudioQueue::wakeup()
   if (fragment.duration > 0) {
     if (state != AUDIO_PLAYING_TONE) {
       state = AUDIO_PLAYING_TONE;
-
-#if !defined(PCBX9D) && !defined(PCBACT)
-      register Dacc *dacptr = DACC;
-      dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
-      dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);
-      dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
-      dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
-#endif
+      dacFill(Sine_values, 50/*100 samples*/);
     }
 
     setFrequency(fragment.freq * 6100 / 4);
@@ -449,7 +448,7 @@ void AudioQueue::wakeup()
       CoSetTmrCnt(audioTimer, fragment.duration*2, 0);
       fragment.duration = 0;
     }
-    toneStart();
+    dacStart();
     CoClearFlag(audioFlag);
     CoStartTmr(audioTimer);
   }
@@ -457,7 +456,7 @@ void AudioQueue::wakeup()
     state = AUDIO_PLAYING_TONE;
     CoSetTmrCnt(audioTimer, fragment.pause*2, 0);
     fragment.pause = 0;
-    toneStop();
+    dacStop();
     CoClearFlag(audioFlag);
     CoStartTmr(audioTimer);
   }
@@ -475,18 +474,12 @@ void AudioQueue::wakeup()
   else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.duration > 0) {
     if (state != AUDIO_PLAYING_TONE) {
       state = AUDIO_PLAYING_TONE;
-#if !defined(PCBX9D) && !defined(PCBACT)
-      register Dacc *dacptr = DACC;
-      dacptr->DACC_TPR = CONVERT_PTR(Sine_values);
-      dacptr->DACC_TNPR = CONVERT_PTR(Sine_values);
-      dacptr->DACC_TCR = 50 ;       // words, 100 16 bit values
-      dacptr->DACC_TNCR = 50 ;      // words, 100 16 bit values
-#endif
+      dacFill(Sine_values, 50/*100 samples*/);
     }
     CoSetTmrCnt(audioTimer, backgroundContext.fragment.duration*2, 0);
     backgroundContext.fragment.duration = 0;
     setFrequency(backgroundContext.fragment.freq * 6100 / 4);
-    toneStart();
+    dacStart();
     CoClearFlag(audioFlag);
     CoStartTmr(audioTimer);
   }
@@ -497,7 +490,7 @@ void AudioQueue::wakeup()
       if (prioIdx >= 0) {
         ridx = prioIdx;
         prioIdx = -1;
-        toneStop();
+        dacStop();
         CoClearFlag(audioFlag);
         nextAudioData = NULL;
         if (state == AUDIO_PLAYING_WAV) {
@@ -526,7 +519,7 @@ void AudioQueue::wakeup()
     else {
       memset(&fragment, 0, sizeof(fragment));
       state = AUDIO_SLEEPING;
-      toneStop();
+      dacStop();
     }
 
     CoLeaveMutexSection(audioMutex);

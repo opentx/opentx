@@ -91,7 +91,7 @@ void init_trainer_ppm()
   TIM8->CCR4 = 600 ;              // 300 uS pulse
   TIM8->BDTR = TIM_BDTR_MOE ;
   TIM8->EGR = 1 ;
-  TIM8->DIER = TIM_DIER_UDE ;
+  // TIM8->DIER = TIM_DIER_UDE ;
 
   TIM8->SR &= ~TIM_SR_UIF ;                               // Clear flag
   TIM8->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
@@ -101,6 +101,15 @@ void init_trainer_ppm()
   TIM8->CR1 = TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM8_CC_IRQn) ;
   NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn) ;
+}
+
+// TODO - testing
+void stop_trainer_ppm()
+{
+  configure_pins( 0x0200, PIN_INPUT | PIN_PORTC ) ;
+  TIM8->CR1 &= ~TIM_CR1_CEN ;                             // Stop counter
+  NVIC_DisableIRQ(TIM8_CC_IRQn) ;                         // Stop Interrupt
+  NVIC_DisableIRQ(TIM8_UP_TIM13_IRQn) ; // Stop Interrupt
 }
 
 extern "C" void TIM8_CC_IRQHandler()
@@ -175,3 +184,4 @@ extern "C" void TIM3_IRQHandler()
     }
   }
 }
+

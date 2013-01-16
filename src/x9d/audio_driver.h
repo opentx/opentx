@@ -32,10 +32,47 @@
  *
  */
 
-#ifndef haptic_driver_h
-#define haptic_driver_h
+#ifndef audio_driver_h
+#define audio_driver_h
 
-extern void hapticOff(void) ;
-extern void hapticOn( uint32_t pwmPercent ) ;
+extern void audioInit( void ) ;
+extern void audioEnd( void ) ;
+
+#define NUM_VOL_LEVELS	24
+
+extern void setFrequency( uint32_t frequency ) ;
+extern uint32_t getFrequency();
+
+extern uint16_t *nextAudioData;
+extern uint16_t nextAudioSize;
+
+inline void dacStart()
+{
+  DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
+  DMA1_Stream5->CR |= DMA_SxCR_CIRC | DMA_SxCR_EN ;                               // Enable DMA channel
+  DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
+  DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
+}
+
+inline void dacStop()
+{
+  DMA1_Stream5->CR &= ~DMA_SxCR_CIRC ;
+}
+
+inline void dacFill(uint16_t *data, uint16_t size)
+{
+  DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                            // Disable DMA channel
+  DMA1_Stream5->M0AR = CONVERT_PTR(data);
+  DMA1_Stream5->NDTR = size*2;
+}
+
+inline uint16_t dacQueue(uint16_t *data, uint16_t size)
+{
+  return size;
+}
+
+inline void setVolume( unsigned char volume )
+{
+}
 
 #endif

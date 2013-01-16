@@ -249,7 +249,7 @@ int g9x_rtc_gettime (RTC *rtc)
   return 1;
 }
 
-int g9x_rtc_settime (const RTC *rtc)
+int g9x_rtcSetTime (const RTC *rtc)
 {
   BYTE buf[8];
 
@@ -278,7 +278,7 @@ void rtc_gettime(struct gtm * utm)
   utm->tm_wday = rtc.wday - 1;
 }
 
-void rtc_settime(struct gtm * t)
+void rtcSetTime(struct gtm * t)
 {
   g_rtcTime = gmktime(t); // update local timestamp and get wday calculated
   g_ms100 = 0; // start of next second begins now
@@ -291,7 +291,7 @@ void rtc_settime(struct gtm * t)
   rtc.min = t->tm_min;
   rtc.sec = t->tm_sec;
   rtc.wday = t->tm_wday + 1;
-  g9x_rtc_settime(&rtc);
+  g9x_rtcSetTime(&rtc);
 }
 
 void rtcInit (void)

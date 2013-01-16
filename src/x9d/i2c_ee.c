@@ -124,7 +124,7 @@ void I2C_SEND_DATA(char SendByte)
   short i=8;
   while (i--) {
     SCL_L;
-    I2C_delay();
+    // I2C_delay();
     if (SendByte & 0x80)
       SDA_H;
     else

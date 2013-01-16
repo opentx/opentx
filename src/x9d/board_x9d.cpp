@@ -146,13 +146,9 @@ void interrupt5ms()
   static uint32_t pre_scale ;       // Used to get 10 Hz counter
 
   // HAPTIC_HEARTBEAT();
-  // AUDIO_HEARTBEAT();
+  AUDIO_HEARTBEAT();
 
   if ( ++pre_scale >= 2 ) {
-    /* if ( Buzzer_count ) {
-      if ( --Buzzer_count == 0 )
-        buzzer_off() ;
-    } */
     pre_scale = 0 ;
     per10ms();
   }

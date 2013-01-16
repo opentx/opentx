@@ -59,7 +59,7 @@ void rtcInit();
 #ifdef __cplusplus
 extern "C" {
 #endif
-void rtc_settime(struct gtm * tm);
+void rtcSetTime(struct gtm * tm);
 void gettime(struct gtm * tm);
 gtime_t gmktime (struct gtm *tm);
 #ifdef __cplusplus

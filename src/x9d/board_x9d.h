@@ -48,6 +48,7 @@
 #include "hal.h"
 #include "aspi.h"
 #include "i2c_ee.h"
+#include "audio_driver.h"
 
 #define PERI1_FREQUENCY 30000000
 #define PERI2_FREQUENCY 60000000
@@ -79,7 +80,7 @@ uint8_t getTemperature();
 #define SD_GET_BLOCKNR()        (0)
 #define SD_GET_SPEED()          (0)
 
-void soft_power_off();
+void pwrOff();
 
 #define strcpy_P strcpy
 #define strcat_P strcat
@@ -95,7 +96,7 @@ extern uint16_t sessionTimer;
 
 #define BOOTLOADER_REQUEST() (0/*usbPlugged()*/)
 
-#define SLAVE_MODE() (0/*check_soft_power() == e_power_trainer*/)
+#define SLAVE_MODE() (0/*pwrCheck() == e_power_trainer*/)
 
 #if !defined(SIMU)
 #define wdt_disable()
@@ -103,7 +104,7 @@ extern uint16_t sessionTimer;
 #define wdt_reset()
 #endif
 
-uint32_t check_soft_power();
+uint32_t pwrCheck();
 
 #define setBacklight(xx)
 #define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
@@ -122,7 +123,6 @@ void pwrInit();
 void eepromInit(); // TODO check it's not in another include
 void delaysInit();
 void adcInit();
-void audioInit();
 void debugInit();
 
 void adcRead();
@@ -137,28 +137,5 @@ void uartSendChar(uint8_t c);
 
 void delaysInit(void);
 void delay_01us(uint16_t nb);
-
-#define NUM_VOL_LEVELS  24
-
-void startSound( void ) ;
-void setFrequency( uint32_t frequency );
-uint32_t getFrequency();
-void start_timer1( void );
-void initDac( void ) ;
-void end_sound( void ) ;
-
-extern uint16_t *nextAudioData;
-extern uint16_t nextAudioSize;
-
-inline void toneStart()
-{
-}
-
-inline void toneStop()
-{
-}
-
-extern void init_twi( void ) ;
-extern void setVolume( register uint8_t volume ) ;
 
 #endif

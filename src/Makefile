@@ -475,7 +475,7 @@ ifeq ($(PCB), ACT)
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_avr.cpp # TODO later eeprom_conversions.cpp
   CPPSRC += x9d/eeprom_driver.cpp x9d/pulses_driver.cpp act/keys_driver.cpp act/audio_driver.cpp
-  CPPSRC += sky9x/audio.cpp
+  CPPSRC += audio_arm.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += monitors_views.cpp
 endif
@@ -484,14 +484,14 @@ ifeq ($(PCB), X9D)
   # X9D radio
   OPT = 2
   CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM
-  EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
+  EXTRAINCDIRS += CoOS/kernel CoOS/portable
   EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
   BOARDSRC = x9d/board_x9d.cpp
   EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c_ee.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_avr.cpp # TODO later eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += sky9x/audio.cpp
+  CPPSRC += audio_arm.cpp
   CPPSRC += x9d/pwr_driver.cpp x9d/eeprom_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/adc_driver.cpp x9d/trainer_driver.cpp x9d/audio_driver.cpp x9d/delays.cpp
   CPPSRC += bmp.cpp monitors_views.cpp
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
@@ -536,8 +536,8 @@ ifeq ($(PCB), SKY9X)
   SRC += sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
-  CPPSRC += sky9x/audio.cpp haptic.cpp
-  CPPSRC += sky9x/pwr_driver.cpp sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp sky9x/audio_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
+  CPPSRC += audio_arm.cpp haptic.cpp
+  CPPSRC += sky9x/pwr_driver.cpp sky9x/adc_driver.cpp sky9x/coproc_driver.cpp sky9x/rotenc_driver.cpp sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp sky9x/audio_driver.cpp sky9x/buzzer_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
     EXTRAINCDIRS += FatFs FatFs/option
@@ -571,7 +571,7 @@ ifeq ($(PCB), GRUVIN9X)
   EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp  
-  CPPSRC += stock/audio.cpp haptic.cpp
+  CPPSRC += audio_avr.cpp haptic.cpp
 
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK
@@ -602,7 +602,7 @@ ifeq ($(PCB), STD128)
     
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
-    CPPSRC += stock/audio.cpp
+    CPPSRC += audio_avr.cpp
   else
     CPPSRC += beeper.cpp 
   endif
@@ -638,7 +638,7 @@ ifeq ($(PCB), STD)
    
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
-    CPPSRC += stock/audio.cpp
+    CPPSRC += audio_avr.cpp
   else
     CPPSRC += beeper.cpp 
   endif

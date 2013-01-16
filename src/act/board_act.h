@@ -87,7 +87,7 @@ extern volatile uint32_t Card_initialized;
 #define SD_GET_BLOCKNR()        (0)
 #define SD_GET_SPEED()          (0)
 
-void soft_power_off();
+void pwrOff();
 
 #define strcpy_P strcpy
 #define strcat_P strcat
@@ -103,7 +103,7 @@ extern uint16_t sessionTimer;
 
 #define BOOTLOADER_REQUEST() (0/*usbPlugged()*/)
 
-#define SLAVE_MODE() (0/*check_soft_power() == e_power_trainer*/)
+#define SLAVE_MODE() (0/*pwrCheck() == e_power_trainer*/)
 
 #if !defined(SIMU)
 #define wdt_disable()
@@ -111,7 +111,7 @@ extern uint16_t sessionTimer;
 #define wdt_reset()
 #endif
 
-#define check_soft_power() e_power_on
+#define pwrCheck() e_power_on
 
 #define setBacklight(xx)
 #define __BACKLIGHT_ON
@@ -127,25 +127,27 @@ void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t si
 
 #define NUM_VOL_LEVELS  24
 
-void startSound( void ) ;
+void audioInit( void ) ;
+void audioEnd( void ) ;
+
 void setFrequency( uint32_t frequency );
 uint32_t getFrequency();
-void start_timer1( void );
-void initDac( void ) ;
-void end_sound( void ) ;
+
+#define dacFill(...)
 
 extern uint16_t *nextAudioData;
 extern uint16_t nextAudioSize;
 
-inline void toneStart()
+inline void dacStart()
 {
 }
 
-inline void toneStop()
+inline void dacStop()
 {
 }
 
-extern void init_twi( void ) ;
-extern void setVolume( register uint8_t volume ) ;
+inline void setVolume( register uint8_t volume )
+{
+}
 
 #endif

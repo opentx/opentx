@@ -34,29 +34,6 @@
 
 #include "../open9x.h"
 
-volatile uint8_t Buzzer_count ;
-
-// Must NOT be in flash, PDC needs a RAM source.
-// Amplitude reduced to 30% to allow for voice volume
-uint16_t Sine_values[] =
-{
-  2048,2085,2123,2160,2197,2233,2268,2303,2336,2369,
-  2400,2430,2458,2485,2510,2533,2554,2573,2590,2605,
-  2618,2629,2637,2643,2646,2648,2646,2643,2637,2629,
-  2618,2605,2590,2573,2554,2533,2510,2485,2458,2430,
-  2400,2369,2336,2303,2268,2233,2197,2160,2123,2085,
-  2048,2010,1972,1935,1898,1862,1826,1792,1758,1726,
-  1695,1665,1637,1610,1585,1562,1541,1522,1505,1490,
-  1477,1466,1458,1452,1448,1448,1448,1452,1458,1466,
-  1477,1490,1505,1522,1541,1562,1585,1610,1637,1665,
-  1695,1726,1758,1792,1826,1862,1898,1935,1972,2010
-};
-
-// Sound routines
-void startSound()
-{
-}
-
 uint32_t currentFrequency = 0;
 
 uint32_t getFrequency()
@@ -68,41 +45,91 @@ void setFrequency(uint32_t frequency)
 {
   if (currentFrequency != frequency) {
     currentFrequency = frequency;
+
+    register uint32_t timer = (PERI1_FREQUENCY * TIMER_MULT_APB1) / frequency - 1 ;         // MCK/8 and 100 000 Hz
+
+    TIM6->CR1 &= ~TIM_CR1_CEN ;
+    TIM6->CNT = 0 ;
+    TIM6->ARR = limit<uint32_t>(2, timer, 65535) ;
+    TIM6->CR1 |= TIM_CR1_CEN ;
   }
 }
 
-// Start TIMER1 at 100000Hz, used for DACC trigger
-void start_timer1()
+// Start TIMER6 at 100000Hz, used for DAC trigger
+void dacTimerInit()
 {
-}
+  // Now for timer 6
+  RCC->APB1ENR |= RCC_APB1ENR_TIM6EN ;            // Enable clock
 
+  TIM6->PSC = 0 ;                                                                                                 // Max speed
+  TIM6->ARR = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 100000 - 1 ;        // 10 uS, 100 kHz
+  TIM6->CR2 = 0 ;
+  TIM6->CR2 = 0x20 ;
+  TIM6->CR1 = TIM_CR1_CEN ;
+}
 
 // Configure DAC0 (or DAC1 for REVA)
 // Not sure why PB14 has not be allocated to the DAC, although it is an EXTRA function
 // So maybe it is automatically done
-void initDac()
+void dacInit()
 {
+  dacTimerInit();
+
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
+  configure_pins( 0x0010, PIN_ANALOG | PIN_PORTA ) ;
+  RCC->APB1ENR |= RCC_APB1ENR_DACEN ;                             // Enable clock
+  RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN ;                    // Enable DMA1 clock
+
+  // Chan 7, 16-bit wide, Medium priority, memory increments
+  DMA1_Stream5->CR &= ~DMA_SxCR_EN ;              // Disable DMA
+  DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
+  DMA1_Stream5->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 |
+                                                                             DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_CIRC ;
+  DMA1_Stream5->PAR = (uint32_t) &DAC->DHR12R1 ;
+  DMA1_Stream5->M0AR = (uint32_t) Sine_values ;
+  DMA1_Stream5->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+  DMA1_Stream5->NDTR = 100 ;
+
+  DAC->DHR12R1 = 2010 ;
+  DAC->SR = DAC_SR_DMAUDR1 ;              // Write 1 to clear flag
+  DAC->CR = DAC_CR_TEN1 | DAC_CR_EN1 ;                    // Enable DAC
+  NVIC_EnableIRQ(TIM6_DAC_IRQn) ;
+  NVIC_EnableIRQ(DMA1_Stream5_IRQn) ;
 }
 
-void end_sound()
+// Sound routines
+void audioInit()
 {
+  dacInit() ;
+
+  // TODO - for volume, shared with EEPROM?
 }
 
-// Set up for volume control (TWI0)
-// Need PA3 and PA4 set to peripheral A
-void init_twi()
+void audioEnd()
 {
+  DAC->CR = 0 ;
+  TIM6->CR1 = 0 ;
+  // Also need to turn off any possible interrupts
+  NVIC_DisableIRQ(TIM6_DAC_IRQn) ;
+  NVIC_DisableIRQ(DMA1_Stream5_IRQn) ;
 }
 
-void setVolume( unsigned char volume )
+#ifndef SIMU
+extern "C" void TIM6_DAC_IRQHandler()
 {
+  DAC->CR &= ~DAC_CR_DMAEN1 ;                     // Stop DMA requests
+  DAC->CR &= ~DAC_CR_DMAUDRIE1 ;  // Stop underrun interrupt
+  DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
 }
-/*
-void read_volume()
+
+extern "C" void DMA1_Stream5_IRQHandler()
 {
-} */
+  DMA1_Stream5->CR &= ~DMA_SxCR_TCIE ;            // Stop interrupt
+  DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear flags
+}
+#endif
 
-
+#if 0
 static void Audio_GPIO_Init()
 {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -192,3 +219,4 @@ void audioInit()
 #error "DMA is not initialized"
 #endif
 }
+#endif

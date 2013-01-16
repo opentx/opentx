@@ -255,7 +255,7 @@ void per10ms()
       rtc_count++;
     }
     else {
-      read_coprocessor(true);
+      coprocReadData(true);
     }
 #endif
     g_ms100 = 0;
@@ -1242,7 +1242,7 @@ void doSplash()
 #endif
       if (keyDown() || tsum!=inacSum) return;  // wait for key release
 
-      if (check_soft_power()==e_power_off) return;
+      if (pwrCheck()==e_power_off) return;
 
 #if !defined(PCBSTD) && !defined(PCBX9D)
       if (curTime < get_tmr10ms()) {
@@ -1313,7 +1313,7 @@ void checkTHR()
 
       int16_t v = thrAnaIn(thrchn);
 
-      if (check_soft_power()==e_power_off || keyDown() || v<=lowLim)
+      if (pwrCheck()==e_power_off || keyDown() || v<=lowLim)
         break;
 
       checkBacklight();
@@ -1367,7 +1367,7 @@ void checkSwitches()
       last_bad_switches = switches_states;
     }
 
-    if (check_soft_power()==e_power_off || keyDown()) return; // Usb on or power off
+    if (pwrCheck()==e_power_off || keyDown()) return; // Usb on or power off
 
     checkBacklight();
 
@@ -1385,7 +1385,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
   {
     SIMU_SLEEP(1);
 
-    if (check_soft_power() == e_power_off) return;
+    if (pwrCheck() == e_power_off) return;
 
     if (keyDown()) return;  // wait for key release
 
@@ -3521,7 +3521,7 @@ void menusTask(void * pdata)
 {
   open9xInit();
 
-  while (check_soft_power() != e_power_off) {
+  while (pwrCheck() != e_power_off) {
     perMain();
     for (uint8_t i=0; i<5; i++) {
       usbMassStorage();
@@ -3563,7 +3563,7 @@ void menusTask(void * pdata)
   lcdRefresh();
   lcdSetRefVolt(0);
 
-  soft_power_off(); // Only turn power off if necessary
+  pwrOff(); // Only turn power off if necessary
 }
 
 extern void audioTimerHandle(void);
@@ -3636,7 +3636,7 @@ int main(void)
 
 #if defined(CPUARM)
   if (BOOTLOADER_REQUEST()) {
-    soft_power_off(); // Only turn power off if necessary
+    pwrOff(); // Only turn power off if necessary
 
 #if defined(HAPTIC)
     hapticOff();
@@ -3689,7 +3689,7 @@ int main(void)
 
   while(1) {
 #if defined(PCBGRUVIN9X)
-    if ((shutdown_state=check_soft_power()) > e_power_trainer)
+    if ((shutdown_state=pwrCheck()) > e_power_trainer)
       break;
 #endif
 
@@ -3715,7 +3715,7 @@ int main(void)
 #endif
   lcd_clear() ;
   lcdRefresh() ;
-  soft_power_off();            // Only turn power off if necessary
+  pwrOff();            // Only turn power off if necessary
   wdt_disable();
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif

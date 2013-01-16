@@ -34,9 +34,6 @@
 
 #include "../open9x.h"
 
-void pwrInit();
-void eepromInit();
-
 #if defined(DEBUG) && !defined(SIMU)
 void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock);
 void DEBUG_UART_Stop();
@@ -127,7 +124,7 @@ inline void setup_switches()
 
 #ifdef SIMU
 #define end_ppm_capture()
-#define stop_rotary_encoder()
+#define rotencEnd()
 #define sam_boot()
 #else
 
@@ -341,46 +338,6 @@ void end_ppm_capture()
   NVIC_DisableIRQ(TC3_IRQn) ;
 }
 
-static void init_rotary_encoder()
-{
-  configure_pins( PIO_PC19 | PIO_PC21, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_PULLUP ) ;        // 19 and 21 are rotary encoder
-  configure_pins( PIO_PB6, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;            // rotary encoder switch
-  PIOC->PIO_IER = PIO_PC19 | PIO_PC21 ;
-  NVIC_EnableIRQ(PIOC_IRQn) ;
-}
-
-static void stop_rotary_encoder()
-{
-  NVIC_DisableIRQ(PIOC_IRQn) ;
-  PIOC->PIO_IDR = PIO_PC19 | PIO_PC21 ;
-}
-
-volatile uint32_t Rotary_position ;
-extern "C" void PIOC_IRQHandler()
-{
-  register uint32_t dummy;
-
-  dummy = PIOC->PIO_ISR ;                 // Read and clear status register
-  (void) dummy ;                          // Discard value - prevents compiler warning
-
-  dummy = PIOC->PIO_PDSR ;                // Read Rotary encoder (PC19, PC21)
-  dummy >>= 19 ;
-  dummy &= 0x05 ;                 // pick out the three bits
-  if ( dummy != ( Rotary_position & 0x05 ) )
-  {
-    if ( ( Rotary_position & 0x01 ) ^ ( ( dummy & 0x04) >> 2 ) )
-    {
-      incRotaryEncoder(0, +1);
-    }
-    else
-    {
-      incRotaryEncoder(0, -1);
-    }
-    Rotary_position &= ~0x45 ;
-    Rotary_position |= dummy ;
-  }
-}
-
 void interrupt5ms()
 {
   static uint32_t pre_scale ;             // Used to get 10 Hz counter
@@ -389,12 +346,9 @@ void interrupt5ms()
   AUDIO_HEARTBEAT();
 
   if ( ++pre_scale >= 2 ) {
-     if ( Buzzer_count ) {
-       if ( --Buzzer_count == 0 )
-         buzzer_off() ;
-     }
-     pre_scale = 0 ;
-     per10ms();
+    BUZZER_HEARTBEAT();
+    pre_scale = 0 ;
+    per10ms();
   }
 }
 
@@ -407,40 +361,6 @@ extern "C" void TC2_IRQHandler()
   (void) dummy ;          // Discard value - prevents compiler warning
 
   interrupt5ms();
-}
-
-// Settings for mode register ADC_MR
-// USEQ off - silicon problem, doesn't work
-// TRANSFER = 1
-// TRACKTIM = 4 (5 clock periods)
-// ANACH = 0
-// SETTLING = 1 (not used if ANACH = 0)
-// STARTUP = 1 (8 clock periods)
-// PRESCAL = 3.6 MHz clock (between 1 and 20MHz)
-// FREERUN = 0
-// FWUP = 0
-// SLEEP = 0
-// LOWRES = 0
-// TRGSEL = 0
-// TRGEN = 0 (software trigger only)
-inline void init_adc()
-{
-  register Adc *padc ;
-  register uint32_t timer ;
-
-  timer = ( Master_frequency / (3600000*2) ) << 8 ;
-  // Enable peripheral clock ADC = bit 29
-  PMC->PMC_PCER0 |= 0x20000000L ;               // Enable peripheral clock to ADC
-  padc = ADC ;
-  padc->ADC_MR = 0x14110000 | timer ;  // 0001 0100 0001 0001 xxxx xxxx 0000 0000
-  padc->ADC_ACR = ADC_ACR_TSON ;                        // Turn on temp sensor
-#if defined(REVA)
-  padc->ADC_CHER = 0x0000E23E ;  // channels 1,2,3,4,5,9,13,14,15
-#else
-  padc->ADC_CHER = 0x0000E33E ;  // channels 1,2,3,4,5,8,9,13,14,15
-#endif
-  padc->ADC_CGR = 0 ;  // Gain = 1, all channels
-  padc->ADC_COR = 0 ;  // Single ended, 0 offset, all channels
 }
 
 // PWM used for PPM generation, and LED Backlight
@@ -619,17 +539,15 @@ void configure_pins( uint32_t pins, uint16_t config )
 
 void boardInit()
 {
-  // register uint32_t goto_usb ;
   register Pio *pioptr ;
-  // Debug variable
-  // uint32_t both_on ;
 
   MATRIX->CCFG_SYSIO |= 0x000000F0L ;             // Disable syspins, enable B4,5,6,7
 
   PMC->PMC_PCER0 = (1<<ID_PIOC)|(1<<ID_PIOB)|(1<<ID_PIOA)|(1<<ID_UART0) ;                               // Enable clocks to PIOB and PIOA and PIOC and UART0
-  pioptr = PIOA ;
+
 #if defined(REVA)
   // On REVB, PA21 is used as AD8, and measures current consumption.
+  pioptr = PIOA ;
   pioptr->PIO_PER = PIO_PA21 ;            // Enable bit A21 (EXT3)
   pioptr->PIO_OER = PIO_PA21 ;            // Set bit A21 as output
   pioptr->PIO_SODR = PIO_PA21 ;   // Set bit A21 ON
@@ -691,68 +609,28 @@ void boardInit()
 
   start_timer2() ;
   start_timer0() ;
-  init_adc() ;
+  adcInit() ;
   init_pwm() ;
 
   __enable_irq() ;
 
-  startSound() ;
-
   codecsInit();
+
+  audioInit() ;
+
+  coprocInit() ;
 
   eepromInit();
 
-  init_rotary_encoder();
+  rotencInit();
 
   init_SDcard();
 
 }
 #endif
 
-uint16_t Analog_values[NUMBER_ANALOG] ;
 uint8_t temperature = 0;          // Raw temp reading
 uint8_t maxTemperature = 0 ;       // Raw temp reading
-
-// Read 8 (9 for REVB) ADC channels
-// Documented bug, must do them 1 by 1
-void adcRead()
-{
-  register Adc *padc;
-  register uint32_t y;
-  register uint32_t x;
-
-  padc = ADC;
-  y = padc->ADC_ISR; // Clear EOC flags
-  for (y = NUMBER_ANALOG+1; --y > 0;) {
-    padc->ADC_CR = 2; // Start conversion
-    x = 0;
-    while ((padc->ADC_ISR & 0x01000000) == 0) {
-      // wait for DRDY flag
-      if (++x > 1000000) {
-        break; // Software timeout
-      }
-    }
-    x = padc->ADC_LCDR; // Clear DRSY flag
-  }
-  // Next bit may be done using the PDC
-  Analog_values[0] = ADC->ADC_CDR1;
-  Analog_values[1] = ADC->ADC_CDR2;
-  Analog_values[2] = ADC->ADC_CDR3;
-  Analog_values[3] = ADC->ADC_CDR4;
-  Analog_values[4] = ADC->ADC_CDR5;
-  Analog_values[5] = ADC->ADC_CDR9;
-  Analog_values[6] = ADC->ADC_CDR13;
-  Analog_values[7] = ADC->ADC_CDR14;
-
-#if !defined(REVA)
-  Analog_values[8] = ADC->ADC_CDR8 ;
-#endif
-
-  temperature = (((int32_t)temperature * 7) + ((((int32_t)ADC->ADC_CDR15 - 838) * 621) >> 11)) >> 3; // Filter it
-  if (get_tmr10ms() >= 100 && temperature > maxTemperature) {
-    maxTemperature = temperature;
-  }
-}
 
 #define RX_UART_BUFFER_SIZE     32
 
@@ -872,12 +750,12 @@ void usbBootloader()
   // This might be replaced by a software reset
   // Any interrupts that have been enabled must be disabled here
   // BEFORE calling sam_boot()
-  stop_rotary_encoder();
+  rotencEnd();
   endPdcUsartReceive() ;          // Terminate any serial reception
   end_bt_tx_interrupt() ;
   end_ppm_capture() ;
   end_spi() ;
-  end_sound() ;
+  audioEnd() ;
 
   TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
   TC0->TC_CHANNEL[0].TC_CCR = TC_CCR0_CLKDIS ;

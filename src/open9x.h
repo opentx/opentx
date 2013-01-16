@@ -155,6 +155,21 @@
 #define ROTARY_ENCODER_NAVIGATION
 #endif
 
+#if defined(SIMU)
+#ifndef FORCEINLINE
+#define FORCEINLINE
+#endif
+#ifndef NOINLINE
+#define NOINLINE
+#endif
+#define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
+#else
+#define FORCEINLINE inline __attribute__ ((always_inline))
+#define NOINLINE __attribute__ ((noinline))
+#define SIMU_SLEEP(x)
+#define CONVERT_PTR(x) ((uint32_t)(x))
+#endif
+
 /*
 #define HELI_VARIANT   0x0004
 #define VOICE_VARIANT  0x0008
@@ -801,9 +816,9 @@ uint32_t switchState(EnumKeys enuk);
 #else
 bool switchState(EnumKeys enuk);
 #if defined(PCBGRUVIN9X)
-uint8_t check_soft_power();
+uint8_t pwrCheck();
 #else
-#define check_soft_power() (e_power_on)
+#define pwrCheck() (e_power_on)
 #endif
 #endif
 
@@ -831,21 +846,6 @@ enum PerOutMode {
   e_perout_mode_nosticks = 4,
   e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
 };
-
-#if defined(SIMU)
-#ifndef FORCEINLINE
-#define FORCEINLINE
-#endif
-#ifndef NOINLINE
-#define NOINLINE
-#endif
-#define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
-#else
-#define FORCEINLINE inline __attribute__ ((always_inline))
-#define NOINLINE __attribute__ ((noinline))
-#define SIMU_SLEEP(x)
-#define CONVERT_PTR(x) ((uint32_t)(x))
-#endif
 
 // Fiddle to force compiler to use a pointer
 #define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
@@ -1318,9 +1318,9 @@ enum AUDIO_SOUNDS {
 
 #if defined(AUDIO)
 #if defined(CPUARM)
-#include "sky9x/audio.h"
+#include "audio_arm.h"
 #else
-#include "stock/audio.h"
+#include "audio_avr.h"
 #endif
 #else
 #include "beeper.h"

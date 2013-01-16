@@ -34,12 +34,12 @@
 
 #include "../open9x.h"
 
-void soft_power_off()
+void pwrOff()
 {
   GPIO_ResetBits(GPIOPWR,PIN_MCU_PWR);
 }
 
-uint32_t check_soft_power()
+uint32_t pwrCheck()
 {
 #if defined(SIMU)
   return e_power_on;

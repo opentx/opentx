@@ -91,10 +91,6 @@ void interrupt5ms()
   // AUDIO_HEARTBEAT();
 
   if ( ++pre_scale >= 2 ) {
-    /* if ( Buzzer_count ) {
-      if ( --Buzzer_count == 0 )
-        buzzer_off() ;
-    } */
     pre_scale = 0 ;
     per10ms();
   }

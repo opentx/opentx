@@ -48,7 +48,7 @@ extern uint8_t hapticTick;
 #if defined(CPUARM)
 inline void _beep(uint8_t b)
 {
-  buzzer_sound(b);
+  buzzerSound(b);
 }
 #else
 inline void _beep(uint8_t b)
