@@ -35,6 +35,7 @@
 #include "open9x.h"
 
 #if LCD_W >= 212
+#define BIGSIZE       MIDSIZE
 #define BOX_WIDTH     31
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
 #define LBOX_CENTERY  (LCD_H-BOX_WIDTH/2-10)
@@ -60,6 +61,7 @@
 #define TRIM_RV_X     (LCD_W-11)
 #define TRIM_RH_X     (LCD_W-32-9)
 #else
+#define BIGSIZE       DBLSIZE
 #define BOX_WIDTH     23
 #define LBOX_CENTERX  (LCD_W/4 + 10)
 #define LBOX_CENTERY  (LCD_H-9-BOX_WIDTH/2)
@@ -227,9 +229,9 @@ void displayVoltage()
   }
 #endif
   else {
-    LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | MIDSIZE;
+    LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
     putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
-#if defined(PCBX9D) || defined(PCBACT)
+#if LCD >= 212
     lcd_putcAtt(VBATTUNIT_X, VBATTUNIT_Y, 'v', MIDSIZE);
 #else
     lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
@@ -239,7 +241,7 @@ void displayVoltage()
 #else
 void displayVoltage()
 {
-  LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | MIDSIZE;
+  LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
   putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
   lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
 }
@@ -416,7 +418,7 @@ void menuMainView(uint8_t event)
     lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
 
     // Model Name
-    putsModelName(MODELNAME_X, 0*FH, g_model.name, g_eeGeneral.currModel, MIDSIZE);
+    putsModelName(MODELNAME_X, 0*FH, g_model.name, g_eeGeneral.currModel, BIGSIZE);
 
     // Main Voltage (or alarm if any)
     displayVoltage();
