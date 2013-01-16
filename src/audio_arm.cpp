@@ -32,7 +32,7 @@
  *
  */
 
-#include "../open9x.h"
+#include "open9x.h"
 
 // Must NOT be in flash, PDC needs a RAM source.
 // Amplitude reduced to 30% to allow for voice volume
