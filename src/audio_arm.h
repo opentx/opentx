@@ -35,7 +35,7 @@
 #ifndef audio_h
 #define audio_h
 
-#include "../FatFs/ff.h"
+#include "FatFs/ff.h"
 
 #define AUDIO_QUEUE_LENGTH (20)
 #define BEEP_DEFAULT_FREQ  (70)
