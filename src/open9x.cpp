@@ -1434,12 +1434,12 @@ void checkTrims()
 {
   uint8_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
-    int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
+    int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
     int8_t s = g_model.trimInc;
 #else
 uint8_t checkTrim(uint8_t event)
 {
-  int8_t k = (event & EVT_KEY_MASK) - TRM_BASE;
+  int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
   int8_t s = g_model.trimInc;
   if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #endif
@@ -1992,7 +1992,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 #endif
 
 #if defined(CPUARM)
-static uint8_t currentSpeakerVolume = 255;
+uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume;
 uint8_t fnSwitchDuration[NUM_FSW] = { 0 };
 #define FSW_PRESSLONG_DURATION   100
@@ -2873,13 +2873,8 @@ void doMixerCalculations()
 #if defined(DSM2)
   if (s_rangecheck_mode) AUDIO_PLAY(AU_FRSKY_CHEEP);
 #endif
-      
-#if defined(CPUARM)
-  if (currentSpeakerVolume != requiredSpeakerVolume) {
-    setVolume(requiredSpeakerVolume);
-    currentSpeakerVolume = requiredSpeakerVolume;
-  }
 
+#if defined(CPUARM)
   return true;
 #endif
 }
@@ -2916,6 +2911,13 @@ void perMain()
     sessionTimer += 1;
     Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
     Current_accumulator = 0 ;
+  }
+#endif
+
+#if defined(CPUARM)
+  if (currentSpeakerVolume != requiredSpeakerVolume) {
+    currentSpeakerVolume = requiredSpeakerVolume;
+    setVolume(currentSpeakerVolume);
   }
 #endif
 

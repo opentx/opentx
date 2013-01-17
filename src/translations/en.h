@@ -382,10 +382,10 @@
 #define TR_PRESSANYKEYTOSKIP   CENTER"Press any key to skip"
 #define TR_THROTTLENOTIDLE     CENTER"Throttle not idle"
 #define TR_ALARMSDISABLED      CENTER"Alarms Disabled"
-#define TR_PRESSANYKEY         "\010Press any Key"
+#define TR_PRESSANYKEY         TR("\010Press any Key",CENTER"Press any Key")
 #define TR_BADEEPROMDATA       CENTER"Bad EEprom Data"
-#define TR_EEPROMFORMATTING    "Formatting EEPROM"
-#define TR_EEPROMOVERFLOW      "EEPROM overflow"
+#define TR_EEPROMFORMATTING    CENTER"Formatting EEPROM"
+#define TR_EEPROMOVERFLOW      CENTER"EEPROM overflow"
 #define TR_MENURADIOSETUP      "RADIO SETUP"
 #define TR_MENUDATEANDTIME     "DATE AND TIME"
 #define TR_MENUTRAINER         "TRAINER"

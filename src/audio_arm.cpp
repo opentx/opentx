@@ -282,11 +282,6 @@ void audioTimerHandle(void)
   CoSetFlag(audioFlag);
 }
 
-// TODO Should be here!
-extern uint16_t Sine_values[];
-
-#define WAV_HEADER_SIZE 44
-
 #define CODEC_ID_PCM_S16LE  1
 #define CODEC_ID_PCM_ALAW   6
 #define CODEC_ID_PCM_MULAW  7
@@ -316,6 +311,9 @@ uint16_t * nextAudioData = NULL;
 uint16_t nextAudioSize = 0;
 
 #if defined(SDCARD) && !defined(SIMU)
+
+#define RIFF_CHUNK_SIZE 12
+
 void AudioQueue::sdWakeup(AudioContext & context)
 {
   if (!nextAudioData) {
@@ -326,12 +324,25 @@ void AudioQueue::sdWakeup(AudioContext & context)
       result = f_open(&context.wavFile, fragment.file, FA_OPEN_EXISTING | FA_READ);
       fragment.file[1] = 0;
       if (result == FR_OK) {
-        result = f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, WAV_HEADER_SIZE, &read);
-        if (result == FR_OK && read == WAV_HEADER_SIZE && !memcmp(wavSamplesBuffer, "RIFF", 4)) {
-          context.pcmCodec = wavSamplesBuffer[10];
-          context.pcmFreq = wavSamplesBuffer[12];
-          if (context.pcmCodec != CODEC_ID_PCM_S16LE) {
-            result = f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, 12, &read);
+        result = f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, RIFF_CHUNK_SIZE+8, &read);
+        if (result == FR_OK && read == RIFF_CHUNK_SIZE+8 && !memcmp(wavSamplesBuffer, "RIFF", 4) && !memcmp(wavSamplesBuffer+4/*short*/, "WAVEfmt ", 8)) {
+          uint32_t size = *((uint32_t *)(wavSamplesBuffer+8/*short*/));
+          result = (size < 256 ? f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, size+8, &read) : FR_DENIED);
+          if (result == FR_OK && read == size+8) {
+            context.pcmCodec = wavSamplesBuffer[0];
+            context.pcmFreq = wavSamplesBuffer[2];
+            uint32_t *wavSamplesPtr = (uint32_t *)(wavSamplesBuffer + size/2);
+            uint32_t size = wavSamplesPtr[1];
+            while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
+              result = (size < 256 ? f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, size+8, &read) : FR_DENIED);
+              if (read != size+8) result = FR_DENIED;
+              wavSamplesPtr = (uint32_t *)(wavSamplesBuffer + size/2);
+              size = wavSamplesPtr[1];
+            }
+            context.wavSize = size;
+          }
+          else {
+            result = FR_DENIED;
           }
         }
         else {
@@ -356,6 +367,10 @@ void AudioQueue::sdWakeup(AudioContext & context)
       state = AUDIO_RESUMING;
     }
     else {
+      if (read > context.wavSize)
+        read = context.wavSize;
+      context.wavSize -= read;
+
       if (read != bufsize) {
         memset(&fragment, 0, sizeof(fragment));
         f_close(&context.wavFile);

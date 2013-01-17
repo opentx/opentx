@@ -77,6 +77,7 @@ class AudioContext {
 #endif
     uint8_t pcmCodec;
     uint32_t pcmFreq;
+    uint32_t wavSize;
 };
 
 class AudioQueue {

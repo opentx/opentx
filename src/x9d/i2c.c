@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    Project/ee_drivers/i2c_ee.c
+  * @file    Project/ee_drivers/i2c.c
   * @author  X9D Application Team
   * @version V 0.2
   * @date    12-JULY-2012
@@ -369,4 +369,33 @@ void I2C_EE_WaitEepromStandbyState(void)
   } while (0 == I2C_WAIT_ACK());
 
   I2C_STOP();
+}
+
+void I2C_set_volume( register uint8_t volume )
+{
+  I2C_START();
+  I2C_SEND_DATA(I2C_CAT5137_ADDRESS|EE_CMD_WRITE);
+  I2C_WAIT_ACK();
+  I2C_SEND_DATA(0);
+  I2C_WAIT_ACK();
+  I2C_SEND_DATA(volume);
+  I2C_WAIT_ACK();
+  I2C_STOP();
+}
+
+uint8_t I2C_read_volume()
+{
+  uint8_t volume ;
+  I2C_START();
+  I2C_SEND_DATA(I2C_CAT5137_ADDRESS|EE_CMD_WRITE);
+  I2C_WAIT_ACK();
+  I2C_SEND_DATA(0);
+  I2C_WAIT_ACK();
+  I2C_START();
+  I2C_SEND_DATA(I2C_CAT5137_ADDRESS|EE_CMD_READ);
+  I2C_WAIT_ACK();
+  volume = I2C_READ();
+  I2C_NO_ACK();
+  I2C_STOP();
+  return volume ;
 }

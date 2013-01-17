@@ -198,9 +198,9 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   else if (flags & TINSIZE) {
     q = &font_3x5[((uint16_t)c-0x2D)*3+2];
     uint8_t ym8 = (y % 8);
-    p += 2;
-    for (int8_t i=2; i>=0; i--) {
-      uint8_t b = pgm_read_byte(q--);
+    p += 3;
+    for (int8_t i=3; i>=0; i--) {
+      uint8_t b = (i!=3 ? pgm_read_byte(q--) : 0);
       if (inv) b = ~b & 0x3f;
       if (p<DISPLAY_END) {
         LCD_BYTE_FILTER(p, ~(0x3f << ym8), b << ym8);
@@ -393,6 +393,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
   }
   else if (tinsize) {
     fw -= 1;
+    x += 1;
   }
   else {
     if (flags & LEFT) {

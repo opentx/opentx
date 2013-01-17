@@ -47,7 +47,7 @@
 
 #include "hal.h"
 #include "aspi.h"
-#include "i2c_ee.h"
+#include "i2c.h"
 #include "audio_driver.h"
 
 #define PERI1_FREQUENCY 30000000
@@ -65,7 +65,6 @@ void sdPoll10ms();
 
 void usbMassStorage();
 
-void setVolume( register uint8_t volume );
 #define JACK_PPM_OUT()
 #define JACK_PPM_IN()
 
@@ -85,50 +84,18 @@ void pwrOff();
 #define strcpy_P strcpy
 #define strcat_P strcat
 
-extern uint32_t readKeys();
-#define KEYS_PRESSED() (~readKeys())
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
-
 extern uint16_t sessionTimer;
 
 #define BOOTLOADER_REQUEST() (0/*usbPlugged()*/)
 
 #define SLAVE_MODE() (0/*pwrCheck() == e_power_trainer*/)
 
-#if !defined(SIMU)
-#define wdt_disable()
-#define wdt_enable(x)
-#define wdt_reset()
-#endif
-
-uint32_t pwrCheck();
-
-#define setBacklight(xx)
-#define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
-#define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
-#define IS_BACKLIGHT_ON() GPIO_IsSet(GPIOB, GPIO_Pin_BL)
-
-#if !defined(SIMU)
-#define eeprom_read_block I2C_EE_BufferRead
-#define eeWriteBlockCmp   I2C_EE_BufferWrite
-#else
-void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
-#endif
-
-void keysInit();
-void pwrInit();
-void eepromInit(); // TODO check it's not in another include
 void delaysInit();
-void adcInit();
 void debugInit();
 
-void adcRead();
 void init_trainer_ppm();
 void init_trainer_capture();
-extern volatile uint16_t Analog_values[];
+
 
 #define DEBUG_UART_BAUDRATE 115200
 
@@ -137,5 +104,48 @@ void uartSendChar(uint8_t c);
 
 void delaysInit(void);
 void delay_01us(uint16_t nb);
+
+// Keys driver
+void keysInit();
+uint32_t readKeys();
+#define KEYS_PRESSED() (~readKeys())
+#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
+#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
+#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
+#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
+
+// WDT driver
+#if !defined(SIMU)
+#define wdt_disable()
+#define wdt_enable(x)
+#define wdt_reset()
+#endif
+
+// ADC driver
+void adcInit();
+void adcRead();
+extern volatile uint16_t Analog_values[];
+
+// Power driver
+void pwrInit();
+uint32_t pwrCheck();
+
+// Backlight driver
+#define setBacklight(xx)
+#define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
+#define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
+#define IS_BACKLIGHT_ON() GPIO_IsSet(GPIOB, GPIO_Pin_BL)
+
+// EEPROM driver
+#if !defined(SIMU)
+#define eepromInit()      I2C_EE_Init()
+#define eeprom_read_block I2C_EE_BufferRead
+#define eeWriteBlockCmp   I2C_EE_BufferWrite
+#else
+#define eepromInit()
+void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
+#endif
+
+
 
 #endif

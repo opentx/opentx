@@ -110,12 +110,12 @@ extern int16_t p1valdiff;
 #define IS_RE_NAVIGATION_ENABLE()   true
 #define NAVIGATION_RE_IDX()         0
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (event==type(KEY_ENTER))
-#define IS_RE_NAVIGATION_EVT(event) ((event&EVT_KEY_MASK)==KEY_ENTER)
+#define IS_RE_NAVIGATION_EVT(event) (EVT_KEY_MASK(event)==KEY_ENTER)
 #elif defined(ROTARY_ENCODERS)
 #define NAVIGATION_RE_IDX()         (g_eeGeneral.reNavigation - 1)
 #define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
-#define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && (event&EVT_KEY_MASK)==(BTN_REa + g_eeGeneral.reNavigation - 1))
+#define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && EVT_KEY_MASK(event)==(BTN_REa + g_eeGeneral.reNavigation - 1))
 #else
 #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (0)
 #define IS_RE_NAVIGATION_EVT(event) (0)
@@ -130,8 +130,14 @@ extern int8_t s_editMode;        // global editmode
 #define NO_INCDEC_MARKS 0x04
 #define INCDEC_SWITCH   0x08
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags);
+
+#if defined(CPUM64)
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
+#else
+#define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
+#define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
+#endif
 
 #define CHECK_INCDEC_MODELVAR(event, var, min, max) \
   var = checkIncDecModel(event,var,min,max)
@@ -259,12 +265,12 @@ void menuChannelsMonitor(uint8_t event);
 #define LABEL(...) (uint8_t)-1
 
 #if defined(ROTARY_ENCODERS)
-#define CURSOR_MOVED_LEFT(event)  ((event & EVT_KEY_MASK) == KEY_LEFT || lastCursorMove < 0)
-#define CURSOR_MOVED_RIGHT(event) ((event & EVT_KEY_MASK) == KEY_RIGHT || lastCursorMove > 0)
+#define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_LEFT || lastCursorMove < 0)
+#define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_RIGHT || lastCursorMove > 0)
 #define REPEAT_LAST_CURSOR_MOVE() if (lastCursorMove) lastCursorMove *= 2; else m_posHorz = 0
 #else
-#define CURSOR_MOVED_LEFT(event)  ((event & EVT_KEY_MASK) == KEY_LEFT)
-#define CURSOR_MOVED_RIGHT(event) ((event & EVT_KEY_MASK) == KEY_RIGHT)
+#define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_LEFT)
+#define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_RIGHT)
 #define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
 #endif
 

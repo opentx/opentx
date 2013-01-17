@@ -67,7 +67,6 @@ extern void sdInit();
 
 void usbMassStorage();
 
-void setVolume( register uint8_t volume );
 #define JACK_PPM_OUT()
 #define JACK_PPM_IN()
 

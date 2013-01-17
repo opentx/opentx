@@ -47,6 +47,9 @@ enum EnumTabModel {
   e_MixAll,
   e_Limits,
   IF_CURVES(e_CurvesAll)
+#if LCD_W >= 260
+  IF_GVARS(e_GVars)
+#endif
   e_CustomSwitches,
   e_CustomFunctions,
   IF_FRSKY(e_Telemetry)
@@ -55,24 +58,17 @@ enum EnumTabModel {
 
 void menuModelSelect(uint8_t event);
 void menuModelSetup(uint8_t event);
-#ifdef HELI
 void menuModelHeli(uint8_t event);
-#endif
-#ifdef FLIGHT_PHASES
 void menuModelPhasesAll(uint8_t event);
-#endif
 void menuModelExposAll(uint8_t event);
 void menuModelMixAll(uint8_t event);
 void menuModelLimits(uint8_t event);
 void menuModelCurvesAll(uint8_t event);
+void menuModelGVars(uint8_t event);
 void menuModelCustomSwitches(uint8_t event);
 void menuModelCustomFunctions(uint8_t event);
-#ifdef FRSKY
 void menuModelTelemetry(uint8_t event);
-#endif
-#ifdef TEMPLATES
 void menuModelTemplates(uint8_t event);
-#endif
 void menuModelExpoOne(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
@@ -84,6 +80,9 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelMixAll,
   menuModelLimits,
   IF_CURVES(menuModelCurvesAll)
+#if LCD_W >= 260
+  IF_GVARS(menuModelGVars)
+#endif
   menuModelCustomSwitches,
   menuModelCustomFunctions,
   IF_FRSKY(menuModelTelemetry)
@@ -579,23 +578,39 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
       }
 
       switch (event) {
+#if defined(PCBX9D) || defined(PCBACT)
+        case EVT_KEY_BREAK(KEY_ENTER):
+          if (next<size-1) {
+            next++;
+          }
+          else {
+            s_editMode = 0;
+            next = 0;
+          }
+          break;
+#else
         case EVT_KEY_BREAK(KEY_LEFT):
           if (next>0) next--;
           break;
         case EVT_KEY_BREAK(KEY_RIGHT):
           if (next<size-1) next++;
           break;
+#endif
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
 #if defined(ROTARY_ENCODERS)
         case EVT_KEY_LONG(BTN_REa):
         case EVT_KEY_LONG(BTN_REb):
           if (!navigationRotaryEncoder(event))
             break;
           // no break
+#endif
 #if defined(PCBX9D) || defined(PCBACT)
         case EVT_KEY_LONG(KEY_ENTER):
 #endif
           if (v==0) {
             s_editMode = 0;
+            next = 0;
             killEvents(event);
             break;
           }
@@ -1137,12 +1152,12 @@ void menuModelPhaseOne(uint8_t event)
       case ITEM_MODEL_PHASE_FADE_IN:
         phase->fadeIn = editDelay(y, event, attr, STR_FADEIN, phase->fadeIn);
         break;
+
       case ITEM_MODEL_PHASE_FADE_OUT:
         phase->fadeOut = editDelay(y, event, attr, STR_FADEOUT, phase->fadeOut);
         break;
 
 #if defined(GVARS) && !defined(CPUM64)
-
       case ITEM_MODEL_PHASE_GVARS_LABEL:
         lcd_putsLeft(y, STR_GLOBAL_VARS);
         break;
@@ -1151,10 +1166,15 @@ void menuModelPhaseOne(uint8_t event)
       {
         uint8_t idx = i-ITEM_MODEL_PHASE_GV1;
 
-        if (editingName)
+        if (editingName) {
+#if defined(PCBX9D) || defined(PCBACT)
+          if (attr) s_editMode = 1;
+#endif
           editName(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, attr, m_posHorz);
-        else
+        }
+        else {
           lcd_putsnAtt(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), ZCHAR|(m_posHorz==0 ? attr : 0));
+        }
 
         lcd_putsLeft(y, PSTR("    "));
         putsStrIdx(INDENT_WIDTH, y, STR_GV, idx+1);
@@ -1180,7 +1200,7 @@ void menuModelPhaseOne(uint8_t event)
         uint8_t p = getGVarFlightPhase(s_currIdx, idx);
         lcd_outdezAtt(21*FW, y, GVAR_VALUE(idx, p), !editingName && m_posHorz==2 ? attr : 0);
         if (attr && !editingName && m_posHorz==2 && ((editMode>0) || p1valdiff))
-          GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -1024, +1024, EE_MODEL);
+          GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -GVAR_MAX, GVAR_MAX, EE_MODEL);
 
         break;
       }
@@ -2554,6 +2574,62 @@ void menuModelCurvesAll(uint8_t event)
   if (CURVE_SELECTED()) {
     s_curveChan = sub;
     DrawCurve(curveFn, 25);
+  }
+}
+#endif
+
+#if LCD_W >= 260 && defined(GVARS)
+void menuModelGVars(uint8_t event)
+{
+  MENU(PSTR("GLOBAL VARIABLES"), menuTabModel, e_GVars, 1+MAX_GVARS, {0, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES});
+
+  uint8_t sub = m_posVert - 1;
+  static bool editingName = false;
+  if (editingName && s_editMode <= 0) editingName = false;
+  if (!editingName && s_editMode > 0 && m_posHorz == 0) editingName = true;
+
+  for (uint8_t i=0; i<MAX_GVARS; i++) {
+    uint8_t y = 1 + 2*FH + i*FH;
+
+    for (uint8_t j=0; j<1+MAX_PHASES; j++) {
+      uint8_t attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      switch(j)
+      {
+        case 0:
+          if (editingName && sub==i)
+            editName(4*FW-3, y, g_model.gvarsNames[i], sizeof(gvar_name_t), event, attr, m_posHorz);
+          else
+            lcd_putsnAtt(4*FW-3, y, g_model.gvarsNames[i], sizeof(gvar_name_t), ZCHAR|(m_posHorz==0 ? attr : 0));
+          // lcd_putsLeft(y, PSTR("    "));
+          putsStrIdx(0, y, STR_GV, i+1);
+          break;
+
+        default:
+        {
+          PhaseData *phase = &g_model.phaseData[j-1];
+          int16_t v = phase->gvars[i];
+          xcoord_t x = 14*FW + (j-1)*(2+4*FWNUM) - 1;
+          int16_t vmin, vmax;
+          if (v > GVAR_MAX) {
+            uint8_t p = v - GVAR_MAX - 1;
+            if (p >= s_currIdx) p++;
+            putsFlightPhase(x, y, p+1, !editingName ? attr : 0);
+            vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_PHASES;
+          }
+          else {
+            if (abs(v) >= 1000)
+              lcd_outdezAtt(x, y+1, v, (editingName ? 0 : attr) | TINSIZE);
+            else
+              lcd_outdezAtt(x, y, v, (editingName ? 0 : attr));
+            vmin = -GVAR_MAX; vmax = GVAR_MAX;
+          }
+          if (attr && !editingName && ((s_editMode>0) || p1valdiff)) {
+            phase->gvars[i] = checkIncDec(event, v, vmin, vmax, EE_MODEL);
+          }
+          break;
+        }
+      }
+    }
   }
 }
 #endif

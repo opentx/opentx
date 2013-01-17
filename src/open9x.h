@@ -769,7 +769,7 @@ enum CswFunctions {
 #define EVT_KEY_LONG(key)  ((key)|_MSK_KEY_LONG)
 #define EVT_ENTRY          (0xff - _MSK_KEY_REPT)
 #define EVT_ENTRY_UP       (0xfe - _MSK_KEY_REPT)
-#define EVT_KEY_MASK       (0x0f)
+#define EVT_KEY_MASK(e)    ((e) & 0x0f)
 
 #define HEART_TIMER_PULSES  1
 #define HEART_TIMER10ms     2
@@ -884,7 +884,7 @@ int16_t getRotaryEncoder(uint8_t idx);
 void incRotaryEncoder(uint8_t idx, int8_t inc);
 inline bool navigationRotaryEncoder(uint8_t event)
 {
-  return g_eeGeneral.reNavigation == ((event & EVT_KEY_MASK) - BTN_REa + 1);
+  return g_eeGeneral.reNavigation == (EVT_KEY_MASK(event) - BTN_REa + 1);
 }
 #endif
 

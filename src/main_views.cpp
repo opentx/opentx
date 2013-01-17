@@ -231,7 +231,7 @@ void displayVoltage()
   else {
     LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
     putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
-#if LCD >= 212
+#if LCD_W >= 212
     lcd_putcAtt(VBATTUNIT_X, VBATTUNIT_Y, 'v', MIDSIZE);
 #else
     lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');

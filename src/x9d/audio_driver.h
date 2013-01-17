@@ -71,8 +71,10 @@ inline uint16_t dacQueue(uint16_t *data, uint16_t size)
   return size;
 }
 
-inline void setVolume( unsigned char volume )
-{
-}
+#if !defined(SIMU)
+#define setVolume(v) I2C_set_volume(v)
+#else
+#define setVolume(v)
+#endif
 
 #endif

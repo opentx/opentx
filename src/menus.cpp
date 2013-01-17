@@ -91,7 +91,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
-  if (event & EVT_KEY_MASK) {
+  if (EVT_KEY_MASK(event)) {
     bool dblkey = true;
     if (DBLKEYS_PRESSED_RGT_LFT(in))
       newval = -val;
@@ -183,6 +183,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   return newval;
 }
 
+#if defined(CPUM64)
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 {
   return checkIncDec(event,i_val,i_min,i_max,EE_MODEL);
@@ -192,6 +193,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 {
   return checkIncDec(event,i_val,i_min,i_max,EE_GENERAL);
 }
+#endif
 
 bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, maxrow_t maxrow)
 {
@@ -222,7 +224,7 @@ void check_rotary_encoder(uint8_t & event)
   }
 
   // TODO remove later...
-  uint8_t key = event & EVT_KEY_MASK;
+  uint8_t key = EVT_KEY_MASK(event);
   if (key==KEY_MOVE_UP || key==KEY_MOVE_DOWN)
     event = 0;
 }
