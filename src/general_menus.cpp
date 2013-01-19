@@ -50,9 +50,7 @@ enum EnumTabDiag {
 };
 
 void menuGeneralSetup(uint8_t event);
-#if defined(SDCARD)
 void menuGeneralSdManager(uint8_t event);
-#endif
 void menuGeneralTrainer(uint8_t event);
 void menuGeneralVersion(uint8_t event);
 void menuGeneralDiagKeys(uint8_t event);
@@ -253,8 +251,7 @@ void menuGeneralSetup(uint8_t event)
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerVolume, 0, NUM_VOL_LEVELS-1);
         }
 #else
-        uint8_t b ;
-        b = g_eeGeneral.speakerVolume+7;
+        uint8_t b = g_eeGeneral.speakerVolume+7;
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, b, attr|LEFT);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, b, 0, 7);
@@ -429,7 +426,7 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
       case ITEM_SETUP_RX_CHANNEL_ORD:
-        lcd_putsLeft( y,STR_RXCHANNELORD);//   RAET->AETR
+        lcd_putsLeft(y, STR_RXCHANNELORD); // RAET->AETR
         for (uint8_t i=1; i<=4; i++)
           putsChnLetter(RADIO_SETUP_2ND_COLUMN - FW + i*FW, y, channel_order(i), attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
@@ -999,6 +996,9 @@ void menuGeneralCalib(uint8_t event)
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
+    if (i >= NUM_STICKS) {
+      reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
+    }
   }
 
   s_noScroll = idxState; // make sure we don't scroll while calibrating
@@ -1044,7 +1044,7 @@ void menuGeneralCalib(uint8_t event)
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i])>50) {
-          g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
+          if (i < NUM_STICKS) g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
           g_eeGeneral.calibSpanNeg[i] = v - v/64;
           v = reusableBuffer.calib.hiVals[i] - reusableBuffer.calib.midVals[i];

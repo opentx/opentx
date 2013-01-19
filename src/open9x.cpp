@@ -804,19 +804,18 @@ bool __getSwitch(int8_t swtch)
         if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
           if (frskyStreaming <= 0 && cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
             return swtch > 0 ? false : true;
-          if (s == CS_VOFS) {
-            y = convertTelemValue(cs->v1-(CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs->v2);
+
+          y = convertCswTelemValue(cs);
+
 #if defined(FRSKY_HUB)
+          if (s == CS_VOFS) {
             uint8_t idx = cs->v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT;
             if (idx < THLD_MAX) {
               // Fill the threshold array
               barsThresholds[idx] = 128 + cs->v2;
             }
+          }
 #endif
-          }
-          else {
-            y = cs->v2;
-          }
         }
         else {
           y = calc100toRESX(cs->v2);
@@ -1073,6 +1072,25 @@ uint8_t s_gvar_last = 0;
 int16_t getGVarValue(int8_t x, int16_t min, int16_t max)
 {
   return (x >= 126 || x <= -126) ? limit(min, GVAR_VALUE((uint8_t)x - 126, -1), max) : x;
+
+
+  if (x >= -125 && x <= 120)
+    return x;
+
+  int8_t idx = (uint8_t)x - 126;
+  int8_t mul = 1;
+  if (idx <= 0) {
+    if (max <= 120) {
+      idx = 1-idx; mul = -1;
+    }
+    else {
+      return x;
+    }
+  }
+
+  return limit(min, GVAR_VALUE(idx, -1), max) * mul;
+
+
 }
 
 void setGVarValue(uint8_t idx, int8_t value)
@@ -1100,11 +1118,21 @@ uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
 
 int16_t getGVarValue(int8_t x, int16_t min, int16_t max, int8_t phase)
 {
-  if (x >= -125 && x <= 125)
+  if (x >= -125 && x <= 120)
     return x;
 
-  uint8_t idx = (uint8_t)x - 126;
-  return limit(min, GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)), max);
+  int8_t idx = (uint8_t)x - 126;
+  int8_t mul = 1;
+  if (idx <= 0) {
+    if (max <= 120) {
+      idx = 1-idx; mul = -1;
+    }
+    else {
+      return x;
+    }
+  }
+
+  return limit(min, GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)), max) * mul;
 }
 
 void setGVarValue(uint8_t idx, int8_t value, int8_t phase)
@@ -2676,10 +2704,7 @@ void doMixerCalculations()
   /* Throttle trace */
   int16_t val;
 
-  if (g_model.thrTraceSrc == 0) {
-    val = calibratedStick[THR_STICK]; // get throttle channel value
-  }
-  else if (g_model.thrTraceSrc > NUM_POTS) {
+  if (g_model.thrTraceSrc > NUM_POTS) {
     uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
     val = g_chans512[ch];
     if (g_model.limitData[ch].revert)
@@ -2691,13 +2716,11 @@ void doMixerCalculations()
       val -= calc1000toRESX(g_model.limitData[ch].offset);
 #endif
     val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
-    val -= RESX;
   }
   else {
-    val = calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1];
+    val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
   }
 
-  val += RESX;
   val /= (RESX/16); // calibrate it
 
   static tmr10ms_t s_time_tot;

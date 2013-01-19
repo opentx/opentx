@@ -560,17 +560,24 @@ void menuModelSelect(uint8_t event)
 #endif
 }
 
-void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active, uint8_t & cur)
+void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active)
 {
+#if defined(CPUM64)
+  // in order to save flash
   lcd_putsLeft(y, STR_NAME);
+#define cursorPos m_posHorz
+#else
+  static uint8_t cursorPos = 0;
+#endif
 
   lcd_putsnAtt(x, y, name, size, ZCHAR | (active ? ((s_editMode>0) ? 0 : INVERS) : 0));
 
   if (active) {
-    if (s_editMode>0) {
-      uint8_t next = cur;
-      char c = name[next];
+    uint8_t cur = cursorPos;
+    if (s_editMode > 0) {
+      char c = name[cur];
       int8_t v = c;
+
       if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
           || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
@@ -578,24 +585,31 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
       }
 
       switch (event) {
+#if defined(ROTARY_ENCODER_NAVIGATION)
 #if defined(PCBX9D) || defined(PCBACT)
         case EVT_KEY_BREAK(KEY_ENTER):
-          if (next<size-1) {
-            next++;
-          }
-          else {
-            s_editMode = 0;
-            next = 0;
-          }
-          break;
 #else
-        case EVT_KEY_BREAK(KEY_LEFT):
-          if (next>0) next--;
-          break;
-        case EVT_KEY_BREAK(KEY_RIGHT):
-          if (next<size-1) next++;
+        case EVT_KEY_BREAK(BTN_REa):
+        case EVT_KEY_BREAK(BTN_REb):
+          if (!navigationRotaryEncoder(event))
+            break;
+#endif
+          if (s_editMode == EDIT_MODIFY_FIELD) {
+            s_editMode = EDIT_MODIFY_STRING;
+            cur = 0;
+          }
+          else if (cur<size-1)
+            cur++;
+          else
+            s_editMode = 0;
           break;
 #endif
+        case EVT_KEY_BREAK(KEY_LEFT):
+          if (cur>0) cur--;
+          break;
+        case EVT_KEY_BREAK(KEY_RIGHT):
+          if (cur<size-1) cur++;
+          break;
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 #if defined(ROTARY_ENCODERS)
@@ -610,7 +624,6 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 #endif
           if (v==0) {
             s_editMode = 0;
-            next = 0;
             killEvents(event);
             break;
           }
@@ -630,14 +643,24 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
         name[cur] = v;
         STORE_MODELVARS;
       }
-      lcd_putcAtt(x+cur*FW, y, idx2char(v), INVERS);
-      cur = next;
+      lcd_putcAtt(x+cursorPos*FW, y, idx2char(v), INVERS);
     }
     else {
       cur = 0;
     }
+    cursorPos = cur;
   }
 }
+
+#if defined(CPUM64)
+#define editSingleName editName
+#else
+void editSingleName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active)
+{
+  lcd_putsLeft(y, STR_NAME);
+  editName(x, y, name, size, event, active);
+}
+#endif
 
 enum menuModelSetupItems {
   ITEM_MODEL_NAME,
@@ -691,7 +714,7 @@ void menuModelSetup(uint8_t event)
     s_rangecheck_mode = 0;
 #endif
 
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), {0,ZCHAR|(sizeof(g_model.name)-1),IF_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), {0,0,IF_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
 
   uint8_t sub = m_posVert - 1;
   int8_t editMode = s_editMode;
@@ -704,7 +727,7 @@ void menuModelSetup(uint8_t event)
 
     switch(k) {
       case ITEM_MODEL_NAME:
-        editName(MODEL_SETUP_2ND_COLUMN, y, g_model.name, sizeof(g_model.name), event, attr, m_posHorz);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, g_model.name, sizeof(g_model.name), event, attr);
 #if defined(CPUARM)
         memcpy(modelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
 #endif
@@ -781,11 +804,13 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_THROTTLE_TRACE:
       {
         lcd_putsLeft(y, STR_TTRACE);
-        int8_t idx = 3;
-        if (g_model.thrTraceSrc > NUM_POTS) idx = NUM_STICKS+NUM_ROTARY_ENCODERS+NUM_STICKS+2+3+NUM_PPM+g_model.thrTraceSrc;
-        else if (g_model.thrTraceSrc > 0) idx = NUM_STICKS+g_model.thrTraceSrc;
-        putsChnRaw(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.thrTraceSrc, 0, NUM_POTS+NUM_CHNOUT);
+        uint8_t idx = g_model.thrTraceSrc + MIXSRC_Thr;
+        if (idx > MIXSRC_Thr)
+          idx += 1;
+        if (idx >= MIXSRC_Pot1+NUM_POTS)
+          idx += MIXSRC_CH1 - MIXSRC_Pot1 - NUM_POTS;
+        putsMixerSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
         break;
       }
 
@@ -1043,7 +1068,7 @@ enum menuModelPhaseItems {
   IF_ROTARY_ENCODERS(ITEM_MODEL_PHASE_ROTARY_ENCODERS)
   ITEM_MODEL_PHASE_FADE_IN,
   ITEM_MODEL_PHASE_FADE_OUT,
-#if defined(GVARS) && !defined(CPUM64)
+#if defined(GVARS) && !defined(CPUM64) && LCD_W < 260
   ITEM_MODEL_PHASE_GVARS_LABEL,
   ITEM_MODEL_PHASE_GV1,
   ITEM_MODEL_PHASE_GV2,
@@ -1059,13 +1084,9 @@ void menuModelPhaseOne(uint8_t event)
   PhaseData *phase = phaseaddress(s_currIdx);
   putsFlightPhase(13*FW, 0, s_currIdx+1, (getFlightPhase()==s_currIdx ? BOLD : 0));
 
-#if defined(GVARS) && !defined(CPUM64)
-  static bool editingName = false;
-  if (editingName && s_editMode <= 0) editingName = false;
-  if (!editingName && s_editMode > 0 && m_posHorz == 0) editingName = true;
-
-  static const pm_uint8_t mstate_tab_phase1[] PROGMEM = {ZCHAR|(sizeof(phase->name)-1), 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
-  static const pm_uint8_t mstate_tab_others[] PROGMEM = {ZCHAR|(sizeof(phase->name)-1), 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
+#if defined(GVARS) && !defined(CPUM64) && LCD_W < 260
+  static const pm_uint8_t mstate_tab_phase1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
+  static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
   if (!check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_phase1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0))) return;
 
@@ -1073,14 +1094,14 @@ void menuModelPhaseOne(uint8_t event)
 
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #else
-  SUBMENU(STR_MENUFLIGHTPHASE, 3 + (s_currIdx==0 ? 0 : 2 + (bool)NUM_ROTARY_ENCODERS), {ZCHAR|(sizeof(phase->name)-1), 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0/*, 0*/});
+  SUBMENU(STR_MENUFLIGHTPHASE, 3 + (s_currIdx==0 ? 0 : 2 + (bool)NUM_ROTARY_ENCODERS), {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0/*, 0*/});
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #endif
 
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;
 
-#if defined(GVARS) && !defined(CPUM64)
+#if defined(GVARS) && !defined(CPUM64) && LCD_W < 260
   if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
@@ -1095,7 +1116,7 @@ void menuModelPhaseOne(uint8_t event)
 #endif
     switch(i) {
       case ITEM_MODEL_PHASE_NAME:
-        editName(MIXES_2ND_COLUMN, y, phase->name, sizeof(phase->name), event, attr, m_posHorz);
+        editSingleName(MIXES_2ND_COLUMN, y, phase->name, sizeof(phase->name), event, attr);
         break;
       case ITEM_MODEL_PHASE_SWITCH:
         phase->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, phase->swtch, attr, event);
@@ -1157,7 +1178,7 @@ void menuModelPhaseOne(uint8_t event)
         phase->fadeOut = editDelay(y, event, attr, STR_FADEOUT, phase->fadeOut);
         break;
 
-#if defined(GVARS) && !defined(CPUM64)
+#if defined(GVARS) && !defined(CPUM64) && LCD_W < 260
       case ITEM_MODEL_PHASE_GVARS_LABEL:
         lcd_putsLeft(y, STR_GLOBAL_VARS);
         break;
@@ -1166,29 +1187,20 @@ void menuModelPhaseOne(uint8_t event)
       {
         uint8_t idx = i-ITEM_MODEL_PHASE_GV1;
 
-        if (editingName) {
-#if defined(PCBX9D) || defined(PCBACT)
-          if (attr) s_editMode = 1;
-#endif
-          editName(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, attr, m_posHorz);
-        }
-        else {
-          lcd_putsnAtt(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), ZCHAR|(m_posHorz==0 ? attr : 0));
-        }
-
-        lcd_putsLeft(y, PSTR("    "));
         putsStrIdx(INDENT_WIDTH, y, STR_GV, idx+1);
+
+        editName(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, m_posHorz==0 ? attr : 0);
 
         int16_t v = phase->gvars[idx];
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
           if (p >= s_currIdx) p++;
-          putsFlightPhase(MIXES_2ND_COLUMN, y, p+1, !editingName && m_posHorz==1 ? attr : 0);
+          putsFlightPhase(MIXES_2ND_COLUMN, y, p+1, m_posHorz==1 ? attr : 0);
         }
         else {
-          lcd_putsAtt(MIXES_2ND_COLUMN, y, STR_OWN, !editingName && m_posHorz==1 ? attr : 0);
+          lcd_putsAtt(MIXES_2ND_COLUMN, y, STR_OWN, m_posHorz==1 ? attr : 0);
         }
-        if (attr && !editingName && s_currIdx>0 && m_posHorz==1 && ((editMode>0) || p1valdiff)) {
+        if (attr && s_currIdx>0 && m_posHorz==1 && ((editMode>0) || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;
           v = checkIncDec(event, v, GVAR_MAX, GVAR_MAX+MAX_PHASES-1, EE_MODEL);
           if (checkIncDec_Ret) {
@@ -1198,8 +1210,8 @@ void menuModelPhaseOne(uint8_t event)
         }
 
         uint8_t p = getGVarFlightPhase(s_currIdx, idx);
-        lcd_outdezAtt(21*FW, y, GVAR_VALUE(idx, p), !editingName && m_posHorz==2 ? attr : 0);
-        if (attr && !editingName && m_posHorz==2 && ((editMode>0) || p1valdiff))
+        lcd_outdezAtt(21*FW, y, GVAR_VALUE(idx, p), m_posHorz==2 ? attr : 0);
+        if (attr && m_posHorz==2 && ((editMode>0) || p1valdiff))
           GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -GVAR_MAX, GVAR_MAX, EE_MODEL);
 
         break;
@@ -1775,7 +1787,7 @@ void menuModelExpoOne(uint8_t event)
   ExpoData *ed = expoaddress(s_currIdx);
   putsChnRaw(7*FW+FW/2,0,ed->chn+1,0);
 
-  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_CPUARM(ZCHAR|(sizeof(ed->name)-1)) 0, 0, IF_CURVES(0) IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
+  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_CPUARM(0) 0, 0, IF_CURVES(0) IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 
   int8_t sub = m_posVert;
 
@@ -1787,7 +1799,7 @@ void menuModelExpoOne(uint8_t event)
     {
 #if defined(CPUARM)
       case EXPO_FIELD_NAME:
-        editName(EXPO_ONE_2ND_COLUMN+3*FW-sizeof(ed->name)*FW, y, ed->name, sizeof(ed->name), event, attr, m_posHorz);
+        editSingleName(EXPO_ONE_2ND_COLUMN+3*FW-sizeof(ed->name)*FW, y, ed->name, sizeof(ed->name), event, attr);
         break;
 #endif
       case EXPO_FIELD_WIDTH:
@@ -1891,11 +1903,11 @@ void menuModelMixOne(uint8_t event)
 #else
   if (m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS)
 #endif  
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 0, IF_CURVES(0) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/})
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 0, IF_CURVES(0) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/})
   else
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 #else
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(ZCHAR|(sizeof(md2->name)-1)) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 1, IF_CURVES(1) 0, IF_FLIGHT_PHASES(MAX_PHASES-1) 0 /*, ...*/});
 #endif
 
   int8_t sub = m_posVert;
@@ -1908,7 +1920,7 @@ void menuModelMixOne(uint8_t event)
     switch(i) {
 #if defined(CPUARM)
       case MIX_FIELD_NAME:
-        editName(MIXES_2ND_COLUMN, y, md2->name, sizeof(md2->name), event, attr, m_posHorz);
+        editSingleName(MIXES_2ND_COLUMN, y, md2->name, sizeof(md2->name), event, attr);
         break;
 #endif
       case MIX_FIELD_SOURCE:
@@ -2584,46 +2596,43 @@ void menuModelGVars(uint8_t event)
   MENU(PSTR("GLOBAL VARIABLES"), menuTabModel, e_GVars, 1+MAX_GVARS, {0, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES});
 
   uint8_t sub = m_posVert - 1;
-  static bool editingName = false;
-  if (editingName && s_editMode <= 0) editingName = false;
-  if (!editingName && s_editMode > 0 && m_posHorz == 0) editingName = true;
 
   for (uint8_t i=0; i<MAX_GVARS; i++) {
-    uint8_t y = 1 + 2*FH + i*FH;
+    uint8_t y = 1 + 3*FH + i*FH;
+
+    putsStrIdx(0, y, STR_GV, i+1);
 
     for (uint8_t j=0; j<1+MAX_PHASES; j++) {
       uint8_t attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      xcoord_t x = 14*FW + (j-1)*(2+4*FWNUM) - 1;
+
+      if (i==0 && j!=9) putsStrIdx(x+FWNUM, 2*FH, STR_FP, j, 0);
+
       switch(j)
       {
         case 0:
-          if (editingName && sub==i)
-            editName(4*FW-3, y, g_model.gvarsNames[i], sizeof(gvar_name_t), event, attr, m_posHorz);
-          else
-            lcd_putsnAtt(4*FW-3, y, g_model.gvarsNames[i], sizeof(gvar_name_t), ZCHAR|(m_posHorz==0 ? attr : 0));
-          // lcd_putsLeft(y, PSTR("    "));
-          putsStrIdx(0, y, STR_GV, i+1);
+          editName(4*FW-3, y, g_model.gvarsNames[i], sizeof(gvar_name_t), event, attr);
           break;
 
         default:
         {
           PhaseData *phase = &g_model.phaseData[j-1];
           int16_t v = phase->gvars[i];
-          xcoord_t x = 14*FW + (j-1)*(2+4*FWNUM) - 1;
           int16_t vmin, vmax;
           if (v > GVAR_MAX) {
             uint8_t p = v - GVAR_MAX - 1;
             if (p >= s_currIdx) p++;
-            putsFlightPhase(x, y, p+1, !editingName ? attr : 0);
+            putsFlightPhase(x, y, p+1, attr);
             vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_PHASES;
           }
           else {
             if (abs(v) >= 1000)
-              lcd_outdezAtt(x, y+1, v, (editingName ? 0 : attr) | TINSIZE);
+              lcd_outdezAtt(x, y+1, v, attr | TINSIZE);
             else
-              lcd_outdezAtt(x, y, v, (editingName ? 0 : attr));
+              lcd_outdezAtt(x, y, v, attr);
             vmin = -GVAR_MAX; vmax = GVAR_MAX;
           }
-          if (attr && !editingName && ((s_editMode>0) || p1valdiff)) {
+          if (attr && ((s_editMode>0) || p1valdiff)) {
             phase->gvars[i] = checkIncDec(event, v, vmin, vmax, EE_MODEL);
           }
           break;
@@ -2701,9 +2710,9 @@ void menuModelCustomSwitchOne(uint8_t event)
         }
         else {
 #if defined(FRSKY)
-          if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-            putsTelemetryChannel(CSW_2ND_COLUMN, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), cstate==CS_VOFS ? convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2) : cs->v2, attr|LEFT);
-            v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY));
+          if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
+            putsTelemetryChannel(CSW_2ND_COLUMN, y, cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT+1), convertCswTelemValue(cs), attr|LEFT);
+            v2_max = maxTelemValue(cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT));
             if (cstate == CS_VOFS) {
               v2_min = -128;
               v2_max -= 128;
@@ -2807,7 +2816,7 @@ void menuModelCustomSwitches(uint8_t event)
 
 #if defined(FRSKY)
         if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-          putsTelemetryChannel(19*FW, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), cstate==CS_VOFS ? convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2) : cs->v2, 0);
+          putsTelemetryChannel(19*FW, y, cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT+1), convertCswTelemValue(cs), 0);
         }
         else
 #endif
@@ -2819,6 +2828,7 @@ void menuModelCustomSwitches(uint8_t event)
   }
 }
 #else
+
 void menuModelCustomSwitches(uint8_t event)
 {
   MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, 2/*repeated...*/});
@@ -2858,9 +2868,10 @@ void menuModelCustomSwitches(uint8_t event)
       putsChnRaw(12*FW-4, y, cs->v1, (m_posHorz==1 ? attr : 0));
 
 #if defined(FRSKY)
-      if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-        putsTelemetryChannel(19*FW, y, cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY+1), cstate==CS_VOFS ? convertTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY), 128+cs->v2) : cs->v2, m_posHorz==2 ? attr : 0);
-        v2_max = maxTelemValue(cs->v1 - (NUM_XCHNCSW-NUM_TELEMETRY));
+      assert(CSW_CHOUT_BASE+NUM_CHNOUT==NUM_XCHNCSW-NUM_TELEMETRY);
+      if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
+        putsTelemetryChannel(19*FW, y, cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT+1), convertCswTelemValue(cs), m_posHorz==2 ? attr : 0);
+        v2_max = maxTelemValue(cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT));
         if (cstate == CS_VOFS) {
           v2_min = -128;
           v2_max -= 128;

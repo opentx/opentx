@@ -302,21 +302,11 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     return false;
   }
 
-  if (IS_RE_NAVIGATION_ENABLE() && event==EVT_KEY_BREAK(RE_NAV_ENTER)) {
-    if (s_editMode > 0 && (maxcol & ZCHAR)) {
-      if (l_posHorz < maxcol-ZCHAR) {
-        l_posHorz++;
-      }
-      else {
-        s_editMode = 0;
-      }
-    }
-    else {
-      scrollRE = 0;
-      if (s_editMode++ > 0) s_editMode = 0;
-      if (s_editMode > 0 && l_posVert == 0 && menuTab) s_editMode = -1;
-      if (maxrow == 0) s_editMode = -1;
-    }
+  if (IS_RE_NAVIGATION_ENABLE() && event==EVT_KEY_BREAK(RE_NAV_ENTER) && s_editMode != EDIT_MODIFY_STRING) {
+    scrollRE = 0;
+    if (s_editMode++ > 0) s_editMode = 0;
+    if (s_editMode > 0 && l_posVert == 0 && menuTab) s_editMode = -1;
+    if (maxrow == 0) s_editMode = -1;
   }
 #else
 #define scrollRE 0
@@ -420,7 +410,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       if (scrollRE > 0) {
         --scrollRE;
         maxcol = MAXCOL(l_posVert);
-        if (maxcol & ZCHAR) maxcol = 0;
         lastCursorMove = +1;
         if (++l_posHorz > maxcol) {
           if (l_posVert < maxrow) {
@@ -428,7 +417,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
               ++l_posVert;
             } while(MAXCOL(l_posVert) == (uint8_t)-1);
             maxcol = MAXCOL(l_posVert);
-            if (maxcol & ZCHAR) maxcol = 0;
             l_posHorz = 0;
           }
           else {
@@ -466,7 +454,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #endif
           else {
             maxcol = MAXCOL(l_posVert);
-            if (maxcol & ZCHAR) maxcol = 0;
             l_posHorz = maxcol;
           }
         }
@@ -708,13 +695,15 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
     value = ((value >= 126 || value <= -126) ? GET_GVAR(value, min, max, s_perout_flight_phase) : 126);
     eeDirty(EE_MODEL);
   }
-  if (value >= 126 || value <= -126) {
+  if (value >= 126 || value <= -126 || (max <= 120 && value >= 121)) {
     if (attr & LEFT)
       attr -= LEFT; /* because of ZCHAR */
     else
       x -= 2*FW+FWNUM;
-    putsStrIdx(x, y, STR_GV, (uint8_t)value - 125, attr);
-    if (invers) value = checkIncDec(event, (uint8_t)value, 126, 130, EE_MODEL);
+    int8_t idx = value - 125;
+    if (idx <= 0) { idx = 1-idx; lcd_putcAtt(x-6, y, '-', attr); }
+    putsStrIdx(x, y, STR_GV, idx, attr);
+    if (invers) value = checkIncDec(event, (uint8_t)value, max <= 120 ? 121 : 126, 130, EE_MODEL);
   }
   else {
     lcd_outdezAtt(x, y, value, attr);

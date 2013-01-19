@@ -350,7 +350,7 @@
 #else
 #define TR_MENUTOSTART         CENTER"\006[MENU] TO START"
 #endif
-#define TR_SETMIDPOINT         CENTER"\012SET MIDPOINT"
+#define TR_SETMIDPOINT         CENTER"\003SET STICKS MIDPOINT"
 #define TR_MOVESTICKSPOTS      CENTER"\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"

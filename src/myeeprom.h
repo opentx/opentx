@@ -681,13 +681,14 @@ enum MixSources {
     MIXSRC_Ele,
     MIXSRC_Thr,
     MIXSRC_Ail,
+    MIXSRC_Pot1,
 #if defined(PCBX9D) || defined(PCBACT)
-    MIXSRC_S1,
+    MIXSRC_S1 = MIXSRC_Pot1,
     MIXSRC_S2,
     MIXSRC_S3,
     MIXSRC_S4,
 #else
-    MIXSRC_P1,
+    MIXSRC_P1 = MIXSRC_Pot1,
     MIXSRC_P2,
     MIXSRC_P3,
 #endif

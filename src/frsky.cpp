@@ -780,33 +780,16 @@ NOINLINE void check_frsky()
     int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.frsky.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
     int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), frskyData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
 
-    uint8_t SoundVarioBeepNextFreq = 0;
-    uint8_t SoundVarioBeepNextTime = 0;
-    static uint8_t SoundVarioBeepFreq = 0;
-    static uint8_t SoundVarioBeepTime = 0;
-    if ((verticalSpeed < varioSpeedUpMin) && (verticalSpeed > varioSpeedDownMin)) { //check thresholds here in cm/s
-      SoundVarioBeepNextFreq = (0);
-      SoundVarioBeepNextTime = (0);
-    }
-    else {
+    if (verticalSpeed <= varioSpeedDownMin || verticalSpeed >= varioSpeedUpMin) { // check thresholds here in cm/s
       if (varioSpeedUpMin < 0 && verticalSpeed >= varioSpeedUpMin) {
         verticalSpeed -= varioSpeedUpMin;
       }		  
-      SoundVarioBeepNextFreq = (verticalSpeed * 10 + 16000) >> 8;
-      SoundVarioBeepNextTime = (1600 - verticalSpeed) / 100;
-      if (verticalSpeed >= 0) {
-        if ((uint16_t)(g_tmr10ms - s_varioTmr) > (uint16_t)SoundVarioBeepTime*2) {
-          s_varioTmr = g_tmr10ms;
-          SoundVarioBeepTime = SoundVarioBeepNextTime;
-          SoundVarioBeepFreq = SoundVarioBeepNextFreq;
-          AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
-        }
-      }
-      else {
-        // negative vertical speed gives sound without pauses
-        SoundVarioBeepTime = SoundVarioBeepNextTime;
-        SoundVarioBeepFreq = SoundVarioBeepNextFreq;
-        AUDIO_VARIO(SoundVarioBeepFreq, 1);
+      uint16_t tmr10ms = g_tmr10ms;
+      if (verticalSpeed < 0 || tmr10ms > s_varioTmr) {
+        uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
+        uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 8;
+        s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
+        AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
       }
     }
 #else
@@ -1034,6 +1017,16 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
       break;
   }
   return result;
+}
+
+int16_t convertCswTelemValue(CustomSwData * cs)
+{
+  int16_t val;
+  if (CS_STATE(cs->func)==CS_VOFS)
+    val = convertTelemValue(cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs->v2);
+  else
+    val = convertTelemValue(cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT), 128+cs->v2) - convertTelemValue(cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT), 128);
+  return val;
 }
 
 const pm_uint8_t bchunit_ar[] PROGMEM = {

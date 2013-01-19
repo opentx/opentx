@@ -122,7 +122,12 @@ extern int16_t p1valdiff;
 #endif
 
 extern int8_t checkIncDec_Ret;  // global helper vars
-extern int8_t s_editMode;        // global editmode
+
+#define EDIT_SELECT_MENU   -1
+#define EDIT_SELECT_FIELD  0
+#define EDIT_MODIFY_FIELD  1
+#define EDIT_MODIFY_STRING 2
+extern int8_t s_editMode;       // global editmode
 
 // checkIncDec flags
 #define EE_GENERAL      0x01
