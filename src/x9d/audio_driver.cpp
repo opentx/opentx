@@ -34,6 +34,7 @@
 
 #include "../open9x.h"
 
+bool dacIdle = true;
 uint32_t currentFrequency = 0;
 
 uint32_t getFrequency()
@@ -86,13 +87,14 @@ void dacInit()
   DMA1_Stream5->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 |
                                                                              DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_CIRC ;
   DMA1_Stream5->PAR = (uint32_t) &DAC->DHR12R1 ;
-  DMA1_Stream5->M0AR = (uint32_t) Sine_values ;
+  DMA1_Stream5->M0AR = CONVERT_PTR(Sine_values);
   DMA1_Stream5->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
   DMA1_Stream5->NDTR = 100 ;
 
   DAC->DHR12R1 = 2010 ;
   DAC->SR = DAC_SR_DMAUDR1 ;              // Write 1 to clear flag
   DAC->CR = DAC_CR_TEN1 | DAC_CR_EN1 ;                    // Enable DAC
+  NVIC_SetPriority( DMA1_Stream5_IRQn, 2 ) ; // High priority interrupt
   NVIC_EnableIRQ(TIM6_DAC_IRQn) ;
   NVIC_EnableIRQ(DMA1_Stream5_IRQn) ;
 }
@@ -126,6 +128,18 @@ extern "C" void DMA1_Stream5_IRQHandler()
 {
   DMA1_Stream5->CR &= ~DMA_SxCR_TCIE ;            // Stop interrupt
   DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear flags
+  DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
+  if (nextAudioData) {
+    DMA1_Stream5->M0AR = CONVERT_PTR(nextAudioData);
+    DMA1_Stream5->NDTR = nextAudioSize*2;
+    DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
+    DMA1_Stream5->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE ;       // Enable DMA channel
+    DAC->SR = DAC_SR_DMAUDR1;                      // Write 1 to clear flag
+    nextAudioData = NULL;
+  }
+  else {
+    dacIdle = true;
+  }
 }
 #endif
 

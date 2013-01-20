@@ -411,7 +411,9 @@ void AudioQueue::sdWakeup(AudioContext & context)
         else {
           nextAudioSize = read;
           nextAudioData = wavSamplesBuffer;
+#if defined(PCBSKY9X)
           dacStart();
+#endif
           CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 500) / context.pcmFreq, 0);
           CoStartTmr(audioTimer);
         }
