@@ -614,8 +614,6 @@ void boardInit()
 
   __enable_irq() ;
 
-  codecsInit();
-
   audioInit() ;
 
   coprocInit() ;
@@ -625,7 +623,6 @@ void boardInit()
   rotencInit();
 
   init_SDcard();
-
 }
 #endif
 

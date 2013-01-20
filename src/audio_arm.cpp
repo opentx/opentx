@@ -289,7 +289,8 @@ void audioTimerHandle(void)
 #ifndef SIMU
 void audioTask(void* pdata)
 {
-#if defined(SDCARD)	
+#if defined(SDCARD)
+  codecsInit();
   sdInit();
   AUDIO_TADA();
 #endif  
