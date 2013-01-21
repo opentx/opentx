@@ -509,9 +509,11 @@ PACK(typedef struct t_FrSkyData {
   uint8_t screensType;
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
   uint8_t varioSource;
-  uint8_t varioSpeedUpMin;    // if increment in 0.2m/s = 3.0m/s max
-  uint8_t varioSpeedDownMin;
-  uint8_t spare[4];
+  uint8_t varioCenterMax;
+  uint8_t varioCenterMin;
+  int8_t  varioMin;
+  int8_t  varioMax;
+  uint8_t spare[2];
 }) FrSkyData;
 #else
 #define MAX_FRSKY_SCREENS 2
@@ -519,15 +521,16 @@ PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
-  uint8_t spare1:4;
-  uint8_t voltsSource:3;
-  uint8_t currentSource:3;
   uint8_t screensType:2;
+  uint8_t varioSource:2;
+  int8_t  varioMin:4;
+  int8_t  varioMax:4;
   FrSkyRSSIAlarm rssiAlarms[2];
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
-  uint8_t   varioSource:3;
-  uint8_t   varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
-  uint8_t   varioSpeedDownMin;
+  uint8_t voltsSource:3;
+  int8_t  varioCenterMin:5;
+  uint8_t currentSource:3;
+  int8_t  varioCenterMax:5;
 }) FrSkyData;
 #endif
 

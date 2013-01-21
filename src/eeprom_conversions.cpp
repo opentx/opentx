@@ -41,8 +41,8 @@ PACK(typedef struct {
   FrSkyBarData bars[4];
   uint8_t lines[4*2*2];
   uint8_t varioSource;
-  uint8_t varioSpeedUpMin;    // if increment in 0.2m/s = 3.0m/s max
-  uint8_t varioSpeedDownMin;
+  uint8_t varioCenterMin;
+  uint8_t varioCenterMax;
   uint8_t spare[4];
 }) FrSkyData_v212;
 
@@ -191,8 +191,8 @@ bool eeConvert()
         g_model.frsky.blades = oldModel.frsky.blades;
         g_model.frsky.currentSource = oldModel.frsky.currentSource;
         g_model.frsky.varioSource = oldModel.frsky.varioSource;
-        g_model.frsky.varioSpeedUpMin = oldModel.frsky.varioSpeedUpMin;
-        g_model.frsky.varioSpeedDownMin = oldModel.frsky.varioSpeedDownMin;
+        g_model.frsky.varioCenterMax = oldModel.frsky.varioCenterMax;
+        g_model.frsky.varioCenterMin = oldModel.frsky.varioCenterMin;
         for (uint8_t i=0; i<2; i++) {
           g_model.frsky.channels[i] = oldModel.frsky.channels[i];
           g_model.frsky.rssiAlarms[i] = oldModel.frsky.rssiAlarms[i];

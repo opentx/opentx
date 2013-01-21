@@ -3203,7 +3203,7 @@ enum menuModelTelemetryItems {
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(1) 0, 2, 2, 2, 2, 0, 2, 2, 2, IF_CPUARM(2) IF_CPUARM(0) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) 2 });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(3) 0, 2, 2, 2, 2, 0, 2, 2, 2, IF_CPUARM(2) IF_CPUARM(0) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) 2 });
 
   uint8_t sub = m_posVert - 1;
 
@@ -3369,19 +3369,23 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_VARIO_SPEED:
         lcd_putsLeft(y, STR_LIMIT);
-        if (!g_model.frsky.varioSpeedDownMin)
-          lcd_putsAtt(TELEM_COL2, y, STR_OFF, ((attr && m_posHorz==0) ? blink : 0));
-        else
-          lcd_outdezAtt(TELEM_COL2, y, -VARIO_SPEED_LIMIT_MUL*(VARIO_SPEED_LIMIT_DOWN_OFF - g_model.frsky.varioSpeedDownMin), ((attr && m_posHorz==0) ? blink : 0)|PREC2|LEFT);
-        lcd_outdezAtt(TELEM_COL2+6*FW, y, VARIO_SPEED_LIMIT_MUL*(g_model.frsky.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER), ((attr && m_posHorz==1) ? blink : 0)|PREC2|LEFT);
-
+        lcd_outdezAtt(TELEM_COL2, y, -10+g_model.frsky.varioMin, ((attr && m_posHorz==0) ? blink : 0)|LEFT);
+        lcd_outdezAtt(TELEM_COL2+7*FW, y, g_model.frsky.varioCenterMin, ((attr && m_posHorz==1) ? blink : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+10*FW, y, g_model.frsky.varioCenterMax, ((attr && m_posHorz==2) ? blink : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+13*FW+2, y, 10+g_model.frsky.varioMax, ((attr && m_posHorz==3) ? blink : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedDownMin, 0, VARIO_SPEED_LIMIT_DOWN_OFF);
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMin, -7, 7);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSpeedUpMin, 0, VARIO_SPEED_LIMIT_UP_MAX);
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -10, min<int8_t>(0, g_model.frsky.varioCenterMax));
+              break;
+            case 2:
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMax, max<int8_t>(-10, g_model.frsky.varioCenterMin), +10);
+              break;
+            case 3:
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMax, -7, 7);
               break;
           }
         }

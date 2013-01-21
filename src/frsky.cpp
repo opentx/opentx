@@ -776,14 +776,29 @@ NOINLINE void check_frsky()
   static uint16_t s_varioTmr = 0;
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
-    int16_t varioSpeedUpMin = (g_model.frsky.varioSpeedUpMin - VARIO_SPEED_LIMIT_UP_CENTER)*VARIO_SPEED_LIMIT_MUL;
-    int16_t varioSpeedDownMin = (VARIO_SPEED_LIMIT_DOWN_OFF - g_model.frsky.varioSpeedDownMin)*(-VARIO_SPEED_LIMIT_MUL);
-    int16_t verticalSpeed = limit((int16_t)(-VARIO_SPEED_LIMIT*100), frskyData.varioSpeed, (int16_t)(+VARIO_SPEED_LIMIT*100));
+    // conversion in cm/s
+    do {
+      int16_t verticalSpeed;
+      int16_t varioCenterMax = (int16_t)g_model.frsky.varioCenterMax * 10;
+      if (frskyData.varioSpeed >= varioCenterMax) {
+        verticalSpeed = frskyData.varioSpeed - varioCenterMax;
+        int16_t varioMax = (10+(int16_t)g_model.frsky.varioMax) * 100;
+        if (verticalSpeed > varioMax) verticalSpeed = varioMax;
+        verticalSpeed = (verticalSpeed * 10) / ((varioMax-varioCenterMax) / 100);
+      }
+      else {
+        int16_t varioCenterMin = (int16_t)g_model.frsky.varioCenterMin * 10;
+        if (frskyData.varioSpeed <= varioCenterMin) {
+          verticalSpeed = frskyData.varioSpeed - varioCenterMin;
+          int16_t varioMin = (-10+(int16_t)g_model.frsky.varioMin) * 100;
+          if (verticalSpeed < varioMin) verticalSpeed = varioMin;
+          verticalSpeed = (verticalSpeed * 10) / ((varioCenterMin-varioMin) / 100);
+        }
+        else {
+          break;
+        }
+      }
 
-    if (verticalSpeed <= varioSpeedDownMin || verticalSpeed >= varioSpeedUpMin) { // check thresholds here in cm/s
-      if (varioSpeedUpMin < 0 && verticalSpeed >= varioSpeedUpMin) {
-        verticalSpeed -= varioSpeedUpMin;
-      }		  
       uint16_t tmr10ms = g_tmr10ms;
       if (verticalSpeed < 0 || tmr10ms > s_varioTmr) {
         uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
@@ -791,7 +806,8 @@ NOINLINE void check_frsky()
         s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
         AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
       }
-    }
+
+    } while(0);
 #else
     int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyData.varioSpeed/10), (int16_t)+100);
 
