@@ -1044,7 +1044,7 @@ void menuGeneralCalib(uint8_t event)
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i])>50) {
-          if (i < NUM_STICKS) g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
+          g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
           g_eeGeneral.calibSpanNeg[i] = v - v/64;
           v = reusableBuffer.calib.hiVals[i] - reusableBuffer.calib.midVals[i];
