@@ -2798,25 +2798,25 @@ void menuModelCustomSwitches(uint8_t event)
 
     if (cs->func > 0) {
       // CSW func
-      lcd_putsiAtt(4*FW - 4, y, STR_VCSWFUNC, cs->func, 0);
+      lcd_putsiAtt(4*FW - 5, y, STR_VCSWFUNC, cs->func, 0);
 
       // CSW params
       uint8_t cstate = CS_STATE(cs->func);
 
       if (cstate == CS_VBOOL) {
-        putsSwitches(12*FW-4, y, cs->v1, 0);
+        putsSwitches(12*FW-5, y, cs->v1, 0);
         putsSwitches(17*FW, y, cs->v2, 0);
       }
       else if (cstate == CS_VCOMP) {
-        putsChnRaw(12*FW-4, y, cs->v1, 0);
+        putsChnRaw(12*FW-5, y, cs->v1, 0);
         putsChnRaw(17*FW, y, cs->v2, 0);
       }
       else {
-        putsChnRaw(12*FW-4, y, cs->v1, 0);
+        putsChnRaw(12*FW-5, y, cs->v1, 0);
 
 #if defined(FRSKY)
         if (cs->v1 > NUM_XCHNCSW-NUM_TELEMETRY) {
-          putsTelemetryChannel(19*FW, y, cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT+1), convertCswTelemValue(cs), 0);
+          putsTelemetryChannel(19*FW+2, y, cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT+1), convertCswTelemValue(cs), 0);
         }
         else
 #endif
