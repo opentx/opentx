@@ -85,8 +85,14 @@ inline uint16_t dacQueue(uint16_t *data, uint16_t size)
   }
 }
 
+static const int8_t volumeScale[NUM_VOL_LEVELS] =
+{
+    0,  2,  4,   6,   8,  10,  13,  17,  22,  27,  33,  40,
+    64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
+} ;
+
 #if !defined(SIMU)
-#define setVolume(v) I2C_set_volume(v)
+#define setVolume(v) I2C_set_volume(volumeScale[min<uint8_t>(v, NUM_VOL_LEVELS-1)])
 #else
 #define setVolume(v)
 #endif
