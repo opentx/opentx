@@ -2868,7 +2868,6 @@ void menuModelCustomSwitches(uint8_t event)
       putsChnRaw(12*FW-5, y, cs->v1, (m_posHorz==1 ? attr : 0));
 
 #if defined(FRSKY)
-      assert(CSW_CHOUT_BASE+NUM_CHNOUT==NUM_XCHNCSW-NUM_TELEMETRY);
       if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
         putsTelemetryChannel(19*FW+2, y, cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT+1), convertCswTelemValue(cs), m_posHorz==2 ? attr : 0);
         v2_max = maxTelemValue(cs->v1 - (CSW_CHOUT_BASE+NUM_CHNOUT));

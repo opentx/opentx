@@ -509,8 +509,8 @@ PACK(typedef struct t_FrSkyData {
   uint8_t screensType;
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
   uint8_t varioSource;
-  uint8_t varioCenterMax;
-  uint8_t varioCenterMin;
+  int8_t  varioCenterMax;
+  int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
   uint8_t spare[2];
