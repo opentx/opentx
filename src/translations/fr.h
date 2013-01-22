@@ -218,14 +218,14 @@
 #define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
 #endif
 
-#if defined (P13POS)
-	#define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""3PO2""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
-#elif defined (P23POS)
-	#define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""P1\0 ""3PO2""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
-#elif defined (P33POS)
-	#define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""P1\0 ""P2\0 ""3PO2" TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
+#if EXTRA_3POS == 1
+  #define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""3PO2""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
+#elif EXTRA_3POS == 2
+  #define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""P1\0 ""3PO2""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
+#elif EXTRA_3POS == 3
+  #define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""P1\0 ""P2\0 ""3PO2" TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
 #else
-	#define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""P1\0 ""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3POS" TR_CYC_VSRCRAW
+  #define TR_VSRCRAW       "Dir\0""Prf\0""Gaz\0""Ail\0""P1\0 ""P2\0 ""P3\0 " TR_ROTARY_ENCODERS_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" "MAX\0""3POS" TR_CYC_VSRCRAW
 #endif
 
 #define LEN_VTMRMODES    "\003"

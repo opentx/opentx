@@ -73,23 +73,6 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
     return STR_SDCARD_ERROR;
 }
 
-#if defined(SIMU)
-#define sdMountPoll()
-#define sdPoll10ms()
-#else
-extern void sdMountPoll();
-#endif
-
-#if defined(CPUARM) && !defined(SIMU)
-extern "C" {
-extern uint32_t sd_card_ready();
-extern uint32_t sdMounted();
-}
-#else
-#define sd_card_ready()   (true)
-#define sdMounted() (true)
-#endif
-
 #if defined(PCBACT)
 #define O9X_FOURCC 0x3478396F // o9x for ACT
 #elif defined(PCBX9D)
@@ -98,13 +81,6 @@ extern uint32_t sdMounted();
 #define O9X_FOURCC 0x3278396F // o9x for sky9x
 #elif defined(PCBGRUVIN9X)
 #define O9X_FOURCC 0x3178396F // o9x for gruvin9x
-#endif
-
-#if defined(PCBGRUVIN9X) || defined(SIMU)
-#define SD_IS_HC() (0)
-#define SD_GET_BLOCKNR() (0)
-#define SD_GET_SIZE_MB() (0)
-#define SD_GET_SPEED() (0)
 #endif
 
 #endif

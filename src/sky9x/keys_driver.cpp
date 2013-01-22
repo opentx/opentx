@@ -229,6 +229,20 @@ uint32_t switchState(EnumKeys enuk)
       xxx = ~c & 0x00000800; // SW_IDL2     PC11
       break;
 
+#if 0
+    case SW_ID3:
+      result = (calibratedStick[POT1+EXTRA_3POS-1] < 0);
+      break;
+
+    case SW_ID4:
+      result = (calibratedStick[POT1+EXTRA_3POS-1] == 0);
+      break;
+
+    case SW_ID5:
+      result = (calibratedStick[POT1+EXTRA_3POS-1] > 0);
+      break;
+#endif
+
     case SW_GEA:
       xxx = c & 0x00010000; // SW_GEAR     PC16
       break;

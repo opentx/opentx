@@ -362,4 +362,13 @@ inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { 
 
 #define configure_pins(...)
 
+#define sdMountPoll()
+#define sdPoll10ms()
+#define sd_card_ready()  (true)
+#define sdMounted()      (true)
+#define SD_IS_HC()       (0)
+#define SD_GET_BLOCKNR() (0)
+#define SD_GET_SIZE_MB() (0)
+#define SD_GET_SPEED()   (0)
+
 #endif

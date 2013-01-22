@@ -210,12 +210,19 @@
 #define TR_VRENCODERS    "REa""REb"
 
 #define LEN_VSWITCHES    "\003"
+
+#if 0
+#define TR_EXTRA_3POS_SWITCHES "ID3""ID4""ID5"
+#else
+#define TR_EXTRA_3POS_SWITCHES
+#endif
+
 #if defined(PCBX9D)
   #define TR_VSWITCHES     "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"" ON"
 #elif defined(PCBSKY9X)
-  #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"" ON"
+  #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2" TR_EXTRA_3POS_SWITCHES "AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"" ON"
 #else
-  #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2""AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"" ON"
+  #define TR_VSWITCHES     "THR""RUD""ELE""ID0""ID1""ID2" TR_EXTRA_3POS_SWITCHES "AIL""GEA""TRN""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"" ON"
 #endif
 
 #define LEN_VSRCRAW      "\004"
@@ -223,13 +230,13 @@
 #if defined(PCBX9D)
   #define TR_POTS_VSRCRAW  "S1\0 ""S2\0 ""LS\0 ""RS\0 "
   #define TR_SW_VSRCRAW    "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 "
-#elif defined (P13POS)	
+#elif EXTRA_3POS == 1
   #define TR_POTS_VSRCRAW  "3PO2""P2\0 ""P3\0 "
   #define TR_SW_VSRCRAW    "3PO1"
-#elif defined (P23POS)
+#elif EXTRA_3POS == 2
   #define TR_POTS_VSRCRAW  "P1\0 ""3PO2""P3\0 "
   #define TR_SW_VSRCRAW    "3PO1"
-#elif defined (P33POS)
+#elif EXTRA_3POS == 3
   #define TR_POTS_VSRCRAW  "P1\0 ""P2\0 ""3PO2"
   #define TR_SW_VSRCRAW    "3PO1"
 #else
@@ -290,7 +297,7 @@
 #define TR_ELIMITS             TR("E.Limits","Extended Limits")
 #define TR_ETRIMS              TR("E.Trims","Extended Trims")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              TR("T-Trace","Throttle Trace")
+#define TR_TTRACE              TR("T-Source","Throttle Source")
 #define TR_TTRIM               TR("T-Trim","Throttle Trim")
 #define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
 #define TR_PROTO               TR(INDENT"Proto",INDENT"Protocol")

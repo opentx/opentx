@@ -779,7 +779,7 @@ NOINLINE void check_frsky()
     // conversion in cm/s
     do {
       int16_t verticalSpeed;
-      int16_t varioCenterMax = (int16_t)g_model.frsky.varioCenterMax * 10;
+      int16_t varioCenterMax = (int16_t)g_model.frsky.varioCenterMax * 10 + 50;
       if (frskyData.varioSpeed >= varioCenterMax) {
         verticalSpeed = frskyData.varioSpeed - varioCenterMax;
         int16_t varioMax = (10+(int16_t)g_model.frsky.varioMax) * 100;
@@ -787,7 +787,7 @@ NOINLINE void check_frsky()
         verticalSpeed = (verticalSpeed * 10) / ((varioMax-varioCenterMax) / 100);
       }
       else {
-        int16_t varioCenterMin = (int16_t)g_model.frsky.varioCenterMin * 10;
+        int16_t varioCenterMin = (int16_t)g_model.frsky.varioCenterMin * 10 - 50;
         if (frskyData.varioSpeed <= varioCenterMin) {
           verticalSpeed = frskyData.varioSpeed - varioCenterMin;
           int16_t varioMin = (-10+(int16_t)g_model.frsky.varioMin) * 100;

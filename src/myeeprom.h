@@ -709,7 +709,7 @@ enum MixSources {
     MIXSRC_TrimEle,
     MIXSRC_TrimThr,
     MIXSRC_TrimAil,
-    MIXSRC_MAX ,
+    MIXSRC_MAX,
 #if defined(PCBX9D) || defined(PCBACT)
     MIXSRC_SA,
     MIXSRC_SB,

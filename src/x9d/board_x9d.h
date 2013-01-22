@@ -55,14 +55,6 @@
 #define TIMER_MULT_APB1 2
 #define TIMER_MULT_APB2 1
 
-// TODO elsewhere
-#if !defined(SIMU)
-#define SD_IS_HC()                     (1)
-#endif
-
-void sdInit();
-void sdPoll10ms();
-
 void usbMassStorage();
 
 #define JACK_PPM_OUT()
@@ -74,12 +66,6 @@ uint16_t getCurrent();
 extern uint8_t temperature ;              // Raw temp reading
 extern uint8_t maxTemperature ;           // Raw temp reading
 uint8_t getTemperature();
-
-#define SD_GET_SIZE_MB()        (0)
-#define SD_GET_BLOCKNR()        (0)
-#define SD_GET_SPEED()          (0)
-
-void pwrOff();
 
 #define strcpy_P strcpy
 #define strcat_P strcat
@@ -96,7 +82,6 @@ void debugInit();
 void init_trainer_ppm();
 void init_trainer_capture();
 
-
 #define DEBUG_UART_BAUDRATE 115200
 
 void uartInit(void);
@@ -104,6 +89,17 @@ void uartSendChar(uint8_t c);
 
 void delaysInit(void);
 void delay_01us(uint16_t nb);
+
+// SD driver
+#if !defined(SIMU)
+#define SD_IS_HC()              (1)
+#define SD_GET_SIZE_MB()        (0)
+#define SD_GET_BLOCKNR()        (0)
+#define SD_GET_SPEED()          (0)
+void sdInit();
+void sdPoll10ms();
+#define sdMountPoll()
+#endif
 
 // Keys driver
 void keysInit();
@@ -129,6 +125,7 @@ extern volatile uint16_t Analog_values[];
 // Power driver
 void pwrInit();
 uint32_t pwrCheck();
+void pwrOff();
 
 // Backlight driver
 #define setBacklight(xx)

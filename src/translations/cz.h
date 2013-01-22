@@ -217,14 +217,14 @@
 #define TR_CYC_VSRCRAW         "[C1]""[C2]""[C3]"
 #endif
 
-#if defined (P13POS)
-	#define TR_VSRCRAW             "Sm\203r""V\212\207k""Plyn""K\206id""3PO2""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3PO1" 	TR_CYC_VSRCRAW
-#elif defined (P23POS)
-	#define TR_VSRCRAW             "Sm\203r""V\212\207k""Plyn""K\206id""Pot1""3PO2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3PO1" 	TR_CYC_VSRCRAW
-#elif defined (P33POS)
-	#define TR_VSRCRAW             "Sm\203r""V\212\207k""Plyn""K\206id""Pot1""Pot3""3PO2" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3PO1" 	TR_CYC_VSRCRAW
-#elseN
-	#define TR_VSRCRAW             "Sm\203r""V\212\207k""Plyn""K\206id""Pot1""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3POS" 	TR_CYC_VSRCRAW
+#if EXTRA_3POS == 1
+  #define TR_VSRCRAW             "Sm\203r""V\212\207k""Plyn""K\206id""3PO2""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3PO1" 	TR_CYC_VSRCRAW
+#elif EXTRA_3POS == 2
+  #define TR_VSRCRAW             "Sm\203r""V\212\207k""Plyn""K\206id""Pot1""3PO2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3PO1" 	TR_CYC_VSRCRAW
+#elif EXTRA_3POS == 3
+  #define TR_VSRCRAW             "Sm\203r""V\212\207k""Plyn""K\206id""Pot1""Pot3""3PO2" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3PO1" 	TR_CYC_VSRCRAW
+#else
+  #define TR_VSRCRAW             "Sm\203r""V\212\207k""Plyn""K\206id""Pot1""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" "MAX ""3POS" 	TR_CYC_VSRCRAW
 #endif
 
 #define LEN_VTMRMODES          "\003"

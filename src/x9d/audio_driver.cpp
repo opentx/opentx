@@ -103,8 +103,6 @@ void dacInit()
 void audioInit()
 {
   dacInit() ;
-
-  // TODO - for volume, shared with EEPROM?
 }
 
 void audioEnd()

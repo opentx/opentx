@@ -344,6 +344,9 @@ CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
 # TTS language
 CPPDEFS += -DTTS_$(TTS)
 
+GVARS_VARIANT  = +1 
+FRSKY_VARIANT  = +2
+3POS_VARIANT   = +4
 EEPROM_VARIANT = 0
 
 ifeq ($(UNITS), IMPERIAL)
@@ -406,7 +409,7 @@ endif
 
 ifeq ($(GVARS), YES)
   CPPDEFS += -DGVARS
-  EEPROM_VARIANT += +1
+  EEPROM_VARIANT += ${GVARS_VARIANT}
 endif
 
 # If STD-Support is enabled
@@ -450,7 +453,7 @@ ifeq ($(EXT), FRSKY)
   ifeq ($(VARIO), YES)
     CPPDEFS += -DVARIO
   endif
-  EEPROM_VARIANT += +2
+  EEPROM_VARIANT += ${FRSKY_VARIANT}
 endif
 
 ifeq ($(DEBUG), YES)
@@ -719,13 +722,16 @@ ifeq ($(IRPROTOS), YES)
 endif
 
 ifeq ($(3POS), POT1)
-  CPPDEFS += -DP13POS
+  CPPDEFS += -DEXTRA_3POS=1
+  # EEPROM_VARIANT += ${3POS_VARIANT}
 endif
 ifeq ($(3POS), POT2)
-  CPPDEFS += -DP23POS
+  CPPDEFS += -DEXTRA_3POS=2
+  # EEPROM_VARIANT += ${3POS_VARIANT}
 endif
 ifeq ($(3POS), POT3)
-  CPPDEFS += -DP33POS
+  CPPDEFS += -DEXTRA_3POS=3
+  # EEPROM_VARIANT += ${3POS_VARIANT}
 endif
 
 #---------------- Compiler Options C++ ----------------

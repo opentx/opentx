@@ -636,25 +636,25 @@ int16_t getValue(uint8_t i)
 {
   /*srcRaw is shifted +1!*/
 
-  if(i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
+  if (i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
 #if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
-  else if(i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS) return getRotaryEncoder(i-(NUM_STICKS+NUM_POTS));
+  else if (i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS) return getRotaryEncoder(i-(NUM_STICKS+NUM_POTS));
 #endif
-  else if(i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
-  else if(i<MIXSRC_MAX) return 1024;
+  else if (i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
+  else if (i<MIXSRC_MAX) return 1024;
 #if defined(PCBX9D) || defined(PCBACT)
-  else if(i<MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));  
-  else if(i<MIXSRC_SB) return (switchState(SW_SB0) ? -1024 : (switchState(SW_SB1) ? 0 : 1024));
-  else if(i<MIXSRC_SC) return (switchState(SW_SC0) ? -1024 : (switchState(SW_SC1) ? 0 : 1024));
-  else if(i<MIXSRC_SD) return (switchState(SW_SD0) ? -1024 : (switchState(SW_SD1) ? 0 : 1024));
-  else if(i<MIXSRC_SE) return (switchState(SW_SE0) ? -1024 : (switchState(SW_SE1) ? 0 : 1024));
-  else if(i<MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
-  else if(i<MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
-  else if(i<MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
+  else if (i<MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));
+  else if (i<MIXSRC_SB) return (switchState(SW_SB0) ? -1024 : (switchState(SW_SB1) ? 0 : 1024));
+  else if (i<MIXSRC_SC) return (switchState(SW_SC0) ? -1024 : (switchState(SW_SC1) ? 0 : 1024));
+  else if (i<MIXSRC_SD) return (switchState(SW_SD0) ? -1024 : (switchState(SW_SD1) ? 0 : 1024));
+  else if (i<MIXSRC_SE) return (switchState(SW_SE0) ? -1024 : (switchState(SW_SE1) ? 0 : 1024));
+  else if (i<MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
+  else if (i<MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
+  else if (i<MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
 #else
-  else if(i<MIXSRC_3POS) return (switchState(SW_ID0) ? -1024 : (switchState(SW_ID1) ? 0 : 1024));
+  else if (i<MIXSRC_3POS) return (switchState(SW_ID0) ? -1024 : (switchState(SW_ID1) ? 0 : 1024));
   // here the switches are skipped
-  else if(i<MIXSRC_3POS+3)
+  else if (i<MIXSRC_3POS+3)
 #if defined(HELI)
     return cyc_anas[i-MIXSRC_3POS];
 #else
@@ -1833,14 +1833,24 @@ BeepANACenter evalSticks(uint8_t mode)
     if(v < -RESX) v = -RESX;
     if(v >  RESX) v =  RESX;
     	
- #if defined(PCBX9D)
-    // TODO constants
-    if(i == 2 || i == 3 || i == 4 || i == 6)
-    	v = -v;
- #endif
+#if defined(PCBX9D)
+    if (i == STICK3 || i == STICK4 || i == POT1 || i == SLIDER1)
+      v = -v;
+#endif
 
     if (g_eeGeneral.throttleReversed && ch==THR_STICK)
       v = -v;
+
+#if defined(EXTRA_3POS)
+    if (i == POT1+EXTRA_3POS-1) {
+      if (v < -RESX/2)
+        v = -RESX;
+      else if (v > +RESX/2)
+        v = +RESX;
+      else
+        v = 0;
+    }
+#endif
 
     if (i < NUM_STICKS+NUM_POTS) {
       calibratedStick[ch] = v; //for show in expo

@@ -39,11 +39,6 @@
 #include "board.h"
 #include "audio_driver.h"
 
-extern "C" {
-extern void init_SDcard();
-extern void sdInit();
-}
-
 #if defined(REVA)
 #define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
 #define GPIO_BUTTON_EXIT                PIOA->PIO_PDSR
@@ -71,8 +66,6 @@ extern void sdInit();
 #define PIN_BUTTON_RIGHT                0x00000010
 #define PIN_BUTTON_LEFT                 0x00000008
 #endif
-
-#define sdPoll10ms()
 
 void usbMassStorage();
 
@@ -133,6 +126,18 @@ extern uint16_t sessionTimer;
 #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
 
 void setSticksGain(uint8_t gains);
+
+// SD driver
+#if !defined(SIMU)
+#define sdPoll10ms()
+void sdMountPoll();
+extern "C" {
+void init_SDcard();
+void sdInit();
+uint32_t sd_card_ready();
+uint32_t sdMounted();
+}
+#endif
 
 // WDT driver
 #if !defined(SIMU)

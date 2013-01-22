@@ -3164,7 +3164,7 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_USR_CURRENT_SOURCE,
   IF_VARIO(ITEM_TELEMETRY_VARIO_LABEL)
   IF_VARIO(ITEM_TELEMETRY_VARIO_SOURCE)
-  IF_VARIO(ITEM_TELEMETRY_VARIO_SPEED)
+  IF_VARIO(ITEM_TELEMETRY_VARIO_RANGE)
   ITEM_TELEMETRY_SCREEN_LABEL1,
   ITEM_TELEMETRY_SCREEN_LINE1,
   ITEM_TELEMETRY_SCREEN_LINE2,
@@ -3333,7 +3333,7 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_USR_PROTO:
         lcd_putsLeft(y, STR_PROTO);
         lcd_putsiAtt(TELEM_COL2, y, STR_VTELPROTO, g_model.frsky.usrProto, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.usrProto, 0, 2);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.usrProto, 0, 3);
         break;
 
       case ITEM_TELEMETRY_USR_BLADES:
@@ -3366,11 +3366,11 @@ void menuModelTelemetry(uint8_t event)
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSource, VARIO_SOURCE_FIRST, VARIO_SOURCE_LAST);
         break;
 
-      case ITEM_TELEMETRY_VARIO_SPEED:
+      case ITEM_TELEMETRY_VARIO_RANGE:
         lcd_putsLeft(y, STR_LIMIT);
         lcd_outdezAtt(TELEM_COL2, y, -10+g_model.frsky.varioMin, ((attr && m_posHorz==0) ? blink : 0)|LEFT);
-        lcd_outdezAtt(TELEM_COL2+7*FW, y, g_model.frsky.varioCenterMin, ((attr && m_posHorz==1) ? blink : 0)|PREC1);
-        lcd_outdezAtt(TELEM_COL2+10*FW, y, g_model.frsky.varioCenterMax, ((attr && m_posHorz==2) ? blink : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((attr && m_posHorz==1) ? blink : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+10*FW, y, 5+g_model.frsky.varioCenterMax, ((attr && m_posHorz==2) ? blink : 0)|PREC1);
         lcd_outdezAtt(TELEM_COL2+13*FW+2, y, 10+g_model.frsky.varioMax, ((attr && m_posHorz==3) ? blink : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
@@ -3378,10 +3378,10 @@ void menuModelTelemetry(uint8_t event)
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMin, -7, 7);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -10, min<int8_t>(0, g_model.frsky.varioCenterMax));
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -15, 5+min<int8_t>(0, g_model.frsky.varioCenterMax+5));
               break;
             case 2:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMax, max<int8_t>(-10, g_model.frsky.varioCenterMin), +10);
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMax, -5+max<int8_t>(-10, g_model.frsky.varioCenterMin-5), +15);
               break;
             case 3:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMax, -7, 7);

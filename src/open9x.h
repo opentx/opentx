@@ -170,15 +170,6 @@
 #define CONVERT_PTR(x) ((uint32_t)(x))
 #endif
 
-/*
-#define HELI_VARIANT   0x0004
-#define VOICE_VARIANT  0x0008
-#define PHASES_VARIANT 0x0010
-#define PXX_VARIANT    0x0020
-#define DSM2_VARIANT   0x0040
-#define VARIO_VARIANT  0x0080
-#define HAPTIC_VARIANT 0x0100 */
-
 #if defined(PCBACT)
 #include "act/board_act.h"
 #elif defined(PCBX9D)
@@ -570,6 +561,11 @@ enum EnumKeys {
   SW_ID0,
   SW_ID1,
   SW_ID2,
+#if 0
+  SW_ID3,
+  SW_ID4,
+  SW_ID5,
+#endif
   SW_AIL,
   SW_GEA,
   SW_TRN,
@@ -938,7 +934,7 @@ extern uint16_t maxMixerDuration;
 extern uint16_t lastMixerDuration;
 
 #if defined(THRTRACE)
-#define MAXTRACE 120
+#define MAXTRACE (LCD_W - 8)
 extern uint8_t s_traceBuf[MAXTRACE];
 extern uint8_t s_traceWr;
 extern int8_t s_traceCnt;

@@ -906,15 +906,4 @@ uint32_t sdMounted()
   return g_FATFS_Obj.fs_type != 0;
 }
 
-void sdMountPoll()
-{
-  /* TODO a define
-  static uint8_t mountTimer;
-  if (mountTimer-- == 0) {
-    mountTimer = 100;
-    if (!sdMounted()) {
-      sdInit();
-    }
-  }*/
-}
 
