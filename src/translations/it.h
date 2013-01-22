@@ -215,7 +215,18 @@
 #else
 #define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
+
+#if defined (P13POS)
+	#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""3PO2""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3PO1" TR_CYC_VSRCRAW
+#elif defined (P23POS)
+	#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""3PO2""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3PO1" TR_CYC_VSRCRAW
+#elif defined (P33POS)
+	#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""3PO2" TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3PO1" TR_CYC_VSRCRAW
+#else
+	#define TR_VSRCRAW       "Rud ""Ele ""Thr ""Ail ""P1  ""P2  ""P3  " TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" "MAX ""3POS" TR_CYC_VSRCRAW
+#endif
+
+
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"

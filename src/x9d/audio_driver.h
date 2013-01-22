@@ -38,8 +38,6 @@
 extern void audioInit( void ) ;
 extern void audioEnd( void ) ;
 
-#define NUM_VOL_LEVELS	24
-
 extern void setFrequency( uint32_t frequency ) ;
 extern uint32_t getFrequency();
 
@@ -85,14 +83,16 @@ inline uint16_t dacQueue(uint16_t *data, uint16_t size)
   }
 }
 
-static const int8_t volumeScale[NUM_VOL_LEVELS] =
+#define VOLUME_LEVEL_MAX  23
+#define VOLUME_LEVEL_DEF  12
+static const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 {
     0,  2,  4,   6,   8,  10,  13,  17,  22,  27,  33,  40,
     64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
 } ;
 
 #if !defined(SIMU)
-#define setVolume(v) I2C_set_volume(volumeScale[min<uint8_t>(v, NUM_VOL_LEVELS-1)])
+#define setVolume(v) I2C_set_volume(volumeScale[min<uint8_t>(v, VOLUME_LEVEL_MAX)])
 #else
 #define setVolume(v)
 #endif

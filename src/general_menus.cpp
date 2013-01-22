@@ -79,21 +79,34 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 #define RADIO_SETUP_DATE_COLUMN (FW*15+5)
 #endif
 
-#if defined(GRAPHICS)
-void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
-{
-  lcd_putc(RADIO_SETUP_2ND_COLUMN+2*FW+(value*FW), y, '$');
-  lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
-}
-#define SLIDER(y, value, min, max, label, values, event, attr) { \
-          int8_t tmp = value; \
-          displaySlider(RADIO_SETUP_2ND_COLUMN, y, tmp, attr); \
-          value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, min, max, attr, event); \
-        }
+#if !defined(CPUM64)
+  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr)
+  {
+    lcd_putc(RADIO_SETUP_2ND_COLUMN+(value*4*FW)/max, y, '$');
+    lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
+    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
+  }
+  #define SLIDER_5POS(y, value, label, event, attr) { \
+    int8_t tmp = value; \
+    displaySlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
+    value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
+  }
+#elif defined(GRAPHICS)
+  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
+  {
+    lcd_putc(RADIO_SETUP_2ND_COLUMN+2*FW+(value*FW), y, '$');
+    lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
+    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
+  }
+  #define SLIDER_5POS(y, value, label, event, attr) { \
+    int8_t tmp = value; \
+    display5posSlider(RADIO_SETUP_2ND_COLUMN, y, tmp, attr); \
+    value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
+  }
+  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #else
-#define SLIDER(y, value, min, max, label, values, event, attr) \
-          value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, values, value, min, max, attr, event)
+  #define SLIDER_5POS(y, value, label, event, attr) value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, STR_VBEEPLEN, value, -2, +2, attr, event)
+  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #endif
 
 enum menuGeneralSetupItems {
@@ -228,7 +241,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_BEEPER_LENGTH:
-        SLIDER(y, g_eeGeneral.beeperLength, -2, 2, STR_LENGTH, STR_VBEEPLEN, event, attr);
+        SLIDER_5POS(y, g_eeGeneral.beeperLength, STR_LENGTH, event, attr);
         break;
 
 #if defined(AUDIO)
@@ -245,22 +258,17 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_SPEAKER_VOLUME:
       {
         lcd_putsLeft(y, STR_SPEAKER_VOLUME);
-#if defined(CPUARM)
-        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.speakerVolume, attr|LEFT);
+        uint8_t b = g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF;
+        displaySlider(RADIO_SETUP_2ND_COLUMN, y, b, VOLUME_LEVEL_MAX, attr);
         if (attr) {
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerVolume, 0, NUM_VOL_LEVELS-1);
-        }
-#else
-        uint8_t b = g_eeGeneral.speakerVolume+7;
-        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, b, attr|LEFT);
-        if (attr) {
-          CHECK_INCDEC_GENVAR(event, b, 0, 7);
+          CHECK_INCDEC_GENVAR(event, b, 0, VOLUME_LEVEL_MAX);
           if (checkIncDec_Ret) {
-            g_eeGeneral.speakerVolume = (int8_t)b-7;
-            SET_VOLUME(b);
+            g_eeGeneral.speakerVolume = (int8_t)b-VOLUME_LEVEL_DEF;
+#if !defined(CPUARM)
+            setVolume(b);
+#endif
           }
         }
-#endif
         break;
       }
 #endif
@@ -275,7 +283,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_HAPTIC_LENGTH:
-        SLIDER(y, g_eeGeneral.hapticLength, -2, 2, STR_LENGTH, STR_VBEEPLEN, event, attr);
+        SLIDER_5POS(y, g_eeGeneral.hapticLength, STR_LENGTH, event, attr);
         break;
 
       case ITEM_SETUP_HAPTIC_STRENGTH:

@@ -124,8 +124,6 @@ extern uint16_t sessionTimer;
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #endif
 
-#define NUM_VOL_LEVELS  24
-
 void audioInit( void ) ;
 void audioEnd( void ) ;
 
@@ -145,6 +143,8 @@ inline void dacStop()
 {
 }
 
+#define VOLUME_LEVEL_MAX  23
+#define VOLUME_LEVEL_DEF  12
 inline void setVolume( register uint8_t volume )
 {
 }

@@ -217,7 +217,18 @@
 #else
 #define TR_CYC_VSRCRAW   "[C1]""[C2]""[C3]"
 #endif
-#define TR_VSRCRAW       "Lem\0""Pfd\0""Mot\0""Ail\0""Pot1""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmL" "TrmP" "TrmM" "TrmA" "MAX\0""3POS" TR_CYC_VSRCRAW
+
+#if defined (P13POS)
+	#define TR_VSRCRAW       "Lem\0""Pfd\0""Mot\0""Ail\0""3PO2""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmL" "TrmP" "TrmM" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
+#elif defined (P23POS)
+	#define TR_VSRCRAW       "Lem\0""Pfd\0""Mot\0""Ail\0""Pot1""3PO2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmL" "TrmP" "TrmM" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
+#elif defined (P33POS)
+	#define TR_VSRCRAW       "Lem\0""Pfd\0""Mot\0""Ail\0""Pot1""Pot2""3PO2" TR_ROTARY_ENCODERS_VSRCRAW "TrmL" "TrmP" "TrmM" "TrmA" "MAX\0""3PO1" TR_CYC_VSRCRAW
+#else
+	#define TR_VSRCRAW       "Lem\0""Pfd\0""Mot\0""Ail\0""Pot1""Pot2""Pot3" TR_ROTARY_ENCODERS_VSRCRAW "TrmL" "TrmP" "TrmM" "TrmA" "MAX\0""3POS" TR_CYC_VSRCRAW
+#endif
+
+
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""MTs""MT%""MTt"
@@ -250,6 +261,7 @@
 #define TR_PPMFRAME            "PPM frame"
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Chave"
+
 #define TR_BITMAP              "Bitmap"
 #define TR_TRIMS               "Trims"
 #define TR_FADEIN              "Aparecer"

@@ -75,7 +75,9 @@ extern void pushPrompt16(uint16_t value);
 extern struct t_voice *voiceaddress( void ) ;
 extern struct t_voice Voice ;
 
-#define SET_VOLUME(v) pushPrompt16((v) | 0xFFF0)
+#define VOLUME_LEVEL_MAX  7
+#define VOLUME_LEVEL_DEF  7
+#define setVolume(v) pushPrompt16((v) | 0xFFF0)
 
 inline bool isPlaying()
 {

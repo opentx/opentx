@@ -106,7 +106,7 @@ enum BeeperMode {
 
 #if defined(CPUARM)
 #define EXTRA_GENERAL_FIELDS \
-  uint8_t  speakerVolume; \
+  int8_t   speakerVolume; \
   uint8_t  backlightBright; \
   int8_t   currentCalib; \
   int8_t   temperatureWarn; \

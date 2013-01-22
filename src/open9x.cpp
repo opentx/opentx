@@ -2177,7 +2177,7 @@ void evalFunctions()
             }
           }
           else if (sd->func == FUNC_VOLUME) {
-            requiredSpeakerVolume = ((1024 + getValue(FSW_PARAM(sd))) * NUM_VOL_LEVELS) / 2048;
+            requiredSpeakerVolume = ((1024 + getValue(FSW_PARAM(sd))) * VOLUME_LEVEL_MAX) / 2048;
           }
 #elif defined(VOICE)
           else if (sd->func == FUNC_PLAY_TRACK) {
@@ -2888,7 +2888,7 @@ void doMixerCalculations()
   }
 
 #if defined(CPUARM)
-  requiredSpeakerVolume = g_eeGeneral.speakerVolume;
+  requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
 #endif
 
   evalFunctions();
@@ -3436,11 +3436,12 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 
   eeReadAll();
 
+#if defined(VOICE)
+  setVolume(g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF);
+#endif
+
 #if defined(CPUARM)
-  setVolume(g_eeGeneral.speakerVolume);
   setBacklight(g_eeGeneral.backlightBright);
-#elif defined(VOICE)
-  SET_VOLUME(g_eeGeneral.speakerVolume+7);
 #endif
 
 #if defined(PCBSKY9X)

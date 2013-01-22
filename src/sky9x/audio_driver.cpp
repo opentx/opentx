@@ -165,7 +165,7 @@ void audioEnd()
   PMC->PMC_PCER0 &= ~0x40000000L ;		// Disable peripheral clock to DAC
 }
 
-static const int8_t volumeScale[NUM_VOL_LEVELS] =
+static const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 {
     0,  2,  4,   6,   8,  10,  13,  17,  22,  27,  33,  40,
     64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
@@ -173,7 +173,7 @@ static const int8_t volumeScale[NUM_VOL_LEVELS] =
 
 void setVolume(uint8_t volume)
 {
-  coprocVolumeRequired = volumeScale[min<uint8_t>(volume, NUM_VOL_LEVELS-1)];
+  coprocVolumeRequired = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
   __disable_irq() ;
   coprocCheck() ;
   __enable_irq() ;
