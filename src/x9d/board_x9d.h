@@ -99,6 +99,7 @@ void delay_01us(uint16_t nb);
 void sdInit();
 void sdPoll10ms();
 #define sdMountPoll()
+uint32_t sdMounted();
 #endif
 
 // Keys driver
