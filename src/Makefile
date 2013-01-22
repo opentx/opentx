@@ -205,6 +205,10 @@ XCURVES = YES
 # Values = YES, NO
 GVARS = NO
 
+# Enable another 3 positions switch to replace a pot
+# Values = NO, POT1, POT2, POT3,
+3POS = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -712,6 +716,16 @@ endif
 
 ifeq ($(IRPROTOS), YES)
   CPPDEFS += -DIRPROTOS
+endif
+
+ifeq ($(3POS), POT1)
+  CPPDEFS += -DP13POS
+endif
+ifeq ($(3POS), POT2)
+  CPPDEFS += -DP23POS
+endif
+ifeq ($(3POS), POT3)
+  CPPDEFS += -DP33POS
 endif
 
 #---------------- Compiler Options C++ ----------------
