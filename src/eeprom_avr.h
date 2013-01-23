@@ -76,14 +76,18 @@ PACK(struct DirEnt{
   uint16_t typ:4;
 });
 
+#if defined(CPUARM)
+#define EEFS_EXTRA_FIELDS uint8_t  spare[2];
+#else
+#define EEFS_EXTRA_FIELDS
+#endif
+
 PACK(struct EeFs{
   uint8_t  version;
   blkid_t  mySize;
   blkid_t  freeList;
   uint8_t  bs;
-#if defined(CPUARM)
-  uint8_t  spare[2];
-#endif
+  EEFS_EXTRA_FIELDS
   DirEnt   files[MAXFILES];
 });
 
