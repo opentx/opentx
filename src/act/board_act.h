@@ -52,6 +52,24 @@
 #define PIN_BUTTON_PAGE                 GPIO_Pin_10
 #define PIN_BUTTON_ENTER                GPIO_Pin_14
 
+// Trims
+#define GPIO_TRIM_LH_L                  GPIOE->IDR
+#define GPIO_TRIM_LV_DN                 GPIOE->IDR
+#define GPIO_TRIM_RV_UP                 GPIOE->IDR
+#define GPIO_TRIM_RH_L                  GPIOE->IDR
+#define GPIO_TRIM_LH_R                  GPIOE->IDR
+#define GPIO_TRIM_LV_UP                 GPIOE->IDR
+#define GPIO_TRIM_RV_DN                 GPIOE->IDR
+#define GPIO_TRIM_RH_R                  GPIOE->IDR
+#define PIN_TRIM_RV_DN                  GPIO_Pin_3
+#define PIN_TRIM_RV_UP                  GPIO_Pin_2
+#define PIN_TRIM_RH_L                   GPIO_Pin_1
+#define PIN_TRIM_RH_R                   GPIO_Pin_8
+#define PIN_TRIM_LH_R                   GPIO_Pin_4
+#define PIN_TRIM_LH_L                   GPIO_Pin_7
+#define PIN_TRIM_LV_DN                  GPIO_Pin_6
+#define PIN_TRIM_LV_UP                  GPIO_Pin_5
+
 // TODO elsewhere
 #if !defined(SIMU)
 #define SD_IS_HC()                     (1)

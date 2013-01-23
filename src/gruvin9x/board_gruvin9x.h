@@ -48,6 +48,23 @@
 #define PIN_BUTTON_RIGHT       (1<<INP_L_KEY_RGT)
 #define PIN_BUTTON_LEFT        (1<<INP_L_KEY_LFT)
 
+#define GPIO_TRIM_LH_L         pinj
+#define GPIO_TRIM_LV_DN        pinj
+#define GPIO_TRIM_RV_UP        pinj
+#define GPIO_TRIM_RH_L         pinj
+#define GPIO_TRIM_LH_R         pinj
+#define GPIO_TRIM_LV_UP        pinj
+#define GPIO_TRIM_RV_DN        pinj
+#define GPIO_TRIM_RH_R         pinj
+#define PIN_TRIM_LH_L          (1<<INP_J_TRM_LH_DWN)
+#define PIN_TRIM_LV_DN         (1<<INP_J_TRM_LV_DWN)
+#define PIN_TRIM_RV_UP         (1<<INP_J_TRM_RV_UP)
+#define PIN_TRIM_RH_L          (1<<INP_J_TRM_RH_DWN)
+#define PIN_TRIM_LH_R          (1<<INP_J_TRM_LH_UP)
+#define PIN_TRIM_LV_UP         (1<<INP_J_TRM_LV_UP)
+#define PIN_TRIM_RV_DN         (1<<INP_J_TRM_RV_DWN)
+#define PIN_TRIM_RH_R          (1<<INP_J_TRM_RH_UP)
+
 #define TIMER_16KHZ_VECT TIMER2_OVF_vect
 #define COUNTER_16KHZ TCNT2
 #define TIMER_10MS_VECT  TIMER2_COMPA_vect

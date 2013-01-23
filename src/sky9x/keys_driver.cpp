@@ -86,75 +86,29 @@ uint32_t readKeys()
 
 uint32_t readTrims()
 {
-  uint32_t trims;
-  uint32_t trima;
+  register uint32_t a = PIOA->PIO_PDSR;
+  register uint32_t b = PIOB->PIO_PDSR;
+  register uint32_t c = PIOC->PIO_PDSR;
+  register uint32_t result = 0;
 
-  trims = 0;
+  if (~a & PIN_TRIM_LH_L)
+    result |= 0x01;
+  if (~a & PIN_TRIM_LV_DN)
+    result |= 0x04;
+  if (~a & PIN_TRIM_RV_UP)
+    result |= 0x20;
+  if (~a & PIN_TRIM_RH_L)
+    result |= 0x40;
+  if (~b & PIN_TRIM_LH_R)
+    result |= 0x02;
+  if (~c & PIN_TRIM_LV_UP)
+    result |= 0x08;
+  if (~c & PIN_TRIM_RV_DN)
+    result |= 0x10;
+  if (~c & PIN_TRIM_RH_R)
+    result |= 0x80;
 
-  trima = PIOA->PIO_PDSR;
-
-// TRIM_LH_DOWN    PA7 (PA23)
-#if defined(REVA)
-  if ( ( trima & 0x0080 ) == 0 )
-#else
-    if ((trima & 0x00800000) == 0)
-#endif
-  {
-    trims |= 1;
-  }
-
-// TRIM_LV_DOWN  PA27 (PA24)
-#if defined(REVA)
-  if ( ( trima & 0x08000000 ) == 0 )
-#else
-  if ((trima & 0x01000000) == 0)
-#endif
-  {
-    trims |= 4;
-  }
-
-// TRIM_RV_UP    PA30 (PA1)
-#if defined(REVA)
-  if ( ( trima & 0x40000000 ) == 0 )
-#else
-  if ((trima & 0x00000002) == 0)
-#endif
-  {
-    trims |= 0x20;
-  }
-
-// TRIM_RH_DOWN    PA29 (PA0)
-#if defined(REVA)
-  if ( ( trima & 0x20000000 ) == 0 )
-#else
-  if ((trima & 0x00000001) == 0)
-#endif
-  {
-    trims |= 0x40;
-  }
-
-// TRIM_LH_UP PB4
-  if ((PIOB->PIO_PDSR & 0x10) == 0) {
-    trims |= 2;
-  }
-
-  trima = PIOC->PIO_PDSR;
-// TRIM_LV_UP   PC28
-  if ((trima & 0x10000000) == 0) {
-    trims |= 8;
-  }
-
-// TRIM_RV_DOWN   PC10
-  if ((trima & 0x00000400) == 0) {
-    trims |= 0x10;
-  }
-
-// TRIM_RH_UP   PC9
-  if ((trima & 0x00000200) == 0) {
-    trims |= 0x80;
-  }
-
-  return trims;
+  return result;
 }
 
 uint8_t keyDown()

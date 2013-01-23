@@ -14,22 +14,30 @@
 #define GPIO_BUTTON_MENU                GPIOD->IDR
 #define GPIO_BUTTON_EXIT                GPIOD->IDR
 #define GPIO_BUTTON_PAGE                GPIOD->IDR
-#define	PIN_BUTTON_PLUS       GPIO_Pin_10	//SW3 PE.10
-#define PIN_BUTTON_MINUS      GPIO_Pin_11 //SW1 PE.12
-#define	PIN_BUTTON_ENTER      GPIO_Pin_12	//SW2 PE.11
-#define PIN_BUTTON_MENU       GPIO_Pin_7	//SW4 PD.07
-#define PIN_BUTTON_PAGE       GPIO_Pin_3  //SW6 PD.02
-#define PIN_BUTTON_EXIT       GPIO_Pin_2  //SW5 PD.03
+#define	PIN_BUTTON_PLUS                 GPIO_Pin_10	//SW3 PE.10
+#define PIN_BUTTON_MINUS                GPIO_Pin_11 //SW1 PE.12
+#define	PIN_BUTTON_ENTER                GPIO_Pin_12	//SW2 PE.11
+#define PIN_BUTTON_MENU                 GPIO_Pin_7	//SW4 PD.07
+#define PIN_BUTTON_PAGE                 GPIO_Pin_3  //SW6 PD.02
+#define PIN_BUTTON_EXIT                 GPIO_Pin_2  //SW5 PD.03
 
 // Trims
-#define	PIN_TRIM_RV_DN        GPIO_Pin_3	//PC.03
-#define	PIN_TRIM_RV_UP        GPIO_Pin_2	//PC.02
-#define	PIN_TRIM_RH_L         GPIO_Pin_1	//PC.01
-#define PIN_TRIM_RH_R         GPIO_Pin_13	//PC.13
-#define	PIN_TRIM_LH_R         GPIO_Pin_4	//PE.04
-#define PIN_TRIM_LH_L         GPIO_Pin_3  //PE.03
-#define PIN_TRIM_LV_DN        GPIO_Pin_6  //PE.06
-#define PIN_TRIM_LV_UP        GPIO_Pin_5  //PE.05
+#define GPIO_TRIM_LH_L                  GPIOE->IDR
+#define GPIO_TRIM_LV_DN                 GPIOE->IDR
+#define GPIO_TRIM_RV_UP                 GPIOC->IDR
+#define GPIO_TRIM_RH_L                  GPIOC->IDR
+#define GPIO_TRIM_LH_R                  GPIOE->IDR
+#define GPIO_TRIM_LV_UP                 GPIOE->IDR
+#define GPIO_TRIM_RV_DN                 GPIOC->IDR
+#define GPIO_TRIM_RH_R                  GPIOC->IDR
+#define	PIN_TRIM_RV_DN                  GPIO_Pin_3	//PC.03
+#define	PIN_TRIM_RV_UP                  GPIO_Pin_2	//PC.02
+#define	PIN_TRIM_RH_L                   GPIO_Pin_1	//PC.01
+#define PIN_TRIM_RH_R                   GPIO_Pin_13	//PC.13
+#define	PIN_TRIM_LH_R                   GPIO_Pin_4	//PE.04
+#define PIN_TRIM_LH_L                   GPIO_Pin_3  //PE.03
+#define PIN_TRIM_LV_DN                  GPIO_Pin_6  //PE.06
+#define PIN_TRIM_LV_UP                  GPIO_Pin_5  //PE.05
 
 // Switchs
 #define	PIN_SW_F		        GPIO_Pin_14	//PE.14
@@ -45,7 +53,7 @@
 #define	PIN_SW_C_H		        GPIO_Pin_1	//PB.01
 #define	PIN_SW_D_H		        GPIO_Pin_9	//PE.09
 #define	PIN_SW_D_L		        GPIO_Pin_8	//PE.08
-#define	PIN_SW_H		          GPIO_Pin_13	//PE.13
+#define	PIN_SW_H		        GPIO_Pin_13	//PE.13
 
 // ADC
 #define PIN_STK_J1                      GPIO_Pin_0  //PA.00              

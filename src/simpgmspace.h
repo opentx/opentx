@@ -313,7 +313,8 @@ extern uint8_t main_thread_running;
 #define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
 
 void simuSetKey(uint8_t key, bool state);
-void simuSetSwitch(int8_t swtch);
+void simuSetTrim(uint8_t trim, bool state);
+void simuSetSwitch(uint8_t swtch, int8_t state);
 
 void StartMainThread(bool tests=true);
 void StartEepromThread(const char *filename="eeprom.bin");

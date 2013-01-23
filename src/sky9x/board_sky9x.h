@@ -67,28 +67,57 @@
 #define PIN_BUTTON_LEFT                 0x00000008
 #endif
 
+#define GPIO_TRIM_LH_L                  PIOA->PIO_PDSR
+#define GPIO_TRIM_LV_DN                 PIOA->PIO_PDSR
+#define GPIO_TRIM_RV_UP                 PIOA->PIO_PDSR
+#define GPIO_TRIM_RH_L                  PIOA->PIO_PDSR
+#define GPIO_TRIM_LH_R                  PIOB->PIO_PDSR
+#define GPIO_TRIM_LV_UP                 PIOC->PIO_PDSR
+#define GPIO_TRIM_RV_DN                 PIOC->PIO_PDSR
+#define GPIO_TRIM_RH_R                  PIOC->PIO_PDSR
+
+#if defined(REVA)
+#define PIN_TRIM_LH_L                   0x00000080
+#define PIN_TRIM_LV_DN                  0x08000000
+#define PIN_TRIM_RV_UP                  0x40000000
+#define PIN_TRIM_RH_L                   0x20000000
+#define PIN_TRIM_LH_R                   0x00000010
+#define PIN_TRIM_LV_UP                  0x10000000
+#define PIN_TRIM_RV_DN                  0x00000400
+#define PIN_TRIM_RH_R                   0x00000200
+#else
+#define PIN_TRIM_LH_L                   0x00800000
+#define PIN_TRIM_LV_DN                  0x01000000
+#define PIN_TRIM_RV_UP                  0x00000002
+#define PIN_TRIM_RH_L                   0x00000001
+#define PIN_TRIM_LH_R                   0x00000010
+#define PIN_TRIM_LV_UP                  0x10000000
+#define PIN_TRIM_RV_DN                  0x00000400
+#define PIN_TRIM_RH_R                   0x00000200
+#endif
+
 void usbMassStorage();
 
-#define PIN_ENABLE           0x001
-#define PIN_PERIPHERAL       0x000
-#define PIN_INPUT            0x002
-#define PIN_OUTPUT           0x000
-#define PIN_PULLUP           0x004
-#define PIN_NO_PULLUP        0x000
-#define PIN_PULLDOWN         0x008
-#define PIN_NO_PULLDOWN      0x000
-#define PIN_PERI_MASK_L      0x010
-#define PIN_PERI_MASK_H      0x020
-#define PIN_PER_A            0x000
-#define PIN_PER_B            0x010
-#define PIN_PER_C            0x020
-#define PIN_PER_D            0x030
-#define PIN_PORT_MASK        0x0C0
-#define PIN_PORTA            0x000
-#define PIN_PORTB            0x040
-#define PIN_PORTC            0x080
-#define PIN_LOW              0x000
-#define PIN_HIGH             0x100
+#define PIN_ENABLE                      0x001
+#define PIN_PERIPHERAL                  0x000
+#define PIN_INPUT                       0x002
+#define PIN_OUTPUT                      0x000
+#define PIN_PULLUP                      0x004
+#define PIN_NO_PULLUP                   0x000
+#define PIN_PULLDOWN                    0x008
+#define PIN_NO_PULLDOWN                 0x000
+#define PIN_PERI_MASK_L                 0x010
+#define PIN_PERI_MASK_H                 0x020
+#define PIN_PER_A                       0x000
+#define PIN_PER_B                       0x010
+#define PIN_PER_C                       0x020
+#define PIN_PER_D                       0x030
+#define PIN_PORT_MASK                   0x0C0
+#define PIN_PORTA                       0x000
+#define PIN_PORTB                       0x040
+#define PIN_PORTC                       0x080
+#define PIN_LOW                         0x000
+#define PIN_HIGH                        0x100
 
 void configure_pins( uint32_t pins, uint16_t config );
 uint16_t getCurrent();

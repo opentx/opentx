@@ -78,28 +78,34 @@ sem_t *eeprom_write_sem;
 
 #if defined(CPUARM)
 #define SWITCH_CASE(swtch, pin, mask) \
-    case -DSW(swtch): \
-      pin &= ~mask; \
-      break; \
-    case DSW(swtch): \
-      pin |= mask; \
+    case swtch: \
+      if (state) pin |= (mask); else pin &= ~(mask); \
+      break;
+#define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
+    case swtch: \
+      if (state < 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
+      if (state > 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
 #define KEY_CASE(key, pin, mask) \
     case key: \
       if (state) pin &= ~mask; else pin |= mask;\
       break;
+#define TRIM_CASE KEY_CASE
 #else
 #define SWITCH_CASE(swtch, pin, mask) \
-    case DSW(swtch): \
-      pin &= ~mask; \
-      break; \
-    case -DSW(swtch): \
-      pin |= mask; \
+    case swtch: \
+      if (state) pin &= ~(mask); else pin |= (mask); \
+      break;
+#define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
+    case swtch: \
+      if (state >= 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
+      if (state <= 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
 #define KEY_CASE(key, pin, mask) \
     case key: \
-      if (state) pin |= mask; else pin &= ~mask;\
+      if (state) pin |= (mask); else pin &= ~(mask);\
       break;
+#define TRIM_CASE KEY_CASE
 #endif
 
 void simuSetKey(uint8_t key, bool state)
@@ -125,111 +131,39 @@ void simuSetKey(uint8_t key, bool state)
   }
 }
 
-void simuSetSwitch(int8_t swtch)
+void simuSetTrim(uint8_t trim, bool state)
 {
+  switch (trim) {
+    TRIM_CASE(0, GPIO_TRIM_LH_L, PIN_TRIM_LH_L)
+    TRIM_CASE(1, GPIO_TRIM_LH_R, PIN_TRIM_LH_R)
+    TRIM_CASE(2, GPIO_TRIM_LV_DN, PIN_TRIM_LV_DN)
+    TRIM_CASE(3, GPIO_TRIM_LV_UP, PIN_TRIM_LV_UP)
+    TRIM_CASE(4, GPIO_TRIM_RV_DN, PIN_TRIM_RV_DN)
+    TRIM_CASE(5, GPIO_TRIM_RV_UP, PIN_TRIM_RV_UP)
+    TRIM_CASE(6, GPIO_TRIM_RH_L, PIN_TRIM_RH_L)
+    TRIM_CASE(7, GPIO_TRIM_RH_R, PIN_TRIM_RH_R)
+  }
+}
+
+void simuSetSwitch(uint8_t swtch, int8_t state)
+{
+  // printf("swtch=%d state=%d\n", swtch, state); fflush(stdout);
   switch (swtch) {
 #if defined(PCBACT)
 #elif defined(PCBX9D)
-    case DSW(SW_SA0):
-      GPIOE->IDR |= PIN_SW_A_L;
-      GPIOB->IDR &= ~PIN_SW_A_H;
-      break;
-    case DSW(SW_SA1):
-      GPIOB->IDR |= PIN_SW_A_H;
-      GPIOE->IDR |= PIN_SW_A_L;
-      break;
-    case DSW(SW_SA2):
-      GPIOE->IDR &= ~PIN_SW_A_L;
-      GPIOB->IDR |= PIN_SW_A_H;
-      break;
-    case DSW(SW_SB0):
-      GPIOB->IDR |= PIN_SW_B_L;
-      GPIOB->IDR &= ~PIN_SW_B_H;
-      break;
-    case DSW(SW_SB1):
-      GPIOB->IDR |= PIN_SW_B_H;
-      GPIOB->IDR |= PIN_SW_B_L;
-      break;
-    case DSW(SW_SB2):
-      GPIOB->IDR &= ~PIN_SW_B_L;
-      GPIOB->IDR |= PIN_SW_B_H;
-      break;
-    case DSW(SW_SC0):
-      GPIOE->IDR |= PIN_SW_C_L;
-      GPIOB->IDR &= ~PIN_SW_C_H;
-      break;
-    case DSW(SW_SC1):
-      GPIOB->IDR |= PIN_SW_C_H;
-      GPIOE->IDR |= PIN_SW_C_L;
-      break;
-    case DSW(SW_SC2):
-      GPIOE->IDR &= ~PIN_SW_C_L;
-      GPIOB->IDR |= PIN_SW_C_H;
-      break;
-    case DSW(SW_SD0):
-      GPIOE->IDR |= PIN_SW_D_L;
-      GPIOE->IDR &= ~PIN_SW_D_H;
-      break;
-    case DSW(SW_SD1):
-      GPIOE->IDR |= PIN_SW_D_H;
-      GPIOE->IDR |= PIN_SW_D_L;
-      break;
-    case DSW(SW_SD2):
-      GPIOE->IDR &= ~PIN_SW_D_L;
-      GPIOE->IDR |= PIN_SW_D_H;
-      break;
-    case DSW(SW_SE0):
-      GPIOB->IDR |= PIN_SW_E_L;
-      GPIOB->IDR &= ~PIN_SW_E_H;
-      break;
-    case DSW(SW_SE1):
-      GPIOB->IDR |= PIN_SW_E_H;
-      GPIOB->IDR |= PIN_SW_E_L;
-      break;
-    case DSW(SW_SE2):
-      GPIOB->IDR &= ~PIN_SW_E_L;
-      GPIOB->IDR |= PIN_SW_E_H;
-      break;
-    case DSW(SW_SF0):
-      GPIOE->IDR &= ~PIN_SW_F;
-      break;
-    case DSW(SW_SF2):
-      GPIOE->IDR |= PIN_SW_F;
-      break;
-    case DSW(SW_SG0):
-      GPIOB->IDR |= PIN_SW_G_L;
-      GPIOA->IDR &= ~PIN_SW_G_H;
-      break;
-    case DSW(SW_SG1):
-      GPIOA->IDR |= PIN_SW_G_H;
-      GPIOB->IDR |= PIN_SW_G_L;
-      break;
-    case DSW(SW_SG2):
-      GPIOB->IDR &= ~PIN_SW_G_L;
-      GPIOA->IDR |= PIN_SW_G_H;
-      break;
-    case DSW(SW_SH0):
-      GPIOE->IDR &= ~PIN_SW_H;
-      break;
-    case DSW(SW_SH2):
-      GPIOE->IDR |= PIN_SW_H;
-      break;
+    SWITCH_3_CASE(SW_SA0, GPIOB->IDR, GPIOE->IDR, PIN_SW_A_H, PIN_SW_A_L)
+    SWITCH_3_CASE(SW_SB0, GPIOB->IDR, GPIOB->IDR, PIN_SW_B_H, PIN_SW_B_L)
+    SWITCH_3_CASE(SW_SC0, GPIOB->IDR, GPIOE->IDR, PIN_SW_C_H, PIN_SW_C_L)
+    SWITCH_3_CASE(SW_SD0, GPIOE->IDR, GPIOE->IDR, PIN_SW_D_H, PIN_SW_D_L)
+    SWITCH_3_CASE(SW_SE0, GPIOB->IDR, GPIOB->IDR, PIN_SW_E_H, PIN_SW_E_L)
+    SWITCH_CASE(SW_SF0, GPIOE->IDR, PIN_SW_F)
+    SWITCH_3_CASE(SW_SG0, GPIOA->IDR, GPIOB->IDR, PIN_SW_G_H, PIN_SW_G_L)
+    SWITCH_CASE(SW_SH0, GPIOE->IDR, PIN_SW_H)
 #elif defined(PCBSKY9X)
-    case DSW(SW_ID0):
-      PIOC->PIO_PDSR &= ~0x00004000;
-      PIOC->PIO_PDSR |= 0x00000800;
-      break;
-    case DSW(SW_ID1):
-      PIOC->PIO_PDSR |= 0x00004800;
-      break;
-    case DSW(SW_ID2):
-      PIOC->PIO_PDSR &= ~0x00000800;
-      PIOC->PIO_PDSR |= 0x00004000;
-      break;
-
     SWITCH_CASE(SW_THR, PIOC->PIO_PDSR, 1<<20)
     SWITCH_CASE(SW_RUD, PIOA->PIO_PDSR, 1<<15)
     SWITCH_CASE(SW_ELE, PIOC->PIO_PDSR, 1<<31)
+    SWITCH_3_CASE(SW_ID0, PIOC->PIO_PDSR, PIOC->PIO_PDSR, 0x00004000, 0x00000800)
     SWITCH_CASE(SW_AIL, PIOA->PIO_PDSR, 1<<2)
     SWITCH_CASE(SW_GEA, PIOC->PIO_PDSR, 1<<16)
     SWITCH_CASE(SW_TRN, PIOC->PIO_PDSR, 1<<8)
@@ -237,20 +171,7 @@ void simuSetSwitch(int8_t swtch)
     SWITCH_CASE(SW_THR, ping, 1<<INP_G_ThrCt)
     SWITCH_CASE(SW_RUD, ping, 1<<INP_G_RuddDR)
     SWITCH_CASE(SW_ELE, pinc, 1<<INP_C_ElevDR)
-
-    case DSW(SW_ID0):
-      ping |=  (1<<INP_G_ID1);
-      pinb &= ~(1<<INP_B_ID2);
-      break;
-    case DSW(SW_ID1):
-      ping &= ~(1<<INP_G_ID1);
-      pinb &= ~(1<<INP_B_ID2);
-      break;
-    case DSW(SW_ID2):
-      ping &= ~(1<<INP_G_ID1);
-      pinb |=  (1<<INP_B_ID2);
-      break;
-
+    SWITCH_3_CASE(SW_ID0, ping, pinb, (1<<INP_G_ID1), (1<<INP_B_ID2))
     SWITCH_CASE(SW_AIL, pinc, 1<<INP_C_AileDR)
     SWITCH_CASE(SW_GEA, ping, 1<<INP_G_Gear)
     SWITCH_CASE(SW_TRN, pinb, 1<<INP_B_Trainer)
@@ -259,22 +180,10 @@ void simuSetSwitch(int8_t swtch)
     SWITCH_CASE(SW_THR, pinc, 1<<INP_C_ThrCt)
     SWITCH_CASE(SW_AIL, pinc, 1<<INP_C_AileDR)
 #else
-    SWITCH_CASE(SW_THR, pine, INP_E_ThrCt)
-    SWITCH_CASE(SW_AIL, pine, INP_E_AileDR)
+    SWITCH_CASE(SW_THR, pine, 1<<INP_E_ThrCt)
+    SWITCH_CASE(SW_AIL, pine, 1<<INP_E_AileDR)
 #endif
-    case DSW(SW_ID0):
-      ping |=  (1<<INP_G_ID1);
-      pine &= ~(1<<INP_E_ID2);
-      break;
-    case DSW(SW_ID1):
-      ping &= ~(1<<INP_G_ID1);
-      pine &= ~(1<<INP_E_ID2);
-      break;
-    case DSW(SW_ID2):
-      ping &= ~(1<<INP_G_ID1);
-      pine |=  (1<<INP_E_ID2);
-      break;
-
+    SWITCH_3_CASE(SW_ID0, ping, pine, (1<<INP_G_ID1), (1<<INP_E_ID2))
     SWITCH_CASE(SW_RUD, ping, 1<<INP_G_RuddDR)
     SWITCH_CASE(SW_ELE, pine, 1<<INP_E_ElevDR)
     SWITCH_CASE(SW_GEA, pine, 1<<INP_E_Gear)

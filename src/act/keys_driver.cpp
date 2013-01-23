@@ -55,7 +55,30 @@ uint32_t readKeys()
 
 uint32_t readTrims()
 {
-  return 0;
+  register uint32_t e = GPIOE->IDR;
+  register uint32_t result = 0;
+
+  if (~e & PIN_TRIM_LH_L)
+    result |= 0x01;         // LH_L
+  if (~e & PIN_TRIM_LH_R)
+    result |= 0x02;         // LH_R
+  if (~e & PIN_TRIM_LV_DN)
+    result |= 0x04;         // LV_DN
+  if (~e & PIN_TRIM_LV_UP)
+    result |= 0x08;         // LV_UP
+
+  if (~e & PIN_TRIM_RV_DN)
+    result |= 0x10;         // RV_DN
+  if (~e & PIN_TRIM_RV_UP)
+    result |= 0x20;         // RV_UP
+  if (~e & PIN_TRIM_RH_L)
+    result |= 0x40;         // RH_L
+  if (~e & PIN_TRIM_RH_R)
+    result |= 0x80;         // RH_R
+
+  // printf("readTrims(): %x %x => %x\n", c, e, result); fflush(stdout);
+
+  return result;
 }
 
 uint8_t keyDown()
@@ -75,12 +98,12 @@ void readKeysAndTrims()
     ++enuk;
   }
 
-  /* in = readTrims();
+  in = readTrims();
 
   for (i = 1; i < 256; i <<= 1) {
     keys[enuk].input(in & i, (EnumKeys) enuk);
     ++enuk;
-  } */
+  }
 
   keys[BTN_REa].input(!(GPIO_BUTTON_ENTER & PIN_BUTTON_ENTER), BTN_REa);
 }

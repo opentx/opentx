@@ -47,24 +47,6 @@
 
 int g_snapshot_idx = 0;
 
-#if !defined(CPUARM)
-// TODO remove!
-uint64_t toto = 0;
-#define ERSKY9X_RETURN_PIO  toto
-#define ERSKY9X_RETURN_MASK toto
-#define ERSKY9X_EXIT_MASK   toto
-#define ERSKY9X_EXIT_PIO    toto
-#define ERSKY9X_UP_PIO      toto
-#define ERSKY9X_UP_MASK     toto
-#define ERSKY9X_RIGHT_PIO   toto
-#define ERSKY9X_RIGHT_MASK  toto
-#define ERSKY9X_DOWN_PIO    toto
-#define ERSKY9X_DOWN_MASK   toto
-#define ERSKY9X_LEFT_PIO    toto
-#define ERSKY9X_LEFT_MASK   toto
-#define ERSKY9X_MENU_MASK   toto
-#endif
-
 class Open9xSim: public FXMainWindow
 {
   FXDECLARE(Open9xSim)
@@ -309,96 +291,29 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     // gruvin: Can't use Function keys on the Mac -- too many other app conflicts.
     //         The ordering of these keys, Q/W,E/R,T/Y,U/I matches the on screen 
     //         order of trim sliders
-    static FXuint keys2[]={KEY_Y, KEY_T, KEY_W, KEY_Q, KEY_I, KEY_U, KEY_E, KEY_R  };
+    static FXuint trimKeys[] = { KEY_E, KEY_R, KEY_U, KEY_I, KEY_R, KEY_E, KEY_Y, KEY_T, KEY_Q, KEY_W };
 #else
-    static FXuint keys2[]={KEY_F8, KEY_F7, KEY_F4, KEY_F3, KEY_F6, KEY_F5, KEY_F1, KEY_F2  };
-#endif
-#if defined(PCBX9D)
-    GPIOE->IDR |= PIN_TRIM_LH_L | PIN_TRIM_LH_R | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP;
-    GPIOC->IDR |= PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
-    // GPIOE->IDR |= 0xFFFFFFFF;
-    // GPIOB->IDR |= 0xFFFFFFFF;
-    // GPIOC->IDR |= 0xFFFFFFFF;
-#elif defined(PCBSKY9X)
-    PIOA->PIO_PDSR |= (0x00800000 | 0x01000000 | 0x00000002 | 0x00000001);
-    PIOB->PIO_PDSR |= (0x00000050);
-    PIOC->PIO_PDSR |= (0x10000000 | 0x00000400 | 0x00000200);
-#elif defined(PCBGRUVIN9X)
-    pinj = 0;
-#else
-    pind  = 0;
+    static FXuint trimKeys[] = { KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8 };
 #endif
 
-    for(unsigned i=0; i<DIM(keys2);i++){
-      if(getApp()->getKeyState(keys2[i])) {
-#if defined(PCBX9D)
-#elif defined(PCBSKY9X)
-        switch(i) {
-          case 6:
-            PIOA->PIO_PDSR &= ~0x00800000;
-            break;
-          case 7:
-            PIOB->PIO_PDSR &= ~0x10;
-            break;
-          case 4:
-            PIOA->PIO_PDSR &= ~0x00000002;
-            break;
-          case 5:
-            PIOC->PIO_PDSR &= ~0x00000400;
-            break;
-          case 3:
-            PIOA->PIO_PDSR &= ~0x01000000;
-            break;
-          case 2:
-            PIOC->PIO_PDSR &= ~0x10000000;
-            break;
-          case 1:
-            PIOA->PIO_PDSR &= ~0x00000001;
-            break;
-          case 0:
-            PIOC->PIO_PDSR &= ~0x00000200;
-            break;
-        }
-#elif defined(PCBGRUVIN9X)
-        pinj |= (1<<i);
-#else
-        pind |= (1<<i);
-#endif
-      }
+    for (unsigned i=0; i<DIM(trimKeys); i++) {
+      simuSetTrim(i, getApp()->getKeyState(trimKeys[i]));
     }
 
-#if defined(PCBX9D)
 #define SWITCH_KEY(key, swtch, states) \
     static bool state##key = 0; \
-    static uint8_t state##swtch = 0; \
+    static int8_t state##swtch = 2; \
     if (getApp()->getKeyState(KEY_##key)) { \
       if (!state##key) { \
-        state##swtch = (state##swtch+1) % states; \
-        simuSetSwitch(DSW(SW_##swtch+state##swtch)); \
+        state##swtch = (state##swtch+1); \
+        if (state##swtch == 2+states) state##swtch = 2; \
         state##key = true; \
       } \
     } \
     else { \
       state##key = false; \
-    }
-#else
-#define SWITCH_KEY(key, swtch, states) \
-    static bool state##key = 0; \
-    static uint8_t state##swtch = 0; \
-    if (getApp()->getKeyState(KEY_##key)) { \
-      if (!state##key) { \
-        state##swtch = (state##swtch+1) % states; \
-        if (states > 2) \
-          simuSetSwitch(DSW(SW_##swtch+state##swtch)); \
-        else \
-          simuSetSwitch(state##swtch ? DSW(SW_##swtch) : -DSW(SW_##swtch)); \
-        state##key = true; \
-      } \
     } \
-    else { \
-      state##key = false; \
-    }
-#endif
+    simuSetSwitch(SW_##swtch, state##swtch-states);
 
 #if defined(PCBX9D) || defined(PCBACT)
     SWITCH_KEY(A, SA0, 3);
@@ -503,10 +418,6 @@ int main(int argc,char **argv)
   // This opens up the display as well, and reads the registry database
   // so that persistent settings are now available.
   application.init(argc,argv);
-
-#if !defined(PCBX9D) && !defined(PCBACT)
-  simuSetSwitch(DSW(SW_ID0));
-#endif
 
   // This creates the main window. We pass in the title to be displayed
   // above the window, and possibly some icons for when its iconified.
