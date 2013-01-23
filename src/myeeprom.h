@@ -234,12 +234,12 @@ PACK(typedef struct t_LimitData {
 }) LimitData;
 
 
-#define TRIM_OFF    1
-#define TRIM_ON     0
-#define TRIM_RUD   -1
-#define TRIM_ELE   -2
-#define TRIM_THR   -3
-#define TRIM_AIL   -4
+#define TRIM_OFF    (1)
+#define TRIM_ON     (0)
+#define TRIM_RUD    (-1)
+#define TRIM_ELE    (-2)
+#define TRIM_THR    (-3)
+#define TRIM_AIL    (-4)
 
 #define MLTPX_ADD   0
 #define MLTPX_MUL   1
