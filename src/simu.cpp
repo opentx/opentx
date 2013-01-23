@@ -302,36 +302,36 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 
 #define SWITCH_KEY(key, swtch, states) \
     static bool state##key = 0; \
-    static int8_t state##swtch = 2; \
+    static int8_t state_##swtch = 2; \
     if (getApp()->getKeyState(KEY_##key)) { \
       if (!state##key) { \
-        state##swtch = (state##swtch+1); \
-        if (state##swtch == 2+states) state##swtch = 2; \
+        state_##swtch = (state_##swtch+1); \
+        if (state_##swtch == 2+states) state_##swtch = 2; \
         state##key = true; \
       } \
     } \
     else { \
       state##key = false; \
     } \
-    simuSetSwitch(SW_##swtch, state##swtch-states);
+    simuSetSwitch(swtch, state_##swtch-states);
 
 #if defined(PCBX9D) || defined(PCBACT)
-    SWITCH_KEY(A, SA0, 3);
-    SWITCH_KEY(B, SB0, 3);
-    SWITCH_KEY(C, SC0, 3);
-    SWITCH_KEY(D, SD0, 3);
-    SWITCH_KEY(E, SE0, 3);
-    SWITCH_KEY(F, SF0, 2);
-    SWITCH_KEY(G, SG0, 3);
-    SWITCH_KEY(H, SH0, 2);
+    SWITCH_KEY(A, 0, 3);
+    SWITCH_KEY(B, 1, 3);
+    SWITCH_KEY(C, 2, 3);
+    SWITCH_KEY(D, 3, 3);
+    SWITCH_KEY(E, 4, 3);
+    SWITCH_KEY(F, 5, 2);
+    SWITCH_KEY(G, 6, 3);
+    SWITCH_KEY(H, 7, 2);
 #else
-    SWITCH_KEY(1, THR, 2);
-    SWITCH_KEY(2, RUD, 2);
-    SWITCH_KEY(3, ELE, 2);
-    SWITCH_KEY(4, ID0, 3);
-    SWITCH_KEY(5, AIL, 2);
-    SWITCH_KEY(6, GEA, 2);
-    SWITCH_KEY(7, TRN, 2);
+    SWITCH_KEY(1, 0, 2);
+    SWITCH_KEY(2, 1, 2);
+    SWITCH_KEY(3, 2, 2);
+    SWITCH_KEY(4, 3, 3);
+    SWITCH_KEY(5, 4, 2);
+    SWITCH_KEY(6, 5, 2);
+    SWITCH_KEY(7, 6, 2);
 #endif
   }
 
