@@ -86,7 +86,7 @@ void dacInit()
   DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
   DMA1_Stream5->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 |
                                                                              DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_CIRC ;
-  DMA1_Stream5->PAR = (uint32_t) &DAC->DHR12R1 ;
+  DMA1_Stream5->PAR = CONVERT_PTR(&DAC->DHR12R1);
   DMA1_Stream5->M0AR = CONVERT_PTR(Sine_values);
   DMA1_Stream5->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
   DMA1_Stream5->NDTR = 100 ;
