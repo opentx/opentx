@@ -216,6 +216,22 @@ extern void boardInit();
 #include <avr/wdt.h>
 #endif
 
+#define NUM_STICKS    4
+
+#if defined(PCBX9D) || defined(PCBACT)
+#define NUM_SWITCHES  8
+#define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
+#define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
+#define NUM_POTS      4
+#define NUM_SW_SRCRAW 8
+#else
+#define NUM_SWITCHES  7
+#define IS_3POS(sw)   ((sw) == 3)
+#define MAX_PSWITCH   (SW_TRN-SW_THR+1)  // 9 physical switches
+#define NUM_POTS      3
+#define NUM_SW_SRCRAW 1
+#endif
+
 #include "myeeprom.h"
 
 #if ROTARY_ENCODERS > 0
@@ -684,22 +700,6 @@ enum CswFunctions {
 #define CS_VCOMP      2
 #define CS_VDIFF      3
 #define CS_STATE(x)   ((x)<CS_AND ? CS_VOFS : ((x)<CS_EQUAL ? CS_VBOOL : ((x)<CS_DIFFEGREATER ? CS_VCOMP : CS_VDIFF)))
-
-#define NUM_STICKS    4
-
-#if defined(PCBX9D) || defined(PCBACT)
-#define NUM_SWITCHES  8
-#define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
-#define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
-#define NUM_POTS      4
-#define NUM_SW_SRCRAW 8
-#else
-#define NUM_SWITCHES  7
-#define IS_3POS(sw)   ((sw) == 3)
-#define MAX_PSWITCH   (SW_TRN-SW_THR+1)  // 9 physical switches
-#define NUM_POTS      3
-#define NUM_SW_SRCRAW 1
-#endif
 
 #define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
 #define SWITCH_ON     (1+MAX_SWITCH)
