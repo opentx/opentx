@@ -1834,7 +1834,7 @@ BeepANACenter evalSticks(uint8_t mode)
     if(v >  RESX) v =  RESX;
     	
 #if defined(PCBX9D)
-    if (i == STICK3 || i == STICK4 || i == POT1 || i == SLIDER1)
+    if (i == POT1 || i == SLIDER1)
       v = -v;
 #endif
 
