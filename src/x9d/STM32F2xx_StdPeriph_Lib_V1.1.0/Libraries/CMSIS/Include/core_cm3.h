@@ -95,6 +95,10 @@
   #define __ASM            __asm                                      /*!< asm keyword for TASKING Compiler      */
   #define __INLINE         inline                                     /*!< inline keyword for TASKING Compiler   */
 
+#else
+  #define __INLINE
+  #define __DSB()
+
 #endif
 
 /*!< __FPU_USED to be checked prior to making use of FPU specific registers and functions */
