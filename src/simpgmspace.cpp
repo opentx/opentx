@@ -685,5 +685,5 @@ void I2S_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
 void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState NewState) { }
 void RCC_LSEConfig(uint8_t RCC_LSE) { }
 FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return RESET; }
-ErrorStatus RTC_WaitForSynchro(void) { return ERROR; }
+ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 #endif

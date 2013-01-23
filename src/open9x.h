@@ -35,9 +35,6 @@
 #ifndef open9x_h
 #define open9x_h
 
-#define MAJ_VERS 2
-#define MIN_VERS 00
-
 #include <inttypes.h>
 #include <string.h>
 #include <stddef.h>

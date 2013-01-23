@@ -1176,7 +1176,9 @@ typedef struct
 #define GPIOG               ((GPIO_TypeDef *) GPIOG_BASE)
 #define GPIOH               ((GPIO_TypeDef *) GPIOH_BASE)
 #define GPIOI               ((GPIO_TypeDef *) GPIOI_BASE)
+#if !defined WIN32 && defined __GNUC__
 #define CRC                 ((CRC_TypeDef *) CRC_BASE)
+#endif
 #define RCC                 ((RCC_TypeDef *) RCC_BASE)
 #define FLASH               ((FLASH_TypeDef *) FLASH_R_BASE)
 #define DMA1                ((DMA_TypeDef *) DMA1_BASE)
