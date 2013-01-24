@@ -653,11 +653,11 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 }
 
 #if defined(CPUM64)
-#define editSingleName editName
+#define editSingleName(x, y, label, name, size, event, active) editName(x, y, name, size, event, active)
 #else
-void editSingleName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active)
+void editSingleName(uint8_t x, uint8_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, bool active)
 {
-  lcd_putsLeft(y, STR_NAME);
+  lcd_putsLeft(y, label);
   editName(x, y, name, size, event, active);
 }
 #endif
@@ -727,7 +727,7 @@ void menuModelSetup(uint8_t event)
 
     switch(k) {
       case ITEM_MODEL_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, g_model.name, sizeof(g_model.name), event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_MODELNAME, g_model.name, sizeof(g_model.name), event, attr);
 #if defined(CPUARM)
         memcpy(modelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
 #endif
@@ -1116,7 +1116,7 @@ void menuModelPhaseOne(uint8_t event)
 #endif
     switch(i) {
       case ITEM_MODEL_PHASE_NAME:
-        editSingleName(MIXES_2ND_COLUMN, y, phase->name, sizeof(phase->name), event, attr);
+        editSingleName(MIXES_2ND_COLUMN, y, STR_PHASENAME, phase->name, sizeof(phase->name), event, attr);
         break;
       case ITEM_MODEL_PHASE_SWITCH:
         phase->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, phase->swtch, attr, event);
@@ -1799,7 +1799,7 @@ void menuModelExpoOne(uint8_t event)
     {
 #if defined(CPUARM)
       case EXPO_FIELD_NAME:
-        editSingleName(EXPO_ONE_2ND_COLUMN+3*FW-sizeof(ed->name)*FW, y, ed->name, sizeof(ed->name), event, attr);
+        editSingleName(EXPO_ONE_2ND_COLUMN+3*FW-sizeof(ed->name)*FW, y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
         break;
 #endif
       case EXPO_FIELD_WIDTH:
@@ -1920,7 +1920,7 @@ void menuModelMixOne(uint8_t event)
     switch(i) {
 #if defined(CPUARM)
       case MIX_FIELD_NAME:
-        editSingleName(MIXES_2ND_COLUMN, y, md2->name, sizeof(md2->name), event, attr);
+        editSingleName(MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
         break;
 #endif
       case MIX_FIELD_SOURCE:

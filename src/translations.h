@@ -494,4 +494,16 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att);
 PLAY_FUNCTION(playDuration, int16_t seconds);
 #endif
 
+#if LCD_W >= 212
+extern const pm_char STR_MODELNAME[];
+extern const pm_char STR_PHASENAME[];
+extern const pm_char STR_MIXNAME[];
+extern const pm_char STR_EXPONAME[];
+#else
+#define STR_MODELNAME STR_NAME
+#define STR_PHASENAME STR_NAME
+#define STR_MIXNAME   STR_NAME
+#define STR_EXPONAME  STR_NAME
+#endif
+
 #endif

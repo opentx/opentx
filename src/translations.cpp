@@ -377,6 +377,13 @@ const pm_char STR_ROTARY_ENCODER[] PROGMEM = TR_ROTARY_ENCODER;
 const pm_char STR_DATE[] PROGMEM = TR_DATE;
 const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
 
+#if LCD_W >= 212
+const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
+const pm_char STR_PHASENAME[] PROGMEM = TR_PHASENAME;
+const pm_char STR_MIXNAME[] PROGMEM = TR_MIXNAME;
+const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
+#endif
+
 const pm_uchar font_5x7[] PROGMEM = {
 #include "font.lbm"
 #if defined(TRANSLATIONS_SE)

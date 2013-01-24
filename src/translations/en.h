@@ -291,7 +291,11 @@
 #define TR_COPYINGMODEL        "Copying model..."
 #define TR_MOVINGMODEL         "Moving model..."
 #define TR_LOADINGMODEL        "Loading model..."
-#define TR_NAME                TR("Name","Model Name")
+#define TR_NAME                "Name"
+#define TR_MODELNAME           "Model Name"
+#define TR_PHASENAME           "Phase Name"
+#define TR_MIXNAME             "Mix Name"
+#define TR_EXPONAME            "Expo Name"
 #define TR_BITMAP              "Model Image"
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("E.Limits","Extended Limits")
