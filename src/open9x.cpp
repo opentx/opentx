@@ -471,7 +471,7 @@ int16_t expo(int16_t x, int16_t k)
 {
   if (k == 0) return x;
   int16_t y;
-  bool neg =  x < 0;
+  bool neg = x < 0;
   if (neg) x = -x;
   if (k<0) {
     y = RESXu-expou(RESXu-x, -k);

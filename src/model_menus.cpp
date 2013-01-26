@@ -560,7 +560,7 @@ void menuModelSelect(uint8_t event)
 #endif
 }
 
-void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, bool active)
+void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uint8_t active)
 {
 #if defined(CPUM64)
   // in order to save flash
@@ -655,7 +655,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, boo
 #if defined(CPUM64)
 #define editSingleName(x, y, label, name, size, event, active) editName(x, y, name, size, event, active)
 #else
-void editSingleName(uint8_t x, uint8_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, bool active)
+void editSingleName(uint8_t x, uint8_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, uint8_t active)
 {
   lcd_putsLeft(y, label);
   editName(x, y, name, size, event, active);
@@ -2488,21 +2488,25 @@ void menuModelLimits(uint8_t event)
           if (active) ld->max = -100 + checkIncDecModel(event, ld->max+100, -25, limit);
           break;
         case ITEM_LIMITS_DIRECTION:
+        {
+          uint8_t revert = ld->revert;
 #if defined(PPM_CENTER_ADJUSTABLE) && LCD < 212
-          lcd_putcAtt(LIMITS_REVERT_POS, y, ld->revert ? 127 : 126, attr);
+          lcd_putcAtt(LIMITS_REVERT_POS, y, revert ? 127 : 126, attr);
 #else
-          lcd_putsiAtt(LIMITS_REVERT_POS, y, STR_MMMINV, ld->revert, attr);
+          lcd_putsiAtt(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
 #endif
           if (active) {
-            bool revert_new = checkIncDecModel(event, ld->revert, 0, 1);
+            uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
             if (checkIncDec_Ret && thrOutput(k)) {
               s_warning = STR_INVERT_THR;
               s_warning_type = WARNING_TYPE_CONFIRM;
             }
-            else
+            else {
               ld->revert = revert_new;
+            }
           }
           break;
+        }
 #if defined(PPM_CENTER_ADJUSTABLE)
         case ITEM_LIMITS_PPM_CENTER:
           lcd_outdezAtt(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, attr);
