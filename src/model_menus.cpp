@@ -3337,7 +3337,7 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_USR_PROTO:
         lcd_putsLeft(y, STR_PROTO);
         lcd_putsiAtt(TELEM_COL2, y, STR_VTELPROTO, g_model.frsky.usrProto, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.usrProto, 0, 3);
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.usrProto, 0, USR_PROTO_LAST);
         break;
 
       case ITEM_TELEMETRY_USR_BLADES:

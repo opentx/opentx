@@ -122,12 +122,6 @@ enum BeeperMode {
   int8_t   speakerVolume
 #endif
 
-enum AdcInput {
-  e_adc_single,
-  e_adc_osmp,
-  e_adc_filtered
-};
-
 enum BacklightMode {
   e_backlight_mode_off = 0,
   e_backlight_mode_keys,
@@ -172,7 +166,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   preBeep:1;
   SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  uint8_t   filterInput;
+  uint8_t   spare3;
   uint8_t   lightAutoOff;
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
@@ -458,7 +452,8 @@ enum VarioSource {
   VARIO_SOURCE_DATA = VARIO_SOURCE_FIRST,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-  VARIO_SOURCE_LAST = VARIO_SOURCE_A2,
+  VARIO_SOURCE_HALCYON,
+  VARIO_SOURCE_LAST = VARIO_SOURCE_HALCYON,
 };
 
 PACK(typedef struct t_FrSkyBarData {
@@ -478,9 +473,9 @@ typedef union t_FrSkyScreenData {
 
 enum FrskyUsrProtocols {
   USR_PROTO_NONE,
-  USR_PROTO_FRSKY_HUB,
+  USR_PROTO_FRSKY,
   USR_PROTO_WS_HOW_HIGH,
-  USR_PROTO_HALCYON,
+  USR_PROTO_LAST = USR_PROTO_WS_HOW_HIGH,
 };
 
 enum FrskySource {

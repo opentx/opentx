@@ -258,7 +258,7 @@ void parseTelemHubByte(uint8_t byte)
       // First received barometer altitude => Altitude offset
       if (!frskyData.hub.baroAltitudeOffset)
         frskyData.hub.baroAltitudeOffset = -frskyData.hub.baroAltitude_bp;
-      if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB && g_model.frsky.varioSource == VARIO_SOURCE_DATA) {
+      if (g_model.frsky.varioSource == VARIO_SOURCE_DATA) {
         evalVario(frskyData.hub.baroAltitude_bp, 0);
       }
       frskyData.hub.baroAltitude_bp += frskyData.hub.baroAltitudeOffset;
@@ -266,7 +266,7 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskyHubData, baroAltitude_ap):
-      if (g_model.frsky.usrProto == USR_PROTO_HALCYON && g_model.frsky.varioSource == VARIO_SOURCE_DATA) {
+      if (g_model.frsky.varioSource == VARIO_SOURCE_HALCYON) {
         evalVario(frskyData.hub.baroAltitude_bp-frskyData.hub.baroAltitudeOffset, frskyData.hub.baroAltitude_ap);
       }
       break;
@@ -367,22 +367,24 @@ void processFrskyPacket(uint8_t *packet)
   switch (packet[0])
   {
     case LINKPKT: // A1/A2/RSSI values
+    {
       link_counter += 32;
       frskyData.analog[0].set(packet[1], g_model.frsky.channels[0].type);
       frskyData.analog[1].set(packet[2], g_model.frsky.channels[1].type);
       frskyData.rssi[0].set(packet[3]);
       frskyData.rssi[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
-      if (g_model.frsky.varioSource >= VARIO_SOURCE_A1) {
-        frskyData.varioSpeed = applyChannelRatio(g_model.frsky.varioSource - VARIO_SOURCE_A1, frskyData.analog[g_model.frsky.varioSource - VARIO_SOURCE_A1].value);
-      }
+      uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
+      if (varioSource < 2)
+        frskyData.varioSpeed = applyChannelRatio(varioSource, frskyData.analog[varioSource].value);
       break;
+    }
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
     case USRPKT: // User Data packet
       uint8_t numBytes = 3 + (packet[1] & 0x07); // sanitize in case of data corruption leading to buffer overflow
       for (uint8_t i=3; i<numBytes; i++) {
 #if defined(FRSKY_HUB)
-        if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB || g_model.frsky.usrProto == USR_PROTO_HALCYON)
+        if (g_model.frsky.usrProto == USR_PROTO_FRSKY)
           parseTelemHubByte(packet[i]);
 #endif
 #if defined(WS_HOW_HIGH)
@@ -1444,7 +1446,7 @@ void menuTelemetryFrsky(uint8_t event)
 #if defined(FRSKY_HUB)
     else if (s_frsky_view == e_frsky_after_flight) {
       uint8_t line=1*FH+1;
-      if (g_model.frsky.usrProto == USR_PROTO_FRSKY_HUB || g_model.frsky.usrProto == USR_PROTO_HALCYON) {
+      if (g_model.frsky.usrProto == USR_PROTO_FRSKY) {
         // Latitude
         lcd_putsLeft(line, STR_LATITUDE);
         displayGpsCoord(line, frskyData.hub.gpsLatitudeNS, frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap);
