@@ -711,8 +711,9 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 /* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 
 #if defined(CPUARM)
-uint32_t delays[NUM_CSW];
-uint32_t durations[NUM_CSW];
+uint32_t cswDelays[NUM_CSW];
+uint32_t cswDurations[NUM_CSW];
+uint8_t  cswStates[NUM_CSW];
 #endif
 
 int16_t csLastValue[NUM_CSW];
@@ -862,22 +863,19 @@ bool __getSwitch(int8_t swtch)
 #if defined(CPUARM)
     if (cs->delay) {
       if (result) {
-        if (delays[cs_idx] > get_tmr10ms())
+        if (cswDelays[cs_idx] > get_tmr10ms())
           result = false;
       }
       else {
-        delays[cs_idx] = get_tmr10ms() + (cs->delay*50);
+        cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
       }
     }
     if (cs->duration) {
-      if (!result) {
-        if (durations[cs_idx] > get_tmr10ms()) {
-          result = true;
-          if (cs->delay) delays[cs_idx] = get_tmr10ms() + (cs->delay*50);
-        }
-      }
-      else {
-        durations[cs_idx] = get_tmr10ms() + (cs->duration*50);
+      if (result && !cswStates[cs_idx])
+        cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*50);
+      if (cswDurations[cs_idx] > get_tmr10ms()) {
+        result = true;
+        if (cs->delay) cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
       }
     }
 
