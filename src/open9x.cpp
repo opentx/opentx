@@ -873,6 +873,9 @@ bool __getSwitch(int8_t swtch)
     if (cs->duration) {
       if (result && !cswStates[cs_idx])
         cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*50);
+
+      cswStates[cs_idx] = result;
+
       if (cswDurations[cs_idx] > get_tmr10ms()) {
         result = true;
         if (cs->delay) cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);

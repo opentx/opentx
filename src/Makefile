@@ -60,7 +60,7 @@ PCBREV =
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
 # More information at [insertURLhere]
-# Values = STD, FRSKY, JETI, NMEA, ARDUPILOT, MAVLINK
+# Values = STD, FRSKY, JETI, NMEA, ARDUPILOT, MAVLINK, TELEMETREZ
 EXT = STD
 
 # Enable heli menu
@@ -102,10 +102,6 @@ HAPTIC = NO
 # SmartieParts 2.2 Backlight support (inverted)
 # Values = YES, NO 
 SP22 = NO
-
-# TelemetrEZ
-# Values = YES, NO 
-TELEMETREZ = NO
 
 # SPLASH on START
 # Values = YES, NO, FIXED
@@ -437,8 +433,12 @@ ifeq ($(EXT), MAVLINK)
  CPPSRC += mavlink.cpp rotarysw.cpp serial.cpp
 endif
 
+ifeq ($(EXT), TELEMETREZ)
+  CPPDEFS += -DTELEMETREZ
+endif
+
 # If FRSKY-Support is enabled
-ifeq ($(EXT), FRSKY)
+ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
   CPPDEFS += -DFRSKY
   CPPSRC += frsky.cpp
   # If FRSKY-Hub is enabled
@@ -627,10 +627,6 @@ ifeq ($(PCB), STD128)
   ifeq ($(SP22), YES)
    CPPDEFS += -DSP22
   endif
-  
-  ifeq ($(TELEMETREZ), YES)
-   CPPDEFS += -DTELEMETREZ
-  endif
 endif
 
 ifeq ($(PCB), STD)
@@ -662,10 +658,6 @@ ifeq ($(PCB), STD)
   
   ifeq ($(SP22), YES)
    CPPDEFS += -DSP22
-  endif
-  
-  ifeq ($(TELEMETREZ), YES)
-   CPPDEFS += -DTELEMETREZ
   endif
 endif
 

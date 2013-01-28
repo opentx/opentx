@@ -95,4 +95,78 @@ void sdPoll10ms();
 #define __BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
 #define IS_BACKLIGHT_ON() (PORTC & (1<<OUT_C_LIGHT))
 
+
+#  define INP_L_SPARE6    7
+#  define INP_L_SPARE5    6
+#  define INP_L_KEY_EXT   5
+#  define INP_L_KEY_MEN   4
+#  define INP_L_KEY_LFT   3
+#  define INP_L_KEY_RGT   2
+#  define INP_L_KEY_UP    1
+#  define INP_L_KEY_DWN   0
+
+#  define INP_J_TRM_RH_UP   7
+#  define INP_J_TRM_RH_DWN  6
+#  define INP_J_TRM_RV_UP   5
+#  define INP_J_TRM_RV_DWN  4
+#  define INP_J_TRM_LV_UP   3
+#  define INP_J_TRM_LV_DWN  2
+#  define INP_J_TRM_LH_UP   1
+#  define INP_J_TRM_LH_DWN  0
+
+#  define INP_E_PPM_IN      7
+#  define INP_E_ROT_ENC_1_B 6
+#  define INP_E_ROT_ENC_1_A 5
+#  define INP_E_USB_D_PLS   4
+#  define OUT_E_BUZZER      3
+#  define INP_E_USB_D_NEG   2
+#  define INP_E_TELEM_RX    1
+#  define OUT_E_TELEM_TX    0
+
+#  define OUT_D_HAPTIC         7
+#  define INP_D_SPARE4         6
+#  define INP_D_ROT_ENC_2_PUSH 5
+#  define INP_D_ROT_ENC_1_PUSH 4
+#  define OUT_D_ROT_ENC_2_B    3
+#  define INP_D_ROT_ENC_2_A    2
+#  define INP_D_I2C_SCL        1
+#  define INP_D_I2C_SDA        0
+
+#  define INP_G_Gear     5
+#  define INP_G_ThrCt    2
+#  define OUT_G_SIM_CTL  4 //1 : phone-jack=ppm_in
+#  define INP_G_ID1      3
+#  define INP_G_RF_POW   1
+#  define INP_G_RuddDR   0
+
+#  define INP_C_AileDR   7
+#  define INP_C_ElevDR   6
+#  define OUT_C_LIGHT    0
+
+#  define OUT_B_Speaker  7
+#  define OUT_B_PPM      6 // will be switched by TCNT1==OCR1B in hardware
+#  define INP_B_Trainer  5
+#  define INP_B_ID2      4
+
+#if defined(VOICE)
+#  define OUT_H_14DRESET 3
+#  define OUT_H_14DCLK   4
+#  define OUT_H_14DDATA  5
+#  define INP_H_14DBUSY  6
+#endif
+
+#define KEYS_PRESSED() (~PINL) // used only for DBLKEYS code.
+#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT))) == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT)))
+#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN)))
+#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))  == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))
+#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_L_KEY_LFT) + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_LFT) + (1<<INP_L_KEY_DWN)))
+
+#define PORTA_LCD_DAT  PORTA
+#define PORTC_LCD_CTRL PORTC
+#define OUT_C_LCD_E     5
+#define OUT_C_LCD_RnW   4
+#define OUT_C_LCD_A0    3
+#define OUT_C_LCD_RES   2
+#define OUT_C_LCD_CS1   1
+
 #endif
