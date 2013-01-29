@@ -106,7 +106,6 @@ enum BeeperMode {
 
 #if defined(CPUARM)
 #define EXTRA_GENERAL_FIELDS \
-  int8_t   speakerVolume; \
   uint8_t  backlightBright; \
   int8_t   currentCalib; \
   int8_t   temperatureWarn; \
@@ -118,8 +117,7 @@ enum BeeperMode {
   uint8_t  optrexDisplay; \
   uint8_t  sticksGain;
 #else
-#define EXTRA_GENERAL_FIELDS \
-  int8_t   speakerVolume
+#define EXTRA_GENERAL_FIELDS
 #endif
 
 enum BacklightMode {
@@ -177,12 +175,13 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   gpsFormat:1;
   uint8_t   unexpectedShutdown:1;
   uint8_t   speakerPitch;
+  int8_t    speakerVolume;
 
   EXTRA_GENERAL_FIELDS;
 
 }) EEGeneral;
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if LCD_W >= 212
 #define LEN_MODEL_NAME     12
 #define LEN_EXPOMIX_NAME   10
 #define LEN_FP_NAME        10
