@@ -229,7 +229,7 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
 #if defined(GVARS)
 #define displayGVar(x, y, v) gvarMenuItem(x, y, v, 0, 0, 0, 0)
 #else
-#define displayGVar(x, y, v) lcd_outdez8(x, y, 0)
+#define displayGVar(x, y, v) lcd_outdez8(x, y, v)
 #endif
 
 #define WARNING_TYPE_ASTERISK  0
