@@ -26,31 +26,43 @@ void Set_Address(u8 x, u8 y)
 #define PALETTE_IDX(p, x, mask) (((p[x] & mask) ? 0x1 : 0) + ((p[DISPLAY_PLAN_SIZE+x] & mask) ? 0x2 : 0) + ((p[2*DISPLAY_PLAN_SIZE+x] & mask) ? 0x4 : 0) + ((p[3*DISPLAY_PLAN_SIZE+x] & mask) ? 0x8 : 0))
 const uint8_t lcdPalette[4] = { 0, 0x03, 0x06, 0x0F };
 
+#define LCD_WRITE_BIT(bit) \
+  if (bit) \
+    GPIOD->BSRRL = PIN_LCD_MOSI; \
+  else \
+    GPIOD->BSRRH = PIN_LCD_MOSI; \
+  GPIOD->BSRRH = PIN_LCD_CLK; /* Clock low */ \
+  __no_operation(); \
+  GPIOD->BSRRL = PIN_LCD_CLK; /* Clock high */
+
 void lcdRefresh()
 {  
-  for (uint8_t y=0; y<LCD_H; y++) {
+  for (uint32_t y=0; y<LCD_H; y++) {
     uint8_t *p = &displayBuf[(y>>3)*LCD_W];
     uint8_t mask = (1 << (y%8));
+
     Set_Address(0, y);
     AspiCmd(0xAF);
-    for (uint8_t x=0; x<LCD_W; x+=2) {
-#if 0
-      uint8_t data = (p[x] & mask ? 0x80 : 0) + (p[x+1] & mask ? 0x08 : 0) + (p[DISPLAY_PLAN_SIZE+x] & mask ? 0x40 : 0) + (p[DISPLAY_PLAN_SIZE+x+1] & mask ? 0x04 : 0);
-#elif 1
-      uint8_t data = (PALETTE_IDX(p, x, mask) << 4) + (PALETTE_IDX(p, x+1, mask));
-      //uint8_t data = (lcdPalette(PALETTE_IDX(p, x, mask)) << 4) + lcdPalette(PALETTE_IDX(p, x+1, mask));
-#else
-      // this code shows the 16 grey tones...
-      uint8_t data = (x * 16) / 212;
-      data += (data << 4);
-#endif
-      WriteData(data);
+
+    LCD_CLK_HIGH();
+    LCD_A0_HIGH();
+    LCD_NCS_LOW();
+
+    for (uint32_t x=0; x<LCD_W; x++) {
+      LCD_WRITE_BIT(p[3*DISPLAY_PLAN_SIZE+x] & mask);
+      LCD_WRITE_BIT(p[2*DISPLAY_PLAN_SIZE+x] & mask);
+      LCD_WRITE_BIT(p[DISPLAY_PLAN_SIZE+x] & mask);
+      LCD_WRITE_BIT(p[x] & mask);
     }
+
+    LCD_NCS_HIGH();
+    LCD_A0_HIGH();
+
     WriteData(0);
   }
 }
 
-/**Init the Backlight GPIO */
+/* Init the Backlight GPIO */
 static void LCD_BL_Config()
 {
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBL, ENABLE);

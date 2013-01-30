@@ -12,8 +12,6 @@
 
 #include "../open9x.h"
 
-#define __no_operation     __NOP
-
 /**
 **********send command to lcd**************
 */

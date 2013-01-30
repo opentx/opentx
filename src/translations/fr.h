@@ -173,8 +173,8 @@
 #define LEN_VOLTSRC      "\003"
 #define TR_VOLTSRC       "---""A1\0""A2\0""FAS""Cel"
 
-#define LEN_VARIOSRC     "\007"
-#define TR_VARIOSRC      "FrSky\0 ""A1\0    ""A2\0    ""Halcyon"
+#define LEN_VARIOSRC     "\005"
+#define TR_VARIOSRC      "Alti\0""Alti+""Vario""A1\0  ""A2\0"
 
 #define LEN_VSCREEN      "\004"
 #define TR_VSCREEN       "Val.""Bars"

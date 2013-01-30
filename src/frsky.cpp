@@ -152,10 +152,10 @@ void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
   if (varioAltitudeQueuePointer == VARIO_QUEUE_LENGTH)
     varioAltitudeQueuePointer = 0;
   frskyData.hub.varioAltitudeQueuePointer = varioAltitudeQueuePointer;
-  frskyData.varioSpeed -= frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
+  frskyData.hub.varioSpeed -= frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
   frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] = varioAltitude_cm - frskyData.hub.varioAltitude_cm;
   frskyData.hub.varioAltitude_cm = varioAltitude_cm;
-  frskyData.varioSpeed += frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
+  frskyData.hub.varioSpeed += frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
 #endif
 }
 
@@ -181,7 +181,7 @@ void parseTelemHubByte(uint8_t byte)
     return;
   }
   if (state == TS_DATA_ID) {
-    if (byte > 0x3b) {
+    if (byte > 0x3f) {
       state = TS_IDLE;
     }
     else {
@@ -258,7 +258,7 @@ void parseTelemHubByte(uint8_t byte)
       // First received barometer altitude => Altitude offset
       if (!frskyData.hub.baroAltitudeOffset)
         frskyData.hub.baroAltitudeOffset = -frskyData.hub.baroAltitude_bp;
-      if (g_model.frsky.varioSource == VARIO_SOURCE_DATA) {
+      if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI_V1) {
         evalVario(frskyData.hub.baroAltitude_bp, 0);
       }
       frskyData.hub.baroAltitude_bp += frskyData.hub.baroAltitudeOffset;
@@ -266,7 +266,7 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskyHubData, baroAltitude_ap):
-      if (g_model.frsky.varioSource == VARIO_SOURCE_HALCYON) {
+      if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI_V2) {
         evalVario(frskyData.hub.baroAltitude_bp-frskyData.hub.baroAltitudeOffset, frskyData.hub.baroAltitude_ap);
       }
       break;
@@ -335,7 +335,7 @@ void parseTelemWSHowHighByte(uint8_t byte)
   if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10)) {
     ((uint8_t*)&frskyData.hub)[offsetof(FrskyHubData, baroAltitude_bp)] = byte;
     checkMinMaxAltitude();
-    if (g_model.frsky.varioSource == VARIO_SOURCE_DATA) {
+    if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI_V1) {
       evalVario(frskyData.hub.baroAltitude_bp, 0);
     }
   }
@@ -347,19 +347,6 @@ void parseTelemWSHowHighByte(uint8_t byte)
   frskyUsrStreaming = FRSKY_TIMEOUT10ms*3; // reset counter
 }
 #endif  
-
-/*
-   Called from somewhere in the main loop or a low priority interrupt
-   routine perhaps. This function processes FrSky telemetry data packets
-   assembled by he USART0_RX_vect) ISR function (below) and stores
-   extracted data in global variables for use by other parts of the program.
-
-   Packets can be any of the following:
-
-    - A1/A2/RSSI telemetry data
-    - Alarm level/mode/threshold settings for Ch1A, Ch1B, Ch2A, Ch2B
-    - User Data packets
-*/
 
 void processFrskyPacket(uint8_t *packet)
 {
@@ -376,7 +363,7 @@ void processFrskyPacket(uint8_t *packet)
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
       if (varioSource < 2)
-        frskyData.varioSpeed = applyChannelRatio(varioSource, frskyData.analog[varioSource].value);
+        frskyData.hub.varioSpeed = applyChannelRatio(varioSource, frskyData.analog[varioSource].value);
       break;
     }
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)
@@ -782,16 +769,16 @@ NOINLINE void check_frsky()
     do {
       int16_t verticalSpeed;
       int16_t varioCenterMax = (int16_t)g_model.frsky.varioCenterMax * 10 + 50;
-      if (frskyData.varioSpeed >= varioCenterMax) {
-        verticalSpeed = frskyData.varioSpeed - varioCenterMax;
+      if (frskyData.hub.varioSpeed >= varioCenterMax) {
+        verticalSpeed = frskyData.hub.varioSpeed - varioCenterMax;
         int16_t varioMax = (10+(int16_t)g_model.frsky.varioMax) * 100;
         if (verticalSpeed > varioMax) verticalSpeed = varioMax;
         verticalSpeed = (verticalSpeed * 10) / ((varioMax-varioCenterMax) / 100);
       }
       else {
         int16_t varioCenterMin = (int16_t)g_model.frsky.varioCenterMin * 10 - 50;
-        if (frskyData.varioSpeed <= varioCenterMin) {
-          verticalSpeed = frskyData.varioSpeed - varioCenterMin;
+        if (frskyData.hub.varioSpeed <= varioCenterMin) {
+          verticalSpeed = frskyData.hub.varioSpeed - varioCenterMin;
           int16_t varioMin = (-10+(int16_t)g_model.frsky.varioMin) * 100;
           if (verticalSpeed < varioMin) verticalSpeed = varioMin;
           verticalSpeed = (verticalSpeed * 10) / ((varioCenterMin-varioMin) / 100);
@@ -811,7 +798,7 @@ NOINLINE void check_frsky()
 
     } while(0);
 #else
-    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyData.varioSpeed/10), (int16_t)+100);
+    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyData.hub.varioSpeed/10), (int16_t)+100);
 
     uint16_t interval;
     if (verticalSpeed == 0) {

@@ -448,11 +448,12 @@ enum TelemetrySource {
 
 enum VarioSource {
   VARIO_SOURCE_FIRST = 0,
-  VARIO_SOURCE_DATA = VARIO_SOURCE_FIRST,
+  VARIO_SOURCE_ALTI_V1 = VARIO_SOURCE_FIRST,
+  VARIO_SOURCE_ALTI_V2,
+  VARIO_SOURCE_VARIO,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-  VARIO_SOURCE_HALCYON,
-  VARIO_SOURCE_LAST = VARIO_SOURCE_HALCYON,
+  VARIO_SOURCE_LAST = VARIO_SOURCE_A2
 };
 
 PACK(typedef struct t_FrSkyBarData {
@@ -510,12 +511,12 @@ PACK(typedef struct t_FrSkyData {
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint8_t screensType:2;
-  uint8_t varioSource:2;
+  uint8_t voltsSource:2;
   int8_t  varioMin:4;
   int8_t  varioMax:4;
   FrSkyRSSIAlarm rssiAlarms[2];
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
-  uint8_t voltsSource:3;
+  uint8_t varioSource:3;
   int8_t  varioCenterMin:5;
   uint8_t currentSource:3;
   int8_t  varioCenterMax:5;
