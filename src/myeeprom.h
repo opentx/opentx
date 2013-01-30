@@ -181,7 +181,7 @@ PACK(typedef struct t_EEGeneral {
 
 }) EEGeneral;
 
-#if LCD_W >= 212
+#if defined(PCBX9D) || defined(PCBACT)
 #define LEN_MODEL_NAME     12
 #define LEN_EXPOMIX_NAME   10
 #define LEN_FP_NAME        10
