@@ -3402,7 +3402,7 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_SCREEN_LABEL3:
       {
         uint8_t screenIndex = (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 0 : (k < ITEM_TELEMETRY_SCREEN_LABEL3 ? 1 : 2));
-        int8_t screenType = IS_BARS_SCREEN(screenIndex);
+        bool screenType = IS_BARS_SCREEN(screenIndex);
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex+1);
         if (screenType != selectMenuItem(10*FW, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= (1 << screenIndex);
@@ -3411,7 +3411,7 @@ void menuModelTelemetry(uint8_t event)
 #else
       {
         uint8_t screenIndex = (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 1 : 2);
-        int8_t screenType = g_model.frsky.screensType & screenIndex;
+        bool screenType = g_model.frsky.screensType & screenIndex;
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex);
         if (screenType != selectMenuItem(10*FW, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= screenIndex;
