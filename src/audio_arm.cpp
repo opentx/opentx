@@ -112,7 +112,7 @@ void refreshSystemAudioFiles()
   sdAvailableSystemAudioFiles = availableAudioFiles;
 }
 
-const char * suffixes[] = { "-OFF", "-ON", "-BG", NULL };
+const char * suffixes[] = { "-OFF", "-ON", /*"-BG", */NULL };
 
 inline uint8_t getAvailableFiles(char *prefix, FILINFO &info, char *filename)
 {
