@@ -34,9 +34,9 @@
 
 #include "open9x.h"
 
-uint16_t jeti_keys = JETI_KEY_NOCHANGE;
+volatile uint16_t jeti_keys = JETI_KEY_NOCHANGE;
 uint8_t JetiBuffer[32]; // 32 characters
-uint8_t JetiBufferReady;
+volatile uint8_t JetiBufferReady;
 
 #ifndef SIMU
 ISR (USART0_RX_vect)
@@ -179,18 +179,12 @@ void JETI_put_stop (void)
         UDR0 = 0xFF;
 }
 
-#include "menus.h"
-
-extern void menuMainView(uint8_t event);
-
 void menuTelemetryJeti(uint8_t event)
 {
   TITLE(PSTR("JETI"));
 
   switch(event)
   {
-    //case EVT_KEY_FIRST(KEY_MENU):
-    //  break;
     case EVT_KEY_FIRST(KEY_EXIT):
       JETI_DisableRXD();
       chainMenu(menuMainView);

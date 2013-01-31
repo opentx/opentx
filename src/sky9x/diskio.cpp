@@ -957,6 +957,7 @@ FATFS g_FATFS_Obj = { 0 };
 
 void sdMountPoll()
 {
+#if 0
   if (!Card_initialized)
     return;
 
@@ -1019,6 +1020,7 @@ void sdMountPoll()
     case SD_ST_ERR:
       break;
   }
+#endif
 }
 
 void sdInit()

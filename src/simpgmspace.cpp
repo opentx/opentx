@@ -420,7 +420,7 @@ FATFS g_FATFS_Obj;
 FRESULT f_stat (const TCHAR * path, FILINFO *)
 {
   struct stat tmp;
-  printf("f_stat(%s)\n", path); fflush(stdout);
+  // printf("f_stat(%s)\n", path); fflush(stdout);
   return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 

@@ -125,8 +125,8 @@ PACK(struct FrskyHubData {
   uint16_t maxGpsDistance;
   uint16_t maxCurrent;
   /* end */
-  int16_t  varioAcc1;
-  int16_t  varioAcc2;
+  int16_t  varioSpeed;       // 0x38  Added to FrSky protocol for home made varios
+  int16_t  cellsSum;
   uint16_t volts_bp;         // 0x3A
   uint16_t volts_ap;         // 0x3B
   // end of FrSky Hub data
@@ -134,8 +134,6 @@ PACK(struct FrskyHubData {
   int16_t  gpsAltitudeOffset;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
   uint8_t  minCellIdx;
-  int16_t  varioSpeed;       // 0x3F  Added to FrSky protocol for home made varios
-  uint16_t cellsSum;
   uint16_t vfas;
 
   // TODO later uint16_t minVfas;
