@@ -49,9 +49,15 @@ typedef void (*MenuFuncP)(uint8_t event);
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 
 #if LCD_W >= 212
-#define MENUS_SCROLLBAR_WIDTH 2
+#define MENUS_SCROLLBAR_WIDTH  2
+#define MENU_COLUMNS           2
+#define MENU_COLUMN2_X         (14 + LCD_W / 2)
+#define lcd_putsColumnLeft(x, y, str) lcd_puts((x > (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)) ? MENU_COLUMN2_X : 0, y, str)
 #else
-#define MENUS_SCROLLBAR_WIDTH 0
+#define MENUS_SCROLLBAR_WIDTH  0
+#define MENU_COLUMNS           1
+#define COLUMN_X               0
+#define lcd_putsColumnLeft(x, y, str) lcd_putsLeft(y, str)
 #endif
 
 #if defined(SDCARD)

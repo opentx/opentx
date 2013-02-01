@@ -76,15 +76,11 @@ uint32_t Eeprom32_data_size ;
 
 #define EE_NOWAIT	1
 
-void init_spi();
-
 void eeDirty(uint8_t msk)
 {
   s_eeDirtyMsk |= msk;
   s_eeDirtyTime10ms = get_tmr10ms() ;
 }
-
-void handle_serial( void ) ;
 
 uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t *p_seq ) ;
 void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0 ) ;

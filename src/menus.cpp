@@ -662,7 +662,7 @@ void displayWarning(uint8_t event)
 
 int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event)
 {
-  lcd_putsLeft(y, label);
+  lcd_putsColumnLeft(x, y, label);
   if (values) lcd_putsiAtt(x, y, values, value-min, attr);
   if (attr) value = checkIncDec(event, value, min, max, (g_menuPos[0] == 0) ? EE_MODEL : EE_GENERAL);
   return value;
@@ -680,7 +680,7 @@ uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label,
 
 int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event)
 {
-  lcd_putsLeft(y, STR_SWITCH);
+  lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
   if (attr) CHECK_INCDEC_MODELSWITCH(event, value, -MAX_SWITCH, MAX_SWITCH);
   return value;

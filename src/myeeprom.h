@@ -120,6 +120,16 @@ enum BeeperMode {
 #define EXTRA_GENERAL_FIELDS
 #endif
 
+#if defined(PCBX9D) || defined(PCBACT)
+#define MODELDATA_EXTRA char bitmap[10];
+#define LIMITDATA_EXTRA char name[6];
+#define swstate_t uint16_t
+#else
+#define MODELDATA_EXTRA
+#define LIMITDATA_EXTRA
+#define swstate_t uint8_t
+#endif
+
 enum BacklightMode {
   e_backlight_mode_off = 0,
   e_backlight_mode_keys,
@@ -224,6 +234,9 @@ PACK(typedef struct t_LimitData {
   int16_t offset:14;
   uint16_t symetrical:1;
   uint16_t revert:1;
+
+  LIMITDATA_EXTRA
+
 }) LimitData;
 
 
@@ -602,7 +615,7 @@ typedef char gvar_name_t[6];
 
 #if defined(CPUM64) && defined(GVARS)
 #define MAX_GVARS 5
-#define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS]
+#define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
 #define PHASE_GVARS_DATA
 #define GVAR_VALUE(x, p) g_model.gvars[x]
 #elif defined(CPUM64)
@@ -611,12 +624,12 @@ typedef char gvar_name_t[6];
 #define PHASE_GVARS_DATA
 #elif defined(GVARS)
 #define MAX_GVARS 5
-#define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS]
+#define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
 #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
 #define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
 #else
 #define MAX_GVARS 0
-#define MODEL_GVARS_DATA gvar_name_t gvarsNames[5]
+#define MODEL_GVARS_DATA gvar_name_t gvarsNames[5];
 #define PHASE_GVARS_DATA gvar_t gvars[5]
 #endif
 
@@ -802,9 +815,9 @@ enum Dsm2Variants {
 };
 
 #if defined(MAVLINK)
-#define TELEMETRY_DATA MavlinkData mavlink
+#define TELEMETRY_DATA MavlinkData mavlink;
 #elif defined(FRSKY) || !defined(CPUM64)
-#define TELEMETRY_DATA FrSkyData frsky
+#define TELEMETRY_DATA FrSkyData frsky;
 #else
 #define TELEMETRY_DATA
 #endif
@@ -813,14 +826,6 @@ enum Dsm2Variants {
 #define BeepANACenter uint16_t
 #else
 #define BeepANACenter uint8_t
-#endif
-
-#if defined(PCBX9D) || defined(PCBACT)
-#define MODELDATA_EXTRA char bitmap[10]
-#define swstate_t uint16_t
-#else
-#define MODELDATA_EXTRA
-#define swstate_t uint8_t
 #endif
 
 PACK(typedef struct t_ModelData {
@@ -855,13 +860,13 @@ PACK(typedef struct t_ModelData {
   
   swstate_t switchWarningStates;
 
-  MODEL_GVARS_DATA;
+  MODEL_GVARS_DATA
 
-  TELEMETRY_DATA;
+  TELEMETRY_DATA
 
-  ROTARY_ENCODER_ARRAY_EXTRA;
+  ROTARY_ENCODER_ARRAY_EXTRA
 
-  MODELDATA_EXTRA;
+  MODELDATA_EXTRA
 
 }) ModelData;
 

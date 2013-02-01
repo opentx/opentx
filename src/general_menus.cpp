@@ -136,9 +136,9 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_MINUTE_BEEP,
   ITEM_SETUP_COUNTDOWN_BEEP,
   ITEM_SETUP_BACKLIGHT_LABEL,
-  ITEM_SETUP_FLASH_BEEP,
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
+  ITEM_SETUP_FLASH_BEEP,
 #if defined(SPLASH) && !defined(FSPLASH)
   ITEM_SETUP_DISABLE_SPLASH,
 #endif
@@ -393,16 +393,16 @@ void menuGeneralSetup(uint8_t event)
         g_eeGeneral.preBeep = onoffMenuItem( g_eeGeneral.preBeep, RADIO_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, attr, event ) ;
         break;
 
+      case ITEM_SETUP_BACKLIGHT_MODE:
+        g_eeGeneral.backlightMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
+        break;
+
       case ITEM_SETUP_BACKLIGHT_LABEL:
         lcd_putsLeft(y, STR_BACKLIGHT_LABEL);
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
         g_eeGeneral.flashBeep = onoffMenuItem( g_eeGeneral.flashBeep, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
-        break;
-
-      case ITEM_SETUP_BACKLIGHT_MODE:
-        g_eeGeneral.backlightMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:

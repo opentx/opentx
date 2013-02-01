@@ -547,7 +547,7 @@ void menuMainView(uint8_t event)
       for (uint8_t i=0; i<6; i++) {
         int8_t sw1 = (i<3 ? 1+i : 4+i);
         int8_t sw2 = (sw1 == 9 ? (getSwitch(4, 0) ? 4 : (getSwitch(5, 0) ? 5 : 6)) : sw1);
-        putsSwitches(i<3 ? 2*FW-3: 17*FW+2, (i%3)*FH+4*FH+1, sw2, getSwitch(sw1, 0) ? INVERS : 0);
+        putsSwitches(i<3 ? 2*FW-2: 17*FW-1, (i%3)*FH+4*FH+1, sw2, getSwitch(sw1, 0) ? INVERS : 0);
       }
     }
     else {
