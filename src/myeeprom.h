@@ -404,6 +404,18 @@ enum TelemetryUnit {
   UNIT_G,
 };
 
+#if defined(CPUARM)
+PACK(typedef struct t_FrSkyChannelData {
+  uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
+  int16_t   offset:12;
+  uint16_t  type:4;             // channel unit (0=volts, ...)
+  uint8_t   alarms_value[2];    // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
+  uint8_t   alarms_level:4;
+  uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
+  uint8_t   spare:2;
+  uint8_t   multiplier;         // 0=no multiplier, 1=*2 multiplier
+}) FrSkyChannelData;
+#else
 PACK(typedef struct t_FrSkyChannelData {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
   int16_t   offset:12;
@@ -413,6 +425,7 @@ PACK(typedef struct t_FrSkyChannelData {
   uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
   uint8_t   multiplier:2;       // 0=no multiplier, 1=*2 multiplier
 }) FrSkyChannelData;
+#endif
 
 enum TelemetrySource {
   TELEM_NONE,
@@ -503,7 +516,6 @@ enum FrskySource {
 #define MAX_FRSKY_SCREENS 3
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
-  FrSkyRSSIAlarm rssiAlarms[2];
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource;
   uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
@@ -515,7 +527,7 @@ PACK(typedef struct t_FrSkyData {
   int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
-  uint8_t spare[2];
+  FrSkyRSSIAlarm rssiAlarms[2];
 }) FrSkyData;
 #else
 #define MAX_FRSKY_SCREENS 2

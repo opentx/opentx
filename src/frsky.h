@@ -210,8 +210,17 @@ int16_t convertCswTelemValue(CustomSwData * cs);
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
 
 extern const pm_uint8_t bchunit_ar[];
-int16_t applyChannelRatio(uint8_t channel, int16_t val);
-void putsTelemetryChannel(uint8_t x, uint8_t y, uint8_t channel, int16_t val, uint8_t att);
+
+#if defined(CPUARM)
+#define telvalue_t           int32_t
+#define FRSKY_MULTIPLIER_MAX 5
+#else
+#define telvalue_t           int16_t
+FRSKY_MULTIPLIER_MAX         3
+#endif
+
+telvalue_t applyChannelRatio(uint8_t channel, telvalue_t val);
+void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, telvalue_t val, uint8_t att);
 
 #define IS_BARS_SCREEN(screenIndex) (g_model.frsky.screensType & (1<<(screenIndex)))
 

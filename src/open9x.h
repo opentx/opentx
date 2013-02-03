@@ -1220,7 +1220,7 @@ extern union ReusableBuffer reusableBuffer;
 void checkFlashOnBeep();
 
 #if defined(FRSKY) || defined(CPUARM)
-void putsTelemetryValue(uint8_t x, uint8_t y, int16_t val, uint8_t unit, uint8_t att);
+void putsTelemetryValue(xcoord_t x, uint8_t y, telvalue_t val, uint8_t unit, uint8_t att);
 #endif
 
 #if defined(CPUARM)

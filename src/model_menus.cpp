@@ -3301,7 +3301,7 @@ void menuModelTelemetry(uint8_t event)
                 channel.multiplier--; channel.ratio = 255;
               }
               else if (ratio == 256) {
-                if (channel.multiplier < 3) { channel.multiplier++; channel.ratio = 128; }
+                if (channel.multiplier < FRSKY_MULTIPLIER_MAX) { channel.multiplier++; channel.ratio = 128; }
               }
               else {
                 channel.ratio = ratio;
