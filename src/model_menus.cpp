@@ -1201,7 +1201,7 @@ void menuModelPhaseOne(uint8_t event)
 
         putsStrIdx(INDENT_WIDTH, y, STR_GV, idx+1);
 
-        editName(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, m_posHorz==0 ? attr : 0);
+        editName(4*FW-2, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, m_posHorz==0 ? attr : 0);
 
         int16_t v = phase->gvars[idx];
         if (v > GVAR_MAX) {
