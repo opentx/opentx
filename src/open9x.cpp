@@ -2389,6 +2389,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #if defined(PCBX9D) || defined(PCBACT)
         else {
           v = getValue(k);
+          // TODO switches: if (v < 0 && !md->swtch) sw = false;
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
@@ -2399,6 +2400,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #else
         else if (k >= MIXSRC_THR-1 && k <= MIXSRC_SWC-1) {
           v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
+          if (v < 0 && !md->swtch) sw = false;
         }
         else {
           v = getValue(k<=MIXSRC_3POS ? k : k-MAX_SWITCH);
@@ -2429,7 +2431,12 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             }
             if (sDelay[i] > 0) { // perform delay
               sDelay[i] = max(0, sDelay[i] - tick10ms);
-              continue;
+              if (!md->swtch) {
+                v = -1024;
+              }
+              else {
+                continue;
+              }
             }
           }
           if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1); // Mix warning
@@ -2448,16 +2455,22 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           }
           if (sDelay[i] > 0) { // perform delay
             sDelay[i] = max(0, sDelay[i] - tick10ms);
+            if (!md->swtch) v = +1024;
             has_delay = true;
+          }
+          else if (!md->swtch) {
+            v = -1024;
           }
         }
         if (!has_delay) {
           if (md->speedDown) {
             if (md->mltpx == MLTPX_REP) continue;
-            v = 0;
-            apply_offset_and_curve = false;
+            if (md->swtch) {
+              v = 0;
+              apply_offset_and_curve = false;
+            }
           }
-          else {
+          else if (md->swtch) {
             continue;
           }
         }
