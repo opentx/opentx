@@ -2741,7 +2741,7 @@ void menuModelCustomSwitchOne(uint8_t event)
         int8_t v1_min=0, v1_max=NUM_XCHNCSW;
         if (cstate == CS_VBOOL) {
           putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr);
-          v1_min = SWITCH_OFF; v1_max = SWITCH_ON;
+          v1_min = SWITCH_OFF+1; v1_max = SWITCH_ON-1;
         }
         else {
           putsChnRaw(CSW_2ND_COLUMN, y, cs->v1, attr);
@@ -2757,7 +2757,7 @@ void menuModelCustomSwitchOne(uint8_t event)
         int8_t v2_min=0, v2_max=NUM_XCHNCSW;
         if (cstate == CS_VBOOL) {
           putsSwitches(CSW_2ND_COLUMN, y, cs->v2, attr);
-          v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
+          v2_min = SWITCH_OFF+1; v2_max = SWITCH_ON-1;
         }
         else if (cstate == CS_VCOMP) {
           putsChnRaw(CSW_2ND_COLUMN, y, cs->v2, attr);
@@ -2911,8 +2911,8 @@ void menuModelCustomSwitches(uint8_t event)
     if (cstate == CS_VBOOL) {
       putsSwitches(10*FW, y, cs->v1, m_posHorz==1 ? attr : 0);
       putsSwitches(16*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
-      v1_min = SWITCH_OFF; v1_max = SWITCH_ON;
-      v2_min = SWITCH_OFF; v2_max = SWITCH_ON;
+      v1_min = SWITCH_OFF+1; v1_max = SWITCH_ON-1;
+      v2_min = SWITCH_OFF+1; v2_max = SWITCH_ON-1;
     }
     else if (cstate == CS_VCOMP) {
       putsChnRaw(10*FW, y, cs->v1, m_posHorz==1 ? attr : 0);
