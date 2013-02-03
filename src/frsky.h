@@ -216,7 +216,7 @@ extern const pm_uint8_t bchunit_ar[];
 #define FRSKY_MULTIPLIER_MAX 5
 #else
 #define telvalue_t           int16_t
-FRSKY_MULTIPLIER_MAX         3
+#define FRSKY_MULTIPLIER_MAX 3
 #endif
 
 telvalue_t applyChannelRatio(uint8_t channel, telvalue_t val);
