@@ -291,7 +291,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define UPE0    0
 #define FE0     0
 
-#define ISR(x)     void x()
+#define ISR(x...)  void x()
 
 #if defined(CPUARM)
 extern volatile uint32_t Tenms;

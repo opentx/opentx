@@ -1201,16 +1201,16 @@ void menuModelPhaseOne(uint8_t event)
 
         putsStrIdx(INDENT_WIDTH, y, STR_GV, idx+1);
 
-        editName(4*FW-2, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, m_posHorz==0 ? attr : 0);
+        editName(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, m_posHorz==0 ? attr : 0);
 
         int16_t v = phase->gvars[idx];
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
           if (p >= s_currIdx) p++;
-          putsFlightPhase(MIXES_2ND_COLUMN, y, p+1, m_posHorz==1 ? attr : 0);
+          putsFlightPhase(MIXES_2ND_COLUMN+2*FW, y, p+1, m_posHorz==1 ? attr : 0);
         }
         else {
-          lcd_putsAtt(MIXES_2ND_COLUMN, y, STR_OWN, m_posHorz==1 ? attr : 0);
+          lcd_putsAtt(MIXES_2ND_COLUMN+2*FW, y, STR_OWN, m_posHorz==1 ? attr : 0);
         }
         if (attr && s_currIdx>0 && m_posHorz==1 && ((editMode>0) || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;

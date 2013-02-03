@@ -722,23 +722,23 @@ inline bool navigationRotaryEncoder(uint8_t event)
 #endif
 
 #if defined(GVARS)
-#if defined(CPUM64)
-int16_t getGVarValue(int8_t x, int16_t min, int16_t max);
-void setGVarValue(uint8_t x, int8_t value);
-#define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
-#define SET_GVAR(idx, val, p) setGVarValue(idx, val)
+  #if defined(CPUM64)
+    int16_t getGVarValue(int8_t x, int16_t min, int16_t max);
+    void setGVarValue(uint8_t x, int8_t value);
+    #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
+    #define SET_GVAR(idx, val, p) setGVarValue(idx, val)
+  #else
+    uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx);
+    int16_t getGVarValue(int8_t x, int16_t min, int16_t max, int8_t phase);
+    void setGVarValue(uint8_t x, int8_t value, int8_t phase);
+    #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
+    #define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)
+  #endif
+  #define GVAR_DISPLAY_TIME     100 /*1 second*/;
+  extern uint8_t s_gvar_timer;
+  extern uint8_t s_gvar_last;
 #else
-uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx);
-int16_t getGVarValue(int8_t x, int16_t min, int16_t max, int8_t phase);
-void setGVarValue(uint8_t x, int8_t value, int8_t phase);
-#define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
-#define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)
-#endif
-#define GVAR_DISPLAY_TIME     100 /*1 second*/;
-extern uint8_t s_gvar_timer;
-extern uint8_t s_gvar_last;
-#else
-#define GET_GVAR(x, ...) (x)
+  #define GET_GVAR(x, ...) (x)
 #endif
 
 extern uint16_t s_timeCumTot;

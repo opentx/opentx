@@ -542,7 +542,7 @@ void applyExpos(int16_t *anas)
       continue;
     if (getSwitch(ed.swtch, 1)) {
       int16_t v = anas2[ed.chn];
-      if((v<0 && ed.mode&1) || (v>=0 && ed.mode&2)) {
+      if((v<0 && (ed.mode&1)) || (v>=0 && (ed.mode&2))) {
 #ifdef BOLD_FONT
         activeExpos |= ((ACTIVE_EXPOS_TYPE)1 << i);
 #endif
@@ -1072,26 +1072,18 @@ uint8_t s_gvar_last = 0;
 #if defined(CPUM64)
 int16_t getGVarValue(int8_t x, int16_t min, int16_t max)
 {
-  return (x >= 126 || x <= -126) ? limit(min, GVAR_VALUE((uint8_t)x - 126, -1), max) : x;
-
-
-  if (x >= -125 && x <= 120)
+  if (x >= -125 && x <= (max <= 120 ? 120 : 125))
     return x;
 
   int8_t idx = (uint8_t)x - 126;
   int8_t mul = 1;
-  if (idx <= 0) {
-    if (max <= 120) {
-      idx = 1-idx; mul = -1;
-    }
-    else {
-      return x;
-    }
+
+  if (idx < 0) {
+    idx = 1-idx;
+    mul = -1;
   }
 
   return limit(min, GVAR_VALUE(idx, -1), max) * mul;
-
-
 }
 
 void setGVarValue(uint8_t idx, int8_t value)
@@ -1119,18 +1111,15 @@ uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
 
 int16_t getGVarValue(int8_t x, int16_t min, int16_t max, int8_t phase)
 {
-  if (x >= -125 && x <= 120)
+  if (x >= -125 && x <= (max <= 120 ? 120 : 125))
     return x;
 
   int8_t idx = (uint8_t)x - 126;
   int8_t mul = 1;
-  if (idx <= 0) {
-    if (max <= 120) {
-      idx = 1-idx; mul = -1;
-    }
-    else {
-      return x;
-    }
+
+  if (idx < 0) {
+    idx = 1-idx;
+    mul = -1;
   }
 
   return limit(min, GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)), max) * mul;
@@ -2289,7 +2278,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
     bpanaCenter = anaCenter;
   }
 
-#ifdef HELI
+#if defined(HELI)
   if(g_model.swashR.value)
   {
     uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
@@ -2400,7 +2389,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #if defined(PCBX9D) || defined(PCBACT)
         else {
           v = getValue(k);
-          // TODO switches: if (v < 0 && !md->swtch) sw = false;
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
@@ -2411,7 +2399,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #else
         else if (k >= MIXSRC_THR-1 && k <= MIXSRC_SWC-1) {
           v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
-          if (v < 0 && !md->swtch) sw = false;
         }
         else {
           v = getValue(k<=MIXSRC_3POS ? k : k-MAX_SWITCH);
@@ -2425,9 +2412,10 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
+      bool apply_offset_and_curve = true;
+
       //========== DELAYS ===============
       uint8_t swTog;
-      bool apply_offset = true;
       if (sw) { // switch on?  (if no switch selected => on)
         swTog = !swOn[i];
         if (mode == e_perout_mode_normal) {
@@ -2441,12 +2429,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             }
             if (sDelay[i] > 0) { // perform delay
               sDelay[i] = max(0, sDelay[i] - tick10ms);
-              if (!md->swtch) {
-                v = -1024;
-              }
-              else {
-                continue;
-              }
+              continue;
             }
           }
           if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1); // Mix warning
@@ -2465,22 +2448,16 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           }
           if (sDelay[i] > 0) { // perform delay
             sDelay[i] = max(0, sDelay[i] - tick10ms);
-            if (!md->swtch) v = +1024;
             has_delay = true;
-          }
-          else if (!md->swtch) {
-            v = -1024;
           }
         }
         if (!has_delay) {
           if (md->speedDown) {
             if (md->mltpx == MLTPX_REP) continue;
-            if (md->swtch) {
-              v = 0;
-              apply_offset = false;
-            }
+            v = 0;
+            apply_offset_and_curve = false;
           }
-          else if (md->swtch) {
+          else {
             continue;
           }
         }
@@ -2491,7 +2468,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #endif
 
       //========== OFFSET ===============
-      if (apply_offset) {
+      if (apply_offset_and_curve) {
         int8_t offset = GET_GVAR(md->offset, -125, 125, s_perout_flight_phase);
         if (offset) v += calc100toRESX(offset);
       }
@@ -2506,6 +2483,11 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         else
           mix_trim = -1;
         if (mix_trim >= 0) v += trims[mix_trim];
+      }
+
+      //========== CURVES ===============
+      if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
+        v = applyCurve(v, md->curveParam);
       }
 
       int16_t weight = GET_GVAR(md->weight, -500, 500, s_perout_flight_phase);
@@ -2536,11 +2518,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
           v = act[i] / DEL_MULT;
         }
-      }
-
-      //========== CURVES ===============
-      if (md->curveParam && md->curveMode == MODE_CURVE) {
-        v = applyCurve(v, md->curveParam);
       }
 
       //========== WEIGHT ===============
