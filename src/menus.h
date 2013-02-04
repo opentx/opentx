@@ -91,7 +91,7 @@ void drawPotsBars();
 void doMainScreenGraphics();
 void menuMainView(uint8_t event);
 void menuGeneralDiagAna(uint8_t event);
-#ifdef FRSKY
+#if defined(FRSKY)
 void menuTelemetryFrsky(uint8_t event);
 #endif
 void menuGeneralSetup(uint8_t event);
@@ -102,29 +102,29 @@ void menuModelCustomFunctions(uint8_t event);
 void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-extern int8_t scrollRE;
-extern int16_t p1valdiff;
-extern int8_t lastCursorMove;
+#if defined(PCBX9D) || defined(ROTARY_ENCODER_NAVIGATION)
+  extern int8_t scrollRE;
+  extern int16_t p1valdiff; // TODO 0 in case of PCBX9D?
+  extern int8_t lastCursorMove;
 #elif defined(NAVIGATION_POT1)
-extern int16_t p1valdiff;
+  extern int16_t p1valdiff;
 #else
-#define p1valdiff 0
+  #define p1valdiff 0
 #endif
 
 #if defined(PCBX9D) || defined(PCBACT)
-#define IS_RE_NAVIGATION_ENABLE()   true
-#define NAVIGATION_RE_IDX()         0
-#define IS_RE_NAVIGATION_EVT_TYPE(event, type) (event==type(KEY_ENTER))
-#define IS_RE_NAVIGATION_EVT(event) (EVT_KEY_MASK(event)==KEY_ENTER)
+  #define IS_RE_NAVIGATION_ENABLE()   true
+  #define NAVIGATION_RE_IDX()         0
+  #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (event==type(KEY_ENTER))
+  #define IS_RE_NAVIGATION_EVT(event) (EVT_KEY_MASK(event)==KEY_ENTER)
 #elif defined(ROTARY_ENCODERS)
-#define NAVIGATION_RE_IDX()         (g_eeGeneral.reNavigation - 1)
-#define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
-#define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
-#define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && EVT_KEY_MASK(event)==(BTN_REa + g_eeGeneral.reNavigation - 1))
+  #define NAVIGATION_RE_IDX()         (g_eeGeneral.reNavigation - 1)
+  #define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
+  #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
+  #define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && EVT_KEY_MASK(event)==(BTN_REa + g_eeGeneral.reNavigation - 1))
 #else
-#define IS_RE_NAVIGATION_EVT_TYPE(event, type) (0)
-#define IS_RE_NAVIGATION_EVT(event) (0)
+  #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (0)
+  #define IS_RE_NAVIGATION_EVT(event) (0)
 #endif
 
 extern int8_t checkIncDec_Ret;  // global helper vars
@@ -275,7 +275,7 @@ void menuChannelsMonitor(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
 
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS) || defined(PCBX9D)
 #define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_LEFT || lastCursorMove < 0)
 #define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_RIGHT || lastCursorMove > 0)
 #define REPEAT_LAST_CURSOR_MOVE() if (lastCursorMove) lastCursorMove *= 2; else m_posHorz = 0

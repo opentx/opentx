@@ -1217,7 +1217,11 @@ void backlightOn()
 inline void Splash()
 {
   lcd_clear();
+#if defined(PCBX9D)
+  lcd_bmp(0, 0, splash_lbm);
+#else
   lcd_img(0, 0, splash_lbm, 0, 0);
+#endif
   lcdRefresh();
 }
 

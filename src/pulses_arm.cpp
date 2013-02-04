@@ -38,11 +38,17 @@ uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol = 255;
 uint8_t pxxFlag = 0 ;
 
-uint16_t Pulses[18] = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0,0,0,0,0,0, 0 } ;
-volatile uint32_t Pulses_index = 0 ;            // Modified in interrupt routine
+uint16_t ppmStream[20] = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
 
+#if defined(PCBSKY9X)
+volatile uint32_t Pulses_index = 0 ;            // Modified in interrupt routine
 uint8_t Bit_pulses[64] ;                        // Likely more than we need
 uint8_t *Pulses2MHzptr ;
+#else
+uint16_t pxxStream[400] ;               // Transisitions
+uint16_t *pxxStreamPtr ;
+uint16_t PxxValue ;
+#endif
 
 // DSM2 control bits
 #define DSM2_CHANS     6
@@ -57,33 +63,34 @@ uint8_t Serial_bit_count;
 uint8_t Serial_byte_count ;
 
 void setupPulses();
-void setupPulsesPPM();
 void setupPulsesDsm2(uint8_t chns);
 void setupPulsesPXX();
 
 void startPulses()
 {
+  // TODO a single call to setupPulses() should be ok!
+#if defined(PCBSKY9X)
   init_main_ppm(3000, 1) ;            // Default for now, initial period 1.5 mS, output on
+#else
+  init_main_ppm();
+#endif
 }
 
 void setupPulsesPPM()                   // Don't enable interrupts through here
 {
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if defined(PCBSKY9X)
   register Pwm *pwmptr = PWM;
 #endif
 
-  // Now set up pulses
-
   int16_t PPM_range = g_model.extendedLimits ? 640 * 2 : 512 * 2; //range of 0.7..1.7msec
+  uint32_t numCh = 8 + g_model.ppmNCH * 2; //Channels *2
 
-  //Total frame length = 22.5msec
-  //each pulse is 0.7..1.7ms long with a 0.3ms stop tail
-  //The pulse ISR is 2mhz that's why everything is multiplied by 2
-  uint16_t *ptr;
-  ptr = Pulses;
-  uint32_t p = 8 + g_model.ppmNCH * 2; //Channels *2
+  // Total frame length = 22.5msec
+  // each pulse is 0.7..1.7ms long with a 0.3ms stop tail
+  // The pulse ISR is 2mhz that's why everything is multiplied by 2
+  uint16_t * ptr = ppmStream;
 
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if defined(PCBSKY9X)
   pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = (g_model.ppmDelay * 50 + 300) * 2; //Stoplen *2
   if (g_model.pulsePol)
     pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;   // CPOL
@@ -93,28 +100,18 @@ void setupPulsesPPM()                   // Don't enable interrupts through here
 
   uint32_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
   rest += (int32_t(g_model.ppmFrameLength)) * 1000;
-  for (uint32_t i = 0; i < p; i++) { //NUM_CHNOUT
+  for (uint32_t i = 0; i < numCh; i++) { //NUM_CHNOUT
     int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
-    rest -= (v);
+    rest -= v;
     *ptr++ = v; /* as Pat MacKenzie suggests */
   }
   *ptr = rest;
   *(ptr + 1) = 0;
-}
 
-void put_serial_bit( uint8_t bit )
-{
-  Serial_byte >>= 1 ;
-  if ( bit & 1 )
-  {
-    Serial_byte |= 0x80 ;
-  }
-  if ( ++Serial_bit_count >= 8 )
-  {
-    *Pulses2MHzptr++ = Serial_byte ;
-    Serial_bit_count = 0 ;
-    Serial_byte_count += 1 ;
-  }
+#if defined(PCBX9D)
+  TIM1->CCR2 = rest - 1000 ;             // Update time
+  TIM1->CCR1 = (g_model.ppmDelay*50+300)*2 ;
+#endif
 }
 
 const uint16_t CRCTable[]=
@@ -163,6 +160,22 @@ void crc( uint8_t data )
   PcmCrc=(PcmCrc>>8)^(CRCTable[(PcmCrc^data) & 0xFF]);
 }
 
+#if defined(PCBSKY9X)
+void put_serial_bit( uint8_t bit )
+{
+  Serial_byte >>= 1 ;
+  if ( bit & 1 )
+  {
+    Serial_byte |= 0x80 ;
+  }
+  if ( ++Serial_bit_count >= 8 )
+  {
+    *Pulses2MHzptr++ = Serial_byte ;
+    Serial_bit_count = 0 ;
+    Serial_byte_count += 1 ;
+  }
+}
+
 // 8uS/bit 01 = 0, 001 = 1
 void putPcmPart( uint8_t value )
 {
@@ -181,6 +194,23 @@ void putPcmFlush()
     put_serial_bit( 1 ) ;           // Line idle level
   }
 }
+#else
+void putPcmPart( uint8_t value )
+{
+  PxxValue += 18 ;                                        // Output 1 for this time
+  *pxxStreamPtr++ = PxxValue ;
+  PxxValue += 14 ;
+  if ( value ) {
+    PxxValue += 16 ;
+  }
+  *pxxStreamPtr++ = PxxValue ;  // Output 0 for this time
+}
+
+void putPcmFlush()
+{
+  *pxxStreamPtr++ = 18010 ;             // Past the 18000 of the ARR
+}
+#endif
 
 void putPcmBit( uint8_t bit )
 {
@@ -202,14 +232,11 @@ void putPcmBit( uint8_t bit )
 
 void putPcmByte( uint8_t byte )
 {
-  uint8_t i ;
+  crc(byte);
 
-  crc( byte ) ;
-
-  for ( i = 0 ; i < 8 ; i += 1 )
-  {
-    putPcmBit( byte & 0x80 ) ;
-    byte <<= 1 ;
+  for (uint8_t i=0; i<8; i++) {
+    putPcmBit(byte & 0x80);
+    byte <<= 1;
   }
 }
 
@@ -229,23 +256,27 @@ void putPcmHead()
 
 void setupPulsesPXX()
 {
-  uint8_t i ;
   uint16_t chan ;
   uint16_t chan_1 ;
 
+#if defined(PCBSKY9X)
   Serial_byte = 0 ;
   Serial_bit_count = 0 ;
   Serial_byte_count = 0 ;
   Pulses2MHzptr = Bit_pulses ;
+#else
+  pxxStreamPtr = pxxStream ;
+  PxxValue = 0 ;
+#endif
+
   PcmCrc = 0 ;
   PcmOnesCount = 0 ;
   putPcmHead(  ) ;  // sync byte
-  putPcmByte( g_model.ppmNCH ) ;     // putPcmByte( g_model.rxnum ) ;  //
+  putPcmByte( g_model.ppmNCH ) ;     // TODO should be RX NUM ??? putPcmByte( g_model.rxnum ) ;  //
   putPcmByte( pxxFlag ) ;     // First byte of flags
   putPcmByte( 0 ) ;     // Second byte of flags
   pxxFlag = 0;          // reset flag after send
-  for ( i = 0 ; i < 8 ; i += 2 )              // First 8 channels only
-  {                                                                                                                                   // Next 8 channels would have 2048 added
+  for (uint32_t i=0; i<8; i+=2) {              // First 8 channels only                                                                                                    // Next 8 channels would have 2048 added
     chan = g_chans512[i] *3 / 4 + 2250 ;
     chan_1 = g_chans512[i+1] *3 / 4 + 2250 ;
 //        if ( chan > 2047 )
@@ -267,6 +298,7 @@ void setupPulsesPXX()
   putPcmFlush() ;
 }
 
+#if defined(DSM2)
 #define BITLEN_DSM2 (8*2) //125000 Baud => 8uS per bit
 void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 {
@@ -312,11 +344,7 @@ void setupPulsesDsm2(uint8_t chns)
         break;
     }
   }
-#if defined(PCBX9D) || defined(PCBACT)
-  // TODO
-#else
   if ((dsmDat[0] & BIND_BIT) && (!switchState(SW_TRN))) dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
-#endif
 
   // TODO find a way to do that, FUNC SWITCH: if ((!(dsmDat[0] & BIND_BIT)) && getSwitch(MAX_DRSWITCH-1, 0, 0)) dsmDat[0] |= RANGECHECK_BIT;   // range check function
   // else dsmDat[0] &= ~RANGECHECK_BIT;
@@ -337,8 +365,9 @@ void setupPulsesDsm2(uint8_t chns)
     put_serial_bit( 1 ) ;           // 16 extra stop bits
   }
 }
+#endif
 
-#if !defined(SIMU) && !defined(PCBX9D)
+#if defined(PCBSKY9X) && !defined(SIMU)
 extern "C" void PWM_IRQHandler(void)
 {
   register Pwm *pwmptr;
@@ -397,8 +426,8 @@ extern "C" void PWM_IRQHandler(void)
         break;
 
       default:
-        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = Pulses[Pulses_index++]; // Period in half uS
-        if (Pulses[Pulses_index] == 0) {
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[Pulses_index++]; // Period in half uS
+        if (ppmStream[Pulses_index] == 0) {
           Pulses_index = 0;
           setupPulses();
         }
@@ -421,11 +450,13 @@ void setupPulses()
 
     switch (s_current_protocol) { // stop existing protocol hardware
       case PROTO_PXX:
-        disable_ssc();
+        disable_pxx();
         break;
+#if defined(DSM2)
       case PROTO_DSM2:
         disable_ssc();
         break;
+#endif
       default:
         disable_main_ppm();
         break;
@@ -433,6 +464,16 @@ void setupPulses()
 
     s_current_protocol = required_protocol;
 
+#if defined(PCBX9D)
+    switch (required_protocol) {
+      case PROTO_PXX:
+        init_pxx();
+        break;
+      default:
+        init_main_ppm();
+        break;
+    }
+#elif defined(PCBSKY9X)
     switch (required_protocol) { // Start new protocol hardware here
       case PROTO_PXX:
         init_main_ppm(5000, 0); // Initial period 2.5 mS, output off
@@ -449,6 +490,7 @@ void setupPulses()
         init_main_ppm(3000, 1); // Initial period 1.5 mS, output on
         break;
     }
+#endif
   }
 
   // Set up output data here
@@ -456,9 +498,11 @@ void setupPulses()
     case PROTO_PXX:
       setupPulsesPXX();
       break;
+#if defined(DSM2)
     case PROTO_DSM2:
       setupPulsesDsm2(6);
       break;
+#endif
     default:
       setupPulsesPPM(); // Don't enable interrupts through here
       break ;

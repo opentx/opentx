@@ -34,6 +34,24 @@ elif sys.argv[3] == "img":
                     value += 1 << z            
             f.write("0x%02x," % value)
         f.write("\n")
+elif sys.argv[3] == "bmp":
+    rows = 1
+    colors = []
+    if len(sys.argv) > 4:
+        rows = int(sys.argv[4])
+    f.write("%d,%d,\n" % (width, height/rows))
+    for y in range(0, height, 8):
+        for x in range(width):
+            values = [255, 255, 255, 255]
+            for z in range(8):
+                if y+z < height:
+                    gray = Qt.qGray(image.pixel(x, y+z))
+                    for i in range(4):
+                        if (gray & (1<<(4+i))):
+                            values[i] -= 1 << z
+            for value in values:
+                f.write("0x%02x," % value)
+        f.write("\n")
 elif sys.argv[3] == "3x5":
     for y in range(0, height, 5):
         for x in range(width):
@@ -80,6 +98,6 @@ elif sys.argv[3] == "10x14":
                     if image.pixel(x, y+l+z) == Qt.qRgb(0, 0, 0):
                         value += 1 << z
                 f.write("0x%02x," % value)
-        f.write("\n")   
+        f.write("\n")
 else:
     print "wrong argument", sys.argv[3]

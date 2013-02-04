@@ -970,3 +970,25 @@ void eeCheck(bool immediately)
   }
 }
 
+#if defined(CPUARM)
+bool eeCopyModel(uint8_t dst, uint8_t src)
+{
+  if (theFile.copy(FILE_MODEL(dst), FILE_MODEL(src))) {
+    memcpy(modelNames[dst], modelNames[src], sizeof(g_model.name));
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+void eeSwapModels(uint8_t id1, uint8_t id2)
+{
+  EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2));
+
+  char tmp[sizeof(g_model.name)];
+  memcpy(tmp, modelNames[id1], sizeof(g_model.name));
+  memcpy(modelNames[id1], modelNames[id2], sizeof(g_model.name));
+  memcpy(modelNames[id2], tmp, sizeof(g_model.name));
+}
+#endif

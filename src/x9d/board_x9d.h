@@ -79,9 +79,6 @@ extern uint16_t sessionTimer;
 void delaysInit();
 void debugInit();
 
-void init_trainer_ppm();
-void init_trainer_capture();
-
 #define DEBUG_UART_BAUDRATE 115200
 
 void uartInit(void);
@@ -102,6 +99,16 @@ void sdPoll10ms();
 uint32_t sdMounted();
 #endif
 
+// Pulses driver
+void init_main_ppm();
+void disable_main_ppm();
+void init_pxx();
+void disable_pxx();
+
+// Trainer driver
+void init_trainer_ppm();
+void init_trainer_capture();
+
 // Keys driver
 void keysInit();
 uint32_t readKeys();
@@ -114,8 +121,9 @@ uint32_t readKeys();
 // WDT driver
 #if !defined(SIMU)
 #define wdt_disable()
-#define wdt_enable(x)
-#define wdt_reset()
+void watchdogInit();
+#define wdt_enable(x)   watchdogInit()
+#define wdt_reset()     IWDG->KR = 0xAAAA
 #endif
 
 // ADC driver

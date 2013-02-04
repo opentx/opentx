@@ -53,9 +53,11 @@
 #endif
 
 #if defined(PCBX9D)
-#define IF_PCBX9D(x) x,
+#define IF_PCBX9D()    true
+#define CASE_PCBX9D(x) x,
 #else
-#define IF_PCBX9D(x)
+#define IF_PCBX9D()    false
+#define CASE_PCBX9D(x)
 #endif
 
 #if defined(CPUARM)
@@ -148,7 +150,7 @@
 #define IF_GVARS(x)
 #endif
 
-#if defined(PCBX9D) || defined(PCBACT) || ROTARY_ENCODERS > 0
+#if defined(PCBACT) || ROTARY_ENCODERS > 0
 #define ROTARY_ENCODER_NAVIGATION
 #endif
 
@@ -1232,6 +1234,8 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
 #define strcat_mixername_nodefault(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
 #define ZLEN(s) zlen(s, sizeof(s))
 #endif
+
+// TODO perhaps better in menus.h ?
 
 #if defined(PCBX9D) || defined(PCBACT)
 #define KEY_MOVE_UP    KEY_PLUS

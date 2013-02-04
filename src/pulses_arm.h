@@ -43,11 +43,4 @@ inline bool pulsesStarted() { return s_current_protocol != 255; }
 inline void pausePulses() { s_pulses_paused = true; }
 inline void resumePulses() { s_pulses_paused = false; }
 
-void init_main_ppm(uint32_t period, uint32_t out_enable);
-void disable_main_ppm();
-
-void init_ssc();
-void disable_ssc();
-
 #endif
-/*eof*/

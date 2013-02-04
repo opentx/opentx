@@ -238,8 +238,14 @@ inline void eeFlush() { theFile.flush(); }
 uint16_t evalChkSum();
 
 #define eeDeleteModel(x) EFile::rm(FILE_MODEL(x))
+
+#if defined(CPUARM)
+bool eeCopyModel(uint8_t dst, uint8_t src);
+void eeSwapModels(uint8_t id1, uint8_t id2);
+#else
 #define eeCopyModel(dst, src) theFile.copy(FILE_MODEL(dst), FILE_MODEL(src))
 #define eeSwapModels(id1, id2) EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2))
+#endif
 
 #if defined(SDCARD)
 const pm_char * eeBackupModel(uint8_t i_fileSrc);

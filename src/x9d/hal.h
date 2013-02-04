@@ -88,6 +88,8 @@
 #define PIN_TR_PPM_OUT                  GPIO_Pin_9  //PC.09
 
 // TODO merge these constants
+#define PIN_PER_1                       0x0010
+#define PIN_PORTA                       0x0000
 #define PIN_PER_3                       0x030
 // #define PIN_OS2                         0x0000
 #define PIN_OS25                        0x2000

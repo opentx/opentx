@@ -298,7 +298,7 @@ TEST(Phases, nullFadeOut_posFadeIn)
   g_model.phaseData[1].swtch = DSW(SW_ID1);
   g_model.phaseData[1].fadeIn = 15;
   perMain();
-  setSwitch(DSW(SW_ID1));
+  simuSetSwitch(3, 0);
   perMain();
 }
 
@@ -315,7 +315,7 @@ TEST(Mixer, Cascaded3Channels)
   g_model.mixData[2].destCh = 2;
   g_model.mixData[2].srcRaw = MIXSRC_ID1;
   g_model.mixData[2].weight = 100;
-  setSwitch(DSW(SW_ID1));
+  simuSetSwitch(3, 0);
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 102400);
   EXPECT_EQ(chans[1], 102400);
@@ -332,7 +332,7 @@ TEST(Mixer, CascadedOrderedChannels)
   g_model.mixData[1].destCh = 1;
   g_model.mixData[1].srcRaw = MIXSRC_CH1;
   g_model.mixData[1].weight = 100;
-  setSwitch(DSW(SW_ID1));
+  simuSetSwitch(3, 0);
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 102400);
   EXPECT_EQ(chans[1], 102400);
@@ -357,35 +357,21 @@ TEST(Mixer, Cascaded5Channels)
   g_model.mixData[4].destCh = 4;
   g_model.mixData[4].srcRaw = MIXSRC_ID1;
   g_model.mixData[4].weight = 100;
-  int32_t lastVal = 0;
   for (uint8_t i=0; i<10; i++) {
-    setSwitch(DSW(SW_ID1));
-    doMixerCalculations();
-    EXPECT_EQ(chans[0], lastVal);
-    EXPECT_EQ(chans[1], lastVal);
-    EXPECT_EQ(chans[2], 102400);
-    EXPECT_EQ(chans[3], 102400);
-    EXPECT_EQ(chans[4], 102400);
+    simuSetSwitch(3, 0);
     doMixerCalculations();
     EXPECT_EQ(chans[0], 102400);
     EXPECT_EQ(chans[1], 102400);
     EXPECT_EQ(chans[2], 102400);
     EXPECT_EQ(chans[3], 102400);
     EXPECT_EQ(chans[4], 102400);
-    setSwitch(DSW(SW_ID0));
-    doMixerCalculations();
-    EXPECT_EQ(chans[0], 102400);
-    EXPECT_EQ(chans[1], 102400);
-    EXPECT_EQ(chans[2], -102400);
-    EXPECT_EQ(chans[3], -102400);
-    EXPECT_EQ(chans[4], -102400);
+    simuSetSwitch(3, -1);
     doMixerCalculations();
     EXPECT_EQ(chans[0], -102400);
     EXPECT_EQ(chans[1], -102400);
     EXPECT_EQ(chans[2], -102400);
     EXPECT_EQ(chans[3], -102400);
     EXPECT_EQ(chans[4], -102400);
-    lastVal = -102400;
   }
 }
 

@@ -241,15 +241,8 @@ void menuModelSelect(uint8_t event)
 #endif
   uint8_t _event_ = (IS_RE_NAVIGATION_EVT(event) ? 0 : event);
 
-  if (s_copyMode
-      /* TODO how is it possible? || !eeModelExists(g_eeGeneral.currModel)*/
-#if defined(PCBX9D) || defined(PCBACT)
-      || s_editMode >= 0
-#endif
-      ) {
-    if ((event & 0x1f) == KEY_EXIT)
-      _event_ -= KEY_EXIT;
-  }
+  if (s_copyMode && (event & 0x1f) == KEY_EXIT)
+    _event_ -= KEY_EXIT;
 
   int8_t oldSub = m_posVert;
   if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
@@ -303,12 +296,6 @@ void menuModelSelect(uint8_t event)
           sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
           s_copyMode = 0;
         }
-#if defined(PCBX9D) || defined(PCBACT)
-        else {
-          m_posVert = sub = g_eeGeneral.currModel;
-          s_editMode = -1;
-        }
-#endif
         break;
 #if defined(ROTARY_ENCODERS)
       case EVT_KEY_BREAK(BTN_REa):
@@ -324,12 +311,6 @@ void menuModelSelect(uint8_t event)
 #endif
       case EVT_KEY_LONG(KEY_ENTER):
       case EVT_KEY_BREAK(KEY_ENTER):
-#if defined(PCBX9D) || defined(PCBACT)
-        if (s_editMode < 0) {
-          s_editMode = 0;
-          break;
-        }
-#endif
         s_editMode = 0;
         if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
           displayPopup(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
@@ -399,7 +380,18 @@ void menuModelSelect(uint8_t event)
         }
         break;
 
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if defined(PCBX9D)
+      // TODO merge with lines below
+      case EVT_KEY_BREAK(KEY_PAGE):
+      case EVT_KEY_LONG(KEY_PAGE):
+        if (sub == g_eeGeneral.currModel) {
+          chainMenu(event == EVT_KEY_BREAK(KEY_PAGE) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
+          killEvents(event);
+          return;
+        }
+        AUDIO_WARNING2();
+        break;
+#else
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
         if (sub == g_eeGeneral.currModel) {
@@ -412,12 +404,6 @@ void menuModelSelect(uint8_t event)
 
       case EVT_KEY_FIRST(KEY_MOVE_UP):
       case EVT_KEY_FIRST(KEY_MOVE_DOWN):
-#if defined(PCBX9D) || defined(PCBACT)
-        if (s_editMode == -1) {
-          chainMenu(event == EVT_KEY_FIRST(KEY_RIGHT) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
-          return;
-        }
-#endif
         if (s_copyMode) {
           int8_t next_ofs = (event == EVT_KEY_FIRST(KEY_MOVE_UP) ? s_copyTgtOfs+1 : s_copyTgtOfs-1);
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
@@ -585,7 +571,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
       }
 
       switch (event) {
-#if defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
 #if defined(PCBX9D) || defined(PCBACT)
         case EVT_KEY_BREAK(KEY_ENTER):
 #else
@@ -611,7 +597,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
           if (cur<size-1) cur++;
           break;
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
 #if defined(ROTARY_ENCODERS)
         case EVT_KEY_LONG(BTN_REa):
         case EVT_KEY_LONG(BTN_REb):
@@ -664,7 +650,7 @@ void editSingleName(uint8_t x, uint8_t y, const pm_char *label, char *name, uint
 
 enum menuModelSetupItems {
   ITEM_MODEL_NAME,
-  IF_PCBX9D(ITEM_MODEL_BITMAP)
+  CASE_PCBX9D(ITEM_MODEL_BITMAP)
   ITEM_MODEL_TIMER1,
   ITEM_MODEL_TIMER2,
   ITEM_MODEL_EXTENDED_LIMITS,
@@ -714,7 +700,7 @@ void menuModelSetup(uint8_t event)
     s_rangecheck_mode = 0;
 #endif
 
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), {0,0,IF_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), {0,0,CASE_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
 
   uint8_t sub = m_posVert - 1;
   int8_t editMode = s_editMode;
@@ -1981,7 +1967,7 @@ void menuModelMixOne(uint8_t event)
           if (attr && m_posHorz==1 && editMode>0) md2->noExpo = !checkIncDecModel(event, !md2->noExpo, 0, 1);
         }
         else if (attr) {
-          m_posHorz = 0;
+          REPEAT_LAST_CURSOR_MOVE();
         }
         break;
       }
@@ -2343,7 +2329,8 @@ void menuModelExposAll(uint8_t event)
 
 void menuModelMixAll(uint8_t event)
 {
-#if defined(PCBX9D)
+#if 0
+  // TODO
   if (event == EVT_KEY_LONG(KEY_PAGE)) {
     pushMenu(menuChannelsMonitor);
     killEvents(event);
