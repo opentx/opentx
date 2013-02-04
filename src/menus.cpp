@@ -287,13 +287,12 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
   uint8_t maxcol = MAXCOL(l_posVert);
 
-#if defined(PCBX9D)
-  if (!(s_warning || s_menu_count/* || s_editMode<0*/))
-    CHECK_ROTARY_ENCODER(event);
-#elif defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
   if (!(s_warning || s_menu_count))
     CHECK_ROTARY_ENCODER(event);
+#endif
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
   if (l_posVert < 0 && (event==EVT_KEY_BREAK(RE_NAV_ENTER) || event==EVT_KEY_BREAK(KEY_MENU))) {
     popMenu();
     return false;
