@@ -77,7 +77,7 @@ uint16_t getChannelRatio(uint8_t channel)
   return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
 }
 
-telvalue_t applyChannelRatio(uint8_t channel, telvalue_t val)
+lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
 {
   return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
 }
@@ -1045,7 +1045,7 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_METERS,  // GPS Alt
 };
 
-void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, telvalue_t val, uint8_t att)
+void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att)
 {
   switch (channel) {
     case TELEM_TM1-1:
@@ -1061,12 +1061,12 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, telvalue_t val
       channel -= TELEM_A1-1;
       // A1 and A2
     {
-      telvalue_t converted_value = applyChannelRatio(channel, val);
+      lcdint_t converted_value = applyChannelRatio(channel, val);
       if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
         converted_value /= 10;
       }
       else {
-        if (converted_value < 1000) {
+        if (abs(converted_value) < 1000) {
           att |= PREC2;
         }
         else {

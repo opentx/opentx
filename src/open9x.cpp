@@ -1140,7 +1140,7 @@ void setGVarValue(uint8_t idx, int8_t value, int8_t phase)
 #endif
 
 #if defined(FRSKY) || defined(CPUARM)
-void putsTelemetryValue(xcoord_t x, uint8_t y, telvalue_t val, uint8_t unit, uint8_t att)
+void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att)
 {
 #ifdef IMPERIAL_UNITS
   if (unit == UNIT_DEGREES) {

@@ -348,12 +348,12 @@ void lcd_outdez8(xcoord_t x, uint8_t y, int8_t val)
   lcd_outdezAtt(x, y, val);
 }
 
-void lcd_outdezAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags)
+void lcd_outdezAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags)
 {
   lcd_outdezNAtt(x, y, val, flags);
 }
 
-void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t len)
+void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t len)
 {
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
@@ -375,7 +375,11 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags flags, uint8_t 
 
   if (mode != MODE(LEADING0)) {
     len = 1;
+#if defined(CPUARM)
+    uint32_t tmp = ((uint32_t)val) / 10;
+#else
     uint16_t tmp = ((uint16_t)val) / 10;
+#endif
     while (tmp) {
       len++;
       tmp /= 10;

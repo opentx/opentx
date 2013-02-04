@@ -55,6 +55,12 @@
 #define CENTER_OFS    0
 #endif
 
+#if defined(CPUARM)
+#define lcdint_t      int32_t
+#else
+#define lcdint_t      int16_t
+#endif
+
 #if LCD_H > 64
 #define LCD_LINES     9
 #else
@@ -159,8 +165,8 @@ extern void lcd_putsLeft(uint8_t y, const pm_char * s);
 #define lcd_putsCenter(y, s) lcd_puts((LCD_W-sizeof(TR_##s)*FW+FW-2)/2, y, STR_##s)
 
 extern void lcd_outhex4(xcoord_t x, uint8_t y, uint16_t val);
-extern void lcd_outdezAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags mode=0);
-extern void lcd_outdezNAtt(xcoord_t x, uint8_t y, int16_t val, LcdFlags mode=0, uint8_t len=0);
+extern void lcd_outdezAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags mode=0);
+extern void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags mode=0, uint8_t len=0);
 extern void lcd_outdez8(xcoord_t x, uint8_t y, int8_t val);
 
 extern void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
