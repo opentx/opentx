@@ -1987,7 +1987,13 @@ void menuModelMixOne(uint8_t event)
               CHECK_INCDEC_MODELVAR(event, md2->curveParam, -MAX_CURVES, CURVE_BASE+MAX_CURVES-1);
               if (md2->curveParam == 0)
                 md2->curveMode = MODE_DIFFERENTIAL;
+#if defined(ROTARY_ENCODERS) || defined(PCBX9D)
+              if (m_posHorz != 0) {
+                REPEAT_LAST_CURSOR_MOVE();
+              }
+#else
               m_posHorz = 0;
+#endif
             }
           }
         }
