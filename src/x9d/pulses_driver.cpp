@@ -75,7 +75,7 @@ void init_pxx()
   DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 | DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1 ; // Write ones to clear bits
   DMA2_Stream1->CR = DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
                                                                                  | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
-  DMA2_Stream1->PAR = (uint32_t) &TIM1->DMAR ;
+  DMA2_Stream1->PAR = CONVERT_PTR(&TIM1->DMAR);
   DMA2_Stream1->M0AR = CONVERT_PTR(&pxxStream[1]);
 //      DMA2_Stream1->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 //      DMA2_Stream1->NDTR = 100 ;
