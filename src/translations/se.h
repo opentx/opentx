@@ -32,8 +32,8 @@
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
 
-#define LEN_VTRIMINC           TR("\006","\012")
-#define TR_VTRIMINC            TR("Expo\0""xFin\0""Fin\0""Medium""Grov\0","Exponentiell""Extra Fin\0""Fin\0""Medium\0""Grov\0")
+#define LEN_VTRIMINC           TR("\006","\014")
+#define TR_VTRIMINC            TR("Expo  ""xFin  ""Fin   ""Medium""Grov  ","Exponentiell""Extra Fin   ""Fin         ""Medium      ""Grov        ")
 
 #define LEN_RETA123            "\001"
 
