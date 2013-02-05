@@ -32,8 +32,8 @@
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
 
-#define LEN_VTRIMINC           TR("\006","\013")
-#define TR_VTRIMINC            TR("Expo  ""xFin  ""Fin   ""Medium""Grov  ","Exponentiel""Extra Fin  ""Fin        ""Medium     ""Grov       ")
+#define LEN_VTRIMINC           TR("\006","\012")
+#define TR_VTRIMINC            TR("Expo\0""xFin\0""Fin\0""Medium""Grov\0","Exponentiell""Extra Fin\0""Fin\0""Medium\0""Grov\0")
 
 #define LEN_RETA123            "\001"
 
@@ -218,11 +218,11 @@
 #endif
 
 #if defined(PCBX9D)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301""CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"" ON"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301""LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF""LBG""LBH""LBI""LBJ""LBK""LBL""LBM""LBN""LBO""LBP""LBQ""LBR""LBS""LBT""LBU""LBV""LBW"" ON"
 #elif defined(PCBSKY9X)
-  #define TR_VSWITCHES         "GAS""ROD""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC""BRD""BRE""BRF""BRG""BRH""BRI""BRJ""BRK""BRL""BRM""BRN""BRO""BRP""BRQ""BRR""BRS""BRT""BRU""BRV""BRW"" P\203"
+  #define TR_VSWITCHES         "GAS""ROD""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF""LBG""LBH""LBI""LBJ""LBK""LBL""LBM""LBN""LBO""LBP""LBQ""LBR""LBS""LBT""LBU""LBV""LBW"" P\203"
 #else
-  #define TR_VSWITCHES         "GAS""ROD""H\205J""ID0""ID1""ID2" TR_EXTRA_3POS_SWITCHES "SKE""LAN""TRN""BR1""BR2""BR3""BR4""BR5""BR6""BR7""BR8""BR9""BRA""BRB""BRC"" P\203"
+  #define TR_VSWITCHES         "GAS""ROD""H\205J""ID0""ID1""ID2" TR_EXTRA_3POS_SWITCHES "SKE""LAN""TRN""LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC"" P\203"
 #endif
 
 #define LEN_VSRCRAW            "\004"
@@ -286,7 +286,7 @@
 #else
   #define TR_MENUWHENDONE        CENTER"\006[MENU] Avslutar "
 #endif
-#define TR_FREE                "Ledigt"
+#define TR_FREE                "kvar"
 #define TR_DELETEMODEL         "Radera Modell"
 #define TR_COPYINGMODEL        "Kopierar Modell"
 #define TR_MOVINGMODEL         "Flyttar Modell"
@@ -305,7 +305,7 @@
 #define TR_TTRIM               "GasTrim"
 #define TR_BEEPCTR             "Centerpip"
 #define TR_PROTO               TR(INDENT"Proto",INDENT"Protokoll")
-#define TR_PPMFRAME            "PPM-ram  "
+#define TR_PPMFRAME            "PPM-paket"
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Brytare"
 #define TR_TRIMS               "Trimmar"
@@ -500,7 +500,7 @@
 #define TR_V2                  "V2"
 #define TR_DURATION            "Tidl\201ngd"
 #define TR_DELAY               "F\202rdr\202j"
-#define TR_SD_CARD             "SD-kord"
+#define TR_SD_CARD             "SD-kort"
 #define TR_SDHC_CARD           "SD/HC-kort"
 #define TR_NO_SOUNDS_ON_SD     "Inga ljud i SD"
 #define TR_NO_MODELS_ON_SD     "Ingen modell i SD"
@@ -528,4 +528,4 @@
 #define TR_OWN                 "Egen"
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
-#define TR_CHANNELS_MONITOR    "KANAL-MONITOR"
+#define TR_CHANNELS_MONITOR    "Kanal\205versikt""
