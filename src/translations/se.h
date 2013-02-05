@@ -435,7 +435,7 @@
 #define TR_MENUCALIBRATION     "Kalibrering"
 #define TR_TRIMS2OFFSETS       "\004[Spara Trimv\201rden]"
 #define TR_MENUMODELSEL        TR("Modell","V\201lj Modell")
-#define TR_MENUSETUP           TR("V\201rden","Modellinst\201llningar")"
+#define TR_MENUSETUP           TR("V\201rden","Modellinst\201llningar")
 #define TR_MENUFLIGHTPHASE     "Flygfas"
 #define TR_MENUFLIGHTPHASES    "Flygfaser"
 #define TR_MENUHELISETUP       "Helikopter"
