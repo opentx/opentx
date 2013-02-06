@@ -6,7 +6,7 @@
 #define TR_MMMINV              "---""INV"
 
 #define LEN_NCHANNELS          "\004"
-#define TR_NCHANNELS           "4KN 6KN 8KN 10KN12KN14KN16KN"
+#define TR_NCHANNELS           "\0014KN\0016KN\0018KN10KN12KN14KN16KN"
 
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Tyst ""Alarm""EjKnp""Alla "
@@ -89,7 +89,7 @@
 #define LEN_VCSWFUNC           "\006"
 #define TR_VCSWFUNC            "---\0  ""v1>x\0 ""v1<x\0 ""|v1|>x""|v1|<x""AND\0  ""OR\0   ""XOR\0  ""v1==v2""v1!=v2""v1>v2\0""v1<v2\0""v1>=v2""v1<=v2""d>=x\0 ""|d|>=x"
 
-#define LEN_VFSWFUNC           "\015"
+#define LEN_VFSWFUNC           "\013"
 
 #if defined(VARIO)
   #define TR_VVARIO            "Vario        "
@@ -98,33 +98,33 @@
 #endif
 
 #if defined(AUDIO)
-  #define TR_SOUND             "Spela Ljud\0  "
+  #define TR_SOUND             "Spela Ljud\0"
 #else
-  #define TR_SOUND             "Pip\0         "
+  #define TR_SOUND             "Pip\0       "
 #endif
 
 #if defined(HAPTIC)
-  #define TR_HAPTIC            "Vibrator\0    "
+  #define TR_HAPTIC            "Vibrator\0  "
 #else
-  #define TR_HAPTIC            "[Vibrator]\0  "
+  #define TR_HAPTIC            "[Vibrator]\0"
 #endif
 
 #if defined(VOICE)
-  #define TR_PLAY_TRACK        "Spela Sp\200r\0  "
-  #define TR_PLAY_VALUE        "Spela V\201rde\0 "
+  #define TR_PLAY_TRACK        "Spela Sp\200r\0"
+  #define TR_PLAY_VALUE        "Spela V\201rde"
 #else
-  #define TR_PLAY_TRACK        "[Spela Sp\200r]\0"
-  #define TR_PLAY_VALUE        "[Spela V\201rde]\0"
+  #define TR_PLAY_TRACK        "[Spela Sp\200r]"
+  #define TR_PLAY_VALUE        "[Spela V\201rde]"
 #endif
 
 #if defined(CPUARM)
   #if defined(SDCARD)
-    #define TR_SDCLOGS         "[SDCARD Logg]"
+    #define TR_SDCLOGS         "SDCARD Loggar"
   #else
     #define TR_SDCLOGS         "[SDCARD Logg]"
   #endif
-  #define TR_FSW_VOLUME        "Volym\0       "
-  #define TR_FSW_BG_MUSIC      "Bg Musik\0    ""BgMusic Pause"
+  #define TR_FSW_VOLUME        "Volym\0     "
+  #define TR_FSW_BG_MUSIC      "BgMusik\0   ""BgMusik ||\0"
 #elif defined(PCBGRUVIN9X)
   #if defined(SDCARD)
     #define TR_SDCLOGS         "SDCARD Loggar"
@@ -140,24 +140,24 @@
 #endif
 
 #ifdef GVARS
-  #define TR_FSW_ADJUST_GVAR   "Adjust \0     "
+  #define TR_FSW_ADJUST_GVAR   "Justera\0   "
 #else
   #define TR_FSW_ADJUST_GVAR
 #endif
 
 #ifdef DEBUG
-  #define TR_FSW_TEST          "Test\0        "
+  #define TR_FSW_TEST          "Test\0"
 #else
   #define TR_FSW_TEST
 #endif
 
-#define TR_VFSWFUNC            "S\201kra\0       ""Trainer\0     ""S\201tt Trim    " TR_SOUND TR_HAPTIC "Nollst\201ll    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Bakgrundsljus" TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
+#define TR_VFSWFUNC            "S\201kra\0     ""Trainer \0  ""S\201tt Trim\0 " TR_SOUND TR_HAPTIC "Nollst\201ll\0 " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Belysning\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
-#define LEN_VFSWRESET          "\006"
-#define TR_VFSWRESET           "Timer1""Timer2""Allt  ""Telem."
+#define LEN_VFSWRESET          TR("\006","\012")
+#define TR_VFSWRESET           "Timer1  ""Timer2  ""Allt     ""Telemetri"
 
 #define LEN_FUNCSOUNDS         "\006"
-#define TR_FUNCSOUNDS          "Pip1  ""Pip2  ""Pip3  ""Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""Pip   ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
+#define TR_FUNCSOUNDS          "Pip1  ""Pip2  ""Pip3  ""Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""F\200gel ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS         "\004"
 #define TR_VTELEMCHNS          "---\0""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Cur+""Acc\0""Tid\0"
@@ -182,7 +182,7 @@
 #define TR_VALARMFN            "<>"
 
 #define LEN_VTELPROTO          "\007"
-#define TR_VTELPROTO           "---\0   ""Hub\0   ""WSHH\202g."
+#define TR_VTELPROTO           "---\0  ""Hub\0   ""WSHH\202g."
 
 #define LEN_VOLTSRC            "\003"
 #define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
@@ -288,9 +288,9 @@
 #endif
 #define TR_FREE                "kvar"
 #define TR_DELETEMODEL         "Radera Modell"
-#define TR_COPYINGMODEL        "Kopierar Modell"
-#define TR_MOVINGMODEL         "Flyttar Modell"
-#define TR_LOADINGMODEL        "Laddar Modell"
+#define TR_COPYINGMODEL        "Kopierar Modell "
+#define TR_MOVINGMODEL         "Flyttar Modell "
+#define TR_LOADINGMODEL        "Laddar Modell   "
 #define TR_NAME                "Namn"
 #define TR_MODELNAME           "Modellnamn"
 #define TR_PHASENAME           "Fasnamn   "
