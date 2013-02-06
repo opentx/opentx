@@ -137,16 +137,15 @@ void refreshModelAudioFiles()
   info.lfsize = sizeof(lfn);
 #endif
 
-  char filename[64] = SOUNDS_PATH "/";
+  char filename[AUDIO_FILENAME_MAXLEN+1] = SOUNDS_PATH "/";
 
   if (sdMounted()) {
     char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
     *buf++ = '/';
 
     for (uint32_t i=0; i<MAX_PHASES; i++) {
-      sdAvailablePhaseAudioFiles[i] = getAvailableFiles(strcat_phasename_default(buf, i), info, filename) << 4;
-      char *tmp = strcat_phasename_nodefault(buf, i);
-      if (tmp != buf) sdAvailablePhaseAudioFiles[i] += getAvailableFiles(tmp, info, filename);
+      char *tmp = strcat_phasename(buf, i);
+      sdAvailablePhaseAudioFiles[i] = (tmp != buf ? getAvailableFiles(strcat_phasename(buf, i), info, filename) : 0);
     }
 
     /* for (uint32_t i=0; i<MAX_MIXERS; i++) {
@@ -159,13 +158,15 @@ void refreshModelAudioFiles()
 bool isAudioFileAvailable(uint32_t i, char * filename)
 {
   uint8_t category = (i >> 24);
+  uint8_t index = (i >> 16) & 0xFF;
+  uint8_t event = i & 0xFF;
 
 #if 0
   printf("isAudioFileAvailable(%08x)\n", i); fflush(stdout);
 #endif
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
-    if (sdAvailableSystemAudioFiles & ((uint32_t)1 << i)) {
+    if (sdAvailableSystemAudioFiles & ((uint32_t)1 << event)) {
       strcpy(filename, SYSTEM_SOUNDS_PATH "/");
       strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
       strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
@@ -173,24 +174,11 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
     }
   }
   else if (category == PHASE_AUDIO_CATEGORY) {
-    uint8_t index = (i >> 16) & 0xFF;
-    uint8_t event = i & 0xFF;
-    if (sdAvailablePhaseAudioFiles[index] & (1 << event)) {
+    if (sdAvailablePhaseAudioFiles[index] & ((uint32_t)1 << event)) {
       strcpy(filename, SOUNDS_PATH "/");
       char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
       *str++ = '/';
-      char * tmp = strcat_phasename_nodefault(str, index);
-      if (tmp != str) {
-        strcpy(tmp, suffixes[event]);
-        strcat(tmp, SOUNDS_EXT);
-        return true;
-      }
-    }
-    else if ((sdAvailablePhaseAudioFiles[index] >> 4) & (1 << event)) {
-      strcpy(filename, SOUNDS_PATH "/");
-      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-      *str++ = '/';
-      char * tmp = strcat_phasename_default(str, index);
+      char * tmp = strcat_phasename(str, index);
       if (tmp != str) {
         strcpy(tmp, suffixes[event]);
         strcat(tmp, SOUNDS_EXT);
@@ -199,13 +187,11 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
     }
   }
   else if (category == MIXER_AUDIO_CATEGORY) {
-    uint8_t index = (i >> 16) & 0xFF;
-    uint8_t event = i & 0xFF;
-    if (sdAvailableMixerAudioFiles[index] & (1 << event)) {
+    if (sdAvailableMixerAudioFiles[index] & ((uint32_t)1 << event)) {
       strcpy(filename, SOUNDS_PATH "/");
       char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
       *str++ = '/';
-      char * tmp = strcat_mixername_nodefault(str, index);
+      char * tmp = strcat_mixername(str, index);
       if (tmp != str) {
         strcpy(tmp, suffixes[event]);
         strcat(tmp, SOUNDS_EXT);
@@ -290,9 +276,11 @@ void audioTimerHandle(void)
 void audioTask(void* pdata)
 {
 #if defined(SDCARD)
-  codecsInit();
-  sdInit();
-  AUDIO_TADA();
+  if (!unexpectedShutdown) {
+    codecsInit();
+    sdInit();
+    AUDIO_TADA();
+  }
 #endif  
 
   while (1) {
@@ -635,7 +623,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 
   if (flags & PLAY_BACKGROUND) {
     memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));
-    strcpy(backgroundContext.fragment.file, filename); // TODO strncpy
+    strncpy(backgroundContext.fragment.file, filename, 32);
     backgroundContext.fragment.id = id;
     if (!busy()) {
       state = AUDIO_RESUMING;
@@ -692,11 +680,11 @@ void AudioQueue::reset()
 
 void audioEvent(uint8_t e, uint8_t f)
 {
-#ifdef SDCARD
-  char filename[32];
+#if defined(SDCARD)
+  char filename[AUDIO_FILENAME_MAXLEN+1];
 #endif
 
-#ifdef HAPTIC
+#if defined(HAPTIC)
   haptic.event(e); //do this before audio to help sync timings
 #endif
 
@@ -706,7 +694,7 @@ void audioEvent(uint8_t e, uint8_t f)
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
-#ifdef SDCARD
+#if defined(SDCARD)
     if (e < AU_FRSKY_FIRST && isAudioFileAvailable(e, filename)) {
       audioQueue.playFile(filename);
     }

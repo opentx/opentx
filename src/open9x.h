@@ -84,6 +84,12 @@
 #define IF_VOICE(x)
 #endif
 
+#if defined(PWM_BACKLIGHT)
+#define CASE_PWM_BACKLIGHT(x) x,
+#else
+#define CASE_PWM_BACKLIGHT(x)
+#endif
+
 #if defined(VARIO)
 #define IF_VARIO(x) x,
 #else
@@ -725,17 +731,19 @@ inline bool navigationRotaryEncoder(uint8_t event)
 
 #if defined(GVARS)
   #if defined(CPUM64)
-    int16_t getGVarValue(int8_t x, int16_t min, int16_t max);
+    int16_t getGVarValue(int16_t x, int16_t min, int16_t max);
     void setGVarValue(uint8_t x, int8_t value);
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
     #define SET_GVAR(idx, val, p) setGVarValue(idx, val)
   #else
     uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx);
-    int16_t getGVarValue(int8_t x, int16_t min, int16_t max, int8_t phase);
+    int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase);
     void setGVarValue(uint8_t x, int8_t value, int8_t phase);
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
     #define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)
   #endif
+  #define GV1_SMALL  123
+  #define GV1_LARGE  1024
   #define GVAR_DISPLAY_TIME     100 /*1 second*/;
   extern uint8_t s_gvar_timer;
   extern uint8_t s_gvar_last;
@@ -1229,9 +1237,8 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
 uint8_t zlen(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelNames[idx], LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
-#define strcat_phasename_default(dest, idx) strcat_zchar(dest, NULL, 0, STR_FP, PSIZE(TR_FP), idx)
-#define strcat_phasename_nodefault(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
-#define strcat_mixername_nodefault(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
+#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
+#define strcat_mixername(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
 #define ZLEN(s) zlen(s, sizeof(s))
 #endif
 

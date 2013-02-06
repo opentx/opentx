@@ -188,8 +188,6 @@ uint8_t zlen(const char *str, uint8_t size)
 
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
 {
-  // TODO review if all if are needed
-
   int8_t len = 0;
 
   if (name) {
@@ -278,6 +276,11 @@ void per10ms()
 #endif
 
   // These moved here from perOut() to improve beep trigger reliability.
+#if defined(PWM_BACKLIGHT)
+  if (g_tmr10ms % 4 == 0)
+    fadeBacklight(); // increment or decrement brightness until target brightness is reached
+#endif
+
   if(mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) AUDIO_MIX_WARNING_1();
   if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_2();
   if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
@@ -1070,20 +1073,21 @@ uint8_t s_gvar_timer = 0;
 uint8_t s_gvar_last = 0;
 
 #if defined(CPUM64)
-int16_t getGVarValue(int8_t x, int16_t min, int16_t max)
+int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
 {
-  if (x >= -125 && x <= (max <= 120 ? 120 : 125))
-    return x;
+  if (x > max) {
+    int8_t idx = (max <= 100 ? x - GV1_SMALL : x - GV1_LARGE);
+    int8_t mul = 1;
 
-  int8_t idx = (uint8_t)x - 126;
-  int8_t mul = 1;
+    if (idx < 0) {
+      idx = 1-idx;
+      mul = -1;
+    }
 
-  if (idx < 0) {
-    idx = 1-idx;
-    mul = -1;
+    x = GVAR_VALUE(idx, -1) * mul;
   }
 
-  return limit(min, GVAR_VALUE(idx, -1), max) * mul;
+  return limit(min, x, max);
 }
 
 void setGVarValue(uint8_t idx, int8_t value)
@@ -1109,20 +1113,21 @@ uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
   return 0;
 }
 
-int16_t getGVarValue(int8_t x, int16_t min, int16_t max, int8_t phase)
+int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
 {
-  if (x >= -125 && x <= (max <= 120 ? 120 : 125))
-    return x;
+  if (x > max) {
+    int8_t idx = (max <= 100 ? x - GV1_SMALL : x - GV1_LARGE);
+    int8_t mul = 1;
 
-  int8_t idx = (uint8_t)x - 126;
-  int8_t mul = 1;
+    if (idx < 0) {
+      idx = 1-idx;
+      mul = -1;
+    }
 
-  if (idx < 0) {
-    idx = 1-idx;
-    mul = -1;
+    x = GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)) * mul;
   }
 
-  return limit(min, GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)), max) * mul;
+  return limit(min, x, max);
 }
 
 void setGVarValue(uint8_t idx, int8_t value, int8_t phase)
@@ -2486,7 +2491,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== OFFSET ===============
       if (apply_offset_and_curve) {
-        int8_t offset = GET_GVAR(md->offset, -125, 125, s_perout_flight_phase);
+        int8_t offset = GET_GVAR(MD_OFFSET(md), -125, 125, s_perout_flight_phase);
         if (offset) v += calc100toRESX(offset);
       }
 
@@ -2507,7 +2512,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         v = applyCurve(v, md->curveParam);
       }
 
-      int16_t weight = GET_GVAR(md->weight, -500, 500, s_perout_flight_phase);
+      int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);
 
       //========== SPEED ===============
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values

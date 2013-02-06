@@ -83,6 +83,16 @@ bool checkSlaveMode();
 #define JACK_PPM_OUT() PORTG &= ~(1<<OUT_G_SIM_CTL)
 #define JACK_PPM_IN() PORTG |=  (1<<OUT_G_SIM_CTL)
 
+#if defined(PWM_BACKLIGHT)
+void backlightFadeOn();
+#define __BACKLIGHT_ON  backlightFadeOn()
+void backlightFadeOff();
+#define __BACKLIGHT_OFF backlightFadeOff()
+bool getBackLightState();
+#define IS_BACKLIGHT_ON() getBackLightState()
+void fadeBacklight();
+#else
+
 #if defined(SP22)
 #define __BACKLIGHT_ON  PORTB &= ~(1 << OUT_B_LIGHT)
 #define __BACKLIGHT_OFF PORTB |=  (1 << OUT_B_LIGHT)
@@ -91,6 +101,7 @@ bool checkSlaveMode();
 #define __BACKLIGHT_ON  PORTB |=  (1 << OUT_B_LIGHT)
 #define __BACKLIGHT_OFF PORTB &= ~(1 << OUT_B_LIGHT)
 #define IS_BACKLIGHT_ON() (PORTB & (1<<OUT_B_LIGHT))
+#endif
 #endif
 
 // G: The following comments relate to the original stock PCB only

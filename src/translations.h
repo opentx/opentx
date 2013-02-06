@@ -301,6 +301,10 @@ extern const pm_char STR_MINUTEBEEP[];
 extern const pm_char STR_BEEPCOUNTDOWN[];
 extern const pm_char STR_BACKLIGHT_LABEL[];
 extern const pm_char STR_BLDELAY[];
+#if defined(PWM_BACKLIGHT)
+extern const pm_char STR_BLONBRIGHTNESS[];
+extern const pm_char STR_BLOFFBRIGHTNESS[];
+#endif
 extern const pm_char STR_SPLASHSCREEN[];
 extern const pm_char STR_THROTTLEWARNING[];
 extern const pm_char STR_SWITCHWARNING[];

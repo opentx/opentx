@@ -37,11 +37,12 @@
 
 #include "FatFs/ff.h"
 
-#define AUDIO_QUEUE_LENGTH (20)
-#define BEEP_DEFAULT_FREQ  (70)
-#define BEEP_OFFSET        (10)
-#define BEEP_KEY_UP_FREQ   (BEEP_DEFAULT_FREQ+5)
-#define BEEP_KEY_DOWN_FREQ (BEEP_DEFAULT_FREQ-5)
+#define AUDIO_FILENAME_MAXLEN (40)
+#define AUDIO_QUEUE_LENGTH    (20)
+#define BEEP_DEFAULT_FREQ     (70)
+#define BEEP_OFFSET           (10)
+#define BEEP_KEY_UP_FREQ      (BEEP_DEFAULT_FREQ+5)
+#define BEEP_KEY_DOWN_FREQ    (BEEP_DEFAULT_FREQ-5)
 
 extern uint16_t Sine_values[];
 
@@ -57,7 +58,7 @@ class ToneFragment {
 
 class AudioFragment : public ToneFragment {
   public:
-    char file[32+1];
+    char file[AUDIO_FILENAME_MAXLEN+1];
 };
 
 extern "C" void DAC_IRQHandler();
@@ -195,8 +196,8 @@ extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define STOP_PLAY(id) audioQueue.stopPlay((id))
 #define AUDIO_RESET() audioQueue.reset()
 #if defined(SDCARD)
-#define PLAY_PHASE_OFF(phase) do { char filename[64]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_OFF, filename)) audioQueue.playFile(filename); } while (0)
-#define PLAY_PHASE_ON(phase)  do { char filename[64]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_ON, filename)) audioQueue.playFile(filename); } while (0)
+#define PLAY_PHASE_OFF(phase) do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_OFF, filename)) audioQueue.playFile(filename); } while (0)
+#define PLAY_PHASE_ON(phase)  do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_ON, filename)) audioQueue.playFile(filename); } while (0)
 #else
 #define PLAY_PHASE_OFF(phase)
 #define PLAY_PHASE_ON(phase)

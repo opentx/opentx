@@ -64,6 +64,15 @@ inline void boardInit()
   OCR0 = 156;
 #endif
 
+#if defined(PWM_BACKLIGHT)
+  /** Smartieparts LED Backlight is connected to PORTB/pin7, which can be used as pwm output of timer2 **/
+#if defined(SP22)
+  TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21)|(1<<COM20); // inv. pwm mode, clk/64
+#else
+  TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21); // pwm mode, clk/64
+#endif
+#endif
+
   TIMSK |= (1<<OCIE0) |  (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
   /********************************/
 }
@@ -215,3 +224,41 @@ bool checkSlaveMode()
   }
   return lastSlaveMode;
 }
+
+#if defined(PWM_BACKLIGHT)
+
+// exponential PWM table for linear brightness
+static const uint16_t pwmtable[16] PROGMEM =
+{
+    0, 2, 3, 4, 6, 8, 11, 16, 23, 32, 45, 64, 90, 128, 181, 255
+};
+
+static uint8_t bl_target;
+static uint8_t bl_current;
+
+void backlightFadeOn()
+{
+  bl_target = 15 - g_eeGeneral.blOnBright;
+}
+
+void backlightFadeOff()
+{
+  bl_target = g_eeGeneral.blOffBright;
+}
+
+bool getBackLightState()
+{
+  return (bl_target==g_eeGeneral.blOnBright);
+}
+
+void fadeBacklight() //called from per10ms()
+{
+  if (bl_target != bl_current) {
+    if (bl_target > bl_current)
+      OCR2 = pgm_read_word(&pwmtable[++bl_current]);
+    else
+      OCR2 = pgm_read_word(&pwmtable[--bl_current]);
+  }
+}
+
+#endif

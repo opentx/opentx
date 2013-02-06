@@ -138,6 +138,8 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_BACKLIGHT_LABEL,
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
+  CASE_PWM_BACKLIGHT(ITEM_SETUP_BACKLIGHT_BRIGHTNESS_OFF)
+  CASE_PWM_BACKLIGHT(ITEM_SETUP_BACKLIGHT_BRIGHTNESS_ON)
   ITEM_SETUP_FLASH_BEEP,
 #if defined(SPLASH) && !defined(FSPLASH)
   ITEM_SETUP_DISABLE_SPLASH,
@@ -162,7 +164,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) LABEL(SOUND), 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(TIMER_EVENTS), 0, 0, LABEL(BACKLIGHT), 0, 0, 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, LABEL(TX_MODE), CASE_PCBX9D(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) LABEL(SOUND), 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(TIMER_EVENTS), 0, 0, LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, LABEL(TX_MODE), CASE_PCBX9D(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -382,15 +384,15 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_THROTTLE_REVERSED:
-        g_eeGeneral.throttleReversed = onoffMenuItem( g_eeGeneral.throttleReversed, RADIO_SETUP_2ND_COLUMN, y, STR_THROTTLEREVERSE, attr, event ) ;
+        g_eeGeneral.throttleReversed = onoffMenuItem(g_eeGeneral.throttleReversed, RADIO_SETUP_2ND_COLUMN, y, STR_THROTTLEREVERSE, attr, event ) ;
         break;
 
       case ITEM_SETUP_MINUTE_BEEP:
-        g_eeGeneral.minuteBeep = onoffMenuItem( g_eeGeneral.minuteBeep, RADIO_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event ) ;
+        g_eeGeneral.minuteBeep = onoffMenuItem(g_eeGeneral.minuteBeep, RADIO_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event ) ;
         break;
 
       case ITEM_SETUP_COUNTDOWN_BEEP:
-        g_eeGeneral.preBeep = onoffMenuItem( g_eeGeneral.preBeep, RADIO_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, attr, event ) ;
+        g_eeGeneral.preBeep = onoffMenuItem(g_eeGeneral.preBeep, RADIO_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_MODE:
@@ -402,15 +404,29 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
-        g_eeGeneral.flashBeep = onoffMenuItem( g_eeGeneral.flashBeep, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
+        g_eeGeneral.flashBeep = onoffMenuItem(g_eeGeneral.flashBeep, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:
-        lcd_putsLeft( y, STR_BLDELAY);
+        lcd_putsLeft(y, STR_BLDELAY);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.lightAutoOff*5, attr|LEFT);
         lcd_putc(lcdLastPos, y, 's');
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
         break;
+
+#if defined(PWM_BACKLIGHT)
+      case ITEM_SETUP_BACKLIGHT_BRIGHTNESS_OFF:
+        lcd_putsLeft(y, STR_BLOFFBRIGHTNESS);
+        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.blOffBright, attr|LEFT);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.blOffBright, 0, 15);
+        break;
+
+      case ITEM_SETUP_BACKLIGHT_BRIGHTNESS_ON:
+        lcd_putsLeft(y, STR_BLONBRIGHTNESS);
+        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, 15-g_eeGeneral.blOnBright, attr|LEFT);
+        if (attr) g_eeGeneral.blOnBright = 15 - checkIncDecGen(event, 15-g_eeGeneral.blOnBright, 0, 15);
+        break;
+#endif
 
 #if defined(SPLASH) && !defined(FSPLASH)
       case ITEM_SETUP_DISABLE_SPLASH:

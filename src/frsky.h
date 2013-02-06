@@ -141,24 +141,39 @@ PACK(struct FrskyHubData {
 
   // TODO later uint16_t minVfas;
 });
-
+#define FRSKY_HUB_DATA FrskyHubData hub;
 #elif defined(WS_HOW_HIGH)
-
-PACK(struct FrskyHubData {
+PACK(struct WSHowHighData {
   int16_t  baroAltitude_bp;     // 0..9,999 meters
   int16_t  baroAltitudeOffset;
   int16_t  minAltitude;
   int16_t  maxAltitude;
+#if defined(VARIO)
+  int16_t  varioAltitudeQueue[VARIO_QUEUE_LENGTH]; //circular buffer
+  uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
+  int32_t  varioAltitude_cm;
+  int16_t  varioSpeed;       // Vertical speed in cm/s
+#endif
 });
-
+#define FRSKY_HUB_DATA WSHowHighData hub;
+#elif defined(VARIO)
+PACK(struct VarioData {
+  int16_t  varioAltitudeQueue[VARIO_QUEUE_LENGTH]; //circular buffer
+  uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
+  int32_t  varioAltitude_cm;
+  int16_t  varioSpeed;       // Vertical speed in cm/s
+});
+#define FRSKY_HUB_DATA VarioData hub;
+#else
+#define FRSKY_HUB_DATA
 #endif
 
 struct FrskyData {
   FrskyValueWithMinMax analog[2];
   FrskyValueWithMin    rssi[2];
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  FrskyHubData         hub;
-#endif
+
+  FRSKY_HUB_DATA
+
   uint16_t             currentConsumption;
   uint16_t             currentPrescale;
   uint16_t             power;

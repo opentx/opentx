@@ -174,7 +174,8 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   preBeep:1;
   SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  uint8_t   spare3;
+  uint8_t   blOffBright:4;
+  uint8_t   blOnBright:4;
   uint8_t   lightAutoOff;
   uint8_t   templateSetup;  //RETA order according to chout_ar array 
   int8_t    PPM_Multiplier;
@@ -263,23 +264,24 @@ PACK(typedef struct t_LimitData {
 PACK(typedef struct t_MixData {
   uint8_t  destCh;
   uint16_t phases;
-  uint8_t curveMode:1;       // O=curve, 1=differential
-  uint8_t noExpo:1;
-  int8_t  carryTrim:3;
-  uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  uint8_t spare:1;
-  int16_t weight;
-  int8_t  swtch;
-  int8_t  curveParam;
-  uint8_t mixWarn;         // mixer warning
-  uint8_t delayUp;
-  uint8_t delayDown;
-  uint8_t speedUp;
-  uint8_t speedDown;
-  uint8_t srcRaw;
-  int8_t  offset;
-  char    name[LEN_EXPOMIX_NAME];
+  uint8_t  curveMode:1;       // O=curve, 1=differential
+  uint8_t  noExpo:1;
+  int8_t   carryTrim:3;
+  uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  offsetMode:1; // TODO change offset to 16bits in future EEPROM
+  int16_t  weight;
+  int8_t   swtch;
+  int8_t   curveParam;
+  uint8_t  mixWarn;           // mixer warning
+  uint8_t  delayUp;
+  uint8_t  delayDown;
+  uint8_t  speedUp;
+  uint8_t  speedDown;
+  uint8_t  srcRaw;
+  int8_t   offset;
+  char     name[LEN_EXPOMIX_NAME];
 }) MixData;
+#define MD_WEIGHT(md) (md->weight)
 #else
 #define DELAY_STEP  2
 #define SLOW_STEP   2
@@ -289,7 +291,8 @@ PACK(typedef struct t_MixData {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
-  uint8_t spare:2;
+  uint8_t weightMode:1;
+  uint8_t offsetMode:1;
   int8_t  weight;
   int8_t  swtch:6;
   uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
@@ -304,6 +307,17 @@ PACK(typedef struct t_MixData {
   int8_t  curveParam;
   int8_t  offset;
 }) MixData;
+#if defined(GVARS)
+  #define MD_WEIGHT(md) (md->weightMode ? (int16_t)GV1_LARGE+md->weight : md->weight)
+#else
+  #define MD_WEIGHT(md) (md->weight)
+#endif
+#endif
+
+#if defined(GVARS)
+#define MD_OFFSET(md) (md->offsetMode ? (int16_t)GV1_LARGE+md->offset : md->offset)
+#else
+#define MD_OFFSET(md) (md->offset)
 #endif
 
 #if defined(CPUARM)

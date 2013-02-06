@@ -103,6 +103,10 @@ HAPTIC = NO
 # Values = YES, NO 
 SP22 = NO
 
+# Fade Backlight using PWM
+# Values = YES, NO 
+PWM_BACKLIGHT = NO
+
 # SPLASH on START
 # Values = YES, NO, FIXED
 SPLASH = YES
@@ -611,6 +615,13 @@ ifeq ($(PCB), STD128)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
   else
+    ifeq ($(PWM_BACKLIGHT), YES)
+      ifeq ($(VOICE), YES)
+        $(error Sorry, PWM_BACKLIGHT doesnt work on Mainboards with VOICE mod.)
+      else
+        CPPDEFS += -DPWM_BACKLIGHT
+      endif
+    endif
     CPPSRC += beeper.cpp 
   endif
   
@@ -638,19 +649,26 @@ ifeq ($(PCB), STD)
   EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp
-   
+
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
   else
+    ifeq ($(PWM_BACKLIGHT), YES)
+      ifeq ($(VOICE), YES)
+        $(error Sorry, PWM_BACKLIGHT doesnt work on Mainboards with VOICE mod.)
+      else
+        CPPDEFS += -DPWM_BACKLIGHT
+      endif
+    endif
     CPPSRC += beeper.cpp 
   endif
-  
+     
   ifeq ($(VOICE), YES)
     CPPSRC += stock/voice.cpp
     CPPDEFS += -DVOICE
   endif
-  
+   
   ifeq ($(HAPTIC), YES)
    CPPDEFS += -DHAPTIC
    CPPSRC += haptic.cpp

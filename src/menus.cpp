@@ -718,23 +718,27 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 }
 
 #if defined(GVARS)
-int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event)
+int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event)
 {
-  bool invers = attr&INVERS;
+  uint8_t delta = (max <= 100 ? GV1_SMALL-1 : GV1_LARGE-1);
+  bool invers = (attr & INVERS);
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
-    value = ((value >= 126 || value <= -126) ? GET_GVAR(value, min, max, s_perout_flight_phase) : 126);
+    value = (value > max ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta+1);
     eeDirty(EE_MODEL);
   }
-  if (value >= 126 || value <= -126 || (max <= 120 && value >= 121)) {
+  if (value > max) {
     if (attr & LEFT)
       attr -= LEFT; /* because of ZCHAR */
     else
       x -= 2*FW+FWNUM;
-    int8_t idx = value - 125;
+    int8_t idx = value - delta;
+    if (invers) {
+      CHECK_INCDEC_MODELVAR(event, idx, -4, +5);
+      value = (int16_t)idx + delta;
+    }
     if (idx <= 0) { idx = 1-idx; lcd_putcAtt(x-6, y, '-', attr); }
     putsStrIdx(x, y, STR_GV, idx, attr);
-    if (invers) value = checkIncDec(event, (uint8_t)value, max <= 120 ? 121 : 126, 130, EE_MODEL);
   }
   else {
     lcd_outdezAtt(x, y, value, attr);

@@ -90,6 +90,23 @@ void checkMinMaxAltitude()
   if (frskyData.hub.baroAltitude_bp < frskyData.hub.minAltitude)
     frskyData.hub.minAltitude = frskyData.hub.baroAltitude_bp;
 }
+
+#if defined(VARIO)
+void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
+{
+  int32_t varioAltitude_cm = (int32_t)altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
+  uint8_t varioAltitudeQueuePointer = frskyData.hub.varioAltitudeQueuePointer + 1;
+  if (varioAltitudeQueuePointer == VARIO_QUEUE_LENGTH)
+    varioAltitudeQueuePointer = 0;
+  frskyData.hub.varioAltitudeQueuePointer = varioAltitudeQueuePointer;
+  frskyData.hub.varioSpeed -= frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
+  frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] = varioAltitude_cm - frskyData.hub.varioAltitude_cm;
+  frskyData.hub.varioAltitude_cm = varioAltitude_cm;
+  frskyData.hub.varioSpeed += frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
+}
+#else
+#define evalVario(...)
+#endif
 #endif
 
 #if defined(FRSKY_HUB)
@@ -143,21 +160,6 @@ typedef enum {
   TS_DATA_HIGH, // waiting for data high byte
   TS_XOR = 0x80 // decode stuffed byte
 } TS_STATE;
-
-void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
-{
-#if defined(VARIO)
-  int32_t varioAltitude_cm = (int32_t)altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
-  uint8_t varioAltitudeQueuePointer = frskyData.hub.varioAltitudeQueuePointer + 1;
-  if (varioAltitudeQueuePointer == VARIO_QUEUE_LENGTH)
-    varioAltitudeQueuePointer = 0;
-  frskyData.hub.varioAltitudeQueuePointer = varioAltitudeQueuePointer;
-  frskyData.hub.varioSpeed -= frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
-  frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] = varioAltitude_cm - frskyData.hub.varioAltitude_cm;
-  frskyData.hub.varioAltitude_cm = varioAltitude_cm;
-  frskyData.hub.varioSpeed += frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
-#endif
-}
 
 void parseTelemHubByte(uint8_t byte)
 {
@@ -361,9 +363,11 @@ void processFrskyPacket(uint8_t *packet)
       frskyData.rssi[0].set(packet[3]);
       frskyData.rssi[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+#if defined(VARIO)
       uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
       if (varioSource < 2)
         frskyData.hub.varioSpeed = applyChannelRatio(varioSource, frskyData.analog[varioSource].value);
+#endif
       break;
     }
 #if defined(FRSKY_HUB) || defined (WS_HOW_HIGH)

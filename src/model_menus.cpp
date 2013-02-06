@@ -1771,7 +1771,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 
 enum ExposFields {
   IF_CPUARM(EXPO_FIELD_NAME)
-  EXPO_FIELD_WIDTH,
+  EXPO_FIELD_WEIGHT,
   EXPO_FIELD_EXPO,
   IF_CURVES(EXPO_FIELD_CURVE)
   IF_FLIGHT_PHASES(EXPO_FIELD_FLIGHT_PHASE)
@@ -1800,7 +1800,7 @@ void menuModelExpoOne(uint8_t event)
         editSingleName(EXPO_ONE_2ND_COLUMN+3*FW-sizeof(ed->name)*FW, y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
         break;
 #endif
-      case EXPO_FIELD_WIDTH:
+      case EXPO_FIELD_WEIGHT:
         lcd_putsLeft(y, STR_WEIGHT);
         ed->weight = gvarMenuItem(EXPO_ONE_2ND_COLUMN+3*FW, y, ed->weight, 0, 100, attr, event);
         break;
@@ -1881,6 +1881,24 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
+void gvarWeightItem(xcoord_t x, uint8_t y, MixData *md, uint8_t attr, uint8_t event)
+{
+#if defined(CPUARM) || !defined(GVARS)
+  md->weight = gvarMenuItem(x, y, md->weight, -125, 125, attr, event);
+#else
+  int16_t weight = (md->weightMode ? (int16_t)GV1_LARGE + md->weight : md->weight);
+  weight = gvarMenuItem(x, y, weight, -125, 125, attr, event);
+  if (weight <= 125) {
+    md->weightMode = 0;
+    md->weight = weight;
+  }
+  else {
+    md->weightMode = 1;
+    md->weight = weight - GV1_LARGE;
+  }
+#endif
+}
+
 void menuModelMixOne(uint8_t event)
 {
 #if defined(PCBX9D)
@@ -1948,12 +1966,27 @@ void menuModelMixOne(uint8_t event)
         break;
       case MIX_FIELD_WEIGHT:
         lcd_putsColumnLeft(COLUMN_X, y, STR_WEIGHT);
-        md2->weight = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->weight, -125, 125, attr|LEFT, event);
+        gvarWeightItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2, attr|LEFT, event);
         break;
       case MIX_FIELD_OFFSET:
+      {
         lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_OFFSET));
-        md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event);
+#if defined(GVARS)
+        int16_t offset = (md2->offsetMode ? (int16_t)GV1_LARGE + md2->offset : md2->offset);
+        offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset, -125, 125, attr|LEFT, event);
+        if (offset <= 125) {
+          md2->offsetMode = 0;
+          md2->offset = offset;
+        }
+        else {
+          md2->offsetMode = 1;
+          md2->offset = offset - GV1_LARGE;
+        }
+#else
+       md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
+#endif
         break;
+      }
       case MIX_FIELD_TRIM:
       {
         uint8_t not_stick = (md2->srcRaw > NUM_STICKS);
@@ -2258,7 +2291,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             putsMixerSource(4*FW+0, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
 
-            md->weight = gvarMenuItem(11*FW+3, y, md->weight, -125, 125, attr, event);
+            gvarWeightItem(11*FW+3, y, md, attr, event);
 
 #if defined(CPUARM)
             if (md->name[0]) {
@@ -3425,7 +3458,7 @@ void menuModelTelemetry(uint8_t event)
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMin, -7, 7);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -15, 5+min<int8_t>(0, g_model.frsky.varioCenterMax+5));
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -15, 5+min<int8_t>(10, g_model.frsky.varioCenterMax+5));
               break;
             case 2:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMax, -5+max<int8_t>(-10, g_model.frsky.varioCenterMin-5), +15);

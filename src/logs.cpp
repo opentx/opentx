@@ -44,7 +44,7 @@ const pm_char * openLogs()
   // Determine and set log file filename
   FRESULT result;
   DIR folder;
-  char filename[24];
+  char filename[32];
 
   if (!sdMounted())
     return STR_NO_SDCARD;
