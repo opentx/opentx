@@ -115,6 +115,8 @@ PACK(struct FrskyHubData {
   uint16_t current;          // 0x28   Current
   int16_t  varioAltitudeQueue[VARIO_QUEUE_LENGTH]; //circular buffer
   int32_t  varioAltitude_cm;
+  int16_t  varioSpeed;       // 0x30  Vertical speed in cm/s
+
   /* next fields must keep this order! */
   int16_t  minAltitude;
   int16_t  maxAltitude;
@@ -125,11 +127,12 @@ PACK(struct FrskyHubData {
   uint16_t maxGpsDistance;
   uint16_t maxCurrent;
   /* end */
-  int16_t  varioSpeed;       // 0x38  Added to FrSky protocol for home made varios
+
   uint16_t vfas;             // 0x39  Added to FrSky protocol for home made sensors with a better precision
   uint16_t volts_bp;         // 0x3A
   uint16_t volts_ap;         // 0x3B
   // end of FrSky Hub data
+
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer

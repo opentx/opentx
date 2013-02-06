@@ -258,7 +258,7 @@ void parseTelemHubByte(uint8_t byte)
       // First received barometer altitude => Altitude offset
       if (!frskyData.hub.baroAltitudeOffset)
         frskyData.hub.baroAltitudeOffset = -frskyData.hub.baroAltitude_bp;
-      if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI_V1) {
+      if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI) {
         evalVario(frskyData.hub.baroAltitude_bp, 0);
       }
       frskyData.hub.baroAltitude_bp += frskyData.hub.baroAltitudeOffset;
@@ -266,7 +266,7 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskyHubData, baroAltitude_ap):
-      if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI_V2) {
+      if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI_PLUS) {
         evalVario(frskyData.hub.baroAltitude_bp-frskyData.hub.baroAltitudeOffset, frskyData.hub.baroAltitude_ap);
       }
       break;
@@ -335,7 +335,7 @@ void parseTelemWSHowHighByte(uint8_t byte)
   if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10)) {
     ((uint8_t*)&frskyData.hub)[offsetof(FrskyHubData, baroAltitude_bp)] = byte;
     checkMinMaxAltitude();
-    if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI_V1) {
+    if (g_model.frsky.varioSource == VARIO_SOURCE_ALTI) {
       evalVario(frskyData.hub.baroAltitude_bp, 0);
     }
   }
