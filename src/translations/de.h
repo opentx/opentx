@@ -322,6 +322,8 @@
 #define TR_BEEPCOUNTDOWN                INDENT"Countdown"
 #define TR_BACKLIGHT_LABEL     					"Beleuchtung"
 #define TR_BLDELAY                      INDENT"Dauer"
+#define TR_BLONBRIGHTNESS               INDENT"An Helligkeit"
+#define TR_BLOFFBRIGHTNESS              INDENT"Aus Helligkeit"
 #define TR_SPLASHSCREEN                 "Startbild"
 #define TR_THROTTLEWARNING              "Gasalarm"
 #define TR_SWITCHWARNING                "Sch.Alarm"
