@@ -615,13 +615,6 @@ ifeq ($(PCB), STD128)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
   else
-    ifeq ($(PWM_BACKLIGHT), YES)
-      ifeq ($(VOICE), YES)
-        $(error Sorry, PWM_BACKLIGHT doesnt work on Mainboards with VOICE mod.)
-      else
-        CPPDEFS += -DPWM_BACKLIGHT
-      endif
-    endif
     CPPSRC += beeper.cpp 
   endif
   
@@ -630,6 +623,14 @@ ifeq ($(PCB), STD128)
     CPPDEFS += -DVOICE
   endif
   
+  ifeq ($(PWM_BACKLIGHT), YES)
+    ifeq ($(VOICE), YES)
+      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod.)
+    else
+      CPPDEFS += -DPWM_BACKLIGHT
+    endif
+  endif
+
   ifeq ($(HAPTIC), YES)
    CPPDEFS += -DHAPTIC
    CPPSRC += haptic.cpp
@@ -654,13 +655,6 @@ ifeq ($(PCB), STD)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
   else
-    ifeq ($(PWM_BACKLIGHT), YES)
-      ifeq ($(VOICE), YES)
-        $(error Sorry, PWM_BACKLIGHT doesnt work on Mainboards with VOICE mod.)
-      else
-        CPPDEFS += -DPWM_BACKLIGHT
-      endif
-    endif
     CPPSRC += beeper.cpp 
   endif
      
@@ -669,6 +663,14 @@ ifeq ($(PCB), STD)
     CPPDEFS += -DVOICE
   endif
    
+  ifeq ($(PWM_BACKLIGHT), YES)
+    ifeq ($(VOICE), YES)
+      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod.)
+    else
+      CPPDEFS += -DPWM_BACKLIGHT
+    endif
+  endif
+
   ifeq ($(HAPTIC), YES)
    CPPDEFS += -DHAPTIC
    CPPSRC += haptic.cpp
