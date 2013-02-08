@@ -228,7 +228,7 @@ bool checkSlaveMode()
 #if defined(PWM_BACKLIGHT)
 
 // exponential PWM table for linear brightness
-static const uint16_t pwmtable[16] PROGMEM =
+static const uint8_t pwmtable[16] PROGMEM =
 {
     0, 2, 3, 4, 6, 8, 11, 16, 23, 32, 45, 64, 90, 128, 181, 255
 };
