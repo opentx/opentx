@@ -52,24 +52,35 @@
 #define LEN_VPROTOS      "\006"
 
 #if defined(PXX)
-  #define TR_PXX  "PXX\0  "
+  #define TR_PXX         "PXX\0  "
+#elif defined(DSM2) || defined(IRPROTOS)
+  #define TR_PXX         "[PXX]\0"
 #else
-  #define TR_PXX  "[PXX]\0"
+  #define TR_PXX
 #endif
 
 #if defined(DSM2)
-  #define TR_DSM2 "DSM2\0 "
+  #define TR_DSM2        "LP45\0 ""DSM2\0 ""DSMX\0 "
+#elif defined(IRPROTOS)
+  #define TR_DSM2        "[LP45]""[DSM2]""[DSMX]"
 #else
-  #define TR_DSM2 "[DSM2]"
+  #define TR_DSM2
 #endif
 
 #if defined(IRPROTOS)
-  #define TR_IRPROTOS "SILV  TRAC09PICZ  SWIFT\0"
+  #define TR_IRPROTOS    "SILV  TRAC09PICZ  SWIFT\0"
 #else
   #define TR_IRPROTOS
 #endif
 
-#define TR_VPROTOS       "PPM\0  ""PPM16\0""PPMsim" TR_PXX TR_DSM2 TR_IRPROTOS
+#if defined(CPUARM)
+  #define TR_XPPM
+#else
+  #define TR_XPPM              "PPM16\0""PPMsim"
+#endif
+
+#define TR_VPROTOS             "PPM\0  " TR_XPPM TR_PXX TR_DSM2 TR_IRPROTOS
+
 
 #define LEN_POSNEG       "\003"
 #define TR_POSNEG        "POS""NEG"
@@ -266,9 +277,6 @@
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
-
-#define LEN_DSM2MODE     "\007"
-#define TR_DSM2MODE      "LP4/LP5DSMonlyDSMX   "
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"

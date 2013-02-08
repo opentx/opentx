@@ -85,9 +85,6 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VSWITCHES)
     ISTR(VSRCRAW)
     ISTR(VTMRMODES)
-#if defined(DSM2)
-    ISTR(DSM2MODE)
-#endif
 #if defined(PCBGRUVIN9X) || defined (CPUARM)
     ISTR(DATETIME)
 #endif

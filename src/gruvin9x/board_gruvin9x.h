@@ -81,8 +81,10 @@
 
 // SD driver
 #if !defined(SIMU)
+bool sdMounted();
 void sdMountPoll();
 void sdPoll10ms();
+
 #define SD_IS_HC()       (0)
 #define SD_GET_BLOCKNR() (0)
 #define SD_GET_SIZE_MB() (0)

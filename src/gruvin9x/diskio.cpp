@@ -669,12 +669,17 @@ void sdPoll10ms()
 }
 
 #if !defined(SIMU)
+bool sdMounted()
+{
+  return g_FATFS_Obj.fs_type != 0;
+}
+
 void sdMountPoll()
 {
   static uint8_t mountTimer;
   if (mountTimer-- == 0) {
     mountTimer = 100;
-    if (g_FATFS_Obj.fs_type == 0) {
+    if (!sdMounted()) {
       f_mount(0, &g_FATFS_Obj);
     }
   }

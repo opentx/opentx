@@ -662,14 +662,21 @@ enum menuModelSetupItems {
   ITEM_MODEL_SWITCHES_WARNING,
   ITEM_MODEL_BEEP_CENTER,
   ITEM_MODEL_PROTOCOL,
+  IF_PCBSKY9X(ITEM_MODEL_PPM2_PROTOCOL)
   ITEM_MODEL_PROTOCOL_PARAMS,
   ITEM_MODEL_SETUP_MAX
 };
 
 #if defined(CPUARM) || defined(PCBGRUVIN9X)
-#define FIELD_TIMER_MAX 3
+#define FIELD_TIMER_MAX    3
 #else
-#define FIELD_TIMER_MAX 2
+#define FIELD_TIMER_MAX    2
+#endif
+
+#if defined(PCBSKY9X)
+#define FIELD_PROTOCOL_MAX 2
+#else
+#define FIELD_PROTOCOL_MAX 1
 #endif
 
 #if LCD_W >= 212
@@ -700,7 +707,7 @@ void menuModelSetup(uint8_t event)
     s_rangecheck_mode = 0;
 #endif
 
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((protocol<=PROTO_PPMSIM||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), {0,0,CASE_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1,1,2});
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), {0,0,CASE_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, IF_PCBSKY9X(1) 2 });
 
   uint8_t sub = m_posVert - 1;
   int8_t editMode = s_editMode;
@@ -871,42 +878,79 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_PROTOCOL:
+#if defined(PCBSKY9X)
+        lcd_putsLeft(y, PSTR("Port1"));
+#else
         lcd_putsLeft(y, NO_INDENT(STR_PROTO));
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VPROTOS, protocol,
-            (attr && m_posHorz==0 ? (editMode>0 ? BLINK|INVERS : INVERS):0));
-        if (protocol <= PROTO_PPMSIM) {
+#endif
+
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VPROTOS, protocol, (attr && m_posHorz==0 ? (editMode>0 ? BLINK|INVERS : INVERS):0));
+
+#if defined(PCBSKY9X)
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW+3, y, STR_CH, (attr && m_posHorz==1) ? blink : 0);
+        lcd_outdezAtt(lcdLastPos, y, g_model.ppmSCH+1, LEFT | ((attr && m_posHorz==1) ? blink : 0));
+        lcd_putc(lcdLastPos, y, '-');
+        lcd_outdezAtt(lcdLastPos + FW+1, y, g_model.ppmSCH+NUM_PORT1_CHANNELS, LEFT | ((attr && m_posHorz==2) ? blink : 0));
+#else
+        if (IS_PPM_PROTOCOL(protocol)) {
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+7*FW, y, STR_NCHANNELS, g_model.ppmNCH+2, (attr && m_posHorz==1) ? blink : 0);
         }
-#if defined(DSM2)
-        else if (protocol == PROTO_DSM2) {
-          if (attr && m_posHorz > 1) m_posHorz = 1;
-          int8_t x = limit((int8_t)0, (int8_t)g_model.ppmNCH, (int8_t)2);
-          g_model.ppmNCH = x;
-          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM2MODE, x, (attr && m_posHorz==1) ? blink : 0);
+        else if (attr) {
+          REPEAT_LAST_CURSOR_MOVE();
         }
 #endif
-        else if (attr) {
-          m_posHorz = 0;
-        }
-        if (attr && (editMode>0 || p1valdiff || (protocol>PROTO_PPMSIM && !IS_DSM2_PROTOCOL(protocol)))) {
+
+        if (attr && (editMode>0 || p1valdiff
+#if !defined(PCBSKY9X)
+            || (!IS_PPM_PROTOCOL(protocol) && !IS_DSM2_PROTOCOL(protocol))
+#endif
+        )) {
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.protocol, 0, PROTO_MAX-1);
               break;
             case 1:
-#if defined(DSM2)
-              if (protocol == PROTO_DSM2)
-                CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, 0, 2);
-              else
+#if defined(PCBSKY9X)
+              CHECK_INCDEC_MODELVAR(event, g_model.ppmSCH, 0, 32-8-(g_model.ppmNCH*2));
+#else
+              CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
 #endif
-                CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
               break;
+#if defined(PCBSKY9X)
+            case 2:
+              if (IS_PPM_PROTOCOL(protocol))
+                CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, min<int8_t>(4, (32-g_model.ppmSCH)/2-4));
+              else
+                REPEAT_LAST_CURSOR_MOVE();
+              break;
+#endif
           }
         }
         break;
 
+#if defined(PCBSKY9X)
+      case ITEM_MODEL_PPM2_PROTOCOL:
+        lcd_putsLeft(y, PSTR("Port2"));
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VPROTOS, 0, 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW+3, y, STR_CH, (attr && m_posHorz==0) ? blink : 0);
+        lcd_outdezAtt(lcdLastPos, y, g_model.ppm2SCH+1, LEFT | ((attr && m_posHorz==0) ? blink : 0));
+        lcd_putc(lcdLastPos, y, '-');
+        lcd_outdezAtt(lcdLastPos + FW+1, y, g_model.ppm2SCH+8+(g_model.ppm2NCH*2), LEFT | ((attr && m_posHorz==1) ? blink : 0));
+        if (attr && (editMode>0 || p1valdiff)) {
+          switch (m_posHorz) {
+            case 0:
+              CHECK_INCDEC_MODELVAR(event, g_model.ppm2SCH, 0, 32-8-(g_model.ppm2NCH*2));
+              break;
+            case 1:
+              CHECK_INCDEC_MODELVAR(event, g_model.ppm2NCH, -2, min<int8_t>(4, (32-g_model.ppm2SCH)/2-4));
+              break;
+          }
+        }
+        break;
+#endif
+
       case ITEM_MODEL_PROTOCOL_PARAMS:
-        if (protocol <= PROTO_PPMSIM) {
+        if (IS_PPM_PROTOCOL(protocol)) {
           lcd_putsLeft( y, STR_PPMFRAME);
           lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.ppmFrameLength*5 + 225, ((attr && m_posHorz==0) ? (editMode>0 ? BLINK|INVERS : INVERS) : 0) | PREC1|LEFT);
@@ -930,19 +974,12 @@ void menuModelSetup(uint8_t event)
         }
 #if defined(DSM2) || defined(PXX)
         else if (IS_DSM2_PROTOCOL(protocol) || IS_PXX_PROTOCOL(protocol)) {
-          if (attr && m_posHorz > 1 && IS_DSM2_PROTOCOL(protocol))
-            m_posHorz = 0; // limit 3 column row to 2 colums for DSM2 protocol (Rx_Num and RANGE fields)
+          if (attr && m_posHorz > 1) {
+            REPEAT_LAST_CURSOR_MOVE(); // limit 3 column row to 2 colums (Rx_Num and RANGE fields)
+          }
 
           lcd_putsLeft(y, STR_RXNUM);
-          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN-(IS_DSM2_PROTOCOL(protocol) ? 0 : 3*FW), y, g_model.modelId, ((attr && m_posHorz==0) ? (editMode>0 ? BLINK|INVERS : INVERS) : 0) | LEADING0|LEFT, 2);
-
-#if defined(DSM2)
-          if (IS_DSM2_PROTOCOL(protocol)) { // RANGE CHECK
-            lcd_putsnAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("RANGErange")+5*(s_rangecheck_mode), 5, (m_posHorz==1 ? attr : 0));
-            s_rangecheck_mode = (attr && m_posHorz==1 && editMode>0); // [MENU] key toggles range check mode
-          }
-#endif
-
+          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN-3*FW, y, g_model.modelId, ((attr && m_posHorz==0) ? (editMode>0 ? BLINK|INVERS : INVERS) : 0) | LEADING0|LEFT, 2);
           if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff)))
             CHECK_INCDEC_MODELVAR(event, g_model.modelId, 0, 99);
 
@@ -956,6 +993,13 @@ void menuModelSetup(uint8_t event)
                 pxxFlag = PXX_SEND_RXNUM;
               }
             }
+          }
+#endif
+
+#if defined(DSM2)
+          if (IS_DSM2_PROTOCOL(protocol)) {
+            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\013Range[MENU]Norm [MENU]"), s_rangecheck_mode, (m_posHorz==1 ? attr : 0));
+            s_rangecheck_mode = (attr && m_posHorz==1 && editMode>0); // [MENU] key toggles range check mode
           }
 #endif
         }

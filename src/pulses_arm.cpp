@@ -38,11 +38,13 @@ uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol = 255;
 uint8_t pxxFlag = 0 ;
 
-uint16_t ppmStream[20] = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
+uint16_t ppmStream[20]  = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
+uint16_t ppm2Stream[20] = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
 
 #if defined(PCBSKY9X)
-volatile uint32_t Pulses_index = 0 ;            // Modified in interrupt routine
-uint8_t Bit_pulses[64] ;                        // Likely more than we need
+volatile uint32_t ppmStreamIndex = 0 ;            // Modified in interrupt routine
+volatile uint32_t ppm2StreamIndex = 0 ;           // Modified in interrupt routine
+uint8_t Bit_pulses[64] ;                          // Likely more than we need
 uint8_t *Pulses2MHzptr ;
 #else
 uint16_t pxxStream[400] ;               // Transisitions
@@ -76,31 +78,57 @@ void startPulses()
 #endif
 }
 
-void setupPulsesPPM()                   // Don't enable interrupts through here
+#if defined(PCBSKY9X)
+#define PPM_PORT_PARAM uint32_t ppmPort=0
+#else
+#define PPM_PORT_PARAM
+#endif
+
+void setupPulsesPPM(PPM_PORT_PARAM)                   // Don't enable interrupts through here
 {
 #if defined(PCBSKY9X)
   register Pwm *pwmptr = PWM;
 #endif
 
   int16_t PPM_range = g_model.extendedLimits ? 640 * 2 : 512 * 2; //range of 0.7..1.7msec
-  uint32_t numCh = 8 + g_model.ppmNCH * 2; //Channels *2
 
   // Total frame length = 22.5msec
   // each pulse is 0.7..1.7ms long with a 0.3ms stop tail
   // The pulse ISR is 2mhz that's why everything is multiplied by 2
-  uint16_t * ptr = ppmStream;
 
 #if defined(PCBSKY9X)
-  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = (g_model.ppmDelay * 50 + 300) * 2; //Stoplen *2
+  uint32_t pwmCh;
+  uint16_t * ptr;
+  uint32_t firstCh, lastCh;
+  if (ppmPort == 0) {
+    pwmCh = 3;
+    ptr = ppmStream;
+    firstCh = g_model.ppmSCH;
+    lastCh = min<uint32_t>(NUM_CHNOUT, firstCh + 8 + (g_model.ppmNCH * 2));
+  }
+  else {
+    pwmCh = 1;
+    ptr = ppm2Stream;
+    firstCh = g_model.ppm2SCH;
+    lastCh = min<uint32_t>(NUM_CHNOUT, firstCh + 8 + (g_model.ppm2NCH * 2));
+  }
+#else
+  #define firstCh 0
+  uint32_t lastCh = 8 + g_model.ppmNCH * 2; //Channels *2
+  uint16_t * ptr = ppmStream;
+#endif
+
+#if defined(PCBSKY9X)
+  pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.ppmDelay * 50 + 300) * 2; //Stoplen *2
   if (g_model.pulsePol)
-    pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;   // CPOL
+    pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
   else
-    pwmptr->PWM_CH_NUM[3].PWM_CMR &= ~0x00000200 ;  // CPOL
+    pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR &= ~0x00000200 ;  // CPOL
 #endif
 
   uint32_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
   rest += (int32_t(g_model.ppmFrameLength)) * 1000;
-  for (uint32_t i = 0; i < numCh; i++) { //NUM_CHNOUT
+  for (uint32_t i=firstCh; i<lastCh; i++) {
     int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= v;
     *ptr++ = v; /* as Pat MacKenzie suggests */
@@ -331,12 +359,12 @@ void setupPulsesDsm2(uint8_t chns)
   // If more channels needed make sure the pulses union/array is large enough
   if (dsmDat[0]&BAD_DATA)  //first time through, setup header
   {
-    switch(g_model.ppmNCH)
+    switch(s_current_protocol)
     {
-      case LPXDSM2:
+      case PROTO_DSM2_LP45:
         dsmDat[0]= 0x80;
         break;
-      case DSM2only:
+      case PROTO_DSM2_DSM2:
         dsmDat[0]=0x90;
         break;
       default:
@@ -373,9 +401,11 @@ extern "C" void PWM_IRQHandler(void)
   register Pwm *pwmptr;
   register Ssc *sscptr;
   uint32_t period;
+  uint32_t reason;
 
   pwmptr = PWM;
-  if (pwmptr->PWM_ISR1 & PWM_ISR1_CHID3) {
+  reason = pwmptr->PWM_ISR1 ;
+  if (reason & PWM_ISR1_CHID3) {
     switch (s_current_protocol) // Use the current, don't switch until set_up_pulses
     {
       case PROTO_PXX:
@@ -401,7 +431,9 @@ extern "C" void PWM_IRQHandler(void)
         }
         break;
 
-      case PROTO_DSM2:
+      case PROTO_DSM2_LP45:
+      case PROTO_DSM2_DSM2:
+      case PROTO_DSM2_DSMX:
         // Alternate periods of 19.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
         if (period == 5000) // 2.5 mS
@@ -426,13 +458,21 @@ extern "C" void PWM_IRQHandler(void)
         break;
 
       default:
-        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[Pulses_index++]; // Period in half uS
-        if (ppmStream[Pulses_index] == 0) {
-          Pulses_index = 0;
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[ppmStreamIndex++]; // Period in half uS
+        if (ppmStream[ppmStreamIndex] == 0) {
+          ppmStreamIndex = 0;
           setupPulses();
         }
         break;
 
+    }
+  }
+
+  if (reason & PWM_ISR1_CHID1) {
+    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = ppm2Stream[ppm2StreamIndex++] ;  // Period in half uS
+    if (ppm2Stream[ppm2StreamIndex] == 0) {
+      ppm2StreamIndex = 0 ;
+      setupPulsesPPM(1) ;
     }
   }
 }
@@ -453,7 +493,9 @@ void setupPulses()
         disable_pxx();
         break;
 #if defined(DSM2)
-      case PROTO_DSM2:
+      case PROTO_DSM2_LP45:
+      case PROTO_DSM2_DSM2:
+      case PROTO_DSM2_DSMX:
         disable_ssc();
         break;
 #endif
@@ -479,7 +521,9 @@ void setupPulses()
         init_main_ppm(5000, 0); // Initial period 2.5 mS, output off
         init_ssc();
         break;
-      case PROTO_DSM2:
+      case PROTO_DSM2_LP45:
+      case PROTO_DSM2_DSM2:
+      case PROTO_DSM2_DSMX:
         init_main_ppm(5000, 0); // Initial period 2.5 mS, output off
         init_ssc();
         break;
@@ -499,7 +543,9 @@ void setupPulses()
       setupPulsesPXX();
       break;
 #if defined(DSM2)
-    case PROTO_DSM2:
+    case PROTO_DSM2_LP45:
+    case PROTO_DSM2_DSM2:
+    case PROTO_DSM2_DSMX:
       setupPulsesDsm2(6);
       break;
 #endif

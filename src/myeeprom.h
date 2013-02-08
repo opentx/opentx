@@ -121,13 +121,17 @@ enum BeeperMode {
 #endif
 
 #if defined(PCBX9D) || defined(PCBACT)
-#define MODELDATA_EXTRA char bitmap[10];
-#define LIMITDATA_EXTRA char name[6];
-#define swstate_t uint16_t
+#define MODELDATA_EXTRA   char bitmap[10];
+#define LIMITDATA_EXTRA   char name[6];
+#define swstate_t         uint16_t
+#elif defined(PCBSKY9X)
+#define MODELDATA_EXTRA   uint8_t ppmSCH; int8_t ppm2SCH; int8_t ppm2NCH;
+#define LIMITDATA_EXTRA
+#define swstate_t         uint8_t
 #else
 #define MODELDATA_EXTRA
 #define LIMITDATA_EXTRA
-#define swstate_t uint8_t
+#define swstate_t         uint8_t
 #endif
 
 enum BacklightMode {
@@ -141,8 +145,7 @@ enum BacklightMode {
 #if defined(FSPLASH) || defined(XSPLASH)
 #define SPLASH_MODE uint8_t splashMode:3
 #else
-#define SPLASH_MODE uint8_t splashMode:1; \
-uint8_t spare4:2
+#define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2
 #endif
 
 #define ALTERNATE_VIEW 0x10
@@ -816,28 +819,27 @@ PACK(typedef struct t_TimerData {
 
 enum Protocols {
   PROTO_PPM,
+#if !defined(CPUARM)
   PROTO_PPM16,
   PROTO_PPMSIM,
+#endif
 #if defined(PXX) || defined(DSM2) || defined(IRPROTOS)
   PROTO_PXX,
 #endif
 #if defined(DSM2) || defined(IRPROTOS)
-  PROTO_DSM2,
+  PROTO_DSM2_LP45,
+  PROTO_DSM2_DSM2,
+  PROTO_DSM2_DSMX,
 #endif
 #if defined(IRPROTOS)
+  // we will need 4 bytes for proto :(
   PROTO_SILV,
   PROTO_TRAC09,
   PROTO_PICZ,
-//  PROTO_SWIFT, // we will need 4 bytes for proto :(
+  PROTO_SWIFT,
 #endif
   PROTO_MAX,
   PROTO_NONE
-};
-
-enum Dsm2Variants {
-  LPXDSM2,
-  DSM2only,
-  DSM2_DSMX
 };
 
 #if defined(MAVLINK)

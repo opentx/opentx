@@ -134,14 +134,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VSWITCHES  (OFS_VKEYS + sizeof(TR_VKEYS))
 #define OFS_VSRCRAW    (OFS_VSWITCHES + sizeof(TR_VSWITCHES))
 #define OFS_VTMRMODES  (OFS_VSRCRAW + sizeof(TR_VSRCRAW))
-#if defined(DSM2)
-#define OFS_DSM2MODE   (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
-#define OFS_ENDDSM2    (OFS_DSM2MODE + sizeof(TR_DSM2MODE))
-#else
-#define OFS_ENDDSM2    (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
-#endif
 #if defined(PCBGRUVIN9X) || defined(CPUARM)
-#define OFS_DATETIME   (OFS_ENDDSM2)
+#define OFS_DATETIME   (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #endif
 #if defined(CPUARM)
 #define OFS_VLCD       (OFS_DATETIME + sizeof(TR_DATETIME))
@@ -197,10 +191,6 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VSWITCHES  (STR_OPEN9X + OFS_VSWITCHES)
 #define STR_VSRCRAW    (STR_OPEN9X + OFS_VSRCRAW)
 #define STR_VTMRMODES  (STR_OPEN9X + OFS_VTMRMODES)
-
-#if defined(DSM2)
-#define STR_DSM2MODE   (STR_OPEN9X + OFS_DSM2MODE)
-#endif
 
 #if defined(ROTARY_ENCODERS)
 #define STR_VRENAVIG   (STR_OPEN9X + OFS_VRENAVIG)

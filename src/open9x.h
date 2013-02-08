@@ -305,16 +305,34 @@ extern bool s_rangecheck_mode;
 extern uint8_t s_bind_allowed;
 #endif
 
+#if defined(CPUARM)
+#define IS_PPM_PROTOCOL(protocol)     (protocol==PROTO_PPM)
+#else
+#define IS_PPM_PROTOCOL(protocol)     (protocol<=PROTO_PPMSIM)
+#endif
+
+#if defined(PXX)
+#define IS_PXX_PROTOCOL(protocol)  (protocol==PROTO_PXX)
+#else
+#define IS_PXX_PROTOCOL(protocol)  (0)
+#endif
+
 #if defined(DSM2)
-#define IS_DSM2_PROTOCOL(protocol) (protocol==PROTO_DSM2)
+#define IS_DSM2_PROTOCOL(protocol) (protocol>=PROTO_DSM2_LP45 && protocol<=PROTO_DSM2_DSMX)
 #else
 #define IS_DSM2_PROTOCOL(protocol) (0)
 #endif
 
-#if defined(PXX)
-#define IS_PXX_PROTOCOL(protocol) (protocol==PROTO_PXX)
+#if defined(DSM2_SERIAL)
+#define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
 #else
-#define IS_PXX_PROTOCOL(protocol) (0)
+#define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
+#endif
+
+
+#define NUM_PORT1_CHANNELS (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+(g_model.ppmNCH*2))))
+#if defined(PCBSKY9X)
+#define NUM_PORT2_CHANNELS (8+(g_model.ppm2NCH*2))
 #endif
 
 #include "lcd.h"
@@ -585,6 +603,7 @@ enum CswFunctions {
 #endif
 
 #define THRCHK_DEADBAND 16
+
 #if defined(FSPLASH) || defined(XSPLASH)
 #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode == 0 ? 60000/*infinite=10mn*/ : ((4*100) * (g_eeGeneral.splashMode & 0x03)))
 #else

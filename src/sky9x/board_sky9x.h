@@ -159,6 +159,7 @@ void setSticksGain(uint8_t gains);
 // Pulses driver
 void init_main_ppm(uint32_t period, uint32_t out_enable);
 void disable_main_ppm();
+void disable_ppm2();
 void init_ssc();
 void disable_ssc();
 #define disable_pxx() disable_ssc()

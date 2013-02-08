@@ -67,7 +67,7 @@ void startPulses()
 {
 #if defined(PCBGRUVIN9X)
 #if defined(DSM2_SERIAL)
-  if (g_model.protocol != PROTO_DSM2)
+  if (!IS_DSM2_PROTOCOL(g_model.protocol))
 #endif
   {
     // TODO g: There has to be a better place for this bug fix
@@ -97,12 +97,6 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 #define CTRL_REP_1CMD -3
 #define CTRL_REP_2CMD -6
 
-#if defined(DSM2_SERIAL)
-#define DSM2_SERIAL_INTERRUPT() (s_current_protocol == PROTO_DSM2)
-#else
-#define DSM2_SERIAL_INTERRUPT() (0)
-#endif
-
 // TIMER1_COMPA_vect used for PPM and DSM2=SERIAL
 uint8_t g_ppmPulsePolarity = 0;
 ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
@@ -111,7 +105,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
   
   // Call setupPulses only after REST pulse had been sent.
   // Must do this before toggle PORTB to keep timing accurate
-  if (DSM2_SERIAL_INTERRUPT() || *((uint16_t*)pulses2MHzRPtr) == 0) {
+  if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol) || *((uint16_t*)pulses2MHzRPtr) == 0) {
     setupPulses(); // does not sei() for setupPulsesPPM
     heartbeat |= HEART_TIMER_PULSES;
     if (IS_PXX_PROTOCOL(s_current_protocol) || IS_DSM2_PROTOCOL(s_current_protocol)) {
@@ -379,16 +373,16 @@ normal:
 FORCEINLINE void setupPulsesDsm2()
 {
   uint16_t *ptr = (uint16_t *)pulses2MHz;
-  switch(g_model.ppmNCH)
+  switch (s_current_protocol)
   {
-    case LPXDSM2:
+    case PROTO_DSM2_LP45:
       *ptr = 0x00;
       break;
-    case DSM2only:
+    case PROTO_DSM2_DSM2:
       *ptr = 0x10;
       break;
-    default:
-      *ptr = 0x18; // DSMX
+    default: // DSMX
+      *ptr = 0x18;
       break;
   }
   if (s_bind_allowed) s_bind_allowed--;
@@ -507,16 +501,16 @@ void setupPulsesDsm2()
   pulses2MHzWPtr = pulses2MHz;
 
   // If more channels needed make sure the pulses union/array is large enough
-  switch(g_model.ppmNCH)
+  switch (s_current_protocol)
   {
-    case LPXDSM2:
+    case PROTO_DSM2_LP45:
       dsmDat[0] = 0x00;
       break;
-    case DSM2only:
+    case PROTO_DSM2_DSM2:
       dsmDat[0] = 0x10;
       break;
-    default:
-      dsmDat[0] = 0x18; // DSMX bind mode
+    default: // DSMX bind mode
+      dsmDat[0] = 0x18;
       break;
   }
 
@@ -740,7 +734,7 @@ void setupPulses()
 // TX moudle power control output register, in case of electrical glitch.
 // (Following advice of Atmel for MCU's used  in industrial / mission cricital 
 // applications.)
-    if (required_protocol == PROTO_DSM2)
+    if (IS_DSM2_PROTOCOL(required_protocol))
       PORTH &= ~0x80;
     else
       PORTH |= 0x80;
@@ -749,7 +743,7 @@ void setupPulses()
   if (s_current_protocol != required_protocol) {
 
 #if defined(DSM2_SERIAL) && defined(FRSKY)
-    if (s_current_protocol == 255 || s_current_protocol == PROTO_DSM2) {
+    if (s_current_protocol == 255 || IS_DSM2_PROTOCOL(s_current_protocol)) {
       FRSKY_Init();
     }
 #endif
@@ -773,7 +767,9 @@ void setupPulses()
     switch (required_protocol) {
 
 #if defined(DSM2_PPM) // For DSM2=SERIAL, the default: case is executed, below
-      case PROTO_DSM2:
+      case PROTO_DSM2_LP45:
+      case PROTO_DSM2_DSM2:
+      case PROTO_DSM2_DSMX:
         set_timer3_capture(); 
         OCR1C = 200;                          // 100 uS
         TCNT1 = 300;                          // Past the OCR1C value
@@ -838,7 +834,9 @@ void setupPulses()
         break ;
 
 #if defined(DSM2_SERIAL) && defined(FRSKY)
-      case PROTO_DSM2:
+      case PROTO_DSM2_LP45:
+      case PROTO_DSM2_DSM2:
+      case PROTO_DSM2_DSMX:
         DSM2_Init();
         // no break
 #endif
@@ -876,7 +874,9 @@ void setupPulses()
 #endif
 
 #if defined(DSM2)
-    case PROTO_DSM2:
+    case PROTO_DSM2_LP45:
+    case PROTO_DSM2_DSM2:
+    case PROTO_DSM2_DSMX:
       // schedule next Mixer calculations
       SCHEDULE_MIXER_END(22*16);
 #if defined(DSM2_PPM)
@@ -981,7 +981,7 @@ ISR(TIMER1_COMPB_vect) // PXX main interrupt
 ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
 {
 #if defined(DSM2_PPM) && defined(PXX)
-  if ( g_model.protocol == PROTO_DSM2 ) {
+  if (IS_DSM2_PROTOCOL(g_model.protocol)) { // TODO not s_current_protocol?
 #endif
 
 #if defined(DSM2_PPM)

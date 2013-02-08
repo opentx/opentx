@@ -267,12 +267,8 @@ void per10ms()
 #endif
 
 #if defined(FRSKY) && !defined(CPUARM) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
-#if defined(DSM2_SERIAL)
-  if (s_current_protocol != PROTO_DSM2)
+  if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
     check_frsky();
-#else
-  check_frsky();
-#endif
 #endif
 
   // These moved here from perOut() to improve beep trigger reliability.
@@ -1080,7 +1076,7 @@ int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
     int8_t mul = 1;
 
     if (idx < 0) {
-      idx = 1-idx;
+      idx = -1-idx;
       mul = -1;
     }
 
@@ -1297,7 +1293,6 @@ void checkAll()
 
   checkTHR();
   checkSwitches();
-
   clearKeyEvents();
 }
 
@@ -3119,12 +3114,8 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
 
 #if defined(FRSKY)
   if (cnt10ms == 30) {
-#if defined(DSM2_SERIAL)
-    if (s_current_protocol != PROTO_DSM2)
+    if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
       check_frsky();
-#else
-    check_frsky();
-#endif
   }
 #endif
 
@@ -3258,7 +3249,7 @@ FORCEINLINE void DSM2_USART0_vect()
 ISR(USART0_UDRE_vect)
 {
 #if defined(FRSKY) && defined(DSM2_SERIAL)
-  if (g_model.protocol == PROTO_DSM2) {
+  if (IS_DSM2_PROTOCOL(g_model.protocol)) { // TODO not s_current_protocol?
     DSM2_USART0_vect();
   }
   else {
