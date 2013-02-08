@@ -163,6 +163,8 @@ void disable_ppm2();
 void init_ssc();
 void disable_ssc();
 #define disable_pxx() disable_ssc()
+// TODO illogical in the driver :(
+void setupPulsesPPM(uint32_t ppmPort=0);
 
 // SD driver
 #if !defined(SIMU)

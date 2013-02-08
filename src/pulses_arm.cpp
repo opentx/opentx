@@ -79,7 +79,7 @@ void startPulses()
 }
 
 #if defined(PCBSKY9X)
-#define PPM_PORT_PARAM uint32_t ppmPort=0
+#define PPM_PORT_PARAM uint32_t ppmPort
 #else
 #define PPM_PORT_PARAM
 #endif

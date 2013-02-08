@@ -34,15 +34,12 @@
 
 #include "../open9x.h"
 
-// TODO illogical in the driver :(
-void setupPulsesPPM(uint32_t ppmPort=0);
-
 void init_main_ppm( uint32_t period, uint32_t out_enable )
 {
   register Pio *pioptr ;
   register Pwm *pwmptr ;
 
-  setupPulsesPPM() ;
+  setupPulsesPPM(0) ;
 
   if ( out_enable )
   {
