@@ -3335,10 +3335,10 @@ void saveTimers()
 }
 #endif
 
-#if defined(PCBACT)
-volatile rotenc_t g_rotenc[1] = {0};
-#elif defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS)
 volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};
+#elif defined(ROTARY_ENCODER_NAVIGATION)
+volatile rotenc_t g_rotenc[1] = {0};
 #endif
 
 #ifndef SIMU
@@ -3718,6 +3718,10 @@ int main(void)
 #if defined(PCBGRUVIN9X)
     if ((shutdown_state=pwrCheck()) > e_power_trainer)
       break;
+#endif
+
+#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION)
+    rotencPoll();
 #endif
 
     perMain();

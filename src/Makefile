@@ -50,8 +50,9 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: STD, STD128, GRUVIN9X, SKY9X, X9D, ACT
-PCB = STD
+# Values: 9X, 9X128, 9XR, 9XR128, GRUVIN9X, SKY9X, X9D, ACT
+# Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
+PCB = 9X
 
 # PCB revision
 # Values: REVA, REVB
@@ -77,6 +78,7 @@ TEMPLATES = YES
 #          POT2 (menus scroll),
 #          POT3 (cursor down/up),
 #          POTS (POT1, POT2, POT3),
+#          ROTENC (Rotary encoder)
 NAVIGATION = NO
 
 # Switches automatic selection
@@ -219,7 +221,7 @@ SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 CPPDEFS = 
 
 # MCU name
-ifeq ($(PCB), STD)
+ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega64  
@@ -228,7 +230,7 @@ ifeq ($(PCB), STD)
   SDCARD = NO
 endif
 
-ifeq ($(PCB), STD128)
+ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega128
@@ -336,9 +338,6 @@ DBGFMT = dwarf-2
 #     For a directory that has spaces, enclose it in quotes.
 EXTRAINCDIRS = . translations
 
-# NOTE: PCB version now overrides all the earlier individual settings
-#       These individual settings work only for PCB=STD
-
 CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
 
 # TTS language
@@ -366,13 +365,20 @@ endif
 ifeq ($(NAVIGATION), POTS)
   CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
 endif
+ifeq ($(NAVIGATION), ROTENC)
+  CPPDEFS += -DROTARY_ENCODER_NAVIGATION
+endif
 
 ifeq ($(AUTOSWITCH), YES)
   CPPDEFS += -DAUTOSWITCH
 endif
 
 ifeq ($(DBLKEYS), YES)
-  CPPDEFS += -DDBLKEYS
+  ifeq ($(PCB), $(filter $(PCB), 9XR 9XR128))
+    $(warning Sorry, DBLKEYS doesnt work on 9XR)
+  else
+    CPPDEFS += -DDBLKEYS
+  endif
 endif
 
 ifeq ($(SPLASH), YES)
@@ -601,7 +607,7 @@ ifeq ($(PCB), GRUVIN9X)
   CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}
 endif
 
-ifeq ($(PCB), STD128)
+ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   # 9x radio with Atmega 64 replace by Atmega 128
   OPT = 2
   CPPDEFS += -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=0x8000
@@ -610,6 +616,12 @@ ifeq ($(PCB), STD128)
   EXTRABOARDSRC += stock/lcd_driver.cpp
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp
+
+  ifeq ($(PCB), 9XR128)
+    CPPDEFS += -DPCB9XR128
+  else
+    CPPDEFS += -DPCB9X128
+  endif
     
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
@@ -625,7 +637,7 @@ ifeq ($(PCB), STD128)
   
   ifeq ($(PWM_BACKLIGHT), YES)
     ifeq ($(VOICE), YES)
-      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod.)
+      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod)
     else
       CPPDEFS += -DPWM_BACKLIGHT
     endif
@@ -641,7 +653,7 @@ ifeq ($(PCB), STD128)
   endif
 endif
 
-ifeq ($(PCB), STD)
+ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x radio
   OPT = s
   EXTRAINCDIRS += stock
@@ -651,6 +663,12 @@ ifeq ($(PCB), STD)
   EEPROMSRC = eeprom_avr.cpp
   PULSESSRC = pulses_avr.cpp
 
+  ifeq ($(PCB), 9XR)
+    CPPDEFS += -DPCB9XR
+  else
+    CPPDEFS += -DPCB9X
+  endif
+    
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
@@ -665,7 +683,7 @@ ifeq ($(PCB), STD)
    
   ifeq ($(PWM_BACKLIGHT), YES)
     ifeq ($(VOICE), YES)
-      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod.)
+      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod)
     else
       CPPDEFS += -DPWM_BACKLIGHT
     endif
@@ -686,7 +704,6 @@ endif
 ifeq ($(PPM_CENTER_ADJUSTABLE), YES)
   CPPDEFS += -DPPM_CENTER_ADJUSTABLE
 endif
-
 
 ifeq ($(PPM_LIMITS_SYMETRICAL), YES)
   CPPDEFS += -DPPM_LIMITS_SYMETRICAL
@@ -922,10 +939,10 @@ splash_9x.lbm: splash_9x.xbm
 	@echo "Convert 9x splash from xbm to lbm:"
 	$(IMG2LBM) $< $@ img
 	
-splash_X9D.lbm: splash_X9D.xbm
+splash_X9D.lbm: splash_X9D.bmp
 	@echo
 	@echo "Convert X9D splash from xbm to lbm:"
-	$(IMG2LBM) $< $@ img
+	$(IMG2LBM) $< $@ bmp
 
 splash_ACT.lbm: splash_ACT.xbm
 	@echo

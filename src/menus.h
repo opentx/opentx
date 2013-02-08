@@ -122,9 +122,24 @@ void menuStatisticsDebug(uint8_t event);
   #define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
   #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (g_eeGeneral.reNavigation && event==type(BTN_REa + g_eeGeneral.reNavigation - 1))
   #define IS_RE_NAVIGATION_EVT(event) (g_eeGeneral.reNavigation && EVT_KEY_MASK(event)==(BTN_REa + g_eeGeneral.reNavigation - 1))
+#elif defined(ROTARY_ENCODER_NAVIGATION)
+  #define IS_RE_NAVIGATION_ENABLE()   true
+  #define NAVIGATION_RE_IDX()         0
+  #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (event==type(BTN_REa))
+  #define IS_RE_NAVIGATION_EVT(event) (EVT_KEY_MASK(event)==BTN_REa)
 #else
   #define IS_RE_NAVIGATION_EVT_TYPE(event, type) (0)
   #define IS_RE_NAVIGATION_EVT(event) (0)
+#endif
+
+#if ROTARY_ENCODERS > 1
+#define EVT_KEY_FIRST_ROTARY_ENCODERS EVT_KEY_FIRST(BTN_REa): case EVT_KEY_FIRST(BTN_REb)
+#define EVT_KEY_BREAK_ROTARY_ENCODERS EVT_KEY_BREAK(BTN_REa): case EVT_KEY_BREAK(BTN_REb)
+#define EVT_KEY_LONG_ROTARY_ENCODERS EVT_KEY_LONG(BTN_REa): case EVT_KEY_LONG(BTN_REb)
+#else
+#define EVT_KEY_FIRST_ROTARY_ENCODERS EVT_KEY_FIRST(BTN_REa)
+#define EVT_KEY_BREAK_ROTARY_ENCODERS EVT_KEY_BREAK(BTN_REa)
+#define EVT_KEY_LONG_ROTARY_ENCODERS EVT_KEY_LONG(BTN_REa)
 #endif
 
 extern int8_t checkIncDec_Ret;  // global helper vars

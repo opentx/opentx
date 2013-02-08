@@ -297,15 +297,13 @@ void menuModelSelect(uint8_t event)
           s_copyMode = 0;
         }
         break;
-#if defined(ROTARY_ENCODERS)
-      case EVT_KEY_BREAK(BTN_REa):
-      case EVT_KEY_BREAK(BTN_REb):
-        if (navigationRotaryEncoder(event))
+#if defined(ROTARY_ENCODER_NAVIGATION)
+      case EVT_KEY_BREAK_ROTARY_ENCODERS:
+        if (IS_RE_NAVIGATION_EVT(event))
           s_editMode = (s_editMode == 0 && sub == g_eeGeneral.currModel) ? -1 : 0;
         break;
-      case EVT_KEY_LONG(BTN_REa):
-      case EVT_KEY_LONG(BTN_REb):
-        if (!navigationRotaryEncoder(event))
+      case EVT_KEY_LONG_ROTARY_ENCODERS:
+        if (!IS_RE_NAVIGATION_EVT(event))
           break;
         // no break
 #endif
@@ -575,9 +573,8 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
 #if defined(PCBX9D) || defined(PCBACT)
         case EVT_KEY_BREAK(KEY_ENTER):
 #else
-        case EVT_KEY_BREAK(BTN_REa):
-        case EVT_KEY_BREAK(BTN_REb):
-          if (!navigationRotaryEncoder(event))
+        case EVT_KEY_BREAK_ROTARY_ENCODERS:
+          if (!IS_RE_NAVIGATION_EVT(event))
             break;
 #endif
           if (s_editMode == EDIT_MODIFY_FIELD) {
@@ -599,9 +596,8 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
 
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
 #if defined(ROTARY_ENCODERS)
-        case EVT_KEY_LONG(BTN_REa):
-        case EVT_KEY_LONG(BTN_REb):
-          if (!navigationRotaryEncoder(event))
+        case EVT_KEY_LONG_ROTARY_ENCODERS:
+          if (!IS_RE_NAVIGATION_EVT(event))
             break;
           // no break
 #endif
@@ -1271,9 +1267,8 @@ void menuModelPhasesAll(uint8_t event)
 
   switch (event) {
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      if (!navigationRotaryEncoder(event))
+    case EVT_KEY_BREAK_ROTARY_ENCODERS:
+      if (!IS_RE_NAVIGATION_EVT(event))
         break;
       // no break
 #endif
@@ -1499,9 +1494,8 @@ void menuModelCurveOne(uint8_t event)
       s_editMode = 1;
       break;
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      if (!navigationRotaryEncoder(event))
+    case EVT_KEY_BREAK_ROTARY_ENCODERS:
+      if (!IS_RE_NAVIGATION_EVT(event))
         break;
       // no break
 #endif
@@ -2203,9 +2197,8 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       }
       // no break
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      if (event!=EVT_KEY_BREAK(KEY_ENTER) && !navigationRotaryEncoder(event))
+    case EVT_KEY_BREAK_ROTARY_ENCODERS:
+      if (event!=EVT_KEY_BREAK(KEY_ENTER) && !IS_RE_NAVIGATION_EVT(event))
         break;
       // no break
 #endif
@@ -2669,9 +2662,8 @@ void menuModelCurvesAll(uint8_t event)
 
   switch (event) {
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      if (!navigationRotaryEncoder(event))
+    case EVT_KEY_BREAK_ROTARY_ENCODERS:
+      if (!IS_RE_NAVIGATION_EVT(event))
         break;
       // no break
 #endif
@@ -2893,9 +2885,8 @@ void menuModelCustomSwitches(uint8_t event)
 
   switch (event) {
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      if (!navigationRotaryEncoder(event))
+    case EVT_KEY_BREAK_ROTARY_ENCODERS:
+      if (!IS_RE_NAVIGATION_EVT(event))
         break;
       // no break
 #endif

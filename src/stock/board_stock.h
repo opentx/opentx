@@ -197,4 +197,8 @@ void fadeBacklight();
 #define OUT_C_LCD_RES   2
 #define OUT_C_LCD_CS1   1
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
+void rotencPoll();
+#endif
+
 #endif

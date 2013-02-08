@@ -518,10 +518,20 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       if (!menuTab || l_posVert>0)
         s_editMode = (s_editMode<=0);
       break;
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    case EVT_KEY_LONG_ROTARY_ENCODERS:
+      if (l_posVert!=0 || !IS_RE_NAVIGATION_EVT(event))
+        break;
+      killEvents(event);
+      // no break
+#endif
+
     case EVT_KEY_LONG(KEY_EXIT):
       s_editMode = 0;
       popMenu();
       break;
+
     case EVT_KEY_BREAK(KEY_EXIT):
 #if defined(ROTARY_ENCODER_NAVIGATION)
       if (s_editMode==0)
@@ -673,9 +683,8 @@ void displayWarning(uint8_t event)
   lcd_puts(16, 5*FH, s_warning_type == WARNING_TYPE_CONFIRM ? STR_POPUPS : STR_EXIT);
   switch(event) {
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK(BTN_REa):
-    case EVT_KEY_BREAK(BTN_REb):
-      if (!navigationRotaryEncoder(event))
+    case EVT_KEY_BREAK_ROTARY_ENCODERS:
+      if (!IS_RE_NAVIGATION_EVT(event))
         break;
       // no break
 #endif

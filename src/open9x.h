@@ -736,10 +736,6 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 #if defined(ROTARY_ENCODERS)
 int16_t getRotaryEncoder(uint8_t idx);
 void incRotaryEncoder(uint8_t idx, int8_t inc);
-inline bool navigationRotaryEncoder(uint8_t event)
-{
-  return g_eeGeneral.reNavigation == (EVT_KEY_MASK(event) - BTN_REa + 1);
-}
 #endif
 
 #if defined(PCBSKY9X)
@@ -1079,11 +1075,11 @@ typedef uint32_t rotenc_t;
 typedef uint8_t rotenc_t;
 #endif
 
-#if defined(PCBACT)
-extern volatile rotenc_t g_rotenc[1];
-#elif defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODERS)
 // Global rotary encoder registers
 extern volatile rotenc_t g_rotenc[ROTARY_ENCODERS];
+#elif defined(ROTARY_ENCODER_NAVIGATION)
+extern volatile rotenc_t g_rotenc[1];
 #endif
 
 #ifdef JETI

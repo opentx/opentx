@@ -539,9 +539,8 @@ void menuGeneralSdManager(uint8_t event)
       reusableBuffer.sd.offset = 65535;
       break;
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_FIRST(BTN_REa):
-    case EVT_KEY_FIRST(BTN_REb):
-      if (!navigationRotaryEncoder(event))
+    case EVT_KEY_FIRST_ROTARY_ENCODERS:
+      if (!IS_RE_NAVIGATION_EVT(event))
         break;
       // no break
 #endif
@@ -560,9 +559,8 @@ void menuGeneralSdManager(uint8_t event)
       break;
     }
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_LONG(BTN_REa):
-    case EVT_KEY_LONG(BTN_REb):
-      if (!navigationRotaryEncoder(event))
+    case EVT_KEY_LONG_ROTARY_ENCODERS:
+      if (!IS_RE_NAVIGATION_EVT(event))
         break;
       // no break
 #endif

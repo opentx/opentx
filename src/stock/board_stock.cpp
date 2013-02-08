@@ -34,6 +34,66 @@
 
 #include "../open9x.h"
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
+
+uint8_t RotEncoder ;
+
+#if defined(TELEMETREZ)
+uint8_t TrotCount ;             // TeZ version
+uint8_t LastTrotCount ;         // TeZ version
+uint8_t TezRotary ;
+#else
+uint8_t RotPosition ;
+int8_t LastRotaryValue ;
+int8_t Rotary_diff ;
+int8_t RotaryControl ;
+#endif
+
+void rotencPoll()
+{
+#if defined(TELEMETREZ)
+  if (TrotCount != LastTrotCount ) {
+    g_rotenc[0] = LastTrotCount = TrotCount ;
+  }
+#else
+  // Rotary Encoder polling
+  PORTA = 0 ;                     // No pullups
+  DDRA = 0x1F ;           // Top 3 bits input
+  asm(" rjmp 1f") ;
+  asm("1:") ;
+//      asm(" nop") ;
+//      asm(" nop") ;
+  uint8_t rotary ;
+  rotary = PINA ;
+  DDRA = 0xFF ;           // Back to all outputs
+  rotary &= 0xE0 ;
+//      RotEncoder = rotary ;
+
+#if defined(TELEMETREZ)
+  if( TezRotary != 0)
+    RotEncoder = 0x20; // switch is on
+#else
+    RotEncoder = rotary ; // just read the lcd pin
+#endif
+
+  rotary &= 0xDF ;
+  if ( rotary != RotPosition ) {
+    uint8_t x ;
+    x = RotPosition & 0x40 ;
+    x <<= 1 ;
+    x ^= rotary & 0x80 ;
+    if ( x ) {
+      g_rotenc[0] -= 1 ;
+    }
+    else {
+      g_rotenc[0] += 1 ;
+    }
+    RotPosition = rotary ;
+  }
+#endif
+}
+#endif
+
 #ifndef SIMU
 inline void boardInit()
 {
@@ -203,9 +263,13 @@ void readKeysAndTrims()
 
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
+    keys[enuk].input(in & pgm_read_byte(crossTrim+i), (EnumKeys)enuk);
     ++enuk;
   }
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  keys[enuk].input(RotEncoder & 0x20, (EnumKeys)enuk); // Rotary Enc. Switch
+#endif
 }
 
 bool checkSlaveMode()
