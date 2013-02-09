@@ -3044,9 +3044,19 @@ void perMain()
       s_batSum = 0;
       s_batCheck = 0;
     }
+#if defined(VOICE)
+    else if (!(s_batCheck & 0x3f)) {
+#else
     else if (s_batCheck == 0) {
+#endif
       g_vbat100mV = s_batSum / 8;
       s_batSum = 0;
+#if defined(VOICE)
+      if (s_batCheck != 0) {
+        // no alarms
+      }
+      else
+#endif
       if (g_vbat100mV <= g_eeGeneral.vBatWarn && g_vbat100mV>50) {
         AUDIO_TX_BATTERY_LOW();
       }
