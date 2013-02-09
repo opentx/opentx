@@ -377,6 +377,8 @@
 #define TR_BEEPCOUNTDOWN       INDENT"R\201kna Ned"
 #define TR_BACKLIGHT_LABEL     "Belysning"
 #define TR_BLDELAY             INDENT"Av efter"
+#define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
+#define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Bild vid start"
 #define TR_THROTTLEWARNING     TR("Gasvarn.","Gasvarning")
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")

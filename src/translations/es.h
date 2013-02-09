@@ -378,6 +378,8 @@
 #define TR_BEEPCOUNTDOWN       INDENT"Cuentaatras"
 #define TR_BACKLIGHT_LABEL     "Luz Fondo"
 #define TR_BLDELAY             INDENT"Duracion"
+#define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
+#define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Ptalla. Inicio"
 #define TR_THROTTLEWARNING     TR("A-Aviso","Aviso Aceler.")
 #define TR_SWITCHWARNING       TR("I-Aviso","Aviso Intrrptor")

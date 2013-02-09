@@ -378,7 +378,7 @@
 #define TR_BACKLIGHT_LABEL     "Backlight"
 #define TR_BLDELAY             INDENT"Duration"
 #define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
-#define TR_BLOFFBRIGHTNESS      INDENT"OFF Brightness"
+#define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning","Throttle Warning")
 #define TR_SWITCHWARNING       TR("S-Warning","Switch Warning")

@@ -334,6 +334,8 @@
 #define TR_BEEPCOUNTDOWN       INDENT"Cpt. \202 rebours"
 #define TR_BACKLIGHT_LABEL     "R\200tro\200clairage"
 #define TR_BLDELAY             INDENT"Dur\200e"
+#define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
+#define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Ecran d'accueil"
 #define TR_THROTTLEWARNING     "Alerte Gaz"
 #define TR_SWITCHWARNING       "Alerte Int"

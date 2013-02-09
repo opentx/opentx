@@ -333,6 +333,8 @@
 #define TR_BEEPCOUNTDOWN       INDENT"Conto rov."
 #define TR_BACKLIGHT_LABEL     "Retroillum."
 #define TR_BLDELAY             INDENT"Durata"
+#define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
+#define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Schermata avvio"
 #define TR_THROTTLEWARNING     "All. Thr"
 #define TR_SWITCHWARNING       "Avv. Inter."

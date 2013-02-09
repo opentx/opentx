@@ -332,6 +332,8 @@
 #define TR_BEEPCOUNTDOWN       INDENT"Odpo\201et \201asu"
 #define TR_BACKLIGHT_LABEL     "Podsv\203tlen\204"
 #define TR_BLDELAY             INDENT"Zhasnout po"
+#define TR_BLONBRIGHTNESS      INDENT"Jas Zap."
+#define TR_BLOFFBRIGHTNESS     INDENT"Jas Vyp."
 #define TR_SPLASHSCREEN        "\210vodn\204Logo"
 #define TR_THROTTLEWARNING     "(!)Plyn"
 #define TR_SWITCHWARNING       "(!)Sp\204na\201"

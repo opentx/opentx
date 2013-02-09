@@ -334,6 +334,8 @@
 #define TR_BEEPCOUNTDOWN       INDENT"Beep Regressivo"
 #define TR_BACKLIGHT_LABEL     "Backlight"
 #define TR_BLDELAY             INDENT"Tempo Backlight"
+#define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
+#define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     "Avisa Acel"
 #define TR_SWITCHWARNING       "Avisa Chav"
