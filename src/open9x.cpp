@@ -1367,7 +1367,7 @@ void checkSwitches()
 
     // first - display warning
     if (last_bad_switches != switches_states) {
-      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, AU_SWITCH_ALERT);
+      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
 #if defined(PCBX9D)
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
         swstate_t mask = (0x03 << (1+i*2));
@@ -3031,7 +3031,12 @@ void perMain()
     static uint8_t  s_batCheck;
     static uint16_t s_batSum;
 
+#if defined(VOICE)
+    s_batCheck += 8;
+#else
     s_batCheck += 32;
+#endif
+
     s_batSum += instant_vbat;
 
     if (g_vbat100mV == 0) {

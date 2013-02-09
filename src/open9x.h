@@ -1166,6 +1166,8 @@ enum AUDIO_SOUNDS {
     AU_FRSKY_RATATA,
     AU_FRSKY_TICK,
     AU_FRSKY_LAST,
+
+    AU_NONE=0xff
 };
 
 #if defined(AUDIO)
