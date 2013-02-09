@@ -407,6 +407,11 @@ uint8_t privateDataLen;
 uint8_t privateDataPos;
 #endif
 
+#if defined(ROTARY_ENCODER_NAVIGATION) && defined(TELEMETREZ)
+extern uint8_t TrotCount;
+extern uint8_t TezRotary;
+#endif
+
 /*
    Receive serial (RS-232) characters, detecting and storing each Fr-Sky 
    0x7e-framed packet as it arrives.  When a complete packet has been 
@@ -498,16 +503,23 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
           break;
 
         case STATE_DATA_PRIVATE_VALUE :
-          if (privateDataPos++ == 0) {
-            // process first private data byte
+          if (privateDataPos == 0) {
+            // Process first private data byte
             // PC6, PC7
-            if ((data & 0x3F) == 0) // check byte is valid
-            {
-              DDRC |= 0xC0; // set as outputs
+            if ((data & 0x3F) == 0) {// Check byte is valid
+              DDRC |= 0xC0;          // Set as outputs
               PORTC = ( PORTC & 0x3F ) | ( data & 0xC0 ); // update outputs
             }
           }
-          if (privateDataPos == privateDataLen) {
+#if defined(ROTARY_ENCODER_NAVIGATION)
+          if (privateDataPos == 1) {
+            TrotCount = data;
+          }
+          if (privateDataPos == 2) { // rotary encoder switch
+            TezRotary = data;
+          }
+#endif
+          if (++privateDataPos == privateDataLen) {
             dataState = STATE_DATA_IDLE;
           }
           break;
