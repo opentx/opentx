@@ -280,6 +280,12 @@ void title(const pm_char * s)
 #define SCROLL(min, val, max) limit(min, val, max)
 #endif
 
+#if defined(PCBX9D)
+#define POS_VERT_INIT (menuTab ? (MAXCOL((int16_t)1) == 255 ? 2 : 1) : 0)
+#else
+#define POS_VERT_INIT 0
+#endif
+
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, maxrow_t maxrow)
 {
   maxrow_t l_posVert = m_posVert;
@@ -448,8 +454,9 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
           }
           else {
 #if defined(PCBX9D)
-            l_posVert = (menuTab ? 1 : 0);
+            l_posVert = POS_VERT_INIT;
             l_posHorz = 0;
+            s_pgOfs = 0;
 #else
             --l_posHorz;
             scrollRE = 0;
@@ -493,11 +500,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   switch(event)
   {
     case EVT_ENTRY:
-#if defined(PCBX9D)
-      l_posVert = (menuTab ? 1 : 0);
-#else
-      l_posVert = 0;
-#endif
+      l_posVert = POS_VERT_INIT;
       l_posHorz = 0;
 #if defined(ROTARY_ENCODER_NAVIGATION)
       if (menuTab) {
@@ -542,7 +545,19 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         s_editMode = 0;
         break;
       }
-      if (IF_PCBX9D() || l_posVert==0 || !menuTab) {
+#if defined(PCBX9D)
+      uint8_t posVertInit = POS_VERT_INIT;
+      if (s_pgOfs != 0 || l_posHorz != 0 || l_posVert != posVertInit) {
+        s_pgOfs = 0;
+        l_posVert = posVertInit;
+        l_posHorz = 0;
+      }
+      else {
+        popMenu();
+        return false;
+      }
+#else
+      if (l_posVert==0 || !menuTab) {
         popMenu();  // beeps itself
         return false;
       }
@@ -551,6 +566,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         l_posVert = 0;
         l_posHorz = 0;
       }
+#endif
       break;
 
 #if !defined(PCBX9D) && !defined(PCBACT)

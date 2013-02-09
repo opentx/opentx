@@ -3432,6 +3432,7 @@ uint16_t stack_free()
 inline void open9xInit(OPEN9X_INIT_ARGS)
 {
 #if defined(PCBX9D)
+  BACKLIGHT_ON();
   Splash();
 #endif
 

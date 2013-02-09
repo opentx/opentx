@@ -186,7 +186,7 @@ uint32_t sdMounted();
 #endif
 
 // Backlight driver
-#define setBacklight(xx)  PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx
+#define setBacklight(xx)  (PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx)
 #define __BACKLIGHT_ON    (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define __BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #define IS_BACKLIGHT_ON() (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)

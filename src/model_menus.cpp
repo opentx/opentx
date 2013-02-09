@@ -382,13 +382,9 @@ void menuModelSelect(uint8_t event)
       // TODO merge with lines below
       case EVT_KEY_BREAK(KEY_PAGE):
       case EVT_KEY_LONG(KEY_PAGE):
-        if (sub == g_eeGeneral.currModel) {
-          chainMenu(event == EVT_KEY_BREAK(KEY_PAGE) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
-          killEvents(event);
-          return;
-        }
-        AUDIO_WARNING2();
-        break;
+        chainMenu(event == EVT_KEY_BREAK(KEY_PAGE) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
+        killEvents(event);
+        return;
 #else
       case EVT_KEY_FIRST(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_RIGHT):
@@ -439,6 +435,8 @@ void menuModelSelect(uint8_t event)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   displayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_RE_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
+#elif defined(PCBX9D)
+  displayScreenIndex(e_ModelSelect, DIM(menuTabModel), 0);
 #else
   displayScreenIndex(e_ModelSelect, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
 #endif
@@ -862,10 +860,10 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_BEEP_CENTER:
         lcd_putsLeft(y, STR_BEEPCTR);
-        for (uint8_t i=0;i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS;i++)
+        for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : ((g_model.beepANACenter & ((BeepANACenter)1<<i)) ? INVERS : 0 ) );
         if (attr) {
-          if((event==EVT_KEY_BREAK(KEY_MENU)) || p1valdiff) {
+          if((event==EVT_KEY_BREAK(KEY_ENTER)) || p1valdiff) {
             s_editMode = 0;
             g_model.beepANACenter ^= ((BeepANACenter)1<<m_posHorz);
             STORE_MODELVARS;
@@ -2306,7 +2304,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             if (ed->curveMode == MODE_CURVE)
               putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
             else
-              displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam);
+              displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, -100, 100);
 
 #if defined(CPUARM)
             if (ed->name[0]) {
@@ -2343,7 +2341,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
                 if (md->curveMode == MODE_CURVE)
                   putsCurve(12*FW+2, y, md->curveParam);
                 else
-                  displayGVar(15*FW+2, y, md->curveParam);
+                  displayGVar(15*FW+2, y, md->curveParam, -125, 125);
               }
               if (md->swtch) putsSwitches(16*FW, y, md->swtch);
 
@@ -3599,7 +3597,9 @@ void menuModelTelemetry(uint8_t event)
               CHECK_INCDEC_MODELVAR(event, value, 0, g_model.frsky.usrProto ? ((lineIndex==3 && c==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX) : TELEM_NOUSR_MAX);
             }
           }
-          if (attr && m_posHorz == 2) m_posHorz = 0;
+          if (attr && m_posHorz == 2) {
+            REPEAT_LAST_CURSOR_MOVE();
+          }
         }
         break;
       }

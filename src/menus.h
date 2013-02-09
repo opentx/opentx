@@ -249,10 +249,10 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 
 #if defined(GVARS)
 int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
-#define displayGVar(x, y, v) gvarMenuItem(x, y, v, 0, 0, 0, 0)
+#define displayGVar(x, y, v, min, max) gvarMenuItem(x, y, v, min, max, 0, 0)
 #else
 int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
-#define displayGVar(x, y, v) lcd_outdez8(x, y, v)
+#define displayGVar(x, y, v, min, max) lcd_outdez8(x, y, v)
 #endif
 
 #define WARNING_TYPE_ASTERISK  0
