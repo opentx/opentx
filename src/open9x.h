@@ -612,18 +612,27 @@ enum CswFunctions {
 
 #define TRM_BASE TRM_LH_DWN
 
+#define EVT_KEY_MASK(e)    ((e) & 0x0f)
+
 #define _MSK_KEY_BREAK     0x20
 #define _MSK_KEY_REPT      0x40
+#define _MSK_KEY_FIRST     0x60
 #define _MSK_KEY_LONG      0x80
-#define IS_KEY_BREAK(key)  (((key)&0xf0)        ==  0x20)
-#define IS_KEY_FIRST(key)  (((key)&0xf0)        ==  0x60)
+
 #define EVT_KEY_BREAK(key) ((key)|_MSK_KEY_BREAK)
-#define EVT_KEY_FIRST(key) ((key)|_MSK_KEY_REPT|0x20)
+#define EVT_KEY_FIRST(key) ((key)|_MSK_KEY_FIRST)
 #define EVT_KEY_REPT(key)  ((key)|_MSK_KEY_REPT)
 #define EVT_KEY_LONG(key)  ((key)|_MSK_KEY_LONG)
+
+#define IS_KEY_BREAK(key)  (((key)&0xf0) ==  _MSK_KEY_BREAK)
+#define IS_KEY_FIRST(key)  (((key)&0xf0) ==  _MSK_KEY_FIRST)
+
 #define EVT_ENTRY          (0xff - _MSK_KEY_REPT)
 #define EVT_ENTRY_UP       (0xfe - _MSK_KEY_REPT)
-#define EVT_KEY_MASK(e)    ((e) & 0x0f)
+#define EVT_ROTARY_SHORT   (0xfd - _MSK_KEY_REPT)
+#define EVT_ROTARY_LONG    (0xfc - _MSK_KEY_REPT)
+#define EVT_ROTARY_LEFT    (0xfb - _MSK_KEY_REPT)
+#define EVT_ROTARY_RIGHT   (0xfa - _MSK_KEY_REPT)
 
 #define HEART_TIMER_PULSES  1
 #define HEART_TIMER10ms     2
@@ -827,10 +836,6 @@ void checkAlarm();
 void checkAll();
 
 #define ADC_VREF_TYPE 0x40 // AVCC with external capacitor at AREF pin
-
-#define GETADC_SING = 0
-#define GETADC_OSMP = 1
-#define GETADC_FILT = 2
 
 #if !defined(SIMU)
 void getADC();
