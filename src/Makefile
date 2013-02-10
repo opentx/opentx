@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: 9X, 9X128, 9XR, 9XR128, GRUVIN9X, SKY9X, X9D, ACT
+# Values: 9X, 9X128, 9XR, 9XR128, GRUVIN9X, SKY9X, X9D
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
 PCB = 9X
 
@@ -278,14 +278,6 @@ ifeq ($(PCB), X9D)
   SDCARD = YES
 endif
 
-ifeq ($(PCB), ACT)
-  ARCH = ARM
-  LDSCRIPT = x9d/stm32_flash.ld
-  TRGT = arm-none-eabi-
-  MCU  = cortex-m3
-  SDCARD = NO
-endif
-
 CC      = $(TRGT)gcc
 AS      = $(TRGT)as
 OBJCOPY = $(TRGT)objcopy
@@ -480,22 +472,6 @@ ifeq ($(SDCARD), YES)
 endif
 
 RUN_FROM_FLASH = 1
-
-ifeq ($(PCB), ACT)
-  # ACT radio
-  OPT = 2
-  CPPDEFS += -DPCBACT -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DDSM2 -DDSM2_PPM -DSTM32F10X_HD
-  EXTRAINCDIRS += sky9x CoOS/kernel CoOS/portable
-  EXTRAINCDIRS += act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/STM32F10x_StdPeriph_Driver/inc act/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
-  BOARDSRC = act/board_act.cpp 
-  EXTRABOARDSRC += x9d/lcd_driver.cpp
-  SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  EEPROMSRC = eeprom_avr.cpp # TODO later eeprom_conversions.cpp
-  CPPSRC += x9d/pulses_driver.cpp act/keys_driver.cpp act/audio_driver.cpp
-  CPPSRC += audio_arm.cpp
-  PULSESSRC = pulses_arm.cpp
-  CPPSRC += monitors_views.cpp
-endif
 
 ifeq ($(PCB), X9D)
   # X9D radio
@@ -855,7 +831,7 @@ eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm splash_ACT.lbm asterisk.lbm
+lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -943,11 +919,6 @@ splash_X9D.lbm: splash_X9D.bmp
 	@echo
 	@echo "Convert X9D splash from xbm to lbm:"
 	$(IMG2LBM) $< $@ bmp
-
-splash_ACT.lbm: splash_ACT.xbm
-	@echo
-	@echo "Convert ACT splash from xbm to lbm:"
-	$(IMG2LBM) $< $@ largimg
 
 asterisk.lbm: asterisk.xbm
 	@echo
