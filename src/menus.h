@@ -292,14 +292,22 @@ void menuChannelsMonitor(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
 
-#if defined(ROTARY_ENCODERS) || defined(PCBX9D)
-#define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_LEFT || lastCursorMove < 0)
-#define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_RIGHT || lastCursorMove > 0)
-#define REPEAT_LAST_CURSOR_MOVE() if (lastCursorMove) lastCursorMove *= 2; else m_posHorz = 0
+#if defined(PCBX9D) || defined(PCBACT)
+  #define KEY_MOVE_UP    KEY_PLUS
+  #define KEY_MOVE_DOWN  KEY_MINUS
 #else
-#define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_LEFT)
-#define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_RIGHT)
-#define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
+  #define KEY_MOVE_UP    KEY_UP
+  #define KEY_MOVE_DOWN  KEY_DOWN
+#endif
+
+#if defined(ROTARY_ENCODERS) || defined(PCBX9D)
+  #define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_LEFT || lastCursorMove < 0)
+  #define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_RIGHT || lastCursorMove > 0)
+  #define REPEAT_LAST_CURSOR_MOVE() if (lastCursorMove) lastCursorMove *= 2; else m_posHorz = 0
+#else
+  #define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_LEFT)
+  #define CURSOR_MOVED_RIGHT(event) (EVT_KEY_MASK(event) == KEY_RIGHT)
+  #define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
 #endif
 
 #endif

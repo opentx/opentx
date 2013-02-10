@@ -1259,14 +1259,11 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
 #define ZLEN(s) zlen(s, sizeof(s))
 #endif
 
-// TODO perhaps better in menus.h ?
-
-#if defined(PCBX9D) || defined(PCBACT)
-#define KEY_MOVE_UP    KEY_PLUS
-#define KEY_MOVE_DOWN  KEY_MINUS
+// Stick tolerance varies between transmitters, Higher is better
+#if defined (PCB9XR) || defined (PCB9XR128)
+  #define STICK_TOLERANCE 16
 #else
-#define KEY_MOVE_UP    KEY_UP
-#define KEY_MOVE_DOWN  KEY_DOWN
+  #define STICK_TOLERANCE 64
 #endif
 
 #endif

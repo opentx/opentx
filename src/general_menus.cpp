@@ -1068,14 +1068,6 @@ void menuGeneralCalib(uint8_t event)
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i])>50) {
           g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
-
-// Stick tolerance varies between transmitters, Higher is better
-#if defined (PCB9XR) || defined (PCB9XR128)
-    #define STICK_TOLERANCE 16
-#else
-    #define STICK_TOLERANCE 64
-#endif
-
           g_eeGeneral.calibSpanNeg[i] = v - v/STICK_TOLERANCE;
           v = reusableBuffer.calib.hiVals[i] - reusableBuffer.calib.midVals[i];
           g_eeGeneral.calibSpanPos[i] = v - v/STICK_TOLERANCE;
