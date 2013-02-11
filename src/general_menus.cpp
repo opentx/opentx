@@ -885,7 +885,7 @@ void menuGeneralDiagAna(uint8_t event)
 
   SIMPLE_MENU(STR_MENUANA, menuTabDiag, e_Ana, ANAS_ITEMS_COUNT);
 
-  for (uint8_t i=0; i<8; i++) {
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
     uint8_t y = 1+FH+(i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
