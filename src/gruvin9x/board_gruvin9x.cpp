@@ -180,9 +180,15 @@ void pwrOff()
 #endif
 }
 
+#if ROTARY_ENCODERS <= 2
+#define ROTENC_DOWN() ((~PIND & 0x20) || (~PIND & 0x10))
+#else
+#define ROTENC_DOWN() (0)
+#endif
+
 FORCEINLINE uint8_t keyDown()
 {
-  return (~PINL) & 0x3F;
+  return ((~PINL) & 0x3F) || ROTENC_DOWN();
 }
 
 bool switchState(EnumKeys enuk)

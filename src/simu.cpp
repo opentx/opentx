@@ -255,6 +255,9 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       KEY_Up,        KEY_UP,
       KEY_Down,      KEY_DOWN,
 #endif
+#if defined(ROTARY_ENCODER_NAVIGATION)
+      KEY_F,  BTN_REa,
+#endif
     };
 
 #if defined(PCBSKY9X)
@@ -299,6 +302,21 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     for (unsigned i=0; i<DIM(trimKeys); i++) {
       simuSetTrim(i, getApp()->getKeyState(trimKeys[i]));
     }
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    static bool rotencAction = false;
+    if (getApp()->getKeyState(KEY_G)) {
+      if (!rotencAction) g_rotenc[0] += ROTARY_ENCODER_GRANULARITY;
+      rotencAction = true;
+    }
+    else if (getApp()->getKeyState(KEY_D)) {
+      if (!rotencAction) g_rotenc[0] -= ROTARY_ENCODER_GRANULARITY;
+      rotencAction = true;
+    }
+    else {
+      rotencAction = false;
+    }
+#endif
 
 #define SWITCH_KEY(key, swtch, states) \
     static bool state##key = 0; \

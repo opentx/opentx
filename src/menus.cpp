@@ -76,11 +76,7 @@ void displayScrollbar(xcoord_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_
 }
 #endif
 
-#if defined(PCBX9D) || defined(ROTARY_ENCODER_NAVIGATION)
-int8_t scrollRE;
-int16_t p1valdiff;
-int8_t lastCursorMove;
-#elif defined(NAVIGATION_POT1)
+#if defined(NAVIGATION_POT1)
 int16_t p1valdiff;
 #endif
 
@@ -114,22 +110,30 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   }
 #endif
 
-  if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
+#if defined(PCBX9D)
+  if (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP))) {
+#else
+  if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
+#endif
     newval++;
     AUDIO_KEYPAD_UP();
   }
-  else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
+#if defined(PCBX9D)
+  else if (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN))) {
+#else
+  else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
+#endif
     newval--;
     AUDIO_KEYPAD_DOWN();
   }
 
-  if (i_min==0 && i_max==1 && event==EVT_KEY_BREAK(KEY_ENTER)) {
+  if (i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
     s_editMode = 0;
     newval = !val;
   }
 
-#if defined(PCBX9D) || defined(ROTARY_ENCODER_NAVIGATION) || defined(NAVIGATION_POT1)
-  //change values based on P1
+#if defined(NAVIGATION_POT1)
+  // change values based on P1
   newval -= p1valdiff;
   p1valdiff = 0;
 #endif
@@ -167,7 +171,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   }
 
   if (newval != val) {
-    if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && (newval==0 || newval==-100 || newval==+100)) {
+    if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && (newval==0 || newval==-100 || newval==+100) && !IS_ROTARY_EVENT(event)) {
       pauseEvents(event); // delay before auto-repeat continues
       if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
         AUDIO_KEYPAD_UP();
@@ -205,56 +209,6 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow)
   return check_simple(event, 0, 0, 0, maxrow);
 }
 
-#if defined(PCBX9D)
-void check_rotary_encoder(uint8_t & event)
-{
-  if (lastCursorMove < -1 || event==EVT_KEY_REPT(KEY_MOVE_UP) || event==EVT_KEY_FIRST(KEY_MOVE_UP)) {
-    scrollRE = -1;
-  }
-  else if (lastCursorMove > 1 || event==EVT_KEY_REPT(KEY_MOVE_DOWN) || event==EVT_KEY_FIRST(KEY_MOVE_DOWN)) {
-    scrollRE = 1;
-  }
-  else {
-    scrollRE = 0;
-  }
-
-  if (s_editMode > 0) {
-    p1valdiff = scrollRE;
-    scrollRE = 0;
-  }
-
-  // TODO remove later...
-  uint8_t key = EVT_KEY_MASK(event);
-  if (key==KEY_MOVE_UP || key==KEY_MOVE_DOWN)
-    event = 0;
-}
-#elif defined(ROTARY_ENCODER_NAVIGATION)
-void check_rotary_encoder()
-{
-  // check rotary encoder 1 if changed -> cursor down/up
-  static int16_t rePreviousValue;
-
-  if (IS_RE_NAVIGATION_ENABLE()) {
-    uint8_t re = NAVIGATION_RE_IDX();
-    p1valdiff = 0;
-    int16_t reNewValue = (g_rotenc[re] / ROTARY_ENCODER_GRANULARITY);
-    scrollRE = rePreviousValue - reNewValue;
-    if (scrollRE) {
-      rePreviousValue = reNewValue;
-      if (s_editMode > 0) {
-        p1valdiff = -scrollRE;
-        scrollRE = 0;
-      }
-    }
-  }
-  else {
-    rePreviousValue = 0;
-    p1valdiff = 0;
-    scrollRE = 0;
-  }
-}
-#endif
-
 void title(const pm_char * s)
 {
   lcd_putsAtt(0, 0, s, INVERS);
@@ -263,27 +217,16 @@ void title(const pm_char * s)
 #define SCROLL_TH      64
 #define SCROLL_POT1_TH 32
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-#define MAXCOL(row) ((horTab && row >= 0) ? pgm_read_byte(horTab+min(row, (maxrow_t)horTabMax)) : (const uint8_t)0)
-#else
 #define MAXCOL(row) (horTab ? pgm_read_byte(horTab+min(row, (maxrow_t)horTabMax)) : (const uint8_t)0)
-#endif
-
-#define INC(val,max) if(val<max) {val++;} else {val=0;}
-#define DEC(val,max) if(val>0  ) {val--;} else {val=max;}
-
-#if defined(PCBX9D) || defined(PCBACT)
-#define RE_NAV_ENTER  (KEY_ENTER)
-#define SCROLL(min, val, max) ((val) > (max) ? ((min) + (val) - (max) - 1) : ((val) < (min) ? ((max) - (min) + (val) + 1) : (val)))
-#else
-#define RE_NAV_ENTER  (BTN_REa+g_eeGeneral.reNavigation-1)
-#define SCROLL(min, val, max) limit(min, val, max)
-#endif
+#define INC(val, min, max) if (val<max) {val++;} else {val=min;}
+#define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
 
 #if defined(PCBX9D)
-#define POS_VERT_INIT (menuTab ? (MAXCOL((int16_t)1) == 255 ? 2 : 1) : 0)
+#define IS_ROTARY_SHORT(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
+#define SCROLL(min, val, max) ((val) > (max) ? ((min) + (val) - (max) - 1) : ((val) < (min) ? ((max) - (min) + (val) + 1) : (val)))
 #else
-#define POS_VERT_INIT 0
+#define IS_ROTARY_SHORT(evt)  (evt==EVT_ROTARY_BREAK)
+#define SCROLL(min, val, max) limit(min, val, max)
 #endif
 
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, maxrow_t maxrow)
@@ -292,29 +235,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   uint8_t  l_posHorz = m_posHorz;
 
   uint8_t maxcol = MAXCOL(l_posVert);
-
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
-  if (!(s_warning || s_menu_count))
-    CHECK_ROTARY_ENCODER(event);
-#endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  if (l_posVert < 0 && (event==EVT_KEY_BREAK(RE_NAV_ENTER) || event==EVT_KEY_BREAK(KEY_MENU))) {
-    popMenu();
-    return false;
-  }
-#endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
-  if (IS_RE_NAVIGATION_ENABLE() && event==EVT_KEY_BREAK(RE_NAV_ENTER) && s_editMode != EDIT_MODIFY_STRING) {
-    scrollRE = 0;
-    if (s_editMode++ > 0) s_editMode = 0;
-    if (s_editMode > 0 && l_posVert == 0 && menuTab) s_editMode = -1;
-    if (maxrow == 0) s_editMode = -1;
-  }
-#else
-#define scrollRE 0
-#endif
 
 #ifdef NAVIGATION_POT1
   // check pot 1 - if changed -> scroll values
@@ -341,7 +261,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #define scrollUD 0
 #endif
 
-  if (scrollRE || scrollLR || scrollUD || p1valdiff) backlightOn(); // on keypress turn the light on
+  if (scrollLR || scrollUD || p1valdiff) backlightOn(); // on keypress turn the light on
 
   if (menuTab) {
     uint8_t attr = 0;
@@ -369,17 +289,37 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       return false;
     }
 #else
+
     if (l_posVert==0 && !s_noScroll) {
       attr = INVERS;
 
       int8_t cc = curr;
 
-      if (scrollLR || (scrollRE && s_editMode < 0)) {
-        cc = SCROLL((int8_t)0, (int8_t)(cc - scrollLR + scrollRE), (int8_t)(menuTabSize-1));
+      if (scrollLR) {
+        cc = SCROLL((int8_t)0, (int8_t)(cc - scrollLR), (int8_t)(menuTabSize-1));
       }
 
       switch(event) {
+#if defined(ROTARY_ENCODER_NAVIGATION)
+        case EVT_ROTARY_BREAK:
+          if (s_editMode < 0 && maxrow > 0) {
+            s_editMode = 0;
+            // TODO ? l_posVert = (horTab && horTab[1]==0xff) ? 2 : 1;
+            l_posHorz = 0;
+          }
+          else {
+            s_editMode = -1;
+          }
+          event = 0;
+          break;
+#endif
+
         case EVT_KEY_FIRST(KEY_LEFT):
+#if defined(ROTARY_ENCODER_NAVIGATION)
+        case EVT_ROTARY_LEFT:
+          if (s_editMode >= 0)
+            break;
+#endif
           if (curr > 0)
             cc = curr - 1;
           else
@@ -387,6 +327,11 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
           break;
 
         case EVT_KEY_FIRST(KEY_RIGHT):
+#if defined(ROTARY_ENCODER_NAVIGATION)
+        case EVT_ROTARY_RIGHT:
+          if (s_editMode >= 0)
+            break;
+#endif
           if (curr < (menuTabSize-1))
             cc = curr + 1;
           else
@@ -414,11 +359,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       displayScrollbar(LCD_W-1, FH, LCD_H-FH, s_pgOfs, maxrow, LCD_LINES-1);
 #endif
   }
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  else if (l_posVert < 0) {
-    lcd_putsAtt(LCD_W-LEN_BACK*FW, 0, STR_BACK, INVERS);
-  }
-#endif
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
 
@@ -431,70 +371,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     if (scrollLR && l_posVert>0) {
       l_posHorz = limit((int8_t)0, (int8_t)(l_posHorz - scrollLR), (int8_t)maxcol);
     }
-
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
-    lastCursorMove = 0;
-#if defined(PCBX9D)
-    // TODO remove that
-    while (s_editMode<=0 && scrollRE) {
-#else
-    while (s_editMode==0 && scrollRE) {
-#endif
-      if (scrollRE > 0) {
-        --scrollRE;
-        maxcol = MAXCOL(l_posVert);
-        lastCursorMove = +1;
-        if (++l_posHorz > maxcol) {
-          if (l_posVert < maxrow) {
-            do {
-              ++l_posVert;
-            } while(MAXCOL(l_posVert) == (uint8_t)-1);
-            maxcol = MAXCOL(l_posVert);
-            l_posHorz = 0;
-          }
-          else {
-#if defined(PCBX9D)
-            l_posVert = POS_VERT_INIT;
-            l_posHorz = 0;
-            s_pgOfs = 0;
-#else
-            --l_posHorz;
-            scrollRE = 0;
-#endif
-          }
-        }
-      }
-      else {
-        ++scrollRE;
-        lastCursorMove = -1;
-        if (l_posHorz-- == 0) {
-          do {
-            --l_posVert;
-          } while(MAXCOL(l_posVert) == (uint8_t)-1);
-#if defined(PCBX9D)
-          if (l_posVert < (menuTab ? 1 : 0)) {
-            l_posVert = maxrow;
-            l_posHorz = MAXCOL(l_posVert);
-          }
-          else if (l_posVert == (menuTab ? 0 : -1)) {
-            l_posHorz = 0;
-          }
-#else
-          if (l_posVert <= (menuTab ? 0 : -1)) {
-            l_posVert = menuTab ? 0 : -1;
-            l_posHorz = 0;
-            scrollRE = 0;
-          }
-#endif
-          else {
-            maxcol = MAXCOL(l_posVert);
-            l_posHorz = maxcol;
-          }
-        }
-      }
-    }
-#endif
-
   }
 
   switch(event)
@@ -504,41 +380,53 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       l_posHorz = 0;
 #if defined(ROTARY_ENCODER_NAVIGATION)
       if (menuTab) {
-        s_editMode = -1;
+        s_editMode = EDIT_MODE_INIT;
         break;
       }
       // no break
 #else
-      s_editMode = -1; // TODO why not 0?
+      s_editMode = EDIT_MODE_INIT;
       break;
 #endif
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ENTRY_UP:
       s_editMode = 0;
       break;
 #endif
-    case EVT_KEY_FIRST(KEY_MENU):
+
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
+    case EVT_ROTARY_BREAK:
+      if (s_editMode > 1) break;
+#endif
+
+#if !defined(PCBX9D)
+    case EVT_KEY_FIRST(KEY_ENTER):
+#endif
       if (!menuTab || l_posVert>0)
         s_editMode = (s_editMode<=0);
       break;
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_KEY_LONG_ROTARY_ENCODERS:
-      if (l_posVert!=0 || !IS_RE_NAVIGATION_EVT(event))
-        break;
+    case EVT_ROTARY_LONG:
+      if (s_editMode > 1) break;
       killEvents(event);
+      if (l_posVert != POS_VERT_INIT) {
+        l_posVert = POS_VERT_INIT;
+        s_editMode = EDIT_MODE_INIT;
+        break;
+      }
       // no break
 #endif
-
     case EVT_KEY_LONG(KEY_EXIT):
-      s_editMode = 0;
+      s_editMode = 0; // TODO needed? we call ENTRY_UP after which does the same
       popMenu();
-      break;
+      return false;
 
     case EVT_KEY_BREAK(KEY_EXIT):
 #if defined(ROTARY_ENCODER_NAVIGATION)
-      if (s_editMode==0)
-        s_editMode = -1;
+      if (s_editMode == 0)
+        s_editMode = EDIT_MODE_INIT;
       else
 #endif
       if (s_editMode>0) {
@@ -546,15 +434,17 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         break;
       }
 #if defined(PCBX9D)
-      uint8_t posVertInit = POS_VERT_INIT;
-      if (s_pgOfs != 0 || l_posHorz != 0 || l_posVert != posVertInit) {
-        s_pgOfs = 0;
-        l_posVert = posVertInit;
-        l_posHorz = 0;
-      }
-      else {
-        popMenu();
-        return false;
+      {
+        uint8_t posVertInit = POS_VERT_INIT;
+        if (s_pgOfs != 0 || l_posHorz != 0 || l_posVert != posVertInit) {
+          s_pgOfs = 0;
+          l_posVert = posVertInit;
+          l_posHorz = 0;
+        }
+        else {
+          popMenu();
+          return false;
+        }
       }
 #else
       if (l_posVert==0 || !menuTab) {
@@ -569,45 +459,95 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #endif
       break;
 
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if !defined(PCBX9D)
     case EVT_KEY_REPT(KEY_RIGHT):  //inc
       if (l_posHorz==maxcol) break;
       // no break
+
     case EVT_KEY_FIRST(KEY_RIGHT)://inc
       if (!horTab || s_editMode>0) break;
-      INC(l_posHorz, maxcol);
+#endif
+
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
+    CASE_EVT_ROTARY_MOVE_RIGHT
+      if (s_editMode != 0) break;
+      // TODO s_editMode test is duplicated
+      // TODO could be written in a smarter way!
+      if (l_posHorz < maxcol) {
+        l_posHorz++;
+        break;
+      }
+      else {
+        l_posHorz = 0;
+        if (!IS_ROTARY_MOVE_RIGHT(event))
+          break;
+      }
+#else
+      INC(l_posHorz, 0, maxcol);
       break;
+#endif
+
+#if !defined(PCBX9D)
+    case EVT_KEY_REPT(KEY_DOWN):  //inc
+      if (!IS_ROTARY_RIGHT(event) && l_posVert==maxrow) break;
+      // no break
+
+    case EVT_KEY_FIRST(KEY_DOWN): //inc
+      if (s_editMode>0) break;
+#endif
+      do {
+        INC(l_posVert, POS_VERT_INIT, maxrow);
+      } while (MAXCOL(l_posVert) == (uint8_t)-1);
+
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
+      s_editMode = 0; // TODO why?
+#endif
+      l_posHorz = min(l_posHorz, MAXCOL(l_posVert));
+      break;
+
+#if !defined(PCBX9D)
     case EVT_KEY_REPT(KEY_LEFT):  //dec
       if (l_posHorz==0) break;
       // no break
+
     case EVT_KEY_FIRST(KEY_LEFT)://dec
       if (!horTab || s_editMode>0) break;
-      DEC(l_posHorz, maxcol);
-      break;
-    case EVT_KEY_REPT(KEY_DOWN):  //inc
-      if (l_posVert==maxrow) break;
-      // no break
-    case EVT_KEY_FIRST(KEY_DOWN): //inc
-      if (s_editMode>0) break;
-      do {
-        INC(l_posVert, maxrow);
-      } while (MAXCOL(l_posVert) == (uint8_t)-1);
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      s_editMode = 0;
 #endif
-      l_posHorz = min(l_posHorz, MAXCOL(l_posVert));
+
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
+    CASE_EVT_ROTARY_MOVE_LEFT
+      // TODO could be written in a smarter way!
+      if (s_editMode != 0) break;
+      if (l_posHorz > 0) {
+        l_posHorz--;
+        break;
+      }
+      else if (IS_ROTARY_MOVE_LEFT(event) && s_editMode == 0) {
+        l_posHorz = 0xff;
+      }
+      else {
+        l_posHorz = maxcol;
+        break;
+      }
+#else
+      DEC(l_posHorz, 0, maxcol);
       break;
+#endif
+
+#if !defined(PCBX9D)
     case EVT_KEY_REPT(KEY_UP):  //dec
-      if (l_posVert==0) break;
+      if (!IS_ROTARY_LEFT(event) && l_posVert==0) break;
       // no break
     case EVT_KEY_FIRST(KEY_UP): //dec
-      if (s_editMode>0)break;
+      if (s_editMode>0) break;
+#endif
+
       do {
-        DEC(l_posVert, maxrow);
+        DEC(l_posVert, POS_VERT_INIT, maxrow);
       } while(MAXCOL(l_posVert) == (uint8_t)-1);
       l_posHorz = min(l_posHorz, MAXCOL(l_posVert));
       break;
-#endif
+
   }
 
   uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
@@ -699,10 +639,7 @@ void displayWarning(uint8_t event)
   lcd_puts(16, 5*FH, s_warning_type == WARNING_TYPE_CONFIRM ? STR_POPUPS : STR_EXIT);
   switch(event) {
 #if defined(ROTARY_ENCODERS)
-    case EVT_KEY_BREAK_ROTARY_ENCODERS:
-      if (!IS_RE_NAVIGATION_EVT(event))
-        break;
-      // no break
+    case EVT_ROTARY_BREAK:
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
       if (s_warning_type == WARNING_TYPE_ASTERISK)
@@ -813,6 +750,7 @@ const char * displayMenu(uint8_t event)
   }
 
   switch(event) {
+    CASE_EVT_ROTARY_RIGHT
     case EVT_KEY_BREAK(KEY_MOVE_UP):
       if (s_menu_item > 0)
         s_menu_item--;
@@ -821,6 +759,10 @@ const char * displayMenu(uint8_t event)
         result = STR_UPDATE_LIST;
       }
       break;
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    CASE_EVT_ROTARY_LEFT
+#endif
     case EVT_KEY_BREAK(KEY_MOVE_DOWN):
       if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count)
         s_menu_item++;
@@ -829,9 +771,14 @@ const char * displayMenu(uint8_t event)
         result = STR_UPDATE_LIST;
       }
       break;
+    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
       result = s_menu[s_menu_item];
       // no break
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    CASE_EVT_ROTARY_LONG
+      killEvents(event);
+#endif
     case EVT_KEY_BREAK(KEY_EXIT):
       s_menu_count = 0;
       s_menu_item = 0;

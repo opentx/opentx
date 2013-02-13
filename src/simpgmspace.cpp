@@ -38,7 +38,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
-volatile uint8_t pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
+volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
 const char *eepromFile = NULL;
@@ -127,6 +127,13 @@ void simuSetKey(uint8_t key, bool state)
     KEY_CASE(KEY_LEFT, GPIO_BUTTON_LEFT, PIN_BUTTON_LEFT)
     KEY_CASE(KEY_UP, GPIO_BUTTON_UP, PIN_BUTTON_UP)
     KEY_CASE(KEY_DOWN, GPIO_BUTTON_DOWN, PIN_BUTTON_DOWN)
+#endif
+#if defined(PCBSKY9X)
+    KEY_CASE(BTN_REa, PIOB->PIO_PDSR, 0x40)
+#elif defined(PCBGRUVIN9X)
+    KEY_CASE(BTN_REa, pind, 0x20)
+#elif defined(ROTARY_ENCODER_NAVIGATION)
+    KEY_CASE(BTN_REa, RotEncoder, 0x20)
 #endif
   }
 }
@@ -274,17 +281,12 @@ void *main_thread(void *)
       doSplash();
 #endif
 
-#if !defined(CPUARM)
-      checkLowEEPROM();
-#endif
-
 #if defined(CPUARM)
       eeLoadModel(g_eeGeneral.currModel);
 #endif
 
-      checkTHR();
-      checkSwitches();
       checkAlarm();
+      checkAll();
     }
 
     s_current_protocol = 0;

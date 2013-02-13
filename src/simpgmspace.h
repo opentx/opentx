@@ -191,6 +191,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define DDRE  dummyport
 #define DDRF  dummyport
 #define DDRG  dummyport
+#define PINA  ~pina
 #define PINB  ~pinb
 #define PINC  ~pinc
 #define PIND  ~pind
@@ -292,6 +293,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define FE0     0
 
 #define ISR(x, ...)  void x()
+#define asm(x)
 
 #if defined(CPUARM)
 extern volatile uint32_t Tenms;
@@ -302,7 +304,7 @@ extern uint32_t Master_frequency;
 #define __enable_irq()
 #endif
 
-extern volatile unsigned char pinb,pinc,pind,pine,ping,pinh,pinj,pinl;
+extern volatile unsigned char pina, pinb, pinc, pind, pine, ping, pinh, pinj, pinl;
 extern uint8_t portb, portc, porth, dummyport;
 extern uint16_t dummyport16;
 extern uint8_t main_thread_running;

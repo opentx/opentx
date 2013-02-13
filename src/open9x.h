@@ -156,7 +156,7 @@
 #define IF_GVARS(x)
 #endif
 
-#if defined(PCBACT) || ROTARY_ENCODERS > 0
+#if ROTARY_ENCODERS > 0
 #define ROTARY_ENCODER_NAVIGATION
 #endif
 
@@ -624,15 +624,66 @@ enum CswFunctions {
 #define EVT_KEY_REPT(key)  ((key)|_MSK_KEY_REPT)
 #define EVT_KEY_LONG(key)  ((key)|_MSK_KEY_LONG)
 
-#define IS_KEY_BREAK(key)  (((key)&0xf0) ==  _MSK_KEY_BREAK)
-#define IS_KEY_FIRST(key)  (((key)&0xf0) ==  _MSK_KEY_FIRST)
+#define IS_KEY_BREAK(evt)  (((evt)&0xf0) ==  _MSK_KEY_BREAK)
+#define IS_KEY_FIRST(evt)  (((evt)&0xf0) ==  _MSK_KEY_FIRST)
+#define IS_KEY_LONG(evt)   (((evt)&0xf0) ==  _MSK_KEY_LONG)
 
-#define EVT_ENTRY          (0xff - _MSK_KEY_REPT)
-#define EVT_ENTRY_UP       (0xfe - _MSK_KEY_REPT)
-#define EVT_ROTARY_SHORT   (0xfd - _MSK_KEY_REPT)
-#define EVT_ROTARY_LONG    (0xfc - _MSK_KEY_REPT)
-#define EVT_ROTARY_LEFT    (0xfb - _MSK_KEY_REPT)
-#define EVT_ROTARY_RIGHT   (0xfa - _MSK_KEY_REPT)
+#define EVT_ENTRY          0xbf
+#define EVT_ENTRY_UP       0xbe
+
+#if defined(PCBX9D)
+#define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
+#define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
+#else
+#define EVT_ROTARY_BREAK   0xcf
+#define EVT_ROTARY_LONG    0xce
+#define EVT_ROTARY_LEFT    0xdf
+#define EVT_ROTARY_RIGHT   0xde
+#endif
+
+#if defined(PCBX9D)
+#define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MOVE_DOWN) || evt==EVT_KEY_REPT(KEY_MOVE_DOWN))
+#define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_MOVE_UP) || evt==EVT_KEY_REPT(KEY_MOVE_UP))
+#define IS_ROTARY_BREAK(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
+#define IS_ROTARY_LONG(evt)   (evt==EVT_KEY_LONG(KEY_ENTER))
+#define IS_ROTARY_EVENT(evt)  (0)
+#define CASE_EVT_ROTARY_BREAK /*case EVT_KEY_BREAK(KEY_ENTER):*/
+#define CASE_EVT_ROTARY_LONG  /*case EVT_KEY_LONG(KEY_ENTER):*/
+#define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
+#define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
+#elif defined(ROTARY_ENCODER_NAVIGATION)
+#define IS_ROTARY_LEFT(evt)   (evt == EVT_ROTARY_LEFT)
+#define IS_ROTARY_RIGHT(evt)  (evt == EVT_ROTARY_RIGHT)
+#define IS_ROTARY_BREAK(evt)  (evt == EVT_ROTARY_BREAK)
+#define IS_ROTARY_LONG(evt)   (evt == EVT_ROTARY_LONG)
+#define IS_ROTARY_EVENT(evt)  (EVT_KEY_MASK(evt) >= 0x0e)
+#define CASE_EVT_ROTARY_BREAK case EVT_ROTARY_BREAK:
+#define CASE_EVT_ROTARY_LONG  case EVT_ROTARY_LONG:
+#define CASE_EVT_ROTARY_LEFT  case EVT_ROTARY_LEFT:
+#define CASE_EVT_ROTARY_RIGHT case EVT_ROTARY_RIGHT:
+#else
+#define IS_ROTARY_LEFT(evt)  (0)
+#define IS_ROTARY_RIGHT(evt) (0)
+#define IS_ROTARY_BREAK(evt) (0)
+#define IS_ROTARY_LONG(evt)  (0)
+#define IS_ROTARY_EVENT(evt) (0)
+#define CASE_EVT_ROTARY_BREAK
+#define CASE_EVT_ROTARY_LONG
+#define CASE_EVT_ROTARY_LEFT
+#define CASE_EVT_ROTARY_RIGHT
+#endif
+
+#if defined(PCBX9D)
+  #define IS_RE_NAVIGATION_ENABLE()   true
+  #define NAVIGATION_RE_IDX()         0
+#elif defined(ROTARY_ENCODERS)
+  #define NAVIGATION_RE_IDX()         (g_eeGeneral.reNavigation - 1)
+  #define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
+#elif defined(ROTARY_ENCODER_NAVIGATION)
+  #define IS_RE_NAVIGATION_ENABLE()   true
+  #define NAVIGATION_RE_IDX()         0
+#endif
+
 
 #define HEART_TIMER_PULSES  1
 #define HEART_TIMER10ms     2
@@ -748,7 +799,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc);
 #endif
 
 #if defined(PCBSKY9X)
-#define ROTARY_ENCODER_GRANULARITY 4
+#define ROTARY_ENCODER_GRANULARITY 2
 #else
 #define ROTARY_ENCODER_GRANULARITY 1
 #endif
@@ -1089,7 +1140,6 @@ extern volatile rotenc_t g_rotenc[1];
 
 #ifdef JETI
 // Jeti-DUPLEX Telemetry
-extern uint16_t jeti_keys;
 #include "jeti.h"
 #endif
 

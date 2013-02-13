@@ -262,6 +262,28 @@ void per10ms()
 
   readKeysAndTrims();
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  if (IS_RE_NAVIGATION_ENABLE()) {
+    static int16_t rePreviousValue;
+    int16_t reNewValue = (g_rotenc[NAVIGATION_RE_IDX()] / ROTARY_ENCODER_GRANULARITY);
+    int8_t scrollRE = reNewValue - rePreviousValue;
+    if (scrollRE) {
+      rePreviousValue = reNewValue;
+      putEvent(scrollRE < 0 ? EVT_ROTARY_LEFT : EVT_ROTARY_RIGHT);
+    }
+    extern uint8_t s_evt;
+    uint8_t evt = s_evt;
+    if (EVT_KEY_MASK(evt) == BTN_REa + NAVIGATION_RE_IDX()) {
+      if (IS_KEY_BREAK(evt)) {
+        putEvent(EVT_ROTARY_BREAK);
+      }
+      else if (IS_KEY_LONG(evt)) {
+        putEvent(EVT_ROTARY_LONG);
+      }
+    }
+  }
+#endif
+
 #if defined(MAVLINK) && !defined(CPUARM)
   check_mavlink();
 #endif
@@ -1204,6 +1226,10 @@ void checkBacklight()
     Voice.voice_process() ;
 #endif
   }
+
+#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION)
+  rotencPoll();
+#endif
 }
 
 void backlightOn()
@@ -3235,6 +3261,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
 // TODO serial_arm and serial_avr
 
 #if defined(FRSKY) && !defined(CPUARM)
+// TODO in frsky.cpp?
 FORCEINLINE void FRSKY_USART0_vect()
 {
   if (frskyTxBufferCount > 0) {
@@ -3734,10 +3761,6 @@ int main(void)
 #if defined(PCBGRUVIN9X)
     if ((shutdown_state=pwrCheck()) > e_power_trainer)
       break;
-#endif
-
-#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION)
-    rotencPoll();
 #endif
 
     perMain();

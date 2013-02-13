@@ -34,7 +34,7 @@
 
 #include "open9x.h"
 
-static uint8_t s_evt;
+uint8_t s_evt;
 void putEvent(uint8_t evt)
 {
   s_evt = evt;
@@ -143,8 +143,16 @@ void pauseEvents(uint8_t event)
 
 void killEvents(uint8_t event)
 {
-  event = EVT_KEY_MASK(event);
-  if (event < (int)DIM(keys)) keys[event].killEvents();
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  if (event == EVT_ROTARY_LONG) {
+    killEvents(BTN_REa + NAVIGATION_RE_IDX());
+  }
+  else
+#endif
+  {
+    event = EVT_KEY_MASK(event);
+    if (event < (int)DIM(keys)) keys[event].killEvents();
+  }
 }
 
 void clearKeyEvents()

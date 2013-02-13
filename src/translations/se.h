@@ -468,7 +468,6 @@
 #define TR_MENUDEBUG           "Debug"
 #define TR_RXNUM               "RxNum"
 #define TR_SYNCMENU            "Synk [MENU]"
-#define TR_BACK                "EXIT"
 #define TR_LIMIT               INDENT"Niv\200"
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Breddgrad"

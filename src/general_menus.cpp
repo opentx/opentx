@@ -367,14 +367,11 @@ void menuGeneralSetup(uint8_t event)
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
 
-#if defined(ROTARY_ENCODERS) && NUM_ROTARY_ENCODERS > 0
+#if ROTARY_ENCODERS > 0
       case ITEM_SETUP_RE_NAVIGATION:
         g_eeGeneral.reNavigation = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, NUM_ROTARY_ENCODERS, attr, event);
         if (attr && checkIncDec_Ret) {
-          for (uint8_t i=0; i<ROTARY_ENCODERS; i++)
-            g_rotenc[i] = 0;
-          p1valdiff = 0;
-          scrollRE = 0;
+          g_rotenc[NAVIGATION_RE_IDX()] = 0;
         }
         break;
 #endif
@@ -474,6 +471,11 @@ void menuGeneralSetup(uint8_t event)
           resumePulses();
           clearKeyEvents();
         }
+#if defined(ROTARY_ENCODER_NAVIGATION)
+        if (m_posHorz > 0) {
+          REPEAT_LAST_CURSOR_MOVE();
+        }
+#endif
         break;
     }
   }
@@ -538,14 +540,14 @@ void menuGeneralSdManager(uint8_t event)
       f_chdir(ROOT_PATH);
       reusableBuffer.sd.offset = 65535;
       break;
-#if defined(ROTARY_ENCODERS)
-    case EVT_KEY_FIRST_ROTARY_ENCODERS:
-      if (!IS_RE_NAVIGATION_EVT(event))
-        break;
-      // no break
-#endif
+
+#if defined(PCBX9D)
+    case EVT_KEY_BREAK(KEY_ENTER):
+#else
+    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_ENTER):
+#endif
     {
       if (m_posVert > 0) {
         uint8_t index = m_posVert-1-s_pgOfs;
@@ -554,18 +556,17 @@ void menuGeneralSdManager(uint8_t event)
           s_pgOfs = 0;
           m_posVert = 1;
           reusableBuffer.sd.offset = 65535;
+          break;
         }
       }
-      break;
-    }
-#if defined(ROTARY_ENCODERS)
-    case EVT_KEY_LONG_ROTARY_ENCODERS:
-      if (!IS_RE_NAVIGATION_EVT(event))
+      if (!IS_ROTARY_BREAK(event) || m_posVert==0)
         break;
-      // no break
-#endif
+      // no break;
+    }
+
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
+      _event = 0;
       if (m_posVert == 0) {
         s_menu[s_menu_count++] = STR_SD_INFO;
         s_menu[s_menu_count++] = STR_SD_FORMAT;
@@ -863,8 +864,8 @@ void menuGeneralDiagKeys(uint8_t event)
     }
   }
 
-#if defined (ROTARY_ENCODERS)
-  for(uint8_t i=0; i<ROTARY_ENCODERS; i++) {
+#if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION)
+  for(uint8_t i=0; i<DIM(g_rotenc); i++) {
     uint8_t y = i*FH + FH;
     lcd_putsiAtt(14*FW, y, STR_VRENCODERS, i, 0);
     lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(switchState((EnumKeys)(BTN_REa+i)) ? INVERS : 0));

@@ -47,6 +47,8 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VBEEPMODE)
 #if defined(ROTARY_ENCODERS)
     ISTR(VRENAVIG)
+#endif
+#if defined(ROTARY_ENCODER_NAVIGATION)
     ISTR(VRENCODERS)
 #endif
     ISTR(TRNMODE)
@@ -288,10 +290,6 @@ const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
 #endif
 
 const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-const pm_char STR_BACK[] PROGMEM = TR_BACK;
-#endif
 
 #if defined(FRSKY_HUB)
 const pm_char STR_MINRSSI[] PROGMEM = TR_MINRSSI;

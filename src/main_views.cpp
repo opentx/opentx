@@ -328,24 +328,13 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      case EVT_KEY_BREAK_ROTARY_ENCODERS:
-        if (!IS_RE_NAVIGATION_EVT(event))
-          break;
-        // no break;
-#endif
+    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
       killEvents(event);
       break;
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_KEY_LONG_ROTARY_ENCODERS:
-      if (!IS_RE_NAVIGATION_EVT(event))
-        break;
-      killEvents(event);
-      // no break;
-#endif
+    CASE_EVT_ROTARY_LONG
     case EVT_KEY_GENERAL_MENU:
       pushMenu(menuGeneralSetup);
       killEvents(event);

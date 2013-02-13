@@ -87,6 +87,9 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VRENAVIG   (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #define OFS_VRENCODERS (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
 #define OFS_TRNMODE    (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
+#elif defined(ROTARY_ENCODER_NAVIGATION)
+#define OFS_VRENCODERS (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
+#define OFS_TRNMODE    (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
 #else
 #define OFS_TRNMODE    (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
@@ -194,7 +197,10 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(ROTARY_ENCODERS)
 #define STR_VRENAVIG   (STR_OPEN9X + OFS_VRENAVIG)
-#define STR_VRENCODERS     (STR_OPEN9X + OFS_VRENCODERS)
+#endif
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+#define STR_VRENCODERS (STR_OPEN9X + OFS_VRENCODERS)
 #endif
 
 #if defined(PCBGRUVIN9X) || defined(CPUARM)
@@ -371,11 +377,6 @@ extern const pm_char STR_MENUDEBUG[];
 extern const pm_char STR_RXNUM[];
 extern const pm_char STR_SYNCMENU[];
 extern const pm_char STR_INVERT_THR[];
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-extern const pm_char STR_BACK[];
-#define LEN_BACK PSIZE(TR_BACK)
-#endif
 
 #if defined(FRSKY)
 extern const pm_char STR_LIMIT[];

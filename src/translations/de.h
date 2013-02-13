@@ -414,7 +414,6 @@
 #define TR_MENUDEBUG                    "DEBUG"
 #define TR_RXNUM                        "RxNum"
 #define TR_SYNCMENU                     "Sync [MENU]"
-#define TR_BACK                         "Zur\205ck"
 #define TR_LIMIT                        INDENT"Limite"
 #define TR_MINRSSI                      "Min. RSSI"
 #define TR_LATITUDE                     "Latitude"

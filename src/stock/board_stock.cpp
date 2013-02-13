@@ -49,16 +49,21 @@ int8_t Rotary_diff ;
 int8_t RotaryControl ;
 #endif
 
+#define ROTENC_DOWN() (RotEncoder & 0x20)
+
 void rotencPoll()
 {
 #if defined(TELEMETREZ)
   if (TrotCount != LastTrotCount ) {
     g_rotenc[0] = LastTrotCount = TrotCount ;
   }
+  if( TezRotary != 0)
+    RotEncoder = 0x20; // switch is on
 #else
   // Rotary Encoder polling
   PORTA = 0 ;                     // No pullups
   DDRA = 0x1F ;           // Top 3 bits input
+
   asm(" rjmp 1f") ;
   asm("1:") ;
 //      asm(" nop") ;
@@ -67,14 +72,8 @@ void rotencPoll()
   rotary = PINA ;
   DDRA = 0xFF ;           // Back to all outputs
   rotary &= 0xE0 ;
-//      RotEncoder = rotary ;
 
-#if defined(TELEMETREZ)
-  if( TezRotary != 0)
-    RotEncoder = 0x20; // switch is on
-#else
-    RotEncoder = rotary ; // just read the lcd pin
-#endif
+  RotEncoder = rotary ; // just read the lcd pin
 
   rotary &= 0xDF ;
   if ( rotary != RotPosition ) {
@@ -90,9 +89,11 @@ void rotencPoll()
     }
     RotPosition = rotary ;
   }
-#endif
+#endif // TELEMETREZ
 }
-#endif
+#else
+#define ROTENC_DOWN() (0)
+#endif // ROTARY_ENCODER_NAVIGATION
 
 #ifndef SIMU
 inline void boardInit()
@@ -143,8 +144,7 @@ FORCEINLINE
 #endif
 uint8_t keyDown()
 {
-  // printf("PINB=%x\n", PINB & 0x7E); fflush(stdout);
-  return (~PINB) & 0x7E;
+  return ((~PINB) & 0x7E) || ROTENC_DOWN();
 }
 
 bool switchState(EnumKeys enuk)
