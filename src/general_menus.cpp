@@ -238,7 +238,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_BEEPER_MODE:
         g_eeGeneral.beeperMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, attr, event);
 #if defined(FRSKY)
-        if (attr && checkIncDec_Ret) FRSKY_setModelAlarms();
+        if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
         break;
 

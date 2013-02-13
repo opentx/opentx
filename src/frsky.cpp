@@ -516,7 +516,7 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
             TrotCount = data;
           }
           if (privateDataPos == 2) { // rotary encoder switch
-            TezRotary = data;
+            RotEncoder = data;
           }
 #endif
           if (++privateDataPos == privateDataLen) {
@@ -613,7 +613,7 @@ void frskyPushValue(uint8_t *&ptr, uint8_t value)
   }
 }
 
-inline void FRSKY10mspoll(void)
+inline void frskySendNextAlarm(void)
 {
 #if defined(PCBSKY9X)
   if (txPdcPending())
@@ -627,7 +627,7 @@ inline void FRSKY10mspoll(void)
   // Now send a packet
   frskyAlarmsSendState -= 1;
   uint8_t alarm = 1 - (frskyAlarmsSendState % 2);
-  if (frskyAlarmsSendState < 4) {
+  if (frskyAlarmsSendState < SEND_MODEL_ALARMS) {
     uint8_t channel = 1 - (frskyAlarmsSendState / 2);
     *ptr++ = (A22PKT + frskyAlarmsSendState); // fc - fb - fa - f9
     frskyPushValue(ptr, g_model.frsky.channels[channel].alarms_value[alarm]);
@@ -672,7 +672,7 @@ void frskyPushValue(uint8_t *&ptr, uint8_t value)
     *ptr = BYTESTUFF;
 }
 
-void FRSKY_setTxPacket(uint8_t type, uint8_t value, uint8_t p1, uint8_t p2)
+void frskySendPacket(uint8_t type, uint8_t value, uint8_t p1, uint8_t p2)
 {
   uint8_t *ptr = &frskyTxBuffer[0];
 
@@ -692,7 +692,7 @@ void FRSKY_setTxPacket(uint8_t type, uint8_t value, uint8_t p1, uint8_t p2)
   frskyTransmitBuffer();
 }
 
-inline void FRSKY10mspoll(void)
+inline void frskySendNextAlarm(void)
 {
   if (frskyTxBufferCount)
     return; // we only have one buffer. If it's in use, then we can't send yet.
@@ -700,27 +700,27 @@ inline void FRSKY10mspoll(void)
   // Now send a packet
   frskyAlarmsSendState -= 1;
   uint8_t alarm = 1 - (frskyAlarmsSendState % 2);
-  if (frskyAlarmsSendState < 4) {
+  if (frskyAlarmsSendState < SEND_MODEL_ALARMS) {
     uint8_t channel = 1 - (frskyAlarmsSendState / 2);
-    FRSKY_setTxPacket(A22PKT + frskyAlarmsSendState, g_model.frsky.channels[channel].alarms_value[alarm], ALARM_GREATER(channel, alarm), ALARM_LEVEL(channel, alarm));
+    frskySendPacket(A22PKT + frskyAlarmsSendState, g_model.frsky.channels[channel].alarms_value[alarm], ALARM_GREATER(channel, alarm), ALARM_LEVEL(channel, alarm));
   }
   else {
-    FRSKY_setTxPacket(RSSI1PKT-alarm, getRssiAlarmValue(alarm), 0, (2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4);
+    frskySendPacket(RSSI1PKT-alarm, getRssiAlarmValue(alarm), 0, (2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4);
   }
 }
 #endif
 
-NOINLINE void check_frsky()
+NOINLINE void telemetryPoll10ms()
 {
 #if defined(PCBSKY9X)
   rxPdcUsart(processSerialData);              // Receive serial data here
 #endif
 
   // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
-  static uint8_t FrskyDelay = 5;
-  if (frskyAlarmsSendState && (--FrskyDelay == 0)) {
-    FrskyDelay = 5; // 50ms
-    FRSKY10mspoll();
+  static uint8_t frskyTxDelay = 5;
+  if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
+    frskyTxDelay = 5; // 50ms
+    frskySendNextAlarm();
   }
 
 #ifndef SIMU
@@ -1273,15 +1273,7 @@ void menuTelemetryFrsky(uint8_t event)
       break;
   }
 
-  // The top black bar
-  putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
-  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
-  putsVBat(14*FW,0,att);
-  if (g_model.timers[0].mode) {
-    att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
-    putsTime(17*FW, 0, s_timerVal[0], att, att);
-  }
-  lcd_invert_line(0);
+  lcdDrawTelemetryTopBar();
 
   if (frskyStreaming >= 0) {
     if (s_frsky_view < MAX_FRSKY_SCREENS) {

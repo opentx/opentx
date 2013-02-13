@@ -56,9 +56,9 @@
 #elif defined(PCBSKY9X)
 #define EEPROM_VER       213
 #elif defined(PCBGRUVIN9X)
-#define EEPROM_VER       212
+#define EEPROM_VER       213
 #else
-#define EEPROM_VER       212
+#define EEPROM_VER       213
 #endif
 
 #ifndef PACK
@@ -355,6 +355,9 @@ enum Functions {
   FUNC_RESET,
   FUNC_VARIO,
   FUNC_PLAY_TRACK,
+#if !defined(CPUARM)
+  FUNC_PLAY_BOTH,
+#endif
   FUNC_PLAY_VALUE,
 #if !defined(PCBSTD)
   FUNC_LOGS,

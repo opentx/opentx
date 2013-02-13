@@ -3148,6 +3148,11 @@ void menuModelCustomFunctions(uint8_t event)
               val_max = NUM_XCHNPLAY-1;
               putsChnRaw(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+1, attr);
             }
+            else if (sd->func == FUNC_PLAY_BOTH) {
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+PROMPT_CUSTOM_BASE, attr|LEFT);
+              lcd_putcAtt(lcdLastPos, y, '/', attr);
+              lcd_outdezAtt(lcdLastPos+FW, y, val_displayed+PROMPT_CUSTOM_BASE+1, attr|LEFT);
+            }
 #endif
 #if defined(SDCARD)
             else if (sd->func == FUNC_LOGS) {
@@ -3299,7 +3304,7 @@ void menuModelTelemetry(uint8_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
 #endif
       if (s_editMode>0 && sub<=ITEM_TELEMETRY_RSSI_ALARM2)
-        FRSKY_setModelAlarms(); // update FrSky module when edit mode exited
+        frskySendAlarms(); // update FrSky module when edit mode exited
       break;
   }
 
@@ -3374,7 +3379,7 @@ void menuModelTelemetry(uint8_t event)
              t = ALARM_GREATER(ch, j);
              if (t != checkIncDecModel(event, t, 0, 1)) {
                channel.alarms_greater ^= (1 << j);
-               FRSKY_setModelAlarms();
+               frskySendAlarms();
              }
              break;
            case 2:

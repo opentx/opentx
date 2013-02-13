@@ -221,14 +221,6 @@ void title(const pm_char * s)
 #define INC(val, min, max) if (val<max) {val++;} else {val=min;}
 #define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
 
-#if defined(PCBX9D)
-#define IS_ROTARY_SHORT(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
-#define SCROLL(min, val, max) ((val) > (max) ? ((min) + (val) - (max) - 1) : ((val) < (min) ? ((max) - (min) + (val) + 1) : (val)))
-#else
-#define IS_ROTARY_SHORT(evt)  (evt==EVT_ROTARY_BREAK)
-#define SCROLL(min, val, max) limit(min, val, max)
-#endif
-
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, maxrow_t maxrow)
 {
   maxrow_t l_posVert = m_posVert;
@@ -296,7 +288,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       int8_t cc = curr;
 
       if (scrollLR) {
-        cc = SCROLL((int8_t)0, (int8_t)(cc - scrollLR), (int8_t)(menuTabSize-1));
+        cc = limit((int8_t)0, (int8_t)(cc - scrollLR), (int8_t)(menuTabSize-1));
       }
 
       switch(event) {

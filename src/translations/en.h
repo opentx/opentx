@@ -121,9 +121,11 @@
 
 #if defined(VOICE)
   #define TR_PLAY_TRACK    "Play Track\0"
+  #define TR_PLAY_BOTH     "Play Both\0 "
   #define TR_PLAY_VALUE    "Play Value\0"
 #else
   #define TR_PLAY_TRACK    "[PlayTrack]"
+  #define TR_PLAY_BOTH     "[Play Both]" // TODO could be avoided
   #define TR_PLAY_VALUE    "[PlayValue]"
 #endif
 
@@ -133,8 +135,8 @@
   #else
     #define TR_SDCLOGS       "[SD Logs]\0 "
   #endif
-  #define TR_FSW_VOLUME    "Volume\0    "
-  #define TR_FSW_BG_MUSIC  "BgMusic\0   ""BgMusic ||\0"
+  #define TR_FSW_VOLUME      "Volume\0    "
+  #define TR_FSW_BG_MUSIC    "BgMusic\0   ""BgMusic ||\0"
 #elif defined(PCBGRUVIN9X)
   #if defined(SDCARD)
     #define TR_SDCLOGS       "SD Logs\0   "
@@ -161,7 +163,7 @@
   #define TR_FSW_TEST
 #endif
 
-#define TR_VFSWFUNC      "Safety\0    ""Trainer \0  ""Inst. Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
+#define TR_VFSWFUNC      "Safety\0    ""Trainer \0  ""Inst. Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
 
 #define LEN_VFSWRESET    TR("\006","\012")
 #define TR_VFSWRESET     "Timer 1  ""Timer 2  ""All      ""Telemetry"

@@ -215,6 +215,8 @@ extern void lcd_invert_line(int8_t y);
 #define lcd_status_line() lcd_invert_line(LCD_LINES-1)
 inline void lcd_square(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att=0) { lcd_rect(x, y, w, w, SOLID, att); }
 
+void lcdDrawTelemetryTopBar();
+
 #define DO_CROSS(xx,yy,ww)          \
     lcd_vline(xx,yy-ww/2,ww);  \
     lcd_hline(xx-ww/2,yy,ww);

@@ -42,11 +42,12 @@
 #define JETI_KEY_NOCHANGE	0xf0
 
 void JETI_Init(void);
-void JETI_DisableTXD (void);
-void JETI_EnableTXD (void);
-void JETI_DisableRXD (void);
 void JETI_EnableRXD (void);
+void JETI_DisableRXD (void);
+void JETI_EnableTXD (void);
+void JETI_DisableTXD (void);
 
+void telemetryPoll10ms();
 void menuTelemetryJeti(uint8_t event);
 
 #endif

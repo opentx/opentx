@@ -203,7 +203,8 @@ extern int8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata d
 extern uint8_t frskyUsrStreaming;
 #endif
 
-#define SEND_MODEL_ALARMS 6
+#define SEND_RSSI_ALARMS  6
+#define SEND_MODEL_ALARMS 4
 extern uint8_t frskyAlarmsSendState;
 
 extern FrskyData frskyData;
@@ -212,11 +213,11 @@ extern uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 extern uint8_t frskyTxBufferCount;
 
 void FRSKY_Init(void);
-NOINLINE void check_frsky(void);
+NOINLINE void telemetryPoll10ms(void);
 
-inline void FRSKY_setModelAlarms(void)
+inline void frskySendAlarms(void)
 {
-  frskyAlarmsSendState = SEND_MODEL_ALARMS;
+  frskyAlarmsSendState = SEND_RSSI_ALARMS;
 }
 
 bool FRSKY_alarmRaised(uint8_t idx);

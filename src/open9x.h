@@ -798,10 +798,10 @@ int16_t getRotaryEncoder(uint8_t idx);
 void incRotaryEncoder(uint8_t idx, int8_t inc);
 #endif
 
-#if defined(PCBSKY9X)
-#define ROTARY_ENCODER_GRANULARITY 2
-#else
+#if defined(PCBGRUVIN9X)
 #define ROTARY_ENCODER_GRANULARITY 1
+#else
+#define ROTARY_ENCODER_GRANULARITY 2
 #endif
 
 #if defined(GVARS)

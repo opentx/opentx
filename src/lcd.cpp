@@ -659,10 +659,22 @@ void lcd_invert_line(int8_t y)
 #if defined(PCBX9D)
     *(p+3*DISPLAY_PLAN_SIZE) ^= 0xff;
     *(p+2*DISPLAY_PLAN_SIZE) ^= 0xff;
-    *(p+DISPLAY_PLAN_SIZE) ^= 0xff;
+    *(p+DISPLAY_PLAN_SIZE)   ^= 0xff;
 #endif
     *p++ ^= 0xff;
   }
+}
+
+void lcdDrawTelemetryTopBar()
+{
+  putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
+  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
+  putsVBat(14*FW,0,att);
+  if (g_model.timers[0].mode) {
+    att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
+    putsTime(17*FW, 0, s_timerVal[0], att, att);
+  }
+  lcd_invert_line(0);
 }
 
 void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2)

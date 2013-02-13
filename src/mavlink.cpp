@@ -605,7 +605,7 @@ void MAVLINK10mspoll(uint8_t count) {
 	}
 }
 
-void check_mavlink() {
+void telemetryPoll10ms() {
 	uint16_t tmr10ms = get_tmr10ms();
 	uint8_t count = tmr10ms & 0x0f; // 15*10ms
 	if (!count) {

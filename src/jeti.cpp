@@ -34,109 +34,133 @@
 
 #include "open9x.h"
 
-volatile uint16_t jeti_keys = JETI_KEY_NOCHANGE;
-uint8_t JetiBuffer[32]; // 32 characters
-volatile uint8_t JetiBufferReady;
+uint8_t jetiRxBuffer[32];
+uint8_t jetiReady;
+uint16_t jetiKeys;
+
+void telemetryPoll10ms()
+{
+  if (jetiReady) {
+    jetiKeys = JETI_KEY_NOCHANGE;
+    if (switchState((EnumKeys)(KEY_UP))) jetiKeys &= JETI_KEY_UP;
+    if (switchState((EnumKeys)(KEY_DOWN))) jetiKeys &= JETI_KEY_DOWN;
+    if (switchState((EnumKeys)(KEY_LEFT))) jetiKeys &= JETI_KEY_LEFT;
+    if (switchState((EnumKeys)(KEY_RIGHT))) jetiKeys &= JETI_KEY_RIGHT;
+
+    jetiReady = 0;    // invalidate buffer
+
+    JETI_EnableTXD();
+  }
+}
 
 #ifndef SIMU
+ISR(USART0_UDRE_vect)
+{
+  if (jetiKeys != 0xff) {
+    UCSR0B &= ~(1 << TXB80);
+
+    if (jetiKeys & 0x0100)
+      UCSR0B |= (1 << TXB80);
+
+    UDR0 = jetiKeys;
+
+    jetiKeys = 0xff;
+  }
+  else {
+    JETI_DisableTXD();
+  }
+}
+
 ISR (USART0_RX_vect)
 {
-        uint8_t stat;
-        uint8_t rh;
-        uint8_t rl;
-        static uint8_t jbp;
-        
-        stat = UCSR0A;
-        rh = UCSR0B;
-        rl = UDR0;
+  uint8_t stat;
+  uint8_t rh;
+  uint8_t rl;
+  static uint8_t jbp;
 
-        
-        if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0)))
-        {       // discard buffer and start new on any error
-                JetiBufferReady = 0;
-                jbp = 0;
-        }
-        else if ((rh & (1 << RXB80)) == 0)
-        {       // control
-                if (rl == 0xfe)
-                {       // start condition
-                        JetiBufferReady = 0;
-                        jbp = 0;
-                }
-                else if (rl == 0xff)
-                {       // stop condition
-                        JetiBufferReady = 1;
-                }
-        }
-        else
-        {       // data
-                if (jbp < 32)
-                {
-                  if(rl==0xDF)
-                    JetiBuffer[jbp++] = '@'; //@ => °  Issue 163
-                  else
-                    JetiBuffer[jbp++] = rl;
-                }
-        }
+  stat = UCSR0A;
+  rh = UCSR0B;
+  rl = UDR0;
 
+  if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0))) {
+    // discard buffer and start new on any error
+    jetiReady = 0;
+    jbp = 0;
+  }
+  else if ((rh & (1 << RXB80)) == 0) {
+    // control
+    if (rl == 0xfe) {
+      // start condition
+      jetiReady = 0;
+      jbp = 0;
+    }
+    else if (rl == 0xff) {
+      // stop condition
+      jetiReady = 1;
+    }
+  }
+  else {
+    // data
+    if (jbp < 32) {
+      if (rl==0xDF)
+        jetiRxBuffer[jbp++] = '@'; //@ => °  Issue 163
+      else
+        jetiRxBuffer[jbp++] = rl;
+    }
+  }
 }
 #endif
 
 void JETI_Init (void)
 {
-
-   jeti_keys = JETI_KEY_NOCHANGE;
-
-   DDRE  &= ~(1 << DDE0);          // set RXD0 pin as input
-   PORTE &= ~(1 << PORTE0);        // disable pullup on RXD0 pin
+  DDRE  &= ~(1 << DDE0);          // set RXD0 pin as input
+  PORTE &= ~(1 << PORTE0);        // disable pullup on RXD0 pin
 
 #ifndef SIMU
 
 #undef BAUD
 #define BAUD 9600
 #include <util/setbaud.h>
-   UBRR0H = UBRRH_VALUE;
-   UBRR0L = UBRRL_VALUE;
+  UBRR0H = UBRRH_VALUE;
+  UBRR0L = UBRRL_VALUE;
 
-   UCSR0A &= ~(1 << U2X0); // disable double speed operation
+  UCSR0A &= ~(1 << U2X0); // disable double speed operation
 
-   // set 9O1
-   UCSR0C = (1 << UPM01) | (1 << UPM00) | (1 << UCSZ01) | (1 << UCSZ00);
-   UCSR0B = (1 << UCSZ02);
+  // set 9O1
+  UCSR0C = (1 << UPM01) | (1 << UPM00) | (1 << UCSZ01) | (1 << UCSZ00);
+  UCSR0B = (1 << UCSZ02);
         
-   // flush receive buffer
-   while ( UCSR0A & (1 << RXC0) ) UDR0;
+  // flush receive buffer
+  while ( UCSR0A & (1 << RXC0) ) UDR0;
 
 #endif
 }
 
+void JETI_EnableTXD (void)
+{
+  UCSR0B |=  (1 << TXEN0);        // enable TX
+  UCSR0B |=  (1 << UDRIE0);       // enable UDRE0 interrupt
+}
 
 void JETI_DisableTXD (void)
 {
-        UCSR0B &= ~(1 << TXEN0);        // disable TX
+  UCSR0B &= ~(1 << TXEN0);        // disable TX
+  UCSR0B &= ~(1 << UDRIE0);       // disable UDRE0 interrupt
 }
-
-
-void JETI_EnableTXD (void)
-{
-        UCSR0B |=  (1 << TXEN0);        // enable TX
-}
-
-
-void JETI_DisableRXD (void)
-{
-        UCSR0B &= ~(1 << RXEN0);        // disable RX
-        UCSR0B &= ~(1 << RXCIE0);       // disable Interrupt
-}
-
 
 void JETI_EnableRXD (void)
 {
-        UCSR0B |=  (1 << RXEN0);        // enable RX
-        UCSR0B |=  (1 << RXCIE0);       // enable Interrupt
+  UCSR0B |=  (1 << RXEN0);        // enable RX
+  UCSR0B |=  (1 << RXCIE0);       // enable Interrupt
 }
 
+void JETI_DisableRXD (void)
+{
+  UCSR0B &= ~(1 << RXEN0);        // disable RX
+  UCSR0B &= ~(1 << RXCIE0);       // disable Interrupt
+}
 
+#if 0
 void JETI_putw (uint16_t c)
 {
         loop_until_bit_is_set(UCSR0A, UDRE0);
@@ -178,39 +202,20 @@ void JETI_put_stop (void)
         UCSR0B &= ~(1 << TXB80);
         UDR0 = 0xFF;
 }
+#endif
 
 void menuTelemetryJeti(uint8_t event)
 {
-  TITLE(PSTR("JETI"));
+  lcdDrawTelemetryTopBar();
 
-  switch(event)
-  {
-    case EVT_KEY_FIRST(KEY_EXIT):
-      JETI_DisableRXD();
-      chainMenu(menuMainView);
-      return;
+  for (uint8_t i=0; i<16; i++) {
+    lcd_putcAtt((i+2)*FW, 3*FH, jetiRxBuffer[i], BSS);
+    lcd_putcAtt((i+2)*FW, 4*FH, jetiRxBuffer[i+16], BSS);
   }
 
-  for (uint8_t i = 0; i < 16; i++)
-  {
-    lcd_putcAtt((i+2)*FW,   3*FH, JetiBuffer[i], BSS);
-    lcd_putcAtt((i+2)*FW,   4*FH, JetiBuffer[i+16], BSS);
-  }
-
-  if (JetiBufferReady)
-  {
-    JETI_EnableTXD();
-    if (switchState((EnumKeys)(KEY_UP))) jeti_keys &= JETI_KEY_UP;
-    if (switchState((EnumKeys)(KEY_DOWN))) jeti_keys &= JETI_KEY_DOWN;
-    if (switchState((EnumKeys)(KEY_LEFT))) jeti_keys &= JETI_KEY_LEFT;
-    if (switchState((EnumKeys)(KEY_RIGHT))) jeti_keys &= JETI_KEY_RIGHT;
-
-    JetiBufferReady = 0;    // invalidate buffer
-
-    JETI_putw((uint16_t) jeti_keys);
-    _delay_ms (1);
-    JETI_DisableTXD();
-
-    jeti_keys = JETI_KEY_NOCHANGE;
+  if (event == EVT_KEY_FIRST(KEY_EXIT)) {
+    JETI_DisableRXD();
+    jetiReady = 0;
+    chainMenu(menuMainView);
   }
 }

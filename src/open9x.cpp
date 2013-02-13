@@ -284,13 +284,9 @@ void per10ms()
   }
 #endif
 
-#if defined(MAVLINK) && !defined(CPUARM)
-  check_mavlink();
-#endif
-
-#if defined(FRSKY) && !defined(CPUARM) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
+#if (defined(FRSKY) || defined(MAVLINK) || defined(JETI)) && !defined(CPUARM) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
-    check_frsky();
+    telemetryPoll10ms();
 #endif
 
   // These moved here from perOut() to improve beep trigger reliability.
@@ -2063,8 +2059,7 @@ void evalFunctions()
 {
   MASK_FUNC_TYPE newActiveFunctions = 0;
 
-#if defined(ROTARY_ENCODERS) && defined(GVARS) && !defined(PCBX9D)
-  // TODO modify the PCBX9D ifdef
+#if defined(ROTARY_ENCODERS) && defined(GVARS)
   static rotenc_t rePreviousValues[ROTARY_ENCODERS];
 #endif
 
@@ -2226,6 +2221,14 @@ void evalFunctions()
               PLAY_VALUE(FSW_PARAM(sd), i+1);
             }
           }
+          else if (sd->func == FUNC_PLAY_BOTH) {
+            if (IS_PLAYING(i+1)) {
+              switch_mask = 0;
+            }
+            else {
+              PUSH_CUSTOM_PROMPT(FSW_PARAM(sd) + 1, i+1);
+            }
+          }
 #endif
 
 #if defined(DEBUG)
@@ -2239,8 +2242,7 @@ void evalFunctions()
             if (FSW_PARAM(sd) >= MIXSRC_TrimRud-1 && FSW_PARAM(sd) <= MIXSRC_TrimAil-1) {
               trimGvar[FSW_PARAM(sd)-MIXSRC_TrimRud+1] = sd->func-FUNC_ADJUST_GV1;
             }
-#if defined(ROTARY_ENCODERS) && !defined(PCBX9D)
-            // TODO modify these ifdef
+#if defined(ROTARY_ENCODERS)
             else if (FSW_PARAM(sd) >= MIXSRC_REa-1 && FSW_PARAM(sd) < MIXSRC_TrimRud-1) {
               int8_t scroll = rePreviousValues[FSW_PARAM(sd)-MIXSRC_REa+1] - (g_rotenc[FSW_PARAM(sd)-MIXSRC_REa+1] / ROTARY_ENCODER_GRANULARITY);
               if (scroll) {
@@ -2279,18 +2281,29 @@ void evalFunctions()
         if (!COMPLEX_SWITCH && sd->func == FUNC_BACKGND_MUSIC) {
           STOP_PLAY(i+1);
         }
+#elif defined(VOICE)
+        if (sd->func == FUNC_PLAY_BOTH && (!momentary || (activeFunctionSwitches & switch_mask))) {
+          if (IS_PLAYING(i+1)) {
+            switch_mask = 0;
+          }
+          else {
+            PUSH_CUSTOM_PROMPT(FSW_PARAM(sd), i+1);
+          }
+        }
 #endif
+
         activeFunctionSwitches &= (~switch_mask);
         if (COMPLEX_SWITCH)
           newActiveFunctions |= (activeFunctions & function_mask);
+
+
       }
     }
   }
 
   activeFunctions = newActiveFunctions;
 
-#if defined(ROTARY_ENCODERS) && defined(GVARS) && !defined(PCBX9D)
-  // TODO review #ifdef PCBX9D
+#if defined(ROTARY_ENCODERS) && defined(GVARS)
   for (uint8_t i=0; i<ROTARY_ENCODERS; i++)
     rePreviousValues[i] = (g_rotenc[i] / ROTARY_ENCODER_GRANULARITY);
 #endif
@@ -3014,7 +3027,7 @@ void perMain()
   checkBacklight();
 
 #if defined(CPUARM) && defined(FRSKY)
-  check_frsky();
+  telemetryPoll10ms();
 #endif
 
   lcd_clear();
@@ -3153,10 +3166,10 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
 
   static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
 
-#if defined(FRSKY)
+#if defined(FRSKY) || defined(MAVLINK) || defined(JETI)
   if (cnt10ms == 30) {
     if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
-      check_frsky();
+      telemetryPoll10ms();
   }
 #endif
 

@@ -913,7 +913,7 @@ void eeLoadModel(uint8_t id)
     // TODO pulses should be started after mixer calculations ...
 
 #if defined(FRSKY)
-    FRSKY_setModelAlarms();
+    frskySendAlarms();
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)

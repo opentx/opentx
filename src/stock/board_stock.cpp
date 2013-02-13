@@ -36,29 +36,26 @@
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 
-uint8_t RotEncoder ;
-
 #if defined(TELEMETREZ)
 uint8_t TrotCount ;             // TeZ version
 uint8_t LastTrotCount ;         // TeZ version
-uint8_t TezRotary ;
+uint8_t RotEncoder ;
+#define ROTENC_DOWN() (RotEncoder != 0)
 #else
 uint8_t RotPosition ;
 int8_t LastRotaryValue ;
 int8_t Rotary_diff ;
 int8_t RotaryControl ;
-#endif
-
+uint8_t RotEncoder ;
 #define ROTENC_DOWN() (RotEncoder & 0x20)
+#endif
 
 void rotencPoll()
 {
 #if defined(TELEMETREZ)
-  if (TrotCount != LastTrotCount ) {
+  if (TrotCount != LastTrotCount) {
     g_rotenc[0] = LastTrotCount = TrotCount ;
   }
-  if( TezRotary != 0)
-    RotEncoder = 0x20; // switch is on
 #else
   // Rotary Encoder polling
   PORTA = 0 ;                     // No pullups
@@ -144,7 +141,7 @@ FORCEINLINE
 #endif
 uint8_t keyDown()
 {
-  return ((~PINB) & 0x7E) || ROTENC_DOWN();
+  return ((~PINB) & 0x7E) | ROTENC_DOWN();
 }
 
 bool switchState(EnumKeys enuk)
@@ -268,7 +265,7 @@ void readKeysAndTrims()
   }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  keys[enuk].input(RotEncoder & 0x20, (EnumKeys)enuk); // Rotary Enc. Switch
+  keys[enuk].input(ROTENC_DOWN(), (EnumKeys)enuk); // Rotary Enc. Switch
 #endif
 }
 
@@ -319,9 +316,9 @@ void fadeBacklight() //called from per10ms()
 {
   if (bl_target != bl_current) {
     if (bl_target > bl_current)
-      OCR2 = pgm_read_word(&pwmtable[++bl_current]);
+      OCR2 = pgm_read_byte(&pwmtable[++bl_current]);
     else
-      OCR2 = pgm_read_word(&pwmtable[--bl_current]);
+      OCR2 = pgm_read_byte(&pwmtable[--bl_current]);
   }
 }
 
