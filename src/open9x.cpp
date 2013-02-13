@@ -598,7 +598,7 @@ int16_t calc1000toRESX(int16_t x) // improve calc time by Pat MacKenzie
 int16_t calcRESXto1000(int16_t x)
 {
 // *1000/1024 = x - x/32 + x/128
-  return (x - x/32 + x/128);
+  return (x - (x>>5) + (x>>7));
 }
 #endif
 
