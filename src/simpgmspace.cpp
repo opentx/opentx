@@ -281,12 +281,17 @@ void *main_thread(void *)
       doSplash();
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
       eeLoadModel(g_eeGeneral.currModel);
 #endif
 
-      checkAlarm();
+      checkAlarm(); // TODO why not in checkAll()
       checkAll();
+    }
+    else {
+#if defined(PCBSKY9X)
+      eeLoadModel(g_eeGeneral.currModel);
+#endif
     }
 
     s_current_protocol = 0;
