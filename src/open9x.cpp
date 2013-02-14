@@ -1784,7 +1784,7 @@ uint16_t inacCounter = 0;
 uint16_t inacSum = 0;
 BeepANACenter bpanaCenter = 0;
 
-int16_t  sDelay[MAX_MIXERS] = {0};
+uint16_t sDelay[MAX_MIXERS] = {0};
 int32_t  act   [MAX_MIXERS] = {0};
 uint8_t  swOn  [MAX_MIXERS] = {0};
 uint8_t mixWarning;
@@ -2467,13 +2467,10 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           swOn[i] = true;
           if (md->delayUp) {
             if (swTog) {
-              if (sDelay[i])
-                sDelay[i] = 0;
-              else
-                sDelay[i] = md->delayUp * (100/DELAY_STEP);
+              sDelay[i] = (sDelay[i] ? 0 : (md->delayUp * (100/DELAY_STEP)));
             }
             if (sDelay[i] > 0) { // perform delay
-              sDelay[i] = max(0, sDelay[i] - tick10ms);
+              sDelay[i] = max<int16_t>(0, (int16_t)sDelay[i] - tick10ms);
               if (!md->swtch) {
                 v = -1024;
               }
@@ -2490,20 +2487,19 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         swTog = swOn[i];
         swOn[i] = false;
         if (md->delayDown) {
+          uint16_t delay = sDelay[i];
           if (swTog) {
-            if (sDelay[i])
-              sDelay[i] = 0;
-            else
-              sDelay[i] = md->delayDown * (100/DELAY_STEP);
+            delay = (delay ? 0 : (md->delayDown * (100/DELAY_STEP)));
           }
-          if (sDelay[i] > 0) { // perform delay
-            sDelay[i] = max(0, sDelay[i] - tick10ms);
+          if (delay > 0) { // perform delay
+            delay = max<int16_t>(0, (int16_t)delay - tick10ms);
             if (!md->swtch) v = +1024;
             has_delay = true;
           }
           else if (!md->swtch) {
             v = -1024;
           }
+          sDelay[i] = delay;
         }
         if (!has_delay) {
           if (md->speedDown) {
