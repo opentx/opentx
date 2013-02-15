@@ -120,50 +120,47 @@
 #endif
 
 #if defined(VOICE)
-  #define TR_PLAY_TRACK    "Play Track\0"
-  #define TR_PLAY_BOTH     "Play Both\0 "
-  #define TR_PLAY_VALUE    "Play Value\0"
+  #if defined(PCBSKY9X)
+    #define TR_PLAY_TRACK    "Play\0      "
+  #else
+    #define TR_PLAY_TRACK    "Play Track\0"
+  #endif
+  #define TR_PLAY_BOTH     "Play Bth\0  "
+  #define TR_PLAY_VALUE    "Play Val\0  "
 #else
   #define TR_PLAY_TRACK    "[PlayTrack]"
-  #define TR_PLAY_BOTH     "[Play Both]" // TODO could be avoided
+  #define TR_PLAY_BOTH     "[Play Both]"
   #define TR_PLAY_VALUE    "[PlayValue]"
 #endif
 
-#if defined(CPUARM)
-  #if defined(SDCARD)
-    #define TR_SDCLOGS       "SD Logs\0   "
-  #else
-    #define TR_SDCLOGS       "[SD Logs]\0 "
-  #endif
-  #define TR_FSW_VOLUME      "Volume\0    "
-  #define TR_FSW_BG_MUSIC    "BgMusic\0   ""BgMusic ||\0"
-#elif defined(PCBGRUVIN9X)
-  #if defined(SDCARD)
-    #define TR_SDCLOGS       "SD Logs\0   "
-  #else
-    #define TR_SDCLOGS       "[SD Logs]\0 "
-  #endif
-  #define TR_FSW_VOLUME
-  #define TR_FSW_BG_MUSIC
+#define TR_CFN_VOLUME      "Volume\0    "
+#define TR_CFN_BG_MUSIC    "BgMusic\0   ""BgMusic ||\0"
+
+#if defined(SDCARD)
+  #define TR_SDCLOGS       "SD Logs\0   "
 #else
-  #define TR_SDCLOGS
-  #define TR_FSW_VOLUME
-  #define TR_FSW_BG_MUSIC
+  #define TR_SDCLOGS       "[SD Logs]\0 "
 #endif
 
 #ifdef GVARS
-  #define TR_FSW_ADJUST_GVAR  "Adjust \0   "
+  #define TR_CFN_ADJUST_GVAR  "Adjust \0   "
 #else
-  #define TR_FSW_ADJUST_GVAR
+  #define TR_CFN_ADJUST_GVAR
 #endif
 
 #ifdef DEBUG
-  #define TR_FSW_TEST      "Test\0"
+  #define TR_CFN_TEST      "Test\0"
 #else
-  #define TR_FSW_TEST
+  #define TR_CFN_TEST
 #endif
 
-#define TR_VFSWFUNC      "Safety\0    ""Trainer \0  ""Inst. Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Backlight\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
+#if defined(CPUARM)
+  #define TR_VFSWFUNC      "Safety\0    ""Trainer \0  ""Inst. Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Backlight\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#elif defined(PCBGRUVIN9X)
+  #define TR_VFSWFUNC      "Safety\0    ""Trainer \0  ""Inst. Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Backlight\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#else
+  #define TR_VFSWFUNC      "Safety\0    ""Trainer \0  ""Inst. Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Backlight\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#endif
 
 #define LEN_VFSWRESET    TR("\006","\012")
 #define TR_VFSWRESET     "Timer 1  ""Timer 2  ""All      ""Telemetry"

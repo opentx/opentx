@@ -132,5 +132,5 @@ inline bool isPlaying()
 #define PUSH_CUSTOM_PROMPT(p, ...) pushCustomPrompt((p))
 #define PLAY_NUMBER(n, u, a) playNumber((n), (u), (a))
 #define PLAY_DURATION(d) playDuration((d))
-#define IS_PLAYING(id) isPlaying()
+#define IS_PLAYING(id) (0) /* isPlaying() */
 #define PLAY_VALUE(v, id) playValue((v))

@@ -534,6 +534,7 @@ enum BaseCurves {
 
 enum CswFunctions {
   CS_OFF,
+  // TODO add CS_VEQUAL,
   CS_VPOS,   // v>offset
   CS_VNEG,   // v<offset
   CS_APOS,   // |v|>offset
@@ -542,13 +543,14 @@ enum CswFunctions {
   CS_OR,
   CS_XOR,
   CS_EQUAL,
-  CS_NEQUAL,
+  CS_NEQUAL, // TODO remove
   CS_GREATER,
   CS_LESS,
-  CS_EGREATER,
-  CS_ELESS,
+  CS_EGREATER, // TODO remove
+  CS_ELESS, // TODO remove
   CS_DIFFEGREATER,
   CS_ADIFFEGREATER,
+  // TODO add CS_TIMER,
   CS_MAXF = CS_ADIFFEGREATER
 };
 
@@ -1111,14 +1113,15 @@ inline bool isMixActive(uint8_t mix)
 #endif
 
 #if defined(CPUARM)
-#define MASK_FSW_TYPE uint32_t // current max = 32 function switches
+#define MASK_CFN_TYPE uint32_t // current max = 32 function switches
 #define MASK_FUNC_TYPE uint32_t // current max = 32 functions
 #else
-#define MASK_FSW_TYPE uint16_t // current max = 16 function switches
+#define MASK_CFN_TYPE uint16_t // current max = 16 function switches
 #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
 #endif
 
-extern MASK_FSW_TYPE activeFunctionSwitches;
+extern MASK_CFN_TYPE  activeSwitches;
+extern MASK_CFN_TYPE  activeFnSwitches;
 extern MASK_FUNC_TYPE activeFunctions;
 inline bool isFunctionActive(uint8_t func)
 {
@@ -1126,9 +1129,9 @@ inline bool isFunctionActive(uint8_t func)
 }
 
 #if defined(CPUARM)
-typedef uint32_t rotenc_t;
+typedef int32_t rotenc_t;
 #else
-typedef uint8_t rotenc_t;
+typedef int8_t rotenc_t;
 #endif
 
 #if defined(ROTARY_ENCODERS)

@@ -190,12 +190,17 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #if defined(CPUM64)
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 {
-  return checkIncDec(event,i_val,i_min,i_max,EE_MODEL);
+  return checkIncDec(event, i_val, i_min, i_max, EE_MODEL);
+}
+
+int8_t checkIncDecModelZero(uint8_t event, int8_t i_val, int8_t i_max)
+{
+  return checkIncDecModel(event, i_val, 0, i_max);
 }
 
 int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 {
-  return checkIncDec(event,i_val,i_min,i_max,EE_GENERAL);
+  return checkIncDec(event, i_val, i_min, i_max, EE_GENERAL);
 }
 #endif
 

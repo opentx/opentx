@@ -125,14 +125,19 @@ int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max,
 
 #if defined(CPUM64)
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
+int8_t checkIncDecModelZero(uint8_t event, int8_t i_val, int8_t i_max);
 int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #else
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
+#define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
 #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
 #endif
 
 #define CHECK_INCDEC_MODELVAR(event, var, min, max) \
   var = checkIncDecModel(event,var,min,max)
+
+#define CHECK_INCDEC_MODELVAR_ZERO(event, var, max) \
+  var = checkIncDecModelZero(event,var,max)
 
 #if defined(AUTOSWITCH)
 #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
@@ -272,7 +277,7 @@ void menuChannelsMonitor(uint8_t event);
 #endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
-  #define REPEAT_LAST_CURSOR_MOVE() putEvent(event)
+  #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else m_posHorz = 0; }
 #else
   #define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
 #endif

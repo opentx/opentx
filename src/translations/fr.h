@@ -125,33 +125,33 @@
 #else
 #define TR_SDCLOGS       "[Logs SD]\0   "
 #endif
-#define TR_FSW_VOLUME    "Volume\0      "
-#define TR_FSW_BG_MUSIC  "Musique\0     ""Pause Musique"
+#define TR_CFN_VOLUME    "Volume\0      "
+#define TR_CFN_BG_MUSIC  "Musique\0     ""Pause Musique"
 #elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)
 #define TR_SDCLOGS       "Logs carte SD"
 #else
 #define TR_SDCLOGS       "[Logs SD]\0   "
 #endif
-#define TR_FSW_VOLUME
-#define TR_FSW_BG_MUSIC
+#define TR_CFN_VOLUME
+#define TR_CFN_BG_MUSIC
 #else
 #define TR_SDCLOGS
-#define TR_FSW_VOLUME
-#define TR_FSW_BG_MUSIC
+#define TR_CFN_VOLUME
+#define TR_CFN_BG_MUSIC
 #endif
 #ifdef GVARS
-#define TR_FSW_ADJUST_GVAR  "Ajuster\0     "
+#define TR_CFN_ADJUST_GVAR  "Ajuster\0     "
 #else
-#define TR_FSW_ADJUST_GVAR
+#define TR_CFN_ADJUST_GVAR
 #endif
 #ifdef DEBUG
-#define TR_FSW_TEST          "Test\0        "
+#define TR_CFN_TEST          "Test\0        "
 #else
-#define TR_FSW_TEST
+#define TR_CFN_TEST
 #endif
 
-#define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "R\200tro\200cl.\0   " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
+#define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "R\200tro\200cl.\0   " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
 
 #define LEN_VFSWRESET    "\006"
 #define TR_VFSWRESET     "Timer1""Timer2""Timers""T\200l\200m."

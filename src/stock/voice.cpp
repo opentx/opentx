@@ -112,13 +112,12 @@ void t_voice::voice_process(void)
     PORTA_LCD_DAT = VoiceLatch; // Latch data set
     PORTB |= (1 << OUT_B_LIGHT); // Drive high,pullup enabled
     DDRB &= ~(1 << OUT_B_LIGHT); // Change to input
-#if !defined(SIMU)
     // delay to allow input to settle
+    asm(" rjmp 1f");
+    asm("1:");
     asm(" nop");
-    asm(" nop");
-    asm(" nop");
-    asm(" nop"); // 4th nop added for Thomas9x (compared to er9x)
-#endif
+    asm(" rjmp 1f");
+    asm("1:");
     busy = PINB & 0x80;
     DDRB |= (1 << OUT_B_LIGHT); // Change to output
     // The next bit guarantees the backlight output gets clocked out

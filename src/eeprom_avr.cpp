@@ -898,8 +898,9 @@ void eeLoadModel(uint8_t id)
       resumePulses();
     }
 
+    activeSwitches = 0;
+    activeFnSwitches = 0;
     activeFunctions = 0;
-    activeFunctionSwitches = 0;
 
 #if !defined(PCBSTD)
     for (uint8_t i=0; i<MAX_TIMERS; i++) {

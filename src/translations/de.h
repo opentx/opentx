@@ -125,33 +125,33 @@
 #else
 #define TR_SDCLOGS                      "[SD Aufz.]\0  "
 #endif
-#define TR_FSW_VOLUME                   "Lautst\201rke\0  "
-#define TR_FSW_BG_MUSIC                 "Musik Start\0 ""Musik Pause\0 "
+#define TR_CFN_VOLUME                   "Lautst\201rke\0  "
+#define TR_CFN_BG_MUSIC                 "Musik Start\0 ""Musik Pause\0 "
 #elif defined(PCBGRUVIN9X)
 #if defined(SDCARD)
 #define TR_SDCLOGS                      "SD Aufz.\0    "
 #else
 #define TR_SDCLOGS                      "[SD Aufz.]\0  "
 #endif
-#define TR_FSW_VOLUME
-#define TR_FSW_BG_MUSIC
+#define TR_CFN_VOLUME
+#define TR_CFN_BG_MUSIC
 #else
 #define TR_SDCLOGS
-#define TR_FSW_VOLUME
-#define TR_FSW_BG_MUSIC
+#define TR_CFN_VOLUME
+#define TR_CFN_BG_MUSIC
 #endif
 #ifdef GVARS
-#define TR_FSW_ADJUST_GVAR  		"\200ndere \0     "
+#define TR_CFN_ADJUST_GVAR  		"\200ndere \0     "
 #else
-#define TR_FSW_ADJUST_GVAR
+#define TR_CFN_ADJUST_GVAR
 #endif
 #ifdef DEBUG
-#define TR_FSW_TEST                     "Test\0        "
+#define TR_CFN_TEST                     "Test\0        "
 #else
-#define TR_FSW_TEST
+#define TR_CFN_TEST
 #endif
 
-#define TR_VFSWFUNC                     "Sicher\0      ""Lehrsch.\0    ""Instant. Trim" TR_SOUND TR_HAPTIC "R\205cksetz.\0   " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_FSW_VOLUME "Beleuchtung\0 " TR_FSW_BG_MUSIC TR_FSW_ADJUST_GVAR TR_FSW_TEST
+#define TR_VFSWFUNC                     "Sicher\0      ""Lehrsch.\0    ""Instant. Trim" TR_SOUND TR_HAPTIC "R\205cksetz.\0   " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Beleuchtung\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
 
 #define LEN_VFSWRESET                   "\006"
 #define TR_VFSWRESET                    "S.Uhr1""S.Uhr2""Alle  ""Telem."

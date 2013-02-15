@@ -68,7 +68,7 @@ PACK(typedef struct {
   int8_t    points[NUM_POINTS];
 
   CustomSwData customSw[NUM_CSW];
-  FuncSwData   funcSw[NUM_FSW];
+  CustomFnData   funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
 

@@ -613,7 +613,8 @@ void AudioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
 void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 {
 #if defined(SIMU)
-  printf("playFile(\"%s\")\n", filename); fflush(stdout);
+  printf("playFile(\"%s\", flags=%x, id=%d)\n", filename, flags, id);
+  fflush(stdout);
 #else
 
   if (!sdMounted())
@@ -654,6 +655,10 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 
 void AudioQueue::stopPlay(uint8_t id)
 {
+#if defined(SIMU)
+  printf("stopPlay(id=%d)\n", id); fflush(stdout);
+#endif
+
   // For the moment it's only needed to stop the background music
   if (backgroundContext.fragment.id == id) {
     memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));

@@ -32,6 +32,7 @@
  *
  */
 
+#include <math.h>
 #include <gtest/gtest.h>
 #include "open9x.h"
 
@@ -219,6 +220,8 @@ TEST(EEPROM, rm)
   EXPECT_EQ(sz, 0);
 }
 
+#if defined(FRSKY)
+
 extern void processFrskyPacket(uint8_t *packet);
 
 TEST(FrSky, gpsNfuel)
@@ -265,6 +268,8 @@ TEST(FrSky, dateNtime)
   EXPECT_EQ(frskyData.hub.min, 18);
   EXPECT_EQ(frskyData.hub.sec, 50);
 }
+
+#endif
 
 TEST(getSwitch, undefCSW)
 {
@@ -423,6 +428,18 @@ TEST(Mixer, RecursiveAddChannel)
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 102400/2);
   EXPECT_EQ(chans[1], 0);
+}
+
+TEST(Expo, AllValues)
+{
+  // TODO whole range
+  for (uint16_t x=0; x<100; x++) {
+    for (uint16_t k=0; k<100; k++) {
+      // TODO compare with the correct function instead of this one
+      uint16_t ref = ((unsigned long)x*x*x/0x10000*k/(RESXul*RESXul/0x10000) + (RESKul-k)*x+RESKul/2)/RESKul;
+      EXPECT_EQ(expou(x, k), ref);
+    }
+  }
 }
 
 

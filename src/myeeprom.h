@@ -381,24 +381,24 @@ enum Functions {
 };
 
 #if defined(CPUARM)
-PACK(typedef struct t_FuncSwData { // Function Switches data
+PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch; //input
   uint8_t func;
-  char param[6];
+  char    param[6];
   uint8_t active;
   uint8_t spare;
-}) FuncSwData;
-#define FSW_PARAM(p)       (*((uint32_t*)(p)->param))
-#define FSW_RESET_PARAM(p) memset(p->param, 0, sizeof(p->param))
+}) CustomFnData;
+#define CFN_PARAM(p)       (*((uint32_t*)(p)->param))
+#define CFN_RESET_PARAM(p) memset(p->param, 0, sizeof(p->param))
 #else
-PACK(typedef struct t_FuncSwData { // Function Switches data
-  int8_t  swtch; //input
-  uint8_t func:7;
-  uint8_t active:1;
+PACK(typedef struct t_CustomFnData { // Function Switches data
+  int8_t  swtch; // input
+  uint8_t func:6;
+  uint8_t active:2;
   uint8_t param;
-}) FuncSwData;
-#define FSW_PARAM(p)       ((p)->param)
-#define FSW_RESET_PARAM(p) FSW_PARAM(p) = 0
+}) CustomFnData;
+#define CFN_PARAM(p)       ((p)->param)
+#define CFN_RESET_PARAM(p) CFN_PARAM(p) = 0
 #endif
 
 enum TelemetryUnit {
@@ -682,7 +682,7 @@ PACK(typedef struct t_PhaseData {
 #define MAX_MIXERS 64
 #define MAX_EXPOS  32
 #define NUM_CSW    32 // number of custom switches
-#define NUM_FSW    32 // number of functions assigned to switches
+#define NUM_CFN    32 // number of functions assigned to switches
 #elif defined(PCBGRUVIN9X) || defined(CPUM128)
 #define MAX_MODELS 30
 #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
@@ -690,7 +690,7 @@ PACK(typedef struct t_PhaseData {
 #define MAX_MIXERS 32
 #define MAX_EXPOS  14
 #define NUM_CSW    12 // number of custom switches
-#define NUM_FSW    16 // number of functions assigned to switches
+#define NUM_CFN    16 // number of functions assigned to switches
 #else
 #define MAX_MODELS 16
 #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
@@ -698,7 +698,7 @@ PACK(typedef struct t_PhaseData {
 #define MAX_MIXERS 32
 #define MAX_EXPOS  14
 #define NUM_CSW    12 // number of custom switches
-#define NUM_FSW    16 // number of functions assigned to switches
+#define NUM_CFN    16 // number of functions assigned to switches
 #endif
 
 #define MAX_TIMERS 2
@@ -881,7 +881,7 @@ PACK(typedef struct t_ModelData {
   int8_t    points[NUM_POINTS];
   
   CustomSwData customSw[NUM_CSW];
-  FuncSwData   funcSw[NUM_FSW];
+  CustomFnData   funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
 

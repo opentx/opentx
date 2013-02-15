@@ -64,11 +64,7 @@ uint8_t getEvent()
 }
 #endif
 
-#if defined(CPUARM)
 #define KEY_LONG_DELAY 32
-#else
-#define KEY_LONG_DELAY 24
-#endif
 
 Key keys[NUM_KEYS];
 void Key::input(bool val, EnumKeys enuk)
@@ -161,11 +157,16 @@ void clearKeyEvents()
   CoTickDelay(100);  // 200ms
 #endif
 
+  // loop until all keys are up
+
 #if defined(SIMU)
   while (keyDown() && main_thread_running) sleep(1/*ms*/);
+#elif defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION) && !defined(TELEMETREZ)
+  while (keyDown()) { wdt_reset(); rotencPoll(); }
 #else
-  while (keyDown()) wdt_reset();  // loop until all keys are up
+  while (keyDown()) wdt_reset();
 #endif
+
   memclear(keys, sizeof(keys));
   putEvent(0);
 }
