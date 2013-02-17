@@ -3502,6 +3502,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 {
 #if defined(PCBX9D)
   BACKLIGHT_ON();
+  CoTickDelay(10);  //20ms
   Splash();
 #endif
 
