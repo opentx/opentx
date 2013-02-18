@@ -120,33 +120,26 @@
 #endif
 
 #if defined(VOICE)
-  #define TR_PLAY_TRACK        "Hr\200t Stopu\0  "
+  #if defined(PCBSKY9X)
+    #define TR_PLAY_TRACK      "Hr\200t         "
+  #else
+    #define TR_PLAY_TRACK      "Hr\200t Stopu\0  "
+  #endif
+  #define TR_PLAY_BOTH         "Hr\200t P\200r\0    "
   #define TR_PLAY_VALUE        "Hr\200t TTS\0    "
 #else
   #define TR_PLAY_TRACK        "[Hr\200t Stopu]\0"
+  #define TR_PLAY_BOTH         "[Hr\200t P\200r]\0  "
   #define TR_PLAY_VALUE        "[Hr\200t TTS]\0  "
 #endif
 
-#if defined(CPUARM)
-  #if defined(SDCARD)
-    #define TR_SDCLOGS         "Logov\200n\204 SD\0 "
-  #else
-    #define TR_SDCLOGS         "[Logov\200n\204 SD]"
-  #endif
-  #define TR_CFN_VOLUME        "Hlasitost\0   "
-  #define TR_CFN_BG_MUSIC      "BgHudba\0     ""BgHudba Pauza"
-#elif defined(PCBGRUVIN9X)
-  #if defined(SDCARD)
-    #define TR_SDCLOGS             "Logování SD\0 "
-  #else
-    #define TR_SDCLOGS             "[Logování SD]"
-  #endif
-  #define TR_CFN_VOLUME
-  #define TR_CFN_BG_MUSIC
+#define TR_CFN_VOLUME        "Hlasitost\0   "
+#define TR_CFN_BG_MUSIC      "BgHudba\0     ""BgHudba Pauza"
+
+#if defined(SDCARD)
+  #define TR_SDCLOGS         "Logování SD\0 "
 #else
-  #define TR_SDCLOGS
-  #define TR_CFN_VOLUME
-  #define TR_CFN_BG_MUSIC
+  #define TR_SDCLOGS         "[Logov\200n\204 SD]"
 #endif
 
 #ifdef GVARS
@@ -161,7 +154,13 @@
   #define TR_CFN_TEST
 #endif
 
-#define TR_VFSWFUNC            "Bezpe\201\0      ""Tren\202r  \0    ""Instant Trim\0" TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Podsv\203tlen\204\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#if defined(CPUARM)
+  #define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r  \0    ""Instant Trim\0" TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Podsv\203tlen\204\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#elif defined(PCBGRUVIN9X)
+  #define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r  \0    ""Instant Trim\0" TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Podsv\203tlen\204\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#else
+  #define TR_VFSWFUNC      "Bezpe\201\0      ""Tren\202r  \0    ""Instant Trim\0" TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Podsv\203tlen\204\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#endif
 
 #define LEN_VFSWRESET          "\006"
 #define TR_VFSWRESET           "Timer1""Timer2""V\207e   ""Telem."
