@@ -479,7 +479,7 @@ void menuMainView(uint8_t event)
         uint8_t x = LCD_W/2+7*FW+col*FW;
         uint8_t y = LCD_H/2-7+line*8;
         lcd_putcAtt(x, y, sw>=9 ? 'A'+sw-9 : '1'+sw, SMLSIZE);
-        if (getSwitch(DSW(SW_SW1+sw), 0))
+        if (getSwitch(SWSRC_SW1+sw, 0))
           lcd_filled_rect(x-1, y-1, 6, 8);
         sw++;
       }
@@ -546,10 +546,14 @@ void menuMainView(uint8_t event)
       doMainScreenGraphics();
 
       // Switches
-      for (uint8_t i=0; i<6; i++) {
-        int8_t sw1 = (i<3 ? 1+i : 4+i);
-        int8_t sw2 = (sw1 == 9 ? (getSwitch(4, 0) ? 4 : (getSwitch(5, 0) ? 5 : 6)) : sw1);
-        putsSwitches(i<3 ? 2*FW-2: 17*FW-1, (i%3)*FH+4*FH+1, sw2, getSwitch(sw1, 0) ? INVERS : 0);
+      for (uint8_t i=SWSRC_THR; i<=SWSRC_TRN; i++) {
+        int8_t sw = (i == SWSRC_TRN ? (switchState(SW_ID0) ? SWSRC_ID0 : (switchState(SW_ID1) ? SWSRC_ID1 : SWSRC_ID2)) : i);
+        uint8_t x = 2*FW-2, y = i*FH+1;
+        if (i>=SWSRC_AIL) {
+          x = 17*FW-1;
+          y -= 3*FH;
+        }
+        putsSwitches(x, y, sw, getSwitch(i, 0) ? INVERS : 0);
       }
     }
     else {
@@ -570,7 +574,7 @@ void menuMainView(uint8_t event)
       // Curstom Switches
 #if defined(PCBSKY9X)
       for (uint8_t i=0; i<NUM_CSW; i++) {
-        int8_t len = getSwitch(DSW(SW_SW1)+i, 0) ? BAR_HEIGHT : 1;
+        int8_t len = getSwitch(SWSRC_SW1+i, 0) ? BAR_HEIGHT : 1;
         uint8_t x = VSWITCH_X(i);
         lcd_vline(x-1, VSWITCH_Y-len, len);
         lcd_vline(x,   VSWITCH_Y-len, len);

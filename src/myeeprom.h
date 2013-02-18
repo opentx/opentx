@@ -49,12 +49,10 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#if defined(PCBACT)
-#define EEPROM_VER       213
-#elif defined(PCBX9D)
-#define EEPROM_VER       213
+#if defined(PCBX9D)
+#define EEPROM_VER       214
 #elif defined(PCBSKY9X)
-#define EEPROM_VER       213
+#define EEPROM_VER       214
 #elif defined(PCBGRUVIN9X)
 #define EEPROM_VER       213
 #else
@@ -271,17 +269,17 @@ PACK(typedef struct t_MixData {
   uint8_t  noExpo:1;
   int8_t   carryTrim:3;
   uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  uint8_t  offsetMode:1; // TODO change offset to 16bits in future EEPROM
   int16_t  weight;
   int8_t   swtch;
   int8_t   curveParam;
-  uint8_t  mixWarn;           // mixer warning
+  uint8_t  mixWarn:4;         // mixer warning
+  uint8_t  srcVariant:4;
   uint8_t  delayUp;
   uint8_t  delayDown;
   uint8_t  speedUp;
   uint8_t  speedDown;
   uint8_t  srcRaw;
-  int8_t   offset;
+  int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
 }) MixData;
 #define MD_WEIGHT(md) (md->weight)
@@ -317,7 +315,7 @@ PACK(typedef struct t_MixData {
 #endif
 #endif
 
-#if defined(GVARS)
+#if defined(GVARS) && !defined(CPUARM)
 #define MD_OFFSET(md) (md->offsetMode ? (int16_t)GV1_LARGE+md->offset : md->offset)
 #else
 #define MD_OFFSET(md) (md->offset)
@@ -329,7 +327,8 @@ PACK(typedef struct t_MixData {
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
-  uint8_t func;
+  uint8_t func:5;
+  uint8_t andsw:3; // TODO 8bits for next EEPROM
   uint8_t delay;
   uint8_t duration;
 }) CustomSwData;
@@ -337,7 +336,8 @@ PACK(typedef struct t_CustomSwData { // Custom Switches data
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
-  uint8_t func;
+  uint8_t func:4;
+  uint8_t andsw:4;
 }) CustomSwData;
 #endif
 
@@ -378,6 +378,22 @@ enum Functions {
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif
   FUNC_MAX
+};
+
+enum ResetFunctionParam {
+  FUNC_RESET_TIMER1,
+  FUNC_RESET_TIMER2,
+  FUNC_RESET_ALL,
+#if defined(FRSKY)
+  FUNC_RESET_TELEMETRY,
+#endif
+#if ROTARY_ENCODERS > 0
+  FUNC_RESET_ROTENC1,
+#endif
+#if ROTARY_ENCODERS > 1
+  FUNC_RESET_ROTENC2,
+#endif
+  FUNC_RESET_PARAMS_COUNT
 };
 
 #if defined(CPUARM)
@@ -713,88 +729,181 @@ PACK(typedef struct t_PhaseData {
 #define CURVTYPE   int8_t
 #endif
 
-enum MixSources {
-    MIXSRC_Rud = 1,
-    MIXSRC_Ele,
-    MIXSRC_Thr,
-    MIXSRC_Ail,
-    MIXSRC_Pot1,
-#if defined(PCBX9D) || defined(PCBACT)
-    MIXSRC_S1 = MIXSRC_Pot1,
-    MIXSRC_S2,
-    MIXSRC_S3,
-    MIXSRC_S4,
+#define MAX_SWITCH (MAX_PSWITCH+NUM_CSW)
+
+enum SwitchSources {
+  SWSRC_NONE = 0,
+
+#if defined(PCBX9D)
+  SWSRC_SA0,
+  SWSRC_SA1,
+  SWSRC_SA2,
+  SWSRC_SB0,
+  SWSRC_SB1,
+  SWSRC_SB2,
+  SWSRC_SC0,
+  SWSRC_SC1,
+  SWSRC_SC2,
+  SWSRC_SD0,
+  SWSRC_SD1,
+  SWSRC_SD2,
+  SWSRC_SE0,
+  SWSRC_SE1,
+  SWSRC_SE2,
+  SWSRC_SF0,
+  SWSRC_SF2,
+  SWSRC_SG0,
+  SWSRC_SG1,
+  SWSRC_SG2,
+  SWSRC_SH0,
+  SWSRC_SH2,
 #else
-    MIXSRC_P1 = MIXSRC_Pot1,
-    MIXSRC_P2,
-    MIXSRC_P3,
+  SWSRC_ID0,
+  SWSRC_ID1,
+  SWSRC_ID2,
+#if defined(EXTRA_3POS)
+  SWSRC_ID3,
+  SWSRC_ID4,
+  SWSRC_ID5,
 #endif
+
+  SWSRC_THR,
+  SWSRC_RUD,
+  SWSRC_ELE,
+  SWSRC_AIL,
+  SWSRC_GEA,
+  SWSRC_TRN,
+#endif
+
+  SWSRC_SW1,
+  SWSRC_SW2,
+  SWSRC_SW3,
+  SWSRC_SW4,
+  SWSRC_SW5,
+  SWSRC_SW6,
+  SWSRC_SW7,
+  SWSRC_SW8,
+  SWSRC_SW9,
+  SWSRC_SWA,
+  SWSRC_SWB,
+  SWSRC_SWC,
+  SWSRC_LAST_CSW = SWSRC_SW1+NUM_CSW-1,
+
+  SWSRC_ON,
+
+  SWSRC_FIRST_MOMENT_SWITCH,
+  SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_ON-1,
+
+#if ROTARY_ENCODERS > 0
+  SWSRC_FIRST_ROTENC_SWITCH,
+  SWSRC_LAST_ROTENC_SWITCH = SWSRC_FIRST_ROTENC_SWITCH+(2*ROTARY_ENCODERS)-1,
+#endif
+
+#if defined(CPUARM)
+  SWSRC_FIRST_SHORT_SWITCH,
+  SWSRC_LAST_SHORT_SWITCH = SWSRC_FIRST_SHORT_SWITCH + MAX_PSWITCH - 1,
+  SWSRC_FIRST_LONG_SWITCH,
+  SWSRC_LAST_LONG_SWITCH = SWSRC_FIRST_LONG_SWITCH + MAX_PSWITCH - 1,
+#endif
+
+  SWSRC_COUNT,
+  SWSRC_FIRST = -SWSRC_LAST_MOMENT_SWITCH,
+  SWSRC_LAST = SWSRC_COUNT-1,
+
+  SWSRC_OFF = -SWSRC_ON
+};
+
+enum MixSources {
+  MIXSRC_NONE,
+  MIXSRC_Rud,
+  MIXSRC_Ele,
+  MIXSRC_Thr,
+  MIXSRC_Ail,
+
+  MIXSRC_Pot1,
+#if defined(PCBX9D)
+  MIXSRC_S1 = MIXSRC_Pot1,
+  MIXSRC_S2,
+  MIXSRC_S3,
+  MIXSRC_S4,
+#else
+  MIXSRC_P1 = MIXSRC_Pot1,
+  MIXSRC_P2,
+  #if !defined(EXTRA_3POS)
+    MIXSRC_P3,
+  #endif
+#endif
+
 #if defined(PCBSKY9X)
-    MIXSRC_REa,
+  MIXSRC_REa,
 #elif defined(PCBGRUVIN9X)
-    MIXSRC_REa,
-    MIXSRC_REb,
-#if ROTARY_ENCODERS > 2
+  MIXSRC_REa,
+  MIXSRC_REb,
+  #if ROTARY_ENCODERS > 2
     MIXSRC_REc,
     MIXSRC_REd,
+  #endif
 #endif
-#endif
-    MIXSRC_TrimRud,
-    MIXSRC_TrimEle,
-    MIXSRC_TrimThr,
-    MIXSRC_TrimAil,
-    MIXSRC_MAX,
-#if defined(PCBX9D) || defined(PCBACT)
-    MIXSRC_SA,
-    MIXSRC_SB,
-    MIXSRC_SC,
-    MIXSRC_SD,
-    MIXSRC_SE,
-    MIXSRC_SF,
-    MIXSRC_SG,
-    MIXSRC_SH,
+
+  MIXSRC_MAX,
+
+  MIXSRC_CYC1,
+  MIXSRC_CYC2,
+  MIXSRC_CYC3,
+
+  MIXSRC_TrimRud,
+  MIXSRC_TrimEle,
+  MIXSRC_TrimThr,
+  MIXSRC_TrimAil,
+
+#if defined(PCBX9D)
+  MIXSRC_SA,
+  MIXSRC_SB,
+  MIXSRC_SC,
+  MIXSRC_SD,
+  MIXSRC_SE,
+  MIXSRC_SF,
+  MIXSRC_SG,
+  MIXSRC_SH,
 #else
-    MIXSRC_3POS,
-    MIXSRC_THR,
-    MIXSRC_RUD,
-    MIXSRC_ELE,
-    MIXSRC_ID0,
-    MIXSRC_ID1,
-    MIXSRC_ID2,
-    MIXSRC_AIL,
-    MIXSRC_GEA,
-    MIXSRC_TRN,
+  MIXSRC_3POS,
+  #if defined(EXTRA_3POS)
+    MIXSRC_3POS2,
+  #endif
+  MIXSRC_THR,
+  MIXSRC_RUD,
+  MIXSRC_ELE,
+  MIXSRC_AIL,
+  MIXSRC_GEA,
+  MIXSRC_TRN,
 #endif
-    MIXSRC_SW1,
-    MIXSRC_SW9 = MIXSRC_SW1 + 8,
-    MIXSRC_SWA,
-    MIXSRC_SWB,
-    MIXSRC_SWC,
-#if defined(CPUARM)
-    MIXSRC_SWW=MIXSRC_SWC+'W'-'C',
-#endif
-    MIXSRC_CYC1,
-    MIXSRC_CYC2,
-    MIXSRC_CYC3,
-    MIXSRC_PPM1,
-    MIXSRC_PPM8 = MIXSRC_PPM1 + 7,
-    MIXSRC_CH1,
-    MIXSRC_CH2,
-    MIXSRC_CH3,
-    MIXSRC_CH4,
-    MIXSRC_CH5,
-    MIXSRC_CH6,
-    MIXSRC_CH7,
-    MIXSRC_CH8,
-    MIXSRC_CH9,
-    MIXSRC_CH10,
-    MIXSRC_CH11,
-    MIXSRC_CH12,
-    MIXSRC_CH13,
-    MIXSRC_CH14,
-    MIXSRC_CH15,
-    MIXSRC_CH16,
-    MIXSRC_CHMAX = MIXSRC_CH1+NUM_CHNOUT-1
+  MIXSRC_SW1,
+  MIXSRC_SW9 = MIXSRC_SW1 + 8,
+  MIXSRC_SWA,
+  MIXSRC_SWB,
+  MIXSRC_SWC,
+  MIXSRC_LAST_CSW = MIXSRC_SW1+NUM_CSW-1, // TODO same naming convention
+
+  MIXSRC_PPM1,
+  MIXSRC_LAST_PPM = MIXSRC_PPM1 + 7,
+
+  MIXSRC_CH1,
+  MIXSRC_CH2,
+  MIXSRC_CH3,
+  MIXSRC_CH4,
+  MIXSRC_CH5,
+  MIXSRC_CH6,
+  MIXSRC_CH7,
+  MIXSRC_CH8,
+  MIXSRC_CH9,
+  MIXSRC_CH10,
+  MIXSRC_CH11,
+  MIXSRC_CH12,
+  MIXSRC_CH13,
+  MIXSRC_CH14,
+  MIXSRC_CH15,
+  MIXSRC_CH16,
+  MIXSRC_LAST_CH = MIXSRC_CH1+NUM_CHNOUT-1
 };
 
 #define MIN_POINTS 3
@@ -881,7 +990,7 @@ PACK(typedef struct t_ModelData {
   int8_t    points[NUM_POINTS];
   
   CustomSwData customSw[NUM_CSW];
-  CustomFnData   funcSw[NUM_CFN];
+  CustomFnData  funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
 

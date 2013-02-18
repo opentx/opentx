@@ -72,9 +72,7 @@ char modelNames[MAX_MODELS][sizeof(g_model.name)];
 
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
-#if defined(PCBACT)
-#include "splash_ACT.lbm"
-#elif defined(PCBX9D)
+#if defined(PCBX9D)
 #include "splash_X9D.lbm"
 #else
 #include "splash_9x.lbm"
@@ -660,6 +658,10 @@ int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMa
 int16_t cyc_anas[3] = {0};
 #endif
 
+// TODO same naming convention than the putsMixerSource
+
+bool __getSwitch(int8_t swtch);
+
 int16_t getValue(uint8_t i)
 {
   /*srcRaw is shifted +1!*/
@@ -668,9 +670,15 @@ int16_t getValue(uint8_t i)
 #if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
   else if (i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS) return getRotaryEncoder(i-(NUM_STICKS+NUM_POTS));
 #endif
-  else if (i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS)));
   else if (i<MIXSRC_MAX) return 1024;
-#if defined(PCBX9D) || defined(PCBACT)
+  else if (i<MIXSRC_CYC3)
+#if defined(HELI)
+    return cyc_anas[i-MIXSRC_MAX];
+#else
+    return 0;
+#endif
+  else if (i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-MIXSRC_CYC3));
+#if defined(PCBX9D)
   else if (i<MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));
   else if (i<MIXSRC_SB) return (switchState(SW_SB0) ? -1024 : (switchState(SW_SB1) ? 0 : 1024));
   else if (i<MIXSRC_SC) return (switchState(SW_SC0) ? -1024 : (switchState(SW_SC1) ? 0 : 1024));
@@ -681,47 +689,44 @@ int16_t getValue(uint8_t i)
   else if (i<MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
 #else
   else if (i<MIXSRC_3POS) return (switchState(SW_ID0) ? -1024 : (switchState(SW_ID1) ? 0 : 1024));
-  // here the switches are skipped
-  else if (i<MIXSRC_3POS+3)
-#if defined(HELI)
-    return cyc_anas[i-MIXSRC_3POS];
-#else
-    return 0;
+#if defined(EXTRA_3POS)
+  else if (i<MIXSRC_3POS2) return (switchState(SW_ID3) ? -1024 : (switchState(SW_ID4) ? 0 : 1024));
 #endif
+  else if (i<MIXSRC_LAST_CSW) return __getSwitch(SWSRC_THR+i-MIXSRC_3POS) ? 1024 : -1024;
 #endif
-  else if(i<CSW_PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-CSW_PPM_BASE] - g_eeGeneral.trainer.calib[i-CSW_PPM_BASE])*2;
-  else if(i<CSW_PPM_BASE+NUM_PPM) return g_ppmIns[i-CSW_PPM_BASE]*2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CSW_CHOUT_BASE];
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_TM2) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT];
+  else if (i<MIXSRC_PPM1+NUM_CAL_PPM) return (g_ppmIns[i-MIXSRC_LAST_CSW] - g_eeGeneral.trainer.calib[i-MIXSRC_LAST_CSW])*2;
+  else if (i<MIXSRC_LAST_PPM) return g_ppmIns[i-MIXSRC_LAST_CSW]*2;
+  else if (i<MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_LAST_PPM];
+  else if (i<MIXSRC_LAST_CH+TELEM_TM2) return s_timerVal[i-MIXSRC_LAST_CH];
 #if defined(FRSKY)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyData.rssi[1].value;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_RX) return frskyData.rssi[0].value;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_A2) return frskyData.analog[i-CSW_CHOUT_BASE-NUM_CHNOUT-4].value;
+  else if (i<MIXSRC_LAST_CH+TELEM_RSSI_TX) return frskyData.rssi[1].value;
+  else if(i<MIXSRC_LAST_CH+TELEM_RSSI_RX) return frskyData.rssi[0].value;
+  else if(i<MIXSRC_LAST_CH+TELEM_A2) return frskyData.analog[i-MIXSRC_LAST_CH-TELEM_RSSI_RX].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ALT) return frskyData.hub.baroAltitude_bp;
+  else if(i<MIXSRC_LAST_CH+TELEM_ALT) return frskyData.hub.baroAltitude_bp;
 #endif
 #if defined(FRSKY_HUB)
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RPM) return frskyData.hub.rpm;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_FUEL) return frskyData.hub.fuelLevel;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T1) return frskyData.hub.temperature1;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_T2) return frskyData.hub.temperature2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_SPEED) return frskyData.hub.gpsSpeed_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_DIST) return frskyData.hub.gpsDistance;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_GPSALT) return frskyData.hub.gpsAltitude_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELL) return (int16_t)frskyData.hub.minCellVolts * 2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_CONSUMPTION) return frskyData.currentConsumption;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_POWER) return frskyData.power;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCx) return frskyData.hub.accelX;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCy) return frskyData.hub.accelY;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_ACCz) return frskyData.hub.accelZ;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_VSPD) return frskyData.hub.varioSpeed;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A1) return frskyData.analog[0].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_A2) return frskyData.analog[1].min;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_MIN_ALT-1));
+  else if (i<MIXSRC_LAST_CH+TELEM_RPM) return frskyData.hub.rpm;
+  else if (i<MIXSRC_LAST_CH+TELEM_FUEL) return frskyData.hub.fuelLevel;
+  else if (i<MIXSRC_LAST_CH+TELEM_T1) return frskyData.hub.temperature1;
+  else if (i<MIXSRC_LAST_CH+TELEM_T2) return frskyData.hub.temperature2;
+  else if (i<MIXSRC_LAST_CH+TELEM_SPEED) return frskyData.hub.gpsSpeed_bp;
+  else if (i<MIXSRC_LAST_CH+TELEM_DIST) return frskyData.hub.gpsDistance;
+  else if (i<MIXSRC_LAST_CH+TELEM_GPSALT) return frskyData.hub.gpsAltitude_bp;
+  else if (i<MIXSRC_LAST_CH+TELEM_CELL) return (int16_t)frskyData.hub.minCellVolts * 2;
+  else if (i<MIXSRC_LAST_CH+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
+  else if (i<MIXSRC_LAST_CH+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
+  else if (i<MIXSRC_LAST_CH+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
+  else if (i<MIXSRC_LAST_CH+TELEM_CONSUMPTION) return frskyData.currentConsumption;
+  else if (i<MIXSRC_LAST_CH+TELEM_POWER) return frskyData.power;
+  else if (i<MIXSRC_LAST_CH+TELEM_ACCx) return frskyData.hub.accelX;
+  else if (i<MIXSRC_LAST_CH+TELEM_ACCy) return frskyData.hub.accelY;
+  else if (i<MIXSRC_LAST_CH+TELEM_ACCz) return frskyData.hub.accelZ;
+  else if (i<MIXSRC_LAST_CH+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
+  else if (i<MIXSRC_LAST_CH+TELEM_VSPD) return frskyData.hub.varioSpeed;
+  else if (i<MIXSRC_LAST_CH+TELEM_MIN_A1) return frskyData.analog[0].min;
+  else if (i<MIXSRC_LAST_CH+TELEM_MIN_A2) return frskyData.analog[1].min;
+  else if (i<MIXSRC_LAST_CH+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_LAST_CH+TELEM_MAX_CURRENT-1));
 #endif
 #endif
   else return 0;
@@ -759,7 +764,7 @@ bool __getSwitch(int8_t swtch)
 
   uint8_t cs_idx = abs(swtch);
 
-  if (cs_idx == SWITCH_ON) {
+  if (cs_idx == SWSRC_ON) {
     result = true;
   }
   else if (cs_idx <= MAX_PSWITCH) {
@@ -767,17 +772,21 @@ bool __getSwitch(int8_t swtch)
   }
   else {
     cs_idx -= MAX_PSWITCH+1;
-    CustomSwData * cs = cswaddress(cs_idx);
-    if (cs->func == CS_OFF) return false;
 
-    uint8_t s = CS_STATE(cs->func);
-    if (s == CS_VBOOL) {
-      GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
-      if (s_last_switch_used & mask) {
-        result = (s_last_switch_value & mask);
+    GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
+    if (s_last_switch_used & mask) {
+      result = (s_last_switch_value & mask);
+    }
+    else {
+      s_last_switch_used |= mask;
+
+      CustomSwData * cs = cswaddress(cs_idx);
+      uint8_t s = cs->andsw;
+      // TODO why? if (s > 8) s += 1;
+      if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
+        result = false;
       }
-      else {
-        s_last_switch_used |= mask;
+      else if ((s=CS_STATE(cs->func)) == CS_VBOOL) {
         bool res1 = __getSwitch(cs->v1);
         bool res2 = __getSwitch(cs->v2);
         switch (cs->func) {
@@ -793,127 +802,114 @@ bool __getSwitch(int8_t swtch)
             break;
         }
       }
-
-#if !defined(CPUARM)
-      if (result)
-        s_last_switch_value |= ((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
-#endif
-    }
-    else {
-      int16_t x = getValue(cs->v1-1);
-      int16_t y;
-      if (s == CS_VCOMP) {
-        y = getValue(cs->v2-1);
-
-        switch (cs->func) {
-          case CS_EQUAL:
-            result = (x==y);
-            break;
-          case CS_NEQUAL:
-            result = (x!=y);
-            break;
-          case CS_GREATER:
-            result = (x>y);
-            break;
-          case CS_LESS:
-            result = (x<y);
-            break;
-          case CS_EGREATER:
-            result = (x>=y);
-            break;
-          // case CS_ELESS:
-          default:
-            result = (x<=y);
-            break;
-        }
-      }
       else {
-#if defined(FRSKY)
-        // Telemetry
-        if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
-          if (frskyStreaming <= 0 && cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS)
-            return swtch > 0 ? false : true;
+        int16_t x = getValue(cs->v1-1);
+        int16_t y;
+        if (s == CS_VCOMP) {
+          y = getValue(cs->v2-1);
 
-          y = convertCswTelemValue(cs);
+          switch (cs->func) {
+            case CS_EQUAL:
+              result = (x==y);
+              break;
+            case CS_GREATER:
+              result = (x>y);
+              break;
+            default:
+              result = (x<y);
+              break;
+          }
+        }
+        else {
+#if defined(FRSKY)
+          // Telemetry
+          if (cs->v1 > MIXSRC_LAST_CH) {
+            if (frskyStreaming <= 0 && cs->v1 > MIXSRC_LAST_CH+MAX_TIMERS)
+              return swtch > 0 ? false : true;
+
+            y = convertCswTelemValue(cs);
 
 #if defined(FRSKY_HUB)
-          if (s == CS_VOFS) {
-            uint8_t idx = cs->v1-CSW_CHOUT_BASE-NUM_CHNOUT-TELEM_ALT;
-            if (idx < THLD_MAX) {
-              // Fill the threshold array
-              barsThresholds[idx] = 128 + cs->v2;
+            if (s == CS_VOFS) {
+              uint8_t idx = cs->v1-MIXSRC_LAST_CH-TELEM_ALT;
+              if (idx < THLD_MAX) {
+                // Fill the threshold array
+                barsThresholds[idx] = 128 + cs->v2;
+              }
+            }
+#endif
+          }
+          else {
+            y = calc100toRESX(cs->v2);
+          }
+#else
+          if (cs->v1 > MIXSRC_LAST_CH) {
+            y = cs->v2; // it's a timer
+          }
+          else {
+            y = calc100toRESX(cs->v2);
+          }
+#endif
+
+          switch (cs->func) {
+            case CS_VEQUAL:
+              result = (x==y);
+              break;
+            case CS_VPOS:
+              result = (x>y);
+              break;
+            case CS_VNEG:
+              result = (x<y);
+              break;
+            case CS_APOS:
+              result = (abs(x)>y);
+              break;
+            case CS_ANEG:
+              result = (abs(x)<y);
+              break;
+            default:
+            {
+              if (csLastValue[cs_idx] == -32668)
+                csLastValue[cs_idx] = x;
+              int16_t diff = x - csLastValue[cs_idx];
+              if (cs->func == CS_DIFFEGREATER)
+                result = (y >= 0 ? (diff >= y) : (diff <= y));
+              else
+                result = (abs(diff) >= y);
+              if (result)
+                csLastValue[cs_idx] = x;
+              break;
             }
           }
-#endif
-        }
-        else {
-          y = calc100toRESX(cs->v2);
-        }
-#else
-        if (cs->v1 > CSW_CHOUT_BASE+NUM_CHNOUT) {
-          y = cs->v2; // it's a timer
-        }
-        else {
-          y = calc100toRESX(cs->v2);
-        }
-#endif
-
-        switch (cs->func) {
-          case CS_VPOS:
-            result = (x>y);
-            break;
-          case CS_VNEG:
-            result = (x<y);
-            break;
-          case CS_APOS:
-            result = (abs(x)>y);
-            break;
-          case CS_ANEG:
-            result = (abs(x)<y);
-            break;
-          default:
-          {
-            if (csLastValue[cs_idx] == -32668)
-              csLastValue[cs_idx] = x;
-            int16_t diff = x - csLastValue[cs_idx];
-            if (cs->func == CS_DIFFEGREATER)
-              result = (y >= 0 ? (diff >= y) : (diff <= y));
-            else
-              result = (abs(diff) >= y);
-            if (result)
-              csLastValue[cs_idx] = x;
-            break;
-          }
         }
       }
-    }
 
 #if defined(CPUARM)
-    if (cs->delay) {
-      if (result) {
-        if (cswDelays[cs_idx] > get_tmr10ms())
-          result = false;
+      if (cs->delay) {
+        if (result) {
+          if (cswDelays[cs_idx] > get_tmr10ms())
+            result = false;
+        }
+        else {
+          cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
+        }
       }
-      else {
-        cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
+      if (cs->duration) {
+        if (result && !cswStates[cs_idx])
+          cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*50);
+
+        cswStates[cs_idx] = result;
+
+        if (cswDurations[cs_idx] > get_tmr10ms()) {
+          result = true;
+          if (cs->delay) cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
+        }
       }
-    }
-    if (cs->duration) {
-      if (result && !cswStates[cs_idx])
-        cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*50);
-
-      cswStates[cs_idx] = result;
-
-      if (cswDurations[cs_idx] > get_tmr10ms()) {
-        result = true;
-        if (cs->delay) cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
-      }
-    }
-
-    if (result)
-      s_last_switch_value |= ((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
 #endif
 
+      if (result)
+        s_last_switch_value |= ((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
+    }
   }
 
   return swtch > 0 ? result : !result;
@@ -961,11 +957,7 @@ int8_t getMovedSwitch()
     bool prev;
     swstate_t mask = 0;
     if (i <= 3) {
-      mask = (1<<(i-1));
-      prev = (switches_states & mask);
-    }
-    else if (i <= 6) {
-      prev = ((switches_states & 0x18) == ((i-4) << 3));
+      prev = ((switches_states & 0x03) == (i-1));
     }
     else {
       mask = (1<<(i-2));
@@ -977,8 +969,9 @@ int8_t getMovedSwitch()
         result = next ? i : -i;
       if (mask)
         switches_states ^= mask;
-      else
-        switches_states = (switches_states & 0xE7) | ((i-4) << 3);
+      else {
+        switches_states = (switches_states & 0x8C) | (i-1);
+      }
     }
   }
 #endif
@@ -1413,9 +1406,9 @@ void checkSwitches()
       uint8_t x = 2;
       for (uint8_t i=1; i<8; i++) {
         uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
-        putsSwitches(x, 5*FH, (i>5?(i+1):(i>=4?(4+((states>>4)&0x3)):i)), attr);
-        if (i == 4 && attr) i++;
-        if (i != 4) x += 3*FW+FW/2;
+        putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>4)&0x3)), attr);
+        if (i == 1 && attr) i++;
+        if (i != 1) x += 3*FW+FW/2;
       }
 #endif
       lcdRefresh();
@@ -1946,23 +1939,26 @@ tmr10ms_t lastFunctionTime[NUM_CFN] = { 0 };
 PLAY_FUNCTION(playValue, uint8_t idx)
 {
   int16_t val = getValue(idx);
+
+  // TODO add the MIXSRC_TELEM_TM1 and so on.
+
   switch (idx) {
-    case NUM_XCHNRAW+TELEM_TM1-1:
-    case NUM_XCHNRAW+TELEM_TM2-1:
+    case MIXSRC_LAST_CH+TELEM_TM1-1:
+    case MIXSRC_LAST_CH+TELEM_TM2-1:
       PLAY_DURATION(val);
       break;
 #if defined(FRSKY)
-    case NUM_XCHNRAW+TELEM_RSSI_TX-1:
-    case NUM_XCHNRAW+TELEM_RSSI_RX-1:
+    case MIXSRC_LAST_CH+TELEM_RSSI_TX-1:
+    case MIXSRC_LAST_CH+TELEM_RSSI_RX-1:
       PLAY_NUMBER(val, 1+UNIT_DBM, 0);
       break;
-    case NUM_XCHNRAW+TELEM_MIN_A1-1:
-    case NUM_XCHNRAW+TELEM_MIN_A2-1:
+    case MIXSRC_LAST_CH+TELEM_MIN_A1-1:
+    case MIXSRC_LAST_CH+TELEM_MIN_A2-1:
       idx -= TELEM_MIN_A1-TELEM_A1;
       // no break
-    case NUM_XCHNRAW+TELEM_A1-1:
-    case NUM_XCHNRAW+TELEM_A2-1:
-      idx -= (NUM_XCHNRAW+TELEM_A1-1);
+    case MIXSRC_LAST_CH+TELEM_A1-1:
+    case MIXSRC_LAST_CH+TELEM_A2-1:
+      idx -= (MIXSRC_LAST_CH+TELEM_A1-1);
         // A1 and A2
       {
         uint8_t att = 0;
@@ -1974,41 +1970,41 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         break;
       }
 
-    case NUM_XCHNRAW+TELEM_CELL-1:
+    case MIXSRC_LAST_CH+TELEM_CELL-1:
       PLAY_NUMBER(val/10, 1+UNIT_VOLTS, PREC1);
       break;
 
-    case NUM_XCHNRAW+TELEM_VFAS-1:
-    case NUM_XCHNRAW+TELEM_CELLS_SUM-1:
+    case MIXSRC_LAST_CH+TELEM_VFAS-1:
+    case MIXSRC_LAST_CH+TELEM_CELLS_SUM-1:
       PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
       break;
 
-    case NUM_XCHNRAW+TELEM_CURRENT-1:
-    case NUM_XCHNRAW+TELEM_MAX_CURRENT-1:
+    case MIXSRC_LAST_CH+TELEM_CURRENT-1:
+    case MIXSRC_LAST_CH+TELEM_MAX_CURRENT-1:
       PLAY_NUMBER(val, 1+UNIT_AMPS, PREC1);
       break;
 
-    case NUM_XCHNRAW+TELEM_ACCx-1:
-    case NUM_XCHNRAW+TELEM_ACCy-1:
-    case NUM_XCHNRAW+TELEM_ACCz-1:
+    case MIXSRC_LAST_CH+TELEM_ACCx-1:
+    case MIXSRC_LAST_CH+TELEM_ACCy-1:
+    case MIXSRC_LAST_CH+TELEM_ACCz-1:
       PLAY_NUMBER(val/10, 1+UNIT_G, PREC1);
       break;
 
-    case NUM_XCHNRAW+TELEM_VSPD-1:
+    case MIXSRC_LAST_CH+TELEM_VSPD-1:
       PLAY_NUMBER(val/10, 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 
-    case NUM_XCHNRAW+TELEM_CONSUMPTION-1:
+    case MIXSRC_LAST_CH+TELEM_CONSUMPTION-1:
       PLAY_NUMBER(val, 1+UNIT_MAH, 0);
       break;
 
-    case NUM_XCHNRAW+TELEM_POWER-1:
+    case MIXSRC_LAST_CH+TELEM_POWER-1:
       PLAY_NUMBER(val, 1+UNIT_WATTS, 0);
       break;
 
-    case NUM_XCHNRAW+TELEM_ALT-1:
-    case NUM_XCHNRAW+TELEM_MIN_ALT-1:
-    case NUM_XCHNRAW+TELEM_MAX_ALT-1:
+    case MIXSRC_LAST_CH+TELEM_ALT-1:
+    case MIXSRC_LAST_CH+TELEM_MIN_ALT-1:
+    case MIXSRC_LAST_CH+TELEM_MAX_ALT-1:
 #if defined(IMPERIAL_UNITS)
       if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
         PLAY_NUMBER(val, 1+UNIT_FEET, 0);
@@ -2017,24 +2013,24 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         PLAY_NUMBER(val, 1+UNIT_METERS, 0);
       break;
 
-    case NUM_XCHNRAW+TELEM_RPM-1:
-    case NUM_XCHNRAW+TELEM_MAX_RPM-1:
+    case MIXSRC_LAST_CH+TELEM_RPM-1:
+    case MIXSRC_LAST_CH+TELEM_MAX_RPM-1:
       PLAY_NUMBER(val, 1+UNIT_RPMS, 0);
       break;
 
-    case NUM_XCHNRAW+TELEM_HDG-1:
+    case MIXSRC_LAST_CH+TELEM_HDG-1:
       PLAY_NUMBER(val, 1+UNIT_DEGREES, 0);
       break;
 
     default:
     {
       uint8_t unit = 1;
-      if (idx < NUM_XCHNRAW+TELEM_TM1-1)
+      if (idx < MIXSRC_LAST_CH+TELEM_TM1-1)
         val = (val * 25) / 256;
-      if (idx >= NUM_XCHNRAW+TELEM_ALT-1 && idx <= NUM_XCHNRAW+TELEM_GPSALT-1)
-        unit = idx - (NUM_XCHNRAW+TELEM_ALT-1);
-      else if (idx >= NUM_XCHNRAW+TELEM_MAX_T1-1 && idx <= NUM_XCHNRAW+TELEM_MAX_DIST-1)
-        unit = 3 + idx - (NUM_XCHNRAW+TELEM_MAX_T1-1);
+      if (idx >= MIXSRC_LAST_CH+TELEM_ALT-1 && idx <= MIXSRC_LAST_CH+TELEM_GPSALT-1)
+        unit = idx - (MIXSRC_LAST_CH+TELEM_ALT-1);
+      else if (idx >= MIXSRC_LAST_CH+TELEM_MAX_T1-1 && idx <= MIXSRC_LAST_CH+TELEM_MAX_DIST-1)
+        unit = 3 + idx - (MIXSRC_LAST_CH+TELEM_MAX_T1-1);
 
       unit = pgm_read_byte(bchunit_ar+unit);
 #if !defined(IMPERIAL_UNITS)
@@ -2208,16 +2204,24 @@ void evalFunctions()
 
         if (sd->func == FUNC_RESET) {
           switch (CFN_PARAM(sd)) {
-            case 0:
-            case 1:
+            case FUNC_RESET_TIMER1:
+            case FUNC_RESET_TIMER2:
               resetTimer(CFN_PARAM(sd));
               break;
-            case 2:
+            case FUNC_RESET_ALL:
               resetAll();
               break;
 #if defined(FRSKY)
-            case 3:
+            case FUNC_RESET_TELEMETRY:
               resetTelemetry();
+              break;
+#endif
+#if ROTARY_ENCODERS > 0
+            case FUNC_RESET_ROTENC1:
+#if ROTARY_ENCODERS > 1
+            case FUNC_RESET_ROTENC2:
+#endif
+              g_rotenc[CFN_PARAM(sd)-FUNC_RESET_ROTENC1] = 0;
               break;
 #endif
           }
@@ -2447,11 +2451,13 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       else {
         if (k < NUM_STICKS)
           v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
         else {
           v = getValue(k);
-          // TODO switches: if (v < 0 && !md->swtch) sw = false;
-          if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
+          if (k >= MIXSRC_SA-1 && k <= MIXSRC_LAST_CSW-1) {
+            if (v < 0 && !md->swtch) sw = false;
+          }
+          if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
@@ -2459,13 +2465,12 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           }
         }
 #else
-        else if (k >= MIXSRC_THR-1 && k <= MIXSRC_SWC-1) {
-          v = getSwitch(k-MIXSRC_THR+1+1, 0) ? +1024 : -1024;
-          if (v < 0 && !md->swtch) sw = false;
-        }
         else {
-          v = getValue(k<=MIXSRC_3POS ? k : k-MAX_SWITCH);
-          if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
+          v = getValue(k);
+          if (k >= MIXSRC_THR-1 && k <= MIXSRC_LAST_CSW-1) {
+            if (v < 0 && !md->swtch) sw = false;
+          }
+          else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)

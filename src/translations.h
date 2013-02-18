@@ -400,26 +400,31 @@ extern const pm_char STR_CURRENT[];
 #endif
 
 #if defined(CPUARM)
-extern const pm_char STR_CURRENT_CALIB[];
-#define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
+  extern const pm_char STR_CURRENT_CALIB[];
+  #define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
 #else
-#define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
+  #define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
+#endif
+
+#if defined(NAVIGATION_MENUS)
+  extern const pm_char STR_SELECT_MODEL[];
+  extern const pm_char STR_CREATE_MODEL[];
+  extern const pm_char STR_COPY_MODEL[];
+  extern const pm_char STR_MOVE_MODEL[];
+  extern const pm_char STR_DELETE_MODEL[];
 #endif
 
 #if defined(SDCARD)
-extern const pm_char STR_SELECT_MODEL[];
-extern const pm_char STR_CREATE_MODEL[];
-extern const pm_char STR_BACKUP_MODEL[];
-extern const pm_char STR_DELETE_MODEL[];
-extern const pm_char STR_RESTORE_MODEL[];
-extern const pm_char STR_SDCARD_ERROR[];
-extern const pm_char STR_NO_SDCARD[];
-extern const pm_char STR_INCOMPATIBLE[];
-extern const pm_char STR_LOGS_PATH[];
-extern const pm_char STR_LOGS_EXT[];
-extern const pm_char STR_MODELS_PATH[];
-extern const pm_char STR_MODELS_EXT[];
-#define STR_UPDATE_LIST STR_DELAYDOWN
+  extern const pm_char STR_BACKUP_MODEL[];
+  extern const pm_char STR_RESTORE_MODEL[];
+  extern const pm_char STR_SDCARD_ERROR[];
+  extern const pm_char STR_NO_SDCARD[];
+  extern const pm_char STR_INCOMPATIBLE[];
+  extern const pm_char STR_LOGS_PATH[];
+  extern const pm_char STR_LOGS_EXT[];
+  extern const pm_char STR_MODELS_PATH[];
+  extern const pm_char STR_MODELS_EXT[];
+  #define STR_UPDATE_LIST STR_DELAYDOWN
 #endif
 
 extern const pm_uchar font_5x7[];

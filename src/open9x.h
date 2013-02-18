@@ -40,7 +40,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 #define IF_9X(x)
 #else
 #define IF_9X(x) x,
@@ -175,9 +175,7 @@
 #define CONVERT_PTR(x) ((uint32_t)(x))
 #endif
 
-#if defined(PCBACT)
-#include "act/board_act.h"
-#elif defined(PCBX9D)
+#if defined(PCBX9D)
 #include "x9d/board_x9d.h"
 #elif defined(PCBSKY9X)
 #include "sky9x/board_sky9x.h"
@@ -223,18 +221,116 @@ extern void boardInit();
 
 #define NUM_STICKS    4
 
-#if defined(PCBX9D) || defined(PCBACT)
-#define NUM_SWITCHES  8
-#define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
-#define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
-#define NUM_POTS      4
-#define NUM_SW_SRCRAW 8
+enum EnumKeys {
+  KEY_MENU,
+  KEY_EXIT,
+#if defined(PCBX9D)
+  KEY_ENTER,
+  KEY_PAGE,
+  KEY_PLUS,
+  KEY_MINUS,
 #else
-#define NUM_SWITCHES  7
-#define IS_3POS(sw)   ((sw) == 3)
-#define MAX_PSWITCH   (SW_TRN-SW_THR+1)  // 9 physical switches
-#define NUM_POTS      3
-#define NUM_SW_SRCRAW 1
+  KEY_DOWN,
+  KEY_UP,
+  KEY_RIGHT,
+  KEY_LEFT,
+#endif
+
+  TRM_BASE,
+  TRM_LH_DWN = TRM_BASE,
+  TRM_LH_UP,
+  TRM_LV_DWN,
+  TRM_LV_UP,
+  TRM_RV_DWN,
+  TRM_RV_UP,
+  TRM_RH_DWN,
+  TRM_RH_UP,
+
+#if ROTARY_ENCODERS > 0 || defined(ROTARY_ENCODER_NAVIGATION)
+  BTN_REa,
+#endif
+#if ROTARY_ENCODERS > 0
+  BTN_REb,
+#endif
+
+  NUM_KEYS,
+  SW_BASE=NUM_KEYS,
+
+#if defined(PCBX9D)
+  SW_SA0=SW_BASE,
+  SW_SA1,
+  SW_SA2,
+  SW_SB0,
+  SW_SB1,
+  SW_SB2,
+  SW_SC0,
+  SW_SC1,
+  SW_SC2,
+  SW_SD0,
+  SW_SD1,
+  SW_SD2,
+  SW_SE0,
+  SW_SE1,
+  SW_SE2,
+  SW_SF0,
+  SW_SF2,
+  SW_SG0,
+  SW_SG1,
+  SW_SG2,
+  SW_SH0,
+  SW_SH2,
+#else
+  SW_ID0=SW_BASE,
+  SW_ID1,
+  SW_ID2,
+#if defined(EXTRA_3POS)
+  SW_ID3,
+  SW_ID4,
+  SW_ID5,
+#endif
+
+  SW_THR,
+  SW_RUD,
+  SW_ELE,
+  SW_AIL,
+  SW_GEA,
+  SW_TRN,
+#endif
+
+};
+
+#if defined(PCBX9D)
+  #define NUM_SWITCHES  8
+  #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
+  #define IS_MOMENTARY(sw) (sw == SWSRC_SH0)
+  #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
+  #define NUM_POTS      4
+  #define NUM_SW_SRCRAW 8
+  #define SWSRC_THR     SWSRC_SF2
+  #define SWSRC_GEA     SWSRC_SG2
+  #define SWSRC_ID0     SWSRC_SA0
+  #define SWSRC_ID1     SWSRC_SA1
+  #define SWSRC_ID2     SWSRC_SA2
+#else
+  #define NUM_SWITCHES  7
+  #define IS_3POS(sw)   ((sw) == 0)
+  #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
+  #define MAX_PSWITCH   (SW_TRN-SW_ID0+1)  // 9 physical switches
+  #define NUM_POTS      3
+  #define NUM_SW_SRCRAW 1
+#endif
+
+#define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
+
+#if defined(PCBX9D)
+#define KEY_RIGHT  KEY_PLUS
+#define KEY_LEFT   KEY_MINUS
+#define KEY_UP     KEY_PLUS
+#define KEY_DOWN   KEY_MINUS
+#else
+#define KEY_ENTER  KEY_MENU
+#define KEY_PLUS   KEY_RIGHT
+#define KEY_MINUS  KEY_LEFT
 #endif
 
 #include "myeeprom.h"
@@ -364,131 +460,7 @@ extern uint8_t stickMode;
 
 extern uint8_t channel_order(uint8_t x);
 
-enum EnumKeys {
-  KEY_MENU,
-  KEY_EXIT,
-#if defined(PCBACT)
-  KEY_CLR,
-  KEY_PAGE,
-  KEY_PLUS,  /* Fake, used for rotary encoder */
-  KEY_MINUS, /* Fake, used for rotary encoder */
-#elif defined(PCBX9D)
-  KEY_ENTER,
-  KEY_PAGE,
-  KEY_PLUS,
-  KEY_MINUS,
-#else
-  KEY_DOWN,
-  KEY_UP,
-  KEY_RIGHT,
-  KEY_LEFT,
-#endif
-  TRM_LH_DWN,
-  TRM_LH_UP,
-  TRM_LV_DWN,
-  TRM_LV_UP,
-  TRM_RV_DWN,
-  TRM_RV_UP,
-  TRM_RH_DWN,
-  TRM_RH_UP,
 
-#if ROTARY_ENCODERS > 0 || defined(ROTARY_ENCODER_NAVIGATION)
-  BTN_REa,
-#endif
-#if ROTARY_ENCODERS > 0
-  BTN_REb,
-#endif
-
-  NUM_KEYS,
-  SW_BASE=NUM_KEYS,
-
-  //SW_NC,
-  //SW_ON,
-#if defined(PCBX9D) || defined(PCBACT)
-  SW_SA0=SW_BASE,
-  SW_SA1,
-  SW_SA2,
-  SW_SB0,
-  SW_SB1,
-  SW_SB2,
-  SW_SC0,
-  SW_SC1,
-  SW_SC2,
-  SW_SD0,
-  SW_SD1,
-  SW_SD2,
-  SW_SE0,
-  SW_SE1,
-  SW_SE2,
-  SW_SF0,
-  SW_SF2,
-  SW_SG0,
-  SW_SG1,
-  SW_SG2,
-  SW_SH0,
-  SW_SH2,
-#else
-  SW_THR=SW_BASE,
-  SW_RUD,
-  SW_ELE,
-  SW_ID0,
-  SW_ID1,
-  SW_ID2,
-#if 0
-  SW_ID3,
-  SW_ID4,
-  SW_ID5,
-#endif
-  SW_AIL,
-  SW_GEA,
-  SW_TRN,
-#endif
-
-  SW_SW1,
-  SW_SW2,
-  SW_SW3,
-  SW_SW4,
-  SW_SW5,
-  SW_SW6,
-  SW_SW7,
-  SW_SW8,
-  SW_SW9,
-  SW_SWA,
-  SW_SWB,
-  SW_SWC,
-};
-
-#define DSW(x)   (1+(x)-SW_BASE)
-
-#if defined(PCBACT)
-#define KEY_ENTER  BTN_REa
-#define KEY_RIGHT  KEY_PLUS
-#define KEY_LEFT   KEY_MINUS
-#define KEY_UP     KEY_MINUS
-#define KEY_DOWN   KEY_PLUS
-#elif defined(PCBX9D)
-#define KEY_RIGHT  KEY_PLUS
-#define KEY_LEFT   KEY_MINUS
-#define KEY_UP     KEY_PLUS
-#define KEY_DOWN   KEY_MINUS
-#else
-#define KEY_ENTER  KEY_MENU
-#define KEY_PLUS   KEY_RIGHT
-#define KEY_MINUS  KEY_LEFT
-#endif
-
-#if defined(PCBX9D) || defined(PCBACT)
-/* mapping of 9x switches */
-#define SW_THR     SW_SA2
-#define SW_RUD     SW_SB2
-#define SW_ELE     SW_SC2
-#define SW_ID0     SW_SD0
-#define SW_ID1     SW_SD1
-#define SW_ID2     SW_SD2
-#define SW_AIL     SW_SF2
-#define SW_GEA     SW_SG2
-#define SW_TRN     SW_SH2
-#endif
 
 class Key
 {
@@ -534,7 +506,7 @@ enum BaseCurves {
 
 enum CswFunctions {
   CS_OFF,
-  // TODO add CS_VEQUAL,
+  CS_VEQUAL, // v==offset
   CS_VPOS,   // v>offset
   CS_VNEG,   // v<offset
   CS_APOS,   // |v|>offset
@@ -543,11 +515,8 @@ enum CswFunctions {
   CS_OR,
   CS_XOR,
   CS_EQUAL,
-  CS_NEQUAL, // TODO remove
   CS_GREATER,
   CS_LESS,
-  CS_EGREATER, // TODO remove
-  CS_ELESS, // TODO remove
   CS_DIFFEGREATER,
   CS_ADIFFEGREATER,
   // TODO add CS_TIMER,
@@ -560,19 +529,9 @@ enum CswFunctions {
 #define CS_VDIFF      3
 #define CS_STATE(x)   ((x)<CS_AND ? CS_VOFS : ((x)<CS_EQUAL ? CS_VBOOL : ((x)<CS_DIFFEGREATER ? CS_VCOMP : CS_VDIFF)))
 
-#define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
-#define SWITCH_ON     (1+MAX_SWITCH)
-#define SWITCH_OFF    (-SWITCH_ON)
-
 #define NUM_CYC         3
-#if defined(PCBX9D) || defined(PCBACT)
-#define CSW_PPM_BASE    24 // TODO garbage to compile ...
-#else
-#define CSW_PPM_BASE    (MIXSRC_3POS+NUM_CYC) // because srcRaw is shifted +1!
-#endif
 #define NUM_CAL_PPM     4
 #define NUM_PPM         8
-#define CSW_CHOUT_BASE  (CSW_PPM_BASE+NUM_PPM)
 
 #if defined(FRSKY_HUB)
 #define NUM_TELEMETRY      TELEM_CSW_MAX
@@ -581,27 +540,9 @@ enum CswFunctions {
 #elif defined(FRSKY)
 #define NUM_TELEMETRY      TELEM_A2
 #elif defined(MAVLINK)
-// Number sw position
 #define NUM_TELEMETRY      4
-#define ROTARY_SW_CHANNEL "UP  DOWN"
-// Channel number for rotary switch
-//#define MIX_SW_ROLL_CHAN (CSW_CHOUT_BASE+NUM_CHNOUT+NUM_VIRTUAL) // GVA:Rotary switch
-#define MIX_INC_ROTARY_SW (CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1)
-#define MIX_DEC_ROTARY_SW (CSW_CHOUT_BASE+NUM_CHNOUT+MAX_TIMERS+1)
 #else
 #define NUM_TELEMETRY      TELEM_TM2
-#endif
-
-#define NUM_XCHNRAW  (NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS+NUM_STICKS+1/*MAX*/+NUM_SW_SRCRAW+NUM_CYC+NUM_PPM+NUM_CHNOUT)
-
-#if defined(PCBX9D) || defined(PCBACT)
-#define NUM_XCHNMIX  (NUM_XCHNRAW+NUM_CSW)
-#define NUM_XCHNCSW  (NUM_XCHNRAW+NUM_CSW+NUM_TELEMETRY)
-#define NUM_XCHNPLAY (NUM_XCHNRAW+NUM_CSW+TELEM_DISPLAY_MAX)
-#else
-#define NUM_XCHNMIX  (NUM_XCHNRAW+MAX_SWITCH)
-#define NUM_XCHNCSW  (NUM_XCHNRAW+NUM_TELEMETRY)
-#define NUM_XCHNPLAY (NUM_XCHNRAW+TELEM_DISPLAY_MAX)
 #endif
 
 #define THRCHK_DEADBAND 16
@@ -611,8 +552,6 @@ enum CswFunctions {
 #else
 #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
 #endif
-
-#define TRM_BASE TRM_LH_DWN
 
 #define EVT_KEY_MASK(e)    ((e) & 0x0f)
 
@@ -858,7 +797,7 @@ extern uint8_t s_traceWr;
 extern int8_t s_traceCnt;
 #endif
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 static inline uint16_t getTmr2MHz() { return 0; }
 #elif defined(PCBSKY9X)
 static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }

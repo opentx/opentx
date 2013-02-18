@@ -63,7 +63,7 @@ void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
   lcd_outdezAtt(x,0,index+1,attr);
 }
 
-#if !defined(PCBSTD)
+#if !defined(CPUM64)
 void displayScrollbar(xcoord_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   lcd_vlineStip(x, y, h, SOLID, ERASE);
@@ -143,20 +143,20 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     if (s_editMode>0) {
       int8_t swtch = getMovedSwitch();
       if (swtch) {
-        if (newval == DSW(SW_TRN) && swtch == DSW(SW_TRN))
+        if (IS_MOMENTARY(newval) && IS_MOMENTARY(swtch))
           newval = -newval;
         else
           newval = swtch;
       }
     }
 
-    if (event == EVT_KEY_LONG(KEY_MENU) && i_max > SWITCH_ON) {
+    if (event == EVT_KEY_LONG(KEY_ENTER) && i_max > SWSRC_ON) {
       s_editMode = !s_editMode;
-      if (newval > SWITCH_ON)
+      if (newval > SWSRC_ON)
         newval -= (MAX_SWITCH+1);
       else if (newval > 0)
         newval += (MAX_SWITCH+1);
-      else if (newval < SWITCH_OFF)
+      else if (newval < SWSRC_OFF)
         newval += (MAX_SWITCH+1);
       else if (newval < 0)
         newval -= (MAX_SWITCH+1);
@@ -311,24 +311,24 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
           break;
 #endif
 
-        case EVT_KEY_FIRST(KEY_LEFT):
 #if defined(ROTARY_ENCODER_NAVIGATION)
         case EVT_ROTARY_LEFT:
           if (s_editMode >= 0)
             break;
 #endif
+        case EVT_KEY_FIRST(KEY_LEFT):
           if (curr > 0)
             cc = curr - 1;
           else
             cc = menuTabSize-1;
           break;
 
-        case EVT_KEY_FIRST(KEY_RIGHT):
 #if defined(ROTARY_ENCODER_NAVIGATION)
         case EVT_ROTARY_RIGHT:
           if (s_editMode >= 0)
             break;
 #endif
+        case EVT_KEY_FIRST(KEY_RIGHT):
           if (curr < (menuTabSize-1))
             cc = curr + 1;
           else
@@ -635,7 +635,7 @@ void displayWarning(uint8_t event)
     lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
   lcd_puts(16, 5*FH, s_warning_type == WARNING_TYPE_CONFIRM ? STR_POPUPS : STR_EXIT);
   switch(event) {
-#if defined(ROTARY_ENCODERS)
+#if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_BREAK:
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -643,6 +643,10 @@ void displayWarning(uint8_t event)
         break;
       s_warning_result = true;
       // no break
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    case EVT_ROTARY_LONG:
+      killEvents(event);
+#endif
     case EVT_KEY_BREAK(KEY_EXIT):
       s_warning = 0;
       s_warning_type = WARNING_TYPE_ASTERISK;
@@ -716,13 +720,15 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, 
 
 #if LCD_W >= 212
 #define MENU_X   30
+#define MENU_Y   16
 #define MENU_W   LCD_W-60
 #else
 #define MENU_X   10
+#define MENU_Y   16
 #define MENU_W   LCD_W-20
 #endif
 
-#if defined(SDCARD)
+#if defined(NAVIGATION_MENUS)
 const char *s_menu[MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
 uint16_t s_menu_count = 0;
@@ -733,40 +739,46 @@ const char * displayMenu(uint8_t event)
   const char * result = NULL;
 
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
-
-  lcd_filled_rect(MENU_X, 16, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
-  lcd_rect(MENU_X, 16, MENU_W, display_count * (FH+1) + 2);
+  uint8_t y = display_count > 4 ? MENU_Y - FH : MENU_Y;
+  lcd_filled_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
+  lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-    lcd_putsAtt(MENU_X+6, i*(FH+1) + 2*FH + 2, s_menu[i], s_menu_flags);
-    if (i == s_menu_item) lcd_filled_rect(MENU_X+1, i*(FH+1) + 2*FH + 1, MENU_W-2, 9);
+    lcd_putsAtt(MENU_X+6, i*(FH+1) + y + 2, s_menu[i], s_menu_flags);
+    if (i == s_menu_item) lcd_filled_rect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
   if (s_menu_count > display_count) {
-    displayScrollbar(MENU_X+MENU_W-1, 17, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
+    displayScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_LINES * (FH+1), s_menu_offset, s_menu_count, MENU_MAX_LINES);
   }
 
   switch(event) {
-    CASE_EVT_ROTARY_RIGHT
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    CASE_EVT_ROTARY_LEFT
+#endif
     case EVT_KEY_BREAK(KEY_MOVE_UP):
       if (s_menu_item > 0)
         s_menu_item--;
+#if defined(SDCARD)
       else if (s_menu_offset > 0) {
         s_menu_offset--;
         result = STR_UPDATE_LIST;
       }
+#endif
       break;
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-    CASE_EVT_ROTARY_LEFT
+    CASE_EVT_ROTARY_RIGHT
 #endif
     case EVT_KEY_BREAK(KEY_MOVE_DOWN):
       if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count)
         s_menu_item++;
+#if defined(SDCARD)
       else if (s_menu_count > s_menu_offset + display_count) {
         s_menu_offset++;
         result = STR_UPDATE_LIST;
       }
+#endif
       break;
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -786,7 +798,9 @@ const char * displayMenu(uint8_t event)
 
   return result;
 }
+#endif
 
+#if defined(SDCARD)
 char statusLineMsg[STATUS_LINE_LENGTH];
 tmr10ms_t statusLineTime = 0;
 uint8_t statusLineHeight = 0;
@@ -815,8 +829,4 @@ void drawStatusLine()
     lcd_filled_rect(0, 8*FH-statusLineHeight, LCD_W, 8, SOLID);
   }
 }
-
 #endif
-
-
-

@@ -15,7 +15,12 @@
 
 #ifndef rotarysw_h
 #define rotarysw_h
-#include "myeeprom.h"
+
+#define ROTARY_SW_CHANNEL "UP  DOWN"
+// Channel number for rotary switch
+//#define MIX_SW_ROLL_CHAN (MIXSRC_LAST_CH+NUM_VIRTUAL) // GVA:Rotary switch
+#define MIX_INC_ROTARY_SW (MIXSRC_LAST_CH+MAX_TIMERS+1)
+#define MIX_DEC_ROTARY_SW (MIXSRC_LAST_CH+MAX_TIMERS+1)
 
 extern int8_t rotarySwIdx;
 extern int8_t rotarySwLastPPMVal;
@@ -79,6 +84,7 @@ inline void init_rotary_sw() {
 #endif
 	}
 }
+
 inline int8_t find_rotary_sw_pos(uint8_t srcRaw, uint8_t swTog, uint8_t swOn) {
 	if ((swOn && swTog) || rotarySwIdx == -1) { // toggle switch on
 		int8_t idx = rotarySwIdx;
