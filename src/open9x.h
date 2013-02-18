@@ -1003,6 +1003,16 @@ void generalDefault();
 void modelDefault(uint8_t id);
 
 #if defined(CPUARM)
+inline int16_t calc100to256(register int8_t x)  // @@@2 open.20.fsguruh: return x*2.56
+{
+  return ((int16_t) x * 256) / 100;
+}
+
+inline int16_t calc100toRESX_16Bits(register int16_t x) // @@@ open.20.fsguruh
+{
+  return x * 1024 / 100;
+}
+
 inline int32_t calc100toRESX(register int8_t x)
 {
   return x * 1024 / 100;
@@ -1024,6 +1034,8 @@ inline int16_t calcRESXto100(register int32_t x)
 }
 
 #else
+extern int16_t calc100to256(int8_t x); // @@@2 open.20.fsguruh: return x*2.56
+extern int16_t calc100toRESX_16Bits(int16_t x); // @@@ open.20.fsguruh
 extern int16_t calc100toRESX(int8_t x);
 extern int16_t calc1000toRESX(int16_t x);
 extern int16_t calcRESXto1000(int16_t x);

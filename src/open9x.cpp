@@ -291,7 +291,7 @@ void per10ms()
 
   // These moved here from perOut() to improve beep trigger reliability.
 #if defined(PWM_BACKLIGHT)
-  if (g_tmr10ms % 4 == 0)
+  if ((g_tmr10ms&0x03) == 0x00)  //  if (g_tmr10ms % 4 == 0) // (should be faster)
     fadeBacklight(); // increment or decrement brightness until target brightness is reached
 #endif
 
@@ -337,8 +337,8 @@ CurveInfo curveinfo(uint8_t idx)
   result.crv = curveaddress(idx);
   int8_t *next = curveaddress(idx+1);
   uint8_t size = next - result.crv;
-  if (size % 2 == 0) {
-    result.points = (size / 2) + 1;
+  if ((size & 1)==0) {  //  if (size % 2 == 0)  {
+	result.points = (size / 2) + 1; // result.points = (size >> 1) + 1; done by the compiler anyway 
     result.custom = true;
   }
   else {
@@ -470,6 +470,11 @@ int16_t applyCurve(int16_t x, int8_t idx)
 #define applyCurve(x, idx) (x)
 #endif
 
+// maybe used in future?
+uint16_t divu100(uint32_t A) {
+    return (((A * 0x47AF) >> 16) + A) >> 7;
+}
+
 // expo-funktion:
 // ---------------
 // kmplot
@@ -491,7 +496,7 @@ uint16_t expou(uint16_t x, uint16_t k)
   value >>= 12;
   value += (uint32_t)(100-k)*x+50;
 
-  // return divu100(value);
+  // return divu100(value);  // would speed up further by needs more code
   return value/100;
 }
 
@@ -590,12 +595,35 @@ void applyExpos(int16_t *anas)
 }
 
 #if !defined(CPUARM)
-int16_t calc100toRESX(int8_t x)
+
+
+int16_t calc100to256(int8_t x) // return x*2.56
+{
+    // y = 2*x + x/2 +x/16-x/512-x/2048
+    // 512 and 2048 are out of scope from int8 input --> forget it
+    
+    return ((int16_t)x<<1)+(x>>1)+(x>>4);
+    // in case of negative values the routine above always generates a too small value, this could be corrected with this
+    // I think it is not needed anyway
+    // if (x<0) return -calc100to256(-x);  
+    // else return ((int16_t)x<<1)+(x>>1)+(x>>4);
+}
+
+// return x*10.24
+int16_t calc100toRESX_16Bits(int16_t x)  // @@@ open.20.fsguruh
+{
+  // return (int16_t)x*10 + x/4 - x/64;
+  return ((x*41)>>2) - (x>>6);  // this implementation saves a add but reduces valid range by factor 4!!! by carefull
+  // return (x*10)+(x>>2)-(x>>6);  // this would be the saver implementation
+}
+
+int16_t calc100toRESX(int8_t x) // return x*10.24
 {
   // return (int16_t)x*10 + x/4 - x/64;
   return ((x*41)>>2) - x/64;
 }
 
+// return x*1.024
 int16_t calc1000toRESX(int16_t x) // improve calc time by Pat MacKenzie
 {
   // return x + x/32 - x/128 + x/512;
@@ -606,45 +634,80 @@ int16_t calc1000toRESX(int16_t x) // improve calc time by Pat MacKenzie
   return x+(y>>2);
 }
 
-int16_t calcRESXto1000(int16_t x)
+int16_t calcRESXto1000(int16_t x)  // return x/1.024
 {
 // *1000/1024 = x - x/32 + x/128
   return (x - (x>>5) + (x>>7));
 }
 #endif
 
+
+// @@@2 open.20.fsguruh ; 
+// channel = channelnumber -1; 
+// value = outputvalue with 100 mulitplied usual range -102400 to 102400; output -1024 to 1024
+// changed rescaling from *100 to *256 to optimize performance
+// rescaled to -262144)) to 262144))
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
   LimitData * limit = limitaddress(channel);
-  int16_t ofs = limit->offset;
-  int16_t lim_p = 10 * (limit->max + 100);
-  int16_t lim_n = 10 * (limit->min - 100); //multiply by 10 to get same range as ofs (-1000..1000)
+  int16_t ofs   = calc1000toRESX(limit->offset);   // multiply to 1.24 to get range (-1024..1024)
+  int16_t lim_p = calc100toRESX(limit->max + 100);
+  int16_t lim_n = calc100toRESX(limit->min - 100); //multiply by 10.24 to get same range (-1024..1024)
+  // int16_t ofs = limit->offset;
+  // int16_t lim_p = 10 * (limit->max + 100);
+  // int16_t lim_n = 10 * (limit->min - 100); //multiply by 10 to get same range as ofs (-1000..1000)  
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
-    int32_t tmp;
+	int16_t tmp;
+    if (limit->symetrical)
+      tmp = (value > 0) ? (lim_p) : (-lim_n);
+    else
+      tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
+	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
+	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
+	tmp>>=2;   // now one simple shift right for two bytes does the rest
+// too pedantic or really useful?		
+//	if ((tmp==-1) && (value&0x00020000)) tmp+=1; // check if negativ and least significant bit was set
+	// if we are pedantic; a -1 result is wrong if we devide with 262144)) (-0x40000) That's why a +1 is needed
+	ofs+=tmp;  // ofs can to added directly because already recalculated,
+
+/*    int32_t tmp;
     if (limit->symetrical)
       tmp = (value > 0) ? ((int32_t) lim_p) : ((int32_t) -lim_n);
     else
       tmp = (value > 0) ? ((int32_t) lim_p - ofs) : ((int32_t) -lim_n + ofs);
-    value = (value * tmp) / 100000;
+    value = (value * tmp) / 100000; */
   }
 #else
   if (value) {
-    int32_t tmp = (value > 0) ? ((int32_t) lim_p - ofs) : ((int32_t) -lim_n + ofs);
-    value = (value * tmp) / 100000; //div by 100000 -> output = -1024..1024
+    int16_t tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
+	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
+	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
+	tmp>>=2;   // now one simple shift right for two bytes does the rest
+// too pedantic or really useful?		
+//	if ((tmp==-1) && (value&0x00020000)) tmp+=1; // check if negativ and least significant bit was set
+	// if we are pedantic; a -1 result is wrong if we devide with 262144)) (-0x40000) That's why a +1 is needed
+	ofs+=tmp;  // ofs can to added directly because already recalculated,
+	
+    // int32_t tmp = (value > 0) ? ((int32_t) lim_p - ofs) : ((int32_t) -lim_n + ofs);
+    // value = (value * tmp) / 100000; //div by 100000 -> output = -1024..1024
   }
 #endif
-
-  value += calc1000toRESX(ofs);
-  lim_p = calc1000toRESX(lim_p);
-  lim_n = calc1000toRESX(lim_n);
-  if (value > lim_p) value = lim_p;
-  if (value < lim_n) value = lim_n;
-
-  ofs = value; // we convert value to a 16bit value and reuse ofs
+  // ofs+=value;  // already done above
+  // lim_p, lim_n already recalculated
+  if (ofs > lim_p) ofs = lim_p;
+  if (ofs < lim_n) ofs = lim_n;  
+  
+  // value += calc1000toRESX(ofs);
+  // lim_p = calc1000toRESX(lim_p);
+  // lim_n = calc1000toRESX(lim_n);
+  // if (value > lim_p) value = lim_p;
+  // if (value < lim_n) value = lim_n;
+  // ofs = value; // we convert value to a 16bit value and reuse ofs
+  
   if (limit->revert) ofs = -ofs; // finally do the reverse.
 
   if (safetyCh[channel] != -128) // if safety channel available for channel check
@@ -1201,12 +1264,13 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
 }
 #endif
 
+#define INAC_DEV_SHIFT 9   // @@@ shift right value for stick movement
 #define INAC_DEVISOR 512   // Bypass splash screen with stick movement
 uint16_t stickMoveValue()
 {
   uint16_t sum = 0;
   for (uint8_t i=0; i<4; i++)
-    sum += anaIn(i)/INAC_DEVISOR;
+    sum += (anaIn(i)>>INAC_DEV_SHIFT); // sum += anaIn(i)/INAC_DEVISOR;
   return sum;
 }
 
@@ -1810,7 +1874,8 @@ FORCEINLINE void evalTrims()
       if (g_eeGeneral.throttleReversed)
         trim = -trim;
       int16_t v = anas[i];
-      int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);
+	  int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)>>(RESX_SHIFT+1);
+      // int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);	  
       trim = vv;
     }
     else if (trimsCheckTimer > 0) {
@@ -1830,7 +1895,8 @@ BeepANACenter evalSticks(uint8_t mode)
   if (g_model.swashR.value) {
     uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] +
         int32_t(calibratedStick[AIL_STICK])*calibratedStick[AIL_STICK]);
-    uint32_t q = int32_t(RESX)*g_model.swashR.value/100;
+	uint32_t q = calc100toRESX(g_model.swashR.value);
+    // uint32_t q = int32_t(RESX)*g_model.swashR.value/100;	
     q *= q;
     if (v>q)
       d = isqrt32(v);
@@ -1908,7 +1974,8 @@ BeepANACenter evalSticks(uint8_t mode)
 
 #ifdef HELI
       if(d && (ch==ELE_STICK || ch==AIL_STICK))
-        v = int32_t(v)*g_model.swashR.value*RESX/(int32_t(d)*100);
+	    v = (int32_t(v)*calc100toRESX(g_model.swashR.value))/int32_t(d);
+      //  v = int32_t(v)*g_model.swashR.value*RESX/(int32_t(d)*100);
 #endif
 
       rawAnas[ch] = v;
@@ -2343,13 +2410,18 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   if(g_model.swashR.value)
   {
     uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
-    uint32_t q = (int32_t)RESX*g_model.swashR.value/100;
+    // uint32_t q = (int32_t)RESX*g_model.swashR.value/100;
+	uint32_t q = calc100toRESX(g_model.swashR.value);		
     q *= q;
     if(v>q)
     {
       uint16_t d = isqrt32(v);
-      anas[ELE_STICK] = (int32_t)anas[ELE_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
-      anas[AIL_STICK] = (int32_t)anas[AIL_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
+	  // @@@ open.20.fsguruh
+      // anas[ELE_STICK] = (int32_t)anas[ELE_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
+      // anas[AIL_STICK] = (int32_t)anas[AIL_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
+	  int16_t tmp = calc100toRESX(g_model.swashR.value);
+      anas[ELE_STICK] = (int32_t) anas[ELE_STICK]*tmp/d; 
+      anas[AIL_STICK] = (int32_t) anas[AIL_STICK]*tmp/d; 
     }
   }
 
@@ -2455,7 +2527,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-              v = chans[k-MIXSRC_CH1+1] / 100;
+			  v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
+              // v = chans[k-MIXSRC_CH1+1] / 100;			  
           }
         }
 #else
@@ -2469,7 +2542,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-              v = chans[k-MIXSRC_CH1+1] / 100;
+			  v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
+			  // v = chans[k-MIXSRC_CH1+1] / 100;
           }
         }
 #endif
@@ -2566,8 +2640,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
       
 #define DEL_MULT 256
+#define DEL_MULT_SHIFT 8
 
-        int16_t diff = v - act[i] / DEL_MULT;
+		int16_t diff = v - (act[i] >> DEL_MULT_SHIFT); // int16_t diff = v - act[i] / DEL_MULT;
 
         if (diff) {
           //rate = steps/sec => 32*1024/100*md->speedUp/Down
@@ -2577,29 +2652,41 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             int32_t rate = (int32_t) DEL_MULT * 2048 * 100 * tick10ms;
             if (weight) rate /= abs(weight);
 
-            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)(100/SLOW_STEP)*md->speedUp)   :  (int32_t)v*DEL_MULT) :
-                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)(100/SLOW_STEP)*md->speedDown) :  (int32_t)v*DEL_MULT) ;
+            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)(100/SLOW_STEP)*md->speedUp)   :  (int32_t)v<<DEL_MULT_SHIFT) :
+                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)(100/SLOW_STEP)*md->speedDown) :  (int32_t)v<<DEL_MULT_SHIFT) ;
+			//act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)(100/SLOW_STEP)*md->speedUp)   :  (int32_t)v*DEL_MULT) :
+            //                    ((md->speedDown>0) ? act[i]-(rate)/((int16_t)(100/SLOW_STEP)*md->speedDown) :  (int32_t)v*DEL_MULT) ;
           }
 
           {
-            int32_t tmp = act[i] / DEL_MULT;
-            if (((diff > 0) && (v < tmp)) || ((diff < 0) && (v > tmp))) act[i] = (int32_t) v * DEL_MULT; //deal with overflow
+            int32_t tmp = act[i] >> DEL_MULT_SHIFT;
+            if (((diff > 0) && (v < tmp)) || ((diff < 0) && (v > tmp))) act[i] = (int32_t) v<<DEL_MULT_SHIFT; //deal with overflow		  
+            // int32_t tmp = act[i] / DEL_MULT;
+            // if (((diff > 0) && (v < tmp)) || ((diff < 0) && (v > tmp))) act[i] = (int32_t) v * DEL_MULT; //deal with overflow			
           }
 
-          v = act[i] / DEL_MULT;
+          v = act[i] >> DEL_MULT_SHIFT;  // v = act[i] / DEL_MULT;		  
         }
       }
 
       //========== WEIGHT ===============
-      int32_t dv = (int32_t) v * weight;
+	  // @@@2 recalculate weight to a 256 basis which ease the calculation later a lot
+      int32_t dv = (int32_t) v * calc100to256(weight);
 
       //========== DIFFERENTIAL =========
       if (md->curveMode == MODE_DIFFERENTIAL) {
-        int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
+/*        int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
         if (curveParam > 0 && dv < 0)
           dv = (dv * (100 - curveParam)) / 100;
         else if (curveParam < 0 && dv > 0)
-          dv = (dv * (100 + curveParam)) / 100;
+          dv = (dv * (100 + curveParam)) / 100; */
+		  
+	    // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
+		int16_t curveParam=calc100to256(GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase));
+        if (curveParam > 0 && dv < 0)
+          dv = (dv * (256 - curveParam)) >> 8;
+        else if (curveParam < 0 && dv > 0)
+          dv = (dv * (256 + curveParam)) >> 8;		  
       }
 
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
@@ -2616,9 +2703,11 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #endif
           break;
         case MLTPX_MUL:
-          dv /= 100;
+		  // @@@2 we have to remove the weight factor of 256 in case of 100%; now we use the new base of 256
+		  // dv /= 100;
+          dv >>= 8;		
           dv *= *ptr;
-          dv /= RESXl;
+		  dv >>= RESX_SHIFT;   // same as dv /= RESXl;
           *ptr = dv;
           break;
         default: // MLTPX_ADD
@@ -2715,7 +2804,8 @@ void doMixerCalculations()
         s_perout_flight_phase = p;
         perOut(e_perout_mode_normal, tick10ms);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
-          sum_chans512[i] += (chans[i] / 16) * fp_act[p];
+          sum_chans512[i] += (chans[i]>>4) * fp_act[p];  // @@@ use shift right instead of division
+		  // sum_chans512[i] += (chans[i] / 16) * fp_act[p];		
         weight += fp_act[p];
       }
     }
@@ -2734,10 +2824,13 @@ void doMixerCalculations()
     // at the end chans[i] = chans[i]/100 =>  -1024..1024
     // interpolate value with min/max so we get smooth motion from center to stop
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
-    int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) * 16 : chans[i]);
-    ex_chans[i] = q / 100; // for the next perMain
+	
+    // int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) * 16 : chans[i]);
+	int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) << 4 : chans[i]);
+	// @@@2 now remove the internal 256 100% basis by a simple shift operation
+	ex_chans[i]=q>>8; // for the next perMain	
 
-    int16_t value = applyLimits(i, q);
+    int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
     cli();
     g_chans512[i] = value;  // copy consistent word to int-level
@@ -2773,14 +2866,18 @@ void doMixerCalculations()
     if (g_model.limitData[ch].symetrical)
       val -= calc1000toRESX(g_model.limitData[ch].offset);
 #endif
-    val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
+    // @@@ open.20.fsguruh  optimized calculation; now *16 /16 instead of 10 base
+    val = (val << 4) / (16+((g_model.limitData[ch].max-g_model.limitData[ch].min)>>5));
+	if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
+	// val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
   }
   else {
     val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
   }
 
-  val /= (RESX/16); // calibrate it
-
+  val >>= (RESX_SHIFT-4); // calibrate it @@@ open.20.fsguruh
+  // val /= (RESX/16); // calibrate it
+  
   static tmr10ms_t s_time_tot;
   static uint8_t s_cnt_1s;
   static uint16_t s_sum_1s;
@@ -2967,9 +3064,17 @@ void perMain()
 #elif !defined(CPUARM)
   uint16_t t0 = getTmr16KHz();
   int16_t delta = (nextMixerEndTime - lastMixerDuration) - t0;
-  if (delta > 0 && delta < MAX_MIXER_DELTA) return;
+  if (delta > 0 && delta < MAX_MIXER_DELTA)  {
+    // @@@ open.20.fsguruh
+    // SLEEP();   // wouldn't that make sense? should save a lot of battery power!!!
+	// asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
+    return;
+  }  
 
   nextMixerEndTime = t0 + MAX_MIXER_DELTA;
+  // this is a very tricky implementation; lastMixerEndTime is just like a default value not to stop mixcalculations totally;
+  // the real value for lastMixerEndTime is calculated inside pulses_XXX.cpp which aligns the timestamp to the pulses generated
+  // nextMixerEndTime is actually defined inside pulses_XXX.h  
 
   doMixerCalculations();
 
