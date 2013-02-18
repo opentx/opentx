@@ -1388,6 +1388,10 @@ void checkAll()
   checkLowEEPROM();
 #endif
 
+// @@@ will be done now  here; otherwise cause safetyCh switch in with 0 output --> dangerous for throttle
+  for (uint8_t i=0; i<NUM_CHNOUT; i++)
+    safetyCh[i] = -128; // not defined  
+
   checkTHR();
   checkSwitches();
   clearKeyEvents();
@@ -2152,8 +2156,9 @@ void evalFunctions()
   static rotenc_t rePreviousValues[ROTARY_ENCODERS];
 #endif
 
+/* @@@ will be done now in checkAll instead to prevent safetyCh switch in with 0 output --> dangerous for throttle
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
-    safetyCh[i] = -128; // not defined
+    safetyCh[i] = -128; // not defined  */
 
 #if defined(GVARS)
   for (uint8_t i=0; i<4; i++)
