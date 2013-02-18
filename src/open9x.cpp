@@ -687,6 +687,7 @@ int16_t getValue(uint8_t i)
   else if (i<MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
   else if (i<MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
   else if (i<MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
+  else if (i<MIXSRC_LAST_CSW) return __getSwitch(SWSRC_SW1+i-MIXSRC_SH) ? 1024 : -1024;
 #else
   else if (i<MIXSRC_3POS) return (switchState(SW_ID0) ? -1024 : (switchState(SW_ID1) ? 0 : 1024));
 #if defined(EXTRA_3POS)
