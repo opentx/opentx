@@ -1388,10 +1388,6 @@ void checkAll()
   checkLowEEPROM();
 #endif
 
-// @@@ will be done now  here; otherwise cause safetyCh switch in with 0 output --> dangerous for throttle
-  for (uint8_t i=0; i<NUM_CHNOUT; i++)
-    safetyCh[i] = -128; // not defined  
-
   checkTHR();
   checkSwitches();
   clearKeyEvents();
@@ -1827,7 +1823,7 @@ static uint8_t lastSwPos[2] = {0, 0};
 static uint16_t s_cnt[2] = {0, 0};
 static uint16_t s_sum[2] = {0, 0};
 static uint8_t sw_toggled[2] = {false, false};
-static uint16_t s_time_cum_16[2] = {0, 0};
+// static uint16_t s_time_cum_16[2] = {0, 0};  no longer needed using s_sum instead
 
 #if defined(THRTRACE)
 uint8_t s_traceBuf[MAXTRACE];
@@ -2156,9 +2152,8 @@ void evalFunctions()
   static rotenc_t rePreviousValues[ROTARY_ENCODERS];
 #endif
 
-/* @@@ will be done now in checkAll instead to prevent safetyCh switch in with 0 output --> dangerous for throttle
   for (uint8_t i=0; i<NUM_CHNOUT; i++)
-    safetyCh[i] = -128; // not defined  */
+    safetyCh[i] = -128; // not defined
 
 #if defined(GVARS)
   for (uint8_t i=0; i<4; i++)
@@ -2654,22 +2649,41 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
           //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 since it's asymmetrical
           if (tick10ms) {
-            int32_t rate = (int32_t) DEL_MULT * 2048 * 100 * tick10ms;
-            if (weight) rate /= abs(weight);
+            // int32_t rate = (int32_t) DEL_MULT * 2048 * 100 * tick10ms;
+            // if (weight) rate /= abs(weight);
+			// @@@ open.20.fsguruh: In my opinion the calculation above is wrong; It leeds to a slower movement if weight is big; What reason do we have to do so?
+			// Is it not enough if the speed of the movement is based on a percentage speed per second rather than slow speed by weight?
+			// if speed should be aligned to weight, the calculation should be the oposite; so instead of *100/weight it should be *weight/100; but is it intended at all?
+			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
+            // codesaving 44 bytes
 
+            int32_t tmp=(int32_t)v<<DEL_MULT_SHIFT;
+            if (diff>0) {
+              if (md->speedUp>0) {
+                int32_t tmp2 = act[i]+rate/((int16_t)(100/SLOW_STEP)*md->speedUp); 
+                if (tmp2<tmp) tmp=tmp2; //deal with overflow; Endposition; prevent toggling around the destination
+              }
+            } else {  // if is <0 because ==0 is not possible
+              if (md->speedDown>0) {
+                int32_t tmp2 = act[i]-rate/((int16_t)(100/SLOW_STEP)*md->speedDown); 
+                if (tmp2>tmp) tmp=tmp2; //deal with overflow; Endposition; prevent toggling around the destination
+              }            
+            }
+            act[i] = tmp;
+            // open.20.fsguruh: this implementation would save about 50 bytes code
+
+/*            
             act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)(100/SLOW_STEP)*md->speedUp)   :  (int32_t)v<<DEL_MULT_SHIFT) :
                                 ((md->speedDown>0) ? act[i]-(rate)/((int16_t)(100/SLOW_STEP)*md->speedDown) :  (int32_t)v<<DEL_MULT_SHIFT) ;
 			//act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)(100/SLOW_STEP)*md->speedUp)   :  (int32_t)v*DEL_MULT) :
             //                    ((md->speedDown>0) ? act[i]-(rate)/((int16_t)(100/SLOW_STEP)*md->speedDown) :  (int32_t)v*DEL_MULT) ;
-          }
-
-          {
+            
+            // only needed if act changes at all
             int32_t tmp = act[i] >> DEL_MULT_SHIFT;
-            if (((diff > 0) && (v < tmp)) || ((diff < 0) && (v > tmp))) act[i] = (int32_t) v<<DEL_MULT_SHIFT; //deal with overflow		  
-            // int32_t tmp = act[i] / DEL_MULT;
-            // if (((diff > 0) && (v < tmp)) || ((diff < 0) && (v > tmp))) act[i] = (int32_t) v * DEL_MULT; //deal with overflow			
-          }
-
+            if (((diff > 0) && (v < tmp)) || ((diff < 0) && (v > tmp))) act[i] = (int32_t) v<<DEL_MULT_SHIFT; //deal with overflow; Endposition; prevent toggling around the destination
+            */
+  
+         }
           v = act[i] >> DEL_MULT_SHIFT;  // v = act[i] / DEL_MULT;		  
         }
       }
@@ -2749,7 +2763,9 @@ void doMixerCalculations()
   static tmr10ms_t lastTMR;
 
   tmr10ms_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);  // handle tick10ms overrun
+  //@@@ open.20.fsguruh: correct overflow handling costs a lot of code; happens only each 11 min; would be but costs too much code
+  // therefore forget the exact calculation and use only 1 instead; good compromise
   lastTMR = tmr10ms;
 
 #if defined(BOLD_FONT)
@@ -2776,7 +2792,7 @@ void doMixerCalculations()
   static ACTIVE_PHASES_TYPE s_fade_flight_phases = 0;
   static uint8_t s_last_phase = 255; // TODO reinit everything here when the model changes, no???
   uint8_t phase = getFlightPhase();
-  int32_t weight = 0;
+  int32_t weight; // = 0; will be initilized below not needed here even compiler complains -> saves 6 bytes
 
   if (s_last_phase != phase) {
     if (s_last_phase != 255) PLAY_PHASE_OFF(s_last_phase);
@@ -2803,7 +2819,7 @@ void doMixerCalculations()
 
   if (s_fade_flight_phases) {
     memclear(sum_chans512, sizeof(sum_chans512));
-    weight = 0;
+    weight = 0;  // unfortunately removing this instead of initialization do not save even 1 bytes of code, that's why it's here
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
         s_perout_flight_phase = p;
@@ -2821,6 +2837,16 @@ void doMixerCalculations()
     s_perout_flight_phase = phase;
     perOut(e_perout_mode_normal, tick10ms);
   }
+  
+  // @@@ open.20.fsguruh according to bsongis and also my this should be done here, hopefully tick10ms is set the first round; later on this should occur max each 10msec
+  if (tick10ms) {
+  #if defined(CPUARM)
+    requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
+  #endif
+
+    // the reason this needs to be done before limits is the applyLimit function; it checks for safety switches which would be not initialized otherwise
+    evalFunctions();  
+  } 
 
   //========== LIMITS ===============
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
@@ -2880,48 +2906,16 @@ void doMixerCalculations()
     val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
   }
 
+//  #define ACCURAT_THROTTLE_TIMER
+//  code cost is about 18 bytes for higher throttle accuracy for timer
+  
+#if defined(ACCURAT_THROTTLE_TIMER)
+  val >>= (RESX_SHIFT-6); // increase resolution by factor 4
+#else
   val >>= (RESX_SHIFT-4); // calibrate it @@@ open.20.fsguruh
   // val /= (RESX/16); // calibrate it
+#endif  
   
-  static tmr10ms_t s_time_tot;
-  static uint8_t s_cnt_1s;
-  static uint16_t s_sum_1s;
-#if defined(THRTRACE)
-  static tmr10ms_t s_time_trace;
-  static uint16_t s_cnt_10s;
-  static uint16_t s_sum_10s;
-#endif
-
-  s_cnt_1s++;
-  s_sum_1s += val;
-
-  if ((tmr10ms_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
-    s_time_tot += 100;
-    s_timeCumTot += 1;
-
-    val = s_sum_1s / s_cnt_1s;
-    s_timeCum16ThrP += val / 2;
-    if (val) s_timeCumThr += 1;
-
-#if defined(THRTRACE)
-    s_cnt_10s += s_cnt_1s;
-    s_sum_10s += s_sum_1s;
-
-    if ((tmr10ms_t)(tmr10ms - s_time_trace) >= 1000) { // 10s
-      s_time_trace += 1000;
-      val = s_sum_10s / s_cnt_10s;
-      s_sum_10s = 0;
-      s_cnt_10s = 0;
-
-      s_traceBuf[s_traceWr++] = val;
-      if (s_traceWr >= MAXTRACE) s_traceWr = 0;
-      if (s_traceCnt >= 0) s_traceCnt++;
-    }
-#endif
-
-    s_cnt_1s = 0;
-    s_sum_1s = 0;
-  }
 
   // Timers start
   for (uint8_t i=0; i<2; i++) {
@@ -2933,7 +2927,7 @@ void doMixerCalculations()
         s_timerState[i] = TMR_RUNNING;
         s_cnt[i] = 0;
         s_sum[i] = 0;
-        s_time_cum_16[i] = 0;
+        // s_time_cum_16[i] = 0;  open.20.fsguruh: we have s_sum, that's enough
       }
 
       uint8_t atm = (tm >= 0 ? tm : TMR_VAROFS-tm-1);
@@ -2964,7 +2958,24 @@ void doMixerCalculations()
           if (val) s_timerVal[i]++;
         }
         else if (atm==TMRMODE_THR_REL) {
-          if (s_cnt[i]) {
+          // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
+          // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
+#if defined(ACCURAT_THROTTLE_TIMER)
+          if ((s_sum[i]/s_cnt[i])>=128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
+            s_timerVal[i]++;  // add second used of throttle
+            s_sum[i]-=128*s_cnt[i];
+          }
+		  s_cnt[i]=0;
+#else
+          if ((s_sum[i]/s_cnt[i])>=32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
+            s_timerVal[i]++;  // add second used of throttle
+            s_sum[i]-=32*s_cnt[i];
+          }
+		  s_cnt[i]=0;
+#endif
+          // isn't that a lot shorter than the old code; should do exactly the same; except with double resolution        
+        
+/*          if (s_cnt[i]) {   old code
             val       = s_sum[i]/s_cnt[i];
             s_sum[i] -= val*s_cnt[i]; //rest
             s_cnt[i]  = 0;
@@ -2973,7 +2984,8 @@ void doMixerCalculations()
               s_timerVal[i] ++;
               s_time_cum_16[i] -= 16;
             }
-          }
+          } */
+          
         }
         else if (atm==TMRMODE_THR_TRG) {
           if (val || s_timerVal[i] > 0)
@@ -3001,6 +3013,55 @@ void doMixerCalculations()
     }
   };
 
+  static tmr10ms_t s_time_tot;
+  static uint8_t s_cnt_1s;
+  static uint16_t s_sum_1s;
+#if defined(THRTRACE)
+  static tmr10ms_t s_time_trace;
+  static uint16_t s_cnt_10s;
+  static uint16_t s_sum_10s;
+#endif
+
+  s_cnt_1s++;
+  s_sum_1s += val;
+  
+  // @@@ open.20.fsguruh: moved code here; at least val variable conflicts with caculations above, safer here?
+  // even reduced code size about 8 bytes, why ever?
+  if ((tmr10ms_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
+    s_time_tot += 100;
+    s_timeCumTot += 1;
+
+#if defined(ACCURAT_THROTTLE_TIMER)
+    val = s_sum_1s / s_cnt_1s;
+    s_timeCum16ThrP += val >> 3;
+    if (val) s_timeCumThr += 1;
+    s_sum_1s>>=2;  // correct better accuracy now, because trace graph can show this information
+#else    
+    val = s_sum_1s / s_cnt_1s;
+    s_timeCum16ThrP += (val>>1);  // @@@ open.20.fsguruh
+    if (val) s_timeCumThr += 1;
+#endif    
+    
+#if defined(THRTRACE)
+    s_cnt_10s += s_cnt_1s;
+    s_sum_10s += s_sum_1s;
+
+    if ((tmr10ms_t)(tmr10ms - s_time_trace) >= 1000) { // 10s
+      s_time_trace += 1000;
+      val = s_sum_10s / s_cnt_10s;
+      s_sum_10s = 0;
+      s_cnt_10s = 0;
+
+      s_traceBuf[s_traceWr++] = val;
+      if (s_traceWr >= MAXTRACE) s_traceWr = 0;
+      if (s_traceCnt >= 0) s_traceCnt++;
+    }
+#endif
+
+    s_cnt_1s = 0;
+    s_sum_1s = 0;
+  }
+  
   static int16_t last_tmr;
   if (last_tmr != s_timerVal[0]) { // beep only if seconds advance
     if (s_timerState[0] == TMR_RUNNING) {
@@ -3047,11 +3108,13 @@ void doMixerCalculations()
     }
   }
 
+/*  as proposed by bsongis, this is done now shortly before limits
 #if defined(CPUARM)
   requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
 #endif
 
   evalFunctions();
+*/
 
 #if defined(DSM2)
   if (s_rangecheck_mode) AUDIO_PLAY(AU_FRSKY_CHEEP);
