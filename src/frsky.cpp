@@ -60,7 +60,6 @@ uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
 #if !defined(CPUARM)
 uint8_t frskyTxBufferCount = 0;
 #endif
-uint8_t FrskyRxBufferReady = 0;
 int8_t frskyStreaming = -1;
 #if defined(WS_HOW_HIGH)
 uint8_t frskyUsrStreaming = 0;
@@ -386,8 +385,6 @@ void processFrskyPacket(uint8_t *packet)
       break;
 #endif
   }
-
-  FrskyRxBufferReady = 0;
 }
 
 // Receive buffer state machine state enum
@@ -443,89 +440,85 @@ NOINLINE void processSerialData(uint8_t stat, uint8_t data)
 #if !defined(CPUARM)
   if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0))) {
     // discard buffer and start fresh on any comms error
-    FrskyRxBufferReady = 0;
     numPktBytes = 0;
   }
   else
 #endif
   {
-    if (FrskyRxBufferReady == 0) // can't get more data if the buffer hasn't been cleared
+    switch (dataState)
     {
-      switch (dataState)
-      {
-        case STATE_DATA_START:
-          if (data == START_STOP) break; // Remain in userDataStart if possible 0x7e,0x7e doublet found.
+      case STATE_DATA_START:
+        if (data == START_STOP) break; // Remain in userDataStart if possible 0x7e,0x7e doublet found.
 
-          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-            frskyRxBuffer[numPktBytes++] = data;
-          dataState = STATE_DATA_IN_FRAME;
-          break;
+        if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+          frskyRxBuffer[numPktBytes++] = data;
+        dataState = STATE_DATA_IN_FRAME;
+        break;
 
-        case STATE_DATA_IN_FRAME:
-          if (data == BYTESTUFF)
-          {
-              dataState = STATE_DATA_XOR; // XOR next byte
-              break;
-          }
-          if (data == START_STOP) // end of frame detected
-          {
-            processFrskyPacket(frskyRxBuffer); // FrskyRxBufferReady = 1;
-            dataState = STATE_DATA_IDLE;
+      case STATE_DATA_IN_FRAME:
+        if (data == BYTESTUFF)
+        {
+            dataState = STATE_DATA_XOR; // XOR next byte
             break;
-          }
-          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-            frskyRxBuffer[numPktBytes++] = data;
+        }
+        if (data == START_STOP) // end of frame detected
+        {
+          processFrskyPacket(frskyRxBuffer);
+          dataState = STATE_DATA_IDLE;
           break;
+        }
+        if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+          frskyRxBuffer[numPktBytes++] = data;
+        break;
 
-        case STATE_DATA_XOR:
-          if (numPktBytes < FRSKY_RX_PACKET_SIZE)
-            frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
-          dataState = STATE_DATA_IN_FRAME;
-          break;
+      case STATE_DATA_XOR:
+        if (numPktBytes < FRSKY_RX_PACKET_SIZE)
+          frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
+        dataState = STATE_DATA_IN_FRAME;
+        break;
 
-        case STATE_DATA_IDLE:
-          if (data == START_STOP) {
-            numPktBytes = 0;
-            dataState = STATE_DATA_START;
-          }
+      case STATE_DATA_IDLE:
+        if (data == START_STOP) {
+          numPktBytes = 0;
+          dataState = STATE_DATA_START;
+        }
 #if defined(TELEMETREZ)
-          if (data == PRIVATE) {
-            dataState = STATE_DATA_PRIVATE_LEN;
-          }
+        if (data == PRIVATE) {
+          dataState = STATE_DATA_PRIVATE_LEN;
+        }
 #endif
-          break;
+        break;
 
 #if defined(TELEMETREZ)
-        case STATE_DATA_PRIVATE_LEN:
-          dataState = STATE_DATA_PRIVATE_VALUE;
-          privateDataLen = data; // Count of bytes to receive
-          privateDataPos = 0;
-          break;
+      case STATE_DATA_PRIVATE_LEN:
+        dataState = STATE_DATA_PRIVATE_VALUE;
+        privateDataLen = data; // Count of bytes to receive
+        privateDataPos = 0;
+        break;
 
-        case STATE_DATA_PRIVATE_VALUE :
-          if (privateDataPos == 0) {
-            // Process first private data byte
-            // PC6, PC7
-            if ((data & 0x3F) == 0) {// Check byte is valid
-              DDRC |= 0xC0;          // Set as outputs
-              PORTC = ( PORTC & 0x3F ) | ( data & 0xC0 ); // update outputs
-            }
+      case STATE_DATA_PRIVATE_VALUE :
+        if (privateDataPos == 0) {
+          // Process first private data byte
+          // PC6, PC7
+          if ((data & 0x3F) == 0) {// Check byte is valid
+            DDRC |= 0xC0;          // Set as outputs
+            PORTC = ( PORTC & 0x3F ) | ( data & 0xC0 ); // update outputs
           }
+        }
 #if defined(ROTARY_ENCODER_NAVIGATION)
-          if (privateDataPos == 1) {
-            TrotCount = data;
-          }
-          if (privateDataPos == 2) { // rotary encoder switch
-            RotEncoder = data;
-          }
+        if (privateDataPos == 1) {
+          TrotCount = data;
+        }
+        if (privateDataPos == 2) { // rotary encoder switch
+          RotEncoder = data;
+        }
 #endif
-          if (++privateDataPos == privateDataLen) {
-            dataState = STATE_DATA_IDLE;
-          }
-          break;
+        if (++privateDataPos == privateDataLen) {
+          dataState = STATE_DATA_IDLE;
+        }
+        break;
 #endif
-      } // switch
-    } // if (FrskyRxBufferReady == 0)
+    } // switch
   }
 }
 
