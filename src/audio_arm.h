@@ -155,7 +155,7 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
 #if defined(VOICE)
   #define AUDIO_ERROR_MESSAGE(e) audioEvent(e)
-  #define AUDIO_TIMER_MINUTE(t)  playDuration(t)
+  #define AUDIO_TIMER_MINUTE(t)  playDuration(t, 0)
 #else
   #define AUDIO_ERROR_MESSAGE(e) audioEvent(AU_ERROR)
   #define AUDIO_TIMER_MINUTE(t)  audioDefevent(AU_WARNING1)

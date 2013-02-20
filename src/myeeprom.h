@@ -271,6 +271,7 @@ PACK(typedef struct t_MixData {
   uint8_t  noExpo:1;
   int8_t   carryTrim:3;
   uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  spare:1;
   int16_t  weight;
   int8_t   swtch;
   int8_t   curveParam;
@@ -329,10 +330,10 @@ PACK(typedef struct t_MixData {
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
-  uint8_t func:5;
-  uint8_t andsw:3; // TODO 8bits for next EEPROM
+  uint8_t func;
   uint8_t delay;
   uint8_t duration;
+  uint8_t andsw;  
 }) CustomSwData;
 #else
 PACK(typedef struct t_CustomSwData { // Custom Switches data
@@ -404,7 +405,6 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
   uint8_t func;
   char    param[6];
   uint8_t active;
-  uint8_t spare;
 }) CustomFnData;
 #define CFN_PARAM(p)       (*((uint32_t*)(p)->param))
 #define CFN_RESET_PARAM(p) memset(p->param, 0, sizeof(p->param))
@@ -665,25 +665,36 @@ typedef char gvar_name_t[6];
 #endif
 
 #if defined(CPUM64) && defined(GVARS)
-#define MAX_GVARS 5
-#define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
-#define PHASE_GVARS_DATA
-#define GVAR_VALUE(x, p) g_model.gvars[x]
+  #define MAX_GVARS 5
+  #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
+  #define PHASE_GVARS_DATA
+  #define GVAR_VALUE(x, p) g_model.gvars[x]
 #elif defined(CPUM64)
-#define MAX_GVARS 0
-#define MODEL_GVARS_DATA
-#define PHASE_GVARS_DATA
+  #define MAX_GVARS 0
+  #define MODEL_GVARS_DATA
+  #define PHASE_GVARS_DATA
 #elif defined(GVARS)
-#define MAX_GVARS 5
-#define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
-#define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
-#define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
+  #define MAX_GVARS 5
+  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
+  #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
+  #define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
 #else
-#define MAX_GVARS 0
-#define MODEL_GVARS_DATA gvar_name_t gvarsNames[5];
-#define PHASE_GVARS_DATA gvar_t gvars[5]
+  #define MAX_GVARS 0
+  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[5];
+  #define PHASE_GVARS_DATA gvar_t gvars[5]
 #endif
 
+#if defined(CPUARM)
+PACK(typedef struct t_PhaseData {
+  TRIM_ARRAY;
+  int8_t swtch;       // swtch of phase[0] is not used
+  char name[LEN_FP_NAME];
+  uint8_t fadeIn;
+  uint8_t fadeOut;
+  ROTARY_ENCODER_ARRAY;
+  PHASE_GVARS_DATA;
+}) PhaseData;
+#else
 PACK(typedef struct t_PhaseData {
   TRIM_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
@@ -693,43 +704,44 @@ PACK(typedef struct t_PhaseData {
   ROTARY_ENCODER_ARRAY;
   PHASE_GVARS_DATA;
 }) PhaseData;
+#endif
 
 #if defined(CPUARM)
-#define MAX_MODELS 60
-#define NUM_CHNOUT 32 // number of real output channels CH1-CH32
-#define MAX_PHASES 9
-#define MAX_MIXERS 64
-#define MAX_EXPOS  32
-#define NUM_CSW    32 // number of custom switches
-#define NUM_CFN    32 // number of functions assigned to switches
+  #define MAX_MODELS 60
+  #define NUM_CHNOUT 32 // number of real output channels CH1-CH32
+  #define MAX_PHASES 9
+  #define MAX_MIXERS 64
+  #define MAX_EXPOS  32
+  #define NUM_CSW    32 // number of custom switches
+  #define NUM_CFN    32 // number of functions assigned to switches
 #elif defined(PCBGRUVIN9X) || defined(CPUM128)
-#define MAX_MODELS 30
-#define NUM_CHNOUT 16 // number of real output channels CH1-CH16
-#define MAX_PHASES 5
-#define MAX_MIXERS 32
-#define MAX_EXPOS  14
-#define NUM_CSW    12 // number of custom switches
-#define NUM_CFN    16 // number of functions assigned to switches
+  #define MAX_MODELS 30
+  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
+  #define MAX_PHASES 5
+  #define MAX_MIXERS 32
+  #define MAX_EXPOS  14
+  #define NUM_CSW    12 // number of custom switches
+  #define NUM_CFN    16 // number of functions assigned to switches
 #else
-#define MAX_MODELS 16
-#define NUM_CHNOUT 16 // number of real output channels CH1-CH16
-#define MAX_PHASES 5
-#define MAX_MIXERS 32
-#define MAX_EXPOS  14
-#define NUM_CSW    12 // number of custom switches
-#define NUM_CFN    16 // number of functions assigned to switches
+  #define MAX_MODELS 16
+  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
+  #define MAX_PHASES 5
+  #define MAX_MIXERS 32
+  #define MAX_EXPOS  14
+  #define NUM_CSW    12 // number of custom switches
+  #define NUM_CFN    16 // number of functions assigned to switches
 #endif
 
 #define MAX_TIMERS 2
 
 #if defined(CPUARM)
-#define MAX_CURVES 16
-#define NUM_POINTS 512
-#define CURVTYPE   int16_t
+  #define MAX_CURVES 16
+  #define NUM_POINTS 512
+  #define CURVTYPE   int16_t
 #else
-#define MAX_CURVES 8
-#define NUM_POINTS (112-MAX_CURVES)
-#define CURVTYPE   int8_t
+  #define MAX_CURVES 8
+  #define NUM_POINTS (112-MAX_CURVES)
+  #define CURVTYPE   int8_t
 #endif
 
 #define MAX_SWITCH (MAX_PSWITCH+NUM_CSW)

@@ -600,7 +600,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
   static uint8_t cursorPos = 0;
 #endif
 
-  lcd_putsnAtt(x, y, name, size, ZCHAR | (active ? ((s_editMode>0) ? 0 : INVERS) : 0));
+  lcd_putsnAtt(x, y, name, size, ZCHAR | ((active && s_editMode <= 0) ? INVERS : 0));
 
   if (active) {
     uint8_t cur = cursorPos;
@@ -1150,95 +1150,134 @@ enum PhasesItems {
   ITEM_PHASES_LAST = ITEM_PHASES_COUNT-1
 };
 
+void editPhaseTrims(uint8_t x, uint8_t y, uint8_t phase, uint8_t event, uint8_t active)
+{
+  static uint8_t cursorPos = 0;
+
+  for (uint8_t t=0; t<NUM_STICKS; t++) {
+    putsTrimMode(x+t*FW, y, phase, t, (active && (s_editMode <= 0 || cursorPos==t)) ? INVERS : 0);
+  }
+
+  if (active) {
+    uint8_t cur = cursorPos;
+    if (s_editMode > 0) {
+      if (p1valdiff || IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
+          || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
+        int16_t v = getRawTrimValue(phase, cur);
+        if (v < TRIM_EXTENDED_MAX) v = TRIM_EXTENDED_MAX;
+        v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX+MAX_PHASES-1, EE_MODEL);
+        if (checkIncDec_Ret) {
+          if (v == TRIM_EXTENDED_MAX) v = 0;
+          setTrimValue(phase, cur, v);
+        }
+      }
+
+      switch (event) {
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
+        case EVT_ROTARY_BREAK:
+          if (s_editMode == EDIT_MODIFY_FIELD) {
+            s_editMode = EDIT_MODIFY_STRING;
+            cur = 0;
+          }
+          else if (cur<NUM_STICKS-1)
+            cur++;
+          else
+            s_editMode = 0;
+          break;
+#endif
+
+#if !defined(PCBX9D)
+        case EVT_KEY_BREAK(KEY_LEFT):
+          if (cur>0) cur--;
+          break;
+        case EVT_KEY_BREAK(KEY_RIGHT):
+          if (cur<NUM_STICKS-1) cur++;
+          break;
+#endif
+
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
+        case EVT_ROTARY_LONG:
+          s_editMode = 0;
+          killEvents(event);
+          break;
+#endif
+      }
+    }
+    else {
+      cur = 0;
+    }
+    cursorPos = cur;
+  }
+}
+
 void menuModelPhasesAll(uint8_t event)
 {
   MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_PhasesAll, 1+MAX_PHASES+1, {0, ITEM_PHASES_LAST-2, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, 0});
 
   int8_t sub = m_posVert - 1;
 
-  switch (event) {
-    CASE_EVT_ROTARY_BREAK
-    case EVT_KEY_FIRST(KEY_ENTER):
-      if (sub == MAX_PHASES) {
-        s_editMode = 0;
-        trimsCheckTimer = 200; // 2 seconds
-      }
-      // no break
-#if !defined(PCBX9D)
-    case EVT_KEY_FIRST(KEY_RIGHT):
-#endif
-      if (sub >= 0 && sub < MAX_PHASES) {
-        s_currIdx = sub;
-        pushMenu(menuModelPhaseOne);
-      }
-      break;
-  }
-
-  uint8_t att;
-  for (uint8_t i=0; i<MAX_PHASES; i++) {
-#if defined(CPUARM)
-    int8_t y = 1 + (1+i-s_pgOfs)*FH;
-    if (y<1*FH+1 || y>(LCD_LINES-1)*FH+1) continue;
-#else
+  for (uint8_t i=0; i<LCD_LINES-1; i++) {
     uint8_t y = 1 + (i+1)*FH;
-#endif
-    att = (i==sub ? INVERS : 0);
+    uint8_t k = i+s_pgOfs;
+
+    if (k==MAX_PHASES) {
+      // last line available - add the "check trims" line
+      lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
+      putsFlightPhase(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_perout_flight_phase+1);
+      if (sub==MAX_PHASES && !trimsCheckTimer) {
+        lcd_status_line();
+        // TODO [ENTER] here
+      }
+      return;
+    }
+
     PhaseData *p = phaseaddress(i);
-#if ROTARY_ENCODERS > 2
-    putsFlightPhase(0, y, i+1, att|CONDENSED|(getFlightPhase()==i ? BOLD : 0));
-#else
-    putsFlightPhase(0, y, i+1, att|(getFlightPhase()==i ? BOLD : 0));
-#endif
-#if defined(ROTARY_ENCODERS)
-#if ROTARY_ENCODERS > 2
-#define NAME_OFS (-4-12)
-#define SWITCH_OFS (-FW/2-2-13)
-#define TRIMS_OFS  (-FW/2-4-15)
-#define ROTARY_ENC_OFS (0)
-#else
-#define NAME_OFS (-4)
-#define SWITCH_OFS (-FW/2-2)
-#define TRIMS_OFS  (-FW/2-4)
-#define ROTARY_ENC_OFS (2)
-#endif
-#else
-#define NAME_OFS 0
-#define SWITCH_OFS (FW/2)
-#define TRIMS_OFS  (FW/2)
-#endif
-    lcd_putsnAtt(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
-    if (i == 0) {
-      lcd_puts((5+LEN_FP_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
-    }
-    else {
-      putsSwitches((5+LEN_FP_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
-      for (uint8_t t=0; t<NUM_STICKS; t++) {
-        putsTrimMode((9+LEN_FP_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
+
+    putsFlightPhase(0, y, i+1, (getFlightPhase()==i ? BOLD : 0));
+
+    for (uint8_t j=0; j<ITEM_PHASES_COUNT; j++) {
+      uint8_t posHorz = m_posHorz;
+      if (i==0 && posHorz > 0) { posHorz += 2; }
+      uint8_t attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
+      switch(j)
+      {
+        case ITEM_PHASES_NAME:
+          editName(4*FW, y, p->name, sizeof(p->name), event, attr);
+          break;
+
+        case ITEM_PHASES_SWITCH:
+          if (i == 0) {
+            lcd_puts((5+LEN_FP_NAME)*FW+FW/2, y, STR_DEFAULT);
+          }
+          else {
+            putsSwitches((5+LEN_FP_NAME)*FW+FW/2, y, p->swtch, attr);
+            if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, -MAX_SWITCH, MAX_SWITCH);
+          }
+          break;
+
+        case ITEM_PHASES_TRIMS:
+          if (i != 0) {
+            editPhaseTrims((10+LEN_FP_NAME)*FW+FW/2, y, i, event, attr);
+          }
+          break;
+
+        case ITEM_PHASES_FADE_IN:
+          lcd_outdezAtt(29*FW, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
+          if (active)  p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
+          break;
+
+        case ITEM_PHASES_FADE_OUT:
+          lcd_outdezAtt(34*FW, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
+          if (active) p->fadeOut = checkIncDec(event, p->fadeOut, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
+          break;
+
       }
-#if defined(PCBGRUVIN9X)
-      for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
-        putsRotaryEncoderMode((13+LEN_FP_NAME+t)*FW+TRIMS_OFS+ROTARY_ENC_OFS, y, i, t, 0);
-      }
-#endif
     }
-
-    if (p->fadeIn || p->fadeOut) {
-      lcd_outdezAtt(24*FW, y, (10/SLOW_STEP)*p->fadeIn, PREC1|LEFT);
-      lcd_putc(lcdLastPos, y, '/');
-      lcd_outdezAtt(lcdLastPos+FW, y, (10/SLOW_STEP)*p->fadeOut, PREC1|LEFT);
-    }
-  }
-
-  if (s_pgOfs != MAX_PHASES-(LCD_LINES-2)) return;
-
-  lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
-  putsFlightPhase(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_perout_flight_phase+1);
-  if (sub==MAX_PHASES && !trimsCheckTimer) {
-    lcd_status_line();
   }
 }
 
-#else
+#else // LCD_W >= 212
 
 enum menuModelPhaseItems {
   ITEM_MODEL_PHASE_NAME,
@@ -1400,6 +1439,24 @@ void menuModelPhaseOne(uint8_t event)
   }
 }
 
+#if defined(ROTARY_ENCODERS)
+  #if ROTARY_ENCODERS > 2
+    #define NAME_OFS (-4-12)
+    #define SWITCH_OFS (-FW/2-2-13)
+    #define TRIMS_OFS  (-FW/2-4-15)
+    #define ROTARY_ENC_OFS (0)
+  #else
+    #define NAME_OFS (-4)
+    #define SWITCH_OFS (-FW/2-2)
+    #define TRIMS_OFS  (-FW/2-4)
+    #define ROTARY_ENC_OFS (2)
+  #endif
+#else
+  #define NAME_OFS 0
+  #define SWITCH_OFS (FW/2)
+  #define TRIMS_OFS  (FW/2)
+#endif
+
 void menuModelPhasesAll(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_PhasesAll, 1+MAX_PHASES+1);
@@ -1414,9 +1471,7 @@ void menuModelPhasesAll(uint8_t event)
         trimsCheckTimer = 200; // 2 seconds
       }
       // no break
-#if !defined(PCBX9D)
     case EVT_KEY_FIRST(KEY_RIGHT):
-#endif
       if (sub >= 0 && sub < MAX_PHASES) {
         s_currIdx = sub;
         pushMenu(menuModelPhaseOne);
@@ -1439,23 +1494,7 @@ void menuModelPhasesAll(uint8_t event)
 #else
     putsFlightPhase(0, y, i+1, att|(getFlightPhase()==i ? BOLD : 0));
 #endif
-#if defined(ROTARY_ENCODERS)
-#if ROTARY_ENCODERS > 2
-#define NAME_OFS (-4-12)
-#define SWITCH_OFS (-FW/2-2-13)
-#define TRIMS_OFS  (-FW/2-4-15)
-#define ROTARY_ENC_OFS (0)
-#else
-#define NAME_OFS (-4)
-#define SWITCH_OFS (-FW/2-2)
-#define TRIMS_OFS  (-FW/2-4)
-#define ROTARY_ENC_OFS (2)
-#endif
-#else
-#define NAME_OFS 0
-#define SWITCH_OFS (FW/2)
-#define TRIMS_OFS  (FW/2)
-#endif
+
     lcd_putsnAtt(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
     if (i == 0) {
       lcd_puts((5+LEN_FP_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
@@ -1492,7 +1531,7 @@ void menuModelPhasesAll(uint8_t event)
 
 #endif // defined(FLIGHT_PHASES)
 
-#ifdef HELI
+#if defined(HELI)
 
 enum menuModelHeliItems {
   ITEM_HELI_SWASHTYPE,
