@@ -149,11 +149,11 @@ void applyTemplate(uint8_t idx)
       // Sticky-T-Cut
       case TMPL_STI_THR_CUT:
         md=setDest(ICC(STK_THR), MIXSRC_MAX);  md->weight=-100;  md->swtch=SWSRC_SWC;  md->mltpx=MLTPX_REP;
-        md=setDest(13, MIXSRC_CH11+3); md->weight= 100;
+        md=setDest(13, MIXSRC_CH14); md->weight= 100;
         md=setDest(13, MIXSRC_MAX); md->weight=-100;  md->swtch=SWSRC_SWB;  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_MAX); md->weight= 100;  md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
         setSwitch(11, CS_VNEG, STK_THR, -99);
-        setSwitch(12, CS_VPOS, 38, 0);
+        setSwitch(12, CS_VPOS, MIXSRC_CH14, 0);
         break;
 
       // V-Tail
