@@ -150,9 +150,9 @@
   #define TR_PLAY_BOTH         "\221\222P\200r\0     "
   #define TR_PLAY_VALUE        "\221\222TTS\0     "
 #else
-  #define TR_PLAY_TRACK        "[\221\222 Stopa]\0"
-  #define TR_PLAY_BOTH         "[Hr\200t P\200r]\0"
-  #define TR_PLAY_VALUE        "[Hr\200t TTS]\0"
+  #define TR_PLAY_TRACK        "[\221\222Stopa]\0 "
+  #define TR_PLAY_BOTH         "[\221\222P\200r]\0    "
+  #define TR_PLAY_VALUE        "[\221\222TTS]\0    "
 #endif
 
 #define TR_CFN_VOLUME        "Hlasitost\ 0"
@@ -203,7 +203,7 @@
 #define TR_FUNCSOUNDS          "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS         "\004"
-#define TR_VTELEMCHNS          "---\0""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
+#define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
 
 #ifdef IMPERIAL_UNITS
   #define LENGTH_UNIT          "ft\0"
