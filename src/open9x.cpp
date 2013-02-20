@@ -483,6 +483,11 @@ uint16_t divu100(uint32_t A) {
 // f(x,k)=x*x*k/10 + x*(1-k/10) ;P[0,1,2,3,4,5,6,7,8,9,10]
 // f(x,k)=1+(x-1)*(x-1)*(x-1)*k/10 + (x-1)*(1-k/10) ;P[0,1,2,3,4,5,6,7,8,9,10]
 
+// input parameters; 
+//  x 0 to 1024;
+//  k 0 to 100;
+// return value = 1024 * (x/1024)^((101+k)/30)
+// return value  = exp(ln(x/1024)*exp(k/10))*1024
 uint16_t expou(uint16_t x, uint16_t k)
 {
   // previous function was this one:
@@ -597,17 +602,38 @@ void applyExpos(int16_t *anas)
 #if !defined(CPUARM)
 
 
+// #define CORRECT_NEGATIVE_SHIFTS
+// open.20.fsguruh; shift right operations do the rounding different for negative values compared to positive values
+// so all negative divisions round always further down, which give absolute values bigger compared to a usual division
+// this is noticable on the display, because instead of -100.0 -99.9 is shown; While in praxis I doublt somebody will notice a 
+// difference this is more a mental thing. Maybe people are distracted, because the easy calculations are obviously wrong
+// this define would correct this, but costs 34 bytes code for stock version
+
 int16_t calc100to256(int8_t x) // return x*2.56
 {
     // y = 2*x + x/2 +x/16-x/512-x/2048
     // 512 and 2048 are out of scope from int8 input --> forget it
+
+#ifdef CORRECT_NEGATIVE_SHIFTS
+    int16_t res=(int16_t)x<<1;
+    //int8_t  sign=(uint8_t) x>>7;
+    int8_t sign=(x<0?1:0);
     
+    x-=sign;    
+    res+=(x>>1);
+    res+=sign;
+    res+=(x>>4);
+    res+=sign;
+    return res;
+#else    
     return ((int16_t)x<<1)+(x>>1)+(x>>4);
+#endif
     // in case of negative values the routine above always generates a too small value, this could be corrected with this
     // I think it is not needed anyway
     // if (x<0) return -calc100to256(-x);  
     // else return ((int16_t)x<<1)+(x>>1)+(x>>4);
 }
+
 
 // return x*10.24
 int16_t calc100toRESX_16Bits(int16_t x)  // @@@ open.20.fsguruh
@@ -615,12 +641,22 @@ int16_t calc100toRESX_16Bits(int16_t x)  // @@@ open.20.fsguruh
   // return (int16_t)x*10 + x/4 - x/64;
   return ((x*41)>>2) - (x>>6);  // this implementation saves a add but reduces valid range by factor 4!!! by carefull
   // return (x*10)+(x>>2)-(x>>6);  // this would be the saver implementation
-}
+} 
 
 int16_t calc100toRESX(int8_t x) // return x*10.24
 {
+#ifdef CORRECT_NEGATIVE_SHIFTS
+  int16_t res= ((int16_t)x*41)>>2;
+  int8_t sign=(x<0?1:0);
+  //int8_t  sign=(uint8_t) x>>7;  
+  x-=sign;
+  res-=(x>>6);
+  res-=sign;
+  return res;
+#else
   // return (int16_t)x*10 + x/4 - x/64;
-  return ((x*41)>>2) - x/64;
+  return ((x*41)>>2) - (x>>6);
+#endif
 }
 
 // return x*1.024
@@ -2636,58 +2672,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);
 
-      //========== SPEED ===============
-      if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
-      
-#define DEL_MULT 256
-#define DEL_MULT_SHIFT 8
-
-		int16_t diff = v - (act[i] >> DEL_MULT_SHIFT); // int16_t diff = v - act[i] / DEL_MULT;
-
-        if (diff) {
-          //rate = steps/sec => 32*1024/100*md->speedUp/Down
-          //act[i] += diff>0 ? (32768)/((int16_t)100*md->speedUp) : -(32768)/((int16_t)100*md->speedDown);
-          //-100..100 => 32768 ->  100*83886/256 = 32768,   For MAX we divide by 2 since it's asymmetrical
-          if (tick10ms) {
-            // int32_t rate = (int32_t) DEL_MULT * 2048 * 100 * tick10ms;
-            // if (weight) rate /= abs(weight);
-			// @@@ open.20.fsguruh: In my opinion the calculation above is wrong; It leeds to a slower movement if weight is big; What reason do we have to do so?
-			// Is it not enough if the speed of the movement is based on a percentage speed per second rather than slow speed by weight?
-			// if speed should be aligned to weight, the calculation should be the oposite; so instead of *100/weight it should be *weight/100; but is it intended at all?
-			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
-            // codesaving 44 bytes
-
-            int32_t tmp=(int32_t)v<<DEL_MULT_SHIFT;
-            if (diff>0) {
-              if (md->speedUp>0) {
-                int32_t tmp2 = act[i]+rate/((int16_t)(100/SLOW_STEP)*md->speedUp); 
-                if (tmp2<tmp) tmp=tmp2; //deal with overflow; Endposition; prevent toggling around the destination
-              }
-            } else {  // if is <0 because ==0 is not possible
-              if (md->speedDown>0) {
-                int32_t tmp2 = act[i]-rate/((int16_t)(100/SLOW_STEP)*md->speedDown); 
-                if (tmp2>tmp) tmp=tmp2; //deal with overflow; Endposition; prevent toggling around the destination
-              }            
-            }
-            act[i] = tmp;
-            // open.20.fsguruh: this implementation would save about 50 bytes code
-
-/*            
-            act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)(100/SLOW_STEP)*md->speedUp)   :  (int32_t)v<<DEL_MULT_SHIFT) :
-                                ((md->speedDown>0) ? act[i]-(rate)/((int16_t)(100/SLOW_STEP)*md->speedDown) :  (int32_t)v<<DEL_MULT_SHIFT) ;
-			//act[i] = (diff>0) ? ((md->speedUp>0)   ? act[i]+(rate)/((int16_t)(100/SLOW_STEP)*md->speedUp)   :  (int32_t)v*DEL_MULT) :
-            //                    ((md->speedDown>0) ? act[i]-(rate)/((int16_t)(100/SLOW_STEP)*md->speedDown) :  (int32_t)v*DEL_MULT) ;
-            
-            // only needed if act changes at all
-            int32_t tmp = act[i] >> DEL_MULT_SHIFT;
-            if (((diff > 0) && (v < tmp)) || ((diff < 0) && (v > tmp))) act[i] = (int32_t) v<<DEL_MULT_SHIFT; //deal with overflow; Endposition; prevent toggling around the destination
-            */
-  
-         }
-          v = act[i] >> DEL_MULT_SHIFT;  // v = act[i] / DEL_MULT;		  
-        }
-      }
-
       //========== WEIGHT ===============
 	  // @@@2 recalculate weight to a 256 basis which ease the calculation later a lot
       int32_t dv = (int32_t) v * calc100to256(weight);
@@ -2708,6 +2692,48 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           dv = (dv * (256 + curveParam)) >> 8;		  
       }
 
+      //========== SPEED ===============
+      if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
+      
+#define DEL_MULT_SHIFT 8
+        // we are lucky, the MULT_SHIFT factor actually fits to the weight recalculation; Therefore no adaption needed
+        // so weight is 256 and MULT factor is the same
+
+        int32_t diff=dv-act[i];
+        if (diff) {
+          // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
+          // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
+          // because we get a tick each 10msec, we need 100 ticks for one second
+          // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
+          if (tick10ms) {
+            // only if already time is passed add or substract a value according the speed configured
+                    
+            // codesaving 44 bytes          
+			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
+            // rate equals a full range for one second; if less time is passed rate is accordingly smaller
+            // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
+
+            int32_t currentValue=dv;
+            if (diff>0) {
+              if (md->speedUp>0) {
+                // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
+                int32_t newValue = act[i]+rate/((int16_t)(100/SLOW_STEP)*md->speedUp); 
+                if (newValue<currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
+              }
+            } else {  // if is <0 because ==0 is not possible
+              if (md->speedDown>0) {
+                // see explanation in speedUp
+                int32_t newValue = act[i]-rate/((int16_t)(100/SLOW_STEP)*md->speedDown); 
+                if (newValue>currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
+              }            
+            } //endif diff>0
+            act[i] = currentValue;
+            // open.20.fsguruh: this implementation would save about 50 bytes code
+          } // endif tick10ms ; in case no time passed assign the old value, not the current value from source
+          dv = act[i];
+        } //endif diff
+      } //endif speed
+      
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
 
       if (i == 0 || md->destCh != (md - 1)->destCh)
@@ -2723,7 +2749,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           break;
         case MLTPX_MUL:
 		  // @@@2 we have to remove the weight factor of 256 in case of 100%; now we use the new base of 256
-		  // dv /= 100;
           dv >>= 8;		
           dv *= *ptr;
 		  dv >>= RESX_SHIFT;   // same as dv /= RESXl;
@@ -2764,7 +2789,7 @@ void doMixerCalculations()
 
   tmr10ms_t tmr10ms = get_tmr10ms();
   uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);  // handle tick10ms overrun
-  //@@@ open.20.fsguruh: correct overflow handling costs a lot of code; happens only each 11 min; would be but costs too much code
+  //@@@ open.20.fsguruh: correct overflow handling costs a lot of code; happens only each 11 min;
   // therefore forget the exact calculation and use only 1 instead; good compromise
   lastTMR = tmr10ms;
 
@@ -2906,8 +2931,13 @@ void doMixerCalculations()
     val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
   }
 
-//  #define ACCURAT_THROTTLE_TIMER
-//  code cost is about 18 bytes for higher throttle accuracy for timer
+#ifndef CPUM64
+  //  code cost is about 16 bytes for higher throttle accuracy for timer 
+  //  would not be noticable anyway, because all version up to this change had only 16 steps; 
+  //  now it has already 32  steps; this define would increase to 128 steps
+  #define ACCURAT_THROTTLE_TIMER
+#endif
+
   
 #if defined(ACCURAT_THROTTLE_TIMER)
   val >>= (RESX_SHIFT-6); // increase resolution by factor 4
@@ -2973,19 +3003,6 @@ void doMixerCalculations()
           }
 		  s_cnt[i]=0;
 #endif
-          // isn't that a lot shorter than the old code; should do exactly the same; except with double resolution        
-        
-/*          if (s_cnt[i]) {   old code
-            val       = s_sum[i]/s_cnt[i];
-            s_sum[i] -= val*s_cnt[i]; //rest
-            s_cnt[i]  = 0;
-            s_time_cum_16[i] += val/2;
-            if (s_time_cum_16[i] >= 16) {
-              s_timerVal[i] ++;
-              s_time_cum_16[i] -= 16;
-            }
-          } */
-          
         }
         else if (atm==TMRMODE_THR_TRG) {
           if (val || s_timerVal[i] > 0)
@@ -3033,16 +3050,19 @@ void doMixerCalculations()
 
 #if defined(ACCURAT_THROTTLE_TIMER)
     val = s_sum_1s / s_cnt_1s;
-    s_timeCum16ThrP += val >> 3;
+    s_timeCum16ThrP += (val>>3);  // s_timeCum16ThrP would overrun if we would store throttle value with higher accuracy; therefore stay with 16 steps
     if (val) s_timeCumThr += 1;
-    s_sum_1s>>=2;  // correct better accuracy now, because trace graph can show this information
+    s_sum_1s>>=2;  // correct better accuracy now, because trace graph can show this information; in case thrtrace is not active, the compile should remove this
 #else    
     val = s_sum_1s / s_cnt_1s;
-    s_timeCum16ThrP += (val>>1);  // @@@ open.20.fsguruh
+    s_timeCum16ThrP += (val>>1);  
     if (val) s_timeCumThr += 1;
 #endif    
     
 #if defined(THRTRACE)
+    // throttle trace is done every 10 seconds; Tracebuffer is adjusted to screen size.
+    // in case buffer runs out, it wraps around
+    // resolution for y axis is only 32, therefore no higher value makes sense
     s_cnt_10s += s_cnt_1s;
     s_sum_10s += s_sum_1s;
 
@@ -3135,7 +3155,16 @@ void perMain()
   if (delta > 0 && delta < MAX_MIXER_DELTA)  {
     // @@@ open.20.fsguruh
     // SLEEP();   // wouldn't that make sense? should save a lot of battery power!!!
-	// asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
+/*  for future use; currently very very beta...
+	ADCSRA&=0x7F;   // disable ADC for power saving
+	ACSR&=0xF7;   // disable ACIE Interrupts
+	ACSR|=0x80;   // disable Analog Comparator
+	
+	MCUCR|=0x24;  // enable Sleep (bit5) enable ADC Noise Reduction (bit2)
+	asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
+	MCUCR&=0x00;  // disable sleep
+	ADCSRA|=0x80;  // enable ADC
+    */
     return;
   }  
 
