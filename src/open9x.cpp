@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -594,6 +596,11 @@ int16_t calc100toRESX(int8_t x)
   return ((x*41)>>2) - x/64;
 }
 
+int8_t calcRESXto100(int16_t x)
+{
+  return (x*25) << 8;
+}
+
 int16_t calc1000toRESX(int16_t x) // improve calc time by Pat MacKenzie
 {
   // return x + x/32 - x/128 + x/512;
@@ -673,11 +680,11 @@ int16_t getValue(uint8_t i)
   else if (i<MIXSRC_MAX) return 1024;
   else if (i<MIXSRC_CYC3)
 #if defined(HELI)
-    return cyc_anas[i-MIXSRC_MAX];
+    return cyc_anas[i+1-MIXSRC_CYC1];
 #else
     return 0;
 #endif
-  else if (i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i-MIXSRC_CYC3));
+  else if (i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i+1-MIXSRC_TrimRud));
 #if defined(PCBX9D)
   else if (i<MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));
   else if (i<MIXSRC_SB) return (switchState(SW_SB0) ? -1024 : (switchState(SW_SB1) ? 0 : 1024));
@@ -693,16 +700,17 @@ int16_t getValue(uint8_t i)
 #if defined(EXTRA_3POS)
   else if (i<MIXSRC_3POS2) return (switchState(SW_ID3) ? -1024 : (switchState(SW_ID4) ? 0 : 1024));
 #endif
-  else if (i<MIXSRC_LAST_CSW) return __getSwitch(SWSRC_THR+i-MIXSRC_3POS) ? 1024 : -1024;
+  else if (i<MIXSRC_LAST_CSW) return __getSwitch(SWSRC_THR+i+1-MIXSRC_SW1) ? 1024 : -1024;
 #endif
-  else if (i<MIXSRC_PPM1+NUM_CAL_PPM) return (g_ppmIns[i-MIXSRC_LAST_CSW] - g_eeGeneral.trainer.calib[i-MIXSRC_LAST_CSW])*2;
+  else if (i<MIXSRC_PPM1+NUM_CAL_PPM) return (g_ppmIns[i-MIXSRC_LAST_CSW] - g_eeGeneral.trainer.calib[i+1-MIXSRC_PPM1])*2;
   else if (i<MIXSRC_LAST_PPM) return g_ppmIns[i-MIXSRC_LAST_CSW]*2;
   else if (i<MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_LAST_PPM];
-  else if (i<MIXSRC_LAST_CH+TELEM_TM2) return s_timerVal[i-MIXSRC_LAST_CH];
+  else if (i<MIXSRC_LAST_CH+TELEM_TX_VOLTAGE) return g_vbat100mV;
+  else if (i<MIXSRC_LAST_CH+TELEM_TM2) return s_timerVal[i+1-MIXSRC_LAST_CH-TELEM_TM1];
 #if defined(FRSKY)
   else if (i<MIXSRC_LAST_CH+TELEM_RSSI_TX) return frskyData.rssi[1].value;
   else if(i<MIXSRC_LAST_CH+TELEM_RSSI_RX) return frskyData.rssi[0].value;
-  else if(i<MIXSRC_LAST_CH+TELEM_A2) return frskyData.analog[i-MIXSRC_LAST_CH-TELEM_RSSI_RX].value;
+  else if(i<MIXSRC_LAST_CH+TELEM_A2) return frskyData.analog[i+1-MIXSRC_LAST_CH-TELEM_A1].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   else if(i<MIXSRC_LAST_CH+TELEM_ALT) return frskyData.hub.baroAltitude_bp;
 #endif
@@ -727,7 +735,7 @@ int16_t getValue(uint8_t i)
   else if (i<MIXSRC_LAST_CH+TELEM_VSPD) return frskyData.hub.varioSpeed;
   else if (i<MIXSRC_LAST_CH+TELEM_MIN_A1) return frskyData.analog[0].min;
   else if (i<MIXSRC_LAST_CH+TELEM_MIN_A2) return frskyData.analog[1].min;
-  else if (i<MIXSRC_LAST_CH+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_LAST_CH+TELEM_MAX_CURRENT-1));
+  else if (i<MIXSRC_LAST_CH+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i+1-(MIXSRC_LAST_CH+TELEM_MAX_CURRENT));
 #endif
 #endif
   else return 0;
@@ -854,7 +862,7 @@ bool __getSwitch(int8_t swtch)
 
           switch (cs->func) {
             case CS_VEQUAL:
-              result = (x==y);
+              result = (abs(x-y) < STICK_TOLERANCE);
               break;
             case CS_VPOS:
               result = (x>y);
@@ -1944,6 +1952,9 @@ PLAY_FUNCTION(playValue, uint8_t idx)
   // TODO add the MIXSRC_TELEM_TM1 and so on.
 
   switch (idx) {
+    case MIXSRC_LAST_CH+TELEM_TX_VOLTAGE-1:
+      PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
+      break;
     case MIXSRC_LAST_CH+TELEM_TM1-1:
     case MIXSRC_LAST_CH+TELEM_TM2-1:
       PLAY_DURATION(val);
@@ -2027,7 +2038,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     {
       uint8_t unit = 1;
       if (idx < MIXSRC_LAST_CH+TELEM_TM1-1)
-        val = (val * 25) / 256;
+        val = calcRESXto100(val);
       if (idx >= MIXSRC_LAST_CH+TELEM_ALT-1 && idx <= MIXSRC_LAST_CH+TELEM_GPSALT-1)
         unit = idx - (MIXSRC_LAST_CH+TELEM_ALT-1);
       else if (idx >= MIXSRC_LAST_CH+TELEM_MAX_T1-1 && idx <= MIXSRC_LAST_CH+TELEM_MAX_DIST-1)
@@ -2733,6 +2744,14 @@ void doMixerCalculations()
     perOut(e_perout_mode_normal, tick10ms);
   }
 
+  if (tick10ms) {
+#if defined(CPUARM)
+    requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
+#endif
+
+    evalFunctions();
+  }
+
   //========== LIMITS ===============
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*100
@@ -2915,8 +2934,8 @@ void doMixerCalculations()
         if(s_timerVal[0]<= 3) AUDIO_TIMER_LT3(s_timerVal[0]);
       }
 
-      if (g_eeGeneral.minuteBeep && (((g_model.timers[0].start ? g_model.timers[0].start-s_timerVal[0] : s_timerVal[0])%60)==0)) { // short beep every minute
-        AUDIO_MINUTE_BEEP();
+      if (g_eeGeneral.minuteBeep && (s_timerVal[0] % 60)==0) { // short beep every minute
+        AUDIO_TIMER_MINUTE(s_timerVal[0]);
       }
     }
     else if(s_timerState[0] == TMR_BEEPING) {
@@ -2950,12 +2969,6 @@ void doMixerCalculations()
       }
     }
   }
-
-#if defined(CPUARM)
-  requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
-#endif
-
-  evalFunctions();
 
 #if defined(DSM2)
   if (s_rangecheck_mode) AUDIO_PLAY(AU_FRSKY_CHEEP);
@@ -3819,7 +3832,7 @@ int main(void)
 #endif
   lcd_clear() ;
   lcdRefresh() ;
-  pwrOff();            // Only turn power off if necessary
+  pwrOff(); // Only turn power off if necessary
   wdt_disable();
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif

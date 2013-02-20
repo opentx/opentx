@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -139,7 +141,7 @@ void readKeysAndTrims()
   }
 }
 
-uint32_t switchState(EnumKeys enuk)
+bool switchState(EnumKeys enuk)
 {
   register uint32_t a;
   register uint32_t c;
@@ -218,8 +220,5 @@ uint32_t switchState(EnumKeys enuk)
       break;
   }
 
-  if (xxx) {
-    return 1;
-  }
-  return 0;
+  return xxx;
 }

@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -78,11 +80,17 @@
 #define PAUSE_PPMIN_INTERRUPT() ETIMSK &= ~(1<<TICIE3)
 #define RESUME_PPMIN_INTERRUPT() ETIMSK |= (1<<TICIE3)
 
+// Power driver (none)
+#define pwrCheck() (e_power_on)
+#define pwrOff()
+
+// Trainer driver
 bool checkSlaveMode();
 #define SLAVE_MODE() checkSlaveMode()
 #define JACK_PPM_OUT() PORTG &= ~(1<<OUT_G_SIM_CTL)
 #define JACK_PPM_IN() PORTG |=  (1<<OUT_G_SIM_CTL)
 
+// PWM Backlight driver
 #if defined(PWM_BACKLIGHT)
 void backlightFadeOn();
 #define __BACKLIGHT_ON  backlightFadeOn()
@@ -183,12 +191,14 @@ void fadeBacklight();
 #define INP_G_RF_POW   1
 #define INP_G_RuddDR   0
 
+// Keys driver
 #define KEYS_PRESSED() (~PINB)
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT))) == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT)))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN)))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))  == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_LFT) + (1<<INP_B_KEY_DWN)))
 
+// LCD driver
 #define PORTA_LCD_DAT  PORTA
 #define PORTC_LCD_CTRL PORTC
 #define OUT_C_LCD_E     5
@@ -197,6 +207,7 @@ void fadeBacklight();
 #define OUT_C_LCD_RES   2
 #define OUT_C_LCD_CS1   1
 
+// Rotary encoder driver
 #if defined(ROTARY_ENCODER_NAVIGATION)
 extern uint8_t RotEncoder ;
 void rotencPoll();

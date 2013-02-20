@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -117,27 +119,29 @@ void audioDefevent(uint8_t e);
 #define AUDIO_WARNING1()       audioDefevent(AU_WARNING1)
 #define AUDIO_WARNING2()       audioDefevent(AU_WARNING2)
 #define AUDIO_ERROR()          audioDefevent(AU_ERROR)
+
 #if defined(VOICE)
-#define AUDIO_TADA()           pushPrompt(PROMPT_SYSTEM_BASE+AU_TADA)
-#define AUDIO_TX_BATTERY_LOW() pushPrompt(PROMPT_SYSTEM_BASE+AU_TX_BATTERY_LOW)
-#define AUDIO_INACTIVITY()     pushPrompt(PROMPT_SYSTEM_BASE+AU_INACTIVITY)
-#define AUDIO_ERROR_MESSAGE(e) pushPrompt(PROMPT_SYSTEM_BASE+(e))
-#define AUDIO_TIMER_30()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_30)
-#define AUDIO_TIMER_20()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_20)
-#define AUDIO_TIMER_10()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_10)
-#define AUDIO_TIMER_LT3(x)     pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_LT3)
+  #define AUDIO_TADA()           pushPrompt(PROMPT_SYSTEM_BASE+AU_TADA)
+  #define AUDIO_TX_BATTERY_LOW() pushPrompt(PROMPT_SYSTEM_BASE+AU_TX_BATTERY_LOW)
+  #define AUDIO_INACTIVITY()     pushPrompt(PROMPT_SYSTEM_BASE+AU_INACTIVITY)
+  #define AUDIO_ERROR_MESSAGE(e) pushPrompt(PROMPT_SYSTEM_BASE+(e))
+  #define AUDIO_TIMER_MINUTE(t)  playDuration(t)
+  #define AUDIO_TIMER_30()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_30)
+  #define AUDIO_TIMER_20()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_20)
+  #define AUDIO_TIMER_10()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_10)
+  #define AUDIO_TIMER_LT3(x)     pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_LT3)
 #else
-#define AUDIO_TADA()
-#define AUDIO_TX_BATTERY_LOW() audioDefevent(AU_TX_BATTERY_LOW)
-#define AUDIO_INACTIVITY()     audioDefevent(AU_INACTIVITY)
-#define AUDIO_ERROR_MESSAGE(e) audioDefevent(AU_ERROR)
-#define AUDIO_TIMER_30()       audioDefevent(AU_TIMER_30)
-#define AUDIO_TIMER_20()       audioDefevent(AU_TIMER_20)
-#define AUDIO_TIMER_10()       audioDefevent(AU_TIMER_10)
-#define AUDIO_TIMER_LT3(x)     audioDefevent(AU_TIMER_LT3)
+  #define AUDIO_TADA()
+  #define AUDIO_TX_BATTERY_LOW() audioDefevent(AU_TX_BATTERY_LOW)
+  #define AUDIO_INACTIVITY()     audioDefevent(AU_INACTIVITY)
+  #define AUDIO_ERROR_MESSAGE(e) audioDefevent(AU_ERROR)
+  #define AUDIO_TIMER_MINUTE(t)  audioDefevent(AU_WARNING1)
+  #define AUDIO_TIMER_30()       audioDefevent(AU_TIMER_30)
+  #define AUDIO_TIMER_20()       audioDefevent(AU_TIMER_20)
+  #define AUDIO_TIMER_10()       audioDefevent(AU_TIMER_10)
+  #define AUDIO_TIMER_LT3(x)     audioDefevent(AU_TIMER_LT3)
 #endif
 
-#define AUDIO_MINUTE_BEEP()    audioDefevent(AU_WARNING1)
 #define AUDIO_MIX_WARNING_1()  audioDefevent(AU_MIX_WARNING_1)
 #define AUDIO_MIX_WARNING_2()  audioDefevent(AU_MIX_WARNING_2)
 #define AUDIO_MIX_WARNING_3()  audioDefevent(AU_MIX_WARNING_3)

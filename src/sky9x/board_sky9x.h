@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -129,13 +131,6 @@ uint8_t getTemperature();
 #define strcpy_P strcpy
 #define strcat_P strcat
 
-extern uint32_t readKeys();
-#define KEYS_PRESSED() (~readKeys())
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
-
 #if !defined(REVA)
 extern uint16_t Current_analogue;
 extern uint16_t Current_max;
@@ -155,6 +150,14 @@ extern uint16_t sessionTimer;
 #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
 
 void setSticksGain(uint8_t gains);
+
+// Keys driver
+extern uint32_t readKeys();
+#define KEYS_PRESSED() (~readKeys())
+#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
+#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
+#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
+#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
 
 // Pulses driver
 void init_main_ppm(uint32_t period, uint32_t out_enable);

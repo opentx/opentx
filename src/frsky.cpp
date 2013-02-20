@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -1090,7 +1092,8 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_CELL-1:
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);
       break;
-      
+
+    case TELEM_TX_VOLTAGE-1:
     case TELEM_VFAS-1:
     case TELEM_CELLS_SUM-1:
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC1);

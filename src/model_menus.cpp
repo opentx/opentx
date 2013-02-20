@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -1136,6 +1138,108 @@ PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uin
   return value;
 }
 
+#if LCD_W >= 212
+
+enum PhasesItems {
+  ITEM_PHASES_NAME,
+  ITEM_PHASES_SWITCH,
+  ITEM_PHASES_TRIMS,
+  ITEM_PHASES_FADE_IN,
+  ITEM_PHASES_FADE_OUT,
+  ITEM_PHASES_COUNT,
+  ITEM_PHASES_LAST = ITEM_PHASES_COUNT-1
+};
+
+void menuModelPhasesAll(uint8_t event)
+{
+  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_PhasesAll, 1+MAX_PHASES+1, {0, ITEM_PHASES_LAST-2, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, ITEM_PHASES_LAST, 0});
+
+  int8_t sub = m_posVert - 1;
+
+  switch (event) {
+    CASE_EVT_ROTARY_BREAK
+    case EVT_KEY_FIRST(KEY_ENTER):
+      if (sub == MAX_PHASES) {
+        s_editMode = 0;
+        trimsCheckTimer = 200; // 2 seconds
+      }
+      // no break
+#if !defined(PCBX9D)
+    case EVT_KEY_FIRST(KEY_RIGHT):
+#endif
+      if (sub >= 0 && sub < MAX_PHASES) {
+        s_currIdx = sub;
+        pushMenu(menuModelPhaseOne);
+      }
+      break;
+  }
+
+  uint8_t att;
+  for (uint8_t i=0; i<MAX_PHASES; i++) {
+#if defined(CPUARM)
+    int8_t y = 1 + (1+i-s_pgOfs)*FH;
+    if (y<1*FH+1 || y>(LCD_LINES-1)*FH+1) continue;
+#else
+    uint8_t y = 1 + (i+1)*FH;
+#endif
+    att = (i==sub ? INVERS : 0);
+    PhaseData *p = phaseaddress(i);
+#if ROTARY_ENCODERS > 2
+    putsFlightPhase(0, y, i+1, att|CONDENSED|(getFlightPhase()==i ? BOLD : 0));
+#else
+    putsFlightPhase(0, y, i+1, att|(getFlightPhase()==i ? BOLD : 0));
+#endif
+#if defined(ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 2
+#define NAME_OFS (-4-12)
+#define SWITCH_OFS (-FW/2-2-13)
+#define TRIMS_OFS  (-FW/2-4-15)
+#define ROTARY_ENC_OFS (0)
+#else
+#define NAME_OFS (-4)
+#define SWITCH_OFS (-FW/2-2)
+#define TRIMS_OFS  (-FW/2-4)
+#define ROTARY_ENC_OFS (2)
+#endif
+#else
+#define NAME_OFS 0
+#define SWITCH_OFS (FW/2)
+#define TRIMS_OFS  (FW/2)
+#endif
+    lcd_putsnAtt(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
+    if (i == 0) {
+      lcd_puts((5+LEN_FP_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
+    }
+    else {
+      putsSwitches((5+LEN_FP_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
+      for (uint8_t t=0; t<NUM_STICKS; t++) {
+        putsTrimMode((9+LEN_FP_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
+      }
+#if defined(PCBGRUVIN9X)
+      for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
+        putsRotaryEncoderMode((13+LEN_FP_NAME+t)*FW+TRIMS_OFS+ROTARY_ENC_OFS, y, i, t, 0);
+      }
+#endif
+    }
+
+    if (p->fadeIn || p->fadeOut) {
+      lcd_outdezAtt(24*FW, y, (10/SLOW_STEP)*p->fadeIn, PREC1|LEFT);
+      lcd_putc(lcdLastPos, y, '/');
+      lcd_outdezAtt(lcdLastPos+FW, y, (10/SLOW_STEP)*p->fadeOut, PREC1|LEFT);
+    }
+  }
+
+  if (s_pgOfs != MAX_PHASES-(LCD_LINES-2)) return;
+
+  lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
+  putsFlightPhase(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_perout_flight_phase+1);
+  if (sub==MAX_PHASES && !trimsCheckTimer) {
+    lcd_status_line();
+  }
+}
+
+#else
+
 enum menuModelPhaseItems {
   ITEM_MODEL_PHASE_NAME,
   ITEM_MODEL_PHASE_SWITCH,
@@ -1143,7 +1247,7 @@ enum menuModelPhaseItems {
   IF_ROTARY_ENCODERS(ITEM_MODEL_PHASE_ROTARY_ENCODERS)
   ITEM_MODEL_PHASE_FADE_IN,
   ITEM_MODEL_PHASE_FADE_OUT,
-#if defined(GVARS) && !defined(CPUM64) && LCD_W < 260
+#if defined(GVARS) && !defined(CPUM64)
   ITEM_MODEL_PHASE_GVARS_LABEL,
   ITEM_MODEL_PHASE_GV1,
   ITEM_MODEL_PHASE_GV2,
@@ -1159,7 +1263,7 @@ void menuModelPhaseOne(uint8_t event)
   PhaseData *phase = phaseaddress(s_currIdx);
   putsFlightPhase(13*FW, 0, s_currIdx+1, (getFlightPhase()==s_currIdx ? BOLD : 0));
 
-#if defined(GVARS) && !defined(CPUM64) && LCD_W < 260
+#if defined(GVARS) && !defined(CPUM64)
   static const pm_uint8_t mstate_tab_phase1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
@@ -1176,7 +1280,7 @@ void menuModelPhaseOne(uint8_t event)
   int8_t sub = m_posVert;
   int8_t editMode = s_editMode;
 
-#if defined(GVARS) && !defined(CPUM64) && LCD_W < 260
+#if defined(GVARS) && !defined(CPUM64)
   if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
@@ -1253,7 +1357,7 @@ void menuModelPhaseOne(uint8_t event)
         phase->fadeOut = EDIT_DELAY(0, y, event, attr, STR_FADEOUT, phase->fadeOut);
         break;
 
-#if defined(GVARS) && !defined(CPUM64) && LCD_W < 260
+#if defined(GVARS) && !defined(CPUM64)
       case ITEM_MODEL_PHASE_GVARS_LABEL:
         lcd_putsLeft(y, STR_GLOBAL_VARS);
         break;
@@ -1367,16 +1471,10 @@ void menuModelPhasesAll(uint8_t event)
       }
 #endif
     }
-#if LCD_W >= 212
-    if (p->fadeIn || p->fadeOut) {
-      lcd_outdezAtt(24*FW, y, (10/SLOW_STEP)*p->fadeIn, PREC1|LEFT);
-      lcd_putc(lcdLastPos, y, '/');
-      lcd_outdezAtt(lcdLastPos+FW, y, (10/SLOW_STEP)*p->fadeOut, PREC1|LEFT);
-    }
-#else
+
     if (p->fadeIn || p->fadeOut) 
       lcd_putc(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
-#endif
+
   }
 
 #if defined(CPUARM)
@@ -1390,7 +1488,9 @@ void menuModelPhasesAll(uint8_t event)
   }
 }
 
-#endif
+#endif // defined(PCBX9D)
+
+#endif // defined(FLIGHT_PHASES)
 
 #ifdef HELI
 
@@ -1922,8 +2022,8 @@ void menuModelExpoOne(uint8_t event)
   int16_t x512 = calibratedStick[ed->chn];
   int16_t y512 = expoFn(x512);
 
-  lcd_outdezAtt(LCD_W-8, 6*FH, x512*25/256, 0);
-  lcd_outdezAtt(LCD_W-8-6*FW, 1*FH, y512*25/256, 0);
+  lcd_outdezAtt(LCD_W-8, 6*FH, calcRESXto100(x512), 0);
+  lcd_outdezAtt(LCD_W-8-6*FW, 1*FH, calcRESXto100(y512), 0);
 
   x512 = X0+x512/(RESXu/WCHART);
   y512 = (LCD_H-1) - (uint16_t)((y512+RESX)/2) * (LCD_H-1) / RESX;

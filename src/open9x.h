@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -460,8 +462,6 @@ extern uint8_t stickMode;
 
 extern uint8_t channel_order(uint8_t x);
 
-
-
 class Key
 {
 #define FILTERBITS      4
@@ -583,35 +583,35 @@ enum CswFunctions {
 #endif
 
 #if defined(PCBX9D)
-#define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MOVE_DOWN) || evt==EVT_KEY_REPT(KEY_MOVE_DOWN))
-#define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_MOVE_UP) || evt==EVT_KEY_REPT(KEY_MOVE_UP))
-#define IS_ROTARY_BREAK(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
-#define IS_ROTARY_LONG(evt)   (evt==EVT_KEY_LONG(KEY_ENTER))
-#define IS_ROTARY_EVENT(evt)  (0)
-#define CASE_EVT_ROTARY_BREAK /*case EVT_KEY_BREAK(KEY_ENTER):*/
-#define CASE_EVT_ROTARY_LONG  /*case EVT_KEY_LONG(KEY_ENTER):*/
-#define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
-#define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
+  #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MOVE_DOWN) || evt==EVT_KEY_REPT(KEY_MOVE_DOWN))
+  #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_MOVE_UP) || evt==EVT_KEY_REPT(KEY_MOVE_UP))
+  #define IS_ROTARY_BREAK(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
+  #define IS_ROTARY_LONG(evt)   (evt==EVT_KEY_LONG(KEY_ENTER))
+  #define IS_ROTARY_EVENT(evt)  (0)
+  #define CASE_EVT_ROTARY_BREAK /*case EVT_KEY_BREAK(KEY_ENTER):*/
+  #define CASE_EVT_ROTARY_LONG  /*case EVT_KEY_LONG(KEY_ENTER):*/
+  #define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
+  #define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-#define IS_ROTARY_LEFT(evt)   (evt == EVT_ROTARY_LEFT)
-#define IS_ROTARY_RIGHT(evt)  (evt == EVT_ROTARY_RIGHT)
-#define IS_ROTARY_BREAK(evt)  (evt == EVT_ROTARY_BREAK)
-#define IS_ROTARY_LONG(evt)   (evt == EVT_ROTARY_LONG)
-#define IS_ROTARY_EVENT(evt)  (EVT_KEY_MASK(evt) >= 0x0e)
-#define CASE_EVT_ROTARY_BREAK case EVT_ROTARY_BREAK:
-#define CASE_EVT_ROTARY_LONG  case EVT_ROTARY_LONG:
-#define CASE_EVT_ROTARY_LEFT  case EVT_ROTARY_LEFT:
-#define CASE_EVT_ROTARY_RIGHT case EVT_ROTARY_RIGHT:
+  #define IS_ROTARY_LEFT(evt)   (evt == EVT_ROTARY_LEFT)
+  #define IS_ROTARY_RIGHT(evt)  (evt == EVT_ROTARY_RIGHT)
+  #define IS_ROTARY_BREAK(evt)  (evt == EVT_ROTARY_BREAK)
+  #define IS_ROTARY_LONG(evt)   (evt == EVT_ROTARY_LONG)
+  #define IS_ROTARY_EVENT(evt)  (EVT_KEY_MASK(evt) >= 0x0e)
+  #define CASE_EVT_ROTARY_BREAK case EVT_ROTARY_BREAK:
+  #define CASE_EVT_ROTARY_LONG  case EVT_ROTARY_LONG:
+  #define CASE_EVT_ROTARY_LEFT  case EVT_ROTARY_LEFT:
+  #define CASE_EVT_ROTARY_RIGHT case EVT_ROTARY_RIGHT:
 #else
-#define IS_ROTARY_LEFT(evt)  (0)
-#define IS_ROTARY_RIGHT(evt) (0)
-#define IS_ROTARY_BREAK(evt) (0)
-#define IS_ROTARY_LONG(evt)  (0)
-#define IS_ROTARY_EVENT(evt) (0)
-#define CASE_EVT_ROTARY_BREAK
-#define CASE_EVT_ROTARY_LONG
-#define CASE_EVT_ROTARY_LEFT
-#define CASE_EVT_ROTARY_RIGHT
+  #define IS_ROTARY_LEFT(evt)  (0)
+  #define IS_ROTARY_RIGHT(evt) (0)
+  #define IS_ROTARY_BREAK(evt) (0)
+  #define IS_ROTARY_LONG(evt)  (0)
+  #define IS_ROTARY_EVENT(evt) (0)
+  #define CASE_EVT_ROTARY_BREAK
+  #define CASE_EVT_ROTARY_LONG
+  #define CASE_EVT_ROTARY_LEFT
+  #define CASE_EVT_ROTARY_RIGHT
 #endif
 
 #if defined(PCBX9D)
@@ -650,11 +650,13 @@ extern char idx2char(int8_t idx);
 void clearKeyEvents();
 void pauseEvents(uint8_t enuk);
 void killEvents(uint8_t enuk);
+
 #if defined(CPUARM)
-uint8_t getEvent(bool trim);
+  uint8_t getEvent(bool trim);
 #else
-uint8_t getEvent();
+  uint8_t getEvent();
 #endif
+
 void putEvent(uint8_t evt);
 
 uint8_t keyDown();
@@ -666,29 +668,19 @@ enum PowerState {
   e_power_off
 };
 
-#if defined(CPUARM)
-uint32_t switchState(EnumKeys enuk);
-#else
 bool switchState(EnumKeys enuk);
-#if defined(PCBGRUVIN9X)
-uint8_t pwrCheck();
-#else
-#define pwrCheck() (e_power_on)
-#endif
-#endif
-
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
 
 #if defined(VOICE)
-#define MESSAGE_SOUND_ARG , uint8_t sound
-#define MESSAGE(title, msg, info, sound) message(title, msg, info, sound)
-#define ALERT(title, msg, sound) alert(title, msg, sound)
+  #define MESSAGE_SOUND_ARG , uint8_t sound
+  #define MESSAGE(title, msg, info, sound) message(title, msg, info, sound)
+  #define ALERT(title, msg, sound) alert(title, msg, sound)
 #else
-#define MESSAGE_SOUND_ARG
-#define MESSAGE(title, msg, info, sound) message(title, msg, info)
-#define ALERT(title, msg, sound) alert(title, msg)
+  #define MESSAGE_SOUND_ARG
+  #define MESSAGE(title, msg, info, sound) message(title, msg, info)
+  #define ALERT(title, msg, sound) alert(title, msg)
 #endif
 
 extern void message(const pm_char *title, const pm_char *s, const char *last MESSAGE_SOUND_ARG);
@@ -708,9 +700,9 @@ enum PerOutMode {
 extern uint8_t s_perout_flight_phase;
 
 #if defined(CPUARM)
-#define bitfield_channels_t uint32_t
+  #define bitfield_channels_t uint32_t
 #else
-#define bitfield_channels_t uint16_t
+  #define bitfield_channels_t uint16_t
 #endif
 
 void perOut(uint8_t mode, uint8_t tick10ms);
@@ -724,9 +716,9 @@ extern swstate_t switches_states;
 int8_t  getMovedSwitch();
 
 #ifdef FLIGHT_PHASES
-extern uint8_t getFlightPhase();
+  extern uint8_t getFlightPhase();
 #else
-#define getFlightPhase() 0
+  #define getFlightPhase() 0
 #endif
 
 extern uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
@@ -735,14 +727,14 @@ extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
 extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
 #if defined(ROTARY_ENCODERS)
-int16_t getRotaryEncoder(uint8_t idx);
-void incRotaryEncoder(uint8_t idx, int8_t inc);
+  int16_t getRotaryEncoder(uint8_t idx);
+  void incRotaryEncoder(uint8_t idx, int8_t inc);
 #endif
 
 #if defined(PCBGRUVIN9X)
-#define ROTARY_ENCODER_GRANULARITY 1
+  #define ROTARY_ENCODER_GRANULARITY 1
 #else
-#define ROTARY_ENCODER_GRANULARITY 2
+  #define ROTARY_ENCODER_GRANULARITY 2
 #endif
 
 #if defined(GVARS)
@@ -791,34 +783,34 @@ extern uint16_t maxMixerDuration;
 extern uint16_t lastMixerDuration;
 
 #if defined(THRTRACE)
-#define MAXTRACE (LCD_W - 8)
-extern uint8_t s_traceBuf[MAXTRACE];
-extern uint8_t s_traceWr;
-extern int8_t s_traceCnt;
+  #define MAXTRACE (LCD_W - 8)
+  extern uint8_t s_traceBuf[MAXTRACE];
+  extern uint8_t s_traceWr;
+  extern int8_t s_traceCnt;
 #endif
 
 #if defined(PCBX9D)
-static inline uint16_t getTmr2MHz() { return 0; }
+  static inline uint16_t getTmr2MHz() { return 0; }
 #elif defined(PCBSKY9X)
-static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
+  static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
-uint16_t getTmr16KHz();
+  uint16_t getTmr16KHz();
 #endif
 
 #if defined(CPUARM)
-uint16_t stack_free(uint8_t tid);
+  uint16_t stack_free(uint8_t tid);
 #else
-uint16_t stack_free();
+  uint16_t stack_free();
 #endif
 
 #if defined(CPUM64)
-void memclear(void *ptr, uint8_t size);
+  void memclear(void *ptr, uint8_t size);
 #else
-#define memclear(p, s) memset(p, 0, s)
+  #define memclear(p, s) memset(p, 0, s)
 #endif
 
 #if defined(SPLASH)
-void doSplash();
+  void doSplash();
 #endif
 
 void checkLowEEPROM();
@@ -830,7 +822,7 @@ void checkAll();
 #define ADC_VREF_TYPE 0x40 // AVCC with external capacitor at AREF pin
 
 #if !defined(SIMU)
-void getADC();
+  void getADC();
 #endif
 
 #define STORE_MODELVARS eeDirty(EE_MODEL)
@@ -861,29 +853,29 @@ enum Analogs {
 };
 
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
-#define BACKLIGHT_ON()    (Voice.Backlight = 1)
-#define BACKLIGHT_OFF()   (Voice.Backlight = 0)
+  #define BACKLIGHT_ON()    (Voice.Backlight = 1)
+  #define BACKLIGHT_OFF()   (Voice.Backlight = 0)
 #else
-#define BACKLIGHT_ON()    __BACKLIGHT_ON
-#define BACKLIGHT_OFF()   __BACKLIGHT_OFF
+  #define BACKLIGHT_ON()    __BACKLIGHT_ON
+  #define BACKLIGHT_OFF()   __BACKLIGHT_OFF
 #endif
 
 #define BUZZER_ON     PORTE |=  (1 << OUT_E_BUZZER)
 #define BUZZER_OFF    PORTE &= ~(1 << OUT_E_BUZZER)
 
 #if defined(HAPTIC)
-#if defined(PCBSKY9X)
-#define HAPTIC_OFF    hapticOff()
-#elif defined(PCBGRUVIN9X)
-#define HAPTIC_ON     PORTD &= ~(1 << OUT_D_HAPTIC)
-#define HAPTIC_OFF    PORTD |=  (1 << OUT_D_HAPTIC)
+  #if defined(PCBSKY9X)
+    #define HAPTIC_OFF    hapticOff()
+  #elif defined(PCBGRUVIN9X)
+    #define HAPTIC_ON     PORTD &= ~(1 << OUT_D_HAPTIC)
+    #define HAPTIC_OFF    PORTD |=  (1 << OUT_D_HAPTIC)
+  #else
+    #define HAPTIC_ON     PORTG |=  (1 << OUT_G_HAPTIC)
+    #define HAPTIC_OFF    PORTG &= ~(1 << OUT_G_HAPTIC)
+  #endif
 #else
-#define HAPTIC_ON     PORTG |=  (1 << OUT_G_HAPTIC)
-#define HAPTIC_OFF    PORTG &= ~(1 << OUT_G_HAPTIC)
-#endif
-#else
-#define HAPTIC_ON
-#define HAPTIC_OFF
+  #define HAPTIC_ON
+  #define HAPTIC_OFF
 #endif
 
 #define BITMASK(bit) (1<<(bit))
@@ -963,9 +955,10 @@ inline int16_t calcRESXto100(register int32_t x)
 }
 
 #else
-extern int16_t calc100toRESX(int8_t x);
-extern int16_t calc1000toRESX(int16_t x);
-extern int16_t calcRESXto1000(int16_t x);
+int16_t calc100toRESX(int8_t x);
+int8_t calcRESXto100(int16_t x);
+int16_t calc1000toRESX(int16_t x);
+int16_t calcRESXto1000(int16_t x);
 #endif
 
 #define TMR_VAROFS  5

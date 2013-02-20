@@ -1,12 +1,14 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
  * - Cameron Weeks <th9xer@gmail.com>
  * - Erez Raviv
+ * - Gabriel Birkus
  * - Jean-Pierre Parisy
- * - Karl Szmutny <shadow@privy.de>
+ * - Karl Szmutny
  * - Michael Blandford
  * - Michal Hlavinka
  * - Pat Mackenzie
@@ -140,38 +142,41 @@ extern AudioQueue audioQueue;
 void codecsInit();
 void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
-#define AUDIO_TADA()        audioEvent(AU_TADA)
-#define AUDIO_KEYPAD_UP()   audioEvent(AU_KEYPAD_UP)
-#define AUDIO_KEYPAD_DOWN() audioEvent(AU_KEYPAD_DOWN)
-#define AUDIO_MENUS()       audioEvent(AU_MENUS)
-#define AUDIO_WARNING1()    audioEvent(AU_WARNING1)
-#define AUDIO_WARNING2()    audioEvent(AU_WARNING2)
-#define AUDIO_TX_BATTERY_LOW() audioEvent(AU_TX_BATTERY_LOW)
-#define AUDIO_TX_MAH_HIGH() audioEvent(AU_TX_MAH_HIGH)
-#define AUDIO_TX_TEMP_HIGH() audioEvent(AU_TX_TEMP_HIGH)
-#define AUDIO_ERROR()       audioEvent(AU_ERROR)
+#define AUDIO_TADA()             audioEvent(AU_TADA)
+#define AUDIO_KEYPAD_UP()        audioEvent(AU_KEYPAD_UP)
+#define AUDIO_KEYPAD_DOWN()      audioEvent(AU_KEYPAD_DOWN)
+#define AUDIO_MENUS()            audioEvent(AU_MENUS)
+#define AUDIO_WARNING1()         audioEvent(AU_WARNING1)
+#define AUDIO_WARNING2()         audioEvent(AU_WARNING2)
+#define AUDIO_TX_BATTERY_LOW()   audioEvent(AU_TX_BATTERY_LOW)
+#define AUDIO_TX_MAH_HIGH()      audioEvent(AU_TX_MAH_HIGH)
+#define AUDIO_TX_TEMP_HIGH()     audioEvent(AU_TX_TEMP_HIGH)
+#define AUDIO_ERROR()            audioEvent(AU_ERROR)
+
 #if defined(VOICE)
-#define AUDIO_ERROR_MESSAGE(e) audioEvent(e)
+  #define AUDIO_ERROR_MESSAGE(e) audioEvent(e)
+  #define AUDIO_TIMER_MINUTE(t)  playDuration(t)
 #else
-#define AUDIO_ERROR_MESSAGE(e) audioEvent(AU_ERROR)
+  #define AUDIO_ERROR_MESSAGE(e) audioEvent(AU_ERROR)
+  #define AUDIO_TIMER_MINUTE(t)  audioDefevent(AU_WARNING1)
 #endif
-#define AUDIO_TIMER_30()    audioEvent(AU_TIMER_30)
-#define AUDIO_TIMER_20()    audioEvent(AU_TIMER_20)
-#define AUDIO_TIMER_10()    audioEvent(AU_TIMER_10)
-#define AUDIO_TIMER_LT3(x)   audioEvent(AU_TIMER_LT3)
-#define AUDIO_MINUTE_BEEP() audioEvent(AU_WARNING1)
-#define AUDIO_INACTIVITY()  audioEvent(AU_INACTIVITY)
-#define AUDIO_MIX_WARNING_1() audioEvent(AU_MIX_WARNING_1)
-#define AUDIO_MIX_WARNING_2() audioEvent(AU_MIX_WARNING_2)
-#define AUDIO_MIX_WARNING_3() audioEvent(AU_MIX_WARNING_3)
+
+#define AUDIO_TIMER_30()         audioEvent(AU_TIMER_30)
+#define AUDIO_TIMER_20()         audioEvent(AU_TIMER_20)
+#define AUDIO_TIMER_10()         audioEvent(AU_TIMER_10)
+#define AUDIO_TIMER_LT3(x)       audioEvent(AU_TIMER_LT3)
+#define AUDIO_INACTIVITY()       audioEvent(AU_INACTIVITY)
+#define AUDIO_MIX_WARNING_1()    audioEvent(AU_MIX_WARNING_1)
+#define AUDIO_MIX_WARNING_2()    audioEvent(AU_MIX_WARNING_2)
+#define AUDIO_MIX_WARNING_3()    audioEvent(AU_MIX_WARNING_3)
 #define AUDIO_POT_STICK_MIDDLE() audioEvent(AU_POT_STICK_MIDDLE)
-#define AUDIO_VARIO_UP()    audioEvent(AU_KEYPAD_UP)
-#define AUDIO_VARIO_DOWN()  audioEvent(AU_KEYPAD_DOWN)
-#define AUDIO_TRIM_MIDDLE(f) audioEvent(AU_TRIM_MIDDLE, f)
-#define AUDIO_TRIM_END(f)    audioEvent(AU_TRIM_END, f)
-#define AUDIO_TRIM(event, f) audioEvent(AU_TRIM_MOVE, f)
-#define AUDIO_PLAY(p)        audioEvent(p)
-#define AUDIO_VARIO(f, t)    audioQueue.play(f, t, 0, PLAY_BACKGROUND)
+#define AUDIO_VARIO_UP()         audioEvent(AU_KEYPAD_UP)
+#define AUDIO_VARIO_DOWN()       audioEvent(AU_KEYPAD_DOWN)
+#define AUDIO_TRIM_MIDDLE(f)     audioEvent(AU_TRIM_MIDDLE, f)
+#define AUDIO_TRIM_END(f)        audioEvent(AU_TRIM_END, f)
+#define AUDIO_TRIM(event, f)     audioEvent(AU_TRIM_MOVE, f)
+#define AUDIO_PLAY(p)            audioEvent(p)
+#define AUDIO_VARIO(f, t)        audioQueue.play(f, t, 0, PLAY_BACKGROUND)
 
 #define AUDIO_HEARTBEAT()
 
@@ -186,21 +191,22 @@ void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
 
 extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 
-#define PLAY_FUNCTION(x, ...) void x(__VA_ARGS__, uint8_t id)
-#define PUSH_PROMPT(p) pushPrompt((p), id)
-#define PLAY_NUMBER(n, u, a) playNumber((n), (u), (a), id)
-#define PLAY_DURATION(d) playDuration((d), id)
-#define IS_PLAYING(id) audioQueue.isPlaying((id))
-#define PLAY_VALUE(v, id) playValue((v), (id))
-#define PLAY_FILE(f, flags, id) audioQueue.playFile((f), (flags), (id))
-#define STOP_PLAY(id) audioQueue.stopPlay((id))
-#define AUDIO_RESET() audioQueue.reset()
+#define PLAY_FUNCTION(x, ...)    void x(__VA_ARGS__, uint8_t id)
+#define PUSH_PROMPT(p)           pushPrompt((p), id)
+#define PLAY_NUMBER(n, u, a)     playNumber((n), (u), (a), id)
+#define PLAY_DURATION(d)         playDuration((d), id)
+#define IS_PLAYING(id)           audioQueue.isPlaying((id))
+#define PLAY_VALUE(v, id)        playValue((v), (id))
+#define PLAY_FILE(f, flags, id)  audioQueue.playFile((f), (flags), (id))
+#define STOP_PLAY(id)            audioQueue.stopPlay((id))
+#define AUDIO_RESET()            audioQueue.reset()
+
 #if defined(SDCARD)
-#define PLAY_PHASE_OFF(phase) do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_OFF, filename)) audioQueue.playFile(filename); } while (0)
-#define PLAY_PHASE_ON(phase)  do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_ON, filename)) audioQueue.playFile(filename); } while (0)
+  #define PLAY_PHASE_OFF(phase) do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_OFF, filename)) audioQueue.playFile(filename); } while (0)
+  #define PLAY_PHASE_ON(phase)  do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_ON, filename)) audioQueue.playFile(filename); } while (0)
 #else
-#define PLAY_PHASE_OFF(phase)
-#define PLAY_PHASE_ON(phase)
+  #define PLAY_PHASE_OFF(phase)
+  #define PLAY_PHASE_ON(phase)
 #endif
 
 extern void refreshSystemAudioFiles();
