@@ -1904,16 +1904,11 @@ void gvarWeightItem(xcoord_t x, uint8_t y, MixData *md, uint8_t attr, uint8_t ev
 #if defined(CPUARM) || !defined(GVARS)
   md->weight = gvarMenuItem(x, y, md->weight, -125, 125, attr, event);
 #else
-  int16_t weight = (md->weightMode ? (int16_t)GV1_LARGE + md->weight : md->weight);
-  weight = gvarMenuItem(x, y, weight, -125, 125, attr, event);
-  if (weight <= 125) {
-    md->weightMode = 0;
-    md->weight = weight;
-  }
-  else {
-    md->weightMode = 1;
-    md->weight = weight - GV1_LARGE;
-  }
+ // @@@ open.20.fsguruh
+  u_int8int16_t weight;
+  MD_GETWEIGHT(weight,md);
+  weight.word = gvarMenuItem(x, y, weight.word, -245, 245, attr, event);
+  MD_SETWEIGHT(weight,md);
 #endif
 }
 
@@ -1990,18 +1985,13 @@ void menuModelMixOne(uint8_t event)
       {
         lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_OFFSET));
 #if defined(GVARS)
-        int16_t offset = (md2->offsetMode ? (int16_t)GV1_LARGE + md2->offset : md2->offset);
-        offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset, -125, 125, attr|LEFT, event);
-        if (offset <= 125) {
-          md2->offsetMode = 0;
-          md2->offset = offset;
-        }
-        else {
-          md2->offsetMode = 1;
-          md2->offset = offset - GV1_LARGE;
-        }
+        // @@@ open.20.fsguruh
+        u_int8int16_t offset;
+	    MD_GETOFFSET(offset,md2);
+        offset.word = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, -245, 245, attr|LEFT, event);
+	    MD_SETOFFSET(offset,md2);	
 #else
-       md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
+        md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
 #endif
         break;
       }

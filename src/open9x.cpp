@@ -657,7 +657,6 @@ void applyExpos(int16_t *anas)
 
 #if !defined(CPUARM)
 
-
 // #define CORRECT_NEGATIVE_SHIFTS
 // open.20.fsguruh; shift right operations do the rounding different for negative values compared to positive values
 // so all negative divisions round always further down, which give absolute values bigger compared to a usual division
@@ -665,11 +664,10 @@ void applyExpos(int16_t *anas)
 // difference this is more a mental thing. Maybe people are distracted, because the easy calculations are obviously wrong
 // this define would correct this, but costs 34 bytes code for stock version
 
-int16_t calc100to256(int8_t x) // return x*2.56
+int16_t calc100to256_16Bits(int16_t x) // return x*2.56
 {
     // y = 2*x + x/2 +x/16-x/512-x/2048
     // 512 and 2048 are out of scope from int8 input --> forget it
-
 #ifdef CORRECT_NEGATIVE_SHIFTS
     int16_t res=(int16_t)x<<1;
     //int8_t  sign=(uint8_t) x>>7;
@@ -684,22 +682,14 @@ int16_t calc100to256(int8_t x) // return x*2.56
 #else    
     return ((int16_t)x<<1)+(x>>1)+(x>>4);
 #endif
-    // in case of negative values the routine above always generates a too small value, this could be corrected with this
-    // I think it is not needed anyway
-    // if (x<0) return -calc100to256(-x);  
-    // else return ((int16_t)x<<1)+(x>>1)+(x>>4);
 }
 
-
-// return x*10.24
-int16_t calc100toRESX_16Bits(int16_t x)  // @@@ open.20.fsguruh
+int16_t calc100to256(int8_t x) // return x*2.56
 {
-  // return (int16_t)x*10 + x/4 - x/64;
-  return ((x*41)>>2) - (x>>6);  // this implementation saves a add but reduces valid range by factor 4!!! by carefull
-  // return (x*10)+(x>>2)-(x>>6);  // this would be the saver implementation
-} 
+  return calc100to256_16Bits(x);
+}
 
-int16_t calc100toRESX(int8_t x) // return x*10.24
+int16_t calc100toRESX_16Bits(int16_t x) // return x*10.24
 {
 #ifdef CORRECT_NEGATIVE_SHIFTS
   int16_t res= ((int16_t)x*41)>>2;
@@ -713,6 +703,11 @@ int16_t calc100toRESX(int8_t x) // return x*10.24
   // return (int16_t)x*10 + x/4 - x/64;
   return ((x*41)>>2) - (x>>6);
 #endif
+}
+
+int16_t calc100toRESX(int8_t x) // return x*10.24
+{
+  return calc100toRESX_16Bits(x);
 }
 
 // return x*1.024
@@ -745,9 +740,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   int16_t ofs   = calc1000toRESX(limit->offset);   // multiply to 1.24 to get range (-1024..1024)
   int16_t lim_p = calc100toRESX(limit->max + 100);
   int16_t lim_n = calc100toRESX(limit->min - 100); //multiply by 10.24 to get same range (-1024..1024)
-  // int16_t ofs = limit->offset;
-  // int16_t lim_p = 10 * (limit->max + 100);
-  // int16_t lim_n = 10 * (limit->min - 100); //multiply by 10 to get same range as ofs (-1000..1000)  
+
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
@@ -759,46 +752,39 @@ int16_t applyLimits(uint8_t channel, int32_t value)
     else
       tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
 	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
+#ifdef CORRECT_NEGATIVE_SHIFTS
+    int8_t sign=(value<0?1:0);
+    value-=sign;
 	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
 	tmp>>=2;   // now one simple shift right for two bytes does the rest
-// too pedantic or really useful?		
-//	if ((tmp==-1) && (value&0x00020000)) tmp+=1; // check if negativ and least significant bit was set
-	// if we are pedantic; a -1 result is wrong if we devide with 262144)) (-0x40000) That's why a +1 is needed
+    tmp+=sign;
+#else
+	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
+	tmp>>=2;   // now one simple shift right for two bytes does the rest
+#endif
+    
 	ofs+=tmp;  // ofs can to added directly because already recalculated,
-
-/*    int32_t tmp;
-    if (limit->symetrical)
-      tmp = (value > 0) ? ((int32_t) lim_p) : ((int32_t) -lim_n);
-    else
-      tmp = (value > 0) ? ((int32_t) lim_p - ofs) : ((int32_t) -lim_n + ofs);
-    value = (value * tmp) / 100000; */
   }
 #else
   if (value) {
     int16_t tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
 	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
+#ifdef CORRECT_NEGATIVE_SHIFTS
+    int8_t sign=(value<0?1:0);
+    value-=sign;
 	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
 	tmp>>=2;   // now one simple shift right for two bytes does the rest
-// too pedantic or really useful?		
-//	if ((tmp==-1) && (value&0x00020000)) tmp+=1; // check if negativ and least significant bit was set
-	// if we are pedantic; a -1 result is wrong if we devide with 262144)) (-0x40000) That's why a +1 is needed
+    tmp+=sign;
+#else    
+	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
+	tmp>>=2;   // now one simple shift right for two bytes does the rest
+#endif
 	ofs+=tmp;  // ofs can to added directly because already recalculated,
-	
-    // int32_t tmp = (value > 0) ? ((int32_t) lim_p - ofs) : ((int32_t) -lim_n + ofs);
-    // value = (value * tmp) / 100000; //div by 100000 -> output = -1024..1024
   }
 #endif
-  // ofs+=value;  // already done above
-  // lim_p, lim_n already recalculated
+
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;  
-  
-  // value += calc1000toRESX(ofs);
-  // lim_p = calc1000toRESX(lim_p);
-  // lim_n = calc1000toRESX(lim_n);
-  // if (value > lim_p) value = lim_p;
-  // if (value < lim_n) value = lim_n;
-  // ofs = value; // we convert value to a 16bit value and reuse ofs
   
   if (limit->revert) ofs = -ofs; // finally do the reverse.
 
@@ -1255,7 +1241,7 @@ uint8_t s_gvar_last = 0;
 #if defined(CPUM64)
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
 {
-  if (x > max) {
+  if (x > (GV1_LARGE-6)) {  // @@@ open.20.fsguruh
     int8_t idx = (max <= 100 ? x - GV1_SMALL : x - GV1_LARGE);
     int8_t mul = 1;
 
@@ -2705,8 +2691,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== OFFSET ===============
       if (apply_offset_and_curve) {
-        int8_t offset = GET_GVAR(MD_OFFSET(md), -125, 125, s_perout_flight_phase);
-        if (offset) v += calc100toRESX(offset);
+        int16_t offset = GET_GVAR(MD_OFFSET(md), -245, 245, s_perout_flight_phase); // open.20.fsguruh
+        if (offset) v+=calc100toRESX_16Bits(offset);  // @@@ open.20.fsguruh      
       }
 
       //========== TRIMS ===============
@@ -2730,7 +2716,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== WEIGHT ===============
 	  // @@@2 recalculate weight to a 256 basis which ease the calculation later a lot
-      int32_t dv = (int32_t) v * calc100to256(weight);
+      int32_t dv = (int32_t) v * calc100to256_16Bits(weight);
 
       //========== SPEED ===============
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values

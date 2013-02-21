@@ -677,7 +677,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 }
 
 #if defined(GVARS)
-int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event)
+int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)  // @@@ open.20.fsguruh
 {
   uint8_t delta = (max <= 100 ? GV1_SMALL-1 : GV1_LARGE-1);
   bool invers = (attr & INVERS);
@@ -701,7 +701,7 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int8_t min, int8_t max
   }
   else {
     lcd_outdezAtt(x, y, value, attr);
-    if (invers) CHECK_INCDEC_MODELVAR(event, value, min, max);
+	if (invers) value = checkIncDec(event, value, min, max,EE_MODEL);  // as proposed, no change to makro, but directly call this function    
   }
   return value;
 }

@@ -211,7 +211,7 @@ uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label,
 int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event);
 
 #if defined(GVARS)
-int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
+int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event); // @@@ open.20.fsguruh
 #define displayGVar(x, y, v, min, max) gvarMenuItem(x, y, v, min, max, 0, 0)
 #else
 int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
