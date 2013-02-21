@@ -177,14 +177,15 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC            "Z\200mek \0    ""Tren\202r  \0  ""Insta-Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Podsv\203tlen\204" TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Z\200mek \0    ""Tren\202r  \0  ""Insta-Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Podsv\203tlen\204" TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC            "Z\200mek \0    ""Tren\202r  \0  ""Insta-Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Podsv\203tlen\204" TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Z\200mek \0    ""Tren\202r  \0  ""Insta-Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Podsv\203tlen\204" TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC            "Z\200mek \0    ""Tren\202r  \0  ""Insta-Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Podsv\203tlen\204\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Z\200mek \0    ""Tren\202r  \0  ""Insta-Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Podsv\203tlen\204\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #endif
 
 #define LEN_VFSWRESET           "\005"
+
 #if defined(FRSKY)
   #define TR_FSW_RESET_TELEM    "Telem"
 #else  
@@ -270,6 +271,8 @@
 
 #if defined(CPUARM)
   #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"
+#elif defined(PCBGRUVIN9X) || defined(CPUM128)
+  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF"
 #else
   #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
 #endif
@@ -280,10 +283,10 @@
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "ZAP"
 #endif
 
+#define LEN_VSWITCHES_SHORT    "\001"
+#define TR_VSWITCHES_SHORT     "-012TREAG3456789"
 
-#if defined(PCBX9D)
-  #define TR_ROTARY_ENCODERS_VSRCRAW
-#elif defined(PCBSKY9X)
+#if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS_VSRCRAW "REnc"
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
   #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
@@ -299,7 +302,7 @@
   #define TR_CYC_VSRCRAW       "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW       "---\0""Sm\203r""V\212\207k""Plyn""K\206id" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "MAX\0" TR_CYC_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" TR_SW_VSRCRAW
+#define TR_VSRCRAW             "---\0""Sm\203r""V\212\207k""Plyn""K\206id" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "MAX\0" TR_CYC_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "VYP""ABS""THs""TH%""THt"
@@ -475,8 +478,15 @@
 #define TR_MENUFLIGHTPHASE     "LETOV\213 F\213ZE"
 #define TR_MENUFLIGHTPHASES    "LETOV\220 F\213ZE"
 #define TR_MENUHELISETUP       "HELI"
+
+
 #define TR_MENUDREXPO          "DV/EXPO"
 #define TR_MENULIMITS          "LIMITY"
+
+
+
+
+
 #define TR_MENUCURVES          "K\215IVKY"
 #define TR_MENUCURVE           "\003CV"
 #define TR_MENUCUSTOMSWITCH    "VLASTN\214 SP\214NA\201"

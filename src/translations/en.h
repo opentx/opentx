@@ -300,9 +300,7 @@
 #define LEN_VSWITCHES_SHORT    "\001"
 #define TR_VSWITCHES_SHORT     "-012TREAG3456789"
 
-#if defined(PCBX9D)
-  #define TR_ROTARY_ENCODERS_VSRCRAW
-#elif defined(PCBSKY9X)
+#if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS_VSRCRAW "REnc"
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
   #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
@@ -512,7 +510,7 @@
 #define TR_MENUTEMPLATES       "TEMPLATES"
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_RXNUM               TR("RxNum","Receiver Number")
+#define TR_RXNUM               TR("RxNum","Receiver No.")
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT"Limit"
 #define TR_MINRSSI             "Min Rssi"

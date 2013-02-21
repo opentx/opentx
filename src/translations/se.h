@@ -119,7 +119,7 @@
 #define TR_VMIXTRIMS           "AV ""P\203 ""Rod""Hjd""Gas""Ske"
 
 #define LEN_VCSWFUNC           "\006"
-#define TR_VCSWFUNC            "---\0  ""v1>x\0 ""v1<x\0 ""|v1|>x""|v1|<x""AND\0  ""OR\0   ""XOR\0  ""v1==v2""v1!=v2""v1>v2\0""v1<v2\0""v1>=v2""v1<=v2""d>=x\0 ""|d|>=x"
+#define TR_VCSWFUNC            "---\0  ""v1==x\0""v1>x\0 ""v1<x\0 ""|v1|>x""|v1|<x""AND\0  ""OR\0   ""XOR\0  ""v1==v2""v1>v2\0""v1<v2\0""d>=x\0 ""|d|>=x"
 
 #define LEN_VFSWFUNC           "\013"
 
@@ -142,35 +142,28 @@
 #endif
 
 #if defined(VOICE)
-  #define TR_PLAY_TRACK        "Spela Sp\200r\0"
+  #if defined(PCBSKY9X)
+    #define TR_PLAY_TRACK        "Spela Sp\200r\0"
+  #else
+    #define TR_PLAY_TRACK        "Spela\0     "
+  #endif
+  #define TR_PLAY_BOTH         "Play Both\0 "
   #define TR_PLAY_VALUE        "Spela V\201rde"
 #else
   #define TR_PLAY_TRACK        "[Spela Sp\200r]"
+  #define TR_PLAY_BOTH         "[Play Both]"
   #define TR_PLAY_VALUE        "[Spela V\201rde]"
 #endif
 
-#if defined(CPUARM)
-  #if defined(SDCARD)
-    #define TR_SDCLOGS         "SDCARD Loggar"
-  #else
-    #define TR_SDCLOGS         "[SDCARD Logg]"
-  #endif
-  #define TR_CFN_VOLUME        "Volym\0     "
-  #define TR_CFN_BG_MUSIC      "BgMusik\0   ""BgMusik ||\0"
-#elif defined(PCBGRUVIN9X)
-  #if defined(SDCARD)
-    #define TR_SDCLOGS         "SDCARD Loggar"
-  #else
-    #define TR_SDCLOGS         "[SDCARD Logg]"
-  #endif
-  #define TR_CFN_VOLUME
-  #define TR_CFN_BG_MUSIC
-#else
-  #define TR_SDCLOGS
-  #define TR_CFN_VOLUME
-  #define TR_CFN_BG_MUSIC
-#endif
+#define TR_CFN_VOLUME          "Volym\0     "
+#define TR_CFN_BG_MUSIC        "BgMusik\0   ""BgMusik ||\0"
 
+#if defined(SDCARD)
+  #define TR_SDCLOGS           "SDCARD Loggar"
+#else
+  #define TR_SDCLOGS           "[SDCARD Logg]"
+#endif
+ 
 #ifdef GVARS
   #define TR_CFN_ADJUST_GVAR   "Justera\0   "
 #else
@@ -183,16 +176,35 @@
   #define TR_CFN_TEST
 #endif
 
-#define TR_VFSWFUNC            "S\201kra\0     ""Trainer \0  ""S\201tt Trim\0 " TR_SOUND TR_HAPTIC "Nollst\201ll\0 " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Belysning\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#if defined(CPUARM)
+  #define TR_VFSWFUNC          "S\201kra\0     ""Trainer \0  ""S\201tt Trim\0 " TR_SOUND TR_HAPTIC "Nollst\201ll\0 " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Belysning\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#elif defined(PCBGRUVIN9X)
+  #define TR_VFSWFUNC          "S\201kra\0     ""Trainer \0  ""S\201tt Trim\0 " TR_SOUND TR_HAPTIC "Nollst\201ll\0 " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Belysning\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#else
+  #define TR_VFSWFUNC          "S\201kra\0     ""Trainer \0  ""S\201tt Trim\0 " TR_SOUND TR_HAPTIC "Nollst\201ll\0 " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Belysning\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+#endif
 
-#define LEN_VFSWRESET          TR("\006","\012")
-#define TR_VFSWRESET           "Timer1  ""Timer2  ""Allt     ""Telemetri"
+#define LEN_VFSWRESET          "\011"
+
+#if defined(FRSKY)
+  #define TR_FSW_RESET_TELEM   "Telemetri"
+#else
+  #define TR_FSW_RESET_TELEM   
+#endif
+
+#if ROTARY_ENCODERS > 0
+  #define TR_FSW_RESET_ROTENC  "R.Enc"
+#else
+  #define TR_FSW_RESET_ROTENC
+#endif
+
+#define TR_VFSWRESET           "Timer1   ""Timer2   ""Allt     " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC
 
 #define LEN_FUNCSOUNDS         "\006"
 #define TR_FUNCSOUNDS          "Pip1  ""Pip2  ""Pip3  ""Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""F\200gel ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS         "\004"
-#define TR_VTELEMCHNS          "---\0""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Cur+""Acc\0""Tid\0"
+#define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Cur+""Acc\0""Tid\0"
 
 #ifdef IMPERIAL_UNITS
   #define LENGTH_UNIT          "fot"
@@ -242,44 +254,40 @@
 #define TR_VRENCODERS          "REa""REb"
 
 #define LEN_VSWITCHES          "\003"
-
-#if 0
-#define TR_EXTRA_3POS_SWITCHES "ID3""ID4""ID5"
-#else
-#define TR_EXTRA_3POS_SWITCHES
-#endif
-
-#if defined(PCBX9D)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301""LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF""LBG""LBH""LBI""LBJ""LBK""LBL""LBM""LBN""LBO""LBP""LBQ""LBR""LBS""LBT""LBU""LBV""LBW"" ON"
-#elif defined(PCBSKY9X)
-  #define TR_VSWITCHES         "GAS""ROD""H\205J""ID0""ID1""ID2""SKE""LAN""TRN""LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF""LBG""LBH""LBI""LBJ""LBK""LBL""LBM""LBN""LBO""LBP""LBQ""LBR""LBS""LBT""LBU""LBV""LBW"" P\203"
-#else
-  #define TR_VSWITCHES         "GAS""ROD""H\205J""ID0""ID1""ID2" TR_EXTRA_3POS_SWITCHES "SKE""LAN""TRN""LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC"" P\203"
-#endif
-
 #define LEN_VSRCRAW            "\004"
 
 #if defined(PCBX9D)
-  #define TR_POTS_VSRCRAW  "S1\0 ""S2\0 ""LS\0 ""RS\0 "
-  #define TR_SW_VSRCRAW    "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 "
-#elif EXTRA_3POS == 1
-  #define TR_POTS_VSRCRAW  "3PO2""P2\0 ""P3\0 "
-  #define TR_SW_VSRCRAW    "3PO1"
-#elif EXTRA_3POS == 2
-  #define TR_POTS_VSRCRAW  "P1\0 ""3PO2""P3\0 "
-  #define TR_SW_VSRCRAW    "3PO1"
-#elif EXTRA_3POS == 3
-  #define TR_POTS_VSRCRAW  "P1\0 ""P2\0 ""3PO2"
-  #define TR_SW_VSRCRAW    "3PO1"
+  #define TR_POTS_VSRCRAW      "S1\0 ""S2\0 ""LS\0 ""RS\0 "
+  #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 "
+#elif defined(EXTRA_3POS)
+  #define TR_POTS_VSRCRAW      "P1\0 ""P2\0 "
+  #define TR_SW_VSRCRAW        "3P1\0""3P2\0"
+  #define TR_9X_3POS_SWITCHES  "ID0""ID1""ID2""ID3""ID4""ID5"
 #else
-  #define TR_POTS_VSRCRAW  "P1\0 ""P2\0 ""P3\0 "
-  #define TR_SW_VSRCRAW    "3POS"
+  #define TR_POTS_VSRCRAW      "P1\0 ""P2\0 ""P3\0 "
+  #define TR_SW_VSRCRAW        "3POS"
+  #define TR_9X_3POS_SWITCHES  "ID0""ID1""ID2"
+#endif
+
+#if defined(CPUARM)
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF""LBG""LBH""LBI""LBJ""LBK""LBL""LBM""LBN""LBO""LBP""LBQ""LBR""LBS""LBT""LBU""LBV""LBW"
+#elif defined(PCBGRUVIN9X) || defined(CPUM128)
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF"
+#else
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC"
 #endif
 
 #if defined(PCBX9D)
-  #define TR_ROTARY_ENCODERS_VSRCRAW
-#elif defined(PCBSKY9X)
-  #define TR_ROTARY_ENCODERS_VSRCRAW "REa "
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " ON"
+#else
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW " ON"
+#endif
+
+#define LEN_VSWITCHES_SHORT    "\001"
+#define TR_VSWITCHES_SHORT     "-012TREAG3456789"
+
+#if defined(PCBSKY9X)
+  #define TR_ROTARY_ENCODERS_VSRCRAW "REnc"
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
   #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS <= 2
@@ -294,7 +302,7 @@
   #define TR_CYC_VSRCRAW   "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW             "Rod\0""H\202j\0""Gas\0""Ske\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" "MAX " TR_SW_VSRCRAW TR_CYC_VSRCRAW
+#define TR_VSRCRAW             "---\0""Rod\0""H\202j\0""Gas\0""Ske\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "MAX " TR_CYC_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "AV ""ABS""THs""TH%""THt"
@@ -503,6 +511,8 @@
 #define TR_CURRENT             INDENT"Str\202m"
 #define TR_SELECT_MODEL        "V\201lj Modell"
 #define TR_CREATE_MODEL        "Skapa Modell"
+#define TR_COPY_MODEL          "Copy Model"
+#define TR_MOVE_MODEL          "Move Model"
 #define TR_BACKUP_MODEL        "Modell-backup"
 #define TR_DELETE_MODEL        "Ta Bort Modell"
 #define TR_RESTORE_MODEL       "\203terst\201ll Modell"
