@@ -717,11 +717,11 @@ PACK(typedef struct t_PhaseData {
 #elif defined(PCBGRUVIN9X) || defined(CPUM128)
   #define MAX_MODELS 30
   #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
-  #define MAX_PHASES 5
+  #define MAX_PHASES 6
   #define MAX_MIXERS 32
-  #define MAX_EXPOS  14
-  #define NUM_CSW    12 // number of custom switches
-  #define NUM_CFN    16 // number of functions assigned to switches
+  #define MAX_EXPOS  16
+  #define NUM_CSW    16 // number of custom switches
+  #define NUM_CFN    24 // number of functions assigned to switches
 #else
   #define MAX_MODELS 16
   #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
