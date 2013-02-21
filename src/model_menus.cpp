@@ -244,8 +244,13 @@ void menuModelSelect(uint8_t event)
 
   uint8_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
 
+#if defined(PCBX9D)
+  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT))
+    _event_ -= KEY_EXIT;
+#else
   if (s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT)
     _event_ -= KEY_EXIT;
+#endif
 
   int8_t oldSub = m_posVert;
 
@@ -307,6 +312,18 @@ void menuModelSelect(uint8_t event)
           sub = m_posVert = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
           s_copyMode = 0;
         }
+#if defined(PCBX9D)
+        else {
+          if (m_posVert != g_eeGeneral.currModel) {
+            m_posVert = g_eeGeneral.currModel;
+            s_pgOfs = 0;
+          }
+          else {
+            popMenu();
+            return;
+          }
+        }
+#endif
         break;
 #if defined(ROTARY_ENCODER_NAVIGATION)
       case EVT_ROTARY_BREAK:
@@ -349,7 +366,11 @@ void menuModelSelect(uint8_t event)
           s_copyMode = 0;
           event = EVT_ENTRY_UP;
         }
-        else if (event == EVT_KEY_LONG(KEY_MENU) || IS_ROTARY_BREAK(event)) {
+        else if (event == EVT_KEY_LONG(KEY_ENTER)
+#if !defined(PCBX9D)
+            || IS_ROTARY_BREAK(event)
+#endif
+            ) {
           s_copyMode = 0;
           killEvents(event);
 #if defined(NAVIGATION_MENUS)
@@ -435,14 +456,14 @@ void menuModelSelect(uint8_t event)
       case EVT_KEY_FIRST(KEY_MOVE_UP):
       case EVT_KEY_FIRST(KEY_MOVE_DOWN):
         if (s_copyMode) {
-          int8_t next_ofs = (IS_ROTARY_LEFT(event) || event == EVT_KEY_FIRST(KEY_MOVE_UP)) ? s_copyTgtOfs+1 : s_copyTgtOfs-1;
+          int8_t next_ofs = (IS_ROTARY_UP(event) || event == EVT_KEY_FIRST(KEY_MOVE_UP)) ? s_copyTgtOfs+1 : s_copyTgtOfs-1;
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
             next_ofs = 0;
 
           if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
             s_copySrcRow = oldSub;
             // find a hole (in the first empty slot above / below)
-            sub = eeFindEmptyModel(s_copySrcRow, IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_MOVE_DOWN));
+            sub = eeFindEmptyModel(s_copySrcRow, IS_ROTARY_DOWN(event) || event==EVT_KEY_FIRST(KEY_MOVE_DOWN));
             if (sub < 0) {
               // no free room for duplicating the model
               AUDIO_ERROR();
@@ -3100,9 +3121,14 @@ void menuModelCustomSwitches(uint8_t event)
 }
 #else
 
+#define CSW_1ST_COLUMN  (4*FW-3)
+#define CSW_2ND_COLUMN  (10*FW+1)
+#define CSW_3RD_COLUMN  (18*FW+2)
+#define CSW_4TH_COLUMN  (20*FW+1)
+
 void menuModelCustomSwitches(uint8_t event)
 {
-  MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, 2/*repeated...*/});
+  MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, 3/*repeated...*/});
 
   uint8_t y = 0;
   uint8_t k = 0;
@@ -3119,28 +3145,28 @@ void menuModelCustomSwitches(uint8_t event)
     putsSwitches(0, y, sw, getSwitch(sw, 0) ? BOLD : 0);
 
     // CSW func
-    lcd_putsiAtt(4*FW-3, y, STR_VCSWFUNC, cs->func, m_posHorz==0 ? attr : 0);
+    lcd_putsiAtt(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, m_posHorz==0 ? attr : 0);
 
     // CSW params
     uint8_t cstate = CS_STATE(cs->func);
     int8_t v1_min=0, v1_max=MIXSRC_LAST_CH+NUM_TELEMETRY, v2_min=0, v2_max=MIXSRC_LAST_CH+NUM_TELEMETRY;
 
     if (cstate == CS_VBOOL) {
-      putsSwitches(10*FW, y, cs->v1, m_posHorz==1 ? attr : 0);
-      putsSwitches(16*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+      putsSwitches(CSW_2ND_COLUMN, y, cs->v1, m_posHorz==1 ? attr : 0);
+      putsSwitches(CSW_3RD_COLUMN, y, cs->v2, m_posHorz==2 ? attr : 0);
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
       v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
     }
     else if (cstate == CS_VCOMP) {
-      putsMixerSource(10*FW, y, cs->v1, m_posHorz==1 ? attr : 0);
-      putsMixerSource(16*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+      putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, m_posHorz==1 ? attr : 0);
+      putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, m_posHorz==2 ? attr : 0);
     }
     else {
-      putsMixerSource(10*FW, y, cs->v1, (m_posHorz==1 ? attr : 0));
+      putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, (m_posHorz==1 ? attr : 0));
 
 #if defined(FRSKY)
       if (cs->v1 > MIXSRC_LAST_CH) {
-        putsTelemetryChannel(18*FW+2, y, cs->v1 - MIXSRC_LAST_CH - 1, convertCswTelemValue(cs), m_posHorz==2 ? attr : 0);
+        putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_LAST_CH - 1, convertCswTelemValue(cs), m_posHorz==2 ? attr : 0);
         v2_max = maxTelemValue(cs->v1 - MIXSRC_LAST_CH);
         if (cstate == CS_VOFS) {
           v2_min = -128;
@@ -3158,10 +3184,13 @@ void menuModelCustomSwitches(uint8_t event)
       else
 #endif
       {
-        lcd_outdezAtt(19*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+        lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, m_posHorz==2 ? attr : 0);
         v2_min = -125; v2_max = 125;
       }
     }
+
+    // CSW and switch
+    lcd_putsiAtt(CSW_4TH_COLUMN, y, STR_VSWITCHES_SHORT, cs->andsw, m_posHorz==3 ? attr : 0);
 
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (m_posHorz) {
@@ -3178,6 +3207,9 @@ void menuModelCustomSwitches(uint8_t event)
         case 2:
           CHECK_INCDEC_MODELVAR(event, cs->v2, v2_min, v2_max);
           break;
+        case 3:
+          CHECK_INCDEC_MODELVAR(event, cs->andsw, 0, 15);
+          break;          
       }
     }
   }

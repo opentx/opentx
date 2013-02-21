@@ -65,10 +65,11 @@ class AudioFragment : public ToneFragment {
 
 extern "C" void DAC_IRQHandler();
 
-#define AUDIO_SLEEPING     0
-#define AUDIO_RESUMING     1
-#define AUDIO_PLAYING_TONE 2
-#define AUDIO_PLAYING_WAV  3
+#define AUDIO_NOT_STARTED  0
+#define AUDIO_SLEEPING     1
+#define AUDIO_RESUMING     2
+#define AUDIO_PLAYING_TONE 3
+#define AUDIO_PLAYING_WAV  4
 
 extern bool playingBackground;
 
@@ -91,6 +92,8 @@ class AudioQueue {
   public:
 
     AudioQueue();
+
+    void start();
 
     void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
 
@@ -141,6 +144,7 @@ extern AudioQueue audioQueue;
 
 void codecsInit();
 void audioEvent(uint8_t e, uint8_t f=BEEP_DEFAULT_FREQ);
+void audioStart();
 
 #define AUDIO_TADA()             audioEvent(AU_TADA)
 #define AUDIO_KEYPAD_UP()        audioEvent(AU_KEYPAD_UP)

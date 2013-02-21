@@ -265,6 +265,12 @@ AudioQueue::AudioQueue()
   prioIdx = -1;
 }
 
+void AudioQueue::start()
+{
+  state = AUDIO_RESUMING;
+  CoSetFlag(audioFlag);
+}
+
 void audioTimerHandle(void)
 {
   CoSetFlag(audioFlag);
@@ -277,6 +283,9 @@ void audioTimerHandle(void)
 #ifndef SIMU
 void audioTask(void* pdata)
 {
+  while (audioQueue.busy())
+    CoWaitForSingleFlag(audioFlag, 0);
+
 #if defined(SDCARD)
   if (!unexpectedShutdown) {
     codecsInit();

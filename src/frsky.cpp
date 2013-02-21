@@ -1141,7 +1141,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       if (channel >= TELEM_MAX_T1-1 && channel <= TELEM_MAX_DIST-1)
         channel -= TELEM_MAX_T1 - TELEM_T1;
       if (channel <= TELEM_GPSALT-1)
-        unit = channel - 6;
+        unit = channel + 1 - TELEM_ALT;
       if (channel >= TELEM_MIN_ALT-1 && channel <= TELEM_MAX_ALT-1)
         unit = 0;
       if (channel == TELEM_HDG-1)

@@ -583,8 +583,10 @@ enum CswFunctions {
 #endif
 
 #if defined(PCBX9D)
-  #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MOVE_DOWN) || evt==EVT_KEY_REPT(KEY_MOVE_DOWN))
-  #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_MOVE_UP) || evt==EVT_KEY_REPT(KEY_MOVE_UP))
+  #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
+  #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
+  #define IS_ROTARY_UP(evt)     (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
+  #define IS_ROTARY_DOWN(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
   #define IS_ROTARY_BREAK(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
   #define IS_ROTARY_LONG(evt)   (evt==EVT_KEY_LONG(KEY_ENTER))
   #define IS_ROTARY_EVENT(evt)  (0)
@@ -595,6 +597,8 @@ enum CswFunctions {
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   #define IS_ROTARY_LEFT(evt)   (evt == EVT_ROTARY_LEFT)
   #define IS_ROTARY_RIGHT(evt)  (evt == EVT_ROTARY_RIGHT)
+  #define IS_ROTARY_UP(evt)     IS_ROTARY_LEFT(evt)
+  #define IS_ROTARY_DOWN(evt)   IS_ROTARY_RIGHT(evt)
   #define IS_ROTARY_BREAK(evt)  (evt == EVT_ROTARY_BREAK)
   #define IS_ROTARY_LONG(evt)   (evt == EVT_ROTARY_LONG)
   #define IS_ROTARY_EVENT(evt)  (EVT_KEY_MASK(evt) >= 0x0e)
@@ -603,11 +607,13 @@ enum CswFunctions {
   #define CASE_EVT_ROTARY_LEFT  case EVT_ROTARY_LEFT:
   #define CASE_EVT_ROTARY_RIGHT case EVT_ROTARY_RIGHT:
 #else
-  #define IS_ROTARY_LEFT(evt)  (0)
-  #define IS_ROTARY_RIGHT(evt) (0)
-  #define IS_ROTARY_BREAK(evt) (0)
-  #define IS_ROTARY_LONG(evt)  (0)
-  #define IS_ROTARY_EVENT(evt) (0)
+  #define IS_ROTARY_LEFT(evt)   (0)
+  #define IS_ROTARY_RIGHT(evt)  (0)
+  #define IS_ROTARY_UP(evt)     (0)
+  #define IS_ROTARY_DOWN(evt)   (0)
+  #define IS_ROTARY_BREAK(evt)  (0)
+  #define IS_ROTARY_LONG(evt)   (0)
+  #define IS_ROTARY_EVENT(evt)  (0)
   #define CASE_EVT_ROTARY_BREAK
   #define CASE_EVT_ROTARY_LONG
   #define CASE_EVT_ROTARY_LEFT

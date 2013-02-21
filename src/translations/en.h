@@ -297,6 +297,9 @@
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW " ON"
 #endif
 
+#define LEN_VSWITCHES_SHORT    "\001"
+#define TR_VSWITCHES_SHORT     "-012TREAG3456789"
+
 #if defined(PCBX9D)
   #define TR_ROTARY_ENCODERS_VSRCRAW
 #elif defined(PCBSKY9X)

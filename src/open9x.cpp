@@ -791,7 +791,7 @@ bool __getSwitch(int8_t swtch)
 
       CustomSwData * cs = cswaddress(cs_idx);
       uint8_t s = cs->andsw;
-      // TODO why? if (s > 8) s += 1;
+      if (s >= SWSRC_TRN) s += SWSRC_SW3-SWSRC_TRN;
       if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
         result = false;
       }
@@ -3532,6 +3532,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #endif
 
 #if defined(CPUARM)
+  audioQueue.start();
   setBacklight(g_eeGeneral.backlightBright);
 #endif
 
