@@ -470,10 +470,16 @@ int16_t applyCurve(int16_t x, int8_t idx)
 #define applyCurve(x, idx) (x)
 #endif
 
+/* currently not needed
 // maybe used in future?
 uint16_t divu100(uint32_t A) {
     return (((A * 0x47AF) >> 16) + A) >> 7;
 }
+*/
+
+
+// #define EXTENDED_EXPO
+// increases range of expo curve but costs about 82 bytes flash
 
 // expo-funktion:
 // ---------------
@@ -482,44 +488,90 @@ uint16_t divu100(uint32_t A) {
 // f(x,k)=x*x*x*k/10 + x*(1-k/10) ;P[0,1,2,3,4,5,6,7,8,9,10]
 // f(x,k)=x*x*k/10 + x*(1-k/10) ;P[0,1,2,3,4,5,6,7,8,9,10]
 // f(x,k)=1+(x-1)*(x-1)*(x-1)*k/10 + (x-1)*(1-k/10) ;P[0,1,2,3,4,5,6,7,8,9,10]
+// don't know what this above should be, just confusing in my opinion,
 
+// here is the real explanation
+// actually the real formula is  
+/*
+ f(x) = exp( ln(x) * 10^k)  
+ if it is 10^k or e^k or 2^k etc. just defines the max distortion of the expo curve; I think 10 is useful
+ this gives values from 0 to 1 for x and output; k must be between -1 and +1
+ we do not like to calculate with floating point. Therefore we rescale for x from 0 to 1024 and for k from -100 to +100
+ f(x) = 1024 * ( e^( ln(x/1024) * 10^(k/100) ) )
+ This would be really hard to be calculated by such a microcontroller
+ Therefore Thomas Husterer compared a few usual function something like x^3, x^4*something, which look similar
+ Actually the formula 
+ f(x) = k*x^3+x*(1-k) 
+ gives a similar form and should have even advantages compared to a original exp curve.
+ This function again expect x from 0 to 1 and k only from 0 to 1
+ Therefore rescaling is needed like before:
+ f(x) = 1024* ((k/100)*(x/1024)^3 + (x/1024)*(100-k)/100)
+ some mathematical tricks 
+ f(x) = (k*x*x*x/(1024*1024) + x*(100-k)) / 100
+ for better rounding results we add the 50
+ f(x) = (k*x*x*x/(1024*1024) + x*(100-k) + 50) / 100
+ 
+ because we now understand the formula, we can optimize it further
+ --> calc100to256(k) --> eliminates /100 by replacing with /256 which is just a simple shift right 8
+ k is now between 0 and 256
+ f(x) = (k*x*x*x/(1024*1024) + x*(256-k) + 128) / 256
+ */
+ 
 // input parameters; 
 //  x 0 to 1024;
 //  k 0 to 100;
-// return value = 1024 * (x/1024)^((101+k)/30)
-// return value  = exp(ln(x/1024)*exp(k/10))*1024
+// output between 0 and 1024
 uint16_t expou(uint16_t x, uint16_t k)
 {
-  // previous function was this one:
-  // k*x*x*x + (1-k)*x
-  // return ((unsigned long)x*x*x/0x10000*k/(RESXul*RESXul/0x10000) + (RESKul-k)*x+RESKul/2)/RESKul;
+#ifdef EXTENDED_EXPO  
+  bool extended;
+  if (k>80) {
+    extended=true;
+  } else {
+    k+=(k>>2);  // use bigger values before extend, because the effect is anyway very very low
+    extended=false;
+  } // endif k > 50
+#endif  
 
+  k=calc100to256(k);    
+  
   uint32_t value = (uint32_t) x*x;
   value *= (uint32_t)k;
   value >>= 8;
   value *= (uint32_t)x;
-  value >>= 12;
-  value += (uint32_t)(100-k)*x+50;
 
-  // return divu100(value);  // would speed up further by needs more code
-  return value/100;
+#ifdef EXTENDED_EXPO
+  if (extended) {  // for higher values do more multiplications to get a stronger expo curve
+    value>>=16;
+    value*=(uint32_t)x;
+    value>>=4;
+    value*=(uint32_t)x;
+  } //endif extend
+#endif
+  
+  value >>= 12;
+  value += (uint32_t)(256-k)*x+128;
+
+  return value>>8;
 }
 
 int16_t expo(int16_t x, int16_t k)
 {
   if (k == 0) return x;
   int16_t y;
-  bool neg = x < 0;
+  bool neg  = x < 0;
+
   if (neg) x = -x;
   if (k<0) {
     y = RESXu-expou(RESXu-x, -k);
-  }
-  else {
+  } else {
     y = expou(x, k);
   }
   return neg? -y : y;
 }
 
+// isn't the following useless? wouldn't be called even if EXTENDED_EXPO is defined
+/*
 #ifdef EXTENDED_EXPO
 /// expo with y-offset
 class Expo
@@ -555,6 +607,7 @@ int16_t  Expo::expo(int16_t x)
   return -expou(-x,c,-d) + drx;
 }
 #endif
+*/
 
 #ifdef BOLD_FONT
 ACTIVE_EXPOS_TYPE activeExpos;
@@ -592,11 +645,14 @@ void applyExpos(int16_t *anas)
           else
             v = expo(v, GET_GVAR(curveParam, -100, 100, s_perout_flight_phase));
         }
-        v = ((int32_t)v * GET_GVAR(ed.weight, 0, 100, s_perout_flight_phase)) / 100;
+        int16_t weight=GET_GVAR(ed.weight, 0, 100, s_perout_flight_phase);
+        weight=calc100to256(weight);
+        v = ((int32_t)v * weight) >> 8;
+        // v = ((int32_t)v * GET_GVAR(ed.weight, 0, 100, s_perout_flight_phase)) / 100;
         anas[cur_chn] = v;
-      }
-    }
-  }
+      } //endif
+    } //endif getSwitch
+  } //endfor
 }
 
 #if !defined(CPUARM)
@@ -2676,22 +2732,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 	  // @@@2 recalculate weight to a 256 basis which ease the calculation later a lot
       int32_t dv = (int32_t) v * calc100to256(weight);
 
-      //========== DIFFERENTIAL =========
-      if (md->curveMode == MODE_DIFFERENTIAL) {
-/*        int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
-        if (curveParam > 0 && dv < 0)
-          dv = (dv * (100 - curveParam)) / 100;
-        else if (curveParam < 0 && dv > 0)
-          dv = (dv * (100 + curveParam)) / 100; */
-		  
-	    // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
-		int16_t curveParam=calc100to256(GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase));
-        if (curveParam > 0 && dv < 0)
-          dv = (dv * (256 - curveParam)) >> 8;
-        else if (curveParam < 0 && dv > 0)
-          dv = (dv * (256 + curveParam)) >> 8;		  
-      }
-
       //========== SPEED ===============
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
       
@@ -2733,11 +2773,27 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           dv = act[i];
         } //endif diff
       } //endif speed
-      
+
+      //========== DIFFERENTIAL =========
+      if (md->curveMode == MODE_DIFFERENTIAL) {
+/*        int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
+        if (curveParam > 0 && dv < 0)
+          dv = (dv * (100 - curveParam)) / 100;
+        else if (curveParam < 0 && dv > 0)
+          dv = (dv * (100 + curveParam)) / 100; */
+		  
+	    // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
+		int16_t curveParam=calc100to256(GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase));
+        if (curveParam > 0 && dv < 0)
+          dv = (dv * (256 - curveParam)) >> 8;
+        else if (curveParam < 0 && dv > 0)
+          dv = (dv * (256 + curveParam)) >> 8;		  
+      }
+
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
 
-      if (i == 0 || md->destCh != (md - 1)->destCh)
-        *ptr = 0;
+      if (i == 0 || md->destCh != (md - 1)->destCh) *ptr = 0;
+      // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
 
       switch (md->mltpx) {
         case MLTPX_REP:
@@ -2763,7 +2819,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
     tick10ms = 0;
     dirtyChannels &= passDirtyChannels;
 
-  } while (++pass < 5 && dirtyChannels);
+  } while (++pass < 7 && dirtyChannels);  // we increased speed of mixer, therefore allow more passes; old value was 5
 
   mixWarning = lv_mixWarning;
 }
