@@ -598,7 +598,7 @@ int16_t calc100toRESX(int8_t x)
 
 int8_t calcRESXto100(int16_t x)
 {
-  return (x*25) << 8;
+  return (x*25) >> 8;
 }
 
 int16_t calc1000toRESX(int16_t x) // improve calc time by Pat MacKenzie
