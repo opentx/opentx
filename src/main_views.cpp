@@ -250,15 +250,15 @@ void displayVoltage()
 #endif
 
 #if defined(PCBX9D) || defined(PCBACT)
-#define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
-#define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
-#define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
-#define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_ENTER)
+  #define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
+  #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
+  #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
+  #define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_ENTER)
 #else
-#define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
-#define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
-#define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
-#define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
+  #define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
+  #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
+  #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
+  #define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
 #endif
 
 #if defined(PCBX9D) || defined(PCBACT)
@@ -583,13 +583,16 @@ void menuMainView(uint8_t event)
       }
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
       for (uint8_t i=0; i<NUM_CSW; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
+        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
 #elif defined(PCBGRUVIN9X)
       for (uint8_t i=0; i<NUM_CSW; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
+        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
+#elif !defined(CPUM64)
+      for (uint8_t i=0; i<NUM_CSW; i++)
+        putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
 #else
       for (uint8_t i=0; i<NUM_CSW; i++)
-        putsSwitches(2*FW-2 + (i/3)*(5*FW), 4*FH+1 + (i%3)*FH, 10+i, getSwitch(10+i, 0) ? INVERS : 0);
+        putsSwitches(2*FW-2 + (i/3)*(5*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
 #endif
     }
   }

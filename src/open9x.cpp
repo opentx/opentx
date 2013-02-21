@@ -702,9 +702,9 @@ int16_t getValue(uint8_t i)
 #endif
   else if (i<MIXSRC_LAST_CSW) return __getSwitch(SWSRC_THR+i+1-MIXSRC_SW1) ? 1024 : -1024;
 #endif
-  else if (i<MIXSRC_PPM1+NUM_CAL_PPM) return (g_ppmIns[i-MIXSRC_LAST_CSW] - g_eeGeneral.trainer.calib[i+1-MIXSRC_PPM1])*2;
-  else if (i<MIXSRC_LAST_PPM) return g_ppmIns[i-MIXSRC_LAST_CSW]*2;
-  else if (i<MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_LAST_PPM];
+  else if (i<MIXSRC_PPM1+NUM_CAL_PPM) return (g_ppmIns[i+1-MIXSRC_PPM1] - g_eeGeneral.trainer.calib[i+1-MIXSRC_PPM1])*2;
+  else if (i<MIXSRC_LAST_PPM) return g_ppmIns[i+1-MIXSRC_PPM1]*2;
+  else if (i<MIXSRC_LAST_CH) return ex_chans[i+1-MIXSRC_CH1];
   else if (i<MIXSRC_LAST_CH+TELEM_TX_VOLTAGE) return g_vbat100mV;
   else if (i<MIXSRC_LAST_CH+TELEM_TM2) return s_timerVal[i+1-MIXSRC_LAST_CH-TELEM_TM1];
 #if defined(FRSKY)

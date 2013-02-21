@@ -720,7 +720,7 @@ PACK(typedef struct t_PhaseData {
   #define MAX_PHASES 6
   #define MAX_MIXERS 32
   #define MAX_EXPOS  16
-  #define NUM_CSW    16 // number of custom switches
+  #define NUM_CSW    15 // number of custom switches
   #define NUM_CFN    24 // number of functions assigned to switches
 #else
   #define MAX_MODELS 16

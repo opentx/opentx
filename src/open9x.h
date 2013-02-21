@@ -1018,18 +1018,18 @@ extern void instantTrim();
 extern void moveTrimsToOffsets();
 
 #if defined(CPUARM)
-#define ACTIVE_EXPOS_TYPE uint32_t
-#define ACTIVE_MIXES_TYPE uint64_t
+#define ACTIVE_EXPOS_TYPE  uint32_t
+#define ACTIVE_MIXES_TYPE  uint64_t
 #define ACTIVE_PHASES_TYPE uint16_t
 #else
-#define ACTIVE_EXPOS_TYPE uint16_t
-#define ACTIVE_MIXES_TYPE uint32_t
+#define ACTIVE_EXPOS_TYPE  uint16_t
+#define ACTIVE_MIXES_TYPE  uint32_t
 #define ACTIVE_PHASES_TYPE uint8_t
 #endif
 
 #ifdef BOLD_FONT
-extern ACTIVE_EXPOS_TYPE activeExpos;
-extern ACTIVE_MIXES_TYPE activeMixes;
+extern ACTIVE_EXPOS_TYPE   activeExpos;
+extern ACTIVE_MIXES_TYPE   activeMixes;
 inline bool isExpoActive(uint8_t expo)
 {
   return activeExpos & ((ACTIVE_EXPOS_TYPE)1 << expo);
@@ -1045,10 +1045,10 @@ inline bool isMixActive(uint8_t mix)
 #endif
 
 #if defined(CPUARM)
-#define MASK_CFN_TYPE uint32_t // current max = 32 function switches
+#define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
 #define MASK_FUNC_TYPE uint32_t // current max = 32 functions
 #else
-#define MASK_CFN_TYPE uint16_t // current max = 16 function switches
+#define MASK_CFN_TYPE uint16_t  // current max = 16 function switches
 #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
 #endif
 
