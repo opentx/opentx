@@ -172,7 +172,7 @@ ISR(TIMER4_COMPA_vect) //Every 0.5ms normally, every 2ms during startup reset
 }
 #endif
 
-void pushPrompt(uint16_t prompt, uint8_t id)
+void pushPrompt(uint16_t prompt)
 {
   /* TODO id */
   somo14playlist[somo14WIdx] = prompt;
@@ -182,7 +182,7 @@ void pushPrompt(uint16_t prompt, uint8_t id)
   sei();
 }
 
-bool isPlaying(uint8_t id)
+bool isPlaying()
 {
   /* TODO id */
 #if defined(SIMU)

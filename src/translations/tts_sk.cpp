@@ -103,10 +103,10 @@ enum SlovakPrompts {
 
 #if defined(VOICE)
 
-#if defined(PCBSTD)
-#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
-#else
+#if defined(CPUARM)
 #define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u), id)
+#else
+#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
 #endif
 
 #define MUZSKY 0x80

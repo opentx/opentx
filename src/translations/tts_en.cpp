@@ -72,10 +72,10 @@ enum EnglishPrompts {
 
 #if defined(VOICE)
 
-#if defined(PCBSTD)
-#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
-#else
+#if defined(CPUARM)
 #define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u), id)
+#else
+#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
 #endif
 
 PLAY_FUNCTION(pushUnitPrompt, int16_t number, uint8_t unitprompt)
