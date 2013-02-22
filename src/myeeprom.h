@@ -58,7 +58,7 @@
 #elif defined(PCBGRUVIN9X)
 #define EEPROM_VER       213
 #else
-#define EEPROM_VER       213
+#define EEPROM_VER       212
 #endif
 
 #ifndef PACK

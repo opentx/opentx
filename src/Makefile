@@ -97,6 +97,12 @@ AUDIO = NO
 # Values = YES, NO 
 VOICE = NO
 
+# corrects different rounding for negative values. So instead of -99.9 you will see again -100.0
+CORRECT_NEGATIVE_VALUES = NO
+
+# increases range of expo curve but costs about 82 bytes flash
+EXTENDED_EXPO_CURVE = NO
+
 # HAPTIC Mods
 # Values = YES, NO 
 HAPTIC = NO
@@ -408,6 +414,14 @@ endif
 ifeq ($(GVARS), YES)
   CPPDEFS += -DGVARS
   EEPROM_VARIANT += ${GVARS_VARIANT}
+endif
+
+ifeq ($(CORRECT_NEGATIVE_VALUES), YES)
+  CPPDEFS += -DCORRECT_NEGATIVE_SHIFTS
+endif
+
+ifeq ($(EXTENDED_EXPO_CURVE), YES)
+  CPPDEFS += -DEXTENDED_EXPO
 endif
 
 # If STD-Support is enabled

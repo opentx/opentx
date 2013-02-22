@@ -1816,6 +1816,20 @@ void getADC()
   uint16_t temp_ana;
   for (uint8_t adc_input=0; adc_input<8; adc_input++) {
     ADMUX = adc_input|ADC_VREF_TYPE;
+/*  
+	// ADCSRA|=0x08; // enable ADC Interrupt Enable  should not be necessary? or is it
+	MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit3)
+	asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
+    while (ADCSRA & 0x40); // Wait for the AD conversion to complete
+    temp_ana = ADC;
+    
+	asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this  
+    while (ADCSRA & 0x40); // Wait for the AD conversion to complete
+    s_anaFilt[adc_input] = temp_ana + ADC;    
+   	MCUCR&=0x08;  // disable sleep  
+    */
+  
+    ADMUX = adc_input|ADC_VREF_TYPE;
     ADCSRA|=0x40; // Start the AD conversion
     while (ADCSRA & 0x40); // Wait for the AD conversion to complete
     temp_ana = ADC;
@@ -1846,6 +1860,17 @@ void getADC_bandgap()
 #else
   // TODO is the next line needed (because it has been called before perMain)?
   ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
+  
+/*
+  MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit2)
+  asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
+  // ADCSRA|=0x40;
+  while ((ADCSRA & 0x10)==0);
+  ADCSRA|=0x10; // take sample  clear flag?
+  BandGap=ADC;    
+  MCUCR&=0x08;  // disable sleep  
+  */
+
   ADCSRA|=0x40;
   while ((ADCSRA & 0x10)==0);
   ADCSRA|=0x10; // take sample
@@ -2706,18 +2731,70 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           mix_trim = -1;
         if (mix_trim >= 0) v += trims[mix_trim];
       }
+      
+      int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);      
+      weight=calc100to256_16Bits(weight);
+      
+
+      //========== SPEED ===============
+      if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
+      
+#define DEL_MULT_SHIFT 8
+        // we recale to a mult 256 higher value for calculation
+
+        int16_t diff=v-(act[i]>>DEL_MULT_SHIFT);
+        if (diff) {
+          // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
+          // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
+          // because we get a tick each 10msec, we need 100 ticks for one second
+          // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
+          if (tick10ms) {
+            // only if already time is passed add or substract a value according the speed configured
+            // codesaving 44 bytes          
+#ifndef WEIGHTSPEEDCORRECTION            
+			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
+#else            
+            // codecost 82 bytes
+			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+19);  // = DEL_MULT*2048*tick10ms            
+            rate/=abs(weight);
+#endif            
+            // rate equals a full range for one second; if less time is passed rate is accordingly smaller
+            // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
+
+            int32_t currentValue=(v<<DEL_MULT_SHIFT);
+            if (diff>0) {
+              if (md->speedUp>0) {
+                // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
+                int32_t newValue = act[i]+rate/((int16_t)(100/SLOW_STEP)*md->speedUp); 
+                if (newValue<currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
+              }
+            } else {  // if is <0 because ==0 is not possible
+              if (md->speedDown>0) {
+                // see explanation in speedUp
+                int32_t newValue = act[i]-rate/((int16_t)(100/SLOW_STEP)*md->speedDown); 
+                if (newValue>currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
+              }            
+            } //endif diff>0
+            act[i] = currentValue;
+            // open.20.fsguruh: this implementation would save about 50 bytes code
+          } // endif tick10ms ; in case no time passed assign the old value, not the current value from source
+          v = (act[i] >> DEL_MULT_SHIFT);
+        } //endif diff
+      } //endif speed
 
       //========== CURVES ===============
       if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
         v = applyCurve(v, md->curveParam);
       }
 
-      int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);
+      // int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);
 
       //========== WEIGHT ===============
 	  // @@@2 recalculate weight to a 256 basis which ease the calculation later a lot
-      int32_t dv = (int32_t) v * calc100to256_16Bits(weight);
+      // int32_t dv = (int32_t) v * calc100to256_16Bits(weight);
+      int32_t dv = (int32_t) v * weight;
 
+#ifdef SPEED_AFTER_WEIGHT      
       //========== SPEED ===============
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
       
@@ -2759,7 +2836,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           dv = act[i];
         } //endif diff
       } //endif speed
-
+#endif
+      
       //========== DIFFERENTIAL =========
       if (md->curveMode == MODE_DIFFERENTIAL) {
 /*        int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
@@ -2956,18 +3034,22 @@ void doMixerCalculations()
   if (g_model.thrTraceSrc > NUM_POTS) {
     uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
     val = g_chans512[ch];
+    int8_t gModelMax=g_model.limitData[ch].max;
+    int8_t gModelMin=g_model.limitData[ch].min;
+    
     if (g_model.limitData[ch].revert)
-      val = -val + calc100toRESX(g_model.limitData[ch].max + 100);
+      val = -val + calc100toRESX(gModelMax + 100);
     else
-      val = val - calc100toRESX(g_model.limitData[ch].min - 100);
+      val = val - calc100toRESX(gModelMin - 100);
 #if defined(PPM_LIMITS_SYMETRICAL)
     if (g_model.limitData[ch].symetrical)
       val -= calc1000toRESX(g_model.limitData[ch].offset);
 #endif
-    // @@@ open.20.fsguruh  optimized calculation; now *16 /16 instead of 10 base
-    val = (val << 4) / (16+((g_model.limitData[ch].max-g_model.limitData[ch].min)>>5));
+    // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; unfortunately *16/16 causes overruns
+    gModelMax-=gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
+    gModelMax>>=4;
+    if (gModelMax) val = (val << 3) / (8+gModelMax); // recaling only needed if Min, Max differs
 	if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
-	// val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
   }
   else {
     val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
@@ -3197,16 +3279,28 @@ void perMain()
   if (delta > 0 && delta < MAX_MIXER_DELTA)  {
     // @@@ open.20.fsguruh
     // SLEEP();   // wouldn't that make sense? should save a lot of battery power!!!
-/*  for future use; currently very very beta...
+/*  for future use; currently very very beta...  */
+#ifdef POWER_SAVE
 	ADCSRA&=0x7F;   // disable ADC for power saving
 	ACSR&=0xF7;   // disable ACIE Interrupts
 	ACSR|=0x80;   // disable Analog Comparator
+    // maybe we disable here a lot more hardware components in future to save even more power
 	
-	MCUCR|=0x24;  // enable Sleep (bit5) enable ADC Noise Reduction (bit2)
-	asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
+	MCUCR|=0x20;  // enable Sleep (bit5)
+    // MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit3)
+    // first tests showed: simple sleep would reduce cpu current from 40.5mA to 32.0mA
+    //                     noise reduction sleep would reduce it down to 28.5mA; However this would break pulses in theory
+    // however with standard module, it will need about 95mA. Therefore the drop to 88mA is not much noticable
+    do {
+      asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
+      t0=getTmr16KHz();
+      delta= (nextMixerEndTime - lastMixerDuration) - t0;
+    } while ((delta>0) && (delta<MAX_MIXER_DELTA));
+    
+    // reenabling of the hardware components needed here
 	MCUCR&=0x00;  // disable sleep
 	ADCSRA|=0x80;  // enable ADC
-    */
+#endif
     return;
   }  
 
@@ -3394,21 +3488,35 @@ uint16_t getTmr16KHz()
   }
 }
 
+
 ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
 {
-  cli();
+ /* open.20.fsguruh is this good for anything? What should that improve?
+ The best thing is it would make timers inaccurate.
+ If ISR is too fast, the whole thing doesn't make sense, so we assume the CPU is fast enough to handle usual turns
+ In case per10ms is called and it takes longer a IRQ is missed --> a count is not done which make the clock very inaccurate
+ Therefore in this case it is better the own ISR is called again and counts the clock. per10ms is not called twice, because the counters are resetted and on a high level.
+Because this lines increases the CPU load of the ISR it makes it even worse
+ */
+/*  cli();
   PAUSE_10MS_INTERRUPT();
-  sei();
+  sei(); */
 
+  static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
+  // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
 #if defined(PCBGRUVIN9X)
-  static uint8_t accuracyWarble = 4; // because 16M / 1024 / 100 = 156.25. So bump every 4.
-  uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
+  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
+  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
   OCR2A += bump;
 #elif defined(AUDIO) || defined(VOICE)
   OCR0 += 2; // interrupt every 128us
+  // warble is done later for AUDIO or VOICE don't do it here because it will destroy audio
 #else
-  static uint8_t accuracyWarble = 4; // because 16M / 1024 / 100 = 156.25. So bump every 4.
-  uint8_t bump = (!(accuracyWarble++ & 0x03)) ? 157 : 156;
+  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
+  // each tick we are 0,016msec too fast
+  // one tick more means 0,048 msec too slow = 3*0,016msec --> in sum we are correct!!!
+  // therefore every 4 round we need to slow down one tick
+  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
   OCR0 += bump;
 #endif
 
@@ -3422,7 +3530,7 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
   VOICE_DRIVER();
 #endif
 
-  static uint8_t cnt10ms = 77; // execute 10ms code once every 78 ISRs
+  static uint8_t cnt10ms; // no initialization needed here;  execute 10ms code once every 78 ISRs; takes 16.38msec to overrun for first round --> no problem
 
 #if defined(FRSKY) || defined(MAVLINK) || defined(JETI)
   if (cnt10ms == 30) {
@@ -3431,9 +3539,14 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
   }
 #endif
 
-  if (cnt10ms-- == 0) { // BEGIN { ... every 10ms ... }
+  if (--cnt10ms == 0) { // BEGIN { ... every 10ms ... }
     // Begin 10ms event
-    cnt10ms = 77;
+    // cnt10ms = 78;
+    cnt10ms = (!(++accuracyWarble &0x07)) ? 79 : 78;
+    // each per10ms() we are 0,016msec too fast
+    // one tick more means 0,112 msec too slow = 7*0,016msec --> in sum we are correct!!!        
+    // therefore every 8. round we need to slow down one tick
+    
 #endif
 
     AUDIO_HEARTBEAT();
@@ -3448,9 +3561,10 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
   } // end 10ms event
 #endif
 
+/*
   cli();
   RESUME_10MS_INTERRUPT();
-  sei();
+  sei(); */
 }
 
 // Timer3 used for PPM_IN pulse width capture. Counter running at 16MHz / 8 = 2MHz
