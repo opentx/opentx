@@ -773,7 +773,7 @@ void menuModelSetup(uint8_t event)
 #endif
 
 #if LCD_W >= 212
-  lcd_outdezNAtt(13*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
+  lcd_outdezNAtt(16*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
 #else
   lcd_outdezNAtt(7*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
 #endif
@@ -1110,9 +1110,13 @@ void menuModelSetup(uint8_t event)
 static uint8_t s_currIdx;
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ) || defined(TRANSLATIONS_SE) || defined(TRANSLATIONS_DE)
-#define MIXES_2ND_COLUMN    (11*FW)
+  #if LCD_W >= 212
+    #define MIXES_2ND_COLUMN  (18*FW)
+  #else
+    #define MIXES_2ND_COLUMN   (11*FW)
+  #endif
 #else
-#define MIXES_2ND_COLUMN    (9*FW)
+  #define MIXES_2ND_COLUMN    (9*FW)
 #endif
 
 #if LCD_W >= 212
@@ -1585,7 +1589,11 @@ enum menuModelHeliItems {
   ITEM_HELI_COLDIRECTION
 };
 
-#define HELI_PARAM_OFS (14*FW)
+#if LCD_W >= 212
+  #define HELI_PARAM_OFS (23*FW)
+#else
+  #define HELI_PARAM_OFS (14*FW)
+#endif
 
 void menuModelHeli(uint8_t event)
 {
@@ -1698,7 +1706,11 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
 void menuModelCurveOne(uint8_t event)
 {
   TITLE(STR_MENUCURVE);
+#if defined(TRANSLATIONS_FR)
+  lcd_outdezAtt(6*FW+1, 0, s_curveChan+1, INVERS|LEFT);
+#else
   lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
+#endif
   DISPLAY_PROGRESS_BAR(20*FW+1);
 
   CurveInfo crv = curveinfo(s_curveChan);
@@ -2243,7 +2255,11 @@ void menuModelMixOne(uint8_t event)
         uint8_t not_stick = (md2->srcRaw > NUM_STICKS);
         int8_t carryTrim = -md2->carryTrim;
         lcd_putsColumnLeft(COLUMN_X, y, STR_TRIM);
+#if LCD_W >= 212 && defined(TRANSLATIONS_FR)
+        lcd_putsiAtt((not_stick ? COLUMN_X+MIXES_2ND_COLUMN : COLUMN_X+11*FW-3), y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
+#else
         lcd_putsiAtt((not_stick ? COLUMN_X+MIXES_2ND_COLUMN : COLUMN_X+6*FW-3), y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
+#endif
         if (attr && m_posHorz==0 && (not_stick || editMode>0)) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         if (!not_stick) {
           lcd_puts(COLUMN_X+MIXES_2ND_COLUMN, y, STR_DREX);
@@ -3197,13 +3213,13 @@ void menuModelCustomSwitches(uint8_t event)
 
     if (cstate == CS_VBOOL) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, m_posHorz==1 ? attr : 0);
-      putsSwitches(CSW_3RD_COLUMN, y, cs->v2, m_posHorz==2 ? attr : 0);
+      putsSwitches(CSW_3RD_COLUMN-3*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
       v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
     }
     else if (cstate == CS_VCOMP) {
       putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, m_posHorz==1 ? attr : 0);
-      putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, m_posHorz==2 ? attr : 0);
+      putsMixerSource(CSW_3RD_COLUMN-3*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
     }
     else {
       putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, (m_posHorz==1 ? attr : 0));

@@ -366,11 +366,11 @@
 #define TR_CHECKTRIMS          CENTER"\006Check\012Trims"
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Swash Type"
-#define TR_COLLECTIVE          "Collective"
+#define TR_COLLECTIVE          TR("Collective","Collective source")
 #define TR_SWASHRING           "Swash Ring"
-#define TR_ELEDIRECTION        "ELE Direction"
-#define TR_AILDIRECTION        "AIL Direction"
-#define TR_COLDIRECTION        "COL Direction"
+#define TR_ELEDIRECTION        TR("ELE Direction","Long. cyc. direction")
+#define TR_AILDIRECTION        TR("AIL Direction","Lateral cyc. direction")
+#define TR_COLDIRECTION        TR("PIT Direction","Coll. pitch direction")
 #define TR_MODE                INDENT"Mode"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"
@@ -378,14 +378,14 @@
 #define TR_EDITMIX             "EDIT MIX "
 #define TR_SOURCE              INDENT"Source"
 #define TR_WEIGHT              "Weight"
-#define TR_EXPO                "Expo"
+#define TR_EXPO                TR("Expo","Exponential")
 #define TR_SIDE                "Side"
 #define TR_DIFFERENTIAL        "Differ"
 #define TR_OFFSET              INDENT"Offset"
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Curve"
-#define TR_FPHASE              "Phase"
+#define TR_FPHASE              TR("Phase","Phases")
 #define TR_MIXWARNING          "Warning"
 #define TR_OFF                 "OFF"
 #define TR_MULTPX              "Multpx"
@@ -483,8 +483,8 @@
 #define TR_MENUDATEANDTIME     "DATE AND TIME"
 #define TR_MENUTRAINER         "TRAINER"
 #define TR_MENUVERSION         "VERSION"
-#define TR_MENUDIAG            "DIAG"
-#define TR_MENUANA             "ANAS"
+#define TR_MENUDIAG            TR("SWITCHES","SWITCH TEST")
+#define TR_MENUANA             TR("ANAS","ANALOG INPUTS")
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
 #define TR_MENUMODELSEL        TR("MODELSEL","MODEL SELECTION")
@@ -548,7 +548,7 @@
 #define TR_COPROC              "CoProc."
 #define TR_COPROC_TEMP         "MB Temp. \016>"
 #define TR_CAPAWARNING         INDENT"Capacity Low"
-#define TR_TEMPWARNING         TR(INDENT"Temp High",INDENT"Temperature High")
+#define TR_TEMPWARNING         INDENT"Overheat"
 #define TR_FUNC                "Func"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
