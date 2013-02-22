@@ -283,7 +283,7 @@ void *main_thread(void *)
       doSplash();
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       eeLoadModel(g_eeGeneral.currModel);
 #endif
 
@@ -291,7 +291,7 @@ void *main_thread(void *)
       checkAll();
     }
     else {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       eeLoadModel(g_eeGeneral.currModel);
 #endif
     }

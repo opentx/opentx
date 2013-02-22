@@ -109,7 +109,8 @@ inline uint8_t eeFindEmptyModel(uint8_t id, bool down)
 }
 
 #if defined(SDCARD)
-bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection)
+#define LIST_NONE_SD_FILE  1
+bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, const char *selection, uint8_t flags=0)
 {
   FILINFO fno;
   DIR dir;
@@ -121,9 +122,11 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 #endif
 
   static uint16_t s_last_menu_offset = 0;
+  static uint8_t s_last_flags;
 
 #if defined(CPUARM)
   if (selection) {
+    s_last_flags = flags;
     memset(reusableBuffer.models.menu_bss, 0, sizeof(reusableBuffer.models.menu_bss));
     strcpy(reusableBuffer.models.menu_bss[0], path);
     strcat(reusableBuffer.models.menu_bss[0], "/");
@@ -133,6 +136,9 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
       selection = NULL;
     }
   }
+  else {
+    flags = s_last_flags;
+  }
 #endif
 
   if (s_menu_offset == 0) {
@@ -140,7 +146,8 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
     memset(reusableBuffer.models.menu_bss, 0, sizeof(reusableBuffer.models.menu_bss));
   }
   else if (s_menu_offset == s_last_menu_offset) {
-    return true; // should not happen, only there because of Murphy's law
+    // should not happen, only there because of Murphy's law
+    return true;
   }
   else if (s_menu_offset > s_last_menu_offset) {
     memmove(reusableBuffer.models.menu_bss[0], reusableBuffer.models.menu_bss[1], (MENU_MAX_LINES-1)*MENU_LINE_LENGTH);
@@ -156,6 +163,21 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
   if (res == FR_OK) {
+
+    if (flags & LIST_NONE_SD_FILE) {
+      s_menu_count++;
+      if (!selection) {
+        char *line;
+        if (s_menu_offset > 0 && s_menu_offset > s_last_menu_offset)
+          line = reusableBuffer.models.menu_bss[MENU_MAX_LINES-1];
+        else {
+          line = reusableBuffer.models.menu_bss[0];
+          memset(line, 0, MENU_LINE_LENGTH);
+          strcpy(line, "---");
+        }
+      }
+    }
+
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
@@ -792,7 +814,7 @@ void menuModelSetup(uint8_t event)
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           _event = 0;
-          if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), g_model.bitmap)) {
+          if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), g_model.bitmap, LIST_NONE_SD_FILE)) {
             s_warning = STR_NO_BITMAPS_ON_SD;
             s_menu_flags = 0;
           }
@@ -2939,16 +2961,23 @@ void menuModelGVars(uint8_t event)
 }
 #endif
 
-#if defined(CPUARM)
 enum CustomSwitchFields {
   CSW_FIELD_FUNCTION,
   CSW_FIELD_V1,
   CSW_FIELD_V2,
+  CSW_FIELD_ANDSW,
+#if defined(CPUARM)
   CSW_FIELD_DURATION,
   CSW_FIELD_DELAY,
-  CSW_FIELD_COUNT
+#endif
+  CSW_FIELD_COUNT,
+  CSW_FIELD_LAST = CSW_FIELD_COUNT-1
 };
-#define CSW_2ND_COLUMN (9*FW)
+
+#if defined(CPUARM) && LCD_W < 212
+
+#define CSWONE_2ND_COLUMN (11*FW)
+
 void menuModelCustomSwitchOne(uint8_t event)
 {
   TITLE(STR_MENUCUSTOMSWITCH);
@@ -2961,14 +2990,14 @@ void menuModelCustomSwitchOne(uint8_t event)
   int8_t sub = m_posVert;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
-    uint8_t y = 1 + (k+2)*FH;
+    uint8_t y = 1 + (k+1)*FH;
     uint8_t i = k + s_pgOfs;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     uint8_t cstate = CS_STATE(cs->func);
     switch(i) {
       case CSW_FIELD_FUNCTION:
         lcd_putsLeft(y, STR_FUNC);
-        lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_VCSWFUNC, cs->func, attr);
+        lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_VCSWFUNC, cs->func, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, CS_MAXF);
           if (cstate != CS_STATE(cs->func)) {
@@ -2982,11 +3011,11 @@ void menuModelCustomSwitchOne(uint8_t event)
         lcd_putsLeft(y, STR_V1);
         int8_t v1_min=0, v1_max=MIXSRC_LAST_CH+NUM_TELEMETRY;
         if (cstate == CS_VBOOL) {
-          putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr);
+          putsSwitches(CSWONE_2ND_COLUMN, y, cs->v1, attr);
           v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
         }
         else {
-          putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, attr);
+          putsMixerSource(CSWONE_2ND_COLUMN, y, cs->v1, attr);
         }
         if (attr) {
           CHECK_INCDEC_MODELVAR(event, cs->v1, v1_min, v1_max);
@@ -2998,16 +3027,16 @@ void menuModelCustomSwitchOne(uint8_t event)
         lcd_putsLeft(y, STR_V2);
         int8_t v2_min=0, v2_max=MIXSRC_LAST_CH+NUM_TELEMETRY;
         if (cstate == CS_VBOOL) {
-          putsSwitches(CSW_2ND_COLUMN, y, cs->v2, attr);
+          putsSwitches(CSWONE_2ND_COLUMN, y, cs->v2, attr);
           v2_min = SWSRC_OFF+1; v2_max = SWSRC_OFF-1;
         }
         else if (cstate == CS_VCOMP) {
-          putsMixerSource(CSW_2ND_COLUMN, y, cs->v2, attr);
+          putsMixerSource(CSWONE_2ND_COLUMN, y, cs->v2, attr);
         }
         else {
 #if defined(FRSKY)
           if (cs->v1 > MIXSRC_LAST_CH) {
-            putsTelemetryChannel(CSW_2ND_COLUMN, y, cs->v1 - MIXSRC_LAST_CH - 1, convertCswTelemValue(cs), attr|LEFT);
+            putsTelemetryChannel(CSWONE_2ND_COLUMN, y, cs->v1 - MIXSRC_LAST_CH - 1, convertCswTelemValue(cs), attr|LEFT);
             v2_max = maxTelemValue(cs->v1 - MIXSRC_LAST_CH);
             if (cstate == CS_VOFS) {
               v2_min = -128;
@@ -3026,7 +3055,7 @@ void menuModelCustomSwitchOne(uint8_t event)
 #endif
           {
             v2_min = -125; v2_max = 125;
-            lcd_outdezAtt(CSW_2ND_COLUMN, y, cs->v2, attr|LEFT);
+            lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v2, attr|LEFT);
           }
         }
 
@@ -3035,25 +3064,35 @@ void menuModelCustomSwitchOne(uint8_t event)
         }
         break;
       }
+      case CSW_FIELD_ANDSW:
+        lcd_putsLeft(y, PSTR("AND Switch"));
+        lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_VSWITCHES_SHORT, cs->andsw, attr);
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, 15);
+        break;
       case CSW_FIELD_DURATION:
         lcd_putsLeft(y, STR_DURATION);
         if (cs->duration > 0)
-          lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs->duration, attr|PREC1|LEFT);
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, 5*cs->duration, attr|PREC1|LEFT);
         else
-          lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_MMMINV, 0, attr);
+          lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_CSW_DURATION);
         break;
       case CSW_FIELD_DELAY:
         lcd_putsLeft(y, STR_DELAY);
         if (cs->delay > 0)
-          lcd_outdezAtt(CSW_2ND_COLUMN, y, 5*cs->delay, attr|PREC1|LEFT);
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, 5*cs->delay, attr|PREC1|LEFT);
         else
-          lcd_putsiAtt(CSW_2ND_COLUMN, y, STR_MMMINV, 0, attr);
+          lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_CSW_DELAY);
         break;
     }
   }
 }
+
+#define CSW_1ST_COLUMN  (4*FW-3)
+#define CSW_2ND_COLUMN  (10*FW+1)
+#define CSW_3RD_COLUMN  (18*FW+2)
+#define CSW_4TH_COLUMN  (20*FW+1)
 
 void menuModelCustomSwitches(uint8_t event)
 {
@@ -3090,32 +3129,35 @@ void menuModelCustomSwitches(uint8_t event)
 
     if (cs->func > 0) {
       // CSW func
-      lcd_putsiAtt(4*FW-3, y, STR_VCSWFUNC, cs->func, 0);
+      lcd_putsiAtt(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, 0);
 
       // CSW params
       uint8_t cstate = CS_STATE(cs->func);
 
       if (cstate == CS_VBOOL) {
-        putsSwitches(10*FW, y, cs->v1, 0);
-        putsSwitches(16*FW, y, cs->v2, 0);
+        putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
+        putsSwitches(CSW_3RD_COLUMN, y, cs->v2, 0);
       }
       else if (cstate == CS_VCOMP) {
-        putsMixerSource(10*FW, y, cs->v1, 0);
-        putsMixerSource(16*FW, y, cs->v2, 0);
+        putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
+        putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, 0);
       }
       else {
-        putsMixerSource(10*FW, y, cs->v1, 0);
+        putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
 
 #if defined(FRSKY)
         if (cs->v1 > MIXSRC_LAST_CH) {
-          putsTelemetryChannel(18*FW+2, y, cs->v1 - MIXSRC_LAST_CH - 1, convertCswTelemValue(cs), 0);
+          putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_LAST_CH - 1, convertCswTelemValue(cs), 0);
         }
         else
 #endif
         {
-          lcd_outdezAtt(19*FW, y, cs->v2, 0);
+          lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, 0);
         }
       }
+
+      // CSW and switch
+      lcd_putsiAtt(CSW_4TH_COLUMN, y, STR_VSWITCHES_SHORT, cs->andsw, 0);
     }
   }
 }
@@ -3124,11 +3166,13 @@ void menuModelCustomSwitches(uint8_t event)
 #define CSW_1ST_COLUMN  (4*FW-3)
 #define CSW_2ND_COLUMN  (10*FW+1)
 #define CSW_3RD_COLUMN  (18*FW+2)
-#define CSW_4TH_COLUMN  (20*FW+1)
+#define CSW_4TH_COLUMN  (21*FW+1)
+#define CSW_5TH_COLUMN  (26*FW+1)
+#define CSW_6TH_COLUMN  (31*FW+1)
 
 void menuModelCustomSwitches(uint8_t event)
 {
-  MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, 3/*repeated...*/});
+  MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, CSW_FIELD_LAST/*repeated...*/});
 
   uint8_t y = 0;
   uint8_t k = 0;
@@ -3190,26 +3234,56 @@ void menuModelCustomSwitches(uint8_t event)
     }
 
     // CSW and switch
+#if defined(PCBX9D)
+    putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, m_posHorz==3 ? attr : 0);
+#else
     lcd_putsiAtt(CSW_4TH_COLUMN, y, STR_VSWITCHES_SHORT, cs->andsw, m_posHorz==3 ? attr : 0);
+#endif
+
+#if defined(CPUARM)
+    // CSW duration
+    if (cs->duration > 0)
+      lcd_outdezAtt(CSW_5TH_COLUMN, y, 5*cs->duration, (m_posHorz==4 ? attr : 0)|PREC1|LEFT);
+    else
+      lcd_putsiAtt(CSW_5TH_COLUMN, y, STR_MMMINV, 0, m_posHorz==4 ? attr : 0);
+
+    // CSW delay
+    if (cs->delay > 0)
+      lcd_outdezAtt(CSW_6TH_COLUMN, y, 5*cs->delay, (m_posHorz==5 ? attr : 0)|PREC1|LEFT);
+    else
+      lcd_putsiAtt(CSW_6TH_COLUMN, y, STR_MMMINV, 0, m_posHorz==5 ? attr : 0);
+#endif
 
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (m_posHorz) {
-        case 0:
+        case CSW_FIELD_FUNCTION:
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, CS_MAXF);
           if (cstate != CS_STATE(cs->func)) {
             cs->v1 = 0;
             cs->v2 = 0;
           }
           break;
-        case 1:
+        case CSW_FIELD_V1:
           CHECK_INCDEC_MODELVAR(event, cs->v1, v1_min, v1_max);
           break;
-        case 2:
+        case CSW_FIELD_V2:
           CHECK_INCDEC_MODELVAR(event, cs->v2, v2_min, v2_max);
           break;
-        case 3:
-          CHECK_INCDEC_MODELVAR(event, cs->andsw, 0, 15);
-          break;          
+        case CSW_FIELD_ANDSW:
+#if defined(PCBX9D)
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, SWSRC_ON-1);
+#else
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, 15);
+#endif
+          break;
+#if defined(CPUARM)
+        case CSW_FIELD_DURATION:
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_CSW_DURATION);
+          break;
+        case CSW_FIELD_DELAY:
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_CSW_DELAY);
+          break;
+#endif
       }
     }
   }

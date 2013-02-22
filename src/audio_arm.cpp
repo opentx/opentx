@@ -283,8 +283,9 @@ void audioTimerHandle(void)
 #ifndef SIMU
 void audioTask(void* pdata)
 {
-  while (audioQueue.busy())
+  while (!audioQueue.started()) {
     CoWaitForSingleFlag(audioFlag, 0);
+  }
 
 #if defined(SDCARD)
   if (!unexpectedShutdown) {

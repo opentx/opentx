@@ -177,5 +177,6 @@ void sdPoll10ms();
 
 // Power driver
 uint8_t pwrCheck();
+#define UNEXPECTED_SHUTDOWN() ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
 
 #endif

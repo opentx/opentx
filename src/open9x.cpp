@@ -96,7 +96,7 @@ ModelData  g_model;
 
 #if defined(PCBX9D) && defined(SDCARD)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-pm_char * modelBitmapLoaded;
+pm_char * modelBitmapLoaded = NULL;
 void loadModelBitmap()
 {
   char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
@@ -792,9 +792,7 @@ bool __getSwitch(int8_t swtch)
 
       CustomSwData * cs = cswaddress(cs_idx);
       uint8_t s = cs->andsw;
-#if defined(PCBX9D)
-      // TODO
-#else
+#if !defined(PCBX9D)
       if (s >= SWSRC_TRN) s += SWSRC_SW3-SWSRC_TRN;
 #endif
       if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
@@ -3512,13 +3510,10 @@ uint16_t stack_free()
 #endif
 
 #if defined(PCBGRUVIN9X)
-#define UNEXPECTED_SHUTDOWN() ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
 #define OPEN9X_INIT_ARGS const uint8_t mcusr
 #elif defined(PCBSTD)
-#define UNEXPECTED_SHUTDOWN() (mcusr & (1 << WDRF))
 #define OPEN9X_INIT_ARGS const uint8_t mcusr
 #else
-#define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
 #define OPEN9X_INIT_ARGS
 #endif
 
@@ -3532,13 +3527,16 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 
   eeReadAll();
 
+#if defined(CPUARM)
+  if (UNEXPECTED_SHUTDOWN())
+    unexpectedShutdown = 1;
+#endif
+
 #if defined(VOICE)
   setVolume(g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF);
 #endif
 
 #if defined(CPUARM)
-  if (UNEXPECTED_SHUTDOWN())
-    unexpectedShutdown = 1;
   audioQueue.start();
   setBacklight(g_eeGeneral.backlightBright);
 #endif
@@ -3559,7 +3557,10 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
   if (UNEXPECTED_SHUTDOWN()) {
+#if !defined(CPUARM)
+    // is done above on ARM
     unexpectedShutdown = 1;
+#endif
 #if defined(CPUARM)
     eeLoadModel(g_eeGeneral.currModel);
 #endif

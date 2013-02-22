@@ -137,6 +137,7 @@ extern volatile uint16_t Analog_values[];
 void pwrInit();
 uint32_t pwrCheck();
 void pwrOff();
+#define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
 
 // Backlight driver
 #define setBacklight(xx)

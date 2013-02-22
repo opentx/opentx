@@ -1025,30 +1025,30 @@ extern void instantTrim();
 extern void moveTrimsToOffsets();
 
 #if defined(CPUARM)
-#define ACTIVE_EXPOS_TYPE  uint32_t
-#define ACTIVE_MIXES_TYPE  uint64_t
-#define ACTIVE_PHASES_TYPE uint16_t
+  #define ACTIVE_EXPOS_TYPE  uint32_t
+  #define ACTIVE_MIXES_TYPE  uint64_t
+  #define ACTIVE_PHASES_TYPE uint16_t
 #else
-#define ACTIVE_EXPOS_TYPE  uint16_t
-#define ACTIVE_MIXES_TYPE  uint32_t
-#define ACTIVE_PHASES_TYPE uint8_t
+  #define ACTIVE_EXPOS_TYPE  uint16_t
+  #define ACTIVE_MIXES_TYPE  uint32_t
+  #define ACTIVE_PHASES_TYPE uint8_t
 #endif
 
 #ifdef BOLD_FONT
-extern ACTIVE_EXPOS_TYPE   activeExpos;
-extern ACTIVE_MIXES_TYPE   activeMixes;
-inline bool isExpoActive(uint8_t expo)
-{
-  return activeExpos & ((ACTIVE_EXPOS_TYPE)1 << expo);
-}
+  extern ACTIVE_EXPOS_TYPE   activeExpos;
+  extern ACTIVE_MIXES_TYPE   activeMixes;
+  inline bool isExpoActive(uint8_t expo)
+  {
+    return activeExpos & ((ACTIVE_EXPOS_TYPE)1 << expo);
+  }
 
-inline bool isMixActive(uint8_t mix)
-{
-  return activeMixes & ((ACTIVE_MIXES_TYPE)1 << mix);
-}
+  inline bool isMixActive(uint8_t mix)
+  {
+    return activeMixes & ((ACTIVE_MIXES_TYPE)1 << mix);
+  }
 #else
-#define isExpoActive(x) false
-#define isMixActive(x) false
+  #define isExpoActive(x) false
+  #define isMixActive(x) false
 #endif
 
 #if defined(CPUARM)
@@ -1066,22 +1066,23 @@ extern MASK_CFN_TYPE  activeSwitches;
 extern MASK_CFN_TYPE  activeFnSwitches;
 extern MASK_FUNC_TYPE activeFunctions;
 extern tmr10ms_t lastFunctionTime[NUM_CFN];
+
 inline bool isFunctionActive(uint8_t func)
 {
   return activeFunctions & ((MASK_FUNC_TYPE)1 << (func-FUNC_TRAINER));
 }
 
 #if defined(CPUARM)
-typedef int32_t rotenc_t;
+  typedef int32_t rotenc_t;
 #else
-typedef int8_t rotenc_t;
+  typedef int8_t rotenc_t;
 #endif
 
 #if defined(ROTARY_ENCODERS)
-// Global rotary encoder registers
-extern volatile rotenc_t g_rotenc[ROTARY_ENCODERS];
+  // Global rotary encoder registers
+  extern volatile rotenc_t g_rotenc[ROTARY_ENCODERS];
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-extern volatile rotenc_t g_rotenc[1];
+  extern volatile rotenc_t g_rotenc[1];
 #endif
 
 #ifdef JETI

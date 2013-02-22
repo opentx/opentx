@@ -83,6 +83,7 @@
 // Power driver (none)
 #define pwrCheck() (e_power_on)
 #define pwrOff()
+#define UNEXPECTED_SHUTDOWN() (mcusr & (1 << WDRF))
 
 // Trainer driver
 bool checkSlaveMode();

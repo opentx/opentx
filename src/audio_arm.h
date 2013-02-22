@@ -107,6 +107,11 @@ class AudioQueue {
 
     bool isPlaying(uint8_t id);
 
+    bool started()
+    {
+      return (state != AUDIO_NOT_STARTED);
+    }
+
     bool busy()
     {
 #ifdef SIMU
