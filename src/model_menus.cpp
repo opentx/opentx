@@ -1113,7 +1113,7 @@ static uint8_t s_currIdx;
   #if LCD_W >= 212
     #define MIXES_2ND_COLUMN  (18*FW)
   #else
-    #define MIXES_2ND_COLUMN   (11*FW)
+    #define MIXES_2ND_COLUMN  (13*FW)
   #endif
 #else
   #define MIXES_2ND_COLUMN    (9*FW)
