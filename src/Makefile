@@ -831,7 +831,7 @@ eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm asterisk.lbm
+lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm x9d_logo.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -917,7 +917,12 @@ splash_9x.lbm: splash_9x.xbm
 	
 splash_X9D.lbm: splash_X9D.bmp
 	@echo
-	@echo "Convert X9D splash from xbm to lbm:"
+	@echo "Convert X9D splash from bmp to lbm:"
+	$(IMG2LBM) $< $@ bmp
+	
+x9d_logo.lbm: x9d_logo.bmp
+	@echo
+	@echo "Convert X9D logo from bmp to lbm:"
 	$(IMG2LBM) $< $@ bmp
 
 asterisk.lbm: asterisk.xbm

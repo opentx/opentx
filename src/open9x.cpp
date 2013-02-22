@@ -96,13 +96,14 @@ ModelData  g_model;
 
 #if defined(PCBX9D) && defined(SDCARD)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
+pm_char * modelBitmapLoaded;
 void loadModelBitmap()
 {
   char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
   strncpy(lfn+sizeof(BITMAPS_PATH), g_model.bitmap, sizeof(g_model.bitmap));
   lfn[sizeof(BITMAPS_PATH)+sizeof(g_model.bitmap)] = '\0';
   strcat(lfn+sizeof(BITMAPS_PATH), BITMAPS_EXT);
-  bmpLoad(modelBitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT);
+  modelBitmapLoaded = bmpLoad(modelBitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT);
 }
 #endif
 

@@ -90,6 +90,12 @@
 #define MARKER_WIDTH  5
 #define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
 
+#if defined(PCBX9D)
+  const pm_uchar x9d_logo[] PROGMEM = { 
+  #include "x9d_logo.lbm"
+  };
+#endif
+
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
@@ -439,8 +445,10 @@ void menuMainView(uint8_t event)
   displaySliders();
 
 #if defined(PCBX9D)
-  // Model bitmap
-  lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
+  if(modelBitmapLoaded == NULL)
+    lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
+  else
+  	lcd_bmp(BITMAP_X, BITMAP_Y, x9d_logo);
 #endif
 
   // Switches

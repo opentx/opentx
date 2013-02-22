@@ -391,6 +391,7 @@ extern inline uint16_t get_tmr10ms()
 #define MODEL_BITMAP_HEIGHT 32
 #define MODEL_BITMAP_SIZE   (2+4*(MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8))
 extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
+extern pm_char * modelBitmapLoaded;
 void loadModelBitmap();
 #define LOAD_MODEL_BITMAP() loadModelBitmap()
 #else
@@ -1051,16 +1052,20 @@ inline bool isMixActive(uint8_t mix)
 #endif
 
 #if defined(CPUARM)
-#define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
-#define MASK_FUNC_TYPE uint32_t // current max = 32 functions
+  #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint32_t // current max = 32 functions
+#elif defined(CPUM64)
+  #define MASK_CFN_TYPE uint16_t  // current max = 16 function switches
+  #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
 #else
-#define MASK_CFN_TYPE uint16_t  // current max = 16 function switches
-#define MASK_FUNC_TYPE uint16_t // current max = 16 functions
+  #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
 #endif
 
 extern MASK_CFN_TYPE  activeSwitches;
 extern MASK_CFN_TYPE  activeFnSwitches;
 extern MASK_FUNC_TYPE activeFunctions;
+extern tmr10ms_t lastFunctionTime[NUM_CFN];
 inline bool isFunctionActive(uint8_t func)
 {
   return activeFunctions & ((MASK_FUNC_TYPE)1 << (func-FUNC_TRAINER));
