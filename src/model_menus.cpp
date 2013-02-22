@@ -772,11 +772,7 @@ void menuModelSetup(uint8_t event)
   }
 #endif
 
-#if LCD_W >= 212
-  lcd_outdezNAtt(16*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
-#else
-  lcd_outdezNAtt(7*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
-#endif
+  lcd_outdezNAtt((PSIZE(TR_MENUSETUP)+2)*FW, 0, g_eeGeneral.currModel+1, INVERS+LEADING0, 2);
 
   uint8_t protocol = g_model.protocol;
 
@@ -1706,11 +1702,7 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
 void menuModelCurveOne(uint8_t event)
 {
   TITLE(STR_MENUCURVE);
-#if defined(TRANSLATIONS_FR)
-  lcd_outdezAtt(6*FW+1, 0, s_curveChan+1, INVERS|LEFT);
-#else
-  lcd_outdezAtt(5*FW+1, 0, s_curveChan+1, INVERS|LEFT);
-#endif
+  lcd_outdezAtt(PSIZE(TR_MENUCURVE)*FW+1, 0, s_curveChan+1, INVERS|LEFT);
   DISPLAY_PROGRESS_BAR(20*FW+1);
 
   CurveInfo crv = curveinfo(s_curveChan);
