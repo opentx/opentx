@@ -3536,6 +3536,8 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 #endif
 
 #if defined(CPUARM)
+  if (UNEXPECTED_SHUTDOWN())
+    unexpectedShutdown = 1;
   audioQueue.start();
   setBacklight(g_eeGeneral.backlightBright);
 #endif
@@ -3557,7 +3559,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
 
   if (UNEXPECTED_SHUTDOWN()) {
     unexpectedShutdown = 1;
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     eeLoadModel(g_eeGeneral.currModel);
 #endif
   }
@@ -3570,7 +3572,7 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
     }
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     eeLoadModel(g_eeGeneral.currModel);
 #endif
 

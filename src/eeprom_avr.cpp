@@ -958,7 +958,9 @@ void eeReadAll()
   }
 
   stickMode = g_eeGeneral.stickMode;
+#if !defined(CPUARM)
   eeLoadModel(g_eeGeneral.currModel);
+#endif
 }
 
 void eeCheck(bool immediately)

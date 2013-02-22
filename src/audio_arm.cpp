@@ -267,7 +267,7 @@ AudioQueue::AudioQueue()
 
 void AudioQueue::start()
 {
-  state = AUDIO_RESUMING;
+  state = AUDIO_SLEEPING;
   CoSetFlag(audioFlag);
 }
 
