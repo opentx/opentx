@@ -129,7 +129,7 @@ class AudioQueue {
 
     void sdWakeup(AudioContext & context);
 
-    uint8_t state;
+    volatile uint8_t state;
     uint8_t ridx;
     uint8_t widx;
     int8_t prioIdx;
