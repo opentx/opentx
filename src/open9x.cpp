@@ -791,7 +791,11 @@ bool __getSwitch(int8_t swtch)
 
       CustomSwData * cs = cswaddress(cs_idx);
       uint8_t s = cs->andsw;
+#if defined(PCBX9D)
+      // TODO
+#else
       if (s >= SWSRC_TRN) s += SWSRC_SW3-SWSRC_TRN;
+#endif
       if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
         result = false;
       }
