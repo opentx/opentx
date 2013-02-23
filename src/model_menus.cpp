@@ -646,7 +646,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
   if (active) {
     uint8_t cur = cursorPos;
     if (s_editMode > 0) {
-      char c = name[cur];
+      int8_t c = name[cur];
       int8_t v = c;
 
       /* TODO work with masks */
