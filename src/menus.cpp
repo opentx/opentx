@@ -499,7 +499,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       } while (MAXCOL(l_posVert) == (uint8_t)-1);
 
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
-      s_editMode = 0; // TODO why?
+      s_editMode = 0; // if we go down, we must be in this mode
 #endif
       l_posHorz = min(l_posHorz, MAXCOL(l_posVert));
       break;
@@ -544,6 +544,11 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       do {
         DEC(l_posVert, POS_VERT_INIT, maxrow);
       } while(MAXCOL(l_posVert) == (uint8_t)-1);
+
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9D)
+      s_editMode = 0; // if we go up, we must be in this mode
+#endif
+
       l_posHorz = min(l_posHorz, MAXCOL(l_posVert));
       break;
 
