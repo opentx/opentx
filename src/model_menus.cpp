@@ -166,15 +166,13 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 
     if (flags & LIST_NONE_SD_FILE) {
       s_menu_count++;
-      if (!selection) {
-        char *line;
-        if (s_menu_offset > 0 && s_menu_offset > s_last_menu_offset)
-          line = reusableBuffer.models.menu_bss[MENU_MAX_LINES-1];
-        else {
-          line = reusableBuffer.models.menu_bss[0];
-          memset(line, 0, MENU_LINE_LENGTH);
-          strcpy(line, "---");
-        }
+      if (selection) {
+        s_last_menu_offset++;
+      }
+      else if (s_menu_offset==0 || s_menu_offset < s_last_menu_offset) {
+        char *line = reusableBuffer.models.menu_bss[0];
+        memset(line, 0, MENU_LINE_LENGTH);
+        strcpy(line, "---");
       }
     }
 
