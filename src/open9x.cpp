@@ -2989,7 +2989,12 @@ void perMain()
 #elif !defined(CPUARM)
   uint16_t t0 = getTmr16KHz();
   int16_t delta = (nextMixerEndTime - lastMixerDuration) - t0;
-  if (delta > 0 && delta < MAX_MIXER_DELTA) return;
+  if (delta > 0 && delta < MAX_MIXER_DELTA) {
+#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION)
+    rotencPoll();
+#endif
+    return;
+  }
 
   nextMixerEndTime = t0 + MAX_MIXER_DELTA;
 
