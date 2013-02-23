@@ -1361,7 +1361,7 @@ void menuTelemetryFrsky(uint8_t event)
               fields_count++;
               int16_t value = getValue(MIXSRC_LAST_CH+field-1);
               uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
-              if (field <= TELEM_TM2) {
+              if (field >= TELEM_TM1 && field <= TELEM_TM2) {
                 uint8_t x = (i==3 ? j?80:20 : j?74:10);
                 putsTime(x, 1+FH+2*FH*i, value, att, att);
               }
