@@ -3180,7 +3180,7 @@ void menuModelCustomSwitches(uint8_t event)
 #define CSW_1ST_COLUMN  (4*FW-3)
 #define CSW_2ND_COLUMN  (10*FW+1)
 #define CSW_3RD_COLUMN  (18*FW+2)
-#define CSW_4TH_COLUMN  (21*FW+1)
+#define CSW_4TH_COLUMN  (20*FW+1)
 #define CSW_5TH_COLUMN  (26*FW+1)
 #define CSW_6TH_COLUMN  (31*FW+1)
 
