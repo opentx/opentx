@@ -986,14 +986,18 @@ void menuModelSetup(uint8_t event)
             case 1:
 #if defined(PCBSKY9X)
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.ppmSCH, 32-8-(g_model.ppmNCH*2));
+              g_model.ppmFrameLength = NUM_PORT1_CHANNELS>NUM_PORT2_CHANNELS ? 4*(NUM_PORT1_CHANNELS-8) : 4*(NUM_PORT2_CHANNELS-8);
 #else
               CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
+              g_model.ppmFrameLength = g_model.ppmNCH * 8;
 #endif
               break;
 #if defined(PCBSKY9X)
             case 2:
-              if (IS_PPM_PROTOCOL(protocol))
+              if (IS_PPM_PROTOCOL(protocol)) {
                 CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, min<int8_t>(4, (32-g_model.ppmSCH)/2-4));
+                g_model.ppmFrameLength = NUM_PORT1_CHANNELS>NUM_PORT2_CHANNELS ? 4*(NUM_PORT1_CHANNELS-8) : 4*(NUM_PORT2_CHANNELS-8);
+              }
               else
                 REPEAT_LAST_CURSOR_MOVE();
               break;
@@ -1014,9 +1018,11 @@ void menuModelSetup(uint8_t event)
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.ppm2SCH, 32-8-(g_model.ppm2NCH*2));
+              g_model.ppmFrameLength = NUM_PORT1_CHANNELS>NUM_PORT2_CHANNELS ? 4*(NUM_PORT1_CHANNELS-8) : 4*(NUM_PORT2_CHANNELS-8);
               break;
             case 1:
               CHECK_INCDEC_MODELVAR(event, g_model.ppm2NCH, -2, min<int8_t>(4, (32-g_model.ppm2SCH)/2-4));
+              g_model.ppmFrameLength = NUM_PORT1_CHANNELS>NUM_PORT2_CHANNELS ? 4*(NUM_PORT1_CHANNELS-8) : 4*(NUM_PORT2_CHANNELS-8);
               break;
           }
         }
