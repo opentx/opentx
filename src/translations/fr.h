@@ -411,7 +411,7 @@
 #define TR_BLOFFBRIGHTNESS     INDENT"Luminosit\200 OFF"
 #define TR_SPLASHSCREEN        "Ecran d'accueil"
 #define TR_THROTTLEWARNING     "Alerte gaz"
-#define TR_SWITCHWARNING       TR("Alerte Int","Alerte interrupt.")
+#define TR_SWITCHWARNING       TR("Alerte int","Alerte interrupt.")
 #define TR_TIMEZONE            "Fuseau horaire"
 #define TR_RXCHANNELORD        TR("Ordre voies RX","Ordre des voies pr\200f\200r\200")
 #define TR_SLAVE               "El\201ve"
@@ -509,7 +509,7 @@
 #define TR_CURRENT_CALIB       "Calib. Courant"
 #define TR_VOLTAGE             INDENT"Tension"
 #define TR_CURRENT             INDENT"Courant"
-#define TR_SELECT_MODEL        "S\200lect Mod\201le"
+#define TR_SELECT_MODEL        "S\200lect. Mod\201le"
 #define TR_CREATE_MODEL        "Cr\200er Mod\201le"
 #define TR_COPY_MODEL          "Copier Mod\201le"
 #define TR_MOVE_MODEL          "D\200placer Mod\201le"

@@ -103,6 +103,13 @@ void configure_pins( uint32_t pins, uint16_t config )
 }
 #endif
 
+#if defined(DEBUG)
+void debugPutc(const char c)
+{
+	uartPutc(c);
+}
+#endif
+
 uint8_t getTemperature()
 {
   return temperature + g_eeGeneral.temperatureCalib;
@@ -181,7 +188,7 @@ void boardInit()
   delaysInit();
   audioInit();
 #if defined(DEBUG)
-  debugInit();
+  uartInit(DEBUG_UART_BAUDRATE);
 #endif
 
   // TODO init_ppm() ;

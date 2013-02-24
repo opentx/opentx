@@ -79,12 +79,11 @@ extern uint16_t sessionTimer;
 #define SLAVE_MODE() (0/*pwrCheck() == e_power_trainer*/)
 
 void delaysInit();
-void debugInit();
 
 #define DEBUG_UART_BAUDRATE 115200
 
-void uartInit(void);
-void uartSendChar(uint8_t c);
+void uartInit(uint32_t baudrate);
+void uartPutc(const char c);
 
 void delaysInit(void);
 void delay_01us(uint16_t nb);

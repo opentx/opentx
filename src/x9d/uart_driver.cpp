@@ -36,7 +36,7 @@
 
 #include "../open9x.h"
 
-void debugInit(void)
+void uartInit(uint32_t baudrate)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -54,7 +54,7 @@ void debugInit(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIO_UART, &GPIO_InitStructure);
   
-  USART_InitStructure.USART_BaudRate = DEBUG_UART_BAUDRATE;
+  USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -65,7 +65,7 @@ void debugInit(void)
   USART_Cmd(UART_DEBUG, ENABLE);
 }
 
-void debugPutc(const char c)
+void uartPutc(const char c)
 {
   USART_SendData(UART_DEBUG, c);
 

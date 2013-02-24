@@ -485,8 +485,8 @@ ifeq ($(PCB), X9D)
   EEPROMSRC = eeprom_avr.cpp # TODO later eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += audio_arm.cpp
-  CPPSRC += x9d/pwr_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/adc_driver.cpp x9d/trainer_driver.cpp x9d/audio_driver.cpp x9d/delays.cpp
-  CPPSRC += bmp.cpp monitors_views.cpp
+  CPPSRC += x9d/pwr_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/adc_driver.cpp x9d/trainer_driver.cpp x9d/audio_driver.cpp x9d/delays.cpp x9d/uart_driver.cpp
+  CPPSRC += bmp.cpp monitors_views.cpp 
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
@@ -509,7 +509,6 @@ ifeq ($(PCB), X9D)
 
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
-  	CPPSRC += x9d/debug_driver.cpp
   	SRC += sky9x/syscalls.c
   endif
 endif
