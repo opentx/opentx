@@ -81,9 +81,12 @@ extern uint16_t sessionTimer;
 void delaysInit();
 
 #define DEBUG_UART_BAUDRATE 115200
+#define SPORT_BAUDRATE 9600
 
 void uartInit(uint32_t baudrate);
 void uartPutc(const char c);
+
+void sportInit(void);
 
 void delaysInit(void);
 void delay_01us(uint16_t nb);

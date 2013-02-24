@@ -78,11 +78,6 @@
 #define GPIOPWRLED                      GPIOC
 #define GPIOPWR                         GPIOD
 
-// Smart-Port
-#define PIN_SPORT_ON                    GPIO_Pin_4  //PD.04
-#define PIN_SPORT_TX                    GPIO_Pin_5  //PD.05
-#define PIN_SPORT_RX                    GPIO_Pin_6  //PD.06
-
 // Trainer Port
 #define PIN_TR_PPM_IN                   GPIO_Pin_5  //PC.08
 #define PIN_TR_PPM_OUT                  GPIO_Pin_9  //PC.09
@@ -115,6 +110,19 @@
 #define GPIO_PinSource_UART3_RX         GPIO_PinSource11
 #define GPIO_AF_UART3                   GPIO_AF_USART3
 #define UART3                           USART3
+
+// Smart-Port
+#define RCC_AHB1Periph_GPIO_SPORT       RCC_AHB1Periph_GPIOD
+#define RCC_APB1Periph_SPORT            RCC_APB1Periph_USART2
+#define GPIO_PIN_SPORT_ON               GPIOD
+#define PIN_SPORT_ON                    GPIO_Pin_4  //PD.04
+#define GPIO_PIN_SPORT_TXRX             GPIOD
+#define PIN_SPORT_TX                    GPIO_Pin_5  //PD.05
+#define PIN_SPORT_RX                    GPIO_Pin_6  //PD.06
+#define GPIO_PinSource_SPORT_TX         GPIO_PinSource5
+#define GPIO_PinSource_SPORT_RX         GPIO_PinSource6
+#define GPIO_AF_SPORT                   GPIO_AF_USART2
+#define SPORT                           USART2 
 
 // USB_OTG
 #define PIN_FS_VBUS                     GPIO_Pin_9  //PA.09

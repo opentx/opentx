@@ -205,6 +205,8 @@ void boardInit()
   __enable_irq() ;
 
   eepromInit();
+  
+  sportInit();
 }
 #endif
 
