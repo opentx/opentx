@@ -586,6 +586,8 @@ ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { 
 ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
 void RTC_GetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { }
 void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { }
+void RTC_TimeStructInit(RTC_TimeTypeDef* RTC_TimeStruct) { }
+void RTC_DateStructInit(RTC_DateTypeDef* RTC_DateStruct) { }
 void PWR_BackupAccessCmd(FunctionalState NewState) { }
 void RCC_RTCCLKConfig(uint32_t RCC_RTCCLKSource) { }
 void RCC_APB1PeriphClockCmd(uint32_t RCC_APB1Periph, FunctionalState NewState) { }
@@ -596,6 +598,7 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG) { ret
 void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
 void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
+void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
 void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR) { }
 void RCC_PLLI2SCmd(FunctionalState NewState) { }
 void RCC_I2SCLKConfig(uint32_t RCC_I2SCLKSource) { }

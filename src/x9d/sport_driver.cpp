@@ -85,13 +85,14 @@ void sportPutc(const char c)
   GPIO_ResetBits(GPIO_PIN_SPORT_ON, PIN_SPORT_ON);
 }
 
+#if !defined(SIMU)
 extern "C" void USART2_IRQHandler()
 {
     uint16_t data;
     
     while(USART_GetFlagStatus(SPORT, USART_FLAG_RXNE)){
       data = USART_ReceiveData(SPORT);
-//      debugPutc(data);
       processSerialData((uint8_t) data);
     }
 } 
+#endif
