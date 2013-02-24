@@ -1815,8 +1815,8 @@ void getADC()
 {
   uint16_t temp_ana;
   for (uint8_t adc_input=0; adc_input<8; adc_input++) {
+/*
     ADMUX = adc_input|ADC_VREF_TYPE;
-/*  
 	// ADCSRA|=0x08; // enable ADC Interrupt Enable  should not be necessary? or is it
 	MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit3)
 	asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
@@ -3034,21 +3034,26 @@ void doMixerCalculations()
   if (g_model.thrTraceSrc > NUM_POTS) {
     uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
     val = g_chans512[ch];
-    int8_t gModelMax=g_model.limitData[ch].max;
-    int8_t gModelMin=g_model.limitData[ch].min;
+    int16_t gModelMax=calc100toRESX(g_model.limitData[ch].max)+1024;
+    int16_t gModelMin=calc100toRESX(g_model.limitData[ch].min)-1024;
     
     if (g_model.limitData[ch].revert)
-      val = -val + calc100toRESX(gModelMax + 100);
+      val = -val + gModelMax;
     else
-      val = val - calc100toRESX(gModelMin - 100);
+      val = val - gModelMin;
 #if defined(PPM_LIMITS_SYMETRICAL)
     if (g_model.limitData[ch].symetrical)
       val -= calc1000toRESX(g_model.limitData[ch].offset);
 #endif
-    // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; unfortunately *16/16 causes overruns
+    // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; (*16/16 already cause a overrun; unsigned calculation also not possible, because v may be negative)
     gModelMax-=gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
-    gModelMax>>=4;
-    if (gModelMax) val = (val << 3) / (8+gModelMax); // recaling only needed if Min, Max differs
+    // usually max is 1024 min is -1024 --> max-min = 2048 full range / 128 = max 16 steps
+    
+    // gModelMax>>=(10-2);
+    // if (gModelMax!=8) val = (val << 3) / (gModelMax); // recaling only needed if Min, Max differs
+    
+    if (gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
+    // val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
 	if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
   }
   else {
@@ -3488,19 +3493,97 @@ uint16_t getTmr16KHz()
   }
 }
 
-
-ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
+/*
+// ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
+ISR(TIMER_10MS_VECT) 
+// 10ms timer
 {
- /* open.20.fsguruh is this good for anything? What should that improve?
- The best thing is it would make timers inaccurate.
- If ISR is too fast, the whole thing doesn't make sense, so we assume the CPU is fast enough to handle usual turns
- In case per10ms is called and it takes longer a IRQ is missed --> a count is not done which make the clock very inaccurate
- Therefore in this case it is better the own ISR is called again and counts the clock. per10ms is not called twice, because the counters are resetted and on a high level.
-Because this lines increases the CPU load of the ISR it makes it even worse
- */
-/*  cli();
+  static uint8_t accuracyWarble; 
+ 
+#if defined(PCBGRUVIN9X)
+  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
+  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
+  OCR2A += bump;
+#elif defined(AUDIO) || defined(VOICE)
+
+  // static uint8_t accuracyWarble; 
+  // because in this compile option the ISR is called each 128usec we prevent reentrant calls with a check to highest bit if accuracyWarble
+  // this is not necessary for the other builds, because we expect there would not be a reentrant call in 10msec time
+  OCR0 += 2; // interrupt every 128us
+  // warble is done later for AUDIO or VOICE don't do it here because it will destroy audio
+
+  static int8_t cnt10ms; // no initialization needed here;  execute 10ms code once every 78 ISRs; takes 16.38msec to overrun for first round --> no problem
+
+  cnt10ms--;
+  
+  if (accuracyWarble&0x80) return;  // is we are already in ISR leave it as soon as possible to free CPU, at least we had the ISR counted
+  accuracyWarble|=0x80;  // sign we are currently in ISR
+ 
+  bool doPer10msCall=false;
+  
+  if (cnt10ms<=0) {  // also allow smaller values
+    cnt10ms += (!(++accuracyWarble &0x07)) ? 79 : 78;  // instead of assigning we add to take missed ISRs into account
+    accuracyWarble|=0x80;  // reset sign bit, because ++accuracyWarble may deleted it because of overrun
+    doPer10msCall=true;
+  }  
+  
+#else
+   static uint8_t accuracyWarble; 
+  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
+  // each tick we are 0,016msec too fast
+  // one tick more means 0,048 msec too slow = 3*0,016msec --> in sum we are correct!!!
+  // therefore every 4 round we need to slow down one tick
+  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
+  OCR0 += bump;
+#endif  
+  sei();  
+  
+#if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
+
+#if defined(AUDIO)
+  AUDIO_DRIVER();
+#endif
+
+#if defined(VOICE)
+  VOICE_DRIVER();
+#endif
+
+#if defined(FRSKY) || defined(MAVLINK) || defined(JETI)
+  if (cnt10ms == 30) {
+    if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
+      telemetryPoll10ms();
+  }
+#endif
+
+  if (doPer10msCall) { // BEGIN { ... every 10ms ... }
+    // Begin 10ms event
+#endif
+
+    AUDIO_HEARTBEAT();
+
+#if defined(HAPTIC)
+    HAPTIC_HEARTBEAT();
+#endif
+
+    per10ms();
+
+#if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
+  } // end 10ms event
+#endif
+  
+  
+  
+  accuracyWarble&=0x7F;  
+  
+}
+*/
+
+ 
+ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer  
+{
+  cli();
   PAUSE_10MS_INTERRUPT();
-  sei(); */
+  sei();
 
   static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
   // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
@@ -3561,10 +3644,10 @@ Because this lines increases the CPU load of the ISR it makes it even worse
   } // end 10ms event
 #endif
 
-/*
-  cli();
+
+  // cli();
   RESUME_10MS_INTERRUPT();
-  sei(); */
+  // sei();
 }
 
 // Timer3 used for PPM_IN pulse width capture. Counter running at 16MHz / 8 = 2MHz
