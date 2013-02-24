@@ -37,17 +37,17 @@
 #ifndef fifo_h
 #define fifo_h
 
-class Fifo32
+class Fifo512
 {
   public:
-    Fifo32():
+    Fifo512():
       widx(0),
       ridx(0)
     {
     }
 
     void push(uint8_t byte) {
-      uint32_t next = (widx+1) & 0x1f;
+      uint32_t next = (widx+1) & 0x1ff;
       if (next != ridx) {
         fifo[widx] = byte;
         widx = next;
@@ -60,13 +60,13 @@ class Fifo32
       }
       else {
         byte = fifo[ridx];
-        ridx = (ridx+1) & 0x1f;
+        ridx = (ridx+1) & 0x1ff;
         return true;
       }
     }
 
   protected:
-    uint8_t fifo[32];
+    uint8_t fifo[512];
     volatile uint32_t widx;
     volatile uint32_t ridx;
 };

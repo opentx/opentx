@@ -41,15 +41,18 @@ void rtcSetTime(struct gtm * t)
   RTC_TimeTypeDef RTC_TimeStruct;
   RTC_DateTypeDef RTC_DateStruct;
 
+  RTC_TimeStructInit(&RTC_TimeStruct);
+  RTC_DateStructInit(&RTC_DateStruct);
+
   RTC_TimeStruct.RTC_Hours = t->tm_hour;
   RTC_TimeStruct.RTC_Minutes = t->tm_min;
   RTC_TimeStruct.RTC_Seconds = t->tm_sec;
   RTC_DateStruct.RTC_Year = t->tm_year - 100;
-  RTC_DateStruct.RTC_Month = t->tm_mon;
+  RTC_DateStruct.RTC_Month = t->tm_mon + 1;
   RTC_DateStruct.RTC_Date = t->tm_mday;
-
-  RTC_SetTime(RTC_Format_BCD, &RTC_TimeStruct);
-  RTC_SetDate(RTC_Format_BCD, &RTC_DateStruct);
+  
+  RTC_SetTime(RTC_Format_BIN, &RTC_TimeStruct);
+  RTC_SetDate(RTC_Format_BIN, &RTC_DateStruct);
 }
 
 void rtc_gettime(struct gtm * t)
@@ -57,14 +60,14 @@ void rtc_gettime(struct gtm * t)
   RTC_TimeTypeDef RTC_TimeStruct;
   RTC_DateTypeDef RTC_DateStruct;
 
-  RTC_GetTime(RTC_Format_BCD, &RTC_TimeStruct);
-  RTC_GetDate(RTC_Format_BCD, &RTC_DateStruct);
-
+  RTC_GetTime(RTC_Format_BIN, &RTC_TimeStruct);
+  RTC_GetDate(RTC_Format_BIN, &RTC_DateStruct);
+  
   t->tm_hour = RTC_TimeStruct.RTC_Hours;
   t->tm_min  = RTC_TimeStruct.RTC_Minutes;
   t->tm_sec  = RTC_TimeStruct.RTC_Seconds;
   t->tm_year = RTC_DateStruct.RTC_Year + 100;
-  t->tm_mon  = RTC_DateStruct.RTC_Month;
+  t->tm_mon  = RTC_DateStruct.RTC_Month - 1;
   t->tm_mday = RTC_DateStruct.RTC_Date;
 }
 

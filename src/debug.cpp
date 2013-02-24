@@ -40,7 +40,8 @@
 
 #if !defined(SIMU)
 
-Fifo32 debugFifo;
+Fifo512 debugRxFifo;
+Fifo512 debugTxFifo;
 
 // Outputs a string to the UART
 void debugPuts(const char *format, ...)
@@ -54,7 +55,7 @@ void debugPuts(const char *format, ...)
 
   const char *t = tmp;
   while (*t) {
-    debugPutc(*t++);
+    debugTxFifo.push(*t++);
   }
 }
 
@@ -78,10 +79,17 @@ void debugTask(void* pdata)
   uint8_t rxchar ;
 
   for (;;) {
-    while (!debugFifo.pop(rxchar))
+    while (!debugRxFifo.pop(rxchar))
       CoTickDelay(5); // 10ms
 
   }
 }
 
+void debugTx(void)
+{
+	uint8_t txchar;
+	
+	if(debugTxFifo.pop(txchar))	
+		debugPutc(txchar);
+}
 #endif

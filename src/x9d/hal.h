@@ -105,16 +105,16 @@
 // Heart Beat
 #define PIN_HEART_BEAT                  GPIO_Pin_7  //PC.07
 
-// Debug UART
-#define RCC_AHB1Periph_GPIO_UART        RCC_AHB1Periph_GPIOB
-#define RCC_APB1Periph_UART_DEBUG       RCC_APB1Periph_USART3
-#define GPIO_UART                       GPIOB
-#define GPIO_PIN_UART_TX                GPIO_Pin_10 //PB.10
-#define GPIO_PIN_UART_RX                GPIO_Pin_11 //PB.11
-#define GPIO_PinSource_UART_TX          GPIO_PinSource10
-#define GPIO_PinSource_UART_RX          GPIO_PinSource11
-#define GPIO_AF_UART                    GPIO_AF_USART3
-#define UART_DEBUG                      USART3
+// UART3
+#define RCC_AHB1Periph_GPIO_UART3       RCC_AHB1Periph_GPIOB
+#define RCC_APB1Periph_UART3            RCC_APB1Periph_USART3
+#define GPIO_UART3                      GPIOB
+#define GPIO_PIN_UART3_TX               GPIO_Pin_10 //PB.10
+#define GPIO_PIN_UART3_RX               GPIO_Pin_11 //PB.11
+#define GPIO_PinSource_UART3_TX         GPIO_PinSource10
+#define GPIO_PinSource_UART3_RX         GPIO_PinSource11
+#define GPIO_AF_UART3                   GPIO_AF_USART3
+#define UART3                           USART3
 
 // USB_OTG
 #define PIN_FS_VBUS                     GPIO_Pin_9  //PA.09

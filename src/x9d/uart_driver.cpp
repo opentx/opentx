@@ -41,34 +41,32 @@ void uartInit(uint32_t baudrate)
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_UART, ENABLE);
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART_DEBUG, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_UART3, ENABLE);
 
-  GPIO_PinAFConfig(GPIO_UART, GPIO_PinSource_UART_RX, GPIO_AF_UART);
-  GPIO_PinAFConfig(GPIO_UART, GPIO_PinSource_UART_TX, GPIO_AF_UART);
+  GPIO_PinAFConfig(GPIO_UART3, GPIO_PinSource_UART3_RX, GPIO_AF_UART3);
+  GPIO_PinAFConfig(GPIO_UART3, GPIO_PinSource_UART3_TX, GPIO_AF_UART3);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_UART_TX | GPIO_PIN_UART_RX;
+  GPIO_InitStructure.GPIO_Pin = GPIO_PIN_UART3_TX | GPIO_PIN_UART3_RX;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIO_UART, &GPIO_InitStructure);
+  GPIO_Init(GPIO_UART3, &GPIO_InitStructure);
+  
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART3, ENABLE);
   
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_Mode = USART_Mode_Tx;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStructure.USART_Mode = USART_Mode_Tx;
   
-  USART_Init(UART_DEBUG, &USART_InitStructure);
-  USART_Cmd(UART_DEBUG, ENABLE);
+  USART_Init(UART3, &USART_InitStructure);
+  USART_Cmd(UART3, ENABLE);
 }
 
 void uartPutc(const char c)
 {
-  USART_SendData(UART_DEBUG, c);
-
-  /* Wait for end of previous transfer */
-  while (USART_GetFlagStatus(UART_DEBUG, USART_FLAG_TC) == RESET);
+  USART_SendData(UART3, c);
 }

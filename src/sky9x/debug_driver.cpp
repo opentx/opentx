@@ -39,7 +39,7 @@
 
 #if !defined(SIMU)
 
-extern Fifo32 debugFifo;
+extern Fifo512 debugRxFifo;
 
 /*
  * Outputs a character on the UART line.
@@ -103,7 +103,7 @@ void DEBUG_UART_Stop()
 
 extern "C" void UART0_IRQHandler()
 {
-  debugFifo.push(CONSOLE_USART->UART_RHR);
+  debugRxFifo.push(CONSOLE_USART->UART_RHR);
 }
 
 #endif

@@ -171,6 +171,9 @@ void interrupt5ms()
     pre_scale = 0 ;
     per10ms();
   }
+#if defined(DEBUG)
+  debugTx();
+#endif 
 }
 
 extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
