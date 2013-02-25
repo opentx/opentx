@@ -3515,7 +3515,7 @@ void menuModelCustomFunctions(uint8_t event)
                   break;
                 default:
                   val_max = 1;
-                  lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\002+1-1"), val_displayed, attr);
+                  lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\002-1+1"), val_displayed, attr);
                   break;
               }
 
