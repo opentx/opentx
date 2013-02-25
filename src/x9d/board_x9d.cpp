@@ -127,6 +127,16 @@ void usbMassStorage()
 {
 }
 
+void usbInit(void)
+{
+	USBD_Init(&USB_OTG_dev,
+            USB_OTG_HS_CORE_ID,  
+            USB_OTG_FS_CORE_ID,
+            &USR_desc,
+            &USBD_MSC_cb, 
+            &USR_cb);
+}
+
 void watchdogInit()
 {
   IWDG->KR = 0x5555 ;      // Unlock registers
@@ -182,6 +192,11 @@ extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
   interrupt5ms() ;
 }
 
+void OTG_FS_IRQHandler(void)
+{
+  USBD_OTG_ISR_Handler (&USB_OTG_dev);
+}
+
 #if !defined(SIMU)
 void boardInit()
 {
@@ -207,6 +222,7 @@ void boardInit()
   eepromInit();
   
   sportInit();
+  usbInit();
 }
 #endif
 
