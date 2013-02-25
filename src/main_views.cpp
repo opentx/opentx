@@ -224,9 +224,30 @@ void displayTimers()
 }
 #endif
 
+void displayBattVoltage()
+{
+#if defined(BATTGRAPH)
+  putsVBat(VBATT_X-8, VBATT_Y+1, 0);
+  lcd_filled_rect(VBATT_X-25, VBATT_Y+9, 22, 5);
+  lcd_vline(VBATT_X-3, VBATT_Y+10, 3);
+  uint8_t count = limit<uint8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20);
+  for (uint8_t i=0; i<count; i+=2)
+    lcd_vline(VBATT_X-24+i, VBATT_Y+10, 3);
+  if (g_vbat100mV > g_eeGeneral.vBatWarn || BLINK_ON_PHASE)
+    lcd_filled_rect(VBATT_X-26, VBATT_Y, 25, 15);
+#else
+  LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
+  putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
+#if LCD_W >= 212
+  lcd_putcAtt(VBATTUNIT_X, VBATTUNIT_Y, 'v', MIDSIZE);
+#else
+  lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
+#endif
+#endif
+}
 
 #if defined(CPUARM)
-void displayVoltage()
+void displayVoltageOrAlarm()
 {
   if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
     putsTelemetryValue(6*FW-1, 3*FH, getTemperature(), UNIT_DEGREES, BLINK|INVERS|DBLSIZE);
@@ -237,22 +258,11 @@ void displayVoltage()
   }
 #endif
   else {
-    LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
-    putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
-#if LCD_W >= 212
-    lcd_putcAtt(VBATTUNIT_X, VBATTUNIT_Y, 'v', MIDSIZE);
-#else
-    lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
-#endif
+    displayBattVoltage();
   }
 }
 #else
-void displayVoltage()
-{
-  LcdFlags att = (g_vbat100mV <= g_eeGeneral.vBatWarn ? BLINK|INVERS : 0) | BIGSIZE;
-  putsVBat(VBATT_X-1, VBATT_Y, att|NO_UNIT);
-  lcd_putc(VBATT_X, VBATTUNIT_Y, 'V');
-}
+  #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
 #if defined(PCBX9D) || defined(PCBACT)
@@ -431,7 +441,7 @@ void menuMainView(uint8_t event)
     putsModelName(MODELNAME_X, 0*FH, g_model.name, g_eeGeneral.currModel, BIGSIZE);
 
     // Main Voltage (or alarm if any)
-    displayVoltage();
+    displayVoltageOrAlarm();
 
     // Timers
     displayTimers();

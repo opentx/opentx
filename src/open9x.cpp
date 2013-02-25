@@ -706,37 +706,40 @@ int16_t getValue(uint8_t i)
   else if (i<MIXSRC_PPM1+NUM_CAL_PPM) return (g_ppmIns[i+1-MIXSRC_PPM1] - g_eeGeneral.trainer.calib[i+1-MIXSRC_PPM1])*2;
   else if (i<MIXSRC_LAST_PPM) return g_ppmIns[i+1-MIXSRC_PPM1]*2;
   else if (i<MIXSRC_LAST_CH) return ex_chans[i+1-MIXSRC_CH1];
-  else if (i<MIXSRC_LAST_CH+TELEM_TX_VOLTAGE) return g_vbat100mV;
-  else if (i<MIXSRC_LAST_CH+TELEM_TM2) return s_timerVal[i+1-MIXSRC_LAST_CH-TELEM_TM1];
+#if defined(GVARS)
+  else if (i<MIXSRC_LAST_GVAR) return GVAR_VALUE(i+1-MIXSRC_GVAR1, getGVarFlightPhase(s_perout_flight_phase, i+1-MIXSRC_GVAR1));
+#endif
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_TM2) return s_timerVal[i+1-MIXSRC_FIRST_TELEM+1-TELEM_TM1];
 #if defined(FRSKY)
-  else if (i<MIXSRC_LAST_CH+TELEM_RSSI_TX) return frskyData.rssi[1].value;
-  else if(i<MIXSRC_LAST_CH+TELEM_RSSI_RX) return frskyData.rssi[0].value;
-  else if(i<MIXSRC_LAST_CH+TELEM_A2) return frskyData.analog[i+1-MIXSRC_LAST_CH-TELEM_A1].value;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
+  else if(i<MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
+  else if(i<MIXSRC_FIRST_TELEM-1+TELEM_A2) return frskyData.analog[i+1-MIXSRC_FIRST_TELEM+1-TELEM_A1].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<MIXSRC_LAST_CH+TELEM_ALT) return frskyData.hub.baroAltitude_bp;
+  else if(i<MIXSRC_FIRST_TELEM-1+TELEM_ALT) return frskyData.hub.baroAltitude_bp;
 #endif
 #if defined(FRSKY_HUB)
-  else if (i<MIXSRC_LAST_CH+TELEM_RPM) return frskyData.hub.rpm;
-  else if (i<MIXSRC_LAST_CH+TELEM_FUEL) return frskyData.hub.fuelLevel;
-  else if (i<MIXSRC_LAST_CH+TELEM_T1) return frskyData.hub.temperature1;
-  else if (i<MIXSRC_LAST_CH+TELEM_T2) return frskyData.hub.temperature2;
-  else if (i<MIXSRC_LAST_CH+TELEM_SPEED) return frskyData.hub.gpsSpeed_bp;
-  else if (i<MIXSRC_LAST_CH+TELEM_DIST) return frskyData.hub.gpsDistance;
-  else if (i<MIXSRC_LAST_CH+TELEM_GPSALT) return frskyData.hub.gpsAltitude_bp;
-  else if (i<MIXSRC_LAST_CH+TELEM_CELL) return (int16_t)frskyData.hub.minCellVolts * 2;
-  else if (i<MIXSRC_LAST_CH+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
-  else if (i<MIXSRC_LAST_CH+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
-  else if (i<MIXSRC_LAST_CH+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
-  else if (i<MIXSRC_LAST_CH+TELEM_CONSUMPTION) return frskyData.currentConsumption;
-  else if (i<MIXSRC_LAST_CH+TELEM_POWER) return frskyData.power;
-  else if (i<MIXSRC_LAST_CH+TELEM_ACCx) return frskyData.hub.accelX;
-  else if (i<MIXSRC_LAST_CH+TELEM_ACCy) return frskyData.hub.accelY;
-  else if (i<MIXSRC_LAST_CH+TELEM_ACCz) return frskyData.hub.accelZ;
-  else if (i<MIXSRC_LAST_CH+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
-  else if (i<MIXSRC_LAST_CH+TELEM_VSPD) return frskyData.hub.varioSpeed;
-  else if (i<MIXSRC_LAST_CH+TELEM_MIN_A1) return frskyData.analog[0].min;
-  else if (i<MIXSRC_LAST_CH+TELEM_MIN_A2) return frskyData.analog[1].min;
-  else if (i<MIXSRC_LAST_CH+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i+1-(MIXSRC_LAST_CH+TELEM_MAX_CURRENT));
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_RPM) return frskyData.hub.rpm;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_FUEL) return frskyData.hub.fuelLevel;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_T1) return frskyData.hub.temperature1;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_T2) return frskyData.hub.temperature2;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return frskyData.hub.gpsSpeed_bp;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_DIST) return frskyData.hub.gpsDistance;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return frskyData.hub.gpsAltitude_bp;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)frskyData.hub.minCellVolts * 2;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CONSUMPTION) return frskyData.currentConsumption;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_POWER) return frskyData.power;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_ACCx) return frskyData.hub.accelX;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_ACCy) return frskyData.hub.accelY;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return frskyData.hub.accelZ;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_VSPD) return frskyData.hub.varioSpeed;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[0].min;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[1].min;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i+1-(MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT));
 #endif
 #endif
   else return 0;
@@ -835,15 +838,15 @@ bool __getSwitch(int8_t swtch)
         else {
 #if defined(FRSKY)
           // Telemetry
-          if (cs->v1 > MIXSRC_LAST_CH) {
-            if (frskyStreaming <= 0 && cs->v1 > MIXSRC_LAST_CH+MAX_TIMERS)
+          if (cs->v1 >= MIXSRC_FIRST_TELEM) {
+            if (frskyStreaming <= 0 && cs->v1 > MIXSRC_FIRST_TELEM-1+MAX_TIMERS)
               return swtch > 0 ? false : true;
 
             y = convertCswTelemValue(cs);
 
 #if defined(FRSKY_HUB)
             if (s == CS_VOFS) {
-              uint8_t idx = cs->v1-MIXSRC_LAST_CH-TELEM_ALT;
+              uint8_t idx = cs->v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;
               if (idx < THLD_MAX) {
                 // Fill the threshold array
                 barsThresholds[idx] = 128 + cs->v2;
@@ -855,7 +858,7 @@ bool __getSwitch(int8_t swtch)
             y = calc100toRESX(cs->v2);
           }
 #else
-          if (cs->v1 > MIXSRC_LAST_CH) {
+          if (cs->v1 >= MIXSRC_FIRST_TELEM) {
             y = cs->v2; // it's a timer
           }
           else {
@@ -865,7 +868,12 @@ bool __getSwitch(int8_t swtch)
 
           switch (cs->func) {
             case CS_VEQUAL:
-              result = (abs(x-y) < STICK_TOLERANCE);
+#if defined(GVARS)
+              if (cs->v1 >= MIXSRC_GVAR1 && cs->v1 <= MIXSRC_LAST_GVAR)
+                result = (x==y);
+              else
+#endif
+              result = (abs(x-y) < (1024 / STICK_TOLERANCE));
               break;
             case CS_VPOS:
               result = (x>y);
@@ -1955,25 +1963,25 @@ PLAY_FUNCTION(playValue, uint8_t idx)
   // TODO add the MIXSRC_TELEM_TM1 and so on.
 
   switch (idx) {
-    case MIXSRC_LAST_CH+TELEM_TX_VOLTAGE-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE-1:
       PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
       break;
-    case MIXSRC_LAST_CH+TELEM_TM1-1:
-    case MIXSRC_LAST_CH+TELEM_TM2-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_TM1-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_TM2-1:
       PLAY_DURATION(val);
       break;
 #if defined(FRSKY)
-    case MIXSRC_LAST_CH+TELEM_RSSI_TX-1:
-    case MIXSRC_LAST_CH+TELEM_RSSI_RX-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX-1:
       PLAY_NUMBER(val, 1+UNIT_DBM, 0);
       break;
-    case MIXSRC_LAST_CH+TELEM_MIN_A1-1:
-    case MIXSRC_LAST_CH+TELEM_MIN_A2-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2-1:
       idx -= TELEM_MIN_A1-TELEM_A1;
       // no break
-    case MIXSRC_LAST_CH+TELEM_A1-1:
-    case MIXSRC_LAST_CH+TELEM_A2-1:
-      idx -= (MIXSRC_LAST_CH+TELEM_A1-1);
+    case MIXSRC_FIRST_TELEM-1+TELEM_A1-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_A2-1:
+      idx -= (MIXSRC_FIRST_TELEM-1+TELEM_A1-1);
         // A1 and A2
       {
         uint8_t att = 0;
@@ -1985,41 +1993,41 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         break;
       }
 
-    case MIXSRC_LAST_CH+TELEM_CELL-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CELL-1:
       PLAY_NUMBER(val/10, 1+UNIT_VOLTS, PREC1);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_VFAS-1:
-    case MIXSRC_LAST_CH+TELEM_CELLS_SUM-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_VFAS-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM-1:
       PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_CURRENT-1:
-    case MIXSRC_LAST_CH+TELEM_MAX_CURRENT-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CURRENT-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT-1:
       PLAY_NUMBER(val, 1+UNIT_AMPS, PREC1);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_ACCx-1:
-    case MIXSRC_LAST_CH+TELEM_ACCy-1:
-    case MIXSRC_LAST_CH+TELEM_ACCz-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCx-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCy-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCz-1:
       PLAY_NUMBER(val/10, 1+UNIT_G, PREC1);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_VSPD-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_VSPD-1:
       PLAY_NUMBER(val/10, 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_CONSUMPTION-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CONSUMPTION-1:
       PLAY_NUMBER(val, 1+UNIT_MAH, 0);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_POWER-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_POWER-1:
       PLAY_NUMBER(val, 1+UNIT_WATTS, 0);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_ALT-1:
-    case MIXSRC_LAST_CH+TELEM_MIN_ALT-1:
-    case MIXSRC_LAST_CH+TELEM_MAX_ALT-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ALT-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_ALT-1:
 #if defined(IMPERIAL_UNITS)
       if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
         PLAY_NUMBER(val, 1+UNIT_FEET, 0);
@@ -2028,24 +2036,24 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         PLAY_NUMBER(val, 1+UNIT_METERS, 0);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_RPM-1:
-    case MIXSRC_LAST_CH+TELEM_MAX_RPM-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_RPM-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_RPM-1:
       PLAY_NUMBER(val, 1+UNIT_RPMS, 0);
       break;
 
-    case MIXSRC_LAST_CH+TELEM_HDG-1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_HDG-1:
       PLAY_NUMBER(val, 1+UNIT_DEGREES, 0);
       break;
 
     default:
     {
       uint8_t unit = 1;
-      if (idx < MIXSRC_LAST_CH+TELEM_TM1-1)
+      if (idx < MIXSRC_FIRST_TELEM-1+TELEM_TM1-1)
         val = calcRESXto100(val);
-      if (idx >= MIXSRC_LAST_CH+TELEM_ALT-1 && idx <= MIXSRC_LAST_CH+TELEM_GPSALT-1)
-        unit = idx - (MIXSRC_LAST_CH+TELEM_ALT-1);
-      else if (idx >= MIXSRC_LAST_CH+TELEM_MAX_T1-1 && idx <= MIXSRC_LAST_CH+TELEM_MAX_DIST-1)
-        unit = 3 + idx - (MIXSRC_LAST_CH+TELEM_MAX_T1-1);
+      if (idx >= MIXSRC_FIRST_TELEM-1+TELEM_ALT-1 && idx <= MIXSRC_FIRST_TELEM-1+TELEM_GPSALT-1)
+        unit = idx - (MIXSRC_FIRST_TELEM-1+TELEM_ALT-1);
+      else if (idx >= MIXSRC_FIRST_TELEM-1+TELEM_MAX_T1-1 && idx <= MIXSRC_FIRST_TELEM-1+TELEM_MAX_DIST-1)
+        unit = 3 + idx - (MIXSRC_FIRST_TELEM-1+TELEM_MAX_T1-1);
 
       unit = pgm_read_byte(bchunit_ar+unit);
 #if !defined(IMPERIAL_UNITS)
@@ -2078,8 +2086,8 @@ uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 {
   char lfn[] = SOUNDS_PATH "/xxxxxx.wav";
-  strncpy(lfn+sizeof(SOUNDS_PATH), sd->param, sizeof(sd->param));
-  lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param)] = '\0';
+  strncpy(lfn+sizeof(SOUNDS_PATH), sd->param.name, sizeof(sd->param.name));
+  lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param.name)] = '\0';
   strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
   PLAY_FILE(lfn, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
 }
@@ -2108,7 +2116,7 @@ void evalFunctions()
     CustomFnData *sd = &g_model.funcSw[i];
     int8_t swtch = sd->swtch;
     if (swtch) {
-      MASK_FUNC_TYPE function_mask = (sd->func >= FUNC_TRAINER ? ((MASK_FUNC_TYPE)1 << (sd->func-FUNC_TRAINER)) : 0);
+      MASK_FUNC_TYPE function_mask = (CFN_FUNC(sd) >= FUNC_TRAINER ? ((MASK_FUNC_TYPE)1 << (CFN_FUNC(sd)-FUNC_TRAINER)) : 0);
       MASK_CFN_TYPE  switch_mask   = ((MASK_CFN_TYPE)1 << i);
       uint8_t momentary = 0;
 
@@ -2158,7 +2166,7 @@ void evalFunctions()
 
           active = !(activeFnSwitches & switch_mask);
 #if !defined(CPUARM)
-          if (sd->func == FUNC_PLAY_BOTH && !active) {
+          if (CFN_FUNC(sd) == FUNC_PLAY_BOTH && !active) {
             momentary = 1;
           }
           else
@@ -2184,19 +2192,19 @@ void evalFunctions()
 #endif
       }
 #if !defined(CPUARM)
-      else if (sd->func == FUNC_PLAY_BOTH) {
+      else if (CFN_FUNC(sd) == FUNC_PLAY_BOTH) {
         momentary = 1;
       }
 #endif
 
       if (active || momentary) {
-        if (sd->active) {
-          if (sd->func < FUNC_TRAINER) {
-            safetyCh[sd->func] = CFN_PARAM(sd);
+        if (CFN_ACTIVE(sd)) {
+          if (CFN_FUNC(sd) < FUNC_TRAINER) {
+            safetyCh[CFN_FUNC(sd)] = CFN_CH_NUMBER(sd);
           }
 
           if (!(activeFunctions & function_mask)) {
-            if (sd->func == FUNC_INSTANT_TRIM) {
+            if (CFN_FUNC(sd) == FUNC_INSTANT_TRIM) {
               if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
                 || g_menuStack[0] == menuTelemetryFrsky
@@ -2206,18 +2214,17 @@ void evalFunctions()
             }
           }
         }
-        else if (sd->func <= FUNC_INSTANT_TRIM) {
-          function_mask = 0;
-          switch_mask = 0;
+        else if (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM) {
+          active = false;
         }
 
 #if defined(SDCARD)
-        if (sd->func == FUNC_LOGS) {
+        if (CFN_FUNC(sd) == FUNC_LOGS) {
           logDelay = CFN_PARAM(sd);
         }
 #endif
 
-        if (sd->func == FUNC_RESET) {
+        if (CFN_FUNC(sd) == FUNC_RESET) {
           switch (CFN_PARAM(sd)) {
             case FUNC_RESET_TIMER1:
             case FUNC_RESET_TIMER2:
@@ -2242,24 +2249,24 @@ void evalFunctions()
           }
         }
 
-        if (sd->func == FUNC_PLAY_SOUND) {
+        if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
           AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(sd));
         }
 
 #if defined(HAPTIC)
-        if (sd->func == FUNC_HAPTIC) {
+        if (CFN_FUNC(sd) == FUNC_HAPTIC) {
           haptic.event(AU_FRSKY_LAST+CFN_PARAM(sd));
         }
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-        else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_VALUE) {
+        else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
           tmr10ms_t tmr10ms = get_tmr10ms();
-          uint8_t repeatParam = sd->active;
+          uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
           if (!lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=500*repeatParam)) {
             if (!IS_PLAYING(i+1)) {
               lastFunctionTime[i] = tmr10ms;
-              if (sd->func == FUNC_PLAY_VALUE) {
+              if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
                 PLAY_VALUE(CFN_PARAM(sd), i+1);
               }
               else {
@@ -2268,51 +2275,75 @@ void evalFunctions()
             }
           }
         }
-        else if (sd->func == FUNC_BACKGND_MUSIC) {
+        else if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC) {
           if (!IS_PLAYING(i+1)) {
             playCustomFunctionFile(sd, i+1);
           }
         }
-        else if (sd->func == FUNC_VOLUME) {
-          requiredSpeakerVolume = ((1024 + getValue(CFN_PARAM(sd))) * VOLUME_LEVEL_MAX) / 2048;
+        else if (CFN_FUNC(sd) == FUNC_VOLUME) {
+          if (CFN_ACTIVE(sd)) {
+            requiredSpeakerVolume = ((1024 + getValue(CFN_PARAM(sd))) * VOLUME_LEVEL_MAX) / 2048;
+          }
+          else {
+            active = false;
+          }
         }
 #elif defined(VOICE)
-        else if (sd->func == FUNC_PLAY_TRACK || sd->func == FUNC_PLAY_BOTH || sd->func == FUNC_PLAY_VALUE) {
+        else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_BOTH || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
           tmr10ms_t tmr10ms = get_tmr10ms();
-          uint8_t repeatParam = sd->active;
-          if (!lastFunctionTime[i] || (sd->func==FUNC_PLAY_BOTH && active!=(bool)(activeFnSwitches&switch_mask)) || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=(1500<<(repeatParam-1)))) {
+          uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
+          if (!lastFunctionTime[i] || (CFN_FUNC(sd)==FUNC_PLAY_BOTH && active!=(bool)(activeFnSwitches&switch_mask)) || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
             lastFunctionTime[i] = tmr10ms;
-            if (sd->func == FUNC_PLAY_VALUE) {
-              PLAY_VALUE(CFN_PARAM(sd), i+1);
+            uint8_t param = CFN_PARAM(sd);
+            if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+              PLAY_VALUE(param, i+1);
             }
             else {
-              PUSH_CUSTOM_PROMPT(active ? sd->param : sd->param+1, i+1);
+              if (CFN_FUNC(sd) == FUNC_PLAY_TRACK && param > 250)
+                param = GVAR_VALUE(param-251, getGVarFlightPhase(s_perout_flight_phase, param-251));
+              PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
             }
           }
         }
 #endif
 
 #if defined(DEBUG)
-        else if (sd->func == FUNC_TEST) {
+        else if (CFN_FUNC(sd) == FUNC_TEST) {
           testFunc();
         }
 #endif
 
 #if defined(GVARS)
-        else if (sd->func >= FUNC_ADJUST_GV1) {
-          if (CFN_PARAM(sd) >= MIXSRC_TrimRud-1 && CFN_PARAM(sd) <= MIXSRC_TrimAil-1) {
-            trimGvar[CFN_PARAM(sd)-MIXSRC_TrimRud+1] = sd->func-FUNC_ADJUST_GV1;
-          }
+        else if (CFN_FUNC(sd) >= FUNC_ADJUST_GV1) {
+          if (CFN_ACTIVE(sd)) {
+            if (CFN_GVAR_MODE(sd) == 0) {
+              SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, CFN_PARAM(sd), s_perout_flight_phase);
+            }
+            else if (CFN_GVAR_MODE(sd) == 2) {
+              SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, GVAR_VALUE(CFN_PARAM(sd), s_perout_flight_phase), s_perout_flight_phase);
+            }
+            else if (CFN_GVAR_MODE(sd) == 3) {
+              if (!(activeFnSwitches & switch_mask)) {
+                SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, GVAR_VALUE(CFN_FUNC(sd)-FUNC_ADJUST_GV1, getGVarFlightPhase(s_perout_flight_phase, CFN_FUNC(sd)-FUNC_ADJUST_GV1)) + (CFN_PARAM(sd) ? +1 : -1), s_perout_flight_phase);
+              }
+            }
+            else if (CFN_PARAM(sd) >= MIXSRC_TrimRud-1 && CFN_PARAM(sd) <= MIXSRC_TrimAil-1) {
+              trimGvar[CFN_PARAM(sd)-MIXSRC_TrimRud+1] = CFN_FUNC(sd)-FUNC_ADJUST_GV1;
+            }
 #if defined(ROTARY_ENCODERS)
-          else if (CFN_PARAM(sd) >= MIXSRC_REa-1 && CFN_PARAM(sd) < MIXSRC_TrimRud-1) {
-            int8_t scroll = rePreviousValues[CFN_PARAM(sd)-MIXSRC_REa+1] - (g_rotenc[CFN_PARAM(sd)-MIXSRC_REa+1] / ROTARY_ENCODER_GRANULARITY);
-            if (scroll) {
-              SET_GVAR(sd->func-FUNC_ADJUST_GV1, GVAR_VALUE(sd->func-FUNC_ADJUST_GV1, s_perout_flight_phase) + scroll, s_perout_flight_phase);
+            else if (CFN_PARAM(sd) >= MIXSRC_REa-1 && CFN_PARAM(sd) < MIXSRC_TrimRud-1) {
+              int8_t scroll = rePreviousValues[CFN_PARAM(sd)-MIXSRC_REa+1] - (g_rotenc[CFN_PARAM(sd)-MIXSRC_REa+1] / ROTARY_ENCODER_GRANULARITY);
+              if (scroll) {
+                SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, GVAR_VALUE(CFN_FUNC(sd)-FUNC_ADJUST_GV1, getGVarFlightPhase(s_perout_flight_phase, CFN_FUNC(sd)-FUNC_ADJUST_GV1)) + scroll, s_perout_flight_phase);
+              }
+            }
+#endif
+            else {
+              SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, limit((int16_t)-1250, getValue(CFN_PARAM(sd)), (int16_t)1250) / 10, s_perout_flight_phase);
             }
           }
-#endif
           else {
-            SET_GVAR(sd->func-FUNC_ADJUST_GV1, limit((int16_t)-1250, getValue(CFN_PARAM(sd)), (int16_t)1250) / 10, s_perout_flight_phase);
+            active = false;
           }
         }
 #endif
@@ -2328,7 +2359,7 @@ void evalFunctions()
         fnSwitchDuration[i] = 0;
 #endif
 #if defined(CPUARM) && defined(SDCARD)
-        if (sd->func == FUNC_BACKGND_MUSIC && isFunctionActive(FUNC_BACKGND_MUSIC)) {
+        if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC && isFunctionActive(FUNC_BACKGND_MUSIC)) {
           STOP_PLAY(i+1);
         }
 #endif

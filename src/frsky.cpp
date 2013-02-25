@@ -1039,9 +1039,9 @@ int16_t convertCswTelemValue(CustomSwData * cs)
 {
   int16_t val;
   if (CS_STATE(cs->func)==CS_VOFS)
-    val = convertTelemValue(cs->v1 - MIXSRC_LAST_CH, 128+cs->v2);
+    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
   else
-    val = convertTelemValue(cs->v1 - MIXSRC_LAST_CH, 128+cs->v2) - convertTelemValue(cs->v1 - MIXSRC_LAST_CH, 128);
+    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
   return val;
 }
 
@@ -1308,7 +1308,7 @@ void menuTelemetryFrsky(uint8_t event)
             uint8_t y = barHeight+6+i*(barHeight+6);
             lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
             lcd_rect(25, y, 101, barHeight+2);
-            int16_t value = getValue(MIXSRC_LAST_CH+source-1);
+            int16_t value = getValue(MIXSRC_FIRST_TELEM+source-2);
             int16_t threshold = 0;
             uint8_t thresholdX = 0;
             if (source <= TELEM_TM2)
@@ -1381,7 +1381,7 @@ void menuTelemetryFrsky(uint8_t event)
             }
             if (field) {
               fields_count++;
-              int16_t value = getValue(MIXSRC_LAST_CH+field-1);
+              int16_t value = getValue(MIXSRC_FIRST_TELEM+field-2);
               uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
               if (field >= TELEM_TM1 && field <= TELEM_TM2) {
                 uint8_t x = (i==3 ? j?80:20 : j?74:10);

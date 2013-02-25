@@ -190,6 +190,8 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   unexpectedShutdown:1;
   uint8_t   speakerPitch;
   int8_t    speakerVolume;
+  int8_t    vBatMin;
+  int8_t    vBatMax;
 
   EXTRA_GENERAL_FIELDS;
 
@@ -345,8 +347,15 @@ PACK(typedef struct t_CustomSwData { // Custom Switches data
 #endif
 
 enum Functions {
+#if defined(CPUARM)
   FUNC_SAFETY_CH1,
   FUNC_SAFETY_CH16=FUNC_SAFETY_CH1+15,
+#else
+  FUNC_SAFETY_GROUP1,
+  FUNC_SAFETY_GROUP2,
+  FUNC_SAFETY_GROUP3,
+  FUNC_SAFETY_GROUP4,
+#endif
   FUNC_TRAINER,
   FUNC_TRAINER_RUD,
   FUNC_TRAINER_ELE,
@@ -401,20 +410,52 @@ enum ResetFunctionParam {
 
 #if defined(CPUARM)
 PACK(typedef struct t_CustomFnData { // Function Switches data
-  int8_t  swtch; //input
+  int8_t  swtch;
   uint8_t func;
-  char    param[6];
-  uint8_t active;
+  union {
+    char name[6];
+    struct {
+      uint32_t val;
+      uint16_t spare;
+    } composite;
+  } param;
+  uint8_t mode:2;
+  uint8_t active:6;
 }) CustomFnData;
-#define CFN_PARAM(p)       (*((uint32_t*)(p)->param))
-#define CFN_RESET_PARAM(p) memset(p->param, 0, sizeof(p->param))
+#define CFN_FUNC(p)        ((p)->func)
+#define CFN_ACTIVE(p)      ((p)->active)
+#define CFN_CH_NUMBER(p)   (CFN_FUNC(p))
+#define CFN_PLAY_REPEAT(p) ((p)->active)
+#define CFN_GVAR_MODE(p)   ((p)->mode)
+#define CFN_PARAM(p)       ((p)->param.composite.val)
+#define CFN_RESET_PARAM(p) memset(&(p)->param, 0, sizeof((p)->param))
 #else
 PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch; // input
-  uint8_t func:6;
-  uint8_t active:2;
+  union {
+    struct {
+      uint8_t param:3;
+      uint8_t func:5;
+    } func_param;
+
+    struct {
+      uint8_t active:1;
+      uint8_t param:2;
+      uint8_t func:5;
+    } func_param_enable;
+
+    struct {
+      uint8_t active:1;
+      uint8_t func:7;
+    } func_safety;
+  } internal;
   uint8_t param;
 }) CustomFnData;
+#define CFN_FUNC(p)        ((p)->internal.func_param.func)
+#define CFN_ACTIVE(p)      ((p)->internal.func_param_enable.active)
+#define CFN_CH_NUMBER(p)   ((p)->internal.func_safety.func)
+#define CFN_PLAY_REPEAT(p) ((p)->internal.func_param.param)
+#define CFN_GVAR_MODE(p)   ((p)->internal.func_param_enable.param)
 #define CFN_PARAM(p)       ((p)->param)
 #define CFN_RESET_PARAM(p) CFN_PARAM(p) = 0
 #endif
@@ -520,6 +561,18 @@ enum VarioSource {
   VARIO_SOURCE_A2,
   VARIO_SOURCE_LAST = VARIO_SOURCE_A2
 };
+
+#if defined(FRSKY_HUB)
+  #define NUM_TELEMETRY      TELEM_CSW_MAX
+#elif defined(WS_HOW_HIGH)
+  #define NUM_TELEMETRY      TELEM_ALT
+#elif defined(FRSKY)
+  #define NUM_TELEMETRY      TELEM_A2
+#elif defined(MAVLINK)
+  #define NUM_TELEMETRY      4
+#else
+  #define NUM_TELEMETRY      TELEM_TM2
+#endif
 
 PACK(typedef struct t_FrSkyBarData {
   uint8_t    source;
@@ -918,7 +971,13 @@ enum MixSources {
   MIXSRC_CH14,
   MIXSRC_CH15,
   MIXSRC_CH16,
-  MIXSRC_LAST_CH = MIXSRC_CH1+NUM_CHNOUT-1
+  MIXSRC_LAST_CH = MIXSRC_CH1+NUM_CHNOUT-1,
+
+  MIXSRC_GVAR1,
+  MIXSRC_LAST_GVAR = MIXSRC_GVAR1+MAX_GVARS-1,
+
+  MIXSRC_FIRST_TELEM,
+  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+NUM_TELEMETRY-1,
 };
 
 #define MIN_POINTS 3

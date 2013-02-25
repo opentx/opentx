@@ -113,9 +113,10 @@ PWM_BACKLIGHT = NO
 # Values = YES, NO, FIXED
 SPLASH = YES
 
-# GRAPHICS (sliders / checkboxes / bold)
+# GRAPHICS (sliders / checkboxes / bold / batt graph)
 GRAPHICS = YES
 BOLD = YES
+BATTGRAPH = YES
 
 # THR trace (in STATS screen)
 THR_TRACE = YES
@@ -389,6 +390,12 @@ ifeq ($(BOLD), YES)
   CPPDEFS += -DBOLD_FONT
 endif
 
+ifneq ($(PCB), X9D)
+  ifeq ($(BATTGRAPH), YES)
+    CPPDEFS += -DBATTGRAPH
+  endif
+endif
+  
 ifeq ($(THR_TRACE), YES)
   CPPDEFS += -DTHRTRACE
 endif

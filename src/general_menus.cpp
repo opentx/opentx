@@ -76,8 +76,8 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 #define RADIO_SETUP_DATE_COLUMN RADIO_SETUP_2ND_COLUMN + 4*FWNUM
 #define RADIO_SETUP_TIME_COLUMN RADIO_SETUP_2ND_COLUMN + 2*FWNUM
 #else
-#define RADIO_SETUP_2ND_COLUMN  (LCD_W-5*FW-MENUS_SCROLLBAR_WIDTH)
-#define RADIO_SETUP_TIME_COLUMN (FW*15+5)
+#define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
+#define RADIO_SETUP_TIME_COLUMN (FW*15+9)
 #define RADIO_SETUP_DATE_COLUMN (FW*15+5)
 #endif
 
@@ -114,6 +114,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 enum menuGeneralSetupItems {
   IF_RTCLOCK(ITEM_SETUP_DATE)
   IF_RTCLOCK(ITEM_SETUP_TIME)
+  IF_BATTGRAPH(ITEM_SETUP_BATT_RANGE)
   ITEM_SETUP_SOUND_LABEL,
   ITEM_SETUP_BEEPER_MODE,
   ITEM_SETUP_BEEPER_LENGTH,
@@ -166,7 +167,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) LABEL(SOUND), 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(TIMER_EVENTS), 0, 0, LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, LABEL(TX_MODE), CASE_PCBX9D(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(TIMER_EVENTS), 0, 0, LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) 0, LABEL(TX_MODE), CASE_PCBX9D(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -230,6 +231,21 @@ void menuGeneralSetup(uint8_t event)
         }
         if (attr && checkIncDec_Ret)
           g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
+        break;
+#endif
+
+#if defined(BATTGRAPH)
+      case ITEM_SETUP_BATT_RANGE:
+        lcd_putsLeft(y, PSTR("Battery Range"));
+        lcd_putc(g_eeGeneral.vBatMin >= 10 ? RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-1 : RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-FW/2, y, '-');
+        putsVolts(RADIO_SETUP_2ND_COLUMN, y,  90+g_eeGeneral.vBatMin, (m_posHorz==0 ? attr : 0)|LEFT|NO_UNIT);
+        putsVolts(RADIO_SETUP_2ND_COLUMN+4*FW-2, y, 120+g_eeGeneral.vBatMax, (m_posHorz!=0 ? attr : 0)|LEFT|NO_UNIT);
+        if (attr && s_editMode>0) {
+          if (m_posHorz==0)
+            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+20); // min=4.0V
+          else
+            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMax, g_eeGeneral.vBatMin-20, +40); // max=16.0V
+        }
         break;
 #endif
 
@@ -327,7 +343,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_BATTERY_WARNING:
-        lcd_putsLeft( y,STR_BATTERYWARNING);
+        lcd_putsLeft(y, STR_BATTERYWARNING);
         putsVolts(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, attr|LEFT);
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
         break;

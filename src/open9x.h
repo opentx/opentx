@@ -68,6 +68,12 @@
 #define IF_CPUARM(x)
 #endif
 
+#if defined(BATTGRAPH)
+#define IF_BATTGRAPH(x) x,
+#else
+#define IF_BATTGRAPH(x)
+#endif
+
 #if defined(RTCLOCK)
 #define IF_RTCLOCK(x) x,
 #else
@@ -533,18 +539,6 @@ enum CswFunctions {
 #define NUM_CYC         3
 #define NUM_CAL_PPM     4
 #define NUM_PPM         8
-
-#if defined(FRSKY_HUB)
-#define NUM_TELEMETRY      TELEM_CSW_MAX
-#elif defined(WS_HOW_HIGH)
-#define NUM_TELEMETRY      TELEM_ALT
-#elif defined(FRSKY)
-#define NUM_TELEMETRY      TELEM_A2
-#elif defined(MAVLINK)
-#define NUM_TELEMETRY      4
-#else
-#define NUM_TELEMETRY      TELEM_TM2
-#endif
 
 #define THRCHK_DEADBAND 16
 

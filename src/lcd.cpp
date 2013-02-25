@@ -771,8 +771,12 @@ void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
     putsStrIdx(x, y, STR_PPM, idx-MIXSRC_PPM1+1, att);
   else if (idx <= MIXSRC_LAST_CH)
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
+#if defined(GVARS)
+  else if (idx <= MIXSRC_LAST_GVAR)
+    putsStrIdx(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
+#endif
   else
-    lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-MIXSRC_LAST_CH, att);
+    lcd_putsiAtt(x, y, STR_VTELEMCHNS, idx-MIXSRC_FIRST_TELEM+1, att);
 }
 
 void putsChnLetter(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags attr)
