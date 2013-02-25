@@ -3223,7 +3223,7 @@ void menuModelCustomSwitches(uint8_t event)
 
 #if defined(FRSKY)
       if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-        putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), m_posHorz==2 ? attr : 0);
+        putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), m_posHorz==2 ? attr : 0);
         v2_max = maxTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1);
         if (cstate == CS_VOFS) {
           v2_min = -128;
