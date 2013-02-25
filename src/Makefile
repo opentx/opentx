@@ -116,7 +116,7 @@ SPLASH = YES
 # GRAPHICS (sliders / checkboxes / bold / batt graph)
 GRAPHICS = YES
 BOLD = YES
-BATTGRAPH = YES
+BATTGRAPH = NO
 
 # THR trace (in STATS screen)
 THR_TRACE = YES

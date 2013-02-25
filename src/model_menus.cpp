@@ -1464,7 +1464,7 @@ void menuModelPhaseOne(uint8_t event)
           putsFlightPhase(MIXES_2ND_COLUMN+2*FW, y, p+1, m_posHorz==1 ? attr : 0);
         }
         else {
-          lcd_putsAtt(MIXES_2ND_COLUMN+2*FW, y, STR_OWN, m_posHorz==1 ? attr : 0);
+          lcd_putsAtt(12*FW, y, STR_OWN, m_posHorz==1 ? attr : 0);
         }
         if (attr && s_currIdx>0 && m_posHorz==1 && (editMode>0 || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;
