@@ -3502,7 +3502,8 @@ void menuModelCustomFunctions(uint8_t event)
                 ) {
               switch (CFN_GVAR_MODE(sd)) {
                 case 0:
-                  val_min = -125; val_max = +125;
+                  val_displayed = (int8_t)CFN_PARAM(sd);
+                  val_min = -125; val_max = 125;
                   lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
                   break;
                 case 1:
@@ -3520,8 +3521,9 @@ void menuModelCustomFunctions(uint8_t event)
               }
 
               if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
-                s_editMode = !s_editMode;
                 killEvents(event);
+                s_editMode = !s_editMode;
+                active = true;
                 CFN_GVAR_MODE(sd) += 1;
                 val_displayed = 0;
               }
