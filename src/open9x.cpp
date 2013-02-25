@@ -733,7 +733,7 @@ int16_t calcRESXto1000(int16_t x)  // return x/1.024
 // channel = channelnumber -1; 
 // value = outputvalue with 100 mulitplied usual range -102400 to 102400; output -1024 to 1024
 // changed rescaling from *100 to *256 to optimize performance
-// rescaled to -262144)) to 262144))
+// rescaled from -262144 to 262144
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
   LimitData * limit = limitaddress(channel);
@@ -744,6 +744,12 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
+  // thanks to gbirkus, he motivated this change, which greatly reduces overruns 
+  // unfortunately the constants and 32bit compares generates about 52 bytes codes; didn't find a way to get it down.
+  // But I think it is worth
+  if (value>RESXl*256)  value =  RESXl*256;  // no bigger values allowed, prevent early overruns
+  if (value<-RESXl*256) value = -RESXl*256;  // no smaller values allowed, prevent early overruns
+  
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
 	int16_t tmp;
@@ -1241,7 +1247,7 @@ uint8_t s_gvar_last = 0;
 #if defined(CPUM64)
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
 {
-  if (x > (GV1_LARGE-6)) {  // @@@ open.20.fsguruh
+  if ((x > (GV1_LARGE-6)) || (x>max)) {  // @@@ open.20.fsguruh
     int8_t idx = (max <= 100 ? x - GV1_SMALL : x - GV1_LARGE);
     int8_t mul = 1;
 
@@ -1715,7 +1721,7 @@ uint8_t checkTrim(uint8_t event)
       after = TRIM_MAX;
     if (after < TRIM_MIN)
       after = TRIM_MIN;
-    after /= 4;
+    after>>=2;  // open.20.fsguruh after/=4;
     after += 60;
 #endif
 
@@ -2631,7 +2637,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
 			  v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
-              // v = chans[k-MIXSRC_CH1+1] / 100;			  
           }
         }
 #else
@@ -2646,7 +2651,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
 			  v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
-			  // v = chans[k-MIXSRC_CH1+1] / 100;
           }
         }
 #endif
@@ -2737,6 +2741,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       
 
       //========== SPEED ===============
+      // now its on input side, but without weight compensation. More like other remote controls
+      // lower weight causes slower movement
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
       
 #define DEL_MULT_SHIFT 8
@@ -2750,14 +2756,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
           if (tick10ms) {
             // only if already time is passed add or substract a value according the speed configured
-            // codesaving 44 bytes          
-#ifndef WEIGHTSPEEDCORRECTION            
 			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
-#else            
-            // codecost 82 bytes
-			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+19);  // = DEL_MULT*2048*tick10ms            
-            rate/=abs(weight);
-#endif            
             // rate equals a full range for one second; if less time is passed rate is accordingly smaller
             // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
 
@@ -2795,6 +2794,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       int32_t dv = (int32_t) v * weight;
 
 #ifdef SPEED_AFTER_WEIGHT      
+// todo remove is there is no need anymore...
       //========== SPEED ===============
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
       
@@ -2840,12 +2840,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       
       //========== DIFFERENTIAL =========
       if (md->curveMode == MODE_DIFFERENTIAL) {
-/*        int8_t curveParam = GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase);
-        if (curveParam > 0 && dv < 0)
-          dv = (dv * (100 - curveParam)) / 100;
-        else if (curveParam < 0 && dv > 0)
-          dv = (dv * (100 + curveParam)) / 100; */
-		  
 	    // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
 		int16_t curveParam=calc100to256(GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase));
         if (curveParam > 0 && dv < 0)
@@ -3049,10 +3043,10 @@ void doMixerCalculations()
     gModelMax-=gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
     // usually max is 1024 min is -1024 --> max-min = 2048 full range / 128 = max 16 steps
     
-    // gModelMax>>=(10-2);
-    // if (gModelMax!=8) val = (val << 3) / (gModelMax); // recaling only needed if Min, Max differs
+    gModelMax>>=(10-2);
+    if (gModelMax!=8) val = (val << 3) / (gModelMax); // recaling only needed if Min, Max differs
     
-    if (gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
+    // if (gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
     // val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
 	if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
   }
@@ -3493,51 +3487,21 @@ uint16_t getTmr16KHz()
   }
 }
 
-/*
-// ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
-ISR(TIMER_10MS_VECT) 
+
+
+
+
+ISR(TIMER_10MS_VECT, ISR_NOBLOCK) 
 // 10ms timer
 {
-  static uint8_t accuracyWarble; 
- 
-#if defined(PCBGRUVIN9X)
-  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
-  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
-  OCR2A += bump;
-#elif defined(AUDIO) || defined(VOICE)
 
-  // static uint8_t accuracyWarble; 
-  // because in this compile option the ISR is called each 128usec we prevent reentrant calls with a check to highest bit if accuracyWarble
-  // this is not necessary for the other builds, because we expect there would not be a reentrant call in 10msec time
-  OCR0 += 2; // interrupt every 128us
-  // warble is done later for AUDIO or VOICE don't do it here because it will destroy audio
+//  cli();
+//  PAUSE_10MS_INTERRUPT();
+//  sei();
 
-  static int8_t cnt10ms; // no initialization needed here;  execute 10ms code once every 78 ISRs; takes 16.38msec to overrun for first round --> no problem
+  static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
 
-  cnt10ms--;
-  
-  if (accuracyWarble&0x80) return;  // is we are already in ISR leave it as soon as possible to free CPU, at least we had the ISR counted
-  accuracyWarble|=0x80;  // sign we are currently in ISR
- 
-  bool doPer10msCall=false;
-  
-  if (cnt10ms<=0) {  // also allow smaller values
-    cnt10ms += (!(++accuracyWarble &0x07)) ? 79 : 78;  // instead of assigning we add to take missed ISRs into account
-    accuracyWarble|=0x80;  // reset sign bit, because ++accuracyWarble may deleted it because of overrun
-    doPer10msCall=true;
-  }  
-  
-#else
-   static uint8_t accuracyWarble; 
-  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
-  // each tick we are 0,016msec too fast
-  // one tick more means 0,048 msec too slow = 3*0,016msec --> in sum we are correct!!!
-  // therefore every 4 round we need to slow down one tick
-  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
-  OCR0 += bump;
-#endif  
-  sei();  
-  
+
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
 
 #if defined(AUDIO)
@@ -3548,6 +3512,8 @@ ISR(TIMER_10MS_VECT)
   VOICE_DRIVER();
 #endif
 
+  static uint8_t cnt10ms; // no initialization needed here;  execute 10ms code once every 78 ISRs; takes 16.38msec to overrun for first round --> no problem
+
 #if defined(FRSKY) || defined(MAVLINK) || defined(JETI)
   if (cnt10ms == 30) {
     if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
@@ -3555,8 +3521,14 @@ ISR(TIMER_10MS_VECT)
   }
 #endif
 
-  if (doPer10msCall) { // BEGIN { ... every 10ms ... }
+  if (--cnt10ms == 0) { // BEGIN { ... every 10ms ... }
     // Begin 10ms event
+    // cnt10ms = 78;
+    cnt10ms = (!(++accuracyWarble &0x07)) ? 79 : 78;  // instead of assigning we add to take missed ISRs into account
+    // each per10ms() we are 0,016msec too fast
+    // one tick more means 0,112 msec too slow = 7*0,016msec --> in sum we are correct!!!        
+    // therefore every 8. round we need to slow down one tick
+    
 #endif
 
     AUDIO_HEARTBEAT();
@@ -3570,14 +3542,45 @@ ISR(TIMER_10MS_VECT)
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
   } // end 10ms event
 #endif
-  
-  
-  
-  accuracyWarble&=0x7F;  
-  
-}
-*/
 
+
+
+  // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
+#if defined(PCBGRUVIN9X)
+  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
+  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
+  OCR2A += bump;
+#elif defined(AUDIO) || defined(VOICE)
+  // simple solution; if ISR tooks longer this round is just ignored; The problem in this case is, it takes 16msec for the next ISR --> big gap in AUDIO, VOICE and a big fault in time calculaiton if it happens
+  // cnt10ms--;
+  OCR0 += 2; // interrupt every 128us
+/*  
+  // needs to change cnt10ms to int instead uint to allow cnt10ms to be negative
+  // code oost: 34 bytes
+  // this solutions   all missed ISRs are counted and next ISR is in about 128usec (exception is wrap around)
+  cli();
+  do {
+    cnt10ms--;  
+    OCR0 += 2; // interrupt every 128us
+  } while ((OCR0<TCNT0) && (OCR0>=2)); // loop in case ISR tooks too long; If it laps around, ignore additional calcuation and stop anyway
+  // sei(); will be done anyway if ISR is left
+ */
+#else
+  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
+  // each tick we are 0,016msec too fast
+  // one tick more means 0,048 msec too slow = 3*0,016msec --> in sum we are correct!!!
+  // therefore every 4 round we need to slow down one tick
+  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
+  OCR0 += bump;
+#endif
+
+}
+
+
+ 
+// #define OLD_VERSION
+
+ #ifdef OLD_VERSION
  
 ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer  
 {
@@ -3649,6 +3652,8 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer
   RESUME_10MS_INTERRUPT();
   // sei();
 }
+
+#endif
 
 // Timer3 used for PPM_IN pulse width capture. Counter running at 16MHz / 8 = 2MHz
 // equating to one count every half millisecond. (2 counts = 1ms). Control channel

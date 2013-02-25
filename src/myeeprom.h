@@ -284,7 +284,39 @@ PACK(typedef struct t_MixData {
   int8_t   offset;
   char     name[LEN_EXPOMIX_NAME];
 }) MixData;
+
 #define MD_WEIGHT(md) (md->weight)
+#define MD_GETWEIGHT(var,md) var.word=md->weight
+#define MD_SETWEIGHT(var,md) md->weight= var.word
+
+PACK( union u_int8int16_t {
+  struct {
+    int8_t  lo;
+	uint8_t hi;
+  } bytes_t;
+  int16_t word;
+});
+
+PACK( union u_gvarint_t {
+  struct {
+    int8_t lo;
+	uint8_t hi;
+  } bytes_t;
+  int16_t word;
+	
+  u_gvarint_t(int8_t l, uint8_t h) {bytes_t.lo=l; bytes_t.hi=h?255:0;} // hi bit is negativ sign
+
+private:
+  // prevent unwanted constructors, also saves program
+  u_gvarint_t() {}
+  u_gvarint_t(const u_gvarint_t&) {}
+}); 
+
+#define MD_OFFSET(md) (u_gvarint_t(md->offset,md->offsetMode).word)
+#define MD_GETOFFSET(var,md) var.bytes_t.lo=md->offset; var.bytes_t.hi=md->offsetMode?255:0
+#define MD_SETOFFSET(var,md)   md->offset     = var.bytes_t.lo;  \
+     if (var.word<0) md->offsetMode=1; else md->offsetMode=0  // set negative sign	 
+
 #else
 #define DELAY_STEP  2
 #define SLOW_STEP   2
@@ -310,60 +342,40 @@ PACK(typedef struct t_MixData {
   int8_t  curveParam;
   int8_t  offset;
 }) MixData;
-#if defined(GVARS)
-  // @@@ open.20.fsguruh
-  PACK( union u_gvarint_t {
-    struct {
-	  int8_t lo;
-	  uint8_t hi;
-	} bytes_t;
-	int16_t word;
-	
-	u_gvarint_t(int8_t l, uint8_t h) {bytes_t.lo=l; bytes_t.hi=h?255:0;} // hi bit is negativ sign
 
-	private:
-	// prevent unwanted constructors, also saves program
-	u_gvarint_t() {}
-	u_gvarint_t(const u_gvarint_t&) {}
-  }); 
-  #define MD_WEIGHT(md) (u_gvarint_t(md->weight,md->weightMode).word)
+// @@@ open.20.fsguruh
+PACK( union u_gvarint_t {
+  struct {
+    int8_t lo;
+	uint8_t hi;
+  } bytes_t;
+  int16_t word;
+	
+  u_gvarint_t(int8_t l, uint8_t h) {bytes_t.lo=l; bytes_t.hi=h?255:0;} // hi bit is negativ sign
+
+private:
+  // prevent unwanted constructors, also saves program
+  u_gvarint_t() {}
+  u_gvarint_t(const u_gvarint_t&) {}
+}); 
+#define MD_WEIGHT(md) (u_gvarint_t(md->weight,md->weightMode).word)
   
-  PACK( union u_int8int16_t {
-    struct {
-	  int8_t  lo;
-	  uint8_t hi;
-	} bytes_t;
-	int16_t word;
-  });
-  #define MD_GETWEIGHT(var,md) var.bytes_t.lo=md->weight; var.bytes_t.hi=md->weightMode?255:0
-  #define MD_SETWEIGHT(var,md)   md->weight     = var.bytes_t.lo;  \
+PACK( union u_int8int16_t {
+  struct {
+    int8_t  lo;
+	uint8_t hi;
+  } bytes_t;
+  int16_t word;
+});
+#define MD_GETWEIGHT(var,md) var.bytes_t.lo=md->weight; var.bytes_t.hi=md->weightMode?255:0
+#define MD_SETWEIGHT(var,md)   md->weight     = var.bytes_t.lo;  \
      if (var.word<0) md->weightMode=1; else md->weightMode=0  // set negative sign
 	 
-  #define MD_OFFSET(md) (u_gvarint_t(md->offset,md->offsetMode).word)
-  #define MD_GETOFFSET(var,md) var.bytes_t.lo=md->offset; var.bytes_t.hi=md->offsetMode?255:0
-  #define MD_SETOFFSET(var,md)   md->offset     = var.bytes_t.lo;  \
+#define MD_OFFSET(md) (u_gvarint_t(md->offset,md->offsetMode).word)
+#define MD_GETOFFSET(var,md) var.bytes_t.lo=md->offset; var.bytes_t.hi=md->offsetMode?255:0
+#define MD_SETOFFSET(var,md)   md->offset     = var.bytes_t.lo;  \
      if (var.word<0) md->offsetMode=1; else md->offsetMode=0  // set negative sign	 
-#else
-  #define MD_WEIGHT(md) (md->weight)
-#endif
-#endif
 
-#if defined(GVARS)
-// @@@ open.20.fsguruh
-#ifndef MD_OFFSET
-  PACK( union u_int8int16_t {
-    struct {
-	  int8_t  lo;
-	  uint8_t hi;
-	} bytes_t;
-	int16_t word;
-  });
-  #define MD_OFFSET(md) (md->offsetMode ? (int16_t)GV1_LARGE+md->offset : md->offset)
-  #define MD_GETOFFSET(var,md) var.word=md->offset
-  #define MD_SETOFFSET(var,md) md->offset=var.word  
-#endif
-#else
-#define MD_OFFSET(md) (md->offset)
 #endif
 
 #if defined(CPUARM)

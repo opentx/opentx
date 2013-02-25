@@ -1901,15 +1901,15 @@ enum MixFields {
 
 void gvarWeightItem(xcoord_t x, uint8_t y, MixData *md, uint8_t attr, uint8_t event)
 {
-#if defined(CPUARM) || !defined(GVARS)
-  md->weight = gvarMenuItem(x, y, md->weight, -125, 125, attr, event);
-#else
+// #if defined(CPUARM) || !defined(GVARS)
+//  md->weight = gvarMenuItem(x, y, md->weight, -125, 125, attr, event);
+// #else
  // @@@ open.20.fsguruh
   u_int8int16_t weight;
   MD_GETWEIGHT(weight,md);
   weight.word = gvarMenuItem(x, y, weight.word, -245, 245, attr, event);
   MD_SETWEIGHT(weight,md);
-#endif
+//#endif
 }
 
 void menuModelMixOne(uint8_t event)
@@ -1984,15 +1984,15 @@ void menuModelMixOne(uint8_t event)
       case MIX_FIELD_OFFSET:
       {
         lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_OFFSET));
-#if defined(GVARS)
+// #if defined(GVARS)
         // @@@ open.20.fsguruh
         u_int8int16_t offset;
 	    MD_GETOFFSET(offset,md2);
         offset.word = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, -245, 245, attr|LEFT, event);
 	    MD_SETOFFSET(offset,md2);	
-#else
-        md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
-#endif
+// #else
+//        md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
+// #endif
         break;
       }
       case MIX_FIELD_TRIM:
@@ -2305,7 +2305,8 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
                 if (md->curveMode == MODE_CURVE)
                   putsCurve(12*FW+2, y, md->curveParam);
                 else
-                  displayGVar(15*FW+2, y, md->curveParam, -125, 125);
+				  displayGVar(15*FW+2, y, md->curveParam, -100, 100);  // open.20.fsguruh
+                  // displayGVar(15*FW+2, y, md->curveParam, -125, 125); // only -100 to +100 is allowed now
               }
               if (md->swtch) putsSwitches(16*FW, y, md->swtch);
 
