@@ -750,7 +750,10 @@ void putsVBat(xcoord_t x, uint8_t y, LcdFlags att)
 void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags att)
 {
   lcd_putsAtt(x, y, str, att);
-  lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
+  if (att & SMLSIZE)
+    lcd_outdezNAtt(lcdLastPos+1, y, idx, att|LEFT, 2);
+  else
+    lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
   lcd_putsAtt(x, y, str, att);
 }
 

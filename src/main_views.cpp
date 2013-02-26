@@ -420,9 +420,6 @@ void menuMainView(uint8_t event)
         resetTimer(1);
       }
 #endif
-      else {
-        resetTimer(0);
-      }
       AUDIO_KEYPAD_UP();
       break;
 

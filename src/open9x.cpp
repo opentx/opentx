@@ -1892,15 +1892,18 @@ BeepANACenter evalSticks(uint8_t mode)
     }
 #endif
 
+    BeepANACenter mask = (BeepANACenter)1 << ch;
+
     if (i < NUM_STICKS+NUM_POTS) {
       calibratedStick[ch] = v; //for show in expo
 
       // filtering for center beep
       uint8_t tmp = (uint16_t)abs(v) / 16;
-      if (tmp <= 1) anaCenter |= (tmp==0 ? (BeepANACenter)1<<ch : bpanaCenter & ((BeepANACenter)1<<ch));
+      if (tmp <= 1) anaCenter |= (tmp==0 ? mask : (bpanaCenter & mask));
     }
     else {
-      if (v == 0) anaCenter |= (BeepANACenter)1<<ch;
+      // rotary encoders
+      if (v == 0) anaCenter |= mask;
     }
 
     if (ch < NUM_STICKS) { //only do this for sticks

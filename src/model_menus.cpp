@@ -49,7 +49,7 @@ enum EnumTabModel {
   e_MixAll,
   e_Limits,
   IF_CURVES(e_CurvesAll)
-#if LCD_W >= 260
+#if LCD_W >= 212
   IF_GVARS(e_GVars)
 #endif
   e_CustomSwitches,
@@ -82,7 +82,7 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelMixAll,
   menuModelLimits,
   IF_CURVES(menuModelCurvesAll)
-#if LCD_W >= 260
+#if LCD_W >= 212
   IF_GVARS(menuModelGVars)
 #endif
   menuModelCustomSwitches,
@@ -1461,10 +1461,10 @@ void menuModelPhaseOne(uint8_t event)
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
           if (p >= s_currIdx) p++;
-          putsFlightPhase(MIXES_2ND_COLUMN+2*FW, y, p+1, m_posHorz==1 ? attr : 0);
+          putsFlightPhase(11*FW, y, p+1, m_posHorz==1 ? attr : 0);
         }
         else {
-          lcd_putsAtt(12*FW, y, STR_OWN, m_posHorz==1 ? attr : 0);
+          lcd_putsAtt(11*FW, y, STR_OWN, m_posHorz==1 ? attr : 0);
         }
         if (attr && s_currIdx>0 && m_posHorz==1 && (editMode>0 || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;
@@ -2921,7 +2921,7 @@ void menuModelCurvesAll(uint8_t event)
 }
 #endif
 
-#if LCD_W >= 260 && defined(GVARS)
+#if LCD_W >= 212 && defined(GVARS)
 void menuModelGVars(uint8_t event)
 {
   MENU(PSTR("GLOBAL VARIABLES"), menuTabModel, e_GVars, 1+MAX_GVARS, {0, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES, MAX_PHASES});
@@ -2935,9 +2935,9 @@ void menuModelGVars(uint8_t event)
 
     for (uint8_t j=0; j<1+MAX_PHASES; j++) {
       uint8_t attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-      xcoord_t x = 14*FW + (j-1)*(2+4*FWNUM) - 1;
+      xcoord_t x = 12*FW + FWNUM + (j-1)*(2+3*FWNUM) - 1;
 
-      if (i==0 && j!=9) putsStrIdx(x+FWNUM, 2*FH, STR_FP, j, 0);
+      if (i==0 && j!=9) putsStrIdx(x+2, 2*FH, STR_FP, j, SMLSIZE);
 
       switch(j)
       {
@@ -2957,7 +2957,7 @@ void menuModelGVars(uint8_t event)
             vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_PHASES;
           }
           else {
-            if (abs(v) >= 1000)
+            if (abs(v) >= 100)
               lcd_outdezAtt(x, y+1, v, attr | TINSIZE);
             else
               lcd_outdezAtt(x, y, v, attr);
