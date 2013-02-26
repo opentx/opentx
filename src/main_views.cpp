@@ -197,11 +197,7 @@ void displayTimers()
     putsTime(TIMERS_X, TIMER1_Y, s_timerVal[0], MIDSIZE, MIDSIZE);
     putsTmrMode(TIMERS_X-16, TIMER1_Y+5, g_model.timers[0].mode, SWCONDENSED|SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
-    if (s_timerState[0]==TMR_BEEPING) {
-      lcd_hline(TIMERS_X-6, TIMER1_Y+2, 4);
-      if (BLINK_ON_PHASE)
-        lcd_filled_rect(TIMERS_X-17, TIMER1_Y, 70, 12);
-    }
+    if (s_timerVal[0] < 0) lcd_hline(TIMERS_X-6, TIMER1_Y+2, 4);
   }
 
   // Second timer
@@ -209,11 +205,19 @@ void displayTimers()
     putsTime(TIMERS_X, TIMER2_Y, s_timerVal[1], MIDSIZE, MIDSIZE);
     putsTmrMode(TIMERS_X-16, TIMER2_Y+5, g_model.timers[1].mode, SWCONDENSED|SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
-    if (s_timerState[1]==TMR_BEEPING) {
-      lcd_hline(TIMERS_X-6, TIMER2_Y+2, 4);
-      if (BLINK_ON_PHASE)
-        lcd_filled_rect(TIMERS_X-17, TIMER2_Y, 70, 12);
-    }
+    if (s_timerVal[1] < 0) lcd_hline(TIMERS_X-6, TIMER2_Y+2, 4);
+  }
+
+  // Main timer beeping
+  if (s_timerState[0]==TMR_BEEPING) {
+    if (BLINK_ON_PHASE)
+      lcd_filled_rect(TIMERS_X-17, TIMER1_Y, 70, 12);
+  }
+
+  // Second timer beeping
+  if (s_timerState[1]==TMR_BEEPING) {
+    if (BLINK_ON_PHASE)
+      lcd_filled_rect(TIMERS_X-17, TIMER2_Y, 70, 12);
   }
 }
 #else

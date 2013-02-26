@@ -2052,7 +2052,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     default:
     {
       uint8_t unit = 1;
-      if (idx < MIXSRC_GVAR1)
+      if (idx < MIXSRC_GVAR1-1)
         val = calcRESXto100(val);
       if (idx >= MIXSRC_FIRST_TELEM-1+TELEM_ALT-1 && idx <= MIXSRC_FIRST_TELEM-1+TELEM_GPSALT-1)
         unit = idx - (MIXSRC_FIRST_TELEM-1+TELEM_ALT-1);
