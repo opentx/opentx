@@ -135,6 +135,7 @@ void setupPulsesPPM(PPM_PORT_PARAM)                   // Don't enable interrupts
     rest -= v;
     *ptr++ = v; /* as Pat MacKenzie suggests */
   }
+  rest = (rest > 65535) ? 65535 : rest;
   *ptr = rest;
   *(ptr + 1) = 0;
 

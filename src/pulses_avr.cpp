@@ -176,6 +176,7 @@ void setupPulsesPPM(uint8_t proto)
     }
 
     *ptr++ = q;  
+    rest = (rest > 65535) ? 65535 : rest;
     *ptr++ = rest;
 
     if (proto == PROTO_PPM) {
