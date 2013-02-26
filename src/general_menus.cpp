@@ -136,8 +136,6 @@ enum menuGeneralSetupItems {
   IF_ROTARY_ENCODERS(ITEM_SETUP_RE_NAVIGATION)
   ITEM_SETUP_THROTTLE_REVERSED,
   ITEM_SETUP_BEEP_LABEL,
-  ITEM_SETUP_MINUTE_BEEP,
-  ITEM_SETUP_COUNTDOWN_BEEP,
   ITEM_SETUP_BACKLIGHT_LABEL,
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
@@ -400,14 +398,6 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_THROTTLE_REVERSED:
         g_eeGeneral.throttleReversed = onoffMenuItem(g_eeGeneral.throttleReversed, RADIO_SETUP_2ND_COLUMN, y, STR_THROTTLEREVERSE, attr, event ) ;
-        break;
-
-      case ITEM_SETUP_MINUTE_BEEP:
-        g_eeGeneral.minuteBeep = onoffMenuItem(g_eeGeneral.minuteBeep, RADIO_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event ) ;
-        break;
-
-      case ITEM_SETUP_COUNTDOWN_BEEP:
-        g_eeGeneral.preBeep = onoffMenuItem(g_eeGeneral.preBeep, RADIO_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_MODE:

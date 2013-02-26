@@ -74,6 +74,12 @@
 #define IF_BATTGRAPH(x)
 #endif
 
+#if defined(CPUARM) || defined(PCBGRUVIN9X)
+#define IF_PERSISTENT_TIMERS(x) x,
+#else
+#define IF_PERSISTENT_TIMERS(x)
+#endif
+
 #if defined(RTCLOCK)
 #define IF_RTCLOCK(x) x,
 #else
@@ -981,7 +987,6 @@ extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of th
 extern int16_t            g_chans512[NUM_CHNOUT];
 extern uint16_t           BandGap;
 
-extern uint16_t expou(uint16_t x, uint16_t k);
 extern int16_t expo(int16_t x, int16_t k);
 extern int16_t intpol(int16_t, uint8_t);
 extern int16_t applyCurve(int16_t, int8_t);

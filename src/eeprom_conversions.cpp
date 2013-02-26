@@ -63,7 +63,7 @@ PACK(typedef struct {
 }) TimerData_v212;
 
 PACK(typedef struct {
-  uint16_t remanent:1;
+  uint16_t persistent:1;
   uint16_t value:15;
 }) TimerDataExtra_v212;
 
@@ -159,7 +159,7 @@ bool eeConvert()
         for (uint8_t i=0; i<2; i++) {
           g_model.timers[i].mode = oldModel.timers[i].mode;
           g_model.timers[i].start = oldModel.timers[i].val;
-          g_model.timers[i].remanent = oldModel.timersXtra[i].remanent;
+          g_model.timers[i].persistent = oldModel.timersXtra[i].persistent;
           g_model.timers[i].value = oldModel.timersXtra[i].value;
         }
         g_model.protocol = oldModel.protocol;

@@ -728,7 +728,13 @@ enum menuModelSetupItems {
   ITEM_MODEL_NAME,
   CASE_PCBX9D(ITEM_MODEL_BITMAP)
   ITEM_MODEL_TIMER1,
+  IF_PERSISTENT_TIMERS(ITEM_MODEL_TIMER1_PERSISTENT)
+  ITEM_MODEL_TIMER1_MINUTE_BEEP,
+  ITEM_MODEL_TIMER1_COUNTDOWN_BEEP,
   ITEM_MODEL_TIMER2,
+  IF_PERSISTENT_TIMERS(ITEM_MODEL_TIMER2_PERSISTENT)
+  ITEM_MODEL_TIMER2_MINUTE_BEEP,
+  ITEM_MODEL_TIMER2_COUNTDOWN_BEEP,
   ITEM_MODEL_EXTENDED_LIMITS,
   ITEM_MODEL_EXTENDED_TRIMS,
   ITEM_MODEL_TRIM_INC,
@@ -742,12 +748,6 @@ enum menuModelSetupItems {
   ITEM_MODEL_PROTOCOL_PARAMS,
   ITEM_MODEL_SETUP_MAX
 };
-
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
-#define FIELD_TIMER_MAX    3
-#else
-#define FIELD_TIMER_MAX    2
-#endif
 
 #if defined(PCBSKY9X)
 #define FIELD_PROTOCOL_MAX 2
@@ -779,7 +779,7 @@ void menuModelSetup(uint8_t event)
     s_rangecheck_mode = 0;
 #endif
 
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), {0,0,CASE_PCBX9D(0) FIELD_TIMER_MAX,FIELD_TIMER_MAX,0,0,0,0,0,0,0,NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, IF_PCBSKY9X(1) 2 });
+  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), { 0, 0, CASE_PCBX9D(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 0, 0, 0, 0, 0, 0, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, IF_PCBSKY9X(1) 2 });
 
   uint8_t sub = m_posVert - 1;
   int8_t editMode = s_editMode;
@@ -819,38 +819,52 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_TIMER1:
       case ITEM_MODEL_TIMER2:
+      case ITEM_MODEL_TIMER1_MINUTE_BEEP:
+      case ITEM_MODEL_TIMER2_MINUTE_BEEP:
+      case ITEM_MODEL_TIMER1_COUNTDOWN_BEEP:
+      case ITEM_MODEL_TIMER2_COUNTDOWN_BEEP:
       {
-        TimerData *timer = &g_model.timers[k-ITEM_MODEL_TIMER1];
-        putsStrIdx(0*FW, y, STR_TIMER, k-ITEM_MODEL_TIMER1+1);
-        putsTmrMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
-        putsTime(MODEL_SETUP_2ND_COLUMN+5*FW-2, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
-        lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW-1, y, g_model.timers[k-ITEM_MODEL_TIMER1].remanent ? 'R' : '-', m_posHorz==3 ? attr : 0);
-#endif
-        if (attr && (editMode>0 || p1valdiff)) {
-          div_t qr = div(timer->start, 60);
-          switch (m_posHorz) {
-            case 0:
-              CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW)-1, TMR_VAROFS+2*(MAX_PSWITCH+NUM_CSW));
-              break;
-            case 1:
-              CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
-              timer->start = qr.rem + qr.quot*60;
-              break;
-            case 2:
-              qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
-              timer->start -= qr.rem ;
-              if ((int16_t)timer->start < 0) timer->start=0;
-              break;
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
-            case 3:
-              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.timers[k-ITEM_MODEL_TIMER1].remanent, 1);
-              break;
-#endif
+        TimerData *timer = &g_model.timers[k>=ITEM_MODEL_TIMER2 ? 1 : 0];
+        if (k==ITEM_MODEL_TIMER1_MINUTE_BEEP || k==ITEM_MODEL_TIMER2_MINUTE_BEEP) {
+          timer->minuteBeep = onoffMenuItem(timer->minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        }
+        else if (k==ITEM_MODEL_TIMER1_COUNTDOWN_BEEP || k==ITEM_MODEL_TIMER2_COUNTDOWN_BEEP) {
+          timer->countdownBeep = onoffMenuItem(timer->countdownBeep, MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, attr, event);
+        }
+        else {
+          putsStrIdx(0*FW, y, STR_TIMER, k>=ITEM_MODEL_TIMER2 ? 2 : 1);
+          putsTmrMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
+          putsTime(MODEL_SETUP_2ND_COLUMN+5*FW-2, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
+          if (attr && (editMode>0 || p1valdiff)) {
+            div_t qr = div(timer->start, 60);
+            switch (m_posHorz) {
+              case 0:
+                CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW)-1, TMR_VAROFS+2*(MAX_PSWITCH+NUM_CSW));
+                break;
+              case 1:
+                CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
+                timer->start = qr.rem + qr.quot*60;
+                break;
+              case 2:
+                qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
+                timer->start -= qr.rem ;
+                if ((int16_t)timer->start < 0) timer->start=0;
+                break;
+            }
           }
         }
         break;
       }
+
+#if defined(CPUARM) || defined(PCBGRUVIN9X)
+      case ITEM_MODEL_TIMER1_PERSISTENT:
+      case ITEM_MODEL_TIMER2_PERSISTENT:
+      {
+        TimerData &timer = g_model.timers[k==ITEM_MODEL_TIMER2_PERSISTENT];
+        timer.persistent = onoffMenuItem(timer.persistent, MODEL_SETUP_2ND_COLUMN, y, PSTR(INDENT"Persist."), attr, event);
+        break;
+      }
+#endif
 
       case ITEM_MODEL_EXTENDED_LIMITS:
         g_model.extendedLimits = onoffMenuItem(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, STR_ELIMITS, attr, event);

@@ -292,7 +292,7 @@ void per10ms()
 
   // These moved here from perOut() to improve beep trigger reliability.
 #if defined(PWM_BACKLIGHT)
-  if (g_tmr10ms % 4 == 0)
+  if ((g_tmr10ms&0x03) == 0x00)
     fadeBacklight(); // increment or decrement brightness until target brightness is reached
 #endif
 
@@ -338,7 +338,7 @@ CurveInfo curveinfo(uint8_t idx)
   result.crv = curveaddress(idx);
   int8_t *next = curveaddress(idx+1);
   uint8_t size = next - result.crv;
-  if (size % 2 == 0) {
+  if ((size & 1) == 0) {
     result.points = (size / 2) + 1;
     result.custom = true;
   }
@@ -854,12 +854,15 @@ bool __getSwitch(int8_t swtch)
             }
 #endif
           }
+          else if (cs->v1 >= MIXSRC_GVAR1) {
+            y = cs->v2;
+          }
           else {
             y = calc100toRESX(cs->v2);
           }
 #else
-          if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-            y = cs->v2; // it's a timer
+          if (cs->v1 >= MIXSRC_GVAR1) {
+            y = cs->v2; // it's a GVAR or a Timer
           }
           else {
             y = calc100toRESX(cs->v2);
@@ -1214,12 +1217,13 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
 }
 #endif
 
-#define INAC_DEVISOR 512   // Bypass splash screen with stick movement
+#define INAC_DEVISOR 512   // bypass splash screen with stick movement
+#define INAC_DEV_SHIFT 9   // shift right value for stick movement
 uint16_t stickMoveValue()
 {
   uint16_t sum = 0;
-  for (uint8_t i=0; i<4; i++)
-    sum += anaIn(i)/INAC_DEVISOR;
+  for (uint8_t i=0; i<NUM_STICKS; i++)
+    sum += anaIn(i) >> INAC_DEV_SHIFT;
   return sum;
 }
 
@@ -1586,7 +1590,7 @@ uint8_t checkTrim(uint8_t event)
       after = TRIM_MAX;
     if (after < TRIM_MIN)
       after = TRIM_MIN;
-    after /= 4;
+    after >>= 2;
     after += 60;
 #endif
 
@@ -1772,7 +1776,6 @@ static uint8_t lastSwPos[2] = {0, 0};
 static uint16_t s_cnt[2] = {0, 0};
 static uint16_t s_sum[2] = {0, 0};
 static uint8_t sw_toggled[2] = {false, false};
-static uint16_t s_time_cum_16[2] = {0, 0};
 
 #if defined(THRTRACE)
 uint8_t s_traceBuf[MAXTRACE];
@@ -1843,7 +1846,7 @@ BeepANACenter evalSticks(uint8_t mode)
   if (g_model.swashR.value) {
     uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] +
         int32_t(calibratedStick[AIL_STICK])*calibratedStick[AIL_STICK]);
-    uint32_t q = int32_t(RESX)*g_model.swashR.value/100;
+    uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v>q)
       d = isqrt32(v);
@@ -1923,8 +1926,8 @@ BeepANACenter evalSticks(uint8_t mode)
       }
 
 #ifdef HELI
-      if(d && (ch==ELE_STICK || ch==AIL_STICK))
-        v = int32_t(v)*g_model.swashR.value*RESX/(int32_t(d)*100);
+      if (d && (ch==ELE_STICK || ch==AIL_STICK))
+        v = (int32_t(v)*calc100toRESX(g_model.swashR.value))/int32_t(d);
 #endif
 
       rawAnas[ch] = v;
@@ -1962,8 +1965,6 @@ tmr10ms_t lastFunctionTime[NUM_CFN] = { 0 };
 PLAY_FUNCTION(playValue, uint8_t idx)
 {
   int16_t val = getValue(idx);
-
-  // TODO add the MIXSRC_TELEM_TM1 and so on.
 
   switch (idx) {
     case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE-1:
@@ -2051,7 +2052,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     default:
     {
       uint8_t unit = 1;
-      if (idx < MIXSRC_FIRST_TELEM-1+TELEM_TM1-1)
+      if (idx < MIXSRC_GVAR1)
         val = calcRESXto100(val);
       if (idx >= MIXSRC_FIRST_TELEM-1+TELEM_ALT-1 && idx <= MIXSRC_FIRST_TELEM-1+TELEM_GPSALT-1)
         unit = idx - (MIXSRC_FIRST_TELEM-1+TELEM_ALT-1);
@@ -2396,13 +2397,13 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   if(g_model.swashR.value)
   {
     uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
-    uint32_t q = (int32_t)RESX*g_model.swashR.value/100;
+    uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
-    if(v>q)
-    {
+    if (v>q) {
       uint16_t d = isqrt32(v);
-      anas[ELE_STICK] = (int32_t)anas[ELE_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
-      anas[AIL_STICK] = (int32_t)anas[AIL_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
+      int16_t tmp = calc100toRESX(g_model.swashR.value);
+      anas[ELE_STICK] = (int32_t) anas[ELE_STICK]*tmp/d;
+      anas[AIL_STICK] = (int32_t) anas[AIL_STICK]*tmp/d;
     }
   }
 
@@ -2769,7 +2770,7 @@ void doMixerCalculations()
         s_perout_flight_phase = p;
         perOut(e_perout_mode_normal, tick10ms);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
-          sum_chans512[i] += (chans[i] / 16) * fp_act[p];
+          sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
       }
     }
@@ -2841,50 +2842,21 @@ void doMixerCalculations()
     val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
   }
 
-  val /= (RESX/16); // calibrate it
-
-  static tmr10ms_t s_time_tot;
-  static uint8_t s_cnt_1s;
-  static uint16_t s_sum_1s;
-#if defined(THRTRACE)
-  static tmr10ms_t s_time_trace;
-  static uint16_t s_cnt_10s;
-  static uint16_t s_sum_10s;
+#if !defined(CPUM64)
+  //  code cost is about 16 bytes for higher throttle accuracy for timer 
+  //  would not be noticable anyway, because all version up to this change had only 16 steps; 
+  //  now it has already 32  steps; this define would increase to 128 steps
+  #define ACCURAT_THROTTLE_TIMER
 #endif
 
-  s_cnt_1s++;
-  s_sum_1s += val;
-
-  if ((tmr10ms_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
-    s_time_tot += 100;
-    s_timeCumTot += 1;
-
-    val = s_sum_1s / s_cnt_1s;
-    s_timeCum16ThrP += val / 2;
-    if (val) s_timeCumThr += 1;
-
-#if defined(THRTRACE)
-    s_cnt_10s += s_cnt_1s;
-    s_sum_10s += s_sum_1s;
-
-    if ((tmr10ms_t)(tmr10ms - s_time_trace) >= 1000) { // 10s
-      s_time_trace += 1000;
-      val = s_sum_10s / s_cnt_10s;
-      s_sum_10s = 0;
-      s_cnt_10s = 0;
-
-      s_traceBuf[s_traceWr++] = val;
-      if (s_traceWr >= MAXTRACE) s_traceWr = 0;
-      if (s_traceCnt >= 0) s_traceCnt++;
-    }
+#if defined(ACCURAT_THROTTLE_TIMER)
+  val >>= (RESX_SHIFT-6); // calibrate it (resolution increased by factor 4)
+#else
+  val >>= (RESX_SHIFT-4); // calibrate it
 #endif
-
-    s_cnt_1s = 0;
-    s_sum_1s = 0;
-  }
 
   // Timers start
-  for (uint8_t i=0; i<2; i++) {
+  for (uint8_t i=0; i<MAX_TIMERS; i++) {
     int8_t tm = g_model.timers[i].mode;
     uint16_t tv = g_model.timers[i].start;
 
@@ -2893,7 +2865,6 @@ void doMixerCalculations()
         s_timerState[i] = TMR_RUNNING;
         s_cnt[i] = 0;
         s_sum[i] = 0;
-        s_time_cum_16[i] = 0;
       }
 
       uint8_t atm = (tm >= 0 ? tm : TMR_VAROFS-tm-1);
@@ -2914,73 +2885,127 @@ void doMixerCalculations()
 
       if ( (s_timerVal_10ms[i] += tick10ms ) >= 100 ) {
         s_timerVal_10ms[i] -= 100 ;
-
-        if (tv) s_timerVal[i] = tv - s_timerVal[i];
+        int16_t newTimerVal = s_timerVal[i];
+        if (tv) newTimerVal = tv - newTimerVal;
 
         if (atm==TMRMODE_ABS) {
-          s_timerVal[i]++;
+          newTimerVal++;
         }
         else if (atm==TMRMODE_THR) {
-          if (val) s_timerVal[i]++;
+          if (val) newTimerVal++;
         }
         else if (atm==TMRMODE_THR_REL) {
-          if (s_cnt[i]) {
-            val       = s_sum[i]/s_cnt[i];
-            s_sum[i] -= val*s_cnt[i]; //rest
-            s_cnt[i]  = 0;
-            s_time_cum_16[i] += val/2;
-            if (s_time_cum_16[i] >= 16) {
-              s_timerVal[i] ++;
-              s_time_cum_16[i] -= 16;
-            }
+          // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
+          // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
+#if defined(ACCURAT_THROTTLE_TIMER)
+          if ((s_sum[i]/s_cnt[i])>=128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
+            newTimerVal++;  // add second used of throttle
+            s_sum[i]-=128*s_cnt[i];
           }
+#else
+          if ((s_sum[i]/s_cnt[i])>=32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
+            newTimerVal++;  // add second used of throttle
+            s_sum[i]-=32*s_cnt[i];
+          }
+#endif
+          s_cnt[i]=0;
         }
         else if (atm==TMRMODE_THR_TRG) {
-          if (val || s_timerVal[i] > 0)
-            s_timerVal[i]++;
+          if (val || newTimerVal > 0)
+            newTimerVal++;
         }
         else {
           if (atm<(TMR_VAROFS+MAX_SWITCH))
             sw_toggled[i] = tm>0 ? getSwitch(tm-(TMR_VAROFS-1), 0) : !getSwitch(-tm, 0); // normal switch
           if (sw_toggled[i])
-            s_timerVal[i]++;
+            newTimerVal++;
         }
 
         switch(s_timerState[i])
         {
           case TMR_RUNNING:
-            if (tv && s_timerVal[i]>=(int16_t)tv) s_timerState[i]=TMR_BEEPING;
+            if (tv && newTimerVal>=(int16_t)tv) s_timerState[i]=TMR_BEEPING;
             break;
           case TMR_BEEPING:
-            if (s_timerVal[i] >= (int16_t)tv + MAX_ALERT_TIME) s_timerState[i]=TMR_STOPPED;
+            if (newTimerVal >= (int16_t)tv + MAX_ALERT_TIME) s_timerState[i]=TMR_STOPPED;
             break;
         }
 
-        if (tv) s_timerVal[i] = tv - s_timerVal[i]; //if counting backwards - display backwards
+        if (tv) newTimerVal = tv - newTimerVal; //if counting backwards - display backwards
+
+        if (newTimerVal != s_timerVal[i]) { // beep only if seconds advance
+          s_timerVal[i] = newTimerVal;
+          if (s_timerState[i] == TMR_RUNNING) {
+            if (g_model.timers[i].countdownBeep && g_model.timers[i].start) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
+              if (newTimerVal==30) AUDIO_TIMER_30(); //beep three times
+              if (newTimerVal==20) AUDIO_TIMER_20(); //beep two times
+              if (newTimerVal==10) AUDIO_TIMER_10();
+              if (newTimerVal<= 3) AUDIO_TIMER_LT3(newTimerVal);
+            }
+
+            if (g_model.timers[i].minuteBeep && (newTimerVal % 60)==0) { // short beep every minute
+              AUDIO_TIMER_MINUTE(newTimerVal);
+            }
+          }
+          else if (s_timerState[0] == TMR_BEEPING) {
+            AUDIO_WARNING1();
+          }
+        }
       }
     }
   };
 
-  static int16_t last_tmr;
-  if (last_tmr != s_timerVal[0]) { // beep only if seconds advance
-    if (s_timerState[0] == TMR_RUNNING) {
-      if (g_eeGeneral.preBeep && g_model.timers[0].start) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
-        if(s_timerVal[0]==30) AUDIO_TIMER_30(); //beep three times
-        if(s_timerVal[0]==20) AUDIO_TIMER_20(); //beep two times
-        if(s_timerVal[0]==10) AUDIO_TIMER_10();
-        if(s_timerVal[0]<= 3) AUDIO_TIMER_LT3(s_timerVal[0]);
-      }
+  static tmr10ms_t s_time_tot;
+  static uint8_t s_cnt_1s;
+  static uint16_t s_sum_1s;
+#if defined(THRTRACE)
+  static tmr10ms_t s_time_trace;
+  static uint16_t s_cnt_10s;
+  static uint16_t s_sum_10s;
+#endif
 
-      if (g_eeGeneral.minuteBeep && (s_timerVal[0] % 60)==0) { // short beep every minute
-        AUDIO_TIMER_MINUTE(s_timerVal[0]);
-      }
+  s_cnt_1s++;
+  s_sum_1s += val;
+  
+  // @@@ open.20.fsguruh: moved code here; at least val variable conflicts with caculations above, safer here?
+  // even reduced code size about 8 bytes, why ever?
+  if ((tmr10ms_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
+    s_time_tot += 100;
+    s_timeCumTot += 1;
+
+#if defined(ACCURAT_THROTTLE_TIMER)
+    val = s_sum_1s / s_cnt_1s;
+    s_timeCum16ThrP += (val>>3);  // s_timeCum16ThrP would overrun if we would store throttle value with higher accuracy; therefore stay with 16 steps
+    if (val) s_timeCumThr += 1;
+    s_sum_1s>>=2;  // correct better accuracy now, because trace graph can show this information; in case thrtrace is not active, the compile should remove this
+#else    
+    val = s_sum_1s / s_cnt_1s;
+    s_timeCum16ThrP += (val>>1);  
+    if (val) s_timeCumThr += 1;
+#endif    
+    
+#if defined(THRTRACE)
+    // throttle trace is done every 10 seconds; Tracebuffer is adjusted to screen size.
+    // in case buffer runs out, it wraps around
+    // resolution for y axis is only 32, therefore no higher value makes sense
+    s_cnt_10s += s_cnt_1s;
+    s_sum_10s += s_sum_1s;
+
+    if ((tmr10ms_t)(tmr10ms - s_time_trace) >= 1000) { // 10s
+      s_time_trace += 1000;
+      val = s_sum_10s / s_cnt_10s;
+      s_sum_10s = 0;
+      s_cnt_10s = 0;
+
+      s_traceBuf[s_traceWr++] = val;
+      if (s_traceWr >= MAXTRACE) s_traceWr = 0;
+      if (s_traceCnt >= 0) s_traceCnt++;
     }
-    else if(s_timerState[0] == TMR_BEEPING) {
-      AUDIO_WARNING1();
-    }
-    last_tmr = s_timerVal[0];
+#endif
+
+    s_cnt_1s = 0;
+    s_sum_1s = 0;
   }
-  // Timers end
 
   if (s_fade_flight_phases) {
     uint16_t tick_delta = delta * tick10ms;
@@ -3031,6 +3056,9 @@ void perMain()
   }
 
   nextMixerEndTime = t0 + MAX_MIXER_DELTA;
+  // this is a very tricky implementation; lastMixerEndTime is just like a default value not to stop mixcalculations totally;
+  // the real value for lastMixerEndTime is calculated inside pulses_XXX.cpp which aligns the timestamp to the pulses generated
+  // nextMixerEndTime is actually defined inside pulses_XXX.h  
 
   doMixerCalculations();
 
@@ -3455,7 +3483,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 void saveTimers()
 {
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
-    if (g_model.timers[i].remanent) {
+    if (g_model.timers[i].persistent) {
       if (g_model.timers[i].value != s_timerVal[i]) {
         g_model.timers[i].value = s_timerVal[i];
         eeDirty(EE_MODEL);

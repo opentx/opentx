@@ -173,8 +173,7 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   spare2:1;
   uint8_t   inactivityTimer;
   uint8_t   throttleReversed:1;
-  uint8_t   minuteBeep:1;
-  uint8_t   preBeep:1;
+  uint8_t   spare3:2;
   SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   blOffBright:4;
@@ -992,14 +991,20 @@ enum MixSources {
 #if defined(PCBGRUVIN9X) || defined(CPUARM)
 PACK(typedef struct t_TimerData {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint16_t  start;
-  uint16_t  remanent:1;
-  uint16_t  value:15;
+  uint16_t  start:12;
+  uint16_t  countdownBeep:1;
+  uint16_t  minuteBeep:1;
+  uint16_t  persistent:1;
+  uint16_t  spare:1;
+  uint16_t  value;
 }) TimerData;
 #else
 PACK(typedef struct t_TimerData {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint16_t  start;
+  uint16_t  start:12;
+  uint16_t  countdownBeep:1;
+  uint16_t  minuteBeep:1;
+  uint16_t  spare:2;
 }) TimerData;
 #endif
 
