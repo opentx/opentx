@@ -730,6 +730,14 @@ int16_t calcRESXto1000(int16_t x)  // return x/1.024
 #endif
 
 
+#define PREVENT_ARITHMETIC_OVERFLOW
+// because of optimizations the reserves before overruns occurs is only the half
+// this defines enables some checks the greatly improves this situation
+// It should nearly prevent all overruns (is still a chance for it, but quite low)
+// negative side is code cost 124 bytes flash
+
+
+
 // @@@2 open.20.fsguruh ; 
 // channel = channelnumber -1; 
 // value = outputvalue with 100 mulitplied usual range -102400 to 102400; output -1024 to 1024
@@ -737,28 +745,37 @@ int16_t calcRESXto1000(int16_t x)  // return x/1.024
 // rescaled from -262144 to 262144
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
-  LimitData * limit = limitaddress(channel);
-  int16_t ofs   = calc1000toRESX(limit->offset);   // multiply to 1.24 to get range (-1024..1024)
-  int16_t lim_p = calc100toRESX(limit->max + 100);
-  int16_t lim_n = calc100toRESX(limit->min - 100); //multiply by 10.24 to get same range (-1024..1024)
+  LimitData * lim = limitaddress(channel);
+  int16_t ofs   = calc1000toRESX(lim->offset);   // multiply to 1.24 to get range (-1024..1024)
+  int16_t lim_p = calc100toRESX(lim->max + 100);
+  int16_t lim_n = calc100toRESX(lim->min - 100); //multiply by 10.24 to get same range (-1024..1024)
 
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
+#ifdef PREVENT_ARITHMETIC_OVERFLOW  
   // thanks to gbirkus, he motivated this change, which greatly reduces overruns 
-  // unfortunately the constants and 32bit compares generates about 52 bytes codes; didn't find a way to get it down.
+  // unfortunately the constants and 32bit compares generates about 50 bytes codes; didn't find a way to get it down.
   // But I think it is worth
-  if (value>RESXl*256)  value =  RESXl*256;  // no bigger values allowed, prevent early overruns
-  if (value<-RESXl*256) value = -RESXl*256;  // no smaller values allowed, prevent early overruns
+  value = limit(int32_t(-RESXl*256),value,int32_t(RESXl*256));  // saves 2 bytes compared to solution below
+  // if (value>RESXl*256)  value =  RESXl*256;  // no bigger values allowed, prevent early overruns
+  // if (value<-RESXl*256) value = -RESXl*256;  // no smaller values allowed, prevent early overruns
+#endif
   
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
 	int16_t tmp;
-    if (limit->symetrical)
+    if (lim->symetrical)
       tmp = (value > 0) ? (lim_p) : (-lim_n);
     else
       tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
 	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
+#else    
+  if (value) {
+    int16_t tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
+	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
+#endif    
+    
 #ifdef CORRECT_NEGATIVE_SHIFTS
     int8_t sign=(value<0?1:0);
     value-=sign;
@@ -772,28 +789,11 @@ int16_t applyLimits(uint8_t channel, int32_t value)
     
 	ofs+=tmp;  // ofs can to added directly because already recalculated,
   }
-#else
-  if (value) {
-    int16_t tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
-	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
-#ifdef CORRECT_NEGATIVE_SHIFTS
-    int8_t sign=(value<0?1:0);
-    value-=sign;
-	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
-	tmp>>=2;   // now one simple shift right for two bytes does the rest
-    tmp+=sign;
-#else    
-	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
-	tmp>>=2;   // now one simple shift right for two bytes does the rest
-#endif
-	ofs+=tmp;  // ofs can to added directly because already recalculated,
-  }
-#endif
 
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;  
   
-  if (limit->revert) ofs = -ofs; // finally do the reverse.
+  if (lim->revert) ofs = -ofs; // finally do the reverse.
 
   if (safetyCh[channel] != -128) // if safety channel available for channel check
     ofs = calc100toRESX(safetyCh[channel]);
@@ -2728,18 +2728,16 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         if (mix_trim >= 0) v += trims[mix_trim];
       }
       
-      int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);      
-      weight = calc100to256_16Bits(weight);
+      // saves 12 bytes code if done here and not together with weight; unknown reason
+      int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);            
+      weight=calc100to256_16Bits(weight);      
       
-
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
-      
 #define DEL_MULT_SHIFT 8
         // we recale to a mult 256 higher value for calculation
-
         int16_t diff = v - (act[i]>>DEL_MULT_SHIFT);
         if (diff) {
           // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
@@ -2751,7 +2749,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
             // rate equals a full range for one second; if less time is passed rate is accordingly smaller
             // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
-
             int32_t currentValue=(v<<DEL_MULT_SHIFT);
             if (diff>0) {
               if (md->speedUp>0) {
@@ -2793,7 +2790,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       }
 
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
-
+      
       if (i == 0 || md->destCh != (md - 1)->destCh)
         *ptr = 0;
       // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
@@ -2816,8 +2813,18 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         default: // MLTPX_ADD
           *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
           break;
+      } //endswitch md->mltpx
+#ifdef PREVENT_ARITHMETIC_OVERFLOW
+      dv=*ptr>>8;
+      if (dv>(32767-RESXl)) {
+        *ptr=(32767-RESXl)<<8;
+      } else if (dv<(-32767+RESXl)) {
+        *ptr=(-32767+RESXl)<<8;
       }
-    }
+      //*ptr=limit( int32_t((-32767+RESXl)<<8), dv, int32_t((32767-RESXl)<<8));  // limit code cost 80 bytes
+#endif        
+     
+    } //endfor mixers
 
     tick10ms = 0;
     dirtyChannels &= passDirtyChannels;
@@ -2825,7 +2832,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   } while (++pass < 7 && dirtyChannels);  // we increased speed of mixer, therefore allow more passes; old value was 5
 
   mixWarning = lv_mixWarning;
-}
+} //endfunc perOut
 
 #define TIME_TO_WRITE() (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
@@ -2928,7 +2935,7 @@ void doMixerCalculations()
 
     // the reason this needs to be done before limits is the applyLimit function; it checks for safety switches which would be not initialized otherwise
     evalFunctions();  
-  } 
+  } //endif
 
   //========== LIMITS ===============
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
@@ -3092,7 +3099,7 @@ void doMixerCalculations()
         if (tv) s_timerVal[i] = tv - s_timerVal[i]; //if counting backwards - display backwards
       }
     }
-  };
+  } //endfor timer loop (only two)
 
   static tmr10ms_t s_time_tot;
   static uint8_t s_cnt_1s;
@@ -3190,7 +3197,7 @@ void doMixerCalculations()
         }
       }
     }
-  }
+  } //endif s_fade_fligh_phases
 
 #if defined(DSM2)
   if (s_rangecheck_mode) AUDIO_PLAY(AU_FRSKY_CHEEP);
@@ -3237,8 +3244,8 @@ void perMain()
   }  
 
   nextMixerEndTime = t0 + MAX_MIXER_DELTA;
-  // this is a very tricky implementation; lastMixerEndTime is just like a default value not to stop mixcalculations totally;
-  // the real value for lastMixerEndTime is calculated inside pulses_XXX.cpp which aligns the timestamp to the pulses generated
+  // this is a very tricky implementation; nextMixerEndTime is just like a default value not to stop mixcalculations totally;
+  // the real value for nextMixerEndTime is calculated inside pulses_XXX.cpp which aligns the timestamp to the pulses generated
   // nextMixerEndTime is actually defined inside pulses_XXX.h  
 
   doMixerCalculations();
@@ -3395,7 +3402,7 @@ void perMain()
 #endif
     }
   }
-}
+} //endfunc void perMain()
 
 int16_t g_ppmIns[8];
 uint8_t ppmInState = 0; //0=unsync 1..8= wait for value i-1
@@ -3422,18 +3429,21 @@ uint16_t getTmr16KHz()
 
 
 
+// new implementation
+
+// This ISR is only called if timer matches OCR0. We updated OCR0 on each call to make ISR happen.
+// If we do not do this, we have 16,385msec time before overflow causes an IRQ
+// So it's so easy instead of preventing IRQ we 
+//just do not cause it! It's enough not to write to OCR0. This gives plenty of time to finish ISR. 
+// So instead of masking we write OCR0 at the end. Max would be ISR is caused here immediately, which would not do anything, 
+// because all critical pfathes are finished. It also would give us the chance to measure if we passed the next tick and count it. 
+// It's already implemented but commented out, because of code cost.
 
 
 ISR(TIMER_10MS_VECT, ISR_NOBLOCK) 
 // 10ms timer
 {
-
-//  cli();
-//  PAUSE_10MS_INTERRUPT();
-//  sei();
-
   static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
-
 
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
 
@@ -3475,8 +3485,6 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
   } // end 10ms event
 #endif
-
-
 
   // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
 #if defined(PCBGRUVIN9X)
