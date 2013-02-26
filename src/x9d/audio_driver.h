@@ -89,7 +89,7 @@ inline uint16_t dacQueue(uint16_t *data, uint16_t size)
 #define VOLUME_LEVEL_DEF  12
 static const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 {
-    0,  2,  4,   6,   8,  10,  13,  17,  22,  27,  33,  40,
+    0,  1,  2,  3,  5,  9,  13,  17,  22,  27,  33,  40,
     64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
 } ;
 
