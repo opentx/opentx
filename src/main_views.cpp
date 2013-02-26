@@ -52,7 +52,10 @@
 #define BITMAP_Y      (LCD_H/2)
 #define PHASE_X       BITMAP_X
 #define PHASE_Y       (3*FH)
+#define PHASE_FLAGS   (0)
 #define TIMERS_X      144
+#define TIMER1_Y      0
+#define TIMER2_Y      VBATT_Y
 #define TIMERS_R      192
 #define REBOOT_X      (LCD_W-FW)
 #define VSWITCH_X(i)  (((i>=NUM_CSW*3/4) ? BITMAP_X+28 : ((i>=NUM_CSW/2) ? BITMAP_X+25 : ((i>=NUM_CSW/4) ? 21 : 18))) + 3*i)
@@ -72,6 +75,7 @@
 #define MODELNAME_X   (2*FW-2)
 #define PHASE_X       (6*FW)
 #define PHASE_Y       (2*FH)
+#define PHASE_FLAGS   0
 #define VBATT_X       (6*FW)
 #define VBATT_Y       (2*FH)
 #define VBATTUNIT_X   (VBATT_X-1)
@@ -190,25 +194,25 @@ void displayTimers()
 {
   // Main timer
   if (g_model.timers[0].mode) {
-    putsTime(TIMERS_X, 0, s_timerVal[0], MIDSIZE, MIDSIZE);
-    putsTmrMode(TIMERS_X-16, 5, g_model.timers[0].mode, SWCONDENSED|SMLSIZE);
-    if (g_model.timers[0].remanent) lcd_putcAtt(TIMERS_R, 1, 'R', SMLSIZE);
+    putsTime(TIMERS_X, TIMER1_Y, s_timerVal[0], MIDSIZE, MIDSIZE);
+    putsTmrMode(TIMERS_X-16, TIMER1_Y+5, g_model.timers[0].mode, SWCONDENSED|SMLSIZE);
+    if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
     if (s_timerState[0]==TMR_BEEPING) {
-      lcd_hline(TIMERS_X-6, 2, 4);
+      lcd_hline(TIMERS_X-6, TIMER1_Y+2, 4);
       if (BLINK_ON_PHASE)
-        lcd_filled_rect(TIMERS_X-17, 0, 69, 12);
+        lcd_filled_rect(TIMERS_X-17, TIMER1_Y, 70, 12);
     }
   }
 
   // Second timer
   if (g_model.timers[1].mode) {
-    putsTime(TIMERS_X, FH+3, s_timerVal[1], MIDSIZE, MIDSIZE);
-    putsTmrMode(TIMERS_X-16, FH+8, g_model.timers[1].mode, SWCONDENSED|SMLSIZE);
-    if (g_model.timers[1].remanent) lcd_putcAtt(TIMERS_R, FH+4, 'R', SMLSIZE);
+    putsTime(TIMERS_X, TIMER2_Y, s_timerVal[1], MIDSIZE, MIDSIZE);
+    putsTmrMode(TIMERS_X-16, TIMER2_Y+5, g_model.timers[1].mode, SWCONDENSED|SMLSIZE);
+    if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
     if (s_timerState[1]==TMR_BEEPING) {
-      lcd_hline(TIMERS_X-6, FH+5, 4);
+      lcd_hline(TIMERS_X-6, TIMER2_Y+2, 4);
       if (BLINK_ON_PHASE)
-        lcd_filled_rect(TIMERS_X-17, FH+3, 69, 12);
+        lcd_filled_rect(TIMERS_X-17, TIMER2_Y, 70, 12);
     }
   }
 }
@@ -432,7 +436,7 @@ void menuMainView(uint8_t event)
   {
     // Flight Phase Name
     uint8_t phase = s_perout_flight_phase;
-    lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR);
+    lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR|PHASE_FLAGS);
 
     // Model Name
     putsModelName(MODELNAME_X, 0*FH, g_model.name, g_eeGeneral.currModel, BIGSIZE);

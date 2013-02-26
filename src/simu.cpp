@@ -470,7 +470,7 @@ uint16_t anaIn(uint8_t chan)
 {
 #if defined(PCBX9D)
   if (chan == 8)
-    return 1500;
+    return 2400;
 #elif defined(PCBGRUVIN9X)
   if (chan == 7)
     return 150;
