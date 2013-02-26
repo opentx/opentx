@@ -291,7 +291,7 @@ void per10ms()
 
   // These moved here from perOut() to improve beep trigger reliability.
 #if defined(PWM_BACKLIGHT)
-  if ((g_tmr10ms&0x03) == 0x00)  //  if (g_tmr10ms % 4 == 0) // (should be faster)
+  if ((g_tmr10ms&0x03) == 0x00)
     fadeBacklight(); // increment or decrement brightness until target brightness is reached
 #endif
 
@@ -337,8 +337,8 @@ CurveInfo curveinfo(uint8_t idx)
   result.crv = curveaddress(idx);
   int8_t *next = curveaddress(idx+1);
   uint8_t size = next - result.crv;
-  if ((size & 1)==0) {  //  if (size % 2 == 0)  {
-	result.points = (size / 2) + 1; // result.points = (size >> 1) + 1; done by the compiler anyway 
+  if ((size & 1) == 0) {
+    result.points = (size / 2) + 1;
     result.custom = true;
   }
   else {
@@ -564,7 +564,8 @@ int16_t expo(int16_t x, int16_t k)
   if (neg) x = -x;
   if (k<0) {
     y = RESXu-expou(RESXu-x, -k);
-  } else {
+  }
+  else {
     y = expou(x, k);
   }
   return neg? -y : y;
@@ -1348,13 +1349,13 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
 }
 #endif
 
-#define INAC_DEV_SHIFT 9   // @@@ shift right value for stick movement
-#define INAC_DEVISOR 512   // Bypass splash screen with stick movement
+#define INAC_DEVISOR 512   // bypass splash screen with stick movement
+#define INAC_DEV_SHIFT 9   // shift right value for stick movement
 uint16_t stickMoveValue()
 {
   uint16_t sum = 0;
-  for (uint8_t i=0; i<4; i++)
-    sum += (anaIn(i)>>INAC_DEV_SHIFT); // sum += anaIn(i)/INAC_DEVISOR;
+  for (uint8_t i=0; i<NUM_STICKS; i++)
+    sum += anaIn(i) >> INAC_DEV_SHIFT;
   return sum;
 }
 
@@ -1721,7 +1722,7 @@ uint8_t checkTrim(uint8_t event)
       after = TRIM_MAX;
     if (after < TRIM_MIN)
       after = TRIM_MIN;
-    after>>=2;  // open.20.fsguruh after/=4;
+    after >>= 2;
     after += 60;
 #endif
 
@@ -1932,7 +1933,6 @@ static uint8_t lastSwPos[2] = {0, 0};
 static uint16_t s_cnt[2] = {0, 0};
 static uint16_t s_sum[2] = {0, 0};
 static uint8_t sw_toggled[2] = {false, false};
-// static uint16_t s_time_cum_16[2] = {0, 0};  no longer needed using s_sum instead
 
 #if defined(THRTRACE)
 uint8_t s_traceBuf[MAXTRACE];
@@ -1983,8 +1983,7 @@ FORCEINLINE void evalTrims()
       if (g_eeGeneral.throttleReversed)
         trim = -trim;
       int16_t v = anas[i];
-	  int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)>>(RESX_SHIFT+1);
-      // int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)/(2*RESX);	  
+      int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)>>(RESX_SHIFT+1);
       trim = vv;
     }
     else if (trimsCheckTimer > 0) {
@@ -2004,8 +2003,7 @@ BeepANACenter evalSticks(uint8_t mode)
   if (g_model.swashR.value) {
     uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] +
         int32_t(calibratedStick[AIL_STICK])*calibratedStick[AIL_STICK]);
-	uint32_t q = calc100toRESX(g_model.swashR.value);
-    // uint32_t q = int32_t(RESX)*g_model.swashR.value/100;	
+    uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v>q)
       d = isqrt32(v);
@@ -2082,9 +2080,8 @@ BeepANACenter evalSticks(uint8_t mode)
       }
 
 #ifdef HELI
-      if(d && (ch==ELE_STICK || ch==AIL_STICK))
-	    v = (int32_t(v)*calc100toRESX(g_model.swashR.value))/int32_t(d);
-      //  v = int32_t(v)*g_model.swashR.value*RESX/(int32_t(d)*100);
+      if (d && (ch==ELE_STICK || ch==AIL_STICK))
+        v = (int32_t(v)*calc100toRESX(g_model.swashR.value))/int32_t(d);
 #endif
 
       rawAnas[ch] = v;
@@ -2519,18 +2516,13 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   if(g_model.swashR.value)
   {
     uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
-    // uint32_t q = (int32_t)RESX*g_model.swashR.value/100;
-	uint32_t q = calc100toRESX(g_model.swashR.value);		
+    uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
-    if(v>q)
-    {
+    if (v>q) {
       uint16_t d = isqrt32(v);
-	  // @@@ open.20.fsguruh
-      // anas[ELE_STICK] = (int32_t)anas[ELE_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
-      // anas[AIL_STICK] = (int32_t)anas[AIL_STICK]*g_model.swashR.value*RESX/((int32_t)d*100);
-	  int16_t tmp = calc100toRESX(g_model.swashR.value);
-      anas[ELE_STICK] = (int32_t) anas[ELE_STICK]*tmp/d; 
-      anas[AIL_STICK] = (int32_t) anas[AIL_STICK]*tmp/d; 
+      int16_t tmp = calc100toRESX(g_model.swashR.value);
+      anas[ELE_STICK] = (int32_t) anas[ELE_STICK]*tmp/d;
+      anas[AIL_STICK] = (int32_t) anas[AIL_STICK]*tmp/d;
     }
   }
 
@@ -2636,7 +2628,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-			  v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
+              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
           }
         }
 #else
@@ -2650,7 +2642,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-			  v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
+              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
           }
         }
 #endif
@@ -2721,7 +2713,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       //========== OFFSET ===============
       if (apply_offset_and_curve) {
         int16_t offset = GET_GVAR(MD_OFFSET(md), -245, 245, s_perout_flight_phase); // open.20.fsguruh
-        if (offset) v+=calc100toRESX_16Bits(offset);  // @@@ open.20.fsguruh      
+        if (offset) v += calc100toRESX_16Bits(offset);  // @@@ open.20.fsguruh      
       }
 
       //========== TRIMS ===============
@@ -2737,7 +2729,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       }
       
       int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);      
-      weight=calc100to256_16Bits(weight);
+      weight = calc100to256_16Bits(weight);
       
 
       //========== SPEED ===============
@@ -2748,7 +2740,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #define DEL_MULT_SHIFT 8
         // we recale to a mult 256 higher value for calculation
 
-        int16_t diff=v-(act[i]>>DEL_MULT_SHIFT);
+        int16_t diff = v - (act[i]>>DEL_MULT_SHIFT);
         if (diff) {
           // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
           // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
@@ -2756,7 +2748,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
           if (tick10ms) {
             // only if already time is passed add or substract a value according the speed configured
-			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
+            int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
             // rate equals a full range for one second; if less time is passed rate is accordingly smaller
             // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
 
@@ -2767,7 +2759,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
                 int32_t newValue = act[i]+rate/((int16_t)(100/SLOW_STEP)*md->speedUp); 
                 if (newValue<currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
               }
-            } else {  // if is <0 because ==0 is not possible
+            }
+            else {  // if is <0 because ==0 is not possible
               if (md->speedDown>0) {
                 // see explanation in speedUp
                 int32_t newValue = act[i]-rate/((int16_t)(100/SLOW_STEP)*md->speedDown); 
@@ -2786,62 +2779,13 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         v = applyCurve(v, md->curveParam);
       }
 
-      // int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);
-
       //========== WEIGHT ===============
-	  // @@@2 recalculate weight to a 256 basis which ease the calculation later a lot
-      // int32_t dv = (int32_t) v * calc100to256_16Bits(weight);
       int32_t dv = (int32_t) v * weight;
-
-#ifdef SPEED_AFTER_WEIGHT      
-// todo remove is there is no need anymore...
-      //========== SPEED ===============
-      if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
-      
-#define DEL_MULT_SHIFT 8
-        // we are lucky, the MULT_SHIFT factor actually fits to the weight recalculation; Therefore no adaption needed
-        // so weight is 256 and MULT factor is the same
-
-        int32_t diff=dv-act[i];
-        if (diff) {
-          // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
-          // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
-          // because we get a tick each 10msec, we need 100 ticks for one second
-          // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
-          if (tick10ms) {
-            // only if already time is passed add or substract a value according the speed configured
-                    
-            // codesaving 44 bytes          
-			int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
-            // rate equals a full range for one second; if less time is passed rate is accordingly smaller
-            // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
-
-            int32_t currentValue=dv;
-            if (diff>0) {
-              if (md->speedUp>0) {
-                // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
-                int32_t newValue = act[i]+rate/((int16_t)(100/SLOW_STEP)*md->speedUp); 
-                if (newValue<currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
-              }
-            } else {  // if is <0 because ==0 is not possible
-              if (md->speedDown>0) {
-                // see explanation in speedUp
-                int32_t newValue = act[i]-rate/((int16_t)(100/SLOW_STEP)*md->speedDown); 
-                if (newValue>currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
-              }            
-            } //endif diff>0
-            act[i] = currentValue;
-            // open.20.fsguruh: this implementation would save about 50 bytes code
-          } // endif tick10ms ; in case no time passed assign the old value, not the current value from source
-          dv = act[i];
-        } //endif diff
-      } //endif speed
-#endif
       
       //========== DIFFERENTIAL =========
       if (md->curveMode == MODE_DIFFERENTIAL) {
-	    // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
-		int16_t curveParam=calc100to256(GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase));
+	// @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
+        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase));
         if (curveParam > 0 && dv < 0)
           dv = (dv * (256 - curveParam)) >> 8;
         else if (curveParam < 0 && dv > 0)
@@ -2850,7 +2794,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
 
-      if (i == 0 || md->destCh != (md - 1)->destCh) *ptr = 0;
+      if (i == 0 || md->destCh != (md - 1)->destCh)
+        *ptr = 0;
       // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
 
       switch (md->mltpx) {
@@ -2862,10 +2807,10 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #endif
           break;
         case MLTPX_MUL:
-		  // @@@2 we have to remove the weight factor of 256 in case of 100%; now we use the new base of 256
+          // @@@2 we have to remove the weight factor of 256 in case of 100%; now we use the new base of 256
           dv >>= 8;		
           dv *= *ptr;
-		  dv >>= RESX_SHIFT;   // same as dv /= RESXl;
+          dv >>= RESX_SHIFT;   // same as dv /= RESXl;
           *ptr = dv;
           break;
         default: // MLTPX_ADD
@@ -2964,8 +2909,7 @@ void doMixerCalculations()
         s_perout_flight_phase = p;
         perOut(e_perout_mode_normal, tick10ms);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
-          sum_chans512[i] += (chans[i]>>4) * fp_act[p];  // @@@ use shift right instead of division
-		  // sum_chans512[i] += (chans[i] / 16) * fp_act[p];		
+          sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
       }
     }
@@ -2977,11 +2921,10 @@ void doMixerCalculations()
     perOut(e_perout_mode_normal, tick10ms);
   }
   
-  // @@@ open.20.fsguruh according to bsongis and also my this should be done here, hopefully tick10ms is set the first round; later on this should occur max each 10msec
   if (tick10ms) {
-  #if defined(CPUARM)
+#if defined(CPUARM)
     requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
-  #endif
+#endif
 
     // the reason this needs to be done before limits is the applyLimit function; it checks for safety switches which would be not initialized otherwise
     evalFunctions();  
@@ -2994,11 +2937,9 @@ void doMixerCalculations()
     // at the end chans[i] = chans[i]/100 =>  -1024..1024
     // interpolate value with min/max so we get smooth motion from center to stop
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
-	
-    // int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) * 16 : chans[i]);
-	int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) << 4 : chans[i]);
-	// @@@2 now remove the internal 256 100% basis by a simple shift operation
-	ex_chans[i]=q>>8; // for the next perMain	
+    int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) << 4 : chans[i]);
+    // @@@2 now remove the internal 256 100% basis by a simple shift operation
+    ex_chans[i] = q>>8; // for the next perMain	
 
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
@@ -3028,33 +2969,36 @@ void doMixerCalculations()
   if (g_model.thrTraceSrc > NUM_POTS) {
     uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
     val = g_chans512[ch];
-    int16_t gModelMax=calc100toRESX(g_model.limitData[ch].max)+1024;
-    int16_t gModelMin=calc100toRESX(g_model.limitData[ch].min)-1024;
+    
+    int16_t gModelMax = calc100toRESX(g_model.limitData[ch].max)+1024;
+    int16_t gModelMin = calc100toRESX(g_model.limitData[ch].min)-1024;
     
     if (g_model.limitData[ch].revert)
       val = -val + gModelMax;
     else
       val = val - gModelMin;
+      
 #if defined(PPM_LIMITS_SYMETRICAL)
     if (g_model.limitData[ch].symetrical)
       val -= calc1000toRESX(g_model.limitData[ch].offset);
 #endif
     // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; (*16/16 already cause a overrun; unsigned calculation also not possible, because v may be negative)
-    gModelMax-=gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
+    gModelMax -= gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
     // usually max is 1024 min is -1024 --> max-min = 2048 full range / 128 = max 16 steps
     
-    gModelMax>>=(10-2);
-    if (gModelMax!=8) val = (val << 3) / (gModelMax); // recaling only needed if Min, Max differs
+    gModelMax >>= (10-2);
+    if (gModelMax != 8)
+      val = (val << 3) / (gModelMax); // recaling only needed if Min, Max differs
     
     // if (gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
     // val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
-	if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
+    if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
   }
   else {
     val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
   }
 
-#ifndef CPUM64
+#if !defined(CPUM64)
   //  code cost is about 16 bytes for higher throttle accuracy for timer 
   //  would not be noticable anyway, because all version up to this change had only 16 steps; 
   //  now it has already 32  steps; this define would increase to 128 steps
@@ -3063,11 +3007,10 @@ void doMixerCalculations()
 
   
 #if defined(ACCURAT_THROTTLE_TIMER)
-  val >>= (RESX_SHIFT-6); // increase resolution by factor 4
+  val >>= (RESX_SHIFT-6); // calibrate it (resolution increased by factor 4)
 #else
-  val >>= (RESX_SHIFT-4); // calibrate it @@@ open.20.fsguruh
-  // val /= (RESX/16); // calibrate it
-#endif  
+  val >>= (RESX_SHIFT-4); // calibrate it
+#endif
   
 
   // Timers start
@@ -3080,7 +3023,6 @@ void doMixerCalculations()
         s_timerState[i] = TMR_RUNNING;
         s_cnt[i] = 0;
         s_sum[i] = 0;
-        // s_time_cum_16[i] = 0;  open.20.fsguruh: we have s_sum, that's enough
       }
 
       uint8_t atm = (tm >= 0 ? tm : TMR_VAROFS-tm-1);
@@ -3118,14 +3060,13 @@ void doMixerCalculations()
             s_timerVal[i]++;  // add second used of throttle
             s_sum[i]-=128*s_cnt[i];
           }
-		  s_cnt[i]=0;
 #else
           if ((s_sum[i]/s_cnt[i])>=32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
             s_timerVal[i]++;  // add second used of throttle
             s_sum[i]-=32*s_cnt[i];
           }
-		  s_cnt[i]=0;
 #endif
+          s_cnt[i]=0;
         }
         else if (atm==TMRMODE_THR_TRG) {
           if (val || s_timerVal[i] > 0)
@@ -3251,14 +3192,6 @@ void doMixerCalculations()
     }
   }
 
-/*  as proposed by bsongis, this is done now shortly before limits
-#if defined(CPUARM)
-  requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
-#endif
-
-  evalFunctions();
-*/
-
 #if defined(DSM2)
   if (s_rangecheck_mode) AUDIO_PLAY(AU_FRSKY_CHEEP);
 #endif
@@ -3279,13 +3212,13 @@ void perMain()
     // @@@ open.20.fsguruh
     // SLEEP();   // wouldn't that make sense? should save a lot of battery power!!!
 /*  for future use; currently very very beta...  */
-#ifdef POWER_SAVE
-	ADCSRA&=0x7F;   // disable ADC for power saving
-	ACSR&=0xF7;   // disable ACIE Interrupts
-	ACSR|=0x80;   // disable Analog Comparator
+#if defined(POWER_SAVE)
+    ADCSRA&=0x7F;   // disable ADC for power saving
+    ACSR&=0xF7;   // disable ACIE Interrupts
+    ACSR|=0x80;   // disable Analog Comparator
     // maybe we disable here a lot more hardware components in future to save even more power
-	
-	MCUCR|=0x20;  // enable Sleep (bit5)
+
+    MCUCR|=0x20;  // enable Sleep (bit5)
     // MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit3)
     // first tests showed: simple sleep would reduce cpu current from 40.5mA to 32.0mA
     //                     noise reduction sleep would reduce it down to 28.5mA; However this would break pulses in theory
@@ -3297,8 +3230,8 @@ void perMain()
     } while ((delta>0) && (delta<MAX_MIXER_DELTA));
     
     // reenabling of the hardware components needed here
-	MCUCR&=0x00;  // disable sleep
-	ADCSRA|=0x80;  // enable ADC
+    MCUCR&=0x00;  // disable sleep
+    ADCSRA|=0x80;  // enable ADC
 #endif
     return;
   }  
