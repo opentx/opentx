@@ -1168,7 +1168,7 @@ int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
   return limit(min, x, max);
 }
 
-void setGVarValue(uint8_t idx, int8_t value, int8_t phase)
+void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
 {
   phase = getGVarFlightPhase(phase, idx);
   if (GVAR_VALUE(idx, phase) != value) {
