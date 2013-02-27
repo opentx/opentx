@@ -2738,7 +2738,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
 #define DEL_MULT_SHIFT 8
         // we recale to a mult 256 higher value for calculation
-        int16_t diff = v - (act[i]>>DEL_MULT_SHIFT);
+        int16_t diff = v - ((int32_t) act[i]>>DEL_MULT_SHIFT);
         if (diff) {
           // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
           // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
@@ -2749,7 +2749,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
             // rate equals a full range for one second; if less time is passed rate is accordingly smaller
             // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
-            int32_t currentValue=(v<<DEL_MULT_SHIFT);
+            int32_t currentValue=((int32_t) v<<DEL_MULT_SHIFT);
             if (diff>0) {
               if (md->speedUp>0) {
                 // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
@@ -2815,12 +2815,35 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           break;
       } //endswitch md->mltpx
 #ifdef PREVENT_ARITHMETIC_OVERFLOW
-      dv=*ptr>>8;
+
+      PACK( union u_int16int32_t {
+        struct {
+          int16_t lo;
+          int16_t hi;
+        } words_t;
+        int32_t dword;
+      });
+      u_int16int32_t tmp;
+      tmp.dword=*ptr;
+      
+      if (tmp.dword<0) {
+        tmp.words_t.hi|=0xFF80;
+        //tmp.bytes_t.h4=0xFF;
+        //tmp.bytes_t.h3|=0x80;
+      } else {
+        // tmp.bytes_t.h4=0x00;
+        // tmp.bytes_t.h3&=0x7F;
+        tmp.words_t.hi&=0x007F;
+      }
+      *ptr=tmp.dword;
+      // this implementation saves 32bytes flash
+
+/*      dv=*ptr>>8;
       if (dv>(32767-RESXl)) {
         *ptr=(32767-RESXl)<<8;
       } else if (dv<(-32767+RESXl)) {
         *ptr=(-32767+RESXl)<<8;
-      }
+      }*/
       //*ptr=limit( int32_t((-32767+RESXl)<<8), dv, int32_t((32767-RESXl)<<8));  // limit code cost 80 bytes
 #endif        
      
