@@ -758,6 +758,9 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   // unfortunately the constants and 32bit compares generates about 50 bytes codes; didn't find a way to get it down.
   // But I think it is worth
   value = limit(int32_t(-RESXl*256),value,int32_t(RESXl*256));  // saves 2 bytes compared to solution below
+  
+  // try also limit 0xFFFFF
+  // value = limit(int32_t(-0xFFFFF),value,int32_t(0xFFFFF));  // saves 2 bytes compared to solution below
   // if (value>RESXl*256)  value =  RESXl*256;  // no bigger values allowed, prevent early overruns
   // if (value<-RESXl*256) value = -RESXl*256;  // no smaller values allowed, prevent early overruns
 #endif
@@ -2823,20 +2826,22 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         } words_t;
         int32_t dword;
       });
+      
       u_int16int32_t tmp;
       tmp.dword=*ptr;
       
       if (tmp.dword<0) {
-        tmp.words_t.hi|=0xFF80;
+        if ((tmp.words_t.hi&0xFF80)!=0xFF80) tmp.words_t.hi=0xFF86; // set to min nearly
         //tmp.bytes_t.h4=0xFF;
         //tmp.bytes_t.h3|=0x80;
       } else {
+        if ((tmp.words_t.hi|0x007F)!=0x007F) tmp.words_t.hi=0x00079; // set to max nearly
         // tmp.bytes_t.h4=0x00;
         // tmp.bytes_t.h3&=0x7F;
-        tmp.words_t.hi&=0x007F;
+        // tmp.words_t.hi&=0x007F;
       }
       *ptr=tmp.dword;
-      // this implementation saves 32bytes flash
+      // this implementation saves 18bytes flash
 
 /*      dv=*ptr>>8;
       if (dv>(32767-RESXl)) {
@@ -2844,7 +2849,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       } else if (dv<(-32767+RESXl)) {
         *ptr=(-32767+RESXl)<<8;
       }*/
-      //*ptr=limit( int32_t((-32767+RESXl)<<8), dv, int32_t((32767-RESXl)<<8));  // limit code cost 80 bytes
+      // *ptr=limit( int32_t(int32_t(-1)<<23), *ptr, int32_t(int32_t(1)<<23));  // limit code cost 72 bytes
+      // *ptr=limit( int32_t((-32767+RESXl)<<8), *ptr, int32_t((32767-RESXl)<<8));  // limit code cost 80 bytes
 #endif        
      
     } //endfor mixers
