@@ -806,7 +806,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 
 int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 int16_t g_chans512[NUM_CHNOUT] = {0};
-int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain
+// int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain; @@@3 fsguruh
 #ifdef HELI
 int16_t cyc_anas[3] = {0};
 #endif
@@ -842,7 +842,7 @@ int16_t getValue(uint8_t i)
 #endif
   else if(i<CSW_PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-CSW_PPM_BASE] - g_eeGeneral.trainer.calib[i-CSW_PPM_BASE])*2;
   else if(i<CSW_PPM_BASE+NUM_PPM) return g_ppmIns[i-CSW_PPM_BASE]*2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CSW_CHOUT_BASE];
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return (chans[i-CSW_CHOUT_BASE]>>8); //@@@3 fsguruh //  return ex_chans[i-CSW_CHOUT_BASE];
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_TM2) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT];
 #if defined(FRSKY)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyData.rssi[1].value;
@@ -2630,8 +2630,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
+            // @@@3 fsguruh should not be necessary
+            /*if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
+              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before */
           }
         }
 #else
@@ -2644,8 +2645,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
+              // @@@3 fsguruh should not be necessary
+            /* if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
+              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before */
           }
         }
 #endif
@@ -2968,14 +2970,13 @@ void doMixerCalculations()
 
   //========== LIMITS ===============
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
-    // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*100
+    // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*256
     // later we multiply by the limit (up to 100) and then we need to normalize
-    // at the end chans[i] = chans[i]/100 =>  -1024..1024
+    // at the end chans[i] = chans[i]/256 =>  -1024..1024
     // interpolate value with min/max so we get smooth motion from center to stop
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
     int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) << 4 : chans[i]);
-    // @@@2 now remove the internal 256 100% basis by a simple shift operation
-    ex_chans[i] = q>>8; // for the next perMain	
+    // ex_chans[i] = q>>8; // for the next perMain	@@@3 fsguruh
 
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
@@ -3468,7 +3469,6 @@ uint16_t getTmr16KHz()
 // because all critical pfathes are finished. It also would give us the chance to measure if we passed the next tick and count it. 
 // It's already implemented but commented out, because of code cost.
 
-
 ISR(TIMER_10MS_VECT, ISR_NOBLOCK) 
 // 10ms timer
 {
@@ -3526,6 +3526,7 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
   OCR0 += 2; // interrupt every 128us
 /*  
   // needs to change cnt10ms to int instead uint to allow cnt10ms to be negative
+  // also remove cnt10ms-- in if statement above, because substraction is done here
   // code oost: 34 bytes
   // this solutions   all missed ISRs are counted and next ISR is in about 128usec (exception is wrap around)
   cli();
@@ -3546,84 +3547,6 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
 
 }
 
-
- 
-// #define OLD_VERSION
-
- #ifdef OLD_VERSION
- 
-ISR(TIMER_10MS_VECT, ISR_NOBLOCK) // 10ms timer  
-{
-  cli();
-  PAUSE_10MS_INTERRUPT();
-  sei();
-
-  static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
-  // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
-#if defined(PCBGRUVIN9X)
-  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
-  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
-  OCR2A += bump;
-#elif defined(AUDIO) || defined(VOICE)
-  OCR0 += 2; // interrupt every 128us
-  // warble is done later for AUDIO or VOICE don't do it here because it will destroy audio
-#else
-  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
-  // each tick we are 0,016msec too fast
-  // one tick more means 0,048 msec too slow = 3*0,016msec --> in sum we are correct!!!
-  // therefore every 4 round we need to slow down one tick
-  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
-  OCR0 += bump;
-#endif
-
-#if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
-
-#if defined(AUDIO)
-  AUDIO_DRIVER();
-#endif
-
-#if defined(VOICE)
-  VOICE_DRIVER();
-#endif
-
-  static uint8_t cnt10ms; // no initialization needed here;  execute 10ms code once every 78 ISRs; takes 16.38msec to overrun for first round --> no problem
-
-#if defined(FRSKY) || defined(MAVLINK) || defined(JETI)
-  if (cnt10ms == 30) {
-    if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
-      telemetryPoll10ms();
-  }
-#endif
-
-  if (--cnt10ms == 0) { // BEGIN { ... every 10ms ... }
-    // Begin 10ms event
-    // cnt10ms = 78;
-    cnt10ms = (!(++accuracyWarble &0x07)) ? 79 : 78;
-    // each per10ms() we are 0,016msec too fast
-    // one tick more means 0,112 msec too slow = 7*0,016msec --> in sum we are correct!!!        
-    // therefore every 8. round we need to slow down one tick
-    
-#endif
-
-    AUDIO_HEARTBEAT();
-
-#if defined(HAPTIC)
-    HAPTIC_HEARTBEAT();
-#endif
-
-    per10ms();
-
-#if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
-  } // end 10ms event
-#endif
-
-
-  // cli();
-  RESUME_10MS_INTERRUPT();
-  // sei();
-}
-
-#endif
 
 // Timer3 used for PPM_IN pulse width capture. Counter running at 16MHz / 8 = 2MHz
 // equating to one count every half millisecond. (2 counts = 1ms). Control channel
