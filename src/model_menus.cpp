@@ -1907,7 +1907,7 @@ void gvarWeightItem(xcoord_t x, uint8_t y, MixData *md, uint8_t attr, uint8_t ev
  // @@@ open.20.fsguruh
   u_int8int16_t weight;
   MD_GETWEIGHT(weight,md);
-  weight.word = gvarMenuItem(x, y, weight.word, -245, 245, attr, event);
+  weight.word = gvarMenuItem(x, y, weight.word, GV_RANGELARGE_NEG, GV_RANGELARGE, attr, event);
   MD_SETWEIGHT(weight,md);
 //#endif
 }
@@ -1988,7 +1988,7 @@ void menuModelMixOne(uint8_t event)
         // @@@ open.20.fsguruh
         u_int8int16_t offset;
 	    MD_GETOFFSET(offset,md2);
-        offset.word = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, -245, 245, attr|LEFT, event);
+        offset.word = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_NEG, GV_RANGELARGE, attr|LEFT, event);
 	    MD_SETOFFSET(offset,md2);	
 // #else
 //        md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
@@ -2307,6 +2307,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
                 else
 				  displayGVar(15*FW+2, y, md->curveParam, -100, 100);  // open.20.fsguruh
                   // displayGVar(15*FW+2, y, md->curveParam, -125, 125); // only -100 to +100 is allowed now
+                  // could be increased now, but is it useful? differentiate with more the +-100% is a fault, correct?
               }
               if (md->swtch) putsSwitches(16*FW, y, md->swtch);
 

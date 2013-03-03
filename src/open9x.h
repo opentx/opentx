@@ -812,21 +812,49 @@ void incRotaryEncoder(uint8_t idx, int8_t inc);
     void setGVarValue(uint8_t x, int8_t value);
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
     #define SET_GVAR(idx, val, p) setGVarValue(idx, val)
+    #define GV1_SMALL  128
+    #define GV1_LARGE  256
   #else
     uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx);
     int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase);
     void setGVarValue(uint8_t x, int8_t value, int8_t phase);
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
     #define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)
+    // @@@ open.20.fsguruh may have different recalculation formula in future to allow higher ranges?
+    #define GV1_SMALL  128
+    #define GV1_LARGE  256
   #endif
-  #define GV1_SMALL  123
-  // @@@ open.20.fsguruh
-  #define GV1_LARGE  251    
+
+  // depends if we want free ranges for use, if no MAX_GVARS are smaller
+  // if not this would assume a max for GVARS instead using MAX_GVARS
+  #define GV_RANGESMALL      (GV1_SMALL - (MAX_GVARS+1))
+  #define GV_RANGESMALL_NEG  (-GV1_SMALL + (MAX_GVARS+1))
+  #define GV_RANGELARGE      (GV1_LARGE - (MAX_GVARS+1))
+  #define GV_RANGELARGE_NEG  (-GV1_LARGE + (MAX_GVARS+1))
+  
+  #define GV_IS_GV_VALUE(x,min,max)    ( (x>max) || (x<min) )
+  #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
+  #define GV_INDEX_CALCULATION(x,max)  ( (max <= GV1_SMALL) ?  (uint8_t) x-GV1_SMALL  : \
+                                       (  (x&(GV1_LARGE*2-1))-GV1_LARGE ) )
+  #define GV_INDEX_CALC_DELTA(x,delta) ((x&(delta*2-1)) - delta)
+
+  #define GV_CALC_VALUE_IDX_POS(idx,delta) (-delta+idx)
+  #define GV_CALC_VALUE_IDX_NEG(idx,delta) (delta+idx)
+
   #define GVAR_DISPLAY_TIME     100 /*1 second*/;
   extern uint8_t s_gvar_timer;
   extern uint8_t s_gvar_last;
 #else
   #define GET_GVAR(x, ...) (x)
+
+  // can be used also without GVARS for allowed parameter ranges (makes -500 +500 range for weight unneccessary)
+  // do we want to allow wider ranges without GVARS? Would cause a conversion problem later on, a lot of options needs to be check to do it right
+  #define GV1_SMALL  128
+  #define GV1_LARGE  256
+  #define GV_RANGESMALL      (GV1_SMALL-1)
+  #define GV_RANGESMALL_NEG  (-GV1_SMALL+1)
+  #define GV_RANGELARGE      (GV1_LARGE-1)
+  #define GV_RANGELARGE_NEG  (-GV1_LARGE+1)  
 #endif
 
 extern uint16_t s_timeCumTot;

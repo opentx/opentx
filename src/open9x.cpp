@@ -757,12 +757,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   // thanks to gbirkus, he motivated this change, which greatly reduces overruns 
   // unfortunately the constants and 32bit compares generates about 50 bytes codes; didn't find a way to get it down.
   // But I think it is worth
-  value = limit(int32_t(-RESXl*256),value,int32_t(RESXl*256));  // saves 2 bytes compared to solution below
-  
-  // try also limit 0xFFFFF
-  // value = limit(int32_t(-0xFFFFF),value,int32_t(0xFFFFF));  // saves 2 bytes compared to solution below
-  // if (value>RESXl*256)  value =  RESXl*256;  // no bigger values allowed, prevent early overruns
-  // if (value<-RESXl*256) value = -RESXl*256;  // no smaller values allowed, prevent early overruns
+  value = limit(int32_t(-RESXl*256),value,int32_t(RESXl*256));  // saves 2 bytes compared to other solutions up to now
 #endif
   
 #if defined(PPM_LIMITS_SYMETRICAL)
@@ -1251,8 +1246,8 @@ uint8_t s_gvar_last = 0;
 #if defined(CPUM64)
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
 {
-  if ((x > (GV1_LARGE-6)) || (x>max)) {  // @@@ open.20.fsguruh
-    int8_t idx = (max <= 100 ? x - GV1_SMALL : x - GV1_LARGE);
+  if (GV_IS_GV_VALUE(x,min,max)) {
+    int8_t idx = GV_INDEX_CALCULATION(x,max);
     int8_t mul = 1;
 
     if (idx < 0) {
@@ -1291,12 +1286,12 @@ uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
 
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
 {
-  if (x > max) {
-    int8_t idx = (max <= 100 ? x - GV1_SMALL : x - GV1_LARGE);
+  if (GV_IS_GV_VALUE(x,min,max)) {
+    int8_t idx = GV_INDEX_CALCULATION(x,max);
     int8_t mul = 1;
 
     if (idx < 0) {
-      idx = 1-idx;
+      idx = -1-idx;
       mul = -1;
     }
 
@@ -2717,7 +2712,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== OFFSET ===============
       if (apply_offset_and_curve) {
-        int16_t offset = GET_GVAR(MD_OFFSET(md), -245, 245, s_perout_flight_phase); // open.20.fsguruh
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase); // open.20.fsguruh
         if (offset) v += calc100toRESX_16Bits(offset);  // @@@ open.20.fsguruh      
       }
 
@@ -2734,7 +2729,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       }
       
       // saves 12 bytes code if done here and not together with weight; unknown reason
-      int16_t weight = GET_GVAR(MD_WEIGHT(md), -500, 500, s_perout_flight_phase);            
+      int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase);            
       weight=calc100to256_16Bits(weight);      
       
       //========== SPEED ===============
@@ -2820,6 +2815,15 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           break;
       } //endswitch md->mltpx
 #ifdef PREVENT_ARITHMETIC_OVERFLOW
+/*      
+      // a lot of assumptions must be true, for this kind of check; not really worth for only 4 bytes flash savings
+      // this solution would save again 4 bytes flash
+      int8_t testVar=(*ptr<<1)>>24;
+      if ( (testVar!=-1) && (testVar!=0 ) ) {
+        // this devices by 64 which should give a good balance between still over 100% but lower then 32x100%; should be OK
+        *ptr >>= 6;  // this is quite tricky, reduces the value a lot but should be still over 100% and reduces flash need
+      } */
+
 
       PACK( union u_int16int32_t {
         struct {
@@ -2834,13 +2838,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       
       if (tmp.dword<0) {
         if ((tmp.words_t.hi&0xFF80)!=0xFF80) tmp.words_t.hi=0xFF86; // set to min nearly
-        //tmp.bytes_t.h4=0xFF;
-        //tmp.bytes_t.h3|=0x80;
       } else {
-        if ((tmp.words_t.hi|0x007F)!=0x007F) tmp.words_t.hi=0x00079; // set to max nearly
-        // tmp.bytes_t.h4=0x00;
-        // tmp.bytes_t.h3&=0x7F;
-        // tmp.words_t.hi&=0x007F;
+        if ((tmp.words_t.hi|0x007F)!=0x007F) tmp.words_t.hi=0x0079; // set to max nearly
       }
       *ptr=tmp.dword;
       // this implementation saves 18bytes flash

@@ -65,6 +65,34 @@
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 #endif
 
+
+typedef int16_t gvar_t;
+
+#if !defined(CPUM64)
+typedef char gvar_name_t[6];
+#define GVAR_MAX  1024
+#endif
+
+#if defined(CPUM64) && defined(GVARS)
+  #define MAX_GVARS 9
+  #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
+  #define PHASE_GVARS_DATA
+  #define GVAR_VALUE(x, p) g_model.gvars[x]
+#elif defined(CPUM64)
+  #define MAX_GVARS 0
+  #define MODEL_GVARS_DATA
+  #define PHASE_GVARS_DATA
+#elif defined(GVARS)
+  #define MAX_GVARS 9
+  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
+  #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
+  #define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
+#else
+  #define MAX_GVARS 0
+  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[5];
+  #define PHASE_GVARS_DATA gvar_t gvars[5]
+#endif
+
 PACK(typedef struct t_TrainerMix {
   uint8_t srcChn:6; // 0-7 = ch1-8
   uint8_t mode:2;   // off,add-mode,subst-mode
@@ -427,7 +455,8 @@ enum Functions {
 #endif
 #if defined(GVARS)
   FUNC_ADJUST_GV1,
-  FUNC_ADJUST_GV5 = FUNC_ADJUST_GV1 + 4,
+  // FUNC_ADJUST_GV5 = FUNC_ADJUST_GV1 + 4,
+  FUNC_ADJUST_GVLAST = (FUNC_ADJUST_GV1 + (MAX_GVARS-1)),
 #endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
@@ -691,33 +720,6 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define TRIM_ARRAY int8_t trim[4]; int8_t trim_ext:8
 #else
 #define TRIM_ARRAY int16_t trim[4]
-#endif
-
-typedef int16_t gvar_t;
-
-#if !defined(CPUM64)
-typedef char gvar_name_t[6];
-#define GVAR_MAX  1024
-#endif
-
-#if defined(CPUM64) && defined(GVARS)
-#define MAX_GVARS 5
-#define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
-#define PHASE_GVARS_DATA
-#define GVAR_VALUE(x, p) g_model.gvars[x]
-#elif defined(CPUM64)
-#define MAX_GVARS 0
-#define MODEL_GVARS_DATA
-#define PHASE_GVARS_DATA
-#elif defined(GVARS)
-#define MAX_GVARS 5
-#define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
-#define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
-#define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
-#else
-#define MAX_GVARS 0
-#define MODEL_GVARS_DATA gvar_name_t gvarsNames[5];
-#define PHASE_GVARS_DATA gvar_t gvars[5]
 #endif
 
 PACK(typedef struct t_PhaseData {
