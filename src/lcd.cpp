@@ -667,6 +667,7 @@ void lcd_invert_line(int8_t y)
   }
 }
 
+#if !defined(PCBX9D)
 void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
@@ -678,6 +679,23 @@ void lcdDrawTelemetryTopBar()
   }
   lcd_invert_line(0);
 }
+#else
+void lcdDrawTelemetryTopBar()
+{
+  putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
+  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
+  putsVBat(18*FW,0,att);
+  if (g_model.timers[0].mode) {
+    att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
+    putsTime(24*FW, 0, s_timerVal[0], att, att);
+  }
+  if (g_model.timers[1].mode) {
+    att = (s_timerState[1]==TMR_BEEPING ? BLINK : 0);
+    putsTime(31*FW, 0, s_timerVal[1], att, att);
+  }
+  lcd_invert_line(0);
+}
+#endif
 
 void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {

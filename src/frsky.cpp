@@ -1077,6 +1077,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
         converted_value /= 10;
       }
       else {
+#if !defined(PCBX9D)
         if (abs(converted_value) < 1000) {
           att |= PREC2;
         }
@@ -1084,6 +1085,9 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
           converted_value /= 10;
           att |= PREC1;
         }
+#else
+        att |= PREC2;
+#endif
       }
       putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
       break;
@@ -1171,11 +1175,11 @@ void displayRssiLine()
     uint8_t rssi = min((uint8_t)99, frskyData.rssi[1].value);
     lcd_putsLeft(7*FH+1, STR_TX); lcd_outdezNAtt(4*FW, 7*FH+1, rssi, LEADING0, 2);
     lcd_rect(25, 57, 78, 7);
-    lcd_filled_rect(26, 58, 17*rssi/33, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    lcd_filled_rect(26, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
     rssi = min((uint8_t)99, frskyData.rssi[0].value);
     lcd_puts(190, 7*FH+1, STR_RX); lcd_outdezNAtt(189+4*FW-1, 7*FH+1, rssi, LEADING0, 2);
     lcd_rect(110, 57, 78, 7);
-    uint8_t v = 17*rssi/33;
+    uint8_t v = 19*rssi/25;
     lcd_filled_rect(111+76-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
@@ -1458,10 +1462,10 @@ void menuTelemetryFrsky(uint8_t event)
         uint8_t y = 1*FH;
         for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
           uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
-          lcd_outdezNAtt(21*FW, y, frskyData.hub.cellVolts[k] * 2, attr, 4);
+          lcd_outdezNAtt(LCD_W, y, frskyData.hub.cellVolts[k] * 2, attr, 4);
           y += 1*FH;
         }
-        lcd_vline(17*FW+4, 8, 47);
+        lcd_vline(LCD_W-3*FW-2, 8, 47);
       }
 #endif
 
