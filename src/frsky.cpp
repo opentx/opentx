@@ -1365,8 +1365,8 @@ void menuTelemetryFrsky(uint8_t event)
 #if !defined(PCBX9D)
               lcd_vline(63, 8, 48);
 #else
-              lcd_vline(70, 8, 48);
-              lcd_vline(140, 8, 48);
+              lcd_vline(69, 8, 48);
+              lcd_vline(141, 8, 48);
 #endif
               if (frskyStreaming > 0) {
 #if defined(FRSKY_HUB)
@@ -1392,17 +1392,26 @@ void menuTelemetryFrsky(uint8_t event)
               fields_count++;
               int16_t value = getValue(MIXSRC_FIRST_TELEM+field-2);
               uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+#if defined(PCBX9D)
+              xcoord_t pos_main[]={23, 95, 166};
+              xcoord_t pos_footer[]={43, 115, 186};
+              xcoord_t pos[]={0, 69, 141, 212};
+#else
+              xcoord_t pos_main[]={17, 82};
+              xcoord_t pos_footer[]={37, 102};
+              xcoord_t pos[]={0, 63, 128};
+#endif
               if (field >= TELEM_TM1 && field <= TELEM_TM2) {
-                uint8_t x = (i==3 ? j?80:20 : j?74:10);
+                uint8_t x = (i==3 ? pos_footer[j] : pos_main[j]);
                 putsTime(x, 1+FH+2*FH*i, value, att, att);
+#if defined(PCBX9D)
+                lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, SMLSIZE);
+#endif
+                lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field-TELEM_TM1+TELEM_T1, 0);
+                if(i==3)
+                  lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
               }
               else {
-                xcoord_t pos[NUM_LINE_ITEMS+1];
-#if !defined(PCBX9D)
-                  pos[0] = 0; pos[1] = 63; pos[2] = 128;// {0, 63, 128};
-#else
-                  pos[0] = 0; pos[1] = 70; pos[2] = 140; pos[3] = 212;// {0, 70, 140, 212};
-#endif
                 putsTelemetryChannel(pos[j+1], i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
                 lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
               }
