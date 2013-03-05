@@ -684,14 +684,16 @@ void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
   uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
-  putsVBat(18*FW,0,att);
+  putsVBat(16*FW+2,0,att);
   if (g_model.timers[0].mode) {
     att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
-    putsTime(24*FW, 0, s_timerVal[0], att, att);
+    putsTime(22*FW, 0, s_timerVal[0], att, att);
+lcd_putsiAtt(18*FW+2, 1, STR_VTELEMCHNS, TELEM_TM1, SMLSIZE);
   }
   if (g_model.timers[1].mode) {
     att = (s_timerState[1]==TMR_BEEPING ? BLINK : 0);
     putsTime(31*FW, 0, s_timerVal[1], att, att);
+lcd_putsiAtt(27*FW+2, 1, STR_VTELEMCHNS, TELEM_TM2, SMLSIZE);
   }
   lcd_invert_line(0);
 }

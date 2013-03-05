@@ -1402,12 +1402,13 @@ void menuTelemetryFrsky(uint8_t event)
               xcoord_t pos[]={0, 63, 128};
 #endif
               if (field >= TELEM_TM1 && field <= TELEM_TM2) {
-                uint8_t x = (i==3 ? pos_footer[j] : pos_main[j]);
+                xcoord_t x = (i==3 ? pos_footer[j] : pos_main[j]);
                 putsTime(x, 1+FH+2*FH*i, value, att, att);
 #if defined(PCBX9D)
                 lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, SMLSIZE);
-#endif
+#else
                 lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field-TELEM_TM1+TELEM_T1, 0);
+#endif
                 if(i==3)
                   lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
               }
