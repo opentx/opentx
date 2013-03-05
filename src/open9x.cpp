@@ -972,7 +972,7 @@ int8_t getMovedSwitch()
       else if (i==6)
         result = 1+(3*5)+2+next;
       else
-        result = 1+(3*5)+2+3+next;
+        result = 1+(3*5)+2+3+(next!=0);
     }
   }
 #else

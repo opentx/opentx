@@ -145,10 +145,17 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     if (s_editMode>0) {
       int8_t swtch = getMovedSwitch();
       if (swtch) {
+#if defined(PCBX9D)
+        if(swtch == SWSRC_SH2)
+          newval = (newval == SWSRC_SH2 ? SWSRC_SH0 : SWSRC_SH2);
+        else if(swtch != SWSRC_SH0)
+          newval = swtch;
+#else
         if (IS_MOMENTARY(newval) && IS_MOMENTARY(swtch))
           newval = -newval;
         else
           newval = swtch;
+#endif
       }
     }
 

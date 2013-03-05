@@ -316,7 +316,6 @@ enum EnumKeys {
 #if defined(PCBX9D)
   #define NUM_SWITCHES  8
   #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
-  #define IS_MOMENTARY(sw) (sw == SWSRC_SH0)
   #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
   #define NUM_POTS      4
   #define NUM_SW_SRCRAW 8
