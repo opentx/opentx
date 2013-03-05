@@ -3573,9 +3573,9 @@ void menuModelCustomFunctions(uint8_t event)
           else if (sd->swtch && CFN_FUNC(sd) >= FUNC_PLAY_TRACK && CFN_FUNC(sd) <= FUNC_PLAY_VALUE) {
 #if defined(CPUARM)
             if (CFN_PLAY_REPEAT(sd))
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(sd)*5, attr);
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+5*FW, y, CFN_PLAY_REPEAT(sd)*5, attr);
             else
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+1, y, '-', attr);
+              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+1+4*FW, y, '-', attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_PLAY_REPEAT(sd), 12);
 #else
             if (CFN_PLAY_REPEAT(sd))
@@ -3666,7 +3666,8 @@ enum menuModelTelemetryItems {
 
 #ifdef FRSKY
 #if LCD_W >= 212
-#define TELEM_COL2 (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH)
+#define TELEM_COL2 14*FW
+#define TELEM_COL3 29*FW
 #elif defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
 #define TELEM_COL2 (9*FW)
 #else
@@ -3953,14 +3954,22 @@ void menuModelTelemetry(uint8_t event)
           }
         }
         else {
-          for (uint8_t c=0; c<2; c++) {
+          for (uint8_t c=0; c<NUM_LINE_ITEMS; c++) {
             uint8_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
-            lcd_putsiAtt(c==0?INDENT_WIDTH:TELEM_COL2, y, STR_VTELEMCHNS, value, m_posHorz==c ? attr : 0);
+            uint8_t pos;
+            switch(c){
+              case 0: pos = INDENT_WIDTH; break;
+              case 1: pos = TELEM_COL2; break;
+#if defined(PCBX9D)
+              case 2: pos = TELEM_COL3; break;
+#endif
+            }    
+            lcd_putsiAtt(pos, y, STR_VTELEMCHNS, value, m_posHorz==c ? attr : 0);
             if (attr && m_posHorz==c && (s_editMode>0 || p1valdiff)) {
               CHECK_INCDEC_MODELVAR_ZERO(event, value, g_model.frsky.usrProto ? ((lineIndex==3 && c==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX) : TELEM_NOUSR_MAX);
             }
           }
-          if (attr && m_posHorz == 2) {
+          if (attr && m_posHorz == NUM_LINE_ITEMS) {
             REPEAT_LAST_CURSOR_MOVE();
           }
         }

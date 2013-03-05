@@ -277,6 +277,7 @@ ifeq ($(PCB), X9D)
   MCU  = cortex-m3
   CPPDEFS += -DHSE_VALUE=12000000
   SDCARD = YES
+  EXT = FRSKY
 endif
 
 CC      = $(TRGT)gcc

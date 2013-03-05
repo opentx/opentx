@@ -1355,10 +1355,15 @@ void menuTelemetryFrsky(uint8_t event)
         // Custom Screen with numbers
         uint8_t fields_count = 0;
         for (uint8_t i=0; i<4; i++) {
-          for (uint8_t j=0; j<2; j++) {
+          for (uint8_t j=0; j<NUM_LINE_ITEMS; j++) {
             uint8_t field = screen.lines[i].sources[j];
             if (i==3 && j==0) {
+#if !defined(PCBX9D)
               lcd_vline(63, 8, 48);
+#else
+              lcd_vline(70, 8, 48);
+              lcd_vline(140, 8, 48);
+#endif
               if (frskyStreaming > 0) {
 #if defined(FRSKY_HUB)
                 if (field == TELEM_ACC) {
@@ -1388,8 +1393,14 @@ void menuTelemetryFrsky(uint8_t event)
                 putsTime(x, 1+FH+2*FH*i, value, att, att);
               }
               else {
-                putsTelemetryChannel(j ? 128 : 63, i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
-                lcd_putsiAtt(j*65, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
+                uint8_t pos[NUM_LINE_ITEMS];
+#if !defined(PCBX9D)
+                  pos[0] = 0; pos[1] = 63; pos[2] = 128;// {0, 63, 128};
+#else
+                  pos[0] = 0; pos[1] = 70; pos[2] = 140; pos[3] = 212;// {0, 70, 140, 212};
+#endif
+                putsTelemetryChannel(pos[j+1], i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
+                lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
               }
             }
           }

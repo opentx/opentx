@@ -408,11 +408,16 @@ enum ResetFunctionParam {
 };
 
 #if defined(CPUARM)
+#if defined(PCBX9D)
+ #define LEN_CFN_NAME 10
+#else
+ #define LEN_CFN_NAME 6
+#endif
 PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
   uint8_t func;
   union {
-    char name[6];
+    char name[LEN_CFN_NAME];
     struct {
       uint32_t val;
       uint16_t spare;
@@ -579,8 +584,13 @@ PACK(typedef struct t_FrSkyBarData {
   uint8_t    barMax;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
 
+#if defined(PCBX9D)
+  #define NUM_LINE_ITEMS 3
+#else
+  #define NUM_LINE_ITEMS 2
+#endif
 PACK(typedef struct t_FrSkyLineData {
-  uint8_t    sources[2];
+  uint8_t    sources[NUM_LINE_ITEMS];
 }) FrSkyLineData;
 
 typedef union t_FrSkyScreenData {
