@@ -3320,7 +3320,7 @@ void menuModelCustomSwitches(uint8_t event)
 #if LCD_W >= 212
 #define MODEL_CUSTOM_FUNC_2ND_COLUMN  (6*FW-2)
 #define MODEL_CUSTOM_FUNC_3RD_COLUMN  (20*FW+2)
-#define MODEL_CUSTOM_FUNC_4TH_COLUMN  (25*FW)
+#define MODEL_CUSTOM_FUNC_4TH_COLUMN  (29*FW)
 #elif defined(GRAPHICS)
 #define MODEL_CUSTOM_FUNC_2ND_COLUMN  (5*FW-2)
 #define MODEL_CUSTOM_FUNC_3RD_COLUMN  (15*FW+2)
@@ -3573,9 +3573,9 @@ void menuModelCustomFunctions(uint8_t event)
           else if (sd->swtch && CFN_FUNC(sd) >= FUNC_PLAY_TRACK && CFN_FUNC(sd) <= FUNC_PLAY_VALUE) {
 #if defined(CPUARM)
             if (CFN_PLAY_REPEAT(sd))
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+5*FW, y, CFN_PLAY_REPEAT(sd)*5, attr);
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(sd)*5, attr);
             else
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+1+4*FW, y, '-', attr);
+              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+1, y, '-', attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_PLAY_REPEAT(sd), 12);
 #else
             if (CFN_PLAY_REPEAT(sd))
