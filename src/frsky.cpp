@@ -1397,7 +1397,7 @@ void menuTelemetryFrsky(uint8_t event)
                 putsTime(x, 1+FH+2*FH*i, value, att, att);
               }
               else {
-                uint8_t pos[NUM_LINE_ITEMS];
+                xcoord_t pos[NUM_LINE_ITEMS+1];
 #if !defined(PCBX9D)
                   pos[0] = 0; pos[1] = 63; pos[2] = 128;// {0, 63, 128};
 #else
