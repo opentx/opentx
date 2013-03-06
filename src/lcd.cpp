@@ -421,10 +421,12 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     div_t qr = div((uint16_t)val, 10);
     char c = qr.rem + '0';
     LcdFlags f = flags;
+#if !defined(PCBX9D)
     if (dblsize) {
       if (c=='1' && i==len && xn>x+10) { x+=2; f|=CONDENSED; }
       if ((uint16_t)val >= 1000) { x+=FWNUM; f&=~DBLSIZE; }
     }
+#endif
     lcd_putcAtt(x, y, c, f);
     if (mode==i) {
       flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
@@ -449,7 +451,9 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
         x--;
       }
     }
+#if !defined(PCBX9D)
     if (dblsize && (uint16_t)val >= 1000 && (uint16_t)val < 10000) x-=2;
+#endif
     val = qr.quot;
     x-=fw;
   }
