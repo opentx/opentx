@@ -1211,7 +1211,7 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
     val = (val * 46) / 25;
   }
 #endif
-  lcd_outdezAtt(x, (att & DBLSIZE ? y - FH : y), val, att & (~NO_UNIT));
+  lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW)
     lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
 }
@@ -2204,7 +2204,7 @@ void evalFunctions()
       if (active || momentary) {
         if (CFN_ACTIVE(sd)) {
           if (CFN_FUNC(sd) < FUNC_TRAINER) {
-            safetyCh[CFN_FUNC(sd)] = CFN_CH_NUMBER(sd);
+            safetyCh[CFN_CH_NUMBER(sd)] = CFN_PARAM(sd);
           }
 
           if (!(activeFunctions & function_mask)) {

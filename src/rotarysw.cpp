@@ -69,7 +69,7 @@ void animRotarySw(uint8_t x) {
 
 	if (s_timerState[0] != TMR_OFF) {
 		att1 = DBLSIZE | (s_timerState[0] == TMR_BEEPING ? BLINK : 0);
-		putsTime(x + 14 * FW - 2, FH * 2, s_timerVal[0], att1, att1);
+		putsTime(x + 14 * FW - 2+5*FWNUM+1, FH * 2, s_timerVal[0], att1, att1);
 	}
 
 	s_time = s_time >> 4; // 1280ms time unit

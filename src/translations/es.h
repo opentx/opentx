@@ -402,7 +402,6 @@
 #define TR_ALARMWARNING        INDENT"Sin Sonido"
 #define TR_RENAVIG             "RotEnc Naveg"
 #define TR_THROTTLEREVERSE     TR("Acel Invert","Invertir Acel.")
-#define TR_BEEP_LABEL          "Pitos Reloj"
 #define TR_MINUTEBEEP          TR(INDENT"Minuto",INDENT"Cada minuto")
 #define TR_BEEPCOUNTDOWN       INDENT"Cuentaatras"
 #define TR_BACKLIGHT_LABEL     "Luz Fondo"

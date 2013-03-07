@@ -296,7 +296,6 @@ extern const pm_char STR_MEMORYWARNING[];
 extern const pm_char STR_ALARMWARNING[];
 extern const pm_char STR_RENAVIG[];
 extern const pm_char STR_THROTTLEREVERSE[];
-extern const pm_char STR_BEEP_LABEL[];
 extern const pm_char STR_MINUTEBEEP[];
 extern const pm_char STR_BEEPCOUNTDOWN[];
 extern const pm_char STR_BACKLIGHT_LABEL[];

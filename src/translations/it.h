@@ -401,7 +401,6 @@
 #define TR_ALARMWARNING        INDENT"Spento"
 #define TR_RENAVIG             "Navig RotEnc "
 #define TR_THROTTLEREVERSE     "Thr inverso"
-#define TR_BEEP_LABEL          "Timer events"
 #define TR_MINUTEBEEP          INDENT"Minuto"
 #define TR_BEEPCOUNTDOWN       INDENT"Conto rov."
 #define TR_BACKLIGHT_LABEL     "Retroillum."

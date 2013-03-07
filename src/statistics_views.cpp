@@ -52,15 +52,15 @@ void menuStatisticsView(uint8_t event)
   }
 
   lcd_puts(  1*FW, FH*1, STR_TM1TM2);
-  putsTime(    5*FW, FH*1, s_timerVal[0], 0, 0);
-  putsTime(   12*FW, FH*1, s_timerVal[1], 0, 0);
+  putsTime(    5*FW+5*FWNUM+1, FH*1, s_timerVal[0], 0, 0);
+  putsTime(   12*FW+5*FWNUM+1, FH*1, s_timerVal[1], 0, 0);
 
   lcd_puts(  1*FW, FH*2, STR_THRTHP);
-  putsTime(    5*FW, FH*2, s_timeCumThr, 0, 0);
-  putsTime(   12*FW, FH*2, s_timeCum16ThrP/16, 0, 0);
+  putsTime(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, 0, 0);
+  putsTime(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
 
   lcd_puts( 17*FW, FH*0, STR_TOT);
-  putsTime(   12*FW, FH*0, s_timeCumTot, 0, 0);
+  putsTime(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
 
 #if defined(THRTRACE)
   uint8_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
@@ -131,7 +131,7 @@ void menuStatisticsDebug(uint8_t event)
 
   lcd_putsLeft(2*FH, STR_CPU_MAH);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
-  putsTime(17*FW, 2*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
+  putsTime(17*FW+5*FWNUM+1, 2*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
 #endif
 
 #if defined(CPUARM)

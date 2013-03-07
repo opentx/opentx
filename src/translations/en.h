@@ -416,7 +416,6 @@
 #define TR_ALARMWARNING        INDENT"Sound Off"
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLEREVERSE     TR("Thr reverse","Throttle reverse")
-#define TR_BEEP_LABEL          "Timer beeps"
 #define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Every minute")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_BACKLIGHT_LABEL     "Backlight"

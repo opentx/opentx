@@ -402,7 +402,6 @@
 #define TR_ALARMWARNING        INDENT"Vypnut\212 Zvuk"
 #define TR_RENAVIG             "Navig. RotEnc"
 #define TR_THROTTLEREVERSE     "Revers Plynu"
-#define TR_BEEP_LABEL          "Upozorn\203n\204 Stopek"
 #define TR_MINUTEBEEP          INDENT"Cel\200 minuta"
 #define TR_BEEPCOUNTDOWN       INDENT"Odpo\201et \201asu"
 #define TR_BACKLIGHT_LABEL     "Podsv\203tlen\204"

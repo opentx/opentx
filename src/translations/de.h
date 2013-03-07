@@ -404,7 +404,6 @@
 #define TR_ALARMWARNING        					INDENT"Ton aus"
 #define TR_RENAVIG                      "Drehgeb. Navig."
 #define TR_THROTTLEREVERSE              "Gasumkehrung"
-#define TR_BEEP_LABEL          					"Stoppuhrpieper"
 #define TR_MINUTEBEEP                   INDENT"Minuten"
 #define TR_BEEPCOUNTDOWN                INDENT"Countdown"
 #define TR_BACKLIGHT_LABEL     					"Beleuchtung"

@@ -671,7 +671,7 @@ void lcd_invert_line(int8_t y)
   }
 }
 
-#if !defined(PCBX9D)
+#if !defined(PCBX9D) // TODO test inversion
 void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
@@ -679,7 +679,7 @@ void lcdDrawTelemetryTopBar()
   putsVBat(14*FW,0,att);
   if (g_model.timers[0].mode) {
     att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
-    putsTime(17*FW, 0, s_timerVal[0], att, att);
+    putsTime(17*FW+5*FWNUM+1, 0, s_timerVal[0], att, att);
   }
   lcd_invert_line(0);
 }
@@ -691,13 +691,13 @@ void lcdDrawTelemetryTopBar()
   putsVBat(16*FW+2,0,att);
   if (g_model.timers[0].mode) {
     att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
-    putsTime(22*FW, 0, s_timerVal[0], att, att);
-lcd_putsiAtt(18*FW+2, 1, STR_VTELEMCHNS, TELEM_TM1, SMLSIZE);
+    putsTime(22*FW+5*FWNUM+1, 0, s_timerVal[0], att, att);
+    lcd_putsiAtt(18*FW+2, 1, STR_VTELEMCHNS, TELEM_TM1, SMLSIZE);
   }
   if (g_model.timers[1].mode) {
     att = (s_timerState[1]==TMR_BEEPING ? BLINK : 0);
-    putsTime(31*FW, 0, s_timerVal[1], att, att);
-lcd_putsiAtt(27*FW+2, 1, STR_VTELEMCHNS, TELEM_TM2, SMLSIZE);
+    putsTime(31*FW+5*FWNUM+1, 0, s_timerVal[1], att, att);
+    lcd_putsiAtt(27*FW+2, 1, STR_VTELEMCHNS, TELEM_TM2, SMLSIZE);
   }
   lcd_invert_line(0);
 }
@@ -707,9 +707,16 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 {
   div_t qr;
 
-  if (att & LEFT) x+=3*FW;
+  if (!(att & LEFT)) {
+    if (att & DBLSIZE)
+      x -= 5*(2*FWNUM)-4;
+    else if (att & MIDSIZE)
+      x -= 5*8-4;
+    else
+      x -= 5*FWNUM+1;
+  }
 
-  if (tme<0) {
+  if (tme < 0) {
     lcd_putcAtt(x - ((att & DBLSIZE) ? FW+3 : ((att & MIDSIZE) ? FW+1 : FWNUM)), y, '-', att);
     tme = -tme;
   }
@@ -735,11 +742,11 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #endif
 
   uint8_t x2, x3;
-  if (att&DBLSIZE) {
+  if (att & DBLSIZE) {
     x2 = x+2*(FW+FWNUM)-3;
     x3 = x+2*(FW+FWNUM)+FW-2;
   }
-  else if (att&MIDSIZE) {
+  else if (att & MIDSIZE) {
     x2 = x+2*8-6;
     x3 = x+2*8+1;
   }
@@ -749,7 +756,7 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   }
 
 #if defined(CPUARM)
-  if (att&MIDSIZE) {
+  if (att & MIDSIZE) {
     LCD_2DOTS(x2, y, att);
   }
   else

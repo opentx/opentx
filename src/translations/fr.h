@@ -402,7 +402,6 @@
 #define TR_ALARMWARNING        INDENT"Sons d\200sactiv\200s"
 #define TR_RENAVIG             "Navig EncRot"
 #define TR_THROTTLEREVERSE     "Inversion gaz"
-#define TR_BEEP_LABEL          "Bips Chronos"
 #define TR_MINUTEBEEP          INDENT"Chaque minute"
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Cpt. \202 rebours",INDENT"Compte \202 rebours")
 #define TR_BACKLIGHT_LABEL     "R\200tro\200clairage"

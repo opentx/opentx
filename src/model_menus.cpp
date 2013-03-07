@@ -834,7 +834,7 @@ void menuModelSetup(uint8_t event)
         else {
           putsStrIdx(0*FW, y, STR_TIMER, k>=ITEM_MODEL_TIMER2 ? 2 : 1);
           putsTmrMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
-          putsTime(MODEL_SETUP_2ND_COLUMN+5*FW-2, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
+          putsTime(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
           if (attr && (editMode>0 || p1valdiff)) {
             div_t qr = div(timer->start, 60);
             switch (m_posHorz) {
@@ -3515,6 +3515,7 @@ void menuModelCustomFunctions(uint8_t event)
 #endif
                 ) {
               switch (CFN_GVAR_MODE(sd)) {
+                // TODO constants
                 case 0:
                   val_displayed = (int8_t)CFN_PARAM(sd);
                   val_min = -125; val_max = 125;
@@ -3955,17 +3956,15 @@ void menuModelTelemetry(uint8_t event)
         }
         else {
           for (uint8_t c=0; c<NUM_LINE_ITEMS; c++) {
+            uint8_t cellAttr = (m_posHorz==c ? attr : 0);
             uint8_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
-            uint8_t pos;
-            switch(c){
-              case 0: pos = INDENT_WIDTH; break;
-              case 1: pos = TELEM_COL2; break;
 #if defined(PCBX9D)
-              case 2: pos = TELEM_COL3; break;
+            uint8_t pos[] = {INDENT_WIDTH, TELEM_COL2, TELEM_COL3};
+#else
+            uint8_t pos[] = {INDENT_WIDTH, TELEM_COL2};
 #endif
-            }    
-            lcd_putsiAtt(pos, y, STR_VTELEMCHNS, value, m_posHorz==c ? attr : 0);
-            if (attr && m_posHorz==c && (s_editMode>0 || p1valdiff)) {
+            lcd_putsiAtt(pos[c], y, STR_VTELEMCHNS, value, cellAttr);
+            if (cellAttr && (s_editMode>0 || p1valdiff)) {
               CHECK_INCDEC_MODELVAR_ZERO(event, value, g_model.frsky.usrProto ? ((lineIndex==3 && c==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX) : TELEM_NOUSR_MAX);
             }
           }

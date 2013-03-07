@@ -402,7 +402,6 @@
 #define TR_ALARMWARNING        INDENT"Ljud AV"
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLEREVERSE     "Reverserad Gas"
-#define TR_BEEP_LABEL          "Pip"
 #define TR_MINUTEBEEP          INDENT"Varje Minut"
 #define TR_BEEPCOUNTDOWN       INDENT"R\201kna Ned"
 #define TR_BACKLIGHT_LABEL     "Belysning"

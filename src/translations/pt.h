@@ -380,7 +380,6 @@
 #define TR_ALARMWARNING        INDENT"Som Off"
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLEREVERSE     "Inverte Acel."
-#define TR_BEEP_LABEL          "Beep Cronom."
 #define TR_MINUTEBEEP          INDENT"Beep Minuto"
 #define TR_BEEPCOUNTDOWN       INDENT"Beep Regressivo"
 #define TR_BACKLIGHT_LABEL     "Backlight"

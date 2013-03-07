@@ -1061,7 +1061,8 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
   switch (channel) {
     case TELEM_TM1-1:
     case TELEM_TM2-1:
-      putsTime(x-3*FW, y, val, att, att);
+      att &= ~NO_UNIT;
+      putsTime(x, y, val, att, att);
       break;
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
@@ -1362,11 +1363,11 @@ void menuTelemetryFrsky(uint8_t event)
           for (uint8_t j=0; j<NUM_LINE_ITEMS; j++) {
             uint8_t field = screen.lines[i].sources[j];
             if (i==3 && j==0) {
-#if !defined(PCBX9D)
-              lcd_vline(63, 8, 48);
-#else
+#if LCD_W >= 212
               lcd_vline(69, 8, 48);
               lcd_vline(141, 8, 48);
+#else
+              lcd_vline(63, 8, 48);
 #endif
               if (frskyStreaming > 0) {
 #if defined(FRSKY_HUB)
@@ -1392,30 +1393,19 @@ void menuTelemetryFrsky(uint8_t event)
               fields_count++;
               int16_t value = getValue(MIXSRC_FIRST_TELEM+field-2);
               uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
-#if defined(PCBX9D)
-              xcoord_t pos_main[]={23, 95, 166};
-              xcoord_t pos_footer[]={43, 115, 186};
-              xcoord_t pos[]={0, 69, 141, 212};
+#if LCD_W >= 212
+              xcoord_t pos[] = {0, 71, 143, 214};
 #else
-              xcoord_t pos_main[]={17, 82};
-              xcoord_t pos_footer[]={37, 102};
-              xcoord_t pos[]={0, 63, 128};
+              xcoord_t pos[] = {0, 65, 130};
 #endif
-              if (field >= TELEM_TM1 && field <= TELEM_TM2) {
-                xcoord_t x = (i==3 ? pos_footer[j] : pos_main[j]);
-                putsTime(x, 1+FH+2*FH*i, value, att, att);
-#if defined(PCBX9D)
-                lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, SMLSIZE);
-#else
-                lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field-TELEM_TM1+TELEM_T1, 0);
+              putsTelemetryChannel(pos[j+1]-2, 1+FH+2*FH*i, field-1, value, att);
+#if LCD_W < 212              
+              if (field >= TELEM_TM1 && field <= TELEM_TM2 && i!=3) {
+                // there is not enough space on LCD for displaying "Tmr1" or "Tmr2", we write "T1" or "T2" instead
+                field = field-TELEM_TM1+TELEM_T1;
+              }
 #endif
-                if(i==3)
-                  lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
-              }
-              else {
-                putsTelemetryChannel(pos[j+1], i==3 ? 1+7*FH : 1+2*FH+2*FH*i, field-1, value, att);
-                lcd_putsiAtt(j?pos[j]+2:0, 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
-              }
+              lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
             }
           }
         }
