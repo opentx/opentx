@@ -658,12 +658,14 @@ void applyExpos(int16_t *anas)
 
 #if !defined(CPUARM)
 
-// #define CORRECT_NEGATIVE_SHIFTS
+#define CORRECT_NEGATIVE_SHIFTS
 // open.20.fsguruh; shift right operations do the rounding different for negative values compared to positive values
 // so all negative divisions round always further down, which give absolute values bigger compared to a usual division
 // this is noticable on the display, because instead of -100.0 -99.9 is shown; While in praxis I doublt somebody will notice a 
 // difference this is more a mental thing. Maybe people are distracted, because the easy calculations are obviously wrong
 // this define would correct this, but costs 34 bytes code for stock version
+
+// currently we set this to active always, because it might cause a fault about 1% compared positive and negative values
 
 int16_t calc100to256_16Bits(int16_t x) // return x*2.56
 {
@@ -730,13 +732,19 @@ int16_t calcRESXto1000(int16_t x)  // return x/1.024
 #endif
 
 
-#define PREVENT_ARITHMETIC_OVERFLOW
+// #define PREVENT_ARITHMETIC_OVERFLOW
 // because of optimizations the reserves before overruns occurs is only the half
 // this defines enables some checks the greatly improves this situation
 // It should nearly prevent all overruns (is still a chance for it, but quite low)
-// negative side is code cost 124 bytes flash
+// negative side is code cost 96 bytes flash
 
-
+// we do it now half way, only in applyLimits, which costs currently 50bytes
+// according opinion poll this topic is currently not very important
+// the change below improves already the situation 
+// the check inside mixer would slow down mix a little bit and costs additionally flash
+// also the check inside mixer still is not bulletproof, there may be still situations a overflow could occur
+// a bulletproof implementation would take about additional 100bytes flash
+// therefore with go with this compromize, interested people could activate this define
 
 // @@@2 open.20.fsguruh ; 
 // channel = channelnumber -1; 
@@ -753,12 +761,15 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
-#ifdef PREVENT_ARITHMETIC_OVERFLOW  
+// because the recaling optimization would reduce the calculation reserve we activate this for all builds
+// it increases the caculation reserve from factor 20,25x to 32x, which it slightly better as original 
+// without it we would only have 16x which is slightly worse as original, we should not do this 
+// #ifdef PREVENT_ARITHMETIC_OVERFLOW  
   // thanks to gbirkus, he motivated this change, which greatly reduces overruns 
   // unfortunately the constants and 32bit compares generates about 50 bytes codes; didn't find a way to get it down.
-  // But I think it is worth
+
   value = limit(int32_t(-RESXl*256),value,int32_t(RESXl*256));  // saves 2 bytes compared to other solutions up to now
-#endif
+// #endif
   
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
@@ -801,7 +812,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 
 int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 int16_t g_chans512[NUM_CHNOUT] = {0};
-// int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain; @@@3 fsguruh
+int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain;
 #ifdef HELI
 int16_t cyc_anas[3] = {0};
 #endif
@@ -837,7 +848,7 @@ int16_t getValue(uint8_t i)
 #endif
   else if(i<CSW_PPM_BASE+NUM_CAL_PPM) return (g_ppmIns[i-CSW_PPM_BASE] - g_eeGeneral.trainer.calib[i-CSW_PPM_BASE])*2;
   else if(i<CSW_PPM_BASE+NUM_PPM) return g_ppmIns[i-CSW_PPM_BASE]*2;
-  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return (chans[i-CSW_CHOUT_BASE]>>8); //@@@3 fsguruh //  return ex_chans[i-CSW_CHOUT_BASE];
+  else if(i<CSW_CHOUT_BASE+NUM_CHNOUT) return ex_chans[i-CSW_CHOUT_BASE];
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_TM2) return s_timerVal[i-CSW_CHOUT_BASE-NUM_CHNOUT];
 #if defined(FRSKY)
   else if(i<CSW_CHOUT_BASE+NUM_CHNOUT+TELEM_RSSI_TX) return frskyData.rssi[1].value;
@@ -2625,9 +2636,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            // @@@3 fsguruh should not be necessary
-            /*if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before */
+            if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
+              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
           }
         }
 #else
@@ -2640,9 +2650,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_CHMAX-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-              // @@@3 fsguruh should not be necessary
-            /* if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before */
+            if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
+              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
           }
         }
 #endif
@@ -2975,7 +2984,7 @@ void doMixerCalculations()
     // interpolate value with min/max so we get smooth motion from center to stop
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
     int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) << 4 : chans[i]);
-    // ex_chans[i] = q>>8; // for the next perMain	@@@3 fsguruh
+    ex_chans[i] = q>>8; // for the next perMain
 
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
