@@ -98,9 +98,15 @@ AUDIO = NO
 VOICE = NO
 
 # corrects different rounding for negative values. So instead of -99.9 you will see again -100.0
-CORRECT_NEGATIVE_VALUES = NO
+# Values = YES, NO
+CORRECT_NEGATIVE_VALUES = YES
+
+# adds additional code to prevent arithmetic overflows. MAX or MIN values stays. Not yet guaranteed!! Just improved
+# Values = YES, NO
+ARITHMETIC_OVERFLOW_CHECK = NO
 
 # increases range of expo curve but costs about 82 bytes flash
+# Values = YES, NO
 EXTENDED_EXPO_CURVE = NO
 
 # HAPTIC Mods
@@ -418,6 +424,10 @@ endif
 
 ifeq ($(CORRECT_NEGATIVE_VALUES), YES)
   CPPDEFS += -DCORRECT_NEGATIVE_SHIFTS
+endif
+
+ifeq ($(ARITHMETIC_OVERFLOW_CHECK), YES)
+  CPPDEFS += -DPREVENT_ARITHMETIC_OVERFLOW
 endif
 
 ifeq ($(EXTENDED_EXPO_CURVE), YES)

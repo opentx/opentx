@@ -73,8 +73,10 @@ typedef char gvar_name_t[6];
 #define GVAR_MAX  1024
 #endif
 
+#define RESERVE_RANGE_FOR_GVARS 10
+// even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
 #if defined(CPUM64) && defined(GVARS)
-  #define MAX_GVARS 9
+  #define MAX_GVARS 5
   #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
   #define PHASE_GVARS_DATA
   #define GVAR_VALUE(x, p) g_model.gvars[x]
@@ -83,7 +85,7 @@ typedef char gvar_name_t[6];
   #define MODEL_GVARS_DATA
   #define PHASE_GVARS_DATA
 #elif defined(GVARS)
-  #define MAX_GVARS 9
+  #define MAX_GVARS 5
   #define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
   #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
   #define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]

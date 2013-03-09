@@ -658,7 +658,7 @@ void applyExpos(int16_t *anas)
 
 #if !defined(CPUARM)
 
-#define CORRECT_NEGATIVE_SHIFTS
+// #define CORRECT_NEGATIVE_SHIFTS
 // open.20.fsguruh; shift right operations do the rounding different for negative values compared to positive values
 // so all negative divisions round always further down, which give absolute values bigger compared to a usual division
 // this is noticable on the display, because instead of -100.0 -99.9 is shown; While in praxis I doublt somebody will notice a 
@@ -666,6 +666,7 @@ void applyExpos(int16_t *anas)
 // this define would correct this, but costs 34 bytes code for stock version
 
 // currently we set this to active always, because it might cause a fault about 1% compared positive and negative values
+// is done now in makefile
 
 int16_t calc100to256_16Bits(int16_t x) // return x*2.56
 {

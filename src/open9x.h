@@ -825,16 +825,9 @@ void incRotaryEncoder(uint8_t idx, int8_t inc);
     #define GV1_LARGE  256
   #endif
 
-  // depends if we want free ranges for use, if no MAX_GVARS are smaller
-  // if not this would assume a max for GVARS instead using MAX_GVARS
-  #define GV_RANGESMALL      (GV1_SMALL - (MAX_GVARS+1))
-  #define GV_RANGESMALL_NEG  (-GV1_SMALL + (MAX_GVARS+1))
-  #define GV_RANGELARGE      (GV1_LARGE - (MAX_GVARS+1))
-  #define GV_RANGELARGE_NEG  (-GV1_LARGE + (MAX_GVARS+1))
-  
   #define GV_IS_GV_VALUE(x,min,max)    ( (x>max) || (x<min) )
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
-  #define GV_INDEX_CALCULATION(x,max)  ( (max <= GV1_SMALL) ?  (uint8_t) x-GV1_SMALL  : \
+  #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV1_SMALL) ? (uint8_t) x-GV1_SMALL  : \
                                        (  (x&(GV1_LARGE*2-1))-GV1_LARGE ) )
   #define GV_INDEX_CALC_DELTA(x,delta) ((x&(delta*2-1)) - delta)
 
@@ -846,16 +839,12 @@ void incRotaryEncoder(uint8_t idx, int8_t inc);
   extern uint8_t s_gvar_last;
 #else
   #define GET_GVAR(x, ...) (x)
-
-  // can be used also without GVARS for allowed parameter ranges (makes -500 +500 range for weight unneccessary)
-  // do we want to allow wider ranges without GVARS? Would cause a conversion problem later on, a lot of options needs to be check to do it right
-  #define GV1_SMALL  128
-  #define GV1_LARGE  256
-  #define GV_RANGESMALL      (GV1_SMALL-1)
-  #define GV_RANGESMALL_NEG  (-GV1_SMALL+1)
-  #define GV_RANGELARGE      (GV1_LARGE-1)
-  #define GV_RANGELARGE_NEG  (-GV1_LARGE+1)  
 #endif
+
+#define GV_RANGESMALL      (GV1_SMALL - (RESERVE_RANGE_FOR_GVARS+1))
+#define GV_RANGESMALL_NEG  (-GV1_SMALL + (RESERVE_RANGE_FOR_GVARS+1))
+#define GV_RANGELARGE      (GV1_LARGE - (RESERVE_RANGE_FOR_GVARS+1))
+#define GV_RANGELARGE_NEG  (-GV1_LARGE + (RESERVE_RANGE_FOR_GVARS+1))
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec
