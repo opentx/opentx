@@ -272,6 +272,11 @@ endif
 
 ifeq ($(PCB), X9D)
   ARCH = ARM
+  ifeq ($(PCBREV), REV3)
+    CPPDEFS += -DREV3
+  else
+    CPPDEFS += -DREV4
+  endif
   LDSCRIPT = x9d/stm32_flash.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
@@ -838,7 +843,7 @@ eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm x9d_logo.lbm asterisk.lbm
+lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm x9d_logo.lbm icons.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -930,6 +935,11 @@ splash_X9D.lbm: splash_X9D.bmp
 x9d_logo.lbm: x9d_logo.bmp
 	@echo
 	@echo "Convert X9D logo from bmp to lbm:"
+	$(IMG2LBM) $< $@ bmp
+	
+icons.lbm: icons.png	
+	@echo
+	@echo "Convert icons from png to lbm:"
 	$(IMG2LBM) $< $@ bmp
 
 asterisk.lbm: asterisk.xbm
