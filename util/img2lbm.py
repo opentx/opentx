@@ -100,4 +100,4 @@ elif sys.argv[3] == "10x14":
                 f.write("0x%02x," % value)
         f.write("\n")
 else:
-    print "wrong argument", sys.argv[3]
+    print("wrong argument", sys.argv[3])
