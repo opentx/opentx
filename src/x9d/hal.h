@@ -64,10 +64,10 @@
 #endif
 
 #if defined(REV3)
-  #define GPIO_PIN_SW_A_L               GPIOB->IDR
-  #define GPIO_PIN_SW_A_H               GPIOE->IDR
-  #define PIN_SW_A_L		        GPIO_Pin_7	//PB.07
-  #define PIN_SW_A_H		        GPIO_Pin_2	//PE.02
+  #define GPIO_PIN_SW_A_H               (~GPIOB->IDR)
+  #define GPIO_PIN_SW_A_L               (~GPIOE->IDR)
+  #define PIN_SW_A_H		        GPIO_Pin_7	//PB.07
+  #define PIN_SW_A_L		        GPIO_Pin_2	//PE.02
 #else
   #define GPIO_PIN_SW_A_H               GPIOB->IDR
   #define GPIO_PIN_SW_A_L               GPIOE->IDR
