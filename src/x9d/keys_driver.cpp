@@ -120,8 +120,6 @@ void readKeysAndTrims()
 bool switchState(EnumKeys enuk)
 {
   register uint32_t b = GPIOB->IDR;
-  register uint32_t e = GPIOE->IDR;
-
   register uint32_t xxx = 0;
 
   if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
