@@ -153,7 +153,11 @@ bool switchState(EnumKeys enuk)
       xxx = (GPIO_PIN_SW_C_H & PIN_SW_C_H) && (~GPIO_PIN_SW_C_L & PIN_SW_C_L);
       break;
     case SW_SC1:
+#if defined(REV3)
+      xxx = (~GPIO_PIN_SW_C_H & PIN_SW_C_H) && (~GPIO_PIN_SW_C_L & PIN_SW_C_L);
+#else
       xxx = (GPIO_PIN_SW_C_H & PIN_SW_C_H) && (GPIO_PIN_SW_C_L & PIN_SW_C_L);
+#endif
       break;
     case SW_SC2:
       xxx = (~GPIO_PIN_SW_C_H & PIN_SW_C_H) && (GPIO_PIN_SW_C_L & PIN_SW_C_L);
@@ -163,7 +167,11 @@ bool switchState(EnumKeys enuk)
       xxx = (GPIO_PIN_SW_D_H & PIN_SW_D_H) && (~GPIO_PIN_SW_D_L & PIN_SW_D_L);
       break;
     case SW_SD1:
+#if defined(REV3)
+      xxx = (~GPIO_PIN_SW_D_H & PIN_SW_D_H) && (~GPIO_PIN_SW_D_L & PIN_SW_D_L);
+#else
       xxx = (GPIO_PIN_SW_D_H & PIN_SW_D_H) && (GPIO_PIN_SW_D_L & PIN_SW_D_L);
+#endif
       break;
     case SW_SD2:
       xxx = (~GPIO_PIN_SW_D_H & PIN_SW_D_H) && (GPIO_PIN_SW_D_L & PIN_SW_D_L);
