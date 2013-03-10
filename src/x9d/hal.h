@@ -167,12 +167,21 @@
 //#define CODEC_I2S_MODE                 GPIO_Pin_  //Connect to GND=I2S_STANDARD
 
 // Eeprom 5137
-#define I2C_EE_GPIO                     GPIOE
-#define I2C_EE_WP_GPIO                  GPIOB
-#define I2C_EE_GPIO_CLK                 RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE
-#define I2C_EE_SCL                      GPIO_Pin_1  //PE1
-#define I2C_EE_SDA                      GPIO_Pin_0  //PE0
-#define I2C_EE_WP                       GPIO_Pin_9  //PB9
+#if defined(REV4)
+  #define I2C_EE_GPIO                     GPIOB
+  #define I2C_EE_WP_GPIO                  GPIOB
+  #define I2C_EE_GPIO_CLK                 RCC_AHB1Periph_GPIOB
+  #define I2C_EE_SCL                      GPIO_Pin_6  //PB6
+  #define I2C_EE_SDA                      GPIO_Pin_7  //PB7
+  #define I2C_EE_WP                       GPIO_Pin_9  //PB9
+#else
+  #define I2C_EE_GPIO                     GPIOE
+  #define I2C_EE_WP_GPIO                  GPIOB
+  #define I2C_EE_GPIO_CLK                 RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE
+  #define I2C_EE_SCL                      GPIO_Pin_1  //PE1
+  #define I2C_EE_SDA                      GPIO_Pin_0  //PE0
+  #define I2C_EE_WP                       GPIO_Pin_9  //PB9
+#endif
 
 // SD - SPI2
 #define SPI_SD                          SPI2
