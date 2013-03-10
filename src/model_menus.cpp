@@ -2157,20 +2157,15 @@ enum MixFields {
 
 void gvarWeightItem(xcoord_t x, uint8_t y, MixData *md, uint8_t attr, uint8_t event)
 {
-#if defined(CPUARM) || !defined(GVARS)
-  md->weight = gvarMenuItem(x, y, md->weight, -125, 125, attr, event);
-#else
-  int16_t weight = (md->weightMode ? (int16_t)GV1_LARGE + md->weight : md->weight);
-  weight = gvarMenuItem(x, y, weight, -125, 125, attr, event);
-  if (weight <= 125) {
-    md->weightMode = 0;
-    md->weight = weight;
-  }
-  else {
-    md->weightMode = 1;
-    md->weight = weight - GV1_LARGE;
-  }
-#endif
+// #if defined(CPUARM) || !defined(GVARS)
+//  md->weight = gvarMenuItem(x, y, md->weight, -125, 125, attr, event);
+// #else
+ // @@@ open.20.fsguruh
+  u_int8int16_t weight;
+  MD_GETWEIGHT(weight,md);
+  weight.word = gvarMenuItem(x, y, weight.word, GV_RANGELARGE_NEG, GV_RANGELARGE, attr, event);
+  MD_SETWEIGHT(weight,md);
+//#endif
 }
 
 void menuModelMixOne(uint8_t event)
@@ -2245,20 +2240,15 @@ void menuModelMixOne(uint8_t event)
       case MIX_FIELD_OFFSET:
       {
         lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_OFFSET));
-#if defined(GVARS) && !defined(CPUARM)
-        int16_t offset = (md2->offsetMode ? (int16_t)GV1_LARGE + md2->offset : md2->offset);
-        offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset, -125, 125, attr|LEFT, event);
-        if (offset <= 125) {
-          md2->offsetMode = 0;
-          md2->offset = offset;
-        }
-        else {
-          md2->offsetMode = 1;
-          md2->offset = offset - GV1_LARGE;
-        }
-#else
-       md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
-#endif
+// #if defined(GVARS)
+        // @@@ open.20.fsguruh
+        u_int8int16_t offset;
+	    MD_GETOFFSET(offset,md2);
+        offset.word = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_NEG, GV_RANGELARGE, attr|LEFT, event);
+	    MD_SETOFFSET(offset,md2);	
+// #else
+//        md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
+// #endif
         break;
       }
       case MIX_FIELD_TRIM:
@@ -2575,7 +2565,9 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
                 if (md->curveMode == MODE_CURVE)
                   putsCurve(12*FW+2, y, md->curveParam);
                 else
-                  displayGVar(15*FW+2, y, md->curveParam, -125, 125);
+				  displayGVar(15*FW+2, y, md->curveParam, -100, 100);  // open.20.fsguruh
+                  // displayGVar(15*FW+2, y, md->curveParam, -125, 125); // only -100 to +100 is allowed now
+                  // could be increased now, but is it useful? differentiate with more the +-100% is a fault, correct?
               }
               if (md->swtch) putsSwitches(16*FW, y, md->swtch);
 

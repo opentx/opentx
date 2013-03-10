@@ -748,22 +748,44 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
     int16_t getGVarValue(int16_t x, int16_t min, int16_t max);
     void setGVarValue(uint8_t x, int8_t value);
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
-    #define SET_GVAR(idx, val, p) setGVarValue(idx, val)
+    #define SET_GVAR(idx, val, p) setGVarValue(idx, val)  
   #else
     uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx);
     int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase);
-    void setGVarValue(uint8_t x, int16_t value, int8_t phase);
+    void setGVarValue(uint8_t x, int16_t value, int8_t phase);  
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
-    #define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)
+    #define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)      
   #endif
-  #define GV1_SMALL  123
-  #define GV1_LARGE  1024
+
   #define GVAR_DISPLAY_TIME     100 /*1 second*/;
   extern uint8_t s_gvar_timer;
   extern uint8_t s_gvar_last;
 #else
   #define GET_GVAR(x, ...) (x)
 #endif
+
+#if defined(CPUARM)
+  #define GV1_SMALL  128
+  // define here range for ARM based controllers; could be nearly unlimited, but could cause problems in mixer calculation (overflows)
+  #define GV1_LARGE  512
+#else
+  #define GV1_SMALL  128
+  #define GV1_LARGE  256
+#endif
+
+#define GV_IS_GV_VALUE(x,min,max)    ( (x>max) || (x<min) )
+#define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
+#define GV_INDEX_CALCULATION(x,max)  ( (max<=GV1_SMALL) ? (uint8_t) x-GV1_SMALL  : \
+                                       (  (x&(GV1_LARGE*2-1))-GV1_LARGE ) )
+#define GV_INDEX_CALC_DELTA(x,delta) ((x&(delta*2-1)) - delta)
+
+#define GV_CALC_VALUE_IDX_POS(idx,delta) (-delta+idx)
+#define GV_CALC_VALUE_IDX_NEG(idx,delta) (delta+idx)
+
+#define GV_RANGESMALL      (GV1_SMALL - (RESERVE_RANGE_FOR_GVARS+1))
+#define GV_RANGESMALL_NEG  (-GV1_SMALL + (RESERVE_RANGE_FOR_GVARS+1))
+#define GV_RANGELARGE      (GV1_LARGE - (RESERVE_RANGE_FOR_GVARS+1))
+#define GV_RANGELARGE_NEG  (-GV1_LARGE + (RESERVE_RANGE_FOR_GVARS+1))
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec
@@ -940,6 +962,21 @@ void generalDefault();
 void modelDefault(uint8_t id);
 
 #if defined(CPUARM)
+inline int16_t calc100to256_16Bits(register int16_t x)  // @@@2 open.20.fsguruh: return x*2.56
+{
+  return ((int16_t) x * 256) / 100;
+}
+
+inline int16_t calc100to256(register int8_t x)  // @@@2 open.20.fsguruh: return x*2.56
+{
+  return ((int16_t) x * 256) / 100;
+}
+
+inline int16_t calc100toRESX_16Bits(register int16_t x) // @@@ open.20.fsguruh
+{
+  return x * 1024 / 100;
+}
+
 inline int32_t calc100toRESX(register int8_t x)
 {
   return x * 1024 / 100;
@@ -961,10 +998,13 @@ inline int16_t calcRESXto100(register int32_t x)
 }
 
 #else
-int16_t calc100toRESX(int8_t x);
-int8_t calcRESXto100(int16_t x);
-int16_t calc1000toRESX(int16_t x);
-int16_t calcRESXto1000(int16_t x);
+extern int16_t calc100to256_16Bits(int16_t x); // @@@2 open.20.fsguruh: return x*2.56
+extern int16_t calc100to256(int8_t x); // @@@2 open.20.fsguruh: return x*2.56
+extern int16_t calc100toRESX_16Bits(int16_t x); // @@@ open.20.fsguruh
+extern int16_t calc100toRESX(int8_t x);
+extern int16_t calc1000toRESX(int16_t x);
+extern int16_t calcRESXto1000(int16_t x);
+extern int8_t  calcRESXto100(int16_t x);
 #endif
 
 #define TMR_VAROFS  5

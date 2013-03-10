@@ -97,6 +97,14 @@ AUDIO = NO
 # Values = YES, NO 
 VOICE = NO
 
+# corrects different rounding for negative values. So instead of -99.9 you will see again -100.0
+# Values = YES, NO
+CORRECT_NEGATIVE_VALUES = YES
+
+# adds additional code to prevent arithmetic overflows. MAX or MIN values stays. Not yet guaranteed!! Just improved
+# Values = YES, NO
+ARITHMETIC_OVERFLOW_CHECK = NO
+
 # HAPTIC Mods
 # Values = YES, NO 
 HAPTIC = NO
@@ -421,6 +429,14 @@ endif
 ifeq ($(GVARS), YES)
   CPPDEFS += -DGVARS
   EEPROM_VARIANT += ${GVARS_VARIANT}
+endif
+
+ifeq ($(CORRECT_NEGATIVE_VALUES), YES)
+  CPPDEFS += -DCORRECT_NEGATIVE_SHIFTS
+endif
+
+ifeq ($(ARITHMETIC_OVERFLOW_CHECK), YES)
+  CPPDEFS += -DPREVENT_ARITHMETIC_OVERFLOW
 endif
 
 # If STD-Support is enabled

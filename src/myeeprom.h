@@ -56,13 +56,43 @@
 #elif defined(PCBSKY9X)
 #define EEPROM_VER       214
 #elif defined(PCBGRUVIN9X)
-#define EEPROM_VER       213
+#define EEPROM_VER       214
 #else
-#define EEPROM_VER       213
+#define EEPROM_VER       214
 #endif
 
 #ifndef PACK
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
+
+
+typedef int16_t gvar_t;
+
+#if !defined(CPUM64)
+typedef char gvar_name_t[6];
+#define GVAR_MAX  1024
+#endif
+
+#define RESERVE_RANGE_FOR_GVARS 10
+// even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
+#if defined(CPUM64) && defined(GVARS)
+  #define MAX_GVARS 5
+  #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
+  #define PHASE_GVARS_DATA
+  #define GVAR_VALUE(x, p) g_model.gvars[x]
+#elif defined(CPUM64)
+  #define MAX_GVARS 0
+  #define MODEL_GVARS_DATA
+  #define PHASE_GVARS_DATA
+#elif defined(GVARS)
+  #define MAX_GVARS 5
+  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
+  #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
+  #define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
+#else
+  #define MAX_GVARS 0
+  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[5];
+  #define PHASE_GVARS_DATA gvar_t gvars[5]
 #endif
 
 PACK(typedef struct t_TrainerMix {
@@ -286,7 +316,24 @@ PACK(typedef struct t_MixData {
   int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
 }) MixData;
+
 #define MD_WEIGHT(md) (md->weight)
+#define MD_GETWEIGHT(var,md) var.word=md->weight
+#define MD_SETWEIGHT(var,md) md->weight=var.word
+
+PACK( union u_int8int16_t {
+  struct {
+    int8_t  lo;
+	uint8_t hi;
+  } bytes_t;
+  int16_t word;
+});
+
+
+#define MD_OFFSET(md) (md->offset)
+#define MD_GETOFFSET(var,md) var.word=md->offset;
+#define MD_SETOFFSET(var,md) md->offset=var.word;
+
 #else
 #define DELAY_STEP  2
 #define SLOW_STEP   2
@@ -312,17 +359,39 @@ PACK(typedef struct t_MixData {
   int8_t  curveParam;
   int8_t  offset;
 }) MixData;
-#if defined(GVARS)
-  #define MD_WEIGHT(md) (md->weightMode ? (int16_t)GV1_LARGE+md->weight : md->weight)
-#else
-  #define MD_WEIGHT(md) (md->weight)
-#endif
-#endif
 
-#if defined(GVARS) && !defined(CPUARM)
-#define MD_OFFSET(md) (md->offsetMode ? (int16_t)GV1_LARGE+md->offset : md->offset)
-#else
-#define MD_OFFSET(md) (md->offset)
+PACK( union u_gvarint_t {
+  struct {
+    int8_t lo;
+	uint8_t hi;
+  } bytes_t;
+  int16_t word;
+	
+  u_gvarint_t(int8_t l, uint8_t h) {bytes_t.lo=l; bytes_t.hi=h?255:0;} // hi bit is negativ sign
+
+private:
+  // prevent unwanted constructors, also saves program
+  u_gvarint_t() {}
+  u_gvarint_t(const u_gvarint_t&) {}
+}); 
+#define MD_WEIGHT(md) (u_gvarint_t(md->weight,md->weightMode).word)
+  
+PACK( union u_int8int16_t {
+  struct {
+    int8_t  lo;
+	uint8_t hi;
+  } bytes_t;
+  int16_t word;
+});
+#define MD_GETWEIGHT(var,md) var.bytes_t.lo=md->weight; var.bytes_t.hi=md->weightMode?255:0
+#define MD_SETWEIGHT(var,md)   md->weight     = var.bytes_t.lo;  \
+     if (var.word<0) md->weightMode=1; else md->weightMode=0  // set negative sign
+	 
+#define MD_OFFSET(md) (u_gvarint_t(md->offset,md->offsetMode).word)
+#define MD_GETOFFSET(var,md) var.bytes_t.lo=md->offset; var.bytes_t.hi=md->offsetMode?255:0
+#define MD_SETOFFSET(var,md)   md->offset     = var.bytes_t.lo;  \
+     if (var.word<0) md->offsetMode=1; else md->offsetMode=0  // set negative sign	 
+
 #endif
 
 #if defined(CPUARM)
@@ -383,7 +452,7 @@ enum Functions {
 #endif
 #if defined(GVARS)
   FUNC_ADJUST_GV1,
-  FUNC_ADJUST_GV5 = FUNC_ADJUST_GV1 + 4,
+  FUNC_ADJUST_GVLAST = (FUNC_ADJUST_GV1 + (MAX_GVARS-1)),
 #endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
@@ -717,33 +786,6 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define TRIM_ARRAY int8_t trim[4]; int8_t trim_ext:8
 #else
 #define TRIM_ARRAY int16_t trim[4]
-#endif
-
-typedef int16_t gvar_t;
-
-#if !defined(CPUM64)
-typedef char gvar_name_t[6];
-#define GVAR_MAX  1024
-#endif
-
-#if defined(CPUM64) && defined(GVARS)
-  #define MAX_GVARS 5
-  #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
-  #define PHASE_GVARS_DATA
-  #define GVAR_VALUE(x, p) g_model.gvars[x]
-#elif defined(CPUM64)
-  #define MAX_GVARS 0
-  #define MODEL_GVARS_DATA
-  #define PHASE_GVARS_DATA
-#elif defined(GVARS)
-  #define MAX_GVARS 5
-  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
-  #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
-  #define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
-#else
-  #define MAX_GVARS 0
-  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[5];
-  #define PHASE_GVARS_DATA gvar_t gvars[5]
 #endif
 
 #if defined(CPUARM)
