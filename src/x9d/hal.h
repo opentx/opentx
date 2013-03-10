@@ -76,10 +76,10 @@
 #endif
 
 #if defined(REV3)
-  #define GPIO_PIN_SW_G_L               GPIOA->IDR
-  #define GPIO_PIN_SW_G_H               GPIOB->IDR
-  #define PIN_SW_G_L                    GPIO_Pin_5      //PA.05
-  #define PIN_SW_G_H		        GPIO_Pin_0	//PB.00
+  #define GPIO_PIN_SW_G_H               GPIOA->IDR
+  #define GPIO_PIN_SW_G_L               GPIOB->IDR
+  #define PIN_SW_G_H                    GPIO_Pin_5      //PA.05
+  #define PIN_SW_G_L		        GPIO_Pin_0	//PB.00
 #else
   #define GPIO_PIN_SW_G_H               GPIOE->IDR
   #define GPIO_PIN_SW_G_L               GPIOE->IDR
@@ -88,10 +88,10 @@
 #endif
 
 #if defined(REV3)
-  #define GPIO_PIN_SW_C_L               GPIOB->IDR
-  #define GPIO_PIN_SW_C_H               GPIOE->IDR
-  #define PIN_SW_C_L                    GPIO_Pin_1      //PB.01
-  #define PIN_SW_C_H		        GPIO_Pin_7	//PE.07
+  #define GPIO_PIN_SW_C_H               GPIOB->IDR
+  #define GPIO_PIN_SW_C_L               GPIOE->IDR
+  #define PIN_SW_C_H                    GPIO_Pin_1      //PB.01
+  #define PIN_SW_C_L		        GPIO_Pin_7	//PE.07
 #else
   #define GPIO_PIN_SW_C_H               GPIOE->IDR
   #define GPIO_PIN_SW_C_L               GPIOA->IDR
