@@ -46,7 +46,7 @@ uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 uint32_t Peri1_frequency ;
 uint32_t Peri2_frequency ;
 GPIO_TypeDef gpioa;
@@ -77,12 +77,18 @@ extern const char* eeprom_buffer_data;
 uint8_t eeprom[EESIZE];
 sem_t *eeprom_write_sem;
 
-
 #if defined(CPUARM)
+#if defined(PCBX9D)
+#define SWITCH_CASE(swtch, pin, mask) \
+    case swtch: \
+      if (state) pin &= ~(mask); else pin |= (mask); \
+      break;
+#else
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
       if (state) pin |= (mask); else pin &= ~(mask); \
       break;
+#endif
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
       if (state < 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
@@ -115,11 +121,7 @@ void simuSetKey(uint8_t key, bool state)
   switch (key) {
     KEY_CASE(KEY_MENU, GPIO_BUTTON_MENU, PIN_BUTTON_MENU)
     KEY_CASE(KEY_EXIT, GPIO_BUTTON_EXIT, PIN_BUTTON_EXIT)
-#if defined(PCBACT)
-    KEY_CASE(KEY_CLR, GPIO_BUTTON_CLR, PIN_BUTTON_CLR)
-    KEY_CASE(KEY_PAGE, GPIO_BUTTON_PAGE, PIN_BUTTON_PAGE)
-    KEY_CASE(BTN_REa, GPIO_BUTTON_ENTER, PIN_BUTTON_ENTER)
-#elif defined(PCBX9D)
+#if defined(PCBX9D)
     KEY_CASE(KEY_ENTER, GPIO_BUTTON_ENTER, PIN_BUTTON_ENTER)
     KEY_CASE(KEY_PAGE, GPIO_BUTTON_PAGE, PIN_BUTTON_PAGE)
     KEY_CASE(KEY_MINUS, GPIO_BUTTON_MINUS, PIN_BUTTON_MINUS)
@@ -160,16 +162,15 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // printf("swtch=%d state=%d\n", swtch, state); fflush(stdout);
   switch (swtch) {
-#if defined(PCBACT)
-#elif defined(PCBX9D)
-    SWITCH_3_CASE(0, GPIOB->IDR, GPIOE->IDR, PIN_SW_A_H, PIN_SW_A_L)
-    SWITCH_3_CASE(1, GPIOB->IDR, GPIOB->IDR, PIN_SW_B_H, PIN_SW_B_L)
-    SWITCH_3_CASE(2, GPIOB->IDR, GPIOE->IDR, PIN_SW_C_H, PIN_SW_C_L)
-    SWITCH_3_CASE(3, GPIOE->IDR, GPIOE->IDR, PIN_SW_D_H, PIN_SW_D_L)
-    SWITCH_3_CASE(4, GPIOB->IDR, GPIOB->IDR, PIN_SW_E_H, PIN_SW_E_L)
-    SWITCH_CASE(5, GPIOE->IDR, PIN_SW_F)
-    SWITCH_3_CASE(6, GPIOA->IDR, GPIOB->IDR, PIN_SW_G_H, PIN_SW_G_L)
-    SWITCH_CASE(7, GPIOE->IDR, PIN_SW_H)
+#if defined(PCBX9D)
+    SWITCH_3_CASE(0, GPIO_PIN_SW_A_L, GPIO_PIN_SW_A_H, PIN_SW_A_L, PIN_SW_A_H)
+    SWITCH_3_CASE(1, GPIO_PIN_SW_B_L, GPIO_PIN_SW_B_H, PIN_SW_B_L, PIN_SW_B_H)
+    SWITCH_3_CASE(2, GPIO_PIN_SW_C_L, GPIO_PIN_SW_C_H, PIN_SW_C_L, PIN_SW_C_H)
+    SWITCH_3_CASE(3, GPIO_PIN_SW_D_L, GPIO_PIN_SW_D_H, PIN_SW_D_L, PIN_SW_D_H)
+    SWITCH_3_CASE(4, GPIO_PIN_SW_E_H, GPIO_PIN_SW_E_L, PIN_SW_E_H, PIN_SW_E_L)
+    SWITCH_CASE(5, GPIO_PIN_SW_F, PIN_SW_F)
+    SWITCH_3_CASE(6, GPIO_PIN_SW_G_L, GPIO_PIN_SW_G_H, PIN_SW_G_L, PIN_SW_G_H)
+    SWITCH_CASE(7, GPIO_PIN_SW_H, PIN_SW_H)
 #elif defined(PCBSKY9X)
     SWITCH_CASE(0, PIOC->PIO_PDSR, 1<<20)
     SWITCH_CASE(1, PIOA->PIO_PDSR, 1<<15)
@@ -211,7 +212,7 @@ uint16_t getTmr16KHz()
   return get_tmr10ms() * 160;
 }
 
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if !defined(PCBX9D)
 bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
 {
@@ -342,7 +343,7 @@ void StartEepromThread(const char *filename)
   sem_init(eeprom_write_sem, 0, 0);
 #endif
 
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if !defined(PCBX9D)
   eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
 #endif
@@ -350,14 +351,14 @@ void StartEepromThread(const char *filename)
 
 void StopEepromThread()
 {
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if !defined(PCBX9D)
   eeprom_thread_running = false;
   sem_post(eeprom_write_sem);
   pthread_join(eeprom_thread_pid, NULL);
 #endif
 }
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size)
 #else
 void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size)
@@ -375,7 +376,7 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
   }
 }
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size)
 {
   assert(size);

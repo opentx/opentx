@@ -119,7 +119,6 @@ void readKeysAndTrims()
 
 bool switchState(EnumKeys enuk)
 {
-  register uint32_t b = GPIOB->IDR;
   register uint32_t xxx = 0;
 
   if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
@@ -178,13 +177,13 @@ bool switchState(EnumKeys enuk)
       break;
 
     case SW_SE0:
-      xxx = (~b & PIN_SW_E_H) && (b & PIN_SW_E_L);
+      xxx = (~GPIO_PIN_SW_E_H & PIN_SW_E_H) && (GPIO_PIN_SW_E_L & PIN_SW_E_L);
       break;
     case SW_SE1:
-      xxx = (b & PIN_SW_E_H) && (b & PIN_SW_E_L);
+      xxx = (GPIO_PIN_SW_E_H & PIN_SW_E_H) && (GPIO_PIN_SW_E_L & PIN_SW_E_L);
       break;
     case SW_SE2:
-      xxx = (b & PIN_SW_E_H) && (~b & PIN_SW_E_L);
+      xxx = (GPIO_PIN_SW_E_H & PIN_SW_E_H) && (~GPIO_PIN_SW_E_L & PIN_SW_E_L);
       break;
 
     case SW_SF0:

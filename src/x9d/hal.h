@@ -53,6 +53,8 @@
   #define PIN_SW_F                      GPIO_Pin_14     //PE.14
 #endif
 
+#define GPIO_PIN_SW_E_L                 GPIOB->IDR
+#define GPIO_PIN_SW_E_H                 GPIOB->IDR
 #define	PIN_SW_E_L		        GPIO_Pin_3	//PB.03
 #define	PIN_SW_E_H		        GPIO_Pin_4	//PB.04
 

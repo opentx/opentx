@@ -82,22 +82,6 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags 
 
 uint8_t lcdLastPos;
 
-#if defined(PCBX9D)
-#define LCD_BYTE_FILTER(p, keep, add) \
-  do { \
-    if (!(flags & GREY(1))) \
-      *(p) = ((*(p)) & (keep)) | (add); \
-    if (!(flags & GREY(2))) \
-      *(p+DISPLAY_PLAN_SIZE) = ((*(p+DISPLAY_PLAN_SIZE)) & (keep)) | (add); \
-    if (!(flags & GREY(4))) \
-      *(p+2*DISPLAY_PLAN_SIZE) = ((*(p+2*DISPLAY_PLAN_SIZE)) & (keep)) | (add); \
-    if (!(flags & GREY(8))) \
-      *(p+3*DISPLAY_PLAN_SIZE) = ((*(p+3*DISPLAY_PLAN_SIZE)) & (keep)) | (add); \
-  } while (0)
-#else
-#define LCD_BYTE_FILTER(p, keep, add) *(p) = (*(p) & (keep)) | (add)
-#endif
-
 void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 {
   uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
@@ -161,7 +145,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
         b1 = ~b1;
         b2 = ~b2;
       }
-      uint8_t ym8 = (y % 8);
+      uint8_t ym8 = (y & 0x07);
       if (&p[LCD_W+1] < DISPLAY_END) {
         LCD_BYTE_FILTER(p, ~(0xff << ym8), b1 << ym8);
         uint8_t *r = p + LCD_W;
@@ -181,7 +165,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
   else if (flags & SMLSIZE) {
     q = &font_4x6[((uint16_t)c-0x20)*5+4];
-    uint8_t ym8 = (y % 8);
+    uint8_t ym8 = (y & 0x07);
     p += 4;
     for (int8_t i=4; i>=0; i--) {
       uint8_t b = pgm_read_byte(q--);
@@ -199,7 +183,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
   else if (flags & TINSIZE) {
     q = &font_3x5[((uint16_t)c-0x2D)*3+2];
-    uint8_t ym8 = (y % 8);
+    uint8_t ym8 = (y & 0x07);
     p += 3;
     for (int8_t i=3; i>=0; i--) {
       uint8_t b = (i!=3 ? pgm_read_byte(q--) : 0);
@@ -224,7 +208,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       condense=1;
     }
 
-    uint8_t ym8 = (y % 8);
+    uint8_t ym8 = (y & 0x07);
     p += 5;
     for (int8_t i=5; i>=0; i--) {
       uint8_t b = (i!=5 ? pgm_read_byte(q--) : 0);
@@ -482,6 +466,10 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 {
   ASSERT_IN_DISPLAY(p);
 
+  if ((att&FILL_WHITE) && ((*p&mask) || (*(p+DISPLAY_PLAN_SIZE)&mask) || (*(p+2*DISPLAY_PLAN_SIZE)&mask) || (*(p+3*DISPLAY_PLAN_SIZE)&mask))) {
+    return;
+  }
+
   if (!(att & GREY(1))) {
     if (att & FORCE)
       *p |= mask;
@@ -579,7 +567,7 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat)
     pat = ~pat;
 
   uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
-  y = y % 8;
+  y = (y & 0x07);
   if (y) {
     ASSERT_IN_DISPLAY(p);
     *p ^= ~(BITMASK(y)-1) & pat;
@@ -612,7 +600,7 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
     pat = ~pat;
 
   uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
-  y = y % 8;
+  y = (y & 0x07);
   if (y) {
     ASSERT_IN_DISPLAY(p);
     uint8_t msk = ~(BITMASK(y)-1);

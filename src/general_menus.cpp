@@ -231,7 +231,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 #endif
 
-#if defined(BATTGRAPH)
+#if defined(BATTGRAPH) || defined(PCBX9D)
       case ITEM_SETUP_BATT_RANGE:
         lcd_putsLeft(y, PSTR("Battery Range"));
         lcd_putc(g_eeGeneral.vBatMin >= 10 ? RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-1 : RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-FW/2, y, '-');

@@ -68,7 +68,7 @@
 #define IF_CPUARM(x)
 #endif
 
-#if defined(BATTGRAPH)
+#if defined(BATTGRAPH) || defined(PCBX9D)
 #define IF_BATTGRAPH(x) x,
 #else
 #define IF_BATTGRAPH(x)

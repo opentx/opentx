@@ -107,6 +107,9 @@
 #define FORCE         0x02
 #define ERASE         0x04
 #define ROUND         0x08
+#if defined(PCBX9D)
+  #define FILL_WHITE  0x10
+#endif
 
 /* switches flags */
 #define SWCONDENSED   0x20 /* means that THRm will be displayed as THR */
@@ -115,17 +118,18 @@
 #define NO_UNIT       0x40
 
 #if defined(CPUARM)
-#define MIDSIZE       0x0100
-#define SMLSIZE       0x0200
-#define TINSIZE       0x0400
+  #define MIDSIZE     0x0100
+  #define SMLSIZE     0x0200
+  #define TINSIZE     0x0400
 #else
-#define MIDSIZE       DBLSIZE
-#define SMLSIZE       0x00
-#define TINSIZE       0x00
+  #define MIDSIZE     DBLSIZE
+  #define SMLSIZE     0x00
+  #define TINSIZE     0x00
 #endif
 
 #if defined(PCBX9D)
 #define GREY(x)       ((x) * 0x1000)
+#define GREY_DEFAULT  GREY(8)
 #define GREY_MASK(x)  ((x) & 0xF000)
 #endif
 
@@ -234,7 +238,8 @@ void lcdDrawTelemetryTopBar();
     lcd_vline(x+5, y+8, 2);
 
 extern void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
-extern void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img);
+extern void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset=0, uint8_t width=0);
+#define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
 extern void lcdSetRefVolt(unsigned char val);
 extern void lcdInit();
 extern void lcd_clear();
@@ -251,6 +256,24 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t widt
 #ifdef SIMU
 extern bool lcd_refresh;
 extern uint8_t lcd_buf[DISPLAY_BUF_SIZE];
+#endif
+
+#define LCD_BYTE_FILTER_PLAN(p, keep, add) *(p) = (*(p) & (keep)) | (add)
+
+#if defined(PCBX9D)
+#define LCD_BYTE_FILTER(p, keep, add) \
+  do { \
+    if (!(flags & GREY(1))) \
+      LCD_BYTE_FILTER_PLAN(p, keep, add); \
+    if (!(flags & GREY(2))) \
+      LCD_BYTE_FILTER_PLAN((p+DISPLAY_PLAN_SIZE), keep, add); \
+    if (!(flags & GREY(4))) \
+      LCD_BYTE_FILTER_PLAN((p+2*DISPLAY_PLAN_SIZE), keep, add); \
+    if (!(flags & GREY(8))) \
+      LCD_BYTE_FILTER_PLAN((p+3*DISPLAY_PLAN_SIZE), keep, add); \
+  } while (0)
+#else
+#define LCD_BYTE_FILTER(p, keep, add) LCD_BYTE_FILTER_PLAN(p, keep, add)
 #endif
 
 #endif

@@ -236,13 +236,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 
   if(hasFocus()) {
     static int keys1[]={
-#if defined(PCBACT)
-      KEY_Page_Up,   KEY_MENU,
-      KEY_BackSpace, KEY_EXIT,
-      KEY_Page_Down, KEY_PAGE,
-      KEY_Clear,     KEY_CLR,
-      KEY_Return,    BTN_REa,
-#elif defined(PCBX9D)
+#if defined(PCBX9D)
       KEY_Page_Up,   KEY_MENU,
       KEY_Page_Down, KEY_PAGE,
       KEY_Return,    KEY_ENTER,
@@ -275,22 +269,6 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     for (unsigned int i=0; i<DIM(keys1); i+=2) {
       simuSetKey(keys1[i+1], getApp()->getKeyState(keys1[i]));
     }
-
-#if defined(PCBACT)
-    static bool rotencState = false;
-    if (rotencState) {
-      if (!getApp()->getKeyState(KEY_Right) && !getApp()->getKeyState(KEY_Left))
-        rotencState = false;
-    }
-    else if (getApp()->getKeyState(KEY_Right)) {
-      g_rotenc[0] -= 1;
-      rotencState = true;
-    }
-    else if (getApp()->getKeyState(KEY_Left)) {
-      g_rotenc[0] += 1;
-      rotencState = true;
-    }
-#endif
 
 #ifdef __APPLE__
     // gruvin: Can't use Function keys on the Mac -- too many other app conflicts.
@@ -335,7 +313,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     } \
     simuSetSwitch(swtch, state_##swtch-states);
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
     SWITCH_KEY(A, 0, 3);
     SWITCH_KEY(B, 1, 3);
     SWITCH_KEY(C, 2, 3);
@@ -361,7 +339,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
   return 0;
 }
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 #define BL_COLOR FXRGB(47,123,227)
 #else
 #define BL_COLOR FXRGB(150,200,152)
@@ -462,6 +440,11 @@ int main(int argc,char **argv)
 
   StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
   StartMainThread();
+
+#if defined(PCBX9D)
+  simuSetSwitch(0, 0);
+  simuSetSwitch(1, 0);
+#endif
 
   return application.run();
 }

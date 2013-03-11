@@ -43,7 +43,8 @@
 #define LBOX_CENTERY  (LCD_H-BOX_WIDTH/2-10)
 #define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
 #define RBOX_CENTERY  LBOX_CENTERY
-#define MODELNAME_X   (13)
+#define MODELNAME_X   (15)
+#define MODELNAME_Y   (10)
 #define VBATT_X       (MODELNAME_X+26)
 #define VBATT_Y       (FH+3)
 #define VBATTUNIT_X   (VBATT_X-2)
@@ -54,8 +55,8 @@
 #define PHASE_Y       (3*FH)
 #define PHASE_FLAGS   (0)
 #define TIMERS_X      144
-#define TIMER1_Y      0
-#define TIMER2_Y      VBATT_Y
+#define TIMER1_Y      20
+#define TIMER2_Y      45
 #define TIMERS_R      192
 #define REBOOT_X      (LCD_W-FW)
 #define VSWITCH_X(i)  (((i>=NUM_CSW*3/4) ? BITMAP_X+28 : ((i>=NUM_CSW/2) ? BITMAP_X+25 : ((i>=NUM_CSW/4) ? 21 : 18))) + 3*i)
@@ -73,6 +74,7 @@
 #define RBOX_CENTERX  (3*LCD_W/4 - 10)
 #define RBOX_CENTERY  LBOX_CENTERY
 #define MODELNAME_X   (2*FW-2)
+#define MODELNAME_Y   (0)
 #define PHASE_X       (6*FW)
 #define PHASE_Y       (2*FH)
 #define PHASE_FLAGS   0
@@ -98,6 +100,16 @@
   const pm_uchar x9d_logo[] PROGMEM = { 
   #include "x9d_logo.lbm"
   };
+
+  const pm_uchar icons[] PROGMEM = {
+  #include "icons.lbm"
+  };
+
+  #define ICON_RSSI    0, 9
+  #define ICON_SPEAKER 9, 9
+  #define ICON_SD      18, 11
+  #define ICON_LOGS    28, 11
+  #define ICON_TRAINER 38, 11
 #endif
 
 void drawPotsBars()
@@ -173,7 +185,7 @@ void displayTrims(uint8_t phase)
   }
 }
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 void displaySliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
@@ -187,6 +199,70 @@ void displaySliders()
     lcd_vline(x+2, y, 2);
   }
 }
+
+#define BAR_X        15
+#define BAR_Y        1
+#define BAR_BATT_X   BAR_X+19
+#define BAR_RSSI_X   BAR_X+42
+#define BAR_SD_X     BAR_X+100
+#define BAR_LOGS_X   BAR_X+112
+#define BAR_TRN_X    BAR_X+124
+#define BAR_VOLUME_X BAR_X+140
+#define BAR_TIME_X   BAR_X+165
+
+void displayTopBarGauge(xcoord_t x, uint8_t count, bool blinking=false)
+{
+  if (!blinking || BLINK_ON_PHASE)
+    lcd_filled_rect(x+1, BAR_Y+2, 11, 5, SOLID, ERASE);
+  count = min((uint8_t)10, count);
+  for (uint8_t i=0; i<count; i+=2)
+    lcd_vline(x+2+i, BAR_Y+3, 3);
+}
+
+void displayTopBar()
+{
+  /* Tx voltage */
+  putsVBat(BAR_BATT_X, BAR_Y+1, 0);
+  lcd_rect(VBATT_X, BAR_Y+1, 13, 7);
+  lcd_vline(VBATT_X+13, BAR_Y+2, 5);
+
+  /* RSSI */
+  LCD_ICON(BAR_RSSI_X, BAR_Y, ICON_RSSI);
+  lcd_rect(BAR_RSSI_X+10, BAR_Y+1, 13, 7);
+
+  /* SD icon */
+  LCD_ICON(BAR_SD_X, BAR_Y, ICON_SD);
+  lcd_hline(BAR_SD_X, BAR_Y+8, 11);
+
+  /* Logs icon */
+  LCD_ICON(BAR_LOGS_X, BAR_Y, ICON_LOGS);
+  lcd_hline(BAR_LOGS_X, BAR_Y+8, 11);
+
+  /* Trainer icon */
+  LCD_ICON(BAR_TRN_X, BAR_Y, ICON_TRAINER);
+  lcd_hline(BAR_TRN_X, BAR_Y+8, 11);
+
+  /* Audio volume */
+  LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER);
+
+  /* RTC time */
+  struct gtm t;
+  gettime(&t);
+  lcd_putcAtt(BAR_TIME_X-1, BAR_Y+1, ':', BLINK);
+  lcd_outdezNAtt(BAR_TIME_X+1, BAR_Y+1, t.tm_hour, LEADING0, 2);
+  lcd_outdezNAtt(BAR_TIME_X+3*FWNUM-1, BAR_Y+1, t.tm_min, LEADING0, 2);
+
+  /* The background */
+  lcd_filled_rect(BAR_X, BAR_Y, 182, 9, SOLID, FILL_WHITE|GREY_DEFAULT);
+
+  /* The inside of the Batt gauge */
+  uint8_t count = 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
+  displayTopBarGauge(VBATT_X, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
+
+  /* The inside of the RSSI gauge */
+  count = min(frskyData.rssi[0].value, frskyData.rssi[1].value) / 10;
+  displayTopBarGauge(BAR_RSSI_X+10, count, (frskyData.rssi[0].value < getRssiAlarmValue(0)) || (frskyData.rssi[1].value < getRssiAlarmValue(1)));
+}
 #endif
 
 #if LCD_W >= 212
@@ -195,7 +271,7 @@ void displayTimers()
   // Main timer
   if (g_model.timers[0].mode) {
     putsTime(TIMERS_X, TIMER1_Y, s_timerVal[0], MIDSIZE|LEFT, MIDSIZE|LEFT);
-    putsTmrMode(TIMERS_X-16, TIMER1_Y+5, g_model.timers[0].mode, SWCONDENSED|SMLSIZE);
+    putsTmrMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, SWCONDENSED|SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
     if (s_timerVal[0] < 0) lcd_hline(TIMERS_X-6, TIMER1_Y+2, 4);
   }
@@ -203,7 +279,7 @@ void displayTimers()
   // Second timer
   if (g_model.timers[1].mode) {
     putsTime(TIMERS_X, TIMER2_Y, s_timerVal[1], MIDSIZE|LEFT, MIDSIZE|LEFT);
-    putsTmrMode(TIMERS_X-16, TIMER2_Y+5, g_model.timers[1].mode, SWCONDENSED|SMLSIZE);
+    putsTmrMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, SWCONDENSED|SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
     if (s_timerVal[1] < 0) lcd_hline(TIMERS_X-6, TIMER2_Y+2, 4);
   }
@@ -443,28 +519,31 @@ void menuMainView(uint8_t event)
     lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR|PHASE_FLAGS);
 
     // Model Name
-    putsModelName(MODELNAME_X, 0*FH, g_model.name, g_eeGeneral.currModel, BIGSIZE);
+    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.name, g_eeGeneral.currModel, BIGSIZE);
 
+#if !defined(PCBX9D)
     // Main Voltage (or alarm if any)
     displayVoltageOrAlarm();
 
     // Timers
     displayTimers();
+#endif
 
     // Trims sliders
     displayTrims(phase);
   }
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
+  // Top bar
+  displayTopBar();
+
   // Sliders (Pots / Sliders)
   displaySliders();
 
-#if defined(PCBX9D)
   if (modelBitmapLoaded == NULL)
     lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
   else
     lcd_bmp(BITMAP_X, BITMAP_Y, x9d_logo);
-#endif
 
   // Switches
   for (uint8_t i=0; i<8; i++) {
@@ -489,10 +568,13 @@ void menuMainView(uint8_t event)
         break;
       }
     }
-    putsSwitches((g_eeGeneral.view == VIEW_SWITCHES) ? (i<4 ? 3*FW+2 : 8*FW-1) : (i<4 ? 8*FW+3 : 24*FW+1), (i%4)*FH+3*FH, sw, 0);
+    putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (i<4 ? 8*FW+3 : 24*FW+1) : (i<4 ? 3*FW+2 : 8*FW-1), (i%4)*FH+3*FH, sw, 0);
   }
 
-  if (g_eeGeneral.view == VIEW_INPUTS) {
+  if (g_eeGeneral.view == VIEW_TIMERS) {
+    displayTimers();
+  }
+  else if (g_eeGeneral.view == VIEW_INPUTS) {
     // Sticks
     doMainScreenGraphics();
   }
