@@ -68,10 +68,20 @@ void adcInit()
   RCC->APB2ENR |= RCC_APB2ENR_ADC1EN ;                    // Enable clock
   RCC->AHB1ENR |= RCC_AHB1Periph_GPIOADC ;        // Enable ports A&C clocks
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;            // Enable DMA2 clock
-  configure_pins( PIN_STK_J1 | PIN_STK_J2 | PIN_STK_J3 | PIN_STK_J4 |
-                  PIN_FLP_J1, PIN_ANALOG | PIN_PORTA ) ;
-  configure_pins( PIN_SLD_J1 | PIN_SLD_J2 | PIN_MVOLT, PIN_ANALOG | PIN_PORTC ) ;
+
+#if defined(REV3)
+  configure_pins(PIN_STK_J1 | PIN_STK_J2 | PIN_STK_J3 | PIN_STK_J4 |
+                 PIN_FLP_J1 | PIN_FLP_J2, PIN_ANALOG | PIN_PORTA) ;
+#else
+  configure_pins(PIN_STK_J1 | PIN_STK_J2 | PIN_STK_J3 | PIN_STK_J4 |
+                 PIN_FLP_J1, PIN_ANALOG | PIN_PORTA) ;
+#endif
+
+#if !defined(REV3)
   configure_pins(PIN_FLP_J2, PIN_ANALOG|PIN_PORTB);
+#endif
+
+  configure_pins(PIN_SLD_J1 | PIN_SLD_J2 | PIN_MVOLT, PIN_ANALOG | PIN_PORTC) ;
 
   ADC1->CR1 = ADC_CR1_SCAN ;
   ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS ;
