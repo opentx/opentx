@@ -56,9 +56,9 @@
 #elif defined(PCBSKY9X)
 #define EEPROM_VER       214
 #elif defined(PCBGRUVIN9X)
-#define EEPROM_VER       214
+#define EEPROM_VER       213
 #else
-#define EEPROM_VER       214
+#define EEPROM_VER       213
 #endif
 
 #ifndef PACK
