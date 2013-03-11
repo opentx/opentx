@@ -159,9 +159,9 @@ void applyTemplate(uint8_t idx)
       // Sticky-T-Cut
       case TMPL_STI_THR_CUT:
         md=setDest(ICC(STK_THR), MIXSRC_MAX); md_SetWeight(md, -100);  md->swtch=SWSRC_SWC;  md->mltpx=MLTPX_REP;
-        md=setDest(13, MIXSRC_CH14); md->weight= 100;
+        md=setDest(13, MIXSRC_CH14); // md->weight= 100; done by setDest anyway
         md=setDest(13, MIXSRC_MAX); md_SetWeight(md, -100);  md->swtch=SWSRC_SWB;  md->mltpx=MLTPX_REP;
-        md=setDest(13, MIXSRC_MAX); md->weight= 100;  md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
+        md=setDest(13, MIXSRC_MAX); /* md->weight= 100;*/  md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
         setSwitch(11, CS_VNEG, STK_THR, -99);
         setSwitch(12, CS_VPOS, MIXSRC_CH14, 0);
         break;
@@ -200,12 +200,12 @@ void applyTemplate(uint8_t idx)
 
       //Set up Mixes
          // 3 cyclic channels
-        md=setDest(0, MIXSRC_CYC1); md->weight=100;
-        md=setDest(1, MIXSRC_CYC2); md->weight=100;
-        md=setDest(2, MIXSRC_CYC3); md->weight=100;
+        md=setDest(0, MIXSRC_CYC1); // md->weight=100;
+        md=setDest(1, MIXSRC_CYC2); // md->weight=100;
+        md=setDest(2, MIXSRC_CYC3); // md->weight=100;
 
         // rudder
-	md=setDest(3, MIXSRC_Rud); md->weight=100;
+	md=setDest(3, MIXSRC_Rud); // md->weight=100;
 
         // throttle
 	md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(1); md->carryTrim=TRIM_OFF;
@@ -218,9 +218,9 @@ void applyTemplate(uint8_t idx)
         md=setDest(5, MIXSRC_MAX); md_SetWeight(md, -30); md->swtch= SWSRC_GEA;
    
         // collective
-	md=setDest(11, MIXSRC_Thr); md->weight= 100; md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(11, MIXSRC_Thr); md->weight= 100; md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(5); md->carryTrim=TRIM_OFF;
-        md=setDest(11, MIXSRC_Thr); md->weight= 100; md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(6); md->carryTrim=TRIM_OFF;
+	md=setDest(11, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(11, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(5); md->carryTrim=TRIM_OFF;
+        md=setDest(11, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(6); md->carryTrim=TRIM_OFF;
 
         g_model.swashR.collectiveSource = MIXSRC_CH11 - MAX_SWITCH;
         g_model.swashR.type = SWASH_TYPE_120;
