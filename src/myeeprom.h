@@ -387,13 +387,13 @@ PACK( union u_int8int16_t {
 });
 
 #define MD_WEIGHT_TO_UNION(md, var) var.bytes_t.lo=md->weight; var.bytes_t.hi=md->weightMode?255:0
-#define MD_UNION_TO_WEIGHT(var, md) md->weight=var.bytes_t.lo; md->weightMode=(var.word<0) /* set negative sign */
-#define MD_SETWEIGHT(md, val) md->weight=val; md->weightMode=(val<0)
+#define MD_UNION_TO_WEIGHT(var, md) md->weight=var.bytes_t.lo; if (var.word<0) md->weightMode=1; else md->weightMode=0
+#define MD_SETWEIGHT(md, val) md->weight=val; if (val<0) md->weightMode=1; else md->weightMode=0 
 
 #define MD_OFFSET(md) (u_gvarint_t(md->offset,md->offsetMode).word)
 #define MD_OFFSET_TO_UNION(md, var) var.bytes_t.lo=md->offset; var.bytes_t.hi=md->offsetMode?255:0
-#define MD_UNION_TO_OFFSET(var, md) md->offset=var.bytes_t.lo; md->offsetMode=(var.word<0) /* set negative sign */
-#define MD_SETOFFSET(md, val) md->offset=val; md->offsetMode=(val<0)
+#define MD_UNION_TO_OFFSET(var, md) md->offset=var.bytes_t.lo; if (var.word<0) md->offsetMode=1; else md->offsetMode=0 /* set negative sign */
+#define MD_SETOFFSET(md, val) md->offset=val; if (val<0) md->offsetMode=1; else md->offsetMode=0
 
 #endif
 
