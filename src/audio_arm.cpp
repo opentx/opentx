@@ -636,7 +636,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 
   if (flags & PLAY_BACKGROUND) {
     memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));
-    strncpy(backgroundContext.fragment.file, filename, 32);
+    strcpy(backgroundContext.fragment.file, filename);
     backgroundContext.fragment.id = id;
     if (!busy()) {
       state = AUDIO_RESUMING;
@@ -648,7 +648,7 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
     if (next_widx != ridx) {
       AudioFragment & fragment = fragments[widx];
       memset(&fragment, 0, sizeof(fragment));
-      strcpy(fragment.file, filename); // TODO strncpy
+      strcpy(fragment.file, filename);
       fragment.repeat = flags & 0x0f;
       fragment.id = id;
       if (flags & PLAY_NOW)

@@ -1242,6 +1242,10 @@ enum AUDIO_SOUNDS {
 #include "rtc.h"
 #endif
 
+#if defined(CPUARM)
+extern uint8_t requiredSpeakerVolume;
+#endif
+
 // Re-useable byte array to save having multiple buffers
 #define SD_SCREEN_FILE_LENGTH (32)
 union ReusableBuffer

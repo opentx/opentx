@@ -105,11 +105,17 @@
   #include "icons.lbm"
   };
 
-  #define ICON_RSSI    0, 9
-  #define ICON_SPEAKER 9, 9
-  #define ICON_SD      18, 11
-  #define ICON_LOGS    28, 11
-  #define ICON_TRAINER 38, 11
+  #define ICON_RSSI     0, 9
+  #define ICON_SPEAKER0 9, 8
+  #define ICON_SPEAKER1 17, 8
+  #define ICON_SPEAKER2 25, 8
+  #define ICON_SPEAKER3 33, 8
+  #define ICON_SD       41, 11
+  #define ICON_LOGS     51, 11
+  #define ICON_TRAINER  61, 11
+  #define ICON_TRAINEE  71, 11
+  #define ICON_USB      81, 11
+  #define ICON_REBOOT   91, 11
 #endif
 
 void drawPotsBars()
@@ -200,15 +206,15 @@ void displaySliders()
   }
 }
 
-#define BAR_X        15
+#define BAR_X        14
 #define BAR_Y        1
-#define BAR_BATT_X   BAR_X+19
+#define BAR_W        184
+#define BAR_H        9
+#define BAR_BATT_X   BAR_X+18
 #define BAR_RSSI_X   BAR_X+42
-#define BAR_SD_X     BAR_X+100
-#define BAR_LOGS_X   BAR_X+112
-#define BAR_TRN_X    BAR_X+124
-#define BAR_VOLUME_X BAR_X+140
-#define BAR_TIME_X   BAR_X+165
+#define BAR_NOTIFS_X BAR_X+133
+#define BAR_VOLUME_X BAR_X+147
+#define BAR_TIME_X   BAR_X+168
 
 void displayTopBarGauge(xcoord_t x, uint8_t count, bool blinking=false)
 {
@@ -219,31 +225,60 @@ void displayTopBarGauge(xcoord_t x, uint8_t count, bool blinking=false)
     lcd_vline(x+2+i, BAR_Y+3, 3);
 }
 
+#define LCD_NOTIF_ICON(x, icon) \
+ lcd_bmp(x, BAR_Y, icons, icon); \
+ lcd_hline(x, BAR_Y+8, 11)
+
 void displayTopBar()
 {
   /* Tx voltage */
   putsVBat(BAR_BATT_X, BAR_Y+1, 0);
-  lcd_rect(VBATT_X, BAR_Y+1, 13, 7);
-  lcd_vline(VBATT_X+13, BAR_Y+2, 5);
+  lcd_rect(BAR_BATT_X+FW, BAR_Y+1, 13, 7);
+  lcd_vline(BAR_BATT_X+FW+13, BAR_Y+2, 5);
 
   /* RSSI */
   LCD_ICON(BAR_RSSI_X, BAR_Y, ICON_RSSI);
   lcd_rect(BAR_RSSI_X+10, BAR_Y+1, 13, 7);
 
-  /* SD icon */
-  LCD_ICON(BAR_SD_X, BAR_Y, ICON_SD);
-  lcd_hline(BAR_SD_X, BAR_Y+8, 11);
+  /* Notifs icons */
+  xcoord_t x = BAR_NOTIFS_X;
+  if (unexpectedShutdown) {
+    LCD_NOTIF_ICON(x, ICON_REBOOT);
+    x -= 12;
+  }
 
-  /* Logs icon */
-  LCD_ICON(BAR_LOGS_X, BAR_Y, ICON_LOGS);
-  lcd_hline(BAR_LOGS_X, BAR_Y+8, 11);
+  if (1) {
+    LCD_NOTIF_ICON(x, ICON_USB);
+    x -= 12;
+  }
 
-  /* Trainer icon */
-  LCD_ICON(BAR_TRN_X, BAR_Y, ICON_TRAINER);
-  lcd_hline(BAR_TRN_X, BAR_Y+8, 11);
+  if (SLAVE_MODE()) {
+    LCD_NOTIF_ICON(x, ICON_TRAINEE);
+    x -= 12;
+  }
+  else if (1) {
+    LCD_NOTIF_ICON(x, ICON_TRAINER);
+    x -= 12;
+  }
+
+  if (isFunctionActive(FUNC_LOGS)) {
+    LCD_NOTIF_ICON(x, ICON_LOGS);
+    x -= 12;
+  }
+
+  if (sdMounted()) {
+    LCD_NOTIF_ICON(x, ICON_SD);
+  }
 
   /* Audio volume */
-  LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER);
+  if (requiredSpeakerVolume == 0)
+    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER0);
+  else if (requiredSpeakerVolume < 10)
+    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER1);
+  else if (requiredSpeakerVolume < 20)
+    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER2);
+  else
+    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER3);
 
   /* RTC time */
   struct gtm t;
@@ -253,11 +288,11 @@ void displayTopBar()
   lcd_outdezNAtt(BAR_TIME_X+3*FWNUM-1, BAR_Y+1, t.tm_min, LEADING0, 2);
 
   /* The background */
-  lcd_filled_rect(BAR_X, BAR_Y, 182, 9, SOLID, FILL_WHITE|GREY_DEFAULT);
+  lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   /* The inside of the Batt gauge */
   uint8_t count = 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
-  displayTopBarGauge(VBATT_X, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
+  displayTopBarGauge(BAR_BATT_X+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
 
   /* The inside of the RSSI gauge */
   count = min(frskyData.rssi[0].value, frskyData.rssi[1].value) / 10;
