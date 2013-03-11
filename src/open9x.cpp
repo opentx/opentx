@@ -3111,7 +3111,6 @@ void doMixerCalculations()
 #else
   val >>= (RESX_SHIFT-4); // calibrate it
 #endif
-  
 
   // Timers start
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
