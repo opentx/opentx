@@ -134,6 +134,11 @@ void watchdogInit();
 void adcInit();
 void adcRead();
 extern volatile uint16_t Analog_values[];
+#if defined(REV3)
+  #define BATT_SCALE    120
+#else
+  #define BATT_SCALE    150
+#endif
 
 // Power driver
 void pwrInit();
