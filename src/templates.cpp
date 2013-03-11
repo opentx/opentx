@@ -152,7 +152,7 @@ void applyTemplate(uint8_t idx)
       case TMPL_STI_THR_CUT:
         md=setDest(ICC(STK_THR), MIXSRC_MAX); MD_SETWEIGHT(md, -100);  md->swtch=SWSRC_SWC;  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_CH14); md->weight= 100;
-        md=setDest(13, MIXSRC_MAX); md->weight=-100;  md->swtch=SWSRC_SWB;  md->mltpx=MLTPX_REP;
+        md=setDest(13, MIXSRC_MAX); MD_SETWEIGHT(md, -100);  md->swtch=SWSRC_SWB;  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_MAX); md->weight= 100;  md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
         setSwitch(11, CS_VNEG, STK_THR, -99);
         setSwitch(12, CS_VPOS, MIXSRC_CH14, 0);
@@ -161,7 +161,7 @@ void applyTemplate(uint8_t idx)
       // V-Tail
       case TMPL_V_TAIL:
         setDest(ICC(STK_RUD), MIXSRC_Rud, true);
-        md=setDest(ICC(STK_RUD), MIXSRC_Ele); md->weight=-100;
+        md=setDest(ICC(STK_RUD), MIXSRC_Ele); MD_SETWEIGHT(md, -100);
         setDest(ICC(STK_ELE), MIXSRC_Rud, true);
         setDest(ICC(STK_ELE), MIXSRC_Ele);
         break;
@@ -171,18 +171,18 @@ void applyTemplate(uint8_t idx)
         setDest(ICC(STK_ELE), MIXSRC_Ele, true);
         setDest(ICC(STK_ELE), MIXSRC_Ail);
         setDest(ICC(STK_AIL), MIXSRC_Ele, true);
-        md=setDest(ICC(STK_AIL), MIXSRC_Ail); md->weight=-100;
+        md=setDest(ICC(STK_AIL), MIXSRC_Ail); MD_SETWEIGHT(md, -100);
         break;
 
       // eCCPM
       case TMPL_ECCPM:
         md=setDest(ICC(STK_ELE), MIXSRC_Ele, true); md->weight= 72;
         md=setDest(ICC(STK_ELE), MIXSRC_Thr);  md->weight= 55;
-        md=setDest(ICC(STK_AIL), MIXSRC_Ele, true);  md->weight=-36;
+        md=setDest(ICC(STK_AIL), MIXSRC_Ele, true);  MD_SETWEIGHT(md, -36);
         md=setDest(ICC(STK_AIL), MIXSRC_Ail);  md->weight= 62;
         md=setDest(ICC(STK_AIL), MIXSRC_Thr);  md->weight= 55;
-        md=setDest(5, MIXSRC_Ele, true);       md->weight=-36;
-        md=setDest(5, MIXSRC_Ail);             md->weight=-62;
+        md=setDest(5, MIXSRC_Ele, true);       MD_SETWEIGHT(md, -36);
+        md=setDest(5, MIXSRC_Ail);             MD_SETWEIGHT(md, -62);
         md=setDest(5, MIXSRC_Thr);             md->weight= 55;
         break;
 
@@ -203,11 +203,11 @@ void applyTemplate(uint8_t idx)
 	md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(1); md->carryTrim=TRIM_OFF;
 	md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
 	md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(3); md->carryTrim=TRIM_OFF;
-        md=setDest(4, MIXSRC_MAX); md->weight=-100; md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
+        md=setDest(4, MIXSRC_MAX); MD_SETWEIGHT(md, -100); md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
 
         // gyro gain
         md=setDest(5, MIXSRC_MAX); md->weight= 30; md->swtch=-SWSRC_GEA;
-        md=setDest(5, MIXSRC_MAX); md->weight=-30; md->swtch= SWSRC_GEA;
+        md=setDest(5, MIXSRC_MAX); MD_SETWEIGHT(md, -30); md->swtch= SWSRC_GEA;
    
         // collective
 	md=setDest(11, MIXSRC_Thr); md->weight= 100; md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
