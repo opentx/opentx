@@ -15,11 +15,11 @@
 #define GPIO_BUTTON_EXIT                GPIOD->IDR
 #define GPIO_BUTTON_PAGE                GPIOD->IDR
 #define	PIN_BUTTON_PLUS                 GPIO_Pin_10	//SW3 PE.10
-#define PIN_BUTTON_MINUS                GPIO_Pin_11 //SW1 PE.12
+#define PIN_BUTTON_MINUS                GPIO_Pin_11     //SW1 PE.12
 #define	PIN_BUTTON_ENTER                GPIO_Pin_12	//SW2 PE.11
 #define PIN_BUTTON_MENU                 GPIO_Pin_7	//SW4 PD.07
-#define PIN_BUTTON_PAGE                 GPIO_Pin_3  //SW6 PD.02
-#define PIN_BUTTON_EXIT                 GPIO_Pin_2  //SW5 PD.03
+#define PIN_BUTTON_PAGE                 GPIO_Pin_3      //SW6 PD.02
+#define PIN_BUTTON_EXIT                 GPIO_Pin_2      //SW5 PD.03
 
 // Trims
 #define GPIO_TRIM_LH_L                  GPIOE->IDR
@@ -34,10 +34,15 @@
 #define	PIN_TRIM_RV_UP                  GPIO_Pin_2	//PC.02
 #define	PIN_TRIM_RH_L                   GPIO_Pin_1	//PC.01
 #define PIN_TRIM_RH_R                   GPIO_Pin_13	//PC.13
-#define	PIN_TRIM_LH_R                   GPIO_Pin_4	//PE.04
-#define PIN_TRIM_LH_L                   GPIO_Pin_3  //PE.03
-#define PIN_TRIM_LV_DN                  GPIO_Pin_6  //PE.06
-#define PIN_TRIM_LV_UP                  GPIO_Pin_5  //PE.05
+#if defined(REV3)
+  #define PIN_TRIM_LH_R                 GPIO_Pin_4	//PE.04
+  #define PIN_TRIM_LH_L                 GPIO_Pin_3      //PE.03
+#else
+  #define PIN_TRIM_LH_L                 GPIO_Pin_4      //PE.04
+  #define PIN_TRIM_LH_R                 GPIO_Pin_3      //PE.03
+#endif
+#define PIN_TRIM_LV_DN                  GPIO_Pin_6      //PE.06
+#define PIN_TRIM_LV_UP                  GPIO_Pin_5      //PE.05
 
 // Switchs
 #if defined(REV3)
@@ -120,16 +125,24 @@
 #endif
 
 // ADC
-#define PIN_STK_J1                      GPIO_Pin_0  //PA.00              
+#define PIN_STK_J1                      GPIO_Pin_0  //PA.00
 #define PIN_STK_J2                      GPIO_Pin_1  //PA.01
 #define PIN_STK_J3                      GPIO_Pin_2  //PA.02
 #define PIN_STK_J4                      GPIO_Pin_3  //PA.03
 #define PIN_SLD_J1                      GPIO_Pin_4  //PC.04
 #define PIN_SLD_J2                      GPIO_Pin_5  //PC.05
 #define PIN_FLP_J1                      GPIO_Pin_6  //PA.06
-#define PIN_FLP_J2                      GPIO_Pin_7  //PA.07
-#define PIN_MVOLT                       GPIO_Pin_0  //PC.00  
-#define RCC_AHB1Periph_GPIOADC          RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC
+#if defined(REV3)
+  #define PIN_FLP_J2                    GPIO_Pin_7  //PA.07
+#else
+  #define PIN_FLP_J2                    GPIO_Pin_0  //PB.00
+#endif
+#define PIN_MVOLT                       GPIO_Pin_0  //PC.00
+#if defined(REV3)
+  #define RCC_AHB1Periph_GPIOADC        RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC
+#else
+  #define RCC_AHB1Periph_GPIOADC        RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC
+#endif
 
 // DAC
 #define PIN_AUDIO_DAC                   GPIO_Pin_4  //PA.04
@@ -143,13 +156,14 @@
 #define GPIOPWR                         GPIOD
 
 // Trainer Port
-#define PIN_TR_PPM_IN                   GPIO_Pin_5  //PC.08
+#define PIN_TR_PPM_IN                   GPIO_Pin_8  //PC.08
 #define PIN_TR_PPM_OUT                  GPIO_Pin_9  //PC.09
 
 // TODO merge these constants
 #define PIN_PER_1                       0x0010
 #define PIN_PORTA                       0x0000
-#define PIN_PER_3                       0x030
+#define PIN_PER_3                       0x0030
+#define PIN_PER_5                       0x0050
 // #define PIN_OS2                         0x0000
 #define PIN_OS25                        0x2000
 // #define PIN_OS50                        0x4000
@@ -157,7 +171,7 @@
 
 // Cppm
 #define RCC_AHB1Periph_GPIOCPPM         RCC_AHB1Periph_GPIOA
-#define PIN_CPPM_OUT                    GPIO_Pin_8  //PA.08
+#define PIN_CPPM_OUT                    GPIO_Pin_7  //PA.07
 #define GPIOCPPM                        GPIOA
 #define GPIO_PinSource_CPPM             GPIO_PinSource8
 
@@ -304,5 +318,7 @@
 #define DMA_Channel_SPI_SD_TX           DMA1_Channel3
 #define DMA_FLAG_SPI_SD_TC_RX           DMA1_FLAG_TC2
 #define DMA_FLAG_SPI_SD_TC_TX           DMA1_FLAG_TC3
+#define DMA_Channel_SPI1_TX             DMA_Channel_3
+#define DMA_Stream_SPI1_TX              DMA2_Stream3
 
 #endif
