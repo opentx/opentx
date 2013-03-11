@@ -2157,15 +2157,10 @@ enum MixFields {
 
 void gvarWeightItem(xcoord_t x, uint8_t y, MixData *md, uint8_t attr, uint8_t event)
 {
-// #if defined(CPUARM) || !defined(GVARS)
-//  md->weight = gvarMenuItem(x, y, md->weight, -125, 125, attr, event);
-// #else
- // @@@ open.20.fsguruh
   u_int8int16_t weight;
-  MD_GETWEIGHT(weight,md);
+  MD_WEIGHT_TO_UNION(md, weight);
   weight.word = gvarMenuItem(x, y, weight.word, GV_RANGELARGE_NEG, GV_RANGELARGE, attr, event);
-  MD_SETWEIGHT(weight,md);
-//#endif
+  MD_UNION_TO_WEIGHT(weight, md);
 }
 
 void menuModelMixOne(uint8_t event)
@@ -2240,15 +2235,10 @@ void menuModelMixOne(uint8_t event)
       case MIX_FIELD_OFFSET:
       {
         lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_OFFSET));
-// #if defined(GVARS)
-        // @@@ open.20.fsguruh
         u_int8int16_t offset;
-	    MD_GETOFFSET(offset,md2);
+        MD_OFFSET_TO_UNION(md2, offset);
         offset.word = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_NEG, GV_RANGELARGE, attr|LEFT, event);
-	    MD_SETOFFSET(offset,md2);	
-// #else
-//        md2->offset = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->offset, -125, 125, attr|LEFT, event); 
-// #endif
+        MD_UNION_TO_OFFSET(offset, md2);
         break;
       }
       case MIX_FIELD_TRIM:

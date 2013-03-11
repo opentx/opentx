@@ -212,7 +212,7 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t widt
   return 0;
 }
 
-void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img)
+void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset, uint8_t width)
 {
   const pm_uchar *q = img;
 #if LCD_W >= 260
@@ -221,14 +221,22 @@ void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img)
 #else
   uint8_t w    = pgm_read_byte(q++);
 #endif
+  if (!width) width = w;
   uint8_t hb   = (pgm_read_byte(q++)+7)/8;
+  q += 4*offset;
   for (uint8_t yb = 0; yb < hb; yb++) {
     uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
-    for (xcoord_t i=0; i<w; i++){
-      *(p+0*DISPLAY_PLAN_SIZE) = pgm_read_byte(q++);
-      *(p+1*DISPLAY_PLAN_SIZE) = pgm_read_byte(q++);
-      *(p+2*DISPLAY_PLAN_SIZE) = pgm_read_byte(q++);
-      *(p+3*DISPLAY_PLAN_SIZE) = pgm_read_byte(q++);
+    for (xcoord_t i=0; i<width; i++) {
+      for (uint8_t plan=0; plan<4; plan++) {
+        uint8_t b = pgm_read_byte(q++);
+        uint8_t ym8 = (y & 0x07);
+        uint8_t *pp = p + plan*DISPLAY_PLAN_SIZE;
+        LCD_BYTE_FILTER_PLAN(pp, ~(0xff << ym8), b << ym8);
+        if (ym8) {
+          uint8_t *r = pp + LCD_W;
+          LCD_BYTE_FILTER_PLAN(r, ~(0xff >> (8-ym8)), b >> (8-ym8));
+        }
+      }
       p++;
     }
   }

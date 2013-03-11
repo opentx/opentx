@@ -113,6 +113,7 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
 
 #if defined(PCBX9D) || defined(PCBACT)
 enum MainViews {
+  VIEW_TIMERS,
   VIEW_INPUTS,
   VIEW_SWITCHES,
   VIEW_COUNT
@@ -318,21 +319,22 @@ PACK(typedef struct t_MixData {
 }) MixData;
 
 #define MD_WEIGHT(md) (md->weight)
-#define MD_GETWEIGHT(var,md) var.word=md->weight
-#define MD_SETWEIGHT(var,md) md->weight=var.word
+#define MD_WEIGHT_TO_UNION(md, var) var.word = md->weight
+#define MD_UNION_TO_WEIGHT(var, md) md->weight = var.word
+#define MD_SETWEIGHT(md, val) md->weight = val
 
 PACK( union u_int8int16_t {
   struct {
     int8_t  lo;
-	uint8_t hi;
+    uint8_t hi;
   } bytes_t;
   int16_t word;
 });
 
-
 #define MD_OFFSET(md) (md->offset)
-#define MD_GETOFFSET(var,md) var.word=md->offset;
-#define MD_SETOFFSET(var,md) md->offset=var.word;
+#define MD_OFFSET_TO_UNION(md, var) var.word = md->offset
+#define MD_UNION_TO_OFFSET(var, md) md->offset = var.word
+#define MD_SETOFFSET(md, val) md->offset = val
 
 #else
 #define DELAY_STEP  2
@@ -379,18 +381,19 @@ private:
 PACK( union u_int8int16_t {
   struct {
     int8_t  lo;
-	uint8_t hi;
+    uint8_t hi;
   } bytes_t;
   int16_t word;
 });
-#define MD_GETWEIGHT(var,md) var.bytes_t.lo=md->weight; var.bytes_t.hi=md->weightMode?255:0
-#define MD_SETWEIGHT(var,md)   md->weight     = var.bytes_t.lo;  \
-     if (var.word<0) md->weightMode=1; else md->weightMode=0  // set negative sign
-	 
+
+#define MD_WEIGHT_TO_UNION(md, var) var.bytes_t.lo=md->weight; var.bytes_t.hi=md->weightMode?255:0
+#define MD_UNION_TO_WEIGHT(var, md) md->weight=var.bytes_t.lo; md->weightMode=(var.word<0) /* set negative sign */
+#define MD_SETWEIGHT(md, val) md->weight=val; md->weightMode=(val<0)
+
 #define MD_OFFSET(md) (u_gvarint_t(md->offset,md->offsetMode).word)
-#define MD_GETOFFSET(var,md) var.bytes_t.lo=md->offset; var.bytes_t.hi=md->offsetMode?255:0
-#define MD_SETOFFSET(var,md)   md->offset     = var.bytes_t.lo;  \
-     if (var.word<0) md->offsetMode=1; else md->offsetMode=0  // set negative sign	 
+#define MD_OFFSET_TO_UNION(var, md) var.bytes_t.lo=md->offset; var.bytes_t.hi=md->offsetMode?255:0
+#define MD_UNION_TO_OFFSET(md, var) md->offset=var.bytes_t.lo; md->offsetMode=(var.word<0) /* set negative sign */
+#define MD_SETOFFSET(md, val) md->offset=val; md->offsetMode=(val<0)
 
 #endif
 

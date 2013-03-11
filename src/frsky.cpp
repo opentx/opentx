@@ -941,7 +941,8 @@ void resetTelemetry()
 #ifdef SIMU
   frskyData.analog[0].set(120, UNIT_VOLTS);
   frskyData.analog[1].set(240, UNIT_VOLTS);
-  frskyData.rssi[0].set(75);
+  frskyData.rssi[0].value = 75;
+  frskyData.rssi[1].value = 75;
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
 

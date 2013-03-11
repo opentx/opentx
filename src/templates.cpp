@@ -150,7 +150,7 @@ void applyTemplate(uint8_t idx)
 
       // Sticky-T-Cut
       case TMPL_STI_THR_CUT:
-        md=setDest(ICC(STK_THR), MIXSRC_MAX);  md->weight=-100;  md->swtch=SWSRC_SWC;  md->mltpx=MLTPX_REP;
+        md=setDest(ICC(STK_THR), MIXSRC_MAX); MD_SETWEIGHT(md, -100);  md->swtch=SWSRC_SWC;  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_CH14); md->weight= 100;
         md=setDest(13, MIXSRC_MAX); md->weight=-100;  md->swtch=SWSRC_SWB;  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_MAX); md->weight= 100;  md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
