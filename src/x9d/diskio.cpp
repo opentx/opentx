@@ -645,6 +645,28 @@ DSTATUS disk_status (
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
+extern "C" {
+// TODO quick & dirty
+int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
+{
+  if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
+
+  if (send_cmd(CMD18, sector) == 0) {     /* READ_MULTIPLE_BLOCK */
+    do {
+      if (!rcvr_datablock(buff, 512)) {
+        break;
+      }
+      buff += 512;
+    } while (--count);
+    send_cmd(CMD12, 0);                             /* STOP_TRANSMISSION */
+  }
+
+  release_spi();
+
+  return 0;
+}
+}
+
 DRESULT disk_read (
         BYTE drv,                       /* Physical drive number (0) */
         BYTE *buff,                     /* Pointer to the data buffer to store read data */
@@ -687,6 +709,27 @@ DRESULT disk_read (
 /*-----------------------------------------------------------------------*/
 
 #if _FS_READONLY == 0
+
+extern "C" {
+// TODO quick & dirty
+int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
+{
+  if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
+  if (CardType & CT_SDC) send_cmd(ACMD23, count);
+  if (send_cmd(CMD25, sector) == 0) {     /* WRITE_MULTIPLE_BLOCK */
+    do {
+      if (!xmit_datablock(buff, 0xFC)) break;
+      buff += 512;
+    } while (--count);
+    if (!xmit_datablock(0, 0xFD))   /* STOP_TRAN token */
+      count = 1;
+  }
+
+  release_spi();
+
+  return 0;
+}
+}
 
 DRESULT disk_write (
         BYTE drv,                       /* Physical drive number (0) */

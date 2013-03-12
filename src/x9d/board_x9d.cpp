@@ -35,6 +35,9 @@
  */
 
 #include "../open9x.h"
+extern "C" {
+#include "x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
+}
 
 // TODO needed?
 uint8_t temperature = 0;          // Raw temp reading
@@ -127,6 +130,20 @@ void usbMassStorage()
 {
 }
 
+extern "C" {
+USB_OTG_CORE_HANDLE USB_OTG_dev;
+
+void OTG_FS_IRQHandler(void)
+{
+  USBD_OTG_ISR_Handler (&USB_OTG_dev);
+}
+}
+
+void usbInit()
+{
+  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
+}
+
 void watchdogInit()
 {
   IWDG->KR = 0x5555 ;      // Unlock registers
@@ -207,6 +224,8 @@ void boardInit()
   eepromInit();
   
   sportInit();
+  
+  usbInit();
 }
 #endif
 
