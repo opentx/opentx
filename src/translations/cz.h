@@ -396,6 +396,7 @@
 #define TR_HAPTICSTRENGTH      INDENT"S\204la"
 #define TR_CONTRAST            "Kontrast LCD"
 #define TR_ALARMS_LABEL        "Alarmy"
+#define TR_BATTERY_RANGE       "Baterie mezich"
 #define TR_BATTERYWARNING      INDENT"Vybit\200 Baterie"
 #define TR_INACTIVITYALARM     INDENT"Ne\201innost"
 #define TR_MEMORYWARNING       INDENT"Pln\200 Pam\203t'"

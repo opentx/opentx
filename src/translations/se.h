@@ -396,6 +396,7 @@
 #define TR_HAPTICSTRENGTH      INDENT"Styrka"
 #define TR_CONTRAST            "Kontrast"
 #define TR_ALARMS_LABEL        "Alarm"
+#define TR_BATTERY_RANGE       "Batteri range"
 #define TR_BATTERYWARNING      INDENT"Batteri"
 #define TR_INACTIVITYALARM     INDENT"Inaktivitet"
 #define TR_MEMORYWARNING       INDENT"Lite Minne"
