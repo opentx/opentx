@@ -31,7 +31,7 @@
 #define __USB_DESC_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_def.h"
+#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc/usbd_def.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
