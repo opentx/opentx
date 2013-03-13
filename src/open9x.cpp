@@ -4004,6 +4004,8 @@ void menusTask(void * pdata)
       usbMassStorage();
       CoTickDelay(1);  // 5*2ms for now
     }
+#else
+    CoTickDelay(5);  // 5*2ms for now
 #endif
   }
 
