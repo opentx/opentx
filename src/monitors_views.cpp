@@ -50,35 +50,39 @@ void menuChannelsMonitor(uint8_t event)
 
   uint8_t ch = 0;
 
-  for (uint8_t col=0; col<4; col++) {
+  for (uint8_t col=0; col<2; col++) {
 
-    uint8_t x = col*LCD_W/4;
-
-    // Column title
-    lcd_outdezNAtt(col==0 ? 28 : (col == 1 ? 81 : x+LCD_W/8-5*FWNUM/2+9), 1*FH+1, ch+1, LEFT|SMLSIZE);
-    lcd_putcAtt(lcdLastPos-1, 1*FH+1, '-', SMLSIZE);
-    lcd_outdezNAtt(lcdLastPos+FW-1, 1*FH+1, ch+8, LEFT|SMLSIZE);
+    uint8_t x = col*LCD_W/2+1;
 
     // Column separator
-    if (col != 0)
-      lcd_vline(x, FH, LCD_H-FH);
+    if (col == 1) 
+      lcd_vline(x-1, FH, LCD_H-FH);
 
     // Channels
     for (uint8_t line=0; line<8; line++) {
-      uint8_t y = 16+line*6;
+      uint8_t y = 9+line*7;
       int16_t val = g_chans512[ch];
+      uint8_t ofs = (col ? 0 : 1);
 
-      lcd_outdezNAtt(x+18, y, calcRESXto100(val), TINSIZE);
+      // Channel name if present, number if not
+      if (*g_model.limitData[ch].name != '\0')
+        lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
+      else {
+        putsChn(x+1-ofs, y, ch+1, SMLSIZE);
+      }
+      lcd_outdezNAtt(x+18+37-ofs, y+1, calcRESXto1000(val), PREC1 | TINSIZE);
 
-#define WBAR 32
+#define WBAR 48
 
-      lcd_rect(x+18, y, WBAR+2, 5);
+      lcd_rect(x+18+37-ofs, y, WBAR+2, 6);
       uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
       uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * WBAR/2 + lim/2) / lim), uint8_t(WBAR/2));
       uint8_t x0 = (val>0) ? x+19+WBAR/2 : x+19+WBAR/2-len;
+      x0 = x0 + 37 - ofs;
       lcd_hline(x0, y+1, len);
       lcd_hline(x0, y+2, len);
       lcd_hline(x0, y+3, len);
+      lcd_hline(x0, y+4, len);
       ch++;
 
 #undef WBAR
