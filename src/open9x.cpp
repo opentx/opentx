@@ -68,8 +68,6 @@ OS_FlagID audioFlag;
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
 
-char modelNames[MAX_MODELS][sizeof(g_model.name)];
-
 #endif // defined(CPUARM)
 
 #if defined(SPLASH)
@@ -284,7 +282,7 @@ void per10ms()
   }
 #endif
 
-#if (defined(FRSKY) || defined(MAVLINK) || defined(JETI)) && !defined(CPUARM) && !(defined(PCBSTD) && (defined(AUDIO) || defined(VOICE)))
+#if (defined(FRSKY) || defined(MAVLINK) || defined(JETI)) && !defined(CPUARM)
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
     telemetryPoll10ms();
 #endif
@@ -384,7 +382,7 @@ uint16_t evalChkSum()
   return sum;
 }
 
-#ifndef TEMPLATES
+#if !defined(TEMPLATES)
 inline void applyDefaultTemplate()
 {
   for (int i=0; i<NUM_STICKS; i++) {
@@ -398,10 +396,27 @@ inline void applyDefaultTemplate()
 }
 #endif
 
+#if defined(PXX) && defined(CPUARM)
+void checkModelIdUnique(uint8_t id)
+{
+  for (uint8_t i=0; i<MAX_MODELS; i++) {
+    if (i != id && g_model.modelId!=0 && g_model.modelId == modelIds[i]) {
+      s_warning = PSTR("Model ID already used");
+      s_warning_type = WARNING_TYPE_ASTERISK;
+    }
+  }
+}
+#endif
+
 void modelDefault(uint8_t id)
 {
   memset(&g_model, 0, sizeof(g_model));
   applyDefaultTemplate();
+
+#if defined(PXX) && defined(CPUARM)
+  modelIds[id] = g_model.modelId = id+1;
+  checkModelIdUnique(id);
+#endif
 }
 
 int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0, 25 ,50, 75, 100
@@ -769,15 +784,13 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   if (ofs > lim_p) ofs = lim_p;
   if (ofs < lim_n) ofs = lim_n;
 
-// because the recaling optimization would reduce the calculation reserve we activate this for all builds
-// it increases the caculation reserve from factor 20,25x to 32x, which it slightly better as original 
-// without it we would only have 16x which is slightly worse as original, we should not do this 
-// #ifdef PREVENT_ARITHMETIC_OVERFLOW  
+  // because the rescaling optimization would reduce the calculation reserve we activate this for all builds
+  // it increases the calculation reserve from factor 20,25x to 32x, which it slightly better as original
+  // without it we would only have 16x which is slightly worse as original, we should not do this
+
   // thanks to gbirkus, he motivated this change, which greatly reduces overruns 
   // unfortunately the constants and 32bit compares generates about 50 bytes codes; didn't find a way to get it down.
-
-  value = limit(int32_t(-RESXl*256),value,int32_t(RESXl*256));  // saves 2 bytes compared to other solutions up to now
-// #endif
+  value = limit(int32_t(-RESXl*256), value, int32_t(RESXl*256));  // saves 2 bytes compared to other solutions up to now
   
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
@@ -1996,7 +2009,11 @@ uint16_t inacSum = 0;
 BeepANACenter bpanaCenter = 0;
 
 uint16_t sDelay[MAX_MIXERS] = {0};
+#if defined(CPUARM)
+int32_t  act   [MAX_MIXERS] = {0};
+#else
 __int24  act   [MAX_MIXERS] = {0};
+#endif
 uint8_t  swOn  [MAX_MIXERS] = {0};
 uint8_t mixWarning;
 
@@ -3524,24 +3541,13 @@ uint16_t getTmr16KHz()
   }
 }
 
-
-
-// new implementation
-
-// This ISR is only called if timer matches OCR0. We updated OCR0 on each call to make ISR happen.
-// If we do not do this, we have 16,385msec time before overflow causes an IRQ
-// So it's so easy instead of preventing IRQ we 
-//just do not cause it! It's enough not to write to OCR0. This gives plenty of time to finish ISR. 
-// So instead of masking we write OCR0 at the end. Max would be ISR is caused here immediately, which would not do anything, 
-// because all critical pfathes are finished. It also would give us the chance to measure if we passed the next tick and count it. 
-// It's already implemented but commented out, because of code cost.
-
-ISR(TIMER_10MS_VECT, ISR_NOBLOCK) 
-// 10ms timer
-{
-  static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
-
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
+// Clocks every 128 uS
+ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
+{
+  cli();
+  TIMSK &= ~ (1<<TOIE2) ; // stop reentrance
+  sei();
 
 #if defined(AUDIO)
   AUDIO_DRIVER();
@@ -3551,69 +3557,29 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
   VOICE_DRIVER();
 #endif
 
-  static uint8_t cnt10ms; // no initialization needed here;  execute 10ms code once every 78 ISRs; takes 16.38msec to overrun for first round --> no problem
-
-#if defined(FRSKY) || defined(MAVLINK) || defined(JETI)
-  if (cnt10ms == 30) {
-    if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
-      telemetryPoll10ms();
-  }
+  cli();
+  TIMSK |= (1<<TOIE2) ;
+  sei();
+}
 #endif
 
-  if (--cnt10ms == 0) { // BEGIN { ... every 10ms ... }
-    // Begin 10ms event
-    // cnt10ms = 78;
-    cnt10ms = (!(++accuracyWarble &0x07)) ? 79 : 78;  // instead of assigning we add to take missed ISRs into account
-    // each per10ms() we are 0,016msec too fast
-    // one tick more means 0,112 msec too slow = 7*0,016msec --> in sum we are correct!!!        
-    // therefore every 8. round we need to slow down one tick
-    
-#endif
+// Clocks every 10ms
+ISR(TIMER_10MS_VECT, ISR_NOBLOCK) 
+{
+  // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
+  static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
 
-    AUDIO_HEARTBEAT();
+  AUDIO_HEARTBEAT();
 
 #if defined(HAPTIC)
-    HAPTIC_HEARTBEAT();
+  HAPTIC_HEARTBEAT();
 #endif
 
-    per10ms();
+  per10ms();
 
-#if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
-  } // end 10ms event
-#endif
-
-  // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
-#if defined(PCBGRUVIN9X)
-  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
   uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
-  OCR2A += bump;
-#elif defined(AUDIO) || defined(VOICE)
-  // simple solution; if ISR tooks longer this round is just ignored; The problem in this case is, it takes 16msec for the next ISR --> big gap in AUDIO, VOICE and a big fault in time calculaiton if it happens
-  // cnt10ms--;
-  OCR0 += 2; // interrupt every 128us
-/*  
-  // needs to change cnt10ms to int instead uint to allow cnt10ms to be negative
-  // also remove cnt10ms-- in if statement above, because substraction is done here
-  // code oost: 34 bytes
-  // this solutions   all missed ISRs are counted and next ISR is in about 128usec (exception is wrap around)
-  cli();
-  do {
-    cnt10ms--;  
-    OCR0 += 2; // interrupt every 128us
-  } while ((OCR0<TCNT0) && (OCR0>=2)); // loop in case ISR tooks too long; If it laps around, ignore additional calcuation and stop anyway
-  // sei(); will be done anyway if ISR is left
- */
-#else
-  // static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; not start value needed
-  // each tick we are 0,016msec too fast
-  // one tick more means 0,048 msec too slow = 3*0,016msec --> in sum we are correct!!!
-  // therefore every 4 round we need to slow down one tick
-  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
-  OCR0 += bump;
-#endif
-
+  TIMER_10MS_COMPVAL += bump;
 }
-
 
 // Timer3 used for PPM_IN pulse width capture. Counter running at 16MHz / 8 = 2MHz
 // equating to one count every half millisecond. (2 counts = 1ms). Control channel

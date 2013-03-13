@@ -363,10 +363,6 @@ enum EnumKeys {
 #endif
 
 #if defined(CPUARM)
-extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
-#endif
-
-#if defined(CPUARM)
 // This doesn't need protection on this processor
 #define tmr10ms_t uint32_t
 extern volatile tmr10ms_t g_tmr10ms;
@@ -384,11 +380,11 @@ extern inline uint16_t get_tmr10ms()
 }
 #endif
 
-// TODO try to merge the 2 include files
+#include "eeprom_common.h"
 #if defined(PCBSKY9X)
-#include "eeprom_arm.h"
+#include "eeprom_raw.h"
 #else
-#include "eeprom_avr.h"
+#include "eeprom_rlc.h"
 #endif
 
 #if defined(CPUARM)
@@ -951,14 +947,12 @@ void saveTimers();
 #define saveTimers()
 #endif
 
-void eeDirty(uint8_t msk);
-void eeCheck(bool immediately=false);
-void eeReadAll();
-bool eeModelExists(uint8_t id);
-void eeLoadModelName(uint8_t id, char *name);
-void eeLoadModel(uint8_t id);
 void generalDefault();
 void modelDefault(uint8_t id);
+
+#if defined(PXX) && defined(CPUARM)
+void checkModelIdUnique(uint8_t id);
+#endif
 
 #if defined(CPUARM)
 inline int16_t calc100to256_16Bits(register int16_t x)  // @@@2 open.20.fsguruh: return x*2.56

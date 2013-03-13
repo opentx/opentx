@@ -34,42 +34,39 @@
  *
  */
 
-#ifndef fifo_h
-#define fifo_h
+#if defined(SIMU)
+  #define WRITE_DELAY_10MS 200
+#elif defined(PCBX9D)
+  #define WRITE_DELAY_10MS 500
+#elif defined(PCBSKY9X) && !defined(REV0)
+  #define WRITE_DELAY_10MS 500
+#elif defined(PCBGRUVIN9X) && !defined(REV0)
+  #define WRITE_DELAY_10MS 500
+#else
+  #define WRITE_DELAY_10MS 200
+#endif
 
-template <int N>
-class Fifo
-{
-  public:
-    Fifo():
-      widx(0),
-      ridx(0)
-    {
-    }
+extern uint8_t   s_eeDirtyMsk;
+extern tmr10ms_t s_eeDirtyTime10ms;
 
-    void push(uint8_t byte) {
-      uint32_t next = (widx+1) & (N-1);
-      if (next != ridx) {
-        fifo[widx] = byte;
-        widx = next;
-      }
-    }
+void eeDirty(uint8_t msk);
+void eeCheck(bool immediately=false);
+void eeReadAll();
+bool eeModelExists(uint8_t id);
+void eeLoadModelName(uint8_t id, char *name);
+void eeLoadModel(uint8_t id);
 
-    bool pop(uint8_t & byte) {
-      if (ridx == widx) {
-        return false;
-      }
-      else {
-        byte = fifo[ridx];
-        ridx = (ridx+1) & (N-1);
-        return true;
-      }
-    }
+#if defined(CPUARM)
 
-  protected:
-    uint8_t fifo[N];
-    volatile uint32_t widx;
-    volatile uint32_t ridx;
-};
+extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
+void eeLoadModelNames();
+
+#if defined(PXX)
+extern uint8_t modelIds[MAX_MODELS];
+#endif
+
+#else // defined(CPUARM)
+
+#define eeLoadModelNames()
 
 #endif

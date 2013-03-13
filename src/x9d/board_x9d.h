@@ -63,8 +63,6 @@ extern "C" {
 #define TIMER_MULT_APB1 2
 #define TIMER_MULT_APB2 1
 
-void usbMassStorage();
-
 #define JACK_PPM_OUT()
 #define JACK_PPM_IN()
 

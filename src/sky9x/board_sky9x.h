@@ -98,6 +98,8 @@
 #define PIN_TRIM_RH_R                   0x00000200
 #endif
 
+void usbMassStorage();
+
 #define PIN_ENABLE                      0x001
 #define PIN_PERIPHERAL                  0x000
 #define PIN_INPUT                       0x002

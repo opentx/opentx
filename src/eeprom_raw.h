@@ -40,17 +40,6 @@
 #include <inttypes.h>
 #include <stdint.h>
 
-#if defined(SIMU)
-#define WRITE_DELAY_10MS 200
-#elif defined(PCBSKY9X) && defined(REV0)
-#define WRITE_DELAY_10MS 200
-#else
-#define WRITE_DELAY_10MS 500
-#endif
-
-extern uint8_t   s_eeDirtyMsk;
-extern tmr10ms_t s_eeDirtyTime10ms;
-
 // States in Eeprom32_process_state
 #define E32_IDLE                                                        1
 #define E32_ERASESENDING                        2
@@ -76,6 +65,10 @@ extern void eeDeleteModel( uint8_t id ) ;
 extern bool eeModelExists(uint8_t id) ;
 extern bool eeCopyModel(uint8_t dst, uint8_t src);
 extern void eeSwapModels(uint8_t id1, uint8_t id2);
+
+#if defined(PXX)
+uint8_t eeLoadModelId(uint8_t id);
+#endif
 
 #define DISPLAY_PROGRESS_BAR(x)
 

@@ -333,7 +333,7 @@
 #endif
 
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
-#define OFS_EXIT               7
+#define OFS_EXIT               sizeof(TR_ENTER)
 
 #define TR_MENUWHENDONE        CENTER"\006"TR_ENTER" WHEN DONE"
 #define TR_FREE                "free"

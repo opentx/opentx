@@ -1073,11 +1073,21 @@ void menuModelSetup(uint8_t event)
 
           lcd_putsLeft(y, STR_RXNUM);
           lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN-3*FW, y, g_model.modelId, (m_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
-          if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff)))
+          if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff))) {
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelId, 99);
+#if defined(CPUARM)
+            if (checkIncDec_Ret)
+              modelIds[g_eeGeneral.currModel] = g_model.modelId;
+#endif
+          }
 
 #if defined(PXX)
           if (protocol == PROTO_PXX) {
+#if defined(CPUARM)
+            if (attr && m_posHorz==0 && editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER))
+              checkModelIdUnique(g_eeGeneral.currModel);
+#endif
+
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN, y, STR_SYNCMENU, (m_posHorz==1 ? attr : 0));
             if (attr && m_posHorz==1) {
               s_editMode = 0;
