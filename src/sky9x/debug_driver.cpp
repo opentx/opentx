@@ -39,7 +39,7 @@
 
 #if !defined(SIMU)
 
-extern Fifo<512> debugRxFifo;
+extern Fifo512 debugRxFifo;
 
 /*
  * Outputs a character on the UART line.

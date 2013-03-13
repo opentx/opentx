@@ -1073,25 +1073,15 @@ void menuModelSetup(uint8_t event)
 
           lcd_putsLeft(y, STR_RXNUM);
           lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN-3*FW, y, g_model.modelId, (m_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
-          if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff))) {
+          if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff)))
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelId, 99);
-#if defined(CPUARM)
-            if (checkIncDec_Ret)
-              modelIds[g_eeGeneral.currModel] = g_model.modelId;
-#endif
-          }
 
 #if defined(PXX)
           if (protocol == PROTO_PXX) {
-#if defined(CPUARM)
-            if (attr && m_posHorz==0 && editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER))
-              checkModelIdUnique(g_eeGeneral.currModel);
-#endif
-
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN, y, STR_SYNCMENU, (m_posHorz==1 ? attr : 0));
             if (attr && m_posHorz==1) {
               s_editMode = 0;
-              if (event==EVT_KEY_LONG(KEY_ENTER)) {
+              if (event==EVT_KEY_LONG(KEY_MENU)) {
                 // send reset code
                 pxxFlag = PXX_SEND_RXNUM;
               }
@@ -1101,7 +1091,7 @@ void menuModelSetup(uint8_t event)
 
 #if defined(DSM2)
           if (IS_DSM2_PROTOCOL(protocol)) {
-            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\013Range"TR_ENTER"Norm "TR_ENTER), s_rangecheck_mode, (m_posHorz==1 ? attr : 0));
+            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\013Range[MENU]Norm [MENU]"), s_rangecheck_mode, (m_posHorz==1 ? attr : 0));
             s_rangecheck_mode = (attr && m_posHorz==1 && editMode>0); // [MENU] key toggles range check mode
           }
 #endif

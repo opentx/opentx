@@ -36,7 +36,7 @@
 
 #include "../open9x.h"
 extern "C" {
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
+#include "x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
 }
 
 // TODO needed?
@@ -128,7 +128,14 @@ void start_ppm_capture()
 {
 }
 
-#if !defined(SIMU)
+void usbBootloader()
+{
+}
+
+void usbMassStorage()
+{
+}
+
 extern "C" {
 USB_OTG_CORE_HANDLE USB_OTG_dev;
 
@@ -142,7 +149,6 @@ void usbInit()
 {
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
 }
-#endif
 
 void watchdogInit()
 {

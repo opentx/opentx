@@ -40,6 +40,8 @@
 #include "string.h"
 
 volatile  uint32_t Spi_complete; // TODO in the driver ?
+uint8_t   s_eeDirtyMsk;
+tmr10ms_t s_eeDirtyTime10ms;
 
 // Logic for storing to EEPROM/loading from EEPROM
 // If main needs to wait for the eeprom, call mainsequence without actioning menus
@@ -76,8 +78,15 @@ uint32_t Eeprom32_data_size ;
 
 #define EE_NOWAIT	1
 
+void eeDirty(uint8_t msk)
+{
+  s_eeDirtyMsk |= msk;
+  s_eeDirtyTime10ms = get_tmr10ms() ;
+}
+
 uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t *p_seq ) ;
 void write32_eeprom_block( uint32_t eeAddress, register uint8_t *buffer, uint32_t size, uint32_t immediate=0 ) ;
+void eeLoadModelNames( void ) ;
 
 // New file system
 
@@ -351,6 +360,8 @@ bool eeLoadGeneral()
 
 void eeLoadModel(uint8_t id)
 {
+  uint16_t size;
+
   if (id<MAX_MODELS) {
 
 #if defined(SDCARD)
@@ -363,7 +374,7 @@ void eeLoadModel(uint8_t id)
 
     pauseMixerCalculations();
 
-    uint16_t size = File_system[id+1].size ;
+    size =  File_system[id+1].size ;
 
     memset(&g_model, 0, sizeof(g_model));
 
@@ -376,7 +387,7 @@ void eeLoadModel(uint8_t id)
     if (size > sizeof(g_model)) {
       size = sizeof(g_model) ;
     }
-
+			 
     if(size < 256) { // if not loaded a fair amount
       modelDefault(id) ;
       eeCheck(true);
@@ -434,19 +445,12 @@ void eeLoadModelName(uint8_t id, char *name)
   }
 }
 
-#if defined(PXX)
-uint8_t eeLoadModelId(uint8_t id)
+void eeLoadModelNames()
 {
-  uint8_t modelId = 0;
-  if (id < MAX_MODELS) {
-    id += 1;
-    if (File_system[id].size > sizeof(g_model.name) + 1) {
-      read32_eeprom_data( ( File_system[id].block_no << 12) + 8 + sizeof(g_model.name), &modelId, 1);
-    }
+  for (uint32_t i=0; i<MAX_MODELS; i++) {
+    eeLoadModelName(i, modelNames[i]);
   }
-  return modelId;
 }
-#endif
 
 void fill_file_index()
 {

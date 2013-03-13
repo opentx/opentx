@@ -29,7 +29,7 @@
 #ifndef _USB_MSC_CORE_H_
 #define _USB_MSC_CORE_H_
 
-#include  "../../../Core/inc/usbd_ioreq.h"
+#include  "usbd_ioreq.h"
 
 /** @addtogroup USBD_MSC_BOT
   * @{

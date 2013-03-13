@@ -30,7 +30,7 @@
 #define __USB_CORE_H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "../../../../usb_conf.h"
+#include "../../../../../usb_conf.h"
 #include "usb_regs.h"
 #include "usb_defines.h"
 

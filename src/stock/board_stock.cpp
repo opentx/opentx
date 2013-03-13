@@ -102,22 +102,29 @@ inline void boardInit()
   DDRB = 0x81;  PORTB = 0x7e; //pullups keys+nc
   DDRC = 0x3e;  PORTC = 0xc1; //pullups nc
   DDRD = 0x00;  PORTD = 0xff; //pullups keys
-  DDRE = (1<<OUT_E_BUZZER); PORTE = 0xff-(1<<OUT_E_BUZZER); //pullups + buzzer 0
+  DDRE = (1<<OUT_E_BUZZER);  PORTE = 0xff-(1<<OUT_E_BUZZER); //pullups + buzzer 0
   DDRF = 0x00;  PORTF = 0x00; //anain
   DDRG = 0x14;  PORTG = 0xfb; //pullups + SIM_CTL=1 = phonejack = ppm_in, Haptic output and off (0)
 
   ADMUX=ADC_VREF_TYPE;
   ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
 
+  /**** Set up timer/counter 0 ****/
+#if defined (AUDIO)
+  // TCNT0  10ms = 16MHz/1024/2(/78) periodic timer (for speaker tone generation)
+  //        Capture ISR 7812.5/second -- runs per-10ms code segment once every 78
+  //        cycles (9.984ms). Timer overflows at about 61Hz or once every 16ms.
+  TCCR0  = (0b111 << CS00);//  Norm mode, clk/1024
+  OCR0 = 2;
+#else
   // TCNT0  10ms = 16MHz/1024/156 periodic timer (9.984ms)
   // (with 1:4 duty at 157 to average 10.0ms)
   // Timer overflows at about 61Hz or once every 16ms.
-  TCCR0  = (0b111 << CS00); // Norm mode, clk/1024
+  TCCR0  = (0b111 << CS00);//  Norm mode, clk/1024
   OCR0 = 156;
+#endif
 
-#if defined(AUDIO) || defined(VOICE)
-  TCCR2  = (0b010 << CS00); // Norm mode, clk/8
-#elif defined(PWM_BACKLIGHT)
+#if defined(PWM_BACKLIGHT)
   /** Smartieparts LED Backlight is connected to PORTB/pin7, which can be used as pwm output of timer2 **/
 #if defined(SP22)
   TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21)|(1<<COM20); // inv. pwm mode, clk/64
@@ -126,7 +133,8 @@ inline void boardInit()
 #endif
 #endif
 
-  TIMSK |= (1<<OCIE0) | (1<<TOIE0) | (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
+  TIMSK |= (1<<OCIE0) |  (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
+  /********************************/
 }
 #endif
 

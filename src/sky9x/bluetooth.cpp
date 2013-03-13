@@ -49,8 +49,8 @@ void btInit()
 }
 
 OS_FlagID btFlag;
-Fifo<32> btTxFifo;
-Fifo<32> btRxFifo;
+Fifo32 btTxFifo;
+Fifo32 btRxFifo;
 
 struct t_serial_tx btTx ;
 uint8_t btTxBuffer[32] ;

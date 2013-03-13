@@ -363,6 +363,10 @@ enum EnumKeys {
 #endif
 
 #if defined(CPUARM)
+extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
+#endif
+
+#if defined(CPUARM)
 // This doesn't need protection on this processor
 #define tmr10ms_t uint32_t
 extern volatile tmr10ms_t g_tmr10ms;
@@ -380,11 +384,11 @@ extern inline uint16_t get_tmr10ms()
 }
 #endif
 
-#include "eeprom_common.h"
+// TODO try to merge the 2 include files
 #if defined(PCBSKY9X)
-#include "eeprom_raw.h"
+#include "eeprom_arm.h"
 #else
-#include "eeprom_rlc.h"
+#include "eeprom_avr.h"
 #endif
 
 #if defined(CPUARM)
@@ -649,16 +653,17 @@ extern uint8_t pxxFlag;
 
 extern char idx2char(int8_t idx);
 
-extern uint8_t s_evt;
-#define putEvent(evt) s_evt = evt
 void clearKeyEvents();
 void pauseEvents(uint8_t enuk);
 void killEvents(uint8_t enuk);
+
 #if defined(CPUARM)
   uint8_t getEvent(bool trim);
 #else
   uint8_t getEvent();
 #endif
+
+void putEvent(uint8_t evt);
 
 uint8_t keyDown();
 
@@ -947,12 +952,14 @@ void saveTimers();
 #define saveTimers()
 #endif
 
+void eeDirty(uint8_t msk);
+void eeCheck(bool immediately=false);
+void eeReadAll();
+bool eeModelExists(uint8_t id);
+void eeLoadModelName(uint8_t id, char *name);
+void eeLoadModel(uint8_t id);
 void generalDefault();
 void modelDefault(uint8_t id);
-
-#if defined(PXX) && defined(CPUARM)
-void checkModelIdUnique(uint8_t id);
-#endif
 
 #if defined(CPUARM)
 inline int16_t calc100to256_16Bits(register int16_t x)  // @@@2 open.20.fsguruh: return x*2.56

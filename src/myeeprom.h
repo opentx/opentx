@@ -1104,7 +1104,6 @@ enum Protocols {
 
 PACK(typedef struct t_ModelData {
   char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
-  uint8_t   modelId;
   TimerData timers[MAX_TIMERS];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
@@ -1131,6 +1130,7 @@ PACK(typedef struct t_ModelData {
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
+  uint8_t   modelId;
   
   swstate_t switchWarningStates;
 

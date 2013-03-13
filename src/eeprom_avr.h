@@ -39,6 +39,19 @@
 
 #include <inttypes.h>
 
+#if defined(SIMU)
+#define WRITE_DELAY_10MS 200
+#elif defined(PCBX9D)
+#define WRITE_DELAY_10MS 1000
+#elif defined(PCBGRUVIN9X) && !defined(REV0)
+#define WRITE_DELAY_10MS 500
+#else
+#define WRITE_DELAY_10MS 200
+#endif
+
+extern uint8_t   s_eeDirtyMsk;
+extern tmr10ms_t s_eeDirtyTime10ms;
+
 #if defined(CPUARM)
 #define blkid_t    uint16_t
 #define EESIZE     (32*1024)
@@ -139,11 +152,6 @@ class EFile
 
 #define eeFileSize(f)   eeFs.files[f].size
 #define eeModelSize(id) eeFileSize(FILE_MODEL(id))
-
-#if defined(PXX)
-uint8_t eeLoadModelIdAfterName();
-#define eeLoadModelId(id) eeLoadModelIdAfterName()
-#endif
 
 #define ERR_NONE 0
 #define ERR_FULL 1
