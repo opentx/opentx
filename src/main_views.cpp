@@ -247,7 +247,7 @@ void displayTopBar()
     x -= 12;
   }
 
-  if (1) {
+  if (usbPlugged()) {
     LCD_NOTIF_ICON(x, ICON_USB);
     x -= 12;
   }

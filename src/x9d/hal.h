@@ -156,6 +156,8 @@
 #define RCC_AHB1Periph_GPIOPWR          RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD
 #define GPIOPWRLED                      GPIOC
 #define GPIOPWR                         GPIOD
+#define GPIOTRNDET                      GPIOA
+#define PIN_TRNDET                      GPIO_Pin_8
 
 // Trainer Port
 #define PIN_TR_PPM_IN                   GPIO_Pin_8  //PC.08
@@ -255,6 +257,11 @@
 #define I2C_EE_SDA                      GPIO_Pin_0  //PE0
 #define I2C_EE_WP                       GPIO_Pin_9  //PB9
 #else
+#define RCC_APBPeriph_I2C_EE            RCC_APB1Periph_I2C1
+#define I2C_EE                          I2C1
+#define GPIO_AF_I2C_EE                  GPIO_AF_I2C1
+#define GPIO_PinSource_I2C_EE_SCL       GPIO_PinSource6
+#define GPIO_PinSource_I2C_EE_SDA       GPIO_PinSource7
 #define I2C_EE_GPIO                     GPIOB
 #define I2C_EE_WP_GPIO                  GPIOB
 #define I2C_EE_GPIO_CLK                 RCC_AHB1Periph_GPIOB

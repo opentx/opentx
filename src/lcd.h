@@ -129,7 +129,7 @@
 
 #if defined(PCBX9D)
 #define GREY(x)       ((x) * 0x1000)
-#define GREY_DEFAULT  GREY(8)
+#define GREY_DEFAULT  GREY(11)
 #define GREY_MASK(x)  ((x) & 0xF000)
 #endif
 

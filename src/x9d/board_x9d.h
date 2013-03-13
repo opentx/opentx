@@ -80,6 +80,7 @@ uint8_t getTemperature();
 
 extern uint16_t sessionTimer;
 
+uint8_t usbPlugged(void);
 #define BOOTLOADER_REQUEST() (0/*usbPlugged()*/)
 
 #define SLAVE_MODE() (0/*pwrCheck() == e_power_trainer*/)

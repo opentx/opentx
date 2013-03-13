@@ -43,6 +43,7 @@ extern "C" {
 uint8_t temperature = 0;          // Raw temp reading
 uint8_t maxTemperature = 0 ;       // Raw temp reading
 volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
+uint8_t usb_connected = 0;
 
 #define PIN_MODE_MASK           0x0003
 #define PIN_INPUT               0x0000
@@ -105,6 +106,11 @@ void configure_pins( uint32_t pins, uint16_t config )
   }
 }
 #endif
+
+uint8_t usbPlugged(void)
+{
+  return usb_connected;	
+}
 
 #if defined(DEBUG)
 void debugPutc(const char c)

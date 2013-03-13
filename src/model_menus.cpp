@@ -3493,7 +3493,7 @@ void menuModelCustomFunctions(uint8_t event)
 #if defined(GVARS)
             else if (CFN_FUNC(sd) >= FUNC_ADJUST_GV1
 #if defined(DEBUG)
-                && CFN_FUNC(sd) <= FUNC_ADJUST_GV5
+                && CFN_FUNC(sd) <= FUNC_ADJUST_GVLAST
 #endif
                 ) {
               switch (CFN_GVAR_MODE(sd)) {

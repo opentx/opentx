@@ -28,6 +28,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_usr.h"
 
+extern uint8_t usb_connected;
+
 /*  Points to the DEVICE_PROP structure of current device */
 /*  The purpose of this register is to speed up the execution */
 
@@ -102,7 +104,7 @@ void USBD_USR_DeviceResumed(void)
 */
 void USBD_USR_DeviceConnected (void)
 {
-
+  usb_connected = 1;
 }
 
 
@@ -114,7 +116,7 @@ void USBD_USR_DeviceConnected (void)
 */
 void USBD_USR_DeviceDisconnected (void)
 {
-
+  usb_connected = 0;
 }
 
 
