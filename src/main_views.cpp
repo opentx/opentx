@@ -743,10 +743,12 @@ void menuMainView(uint8_t event)
   }
 #endif // PCBX9D
 
+#if !defined(PCBX9D)
   // And ! in case of unexpected shutdown
   if (unexpectedShutdown) {
     lcd_putcAtt(REBOOT_X, 0*FH, '!', INVERS);
   }
+#endif
 
   if (s_global_warning) {
     s_warning = s_global_warning;
