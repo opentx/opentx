@@ -511,11 +511,13 @@ ifeq ($(PCB), X9D)
   EXTRAINCDIRS += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
   EXTRAINCDIRS += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
   BOARDSRC = x9d/board_x9d.cpp
-  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c.c x9d/pwr_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/adc_driver.cpp x9d/trainer_driver.cpp x9d/audio_driver.cpp x9d/delays.cpp x9d/uart_driver.cpp x9d/sport_driver.cpp
+  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c.c
+  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_avr.cpp # TODO later eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += audio_arm.cpp
+  CPPSRC += x9d/pwr_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/adc_driver.cpp x9d/trainer_driver.cpp x9d/audio_driver.cpp x9d/delays.cpp x9d/uart_driver.cpp x9d/sport_driver.cpp
   CPPSRC += bmp.cpp monitors_views.cpp 
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c

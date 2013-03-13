@@ -327,16 +327,15 @@
 #define INDENT_WIDTH           (FW/2)
 
 #if defined(PCBX9D)
-#define TR_POPUPS              "[ENTER]\010[EXIT]"
+  #define TR_ENTER               "[ENTER]"
 #else
-#define TR_POPUPS              "[MENU]\010[EXIT]"
+  #define TR_ENTER               "[MENU]"
 #endif
+
+#define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               7
-#if defined(PCBX9D)
-  #define TR_MENUWHENDONE      CENTER"\006[ENTER] WHEN DONE"
-#else
-  #define TR_MENUWHENDONE      CENTER"\006[MENU] WHEN DONE"
-#endif
+
+#define TR_MENUWHENDONE        CENTER"\006"TR_ENTER" WHEN DONE"
 #define TR_FREE                "free"
 #define TR_DELETEMODEL         "DELETE MODEL"
 #define TR_COPYINGMODEL        "Copying model..."
@@ -434,13 +433,7 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-
-#if defined(PCBX9D)
-  #define TR_MENUTOSTART       CENTER"\006[ENTER] TO START"
-#else
-  #define TR_MENUTOSTART       CENTER"\006[MENU] TO START"
-#endif
-
+#define TR_MENUTOSTART         CENTER"\006"TR_ENTER" TO START"
 #define TR_SETMIDPOINT         CENTER"\003SET STICKS MIDPOINT"
 #define TR_MOVESTICKSPOTS      CENTER"\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
@@ -475,7 +468,7 @@
 #define TR_PRESSANYKEYTOSKIP   CENTER"Press any key to skip"
 #define TR_THROTTLENOTIDLE     CENTER"Throttle not idle"
 #define TR_ALARMSDISABLED      CENTER"Alarms Disabled"
-#define TR_PRESSANYKEY         TR("\010Press any Key",CENTER"Press any Key")
+#define TR_PRESSANYKEY         TR("\010Press any Key", CENTER"Press any Key")
 #define TR_BADEEPROMDATA       CENTER"Bad EEprom Data"
 #define TR_EEPROMFORMATTING    CENTER"Formatting EEPROM"
 #define TR_EEPROMOVERFLOW      CENTER"EEPROM overflow"
@@ -511,7 +504,7 @@
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
 #define TR_RXNUM               TR("RxNum","Receiver No.")
-#define TR_SYNCMENU            "Sync [MENU]"
+#define TR_SYNCMENU            "Sync "TR_ENTER
 #define TR_LIMIT               INDENT"Limit"
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitude"

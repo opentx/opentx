@@ -653,17 +653,16 @@ extern uint8_t pxxFlag;
 
 extern char idx2char(int8_t idx);
 
+extern uint8_t s_evt;
+#define putEvent(evt) s_evt = evt
 void clearKeyEvents();
 void pauseEvents(uint8_t enuk);
 void killEvents(uint8_t enuk);
-
 #if defined(CPUARM)
   uint8_t getEvent(bool trim);
 #else
   uint8_t getEvent();
 #endif
-
-void putEvent(uint8_t evt);
 
 uint8_t keyDown();
 

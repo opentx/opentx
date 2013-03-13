@@ -128,14 +128,7 @@ void start_ppm_capture()
 {
 }
 
-void usbBootloader()
-{
-}
-
-void usbMassStorage()
-{
-}
-
+#if !defined(SIMU)
 extern "C" {
 USB_OTG_CORE_HANDLE USB_OTG_dev;
 
@@ -149,6 +142,7 @@ void usbInit()
 {
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
 }
+#endif
 
 void watchdogInit()
 {

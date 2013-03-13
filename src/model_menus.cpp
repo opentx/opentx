@@ -1081,7 +1081,7 @@ void menuModelSetup(uint8_t event)
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN, y, STR_SYNCMENU, (m_posHorz==1 ? attr : 0));
             if (attr && m_posHorz==1) {
               s_editMode = 0;
-              if (event==EVT_KEY_LONG(KEY_MENU)) {
+              if (event==EVT_KEY_LONG(KEY_ENTER)) {
                 // send reset code
                 pxxFlag = PXX_SEND_RXNUM;
               }
@@ -1091,7 +1091,7 @@ void menuModelSetup(uint8_t event)
 
 #if defined(DSM2)
           if (IS_DSM2_PROTOCOL(protocol)) {
-            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\013Range[MENU]Norm [MENU]"), s_rangecheck_mode, (m_posHorz==1 ? attr : 0));
+            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\013Range"TR_ENTER"Norm "TR_ENTER), s_rangecheck_mode, (m_posHorz==1 ? attr : 0));
             s_rangecheck_mode = (attr && m_posHorz==1 && editMode>0); // [MENU] key toggles range check mode
           }
 #endif

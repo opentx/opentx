@@ -272,7 +272,6 @@ void per10ms()
       rePreviousValue = reNewValue;
       putEvent(scrollRE < 0 ? EVT_ROTARY_LEFT : EVT_ROTARY_RIGHT);
     }
-    extern uint8_t s_evt;
     uint8_t evt = s_evt;
     if (EVT_KEY_MASK(evt) == BTN_REa + NAVIGATION_RE_IDX()) {
       if (IS_KEY_BREAK(evt)) {
@@ -528,7 +527,8 @@ uint16_t expou(uint16_t x, uint16_t k)
   bool extended;
   if (k>80) {
     extended=true;
-  } else {
+  }
+  else {
     k+=(k>>2);  // use bigger values before extend, because the effect is anyway very very low
     extended=false;
   } // endif k > 50
@@ -781,30 +781,30 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
-	int16_t tmp;
+    int16_t tmp;
     if (lim->symetrical)
       tmp = (value > 0) ? (lim_p) : (-lim_n);
     else
       tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
-	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
+    value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
 #else    
   if (value) {
     int16_t tmp = (value > 0) ? (lim_p - ofs) : (-lim_n + ofs);
-	value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
+    value = (int32_t) value * tmp;   //  div by 1024*256 -> output = -1024..1024
 #endif    
     
 #ifdef CORRECT_NEGATIVE_SHIFTS
-    int8_t sign=(value<0?1:0);
-    value-=sign;
-	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
-	tmp>>=2;   // now one simple shift right for two bytes does the rest
-    tmp+=sign;
+    int8_t sign = (value<0?1:0);
+    value -= sign;
+    tmp = value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes;
+    tmp >>= 2;   // now one simple shift right for two bytes does the rest
+    tmp += sign;
 #else
-	tmp=value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes; 
-	tmp>>=2;   // now one simple shift right for two bytes does the rest
+    tmp = value>>16;   // that's quite tricky: the shiftright 16 operation is assmbled just with addressmove; just forget the two least significant bytes;
+    tmp >>= 2;   // now one simple shift right for two bytes does the rest
 #endif
     
-	ofs+=tmp;  // ofs can to added directly because already recalculated,
+    ofs += tmp;  // ofs can to added directly because already recalculated,
   }
 
   if (ofs > lim_p) ofs = lim_p;
@@ -862,8 +862,7 @@ int16_t getValue(uint8_t i)
 #endif
   else if (i<MIXSRC_LAST_CSW) return __getSwitch(SWSRC_THR+i+1-MIXSRC_THR) ? 1024 : -1024;
 #endif
-  else if (i<MIXSRC_PPM1+NUM_CAL_PPM) return (g_ppmIns[i+1-MIXSRC_PPM1] - g_eeGeneral.trainer.calib[i+1-MIXSRC_PPM1])*2;
-  else if (i<MIXSRC_LAST_PPM) return g_ppmIns[i+1-MIXSRC_PPM1]*2;
+  else if (i<MIXSRC_LAST_PPM) { int16_t x = g_ppmIns[i+1-MIXSRC_PPM1]; if (i<MIXSRC_PPM1+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i+1-MIXSRC_PPM1]; } return x*2; }
   else if (i<MIXSRC_LAST_CH) return ex_chans[i+1-MIXSRC_CH1];
 #if defined(GVARS)
   else if (i<MIXSRC_LAST_GVAR) return GVAR_VALUE(i+1-MIXSRC_GVAR1, getGVarFlightPhase(s_perout_flight_phase, i+1-MIXSRC_GVAR1));
@@ -1394,8 +1393,9 @@ void checkBacklight()
   rotencPoll();
 #endif
 
-  if (tmr10ms != g_blinkTmr10ms) {
-    tmr10ms = g_blinkTmr10ms;
+  uint8_t x = g_blinkTmr10ms;
+  if (tmr10ms != x) {
+    tmr10ms = x;
     uint16_t tsum = stickMoveValue();
     if (tsum != inacSum) {
       inacSum = tsum;
@@ -1675,7 +1675,7 @@ uint8_t checkTrim(uint8_t event)
   if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
-    uint8_t idx = CONVERT_MODE(1+k/2) - 1;
+    uint8_t idx = CONVERT_MODE(1+(uint8_t)k/2) - 1;
     uint8_t phase;
     int16_t before;
     bool thro;
@@ -1814,18 +1814,19 @@ uint16_t anaIn(uint8_t chan)
 #if defined(PCBX9D)
   // crossAna[]={LH,LV,RH,RV,S1,S2,LS,RS,BAT 
   // s_anaFilt[]={LH,LV,RH,RV,S1,S2,LS,RS,_BAT
-  static const uint8_t crossAna[]={0,1,2,3,4,5,6,7,8};
+  return s_anaFilt[chan];
 #elif defined(PCBSKY9X) && !defined(REVA)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
   if (chan == TX_CURRENT) {
     return Current_analogue ;
   }
-#else
-  static const pm_char crossAna[] PROGMEM ={3,1,2,0,4,5,6,7};
-#endif
-
   volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
   return *p;
+#else
+  static const pm_char crossAna[] PROGMEM = {3,1,2,0,4,5,6,7};
+  volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
+  return *p;
+#endif
 }
 
 #if defined(CPUARM)
@@ -1893,7 +1894,7 @@ void getADC_bandgap()
   ADCSRB |= (1<<MUX5);
 #else
   // TODO is the next line needed (because it has been called before perMain)?
-  ADMUX=0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
+  ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal 1.22V reference
   
 /*
   MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit2)
@@ -1905,10 +1906,9 @@ void getADC_bandgap()
   MCUCR&=0x08;  // disable sleep  
   */
 
-  ADCSRA|=0x40;
-  while ((ADCSRA & 0x10)==0);
-  ADCSRA|=0x10; // take sample
-  BandGap=ADC;
+  ADCSRA |= 0x40;
+  while (ADCSRA & 0x40);
+  BandGap = ADC;
 #endif
 }
 #endif
@@ -1996,7 +1996,7 @@ uint16_t inacSum = 0;
 BeepANACenter bpanaCenter = 0;
 
 uint16_t sDelay[MAX_MIXERS] = {0};
-int32_t  act   [MAX_MIXERS] = {0};
+__int24  act   [MAX_MIXERS] = {0};
 uint8_t  swOn  [MAX_MIXERS] = {0};
 uint8_t mixWarning;
 
@@ -2804,7 +2804,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
 #define DEL_MULT_SHIFT 8
         // we recale to a mult 256 higher value for calculation
-        int16_t diff = v - ((int32_t) act[i]>>DEL_MULT_SHIFT);
+        int32_t tact = act[i];
+        int16_t diff = v - (tact>>DEL_MULT_SHIFT);
         if (diff) {
           // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
           // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
@@ -2819,21 +2820,21 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             if (diff>0) {
               if (md->speedUp>0) {
                 // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
-                int32_t newValue = act[i]+rate/((int16_t)(100/SLOW_STEP)*md->speedUp); 
+                int32_t newValue = tact+rate/((int16_t)(100/SLOW_STEP)*md->speedUp);
                 if (newValue<currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
               }
             }
             else {  // if is <0 because ==0 is not possible
               if (md->speedDown>0) {
                 // see explanation in speedUp
-                int32_t newValue = act[i]-rate/((int16_t)(100/SLOW_STEP)*md->speedDown); 
+                int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
                 if (newValue>currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
               }            
             } //endif diff>0
-            act[i] = currentValue;
+            act[i] = tact = currentValue;
             // open.20.fsguruh: this implementation would save about 50 bytes code
           } // endif tick10ms ; in case no time passed assign the old value, not the current value from source
-          v = (act[i] >> DEL_MULT_SHIFT);
+          v = (tact >> DEL_MULT_SHIFT);
         } //endif diff
       } //endif speed
 
@@ -4032,10 +4033,12 @@ void menusTask(void * pdata)
 
   while (pwrCheck() != e_power_off) {
     perMain();
+#if defined(PCBSKY9X)
     for (uint8_t i=0; i<5; i++) {
       usbMassStorage();
       CoTickDelay(1);  // 5*2ms for now
     }
+#endif
   }
 
 #if defined(SDCARD)
@@ -4143,7 +4146,7 @@ int main(void)
   open9xInit(mcusr);
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
   if (BOOTLOADER_REQUEST()) {
     pwrOff(); // Only turn power off if necessary
 
