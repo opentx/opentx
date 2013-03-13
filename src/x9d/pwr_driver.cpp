@@ -49,7 +49,7 @@ uint32_t pwrCheck()
   if (GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET)
     return e_power_on;
 #if !defined(REV3)
-  else if (GPIO_ReadInputDataBit(GPIOTRNDET, PIN_TRNDET) == Bit_RESET)
+  else if (GPIO_ReadInputDataBit(GPIOTRNDET, PIN_TRNDET) == Bit_SET)
     return e_power_trainer;
 #endif
   else if (usbPlugged())
@@ -87,6 +87,15 @@ void pwrInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
   GPIO_Init(GPIOPWRLED, &GPIO_InitStructure);
   
+#if !defined(REV3)
+  GPIO_InitStructure.GPIO_Pin = PIN_TRNDET;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+  GPIO_Init(GPIOTRNDET, &GPIO_InitStructure);
+#endif
+
   // Soft power ON
   GPIO_SetBits(GPIOPWR,PIN_MCU_PWR);
 }
