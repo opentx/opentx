@@ -80,6 +80,7 @@ extern uint16_t sessionTimer;
 
 uint8_t usbPlugged(void);
 #define BOOTLOADER_REQUEST() (0)
+#define usbBootloader() (0)
 
 #define SLAVE_MODE() (0/*pwrCheck() == e_power_trainer*/)
 
