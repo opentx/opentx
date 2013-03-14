@@ -49,7 +49,7 @@ void menuChannelsMonitor(uint8_t event)
   lcd_invert_line(0);
 
   // Column separator
-  lcd_vline(LCD_W/2+1, FH, LCD_H-FH);
+  lcd_vline(LCD_W/2, FH, LCD_H-FH);
 
   uint8_t ch = 0;
 
