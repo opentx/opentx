@@ -63,8 +63,6 @@ extern "C" {
 #define TIMER_MULT_APB1 2
 #define TIMER_MULT_APB2 1
 
-void usbMassStorage();
-
 #define JACK_PPM_OUT()
 #define JACK_PPM_IN()
 
@@ -81,7 +79,7 @@ uint8_t getTemperature();
 extern uint16_t sessionTimer;
 
 uint8_t usbPlugged(void);
-#define BOOTLOADER_REQUEST() (0/*usbPlugged()*/)
+#define BOOTLOADER_REQUEST() (0)
 
 #define SLAVE_MODE() (0/*pwrCheck() == e_power_trainer*/)
 

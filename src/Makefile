@@ -506,16 +506,17 @@ ifeq ($(PCB), X9D)
   # X9D radio
   OPT = 2
   CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
-  EXTRAINCDIRS += CoOS/kernel CoOS/portable
+  EXTRAINCDIRS += x9d CoOS/kernel CoOS/portable
   EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
   EXTRAINCDIRS += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
   EXTRAINCDIRS += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
   BOARDSRC = x9d/board_x9d.cpp
-  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c.c x9d/pwr_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/adc_driver.cpp x9d/trainer_driver.cpp x9d/audio_driver.cpp x9d/delays.cpp x9d/uart_driver.cpp x9d/sport_driver.cpp
+  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  EEPROMSRC = eeprom_avr.cpp # TODO later eeprom_conversions.cpp
+  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp # TODO later eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += audio_arm.cpp
+  CPPSRC += x9d/pwr_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/adc_driver.cpp x9d/trainer_driver.cpp x9d/audio_driver.cpp x9d/delays.cpp x9d/uart_driver.cpp x9d/sport_driver.cpp
   CPPSRC += bmp.cpp monitors_views.cpp 
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
@@ -570,7 +571,7 @@ ifeq ($(PCB), SKY9X)
   SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
   SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
   SRC += sky9x/MEDSdcard.c
-  EEPROMSRC = eeprom_arm.cpp eeprom_conversions.cpp
+  EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += audio_arm.cpp haptic.cpp
   CPPSRC += sky9x/pwr_driver.cpp sky9x/adc_driver.cpp sky9x/coproc_driver.cpp sky9x/rotenc_driver.cpp sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp sky9x/audio_driver.cpp sky9x/buzzer_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
@@ -605,7 +606,7 @@ ifeq ($(PCB), GRUVIN9X)
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
   BOARDSRC += gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC += stock/lcd_driver.cpp
-  EEPROMSRC = eeprom_avr.cpp
+  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp
 
@@ -633,7 +634,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   EXTRAINCDIRS += stock
   BOARDSRC = stock/board_stock.cpp
   EXTRABOARDSRC += stock/lcd_driver.cpp
-  EEPROMSRC = eeprom_avr.cpp
+  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses_avr.cpp
 
   ifeq ($(PCB), 9XR128)
@@ -679,7 +680,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   CPPDEFS += -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = stock/board_stock.cpp
   EXTRABOARDSRC += stock/lcd_driver.cpp
-  EEPROMSRC = eeprom_avr.cpp
+  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses_avr.cpp
 
   ifeq ($(PCB), 9XR)

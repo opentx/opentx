@@ -40,17 +40,9 @@
 #include "string.h"
 
 uint8_t   s_write_err = 0;    // error reasons
-uint8_t   s_eeDirtyMsk;
-tmr10ms_t s_eeDirtyTime10ms;
 
 RlcFile  theFile;  //used for any file operation
 EeFs     eeFs;
-
-void eeDirty(uint8_t msk)
-{
-  s_eeDirtyMsk |= msk;
-  s_eeDirtyTime10ms = get_tmr10ms();
-}
 
 #if !defined(CPUARM)
 uint8_t  s_sync_write = false;
@@ -837,7 +829,6 @@ bool eeLoadGeneral()
   return false;
 }
 
-
 void eeLoadModelName(uint8_t id, char *name)
 {
   memclear(name, sizeof(g_model.name));
@@ -847,16 +838,14 @@ void eeLoadModelName(uint8_t id, char *name)
   }
 }
 
-#if defined(CPUARM)
-// TODO same function in eeprom_arm.cpp
-void eeLoadModelNames()
+#if defined(PXX)
+// must be called just after eeLoadModelName!
+uint8_t eeLoadModelIdAfterName()
 {
-  for (uint32_t i=0; i<MAX_MODELS; i++) {
-    eeLoadModelName(i, modelNames[i]);
-  }
+  uint8_t modelId = 0;
+  theFile.readRlc(&modelId, sizeof(modelId));
+  return modelId;
 }
-#else
-#define eeLoadModelNames()
 #endif
 
 bool eeModelExists(uint8_t id)
@@ -864,7 +853,7 @@ bool eeModelExists(uint8_t id)
     return EFile::exists(FILE_MODEL(id));
 }
 
-// TODO Now the 2 functions in eeprom_avr.cpp and eeprom_arm.cpp are really close, should be merged.
+// TODO Now the 2 functions in eeprom_rlc.cpp and eeprom_raw.cpp are really close, should be merged.
 void eeLoadModel(uint8_t id)
 {
   if (id<MAX_MODELS) {

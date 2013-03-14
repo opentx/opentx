@@ -34,42 +34,35 @@
  *
  */
 
-#ifndef fifo_h
-#define fifo_h
+#include <stdint.h>
+#include "open9x.h"
+#include "inttypes.h"
+#include "string.h"
 
-template <int N>
-class Fifo
+uint8_t   s_eeDirtyMsk;
+tmr10ms_t s_eeDirtyTime10ms;
+
+void eeDirty(uint8_t msk)
 {
-  public:
-    Fifo():
-      widx(0),
-      ridx(0)
-    {
-    }
+  s_eeDirtyMsk |= msk;
+  s_eeDirtyTime10ms = get_tmr10ms() ;
+}
 
-    void push(uint8_t byte) {
-      uint32_t next = (widx+1) & (N-1);
-      if (next != ridx) {
-        fifo[widx] = byte;
-        widx = next;
-      }
-    }
+#if defined(CPUARM)
 
-    bool pop(uint8_t & byte) {
-      if (ridx == widx) {
-        return false;
-      }
-      else {
-        byte = fifo[ridx];
-        ridx = (ridx+1) & (N-1);
-        return true;
-      }
-    }
+char modelNames[MAX_MODELS][sizeof(g_model.name)];
 
-  protected:
-    uint8_t fifo[N];
-    volatile uint32_t widx;
-    volatile uint32_t ridx;
-};
+#if defined(PXX)
+uint8_t modelIds[MAX_MODELS];
+#endif
 
+void eeLoadModelNames()
+{
+  for (uint32_t i=0; i<MAX_MODELS; i++) {
+    eeLoadModelName(i, modelNames[i]);
+#if defined(PXX)
+    modelIds[i] = eeLoadModelId(i);
+#endif
+  }
+}
 #endif

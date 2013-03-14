@@ -37,10 +37,6 @@
 #include "open9x.h"
 
 uint8_t s_evt;
-void putEvent(uint8_t evt)
-{
-  s_evt = evt;
-}
 
 #if defined(CPUARM)
 uint8_t getEvent(bool trim)

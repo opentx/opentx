@@ -50,10 +50,10 @@ uint32_t pwrCheck()
     return e_power_on;
 #if !defined(REV3)
   else if (GPIO_ReadInputDataBit(GPIOTRNDET, PIN_TRNDET) == Bit_SET)
-  	return  e_power_trainer;
+    return e_power_trainer;
 #endif
   else if (usbPlugged())
-  	return e_power_usb;
+    return e_power_usb;
   else
     return e_power_off;
 #endif

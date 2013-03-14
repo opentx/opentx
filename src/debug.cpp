@@ -40,8 +40,8 @@
 
 #if !defined(SIMU)
 
-Fifo512 debugRxFifo;
-Fifo512 debugTxFifo;
+Fifo<512> debugRxFifo;
+Fifo<512> debugTxFifo;
 
 // Outputs a string to the UART
 void debugPuts(const char *format, ...)
@@ -61,17 +61,17 @@ void debugPuts(const char *format, ...)
 
 void dump(unsigned char *data, unsigned int size)
 {
- debugPuts("DUMP %d bytes ...\n\r", size);
- unsigned int i = 0, j=0;
- while (i*32+j < size) {
-   debugPuts("%.2X ", data[i*32+j]);
-   j++;
-   if (j==32) {
-     i++; j=0;
-     debugPuts("\n\r");
-   }
- }
- debugPuts("\n\r");
+  debugPuts("DUMP %d bytes ...\n\r", size);
+  unsigned int i = 0, j=0;
+  while (i*32+j < size) {
+    debugPuts("%.2X ", data[i*32+j]);
+    j++;
+    if (j==32) {
+      i++; j=0;
+      debugPuts("\n\r");
+    }
+  }
+  debugPuts("\n\r");
 }
 
 void debugTask(void* pdata)
@@ -87,9 +87,9 @@ void debugTask(void* pdata)
 
 void debugTx(void)
 {
-	uint8_t txchar;
-	
-	if(debugTxFifo.pop(txchar))	
-		debugPutc(txchar);
+  uint8_t txchar;
+
+  if (debugTxFifo.pop(txchar))
+    debugPutc(txchar);
 }
 #endif
