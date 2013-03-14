@@ -180,7 +180,7 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, STR_DATE);
         lcd_putc(RADIO_SETUP_DATE_COLUMN, y, '-'); lcd_putc(RADIO_SETUP_DATE_COLUMN+3*FW-1, y, '-');
         for (uint8_t j=0; j<3; j++) {
-          uint8_t rowattr = (m_posHorz==j) ? attr : 0;
+          uint8_t rowattr = (m_posHorz<0 || m_posHorz==j) ? attr : 0;
           switch (j) {
             case 0:
               lcd_outdezAtt(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+1900, rowattr);
@@ -210,7 +210,7 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, STR_TIME);
         lcd_putc(RADIO_SETUP_TIME_COLUMN-1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-4, y, ':');
         for (uint8_t j=0; j<3; j++) {
-          uint8_t rowattr = (m_posHorz==j) ? attr : 0;
+          uint8_t rowattr = (m_posHorz<0 || m_posHorz==j) ? attr : 0;
           switch (j) {
             case 0:
               lcd_outdezNAtt(RADIO_SETUP_TIME_COLUMN, y, t.tm_hour, rowattr|LEADING0, 2);
@@ -235,7 +235,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_BATT_RANGE:
         lcd_putsLeft(y, STR_BATTERY_RANGE);
         lcd_putc(g_eeGeneral.vBatMin >= 10 ? RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-1 : RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-FW/2, y, '-');
-        putsVolts(RADIO_SETUP_2ND_COLUMN, y,  90+g_eeGeneral.vBatMin, (m_posHorz==0 ? attr : 0)|LEFT|NO_UNIT);
+        putsVolts(RADIO_SETUP_2ND_COLUMN, y,  90+g_eeGeneral.vBatMin, (m_posHorz<=0 ? attr : 0)|LEFT|NO_UNIT);
         putsVolts(RADIO_SETUP_2ND_COLUMN+4*FW-2, y, 120+g_eeGeneral.vBatMax, (m_posHorz!=0 ? attr : 0)|LEFT|NO_UNIT);
         if (attr && s_editMode>0) {
           if (m_posHorz==0)
@@ -762,7 +762,7 @@ void menuGeneralTrainer(uint8_t event)
       uint8_t chan = channel_order(i);
       volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-      putsMixerSource(0, y, chan, 0);
+      putsMixerSource(0, y, chan, (m_posVert==i && m_posHorz<0) ? INVERS : 0);
 
       for (uint8_t j=0; j<3; j++) {
 
@@ -881,7 +881,7 @@ void menuGeneralDiagAna(uint8_t event)
 {
 #if defined(PCBSKY9X) && !defined(REVA)
 #define ANAS_ITEMS_COUNT 4
-#elif defined(CPUARM)
+#elif defined(PCBSKY9X)
 #define ANAS_ITEMS_COUNT 3
 #else
 #define ANAS_ITEMS_COUNT 2
@@ -919,12 +919,12 @@ void menuGeneralDiagAna(uint8_t event)
   uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.vBatCalib)/8) / BandGap;
   lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
 #elif defined(PCBX9D)
-  lcd_putsLeft(5*FH+1, STR_BATT_CALIB);
+  lcd_putsLeft(6*FH+1, STR_BATT_CALIB);
   static uint32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(8)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ( adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128 ) * BATT_SCALE;
   batCalV >>= 11;
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 5*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
 #else
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
@@ -937,7 +937,7 @@ void menuGeneralDiagAna(uint8_t event)
   if (m_posVert==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.currentCalib, -49, 49);
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
   lcd_putsLeft(7*FH+1, STR_TEMP_CALIB);
   putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH+1, getTemperature(), UNIT_DEGREES, (m_posVert==3 ? INVERS : 0)) ;
   if (m_posVert==3) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);

@@ -162,22 +162,24 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 
 // Menus related stuff ...
 #if defined(SDCARD)
-#define maxrow_t uint16_t
+  #define vertpos_t uint16_t
 #else
-#define maxrow_t uint8_t
+  #define vertpos_t uint8_t
 #endif
-
-extern maxrow_t m_posVert;
-extern uint8_t m_posHorz;
 
 #if defined(PCBX9D)
-typedef uint8_t & check_event_t;
+  typedef uint8_t & check_event_t;
+  #define horzpos_t int8_t
 #else
-typedef uint8_t check_event_t;
+  typedef uint8_t check_event_t;
+  #define horzpos_t uint8_t
 #endif
 
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, maxrow_t maxrow);
-bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, maxrow_t maxrow);
+extern vertpos_t m_posVert;
+extern horzpos_t m_posHorz;
+
+bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, vertpos_t maxrow);
+bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
@@ -310,11 +312,13 @@ void menuChannelsMonitor(uint8_t event);
 #endif
 
 #if defined(PCBX9D)
-  #define POS_VERT_INIT  (menuTab ? (MAXCOL((uint16_t)1) == 255 ? 2 : 1) : 0)
-  #define EDIT_MODE_INIT 0 // TODO enum
+  #define POS_VERT_INIT   (menuTab ? (MAXCOL((uint16_t)1) == 255 ? 2 : 1) : 0)
+  #define POS_HORZ_INIT   -1
+  #define EDIT_MODE_INIT  0 // TODO enum
 #else
-  #define POS_VERT_INIT 0
-  #define EDIT_MODE_INIT -1
+  #define POS_VERT_INIT   0
+  #define POS_HORZ_INIT   0
+  #define EDIT_MODE_INIT  -1
 #endif
 
 #endif

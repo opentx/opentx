@@ -416,7 +416,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
       if (dblsize) {
         xn = x;
-        if(c>='1' && c<='3') ln++;
+        if (c>='1' && c<='3') ln++;
         uint8_t tn = (qr.quot) % 10;
         if (tn==2 || tn==4) {
           if (c=='4') { xn++; }
@@ -426,6 +426,13 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       else if (midsize) {
         x -= 3;
         xn = x+1;
+      }
+      else if (tinsize) {
+        x--;
+        lcd_plot(x-1, y+4);
+        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE))
+          lcd_vline(x, y, 8);
+        x--;
       }
       else {
         x--;
