@@ -488,13 +488,12 @@ enum ResetFunctionParam {
 PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
   uint8_t func;
-  union {
+  PACK(union {
     char name[LEN_CFN_NAME];
     struct {
       uint32_t val;
-      uint16_t spare;
     } composite;
-  } param;
+  }) param;
   uint8_t mode:2;
   uint8_t active:6;
 }) CustomFnData;

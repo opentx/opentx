@@ -288,7 +288,7 @@ void displayTopBar()
   lcd_outdezNAtt(BAR_TIME_X+3*FWNUM-1, BAR_Y+1, t.tm_min, LEADING0, 2);
 
   /* The background */
-  lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY_DEFAULT);
+  lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY_DEFAULT|ROUND);
 
   /* The inside of the Batt gauge */
   uint8_t count = 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);

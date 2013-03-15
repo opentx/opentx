@@ -51,6 +51,10 @@
 typedef void (*MenuFuncP)(uint8_t event);
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
+inline void displayColumnHeader(const char **headers, uint8_t index)
+{
+  lcd_putsAtt(17*FW, 0, headers[index], 0);
+}
 
 #if LCD_W >= 212
 #if defined(TRANSLATIONS_FR)

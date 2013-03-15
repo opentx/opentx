@@ -646,10 +646,20 @@ void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat, LcdFlag
 
 void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat, LcdFlags att)
 {
+#if defined(CPUM64)
   for (int8_t i=y; i<y+h; i++) {
-    if (i>=0 && i<LCD_H) lcd_hlineStip(x, i, w, pat, att);
+    lcd_hlineStip(x, i, w, pat, att);
     pat = (pat >> 1) + ((pat & 1) << 7);
   }
+#else
+  for (int8_t i=y; i<y+h; i++) {
+    if ((att&ROUND) && (i==y || i==y+h-1))
+      lcd_hlineStip(x+1, i, w-2, pat, att);
+    else
+      lcd_hlineStip(x, i, w, pat, att);
+    pat = (pat >> 1) + ((pat & 1) << 7);
+  }
+#endif
 }
 
 void lcd_invert_line(int8_t y)

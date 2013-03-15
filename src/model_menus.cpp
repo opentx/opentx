@@ -58,6 +58,12 @@ enum EnumTabModel {
   IF_TEMPLATES(e_Templates)
 };
 
+#if LCD_W >= 212
+const char * STR_PHASES_HEADERS[] = { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " };
+const char * STR_LIMITS_HEADERS[] = { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symetrical " };
+const char * STR_CSW_HEADERS[] =    { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " };
+#endif
+
 void menuModelSelect(uint8_t event);
 void menuModelSetup(uint8_t event);
 void menuModelHeli(uint8_t event);
@@ -1287,6 +1293,13 @@ void menuModelPhasesAll(uint8_t event)
 
   int8_t sub = m_posVert - 1;
 
+  horzpos_t posHorz = m_posHorz;
+  if (sub==0 && posHorz > 0) { posHorz += 2; }
+
+  if (sub<MAX_PHASES && posHorz>=0) {
+    displayColumnHeader(STR_PHASES_HEADERS, posHorz);
+  }
+
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     uint8_t y = 1 + (i+1)*FH;
     uint8_t k = i+s_pgOfs;
@@ -1307,8 +1320,6 @@ void menuModelPhasesAll(uint8_t event)
     putsFlightPhase(0, y, k+1, (getFlightPhase()==k ? BOLD : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
 
     for (uint8_t j=0; j<ITEM_PHASES_COUNT; j++) {
-      horzpos_t posHorz = m_posHorz;
-      if (i==0 && posHorz > 0) { posHorz += 2; }
       uint8_t attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
       switch(j)
@@ -2727,6 +2738,12 @@ void menuModelLimits(uint8_t event)
   MENU(STR_MENULIMITS, menuTabModel, e_Limits, 1+NUM_CHNOUT+1, {0, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, ITEM_LIMITS_MAXROW, 0});
 #endif
 
+#if LCD_W >= 212
+  if (sub<NUM_CHNOUT && m_posHorz>=0) {
+    displayColumnHeader(STR_LIMITS_HEADERS, m_posHorz);
+  }
+#endif
+
   if (s_warning_result) {
     LimitData *ld = limitaddress(sub);
     ld->revert = !ld->revert;
@@ -3201,6 +3218,12 @@ void menuModelCustomSwitches(uint8_t event)
   uint8_t y = 0;
   uint8_t k = 0;
   int8_t sub = m_posVert - 1;
+
+#if LCD_W >= 212
+  if (m_posHorz>=0) {
+    displayColumnHeader(STR_CSW_HEADERS, m_posHorz);
+  }
+#endif
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     y = 1 + (i+1)*FH;
