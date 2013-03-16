@@ -249,6 +249,11 @@ endif
 
 ifeq ($(PCB), GRUVIN9X)
   ARCH = AVR
+  ifeq ($(PCBREV), REV0)
+    CPPDEFS += -DREV0
+  else
+    CPPDEFS += -DREV1
+  endif
   TRGT = avr-
   MCU = atmega2560
   CPPDEFS += -DF_CPU=$(F_CPU)UL
@@ -257,11 +262,6 @@ endif
 
 ifeq ($(PCB), MEGA2560)
   ARCH = AVR
-  ifeq ($(PCBREV), REV0)
-    CPPDEFS += -DREV0
-  else
-    CPPDEFS += -DREV1
-  endif
   TRGT = avr-
   MCU = atmega2560
   CPPDEFS += -DF_CPU=$(F_CPU)UL
