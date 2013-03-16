@@ -146,7 +146,8 @@ enum BeeperMode {
   int8_t   temperatureCalib; \
   uint8_t  btBaudrate; \
   uint8_t  optrexDisplay; \
-  uint8_t  sticksGain;
+  uint8_t  sticksGain; \
+  uint8_t  rotarySteps;
 #else
 #define EXTRA_GENERAL_FIELDS
 #endif

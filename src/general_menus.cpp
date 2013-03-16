@@ -952,6 +952,7 @@ enum menuGeneralHwItems {
   ITEM_SETUP_HW_STICK_LH_GAIN,
   ITEM_SETUP_HW_STICK_RV_GAIN,
   ITEM_SETUP_HW_STICK_RH_GAIN,
+  ITEM_SETUP_HW_ROTARY_ENCODER,
   IF_BLUETOOTH(ITEM_SETUP_HW_BT_BAUDRATE)
   ITEM_SETUP_HW_MAX
 };
@@ -987,7 +988,7 @@ void menuGeneralHardware(uint8_t event)
         lcd_puts(INDENT_WIDTH+3*FW, y, PSTR("Gain"));
         uint8_t mask = (1<<(k-ITEM_SETUP_HW_STICK_LV_GAIN));
         uint8_t val = (g_eeGeneral.sticksGain & mask ? 1 : 0);
-        lcd_putcAtt(15*FW, y, val ? '2' : '1', attr);
+        lcd_putcAtt(GENERAL_HW_PARAM_OFS, y, val ? '2' : '1', attr);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, val, 0, 1);
           if (checkIncDec_Ret) {
@@ -998,9 +999,13 @@ void menuGeneralHardware(uint8_t event)
         break;
       }
 
+      case ITEM_SETUP_HW_ROTARY_ENCODER:
+        g_eeGeneral.rotarySteps = selectMenuItem(GENERAL_HW_PARAM_OFS, y, PSTR("Rotary Encoder"), PSTR("\0062steps4steps"), g_eeGeneral.rotarySteps, 0, 1, attr, event);
+        break;
+
 #if defined(BLUETOOTH)
       case ITEM_SETUP_HW_BT_BAUDRATE:
-        g_eeGeneral.btBaudrate = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
+        g_eeGeneral.btBaudrate = selectMenuItem(GENERAL_HW_PARAM_OFS, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           btInit();
         }
