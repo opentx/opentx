@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: 9X, 9X128, 9XR, 9XR128, GRUVIN9X, SKY9X, X9D
+# Values: 9X, 9X128, 9XR, 9XR128, GRUVIN9X, MEGA2560, SKY9X, X9D
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
 PCB = 9X
 
@@ -248,6 +248,14 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
 endif
 
 ifeq ($(PCB), GRUVIN9X)
+  ARCH = AVR
+  TRGT = avr-
+  MCU = atmega2560
+  CPPDEFS += -DF_CPU=$(F_CPU)UL
+  SDCARD = NO
+endif
+
+ifeq ($(PCB), MEGA2560)
   ARCH = AVR
   ifeq ($(PCBREV), REV0)
     CPPDEFS += -DREV0
@@ -606,6 +614,34 @@ ifeq ($(PCB), GRUVIN9X)
   EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
   BOARDSRC += gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC += stock/lcd_driver.cpp
+  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
+  PULSESSRC = pulses_avr.cpp  
+  CPPSRC += audio_avr.cpp haptic.cpp
+
+  ifeq ($(SDCARD), YES)
+    CPPDEFS += -DRTCLOCK
+    CPPSRC += rtc.cpp gruvin9x/rtc_driver.cpp 
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c gruvin9x/diskio.cpp
+  endif
+    
+  ifeq ($(VOICE), YES)
+    CPPSRC += gruvin9x/somo14d.cpp
+    CPPDEFS += -DVOICE
+  endif
+  
+  # Enable extra rotary encoders (Gruvin9x board only)
+  # Values = YES, NO
+  ROTARY_ENCODERS = 2
+  CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}
+endif
+
+ifeq ($(PCB), MEGA2560)
+  # ARDUINO2560 DIY RADIO
+  OPT = 2
+  CPPDEFS += -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
+  EXTRAINCDIRS += gruvin9x stock FatFs FatFs/option
+  BOARDSRC += mega2560/board_mega2560.cpp
+  EXTRABOARDSRC += mega2560/lcd_driver_ST7565R.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp
