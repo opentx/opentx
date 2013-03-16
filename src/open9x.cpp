@@ -1164,7 +1164,7 @@ int8_t getMovedSwitch()
       if (mask)
         switches_states ^= mask;
       else {
-        switches_states = (switches_states & 0x8C) | (i-1);
+        switches_states = (switches_states & 0xFC) | (i-1);
       }
     }
   }
