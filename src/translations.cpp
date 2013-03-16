@@ -288,10 +288,20 @@ const pm_char STR_MENUDEBUG[] PROGMEM = TR_MENUDEBUG;
 
 #if defined(DSM2) || defined(PXX)
 const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
+const pm_char STR_BIND[] PROGMEM = TR_BIND;
 #endif
 
 #if defined(PXX)
 const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
+const pm_char STR_INTERNALRF[] PROGMEM = TR_INTERNALRF;
+const pm_char STR_EXTERNALRF[] PROGMEM = TR_EXTERNALRF;
+const pm_char STR_FAILSAFE[] PROGMEM = TR_FAILSAFE;
+const pm_char STR_HOLD[] PROGMEM = TR_HOLD;
+const pm_char STR_NOPULSES[] PROGMEM = TR_NOPULSES;
+const pm_char STR_CUSTOMFS[] PROGMEM = TR_CUSTOMFS;
+const pm_char STR_FAILSAFESET[] PROGMEM = TR_FAILSAFESET;
+const pm_char STR_SET[] PROGMEM = TR_SET;
+const pm_char STR_RANGECHECK[] PROGMEM = TR_RANGECHECK;
 #endif
 
 const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
