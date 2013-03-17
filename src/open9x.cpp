@@ -1600,9 +1600,9 @@ void checkSwitches()
       }
 #else
       uint8_t x = 2;
-      for (uint8_t i=1; i<8; i++) {
+      for (uint8_t i=1; i<MAX_PSWITCH-1; i++) {
         uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
-        putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>4)&0x3)), attr);
+        putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>1)&0x3)), attr);
         if (i == 1 && attr) i++;
         if (i != 1) x += 3*FW+FW/2;
       }
