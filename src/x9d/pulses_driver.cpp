@@ -57,6 +57,8 @@ extern uint16_t pxxStream[400] ;
 
 void init_pxx()
 {
+  INTERNAL_RF_ON();
+
   // Timer1
   setupPulsesPXX() ; // TODO not here!
 
@@ -113,6 +115,7 @@ void disable_pxx()
   NVIC_DisableIRQ(TIM1_CC_IRQn) ;
   TIM1->DIER &= ~TIM_DIER_CC2IE ;
   TIM1->CR1 &= ~TIM_CR1_CEN ;
+  INTERNAL_RF_OFF();
 }
 
 // Robert@FrSky code

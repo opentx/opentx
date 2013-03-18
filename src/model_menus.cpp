@@ -1060,8 +1060,8 @@ void menuModelSetup(uint8_t event)
           else if (m_posHorz==1) {
             s_editMode = 0;
             if (g_model.failsafeMode==FAILSAFE_CUSTOM && event==EVT_KEY_LONG(KEY_ENTER)) {
-              for (int32_t i=g_model.ppmSCH; i<g_model.ppmSCH+NUM_PORT1_CHANNELS(g_model); i++) {
-                g_model.failsafeChannels[i] = channelOutputs[i];
+              for (int32_t i=0; i<16; i++) {
+                g_model.failsafeChannels[i] = (i < NUM_PORT1_CHANNELS(g_model) ? channelOutputs[g_model.ppmSCH + i] : 0);
               }
             }
           }
