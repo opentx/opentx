@@ -289,7 +289,7 @@
 #define TR_VSWITCHES_SHORT     "-012TREAG3456789"
 
 #if defined(PCBSKY9X)
-  #define TR_ROTARY_ENCODERS_VSRCRAW "DrG"
+  #define TR_ROTARY_ENCODERS_VSRCRAW "Dreh"
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
   #define TR_ROTARY_ENCODERS_VSRCRAW "DGa ""DGb ""DGc ""DGd "
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS <= 2
@@ -304,7 +304,7 @@
 #define TR_CYC_VSRCRAW                  "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW                      "---\0""StR\0""H\203R\0""Gas\0""QuR\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "MAX\0""3POS" TR_CYC_VSRCRAW "TrmS" "TrmH" "TrmG" "TrmQ" TR_SW_VSRCRAW
+#define TR_VSRCRAW                      "---\0""Sei\0""H\203h\0""Gas\0""Que\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "MAX\0" TR_CYC_VSRCRAW "TrmS" "TrmH" "TrmG" "TrmQ" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES                   "\003"
 #define TR_VTMRMODES                    "AUS""ABS""GSs""GS%""GSt"
@@ -313,6 +313,8 @@
 #define INDENT                 					"\001"
 #define LEN_INDENT            					1
 #define INDENT_WIDTH           					(FW/2)
+
+#define TR_ENTER               "[MENU]"
 
 #if defined(PCBX9D)
 #define TR_POPUPS              "[ENTER]\010[EXIT]"
@@ -337,7 +339,7 @@
 #define TR_EXPONAME                     "Expo Name"
 #define TR_BITMAP                       "Model Image"
 #define TR_TIMER                        "Stoppuhr"
-#define TR_ELIMITS                      "Erw.Limit"
+#define TR_ELIMITS                      "FrSkyMod."
 #define TR_ETRIMS                       "Erw.Trims"
 #define TR_TRIMINC                      "Trim Schr."
 #define TR_TTRACE                       "Gasquelle"

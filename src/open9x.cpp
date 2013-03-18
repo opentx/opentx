@@ -832,7 +832,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 }
 
 int16_t calibratedStick[NUM_STICKS+NUM_POTS];
-int16_t g_chans512[NUM_CHNOUT] = {0};
+int16_t channelOutputs[NUM_CHNOUT] = {0};
 int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain;
 #ifdef HELI
 int16_t cyc_anas[3] = {0};
@@ -3063,7 +3063,7 @@ void doMixerCalculations()
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
     cli();
-    g_chans512[i] = value;  // copy consistent word to int-level
+    channelOutputs[i] = value;  // copy consistent word to int-level
     sei();
   }
 
@@ -3087,7 +3087,7 @@ void doMixerCalculations()
 
   if (g_model.thrTraceSrc > NUM_POTS) {
     uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
-    val = g_chans512[ch];
+    val = channelOutputs[ch];
     
     int16_t gModelMax = calc100toRESX(g_model.limitData[ch].max)+1024;
     int16_t gModelMin = calc100toRESX(g_model.limitData[ch].min)-1024;

@@ -96,6 +96,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #if defined(CPUARM)
     ISTR(VLCD)
 #endif
+#if defined(PXX)
+    ISTR(COUNTRYCODES)
+#endif
     ;
 
 // The 0-terminated-strings

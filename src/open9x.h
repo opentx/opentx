@@ -128,6 +128,12 @@
 #define IF_FRSKY(x)
 #endif
 
+#if defined(PXX)
+#define IF_PXX(x) x,
+#else
+#define IF_PXX(x)
+#endif
+
 #if defined(SDCARD)
 #define IF_SDCARD(x) x,
 #else
@@ -412,46 +418,51 @@ extern uint8_t s_bind_allowed;
 #endif
 
 #if defined(CPUARM)
-#define IS_PPM_PROTOCOL(protocol)     (protocol==PROTO_PPM)
+  #define IS_PPM_PROTOCOL(protocol)     (protocol==PROTO_PPM)
 #else
-#define IS_PPM_PROTOCOL(protocol)     (protocol<=PROTO_PPMSIM)
+  #define IS_PPM_PROTOCOL(protocol)     (protocol<=PROTO_PPMSIM)
 #endif
 
 #if defined(PXX)
-#define IS_PXX_PROTOCOL(protocol)  (protocol==PROTO_PXX)
+  #define IS_PXX_PROTOCOL(protocol)  (protocol==PROTO_PXX)
 #else
-#define IS_PXX_PROTOCOL(protocol)  (0)
+  #define IS_PXX_PROTOCOL(protocol)  (0)
 #endif
 
 #if defined(DSM2)
-#define IS_DSM2_PROTOCOL(protocol) (protocol>=PROTO_DSM2_LP45 && protocol<=PROTO_DSM2_DSMX)
+  #define IS_DSM2_PROTOCOL(protocol) (protocol>=PROTO_DSM2_LP45 && protocol<=PROTO_DSM2_DSMX)
 #else
-#define IS_DSM2_PROTOCOL(protocol) (0)
+  #define IS_DSM2_PROTOCOL(protocol) (0)
 #endif
 
 #if defined(DSM2_SERIAL)
-#define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
+  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (IS_DSM2_PROTOCOL(protocol))
 #else
-#define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
+  #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
 #endif
 
+#if defined(PCBX9D)
+  #define NUM_PORT1_CHANNELS(model) ((8+(model.ppmNCH*2)))
+#else
+  #define NUM_PORT1_CHANNELS(model) (IS_PXX_PROTOCOL(model.protocol) ? 8 : (IS_DSM2_PROTOCOL(model.protocol) ? 6 : (8+(model.ppmNCH*2))))
+#endif
 
-#define NUM_PORT1_CHANNELS (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+(g_model.ppmNCH*2))))
 #if defined(PCBSKY9X)
-#define NUM_PORT2_CHANNELS (8+(g_model.ppm2NCH*2))
+  #define NUM_PORT2_CHANNELS(model) (8+(model.ppm2NCH*2))
 #endif
 
 #include "lcd.h"
 #include "menus.h"
-#ifdef TEMPLATES
-#include "templates.h"
+
+#if defined(TEMPLATES)
+  #include "templates.h"
 #endif
 
 #if !defined(SIMU)
-#define assert(x)
-#if !defined(CPUARM) || !defined(DEBUG)
-#define printf printf_not_allowed
-#endif
+  #define assert(x)
+  #if !defined(CPUARM) || !defined(DEBUG)
+    #define printf printf_not_allowed
+  #endif
 #endif
 
 extern const pm_uint8_t bchout_ar[];
@@ -642,8 +653,9 @@ extern uint16_t inacSum;
 extern uint8_t pxxFlag;
 #endif
 
-#define PXX_SEND_RXNUM     0x01
-#define PXX_SEND_FAILSAFE  0x02
+#define PXX_SEND_RXNUM       0x01
+#define PXX_SEND_FAILSAFE    0x02
+#define PXX_SEND_RANGECHECK  (1 << 1)
 
 #define ZCHAR_MAX (40 + LEN_SPECIAL_CHARS)
 
@@ -1016,7 +1028,7 @@ extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
 extern int16_t            g_ppmIns[8];
 extern int32_t            chans[NUM_CHNOUT];
 extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain
-extern int16_t            g_chans512[NUM_CHNOUT];
+extern int16_t            channelOutputs[NUM_CHNOUT];
 extern uint16_t           BandGap;
 
 extern int16_t expo(int16_t x, int16_t k);

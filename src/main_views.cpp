@@ -645,7 +645,7 @@ void menuMainView(uint8_t event)
       uint8_t chan = (g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i;
 #endif
 
-      int16_t val = g_chans512[chan];
+      int16_t val = channelOutputs[chan];
 
       switch(view_base)
       {

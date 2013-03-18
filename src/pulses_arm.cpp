@@ -131,7 +131,7 @@ void setupPulsesPPM(PPM_PORT_PARAM)                   // Don't enable interrupts
   uint32_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
   rest += (int32_t(g_model.ppmFrameLength)) * 1000;
   for (uint32_t i=firstCh; i<lastCh; i++) {
-    int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
+    int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= v;
     *ptr++ = v; /* as Pat MacKenzie suggests */
   }
@@ -300,33 +300,56 @@ void setupPulsesPXX()
   PxxValue = 0 ;
 #endif
 
-  PcmCrc = 0 ;
-  PcmOnesCount = 0 ;
-  putPcmHead(  ) ;  // sync byte
-  putPcmByte( g_model.ppmNCH ) ;     // TODO should be RX NUM ??? putPcmByte( g_model.rxnum ) ;  //
-  putPcmByte( pxxFlag ) ;     // First byte of flags
-  putPcmByte( 0 ) ;     // Second byte of flags
-  pxxFlag = 0;          // reset flag after send
-  for (uint32_t i=0; i<8; i+=2) {              // First 8 channels only                                                                                                    // Next 8 channels would have 2048 added
-    chan = g_chans512[i] *3 / 4 + 2250 ;
-    chan_1 = g_chans512[i+1] *3 / 4 + 2250 ;
-//        if ( chan > 2047 )
-//        {
-//            chan = 2047 ;
-//        }
-//        if ( chan_1 > 2047 )
-//        {
-//            chan_1 = 2047 ;
-//        }
-    putPcmByte( chan ) ; // Low byte of channel
-    putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
-    putPcmByte( chan_1 >> 4 ) ;  // High byte of channel
+  PcmCrc = 0;
+  PcmOnesCount = 0;
+
+  /* Sync */
+  putPcmHead();
+
+  /* Rx Number */
+  putPcmByte(g_model.modelId);
+
+  /* FLAG1 */
+  if (pxxFlag == PXX_SEND_RXNUM) {
+    putPcmByte((g_model.rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag);
+    pxxFlag = 0; // reset flag after send
   }
-  chan = PcmCrc ;                     // get the crc
-  putPcmByte( chan ) ;                        // Checksum lo
-  putPcmByte( chan >> 8 ) ; // Checksum hi
-  putPcmHead(  ) ;      // sync byte
-  putPcmFlush() ;
+  else {
+    putPcmByte((g_model.rfProtocol << 6) | pxxFlag);
+  }
+
+  /* FLAG2 */
+  putPcmByte(0);
+
+  /* PPM */
+  static uint32_t pass = 0;
+  uint32_t sendUpperChannels = 0;
+  if (pass++ & 0x01) {
+    sendUpperChannels = g_model.ppmNCH*2;
+  }
+  for (uint32_t i=0; i<8; i+=2) {
+    if (i < sendUpperChannels) {
+      chan =  limit(2048, channelOutputs[8+g_model.ppmSCH+i] + 3072, 4095);
+      chan_1 = limit(2048, channelOutputs[8+g_model.ppmSCH+i+1] + 3072, 4095);
+    }
+    else {
+      chan = limit(0, channelOutputs[g_model.ppmSCH+i] + 1024, 2047);
+      chan_1 = limit(0, channelOutputs[g_model.ppmSCH+i+1] + 1024, 2047);
+    }
+    putPcmByte(chan); // Low byte of channel
+    putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
+    putPcmByte(chan_1 >> 4);  // High byte of channel
+  }
+
+  /* CRC16 */
+  chan = PcmCrc;
+  putPcmByte(chan);
+  putPcmByte(chan >> 8);
+
+  /* Sync */
+  putPcmHead();
+
+  putPcmFlush();
 }
 
 #if defined(DSM2)
@@ -382,7 +405,7 @@ void setupPulsesDsm2(uint8_t chns)
   dsmDat[1]=g_eeGeneral.currModel+1;  //DSM2 Header second byte for model match
   for(uint8_t i=0; i<chns; i++)
   {
-    uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
+    uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
     dsmDat[3+2*i] = pulse & 0xff;
   }
@@ -485,7 +508,12 @@ void setupPulses()
 {
   heartbeat |= HEART_TIMER_PULSES;
 
+#if defined(PCBX9D)
+  uint8_t required_protocol = (g_model.rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX);
+#else
   uint8_t required_protocol = g_model.protocol;
+#endif
+
   if (s_pulses_paused)
     required_protocol = PROTO_NONE;
 

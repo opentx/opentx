@@ -43,7 +43,7 @@ void doMixerCalculations();
 #define MODEL_RESET() memset(&g_model, 0, sizeof(g_model))
 
 #define MIXER_RESET() \
-  memset(g_chans512, 0, sizeof(g_chans512)); \
+  memset(channelOutputs, 0, sizeof(channelOutputs)); \
   memset(ex_chans, 0, sizeof(ex_chans))
 
 uint16_t anaIn(uint8_t chan)

@@ -60,7 +60,7 @@ void menuChannelsMonitor(uint8_t event)
     // Channels
     for (uint8_t line=0; line<8; line++) {
       uint8_t y = 9+line*7;
-      int32_t val = g_chans512[ch];
+      int32_t val = channelOutputs[ch];
       uint8_t ofs = (col ? 0 : 1);
 
       // Channel name if present, number if not

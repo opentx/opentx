@@ -65,7 +65,7 @@ void setupTrainerPulses()
   rest += int32_t(g_model.ppmFrameLength) * 1000;
 
   for (uint32_t i = 0 ; i < p ; i += 1 ) {
-    uint32_t pulse = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
+    uint32_t pulse = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= pulse ;
     *ptr++ = pulse ;
   }

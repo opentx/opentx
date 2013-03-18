@@ -169,7 +169,7 @@ void setupPulsesPPM(uint8_t proto)
 
     rest += (int32_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=(proto==PROTO_PPM16) ? p-8 : 0; i<p; i++) {
-      int16_t v = limit((int16_t)-PPM_range, g_chans512[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
+      int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
       rest -= v;
       *ptr++ = q;
       *ptr++ = v - q; // total pulse width includes stop phase
@@ -325,8 +325,8 @@ void setupPulsesPXX()
     pxxFlag = 0;          // reset flag after send
     for ( i = 0 ; i < 8 ; i += 2 )              // First 8 channels only
     {
-        chan = g_chans512[i] * 3 / 4 + 2250 ;
-        chan_1 = g_chans512[i+1] * 3 / 4 + 2250 ;
+        chan = channelOutputs[i] * 3 / 4 + 2250 ;
+        chan_1 = channelOutputs[i+1] * 3 / 4 + 2250 ;
         putPcmByte( chan ) ; // Low byte of channel
         putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
         putPcmByte( chan_1 >> 4 ) ;  // High byte of channel
@@ -405,7 +405,7 @@ FORCEINLINE void setupPulsesDsm2()
   *ptr++ = g_model.modelId;
   for (uint8_t i=0; i<DSM2_CHANS; i++) 
   {
-    uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
+    uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);
     *ptr++ = (i<<2) | ((pulse>>8)&0x03); // encoded channel + upper 2 bits pulse width
     *ptr++ = pulse & 0xff; // low byte
   }
@@ -533,7 +533,7 @@ void setupPulsesDsm2()
   dsmDat[1] = g_model.modelId; // DSM2 Header second byte for model match
   for (uint8_t i=0; i<DSM2_CHANS; i++)
   {
-    uint16_t pulse = limit(0, ((g_chans512[i]*13)>>5)+512,1023);
+    uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03); // encoded channel + upper 2 bits pulse width
     dsmDat[3+2*i] = pulse & 0xff; // low byte
   }
@@ -675,8 +675,8 @@ NOINLINE int8_t reduce7s(int16_t v, uint8_t sfr, uint8_t sf2, int8_t ofs2)
 }
 
 //these defines allow the compiler to preclculate constants
-#define getChan7u(i,bitsRes) reduce7u(g_chans512[i],(BITS-bitsRes))
-#define getChan7s(i,bitsRes) reduce7s(g_chans512[i],(BITS-bitsRes),1<<((BITS-bitsRes)-1),1<<(bitsRes-1))
+#define getChan7u(i,bitsRes) reduce7u(channelOutputs[i],(BITS-bitsRes))
+#define getChan7s(i,bitsRes) reduce7s(channelOutputs[i],(BITS-bitsRes),1<<((BITS-bitsRes)-1),1<<(bitsRes-1))
 
 static void setupPulsesPiccoZ(uint8_t chn)
 {

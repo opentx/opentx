@@ -111,7 +111,7 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 enum MainViews {
   VIEW_TIMERS,
   VIEW_INPUTS,
@@ -136,7 +136,7 @@ enum BeeperMode {
 };
 
 #if defined(CPUARM)
-#define EXTRA_GENERAL_FIELDS \
+  #define EXTRA_GENERAL_FIELDS \
   uint8_t  backlightBright; \
   int8_t   currentCalib; \
   int8_t   temperatureWarn; \
@@ -147,17 +147,20 @@ enum BeeperMode {
   uint8_t  btBaudrate; \
   uint8_t  optrexDisplay; \
   uint8_t  sticksGain; \
-  uint8_t  rotarySteps;
+  uint8_t  rotarySteps; \
+  uint8_t  countryCode;
+#elif defined(PXX)
+  #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else
-#define EXTRA_GENERAL_FIELDS
+  #define EXTRA_GENERAL_FIELDS
 #endif
 
-#if defined(PCBX9D) || defined(PCBACT)
-#define MODELDATA_EXTRA   char bitmap[10];
+#if defined(PCBX9D)
+#define MODELDATA_EXTRA   char bitmap[10]; int8_t rfProtocol; uint8_t ppmSCH; uint8_t failsafeMode; int16_t failsafeChannels[16];
 #define LIMITDATA_EXTRA   char name[6];
 #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
-#define MODELDATA_EXTRA   uint8_t ppmSCH; int8_t ppm2SCH; int8_t ppm2NCH;
+#define MODELDATA_EXTRA   uint8_t ppmSCH; int8_t ppm2SCH; int8_t ppm2NCH; int8_t rfProtocol; uint8_t rfCountryCode;
 #define LIMITDATA_EXTRA
 #define swstate_t         uint8_t
 #else
@@ -224,11 +227,11 @@ PACK(typedef struct t_EEGeneral {
   int8_t    vBatMin;
   int8_t    vBatMax;
 
-  EXTRA_GENERAL_FIELDS;
+  EXTRA_GENERAL_FIELDS
 
 }) EEGeneral;
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBX9D)
 #define LEN_MODEL_NAME     12
 #define LEN_EXPOMIX_NAME   10
 #define LEN_FP_NAME        10
@@ -754,11 +757,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 
 #define ROTARY_ENCODER_MAX  1024
 
-#if defined(PCBACT)
-#define NUM_ROTARY_ENCODERS 0
-#define ROTARY_ENCODER_ARRAY_EXTRA
-#define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
-#elif defined(PCBX9D)
+#if defined(PCBX9D)
 #define NUM_ROTARY_ENCODERS 0
 #define NUM_ROTARY_ENCODERS_EXTRA 0
 #define ROTARY_ENCODER_ARRAY_EXTRA
@@ -1086,6 +1085,21 @@ enum Protocols {
 #endif
   PROTO_MAX,
   PROTO_NONE
+};
+
+enum RfProtocols {
+  RF_PROTO_OFF = -1,
+  RF_PROTO_X16,
+  RF_PROTO_D8,
+  RF_PROTO_LR12,
+  RF_PROTO_LAST = RF_PROTO_LR12
+};
+
+enum FailsafeModes {
+  FAILSAFE_HOLD,
+  FAILSAFE_CUSTOM,
+  FAILSAFE_NOPULSES,
+  FAILSAFE_LAST = FAILSAFE_NOPULSES
 };
 
 #if defined(MAVLINK)
