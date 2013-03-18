@@ -746,8 +746,10 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
 #if defined(PCBGRUVIN9X)
   #define ROTARY_ENCODER_GRANULARITY (1)
-#else
+#elif defined(CPUARM)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
+#else
+  #define ROTARY_ENCODER_GRANULARITY (2)
 #endif
 
 #if defined(GVARS)
