@@ -1030,7 +1030,7 @@ void menuModelSetup(uint8_t event)
         if (attr && m_posHorz==1) {
           s_editMode = 0;
           if (event==EVT_KEY_BREAK(KEY_ENTER)) {
-            pxxFlag = PXX_SEND_RXNUM;
+            pxxFlag ^= PXX_SEND_RXNUM;
           }
         }
 

@@ -310,9 +310,8 @@ void setupPulsesPXX()
   putPcmByte(g_model.modelId);
 
   /* FLAG1 */
-  if (pxxFlag == PXX_SEND_RXNUM) {
+  if (pxxFlag & PXX_SEND_RXNUM) {
     putPcmByte((g_model.rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag);
-    pxxFlag = 0; // reset flag after send
   }
   else {
     putPcmByte((g_model.rfProtocol << 6) | pxxFlag);
