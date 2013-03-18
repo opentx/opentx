@@ -154,7 +154,7 @@ void pwrOff();
 #define INTERNAL_RF_ON()  GPIO_SetBits(GPIOPWR, PIN_INT_RF_PWR)
 #define INTERNAL_RF_OFF() GPIO_ResetBits(GPIOPWR, PIN_INT_RF_PWR)
 #define EXTERNAL_RF_ON()  GPIO_SetBits(GPIOPWR, PIN_EXT_RF_PWR)
-#define INTERNAL_RF_OFF() GPIO_ResetBits(GPIOPWR, PIN_EXT_RF_PWR)
+#define EXTERNAL_RF_OFF() GPIO_ResetBits(GPIOPWR, PIN_EXT_RF_PWR)
 
 // Backlight driver
 #define setBacklight(xx)
