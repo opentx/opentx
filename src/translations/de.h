@@ -339,7 +339,7 @@
 #define TR_EXPONAME                     "Expo Name"
 #define TR_BITMAP                       "Model Image"
 #define TR_TIMER                        "Stoppuhr"
-#define TR_ELIMITS                      "FrSkyMod."
+#define TR_ELIMITS                      "Erw.Limit"
 #define TR_ETRIMS                       "Erw.Trims"
 #define TR_TRIMINC                      "Trim Schr."
 #define TR_TTRACE                       "Gasquelle"
