@@ -158,6 +158,8 @@
 #define GPIOPWR                         GPIOD
 #define GPIOTRNDET                      GPIOA
 #define PIN_TRNDET                      GPIO_Pin_8
+#define PIN_INT_RF_PWR                  GPIO_Pin_15
+#define PIN_EXT_RF_PWR                  GPIO_Pin_8
 
 // Trainer Port
 #define PIN_TR_PPM_IN                   GPIO_Pin_8  //PC.08
