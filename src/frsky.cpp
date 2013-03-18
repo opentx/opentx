@@ -802,7 +802,11 @@ NOINLINE void telemetryPoll10ms()
       uint16_t tmr10ms = g_tmr10ms;
       if (verticalSpeed < 0 || tmr10ms > s_varioTmr) {
         uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
+#if defined(PCBSTD)
+        uint8_t SoundVarioBeepFreq = max(40, (verticalSpeed * 10 + 20000) >> 8);
+#else
         uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 8;
+#endif
         s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
         AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
       }
