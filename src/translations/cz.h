@@ -151,8 +151,8 @@
   #define TR_PLAY_VALUE        "\221\222TTS\0     "
 #else
   #define TR_PLAY_TRACK        "[\221\222Stopa]\0 "
-  #define TR_PLAY_BOTH         "[\221\222P\200r]\0    "
-  #define TR_PLAY_VALUE        "[\221\222TTS]\0    "
+  #define TR_PLAY_BOTH         "[\221\222P\200r]\0   "
+  #define TR_PLAY_VALUE        "[\221\222TTS]\0   "
 #endif
 
 #define TR_CFN_VOLUME        "Hlasitost\ 0"
@@ -314,10 +314,12 @@
 
 #if defined(PCBX9D)
   #define TR_POPUPS              "[ENTER]\010[EXIT]"
+  #define OFS_EXIT               7
 #else
   #define TR_POPUPS              "[MENU]\010[EXIT]"
+  #define OFS_EXIT               6
 #endif
-#define OFS_EXIT               7
+
 #if defined(PCBX9D)
   #define TR_MENUWHENDONE        CENTER"\005[ENTER] > DAL\207\214"
 #else
@@ -340,7 +342,7 @@
 #define TR_TRIMINC             "KrokTrimu"
 #define TR_TTRACE              "StopaPlyn"
 #define TR_TTRIM               "TrimPlynu"
-#define TR_BEEPCTR             "(!)St\206edy"
+#define TR_BEEPCTR             "\006St\206edy"
 #define TR_PROTO               INDENT"Protokol"
 #define TR_PPMFRAME            "PPM frame"
 #define TR_MS                  "ms"
@@ -396,22 +398,22 @@
 #define TR_HAPTICSTRENGTH      INDENT"S\204la"
 #define TR_CONTRAST            "Kontrast LCD"
 #define TR_ALARMS_LABEL        "Alarmy"
-#define TR_BATTERY_RANGE       "Baterie mezich"
+#define TR_BATTERY_RANGE       "Meze Baterie"
 #define TR_BATTERYWARNING      INDENT"Vybit\200 Baterie"
 #define TR_INACTIVITYALARM     INDENT"Ne\201innost"
 #define TR_MEMORYWARNING       INDENT"Pln\200 Pam\203t'"
 #define TR_ALARMWARNING        INDENT"Vypnut\212 Zvuk"
 #define TR_RENAVIG             "Navig. RotEnc"
 #define TR_THROTTLEREVERSE     "Revers Plynu"
-#define TR_MINUTEBEEP          INDENT"Cel\200 minuta"
-#define TR_BEEPCOUNTDOWN       INDENT"Odpo\201et \201asu"
+#define TR_MINUTEBEEP          INDENT"Minuta"
+#define TR_BEEPCOUNTDOWN       INDENT"Odpo\201et"
 #define TR_BACKLIGHT_LABEL     "Podsv\203tlen\204"
 #define TR_BLDELAY             INDENT"Zhasnout po"
 #define TR_BLONBRIGHTNESS      INDENT"Jas Zap."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jas Vyp."
 #define TR_SPLASHSCREEN        "\210vodn\204Logo"
-#define TR_THROTTLEWARNING     "(!)Plyn"
-#define TR_SWITCHWARNING       "(!)Sp\204na\201"
+#define TR_THROTTLEWARNING     "\221\222 Plyn"
+#define TR_SWITCHWARNING       "\006Sp\204na\201"
 #define TR_TIMEZONE            "\201asov\202 p\200smo"
 #define TR_RXCHANNELORD        "Po\206ad\204 Kan\200l\211"
 #define TR_SLAVE               "Pod\206\204zen\212"
