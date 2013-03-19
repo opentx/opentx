@@ -327,15 +327,13 @@ void setupPulsesPXX()
     sendUpperChannels = g_model.ppmNCH*2;
   }
   for (uint32_t i=0; i<8; i+=2) {
-  	int32_t out = channelOutputs[8+g_model.ppmSCH+i] * 512 / 682;
-  	int32_t out_1 = channelOutputs[8+g_model.ppmSCH+i+1] * 512 / 682;
     if (i < sendUpperChannels) {
-      chan =  limit(2048, (int16_t)out + 3072, 4095);
-      chan_1 = limit(2048, (int16_t)out_1 + 3072, 4095);
+      chan =  limit(2048, (channelOutputs[8+g_model.ppmSCH+i] * 512 / 682) + 3072, 4095);
+      chan_1 = limit(2048, (channelOutputs[8+g_model.ppmSCH+i+1] * 512 / 682) + 3072, 4095);
     }
     else {
-      chan = limit(0, (int16_t)out + 1024, 2047);
-      chan_1 = limit(0, (int16_t)out_1  + 1024, 2047);
+      chan = limit(0, (channelOutputs[g_model.ppmSCH+i] * 512 / 682) + 1024, 2047);
+      chan_1 = limit(0, (channelOutputs[g_model.ppmSCH+i+1] * 512 / 682)  + 1024, 2047);
     }
     putPcmByte(chan); // Low byte of channel
     putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
