@@ -182,6 +182,11 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 extern vertpos_t m_posVert;
 extern horzpos_t m_posHorz;
 
+#if defined(PCBX9D)
+  #define NAVIGATION_LINE_BY_LINE  0x40
+#else
+  #define NAVIGATION_LINE_BY_LINE  0
+#endif
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, vertpos_t maxrow);
 bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
@@ -324,11 +329,11 @@ void menuChannelsMonitor(uint8_t event);
 
 #if defined(PCBX9D)
   #define POS_VERT_INIT   (menuTab ? (MAXCOL((uint16_t)1) == 255 ? 2 : 1) : 0)
-  #define POS_HORZ_INIT   -1
+  #define POS_HORZ_INIT(posVert)   ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
   #define EDIT_MODE_INIT  0 // TODO enum
 #else
   #define POS_VERT_INIT   0
-  #define POS_HORZ_INIT   0
+  #define POS_HORZ_INIT(posVert)   0
   #define EDIT_MODE_INIT  -1
 #endif
 

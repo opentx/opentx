@@ -78,16 +78,17 @@ uint8_t getTemperature();
 
 extern uint16_t sessionTimer;
 
+/* USB driver */
 uint8_t usbPlugged(void);
 #define BOOTLOADER_REQUEST() (0)
 #define usbBootloader()
 
-#define SLAVE_MODE() (0/*pwrCheck() == e_power_trainer*/)
+#define SLAVE_MODE()         (0/*pwrCheck() == e_power_trainer*/)
 
 void delaysInit();
 
 #define DEBUG_UART_BAUDRATE 115200
-#define SPORT_BAUDRATE 9600
+#define SPORT_BAUDRATE      9600
 
 void uartInit(uint32_t baudrate);
 void uartPutc(const char c);
