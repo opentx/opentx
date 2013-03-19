@@ -331,7 +331,7 @@ void setupPulsesPXX()
         putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
         putPcmByte( chan_1 >> 4 ) ;  // High byte of channel
     }
-    putPcbByte(0);
+    putPcmByte(0);
     chan = PcmCrc ;                     // get the crc
     putPcmByte( chan>>8 ) ;                        // Checksum lo
     putPcmByte( chan ) ; // Checksum hi
