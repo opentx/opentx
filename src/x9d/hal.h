@@ -179,7 +179,7 @@
 #define RCC_AHB1Periph_GPIOCPPM         RCC_AHB1Periph_GPIOA
 #define PIN_CPPM_OUT                    GPIO_Pin_7  //PA.07
 #define GPIOCPPM                        GPIOA
-#define GPIO_PinSource_CPPM             GPIO_PinSource8
+#define GPIO_PinSource_CPPM             GPIO_PinSource7
 
 // Heart Beat
 #define PIN_HEART_BEAT                  GPIO_Pin_7  //PC.07

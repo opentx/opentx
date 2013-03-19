@@ -55,6 +55,7 @@ uint16_t *ppmStreamPtr;
 extern uint16_t ppmStream[20];
 extern uint16_t pxxStream[400] ;
 
+#if 1
 void init_pxx()
 {
   INTERNAL_RF_ON();
@@ -66,7 +67,15 @@ void init_pxx()
 #if defined(REV3)
   configure_pins( 0x0100, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25 | PIN_PUSHPULL ) ;
 #else
-  configure_pins( 0x0080, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25 | PIN_PUSHPULL ) ;
+  GPIO_InitTypeDef GPIO_InitStructure;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOCPPM, ENABLE);
+  GPIO_PinAFConfig(GPIOCPPM, GPIO_PinSource_CPPM, GPIO_AF_TIM1);
+  GPIO_InitStructure.GPIO_Pin = PIN_CPPM_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOCPPM, &GPIO_InitStructure);
 #endif
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;                    // Enable DMA1 clock
@@ -119,7 +128,7 @@ void disable_pxx()
 }
 
 // Robert@FrSky code
-#if 0
+#else
 static DMA_InitTypeDef DMA_InitStructure;
 
 /**
@@ -127,6 +136,7 @@ static DMA_InitTypeDef DMA_InitStructure;
 */
 void init_pxx()
 {
+  INTERNAL_RF_ON();
   setupPulsesPXX(); // TODO later ... not here!
 
   // SPI1
@@ -198,6 +208,7 @@ void disable_pxx()
   NVIC_DisableIRQ(DMA2_Stream3_IRQn);
   DMA_ITConfig(DMA_Stream_SPI1_TX, DMA_IT_TC, DISABLE);
   SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx, DISABLE);
+  INTERNAL_RF_OFF();
 }
 
 extern "C" void DMA2_Stream3_IRQHandler()
