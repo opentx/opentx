@@ -784,9 +784,17 @@ void menuModelSetup(uint8_t event)
   }
 #endif
 
+// TODO this is quick & dirty, should be done in place of the return which is hidden inside MENU(...)
 #if defined(DSM2)
-  if (event == EVT_KEY_LONG(KEY_EXIT))
+  if (event == EVT_KEY_LONG(KEY_EXIT)) {
     s_rangecheck_mode = 0;
+  }
+#endif
+
+#if defined(PCBX9D)
+  if (event == EVT_KEY_LONG(KEY_EXIT)) {
+    pxxFlag = 0;
+  }
 #endif
 
 #if defined(PCBX9D)
@@ -1028,17 +1036,17 @@ void menuModelSetup(uint8_t event)
             checkModelIdUnique(g_eeGeneral.currModel);
         }
 
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, PSTR("[Bind]"), (pxxFlag & PXX_SEND_RXNUM ? BLINK : 0) | (m_posHorz==1 ? attr : 0));
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, PSTR("[Range]"), (pxxFlag & PXX_SEND_RANGECHECK ? BLINK : 0) | (m_posHorz==2 ? attr : 0));
-        if (attr && m_posHorz<0) lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
-        if (attr && m_posHorz>0) {
-          s_editMode = 0;
-          if (event==EVT_KEY_BREAK(KEY_ENTER)) {
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, PSTR("[Bind]"), m_posHorz==1 ? attr : 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, PSTR("[Range]"), m_posHorz==2 ? attr : 0);
+        {
+          uint8_t newFlag = 0;
+          if (attr && m_posHorz>0 && s_editMode>0) {
             if (m_posHorz == 1)
-              pxxFlag ^= PXX_SEND_RXNUM;
-            else
-              pxxFlag ^= PXX_SEND_RANGECHECK;
+              newFlag = PXX_SEND_RXNUM;
+            else if(m_posHorz == 2)
+              newFlag = PXX_SEND_RANGECHECK;
           }
+          pxxFlag = newFlag;
         }
         break;
 
