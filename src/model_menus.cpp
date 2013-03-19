@@ -889,7 +889,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_TIMER2_PERSISTENT:
       {
         TimerData &timer = g_model.timers[k==ITEM_MODEL_TIMER2_PERSISTENT];
-        timer.persistent = onoffMenuItem(timer.persistent, MODEL_SETUP_2ND_COLUMN, y, PSTR(INDENT"Persist."), attr, event);
+        timer.persistent = onoffMenuItem(timer.persistent, MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, attr, event);
         break;
       }
 #endif
@@ -994,7 +994,7 @@ void menuModelSetup(uint8_t event)
 
 #if defined(PCBX9D)
       case ITEM_MODE_INTERNAL_MODULE_LABEL:
-        lcd_putsLeft(y, PSTR("Internal Module"));
+        lcd_putsLeft(y, TR_INTERNALRF);
         break;
 
       case ITEM_MODE_INTERNAL_MODULE_MODE:
@@ -1051,7 +1051,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODE_INTERNAL_MODULE_FAILSAFE:
-        lcd_putsLeft(y, PSTR("\001FailSafe"));
+        lcd_putsLeft(y, TR_FAILSAFE);
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\011""Hold\0    ""Custom\0  ""No pulses"), g_model.failsafeMode, (m_posHorz==0 || g_model.failsafeMode!=FAILSAFE_CUSTOM) ? attr : 0);
         if (g_model.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + 10*FW, y, PSTR("[Set]"), m_posHorz==1 ? attr : 0);
         if (attr) {

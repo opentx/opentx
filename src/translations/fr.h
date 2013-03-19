@@ -412,20 +412,21 @@
 #define TR_HAPTICSTRENGTH      INDENT"Force"
 #define TR_CONTRAST            "Contraste"
 #define TR_ALARMS_LABEL        "Alarmes"
-#define TR_BATTERY_RANGE       "Battery Range"
-#define TR_BATTERYWARNING      INDENT"Batterie faible"
+#define TR_BATTERY_RANGE       "Plage batterie"
+#define TR_BATTERYWARNING      TR(INDENT"Batterie",INDENT"Batterie faible")
 #define TR_INACTIVITYALARM     INDENT"Inactivit\200"
 #define TR_MEMORYWARNING       INDENT"M\200moire faible"
-#define TR_ALARMWARNING        INDENT"Sons d\200sactiv\200s"
+#define TR_ALARMWARNING        TR(INDENT"Silence",INDENT"Sons d\200sactiv\200s")
 #define TR_RENAVIG             "Navig EncRot"
 #define TR_THROTTLEREVERSE     "Inversion gaz"
-#define TR_MINUTEBEEP          TR(INDENT"Bip minute",INDENT"Chaque minute")
-#define TR_BEEPCOUNTDOWN       TR(INDENT"Bip rebours",INDENT"Compte \202 rebours")
+#define TR_MINUTEBEEP          TR(INDENT"Bip min.",INDENT"Chaque minute")
+#define TR_BEEPCOUNTDOWN       TR(INDENT"Bip fin",INDENT"Compte \202 rebours")
+#define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistant")
 #define TR_BACKLIGHT_LABEL     "R\200tro\200clairage"
 #define TR_BLDELAY             INDENT"Dur\200e"
 #define TR_BLONBRIGHTNESS      INDENT"Luminosit\200 ON"
 #define TR_BLOFFBRIGHTNESS     INDENT"Luminosit\200 OFF"
-#define TR_SPLASHSCREEN        "Ecran d'accueil"
+#define TR_SPLASHSCREEN        "Logo d'accueil"
 #define TR_THROTTLEWARNING     "Alerte gaz"
 #define TR_SWITCHWARNING       TR("Alerte int","Alerte interrupt.")
 #define TR_TIMEZONE            "Fuseau horaire"
@@ -490,7 +491,7 @@
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
 #define TR_MENUMODELSEL        "MODELES"
-#define TR_MENUSETUP           TR("CONF.","CONFIGURATION")
+#define TR_MENUSETUP           TR("CONF. MODELE","CONFIGURATION")
 #define TR_MENUFLIGHTPHASE     "PHASE DE VOL"
 #define TR_MENUFLIGHTPHASES    "PHASES DE VOL"
 #define TR_MENUHELISETUP       TR("CONF.HELI","CONFIGURATION HELICO")
@@ -518,7 +519,7 @@
 #define TR_MINRSSI             "RSSI Min."
 #define TR_LATITUDE            "Latitude"
 #define TR_LONGITUDE           "Longitude"
-#define TR_GPSCOORD            "Coordonn\200es GPS"
+#define TR_GPSCOORD            TR("Coordonn\200es","Coordonn\200es GPS")
 #define TR_VARIO               TR("Vario","Variom\201tre")
 #define TR_SHUTDOWN            "ARRET EN COURS"
 #define TR_BATT_CALIB          "Calib. Batterie"
@@ -588,10 +589,5 @@
 #define TR_INTERNALRF          "HF interne"
 #define TR_EXTERNALRF          "HF externe"
 #define TR_FAILSAFE            "Type failsafe"
-#define TR_HOLD                "Maintien"
-#define TR_NOPULSES            "Sorties off"
-#define TR_CUSTOMFS            "Prédéfini"
-#define TR_SET                 "SET"
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
-#define TR_RANGECHECK          "Test port\200e"
-#define TR_BIND                "BIND"
+#define TR_COUNTRYCODE         "Zone g\200o."

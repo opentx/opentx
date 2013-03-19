@@ -461,7 +461,7 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(PXX)
       case ITEM_SETUP_COUNTRYCODE:
-        g_eeGeneral.countryCode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, PSTR("Country Code"), STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
+        g_eeGeneral.countryCode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODE, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
         break;
 #endif
 

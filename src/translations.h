@@ -312,6 +312,7 @@ extern const pm_char STR_RENAVIG[];
 extern const pm_char STR_THROTTLEREVERSE[];
 extern const pm_char STR_MINUTEBEEP[];
 extern const pm_char STR_BEEPCOUNTDOWN[];
+extern const pm_char STR_PERSISTENT[];
 extern const pm_char STR_BACKLIGHT_LABEL[];
 extern const pm_char STR_BLDELAY[];
 #if defined(PWM_BACKLIGHT)
@@ -395,7 +396,6 @@ extern const pm_char STR_INVERT_THR[];
 
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RXNUM[];
-extern const pm_char STR_BIND[];
 #endif
 
 #if defined(PXX)
@@ -403,12 +403,8 @@ extern const pm_char STR_SYNCMENU[];
 extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];
 extern const pm_char STR_FAILSAFE[];
-extern const pm_char STR_HOLD[];
-extern const pm_char STR_NOPULSES[];
-extern const pm_char STR_CUSTOMFS[];
 extern const pm_char STR_FAILSAFESET[];
-extern const pm_char STR_SET[];
-extern const pm_char STR_RANGECHECK[];
+extern const pm_char STR_COUNTRYCODE[];
 #endif
 
 #if defined(FRSKY)

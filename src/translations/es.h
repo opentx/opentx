@@ -407,6 +407,7 @@
 #define TR_THROTTLEREVERSE     TR("Acel Invert","Invertir Acel.")
 #define TR_MINUTEBEEP          TR(INDENT"Minuto",INDENT"Cada minuto")
 #define TR_BEEPCOUNTDOWN       INDENT"Cuentaatras"
+#define TR_PERSISTENT          INDENT"Persist."
 #define TR_BACKLIGHT_LABEL     "Luz Fondo"
 #define TR_BLDELAY             INDENT"Duracion"
 #define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
@@ -574,10 +575,5 @@
 #define TR_INTERNALRF          "Internal RF"
 #define TR_EXTERNALRF          "External RF"
 #define TR_FAILSAFE            "Failsafe mode"
-#define TR_HOLD                "Hold"
-#define TR_NOPULSES            "Pulses off"
-#define TR_CUSTOMFS            "Custom"
-#define TR_SET                 "SET"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
-#define TR_RANGECHECK          "R. Check"
-#define TR_BIND                "BIND"
+#define TR_COUNTRYCODE         "Country Code"
