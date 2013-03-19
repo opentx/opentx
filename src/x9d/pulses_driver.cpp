@@ -36,16 +36,6 @@
 
 #include "../open9x.h"
 
-// Robert@FrSky code
-#if 0
-#include "../x9d/hal.h"
-#include "../x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/Stm32f2xx.h"
-#include "../x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/Stm32f2xx_dma.h"
-#include "../x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/Stm32f2xx_spi.h"
-#include "../x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/Misc.h"
-#include "../x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/Stm32f2xx_tim.h"
-#endif
-
 // TODO not here!
 void setupPulses();
 void setupPulsesPPM();
@@ -55,7 +45,6 @@ uint16_t *ppmStreamPtr;
 extern uint16_t ppmStream[20];
 extern uint16_t pxxStream[400] ;
 
-#if 1
 void init_pxx()
 {
   INTERNAL_RF_ON();
@@ -126,108 +115,6 @@ void disable_pxx()
   TIM1->CR1 &= ~TIM_CR1_CEN ;
   INTERNAL_RF_OFF();
 }
-
-// Robert@FrSky code
-#else
-static DMA_InitTypeDef DMA_InitStructure;
-
-/**
-* Configure PA7 AS SPI1_MOSI, transfer by DMA2 ch3/stream3
-*/
-void init_pxx()
-{
-  INTERNAL_RF_ON();
-  setupPulsesPXX(); // TODO later ... not here!
-
-  // SPI1
-  SPI_InitTypeDef SPI_InitStructure;
-  NVIC_InitTypeDef NVIC_InitStructure;
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream3_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;
-  GPIO_InitStructure.GPIO_Pin = PIN_CPPM_OUT;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-  GPIO_PinAFConfig(GPIOA, 7, GPIO_AF_SPI1);
-
-  RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; // Enable clock
-
-  SPI_DeInit(SPI1);
-  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  SPI_InitStructure.SPI_DataSize = SPI_DataSize_16b;
-  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64; // 1us resolution
-  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-  SPI_InitStructure.SPI_CRCPolynomial = 7;
-
-  SPI_Init(SPI1, &SPI_InitStructure);
-  SPI_CalculateCRC(SPI1, DISABLE);
-
-  RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;
-  DMA_DeInit(DMA_Stream_SPI1_TX);
-
-  DMA_InitStructure.DMA_Channel = DMA_Channel_SPI1_TX;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (DWORD)(&(SPI1->DR));
-  DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)pxxStream;
-  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-  DMA_InitStructure.DMA_BufferSize = sizeof(pxxStream)/2;
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
-  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Enable;
-  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-
-  DMA_Init(DMA_Stream_SPI1_TX, &DMA_InitStructure);
-  DMA_ITConfig(DMA_Stream_SPI1_TX, DMA_IT_TC, ENABLE);
-  DMA_Cmd(DMA_Stream_SPI1_TX, ENABLE);
-
-  SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx, ENABLE);
-  SPI_Cmd(SPI1, ENABLE);
-}
-
-void disable_pxx()
-{
-  NVIC_DisableIRQ(DMA2_Stream3_IRQn);
-  DMA_ITConfig(DMA_Stream_SPI1_TX, DMA_IT_TC, DISABLE);
-  SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx, DISABLE);
-  INTERNAL_RF_OFF();
-}
-
-extern "C" void DMA2_Stream3_IRQHandler()
-{
-  if (DMA_GetFlagStatus(DMA_Stream_SPI1_TX, DMA_IT_TCIF3)) {
-    DMA_ClearFlag(DMA_Stream_SPI1_TX, DMA_IT_TCIF3);
-
-    setupPulses() ;
-    //memset(pxxStream, 0x5555, 5); //test pxx signal on PA.07
-
-    DMA_InitStructure.DMA_Memory0BaseAddr = (DWORD)pxxStream;
-    DMA_InitStructure.DMA_BufferSize = sizeof(pxxStream)/2;
-    DMA_Init(DMA_Stream_SPI1_TX, &DMA_InitStructure);
-    DMA_Cmd(DMA_Stream_SPI1_TX, ENABLE);
-
-    SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx, ENABLE);
-  }
-}
-#endif
 
 // PPM output
 // Timer 1, channel 1 on PA8 for prototype
