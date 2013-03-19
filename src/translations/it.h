@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  */
-
+// NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"
 #define TR_OFFON         "OFF""ON\0"
 
@@ -52,6 +52,9 @@
 
 #define LEN_VLCD         "\006"
 #define TR_VLCD          "NormalOptrex"
+
+#define LEN_COUNTRYCODES       TR("\002", "\007")
+#define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
 
 #define LEN_VTRIMINC     "\006"
 #define TR_VTRIMINC      "Exp   ""ExFine""Fine  ""Medio ""Ampio "
@@ -312,16 +315,15 @@
 #define INDENT_WIDTH           (FW/2)
 
 #if defined(PCBX9D)
-#define TR_POPUPS              "[ENTER]\004[EXIT]"
+  #define TR_ENTER             "[ENTER]"
 #else
-#define TR_POPUPS              "[MEN\200]\004[EXIT]"
+  #define TR_ENTER             "[Men\200]"
 #endif
-#define OFS_EXIT               7
-#if defined(PCBX9D)
-  #define TR_MENUWHENDONE      CENTER"\006[ENTER] Conferma"
-#else
-  #define TR_MENUWHENDONE      CENTER"\006[Men\200] Conferma"
-#endif
+
+#define TR_POPUPS              TR_ENTER"\004[EXIT]"
+#define OFS_EXIT               sizeof(TR_ENTER)
+
+#define TR_MENUWHENDONE      CENTER"\006"TR_ENTER" Conferma"
 #define TR_FREE                " Disp."
 #define TR_DELETEMODEL         "Elimina modello?"
 #define TR_COPYINGMODEL        "Copia in corso.."

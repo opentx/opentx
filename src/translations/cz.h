@@ -54,6 +54,9 @@
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
 
+#define LEN_COUNTRYCODES       TR("\002", "\007")
+#define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
+
 #define LEN_VTRIMINC           "\007"
 #define TR_VTRIMINC            "Expo\0  ""ExJemn\212""Jemn\212\0 ""St\206edn\204""Hrub\212\0 "
 
@@ -313,18 +316,15 @@
 #define INDENT_WIDTH           (FW/2)
 
 #if defined(PCBX9D)
-  #define TR_POPUPS              "[ENTER]\010[EXIT]"
-  #define OFS_EXIT               7
+  #define TR_ENTER             "[ENTER]"
 #else
-  #define TR_POPUPS              "[MENU]\010[EXIT]"
-  #define OFS_EXIT               6
+  #define TR_ENTER             "[MENU]"
 #endif
 
-#if defined(PCBX9D)
-  #define TR_MENUWHENDONE        CENTER"\005[ENTER] > DAL\207\214"
-#else
-  #define TR_MENUWHENDONE        CENTER"\007[MENU] > DAL\207\214"
-#endif
+#define TR_POPUPS              TR_ENTER"\010[EXIT]"
+#define OFS_EXIT               sizeof(TR_ENTER)
+
+#define TR_MENUWHENDONE        CENTER"\007"TR_ENTER" > DAL\207\214"
 #define TR_FREE                "voln\202:"
 #define TR_DELETEMODEL         "SMAZAT MODEL"
 #define TR_COPYINGMODEL        "Kop\204ruji model.."

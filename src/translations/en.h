@@ -330,9 +330,9 @@
 #define INDENT_WIDTH           (FW/2)
 
 #if defined(PCBX9D)
-  #define TR_ENTER               "[ENTER]"
+  #define TR_ENTER             "[ENTER]"
 #else
-  #define TR_ENTER               "[MENU]"
+  #define TR_ENTER             "[MENU]"
 #endif
 
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"

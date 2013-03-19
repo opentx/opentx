@@ -54,6 +54,9 @@
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
 
+#define LEN_COUNTRYCODES       TR("\002", "\007")
+#define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
+
 #define LEN_VTRIMINC           TR("\006","\014")
 #define TR_VTRIMINC            TR("Expo  ""xFin  ""Fin   ""Medium""Grov  ","Exponentiell""Extra Fin   ""Fin         ""Medium      ""Grov        ")
 
@@ -313,16 +316,15 @@
 #define INDENT_WIDTH           (FW/2)
 
 #if defined(PCBX9D)
-#define TR_POPUPS              "[ENTER]\010[EXIT]"
+  #define TR_ENTER             "[ENTER]"
 #else
-#define TR_POPUPS              "[MENU]\010[EXIT]"
+  #define TR_ENTER             "[MENU]"
 #endif
-#define OFS_EXIT               7
-#if defined(PCBX9D)
-  #define TR_MENUWHENDONE        CENTER"\006[ENTER] Avslutar "
-#else
-  #define TR_MENUWHENDONE        CENTER"\006[MENU] Avslutar "
-#endif
+
+#define TR_POPUPS              TR_ENTER"\010[EXIT]"
+#define OFS_EXIT               sizeof(TR_ENTER)
+
+#define TR_MENUWHENDONE        CENTER"\006"TR_ENTER" Avslutar "
 #define TR_FREE                "kvar"
 #define TR_DELETEMODEL         "Radera Modell"
 #define TR_COPYINGMODEL        "Kopierar Modell "
