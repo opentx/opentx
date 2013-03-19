@@ -188,7 +188,7 @@ void crc( uint8_t data )
 {
   //  uint8_t i ;
 
-  PcmCrc=(PcmCrc>>8)^(CRCTable[(PcmCrc^data) & 0xFF]);
+  PcmCrc=(PcmCrc<<8)^(CRCTable[((PcmCrc>>8)^data) & 0xFF]);
 }
 
 #if defined(PCBSKY9X)
@@ -341,9 +341,10 @@ void setupPulsesPXX()
   }
 
   /* CRC16 */
+  putPcmByte(0);
   chan = PcmCrc;
+  putPcmByte(chan>>8);
   putPcmByte(chan);
-  putPcmByte(chan >> 8);
 
   /* Sync */
   putPcmHead();

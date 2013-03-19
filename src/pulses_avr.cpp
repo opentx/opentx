@@ -235,7 +235,7 @@ uint8_t pxxFlag = 0;
 
 void crc( uint8_t data )
 {
-    PcmCrc=(PcmCrc>>8)^pgm_read_word(&CRCTable[(PcmCrc^data) & 0xFF]);
+    PcmCrc=(PcmCrc<<8)^pgm_read_word(&CRCTable[((PcmCrc>>8)^data) & 0xFF]);
 }
 
 
@@ -331,9 +331,10 @@ void setupPulsesPXX()
         putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
         putPcmByte( chan_1 >> 4 ) ;  // High byte of channel
     }
+    putPcbByte(0);
     chan = PcmCrc ;                     // get the crc
-    putPcmByte( chan ) ;                        // Checksum lo
-    putPcmByte( chan >> 8 ) ; // Checksum hi
+    putPcmByte( chan>>8 ) ;                        // Checksum lo
+    putPcmByte( chan ) ; // Checksum hi
     putPcmHead( ) ;
     putPcmFlush() ;
     OCR1C += 40000 ;            // 20mS on
