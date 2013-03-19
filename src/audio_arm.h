@@ -41,10 +41,10 @@
 
 #define AUDIO_FILENAME_MAXLEN (40)
 #define AUDIO_QUEUE_LENGTH    (20)
-#define BEEP_DEFAULT_FREQ     (70)
+#define BEEP_DEFAULT_FREQ     (140)
 #define BEEP_OFFSET           (10)
-#define BEEP_KEY_UP_FREQ      (BEEP_DEFAULT_FREQ+5)
-#define BEEP_KEY_DOWN_FREQ    (BEEP_DEFAULT_FREQ-5)
+#define BEEP_KEY_UP_FREQ      (BEEP_DEFAULT_FREQ+10)
+#define BEEP_KEY_DOWN_FREQ    (BEEP_DEFAULT_FREQ-10)
 
 extern uint16_t Sine_values[];
 
@@ -95,7 +95,7 @@ class AudioQueue {
 
     void start();
 
-    void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
+    void play(uint16_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
 
     void playFile(const char *filename, uint8_t flags=0, uint8_t id=0);
 

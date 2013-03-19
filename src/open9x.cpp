@@ -1762,8 +1762,13 @@ uint8_t checkTrim(uint8_t event)
       after = TRIM_MAX;
     if (after < TRIM_MIN)
       after = TRIM_MIN;
+#if defined(CPUARM)
+    after >>= 1;
+    after += 120;
+#else
     after >>= 2;
     after += 60;
+#endif
 #endif
 
     if (beepTrim) {

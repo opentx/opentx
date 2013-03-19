@@ -804,6 +804,8 @@ NOINLINE void telemetryPoll10ms()
         uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
 #if defined(PCBSTD)
         uint8_t SoundVarioBeepFreq = max(40, (verticalSpeed * 10 + 20000) >> 8);
+#elif defined(CPUARM)
+        uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 7;
 #else
         uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 8;
 #endif

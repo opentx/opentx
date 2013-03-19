@@ -1026,23 +1026,18 @@ void menuModelSetup(uint8_t event)
             checkModelIdUnique(g_eeGeneral.currModel);
         }
 
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, PSTR("[Bind]"), (m_posHorz==1 ? attr : 0));
-        if (attr && m_posHorz==1) {
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, PSTR("[Bind]"), (pxxFlag & PXX_SEND_RXNUM ? BLINK : 0) | (m_posHorz==1 ? attr : 0));
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, PSTR("[Range]"), (pxxFlag & PXX_SEND_RANGECHECK ? BLINK : 0) | (m_posHorz==2 ? attr : 0));
+        if (attr && m_posHorz<0) lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+        if (attr && m_posHorz>0) {
           s_editMode = 0;
           if (event==EVT_KEY_BREAK(KEY_ENTER)) {
-            pxxFlag ^= PXX_SEND_RXNUM;
+            if (m_posHorz == 1)
+              pxxFlag ^= PXX_SEND_RXNUM;
+            else
+              pxxFlag ^= PXX_SEND_RANGECHECK;
           }
         }
-
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, PSTR("[Range]"), (pxxFlag == PXX_SEND_RANGECHECK ? BLINK : 0) | (m_posHorz==2 ? attr : 0));
-        if (attr && m_posHorz==2) {
-          s_editMode = 0;
-          if (event==EVT_KEY_BREAK(KEY_ENTER)) {
-            pxxFlag ^= PXX_SEND_RANGECHECK;
-          }
-        }
-
-        if (attr && m_posHorz < 0) lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
         break;
 
       case ITEM_MODE_INTERNAL_MODULE_FAILSAFE:
