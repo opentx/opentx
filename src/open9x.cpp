@@ -2509,8 +2509,10 @@ void evalFunctions()
               PLAY_VALUE(param, i+1);
             }
             else {
+#if defined(GVARS)
               if (CFN_FUNC(sd) == FUNC_PLAY_TRACK && param > 250)
                 param = GVAR_VALUE(param-251, getGVarFlightPhase(s_perout_flight_phase, param-251));
+#endif
               PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
             }
           }
