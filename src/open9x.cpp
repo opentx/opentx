@@ -3956,11 +3956,6 @@ inline void open9xInit(OPEN9X_INIT_ARGS)
   // TODO startPulses should be started after the first doMixerCalculations()
 #endif
 
-#if defined(PCBX9D)
-  // TODO remove this line, it only allows the Mixer to run (until pulses are there!)
-  s_current_protocol = PROTO_PPM;
-#endif
-
 #if !defined(CPUARM)
   doMixerCalculations();
 #endif
@@ -3980,12 +3975,10 @@ void mixerTask(void * pdata)
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
 
-      if (s_current_protocol < PROTO_NONE) {
-        CoEnterMutexSection(mixerMutex);
-        bool tick10ms = doMixerCalculations();
-        CoLeaveMutexSection(mixerMutex);
-        if (tick10ms) checkTrims();
-      }
+      CoEnterMutexSection(mixerMutex);
+      bool tick10ms = doMixerCalculations();
+      CoLeaveMutexSection(mixerMutex);
+      if (tick10ms) checkTrims();
 
       if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
         wdt_reset();

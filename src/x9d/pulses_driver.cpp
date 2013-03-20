@@ -105,6 +105,7 @@ void init_pxx()
   TIM1->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
   TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   TIM1->CR1 |= TIM_CR1_CEN ;
+//  NVIC_SetPriority(TIM1_CC_IRQn, 1); // Debug - high priority, doesn't help
   NVIC_EnableIRQ(TIM1_CC_IRQn) ;
 }
 
