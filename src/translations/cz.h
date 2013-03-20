@@ -158,7 +158,7 @@
   #define TR_PLAY_VALUE        "[\221\222TTS]\0   "
 #endif
 
-#define TR_CFN_VOLUME        "Hlasitost\ 0"
+#define TR_CFN_VOLUME        "Hlasitost\0 "
 #define TR_CFN_BG_MUSIC      "BgHudba\0   ""BgHudba ||\0"
 
 #if defined(SDCARD)
@@ -342,7 +342,7 @@
 #define TR_TRIMINC             "KrokTrimu"
 #define TR_TTRACE              "StopaPlyn"
 #define TR_TTRIM               "TrimPlynu"
-#define TR_BEEPCTR             "\006St\206edy"
+#define TR_BEEPCTR             "(\043)St\206edy"
 #define TR_PROTO               INDENT"Protokol"
 #define TR_PPMFRAME            "PPM frame"
 #define TR_MS                  "ms"
@@ -413,8 +413,8 @@
 #define TR_BLONBRIGHTNESS      INDENT"Jas Zap."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jas Vyp."
 #define TR_SPLASHSCREEN        "\210vodn\204Logo"
-#define TR_THROTTLEWARNING     "\221\222 Plyn"
-#define TR_SWITCHWARNING       "\006Sp\204na\201"
+#define TR_THROTTLEWARNING     "(\043)Plyn"
+#define TR_SWITCHWARNING       "(\043)Sp\204na\201"
 #define TR_TIMEZONE            "\201asov\202 p\200smo"
 #define TR_RXCHANNELORD        "Po\206ad\204 Kan\200l\211"
 #define TR_SLAVE               "Pod\206\204zen\212"
@@ -507,7 +507,7 @@
 #define TR_LONGITUDE           "Longitude"
 #define TR_GPSCOORD            "Gps Sou\206adnice"
 #define TR_VARIO               "Vario"
-#define TR_SHUTDOWN            "VYP\214N\213\N\204.."
+#define TR_SHUTDOWN            "VYP\214N\213N\204.."
 #define TR_BATT_CALIB          "Kalib:Baterie"
 #define TR_CURRENT_CALIB       " +=\006Proud"
 #define TR_VOLTAGE             INDENT"Nap\203t\204"
