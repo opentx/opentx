@@ -40,21 +40,30 @@ void menuChannelsView(uint8_t event)
 {
   static bool longNames = false;
   bool newLongNames = false;
+  static bool secondPage = false;
+  uint8_t ch;
 
   switch(event)
   {
     case EVT_KEY_BREAK(KEY_EXIT):
       popMenu();
       return;
+    case EVT_KEY_FIRST(KEY_RIGHT):
+    case EVT_KEY_FIRST(KEY_LEFT):
+      secondPage = !secondPage;
+      break;
   }
+  
+  if(secondPage)
+  	ch = 16;
+  else
+  	ch = 0;
 
   lcd_putsCenter(0*FH, CHANNELS_MONITOR);
   lcd_invert_line(0);
 
   // Column separator
   lcd_vline(LCD_W/2, FH, LCD_H-FH);
-
-  uint8_t ch = 0;
 
   for (uint8_t col=0; col<2; col++) {
 
