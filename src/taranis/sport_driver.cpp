@@ -88,11 +88,11 @@ void sportPutc(const char c)
 #if !defined(SIMU)
 extern "C" void USART2_IRQHandler()
 {
-    uint16_t data;
+  uint16_t data;
 
-    if (USART_GetFlagStatus(SPORT, USART_FLAG_RXNE) || USART_GetFlagStatus(SPORT, USART_FLAG_ORE)) {
-      data = USART_ReceiveData(SPORT);
-      processSerialData((uint8_t) data);
-    }
+  if (USART_GetFlagStatus(SPORT, USART_FLAG_RXNE) || USART_GetFlagStatus(SPORT, USART_FLAG_ORE)) {
+    data = USART_ReceiveData(SPORT);
+    processSerialData((uint8_t) data);
+  }
 } 
 #endif

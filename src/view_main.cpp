@@ -406,7 +406,7 @@ void menuMainViewChannelsMonitor(uint8_t event)
       return;
   }
 
-  return menuChannelsMonitor(event);
+  return menuChannelsView(event);
 }
 #endif
 

@@ -1137,23 +1137,23 @@ inline bool isFunctionActive(uint8_t func)
 
 #if defined (FRSKY)
 // FrSky Telemetry
-#include "frsky.h"
+#include "telemetry_frsky.h"
 #endif
 
 #ifdef ARDUPILOT
 // ArduPilot Telemetry
-#include "ardupilot.h"
+#include "telemetry_ardupilot.h"
 #endif
 
 #ifdef NMEA
 // NMEA Telemetry
-#include "nmea.h"
+#include "telemetry_nmea.h"
 #endif
 
 #ifdef MAVLINK
 // Mavlink Telemetry
 #include "rotarysw.h"
-#include "mavlink.h"
+#include "telemetry_mavlink.h"
 #endif
 
 // REPEAT uses 0x01 to 0x0f

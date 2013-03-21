@@ -2298,7 +2298,7 @@ void menuModelMixOne(uint8_t event)
 {
 #if defined(PCBTARANIS)
   if (event == EVT_KEY_LONG(KEY_PAGE)) {
-    pushMenu(menuChannelsMonitor);
+    pushMenu(menuChannelsView);
     killEvents(event);
     return;
   }
@@ -2752,7 +2752,7 @@ void menuModelMixAll(uint8_t event)
 #if 0
   // TODO
   if (event == EVT_KEY_LONG(KEY_PAGE)) {
-    pushMenu(menuChannelsMonitor);
+    pushMenu(menuChannelsView);
     killEvents(event);
     return;
   }

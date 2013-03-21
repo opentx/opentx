@@ -36,8 +36,11 @@
 
 #include "opentx.h"
 
-void menuChannelsMonitor(uint8_t event)
+void menuChannelsView(uint8_t event)
 {
+  static bool longNames = false;
+  bool newLongNames = false;
+
   switch(event)
   {
     case EVT_KEY_BREAK(KEY_EXIT):
@@ -65,12 +68,16 @@ void menuChannelsMonitor(uint8_t event)
 
       // Channel name if present, number if not
       uint8_t lenLabel = zlen(g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name));
+      if (lenLabel > 4) {
+        newLongNames = longNames = true;
+      }
+
       if (lenLabel > 0)
         lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
       else
         putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 
-      uint8_t wbar = (lenLabel > 4 ? 48 : 58);
+      uint8_t wbar = (longNames ? 48 : 58);
 
       // Value
       lcd_outdezNAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1 | TINSIZE);
@@ -88,4 +95,6 @@ void menuChannelsMonitor(uint8_t event)
       ch++;
     }
   }
+
+  longNames = newLongNames;
 }

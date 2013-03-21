@@ -295,7 +295,7 @@ void displayWarning(uint8_t event);
   #define drawStatusLine()
 #endif
 
-void menuChannelsMonitor(uint8_t event);
+void menuChannelsView(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
 

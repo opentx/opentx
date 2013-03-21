@@ -327,18 +327,18 @@ SRC =
 STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
 TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 
-CPPSRC = opentx.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp keys.cpp translations.cpp $(TTS_SRC)
+CPPSRC = opentx.cpp $(PULSESSRC) stamp.cpp menus.cpp menu_model.cpp menu_general.cpp view_main.cpp view_statistics.cpp $(EEPROMSRC) lcd.cpp keys.cpp translations.cpp $(TTS_SRC)
 
 ifeq ($(EXT), JETI)
- CPPSRC += jeti.cpp
+ CPPSRC += telemetry_jeti.cpp
 endif
 
 ifeq ($(EXT), ARDUPILOT)
- CPPSRC += ardupilot.cpp
+ CPPSRC += telemetry_ardupilot.cpp
 endif
 
 ifeq ($(EXT), NMEA)
- CPPSRC += nmea.cpp
+ CPPSRC += telemetry_nmea.cpp
 endif
 
 # Debugging format.
@@ -469,7 +469,7 @@ endif
 
 ifeq ($(EXT), MAVLINK)
  CPPDEFS += -DMAVLINK
- CPPSRC += mavlink.cpp rotarysw.cpp serial.cpp
+ CPPSRC += telemetry_mavlink.cpp rotarysw.cpp serial.cpp
 endif
 
 ifeq ($(EXT), TELEMETREZ)
@@ -479,7 +479,18 @@ endif
 # If FRSKY-Support is enabled
 ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
   CPPDEFS += -DFRSKY
-  CPPSRC += frsky.cpp
+  ifeq ($(PCB), TARANIS)
+    TELEMETRY_PROTO = $(shell sh -c "if test -f telemetry_sport.cpp; then echo SPORT; else echo FRSKY; fi")
+    ifeq ($(TELEMETRY_PROTO), SPORT)
+      CPPSRC += telemetry_sport.cpp
+      CPPDEFS += -DFRSKY_SPORT
+    else
+      CPPSRC += telemetry_frsky.cpp
+    endif
+  else
+    CPPSRC += telemetry_frsky.cpp
+  endif
+  CPPSRC += view_telemetry.cpp
   # If FRSKY-Hub is enabled
   ifeq ($(FRSKY_HUB), YES)
     CPPDEFS += -DFRSKY_HUB
@@ -525,7 +536,7 @@ ifeq ($(PCB), TARANIS)
   PULSESSRC = pulses_arm.cpp
   CPPSRC += audio_arm.cpp
   CPPSRC += taranis/pwr_driver.cpp taranis/pulses_driver.cpp taranis/keys_driver.cpp taranis/adc_driver.cpp taranis/trainer_driver.cpp taranis/audio_driver.cpp taranis/delays.cpp taranis/uart_driver.cpp taranis/sport_driver.cpp
-  CPPSRC += bmp.cpp monitors_views.cpp 
+  CPPSRC += bmp.cpp view_channels.cpp 
   SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
   SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
