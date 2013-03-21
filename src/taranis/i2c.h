@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    Project/ee_drivers/i2c_ee.h
-  * @author  X9D Application Team
+  * @author  FrSky Application Team
   * @version V 0.2
   * @date    12-JLY-2012
   * @brief   Header for i2c.c module

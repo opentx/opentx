@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: 9X, 9X128, 9XR, 9XR128, GRUVIN9X, MEGA2560, SKY9X, X9D
+# Values: 9X, 9X128, 9XR, 9XR128, GRUVIN9X, MEGA2560, SKY9X, TARANIS
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
 PCB = 9X
 
@@ -286,14 +286,14 @@ ifeq ($(PCB), SKY9X)
   SDCARD = YES
 endif
 
-ifeq ($(PCB), X9D)
+ifeq ($(PCB), TARANIS)
   ARCH = ARM
   ifeq ($(PCBREV), REV3)
     CPPDEFS += -DREV3
   else
     CPPDEFS += -DREV4
   endif
-  LDSCRIPT = x9d/stm32_flash.ld
+  LDSCRIPT = taranis/stm32_flash.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
   CPPDEFS += -DHSE_VALUE=12000000
@@ -412,7 +412,7 @@ ifeq ($(BOLD), YES)
   CPPDEFS += -DBOLD_FONT
 endif
 
-ifneq ($(PCB), X9D)
+ifneq ($(PCB), TARANIS)
   ifeq ($(BATTGRAPH), YES)
     CPPDEFS += -DBATTGRAPH
   endif
@@ -510,54 +510,54 @@ endif
 
 RUN_FROM_FLASH = 1
 
-ifeq ($(PCB), X9D)
-  # X9D radio
+ifeq ($(PCB), TARANIS)
+  # TARANIS radio
   OPT = 2
-  CPPDEFS += -DPCBX9D -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
-  EXTRAINCDIRS += x9d CoOS/kernel CoOS/portable
-  EXTRAINCDIRS += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
-  EXTRAINCDIRS += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
-  EXTRAINCDIRS += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
-  BOARDSRC = x9d/board_x9d.cpp
-  EXTRABOARDSRC += x9d/lcd_driver.cpp x9d/aspi.cpp x9d/i2c.c
+  CPPDEFS += -DPCBTARANIS -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
+  EXTRAINCDIRS += taranis CoOS/kernel CoOS/portable
+  EXTRAINCDIRS += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
+  EXTRAINCDIRS += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
+  EXTRAINCDIRS += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
+  BOARDSRC = taranis/board_taranis.cpp
+  EXTRABOARDSRC += taranis/lcd_driver.cpp taranis/aspi.cpp taranis/i2c.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp # TODO later eeprom_conversions.cpp
   PULSESSRC = pulses_arm.cpp
   CPPSRC += audio_arm.cpp
-  CPPSRC += x9d/pwr_driver.cpp x9d/pulses_driver.cpp x9d/keys_driver.cpp x9d/adc_driver.cpp x9d/trainer_driver.cpp x9d/audio_driver.cpp x9d/delays.cpp x9d/uart_driver.cpp x9d/sport_driver.cpp
+  CPPSRC += taranis/pwr_driver.cpp taranis/pulses_driver.cpp taranis/keys_driver.cpp taranis/adc_driver.cpp taranis/trainer_driver.cpp taranis/audio_driver.cpp taranis/delays.cpp taranis/uart_driver.cpp taranis/sport_driver.cpp
   CPPSRC += bmp.cpp monitors_views.cpp 
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rtc.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_pwr.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c
-  SRC += x9d/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
-  SRC += x9d/usb_bsp.c x9d/usbd_desc.c x9d/usbd_usr.c x9d/usbd_storage_msd.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd_int.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_core.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_ioreq.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_req.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
-  SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
-  # SRC += x9d/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/src/usbd_hid_core.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rtc.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_pwr.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c
+  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
+  SRC += taranis/usb_bsp.c taranis/usbd_desc.c taranis/usbd_usr.c taranis/usbd_storage_msd.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd_int.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_core.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_ioreq.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_req.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
+  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
+  # SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/src/usbd_hid_core.c
   
   ifeq ($(SDCARD), YES)
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c x9d/diskio.cpp
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c taranis/diskio.cpp
     CPPDEFS += -DVOICE
     EXTRAINCDIRS += FatFs FatFs/option
   endif
     
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp x9d/rtc_driver.cpp
+    CPPSRC += rtc.cpp taranis/rtc_driver.cpp
   endif
 
   ifeq ($(DEBUG), YES)
@@ -911,7 +911,7 @@ eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_X9D.lbm x9d_logo.lbm icons.lbm asterisk.lbm
+lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_taranis.lbm logo_taranis.lbm icons.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -995,14 +995,14 @@ splash_9x.lbm: splash_9x.xbm
 	@echo "Convert 9x splash from xbm to lbm:"
 	$(IMG2LBM) $< $@ img
 	
-splash_X9D.lbm: splash_X9D.bmp
+splash_taranis.lbm: splash_taranis.png
 	@echo
-	@echo "Convert X9D splash from bmp to lbm:"
+	@echo "Convert Taranis splash from png to lbm:"
 	$(IMG2LBM) $< $@ bmp
 	
-x9d_logo.lbm: x9d_logo.bmp
+logo_taranis.lbm: logo_taranis.bmp
 	@echo
-	@echo "Convert X9D logo from bmp to lbm:"
+	@echo "Convert Taranis logo from bmp to lbm:"
 	$(IMG2LBM) $< $@ bmp
 	
 icons.lbm: icons.png	

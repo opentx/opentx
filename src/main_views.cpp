@@ -96,9 +96,9 @@
 #define MARKER_WIDTH  5
 #define BOX_LIMIT     (BOX_WIDTH-MARKER_WIDTH)
 
-#if defined(PCBX9D)
-  const pm_uchar x9d_logo[] PROGMEM = { 
-  #include "x9d_logo.lbm"
+#if defined(PCBTARANIS)
+  const pm_uchar logo_taranis[] PROGMEM = {
+  #include "logo_taranis.lbm"
   };
 
   const pm_uchar icons[] PROGMEM = {
@@ -145,7 +145,7 @@ void doMainScreenGraphics()
     calibStickVert = -calibStickVert;
   lcd_square(RBOX_CENTERX+(calibratedStick[CONVERT_MODE(3+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, RBOX_CENTERY-(calibStickVert*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
 
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
   drawPotsBars();
 #endif
 }
@@ -191,7 +191,7 @@ void displayTrims(uint8_t phase)
   }
 }
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 void displaySliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
@@ -384,7 +384,7 @@ void displayVoltageOrAlarm()
   #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBTARANIS) || defined(PCBACT)
   #define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
   #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
   #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
@@ -396,7 +396,7 @@ void displayVoltageOrAlarm()
   #define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
 #endif
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBTARANIS) || defined(PCBACT)
 void menuMainViewChannelsMonitor(uint8_t event)
 {
   switch(event) {
@@ -412,7 +412,7 @@ void menuMainViewChannelsMonitor(uint8_t event)
 
 void menuMainView(uint8_t event)
 {
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if !defined(PCBTARANIS) && !defined(PCBACT)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 #endif
@@ -430,7 +430,7 @@ void menuMainView(uint8_t event)
       killEvents(KEY_DOWN);
       break;
 
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if !defined(PCBTARANIS) && !defined(PCBACT)
     /* TODO if timer2 is OFF, it's possible to use this timer2 as in er9x...
     case EVT_KEY_BREAK(KEY_MENU):
       if (view_base == VIEW_TIMER2) {
@@ -458,7 +458,7 @@ void menuMainView(uint8_t event)
 #endif
 
 #if !defined(READONLY)
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if !defined(PCBTARANIS) && !defined(PCBACT)
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
       killEvents(event);
@@ -478,7 +478,7 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
-#if defined(PCBX9D) || defined(PCBACT)
+#if defined(PCBTARANIS) || defined(PCBACT)
     case EVT_KEY_BREAK(KEY_PAGE):
       eeDirty(EE_GENERAL);
       g_eeGeneral.view += 1;
@@ -556,7 +556,7 @@ void menuMainView(uint8_t event)
     // Model Name
     putsModelName(MODELNAME_X, MODELNAME_Y, g_model.name, g_eeGeneral.currModel, BIGSIZE);
 
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
     // Main Voltage (or alarm if any)
     displayVoltageOrAlarm();
 
@@ -568,7 +568,7 @@ void menuMainView(uint8_t event)
     displayTrims(phase);
   }
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   // Top bar
   displayTopBar();
 
@@ -578,7 +578,7 @@ void menuMainView(uint8_t event)
   if (modelBitmapLoaded == NULL)
     lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
   else
-    lcd_bmp(BITMAP_X, BITMAP_Y, x9d_logo);
+    lcd_bmp(BITMAP_X, BITMAP_Y, logo_taranis);
 
   // Switches
   for (uint8_t i=0; i<8; i++) {
@@ -627,7 +627,7 @@ void menuMainView(uint8_t event)
       }
     }
   }
-#else // PCBX9D
+#else // PCBTARANIS
   if (view_base < VIEW_INPUTS) {
     // scroll bar
     lcd_hlineStip(38, 34, 54, DOTTED);
@@ -741,9 +741,9 @@ void menuMainView(uint8_t event)
     putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, SWCONDENSED);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
-#endif // PCBX9D
+#endif // PCBTARANIS
 
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
   // And ! in case of unexpected shutdown
   if (unexpectedShutdown) {
     lcd_putcAtt(REBOOT_X, 0*FH, '!', INVERS);

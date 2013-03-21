@@ -60,7 +60,7 @@
 #define USBD_LANGID_STRING         0x409
 #define USBD_MANUFACTURER_STRING   "FrSky"
 
-#define USBD_PRODUCT_FS_STRING        "FrSky X9DA Mass Storage"
+#define USBD_PRODUCT_FS_STRING        "FrSky Taranis Mass Storage"
 #define USBD_SERIALNUMBER_FS_STRING   "00000000001B"
 #define USBD_CONFIGURATION_FS_STRING  "MSC Config"
 #define USBD_INTERFACE_FS_STRING      "MSC Interface"

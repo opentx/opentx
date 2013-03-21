@@ -165,7 +165,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) IF_PXX(0) 0, LABEL(TX_MODE), CASE_PCBX9D(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_CPUARM(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) IF_PXX(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -203,7 +203,7 @@ void menuGeneralSetup(uint8_t event)
             }
           }
         }
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
         if (attr && m_posHorz < 0) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
 #endif
         if (attr && checkIncDec_Ret)
@@ -230,7 +230,7 @@ void menuGeneralSetup(uint8_t event)
               break;
           }
         }
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
         if (attr && m_posHorz < 0) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
 #endif
         if (attr && checkIncDec_Ret)
@@ -238,13 +238,13 @@ void menuGeneralSetup(uint8_t event)
         break;
 #endif
 
-#if defined(BATTGRAPH) || defined(PCBX9D)
+#if defined(BATTGRAPH) || defined(PCBTARANIS)
       case ITEM_SETUP_BATT_RANGE:
         lcd_putsLeft(y, STR_BATTERY_RANGE);
         lcd_putc(g_eeGeneral.vBatMin >= 10 ? RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-1 : RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-FW/2, y, '-');
         putsVolts(RADIO_SETUP_2ND_COLUMN, y,  90+g_eeGeneral.vBatMin, (m_posHorz==0 ? attr : 0)|LEFT|NO_UNIT);
         putsVolts(RADIO_SETUP_2ND_COLUMN+4*FW-2, y, 120+g_eeGeneral.vBatMax, (m_posHorz>0 ? attr : 0)|LEFT|NO_UNIT);
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
         if (attr && m_posHorz < 0) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
 #endif
         if (attr && s_editMode>0) {
@@ -334,7 +334,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 #endif
 
-#if !defined(PCBX9D) && !defined(PCBACT)
+#if !defined(PCBTARANIS) && !defined(PCBACT)
       case ITEM_SETUP_CONTRAST:
         lcd_putsLeft( y, STR_CONTRAST);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN,y,g_eeGeneral.contrast, attr|LEFT);
@@ -560,7 +560,7 @@ void menuGeneralSdManager(uint8_t event)
       reusableBuffer.sd.offset = 65535;
       break;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
     case EVT_KEY_BREAK(KEY_ENTER):
 #else
     CASE_EVT_ROTARY_BREAK
@@ -864,7 +864,7 @@ void menuGeneralDiagKeys(uint8_t event)
 
   for(uint8_t i=0; i<9; i++) {
     uint8_t y = i*FH; //+FH;
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
     if(i>(SW_ID0-SW_BASE)) y-=FH; //overwrite ID0
     putsSwitches(8*FW, y, i+1, 0); //ohne off,on
     displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
@@ -934,7 +934,7 @@ void menuGeneralDiagAna(uint8_t event)
   adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.vBatCalib)/8) / BandGap;
   lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
-#elif defined(PCBX9D)
+#elif defined(PCBTARANIS)
   lcd_putsLeft(6*FH+1, STR_BATT_CALIB);
   static uint32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(8)) / 8; // running average, sourced directly (to avoid unending debate :P)
@@ -1104,7 +1104,7 @@ void menuGeneralCalib(uint8_t event)
   }
 
   doMainScreenGraphics();
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   drawPotsBars();
 #endif
 }

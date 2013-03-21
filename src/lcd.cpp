@@ -62,7 +62,7 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags 
     for (xcoord_t i=0; i<w; i++){
       uint8_t b = pgm_read_byte(q++);
       ASSERT_IN_DISPLAY(p);
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
       uint8_t val = inv ? ~b : b;
       if (!(att & GREY(1)))
         *p = val;
@@ -405,7 +405,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     div_t qr = div((uint16_t)val, 10);
     char c = qr.rem + '0';
     LcdFlags f = flags;
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
     if (dblsize) {
       if (c=='1' && i==len && xn>x+10) { x+=2; f|=CONDENSED; }
       if ((uint16_t)val >= 1000) { x+=FWNUM; f&=~DBLSIZE; }
@@ -442,7 +442,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
         x--;
       }
     }
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
     if (dblsize && (uint16_t)val >= 1000 && (uint16_t)val < 10000) x-=2;
 #endif
     val = qr.quot;
@@ -468,7 +468,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
   if (neg) lcd_putcAtt(x, y, '-', flags);
 }
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
 {
   ASSERT_IN_DISPLAY(p);
@@ -667,7 +667,7 @@ void lcd_invert_line(int8_t y)
   uint8_t *p  = &displayBuf[y * LCD_W];
   for (xcoord_t x=0; x<LCD_W; x++) {
     ASSERT_IN_DISPLAY(p);
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
     *(p+3*DISPLAY_PLAN_SIZE) ^= 0xff;
     *(p+2*DISPLAY_PLAN_SIZE) ^= 0xff;
     *(p+DISPLAY_PLAN_SIZE)   ^= 0xff;
@@ -676,7 +676,7 @@ void lcd_invert_line(int8_t y)
   }
 }
 
-#if !defined(PCBX9D) // TODO test inversion
+#if !defined(PCBTARANIS) // TODO test inversion
 void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
@@ -795,7 +795,7 @@ void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags
 
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
 {
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   if (idx < MIXSRC_SW1)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx, att);
   else if (idx < MIXSRC_PPM1)

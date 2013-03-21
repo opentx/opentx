@@ -36,7 +36,7 @@
 
 #if defined(SIMU)
   #define WRITE_DELAY_10MS 200
-#elif defined(PCBX9D)
+#elif defined(PCBTARANIS)
   #define WRITE_DELAY_10MS 500
 #elif defined(PCBSKY9X) && !defined(REV0)
   #define WRITE_DELAY_10MS 500

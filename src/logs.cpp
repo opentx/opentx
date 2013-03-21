@@ -113,7 +113,7 @@ const pm_char * openLogs()
       f_puts("WSHH Alt,", &g_oLogFile);
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
     // TODO
 #else
     f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n", &g_oLogFile);
@@ -198,7 +198,7 @@ void writeLogs()
       }
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
       // TODO
 #else
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {

@@ -43,7 +43,7 @@
 #define xcoord_t      uint16_t
 #define CENTER        "\015"
 #define CENTER_OFS    (7*FW-FW/2)
-#elif defined(PCBX9D)
+#elif defined(PCBTARANIS)
 #define LCD_W         212
 #define LCD_H         64
 #define xcoord_t      uint16_t
@@ -107,7 +107,7 @@
 #define FORCE         0x02
 #define ERASE         0x04
 #define ROUND         0x08
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define FILL_WHITE  0x10
 #endif
 
@@ -127,7 +127,7 @@
   #define TINSIZE     0x00
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define GREY(x)       ((x) * 0x1000)
 #define GREY_DEFAULT  GREY(11)
 #define GREY_MASK(x)  ((x) & 0xF000)
@@ -141,7 +141,7 @@
 
 #define DISPLAY_PLAN_SIZE (LCD_W*((LCD_H+7)/8))
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define DISPLAY_BUF_SIZE   (4*DISPLAY_PLAN_SIZE)
 #else
 #define DISPLAY_BUF_SIZE   DISPLAY_PLAN_SIZE
@@ -247,7 +247,7 @@ extern void lcdSetContrast();
 
 extern void lcdRefresh();
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t width, const uint8_t height);
 #endif
 
@@ -260,7 +260,7 @@ extern uint8_t lcd_buf[DISPLAY_BUF_SIZE];
 
 #define LCD_BYTE_FILTER_PLAN(p, keep, add) *(p) = (*(p) & (keep)) | (add)
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define LCD_BYTE_FILTER(p, keep, add) \
   do { \
     if (!(flags & GREY(1))) \

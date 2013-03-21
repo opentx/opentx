@@ -72,8 +72,8 @@ OS_MutexID mixerMutex;
 
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
-#if defined(PCBX9D)
-#include "splash_X9D.lbm"
+#if defined(PCBTARANIS)
+#include "splash_taranis.lbm"
 #else
 #include "splash_9x.lbm"
 #endif
@@ -92,7 +92,7 @@ const pm_uchar asterisk_lbm[] PROGMEM = {
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
 
-#if defined(PCBX9D) && defined(SDCARD)
+#if defined(PCBTARANIS) && defined(SDCARD)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 pm_char * modelBitmapLoaded = NULL;
 void loadModelBitmap()
@@ -858,7 +858,7 @@ int16_t getValue(uint8_t i)
     return 0;
 #endif
   else if (i<MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_perout_flight_phase, i+1-MIXSRC_TrimRud));
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   else if (i<MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));
   else if (i<MIXSRC_SB) return (switchState(SW_SB0) ? -1024 : (switchState(SW_SB1) ? 0 : 1024));
   else if (i<MIXSRC_SC) return (switchState(SW_SC0) ? -1024 : (switchState(SW_SC1) ? 0 : 1024));
@@ -966,7 +966,7 @@ bool __getSwitch(int8_t swtch)
 
       CustomSwData * cs = cswaddress(cs_idx);
       uint8_t s = cs->andsw;
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
       if (s >= SWSRC_TRN) s += SWSRC_SW3-SWSRC_TRN;
 #endif
       if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
@@ -1129,7 +1129,7 @@ int8_t getMovedSwitch()
 
   int8_t result = 0;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   for (uint8_t i=0; i<NUM_SWITCHES; i++) {
     swstate_t mask = (0x03 << (i*2));
     uint8_t prev = (switches_states & mask) >> (i*2);
@@ -1440,7 +1440,7 @@ void backlightOn()
 inline void Splash()
 {
   lcd_clear();
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   lcd_bmp(0, 0, splash_lbm);
 #else
   lcd_img(0, 0, splash_lbm, 0, 0);
@@ -1459,7 +1459,7 @@ void doSplash()
 
 #if defined(PCBSTD)
     lcdSetContrast();
-#elif !defined(PCBX9D)
+#elif !defined(PCBTARANIS)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -1489,7 +1489,7 @@ void doSplash()
 
       if (pwrCheck()==e_power_off) return;
 
-#if !defined(PCBSTD) && !defined(PCBX9D)
+#if !defined(PCBSTD) && !defined(PCBTARANIS)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
         if (contrast < g_eeGeneral.contrast) {
@@ -1590,7 +1590,7 @@ void checkSwitches()
     // first - display warning
     if (last_bad_switches != switches_states) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
         swstate_t mask = (0x03 << (1+i*2));
         uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
@@ -1829,7 +1829,7 @@ int16_t thrAnaIn(uint8_t chan)
 #if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
 {
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   // crossAna[]={LH,LV,RH,RV,S1,S2,LS,RS,BAT 
   // s_anaFilt[]={LH,LV,RH,RV,S1,S2,LS,RS,_BAT
   return s_anaFilt[chan];
@@ -2082,7 +2082,7 @@ BeepANACenter evalSticks(uint8_t mode)
     if(v < -RESX) v = -RESX;
     if(v >  RESX) v =  RESX;
     	
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
     if (i == POT1 || i == SLIDER1)
       v = -v;
 #endif
@@ -2709,7 +2709,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       else {
         if (k < NUM_STICKS)
           v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
         else {
           v = getValue(k);
           if (k >= MIXSRC_SA-1 && k <= MIXSRC_LAST_CSW-1) {
@@ -3463,7 +3463,7 @@ void perMain()
   }
   if (counter-- == 0) {
     counter = 10;
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
     instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * BATT_SCALE;
     instant_vbat >>= 11;
@@ -3876,7 +3876,7 @@ uint16_t stack_free()
 
 inline void opentxInit(OPEN9X_INIT_ARGS)
 {
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   BACKLIGHT_ON();
   CoTickDelay(10);  //20ms
   Splash();

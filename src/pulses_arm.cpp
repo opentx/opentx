@@ -139,7 +139,7 @@ void setupPulsesPPM(PPM_PORT_PARAM)                   // Don't enable interrupts
   *ptr = rest;
   *(ptr + 1) = 0;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   TIM1->CCR2 = rest - 1000 ;             // Update time
   TIM1->CCR1 = (g_model.ppmDelay*50+300)*2 ;
 #endif
@@ -508,7 +508,7 @@ void setupPulses()
 {
   heartbeat |= HEART_TIMER_PULSES;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   uint8_t required_protocol = (g_model.rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX);
 #else
   uint8_t required_protocol = g_model.protocol;
@@ -537,7 +537,7 @@ void setupPulses()
 
     s_current_protocol = required_protocol;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
     switch (required_protocol) {
       case PROTO_PXX:
         init_pxx();

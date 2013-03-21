@@ -171,7 +171,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   #define vertpos_t uint8_t
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   typedef uint8_t & check_event_t;
   #define horzpos_t int8_t
 #else
@@ -182,7 +182,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 extern vertpos_t m_posVert;
 extern horzpos_t m_posHorz;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define NAVIGATION_LINE_BY_LINE  0x40
 #else
   #define NAVIGATION_LINE_BY_LINE  0
@@ -299,7 +299,7 @@ void menuChannelsMonitor(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define KEY_MOVE_UP    KEY_PLUS
   #define KEY_MOVE_DOWN  KEY_MINUS
   #define CURSOR_MOVED_LEFT(event)  (EVT_KEY_MASK(event) == KEY_PLUS)
@@ -319,7 +319,7 @@ void menuChannelsMonitor(uint8_t event);
   #define IS_ROTARY_MOVE_LEFT        IS_ROTARY_LEFT
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define REPEAT_LAST_CURSOR_MOVE() { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else m_posHorz = 0; }
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else m_posHorz = 0; }
@@ -327,7 +327,7 @@ void menuChannelsMonitor(uint8_t event);
   #define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define POS_VERT_INIT   (menuTab ? (MAXCOL((uint16_t)1) == 255 ? 2 : 1) : 0)
   #define POS_HORZ_INIT(posVert)   ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
   #define EDIT_MODE_INIT  0 // TODO enum

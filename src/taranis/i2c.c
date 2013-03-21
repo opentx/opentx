@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    Project/ee_drivers/i2c.c
-  * @author  X9D Application Team
+  * @author  FrSky Application Team
   * @version V 0.2
   * @date    12-JULY-2012
   * @brief   This file provides a set of functions needed to manage the

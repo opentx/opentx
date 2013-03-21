@@ -879,7 +879,7 @@ void FRSKY_Init(void)
   // clear frsky variables
   resetTelemetry();
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   // TODO
 #elif defined(PCBSKY9X)
   startPdcUsartReceive() ;
@@ -1085,7 +1085,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
         converted_value /= 10;
       }
       else {
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
         if (abs(converted_value) < 1000) {
           att |= PREC2;
         }

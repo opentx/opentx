@@ -46,7 +46,7 @@ uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 uint32_t Peri1_frequency ;
 uint32_t Peri2_frequency ;
 GPIO_TypeDef gpioa;
@@ -78,7 +78,7 @@ uint8_t eeprom[EESIZE];
 sem_t *eeprom_write_sem;
 
 #if defined(CPUARM)
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
       if (state) pin &= ~(mask); else pin |= (mask); \
@@ -121,7 +121,7 @@ void simuSetKey(uint8_t key, bool state)
   switch (key) {
     KEY_CASE(KEY_MENU, GPIO_BUTTON_MENU, PIN_BUTTON_MENU)
     KEY_CASE(KEY_EXIT, GPIO_BUTTON_EXIT, PIN_BUTTON_EXIT)
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
     KEY_CASE(KEY_ENTER, GPIO_BUTTON_ENTER, PIN_BUTTON_ENTER)
     KEY_CASE(KEY_PAGE, GPIO_BUTTON_PAGE, PIN_BUTTON_PAGE)
     KEY_CASE(KEY_MINUS, GPIO_BUTTON_MINUS, PIN_BUTTON_MINUS)
@@ -162,7 +162,7 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // printf("swtch=%d state=%d\n", swtch, state); fflush(stdout);
   switch (swtch) {
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
     SWITCH_3_CASE(0, GPIO_PIN_SW_A_L, GPIO_PIN_SW_A_H, PIN_SW_A_L, PIN_SW_A_H)
     SWITCH_3_CASE(1, GPIO_PIN_SW_B_L, GPIO_PIN_SW_B_H, PIN_SW_B_L, PIN_SW_B_H)
     SWITCH_3_CASE(2, GPIO_PIN_SW_C_L, GPIO_PIN_SW_C_H, PIN_SW_C_L, PIN_SW_C_H)
@@ -212,7 +212,7 @@ uint16_t getTmr16KHz()
   return get_tmr10ms() * 160;
 }
 
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
 bool eeprom_thread_running = true;
 void *eeprom_write_function(void *)
 {
@@ -343,7 +343,7 @@ void StartEepromThread(const char *filename)
   sem_init(eeprom_write_sem, 0, 0);
 #endif
 
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
   eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
 #endif
@@ -351,14 +351,14 @@ void StartEepromThread(const char *filename)
 
 void StopEepromThread()
 {
-#if !defined(PCBX9D)
+#if !defined(PCBTARANIS)
   eeprom_thread_running = false;
   sem_post(eeprom_write_sem);
   pthread_join(eeprom_thread_pid, NULL);
 #endif
 }
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size)
 #else
 void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size)
@@ -376,7 +376,7 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
   }
 }
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size)
 {
   assert(size);
@@ -582,7 +582,7 @@ void lcdRefresh()
   lcd_refresh = true;
 }
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }
 ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
 void RTC_GetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { }

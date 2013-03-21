@@ -68,7 +68,7 @@
   #else
     #define TR_RETA123         "RHGS123ab"
   #endif
-#elif defined(PCBX9D)
+#elif defined(PCBTARANIS)
   #define TR_RETA123           "RHGS12LR"
 #else
   #define TR_RETA123           "RHGS123"
@@ -259,7 +259,7 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define TR_POTS_VSRCRAW      "S1\0 ""S2\0 ""LS\0 ""RS\0 "
   #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SD\0 ""SE\0 ""SF\0 ""SG\0 ""SH\0 "
 #elif defined(EXTRA_3POS)
@@ -280,7 +280,7 @@
   #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC"
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " ON"
 #else
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW " ON"
@@ -315,7 +315,7 @@
 #define LEN_INDENT             1
 #define INDENT_WIDTH           (FW/2)
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define TR_ENTER             "[ENTER]"
 #else
   #define TR_ENTER             "[MENU]"
@@ -424,7 +424,7 @@
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define TR_MENUTOSTART         CENTER"\006[ENTER] Startar "
 #else
   #define TR_MENUTOSTART         CENTER"\006[MENU] Startar "

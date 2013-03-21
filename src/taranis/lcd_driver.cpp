@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    Project/lcd/lcd.c 
-  * @author  X9D Application Team
+  * @author  FrSky Application Team
   * @Hardware version V0.2
   * @date    11-July-2012
   * @brief   This file provides LCD Init and botom drivers.

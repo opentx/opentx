@@ -42,7 +42,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define IF_9X(x)
 #else
 #define IF_9X(x) x,
@@ -54,12 +54,12 @@
 #define IF_PCBSKY9X(x)
 #endif
 
-#if defined(PCBX9D)
-#define IF_PCBX9D()    true
-#define CASE_PCBX9D(x) x,
+#if defined(PCBTARANIS)
+#define IF_PCBTARANIS()    true
+#define CASE_PCBTARANIS(x) x,
 #else
-#define IF_PCBX9D()    false
-#define CASE_PCBX9D(x)
+#define IF_PCBTARANIS()    false
+#define CASE_PCBTARANIS(x)
 #endif
 
 #if defined(CPUARM)
@@ -68,7 +68,7 @@
 #define IF_CPUARM(x)
 #endif
 
-#if defined(BATTGRAPH) || defined(PCBX9D)
+#if defined(BATTGRAPH) || defined(PCBTARANIS)
 #define IF_BATTGRAPH(x) x,
 #else
 #define IF_BATTGRAPH(x)
@@ -195,8 +195,8 @@
 #define CONVERT_PTR(x) ((uint32_t)(x))
 #endif
 
-#if defined(PCBX9D)
-#include "x9d/board_x9d.h"
+#if defined(PCBTARANIS)
+#include "taranis/board_taranis.h"
 #elif defined(PCBSKY9X)
 #include "sky9x/board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
@@ -244,7 +244,7 @@ extern void boardInit();
 enum EnumKeys {
   KEY_MENU,
   KEY_EXIT,
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   KEY_ENTER,
   KEY_PAGE,
   KEY_PLUS,
@@ -276,7 +276,7 @@ enum EnumKeys {
   NUM_KEYS,
   SW_BASE=NUM_KEYS,
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   SW_SA0=SW_BASE,
   SW_SA1,
   SW_SA2,
@@ -319,7 +319,7 @@ enum EnumKeys {
 
 };
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define NUM_SWITCHES  8
   #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
   #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
@@ -341,7 +341,7 @@ enum EnumKeys {
 
 #define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define KEY_RIGHT  KEY_PLUS
 #define KEY_LEFT   KEY_MINUS
 #define KEY_UP     KEY_PLUS
@@ -399,7 +399,7 @@ extern inline uint16_t get_tmr10ms()
 #include "pulses_avr.h"
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define MODEL_BITMAP_WIDTH  64
 #define MODEL_BITMAP_HEIGHT 32
 #define MODEL_BITMAP_SIZE   (2+4*(MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8))
@@ -441,7 +441,7 @@ extern uint8_t s_bind_allowed;
   #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define NUM_PORT1_CHANNELS(model) ((8+(model.ppmNCH*2)))
 #else
   #define NUM_PORT1_CHANNELS(model) (IS_PXX_PROTOCOL(model.protocol) ? 8 : (IS_DSM2_PROTOCOL(model.protocol) ? 6 : (8+(model.ppmNCH*2))))
@@ -579,7 +579,7 @@ enum CswFunctions {
 #define EVT_ENTRY          0xbf
 #define EVT_ENTRY_UP       0xbe
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
 #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
 #else
@@ -589,7 +589,7 @@ enum CswFunctions {
 #define EVT_ROTARY_RIGHT   0xde
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
   #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
   #define IS_ROTARY_UP(evt)     (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
@@ -627,7 +627,7 @@ enum CswFunctions {
   #define CASE_EVT_ROTARY_RIGHT
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define IS_RE_NAVIGATION_ENABLE()   true
   #define NAVIGATION_RE_IDX()         0
 #elif defined(ROTARY_ENCODERS)
@@ -826,7 +826,7 @@ extern uint16_t lastMixerDuration;
   extern int8_t s_traceCnt;
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   static inline uint16_t getTmr2MHz() { return 0; }
 #elif defined(PCBSKY9X)
   static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
@@ -872,7 +872,7 @@ enum Analogs {
   STICK2,
   STICK3,
   STICK4,
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   POT1,
   POT2,
   SLIDER1,

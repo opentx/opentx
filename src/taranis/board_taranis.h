@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef board_x9d_h
-#define board_x9d_h
+#ifndef board_taranis_h
+#define board_taranis_h
 
 #include <stdio.h>
 

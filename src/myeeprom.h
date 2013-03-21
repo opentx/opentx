@@ -51,7 +51,7 @@
 #define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define EEPROM_VER       214
 #elif defined(PCBSKY9X)
 #define EEPROM_VER       214
@@ -111,7 +111,7 @@ PACK(typedef struct t_FrSkyRSSIAlarm {
   int8_t    value:6;
 }) FrSkyRSSIAlarm;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 enum MainViews {
   VIEW_TIMERS,
   VIEW_INPUTS,
@@ -155,7 +155,7 @@ enum BeeperMode {
   #define EXTRA_GENERAL_FIELDS
 #endif
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define MODELDATA_EXTRA   char bitmap[10]; int8_t rfProtocol; uint8_t ppmSCH; uint8_t failsafeMode; int16_t failsafeChannels[16];
 #define LIMITDATA_EXTRA   char name[6];
 #define swstate_t         uint16_t
@@ -231,7 +231,7 @@ PACK(typedef struct t_EEGeneral {
 
 }) EEGeneral;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define LEN_MODEL_NAME     12
 #define LEN_EXPOMIX_NAME   10
 #define LEN_FP_NAME        10
@@ -484,7 +484,7 @@ enum ResetFunctionParam {
 };
 
 #if defined(CPUARM)
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
  #define LEN_CFN_NAME 10
 #else
  #define LEN_CFN_NAME 6
@@ -659,7 +659,7 @@ PACK(typedef struct t_FrSkyBarData {
   uint8_t    barMax;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData;
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   #define NUM_LINE_ITEMS 3
 #else
   #define NUM_LINE_ITEMS 2
@@ -757,7 +757,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 
 #define ROTARY_ENCODER_MAX  1024
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
 #define NUM_ROTARY_ENCODERS 0
 #define NUM_ROTARY_ENCODERS_EXTRA 0
 #define ROTARY_ENCODER_ARRAY_EXTRA
@@ -855,7 +855,7 @@ PACK(typedef struct t_PhaseData {
 enum SwitchSources {
   SWSRC_NONE = 0,
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   SWSRC_SA0,
   SWSRC_SA1,
   SWSRC_SA2,
@@ -942,7 +942,7 @@ enum MixSources {
   MIXSRC_Ail,
 
   MIXSRC_Pot1,
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   MIXSRC_S1 = MIXSRC_Pot1,
   MIXSRC_S2,
   MIXSRC_S3,
@@ -977,7 +977,7 @@ enum MixSources {
   MIXSRC_TrimThr,
   MIXSRC_TrimAil,
 
-#if defined(PCBX9D)
+#if defined(PCBTARANIS)
   MIXSRC_SA,
   MIXSRC_SB,
   MIXSRC_SC,

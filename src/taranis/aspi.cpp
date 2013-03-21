@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    Project/spi/spi.c 
-  * @author  X9D Application Team
+  * @author  FrSky Application Team
   * @Hardware version V0.2
   * @date    11-July-2012
   * @brief   This file provides spi Init(Analog spi),read and write.
