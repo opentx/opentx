@@ -37,6 +37,10 @@
 #include "opentx.h"
 #include "menus.h"
 
+#if defined(FRSKY_HUB)
+uint8_t barsThresholds[THLD_MAX];
+#endif
+
 uint8_t maxTelemValue(uint8_t channel)
 {
   switch (channel) {
@@ -384,10 +388,10 @@ void menuTelemetryFrsky(uint8_t event)
               threshold = getRssiAlarmValue(source-TELEM_RSSI_TX);
             else if (source <= TELEM_A2)
               threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
-  #if defined(FRSKY_HUB)
+#if defined(FRSKY_HUB)
             else
               threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
-  #endif
+#endif
 
             if (threshold) {
               thresholdX = barCoord(threshold, barMin, barMax);

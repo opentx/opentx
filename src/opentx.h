@@ -1135,25 +1135,22 @@ inline bool isFunctionActive(uint8_t func)
 #include "jeti.h"
 #endif
 
-#if defined (FRSKY)
-// FrSky Telemetry
-#include "telemetry_frsky.h"
-#endif
-
-#ifdef ARDUPILOT
-// ArduPilot Telemetry
-#include "telemetry_ardupilot.h"
-#endif
-
-#ifdef NMEA
-// NMEA Telemetry
-#include "telemetry_nmea.h"
-#endif
-
-#ifdef MAVLINK
-// Mavlink Telemetry
-#include "rotarysw.h"
-#include "telemetry_mavlink.h"
+#if defined(FRSKY_SPORT)
+  // FrSky SPORT Telemetry
+  #include "telemetry_sport.h"
+#elif defined (FRSKY)
+  // FrSky Telemetry
+  #include "telemetry_frsky.h"
+#elif defined(ARDUPILOT)
+  // ArduPilot Telemetry
+  #include "telemetry_ardupilot.h"
+#elif defined(NMEA)
+  // NMEA Telemetry
+  #include "telemetry_nmea.h"
+#elif defined(MAVLINK)
+  // Mavlink Telemetry
+  #include "rotarysw.h"
+  #include "telemetry_mavlink.h"
 #endif
 
 // REPEAT uses 0x01 to 0x0f
@@ -1316,6 +1313,53 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
 #else
   #define STICK_TOLERANCE 64
 #endif
+
+#if defined(FRSKY_HUB)
+enum BarThresholdIdx {
+  THLD_ALT,
+  THLD_RPM,
+  THLD_FUEL,
+  THLD_T1,
+  THLD_T2,
+  THLD_SPEED,
+  THLD_DIST,
+  THLD_GPSALT,
+  THLD_CELL,
+  THLD_CURRENT,
+  THLD_CONSUMPTION,
+  THLD_MAX,
+};
+extern uint8_t barsThresholds[THLD_MAX];
+#endif
+
+#if defined(FRSKY)
+uint8_t maxTelemValue(uint8_t channel);
+int16_t convertTelemValue(uint8_t channel, uint8_t value);
+int16_t convertCswTelemValue(CustomSwData * cs);
+NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
+
+extern const pm_uint8_t bchunit_ar[];
+
+#if defined(CPUARM)
+  #define FRSKY_MULTIPLIER_MAX 5
+#else
+  #define FRSKY_MULTIPLIER_MAX 3
+#endif
+
+lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
+void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att);
+
+#define IS_BARS_SCREEN(screenIndex) (g_model.frsky.screensType & (1<<(screenIndex)))
+#endif
+
+#define EARTH_RADIUSKM ((uint32_t)6371)
+#define EARTH_RADIUS ((uint32_t)111194)
+
+void checkMinMaxAltitude();
+void evalVario(int16_t altitude_bp, uint16_t altitude_ap);
+void getGpsPilotPosition();
+void getGpsDistance();
+void varioPoll10ms();
 
 #endif
 

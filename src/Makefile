@@ -327,7 +327,7 @@ SRC =
 STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
 TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 
-CPPSRC = opentx.cpp $(PULSESSRC) stamp.cpp menus.cpp menu_model.cpp menu_general.cpp view_main.cpp view_statistics.cpp $(EEPROMSRC) lcd.cpp keys.cpp translations.cpp $(TTS_SRC)
+CPPSRC = opentx.cpp $(PULSESSRC) stamp.cpp menus.cpp menu_model.cpp menu_general.cpp view_main.cpp view_statistics.cpp $(EEPROMSRC) lcd.cpp keys.cpp maths.cpp translations.cpp $(TTS_SRC)
 
 ifeq ($(EXT), JETI)
  CPPSRC += telemetry_jeti.cpp

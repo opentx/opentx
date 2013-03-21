@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef FRSKY_H
-#define FRSKY_H
+#ifndef TELEMETRY_FRSKY_H
+#define TELEMETRY_FRSKY_H
 
 #define FRSKY_RX_PACKET_SIZE 19
 #define FRSKY_TX_PACKET_SIZE 12
@@ -68,9 +68,6 @@ class FrskyValueWithMinMax: public FrskyValueWithMin {
   uint8_t max;
   void set(uint8_t value, uint8_t unit);
 };
-
-#define EARTH_RADIUSKM ((uint32_t)6371)
-#define EARTH_RADIUS ((uint32_t)111194)
 
 #define VARIO_QUEUE_LENGTH          5
 
@@ -181,24 +178,6 @@ struct FrskyData {
   uint16_t             power;
 };
 
-#if defined(FRSKY_HUB)
-enum BarThresholdIdx {
-  THLD_ALT,
-  THLD_RPM,
-  THLD_FUEL,
-  THLD_T1,
-  THLD_T2,
-  THLD_SPEED,
-  THLD_DIST,
-  THLD_GPSALT,
-  THLD_CELL,
-  THLD_CURRENT,
-  THLD_CONSUMPTION,
-  THLD_MAX,
-};
-extern uint8_t barsThresholds[THLD_MAX];
-#endif
-
 // Global Fr-Sky telemetry data variables
 extern int8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
 #if defined(WS_HOW_HIGH)
@@ -225,23 +204,6 @@ inline void frskySendAlarms(void)
 bool FRSKY_alarmRaised(uint8_t idx);
 
 void resetTelemetry();
-uint8_t maxTelemValue(uint8_t channel);
-int16_t convertTelemValue(uint8_t channel, uint8_t value);
-int16_t convertCswTelemValue(CustomSwData * cs);
-NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
-
-extern const pm_uint8_t bchunit_ar[];
-
-#if defined(CPUARM)
-#define FRSKY_MULTIPLIER_MAX 5
-#else
-#define FRSKY_MULTIPLIER_MAX 3
-#endif
-
-lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
-void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att);
-
-#define IS_BARS_SCREEN(screenIndex) (g_model.frsky.screensType & (1<<(screenIndex)))
 
 #endif
 
