@@ -39,7 +39,32 @@
 
 #include <inttypes.h>
 
-#if defined(DEBUG) && !defined(SIMU)
+#if defined(SIMU)
+
+  #define TRACE_DEBUG(...) { printf("-D- " __VA_ARGS__); fflush(stdout); }
+  #define TRACE_DEBUG_WP(...) { printf(__VA_ARGS__); fflush(stdout); }
+  #define TRACE_INFO(...) { printf("-I- " __VA_ARGS__); fflush(stdout); }
+  #define TRACE_INFO_WP(...) { printf(__VA_ARGS__); fflush(stdout); }
+  #define TRACE_WARNING(...) { printf("-W- " __VA_ARGS__); fflush(stdout); }
+  #define TRACE_WARNING_WP(...) { printf(__VA_ARGS__); fflush(stdout); }
+  #define TRACE_ERROR(...) { printf("-E- " __VA_ARGS__); fflush(stdout); }
+  inline void dump(unsigned char *data, unsigned int size)
+  {
+    printf("DUMP %d bytes ...\n\r", size);
+    unsigned int i = 0, j=0;
+    while (i*32+j < size) {
+      printf("%.2X ", data[i*32+j]);
+      j++;
+      if (j==32) {
+        i++; j=0;
+        printf("\n\r");
+      }
+    }
+    printf("\n\r");
+  }
+  #define DUMP(data, size) dump(data, size)
+
+#elif defined(DEBUG)
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,14 +92,14 @@ void debugTx(void);
 
 #else
 
-#define TRACE_DEBUG(...) { }
-#define TRACE_DEBUG_WP(...) { }
-#define TRACE_INFO(...) { }
-#define TRACE_INFO_WP(...) { }
-#define TRACE_WARNING(...) { }
-#define TRACE_WARNING_WP(...) { }
-#define TRACE_ERROR(...) { }
-#define DUMP(...) { }
+  #define TRACE_DEBUG(...) { }
+  #define TRACE_DEBUG_WP(...) { }
+  #define TRACE_INFO(...) { }
+  #define TRACE_INFO_WP(...) { }
+  #define TRACE_WARNING(...) { }
+  #define TRACE_WARNING_WP(...) { }
+  #define TRACE_ERROR(...) { }
+  #define DUMP(...) { }
 
 #endif
 

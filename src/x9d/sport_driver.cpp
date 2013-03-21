@@ -36,8 +36,6 @@
 
 #include "../open9x.h"
 
-uint16_t tmp=0; // Debug - received bytes counter
-
 void sportInit(void)
 {
   USART_InitTypeDef USART_InitStructure;
@@ -91,20 +89,10 @@ void sportPutc(const char c)
 extern "C" void USART2_IRQHandler()
 {
     uint16_t data;
-	
-    tmp++;  // Debug - received bytes counter
-			
-    if(USART_GetFlagStatus(SPORT, USART_FLAG_RXNE))
+
+    if (USART_GetFlagStatus(SPORT, USART_FLAG_RXNE) || USART_GetFlagStatus(SPORT, USART_FLAG_ORE)) {
       data = USART_ReceiveData(SPORT);
-    
-    USART_ClearFlag(SPORT,USART_FLAG_RXNE); // Just in case, should be cleared automatically by the read above, and we shouldn't enter the interrupt if no char received - doesn't help
-      
-    if(SPORT->SR & USART_FLAG_ORE) // Debug - never happened once yet
-    {
-      data = (int8_t)(SPORT->SR & (uint8_t)0xFF);
-      tmp=0;
+      processSerialData((uint8_t) data);
     }
-    
-    processSerialData((uint8_t) data);
 } 
 #endif

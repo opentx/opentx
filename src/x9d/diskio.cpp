@@ -419,6 +419,8 @@ void power_on (void)
 	/* enable DMA clock */
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA_SD, ENABLE);
 #endif
+
+	(void) dummyread;          // Discard value - prevents compiler warning
 }
 static
 void power_off (void)

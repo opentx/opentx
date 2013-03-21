@@ -297,9 +297,6 @@ void displayTopBar()
   /* The inside of the RSSI gauge */
   count = min(frskyData.rssi[0].value, frskyData.rssi[1].value) / 10;
   displayTopBarGauge(BAR_RSSI_X+10, count, (frskyData.rssi[0].value < getRssiAlarmValue(0)) || (frskyData.rssi[1].value < getRssiAlarmValue(1)));
-// Debug - SPORTT receive counter
-extern uint16_t tmp;  
-lcd_outdezAtt(120,2,tmp);
 }
 #endif
 
