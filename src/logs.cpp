@@ -181,9 +181,9 @@ void writeLogs()
         f_printf(&g_oLogFile, "%03d.%04d%c,", frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap,
             frskyData.hub.gpsLatitudeNS ? frskyData.hub.gpsLatitudeNS : '-');
         f_printf(&g_oLogFile, "%03d.%d,", frskyData.hub.gpsCourse_bp, frskyData.hub.gpsCourse_ap);
-        f_printf(&g_oLogFile, "%d.%d,", frskyData.hub.gpsSpeed_bp, frskyData.hub.gpsSpeed_ap);
-        f_printf(&g_oLogFile, "%03d.%d,", frskyData.hub.gpsAltitude_bp, frskyData.hub.gpsAltitude_ap);
-        f_printf(&g_oLogFile, "%d.%d,", frskyData.hub.baroAltitude_bp, frskyData.hub.baroAltitude_ap);
+        f_printf(&g_oLogFile, "%d.%d,", TELEMETRY_GPS_SPEED_BP, TELEMETRY_GPS_SPEED_AP);
+        f_printf(&g_oLogFile, "%03d.%d,", TELEMETRY_GPS_ALT_BP, TELEMETRY_GPS_ALT_AP);
+        f_printf(&g_oLogFile, "%d.%d,", TELEMETRY_ALT_BP, TELEMETRY_ALT_AP);
         f_printf(&g_oLogFile, "%d,%d,", frskyData.hub.temperature1, frskyData.hub.temperature2);
         f_printf(&g_oLogFile, "%d,", frskyData.hub.rpm);
         f_printf(&g_oLogFile, "%d,", frskyData.hub.fuelLevel);
@@ -194,7 +194,7 @@ void writeLogs()
 
 #if defined(WS_HOW_HIGH)
       if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
-        f_printf(&g_oLogFile, "%d,", frskyData.hub.baroAltitude_bp);
+        f_printf(&g_oLogFile, "%d,", TELEMETRY_GPS_ALT_BP);
       }
 #endif
 

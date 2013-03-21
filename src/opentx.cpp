@@ -887,16 +887,16 @@ int16_t getValue(uint8_t i)
   else if(i<MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
   else if(i<MIXSRC_FIRST_TELEM-1+TELEM_A2) return frskyData.analog[i+1-MIXSRC_FIRST_TELEM+1-TELEM_A1].value;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<MIXSRC_FIRST_TELEM-1+TELEM_ALT) return frskyData.hub.baroAltitude_bp;
+  else if(i<MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_ALT_BP;
 #endif
 #if defined(FRSKY_HUB)
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_RPM) return frskyData.hub.rpm;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_FUEL) return frskyData.hub.fuelLevel;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_T1) return frskyData.hub.temperature1;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_T2) return frskyData.hub.temperature2;
-  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return frskyData.hub.gpsSpeed_bp;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return TELEMETRY_GPS_SPEED_BP;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_DIST) return frskyData.hub.gpsDistance;
-  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return frskyData.hub.gpsAltitude_bp;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_GPS_ALT_BP;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)frskyData.hub.minCellVolts * 2;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;

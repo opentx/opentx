@@ -51,13 +51,14 @@ lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 void checkMinMaxAltitude()
 {
-  if (frskyData.hub.baroAltitude_bp > frskyData.hub.maxAltitude)
-    frskyData.hub.maxAltitude = frskyData.hub.baroAltitude_bp;
-  if (frskyData.hub.baroAltitude_bp < frskyData.hub.minAltitude)
-    frskyData.hub.minAltitude = frskyData.hub.baroAltitude_bp;
+  if (TELEMETRY_ALT_BP > frskyData.hub.maxAltitude)
+    frskyData.hub.maxAltitude = TELEMETRY_ALT_BP;
+  if (TELEMETRY_ALT_BP < frskyData.hub.minAltitude)
+    frskyData.hub.minAltitude = TELEMETRY_ALT_BP;
 }
+#endif
 
-#if defined(VARIO)
+#if defined(VARIO) && (defined(FRSKY_HUB) || defined(WS_HOW_HIGH))
 void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
 {
   int32_t varioAltitude_cm = (int32_t)altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
@@ -72,7 +73,6 @@ void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
 }
 #else
 #define evalVario(...)
-#endif
 #endif
 
 #if defined(FRSKY_HUB)
@@ -111,7 +111,7 @@ void getGpsDistance()
   dist = frskyData.hub.distFromEarthAxis * angle / 1000000;
   result += dist*dist;
 
-  dist = abs(frskyData.hub.baroAltitudeOffset ? frskyData.hub.baroAltitude_bp : frskyData.hub.gpsAltitude_bp);
+  dist = abs(frskyData.hub.baroAltitudeOffset ? TELEMETRY_ALT_BP : TELEMETRY_GPS_ALT_BP);
   result += dist*dist;
 
   frskyData.hub.gpsDistance = isqrt32(result);

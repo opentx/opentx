@@ -205,5 +205,12 @@ bool FRSKY_alarmRaised(uint8_t idx);
 
 void resetTelemetry();
 
+#define TELEMETRY_ALT_BP       frskyData.hub.baroAltitude_bp
+#define TELEMETRY_ALT_AP       frskyData.hub.baroAltitude_ap
+#define TELEMETRY_GPS_ALT_AP   frskyData.hub.gpsAltitude_ap
+#define TELEMETRY_GPS_ALT_BP   frskyData.hub.gpsAltitude_bp
+#define TELEMETRY_GPS_SPEED_BP frskyData.hub.gpsSpeed_bp
+#define TELEMETRY_GPS_SPEED_AP frskyData.hub.gpsSpeed_ap
+
 #endif
 
