@@ -14,7 +14,7 @@
  *
  */
 
-#include "open9x.h"
+#include "opentx.h"
 #include "serial.h"
 
 /*

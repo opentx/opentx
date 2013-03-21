@@ -17,7 +17,7 @@
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
  * - Thomas Husterer
  *
- * open9x is based on code named
+ * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
  * er9x by Erez Raviv: http://code.google.com/p/er9x/,
  * and the original (and ongoing) project by
@@ -34,7 +34,7 @@
  *
  */
 
-#include "../open9x.h"
+#include "../opentx.h"
 
 uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
 {

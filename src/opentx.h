@@ -17,7 +17,7 @@
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
  * - Thomas Husterer
  *
- * open9x is based on code named
+ * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
  * er9x by Erez Raviv: http://code.google.com/p/er9x/,
  * and the original (and ongoing) project by
@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef open9x_h
-#define open9x_h
+#ifndef opentx_h
+#define opentx_h
 
 #include <inttypes.h>
 #include <string.h>

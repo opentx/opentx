@@ -17,7 +17,7 @@
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
  * - Thomas Husterer
  *
- * open9x is based on code named
+ * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
  * er9x by Erez Raviv: http://code.google.com/p/er9x/,
  * and the original (and ongoing) project by
@@ -43,7 +43,7 @@
  old DSM2 code) which seemed to much for the interrupt. 
  */
 
-#include "../open9x.h"
+#include "../opentx.h"
 
 // Start and stop bits need to be 2ms in duration. Start bit is low, stop bit is high
 #define SOMOSSBIT    5 //The 2ms of a stop/start bit

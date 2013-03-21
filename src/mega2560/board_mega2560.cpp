@@ -1,4 +1,4 @@
-#include "../open9x.h"
+#include "../opentx.h"
 
 #define PIN_MODE_MASK           0x0003
 #define PIN_INPUT               0x0000

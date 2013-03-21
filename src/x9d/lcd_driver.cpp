@@ -9,7 +9,7 @@
   ******************************************************************************
 */
 
-#include "../open9x.h"
+#include "../opentx.h"
 
 #define	WriteData(x)	 AspiData(x)
 #define	WriteCommand(x)	 AspiCmd(x)

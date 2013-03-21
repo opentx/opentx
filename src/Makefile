@@ -320,14 +320,14 @@ F_CPU = 16000000
 FORMAT = ihex
 
 # Target file name (without extension).
-TARGET = open9x
+TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
 SRC =
 STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
 TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 
-CPPSRC = open9x.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp keys.cpp translations.cpp $(TTS_SRC)
+CPPSRC = opentx.cpp $(PULSESSRC) stamp.cpp menus.cpp model_menus.cpp general_menus.cpp main_views.cpp statistics_views.cpp $(EEPROMSRC) lcd.cpp keys.cpp translations.cpp $(TTS_SRC)
 
 ifeq ($(EXT), JETI)
  CPPSRC += jeti.cpp
@@ -874,7 +874,7 @@ MSG_CLEANING = Cleaning project:
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
 
-ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=open9x.lst -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS)
+ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS)
 AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
 
 ifeq ($(ARCH), AVR)
@@ -891,8 +891,8 @@ ifeq ($(ARCH), AVR)
   endif
 endif
 
-MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" open9x.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
-MIN_VER = ${shell sh -c "grep \"MIN_VERS\" open9x.h | cut -d\  -f3"}
+MAJ_VER = ${shell sh -c "grep \"MAJ_VERS\" opentx.h | cut -d\  -f3 | egrep -o \"[[:digit:]]\""}
+MIN_VER = ${shell sh -c "grep \"MIN_VERS\" opentx.h | cut -d\  -f3"}
 
 # Default target.
 all: begin gccversion sizebefore build sizeafter end
@@ -917,35 +917,35 @@ lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sti
 stamp_header:
 	@echo
 	@echo "Generate Version-stamp:"
-	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-open9x.h
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-open9x.h
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x.h
-	@echo "#define SVN_STR  \"open9x-r$(SVNREV)\"" >> stamp-open9x.h
-	@cat stamp-open9x.h
+	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-opentx.h
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx.h
+	@echo "#define SVN_STR  \"opentx-r$(SVNREV)\"" >> stamp-opentx.h
+	@cat stamp-opentx.h
 
 stock-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-stock.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-stock.txt
-	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-stock.txt
-	@cat stamp-open9x-stock.txt
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock.txt
+	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock.txt
+	@cat stamp-opentx-stock.txt
 
 stock128-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-stock128.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-stock128.txt
-	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-stock128.txt
-	@cat stamp-open9x-stock128.txt
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock128.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock128.txt
+	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock128.txt
+	@cat stamp-opentx-stock128.txt
 
 v4-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-v4.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-v4.txt
-	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-v4.txt
-	@cat stamp-open9x-v4.txt
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-v4.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-v4.txt
+	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-v4.txt
+	@cat stamp-opentx-v4.txt
 
 arm-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-open9x-arm.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-open9x-arm.txt
-	@echo "#define SVN_VERS \"open9x-r$(SVNREV)\"" >> stamp-open9x-arm.txt
-	@cat stamp-open9x-arm.txt
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-arm.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-arm.txt
+	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-arm.txt
+	@cat stamp-opentx-arm.txt
 
 font.lbm: font.xbm font_extra.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm
 	@echo
@@ -1073,7 +1073,7 @@ else
 %.hex: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
-	 $(OBJCOPY) -O ihex open9x.elf open9x.hex
+	 $(OBJCOPY) -O ihex opentx.elf opentx.hex
 endif
 
 %.bin: %.elf
@@ -1155,14 +1155,14 @@ clean_list :
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
-	$(REMOVE) stamp-open9x.h
+	$(REMOVE) stamp-opentx.h
 
 #### Install
 
 DATE = ${shell sh -c "date +%F:%T" }
 AVRCOMMAND = $(AVRDUDE) $(AVRDEVICE)
 
-WRITE_COMMAND = $(AVRCOMMAND) -U flash:w:open9x.hex:i
+WRITE_COMMAND = $(AVRCOMMAND) -U flash:w:opentx.hex:i
 ifeq ($(RESTORE_EEPROM), YES)
    BACKUP_EEPROM = YES
    ifeq ($(DOUBLE_WRITE_OK), YES)
@@ -1176,7 +1176,7 @@ ifeq ($(BACKUP_FLASH), YES)
   BACKUP_ARGS += -U eeprom:r:$(DATA_DIR)/eeprom-$(DATE).hex:i $(BACKUPFLASH)
 endif
 ifeq ($(BACKUP_EEPROM), YES)
-  BACKUP_ARGS += -U flash:r:$(DATA_DIR)/open9x-$(DATE).hex:i
+  BACKUP_ARGS += -U flash:r:$(DATA_DIR)/opentx-$(DATE).hex:i
 endif
 
 install: all

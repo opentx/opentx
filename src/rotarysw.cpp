@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  */
-#include "open9x.h"
+#include "opentx.h"
 #include "menus.h"
 
 #define CTIME_ROTARY_ANIM 500

@@ -3,7 +3,7 @@
  * - Bertrand Songis <bsongis@gmail.com>
  * - Martin Hotar <mhotar@gmail.com>
  *
- * open9x is based on code named
+ * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
  * er9x by Erez Raviv: http://code.google.com/p/er9x/,
  * and the original (and ongoing) project by

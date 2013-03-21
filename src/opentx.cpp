@@ -17,7 +17,7 @@
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
  * - Thomas Husterer
  *
- * open9x is based on code named
+ * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
  * er9x by Erez Raviv: http://code.google.com/p/er9x/,
  * and the original (and ongoing) project by
@@ -34,7 +34,7 @@
  *
  */
 
-#include "open9x.h"
+#include "opentx.h"
 
 #if defined(CPUARM)
 #define MIXER_STACK_SIZE    500
@@ -3874,7 +3874,7 @@ uint16_t stack_free()
 #define OPEN9X_INIT_ARGS
 #endif
 
-inline void open9xInit(OPEN9X_INIT_ARGS)
+inline void opentxInit(OPEN9X_INIT_ARGS)
 {
 #if defined(PCBX9D)
   BACKLIGHT_ON();
@@ -3995,7 +3995,7 @@ void mixerTask(void * pdata)
 
 void menusTask(void * pdata)
 {
-  open9xInit();
+  opentxInit();
 
   while (pwrCheck() != e_power_off) {
     perMain();
@@ -4111,7 +4111,7 @@ int main(void)
 #endif
 
 #if !defined(CPUARM)
-  open9xInit(mcusr);
+  opentxInit(mcusr);
 #endif
 
 #if defined(CPUARM)
