@@ -2297,7 +2297,7 @@ void gvarWeightItem(xcoord_t x, uint8_t y, MixData *md, uint8_t attr, uint8_t ev
 void menuModelMixOne(uint8_t event)
 {
 #if defined(PCBTARANIS)
-  if (event == EVT_KEY_LONG(KEY_PAGE)) {
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
     return;
@@ -2749,14 +2749,11 @@ void menuModelExposAll(uint8_t event)
 
 void menuModelMixAll(uint8_t event)
 {
-#if 0
-  // TODO
-  if (event == EVT_KEY_LONG(KEY_PAGE)) {
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
     return;
   }
-#endif
 
   return menuModelExpoMix(0, event);
 }
