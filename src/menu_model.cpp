@@ -1313,7 +1313,7 @@ PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uin
   }
 
   if (attr) {
-    if ((event==EVT_KEY_BREAK(KEY_MENU)) || p1valdiff) {
+    if ((event==EVT_KEY_BREAK(KEY_ENTER)) || p1valdiff) {
       s_editMode = 0;
       value ^= (1<<posHorz);
       STORE_MODELVARS;
@@ -2749,11 +2749,13 @@ void menuModelExposAll(uint8_t event)
 
 void menuModelMixAll(uint8_t event)
 {
+#if defined(PCBTARANIS)
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
     return;
   }
+#endif
 
   return menuModelExpoMix(0, event);
 }
