@@ -241,7 +241,7 @@ if __name__ == "__main__":
                      (u"flight mode!, float", "fm-flt"),
                      (u"flight mode!, speed", "fm-spd"),
                      (u"flight mode!, fast", "fm-fst"), 
-                     (u"flight mode!, land", "fm-nrm"),
+                     (u"flight mode!, normal", "fm-nrm"),
                      (u"flight mode!, cruise", "fm-crs"),                 
                      ]):
             sounds.extend(generate(s, f, 256+i))
