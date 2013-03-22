@@ -212,6 +212,7 @@ void displaySliders()
 #define BAR_H        9
 #define BAR_BATT_X   BAR_X+18
 #define BAR_RSSI_X   BAR_X+42
+#define BAR_A1_X     BAR_X+69
 #define BAR_NOTIFS_X BAR_X+133
 #define BAR_VOLUME_X BAR_X+147
 #define BAR_TIME_X   BAR_X+168
@@ -239,6 +240,9 @@ void displayTopBar()
   /* RSSI */
   LCD_ICON(BAR_RSSI_X, BAR_Y, ICON_RSSI);
   lcd_rect(BAR_RSSI_X+10, BAR_Y+1, 13, 7);
+
+  /* Rx voltage */
+  putsTelemetryChannel(BAR_A1_X, BAR_Y+1, TELEM_A1-1, frskyData.analog[0].value, LEFT);
 
   /* Notifs icons */
   xcoord_t x = BAR_NOTIFS_X;
