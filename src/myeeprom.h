@@ -160,7 +160,7 @@ enum BeeperMode {
 #define LIMITDATA_EXTRA   char name[6];
 #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
-#define MODELDATA_EXTRA   uint8_t ppmSCH; int8_t ppm2SCH; int8_t ppm2NCH; int8_t rfProtocol; uint8_t rfCountryCode;
+#define MODELDATA_EXTRA   uint8_t ppmSCH; int8_t ppm2SCH; int8_t ppm2NCH; int8_t rfProtocol;
 #define LIMITDATA_EXTRA
 #define swstate_t         uint8_t
 #else

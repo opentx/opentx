@@ -3176,7 +3176,7 @@ void menuModelCustomSwitchOne(uint8_t event)
         int8_t v2_min=0, v2_max=MIXSRC_LAST_TELEM;
         if (cstate == CS_VBOOL) {
           putsSwitches(CSWONE_2ND_COLUMN, y, cs->v2, attr);
-          v2_min = SWSRC_OFF+1; v2_max = SWSRC_OFF-1;
+          v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
         }
         else if (cstate == CS_VCOMP) {
           putsMixerSource(CSWONE_2ND_COLUMN, y, cs->v2, attr);
