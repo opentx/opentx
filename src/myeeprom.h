@@ -55,8 +55,8 @@
 #define EEPROM_VER       214
 #elif defined(PCBSKY9X)
 #define EEPROM_VER       214
-#elif defined(PCBGRUVIN9X)
-#define EEPROM_VER       213
+#elif defined(PCBGRUVIN9X) || defined(CPUM128)
+#define EEPROM_VER       214
 #else
 #define EEPROM_VER       213
 #endif
@@ -255,14 +255,25 @@ PACK(typedef struct t_ExpoData {
   char    name[LEN_EXPOMIX_NAME];
   int8_t  curveParam;
 }) ExpoData;
-#else
+#elif defined(CPUM64)
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   int8_t  swtch:6;
   uint8_t chn:2;
   uint8_t phases:5;
   uint8_t curveMode:1;
-  uint8_t weight;         // we have one bit spare here :)
+  uint8_t weight;         // One spare bit here (used for GVARS)
+  int8_t  curveParam;
+}) ExpoData;
+#else
+PACK(typedef struct t_ExpoData {
+  uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
+  uint8_t chn:2;
+  uint8_t curveMode:1;
+  uint8_t spare:3;
+  uint8_t phases;
+  int8_t  swtch;
+  uint8_t weight;
   int8_t  curveParam;
 }) ExpoData;
 #endif
@@ -345,6 +356,8 @@ PACK( union u_int8int16_t {
 #define SLOW_STEP   2
 #define DELAY_MAX   15 /* 7.5 seconds */
 #define SLOW_MAX    15 /* 7.5 seconds */
+
+#if defined(CPUM64)
 PACK(typedef struct t_MixData {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
@@ -365,7 +378,29 @@ PACK(typedef struct t_MixData {
   int8_t  curveParam;
   int8_t  offset;
 }) MixData;
-
+#else
+PACK(typedef struct t_MixData {
+  uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
+  uint8_t curveMode:1;       // O=curve, 1=differential
+  uint8_t noExpo:1;
+  uint8_t weightMode:1;
+  uint8_t offsetMode:1;
+  uint8_t srcRaw;
+  int8_t  weight;
+  int8_t  swtch;
+  uint8_t phases;
+  uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  int8_t  carryTrim:3;
+  uint8_t mixWarn:2;         // mixer warning
+  uint8_t spare:1;
+  uint8_t delayUp:4;
+  uint8_t delayDown:4;
+  uint8_t speedUp:4;
+  uint8_t speedDown:4;
+  int8_t  curveParam;
+  int8_t  offset;
+}) MixData;
+#endif
 PACK( union u_gvarint_t {
   struct {
     int8_t lo;

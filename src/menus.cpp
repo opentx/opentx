@@ -776,12 +776,10 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
   bool invers = (attr & INVERS);
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
-    
-    value = ( GV_IS_GV_VALUE(value,min,max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
-    
+    value = (GV_IS_GV_VALUE(value,min,max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
     eeDirty(EE_MODEL);
   }
-  if ( GV_IS_GV_VALUE(value,min,max) ) {
+  if (GV_IS_GV_VALUE(value,min,max) ) {
     if (attr & LEFT)
       attr -= LEFT; /* because of ZCHAR */
     else
@@ -799,16 +797,20 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
     idx++; */
 
     if (idx < 0) { 
-      value=(int16_t) GV_CALC_VALUE_IDX_NEG(idx,delta); idx=-idx; lcd_putcAtt(x-6, y, '-', attr); 
-    } else { 
-      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx,delta); idx++; 
+      value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx,delta);
+      idx = -idx;
+      lcd_putcAtt(x-6, y, '-', attr);
+    }
+    else {
+      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx,delta);
+      idx++;
     }
     
     putsStrIdx(x, y, STR_GV, idx, attr);
   }
   else {
     lcd_outdezAtt(x, y, value, attr);
-	if (invers) value = checkIncDec(event, value, min, max,EE_MODEL);    
+    if (invers) value = checkIncDec(event, value, min, max, EE_MODEL);
   }
   return value;
 }
@@ -817,7 +819,7 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
 int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
 {
   lcd_outdezAtt(x, y, value, attr);
-  if (attr&INVERS) value = checkIncDec(event, value, min, max,EE_MODEL);
+  if (attr&INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);
   return value;
 }
 #endif
