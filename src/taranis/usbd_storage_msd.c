@@ -48,8 +48,8 @@ const char STORAGE_Inquirydata[] = {//36
   0x00,	
   0x00,
   'F', 'r', 'S', 'k', 'y', ' ', ' ', ' ',  /* Manufacturer : 8 bytes */
-  'X', '9', 'D', 'A', ' ', 'R', 'a', 'd',  /* Product      : 16 Bytes */
-  'i', 'o', ' ', ' ', ' ', ' ', ' ', ' ',
+  'T', 'a', 'r', 'a', 'n', 'i', 's', ' ',  /* Product      : 16 Bytes */
+  'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
   '1', '.', '0' ,'0',                      /* Version      : 4 Bytes */
 }; 
 
