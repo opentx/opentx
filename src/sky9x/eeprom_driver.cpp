@@ -36,6 +36,8 @@
 
 #include "../opentx.h"
 
+extern volatile uint32_t Spi_complete; // TODO in the driver ?
+
 uint32_t spi_PDC_action( register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
 {
 #ifndef SIMU
