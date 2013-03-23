@@ -4225,10 +4225,15 @@ void menuModelFailsafe(uint8_t event)
       uint8_t wbar = (longNames ? 48 : 58);
 
       // Value
-      if (m_posVert == ch)
-      	lcd_outdezNAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1 | TINSIZE | INVERS);
-      else
-        lcd_outdezNAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1 | TINSIZE);
+      LcdFlags flags = PREC1 | TINSIZE;
+
+      if (m_posVert == ch) {
+        flags |= INVERS;
+        if (s_editMode)
+          flags |= BLINK;
+      }
+
+      lcd_outdezNAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), flags);
 
       // Gauge
       lcd_rect(x+LCD_W/2-3-wbar-ofs, y, wbar+1, 6);
