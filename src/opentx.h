@@ -1130,17 +1130,15 @@ inline bool isFunctionActive(uint8_t func)
   extern volatile rotenc_t g_rotenc[1];
 #endif
 
-#ifdef JETI
-// Jeti-DUPLEX Telemetry
-#include "jeti.h"
-#endif
-
 #if defined(FRSKY_SPORT)
   // FrSky SPORT Telemetry
   #include "telemetry_sport.h"
 #elif defined (FRSKY)
   // FrSky Telemetry
   #include "telemetry_frsky.h"
+#elif defined(JETI)
+  // Jeti-DUPLEX Telemetry
+  #include "telemetry_jeti.h"
 #elif defined(ARDUPILOT)
   // ArduPilot Telemetry
   #include "telemetry_ardupilot.h"
