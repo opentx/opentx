@@ -1044,8 +1044,11 @@ void menuModelSetup(uint8_t event)
           if (attr && m_posHorz>0 && s_editMode>0) {
             if (m_posHorz == 1)
               newFlag = PXX_SEND_RXNUM;
-            else if(m_posHorz == 2)
+            else if(m_posHorz == 2) {
               newFlag = PXX_SEND_RANGECHECK;
+              displayPopup("RSSI: ");
+              lcd_outdezAtt(16+4*FW, 5*FH, frskyData.rssi[0].value, BOLD);
+            }
           }
           pxxFlag = newFlag;
         }
