@@ -430,8 +430,10 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       else if (tinsize) {
         x--;
         lcd_plot(x-1, y+4);
-        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE))
-          lcd_vline(x, y, 8);
+        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
+          lcd_vline(x-1, y, 6);
+          lcd_vline(x, y, 6);
+        }
         x--;
       }
       else {

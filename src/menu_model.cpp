@@ -78,6 +78,7 @@ void menuModelCustomFunctions(uint8_t event);
 void menuModelTelemetry(uint8_t event);
 void menuModelTemplates(uint8_t event);
 void menuModelExpoOne(uint8_t event);
+void menuModelFailsafe(uint8_t event);
 
 const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelSelect,
@@ -1064,11 +1065,8 @@ void menuModelSetup(uint8_t event)
           }
           else if (m_posHorz==1) {
             s_editMode = 0;
-            if (g_model.failsafeMode==FAILSAFE_CUSTOM && event==EVT_KEY_LONG(KEY_ENTER)) {
-              for (int32_t i=0; i<16; i++) {
-                g_model.failsafeChannels[i] = (i < NUM_PORT1_CHANNELS(g_model) ? channelOutputs[g_model.ppmSCH + i] : 0);
-              }
-            }
+            if (g_model.failsafeMode==FAILSAFE_CUSTOM && event==EVT_KEY_FIRST(KEY_ENTER))
+            	pushMenu(menuModelFailsafe);
           }
           else {
             lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
@@ -4160,3 +4158,93 @@ void menuModelTemplates(uint8_t event)
 }
 #endif
 
+#if defined(PCBTARANIS)
+void menuModelFailsafe(uint8_t event)
+{
+  static bool longNames = false;
+  bool newLongNames = false;
+  uint8_t ch;
+
+  SUBMENU_NOTITLE(32, {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0});
+
+  switch(event)
+  {
+    case EVT_KEY_BREAK(KEY_EXIT):
+      popMenu();
+      return;
+  }
+
+  if(m_posVert >= 16)
+  	ch = 16;
+  else
+  	ch = 0;
+
+  lcd_putsCenter(0*FH, FAILSAFESET);
+  lcd_invert_line(0);
+
+  // Column separator
+  lcd_vline(LCD_W/2, FH, LCD_H-FH);
+
+  for (uint8_t col=0; col<2; col++) {
+
+    uint8_t x = col*LCD_W/2+1;
+
+    // Channels
+    for (uint8_t line=0; line<8; line++) {
+      uint8_t y = 9+line*7;
+      int32_t val;
+      uint8_t ofs = (col ? 0 : 1);
+
+      if (ch >= g_model.ppmSCH)
+        if (s_editMode && m_posVert == ch)
+          val = (ch < NUM_PORT1_CHANNELS(g_model) + g_model.ppmSCH ? channelOutputs[ch] : 0);
+        else
+          val = (ch < NUM_PORT1_CHANNELS(g_model) + g_model.ppmSCH ? g_model.failsafeChannels[ch] : 0);
+      else
+        val = 0;
+
+      if(m_posVert == ch && event == EVT_KEY_LONG(KEY_ENTER)) {
+        g_model.failsafeChannels[ch] = val;
+        eeDirty(EE_MODEL);
+        s_editMode = 0;
+        AUDIO_WARNING1();
+        killEvents(event);
+      }
+
+      // Channel name if present, number if not
+      uint8_t lenLabel = zlen(g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name));
+      if (lenLabel > 4) {
+        newLongNames = longNames = true;
+      }
+
+      if (lenLabel > 0)
+        lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
+      else
+        putsChn(x+1-ofs, y, ch+1, SMLSIZE);
+
+      uint8_t wbar = (longNames ? 48 : 58);
+
+      // Value
+      if (m_posVert == ch)
+      	lcd_outdezNAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1 | TINSIZE | INVERS);
+      else
+        lcd_outdezNAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1 | TINSIZE);
+
+      // Gauge
+      lcd_rect(x+LCD_W/2-3-wbar-ofs, y, wbar+1, 6);
+      uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
+      uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
+      uint8_t x0 = (val>0) ? x+LCD_W/2-ofs-3-wbar/2 : x+LCD_W/2-ofs-2-wbar/2-len;
+      lcd_hline(x0, y+1, len);
+      lcd_hline(x0, y+2, len);
+      lcd_hline(x0, y+3, len);
+      lcd_hline(x0, y+4, len);
+
+      ch++;
+    }
+  }
+  
+  longNames = newLongNames;
+	
+}
+#endif
