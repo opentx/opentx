@@ -2873,7 +2873,7 @@ void menuModelLimits(uint8_t event)
       lcd_putsAtt(CENTER_OFS, y, STR_TRIMS2OFFSETS, s_noHi ? 0 : attr);
       if (attr) {
         s_editMode = 0;
-        if (event==EVT_KEY_LONG(KEY_MENU)) {
+        if (event==EVT_KEY_LONG(KEY_ENTER)) {
           s_noHi = NO_HI_LEN;
           killEvents(event);
           moveTrimsToOffsets(); // if highlighted and menu pressed - move trims to offsets
