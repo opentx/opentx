@@ -85,6 +85,8 @@ void sportPutc(const char c)
   GPIO_ResetBits(GPIO_PIN_SPORT_ON, PIN_SPORT_ON);
 }
 
+void processSerialData(uint8_t data);
+
 #if !defined(SIMU)
 extern "C" void USART2_IRQHandler()
 {
