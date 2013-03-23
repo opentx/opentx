@@ -107,6 +107,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
       killEvents(KEY_DOWN);
       killEvents(KEY_RIGHT);
       killEvents(KEY_LEFT);
+#if defined(PCBTARANIS)
+      killEvents(KEY_PAGE);
+      killEvents(KEY_MENU);
+      killEvents(KEY_ENTER);
+      killEvents(KEY_EXIT);
+#endif
       event = 0;
     }
   }
