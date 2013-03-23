@@ -551,7 +551,6 @@ FORMAT = ihex
 TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
-SRC =
 STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
 TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 
