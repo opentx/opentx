@@ -125,10 +125,10 @@ void init_trainer_capture();
 void keysInit();
 uint32_t readKeys();
 #define KEYS_PRESSED() (~readKeys())
-#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
-#define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
-#define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))
-#define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
+#define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((2<<KEY_PLUS) + (2<<KEY_MINUS))) == ((2<<KEY_PLUS) + (2<<KEY_MINUS)))
+#define DBLKEYS_PRESSED_UP_DWN(i)  (0)
+#define DBLKEYS_PRESSED_RGT_UP(i)  (0)
+#define DBLKEYS_PRESSED_LFT_DWN(i) (0)
 
 // WDT driver
 #if !defined(SIMU)
