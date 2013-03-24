@@ -1300,12 +1300,12 @@ PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uin
 
   uint8_t posHorz = m_posHorz;
 
-#if defined(CPUARM) && LCD < 212
+#if defined(CPUARM) && LCD_W < 212
   bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-2*FW);
 #endif
 
   for (uint8_t p=0; p<MAX_PHASES; p++) {
-#if defined(CPUARM) && LCD < 212
+#if defined(CPUARM) && LCD_W < 212
     if (expoMenu && ((attr && p < posHorz-4) || (x > EXPO_ONE_2ND_COLUMN+2*FW)))
       continue;
 #endif
@@ -2803,7 +2803,11 @@ enum LimitsItems {
   #define LIMITS_MIN_POS            19*FW
   #define LIMITS_MAX_POS            23*FW+4
   #define LIMITS_REVERT_POS         26*FW
-  #define LIMITS_PPM_CENTER_POS     32*FW
+  #ifdef PPM_CENTER_ADJUSTABLE
+    #define LIMITS_PPM_CENTER_POS     34*FW
+  #else
+    #define LIMITS_PPM_CENTER_POS     32*FW
+  #endif
 #else
   #if defined(PPM_UNIT_US)
     #define LIMITS_MIN_POS          12*FW+1
@@ -2964,7 +2968,7 @@ void menuModelLimits(uint8_t event)
         case ITEM_LIMITS_DIRECTION:
         {
           uint8_t revert = ld->revert;
-#if defined(PPM_CENTER_ADJUSTABLE) && LCD < 212
+#if defined(PPM_CENTER_ADJUSTABLE) && LCD_W < 212
           lcd_putcAtt(LIMITS_REVERT_POS, y, revert ? 127 : 126, attr);
 #else
           lcd_putsiAtt(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
