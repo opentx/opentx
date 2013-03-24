@@ -119,6 +119,7 @@ void disable_pxx();
 
 // Trainer driver
 void init_trainer_ppm();
+void stop_trainer_ppm();
 void init_trainer_capture();
 
 // Keys driver

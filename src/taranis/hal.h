@@ -167,6 +167,7 @@
 
 // TODO merge these constants
 #define PIN_PER_1                       0x0010
+#define PIN_PER_2                       0x0020
 #define PIN_PORTA                       0x0000
 #define PIN_PER_3                       0x0030
 #define PIN_PER_5                       0x0050

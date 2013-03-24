@@ -143,9 +143,9 @@ extern "C" void TIM8_UP_TIM13_IRQHandler()
 // Trainer capture, PC8, Timer 3 channel 3
 void init_trainer_capture()
 {
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
-  configure_pins( 0x0100, PIN_PERIPHERAL | PIN_PORTC | PIN_TR_PPM_IN ) ;
-  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ;            // Enable clock
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ; // Enable portC clock
+  configure_pins (PIN_TR_PPM_IN, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2) ;
+  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ; // Enable clock
 
   TIM3->ARR = 0xFFFF ;
   TIM3->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;               // 0.5uS

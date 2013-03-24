@@ -100,8 +100,8 @@ void configure_pins( uint32_t pins, uint16_t config )
       pgpio->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << ((uint16_t)pos * 2));
       pgpio->PUPDR |= ((config & PIN_PULL_MASK) >> 2) << (pos * 2) ;
 
-      pgpio->AFR[pos >> 3] &= ~(0x000F << (pos & 7)) ;
-      pgpio->AFR[pos >> 3] |= ((config & PIN_PERI_MASK) >> 4) << (pos & 7) ;
+      pgpio->AFR[pos >> 3] &= ~(0x000F << ((pos & 7)*4)) ;
+      pgpio->AFR[pos >> 3] |= ((config & PIN_PERI_MASK) >> 4) << ((pos & 7)*4) ;
     }
   }
 }
@@ -213,18 +213,11 @@ void boardInit()
 
   // TODO init_ppm() ;
 
-  init_trainer_ppm() ;
-
   init_trainer_capture() ;
-
   init5msTimer();
-
   __enable_irq() ;
-
   eepromInit();
-  
   sportInit();
-  
   usbInit();
 }
 #endif
