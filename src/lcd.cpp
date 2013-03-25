@@ -279,6 +279,7 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
 #endif
       lcd_putcAtt(x, y, c, mode);
       x += FW;
+      if (c == '|') x -= 4;
       if (mode&DBLSIZE) x += FW-1;
       else if (mode&MIDSIZE) x += FW-3;
       else if (mode&SMLSIZE) x -= 1;
@@ -777,7 +778,7 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, LcdFlags att)
 {
   lcd_outdezAtt(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att&(~INVERS));
+  if (~att & NO_UNIT) lcd_putcAtt(lcdLastPos, y, 'v', att);
 }
 
 void putsVBat(xcoord_t x, uint8_t y, LcdFlags att)

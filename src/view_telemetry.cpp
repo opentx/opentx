@@ -55,15 +55,19 @@ uint8_t maxTelemValue(uint8_t channel)
   }
 }
 
-int16_t convertTelemValue(uint8_t channel, uint8_t value)
+getvalue_t convertTelemValue(uint8_t channel, uint8_t value)
 {
-  int16_t result;
+  getvalue_t result;
   switch (channel) {
     case TELEM_TM1:
     case TELEM_TM2:
       result = value * 3;
       break;
     case TELEM_ALT:
+#if defined(PCBTARANIS)
+      result = value * 80 - 5000;
+      break;
+#endif
     case TELEM_GPSALT:
     case TELEM_MAX_ALT:
     case TELEM_MIN_ALT:
@@ -77,7 +81,7 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
     case TELEM_T2:
     case TELEM_MAX_T1:
     case TELEM_MAX_T2:
-      result = (int16_t)value - 30;
+      result = (getvalue_t)value - 30;
       break;
     case TELEM_CELL:
     case TELEM_HDG:
@@ -101,9 +105,9 @@ int16_t convertTelemValue(uint8_t channel, uint8_t value)
   return result;
 }
 
-int16_t convertCswTelemValue(CustomSwData * cs)
+getvalue_t convertCswTelemValue(CustomSwData * cs)
 {
-  int16_t val;
+  getvalue_t val;
   if (CS_STATE(cs->func)==CS_VOFS)
     val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
   else
@@ -195,7 +199,11 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       putsTelemetryValue(x, y, val, UNIT_RAW, att);
       break;
 
-#if defined(IMPERIAL_UNITS)
+#if LCD_W >= 212
+    case TELEM_ALT-1:
+      putsTelemetryValue(x, y, val/10, UNIT_METERS, att|PREC1);
+      break;
+#elif defined(IMPERIAL_UNITS)
     case TELEM_ALT-1:
     case TELEM_MIN_ALT-1:
     case TELEM_MAX_ALT-1:
@@ -457,7 +465,7 @@ void menuTelemetryFrsky(uint8_t event)
             }
             if (field) {
               fields_count++;
-              int16_t value = getValue(MIXSRC_FIRST_TELEM+field-2);
+              getvalue_t value = getValue(MIXSRC_FIRST_TELEM+field-2);
               uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
 #if LCD_W >= 212
               xcoord_t pos[] = {0, 71, 143, 214};

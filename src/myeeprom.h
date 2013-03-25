@@ -439,15 +439,17 @@ PACK( union u_int8int16_t {
 #if defined(CPUARM)
 #define MAX_CSW_DURATION 120 /*60s*/
 #define MAX_CSW_DELAY    120 /*60s*/
+#define MAX_CSW_ANDSW    MAX_SWITCH
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
   uint8_t delay;
   uint8_t duration;
-  uint8_t andsw;  
+  int8_t  andsw;
 }) CustomSwData;
 #else
+#define MAX_CSW_ANDSW    15
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset

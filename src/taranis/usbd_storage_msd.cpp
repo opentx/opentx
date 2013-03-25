@@ -26,6 +26,10 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
+#include "../opentx.h"
+#include "../FatFs/diskio.h"
+
+extern "C" {
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
 #include "usbd_msc_mem.h"
 #include "usb_conf.h"
@@ -36,7 +40,7 @@
 #define SD_GetStatus() (0)
 
 /* USB Mass storage Standard Inquiry Data */
-const char STORAGE_Inquirydata[] = {//36
+const unsigned char STORAGE_Inquirydata[] = {//36
   
   /* LUN 0 */
   0x00,		
@@ -50,7 +54,7 @@ const char STORAGE_Inquirydata[] = {//36
   'F', 'r', 'S', 'k', 'y', ' ', ' ', ' ',  /* Manufacturer : 8 bytes */
   'T', 'a', 'r', 'a', 'n', 'i', 's', ' ',  /* Product      : 16 Bytes */
   'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
-  '1', '.', '0' ,'0',                      /* Version      : 4 Bytes */
+  '1', '.', '0', '0',                      /* Version      : 4 Bytes */
 }; 
 
 
@@ -76,7 +80,6 @@ int8_t STORAGE_Write (uint8_t lun,
 
 int8_t STORAGE_GetMaxLun (void);
 
-
 USBD_STORAGE_cb_TypeDef USBD_MICRO_SDIO_fops =
 {
   STORAGE_Init,
@@ -92,6 +95,7 @@ USBD_STORAGE_cb_TypeDef USBD_MICRO_SDIO_fops =
 USBD_STORAGE_cb_TypeDef  *USBD_STORAGE_fops = &USBD_MICRO_SDIO_fops;
 
 __IO uint32_t count = 0;
+}
 
 int8_t STORAGE_Init (uint8_t lun)
 {
@@ -119,17 +123,17 @@ int8_t STORAGE_Init (uint8_t lun)
   */
 int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
-  if(SD_GetStatus() != 0 )
-  {
-    return (-1); 
-  }   
+  if (SD_GetStatus() != 0 )
+    return -1;
   
   *block_size = 512;
-  *block_num  = 2*1024*1024; /* TEMP: 1GB */
-  // TODO check that lock on SD is taken
-  // TODO disk_ioctl(pdrv, GET_SECTOR_COUNT, block_num);
-  
-  return (0);
+
+  BYTE sector_count = 0;
+  if (disk_ioctl(g_FATFS_Obj.drv, GET_SECTOR_COUNT, block_num) != RES_OK)
+    return -1;
+
+  *block_num  = sector_count;
+  return 0;
 }
 
 /**

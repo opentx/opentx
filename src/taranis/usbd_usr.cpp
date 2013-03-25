@@ -26,12 +26,16 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_usr.h"
+#include "../opentx.h"
 
 extern uint8_t usb_connected;
 
+extern "C" {
+#include "usbd_usr.h"
+
 /*  Points to the DEVICE_PROP structure of current device */
 /*  The purpose of this register is to speed up the execution */
+
 
 USBD_Usr_cb_TypeDef USR_cb =
 {
@@ -44,6 +48,7 @@ USBD_Usr_cb_TypeDef USR_cb =
   USBD_USR_DeviceConnected,
   USBD_USR_DeviceDisconnected,    
 };
+}
 
 /**
 * @brief Whatever the user application needs to do when USB is initialised
@@ -52,7 +57,7 @@ USBD_Usr_cb_TypeDef USR_cb =
 */
 void USBD_USR_Init(void)
 {
- 
+
 }
 
 /**
@@ -104,6 +109,12 @@ void USBD_USR_DeviceResumed(void)
 */
 void USBD_USR_DeviceConnected (void)
 {
+  if (sdMounted()) {
+    audioQueue.stopSD();
+    closeLogs();
+    f_mount(0, 0); // unmount SD
+  }
+
   usb_connected = 1;
 }
 
@@ -117,6 +128,8 @@ void USBD_USR_DeviceConnected (void)
 void USBD_USR_DeviceDisconnected (void)
 {
   usb_connected = 0;
+
+  sdInit();
 }
 
 

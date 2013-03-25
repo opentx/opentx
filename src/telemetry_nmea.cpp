@@ -477,7 +477,7 @@ void menuTelemetryNMEA1(uint8_t event)
     if ((show_timer == 1) && rbuf[0][0])  {					// show the Timer when data have been received
 
         lcd_puts    (   2*FW,   4*FH, PSTR("Timer"));			// display "Timer"
-        putsTime+5*FWNUM+1      (   5*FW,   5*FH, (gpstime-gpstimer), DBLSIZE, DBLSIZE);	// display difference as mm:ss
+        putsTime    (   5*FW,   5*FH, (gpstime-gpstimer), DBLSIZE, DBLSIZE);	// display difference as mm:ss
     }
     else
     {

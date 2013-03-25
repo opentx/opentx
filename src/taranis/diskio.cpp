@@ -662,7 +662,6 @@ DSTATUS disk_status (
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
-extern "C" {
 // TODO quick & dirty
 int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 {
@@ -681,7 +680,6 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
   release_spi();
 
   return 0;
-}
 }
 
 DRESULT disk_read (
@@ -727,7 +725,6 @@ DRESULT disk_read (
 
 #if _FS_READONLY == 0
 
-extern "C" {
 // TODO quick & dirty
 int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 {
@@ -745,7 +742,6 @@ int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
   release_spi();
 
   return 0;
-}
 }
 
 DRESULT disk_write (

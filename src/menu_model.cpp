@@ -2673,6 +2673,17 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             }
           }
           else {
+#if LCD_W >= 212
+            if (attr) {
+              uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
+              if (len) {
+                lcd_putc(17*FW, 0, ' ');
+                lcd_putsnAtt(18*FW, 0, g_model.limitData[ch-1].name, len, ZCHAR);
+                lcd_putc(18*FW+len*FW, 0, ' ');
+              }
+            }
+#endif
+
             if (mixCnt > 0)
               lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, 0);
 
@@ -2693,7 +2704,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
                 if (md->curveMode == MODE_CURVE)
                   putsCurve(12*FW+2, y, md->curveParam);
                 else
-				  displayGVar(15*FW+2, y, md->curveParam, -100, 100);  // open.20.fsguruh
+                  displayGVar(15*FW+2, y, md->curveParam, -100, 100);  // open.20.fsguruh
                   // displayGVar(15*FW+2, y, md->curveParam, -125, 125); // only -100 to +100 is allowed now
                   // could be increased now, but is it useful? differentiate with more the +-100% is a fault, correct?
               }
@@ -3134,6 +3145,20 @@ enum CustomSwitchFields {
   CSW_FIELD_LAST = CSW_FIELD_COUNT-1
 };
 
+#if LCD_W >= 212
+  #define CSW_1ST_COLUMN  (4*FW-3)
+  #define CSW_2ND_COLUMN  (10*FW+1)
+  #define CSW_3RD_COLUMN  (18*FW+2)
+  #define CSW_4TH_COLUMN  (20*FW+1)
+  #define CSW_5TH_COLUMN  (26*FW+1)
+  #define CSW_6TH_COLUMN  (31*FW+1)
+#else
+  #define CSW_1ST_COLUMN  (4*FW-3)
+  #define CSW_2ND_COLUMN  (8*FW-3)
+  #define CSW_3RD_COLUMN  (16*FW-6)
+  #define CSW_4TH_COLUMN  (18*FW+2)
+#endif
+
 #if defined(CPUARM) && LCD_W < 212
 
 #define CSWONE_2ND_COLUMN (11*FW)
@@ -3226,8 +3251,8 @@ void menuModelCustomSwitchOne(uint8_t event)
       }
       case CSW_FIELD_ANDSW:
         lcd_putsLeft(y, PSTR("AND Switch"));
-        lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_VSWITCHES_SHORT, cs->andsw, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, 15);
+        putsSwitches(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
+        if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_SWITCH, MAX_SWITCH);
         break;
       case CSW_FIELD_DURATION:
         lcd_putsLeft(y, STR_DURATION);
@@ -3248,11 +3273,6 @@ void menuModelCustomSwitchOne(uint8_t event)
     }
   }
 }
-
-#define CSW_1ST_COLUMN  (4*FW-3)
-#define CSW_2ND_COLUMN  (10*FW+1)
-#define CSW_3RD_COLUMN  (18*FW+2)
-#define CSW_4TH_COLUMN  (20*FW+1)
 
 void menuModelCustomSwitches(uint8_t event)
 {
@@ -3317,18 +3337,11 @@ void menuModelCustomSwitches(uint8_t event)
       }
 
       // CSW and switch
-      lcd_putsiAtt(CSW_4TH_COLUMN, y, STR_VSWITCHES_SHORT, cs->andsw, 0);
+      putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, 0);
     }
   }
 }
 #else
-
-#define CSW_1ST_COLUMN  (4*FW-3)
-#define CSW_2ND_COLUMN  (10*FW+1)
-#define CSW_3RD_COLUMN  (18*FW+2)
-#define CSW_4TH_COLUMN  (20*FW+1)
-#define CSW_5TH_COLUMN  (26*FW+1)
-#define CSW_6TH_COLUMN  (31*FW+1)
 
 void menuModelCustomSwitches(uint8_t event)
 {
@@ -3400,11 +3413,7 @@ void menuModelCustomSwitches(uint8_t event)
     }
 
     // CSW and switch
-#if defined(PCBTARANIS)
     putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, m_posHorz==3 ? attr : 0);
-#else
-    lcd_putsiAtt(CSW_4TH_COLUMN, y, STR_VSWITCHES_SHORT, cs->andsw, m_posHorz==3 ? attr : 0);
-#endif
 
 #if defined(CPUARM)
     // CSW duration
@@ -3437,9 +3446,9 @@ void menuModelCustomSwitches(uint8_t event)
           break;
         case CSW_FIELD_ANDSW:
 #if defined(PCBTARANIS)
-          CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, SWSRC_ON-1);
+          CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_CSW_ANDSW, MAX_CSW_ANDSW);
 #else
-          CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, 15);
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, MAX_CSW_ANDSW);
 #endif
           break;
 #if defined(CPUARM)
@@ -3629,7 +3638,7 @@ void menuModelCustomFunctions(uint8_t event)
 #endif
             }
             else if (CFN_FUNC(sd) == FUNC_PLAY_BOTH) {
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN-2+3*FWNUM, y, '|', attr);
+              lcd_putcAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+3*FWNUM, y, '|', attr);
               lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+3*FWNUM, y, val_displayed+PROMPT_CUSTOM_BASE, attr);
               lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+2+3*FWNUM, y, (val_displayed+PROMPT_CUSTOM_BASE+1)%10, attr|LEFT);
             }
@@ -4101,7 +4110,7 @@ void menuModelTelemetry(uint8_t event)
           if (attr && (s_editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
               case 0:
-                bar.source = checkIncDecModel(event, barSource, 0, g_model.frsky.usrProto ? TELEM_DISPLAY_MAX : TELEM_NOUSR_MAX);
+                bar.source = checkIncDecModel(event, barSource, 0, TELEM_DISPLAY_MAX);
                 if (checkIncDec_Ret) {
                   bar.barMin = 0;
                   bar.barMax = 255-maxTelemValue(bar.source);
@@ -4127,7 +4136,7 @@ void menuModelTelemetry(uint8_t event)
 #endif
             lcd_putsiAtt(pos[c], y, STR_VTELEMCHNS, value, cellAttr);
             if (cellAttr && (s_editMode>0 || p1valdiff)) {
-              CHECK_INCDEC_MODELVAR_ZERO(event, value, g_model.frsky.usrProto ? ((lineIndex==3 && c==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX) : TELEM_NOUSR_MAX);
+              CHECK_INCDEC_MODELVAR_ZERO(event, value, (lineIndex==3 && c==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX);
             }
           }
           if (attr && m_posHorz == NUM_LINE_ITEMS) {

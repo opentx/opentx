@@ -87,7 +87,6 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #endif
     ISTR(VKEYS)
     ISTR(VSWITCHES)
-    ISTR(VSWITCHES_SHORT)
     ISTR(VSRCRAW)
     ISTR(VTMRMODES)
 #if defined(PCBGRUVIN9X) || defined (CPUARM)

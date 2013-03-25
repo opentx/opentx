@@ -44,7 +44,7 @@
 #define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
 #define RBOX_CENTERY  LBOX_CENTERY
 #define MODELNAME_X   (15)
-#define MODELNAME_Y   (10)
+#define MODELNAME_Y   (11)
 #define VBATT_X       (MODELNAME_X+26)
 #define VBATT_Y       (FH+3)
 #define VBATTUNIT_X   (VBATT_X-2)
@@ -237,12 +237,19 @@ void displayTopBar()
   lcd_rect(BAR_BATT_X+FW, BAR_Y+1, 13, 7);
   lcd_vline(BAR_BATT_X+FW+13, BAR_Y+2, 5);
 
-  /* RSSI */
-  LCD_ICON(BAR_RSSI_X, BAR_Y, ICON_RSSI);
-  lcd_rect(BAR_RSSI_X+10, BAR_Y+1, 13, 7);
+  if (frskyData.rssi[0].value > 0) {
+    /* RSSI */
+    LCD_ICON(BAR_RSSI_X, BAR_Y, ICON_RSSI);
+    lcd_rect(BAR_RSSI_X+10, BAR_Y+1, 13, 7);
 
-  /* Rx voltage */
-  putsTelemetryChannel(BAR_A1_X, BAR_Y+1, TELEM_A1-1, frskyData.analog[0].value, LEFT);
+    /* Rx voltage */
+    if (g_model.frsky.voltsSource <= 1) {
+      uint8_t value = frskyData.analog[g_model.frsky.voltsSource].value;
+      if (value > 0) {
+        putsTelemetryChannel(BAR_A1_X, BAR_Y+1, TELEM_A1+g_model.frsky.voltsSource-1, value, LEFT);
+      }
+    }
+  }
 
   /* Notifs icons */
   xcoord_t x = BAR_NOTIFS_X;
@@ -299,8 +306,9 @@ void displayTopBar()
   displayTopBarGauge(BAR_BATT_X+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
 
   /* The inside of the RSSI gauge */
-  count = min(frskyData.rssi[0].value, frskyData.rssi[1].value) / 10;
-  displayTopBarGauge(BAR_RSSI_X+10, count, (frskyData.rssi[0].value < getRssiAlarmValue(0)) || (frskyData.rssi[1].value < getRssiAlarmValue(1)));
+  if (frskyData.rssi[0].value > 0) {
+    displayTopBarGauge(BAR_RSSI_X+10, frskyData.rssi[0].value / 10, frskyData.rssi[0].value < getRssiAlarmValue(0));
+  }
 }
 #endif
 

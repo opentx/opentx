@@ -135,8 +135,8 @@
 #define LEN_VMIXTRIMS          "\003"
 #define TR_VMIXTRIMS           "OFF""ON\0""Rud""Ele""Thr""Ail"
 
-#define LEN_VCSWFUNC           "\006"
-#define TR_VCSWFUNC            "---\0  ""v1==x\0""v1>x\0 ""v1<x\0 ""|v1|>x""|v1|<x""AND\0  ""OR\0   ""XOR\0  ""v1==v2""v1>v2\0""v1<v2\0""d>=x\0 ""|d|>=x"
+#define LEN_VCSWFUNC           "\005"
+#define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 ""|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 ""a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x"
 
 #define LEN_VFSWFUNC           "\012"
 
@@ -299,9 +299,6 @@
 #else
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW " ON"
 #endif
-
-#define LEN_VSWITCHES_SHORT    "\001"
-#define TR_VSWITCHES_SHORT     "-012TREAG3456789"
 
 #if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS_VSRCRAW "REnc"

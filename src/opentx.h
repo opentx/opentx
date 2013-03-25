@@ -355,66 +355,71 @@ enum EnumKeys {
 #include "myeeprom.h"
 
 #if ROTARY_ENCODERS > 0
-#define IF_ROTARY_ENCODERS(x) x,
+  #define IF_ROTARY_ENCODERS(x) x,
 #else
-#define IF_ROTARY_ENCODERS(x)
+  #define IF_ROTARY_ENCODERS(x)
 #endif
 
 #define PPM_CENTER 1500
 
 #if defined(PPM_CENTER_ADJUSTABLE)
-#define PPM_CH_CENTER(ch) (PPM_CENTER+limitaddress(ch)->ppmCenter)
+  #define PPM_CH_CENTER(ch) (PPM_CENTER+limitaddress(ch)->ppmCenter)
 #else
-#define PPM_CH_CENTER(ch) (PPM_CENTER)
+  #define PPM_CH_CENTER(ch) (PPM_CENTER)
 #endif
 
 #if defined(CPUARM)
-// This doesn't need protection on this processor
-#define tmr10ms_t uint32_t
-extern volatile tmr10ms_t g_tmr10ms;
-#define get_tmr10ms() g_tmr10ms
+  // This doesn't need protection on this processor
+  #define tmr10ms_t uint32_t
+  extern volatile tmr10ms_t g_tmr10ms;
+  #define get_tmr10ms() g_tmr10ms
+  typedef int32_t rotenc_t;
+  typedef int32_t getvalue_t;
 #else
-#define tmr10ms_t uint16_t
-extern volatile tmr10ms_t g_tmr10ms;
-extern inline uint16_t get_tmr10ms()
-{
-  uint16_t time  ;
-  cli();
-  time = g_tmr10ms ;
-  sei();
-  return time ;
-}
+  #define tmr10ms_t uint16_t
+  extern volatile tmr10ms_t g_tmr10ms;
+  extern inline uint16_t get_tmr10ms()
+  {
+    uint16_t time  ;
+    cli();
+    time = g_tmr10ms ;
+    sei();
+    return time ;
+  }
+  typedef int8_t rotenc_t;
+  typedef int16_t getvalue_t;
 #endif
 
 #include "eeprom_common.h"
+
 #if defined(PCBSKY9X)
-#include "eeprom_raw.h"
+  #include "eeprom_raw.h"
 #else
-#include "eeprom_rlc.h"
+  #include "eeprom_rlc.h"
 #endif
 
 #if defined(CPUARM)
-#include "pulses_arm.h"
+  #include "pulses_arm.h"
 #else
-#include "pulses_avr.h"
+  #include "pulses_avr.h"
 #endif
 
 #if defined(PCBTARANIS)
-#define MODEL_BITMAP_WIDTH  64
-#define MODEL_BITMAP_HEIGHT 32
-#define MODEL_BITMAP_SIZE   (2+4*(MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8))
-extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-extern pm_char * modelBitmapLoaded;
-void loadModelBitmap();
-#define LOAD_MODEL_BITMAP() loadModelBitmap()
+  #define MODEL_BITMAP_WIDTH  64
+  #define MODEL_BITMAP_HEIGHT 32
+  #define MODEL_BITMAP_SIZE   (2+4*(MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8))
+  extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
+  extern pm_char * modelBitmapLoaded;
+  void loadModelBitmap();
+  #define LOAD_MODEL_BITMAP() loadModelBitmap()
 #else
-#define LOAD_MODEL_BITMAP()
+  #define LOAD_MODEL_BITMAP()
 #endif
 
 #if defined(DSM2)
-extern bool s_bind_mode;
-extern bool s_rangecheck_mode;
-extern uint8_t s_bind_allowed;
+  extern bool s_bind_mode;
+  extern bool s_rangecheck_mode;
+  extern uint8_t s_bind_allowed;
 #endif
 
 #if defined(CPUARM)
@@ -722,8 +727,8 @@ void perOut(uint8_t mode, uint8_t tick10ms);
 void perMain();
 NOINLINE void per10ms();
 
-int16_t getValue(uint8_t i);
-bool    getSwitch(int8_t swtch, bool nc);
+getvalue_t getValue(uint8_t i);
+bool       getSwitch(int8_t swtch, bool nc);
 
 extern swstate_t switches_states;
 int8_t  getMovedSwitch();
@@ -1117,12 +1122,6 @@ inline bool isFunctionActive(uint8_t func)
   return activeFunctions & ((MASK_FUNC_TYPE)1 << (func-FUNC_TRAINER));
 }
 
-#if defined(CPUARM)
-  typedef int32_t rotenc_t;
-#else
-  typedef int8_t rotenc_t;
-#endif
-
 #if defined(ROTARY_ENCODERS)
   // Global rotary encoder registers
   extern volatile rotenc_t g_rotenc[ROTARY_ENCODERS];
@@ -1332,8 +1331,8 @@ extern uint8_t barsThresholds[THLD_MAX];
 
 #if defined(FRSKY)
 uint8_t maxTelemValue(uint8_t channel);
-int16_t convertTelemValue(uint8_t channel, uint8_t value);
-int16_t convertCswTelemValue(CustomSwData * cs);
+getvalue_t convertTelemValue(uint8_t channel, uint8_t value);
+getvalue_t convertCswTelemValue(CustomSwData * cs);
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
 
 extern const pm_uint8_t bchunit_ar[];

@@ -134,8 +134,7 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VKEYS            (OFS_VSWASHTYPE)
 #endif
 #define OFS_VSWITCHES          (OFS_VKEYS + sizeof(TR_VKEYS))
-#define OFS_VSWITCHES_SHORT    (OFS_VSWITCHES + sizeof(TR_VSWITCHES))
-#define OFS_VSRCRAW            (OFS_VSWITCHES_SHORT + sizeof(TR_VSWITCHES_SHORT))
+#define OFS_VSRCRAW            (OFS_VSWITCHES + sizeof(TR_VSWITCHES))
 #define OFS_VTMRMODES          (OFS_VSRCRAW + sizeof(TR_VSRCRAW))
 #define OFS_DATETIME           (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #if defined(PCBGRUVIN9X) || defined(CPUARM)
@@ -202,7 +201,6 @@ extern const pm_char STR_OPEN9X[];
 
 #define STR_VKEYS              (STR_OPEN9X + OFS_VKEYS)
 #define STR_VSWITCHES          (STR_OPEN9X + OFS_VSWITCHES)
-#define STR_VSWITCHES_SHORT    (STR_OPEN9X + OFS_VSWITCHES_SHORT)
 #define STR_VSRCRAW            (STR_OPEN9X + OFS_VSRCRAW)
 #define STR_VTMRMODES          (STR_OPEN9X + OFS_VTMRMODES)
 

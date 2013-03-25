@@ -842,7 +842,7 @@ int16_t cyc_anas[3] = {0};
 
 bool __getSwitch(int8_t swtch);
 
-int16_t getValue(uint8_t i)
+getvalue_t getValue(uint8_t i)
 {
   /*srcRaw is shifted +1!*/
 
@@ -884,10 +884,12 @@ int16_t getValue(uint8_t i)
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_TM2) return s_timerVal[i+1-MIXSRC_FIRST_TELEM+1-TELEM_TM1];
 #if defined(FRSKY)
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
-  else if(i<MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
-  else if(i<MIXSRC_FIRST_TELEM-1+TELEM_A2) return frskyData.analog[i+1-MIXSRC_FIRST_TELEM+1-TELEM_A1].value;
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if(i<MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_ALT_BP;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_A2) return frskyData.analog[i+1-MIXSRC_FIRST_TELEM+1-TELEM_A1].value;
+#if defined(PCBTARANIS)
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_ALT) return frskyData.hub.baroAltitude;
+#elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_ALT_BP;
 #endif
 #if defined(FRSKY_HUB)
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_RPM) return frskyData.hub.rpm;
@@ -966,9 +968,6 @@ bool __getSwitch(int8_t swtch)
 
       CustomSwData * cs = cswaddress(cs_idx);
       uint8_t s = cs->andsw;
-#if !defined(PCBTARANIS)
-      if (s >= SWSRC_TRN) s += SWSRC_SW3-SWSRC_TRN;
-#endif
       if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
         result = false;
       }
@@ -2236,6 +2235,10 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM-1+TELEM_ALT-1:
+#if defined(PCBTARANIS)
+      PLAY_NUMBER(val/100, 1+UNIT_METERS, 0);
+      break;
+#endif
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT-1:
     case MIXSRC_FIRST_TELEM-1+TELEM_MAX_ALT-1:
 #if defined(IMPERIAL_UNITS)
@@ -2551,7 +2554,7 @@ void evalFunctions()
             }
 #endif
             else {
-              SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, limit((int16_t)-1250, getValue(CFN_PARAM(sd)), (int16_t)1250) / 10, s_perout_flight_phase);
+              SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, limit((getvalue_t)-1250, getValue(CFN_PARAM(sd)), (getvalue_t)1250) / 10, s_perout_flight_phase);
             }
           }
           else {
