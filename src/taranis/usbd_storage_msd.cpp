@@ -128,8 +128,8 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   
   *block_size = 512;
 
-  BYTE sector_count = 0;
-  if (disk_ioctl(g_FATFS_Obj.drv, GET_SECTOR_COUNT, block_num) != RES_OK)
+  DWORD sector_count = 0;
+  if (disk_ioctl(0, GET_SECTOR_COUNT, &sector_count) != RES_OK)
     return -1;
 
   *block_num  = sector_count;
