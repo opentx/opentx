@@ -404,7 +404,6 @@ void menuModelSelect(uint8_t event)
             if (eeModelExists(sub)) {
               s_menu[s_menu_count++] = STR_SELECT_MODEL;
               MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-              MENU_ADD_SD_ITEM(STR_RESTORE_MODEL);
               MENU_ADD_NAVIGATION_ITEM(STR_COPY_MODEL);
               MENU_ADD_NAVIGATION_ITEM(STR_MOVE_MODEL);
               s_menu[s_menu_count++] = STR_DELETE_MODEL;
@@ -428,7 +427,6 @@ void menuModelSelect(uint8_t event)
           }
           else {
             MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-            MENU_ADD_SD_ITEM(STR_RESTORE_MODEL);
             MENU_ADD_NAVIGATION_ITEM(STR_COPY_MODEL);
             MENU_ADD_NAVIGATION_ITEM(STR_MOVE_MODEL);
           }
@@ -479,9 +477,11 @@ void menuModelSelect(uint8_t event)
 #endif
 
       case EVT_KEY_FIRST(KEY_MOVE_UP):
+      case EVT_KEY_REPT(KEY_MOVE_UP):
       case EVT_KEY_FIRST(KEY_MOVE_DOWN):
+      case EVT_KEY_REPT(KEY_MOVE_DOWN):
         if (s_copyMode) {
-          int8_t next_ofs = (IS_ROTARY_UP(event) || event == EVT_KEY_FIRST(KEY_MOVE_UP)) ? s_copyTgtOfs+1 : s_copyTgtOfs-1;
+          int8_t next_ofs = s_copyTgtOfs + oldSub - m_posVert;
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
             next_ofs = 0;
 
@@ -525,9 +525,6 @@ void menuModelSelect(uint8_t event)
 #endif
 
   TITLE(STR_MENUMODELSEL);
-
-  if (sub-s_pgOfs < 1) s_pgOfs = max(0, sub-1);
-  else if (sub-s_pgOfs > 5)  s_pgOfs = min(MAX_MODELS-7, sub-4);
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     uint8_t y=(i+1)*FH+1;
@@ -1064,12 +1061,13 @@ void menuModelSetup(uint8_t event)
           if (m_posHorz==0) {
             if (editMode>0 || p1valdiff) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.failsafeMode, FAILSAFE_LAST);
+              if (checkIncDec_Ret) SEND_FAILSAFE_NOW();
             }
           }
           else if (m_posHorz==1) {
             s_editMode = 0;
             if (g_model.failsafeMode==FAILSAFE_CUSTOM && event==EVT_KEY_FIRST(KEY_ENTER))
-            	pushMenu(menuModelFailsafe);
+              pushMenu(menuModelFailsafe);
           }
           else {
             lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
@@ -4197,10 +4195,10 @@ void menuModelFailsafe(uint8_t event)
       return;
   }
 
-  if(m_posVert >= 16)
-  	ch = 16;
+  if (m_posVert >= 16)
+    ch = 16;
   else
-  	ch = 0;
+    ch = 0;
 
   lcd_putsCenter(0*FH, FAILSAFESET);
   lcd_invert_line(0);
@@ -4226,7 +4224,7 @@ void menuModelFailsafe(uint8_t event)
       else
         val = 0;
 
-      if(m_posVert == ch && event == EVT_KEY_LONG(KEY_ENTER)) {
+      if (m_posVert == ch && event == EVT_KEY_LONG(KEY_ENTER)) {
         g_model.failsafeChannels[ch] = val;
         eeDirty(EE_MODEL);
         s_editMode = 0;

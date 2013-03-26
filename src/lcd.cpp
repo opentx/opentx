@@ -210,11 +210,10 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 
     uint8_t ym8 = (y & 0x07);
     p += 5;
-    for (int8_t i=5; i>=0; i--) {
-      uint8_t b = (i!=5 ? pgm_read_byte(q--) : 0);
+    for (uint8_t i=6, b=0; i>0; i--, b=pgm_read_byte(q--)) {
       if (inv) b = ~b;
 
-      if (condense && i==1) {
+      if (condense && i==2) {
         /*condense the letter by skipping column 4 */
         continue;
       }

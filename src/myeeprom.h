@@ -441,8 +441,8 @@ PACK( union u_int8int16_t {
 #define MAX_CSW_DELAY    120 /*60s*/
 #define MAX_CSW_ANDSW    MAX_SWITCH
 PACK(typedef struct t_CustomSwData { // Custom Switches data
-  int8_t  v1; //input
-  int8_t  v2; //offset
+  int8_t  v1;
+  int8_t  v2;      // TODO EEPROM change
   uint8_t func;
   uint8_t delay;
   uint8_t duration;
@@ -1157,7 +1157,7 @@ PACK(typedef struct t_ModelData {
   TimerData timers[MAX_TIMERS];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
-  int8_t    ppmNCH:4;
+  int8_t    ppmNCH:4;             /* TODO EEPROM change */
   uint8_t   trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
   uint8_t   pulsePol:1;

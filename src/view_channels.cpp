@@ -54,10 +54,10 @@ void menuChannelsView(uint8_t event)
       break;
   }
   
-  if(secondPage)
-  	ch = 16;
+  if (secondPage)
+    ch = 16;
   else
-  	ch = 0;
+    ch = 0;
 
   lcd_putsCenter(0*FH, CHANNELS_MONITOR);
   lcd_invert_line(0);

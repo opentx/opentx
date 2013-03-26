@@ -41,6 +41,8 @@
 
 #if defined(SIMU)
 
+#include <stdio.h>
+
   #define TRACE_DEBUG(...) { printf("-D- " __VA_ARGS__); fflush(stdout); }
   #define TRACE_DEBUG_WP(...) { printf(__VA_ARGS__); fflush(stdout); }
   #define TRACE_INFO(...) { printf("-I- " __VA_ARGS__); fflush(stdout); }
@@ -64,7 +66,7 @@
   }
   #define DUMP(data, size) dump(data, size)
 
-#elif defined(DEBUG)
+#elif defined(DEBUG) && defined(CPUARM)
 
 #ifdef __cplusplus
 extern "C" {

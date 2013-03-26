@@ -205,9 +205,7 @@
 #include "stock/board_stock.h"
 #endif
 
-#if defined(CPUARM)
 #include "debug.h"
-#endif
 
 #if defined(SIMU)
 #include "simpgmspace.h"

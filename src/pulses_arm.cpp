@@ -38,7 +38,8 @@
 
 uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol = 255;
-uint8_t pxxFlag = 0 ;
+uint32_t failsafeCounter = 100;
+uint8_t pxxFlag = 0;
 
 uint16_t ppmStream[20]  = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
 uint16_t ppm2Stream[20] = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
@@ -310,12 +311,25 @@ void setupPulsesPXX()
   putPcmByte(g_model.modelId);
 
   /* FLAG1 */
+  uint8_t flag1;
   if (pxxFlag & PXX_SEND_RXNUM) {
-    putPcmByte((g_model.rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag);
+    flag1 = (g_model.rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag;
   }
   else {
-    putPcmByte((g_model.rfProtocol << 6) | pxxFlag);
+    flag1 = (g_model.rfProtocol << 6) | pxxFlag;
+#if defined(PCBTARANIS)
+    if (g_model.failsafeMode != FAILSAFE_HOLD) {
+      if (failsafeCounter-- == 0) {
+        failsafeCounter = 1000;
+        flag1 |= PXX_SEND_FAILSAFE;
+      }
+      if (failsafeCounter == 0 && g_model.ppmNCH > 0) {
+        flag1 |= PXX_SEND_FAILSAFE;
+      }
+    }
+#endif
   }
+  putPcmByte(flag1);
 
   /* FLAG2 */
   putPcmByte(0);
@@ -327,13 +341,44 @@ void setupPulsesPXX()
     sendUpperChannels = g_model.ppmNCH*2;
   }
   for (uint32_t i=0; i<8; i+=2) {
-    if (i < sendUpperChannels) {
-      chan =  limit(2048, (channelOutputs[8+g_model.ppmSCH+i] * 512 / 682) + 3072, 4095);
-      chan_1 = limit(2048, (channelOutputs[8+g_model.ppmSCH+i+1] * 512 / 682) + 3072, 4095);
+#if defined(PCBTARANIS)
+    if (flag1 & PXX_SEND_FAILSAFE) {
+      if (g_model.failsafeMode == FAILSAFE_NOPULSES) {
+        if (i < sendUpperChannels) {
+          chan   = 3072;
+          chan_1 = 3072;
+        }
+        else {
+          chan   = 1024;
+          chan_1 = 1024;
+        }
+      }
+      else {
+        if (i < sendUpperChannels) {
+          chan =  limit(2048, (g_model.failsafeChannels[8+g_model.ppmSCH+i] * 512 / 682) + 3072, 4095);
+          chan_1 = limit(2048, (g_model.failsafeChannels[8+g_model.ppmSCH+i+1] * 512 / 682) + 3072, 4095);
+          if (chan == 3072) chan = 3073;
+          if (chan_1 == 3072) chan_1 = 3073;
+        }
+        else {
+          chan = limit(0, (g_model.failsafeChannels[g_model.ppmSCH+i] * 512 / 682) + 1024, 2047);
+          chan_1 = limit(0, (g_model.failsafeChannels[g_model.ppmSCH+i+1] * 512 / 682) + 1024, 2047);
+          if (chan == 1024) chan = 1025;
+          if (chan_1 == 1024) chan_1 = 1025;
+        }
+      }
     }
-    else {
-      chan = limit(0, (channelOutputs[g_model.ppmSCH+i] * 512 / 682) + 1024, 2047);
-      chan_1 = limit(0, (channelOutputs[g_model.ppmSCH+i+1] * 512 / 682)  + 1024, 2047);
+    else
+#endif
+    {
+      if (i < sendUpperChannels) {
+        chan =  limit(2048, (channelOutputs[8+g_model.ppmSCH+i] * 512 / 682) + 3072, 4095);
+        chan_1 = limit(2048, (channelOutputs[8+g_model.ppmSCH+i+1] * 512 / 682) + 3072, 4095);
+      }
+      else {
+        chan = limit(0, (channelOutputs[g_model.ppmSCH+i] * 512 / 682) + 1024, 2047);
+        chan_1 = limit(0, (channelOutputs[g_model.ppmSCH+i+1] * 512 / 682) + 1024, 2047);
+      }
     }
     putPcmByte(chan); // Low byte of channel
     putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
