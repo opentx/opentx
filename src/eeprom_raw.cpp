@@ -410,11 +410,13 @@ void eeLoadModel(uint8_t id)
     frskySendAlarms();
 #endif
 
-#if defined(SDCARD)
+#if defined(CPUARM) && defined(SDCARD)
     refreshModelAudioFiles();
 #endif
 
     LOAD_MODEL_BITMAP();
+
+    SEND_FAILSAFE_1S();
   }
 }
 

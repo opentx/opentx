@@ -47,5 +47,6 @@ inline void pausePulses() { s_pulses_paused = true; }
 inline void resumePulses() { s_pulses_paused = false; }
 
 #define SEND_FAILSAFE_NOW() failsafeCounter = 1
+#define SEND_FAILSAFE_1S()  failsafeCounter = 100
 
 #endif

@@ -55,5 +55,8 @@ void setupPulses();
 void DSM2_Init();
 void DSM2_Done();
 
+#define SEND_FAILSAFE_NOW()
+#define SEND_FAILSAFE_1S()
+
 #endif
 /*eof*/
