@@ -4229,6 +4229,7 @@ void menuModelFailsafe(uint8_t event)
         eeDirty(EE_MODEL);
         s_editMode = 0;
         AUDIO_WARNING1();
+        SEND_FAILSAFE_NOW();
         killEvents(event);
       }
 
