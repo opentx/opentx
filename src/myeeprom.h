@@ -887,8 +887,6 @@ PACK(typedef struct t_PhaseData {
   #define CURVTYPE   int8_t
 #endif
 
-#define MAX_SWITCH (MAX_PSWITCH+NUM_CSW)
-
 enum SwitchSources {
   SWSRC_NONE = 0,
 

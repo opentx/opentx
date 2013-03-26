@@ -1056,12 +1056,12 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODE_INTERNAL_MODULE_FAILSAFE:
         lcd_putsLeft(y, TR_FAILSAFE);
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\011""Hold\0    ""Custom\0  ""No pulses"), g_model.failsafeMode, (m_posHorz==0 || g_model.failsafeMode!=FAILSAFE_CUSTOM) ? attr : 0);
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\011""Hold\0    ""Custom\0  ""No pulses"), g_model.failsafeMode, m_posHorz==0 ? attr : 0);
         if (g_model.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + 10*FW, y, PSTR("[Set]"), m_posHorz==1 ? attr : 0);
         if (attr) {
-          if (s_editMode==0 && g_model.failsafeMode!=FAILSAFE_CUSTOM)
-            m_posHorz = -1;
-          if (m_posHorz==0 || g_model.failsafeMode!=FAILSAFE_CUSTOM) {
+          if (g_model.failsafeMode != FAILSAFE_CUSTOM)
+            m_posHorz = 0;
+          if (m_posHorz==0) {
             if (editMode>0 || p1valdiff) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.failsafeMode, FAILSAFE_LAST);
             }
@@ -3511,7 +3511,7 @@ void menuModelCustomFunctions(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, sd->swtch, attr | ((activeFnSwitches & ((MASK_FUNC_TYPE)1 << k)) ? BOLD : 0));
+          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, sd->swtch, attr | ((activeFnSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWSRC_FIRST, SWSRC_LAST);
           break;
 
