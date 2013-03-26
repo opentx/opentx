@@ -211,7 +211,7 @@ bool switchState(EnumKeys enuk)
       xxx = GPIO_PIN_SW_H & PIN_SW_H;
       break;
     case SW_SH2:
-      xxx = GPIO_PIN_SW_H & PIN_SW_H;
+      xxx = ~GPIO_PIN_SW_H & PIN_SW_H;
       break;
 
     default:
