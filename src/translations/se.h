@@ -55,7 +55,7 @@
 #define TR_VLCD                "NormalOptrex"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
-#define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
+#define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_VTRIMINC           TR("\006","\014")
 #define TR_VTRIMINC            TR("Expo  ""xFin  ""Fin   ""Medium""Grov  ","Exponentiell""Extra Fin   ""Fin         ""Medium      ""Grov        ")
@@ -146,9 +146,9 @@
 
 #if defined(VOICE)
   #if defined(PCBSKY9X)
-    #define TR_PLAY_TRACK        "Spela Sp\200r\0"
+    #define TR_PLAY_TRACK      "Spela Sp\200r\0"
   #else
-    #define TR_PLAY_TRACK        "Spela\0     "
+    #define TR_PLAY_TRACK      "Spela\0     "
   #endif
   #define TR_PLAY_BOTH         "Play Both\0 "
   #define TR_PLAY_VALUE        "Spela V\201rde"
@@ -422,9 +422,9 @@
 #define TR_BG                  "BG:"
 
 #if defined(PCBTARANIS)
-  #define TR_MENUTOSTART         CENTER"\006[ENTER] Startar "
+  #define TR_MENUTOSTART       CENTER"\006[ENTER] Startar "
 #else
-  #define TR_MENUTOSTART         CENTER"\006[MENU] Startar "
+  #define TR_MENUTOSTART       CENTER"\006[MENU] Startar "
 #endif
 
 #define TR_SETMIDPOINT         CENTER"\010Centrera Allt"
@@ -443,9 +443,9 @@
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\006us"
 
 #if defined(CPUARM)
-  #define TR_TMIXMAXMS           "Tmix max\012ms"
+  #define TR_TMIXMAXMS         "Tmix max\012ms"
 #else
-  #define TR_TMIXMAXMS           "Tmix max\014ms"
+  #define TR_TMIXMAXMS         "Tmix max\014ms"
 #endif
 
 #define TR_T10MSUS             "T10ms\016us"
