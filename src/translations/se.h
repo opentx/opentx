@@ -2,6 +2,19 @@
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Kjell Kernen <kjell.kernen@gmail.com>
+ * *
+ *
+ *
+ *
+ *
+ *
+ * 
+ *    << Blank area used to row align file with en.h  >>
+ *
+ *
+ *
+ *
+ *
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -18,7 +31,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- */
+ *
+*/ 
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
@@ -77,17 +91,17 @@
 #define LEN_VPROTOS            "\006"
 
 #if defined(PXX)
-  #define TR_PXX         "PXX\0  "
+  #define TR_PXX               "PXX\0  "
 #elif defined(DSM2) || defined(IRPROTOS)
-  #define TR_PXX         "[PXX]\0"
+  #define TR_PXX               "[PXX]\0"
 #else
   #define TR_PXX
 #endif
 
 #if defined(DSM2)
-  #define TR_DSM2        "LP45\0 ""DSM2\0 ""DSMX\0 "
+  #define TR_DSM2              "LP45\0 ""DSM2\0 ""DSMX\0 "
 #elif defined(IRPROTOS)
-  #define TR_DSM2        "[LP45]""[DSM2]""[DSMX]"
+  #define TR_DSM2              "[LP45]""[DSM2]""[DSMX]"
 #else
   #define TR_DSM2
 #endif
@@ -420,13 +434,7 @@
 #define TR_CAL                 "Kalib."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-
-#if defined(PCBTARANIS)
-  #define TR_MENUTOSTART       CENTER"\006[ENTER] Startar "
-#else
-  #define TR_MENUTOSTART       CENTER"\006[MENU] Startar "
-#endif
-
+#define TR_MENUTOSTART         CENTER"\006"TR_ENTER" Startar "
 #define TR_SETMIDPOINT         CENTER"\010Centrera Allt"
 #define TR_MOVESTICKSPOTS      CENTER"\004R\202r Rattar/Spakar"
 #define TR_RXBATT              "Rx Batt:"
@@ -572,5 +580,5 @@
 #define TR_INTERNALRF          "Intern RF"
 #define TR_EXTERNALRF          "Extern RF"
 #define TR_FAILSAFE            "Failsafe-l\201ge"
-#define TR_FAILSAFESET         "FAILSAFE INST\204LLNING"
+#define TR_FAILSAFESET         "FailsafeInst\201llning"
 #define TR_COUNTRYCODE         "Landskod"
