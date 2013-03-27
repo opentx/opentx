@@ -150,11 +150,11 @@
   #else
     #define TR_PLAY_TRACK      "Spela\0     "
   #endif
-  #define TR_PLAY_BOTH         "Play Both\0 "
+  #define TR_PLAY_BOTH         "Spela B\203da\0"
   #define TR_PLAY_VALUE        "Spela V\201rde"
 #else
   #define TR_PLAY_TRACK        "[Spela Sp\200r]"
-  #define TR_PLAY_BOTH         "[Play Both]"
+  #define TR_PLAY_BOTH         "[Spela B\200da]"
   #define TR_PLAY_VALUE        "[Spela V\201rde]"
 #endif
 
@@ -281,9 +281,9 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " ON"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " P\203"
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW " ON"
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "GAS""SID""HJD""SKE""LAN""TRN" TR_CUSTOMSW " P\203"
 #endif
 
 #if defined(PCBSKY9X)
@@ -395,7 +395,7 @@
 #define TR_HAPTICSTRENGTH      INDENT"Styrka"
 #define TR_CONTRAST            "Kontrast"
 #define TR_ALARMS_LABEL        "Alarm"
-#define TR_BATTERY_RANGE       "Batteri range"
+#define TR_BATTERY_RANGE       "Batteriomr\203de"
 #define TR_BATTERYWARNING      INDENT"Batteri"
 #define TR_INACTIVITYALARM     INDENT"Inaktivitet"
 #define TR_MEMORYWARNING       INDENT"Lite Minne"
@@ -407,8 +407,8 @@
 #define TR_PERSISTENT          INDENT"Persist."
 #define TR_BACKLIGHT_LABEL     "Belysning"
 #define TR_BLDELAY             INDENT"Av efter"
-#define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
-#define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
+#define TR_BLONBRIGHTNESS      INDENT"P\200 Ljusstyrka"
+#define TR_BLOFFBRIGHTNESS     INDENT"AV Ljusstyrka"
 #define TR_SPLASHSCREEN        "Bild vid start"
 #define TR_THROTTLEWARNING     TR("Gasvarn.","Gasvarning")
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
@@ -511,8 +511,8 @@
 #define TR_CURRENT             INDENT"Str\202m"
 #define TR_SELECT_MODEL        "V\201lj Modell"
 #define TR_CREATE_MODEL        "Skapa Modell"
-#define TR_COPY_MODEL          "Copy Model"
-#define TR_MOVE_MODEL          "Move Model"
+#define TR_COPY_MODEL          "Kopiera Modell"
+#define TR_MOVE_MODEL          "Flytta Modell"
 #define TR_BACKUP_MODEL        "Modell-backup"
 #define TR_DELETE_MODEL        "Ta Bort Modell"
 #define TR_RESTORE_MODEL       "\203terst\201ll Modell"
@@ -569,8 +569,8 @@
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
 #define TR_CHANNELS_MONITOR    "Kanal\205versikt"
-#define TR_INTERNALRF          "Internal RF"
-#define TR_EXTERNALRF          "External RF"
-#define TR_FAILSAFE            "Failsafe mode"
-#define TR_FAILSAFESET         "FAILSAFE SETTINGS"
-#define TR_COUNTRYCODE         "Country Code"
+#define TR_INTERNALRF          "Intern RF"
+#define TR_EXTERNALRF          "Extern RF"
+#define TR_FAILSAFE            "Failsafe-l\201ge"
+#define TR_FAILSAFESET         "FAILSAFE INST\204LLNING"
+#define TR_COUNTRYCODE         "Landskod"
