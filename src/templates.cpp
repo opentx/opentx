@@ -122,11 +122,11 @@ void setSwitch(uint8_t idx, uint8_t func, int8_t v1, int8_t v2)
   cs->v2   = v2;
 }
 
-const pm_int8_t heli_ar1[] PROGMEM = {-100, 20, 50, 70, 90};
-const pm_int8_t heli_ar2[] PROGMEM = {90, 70, 50, 70, 90};
-const pm_int8_t heli_ar3[] PROGMEM = {-20, -20, 0, 60, 100};
-const pm_int8_t heli_ar4[] PROGMEM = {-100, -60, 0, 60, 100};
-const pm_int8_t heli_ar5[] PROGMEM = {-100, 0, 0, 0, 100};
+const pm_int8_t heli_ar1[] PROGMEM = {-100, 20, 30, 70, 90};
+const pm_int8_t heli_ar2[] PROGMEM = {80, 70, 60, 70, 100};
+const pm_int8_t heli_ar3[] PROGMEM = {100, 90, 80, 90, 100};
+const pm_int8_t heli_ar4[] PROGMEM = {-30, -15, 0, 50, 100};
+const pm_int8_t heli_ar5[] PROGMEM = {-100, -50, 0, 50, 100};
 
 void applyTemplate(uint8_t idx)
 {
@@ -198,19 +198,19 @@ void applyTemplate(uint8_t idx)
       case TMPL_HELI_SETUP:
         clearCurves();
 
-      //Set up Mixes
-         // 3 cyclic channels
+        //Set up Mixes
+        // 3 cyclic channels
         md=setDest(0, MIXSRC_CYC1); // md->weight=100;
         md=setDest(1, MIXSRC_CYC2); // md->weight=100;
         md=setDest(2, MIXSRC_CYC3); // md->weight=100;
 
         // rudder
-	md=setDest(3, MIXSRC_Rud); // md->weight=100;
+        md=setDest(3, MIXSRC_Rud); // md->weight=100;
 
         // throttle
-	md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(1); md->carryTrim=TRIM_OFF;
-	md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
-	md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(3); md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(1); md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(3); md->carryTrim=TRIM_OFF;
         md=setDest(4, MIXSRC_MAX); md_SetWeight(md, -100); md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
 
         // gyro gain
@@ -218,11 +218,11 @@ void applyTemplate(uint8_t idx)
         md=setDest(5, MIXSRC_MAX); md_SetWeight(md, -30); md->swtch= SWSRC_GEA;
    
         // collective
-	md=setDest(11, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(11, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(5); md->carryTrim=TRIM_OFF;
-        md=setDest(11, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(6); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(5); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(6); md->carryTrim=TRIM_OFF;
 
-        g_model.swashR.collectiveSource = MIXSRC_CH11 - MAX_SWITCH;
+        g_model.swashR.collectiveSource = MIXSRC_CH11;
         g_model.swashR.type = SWASH_TYPE_120;
 
         //Set up Curves
