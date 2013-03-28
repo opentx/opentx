@@ -242,7 +242,7 @@ enum FrskyViews {
 
 static uint8_t s_frsky_view = e_frsky_custom_screen_1;
 
-#if LCD_W == 212
+#if LCD_W >= 212
 void displayRssiLine()
 {
   if (frskyStreaming > 0) {

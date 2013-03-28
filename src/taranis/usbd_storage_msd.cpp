@@ -33,12 +33,10 @@ extern "C" {
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
 #include "usbd_msc_mem.h"
 #include "usb_conf.h"
-extern void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
+
+void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 
 #define STORAGE_LUN_NBR                  2 
-
-// TODO ... perhaps something more adequate ;)
-#define SD_GetStatus() (0)
 
 /* USB Mass storage Standard Inquiry Data */
 const unsigned char STORAGE_Inquirydata[] = {//36
@@ -70,7 +68,6 @@ const unsigned char STORAGE_Inquirydata[] = {//36
   'R', 'a', 'd', 'i', 'o', 'E', 'P', 'M',
   '1', '.', '0' ,'0',                      /* Version      : 4 Bytes */
 }; 
-
 
 int32_t fat12Write( const uint8_t *buffer, uint16_t sector, uint32_t count ) ;
 int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count ) ;
@@ -140,23 +137,23 @@ int8_t STORAGE_Init (uint8_t lun)
   */
 int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
-	if ( lun == 1 )
-	{
-  	*block_size = 512;
-  	*block_num  = 1024*64 + 3 ;
-  	return (0);
-	}
-	
-  if (SD_GetStatus() != 0 )
-    return -1;
+  if (lun == 1)	{
+    *block_size = 512;
+    *block_num  = 1024*64 + 3 ;
+  }
+  else {
+    if (!SD_CARD_PRESENT())
+      return -1;
   
-  *block_size = 512;
+    *block_size = 512;
 
-  DWORD sector_count = 0;
-  if (disk_ioctl(0, GET_SECTOR_COUNT, &sector_count) != RES_OK)
-    return -1;
+    DWORD sector_count = 0;
+    if (disk_ioctl(0, GET_SECTOR_COUNT, &sector_count) != RES_OK)
+      return -1;
 
-  *block_num  = sector_count;
+    *block_num  = sector_count;
+  }
+
   return 0;
 }
 
@@ -167,25 +164,12 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   */
 int8_t  STORAGE_IsReady (uint8_t lun)
 { 
-  static int8_t last_status = 0;
-
-	if ( lun == 1 )
-	{
-  	return (0);
-	}
-
-  if(last_status  < 0)
-  {
-    // TODO ? SD_Init();
-    last_status = 0;
+  if (lun == 1) {
+    return 0;
   }
-  
-  if(SD_GetStatus() != 0)
-  {
-    last_status = -1;
-    return (-1); 
-  }  
-  return (0);
+  else {
+    return SD_CARD_PRESENT() ? 0 : -1;
+  }
 }
 
 /**
@@ -207,7 +191,6 @@ int8_t  STORAGE_IsWriteProtected (uint8_t lun)
   * @retval Status
   */
 
-// TODO quick & dirty
 int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count);
 
 int8_t STORAGE_Read (uint8_t lun, 
@@ -215,26 +198,19 @@ int8_t STORAGE_Read (uint8_t lun,
                  uint32_t blk_addr,                       
                  uint16_t blk_len)
 {
-	if ( lun == 1 )
-	{
-		if (fat12Read( buf, blk_addr, blk_len ) == 0 )
-		{
-    	return 0 ;
-		}
-    return -1 ;
-	}
-  
-  
-  if( SD_ReadSectors (buf,
-                      blk_addr,
-                      blk_len) != 0)
-  {
-    return -1;
+  if (lun == 1) {
+    if (fat12Read(buf, blk_addr, blk_len) != 0) {
+      return -1;
+    }
   }
-#if 0
-  SD_WaitReadOperation();
-  while (SD_GetStatus() != SD_TRANSFER_OK);
-#endif    
+  else {
+    if (SD_ReadSectors(buf,
+                       blk_addr,
+                       blk_len) != 0) {
+      return -1;
+    }
+  }
+
   return 0;
 }
 /**
@@ -253,25 +229,17 @@ int8_t STORAGE_Write (uint8_t lun,
                   uint32_t blk_addr,
                   uint16_t blk_len)
 {
-	if ( lun == 1 )
-	{
-		if (fat12Write( buf, blk_addr, blk_len ) == 0 )
-		{
-    	return 0 ;
-		}
-    return -1 ;
-	}
-  
-  if( SD_WriteSectors (buf,
-                       blk_addr,
-                       blk_len) != 0)
-  {
-    return -1;
+  if (lun == 1)	{
+    if (fat12Write( buf, blk_addr, blk_len ) != 0)
+      return -1;
   }
-#if 0
-  SD_WaitWriteOperation();
-  while (SD_GetStatus() != SD_TRANSFER_OK);  
-#endif  
+  else {
+    if (SD_WriteSectors(buf,
+                        blk_addr,
+                        blk_len) != 0)
+      return -1;
+  }
+
   return (0);
 }
 

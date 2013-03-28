@@ -441,7 +441,7 @@
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
-#define TR_NODATA              "NO DATA"
+#define TR_NODATA              CENTER"NO DATA"
 #define TR_TM1TM2              "TM1\032TM2"
 #define TR_THRTHP              "THR\032TH%"
 #define TR_TOT                 "TOT"
