@@ -65,8 +65,7 @@ void rotencPoll()
 
   asm(" rjmp 1f") ;
   asm("1:") ;
-//      asm(" nop") ;
-//      asm(" nop") ;
+
   uint8_t rotary ;
   rotary = PINA ;
   DDRA = 0xFF ;           // Back to all outputs

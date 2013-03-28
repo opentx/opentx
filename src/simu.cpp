@@ -453,7 +453,7 @@ uint16_t anaIn(uint8_t chan)
 {
 #if defined(PCBTARANIS)
   if (chan == 8)
-    return 2400;
+    return 1000;
 #elif defined(PCBGRUVIN9X)
   if (chan == 7)
     return 150;
