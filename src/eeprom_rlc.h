@@ -41,7 +41,11 @@
 
 #if defined(CPUARM)
 #define blkid_t    uint16_t
-#define EESIZE     (32*1024)
+#if defined(REV3)
+  #define EESIZE     (32*1024)
+#else
+  #define EESIZE     (64*1024)
+#endif
 #define EEFS_VERS  5
 #define MAXFILES   62
 #define BS         64
