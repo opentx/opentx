@@ -1246,7 +1246,7 @@ void menuModelSetup(uint8_t event)
 
 static uint8_t s_currIdx;
 
-#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ) || defined(TRANSLATIONS_SE) || defined(TRANSLATIONS_DE)
+#if MENU_COLUMNS < 2
   #if LCD_W >= 212
     #define MIXES_2ND_COLUMN  (18*FW)
   #else
