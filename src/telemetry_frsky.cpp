@@ -621,35 +621,8 @@ inline void frskySendNextAlarm(void)
 }
 #endif
 
-NOINLINE void telemetryPoll10ms()
+void telemetryInterrupt10ms()
 {
-#if defined(PCBSKY9X)
-  rxPdcUsart(processSerialData);              // Receive serial data here
-#endif
-
-  // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
-  static uint8_t frskyTxDelay = 5;
-  if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
-    frskyTxDelay = 5; // 50ms
-    frskySendNextAlarm();
-  }
-
-#ifndef SIMU
-#if defined(WS_HOW_HIGH)
-  if (frskyUsrStreaming > 0) {
-    frskyUsrStreaming--;
-  }
-#endif
-
-  if (frskyStreaming > 0) {
-    frskyStreaming--;
-  }
-  else {
-    frskyData.rssi[0].set(0);
-    frskyData.rssi[1].set(0);
-  }
-#endif
-
   uint16_t voltage = 0; /* unit: 1/10 volts */
 
 #if defined(FRSKY_HUB)
@@ -687,9 +660,39 @@ NOINLINE void telemetryPoll10ms()
     frskyData.currentConsumption += 1;
     frskyData.currentPrescale -= 3600;
   }
+}
+
+void telemetryWakeup()
+{
+#if defined(PCBSKY9X)
+  rxPdcUsart(processSerialData);              // Receive serial data here
+#endif
+
+  // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
+  static uint8_t frskyTxDelay = 5;
+  if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
+    frskyTxDelay = 5; // 50ms
+    frskySendNextAlarm();
+  }
+
+#ifndef SIMU
+#if defined(WS_HOW_HIGH)
+  if (frskyUsrStreaming > 0) {
+    frskyUsrStreaming--;
+  }
+#endif
+
+  if (frskyStreaming > 0) {
+    frskyStreaming--;
+  }
+  else {
+    frskyData.rssi[0].set(0);
+    frskyData.rssi[1].set(0);
+  }
+#endif
 
 #if defined(VARIO)
-  varioPoll10ms();
+  varioWakeup();
 #endif
 }
 

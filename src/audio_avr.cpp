@@ -124,8 +124,7 @@ void audioQueue::pause(uint8_t tLen)
   play(0, tLen, 5); // a pause
 }
 
-void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
-    uint8_t tFlags, int8_t tFreqIncr)
+void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags)
 {
   if (tFlags & PLAY_BACKGROUND) {
     tone2Freq = tFreq;
@@ -133,6 +132,9 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
     tone2Pause = tPause;
   }
   else {
+    int8_t tFreqIncr = (tFlags >> 6);
+    if (tFreqIncr == 3) tFreqIncr = -1;
+
     if (tFreq > 0) { //we dont add pitch if zero as this is a pause only event
       tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     }
@@ -165,7 +167,7 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause,
 
 void audioQueue::event(uint8_t e, uint8_t f)
 {
-#ifdef HAPTIC
+#if defined(HAPTIC)
   haptic.event(e); //do this before audio to help sync timings
 #endif
 
@@ -179,13 +181,13 @@ void audioQueue::event(uint8_t e, uint8_t f)
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:
-          play(70, 10, 2, 2|PLAY_NOW);
+          play(70, 10, 2, PLAY_REPEAT(2)|PLAY_NOW);
           break;
         // low battery in tx
         case AU_TX_BATTERY_LOW:
           if (empty()) {
-            play(60, 20, 3, 2, 1);
-            play(80, 20, 3, 2, -1);
+            play(60, 20, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(1));
+            play(80, 20, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(-1));
           }
           break;
         // error
@@ -230,23 +232,23 @@ void audioQueue::event(uint8_t e, uint8_t f)
           break;
         // mix warning 1
         case AU_MIX_WARNING_1:
-          play(BEEP_DEFAULT_FREQ + 50, 6, 0, PLAY_NOW);
+          play(BEEP_DEFAULT_FREQ + 50, 6, 0);
           break;
         // mix warning 2
         case AU_MIX_WARNING_2:
-          play(BEEP_DEFAULT_FREQ + 52, 6, 0, PLAY_NOW);
+          play(BEEP_DEFAULT_FREQ + 52, 6, 3, PLAY_REPEAT(1));
           break;
         // mix warning 3
         case AU_MIX_WARNING_3:
-          play(BEEP_DEFAULT_FREQ + 54, 6, 0, PLAY_NOW);
+          play(BEEP_DEFAULT_FREQ + 54, 6, 3, PLAY_REPEAT(2));
           break;
         // time 30 seconds left
         case AU_TIMER_30:
-          play(BEEP_DEFAULT_FREQ + 50, 15, 3, 2|PLAY_NOW);
+          play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(2)|PLAY_NOW);
           break;
         // time 20 seconds left
         case AU_TIMER_20:
-          play(BEEP_DEFAULT_FREQ + 50, 15, 3, 1|PLAY_NOW);
+          play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         // time 10 seconds left
         case AU_TIMER_10:
@@ -255,81 +257,81 @@ void audioQueue::event(uint8_t e, uint8_t f)
           play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_NOW);
           break;
         case AU_FRSKY_BEEP1:
-          play(BEEP_DEFAULT_FREQ,10,1,0);
+          play(BEEP_DEFAULT_FREQ, 10, 1);
           pause(200);
           break;
         case AU_FRSKY_BEEP2:
-          play(BEEP_DEFAULT_FREQ,20,1,0);
+          play(BEEP_DEFAULT_FREQ, 20, 1);
           pause(200);
           break;
         case AU_FRSKY_BEEP3:
-          play(BEEP_DEFAULT_FREQ,30,1,0);
+          play(BEEP_DEFAULT_FREQ, 30, 1);
           pause(200);
           break;
         case AU_FRSKY_WARN1:
-          play(BEEP_DEFAULT_FREQ+20,15,5,2);
+          play(BEEP_DEFAULT_FREQ+20, 15, 5, PLAY_REPEAT(2));
           pause(200);
           break;
         case AU_FRSKY_WARN2:
-          play(BEEP_DEFAULT_FREQ+30,15,5,2);
+          play(BEEP_DEFAULT_FREQ+30, 15, 5, PLAY_REPEAT(2));
           pause(200);
           break;
         case AU_FRSKY_CHEEP:
-          play(BEEP_DEFAULT_FREQ+30,10,2,2,2);
+          play(BEEP_DEFAULT_FREQ+30, 10, 2, PLAY_REPEAT(2)|PLAY_INCREMENT(2));
           pause(200);
           break;
         case AU_FRSKY_RING:
-          play(BEEP_DEFAULT_FREQ+25,5,2,10);
-          play(BEEP_DEFAULT_FREQ+25,5,10,1);
-          play(BEEP_DEFAULT_FREQ+25,5,2,10);
+          play(BEEP_DEFAULT_FREQ+25, 5, 2, PLAY_REPEAT(10));
+          play(BEEP_DEFAULT_FREQ+25, 5, 10, PLAY_REPEAT(1));
+          play(BEEP_DEFAULT_FREQ+25, 5, 2, PLAY_REPEAT(10));
           pause(200);
           break;
         case AU_FRSKY_SCIFI:
-          play(80,10,3,2,-1);
-          play(60,10,3,2,1);
-          play(70,10,1,0);
+          play(80, 10, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(-1));
+          play(60, 10, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(1));
+          play(70, 10, 1);
           pause(200);
           break;
         case AU_FRSKY_ROBOT:
-          play(70,5,1,1);
-          play(50,15,2,1);
-          play(80,15,2,1);
+          play(70, 5, 1, PLAY_REPEAT(1));
+          play(50, 15, 2, PLAY_REPEAT(1));
+          play(80, 15, 2, PLAY_REPEAT(1));
           pause(200);
           break;
         case AU_FRSKY_CHIRP:
-          play(BEEP_DEFAULT_FREQ+40,5,1,2);
-          play(BEEP_DEFAULT_FREQ+54,5,1,3);
+          play(BEEP_DEFAULT_FREQ+40, 5, 1, PLAY_REPEAT(2));
+          play(BEEP_DEFAULT_FREQ+54, 5, 1, PLAY_REPEAT(3));
           pause(200);
           break;
         case AU_FRSKY_TADA:
-          play(50,5,5);
-          play(90,5,5);
-          play(110,3,4,2);
+          play(50, 5, 5);
+          play(90, 5, 5);
+          play(110, 3, 4, PLAY_REPEAT(2));
           pause(200);
           break;
         case AU_FRSKY_CRICKET:
-          play(80,5,10,3);
-          play(80,5,20,1);
-          play(80,5,10,3);
+          play(80, 5, 10, PLAY_REPEAT(3));
+          play(80, 5, 20, PLAY_REPEAT(1));
+          play(80, 5, 10, PLAY_REPEAT(3));
           pause(200);
           break;
         case AU_FRSKY_SIREN:
-          play(10,20,5,2,1);
+          play(10, 20, 5, PLAY_REPEAT(2)|PLAY_INCREMENT(1));
           pause(200);
           break;
         case AU_FRSKY_ALARMC:
-          play(50,4,10,2);
-          play(70,8,20,1);
-          play(50,8,10,2);
-          play(70,4,20,1);
+          play(50, 4, 10, PLAY_REPEAT(2));
+          play(70, 8, 20, PLAY_REPEAT(1));
+          play(50, 8, 10, PLAY_REPEAT(2));
+          play(70, 4, 20, PLAY_REPEAT(1));
           pause(200);
           break;
         case AU_FRSKY_RATATA:
-          play(BEEP_DEFAULT_FREQ+50,5,10,10);
+          play(BEEP_DEFAULT_FREQ+50, 5, 10, PLAY_REPEAT(10));
           pause(200);
           break;
         case AU_FRSKY_TICK:
-          play(BEEP_DEFAULT_FREQ+50,5,50,2);
+          play(BEEP_DEFAULT_FREQ+50, 5, 50, PLAY_REPEAT(2));
           pause(200);
           break;
         default:

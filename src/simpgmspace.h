@@ -97,7 +97,6 @@ typedef const uint16_t pm_uint16_t;
 typedef const uint8_t pm_uint8_t;
 typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
-typedef int32_t __int24;
 
 #if defined(PCBTARANIS) || defined(PCBACT)
 extern GPIO_TypeDef gpioa;
@@ -357,7 +356,7 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
 #define UART_Stop(...)
 #define UART3_Stop(...)
 
-#if defined(PCBTARANIS) || defined(PCBACT)
+#if defined(PCBTARANIS)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
 #define GPIO_SetBits(GPIOx, pin) GPIOx->BSRRL |= pin
 #define GPIO_ResetBits(GPIOx, pin) GPIOx->BSRRL &= ~pin

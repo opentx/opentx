@@ -499,7 +499,7 @@
 ///// MCI Card Detect pin.
 #define BOARD_SD_PIN_CD             PIN_MCI_CD
 
-#define CardIsConnected() ( (PIOB->PIO_PDSR & PIO_PB7) == 0 )
+#define SD_CARD_PRESENT() ( (PIOB->PIO_PDSR & PIO_PB7) == 0 )
 
 // States for initialising card
 #define SD_ST_ERR               -1

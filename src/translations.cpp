@@ -331,6 +331,12 @@ const pm_char STR_CREATE_MODEL[] PROGMEM = TR_CREATE_MODEL;
 const pm_char STR_COPY_MODEL[] PROGMEM = TR_COPY_MODEL;
 const pm_char STR_MOVE_MODEL[] PROGMEM = TR_MOVE_MODEL;
 const pm_char STR_DELETE_MODEL[] PROGMEM = TR_DELETE_MODEL;
+const pm_char STR_EDIT[] PROGMEM = "Edit";
+const pm_char STR_INSERT_BEFORE[] PROGMEM = "Insert Before";
+const pm_char STR_INSERT_AFTER[] PROGMEM = "Insert After";
+const pm_char STR_COPY[] PROGMEM = "Copy";
+const pm_char STR_MOVE[] PROGMEM = "Move";
+const pm_char STR_DELETE[] PROGMEM = "Delete";
 #endif
 
 #if defined(SDCARD)

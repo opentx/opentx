@@ -274,6 +274,8 @@
 #endif
 
 // SD - SPI2
+#define SD_PRESENT_GPIO                 GPIOD->IDR
+#define SD_PRESENT_GPIO_Pin             GPIO_Pin_9  //PD.09
 #define GPIO_Pin_SPI_SD_CS              GPIO_Pin_12 //PB.12
 #define GPIO_Pin_SPI_SD_SCK             GPIO_Pin_13 //PB.13
 #define GPIO_Pin_SPI_SD_MISO            GPIO_Pin_14 //PB.14
@@ -293,9 +295,9 @@
 #define SPI_BaudRatePrescaler_SPI_SD  	SPI_BaudRatePrescaler_4 //10.5<20MHZ,make sure < 20MHZ
 
 //disabled io_ctl and cp/wp
-#define CARD_SUPPLY_SWITCHABLE   				0
-#define SOCKET_WP_CONNECTED      				0
-#define SOCKET_CP_CONNECTED      				0
+#define CARD_SUPPLY_SWITCHABLE   	0
+#define SOCKET_WP_CONNECTED      	0
+#define SOCKET_CP_CONNECTED      	0
 /* set to 1 to provide a disk_ioctrl function even if not needed by the FatFs */
 #define STM32_SD_DISK_IOCTRL_FORCE      0
 
@@ -303,13 +305,13 @@
 #define STM32_SD_USE_DMA //Enable the DMA for SD 
 
 #ifdef STM32_SD_USE_DMA
-#define DMA_Channel_SPI_SD_RX    		DMA1_Stream3
-#define DMA_Channel_SPI_SD_TX    		DMA1_Stream4
+#define DMA_Channel_SPI_SD_RX    	DMA1_Stream3
+#define DMA_Channel_SPI_SD_TX    	DMA1_Stream4
 
-#define DMA_FLAG_SPI_SD_TC_RX    		DMA_FLAG_TCIF3
-#define DMA_FLAG_SPI_SD_TC_TX    		DMA_FLAG_TCIF4
-#define DMA_Channel_SPI2_TX		 			DMA_Channel_0
-#define DMA_Channel_SPI2_RX		 			DMA_Channel_0
+#define DMA_FLAG_SPI_SD_TC_RX    	DMA_FLAG_TCIF3
+#define DMA_FLAG_SPI_SD_TC_TX    	DMA_FLAG_TCIF4
+#define DMA_Channel_SPI2_TX		DMA_Channel_0
+#define DMA_Channel_SPI2_RX		DMA_Channel_0
 #endif
 
 // Audio----I2S3-----SPI3

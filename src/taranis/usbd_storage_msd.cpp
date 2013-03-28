@@ -36,9 +36,6 @@ extern "C" {
 
 #define STORAGE_LUN_NBR                  1 
 
-// TODO ... perhaps something more adequate ;)
-#define SD_GetStatus() (0)
-
 /* USB Mass storage Standard Inquiry Data */
 const unsigned char STORAGE_Inquirydata[] = {//36
   
@@ -123,7 +120,7 @@ int8_t STORAGE_Init (uint8_t lun)
   */
 int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
-  if (SD_GetStatus() != 0 )
+  if (!SD_CARD_PRESENT())
     return -1;
   
   *block_size = 512;
@@ -143,20 +140,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   */
 int8_t  STORAGE_IsReady (uint8_t lun)
 { 
-  static int8_t last_status = 0;
-
-  if(last_status  < 0)
-  {
-    // TODO ? SD_Init();
-    last_status = 0;
-  }
-  
-  if(SD_GetStatus() != 0)
-  {
-    last_status = -1;
-    return (-1); 
-  }  
-  return (0);
+  return SD_CARD_PRESENT() ? 0 : -1;
 }
 
 /**
@@ -178,7 +162,6 @@ int8_t  STORAGE_IsWriteProtected (uint8_t lun)
   * @retval Status
   */
 
-// TODO quick & dirty
 int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count);
 
 int8_t STORAGE_Read (uint8_t lun, 
@@ -193,10 +176,7 @@ int8_t STORAGE_Read (uint8_t lun,
   {
     return -1;
   }
-#if 0
-  SD_WaitReadOperation();
-  while (SD_GetStatus() != SD_TRANSFER_OK);
-#endif    
+
   return 0;
 }
 /**
@@ -222,10 +202,7 @@ int8_t STORAGE_Write (uint8_t lun,
   {
     return -1;
   }
-#if 0
-  SD_WaitWriteOperation();
-  while (SD_GetStatus() != SD_TRANSFER_OK);  
-#endif  
+
   return (0);
 }
 

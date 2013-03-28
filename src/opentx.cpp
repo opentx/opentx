@@ -236,11 +236,6 @@ void per10ms()
   if (lightOffCounter) lightOffCounter--;
   if (s_noHi) s_noHi--;
   if (trimsCheckTimer) trimsCheckTimer --;
-  if ((g_blinkTmr10ms & 0x1F) == 0) {
-    inacCounter++;
-    if ((((uint8_t)inacCounter)&0x0F)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*187))
-      AUDIO_INACTIVITY();
-  }
 
 #if defined(RTCLOCK)
   /* Update global Date/Time every 100 per10ms cycles */
@@ -282,20 +277,22 @@ void per10ms()
   }
 #endif
 
-#if (defined(FRSKY) || defined(MAVLINK) || defined(JETI)) && !defined(CPUARM)
+#if defined(FRSKY)
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
-    telemetryPoll10ms();
+    telemetryInterrupt10ms();
 #endif
 
   // These moved here from perOut() to improve beep trigger reliability.
 #if defined(PWM_BACKLIGHT)
   if ((g_tmr10ms&0x03) == 0x00)
-    fadeBacklight(); // increment or decrement brightness until target brightness is reached
+    backlightFade(); // increment or decrement brightness until target brightness is reached
 #endif
 
-  if(mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) AUDIO_MIX_WARNING_1();
-  if(mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING_2();
-  if(mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING_3();
+#if !defined(AUDIO)
+  if (mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) AUDIO_MIX_WARNING(1);
+  if (mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING(2);
+  if (mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING(3);
+#endif
 
 #if defined(SDCARD)
   sdPoll10ms();
@@ -2013,12 +2010,9 @@ uint16_t inacSum = 0;
 BeepANACenter bpanaCenter = 0;
 
 uint16_t sDelay[MAX_MIXERS] = {0};
-#if defined(CPUARM)
-int32_t  act   [MAX_MIXERS] = {0};
-#else
-__int24  act   [MAX_MIXERS] = {0};
-#endif
+int24_t  act   [MAX_MIXERS] = {0};
 uint8_t  swOn  [MAX_MIXERS] = {0};
+
 uint8_t mixWarning;
 
 FORCEINLINE void evalTrims()
@@ -2763,7 +2757,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
               }
             }
           }
+
           if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1); // Mix warning
+
         }
       }
       else {
@@ -2956,7 +2952,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   } while (++pass < 5 && dirtyChannels);
 
   mixWarning = lv_mixWarning;
-} //endfunc perOut
+}
 
 #define TIME_TO_WRITE() (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
@@ -3038,7 +3034,7 @@ void doMixerCalculations()
 
     // the reason this needs to be done before limits is the applyLimit function; it checks for safety switches which would be not initialized otherwise
     evalFunctions();
-  } //endif
+  }
 
   int32_t weight = 0;
   if (s_fade_flight_phases) {
@@ -3250,13 +3246,23 @@ void doMixerCalculations()
 #endif
 
   s_cnt_1s++;
-  s_sum_1s += val;
+  s_sum_1s+=val;
   
   // @@@ open.20.fsguruh: moved code here; at least val variable conflicts with caculations above, safer here?
   // even reduced code size about 8 bytes, why ever?
   if ((tmr10ms_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
     s_time_tot += 100;
     s_timeCumTot += 1;
+
+    inacCounter++;
+    if ((((uint8_t)inacCounter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
+      AUDIO_INACTIVITY();
+
+#if defined(AUDIO)
+    if (mixWarning & 1) if ((s_timeCumTot&0x03)== 0) AUDIO_MIX_WARNING(1);
+    if (mixWarning & 2) if ((s_timeCumTot&0x03)== 1) AUDIO_MIX_WARNING(2);
+    if (mixWarning & 4) if ((s_timeCumTot&0x03)== 2) AUDIO_MIX_WARNING(3);
+#endif
 
 #if defined(ACCURAT_THROTTLE_TIMER)
     val = s_sum_1s / s_cnt_1s;
@@ -3441,8 +3447,8 @@ void perMain()
 
   checkBacklight();
 
-#if defined(CPUARM) && defined(FRSKY)
-  telemetryPoll10ms();
+#if defined(FRSKY)
+  telemetryWakeup();
 #endif
 
   lcd_clear();

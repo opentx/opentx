@@ -55,7 +55,7 @@ class audioQueue
 
     audioQueue();
 
-    void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0, int8_t tFreqIncr=0);
+    void play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags=0);
     void pause(uint8_t tLen);
     
     inline bool busy() { return (toneTimeLeft > 0); }
@@ -142,21 +142,19 @@ void audioDefevent(uint8_t e);
   #define AUDIO_TIMER_LT3(x)     audioDefevent(AU_TIMER_LT3)
 #endif
 
-#define AUDIO_MIX_WARNING_1()  audioDefevent(AU_MIX_WARNING_1)
-#define AUDIO_MIX_WARNING_2()  audioDefevent(AU_MIX_WARNING_2)
-#define AUDIO_MIX_WARNING_3()  audioDefevent(AU_MIX_WARNING_3)
+#define AUDIO_MIX_WARNING(x)     audioDefevent(AU_MIX_WARNING_1+x-1)
 #define AUDIO_POT_STICK_MIDDLE() audioDefevent(AU_POT_STICK_MIDDLE)
-#define AUDIO_VARIO_UP()       audioDefevent(AU_KEYPAD_UP)
-#define AUDIO_VARIO_DOWN()     audioDefevent(AU_KEYPAD_DOWN)
-#define AUDIO_TRIM_MIDDLE(f)   audio.event(AU_TRIM_MIDDLE, f)
-#define AUDIO_TRIM_END(f)      AUDIO_TRIM_MIDDLE(f)
-#define AUDIO_TRIM(event, f)   audio.event(AU_TRIM_MOVE, f)
-#define AUDIO_PLAY(p)          audio.event(p)
-#define AUDIO_VARIO(f, t)      audio.play(f, t, 0, PLAY_BACKGROUND)
+#define AUDIO_VARIO_UP()         audioDefevent(AU_KEYPAD_UP)
+#define AUDIO_VARIO_DOWN()       audioDefevent(AU_KEYPAD_DOWN)
+#define AUDIO_TRIM_MIDDLE(f)     audio.event(AU_TRIM_MIDDLE, f)
+#define AUDIO_TRIM_END(f)        AUDIO_TRIM_MIDDLE(f)
+#define AUDIO_TRIM(event, f)     audio.event(AU_TRIM_MOVE, f)
+#define AUDIO_PLAY(p)            audio.event(p)
+#define AUDIO_VARIO(f, t)        audio.play(f, t, 0, PLAY_BACKGROUND)
 
-#define AUDIO_DRIVER()         audio.driver()
-#define AUDIO_HEARTBEAT()      audio.heartbeat()
-#define IS_AUDIO_BUSY()        audio.busy()
+#define AUDIO_DRIVER()           audio.driver()
+#define AUDIO_HEARTBEAT()        audio.heartbeat()
+#define IS_AUDIO_BUSY()          audio.busy()
 #define AUDIO_RESET()
 
 #define PLAY_PHASE_OFF(phase)

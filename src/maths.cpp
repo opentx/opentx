@@ -121,7 +121,7 @@ void getGpsDistance()
 #endif
 
 #if defined(FRSKY) && defined(VARIO)
-void varioPoll10ms()
+void varioWakeup()
 {
   static uint16_t s_varioTmr = 0;
   if (isFunctionActive(FUNC_VARIO)) {

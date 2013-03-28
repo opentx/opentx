@@ -49,7 +49,7 @@ void JETI_DisableRXD (void);
 void JETI_EnableTXD (void);
 void JETI_DisableTXD (void);
 
-void telemetryPoll10ms();
+void telemetryWakeup();
 void menuTelemetryJeti(uint8_t event);
 
 #endif

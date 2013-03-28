@@ -161,7 +161,7 @@ static void socket_cp_init(void)
 
 static inline DWORD socket_is_empty(void)
 {
-        return 0; /* fake inserted */
+        return !SD_CARD_PRESENT(); /* fake inserted */
 }
 
 static void card_power(BYTE on)

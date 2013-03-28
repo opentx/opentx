@@ -267,7 +267,7 @@ void displayTopBar()
     LCD_NOTIF_ICON(x, ICON_TRAINEE);
     x -= 12;
   }
-  else if (1) {
+  else if (0) {
     LCD_NOTIF_ICON(x, ICON_TRAINER);
     x -= 12;
   }

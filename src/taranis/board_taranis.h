@@ -109,6 +109,7 @@ void sdInit();
 void sdPoll10ms();
 #define sdMountPoll()
 uint32_t sdMounted();
+#define SD_CARD_PRESENT()       (1)
 #endif
 
 // Pulses driver

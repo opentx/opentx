@@ -261,11 +261,7 @@ void displayWarning(uint8_t event);
 #if defined(SDCARD) || (defined(ROTARY_ENCODER_NAVIGATION) && !defined(CPUM64))
   #define NAVIGATION_MENUS
   #define MENU_ADD_ITEM(s) s_menu[s_menu_count++] = s
-  #if defined(SDCARD) && defined(ROTARY_ENCODER_NAVIGATION)
-    #define MENU_MAX_LINES 6
-  #else
-    #define MENU_MAX_LINES 4
-  #endif
+  #define MENU_MAX_LINES 6
   #if defined(SDCARD)
     #define MENU_ADD_SD_ITEM(s) MENU_ADD_ITEM(s)
   #else

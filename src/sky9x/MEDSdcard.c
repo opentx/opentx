@@ -221,7 +221,7 @@ unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
     // Initialize SDcard
     //--------------------------------------------------------------------------
 
-    if ( !CardIsConnected(  ) )
+    if ( !SD_CARD_PRESENT(  ) )
     {
         return 0;
     }

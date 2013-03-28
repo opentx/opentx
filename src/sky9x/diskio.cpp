@@ -285,7 +285,7 @@ const char * sdCommand(uint32_t cmd, uint32_t arg)
   uint32_t i;
   Hsmci *phsmci = HSMCI;
 
-  if (CardIsConnected()) {
+  if (SD_CARD_PRESENT()) {
     phsmci->HSMCI_ARGR = arg;
     phsmci->HSMCI_CMDR = cmd;
 
@@ -378,7 +378,7 @@ uint32_t sdCmd16()
 {
   Hsmci *phsmci = HSMCI;
 
-  if (CardIsConnected()) {
+  if (SD_CARD_PRESENT()) {
     phsmci->HSMCI_BLKR = ( ( 512 ) << 16 ) | 1 ;
     phsmci->HSMCI_ARGR = 512;
     phsmci->HSMCI_CMDR = SDMMC_SET_BLOCKLEN;
@@ -963,7 +963,7 @@ void sdMountPoll()
   if (!Card_initialized)
     return;
 
-  if (!CardIsConnected()) {
+  if (!SD_CARD_PRESENT()) {
     Card_state = SD_ST_EMPTY;
     Sd_rca = 0;
     sdErrorCount = 0;
@@ -971,7 +971,7 @@ void sdMountPoll()
 
   switch (Card_state) {
     case SD_ST_EMPTY:
-      if (CardIsConnected()) {
+      if (SD_CARD_PRESENT()) {
         Card_state = SD_ST_INIT1;
       }
       break;
@@ -1030,7 +1030,7 @@ void sdInit()
   Sd_rca = 0;
   sdErrorCount = 0;
 
-  if (!CardIsConnected()) {
+  if (!SD_CARD_PRESENT()) {
     Card_state = SD_ST_EMPTY;
     Card_initialized = 1;
     return;
@@ -1093,12 +1093,12 @@ void sdInit()
 // returns 1 for YES, 0 for NO
 uint32_t sd_card_ready( void )
 {
-  return CardIsConnected() && Card_state >= SD_ST_DATA;
+  return SD_CARD_PRESENT() && Card_state >= SD_ST_DATA;
 }
 
 uint32_t sdMounted( void )
 {
-  return CardIsConnected() && Card_state == SD_ST_MOUNTED;
+  return SD_CARD_PRESENT() && Card_state == SD_ST_MOUNTED;
 }
 
 uint32_t sd_read_block(uint32_t block_no, uint32_t *data)

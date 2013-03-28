@@ -177,32 +177,38 @@
 #endif
 
 #if ROTARY_ENCODERS > 0
-#define ROTARY_ENCODER_NAVIGATION
+  #define ROTARY_ENCODER_NAVIGATION
+#endif
+
+#if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472
+  typedef int32_t int24_t;
+#else
+  typedef __int24 int24_t;
 #endif
 
 #if defined(SIMU)
-#ifndef FORCEINLINE
-#define FORCEINLINE
-#endif
-#ifndef NOINLINE
-#define NOINLINE
-#endif
-#define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
+  #ifndef FORCEINLINE
+    #define FORCEINLINE
+  #endif
+  #if !defined(NOINLINE)
+    #define NOINLINE
+  #endif
+  #define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
 #else
-#define FORCEINLINE inline __attribute__ ((always_inline))
-#define NOINLINE __attribute__ ((noinline))
-#define SIMU_SLEEP(x)
-#define CONVERT_PTR(x) ((uint32_t)(x))
+  #define FORCEINLINE inline __attribute__ ((always_inline))
+  #define NOINLINE __attribute__ ((noinline))
+  #define SIMU_SLEEP(x)
+  #define CONVERT_PTR(x) ((uint32_t)(x))
 #endif
 
 #if defined(PCBTARANIS)
-#include "taranis/board_taranis.h"
+  #include "taranis/board_taranis.h"
 #elif defined(PCBSKY9X)
-#include "sky9x/board_sky9x.h"
+  #include "sky9x/board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
-#include "gruvin9x/board_gruvin9x.h"
+  #include "gruvin9x/board_gruvin9x.h"
 #else
-#include "stock/board_stock.h"
+  #include "stock/board_stock.h"
 #endif
 
 #include "debug.h"
@@ -1148,9 +1154,10 @@ inline bool isFunctionActive(uint8_t func)
   #include "telemetry_mavlink.h"
 #endif
 
-// REPEAT uses 0x01 to 0x0f
+#define PLAY_REPEAT(x)            (x)                 /* Range 0 to 15 */
 #define PLAY_NOW                  0x10
 #define PLAY_BACKGROUND           0x20
+#define PLAY_INCREMENT(x)         ((uint8_t)(((uint8_t)x) << 6))   /* -1, 0, 1, 2 */
 
 /* make sure the defines below always go in numeric order */
 enum AUDIO_SOUNDS {
@@ -1354,7 +1361,7 @@ void checkMinMaxAltitude();
 void evalVario(int16_t altitude_bp, uint16_t altitude_ap);
 void getGpsPilotPosition();
 void getGpsDistance();
-void varioPoll10ms();
+void varioWakeup();
 
 #endif
 

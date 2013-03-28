@@ -794,23 +794,23 @@ void audioEvent(uint8_t e, uint8_t f)
           break;
         // mix warning 1
         case AU_MIX_WARNING_1:
-          audioQueue.play(BEEP_DEFAULT_FREQ+100, 12, 0, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+96, 12, 0);
           break;
         // mix warning 2
         case AU_MIX_WARNING_2:
-          audioQueue.play(BEEP_DEFAULT_FREQ+104, 12, 0, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+104, 12, 8, PLAY_REPEAT(1));
           break;
         // mix warning 3
         case AU_MIX_WARNING_3:
-          audioQueue.play(BEEP_DEFAULT_FREQ+108, 12, 0, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+112, 12, 8, PLAY_REPEAT(2));
           break;
         // time 30 seconds left
         case AU_TIMER_30:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, 2|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, PLAY_REPEAT(2)|PLAY_NOW);
           break;
         // time 20 seconds left
         case AU_TIMER_20:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, 1|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         // time 10 seconds left
         case AU_TIMER_10:
@@ -821,15 +821,15 @@ void audioEvent(uint8_t e, uint8_t f)
           audioQueue.play(BEEP_DEFAULT_FREQ+10, 30, 6, PLAY_NOW);
           break;
         case AU_FRSKY_BEEP1:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 15, 2, 0);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 15, 2);
           audioQueue.pause(200);
           break;
         case AU_FRSKY_BEEP2:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 2, 0);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 2);
           audioQueue.pause(200);
           break;
         case AU_FRSKY_BEEP3:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2, 0);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2);
           audioQueue.pause(200);
           break;
         case AU_FRSKY_WARN1:

@@ -100,7 +100,7 @@ void backlightFadeOff();
 #define __BACKLIGHT_OFF backlightFadeOff()
 bool getBackLightState();
 #define IS_BACKLIGHT_ON() getBackLightState()
-void fadeBacklight();
+void backlightFade();
 #else
 
 #if defined(SP22)

@@ -89,7 +89,7 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelMixAll,
   menuModelLimits,
   IF_CURVES(menuModelCurvesAll)
-#if LCD_W >= 212
+#if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_PHASES)
   IF_GVARS(menuModelGVars)
 #endif
   menuModelCustomSwitches,
@@ -402,16 +402,16 @@ void menuModelSelect(uint8_t event)
           _event = 0;
           if (g_eeGeneral.currModel != sub) {
             if (eeModelExists(sub)) {
-              s_menu[s_menu_count++] = STR_SELECT_MODEL;
+              MENU_ADD_ITEM(STR_SELECT_MODEL);
               MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
               MENU_ADD_NAVIGATION_ITEM(STR_COPY_MODEL);
               MENU_ADD_NAVIGATION_ITEM(STR_MOVE_MODEL);
-              s_menu[s_menu_count++] = STR_DELETE_MODEL;
+              MENU_ADD_ITEM(STR_DELETE_MODEL);
             }
             else {
 #if defined(SDCARD)
-              s_menu[s_menu_count++] = STR_CREATE_MODEL;
-              MENU_ADD_SD_ITEM(STR_RESTORE_MODEL);
+              MENU_ADD_ITEM(STR_CREATE_MODEL);
+              MENU_ADD_ITEM(STR_RESTORE_MODEL);
 #else
               // TODO duplicated *3 code
               displayPopup(STR_LOADINGMODEL);
@@ -2505,7 +2505,14 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
   uint8_t chn = (expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh+1);
 
-  switch(event)
+#if defined(NAVIGATION_MENUS)
+  uint8_t _event = event;
+  if (s_menu_count) {
+    event = 0;
+  }
+#endif
+
+  switch (event)
   {
     case EVT_ENTRY:
     case EVT_ENTRY_UP:
@@ -2559,6 +2566,25 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       }
       else if (sub != 0) {
         if (s_copyMode) s_currCh = 0;
+#if defined(NAVIGATION_MENUS)
+        if (s_currCh) {
+          if (reachExpoMixCountLimit(expo)) break;
+          insertExpoMix(expo, s_currIdx);
+          pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
+          s_copyMode = 0;
+          return;
+        }
+        else {
+          _event = event = 0;
+          s_copyMode = 0;
+          MENU_ADD_ITEM(STR_EDIT);
+          MENU_ADD_ITEM(STR_INSERT_BEFORE);
+          MENU_ADD_ITEM(STR_INSERT_AFTER);
+          MENU_ADD_ITEM(STR_COPY);
+          MENU_ADD_ITEM(STR_MOVE);
+          MENU_ADD_ITEM(STR_DELETE);
+        }
+#else
         if (s_currCh) {
           if (reachExpoMixCountLimit(expo)) break;
           insertExpoMix(expo, s_currIdx);
@@ -2566,6 +2592,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
         s_copyMode = 0;
         return;
+#endif
       }
       break;
     case EVT_KEY_LONG(KEY_LEFT):
@@ -2573,7 +2600,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       if (s_copyMode && !s_copyTgtOfs) {
         if (reachExpoMixCountLimit(expo)) break;
         s_currCh = chn;
-        if (event == EVT_KEY_LONG(KEY_RIGHT)) s_currIdx++;
+        if (event == EVT_KEY_LONG(KEY_RIGHT)) { s_currIdx++; m_posVert++; }
         insertExpoMix(expo, s_currIdx);
         pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
         s_copyMode = 0;
@@ -2757,6 +2784,34 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
   }
   s_maxLines = cur;
   if (sub >= s_maxLines-1) m_posVert = s_maxLines-1;
+
+#if defined(NAVIGATION_MENUS)
+  if (s_menu_count) {
+    const char * result = displayMenu(_event);
+    if (result) {
+      if (result == STR_EDIT) {
+        pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
+      }
+      else if (result == STR_INSERT_BEFORE || result == STR_INSERT_AFTER) {
+        if (!reachExpoMixCountLimit(expo)) {
+          s_currCh = chn;
+          if (result == STR_INSERT_AFTER) { s_currIdx++; m_posVert++; }
+          insertExpoMix(expo, s_currIdx);
+          pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
+        }
+      }
+      else if (result == STR_COPY || result == STR_MOVE) {
+        s_copyMode = (result == STR_COPY ? COPY_MODE : MOVE_MODE);
+        s_copySrcIdx = s_currIdx;
+        s_copySrcCh = chn;
+        s_copySrcRow = sub;
+      }
+      else if (result == STR_DELETE) {
+        deleteExpoMix(expo, s_currIdx);
+      }
+    }
+  }
+#endif
 }
 
 void menuModelExposAll(uint8_t event)
@@ -3077,7 +3132,7 @@ void menuModelCurvesAll(uint8_t event)
 }
 #endif
 
-#if LCD_W >= 212 && defined(GVARS)
+#if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_PHASES)
 void menuModelGVars(uint8_t event)
 {
   MENU(PSTR("GLOBAL VARIABLES"), menuTabModel, e_GVars, 1+MAX_GVARS, {0, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES});

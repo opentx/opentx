@@ -306,7 +306,7 @@ bool getBackLightState()
   return (bl_target==g_eeGeneral.blOnBright);
 }
 
-void fadeBacklight() //called from per10ms()
+void backlightFade() //called from per10ms()
 {
   if (bl_target != bl_current) {
     if (bl_target > bl_current)

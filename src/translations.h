@@ -439,6 +439,12 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_COPY_MODEL[];
   extern const pm_char STR_MOVE_MODEL[];
   extern const pm_char STR_DELETE_MODEL[];
+  extern const pm_char STR_EDIT[];
+  extern const pm_char STR_INSERT_BEFORE[];
+  extern const pm_char STR_INSERT_AFTER[];
+  extern const pm_char STR_COPY[];
+  extern const pm_char STR_MOVE[];
+  extern const pm_char STR_DELETE[];
 #endif
 
 #if defined(SDCARD)

@@ -194,7 +194,8 @@ extern uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 extern uint8_t frskyTxBufferCount;
 
 void FRSKY_Init(void);
-NOINLINE void telemetryPoll10ms(void);
+void telemetryWakeup(void);
+void telemetryInterrupt10ms(void);
 
 inline void frskySendAlarms(void)
 {
