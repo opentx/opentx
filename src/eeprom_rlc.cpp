@@ -162,7 +162,11 @@ static void EeFsFlush()
 
 uint16_t EeFsGetFree()
 {
+#if defined(CPUARM)
   int32_t ret = 0;
+#else
+  int16_t ret = 0;
+#endif
   blkid_t i = eeFs.freeList;
   while (i) {
     ret += BS-1;
