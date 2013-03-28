@@ -162,7 +162,7 @@ static void EeFsFlush()
 
 uint16_t EeFsGetFree()
 {
-  int16_t ret = 0;
+  int32_t ret = 0;
   blkid_t i = eeFs.freeList;
   while (i) {
     ret += BS-1;
