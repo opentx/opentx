@@ -337,7 +337,7 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 void displayVoltageScreenLine(uint8_t y, uint8_t index)
 {
   putsStrIdx(0, y, STR_A, index+1, 0);
-  putsTelemetryChannel(3*FW+6*FW+4, y, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
+  putsTelemetryChannel(3*FW+6*FW+4, y-FH+1, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
   lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
   lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
 }
@@ -490,20 +490,20 @@ void menuTelemetryFrsky(uint8_t event)
     }
     else if (s_frsky_view == e_frsky_voltages) {
       // Volts / Amps / Watts / mAh
-      uint8_t other = 0;
+      uint8_t analog = 0;
       lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource+1, 0);
       switch(g_model.frsky.voltsSource) {
         case 0:
         case 1:
           displayVoltageScreenLine(2*FH, g_model.frsky.voltsSource);
-          other = !g_model.frsky.voltsSource;
+          analog = 1+g_model.frsky.voltsSource;
           break;
 #if defined(FRSKY_HUB)
         case 2:
-          putsTelemetryChannel(3*FW+6*FW+4, 2*FH, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
+          putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
           break;
         case 3:
-          putsTelemetryChannel(3*FW+6*FW+4, 2*FH, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
+          putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
           break;
 #endif
       }
@@ -517,17 +517,17 @@ void menuTelemetryFrsky(uint8_t event)
             break;
 #if defined(FRSKY_HUB)
           case 3:
-            putsTelemetryChannel(3*FW+6*FW+4, 4*FH, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
+            putsTelemetryChannel(3*FW+6*FW+4, 3*FH+1, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
             break;
 #endif
         }
 
-        putsTelemetryChannel(4, 6*FH, TELEM_POWER-1, frskyData.power, LEFT|DBLSIZE);
-        putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 6*FH, TELEM_CONSUMPTION-1, frskyData.currentConsumption, DBLSIZE);
+        putsTelemetryChannel(4, 5*FH+1, TELEM_POWER-1, frskyData.power, LEFT|DBLSIZE);
+        putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.currentConsumption, DBLSIZE);
       }
       else {
-        displayVoltageScreenLine(other ? 5*FH : 4*FH, other);
-        if (!other) displayVoltageScreenLine(6*FH, 1);
+        displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
+        if (analog == 0) displayVoltageScreenLine(6*FH, 1);
       }
 
 #if defined(FRSKY_HUB)
