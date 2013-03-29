@@ -148,18 +148,6 @@ void varioWakeup()
       }
     }
 
-#if defined(PCBSTD)
-    tmr10ms_t tmr10ms = get_tmr10ms();
-    if (verticalSpeed >= 0 && tmr10ms > s_varioTmr) {
-      uint8_t SoundVarioBeepTime = limit((uint8_t)5, (uint8_t)((1600 - verticalSpeed) / 100), (uint8_t)30);
-      uint8_t SoundVarioBeepFreq = limit((uint8_t)40, (uint8_t)((verticalSpeed * 10 + 20000) >> 8), (uint8_t)120);
-      if (verticalSpeed >= 0)
-        s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
-      else
-        s_varioTmr = tmr10ms + SoundVarioBeepTime;
-      AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
-    }
-#else
     tmr10ms_t tmr10ms = get_tmr10ms();
     if (verticalSpeed < 0 || tmr10ms > s_varioTmr) {
       uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
@@ -171,7 +159,6 @@ void varioWakeup()
       s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
       AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
     }
-#endif
 
 #else // defined(AUDIO)
 
