@@ -150,7 +150,7 @@ void varioWakeup()
 
 #if defined(PCBSTD)
     tmr10ms_t tmr10ms = get_tmr10ms();
-    if (tmr10ms > s_varioTmr) {
+    if (verticalSpeed >= 0 && tmr10ms > s_varioTmr) {
       uint8_t SoundVarioBeepTime = limit((uint8_t)5, (uint8_t)((1600 - verticalSpeed) / 100), (uint8_t)30);
       uint8_t SoundVarioBeepFreq = limit((uint8_t)40, (uint8_t)((verticalSpeed * 10 + 20000) >> 8), (uint8_t)120);
       if (verticalSpeed >= 0)
