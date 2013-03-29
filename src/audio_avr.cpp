@@ -40,6 +40,7 @@ audioQueue::audioQueue()
 {
   toneTimeLeft = 0;
   tonePause = 0;
+  tone2TimeLeft = 0;
 
   t_queueRidx = 0;
   t_queueWidx = 0;
@@ -66,7 +67,6 @@ void audioQueue::heartbeat()
       }
 #endif
       toneFreq += toneFreqIncr;
-      // TODO tone2TimeLeft = 0?
     }
     toneTimeLeft--; //time gets counted down
   }
@@ -98,9 +98,6 @@ void audioQueue::heartbeat()
       } 
       else {
         SPEAKER_OFF;
-        if (tone2Pause > 0) {
-          tone2Pause--; //time gets counted down
-        }
       }
     }
   }
@@ -129,7 +126,6 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
   if (tFlags & PLAY_BACKGROUND) {
     tone2Freq = tFreq;
     tone2TimeLeft = tLen;
-    tone2Pause = tPause;
   }
   else {
     int8_t tFreqIncr = (tFlags >> 6);
@@ -178,6 +174,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
     if (e < AU_FRSKY_FIRST || empty()) {
+      // TODO when VOICE enable some cases here are not needed!
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:

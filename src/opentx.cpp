@@ -3783,7 +3783,7 @@ void saveTimers()
 {
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
     if (g_model.timers[i].persistent) {
-      if (g_model.timers[i].value != s_timerVal[i]) {
+      if (g_model.timers[i].value != (uint16_t)s_timerVal[i]) {
         g_model.timers[i].value = s_timerVal[i];
         eeDirty(EE_MODEL);
       }

@@ -129,9 +129,10 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 #endif
 
   static uint16_t s_last_menu_offset = 0;
-  static uint8_t s_last_flags;
 
 #if defined(CPUARM)
+  static uint8_t s_last_flags;
+
   if (selection) {
     s_last_flags = flags;
     memset(reusableBuffer.models.menu_bss, 0, sizeof(reusableBuffer.models.menu_bss));

@@ -105,14 +105,14 @@ inline void boardInit()
   DDRF = 0x00;  PORTF = 0x00; //anain
   DDRG = 0x14;  PORTG = 0xfb; //pullups + SIM_CTL=1 = phonejack = ppm_in, Haptic output and off (0)
 
-  ADMUX=ADC_VREF_TYPE;
-  ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
+  ADMUX  = ADC_VREF_TYPE;
+  ADCSRA = 0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
 
   // TCNT0  10ms = 16MHz/1024/156 periodic timer (9.984ms)
   // (with 1:4 duty at 157 to average 10.0ms)
   // Timer overflows at about 61Hz or once every 16ms.
   TCCR0  = (0b111 << CS00); // Norm mode, clk/1024
-  OCR0 = 156;
+  OCR0   = 156;
 
 #if defined(AUDIO) || defined(VOICE)
   TCCR2  = (0b010 << CS00); // Norm mode, clk/8

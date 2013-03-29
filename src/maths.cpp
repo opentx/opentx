@@ -63,7 +63,7 @@ void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
 {
   int32_t varioAltitude_cm = (int32_t)altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
   uint8_t varioAltitudeQueuePointer = frskyData.hub.varioAltitudeQueuePointer + 1;
-  if (varioAltitudeQueuePointer == VARIO_QUEUE_LENGTH)
+  if (varioAltitudeQueuePointer >= VARIO_QUEUE_LENGTH)
     varioAltitudeQueuePointer = 0;
   frskyData.hub.varioAltitudeQueuePointer = varioAltitudeQueuePointer;
   frskyData.hub.varioSpeed -= frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
@@ -123,22 +123,27 @@ void getGpsDistance()
 #if defined(FRSKY) && defined(VARIO)
 void varioWakeup()
 {
-  static uint16_t s_varioTmr = 0;
+  static tmr10ms_t s_varioTmr;
+  tmr10ms_t tmr10ms = get_tmr10ms();
+  
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
     // conversion in cm/s
-    int16_t verticalSpeed;
+    cli();
+    int16_t verticalSpeed = frskyData.hub.varioSpeed;
+    sei();
+    
     int16_t varioCenterMax = (int16_t)g_model.frsky.varioCenterMax * 10 + 50;
-    if (frskyData.hub.varioSpeed >= varioCenterMax) {
-      verticalSpeed = frskyData.hub.varioSpeed - varioCenterMax;
+    if (verticalSpeed >= varioCenterMax) {
+      verticalSpeed = verticalSpeed - varioCenterMax;
       int16_t varioMax = (10+(int16_t)g_model.frsky.varioMax) * 100;
       if (verticalSpeed > varioMax) verticalSpeed = varioMax;
       verticalSpeed = (verticalSpeed * 10) / ((varioMax-varioCenterMax) / 100);
     }
     else {
       int16_t varioCenterMin = (int16_t)g_model.frsky.varioCenterMin * 10 - 50;
-      if (frskyData.hub.varioSpeed <= varioCenterMin) {
-        verticalSpeed = frskyData.hub.varioSpeed - varioCenterMin;
+      if (verticalSpeed <= varioCenterMin) {
+        verticalSpeed = verticalSpeed - varioCenterMin;
         int16_t varioMin = (-10+(int16_t)g_model.frsky.varioMin) * 100;
         if (verticalSpeed < varioMin) verticalSpeed = varioMin;
         verticalSpeed = (verticalSpeed * 10) / ((varioCenterMin-varioMin) / 100);
@@ -148,8 +153,7 @@ void varioWakeup()
       }
     }
 
-    tmr10ms_t tmr10ms = get_tmr10ms();
-    if (verticalSpeed < 0 || tmr10ms > s_varioTmr) {
+    if (verticalSpeed < 0 || (int16_t)(s_varioTmr-tmr10ms) < 0) {
       uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
 #if defined(CPUARM)
       uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 7;
@@ -183,6 +187,9 @@ void varioWakeup()
         AUDIO_VARIO_UP();
     }
 #endif
+  }
+  else {
+    s_varioTmr = tmr10ms;
   }
 }
 #endif

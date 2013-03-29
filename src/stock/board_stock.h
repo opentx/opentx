@@ -67,8 +67,8 @@
 #define PIN_TRIM_RV_DN         (1<<INP_D_TRM_RV_DWN)
 #define PIN_TRIM_RH_R          (1<<INP_D_TRM_RH_UP)
 
-#define TIMER_16KHZ_VECT TIMER0_OVF_vect
-#define COUNTER_16KHZ TCNT0
+#define TIMER_16KHZ_VECT    TIMER0_OVF_vect
+#define COUNTER_16KHZ       TCNT0
 
 #define TIMER_10MS_VECT  TIMER0_COMP_vect
 #define TIMER_10MS_COMPVAL OCR0

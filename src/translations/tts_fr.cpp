@@ -108,7 +108,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 */
 
   if (number < 0) {
-    PUSH_PROMPT(PROMPT_MOINS);
+    PUSH_NUMBER_PROMPT(PROMPT_MOINS);
     number = -number;
   }
 
@@ -118,7 +118,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
     div_t qr = div(number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, 0);
-      PUSH_PROMPT(PROMPT_VIRGULE_BASE + qr.rem);
+      PUSH_NUMBER_PROMPT(PROMPT_VIRGULE_BASE + qr.rem);
       number = -1;
     }
     else {
@@ -129,35 +129,35 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
   if (number >= 1000) {
     if (number >= 2000)
       PLAY_NUMBER(number / 1000, 0, 0);
-    PUSH_PROMPT(PROMPT_MILLE);
+    PUSH_NUMBER_PROMPT(PROMPT_MILLE);
     number %= 1000;
     if (number == 0)
       number = -1;
   }
   if (number >= 100) {
     if (number >= 200)
-      PUSH_PROMPT(PROMPT_ZERO + number/100);
-    PUSH_PROMPT(PROMPT_CENT);
+      PUSH_NUMBER_PROMPT(PROMPT_ZERO + number/100);
+    PUSH_NUMBER_PROMPT(PROMPT_CENT);
     number %= 100;
     if (number == 0)
       number = -1;
   }
   if (((number % 10) == 1) && number < 90 && (att & FEMININ)) {
-    PUSH_PROMPT(PROMPT_UNE+(number/10));
+    PUSH_NUMBER_PROMPT(PROMPT_UNE+(number/10));
   }
   else if (number >= 0) {
-    PUSH_PROMPT(PROMPT_ZERO+number);
+    PUSH_NUMBER_PROMPT(PROMPT_ZERO+number);
   }
 
   if (unit) {
-    PUSH_PROMPT(PROMPT_UNITS_BASE+unit-1);
+    PUSH_NUMBER_PROMPT(PROMPT_UNITS_BASE+unit-1);
   }
 }
 
 PLAY_FUNCTION(playDuration, int16_t seconds)
 {
   if (seconds < 0) {
-    PUSH_PROMPT(PROMPT_MOINS);
+    PUSH_NUMBER_PROMPT(PROMPT_MOINS);
     seconds = -seconds;
   }
 
@@ -165,21 +165,21 @@ PLAY_FUNCTION(playDuration, int16_t seconds)
   seconds %= 3600;
   if (tmp > 0) {
     PLAY_NUMBER(tmp, 0, FEMININ);
-    PUSH_PROMPT(PROMPT_HEURE);
+    PUSH_NUMBER_PROMPT(PROMPT_HEURE);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
     PLAY_NUMBER(tmp, 0, FEMININ);
-    PUSH_PROMPT(PROMPT_MINUTE);
+    PUSH_NUMBER_PROMPT(PROMPT_MINUTE);
     if (seconds > 0)
-      PUSH_PROMPT(PROMPT_ET);
+      PUSH_NUMBER_PROMPT(PROMPT_ET);
   }
 
   if (seconds > 0) {
     PLAY_NUMBER(seconds, 0, FEMININ);
-    PUSH_PROMPT(PROMPT_SECONDE);
+    PUSH_NUMBER_PROMPT(PROMPT_SECONDE);
   }
 }
 

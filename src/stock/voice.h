@@ -56,8 +56,9 @@
 #define V_WAIT_BUSY_DELAY       5
 #define V_WAIT_START_BUSY_OFF   6
 
-#define PROMPT_SYSTEM_BASE      230
-#define PROMPT_CUSTOM_BASE      256
+#define PROMPT_CUSTOM_BASE      0
+#define PROMPT_I18N_BASE        256
+#define PROMPT_SYSTEM_BASE      480
 
 struct t_voice
 {
@@ -75,15 +76,16 @@ struct t_voice
     void voice_process( void ) ;
 };
 
-extern void pushCustomPrompt( uint8_t value );
-extern void pushPrompt( uint8_t value );
-extern void pushPrompt16(uint16_t value);
+extern void pushPrompt(uint16_t value);
+extern void pushCustomPrompt(uint8_t value);
+extern void pushNumberPrompt(uint8_t value);
+
 extern struct t_voice *voiceaddress( void ) ;
 extern struct t_voice Voice ;
 
 #define VOLUME_LEVEL_MAX  7
 #define VOLUME_LEVEL_DEF  7
-#define setVolume(v) pushPrompt16((v) | 0xFFF0)
+#define setVolume(v) pushPrompt((v) | 0xFFF0)
 
 inline bool isPlaying()
 {
@@ -99,24 +101,18 @@ inline bool isPlaying()
  * Check for LcdLocked (in interrupt), and voice_enabled
  */
 #define VOICE_DRIVER() \
-  if ( LcdLock == 0 ) /* LCD not in use */ \
-  { \
+  if ( LcdLock == 0 ) { /* LCD not in use */ \
     struct t_voice *vptr; \
     vptr = voiceaddress(); \
-    if ( vptr->VoiceState == V_CLOCKING ) \
-    { \
-      if ( vptr->VoiceTimer ) \
-      { \
+    if ( vptr->VoiceState == V_CLOCKING ) { \
+      if ( vptr->VoiceTimer ) { \
         vptr->VoiceTimer -= 1; \
       } \
-      else \
-      { \
+      else { \
         PORTB |= (1<<OUT_B_LIGHT); /* Latch clock high */ \
-        if ((vptr->VoiceCounter & 1) == 0) \
-        { \
+        if ((vptr->VoiceCounter & 1) == 0) { \
           vptr->VoiceLatch &= ~VOICE_DATA_BIT; \
-          if ( vptr->VoiceSerial & 0x4000 ) \
-          { \
+          if ( vptr->VoiceSerial & 0x4000 ) { \
             vptr->VoiceLatch |= VOICE_DATA_BIT; \
           } \
           vptr->VoiceSerial <<= 1; \
@@ -124,8 +120,7 @@ inline bool isPlaying()
         vptr->VoiceLatch ^= VOICE_CLOCK_BIT; \
         PORTA_LCD_DAT = vptr->VoiceLatch; /* Latch data set */ \
         PORTB &= ~(1<<OUT_B_LIGHT); /* Latch clock low */ \
-        if ( --vptr->VoiceCounter == 0 ) \
-        { \
+        if ( --vptr->VoiceCounter == 0 ) { \
           vptr->VoiceState = V_WAIT_BUSY_ON; \
           vptr->VoiceTimer = 5; /* 50 mS */ \
         } \
@@ -134,8 +129,9 @@ inline bool isPlaying()
   }
 
 #define PLAY_FUNCTION(x, ...) void x(__VA_ARGS__)
-#define PUSH_PROMPT(p) pushPrompt((p))
 #define PUSH_CUSTOM_PROMPT(p, ...) pushCustomPrompt((p))
+#define PUSH_NUMBER_PROMPT(p) pushNumberPrompt((p))
+#define PUSH_SYSTEM_PROMPT(p) pushNumberPrompt(PROMPT_SYSTEM_BASE-PROMPT_I18N_BASE+(p))
 #define PLAY_NUMBER(n, u, a) playNumber((n), (u), (a))
 #define PLAY_DURATION(d) playDuration((d))
 #define IS_PLAYING(id) (0) /* isPlaying() */

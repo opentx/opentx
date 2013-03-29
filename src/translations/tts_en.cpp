@@ -81,15 +81,15 @@ enum EnglishPrompts {
 PLAY_FUNCTION(pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
   if (number == 1)
-    PUSH_PROMPT(unitprompt);
+    PUSH_NUMBER_PROMPT(unitprompt);
   else
-    PUSH_PROMPT(unitprompt+1);
+    PUSH_NUMBER_PROMPT(unitprompt+1);
 }
 
 PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 {
   if (number < 0) {
-    PUSH_PROMPT(PROMPT_MINUS);
+    PUSH_NUMBER_PROMPT(PROMPT_MINUS);
     number = -number;
   }
 
@@ -99,7 +99,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
     div_t qr = div(number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, 0);
-      PUSH_PROMPT(PROMPT_POINT_BASE + qr.rem);
+      PUSH_NUMBER_PROMPT(PROMPT_POINT_BASE + qr.rem);
       number = -1;
     }
     else {
@@ -111,19 +111,19 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 
   if (number >= 1000) {
     PLAY_NUMBER(number / 1000, 0, 0);
-    PUSH_PROMPT(PROMPT_THOUSAND);
+    PUSH_NUMBER_PROMPT(PROMPT_THOUSAND);
     number %= 1000;
     if (number == 0)
       number = -1;
   }
   if (number >= 100) {
-    PUSH_PROMPT(PROMPT_HUNDRED + (number/100)-1);
+    PUSH_NUMBER_PROMPT(PROMPT_HUNDRED + (number/100)-1);
     number %= 100;
     if (number == 0)
       number = -1;
   }
   if (number >= 0) {
-    PUSH_PROMPT(PROMPT_ZERO + number);
+    PUSH_NUMBER_PROMPT(PROMPT_ZERO + number);
   }
   
   if (unit) {
@@ -134,7 +134,7 @@ PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
 PLAY_FUNCTION(playDuration, int16_t seconds)
 {
   if (seconds < 0) {
-    PUSH_PROMPT(PROMPT_MINUS);
+    PUSH_NUMBER_PROMPT(PROMPT_MINUS);
     seconds = -seconds;
   }
 
@@ -149,7 +149,7 @@ PLAY_FUNCTION(playDuration, int16_t seconds)
   if (tmp > 0) {
     PLAY_NUMBER(tmp, UNIT_MINUTES+1 , 0);
     if (seconds > 0)
-      PUSH_PROMPT(PROMPT_AND);
+      PUSH_NUMBER_PROMPT(PROMPT_AND);
   }
 
   if (seconds > 0) {

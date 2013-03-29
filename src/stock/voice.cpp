@@ -38,7 +38,7 @@
 
 struct t_voice Voice ;
 
-void pushPrompt16(uint16_t value)
+void pushPrompt(uint16_t value)
 {
 #ifdef SIMU
   printf("playFile(\"%04d.ad4\")\n", value); fflush(stdout);
@@ -49,19 +49,19 @@ void pushPrompt16(uint16_t value)
 
   if (vptr->VoiceQueueCount < VOICE_Q_LENGTH) {
     vptr->VoiceQueue[vptr->VoiceQueueInIndex++] = value;
-    vptr->VoiceQueueInIndex &= (VOICE_Q_LENGTH - 1); // TODO flash saving?
+    vptr->VoiceQueueInIndex &= (VOICE_Q_LENGTH - 1);
     vptr->VoiceQueueCount += 1;
   }
 }
 
 void pushCustomPrompt(uint8_t value)
 {
-  pushPrompt16(PROMPT_CUSTOM_BASE + value);
+  pushPrompt(PROMPT_CUSTOM_BASE + value);
 }
 
-void pushPrompt(uint8_t value)
+void pushNumberPrompt(uint8_t value)
 {
-  pushPrompt16(value);
+  pushPrompt(PROMPT_I18N_BASE + value);
 }
 
 struct t_voice *voiceaddress()

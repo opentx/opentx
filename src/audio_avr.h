@@ -95,7 +95,6 @@ class audioQueue
     // vario has less priority
     uint8_t tone2Freq;
     uint8_t tone2TimeLeft;
-    uint8_t tone2Pause;
 	  
     // queue arrays
     uint8_t queueToneFreq[AUDIO_QUEUE_LENGTH];
@@ -121,15 +120,15 @@ void audioDefevent(uint8_t e);
 #define AUDIO_ERROR()          audioDefevent(AU_ERROR)
 
 #if defined(VOICE)
-  #define AUDIO_TADA()           pushPrompt(PROMPT_SYSTEM_BASE+AU_TADA)
-  #define AUDIO_TX_BATTERY_LOW() pushPrompt(PROMPT_SYSTEM_BASE+AU_TX_BATTERY_LOW)
-  #define AUDIO_INACTIVITY()     pushPrompt(PROMPT_SYSTEM_BASE+AU_INACTIVITY)
-  #define AUDIO_ERROR_MESSAGE(e) pushPrompt(PROMPT_SYSTEM_BASE+(e))
+  #define AUDIO_TADA()           PUSH_SYSTEM_PROMPT(AU_TADA)
+  #define AUDIO_TX_BATTERY_LOW() PUSH_SYSTEM_PROMPT(AU_TX_BATTERY_LOW)
+  #define AUDIO_INACTIVITY()     PUSH_SYSTEM_PROMPT(AU_INACTIVITY)
+  #define AUDIO_ERROR_MESSAGE(e) PUSH_SYSTEM_PROMPT((e))
   #define AUDIO_TIMER_MINUTE(t)  playDuration(t)
-  #define AUDIO_TIMER_30()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_30)
-  #define AUDIO_TIMER_20()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_20)
-  #define AUDIO_TIMER_10()       pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_10)
-  #define AUDIO_TIMER_LT3(x)     pushPrompt(PROMPT_SYSTEM_BASE+AU_TIMER_LT3)
+  #define AUDIO_TIMER_30()       PUSH_SYSTEM_PROMPT(AU_TIMER_30)
+  #define AUDIO_TIMER_20()       PUSH_SYSTEM_PROMPT(AU_TIMER_20)
+  #define AUDIO_TIMER_10()       PUSH_SYSTEM_PROMPT(AU_TIMER_10)
+  #define AUDIO_TIMER_LT3(x)     PUSH_SYSTEM_PROMPT(AU_TIMER_LT3)
 #else
   #define AUDIO_TADA()
   #define AUDIO_TX_BATTERY_LOW() audioDefevent(AU_TX_BATTERY_LOW)

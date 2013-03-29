@@ -199,7 +199,7 @@ void audioStart();
 extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 
 #define PLAY_FUNCTION(x, ...)    void x(__VA_ARGS__, uint8_t id)
-#define PUSH_PROMPT(p)           pushPrompt((p), id)
+#define PUSH_NUMBER_PROMPT(p)    pushPrompt((p), id)
 #define PLAY_NUMBER(n, u, a)     playNumber((n), (u), (a), id)
 #define PLAY_DURATION(d)         playDuration((d), id)
 #define IS_PLAYING(id)           audioQueue.isPlaying((id))
