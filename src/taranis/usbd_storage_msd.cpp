@@ -356,6 +356,16 @@ const char g_FAT[BLOCKSIZE] =
 };
 
 
+//	File Attributes
+//	0 	0x01 	Read Only.
+//	1 	0x02 	Hidden.
+//	2 	0x04 	System.
+//	3 	0x08 	Volume Label.
+//	4 	0x10 	Subdirectory.
+//	5 	0x20 	Archive.
+//	6 	0x40 	Device.
+//	7 	0x80 	Reserved.
+
 typedef struct
 {
     uint8_t name[8];
@@ -378,23 +388,8 @@ const FATDirEntry_t g_DIRroot[16] =
 {
     {
         { 'T', 'A', 'R', 'A', 'N', 'I', 'S', ' '},
-        { 'B', 'I', 'N'},
-        0x20,
-        0x00,
-        0x3E,
-        0xA301,
-        0x3D55,
-        0x3D55,
-        0x0000,
-        0xA302,
-        0x3D55,
-        0x0002,
-        0x00010000
-    },
-    {
-        { '\x00', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
         { ' ', ' ', ' '},
-        0x00,
+        0x08,		// Volume
         0x00,
         0x00,
         0x0000,
@@ -405,6 +400,21 @@ const FATDirEntry_t g_DIRroot[16] =
         0x0000,
         0x0000,
         0x00000000
+    },
+    {
+        { 'T', 'A', 'R', 'A', 'N', 'I', 'S', ' '},
+        { 'B', 'I', 'N'},
+        0x26,		// Archive, hidden, system
+        0x00,
+        0x3E,
+        0xA301,
+        0x3D55,
+        0x3D55,
+        0x0000,
+        0xA302,
+        0x3D55,
+        0x0002,
+        0x00010000
     },
     {
         { '\x00', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
