@@ -219,6 +219,16 @@ void boardInit()
   eepromInit();
   sportInit();
   usbInit();
+  
+  //Temporary: Configure second PPM pin as input (done after USB init in case the lib already initialises USB_ID)
+  GPIO_InitTypeDef GPIO_InitStructure;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_EXTPPM, ENABLE);
+  GPIO_InitStructure.GPIO_Pin = PIN_EXTPPM_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIO_EXTPPM, &GPIO_InitStructure);
 }
 #endif
 

@@ -109,7 +109,7 @@ void sdInit();
 void sdPoll10ms();
 #define sdMountPoll()
 uint32_t sdMounted();
-#define SD_CARD_PRESENT()       (1)
+#define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_Pin)
 #endif
 
 // Pulses driver
@@ -164,7 +164,7 @@ void pwrOff();
 #define setBacklight(xx)
 #define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
 #define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
-#define IS_BACKLIGHT_ON() GPIO_IsSet(GPIOB, GPIO_Pin_BL)
+#define IS_BACKLIGHT_ON() GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_BL)
 
 // EEPROM driver
 #if !defined(SIMU)

@@ -156,14 +156,15 @@
 #define RCC_AHB1Periph_GPIOPWR          RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD
 #define GPIOPWRLED                      GPIOC
 #define GPIOPWR                         GPIOD
-#define GPIOTRNDET                      GPIOA
-#define PIN_TRNDET                      GPIO_Pin_8
 #define PIN_INT_RF_PWR                  GPIO_Pin_15
 #define PIN_EXT_RF_PWR                  GPIO_Pin_8
 
 // Trainer Port
+#define GPIO_TR_INOUT                   GPIOC
 #define PIN_TR_PPM_IN                   GPIO_Pin_8  //PC.08
 #define PIN_TR_PPM_OUT                  GPIO_Pin_9  //PC.09
+#define GPIOTRNDET                      GPIOA
+#define PIN_TRNDET                      GPIO_Pin_8
 
 // TODO merge these constants
 #define PIN_PER_1                       0x0010
@@ -181,6 +182,10 @@
 #define PIN_CPPM_OUT                    GPIO_Pin_7  //PA.07
 #define GPIOCPPM                        GPIOA
 #define GPIO_PinSource_CPPM             GPIO_PinSource7
+#define RCC_AHB1Periph_GPIO_EXTPPM      RCC_AHB1Periph_GPIOA
+#define PIN_EXTPPM_OUT                  GPIO_Pin_10  //PA.10
+#define GPIO_EXTPPM                     GPIOA
+#define GPIO_PinSource_EXTPPM           GPIO_PinSource10
 
 // Heart Beat
 #define PIN_HEART_BEAT                  GPIO_Pin_7  //PC.07
@@ -274,7 +279,8 @@
 #endif
 
 // SD - SPI2
-#define SD_PRESENT_GPIO                 GPIOD->IDR
+#define RCC_AHB1Periph_SD_PRESENT       RCC_AHB1Periph_GPIOD
+#define SD_PRESENT_GPIO                 GPIOD
 #define SD_PRESENT_GPIO_Pin             GPIO_Pin_9  //PD.09
 #define GPIO_Pin_SPI_SD_CS              GPIO_Pin_12 //PB.12
 #define GPIO_Pin_SPI_SD_SCK             GPIO_Pin_13 //PB.13

@@ -156,7 +156,16 @@ static inline DWORD socket_is_write_protected(void)
 
 static void socket_cp_init(void)
 {
-        return;
+        GPIO_InitTypeDef GPIO_InitStructure;
+        
+        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_SD_PRESENT, ENABLE);
+        
+        GPIO_InitStructure.GPIO_Pin = SD_PRESENT_GPIO_Pin;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+        GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+        GPIO_Init(SD_PRESENT_GPIO, &GPIO_InitStructure);
 }
 
 static inline DWORD socket_is_empty(void)
@@ -363,7 +372,6 @@ void power_on (void)
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_SD, ENABLE);
 	/* Enable SPI clock, SPI1: APB2, SPI2: APB1 */
 	RCC_APBPeriphClockCmd_SPI_SD(RCC_APBPeriph_SPI_SD, ENABLE);
-    
     
 	card_power(1);
     

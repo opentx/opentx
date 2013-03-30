@@ -122,6 +122,7 @@ void disable_pxx()
 // Pin is AF1 function for timer 1
 void init_main_ppm()
 {
+  EXTERNAL_RF_ON();
   // Timer1
   setupPulsesPPM() ;
   ppmStreamPtr = ppmStream ;
@@ -163,6 +164,7 @@ void disable_main_ppm()
   NVIC_DisableIRQ(TIM1_UP_TIM10_IRQn) ;
   TIM1->DIER &= ~TIM_DIER_CC2IE & ~TIM_DIER_UIE ;
   TIM1->CR1 &= ~TIM_CR1_CEN ;
+  EXTERNAL_RF_OFF();
 }
 
 extern "C" void TIM1_CC_IRQHandler()
