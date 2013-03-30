@@ -24,8 +24,6 @@
 # Italian : Romolo Manfredini
 # Czeck   : Martin Hotar
 
-
-
 import os, sys, shutil, platform, subprocess, wave, zipfile
 
 def generate(str, idx, alternate=0):
@@ -122,10 +120,16 @@ if __name__ == "__main__":
     
     if "sky9x" in sys.argv:
         board = "sky9x"
+        PROMPT_CUSTOM_BASE = 256
+        PROMPT_SYSTEM_BASE = 0
     elif "gruvin9x" in sys.argv:
         board = "gruvin9x"
+        PROMPT_CUSTOM_BASE = 0
+        PROMPT_SYSTEM_BASE = 256
     else:
         board = "stock"
+        PROMPT_CUSTOM_BASE = 0
+        PROMPT_SYSTEM_BASE = 256
 
     if "sapi" in sys.argv:
         import pyTTS
@@ -164,11 +168,11 @@ if __name__ == "__main__":
             voice = "english"      
             
         for i in range(100):
-            systemSounds.extend(generate(str(i), i))
+            systemSounds.extend(generate(str(i), PROMPT_SYSTEM_BASE+i))
         for i in range(9):
-            systemSounds.extend(generate(str(100*(i+1)), 100+i))
+            systemSounds.extend(generate(str(100*(i+1)), PROMPT_SYSTEM_BASE+100+i))
         for i, s in enumerate(["thousand", "and", "minus", "point"]):
-            systemSounds.extend(generate(s, 109+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+109+i))
         for i, s in enumerate(["volt", "volts",
         					   "amp", "amps",
         					   "meter per second", "meters per second",
@@ -188,11 +192,11 @@ if __name__ == "__main__":
         					   "second", "seconds",
         					   "r p m", "r p m",
         					   "g", "g"]):
-            systemSounds.extend(generate(s, 115+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+115+i))
         for i, s in enumerate(["point zero", "point one", "point two", "point three",
                                "point four", "point five", "point six",
                                "point seven", "point eight", "point nine"]):
-            systemSounds.extend(generate(s, 160+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+160+i))
         for s, f, a in [(u"trim center", "midtrim", 244),
                         (u"maximum trim reached", "endtrim", 0),
                         (u"transmitter battery low", "lowbatt", 231),
@@ -205,7 +209,7 @@ if __name__ == "__main__":
                         (u"twenty. seconds", "timer20", 252),
                         (u"thirty. seconds", "timer30", 253),
                        ]:
-            systemSounds.extend(generate(s, f, a))
+            systemSounds.extend(generate(s, f, PROMPT_SYSTEM_BASE+a))
         for i, (s, f) in enumerate([
                      (u"gear!, up!", "gearup"),
                      (u"gear!, down!", "geardn"),
@@ -244,7 +248,7 @@ if __name__ == "__main__":
                      (u"flight mode!, normal", "fm-nrm"),
                      (u"flight mode!, cruise", "fm-crs"),                 
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
 
     
     elif "fr" in sys.argv:
@@ -257,22 +261,22 @@ if __name__ == "__main__":
             voice = "french"      
             
         for i in range(100):
-            systemSounds.extend(generate(str(i), i))
+            systemSounds.extend(generate(str(i), PROMPT_SYSTEM_BASE+i))
         for i in range(10):
-            systemSounds.extend(generate(str(100*(i+1)), 100+i))    
+            systemSounds.extend(generate(str(100*(i+1)), PROMPT_SYSTEM_BASE+100+i))    
         for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante et une", "cinquante et une", "soixante et une", "soixante et onze", "quatre vingt une"]): 
-            systemSounds.extend(generate(s, 110+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+110+i))
         for i, s in enumerate(["virgule", "et", "moins"]): 
-            systemSounds.extend(generate(s, 119+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+119+i))
         for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "km heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "knotts", "heure", "minute", "seconde", "tours par minute", "g"]):
-            systemSounds.extend(generate(s, 125+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+125+i))
         for i, s in enumerate(["timer", "", "tension", "tension", u"émission", u"réception", "altitude", "moteur",
                                "essence", u"température", u"température", "vitesse", "distance", "altitude", u"élément lipo",
                                "total lipo", "tension", "courant", "consommation", "puissance", u"accelération X", u"accelération Y", u"accelération Z",
                                "orientation", "vario"]):
-            systemSounds.extend(generate(s, 146+i))            
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+146+i))            
         for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
-            systemSounds.extend(generate(s, 180+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+180+i))
         for i, (s, f) in enumerate([
                      (u"train rentré", "gearup"),
                      (u"train sorti", "geardn"),
@@ -283,7 +287,7 @@ if __name__ == "__main__":
                      (u"fin écolage", "trnoff"),
                      (u"moteur coupé", "engoff"),
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
             
             
     elif "it" in sys.argv:
@@ -296,13 +300,13 @@ if __name__ == "__main__":
             voice = "italian"
 
         for i in range(101):
-            systemSounds.extend(generate(str(i), i))
-        systemSounds.extend(generate("mila", 101))
-        systemSounds.extend(generate("mille", 102))
+            systemSounds.extend(generate(str(i), PROMPT_SYSTEM_BASE+i))
+        systemSounds.extend(generate("mila", PROMPT_SYSTEM_BASE+101))
+        systemSounds.extend(generate("mille", PROMPT_SYSTEM_BASE+102))
         for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
-            systemSounds.extend(generate(s, 103+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+103+i))
         for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g"]):
-            systemSounds.extend(generate(s, 113+i))            
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+113+i))            
         for s, f, a in [(u"radio inattiva controllare", "inactiv", 230),
                         (u"batteria della radio scarica", "lowbatt", 231),
                         (u"controllo motore non in posizione, verificare", "thralert", 232),
@@ -319,12 +323,12 @@ if __name__ == "__main__":
                         (u"venti secondi", "timer20", 252),
                         (u"trenta secondi", "timer30", 253),
                      ]:
-            systemSounds.extend(generate(s, f, a))
+            systemSounds.extend(generate(s, f, PROMPT_SYSTEM_BASE+a))
         for i, s in enumerate(["timer", "timer",  "trasmissione", "ricezione", "A1", "A2", "altitudine", "motore",
                                "carburante", "temperatura", "temperatura", "velocita'", "distanza", "altitudine", "cella lipo",
                                "totale lipo", "tensione", "corrente", "consumo", "potenza", "accelerazione X", "accellerazione Y", "accelerazione Z",
                                "direzione", "variometro","minimo","massimo"]):
-            systemSounds.extend(generate(s, 132+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+132+i))
         for i, (s, f) in enumerate([
                      (u"carrello chiuso", "gearup"),
                      (u"carrello aperto", "geardn"),
@@ -354,7 +358,7 @@ if __name__ == "__main__":
                      (u"fase di volo 8", "fltmd8"),
                      (u"fase di volo 9", "fltmd9"),
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
 
     elif "de" in sys.argv:
         if "sapi" in sys.argv:
@@ -367,11 +371,11 @@ if __name__ == "__main__":
 
         for i in range(101):
             systemSounds.extend(generate(str(i), i))
-        systemSounds.extend(generate("tausend", 101))
+        systemSounds.extend(generate("tausend", PROMPT_SYSTEM_BASE+101))
         for i, s in enumerate(["comma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden"]):
-            systemSounds.extend(generate(s, 102+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+102+i))
         for i, s in enumerate(["Volt", "Ampere", "Meter pro sekunde", "", "kilometer pro stunde", "Meter", "Grad", "Prozent", "Milliampere", "Milliampere pro stunde", "Watt", "db", "Fuesse", "Knoten", "Uhr", "Minuten", "Secunden", "R P M", "g"]):
-            systemSounds.extend(generate(s, 110+i))            
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+110+i))            
         for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 230),
                         (u"Senderakku niedrig", "lowbatt", 231),
                         (u"Gaskanal nicht Null, bitte pruefen", "thralert", 232),
@@ -388,12 +392,12 @@ if __name__ == "__main__":
                         (u"20 sekunden", "timer20", 252),
                         (u"30 sekunden", "timer30", 253),
                      ]:
-            systemSounds.extend(generate(s, f, a))
+            systemSounds.extend(generate(s, f, PROMPT_SYSTEM_BASE+a))
         for i, s in enumerate(["Timer", "Timer",  "Sendung", "Empfang", "A1", "A2", "Hoehe", "Motor",
                                "Treibstoff", "Temperatur", "Temperatur", "Geschwindigkeit", "Ferne", "Hoehe", "Lipo-Zelle",
                                "Zellen gesamt", "Spannung", "Strom", "Verbrauch", "Power", "Beschleunigung X", "Beschleunigung Y", "Beschleunigung Z",
                                "Richtung", "Variometer","Minimum","Maximum"]):
-            systemSounds.extend(generate(s, 129+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+129+i))
         for i, (s, f) in enumerate([
                      (u"Fahrwerk eingezogen", "gearup"),
                      (u"Fahrwerk ausgefahren", "geardn"),
@@ -423,7 +427,7 @@ if __name__ == "__main__":
                      (u"Regime 8", "fltmd8"),
                      (u"Regime 9", "fltmd9"),
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
 
     elif "pt" in sys.argv:
         if "sapi" in sys.argv:
@@ -435,21 +439,21 @@ if __name__ == "__main__":
             voice = "portuguese"
 
         for i in range(101):
-            systemSounds.extend(generate(str(i), i))
-        systemSounds.extend(generate("cento", 101))
-        systemSounds.extend(generate("duzentos", 102))
-        systemSounds.extend(generate("trezentos", 103))
-        systemSounds.extend(generate("quatrocentos", 104))
-        systemSounds.extend(generate("quinhentos", 105))
-        systemSounds.extend(generate("seiscentos", 106))
-        systemSounds.extend(generate("setecentos", 107))
-        systemSounds.extend(generate("oitocentos", 108))
-        systemSounds.extend(generate("novecentos", 109))
-        systemSounds.extend(generate("mil", 110))
+            systemSounds.extend(generate(str(i), PROMPT_SYSTEM_BASE+i))
+        systemSounds.extend(generate("cento", PROMPT_SYSTEM_BASE+101))
+        systemSounds.extend(generate("duzentos", PROMPT_SYSTEM_BASE+102))
+        systemSounds.extend(generate("trezentos", PROMPT_SYSTEM_BASE+103))
+        systemSounds.extend(generate("quatrocentos", PROMPT_SYSTEM_BASE+104))
+        systemSounds.extend(generate("quinhentos", PROMPT_SYSTEM_BASE+105))
+        systemSounds.extend(generate("seiscentos", PROMPT_SYSTEM_BASE+106))
+        systemSounds.extend(generate("setecentos", PROMPT_SYSTEM_BASE+107))
+        systemSounds.extend(generate("oitocentos", PROMPT_SYSTEM_BASE+108))
+        systemSounds.extend(generate("novecentos", PROMPT_SYSTEM_BASE+109))
+        systemSounds.extend(generate("mil", PROMPT_SYSTEM_BASE+110))
         for i, s in enumerate(["virgula", "uma", "duas", "e", "menos", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
-            systemSounds.extend(generate(s, 111+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+111+i))
         for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"quilômetros por hora", u"metros", u"graus", u"cento", u"miliamperes", u"miliamperes por hora", u"watt", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g"]):
-            systemSounds.extend(generate(s, 122+i))            
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+122+i))            
         for s, f, a in [(u"atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv", 230),
                         (u"bateria do rádio fraca", "lowbatt", 231),
                         (u"atenção,acelerador não está no mínimo", "thralert", 232),
@@ -466,12 +470,12 @@ if __name__ == "__main__":
                         (u"20 segundos", "timer20", 252),
                         (u"30 segundos", "timer30", 253),
                      ]:
-            systemSounds.extend(generate(s, f, a))
+            systemSounds.extend(generate(s, f, PROMPT_SYSTEM_BASE+a))
         for i, s in enumerate([u"cronómetro", u"cronómetro", u"transmissão", u"recepção", u"A1", u"A2", u"altitude", u"motor",
                                 u"combustível", u"temperatura", u"temperatura", u"velocidade", u"distância", u"altitude", u"célula lipo"
                                 u"Total lipo", u"tensão", u"corrente", u"consumo", u"potência", u"aceleração X", u"aceleração Y", u"aceleração Z"
                                 u"Direcção", u"variómetro", u"mínimo", u"máximo"]):
-            systemSounds.extend(generate(s, 141+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+141+i))
         for i, (s, f) in enumerate([
                       (u"trem, em cima.", "gearup"),
                       (u"trem, em baixo.", "geardn"),
@@ -501,7 +505,7 @@ if __name__ == "__main__":
                       (u"fase de voo 8", "fltmd8"),
                       (u"fase de voo 9", "fltmd9"),
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
             
     elif "cz" in sys.argv:
         if "sapi" in sys.argv:
@@ -513,14 +517,14 @@ if __name__ == "__main__":
             voice = "czech"     
              
         for i, s in enumerate(["nula", "jedna", "dva"]):
-            systemSounds.extend(generate(s, i))    
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+i))    
         for i in range(97):
-            systemSounds.extend(generate(str(3+i), 3+i))
+            systemSounds.extend(generate(str(3+i), PROMPT_SYSTEM_BASE+3+i))
         for i, s in enumerate(["sto", u"dvěsta", u"třista", u"čtyřista", u"pětset", u"šestset", "sedmset", "osmset", 			
         						u"devětset", u"tisíc"]):
-            systemSounds.extend(generate(s, 100+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+100+i))
         for i, s in enumerate([u"tisíce", "jeden", "jedno", u"dvě", u"celá", u"celé", u"celých", u"mínus"]):
-            systemSounds.extend(generate(s, 110+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+110+i))
             
         for i, s in enumerate(["volt", "volty", u"voltů", "voltu",
         					   u"ampér", u"ampéry", u"ampérů", u"ampéru",
@@ -541,7 +545,7 @@ if __name__ == "__main__":
         					   "sekunda", "sekundy", "sekund", "sekundy",
         					   u"otáčka za minutu", u"otáčky za minutu", u"otáček za minutu", u"otáčky za minutu",
         					   u"gé", u"gé", u"gé", u"gé"]):
-            systemSounds.extend(generate(s, 118+i))
+            systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+118+i))
             
         for s, f, a in [(u"střed trimu", "midtrim", 244),
                         (u"maximum trimu", "endtrim", 0),
@@ -555,7 +559,7 @@ if __name__ == "__main__":
                         (u"dvacet sekund", "timer20", 252),
                         (u"třicet sekund", "timer30", 253),
                        ]:
-            systemSounds.extend(generate(s, f, a))
+            systemSounds.extend(generate(s, f, PROMPT_SYSTEM_BASE+a))
         for i, (s, f) in enumerate([
                      (u"podvozek je zasunut", "gearup"),
                      (u"podvozek je vysunut", "geardn"),
@@ -585,7 +589,7 @@ if __name__ == "__main__":
                      (u"režim osm", "fltmd8"),
                      (u"režim devět", "fltmd9"),
                      ]):
-            sounds.extend(generate(s, f, 256+i))
+            sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
             
 
     voice += "-" + board
