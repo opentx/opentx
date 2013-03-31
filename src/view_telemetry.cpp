@@ -199,7 +199,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       putsTelemetryValue(x, y, val, UNIT_RAW, att);
       break;
 
-#if LCD_W >= 212
+#if defined(FRSKY_SPORT)
     case TELEM_ALT-1:
       putsTelemetryValue(x, y, val/10, UNIT_METERS, att|PREC1);
       break;

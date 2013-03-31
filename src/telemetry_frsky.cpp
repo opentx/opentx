@@ -69,6 +69,33 @@ uint8_t frskyUsrStreaming = 0;
 uint8_t link_counter = 0;
 FrskyData frskyData;
 
+#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+void checkMinMaxAltitude()
+{
+  if (TELEMETRY_ALT_BP > frskyData.hub.maxAltitude)
+    frskyData.hub.maxAltitude = TELEMETRY_ALT_BP;
+  if (TELEMETRY_ALT_BP < frskyData.hub.minAltitude)
+    frskyData.hub.minAltitude = TELEMETRY_ALT_BP;
+}
+#endif
+
+#if defined(VARIO) && !defined(FRSKY_SPORT) && (defined(FRSKY_HUB) || defined(WS_HOW_HIGH))
+void evalVario(int16_t altitude_bp, uint16_t altitude_ap)
+{
+  int32_t varioAltitude_cm = (int32_t)altitude_bp * 100 + (altitude_bp > 0 ? altitude_ap : -altitude_ap);
+  uint8_t varioAltitudeQueuePointer = frskyData.hub.varioAltitudeQueuePointer + 1;
+  if (varioAltitudeQueuePointer >= VARIO_QUEUE_LENGTH)
+    varioAltitudeQueuePointer = 0;
+  frskyData.hub.varioAltitudeQueuePointer = varioAltitudeQueuePointer;
+  frskyData.hub.varioSpeed -= frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
+  frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] = varioAltitude_cm - frskyData.hub.varioAltitude_cm;
+  frskyData.hub.varioAltitude_cm = varioAltitude_cm;
+  frskyData.hub.varioSpeed += frskyData.hub.varioAltitudeQueue[varioAltitudeQueuePointer] ;
+}
+#else
+#define evalVario(...)
+#endif
+
 #if defined(FRSKY_HUB)
 typedef enum {
   TS_IDLE = 0,  // waiting for 0x5e frame marker

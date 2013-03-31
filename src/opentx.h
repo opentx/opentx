@@ -1357,8 +1357,6 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 #define EARTH_RADIUSKM ((uint32_t)6371)
 #define EARTH_RADIUS ((uint32_t)111194)
 
-void checkMinMaxAltitude();
-void evalVario(int16_t altitude_bp, uint16_t altitude_ap);
 void getGpsPilotPosition();
 void getGpsDistance();
 void varioWakeup();
