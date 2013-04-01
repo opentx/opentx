@@ -127,13 +127,23 @@ void varioWakeup()
     }
 
     if (verticalSpeed < 0 || (int16_t)(s_varioTmr-tmr10ms) < 0) {
-      uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
 #if defined(CPUARM)
-      uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 7;
+     uint8_t SoundVarioBeepTime;
+     uint8_t SoundVarioBeepFreq;
+      if (verticalSpeed > 0) {
+        SoundVarioBeepTime = (8000 - verticalSpeed * 5) / 100;
+        SoundVarioBeepFreq = (verticalSpeed * 4 + 8000) >> 7;
+      }
+      else {
+        SoundVarioBeepTime = 20;
+        SoundVarioBeepFreq = (verticalSpeed * 3 + 8000) >> 7;
+      }
+      s_varioTmr = tmr10ms + (SoundVarioBeepTime/2);
 #else
+      uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
       uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 8;
-#endif
       s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
+#endif
       AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
     }
 
