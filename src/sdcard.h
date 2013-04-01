@@ -48,11 +48,11 @@
 #define BITMAPS_PATH  "."
 #else
 #define ROOT_PATH           "/"
-#define MODELS_PATH         "/9XMODELS"
-#define LOGS_PATH           "/9XLOGS"   // no trailing slash = important
-#define SOUNDS_PATH         "/9XSOUNDS" // no trailing slash = important
+#define MODELS_PATH         "/MODELS"
+#define LOGS_PATH           "/LOGS"   // no trailing slash = important
+#define SOUNDS_PATH         "/SOUNDS" // no trailing slash = important
 #define SYSTEM_SOUNDS_PATH  SOUNDS_PATH "/SYSTEM" // no trailing slash = important
-#define BITMAPS_PATH        "/9XBMP"
+#define BITMAPS_PATH        "/BMP"
 #endif
 
 #define MODELS_EXT   ".bin"
