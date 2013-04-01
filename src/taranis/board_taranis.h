@@ -166,6 +166,10 @@ void pwrOff();
 #define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
 #define IS_BACKLIGHT_ON() GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_BL)
 
+// USB driver
+void usbInit(void);
+extern uint8_t usb_connected;
+
 // EEPROM driver
 #if !defined(SIMU)
 #define eepromInit()      I2C_EE_Init()
@@ -175,8 +179,6 @@ void pwrOff();
 #define eepromInit()
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #endif
-
-// USB driver
-void usbInit(void);
+#define EEPROM_MASSSTORAGE() (usb_connected)
 
 #endif

@@ -3453,8 +3453,15 @@ void perMain()
 
   lcd_clear();
   const char *warn = s_warning;
-  g_menuStack[g_menuStackPtr](warn ? 0 : evt);
-  if (warn) displayWarning(evt);
+
+  if (EEPROM_MASSSTORAGE()) {
+    menuMainView(0);
+  }
+  else {
+    g_menuStack[g_menuStackPtr](warn ? 0 : evt);
+    if (warn) displayWarning(evt);
+  }
+
   drawStatusLine();
   lcdRefresh();
 

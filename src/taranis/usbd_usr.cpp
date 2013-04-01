@@ -28,8 +28,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "../opentx.h"
 
-extern uint8_t usb_connected;
-
 extern "C" {
 #include "usbd_usr.h"
 

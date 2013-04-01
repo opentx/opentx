@@ -961,6 +961,10 @@ void eeReadAll()
 
 void eeCheck(bool immediately)
 {
+  if (EEPROM_MASSSTORAGE()) {
+    return;
+  }
+
   if (immediately) {
     eeFlush();
   }

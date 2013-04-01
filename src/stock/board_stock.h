@@ -215,4 +215,6 @@ extern uint8_t RotEncoder ;
 void rotencPoll();
 #endif
 
+#define EEPROM_MASSSTORAGE() (0)
+
 #endif
