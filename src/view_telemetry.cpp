@@ -360,6 +360,9 @@ void menuTelemetryFrsky(uint8_t event)
         s_frsky_view = FRSKY_VIEW_MAX;
       break;
 
+#if defined(PCBTARANIS)
+    case EVT_KEY_BREAK(KEY_PAGE):
+#endif
     case EVT_KEY_BREAK(KEY_DOWN):
       if (s_frsky_view++ == FRSKY_VIEW_MAX)
         s_frsky_view = 0;
