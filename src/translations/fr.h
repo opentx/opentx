@@ -135,8 +135,8 @@
 #define LEN_VMIXTRIMS    "\003"
 #define TR_VMIXTRIMS     "OFF""ON\0""Dir""Prf""Gaz""Ail"
 
-#define LEN_VCSWFUNC     "\006"
-#define TR_VCSWFUNC      "---\0  ""v1==x\0""v1>x\0 ""v1<x\0 ""|v1|>x""|v1|<x""ET\0   ""OU\0   ""OU Exc""v1==v2""v1>v2\0""v1<v2\0""d>=x\0 ""|d|>=x"
+#define LEN_VCSWFUNC     "\005"
+#define TR_VCSWFUNC      "---\0 ""a{x\0 ""a>x\0 ""a<x\0 ""|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 ""a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x"
 
 #define LEN_VFSWFUNC     "\015"
 
