@@ -3723,7 +3723,7 @@ void menuModelCustomFunctions(uint8_t event)
             }
 #endif
             else if (CFN_FUNC(sd) == FUNC_RESET) {
-              val_max = 3;
+              val_max = FUNC_RESET_PARAM_LAST;
               lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(sd), attr);
             }
             else if (CFN_FUNC(sd) < FUNC_TRAINER) {
