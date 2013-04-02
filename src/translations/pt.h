@@ -99,8 +99,8 @@
 #define LEN_VMIXTRIMS    "\003"
 #define TR_VMIXTRIMS     "OFF""ON\0""Lem""Pfd""Mot""Ail"
 
-#define LEN_VCSWFUNC     "\006"
-#define TR_VCSWFUNC      "---\0  ""v1==x\0""v1>x\0 ""v1<x\0 ""|v1|>x""|v1|<x""AND\0  ""OR\0   ""XOR\0  ""v1==v2""v1>v2\0""v1<v2\0""d>=x\0 ""|d|>=x"
+#define LEN_VCSWFUNC     "\005"
+#define TR_VCSWFUNC      "---\0 ""a{x\0 ""a>x\0 ""a<x\0 ""|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 ""a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x"
 
 #define LEN_VFSWFUNC     "\015"
 
@@ -411,7 +411,7 @@
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
-#define TR_NODATA              "SEM DADOS"
+#define TR_NODATA              CENTER"SEM DADOS"
 #define TR_TM1TM2              "TM1\032TM2"
 #define TR_THRTHP              "MTR\032MT%"
 #define TR_TOT                 "TOT"
