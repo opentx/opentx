@@ -846,6 +846,7 @@ uint8_t s_menu_item = 0;
 uint16_t s_menu_count = 0;
 uint8_t s_menu_flags = 0;
 uint16_t s_menu_offset = 0;
+void (*menuHandler)(const char *result);
 const char * displayMenu(uint8_t event)
 {
   const char * result = NULL;

@@ -985,8 +985,8 @@ bool __getSwitch(int8_t swtch)
         }
       }
       else {
-        int16_t x = getValue(cs->v1-1);
-        int16_t y;
+        getvalue_t x = getValue(cs->v1-1);
+        getvalue_t y;
         if (s == CS_VCOMP) {
           y = getValue(cs->v2-1);
 
@@ -2163,7 +2163,7 @@ tmr10ms_t lastFunctionTime[NUM_CFN] = { 0 };
 #if defined(VOICE)
 PLAY_FUNCTION(playValue, uint8_t idx)
 {
-  int16_t val = getValue(idx);
+  getvalue_t val = getValue(idx);
 
   switch (idx) {
     case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE-1:
@@ -2284,11 +2284,15 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 }
 #endif
 
+#if !defined(CPUM64)
+uint8_t mSwitchDuration[1+NUM_ROTARY_ENCODERS] = { 0 };
+#define CFN_PRESSLONG_DURATION   100
+#endif
+
 #if defined(CPUARM)
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume;
 uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
-#define CFN_PRESSLONG_DURATION   100
 
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 {
@@ -2298,7 +2302,6 @@ inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
   strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
   PLAY_FILE(lfn, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
 }
-
 #endif
 
 void evalFunctions()
@@ -2327,27 +2330,30 @@ void evalFunctions()
       MASK_CFN_TYPE  switch_mask   = ((MASK_CFN_TYPE)1 << i);
       uint8_t momentary = 0;
 
-#if defined(CPUARM)
+#if !defined(CPUM64)
 
   #define MOMENTARY_START_TEST() ( (momentary && !(activeSwitches & switch_mask) && active) || \
-                                   (shortPress && !active && fnSwitchDuration[i]>0 && fnSwitchDuration[i]<CFN_PRESSLONG_DURATION) || \
-                                   (longPress && active && fnSwitchDuration[i]>=CFN_PRESSLONG_DURATION) )
+                                   (short_long==1 && !active && mSwitchDuration[mswitch]>0 && mSwitchDuration[mswitch]<CFN_PRESSLONG_DURATION) || \
+                                   (short_long==2 && active && mSwitchDuration[mswitch]>=CFN_PRESSLONG_DURATION) )
 
-      uint8_t shortPress=0, longPress=0;
-      if (swtch > MAX_SWITCH+1+MAX_SWITCH+1+MAX_PSWITCH) {
-        longPress = 1;
-        swtch -= MAX_SWITCH+1+MAX_SWITCH+1+MAX_PSWITCH;
+      uint8_t short_long = 0;
+      uint8_t mswitch = 0;
+
+      if (swtch == SWSRC_TRAINER_LONG) {
+        short_long = 2;
+        swtch = SWSRC_TRAINER;
+        mswitch = 0;
       }
-      else if (swtch > MAX_SWITCH+1+MAX_SWITCH+1) {
-        shortPress = 1;
-        swtch -= MAX_SWITCH+1+MAX_SWITCH+1;
+      else if (swtch == SWSRC_TRAINER_SHORT) {
+        short_long = 1;
+        swtch = SWSRC_TRAINER;
+        mswitch = 0;
       }
       else
 
 #else
 
-  #define shortPress  0
-  #define longPress   0
+  #define short_long  0
   #define MOMENTARY_START_TEST() (!(activeSwitches & switch_mask) && active)
 
 #endif
@@ -2363,37 +2369,43 @@ void evalFunctions()
 
       bool active = getSwitch(swtch, 0);
       if (active) newActiveSwitches |= switch_mask;
-      if (momentary || longPress || shortPress) {
+      if (momentary || short_long) {
 
-#if defined(CPUARM)
+#if !defined(CPUM64)
         bool swState = active;
 #endif
 
         if (MOMENTARY_START_TEST()) {
 
-          active = !(activeFnSwitches & switch_mask);
-#if !defined(CPUARM)
-          if (CFN_FUNC(sd) == FUNC_PLAY_BOTH && !active) {
-            momentary = 1;
+          if (short_long) {
+            active = false;
+            momentary = true;
           }
-          else
+          else {
+            active = !(activeFnSwitches & switch_mask);
+#if !defined(CPUARM)
+            if (CFN_FUNC(sd) == FUNC_PLAY_BOTH && !active) {
+              momentary = 1;
+            }
+            else
 #endif
-          {
-            momentary = 0;
+            {
+              momentary = 0;
+            }
           }
         }
         else {
           active = (activeFnSwitches & switch_mask);
           momentary = 0;
         }
-#if defined(CPUARM)
-        if (shortPress || longPress) {
+#if !defined(CPUM64)
+        if (short_long) {
           if (swState) {
-            if (fnSwitchDuration[i] < 255)
-              fnSwitchDuration[i]++;
+            if (mSwitchDuration[mswitch] < 255)
+              mSwitchDuration[mswitch]++;
           }
           else {
-            fnSwitchDuration[i] = 0;
+            mSwitchDuration[mswitch] = 0;
           }
         }
 #endif
@@ -2617,9 +2629,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
   if(g_model.swashR.type)
   {
-    int16_t vp = anas[ELE_STICK]+trims[ELE_STICK];
-    int16_t vr = anas[AIL_STICK]+trims[AIL_STICK];
-    int16_t vc = 0;
+    getvalue_t vp = anas[ELE_STICK]+trims[ELE_STICK];
+    getvalue_t vr = anas[AIL_STICK]+trims[AIL_STICK];
+    getvalue_t vc = 0;
     if (g_model.swashR.collectiveSource)
       vc = getValue(g_model.swashR.collectiveSource-1);
 
@@ -2694,7 +2706,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       bool sw = getSwitch(md->swtch, 1);
 
       //========== VALUE ===============
-      int16_t v = 0;
+      getvalue_t v = 0;
       if (mode != e_perout_mode_normal) {
         if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
           continue;
@@ -3453,13 +3465,23 @@ void perMain()
 
   lcd_clear();
   const char *warn = s_warning;
+  uint8_t menu = s_menu_count;
 
   if (EEPROM_MASSSTORAGE()) {
     menuMainView(0);
   }
   else {
-    g_menuStack[g_menuStackPtr](warn ? 0 : evt);
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
     if (warn) displayWarning(evt);
+#if defined(NAVIGATION_MENUS)
+    if (menu) {
+      const char * result = displayMenu(evt);
+      if (result) {
+        menuHandler(result);
+        putEvent(EVT_MENU_UP);
+      }
+    }
+#endif
   }
 
   drawStatusLine();

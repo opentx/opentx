@@ -531,6 +531,58 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcmp(fn, line) < 0);
 }
 
+void onSdManagerMenu(const char *result)
+{
+  char lfn[SD_SCREEN_FILE_LENGTH];
+
+  uint8_t index = m_posVert-1-s_pgOfs;
+  if (result == STR_SD_INFO) {
+    pushMenu(menuGeneralSdManagerInfo);
+  }
+  else if (result == STR_SD_FORMAT) {
+    displayPopup(STR_FORMATTING);
+    closeLogs();
+#if defined(PCBSKY9X)
+    Card_state = SD_ST_DATA;
+#endif
+#if defined(CPUARM)
+    audioQueue.stopSD();
+#endif
+    if (f_mkfs(0, 1, 0) == FR_OK) {
+      f_chdir("/");
+      reusableBuffer.sd.offset = -1;
+    }
+    else {
+      s_warning = STR_SDCARD_ERROR;
+    }
+  }
+  else if (result == STR_DELETE_FILE) {
+    f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
+    strcat_P(lfn, PSTR("/"));
+    strcat(lfn, reusableBuffer.sd.lines[index]);
+    f_unlink(lfn);
+    strncpy(statusLineMsg, reusableBuffer.sd.lines[index], 13);
+    strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
+    showStatusLine();
+    if ((uint16_t)m_posVert == reusableBuffer.sd.count) m_posVert--;
+    reusableBuffer.sd.offset = s_pgOfs-1;
+  }
+#if defined(CPUARM)
+  /* TODO else if (result == STR_LOAD_FILE) {
+    f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
+    strcat(lfn, "/");
+    strcat(lfn, reusableBuffer.sd.lines[index]);
+    s_warning = eeLoadModelSD(lfn);
+  } */
+  else if (result == STR_PLAY_FILE) {
+    f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
+    strcat(lfn, "/");
+    strcat(lfn, reusableBuffer.sd.lines[index]);
+    audioQueue.playFile(lfn, PLAY_NOW);
+  }
+#endif
+}
+
 void menuGeneralSdManager(uint8_t event)
 {
   FILINFO fno;
@@ -543,11 +595,6 @@ void menuGeneralSdManager(uint8_t event)
 #else
   char lfn[SD_SCREEN_FILE_LENGTH];
 #endif
-
-  uint8_t _event = event;
-  if (s_menu_count) {
-    event = 0;
-  }
 
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sd.count);
 
@@ -585,10 +632,9 @@ void menuGeneralSdManager(uint8_t event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
-      _event = 0;
       if (m_posVert == 0) {
-        s_menu[s_menu_count++] = STR_SD_INFO;
-        s_menu[s_menu_count++] = STR_SD_FORMAT;
+        MENU_ADD_ITEM(STR_SD_INFO);
+        MENU_ADD_ITEM(STR_SD_FORMAT);
       }
       else {
 #if defined(CPUARM)
@@ -599,13 +645,14 @@ void menuGeneralSdManager(uint8_t event)
           s_menu[s_menu_count++] = STR_LOAD_FILE;
         }
         else */ if (!strcmp(ext, SOUNDS_EXT)) {
-          s_menu[s_menu_count++] = STR_PLAY_FILE;
+          MENU_ADD_ITEM(STR_PLAY_FILE);
         }
 #endif
-        s_menu[s_menu_count++] = STR_DELETE_FILE;
-        s_menu[s_menu_count++] = STR_RENAME_FILE;
-        s_menu[s_menu_count++] = STR_COPY_FILE;
+        MENU_ADD_ITEM(STR_DELETE_FILE);
+        MENU_ADD_ITEM(STR_RENAME_FILE);
+        MENU_ADD_ITEM(STR_COPY_FILE);
       }
+      menuHandler = onSdManagerMenu;
       break;
   }
 
@@ -699,58 +746,6 @@ void menuGeneralSdManager(uint8_t event)
       if (!reusableBuffer.sd.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', attr); x += FW; }
       lcd_putsAtt(x, y, reusableBuffer.sd.lines[i], attr);
       if (!reusableBuffer.sd.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdLastPos, y, ']', attr); }
-    }
-  }
-
-  if (s_menu_count) {
-    const char * result = displayMenu(_event);
-    if (result) {
-      uint8_t index = m_posVert-1-s_pgOfs;
-      if (result == STR_SD_INFO) {
-        pushMenu(menuGeneralSdManagerInfo);
-      }
-      else if (result == STR_SD_FORMAT) {
-        displayPopup(STR_FORMATTING);
-        closeLogs();
-#if defined(PCBSKY9X)
-        Card_state = SD_ST_DATA;
-#endif
-#if defined(CPUARM)
-        audioQueue.stopSD();
-#endif
-        if (f_mkfs(0, 1, 0) == FR_OK) {
-          f_chdir("/");
-          reusableBuffer.sd.offset = -1;
-        }
-        else {
-          s_warning = STR_SDCARD_ERROR;
-        }
-      }
-      else if (result == STR_DELETE_FILE) {
-        f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
-        strcat_P(lfn, PSTR("/"));
-        strcat(lfn, reusableBuffer.sd.lines[index]);
-        f_unlink(lfn);
-        strncpy(statusLineMsg, reusableBuffer.sd.lines[index], 13);
-        strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
-        showStatusLine();
-        if ((uint16_t)m_posVert == reusableBuffer.sd.count) m_posVert--;
-        reusableBuffer.sd.offset = s_pgOfs-1;
-      }
-#if defined(CPUARM)
-      /* TODO else if (result == STR_LOAD_FILE) {
-        f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
-        strcat(lfn, "/");
-        strcat(lfn, reusableBuffer.sd.lines[index]);
-        s_warning = eeLoadModelSD(lfn);
-      }
-      else */ if (result == STR_PLAY_FILE) {
-        f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
-        strcat(lfn, "/");
-        strcat(lfn, reusableBuffer.sd.lines[index]);
-        audioQueue.playFile(lfn, PLAY_NOW);
-      }
-#endif
     }
   }
 }

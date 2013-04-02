@@ -2,7 +2,7 @@
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
  * - Andreas Weitl <andreas.weitl@gmx.de>
- * - Hellmut Renz <hrenz62961@aol.com>
+ * - Helmut Renz <hrenz62961@aol.com>
  * - Thomas Husterer
  *
  * opentx is based on code named
@@ -135,12 +135,14 @@
 #endif
 
 #if defined(AUDIO)
-  #define TR_SOUND             "Play Sound"
+  #define TR_SOUND             "Spiel T\203ne"
 #else
-  #define TR_SOUND             "Piep\0     "
+  #define TR_SOUND             "Spiel\0    "
 #endif
 
-#if defined(HAPTIC)
+#if defined(PCBTARANIS)
+  #define TR_HAPTIC
+#elif defined(HAPTIC)
   #define TR_HAPTIC            "Haptic\0   "
 #else
   #define TR_HAPTIC            "[Haptic]\0 "
@@ -148,16 +150,16 @@
 
 #if defined(VOICE)
   #if defined(PCBSKY9X)
-    #define TR_PY_TRACK        "Play\0     "
+    #define TR_PY_TRACK        "Spiel\0    "
   #else
-    #define TR_PLAY_TRACK      "Play Track"
+    #define TR_PLAY_TRACK      "Sag Text\0 "
   #endif
-  #define TR_PLAY_BOTH         "Play Beide"  
-  #define TR_PLAY_VALUE        "Play Wert\0"
+  #define TR_PLAY_BOTH         "Sag Beide "  
+  #define TR_PLAY_VALUE        "Sag Wert\0 "
 #else
-  #define TR_PLAY_TRACK        "[Play Trk]"
-  #define TR_PLAY_BOTH         "[Play Bth]"
-  #define TR_PLAY_VALUE        "[Play Val]"
+  #define TR_PLAY_TRACK        "[Sag Text]"
+  #define TR_PLAY_BOTH         "[SagBeide]"
+  #define TR_PLAY_VALUE        "[Sag Wert]"
 #endif
 
 #define TR_CFN_VOLUME          "Lautst\201rke"
@@ -194,7 +196,7 @@
 #if defined(FRSKY)
   #define TR_FSW_RESET_TELEM   TR("Telem", "Telemetry")
 #else
-  #define TR_FSW_RESET_TELEM   
+  #define TR_FSW_RESET_TELEM    
 #endif
 
 #if ROTARY_ENCODERS > 0
@@ -203,7 +205,7 @@
   #define TR_FSW_RESET_ROTENC
 #endif
 
-#define TR_VFSWRESET           TR("Tmr1\0""Tmr2\0""All\0 " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, "Timer 1  ""Timer 2  ""Alles    " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
+#define TR_VFSWRESET           TR("Tmr1\0""Tmr2\0""Alle\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, "Timer 1  ""Timer 2  ""Alle Tmr." TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         "\006"
 #define TR_FUNCSOUNDS          "Piep1\0""Piep2\0""Piep3\0""Warn1\0""Warn2\0""Cheep\0""Ring\0 ""SciFi\0""Robot\0""Chirp\0""Tada\0 ""Crickt""Siren\0""AlmClk""Ratata""Tick\0 "
@@ -253,7 +255,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               " Menu"" Exit""Enter"" Page"" Plus""Minus"
+#define TR_VKEYS               TR(" Menu"" Exit"" Down""   Up""Right"" Left", " Menu"" Exit""Enter"" Page"" Plus""Minus")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "DGa""DGb" //Digitalgeber a und b = Drehgeber
@@ -330,7 +332,7 @@
 #define TR_MOVINGMODEL         "Schiebe Modell"
 #define TR_LOADINGMODEL        "Lade Modell..."
 #define TR_NAME                "Name"
-#define TR_MODELNAME           "Model Name"
+#define TR_MODELNAME           "Modell Name"
 #define TR_PHASENAME           "Phase Name"
 #define TR_MIXNAME             "Mix Name"
 #define TR_EXPONAME            "Expo Name"
@@ -383,13 +385,13 @@
 #define TR_MIXER               "MISCHER"
 #define TR_CV                  "KV"
 #define TR_GV                  "GV"
-#define TR_ACHANNEL            "A\004channel"
+#define TR_ACHANNEL            "A\004Kanal  "
 #define TR_RANGE               INDENT"Skala"
 #define TR_BAR                 "Streifen"
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             "Daten"
 #define TR_BLADES              INDENT"Bl\201tter"
-#define TR_SCREEN              "Schirm"
+#define TR_SCREEN              "Bild "
 #define TR_SOUND_LABEL         "Ton"
 #define TR_LENGTH	       INDENT"Dauer"
 #define TR_SPKRPITCH           INDENT"Tonh\203he"
@@ -403,11 +405,11 @@
 #define TR_MEMORYWARNING       INDENT"Speicher voll"
 #define TR_ALARMWARNING        INDENT"Ton aus"
 #define TR_RENAVIG             "Drehgeb. Navig."
-#define TR_THROTTLEREVERSE     TR("Gasumkehrung?","Gasumkehrung?")
+#define TR_THROTTLEREVERSE     TR("Vollgas hinten?", "Vollgas hinten?")
 #define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Jede Minute")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_PERSISTENT          TR(INDENT"Dauernd",INDENT"Dauernd ein")
-#define TR_BACKLIGHT_LABEL     "LCD Licht"
+#define TR_BACKLIGHT_LABEL     "LCD Licht an"
 #define TR_BLDELAY             INDENT"Dauer"
 #define TR_BLONBRIGHTNESS      INDENT"An Helligkeit"
 #define TR_BLOFFBRIGHTNESS     INDENT"Aus Helligkeit"

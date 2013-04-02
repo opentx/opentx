@@ -122,7 +122,7 @@ void readKeysAndTrims()
 {
   register uint32_t i;
 
-#if defined(ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 0
   keys[BTN_REa].input(rotencDown(), BTN_REa);
 #endif
 

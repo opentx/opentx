@@ -181,6 +181,7 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
         char *line = reusableBuffer.models.menu_bss[0];
         memset(line, 0, MENU_LINE_LENGTH);
         strcpy(line, "---");
+        s_menu[0] = line;
       }
     }
 
@@ -242,31 +243,76 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 }
 #endif
 
-void menuModelSelect(uint8_t event)
+#if defined(NAVIGATION_MENUS)
+void onModelSelectMenu(const char *result)
 {
-#if defined(PCBSKY9X)
-  #define REFRESH(x)
-#elif defined(PCBGRUVIN9X) && defined(SDCARD)
-  static bool refresh = true;
-  #define REFRESH(x) refresh = (x)
+  int8_t sub = m_posVert;
+
+  if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
+    displayPopup(STR_LOADINGMODEL);
+    saveTimers();
+    eeCheck(true); // force writing of current model data before this is changed
+    if (g_eeGeneral.currModel != sub) {
+      g_eeGeneral.currModel = sub;
+      STORE_GENERALVARS;
+      eeLoadModel(sub);
+    }
+  }
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  else if (result == STR_COPY_MODEL) {
+    s_copyMode = COPY_MODE;
+    s_copyTgtOfs = 0;
+    s_copySrcRow = -1;
+  }
+  else if (result == STR_MOVE_MODEL) {
+    s_copyMode = MOVE_MODE;
+    s_copyTgtOfs = 0;
+    s_copySrcRow = -1;
+  }
+#endif
+#if defined(SDCARD)
+  else if (result == STR_BACKUP_MODEL) {
+    eeCheck(true); // force writing of current model data before this is changed
+    s_warning = eeBackupModel(sub);
+  }
+  else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
+    if (!listSdFiles(MODELS_PATH, MODELS_EXT, sizeof(g_model.name), NULL)) {
+      s_warning = STR_NO_MODELS_ON_SD;
+      s_menu_flags = 0;
+    }
+  }
+#endif
+  else if (result == STR_DELETE_MODEL) {
+    s_warning = STR_DELETEMODEL;
+    s_warning_type = WARNING_TYPE_CONFIRM;
+#if defined(CPUARM)
+    s_warning_info = modelNames[sub];
 #else
-  #define refresh event
-  #define REFRESH(x)
+    char * name = reusableBuffer.models.mainname;
+    eeLoadModelName(sub, name);
+    s_warning_info = name;
+#endif
+    s_warning_info_len = sizeof(g_model.name);
+  }
+#if defined(SDCARD)
+  else {
+    // The user choosed a file on SD to restore
+    s_warning = eeRestoreModel(sub, (char *)result);
+    if (!s_warning && g_eeGeneral.currModel == sub)
+      eeLoadModel(sub);
+  }
+#endif
+}
 #endif
 
+void menuModelSelect(uint8_t event)
+{
   if (s_warning_result) {
     eeDeleteModel(m_posVert); // delete file
     s_warning_result = 0;
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
   }
-
-#if defined(NAVIGATION_MENUS)
-  uint8_t _event = event;
-  if (s_menu_count) {
-    event = 0;
-  }
-#endif
 
   uint8_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
 
@@ -287,9 +333,6 @@ void menuModelSelect(uint8_t event)
 #if !defined(CPUARM)
   if (event) {
     eeFlush(); // flush eeprom write
-#if defined(SDCARD)
-    REFRESH(true);
-#endif
   }
 #endif
 
@@ -400,7 +443,6 @@ void menuModelSelect(uint8_t event)
           s_copyMode = 0;
           killEvents(event);
 #if defined(NAVIGATION_MENUS)
-          _event = 0;
           if (g_eeGeneral.currModel != sub) {
             if (eeModelExists(sub)) {
               MENU_ADD_ITEM(STR_SELECT_MODEL);
@@ -431,6 +473,7 @@ void menuModelSelect(uint8_t event)
             MENU_ADD_NAVIGATION_ITEM(STR_COPY_MODEL);
             MENU_ADD_NAVIGATION_ITEM(STR_MOVE_MODEL);
           }
+          menuHandler = onModelSelectMenu;
 #else
           if (g_eeGeneral.currModel != sub) {
             displayPopup(STR_LOADINGMODEL);
@@ -507,12 +550,12 @@ void menuModelSelect(uint8_t event)
 
 #if defined(PCBTARANIS)
   lcd_puts(27*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
+  if (event) reusableBuffer.models.eepromfree = EeFsGetFree();
   lcd_outdezAtt(20*FW, 0, reusableBuffer.models.eepromfree, 0);
   lcd_puts(21*FW, 0, "bytes"); // TODO translations
 #elif !defined(PCBSKY9X)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  if (refresh) reusableBuffer.models.eepromfree = EeFsGetFree();
+  if (event) reusableBuffer.models.eepromfree = EeFsGetFree();
   lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
 #endif
 
@@ -558,7 +601,7 @@ void menuModelSelect(uint8_t event)
       lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
 #else
       char * name = reusableBuffer.models.listnames[i];
-      if (refresh) eeLoadModelName(k, name);
+      if (event) eeLoadModelName(k, name);
       putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
 #endif
@@ -570,71 +613,6 @@ void menuModelSelect(uint8_t event)
       lcd_rect(8, y-1, LCD_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
   }
-
-#if defined(NAVIGATION_MENUS)
-  REFRESH(false);
-
-  if (s_menu_count) {
-    const char * result = displayMenu(_event);
-    if (result) {
-      REFRESH(true);
-      if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
-        displayPopup(STR_LOADINGMODEL);
-        saveTimers();
-        eeCheck(true); // force writing of current model data before this is changed
-        if (g_eeGeneral.currModel != sub) {
-          g_eeGeneral.currModel = sub;
-          STORE_GENERALVARS;
-          eeLoadModel(sub);
-        }
-      }
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      else if (result == STR_COPY_MODEL) {
-        s_copyMode = COPY_MODE;
-        s_copyTgtOfs = 0;
-        s_copySrcRow = -1;
-      }
-      else if (result == STR_MOVE_MODEL) {
-        s_copyMode = MOVE_MODE;
-        s_copyTgtOfs = 0;
-        s_copySrcRow = -1;
-      }
-#endif
-#if defined(SDCARD)
-      else if (result == STR_BACKUP_MODEL) {
-        eeCheck(true); // force writing of current model data before this is changed
-        s_warning = eeBackupModel(sub);
-      }
-      else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-        if (!listSdFiles(MODELS_PATH, MODELS_EXT, sizeof(g_model.name), NULL)) {
-          s_warning = STR_NO_MODELS_ON_SD;
-          s_menu_flags = 0;
-        }
-      }
-#endif
-      else if (result == STR_DELETE_MODEL) {
-        s_warning = STR_DELETEMODEL;
-        s_warning_type = WARNING_TYPE_CONFIRM;
-#if defined(CPUARM)
-        s_warning_info = modelNames[sub];
-#else
-        char * name = reusableBuffer.models.mainname;
-        eeLoadModelName(sub, name);
-        s_warning_info = name;
-#endif
-        s_warning_info_len = sizeof(g_model.name);
-      }
-#if defined(SDCARD)
-      else {
-        // The user choosed a file on SD to restore
-        s_warning = eeRestoreModel(sub, (char *)result);
-        if (!s_warning && g_eeGeneral.currModel == sub)
-          eeLoadModel(sub);
-      }
-#endif
-    }
-  }
-#endif
 }
 
 void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uint8_t active)
@@ -774,15 +752,26 @@ enum menuModelSetupItems {
 #define MODEL_SETUP_2ND_COLUMN (LCD_W-11*FW-MENUS_SCROLLBAR_WIDTH)
 #endif
 
-void menuModelSetup(uint8_t event)
-{
 #if defined(PCBTARANIS) && defined(SDCARD)
-  uint8_t _event = event;
-  if (s_menu_count) {
-    event = 0;
+void onModelSetupMenu(const char *result)
+{
+  if (result == STR_UPDATE_LIST) {
+    if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), NULL)) {
+      s_warning = STR_NO_BITMAPS_ON_SD;
+      s_menu_flags = 0;
+    }
   }
+  else {
+    // The user choosed a bmp file in the list
+    memcpy(g_model.bitmap, result, sizeof(g_model.bitmap));
+    LOAD_MODEL_BITMAP();
+    eeDirty(EE_MODEL);
+  }
+}
 #endif
 
+void menuModelSetup(uint8_t event)
+{
 // TODO this is quick & dirty, should be done in place of the return which is hidden inside MENU(...)
 #if defined(DSM2)
   if (event == EVT_KEY_LONG(KEY_EXIT)) {
@@ -831,13 +820,14 @@ void menuModelSetup(uint8_t event)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
-          _event = 0;
-          if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), g_model.bitmap, LIST_NONE_SD_FILE)) {
+          if (listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), g_model.bitmap, LIST_NONE_SD_FILE)) {
+            menuHandler = onModelSetupMenu;
+          }
+          else {
             s_warning = STR_NO_BITMAPS_ON_SD;
             s_menu_flags = 0;
           }
         }
-
         break;
 #endif
 
@@ -1223,26 +1213,6 @@ void menuModelSetup(uint8_t event)
 #endif // defined(PCBTARANIS)
     }
   }
-
-#if defined(PCBTARANIS) && defined(SDCARD)
-  if (s_menu_count) {
-    const char * result = displayMenu(_event);
-    if (result) {
-      if (result == STR_UPDATE_LIST) {
-        if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), NULL)) {
-          s_warning = STR_NO_BITMAPS_ON_SD;
-          s_menu_flags = 0;
-        }
-      }
-      else {
-        // The user choosed a bmp file in the list
-        memcpy(g_model.bitmap, result, sizeof(g_model.bitmap));
-        LOAD_MODEL_BITMAP();
-        eeDirty(EE_MODEL);
-      }
-    }
-  }
-#endif
 }
 
 static uint8_t s_currIdx;
@@ -2497,6 +2467,35 @@ static uint8_t s_copySrcCh;
 #define EXPO_LINE_SELECT_POS 18
 #endif
 
+#if defined(NAVIGATION_MENUS)
+void onExpoMixMenu(const char *result)
+{
+  bool expo = (g_menuStack[g_menuStackPtr] == menuModelExposAll);
+  uint8_t chn = (expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh+1);
+
+  if (result == STR_EDIT) {
+    pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
+  }
+  else if (result == STR_INSERT_BEFORE || result == STR_INSERT_AFTER) {
+    if (!reachExpoMixCountLimit(expo)) {
+      s_currCh = chn;
+      if (result == STR_INSERT_AFTER) { s_currIdx++; m_posVert++; }
+      insertExpoMix(expo, s_currIdx);
+      pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
+    }
+  }
+  else if (result == STR_COPY || result == STR_MOVE) {
+    s_copyMode = (result == STR_COPY ? COPY_MODE : MOVE_MODE);
+    s_copySrcIdx = s_currIdx;
+    s_copySrcCh = chn;
+    s_copySrcRow = m_posVert;
+  }
+  else if (result == STR_DELETE) {
+    deleteExpoMix(expo, s_currIdx);
+  }
+}
+#endif
+
 void menuModelExpoMix(uint8_t expo, uint8_t event)
 {
   uint8_t sub = m_posVert;
@@ -2505,13 +2504,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
     s_editMode = 0;
 
   uint8_t chn = (expo ? expoaddress(s_currIdx)->chn+1 : mixaddress(s_currIdx)->destCh+1);
-
-#if defined(NAVIGATION_MENUS)
-  uint8_t _event = event;
-  if (s_menu_count) {
-    event = 0;
-  }
-#endif
 
   switch (event)
   {
@@ -2582,7 +2574,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           return;
         }
         else {
-          _event = event = 0;
+          event = 0;
           s_copyMode = 0;
           MENU_ADD_ITEM(STR_EDIT);
           MENU_ADD_ITEM(STR_INSERT_BEFORE);
@@ -2590,6 +2582,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           MENU_ADD_ITEM(STR_COPY);
           MENU_ADD_ITEM(STR_MOVE);
           MENU_ADD_ITEM(STR_DELETE);
+          menuHandler = onExpoMixMenu;
         }
 #else
         if (s_currCh) {
@@ -2795,34 +2788,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
   }
   s_maxLines = cur;
   if (sub >= s_maxLines-1) m_posVert = s_maxLines-1;
-
-#if defined(NAVIGATION_MENUS)
-  if (s_menu_count) {
-    const char * result = displayMenu(_event);
-    if (result) {
-      if (result == STR_EDIT) {
-        pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
-      }
-      else if (result == STR_INSERT_BEFORE || result == STR_INSERT_AFTER) {
-        if (!reachExpoMixCountLimit(expo)) {
-          s_currCh = chn;
-          if (result == STR_INSERT_AFTER) { s_currIdx++; m_posVert++; }
-          insertExpoMix(expo, s_currIdx);
-          pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
-        }
-      }
-      else if (result == STR_COPY || result == STR_MOVE) {
-        s_copyMode = (result == STR_COPY ? COPY_MODE : MOVE_MODE);
-        s_copySrcIdx = s_currIdx;
-        s_copySrcCh = chn;
-        s_copySrcRow = sub;
-      }
-      else if (result == STR_DELETE) {
-        deleteExpoMix(expo, s_currIdx);
-      }
-    }
-  }
-#endif
 }
 
 void menuModelExposAll(uint8_t event)
@@ -3546,15 +3511,27 @@ void menuModelCustomSwitches(uint8_t event)
 #define MODEL_CUSTOM_FUNC_4TH_COLUMN  (18*FW+2)
 #endif
 
-void menuModelCustomFunctions(uint8_t event)
-{
 #if defined(CPUARM) && defined(SDCARD)
-  uint8_t _event = event;
-  if (s_menu_count) {
-    event = 0;
+void onCustomFunctionsMenu(const char *result)
+{
+  int8_t  sub = m_posVert - 1;
+
+  if (result == STR_UPDATE_LIST) {
+    if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(g_model.funcSw[sub].param), NULL)) {
+      s_warning = STR_NO_SOUNDS_ON_SD;
+      s_menu_flags = 0;
+    }
   }
+  else {
+    // The user choosed a wav file in the list
+    memcpy(g_model.funcSw[sub].param.name, result, sizeof(g_model.funcSw[sub].param.name));
+    eeDirty(EE_MODEL);
+  }
+}
 #endif
 
+void menuModelCustomFunctions(uint8_t event)
+{
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|3/*repeated*/});
 
   uint8_t y;
@@ -3664,8 +3641,10 @@ void menuModelCustomFunctions(uint8_t event)
                 lcd_putsiAtt(x, y, STR_VCSWFUNC, 0, attr);
               if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
                 s_editMode = 0;
-                _event = 0;
-                if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
+                if (listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
+                  menuHandler = onCustomFunctionsMenu;
+                }
+                else {
                   s_warning = STR_NO_SOUNDS_ON_SD;
                   s_menu_flags = 0;
                 }
@@ -3817,25 +3796,6 @@ void menuModelCustomFunctions(uint8_t event)
       }
     }
   }
-
-#if defined(CPUARM) && defined(SDCARD)
-  if (s_menu_count) {
-    const char * result = displayMenu(_event);
-    if (result) {
-      if (result == STR_UPDATE_LIST) {
-        if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(g_model.funcSw[sub].param), NULL)) {
-          s_warning = STR_NO_SOUNDS_ON_SD;
-          s_menu_flags = 0;
-        }
-      }
-      else {
-        // The user choosed a wav file in the list
-        memcpy(g_model.funcSw[sub].param.name, result, sizeof(g_model.funcSw[sub].param.name));
-        eeDirty(EE_MODEL);
-      }
-    }
-  }
-#endif
 }
 
 enum menuModelTelemetryItems {

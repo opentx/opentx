@@ -278,6 +278,7 @@ void displayWarning(uint8_t event);
   extern uint8_t s_menu_flags;
   extern uint16_t s_menu_offset;
   const char * displayMenu(uint8_t event);
+  extern void (*menuHandler)(const char *result);
 #else
   #define s_menu_count 0
 #endif

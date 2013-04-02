@@ -113,6 +113,7 @@ void USBD_USR_DeviceConnected (void)
     f_mount(0, 0); // unmount SD
   }
 
+  eeCheck(true);
   usb_connected = 1;
 }
 
@@ -126,6 +127,9 @@ void USBD_USR_DeviceConnected (void)
 void USBD_USR_DeviceDisconnected (void)
 {
   usb_connected = 0;
+
+  eeReadAll();
+  eeLoadModel(g_eeGeneral.currModel);
 
   sdInit();
 }

@@ -368,7 +368,7 @@ void menuTelemetryFrsky(uint8_t event)
         s_frsky_view = 0;
       break;
 
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_ENTER):
       resetTelemetry();
       break;
   }
@@ -384,14 +384,14 @@ void menuTelemetryFrsky(uint8_t event)
         for (int8_t i=3; i>=0; i--) {
           FrSkyBarData & bar = screen.bars[i];
           uint8_t source = bar.source;
-          int16_t barMin = convertTelemValue(source, bar.barMin);
-          int16_t barMax = convertTelemValue(source, 255-bar.barMax);
+          getvalue_t barMin = convertTelemValue(source, bar.barMin);
+          getvalue_t barMax = convertTelemValue(source, 255-bar.barMax);
           if (source && barMax > barMin) {
             uint8_t y = barHeight+6+i*(barHeight+6);
             lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
             lcd_rect(25, y, 101, barHeight+2);
-            int16_t value = getValue(MIXSRC_FIRST_TELEM+source-2);
-            int16_t threshold = 0;
+            getvalue_t value = getValue(MIXSRC_FIRST_TELEM+source-2);
+            getvalue_t threshold = 0;
             uint8_t thresholdX = 0;
             if (source <= TELEM_TM2)
               threshold = 0;

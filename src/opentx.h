@@ -569,33 +569,34 @@ enum CswFunctions {
 #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
 #endif
 
-#define EVT_KEY_MASK(e)    ((e) & 0x0f)
+#define EVT_KEY_MASK(e)      ((e) & 0x1f)
 
-#define _MSK_KEY_BREAK     0x20
-#define _MSK_KEY_REPT      0x40
-#define _MSK_KEY_FIRST     0x60
-#define _MSK_KEY_LONG      0x80
+#define _MSK_KEY_BREAK       0x20
+#define _MSK_KEY_REPT        0x40
+#define _MSK_KEY_FIRST       0x60
+#define _MSK_KEY_LONG        0x80
 
-#define EVT_KEY_BREAK(key) ((key)|_MSK_KEY_BREAK)
-#define EVT_KEY_FIRST(key) ((key)|_MSK_KEY_FIRST)
-#define EVT_KEY_REPT(key)  ((key)|_MSK_KEY_REPT)
-#define EVT_KEY_LONG(key)  ((key)|_MSK_KEY_LONG)
+#define EVT_KEY_BREAK(key)   ((key)|_MSK_KEY_BREAK)
+#define EVT_KEY_FIRST(key)   ((key)|_MSK_KEY_FIRST)
+#define EVT_KEY_REPT(key)    ((key)|_MSK_KEY_REPT)
+#define EVT_KEY_LONG(key)    ((key)|_MSK_KEY_LONG)
 
-#define IS_KEY_BREAK(evt)  (((evt)&0xf0) ==  _MSK_KEY_BREAK)
-#define IS_KEY_FIRST(evt)  (((evt)&0xf0) ==  _MSK_KEY_FIRST)
-#define IS_KEY_LONG(evt)   (((evt)&0xf0) ==  _MSK_KEY_LONG)
+#define IS_KEY_BREAK(evt)    (((evt)&0xe0) == _MSK_KEY_BREAK)
+#define IS_KEY_FIRST(evt)    (((evt)&0xe0) == _MSK_KEY_FIRST)
+#define IS_KEY_LONG(evt)     (((evt)&0xe0) == _MSK_KEY_LONG)
 
-#define EVT_ENTRY          0xbf
-#define EVT_ENTRY_UP       0xbe
+#define EVT_ENTRY            0xbf
+#define EVT_ENTRY_UP         0xbe
+#define EVT_MENU_UP          0xbd
 
 #if defined(PCBTARANIS)
-#define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
-#define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
+  #define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
+  #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
 #else
-#define EVT_ROTARY_BREAK   0xcf
-#define EVT_ROTARY_LONG    0xce
-#define EVT_ROTARY_LEFT    0xdf
-#define EVT_ROTARY_RIGHT   0xde
+  #define EVT_ROTARY_BREAK   0xcf
+  #define EVT_ROTARY_LONG    0xce
+  #define EVT_ROTARY_LEFT    0xdf
+  #define EVT_ROTARY_RIGHT   0xde
 #endif
 
 #if defined(PCBTARANIS)

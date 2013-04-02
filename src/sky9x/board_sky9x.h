@@ -241,7 +241,7 @@ void eepromInit();
 void rotencInit();
 void rotencEnd();
 
-#if defined(ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 0
   #define rotencDown()  (!(PIOB->PIO_PDSR & 0x40))
 #else
   #define rotencDown()  0

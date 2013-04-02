@@ -851,37 +851,34 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
   }
 
 #if ROTARY_ENCODERS > 0
-  if (idx >= SWSRC_FIRST_ROTENC_SWITCH) {
-    if (idx <= SWSRC_LAST_ROTENC_SWITCH) {
-      idx -= SWSRC_FIRST_ROTENC_SWITCH;
-      char suffix;
-      if (idx < ROTARY_ENCODERS) {
-        suffix = 's';
-      }
-      else {
-        idx -= ROTARY_ENCODERS;
-        suffix = 'l';
-      }
-      lcd_putcAtt(x+3*FW, y, suffix, att);
-      return lcd_putsiAtt(x, y, STR_VRENCODERS, idx, att);
+  else if (idx >= SWSRC_FIRST_ROTENC_SWITCH) {
+    idx -= SWSRC_FIRST_ROTENC_SWITCH;
+    char suffix = (idx & 1) ? 'l' : 's';
+    lcd_putcAtt(x+3*FW, y, suffix, att);
+    return lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
+  }
+#endif
+
+#if !defined(CPUM64)
+  else if (idx >= SWSRC_TRAINER_SHORT) {
+    idx -= SWSRC_TRAINER_SHORT;
+    lcd_putcAtt(x+3*FW, y, (idx & 1) ? 'l' : 's', att);
+#if ROTARY_ENCODERS > 0
+    if (idx >= 2) {
+      idx -= 2;
+      return lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
     }
-    idx -= 2*ROTARY_ENCODERS;
+    else
+#endif
+    {
+      return lcd_putsiAtt(x, y, STR_VSWITCHES, SWSRC_TRAINER-1, att);
+    }
   }
 #endif
 
   if (idx > SWSRC_ON) {
     idx -= SWSRC_ON;
     char suffix = 'm';
-#if defined(CPUARM)
-    if (idx > SWSRC_ON) {
-      suffix = 's';
-      idx -= SWSRC_ON;
-      if (idx > MAX_PSWITCH) {
-        suffix = 'l';
-        idx -= MAX_PSWITCH;
-      }
-    }
-#endif
     if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, suffix, att);
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
@@ -942,7 +939,7 @@ void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags at
   }
 }
 
-#if defined(ROTARY_ENCODERS)
+#if ROTARY_ENCODERS > 0
 void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
 #if ROTARY_ENCODERS > 2
