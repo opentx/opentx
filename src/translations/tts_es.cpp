@@ -113,7 +113,7 @@ enum SpanishPrompts {
 
 #if defined(VOICE)
 
-PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
+PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
       temp_digit, digit = divmod(digit, 1000000000)

@@ -181,13 +181,13 @@ void interrupt5ms()
 {
   static uint32_t pre_scale ;       // Used to get 10 Hz counter
 
-  // HAPTIC_HEARTBEAT();
   AUDIO_HEARTBEAT();
 
   if ( ++pre_scale >= 2 ) {
     pre_scale = 0 ;
     per10ms();
   }
+
 #if defined(DEBUG)
   debugTx();
 #endif 

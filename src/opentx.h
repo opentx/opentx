@@ -86,6 +86,12 @@
 #define IF_RTCLOCK(x)
 #endif
 
+#if defined(BEEPER)
+#define IF_BEEPER(x) x,
+#else
+#define IF_BEEPER(x)
+#endif
+
 #if defined(AUDIO)
 #define IF_AUDIO(x) x,
 #else
@@ -737,6 +743,9 @@ bool       getSwitch(int8_t swtch, bool nc);
 
 extern swstate_t switches_states;
 int8_t  getMovedSwitch();
+#if defined(AUTOSOURCE)
+int8_t getMovedSource();
+#endif
 
 #ifdef FLIGHT_PHASES
   extern uint8_t getFlightPhase();
@@ -1223,7 +1232,9 @@ enum AUDIO_SOUNDS {
 #else
 #include "audio_avr.h"
 #endif
-#else
+#endif
+
+#if defined(BEEPER)
 #include "beeper.h"
 #endif
 
@@ -1298,7 +1309,10 @@ extern union ReusableBuffer reusableBuffer;
 void checkFlashOnBeep();
 
 #if defined(FRSKY) || defined(CPUARM)
+FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit);
 void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att);
+#else
+#define convertUnit(...)
 #endif
 
 #if defined(CPUARM)
@@ -1361,6 +1375,12 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 void getGpsPilotPosition();
 void getGpsDistance();
 void varioWakeup();
+
+#if defined(AUDIO) && defined(BEEPER)
+  #define IS_SOUND_OFF() (!g_eeGeneral.alarmsBeep && g_eeGeneral.beeperMode == e_mode_quiet)
+#else
+  #define IS_SOUND_OFF() (g_eeGeneral.beeperMode == e_mode_quiet)
+#endif
 
 #endif
 

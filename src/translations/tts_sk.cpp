@@ -123,7 +123,7 @@ PLAY_FUNCTION(pushUnitPrompt, int16_t number, uint8_t unitprompt)
     PUSH_NUMBER_PROMPT(unitprompt+2);
 }
 
-PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
+PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
 
   if (number < 0) {

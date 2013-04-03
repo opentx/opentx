@@ -368,9 +368,18 @@ void menuTelemetryFrsky(uint8_t event)
         s_frsky_view = 0;
       break;
 
+#if defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_ENTER):
+      killEvents(event);
+      MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+      MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      menuHandler = onMainViewMenu;
+      break;
+#else
     case EVT_KEY_FIRST(KEY_ENTER):
       resetTelemetry();
       break;
+#endif
   }
 
   lcdDrawTelemetryTopBar();

@@ -116,7 +116,8 @@ enum menuGeneralSetupItems {
   IF_RTCLOCK(ITEM_SETUP_TIME)
   IF_BATTGRAPH(ITEM_SETUP_BATT_RANGE)
   ITEM_SETUP_SOUND_LABEL,
-  ITEM_SETUP_BEEPER_MODE,
+  IF_AUDIO(ITEM_SETUP_AUDIO_MODE)
+  IF_BEEPER(ITEM_SETUP_BEEPER_MODE)
   ITEM_SETUP_BEEPER_LENGTH,
   IF_AUDIO(ITEM_SETUP_SPEAKER_PITCH)
   IF_VOICE(ITEM_SETUP_SPEAKER_VOLUME)
@@ -165,7 +166,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), 0, 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) IF_PXX(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BEEPER(0) 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) 0, LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) IF_PXX(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -260,12 +261,30 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, STR_SOUND_LABEL);
         break;
 
-      case ITEM_SETUP_BEEPER_MODE:
-        g_eeGeneral.beeperMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, attr, event);
+#if defined(AUDIO)
+      case ITEM_SETUP_AUDIO_MODE:
+        g_eeGeneral.beeperMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, attr, event);
 #if defined(FRSKY)
         if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
         break;
+
+#if defined(BEEPER)
+      case ITEM_SETUP_BEEPER_MODE:
+        g_eeGeneral.alarmsBeep = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_BEEPER, STR_VBEEPMODE, g_eeGeneral.alarmsBeep, 0, 1, attr, event);
+#if defined(FRSKY)
+        if (attr && checkIncDec_Ret) frskySendAlarms();
+#endif
+        break;
+#endif
+#else
+      case ITEM_SETUP_BEEPER_MODE:
+        g_eeGeneral.beeperMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beeperMode, -2, 1, attr, event);
+#if defined(FRSKY)
+        if (attr && checkIncDec_Ret) frskySendAlarms();
+#endif
+        break;
+#endif
 
       case ITEM_SETUP_BEEPER_LENGTH:
         SLIDER_5POS(y, g_eeGeneral.beeperLength, STR_LENGTH, event, attr);
@@ -336,8 +355,8 @@ void menuGeneralSetup(uint8_t event)
 
 #if !defined(PCBTARANIS) && !defined(PCBACT)
       case ITEM_SETUP_CONTRAST:
-        lcd_putsLeft( y, STR_CONTRAST);
-        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN,y,g_eeGeneral.contrast, attr|LEFT);
+        lcd_putsLeft(y, STR_CONTRAST);
+        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);
         if(attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
           lcdSetContrast();
@@ -358,14 +377,14 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_MEMORY_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem( b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event ) ;
+        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
         break;
       }
 
       case ITEM_SETUP_ALARM_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem( b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event ) ;
+        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
         break;
       }
 
@@ -414,7 +433,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
-        g_eeGeneral.flashBeep = onoffMenuItem(g_eeGeneral.flashBeep, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
+        g_eeGeneral.alarmsFlash = onoffMenuItem(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:

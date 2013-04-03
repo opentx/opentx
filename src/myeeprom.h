@@ -84,15 +84,11 @@ typedef char gvar_name_t[6];
   #define MAX_GVARS 0
   #define MODEL_GVARS_DATA
   #define PHASE_GVARS_DATA
-#elif defined(GVARS)
+#else
   #define MAX_GVARS 5
   #define MODEL_GVARS_DATA gvar_name_t gvarsNames[MAX_GVARS];
   #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
   #define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
-#else
-  #define MAX_GVARS 0
-  #define MODEL_GVARS_DATA gvar_name_t gvarsNames[5];
-  #define PHASE_GVARS_DATA gvar_t gvars[5]
 #endif
 
 PACK(typedef struct t_TrainerMix {
@@ -198,17 +194,17 @@ PACK(typedef struct t_EEGeneral {
   int8_t    backlightMode;
   TrainerData trainer;
   uint8_t   view;      //index of subview in main scrren
-  int8_t    spare1:3;
+  uint8_t   spare1:3;
   int8_t    beeperMode:2;
-  uint8_t   flashBeep:1;
+  uint8_t   alarmsFlash:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
   int8_t    timezone:5;
-  uint8_t   spare2:1;
+  uint8_t   alarmsBeep:1;
   uint8_t   inactivityTimer;
   uint8_t   throttleReversed:1;
-  uint8_t   spare3:2;
+  uint8_t   spare2:2;
   SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   blOffBright:4;
@@ -1014,8 +1010,10 @@ enum MixSources {
   MIXSRC_TrimThr,
   MIXSRC_TrimAil,
 
+  MIXSRC_FIRST_SWITCH,
+
 #if defined(PCBTARANIS)
-  MIXSRC_SA,
+  MIXSRC_SA = MIXSRC_FIRST_SWITCH,
   MIXSRC_SB,
   MIXSRC_SC,
   MIXSRC_SD,
@@ -1024,7 +1022,7 @@ enum MixSources {
   MIXSRC_SG,
   MIXSRC_SH,
 #else
-  MIXSRC_3POS,
+  MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
   #if defined(EXTRA_3POS)
     MIXSRC_3POS2,
   #endif

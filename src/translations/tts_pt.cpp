@@ -108,7 +108,7 @@ enum PortuguesePrompts {
 
 #if defined(VOICE)
 
-PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att)
+PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
   if (number < 0) {
     PUSH_NUMBER_PROMPT(PROMPT_MENOS);

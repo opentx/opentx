@@ -462,7 +462,7 @@
 
 #define TR_T10MSUS             "T10ms\016us"
 #define TR_FREESTACKMINB       "Free Stack\010b"
-#define TR_MENUTORESET         "[MENU] to reset"
+#define TR_MENUTORESET         CENTER TR_ENTER" to reset"
 #define TR_PPM                 "PPM"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"

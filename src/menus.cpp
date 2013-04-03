@@ -179,6 +179,37 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   }
 #endif
 
+#if defined(AUTOSOURCE)
+  if (i_flags & INCDEC_SOURCE) {
+    if (s_editMode>0) {
+      int8_t source = getMovedSource();
+      if (source) {
+        newval = MIXSRC_Rud - 1 + source;
+      }
+#if defined(AUTOSWITCH)
+      source = abs(getMovedSwitch());
+      if (source) {
+#if defined(PCBTARANIS)
+        if (source <= 5*3)
+          newval = MIXSRC_FIRST_SWITCH + (source-1) / 3;
+        else if (source <= 17)
+          newval = MIXSRC_SF;
+        else if (source <= 20)
+          newval = MIXSRC_SG;
+        else
+          newval = MIXSRC_SH;
+#else
+        if (source <= 3)
+          newval = MIXSRC_3POS;
+        else
+          newval = MIXSRC_FIRST_SWITCH - 3 + source;
+#endif
+      }
+#endif
+    }
+  }
+#endif
+
   if (newval > i_max || newval < i_min) {
     newval = (newval > i_max ? i_max : i_min);
     killEvents(event);
@@ -648,6 +679,14 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   else if (l_posVert-s_pgOfs<1) s_pgOfs = l_posVert-1;
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
+#if !defined(CPUM64)
+  // cosmetics on 9x
+  if (s_pgOfs > 0) {
+    l_posVert--;
+    if (l_posVert == s_pgOfs && MAXCOL(l_posVert) == (uint8_t)-1)
+      s_pgOfs = l_posVert-1;
+  }
+#endif
   return true;
 }
 

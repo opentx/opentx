@@ -362,9 +362,14 @@ void AudioQueue::sdWakeup(AudioContext & context)
       dacStop();
       memset(&fragment, 0, sizeof(fragment));
       f_close(&context.wavFile);
-      CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 1000) / context.pcmFreq, 0);
-      CoStartTmr(audioTimer);
-      CoClearFlag(audioFlag);
+      if (context.pcmFreq) {
+        CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 1000) / context.pcmFreq, 0);
+        CoStartTmr(audioTimer);
+        CoClearFlag(audioFlag);
+      }
+      else {
+        CoSetFlag(audioFlag);
+      }
       state = AUDIO_RESUMING;
     }
     else {
@@ -705,9 +710,15 @@ void audioEvent(uint8_t e, uint8_t f)
   haptic.event(e); //do this before audio to help sync timings
 #endif
 
-  if (g_eeGeneral.flashBeep && (e <= AU_ERROR || e >= AU_WARNING1)) {
-    if (lightOffCounter < FLASH_DURATION)
-      lightOffCounter = FLASH_DURATION;
+  if (e <= AU_ERROR || e >= AU_WARNING1) {
+#if defined(BEEPER)
+    beep();
+#endif
+
+    if (g_eeGeneral.alarmsFlash) {
+      if (lightOffCounter < FLASH_DURATION)
+        lightOffCounter = FLASH_DURATION;
+    }
   }
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {

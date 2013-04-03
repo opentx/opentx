@@ -570,13 +570,13 @@ inline void frskySendNextAlarm(void)
     *ptr++ = (A22PKT + frskyAlarmsSendState); // fc - fb - fa - f9
     frskyPushValue(ptr, g_model.frsky.channels[channel].alarms_value[alarm]);
     *ptr++ = ALARM_GREATER(channel, alarm);
-    *ptr++ = (g_eeGeneral.beeperMode != e_mode_quiet ? ALARM_LEVEL(channel, alarm) : alarm_off);
+    *ptr++ = (IS_SOUND_OFF() ? alarm_off : ALARM_LEVEL(channel, alarm));
   }
   else {
     *ptr++ = (RSSI1PKT-alarm);  // f7 - f6
     frskyPushValue(ptr, getRssiAlarmValue(alarm));
     *ptr++ = 0x00;
-    *ptr++ = (g_eeGeneral.beeperMode != e_mode_quiet ? ((2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4) : alarm_off);
+    *ptr++ = (IS_SOUND_OFF() ? alarm_off : ((2+alarm+g_model.frsky.rssiAlarms[alarm].level) % 4));
   }
 
   *ptr++ = 0x00;
@@ -620,7 +620,7 @@ void frskySendPacket(uint8_t type, uint8_t value, uint8_t p1, uint8_t p2)
   *ptr++ = 0x00;
   *ptr++ = 0x00;
   *ptr++ = 0x00;
-  *ptr++ = (g_eeGeneral.beeperMode == e_mode_quiet ? alarm_off : p2);
+  *ptr++ = (IS_SOUND_OFF() ? alarm_off : p2);
   *ptr++ = p1;
   frskyPushValue(ptr, value);
   *ptr++ = type;

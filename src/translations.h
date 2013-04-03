@@ -261,6 +261,13 @@ extern const pm_char STR_ELEDIRECTION[];
 extern const pm_char STR_AILDIRECTION[];
 extern const pm_char STR_COLDIRECTION[];
 extern const pm_char STR_MODE[];
+#if defined(AUDIO) && defined(BEEPER)
+extern const pm_char STR_SPEAKER[];
+extern const pm_char STR_BEEPER[];
+#else
+#define STR_SPEAKER STR_MODE
+#define STR_BEEPER  STR_MODE
+#endif
 extern const pm_char STR_NOFREEEXPO[];
 extern const pm_char STR_NOFREEMIXER[];
 extern const pm_char STR_INSERTMIX[];
@@ -445,6 +452,11 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_COPY[];
   extern const pm_char STR_MOVE[];
   extern const pm_char STR_DELETE[];
+  extern const pm_char STR_RESET_FLIGHT[];
+  extern const pm_char STR_RESET_TIMER1[];
+  extern const pm_char STR_RESET_TIMER2[];
+  extern const pm_char STR_RESET_TELEMETRY[];
+  extern const pm_char STR_STATISTICS[];
 #endif
 
 #if defined(SDCARD)
@@ -523,7 +535,7 @@ extern const pm_char STR_DATE[];
 extern const pm_char STR_CHANNELS_MONITOR[];
 
 #if defined(VOICE)
-  PLAY_FUNCTION(playNumber, int16_t number, uint8_t unit, uint8_t att);
+  PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att);
   PLAY_FUNCTION(playDuration, int16_t seconds);
 #endif
 

@@ -102,6 +102,7 @@ inline MenuFuncP lastPopMenu()
 
 void drawPotsBars();
 void doMainScreenGraphics();
+void onMainViewMenu(const char *result);
 void menuMainView(uint8_t event);
 void menuGeneralDiagAna(uint8_t event);
 #if defined(FRSKY)
@@ -134,6 +135,7 @@ extern int8_t s_editMode;       // global editmode
 #define EE_MODEL        0x02
 #define NO_INCDEC_MARKS 0x04
 #define INCDEC_SWITCH   0x08
+#define INCDEC_SOURCE   0x10
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags);
 
 #if defined(CPUM64)
@@ -159,6 +161,13 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #else
 #define AUTOSWITCH_ENTER_LONG() (0)
 #define CHECK_INCDEC_MODELSWITCH CHECK_INCDEC_MODELVAR
+#endif
+
+#if defined(AUTOSOURCE)
+#define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
+  var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE)
+#else
+#define CHECK_INCDEC_MODELSOURCE CHECK_INCDEC_MODELVAR
 #endif
 
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \

@@ -85,6 +85,10 @@ NAVIGATION = NO
 # Values = YES, NO 
 AUTOSWITCH = NO
 
+# Sources automatic selection
+# Values = YES, NO 
+AUTOSOURCE = NO
+
 # Double keys support (+/- means invert, +/up means max, -/dwn means min, up/down means reset to default)
 # Values = YES, NO 
 DBLKEYS = NO
@@ -260,12 +264,13 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
   else
+    CPPDEFS += -DBEEPER
     CPPSRC += beeper.cpp 
   endif
-     
+  
   ifeq ($(VOICE), YES)
-    CPPSRC += stock/voice.cpp
     CPPDEFS += -DVOICE
+    CPPSRC += stock/voice.cpp
   endif
    
   ifeq ($(PWM_BACKLIGHT), YES)
@@ -310,12 +315,13 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
   else
+    CPPDEFS += -DBEEPER
     CPPSRC += beeper.cpp 
   endif
   
   ifeq ($(VOICE), YES)
-    CPPSRC += stock/voice.cpp
     CPPDEFS += -DVOICE
+    CPPSRC += stock/voice.cpp
   endif
   
   ifeq ($(PWM_BACKLIGHT), YES)
@@ -349,22 +355,28 @@ ifeq ($(PCB), GRUVIN9X)
   OPT = 2
   CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
+  BEEPER = NO
   EXTRAINCDIRS = gruvin9x stock FatFs FatFs/option
   BOARDSRC = gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC = stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp
-
+  
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp gruvin9x/rtc_driver.cpp 
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c gruvin9x/diskio.cpp
   endif
     
+  ifeq ($(BEEPER), YES)
+    CPPDEFS += -DBEEPER
+    CPPSRC += beeper.cpp
+  endif
+
   ifeq ($(VOICE), YES)
-    CPPSRC += gruvin9x/somo14d.cpp
     CPPDEFS += -DVOICE
+    CPPSRC += gruvin9x/somo14d.cpp
   endif
   
   # Enable extra rotary encoders (Gruvin9x board only)
@@ -423,6 +435,7 @@ ifeq ($(PCB), SKY9X)
   MCU  = cortex-m3
   OPT = 2
   SDCARD = YES
+  BEEPER = NO
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS = sky9x CoOS/kernel CoOS/portable
   BOARDSRC = sky9x/board_sky9x.cpp
@@ -439,11 +452,16 @@ ifeq ($(PCB), SKY9X)
   CPPSRC += sky9x/pwr_driver.cpp sky9x/adc_driver.cpp sky9x/coproc_driver.cpp sky9x/rotenc_driver.cpp sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp sky9x/audio_driver.cpp sky9x/buzzer_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
+    CPPDEFS += -DVOICE
     EXTRAINCDIRS += FatFs FatFs/option
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
-    CPPDEFS += -DVOICE
   endif
   
+  ifeq ($(BEEPER), YES)
+    CPPDEFS += -DBEEPER
+    CPPSRC += beeper.cpp
+  endif
+
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp sky9x/rtc_driver.cpp
@@ -602,6 +620,10 @@ endif
 
 ifeq ($(AUTOSWITCH), YES)
   CPPDEFS += -DAUTOSWITCH
+endif
+
+ifeq ($(AUTOSOURCE), YES)
+  CPPDEFS += -DAUTOSOURCE
 endif
 
 ifeq ($(DBLKEYS), YES)

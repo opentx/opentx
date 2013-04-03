@@ -135,6 +135,10 @@ const pm_char STR_AILDIRECTION[] PROGMEM = TR_AILDIRECTION;
 const pm_char STR_COLDIRECTION[] PROGMEM = TR_COLDIRECTION;
 #endif
 const pm_char STR_MODE[] PROGMEM = TR_MODE;
+#if defined(AUDIO) && defined(BEEPER)
+const pm_char STR_SPEAKER[] PROGMEM = INDENT"Speaker";
+const pm_char STR_BEEPER[] PROGMEM = INDENT"Beeper";
+#endif
 const pm_char STR_NOFREEEXPO[] PROGMEM = TR_NOFREEEXPO;
 const pm_char STR_NOFREEMIXER[] PROGMEM = TR_NOFREEMIXER;
 const pm_char STR_INSERTMIX[] PROGMEM = TR_INSERTMIX;
@@ -337,6 +341,11 @@ const pm_char STR_INSERT_AFTER[] PROGMEM = "Insert After";
 const pm_char STR_COPY[] PROGMEM = "Copy";
 const pm_char STR_MOVE[] PROGMEM = "Move";
 const pm_char STR_DELETE[] PROGMEM = "Delete";
+const pm_char STR_RESET_FLIGHT[] PROGMEM = "Reset Flight";
+const pm_char STR_RESET_TIMER1[] PROGMEM = "Reset Timer1";
+const pm_char STR_RESET_TIMER2[] PROGMEM = "Reset Timer2";
+const pm_char STR_RESET_TELEMETRY[] PROGMEM = "Reset Telemetry";
+const pm_char STR_STATISTICS[] PROGMEM = "Statistics";
 #endif
 
 #if defined(SDCARD)

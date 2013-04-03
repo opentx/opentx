@@ -396,19 +396,20 @@ void displayVoltageOrAlarm()
   #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBACT)
+#if defined(PCBTARANIS)
   #define EVT_KEY_MODEL_MENU   EVT_KEY_BREAK(KEY_MENU)
   #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_MENU)
   #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_PAGE)
-  #define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_ENTER)
+  #define EVT_KEY_CONTEXT_MENU EVT_KEY_LONG(KEY_ENTER)
 #else
   #define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
   #define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
   #define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
   #define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
+  #define EVT_KEY_CONTEXT_MENU EVT_KEY_BREAK(KEY_MENU)
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBACT)
+#if defined(PCBTARANIS)
 void menuMainViewChannelsMonitor(uint8_t event)
 {
   switch(event) {
@@ -422,9 +423,32 @@ void menuMainViewChannelsMonitor(uint8_t event)
 }
 #endif
 
+#if defined(NAVIGATION_MENUS)
+void onMainViewMenu(const char *result)
+{
+  if (result == STR_RESET_TIMER1) {
+    resetTimer(0);
+  }
+  else if (result == STR_RESET_TIMER2) {
+    resetTimer(1);
+  }
+#if defined(FRSKY)
+  else if (result == STR_RESET_TELEMETRY) {
+    resetTelemetry();
+  }
+#endif
+  else if (result == STR_RESET_FLIGHT) {
+    resetAll();
+  }
+  else if (result == STR_STATISTICS) {
+    chainMenu(menuStatisticsView);
+  }
+}
+#endif
+
 void menuMainView(uint8_t event)
 {
-#if !defined(PCBTARANIS) && !defined(PCBACT)
+#if !defined(PCBTARANIS)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 #endif
@@ -442,7 +466,7 @@ void menuMainView(uint8_t event)
       killEvents(KEY_DOWN);
       break;
 
-#if !defined(PCBTARANIS) && !defined(PCBACT)
+#if !defined(PCBTARANIS)
     /* TODO if timer2 is OFF, it's possible to use this timer2 as in er9x...
     case EVT_KEY_BREAK(KEY_MENU):
       if (view_base == VIEW_TIMER2) {
@@ -469,8 +493,22 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
+#if defined(NAVIGATION_MENUS)
+    case EVT_KEY_CONTEXT_MENU:
+      killEvents(event);
+      MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      MENU_ADD_ITEM(STR_RESET_TIMER1);
+      MENU_ADD_ITEM(STR_RESET_TIMER2);
+#if defined(FRSKY)
+      MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+#endif
+      MENU_ADD_ITEM(STR_STATISTICS);
+      menuHandler = onMainViewMenu;
+      break;
+#endif
+
 #if !defined(READONLY)
-#if !defined(PCBTARANIS) && !defined(PCBACT)
+#if !defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
       killEvents(event);
@@ -490,7 +528,7 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBACT)
+#if defined(PCBTARANIS)
     case EVT_KEY_BREAK(KEY_PAGE):
       eeDirty(EE_GENERAL);
       g_eeGeneral.view += 1;
@@ -509,10 +547,12 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
+#if !defined(PCBTARANIS)
     case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
       killEvents(event);
       return;
+#endif
 
     case EVT_KEY_TELEMETRY:
 #if defined(FRSKY)
@@ -546,7 +586,7 @@ void menuMainView(uint8_t event)
         s_gvar_timer = 0;
       }
 #endif
-#if LCD_W < 212
+#if !defined(PCBTARANIS)
       else if (view == VIEW_TIMER2) {
         resetTimer(1);
       }

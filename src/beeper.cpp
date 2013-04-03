@@ -43,6 +43,15 @@ uint8_t beepOn = false;
 bool warble = false;
 bool warbleC;
 
+#if defined(AUDIO)
+static const pm_uint8_t beepTab[] PROGMEM = {
+    60, 80, 100, 120, 150,
+};
+void beep()
+{
+  _beep(pgm_read_byte(beepTab+(2+g_eeGeneral.beeperLength)));
+}
+#else
 // The various "beep" tone lengths
 static const pm_uint8_t beepTab[] PROGMEM = {
     // key, trim, warn2, warn1, error
@@ -59,9 +68,10 @@ void beep(uint8_t val)
   haptic.event(val==0 ? AU_KEYPAD_UP : (val==4 ? AU_ERROR : AU_TIMER_10+beepAgain));
 #endif
 
-  if (g_eeGeneral.flashBeep && val>1 && lightOffCounter<FLASH_DURATION) lightOffCounter = FLASH_DURATION;
+  if (g_eeGeneral.alarmsFlash && val>1 && lightOffCounter<FLASH_DURATION) lightOffCounter = FLASH_DURATION;
 
   if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && val!=0) || (g_eeGeneral.beeperMode==-1 && val>=3)) {
     _beep(pgm_read_byte(beepTab+5*(2+g_eeGeneral.beeperLength)+val));
   }
 }
+#endif

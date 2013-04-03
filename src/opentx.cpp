@@ -1119,10 +1119,9 @@ bool getSwitch(int8_t swtch, bool nc)
 }
 
 swstate_t switches_states = 0;
+tmr10ms_t s_move_last_time = 0;
 int8_t getMovedSwitch()
 {
-  static tmr10ms_t s_last_time = 0;
-
   int8_t result = 0;
 
 #if defined(PCBTARANIS)
@@ -1166,13 +1165,40 @@ int8_t getMovedSwitch()
   }
 #endif
 
-  if ((tmr10ms_t)(get_tmr10ms() - s_last_time) > 10)
+  if ((tmr10ms_t)(get_tmr10ms() - s_move_last_time) > 10)
     result = 0;
 
-  s_last_time = get_tmr10ms();
-
+  s_move_last_time = get_tmr10ms();
   return result;
 }
+
+#if defined(AUTOSOURCE)
+int8_t getMovedSource()
+{
+  static int16_t sourcesStates[NUM_STICKS+NUM_POTS];
+
+  int8_t result = 0;
+
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+    if (abs(calibratedStick[i] - sourcesStates[i]) > 512) {
+      result = 1+i;
+      break;
+    }
+  }
+
+  bool recent = ((tmr10ms_t)(get_tmr10ms() - s_move_last_time) > 10);
+  if (recent) {
+    result = 0;
+  }
+
+  if (result || recent) {
+    memcpy(sourcesStates, calibratedStick, sizeof(sourcesStates));
+  }
+
+  s_move_last_time = get_tmr10ms();
+  return result;
+}
+#endif
 
 #ifdef FLIGHT_PHASES
 uint8_t getFlightPhase()
@@ -1353,17 +1379,17 @@ void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
 #endif
 
 #if defined(FRSKY) || defined(CPUARM)
-void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att)
+inline void convertUnit(getvalue_t & val, uint8_t & unit)
 {
 #if defined(IMPERIAL_UNITS)
   if (unit == UNIT_DEGREES) {
-    val += 18 ;
-    val *= 115 ;
-    val >>= 6 ;
+    val += 18;
+    val *= 115;
+    val >>= 6;
   }
   if (unit == UNIT_METERS) {
     // m to ft *105/32
-    val = val * 3 + ( val >> 2 ) + (val >> 5) ;
+    val = val * 3 + (val >> 2) + (val >> 5);
   }
   if (unit == UNIT_FEET) {
     unit = UNIT_METERS;
@@ -1378,6 +1404,11 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
     val = (val * 46) / 25;
   }
 #endif
+}
+
+void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att)
+{
+  convertUnit(val, unit);
   lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW)
     lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
@@ -1565,7 +1596,7 @@ void checkTHR()
 void checkAlarm() // added by Gohst
 {
   if (g_eeGeneral.disableAlarmWarning) return;
-  if (g_eeGeneral.beeperMode == e_mode_quiet) ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
+  if (IS_SOUND_OFF()) ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
 }
 
 void checkSwitches()
@@ -2263,13 +2294,6 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         unit = 3 + idx - (MIXSRC_FIRST_TELEM-1+TELEM_MAX_T1-1);
 
       unit = pgm_read_byte(bchunit_ar+unit);
-#if !defined(IMPERIAL_UNITS)
-      if (unit == UNIT_KTS) {
-        // kts to km/h
-        unit = UNIT_KMH;
-        val = (val * 46) / 25;
-      }
-#endif
       PLAY_NUMBER(val, unit == UNIT_RAW ? 0 : unit+1, 0);
       break;
     }
@@ -3614,7 +3638,13 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
   // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
   static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
 
+#if defined(AUDIO)
   AUDIO_HEARTBEAT();
+#endif
+
+#if defined(BUZZER)
+  BUZZER_HEARTBEAT();
+#endif
 
 #if defined(HAPTIC)
   HAPTIC_HEARTBEAT();
