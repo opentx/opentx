@@ -116,6 +116,8 @@ PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
+  convertUnit(number, unit);
+
   int8_t mode = MODE(att);
   if (mode > 0) {
     // we assume that we are PREC1

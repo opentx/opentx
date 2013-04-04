@@ -114,6 +114,9 @@ PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     PUSH_NUMBER_PROMPT(PROMPT_MENOS);
     number = -number;
   }
+
+  convertUnit(number, unit);
+
   int8_t mode = MODE(att);
   if (mode > 0) {
     div_t qr = div(number, (mode == 1 ? 10 : 100));

@@ -199,8 +199,10 @@
   #define TR_FSW_RESET_TELEM    
 #endif
 
-#if ROTARY_ENCODERS > 0
-  #define TR_FSW_RESET_ROTENC  TR("R.Enc", "RotEnc   ")
+#if ROTARY_ENCODERS == 2
+  #define TR_FSW_RESET_ROTENC  TR("REa\0 ""REb\0 ", "RotEnc A\0""RotEnc B\0")
+#elif ROTARY_ENCODERS == 1
+  #define TR_FSW_RESET_ROTENC  TR("R.Enc", "RotEnc\0  ")
 #else
   #define TR_FSW_RESET_ROTENC
 #endif
@@ -448,7 +450,7 @@
 
 #define TR_T10MSUS             "T10ms\016us"
 #define TR_FREESTACKMINB       "Free Stack\010b"
-#define TR_MENUTORESET         "[MENU] f\205r Reset"
+#define TR_MENUTORESET         CENTER TR_ENTER" f\205r Reset"
 #define TR_PPM                 "PPM"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODELL"

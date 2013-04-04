@@ -152,7 +152,9 @@
   #define TR_SOUND             "Pip\0       "
 #endif
 
-#if defined(HAPTIC)
+#if defined(PCBTARANIS)
+  #define TR_HAPTIC
+#elif defined(HAPTIC)
   #define TR_HAPTIC            "Vibrator\0  "
 #else
   #define TR_HAPTIC            "[Vibrator]\0"
@@ -209,8 +211,10 @@
   #define TR_FSW_RESET_TELEM   
 #endif
 
-#if ROTARY_ENCODERS > 0
-  #define TR_FSW_RESET_ROTENC  "R.Enc"
+#if ROTARY_ENCODERS == 2
+  #define TR_FSW_RESET_ROTENC  TR("REa\0 ""REb\0 ", "RotEnc A\0""RotEnc B\0")
+#elif ROTARY_ENCODERS == 1
+  #define TR_FSW_RESET_ROTENC  TR("R.Enc", "RotEnc\0  ")
 #else
   #define TR_FSW_RESET_ROTENC
 #endif
@@ -265,7 +269,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               " MENU"" EXIT""  Ned""  Upp""H\202ger""V\201nst"
+#define TR_VKEYS               TR(" MENU"" EXIT""  Ned""  Upp""H\202ger""V\201nst", " Menu"" Exit""Enter"" Page"" Plus""Minus")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -458,7 +462,7 @@
 
 #define TR_T10MSUS             "T10ms\016us"
 #define TR_FREESTACKMINB       "Free Stack\010b"
-#define TR_MENUTORESET         "[MENU] Nollar  "
+#define TR_MENUTORESET         CENTER TR_ENTER" Nollar"
 #define TR_PPM                 "PPM"
 #define TR_CH                  "KN"
 #define TR_MODEL               "Modell"
