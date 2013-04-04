@@ -1119,9 +1119,9 @@ bool getSwitch(int8_t swtch, bool nc)
 }
 
 swstate_t switches_states = 0;
-tmr10ms_t s_move_last_time = 0;
 int8_t getMovedSwitch()
 {
+  static tmr10ms_t s_move_last_time = 0;
   int8_t result = 0;
 
 #if defined(PCBTARANIS)
@@ -1175,6 +1175,7 @@ int8_t getMovedSwitch()
 #if defined(AUTOSOURCE)
 int8_t getMovedSource()
 {
+  static tmr10ms_t s_move_last_time = 0;
   static int16_t sourcesStates[NUM_STICKS+NUM_POTS];
 
   int8_t result = 0;
