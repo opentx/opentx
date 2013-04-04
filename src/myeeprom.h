@@ -144,7 +144,8 @@ enum BeeperMode {
   uint8_t  optrexDisplay; \
   uint8_t  sticksGain; \
   uint8_t  rotarySteps; \
-  uint8_t  countryCode;
+  uint8_t  countryCode; \
+  uint8_t  imperial;
 #elif defined(PXX)
   #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else
@@ -531,7 +532,9 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
   PACK(union {
     char name[LEN_CFN_NAME];
     struct {
-      uint32_t val;
+      int16_t val;
+      int16_t ext1;
+      int16_t ext2;
     } composite;
   }) param;
   uint8_t mode:2;

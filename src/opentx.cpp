@@ -1382,29 +1382,30 @@ void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
 #if defined(FRSKY) || defined(CPUARM)
 inline void convertUnit(getvalue_t & val, uint8_t & unit)
 {
-#if defined(IMPERIAL_UNITS)
-  if (unit == UNIT_DEGREES) {
-    val += 18;
-    val *= 115;
-    val >>= 6;
+  if (IS_IMPERIAL_ENABLE()) {
+    if (unit == UNIT_DEGREES) {
+      val += 18;
+      val *= 115;
+      val >>= 6;
+    }
+    if (unit == UNIT_METERS) {
+      // m to ft *105/32
+      val = val * 3 + (val >> 2) + (val >> 5);
+    }
+    if (unit == UNIT_FEET) {
+      unit = UNIT_METERS;
+    }
+    if (unit == UNIT_KTS) {
+      unit = UNIT_KMH;
+    }
   }
-  if (unit == UNIT_METERS) {
-    // m to ft *105/32
-    val = val * 3 + (val >> 2) + (val >> 5);
+  else {
+    if (unit == UNIT_KTS) {
+      // kts to km/h
+      unit = UNIT_KMH;
+      val = (val * 46) / 25;
+    }
   }
-  if (unit == UNIT_FEET) {
-    unit = UNIT_METERS;
-  }
-  if (unit == UNIT_KTS) {
-    unit = UNIT_KMH;
-  }
-#else
-  if (unit == UNIT_KTS) {
-    // kts to km/h
-    unit = UNIT_KMH;
-    val = (val * 46) / 25;
-  }
-#endif
 }
 
 void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att)
@@ -2267,8 +2268,8 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 #endif
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT-1:
     case MIXSRC_FIRST_TELEM-1+TELEM_MAX_ALT-1:
-#if defined(IMPERIAL_UNITS)
-      if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
+#if defined(WS_HOW_HIGH)
+      if (IS_IMPERIAL_ENABLE() && g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
         PLAY_NUMBER(val, 1+UNIT_FEET, 0);
       else
 #endif
@@ -2410,18 +2411,22 @@ void evalFunctions()
             active = !(activeFnSwitches & switch_mask);
 #if !defined(CPUARM)
             if (CFN_FUNC(sd) == FUNC_PLAY_BOTH && !active) {
-              momentary = 1;
+              momentary = true;
             }
             else
 #endif
             {
-              momentary = 0;
+              momentary = false;
             }
           }
         }
+        else if (swtch == SWSRC_ON) {
+          active = false;
+          momentary = false;
+        }
         else {
           active = (activeFnSwitches & switch_mask);
-          momentary = 0;
+          momentary = false;
         }
 #if !defined(CPUM64)
         if (short_long) {
@@ -2437,11 +2442,19 @@ void evalFunctions()
       }
 #if !defined(CPUARM)
       else if (CFN_FUNC(sd) == FUNC_PLAY_BOTH) {
-        momentary = 1;
+        momentary = true;
       }
 #endif
 
       if (active || momentary) {
+
+        if (active)
+          TRACE_DEBUG("ACTIVE ");
+        if (momentary)
+          TRACE_DEBUG("MOMENTARY ");
+
+        TRACE_DEBUG("\n");
+
         if (CFN_ACTIVE(sd)) {
           if (CFN_FUNC(sd) < FUNC_TRAINER) {
             safetyCh[CFN_CH_NUMBER(sd)] = CFN_PARAM(sd);

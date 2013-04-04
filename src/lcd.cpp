@@ -742,7 +742,7 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   char separator = ':';
   if (tme >= 3600 && (~att & DBLSIZE)) {
     qr = div(qr.quot, 60);
-    separator = 'h';
+    separator = CHR_HOUR;
   }
 #else
 #define separator ':'
@@ -853,7 +853,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 #if ROTARY_ENCODERS > 0
   else if (idx >= SWSRC_FIRST_ROTENC_SWITCH) {
     idx -= SWSRC_FIRST_ROTENC_SWITCH;
-    char suffix = (idx & 1) ? 'l' : 's';
+    char suffix = (idx & 1) ? CHR_LONG : CHR_SHORT;
     lcd_putcAtt(x+3*FW, y, suffix, att);
     return lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
   }
@@ -862,7 +862,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 #if !defined(CPUM64)
   else if (idx >= SWSRC_TRAINER_SHORT) {
     idx -= SWSRC_TRAINER_SHORT;
-    lcd_putcAtt(x+3*FW, y, (idx & 1) ? 'l' : 's', att);
+    lcd_putcAtt(x+3*FW, y, (idx & 1) ? CHR_LONG : CHR_SHORT, att);
 #if ROTARY_ENCODERS > 0
     if (idx >= 2) {
       idx -= 2;
@@ -878,8 +878,8 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 
   if (idx > SWSRC_ON) {
     idx -= SWSRC_ON;
-    char suffix = 'm';
-    if (~att & SWCONDENSED) lcd_putcAtt(x+3*FW, y, suffix, att);
+    char suffix = CHR_TOGGLE;
+    if (idx != SWSRC_ON && (~att & SWCONDENSED)) lcd_putcAtt(x+3*FW, y, suffix, att);
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }

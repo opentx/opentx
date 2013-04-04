@@ -67,9 +67,9 @@
 #define EOFS(x)  ( OFS_##x + sizeof(TR_##x) )
 
 #if LCD_W >= 212
-#define TR(x,y) y
+  #define TR(x,y) y
 #else
-#define TR(x,y) x
+  #define TR(x,y) x
 #endif
 
 // The non-0-terminated-strings
@@ -111,8 +111,14 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_FUNCSOUNDS         (OFS_VFSWRESET + sizeof(TR_VFSWRESET))
 #define OFS_VTELEMCHNS         (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
 #if defined(FRSKY) || defined(CPUARM)
-  #define OFS_VTELEMUNIT       (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
-  #define OFS_VALARM           (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
+  #if defined(CPUARM)
+   #define OFS_VTELEMUNIT_IMP  (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
+   #define OFS_VTELEMUNIT_NORM (OFS_VTELEMUNIT_IMP + sizeof(TR_VTELEMUNIT_IMP))
+   #define OFS_VALARM          (OFS_VTELEMUNIT_NORM + sizeof(TR_VTELEMUNIT_NORM))
+  #else
+   #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
+   #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
+  #endif
   #define OFS_VALARMFN         (OFS_VALARM + sizeof(TR_VALARM))
   #define OFS_VTELPROTO        (OFS_VALARMFN + sizeof(TR_VALARMFN))
   #define OFS_GPSFORMAT        (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
@@ -180,7 +186,11 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VTELEMCHNS         (STR_OPEN9X + OFS_VTELEMCHNS)
 
 #if defined(FRSKY) || defined(CPUARM)
-#define STR_VTELEMUNIT         (STR_OPEN9X + OFS_VTELEMUNIT)
+  #if defined(CPUARM)
+    #define STR_VTELEMUNIT     (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_NORM))
+  #else
+    #define STR_VTELEMUNIT     (STR_OPEN9X + OFS_VTELEMUNIT)
+  #endif
 #define STR_VALARM             (STR_OPEN9X + OFS_VALARM)
 #define STR_VALARMFN           (STR_OPEN9X + OFS_VALARMFN)
 #define STR_VTELPROTO          (STR_OPEN9X + OFS_VTELPROTO)
@@ -409,6 +419,7 @@ extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];
 extern const pm_char STR_FAILSAFE[];
 extern const pm_char STR_FAILSAFESET[];
+extern const pm_char STR_VFAILSAFE[]; // TODO non-zero terminated
 extern const pm_char STR_COUNTRYCODE[];
 #endif
 
@@ -436,6 +447,8 @@ extern const pm_char STR_CURRENT[];
 #if defined(CPUARM)
   extern const pm_char STR_CURRENT_CALIB[];
   #define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
+  extern const pm_char STR_UNITSSYSTEM[];
+  extern const pm_char STR_VUNITSSYSTEM[];
 #else
   #define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
 #endif
@@ -550,5 +563,24 @@ extern const pm_char STR_CHANNELS_MONITOR[];
   #define STR_MIXNAME   STR_NAME
   #define STR_EXPONAME  STR_NAME
 #endif
+
+#if LCD_W >= 212
+  extern const char * STR_PHASES_HEADERS[];
+  extern const char * STR_LIMITS_HEADERS[];
+  extern const char * STR_CSW_HEADERS[];
+#endif
+
+#if defined(PCBTARANIS)
+  extern const pm_char STR_BYTES[];
+  extern const pm_char STR_MODULE_BIND[];
+  extern const pm_char STR_MODULE_RANGE[];
+  extern const pm_char STR_SET[];
+#endif
+
+// TODO move to translations files
+#define CHR_SHORT  's'
+#define CHR_LONG   'l'
+#define CHR_TOGGLE 't'
+#define CHR_HOUR   'h'
 
 #endif

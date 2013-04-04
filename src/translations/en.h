@@ -227,16 +227,23 @@
 #define LEN_VTELEMCHNS         "\004"
 #define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
 
-#ifdef IMPERIAL_UNITS
-  #define LENGTH_UNIT          "ft\0"
-  #define SPEED_UNIT           "kts"
+#if defined(CPUARM)
+  #define LEN_VTELEMUNIT_NORM  "\003"
+  #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define LEN_VTELEMUNIT_IMP   "\003"
+  #define TR_VTELEMUNIT_IMP    "v\0 ""A\0 ""m/s""-\0 ""kts""ft\0""@\0 ""%\0 ""mA\0""mAh""W\0 "
 #else
-  #define LENGTH_UNIT          "m\0 "
-  #define SPEED_UNIT           "kmh"
+  #if defined(IMPERIAL_UNITS)
+    #define LENGTH_UNIT        "ft\0"
+    #define SPEED_UNIT         "kts"
+  #else
+    #define LENGTH_UNIT        "m\0 "
+    #define SPEED_UNIT         "kmh"
+  #endif
+  #define LEN_VTELEMUNIT       "\003"
+  #define TR_VTELEMUNIT        "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
 #endif
 
-#define LEN_VTELEMUNIT         "\003"
-#define TR_VTELEMUNIT          "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
 
@@ -299,9 +306,9 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " ON"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "One"
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW " ON"
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "One"
 #endif
 
 #if defined(PCBSKY9X)
@@ -336,10 +343,10 @@
   #define TR_ENTER             "[MENU]"
 #endif
 
-#define TR_POPUPS              TR_ENTER"\010[EXIT]"
+#define TR_POPUPS              TR_ENTER "\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER"\006"TR_ENTER" WHEN DONE"
+#define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " WHEN DONE"
 #define TR_FREE                "free"
 #define TR_DELETEMODEL         "DELETE MODEL"
 #define TR_COPYINGMODEL        "Copying model..."
@@ -366,7 +373,7 @@
 #define TR_FADEIN              "Fade In"
 #define TR_FADEOUT             "Fade Out"
 #define TR_DEFAULT             "(default)"
-#define TR_CHECKTRIMS          CENTER"\006Check\012Trims"
+#define TR_CHECKTRIMS          CENTER "\006Check\012Trims"
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Swash Type"
 #define TR_COLLECTIVE          TR("Collective","Collective source")
@@ -438,14 +445,14 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER"\006"TR_ENTER" TO START"
-#define TR_SETMIDPOINT         CENTER"\003SET STICKS MIDPOINT"
-#define TR_MOVESTICKSPOTS      CENTER"\006MOVE STICKS/POTS"
+#define TR_MENUTOSTART         CENTER "\006" TR_ENTER " TO START"
+#define TR_SETMIDPOINT         CENTER "\003SET STICKS MIDPOINT"
+#define TR_MOVESTICKSPOTS      CENTER "\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
-#define TR_NODATA              CENTER"NO DATA"
+#define TR_NODATA              CENTER "NO DATA"
 #define TR_TM1TM2              "TM1\032TM2"
 #define TR_THRTHP              "THR\032TH%"
 #define TR_TOT                 "TOT"
@@ -462,7 +469,7 @@
 
 #define TR_T10MSUS             "T10ms\016us"
 #define TR_FREESTACKMINB       "Free Stack\010b"
-#define TR_MENUTORESET         CENTER TR_ENTER" to reset"
+#define TR_MENUTORESET         CENTER TR_ENTER " to reset"
 #define TR_PPM                 "PPM"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
@@ -470,13 +477,13 @@
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM low mem"
 #define TR_ALERT               "\016ALERT"
-#define TR_PRESSANYKEYTOSKIP   CENTER"Press any key to skip"
-#define TR_THROTTLENOTIDLE     CENTER"Throttle not idle"
-#define TR_ALARMSDISABLED      CENTER"Alarms Disabled"
-#define TR_PRESSANYKEY         TR("\010Press any Key", CENTER"Press any Key")
-#define TR_BADEEPROMDATA       CENTER"Bad EEprom Data"
-#define TR_EEPROMFORMATTING    CENTER"Formatting EEPROM"
-#define TR_EEPROMOVERFLOW      CENTER"EEPROM overflow"
+#define TR_PRESSANYKEYTOSKIP   CENTER "Press any key to skip"
+#define TR_THROTTLENOTIDLE     CENTER "Throttle not idle"
+#define TR_ALARMSDISABLED      CENTER "Alarms Disabled"
+#define TR_PRESSANYKEY         TR("\010Press any Key", CENTER "Press any Key")
+#define TR_BADEEPROMDATA       CENTER "Bad EEprom Data"
+#define TR_EEPROMFORMATTING    CENTER "Formatting EEPROM"
+#define TR_EEPROMOVERFLOW      CENTER "EEPROM overflow"
 #define TR_MENURADIOSETUP      "RADIO SETUP"
 #define TR_MENUDATEANDTIME     "DATE AND TIME"
 #define TR_MENUTRAINER         "TRAINER"

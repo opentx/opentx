@@ -302,7 +302,7 @@ TEST(getSwitch, nullSW)
 TEST(Phases, nullFadeOut_posFadeIn)
 {
   MODEL_RESET();
-  g_model.phaseData[1].swtch = SWSRC_ID1);
+  g_model.phaseData[1].swtch = SWSRC_ID1;
   g_model.phaseData[1].fadeIn = 15;
   perMain();
   simuSetSwitch(3, 0);
@@ -320,13 +320,13 @@ TEST(Mixer, Cascaded3Channels)
   g_model.mixData[1].srcRaw = MIXSRC_CH3;
   g_model.mixData[1].weight = 100;
   g_model.mixData[2].destCh = 2;
-  g_model.mixData[2].srcRaw = MIXSRC_ID1;
+  g_model.mixData[2].srcRaw = MIXSRC_THR;
   g_model.mixData[2].weight = 100;
-  simuSetSwitch(3, 0);
+  simuSetSwitch(0, 1);
   perOut(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 102400);
-  EXPECT_EQ(chans[1], 102400);
-  EXPECT_EQ(chans[2], 102400);
+  EXPECT_EQ(chans[0], 1024*256);
+  EXPECT_EQ(chans[1], 1024*256);
+  EXPECT_EQ(chans[2], 1024*256);
 }
 
 TEST(Mixer, CascadedOrderedChannels)
@@ -334,15 +334,15 @@ TEST(Mixer, CascadedOrderedChannels)
   MODEL_RESET();
   MIXER_RESET();
   g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].srcRaw = MIXSRC_ID1;
+  g_model.mixData[0].srcRaw = MIXSRC_THR;
   g_model.mixData[0].weight = 100;
   g_model.mixData[1].destCh = 1;
   g_model.mixData[1].srcRaw = MIXSRC_CH1;
   g_model.mixData[1].weight = 100;
-  simuSetSwitch(3, 0);
+  simuSetSwitch(0, 1);
   perOut(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 102400);
-  EXPECT_EQ(chans[1], 102400);
+  EXPECT_EQ(chans[0], 1024*256);
+  EXPECT_EQ(chans[1], 1024*256);
 }
 
 TEST(Mixer, Cascaded5Channels)
@@ -362,23 +362,23 @@ TEST(Mixer, Cascaded5Channels)
   g_model.mixData[3].srcRaw = MIXSRC_CH5;
   g_model.mixData[3].weight = 100;
   g_model.mixData[4].destCh = 4;
-  g_model.mixData[4].srcRaw = MIXSRC_ID1;
+  g_model.mixData[4].srcRaw = MIXSRC_THR;
   g_model.mixData[4].weight = 100;
   for (uint8_t i=0; i<10; i++) {
-    simuSetSwitch(3, 0);
+    simuSetSwitch(0, 1);
     doMixerCalculations();
-    EXPECT_EQ(chans[0], 102400);
-    EXPECT_EQ(chans[1], 102400);
-    EXPECT_EQ(chans[2], 102400);
-    EXPECT_EQ(chans[3], 102400);
-    EXPECT_EQ(chans[4], 102400);
-    simuSetSwitch(3, -1);
+    EXPECT_EQ(chans[0], 1024*256);
+    EXPECT_EQ(chans[1], 1024*256);
+    EXPECT_EQ(chans[2], 1024*256);
+    EXPECT_EQ(chans[3], 1024*256);
+    EXPECT_EQ(chans[4], 1024*256);
+    simuSetSwitch(0, 0);
     doMixerCalculations();
-    EXPECT_EQ(chans[0], -102400);
-    EXPECT_EQ(chans[1], -102400);
-    EXPECT_EQ(chans[2], -102400);
-    EXPECT_EQ(chans[3], -102400);
-    EXPECT_EQ(chans[4], -102400);
+    EXPECT_EQ(chans[0], -1024*256);
+    EXPECT_EQ(chans[1], -1024*256);
+    EXPECT_EQ(chans[2], -1024*256);
+    EXPECT_EQ(chans[3], -1024*256);
+    EXPECT_EQ(chans[4], -1024*256);
   }
 }
 
@@ -428,22 +428,8 @@ TEST(Mixer, RecursiveAddChannel)
   g_model.mixData[2].srcRaw = MIXSRC_Rud;
   g_model.mixData[2].weight = 100;
   perOut(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 102400/2);
+  EXPECT_EQ(chans[0], 1024*256/2);
   EXPECT_EQ(chans[1], 0);
-}
-
-TEST(Expo, AllValues)
-{
-  // TODO whole range
-  for (uint16_t x=0; x<20; x++) {
-    for (uint16_t k=0; k<20; k++) {
-      // TODO compare with the correct function instead of this one
-      // uint16_t ref = ((unsigned long)x*x*x/0x10000*k/(RESXul*RESXul/0x10000) + (RESKul-k)*x+RESKul/2)/RESKul;
-      double ref = exp(log((float)x)*(float)k/10);
-      printf("x=%d k=%d ref=%f res=%d\n", x, k, ref, expou(x, k));
-      // EXPECT_EQ(expou(x, k), ref);
-    }
-  }
 }
 
 

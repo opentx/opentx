@@ -58,12 +58,6 @@ enum EnumTabModel {
   IF_TEMPLATES(e_Templates)
 };
 
-#if LCD_W >= 212
-const char * STR_PHASES_HEADERS[] = { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " };
-const char * STR_LIMITS_HEADERS[] = { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symetrical " };
-const char * STR_CSW_HEADERS[] =    { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " };
-#endif
-
 void menuModelSelect(uint8_t event);
 void menuModelSetup(uint8_t event);
 void menuModelHeli(uint8_t event);
@@ -552,7 +546,7 @@ void menuModelSelect(uint8_t event)
   lcd_puts(27*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (event) reusableBuffer.models.eepromfree = EeFsGetFree();
   lcd_outdezAtt(20*FW, 0, reusableBuffer.models.eepromfree, 0);
-  lcd_puts(21*FW, 0, "bytes"); // TODO translations
+  lcd_puts(21*FW, 0, STR_BYTES);
 #elif !defined(PCBSKY9X)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (event) reusableBuffer.models.eepromfree = EeFsGetFree();
@@ -987,7 +981,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODE_INTERNAL_MODULE_MODE:
-        lcd_putsLeft(y, PSTR("\001Mode"));
+        lcd_putsLeft(y, STR_MODE);
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""X16\0""D8\0 ""LR12"), 1+g_model.rfProtocol, m_posHorz==0 ? attr : 0);
         lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+5*FW+3, y, STR_CH, m_posHorz==1 ? attr : 0);
         lcd_outdezAtt(lcdLastPos, y, g_model.ppmSCH+1, LEFT | (m_posHorz==1 ? attr : 0));
@@ -1025,8 +1019,8 @@ void menuModelSetup(uint8_t event)
             checkModelIdUnique(g_eeGeneral.currModel);
         }
 
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, PSTR("[Bind]"), m_posHorz==1 ? attr : 0);
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, PSTR("[Range]"), m_posHorz==2 ? attr : 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MODULE_BIND, m_posHorz==1 ? attr : 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_MODULE_RANGE, m_posHorz==2 ? attr : 0);
         {
           uint8_t newFlag = 0;
           if (attr && m_posHorz>0 && s_editMode>0) {
@@ -1044,8 +1038,8 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODE_INTERNAL_MODULE_FAILSAFE:
         lcd_putsLeft(y, TR_FAILSAFE);
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\011""Hold\0    ""Custom\0  ""No pulses"), g_model.failsafeMode, m_posHorz==0 ? attr : 0);
-        if (g_model.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + 10*FW, y, PSTR("[Set]"), m_posHorz==1 ? attr : 0);
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, g_model.failsafeMode, m_posHorz==0 ? attr : 0);
+        if (g_model.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + 10*FW, y, STR_SET, m_posHorz==1 ? attr : 0);
         if (attr) {
           if (g_model.failsafeMode != FAILSAFE_CUSTOM)
             m_posHorz = 0;

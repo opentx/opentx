@@ -70,7 +70,12 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(FUNCSOUNDS)
     ISTR(VTELEMCHNS)
 #if defined(FRSKY) || defined(CPUARM)
+  #if defined(CPUARM)
+    ISTR(VTELEMUNIT_IMP)
+    ISTR(VTELEMUNIT_NORM)
+  #else
     ISTR(VTELEMUNIT)
+  #endif
     ISTR(VALARM)
     ISTR(VALARMFN)
     ISTR(VTELPROTO)
@@ -79,17 +84,17 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VARIOSRC)
     ISTR(VSCREEN)
 #endif
-#ifdef TEMPLATES
+#if defined(TEMPLATES)
     ISTR(VTEMPLATES)
 #endif
-#ifdef HELI
+#if defined(HELI)
     ISTR(VSWASHTYPE)
 #endif
     ISTR(VKEYS)
     ISTR(VSWITCHES)
     ISTR(VSRCRAW)
     ISTR(VTMRMODES)
-#if defined(PCBGRUVIN9X) || defined (CPUARM)
+#if defined(PCBGRUVIN9X) || defined(CPUARM)
     ISTR(DATETIME)
 #endif
 #if defined(CPUARM)
@@ -301,9 +306,10 @@ const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
 const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
 const pm_char STR_INTERNALRF[] PROGMEM = TR_INTERNALRF;
 const pm_char STR_EXTERNALRF[] PROGMEM = TR_EXTERNALRF;
-const pm_char STR_FAILSAFE[] PROGMEM = TR_FAILSAFE;
-const pm_char STR_FAILSAFESET[] PROGMEM = TR_FAILSAFESET;
 const pm_char STR_COUNTRYCODE[] PROGMEM = TR_COUNTRYCODE;
+const pm_char STR_FAILSAFE[] PROGMEM = TR_FAILSAFE;
+const pm_char STR_VFAILSAFE[] PROGMEM = "\011""Hold\0    ""Custom\0  ""No pulses"; // TODO non-zero terminated
+const pm_char STR_FAILSAFESET[] PROGMEM = TR_FAILSAFESET;
 #endif
 
 const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
@@ -327,6 +333,8 @@ const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
 
 #if defined(CPUARM)
 const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
+const pm_char STR_UNITSSYSTEM[]   PROGMEM = "Units";
+const pm_char STR_VUNITSSYSTEM[]  PROGMEM = TR("\006MetricImper.", "\010Metric\0 Imperial"); // TODO move it to non-zero terminated strings
 #endif
 
 #if defined(NAVIGATION_MENUS)
@@ -412,10 +420,23 @@ const pm_char STR_DATE[] PROGMEM = TR_DATE;
 const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
 
 #if LCD_W >= 212
-const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
-const pm_char STR_PHASENAME[] PROGMEM = TR_PHASENAME;
-const pm_char STR_MIXNAME[] PROGMEM = TR_MIXNAME;
-const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
+  const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
+  const pm_char STR_PHASENAME[] PROGMEM = TR_PHASENAME;
+  const pm_char STR_MIXNAME[] PROGMEM = TR_MIXNAME;
+  const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
+#endif
+
+#if LCD_W >= 212
+  const char * STR_PHASES_HEADERS[] = { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " };
+  const char * STR_LIMITS_HEADERS[] = { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symetrical " };
+  const char * STR_CSW_HEADERS[] =    { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " };
+#endif
+
+#if defined(PCBTARANIS)
+const pm_char STR_BYTES[] PROGMEM = "bytes";
+const pm_char STR_MODULE_BIND[] PROGMEM  = "[Bind]";
+const pm_char STR_MODULE_RANGE[] PROGMEM = "[Range]";
+const pm_char STR_SET[] PROGMEM = "[Set]";
 #endif
 
 const pm_uchar font_5x7[] PROGMEM = {

@@ -203,11 +203,11 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_ALT-1:
       putsTelemetryValue(x, y, val/10, UNIT_METERS, att|PREC1);
       break;
-#elif defined(IMPERIAL_UNITS)
+#elif defined(WS_HOW_HIGH)
     case TELEM_ALT-1:
     case TELEM_MIN_ALT-1:
     case TELEM_MAX_ALT-1:
-      if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
+      if (IS_IMPERIAL_ENABLE() && g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
         putsTelemetryValue(x, y, val, UNIT_FEET, att);
         break;
       }

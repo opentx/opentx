@@ -1382,5 +1382,13 @@ void varioWakeup();
   #define IS_SOUND_OFF() (g_eeGeneral.beeperMode == e_mode_quiet)
 #endif
 
+#if defined(CPUARM)
+  #define IS_IMPERIAL_ENABLE() (g_eeGeneral.imperial)
+#elif defined(IMPERIAL)
+  #define IS_IMPERIAL_ENABLE() (1)
+#else
+  #define IS_IMPERIAL_ENABLE() (0)
+#endif
+
 #endif
 
