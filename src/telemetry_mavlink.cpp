@@ -36,9 +36,7 @@
  */
 
 #include "opentx.h"
-#include "menus.h"
 #include "serial.h"
-#include "mavlink.h"
 
 #define DUMP_RX_TX
 
@@ -637,30 +635,16 @@ enum mavlink_menu_ {
 	MENU_DUMP_TX, //
 #endif
 	MAX_MAVLINK_MENU
-} MAVLINK_menu = MENU_INFO;
+};
 
-inline mavlink_menu_ operator++(mavlink_menu_ &eDOW, int) {
-	int i = static_cast<int>(eDOW);
-	i++;
-	if (i < MAX_MAVLINK_MENU) {
-		eDOW = static_cast<mavlink_menu_>(i);
-	}
-	return eDOW;
-}
+uint8_t MAVLINK_menu = MENU_INFO;
 
-inline mavlink_menu_ operator--(mavlink_menu_ &eDOW, int) {
-	int i = static_cast<int>(eDOW);
-	if (i > 0) {
-		eDOW = static_cast<mavlink_menu_>(--i);
-	}
-	return eDOW;
-}
-
-void mav_title(const pm_char * s, uint8_t index) {
-	lcd_putsAtt(0, 0, PSTR("MAVLINK"), INVERS);
-	lcd_putsAtt(10 * FW, 0, s, 0);
-	displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
-	lcd_putcAtt(8 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ', 0);
+void mav_title(const pm_char * s, uint8_t index)
+{
+  lcd_putsAtt(0, 0, PSTR("MAVLINK"), INVERS);
+  lcd_puts(10 * FW, 0, s);
+  displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
+  lcd_putc(8 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');
 }
 
 void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mode = 0) {
@@ -761,9 +745,9 @@ void menuTelemetryMavlinkInfos(void) {
 	uint8_t * ptr = mav_statustext;
 	for (uint8_t j = 0; j < LEN_STATUSTEXT; j++) {
 		if (*ptr == 0) {
-			lcd_putcAtt(x1, y, ' ', 0);
+			lcd_putc(x1, y, ' ');
 		} else {
-			lcd_putcAtt(x1, y, *ptr++, 0);
+			lcd_putc(x1, y, *ptr++);
 		}
 		x1 += FW;
 	}
@@ -772,19 +756,19 @@ void menuTelemetryMavlinkInfos(void) {
 
 	if (telemetry_data.status) {
 		if (!isValidReqControlMode()) {
-		  lcd_putsnAtt(x1, y, PSTR("REQ"), 3, 0);
+		  lcd_puts(x1, y, PSTR("REQ"));
 		  putsControlMode(x2, y, telemetry_data.req_mode, 0, 6);
 		  y += FH;
 		}
-		lcd_putsnAtt(x1, y, PSTR("MODE"), 4, 0);
+		lcd_puts(x1, y, PSTR("MODE"));
 		putsMavlinkControlMode(x2, y, 6);
 
 		y += FH;
-		lcd_putsnAtt(x1, y, PSTR("BATT"), 4, 0);
+		lcd_puts(x1, y, PSTR("BATT"));
 		lcd_outdezNAtt(xnum, y, telemetry_data.vbat, PREC1, 5);
 
 		y += FH;
-		lcd_putsnAtt(x1, y, PSTR("DROP"), 4, 0);
+		lcd_puts(x1, y, PSTR("DROP"));
 		lcd_outdezAtt(xnum, y, telemetry_data.packet_drop, 0);
 
 	}
@@ -807,16 +791,16 @@ void menuTelemetryMavlinkGPS(void) {
 	} else {
 		lcd_outdezNAtt(xnum, y, fix_type, 0, 3);
 	}
-	lcd_putsnAtt(x2 + 5 * FW, y, PSTR("SAT"), 3, 0);
+	lcd_puts(x2 + 5 * FW, y, PSTR("SAT"));
 	lcd_outdezNAtt(x2 + 8 * FW + 3 * FWNUM, y, telemetry_data.satellites_visible, 0, 2);
 
 //	if (telemetry_data.fix_type > 0) {
 	y += FH;
-	lcd_putsnAtt(0, y, PSTR("HDOP"), 4, 0);
+	lcd_puts(0, y, PSTR("HDOP"));
 	lcd_outdezFloat(xnum, y, telemetry_data.eph, 2);
 
 	y += FH;
-	lcd_putsnAtt(0, y, PSTR("COOR"), 4, 0);
+	lcd_puts(0, y, PSTR("COOR"));
 	lcd_outdezFloat(xnum, y, telemetry_data.loc_current.lat, 5);
 
 	//	y += FH;
@@ -924,7 +908,7 @@ void menuTelemetryMavlink(uint8_t event) {
 #endif
 
 	default:
-		break;
+	  break;
 	}
 
 }
