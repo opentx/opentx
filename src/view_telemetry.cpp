@@ -207,7 +207,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_ALT-1:
     case TELEM_MIN_ALT-1:
     case TELEM_MAX_ALT-1:
-      if (IS_IMPERIAL_ENABLE() && g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
+      if (IS_IMPERIAL_ENABLE() && IS_USR_PROTO_WS_HOW_HIGH()) {
         putsTelemetryValue(x, y, val, UNIT_FEET, att);
         break;
       }
@@ -560,7 +560,7 @@ void menuTelemetryFrsky(uint8_t event)
 #if defined(FRSKY_HUB)
     else if (s_frsky_view == e_frsky_after_flight) {
       uint8_t line=1*FH+1;
-      if (g_model.frsky.usrProto == USR_PROTO_FRSKY) {
+      if (IS_USR_PROTO_FRSKY_HUB()) {
         // Latitude
         lcd_putsLeft(line, STR_LATITUDE);
         displayGpsCoord(line, frskyData.hub.gpsLatitudeNS, frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap);

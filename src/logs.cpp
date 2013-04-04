@@ -104,12 +104,12 @@ const pm_char * openLogs()
 #endif
 
 #if defined(FRSKY_HUB)
-    if (g_model.frsky.usrProto == USR_PROTO_FRSKY)
+    if (IS_USR_PROTO_FRSKY_HUB())
       f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,Temp1,Temp2,RPM,Fuel,Volts,AccelX,AccelY,AccelZ,", &g_oLogFile);
 #endif
 
 #if defined(WS_HOW_HIGH)
-    if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
+    if (IS_USR_PROTO_WS_HOW_HIGH())
       f_puts("WSHH Alt,", &g_oLogFile);
 #endif
 
@@ -173,7 +173,7 @@ void writeLogs()
 #endif
 
 #if defined(FRSKY_HUB)
-      if (g_model.frsky.usrProto == USR_PROTO_FRSKY) {
+      if (IS_USR_PROTO_FRSKY_HUB()) {
         f_printf(&g_oLogFile, "%4d-%02d-%02d,", frskyData.hub.year+2000, frskyData.hub.month, frskyData.hub.day);
         f_printf(&g_oLogFile, "%02d:%02d:%02d,", frskyData.hub.hour, frskyData.hub.min, frskyData.hub.sec);
         f_printf(&g_oLogFile, "%03d.%04d%c,", frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap,
@@ -193,7 +193,7 @@ void writeLogs()
 #endif
 
 #if defined(WS_HOW_HIGH)
-      if (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH) {
+      if (IS_USR_PROTO_WS_HOW_HIGH()) {
         f_printf(&g_oLogFile, "%d,", TELEMETRY_GPS_ALT_BP);
       }
 #endif

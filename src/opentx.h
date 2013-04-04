@@ -1390,5 +1390,12 @@ void varioWakeup();
   #define IS_IMPERIAL_ENABLE() (0)
 #endif
 
+#if defined(PCBTARANIS)
+  #define IS_USR_PROTO_FRSKY_HUB()   (1)
+  #define IS_USR_PROTO_WS_HOW_HIGH() (0)
+#else
+  #define IS_USR_PROTO_FRSKY_HUB()   (g_model.frsky.usrProto == USR_PROTO_FRSKY)
+  #define IS_USR_PROTO_WS_HOW_HIGH() (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
 #endif
 
+#endif

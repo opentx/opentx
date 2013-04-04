@@ -3808,7 +3808,9 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_RSSI_ALARM2,
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   ITEM_TELEMETRY_USR_LABEL,
+#if !defined(PCBTARANIS)
   ITEM_TELEMETRY_USR_PROTO,
+#endif
   ITEM_TELEMETRY_USR_BLADES,
 #endif
   ITEM_TELEMETRY_USR_VOLTAGE_SOURCE,
@@ -3836,10 +3838,12 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_MAX
 };
 
-#if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-#define USRDATA_LINES (uint8_t)-1, 0, 0,
+#if defined(PCBTARANIS)
+  #define USRDATA_LINES (uint8_t)-1, 0,
+#elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
+  #define USRDATA_LINES (uint8_t)-1, 0, 0,
 #else
-#define USRDATA_LINES
+  #define USRDATA_LINES
 #endif
 
 #if defined(FRSKY)
@@ -3990,11 +3994,13 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsLeft(y, STR_USRDATA);
         break;
 
+#if !defined(PCBTARANIS)
       case ITEM_TELEMETRY_USR_PROTO:
         lcd_putsLeft(y, STR_PROTO);
         lcd_putsiAtt(TELEM_COL2, y, STR_VTELPROTO, g_model.frsky.usrProto, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.usrProto, USR_PROTO_LAST);
         break;
+#endif
 
       case ITEM_TELEMETRY_USR_BLADES:
         lcd_putsLeft(y, STR_BLADES);

@@ -361,7 +361,14 @@ void generalDefault()
   g_eeGeneral.version  = EEPROM_VER;
   g_eeGeneral.variant = EEPROM_VARIANT;
   g_eeGeneral.contrast = 25;
+
+#if defined(PCBTARANIS)
+  g_eeGeneral.vBatWarn = 65;
+  g_eeGeneral.vBatMin = -30;
+  g_eeGeneral.vBatMax = -40;
+#else
   g_eeGeneral.vBatWarn = 90;
+#endif
 
   for (int i = 0; i < NUM_STICKS+NUM_POTS; ++i) {
     g_eeGeneral.calibMid[i]     = 0x200;
@@ -413,6 +420,10 @@ void modelDefault(uint8_t id)
 #if defined(PXX) && defined(CPUARM)
   modelIds[id] = g_model.modelId = id+1;
   checkModelIdUnique(id);
+#endif
+
+#if defined(PCBTARANIS)
+  g_model.frsky.channels[0].ratio = 132;
 #endif
 }
 
@@ -2269,7 +2280,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT-1:
     case MIXSRC_FIRST_TELEM-1+TELEM_MAX_ALT-1:
 #if defined(WS_HOW_HIGH)
-      if (IS_IMPERIAL_ENABLE() && g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
+      if (IS_IMPERIAL_ENABLE() && IS_USR_PROTO_WS_HOW_HIGH())
         PLAY_NUMBER(val, 1+UNIT_FEET, 0);
       else
 #endif
