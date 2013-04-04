@@ -215,16 +215,23 @@
 #define LEN_VTELEMCHNS         "\004"
 #define TR_VTELEMCHNS          "---\0""Batt""Uhr1""Uhr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""H\203he""Umdr""Stof""T1\0 ""T2\0 ""Gesc""Dist""GH\203h""Zell""Zels""Vfas""Strm""Verb""Leis""BesX""BesY""BesZ""Rich""VGes""A1-\0""A2-\0""H\203h-""H\203h+""Umd+""T1+\0""T2+\0""Ges+""Dst+""Str+""Besc""Zeit"
 
-#ifdef IMPERIAL_UNITS
-#define LENGTH_UNIT            "ft\0"
-#define SPEED_UNIT             "kts"
+#if defined(CPUARM)
+  #define LEN_VTELEMUNIT_NORM  "\003"
+  #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define LEN_VTELEMUNIT_IMP   "\003"
+  #define TR_VTELEMUNIT_IMP    "v\0 ""A\0 ""m/s""-\0 ""kts""ft\0""@\0 ""%\0 ""mA\0""mAh""W\0 "
 #else
-#define LENGTH_UNIT            "m\0 "
-#define SPEED_UNIT             "kmh"
+  #if defined(IMPERIAL_UNITS)
+    #define LENGTH_UNIT        "ft\0"
+    #define SPEED_UNIT         "kts"
+  #else
+    #define LENGTH_UNIT        "m\0 "
+    #define SPEED_UNIT         "kmh"
+  #endif
+  #define LEN_VTELEMUNIT       "\003"
+  #define TR_VTELEMUNIT        "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
 #endif
 
-#define LEN_VTELEMUNIT         "\003"
-#define TR_VTELEMUNIT          "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
 
