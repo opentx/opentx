@@ -420,14 +420,14 @@
 #define TR_HAPTICSTRENGTH      INDENT"Strength"
 #define TR_CONTRAST            "Contrast"
 #define TR_ALARMS_LABEL        "Alarms"
-#define TR_BATTERY_RANGE       "Battery Range"
+#define TR_BATTERY_RANGE       TR("Battery range","Battery meter range")
 #define TR_BATTERYWARNING      INDENT"Battery Low"
 #define TR_INACTIVITYALARM     INDENT"Inactivity"
 #define TR_MEMORYWARNING       INDENT"Memory Low"
 #define TR_ALARMWARNING        INDENT"Sound Off"
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLEREVERSE     TR("Thr reverse","Throttle reverse")
-#define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Every minute")
+#define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Minute call")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistent")
 #define TR_BACKLIGHT_LABEL     "Backlight"
@@ -500,7 +500,7 @@
 
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUDREXPO        "STICKS"
-  #define TR_MENULIMITS        "OUTPUTS"
+  #define TR_MENULIMITS        "SERVOS"
 #else
   #define TR_MENUDREXPO        "DR/EXPO"
   #define TR_MENULIMITS        "LIMITS"
