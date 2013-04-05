@@ -429,7 +429,7 @@
 #define TR_THROTTLEREVERSE     "Reverserad Gas"
 #define TR_MINUTEBEEP          INDENT"Varje Minut"
 #define TR_BEEPCOUNTDOWN       INDENT"R\201kna Ned"
-#define TR_PERSISTENT          TR("J\201mt p\200 ","INDENT"Alltid P\200")
+#define TR_PERSISTENT          TR("J\201mt p\200 ",INDENT"Alltid P\200")
 #define TR_BACKLIGHT_LABEL     "Belysning"
 #define TR_BLDELAY             INDENT"Av efter"
 #define TR_BLONBRIGHTNESS      INDENT"P\200 Ljusstyrka"
