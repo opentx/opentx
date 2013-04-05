@@ -730,11 +730,12 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 
   qr = div(tme, 60);
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
   if (att & MIDSIZE) {
     div_t qr2 = div(qr.quot, 60);
     LCD_2DOTS(x+2*8-6, y, att);
     lcd_outdezNAtt(x, y, qr2.quot, att|LEADING0|LEFT, 2);
+    qr.quot = qr2.rem;
     x += 2*8+1;
   }
 #define separator ':'
