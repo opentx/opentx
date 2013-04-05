@@ -26,6 +26,8 @@
 
 import os, sys, shutil, platform, subprocess, wave, zipfile
 
+NO_ALTERNATE = 1024
+
 def generate(str, idx, alternate=0):
     result = None
     if "speak" in sys.argv:
@@ -41,7 +43,7 @@ def generate(str, idx, alternate=0):
         elif board == 'sky9x':
             result = idx + ".wav"
         else:
-            if alternate == 0:
+            if alternate >= NO_ALTERNATE:
                 return []
             result = "%04d.wav" % alternate
             
@@ -198,7 +200,7 @@ if __name__ == "__main__":
                                "point seven", "point eight", "point nine"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+160+i))
         for s, f, a in [(u"trim center", "midtrim", 244),
-                        (u"maximum trim reached", "endtrim", 0),
+                        (u"maximum trim reached", "endtrim", NO_ALTERNATE),
                         (u"transmitter battery low", "lowbatt", 231),
                         (u"inactivity alarm", "inactiv", 230),
                         (u"throttle warning", "thralert", 232),
@@ -311,13 +313,13 @@ if __name__ == "__main__":
                         (u"batteria della radio scarica", "lowbatt", 231),
                         (u"controllo motore non in posizione, verificare", "thralert", 232),
                         (u"interruttori non in posizione, verificare", "swalert", 233),
-                        (u"eeprom corrotta", "eebad", 0),
-                        (u"formattazone eeprom in corso", "eeformat", 0),
-                        (u"errore", "error", 0),
+                        (u"eeprom corrotta", "eebad", NO_ALTERNATE),
+                        (u"formattazone eeprom in corso", "eeformat", NO_ALTERNATE),
+                        (u"errore", "error", NO_ALTERNATE),
                         (u"trim centrato", "midtrim", 244),
                         (u"tada", "tada", 245),
                         (u"potenziometro centrato", "midpot", 246),
-                        (u"massimo trim raggiunto", "endtrim", 0),
+                        (u"massimo trim raggiunto", "endtrim", NO_ALTERNATE),
                         (u"3 secondi al termine", "timerlt3", 250),
                         (u"dieci secondi", "timer10", 251),
                         (u"venti secondi", "timer20", 252),
@@ -380,13 +382,13 @@ if __name__ == "__main__":
                         (u"Senderakku niedrig", "lowbatt", 231),
                         (u"Gaskanal nicht Null, bitte pruefen", "thralert", 232),
                         (u"Schalten fehlpositioniert, bitte pruefen", "swalert", 233),
-                        (u"Das EEPROM ist fehlerhaft", "eebad", 0),
-                        (u"Das EEPROM ist immer formatiert", "eeformat", 0),
-                        (u"fehler", "error", 0),
+                        (u"Das EEPROM ist fehlerhaft", "eebad", NO_ALTERNATE),
+                        (u"Das EEPROM ist immer formatiert", "eeformat", NO_ALTERNATE),
+                        (u"fehler", "error", NO_ALTERNATE),
                         (u"Trim zentriert", "midtrim", 244),
                         (u"tada", "tada", 245),
                         (u"Poti zentriert", "midpot", 246),
-                        (u"Maximale trimmung erreicht", "endtrim", 0),
+                        (u"Maximale trimmung erreicht", "endtrim", NO_ALTERNATE),
                         (u"Noch drei sekunden", "timerlt3", 250),
                         (u"10 sekunden", "timer10", 251),
                         (u"20 sekunden", "timer20", 252),
@@ -458,13 +460,13 @@ if __name__ == "__main__":
                         (u"bateria do rádio fraca", "lowbatt", 231),
                         (u"atenção,acelerador não está no mínimo", "thralert", 232),
                         (u"atenção, certifique-se que os interruptores estão na posição certa", "swalert", 233),
-                        (u"eeprom corrompida", "eebad", 0),
-                        (u"formatação da eeprom em curso", "eeformat", 0),
-                        (u"erro", "error", 0),
+                        (u"eeprom corrompida", "eebad", NO_ALTERNATE),
+                        (u"formatação da eeprom em curso", "eeformat", NO_ALTERNATE),
+                        (u"erro", "error", NO_ALTERNATE),
                         (u"trim centrado", "midtrim", 244),
                         (u"tada", "tada", 245),
                         (u"potenciómetro centrado", "midpot", 246),
-                        (u"trim no máximo", "endtrim", 0),
+                        (u"trim no máximo", "endtrim", NO_ALTERNATE),
                         (u"3 segundos", "timerlt3", 250),
                         (u"10 segundos", "timer10", 251),
                         (u"20 segundos", "timer20", 252),
@@ -548,7 +550,7 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+118+i))
             
         for s, f, a in [(u"střed trimu", "midtrim", 244),
-                        (u"maximum trimu", "endtrim", 0),
+                        (u"maximum trimu", "endtrim", NO_ALTERNATE),
                         (u"baterie rádia je vybitá", "lowbatt", 231),
                         (u"zapoměl jsi na mě!", "inactiv", 230),
                         (u"plyn není na nule", "thralert", 232),
@@ -599,13 +601,13 @@ if __name__ == "__main__":
         for f, s in systemSounds:
             l = u""
             if board == "sky9x":
-                l += u"9XSOUNDS/SYSTEM;"
+                l += u"SOUNDS/SYSTEM;"
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
         for f, s in sounds:
             l = u""
             if board == "sky9x":
-                l += u"9XSOUNDS;"
+                l += u"SOUNDS;"
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
         csvFile.close()
@@ -615,13 +617,13 @@ if __name__ == "__main__":
         zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
         for f, s in systemSounds:
             if board == "sky9x":
-                zip.write(f, "9XSOUNDS/SYSTEM/" + f)
+                zip.write(f, "SOUNDS/SYSTEM/" + f)
             else:
                 zip.write(f, f)
             os.remove(f)
         for f, s in sounds:
             if board == "sky9x":
-                zip.write(f, "9XSOUNDS/" + f)
+                zip.write(f, "SOUNDS/" + f)
             else:
                 zip.write(f, f)
             os.remove(f)
