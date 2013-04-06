@@ -3668,7 +3668,7 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
 #endif
 
 #if defined(BEEPER)
-  BEEPER_HEARTBEAT();
+  BUZZER_HEARTBEAT();
 #endif
 
 #if defined(HAPTIC)
