@@ -3667,7 +3667,7 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
   AUDIO_HEARTBEAT();
 #endif
 
-#if defined(BUZZER)
+#if defined(BEEPER)
   BUZZER_HEARTBEAT();
 #endif
 
