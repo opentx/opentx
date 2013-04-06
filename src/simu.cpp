@@ -241,8 +241,8 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
       KEY_Page_Down, KEY_PAGE,
       KEY_Return,    KEY_ENTER,
       KEY_BackSpace, KEY_EXIT,
-      KEY_Right,     KEY_PLUS,
-      KEY_Left,      KEY_MINUS,
+      KEY_Up,     KEY_PLUS,
+      KEY_Down,      KEY_MINUS,
 #else
       KEY_Return,    KEY_MENU,
       KEY_BackSpace, KEY_EXIT,

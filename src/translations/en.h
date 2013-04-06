@@ -354,7 +354,7 @@
 #define TR_LOADINGMODEL        "Loading model..."
 #define TR_NAME                "Name"
 #define TR_MODELNAME           "Model Name"
-#define TR_PHASENAME           "Phase Name"
+#define TR_PHASENAME           "Mode Name"
 #define TR_MIXNAME             "Mix Name"
 #define TR_EXPONAME            "Expo Name"
 #define TR_BITMAP              "Model Image"
@@ -395,7 +395,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Curve"
-#define TR_FPHASE              TR("Phase","Phases")
+#define TR_FPHASE              TR("Mode","Modes")
 #define TR_MIXWARNING          "Warning"
 #define TR_OFF                 "OFF"
 #define TR_MULTPX              "Multpx"
@@ -473,7 +473,7 @@
 #define TR_PPM                 "PPM"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
-#define TR_FP                  "FP"
+#define TR_FP                  "FM"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM low mem"
 #define TR_ALERT               "\016ALERT"
@@ -494,8 +494,8 @@
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
 #define TR_MENUMODELSEL        TR("MODELSEL","MODEL SELECTION")
 #define TR_MENUSETUP           TR("SETUP","MODEL SETUP")
-#define TR_MENUFLIGHTPHASE     "FLIGHT PHASE"
-#define TR_MENUFLIGHTPHASES    "FLIGHT PHASES"
+#define TR_MENUFLIGHTPHASE     "FLIGHT MODE"
+#define TR_MENUFLIGHTPHASES    "FLIGHT MODES"
 #define TR_MENUHELISETUP       "HELI SETUP"
 
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
