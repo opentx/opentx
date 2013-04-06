@@ -111,7 +111,7 @@ void beep(uint8_t val);
 #endif
 
 #if !defined(CPUARM)
-inline void BEEPER_HEARTBEAT()
+inline void BUZZER_HEARTBEAT()
 {
     if(g_beepCnt) {
         if(!beepAgainOrig) {
