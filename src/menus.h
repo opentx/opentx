@@ -73,13 +73,24 @@ inline void displayColumnHeader(const char **headers, uint8_t index)
 #define lcd_putsColumnLeft(x, y, str) lcd_putsLeft(y, str)
 #endif
 
+// Menus related stuff ...
 #if defined(SDCARD)
-typedef uint16_t pgofs_t;
+  typedef uint16_t vertpos_t;
 #else
-typedef uint8_t pgofs_t;
+  typedef uint8_t vertpos_t;
 #endif
 
-extern pgofs_t s_pgOfs;
+#if defined(PCBTARANIS)
+  typedef uint8_t & check_event_t;
+  #define horzpos_t int8_t
+#else
+  typedef uint8_t check_event_t;
+  #define horzpos_t uint8_t
+#endif
+
+extern vertpos_t m_posVert;
+extern horzpos_t m_posHorz;
+extern vertpos_t s_pgOfs;
 extern uint8_t s_noHi;
 extern uint8_t s_noScroll;
 
@@ -172,24 +183,6 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event,var,min,max)
-
-// Menus related stuff ...
-#if defined(SDCARD)
-  #define vertpos_t uint16_t
-#else
-  #define vertpos_t uint8_t
-#endif
-
-#if defined(PCBTARANIS)
-  typedef uint8_t & check_event_t;
-  #define horzpos_t int8_t
-#else
-  typedef uint8_t check_event_t;
-  #define horzpos_t uint8_t
-#endif
-
-extern vertpos_t m_posVert;
-extern horzpos_t m_posHorz;
 
 #if defined(PCBTARANIS)
   #define NAVIGATION_LINE_BY_LINE  0x40

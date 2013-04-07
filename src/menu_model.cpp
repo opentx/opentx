@@ -599,10 +599,10 @@ void menuModelSelect(uint8_t event)
       putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
 #endif
-      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=(pgofs_t)sub)) lcd_putc(1, y, '*');
+      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+s_pgOfs!=(vertpos_t)sub)) lcd_putc(1, y, '*');
     }
 
-    if (s_copyMode && (pgofs_t)sub==i+s_pgOfs) {
+    if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {
       lcd_filled_rect(9, y, LCD_W-1-9, 7);
       lcd_rect(8, y-1, LCD_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
@@ -2276,7 +2276,7 @@ void menuModelMixOne(uint8_t event)
 
   TITLE(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
   MixData *md2 = mixaddress(s_currIdx) ;
-  putsChn(lcdLastPos+1*FW,0,md2->destCh+1,0);
+  putsChn(lcdLastPos+1*FW, 0, md2->destCh+1,0);
 
 #if defined(ROTARY_ENCODERS)
 #if defined(CURVES)

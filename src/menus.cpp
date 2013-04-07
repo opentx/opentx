@@ -36,7 +36,7 @@
 
 #include "opentx.h"
 
-pgofs_t s_pgOfs;
+vertpos_t s_pgOfs;
 int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t s_noScroll;
@@ -675,8 +675,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
   uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
   if (l_posVert<1) s_pgOfs=0;
-  else if (l_posVert-s_pgOfs>max) s_pgOfs = l_posVert-max;
-  else if (l_posVert-s_pgOfs<1) s_pgOfs = l_posVert-1;
+  else if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
+  else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
 #if !defined(CPUM64)
