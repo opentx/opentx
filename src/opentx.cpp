@@ -2459,13 +2459,6 @@ void evalFunctions()
 
       if (active || momentary) {
 
-        if (active)
-          TRACE_DEBUG("ACTIVE ");
-        if (momentary)
-          TRACE_DEBUG("MOMENTARY ");
-
-        TRACE_DEBUG("\n");
-
         if (CFN_ACTIVE(sd)) {
           if (CFN_FUNC(sd) < FUNC_TRAINER) {
             safetyCh[CFN_CH_NUMBER(sd)] = CFN_PARAM(sd);
