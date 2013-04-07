@@ -28,6 +28,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "../opentx.h"
 #include "../FatFs/diskio.h"
+#include "board_taranis.h"
 
 extern "C" {
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
@@ -404,7 +405,7 @@ const FATDirEntry_t g_DIRroot[16] =
     {
         { 'T', 'A', 'R', 'A', 'N', 'I', 'S', ' '},
         { 'B', 'I', 'N'},
-        0x26,		// Archive, hidden, system
+        0x24,		// Archive, hidden, system
         0x00,
         0x3E,
         0xA301,
@@ -652,22 +653,27 @@ int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
       eeprom_read_block (buffer, (sector-3)*512, 512);
     }
     buffer += 512 ;
-    sector += 1 ;
-    count -= 1 ;
+    sector++ ;
+    count-- ;
   }
   return 0 ;
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int32_t fat12Write( const uint8_t *buffer, uint16_t sector, uint32_t count )
+int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
 {
   // TO DO, actually write to the EEPROM
-  if ( sector > 2 )
+  if ( sector >3 )
   {
-    sector -= 2 ;		// Indexes EEPROM in 512 byte blocks
+    sector -= 4 ;		// Indexes EEPROM in 512 byte blocks
     // Look for a 4K block boundary, writing 4K+
-    
+    while (count) {
+      eeWriteBlockCmp((uint8_t *)buffer, sector*512, 512);
+      buffer+=512;
+      sector++;
+      count--;
+    }  
   }
   return 0 ;
 }
