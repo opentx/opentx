@@ -284,7 +284,7 @@
 
 #if defined(CPUARM)
   #define TR_CUSTOMSW          "SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC""SWD""SWE""SWF""SWG""SWH""SWI""SWJ""SWK""SWL""SWM""SWN""SWO""SWP""SWQ""SWR""SWS""SWT""SWU""SWV""SWW"
-#elif defined(PCBGRUVIN9X) || defined(CPUM128)
+#elif defined(PCBGRUVIN9X)
   #define TR_CUSTOMSW          "SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC""SWD""SWE""SWF"
 #else
   #define TR_CUSTOMSW          "SW1""SW2""SW3""SW4""SW5""SW6""SW7""SW8""SW9""SWA""SWB""SWC"
