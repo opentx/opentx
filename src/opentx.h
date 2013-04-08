@@ -1118,7 +1118,7 @@ extern void moveTrimsToOffsets();
 #if defined(CPUARM)
   #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
   #define MASK_FUNC_TYPE uint32_t // current max = 32 functions
-#elif defined(PCBSTD)
+#elif defined(CPUM64)
   #define MASK_CFN_TYPE uint16_t  // current max = 16 function switches
   #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
 #else

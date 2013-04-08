@@ -299,7 +299,7 @@
 
 #if defined(CPUARM)
   #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF""LBG""LBH""LBI""LBJ""LBK""LBL""LBM""LBN""LBO""LBP""LBQ""LBR""LBS""LBT""LBU""LBV""LBW"
-#elif defined(PCBGRUVIN9X)
+#elif defined(PCBGRUVIN9X) || defined(CPUM128)
   #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF"
 #else
   #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC"

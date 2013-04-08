@@ -130,9 +130,6 @@ GRAPHICS = YES
 BOLD = YES
 BATTGRAPH = NO
 
-# THR trace (in STATS screen)
-THR_TRACE = YES
-
 # PPM center adjustable
 # Values = YES, NO
 PPM_CENTER_ADJUSTABLE = NO
@@ -239,6 +236,12 @@ ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 GRUVIN9X MEGA2560
   $(error Sorry, the PCB $(PCB) is not supported yet in openTx)
 endif
 
+GVARS_VARIANT  = +1 
+FRSKY_VARIANT  = +2
+3POS_VARIANT   = +4
+M128_VARIANT   = +32768
+EEPROM_VARIANT = 0
+
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
   ARCH = AVR
@@ -247,6 +250,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   OPT = s  
   XCURVES = NO
   SDCARD = NO
+  THR_TRACE = NO
   EXTRAINCDIRS = stock
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = stock/board_stock.cpp
@@ -298,6 +302,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   MCU = atmega128
   OPT = 2
   SDCARD = NO
+  THR_TRACE = NO
   EEPROM_VARIANT += ${M128_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   EXTRAINCDIRS = stock
@@ -357,6 +362,7 @@ ifeq ($(PCB), GRUVIN9X)
   CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
   BEEPER = NO
+  THR_TRACE = YES
   EXTRAINCDIRS = gruvin9x stock FatFs FatFs/option
   BOARDSRC = gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC = stock/lcd_driver.cpp
@@ -394,6 +400,7 @@ ifeq ($(PCB), MEGA2560)
   OPT = 2
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
+  THR_TRACE = YES
   EXTRAINCDIRS = gruvin9x stock FatFs FatFs/option
   BOARDSRC = mega2560/board_mega2560.cpp
   EXTRABOARDSRC = mega2560/lcd_driver_ST7565R.cpp
@@ -437,6 +444,7 @@ ifeq ($(PCB), SKY9X)
   OPT = 2
   SDCARD = YES
   BEEPER = NO
+  THR_TRACE = YES
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS = sky9x CoOS/kernel CoOS/portable
   BOARDSRC = sky9x/board_sky9x.cpp
@@ -494,6 +502,7 @@ ifeq ($(PCB), TARANIS)
   OPT = 2
   CPPDEFS += -DHSE_VALUE=12000000
   SDCARD = YES
+  THR_TRACE = YES
   EXT = FRSKY
   CPPDEFS += -DPCBTARANIS -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
   EXTRAINCDIRS = taranis CoOS/kernel CoOS/portable
@@ -592,12 +601,6 @@ CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
 
 # TTS language
 CPPDEFS += -DTTS_$(TTS)
-
-GVARS_VARIANT  = +0x0001 
-FRSKY_VARIANT  = +0x0002
-3POS_VARIANT   = +0x0004
-M128_VARIANT   = +0x8000
-EEPROM_VARIANT = 0
 
 ifeq ($(UNITS), IMPERIAL)
   CPPDEFS += -DIMPERIAL_UNITS

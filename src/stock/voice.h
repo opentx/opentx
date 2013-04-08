@@ -41,7 +41,11 @@
 #define BACKLIGHT_BIT           0x04
 #define SPARE_BIT               0x08
 
-#define VOICE_Q_LENGTH        8
+#if defined(CPUM64)
+  #define VOICE_Q_LENGTH        8
+#else
+  #define VOICE_Q_LENGTH        16
+#endif
 
 // Voice states
 #define V_STARTUP               0
