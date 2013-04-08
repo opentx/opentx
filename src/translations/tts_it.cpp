@@ -102,7 +102,16 @@ PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-  convertUnit(number, unit);
+  if (unit) {
+    unit--;
+    convertUnit(number, unit);
+    if (IS_IMPERIAL_ENABLE()) {
+      if (unit == UNIT_METERS) {
+        unit = UNIT_FEET;
+      }
+    }
+    unit++;
+  }
 
   int8_t mode = MODE(att);
   if (mode > 0) {
