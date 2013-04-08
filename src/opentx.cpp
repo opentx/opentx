@@ -670,14 +670,13 @@ void applyExpos(int16_t *anas)
           else
             v = expo(v, GET_GVAR(curveParam, -100, 100, s_perout_flight_phase));
         }
-        int16_t weight=GET_GVAR(ed.weight, 0, 100, s_perout_flight_phase);
-        weight=calc100to256(weight);
+        int16_t weight = GET_GVAR(ed.weight, 0, 100, s_perout_flight_phase);
+        weight = calc100to256(weight);
         v = ((int32_t)v * weight) >> 8;
-        // v = ((int32_t)v * GET_GVAR(ed.weight, 0, 100, s_perout_flight_phase)) / 100;
         anas[cur_chn] = v;
-      } //endif
-    } //endif getSwitch
-  } //endfor
+      }
+    }
+  }
 }
 
 #if !defined(CPUARM)
@@ -1228,7 +1227,7 @@ uint8_t getFlightPhase()
 int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
   PhaseData *p = phaseaddress(phase);
-#if defined(CPUM64)
+#if defined(PCBSTD)
   return (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
 #else
   return p->trim[idx];
@@ -1243,7 +1242,7 @@ int16_t getTrimValue(uint8_t phase, uint8_t idx)
 void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 {
   PhaseData *p = phaseaddress(phase);
-#if defined(CPUM64)
+#if defined(PCBSTD)
   p->trim[idx] = (int8_t)(trim >> 2);
   p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
 #else
@@ -1318,7 +1317,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 uint8_t s_gvar_timer = 0;
 uint8_t s_gvar_last = 0;
 
-#if defined(CPUM64)
+#if defined(PCBSTD)
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
 {
   if (GV_IS_GV_VALUE(x,min,max)) {
@@ -1736,7 +1735,7 @@ uint8_t checkTrim(uint8_t event)
 #if defined(GVARS)
 #define TRIM_REUSED() trimGvar[idx] >= 0
     if (TRIM_REUSED()) {
-#if defined(CPUM64)
+#if defined(PCBSTD)
       phase = 0;
 #else
       phase = getGVarFlightPhase(s_perout_flight_phase, trimGvar[idx]);
@@ -2321,7 +2320,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 }
 #endif
 
-#if !defined(CPUM64)
+#if !defined(PCBSTD)
 uint8_t mSwitchDuration[1+NUM_ROTARY_ENCODERS] = { 0 };
 #define CFN_PRESSLONG_DURATION   100
 #endif
@@ -2367,7 +2366,7 @@ void evalFunctions()
       MASK_CFN_TYPE  switch_mask   = ((MASK_CFN_TYPE)1 << i);
       uint8_t momentary = 0;
 
-#if !defined(CPUM64)
+#if !defined(PCBSTD)
 
   #define MOMENTARY_START_TEST() ( (momentary && !(activeSwitches & switch_mask) && active) || \
                                    (short_long==1 && !active && mSwitchDuration[mswitch]>0 && mSwitchDuration[mswitch]<CFN_PRESSLONG_DURATION) || \
@@ -2408,7 +2407,7 @@ void evalFunctions()
       if (active) newActiveSwitches |= switch_mask;
       if (momentary || short_long) {
 
-#if !defined(CPUM64)
+#if !defined(PCBSTD)
         bool swState = active;
 #endif
 
@@ -2439,7 +2438,7 @@ void evalFunctions()
           active = (activeFnSwitches & switch_mask);
           momentary = false;
         }
-#if !defined(CPUM64)
+#if !defined(PCBSTD)
         if (short_long) {
           if (swState) {
             if (mSwitchDuration[mswitch] < 255)
@@ -2982,7 +2981,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       
       if (tmp.dword<0) {
         if ((tmp.words_t.hi&0xFF80)!=0xFF80) tmp.words_t.hi=0xFF86; // set to min nearly
-      } else {
+      }
+      else {
         if ((tmp.words_t.hi|0x007F)!=0x007F) tmp.words_t.hi=0x0079; // set to max nearly
       }
       *ptr=tmp.dword;
@@ -3313,9 +3313,9 @@ void doMixerCalculations()
       AUDIO_INACTIVITY();
 
 #if defined(AUDIO)
-    if (mixWarning & 1) if ((s_timeCumTot&0x03)== 0) AUDIO_MIX_WARNING(1);
-    if (mixWarning & 2) if ((s_timeCumTot&0x03)== 1) AUDIO_MIX_WARNING(2);
-    if (mixWarning & 4) if ((s_timeCumTot&0x03)== 2) AUDIO_MIX_WARNING(3);
+    if (mixWarning & 1) if ((s_timeCumTot&0x03)==0) AUDIO_MIX_WARNING(1);
+    if (mixWarning & 2) if ((s_timeCumTot&0x03)==1) AUDIO_MIX_WARNING(2);
+    if (mixWarning & 4) if ((s_timeCumTot&0x03)==2) AUDIO_MIX_WARNING(3);
 #endif
 
 #if defined(ACCURAT_THROTTLE_TIMER)
@@ -3633,7 +3633,7 @@ uint16_t getTmr16KHz()
 ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
 {
   cli();
-  TIMSK &= ~ (1<<TOIE2) ; // stop reentrance
+  TIMSK &= ~(1<<TOIE2) ; // stop reentrance
   sei();
 
 #if defined(AUDIO)
@@ -3789,7 +3789,7 @@ ISR(USART0_UDRE_vect)
   else {
     FRSKY_USART0_vect();
   }
-#elif defined (FRSKY)
+#elif defined(FRSKY)
   FRSKY_USART0_vect();
 #else
   DSM2_USART0_vect();

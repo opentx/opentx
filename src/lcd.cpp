@@ -813,7 +813,7 @@ void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
     putsStrIdx(x, y, STR_PPM, idx-MIXSRC_PPM1+1, att);
   else if (idx <= MIXSRC_LAST_CH)
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
-#if defined(GVARS) || !defined(CPUM64)
+#if defined(GVARS) || !defined(PCBSTD)
   else if (idx <= MIXSRC_LAST_GVAR)
     putsStrIdx(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
 #endif
@@ -860,7 +860,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
   }
 #endif
 
-#if !defined(CPUM64)
+#if !defined(PCBSTD)
   else if (idx >= SWSRC_TRAINER_SHORT) {
     idx -= SWSRC_TRAINER_SHORT;
     lcd_putcAtt(x+3*FW, y, (idx & 1) ? CHR_LONG : CHR_SHORT, att);

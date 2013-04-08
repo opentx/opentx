@@ -474,8 +474,7 @@ ISR(USART0_RX_vect)
   uint8_t data;
   
   UCSR0B &= ~(1 << RXCIE0); // disable Interrupt
-  sei() ;
-
+  sei();
 
   stat = UCSR0A; // USART control and Status Register 0 A
 

@@ -765,7 +765,7 @@ void menuMainView(uint8_t event)
       }
 #endif // PCBGRUVIN9X && ROTARY_ENCODERS
 
-      // Curstom Switches
+      // Custom Switches
 #if defined(PCBSKY9X)
       for (uint8_t i=0; i<NUM_CSW; i++) {
         int8_t len = getSwitch(SWSRC_SW1+i, 0) ? BAR_HEIGHT : 1;
@@ -779,7 +779,7 @@ void menuMainView(uint8_t event)
 #elif defined(PCBGRUVIN9X)
       for (uint8_t i=0; i<NUM_CSW; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
-#elif !defined(CPUM64)
+#elif !defined(PCBSTD)
       for (uint8_t i=0; i<NUM_CSW; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
 #else
@@ -814,7 +814,7 @@ void menuMainView(uint8_t event)
     s_gvar_timer--;
     s_warning = PSTR("Global Variable");
     displayBox();
-#if defined(CPUM64)
+#if defined(PCBSTD)
     lcd_putsAtt(16+4*FW, 5*FH, PSTR("[\010]"), BOLD);
     lcd_outdezAtt(16+4*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
 #else

@@ -813,7 +813,7 @@ bool eeLoadGeneral()
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 1) == 1 && g_eeGeneral.version == EEPROM_VER) {
     theFile.openRlc(FILE_GENERAL);
     if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral)) {
-#if defined(CPUM64)
+#if defined(PCBSTD)
       if (g_eeGeneral.variant == EEPROM_VARIANT && g_eeGeneral.chkSum == evalChkSum()) {
         return true;
       }

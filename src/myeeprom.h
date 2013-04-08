@@ -52,35 +52,36 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBTARANIS)
-#define EEPROM_VER       214
+  #define EEPROM_VER       214
 #elif defined(PCBSKY9X)
-#define EEPROM_VER       214
-#elif defined(PCBGRUVIN9X) || defined(CPUM128)
-#define EEPROM_VER       214
+  #define EEPROM_VER       214
+#elif defined(PCBGRUVIN9X)
+  #define EEPROM_VER       214
+#elif defined(CPUM128)
+  #define EEPROM_VER       215
 #else
-#define EEPROM_VER       213
+  #define EEPROM_VER       213
 #endif
 
 #ifndef PACK
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 #endif
 
-
 typedef int16_t gvar_t;
 
-#if !defined(CPUM64)
+#if !defined(PCBSTD)
 typedef char gvar_name_t[6];
 #define GVAR_MAX  1024
 #endif
 
 #define RESERVE_RANGE_FOR_GVARS 10
 // even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
-#if defined(CPUM64) && defined(GVARS)
+#if defined(PCBSTD) && defined(GVARS)
   #define MAX_GVARS 5
   #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
   #define PHASE_GVARS_DATA
   #define GVAR_VALUE(x, p) g_model.gvars[x]
-#elif defined(CPUM64)
+#elif defined(PCBSTD)
   #define MAX_GVARS 0
   #define MODEL_GVARS_DATA
   #define PHASE_GVARS_DATA
@@ -252,7 +253,7 @@ PACK(typedef struct t_ExpoData {
   char    name[LEN_EXPOMIX_NAME];
   int8_t  curveParam;
 }) ExpoData;
-#elif defined(CPUM64)
+#elif defined(PCBSTD)
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   int8_t  swtch:6;
@@ -354,7 +355,7 @@ PACK( union u_int8int16_t {
 #define DELAY_MAX   15 /* 7.5 seconds */
 #define SLOW_MAX    15 /* 7.5 seconds */
 
-#if defined(CPUM64)
+#if defined(PCBSTD)
 PACK(typedef struct t_MixData {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
@@ -823,7 +824,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define ROTARY_ENCODER_ARRAY_EXTRA
 #endif
 
-#if defined(CPUM64)
+#if defined(PCBSTD)
 #define TRIM_ARRAY int8_t trim[4]; int8_t trim_ext:8
 #else
 #define TRIM_ARRAY int16_t trim[4]
@@ -859,7 +860,7 @@ PACK(typedef struct t_PhaseData {
   #define MAX_EXPOS  32
   #define NUM_CSW    32 // number of custom switches
   #define NUM_CFN    32 // number of functions assigned to switches
-#elif defined(PCBGRUVIN9X) || defined(CPUM128)
+#elif defined(PCBGRUVIN9X)
   #define MAX_MODELS 30
   #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
   #define MAX_PHASES 6
@@ -867,6 +868,14 @@ PACK(typedef struct t_PhaseData {
   #define MAX_EXPOS  16
   #define NUM_CSW    15 // number of custom switches
   #define NUM_CFN    24 // number of functions assigned to switches
+#elif defined(CPUM128)
+  #define MAX_MODELS 30
+  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
+  #define MAX_PHASES 5
+  #define MAX_MIXERS 32
+  #define MAX_EXPOS  14
+  #define NUM_CSW    12 // number of custom switches
+  #define NUM_CFN    16 // number of functions assigned to switches
 #else
   #define MAX_MODELS 16
   #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
@@ -952,7 +961,7 @@ enum SwitchSources {
   SWSRC_FIRST_MOMENT_SWITCH,
   SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_ON-1,
 
-#if !defined(CPUM64)
+#if !defined(PCBSTD)
   SWSRC_TRAINER_SHORT,
   SWSRC_TRAINER_LONG,
 #endif
@@ -1142,7 +1151,7 @@ enum FailsafeModes {
 
 #if defined(MAVLINK)
 #define TELEMETRY_DATA MavlinkData mavlink;
-#elif defined(FRSKY) || !defined(CPUM64)
+#elif defined(FRSKY)
 #define TELEMETRY_DATA FrSkyData frsky;
 #else
 #define TELEMETRY_DATA
@@ -1168,7 +1177,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   extendedTrims:1;
   uint8_t   spare1:1;
   int8_t    ppmDelay;
-  BeepANACenter   beepANACenter;        // 1<<0->A1.. 1<<6->A7
+  BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData   mixData[MAX_MIXERS];
   LimitData limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
@@ -1177,7 +1186,7 @@ PACK(typedef struct t_ModelData {
   int8_t    points[NUM_POINTS];
   
   CustomSwData customSw[NUM_CSW];
-  CustomFnData  funcSw[NUM_CFN];
+  CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
 

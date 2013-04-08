@@ -772,7 +772,7 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 #endif
 
 #if defined(GVARS)
-  #if defined(CPUM64)
+  #if defined(PCBSTD)
     int16_t getGVarValue(int16_t x, int16_t min, int16_t max);
     void setGVarValue(uint8_t x, int8_t value);
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
@@ -1118,7 +1118,7 @@ extern void moveTrimsToOffsets();
 #if defined(CPUARM)
   #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
   #define MASK_FUNC_TYPE uint32_t // current max = 32 functions
-#elif defined(CPUM64)
+#elif defined(PCBSTD)
   #define MASK_CFN_TYPE uint16_t  // current max = 16 function switches
   #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
 #else
