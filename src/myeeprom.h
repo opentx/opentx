@@ -76,6 +76,7 @@ typedef char gvar_name_t[6];
 
 #define RESERVE_RANGE_FOR_GVARS 10
 // even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
+
 #if defined(PCBSTD) && defined(GVARS)
   #define MAX_GVARS 5
   #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
@@ -195,28 +196,28 @@ PACK(typedef struct t_EEGeneral {
   int8_t    vBatCalib;
   int8_t    backlightMode;
   TrainerData trainer;
-  uint8_t   view;      //index of subview in main scrren
-  uint8_t   spare1:3;
-  int8_t    beeperMode:2;
+  uint8_t   view;            // index of view in main screen
+  int8_t    buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   spare1:1;
+  int8_t    beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   alarmsFlash:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
   int8_t    timezone:5;
-  uint8_t   alarmsBeep:1;
+  uint8_t   spare2:1;
   uint8_t   inactivityTimer;
-  uint8_t   throttleReversed:1;
-  uint8_t   spare2:2;
+  uint8_t   spare3:3;
   SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   blOffBright:4;
   uint8_t   blOnBright:4;
   uint8_t   lightAutoOff;
-  uint8_t   templateSetup;  //RETA order according to chout_ar array 
+  uint8_t   templateSetup;   // RETA order for receiver channels
   int8_t    PPM_Multiplier;
   int8_t    hapticLength;
-  uint8_t   reNavigation; // not used on STOCK board
-  int8_t    beeperLength:3;
+  uint8_t   reNavigation;    // not used on STOCK board
+  int8_t    beepLength:3;
   uint8_t   hapticStrength:3;
   uint8_t   gpsFormat:1;
   uint8_t   unexpectedShutdown:1;
@@ -287,7 +288,6 @@ PACK(typedef struct t_LimitData {
   LIMITDATA_EXTRA
 
 }) LimitData;
-
 
 #define TRIM_OFF    (1)
 #define TRIM_ON     (0)
@@ -825,14 +825,16 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #endif
 
 #if defined(PCBSTD)
-#define TRIM_ARRAY int8_t trim[4]; int8_t trim_ext:8
+  #define TRIMS_ARRAY       int8_t trim[4]; int8_t trim_ext:8
+  #define TRIMS_ARRAY_SIZE  5
 #else
-#define TRIM_ARRAY int16_t trim[4]
+  #define TRIMS_ARRAY       int16_t trim[4]
+  #define TRIMS_ARRAY_SIZE  8
 #endif
 
 #if defined(CPUARM)
 PACK(typedef struct t_PhaseData {
-  TRIM_ARRAY;
+  TRIMS_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
   uint8_t fadeIn;
@@ -842,7 +844,7 @@ PACK(typedef struct t_PhaseData {
 }) PhaseData;
 #else
 PACK(typedef struct t_PhaseData {
-  TRIM_ARRAY;
+  TRIMS_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
   uint8_t fadeIn:4;
@@ -1175,7 +1177,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   pulsePol:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
-  uint8_t   spare1:1;
+  uint8_t   throttleReversed:1;
   int8_t    ppmDelay;
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData   mixData[MAX_MIXERS];

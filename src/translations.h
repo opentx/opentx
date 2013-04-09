@@ -271,12 +271,12 @@ extern const pm_char STR_ELEDIRECTION[];
 extern const pm_char STR_AILDIRECTION[];
 extern const pm_char STR_COLDIRECTION[];
 extern const pm_char STR_MODE[];
-#if defined(AUDIO) && defined(BEEPER)
+#if defined(AUDIO) && defined(BUZZER)
 extern const pm_char STR_SPEAKER[];
-extern const pm_char STR_BEEPER[];
+extern const pm_char STR_BUZZER[];
 #else
 #define STR_SPEAKER STR_MODE
-#define STR_BEEPER  STR_MODE
+#define STR_BUZZER  STR_MODE
 #endif
 extern const pm_char STR_NOFREEEXPO[];
 extern const pm_char STR_NOFREEMIXER[];
@@ -291,7 +291,7 @@ extern const pm_char STR_OFFSET[];
 extern const pm_char STR_TRIM[];
 extern const pm_char STR_DREX[];
 extern const pm_char STR_CURVE[];
-extern const pm_char STR_FPHASE[];
+extern const pm_char STR_FLMODE[];
 extern const pm_char STR_MIXWARNING[];
 extern const pm_char STR_OFF[];
 extern const pm_char STR_MULTPX[];

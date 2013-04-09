@@ -43,15 +43,6 @@ uint8_t beepOn = false;
 bool warble = false;
 bool warbleC;
 
-#if defined(AUDIO)
-static const pm_uint8_t beepTab[] PROGMEM = {
-    60, 80, 100, 120, 150,
-};
-void beep()
-{
-  _beep(pgm_read_byte(beepTab+(2+g_eeGeneral.beeperLength)));
-}
-#else
 // The various "beep" tone lengths
 static const pm_uint8_t beepTab[] PROGMEM = {
     // key, trim, warn2, warn1, error
@@ -64,14 +55,16 @@ static const pm_uint8_t beepTab[] PROGMEM = {
 
 void beep(uint8_t val)
 {
-#if defined(HAPTIC)
+#if defined(HAPTIC) && !defined(AUDIO)
   haptic.event(val==0 ? AU_KEYPAD_UP : (val==4 ? AU_ERROR : AU_TIMER_10+beepAgain));
 #endif
 
+#if !defined(AUDIO)
   if (g_eeGeneral.alarmsFlash && val>1 && lightOffCounter<FLASH_DURATION) lightOffCounter = FLASH_DURATION;
+#endif
 
-  if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && val!=0) || (g_eeGeneral.beeperMode==-1 && val>=3)) {
-    _beep(pgm_read_byte(beepTab+5*(2+g_eeGeneral.beeperLength)+val));
+  if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && val!=0) || (g_eeGeneral.beepMode==-1 && val>=3)) {
+    _beep(pgm_read_byte(beepTab+5*(2+g_eeGeneral.beepLength)+val));
   }
 }
-#endif
+

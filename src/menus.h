@@ -133,6 +133,12 @@ void menuStatisticsDebug(uint8_t event);
   #define p1valdiff 0
 #endif
 
+#if defined(NAVIGATION_POT2)
+  extern int8_t p2valdiff;
+#else
+  #define p2valdiff 0
+#endif
+
 extern int8_t checkIncDec_Ret;  // global helper vars
 
 #define EDIT_SELECT_MENU   -1

@@ -355,14 +355,14 @@ void setupPulsesPXX()
       }
       else {
         if (i < sendUpperChannels) {
-          chan =  limit(2048, (g_model.failsafeChannels[8+g_model.ppmSCH+i] * 512 / 682) + 3072, 4095);
-          chan_1 = limit(2048, (g_model.failsafeChannels[8+g_model.ppmSCH+i+1] * 512 / 682) + 3072, 4095);
+          chan =  limit(2048, PPM_CH_CENTER(8+g_model.ppmSCH+i) - PPM_CENTER + (g_model.failsafeChannels[8+g_model.ppmSCH+i] * 512 / 682) + 3072, 4095);
+          chan_1 = limit(2048, PPM_CH_CENTER(8+g_model.ppmSCH+i+1) - PPM_CENTER + (g_model.failsafeChannels[8+g_model.ppmSCH+i+1] * 512 / 682) + 3072, 4095);
           if (chan == 3072) chan = 3073;
           if (chan_1 == 3072) chan_1 = 3073;
         }
         else {
-          chan = limit(0, (g_model.failsafeChannels[g_model.ppmSCH+i] * 512 / 682) + 1024, 2047);
-          chan_1 = limit(0, (g_model.failsafeChannels[g_model.ppmSCH+i+1] * 512 / 682) + 1024, 2047);
+          chan = limit(0, PPM_CH_CENTER(g_model.ppmSCH+i) - PPM_CENTER + (g_model.failsafeChannels[g_model.ppmSCH+i] * 512 / 682) + 1024, 2047);
+          chan_1 = limit(0, PPM_CH_CENTER(g_model.ppmSCH+i+1) - PPM_CENTER + (g_model.failsafeChannels[g_model.ppmSCH+i+1] * 512 / 682) + 1024, 2047);
           if (chan == 1024) chan = 1025;
           if (chan_1 == 1024) chan_1 = 1025;
         }
@@ -372,12 +372,12 @@ void setupPulsesPXX()
 #endif
     {
       if (i < sendUpperChannels) {
-        chan =  limit(2048, (channelOutputs[8+g_model.ppmSCH+i] * 512 / 682) + 3072, 4095);
-        chan_1 = limit(2048, (channelOutputs[8+g_model.ppmSCH+i+1] * 512 / 682) + 3072, 4095);
+        chan =  limit(2048, PPM_CH_CENTER(8+g_model.ppmSCH+i) - PPM_CENTER + (channelOutputs[8+g_model.ppmSCH+i] * 512 / 682) + 3072, 4095);
+        chan_1 = limit(2048, PPM_CH_CENTER(8+g_model.ppmSCH+i+1) - PPM_CENTER + (channelOutputs[8+g_model.ppmSCH+i+1] * 512 / 682) + 3072, 4095);
       }
       else {
-        chan = limit(0, (channelOutputs[g_model.ppmSCH+i] * 512 / 682) + 1024, 2047);
-        chan_1 = limit(0, (channelOutputs[g_model.ppmSCH+i+1] * 512 / 682) + 1024, 2047);
+        chan = limit(0, PPM_CH_CENTER(g_model.ppmSCH+i) - PPM_CENTER + (channelOutputs[g_model.ppmSCH+i] * 512 / 682) + 1024, 2047);
+        chan_1 = limit(0, PPM_CH_CENTER(g_model.ppmSCH+i+1) - PPM_CENTER + (channelOutputs[g_model.ppmSCH+i+1] * 512 / 682) + 1024, 2047);
       }
     }
     putPcmByte(chan); // Low byte of channel

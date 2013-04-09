@@ -383,7 +383,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Kurve"
-#define TR_FPHASE              TR("Phase","Phasen")
+#define TR_FLMODE              TR("Phase","Phasen")
 #define TR_MIXWARNING          "Warnung"
 #define TR_OFF                 "AUS"
 #define TR_MULTPX              "Wirkung"

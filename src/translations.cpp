@@ -140,9 +140,9 @@ const pm_char STR_AILDIRECTION[] PROGMEM = TR_AILDIRECTION;
 const pm_char STR_COLDIRECTION[] PROGMEM = TR_COLDIRECTION;
 #endif
 const pm_char STR_MODE[] PROGMEM = TR_MODE;
-#if defined(AUDIO) && defined(BEEPER)
+#if defined(AUDIO) && defined(BUZZER)
 const pm_char STR_SPEAKER[] PROGMEM = INDENT"Speaker";
-const pm_char STR_BEEPER[] PROGMEM = INDENT"Beeper";
+const pm_char STR_BUZZER[] PROGMEM = INDENT"Buzzer";
 #endif
 const pm_char STR_NOFREEEXPO[] PROGMEM = TR_NOFREEEXPO;
 const pm_char STR_NOFREEMIXER[] PROGMEM = TR_NOFREEMIXER;
@@ -157,7 +157,7 @@ const pm_char STR_OFFSET[] PROGMEM = TR_OFFSET;
 const pm_char STR_TRIM[] PROGMEM = TR_TRIM;
 const pm_char STR_DREX[] PROGMEM = TR_DREX;
 const pm_char STR_CURVE[] PROGMEM = TR_CURVE;
-const pm_char STR_FPHASE[] PROGMEM = TR_FPHASE;
+const pm_char STR_FLMODE[] PROGMEM = TR_FLMODE;
 const pm_char STR_MIXWARNING[] PROGMEM = TR_MIXWARNING;
 const pm_char STR_OFF[] PROGMEM = TR_OFF;
 const pm_char STR_MULTPX[] PROGMEM = TR_MULTPX;

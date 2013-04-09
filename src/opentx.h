@@ -86,10 +86,10 @@
 #define IF_RTCLOCK(x)
 #endif
 
-#if defined(BEEPER)
-#define IF_BEEPER(x) x,
+#if defined(BUZZER)
+#define IF_BUZZER(x) x,
 #else
-#define IF_BEEPER(x)
+#define IF_BUZZER(x)
 #endif
 
 #if defined(AUDIO)
@@ -164,10 +164,10 @@
 #define IF_TEMPLATES(x)
 #endif
 
-#if defined(FLIGHT_PHASES)
-#define IF_FLIGHT_PHASES(x) x,
+#if defined(FLIGHT_MODES)
+#define IF_FLIGHT_MODES(x) x,
 #else
-#define IF_FLIGHT_PHASES(x)
+#define IF_FLIGHT_MODES(x)
 #endif
 
 #if defined(CURVES)
@@ -747,7 +747,7 @@ int8_t  getMovedSwitch();
 int8_t getMovedSource();
 #endif
 
-#ifdef FLIGHT_PHASES
+#if defined(FLIGHT_MODES)
   extern uint8_t getFlightPhase();
 #else
   #define getFlightPhase() 0
@@ -1234,8 +1234,8 @@ enum AUDIO_SOUNDS {
 #endif
 #endif
 
-#if defined(BEEPER)
-#include "beeper.h"
+#if defined(BUZZER)
+#include "buzzer.h"
 #endif
 
 #if defined(PCBSTD) && defined(VOICE)
@@ -1376,10 +1376,10 @@ void getGpsPilotPosition();
 void getGpsDistance();
 void varioWakeup();
 
-#if defined(AUDIO) && defined(BEEPER)
-  #define IS_SOUND_OFF() (!g_eeGeneral.alarmsBeep && g_eeGeneral.beeperMode == e_mode_quiet)
+#if defined(AUDIO) && defined(BUZZER)
+  #define IS_SOUND_OFF() (g_eeGeneral.buzzerMode==e_mode_quiet && g_eeGeneral.beepMode==e_mode_quiet)
 #else
-  #define IS_SOUND_OFF() (g_eeGeneral.beeperMode == e_mode_quiet)
+  #define IS_SOUND_OFF() (g_eeGeneral.beepMode == e_mode_quiet)
 #endif
 
 #if defined(CPUARM)

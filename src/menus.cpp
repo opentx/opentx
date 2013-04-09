@@ -82,6 +82,10 @@ void displayScrollbar(xcoord_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_
 int16_t p1valdiff;
 #endif
 
+#if defined(NAVIGATION_POT2)
+int8_t p2valdiff;
+#endif
+
 int8_t  checkIncDec_Ret;
 int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
 {
@@ -296,10 +300,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #ifdef NAVIGATION_POT2
   // check pot 2 - if changed -> scroll menu
   static int16_t p2valprev;
-  int8_t scrollLR = (p2valprev-calibratedStick[4]) / SCROLL_TH;
-  if (scrollLR) p2valprev = calibratedStick[4];
-#else
-#define scrollLR 0
+  p2valdiff = (p2valprev-calibratedStick[4]) / SCROLL_TH;
+  if (p2valdiff) p2valprev = calibratedStick[4];
 #endif
 
 #ifdef NAVIGATION_POT3
@@ -311,7 +313,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #define scrollUD 0
 #endif
 
-  if (scrollLR || scrollUD || p1valdiff) backlightOn(); // on keypress turn the light on
+  if (p2valdiff || scrollUD || p1valdiff) backlightOn(); // on keypress turn the light on
 
   if (menuTab) {
     uint8_t attr = 0;
@@ -345,8 +347,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
       int8_t cc = curr;
 
-      if (scrollLR) {
-        cc = limit((int8_t)0, (int8_t)(cc - scrollLR), (int8_t)(menuTabSize-1));
+      if (p2valdiff) {
+        cc = limit((int8_t)0, (int8_t)(cc - p2valdiff), (int8_t)(menuTabSize-1));
       }
 
       switch(event) {
@@ -422,8 +424,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       l_posHorz = min((uint8_t)l_posHorz, MAXCOL(l_posVert));
     }
 
-    if (scrollLR && l_posVert>0) {
-      l_posHorz = limit((int8_t)0, (int8_t)((uint8_t)l_posHorz - scrollLR), (int8_t)maxcol);
+    if (p2valdiff && l_posVert>0) {
+      l_posHorz = limit((int8_t)0, (int8_t)((uint8_t)l_posHorz - p2valdiff), (int8_t)maxcol);
     }
   }
 

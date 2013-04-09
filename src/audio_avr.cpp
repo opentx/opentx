@@ -107,11 +107,11 @@ void audioQueue::heartbeat()
 inline uint8_t audioQueue::getToneLength(uint8_t tLen)
 {
   uint8_t result = tLen; // default
-  if (g_eeGeneral.beeperLength < 0) {
-    result /= (1-g_eeGeneral.beeperLength);
+  if (g_eeGeneral.beepLength < 0) {
+    result /= (1-g_eeGeneral.beepLength);
   }
-  if (g_eeGeneral.beeperLength > 0) {
-    result *= (1+g_eeGeneral.beeperLength);
+  if (g_eeGeneral.beepLength > 0) {
+    result *= (1+g_eeGeneral.beepLength);
   }
   return result;
 }
@@ -168,17 +168,13 @@ void audioQueue::event(uint8_t e, uint8_t f)
 #endif
 
   if (e <= AU_ERROR || e >= AU_WARNING1) {
-#if defined(BEEPER)
-    beep();
-#endif
-
     if (g_eeGeneral.alarmsFlash) {
       if (lightOffCounter < FLASH_DURATION)
         lightOffCounter = FLASH_DURATION;
     }
   }
 
-  if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
+  if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && e<=AU_ERROR)) {
     if (e < AU_FRSKY_FIRST || empty()) {
       // TODO when VOICE enable some cases here are not needed!
       switch (e) {

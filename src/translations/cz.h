@@ -381,7 +381,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DVex"
 #define TR_CURVE               "K\206ivka"
-#define TR_FPHASE              "F\200ze"
+#define TR_FLMODE              "F\200ze"
 #define TR_MIXWARNING          "Varov\200n\204"
 #define TR_OFF                 "VYP"
 #define TR_MULTPX              "Mat.Operace"

@@ -201,9 +201,9 @@ EEPROM_PROGRESS_BAR = NO
 # Values = YES, NO
 DEBUG = NO
 
-# Flight Phases
+# Flight Modes
 # Values = YES, NO
-FLIGHT_PHASES = YES
+FLIGHT_MODES = YES
 
 # Curves
 # Values = YES, NO
@@ -268,8 +268,8 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
   else
-    CPPDEFS += -DBEEPER
-    CPPSRC += beeper.cpp 
+    CPPDEFS += -DBUZZER
+    CPPSRC += buzzer.cpp 
   endif
   
   ifeq ($(VOICE), YES)
@@ -280,9 +280,11 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   ifeq ($(PWM_BACKLIGHT), YES)
     ifeq ($(VOICE), YES)
       $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod)
-    else
-      CPPDEFS += -DPWM_BACKLIGHT
     endif
+    ifeq ($(AUDIO), YES)
+      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with AUDIO mod)
+    endif
+    CPPDEFS += -DPWM_BACKLIGHT
   endif
 
   ifeq ($(HAPTIC), YES)
@@ -321,8 +323,8 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
   else
-    CPPDEFS += -DBEEPER
-    CPPSRC += beeper.cpp 
+    CPPDEFS += -DBUZZER
+    CPPSRC += buzzer.cpp 
   endif
   
   ifeq ($(VOICE), YES)
@@ -333,9 +335,11 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   ifeq ($(PWM_BACKLIGHT), YES)
     ifeq ($(VOICE), YES)
       $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod)
-    else
-      CPPDEFS += -DPWM_BACKLIGHT
     endif
+    ifeq ($(AUDIO), YES)
+      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with AUDIO mod)
+    endif
+    CPPDEFS += -DPWM_BACKLIGHT
   endif
 
   ifeq ($(HAPTIC), YES)
@@ -361,7 +365,7 @@ ifeq ($(PCB), GRUVIN9X)
   OPT = 2
   CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
-  BEEPER = NO
+  BUZZER = NO
   THR_TRACE = YES
   EXTRAINCDIRS = gruvin9x stock FatFs FatFs/option
   BOARDSRC = gruvin9x/board_gruvin9x.cpp
@@ -376,9 +380,9 @@ ifeq ($(PCB), GRUVIN9X)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c gruvin9x/diskio.cpp
   endif
     
-  ifeq ($(BEEPER), YES)
-    CPPDEFS += -DBEEPER
-    CPPSRC += beeper.cpp
+  ifeq ($(BUZZER), YES)
+    CPPDEFS += -DBUZZER
+    CPPSRC += buzzer.cpp
   endif
 
   ifeq ($(VOICE), YES)
@@ -443,7 +447,7 @@ ifeq ($(PCB), SKY9X)
   MCU  = cortex-m3
   OPT = 2
   SDCARD = YES
-  BEEPER = NO
+  BUZZER = NO
   THR_TRACE = YES
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
   EXTRAINCDIRS = sky9x CoOS/kernel CoOS/portable
@@ -466,9 +470,9 @@ ifeq ($(PCB), SKY9X)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
   endif
   
-  ifeq ($(BEEPER), YES)
-    CPPDEFS += -DBEEPER
-    CPPSRC += beeper.cpp
+  ifeq ($(BUZZER), YES)
+    CPPDEFS += -DBUZZER
+    CPPSRC += buzzer.cpp
   endif
 
   ifeq ($(RTCLOCK), YES)
@@ -665,8 +669,8 @@ ifeq ($(THR_TRACE), YES)
   CPPDEFS += -DTHRTRACE
 endif
 
-ifeq ($(FLIGHT_PHASES), YES)
-  CPPDEFS += -DFLIGHT_PHASES
+ifeq ($(FLIGHT_MODES), YES)
+  CPPDEFS += -DFLIGHT_MODES
 endif
 
 ifeq ($(CURVES), YES)

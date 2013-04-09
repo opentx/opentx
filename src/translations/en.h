@@ -395,7 +395,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Curve"
-#define TR_FPHASE              TR("Mode","Modes")
+#define TR_FLMODE              TR("Mode","Modes")
 #define TR_MIXWARNING          "Warning"
 #define TR_OFF                 "OFF"
 #define TR_MULTPX              "Multpx"
@@ -426,7 +426,7 @@
 #define TR_MEMORYWARNING       INDENT"Memory Low"
 #define TR_ALARMWARNING        INDENT"Sound Off"
 #define TR_RENAVIG             "RotEnc Navig"
-#define TR_THROTTLEREVERSE     TR("Thr reverse","Throttle reverse")
+#define TR_THROTTLEREVERSE     TR("T-Reverse", "Throttle reverse")
 #define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Minute call")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistent")

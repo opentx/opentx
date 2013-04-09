@@ -552,11 +552,11 @@ void AudioQueue::wakeup()
 inline uint8_t getToneLength(uint8_t tLen)
 {
   uint8_t result = tLen; // default
-  if (g_eeGeneral.beeperLength < 0) {
-    result /= (1-g_eeGeneral.beeperLength);
+  if (g_eeGeneral.beepLength < 0) {
+    result /= (1-g_eeGeneral.beepLength);
   }
-  if (g_eeGeneral.beeperLength > 0) {
-    result *= (1+g_eeGeneral.beeperLength);
+  if (g_eeGeneral.beepLength > 0) {
+    result *= (1+g_eeGeneral.beepLength);
   }
   return result;
 }
@@ -711,7 +711,7 @@ void audioEvent(uint8_t e, uint8_t f)
 #endif
 
   if (e <= AU_ERROR || e >= AU_WARNING1) {
-#if defined(BEEPER)
+#if defined(BUZZER)
     beep();
 #endif
 
@@ -721,7 +721,7 @@ void audioEvent(uint8_t e, uint8_t f)
     }
   }
 
-  if (g_eeGeneral.beeperMode>0 || (g_eeGeneral.beeperMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beeperMode>=-1 && e<=AU_ERROR)) {
+  if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && e<=AU_ERROR)) {
 #if defined(SDCARD)
     if (e < AU_FRSKY_FIRST && isAudioFileAvailable(e, filename)) {
       audioQueue.playFile(filename);

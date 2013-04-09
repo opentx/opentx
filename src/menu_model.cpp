@@ -42,9 +42,9 @@
 
 enum EnumTabModel {
   e_ModelSelect,
-  e_Model,
+  e_ModelSetup,
   IF_HELI(e_Heli)
-  IF_FLIGHT_PHASES(e_PhasesAll)
+  IF_FLIGHT_MODES(e_FlightModesAll)
   e_ExposAll,
   e_MixAll,
   e_Limits,
@@ -61,7 +61,7 @@ enum EnumTabModel {
 void menuModelSelect(uint8_t event);
 void menuModelSetup(uint8_t event);
 void menuModelHeli(uint8_t event);
-void menuModelPhasesAll(uint8_t event);
+void menuModelFlightModesAll(uint8_t event);
 void menuModelExposAll(uint8_t event);
 void menuModelMixAll(uint8_t event);
 void menuModelLimits(uint8_t event);
@@ -78,12 +78,12 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelSelect,
   menuModelSetup,
   IF_HELI(menuModelHeli)
-  IF_FLIGHT_PHASES(menuModelPhasesAll)
+  IF_FLIGHT_MODES(menuModelFlightModesAll)
   menuModelExposAll,
   menuModelMixAll,
   menuModelLimits,
   IF_CURVES(menuModelCurvesAll)
-#if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_PHASES)
+#if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_MODES)
   IF_GVARS(menuModelGVars)
 #endif
   menuModelCustomSwitches,
@@ -321,6 +321,12 @@ void menuModelSelect(uint8_t event)
   int8_t oldSub = m_posVert;
 
   if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
+
+#if defined(NAVIGATION_POT2)
+  if (event==0 && p2valdiff<0) {
+    event = EVT_KEY_FIRST(KEY_RIGHT);
+  }
+#endif
 
   if (s_editMode > 0) s_editMode = 0;
 
@@ -716,6 +722,7 @@ enum menuModelSetupItems {
   ITEM_MODEL_EXTENDED_LIMITS,
   ITEM_MODEL_EXTENDED_TRIMS,
   ITEM_MODEL_TRIM_INC,
+  ITEM_MODEL_THROTTLE_REVERSED,
   ITEM_MODEL_THROTTLE_TRACE,
   ITEM_MODEL_THROTTLE_TRIM,
   ITEM_MODEL_THROTTLE_WARNING,
@@ -781,11 +788,15 @@ void menuModelSetup(uint8_t event)
 
 #if defined(PCBTARANIS)
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, 1+ITEM_MODEL_SETUP_MAX, { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 2, 2, g_model.failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0});
+  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, 1+ITEM_MODEL_SETUP_MAX, { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 2, 2, g_model.failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0});
+#elif defined(CPUM64)
+  #define CURSOR_ON_CELL (true)
+  uint8_t protocol = g_model.protocol;
+  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, IF_PCBSKY9X(1) 2 });
 #else
   #define CURSOR_ON_CELL (true)
   uint8_t protocol = g_model.protocol;
-  MENU(STR_MENUSETUP, menuTabModel, e_Model, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 0, 0, 0, 0, 0, 0, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, IF_PCBSKY9X(1) 2 });
+  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, IF_PCBSKY9X(1) 2 });
 #endif
 
   uint8_t sub = m_posVert - 1;
@@ -882,11 +893,26 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_EXTENDED_TRIMS:
-        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, attr, event);
+#if defined(CPUM64)
+        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, event);
+#else
+        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, PSTR("[Reset]"), m_posHorz>0 ? attr : 0);
+        if (attr && m_posHorz>0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
+          s_editMode = 0;
+          for (uint8_t i=0; i<MAX_PHASES; i++) {
+            memclear(&g_model.phaseData[i], TRIMS_ARRAY_SIZE);
+          }
+        }
+#endif
         break;
 
       case ITEM_MODEL_TRIM_INC:
         g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, 0, 4, attr, event);
+        break;
+
+      case ITEM_MODEL_THROTTLE_REVERSED:
+        g_model.throttleReversed = onoffMenuItem(g_model.throttleReversed, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEREVERSE, attr, event ) ;
         break;
 
       case ITEM_MODEL_THROTTLE_TRACE:
@@ -1249,17 +1275,17 @@ uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, cons
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 #endif
 
-#if defined(FLIGHT_PHASES)
+#if defined(FLIGHT_MODES)
 
 #if defined(CPUARM)
-#define PhasesType uint16_t
+#define FlightModesType uint16_t
 #else
-#define PhasesType uint8_t
+#define FlightModesType uint8_t
 #endif
 
-PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uint8_t attr)
+FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModesType value, uint8_t attr)
 {
-  lcd_putsColumnLeft(x, y, STR_FPHASE);
+  lcd_putsColumnLeft(x, y, STR_FLMODE);
 
   uint8_t posHorz = m_posHorz;
 
@@ -1296,7 +1322,7 @@ PhasesType editPhases(uint8_t x, uint8_t y, uint8_t event, PhasesType value, uin
 
 #if LCD_W >= 212
 
-enum PhasesItems {
+enum FlightModesItems {
   ITEM_PHASES_NAME,
   ITEM_PHASES_SWITCH,
   ITEM_PHASES_TRIMS,
@@ -1366,9 +1392,9 @@ void editPhaseTrims(uint8_t x, uint8_t y, uint8_t phase, uint8_t event, uint8_t 
   }
 }
 
-void menuModelPhasesAll(uint8_t event)
+void menuModelFlightModesAll(uint8_t event)
 {
-  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_PhasesAll, 1+MAX_PHASES+1, {0, NAVIGATION_LINE_BY_LINE|(ITEM_PHASES_LAST-2), NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, 0});
+  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_PHASES+1, {0, NAVIGATION_LINE_BY_LINE|(ITEM_PHASES_LAST-2), NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, 0});
 
   int8_t sub = m_posVert - 1;
 
@@ -1618,9 +1644,9 @@ void menuModelPhaseOne(uint8_t event)
   #define TRIMS_OFS  (FW/2)
 #endif
 
-void menuModelPhasesAll(uint8_t event)
+void menuModelFlightModesAll(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_PhasesAll, 1+MAX_PHASES+1);
+  SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_PHASES+1);
 
   int8_t sub = m_posVert - 1;
 
@@ -1690,7 +1716,7 @@ void menuModelPhasesAll(uint8_t event)
 
 #endif // defined(PCBTARANIS)
 
-#endif // defined(FLIGHT_PHASES)
+#endif // defined(FLIGHT_MODES)
 
 #if defined(HELI)
 
@@ -2149,7 +2175,7 @@ enum ExposFields {
   EXPO_FIELD_WEIGHT,
   EXPO_FIELD_EXPO,
   IF_CURVES(EXPO_FIELD_CURVE)
-  IF_FLIGHT_PHASES(EXPO_FIELD_FLIGHT_PHASE)
+  IF_FLIGHT_MODES(EXPO_FIELD_FLIGHT_PHASE)
   EXPO_FIELD_SWITCH,
   EXPO_FIELD_SIDE,
   EXPO_FIELD_MAX
@@ -2160,7 +2186,7 @@ void menuModelExpoOne(uint8_t event)
   ExpoData *ed = expoaddress(s_currIdx);
   putsMixerSource(7*FW+FW/2, 0, ed->chn+1, 0);
 
-  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_CPUARM(0) 0, 0, IF_CURVES(0) IF_FLIGHT_PHASES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  SUBMENU(STR_MENUDREXPO, EXPO_FIELD_MAX, {IF_CPUARM(0) 0, 0, IF_CURVES(0) IF_FLIGHT_MODES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
 
   int8_t sub = m_posVert;
 
@@ -2208,9 +2234,9 @@ void menuModelExpoOne(uint8_t event)
         }
         break;
 #endif
-#if defined(FLIGHT_PHASES)
+#if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_PHASE:
-        ed->phases = editPhases(EXPO_ONE_2ND_COLUMN+3*FW-EXPO_ONE_FP_WIDTH, y, event, ed->phases, attr);
+        ed->phases = editFlightModes(EXPO_ONE_2ND_COLUMN+3*FW-EXPO_ONE_FP_WIDTH, y, event, ed->phases, attr);
         break;
 #endif
       case EXPO_FIELD_SWITCH:
@@ -2245,7 +2271,7 @@ enum MixFields {
   MIX_FIELD_OFFSET,
   MIX_FIELD_TRIM,
   IF_CURVES(MIX_FIELD_CURVE)
-  IF_FLIGHT_PHASES(MIX_FIELD_FLIGHT_PHASE)
+  IF_FLIGHT_MODES(MIX_FIELD_FLIGHT_PHASE)
   MIX_FIELD_SWITCH,
   MIX_FIELD_WARNING,
   MIX_FIELD_MLTPX,
@@ -2284,11 +2310,11 @@ void menuModelMixOne(uint8_t event)
 #else
   if (m_posVert == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS)
 #endif  
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 0, IF_CURVES(0) IF_FLIGHT_PHASES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/})
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 0, IF_CURVES(0) IF_FLIGHT_MODES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/})
   else
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 1, IF_CURVES(1) IF_FLIGHT_PHASES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 1, IF_CURVES(1) IF_FLIGHT_MODES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #else
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 1, IF_CURVES(1) IF_FLIGHT_PHASES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, 1, IF_CURVES(1) IF_FLIGHT_MODES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #endif
 
 #if MENU_COLUMNS > 1
@@ -2404,9 +2430,9 @@ void menuModelMixOne(uint8_t event)
         break;
       }
 #endif
-#if defined(FLIGHT_PHASES)
+#if defined(FLIGHT_MODES)
       case MIX_FIELD_FLIGHT_PHASE:
-        md2->phases = editPhases(COLUMN_X+MIXES_2ND_COLUMN, y, event, md2->phases, attr);
+        md2->phases = editFlightModes(COLUMN_X+MIXES_2ND_COLUMN, y, event, md2->phases, attr);
         break;
 #endif
       case MIX_FIELD_SWITCH:
@@ -3101,15 +3127,24 @@ void menuModelCurvesAll(uint8_t event)
 }
 #endif
 
-#if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_PHASES)
+#if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_MODES)
 void menuModelGVars(uint8_t event)
 {
   MENU(PSTR("GLOBAL VARIABLES"), menuTabModel, e_GVars, 1+MAX_GVARS, {0, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES});
 
   uint8_t sub = m_posVert - 1;
 
+#if MAX_GVARS > 6
+  for (uint8_t l=0; l<LCD_LINES-1; l++) {
+    uint8_t i = l+s_pgOfs;
+    uint8_t y = 1 + FH + l*FH;
+#elif MAX_GVARS == 6
+  for (uint8_t i=0; i<MAX_GVARS; i++) {
+    uint8_t y = 1 + 2*FH + i*FH;
+#else
   for (uint8_t i=0; i<MAX_GVARS; i++) {
     uint8_t y = 1 + 3*FH + i*FH;
+#endif
 
     putsStrIdx(0, y, STR_GV, i+1, (sub==i && m_posHorz<0) ? INVERS : 0);
 
@@ -3117,7 +3152,11 @@ void menuModelGVars(uint8_t event)
       uint8_t attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       xcoord_t x = 12*FW + FWNUM + (j-1)*(2+3*FWNUM) - 1;
 
+#if MAX_GVARS == 6
+      if (i==0 && j!=9) putsStrIdx(x+2, FH+1, STR_FP, j, SMLSIZE);
+#elif MAX_GVARS <= 5
       if (i==0 && j!=9) putsStrIdx(x+2, 2*FH, STR_FP, j, SMLSIZE);
+#endif
 
       switch(j)
       {

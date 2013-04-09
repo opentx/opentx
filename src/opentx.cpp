@@ -1211,7 +1211,7 @@ int8_t getMovedSource()
 }
 #endif
 
-#ifdef FLIGHT_PHASES
+#if defined(FLIGHT_MODES)
 uint8_t getFlightPhase()
 {
   for (uint8_t i=1; i<MAX_PHASES; i++) {
@@ -1578,7 +1578,7 @@ void checkTHR()
 #else
   getADC();   // if thr is down - do not display warning at all
   int16_t lowLim = g_eeGeneral.calibMid[thrchn];
-  lowLim = (g_eeGeneral.throttleReversed ? - lowLim - g_eeGeneral.calibSpanPos[thrchn] : lowLim - g_eeGeneral.calibSpanNeg[thrchn]);
+  lowLim = (g_model.throttleReversed ? - lowLim - g_eeGeneral.calibSpanPos[thrchn] : lowLim - g_eeGeneral.calibSpanNeg[thrchn]);
   lowLim += THRCHK_DEADBAND;
 #endif
   int16_t v = thrAnaIn(thrchn);
@@ -1862,7 +1862,7 @@ uint16_t BandGap ;
 int16_t thrAnaIn(uint8_t chan)
 {
   int16_t v = anaIn(chan);
-  return (g_eeGeneral.throttleReversed) ? -v : v;
+  return (g_model.throttleReversed) ? -v : v;
 }
 
 #if !defined(SIMU)
@@ -2065,7 +2065,7 @@ FORCEINLINE void evalTrims()
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
     if (i==THR_STICK && g_model.thrTrim) {
-      if (g_eeGeneral.throttleReversed)
+      if (g_model.throttleReversed)
         trim = -trim;
       int16_t v = anas[i];
       int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)>>(RESX_SHIFT+1);
@@ -2123,7 +2123,7 @@ BeepANACenter evalSticks(uint8_t mode)
       v = -v;
 #endif
 
-    if (g_eeGeneral.throttleReversed && ch==THR_STICK)
+    if (g_model.throttleReversed && ch==THR_STICK)
       v = -v;
 
 #if defined(EXTRA_3POS)
@@ -3660,7 +3660,7 @@ ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
   AUDIO_HEARTBEAT();
 #endif
 
-#if defined(BEEPER)
+#if defined(BUZZER)
   BUZZER_HEARTBEAT();
 #endif
 

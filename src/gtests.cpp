@@ -46,9 +46,13 @@ void doMixerCalculations();
   memset(channelOutputs, 0, sizeof(channelOutputs)); \
   memset(ex_chans, 0, sizeof(ex_chans))
 
+uint16_t anaInValues[NUM_STICKS+NUM_POTS] = { 0 };
 uint16_t anaIn(uint8_t chan)
 {
-  return 0;
+  if (chan < NUM_STICKS+NUM_POTS)
+    return anaInValues[chan];
+  else
+    return 0;
 }
 
 TEST(Trims, greaterTrimLink)
@@ -299,7 +303,7 @@ TEST(getSwitch, nullSW)
   EXPECT_EQ(getSwitch(0, 0), false);
 }
 
-TEST(Phases, nullFadeOut_posFadeIn)
+TEST(FlightModes, nullFadeOut_posFadeIn)
 {
   MODEL_RESET();
   g_model.phaseData[1].swtch = SWSRC_ID1;
@@ -307,6 +311,33 @@ TEST(Phases, nullFadeOut_posFadeIn)
   perMain();
   simuSetSwitch(3, 0);
   perMain();
+}
+
+TEST(Mixer, R2029Comment)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].srcRaw = MIXSRC_CH2;
+  g_model.mixData[0].swtch = -SWSRC_THR;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[1].destCh = 1;
+  g_model.mixData[1].srcRaw = MIXSRC_Thr;
+  g_model.mixData[1].swtch = SWSRC_THR;
+  g_model.mixData[1].weight = 100;
+  anaInValues[THR_STICK] = 1024;
+  simuSetSwitch(0, 1);
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+  EXPECT_EQ(chans[1], 1024*256);
+  simuSetSwitch(0, 0);
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+  EXPECT_EQ(chans[1], 0);
+  simuSetSwitch(0, 1);
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+  EXPECT_EQ(chans[1], 1024*256);
 }
 
 TEST(Mixer, Cascaded3Channels)

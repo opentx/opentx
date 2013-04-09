@@ -395,7 +395,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Kurva"
-#define TR_FPHASE              TR("Fas","Faser")
+#define TR_FLMODE              TR("Fas","Faser")
 #define TR_MIXWARNING          "Varning"
 #define TR_OFF                 "AV "
 #define TR_MULTPX              "Multpx"

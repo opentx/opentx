@@ -381,7 +381,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Curva"
-#define TR_FPHASE              "Fase"
+#define TR_FLMODE              "Fase"
 #define TR_MIXWARNING          "Aviso"
 #define TR_OFF                 "OFF"
 #define TR_MULTPX              "Multpx"

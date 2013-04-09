@@ -34,8 +34,8 @@
  *
  */
 
-#ifndef BEEPER_H
-#define BEEPER_H
+#ifndef BUZZER_H
+#define BUZZER_H
 
 extern uint8_t g_beepCnt;
 extern uint8_t beepAgain;
@@ -59,11 +59,7 @@ inline void _beep(uint8_t b)
 }
 #endif
 
-#if defined(AUDIO)
-void beep();
-#else
 void beep(uint8_t val);
-#endif
 
 #if !defined(AUDIO)
   #if defined(VOICE)
