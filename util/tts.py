@@ -372,7 +372,7 @@ if __name__ == "__main__":
             voice = "german"
 
         for i in range(101):
-            systemSounds.extend(generate(str(i), i))
+            systemSounds.extend(generate(str(i), PROMPT_SYSTEM_BASE+i))
         systemSounds.extend(generate("tausend", PROMPT_SYSTEM_BASE+101))
         for i, s in enumerate(["comma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+102+i))
