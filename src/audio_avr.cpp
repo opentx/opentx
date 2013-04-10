@@ -169,8 +169,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
 
   if (e <= AU_ERROR || e >= AU_WARNING1) {
     if (g_eeGeneral.alarmsFlash) {
-      if (lightOffCounter < FLASH_DURATION)
-        lightOffCounter = FLASH_DURATION;
+      flashCounter = FLASH_DURATION;
     }
   }
 

@@ -297,6 +297,7 @@ const pm_char STR_MENUTEMPLATES[] PROGMEM = TR_MENUTEMPLATES;
 
 const pm_char STR_MENUSTAT[] PROGMEM = TR_MENUSTAT;
 const pm_char STR_MENUDEBUG[] PROGMEM = TR_MENUDEBUG;
+const pm_char STR_MENUGLOBALVARS[] PROGMEM = "GLOBAL VARIABLES";
 
 #if defined(DSM2) || defined(PXX)
 const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
@@ -313,6 +314,8 @@ const pm_char STR_FAILSAFESET[] PROGMEM = TR_FAILSAFESET;
 #endif
 
 const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
+const pm_char STR_AND_SWITCH[] PROGMEM = "AND Switch";
+extern const pm_char STR_CF[] PROGMEM = "CF";
 
 #if defined(FRSKY_HUB)
 const pm_char STR_MINRSSI[] PROGMEM = TR_MINRSSI;
@@ -355,6 +358,8 @@ const pm_char STR_RESET_TIMER2[] PROGMEM = "Reset Timer2";
 const pm_char STR_RESET_TELEMETRY[] PROGMEM = "Reset Telemetry";
 const pm_char STR_STATISTICS[] PROGMEM = "Statistics";
 #endif
+
+const pm_char STR_RESET[] PROGMEM = "[Reset]";
 
 #if defined(SDCARD)
 const pm_char STR_BACKUP_MODEL[] PROGMEM = TR_BACKUP_MODEL;

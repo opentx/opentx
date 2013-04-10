@@ -60,7 +60,7 @@ void beep(uint8_t val)
 #endif
 
 #if !defined(AUDIO)
-  if (g_eeGeneral.alarmsFlash && val>1 && lightOffCounter<FLASH_DURATION) lightOffCounter = FLASH_DURATION;
+  if (g_eeGeneral.alarmsFlash && val>1) flashCounter = FLASH_DURATION;
 #endif
 
   if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && val!=0) || (g_eeGeneral.beepMode==-1 && val>=3)) {

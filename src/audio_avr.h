@@ -111,55 +111,42 @@ extern audioQueue audio;
 
 void audioDefevent(uint8_t e);
 
-#if defined(BUZZER)
-  #define AUDIO_BUZZER(evt, bz)  do { audioDefevent(evt); beep(bz); } while(0)
+#if defined(AUDIO) && defined(BUZZER)
+  #define AUDIO_BUZZER(a, b)  do { a; b; } while(0)
+#elif defined(AUDIO)
+  #define AUDIO_BUZZER(a, b)  a
 #else
-  #define AUDIO_BUZZER(evt, bz)  audioDefevent(evt)
+  #define AUDIO_BUZZER(a, b)  b
 #endif
-
-#define AUDIO_KEYPAD_UP()      AUDIO_BUZZER(AU_KEYPAD_UP, 0)
-#define AUDIO_KEYPAD_DOWN()    AUDIO_BUZZER(AU_KEYPAD_DOWN, 0)
-#define AUDIO_MENUS()          AUDIO_BUZZER(AU_MENUS, 0)
-#define AUDIO_WARNING1()       AUDIO_BUZZER(AU_WARNING1, 3)
-#define AUDIO_WARNING2()       AUDIO_BUZZER(AU_WARNING2, 2)
-#define AUDIO_ERROR()          AUDIO_BUZZER(AU_ERROR, 4)
 
 #if defined(VOICE)
-  #define AUDIO_TADA()           PUSH_SYSTEM_PROMPT(AU_TADA)
-  #define AUDIO_TX_BATTERY_LOW() PUSH_SYSTEM_PROMPT(AU_TX_BATTERY_LOW)
-  #define AUDIO_INACTIVITY()     PUSH_SYSTEM_PROMPT(AU_INACTIVITY)
-  #define AUDIO_ERROR_MESSAGE(e) PUSH_SYSTEM_PROMPT((e))
-  #define AUDIO_TIMER_MINUTE(t)  playDuration(t)
-  #define AUDIO_TIMER_30()       PUSH_SYSTEM_PROMPT(AU_TIMER_30)
-  #define AUDIO_TIMER_20()       PUSH_SYSTEM_PROMPT(AU_TIMER_20)
-  #define AUDIO_TIMER_10()       PUSH_SYSTEM_PROMPT(AU_TIMER_10)
-  #define AUDIO_TIMER_LT3(x)     PUSH_SYSTEM_PROMPT(AU_TIMER_LT3)
+  #define VOICE_AUDIO_BUZZER(v, a, b)  v
 #else
-  #define AUDIO_TADA()
-  #define AUDIO_TX_BATTERY_LOW() AUDIO_BUZZER(AU_TX_BATTERY_LOW, 4)
-  #define AUDIO_INACTIVITY()     AUDIO_BUZZER(AU_INACTIVITY, 3)
-  #define AUDIO_ERROR_MESSAGE(e) AUDIO_BUZZER(AU_ERROR, 4)
-  #define AUDIO_TIMER_MINUTE(t)  AUDIO_BUZZER(AU_WARNING1, 2)
-  #define AUDIO_TIMER_30()       audioDefevent(AU_TIMER_30)
-  #define AUDIO_TIMER_20()       audioDefevent(AU_TIMER_20)
-  #define AUDIO_TIMER_10()       AUDIO_BUZZER(AU_TIMER_10, 2)
-  #define AUDIO_TIMER_LT3(x)     AUDIO_BUZZER(AU_TIMER_LT3, 2)
+  #define VOICE_AUDIO_BUZZER(v, a, b)  AUDIO_BUZZER(a, b)
 #endif
 
-/* TODO BUZZER mode for these events
-#define AUDIO_TRIM(event, f)     { if (!IS_KEY_FIRST(event)) warble = true; beep(1); }
-#define AUDIO_TRIM_MIDDLE(f)     beep(2)
-#define AUDIO_TIMER_30()       { beepAgain=2; beep(2); }
-#define AUDIO_TIMER_20()       { beepAgain=1; beep(2); }
-*/
-
-#define AUDIO_MIX_WARNING(x)     AUDIO_BUZZER(AU_MIX_WARNING_1+x-1, 1)
-#define AUDIO_POT_STICK_MIDDLE() AUDIO_BUZZER(AU_POT_STICK_MIDDLE, 2)
+#define AUDIO_KEYPAD_UP()        AUDIO_BUZZER(audioDefevent(AU_KEYPAD_UP), beep(0))
+#define AUDIO_KEYPAD_DOWN()      AUDIO_BUZZER(audioDefevent(AU_KEYPAD_DOWN), beep(0))
+#define AUDIO_MENUS()            AUDIO_BUZZER(audioDefevent(AU_MENUS), beep(0))
+#define AUDIO_WARNING1()         AUDIO_BUZZER(audioDefevent(AU_WARNING1), beep(3))
+#define AUDIO_WARNING2()         AUDIO_BUZZER(audioDefevent(AU_WARNING2), beep(2))
+#define AUDIO_ERROR()            AUDIO_BUZZER(audioDefevent(AU_ERROR), beep(4))
+#define AUDIO_TADA()             VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_TADA),,)
+#define AUDIO_TX_BATTERY_LOW()   VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_TX_BATTERY_LOW), audioDefevent(AU_TX_BATTERY_LOW), beep(4))
+#define AUDIO_INACTIVITY()       VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_INACTIVITY), audioDefevent(AU_INACTIVITY), beep(3))
+#define AUDIO_ERROR_MESSAGE(e)   VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT((e)), audioDefevent(AU_ERROR), beep(4))
+#define AUDIO_TIMER_MINUTE(t)    VOICE_AUDIO_BUZZER(playDuration(t), audioDefevent(AU_WARNING1), beep(2))
+#define AUDIO_TIMER_30()         VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_TIMER_30), audioDefevent(AU_TIMER_30), { beepAgain=2; beep(2); })
+#define AUDIO_TIMER_20()         VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_TIMER_20), audioDefevent(AU_TIMER_20), { beepAgain=1; beep(2); })
+#define AUDIO_TIMER_10()         VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_TIMER_10), audioDefevent(AU_TIMER_10), beep(2))
+#define AUDIO_TIMER_LT3(x)       VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_TIMER_LT3), audioDefevent(AU_TIMER_LT3), beep(2))
+#define AUDIO_MIX_WARNING(x)     AUDIO_BUZZER(audioDefevent(AU_MIX_WARNING_1+x-1), beep(1))
+#define AUDIO_POT_STICK_MIDDLE() AUDIO_BUZZER(audioDefevent(AU_POT_STICK_MIDDLE), beep(2))
 #define AUDIO_VARIO_UP()         audioDefevent(AU_KEYPAD_UP)
 #define AUDIO_VARIO_DOWN()       audioDefevent(AU_KEYPAD_DOWN)
-#define AUDIO_TRIM_MIDDLE(f)     audio.event(AU_TRIM_MIDDLE, f)
-#define AUDIO_TRIM_END(f)        AUDIO_BUZZER(f, 2)
-#define AUDIO_TRIM(event, f)     audio.event(AU_TRIM_MOVE, f)
+#define AUDIO_TRIM_MIDDLE(f)     AUDIO_BUZZER(audio.event(AU_TRIM_MIDDLE, f), beep(2))
+#define AUDIO_TRIM_END(f)        AUDIO_BUZZER(audioDefevent(f), beep(2))
+#define AUDIO_TRIM(event, f)     AUDIO_BUZZER(audio.event(AU_TRIM_MOVE, f), { if (!IS_KEY_FIRST(event)) warble = true; beep(1); })
 #define AUDIO_PLAY(p)            audio.event(p)
 #define AUDIO_VARIO(f, t)        audio.play(f, t, 0, PLAY_BACKGROUND)
 

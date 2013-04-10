@@ -711,13 +711,8 @@ void audioEvent(uint8_t e, uint8_t f)
 #endif
 
   if (e <= AU_ERROR || e >= AU_WARNING1) {
-#if defined(BUZZER)
-    beep();
-#endif
-
     if (g_eeGeneral.alarmsFlash) {
-      if (lightOffCounter < FLASH_DURATION)
-        lightOffCounter = FLASH_DURATION;
+      flashCounter = FLASH_DURATION;
     }
   }
 

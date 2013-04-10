@@ -1066,6 +1066,7 @@ extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
 extern uint8_t beepAgain;
 extern uint16_t lightOffCounter;
+extern uint8_t flashCounter;
 extern uint8_t mixWarning;
 
 extern PhaseData *phaseaddress(uint8_t idx);

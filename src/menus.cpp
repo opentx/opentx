@@ -893,7 +893,7 @@ const char * displayMenu(uint8_t event)
   const char * result = NULL;
 
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
-  uint8_t y = display_count > 4 ? MENU_Y - FH : MENU_Y;
+  uint8_t y = (display_count >= 5 ? MENU_Y - FH : MENU_Y);
   lcd_filled_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
@@ -910,29 +910,39 @@ const char * displayMenu(uint8_t event)
 #if defined(ROTARY_ENCODER_NAVIGATION)
     CASE_EVT_ROTARY_LEFT
 #endif
-    case EVT_KEY_BREAK(KEY_MOVE_UP):
-      if (s_menu_item > 0)
+    case EVT_KEY_FIRST(KEY_MOVE_UP):
+    case EVT_KEY_REPT(KEY_MOVE_UP):
+      if (s_menu_item > 0) {
         s_menu_item--;
+      }
 #if defined(SDCARD)
       else if (s_menu_offset > 0) {
         s_menu_offset--;
         result = STR_UPDATE_LIST;
       }
 #endif
+      else {
+        s_menu_item = display_count - 1;
+      }
       break;
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
     CASE_EVT_ROTARY_RIGHT
 #endif
-    case EVT_KEY_BREAK(KEY_MOVE_DOWN):
-      if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count)
+    case EVT_KEY_FIRST(KEY_MOVE_DOWN):
+    case EVT_KEY_REPT(KEY_MOVE_DOWN):
+      if (s_menu_item < display_count - 1 && s_menu_offset + s_menu_item + 1 < s_menu_count) {
         s_menu_item++;
+      }
 #if defined(SDCARD)
       else if (s_menu_count > s_menu_offset + display_count) {
         s_menu_offset++;
         result = STR_UPDATE_LIST;
       }
 #endif
+      else {
+        s_menu_item = 0;
+      }
       break;
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):

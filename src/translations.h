@@ -407,7 +407,10 @@ extern const pm_char STR_MENUTELEMETRY[];
 extern const pm_char STR_MENUTEMPLATES[];
 extern const pm_char STR_MENUSTAT[];
 extern const pm_char STR_MENUDEBUG[];
+extern const pm_char STR_MENUGLOBALVARS[];
 extern const pm_char STR_INVERT_THR[];
+extern const pm_char STR_AND_SWITCH[];
+extern const pm_char STR_CF[];
 
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RXNUM[];
@@ -471,6 +474,8 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_RESET_TELEMETRY[];
   extern const pm_char STR_STATISTICS[];
 #endif
+
+extern const pm_char STR_RESET[];
 
 #if defined(SDCARD)
   extern const pm_char STR_BACKUP_MODEL[];

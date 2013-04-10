@@ -234,6 +234,7 @@ void per10ms()
 #endif
 
   if (lightOffCounter) lightOffCounter--;
+  if (flashCounter) flashCounter--;
   if (s_noHi) s_noHi--;
   if (trimsCheckTimer) trimsCheckTimer --;
 
@@ -1456,7 +1457,9 @@ void checkBacklight()
         backlightOn();
     }
 
-    if (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNC_BACKLIGHT))
+    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNC_BACKLIGHT));
+    if (flashCounter) backlightOn = !backlightOn;
+    if (backlightOn)
       BACKLIGHT_ON();
     else
       BACKLIGHT_OFF();
@@ -1974,6 +1977,7 @@ void getADC_bandgap()
 
 uint8_t g_vbat100mV = 0;
 uint16_t lightOffCounter;
+uint8_t flashCounter = 0;
 
 uint16_t s_timeCumTot;
 uint16_t s_timeCumThr;    // THR in 1/16 sec

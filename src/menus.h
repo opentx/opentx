@@ -275,11 +275,6 @@ void displayWarning(uint8_t event);
   #else
     #define MENU_ADD_SD_ITEM(s)
   #endif
-  #if defined(ROTARY_ENCODER_NAVIGATION)
-    #define MENU_ADD_NAVIGATION_ITEM(s) MENU_ADD_ITEM(s)
-  #else
-    #define MENU_ADD_NAVIGATION_ITEM(s)
-  #endif
   #define MENU_LINE_LENGTH (LEN_MODEL_NAME+1)
   extern const char *s_menu[MENU_MAX_LINES];
   extern uint16_t s_menu_count;

@@ -252,7 +252,6 @@ void onModelSelectMenu(const char *result)
       eeLoadModel(sub);
     }
   }
-#if defined(ROTARY_ENCODER_NAVIGATION)
   else if (result == STR_COPY_MODEL) {
     s_copyMode = COPY_MODE;
     s_copyTgtOfs = 0;
@@ -263,7 +262,6 @@ void onModelSelectMenu(const char *result)
     s_copyTgtOfs = 0;
     s_copySrcRow = -1;
   }
-#endif
 #if defined(SDCARD)
   else if (result == STR_BACKUP_MODEL) {
     eeCheck(true); // force writing of current model data before this is changed
@@ -447,8 +445,8 @@ void menuModelSelect(uint8_t event)
             if (eeModelExists(sub)) {
               MENU_ADD_ITEM(STR_SELECT_MODEL);
               MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-              MENU_ADD_NAVIGATION_ITEM(STR_COPY_MODEL);
-              MENU_ADD_NAVIGATION_ITEM(STR_MOVE_MODEL);
+              MENU_ADD_ITEM(STR_COPY_MODEL);
+              MENU_ADD_ITEM(STR_MOVE_MODEL);
               MENU_ADD_ITEM(STR_DELETE_MODEL);
             }
             else {
@@ -470,8 +468,8 @@ void menuModelSelect(uint8_t event)
           }
           else {
             MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-            MENU_ADD_NAVIGATION_ITEM(STR_COPY_MODEL);
-            MENU_ADD_NAVIGATION_ITEM(STR_MOVE_MODEL);
+            MENU_ADD_ITEM(STR_COPY_MODEL);
+            MENU_ADD_ITEM(STR_MOVE_MODEL);
           }
           menuHandler = onModelSelectMenu;
 #else
@@ -894,10 +892,10 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_EXTENDED_TRIMS:
 #if defined(CPUM64)
-        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, event);
+        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, attr, event);
 #else
         g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, PSTR("[Reset]"), m_posHorz>0 ? attr : 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET, m_posHorz>0 ? attr : 0);
         if (attr && m_posHorz>0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
           for (uint8_t i=0; i<MAX_PHASES; i++) {
@@ -3130,7 +3128,7 @@ void menuModelCurvesAll(uint8_t event)
 #if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_MODES)
 void menuModelGVars(uint8_t event)
 {
-  MENU(PSTR("GLOBAL VARIABLES"), menuTabModel, e_GVars, 1+MAX_GVARS, {0, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES});
+  MENU(STR_MENUGLOBALVARS, menuTabModel, e_GVars, 1+MAX_GVARS, {0, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES});
 
   uint8_t sub = m_posVert - 1;
 
@@ -3311,7 +3309,7 @@ void menuModelCustomSwitchOne(uint8_t event)
         break;
       }
       case CSW_FIELD_ANDSW:
-        lcd_putsLeft(y, PSTR("AND Switch"));
+        lcd_putsLeft(y, STR_AND_SWITCH);
         putsSwitches(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_SWITCH, MAX_SWITCH);
         break;
@@ -3406,6 +3404,15 @@ void menuModelCustomSwitches(uint8_t event)
 
 void menuModelCustomSwitches(uint8_t event)
 {
+#if defined(CPUM64)
+  #define INCDEC_SET_FLAG(f)
+  #define CHECK_INCDEC_CSPARAM(event, var, min, max) CHECK_INCDEC_MODELVAR(event, var, min, max)
+#else
+  uint8_t incdecFlag;
+  #define INCDEC_SET_FLAG(f) incdecFlag = (EE_MODEL|(f))
+  #define CHECK_INCDEC_CSPARAM(event, var, min, max) var=checkIncDec(event,var,min,max,incdecFlag)
+#endif
+
   MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, NAVIGATION_LINE_BY_LINE|CSW_FIELD_LAST/*repeated...*/});
 
   uint8_t y = 0;
@@ -3440,14 +3447,19 @@ void menuModelCustomSwitches(uint8_t event)
       putsSwitches(CSW_3RD_COLUMN-3*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
       v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
+      INCDEC_SET_FLAG(INCDEC_SWITCH);
     }
     else if (cstate == CS_VCOMP) {
       putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, m_posHorz==1 ? attr : 0);
       putsMixerSource(CSW_3RD_COLUMN-3*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+      INCDEC_SET_FLAG(INCDEC_SOURCE);
     }
     else {
       putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, (m_posHorz==1 ? attr : 0));
-
+      if (m_posHorz == 1)
+        INCDEC_SET_FLAG(INCDEC_SOURCE);
+      else
+        INCDEC_SET_FLAG(0);
 #if defined(FRSKY)
       if (cs->v1 >= MIXSRC_FIRST_TELEM) {
         putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), m_posHorz==2 ? attr : 0);
@@ -3500,14 +3512,14 @@ void menuModelCustomSwitches(uint8_t event)
           }
           break;
         case CSW_FIELD_V1:
-          CHECK_INCDEC_MODELVAR(event, cs->v1, v1_min, v1_max);
+          CHECK_INCDEC_CSPARAM(event, cs->v1, v1_min, v1_max);
           break;
         case CSW_FIELD_V2:
-          CHECK_INCDEC_MODELVAR(event, cs->v2, v2_min, v2_max);
+          CHECK_INCDEC_CSPARAM(event, cs->v2, v2_min, v2_max);
           break;
         case CSW_FIELD_ANDSW:
-#if defined(PCBTARANIS)
-          CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_CSW_ANDSW, MAX_CSW_ANDSW);
+#if defined(CPUARM)
+          CHECK_INCDEC_MODELSWITCH(event, cs->andsw, -MAX_CSW_ANDSW, MAX_CSW_ANDSW);
 #else
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, MAX_CSW_ANDSW);
 #endif
@@ -3575,7 +3587,7 @@ void menuModelCustomFunctions(uint8_t event)
     k = i+s_pgOfs;
 
 #if LCD_W >= 212
-    putsStrIdx(0, y, PSTR("CF"), k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
+    putsStrIdx(0, y, STR_CF, k+1, (sub==k && m_posHorz<0) ? INVERS : 0);
 #endif
 
     CustomFnData *sd = &g_model.funcSw[k];
