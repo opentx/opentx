@@ -1062,7 +1062,7 @@ extern uint16_t anaIn(uint8_t chan);
 extern int16_t thrAnaIn(uint8_t chan);
 extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
-#define FLASH_DURATION 50 /*500ms*/
+#define FLASH_DURATION 20 /*200ms*/
 
 extern uint8_t beepAgain;
 extern uint16_t lightOffCounter;

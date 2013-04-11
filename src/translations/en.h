@@ -590,6 +590,6 @@
 #define TR_CHANNELS_MONITOR    "CHANNEL MONITOR"
 #define TR_INTERNALRF          "Internal RF"
 #define TR_EXTERNALRF          "External RF"
-#define TR_FAILSAFE            "Failsafe mode"
+#define TR_FAILSAFE            INDENT"Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
 #define TR_COUNTRYCODE         "Country Code"

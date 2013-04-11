@@ -896,10 +896,14 @@ void menuModelSetup(uint8_t event)
 #else
         g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
         lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET, m_posHorz>0 ? attr : 0);
-        if (attr && m_posHorz>0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
-          s_editMode = 0;
-          for (uint8_t i=0; i<MAX_PHASES; i++) {
-            memclear(&g_model.phaseData[i], TRIMS_ARRAY_SIZE);
+        if (attr && m_posHorz>0) {
+        	s_editMode = 0;
+        	if (event==EVT_KEY_LONG(KEY_ENTER)) {
+            for (uint8_t i=0; i<MAX_PHASES; i++) {
+              memclear(&g_model.phaseData[i], TRIMS_ARRAY_SIZE);
+            }
+          eeDirty(EE_MODEL);
+          AUDIO_WARNING1();
           }
         }
 #endif

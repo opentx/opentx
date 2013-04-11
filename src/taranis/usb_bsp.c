@@ -49,7 +49,7 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
   RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOA , ENABLE);  
   
   /* Configure SOF ID DM DP Pins */
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8  | 
+  GPIO_InitStructure.GPIO_Pin = // GPIO_Pin_8  | 
                                 GPIO_Pin_11 | 
                                 GPIO_Pin_12;
   
@@ -59,7 +59,7 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;
   GPIO_Init(GPIOA, &GPIO_InitStructure);  
   
-  GPIO_PinAFConfig(GPIOA,GPIO_PinSource8,GPIO_AF_OTG1_FS) ;
+  //GPIO_PinAFConfig(GPIOA,GPIO_PinSource8,GPIO_AF_OTG1_FS) ;
   GPIO_PinAFConfig(GPIOA,GPIO_PinSource11,GPIO_AF_OTG1_FS) ; 
   GPIO_PinAFConfig(GPIOA,GPIO_PinSource12,GPIO_AF_OTG1_FS) ;
   
