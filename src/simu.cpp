@@ -56,7 +56,6 @@ public:
   Open9xSim(){};
   Open9xSim(FXApp* a);
   long onKeypress(FXObject*,FXSelector,void*);
-  long onArrowPress(FXObject*,FXSelector,void*);
   long onTimeout(FXObject*,FXSelector,void*);
   void makeSnapshot(const FXDrawable* drawable);
   void doEvents();
@@ -69,18 +68,13 @@ private:
 
 public:
   FXSlider      *sliders[8];
-  FXKnob        *knobs[8];
-  FXKnob        *knobsppm[8];
-  FXArrowButton *arrow[3];
-  FXArrowButton *arrow2[3];
-  FXToggleButton *togButPpm;
+  FXKnob        *knobs[NUM_POTS];
 };
 // Message Map
 FXDEFMAP(Open9xSim) Open9xSimMap[]={
 
   //________Message_Type_________ID_____________________Message_Handler_______
   FXMAPFUNC(SEL_TIMEOUT,   2,    Open9xSim::onTimeout),
-  FXMAPFUNC(SEL_COMMAND,   1000,    Open9xSim::onArrowPress),
   FXMAPFUNC(SEL_KEYPRESS,  0,    Open9xSim::onKeypress),
   };
 
@@ -89,16 +83,10 @@ FXIMPLEMENT(Open9xSim,FXMainWindow,Open9xSimMap,ARRAYNUMBER(Open9xSimMap))
 Open9xSim::Open9xSim(FXApp* a)
 :FXMainWindow(a,"Open9xSim",NULL,NULL,DECOR_ALL,20,90,0,0)
 {
-
   firstTime=true;
   for(int i=0; i<(LCD_W*LCD_H/8); i++) displayBuf[i]=0;//rand();
   bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
-  FXHorizontalFrame *hf00=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
-  FXHorizontalFrame *hf01=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
-  FXHorizontalFrame *hf02=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
-  //FXHorizontalFrame *hf2=new FXHorizontalFrame(this,LAYOUT_FILL_X);
-  FXHorizontalFrame *hf10=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
   FXHorizontalFrame *hf11=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
   FXHorizontalFrame *hf1=new FXHorizontalFrame(this,LAYOUT_FILL_X);
 
@@ -109,18 +97,18 @@ Open9xSim::Open9xSim(FXApp* a)
 #define L LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FIX_X|LAYOUT_FIX_Y
 #undef X0
 #define X0 10
-#define Y0 20
+#define Y0 10
       case 0:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,X0+0,Y0+120,100,20);
+        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,X0+0,Y0+100,100,20);
         break;
       case 1:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,X0+100,Y0+20,20,100);
+        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,X0+100,Y0+0,20,100);
         break;
       case 2:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,X0+120,Y0+20,20,100);
+        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_VERTICAL,X0+120,Y0+0,20,100);
         break;
       case 3:
-        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,X0+140,Y0+120,100,20);
+        sliders[i]=new FXSlider(hf1,NULL,0,L|SLIDER_HORIZONTAL,X0+140,Y0+100,100,20);
         break;
       default:;
     }
@@ -128,26 +116,13 @@ Open9xSim::Open9xSim(FXApp* a)
     sliders[i]->setTickDelta(7);
     sliders[i]->setValue(0);
   }
-  arrow[0]= new FXArrowButton(hf10,this,1000,ARROW_LEFT);
-  arrow[1]= new FXArrowButton(hf10,this,1000,ARROW_UP);
-  arrow[2]= new FXArrowButton(hf10,this,1000,ARROW_RIGHT);
-  for(int i=4; i<8; i++){
+
+  for(int i=0; i<NUM_POTS; i++){
     knobs[i]= new FXKnob(hf11,NULL,0,KNOB_TICKS|LAYOUT_LEFT);
     knobs[i]->setRange(-1024, 1024);
     knobs[i]->setValue(0);
   }
   
-  arrow2[0]= new FXArrowButton(hf00,this,1000,ARROW_LEFT);
-  arrow2[1]= new FXArrowButton(hf00,this,1000,ARROW_UP);
-  arrow2[2]= new FXArrowButton(hf00,this,1000,ARROW_RIGHT);
-  togButPpm = new FXToggleButton(hf00,"on", "off", NULL, NULL, NULL, 0, TOGGLEBUTTON_NORMAL);
-  for(int i=0; i<8; i++){
-    knobsppm[i]= new FXKnob(i<4?hf01:hf02,NULL,0,KNOB_TICKS|LAYOUT_LEFT);
-    knobsppm[i]->setRange(1000,2000);
-    knobsppm[i]->setValue(1500+i*20);
-  }
-
-
   bmf = new FXImageFrame(this,bmp);
 
   getApp()->addTimeout(this,2,100);
@@ -194,25 +169,6 @@ void Open9xSim::doEvents()
   getApp()->runOneEvent(false);
 }
 
-long Open9xSim::onArrowPress(FXObject*sender,FXSelector sel,void*v)
-{
-  int which,val;
-  if(sender==arrow[0]) { which=1; val=0;}
-  if(sender==arrow[1]) { which=1; val=512;}
-  if(sender==arrow[2]) { which=1; val=1023;}
-  if(sender==arrow2[0]){ which=2; val=1000;}
-  if(sender==arrow2[1]){ which=2; val=1500;}
-  if(sender==arrow2[2]){ which=2; val=2000;}
-  if(which == 1){
-    for(int i=0; i<4; i++) sliders[i]->setValue(val);
-    for(int i=4; i<7; i++) knobs[i]->setValue(val);
-  }
-  if(which == 2){
-    for(int i=0; i<8; i++) knobsppm[i]->setValue(val);
-  }
-  return 0;
-}
-
 long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
 {
   FXEvent *evt=(FXEvent*)v;
@@ -225,15 +181,6 @@ long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
 
 long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 {
-  if(togButPpm->getState()){
-    for(int i=0; i<8; i++){
-      g_ppmIns[i]=knobsppm[i]->getValue()-1500;
-      if(g_ppmIns[i]<-400){
-	break;
-      }
-    }
-  }
-
   if(hasFocus()) {
     static int keys1[]={
 #if defined(PCBTARANIS)
@@ -464,5 +411,5 @@ uint16_t anaIn(uint8_t chan)
   else if (chan<NUM_STICKS)
     return th9xSim->sliders[chan]->getValue();
   else
-    return th9xSim->knobs[chan]->getValue();
+    return th9xSim->knobs[chan-NUM_STICKS]->getValue();
 }
