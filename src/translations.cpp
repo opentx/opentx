@@ -442,6 +442,7 @@ const pm_char STR_BYTES[] PROGMEM = "bytes";
 const pm_char STR_MODULE_BIND[] PROGMEM  = "[Bind]";
 const pm_char STR_MODULE_RANGE[] PROGMEM = "[Range]";
 const pm_char STR_SET[] PROGMEM = "[Set]";
+const pm_char STR_TRAINER[] PROGMEM = "Trainer";
 #endif
 
 const pm_uchar font_5x7[] PROGMEM = {

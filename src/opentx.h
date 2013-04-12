@@ -457,13 +457,17 @@ enum EnumKeys {
 #endif
 
 #if defined(PCBTARANIS)
-  #define NUM_PORT1_CHANNELS(model) ((8+(model.ppmNCH*2)))
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, 0, 0 };
+  static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 };
+  #define IS_MODULE_XJT(idx)        ((idx==0 || g_model.externalModule == MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
+  #define IS_MODULE_PPM(idx)        (idx==1 && g_model.externalModule == MODULE_TYPE_PPM)
+  #define NUM_CHANNELS(idx)         (8+g_model.moduleData[idx].channelsCount)
+  #define MAX_PORT1_CHANNELS()      (maxChannelsXJT[1+g_model.moduleData[0].rfProtocol])
+  #define MAX_PORT2_CHANNELS()      ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_CHANNELS(idx)         (idx==0 ? MAX_PORT1_CHANNELS() : MAX_PORT2_CHANNELS())
 #else
-  #define NUM_PORT1_CHANNELS(model) (IS_PXX_PROTOCOL(model.protocol) ? 8 : (IS_DSM2_PROTOCOL(model.protocol) ? 6 : (8+(model.ppmNCH*2))))
-#endif
-
-#if defined(PCBSKY9X)
-  #define NUM_PORT2_CHANNELS(model) (8+(model.ppm2NCH*2))
+  #define NUM_PORT1_CHANNELS()      (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+(g_model.ppmNCH*2))))
+  #define NUM_PORT2_CHANNELS()      (8+(g_model.ppm2NCH*2))
 #endif
 
 #include "lcd.h"
@@ -666,7 +670,7 @@ extern uint16_t inacCounter;
 extern uint16_t inacSum;
 
 #if defined(PXX)
-extern uint8_t pxxFlag;
+extern uint8_t pxxFlag[NUM_MODULES];
 #endif
 
 #define PXX_SEND_RXNUM       0x01

@@ -365,8 +365,8 @@
 #define TR_TTRACE              TR("T-Source","Throttle Source")
 #define TR_TTRIM               TR("T-Trim","Throttle Trim")
 #define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
-#define TR_PROTO               TR(INDENT"Proto",INDENT"Protocol")
-#define TR_PPMFRAME            "PPM frame"
+#define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
+#define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Switch"
 #define TR_TRIMS               "Trims"
@@ -590,6 +590,6 @@
 #define TR_CHANNELS_MONITOR    "CHANNEL MONITOR"
 #define TR_INTERNALRF          "Internal RF"
 #define TR_EXTERNALRF          "External RF"
-#define TR_FAILSAFE            INDENT"Failsafe mode"
+#define TR_FAILSAFE            INDENT "Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
 #define TR_COUNTRYCODE         "Country Code"

@@ -580,6 +580,7 @@ extern const pm_char STR_CHANNELS_MONITOR[];
   extern const pm_char STR_MODULE_BIND[];
   extern const pm_char STR_MODULE_RANGE[];
   extern const pm_char STR_SET[];
+  extern const pm_char STR_TRAINER[];
 #endif
 
 // TODO move to translations files

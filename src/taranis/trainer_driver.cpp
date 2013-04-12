@@ -57,7 +57,7 @@ void setupTrainerPulses()
   int16_t PPM_range = g_model.extendedLimits ? 640 * 2 : 512 * 2; //range of 0.7..1.7msec
 
   uint16_t *ptr ;
-  uint32_t p=8+g_model.ppmNCH*2; //Channels *2
+  uint32_t p = NUM_CHANNELS(0);
 
   ptr = TrainerPpmStream ;
 

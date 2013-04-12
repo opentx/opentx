@@ -67,11 +67,63 @@
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 #endif
 
+#if defined(CPUARM)
+  #define MAX_MODELS 60
+  #define NUM_CHNOUT 32 // number of real output channels CH1-CH32
+  #define MAX_PHASES 9
+  #define MAX_MIXERS 64
+  #define MAX_EXPOS  32
+  #define NUM_CSW    32 // number of custom switches
+  #define NUM_CFN    32 // number of functions assigned to switches
+#elif defined(PCBGRUVIN9X)
+  #define MAX_MODELS 30
+  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
+  #define MAX_PHASES 6
+  #define MAX_MIXERS 32
+  #define MAX_EXPOS  16
+  #define NUM_CSW    15 // number of custom switches
+  #define NUM_CFN    24 // number of functions assigned to switches
+#elif defined(CPUM128)
+  #define MAX_MODELS 30
+  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
+  #define MAX_PHASES 5
+  #define MAX_MIXERS 32
+  #define MAX_EXPOS  14
+  #define NUM_CSW    15 // number of custom switches
+  #define NUM_CFN    24 // number of functions assigned to switches
+#else
+  #define MAX_MODELS 16
+  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
+  #define MAX_PHASES 5
+  #define MAX_MIXERS 32
+  #define MAX_EXPOS  14
+  #define NUM_CSW    12 // number of custom switches
+  #define NUM_CFN    16 // number of functions assigned to switches
+#endif
+
+#define MAX_TIMERS 2
+
+#if defined(CPUARM)
+  #define MAX_CURVES 16
+  #define NUM_POINTS 512
+  #define CURVTYPE   int16_t
+#else
+  #define MAX_CURVES 8
+  #define NUM_POINTS (112-MAX_CURVES)
+  #define CURVTYPE   int8_t
+#endif
+
+#if defined(PCBTARANIS)
+  #define NUM_MODULES 2
+#else
+  #define NUM_MODULES 1
+#endif
+
 typedef int16_t gvar_t;
 
 #if !defined(PCBSTD)
-typedef char gvar_name_t[6];
-#define GVAR_MAX  1024
+  typedef char gvar_name_t[6];
+  #define GVAR_MAX  1024
 #endif
 
 #define RESERVE_RANGE_FOR_GVARS 10
@@ -154,12 +206,20 @@ enum BeeperMode {
   #define EXTRA_GENERAL_FIELDS
 #endif
 
+PACK(typedef struct t_ModuleData {
+  int8_t  rfProtocol;
+  uint8_t channelsStart;
+  int8_t  channelsCount; // 0=8 channels
+  uint8_t failsafeMode;
+  int16_t failsafeChannels[NUM_CHNOUT];
+}) ModuleData;
+
 #if defined(PCBTARANIS)
-#define MODELDATA_EXTRA   char bitmap[10]; int8_t rfProtocol; uint8_t ppmSCH; uint8_t failsafeMode; int16_t failsafeChannels[16];
+#define MODELDATA_EXTRA   char bitmap[10]; uint8_t externalModule; ModuleData moduleData[NUM_MODULES]; uint8_t trainerMode;
 #define LIMITDATA_EXTRA   char name[6];
 #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
-#define MODELDATA_EXTRA   uint8_t ppmSCH; int8_t ppm2SCH; int8_t ppm2NCH; int8_t rfProtocol;
+#define MODELDATA_EXTRA   uint8_t ppmSCH; int8_t ppm2SCH; int8_t ppm2NCH; ModuleData moduleData[NUM_MODULES];
 #define LIMITDATA_EXTRA
 #define swstate_t         uint8_t
 #else
@@ -854,52 +914,6 @@ PACK(typedef struct t_PhaseData {
 }) PhaseData;
 #endif
 
-#if defined(CPUARM)
-  #define MAX_MODELS 60
-  #define NUM_CHNOUT 32 // number of real output channels CH1-CH32
-  #define MAX_PHASES 9
-  #define MAX_MIXERS 64
-  #define MAX_EXPOS  32
-  #define NUM_CSW    32 // number of custom switches
-  #define NUM_CFN    32 // number of functions assigned to switches
-#elif defined(PCBGRUVIN9X)
-  #define MAX_MODELS 30
-  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
-  #define MAX_PHASES 6
-  #define MAX_MIXERS 32
-  #define MAX_EXPOS  16
-  #define NUM_CSW    15 // number of custom switches
-  #define NUM_CFN    24 // number of functions assigned to switches
-#elif defined(CPUM128)
-  #define MAX_MODELS 30
-  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
-  #define MAX_PHASES 5
-  #define MAX_MIXERS 32
-  #define MAX_EXPOS  14
-  #define NUM_CSW    15 // number of custom switches
-  #define NUM_CFN    24 // number of functions assigned to switches
-#else
-  #define MAX_MODELS 16
-  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
-  #define MAX_PHASES 5
-  #define MAX_MIXERS 32
-  #define MAX_EXPOS  14
-  #define NUM_CSW    12 // number of custom switches
-  #define NUM_CFN    16 // number of functions assigned to switches
-#endif
-
-#define MAX_TIMERS 2
-
-#if defined(CPUARM)
-  #define MAX_CURVES 16
-  #define NUM_POINTS 512
-  #define CURVTYPE   int16_t
-#else
-  #define MAX_CURVES 8
-  #define NUM_POINTS (112-MAX_CURVES)
-  #define CURVTYPE   int8_t
-#endif
-
 enum SwitchSources {
   SWSRC_NONE = 0,
 
@@ -1136,12 +1150,21 @@ enum Protocols {
   PROTO_NONE
 };
 
-enum RfProtocols {
+enum RFProtocols {
   RF_PROTO_OFF = -1,
   RF_PROTO_X16,
   RF_PROTO_D8,
   RF_PROTO_LR12,
   RF_PROTO_LAST = RF_PROTO_LR12
+};
+
+enum ModuleTypes {
+  MODULE_TYPE_NONE = 0,
+  MODULE_TYPE_PPM,
+  MODULE_TYPE_XJT,
+  MODULE_TYPE_DJT,
+  MODULE_TYPE_DSM2,
+  MODULE_TYPE_LAST = MODULE_TYPE_DJT
 };
 
 enum FailsafeModes {
