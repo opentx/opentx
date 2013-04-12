@@ -354,7 +354,7 @@
 #define TR_LOADINGMODEL        "Laddar Modell   "
 #define TR_NAME                "Namn"
 #define TR_MODELNAME           "Modellnamn"
-#define TR_PHASENAME           "Fasnamn   "
+#define TR_PHASENAME           "Modnamn   "
 #define TR_MIXNAME             "Mixnamn "
 #define TR_EXPONAME            "Exponamn "
 #define TR_BITMAP              "Modell-bild"
@@ -395,7 +395,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Kurva"
-#define TR_FLMODE              TR("Fas","Faser")
+#define TR_FLMODE              TR("Mod","Moder")
 #define TR_MIXWARNING          "Varning"
 #define TR_OFF                 "AV "
 #define TR_MULTPX              "Multpx"
@@ -494,8 +494,8 @@
 #define TR_TRIMS2OFFSETS       "\004[Spara Trimv\201rden]"
 #define TR_MENUMODELSEL        TR("Modell","V\201lj Modell")
 #define TR_MENUSETUP           TR("V\201rden","Modellinst\201llningar")
-#define TR_MENUFLIGHTPHASE     "Flygfas"
-#define TR_MENUFLIGHTPHASES    "Flygfaser"
+#define TR_MENUFLIGHTPHASE     "Flygmod"
+#define TR_MENUFLIGHTPHASES    "Flygmoder"
 #define TR_MENUHELISETUP       "Helikopter"
 
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
