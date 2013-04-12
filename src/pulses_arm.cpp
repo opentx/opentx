@@ -288,8 +288,7 @@ void putPcmHead()
 
 void setupPulsesPXX()
 {
-  uint16_t chan ;
-  uint16_t chan_1 ;
+  uint16_t chan, chan_low;
 
 #if defined(PCBSKY9X)
   Serial_byte = 0 ;
@@ -340,49 +339,43 @@ void setupPulsesPXX()
   if (pass++ & 0x01) {
     sendUpperChannels = g_model.moduleData[0].channelsCount;
   }
-  for (uint32_t i=0; i<8; i+=2) {
+  for (uint32_t i=0; i<8; i++) {
 #if defined(PCBTARANIS)
     if (flag1 & PXX_SEND_FAILSAFE) {
       if (g_model.moduleData[0].failsafeMode == FAILSAFE_NOPULSES) {
-        if (i < sendUpperChannels) {
-          chan   = 3072;
-          chan_1 = 3072;
-        }
-        else {
-          chan   = 1024;
-          chan_1 = 1024;
-        }
+        if (i < sendUpperChannels)
+          chan = 3072;
+        else
+          chan = 1024;
       }
       else {
         if (i < sendUpperChannels) {
           chan =  limit(2048, PPM_CH_CENTER(8+g_model.moduleData[0].channelsStart+i) - PPM_CENTER + (g_model.moduleData[0].failsafeChannels[8+g_model.moduleData[0].channelsStart+i] * 512 / 682) + 3072, 4095);
-          chan_1 = limit(2048, PPM_CH_CENTER(8+g_model.moduleData[0].channelsStart+i+1) - PPM_CENTER + (g_model.moduleData[0].failsafeChannels[8+g_model.moduleData[0].channelsStart+i+1] * 512 / 682) + 3072, 4095);
           if (chan == 3072) chan = 3073;
-          if (chan_1 == 3072) chan_1 = 3073;
         }
         else {
           chan = limit(0, PPM_CH_CENTER(g_model.moduleData[0].channelsStart+i) - PPM_CENTER + (g_model.moduleData[0].failsafeChannels[g_model.moduleData[0].channelsStart+i] * 512 / 682) + 1024, 2047);
-          chan_1 = limit(0, PPM_CH_CENTER(g_model.moduleData[0].channelsStart+i+1) - PPM_CENTER + (g_model.moduleData[0].failsafeChannels[g_model.moduleData[0].channelsStart+i+1] * 512 / 682) + 1024, 2047);
           if (chan == 1024) chan = 1025;
-          if (chan_1 == 1024) chan_1 = 1025;
         }
       }
     }
     else
 #endif
     {
-      if (i < sendUpperChannels) {
+      if (i < sendUpperChannels)
         chan =  limit(2048, PPM_CH_CENTER(8+g_model.moduleData[0].channelsStart+i) - PPM_CENTER + (channelOutputs[8+g_model.moduleData[0].channelsStart+i] * 512 / 682) + 3072, 4095);
-        chan_1 = limit(2048, PPM_CH_CENTER(8+g_model.moduleData[0].channelsStart+i+1) - PPM_CENTER + (channelOutputs[8+g_model.moduleData[0].channelsStart+i+1] * 512 / 682) + 3072, 4095);
-      }
-      else {
+      else
         chan = limit(0, PPM_CH_CENTER(g_model.moduleData[0].channelsStart+i) - PPM_CENTER + (channelOutputs[g_model.moduleData[0].channelsStart+i] * 512 / 682) + 1024, 2047);
-        chan_1 = limit(0, PPM_CH_CENTER(g_model.moduleData[0].channelsStart+i+1) - PPM_CENTER + (channelOutputs[g_model.moduleData[0].channelsStart+i+1] * 512 / 682) + 1024, 2047);
-      }
     }
-    putPcmByte(chan); // Low byte of channel
-    putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
-    putPcmByte(chan_1 >> 4);  // High byte of channel
+
+    if (i & 1) {
+      putPcmByte(chan_low); // Low byte of channel
+      putPcmByte( ( ( chan_low >> 8 ) & 0x0F ) | ( chan << 4) ) ;  // 4 bits each from 2 channels
+      putPcmByte(chan >> 4);  // High byte of channel
+    }
+    else {
+      chan_low = chan;
+    }
   }
 
   /* CRC16 */
