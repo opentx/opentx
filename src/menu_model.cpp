@@ -1234,8 +1234,6 @@ void menuModelSetup(uint8_t event)
                   newFlag = PXX_SEND_RXNUM;
                 else if (m_posHorz == 2) {
                   newFlag = PXX_SEND_RANGECHECK;
-                  displayPopup("RSSI: ");
-                  lcd_outdezAtt(16+4*FW, 5*FH, frskyData.rssi[0].value, BOLD);
                 }
               }
               pxxFlag[moduleIdx] = newFlag;
@@ -1279,7 +1277,7 @@ void menuModelSetup(uint8_t event)
       }
 
       case ITEM_MODEL_TRAINER:
-        g_model.trainerMode = onoffMenuItem(g_model.trainerMode, MODEL_SETUP_2ND_COLUMN, y, STR_TRAINER, attr, event);
+        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, PSTR("Trainer Mode"), PSTR("\006MasterSlave"), g_model.trainerMode, 0, 1, attr, event);
         break;
 #else
       case ITEM_MODEL_PROTOCOL:
@@ -1429,6 +1427,13 @@ void menuModelSetup(uint8_t event)
 #endif // defined(PCBTARANIS)
     }
   }
+
+#if defined(PCBTARANIS)
+  if (pxxFlag[0] == PXX_SEND_RANGECHECK || pxxFlag[1] == PXX_SEND_RANGECHECK) {
+    displayPopup("RSSI: ");
+    lcd_outdezAtt(16+4*FW, 5*FH, frskyData.rssi[0].value, BOLD);
+  }
+#endif
 }
 
 static uint8_t s_currIdx;
