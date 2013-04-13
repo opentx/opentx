@@ -84,7 +84,8 @@ uint8_t usbPlugged(void);
 #define BOOTLOADER_REQUEST() (0)
 #define usbBootloader()
 
-#define SLAVE_MODE()         (0/*pwrCheck() == e_power_trainer*/)
+#define SLAVE_MODE()         (g_model.trainerMode == 1)
+#define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(GPIOTRNDET, PIN_TRNDET) == Bit_RESET)
 
 void delaysInit();
 
