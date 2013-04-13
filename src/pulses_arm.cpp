@@ -288,7 +288,7 @@ void putPcmHead()
 
 void setupPulsesPXX()
 {
-  uint16_t chan, chan_low;
+  uint16_t chan=0, chan_low=0;
 
 #if defined(PCBSKY9X)
   Serial_byte = 0 ;

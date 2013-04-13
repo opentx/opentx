@@ -165,7 +165,7 @@ void pwrOff();
 #define setBacklight(xx)
 #define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
 #define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
-#define IS_BACKLIGHT_ON() GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_BL)
+#define IS_BACKLIGHT_ON() GPIO_IsSet(GPIOB, GPIO_Pin_BL)
 
 // USB driver
 void usbInit(void);
