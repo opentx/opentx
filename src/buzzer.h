@@ -47,7 +47,7 @@ extern bool warbleC;
 extern uint8_t hapticTick;
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && !defined(SIMU)
 inline void _beep(uint8_t b)
 {
   buzzerSound(b);
