@@ -425,12 +425,12 @@ void setupPulsesPXX(MODULE_INDEX_PARAM)
     
 		
 #if defined(PCBTARANIS)
-		flag1 = (g_model.moduleData[module_index].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[module_index];
+    flag1 = (g_model.moduleData[module_index].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[module_index];
   }
   else {
     flag1 = (g_model.moduleData[module_index].rfProtocol << 6) | pxxFlag[0];
 #else
-		flag1 = (g_model.moduleData[0].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[module_index];
+    flag1 = (g_model.moduleData[0].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[0];
   }
   else {
     flag1 = (g_model.moduleData[0].rfProtocol << 6) | pxxFlag[0];
