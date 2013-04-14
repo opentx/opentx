@@ -109,8 +109,10 @@ void init_trainer_ppm()
 // TODO - testing
 void stop_trainer_ppm()
 {
-  configure_pins( PIN_TR_PPM_OUT, PIN_INPUT | PIN_PORTC ) ;
+  configure_pins( PIN_TR_PPM_OUT, PIN_INPUT | PIN_PORTC ) ; // Pin as input
   TIM3->CR1 &= ~TIM_CR1_CEN ;                             // Stop counter
+  TIM3->DIER &= ~TIM_DIER_CC2IE ;                      // Stop Interrupt
+  TIM3->DIER &= ~TIM_DIER_UIE ;                        // Stop Interrupt
   NVIC_DisableIRQ(TIM3_IRQn) ;                         // Stop Interrupt
 }
 
@@ -132,6 +134,12 @@ void init_trainer_capture()
   NVIC_EnableIRQ(TIM3_IRQn) ;
 }
 
+void stop_trainer_capture()
+{
+  TIM3->CR1 &= ~TIM_CR1_CEN ;                          // Stop counter
+  TIM3->DIER &= ~TIM_DIER_CC3IE ;                      // Stop Interrupt
+  NVIC_DisableIRQ(TIM3_IRQn) ;                         // Stop Interrupt
+}
 
 extern "C" void TIM3_IRQHandler()
 {
