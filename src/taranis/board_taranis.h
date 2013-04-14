@@ -114,10 +114,10 @@ uint32_t sdMounted();
 #endif
 
 // Pulses driver
-void init_main_ppm();
-void disable_main_ppm();
-void init_pxx();
-void disable_pxx();
+void init_ppm( uint32_t module_index );
+void disable_ppm( uint32_t module_index );
+void init_pxx( uint32_t module_index );
+void disable_pxx( uint32_t module_index );
 
 // Trainer driver
 void init_trainer_ppm();
