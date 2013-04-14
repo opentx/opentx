@@ -422,10 +422,20 @@ void setupPulsesPXX(MODULE_INDEX_PARAM)
   /* FLAG1 */
   uint8_t flag1;
   if (pxxFlag[0] & PXX_SEND_RXNUM) {
-    flag1 = (g_model.moduleData[module_index].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[module_index];
+    
+		
+#if defined(PCBTARANIS)
+		flag1 = (g_model.moduleData[module_index].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[module_index];
   }
   else {
     flag1 = (g_model.moduleData[module_index].rfProtocol << 6) | pxxFlag[0];
+#else
+		flag1 = (g_model.moduleData[0].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[module_index];
+  }
+  else {
+    flag1 = (g_model.moduleData[0].rfProtocol << 6) | pxxFlag[0];
+#endif
+
 #if defined(PCBTARANIS)
     if (g_model.moduleData[module_index].failsafeMode != FAILSAFE_HOLD) {
       if (failsafeCounter-- == 0) {
@@ -719,7 +729,7 @@ void setupPulses(MODULE_INDEX_PARAM)
 #if defined(PCBTARANIS)
         disable_ppm(module_index);
 #else
-        disable_ppm();
+        disable_main_ppm();
 #endif
         break;
     }
