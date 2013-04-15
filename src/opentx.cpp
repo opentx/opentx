@@ -920,7 +920,7 @@ getvalue_t getValue(uint8_t i)
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_VSPD) return frskyData.hub.varioSpeed;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[0].min;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[1].min;
-  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i+1-(MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT));
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i+1-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
 #endif
 #endif
   else return 0;
