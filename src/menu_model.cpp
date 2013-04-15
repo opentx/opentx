@@ -3410,14 +3410,14 @@ enum CustomSwitchFields {
 #if LCD_W >= 212
   #define CSW_1ST_COLUMN  (4*FW-3)
   #define CSW_2ND_COLUMN  (8*FW+1)
-  #define CSW_3RD_COLUMN  (16*FW+2)
+  #define CSW_3RD_COLUMN  (13*FW+2)
   #define CSW_4TH_COLUMN  (21*FW+1)
   #define CSW_5TH_COLUMN  (26*FW+1)
   #define CSW_6TH_COLUMN  (31*FW+1)
 #else
   #define CSW_1ST_COLUMN  (4*FW-3)
   #define CSW_2ND_COLUMN  (8*FW-3)
-  #define CSW_3RD_COLUMN  (16*FW-6)
+  #define CSW_3RD_COLUMN  (13*FW-6)
   #define CSW_4TH_COLUMN  (18*FW+2)
 #endif
 
@@ -3589,12 +3589,12 @@ void menuModelCustomSwitches(uint8_t event)
 
 #if defined(FRSKY)
         if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-          putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), 0);
+          putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT);
         }
         else
 #endif
         {
-          lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, 0);
+          lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT);
         }
       }
 
@@ -3647,14 +3647,14 @@ void menuModelCustomSwitches(uint8_t event)
 
     if (cstate == CS_VBOOL) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, m_posHorz==1 ? attr : 0);
-      putsSwitches(CSW_3RD_COLUMN-3*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+      putsSwitches(CSW_3RD_COLUMN, y, cs->v2, m_posHorz==2 ? attr : 0);
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
       v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
       INCDEC_SET_FLAG(INCDEC_SWITCH);
     }
     else if (cstate == CS_VCOMP) {
       putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, m_posHorz==1 ? attr : 0);
-      putsMixerSource(CSW_3RD_COLUMN-3*FW, y, cs->v2, m_posHorz==2 ? attr : 0);
+      putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, m_posHorz==2 ? attr : 0);
       INCDEC_SET_FLAG(INCDEC_SOURCE);
     }
     else {
@@ -3665,7 +3665,7 @@ void menuModelCustomSwitches(uint8_t event)
         INCDEC_SET_FLAG(0);
 #if defined(FRSKY)
       if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-        putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), m_posHorz==2 ? attr : 0);
+        putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT | (m_posHorz==2 ? attr : 0));
         v2_max = maxTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1);
         if (cstate == CS_VOFS) {
           v2_min = -128;
@@ -3680,12 +3680,16 @@ void menuModelCustomSwitches(uint8_t event)
           eeDirty(EE_MODEL);
         }
       }
-      else
-#endif
-      {
-        lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, m_posHorz==2 ? attr : 0);
+      else {
+        lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT | (m_posHorz==2 ? attr : 0));
         v2_min = -125; v2_max = 125;
       }
+#else
+      {
+        lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT | (m_posHorz==2 ? attr : 0));
+        v2_min = -125; v2_max = 125;
+      }
+#endif
     }
 
     // CSW and switch
