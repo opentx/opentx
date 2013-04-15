@@ -3586,14 +3586,10 @@ void menuModelCustomSwitches(uint8_t event)
       }
       else {
         putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
-
-#if defined(FRSKY)
         if (cs->v1 >= MIXSRC_FIRST_TELEM) {
           putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT);
         }
-        else
-#endif
-        {
+        else {
           lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT);
         }
       }
@@ -3685,7 +3681,11 @@ void menuModelCustomSwitches(uint8_t event)
         v2_min = -125; v2_max = 125;
       }
 #else
-      {
+      if (cs->v1 >= MIXSRC_FIRST_TELEM) {
+        putsTime(CSW_3RD_COLUMN, y, (int16_t)3 * (CS_STATE(cs->func)==CS_VOFS ? 128+cs->v2 : cs->v2), LEFT | (m_posHorz==2 ? attr : 0), LEFT | (m_posHorz==2 ? attr : 0));
+        v2_min = -128; v2_max = 127;
+      }
+      else {
         lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT | (m_posHorz==2 ? attr : 0));
         v2_min = -125; v2_max = 125;
       }

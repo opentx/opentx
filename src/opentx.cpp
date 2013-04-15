@@ -1039,8 +1039,11 @@ bool __getSwitch(int8_t swtch)
             y = calc100toRESX(cs->v2);
           }
 #else
-          if (cs->v1 >= MIXSRC_GVAR1) {
-            y = cs->v2; // it's a GVAR or a Timer
+          if (cs->v1 >= MIXSRC_FIRST_TELEM) {
+            y = (int16_t)3 * cs->v2; // it's a Timer
+          }
+          else if (cs->v1 >= MIXSRC_GVAR1) {
+            y = cs->v2; // it's a GVAR
           }
           else {
             y = calc100toRESX(cs->v2);
