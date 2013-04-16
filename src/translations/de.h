@@ -150,7 +150,7 @@
 
 #if defined(VOICE)
   #if defined(PCBSKY9X)
-    #define TR_PY_TRACK        "Spiel\0    "
+    #define TR_PLAY_TRACK      "Spiel\0    "
   #else
     #define TR_PLAY_TRACK      "Sag Text\0 "
   #endif

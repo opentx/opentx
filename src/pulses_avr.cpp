@@ -231,7 +231,7 @@ uint8_t PcmByte ;
 uint8_t PcmBitCount ;
 uint16_t PcmCrc ;
 uint8_t PcmOnesCount ;
-uint8_t pxxFlag = 0;
+uint8_t pxxFlag[NUM_MODULES] = { 0 };
 
 void crc( uint8_t data )
 {
@@ -320,9 +320,9 @@ void setupPulsesPXX()
     PcmOnesCount = 0 ;
     putPcmHead() ;
     putPcmByte( g_model.modelId ) ;     // putPcmByte( g_model.rxnum ) ;  //
-    putPcmByte( pxxFlag ) ;     // First byte of flags
+    putPcmByte( pxxFlag[0] ) ;     // First byte of flags
     putPcmByte( 0 ) ;     // Second byte of flags
-    pxxFlag = 0;          // reset flag after send
+    pxxFlag[0] = 0;          // reset flag after send
     for ( i = 0 ; i < 8 ; i += 2 )              // First 8 channels only
     {
         chan = channelOutputs[i] * 3 / 4 + 2250 ;
