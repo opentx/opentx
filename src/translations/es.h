@@ -354,7 +354,7 @@
 #define TR_LOADINGMODEL        "Cargar modelo..."
 #define TR_NAME                "Nombre"
 #define TR_MODELNAME           "Nom.Modelo"
-#define TR_PHASENAME           "Nom.Fase "
+#define TR_PHASENAME           "Nom. Fase"
 #define TR_MIXNAME             "Nom.Mezcla"
 #define TR_EXPONAME            "Nom. Expo"
 #define TR_BITMAP              "Imagen Modelo"
