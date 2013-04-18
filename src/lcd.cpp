@@ -964,6 +964,149 @@ void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, Lc
 }
 #endif
 
+#if defined(FRSKY) || defined(CPUARM)
+void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att)
+{
+  convertUnit(val, unit);
+  lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
+  if (!(att & NO_UNIT) && unit != UNIT_RAW)
+    lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+}
+
+const pm_uint8_t bchunit_ar[] PROGMEM = {
+  UNIT_METERS,  // Alt
+  UNIT_RAW,     // Rpm
+  UNIT_PERCENT, // Fuel
+  UNIT_DEGREES, // T1
+  UNIT_DEGREES, // T2
+  UNIT_KTS,     // Speed
+  UNIT_METERS,  // Dist
+  UNIT_METERS,  // GPS Alt
+};
+
+void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att)
+{
+  switch (channel) {
+    case TELEM_TM1-1:
+    case TELEM_TM2-1:
+      att &= ~NO_UNIT;
+      putsTime(x, y, val, att, att);
+      break;
+    case TELEM_MIN_A1-1:
+    case TELEM_MIN_A2-1:
+      channel -= TELEM_MIN_A1-TELEM_A1;
+      // no break
+    case TELEM_A1-1:
+    case TELEM_A2-1:
+      channel -= TELEM_A1-1;
+      // A1 and A2
+    {
+      lcdint_t converted_value = applyChannelRatio(channel, val);
+      if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
+        converted_value /= 10;
+      }
+      else {
+#if !defined(PCBTARANIS)
+        if (abs(converted_value) < 1000) {
+          att |= PREC2;
+        }
+        else {
+          converted_value /= 10;
+          att |= PREC1;
+        }
+#else
+        att |= PREC2;
+#endif
+      }
+      putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
+      break;
+    }
+
+    case TELEM_CELL-1:
+      putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);
+      break;
+
+    case TELEM_TX_VOLTAGE-1:
+    case TELEM_VFAS-1:
+    case TELEM_CELLS_SUM-1:
+      putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC1);
+      break;
+
+    case TELEM_CURRENT-1:
+    case TELEM_MAX_CURRENT-1:
+      putsTelemetryValue(x, y, val, UNIT_AMPS, att|PREC1);
+      break;
+
+    case TELEM_CONSUMPTION-1:
+      putsTelemetryValue(x, y, val, UNIT_MAH, att);
+      break;
+
+    case TELEM_POWER-1:
+      putsTelemetryValue(x, y, val, UNIT_WATTS, att);
+      break;
+
+    case TELEM_ACCx-1:
+    case TELEM_ACCy-1:
+    case TELEM_ACCz-1:
+    case TELEM_VSPD-1:
+      putsTelemetryValue(x, y, val, UNIT_RAW, att|PREC2);
+      break;
+
+    case TELEM_RSSI_TX-1:
+    case TELEM_RSSI_RX-1:
+      putsTelemetryValue(x, y, val, UNIT_RAW, att);
+      break;
+
+#if defined(FRSKY_SPORT)
+    case TELEM_ALT-1:
+      putsTelemetryValue(x, y, val/10, UNIT_METERS, att|PREC1);
+      break;
+#elif defined(WS_HOW_HIGH)
+    case TELEM_ALT-1:
+    case TELEM_MIN_ALT-1:
+    case TELEM_MAX_ALT-1:
+      if (IS_IMPERIAL_ENABLE() && IS_USR_PROTO_WS_HOW_HIGH()) {
+        putsTelemetryValue(x, y, val, UNIT_FEET, att);
+        break;
+      }
+      // no break
+#endif
+
+    default:
+    {
+      uint8_t unit = 1;
+      if (channel >= TELEM_MAX_T1-1 && channel <= TELEM_MAX_DIST-1)
+        channel -= TELEM_MAX_T1 - TELEM_T1;
+      if (channel <= TELEM_GPSALT-1)
+        unit = channel + 1 - TELEM_ALT;
+      if (channel >= TELEM_MIN_ALT-1 && channel <= TELEM_MAX_ALT-1)
+        unit = 0;
+      if (channel == TELEM_HDG-1)
+        unit = 3;
+      putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+unit), att);
+      break;
+    }
+  }
+}
+#else // defined(FRSKY)
+void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att)
+{
+  switch (channel) {
+    case TELEM_TM1-1:
+    case TELEM_TM2-1:
+      att &= ~NO_UNIT;
+      putsTime(x, y, val, att, att);
+      break;
+
+    case TELEM_TX_VOLTAGE-1:
+      lcd_outdezAtt(x, y, val, (att|PREC1) & (~NO_UNIT));
+      if (!(att & NO_UNIT))
+        lcd_putc(lcdLastPos/*+1*/, y, 'v');
+      break;
+  }
+}
+#endif
+
 void lcdSetContrast()
 {
   lcdSetRefVolt(g_eeGeneral.contrast);

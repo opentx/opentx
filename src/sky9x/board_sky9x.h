@@ -41,6 +41,8 @@
 #include "board.h"
 #include "audio_driver.h"
 
+extern uint16_t ResetReason;
+
 #if defined(REVA)
 #define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
 #define GPIO_BUTTON_EXIT                PIOA->PIO_PDSR
@@ -235,7 +237,7 @@ uint32_t pwrCheck();
 
 // EEPROM driver
 void eepromInit();
-#define EEPROM_MASSSTORAGE() (0)
+#define EEPROM_MASSSTORAGE()  (0)
 
 // Rotary Encoder driver
 void rotencInit();

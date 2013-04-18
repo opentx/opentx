@@ -272,6 +272,12 @@ void title(const pm_char * s)
 #define SCROLL_TH      64
 #define SCROLL_POT1_TH 32
 
+#if defined(CPUARM)
+  #define CURSOR_NOT_ALLOWED_IN_ROW(row)   ((int8_t)MAXCOL(row) < 0)
+#else
+  #define CURSOR_NOT_ALLOWED_IN_ROW(row)   (MAXCOL(row) == TITLE_ROW)
+#endif
+
 #if defined(PCBTARANIS)
   #define MAXCOL_RAW(row) (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
   #define MAXCOL(row)     (MAXCOL_RAW(row) == (uint8_t)-1 ? (uint8_t)-1 : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
@@ -585,7 +591,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #endif
       do {
         INC(l_posVert, POS_VERT_INIT, maxrow);
-      } while (MAXCOL(l_posVert) == (uint8_t)-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBTARANIS)
       s_editMode = 0; // if we go down, we must be in this mode
@@ -658,7 +664,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
       do {
         DEC(l_posVert, POS_VERT_INIT, maxrow);
-      } while(MAXCOL(l_posVert) == (uint8_t)-1);
+      } while (CURSOR_NOT_ALLOWED_IN_ROW(l_posVert));
 
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBTARANIS)
       s_editMode = 0; // if we go up, we must be in this mode
@@ -675,17 +681,46 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       break;
   }
 
+#if defined(CPUARM)
+  if (l_posVert<1) s_pgOfs=0;
+  else if (menuTab && horTab) {
+    vertpos_t realPosVert = l_posVert;
+    vertpos_t realPgOfs = s_pgOfs;
+    for (vertpos_t i=1; i<=maxrow; i++) {
+      if (horTab[i] == HIDDEN_ROW) {
+        if (i < l_posVert)
+          realPosVert--;
+        if (i < s_pgOfs)
+          realPgOfs--;
+      }
+    }
+    if (realPosVert>(LCD_LINES-1)+realPgOfs) realPgOfs = realPosVert-(LCD_LINES-1);
+    else if (realPosVert<1+realPgOfs) realPgOfs = realPosVert-1;
+    s_pgOfs = realPgOfs;
+    for (vertpos_t i=1; i<=realPgOfs; i++) {
+      if (horTab[i] == HIDDEN_ROW) {
+        s_pgOfs++;
+      }
+    }
+  }
+  else {
+    uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
+    if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
+    else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
+  }
+#else
   uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
   if (l_posVert<1) s_pgOfs=0;
   else if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
   else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
+#endif
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
 #if !defined(CPUM64)
   // cosmetics on 9x
   if (s_pgOfs > 0) {
     l_posVert--;
-    if (l_posVert == s_pgOfs && MAXCOL(l_posVert) == (uint8_t)-1)
+    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert))
       s_pgOfs = l_posVert-1;
   }
 #endif

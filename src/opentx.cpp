@@ -1393,8 +1393,99 @@ void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
 
 #endif
 
+#if defined(FRSKY)
+uint8_t maxTelemValue(uint8_t channel)
+{
+  switch (channel) {
+    case TELEM_FUEL:
+    case TELEM_RSSI_TX:
+    case TELEM_RSSI_RX:
+      return 100;
+    case TELEM_HDG:
+      return 180;
+    default:
+      return 255;
+  }
+}
+
+getvalue_t convertTelemValue(uint8_t channel, uint8_t value)
+{
+  getvalue_t result;
+  switch (channel) {
+    case TELEM_TM1:
+    case TELEM_TM2:
+      result = value * 3;
+      break;
+    case TELEM_ALT:
+#if defined(PCBTARANIS)
+      result = value * 80 - 5000;
+      break;
+#endif
+    case TELEM_GPSALT:
+    case TELEM_MAX_ALT:
+    case TELEM_MIN_ALT:
+      result = value * 8 - 500;
+      break;
+    case TELEM_RPM:
+    case TELEM_MAX_RPM:
+      result = value * 50;
+      break;
+    case TELEM_T1:
+    case TELEM_T2:
+    case TELEM_MAX_T1:
+    case TELEM_MAX_T2:
+      result = (getvalue_t)value - 30;
+      break;
+    case TELEM_CELL:
+    case TELEM_HDG:
+      result = value * 2;
+      break;
+    case TELEM_DIST:
+    case TELEM_MAX_DIST:
+      result = value * 8;
+      break;
+    case TELEM_CURRENT:
+    case TELEM_POWER:
+      result = value * 5;
+      break;
+    case TELEM_CONSUMPTION:
+      result = value * 20;
+      break;
+    default:
+      result = value;
+      break;
+  }
+  return result;
+}
+#else
+getvalue_t convertTelemValue(uint8_t channel, uint8_t value)
+{
+  getvalue_t result;
+  switch (channel) {
+    case TELEM_TM1:
+    case TELEM_TM2:
+      result = value * 3;
+      break;
+    default:
+      result = value;
+      break;
+  }
+  return result;
+}
+#endif
+
+getvalue_t convertCswTelemValue(CustomSwData * cs)
+{
+  getvalue_t val;
+  if (CS_STATE(cs->func)==CS_VOFS)
+    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
+  else
+    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
+  return val;
+}
+
 #if defined(FRSKY) || defined(CPUARM)
-inline void convertUnit(getvalue_t & val, uint8_t & unit)
+FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {
   if (IS_IMPERIAL_ENABLE()) {
     if (unit == UNIT_DEGREES) {
@@ -1420,14 +1511,6 @@ inline void convertUnit(getvalue_t & val, uint8_t & unit)
       val = (val * 46) / 25;
     }
   }
-}
-
-void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att)
-{
-  convertUnit(val, unit);
-  lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
-  if (!(att & NO_UNIT) && unit != UNIT_RAW)
-    lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
 }
 #endif
 
@@ -4150,7 +4233,7 @@ int main(void)
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more wdt_reset()s in. But I don't like that approach
   // during boot up.)
-#if defined(PCBGRUVIN9X)
+#if defined(PCBGRUVIN9X) || defined(CPUM2561)
   uint8_t mcusr = MCUSR; // save the WDT (etc) flags
   MCUSR = 0; // must be zeroed before disabling the WDT
 #elif defined(PCBSTD)

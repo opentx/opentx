@@ -108,11 +108,17 @@ inline void boardInit()
   ADMUX  = ADC_VREF_TYPE;
   ADCSRA = 0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
 
+#if defined(CPUM2561)
+  TCCR2B  = (0b111 << CS20); // Norm mode, clk/1024 (differs from ATmega64 chip)
+  OCR2A   = 156;
+  TIMSK2 |= (1<<OCIE2A) |  (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
+#else
   // TCNT0  10ms = 16MHz/1024/156 periodic timer (9.984ms)
   // (with 1:4 duty at 157 to average 10.0ms)
   // Timer overflows at about 61Hz or once every 16ms.
   TCCR0  = (0b111 << CS00); // Norm mode, clk/1024
   OCR0   = 156;
+#endif
 
 #if defined(AUDIO) || defined(VOICE)
   TCCR2  = (0b010 << CS00); // Norm mode, clk/8
@@ -125,7 +131,9 @@ inline void boardInit()
 #endif
 #endif
 
+#if !defined(CPUM2561)
   TIMSK |= (1<<OCIE0) | (1<<TOIE0) | (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
+#endif
 }
 #endif
 

@@ -44,6 +44,7 @@ void DEBUG_UART_Stop();
 #define DEBUG_UART_Configure(...)
 #endif
 
+uint16_t ResetReason;
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
 volatile uint8_t lcdLock;
@@ -531,6 +532,8 @@ void configure_pins( uint32_t pins, uint16_t config )
 void boardInit()
 {
   register Pio *pioptr ;
+
+  ResetReason = RSTC->RSTC_MR ;
 
   MATRIX->CCFG_SYSIO |= 0x000000F0L ;             // Disable syspins, enable B4,5,6,7
 

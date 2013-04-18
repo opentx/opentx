@@ -1355,9 +1355,19 @@ extern uint8_t barsThresholds[THLD_MAX];
 #endif
 
 #if defined(FRSKY)
-uint8_t maxTelemValue(uint8_t channel);
+  uint8_t maxTelemValue(uint8_t channel);
+#else
+  #define maxTelemValue(channel) 255
+#endif
+
 getvalue_t convertTelemValue(uint8_t channel, uint8_t value);
 getvalue_t convertCswTelemValue(CustomSwData * cs);
+
+#if defined(FRSKY) || defined(CPUARM)
+lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
+#endif
+
+#if defined(FRSKY)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
 
 extern const pm_uint8_t bchunit_ar[];
@@ -1367,9 +1377,6 @@ extern const pm_uint8_t bchunit_ar[];
 #else
   #define FRSKY_MULTIPLIER_MAX 3
 #endif
-
-lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
-void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att);
 
 #define IS_BARS_SCREEN(screenIndex) (g_model.frsky.screensType & (1<<(screenIndex)))
 #endif

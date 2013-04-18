@@ -49,7 +49,7 @@
   #define EEFS_VERS  5
   #define MAXFILES   62
   #define BS         64
-#elif defined(PCBGRUVIN9X) || defined(CPUM128)
+#elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
   #define blkid_t    uint8_t
   #define EESIZE     4096
   #define EEFS_VERS  5

@@ -153,6 +153,11 @@ extern int8_t s_editMode;       // global editmode
 #define NO_INCDEC_MARKS 0x04
 #define INCDEC_SWITCH   0x08
 #define INCDEC_SOURCE   0x10
+
+// mawrow special values
+#define TITLE_ROW      ((uint8_t)-1)
+#define HIDDEN_ROW     ((uint8_t)-2)
+
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags);
 
 #if defined(CPUM64)

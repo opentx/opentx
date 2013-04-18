@@ -263,7 +263,7 @@
 
 #if defined(CPUARM)
   #define TR_CUSTOMSW          "CE1""CE2""CE3""CE4""CE5""CE6""CE7""CE8""CE9""CEA""CEB""CEC""CED""CEE""CEF""CEG""CEH""CEI""CEJ""CEK""CEL""CEM""CEN""CEO""CEP""CEQ""CER""CES""CET""CEU""CEV""CEW"
-#elif defined(PCBGRUVIN9X) || defined(CPUM128)
+#elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
   #define TR_CUSTOMSW          "CE1""CE2""CE3""CE4""CE5""CE6""CE7""CE8""CE9""CEA""CEB""CEC""CED""CEE""CEF"
 #else
   #define TR_CUSTOMSW          "CE1""CE2""CE3""CE4""CE5""CE6""CE7""CE8""CE9""CEA""CEB""CEC"

@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: 9X, 9X128, 9XR, 9XR128, GRUVIN9X, MEGA2560, SKY9X, TARANIS
+# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, TARANIS
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
 PCB = 9X
 
@@ -232,7 +232,7 @@ SRC =
 CPPSRC =
 
 # MCU name
-ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 GRUVIN9X MEGA2560 SKY9X TARANIS))
+ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X TARANIS))
   $(error Sorry, the PCB $(PCB) is not supported yet in openTx)
 endif
 
@@ -240,6 +240,7 @@ GVARS_VARIANT  = +1
 FRSKY_VARIANT  = +2
 3POS_VARIANT   = +4
 M128_VARIANT   = +32768
+M2561_VARIANT  = +16384
 EEPROM_VARIANT = 0
 
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
@@ -298,7 +299,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
 endif
 
 ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
-  # 9x/9xr radio with Atmega 64 replaced by Atmega 128
+  # 9X/9XR radio with ATmega64 replaced by ATmega128
   ARCH = AVR
   TRGT = avr-
   MCU = atmega128
@@ -317,6 +318,61 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
     CPPDEFS += -DPCB9XR128
   else
     CPPDEFS += -DPCB9X128
+  endif
+    
+  ifeq ($(AUDIO), YES)
+    CPPDEFS += -DAUDIO
+    CPPSRC += audio_avr.cpp
+  else
+    CPPDEFS += -DBUZZER
+    CPPSRC += buzzer.cpp 
+  endif
+  
+  ifeq ($(VOICE), YES)
+    CPPDEFS += -DVOICE
+    CPPSRC += stock/voice.cpp
+  endif
+  
+  ifeq ($(PWM_BACKLIGHT), YES)
+    ifeq ($(VOICE), YES)
+      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with VOICE mod)
+    endif
+    ifeq ($(AUDIO), YES)
+      $(error Sorry, PWM_BACKLIGHT doesnt work on stock board with AUDIO mod)
+    endif
+    CPPDEFS += -DPWM_BACKLIGHT
+  endif
+
+  ifeq ($(HAPTIC), YES)
+   CPPDEFS += -DHAPTIC
+   CPPSRC += haptic.cpp
+  endif
+  
+  ifeq ($(SP22), YES)
+   CPPDEFS += -DSP22
+  endif
+endif
+
+ifeq ($(PCB), $(filter $(PCB), 9X2561))
+  # 9X/9XR radio with ATmega64 replaced by ATmega2561
+  ARCH = AVR
+  TRGT = avr-
+  MCU = atmega2561
+  OPT = 2
+  SDCARD = NO
+  THR_TRACE = YES
+  EEPROM_VARIANT += ${M2561_VARIANT}
+  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
+  EXTRAINCDIRS = stock
+  BOARDSRC = stock/board_stock.cpp
+  EXTRABOARDSRC = stock/lcd_driver.cpp
+  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
+  PULSESSRC = pulses_avr.cpp
+
+  ifeq ($(PCB), 9XR2561)
+    CPPDEFS += -DPCB9XR2561
+  else
+    CPPDEFS += -DPCB9X2561
   endif
     
   ifeq ($(AUDIO), YES)
@@ -636,7 +692,7 @@ ifeq ($(AUTOSOURCE), YES)
 endif
 
 ifeq ($(DBLKEYS), YES)
-  ifeq ($(PCB), $(filter $(PCB), 9XR 9XR128))
+  ifeq ($(PCB), $(filter $(PCB), 9XR 9XR128 9XR2561))
     $(warning Sorry, DBLKEYS doesnt work on 9XR)
   else
     CPPDEFS += -DDBLKEYS
@@ -952,6 +1008,12 @@ stock128-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock128.txt
 	@cat stamp-opentx-stock128.txt
 
+stock2561-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock2561.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock2561.txt
+	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock2561.txt
+	@cat stamp-opentx-stock2561.txt
+	
 v4-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-v4.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-v4.txt

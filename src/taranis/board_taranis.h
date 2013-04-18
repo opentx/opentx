@@ -157,16 +157,16 @@ void pwrInit();
 uint32_t pwrCheck();
 void pwrOff();
 #define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
-#define INTERNAL_RF_ON()  GPIO_SetBits(GPIOPWR, PIN_INT_RF_PWR)
-#define INTERNAL_RF_OFF() GPIO_ResetBits(GPIOPWR, PIN_INT_RF_PWR)
-#define EXTERNAL_RF_ON()  GPIO_SetBits(GPIOPWR, PIN_EXT_RF_PWR)
-#define EXTERNAL_RF_OFF() GPIO_ResetBits(GPIOPWR, PIN_EXT_RF_PWR)
+#define INTERNAL_RF_ON()      GPIO_SetBits(GPIOPWR, PIN_INT_RF_PWR)
+#define INTERNAL_RF_OFF()     GPIO_ResetBits(GPIOPWR, PIN_INT_RF_PWR)
+#define EXTERNAL_RF_ON()      GPIO_SetBits(GPIOPWR, PIN_EXT_RF_PWR)
+#define EXTERNAL_RF_OFF()     GPIO_ResetBits(GPIOPWR, PIN_EXT_RF_PWR)
 
 // Backlight driver
 #define setBacklight(xx)
-#define __BACKLIGHT_ON    GPIO_SetBits(GPIOB, GPIO_Pin_BL)
-#define __BACKLIGHT_OFF   GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
-#define IS_BACKLIGHT_ON() GPIO_IsSet(GPIOB, GPIO_Pin_BL)
+#define __BACKLIGHT_ON        GPIO_SetBits(GPIOB, GPIO_Pin_BL)
+#define __BACKLIGHT_OFF       GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
+#define IS_BACKLIGHT_ON()     GPIO_IsSet(GPIOB, GPIO_Pin_BL)
 
 // USB driver
 void usbInit(void);
@@ -174,13 +174,13 @@ extern uint8_t usb_connected;
 
 // EEPROM driver
 #if !defined(SIMU)
-#define eepromInit()      I2C_EE_Init()
-#define eeprom_read_block I2C_EE_BufferRead
-#define eeWriteBlockCmp   I2C_EE_BufferWrite
+#define eepromInit()          I2C_EE_Init()
+#define eeprom_read_block     I2C_EE_BufferRead
+#define eeWriteBlockCmp       I2C_EE_BufferWrite
 #else
 #define eepromInit()
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #endif
-#define EEPROM_MASSSTORAGE() (usb_connected)
+#define EEPROM_MASSSTORAGE()  (usb_connected)
 
 #endif

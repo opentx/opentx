@@ -43,8 +43,10 @@ void menuStatisticsView(uint8_t event)
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_UP):
+#if !defined(PCBTARANIS) || defined(DEBUG)
       chainMenu(menuStatisticsDebug);
       return;
+#endif
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
@@ -122,6 +124,15 @@ void menuStatisticsDebug(uint8_t event)
       chainMenu(menuMainView);
       return;
   }
+
+#if defined(PCBSKY9X)
+  if ((ResetReason&RSTC_SR_RSTTYP) == (2<<8)) {
+    lcd_puts(LCD_W-8*FW, 0*FH, "WATCHDOG");
+  }
+  else if (unexpectedShutdown) {
+    lcd_puts(LCD_W-13*FW, 0*FH, "UNEXP.SHTDOWN");
+  }
+#endif
 
 #if defined(PCBSKY9X) && !defined(REVA)
   lcd_putsLeft(1*FH, STR_CPU_CURRENT);

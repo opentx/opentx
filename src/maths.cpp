@@ -36,7 +36,7 @@
 
 #include "opentx.h"
 
-#if defined(FRSKY)
+#if defined(FRSKY) || defined(CPUARM)
 uint16_t getChannelRatio(uint8_t channel)
 {
   return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;

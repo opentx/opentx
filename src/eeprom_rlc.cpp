@@ -56,7 +56,7 @@ inline void eeprom_write_byte()
   EEAR = eeprom_pointer;
   EEDR = *eeprom_buffer_data;
 // TODO add some define here
-#if defined (PCBGRUVIN9X)
+#if defined (PCBGRUVIN9X) || defined(CPUM2561)
   EECR |= 1<<EEMPE;
   EECR |= 1<<EEPE;
 #else
@@ -73,7 +73,7 @@ ISR(EE_READY_vect)
     eeprom_write_byte();
   }
   else {
-#if defined(PCBGRUVIN9X)
+#if defined(PCBGRUVIN9X) || defined(CPUM2561)
     EECR &= ~(1<<EERIE);
 #else
     EECR &= ~(1<<EERIE);
@@ -92,7 +92,7 @@ void eeWriteBlockCmp(const void *i_pointer_ram, uint16_t i_pointer_eeprom, size_
 
 #if defined(SIMU)
   sem_post(eeprom_write_sem);
-#elif defined (PCBGRUVIN9X)
+#elif defined (PCBGRUVIN9X) || defined(CPUM2561)
   EECR |= (1<<EERIE);
 #else
   EECR |= (1<<EERIE);

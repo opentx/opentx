@@ -890,14 +890,14 @@ void menuModelSetup(uint8_t event)
 
 #if defined(PCBTARANIS)
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  #define IF_PORT1_ON(x)             (g_model.moduleData[0].rfProtocol == RF_PROTO_OFF ? (uint8_t)-1 : (uint8_t)(x))
-  #define IF_PORT2_ON(x)             (g_model.externalModule == MODULE_TYPE_NONE ? (uint8_t)-1 : (uint8_t)(x))
+  #define IF_PORT1_ON(x)             (g_model.moduleData[0].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
+  #define IF_PORT2_ON(x)             (g_model.externalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
   #define IF_PORT_ON(idx, x)         (idx==0 ? IS_PORT1_ON(x) : IS_PORT2_ON(x))
-  #define IF_PORT2_XJT(x)            (IS_MODULE_XJT(1) ? (uint8_t)x : (uint8_t)-1)
+  #define IF_PORT2_XJT(x)            (IS_MODULE_XJT(1) ? (uint8_t)x : HIDDEN_ROW)
   #define PORT1_CHANNELS_ROWS()      IF_PORT1_ON(1)
   #define PORT2_CHANNELS_ROWS()      IF_PORT2_ON(g_model.externalModule == MODULE_TYPE_DJT ? (uint8_t)0 : (g_model.externalModule == MODULE_TYPE_DSM2 ? (uint8_t)0 : ((uint8_t)1)))
   #define PORT_CHANNELS_ROWS(x)      (x==0 ? PORT1_CHANNELS_ROWS() : PORT2_CHANNELS_ROWS())
-  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, 1+ITEM_MODEL_SETUP_MAX, { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(2), IF_PORT1_ON(g_model.moduleData[0].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0), LABEL(ExternalModule), g_model.externalModule==MODULE_TYPE_XJT ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) ? (uint8_t)2 : (uint8_t)-1), IF_PORT2_XJT(g_model.moduleData[1].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0), 0});
+  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, 1+ITEM_MODEL_SETUP_MAX, { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(2), IF_PORT1_ON(g_model.moduleData[0].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0), LABEL(ExternalModule), g_model.externalModule==MODULE_TYPE_XJT ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) ? (uint8_t)2 : HIDDEN_ROW), IF_PORT2_XJT(g_model.moduleData[1].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0), 0});
 #elif defined(CPUM64)
   #define CURSOR_ON_CELL (true)
   uint8_t protocol = g_model.protocol;
@@ -913,7 +913,15 @@ void menuModelSetup(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     uint8_t y = 1 + 1*FH + i*FH;
+
     uint8_t k = i+s_pgOfs;
+#if defined(CPUARM)
+    for (int j=0; j<=k; j++) {
+      if (mstate_tab[j+1] == HIDDEN_ROW)
+        k++;
+    }
+#endif
+
     uint8_t blink = ((editMode>0) ? BLINK|INVERS : INVERS);
     uint8_t attr = (sub == k ? blink : 0);
 
@@ -1008,13 +1016,13 @@ void menuModelSetup(uint8_t event)
         g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
         lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET, m_posHorz>0 ? attr : 0);
         if (attr && m_posHorz>0) {
-        	s_editMode = 0;
-        	if (event==EVT_KEY_LONG(KEY_ENTER)) {
+          s_editMode = 0;
+          if (event==EVT_KEY_LONG(KEY_ENTER)) {
             for (uint8_t i=0; i<MAX_PHASES; i++) {
               memclear(&g_model.phaseData[i], TRIMS_ARRAY_SIZE);
             }
-          eeDirty(EE_MODEL);
-          AUDIO_WARNING1();
+            eeDirty(EE_MODEL);
+            AUDIO_WARNING1();
           }
         }
 #endif
@@ -2043,6 +2051,138 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
   return true;
 }
 
+#if defined(PCBTARANIS)
+void menuModelCurveOne(uint8_t event)
+{
+  static uint8_t coordsOfs = 0;
+
+  TITLE(STR_MENUCURVE);
+  lcd_outdezAtt(PSIZE(TR_MENUCURVE)*FW+1, 0, s_curveChan+1, INVERS|LEFT);
+  DISPLAY_PROGRESS_BAR(20*FW+1);
+
+  CurveInfo crv = curveinfo(s_curveChan);
+
+  const uint8_t mstate_tab[] = { 0, 0, uint8_t(NAVIGATION_LINE_BY_LINE|(crv.points-1)), 0 };
+  if (!check(event, 0, 0, 0, mstate_tab, 3, 3))
+    return;
+
+  switch(event) {
+    case EVT_ENTRY:
+      m_posVert = 2;
+      coordsOfs = 0;
+      break;
+
+    case EVT_KEY_REPT(KEY_LEFT):
+    case EVT_KEY_FIRST(KEY_LEFT):
+      if (m_posVert == 0 && s_editMode > 0) {
+        coordsOfs = 0;
+        if (crv.custom) {
+          moveCurve(s_curveChan, -crv.points+2);
+        }
+        else if (crv.points > MIN_POINTS) {
+          moveCurve(s_curveChan, -1, (crv.points+1)/2);
+        }
+        else {
+          AUDIO_WARNING2();
+        }
+        return;
+      }
+      break;
+
+    case EVT_KEY_REPT(KEY_RIGHT):
+    case EVT_KEY_FIRST(KEY_RIGHT):
+      if (m_posVert == 0 && s_editMode > 0) {
+        coordsOfs = 0;
+        if (!crv.custom) {
+          moveCurve(s_curveChan, crv.points-2, crv.points);
+        }
+        else if (crv.points < MAX_POINTS) {
+          if (moveCurve(s_curveChan, 1)) {
+            for (int8_t i=crv.points+crv.points-2; i>=0; i--) {
+              if (i%2)
+                crv.crv[i] = (crv.crv[i/2] + crv.crv[1+i/2]) / 2;
+              else
+                crv.crv[i] = crv.crv[i/2];
+            }
+          }
+        }
+        else {
+          AUDIO_WARNING2();
+        }
+      }
+      break;
+  }
+
+  lcd_putsLeft(FH+1, STR_CURVE_TYPE);
+  uint8_t attr = (m_posVert==0 ? (s_editMode <= 0 ? INVERS : INVERS|BLINK) : 0);
+  lcd_outdezAtt(5*FW, FH+1, crv.points, LEFT|attr);
+  lcd_putsAtt(lcdLastPos, FH+1, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
+
+  lcd_putsLeft(2*FH+1, STR_NAME);
+  editName(5*FW, 2*FH+1, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==1 ? INVERS : 0);
+
+  lcd_putsAtt(0*FW, 3*FH+3, PSTR("[Edit]"), m_posVert==2 ? INVERS : 0);
+  lcd_putsAtt(0*FW, 4*FH+3, PSTR("[Preset]"), m_posVert==3 ? INVERS : 0);
+  if (m_posVert==3 && event==EVT_KEY_BREAK(KEY_ENTER)) {
+    static int8_t presetIdx = 0;
+    if (++presetIdx > 4)
+      presetIdx = -4;
+    for (uint8_t i=0; i<crv.points; i++)
+      crv.crv[i] = (i-(crv.points/2)) * presetIdx * 50 / (crv.points-1);
+    eeDirty(EE_MODEL);
+    s_editMode = 0;
+  }
+
+  DrawCurve(curveFn);
+
+  uint8_t posY = 3;
+  for (uint8_t i=0; i<crv.points; i++) {
+    uint8_t xx = X0-1-WCHART+i*WCHART/(crv.points/2);
+    uint8_t yy = (LCD_H-1) - (100 + crv.crv[i]) * (LCD_H-1) / 200;
+    if (crv.custom && i>0 && i<crv.points-1)
+      xx = X0-1-WCHART + (100 + (100 + crv.crv[crv.points+i-1]) * (2*WCHART)) / 200;
+
+    lcd_filled_rect(xx, yy-1, 3, 3, SOLID, FORCE); // do markup square
+
+    if (i>=coordsOfs && i<=coordsOfs+5) {
+      int8_t x = -100 + 200*i/(crv.points-1);
+      if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
+      lcd_outdezAtt(7+13*FW, posY, x, LEFT|((m_posVert==2 && m_posHorz==i && s_editMode==2) ? BLINK|INVERS : 0));
+      lcd_outdezAtt(7+17*FW, posY, crv.crv[i], LEFT|((m_posVert==2 && m_posHorz==i && s_editMode==3) ? BLINK|INVERS : 0));
+      if (m_posVert==2 && m_posHorz == i) {
+        lcd_rect(9+12*FW, posY-2, 9*FW-4, FH+3);
+      }
+      posY += FH+2;
+    }
+
+    if (m_posVert==2 && m_posHorz==i) {
+      // do selection square
+      lcd_filled_rect(xx-1, yy-2, 5, 5, SOLID, FORCE);
+      lcd_filled_rect(xx, yy-1, 3, 3, SOLID);
+      if (s_editMode > 0) {
+        if (event==EVT_KEY_BREAK(KEY_ENTER)) {
+          if (s_editMode == EDIT_MODIFY_FIELD)
+            s_editMode = (crv.custom && m_posHorz>0 && m_posHorz<crv.points-1) ? 2 : 3;
+          else if (s_editMode == 2)
+            s_editMode = 3;
+          else
+            s_editMode = 0;
+        }
+        else if (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_MINUS) || event==EVT_KEY_REPT(KEY_PLUS)) {
+          if (s_editMode == 2)
+            CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X
+          else if (s_editMode == 3)
+            CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);
+        }
+      }
+      if (m_posHorz < coordsOfs)
+        coordsOfs = m_posHorz;
+      else if (m_posHorz >= coordsOfs+6)
+        coordsOfs = m_posHorz-5;
+    }
+  }
+}
+#else
 void menuModelCurveOne(uint8_t event)
 {
   TITLE(STR_MENUCURVE);
@@ -2053,28 +2193,14 @@ void menuModelCurveOne(uint8_t event)
 
   switch(event) {
     case EVT_ENTRY:
-#if defined(PCBTARANIS)
-      m_posHorz = 0;
-#endif
       s_editMode = 1;
       break;
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
-#if defined(PCBTARANIS)
-      if (s_editMode <= 0) {
-        s_editMode = 1;
-        m_posHorz = 0;
-      }
-      else if (s_editMode == 1)
-        s_editMode = (crv.custom && m_posHorz>0 && m_posHorz<crv.points-1) ? 2 : 3;
-      else if (s_editMode == 2)
-        s_editMode = 3;
-#else
       if (s_editMode <= 0)
         m_posHorz = 0;
       if (s_editMode == 1 && crv.custom)
         s_editMode = 2;
-#endif
       else
         s_editMode = 1;
       break;
@@ -2090,10 +2216,6 @@ void menuModelCurveOne(uint8_t event)
       break;
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_editMode > 0) {
-#if defined(PCBTARANIS)
-        if (s_editMode == 3 && !(crv.custom && m_posHorz>0 && m_posHorz<crv.points-1))
-          s_editMode = 2;
-#endif
         if (--s_editMode == 0)
           m_posHorz = 0;
       }
@@ -2169,33 +2291,20 @@ void menuModelCurveOne(uint8_t event)
 
       int8_t x = -100 + 200*i/(crv.points-1);
       if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
-#if defined(PCBTARANIS)
-      lcd_puts(7, 2*FH, PSTR("x=")); lcd_outdezAtt(7+2*FW, 2*FH, x, LEFT|(s_editMode==2 ? BLINK|INVERS : 0));
-      lcd_puts(7, 3*FH, PSTR("y=")); lcd_outdezAtt(7+2*FW, 3*FH, crv.crv[i], LEFT|(s_editMode==3 ? BLINK|INVERS : 0));
-#else
       lcd_puts(7, 2*FH, PSTR("x=")); lcd_outdezAtt(7+2*FW, 2*FH, x, LEFT);
       lcd_puts(7, 3*FH, PSTR("y=")); lcd_outdezAtt(7+2*FW, 3*FH, crv.crv[i], LEFT);
-#endif
       lcd_rect(3, 1*FH+4, 7*FW-2, 3*FH-2);
 
-#if defined(PCBTARANIS)
-      if (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_MINUS) || event==EVT_KEY_REPT(KEY_PLUS)) {
-        if (s_editMode == 2)
-          CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X
-        else if (s_editMode == 3)
-          CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);  // edit Y
-      }
-#else
       if (p1valdiff || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP))
         CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);  // edit Y on up/down
 
 
       if (i>0 && i<crv.points-1 && s_editMode==2 && (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_LEFT) || event==EVT_KEY_REPT(KEY_RIGHT)))
         CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X on left/right
-#endif
     }
   }
 }
+#endif
 #endif
 
 uint8_t getExpoMixCount(uint8_t expo)
@@ -3307,6 +3416,9 @@ void menuModelCurvesAll(uint8_t event)
 #if defined(GVARS) && defined(PCBSTD)
     if (k < MAX_CURVES) {
       putsStrIdx(0, y, STR_CV, k+1, attr);
+#if defined(PCBTARANIS)
+      lcd_putsnAtt(5*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), ZCHAR);
+#endif
     }
     else {
       putsStrIdx(0, y, STR_GV, k-MAX_CURVES+1);
@@ -3318,6 +3430,9 @@ void menuModelCurvesAll(uint8_t event)
     }
 #else
     putsStrIdx(0, y, STR_CV, k+1, attr);
+#if defined(PCBTARANIS)
+    lcd_putsnAtt(5*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), ZCHAR);
+#endif
 #endif
   }
 
@@ -3682,7 +3797,7 @@ void menuModelCustomSwitches(uint8_t event)
       }
 #else
       if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-        putsTime(CSW_3RD_COLUMN, y, (int16_t)3 * (CS_STATE(cs->func)==CS_VOFS ? 128+cs->v2 : cs->v2), LEFT | (m_posHorz==2 ? attr : 0), LEFT | (m_posHorz==2 ? attr : 0));
+        putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT | (m_posHorz==2 ? attr : 0));
         v2_min = -128; v2_max = 127;
       }
       else {

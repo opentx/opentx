@@ -67,19 +67,25 @@
 #define PIN_TRIM_RV_DN         (1<<INP_D_TRM_RV_DWN)
 #define PIN_TRIM_RH_R          (1<<INP_D_TRM_RH_UP)
 
-#define TIMER_16KHZ_VECT    TIMER0_OVF_vect
-#define COUNTER_16KHZ       TCNT0
-
-#define TIMER_10MS_VECT  TIMER0_COMP_vect
-#define TIMER_10MS_COMPVAL OCR0
-#define PAUSE_10MS_INTERRUPT() TIMSK &= ~(1<<OCIE0)
-#define RESUME_10MS_INTERRUPT() TIMSK |= (1<<OCIE0)
-
-#define PAUSE_PULSES_INTERRUPT() TIMSK &= ~(1<<OCIE1A);
-#define RESUME_PULSES_INTERRUPT() TIMSK |= (1<<OCIE1A)
-
-#define PAUSE_PPMIN_INTERRUPT() ETIMSK &= ~(1<<TICIE3)
-#define RESUME_PPMIN_INTERRUPT() ETIMSK |= (1<<TICIE3)
+#if defined(CPUM2561)
+  #define TIMER_16KHZ_VECT         TIMER2_OVF_vect
+  #define COUNTER_16KHZ            TCNT2
+  #define TIMER_10MS_VECT          TIMER2_COMPA_vect
+  #define TIMER_10MS_COMPVAL       OCR2A
+  #define PAUSE_10MS_INTERRUPT()   TIMSK2 &= ~(1<<OCIE2A)
+  #define RESUME_10MS_INTERRUPT()  TIMSK2 |= (1<<OCIE2A)
+  #define PAUSE_PPMIN_INTERRUPT()  TIMSK3 &= ~(1<<ICIE3)
+  #define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
+#else
+  #define TIMER_16KHZ_VECT         TIMER0_OVF_vect
+  #define COUNTER_16KHZ            TCNT0
+  #define TIMER_10MS_VECT          TIMER0_COMP_vect
+  #define TIMER_10MS_COMPVAL       OCR0
+  #define PAUSE_10MS_INTERRUPT()   TIMSK &= ~(1<<OCIE0)
+  #define RESUME_10MS_INTERRUPT()  TIMSK |= (1<<OCIE0)
+  #define PAUSE_PPMIN_INTERRUPT()  ETIMSK &= ~(1<<TICIE3)
+  #define RESUME_PPMIN_INTERRUPT() ETIMSK |= (1<<TICIE3)
+#endif
 
 // Power driver (none)
 #define pwrCheck() (e_power_on)
