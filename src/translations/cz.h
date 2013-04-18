@@ -211,7 +211,7 @@
 #define TR_FUNCSOUNDS          "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS         "\004"
-#define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
+#define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
 
 #if defined(CPUARM)
   #define LEN_VTELEMUNIT_NORM  "\003"
@@ -284,11 +284,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"
+  #define TR_CUSTOMSW          "VS1""VS2""VS3""VS4""VS5""VS6""VS7""VS8""VS9""VSA""VSB""VSC""VSD""VSE""VSF""VSG""VSH""VSI""VSJ""VSK""VSL""VSM""VSN""VSO""VSP""VSQ""VSR""VSS""VST""VSU""VSV""VSW"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF"
+  #define TR_CUSTOMSW          "VS1""VS2""VS3""VS4""VS5""VS6""VS7""VS8""VS9""VSA""VSB""VSC""VSD""VSE""VSF"
 #else
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
+  #define TR_CUSTOMSW          "VS1""VS2""VS3""VS4""VS5""VS6""VS7""VS8""VS9""VSA""VSB""VSC"
 #endif
 
 #if defined(PCBTARANIS)
@@ -379,9 +379,9 @@
 #define TR_DIFFERENTIAL        "Dif.V\212chylek"
 #define TR_OFFSET              INDENT"Ofset"
 #define TR_TRIM                "Trim"
-#define TR_DREX                "DVex"
+#define TR_DREX                "DRex"
 #define TR_CURVE               "K\206ivka"
-#define TR_FLMODE              "F\200ze"
+#define TR_FLMODE              "Re\217im"
 #define TR_MIXWARNING          "Varov\200n\204"
 #define TR_OFF                 "VYP"
 #define TR_MULTPX              "Mat.Operace"
@@ -390,8 +390,8 @@
 #define TR_SLOWDOWN            "Zpomalen\204(-)"
 #define TR_SLOWUP              "Zpomalen\204(+)"
 #define TR_MIXER               "MIXER"
-#define TR_CV                  "CV"
-#define TR_GV                  "GV"
+#define TR_CV                  "k"
+#define TR_GV                  "GP"
 #define TR_ACHANNEL            "A\004Kan\200l"
 #define TR_RANGE               INDENT"Rozsah"
 #define TR_BAR                 "Ukazatel"
@@ -406,7 +406,7 @@
 #define TR_HAPTICSTRENGTH      INDENT"S\204la"
 #define TR_CONTRAST            "Kontrast LCD"
 #define TR_ALARMS_LABEL        "Alarmy"
-#define TR_BATTERY_RANGE       "Meze Baterie"
+#define TR_BATTERY_RANGE       "Rozsah Bat."
 #define TR_BATTERYWARNING      INDENT"Vybit\200 Baterie"
 #define TR_INACTIVITYALARM     INDENT"Ne\201innost"
 #define TR_MEMORYWARNING       INDENT"Pln\200 Pam\203t'"
@@ -465,7 +465,7 @@
 #define TR_PPM                 "PPM"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
-#define TR_FP                  "FP"
+#define TR_FP                  "LR"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Doch\200z\204 EEPROM"
 #define TR_ALERT               "\006(!)POZOR"
@@ -486,22 +486,17 @@
 #define TR_TRIMS2OFFSETS       "\004Trimy => Subtrimy"
 #define TR_MENUMODELSEL        "MODEL"
 #define TR_MENUSETUP           "NASTAVEN\214"
-#define TR_MENUFLIGHTPHASE     "LETOV\213 F\213ZE"
-#define TR_MENUFLIGHTPHASES    "LETOV\220 F\213ZE"
+#define TR_MENUFLIGHTPHASE     "LETOV\216 RE\217IM"
+#define TR_MENUFLIGHTPHASES    "LETOV\220 RE\217IMY"
 #define TR_MENUHELISETUP       "HELI"
 
-
-#define TR_MENUDREXPO          "DV/EXPO"
+#define TR_MENUDREXPO          "DR/EXPO"
 #define TR_MENULIMITS          "LIMITY"
 
-
-
-
-
 #define TR_MENUCURVES          "K\215IVKY"
-#define TR_MENUCURVE           "\003CV"
-#define TR_MENUCUSTOMSWITCH    "VLASTN\214 SP\214NA\201"
-#define TR_MENUCUSTOMSWITCHES  "VLASTN\214 SP\214NA\201E"
+#define TR_MENUCURVE           "\002k"
+#define TR_MENUCUSTOMSWITCH    "VIRT. SP\214NA\201"
+#define TR_MENUCUSTOMSWITCHES  "VIRTU\213LN\214 SP\214NA\201E"
 #define TR_MENUCUSTOMFUNC      "FUNKCE"
 #define TR_MENUTELEMETRY       "TELEMETRIE"
 #define TR_MENUTEMPLATES       "\207ABLONY"
@@ -576,7 +571,7 @@
 #define TR_SD_SIZE             "Velikost:"
 #define TR_CURVE_TYPE          TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Glob\200ln\204 prom\203nn\202"
-#define TR_OWN                 " * "
+#define TR_OWN                 " \043 "
 #define TR_DATE                "Date"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"

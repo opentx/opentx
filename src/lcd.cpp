@@ -906,7 +906,7 @@ void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
   if (idx < CURVE_BASE)
     lcd_putsiAtt(x, y, STR_VCURVEFUNC, idx, att);
   else
-    putsStrIdx(x, y, PSTR("c"), idx-CURVE_BASE+1, att);
+    putsStrIdx(x, y, STR_CV, idx-CURVE_BASE+1, att);
 }
 
 void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att)
