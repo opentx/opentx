@@ -407,7 +407,7 @@ void setupPulsesPXX(MODULE_INDEX_PARAM)
   putPcmHead(module_index);
 
   /* Rx Number */
-  putPcmByte(g_model.modelId, module_index);
+  putPcmByte(g_model.header.modelId, module_index);
 #else
   PcmCrc = 0;
   PcmOnesCount = 0;
@@ -416,7 +416,7 @@ void setupPulsesPXX(MODULE_INDEX_PARAM)
   putPcmHead();
 
   /* Rx Number */
-  putPcmByte(g_model.modelId);
+  putPcmByte(g_model.header.modelId);
 #endif
 
   /* FLAG1 */

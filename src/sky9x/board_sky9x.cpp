@@ -533,7 +533,7 @@ void boardInit()
 {
   register Pio *pioptr ;
 
-  ResetReason = RSTC->RSTC_MR ;
+  ResetReason = RSTC->RSTC_SR;
 
   MATRIX->CCFG_SYSIO |= 0x000000F0L ;             // Disable syspins, enable B4,5,6,7
 

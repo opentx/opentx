@@ -49,20 +49,11 @@ void eeDirty(uint8_t msk)
 }
 
 #if defined(CPUARM)
-
-char modelNames[MAX_MODELS][sizeof(g_model.name)];
-
-#if defined(PXX)
-uint8_t modelIds[MAX_MODELS];
-#endif
-
-void eeLoadModelNames()
+ModelHeader modelHeaders[MAX_MODELS];
+void eeLoadModelHeaders()
 {
   for (uint32_t i=0; i<MAX_MODELS; i++) {
-    eeLoadModelName(i, modelNames[i]);
-#if defined(PXX)
-    modelIds[i] = eeLoadModelId(i);
-#endif
+    eeLoadModelHeader(i, &modelHeaders[i]);
   }
 }
 #endif

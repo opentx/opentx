@@ -155,7 +155,7 @@ bool eeConvert()
         }
         read32_eeprom_data((File_system[id+1].block_no << 12) + sizeof(struct t_eeprom_header), (uint8_t *)&oldModel, size);
 
-        memcpy(g_model.name, oldModel.name, 10);
+        memcpy(g_model.header.name, oldModel.name, 10);
         for (uint8_t i=0; i<2; i++) {
           g_model.timers[i].mode = oldModel.timers[i].mode;
           g_model.timers[i].start = oldModel.timers[i].val;
@@ -220,7 +220,7 @@ bool eeConvert()
         }
         g_model.ppmFrameLength = oldModel.ppmFrameLength;
         g_model.thrTraceSrc = oldModel.thrTraceSrc;
-        g_model.modelId = oldModel.modelId;
+        g_model.header.modelId = oldModel.modelId;
         g_model.switchWarningStates = oldModel.switchWarningStates;
         g_model.frsky.usrProto = oldModel.frsky.usrProto;
         g_model.frsky.voltsSource = oldModel.frsky.voltsSource;

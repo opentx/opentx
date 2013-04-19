@@ -319,7 +319,7 @@ void setupPulsesPXX()
     PcmBitCount = PcmByte = 0 ;
     PcmOnesCount = 0 ;
     putPcmHead() ;
-    putPcmByte( g_model.modelId ) ;     // putPcmByte( g_model.rxnum ) ;  //
+    putPcmByte( g_model.header.modelId ) ;     // putPcmByte( g_model.rxnum ) ;  //
     putPcmByte( pxxFlag[0] ) ;     // First byte of flags
     putPcmByte( 0 ) ;     // Second byte of flags
     pxxFlag[0] = 0;          // reset flag after send
@@ -403,7 +403,7 @@ FORCEINLINE void setupPulsesDsm2()
     s_bind_mode = false;
   ++ptr;
 
-  *ptr++ = g_model.modelId;
+  *ptr++ = g_model.header.modelId;
   for (uint8_t i=0; i<DSM2_CHANS; i++) 
   {
     uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);
@@ -531,7 +531,7 @@ void setupPulsesDsm2()
   else
     s_bind_mode = false;
 
-  dsmDat[1] = g_model.modelId; // DSM2 Header second byte for model match
+  dsmDat[1] = g_model.header.modelId; // DSM2 Header second byte for model match
   for (uint8_t i=0; i<DSM2_CHANS; i++)
   {
     uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);

@@ -419,9 +419,8 @@ enum EnumKeys {
   #define MODEL_BITMAP_HEIGHT 32
   #define MODEL_BITMAP_SIZE   (2+4*(MODEL_BITMAP_WIDTH*MODEL_BITMAP_HEIGHT/8))
   extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-  extern pm_char * modelBitmapLoaded;
-  void loadModelBitmap();
-  #define LOAD_MODEL_BITMAP() loadModelBitmap()
+  void loadModelBitmap(char *name, uint8_t *bitmap);
+  #define LOAD_MODEL_BITMAP() loadModelBitmap(g_model.header.bitmap, modelBitmap)
 #else
   #define LOAD_MODEL_BITMAP()
 #endif
@@ -1056,6 +1055,12 @@ extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of th
 extern int16_t            channelOutputs[NUM_CHNOUT];
 extern uint16_t           BandGap;
 
+#if defined(CPUARM)
+  #define NUM_INPUTS      (NUM_STICKS)
+#else
+  #define NUM_INPUTS      (NUM_STICKS)
+#endif
+
 extern int16_t expo(int16_t x, int16_t k);
 extern int16_t intpol(int16_t, uint8_t);
 extern int16_t applyCurve(int16_t, int8_t);
@@ -1273,30 +1278,25 @@ extern uint8_t requiredSpeakerVolume;
 #define SD_SCREEN_FILE_LENGTH (32)
 union ReusableBuffer
 {
-    /* 128 bytes on stock */
-
-#if !defined(PCBSKY9X)
-    uint8_t eefs_buffer[BLOCKS];           // 128bytes used by EeFsck
-#endif
-
     struct
     {
-        char mainname[42];
         char listnames[LCD_LINES-1][LEN_MODEL_NAME];
         uint16_t eepromfree;
-
 #if defined(SDCARD)
         char menu_bss[MENU_MAX_LINES][MENU_LINE_LENGTH];
+        char mainname[42]; // because reused for SD backup / restore
+#else
+        char mainname[LEN_MODEL_NAME];
 #endif
 
-    } models;                                     // 128bytes used by menuModelSelect (mainname reused for SD card archive / restore)
+    } modelsel;
 
     struct
     {
         int16_t midVals[NUM_STICKS+NUM_POTS];
         int16_t loVals[NUM_STICKS+NUM_POTS];
         int16_t hiVals[NUM_STICKS+NUM_POTS];
-    } calib;                                      // 42 bytes used by menuGeneralCalib
+    } calib;
 
 #if defined(SDCARD)
     struct
@@ -1305,7 +1305,7 @@ union ReusableBuffer
         uint32_t available;
         uint16_t offset;
         uint16_t count;
-    } sd;
+    } sdmanager;
 #endif
 };
 
@@ -1323,7 +1323,7 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
 #if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
-#define strcat_modelname(dest, idx) strcat_zchar(dest, modelNames[idx], LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
+#define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
 #define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
 #define strcat_mixername(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
 #define ZLEN(s) zlen(s, sizeof(s))
@@ -1408,6 +1408,10 @@ void varioWakeup();
 #else
   #define IS_USR_PROTO_FRSKY_HUB()   (g_model.frsky.usrProto == USR_PROTO_FRSKY)
   #define IS_USR_PROTO_WS_HOW_HIGH() (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
+#endif
+
+#if defined(PCBTARANIS)
+  extern const pm_uchar logo_taranis[];
 #endif
 
 #endif

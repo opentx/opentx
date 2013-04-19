@@ -144,11 +144,6 @@ class EFile
 #define eeFileSize(f)   eeFs.files[f].size
 #define eeModelSize(id) eeFileSize(FILE_MODEL(id))
 
-#if defined(PXX)
-uint8_t eeLoadModelIdAfterName();
-#define eeLoadModelId(id) eeLoadModelIdAfterName()
-#endif
-
 #define ERR_NONE 0
 #define ERR_FULL 1
 extern uint8_t  s_write_err;    // error reasons

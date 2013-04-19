@@ -57,16 +57,9 @@ void eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
 
 #if defined(CPUARM)
-
-extern char modelNames[MAX_MODELS][sizeof(g_model.name)];
-void eeLoadModelNames();
-
-#if defined(PXX)
-extern uint8_t modelIds[MAX_MODELS];
-#endif
-
-#else // defined(CPUARM)
-
-#define eeLoadModelNames()
-
+  extern ModelHeader modelHeaders[MAX_MODELS];
+  void eeLoadModelHeader(uint8_t id, ModelHeader *header);
+  void eeLoadModelHeaders();
+#else
+  #define eeLoadModelHeaders()
 #endif

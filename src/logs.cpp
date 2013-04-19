@@ -62,10 +62,10 @@ const pm_char * openLogs()
   }
 
   filename[sizeof(LOGS_PATH)-1] = '/';
-  memcpy(&filename[sizeof(LOGS_PATH)], g_model.name, sizeof(g_model.name));
-  filename[sizeof(LOGS_PATH)+sizeof(g_model.name)] = '\0';
+  memcpy(&filename[sizeof(LOGS_PATH)], g_model.header.name, sizeof(g_model.header.name));
+  filename[sizeof(LOGS_PATH)+sizeof(g_model.header.name)] = '\0';
 
-  uint8_t i = sizeof(LOGS_PATH)+sizeof(g_model.name)-1;
+  uint8_t i = sizeof(LOGS_PATH)+sizeof(g_model.header.name)-1;
   uint8_t len = 0;
   while (i>sizeof(LOGS_PATH)-1) {
     if (!len && filename[i])

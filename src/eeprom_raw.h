@@ -66,10 +66,6 @@ extern bool eeModelExists(uint8_t id) ;
 extern bool eeCopyModel(uint8_t dst, uint8_t src);
 extern void eeSwapModels(uint8_t id1, uint8_t id2);
 
-#if defined(PXX)
-uint8_t eeLoadModelId(uint8_t id);
-#endif
-
 #define DISPLAY_PROGRESS_BAR(x)
 
 struct t_file_entry

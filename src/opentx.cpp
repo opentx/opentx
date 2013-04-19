@@ -94,14 +94,15 @@ ModelData  g_model;
 
 #if defined(PCBTARANIS) && defined(SDCARD)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-pm_char * modelBitmapLoaded = NULL;
-void loadModelBitmap()
+void loadModelBitmap(char *name, uint8_t *bitmap)
 {
   char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
-  strncpy(lfn+sizeof(BITMAPS_PATH), g_model.bitmap, sizeof(g_model.bitmap));
-  lfn[sizeof(BITMAPS_PATH)+sizeof(g_model.bitmap)] = '\0';
+  strncpy(lfn+sizeof(BITMAPS_PATH), name, LEN_BITMAP_NAME);
+  lfn[sizeof(BITMAPS_PATH)+LEN_BITMAP_NAME] = '\0';
   strcat(lfn+sizeof(BITMAPS_PATH), BITMAPS_EXT);
-  modelBitmapLoaded = bmpLoad(modelBitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT);
+  if (bmpLoad(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
+    memcpy(bitmap, logo_taranis, MODEL_BITMAP_SIZE);
+  }
 }
 #endif
 
@@ -405,7 +406,7 @@ inline void applyDefaultTemplate()
 void checkModelIdUnique(uint8_t id)
 {
   for (uint8_t i=0; i<MAX_MODELS; i++) {
-    if (i != id && g_model.modelId!=0 && g_model.modelId == modelIds[i]) {
+    if (i!=id && g_model.header.modelId!=0 && g_model.header.modelId==modelHeaders[i].modelId) {
       s_warning = PSTR("Model ID already used");
       s_warning_type = WARNING_TYPE_ASTERISK;
     }
@@ -419,7 +420,7 @@ void modelDefault(uint8_t id)
   applyDefaultTemplate();
 
 #if defined(PXX) && defined(CPUARM)
-  modelIds[id] = g_model.modelId = id+1;
+  modelHeaders[id].modelId = g_model.header.modelId = id+1;
   checkModelIdUnique(id);
 #endif
 
@@ -641,7 +642,7 @@ ACTIVE_EXPOS_TYPE activeExpos;
 
 void applyExpos(int16_t *anas)
 {
-  int16_t anas2[NUM_STICKS]; // values before expo, to ensure same expo base when multiple expo lines are used
+  int16_t anas2[NUM_INPUTS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 
   int8_t cur_chn = -1;
@@ -2133,8 +2134,8 @@ uint16_t isqrt32(uint32_t n)
 
 // static variables used in perOut - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-int16_t  rawAnas [NUM_STICKS] = {0};
-int16_t  anas [NUM_STICKS] = {0};
+int16_t  rawAnas [NUM_INPUTS] = {0};
+int16_t  anas [NUM_INPUTS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
 uint8_t inacPrescale;

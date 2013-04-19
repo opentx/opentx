@@ -681,7 +681,7 @@ void lcd_invert_line(int8_t y)
 #if !defined(PCBTARANIS) // TODO test inversion
 void lcdDrawTelemetryTopBar()
 {
-  putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
+  putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
   uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
   putsVBat(14*FW,0,att);
   if (g_model.timers[0].mode) {
@@ -693,7 +693,7 @@ void lcdDrawTelemetryTopBar()
 #else
 void lcdDrawTelemetryTopBar()
 {
-  putsModelName(0, 0, g_model.name, g_eeGeneral.currModel, 0);
+  putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
   uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
   putsVBat(16*FW+2,0,att);
   if (g_model.timers[0].mode) {
@@ -828,13 +828,13 @@ void putsChnLetter(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags attr)
 
 void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, LcdFlags att)
 {
-  uint8_t len = sizeof(g_model.name);
+  uint8_t len = sizeof(g_model.header.name);
   while (len>0 && !name[len-1]) --len;
   if (len==0) {
     putsStrIdx(x, y, STR_MODEL, id+1, att|LEADING0);
   }
   else {
-    lcd_putsnAtt(x, y, name, sizeof(g_model.name), ZCHAR|att);
+    lcd_putsnAtt(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
   }
 }
 

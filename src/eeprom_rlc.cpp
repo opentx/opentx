@@ -40,9 +40,12 @@
 #include "string.h"
 
 uint8_t   s_write_err = 0;    // error reasons
+RlcFile   theFile;  //used for any file operation
+EeFs      eeFs;
+#if defined(PCBTARANIS)
+blkid_t   freeBlocks = 0;
+#endif
 
-RlcFile  theFile;  //used for any file operation
-EeFs     eeFs;
 
 #if !defined(CPUARM)
 uint8_t  s_sync_write = false;
@@ -163,15 +166,15 @@ static void EeFsFlush()
 uint16_t EeFsGetFree()
 {
 #if defined(CPUARM)
-  int32_t ret = 0;
+  int32_t ret = freeBlocks * (BS-sizeof(blkid_t));
 #else
   int16_t ret = 0;
-#endif
   blkid_t i = eeFs.freeList;
   while (i) {
-    ret += BS-1;
+    ret += BS-sizeof(blkid_t);
     i = EeFsGetLink(i);
   }
+#endif
   ret += eeFs.files[FILE_TMP].size;
   ret -= eeFs.files[FILE_MODEL(g_eeGeneral.currModel)].size;
   return (ret > 0 ? ret : 0);
@@ -182,7 +185,18 @@ static void EeFsFree(blkid_t blk)
 {
   blkid_t i = blk;
   blkid_t tmp;
-  while ((tmp=EeFsGetLink(i))) i = tmp;
+
+#if defined(PCBTARANIS)
+  freeBlocks++;
+#endif
+
+  while ((tmp=EeFsGetLink(i))) {
+    i = tmp;
+#if defined(PCBTARANIS)
+    freeBlocks++;
+#endif
+  }
+
   EeFsSetLink(i, eeFs.freeList);
   eeFs.freeList = blk; //chain in front
   EeFsFlushFreelist();
@@ -192,17 +206,23 @@ int8_t EeFsck()
 {
   ENABLE_SYNC_WRITE(true);
 
-  uint8_t *bufp = reusableBuffer.eefs_buffer;
+  uint8_t *bufp = (uint8_t *)&g_model;
   memclear(bufp, BLOCKS);
   blkid_t blk ;
 
+#if defined(PCBTARANIS)
+  blkid_t blocksCount;
+#endif
   for (uint8_t i=0; i<=MAXFILES; i++) {
+#if defined(PCBTARANIS)
+    blocksCount = 0;
+#endif
     blkid_t *startP = (i==MAXFILES ? &eeFs.freeList : &eeFs.files[i].startBlk);
     blkid_t lastBlk = 0;
     blk = *startP;
     while (blk) {
       if (blk < FIRSTBLK || // bad blk index
-          blk >= BLOCKS  || // bad blk index
+          blk >= BLOCKS  || // bad blk indexchan
           bufp[blk])        // blk double usage
       {
         if (lastBlk) {
@@ -215,14 +235,25 @@ int8_t EeFsck()
         blk = 0; // abort
       }
       else {
+#if defined(PCBTARANIS)
+        blocksCount++;
+#endif
         bufp[blk] = i+1;
         lastBlk   = blk;
         blk       = EeFsGetLink(blk);
       }
     }
   }
+
+#if defined(PCBTARANIS)
+  freeBlocks = blocksCount;
+#endif
+
   for (blk=FIRSTBLK; blk<BLOCKS; blk++) {
     if (!bufp[blk]) { // unused block
+#if defined(PCBTARANIS)
+      freeBlocks++;
+#endif
       EeFsSetLink(blk, eeFs.freeList);
       eeFs.freeList = blk; // chain in front
       EeFsFlushFreelist();
@@ -248,6 +279,9 @@ void EeFsFormat()
   }
   EeFsSetLink(BLOCKS-1, 0);
   eeFs.freeList = FIRSTBLK;
+#if defined(PCBTARANIS)
+  freeBlocks = BLOCKS;
+#endif
   EeFsFlush();
 
   ENABLE_SYNC_WRITE(false);
@@ -399,6 +433,9 @@ void RlcFile::nextWriteStep()
   if (!m_currBlk && m_pos==0) {
     eeFs.files[FILE_TMP].startBlk = m_currBlk = eeFs.freeList;
     if (m_currBlk) {
+#if defined(PCBTARANIS)
+      freeBlocks--;
+#endif
       eeFs.freeList = EeFsGetLink(m_currBlk);
       m_write_step |= WRITE_FIRST_LINK;
       EeFsFlushFreelist();
@@ -427,6 +464,7 @@ void RlcFile::nextWriteStep()
         }
         m_write_step += WRITE_NEXT_LINK_1;
         EeFsSetLink(m_currBlk, eeFs.freeList);
+        // TODO not good
         return;
       }
       m_currBlk = nextBlk;
@@ -434,6 +472,9 @@ void RlcFile::nextWriteStep()
     switch (m_write_step & 0x0f) {
       case WRITE_NEXT_LINK_1:
         m_currBlk = eeFs.freeList;
+#if defined(PCBTARANIS)
+        freeBlocks--;
+#endif
         eeFs.freeList = EeFsGetLink(eeFs.freeList);
         m_write_step += 1;
         EeFsFlushFreelist();
@@ -513,7 +554,7 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 extern FIL g_oLogFile;
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
-  char *buf = reusableBuffer.models.mainname;
+  char *buf = reusableBuffer.modelsel.mainname;
   DIR archiveFolder;
   UINT written;
 
@@ -532,9 +573,9 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
   buf[sizeof(MODELS_PATH)-1] = '/';
   eeLoadModelName(i_fileSrc, &buf[sizeof(MODELS_PATH)]);
-  buf[sizeof(MODELS_PATH)+sizeof(g_model.name)] = '\0';
+  buf[sizeof(MODELS_PATH)+sizeof(g_model.header.name)] = '\0';
 
-  uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.name)-1;
+  uint8_t i = sizeof(MODELS_PATH)+sizeof(g_model.header.name)-1;
   uint8_t len = 0;
   while (i>sizeof(MODELS_PATH)-1) {
     if (!len && buf[i])
@@ -595,7 +636,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 {
-  char *buf = reusableBuffer.models.mainname;
+  char *buf = reusableBuffer.modelsel.mainname;
   UINT read;
 
   // we must close the logs as we reuse the same FIL structure
@@ -742,9 +783,18 @@ void RlcFile::nextRlcWriteStep()
        blkid_t fri=0;
 
        if (m_currBlk && (fri=EeFsGetLink(m_currBlk))) {
+         // TODO reuse EeFsFree!!!
          blkid_t prev_freeList = eeFs.freeList;
          eeFs.freeList = fri;
-         while( EeFsGetLink(fri)) fri = EeFsGetLink(fri);
+#if defined(PCBTARANIS)
+         freeBlocks++;
+#endif
+         while( EeFsGetLink(fri)) {
+           fri = EeFsGetLink(fri);
+#if defined(PCBTARANIS)
+           freeBlocks++;
+#endif
+         }
          m_write_step = WRITE_FREE_UNUSED_BLOCKS_STEP1;
          EeFsSetLink(fri, prev_freeList);
          return;
@@ -835,20 +885,21 @@ bool eeLoadGeneral()
 
 void eeLoadModelName(uint8_t id, char *name)
 {
-  memclear(name, sizeof(g_model.name));
+  memclear(name, sizeof(g_model.header.name));
   if (id < MAX_MODELS) {
     theFile.openRlc(FILE_MODEL(id));
-    theFile.readRlc((uint8_t*)name, sizeof(g_model.name));
+    theFile.readRlc((uint8_t*)name, sizeof(g_model.header.name));
   }
 }
 
-#if defined(PXX)
-// must be called just after eeLoadModelName!
-uint8_t eeLoadModelIdAfterName()
+#if defined(CPUARM)
+void eeLoadModelHeader(uint8_t id, ModelHeader *header)
 {
-  uint8_t modelId = 0;
-  theFile.readRlc(&modelId, sizeof(modelId));
-  return modelId;
+  memclear(header, sizeof(ModelHeader));
+  if (id < MAX_MODELS) {
+    theFile.openRlc(FILE_MODEL(id));
+    theFile.readRlc((uint8_t*)header, sizeof(ModelHeader));
+  }
 }
 #endif
 
@@ -950,7 +1001,7 @@ void eeReadAll()
     theFile.writeRlc(FILE_MODEL(0), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), true);
   }
   else {
-    eeLoadModelNames();
+    eeLoadModelHeaders();
   }
 
   stickMode = g_eeGeneral.stickMode;
@@ -985,7 +1036,7 @@ void eeCheck(bool immediately)
 bool eeCopyModel(uint8_t dst, uint8_t src)
 {
   if (theFile.copy(FILE_MODEL(dst), FILE_MODEL(src))) {
-    memcpy(modelNames[dst], modelNames[src], sizeof(g_model.name));
+    memcpy(modelHeaders[dst].name, modelHeaders[src].name, sizeof(g_model.header.name));
     return true;
   }
   else {
@@ -997,9 +1048,9 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
 {
   EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2));
 
-  char tmp[sizeof(g_model.name)];
-  memcpy(tmp, modelNames[id1], sizeof(g_model.name));
-  memcpy(modelNames[id1], modelNames[id2], sizeof(g_model.name));
-  memcpy(modelNames[id2], tmp, sizeof(g_model.name));
+  char tmp[sizeof(g_model.header.name)];
+  memcpy(tmp, modelHeaders[id1].name, sizeof(g_model.header.name));
+  memcpy(modelHeaders[id1].name, modelHeaders[id2].name, sizeof(g_model.header.name));
+  memcpy(modelHeaders[id2].name, tmp, sizeof(g_model.header.name));
 }
 #endif

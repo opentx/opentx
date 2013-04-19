@@ -128,12 +128,12 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 
   if (selection) {
     s_last_flags = flags;
-    memset(reusableBuffer.models.menu_bss, 0, sizeof(reusableBuffer.models.menu_bss));
-    strcpy(reusableBuffer.models.menu_bss[0], path);
-    strcat(reusableBuffer.models.menu_bss[0], "/");
-    strncat(reusableBuffer.models.menu_bss[0], selection, maxlen);
-    strcat(reusableBuffer.models.menu_bss[0], extension);
-    if (f_stat(reusableBuffer.models.menu_bss[0], &fno) != FR_OK) {
+    memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
+    strcpy(reusableBuffer.modelsel.menu_bss[0], path);
+    strcat(reusableBuffer.modelsel.menu_bss[0], "/");
+    strncat(reusableBuffer.modelsel.menu_bss[0], selection, maxlen);
+    strcat(reusableBuffer.modelsel.menu_bss[0], extension);
+    if (f_stat(reusableBuffer.modelsel.menu_bss[0], &fno) != FR_OK) {
       selection = NULL;
     }
   }
@@ -144,19 +144,19 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 
   if (s_menu_offset == 0) {
     s_last_menu_offset = 0;
-    memset(reusableBuffer.models.menu_bss, 0, sizeof(reusableBuffer.models.menu_bss));
+    memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
   }
   else if (s_menu_offset == s_last_menu_offset) {
     // should not happen, only there because of Murphy's law
     return true;
   }
   else if (s_menu_offset > s_last_menu_offset) {
-    memmove(reusableBuffer.models.menu_bss[0], reusableBuffer.models.menu_bss[1], (MENU_MAX_LINES-1)*MENU_LINE_LENGTH);
-    memset(reusableBuffer.models.menu_bss[MENU_MAX_LINES-1], 0xff, MENU_LINE_LENGTH);
+    memmove(reusableBuffer.modelsel.menu_bss[0], reusableBuffer.modelsel.menu_bss[1], (MENU_MAX_LINES-1)*MENU_LINE_LENGTH);
+    memset(reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-1], 0xff, MENU_LINE_LENGTH);
   }
   else {
-    memmove(reusableBuffer.models.menu_bss[1], reusableBuffer.models.menu_bss[0], (MENU_MAX_LINES-1)*MENU_LINE_LENGTH);
-    memset(reusableBuffer.models.menu_bss[0], 0, MENU_LINE_LENGTH);
+    memmove(reusableBuffer.modelsel.menu_bss[1], reusableBuffer.modelsel.menu_bss[0], (MENU_MAX_LINES-1)*MENU_LINE_LENGTH);
+    memset(reusableBuffer.modelsel.menu_bss[0], 0, MENU_LINE_LENGTH);
   }
 
   s_menu_count = 0;
@@ -171,7 +171,7 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
         s_last_menu_offset++;
       }
       else if (s_menu_offset==0 || s_menu_offset < s_last_menu_offset) {
-        char *line = reusableBuffer.models.menu_bss[0];
+        char *line = reusableBuffer.modelsel.menu_bss[0];
         memset(line, 0, MENU_LINE_LENGTH);
         strcpy(line, "---");
         s_menu[0] = line;
@@ -200,9 +200,9 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
         }
         else {
           for (uint8_t i=0; i<MENU_MAX_LINES; i++) {
-            char *line = reusableBuffer.models.menu_bss[i];
+            char *line = reusableBuffer.modelsel.menu_bss[i];
             if (line[0] == '\0' || strcmp(fn, line) < 0) {
-              if (i < MENU_MAX_LINES-1) memmove(reusableBuffer.models.menu_bss[i+1], line, sizeof(reusableBuffer.models.menu_bss[i]) * (MENU_MAX_LINES-1-i));
+              if (i < MENU_MAX_LINES-1) memmove(reusableBuffer.modelsel.menu_bss[i+1], line, sizeof(reusableBuffer.modelsel.menu_bss[i]) * (MENU_MAX_LINES-1-i));
               memset(line, 0, MENU_LINE_LENGTH);
               strcpy(line, fn);
               break;
@@ -210,18 +210,18 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
           }
         }
         for (uint8_t i=0; i<min(s_menu_count, (uint16_t)MENU_MAX_LINES); i++)
-          s_menu[i] = reusableBuffer.models.menu_bss[i];
+          s_menu[i] = reusableBuffer.modelsel.menu_bss[i];
       }
       else if (s_menu_offset > s_last_menu_offset) {
-        if (strcmp(fn, reusableBuffer.models.menu_bss[MENU_MAX_LINES-2]) > 0 && strcmp(fn, reusableBuffer.models.menu_bss[MENU_MAX_LINES-1]) < 0) {
-          memset(reusableBuffer.models.menu_bss[MENU_MAX_LINES-1], 0, MENU_LINE_LENGTH);
-          strcpy(reusableBuffer.models.menu_bss[MENU_MAX_LINES-1], fn);
+        if (strcmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-2]) > 0 && strcmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-1]) < 0) {
+          memset(reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-1], 0, MENU_LINE_LENGTH);
+          strcpy(reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-1], fn);
         }
       }
       else {
-        if (strcmp(fn, reusableBuffer.models.menu_bss[1]) < 0 && strcmp(fn, reusableBuffer.models.menu_bss[0]) > 0) {
-          memset(reusableBuffer.models.menu_bss[0], 0, MENU_LINE_LENGTH);
-          strcpy(reusableBuffer.models.menu_bss[0], fn);
+        if (strcmp(fn, reusableBuffer.modelsel.menu_bss[1]) < 0 && strcmp(fn, reusableBuffer.modelsel.menu_bss[0]) > 0) {
+          memset(reusableBuffer.modelsel.menu_bss[0], 0, MENU_LINE_LENGTH);
+          strcpy(reusableBuffer.modelsel.menu_bss[0], fn);
         }
       }
     }
@@ -267,7 +267,7 @@ void onModelSelectMenu(const char *result)
     s_warning = eeBackupModel(sub);
   }
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-    if (!listSdFiles(MODELS_PATH, MODELS_EXT, sizeof(g_model.name), NULL)) {
+    if (!listSdFiles(MODELS_PATH, MODELS_EXT, sizeof(g_model.header.name), NULL)) {
       s_warning = STR_NO_MODELS_ON_SD;
       s_menu_flags = 0;
     }
@@ -277,13 +277,13 @@ void onModelSelectMenu(const char *result)
     s_warning = STR_DELETEMODEL;
     s_warning_type = WARNING_TYPE_CONFIRM;
 #if defined(CPUARM)
-    s_warning_info = modelNames[sub];
+    s_warning_info = modelHeaders[sub].name;
 #else
-    char * name = reusableBuffer.models.mainname;
+    char * name = reusableBuffer.modelsel.mainname;
     eeLoadModelName(sub, name);
     s_warning_info = name;
 #endif
-    s_warning_info_len = sizeof(g_model.name);
+    s_warning_info_len = sizeof(g_model.header.name);
   }
 #if defined(SDCARD)
   else {
@@ -333,6 +333,11 @@ void menuModelSelect(uint8_t event)
   }
 #endif
 
+#if defined(PCBTARANIS)
+  static int8_t modelselBitmapIdx = -1;
+  static uint8_t modelselBitmap[MODEL_BITMAP_SIZE];
+#endif
+
   int8_t sub = m_posVert;
 
   switch (event)
@@ -348,13 +353,13 @@ void menuModelSelect(uint8_t event)
           s_warning = STR_DELETEMODEL;
           s_warning_type = WARNING_TYPE_CONFIRM;
 #if defined(CPUARM)
-          s_warning_info = modelNames[sub];
+          s_warning_info = modelHeaders[sub].name;
 #else
-          char * name = reusableBuffer.models.mainname;
+          char * name = reusableBuffer.modelsel.mainname;
           eeLoadModelName(sub, name);
           s_warning_info = name;
 #endif
-          s_warning_info_len = sizeof(g_model.name);
+          s_warning_info_len = sizeof(g_model.header.name);
           killEvents(event);
           break;
         }
@@ -542,18 +547,17 @@ void menuModelSelect(uint8_t event)
           s_copyTgtOfs = next_ofs;
         }
         break;
-
   }
 
 #if defined(PCBTARANIS)
   lcd_puts(27*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  if (event) reusableBuffer.models.eepromfree = EeFsGetFree();
-  lcd_outdezAtt(20*FW, 0, reusableBuffer.models.eepromfree, 0);
+  if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
+  lcd_outdezAtt(20*FW, 0, reusableBuffer.modelsel.eepromfree, 0);
   lcd_puts(21*FW, 0, STR_BYTES);
 #elif !defined(PCBSKY9X)
   lcd_puts(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  if (event) reusableBuffer.models.eepromfree = EeFsGetFree();
-  lcd_outdezAtt(17*FW, 0, reusableBuffer.models.eepromfree, 0);
+  if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
+  lcd_outdezAtt(17*FW, 0, reusableBuffer.modelsel.eepromfree, 0);
 #endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -592,12 +596,12 @@ void menuModelSelect(uint8_t event)
 
     if (eeModelExists(k)) {
 #if defined(PCBSKY9X)
-      putsModelName(4*FW, y, modelNames[k], k, 0);
+      putsModelName(4*FW, y, modelHeaders[k].name, k, 0);
 #elif defined(CPUARM)
-      putsModelName(4*FW, y, modelNames[k], k, 0);
+      putsModelName(4*FW, y, modelHeaders[k].name, k, 0);
       lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
 #else
-      char * name = reusableBuffer.models.listnames[i];
+      char * name = reusableBuffer.modelsel.listnames[i];
       if (event) eeLoadModelName(k, name);
       putsModelName(4*FW, y, name, k, 0);
       lcd_outdezAtt(20*FW, y, eeModelSize(k), 0);
@@ -610,6 +614,17 @@ void menuModelSelect(uint8_t event)
       lcd_rect(8, y-1, LCD_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
   }
+
+#if defined(PCBTARANIS)
+  if (modelselBitmapIdx != m_posVert) {
+    modelselBitmapIdx = m_posVert;
+    if (modelselBitmapIdx == g_eeGeneral.currModel)
+      memcpy(modelselBitmap, modelBitmap, MODEL_BITMAP_SIZE);
+    else
+      loadModelBitmap(modelHeaders[sub].bitmap, modelselBitmap);
+  }
+  lcd_bmp(22*FW+2, 2*FH+FH/2, modelselBitmap);
+#endif
 }
 
 #if defined(PCBTARANIS)
@@ -858,14 +873,14 @@ enum menuModelSetupItems {
 void onModelSetupMenu(const char *result)
 {
   if (result == STR_UPDATE_LIST) {
-    if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), NULL)) {
+    if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
       s_warning = STR_NO_BITMAPS_ON_SD;
       s_menu_flags = 0;
     }
   }
   else {
     // The user choosed a bmp file in the list
-    memcpy(g_model.bitmap, result, sizeof(g_model.bitmap));
+    memcpy(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
     LOAD_MODEL_BITMAP();
     eeDirty(EE_MODEL);
   }
@@ -927,22 +942,22 @@ void menuModelSetup(uint8_t event)
 
     switch(k) {
       case ITEM_MODEL_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_MODELNAME, g_model.name, sizeof(g_model.name), event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_MODELNAME, g_model.header.name, sizeof(g_model.header.name), event, attr);
 #if defined(CPUARM)
-        memcpy(modelNames[g_eeGeneral.currModel], g_model.name, sizeof(g_model.name));
+        memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
 #endif
         break;
 
 #if defined(PCBTARANIS) && defined(SDCARD)
       case ITEM_MODEL_BITMAP:
         lcd_putsLeft(y, STR_BITMAP);
-        if (ZLEN(g_model.bitmap) > 0)
-          lcd_putsnAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.bitmap, sizeof(g_model.bitmap), attr);
+        if (ZLEN(g_model.header.bitmap) > 0)
+          lcd_putsnAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.bitmap, sizeof(g_model.header.bitmap), attr);
         else
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
           s_editMode = 0;
-          if (listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.bitmap), g_model.bitmap, LIST_NONE_SD_FILE)) {
+          if (listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), g_model.header.bitmap, LIST_NONE_SD_FILE)) {
             menuHandler = onModelSetupMenu;
           }
           else {
@@ -1222,12 +1237,12 @@ void menuModelSetup(uint8_t event)
         else {
           lcd_putsLeft(y, STR_RXNUM);
           if (IS_MODULE_XJT(moduleIdx)) {
-            lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.modelId, (m_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (m_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && m_posHorz==0) {
               if (editMode>0 || p1valdiff) {
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelId, 63);
+                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, 63);
                 if (checkIncDec_Ret)
-                  modelIds[g_eeGeneral.currModel] = g_model.modelId;
+                  modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
               }
               if (editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER))
                 checkModelIdUnique(g_eeGeneral.currModel);
@@ -1396,12 +1411,12 @@ void menuModelSetup(uint8_t event)
           }
 
           lcd_putsLeft(y, STR_RXNUM);
-          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN-3*FW, y, g_model.modelId, (m_posHorz<=0 ? attr : 0) | LEADING0|LEFT, 2);
+          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN-3*FW, y, g_model.header.modelId, (m_posHorz<=0 ? attr : 0) | LEADING0|LEFT, 2);
           if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff))) {
-            CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelId, 99);
+            CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, 99);
 #if defined(CPUARM)
             if (checkIncDec_Ret)
-              modelIds[g_eeGeneral.currModel] = g_model.modelId;
+              modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
 #endif
           }
 
@@ -1990,7 +2005,7 @@ typedef int16_t (*FnFuncP) (int16_t x);
 int16_t expoFn(int16_t x)
 {
   ExpoData *ed = expoaddress(s_currIdx);
-  int16_t anas[NUM_STICKS] = {0};
+  int16_t anas[NUM_INPUTS] = {0};
   anas[ed->chn] = x;
   applyExpos(anas);
   return anas[ed->chn];
@@ -2981,7 +2996,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
   uint8_t cur = 1;
   uint8_t i = 0;
 
-  for (uint8_t ch=1; ch<=(expo ? NUM_STICKS : NUM_CHNOUT); ch++) {
+  for (uint8_t ch=1; ch<=(expo ? NUM_INPUTS : NUM_CHNOUT); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
     uint8_t y = 1+(cur-s_pgOfs)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoaddress(i))->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && (md=mixaddress(i))->srcRaw && md->destCh+1 == ch)) {

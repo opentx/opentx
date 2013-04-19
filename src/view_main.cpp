@@ -606,7 +606,7 @@ void menuMainView(uint8_t event)
     lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR|PHASE_FLAGS);
 
     // Model Name
-    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.name, g_eeGeneral.currModel, BIGSIZE);
+    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
 
 #if !defined(PCBTARANIS)
     // Main Voltage (or alarm if any)
@@ -627,10 +627,7 @@ void menuMainView(uint8_t event)
   // Sliders (Pots / Sliders)
   displaySliders();
 
-  if (modelBitmapLoaded == NULL)
-    lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
-  else
-    lcd_bmp(BITMAP_X, BITMAP_Y, logo_taranis);
+  lcd_bmp(BITMAP_X, BITMAP_Y, modelBitmap);
 
   // Switches
   for (uint8_t i=0; i<8; i++) {
