@@ -41,6 +41,12 @@ FIL g_oLogFile = {0};
 const pm_char * g_logError = NULL;
 uint8_t logDelay;
 
+#if defined(PCBTARANIS)
+int mswitchState(bool sw1, bool sw2) {
+  return (sw1 ? -1 : (sw2 ? 1 : 0));
+}
+#endif
+
 const pm_char * openLogs()
 {
   // Determine and set log file filename
@@ -114,7 +120,7 @@ const pm_char * openLogs()
 #endif
 
 #if defined(PCBTARANIS)
-    // TODO
+    f_puts("Rud,Ele,Thr,Ail,S1,S2,LS,RS,SA,SB,SC,SD,SE,SF,SG,SH\n", &g_oLogFile);
 #else
     f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n", &g_oLogFile);
 #endif
@@ -199,7 +205,22 @@ void writeLogs()
 #endif
 
 #if defined(PCBTARANIS)
-      // TODO
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+        f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
+      }
+
+      if (f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,%d\n", 
+          mswitchState(switchState(SW_SA0),switchState(SW_SA2)),
+          mswitchState(switchState(SW_SB0),switchState(SW_SB2)),
+          mswitchState(switchState(SW_SC0),switchState(SW_SC2)),
+          mswitchState(switchState(SW_SD0),switchState(SW_SD2)),
+          mswitchState(switchState(SW_SE0),switchState(SW_SE2)),
+          mswitchState(switchState(SW_SF0),switchState(SW_SF2)),
+          mswitchState(switchState(SW_SG0),switchState(SW_SG2)),
+          mswitchState(switchState(SW_SH0),switchState(SW_SH2))) < 0  && !error_displayed) {
+        error_displayed = STR_SDCARD_ERROR;
+        s_global_warning = STR_SDCARD_ERROR;
+      }
 #else
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
