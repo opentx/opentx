@@ -683,6 +683,7 @@ void sdMountPoll()
     mountTimer = 100;
     if (!sdMounted()) {
       f_mount(0, &g_FATFS_Obj);
+      f_chdir(ROOT_PATH);
     }
   }
 }
