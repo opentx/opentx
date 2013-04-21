@@ -231,7 +231,7 @@ int8_t STORAGE_Write (uint8_t lun,
                   uint16_t blk_len)
 {
   if (lun == 1)	{
-    if (fat12Write( buf, blk_addr, blk_len ) != 0)
+    if (fat12Write(buf, blk_addr, blk_len) != 0)
       return -1;
   }
   else {
@@ -639,12 +639,12 @@ int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
     {
         memcpy( buffer, g_FATboot, BLOCKSIZE ) ;
     }
-    else if ( sector == 1/*Reserved sector count*/)
+    else if (sector == 1/*Reserved sector count*/)
     {
         // FAT table.
         memcpy( buffer, g_FAT, BLOCKSIZE);
     }
-    else if ( sector == 2)
+    else if (sector == 2)
     {
       memcpy( buffer, g_DIRroot, BLOCKSIZE ) ;
     }
@@ -663,17 +663,13 @@ int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
 //------------------------------------------------------------------------------
 int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
 {
-  // TO DO, actually write to the EEPROM
-  if ( sector >3 )
-  {
-    sector -= 4 ;		// Indexes EEPROM in 512 byte blocks
-    // Look for a 4K block boundary, writing 4K+
-    while (count) {
-      eeWriteBlockCmp((uint8_t *)buffer, sector*512, 512);
-      buffer+=512;
-      sector++;
-      count--;
-    }  
+  while (count) {
+    if (sector >= 4) {
+      eeWriteBlockCmp((uint8_t *)buffer, (sector-4)*512, 512);
+    }
+    buffer += 512;
+    sector++;
+    count--;
   }
   return 0 ;
 }
