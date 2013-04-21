@@ -663,13 +663,21 @@ int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
 //------------------------------------------------------------------------------
 int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
 {
+  static int offset = 0;
+
   while (count) {
-    if (sector >= 4) {
-      eeWriteBlockCmp((uint8_t *)buffer, (sector-4)*512, 512);
+    const EeFs * test = (const EeFs *)buffer;
+    if (test->version==EEFS_VERS && test->mySize==sizeof(eeFs) && test->bs==BS) {
+      offset = sector;
+    }
+    if (offset && sector >= offset) {
+      eeWriteBlockCmp((uint8_t *)buffer, (sector-offset)*512, 512);
     }
     buffer += 512;
     sector++;
     count--;
+    if (sector-offset+1==EESIZE/512)
+      offset = 0;
   }
   return 0 ;
 }
