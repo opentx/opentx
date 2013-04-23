@@ -186,7 +186,7 @@ uint32_t sdMounted();
 // WDT driver
 #if !defined(SIMU)
 #define wdt_disable()
-#define wdt_enable(x) WDT->WDT_MR = 0x3FFF217F
+#define wdt_enable(x) WDT->WDT_MR = 0x3FFF207F
 #define wdt_reset()   WDT->WDT_CR = 0xA5000001
 #endif
 
