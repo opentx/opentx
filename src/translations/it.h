@@ -573,7 +573,7 @@
 #define TR_SD_SPEED            "Veloc.:"
 #define TR_SD_SECTORS          "Settori:"
 #define TR_SD_SIZE             "Dimens:"
-#define TR_CURVE_TYPE          "Tipo"
+#define TR_TYPE          "Tipo"
 #define TR_GLOBAL_VARS         "Variabili Globali"
 #define TR_OWN                 "Own"
 #define TR_DATE                "Date"

@@ -545,7 +545,7 @@ extern const pm_char STR_SD_TYPE[];
 extern const pm_char STR_SD_SPEED[];
 extern const pm_char STR_SD_SECTORS[];
 extern const pm_char STR_SD_SIZE[];
-extern const pm_char STR_CURVE_TYPE[];
+extern const pm_char STR_TYPE[];
 extern const pm_char STR_GLOBAL_VARS[];
 extern const pm_char STR_OWN[];
 extern const pm_char STR_ROTARY_ENCODER[];

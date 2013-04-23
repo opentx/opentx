@@ -724,20 +724,23 @@ void menuModelFailsafe(uint8_t event)
 }
 #endif
 
+#if defined(CPUM64)
+  #define editNameCursorPos m_posHorz
+#else
+  static uint8_t editNameCursorPos = 0;
+#endif
+
 void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uint8_t active)
 {
 #if defined(CPUM64)
   // in order to save flash
   lcd_putsLeft(y, STR_NAME);
-#define cursorPos m_posHorz
-#else
-  static uint8_t cursorPos = 0;
 #endif
 
   lcd_putsnAtt(x, y, name, size, ZCHAR | ((active && s_editMode <= 0) ? INVERS : 0));
 
   if (active) {
-    uint8_t cur = cursorPos;
+    uint8_t cur = editNameCursorPos;
     if (s_editMode > 0) {
       int8_t c = name[cur];
       int8_t v = c;
@@ -798,12 +801,12 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
         name[cur] = v;
         STORE_MODELVARS;
       }
-      lcd_putcAtt(x+cursorPos*FW, y, idx2char(v), INVERS);
+      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), INVERS);
     }
     else {
       cur = 0;
     }
-    cursorPos = cur;
+    editNameCursorPos = cur;
   }
 }
 
@@ -2068,30 +2071,52 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
 }
 
 #if defined(PCBTARANIS)
-void menuModelCurveOne(uint8_t event)
+const pm_char STR_NEXT_PRESET[] PROGMEM = "Next Preset";
+const pm_char STR_CURVE_NAME[] PROGMEM = "Curve Name...";
+const pm_char STR_CURVE_TYPE[] PROGMEM = "Curve Type...";
+int8_t  presetIdx = 0;
+uint8_t paramsEditMode = 0;
+void onCurveOneMenu(const char *result)
 {
-  static uint8_t coordsOfs = 0;
-
-  TITLE(STR_MENUCURVE);
-  lcd_outdezAtt(PSIZE(TR_MENUCURVE)*FW+1, 0, s_curveChan+1, INVERS|LEFT);
-  DISPLAY_PROGRESS_BAR(20*FW+1);
-
   CurveInfo crv = curveinfo(s_curveChan);
 
-  const uint8_t mstate_tab[] = { 0, 0, uint8_t(NAVIGATION_LINE_BY_LINE|(crv.points-1)), 0 };
-  if (!check(event, 0, 0, 0, mstate_tab, 3, 3))
-    return;
+  if (result == STR_NEXT_PRESET) {
+    if (++presetIdx > 4)
+      presetIdx = -4;
+    for (uint8_t i=0; i<crv.points; i++)
+      crv.crv[i] = (i-(crv.points/2)) * presetIdx * 50 / (crv.points-1);
+    eeDirty(EE_MODEL);
+  }
+  else if (result == STR_CURVE_NAME) {
+    paramsEditMode = 1;
+    s_editMode = 2;
+    editNameCursorPos = 0;
+  }
+  else if (result == STR_CURVE_TYPE) {
+    paramsEditMode = 2;
+    s_editMode = 1;
+  }
+}
 
-  switch(event) {
-    case EVT_ENTRY:
-      m_posVert = 2;
-      coordsOfs = 0;
-      break;
+void menuModelCurveOne(uint8_t event)
+{
+  CurveInfo crv = curveinfo(s_curveChan);
 
-    case EVT_KEY_REPT(KEY_LEFT):
-    case EVT_KEY_FIRST(KEY_LEFT):
-      if (m_posVert == 0 && s_editMode > 0) {
-        coordsOfs = 0;
+  lcd_puts(9*FW, 0, "pt\003X\006Y");
+  lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
+
+  SIMPLE_SUBMENU(STR_MENUCURVE, crv.points);
+  lcd_outdezAtt(PSIZE(TR_MENUCURVE)*FW+1, 0, s_curveChan+1, INVERS|LEFT);
+
+  lcd_putsLeft(FH+1, STR_NAME);
+  editName(INDENT_WIDTH, 2*FH+1, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, paramsEditMode==1);
+  lcd_putsLeft(3*FH+3, STR_TYPE);
+  lcd_outdezAtt(INDENT_WIDTH, 4*FH+3, crv.points, LEFT|(paramsEditMode==2 ? INVERS|BLINK : 0));
+  lcd_putsAtt(lcdLastPos, 4*FH+3, crv.custom ? PSTR("pt'") : PSTR("pt"), (paramsEditMode==2 ? INVERS|BLINK : 0));
+  if (paramsEditMode==2) {
+    switch(event) {
+      case EVT_KEY_REPT(KEY_LEFT):
+      case EVT_KEY_FIRST(KEY_LEFT):
         if (crv.custom) {
           moveCurve(s_curveChan, -crv.points+2);
         }
@@ -2101,14 +2126,10 @@ void menuModelCurveOne(uint8_t event)
         else {
           AUDIO_WARNING2();
         }
-        return;
-      }
-      break;
+        break;
 
-    case EVT_KEY_REPT(KEY_RIGHT):
-    case EVT_KEY_FIRST(KEY_RIGHT):
-      if (m_posVert == 0 && s_editMode > 0) {
-        coordsOfs = 0;
+      case EVT_KEY_REPT(KEY_RIGHT):
+      case EVT_KEY_FIRST(KEY_RIGHT):
         if (!crv.custom) {
           moveCurve(s_curveChan, crv.points-2, crv.points);
         }
@@ -2125,60 +2146,62 @@ void menuModelCurveOne(uint8_t event)
         else {
           AUDIO_WARNING2();
         }
-      }
-      break;
+        break;
+    }
+    crv = curveinfo(s_curveChan);
+    m_posVert = 0;
   }
 
-  lcd_putsLeft(FH+1, STR_CURVE_TYPE);
-  uint8_t attr = (m_posVert==0 ? (s_editMode <= 0 ? INVERS : INVERS|BLINK) : 0);
-  lcd_outdezAtt(5*FW, FH+1, crv.points, LEFT|attr);
-  lcd_putsAtt(lcdLastPos, FH+1, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
-
-  lcd_putsLeft(2*FH+1, STR_NAME);
-  editName(5*FW, 2*FH+1, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==1 ? INVERS : 0);
-
-  lcd_putsAtt(0*FW, 3*FH+3, PSTR("[Edit]"), m_posVert==2 ? INVERS : 0);
-  lcd_putsAtt(0*FW, 4*FH+3, PSTR("[Preset]"), m_posVert==3 ? INVERS : 0);
-  if (m_posVert==3 && event==EVT_KEY_BREAK(KEY_ENTER)) {
-    static int8_t presetIdx = 0;
-    if (++presetIdx > 4)
-      presetIdx = -4;
-    for (uint8_t i=0; i<crv.points; i++)
-      crv.crv[i] = (i-(crv.points/2)) * presetIdx * 50 / (crv.points-1);
-    eeDirty(EE_MODEL);
-    s_editMode = 0;
+  if (paramsEditMode==0) {
+    switch(event) {
+      case EVT_ENTRY:
+        presetIdx = 0;
+        paramsEditMode = 0;
+        break;
+      case EVT_KEY_LONG(KEY_ENTER):
+        killEvents(event);
+        MENU_ADD_ITEM(STR_NEXT_PRESET);
+        MENU_ADD_ITEM(STR_CURVE_NAME);
+        MENU_ADD_ITEM(STR_CURVE_TYPE);
+        menuHandler = onCurveOneMenu;
+        break;
+    }
+  }
+  else if (s_editMode==0) {
+    paramsEditMode = 0;
   }
 
-  DrawCurve(curveFn);
+  DrawCurve(curveFn, FW);
 
-  uint8_t posY = 3;
+  uint8_t posY = FH+4;
   for (uint8_t i=0; i<crv.points; i++) {
-    uint8_t xx = X0-1-WCHART+i*WCHART/(crv.points/2);
+    uint8_t xx = X0-1-WCHART-FW+i*WCHART/(crv.points/2);
     uint8_t yy = (LCD_H-1) - (100 + crv.crv[i]) * (LCD_H-1) / 200;
     if (crv.custom && i>0 && i<crv.points-1)
-      xx = X0-1-WCHART + (100 + (100 + crv.crv[crv.points+i-1]) * (2*WCHART)) / 200;
+      xx = X0-1-WCHART-FW + (100 + (100 + crv.crv[crv.points+i-1]) * (2*WCHART)) / 200;
 
     lcd_filled_rect(xx, yy-1, 3, 3, SOLID, FORCE); // do markup square
 
-    if (i>=coordsOfs && i<=coordsOfs+5) {
+    if (i>=s_pgOfs && i<s_pgOfs+5) {
       int8_t x = -100 + 200*i/(crv.points-1);
       if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
-      lcd_outdezAtt(7+13*FW, posY, x, LEFT|((m_posVert==2 && m_posHorz==i && s_editMode==2) ? BLINK|INVERS : 0));
-      lcd_outdezAtt(7+17*FW, posY, crv.crv[i], LEFT|((m_posVert==2 && m_posHorz==i && s_editMode==3) ? BLINK|INVERS : 0));
-      if (m_posVert==2 && m_posHorz == i) {
-        lcd_rect(9+12*FW, posY-2, 9*FW-4, FH+3);
+      lcd_outdezAtt(6+8*FW,  posY, i+1, LEFT|((paramsEditMode==0 && m_posVert==i && s_editMode==0) ? INVERS : 0));
+      lcd_outdezAtt(3+12*FW, posY, x, LEFT|((paramsEditMode==0 && m_posVert==i && s_editMode==2) ? BLINK|INVERS : 0));
+      lcd_outdezAtt(3+16*FW, posY, crv.crv[i], LEFT|((paramsEditMode==0 && m_posVert==i && s_editMode==3) ? BLINK|INVERS : 0));
+      if (paramsEditMode==0 && m_posVert == i) {
+        lcd_rect(10+7*FW, posY-2, 12*FW-2, FH+3);
       }
       posY += FH+2;
     }
 
-    if (m_posVert==2 && m_posHorz==i) {
+    if (paramsEditMode==0 && m_posVert==i) {
       // do selection square
       lcd_filled_rect(xx-1, yy-2, 5, 5, SOLID, FORCE);
       lcd_filled_rect(xx, yy-1, 3, 3, SOLID);
       if (s_editMode > 0) {
         if (event==EVT_KEY_BREAK(KEY_ENTER)) {
           if (s_editMode == EDIT_MODIFY_FIELD)
-            s_editMode = (crv.custom && m_posHorz>0 && m_posHorz<crv.points-1) ? 2 : 3;
+            s_editMode = crv.custom ? 2 : 3;
           else if (s_editMode == 2)
             s_editMode = 3;
           else
@@ -2191,10 +2214,10 @@ void menuModelCurveOne(uint8_t event)
             CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);
         }
       }
-      if (m_posHorz < coordsOfs)
-        coordsOfs = m_posHorz;
-      else if (m_posHorz >= coordsOfs+6)
-        coordsOfs = m_posHorz-5;
+      if (m_posVert < s_pgOfs)
+        s_pgOfs = m_posVert;
+      else if (m_posVert >= s_pgOfs+5)
+        s_pgOfs = m_posVert-4;
     }
   }
 }
@@ -2283,7 +2306,7 @@ void menuModelCurveOne(uint8_t event)
       break;
   }
 
-  lcd_putsLeft(7*FH, STR_CURVE_TYPE);
+  lcd_putsLeft(7*FH, STR_TYPE);
   uint8_t attr = (s_editMode <= 0 ? INVERS : 0);
   lcd_outdezAtt(5*FW-2, 7*FH, crv.points, LEFT|attr);
   lcd_putsAtt(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
@@ -3414,10 +3437,12 @@ void menuModelCurvesAll(uint8_t event)
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_BREAK:
 #endif
-#if !defined(PCBTARANIS)
+#if defined(PCBTARANIS)
+    case EVT_KEY_BREAK(KEY_ENTER):
+#else
     case EVT_KEY_FIRST(KEY_RIGHT):
-#endif
     case EVT_KEY_FIRST(KEY_ENTER):
+#endif
       if (CURVE_SELECTED()) {
         s_curveChan = sub;
         pushMenu(menuModelCurveOne);
@@ -3430,13 +3455,7 @@ void menuModelCurvesAll(uint8_t event)
     uint8_t k = i + s_pgOfs;
     uint8_t attr = (sub == k ? INVERS : 0);
 #if defined(GVARS) && defined(PCBSTD)
-    if (k < MAX_CURVES) {
-      putsStrIdx(0, y, STR_CV, k+1, attr);
-#if defined(PCBTARANIS)
-      lcd_putsnAtt(5*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), ZCHAR);
-#endif
-    }
-    else {
+    if (k >= MAX_CURVES) {
       putsStrIdx(0, y, STR_GV, k-MAX_CURVES+1);
       if (GVAR_SELECTED()) {
         if (attr && s_editMode>0) attr |= BLINK;
@@ -3444,12 +3463,17 @@ void menuModelCurvesAll(uint8_t event)
         if (attr) g_model.gvars[k-MAX_CURVES] = checkIncDec(event, g_model.gvars[k-MAX_CURVES], -1000, 1000, EE_MODEL);
       }
     }
-#else
-    putsStrIdx(0, y, STR_CV, k+1, attr);
+    else
+#endif
+    {
+      putsStrIdx(0, y, STR_CV, k+1, attr);
 #if defined(PCBTARANIS)
-    lcd_putsnAtt(5*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), ZCHAR);
+      editName(4*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
+      CurveInfo crv = curveinfo(k);
+      lcd_outdezAtt(11*FW, y, crv.points, LEFT);
+      lcd_putsAtt(lcdLastPos, y, crv.custom ? PSTR("pt'") : PSTR("pt"), 0);
 #endif
-#endif
+    }
   }
 
   if (CURVE_SELECTED()) {

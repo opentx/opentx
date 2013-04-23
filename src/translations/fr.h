@@ -588,7 +588,7 @@
 #define TR_SD_SPEED            "Vitesse:"
 #define TR_SD_SECTORS          "Secteurs:"
 #define TR_SD_SIZE             "Taille:"
-#define TR_CURVE_TYPE          "Type"
+#define TR_TYPE          "Type"
 #define TR_GLOBAL_VARS         "Variables Globales"
 #define TR_OWN                 "Pers"
 #define TR_DATE                "Date"

@@ -569,7 +569,7 @@
 #define TR_SD_SPEED            "Rychlost:"
 #define TR_SD_SECTORS          "Sektor\211 :"
 #define TR_SD_SIZE             "Velikost:"
-#define TR_CURVE_TYPE          TR_SD_TYPE
+#define TR_TYPE          TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Glob\200ln\204 prom\203nn\202"
 #define TR_OWN                 " \043 "
 #define TR_DATE                "Date"

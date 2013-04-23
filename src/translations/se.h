@@ -582,7 +582,7 @@
 #define TR_SD_SPEED            "Hastighet:"
 #define TR_SD_SECTORS          "Sektorer:"
 #define TR_SD_SIZE             "Strl:"
-#define TR_CURVE_TYPE          "Typ "
+#define TR_TYPE          "Typ "
 #define TR_GLOBAL_VARS         "Globala Variabler"
 #define TR_OWN                 "Egen"
 #define TR_DATE                "Datum"
