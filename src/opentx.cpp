@@ -429,17 +429,17 @@ void modelDefault(uint8_t id)
 #endif
 }
 
-int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0, 25 ,50, 75, 100
+int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 {
   CurveInfo crv = curveinfo(idx);
   int16_t erg = 0;
 
   x+=RESXu;
   if (x < 0) {
-    erg = (int16_t)crv.crv[0];
+    erg = (int16_t)crv.crv[0] * (RESX/4);
   }
   else if (x >= (RESX*2)) {
-    erg = (int16_t)crv.crv[crv.points-1];
+    erg = (int16_t)crv.crv[crv.points-1] * (RESX/4);
   }
   else {
     uint16_t a=0, b=0;
@@ -457,10 +457,10 @@ int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0, 25 ,50, 75, 10
       a = i * d;
       b = a + d;
     }
-    erg = (int16_t)crv.crv[i] + ((int32_t)(x-a) * (crv.crv[i+1]-crv.crv[i])) / (b-a);
+    erg = (int16_t)crv.crv[i]*(RESX/4) + ((int32_t)(x-a) * (crv.crv[i+1]-crv.crv[i]) * (RESX/4)) / ((b-a));
   }
 
-  return calc100toRESX(erg);
+  return erg / 25; // 100*D5/RESX;
 }
 
 #if defined(CURVES)

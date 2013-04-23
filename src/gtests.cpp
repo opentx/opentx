@@ -463,6 +463,17 @@ TEST(Mixer, RecursiveAddChannel)
   EXPECT_EQ(chans[1], 0);
 }
 
+TEST(Curves, LinearIntpol)
+{
+  MODEL_RESET();
+  for (int8_t i=-2; i<=2; i++) {
+    g_model.points[2+i] = 50*i;
+  }
+  EXPECT_EQ(intpol(-1024, 0), -1024);
+  EXPECT_EQ(intpol(0, 0), 0);
+  EXPECT_EQ(intpol(1024, 0), 1024);
+  EXPECT_EQ(intpol(-192, 0), -192);
+}
 
 int main(int argc, char **argv) {
   StartEepromThread(NULL);
