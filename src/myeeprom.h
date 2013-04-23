@@ -226,7 +226,7 @@ PACK(typedef struct t_ModuleData {
 
 #if defined(PCBTARANIS)
 #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-#define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES]; uint8_t trainerMode; char curveNames[MAX_CURVES][6];
+#define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES]; uint8_t trainerMode; char curveNames[MAX_CURVES][6]; ModuleData trainerData;
 #define LIMITDATA_EXTRA   char name[6];
 #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
