@@ -3964,7 +3964,7 @@ void opentxStart()
 {
   doSplash();
 
-#if defined(PCBSKY9X) && defined(SDCARD)
+#if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
   for (int i=0; i<500 && !Card_initialized; i++) {
     CoTickDelay(1);  // 2ms
   }
