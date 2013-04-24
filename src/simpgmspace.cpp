@@ -260,6 +260,7 @@ void *eeprom_write_function(void *)
 
 uint8_t main_thread_running = 0;
 char * main_thread_error = NULL;
+extern void opentxStart();
 void *main_thread(void *)
 {
 #ifdef SIMU_EXCEPTIONS
@@ -280,16 +281,7 @@ void *main_thread(void *)
     if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
     if (main_thread_running == 1) {
-#if defined(SPLASH)
-      doSplash();
-#endif
-
-#if defined(CPUARM)
-      eeLoadModel(g_eeGeneral.currModel);
-#endif
-
-      checkAlarm(); // TODO why not in checkAll()
-      checkAll();
+      opentxStart();
     }
     else {
 #if defined(CPUARM)

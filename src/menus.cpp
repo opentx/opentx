@@ -412,11 +412,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     s_noScroll = 0;
     displayScreenIndex(curr, menuTabSize, attr);
 
-#if LCD_W >= 212
-    if (maxrow > LCD_LINES-1)
-      displayScrollbar(LCD_W-1, FH, LCD_H-FH, s_pgOfs, maxrow, LCD_LINES-1);
-#endif
-
 #if defined(PCBTARANIS)
     lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 #endif
@@ -686,8 +681,10 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   else if (menuTab && horTab) {
     vertpos_t realPosVert = l_posVert;
     vertpos_t realPgOfs = s_pgOfs;
+    vertpos_t realMaxrow = maxrow;
     for (vertpos_t i=1; i<=maxrow; i++) {
       if (horTab[i] == HIDDEN_ROW) {
+        realMaxrow--;
         if (i < l_posVert)
           realPosVert--;
         if (i < s_pgOfs)
@@ -702,12 +699,19 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         s_pgOfs++;
       }
     }
+    maxrow = realMaxrow;
   }
   else {
     uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
     if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
     else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
   }
+
+#if LCD_W >= 212
+  if (maxrow > LCD_LINES-1)
+    displayScrollbar(LCD_W-1, FH, LCD_H-FH, s_pgOfs, maxrow, LCD_LINES-1);
+#endif
+
 #else
   uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
   if (l_posVert<1) s_pgOfs=0;
@@ -774,19 +778,25 @@ void pushMenu(MenuFuncP newMenu)
   (*newMenu)(EVT_ENTRY);
 }
 
-const pm_char * s_warning = 0;
+const pm_char * s_warning = NULL;
 const pm_char * s_warning_info;
 uint8_t         s_warning_info_len;
 // uint8_t s_warning_info_att not needed now
 uint8_t         s_warning_type;
 uint8_t         s_warning_result = 0;
-const pm_char * s_global_warning = 0;
+const pm_char * s_global_warning = NULL;
+
+#if defined(CPUARM)
+int16_t s_warning_input_value;
+int16_t s_warning_input_min;
+int16_t s_warning_input_max;
+#endif
 
 void displayBox()
 {
   lcd_filled_rect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcd_rect(10, 16, LCD_W-20, 40);
-  lcd_puts(16, 3*FH, s_warning);
+  lcd_puts(WARNING_LINE_X, WARNING_LINE_Y, s_warning);
   // could be a place for a s_warning_info
 }
 
@@ -794,7 +804,7 @@ void displayPopup(const pm_char * pstr)
 {
   s_warning = pstr;
   displayBox();
-  s_warning = 0;
+  s_warning = NULL;
   lcdRefresh();
 }
 
@@ -803,9 +813,9 @@ void displayWarning(uint8_t event)
   s_warning_result = false;
   displayBox();
   if (s_warning_info)
-    lcd_putsnAtt(16, 4*FH, s_warning_info, s_warning_info_len, ZCHAR);
-  lcd_puts(16, 5*FH, s_warning_type == WARNING_TYPE_CONFIRM ? STR_POPUPS : STR_EXIT);
-  switch(event) {
+    lcd_putsnAtt(16, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, ZCHAR);
+  lcd_puts(16, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
+  switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_BREAK:
 #endif
@@ -819,9 +829,17 @@ void displayWarning(uint8_t event)
       killEvents(event);
 #endif
     case EVT_KEY_BREAK(KEY_EXIT):
-      s_warning = 0;
+      s_warning = NULL;
       s_warning_type = WARNING_TYPE_ASTERISK;
       break;
+#if defined(CPUARM)
+    default:
+      if (s_warning_type != WARNING_TYPE_INPUT) break;
+      s_editMode = EDIT_MODIFY_FIELD;
+      s_warning_input_value = checkIncDec(event, s_warning_input_value, s_warning_input_min, s_warning_input_max);
+      s_editMode = EDIT_SELECT_FIELD;
+      break;
+#endif
   }
 }
 
@@ -914,6 +932,10 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int16_t min, int16_t max
 #define MENU_X   10
 #define MENU_Y   16
 #define MENU_W   LCD_W-20
+#endif
+
+#if defined(CPUARM)
+void (*popupFunc)(uint8_t event) = NULL;
 #endif
 
 #if defined(NAVIGATION_MENUS)

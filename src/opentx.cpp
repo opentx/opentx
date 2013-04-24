@@ -372,12 +372,7 @@ void generalDefault()
   g_eeGeneral.vBatWarn = 90;
 #endif
 
-  for (int i = 0; i < NUM_STICKS+NUM_POTS; ++i) {
-    g_eeGeneral.calibMid[i]     = 0x200;
-    g_eeGeneral.calibSpanNeg[i] = 0x180;
-    g_eeGeneral.calibSpanPos[i] = 0x180;
-  }
-  g_eeGeneral.chkSum = 0x200 * (NUM_STICKS+NUM_POTS) + 0x180 * 5;
+  g_eeGeneral.chkSum = 0xFFFF;
 }
 
 uint16_t evalChkSum()
@@ -407,8 +402,7 @@ void checkModelIdUnique(uint8_t id)
 {
   for (uint8_t i=0; i<MAX_MODELS; i++) {
     if (i!=id && g_model.header.modelId!=0 && g_model.header.modelId==modelHeaders[i].modelId) {
-      s_warning = PSTR("Model ID already used");
-      s_warning_type = WARNING_TYPE_ASTERISK;
+      POPUP_WARNING(PSTR("Model ID already used"));
     }
   }
 }
@@ -3605,7 +3599,7 @@ void perMain()
   }
   else {
     g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-    if (warn) displayWarning(evt);
+    if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
     if (menu) {
       const char * result = displayMenu(evt);
@@ -3961,10 +3955,32 @@ void saveTimers()
 #endif
 
 #if defined(ROTARY_ENCODERS)
-volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};
+  volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-volatile rotenc_t g_rotenc[1] = {0};
+  volatile rotenc_t g_rotenc[1] = {0};
 #endif
+
+void opentxStart()
+{
+  doSplash();
+
+#if defined(PCBSKY9X) && defined(SDCARD)
+  for (int i=0; i<500 && !Card_initialized; i++) {
+    CoTickDelay(1);  // 2ms
+  }
+#endif
+
+#if defined(CPUARM)
+  eeLoadModel(g_eeGeneral.currModel);
+#endif
+
+  checkAlarm();
+  checkAll();
+
+  if (g_eeGeneral.chkSum != evalChkSum()) {
+    pushMenu(menuGeneralCalib);
+  }
+}
 
 #ifndef SIMU
 
@@ -4044,14 +4060,14 @@ uint16_t stack_free()
 #endif
 
 #if defined(PCBGRUVIN9X)
-#define OPEN9X_INIT_ARGS const uint8_t mcusr
+  #define OPENTX_INIT_ARGS const uint8_t mcusr
 #elif defined(PCBSTD)
-#define OPEN9X_INIT_ARGS const uint8_t mcusr
+  #define OPENTX_INIT_ARGS const uint8_t mcusr
 #else
-#define OPEN9X_INIT_ARGS
+  #define OPENTX_INIT_ARGS
 #endif
 
-inline void opentxInit(OPEN9X_INIT_ARGS)
+inline void opentxInit(OPENTX_INIT_ARGS)
 {
 #if defined(PCBTARANIS)
   BACKLIGHT_ON();
@@ -4100,20 +4116,7 @@ inline void opentxInit(OPEN9X_INIT_ARGS)
 #endif
   }
   else {
-    doSplash();
-
-#if defined(PCBSKY9X) && defined(SDCARD)
-    for (int i=0; i<500 && !Card_initialized; i++) {
-      CoTickDelay(1);  // 2ms
-    }
-#endif
-
-#if defined(CPUARM)
-    eeLoadModel(g_eeGeneral.currModel);
-#endif
-
-    checkAlarm();
-    checkAll();
+    opentxStart();
   }
 
 #if defined(CPUARM) || defined(PCBGRUVIN9X)

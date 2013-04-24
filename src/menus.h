@@ -158,7 +158,7 @@ extern int8_t s_editMode;       // global editmode
 #define TITLE_ROW      ((uint8_t)-1)
 #define HIDDEN_ROW     ((uint8_t)-2)
 
-int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags);
+int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
 
 #if defined(CPUM64)
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
@@ -258,6 +258,7 @@ int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int16_t min, int16_t max
 
 #define WARNING_TYPE_ASTERISK  0
 #define WARNING_TYPE_CONFIRM   1
+#define WARNING_TYPE_INPUT     2
 
 extern const pm_char * s_warning;
 extern const pm_char * s_warning_info;
@@ -267,9 +268,30 @@ extern uint8_t         s_warning_type;
 
 extern const pm_char * s_global_warning;
 
+#define WARNING_LINE_X 16
+#define WARNING_LINE_Y 3*FH
+
 void displayBox();
 void displayPopup(const pm_char * pstr);
 void displayWarning(uint8_t event);
+
+#if defined(CPUARM)
+  extern void (*popupFunc)(uint8_t event);
+  extern int16_t s_warning_input_value;
+  extern int16_t s_warning_input_min;
+  extern int16_t s_warning_input_max;
+#endif
+
+#if defined(CPUARM)
+  #define DISPLAY_WARNING       (*popupFunc)
+  #define POPUP_WARNING(s)      do { s_warning = s; popupFunc = displayWarning; } while(0)
+  #define POPUP_CONFIRMATION(s) do { s_warning = s; s_warning_type = WARNING_TYPE_CONFIRM; popupFunc = displayWarning; } while(0)
+  #define POPUP_INPUT(s, func, start, min, max) do { s_warning = s; s_warning_type = WARNING_TYPE_INPUT; popupFunc = func; s_warning_input_value = start; s_warning_input_min = min; s_warning_input_max = max; } while(0)
+#else
+  #define DISPLAY_WARNING       displayWarning
+  #define POPUP_WARNING(s)      s_warning = s
+  #define POPUP_CONFIRMATION(s) do { s_warning = s; s_warning_type = WARNING_TYPE_CONFIRM; } while(0)
+#endif
 
 #if defined(SDCARD) || (defined(ROTARY_ENCODER_NAVIGATION) && !defined(CPUM64))
   #define NAVIGATION_MENUS

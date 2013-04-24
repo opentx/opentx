@@ -222,11 +222,14 @@ PACK(typedef struct t_ModuleData {
   int8_t  channelsCount; // 0=8 channels
   uint8_t failsafeMode;
   int16_t failsafeChannels[NUM_CHNOUT];
+  int8_t  ppmDelay;
+  int8_t  ppmFrameLength;
+  uint8_t ppmPulsePol;
 }) ModuleData;
 
 #if defined(PCBTARANIS)
 #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-#define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES]; uint8_t trainerMode; char curveNames[MAX_CURVES][6]; ModuleData trainerData;
+#define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6];
 #define LIMITDATA_EXTRA   char name[6];
 #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)

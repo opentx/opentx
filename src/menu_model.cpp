@@ -264,18 +264,17 @@ void onModelSelectMenu(const char *result)
 #if defined(SDCARD)
   else if (result == STR_BACKUP_MODEL) {
     eeCheck(true); // force writing of current model data before this is changed
-    s_warning = eeBackupModel(sub);
+    POPUP_WARNING(eeBackupModel(sub));
   }
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
     if (!listSdFiles(MODELS_PATH, MODELS_EXT, sizeof(g_model.header.name), NULL)) {
-      s_warning = STR_NO_MODELS_ON_SD;
+      POPUP_WARNING(STR_NO_MODELS_ON_SD);
       s_menu_flags = 0;
     }
   }
 #endif
   else if (result == STR_DELETE_MODEL) {
-    s_warning = STR_DELETEMODEL;
-    s_warning_type = WARNING_TYPE_CONFIRM;
+    POPUP_CONFIRMATION(STR_DELETEMODEL);
 #if defined(CPUARM)
     s_warning_info = modelHeaders[sub].name;
 #else
@@ -288,7 +287,7 @@ void onModelSelectMenu(const char *result)
 #if defined(SDCARD)
   else {
     // The user choosed a file on SD to restore
-    s_warning = eeRestoreModel(sub, (char *)result);
+    POPUP_WARNING(eeRestoreModel(sub, (char *)result));
     if (!s_warning && g_eeGeneral.currModel == sub)
       eeLoadModel(sub);
   }
@@ -350,8 +349,7 @@ void menuModelSelect(uint8_t event)
         break;
       case EVT_KEY_LONG(KEY_EXIT):
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
-          s_warning = STR_DELETEMODEL;
-          s_warning_type = WARNING_TYPE_CONFIRM;
+          POPUP_CONFIRMATION(STR_DELETEMODEL);
 #if defined(CPUARM)
           s_warning_info = modelHeaders[sub].name;
 #else
@@ -851,7 +849,10 @@ enum menuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_EXTERNAL_MODULE_BIND,
   ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
-  ITEM_MODEL_TRAINER,
+  ITEM_MODEL_TRAINER_LABEL,
+  ITEM_MODEL_TRAINER_MODE,
+  ITEM_MODEL_TRAINER_CHANNELS,
+  ITEM_MODEL_TRAINER_SETTINGS,
 #else
   ITEM_MODEL_PROTOCOL,
   IF_PCBSKY9X(ITEM_MODEL_PPM2_PROTOCOL)
@@ -877,7 +878,7 @@ void onModelSetupMenu(const char *result)
 {
   if (result == STR_UPDATE_LIST) {
     if (!listSdFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
-      s_warning = STR_NO_BITMAPS_ON_SD;
+      POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
       s_menu_flags = 0;
     }
   }
@@ -911,12 +912,14 @@ void menuModelSetup(uint8_t event)
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
   #define IF_PORT1_ON(x)             (g_model.moduleData[0].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
   #define IF_PORT2_ON(x)             (g_model.externalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
-  #define IF_PORT_ON(idx, x)         (idx==0 ? IS_PORT1_ON(x) : IS_PORT2_ON(x))
+  #define IF_TRAINER_ON(x)           (g_model.trainerMode ? (uint8_t)(x) : HIDDEN_ROW)
+  #define IF_PORT_ON(idx, x)         (idx==0 ? IS_PORT1_ON(x) : (idx==1 ? IS_PORT2_ON(x) : IS_TRAINER_ON()))
   #define IF_PORT2_XJT(x)            (IS_MODULE_XJT(1) ? (uint8_t)x : HIDDEN_ROW)
   #define PORT1_CHANNELS_ROWS()      IF_PORT1_ON(1)
   #define PORT2_CHANNELS_ROWS()      IF_PORT2_ON(g_model.externalModule == MODULE_TYPE_DJT ? (uint8_t)0 : (g_model.externalModule == MODULE_TYPE_DSM2 ? (uint8_t)0 : ((uint8_t)1)))
-  #define PORT_CHANNELS_ROWS(x)      (x==0 ? PORT1_CHANNELS_ROWS() : PORT2_CHANNELS_ROWS())
-  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, 1+ITEM_MODEL_SETUP_MAX, { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(2), IF_PORT1_ON(g_model.moduleData[0].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0), LABEL(ExternalModule), g_model.externalModule==MODULE_TYPE_XJT ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) ? (uint8_t)2 : HIDDEN_ROW), IF_PORT2_XJT(g_model.moduleData[1].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0), 0});
+  #define TRAINER_CHANNELS_ROWS()    IF_TRAINER_ON(1)
+  #define PORT_CHANNELS_ROWS(x)      (x==0 ? PORT1_CHANNELS_ROWS() : (x==1 ? PORT2_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS()))
+  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, 1+ITEM_MODEL_SETUP_MAX, { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(2), IF_PORT1_ON(g_model.moduleData[0].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0), LABEL(ExternalModule), g_model.externalModule==MODULE_TYPE_XJT ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) ? (uint8_t)2 : HIDDEN_ROW), IF_PORT2_XJT(g_model.moduleData[1].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #elif defined(CPUM64)
   #define CURSOR_ON_CELL (true)
   uint8_t protocol = g_model.protocol;
@@ -965,7 +968,7 @@ void menuModelSetup(uint8_t event)
             menuHandler = onModelSetupMenu;
           }
           else {
-            s_warning = STR_NO_BITMAPS_ON_SD;
+            POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
             s_menu_flags = 0;
           }
         }
@@ -1189,8 +1192,9 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
       case ITEM_MODEL_EXTERNAL_MODULE_CHANNELS:
+      case ITEM_MODEL_TRAINER_CHANNELS:
       {
-        uint8_t moduleIdx = (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? 1 : 0);
+        uint8_t moduleIdx = (k>=ITEM_MODEL_TRAINER_LABEL ? 2 : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? 1 : 0));
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcd_putsLeft(y, PSTR(INDENT "Channels Range"));
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
@@ -1214,26 +1218,28 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_BIND:
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
+      case ITEM_MODEL_TRAINER_SETTINGS:
       {
-        uint8_t moduleIdx = (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? 1 : 0);
+        uint8_t moduleIdx = (k>=ITEM_MODEL_TRAINER_LABEL ? 2 : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? 1 : 0));
+        ModuleData & moduleData = g_model.moduleData[moduleIdx];
         if (IS_MODULE_PPM(moduleIdx)) {
           lcd_putsLeft(y, STR_PPMFRAME);
           lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
+          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
           lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.ppmDelay*50)+300, (m_posHorz < 0 || m_posHorz==1) ? attr : 0);
-          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.pulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
+          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppmDelay*50)+300, (m_posHorz < 0 || m_posHorz==1) ? attr : 0);
+          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
 
           if (attr && (editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
               case 0:
-                CHECK_INCDEC_MODELVAR(event, g_model.ppmFrameLength, -20, 35);
+                CHECK_INCDEC_MODELVAR(event, moduleData.ppmFrameLength, -20, 35);
                 break;
               case 1:
-                CHECK_INCDEC_MODELVAR(event, g_model.ppmDelay, -4, 10);
+                CHECK_INCDEC_MODELVAR(event, moduleData.ppmDelay, -4, 10);
                 break;
               case 2:
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.pulsePol, 1);
+                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.ppmPulsePol, 1);
                 break;
             }
           }
@@ -1303,10 +1309,16 @@ void menuModelSetup(uint8_t event)
         break;
       }
 
-      case ITEM_MODEL_TRAINER:
-        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, PSTR("Trainer Mode"), PSTR("\006MasterSlave"), g_model.trainerMode, 0, 1, attr, event);
+      case ITEM_MODEL_TRAINER_LABEL:
+        lcd_putsLeft(y, PSTR("Trainer"));
         break;
+
+      case ITEM_MODEL_TRAINER_MODE:
+        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, PSTR("\006MasterSlave"), g_model.trainerMode, 0, 1, attr, event);              break;
+        break;
+
 #else
+
       case ITEM_MODEL_PROTOCOL:
 #if defined(PCBSKY9X)
         lcd_putsLeft(y, PSTR("Port1"));
@@ -2103,28 +2115,32 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
 }
 
 #if defined(PCBTARANIS)
-const pm_char STR_CURVE_NAME[] PROGMEM = "Curve Name...";
-const pm_char STR_CURVE_TYPE[] PROGMEM = "Curve Type...";
 const pm_char STR_CURVE_PRESET[] PROGMEM = "Preset...";
 const pm_char STR_PRESET[] PROGMEM = "Preset";
 const pm_char STR_CURVE_MIRROR[] PROGMEM = "Mirror";
 const pm_char STR_CURVE_CLEAR[] PROGMEM = "Clear";
-int8_t  presetIdx = 0;
-uint8_t paramsEditMode = 0;
+
+void displayPresetChoice(uint8_t event)
+{
+  displayWarning(event);
+  lcd_outdezAtt(WARNING_LINE_X+FW*sizeof(STR_PRESET), WARNING_LINE_Y, 45*s_warning_input_value/4, LEFT|INVERS);
+  lcd_putcAtt(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
+
+  if (s_warning_result) {
+    CurveInfo crv = curveinfo(s_curveChan);
+    for (uint8_t i=0; i<crv.points; i++)
+      crv.crv[i] = (i-(crv.points/2)) * s_warning_input_value * 50 / (crv.points-1);
+    if (crv.custom) {
+      for (int i=0; i<crv.points-2; i++)
+        crv.crv[crv.points+i] = -100 + ((i+1)*200) / (crv.points-1);
+    }
+  }
+}
+
 void onCurveOneMenu(const char *result)
 {
-  if (result == STR_CURVE_NAME) {
-    paramsEditMode = 1;
-    s_editMode = 2;
-    editNameCursorPos = 0;
-  }
-  else if (result == STR_CURVE_TYPE) {
-    paramsEditMode = 2;
-    s_editMode = 1;
-  }
-  else if (result == STR_CURVE_PRESET) {
-    paramsEditMode = 3;
-    s_editMode = 1;
+  if (result == STR_CURVE_PRESET) {
+    POPUP_INPUT(STR_PRESET, displayPresetChoice, 0, -4, 4);
   }
   else if (result == STR_CURVE_MIRROR) {
     CurveInfo crv = curveinfo(s_curveChan);
@@ -2144,21 +2160,23 @@ void onCurveOneMenu(const char *result)
 
 void menuModelCurveOne(uint8_t event)
 {
+  static uint8_t pointsOfs = 0;
   CurveInfo crv = curveinfo(s_curveChan);
 
   lcd_puts(9*FW, 0, "pt\003X\006Y");
   lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
-  SIMPLE_SUBMENU(STR_MENUCURVE, crv.points);
+  SIMPLE_SUBMENU(STR_MENUCURVE, 2 + crv.points + (crv.custom ? crv.points-2 : 0));
   lcd_outdezAtt(PSIZE(TR_MENUCURVE)*FW+1, 0, s_curveChan+1, INVERS|LEFT);
 
   lcd_putsLeft(FH+1, STR_NAME);
-  editName(INDENT_WIDTH, 2*FH+1, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, paramsEditMode==1);
+  editName(INDENT_WIDTH, 2*FH+1, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, m_posVert==0);
 
+  uint8_t attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(3*FH+3, STR_TYPE);
-  lcd_outdezAtt(INDENT_WIDTH, 4*FH+3, crv.points, LEFT|(paramsEditMode==2 ? INVERS|BLINK : 0));
-  lcd_putsAtt(lcdLastPos, 4*FH+3, crv.custom ? PSTR("pt'") : PSTR("pt"), (paramsEditMode==2 ? INVERS|BLINK : 0));
-  if (paramsEditMode==2) {
+  lcd_outdezAtt(INDENT_WIDTH, 4*FH+3, crv.points, LEFT|attr);
+  lcd_putsAtt(lcdLastPos, 4*FH+3, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
+  if (attr==(INVERS|BLINK)) {
     switch(event) {
       case EVT_KEY_REPT(KEY_LEFT):
       case EVT_KEY_FIRST(KEY_LEFT):
@@ -2194,87 +2212,61 @@ void menuModelCurveOne(uint8_t event)
         break;
     }
     crv = curveinfo(s_curveChan);
-    m_posVert = 0;
   }
 
-  if (paramsEditMode==3) {
-    lcd_putsLeft(5*FH+5, STR_PRESET);
-    lcd_outdezAtt(INDENT_WIDTH, 6*FH+5, 45*presetIdx/4, LEFT|INVERS|BLINK);
-    lcd_putcAtt(lcdLastPos, 6*FH+5, '@', INVERS|BLINK);
-    presetIdx = checkIncDecModel(event, presetIdx, -4, 4);
-    if (checkIncDec_Ret) {
-      for (uint8_t i=0; i<crv.points; i++)
-        crv.crv[i] = (i-(crv.points/2)) * presetIdx * 50 / (crv.points-1);
-      if (crv.custom) {
-        for (int i=0; i<crv.points-2; i++)
-          crv.crv[crv.points+i] = -100 + ((i+1)*200) / (crv.points-1);
-      }
-    }
-  }
-
-  if (paramsEditMode==0) {
-    switch(event) {
-      case EVT_ENTRY:
-        presetIdx = 0;
-        paramsEditMode = 0;
-        break;
-      case EVT_KEY_LONG(KEY_ENTER):
-        killEvents(event);
-        MENU_ADD_ITEM(STR_CURVE_NAME);
-        MENU_ADD_ITEM(STR_CURVE_TYPE);
-        MENU_ADD_ITEM(STR_CURVE_PRESET);
-        MENU_ADD_ITEM(STR_CURVE_MIRROR);
-        MENU_ADD_ITEM(STR_CURVE_CLEAR);
-        menuHandler = onCurveOneMenu;
-        break;
-    }
-  }
-  else if (s_editMode==0) {
-    paramsEditMode = 0;
+  switch(event) {
+    case EVT_ENTRY:
+      pointsOfs = 0;
+      break;
+    case EVT_KEY_LONG(KEY_ENTER):
+      killEvents(event);
+      MENU_ADD_ITEM(STR_CURVE_PRESET);
+      MENU_ADD_ITEM(STR_CURVE_MIRROR);
+      MENU_ADD_ITEM(STR_CURVE_CLEAR);
+      menuHandler = onCurveOneMenu;
+      break;
   }
 
   DrawCurve(FW);
 
-  uint8_t posY = FH+4;
+  uint8_t posY = FH+1;
+  attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);
   for (uint8_t i=0; i<crv.points; i++) {
     point_t point = getPoint(i);
-
-    if (i>=s_pgOfs && i<s_pgOfs+5) {
-      int8_t x = -100 + 200*i/(crv.points-1);
-      if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
-      lcd_outdezAtt(6+8*FW,  posY, i+1, LEFT|((paramsEditMode==0 && m_posVert==i && s_editMode==0) ? INVERS : 0));
-      lcd_outdezAtt(3+12*FW, posY, x, LEFT|((paramsEditMode==0 && m_posVert==i && s_editMode==2) ? BLINK|INVERS : 0));
-      lcd_outdezAtt(3+16*FW, posY, crv.crv[i], LEFT|((paramsEditMode==0 && m_posVert==i && s_editMode==3) ? BLINK|INVERS : 0));
-      if (paramsEditMode==0 && m_posVert == i) {
-        lcd_rect(10+7*FW, posY-2, 12*FW-2, FH+3);
-      }
-      posY += FH+2;
+    uint8_t selectionMode = 0;
+    if (crv.custom) {
+      if (m_posVert==2+2*i || (i==crv.points-1 && m_posVert==2+crv.points+crv.points-2-1))
+        selectionMode = 2;
+      else if (i>0 && m_posVert==1+2*i)
+        selectionMode = 1;
+    }
+    else if (m_posVert == 2+i) {
+      selectionMode = 2;
     }
 
-    if (paramsEditMode==0 && m_posVert==i) {
+    if (i>=pointsOfs && i<pointsOfs+7) {
+      int8_t x = -100 + 200*i/(crv.points-1);
+      if (crv.custom && i>0 && i<crv.points-1) x = crv.crv[crv.points+i-1];
+      lcd_outdezAtt(6+8*FW,  posY, i+1, LEFT);
+      lcd_outdezAtt(3+12*FW, posY, x, LEFT|(selectionMode==1?attr:0));
+      lcd_outdezAtt(3+16*FW, posY, crv.crv[i], LEFT|(selectionMode==2?attr:0));
+      posY += FH;
+    }
+
+    if (selectionMode > 0) {
       // do selection square
       lcd_filled_rect(point.x-FW-1, point.y-2, 5, 5, SOLID, FORCE);
       lcd_filled_rect(point.x-FW, point.y-1, 3, 3, SOLID);
       if (s_editMode > 0) {
-        if (event==EVT_KEY_BREAK(KEY_ENTER)) {
-          if (s_editMode == EDIT_MODIFY_FIELD)
-            s_editMode = (crv.custom && i>0 && i<crv.points-1) ? 2 : 3;
-          else if (s_editMode == 2)
-            s_editMode = 3;
-          else
-            s_editMode = 0;
-        }
-        else if (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_MINUS) || event==EVT_KEY_REPT(KEY_PLUS)) {
-          if (s_editMode == 2)
-            CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X
-          else if (s_editMode == 3)
-            CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);
-        }
+        if (selectionMode == 1)
+          CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X
+        else if (selectionMode == 2)
+          CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);
       }
-      if (m_posVert < s_pgOfs)
-        s_pgOfs = m_posVert;
-      else if (m_posVert >= s_pgOfs+5)
-        s_pgOfs = m_posVert-4;
+      if (i < pointsOfs)
+        pointsOfs = i;
+      else if (i > pointsOfs+6)
+        pointsOfs = i-6;
     }
   }
 }
@@ -2302,10 +2294,10 @@ void menuModelCurveOne(uint8_t event)
       break;
     case EVT_KEY_LONG(KEY_ENTER):
       if (s_editMode <= 0) {
-        if (++m_posHorz > 4)
+        if (int8_t(++m_posHorz) > 4)
           m_posHorz = -4;
         for (uint8_t i=0; i<crv.points; i++)
-          crv.crv[i] = (i-(crv.points/2)) * m_posHorz * 50 / (crv.points-1);
+          crv.crv[i] = (i-(crv.points/2)) * int8_t(m_posHorz) * 50 / (crv.points-1);
         eeDirty(EE_MODEL);
         killEvents(event);
       }
@@ -2414,7 +2406,7 @@ bool reachExpoMixCountLimit(uint8_t expo)
 {
   // check mixers count limit
   if (getExpoMixCount(expo) >= (expo ? MAX_EXPOS : MAX_MIXERS)) {
-    s_warning = (expo ? STR_NOFREEEXPO : STR_NOFREEMIXER);
+    POPUP_WARNING(expo ? STR_NOFREEEXPO : STR_NOFREEMIXER);
     return true;
   }
   return false;
@@ -3434,8 +3426,7 @@ void menuModelLimits(uint8_t event)
           if (active) {
             uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
             if (checkIncDec_Ret && thrOutput(k)) {
-              s_warning = STR_INVERT_THR;
-              s_warning_type = WARNING_TYPE_CONFIRM;
+              POPUP_CONFIRMATION(STR_INVERT_THR);
             }
             else {
               ld->revert = revert_new;
@@ -3467,10 +3458,10 @@ void menuModelLimits(uint8_t event)
 #if defined(CURVES)
 
 #if defined(GVARS)
-#define CURVE_SELECTED() (sub >= 0 && sub < MAX_CURVES)
-#define GVAR_SELECTED() (sub >= MAX_CURVES)
+  #define CURVE_SELECTED() (sub >= 0 && sub < MAX_CURVES)
+  #define GVAR_SELECTED()  (sub >= MAX_CURVES)
 #else
-#define CURVE_SELECTED() (sub >= 0)
+  #define CURVE_SELECTED() (sub >= 0)
 #endif
 
 void menuModelCurvesAll(uint8_t event)
@@ -3974,7 +3965,7 @@ void onCustomFunctionsMenu(const char *result)
 
   if (result == STR_UPDATE_LIST) {
     if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(g_model.funcSw[sub].param), NULL)) {
-      s_warning = STR_NO_SOUNDS_ON_SD;
+      POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
     }
   }
@@ -4101,7 +4092,7 @@ void menuModelCustomFunctions(uint8_t event)
                   menuHandler = onCustomFunctionsMenu;
                 }
                 else {
-                  s_warning = STR_NO_SOUNDS_ON_SD;
+                  POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
                   s_menu_flags = 0;
                 }
               }
@@ -4650,8 +4641,7 @@ void menuModelTemplates(uint8_t event)
       AUDIO_WARNING2();
     }
     if (event==EVT_KEY_BREAK(KEY_ENTER)) {
-      s_warning = STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES);
-      s_warning_type = WARNING_TYPE_CONFIRM;
+      POPUP_CONFIRMATION(STR_VTEMPLATES+1 + (sub * LEN2_VTEMPLATES));
       s_editMode = 0;
     }
   }

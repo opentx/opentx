@@ -574,7 +574,7 @@ void onSdManagerMenu(const char *result)
       reusableBuffer.sdmanager.offset = -1;
     }
     else {
-      s_warning = STR_SDCARD_ERROR;
+      POPUP_WARNING(STR_SDCARD_ERROR);
     }
   }
   else if (result == STR_DELETE_FILE) {
@@ -593,7 +593,7 @@ void onSdManagerMenu(const char *result)
     f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
-    s_warning = eeLoadModelSD(lfn);
+    POPUP_WARNING(eeLoadModelSD(lfn));
   } */
   else if (result == STR_PLAY_FILE) {
     f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);

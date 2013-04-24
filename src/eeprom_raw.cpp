@@ -332,21 +332,12 @@ bool eeLoadGeneral()
   }
 
   if (g_eeGeneral.version != EEPROM_VER) {
+    TRACE_DEBUG("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.version, g_eeGeneral.variant, EEPROM_VER, EEPROM_VARIANT);
     if (!eeConvert())
       return false;
   }
 
-  uint16_t sum = evalChkSum();
-  if (g_eeGeneral.chkSum == sum) {
-    return true;
-  }
-
-#ifdef SIMU
-  printf("EEPROM version %d (%d) instead of %d (%d)\n", g_eeGeneral.version, g_eeGeneral.variant, EEPROM_VER, EEPROM_VARIANT);
-  fflush(stdout);
-#endif
-
-  return false;
+  return true;
 }
 
 void eeLoadModel(uint8_t id)

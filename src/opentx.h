@@ -459,11 +459,12 @@ enum EnumKeys {
   static const int8_t maxChannelsModules[] = { 0, 8, 8, 0, 0 };
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 };
   #define IS_MODULE_XJT(idx)        ((idx==0 || g_model.externalModule == MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
-  #define IS_MODULE_PPM(idx)        (idx==1 && g_model.externalModule == MODULE_TYPE_PPM)
+  #define IS_MODULE_PPM(idx)        (idx==2 || (idx==1 && g_model.externalModule == MODULE_TYPE_PPM))
   #define NUM_CHANNELS(idx)         (8+g_model.moduleData[idx].channelsCount)
   #define MAX_PORT1_CHANNELS()      (maxChannelsXJT[1+g_model.moduleData[0].rfProtocol])
   #define MAX_PORT2_CHANNELS()      ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
-  #define MAX_CHANNELS(idx)         (idx==0 ? MAX_PORT1_CHANNELS() : MAX_PORT2_CHANNELS())
+  #define MAX_TRAINER_CHANNELS()    (8)
+  #define MAX_CHANNELS(idx)         (idx==0 ? MAX_PORT1_CHANNELS() : (idx==1 ? MAX_PORT2_CHANNELS() : MAX_TRAINER_CHANNELS()))
 #else
   #define NUM_PORT1_CHANNELS()      (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+(g_model.ppmNCH*2))))
   #define NUM_PORT2_CHANNELS()      (8+(g_model.ppm2NCH*2))
