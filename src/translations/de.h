@@ -121,7 +121,7 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\003"
-#define TR_VMIXTRIMS           "AUSF""EIN""Rud""Ele""Thr""Ail"
+#define TR_VMIXTRIMS           "AUS""EIN""Sei""H\203e""Gas""Que" //Mixer Trim Werte
 
 #define LEN_VCSWFUNC           "\005"
 #define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 ""|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 ""a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x"
@@ -401,7 +401,7 @@
 #define TR_USRDATA             "Daten"
 #define TR_BLADES              INDENT"Bl\201tter"
 #define TR_SCREEN              "Bild "
-#define TR_SOUND_LABEL         "Ton"
+#define TR_SOUND_LABEL         "T\203ne"
 #define TR_LENGTH	       INDENT"Dauer"
 #define TR_SPKRPITCH           INDENT"Tonh\203he"
 #define TR_HAPTIC_LABEL        "Vibration"
@@ -409,7 +409,7 @@
 #define TR_CONTRAST            "Kontrast"
 #define TR_ALARMS_LABEL        "Alarm wenn"
 #define TR_BATTERY_RANGE       "Akku Spannung V"
-#define TR_BATTERYWARNING      INDENT"Akku leer kl."
+#define TR_BATTERYWARNING      INDENT"Akku Spg kl."
 #define TR_INACTIVITYALARM     INDENT"Inaktivit\201t "
 #define TR_MEMORYWARNING       INDENT"Speicher voll"
 #define TR_ALARMWARNING        INDENT"Ton aus"
@@ -417,7 +417,7 @@
 #define TR_THROTTLEREVERSE     TR("Vollgas hinten?", "Vollgas hinten?")
 #define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Jede Minute")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
-#define TR_PERSISTENT          TR(INDENT"Dauernd",INDENT"Dauernd ein")
+#define TR_PERSISTENT          TR(INDENT"M-Zeit",INDENT"Modell Zeit")
 #define TR_BACKLIGHT_LABEL     "LCD Licht an"
 #define TR_BLDELAY             INDENT"Dauer"
 #define TR_BLONBRIGHTNESS      INDENT"An Helligkeit"
@@ -427,7 +427,7 @@
 #define TR_SWITCHWARNING       TR("Sch. Alarm","Schalter Alarm")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
-#define TR_SLAVE               "Sch\205ler"
+#define TR_SLAVE               "Sch\205ler PPM1-8 als Ausgang"
 #define TR_MODESRC             " Modus\002% Quelle"
 #define TR_MULTIPLIER          "Multiplikator"
 #define TR_CAL                 "Kal."
