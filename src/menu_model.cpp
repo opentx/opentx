@@ -675,7 +675,7 @@ void menuModelFailsafe(uint8_t event)
         eeDirty(EE_MODEL);
         s_editMode = 0;
         AUDIO_WARNING1();
-        SEND_FAILSAFE_NOW();
+        SEND_FAILSAFE_NOW(g_moduleIdx);
         killEvents(event);
       }
 
@@ -903,8 +903,8 @@ void menuModelSetup(uint8_t event)
 
 #if defined(PCBTARANIS)
   if (event == EVT_KEY_LONG(KEY_EXIT)) {
-    pxxFlag[0] = 0;
-    pxxFlag[1] = 0;
+    pxxFlag[INTERNAL_MODULE] = 0;
+    pxxFlag[EXTERNAL_MODULE] = 0;
   }
 #endif
 
@@ -1161,13 +1161,14 @@ void menuModelSetup(uint8_t event)
           if (checkIncDec_Ret) {
             g_model.moduleData[0].channelsStart = 0;
             g_model.moduleData[0].channelsCount = MAX_PORT1_CHANNELS();
+            setupPulses(INTERNAL_MODULE);
           }
         }
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         lcd_putsLeft(y, PSTR(INDENT "Module"));
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""---\0""PPM\0""XJT\0""DJT\0""DSM2"), g_model.externalModule, m_posHorz==0 ? attr : 0);
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""PPM\0""XJT\0""DJT\0""DSM2"), g_model.externalModule, m_posHorz==0 ? attr : 0);
         if (g_model.externalModule == MODULE_TYPE_XJT)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("\004""OFF\0""X16\0""D8\0 ""LR12"), 1+g_model.moduleData[1].rfProtocol, m_posHorz==1 ? attr : 0);
         if (attr && (editMode>0 || p1valdiff)) {
@@ -1176,7 +1177,11 @@ void menuModelSetup(uint8_t event)
               CHECK_INCDEC_MODELVAR(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_LAST);
               if (checkIncDec_Ret) {
                 g_model.moduleData[1].channelsStart = 0;
-                g_model.moduleData[1].channelsCount = MAX_PORT2_CHANNELS();
+                if (g_model.externalModule == MODULE_TYPE_PPM)
+                  g_model.moduleData[1].channelsCount = 0;
+                else
+                  g_model.moduleData[1].channelsCount = MAX_PORT2_CHANNELS();
+                setupPulses(EXTERNAL_MODULE);
               }
               break;
             case 1:
@@ -1208,7 +1213,9 @@ void menuModelSetup(uint8_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
                 break;
               case 1:
-                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsCount, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-moduleData.channelsStart-8));
+                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsCount, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
+                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.externalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS))
+                  moduleData.ppmFrameLength = moduleData.channelsCount * 4;
                 break;
             }
           }
@@ -1291,7 +1298,7 @@ void menuModelSetup(uint8_t event)
             if (m_posHorz==0) {
               if (editMode>0 || p1valdiff) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.failsafeMode, FAILSAFE_LAST);
-                if (checkIncDec_Ret) SEND_FAILSAFE_NOW();
+                if (checkIncDec_Ret) SEND_FAILSAFE_NOW(moduleIdx);
               }
             }
             else if (m_posHorz==1) {
@@ -1314,7 +1321,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TRAINER_MODE:
-        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, PSTR("\006MasterSlave"), g_model.trainerMode, 0, 1, attr, event);              break;
+        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, PSTR("\006MasterSlave"), g_model.trainerMode, 0, 1, attr, event);
         break;
 
 #else
@@ -1330,9 +1337,9 @@ void menuModelSetup(uint8_t event)
 
 #if defined(PCBSKY9X)
         lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW+3, y, STR_CH, m_posHorz==1 ? attr : 0);
-        lcd_outdezAtt(lcdLastPos, y, g_model.ppmSCH+1, LEFT | (m_posHorz==1 ? attr : 0));
+        lcd_outdezAtt(lcdLastPos, y, g_model.moduleData[0].channelsStart+1, LEFT | (m_posHorz==1 ? attr : 0));
         lcd_putc(lcdLastPos, y, '-');
-        lcd_outdezAtt(lcdLastPos + FW+1, y, g_model.ppmSCH+NUM_PORT1_CHANNELS(), LEFT | (m_posHorz==2 ? attr : 0));
+        lcd_outdezAtt(lcdLastPos + FW+1, y, g_model.moduleData[0].channelsStart+NUM_PORT1_CHANNELS(), LEFT | (m_posHorz==2 ? attr : 0));
 #else
         if (IS_PPM_PROTOCOL(protocol)) {
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+7*FW, y, STR_NCHANNELS, g_model.ppmNCH+2, m_posHorz!=0 ? attr : 0);
@@ -1353,8 +1360,8 @@ void menuModelSetup(uint8_t event)
               break;
             case 1:
 #if defined(PCBSKY9X)
-              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.ppmSCH, 32-8-(g_model.ppmNCH*2));
-              g_model.ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[0].channelsStart, 32-8-g_model.moduleData[0].channelsCount);
+              g_model.moduleData[0].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
 #else
               CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
               g_model.ppmFrameLength = g_model.ppmNCH * 8;
@@ -1363,8 +1370,8 @@ void menuModelSetup(uint8_t event)
 #if defined(PCBSKY9X)
             case 2:
               if (IS_PPM_PROTOCOL(protocol)) {
-                CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, min<int8_t>(4, (32-g_model.ppmSCH)/2-4));
-                g_model.ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].channelsCount, -4, min<int8_t>(8, 32-8-g_model.moduleData[0].channelsStart));
+                g_model.moduleData[0].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
               }
               else
                 REPEAT_LAST_CURSOR_MOVE();
@@ -1386,17 +1393,41 @@ void menuModelSetup(uint8_t event)
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.ppm2SCH, 32-8-(g_model.ppm2NCH*2));
-              g_model.ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
+              g_model.moduleData[1].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
               break;
             case 1:
               CHECK_INCDEC_MODELVAR(event, g_model.ppm2NCH, -2, min<int8_t>(4, (32-g_model.ppm2SCH)/2-4));
-              g_model.ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
+              g_model.moduleData[1].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
               break;
           }
         }
         break;
 #endif
 
+#if defined(PCBSKY9X)
+      case ITEM_MODEL_PROTOCOL_PARAMS:
+        if (IS_PPM_PROTOCOL(protocol)) {
+          lcd_putsLeft(y, STR_PPMFRAME);
+          lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
+          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.moduleData[0].ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
+          lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
+          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.moduleData[0].ppmDelay*50)+300, (m_posHorz < 0 || m_posHorz==1) ? attr : 0);
+          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.moduleData[0].ppmPulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
+          if (attr && (editMode>0 || p1valdiff)) {
+            switch (m_posHorz) {
+              case 0:
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].ppmFrameLength, -20, 35);
+                break;
+              case 1:
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].ppmDelay, -4, 10);
+                break;
+              case 2:
+                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[0].ppmPulsePol, 1);
+                break;
+            }
+          }
+        }
+#else
       case ITEM_MODEL_PROTOCOL_PARAMS:
         if (IS_PPM_PROTOCOL(protocol)) {
           lcd_putsLeft(y, STR_PPMFRAME);
@@ -1405,7 +1436,6 @@ void menuModelSetup(uint8_t event)
           lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
           lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.ppmDelay*50)+300, (m_posHorz < 0 || m_posHorz==1) ? attr : 0);
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.pulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
-
           if (attr && (editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
               case 0:
@@ -1420,6 +1450,7 @@ void menuModelSetup(uint8_t event)
             }
           }
         }
+#endif
 #if defined(DSM2) || defined(PXX)
         else if (IS_DSM2_PROTOCOL(protocol) || IS_PXX_PROTOCOL(protocol)) {
           if (attr && m_posHorz > 1) {
@@ -1468,7 +1499,7 @@ void menuModelSetup(uint8_t event)
   }
 
 #if defined(PCBTARANIS)
-  if (pxxFlag[0] == PXX_SEND_RANGECHECK || pxxFlag[1] == PXX_SEND_RANGECHECK) {
+  if (pxxFlag[INTERNAL_MODULE] == PXX_SEND_RANGECHECK || pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK) {
     displayPopup("RSSI: ");
     lcd_outdezAtt(16+4*FW, 5*FH, frskyData.rssi[0].value, BOLD);
   }
@@ -2219,11 +2250,13 @@ void menuModelCurveOne(uint8_t event)
       pointsOfs = 0;
       break;
     case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(event);
-      MENU_ADD_ITEM(STR_CURVE_PRESET);
-      MENU_ADD_ITEM(STR_CURVE_MIRROR);
-      MENU_ADD_ITEM(STR_CURVE_CLEAR);
-      menuHandler = onCurveOneMenu;
+      if (m_posVert > 1) {
+        killEvents(event);
+        MENU_ADD_ITEM(STR_CURVE_PRESET);
+        MENU_ADD_ITEM(STR_CURVE_MIRROR);
+        MENU_ADD_ITEM(STR_CURVE_CLEAR);
+        menuHandler = onCurveOneMenu;
+      }
       break;
   }
 

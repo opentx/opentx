@@ -123,7 +123,7 @@
   #define CURVTYPE   int8_t
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBSKY9X)
   #define NUM_MODULES 2
 #else
   #define NUM_MODULES 1
@@ -228,6 +228,11 @@ PACK(typedef struct t_ModuleData {
 }) ModuleData;
 
 #if defined(PCBTARANIS)
+enum ModuleIndex {
+  INTERNAL_MODULE,
+  EXTERNAL_MODULE,
+  TRAINER_MODULE
+};
 #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
 #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6];
 #define LIMITDATA_EXTRA   char name[6];

@@ -123,7 +123,7 @@ void disable_pxx( uint32_t module_index );
 void init_trainer_ppm();
 void stop_trainer_ppm();
 void init_trainer_capture();
-void stop_trainer_ppm() ;
+void stop_trainer_capture();
 
 // Keys driver
 void keysInit();

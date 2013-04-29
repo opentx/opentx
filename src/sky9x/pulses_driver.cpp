@@ -54,12 +54,12 @@ void init_main_ppm( uint32_t period, uint32_t out_enable )
   pwmptr = PWM ;
   // PWM3 for PPM output
   pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0000000B ;                  // CLKA
-  if (g_model.pulsePol)
+  if (g_model.moduleData[0].ppmPulsePol)
     pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;               // CPOL
   pwmptr->PWM_CH_NUM[3].PWM_CPDR = period ;                     // Period in half uS
   pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period ;                  // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.ppmDelay*100+600;    // Duty in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.ppmDelay*100+600; // Duty in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.moduleData[0].ppmDelay*100+600;    // Duty in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.moduleData[0].ppmDelay*100+600; // Duty in half uS
   pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
   pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
 
@@ -70,12 +70,12 @@ void init_main_ppm( uint32_t period, uint32_t out_enable )
 #if !defined(REVA)
   // PWM1 for PPM2
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B ;    // CLKB
-  if (g_model.pulsePol)
+  if (g_model.moduleData[0].ppmPulsePol)
     pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200 ;   // CPOL
   pwmptr->PWM_CH_NUM[1].PWM_CPDR = period ;                       // Period
   pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = period ;            // Period
-  pwmptr->PWM_CH_NUM[1].PWM_CDTY = g_model.ppmDelay*100+600 ;                             // Duty
-  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = g_model.ppmDelay*100+600 ;          // Duty
+  pwmptr->PWM_CH_NUM[1].PWM_CDTY = g_model.moduleData[0].ppmDelay*100+600 ;                             // Duty
+  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = g_model.moduleData[0].ppmDelay*100+600 ;          // Duty
   pwmptr->PWM_ENA = PWM_ENA_CHID1 ;                                               // Enable channel 1
 #endif
 

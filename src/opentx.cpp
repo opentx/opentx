@@ -300,7 +300,7 @@ void per10ms()
   sdPoll10ms();
 #endif
 
-  heartbeat |= HEART_TIMER10ms;
+  heartbeat |= HEART_TIMER_10MS;
 }
 
 PhaseData *phaseaddress(uint8_t idx)
@@ -4160,7 +4160,17 @@ void mixerTask(void * pdata)
       CoLeaveMutexSection(mixerMutex);
       if (tick10ms) checkTrims();
 
-      if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
+      uint8_t heartbeatCheck = HEART_TIMER_10MS;
+#if defined(PCBTARANIS)
+      if (g_model.moduleData[0].rfProtocol != RF_PROTO_OFF)
+        heartbeatCheck |= HEART_TIMER_PULSES;
+      if (g_model.externalModule != MODULE_TYPE_NONE)
+        heartbeatCheck |= HEART_TIMER_PULSES << 1;
+#else
+      uint8_t heartbeatCheck = HEART_TIMER_10MS + HEART_TIMER_PULSES;
+#endif
+
+      if ((heartbeat & heartbeatCheck) == heartbeatCheck) {
         wdt_reset();
         heartbeat = 0;
       }
@@ -4355,7 +4365,7 @@ int main(void)
 
     perMain();
 
-    if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER10ms) {
+    if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER_10MS) {
       wdt_reset();
       heartbeat = 0;
     }

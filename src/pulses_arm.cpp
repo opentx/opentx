@@ -36,29 +36,34 @@
 
 #include "opentx.h"
 
-uint8_t s_pulses_paused = 0;
-uint8_t s_current_protocol = 255;
-uint32_t failsafeCounter = 100;
-uint8_t pxxFlag[NUM_MODULES] = { 0 };
-
-uint16_t ppmStream[20]  = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
-uint16_t ppm2Stream[20] = { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ;
-
-#if defined(PCBSKY9X)
-volatile uint32_t ppmStreamIndex = 0 ;            // Modified in interrupt routine
-volatile uint32_t ppm2StreamIndex = 0 ;           // Modified in interrupt routine
-uint8_t Bit_pulses[64] ;                          // Likely more than we need
-uint8_t *Pulses2MHzptr ;
+#if NUM_MODULES == 2
+  #define MODULES_INIT(x) x, x
 #else
-uint16_t pxxStream[400] ;               // Transisitions
- #if defined(PCBTARANIS)
-uint16_t pxx2Stream[400] ;               // Transisitions
+  #define MODULES_INIT(x) x
+#endif
+
+uint8_t s_pulses_paused = 0;
+uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
+uint32_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
+
+uint8_t pxxFlag[NUM_MODULES] = { MODULES_INIT(0) };
+uint16_t pxxStream[NUM_MODULES][400] ;                // Transitions
 uint16_t *pxxStreamPtr[NUM_MODULES] ;
 uint16_t PxxValue[NUM_MODULES] ;
- #else
-uint16_t *pxxStreamPtr ;
-uint16_t PxxValue ;
- #endif
+uint16_t PcmCrc[NUM_MODULES] ;
+uint8_t  PcmOnesCount[NUM_MODULES] ;
+
+#if NUM_MODULES == 2
+uint16_t ppmStream[NUM_MODULES][20]  = { { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                                         { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+#else
+uint16_t ppmStream[NUM_MODULES][20]  = { { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+#endif
+
+#if defined(PCBSKY9X)
+volatile uint32_t ppmStreamIndex[NUM_MODULES] = { MODULES_INIT(0) };  // Modified in interrupt routine
+uint8_t Bit_pulses[64] ;                          // Likely more than we need
+uint8_t *Pulses2MHzptr ;
 #endif
 
 // DSM2 control bits
@@ -73,38 +78,7 @@ uint8_t Serial_byte ;
 uint8_t Serial_bit_count;
 uint8_t Serial_byte_count ;
 
-#if defined(PCBTARANIS)
-#define MODULE_INDEX_PARAM uint32_t module_index
-#else
-#define MODULE_INDEX_PARAM
-#endif
-
-void setupPulses( MODULE_INDEX_PARAM ) ;
-
-void setupPulsesDsm2(uint8_t chns);
-void setupPulsesPXX();
-
-void startPulses()
-{
-  // TODO a single call to setupPulses() should be ok!
-#if defined(PCBSKY9X)
-  init_main_ppm(3000, 1) ;            // Default for now, initial period 1.5 mS, output on
-#else
- #if defined(PCBTARANIS)
-  init_ppm( 0 ) ;
- #else
-  init_main_ppm();
- #endif
-#endif
-}
-
-#if defined(PCBSKY9X)
-#define PPM_PORT_PARAM uint32_t ppmPort
-#else
-#define PPM_PORT_PARAM
-#endif
-
-void setupPulsesPPM(PPM_PORT_PARAM)                   // Don't enable interrupts through here
+void setupPulsesPPM(unsigned int port)                   // Don't enable interrupts through here
 {
 #if defined(PCBSKY9X)
   register Pwm *pwmptr = PWM;
@@ -116,38 +90,30 @@ void setupPulsesPPM(PPM_PORT_PARAM)                   // Don't enable interrupts
   // each pulse is 0.7..1.7ms long with a 0.3ms stop tail
   // The pulse ISR is 2mhz that's why everything is multiplied by 2
 
+  uint32_t firstCh = g_model.moduleData[port].channelsStart;
+  uint32_t lastCh = min<unsigned int>(NUM_CHNOUT, firstCh + 8 + g_model.moduleData[port].channelsCount);
+
 #if defined(PCBSKY9X)
   uint32_t pwmCh;
-  uint16_t * ptr;
-  uint32_t firstCh, lastCh;
-  if (ppmPort == 0) {
+  if (port == 0) {
     pwmCh = 3;
-    ptr = ppmStream;
-    firstCh = g_model.ppmSCH;
-    lastCh = min<uint32_t>(NUM_CHNOUT, firstCh + 8 + (g_model.ppmNCH * 2));
   }
   else {
     pwmCh = 1;
-    ptr = ppm2Stream;
-    firstCh = g_model.ppm2SCH;
-    lastCh = min<uint32_t>(NUM_CHNOUT, firstCh + NUM_PORT2_CHANNELS());
   }
-#else
-  #define firstCh 0
-  uint32_t lastCh = NUM_CHANNELS(0);
-  uint16_t * ptr = ppmStream;
 #endif
+  uint16_t * ptr = ppmStream[port];
 
 #if defined(PCBSKY9X)
-  pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.ppmDelay * 50 + 300) * 2; //Stoplen *2
-  if (g_model.pulsePol)
+  pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.moduleData[port].ppmDelay * 50 + 300) * 2; //Stoplen *2
+  if (g_model.moduleData[port].ppmPulsePol)
     pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
   else
     pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR &= ~0x00000200 ;  // CPOL
 #endif
 
   uint32_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
-  rest += (int32_t(g_model.ppmFrameLength)) * 1000;
+  rest += (int32_t(g_model.moduleData[port].ppmFrameLength)) * 1000;
   for (uint32_t i=firstCh; i<lastCh; i++) {
     int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= v;
@@ -158,13 +124,14 @@ void setupPulsesPPM(PPM_PORT_PARAM)                   // Don't enable interrupts
   *(ptr + 1) = 0;
 
 #if defined(PCBTARANIS)
-// THIS IS SPECIFIC TO EITHER THE INTERNAL OR EXTERNAL MODULE
-// OTHER IS COMMENTED OUT. IF PPM IS NEEDED ON INTERNAL AS WELL AS EXTARNAL
-// setupPulsesPPM() WILL NEED A "MODULE" PARAMETER
-  TIM8->CCR2 = rest - 1000 ;             // Update time
-  TIM8->CCR1 = (g_model.ppmDelay*50+300)*2 ;
-//  TIM1->CCR2 = rest - 1000 ;             // Update time
-//  TIM1->CCR3 = (g_model.ppmDelay*50+300)*2 ;
+  if (port == EXTERNAL_MODULE) {
+    TIM8->CCR2 = rest - 1000;             // Update time
+    TIM8->CCR1 = (g_model.moduleData[port].ppmDelay*50+300)*2;
+  }
+  else {
+    TIM1->CCR2 = rest - 1000;             // Update time
+    TIM1->CCR3 = (g_model.moduleData[port].ppmDelay*50+300)*2;
+  }
 #endif
 }
 
@@ -204,276 +171,137 @@ const uint16_t CRCTable[]=
   0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
 };
 
-#if defined(PCBTARANIS)
-uint16_t PcmCrc[2] ;
-uint8_t PcmOnesCount[2] ;
-
-void crc( uint8_t data, uint32_t module_index )
+void crc(uint8_t data, unsigned int port)
 {
-  //  uint8_t i ;
-
-  PcmCrc[module_index]=(PcmCrc[module_index]<<8)^(CRCTable[((PcmCrc[module_index]>>8)^data) & 0xFF]);
+  PcmCrc[port]=(PcmCrc[port]<<8)^(CRCTable[((PcmCrc[port]>>8)^data) & 0xFF]);
 }
 
-void putPcmPart( uint8_t value, uint32_t module_index )
+void putPcmPart(uint8_t value, unsigned int port)
 {
-  PxxValue[module_index] += 18 ;                                        // Output 1 for this time
-  *pxxStreamPtr[module_index]++ = PxxValue[module_index] ;
-  PxxValue[module_index] += 14 ;
-  if ( value ) {
-    PxxValue[module_index] += 16 ;
+  PxxValue[port] += 18 ;                                        // Output 1 for this time
+  *pxxStreamPtr[port]++ = PxxValue[port] ;
+  PxxValue[port] += 14 ;
+  if (value) {
+    PxxValue[port] += 16 ;
   }
-  *pxxStreamPtr[module_index]++ = PxxValue[module_index] ;  // Output 0 for this time
+  *pxxStreamPtr[port]++ = PxxValue[port] ;  // Output 0 for this time
 }
 
-void putPcmFlush( uint32_t module_index )
+void putPcmFlush(unsigned int port)
 {
-  *pxxStreamPtr[module_index]++ = 18010 ;             // Past the 18000 of the ARR
+  *pxxStreamPtr[port]++ = 18010 ;             // Past the 18000 of the ARR
 }
 
-void putPcmBit( uint8_t bit, uint32_t module_index )
+void putPcmBit(uint8_t bit, unsigned int port)
 {
-  if ( bit )
+  if (bit)
   {
-    PcmOnesCount[module_index] += 1 ;
-    putPcmPart( 1, module_index ) ;
+    PcmOnesCount[port] += 1 ;
+    putPcmPart(1, port);
   }
   else
   {
-    PcmOnesCount[module_index] = 0 ;
-    putPcmPart( 0, module_index ) ;
+    PcmOnesCount[port] = 0 ;
+    putPcmPart(0, port);
   }
-  if ( PcmOnesCount[module_index] >= 5 )
+  if (PcmOnesCount[port] >= 5)
   {
-    putPcmBit( 0, module_index ) ;                                // Stuff a 0 bit in
+    putPcmBit(0, port);                                // Stuff a 0 bit in
   }
 }
 
-void putPcmByte( uint8_t byte, uint32_t module_index )
+void putPcmByte(uint8_t byte, unsigned int port)
 {
-  crc(byte, module_index);
+  crc(byte, port);
 
   for (uint8_t i=0; i<8; i++) {
-    putPcmBit(byte & 0x80, module_index);
+    putPcmBit(byte & 0x80, port);
     byte <<= 1;
   }
 }
 
-void putPcmHead( uint32_t module_index )
+void putPcmHead(unsigned int port)
 {
   // send 7E, do not CRC
   // 01111110
-  putPcmPart( 0, module_index ) ;
-  putPcmPart( 1, module_index ) ;
-  putPcmPart( 1, module_index ) ;
-  putPcmPart( 1, module_index ) ;
-  putPcmPart( 1, module_index ) ;
-  putPcmPart( 1, module_index ) ;
-  putPcmPart( 1, module_index ) ;
-  putPcmPart( 0, module_index ) ;
-}
-
-#else // Not Taranis
-uint16_t PcmCrc ;
-uint8_t PcmOnesCount ;
-
-
-void crc( uint8_t data )
-{
-  //  uint8_t i ;
-
-  PcmCrc=(PcmCrc<<8)^(CRCTable[((PcmCrc>>8)^data) & 0xFF]);
+  putPcmPart(0, port);
+  putPcmPart(1, port);
+  putPcmPart(1, port);
+  putPcmPart(1, port);
+  putPcmPart(1, port);
+  putPcmPart(1, port);
+  putPcmPart(1, port);
+  putPcmPart(0, port);
 }
 
 #if defined(PCBSKY9X)
-void put_serial_bit( uint8_t bit )
+void put_serial_bit(uint8_t bit)
 {
   Serial_byte >>= 1 ;
-  if ( bit & 1 )
+  if (bit & 1)
   {
     Serial_byte |= 0x80 ;
   }
-  if ( ++Serial_bit_count >= 8 )
+  if (++Serial_bit_count >= 8)
   {
     *Pulses2MHzptr++ = Serial_byte ;
     Serial_bit_count = 0 ;
     Serial_byte_count += 1 ;
   }
 }
-
-// 8uS/bit 01 = 0, 001 = 1
-void putPcmPart( uint8_t value )
-{
-  put_serial_bit( 0 ) ;
-  if ( value )
-  {
-    put_serial_bit( 0 ) ;
-  }
-  put_serial_bit( 1 ) ;
-}
-
-void putPcmFlush()
-{
-  while ( Serial_bit_count != 0 )
-  {
-    put_serial_bit( 1 ) ;           // Line idle level
-  }
-}
-#else
-void putPcmPart( uint8_t value )
-{
-  PxxValue += 18 ;                                        // Output 1 for this time
-  *pxxStreamPtr++ = PxxValue ;
-  PxxValue += 14 ;
-  if ( value ) {
-    PxxValue += 16 ;
-  }
-  *pxxStreamPtr++ = PxxValue ;  // Output 0 for this time
-}
-
-void putPcmFlush()
-{
-  *pxxStreamPtr++ = 18010 ;             // Past the 18000 of the ARR
-}
 #endif
 
-void putPcmBit( uint8_t bit )
-{
-  if ( bit )
-  {
-    PcmOnesCount += 1 ;
-    putPcmPart( 1 ) ;
-  }
-  else
-  {
-    PcmOnesCount = 0 ;
-    putPcmPart( 0 ) ;
-  }
-  if ( PcmOnesCount >= 5 )
-  {
-    putPcmBit( 0 ) ;                                // Stuff a 0 bit in
-  }
-}
-
-void putPcmByte( uint8_t byte )
-{
-  crc(byte);
-
-  for (uint8_t i=0; i<8; i++) {
-    putPcmBit(byte & 0x80);
-    byte <<= 1;
-  }
-}
-
-void putPcmHead()
-{
-  // send 7E, do not CRC
-  // 01111110
-  putPcmPart( 0 ) ;
-  putPcmPart( 1 ) ;
-  putPcmPart( 1 ) ;
-  putPcmPart( 1 ) ;
-  putPcmPart( 1 ) ;
-  putPcmPart( 1 ) ;
-  putPcmPart( 1 ) ;
-  putPcmPart( 0 ) ;
-}
-#endif // Taranis
-
-void setupPulsesPXX(MODULE_INDEX_PARAM)
+void setupPulsesPXX(unsigned int port)
 {
   uint16_t chan=0, chan_low=0;
 
-#if defined(PCBSKY9X)
-  Serial_byte = 0 ;
-  Serial_bit_count = 0 ;
-  Serial_byte_count = 0 ;
-  Pulses2MHzptr = Bit_pulses ;
-#else
- #if defined(PCBTARANIS)
-  pxxStreamPtr[module_index] = module_index ? pxx2Stream : pxxStream ;
-  PxxValue[module_index] = 0 ;
- #else
-  pxxStreamPtr = pxxStream ;
-  PxxValue = 0 ;
- #endif
-#endif
-
 #if defined(PCBTARANIS)
-  PcmCrc[module_index] = 0;
-  PcmOnesCount[module_index] = 0;
-
-  /* Sync */
-  putPcmHead(module_index);
-
-  /* Rx Number */
-  putPcmByte(g_model.header.modelId, module_index);
-#else
-  PcmCrc = 0;
-  PcmOnesCount = 0;
-
-  /* Sync */
-  putPcmHead();
-
-  /* Rx Number */
-  putPcmByte(g_model.header.modelId);
+  pxxStreamPtr[port] = pxxStream[port];
+  PxxValue[port] = 0 ;
 #endif
+
+  PcmCrc[port] = 0;
+  PcmOnesCount[port] = 0;
+
+  /* Sync */
+  putPcmHead(port);
+
+  /* Rx Number */
+  putPcmByte(g_model.header.modelId, port);
 
   /* FLAG1 */
   uint8_t flag1;
-  if (pxxFlag[0] & PXX_SEND_RXNUM) {
-    
-		
-#if defined(PCBTARANIS)
-    flag1 = (g_model.moduleData[module_index].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[module_index];
+  if (pxxFlag[port] & PXX_SEND_RXNUM) {
+    flag1 = (g_model.moduleData[port].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[port];
   }
   else {
-    flag1 = (g_model.moduleData[module_index].rfProtocol << 6) | pxxFlag[0];
-#else
-    flag1 = (g_model.moduleData[0].rfProtocol << 6) | (g_eeGeneral.countryCode << 1) | pxxFlag[0];
-  }
-  else {
-    flag1 = (g_model.moduleData[0].rfProtocol << 6) | pxxFlag[0];
-#endif
+    flag1 = (g_model.moduleData[port].rfProtocol << 6) | pxxFlag[port];
 
-#if defined(PCBTARANIS)
-    if (g_model.moduleData[module_index].failsafeMode != FAILSAFE_HOLD) {
-      if (failsafeCounter-- == 0) {
-        failsafeCounter = 1000;
+    if (g_model.moduleData[port].failsafeMode != FAILSAFE_HOLD) {
+      if (failsafeCounter[port]-- == 0) {
+        failsafeCounter[port] = 1000;
         flag1 |= PXX_SEND_FAILSAFE;
       }
-      if (failsafeCounter == 0 && g_model.moduleData[module_index].channelsCount > 0) {
+      if (failsafeCounter[port] == 0 && g_model.moduleData[port].channelsCount > 0) {
         flag1 |= PXX_SEND_FAILSAFE;
       }
     }
-#endif
   }
-#if defined(PCBTARANIS)
-  putPcmByte(flag1, module_index);
+
+  putPcmByte(flag1, port);
 
   /* FLAG2 */
-  putPcmByte(0, module_index);
-#else
-  putPcmByte(flag1);
-
-  /* FLAG2 */
-  putPcmByte(0);
-#endif
+  putPcmByte(0, port);
 
   /* PPM */
   static uint32_t pass = 0;
   uint32_t sendUpperChannels = 0;
   if (pass++ & 0x01) {
-#if defined(PCBTARANIS)
-    sendUpperChannels = g_model.moduleData[module_index].channelsCount;
-#else
-    sendUpperChannels = g_model.moduleData[0].channelsCount;
-#endif
+    sendUpperChannels = g_model.moduleData[port].channelsCount;
   }
   for (uint32_t i=0; i<8; i++) {
-#if defined(PCBTARANIS)
     if (flag1 & PXX_SEND_FAILSAFE) {
-      if (g_model.moduleData[module_index].failsafeMode == FAILSAFE_NOPULSES) {
+      if (g_model.moduleData[port].failsafeMode == FAILSAFE_NOPULSES) {
         if (i < sendUpperChannels)
           chan = 3072;
         else
@@ -481,18 +309,16 @@ void setupPulsesPXX(MODULE_INDEX_PARAM)
       }
       else {
         if (i < sendUpperChannels) {
-          chan =  limit(2048, PPM_CH_CENTER(8+g_model.moduleData[module_index].channelsStart+i) - PPM_CENTER + (g_model.moduleData[module_index].failsafeChannels[8+g_model.moduleData[0].channelsStart+i] * 512 / 682) + 3072, 4095);
+          chan =  limit(2048, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (g_model.moduleData[port].failsafeChannels[8+g_model.moduleData[port].channelsStart+i] * 512 / 682) + 3072, 4095);
           if (chan == 3072) chan = 3073;
         }
         else {
-          chan = limit(0, PPM_CH_CENTER(g_model.moduleData[module_index].channelsStart+i) - PPM_CENTER + (g_model.moduleData[module_index].failsafeChannels[g_model.moduleData[0].channelsStart+i] * 512 / 682) + 1024, 2047);
+          chan = limit(0, PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (g_model.moduleData[port].failsafeChannels[g_model.moduleData[port].channelsStart+i] * 512 / 682) + 1024, 2047);
           if (chan == 1024) chan = 1025;
         }
       }
     }
-    else
-#endif
-    {
+    else {
       if (i < sendUpperChannels)
         chan =  limit(2048, PPM_CH_CENTER(8+g_model.moduleData[0].channelsStart+i) - PPM_CENTER + (channelOutputs[8+g_model.moduleData[0].channelsStart+i] * 512 / 682) + 3072, 4095);
       else
@@ -500,15 +326,9 @@ void setupPulsesPXX(MODULE_INDEX_PARAM)
     }
 
     if (i & 1) {
-#if defined(PCBTARANIS)
-      putPcmByte(chan_low, module_index); // Low byte of channel
-      putPcmByte( ( ( chan_low >> 8 ) & 0x0F ) | ( chan << 4), module_index ) ;  // 4 bits each from 2 channels
-      putPcmByte(chan >> 4, module_index);  // High byte of channel
-#else
-      putPcmByte(chan_low); // Low byte of channel
-      putPcmByte( ( ( chan_low >> 8 ) & 0x0F ) | ( chan << 4) ) ;  // 4 bits each from 2 channels
-      putPcmByte(chan >> 4);  // High byte of channel
-#endif
+      putPcmByte(chan_low, port); // Low byte of channel
+      putPcmByte(((chan_low >> 8) & 0x0F) | (chan << 4), port);  // 4 bits each from 2 channels
+      putPcmByte(chan >> 4, port);  // High byte of channel
     }
     else {
       chan_low = chan;
@@ -516,42 +336,30 @@ void setupPulsesPXX(MODULE_INDEX_PARAM)
   }
 
   /* CRC16 */
-#if defined(PCBTARANIS)
-  putPcmByte(0, module_index);
-  chan = PcmCrc[module_index];
-  putPcmByte(chan>>8, module_index);
-  putPcmByte(chan, module_index);
+  putPcmByte(0, port);
+  chan = PcmCrc[port];
+  putPcmByte(chan>>8, port);
+  putPcmByte(chan, port);
 
   /* Sync */
-  putPcmHead(module_index);
+  putPcmHead(port);
 
-  putPcmFlush(module_index);
-#else
-  putPcmByte(0);
-  chan = PcmCrc;
-  putPcmByte(chan>>8);
-  putPcmByte(chan);
-
-  /* Sync */
-  putPcmHead();
-
-  putPcmFlush();
-#endif
+  putPcmFlush(port);
 }
 
 #if defined(DSM2)
 #define BITLEN_DSM2 (8*2) //125000 Baud => 8uS per bit
 void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 {
-  put_serial_bit( 0 ) ;           // Start bit
-  for( uint8_t i=0; i<8; i++)    // 8 data Bits
+  put_serial_bit(0) ;           // Start bit
+  for(uint8_t i=0; i<8; i++)    // 8 data Bits
   {
-    put_serial_bit( b & 1 ) ;
+    put_serial_bit(b & 1) ;
     b >>= 1 ;
   }
 
-  put_serial_bit( 1 ) ;           // Stop bit
-  put_serial_bit( 1 ) ;           // Stop bit
+  put_serial_bit(1) ;           // Stop bit
+  put_serial_bit(1) ;           // Stop bit
 }
 
 // This is the data stream to send, prepare after 19.5 mS
@@ -572,7 +380,7 @@ void setupPulsesDsm2(uint8_t chns)
   // If more channels needed make sure the pulses union/array is large enough
   if (dsmDat[0]&BAD_DATA)  //first time through, setup header
   {
-    switch(s_current_protocol)
+    switch(s_current_protocol[0])
     {
       case PROTO_DSM2_LP45:
         dsmDat[0]= 0x80;
@@ -597,13 +405,13 @@ void setupPulsesDsm2(uint8_t chns)
     dsmDat[3+2*i] = pulse & 0xff;
   }
 
-  for ( counter = 0 ; counter < 14 ; counter += 1 )
+  for (counter = 0 ; counter < 14 ; counter += 1)
   {
     sendByteDsm2(dsmDat[counter]);
   }
-  for ( counter = 0 ; counter < 16 ; counter += 1 )
+  for (counter = 0 ; counter < 16 ; counter += 1)
   {
-    put_serial_bit( 1 ) ;           // 16 extra stop bits
+    put_serial_bit(1) ;           // 16 extra stop bits
   }
 }
 #endif
@@ -619,7 +427,7 @@ extern "C" void PWM_IRQHandler(void)
   pwmptr = PWM;
   reason = pwmptr->PWM_ISR1 ;
   if (reason & PWM_ISR1_CHID3) {
-    switch (s_current_protocol) // Use the current, don't switch until set_up_pulses
+    switch (s_current_protocol[0]) // Use the current, don't switch until set_up_pulses
     {
       case PROTO_PXX:
         // Alternate periods of 15.5mS and 2.5 mS
@@ -632,10 +440,9 @@ extern "C" void PWM_IRQHandler(void)
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 5000) { // 2.5 mS
-          setupPulses();
+          setupPulses(INTERNAL_MODULE);
         }
         else {
-
           // Kick off serial output here
           sscptr = SSC;
           sscptr->SSC_TPR = (uint32_t) Bit_pulses;
@@ -659,7 +466,7 @@ extern "C" void PWM_IRQHandler(void)
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 5000) // 2.5 mS
         {
-          setupPulses();
+          setupPulses(0);
         }
         else {
           // Kick off serial output here
@@ -671,10 +478,10 @@ extern "C" void PWM_IRQHandler(void)
         break;
 
       default:
-        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[ppmStreamIndex++]; // Period in half uS
-        if (ppmStream[ppmStreamIndex] == 0) {
-          ppmStreamIndex = 0;
-          setupPulses();
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[0][ppmStreamIndex[0]++]; // Period in half uS
+        if (ppmStream[0][ppmStreamIndex[0]] == 0) {
+          ppmStreamIndex[0] = 0;
+          setupPulses(0);
         }
         break;
 
@@ -682,25 +489,38 @@ extern "C" void PWM_IRQHandler(void)
   }
 
   if (reason & PWM_ISR1_CHID1) {
-    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = ppm2Stream[ppm2StreamIndex++] ;  // Period in half uS
-    if (ppm2Stream[ppm2StreamIndex] == 0) {
-      ppm2StreamIndex = 0 ;
+    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = ppmStream[1][ppmStreamIndex[1]++] ;  // Period in half uS
+    if (ppmStream[1][ppmStreamIndex[1]] == 0) {
+      ppmStreamIndex[1] = 0 ;
       setupPulsesPPM(1) ;
     }
   }
 }
 #endif
 
-void setupPulses(MODULE_INDEX_PARAM)
+void setupPulses(unsigned int port)
 {
-  heartbeat |= HEART_TIMER_PULSES;
+  heartbeat |= (HEART_TIMER_PULSES << port);
 
 #if defined(PCBTARANIS)
-	if ( module_index )
-	{
-		module_index = 1 ;			// Ensure is 0 or 1 only
-	}
-  uint8_t required_protocol = (g_model.moduleData[module_index].rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX);
+  if (port) port = 1;			// Ensure is 0 or 1 only
+  uint8_t required_protocol;
+  
+  if (port == INTERNAL_MODULE) 
+  	required_protocol = g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX;
+  else {
+  	switch (g_model.externalModule) {
+  	  case MODULE_TYPE_PPM:
+  		  required_protocol = PROTO_PPM;
+  		  break;
+  	  case MODULE_TYPE_XJT:
+      case MODULE_TYPE_DJT:
+      	required_protocol = PROTO_PXX;
+        break;
+      default:
+        required_protocol = PROTO_NONE;
+    }
+  }
 #else
   uint8_t required_protocol = g_model.protocol;
 #endif
@@ -708,12 +528,12 @@ void setupPulses(MODULE_INDEX_PARAM)
   if (s_pulses_paused)
     required_protocol = PROTO_NONE;
 
-  if (s_current_protocol != required_protocol) {
+  if (s_current_protocol[port] != required_protocol) {
 
-    switch (s_current_protocol) { // stop existing protocol hardware
+    switch (s_current_protocol[port]) { // stop existing protocol hardware
       case PROTO_PXX:
 #if defined(PCBTARANIS)
-        disable_pxx(module_index);
+        disable_pxx(port);
 #else
         disable_pxx();
 #endif
@@ -727,24 +547,22 @@ void setupPulses(MODULE_INDEX_PARAM)
 #endif
       default:
 #if defined(PCBTARANIS)
-        disable_ppm(module_index);
+        disable_ppm(port);
 #else
         disable_main_ppm();
 #endif
         break;
     }
 
-    s_current_protocol = required_protocol;
+    s_current_protocol[port] = required_protocol;
 
 #if defined(PCBTARANIS)
     switch (required_protocol) {
       case PROTO_PXX:
-        init_pxx(0);
-//        init_pxx(module_index);
+        init_pxx(port);
         break;
-      default:
-        init_ppm(0);
-//        init_ppm(module_index);
+      case PROTO_PPM:
+        init_ppm(port);
         break;
     }
 #elif defined(PCBSKY9X)
@@ -772,11 +590,7 @@ void setupPulses(MODULE_INDEX_PARAM)
   // Set up output data here
   switch (required_protocol) {
     case PROTO_PXX:
-#if defined(PCBTARANIS)
-      setupPulsesPXX(module_index);
-#else
-      setupPulsesPXX();
-#endif
+      setupPulsesPXX(port);
       break;
 #if defined(DSM2)
     case PROTO_DSM2_LP45:
@@ -785,8 +599,12 @@ void setupPulses(MODULE_INDEX_PARAM)
       setupPulsesDsm2(6);
       break;
 #endif
+#if defined(PCBTARANIS)
+    case PROTO_PPM:
+#else
     default:
-      setupPulsesPPM(); // Don't enable interrupts through here
+#endif
+      setupPulsesPPM(port); // Don't enable interrupts through here
       break ;
   }
 }

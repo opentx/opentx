@@ -178,14 +178,14 @@
 // #define PIN_OS100                       0x6000
 
 // Cppm
-#define RCC_AHB1Periph_GPIOCPPM         RCC_AHB1Periph_GPIOA
-#define PIN_CPPM_OUT                    GPIO_Pin_7  //PA.07
-#define GPIOCPPM                        GPIOA
-#define GPIO_PinSource_CPPM             GPIO_PinSource7
+#define RCC_AHB1Periph_GPIO_INTPPM      RCC_AHB1Periph_GPIOA
+#define PIN_INTPPM_OUT                  GPIO_Pin_10  //PA.10
+#define GPIO_INTPPM                     GPIOA
+#define GPIO_PinSource_INTPPM           GPIO_PinSource10
 #define RCC_AHB1Periph_GPIO_EXTPPM      RCC_AHB1Periph_GPIOA
-#define PIN_EXTPPM_OUT                  GPIO_Pin_10  //PA.10
+#define PIN_EXTPPM_OUT                  GPIO_Pin_7  //PA.07
 #define GPIO_EXTPPM                     GPIOA
-#define GPIO_PinSource_EXTPPM           GPIO_PinSource10
+#define GPIO_PinSource_EXTPPM           GPIO_PinSource7
 
 // Heart Beat
 #define PIN_HEART_BEAT                  GPIO_Pin_7  //PC.07
@@ -216,7 +216,6 @@
 
 // USB_OTG
 #define PIN_FS_VBUS                     GPIO_Pin_9  //PA.09
-#define PIN_FS_ID                       GPIO_Pin_10 //PA.10
 #define PIN_FS_DM                       GPIO_Pin_11 //PA.11
 #define PIN_FS_DP                       GPIO_Pin_12 //PA.12
 

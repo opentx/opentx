@@ -270,7 +270,7 @@ void *main_thread(void *)
   try {
 #endif
 
-    s_current_protocol = 255;
+    s_current_protocol[0] = 255;
 
     g_menuStackPtr = 0;
     g_menuStack[0] = menuMainView;
@@ -289,7 +289,7 @@ void *main_thread(void *)
 #endif
     }
 
-    s_current_protocol = 0;
+    s_current_protocol[0] = 0;
 
     while (main_thread_running) {
       perMain();

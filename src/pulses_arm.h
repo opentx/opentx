@@ -37,16 +37,35 @@
 #ifndef pulses_arm_h
 #define pulses_arm_h
 
-extern uint8_t s_current_protocol;
+extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
-extern uint32_t failsafeCounter;
+extern uint32_t failsafeCounter[NUM_MODULES];
 
-void startPulses();
-inline bool pulsesStarted() { return s_current_protocol != 255; }
+void setupPulses(unsigned int port);
+void setupPulsesDsm2(uint8_t chns);
+void setupPulsesPXX(unsigned int port);
+void setupPulsesPPM(unsigned int port);
+
+inline void startPulses()
+{
+#if defined(PCBTARANIS)
+  setupPulses(INTERNAL_MODULE);
+  setupPulses(EXTERNAL_MODULE);
+#else
+  setupPulses(0);
+#endif
+}
+
+inline bool pulsesStarted() { return s_current_protocol[0] != 255; }
 inline void pausePulses() { s_pulses_paused = true; }
 inline void resumePulses() { s_pulses_paused = false; }
 
-#define SEND_FAILSAFE_NOW() failsafeCounter = 1
-#define SEND_FAILSAFE_1S()  failsafeCounter = 100
+#define SEND_FAILSAFE_NOW(idx) failsafeCounter[idx] = 1
+
+inline void SEND_FAILSAFE_1S()
+{
+  for (int i=0; i<NUM_MODULES; i++)
+    failsafeCounter[i] = 100;
+}
 
 #endif

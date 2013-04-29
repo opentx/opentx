@@ -122,6 +122,8 @@ PACK(typedef struct {
 
 bool eeConvert()
 {
+  return false;
+
   if (g_eeGeneral.version == 212) {
     g_eeGeneral.optrexDisplay = 0;
     g_eeGeneral.backlightBright = 0;
@@ -167,10 +169,10 @@ bool eeConvert()
         g_model.ppmNCH = oldModel.ppmNCH;
         g_model.trimInc = oldModel.trimInc;
         g_model.disableThrottleWarning = oldModel.disableThrottleWarning;
-        g_model.pulsePol = oldModel.pulsePol;
+        g_model.moduleData[0].ppmPulsePol = oldModel.pulsePol;
         g_model.extendedLimits = oldModel.extendedLimits;
         g_model.extendedTrims = oldModel.extendedTrims;
-        g_model.ppmDelay = oldModel.ppmDelay;
+        g_model.moduleData[0].ppmDelay = oldModel.ppmDelay;
         g_model.beepANACenter = oldModel.beepANACenter;
         for (uint8_t i=0; i<64; i++) {
           g_model.mixData[i].destCh = oldModel.mixData[i].destCh;
@@ -218,7 +220,7 @@ bool eeConvert()
           memcpy(g_model.phaseData[i].trim, oldModel.phaseData[i].trim, 4*sizeof(int16_t));
           memcpy(g_model.phaseData[i].rotaryEncoders, oldModel.phaseData[i].rotaryEncoders, 1*sizeof(int16_t));
         }
-        g_model.ppmFrameLength = oldModel.ppmFrameLength;
+        g_model.moduleData[0].ppmFrameLength = oldModel.ppmFrameLength;
         g_model.thrTraceSrc = oldModel.thrTraceSrc;
         g_model.header.modelId = oldModel.modelId;
         g_model.switchWarningStates = oldModel.switchWarningStates;

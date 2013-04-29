@@ -465,9 +465,9 @@ enum EnumKeys {
   #define MAX_PORT2_CHANNELS()      ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
   #define MAX_TRAINER_CHANNELS()    (8)
   #define MAX_CHANNELS(idx)         (idx==0 ? MAX_PORT1_CHANNELS() : (idx==1 ? MAX_PORT2_CHANNELS() : MAX_TRAINER_CHANNELS()))
-#else
-  #define NUM_PORT1_CHANNELS()      (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+(g_model.ppmNCH*2))))
-  #define NUM_PORT2_CHANNELS()      (8+(g_model.ppm2NCH*2))
+#elif defined(PCBSKY9X)
+  #define NUM_PORT1_CHANNELS()      (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+g_model.moduleData[0].channelsCount)))
+  #define NUM_PORT2_CHANNELS()      (8+g_model.moduleData[1].channelsCount)
 #endif
 
 #include "lcd.h"
@@ -658,9 +658,8 @@ enum CswFunctions {
   #define NAVIGATION_RE_IDX()         0
 #endif
 
-
-#define HEART_TIMER_PULSES  1
-#define HEART_TIMER10ms     2
+#define HEART_TIMER_10MS     1
+#define HEART_TIMER_PULSES   2 // when multiple modules this is the first one
 extern uint8_t heartbeat;
 
 #define MAX_ALERT_TIME   60
