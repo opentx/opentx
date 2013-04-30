@@ -958,6 +958,10 @@ void eeLoadModel(uint8_t id)
     resumeMixerCalculations();
     // TODO pulses should be started after mixer calculations ...
 
+#if defined(PCBTARANIS)
+      startPulses();
+#endif
+
 #if defined(FRSKY)
     frskySendAlarms();
 #endif

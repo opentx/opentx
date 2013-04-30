@@ -36,8 +36,6 @@
 
 #include "../opentx.h"
 
-// CURRENTLY EXPECTS ONLY PXX ON THE INTERNAL SIGNAL, PPM ALLOWED ON THE EXTERNAL SIGNAL
-
 void setupPulses(unsigned int port);
 void setupPulsesPPM(unsigned int port);
 void setupPulsesPXX(unsigned int port);
@@ -143,7 +141,6 @@ static void init_pa10_pxx()
   TIM1->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
   TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   TIM1->CR1 |= TIM_CR1_CEN ;
-//  NVIC_SetPriority(TIM1_CC_IRQn, 1); // Debug - high priority, doesn't help
   NVIC_EnableIRQ(TIM1_CC_IRQn) ;
 }
 
@@ -302,7 +299,6 @@ static void init_pa7_pxx()
   TIM8->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
   TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   TIM8->CR1 |= TIM_CR1_CEN ;
-//  NVIC_SetPriority(TIM8_CC_IRQn, 1); // Debug - high priority, doesn't help
   NVIC_EnableIRQ(TIM8_CC_IRQn) ;
 }
 
