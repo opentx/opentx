@@ -3590,6 +3590,23 @@ void perMain()
   telemetryWakeup();
 #endif
 
+#if defined(PCBTARANIS)
+  uint8_t requiredTrainerMode = g_model.trainerMode;
+  if (requiredTrainerMode != currentTrainerMode) {
+    currentTrainerMode = requiredTrainerMode;
+    if (requiredTrainerMode) {
+      // slave
+      stop_trainer_capture();
+      init_trainer_ppm();
+    }
+    else {
+      // master
+      stop_trainer_ppm();
+      init_trainer_capture();
+    }
+  }
+#endif
+
   lcd_clear();
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
@@ -4163,7 +4180,7 @@ void mixerTask(void * pdata)
       uint8_t heartbeatCheck = HEART_TIMER_10MS;
 #if defined(PCBTARANIS)
       if (g_model.moduleData[0].rfProtocol != RF_PROTO_OFF)
-        heartbeatCheck |= HEART_TIMER_PULSES;
+        heartbeatCheck |= HEART_TIMER_PULSES << 0;
       if (g_model.externalModule != MODULE_TYPE_NONE)
         heartbeatCheck |= HEART_TIMER_PULSES << 1;
 #else

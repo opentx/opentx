@@ -183,4 +183,6 @@ void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t si
 #endif
 #define EEPROM_MASSSTORAGE()  (usb_connected)
 
+extern uint8_t currentTrainerMode;
+
 #endif

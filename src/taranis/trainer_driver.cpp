@@ -50,6 +50,7 @@ uint16_t TrainerPpmStream[20] =
   0,0,0,0,0,0,0,0,0,0,0
 };
 
+uint8_t currentTrainerMode;
 uint16_t * TrainerPulsePtr;
 
 // TODO remove duplicated code
