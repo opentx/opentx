@@ -294,9 +294,9 @@ void setupPulsesPXX(unsigned int port)
   putPcmByte(0, port);
 
   /* PPM */
-  static uint32_t pass = 0;
+  static uint32_t pass[NUM_MODULES] = {0};
   uint32_t sendUpperChannels = 0;
-  if (pass++ & 0x01) {
+  if (pass[port]++ & 0x01) {
     sendUpperChannels = g_model.moduleData[port].channelsCount;
   }
   for (uint32_t i=0; i<8; i++) {
@@ -320,9 +320,9 @@ void setupPulsesPXX(unsigned int port)
     }
     else {
       if (i < sendUpperChannels)
-        chan =  limit(2048, PPM_CH_CENTER(8+g_model.moduleData[0].channelsStart+i) - PPM_CENTER + (channelOutputs[8+g_model.moduleData[0].channelsStart+i] * 512 / 682) + 3072, 4095);
+        chan =  limit(2048, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (channelOutputs[8+g_model.moduleData[port].channelsStart+i] * 512 / 682) + 3072, 4095);
       else
-        chan = limit(0, PPM_CH_CENTER(g_model.moduleData[0].channelsStart+i) - PPM_CENTER + (channelOutputs[g_model.moduleData[0].channelsStart+i] * 512 / 682) + 1024, 2047);
+        chan = limit(0, PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (channelOutputs[g_model.moduleData[port].channelsStart+i] * 512 / 682) + 1024, 2047);
     }
 
     if (i & 1) {

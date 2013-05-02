@@ -58,7 +58,12 @@ inline void startPulses()
 
 inline bool pulsesStarted() { return s_current_protocol[0] != 255; }
 inline void pausePulses() { s_pulses_paused = true; }
-inline void resumePulses() { s_pulses_paused = false; }
+inline void resumePulses() { 
+  s_pulses_paused = false;
+#if defined(PCBTARANIS)
+  startPulses(); //TODO delete
+#endif
+  }
 
 #define SEND_FAILSAFE_NOW(idx) failsafeCounter[idx] = 1
 
