@@ -49,7 +49,7 @@ uint16_t nextMixerEndTime = 0;
 #define BAD_DATA       0x47
 #endif
 
-uint8_t s_current_protocol = 255;
+uint8_t s_current_protocol[1] = { 255 };
 uint8_t s_pulses_paused = 0;
 
 uint16_t B3_comp_value;
@@ -80,7 +80,7 @@ void startPulses()
 #endif
 
 #if defined(SIMU)
-  s_current_protocol = g_model.protocol;
+  s_current_protocol[0] = g_model.protocol;
 #else
   setupPulses();
 #endif // SIMU
@@ -107,10 +107,10 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
   
   // Call setupPulses only after REST pulse had been sent.
   // Must do this before toggle PORTB to keep timing accurate
-  if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol) || *((uint16_t*)pulses2MHzRPtr) == 0) {
+  if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]) || *((uint16_t*)pulses2MHzRPtr) == 0) {
     setupPulses(); // does not sei() for setupPulsesPPM
     heartbeat |= HEART_TIMER_PULSES;
-    if (IS_PXX_PROTOCOL(s_current_protocol) || IS_DSM2_PROTOCOL(s_current_protocol)) {
+    if (IS_PXX_PROTOCOL(s_current_protocol[0]) || IS_DSM2_PROTOCOL(s_current_protocol[0])) {
       // !PPM protocols interrupts don't need COMPA
       return;
     }
@@ -118,7 +118,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
 
 #if !defined(PCBGRUVIN9X)
   // Original bitbang for PPM
-  if (s_current_protocol != PROTO_NONE) {
+  if (s_current_protocol[0] != PROTO_NONE) {
     if (g_ppmPulsePolarity) {
       PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
       g_ppmPulsePolarity = 0;
@@ -134,7 +134,7 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
     
   // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
   // so need to use pusePol register to keep track of PPM_out polarity.
-  if (s_current_protocol != PROTO_NONE) {
+  if (s_current_protocol[0] != PROTO_NONE) {
     if (g_ppmPulsePolarity) {
       TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
       g_ppmPulsePolarity = 0;
@@ -377,7 +377,7 @@ normal:
 FORCEINLINE void setupPulsesDsm2()
 {
   uint16_t *ptr = (uint16_t *)pulses2MHz;
-  switch (s_current_protocol)
+  switch (s_current_protocol[0])
   {
     case PROTO_DSM2_LP45:
       *ptr = 0x00;
@@ -505,7 +505,7 @@ void setupPulsesDsm2()
   pulses2MHzWPtr = pulses2MHz;
 
   // If more channels needed make sure the pulses union/array is large enough
-  switch (s_current_protocol)
+  switch (s_current_protocol[0])
   {
     case PROTO_DSM2_LP45:
       dsmDat[0] = 0x00;
@@ -744,15 +744,15 @@ void setupPulses()
       PORTH |= 0x80;
 #endif
 
-  if (s_current_protocol != required_protocol) {
+  if (s_current_protocol[0] != required_protocol) {
 
 #if defined(DSM2_SERIAL) && defined(FRSKY)
-    if (s_current_protocol == 255 || IS_DSM2_PROTOCOL(s_current_protocol)) {
+    if (s_current_protocol[0] == 255 || IS_DSM2_PROTOCOL(s_current_protocol[0])) {
       FRSKY_Init();
     }
 #endif
 
-    s_current_protocol = required_protocol;
+    s_current_protocol[0] = required_protocol;
 
     TCCR1B = 0;                           // Stop counter
     TCNT1 = 0;
@@ -1094,8 +1094,8 @@ ISR(TIMER3_COMPA_vect) //2MHz pulse generation
 ISR(TIMER3_COMPB_vect) //2MHz pulse generation
 {
   sei() ;
-  if (s_current_protocol != g_model.protocol) {
-    if (s_current_protocol == PROTO_PPMSIM) {
+  if (s_current_protocol[0] != g_model.protocol) {
+    if (s_current_protocol[0] == PROTO_PPMSIM) {
       setupPulses();
     }
   }

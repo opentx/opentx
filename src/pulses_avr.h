@@ -37,7 +37,7 @@
 #ifndef pulses_avr_h
 #define pulses_avr_h
 
-extern uint8_t s_current_protocol;
+extern uint8_t s_current_protocol[1];
 extern uint8_t s_pulses_paused;
 
 extern uint8_t *pulses2MHzRPtr;
@@ -48,7 +48,7 @@ extern uint16_t nextMixerEndTime;
 #define MAX_MIXER_DELTA (50*16) /* 50ms max as an interval between 2 mixer calculations */
 
 void startPulses();
-inline bool pulsesStarted() { return s_current_protocol != 255; }
+inline bool pulsesStarted() { return s_current_protocol[0] != 255; }
 inline void pausePulses() { s_pulses_paused = true; }
 inline void resumePulses() { s_pulses_paused = false; }
 void setupPulses();
