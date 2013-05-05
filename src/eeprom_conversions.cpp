@@ -166,7 +166,7 @@ bool eeConvert()
         }
         g_model.protocol = oldModel.protocol;
         g_model.thrTrim = oldModel.thrTrim;
-        g_model.ppmNCH = oldModel.ppmNCH;
+        g_model.moduleData[0].channelsCount = oldModel.ppmNCH*2;
         g_model.trimInc = oldModel.trimInc;
         g_model.disableThrottleWarning = oldModel.disableThrottleWarning;
         g_model.moduleData[0].ppmPulsePol = oldModel.pulsePol;

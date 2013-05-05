@@ -440,7 +440,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 5000) { // 2.5 mS
-          setupPulses(INTERNAL_MODULE);
+          setupPulses(0);
         }
         else {
           // Kick off serial output here

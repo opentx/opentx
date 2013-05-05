@@ -1386,17 +1386,17 @@ void menuModelSetup(uint8_t event)
         lcd_putsLeft(y, PSTR("Port2"));
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VPROTOS, 0, 0);
         lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW+3, y, STR_CH, m_posHorz<=0 ? attr : 0);
-        lcd_outdezAtt(lcdLastPos, y, g_model.ppm2SCH+1, LEFT | (m_posHorz<=0 ? attr : 0));
+        lcd_outdezAtt(lcdLastPos, y, g_model.moduleData[1].channelsStart+1, LEFT | (m_posHorz<=0 ? attr : 0));
         lcd_putc(lcdLastPos, y, '-');
-        lcd_outdezAtt(lcdLastPos + FW+1, y, g_model.ppm2SCH+8+(g_model.ppm2NCH*2), LEFT | (m_posHorz!=0 ? attr : 0));
+        lcd_outdezAtt(lcdLastPos + FW+1, y, g_model.moduleData[1].channelsStart+8+g_model.moduleData[1].channelsCount, LEFT | (m_posHorz!=0 ? attr : 0));
         if (attr && (editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
-              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.ppm2SCH, 32-8-(g_model.ppm2NCH*2));
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[1].channelsStart, 32-8-g_model.moduleData[1].channelsCount);
               g_model.moduleData[1].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.ppm2NCH, -2, min<int8_t>(4, (32-g_model.ppm2SCH)/2-4));
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[1].channelsCount, -4, min<int8_t>(8, 32-g_model.moduleData[1].channelsStart)-8);
               g_model.moduleData[1].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
               break;
           }

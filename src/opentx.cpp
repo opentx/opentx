@@ -4177,8 +4177,8 @@ void mixerTask(void * pdata)
       CoLeaveMutexSection(mixerMutex);
       if (tick10ms) checkTrims();
 
-      uint8_t heartbeatCheck = HEART_TIMER_10MS;
 #if defined(PCBTARANIS)
+      uint8_t heartbeatCheck = HEART_TIMER_10MS;
       if (g_model.moduleData[0].rfProtocol != RF_PROTO_OFF)
         heartbeatCheck |= HEART_TIMER_PULSES << 0;
       if (g_model.externalModule != MODULE_TYPE_NONE)

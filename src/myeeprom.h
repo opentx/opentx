@@ -239,7 +239,7 @@ enum ModuleIndex {
 #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
 #define MODELDATA_BITMAP
-#define MODELDATA_EXTRA   uint8_t ppmSCH; int8_t ppm2SCH; int8_t ppm2NCH; ModuleData moduleData[NUM_MODULES];
+#define MODELDATA_EXTRA   ModuleData moduleData[NUM_MODULES];
 #define LIMITDATA_EXTRA
 #define swstate_t         uint8_t
 #else
