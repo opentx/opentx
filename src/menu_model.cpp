@@ -2066,7 +2066,7 @@ void DrawFunction(FnFuncP fn, uint8_t offset=0)
   uint8_t prev_yv = 255;
 
   for (int8_t xv=-WCHART; xv<=WCHART; xv++) {
-    uint8_t yv = (LCD_H-1) - (((int16_t)RESX + fn(xv * (RESX/WCHART))) / 2 * (LCD_H-1) / RESX);
+    uint8_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/WCHART))) / 2 * (LCD_H-1) / RESX);
     if (prev_yv != 255) {
       if (abs((int8_t)yv-prev_yv) <= 1) {
         lcd_plot(X0+xv-offset-1, prev_yv, FORCE);
