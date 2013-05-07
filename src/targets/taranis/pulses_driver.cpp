@@ -54,8 +54,8 @@ static void init_pa7_ppm( void ) ;
 static void disable_pa7_ppm( void ) ;
 static void init_pa10_none( void ) ;
 static void disable_pa10_none( void ) ;
-static void init_pa7_none()
-static void disable_pa7_none()
+static void init_pa7_none( void ) ;
+static void disable_pa7_none( void ) ;
 
 void init_pxx(uint32_t port)
 {
