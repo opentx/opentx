@@ -228,8 +228,6 @@ inline void eeFlush() { theFile.flush(); }
 #define DISPLAY_PROGRESS_BAR(x)
 #endif
 
-uint16_t evalChkSum();
-
 #define eeDeleteModel(x) EFile::rm(FILE_MODEL(x))
 
 #if defined(CPUARM)

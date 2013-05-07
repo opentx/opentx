@@ -1049,12 +1049,9 @@ void menuGeneralHardware(uint8_t event)
 }
 #endif
 
-void menuGeneralCalib(uint8_t event)
+
+void menuCommonCalib(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUCALIBRATION, menuTabDiag, e_Calib, 1);
-
-  static uint8_t idxState;
-
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { //get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
@@ -1064,25 +1061,20 @@ void menuGeneralCalib(uint8_t event)
     }
   }
 
-  s_noScroll = idxState; // make sure we don't scroll while calibrating
+  s_noScroll = reusableBuffer.calib.state; // make sure we don't scroll while calibrating
 
   switch(event)
   {
     case EVT_ENTRY:
-      idxState = 0;
+      reusableBuffer.calib.state = 0;
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
-      idxState++;
-      if (idxState==3) {
-        STORE_GENERALVARS;
-        idxState = 0;
-      }
+      reusableBuffer.calib.state++;
       break;
   }
 
-
-  switch (idxState) {
+  switch (reusableBuffer.calib.state) {
     case 0:
       // START CALIBRATION
       lcd_putsLeft(3*FH, STR_MENUTOSTART);
@@ -1114,8 +1106,16 @@ void menuGeneralCalib(uint8_t event)
           g_eeGeneral.calibSpanPos[i] = v - v/STICK_TOLERANCE;
         }
       }
+      break;
 
+    case 3:
       g_eeGeneral.chkSum = evalChkSum();
+      STORE_GENERALVARS;
+      reusableBuffer.calib.state = 4;
+      break;
+
+    default:
+      reusableBuffer.calib.state = 0;
       break;
   }
 
@@ -1123,4 +1123,23 @@ void menuGeneralCalib(uint8_t event)
 #if defined(PCBTARANIS)
   drawPotsBars();
 #endif
+}
+
+void menuGeneralCalib(uint8_t event)
+{
+  SIMPLE_MENU(STR_MENUCALIBRATION, menuTabDiag, e_Calib, 1);
+
+  menuCommonCalib(event);
+}
+
+void menuFirstCalib(uint8_t event)
+{
+  if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == 4) {
+    chainMenu(menuMainView);
+  }
+  else {
+    lcd_putsCenter(0*FH, MENUCALIBRATION);
+    lcd_invert_line(0);
+    menuCommonCalib(event);
+  }
 }

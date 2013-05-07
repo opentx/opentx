@@ -1303,6 +1303,7 @@ union ReusableBuffer
         int16_t midVals[NUM_STICKS+NUM_POTS];
         int16_t loVals[NUM_STICKS+NUM_POTS];
         int16_t hiVals[NUM_STICKS+NUM_POTS];
+        uint8_t state;
     } calib;
 
 #if defined(SDCARD)

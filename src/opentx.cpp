@@ -372,6 +372,11 @@ void generalDefault()
   g_eeGeneral.vBatWarn = 90;
 #endif
 
+#if !defined(CPUM64)
+  g_eeGeneral.backlightMode = e_backlight_mode_both;
+  g_eeGeneral.lightAutoOff = 2;
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
@@ -2455,7 +2460,7 @@ void evalFunctions()
 
   #define MOMENTARY_START_TEST() ( (momentary && !(activeSwitches & switch_mask) && active) || \
                                    (short_long==1 && !active && mSwitchDuration[mswitch]>0 && mSwitchDuration[mswitch]<CFN_PRESSLONG_DURATION) || \
-                                   (short_long==2 && active && mSwitchDuration[mswitch]>=CFN_PRESSLONG_DURATION) )
+                                   (short_long==2 && active && mSwitchDuration[mswitch]==CFN_PRESSLONG_DURATION) )
 
       uint8_t short_long = 0;
       uint8_t mswitch = 0;
@@ -3995,7 +4000,7 @@ void opentxStart()
   checkAll();
 
   if (g_eeGeneral.chkSum != evalChkSum()) {
-    pushMenu(menuGeneralCalib);
+    chainMenu(menuFirstCalib);
   }
 }
 

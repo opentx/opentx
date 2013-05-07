@@ -104,6 +104,8 @@ inline MenuFuncP lastPopMenu()
 
 void drawPotsBars();
 void doMainScreenGraphics();
+void menuFirstCalib(uint8_t event);
+
 void onMainViewMenu(const char *result);
 void menuMainView(uint8_t event);
 void menuGeneralDiagAna(uint8_t event);
