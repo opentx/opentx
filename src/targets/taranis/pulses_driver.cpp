@@ -52,6 +52,10 @@ static void init_pa7_pxx( void ) ;
 static void disable_pa7_pxx( void ) ;
 static void init_pa7_ppm( void ) ;
 static void disable_pa7_ppm( void ) ;
+static void init_pa10_none( void ) ;
+static void disable_pa10_none( void ) ;
+static void init_pa7_none()
+static void disable_pa7_none()
 
 void init_pxx(uint32_t port)
 {
@@ -84,6 +88,112 @@ void disable_ppm(uint32_t port)
   else
     disable_pa7_ppm();
 }
+
+void init_no_pulses(uint32_t port)
+{
+  if (port == INTERNAL_MODULE)
+    init_pa10_none();
+  else
+    init_pa7_none();
+}
+
+void disable_no_pulses(uint32_t port)
+{
+  if (port == INTERNAL_MODULE)
+    disable_pa10_none();
+  else
+    disable_pa7_none();
+}
+
+static void init_pa10_none()
+{
+  INTERNAL_RF_OFF();
+
+  // Timer1, channel 3
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_INTPPM, ENABLE);
+  
+  GPIO_InitStructure.GPIO_Pin = PIN_INTPPM_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT ;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIO_INTPPM, &GPIO_InitStructure);
+  
+	GPIO_SetBits(GPIO_INTPPM,PIN_INTPPM_OUT) ; // Set high
+  
+  RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
+
+  TIM1->CR1 &= ~TIM_CR1_CEN ;
+  TIM1->ARR = 36000 ;             // 18mS
+  TIM1->CCR2 = 32000 ;            // Update time
+  TIM1->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
+  
+  TIM1->CCER = TIM_CCER_CC3E ;
+  
+  TIM1->CCMR2 = 0 ;
+  TIM1->EGR = 1 ;                                                         // Restart
+
+  TIM1->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_0 ;                     // Toggle CC1 o/p
+  TIM1->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
+  TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
+  TIM1->CR1 |= TIM_CR1_CEN ;
+  NVIC_EnableIRQ(TIM1_CC_IRQn) ;
+}
+
+static void disable_pa10_none()
+{
+  NVIC_DisableIRQ(TIM1_CC_IRQn) ;
+  TIM1->DIER &= ~TIM_DIER_CC2IE ;
+  TIM1->CR1 &= ~TIM_CR1_CEN ;
+  INTERNAL_RF_OFF();
+}
+
+static void init_pa7_none()
+{
+  EXTERNAL_RF_ON();
+
+  // Timer8
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_EXTPPM, ENABLE);
+  
+  GPIO_InitStructure.GPIO_Pin = PIN_EXTPPM_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT ;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIO_EXTPPM, &GPIO_InitStructure);
+
+	GPIO_SetBits(GPIO_EXTPPM,PIN_EXTPPM_OUT) ; // Set high
+  
+  RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
+
+  TIM1->CR1 &= ~TIM_CR1_CEN ;
+  TIM8->ARR = 36000 ;             // 18mS
+  TIM8->CCR2 = 32000 ;            // Update time
+  TIM8->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
+  
+  TIM8->CCMR2 = 0 ;
+  TIM8->EGR = 1 ;                                                         // Restart
+
+  TIM8->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_0 ;                     // Toggle CC1 o/p
+  TIM8->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
+  TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
+  TIM8->CR1 |= TIM_CR1_CEN ;
+  NVIC_EnableIRQ(TIM8_CC_IRQn) ;
+}
+
+static void disable_pa7_none()
+{
+  NVIC_DisableIRQ(TIM8_CC_IRQn) ;
+  TIM8->DIER &= ~TIM_DIER_CC2IE ;
+  TIM8->CR1 &= ~TIM_CR1_CEN ;
+  EXTERNAL_RF_OFF();
+}
+
+
 
 static void init_pa10_pxx()
 {

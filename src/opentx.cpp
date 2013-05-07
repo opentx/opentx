@@ -57,6 +57,11 @@ OS_TID btTaskId;
 OS_STK btStack[BT_STACK_SIZE];
 #endif
 
+#if defined(PCBTARANIS) && defined(DEBUG)
+OS_TID debugTaskId;
+OS_STK debugStack[DEBUG_STACK_SIZE];
+#endif
+
 #if defined(PCBSKY9X) && defined(DEBUG)
 OS_TID debugTaskId;
 OS_STK debugStack[DEBUG_STACK_SIZE];
@@ -4356,6 +4361,10 @@ int main(void)
   CoInitOS();
 
 #if defined(PCBSKY9X) && defined(DEBUG)
+  debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
+#endif
+
+#if defined(PCBTARANIS) && defined(DEBUG)
   debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
 #endif
 
