@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 uint8_t Bit_pulses[64] ;                          // Likely more than we need
 uint8_t *Pulses2MHzptr ;

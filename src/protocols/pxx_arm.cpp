@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 uint8_t pxxFlag[NUM_MODULES] = { MODULES_INIT(0) };
 uint16_t pxxStream[NUM_MODULES][400];                // Transitions

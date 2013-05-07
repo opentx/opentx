@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 #if defined(PCBTARANIS)
 // TODO internal module doesn't send PPM
