@@ -146,6 +146,10 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
     s_last_menu_offset = 0;
     memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
   }
+  else if (s_menu_offset == s_menu_count - MENU_MAX_LINES) {
+    s_last_menu_offset = 0xffff;
+    memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
+  }
   else if (s_menu_offset == s_last_menu_offset) {
     // should not happen, only there because of Murphy's law
     return true;
@@ -207,6 +211,19 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
               strcpy(line, fn);
               break;
             }
+          }
+        }
+        for (uint8_t i=0; i<min(s_menu_count, (uint16_t)MENU_MAX_LINES); i++)
+          s_menu[i] = reusableBuffer.modelsel.menu_bss[i];
+      }
+      else if (s_last_menu_offset == 0xffff) {
+        for (int i=MENU_MAX_LINES-1; i>=0; i--) {
+          char *line = reusableBuffer.modelsel.menu_bss[i];
+          if (line[0] == '\0' || strcmp(fn, line) > 0) {
+            if (i > 0) memmove(reusableBuffer.modelsel.menu_bss[0], reusableBuffer.modelsel.menu_bss[1], sizeof(reusableBuffer.modelsel.menu_bss[i]) * i);
+            memset(line, 0, MENU_LINE_LENGTH);
+            strcpy(line, fn);
+            break;
           }
         }
         for (uint8_t i=0; i<min(s_menu_count, (uint16_t)MENU_MAX_LINES); i++)

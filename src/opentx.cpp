@@ -1012,7 +1012,7 @@ bool __getSwitch(int8_t swtch)
 #if defined(FRSKY)
           // Telemetry
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-            if (frskyStreaming <= 0 && cs->v1 > MIXSRC_FIRST_TELEM-1+TELEM_TM2)
+            if (frskyStreaming <= 0 && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2)
               return swtch > 0 ? false : true;
 
             y = convertCswTelemValue(cs);

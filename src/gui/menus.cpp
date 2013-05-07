@@ -980,6 +980,12 @@ const char * displayMenu(uint8_t event)
 #endif
       else {
         s_menu_item = display_count - 1;
+#if defined(SDCARD)
+        if (s_menu_count > MENU_MAX_LINES) {
+          s_menu_offset = s_menu_count - display_count;
+          result = STR_UPDATE_LIST;
+        }
+#endif
       }
       break;
 
@@ -999,6 +1005,12 @@ const char * displayMenu(uint8_t event)
 #endif
       else {
         s_menu_item = 0;
+#if defined(SDCARD)
+        if (s_menu_offset) {
+          s_menu_offset = 0;
+          result = STR_UPDATE_LIST;
+        }
+#endif
       }
       break;
     CASE_EVT_ROTARY_BREAK
