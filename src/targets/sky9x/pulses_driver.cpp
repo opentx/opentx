@@ -36,6 +36,8 @@
 
 #include "../opentx.h"
 
+volatile uint32_t ppmStreamIndex[NUM_MODULES] = { MODULES_INIT(0) };  // Modified in interrupt routine
+
 void init_main_ppm( uint32_t period, uint32_t out_enable )
 {
   register Pio *pioptr ;
@@ -133,3 +135,83 @@ void disable_ssc()
   sscptr = SSC ;
   sscptr->SSC_CR = SSC_CR_TXDIS ;
 }
+
+#if !defined(SIMU)
+extern "C" void PWM_IRQHandler(void)
+{
+  register Pwm *pwmptr;
+  register Ssc *sscptr;
+  uint32_t period;
+  uint32_t reason;
+
+  pwmptr = PWM;
+  reason = pwmptr->PWM_ISR1 ;
+  if (reason & PWM_ISR1_CHID3) {
+    switch (s_current_protocol[0]) // Use the current, don't switch until set_up_pulses
+    {
+      case PROTO_PXX:
+        // Alternate periods of 15.5mS and 2.5 mS
+        period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
+        if (period == 5000) { // 2.5 mS
+          period = 15500 * 2;
+        }
+        else {
+          period = 5000;
+        }
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
+        if (period != 5000) { // 2.5 mS
+          setupPulses(0);
+        }
+        else {
+          // Kick off serial output here
+          sscptr = SSC;
+          sscptr->SSC_TPR = CONVERT_PTR(pxxStream[0]);
+          sscptr->SSC_TCR = (uint8_t *)pxxStreamPtr[0] - (uint8_t *)pxxStream[0];
+          sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
+        }
+        break;
+
+      case PROTO_DSM2_LP45:
+      case PROTO_DSM2_DSM2:
+      case PROTO_DSM2_DSMX:
+        // Alternate periods of 19.5mS and 2.5 mS
+        period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
+        if (period == 5000) { // 2.5 mS
+          period = 19500 * 2;
+        }
+        else {
+          period = 5000;
+        }
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
+        if (period != 5000) { // 2.5 mS
+          setupPulses(0);
+        }
+        else {
+          // Kick off serial output here
+          sscptr = SSC;
+          sscptr->SSC_TPR = (uint32_t) Bit_pulses;
+          sscptr->SSC_TCR = Serial_byte_count;
+          sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
+        }
+        break;
+
+      default:
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[0][ppmStreamIndex[0]++]; // Period in half uS
+        if (ppmStream[0][ppmStreamIndex[0]] == 0) {
+          ppmStreamIndex[0] = 0;
+          setupPulses(0);
+        }
+        break;
+
+    }
+  }
+
+  if (reason & PWM_ISR1_CHID1) {
+    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = ppmStream[1][ppmStreamIndex[1]++] ;  // Period in half uS
+    if (ppmStream[1][ppmStreamIndex[1]] == 0) {
+      ppmStreamIndex[1] = 0;
+      setupPulsesPPM(1);
+    }
+  }
+}
+#endif

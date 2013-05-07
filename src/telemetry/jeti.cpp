@@ -40,7 +40,7 @@ uint8_t jetiRxBuffer[32];
 uint8_t jetiReady;
 uint16_t jetiKeys;
 
-void telemetryWakeup()
+void telemetryInterrupt10ms()
 {
   if (jetiReady) {
     jetiKeys = JETI_KEY_NOCHANGE;

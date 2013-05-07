@@ -73,9 +73,9 @@ OS_MutexID mixerMutex;
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 #if defined(PCBTARANIS)
-#include "splash_taranis.lbm"
+#include "bitmaps/splash_taranis.lbm"
 #else
-#include "splash_9x.lbm"
+#include "bitmaps/splash_9x.lbm"
 #endif
 	'S','P','E',0};
 const pm_uchar * splash_lbm = splashdata+4;
@@ -83,11 +83,11 @@ const pm_uchar * splash_lbm = splashdata+4;
 
 #if !defined(CPUM64) || defined(EXTSTD)
 const pm_uchar asterisk_lbm[] PROGMEM = {
-#include "asterisk.lbm"
+#include "bitmaps/asterisk.lbm"
 };
 #endif
 
-#include "menus.h"
+#include "gui/menus.h"
 
 EEGeneral  g_eeGeneral;
 ModelData  g_model;
@@ -279,7 +279,7 @@ void per10ms()
   }
 #endif
 
-#if defined(FRSKY)
+#if defined(FRSKY) || defined(JETI)
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol))
     telemetryInterrupt10ms();
 #endif
@@ -3586,7 +3586,7 @@ void perMain()
 
   checkBacklight();
 
-#if defined(FRSKY)
+#if defined(FRSKY) || defined(MAVLINK)
   telemetryWakeup();
 #endif
 

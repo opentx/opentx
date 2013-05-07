@@ -41,7 +41,7 @@ void setupPulsesPPM(unsigned int port);
 void setupPulsesPXX(unsigned int port);
 
 uint16_t *ppmStreamPtr[NUM_MODULES];
-extern uint16_t ppmStream[NUM_MODULES][20];
+extern uint16_t ppmStream[NUM_MODULES+1][20];
 extern uint16_t pxxStream[NUM_MODULES][400] ;
 
 static void init_pa10_pxx( void ) ;
@@ -220,7 +220,6 @@ extern "C" void TIM1_CC_IRQHandler()
   }
   else {
     ppmStreamPtr[INTERNAL_MODULE] = ppmStream[INTERNAL_MODULE];
-
     TIM1->DIER |= TIM_DIER_UDE ;
     TIM1->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     TIM1->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
@@ -284,7 +283,7 @@ static void init_pa7_pxx()
   TIM8->DCR = 13 ;                                                                // DMA to CC1
 
 //      TIM8->CR1 = TIM_CR1_OPM ;                               // Just run once
-        // Enable the DMA channel here, DMA2 stream 2, channel 7
+  // Enable the DMA channel here, DMA2 stream 2, channel 7
   DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
   DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
   DMA2_Stream2->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0

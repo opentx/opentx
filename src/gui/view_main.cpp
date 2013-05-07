@@ -98,11 +98,11 @@
 
 #if defined(PCBTARANIS)
   const pm_uchar logo_taranis[] PROGMEM = {
-  #include "logo_taranis.lbm"
+  #include "bitmaps/logo_taranis.lbm"
   };
 
   const pm_uchar icons[] PROGMEM = {
-  #include "icons.lbm"
+  #include "bitmaps/icons.lbm"
   };
 
   #define ICON_RSSI     0, 9

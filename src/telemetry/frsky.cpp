@@ -35,7 +35,6 @@
  */
 
 #include "opentx.h"
-#include "menus.h"
 
 // Enumerate FrSky packet codes
 #define LINKPKT         0xfe

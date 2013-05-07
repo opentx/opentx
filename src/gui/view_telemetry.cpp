@@ -35,7 +35,6 @@
  */
 
 #include "opentx.h"
-#include "menus.h"
 
 #if defined(FRSKY_HUB)
 uint8_t barsThresholds[THLD_MAX];

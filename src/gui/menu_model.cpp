@@ -853,18 +853,22 @@ enum menuModelSetupItems {
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_CHANNELS,
   ITEM_MODEL_TRAINER_SETTINGS,
+#elif defined(PCBSKY9X)
+  ITEM_MODEL_PPM1_PROTOCOL,
+  ITEM_MODEL_PPM1_PARAMS,
+  ITEM_MODEL_PPM2_PROTOCOL,
+  ITEM_MODEL_PPM2_PARAMS,
 #else
-  ITEM_MODEL_PROTOCOL,
-  IF_PCBSKY9X(ITEM_MODEL_PPM2_PROTOCOL)
-  ITEM_MODEL_PROTOCOL_PARAMS,
+  ITEM_MODEL_PPM1_PROTOCOL,
+  ITEM_MODEL_PPM1_PARAMS,
 #endif
   ITEM_MODEL_SETUP_MAX
 };
 
 #if defined(PCBSKY9X)
-#define FIELD_PROTOCOL_MAX 2
+  #define FIELD_PROTOCOL_MAX 2
 #else
-#define FIELD_PROTOCOL_MAX 1
+  #define FIELD_PROTOCOL_MAX 1
 #endif
 
 #if LCD_W >= 212
@@ -923,11 +927,11 @@ void menuModelSetup(uint8_t event)
 #elif defined(CPUM64)
   #define CURSOR_ON_CELL (true)
   uint8_t protocol = g_model.protocol;
-  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, IF_PCBSKY9X(1) 2 });
+  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2 });
 #else
   #define CURSOR_ON_CELL (true)
   uint8_t protocol = g_model.protocol;
-  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, IF_PCBSKY9X(1) 2 });
+  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX), { 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, IF_PCBSKY9X(1) IF_PCBSKY9X(2) });
 #endif
 
   uint8_t sub = m_posVert - 1;
@@ -1326,7 +1330,7 @@ void menuModelSetup(uint8_t event)
 
 #else
 
-      case ITEM_MODEL_PROTOCOL:
+      case ITEM_MODEL_PPM1_PROTOCOL:
 #if defined(PCBSKY9X)
         lcd_putsLeft(y, PSTR("Port1"));
 #else
@@ -1361,7 +1365,7 @@ void menuModelSetup(uint8_t event)
             case 1:
 #if defined(PCBSKY9X)
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[0].channelsStart, 32-8-g_model.moduleData[0].channelsCount);
-              g_model.moduleData[0].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
+              g_model.moduleData[0].ppmFrameLength = 4*(NUM_PORT1_CHANNELS()-8);
 #else
               CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
               g_model.ppmFrameLength = g_model.ppmNCH * 8;
@@ -1371,7 +1375,7 @@ void menuModelSetup(uint8_t event)
             case 2:
               if (IS_PPM_PROTOCOL(protocol)) {
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].channelsCount, -4, min<int8_t>(8, 32-8-g_model.moduleData[0].channelsStart));
-                g_model.moduleData[0].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
+                g_model.moduleData[0].ppmFrameLength = 4*(NUM_PORT1_CHANNELS()-8);
               }
               else
                 REPEAT_LAST_CURSOR_MOVE();
@@ -1393,19 +1397,41 @@ void menuModelSetup(uint8_t event)
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[1].channelsStart, 32-8-g_model.moduleData[1].channelsCount);
-              g_model.moduleData[1].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
+              g_model.moduleData[1].ppmFrameLength = 4*(NUM_PORT2_CHANNELS()-8);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[1].channelsCount, -4, min<int8_t>(8, 32-g_model.moduleData[1].channelsStart)-8);
-              g_model.moduleData[1].ppmFrameLength = NUM_PORT1_CHANNELS()>NUM_PORT2_CHANNELS() ? 4*(NUM_PORT1_CHANNELS()-8) : 4*(NUM_PORT2_CHANNELS()-8);
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[1].channelsCount, -4, min<int8_t>(8, 32-8-g_model.moduleData[1].channelsStart));
+              g_model.moduleData[1].ppmFrameLength = 4*(NUM_PORT2_CHANNELS()-8);
+              break;
+          }
+        }
+        break;
+
+      case ITEM_MODEL_PPM2_PARAMS:
+        lcd_putsLeft(y, STR_PPMFRAME);
+        lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
+        lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.moduleData[1].ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
+        lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
+        lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.moduleData[1].ppmDelay*50)+300, (m_posHorz < 0 || m_posHorz==1) ? attr : 0);
+        lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.moduleData[1].ppmPulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
+        if (attr && (editMode>0 || p1valdiff)) {
+          switch (m_posHorz) {
+            case 0:
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[1].ppmFrameLength, -20, 35);
+              break;
+            case 1:
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[1].ppmDelay, -4, 10);
+              break;
+            case 2:
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[1].ppmPulsePol, 1);
               break;
           }
         }
         break;
 #endif
 
+      case ITEM_MODEL_PPM1_PARAMS:
 #if defined(PCBSKY9X)
-      case ITEM_MODEL_PROTOCOL_PARAMS:
         if (IS_PPM_PROTOCOL(protocol)) {
           lcd_putsLeft(y, STR_PPMFRAME);
           lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
@@ -1428,7 +1454,6 @@ void menuModelSetup(uint8_t event)
           }
         }
 #else
-      case ITEM_MODEL_PROTOCOL_PARAMS:
         if (IS_PPM_PROTOCOL(protocol)) {
           lcd_putsLeft(y, STR_PPMFRAME);
           lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);

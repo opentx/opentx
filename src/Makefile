@@ -170,6 +170,10 @@ PXX = NO
 # Values = NO, SERIAL, PPM
 DSM2 = NO
 
+# HUBSAN protocol
+# Values = NO, YES
+HUBSAN = NO
+
 # DSM/PPM TX caddy PCB (Gruvin)
 # For auto-switching switching between DSM2/X and Fr-Sky transmitter modules
 # Values = YES, NO
@@ -252,12 +256,12 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   XCURVES = NO
   SDCARD = NO
   THR_TRACE = NO
-  EXTRAINCDIRS = stock
+  EXTRAINCDIRS = targets/stock
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  BOARDSRC = stock/board_stock.cpp
-  EXTRABOARDSRC = stock/lcd_driver.cpp
+  BOARDSRC = targets/stock/board_stock.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  PULSESSRC = pulses_avr.cpp
+  PULSESSRC = protocols/pulses_avr.cpp
 
   ifeq ($(PCB), 9XR)
     CPPDEFS += -DPCB9XR
@@ -275,7 +279,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += stock/voice.cpp
+    CPPSRC += targets/stock/voice.cpp
   endif
    
   ifeq ($(PWM_BACKLIGHT), YES)
@@ -308,11 +312,11 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   THR_TRACE = NO
   EEPROM_VARIANT += ${M128_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  EXTRAINCDIRS = stock
-  BOARDSRC = stock/board_stock.cpp
-  EXTRABOARDSRC = stock/lcd_driver.cpp
+  EXTRAINCDIRS = targets/stock
+  BOARDSRC = targets/stock/board_stock.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  PULSESSRC = pulses_avr.cpp
+  PULSESSRC = protocols/pulses_avr.cpp
 
   ifeq ($(PCB), 9XR128)
     CPPDEFS += -DPCB9XR128
@@ -330,7 +334,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += stock/voice.cpp
+    CPPSRC += targets/stock/voice.cpp
   endif
   
   ifeq ($(PWM_BACKLIGHT), YES)
@@ -363,11 +367,11 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   THR_TRACE = YES
   EEPROM_VARIANT += ${M2561_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  EXTRAINCDIRS = stock
-  BOARDSRC = stock/board_stock.cpp
-  EXTRABOARDSRC = stock/lcd_driver.cpp
+  EXTRAINCDIRS = targets/stock
+  BOARDSRC = targets/stock/board_stock.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  PULSESSRC = pulses_avr.cpp
+  PULSESSRC = protocols/pulses_avr.cpp
 
   ifeq ($(PCB), 9XR2561)
     CPPDEFS += -DPCB9XR2561
@@ -385,7 +389,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += stock/voice.cpp
+    CPPSRC += targets/stock/voice.cpp
   endif
   
   ifeq ($(PWM_BACKLIGHT), YES)
@@ -423,17 +427,17 @@ ifeq ($(PCB), GRUVIN9X)
   SDCARD = NO
   BUZZER = NO
   THR_TRACE = YES
-  EXTRAINCDIRS = gruvin9x stock FatFs FatFs/option
-  BOARDSRC = gruvin9x/board_gruvin9x.cpp
-  EXTRABOARDSRC = stock/lcd_driver.cpp
+  EXTRAINCDIRS = targets/gruvin9x targets/stock FatFs FatFs/option
+  BOARDSRC = targets/gruvin9x/board_gruvin9x.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  PULSESSRC = pulses_avr.cpp  
+  PULSESSRC = protocols/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp
   
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp gruvin9x/rtc_driver.cpp 
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c gruvin9x/diskio.cpp
+    CPPSRC += rtc.cpp targets/gruvin9x/rtc_driver.cpp 
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp
   endif
     
   ifeq ($(BUZZER), YES)
@@ -443,7 +447,7 @@ ifeq ($(PCB), GRUVIN9X)
 
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += gruvin9x/somo14d.cpp
+    CPPSRC += targets/gruvin9x/somo14d.cpp
   endif
   
   # Enable extra rotary encoders (Gruvin9x board only)
@@ -461,21 +465,21 @@ ifeq ($(PCB), MEGA2560)
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
   THR_TRACE = YES
-  EXTRAINCDIRS = gruvin9x stock FatFs FatFs/option
-  BOARDSRC = mega2560/board_mega2560.cpp
-  EXTRABOARDSRC = mega2560/lcd_driver_ST7565R.cpp
+  EXTRAINCDIRS = targets/gruvin9x targets/stock FatFs FatFs/option
+  BOARDSRC = targets/mega2560/board_mega2560.cpp
+  EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
-  PULSESSRC = pulses_avr.cpp  
+  PULSESSRC = protocols/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp
 
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp gruvin9x/rtc_driver.cpp 
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c gruvin9x/diskio.cpp
+    CPPSRC += rtc.cpp targets/gruvin9x/rtc_driver.cpp 
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp
   endif
     
   ifeq ($(VOICE), YES)
-    CPPSRC += gruvin9x/somo14d.cpp
+    CPPSRC += targets/gruvin9x/somo14d.cpp
     CPPDEFS += -DVOICE
   endif
   
@@ -491,13 +495,13 @@ ifeq ($(PCB), SKY9X)
   CPPDEFS = -Dat91sam3s4 
   ifeq ($(PCBREV), REVA)
     CPPDEFS += -DREVA
-    LDSCRIPT = sky9x/sam3s2c_flash.ld
+    LDSCRIPT = targets/sky9x/sam3s2c_flash.ld
   else ifeq ($(PCBREV), REVB)
     CPPDEFS += -DREVB
-    LDSCRIPT = sky9x/sam3s4c_flash.ld
+    LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
   else
     CPPDEFS += -DREVC
-    LDSCRIPT = sky9x/sam3s4c_flash.ld
+    LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
   endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
@@ -506,24 +510,24 @@ ifeq ($(PCB), SKY9X)
   BUZZER = NO
   THR_TRACE = YES
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
-  EXTRAINCDIRS = sky9x CoOS/kernel CoOS/portable
-  BOARDSRC = sky9x/board_sky9x.cpp
-  EXTRABOARDSRC = sky9x/lcd_driver.cpp
-  SRC += sky9x/core_cm3.c sky9x/board_lowlevel.c sky9x/crt.c sky9x/vectors_sam3s.c
+  EXTRAINCDIRS = targets/sky9x CoOS/kernel CoOS/portable
+  BOARDSRC = targets/sky9x/board_sky9x.cpp
+  EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
+  SRC += targets/sky9x/core_cm3.c targets/sky9x/board_lowlevel.c targets/sky9x/crt.c targets/sky9x/vectors_sam3s.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  SRC += sky9x/usb/device/core/USBD_UDP.c sky9x/usb/device/core/USBDDriver.c
-  SRC += sky9x/usb/device/massstorage/MSDDriver.c sky9x/usb/device/massstorage/MSDDStateMachine.c sky9x/usb/device/massstorage/MSDLun.c sky9x/usb/device/massstorage/MSDDriverDescriptors.c sky9x/usb/device/massstorage/SBCMethods.c  
-  SRC += sky9x/usb/common/core/USBEndpointDescriptor.c sky9x/usb/common/core/USBGenericRequest.c sky9x/usb/common/core/USBFeatureRequest.c sky9x/usb/common/core/USBInterfaceRequest.c sky9x/usb/common/core/USBGetDescriptorRequest.c sky9x/usb/common/core/USBSetAddressRequest.c sky9x/usb/common/core/USBSetConfigurationRequest.c sky9x/usb/common/core/USBConfigurationDescriptor.c sky9x/usb/common/core/USBGenericDescriptor.c 
-  SRC += sky9x/MEDSdcard.c
+  SRC += targets/sky9x/usb/device/core/USBD_UDP.c targets/sky9x/usb/device/core/USBDDriver.c
+  SRC += targets/sky9x/usb/device/massstorage/MSDDriver.c targets/sky9x/usb/device/massstorage/MSDDStateMachine.c targets/sky9x/usb/device/massstorage/MSDLun.c targets/sky9x/usb/device/massstorage/MSDDriverDescriptors.c targets/sky9x/usb/device/massstorage/SBCMethods.c  
+  SRC += targets/sky9x/usb/common/core/USBEndpointDescriptor.c targets/sky9x/usb/common/core/USBGenericRequest.c targets/sky9x/usb/common/core/USBFeatureRequest.c targets/sky9x/usb/common/core/USBInterfaceRequest.c targets/sky9x/usb/common/core/USBGetDescriptorRequest.c targets/sky9x/usb/common/core/USBSetAddressRequest.c targets/sky9x/usb/common/core/USBSetConfigurationRequest.c targets/sky9x/usb/common/core/USBConfigurationDescriptor.c targets/sky9x/usb/common/core/USBGenericDescriptor.c 
+  SRC += targets/sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
-  PULSESSRC = pulses_arm.cpp
+  PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp protocols/dsm2_arm.cpp
   CPPSRC += audio_arm.cpp haptic.cpp
-  CPPSRC += sky9x/pwr_driver.cpp sky9x/adc_driver.cpp sky9x/coproc_driver.cpp sky9x/rotenc_driver.cpp sky9x/eeprom_driver.cpp sky9x/pulses_driver.cpp sky9x/keys_driver.cpp sky9x/audio_driver.cpp sky9x/buzzer_driver.cpp sky9x/haptic_driver.cpp sky9x/sdcard_driver.cpp sky9x/massstorage.cpp
+  CPPSRC += targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/coproc_driver.cpp targets/sky9x/rotenc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DVOICE
     EXTRAINCDIRS += FatFs FatFs/option
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c sky9x/diskio.cpp
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/sky9x/diskio.cpp
   endif
   
   ifeq ($(BUZZER), YES)
@@ -533,18 +537,18 @@ ifeq ($(PCB), SKY9X)
 
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp sky9x/rtc_driver.cpp
+    CPPSRC += rtc.cpp targets/sky9x/rtc_driver.cpp
   endif
   
   ifeq ($(BLUETOOTH), YES)
   	CPPDEFS += -DBLUETOOTH
-  	CPPSRC += sky9x/bluetooth.cpp 
+  	CPPSRC += targets/sky9x/bluetooth.cpp 
   endif
   
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
-  	CPPSRC += sky9x/debug_driver.cpp
-  	SRC += sky9x/syscalls.c
+  	CPPSRC += targets/sky9x/debug_driver.cpp
+  	SRC += targets/sky9x/syscalls.c
   endif
 endif
 
@@ -556,7 +560,7 @@ ifeq ($(PCB), TARANIS)
   else
     CPPDEFS = -DREV4
   endif
-  LDSCRIPT = taranis/stm32_flash.ld
+  LDSCRIPT = targets/taranis/stm32_flash.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
   OPT = 2
@@ -565,57 +569,63 @@ ifeq ($(PCB), TARANIS)
   THR_TRACE = YES
   EXT = FRSKY
   CPPDEFS += -DPCBTARANIS -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
-  EXTRAINCDIRS = taranis CoOS/kernel CoOS/portable
-  EXTRAINCDIRS += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
-  EXTRAINCDIRS += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
-  EXTRAINCDIRS += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
-  BOARDSRC = taranis/board_taranis.cpp
-  EXTRABOARDSRC += taranis/lcd_driver.cpp taranis/aspi.cpp taranis/i2c.c
+  EXTRAINCDIRS = targets/taranis CoOS/kernel CoOS/portable
+  EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
+  EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
+  EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
+  BOARDSRC = targets/taranis/board_taranis.cpp
+  EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/aspi.cpp targets/taranis/i2c.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp # TODO later eeprom_conversions.cpp
-  PULSESSRC = pulses_arm.cpp
+  PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
-  CPPSRC += taranis/pwr_driver.cpp taranis/pulses_driver.cpp taranis/keys_driver.cpp taranis/adc_driver.cpp taranis/trainer_driver.cpp taranis/audio_driver.cpp taranis/delays.cpp taranis/uart_driver.cpp taranis/sport_driver.cpp
-  CPPSRC += bmp.cpp view_channels.cpp 
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rtc.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_pwr.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c
-  SRC += taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
-  SRC += taranis/usb_bsp.c taranis/usbd_desc.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd_int.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_core.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_ioreq.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_req.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
-  SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
-  # SRC += taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/src/usbd_hid_core.c
-  EXTRABOARDSRC += taranis/usbd_usr.cpp taranis/usbd_storage_msd.cpp
+  CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart_driver.cpp targets/taranis/sport_driver.cpp
+  CPPSRC += bmp.cpp gui/view_channels.cpp 
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rtc.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_pwr.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
+  SRC += targets/taranis/usb_bsp.c targets/taranis/usbd_desc.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd_int.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_core.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_ioreq.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_req.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
+  SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
+  # SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/src/usbd_hid_core.c
+  EXTRABOARDSRC += targets/taranis/usbd_usr.cpp targets/taranis/usbd_storage_msd.cpp
   
   ifeq ($(SDCARD), YES)
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c taranis/diskio.cpp
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
     CPPDEFS += -DVOICE
     EXTRAINCDIRS += FatFs FatFs/option
   endif
     
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp taranis/rtc_driver.cpp
+    CPPSRC += rtc.cpp targets/taranis/rtc_driver.cpp
   endif
 
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
-  	SRC += sky9x/syscalls.c
-  endif  
+  	SRC += targets/sky9x/syscalls.c
+  endif
+  
+  ifeq ($(HUBSAN), YES)
+    CPPDEFS += -DHUBSAN
+    CPPSRC += protocols/hubsan.cpp
+  	# SRC += targets/sky9x/syscalls.c
+  endif
 endif
 
 CC      = $(TRGT)gcc
@@ -643,7 +653,7 @@ TARGET = opentx
 STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
 TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 
-CPPSRC += opentx.cpp $(PULSESSRC) stamp.cpp menus.cpp menu_model.cpp menu_general.cpp view_main.cpp view_statistics.cpp $(EEPROMSRC) lcd.cpp keys.cpp maths.cpp translations.cpp $(TTS_SRC)
+CPPSRC += opentx.cpp $(PULSESSRC) stamp.cpp gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp $(EEPROMSRC) lcd.cpp keys.cpp maths.cpp translations.cpp $(TTS_SRC)
 
 # Debugging format.
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
@@ -762,22 +772,22 @@ endif
 
 ifeq ($(EXT), ARDUPILOT)
   CPPDEFS += -DARDUPILOT
-  CPPSRC += telemetry_ardupilot.cpp
+  CPPSRC += telemetry/ardupilot.cpp
 endif
 
 ifeq ($(EXT), NMEA)
   CPPDEFS += -DNMEA
-  CPPSRC += telemetry_nmea.cpp
+  CPPSRC += telemetry/nmea.cpp
 endif
 
 ifeq ($(EXT), JETI)
   CPPDEFS += -DJETI
-  CPPSRC += telemetry_jeti.cpp
+  CPPSRC += telemetry/jeti.cpp
 endif
 
 ifeq ($(EXT), MAVLINK)
  CPPDEFS += -DMAVLINK
- CPPSRC += telemetry_mavlink.cpp rotarysw.cpp serial.cpp
+ CPPSRC += telemetry/mavlink.cpp rotarysw.cpp serial.cpp
 endif
 
 ifeq ($(EXT), TELEMETREZ)
@@ -787,17 +797,17 @@ endif
 ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
   CPPDEFS += -DFRSKY
   ifeq ($(PCB), TARANIS)
-    TELEMETRY_PROTO = $(shell sh -c "if test -f telemetry_sport.cpp; then echo SPORT; else echo FRSKY; fi")
+    TELEMETRY_PROTO = $(shell sh -c "if test -f telemetry/frsky_sport.cpp; then echo SPORT; else echo FRSKY; fi")
     ifeq ($(TELEMETRY_PROTO), SPORT)
-      CPPSRC += telemetry_sport.cpp
+      CPPSRC += telemetry/frsky_sport.cpp
       CPPDEFS += -DFRSKY_SPORT
     else
-      CPPSRC += telemetry_frsky.cpp
+      CPPSRC += telemetry/frsky.cpp
     endif
   else
-    CPPSRC += telemetry_frsky.cpp
+    CPPSRC += telemetry/frsky.cpp
   endif
-  CPPSRC += view_telemetry.cpp
+  CPPSRC += gui/view_telemetry.cpp
   # If FRSKY-Hub is enabled
   ifeq ($(FRSKY_HUB), YES)
     CPPDEFS += -DFRSKY_HUB
@@ -977,14 +987,14 @@ else
   build: stamp_header lbm allsrc.cpp elf remallsrc bin lss
 endif
 
+lbm: bitmaps/font.lbm bitmaps/sticks.lbm
+  
 elf: $(TARGET).elf
 bin: $(TARGET).bin
 hex: $(TARGET).hex
 eep: $(TARGET).eep
 lss: $(TARGET).lss
 sym: $(TARGET).sym
-
-lbm: font.lbm font_tiny.lbm font_small.lbm font_midsize.lbm font_dblsize.lbm sticks.lbm splash_9x.lbm splash_taranis.lbm logo_taranis.lbm icons.lbm asterisk.lbm
 
 # Build stamp-file
 stamp_header:
@@ -1026,73 +1036,37 @@ arm-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-arm.txt
 	@cat stamp-opentx-arm.txt
 
-font.lbm: font.xbm font_extra.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm
+bitmaps/font.lbm: bitmaps/font.xbm bitmaps/font_extra.xbm bitmaps/font_tiny.xbm bitmaps/font_small.xbm bitmaps/font_midsize.xbm bitmaps/font_dblsize.xbm bitmaps/font_dblsize_extra.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
 	@echo
-	@echo "Convert font from xbm to lbm:"
-	$(IMG2LBM) font.xbm font.lbm 5x7
-	$(IMG2LBM) font_extra.xbm font_extra.lbm 5x7
+	@echo "Convert fonts from xbm to lbm:"
+	$(IMG2LBM) bitmaps/font.xbm bitmaps/font.lbm 5x7
+	$(IMG2LBM) bitmaps/font_extra.xbm bitmaps/font_extra.lbm 5x7
+	$(IMG2LBM) bitmaps/font_tiny.xbm bitmaps/font_tiny.lbm 3x5
+	$(IMG2LBM) bitmaps/font_small.xbm bitmaps/font_small.lbm 4x6
+	$(IMG2LBM) bitmaps/font_midsize.xbm bitmaps/font_midsize.lbm 8x10
+	$(IMG2LBM) bitmaps/font_dblsize.xbm bitmaps/font_dblsize.lbm 10x14
+	$(IMG2LBM) bitmaps/font_dblsize_extra.xbm bitmaps/font_dblsize_extra.lbm 10x14
 	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm 5x7
 	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm 5x7
 	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm 5x7
 	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm 5x7
 	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm 5x7
 	$(IMG2LBM) translations/font_es.xbm translations/font_es.lbm 5x7
-
-font_tiny.lbm: font_tiny.xbm
-	@echo
-	@echo "Convert font from xbm to lbm:"
-	$(IMG2LBM) $< $@ 3x5
-
-font_small.lbm: font_small.xbm
-	@echo
-	@echo "Convert font from xbm to lbm:"
-	$(IMG2LBM) $< $@ 4x6
-
-font_midsize.lbm: font_midsize.xbm
-	@echo
-	@echo "Convert font from xbm to lbm:"
-	$(IMG2LBM) $< $@ 8x10
-	
-font_dblsize.lbm: font_dblsize.xbm font_dblsize_extra.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
-	@echo
-	@echo "Convert font from xbm to lbm:"
-	$(IMG2LBM) font_dblsize.xbm font_dblsize.lbm 10x14
-	$(IMG2LBM) font_dblsize_extra.xbm font_dblsize_extra.lbm 10x14
 	$(IMG2LBM) translations/font_dblsize_se.xbm translations/font_dblsize_se.lbm 10x14
 	$(IMG2LBM) translations/font_dblsize_de.xbm translations/font_dblsize_de.lbm 10x14
 	$(IMG2LBM) translations/font_dblsize_it.xbm translations/font_dblsize_it.lbm 10x14
 	$(IMG2LBM) translations/font_dblsize_fr.xbm translations/font_dblsize_fr.lbm 10x14
 	$(IMG2LBM) translations/font_dblsize_es.xbm translations/font_dblsize_es.lbm 10x14
 
-sticks.lbm: sticks_4x1.xbm
+bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_taranis.png bitmaps/logo_taranis.bmp bitmaps/icons.png bitmaps/asterisk.xbm
 	@echo
-	@echo "Convert sticks from xbm to lbm:"
-	$(IMG2LBM) $< $@ img 4
-
-splash_9x.lbm: splash_9x.xbm
-	@echo
-	@echo "Convert 9x splash from xbm to lbm:"
-	$(IMG2LBM) $< $@ img
-	
-splash_taranis.lbm: splash_taranis.png
-	@echo
-	@echo "Convert Taranis splash from png to lbm:"
-	$(IMG2LBM) $< $@ bmp
-	
-logo_taranis.lbm: logo_taranis.bmp
-	@echo
-	@echo "Convert Taranis logo from bmp to lbm:"
-	$(IMG2LBM) $< $@ bmp
-	
-icons.lbm: icons.png	
-	@echo
-	@echo "Convert icons from png to lbm:"
-	$(IMG2LBM) $< $@ bmp
-
-asterisk.lbm: asterisk.xbm
-	@echo
-	@echo "Convert asterisk from xbm to lbm:"
-	$(IMG2LBM) $< $@ img
+	@echo "Convert bitmaps from xbm to lbm:"
+	$(IMG2LBM) bitmaps/sticks_4x1.xbm bitmaps/sticks.lbm img 4
+	$(IMG2LBM) bitmaps/splash_9x.xbm bitmaps/splash_9x.lbm img
+	$(IMG2LBM) bitmaps/splash_taranis.png bitmaps/splash_taranis.lbm bmp
+	$(IMG2LBM) bitmaps/logo_taranis.bmp bitmaps/logo_taranis.lbm bmp
+	$(IMG2LBM) bitmaps/icons.png bitmaps/icons.lbm bmp
+	$(IMG2LBM) bitmaps/asterisk.xbm bitmaps/asterisk.lbm img
 	 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
@@ -1135,7 +1109,7 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h *.lbm eeprom.bin
+simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h lbm eeprom.bin
 	g++ $(CPPFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:

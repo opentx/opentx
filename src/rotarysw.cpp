@@ -13,7 +13,6 @@
  *
  */
 #include "opentx.h"
-#include "menus.h"
 
 #define CTIME_ROTARY_ANIM 500
 uint16_t rotarySwChanged = 0;

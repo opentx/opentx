@@ -37,7 +37,7 @@
 #include "opentx.h"
 
 const pm_uchar sticks[] PROGMEM = {
-#include "sticks.lbm"
+#include "bitmaps/sticks.lbm"
 };
 
 enum EnumTabDiag {

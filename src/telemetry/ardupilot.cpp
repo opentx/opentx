@@ -35,7 +35,6 @@
  */
 
 #include "opentx.h"
-#include "menus.h"
 
 #define NB_BUF 2
 #define LG_BUF 11

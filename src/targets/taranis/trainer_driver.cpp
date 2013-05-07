@@ -36,56 +36,16 @@
 
 #include "../opentx.h"
 
-uint16_t TrainerPpmStream[20] =
-{
-  2000,
-  2200,
-  2400,
-  2600,
-  2800,
-  3000,
-  3200,
-  3400,
-  45000-21600,
-  0,0,0,0,0,0,0,0,0,0,0
-};
-
 uint8_t currentTrainerMode;
 uint16_t * TrainerPulsePtr;
 
-// TODO remove duplicated code
-void setupTrainerPulses()
-{
-  int16_t PPM_range = g_model.extendedLimits ? 640 * 2 : 512 * 2; //range of 0.7..1.7msec
-
-  uint16_t *ptr ;
-  uint32_t firstCh = g_model.moduleData[TRAINER_MODULE].channelsStart;
-  uint32_t lastCh = min<unsigned int>(NUM_CHNOUT, firstCh + 8 + g_model.moduleData[TRAINER_MODULE].channelsCount);
-
-  ptr = TrainerPpmStream ;
-
-  uint32_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
-  rest += int32_t(g_model.moduleData[TRAINER_MODULE].ppmFrameLength) * 1000;
-
-  for (uint32_t i=firstCh; i<lastCh; i++) {
-    uint32_t pulse = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
-    rest -= pulse ;
-    *ptr++ = pulse ;
-  }
-
-  rest = (rest > 65535) ? 65535 : rest;
-  *ptr++ = rest ;
-  *ptr = 0 ;
-
-  TIM3->CCR2 = rest - 1000 ;             // Update time
-  TIM3->CCR4 = (g_model.moduleData[TRAINER_MODULE].ppmDelay*50+300)*2 ;
-}
+#define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
 
 // Trainer PPM oputput PC9, Timer 3 channel 4, (Alternate Function 2)
 void init_trainer_ppm()
 {
   setupTrainerPulses() ;
-  TrainerPulsePtr = TrainerPpmStream ;
+  TrainerPulsePtr = ppmStream[TRAINER_MODULE];
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
   configure_pins( PIN_TR_PPM_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_3 | PIN_OS25 | PIN_PUSHPULL ) ;
@@ -152,7 +112,7 @@ extern "C" void TIM3_IRQHandler()
   static uint16_t lastCapt ;
   uint16_t val ;
 
-	// What mode? in or out?
+  // What mode? in or out?
   if ( (TIM3->DIER & TIM_DIER_CC3IE ) && ( TIM3->SR & TIM_SR_CC3IF ) ) {
     // capture mode
     capture = TIM3->CCR3 ;
@@ -166,7 +126,7 @@ extern "C" void TIM3_IRQHandler()
       ppmInState = 1; // triggered
     }
     else {
-      if(ppmInState && (ppmInState<=8)) {
+      if (ppmInState && (ppmInState<=8)) {
         if ((val>800) && (val<2200)) {
           g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
         }
@@ -178,23 +138,23 @@ extern "C" void TIM3_IRQHandler()
   }
 
   // PPM out compare interrupt
-  if ( ( TIM3->DIER & TIM_DIER_CC2IE ) && ( TIM3->SR & TIM_SR_CC2IF ) )
-  { // compare interrupt
-  TIM3->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
-  TIM3->DIER &= ~TIM_DIER_CC2IE ;         // stop this interrupt
-  TIM3->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
+  if ( ( TIM3->DIER & TIM_DIER_CC2IE ) && ( TIM3->SR & TIM_SR_CC2IF ) ) {
+    // compare interrupt
+    TIM3->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
+    TIM3->DIER &= ~TIM_DIER_CC2IE ;         // stop this interrupt
+    TIM3->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
 
-  setupTrainerPulses() ;
+    setupTrainerPulses() ;
 
-  TrainerPulsePtr = TrainerPpmStream ;
-  TIM3->DIER |= TIM_DIER_UDE ;
+    TrainerPulsePtr = ppmStream[TRAINER_MODULE];
+    TIM3->DIER |= TIM_DIER_UDE ;
 
-  TIM3->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
-  TIM3->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
+    TIM3->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
+    TIM3->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
   }
 
   // PPM out update interrupt
-  if ( (TIM3->DIER & TIM_DIER_UIE) && ( TIM3->SR & TIM_SR_UIF ) )	{
+  if ( (TIM3->DIER & TIM_DIER_UIE) && ( TIM3->SR & TIM_SR_UIF ) ) {
     TIM3->SR &= ~TIM_SR_UIF ;                               // Clear flag
     TIM3->ARR = *TrainerPulsePtr++ ;
     if ( *TrainerPulsePtr == 0 ) {

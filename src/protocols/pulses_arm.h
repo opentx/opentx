@@ -37,6 +37,12 @@
 #ifndef pulses_arm_h
 #define pulses_arm_h
 
+#if NUM_MODULES == 2
+  #define MODULES_INIT(...) __VA_ARGS__, __VA_ARGS__
+#else
+  #define MODULES_INIT(...) __VA_ARGS__
+#endif
+
 extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
 extern uint32_t failsafeCounter[NUM_MODULES];

@@ -446,56 +446,56 @@ const pm_char STR_TRAINER[] PROGMEM = "Trainer";
 #endif
 
 const pm_uchar font_5x7[] PROGMEM = {
-#include "font.lbm"
+#include "bitmaps/font.lbm"
 #if defined(TRANSLATIONS_SE)
-#include "font_se.lbm"
+#include "bitmaps/font_se.lbm"
 #elif defined(TRANSLATIONS_DE)
-#include "font_de.lbm"
+#include "bitmaps/font_de.lbm"
 #elif defined(TRANSLATIONS_IT)
-#include "font_it.lbm"
+#include "bitmaps/font_it.lbm"
 #elif defined(TRANSLATIONS_CZ)
-#include "font_cz.lbm"
+#include "bitmaps/font_cz.lbm"
 #elif defined(TRANSLATIONS_FR)
-#include "font_fr.lbm"
+#include "bitmaps/font_fr.lbm"
 #elif defined(TRANSLATIONS_ES)
-#include "font_es.lbm"
+#include "bitmaps/font_es.lbm"
 #endif
 };
 
 const pm_uchar font_10x14[] PROGMEM = {
-#include "font_dblsize.lbm"
+#include "bitmaps/font_dblsize.lbm"
 #if defined(TRANSLATIONS_SE)
-#include "font_dblsize_se.lbm"
+#include "bitmaps/font_dblsize_se.lbm"
 #elif defined(TRANSLATIONS_DE)
-#include "font_dblsize_de.lbm"
+#include "bitmaps/font_dblsize_de.lbm"
 #elif defined(TRANSLATIONS_IT)
-#include "font_dblsize_it.lbm"
+#include "bitmaps/font_dblsize_it.lbm"
 #elif defined(TRANSLATIONS_FR)
-#include "font_dblsize_fr.lbm"
+#include "bitmaps/font_dblsize_fr.lbm"
 #elif defined(TRANSLATIONS_ES)
-#include "font_dblsize_es.lbm"
+#include "bitmaps/font_dblsize_es.lbm"
 #endif
 };
 
 #if defined(CPUARM)
 const pm_uchar font_3x5[] PROGMEM = {
-#include "font_tiny.lbm"
+#include "bitmaps/font_tiny.lbm"
 };
 
 const pm_uchar font_4x6[] PROGMEM = {
-#include "font_small.lbm"
+#include "bitmaps/font_small.lbm"
 };
 
 const pm_uchar font_8x10[] PROGMEM = {
-#include "font_midsize.lbm"
+#include "bitmaps/font_midsize.lbm"
 };
 
 const pm_uchar font_5x7_extra[] PROGMEM = {
-#include "font_extra.lbm"
+#include "bitmaps/font_extra.lbm"
 };
 
 const pm_uchar font_10x14_extra[] PROGMEM = {
-#include "font_dblsize_extra.lbm"
+#include "bitmaps/font_dblsize_extra.lbm"
 };
 #endif
 

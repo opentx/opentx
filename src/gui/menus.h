@@ -39,15 +39,6 @@
 
 #define NO_HI_LEN  25
 
-// RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
-#define RESX_SHIFT 10
-#define RESX       1024
-#define RESXu      1024u
-#define RESXul     1024ul
-#define RESXl      1024l
-#define RESKul     100ul
-#define RESX_PLUS_TRIM (RESX+128)
-
 typedef void (*MenuFuncP)(uint8_t event);
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);

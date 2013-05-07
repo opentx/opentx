@@ -40,7 +40,6 @@
 #include <unistd.h>
 #include "fxkeys.h"
 #include "opentx.h"
-#include "menus.h"
 #include <time.h>
 #include <ctype.h>
 

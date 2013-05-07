@@ -207,14 +207,21 @@
   #define CONVERT_PTR(x) ((uint32_t)(x))
 #endif
 
+// RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
+#define RESX_SHIFT 10
+#define RESX       1024
+#define RESXu      1024u
+#define RESXul     1024ul
+#define RESXl      1024l
+
 #if defined(PCBTARANIS)
-  #include "taranis/board_taranis.h"
+  #include "targets/taranis/board_taranis.h"
 #elif defined(PCBSKY9X)
-  #include "sky9x/board_sky9x.h"
+  #include "targets/sky9x/board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
-  #include "gruvin9x/board_gruvin9x.h"
+  #include "targets/gruvin9x/board_gruvin9x.h"
 #else
-  #include "stock/board_stock.h"
+  #include "targets/stock/board_stock.h"
 #endif
 
 #include "debug.h"
@@ -409,9 +416,9 @@ enum EnumKeys {
 #endif
 
 #if defined(CPUARM)
-  #include "pulses_arm.h"
+  #include "protocols/pulses_arm.h"
 #else
-  #include "pulses_avr.h"
+  #include "protocols/pulses_avr.h"
 #endif
 
 #if defined(PCBTARANIS)
@@ -471,7 +478,7 @@ enum EnumKeys {
 #endif
 
 #include "lcd.h"
-#include "menus.h"
+#include "gui/menus.h"
 
 #if defined(TEMPLATES)
   #include "templates.h"
@@ -1155,23 +1162,23 @@ inline bool isFunctionActive(uint8_t func)
 
 #if defined(FRSKY_SPORT)
   // FrSky SPORT Telemetry
-  #include "telemetry_sport.h"
+  #include "telemetry/frsky_sport.h"
 #elif defined (FRSKY)
   // FrSky Telemetry
-  #include "telemetry_frsky.h"
+  #include "telemetry/frsky.h"
 #elif defined(JETI)
   // Jeti-DUPLEX Telemetry
-  #include "telemetry_jeti.h"
+  #include "telemetry/jeti.h"
 #elif defined(ARDUPILOT)
   // ArduPilot Telemetry
-  #include "telemetry_ardupilot.h"
+  #include "telemetry/ardupilot.h"
 #elif defined(NMEA)
   // NMEA Telemetry
-  #include "telemetry_nmea.h"
+  #include "telemetry/nmea.h"
 #elif defined(MAVLINK)
   // Mavlink Telemetry
   #include "rotarysw.h"
-  #include "telemetry_mavlink.h"
+  #include "telemetry/mavlink.h"
 #endif
 
 #define PLAY_REPEAT(x)            (x)                 /* Range 0 to 15 */
@@ -1249,11 +1256,11 @@ enum AUDIO_SOUNDS {
 #endif
 
 #if defined(PCBSTD) && defined(VOICE)
-#include "stock/voice.h"
+#include "targets/stock/voice.h"
 #endif
 
 #if defined(PCBGRUVIN9X) && defined(VOICE)
-#include "gruvin9x/somo14d.h"
+#include "targets/gruvin9x/somo14d.h"
 #endif
 
 #include "translations.h"
