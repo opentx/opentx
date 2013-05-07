@@ -624,7 +624,7 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(HUBSAN), YES)
     CPPDEFS += -DHUBSAN
     CPPSRC += protocols/hubsan.cpp
-  	# SRC += targets/sky9x/syscalls.c
+    CPPSRC += targets/taranis/a7105_driver.cpp
   endif
 endif
 
