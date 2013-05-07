@@ -136,7 +136,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     q = &font_8x10[((uint16_t)c-0x20)*16];
     for (int8_t i=9; i>=0; i--) {
       uint8_t b1=0, b2=0;
-      if (flags & CONDENSED && i<=1) break;
+      if ((flags & CONDENSED) && i<=1) break;
       if (i!=0 && i!=9) {
         b1 = pgm_read_byte(q++); /*top byte*/
         b2 = pgm_read_byte(q++); /*top byte*/
@@ -164,7 +164,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     }
   }
   else if (flags & SMLSIZE) {
-    q = &font_4x6[((uint16_t)c-0x20)*5+4];
+    q = (c < 0xC0) ? &font_4x6[(c-0x20)*5+4] : &font_4x6_extra[(c-0xC0)*5+4];
     uint8_t ym8 = (y & 0x07);
     p += 4;
     for (int8_t i=4; i>=0; i--) {

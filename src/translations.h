@@ -499,6 +499,7 @@ extern const pm_uchar font_4x6[];
 extern const pm_uchar font_8x10[];
 extern const pm_uchar font_5x7_extra[];
 extern const pm_uchar font_10x14_extra[];
+extern const pm_uchar font_4x6_extra[];
 #endif
 
 extern const pm_char STR_WARNING[];

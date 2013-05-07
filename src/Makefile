@@ -1036,7 +1036,7 @@ arm-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-arm.txt
 	@cat stamp-opentx-arm.txt
 
-bitmaps/font.lbm: bitmaps/font.xbm bitmaps/font_extra.xbm bitmaps/font_tiny.xbm bitmaps/font_small.xbm bitmaps/font_midsize.xbm bitmaps/font_dblsize.xbm bitmaps/font_dblsize_extra.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
+bitmaps/font.lbm: bitmaps/font.xbm bitmaps/font_extra.xbm bitmaps/font_tiny.xbm bitmaps/font_small.xbm bitmaps/font_midsize.xbm bitmaps/font_dblsize.xbm bitmaps/font_dblsize_extra.xbm bitmaps/font_small_extra.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
 	@echo
 	@echo "Convert fonts from xbm to lbm:"
 	$(IMG2LBM) bitmaps/font.xbm bitmaps/font.lbm 5x7
@@ -1046,6 +1046,7 @@ bitmaps/font.lbm: bitmaps/font.xbm bitmaps/font_extra.xbm bitmaps/font_tiny.xbm 
 	$(IMG2LBM) bitmaps/font_midsize.xbm bitmaps/font_midsize.lbm 8x10
 	$(IMG2LBM) bitmaps/font_dblsize.xbm bitmaps/font_dblsize.lbm 10x14
 	$(IMG2LBM) bitmaps/font_dblsize_extra.xbm bitmaps/font_dblsize_extra.lbm 10x14
+	$(IMG2LBM) bitmaps/font_small_extra.xbm bitmaps/font_small_extra.lbm 4x6
 	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm 5x7
 	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm 5x7
 	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm 5x7

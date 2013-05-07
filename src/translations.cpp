@@ -497,5 +497,10 @@ const pm_uchar font_5x7_extra[] PROGMEM = {
 const pm_uchar font_10x14_extra[] PROGMEM = {
 #include "bitmaps/font_dblsize_extra.lbm"
 };
+
+const pm_uchar font_4x6_extra[] PROGMEM = {
+#include "bitmaps/font_small_extra.lbm"
+};
+
 #endif
 

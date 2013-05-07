@@ -38,6 +38,7 @@
 
 uint8_t currentTrainerMode;
 uint16_t * TrainerPulsePtr;
+extern uint16_t ppmStream[NUM_MODULES+1][20];
 
 #define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
 
