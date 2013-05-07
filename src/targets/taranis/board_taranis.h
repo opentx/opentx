@@ -58,7 +58,6 @@ extern "C" {
 #include "aspi.h"
 #include "i2c.h"
 #include "audio_driver.h"
-#include "a7105_driver.h"
 
 #define PERI1_FREQUENCY 30000000
 #define PERI2_FREQUENCY 60000000
