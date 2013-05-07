@@ -1595,8 +1595,8 @@ FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModes
       continue;
 #endif
 #if defined(PCBTARANIS)
-    LcdFlags flags = ((posHorz==p) && attr) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS);
-    if (m_posHorz<0)
+    LcdFlags flags = (attr && (posHorz==p)) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS);
+    if (attr && m_posHorz<0)
       flags = BLINK|INVERS;
     lcd_putcAtt(x, y, '0'+p, flags);
 #else
@@ -1716,7 +1716,7 @@ void menuModelFlightModesAll(uint8_t event)
       return;
     }
 
-    PhaseData *p = phaseaddress(i);
+    PhaseData *p = phaseaddress(k);
 
     putsFlightPhase(0, y, k+1, (getFlightPhase()==k ? BOLD : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
 
@@ -1730,7 +1730,7 @@ void menuModelFlightModesAll(uint8_t event)
           break;
 
         case ITEM_PHASES_SWITCH:
-          if (i == 0) {
+          if (k == 0) {
             lcd_puts((5+LEN_FP_NAME)*FW+FW/2, y, STR_DEFAULT);
           }
           else {
@@ -1740,14 +1740,14 @@ void menuModelFlightModesAll(uint8_t event)
           break;
 
         case ITEM_PHASES_TRIMS:
-          if (i != 0) {
+          if (k != 0) {
             editPhaseTrims((10+LEN_FP_NAME)*FW+FW/2, y, i, event, attr);
           }
           break;
 
         case ITEM_PHASES_FADE_IN:
           lcd_outdezAtt(29*FW, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
-          if (active)  p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
+          if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 
         case ITEM_PHASES_FADE_OUT:
