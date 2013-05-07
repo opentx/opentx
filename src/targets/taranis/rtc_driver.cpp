@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 void rtcSetTime(struct gtm * t)
 {

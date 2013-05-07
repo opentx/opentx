@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 

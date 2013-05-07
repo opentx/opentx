@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 extern volatile uint32_t Spi_complete; // TODO in the driver ?
 

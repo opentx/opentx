@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 uint32_t pwrCheck()
 {

@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 #if LCD_W >= 212
 #define BIGSIZE       MIDSIZE
@@ -98,11 +98,11 @@
 
 #if defined(PCBTARANIS)
   const pm_uchar logo_taranis[] PROGMEM = {
-  #include "bitmaps/logo_taranis.lbm"
+  #include "../bitmaps/logo_taranis.lbm"
   };
 
   const pm_uchar icons[] PROGMEM = {
-  #include "bitmaps/icons.lbm"
+  #include "../bitmaps/icons.lbm"
   };
 
   #define ICON_RSSI     0, 9

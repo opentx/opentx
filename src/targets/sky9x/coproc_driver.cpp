@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 int8_t coprocVolumeRequired ;
 uint8_t coprocVolumeReadPending ;

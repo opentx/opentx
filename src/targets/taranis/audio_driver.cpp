@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 bool dacIdle = true;
 uint32_t currentFrequency = 0;

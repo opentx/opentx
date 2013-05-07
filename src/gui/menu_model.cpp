@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 #define WCHART 32
 #define X0     (LCD_W-WCHART-2)

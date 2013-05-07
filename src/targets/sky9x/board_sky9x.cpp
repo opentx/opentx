@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 #if defined(DEBUG) && !defined(SIMU)
 void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock);

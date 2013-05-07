@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 void setupPulses(unsigned int port);
 void setupPulsesPPM(unsigned int port);

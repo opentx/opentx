@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 uint8_t currentTrainerMode;
 uint16_t * TrainerPulsePtr;

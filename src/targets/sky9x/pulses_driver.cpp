@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 volatile uint32_t ppmStreamIndex[NUM_MODULES] = { MODULES_INIT(0) };  // Modified in interrupt routine
 

@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 void menuStatisticsView(uint8_t event)
 {

@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 // TODO FrSky code included PIN_BIND and PIN_POWER
 

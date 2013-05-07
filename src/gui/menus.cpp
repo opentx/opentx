@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 vertpos_t s_pgOfs;
 int8_t s_editMode;
