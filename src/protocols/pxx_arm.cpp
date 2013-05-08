@@ -148,11 +148,12 @@ void setupPulsesPXX(unsigned int port)
   PcmCrc[port] = 0;
   PcmOnesCount[port] = 0;
 
-	/* preamble */
+  /* Preamble */
   putPcmPart(0, port);
   putPcmPart(0, port);
   putPcmPart(0, port);
   putPcmPart(0, port);
+
   /* Sync */
   putPcmHead(port);
 
