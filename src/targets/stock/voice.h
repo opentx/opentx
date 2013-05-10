@@ -128,6 +128,7 @@ inline bool isPlaying()
     } \
   }
 
+#define I18N_PLAY_FUNCTION(lng, x, ...) void x(__VA_ARGS__)
 #define PLAY_FUNCTION(x, ...) void x(__VA_ARGS__)
 #define PUSH_CUSTOM_PROMPT(p, ...) pushCustomPrompt((p))
 #define PUSH_NUMBER_PROMPT(p) pushNumberPrompt((p))

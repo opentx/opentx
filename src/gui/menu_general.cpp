@@ -40,6 +40,19 @@ const pm_uchar sticks[] PROGMEM = {
 #include "../bitmaps/sticks.lbm"
 };
 
+#if defined(CPUARM)
+extern LanguagePack enLanguagePack;
+extern LanguagePack frLanguagePack;
+extern LanguagePack itLanguagePack;
+LanguagePack * languagePacks[] = {
+  // alphabetical order
+  &enLanguagePack,
+  &frLanguagePack,
+  &itLanguagePack,
+  NULL
+};
+#endif
+
 enum EnumTabDiag {
   e_Setup,
   IF_SDCARD(e_Sd)
@@ -147,6 +160,7 @@ enum menuGeneralSetupItems {
   IF_FRSKY(ITEM_SETUP_TIMEZONE)
   IF_FRSKY(ITEM_SETUP_GPSFORMAT)
   IF_PXX(ITEM_SETUP_COUNTRYCODE)
+  IF_CPUARM(ITEM_SETUP_LANGUAGE)
   IF_CPUARM(ITEM_SETUP_IMPERIAL)
   ITEM_SETUP_RX_CHANNEL_ORD,
   ITEM_SETUP_STICK_MODE_LABELS,
@@ -166,7 +180,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) IF_PXX(0) IF_CPUARM(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_FRSKY(0) IF_FRSKY(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -481,6 +495,18 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
 #if defined(CPUARM)
+      case ITEM_SETUP_LANGUAGE:
+        lcd_putsLeft(y, PSTR("Language"));
+        lcd_putsAtt(RADIO_SETUP_2ND_COLUMN, y, currentLanguagePack->name, attr);
+        if (attr) {
+          currentLanguagePackIdx = checkIncDec(event, currentLanguagePackIdx, 0, DIM(languagePacks)-2, EE_GENERAL);
+          if (checkIncDec_Ret) {
+            currentLanguagePack = languagePacks[currentLanguagePackIdx];
+            strncpy(g_eeGeneral.ttsLanguage, currentLanguagePack->id, 2);
+          }
+        }
+        break;
+
       case ITEM_SETUP_IMPERIAL:
         g_eeGeneral.imperial = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_UNITSSYSTEM, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
         break;

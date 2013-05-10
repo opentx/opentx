@@ -55,7 +55,6 @@ DELAY = 5
 PCB = 9X
 
 # PCB revision
-# Values: REVA, REVB
 PCBREV =
 
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
@@ -557,6 +556,8 @@ ifeq ($(PCB), TARANIS)
   ARCH = ARM
   ifeq ($(PCBREV), REV3)
     CPPDEFS = -DREV3
+  else ifeq ($(PCBREV), REV4a)
+    CPPDEFS = -DREV4a
   else
     CPPDEFS = -DREV4
   endif
@@ -650,8 +651,12 @@ FORMAT = ihex
 TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
-STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
-TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
+ifeq ($(PCB), $(filter $(PCB), SKY9X TARANIS))
+  TTS_SRC = translations/tts_en.cpp translations/tts_fr.cpp translations/tts_it.cpp
+else
+  STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
+  TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
+endif
 
 CPPSRC += opentx.cpp $(PULSESSRC) stamp.cpp gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp $(EEPROMSRC) lcd.cpp keys.cpp maths.cpp translations.cpp $(TTS_SRC)
 

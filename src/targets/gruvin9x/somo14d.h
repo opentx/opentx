@@ -41,6 +41,7 @@
 extern void pushPrompt(uint16_t prompt);
 extern bool isPlaying();
 
+#define I18N_PLAY_FUNCTION(lng, x, ...) void x(__VA_ARGS__)
 #define PLAY_FUNCTION(x, ...) void x(__VA_ARGS__)
 #define PUSH_CUSTOM_PROMPT(p, id) pushPrompt(PROMPT_CUSTOM_BASE+(p))
 #define PUSH_NUMBER_PROMPT(p) pushPrompt(PROMPT_I18N_BASE+(p))

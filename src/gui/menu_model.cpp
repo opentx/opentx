@@ -4039,7 +4039,9 @@ void onCustomFunctionsMenu(const char *result)
   int8_t  sub = m_posVert - 1;
 
   if (result == STR_UPDATE_LIST) {
-    if (!listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(g_model.funcSw[sub].param), NULL)) {
+    char directory[] = SOUNDS_PATH "/en";
+    strncpy(directory+sizeof(SOUNDS_PATH), currentLanguagePack->id, 2);
+    if (!listSdFiles(directory, SOUNDS_EXT, sizeof(g_model.funcSw[sub].param), NULL)) {
       POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
     }
@@ -4163,7 +4165,9 @@ void menuModelCustomFunctions(uint8_t event)
                 lcd_putsiAtt(x, y, STR_VCSWFUNC, 0, attr);
               if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
                 s_editMode = 0;
-                if (listSdFiles(SOUNDS_PATH, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
+                char directory[] = SOUNDS_PATH "/en";
+                strncpy(directory+sizeof(SOUNDS_PATH), currentLanguagePack->id, 2);
+                if (listSdFiles(directory, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
                   menuHandler = onCustomFunctionsMenu;
                 }
                 else {
@@ -4324,16 +4328,20 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_A1_LABEL,
   ITEM_TELEMETRY_A1_RANGE,
   ITEM_TELEMETRY_A1_OFFSET,
+#if !defined(PCBTARANIS)
   ITEM_TELEMETRY_A1_ALARM1,
   ITEM_TELEMETRY_A1_ALARM2,
+#endif
   ITEM_TELEMETRY_A2_LABEL,
   ITEM_TELEMETRY_A2_RANGE,
   ITEM_TELEMETRY_A2_OFFSET,
+#if !defined(PCBTARANIS)
   ITEM_TELEMETRY_A2_ALARM1,
   ITEM_TELEMETRY_A2_ALARM2,
   ITEM_TELEMETRY_RSSI_LABEL,
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
+#endif
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   ITEM_TELEMETRY_USR_LABEL,
 #if !defined(PCBTARANIS)
@@ -4392,9 +4400,17 @@ enum menuModelTelemetryItems {
   #define TELEM_BARS_COLMAX (14*FW-3)
 #endif
 
+#if defined(PCBTARANIS)
+ #define CHANNEL_ROWS (uint8_t)-1, 1, 0,
+ #define RSSI_ROWS
+#else
+ #define CHANNEL_ROWS (uint8_t)-1, 1, 0, 2, 2,
+ #define RSSI_ROWS    (uint8_t)-1, 1, 1,
+#endif
+
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 0, 2, 2, (uint8_t)-1, 1, 1, USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(3) 0, 2, 2, 2, 2, 0, 2, 2, 2, IF_CPUARM(2) IF_CPUARM(0) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) 2 });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(3) 0, 2, 2, 2, 2, 0, 2, 2, 2, IF_CPUARM(2) IF_CPUARM(0) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) 2 });
 
   uint8_t sub = m_posVert - 1;
 
@@ -4404,9 +4420,9 @@ void menuModelTelemetry(uint8_t event)
 #if !defined(PCBTARANIS)
     case EVT_KEY_BREAK(KEY_LEFT):
     case EVT_KEY_BREAK(KEY_RIGHT):
-#endif
       if (s_editMode>0 && sub<=ITEM_TELEMETRY_RSSI_ALARM2)
         frskySendAlarms(); // update FrSky module when edit mode exited
+#endif
       break;
   }
 
@@ -4459,6 +4475,7 @@ void menuModelTelemetry(uint8_t event)
         if (attr) channel.offset = checkIncDec(event, channel.offset, -256, 256, EE_MODEL);
         break;
 
+#if !defined(PCBTARANIS)
       case ITEM_TELEMETRY_A1_ALARM1:
       case ITEM_TELEMETRY_A1_ALARM2:
       case ITEM_TELEMETRY_A2_ALARM1:
@@ -4516,6 +4533,7 @@ void menuModelTelemetry(uint8_t event)
         }
         break;
       }
+#endif
 
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
       case ITEM_TELEMETRY_USR_LABEL:

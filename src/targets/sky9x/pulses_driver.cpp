@@ -36,7 +36,13 @@
 
 #include "../../opentx.h"
 
+extern uint16_t ppmStream[NUM_MODULES][20];
 volatile uint32_t ppmStreamIndex[NUM_MODULES] = { MODULES_INIT(0) };  // Modified in interrupt routine
+extern uint16_t pxxStream[NUM_MODULES][400];                // Transitions
+extern uint16_t *pxxStreamPtr[NUM_MODULES];
+extern uint8_t Bit_pulses[64] ;                          // Likely more than we need
+extern uint8_t Serial_byte_count ;
+
 
 void init_main_ppm( uint32_t period, uint32_t out_enable )
 {

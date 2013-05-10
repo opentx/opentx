@@ -205,6 +205,7 @@ void audioStart();
 
 extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 
+#define I18N_PLAY_FUNCTION(lng, x, ...) void lng ## _ ## x(__VA_ARGS__, uint8_t id)
 #define PLAY_FUNCTION(x, ...)    void x(__VA_ARGS__, uint8_t id)
 #define PUSH_NUMBER_PROMPT(p)    pushPrompt((p), id)
 #define PLAY_NUMBER(n, u, a)     playNumber((n), (u), (a), id)

@@ -38,8 +38,8 @@
 #define audio_h
 
 #if defined(PCBSTD)
-#define SPEAKER_ON   BUZZER_ON
-#define SPEAKER_OFF  toneFreq=0; BUZZER_OFF
+  #define SPEAKER_ON   BUZZER_ON
+  #define SPEAKER_OFF  toneFreq=0; BUZZER_OFF
 #endif
 
 //audio

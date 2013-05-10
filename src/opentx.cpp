@@ -2422,11 +2422,12 @@ uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
 
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 {
-  char lfn[] = SOUNDS_PATH "/xxxxxx.wav";
-  strncpy(lfn+sizeof(SOUNDS_PATH), sd->param.name, sizeof(sd->param.name));
-  lfn[sizeof(SOUNDS_PATH)+sizeof(sd->param.name)] = '\0';
-  strcat(lfn+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-  PLAY_FILE(lfn, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
+  char filename[] = SOUNDS_PATH "/en/xxxxxx.wav";
+  strncpy(filename+sizeof(SOUNDS_PATH), currentLanguagePack->id, 2);
+  strncpy(filename+sizeof(SOUNDS_PATH)+3, sd->param.name, sizeof(sd->param.name));
+  filename[sizeof(SOUNDS_PATH)+3+sizeof(sd->param.name)] = '\0';
+  strcat(filename+sizeof(SOUNDS_PATH)+3, SOUNDS_EXT);
+  PLAY_FILE(filename, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
 }
 #endif
 
