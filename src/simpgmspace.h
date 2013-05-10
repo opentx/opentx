@@ -114,6 +114,27 @@ extern GPIO_TypeDef gpiod;
 extern GPIO_TypeDef gpioe;
 #undef GPIOE
 #define GPIOE (&gpioe)
+extern TIM_TypeDef tim1;
+extern TIM_TypeDef tim3;
+extern TIM_TypeDef tim8;
+#undef TIM1
+#undef TIM3
+#undef TIM8
+#define TIM1 (&tim1)
+#define TIM3 (&tim3)
+#define TIM8 (&tim8)
+extern RCC_TypeDef rcc;
+#undef RCC
+#define RCC (&rcc)
+#undef DMA2_Stream2
+#undef DMA2_Stream6
+#define DMA2_Stream2 (&dma2_stream2)
+#define DMA2_Stream6 (&dma2_stream6)
+extern DMA_Stream_TypeDef dma2_stream2;
+extern DMA_Stream_TypeDef dma2_stream6;
+#undef DMA2
+#define DMA2 (&dma2)
+extern DMA_TypeDef dma2;
 #elif defined(PCBSKY9X)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;

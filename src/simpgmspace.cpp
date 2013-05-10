@@ -54,6 +54,13 @@ GPIO_TypeDef gpiob;
 GPIO_TypeDef gpioc;
 GPIO_TypeDef gpiod;
 GPIO_TypeDef gpioe;
+TIM_TypeDef tim1;
+TIM_TypeDef tim3;
+TIM_TypeDef tim8;
+RCC_TypeDef rcc;
+DMA_Stream_TypeDef dma2_stream2;
+DMA_Stream_TypeDef dma2_stream6;
+DMA_TypeDef dma2;
 #elif defined(PCBSKY9X)
 Pio Pioa, Piob, Pioc;
 Pwm pwm;
