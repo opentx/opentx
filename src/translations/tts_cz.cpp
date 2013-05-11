@@ -88,12 +88,10 @@ enum CzechPrompts {
 
 #if defined(VOICE)
 
-#if not defined PUSH_UNIT_PROMPT
 #if defined(CPUARM)
-  #define PUSH_UNIT_PROMPT(p, u) cz_pushUnitPrompt((p), (u), id)
+  #define CZ_PUSH_UNIT_PROMPT(p, u) cz_pushUnitPrompt((p), (u), id)
 #else
-  #define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
-#endif
+  #define CZ_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
 #endif
 
 #define MUZSKY 0x80
@@ -138,7 +136,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         if (qr.quot == 0)
           PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
         else
-          PUSH_UNIT_PROMPT(qr.quot, CZ_PROMPT_CELA);
+          CZ_PUSH_UNIT_PROMPT(qr.quot, CZ_PROMPT_CELA);
         PLAY_NUMBER(qr.rem, 0, ZENSKY);
         PUSH_NUMBER_PROMPT(CZ_PROMPT_UNITS_BASE+((unit-1)*4)+3);
         return;
@@ -208,7 +206,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PUSH_UNIT_PROMPT(tmp, (CZ_PROMPT_UNITS_BASE+((unit-1)*4)));
+    CZ_PUSH_UNIT_PROMPT(tmp, (CZ_PROMPT_UNITS_BASE+((unit-1)*4)));
   }
 }
 

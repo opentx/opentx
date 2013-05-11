@@ -103,12 +103,10 @@ enum SlovakPrompts {
 
 #if defined(VOICE)
 
-#if not defined PUSH_UNIT_PROMPT
 #if defined(CPUARM)
-#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u), id)
+  #define SK_PUSH_UNIT_PROMPT(p, u) sk_pushUnitPrompt((p), (u), id)
 #else
-#define PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
-#endif
+  #define SK_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
 #endif
 
 #define MUZSKY 0x80
@@ -153,7 +151,7 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         if (qr.quot == 0)
           PUSH_NUMBER_PROMPT(SK_PROMPT_CELA);
         else
-          PUSH_UNIT_PROMPT(qr.quot, SK_PROMPT_CELA);
+          SK_PUSH_UNIT_PROMPT(qr.quot, SK_PROMPT_CELA);
         PLAY_NUMBER(qr.rem, 0, ZENSKY);
         PUSH_NUMBER_PROMPT(SK_PROMPT_UNITS_BASE+((unit-1)*4)+3);
         return;
@@ -224,7 +222,7 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PUSH_UNIT_PROMPT(tmp, (SK_PROMPT_UNITS_BASE+((unit-1)*4)));
+    SK_PUSH_UNIT_PROMPT(tmp, (SK_PROMPT_UNITS_BASE+((unit-1)*4)));
   }
 }
 
