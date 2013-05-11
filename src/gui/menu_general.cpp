@@ -43,16 +43,23 @@ const pm_uchar sticks[] PROGMEM = {
 #if defined(CPUARM)
 extern LanguagePack czLanguagePack;
 extern LanguagePack enLanguagePack;
+extern LanguagePack esLanguagePack;
 extern LanguagePack frLanguagePack;
 extern LanguagePack deLanguagePack;
 extern LanguagePack itLanguagePack;
+extern LanguagePack ptLanguagePack;
+extern LanguagePack skLanguagePack;
+
 LanguagePack * languagePacks[] = {
   // alphabetical order
   &czLanguagePack,
   &enLanguagePack,
+  &esLanguagePack,
   &frLanguagePack,
   &deLanguagePack,
   &itLanguagePack,
+  &ptLanguagePack,
+  &skLanguagePack,
   NULL
 };
 #endif
