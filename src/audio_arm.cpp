@@ -97,8 +97,8 @@ void refreshSystemAudioFiles()
   info.lfsize = sizeof(lfn);
 #endif
 
-  char filename[32] = SYSTEM_SOUNDS_PATH "/en/";
-  strncpy(filename+sizeof(SYSTEM_SOUNDS_PATH), currentLanguagePack->id, 2);
+  char filename[32] = SYSTEM_SOUNDS_PATH "/";
+  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
 
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableSystemAudioFiles)*8 > AU_FRSKY_FIRST);
@@ -106,8 +106,8 @@ void refreshSystemAudioFiles()
   uint32_t availableAudioFiles = 0;
 
   for (uint32_t i=0; i<AU_FRSKY_FIRST; i++) {
-    strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH)+3, audioFilenames[i]);
-    strcat(filename+sizeof(SYSTEM_SOUNDS_PATH)+3, SOUNDS_EXT);
+    strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
+    strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
     if (f_stat(filename, &info) == FR_OK)
       availableAudioFiles |= ((uint32_t)1 << i);
   }
@@ -170,16 +170,17 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
     if (sdAvailableSystemAudioFiles & ((uint32_t)1 << event)) {
-      strcpy(filename, SYSTEM_SOUNDS_PATH "/en/");
-      strncpy(filename+sizeof(SYSTEM_SOUNDS_PATH), currentLanguagePack->id, 2);
-      strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH)+3, audioFilenames[i]);
-      strcat(filename+sizeof(SYSTEM_SOUNDS_PATH)+3, SOUNDS_EXT);
+      strcpy(filename, SYSTEM_SOUNDS_PATH);
+      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+      strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
+      strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
       return true;
     }
   }
   else if (category == PHASE_AUDIO_CATEGORY) {
     if (sdAvailablePhaseAudioFiles[index] & ((uint32_t)1 << event)) {
       strcpy(filename, SOUNDS_PATH "/");
+      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
       char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
       *str++ = '/';
       char * tmp = strcat_phasename(str, index);
@@ -193,6 +194,7 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
   else if (category == MIXER_AUDIO_CATEGORY) {
     if (sdAvailableMixerAudioFiles[index] & ((uint32_t)1 << event)) {
       strcpy(filename, SOUNDS_PATH "/");
+      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
       char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
       *str++ = '/';
       char * tmp = strcat_mixername(str, index);
@@ -916,11 +918,11 @@ void pushPrompt(uint16_t prompt, uint8_t id)
 {
 #if defined(SDCARD)
 
-  char filename[] = SYSTEM_SOUNDS_PATH "/en/0000" SOUNDS_EXT;
-  strncpy(filename+sizeof(SYSTEM_SOUNDS_PATH), currentLanguagePack->id, 2);
+  char filename[] = SYSTEM_SOUNDS_PATH "/0000" SOUNDS_EXT;
+  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
 
   for (int8_t i=3; i>=0; i--) {
-    filename[sizeof(SYSTEM_SOUNDS_PATH)+3+i] = '0' + (prompt%10);
+    filename[sizeof(SYSTEM_SOUNDS_PATH)+i] = '0' + (prompt%10);
     prompt /= 10;
   }
 

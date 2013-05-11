@@ -4039,8 +4039,8 @@ void onCustomFunctionsMenu(const char *result)
   int8_t  sub = m_posVert - 1;
 
   if (result == STR_UPDATE_LIST) {
-    char directory[] = SOUNDS_PATH "/en";
-    strncpy(directory+sizeof(SOUNDS_PATH), currentLanguagePack->id, 2);
+    char directory[] = SOUNDS_PATH;
+    strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
     if (!listSdFiles(directory, SOUNDS_EXT, sizeof(g_model.funcSw[sub].param), NULL)) {
       POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
@@ -4165,8 +4165,8 @@ void menuModelCustomFunctions(uint8_t event)
                 lcd_putsiAtt(x, y, STR_VCSWFUNC, 0, attr);
               if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
                 s_editMode = 0;
-                char directory[] = SOUNDS_PATH "/en";
-                strncpy(directory+sizeof(SOUNDS_PATH), currentLanguagePack->id, 2);
+                char directory[] = SOUNDS_PATH;
+                strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
                 if (listSdFiles(directory, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
                   menuHandler = onCustomFunctionsMenu;
                 }

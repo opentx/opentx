@@ -43,14 +43,16 @@
 #define ROOT_PATH    "."
 #define MODELS_PATH  "."
 #define LOGS_PATH    "."
-#define SOUNDS_PATH  "."
-#define SYSTEM_SOUNDS_PATH "."
+#define SOUNDS_PATH  "./en"
+#define SOUNDS_PATH_LNG_OFS 2
+#define SYSTEM_SOUNDS_PATH SOUNDS_PATH "/SYSTEM"
 #define BITMAPS_PATH  "."
 #else
 #define ROOT_PATH           "/"
 #define MODELS_PATH         "/MODELS"
 #define LOGS_PATH           "/LOGS"   // no trailing slash = important
-#define SOUNDS_PATH         "/SOUNDS" // no trailing slash = important
+#define SOUNDS_PATH         "/SOUNDS/en" // no trailing slash = important
+#define SOUNDS_PATH_LNG_OFS 8
 #define SYSTEM_SOUNDS_PATH  SOUNDS_PATH "/SYSTEM" // no trailing slash = important
 #define BITMAPS_PATH        "/BMP"
 #endif
