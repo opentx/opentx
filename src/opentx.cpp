@@ -4222,19 +4222,16 @@ void menusTask(void * pdata)
 #endif
   }
 
+  lcd_clear();
+  displayPopup(STR_SHUTDOWN);
+
 #if defined(SDCARD)
   closeLogs();
 #endif
 
-  SysTick->CTRL = 0; // turn off systick
-
 #if defined(HAPTIC)
   hapticOff();
 #endif
-
-  lcd_clear();
-
-  displayPopup(STR_SHUTDOWN);
 
   saveTimers();
 
@@ -4255,6 +4252,8 @@ void menusTask(void * pdata)
   lcd_clear();
   lcdRefresh();
   lcdSetRefVolt(0);
+
+  SysTick->CTRL = 0; // turn off systick
 
   pwrOff(); // Only turn power off if necessary
 }
