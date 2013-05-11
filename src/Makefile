@@ -652,7 +652,7 @@ TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
 ifeq ($(PCB), $(filter $(PCB), SKY9X TARANIS))
-  TTS_SRC = translations/tts_en.cpp translations/tts_fr.cpp translations/tts_it.cpp
+  TTS_SRC = translations/tts_de.cpp translations/tts_en.cpp translations/tts_fr.cpp translations/tts_it.cpp
 else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")

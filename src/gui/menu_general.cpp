@@ -43,11 +43,13 @@ const pm_uchar sticks[] PROGMEM = {
 #if defined(CPUARM)
 extern LanguagePack enLanguagePack;
 extern LanguagePack frLanguagePack;
+extern LanguagePack deLanguagePack;
 extern LanguagePack itLanguagePack;
 LanguagePack * languagePacks[] = {
   // alphabetical order
   &enLanguagePack,
   &frLanguagePack,
+  &deLanguagePack,
   &itLanguagePack,
   NULL
 };
@@ -496,7 +498,7 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(CPUARM)
       case ITEM_SETUP_LANGUAGE:
-        lcd_putsLeft(y, PSTR("Language"));
+        lcd_putsLeft(y, PSTR("Voice Language"));
         lcd_putsAtt(RADIO_SETUP_2ND_COLUMN, y, currentLanguagePack->name, attr);
         if (attr) {
           currentLanguagePackIdx = checkIncDec(event, currentLanguagePackIdx, 0, DIM(languagePacks)-2, EE_GENERAL);
