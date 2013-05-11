@@ -2449,6 +2449,10 @@ void evalFunctions()
     trimGvar[i] = -1;
 #endif
 
+#if !defined(PCBSTD)
+  uint8_t mSwitchDurationIncremented = 0;
+#endif
+
   for (uint8_t i=0; i<NUM_CFN; i++) {
     CustomFnData *sd = &g_model.funcSw[i];
     int8_t swtch = sd->swtch;
@@ -2530,7 +2534,8 @@ void evalFunctions()
           momentary = false;
         }
 #if !defined(PCBSTD)
-        if (short_long) {
+        if (short_long && !(mSwitchDurationIncremented & (1<<mswitch))) {
+          mSwitchDurationIncremented |= (1<<mswitch);
           if (swState) {
             if (mSwitchDuration[mswitch] < 255)
               mSwitchDuration[mswitch]++;
