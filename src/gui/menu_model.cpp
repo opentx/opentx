@@ -2938,17 +2938,23 @@ static uint8_t s_copySrcCh;
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#if defined(TRANSLATIONS_CZ)
+#if LCD_W >= 212
+#define EXPO_LINE_WEIGHT_POS 7*FW
+#define EXPO_LINE_EXPO_POS   10*FW
+#define EXPO_LINE_SWITCH_POS 13*FW+4
+#define EXPO_LINE_SIDE_POS   20*FW
+#define EXPO_LINE_SELECT_POS 18
+#elif defined(TRANSLATIONS_CZ)
 #define EXPO_LINE_WEIGHT_POS 7*FW-2
 #define EXPO_LINE_EXPO_POS   10*FW+2
-#define EXPO_LINE_PHASE_POS  10*FW+4
 #define EXPO_LINE_SWITCH_POS 13*FW+5
+#define EXPO_LINE_SIDE_POS   17*FW
 #define EXPO_LINE_SELECT_POS 24
 #else
 #define EXPO_LINE_WEIGHT_POS 6*FW-2
 #define EXPO_LINE_EXPO_POS   9*FW+1
-#define EXPO_LINE_PHASE_POS  10*FW
 #define EXPO_LINE_SWITCH_POS 13*FW+4
+#define EXPO_LINE_SIDE_POS   17*FW
 #define EXPO_LINE_SELECT_POS 18
 #endif
 
@@ -3172,19 +3178,23 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             else
               displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, -100, 100);
 
+#if defined(PCBTARANIS)
+            putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
+            if (ed->name[0]) lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
+            if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
+#else
 #if defined(CPUARM)
             if (ed->name[0]) {
               putsSwitches(11*FW, y, ed->swtch, 0);
               lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
             }
-#if LCD_W < 212
             else
-#endif
 #endif
             {
               putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
-              if (ed->mode!=3) lcd_putc(17*FW, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
+              if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
             }
+#endif
           }
           else {
 #if LCD_W >= 212
