@@ -170,7 +170,7 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
     if (sdAvailableSystemAudioFiles & ((uint32_t)1 << event)) {
-      strcpy(filename, SYSTEM_SOUNDS_PATH);
+      strcpy(filename, SYSTEM_SOUNDS_PATH "/");
       strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
       strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
       strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
