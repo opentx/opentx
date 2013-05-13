@@ -993,6 +993,7 @@ void menuGeneralDiagAna(uint8_t event)
   adcBatt = ((adcBatt * 7) + anaIn(8)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ( adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128 ) * BATT_SCALE;
   batCalV >>= 11;
+  batCalV += 2; // because of the diode
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
 #else
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
