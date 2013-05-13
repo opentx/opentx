@@ -193,6 +193,10 @@ TTS = $(TRANSLATIONS)
 # Values = imperial, metric 
 UNITS = METRIC
 
+# Default Tx Mode
+# Values = NO / 1 / 2 / 3 / 4
+DEFAULT_MODE = NO
+
 # EEPROM_PROGRESS_BAR
 # Values = YES, NO
 EEPROM_PROGRESS_BAR = NO
@@ -679,6 +683,10 @@ CPPDEFS += -DTTS_$(TTS)
 
 ifeq ($(UNITS), IMPERIAL)
   CPPDEFS += -DIMPERIAL_UNITS
+endif
+
+ifneq ($(DEFAULT_MODE), NO)
+  CPPDEFS += -DDEFAULT_MODE=$(DEFAULT_MODE)
 endif
 
 # If POTS are used for fields modification

@@ -372,6 +372,14 @@ void generalDefault()
   g_eeGeneral.vBatWarn = 90;
 #endif
 
+#if defined(DEFAULT_MODE)
+  g_eeGeneral.stickMode = DEFAULT_MODE-1;
+#endif
+
+#if defined(PCBTARANIS)
+  g_eeGeneral.templateSetup = 17; /* TAER */
+#endif
+
 #if !defined(CPUM64)
   g_eeGeneral.backlightMode = e_backlight_mode_both;
   g_eeGeneral.lightAutoOff = 2;
