@@ -152,7 +152,7 @@ static void disable_pa10_none()
 
 static void init_pa7_none()
 {
-  EXTERNAL_RF_ON();
+  EXTERNAL_RF_OFF();
 
   // Timer8
 
@@ -166,7 +166,7 @@ static void init_pa7_none()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIO_EXTPPM, &GPIO_InitStructure);
 
-	GPIO_SetBits(GPIO_EXTPPM,PIN_EXTPPM_OUT) ; // Set high
+  GPIO_SetBits(GPIO_EXTPPM, PIN_EXTPPM_OUT) ; // Set high
   
   RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
 
@@ -192,8 +192,6 @@ static void disable_pa7_none()
   TIM8->CR1 &= ~TIM_CR1_CEN ;
   EXTERNAL_RF_OFF();
 }
-
-
 
 static void init_pa10_pxx()
 {
