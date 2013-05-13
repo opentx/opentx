@@ -1025,8 +1025,13 @@ bool __getSwitch(int8_t swtch)
 #if defined(FRSKY)
           // Telemetry
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
+#if defined(PCBTARANIS)
+            if (frskyData.rssi[0] == 0 && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2)
+              return swtch > 0 ? false : true;
+#else
             if (frskyStreaming <= 0 && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2)
               return swtch > 0 ? false : true;
+#endif
 
             y = convertCswTelemValue(cs);
 
