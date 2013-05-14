@@ -69,7 +69,6 @@ void init_trainer_ppm()
 
   TIM3->CR1 = TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM3_IRQn) ;
-//  NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn) ;
 }
 
 // TODO - testing

@@ -147,9 +147,9 @@ void usbInit()
 void watchdogInit()
 {
   IWDG->KR = 0x5555 ;      // Unlock registers
-  IWDG->PR = 3 ;            // Divide by 32 => 1kHz clock
+  IWDG->PR = 3 ;           // Divide by 32 => 1kHz clock
   IWDG->KR = 0x5555 ;      // Unlock registers
-  IWDG->RLR = 1500 ;      // 1.5 seconds nominal
+  IWDG->RLR = 1500 ;       // 1.5 seconds nominal
   IWDG->KR = 0xAAAA ;      // reload
   IWDG->KR = 0xCCCC ;      // start
 }

@@ -114,6 +114,8 @@ uint32_t sdMounted();
 #endif
 
 // Pulses driver
+void init_no_pulses(uint32_t port);
+void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
 void disable_ppm( uint32_t module_index );
 void init_pxx( uint32_t module_index );
