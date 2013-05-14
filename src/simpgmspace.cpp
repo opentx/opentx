@@ -283,7 +283,11 @@ void *main_thread(void *)
     g_menuStack[0] = menuMainView;
     g_menuStack[1] = menuModelSelect;
 
-    eeReadAll(); //load general setup and selected model
+#if defined(CPUARM) && defined(SDCARD)
+    refreshSystemAudioFiles();
+#endif
+
+    eeReadAll(); // load general setup and selected model
 
     if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 

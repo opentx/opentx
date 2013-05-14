@@ -973,12 +973,20 @@ void menuGeneralDiagAna(uint8_t event)
   lcd_outdezAtt(64+5+6*FW-3, 1+4*FH, BandGap, 0);
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(PCBTARANIS)
+  lcd_putsLeft(6*FH+1, STR_BATT_CALIB);
+  static int32_t adcBatt;
+  adcBatt = ((adcBatt * 7) + anaIn(8)) / 8;
+  uint32_t batCalV = (adcBatt + (adcBatt*g_eeGeneral.vBatCalib)/128) * BATT_SCALE;
+  batCalV >>= 11;
+  batCalV += 2; // because of the diode
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
+#elif defined(PCBSKY9X)
   lcd_putsLeft(5*FH+1, STR_BATT_CALIB);
-  static uint32_t adcBatt;
-  adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
-  uint32_t batCalV = ( adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128 ) * 4191 ;
-  batCalV /= 55296  ;
+  static int32_t adcBatt;
+  adcBatt = ((adcBatt * 7) + anaIn(7)) / 8;
+  uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128) * 4191;
+  batCalV /= 55296;
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 5*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
 #elif defined(PCBGRUVIN9X)
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
@@ -987,14 +995,6 @@ void menuGeneralDiagAna(uint8_t event)
   adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.vBatCalib)/8) / BandGap;
   lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
-#elif defined(PCBTARANIS)
-  lcd_putsLeft(6*FH+1, STR_BATT_CALIB);
-  static uint32_t adcBatt;
-  adcBatt = ((adcBatt * 7) + anaIn(8)) / 8; // running average, sourced directly (to avoid unending debate :P)
-  uint32_t batCalV = ( adcBatt + ((int32_t)adcBatt*g_eeGeneral.vBatCalib)/128 ) * BATT_SCALE;
-  batCalV >>= 11;
-  batCalV += 2; // because of the diode
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
 #else
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, g_vbat100mV, (m_posVert==1 ? INVERS : 0));
