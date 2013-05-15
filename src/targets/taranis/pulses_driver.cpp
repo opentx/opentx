@@ -146,7 +146,6 @@ static void disable_pa10_none()
   NVIC_DisableIRQ(TIM1_CC_IRQn) ;
   TIM1->DIER &= ~TIM_DIER_CC2IE ;
   TIM1->CR1 &= ~TIM_CR1_CEN ;
-  INTERNAL_RF_OFF();
 }
 
 static void init_pa7_none()
@@ -189,7 +188,6 @@ static void disable_pa7_none()
   NVIC_DisableIRQ(TIM8_CC_IRQn) ;
   TIM8->DIER &= ~TIM_DIER_CC2IE ;
   TIM8->CR1 &= ~TIM_CR1_CEN ;
-  EXTERNAL_RF_OFF();
 }
 
 static void init_pa10_pxx()
@@ -494,7 +492,7 @@ extern "C" void TIM8_CC_IRQHandler()
     TIM8->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
   }
   else {
-    TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
+    TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 }
 
