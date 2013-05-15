@@ -105,7 +105,9 @@ const pm_char * openLogs()
     f_puts("Date,Time,", &g_oLogFile);
 #endif
 
-#if defined(FRSKY)
+#if defined(FRSKY_SPORT)
+    f_puts("SWR,RSSI,A1,A2,", &g_oLogFile);
+#elif defined(FRSKY)
     f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
 #endif
 
@@ -170,8 +172,13 @@ void writeLogs()
       f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d,", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec);
 #endif
 
-#if defined(FRSKY)
+#if defined(FRSKY_SPORT)
+      f_printf(&g_oLogFile, "%d,%d,", frskyData.rssi[1].value, frskyData.rssi[0].value);
+#elif defined(FRSKY)
       f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, frskyData.rssi[0].value, frskyData.rssi[1].value);
+#endif
+
+#if defined(FRSKY)
       for (uint8_t i=0; i<2; i++) {
         int16_t converted_value = applyChannelRatio(i, frskyData.analog[i].value);
         f_printf(&g_oLogFile, "%d.%02d,", converted_value/100, converted_value%100);

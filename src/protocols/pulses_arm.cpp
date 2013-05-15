@@ -76,59 +76,43 @@ void setupPulses(unsigned int port)
 
     switch (s_current_protocol[port]) { // stop existing protocol hardware
       case PROTO_PXX:
-#if defined(PCBTARANIS)
         disable_pxx(port);
-#else
-        disable_pxx();
-#endif
         break;
 #if defined(DSM2)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:
-        disable_ssc();
+        disable_dsm2();
         break;
 #endif
-      default:
-#if defined(PCBTARANIS)
+      case PROTO_PPM:
         disable_ppm(port);
-#else
-        disable_main_ppm();
-#endif
+        break;
+      default:
+        disable_no_pulses(port);
         break;
     }
 
     s_current_protocol[port] = required_protocol;
 
-#if defined(PCBTARANIS)
-    switch (required_protocol) {
+    switch (required_protocol) { // Start new protocol hardware here
       case PROTO_PXX:
         init_pxx(port);
         break;
-      case PROTO_PPM:
-        init_ppm(port);
-        break;
-    }
-#elif defined(PCBSKY9X)
-    switch (required_protocol) { // Start new protocol hardware here
-      case PROTO_PXX:
-        init_main_ppm(5000, 0); // Initial period 2.5 mS, output off
-        init_ssc();
-        break;
+#if defined(DSM2)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:
-        init_main_ppm(5000, 0); // Initial period 2.5 mS, output off
-        init_ssc();
+        init_dsm2(port);
         break;
-      case PROTO_NONE:
-        init_main_ppm(3000, 0); // Initial period 1.5 mS, output off
+#endif
+      case PROTO_PPM:
+        init_ppm(port);
         break;
       default:
-        init_main_ppm(3000, 1); // Initial period 1.5 mS, output on
+        init_no_pulses(port);
         break;
     }
-#endif
   }
 
   // Set up output data here
@@ -143,12 +127,10 @@ void setupPulses(unsigned int port)
       setupPulsesDsm2(6);
       break;
 #endif
-#if defined(PCBTARANIS)
     case PROTO_PPM:
-#else
-    default:
-#endif
-      setupPulsesPPM(port); // Don't enable interrupts through here
+      setupPulsesPPM(port);
       break ;
+    default:
+      break;
   }
 }

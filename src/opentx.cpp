@@ -1025,13 +1025,8 @@ bool __getSwitch(int8_t swtch)
 #if defined(FRSKY)
           // Telemetry
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-#if defined(PCBTARANIS)
-            if (frskyData.rssi[0].value == 0 && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2)
+            if (!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2)
               return swtch > 0 ? false : true;
-#else
-            if (frskyStreaming <= 0 && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2)
-              return swtch > 0 ? false : true;
-#endif
 
             y = convertCswTelemValue(cs);
 
@@ -3671,12 +3666,12 @@ void perMain()
     counter = 10;
 #if defined(PCBTARANIS)
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
-    instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * BATT_SCALE;
+    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128) * BATT_SCALE;
     instant_vbat >>= 11;
     instant_vbat += 2; // because of the diode
 #elif defined(PCBSKY9X)
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
-    instant_vbat = ( instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128 ) * 4191;
+    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128) * 4191;
     instant_vbat /= 55296;
 #elif defined(PCBGRUVIN9X)
     uint16_t instant_vbat = anaIn(TX_VOLTAGE);
@@ -3718,12 +3713,10 @@ void perMain()
       if (g_vbat100mV <= g_eeGeneral.vBatWarn && g_vbat100mV>50) {
         AUDIO_TX_BATTERY_LOW();
       }
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
       else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
         AUDIO_TX_TEMP_HIGH();
       }
-#endif
-#if defined(PCBSKY9X)
       else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
         AUDIO_TX_MAH_HIGH();
       }

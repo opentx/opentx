@@ -179,7 +179,8 @@ struct FrskyData {
 };
 
 // Global Fr-Sky telemetry data variables
-extern int8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
+extern uint8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
+
 #if defined(WS_HOW_HIGH)
 extern uint8_t frskyUsrStreaming;
 #endif
@@ -212,6 +213,8 @@ void resetTelemetry();
 #define TELEMETRY_GPS_ALT_BP   frskyData.hub.gpsAltitude_bp
 #define TELEMETRY_GPS_SPEED_BP frskyData.hub.gpsSpeed_bp
 #define TELEMETRY_GPS_SPEED_AP frskyData.hub.gpsSpeed_ap
+
+#define TELEMETRY_STREAMING()  (frskyStreaming > 0)
 
 #endif
 

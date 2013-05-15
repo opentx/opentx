@@ -44,7 +44,7 @@ extern uint8_t Bit_pulses[64] ;                          // Likely more than we 
 extern uint8_t Serial_byte_count ;
 
 
-void init_main_ppm( uint32_t period, uint32_t out_enable )
+void init_main_ppm(uint32_t period, uint32_t out_enable)
 {
   register Pio *pioptr ;
   register Pwm *pwmptr ;
@@ -91,25 +91,22 @@ void init_main_ppm( uint32_t period, uint32_t out_enable )
   NVIC_EnableIRQ(PWM_IRQn) ;
 }
 
-void disable_main_ppm()
+void disable_ppm(uint32_t port)
 {
   register Pio *pioptr ;
 
-  pioptr = PIOA ;
-  pioptr->PIO_PER = PIO_PA17 ;                                            // Assign A17 to PIO
+  if (port == 0) {
+    pioptr = PIOA ;
+    pioptr->PIO_PER = PIO_PA17 ;                                            // Assign A17 to PIO
+    PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
+  }
+  else {
+    pioptr = PIOC ;
+    pioptr->PIO_PER = PIO_PC17 ;                                            // Assign A17 to PIO
 
-  PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
-}
-
-void disable_ppm2()
-{
-  register Pio *pioptr ;
-
-  pioptr = PIOC ;
-  pioptr->PIO_PER = PIO_PC17 ;                                            // Assign A17 to PIO
-
-  PWM->PWM_IDR1 = PWM_IDR1_CHID1 ;
-  NVIC_DisableIRQ(PWM_IRQn) ;
+    PWM->PWM_IDR1 = PWM_IDR1_CHID1 ;
+    NVIC_DisableIRQ(PWM_IRQn) ;
+  }
 }
 
 // Initialise the SSC to allow PXX output.

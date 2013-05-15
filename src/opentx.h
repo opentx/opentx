@@ -1190,7 +1190,7 @@ inline bool isFunctionActive(uint8_t func)
 enum AUDIO_SOUNDS {
     AU_INACTIVITY,
     AU_TX_BATTERY_LOW,
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
     AU_TX_MAH_HIGH,
     AU_TX_TEMP_HIGH,
 #endif
@@ -1221,6 +1221,15 @@ enum AUDIO_SOUNDS {
     AU_TIMER_10,
     AU_TIMER_20,
     AU_TIMER_30,
+#if defined(PCBTARANIS)
+    AU_A1_ORANGE,
+    AU_A1_RED,
+    AU_A2_ORANGE,
+    AU_A2_RED,
+    AU_RSSI_ORANGE,
+    AU_RSSI_RED,
+    AU_SWR_RED,
+#endif
     AU_FRSKY_FIRST,
     AU_FRSKY_BEEP1 = AU_FRSKY_FIRST,
     AU_FRSKY_BEEP2,

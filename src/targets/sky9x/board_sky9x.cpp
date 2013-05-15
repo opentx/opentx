@@ -758,8 +758,8 @@ void usbBootloader()
   PWM->PWM_DIS = PWM_DIS_CHID0 | PWM_DIS_CHID1 | PWM_DIS_CHID2 | PWM_DIS_CHID3 ;  // Disable all
   NVIC_DisableIRQ(TC2_IRQn) ;
 
-  disable_main_ppm() ;
-  disable_ppm2();
+  disable_ppm(0);
+  disable_ppm(1);
 
   //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
   //      NVIC_DisableIRQ(PWM_IRQn) ;

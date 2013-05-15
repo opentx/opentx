@@ -61,7 +61,7 @@ uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
 #if !defined(CPUARM)
 uint8_t frskyTxBufferCount = 0;
 #endif
-int8_t frskyStreaming = -1;
+uint8_t frskyStreaming = 0;
 #if defined(WS_HOW_HIGH)
 uint8_t frskyUsrStreaming = 0;
 #endif

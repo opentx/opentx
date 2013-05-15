@@ -110,7 +110,6 @@ static void init_pa10_none()
   INTERNAL_RF_OFF();
 
   // Timer1, channel 3
-
   GPIO_InitTypeDef GPIO_InitStructure;
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_INTPPM, ENABLE);
   
@@ -121,7 +120,7 @@ static void init_pa10_none()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIO_INTPPM, &GPIO_InitStructure);
   
-	GPIO_SetBits(GPIO_INTPPM,PIN_INTPPM_OUT) ; // Set high
+  GPIO_SetBits(GPIO_INTPPM, PIN_INTPPM_OUT) ; // Set high
   
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
 
@@ -170,7 +169,7 @@ static void init_pa7_none()
   
   RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
 
-  TIM1->CR1 &= ~TIM_CR1_CEN ;
+  TIM8->CR1 &= ~TIM_CR1_CEN ;
   TIM8->ARR = 36000 ;             // 18mS
   TIM8->CCR2 = 32000 ;            // Update time
   TIM8->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
@@ -326,11 +325,14 @@ extern "C" void TIM1_CC_IRQHandler()
     TIM1->CCR3 = pxxStream[INTERNAL_MODULE][0];
     TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
-  else {
+  else if (s_current_protocol[INTERNAL_MODULE] == PROTO_PPM) {
     ppmStreamPtr[INTERNAL_MODULE] = ppmStream[INTERNAL_MODULE];
     TIM1->DIER |= TIM_DIER_UDE ;
     TIM1->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     TIM1->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
+  }
+  else {
+    TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 }
 
