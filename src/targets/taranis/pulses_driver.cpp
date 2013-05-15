@@ -487,12 +487,14 @@ extern "C" void TIM8_CC_IRQHandler()
     TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0] ;
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
-  else {
+  else if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PPM) {
     ppmStreamPtr[EXTERNAL_MODULE] = ppmStream[EXTERNAL_MODULE];
-
     TIM8->DIER |= TIM_DIER_UDE ;
     TIM8->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     TIM8->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
+  }
+  else {
+    TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 }
 
