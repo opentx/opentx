@@ -384,7 +384,7 @@ int main(int argc,char **argv)
   frskyStreaming = 1;
 #endif
 
-  printf("Model size = %d\n", sizeof(g_model));
+  printf("Model size = %d\n", (int)sizeof(g_model));
 
   StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
   StartMainThread();
