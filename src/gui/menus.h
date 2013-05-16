@@ -119,6 +119,7 @@ void menuModelSelect(uint8_t event);
 void menuModelCustomFunctions(uint8_t event);
 void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
+void menuAboutView(uint8_t event);
 
 #if defined(NAVIGATION_POT1)
   extern int16_t p1valdiff;

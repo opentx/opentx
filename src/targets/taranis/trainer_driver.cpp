@@ -57,7 +57,7 @@ void init_trainer_ppm()
   TIM3->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;               // 0.5uS
   TIM3->CCER = TIM_CCER_CC4E ;
   TIM3->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4PE ;                   // PWM mode 1
-  TIM3->CCR4 = 600 ;              // 300 uS pulse
+  TIM3->CCR4 = (g_model.moduleData[TRAINER_MODULE].ppmDelay*50+300)*2;
   TIM3->BDTR = TIM_BDTR_MOE ;
   TIM3->EGR = 1 ;
   // TIM3->DIER = TIM_DIER_UDE ;
@@ -148,7 +148,6 @@ extern "C" void TIM3_IRQHandler()
 
     TrainerPulsePtr = ppmStream[TRAINER_MODULE];
     TIM3->DIER |= TIM_DIER_UDE ;
-
     TIM3->SR &= ~TIM_SR_UIF ;                                       // Clear this flag
     TIM3->DIER |= TIM_DIER_UIE ;                            // Enable this interrupt
   }

@@ -111,7 +111,7 @@ void refreshSystemAudioFiles()
   strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
 
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
-  assert(sizeof(sdAvailableSystemAudioFiles)*8 > AU_FRSKY_FIRST);
+  assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_FRSKY_FIRST);
 
   uint32_t availableAudioFiles = 0;
 

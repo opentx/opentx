@@ -443,6 +443,11 @@ void onMainViewMenu(const char *result)
   else if (result == STR_STATISTICS) {
     chainMenu(menuStatisticsView);
   }
+#if defined(PCBTARANIS)
+  else if (result == STR_ABOUT_US) {
+    chainMenu(menuAboutView);
+  }
+#endif
 }
 #endif
 
@@ -503,6 +508,9 @@ void menuMainView(uint8_t event)
       MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
       MENU_ADD_ITEM(STR_STATISTICS);
+#if defined(PCBTARANIS)
+      MENU_ADD_ITEM(STR_ABOUT_US);
+#endif
       menuHandler = onMainViewMenu;
       break;
 #endif

@@ -148,6 +148,7 @@ if __name__ == "__main__":
         defaultcodec = "pcm_alaw"
     
     if "en" in sys.argv:
+        directory = "en"
         if "sapi" in sys.argv:
             if "scottish" in sys.argv:
             	tts.SetVoiceByName("ScanSoftFiona_Full_22kHz")
@@ -254,6 +255,7 @@ if __name__ == "__main__":
 
     
     elif "fr" in sys.argv:
+        directory = "fr"
         if "sapi" in sys.argv:
             tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
             voice = "french"
@@ -293,6 +295,7 @@ if __name__ == "__main__":
             
             
     elif "it" in sys.argv:
+        directory = "it"
         if "sapi" in sys.argv:
             tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
             voice = "italian"
@@ -363,6 +366,7 @@ if __name__ == "__main__":
             sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
 
     elif "de" in sys.argv:
+        directory = "de"
         if "sapi" in sys.argv:
             tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
             voice = "german"
@@ -432,6 +436,7 @@ if __name__ == "__main__":
             sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
 
     elif "pt" in sys.argv:
+        directory = "pt"
         if "sapi" in sys.argv:
             tts.SetVoiceByName("ScanSoftVirginie_Full_22kHz")
             voice = "portuguese"
@@ -510,6 +515,7 @@ if __name__ == "__main__":
             sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
             
     elif "cz" in sys.argv:
+        directory = "cz"
         if "sapi" in sys.argv:
             tts.SetVoiceByName("ScanSoftZuzana_Full_22kHz")
             voice = "czech"           	
@@ -601,13 +607,13 @@ if __name__ == "__main__":
         for f, s in systemSounds:
             l = u""
             if board == "sky9x":
-                l += u"SOUNDS/SYSTEM;"
+                l += u"SOUNDS/%s/SYSTEM;" % directory
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
         for f, s in sounds:
             l = u""
             if board == "sky9x":
-                l += u"SOUNDS;"
+                l += u"SOUNDS/%s;" % directory
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
         csvFile.close()
@@ -617,13 +623,13 @@ if __name__ == "__main__":
         zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
         for f, s in systemSounds:
             if board == "sky9x":
-                zip.write(f, "SOUNDS/SYSTEM/" + f)
+                zip.write(f, "SOUNDS/%s/SYSTEM/" % directory + f)
             else:
                 zip.write(f, f)
             os.remove(f)
         for f, s in sounds:
             if board == "sky9x":
-                zip.write(f, "SOUNDS/" + f)
+                zip.write(f, "SOUNDS/%s/" % directory + f)
             else:
                 zip.write(f, f)
             os.remove(f)

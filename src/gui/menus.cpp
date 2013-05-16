@@ -950,7 +950,7 @@ const char * displayMenu(uint8_t event)
   const char * result = NULL;
 
   uint8_t display_count = min(s_menu_count, (uint16_t)MENU_MAX_LINES);
-  uint8_t y = (display_count >= 5 ? MENU_Y - FH : MENU_Y);
+  uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
   lcd_filled_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcd_rect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 

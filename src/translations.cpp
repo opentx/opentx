@@ -357,6 +357,7 @@ const pm_char STR_RESET_TIMER1[] PROGMEM = "Reset Timer1";
 const pm_char STR_RESET_TIMER2[] PROGMEM = "Reset Timer2";
 const pm_char STR_RESET_TELEMETRY[] PROGMEM = "Reset Telemetry";
 const pm_char STR_STATISTICS[] PROGMEM = "Statistics";
+const pm_char STR_ABOUT_US[] PROGMEM = "About Us";
 #endif
 
 const pm_char STR_RESET[] PROGMEM = "[Reset]";
