@@ -51,6 +51,7 @@ enum AboutScreens {
   ABOUT_ROB,
   ABOUT_MARTIN,
   ABOUT_HARDWARE,
+  ABOUT_PARENTS,
   ABOUT_END,
   ABOUT_COUNT,
 };
@@ -95,6 +96,7 @@ void menuAboutView(uint8_t event)
     case ABOUT_BERTRAND:
       lcd_putsAtt(62, 24, PSTR("Bertrand Songis"), att);
       lcd_putsAtt(68, 36, PSTR("OpenTX main author"), att|SMLSIZE);
+      lcd_putsAtt(68, 44, PSTR("Companion9x co-developer"), att|SMLSIZE);
       break;
 
     case ABOUT_MIKE:
@@ -125,6 +127,14 @@ void menuAboutView(uint8_t event)
     case ABOUT_HARDWARE:
       lcd_putsAtt(62, 24, PSTR("FrSky"), att);
       lcd_putsAtt(68, 36, PSTR("Hardware designer/producer"), att|SMLSIZE);
+      screenDuration = 300;
+      break;
+
+    case ABOUT_PARENTS:
+      lcd_putsAtt(62, 24, PSTR("Parent projects"), att);
+      lcd_putsAtt(68, 36, PSTR("Ersky9x (Mike Blandford)"), att|SMLSIZE);
+      lcd_putsAtt(68, 44, PSTR("Er9x (Erez Raviv)"), att|SMLSIZE);
+      lcd_putsAtt(68, 52, PSTR("Th9x (Thomas Husterer)"), att|SMLSIZE);
       screenDuration = 300;
       break;
   }
