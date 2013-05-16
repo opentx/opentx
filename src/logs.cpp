@@ -207,7 +207,7 @@ void writeLogs()
 
 #if defined(WS_HOW_HIGH)
       if (IS_USR_PROTO_WS_HOW_HIGH()) {
-        f_printf(&g_oLogFile, "%d,", TELEMETRY_GPS_ALT_BP);
+        f_printf(&g_oLogFile, "%d,", TELEMETRY_ALT_BP);
       }
 #endif
 
