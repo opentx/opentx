@@ -928,6 +928,11 @@ void menuModelSetup(uint8_t event)
     pxxFlag[INTERNAL_MODULE] = 0;
     pxxFlag[EXTERNAL_MODULE] = 0;
   }
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
 #endif
 
 #if defined(PCBTARANIS)
@@ -1708,6 +1713,14 @@ void editPhaseTrims(uint8_t x, uint8_t y, uint8_t phase, uint8_t event, uint8_t 
 
 void menuModelFlightModesAll(uint8_t event)
 {
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
+
   MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_PHASES+1, {0, NAVIGATION_LINE_BY_LINE|(ITEM_PHASES_LAST-2), NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, 0});
 
   int8_t sub = m_posVert - 1;
@@ -2051,6 +2064,14 @@ enum menuModelHeliItems {
 
 void menuModelHeli(uint8_t event)
 {
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
+
   SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, 7);
 
   uint8_t sub = m_posVert - 1;
@@ -2301,6 +2322,10 @@ void menuModelCurveOne(uint8_t event)
         menuHandler = onCurveOneMenu;
       }
       break;
+    case EVT_KEY_LONG(KEY_MENU):
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
   }
 
   DrawCurve(FW);
@@ -2650,6 +2675,14 @@ enum ExposFields {
 
 void menuModelExpoOne(uint8_t event)
 {
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
+
   ExpoData *ed = expoaddress(s_currIdx);
   putsMixerSource(7*FW+FW/2, 0, ed->chn+1, 0);
 
@@ -3288,6 +3321,14 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
 void menuModelExposAll(uint8_t event)
 {
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
+	
   return menuModelExpoMix(1, event);
 }
 
@@ -3377,6 +3418,14 @@ enum LimitsItems {
 void menuModelLimits(uint8_t event)
 {
   uint8_t sub = m_posVert - 1;
+
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
 
   if (sub < NUM_CHNOUT) {
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_UNIT_US)
@@ -3575,6 +3624,12 @@ void menuModelCurvesAll(uint8_t event)
         pushMenu(menuModelCurveOne);
       }
       break;
+#if defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_MENU):
+      pushMenu(menuChannelsView);
+      killEvents(event);
+      return;
+#endif
   }
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
@@ -3613,6 +3668,14 @@ void menuModelCurvesAll(uint8_t event)
 #if LCD_W >= 212 && defined(GVARS) && defined(FLIGHT_MODES)
 void menuModelGVars(uint8_t event)
 {
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
+
   MENU(STR_MENUGLOBALVARS, menuTabModel, e_GVars, 1+MAX_GVARS, {0, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES});
 
   uint8_t sub = m_posVert - 1;
@@ -3894,6 +3957,14 @@ void menuModelCustomSwitches(uint8_t event)
   #define CHECK_INCDEC_CSPARAM(event, var, min, max) var=checkIncDec(event,var,min,max,incdecFlag)
 #endif
 
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
+
   MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, NAVIGATION_LINE_BY_LINE|CSW_FIELD_LAST/*repeated...*/});
 
   uint8_t y = 0;
@@ -4067,6 +4138,14 @@ void onCustomFunctionsMenu(const char *result)
 
 void menuModelCustomFunctions(uint8_t event)
 {
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
+
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|3/*repeated*/});
 
   uint8_t y;

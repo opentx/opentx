@@ -42,12 +42,12 @@ void menuStatisticsView(uint8_t event)
 
   switch(event)
   {
-    case EVT_KEY_FIRST(KEY_UP):
 #if !defined(PCBTARANIS) || defined(DEBUG)
+    case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuStatisticsDebug);
       return;
-#endif
     case EVT_KEY_FIRST(KEY_DOWN):
+#endif
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       return;

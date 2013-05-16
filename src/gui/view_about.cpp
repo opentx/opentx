@@ -67,12 +67,17 @@ void menuAboutView(uint8_t event)
       screenIndex = 0;
       greyIndex = 0;
       break;
-    case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_FIRST(KEY_DOWN):
+      screenIndex < ABOUT_PARENTS ? screenIndex++ : screenIndex = ABOUT_OPENTX;
+      greyIndex = 0;
+      break;
+    case EVT_KEY_FIRST(KEY_UP):
+      screenIndex > ABOUT_OPENTX ? screenIndex-- : screenIndex = ABOUT_PARENTS;
+      greyIndex = 0;
+      break;
     case EVT_KEY_FIRST(KEY_EXIT):
-    case EVT_KEY_FIRST(KEY_ENTER):
       chainMenu(menuMainView);
-      return;
+    return;
   }
 
   lcd_bmp(0, 0, about_bmp);
@@ -90,7 +95,7 @@ void menuAboutView(uint8_t event)
       lcd_putsAtt(62, 36, PSTR("Your donation will ensure"), SMLSIZE);
       lcd_putsAtt(62, 44, PSTR("that it remains free and open"), SMLSIZE);
       lcd_putsAtt(62, 56, PSTR("The amount is up to you!"), SMLSIZE);
-      screenDuration = 300;
+      screenDuration = 200;
       break;
 
     case ABOUT_BERTRAND:
