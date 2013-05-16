@@ -49,7 +49,7 @@ void init_trainer_ppm()
   TrainerPulsePtr = ppmStream[TRAINER_MODULE];
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN ;           // Enable portC clock
-  configure_pins( PIN_TR_PPM_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_3 | PIN_OS25 | PIN_PUSHPULL ) ;
+  configure_pins( PIN_TR_PPM_OUT, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2 | PIN_OS25 | PIN_PUSHPULL ) ;
   configure_pins( PIN_TR_PPM_IN, PIN_PORTA | PIN_INPUT ) ;
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ;            // Enable clock
 
