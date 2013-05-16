@@ -360,6 +360,7 @@ void menuModelSelect(uint8_t event)
   {
       case EVT_ENTRY:
         m_posVert = sub = g_eeGeneral.currModel;
+        if (sub >= LCD_LINES-1) s_pgOfs = sub-LCD_LINES+2;
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
         eeCheck(true);
