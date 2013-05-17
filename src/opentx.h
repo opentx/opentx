@@ -675,6 +675,10 @@ enum CswFunctions {
 #endif
 extern uint8_t heartbeat;
 
+#if defined(CPUARM)
+void watchdogSetTimeout(uint32_t timeout);
+#endif
+
 #define MAX_ALERT_TIME   60
 
 extern uint8_t inacPrescale;

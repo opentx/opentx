@@ -39,8 +39,6 @@
 
 #define NO_HI_LEN  25
 
-typedef void (*MenuFuncP)(uint8_t event);
-
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 inline void displayColumnHeader(const char **headers, uint8_t index)
 {
@@ -86,6 +84,10 @@ extern uint8_t s_noHi;
 extern uint8_t s_noScroll;
 
 void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr);
+
+typedef void (*MenuFuncP)(uint8_t event);
+typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
+extern const MenuFuncP_PROGMEM menuTabModel[];
 
 extern MenuFuncP g_menuStack[5];
 extern uint8_t g_menuStackPtr;
@@ -197,8 +199,6 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, vertpos_t maxrow);
 bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
-
-typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 
 void title(const pm_char * s);
 #define TITLE(str) title(str)

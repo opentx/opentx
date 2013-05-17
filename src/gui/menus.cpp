@@ -327,6 +327,14 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #if defined(PCBTARANIS)
     int8_t cc = curr;
     switch(event) {
+      case EVT_KEY_LONG(KEY_MENU):
+        if (menuTab == menuTabModel) {
+          pushMenu(menuChannelsView);
+          killEvents(event);
+          return false;
+        }
+        break;
+
       case EVT_KEY_LONG(KEY_PAGE):
         if (curr > 0)
           cc = curr - 1;
