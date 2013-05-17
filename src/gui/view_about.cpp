@@ -108,7 +108,7 @@ void menuAboutView(uint8_t event)
       lcd_putsAtt(62, 24, PSTR("Mike Blandford"), att);
       lcd_putsAtt(68, 36, PSTR("Code and drivers guru"), att|SMLSIZE);
       lcd_putsAtt(68, 44, PSTR("Arguably, one of the best"), att|SMLSIZE);
-      lcd_putsAtt(68, 52, PSTR("Inspirational"), att|SMLSIZE);
+      lcd_putsAtt(67, 52, PSTR("Inspirational"), att|SMLSIZE);
       break;
 
     case ABOUT_ROMOLO:
