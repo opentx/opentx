@@ -81,10 +81,14 @@ const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 const pm_uchar * splash_lbm = splashdata+4;
 #endif
 
-#if !defined(CPUM64) || defined(EXTSTD)
-const pm_uchar asterisk_lbm[] PROGMEM = {
-#include "bitmaps/asterisk.lbm"
-};
+#if LCD_W >= 212
+  const pm_uchar asterisk_lbm[] PROGMEM = {
+    #include "bitmaps/asterisk_4bits.lbm"
+  };
+#elif !defined(CPUM64) || defined(EXTSTD)
+  const pm_uchar asterisk_lbm[] PROGMEM = {
+    #include "bitmaps/asterisk.lbm"
+  };
 #endif
 
 #include "gui/menus.h"
@@ -223,7 +227,12 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
 volatile tmr10ms_t g_tmr10ms;
 
 #if defined(CPUARM)
-volatile uint8_t rtc_count=0;
+volatile uint8_t rtc_count = 0;
+uint32_t watchdogTimeout = 0;
+void watchdogSetTimeout(uint32_t timeout)
+{
+  watchdogTimeout = timeout;
+}
 #endif
 
 void per10ms()
@@ -231,6 +240,10 @@ void per10ms()
   g_tmr10ms++;
 
 #if defined(CPUARM)
+  if (watchdogTimeout) {
+    watchdogTimeout -= 1;
+    wdt_reset();  // Retrigger hardware watchdog
+  }
   Tenms |= 1 ;                    // 10 mS has passed
 #endif
 
@@ -1731,8 +1744,8 @@ void checkSwitches()
         swstate_t mask = (0x03 << (1+i*2));
         uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
         char c = "\300-\301"[(states & mask) >> (1+i*2)];
-        lcd_putcAtt(50+i*(2*FW+FW/2), 5*FH, 'A'+i, attr);
-        lcd_putcAtt(50+i*(2*FW+FW/2)+FW, 5*FH, c, attr);
+        lcd_putcAtt(60+i*(2*FW+FW/2), 5*FH, 'A'+i, attr);
+        lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 5*FH, c, attr);
       }
 #else
       uint8_t x = 2;
@@ -1780,26 +1793,43 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   lcd_clear();
 
 #if LCD_W >= 212
-  lcd_img(LCD_W-29, 0, asterisk_lbm, 0, 0);
-#endif
-#if !defined(CPUM64) || defined(EXTSTD)
+  lcd_bmp(0, 0, asterisk_lbm);
+  #define TITLE_LCD_OFFSET   60
+  #define MESSAGE_LCD_OFFSET 60
+#elif !defined(CPUM64) || defined(EXTSTD)
   lcd_img(2, 0, asterisk_lbm, 0, 0);
+  #define TITLE_LCD_OFFSET   6*FW
+  #define MESSAGE_LCD_OFFSET 0
 #else
   lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
+  #define TITLE_LCD_OFFSET   6*FW
+  #define MESSAGE_LCD_OFFSET 0
 #endif
+
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-  lcd_putsAtt(6*FW, 0, STR_WARNING, DBLSIZE);
-  lcd_putsAtt(6*FW, 2*FH, title, DBLSIZE);
+  lcd_putsAtt(TITLE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
+  lcd_putsAtt(TITLE_LCD_OFFSET, 2*FH, title, DBLSIZE);
 #else
-  lcd_putsAtt(6*FW, 0, title, DBLSIZE);
-  lcd_putsAtt(6*FW, 2*FH, STR_WARNING, DBLSIZE);
+  lcd_putsAtt(TITLE_LCD_OFFSET, 0, title, DBLSIZE);
+  lcd_putsAtt(TITLE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
 #endif
-  lcd_filled_rect(0, 0, LCD_W, 32);
+
+#if LCD_W >= 212
+  lcd_filled_rect(60, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
+  if (t) lcd_puts(MESSAGE_LCD_OFFSET, 5*FH, t);
+  if (last) {
+    lcd_puts(MESSAGE_LCD_OFFSET, 7*FH, last);
+    AUDIO_ERROR_MESSAGE(sound);
+  }
+#else
+  lcd_filled_rect(0, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
   if (t) lcd_putsLeft(5*FH, t);
   if (last) {
     lcd_putsLeft(7*FH, last);
     AUDIO_ERROR_MESSAGE(sound);
   }
+#endif
+
   lcdRefresh();
   lcdSetContrast();
   clearKeyEvents();
@@ -3626,6 +3656,15 @@ void perMain()
   }
 #endif
 
+#if defined(PCBTARANIS)
+  if (usbState == USB_DISCONNECTING) {
+    eeReadAll();
+    eeLoadModel(g_eeGeneral.currModel);
+    sdInit();
+    usbState = USB_DISCONNECTED;
+  }
+#endif
+
   lcd_clear();
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
@@ -4195,17 +4234,7 @@ void mixerTask(void * pdata)
       CoLeaveMutexSection(mixerMutex);
       if (tick10ms) checkTrims();
 
-#if defined(PCBTARANIS)
-      uint8_t heartbeatCheck = HEART_TIMER_10MS;
-      if (g_model.moduleData[0].rfProtocol != RF_PROTO_OFF)
-        heartbeatCheck |= HEART_TIMER_PULSES << 0;
-      if (g_model.externalModule != MODULE_TYPE_NONE)
-        heartbeatCheck |= HEART_TIMER_PULSES << 1;
-#else
-      uint8_t heartbeatCheck = HEART_TIMER_10MS + HEART_TIMER_PULSES;
-#endif
-
-      if ((heartbeat & heartbeatCheck) == heartbeatCheck) {
+      if (heartbeat == HEART_WDT_CHECK) {
         wdt_reset();
         heartbeat = 0;
       }
@@ -4399,7 +4428,7 @@ int main(void)
 
     perMain();
 
-    if (heartbeat == HEART_TIMER_PULSES+HEART_TIMER_10MS) {
+    if (heartbeat == HEART_WDT_CHECK) {
       wdt_reset();
       heartbeat = 0;
     }

@@ -52,6 +52,10 @@ void setupPulsesDsm2(uint8_t chns);
 void setupPulsesPXX(unsigned int port);
 void setupPulsesPPM(unsigned int port);
 
+#if defined(HUBSAN)
+void Hubsan_Init();
+#endif
+
 inline void startPulses()
 {
 #if defined(PCBTARANIS)
@@ -59,6 +63,10 @@ inline void startPulses()
   setupPulses(EXTERNAL_MODULE);
 #else
   setupPulses(0);
+#endif
+
+#if defined(HUBSAN)
+  Hubsan_Init();
 #endif
 }
 

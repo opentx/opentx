@@ -1072,7 +1072,7 @@ bitmaps/font.lbm: bitmaps/font.xbm bitmaps/font_extra.xbm bitmaps/font_tiny.xbm 
 	$(IMG2LBM) translations/font_dblsize_fr.xbm translations/font_dblsize_fr.lbm 10x14
 	$(IMG2LBM) translations/font_dblsize_es.xbm translations/font_dblsize_es.lbm 10x14
 
-bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_taranis.png bitmaps/logo_taranis.bmp bitmaps/icons.png bitmaps/asterisk.xbm bitmaps/about.png
+bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_taranis.png bitmaps/logo_taranis.bmp bitmaps/icons.png bitmaps/asterisk.xbm bitmaps/about.png bitmaps/asterisk_4bits.png
 	@echo
 	@echo "Convert bitmaps from xbm to lbm:"
 	$(IMG2LBM) bitmaps/sticks_4x1.xbm bitmaps/sticks.lbm img 4
@@ -1082,6 +1082,7 @@ bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_
 	$(IMG2LBM) bitmaps/icons.png bitmaps/icons.lbm bmp
 	$(IMG2LBM) bitmaps/asterisk.xbm bitmaps/asterisk.lbm img
 	$(IMG2LBM) bitmaps/about.png bitmaps/about.lbm bmp
+	$(IMG2LBM) bitmaps/asterisk_4bits.png bitmaps/asterisk_4bits.lbm bmp
 	 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on

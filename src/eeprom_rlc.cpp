@@ -911,6 +911,10 @@ void eeLoadModel(uint8_t id)
 {
   if (id<MAX_MODELS) {
 
+#if defined(CPUARM)
+    watchdogSetTimeout(500/*5s*/);
+#endif
+
 #if defined(SDCARD)
     closeLogs();
 #endif

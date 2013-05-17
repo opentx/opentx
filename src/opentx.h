@@ -405,6 +405,7 @@ enum EnumKeys {
   }
   typedef int8_t rotenc_t;
   typedef int16_t getvalue_t;
+  void watchdogSetTimeout(uint32_t timeout);
 #endif
 
 #include "eeprom_common.h"
@@ -667,6 +668,11 @@ enum CswFunctions {
 
 #define HEART_TIMER_10MS     1
 #define HEART_TIMER_PULSES   2 // when multiple modules this is the first one
+#if defined(PCBTARANIS)
+  #define HEART_WDT_CHECK      (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
+#else
+  #define HEART_WDT_CHECK      (HEART_TIMER_10MS + HEART_TIMER_PULSES)
+#endif
 extern uint8_t heartbeat;
 
 #define MAX_ALERT_TIME   60

@@ -37,9 +37,9 @@
 #include "opentx.h"
 
 #define delay_1us() _delay_us(1)
-void delay_1_5us(int ms)
+void delay_1_5us(uint16_t ms)
 {
-  for(int i=0; i<ms; i++) delay_1us();
+  for (uint16_t i=0; i<ms; i++) delay_1us();
 }
 
 void lcdSendCtl(uint8_t val)
@@ -69,6 +69,22 @@ volatile uint8_t LcdLock ;
 #define LCD_UNLOCK()
 #endif
 
+const static pm_uchar lcdInitSequence[] PROGMEM =
+{
+   0xe2, //Initialize the internal functions
+   0xae, //DON = 0: display OFF
+   0xa1, //ADC = 1: reverse direction(SEG132->SEG1)
+   0xA6, //REV = 0: non-reverse display
+   0xA4, //EON = 0: normal display. non-entire
+   0xA2, // Select LCD bias=0
+   0xC0, //SHL = 0: normal direction (COM1->COM64)
+   0x2F, //Control power circuit operation VC=VR=VF=1
+   0x25, //Select int resistance ratio R2 R1 R0 =5
+   0x81, //Set reference voltage Mode
+   0x22, // 24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
+   0xAF  //DON = 1: display ON
+};
+
 inline void lcdInit()
 {
   // /home/thus/txt/datasheets/lcd/KS0713.pdf
@@ -76,22 +92,14 @@ inline void lcdInit()
 
   LCD_LOCK();
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES);  //LCD_RES
+  // TODO delay_2us ?
   delay_1us();
-  delay_1us();//    f520  call  0xf4ce  delay_1us() ; 0x0xf4ce
+  delay_1us(); //    f520  call  0xf4ce  delay_1us() ; 0x0xf4ce
   PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES); //  f524  sbi 0x15, 2 IOADR-PORTC_LCD_CTRL; 21           1
   delay_1_5us(1500);
-  lcdSendCtl(0xe2); //Initialize the internal functions
-  lcdSendCtl(0xae); //DON = 0: display OFF
-  lcdSendCtl(0xa1); //ADC = 1: reverse direction(SEG132->SEG1)
-  lcdSendCtl(0xA6); //REV = 0: non-reverse display
-  lcdSendCtl(0xA4); //EON = 0: normal display. non-entire
-  lcdSendCtl(0xA2); // Select LCD bias=0
-  lcdSendCtl(0xC0); //SHL = 0: normal direction (COM1->COM64)
-  lcdSendCtl(0x2F); //Control power circuit operation VC=VR=VF=1
-  lcdSendCtl(0x25); //Select int resistance ratio R2 R1 R0 =5
-  lcdSendCtl(0x81); //Set reference voltage Mode
-  lcdSendCtl(0x22); // 24 SV5 SV4 SV3 SV2 SV1 SV0 = 0x18
-  lcdSendCtl(0xAF); //DON = 1: display ON
+  for (uint8_t i=0; i<12; i++) {
+    lcdSendCtl(pgm_read_byte(&lcdInitSequence[i]) ) ;
+  }
   g_eeGeneral.contrast = 0x22;
   LCD_UNLOCK();
 }

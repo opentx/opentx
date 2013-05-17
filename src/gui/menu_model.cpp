@@ -2323,9 +2323,9 @@ void menuModelCurveOne(uint8_t event)
       }
       break;
     case EVT_KEY_LONG(KEY_MENU):
-    pushMenu(menuChannelsView);
-    killEvents(event);
-    return;
+      pushMenu(menuChannelsView);
+      killEvents(event);
+      return;
   }
 
   DrawCurve(FW);
@@ -3023,6 +3023,14 @@ void onExpoMixMenu(const char *result)
 
 void menuModelExpoMix(uint8_t expo, uint8_t event)
 {
+#if defined(PCBTARANIS)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+    return;
+  }
+#endif
+
   uint8_t sub = m_posVert;
 
   if (s_editMode > 0)
@@ -3321,27 +3329,11 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
 void menuModelExposAll(uint8_t event)
 {
-#if defined(PCBTARANIS)
-  if (event == EVT_KEY_LONG(KEY_MENU)) {
-    pushMenu(menuChannelsView);
-    killEvents(event);
-    return;
-  }
-#endif
-	
   return menuModelExpoMix(1, event);
 }
 
 void menuModelMixAll(uint8_t event)
 {
-#if defined(PCBTARANIS)
-  if (event == EVT_KEY_LONG(KEY_MENU)) {
-    pushMenu(menuChannelsView);
-    killEvents(event);
-    return;
-  }
-#endif
-
   return menuModelExpoMix(0, event);
 }
 

@@ -207,7 +207,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
     Coproc_maxtemp = 28;
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
     temperature = 31;
     maxTemperature = 42;
 #endif

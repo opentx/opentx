@@ -68,11 +68,6 @@ extern "C" {
 #define JACK_PPM_IN()
 
 void configure_pins( uint32_t pins, uint16_t config );
-uint16_t getCurrent();
-
-extern uint8_t temperature ;              // Raw temp reading
-extern uint8_t maxTemperature ;           // Raw temp reading
-uint8_t getTemperature();
 
 #define strcpy_P strcpy
 #define strcat_P strcat
@@ -101,16 +96,18 @@ void delaysInit(void);
 void delay_01us(uint16_t nb);
 
 // SD driver
-#if !defined(SIMU)
-#define SD_IS_HC()              (1)
-#define SD_GET_SIZE_MB()        (0)
-#define SD_GET_BLOCKNR()        (0)
-#define SD_GET_SPEED()          (0)
-void sdInit();
-void sdPoll10ms();
-#define sdMountPoll()
-uint32_t sdMounted();
-#define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_Pin)
+#if defined(SIMU)
+  #define sdInit()
+#else
+  #define SD_IS_HC()              (1)
+  #define SD_GET_SIZE_MB()        (0)
+  #define SD_GET_BLOCKNR()        (0)
+  #define SD_GET_SPEED()          (0)
+  void sdInit();
+  void sdPoll10ms();
+  #define sdMountPoll()
+  uint32_t sdMounted();
+  #define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_Pin)
 #endif
 
 // Pulses driver
@@ -139,8 +136,8 @@ uint32_t readKeys();
 // WDT driver
 #if !defined(SIMU)
 #define wdt_disable()
-void watchdogInit();
-#define wdt_enable(x)   watchdogInit()
+void watchdogInit(unsigned int duration);
+#define wdt_enable(x)   watchdogInit(1500)
 #define wdt_reset()     IWDG->KR = 0xAAAA
 #endif
 
@@ -172,7 +169,12 @@ void pwrOff();
 
 // USB driver
 void usbInit(void);
-extern uint8_t usb_connected;
+enum UsbState {
+  USB_DISCONNECTED,
+  USB_CONNECTED,
+  USB_DISCONNECTING,
+};
+extern UsbState usbState;
 
 // EEPROM driver
 #if !defined(SIMU)
@@ -183,7 +185,7 @@ extern uint8_t usb_connected;
 #define eepromInit()
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #endif
-#define EEPROM_MASSSTORAGE()  (usb_connected)
+#define EEPROM_MASSSTORAGE()  usbPlugged()
 
 extern uint8_t currentTrainerMode;
 

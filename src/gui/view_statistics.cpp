@@ -145,7 +145,7 @@ void menuStatisticsDebug(uint8_t event)
   putsTime(17*FW+5*FWNUM+1, 2*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBSKY9X)
   lcd_putsLeft(3*FH, STR_CPU_TEMP);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_DEGREES, 0);
   putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
