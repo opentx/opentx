@@ -616,12 +616,18 @@ static int8_t SCSI_Verify10(uint8_t lun , uint8_t *params){
 */
 static int8_t SCSI_CheckAddressRange (uint8_t lun , uint32_t blk_offset , uint16_t blk_nbr)
 {
+  if (USBD_STORAGE_fops->GetCapacity(lun, &SCSI_blk_nbr, &SCSI_blk_size) != 0)
+  {
+    SCSI_SenseCode(lun, NOT_READY, MEDIUM_NOT_PRESENT);
+    return -1;
+  }
   
   if ((blk_offset + blk_nbr) > SCSI_blk_nbr )
   {
     SCSI_SenseCode(lun, ILLEGAL_REQUEST, ADDRESS_OUT_OF_RANGE);
     return -1;
   }
+
   return 0;
 }
 
