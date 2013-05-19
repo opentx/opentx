@@ -609,7 +609,7 @@
 #define TR_FAILSAFE            INDENT"Type failsafe"
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
 #define TR_COUNTRYCODE         "Zone g\200o."
-#define TR_VOICELANG           "Langue de la voix"
+#define TR_VOICELANG           TR("Langue voix","Langue annonces vocales")
 #define TR_UNITSSYSTEM         "Unit\200s"
 #define TR_EDIT                "Editer"
 #define TR_INSERT_BEFORE       "Ins\200rer avant"
@@ -622,7 +622,7 @@
 #define TR_RESET_TIMER2        "R\200initialiser Timer2"
 #define TR_RESET_TELEMETRY     "R\200init. T\200l\200mesure"
 #define TR_STATISTICS          "Statistiques"
-#define TR_ABOUT_US            "A propos d'openTx"
+#define TR_ABOUT_US            "A propos"
 #define TR_AND_SWITCH          "ET suppl."
 #define TR_CF                  "FS"
 #define TR_SPEAKER             INDENT"Haut-p."
