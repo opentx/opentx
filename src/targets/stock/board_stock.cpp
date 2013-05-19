@@ -121,7 +121,7 @@ inline void boardInit()
 #endif
 
 #if defined(AUDIO) || defined(VOICE)
-  TCCR2  = (0b010 << CS00); // Norm mode, clk/8
+  SET_TIMER_AUDIO_CTRL();
 #elif defined(PWM_BACKLIGHT)
   /** Smartieparts LED Backlight is connected to PORTB/pin7, which can be used as pwm output of timer2 **/
 #if defined(SP22)

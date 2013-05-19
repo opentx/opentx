@@ -3789,10 +3789,10 @@ uint16_t getTmr16KHz()
 
 #if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
 // Clocks every 128 uS
-ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
+ISR(TIMER_AUDIO_VECT, ISR_NOBLOCK)
 {
   cli();
-  TIMSK &= ~(1<<TOIE2) ; // stop reentrance
+  PAUSE_AUDIO_INTERRUPT(); // stop reentrance
   sei();
 
 #if defined(AUDIO)
@@ -3804,7 +3804,7 @@ ISR(TIMER2_OVF_vect, ISR_NOBLOCK)
 #endif
 
   cli();
-  TIMSK |= (1<<TOIE2) ;
+  RESUME_AUDIO_INTERRUPT();
   sei();
 }
 #endif
@@ -4204,15 +4204,10 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   backlightOn();
 
 #if defined(CPUARM)
-  start_ppm_capture();
-  // TODO inside startPulses?
-  s_pulses_paused = false;
-  // TODO startPulses should be started after the first doMixerCalculations()
+  init_trainer_capture();
 #endif
 
-#if !defined(CPUARM)
   doMixerCalculations();
-#endif
 
   startPulses();
 

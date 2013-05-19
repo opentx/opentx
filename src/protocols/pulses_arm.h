@@ -58,6 +58,8 @@ void Hubsan_Init();
 
 inline void startPulses()
 {
+  s_pulses_paused = false;
+
 #if defined(PCBTARANIS)
   setupPulses(INTERNAL_MODULE);
   setupPulses(EXTERNAL_MODULE);

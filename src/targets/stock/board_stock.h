@@ -76,6 +76,10 @@
   #define RESUME_10MS_INTERRUPT()  TIMSK2 |= (1<<OCIE2A)
   #define PAUSE_PPMIN_INTERRUPT()  TIMSK3 &= ~(1<<ICIE3)
   #define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
+  #define TIMER_AUDIO_VECT         TIMER4_OVF_vect
+  #define SET_TIMER_AUDIO_CTRL()   TCCR4B = (0b111 << CS20)
+  #define PAUSE_AUDIO_INTERRUPT()  TIMSK4 &= ~(1<<OCIE4A)
+  #define RESUME_AUDIO_INTERRUPT() TIMSK4 |= (1<<OCIE4A)
 #else
   #define TIMER_16KHZ_VECT         TIMER0_OVF_vect
   #define COUNTER_16KHZ            TCNT0
@@ -85,6 +89,10 @@
   #define RESUME_10MS_INTERRUPT()  TIMSK |= (1<<OCIE0)
   #define PAUSE_PPMIN_INTERRUPT()  ETIMSK &= ~(1<<TICIE3)
   #define RESUME_PPMIN_INTERRUPT() ETIMSK |= (1<<TICIE3)
+  #define TIMER_AUDIO_VECT         TIMER2_OVF_vect
+  #define SET_TIMER_AUDIO_CTRL()   TCCR2 = (0b010 << CS00) // Norm mode, clk/8
+  #define PAUSE_AUDIO_INTERRUPT()  TIMSK &= ~(1<<TOIE2)
+  #define RESUME_AUDIO_INTERRUPT() TIMSK |= (1<<TOIE2)
 #endif
 
 // Power driver (none)

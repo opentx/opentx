@@ -112,13 +112,9 @@ uint8_t usbPlugged(void)
 #if defined(DEBUG)
 void debugPutc(const char c)
 {
-	uartPutc(c);
+  uartPutc(c);
 }
 #endif
-
-void start_ppm_capture()
-{
-}
 
 #if !defined(SIMU)
 extern "C" {
@@ -202,7 +198,6 @@ void boardInit()
 #if defined(DEBUG)
   uartInit(DEBUG_UART_BAUDRATE);
 #endif
-  init_trainer_capture();  
   init5msTimer();
   __enable_irq();
   eepromInit();

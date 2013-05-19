@@ -126,7 +126,7 @@ inline void setup_switches()
 }
 
 #ifdef SIMU
-#define end_ppm_capture()
+#define stop_trainer_capture()
 #define rotencEnd()
 #define sam_boot()
 #else
@@ -329,13 +329,13 @@ extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
   lastCapt = capture;
 }
 
-void start_ppm_capture()
+void init_trainer_capture()
 {
   start_timer4() ;
   start_timer3() ;
 }
 
-void end_ppm_capture()
+void stop_trainer_capture()
 {
   TC1->TC_CHANNEL[0].TC_IDR = TC_IDR0_LDRAS ;
   NVIC_DisableIRQ(TC3_IRQn) ;
@@ -744,7 +744,7 @@ void usbBootloader()
   rotencEnd();
   endPdcUsartReceive() ;          // Terminate any serial reception
   end_bt_tx_interrupt() ;
-  end_ppm_capture() ;
+  stop_trainer_capture() ;
   end_spi() ;
   audioEnd() ;
 
