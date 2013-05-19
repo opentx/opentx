@@ -225,9 +225,18 @@
 #define TR_FUNCSOUNDS          "Pip1  ""Pip2  ""Pip3  ""Varn1 ""Varn2 ""F\200r   ""Ring  ""SciFi ""Robot ""F\200gel ""Tada  ""Syrsa ""Siren ""Alarm ""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS         "\004"
+#if defined(PCBTARANIS)
+  #define TR_RSSI_0            "SWR\0"
+  #define TR_RSSI_1            "RSSI"
+#else
+  #define TR_RSSI_0            "Tx\0 "
+  #define TR_RSSI_1            "Rx\0 "
+#endif
 #define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""H\202jd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VFrt""A1-\0""A2-\0""Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+""Cur+""Acc\0""Tid\0"
 
 #if defined(CPUARM)
+  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
+  #define TR_VUNITSSYSTEM      TR("MetricImper.", "Metric\0 Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -331,6 +340,11 @@
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "AV ""ABS""GAs""GA%""GAt"
+
+#if defined (PCBTARANIS)
+  #define LEN_VTRAINERMODES      "\006"
+  #define TR_VTRAINERMODES       "MasterSlave\0"
+#endif
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -582,7 +596,7 @@
 #define TR_SD_SPEED            "Hastighet:"
 #define TR_SD_SECTORS          "Sektorer:"
 #define TR_SD_SIZE             "Strl:"
-#define TR_TYPE          "Typ "
+#define TR_TYPE                "Typ "
 #define TR_GLOBAL_VARS         "Globala Variabler"
 #define TR_OWN                 "Egen"
 #define TR_DATE                "Datum"
@@ -593,3 +607,7 @@
 #define TR_FAILSAFE            "Failsafe-l\201ge"
 #define TR_FAILSAFESET         "FailsafeInst\201llning"
 #define TR_COUNTRYCODE         "Landskod"
+#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#define TR_MODELIDUSED         "Model ID already used"
+#define TR_VOICELANG           "Voice Language"
+#define TR_UNITSSYSTEM         "Units"

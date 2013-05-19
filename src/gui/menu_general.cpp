@@ -507,7 +507,7 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(CPUARM)
       case ITEM_SETUP_LANGUAGE:
-        lcd_putsLeft(y, PSTR("Voice Language"));
+        lcd_putsLeft(y, STR_VOICELANG);
         lcd_putsAtt(RADIO_SETUP_2ND_COLUMN, y, currentLanguagePack->name, attr);
         if (attr) {
           currentLanguagePackIdx = checkIncDec(event, currentLanguagePackIdx, 0, DIM(languagePacks)-2, EE_GENERAL);

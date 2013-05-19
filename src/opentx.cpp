@@ -428,7 +428,7 @@ void checkModelIdUnique(uint8_t id)
 {
   for (uint8_t i=0; i<MAX_MODELS; i++) {
     if (i!=id && g_model.header.modelId!=0 && g_model.header.modelId==modelHeaders[i].modelId) {
-      POPUP_WARNING(PSTR("Model ID already used"));
+      POPUP_WARNING(STR_MODELIDUSED);
     }
   }
 }

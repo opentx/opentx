@@ -168,6 +168,6 @@ I18N_PLAY_FUNCTION(en, playDuration, int16_t seconds)
   }
 }
 
-LANGUAGE_PACK_DECLARE_DEFAULT(en, "english");
+LANGUAGE_PACK_DECLARE_DEFAULT(en, "English");
 
 #endif

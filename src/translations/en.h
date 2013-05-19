@@ -235,6 +235,8 @@
 #define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
 
 #if defined(CPUARM)
+  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
+  #define TR_VUNITSSYSTEM      TR("MetricImper.", "Metric\0 Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -338,6 +340,11 @@
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ABS""THs""TH%""THt"
+
+#if defined (PCBTARANIS)
+  #define LEN_VTRAINERMODES      "\006"
+  #define TR_VTRAINERMODES       "MasterSlave\0"
+#endif
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -600,3 +607,7 @@
 #define TR_FAILSAFE            INDENT "Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
 #define TR_COUNTRYCODE         "Country Code"
+#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#define TR_MODELIDUSED         "Model ID already used"
+#define TR_VOICELANG           "Voice Language"
+#define TR_UNITSSYSTEM         "Units"

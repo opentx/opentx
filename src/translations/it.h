@@ -19,6 +19,21 @@
  * GNU General Public License for more details.
  *
  */
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"
 #define TR_OFFON         "OFF""ON\0"
@@ -210,9 +225,18 @@
 #define TR_FUNCSOUNDS    "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS   "\004"
+#if defined(PCBTARANIS)
+  #define TR_RSSI_0            "SWR\0"
+  #define TR_RSSI_1            "RSSI"
+#else
+  #define TR_RSSI_0            "Tx\0 "
+  #define TR_RSSI_1            "Rx\0 "
+#endif
 #define TR_VTELEMCHNS    "---\0""Batt""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vel\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsm""Powr""AccX""AccY""AccZ""Dir\0""VelV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vel+""Dst+""Cur+""Acc\0""Time"
 
 #if defined(CPUARM)
+  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
+  #define TR_VUNITSSYSTEM      TR("MetricImper.", "Metric\0 Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -316,6 +340,11 @@
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
+
+#if defined (PCBTARANIS)
+  #define LEN_VTRAINERMODES      "\006"
+  #define TR_VTRAINERMODES       "MasterSlave\0"
+#endif
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -430,13 +459,7 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-
-#if defined(PCBTARANIS)
-  #define TR_MENUTOSTART       CENTER"\006[ENTER] per Cal."
-#else
-  #define TR_MENUTOSTART       CENTER"\006[Men\200] per Cal."
-#endif
-
+#define TR_MENUTOSTART         CENTER"\006" TR_ENTER " per Cal."
 #define TR_SETMIDPOINT         CENTER"\011SETTA CENTRO"
 #define TR_MOVESTICKSPOTS      CENTER"\006MUOVI STICK/POT"
 #define TR_RXBATT              "Rx Batt:"
@@ -573,7 +596,7 @@
 #define TR_SD_SPEED            "Veloc.:"
 #define TR_SD_SECTORS          "Settori:"
 #define TR_SD_SIZE             "Dimens:"
-#define TR_TYPE          "Tipo"
+#define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Variabili Globali"
 #define TR_OWN                 "Own"
 #define TR_DATE                "Date"
@@ -584,3 +607,7 @@
 #define TR_FAILSAFE            "Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
 #define TR_COUNTRYCODE         "Country Code"
+#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#define TR_MODELIDUSED         "Model ID already used"
+#define TR_VOICELANG           "Voice Language"
+#define TR_UNITSSYSTEM         "Units"

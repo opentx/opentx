@@ -22,6 +22,18 @@
  *
  */
 
+
+
+
+
+
+
+
+
+
+
+
+
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "AUS""EIN"
@@ -213,9 +225,18 @@
 #define TR_FUNCSOUNDS          "Piep1\0""Piep2\0""Piep3\0""Warn1\0""Warn2\0""Cheep\0""Ring\0 ""SciFi\0""Robot\0""Chirp\0""Tada\0 ""Crickt""Siren\0""AlmClk""Ratata""Tick\0 "
 
 #define LEN_VTELEMCHNS         "\004"
+#if defined(PCBTARANIS)
+  #define TR_RSSI_0            "SWR\0"
+  #define TR_RSSI_1            "RSSI"
+#else
+  #define TR_RSSI_0            "Tx\0 "
+  #define TR_RSSI_1            "Rx\0 "
+#endif
 #define TR_VTELEMCHNS          "---\0""Batt""Uhr1""Uhr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""H\203he""Umdr""Stof""T1\0 ""T2\0 ""Gesc""Dist""GH\203h""Zell""Zels""Vfas""Strm""Verb""Leis""BesX""BesY""BesZ""Rich""VGes""A1-\0""A2-\0""H\203h-""H\203h+""Umd+""T1+\0""T2+\0""Ges+""Dst+""Str+""Besc""Zeit"
 
 #if defined(CPUARM)
+  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
+  #define TR_VUNITSSYSTEM      TR("MetricImper.", "Metric\0 Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -319,6 +340,11 @@
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "AUS""ABS""GSs""GS%""GSt"
+
+#if defined (PCBTARANIS)
+  #define LEN_VTRAINERMODES      "\006"
+  #define TR_VTRAINERMODES       "MasterSlave\0"
+#endif
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -570,7 +596,7 @@
 #define TR_SD_SPEED            "Geschw:"
 #define TR_SD_SECTORS          "Sektoren:"
 #define TR_SD_SIZE             "Gr\203\206e:"
-#define TR_TYPE          "Typ"
+#define TR_TYPE                "Typ"
 #define TR_GLOBAL_VARS         "Globale Variablen"
 #define TR_OWN                 "Eigen"
 #define TR_DATE                "Datum:"
@@ -581,4 +607,7 @@
 #define TR_FAILSAFE            "Failsafe Mode"
 #define TR_FAILSAFESET         "Failsafe Einst."
 #define TR_COUNTRYCODE         "L\201nder Code"
-
+#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#define TR_MODELIDUSED         "Model ID already used"
+#define TR_VOICELANG           "Voice Language"
+#define TR_UNITSSYSTEM         "Units"

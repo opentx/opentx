@@ -20,6 +20,20 @@
  *
  */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "VYP""ZAP"
@@ -211,9 +225,18 @@
 #define TR_FUNCSOUNDS          "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""Siren ""AlmClk""Ratata""Tick  "
 
 #define LEN_VTELEMCHNS         "\004"
+#if defined(PCBTARANIS)
+  #define TR_RSSI_0            "SWR\0"
+  #define TR_RSSI_1            "RSSI"
+#else
+  #define TR_RSSI_0            "Tx\0 "
+  #define TR_RSSI_1            "Rx\0 "
+#endif
 #define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Time"
 
 #if defined(CPUARM)
+  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
+  #define TR_VUNITSSYSTEM      TR("MetricImper.", "Metric\0 Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -317,6 +340,11 @@
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "VYP""ABS""THs""TH%""THt"
+
+#if defined (PCBTARANIS)
+  #define LEN_VTRAINERMODES      "\006"
+  #define TR_VTRAINERMODES       "MasterSlave\0"
+#endif
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -484,8 +512,13 @@
 #define TR_MENUFLIGHTPHASES    "LETOV\220 RE\217IMY"
 #define TR_MENUHELISETUP       "HELI"
 
+
+// Alignment
+
+
 #define TR_MENUDREXPO          "DR/EXPO"
 #define TR_MENULIMITS          "LIMITY"
+
 
 #define TR_MENUCURVES          "K\215IVKY"
 #define TR_MENUCURVE           "\002k"
@@ -563,7 +596,7 @@
 #define TR_SD_SPEED            "Rychlost:"
 #define TR_SD_SECTORS          "Sektor\211 :"
 #define TR_SD_SIZE             "Velikost:"
-#define TR_TYPE          TR_SD_TYPE
+#define TR_TYPE                TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Glob\200ln\204 prom\203nn\202"
 #define TR_OWN                 " \043 "
 #define TR_DATE                "Datum"
@@ -574,3 +607,7 @@
 #define TR_FAILSAFE            "M\205d Failsafe"
 #define TR_FAILSAFESET         "NASTAVEN\214 FAILSAFE"
 #define TR_COUNTRYCODE         "K\205d regionu"
+#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#define TR_MODELIDUSED         "Model ID already used"
+#define TR_VOICELANG           "Voice Language"
+#define TR_UNITSSYSTEM         "Units"

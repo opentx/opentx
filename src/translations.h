@@ -145,18 +145,25 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_DATETIME           (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #if defined(PCBGRUVIN9X) || defined(CPUARM)
   #define OFS_VLCD             (OFS_DATETIME + sizeof(TR_DATETIME))
+  #define OFS_VUNITSSYSTEM     (OFS_VLCD + sizeof(TR_VLCD))
 #else
   #define OFS_VLCD             (OFS_DATETIME)
+  #define OFS_VUNITSSYSTEM     (OFS_DATETIME)
 #endif
 #if defined(CPUARM)
-  #define OFS_COUNTRYCODES     (OFS_VLCD + sizeof(TR_VLCD))
+  #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
 #else
-  #define OFS_COUNTRYCODES     (OFS_VLCD)
+  #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM)
 #endif
 #if defined(PXX)
-  #define OFS_SPARE            (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
+  #define OFS_VTRAINERMODES    (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
 #else
-  #define OFS_SPARE            (OFS_COUNTRYCODES)
+  #define OFS_VTRAINERMODES    (OFS_COUNTRYCODES)
+#endif
+#if defined(PCBTARANIS)
+  #define OFS_SPARE            (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
+#else
+  #define OFS_SPARE            (OFS_VTRAINERMODES)
 #endif
 
 #define STR_OFFON              (STR_OPEN9X + OFS_OFFON)
@@ -228,10 +235,15 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(CPUARM)
   #define STR_VLCD             (STR_OPEN9X + OFS_VLCD)
+  #define STR_VUNITSSYSTEM     (STR_OPEN9X + OFS_VUNITSSYSTEM)
 #endif
 
 #if defined(PXX)
   #define STR_COUNTRYCODES     (STR_OPEN9X + OFS_COUNTRYCODES)
+#endif
+
+#if defined(PCBTARANIS)
+  #define STR_VTRAINERMODES    (STR_OPEN9X + OFS_VTRAINERMODES)
 #endif
 
 // The 0-terminated-strings
@@ -451,7 +463,7 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_CURRENT_CALIB[];
   #define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
   extern const pm_char STR_UNITSSYSTEM[];
-  extern const pm_char STR_VUNITSSYSTEM[];
+  extern const pm_char STR_VOICELANG[];
 #else
   #define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
 #endif
@@ -602,6 +614,8 @@ extern const pm_char STR_CHANNELS_MONITOR[];
   extern const pm_char STR_MODULE_RANGE[];
   extern const pm_char STR_SET[];
   extern const pm_char STR_TRAINER[];
+  extern const pm_char STR_ANTENNAPROBLEM[];
+  extern const pm_char STR_MODELIDUSED[];
 #endif
 
 // TODO move to translations files

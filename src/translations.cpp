@@ -99,9 +99,13 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #endif
 #if defined(CPUARM)
     ISTR(VLCD)
+    ISTR(VUNITSSYSTEM)
 #endif
 #if defined(PXX)
     ISTR(COUNTRYCODES)
+#endif
+#if defined(PCBTARANIS)
+    ISTR(VTRAINERMODES)
 #endif
     ;
 
@@ -336,8 +340,8 @@ const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
 
 #if defined(CPUARM)
 const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
-const pm_char STR_UNITSSYSTEM[]   PROGMEM = "Units";
-const pm_char STR_VUNITSSYSTEM[]  PROGMEM = TR("\006MetricImper.", "\010Metric\0 Imperial"); // TODO move it to non-zero terminated strings
+const pm_char STR_UNITSSYSTEM[]   PROGMEM = TR_UNITSSYSTEM;
+const pm_char STR_VOICELANG[] PROGMEM = TR_VOICELANG;
 #endif
 
 #if defined(NAVIGATION_MENUS)
@@ -444,6 +448,8 @@ const pm_char STR_MODULE_BIND[] PROGMEM  = "[Bind]";
 const pm_char STR_MODULE_RANGE[] PROGMEM = "[Range]";
 const pm_char STR_SET[] PROGMEM = "[Set]";
 const pm_char STR_TRAINER[] PROGMEM = "Trainer";
+const pm_char STR_ANTENNAPROBLEM[] PROGMEM = TR_ANTENNAPROBLEM;
+const pm_char STR_MODELIDUSED[] PROGMEM = TR_MODELIDUSED;
 #endif
 
 const pm_uchar font_5x7[] PROGMEM = {

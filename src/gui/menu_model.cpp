@@ -1343,7 +1343,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TRAINER_MODE:
-        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, PSTR("\006MasterSlave"), g_model.trainerMode, 0, 1, attr, event);
+        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, STR_VTRAINERMODES, g_model.trainerMode, 0, 1, attr, event);
         break;
 
 #else

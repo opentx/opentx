@@ -225,9 +225,18 @@
 #define TR_FUNCSOUNDS          "Beep1 ""Beep2 ""Beep3 ""Aviso1""Aviso2""Cheep ""Ring  ""SciFi ""Robot ""Gorjeo""Tada  ""Crickt""Sirena""Alarma""Ratata""Tictac"
 
 #define LEN_VTELEMCHNS         "\004"
+#if defined(PCBTARANIS)
+  #define TR_RSSI_0            "SWR\0"
+  #define TR_RSSI_1            "RSSI"
+#else
+  #define TR_RSSI_0            "Tx\0 "
+  #define TR_RSSI_1            "Rx\0 "
+#endif
 #define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Acc\0""Hora"
 
 #if defined(CPUARM)
+  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
+  #define TR_VUNITSSYSTEM      TR("MetricImper.", "Metric\0 Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -332,6 +341,11 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ABS""THs""TH%""THt"
 
+#if defined (PCBTARANIS)
+  #define LEN_VTRAINERMODES      "\006"
+  #define TR_VTRAINERMODES       "MasterSlave\0"
+#endif
+
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
 #define LEN_INDENT             1
@@ -359,7 +373,7 @@
 #define TR_EXPONAME            "Nom. Expo"
 #define TR_BITMAP              "Imagen Modelo"
 #define TR_TIMER               TR("Reloj","Reloj ")
-#define TR_ELIMITS             TR("E.Limite,"Ampliar Limites")
+#define TR_ELIMITS             TR("E.Limite","Ampliar Limites")
 #define TR_ETRIMS              TR("E.Trims","Ampliar Trims")
 #define TR_TRIMINC             "Paso Trim"
 #define TR_TTRACE              TR("T-Fuente","Fuente Acelerad")
@@ -558,7 +572,7 @@
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
 #define TR_DURATION            "Duracion"
-#define TR_DELAY               "Atraso
+#define TR_DELAY               "Atraso"
 #define TR_SD_CARD             "SD CARD"
 #define TR_SDHC_CARD           "SD-HC CARD"
 #define TR_NO_SOUNDS_ON_SD     "Sin sonidos en SD"
@@ -582,7 +596,7 @@
 #define TR_SD_SPEED            "Velocidad:"
 #define TR_SD_SECTORS          "Sectores:"
 #define TR_SD_SIZE             "Talla:"
-#define TR_TYPE          "Tipo"
+#define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_OWN                 "Propio"
 #define TR_DATE                "Fecha"
@@ -593,3 +607,7 @@
 #define TR_FAILSAFE            INDENT"Modo sgdad."
 #define TR_FAILSAFESET         "AJUSTES SGDAD."
 #define TR_COUNTRYCODE         "Codigo Pais"
+#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#define TR_MODELIDUSED         "Model ID already used"
+#define TR_VOICELANG           "Voice Language"
+#define TR_UNITSSYSTEM         "Units"

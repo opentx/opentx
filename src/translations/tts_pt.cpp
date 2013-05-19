@@ -212,6 +212,6 @@ I18N_PLAY_FUNCTION(pt, playDuration, int16_t seconds)
   }
 }
 
-LANGUAGE_PACK_DECLARE(pt, "portuguese");
+LANGUAGE_PACK_DECLARE(pt, "Portuguese");
 
 #endif

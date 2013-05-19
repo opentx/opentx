@@ -51,20 +51,15 @@ enum FrskyViews {
 
 static uint8_t s_frsky_view = e_frsky_custom_screen_1;
 
-#if LCD_W >= 212
+#if defined(PCBTARANIS)
 void displayRssiLine()
 {
   if (TELEMETRY_STREAMING()) {
     lcd_hline(0, 55, 212, 0); // separator
-    uint8_t rssi = min((uint8_t)99, frskyData.rssi[1].value);
-    lcd_putsLeft(7*FH+1, STR_TX); lcd_outdezNAtt(4*FW, 7*FH+1, rssi, LEADING0, 2);
+    uint8_t rssi = min((uint8_t)99, frskyData.rssi[0].value);
+    lcd_putsLeft(7*FH+1, STR_RX); lcd_outdezNAtt(4*FW, 7*FH+1, rssi, LEADING0, 2);
     lcd_rect(25, 57, 78, 7);
     lcd_filled_rect(26, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
-    rssi = min((uint8_t)99, frskyData.rssi[0].value);
-    lcd_puts(190, 7*FH+1, STR_RX); lcd_outdezNAtt(189+4*FW-1, 7*FH+1, rssi, LEADING0, 2);
-    lcd_rect(110, 57, 78, 7);
-    uint8_t v = 19*rssi/25;
-    lcd_filled_rect(111+76-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
     lcd_putsAtt(7*FW, 7*FH+1, STR_NODATA, BLINK);

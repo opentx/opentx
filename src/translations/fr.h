@@ -225,9 +225,18 @@
 #define TR_FUNCSOUNDS    "Beep1\0""Beep2\0""Beep3\0""Warn1\0""Warn2\0""Cheep\0""Ring\0 ""SciFi\0""Robot\0""Chirp\0""Tada\0 ""Crickt""Siren\0""AlmClk""Ratata""Tick\0 "
 
 #define LEN_VTELEMCHNS   "\004"
+#if defined(PCBTARANIS)
+  #define TR_RSSI_0            "SWR\0"
+  #define TR_RSSI_1            "RSSI"
+#else
+  #define TR_RSSI_0            "Tx\0 "
+  #define TR_RSSI_1            "Rx\0 "
+#endif
 #define TR_VTELEMCHNS    "---\0""Batt""Chr1""Chr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Velm""Vfas""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Cur+""Acc\0""Time"
 
 #if defined(CPUARM)
+  #define LEN_VUNITSSYSTEM     TR("\006", "\012")
+  #define TR_VUNITSSYSTEM      TR("M\200tr.\0Imp\200r.", "M\200triques\0Imp\200riales")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -331,6 +340,11 @@
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
+
+#if defined (PCBTARANIS)
+  #define LEN_VTRAINERMODES      "\006"
+  #define TR_VTRAINERMODES       "MaitreEl\201ve\0"
+#endif
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -445,13 +459,7 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-
-#if defined(PCBTARANIS)
-  #define TR_MENUTOSTART       CENTER"\005[ENTER] POUR DEBUT"
-#else
-  #define TR_MENUTOSTART       CENTER"\006[MENU] POUR DEBUT"
-#endif
-
+#define TR_MENUTOSTART         CENTER"\006" TR_ENTER " POUR DEBUT"
 #define TR_SETMIDPOINT         CENTER"\010REGLER NEUTRES"
 #define TR_MOVESTICKSPOTS      CENTER"\004BOUGER STICKS/POTS"
 #define TR_RXBATT              "Batt.RX"
@@ -588,7 +596,7 @@
 #define TR_SD_SPEED            "Vitesse:"
 #define TR_SD_SECTORS          "Secteurs:"
 #define TR_SD_SIZE             "Taille:"
-#define TR_TYPE          "Type"
+#define TR_TYPE                "Type"
 #define TR_GLOBAL_VARS         "Variables Globales"
 #define TR_OWN                 "Pers"
 #define TR_DATE                "Date"
@@ -599,3 +607,7 @@
 #define TR_FAILSAFE            "Type failsafe"
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
 #define TR_COUNTRYCODE         "Zone g\200o."
+#define TR_ANTENNAPROBLEM      CENTER "Antenne radio d\200fectueuse!"
+#define TR_MODELIDUSED         "No de modèle d\200j\202 utilis\200"
+#define TR_VOICELANG           "Langue de la voix"
+#define TR_UNITSSYSTEM         "Unit\200s"

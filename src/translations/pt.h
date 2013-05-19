@@ -1,3 +1,39 @@
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Padding for row alignment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+
+
+
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"
 #define TR_OFFON         "OFF""ON\0"
@@ -189,9 +225,18 @@
 #define TR_FUNCSOUNDS    "Beep1 ""Beep2 ""Beep3 ""Avis1 ""Avis2 ""Pio  ""Ring  ""SciFi ""Robot ""Gorjeo""Tada  ""Crickt""Sirene""Alarme""Ratata""Tictac"
 
 #define LEN_VTELEMCHNS   "\004"
+#if defined(PCBTARANIS)
+  #define TR_RSSI_0            "SWR\0"
+  #define TR_RSSI_1            "RSSI"
+#else
+  #define TR_RSSI_0            "Tx\0 "
+  #define TR_RSSI_1            "Rx\0 "
+#endif
 #define TR_VTELEMCHNS    "---\0""Batt""Tmr1""Tmr2""Tx\0 ""Rx\0 ""A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VVel""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vel+""Dst+""Cur+""Acc\0""Hora"
 
 #if defined(CPUARM)
+  #define LEN_VUNITSSYSTEM     TR("\006", "\010")
+  #define TR_VUNITSSYSTEM      TR("MetricImper.", "Metric\0 Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -295,6 +340,11 @@
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""MTs""MT%""MTt"
+
+#if defined (PCBTARANIS)
+  #define LEN_VTRAINERMODES      "\006"
+  #define TR_VTRAINERMODES       "MasterSlave\0"
+#endif
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -409,13 +459,7 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-
-#if defined(PCBTARANIS)
-  #define TR_MENUTOSTART       CENTER"\006[ENTER] INICIAR"
-#else
-  #define TR_MENUTOSTART       CENTER"\006[MENU] INICIAR"
-#endif
-
+#define TR_MENUTOSTART         CENTER"\006" TR_ENTER " INICIAR"
 #define TR_SETMIDPOINT         CENTER"\005CENTRAR STICK/POT"
 #define TR_MOVESTICKSPOTS      CENTER"\005MOVER STICKS/POTs"
 #define TR_RXBATT              "Rx Batt:"
@@ -552,7 +596,7 @@
 #define TR_SD_SPEED            "Velocidade"
 #define TR_SD_SECTORS          "Sectores"
 #define TR_SD_SIZE             "Tamanho"
-#define TR_TYPE          "Type"
+#define TR_TYPE                "Tipe"
 #define TR_GLOBAL_VARS         "Variaveis"
 #define TR_OWN                 "Propr."
 #define TR_DATE                "Data"
@@ -563,3 +607,7 @@
 #define TR_FAILSAFE            "Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
 #define TR_COUNTRYCODE         "Country Code"
+#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#define TR_MODELIDUSED         "Model ID already used"
+#define TR_VOICELANG           "Voice Language"
+#define TR_UNITSSYSTEM         "Units"

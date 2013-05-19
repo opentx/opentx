@@ -193,6 +193,6 @@ I18N_PLAY_FUNCTION(de, playDuration, int16_t seconds)
   }
 }
 
-LANGUAGE_PACK_DECLARE(de, "german");
+LANGUAGE_PACK_DECLARE(de, "German");
 
 #endif

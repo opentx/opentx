@@ -250,6 +250,6 @@ I18N_PLAY_FUNCTION(sk, playDuration, int16_t seconds)
   }
 }
 
-LANGUAGE_PACK_DECLARE(sk, "slovak");
+LANGUAGE_PACK_DECLARE(sk, "Slovak");
 
 #endif

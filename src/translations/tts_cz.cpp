@@ -234,6 +234,6 @@ I18N_PLAY_FUNCTION(cz, playDuration, int16_t seconds)
   }
 }
 
-LANGUAGE_PACK_DECLARE(cz, "czech");
+LANGUAGE_PACK_DECLARE(cz, "Czech");
 
 #endif
