@@ -2702,7 +2702,7 @@ void menuModelExpoOne(uint8_t event)
           if (attr) {
             CHECK_INCDEC_MODELVAR_ZERO(event, ed->curveParam, CURVE_BASE+MAX_CURVES-1);
             if (ed->curveParam) ed->curveMode = MODE_CURVE;
-            if (ed->curveParam>=CURVE_BASE && event==EVT_KEY_FIRST(KEY_MENU)) {
+            if (ed->curveParam>=CURVE_BASE && event==EVT_KEY_LONG(KEY_ENTER)) {
               s_curveChan = ed->curveParam - CURVE_BASE;
               pushMenu(menuModelCurveOne);
             }
@@ -2876,7 +2876,7 @@ void menuModelMixOne(uint8_t event)
         if (md2->curveMode == MODE_CURVE) {
           putsCurve(COLUMN_X+MIXES_2ND_COLUMN, y, curveParam, attr);
           if (attr) {
-            if (event==EVT_KEY_FIRST(KEY_MENU) && (curveParam<0 || curveParam>=CURVE_BASE)){
+            if (event==EVT_KEY_LONG(KEY_ENTER) && (curveParam<0 || curveParam>=CURVE_BASE)){
               s_curveChan = (curveParam<0 ? -curveParam-1 : curveParam-CURVE_BASE);
               pushMenu(menuModelCurveOne);
             }
@@ -2953,9 +2953,9 @@ static uint8_t s_copySrcCh;
 
 #if LCD_W >= 212
 #define EXPO_LINE_WEIGHT_POS 7*FW
-#define EXPO_LINE_EXPO_POS   10*FW
+#define EXPO_LINE_EXPO_POS   12*FW
 #define EXPO_LINE_SWITCH_POS 13*FW+4
-#define EXPO_LINE_SIDE_POS   20*FW
+#define EXPO_LINE_SIDE_POS   19*FW
 #define EXPO_LINE_SELECT_POS 18
 #elif defined(TRANSLATIONS_CZ)
 #define EXPO_LINE_WEIGHT_POS 7*FW-2
