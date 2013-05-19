@@ -145,8 +145,8 @@ const pm_char STR_COLDIRECTION[] PROGMEM = TR_COLDIRECTION;
 #endif
 const pm_char STR_MODE[] PROGMEM = TR_MODE;
 #if defined(AUDIO) && defined(BUZZER)
-const pm_char STR_SPEAKER[] PROGMEM = INDENT"Speaker";
-const pm_char STR_BUZZER[] PROGMEM = INDENT"Buzzer";
+const pm_char STR_SPEAKER[] PROGMEM = TR_SPEAKER;
+const pm_char STR_BUZZER[] PROGMEM = TR_BUZZER;
 #endif
 const pm_char STR_NOFREEEXPO[] PROGMEM = TR_NOFREEEXPO;
 const pm_char STR_NOFREEMIXER[] PROGMEM = TR_NOFREEMIXER;
@@ -301,7 +301,7 @@ const pm_char STR_MENUTEMPLATES[] PROGMEM = TR_MENUTEMPLATES;
 
 const pm_char STR_MENUSTAT[] PROGMEM = TR_MENUSTAT;
 const pm_char STR_MENUDEBUG[] PROGMEM = TR_MENUDEBUG;
-const pm_char STR_MENUGLOBALVARS[] PROGMEM = "GLOBAL VARIABLES";
+const pm_char STR_MENUGLOBALVARS[] PROGMEM = TR_MENUGLOBALVARS;
 
 #if defined(DSM2) || defined(PXX)
 const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
@@ -318,8 +318,8 @@ const pm_char STR_FAILSAFESET[] PROGMEM = TR_FAILSAFESET;
 #endif
 
 const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
-const pm_char STR_AND_SWITCH[] PROGMEM = "AND Switch";
-extern const pm_char STR_CF[] PROGMEM = "CF";
+const pm_char STR_AND_SWITCH[] PROGMEM = TR_AND_SWITCH;
+extern const pm_char STR_CF[] PROGMEM = TR_CF;
 
 #if defined(FRSKY_HUB)
 const pm_char STR_MINRSSI[] PROGMEM = TR_MINRSSI;
@@ -342,6 +342,7 @@ const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
 const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
 const pm_char STR_UNITSSYSTEM[]   PROGMEM = TR_UNITSSYSTEM;
 const pm_char STR_VOICELANG[] PROGMEM = TR_VOICELANG;
+const pm_char STR_MODELIDUSED[] PROGMEM = TR_MODELIDUSED;
 #endif
 
 #if defined(NAVIGATION_MENUS)
@@ -350,21 +351,21 @@ const pm_char STR_CREATE_MODEL[] PROGMEM = TR_CREATE_MODEL;
 const pm_char STR_COPY_MODEL[] PROGMEM = TR_COPY_MODEL;
 const pm_char STR_MOVE_MODEL[] PROGMEM = TR_MOVE_MODEL;
 const pm_char STR_DELETE_MODEL[] PROGMEM = TR_DELETE_MODEL;
-const pm_char STR_EDIT[] PROGMEM = "Edit";
-const pm_char STR_INSERT_BEFORE[] PROGMEM = "Insert Before";
-const pm_char STR_INSERT_AFTER[] PROGMEM = "Insert After";
-const pm_char STR_COPY[] PROGMEM = "Copy";
-const pm_char STR_MOVE[] PROGMEM = "Move";
-const pm_char STR_DELETE[] PROGMEM = "Delete";
-const pm_char STR_RESET_FLIGHT[] PROGMEM = "Reset Flight";
-const pm_char STR_RESET_TIMER1[] PROGMEM = "Reset Timer1";
-const pm_char STR_RESET_TIMER2[] PROGMEM = "Reset Timer2";
-const pm_char STR_RESET_TELEMETRY[] PROGMEM = "Reset Telemetry";
-const pm_char STR_STATISTICS[] PROGMEM = "Statistics";
-const pm_char STR_ABOUT_US[] PROGMEM = "About Us";
+const pm_char STR_EDIT[] PROGMEM = TR_EDIT;
+const pm_char STR_INSERT_BEFORE[] PROGMEM = TR_INSERT_BEFORE;
+const pm_char STR_INSERT_AFTER[] PROGMEM = TR_INSERT_AFTER;
+const pm_char STR_COPY[] PROGMEM = TR_COPY;
+const pm_char STR_MOVE[] PROGMEM = TR_MOVE;
+const pm_char STR_DELETE[] PROGMEM = TR_DELETE;
+const pm_char STR_RESET_FLIGHT[] PROGMEM = TR_RESET_FLIGHT;
+const pm_char STR_RESET_TIMER1[] PROGMEM = TR_RESET_TIMER1;
+const pm_char STR_RESET_TIMER2[] PROGMEM = TR_RESET_TIMER2;
+const pm_char STR_RESET_TELEMETRY[] PROGMEM = TR_RESET_TELEMETRY;
+const pm_char STR_STATISTICS[] PROGMEM = TR_STATISTICS;
+const pm_char STR_ABOUT_US[] PROGMEM = TR_ABOUT_US;
 #endif
 
-const pm_char STR_RESET[] PROGMEM = "[Reset]";
+const pm_char STR_RESET[] PROGMEM = TR_RESET;
 
 #if defined(SDCARD)
 const pm_char STR_BACKUP_MODEL[] PROGMEM = TR_BACKUP_MODEL;
@@ -424,6 +425,7 @@ const pm_char STR_SD_SECTORS[] PROGMEM = TR_SD_SECTORS;
 const pm_char STR_SD_SIZE[] PROGMEM = TR_SD_SIZE;
 const pm_char STR_TYPE[] PROGMEM = TR_TYPE;
 const pm_char STR_GLOBAL_VARS[] PROGMEM = TR_GLOBAL_VARS;
+const pm_char STR_GLOBAL_VAR[] PROGMEM = TR_GLOBAL_VAR;
 const pm_char STR_OWN[] PROGMEM = TR_OWN;
 const pm_char STR_ROTARY_ENCODER[] PROGMEM = TR_ROTARY_ENCODER;
 const pm_char STR_DATE[] PROGMEM = TR_DATE;
@@ -438,21 +440,21 @@ const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
 
 #if LCD_W >= 212
   const char * STR_PHASES_HEADERS[] = { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " };
-  const char * STR_LIMITS_HEADERS[] = { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symetrical " };
+  const char * STR_LIMITS_HEADERS[] = { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symmetrical " };
   const char * STR_CSW_HEADERS[] =    { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " };
 #endif
 
 #if defined(PCBTARANIS)
-const pm_char STR_BYTES[] PROGMEM = "bytes";
-const pm_char STR_MODULE_BIND[] PROGMEM  = "[Bind]";
-const pm_char STR_MODULE_RANGE[] PROGMEM = "[Range]";
-const pm_char STR_SET[] PROGMEM = "[Set]";
-const pm_char STR_TRAINER[] PROGMEM = "Trainer";
+const pm_char STR_BYTES[] PROGMEM = TR_BYTES;
+const pm_char STR_MODULE_BIND[] PROGMEM  = TR_MODULE_BIND;
+const pm_char STR_MODULE_RANGE[] PROGMEM = TR_MODULE_RANGE;
+const pm_char STR_SET[] PROGMEM = TR_SET;
+const pm_char STR_TRAINER[] PROGMEM = TR_TRAINER;
 const pm_char STR_ANTENNAPROBLEM[] PROGMEM = TR_ANTENNAPROBLEM;
-#endif
-
-#if defined(CPUARM)
-const pm_char STR_MODELIDUSED[] PROGMEM = TR_MODELIDUSED;
+const pm_char STR_MODULE[] PROGMEM = TR_MODULE;
+const pm_char STR_CHANNELRANGE[] PROGMEM = TR_CHANNELRANGE;
+const pm_char STR_LOWALARM[] PROGMEM = TR_LOWALARM;
+const pm_char STR_CRITICALALARM[] PROGMEM = TR_CRITICALALARM;
 #endif
 
 const pm_uchar font_5x7[] PROGMEM = {

@@ -598,6 +598,8 @@
 #define TR_SD_SIZE             "Velikost:"
 #define TR_TYPE                TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Glob\200ln\204 prom\203nn\202"
+#define TR_GLOBAL_VAR          "Global Variable"
+#define TR_MENUGLOBALVARS      "GLOB\200LN\204 PROM\203NN\202"
 #define TR_OWN                 " \043 "
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Encs"
@@ -607,11 +609,38 @@
 #define TR_FAILSAFE            "M\205d Failsafe"
 #define TR_FAILSAFESET         "NASTAVEN\214 FAILSAFE"
 #define TR_COUNTRYCODE         "K\205d regionu"
-#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
-#if defined (PCBTARANIS)
-#define TR_MODELIDUSED         "Model ID already used"
-#else
-#define TR_MODELIDUSED         "ID already used"
-#endif
 #define TR_VOICELANG           "Voice Language"
 #define TR_UNITSSYSTEM         "Units"
+#define TR_EDIT                "Edit"
+#define TR_INSERT_BEFORE       "Insert Before"
+#define TR_INSERT_AFTER        "Insert After"
+#define TR_COPY                "Copy"
+#define TR_MOVE                "Move"
+#define TR_DELETE              "Delete"
+#define TR_RESET_FLIGHT        "Reset Flight"
+#define TR_RESET_TIMER1        "Reset Timer1"
+#define TR_RESET_TIMER2        "Reset Timer2"
+#define TR_RESET_TELEMETRY     "Reset Telemetry"
+#define TR_STATISTICS          "Statistics"
+#define TR_ABOUT_US            "About Us"
+#define TR_AND_SWITCH          "AND Switch"
+#define TR_CF                  "CF"
+#define TR_SPEAKER             INDENT"Speaker"
+#define TR_BUZZER              INDENT"Buzzer"
+#define TR_BYTES               "bytes"
+#define TR_MODULE_BIND         "[Bind]"
+#define TR_MODULE_RANGE        "[Range]"
+#define TR_RESET               "[Reset]"
+#define TR_SET                 "[Set]"
+#define TR_TRAINER             "Trainer"
+#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#define TR_MODELIDUSED         TR("ID already used","Model ID already used")
+#define TR_MODULE              INDENT "Module"
+#define TR_CHANNELRANGE        INDENT "Channel Range"
+#define TR_LOWALARM            INDENT "Low Alarm"
+#define TR_CRITICALALARM       INDENT "Critical Alarm"
+
+#define TR_CHR_SHORT  's'
+#define TR_CHR_LONG   'l'
+#define TR_CHR_TOGGLE 't'
+#define TR_CHR_HOUR   'h'

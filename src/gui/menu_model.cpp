@@ -1189,7 +1189,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
-        lcd_putsLeft(y, PSTR(INDENT "Module"));
+        lcd_putsLeft(y, STR_MODULE);
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""PPM\0""XJT\0""DJT\0""DSM2"), g_model.externalModule, m_posHorz==0 ? attr : 0);
         if (g_model.externalModule == MODULE_TYPE_XJT)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("\004""OFF\0""X16\0""D8\0 ""LR12"), 1+g_model.moduleData[1].rfProtocol, m_posHorz==1 ? attr : 0);
@@ -1223,7 +1223,7 @@ void menuModelSetup(uint8_t event)
       {
         uint8_t moduleIdx = (k>=ITEM_MODEL_TRAINER_LABEL ? 2 : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? 1 : 0));
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
-        lcd_putsLeft(y, PSTR(INDENT "Channels Range"));
+        lcd_putsLeft(y, STR_CHANNELRANGE);
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
           lcd_putsAtt(MODEL_SETUP_2ND_COLUMN, y, STR_CH, m_posHorz==0 ? attr : 0);
           lcd_outdezAtt(lcdLastPos, y, moduleData.channelsStart+1, LEFT | (m_posHorz==0 ? attr : 0));
@@ -1339,7 +1339,7 @@ void menuModelSetup(uint8_t event)
       }
 
       case ITEM_MODEL_TRAINER_LABEL:
-        lcd_putsLeft(y, PSTR("Trainer"));
+        lcd_putsLeft(y, STR_TRAINER);
         break;
 
       case ITEM_MODEL_TRAINER_MODE:
@@ -4495,7 +4495,7 @@ void menuModelTelemetry(uint8_t event)
       {
         uint8_t j = ((k==ITEM_TELEMETRY_A1_ALARM1 || k==ITEM_TELEMETRY_A2_ALARM1) ? 0 : 1);
 #if defined(PCBTARANIS)
-        lcd_putsLeft(y, (j==0 ? INDENT "Low Alarm" : INDENT "Critical Alarm"));
+        lcd_putsLeft(y, (j==0 ? STR_LOWALARM : STR_CRITICALALARM));
         putsTelemetryChannel(TELEM_COL2, y, dest, channel.alarms_value[j], LEFT|attr);
         if (attr && (s_editMode>0 || p1valdiff)) {
           channel.alarms_value[j] = checkIncDec(event, channel.alarms_value[j], 0, 255, EE_MODEL);
@@ -4537,7 +4537,7 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_RSSI_ALARM2: {
         uint8_t j = k-ITEM_TELEMETRY_RSSI_ALARM1;
 #if defined(PCBTARANIS)
-        lcd_putsLeft(y, (j==0 ? INDENT "Low Alarm" : INDENT "Critical Alarm"));
+        lcd_putsLeft(y, (j==0 ? STR_LOWALARM : STR_CRITICALALARM));
         lcd_outdezNAtt(TELEM_COL2, y, getRssiAlarmValue(j), LEFT|attr, 3);
         if (attr && (s_editMode>0 || p1valdiff)) {
           CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[j].value, -30, 30);

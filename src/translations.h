@@ -464,6 +464,7 @@ extern const pm_char STR_CURRENT[];
   #define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
   extern const pm_char STR_UNITSSYSTEM[];
   extern const pm_char STR_VOICELANG[];
+  extern const pm_char STR_MODELIDUSED[];
 #else
   #define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
 #endif
@@ -561,6 +562,7 @@ extern const pm_char STR_SD_SECTORS[];
 extern const pm_char STR_SD_SIZE[];
 extern const pm_char STR_TYPE[];
 extern const pm_char STR_GLOBAL_VARS[];
+extern const pm_char STR_GLOBAL_VAR[];
 extern const pm_char STR_OWN[];
 extern const pm_char STR_ROTARY_ENCODER[];
 extern const pm_char STR_DATE[];
@@ -615,16 +617,15 @@ extern const pm_char STR_CHANNELS_MONITOR[];
   extern const pm_char STR_SET[];
   extern const pm_char STR_TRAINER[];
   extern const pm_char STR_ANTENNAPROBLEM[];
+  extern const pm_char STR_MODULE[];
+  extern const pm_char STR_CHANNELRANGE[];
+  extern const pm_char STR_LOWALARM[];
+  extern const pm_char STR_CRITICALALARM[];
 #endif
 
-#if defined(CPUARM)
-  extern const pm_char STR_MODELIDUSED[];
-#endif
-
-// TODO move to translations files
-#define CHR_SHORT  's'
-#define CHR_LONG   'l'
-#define CHR_TOGGLE 't'
-#define CHR_HOUR   'h'
+#define CHR_SHORT  TR_CHR_SHORT
+#define CHR_LONG   TR_CHR_LONG
+#define CHR_TOGGLE TR_CHR_TOGGLE
+#define CHR_HOUR   TR_CHR_HOUR
 
 #endif

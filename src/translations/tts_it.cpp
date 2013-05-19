@@ -198,6 +198,6 @@ I18N_PLAY_FUNCTION(it, playDuration, int16_t seconds)
   }
 }
 
-LANGUAGE_PACK_DECLARE(it, "Italian");
+LANGUAGE_PACK_DECLARE(it, "Italiano");
 
 #endif

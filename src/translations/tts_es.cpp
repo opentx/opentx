@@ -224,6 +224,6 @@ I18N_PLAY_FUNCTION(es, playDuration, int16_t seconds)
   }
 }
 
-LANGUAGE_PACK_DECLARE(es, "Spanish");
+LANGUAGE_PACK_DECLARE(es, "Espanol");
 
 #endif

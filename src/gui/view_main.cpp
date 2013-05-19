@@ -815,7 +815,7 @@ void menuMainView(uint8_t event)
 #if defined(GVARS)
   else if (s_gvar_timer > 0) {
     s_gvar_timer--;
-    s_warning = PSTR("Global Variable");
+    s_warning = STR_GLOBAL_VAR;
     displayBox();
 #if defined(PCBSTD)
     lcd_putsAtt(16+4*FW, 5*FH, PSTR("[\010]"), BOLD);
