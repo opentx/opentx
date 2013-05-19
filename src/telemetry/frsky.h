@@ -176,6 +176,7 @@ struct FrskyData {
   uint16_t             currentConsumption;
   uint16_t             currentPrescale;
   uint16_t             power;
+  // TODO uint16_t             maxPower;
 };
 
 // Global Fr-Sky telemetry data variables

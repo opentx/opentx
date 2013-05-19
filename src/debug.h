@@ -90,7 +90,6 @@ void dump(unsigned char *data, unsigned int size);
 #define DUMP(data, size) dump(data, size)
 
 void debugTask(void* pdata);
-void debugTx(void);
 
 #else
 

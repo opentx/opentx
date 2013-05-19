@@ -684,6 +684,11 @@ void telemetryInterrupt10ms()
   frskyData.power = ((current>>1) * (voltage>>1)) / 25;
 #endif
 
+#if 0
+  if (frskyData.power > frskyData.maxPower)
+    frskyData.maxPower = frskyData.power;
+#endif
+
   frskyData.currentPrescale += current;
   if (frskyData.currentPrescale >= 3600) {
     frskyData.currentConsumption += 1;

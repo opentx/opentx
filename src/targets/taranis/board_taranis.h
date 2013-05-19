@@ -84,7 +84,7 @@ uint8_t usbPlugged(void);
 
 void delaysInit();
 
-#define DEBUG_UART_BAUDRATE 9600
+#define DEBUG_UART_BAUDRATE 115200
 #define SPORT_BAUDRATE      57600
 
 void uartInit(uint32_t baudrate);

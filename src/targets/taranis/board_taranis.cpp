@@ -109,13 +109,6 @@ uint8_t usbPlugged(void)
   return usbState == USB_CONNECTED;
 }
 
-#if defined(DEBUG)
-void debugPutc(const char c)
-{
-  uartPutc(c);
-}
-#endif
-
 #if !defined(SIMU)
 extern "C" {
 USB_OTG_CORE_HANDLE USB_OTG_dev;
@@ -175,10 +168,6 @@ void interrupt5ms()
     pre_scale = 0 ;
     per10ms();
   }
-
-#if defined(DEBUG)
-  debugTx();
-#endif 
 }
 
 extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
