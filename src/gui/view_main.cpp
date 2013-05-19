@@ -600,10 +600,12 @@ void menuMainView(uint8_t event)
       AUDIO_KEYPAD_UP();
       break;
 
+#if !defined(NAVIGATION_MENUS)
     case EVT_KEY_LONG(KEY_EXIT):
       resetAll();
       AUDIO_KEYPAD_UP();
       break;
+#endif
   }
 
   {
