@@ -147,18 +147,18 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VLCD             (OFS_DATETIME + sizeof(TR_DATETIME))
   #define OFS_VUNITSSYSTEM     (OFS_VLCD + sizeof(TR_VLCD))
 #else
-  #define OFS_VLCD             (OFS_DATETIME)
   #define OFS_VUNITSSYSTEM     (OFS_DATETIME)
 #endif
 #if defined(CPUARM)
   #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
+  #define OFS_VFAILSAFE        (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
 #else
-  #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM)
+  #define OFS_VFAILSAFE        (OFS_VUNITSSYSTEM)
 #endif
 #if defined(PXX)
-  #define OFS_VTRAINERMODES    (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
+  #define OFS_VTRAINERMODES    (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
 #else
-  #define OFS_VTRAINERMODES    (OFS_COUNTRYCODES)
+  #define OFS_VTRAINERMODES    (OFS_VFAILSAFE)
 #endif
 #if defined(PCBTARANIS)
   #define OFS_SPARE            (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
@@ -240,6 +240,7 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(PXX)
   #define STR_COUNTRYCODES     (STR_OPEN9X + OFS_COUNTRYCODES)
+  #define STR_VFAILSAFE        (STR_OPEN9X + OFS_VFAILSAFE)
 #endif
 
 #if defined(PCBTARANIS)
@@ -434,7 +435,6 @@ extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];
 extern const pm_char STR_FAILSAFE[];
 extern const pm_char STR_FAILSAFESET[];
-extern const pm_char STR_VFAILSAFE[]; // TODO non-zero terminated
 extern const pm_char STR_COUNTRYCODE[];
 #endif
 

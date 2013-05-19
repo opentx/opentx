@@ -236,7 +236,7 @@
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\012")
-  #define TR_VUNITSSYSTEM      TR("M\200tr.\0Imp\200r.", "M\200triques\0Imp\200riales")
+  #define TR_VUNITSSYSTEM      TR("M\200tr.\0""Imp\200r.", "M\200triques\0""Imp\200riales")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -341,10 +341,11 @@
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
 
-#if defined (PCBTARANIS)
-  #define LEN_VTRAINERMODES      "\006"
-  #define TR_VTRAINERMODES       "Ma\203treEl\201ve\0"
-#endif
+#define LEN_VTRAINERMODES      "\006"
+#define TR_VTRAINERMODES       "Ma\203tre""El\201ve\0"
+
+#define LEN_VFAILSAFE    "\011"
+#define TR_VFAILSAFE     "Maintien\0""Pr\200d\200fini""Pas d'imp"
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -639,6 +640,11 @@
 #define TR_CHANNELRANGE        INDENT "Plage de canaux"
 #define TR_LOWALARM            INDENT "Alarme basse"
 #define TR_CRITICALALARM       INDENT "Alarme critique"
+
+// Taranis column headers
+#define TR_PHASES_HEADERS      { " Nom ", " Inter ", " Trims ", " Fondu ON ", " Fondu OFF " }
+#define TR_LIMITS_HEADERS      { " Nom ", " Subtrim ", " Min ", " Max ", " Direction ", " Neutre PPM ", " Mode subtrim " }
+#define TR_CSW_HEADERS         { " Fonction ", " V1 ", " V2 ", " ET suppl. ", " Dur\200e ", " D\200lai " }
 
 #define TR_CHR_SHORT  's'
 #define TR_CHR_LONG   'l'

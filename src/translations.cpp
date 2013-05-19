@@ -103,6 +103,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #endif
 #if defined(PXX)
     ISTR(COUNTRYCODES)
+    ISTR(VFAILSAFE)
 #endif
 #if defined(PCBTARANIS)
     ISTR(VTRAINERMODES)
@@ -313,7 +314,6 @@ const pm_char STR_INTERNALRF[] PROGMEM = TR_INTERNALRF;
 const pm_char STR_EXTERNALRF[] PROGMEM = TR_EXTERNALRF;
 const pm_char STR_COUNTRYCODE[] PROGMEM = TR_COUNTRYCODE;
 const pm_char STR_FAILSAFE[] PROGMEM = TR_FAILSAFE;
-const pm_char STR_VFAILSAFE[] PROGMEM = "\011""Hold\0    ""Custom\0  ""No pulses"; // TODO non-zero terminated
 const pm_char STR_FAILSAFESET[] PROGMEM = TR_FAILSAFESET;
 #endif
 
@@ -439,9 +439,9 @@ const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
 #endif
 
 #if LCD_W >= 212
-  const char * STR_PHASES_HEADERS[] = { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " };
-  const char * STR_LIMITS_HEADERS[] = { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symmetrical " };
-  const char * STR_CSW_HEADERS[] =    { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " };
+  const char * STR_PHASES_HEADERS[] = TR_PHASES_HEADERS;
+  const char * STR_LIMITS_HEADERS[] = TR_LIMITS_HEADERS;
+  const char * STR_CSW_HEADERS[] =    TR_CSW_HEADERS;
 #endif
 
 #if defined(PCBTARANIS)

@@ -843,22 +843,22 @@ void audioEvent(uint8_t e, uint8_t f)
           break;
 #if defined(PCBTARANIS)
         case AU_A1_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+40, 30, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+40, 50, 6, PLAY_NOW);
           break;
         case AU_A1_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+40, 30, 6, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+40, 50, 6, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_A2_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+80, 30, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+100, 50, 6, PLAY_NOW);
           break;
         case AU_A2_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+80, 30, 6, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+100, 50, 6, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_RSSI_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+120, 30, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+120, 200, 6, PLAY_NOW);
           break;
         case AU_RSSI_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+120, 30, 6, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+120, 200, 6, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_SWR_RED:
           // siren

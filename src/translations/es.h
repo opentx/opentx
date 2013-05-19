@@ -236,7 +236,7 @@
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
-  #define TR_VUNITSSYSTEM      TR("MetricImper.", "Metric\0 Imperial")
+  #define TR_VUNITSSYSTEM      TR("Metric""Imper.", "Metric\0 ""Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -341,10 +341,11 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ABS""THs""TH%""THt"
 
-#if defined (PCBTARANIS)
-  #define LEN_VTRAINERMODES      "\006"
-  #define TR_VTRAINERMODES       "MasterSlave\0"
-#endif
+#define LEN_VTRAINERMODES      "\006"
+#define TR_VTRAINERMODES       "Master""Slave\0"
+
+#define LEN_VFAILSAFE          "\011"
+#define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -639,6 +640,11 @@
 #define TR_CHANNELRANGE        INDENT "Channel Range"
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
+
+// Taranis column headers
+#define TR_PHASES_HEADERS      { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " }
+#define TR_LIMITS_HEADERS      { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symmetrical " }
+#define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
 
 #define TR_CHR_SHORT  's'
 #define TR_CHR_LONG   'l'
