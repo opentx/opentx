@@ -678,7 +678,11 @@ void telemetryInterrupt10ms()
     current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
   }
 
+#if defined(CPUARM)
   frskyData.power = (current * voltage) / 100;
+#else
+  frskyData.power = ((current>>1) * (voltage>>1)) / 25;
+#endif
 
   frskyData.currentPrescale += current;
   if (frskyData.currentPrescale >= 3600) {
