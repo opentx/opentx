@@ -608,6 +608,10 @@
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
 #define TR_COUNTRYCODE         "Zone g\200o."
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio d\200fectueuse!"
+#if defined (PCBTARANIS)
 #define TR_MODELIDUSED         "No de modèle d\200j\202 utilis\200"
+#else
+#define TR_MODELIDUSED         "No d\200j\202 utilis\200"
+#endif
 #define TR_VOICELANG           "Langue de la voix"
 #define TR_UNITSSYSTEM         "Unit\200s"

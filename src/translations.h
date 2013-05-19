@@ -615,6 +615,9 @@ extern const pm_char STR_CHANNELS_MONITOR[];
   extern const pm_char STR_SET[];
   extern const pm_char STR_TRAINER[];
   extern const pm_char STR_ANTENNAPROBLEM[];
+#endif
+
+#if defined(CPUARM)
   extern const pm_char STR_MODELIDUSED[];
 #endif
 

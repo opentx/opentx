@@ -608,6 +608,10 @@
 #define TR_FAILSAFESET         "FailsafeInst\201llning"
 #define TR_COUNTRYCODE         "Landskod"
 #define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
+#if defined (PCBTARANIS)
 #define TR_MODELIDUSED         "Model ID already used"
+#else
+#define TR_MODELIDUSED         "ID already used"
+#endif
 #define TR_VOICELANG           "Voice Language"
 #define TR_UNITSSYSTEM         "Units"

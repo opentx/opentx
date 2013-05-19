@@ -449,6 +449,9 @@ const pm_char STR_MODULE_RANGE[] PROGMEM = "[Range]";
 const pm_char STR_SET[] PROGMEM = "[Set]";
 const pm_char STR_TRAINER[] PROGMEM = "Trainer";
 const pm_char STR_ANTENNAPROBLEM[] PROGMEM = TR_ANTENNAPROBLEM;
+#endif
+
+#if defined(CPUARM)
 const pm_char STR_MODELIDUSED[] PROGMEM = TR_MODELIDUSED;
 #endif
 

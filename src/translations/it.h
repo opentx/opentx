@@ -606,8 +606,12 @@
 #define TR_EXTERNALRF          "External RF"
 #define TR_FAILSAFE            "Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
-#define TR_COUNTRYCODE         "Country Code"
-#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
-#define TR_MODELIDUSED         "Model ID already used"
-#define TR_VOICELANG           "Voice Language"
-#define TR_UNITSSYSTEM         "Units"
+#define TR_COUNTRYCODE         "Codice Paese"
+#define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
+#if defined (PCBTARANIS)
+#define TR_MODELIDUSED         "ID modello gia' usato"
+#else
+#define TR_MODELIDUSED         "ID gia' usato"
+#endif
+#define TR_VOICELANG           "Lingua della Voce"
+#define TR_UNITSSYSTEM         "Unita'"
