@@ -59,8 +59,10 @@
 #define SAMPTIME    2   // sample time = 15 cycles
 
 volatile uint16_t Analog_values[NUMBER_ANALOG];
-#if !defined(REV3)
+#if defined(REV4a)
 const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,1,1,0,  0};
+#elif !defined(REV3)
+const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,0,1,0,  0};
 #endif
 
 void adcInit()
