@@ -34,15 +34,18 @@
  * GNU General Public License for more details.
  *
  */
+/*!	\file telemetry_mavlink.cpp
+ *	Mavlink telemetry decoder for Arducopter/Arduplane telemetry information.
+ */
 
-#include "opentx.h"
-#include "serial.h"
 
-#define DUMP_RX_TX
+#include "telemetry/mavlink.h"
+
+//#define DUMP_RX_TX
 
 // this might need to move to the flight software
 //static
-mavlink_system_t mavlink_system = { 7, 1, 0, 0 };
+mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
 
 //static uint8_t system_id = 7;
 //static uint8_t component_id = 1;
@@ -54,7 +57,7 @@ mavlink_system_t mavlink_system = { 7, 1, 0, 0 };
 // Mavlink message decoded Status Text
 #define PARAM_NB_REPEAT 10
 #define LEN_STATUSTEXT 15
-static uint8_t mav_statustext[LEN_STATUSTEXT];
+static char mav_statustext[LEN_STATUSTEXT];
 static int8_t mav_heartbeat = 0;
 static int8_t mav_heartbeat_recv = 0;
 static int8_t watch_mav_req_id_action = 0;
@@ -63,6 +66,7 @@ static uint8_t data_stream_start_stop = 0;
 int8_t watch_mav_req_params_list = 5;
 static uint8_t mav_req_params_nb_recv = 0;
 static int8_t watch_mav_req_params_set = 0;
+
 
 // Telemetry data hold
 Telemetry_Data_t telemetry_data;
@@ -95,6 +99,10 @@ void MAVLINK_rxhandler(uint8_t byte) {
 
 SerialFuncP RXHandler = MAVLINK_rxhandler;
 
+/*!	\brief Reset basic Mavlink varables
+ *	\todo Figure out exact function
+ *
+ */
 void MAVLINK_reset(uint8_t warm_reset) {
 	if (warm_reset && telemetry_data.status) {
 		mav_statustext[0] = 0;
@@ -120,68 +128,85 @@ void MAVLINK_reset(uint8_t warm_reset) {
 	data_stream_start_stop = 0;
 }
 
+//! \brief initalize mavlink extension
 void MAVLINK_Init(void) {
 	mav_statustext[0] = 0;
 	MAVLINK_reset(0);
 	SERIAL_Init();
 }
 
+/*!	\brief Status log message
+ *	\details Processes the mavlink status messages. This message contains a
+ *	severity and a message. The severity is an enum difined by MAV_SEVERITY also
+ *	see RFC-5424 for the severity levels.
+ *	The original message is maximum 50 characters and is without termination
+ *	character. For readablity on the 9x the only the first 15 (LEN_STATUSTEXT)
+ *	characters are used. To get the full message you can use the commented
+ *	funtion below.
+ */
 static inline void REC_MAVLINK_MSG_ID_STATUSTEXT(const mavlink_message_t* msg) {
-	//memcpy(mav_statustext, msg->payload + sizeof(uint8_t), sizeof(int8_t) * LEN_STATUSTEXT);
-	//	_MAV_RETURN_int8_t_array(msg, mav_statustext, LEN_STATUSTEXT,  1);
-	memcpy(mav_statustext, &_MAV_PAYLOAD(msg)[1], LEN_STATUSTEXT);
+	uint8_t temp = mavlink_msg_statustext_get_severity(msg);
+	_MAV_RETURN_char_array(msg, mav_statustext, LEN_STATUSTEXT,  1);
+	//mavlink_msg_statustext_get_text( msg, mav_statustext);
 }
 
+/*!	\brief System status including cpu load, battery status and communication status.
+ *	\details From this message we use use only the batery infomation. The rest
+ *	is not realy of use while flying. The complete message can be decoded in to
+ *	a struct with the first two commented lines.
+ *  The batery votage is in mV. We devide by 100 to display tenths of volts.'
+ *	\todo Add battery remaining variable in telemetry_data struct for estimated
+ *	remaining battery. Decoding funtion allready in place.
+ */
 static inline void REC_MAVLINK_MSG_ID_SYS_STATUS(const mavlink_message_t* msg) {
-	mavlink_sys_status_t sys_status;
-	mavlink_msg_sys_status_decode(msg, &sys_status);
+//	mavlink_sys_status_t sys_status;
+//	mavlink_msg_sys_status_decode(msg, &sys_status);
 
-	telemetry_data.packet_drop = mavlink_msg_sys_status_get_packet_drop(msg);
+	telemetry_data.vbat = mavlink_msg_sys_status_get_voltage_battery(msg) / 100; // Voltage * 10
+	int8_t temp = mavlink_msg_sys_status_get_battery_remaining(msg);
 
-	uint8_t mode = mavlink_msg_sys_status_get_mode(msg);
-	uint8_t nav_mode = mavlink_msg_sys_status_get_nav_mode(msg);
-	telemetry_data.rcv_control_mode = MAVLINK_NavMode2CtrlMode(mode, nav_mode);
-	//telemetry_data.mode = mode;
-	//telemetry_data.nav_mode = nav_mode;
-
-	telemetry_data.status = mavlink_msg_sys_status_get_status(msg);
-	//telemetry_data.load = mavlink_msg_sys_status_get_load(msg);
-	telemetry_data.vbat = mavlink_msg_sys_status_get_vbat(msg) / 100; // Voltage * 10
-
+#ifdef MAVLINK_PARAMS
 	telemetry_data.vbat_low = (getMavlinParamsValue(BATT_MONITOR) > 0)
 					&& (((float) telemetry_data.vbat / 10.0) < getMavlinParamsValue(LOW_VOLT)) && (telemetry_data.vbat > 50);
+#endif
 }
 
-static inline void REC_MAVLINK_MSG_ID_GPS_RAW(const mavlink_message_t* msg) {
-	telemetry_data.fix_type = mavlink_msg_gps_raw_get_fix_type(msg);
-	telemetry_data.loc_current.lat = mavlink_msg_gps_raw_get_lat(msg);
-	telemetry_data.loc_current.lon = mavlink_msg_gps_raw_get_lon(msg);
-	telemetry_data.loc_current.alt = mavlink_msg_gps_raw_get_alt(msg);
-	telemetry_data.eph = mavlink_msg_gps_raw_get_eph(msg);
-	telemetry_data.hdg = mavlink_msg_gps_raw_get_hdg(msg);
-	telemetry_data.v = mavlink_msg_gps_raw_get_v(msg);
+/*!	\brief Hardbeat message
+ *	\todo Fix hartbeat * on display title see \link telemetryWakeup telemetryWakeup \endlink
+ *	and \link mav_title mav_title \endlink.
+ */
+static inline void REC_MAVLINK_MSG_ID_HEARTBEAT(const mavlink_message_t* msg) {	
+	telemetry_data.mode  = mavlink_msg_heartbeat_get_base_mode(msg);	
+	telemetry_data.status = mavlink_msg_heartbeat_get_system_status(msg);
+	mav_heartbeat = 3; // 450ms display '*'
+	mav_heartbeat_recv = 1;
+}
+static inline void REC_MAVLINK_MSG_ID_HIL_CONTROLS(const mavlink_message_t* msg) {
+	telemetry_data.nav_mode = mavlink_msg_hil_controls_get_mode(msg);
+}
+/*!	\brief Process GPS raw intger message
+ *	\details This message contains the following data:
+ *		- fix type: 0-1: no fix, 2: 2D fix, 3: 3D fix.
+ *		- Latitude, longitude in 1E7 * degrees
+ *		- Altutude 1E3 * meters above MSL.
+ *		- Course over ground in 100 * degrees
+ *		- GPS HDOP horizontal dilution of precision in cm (m*100).
+ *		- Ground speed in m/s * 100
+ */
+static inline void REC_MAVLINK_MSG_ID_GPS_RAW_INT(const mavlink_message_t* msg) {
+	telemetry_data.fix_type = mavlink_msg_gps_raw_int_get_fix_type(msg);
+	telemetry_data.loc_current.lat = mavlink_msg_gps_raw_int_get_lat(msg) / 1E7;	
+	telemetry_data.loc_current.lon = mavlink_msg_gps_raw_int_get_lon(msg) / 1E7;
+	telemetry_data.loc_current.alt = mavlink_msg_gps_raw_int_get_alt(msg) / 1E3;
+	telemetry_data.eph = mavlink_msg_gps_raw_int_get_eph(msg) / 100;
+	telemetry_data.course = mavlink_msg_gps_raw_int_get_cog(msg) / 100;
+	telemetry_data.v = mavlink_msg_gps_raw_int_get_vel(msg) / 100;
 }
 
 static inline void REC_MAVLINK_MSG_ID_GPS_STATUS(const mavlink_message_t* msg) {
 	telemetry_data.satellites_visible = mavlink_msg_gps_status_get_satellites_visible(msg);
 }
 
-static inline void REC_MAVLINK_MSG_ID_ACTION_ACK(const mavlink_message_t* msg) {
-	uint8_t ack_action = mavlink_msg_action_ack_get_action(msg);
-	telemetry_data.ack_result = mavlink_msg_action_ack_get_result(msg);
-	uint8_t *ptr = mav_statustext;
-	if (!telemetry_data.ack_result)
-		*ptr++ = 'N';
-	*ptr++ = 'A';
-	*ptr++ = 'C';
-	*ptr++ = 'K';
-	*ptr++ = ' ';
-	*ptr++ = ack_action / 10 + '0';
-	*ptr++ = ack_action % 10 + '0';
-	*ptr++ = 0;
-	watch_mav_req_id_action = 0;
-	AUDIO_WARNING1();
-}
 
 #ifdef MAVLINK_PARAMS
 const pm_char * getParamId(uint8_t idx) {
@@ -317,8 +342,8 @@ static inline void setParamValue(int8_t *id, float value) {
 static inline void REC_MAVLINK_MSG_ID_PARAM_VALUE(const mavlink_message_t* msg) {
 	mavlink_param_value_t param_value;
 	mavlink_msg_param_value_decode(msg, &param_value);
-	int8_t *id = param_value.param_id;
-	setParamValue(id, param_value.param_value);
+	char *id = param_value.param_id;
+	setParamValue((int8_t*)id, param_value.param_value);
 	data_stream_start_stop = 0; // stop data stream while getting params list
 	watch_mav_req_params_list = mav_req_params_nb_recv < (NB_PARAMS - 5) ? 20 : 0; // stop timeout
 }
@@ -327,8 +352,7 @@ static inline void REC_MAVLINK_MSG_ID_PARAM_VALUE(const mavlink_message_t* msg) 
 static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 	switch (p_rxmsg->msgid) {
 	case MAVLINK_MSG_ID_HEARTBEAT:
-		mav_heartbeat = 3; // 450ms display '*'
-		mav_heartbeat_recv = 1;
+		REC_MAVLINK_MSG_ID_HEARTBEAT(p_rxmsg);
 		break;
 	case MAVLINK_MSG_ID_STATUSTEXT:
 		REC_MAVLINK_MSG_ID_STATUSTEXT(p_rxmsg);
@@ -338,14 +362,14 @@ static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 		REC_MAVLINK_MSG_ID_SYS_STATUS(p_rxmsg);
 		watch_mav_req_start_data_stream = 20;
 		break;
-	case MAVLINK_MSG_ID_GPS_RAW:
-		REC_MAVLINK_MSG_ID_GPS_RAW(p_rxmsg);
+	case MAVLINK_MSG_ID_HIL_CONTROLS:
+		REC_MAVLINK_MSG_ID_HIL_CONTROLS(p_rxmsg);
+		break;
+	case MAVLINK_MSG_ID_GPS_RAW_INT:
+		REC_MAVLINK_MSG_ID_GPS_RAW_INT(p_rxmsg);
 		break;
 	case MAVLINK_MSG_ID_GPS_STATUS:
 		REC_MAVLINK_MSG_ID_GPS_STATUS(p_rxmsg);
-		break;
-	case MAVLINK_MSG_ID_ACTION_ACK:
-		REC_MAVLINK_MSG_ID_ACTION_ACK(p_rxmsg);
 		break;
 #ifdef MAVLINK_PARAMS
 	case MAVLINK_MSG_ID_PARAM_VALUE:
@@ -357,27 +381,27 @@ static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 
 }
 
-#if 0
+
+/*!	\brief Mavlink message parser
+ *	\details Parses the characters in to a mavlink message.
+ *	Case statement parses each character as it is recieved. 
+ *	\attention One big change form the 0.9 to 1.0 version is the 
+ *	MAVLINK_CRC_EXTRA. This requires the mavlink_message_crcs array of 256 bytes.
+ *	\todo create dot for the statemachine
+ */
 static void MAVLINK_parse_char(uint8_t c) {
-//	mavlink_message_t msg;
-//	mavlink_status_t status;
 
 	static mavlink_message_t m_mavlink_message;
-	static mavlink_status_t m_mavlink_status;
-	mavlink_message_t *p_rxmsg = &m_mavlink_message;///< The currently decoded message
-	mavlink_status_t *p_status = &m_mavlink_status;///< The current decode status
-
-	if (mavlink_parse_char(MAVLINK_COMM_0, c, p_rxmsg, p_status)) {
-		handleMessage(p_rxmsg);
-	}
-}
+	//! The currently decoded message
+	static mavlink_message_t* p_rxmsg = &m_mavlink_message;
+	//! The current decode status
+	mavlink_status_t* p_status = mavlink_get_channel_status(MAVLINK_COMM_0); 
+	
+	
+#if MAVLINK_CRC_EXTRA
+	static const uint8_t mavlink_message_crcs[256] = MAVLINK_MESSAGE_CRCS;
+#define MAVLINK_MESSAGE_CRC(msgid) mavlink_message_crcs[msgid]
 #endif
-
-static void MAVLINK_parse_char(uint8_t c) {
-
-	static mavlink_message_t m_mavlink_message;
-	static mavlink_message_t* p_rxmsg = &m_mavlink_message; ///< The currently decoded message
-	mavlink_status_t* p_status = mavlink_get_channel_status(MAVLINK_COMM_0); ///< The current decode status
 
 	// Initializes only once, values keep unchanged after first initialization
 	//mavlink_parse_state_initialize(p_status);
@@ -430,7 +454,7 @@ static void MAVLINK_parse_char(uint8_t c) {
 		break;
 
 	case MAVLINK_PARSE_STATE_GOT_MSGID:
-		_MAV_PAYLOAD(p_rxmsg)[p_status->packet_idx++] = (char) c;
+		_MAV_PAYLOAD_NON_CONST(p_rxmsg)[p_status->packet_idx++] = (char) c;
 		mavlink_update_checksum(p_rxmsg, c);
 		if (p_status->packet_idx == p_rxmsg->len) {
 			p_status->parse_state = MAVLINK_PARSE_STATE_GOT_PAYLOAD;
@@ -438,6 +462,10 @@ static void MAVLINK_parse_char(uint8_t c) {
 		break;
 
 	case MAVLINK_PARSE_STATE_GOT_PAYLOAD:
+
+#if MAVLINK_CRC_EXTRA
+		mavlink_update_checksum(p_rxmsg, MAVLINK_MESSAGE_CRC(p_rxmsg->msgid));
+#endif
 		if (c != (p_rxmsg->checksum & 0xFF)) {
 			// Check first checksum byte
 			p_status->parse_error = 3;
@@ -458,7 +486,6 @@ static void MAVLINK_parse_char(uint8_t c) {
 			//p_status->msg_received = 1;
 			p_status->parse_state = MAVLINK_PARSE_STATE_IDLE;
 			//memcpy(r_message, p_rxmsg, sizeof(mavlink_message_t));
-
 			handleMessage(p_rxmsg);
 		}
 		break;
@@ -515,7 +542,10 @@ static inline void MAVLINK_msg_param_set(uint8_t idx) {
 	float param_value = getParam(idx)->value;
 
 	mavlink_channel_t chan = MAVLINK_COMM_0;
-	mavlink_msg_param_set_send(chan, mavlink_system.sysid, mavlink_system.compid, buf, param_value);
+	uint8_t param_type = (uint8_t)MAV_PARAM_TYPE_REAL32;
+	const char* param_id = (const char*)buf;
+	mavlink_msg_param_set_send(chan, mavlink_system.sysid, mavlink_system.compid, param_id, param_value, param_type);
+
 }
 #endif
 
@@ -526,26 +556,31 @@ static inline void MAVLINK_msg_request_data_stream_pack_send(uint8_t req_stream_
 					start_stop);
 }
 
+//! \brief old mode switch funtion
 static inline void MAVLINK_msg_action_pack_send(uint8_t action) {
-	mavlink_channel_t chan = MAVLINK_COMM_0;
-	mavlink_msg_action_send(chan, mavlink_system.sysid, mavlink_system.compid, action);
+//	mavlink_channel_t chan = MAVLINK_COMM_0;
+//	mavlink_msg_action_send(chan, mavlink_system.sysid, mavlink_system.compid, action);
 }
 
+//! \brief old mode switch funtion
 static inline void MAVLINK_msg_set_mode_send(uint8_t mode) {
 	mavlink_channel_t chan = MAVLINK_COMM_0;
-	mavlink_msg_set_mode_send(chan, mavlink_system.sysid, mode);
+	mavlink_msg_set_mode_send(chan, mavlink_system.sysid, mode, 0);
 }
 
+/*!	\brief Looks like som kind of task switcher on a timer
+ *	\todo Figure out wher this was used for and intergrate in current implemnetation.
+ */
 void MAVLINK10mspoll(uint8_t count) {
 	switch (count) {
 	case 2: // MAVLINK_MSG_ID_ACTION
 		if (watch_mav_req_id_action > 0) {
 			watch_mav_req_id_action--;
 			// Repeat  is not ack : 150ms*0x07
-			if ((watch_mav_req_id_action & 0x07) == 0 && telemetry_data.req_mode < NUM_MODES) {
+			if ((watch_mav_req_id_action & 0x07) == 0) {
 				uint8_t action = MAVLINK_CtrlMode2Action(telemetry_data.req_mode);
 				MAVLINK_msg_action_pack_send(action);
-				uint8_t *ptr = mav_statustext;
+				char *ptr = mav_statustext;
 				*ptr++ = 'R';
 				*ptr++ = 'Q';
 				*ptr++ = ' ';
@@ -560,6 +595,7 @@ void MAVLINK10mspoll(uint8_t count) {
 			}
 		}
 		break;
+#ifdef MAVLINK_PARAMS
 	case 4: // MAVLINK_MSG_ID_PARAM_REQUEST_LIST
 		if (watch_mav_req_params_list > 0) {
 			watch_mav_req_params_list--;
@@ -570,7 +606,7 @@ void MAVLINK10mspoll(uint8_t count) {
 			}
 		}
 		break;
-
+#endif
 	case 6: // MAVLINK_MSG_ID_REQUEST_DATA_STREAM
 		if (watch_mav_req_start_data_stream > 0) {
 			watch_mav_req_start_data_stream--;
@@ -584,6 +620,7 @@ void MAVLINK10mspoll(uint8_t count) {
 			}
 		}
 		break;
+#ifdef MAVLINK_PARAMS
 	case 8: // MAVLINK_MSG_ID_PARAM_SET
 		if (watch_mav_req_params_set > 0) {
 			watch_mav_req_params_set--;
@@ -599,12 +636,17 @@ void MAVLINK10mspoll(uint8_t count) {
 			}
 		}
 		break;
-
+#endif
 	default:
 		return;
 	}
 }
 
+/*!	\brief Telemetry monitoring, calls \link MAVLINK10mspoll.
+ *	\todo add  #if defined(FRSKY) || defined(MAVLINK) to line 3487
+ *	of opentx.cpp to add a call to telemetryWakeup from void perMain().
+ *	
+ */
 void telemetryWakeup() {
 	uint16_t tmr10ms = get_tmr10ms();
 	uint8_t count = tmr10ms & 0x0f; // 15*10ms
@@ -623,293 +665,3 @@ void telemetryWakeup() {
 		MAVLINK10mspoll(count);
 	}
 }
-
-// Start of Mavlink menus <<<<<<<<<<<<<<<<<<<<<<<<<<<
-void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
-
-enum mavlink_menu_ {
-	MENU_INFO = 0, //
-	MENU_GPS, //
-#ifdef DUMP_RX_TX
-	MENU_DUMP_RX, //
-	MENU_DUMP_TX, //
-#endif
-	MAX_MAVLINK_MENU
-};
-
-uint8_t MAVLINK_menu = MENU_INFO;
-
-void mav_title(const pm_char * s, uint8_t index)
-{
-  lcd_putsAtt(0, 0, PSTR("MAVLINK"), INVERS);
-  lcd_puts(10 * FW, 0, s);
-  displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
-  lcd_putc(8 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');
-}
-
-void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mode = 0) {
-	char c;
-	int16_t lnum = val;
-	uint8_t x1 = x;
-	val -= lnum;
-
-	int8_t i = 0;
-	lnum = abs(lnum);
-	for (; i < 4; i++) {
-		c = (lnum % 10) + '0';
-		x1 -= FWNUM;
-		lcd_putcAtt(x1, y, c, mode);
-		lnum /= 10;
-		if (lnum == 0) {
-			break;
-		}
-	}
-	if (lnum != 0) {
-		// Error number too big
-		x1 = x;
-		for (i = 0; i < 4; i++) {
-			x1 -= FW;
-			lcd_putcAtt(x1, y, '?', mode);
-		}
-	} else {
-		if (val < 0) {
-			val = -val;
-			x1 -= FWNUM;
-			lcd_putcAtt(x1, y, '-', mode);
-		}
-		if (precis)
-			lcd_putcAtt(x, y, '.', mode);
-
-		for (i = 0; i < precis; i++) {
-			val *= 10;
-			int a = val;
-			c = a + '0';
-			x += FWNUM;
-			lcd_putcAtt(x, y, c, mode);
-			val -= a;
-		}
-	}
-}
-
-bool isValidReqControlMode()
-{
-	if (telemetry_data.req_mode < NUM_MODES) {
-		if (telemetry_data.req_mode != telemetry_data.rcv_control_mode) {
-			return false;
-		}
-	}
-	return true;
-}
-
-void putsMavlinkControlMode(uint8_t x, uint8_t y, uint8_t len) {
-	if (telemetry_data.status) {
-		uint8_t attr = 0;
-		uint8_t mode = telemetry_data.rcv_control_mode;
-		if (telemetry_data.req_mode < NUM_MODES) {
-
-			if (telemetry_data.req_mode != telemetry_data.rcv_control_mode) {
-				attr = INVERS;
-				switch (telemetry_data.ack_result) {
-				case 5:
-					AUDIO_ERROR();
-					telemetry_data.req_mode = NUM_MODES;
-					break;
-				default:
-					//mode = telemetry_data.req_mode;
-					break;
-				}
-			}
-		}
-		putsControlMode(x, y, mode, attr, len);
-	}
-}
-
-void MAVLINK_ReqMode(uint8_t mode, uint8_t send) {
-	telemetry_data.req_mode = mode;
-	telemetry_data.ack_result = 0;
-	if (send) {
-		watch_mav_req_id_action = 0x43;
-	}
-}
-
-void menuTelemetryMavlinkInfos(void) {
-
-	mav_title(PSTR("INFOS"), MAVLINK_menu);
-
-	uint8_t x1, x2, xnum, y;
-	x1 = FW;
-	x2 = 7 * FW;
-	xnum = x2 + 5 * FWNUM;
-	y = FH;
-
-	uint8_t * ptr = mav_statustext;
-	for (uint8_t j = 0; j < LEN_STATUSTEXT; j++) {
-		if (*ptr == 0) {
-			lcd_putc(x1, y, ' ');
-		} else {
-			lcd_putc(x1, y, *ptr++);
-		}
-		x1 += FW;
-	}
-	x1 = FW;
-	y += FH;
-
-	if (telemetry_data.status) {
-		if (!isValidReqControlMode()) {
-		  lcd_puts(x1, y, PSTR("REQ"));
-		  putsControlMode(x2, y, telemetry_data.req_mode, 0, 6);
-		  y += FH;
-		}
-		lcd_puts(x1, y, PSTR("MODE"));
-		putsMavlinkControlMode(x2, y, 6);
-
-		y += FH;
-		lcd_puts(x1, y, PSTR("BATT"));
-		lcd_outdezNAtt(xnum, y, telemetry_data.vbat, PREC1, 5);
-
-		y += FH;
-		lcd_puts(x1, y, PSTR("DROP"));
-		lcd_outdezAtt(xnum, y, telemetry_data.packet_drop, 0);
-
-	}
-
-}
-
-void menuTelemetryMavlinkGPS(void) {
-	mav_title(PSTR("GPS"), MAVLINK_menu);
-
-	uint8_t x1, x2, xnum, y;
-	x1 = FW;
-	x2 = 5 * FW + FWNUM;
-	xnum = 5 * FW + 3 * FWNUM;
-	y = FH;
-
-	lcd_putsnAtt(x1, y, PSTR("GPS"), 3, 0);
-	uint8_t fix_type = telemetry_data.fix_type;
-	if (fix_type <= 2) {
-		lcd_putsnAtt(x2, y, PSTR("__NOOK") + 2 * fix_type, 2, 0);
-	} else {
-		lcd_outdezNAtt(xnum, y, fix_type, 0, 3);
-	}
-	lcd_puts(x2 + 5 * FW, y, PSTR("SAT"));
-	lcd_outdezNAtt(x2 + 8 * FW + 3 * FWNUM, y, telemetry_data.satellites_visible, 0, 2);
-
-//	if (telemetry_data.fix_type > 0) {
-	y += FH;
-	lcd_puts(0, y, PSTR("HDOP"));
-	lcd_outdezFloat(xnum, y, telemetry_data.eph, 2);
-
-	y += FH;
-	lcd_puts(0, y, PSTR("COOR"));
-	lcd_outdezFloat(xnum, y, telemetry_data.loc_current.lat, 5);
-
-	//	y += FH;
-	//	lcd_putsnAtt(x1, y, PSTR("LON"), 3, 0);
-	lcd_outdezFloat(xnum + 10 * FWNUM, y, telemetry_data.loc_current.lon, 5);
-
-	y += FH;
-	lcd_putsnAtt(x1, y, PSTR("ALT"), 3, 0);
-	lcd_outdezFloat(xnum, y, telemetry_data.loc_current.alt, 2);
-
-	y += FH;
-	lcd_putsnAtt(x1, y, PSTR("HDG"), 3, 0);
-	lcd_outdezFloat(xnum, y, telemetry_data.hdg, 2);
-
-	y += FH;
-	lcd_putsnAtt(x1, y, PSTR("V"), 1, 0);
-	lcd_outdezFloat(xnum, y, telemetry_data.v, 2);
-	//}
-}
-
-#ifdef DUMP_RX_TX
-
-void lcd_outhex2(uint8_t x, uint8_t y, uint8_t val) {
-	x += FWNUM * 2;
-	for (int i = 0; i < 2; i++) {
-		x -= FWNUM;
-		char c = val & 0xf;
-		c = c > 9 ? c + 'A' - 10 : c + '0';
-		lcd_putcAtt(x, y, c, c >= 'A' ? CONDENSED : 0);
-		val >>= 4;
-	}
-}
-
-void menuTelemetryMavlinkDump(uint8_t event) {
-	uint8_t x = 0;
-	uint8_t y = FH;
-	uint16_t count = 0;
-	uint16_t bufferLen = 0;
-	uint8_t *ptr = NULL;
-	switch (MAVLINK_menu) {
-		case MENU_DUMP_RX:
-		mav_dump_rx = 1;
-		mav_title(PSTR("RX"), MAVLINK_menu);
-		bufferLen = mavlinkRxBufferCount;
-		ptr = mavlinkRxBuffer;
-		break;
-
-		case MENU_DUMP_TX:
-		mav_title(PSTR("TX"), MAVLINK_menu);
-		bufferLen = serialTxBufferCount;
-		ptr = ptrTxISR;
-		break;
-		default:
-		break;
-	}
-	for (uint16_t var = 0; var < bufferLen; var++) {
-		uint8_t byte = *ptr++;
-		lcd_outhex2(x, y, byte);
-		x += 2 * FW;
-		count++;
-		if (count > 8) {
-			count = 0;
-			x = 0;
-			y += FH;
-			if (y == (6 * FH))
-			break;
-		}
-	}
-}
-#endif
-
-void menuTelemetryMavlink(uint8_t event) {
-
-	switch (event) // new event received, branch accordingly
-	{
-	case EVT_ENTRY:
-		MAVLINK_menu = MENU_INFO;
-		break;
-
-	case EVT_KEY_FIRST(KEY_UP):
-		MAVLINK_menu--;
-		break;
-	case EVT_KEY_FIRST(KEY_DOWN):
-		MAVLINK_menu++;
-		break;
-	case EVT_KEY_FIRST(KEY_MENU):
-	case EVT_KEY_FIRST(KEY_EXIT):
-		//MAVLINK_Quit();
-		chainMenu(menuMainView);
-		return;
-	}
-
-	switch (MAVLINK_menu) {
-	case MENU_INFO:
-	  menuTelemetryMavlinkInfos();
-	  break;
-	case MENU_GPS:
-	  menuTelemetryMavlinkGPS();
-	  break;
-#ifdef DUMP_RX_TX
-	case MENU_DUMP_TX:
-	case MENU_DUMP_RX:
-	  menuTelemetryMavlinkDump(event);
-	  break;
-#endif
-
-	default:
-	  break;
-	}
-
-}
-

@@ -9,7 +9,6 @@
       is general enough to move into common.xml later
     -->
 
-
 	<enums>
 	  <!-- Camera Mount mode Enumeration -->
 	  <enum name="MAV_MOUNT_MODE">
@@ -77,6 +76,9 @@
 	    <entry name="FENCE_ACTION_GUIDED" value="1">
 	      <description>Switched to guided mode to return point (fence point 0)</description>
 	    </entry>
+	    <entry name="FENCE_ACTION_REPORT" value="2">
+	      <description>Report fence breach, but don't take action</description>
+	    </entry>
 	  </enum>
 
 	  <enum name="FENCE_BREACH">
@@ -93,6 +95,23 @@
 	      <description>Breached fence boundary</description>
 	    </entry>
 	  </enum>
+	  
+	  	<!--  AP_Limits Enums -->
+	<enum name="LIMITS_STATE">
+		<entry name="LIMITS_INIT" value="0"> <description> pre-initialization</description></entry>
+		<entry name="LIMITS_DISABLED" value="1"> <description> disabled</description></entry>
+		<entry name="LIMITS_ENABLED" value="2"> <description> checking limits</description></entry>
+		<entry name="LIMITS_TRIGGERED" value="3"> <description> a limit has been breached</description></entry>
+		<entry name="LIMITS_RECOVERING" value="4"> <description> taking action eg. RTL</description></entry>
+		<entry name="LIMITS_RECOVERED" value="5"> <description> we're no longer in breach of a limit</description></entry>
+	</enum>
+	
+	<!--  AP_Limits Modules - power of 2 (1,2,4,8,16,32 etc) so we can send as bitfield -->
+	<enum name="LIMIT_MODULE">
+		<entry name="LIMIT_GPSLOCK" value="1"> <description> pre-initialization</description></entry>
+		<entry name="LIMIT_GEOFENCE" value="2"> <description> disabled</description></entry>
+		<entry name="LIMIT_ALTITUDE" value="4"> <description> checking limits</description></entry>
+	</enum>
 	</enums>
 
      <messages>
@@ -164,7 +183,7 @@
 	    <field name="focus_lock" type="uint8_t">0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus</field>
 	    <field name="shot" type="uint8_t">0: ignore, 1: shot or start filming</field>
 	    <field name="command_id" type="uint8_t">Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once</field>
-	    <field name="extra_param" type="uint8">Extra parameters enumeration (0 means ignore)</field>
+	    <field name="extra_param" type="uint8_t">Extra parameters enumeration (0 means ignore)</field>
 	    <field name="extra_value" type="float">Correspondent value to given extra_param</field>
 	  </message>
 
@@ -202,7 +221,7 @@
 	  <message name="FENCE_POINT" id="160">
 	    <description>A fence point. Used to set a point when from
 	      GCS -> MAV. Also used to return a point from MAV -> GCS</description>
-	    <field name="target_system" type="uint8_t">System ID</field>
+	    <field name="target_system" type="uint8_t">System ID</field>      
 	    <field name="target_component" type="uint8_t">Component ID</field>
 	    <field name="idx" type="uint8_t">point index (first point is 1, 0 is for return point)</field>
 	    <field name="count" type="uint8_t">total number of points (for sanity checking)</field>
@@ -212,7 +231,7 @@
 
 	  <message name="FENCE_FETCH_POINT" id="161">
 	    <description>Request a current fence point from MAV</description>
-	    <field name="target_system" type="uint8_t">System ID</field>
+	    <field name="target_system" type="uint8_t">System ID</field>      
 	    <field name="target_component" type="uint8_t">Component ID</field>
 	    <field name="idx" type="uint8_t">point index (first point is 1, 0 is for return point)</field>
 	  </message>
@@ -225,5 +244,106 @@
 	    <field name="breach_type" type="uint8_t">last breach type (see FENCE_BREACH_* enum)</field>
 	    <field name="breach_time" type="uint32_t">time of last breach in milliseconds since boot</field>
 	  </message>
+
+	  <message name="AHRS" id="163">
+	    <description>Status of DCM attitude estimator</description>
+            <field type="float" name="omegaIx">X gyro drift estimate rad/s</field>
+            <field type="float" name="omegaIy">Y gyro drift estimate rad/s</field>
+            <field type="float" name="omegaIz">Z gyro drift estimate rad/s</field>
+            <field type="float" name="accel_weight">average accel_weight</field>
+            <field type="float" name="renorm_val">average renormalisation value</field>
+            <field type="float" name="error_rp">average error_roll_pitch value</field>
+            <field type="float" name="error_yaw">average error_yaw value</field>
+	  </message>
+
+	  <message name="SIMSTATE" id="164">
+	    <description>Status of simulation environment, if used</description>
+            <field type="float" name="roll">Roll angle (rad)</field>
+            <field type="float" name="pitch">Pitch angle (rad)</field>
+            <field type="float" name="yaw">Yaw angle (rad)</field>
+            <field type="float" name="xacc">X acceleration m/s/s</field>
+            <field type="float" name="yacc">Y acceleration m/s/s</field>
+            <field type="float" name="zacc">Z acceleration m/s/s</field>
+            <field type="float" name="xgyro">Angular speed around X axis rad/s</field>
+            <field type="float" name="ygyro">Angular speed around Y axis rad/s</field>
+            <field type="float" name="zgyro">Angular speed around Z axis rad/s</field>
+            <field type="float" name="lat">Latitude in degrees</field>
+            <field type="float" name="lng">Longitude in degrees</field>
+	  </message>
+
+	  <message name="HWSTATUS" id="165">
+	    <description>Status of key hardware</description>
+            <field type="uint16_t" name="Vcc">board voltage (mV)</field>
+            <field type="uint8_t"  name="I2Cerr">I2C error count</field>
+	  </message>
+
+	  <message name="RADIO" id="166">
+	    <description>Status generated by radio</description>
+            <field type="uint8_t" name="rssi">local signal strength</field>
+            <field type="uint8_t" name="remrssi">remote signal strength</field>
+	    <field type="uint8_t" name="txbuf">how full the tx buffer is as a percentage</field>
+            <field type="uint8_t" name="noise">background noise level</field>
+            <field type="uint8_t" name="remnoise">remote background noise level</field>
+	    <field type="uint16_t" name="rxerrors">receive errors</field>
+	    <field type="uint16_t" name="fixed">count of error corrected packets</field>
+	  </message>
+	  
+	  	  <!--  AP_Limits status -->
+
+	  <message name="LIMITS_STATUS" id="167">
+	    <description>Status of AP_Limits. Sent in extended
+	    status stream when AP_Limits is enabled</description>
+	    <field name="limits_state" type="uint8_t">state of AP_Limits, (see enum LimitState, LIMITS_STATE)</field>
+	    <field name="last_trigger" type="uint32_t">time of last breach in milliseconds since boot</field>
+	    <field name="last_action" type="uint32_t">time of last recovery action in milliseconds since boot</field>
+	    <field name="last_recovery" type="uint32_t">time of last successful recovery in milliseconds since boot</field>
+	    <field name="last_clear" type="uint32_t">time of last all-clear in milliseconds since boot</field>
+	    <field name="breach_count" type="uint16_t">number of fence breaches</field>
+	    <field name="mods_enabled" type="uint8_t">AP_Limit_Module bitfield of enabled modules, (see enum moduleid or LIMIT_MODULE)</field>
+	    <field name="mods_required" type="uint8_t">AP_Limit_Module bitfield of required modules, (see enum moduleid or LIMIT_MODULE)</field>
+	    <field name="mods_triggered" type="uint8_t">AP_Limit_Module bitfield of triggered modules, (see enum moduleid or LIMIT_MODULE)</field>	    
+	  </message>
+
+	  <message name="WIND" id="168">
+	    <description>Wind estimation</description>
+            <field type="float" name="direction">wind direction that wind is coming from (degrees)</field>
+            <field type="float" name="speed">wind speed in ground plane (m/s)</field>
+            <field type="float" name="speed_z">vertical wind speed (m/s)</field>
+	  </message>
+
+	  <message name="DATA16" id="169">
+	    <description>Data packet, size 16</description>
+	    <field type="uint8_t" name="type">data type</field>
+	    <field type="uint8_t" name="len">data length</field>
+	    <field type="uint8_t[16]" name="data">raw data</field>
+	  </message>
+
+	  <message name="DATA32" id="170">
+	    <description>Data packet, size 32</description>
+	    <field type="uint8_t" name="type">data type</field>
+	    <field type="uint8_t" name="len">data length</field>
+	    <field type="uint8_t[32]" name="data">raw data</field>
+	  </message>
+
+	  <message name="DATA64" id="171">
+	    <description>Data packet, size 64</description>
+	    <field type="uint8_t" name="type">data type</field>
+	    <field type="uint8_t" name="len">data length</field>
+	    <field type="uint8_t[64]" name="data">raw data</field>
+	  </message>
+
+	  <message name="DATA96" id="172">
+	    <description>Data packet, size 96</description>
+	    <field type="uint8_t" name="type">data type</field>
+	    <field type="uint8_t" name="len">data length</field>
+	    <field type="uint8_t[96]" name="data">raw data</field>
+	  </message>
+
+	  <message name="RANGEFINDER" id="173">
+	    <description>Rangefinder reporting</description>
+	    <field type="float" name="distance">distance in meters</field>
+	    <field type="float" name="voltage">raw voltage if available, zero otherwise</field>
+	  </message>
+	 
      </messages>
 </mavlink>

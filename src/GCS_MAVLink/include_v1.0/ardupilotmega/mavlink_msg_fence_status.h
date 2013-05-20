@@ -48,7 +48,7 @@ static inline uint16_t mavlink_msg_fence_status_pack(uint8_t system_id, uint8_t 
 	_mav_put_uint8_t(buf, 6, breach_status);
 	_mav_put_uint8_t(buf, 7, breach_type);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 8);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 8);
 #else
 	mavlink_fence_status_t packet;
 	packet.breach_time = breach_time;
@@ -56,7 +56,7 @@ static inline uint16_t mavlink_msg_fence_status_pack(uint8_t system_id, uint8_t 
 	packet.breach_status = breach_status;
 	packet.breach_type = breach_type;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 8);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 8);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_FENCE_STATUS;
@@ -86,7 +86,7 @@ static inline uint16_t mavlink_msg_fence_status_pack_chan(uint8_t system_id, uin
 	_mav_put_uint8_t(buf, 6, breach_status);
 	_mav_put_uint8_t(buf, 7, breach_type);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 8);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 8);
 #else
 	mavlink_fence_status_t packet;
 	packet.breach_time = breach_time;
@@ -94,7 +94,7 @@ static inline uint16_t mavlink_msg_fence_status_pack_chan(uint8_t system_id, uin
 	packet.breach_status = breach_status;
 	packet.breach_type = breach_type;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 8);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 8);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_FENCE_STATUS;

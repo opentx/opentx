@@ -198,7 +198,7 @@ void SERIAL_Init(void) {
 	DDRE &= ~(1 << DDE0); // set RXD0 pin as input
 	PORTE &= ~(1 << PORTE0); // disable pullup on RXD0 pin
 
-	uint8_t b = 1; // TODO g_eeGeneral.baudRate;
+	uint8_t b = 2; // TODO g_eeGeneral.baudRate;
 
 	if (b == 0) {
 		uart_19200();

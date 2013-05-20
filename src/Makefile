@@ -800,7 +800,7 @@ endif
 
 ifeq ($(EXT), MAVLINK)
  CPPDEFS += -DMAVLINK
- CPPSRC += telemetry/mavlink.cpp rotarysw.cpp serial.cpp
+ CPPSRC += telemetry/mavlink.cpp gui/view_mavlink.cpp serial.cpp
 endif
 
 ifeq ($(EXT), TELEMETREZ)

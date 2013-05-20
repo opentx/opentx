@@ -4,7 +4,7 @@
 
 typedef struct __mavlink_scaled_pressure_t
 {
- uint32_t time_boot_ms; ///< Timestamp (microseconds since UNIX epoch or microseconds since system boot)
+ uint32_t time_boot_ms; ///< Timestamp (milliseconds since system boot)
  float press_abs; ///< Absolute pressure (hectopascal)
  float press_diff; ///< Differential pressure 1 (hectopascal)
  int16_t temperature; ///< Temperature measurement (0.01 degrees celsius)
@@ -32,7 +32,7 @@ typedef struct __mavlink_scaled_pressure_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param time_boot_ms Timestamp (microseconds since UNIX epoch or microseconds since system boot)
+ * @param time_boot_ms Timestamp (milliseconds since system boot)
  * @param press_abs Absolute pressure (hectopascal)
  * @param press_diff Differential pressure 1 (hectopascal)
  * @param temperature Temperature measurement (0.01 degrees celsius)
@@ -48,7 +48,7 @@ static inline uint16_t mavlink_msg_scaled_pressure_pack(uint8_t system_id, uint8
 	_mav_put_float(buf, 8, press_diff);
 	_mav_put_int16_t(buf, 12, temperature);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 14);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 14);
 #else
 	mavlink_scaled_pressure_t packet;
 	packet.time_boot_ms = time_boot_ms;
@@ -56,7 +56,7 @@ static inline uint16_t mavlink_msg_scaled_pressure_pack(uint8_t system_id, uint8
 	packet.press_diff = press_diff;
 	packet.temperature = temperature;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 14);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 14);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_SCALED_PRESSURE;
@@ -69,7 +69,7 @@ static inline uint16_t mavlink_msg_scaled_pressure_pack(uint8_t system_id, uint8
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message was sent over
  * @param msg The MAVLink message to compress the data into
- * @param time_boot_ms Timestamp (microseconds since UNIX epoch or microseconds since system boot)
+ * @param time_boot_ms Timestamp (milliseconds since system boot)
  * @param press_abs Absolute pressure (hectopascal)
  * @param press_diff Differential pressure 1 (hectopascal)
  * @param temperature Temperature measurement (0.01 degrees celsius)
@@ -86,7 +86,7 @@ static inline uint16_t mavlink_msg_scaled_pressure_pack_chan(uint8_t system_id, 
 	_mav_put_float(buf, 8, press_diff);
 	_mav_put_int16_t(buf, 12, temperature);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 14);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 14);
 #else
 	mavlink_scaled_pressure_t packet;
 	packet.time_boot_ms = time_boot_ms;
@@ -94,7 +94,7 @@ static inline uint16_t mavlink_msg_scaled_pressure_pack_chan(uint8_t system_id, 
 	packet.press_diff = press_diff;
 	packet.temperature = temperature;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 14);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 14);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_SCALED_PRESSURE;
@@ -118,7 +118,7 @@ static inline uint16_t mavlink_msg_scaled_pressure_encode(uint8_t system_id, uin
  * @brief Send a scaled_pressure message
  * @param chan MAVLink channel to send the message
  *
- * @param time_boot_ms Timestamp (microseconds since UNIX epoch or microseconds since system boot)
+ * @param time_boot_ms Timestamp (milliseconds since system boot)
  * @param press_abs Absolute pressure (hectopascal)
  * @param press_diff Differential pressure 1 (hectopascal)
  * @param temperature Temperature measurement (0.01 degrees celsius)
@@ -154,7 +154,7 @@ static inline void mavlink_msg_scaled_pressure_send(mavlink_channel_t chan, uint
 /**
  * @brief Get field time_boot_ms from scaled_pressure message
  *
- * @return Timestamp (microseconds since UNIX epoch or microseconds since system boot)
+ * @return Timestamp (milliseconds since system boot)
  */
 static inline uint32_t mavlink_msg_scaled_pressure_get_time_boot_ms(const mavlink_message_t* msg)
 {

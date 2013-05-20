@@ -56,7 +56,7 @@ static inline uint16_t mavlink_msg_fence_point_pack(uint8_t system_id, uint8_t c
 	_mav_put_uint8_t(buf, 10, idx);
 	_mav_put_uint8_t(buf, 11, count);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 12);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 12);
 #else
 	mavlink_fence_point_t packet;
 	packet.lat = lat;
@@ -66,7 +66,7 @@ static inline uint16_t mavlink_msg_fence_point_pack(uint8_t system_id, uint8_t c
 	packet.idx = idx;
 	packet.count = count;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 12);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 12);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_FENCE_POINT;
@@ -100,7 +100,7 @@ static inline uint16_t mavlink_msg_fence_point_pack_chan(uint8_t system_id, uint
 	_mav_put_uint8_t(buf, 10, idx);
 	_mav_put_uint8_t(buf, 11, count);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 12);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 12);
 #else
 	mavlink_fence_point_t packet;
 	packet.lat = lat;
@@ -110,7 +110,7 @@ static inline uint16_t mavlink_msg_fence_point_pack_chan(uint8_t system_id, uint
 	packet.idx = idx;
 	packet.count = count;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 12);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 12);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_FENCE_POINT;

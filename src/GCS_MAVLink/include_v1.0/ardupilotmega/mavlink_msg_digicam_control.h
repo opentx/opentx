@@ -72,7 +72,7 @@ static inline uint16_t mavlink_msg_digicam_control_pack(uint8_t system_id, uint8
 	_mav_put_uint8_t(buf, 11, command_id);
 	_mav_put_uint8_t(buf, 12, extra_param);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 13);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 13);
 #else
 	mavlink_digicam_control_t packet;
 	packet.extra_value = extra_value;
@@ -86,7 +86,7 @@ static inline uint16_t mavlink_msg_digicam_control_pack(uint8_t system_id, uint8
 	packet.command_id = command_id;
 	packet.extra_param = extra_param;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 13);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 13);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_DIGICAM_CONTROL;
@@ -128,7 +128,7 @@ static inline uint16_t mavlink_msg_digicam_control_pack_chan(uint8_t system_id, 
 	_mav_put_uint8_t(buf, 11, command_id);
 	_mav_put_uint8_t(buf, 12, extra_param);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 13);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 13);
 #else
 	mavlink_digicam_control_t packet;
 	packet.extra_value = extra_value;
@@ -142,7 +142,7 @@ static inline uint16_t mavlink_msg_digicam_control_pack_chan(uint8_t system_id, 
 	packet.command_id = command_id;
 	packet.extra_param = extra_param;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 13);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 13);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_DIGICAM_CONTROL;

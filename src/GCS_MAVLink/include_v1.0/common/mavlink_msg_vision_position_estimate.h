@@ -4,7 +4,7 @@
 
 typedef struct __mavlink_vision_position_estimate_t
 {
- uint64_t usec; ///< Timestamp (milliseconds)
+ uint64_t usec; ///< Timestamp (microseconds, synced to UNIX time or since system boot)
  float x; ///< Global X position
  float y; ///< Global Y position
  float z; ///< Global Z position
@@ -38,7 +38,7 @@ typedef struct __mavlink_vision_position_estimate_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param usec Timestamp (milliseconds)
+ * @param usec Timestamp (microseconds, synced to UNIX time or since system boot)
  * @param x Global X position
  * @param y Global Y position
  * @param z Global Z position
@@ -60,7 +60,7 @@ static inline uint16_t mavlink_msg_vision_position_estimate_pack(uint8_t system_
 	_mav_put_float(buf, 24, pitch);
 	_mav_put_float(buf, 28, yaw);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 32);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 32);
 #else
 	mavlink_vision_position_estimate_t packet;
 	packet.usec = usec;
@@ -71,7 +71,7 @@ static inline uint16_t mavlink_msg_vision_position_estimate_pack(uint8_t system_
 	packet.pitch = pitch;
 	packet.yaw = yaw;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 32);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 32);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_VISION_POSITION_ESTIMATE;
@@ -84,7 +84,7 @@ static inline uint16_t mavlink_msg_vision_position_estimate_pack(uint8_t system_
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message was sent over
  * @param msg The MAVLink message to compress the data into
- * @param usec Timestamp (milliseconds)
+ * @param usec Timestamp (microseconds, synced to UNIX time or since system boot)
  * @param x Global X position
  * @param y Global Y position
  * @param z Global Z position
@@ -107,7 +107,7 @@ static inline uint16_t mavlink_msg_vision_position_estimate_pack_chan(uint8_t sy
 	_mav_put_float(buf, 24, pitch);
 	_mav_put_float(buf, 28, yaw);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 32);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 32);
 #else
 	mavlink_vision_position_estimate_t packet;
 	packet.usec = usec;
@@ -118,7 +118,7 @@ static inline uint16_t mavlink_msg_vision_position_estimate_pack_chan(uint8_t sy
 	packet.pitch = pitch;
 	packet.yaw = yaw;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 32);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 32);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_VISION_POSITION_ESTIMATE;
@@ -142,7 +142,7 @@ static inline uint16_t mavlink_msg_vision_position_estimate_encode(uint8_t syste
  * @brief Send a vision_position_estimate message
  * @param chan MAVLink channel to send the message
  *
- * @param usec Timestamp (milliseconds)
+ * @param usec Timestamp (microseconds, synced to UNIX time or since system boot)
  * @param x Global X position
  * @param y Global Y position
  * @param z Global Z position
@@ -187,7 +187,7 @@ static inline void mavlink_msg_vision_position_estimate_send(mavlink_channel_t c
 /**
  * @brief Get field usec from vision_position_estimate message
  *
- * @return Timestamp (milliseconds)
+ * @return Timestamp (microseconds, synced to UNIX time or since system boot)
  */
 static inline uint64_t mavlink_msg_vision_position_estimate_get_usec(const mavlink_message_t* msg)
 {

@@ -2,7 +2,7 @@
 branch="master" 
 trap exit ERR
 rm -rf _tmp
-git clone git://github.com/pixhawk/mavlink.git -b $branch _tmp
+git clone git://github.com/mavlink/mavlink.git -b $branch _tmp
 rm -rf _tmp/.git
 rsync -av _tmp/* .
 rm -rf _tmp

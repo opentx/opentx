@@ -56,7 +56,7 @@ static inline uint16_t mavlink_msg_mount_configure_pack(uint8_t system_id, uint8
 	_mav_put_uint8_t(buf, 4, stab_pitch);
 	_mav_put_uint8_t(buf, 5, stab_yaw);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 6);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 6);
 #else
 	mavlink_mount_configure_t packet;
 	packet.target_system = target_system;
@@ -66,7 +66,7 @@ static inline uint16_t mavlink_msg_mount_configure_pack(uint8_t system_id, uint8
 	packet.stab_pitch = stab_pitch;
 	packet.stab_yaw = stab_yaw;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 6);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 6);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_MOUNT_CONFIGURE;
@@ -100,7 +100,7 @@ static inline uint16_t mavlink_msg_mount_configure_pack_chan(uint8_t system_id, 
 	_mav_put_uint8_t(buf, 4, stab_pitch);
 	_mav_put_uint8_t(buf, 5, stab_yaw);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 6);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 6);
 #else
 	mavlink_mount_configure_t packet;
 	packet.target_system = target_system;
@@ -110,7 +110,7 @@ static inline uint16_t mavlink_msg_mount_configure_pack_chan(uint8_t system_id, 
 	packet.stab_pitch = stab_pitch;
 	packet.stab_yaw = stab_yaw;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 6);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 6);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_MOUNT_CONFIGURE;

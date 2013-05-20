@@ -52,7 +52,7 @@ static inline uint16_t mavlink_msg_mount_status_pack(uint8_t system_id, uint8_t 
 	_mav_put_uint8_t(buf, 12, target_system);
 	_mav_put_uint8_t(buf, 13, target_component);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 14);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 14);
 #else
 	mavlink_mount_status_t packet;
 	packet.pointing_a = pointing_a;
@@ -61,7 +61,7 @@ static inline uint16_t mavlink_msg_mount_status_pack(uint8_t system_id, uint8_t 
 	packet.target_system = target_system;
 	packet.target_component = target_component;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 14);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 14);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_MOUNT_STATUS;
@@ -93,7 +93,7 @@ static inline uint16_t mavlink_msg_mount_status_pack_chan(uint8_t system_id, uin
 	_mav_put_uint8_t(buf, 12, target_system);
 	_mav_put_uint8_t(buf, 13, target_component);
 
-        memcpy(_MAV_PAYLOAD(msg), buf, 14);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 14);
 #else
 	mavlink_mount_status_t packet;
 	packet.pointing_a = pointing_a;
@@ -102,7 +102,7 @@ static inline uint16_t mavlink_msg_mount_status_pack_chan(uint8_t system_id, uin
 	packet.target_system = target_system;
 	packet.target_component = target_component;
 
-        memcpy(_MAV_PAYLOAD(msg), &packet, 14);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 14);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_MOUNT_STATUS;

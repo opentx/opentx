@@ -7,8 +7,8 @@ typedef struct __mavlink_param_value_t
  float param_value; ///< Onboard parameter value
  uint16_t param_count; ///< Total number of onboard parameters
  uint16_t param_index; ///< Index of this onboard parameter
- char param_id[16]; ///< Onboard parameter id
- uint8_t param_type; ///< Onboard parameter type: see MAV_VAR enum
+ char param_id[16]; ///< Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
+ uint8_t param_type; ///< Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types.
 } mavlink_param_value_t;
 
 #define MAVLINK_MSG_ID_PARAM_VALUE_LEN 25
@@ -34,9 +34,9 @@ typedef struct __mavlink_param_value_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param param_id Onboard parameter id
+ * @param param_id Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
  * @param param_value Onboard parameter value
- * @param param_type Onboard parameter type: see MAV_VAR enum
+ * @param param_type Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types.
  * @param param_count Total number of onboard parameters
  * @param param_index Index of this onboard parameter
  * @return length of the message in bytes (excluding serial stream start sign)
@@ -51,7 +51,7 @@ static inline uint16_t mavlink_msg_param_value_pack(uint8_t system_id, uint8_t c
 	_mav_put_uint16_t(buf, 6, param_index);
 	_mav_put_uint8_t(buf, 24, param_type);
 	_mav_put_char_array(buf, 8, param_id, 16);
-        memcpy(_MAV_PAYLOAD(msg), buf, 25);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 25);
 #else
 	mavlink_param_value_t packet;
 	packet.param_value = param_value;
@@ -59,7 +59,7 @@ static inline uint16_t mavlink_msg_param_value_pack(uint8_t system_id, uint8_t c
 	packet.param_index = param_index;
 	packet.param_type = param_type;
 	mav_array_memcpy(packet.param_id, param_id, sizeof(char)*16);
-        memcpy(_MAV_PAYLOAD(msg), &packet, 25);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 25);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_PARAM_VALUE;
@@ -72,9 +72,9 @@ static inline uint16_t mavlink_msg_param_value_pack(uint8_t system_id, uint8_t c
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message was sent over
  * @param msg The MAVLink message to compress the data into
- * @param param_id Onboard parameter id
+ * @param param_id Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
  * @param param_value Onboard parameter value
- * @param param_type Onboard parameter type: see MAV_VAR enum
+ * @param param_type Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types.
  * @param param_count Total number of onboard parameters
  * @param param_index Index of this onboard parameter
  * @return length of the message in bytes (excluding serial stream start sign)
@@ -90,7 +90,7 @@ static inline uint16_t mavlink_msg_param_value_pack_chan(uint8_t system_id, uint
 	_mav_put_uint16_t(buf, 6, param_index);
 	_mav_put_uint8_t(buf, 24, param_type);
 	_mav_put_char_array(buf, 8, param_id, 16);
-        memcpy(_MAV_PAYLOAD(msg), buf, 25);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, 25);
 #else
 	mavlink_param_value_t packet;
 	packet.param_value = param_value;
@@ -98,7 +98,7 @@ static inline uint16_t mavlink_msg_param_value_pack_chan(uint8_t system_id, uint
 	packet.param_index = param_index;
 	packet.param_type = param_type;
 	mav_array_memcpy(packet.param_id, param_id, sizeof(char)*16);
-        memcpy(_MAV_PAYLOAD(msg), &packet, 25);
+        memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, 25);
 #endif
 
 	msg->msgid = MAVLINK_MSG_ID_PARAM_VALUE;
@@ -122,9 +122,9 @@ static inline uint16_t mavlink_msg_param_value_encode(uint8_t system_id, uint8_t
  * @brief Send a param_value message
  * @param chan MAVLink channel to send the message
  *
- * @param param_id Onboard parameter id
+ * @param param_id Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
  * @param param_value Onboard parameter value
- * @param param_type Onboard parameter type: see MAV_VAR enum
+ * @param param_type Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types.
  * @param param_count Total number of onboard parameters
  * @param param_index Index of this onboard parameter
  */
@@ -159,7 +159,7 @@ static inline void mavlink_msg_param_value_send(mavlink_channel_t chan, const ch
 /**
  * @brief Get field param_id from param_value message
  *
- * @return Onboard parameter id
+ * @return Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
  */
 static inline uint16_t mavlink_msg_param_value_get_param_id(const mavlink_message_t* msg, char *param_id)
 {
@@ -179,7 +179,7 @@ static inline float mavlink_msg_param_value_get_param_value(const mavlink_messag
 /**
  * @brief Get field param_type from param_value message
  *
- * @return Onboard parameter type: see MAV_VAR enum
+ * @return Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types.
  */
 static inline uint8_t mavlink_msg_param_value_get_param_type(const mavlink_message_t* msg)
 {

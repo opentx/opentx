@@ -1187,7 +1187,6 @@ inline bool isFunctionActive(uint8_t func)
   #include "telemetry/nmea.h"
 #elif defined(MAVLINK)
   // Mavlink Telemetry
-  #include "rotarysw.h"
   #include "telemetry/mavlink.h"
 #endif
 
