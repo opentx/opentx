@@ -1040,6 +1040,11 @@ bool __getSwitch(int8_t swtch)
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
             if (!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2)
               return swtch > 0 ? false : true;
+              	
+#if defined (PCBTARANIS)
+          if (cs->v1 == MIXSRC_FIRST_TELEM+TELEM_A2-1 && g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_X16)
+          	 return swtch > 0 ? false : true;
+#endif
 
             y = convertCswTelemValue(cs);
 
@@ -3661,8 +3666,8 @@ void perMain()
 #if defined(PCBTARANIS)
   if (usbState == USB_DISCONNECTING) {
     eeReadAll();
-    eeLoadModel(g_eeGeneral.currModel);
     sdInit();
+    eeLoadModel(g_eeGeneral.currModel);
     usbState = USB_DISCONNECTED;
   }
 #endif
