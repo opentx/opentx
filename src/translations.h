@@ -145,20 +145,23 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_DATETIME           (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #if defined(PCBGRUVIN9X) || defined(CPUARM)
   #define OFS_VLCD             (OFS_DATETIME + sizeof(TR_DATETIME))
+#else
+  #define OFS_VLCD             (OFS_DATETIME)
+#endif
+#if defined(CPUARM)
   #define OFS_VUNITSSYSTEM     (OFS_VLCD + sizeof(TR_VLCD))
 #else
-  #define OFS_VUNITSSYSTEM     (OFS_DATETIME)
+  #define OFS_VUNITSSYSTEM     (OFS_VLCD)
 #endif
 #if defined(CPUARM)
   #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
+#else
+  #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM)
+#endif
+#if defined(PXX)
   #define OFS_VFAILSAFE        (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
 #else
-  #if defined (PXX)
-    #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM)
-    #define OFS_VFAILSAFE        (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
-  #else
-    #define OFS_VFAILSAFE        (OFS_VUNITSSYSTEM)
-  #endif
+  #define OFS_VFAILSAFE        (OFS_COUNTRYCODES)
 #endif
 #if defined(PXX)
   #define OFS_VTRAINERMODES    (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))

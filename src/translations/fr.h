@@ -632,7 +632,7 @@
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Port.]"
 #define TR_RESET               "[RAZ]"
-#define TR_SET                 "[D\200fin.]"
+#define TR_SET                 "[D\200f.]"
 #define TR_TRAINER             "Ecolage"
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio d\200fectueuse!"
 #define TR_MODELIDUSED         TR("ID d\200j\202 affect\200","No de modèle d\200j\202 utilis\200")
