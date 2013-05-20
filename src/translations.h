@@ -153,7 +153,12 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
   #define OFS_VFAILSAFE        (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
 #else
-  #define OFS_VFAILSAFE        (OFS_VUNITSSYSTEM)
+  #if defined (PXX)
+    #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM)
+    #define OFS_VFAILSAFE        (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
+  #else
+    #define OFS_VFAILSAFE        (OFS_VUNITSSYSTEM)
+  #endif
 #endif
 #if defined(PXX)
   #define OFS_VTRAINERMODES    (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
