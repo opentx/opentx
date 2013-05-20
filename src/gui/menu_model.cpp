@@ -1185,8 +1185,7 @@ void menuModelSetup(uint8_t event)
           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].rfProtocol, RF_PROTO_OFF, RF_PROTO_LAST);
           if (checkIncDec_Ret) {
             g_model.moduleData[0].channelsStart = 0;
-            g_model.moduleData[0].channelsCount = MAX_PORT1_CHANNELS();
-            setupPulses(INTERNAL_MODULE);
+            g_model.moduleData[0].channelsCount = 0;
           }
         }
         break;
@@ -1206,7 +1205,6 @@ void menuModelSetup(uint8_t event)
                   g_model.moduleData[1].channelsCount = 0;
                 else
                   g_model.moduleData[1].channelsCount = MAX_PORT2_CHANNELS();
-                setupPulses(EXTERNAL_MODULE);
               }
               break;
             case 1:
