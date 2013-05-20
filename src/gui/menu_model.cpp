@@ -350,7 +350,7 @@ void menuModelSelect(uint8_t event)
 #endif
 
 #if defined(PCBTARANIS)
-  static int8_t modelselBitmapIdx = -1;
+  static int8_t modelselBitmapIdx;
   static uint8_t modelselBitmap[MODEL_BITMAP_SIZE];
 #endif
 
@@ -363,6 +363,9 @@ void menuModelSelect(uint8_t event)
         if (sub >= LCD_LINES-1) s_pgOfs = sub-LCD_LINES+2;
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
+#if defined(PCBTARANIS)
+        modelselBitmapIdx = -1;
+#endif
         eeCheck(true);
         break;
       case EVT_KEY_LONG(KEY_EXIT):
