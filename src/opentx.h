@@ -476,6 +476,7 @@ enum EnumKeys {
 #elif defined(PCBSKY9X)
   #define NUM_PORT1_CHANNELS()      (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+g_model.moduleData[0].channelsCount)))
   #define NUM_PORT2_CHANNELS()      (8+g_model.moduleData[1].channelsCount)
+  #define NUM_CHANNELS(idx)         (idx==0 ? NUM_PORT1_CHANNELS() : (8+g_model.moduleData[idx].channelsCount))
 #endif
 
 #include "lcd.h"
