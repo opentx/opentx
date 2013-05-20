@@ -85,7 +85,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
     if(!g_model.moduleData[TRAINER_MODULE].ppmPulsePol)
       TIM3->CCER |= TIM_CCER_CC4P;
     else
-    	TIM3->CCER &= ~TIM_CCER_CC4P;
+      TIM3->CCER &= ~TIM_CCER_CC4P;
   }
   else if (port == EXTERNAL_MODULE) {
     TIM8->CCR2 = rest - 1000;             // Update time
@@ -93,7 +93,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
     if(!g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol)
       TIM8->CCER |= TIM_CCER_CC1NP;
     else
-    	TIM8->CCER &= ~TIM_CCER_CC1NP;
+      TIM8->CCER &= ~TIM_CCER_CC1NP;
   }
   else {
     TIM1->CCR2 = rest - 1000;             // Update time
