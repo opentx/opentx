@@ -236,7 +236,7 @@
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
-  #define TR_VUNITSSYSTEM      TR("Metric""Imper.", "Metric\0 ""Imperial")
+  #define TR_VUNITSSYSTEM      TR("Metri.""Imper.", "Metriskt""Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -342,10 +342,10 @@
 #define TR_VTMRMODES           "AV ""ABS""GAs""GA%""GAt"
 
 #define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Master""Slave\0"
+#define TR_VTRAINERMODES       "Master""Slav\0."
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
+#define TR_VFAILSAFE           "H\200ll\0    ""Special\0 ""Pulsfritt"
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -599,7 +599,7 @@
 #define TR_SD_SIZE             "Strl:"
 #define TR_TYPE                "Typ "
 #define TR_GLOBAL_VARS         "Globala Variabler"
-#define TR_GLOBAL_VAR          "Global Variable"
+#define TR_GLOBAL_VAR          "Global Variabel"
 #define TR_MENUGLOBALVARS      "GLOBALA VARIABLER"
 #define TR_OWN                 "Egen"
 #define TR_DATE                "Datum"
@@ -610,78 +610,78 @@
 #define TR_FAILSAFE            "Failsafe-l\201ge"
 #define TR_FAILSAFESET         "FailsafeInst\201llning"
 #define TR_COUNTRYCODE         "Landskod"
-#define TR_VOICELANG           "Voice Language"
-#define TR_UNITSSYSTEM         "Units"
-#define TR_EDIT                "Edit"
-#define TR_INSERT_BEFORE       "Insert Before"
-#define TR_INSERT_AFTER        "Insert After"
-#define TR_COPY                "Copy"
-#define TR_MOVE                "Move"
-#define TR_DELETE              "Delete"
-#define TR_RESET_FLIGHT        "Reset Flight"
+#define TR_VOICELANG           "R\202st-spr\200k"
+#define TR_UNITSSYSTEM         "Enheter"
+#define TR_EDIT                "Redigera"
+#define TR_INSERT_BEFORE       "Addera F\202re"
+#define TR_INSERT_AFTER        "Addera Efter"
+#define TR_COPY                "Kopiera"
+#define TR_MOVE                "Flytta"
+#define TR_DELETE              "Radera"
+#define TR_RESET_FLIGHT        "Reset Flygning"
 #define TR_RESET_TIMER1        "Reset Timer1"
 #define TR_RESET_TIMER2        "Reset Timer2"
-#define TR_RESET_TELEMETRY     "Reset Telemetry"
-#define TR_STATISTICS          "Statistics"
-#define TR_ABOUT_US            "About Us"
-#define TR_AND_SWITCH          "AND Switch"
+#define TR_RESET_TELEMETRY     "Reset Telemetri"
+#define TR_STATISTICS          "Statistik"
+#define TR_ABOUT_US            "Om Oss"
+#define TR_AND_SWITCH          "AND Brytare"
 #define TR_CF                  "CF"
-#define TR_SPEAKER             INDENT"Speaker"
-#define TR_BUZZER              INDENT"Buzzer"
+#define TR_SPEAKER             INDENT"H\202gtalare"
+#define TR_BUZZER              INDENT"Summer"
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
-#define TR_MODULE_RANGE        "[Range]"
+#define TR_MODULE_RANGE        "[R\201ckvidd]"
 #define TR_RESET               "[Reset]"
-#define TR_SET                 "[Set]"
+#define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"
-#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
-#define TR_MODELIDUSED         TR("ID already used","Model ID already used")
-#define TR_MODULE              INDENT "Module"
-#define TR_CHANNELRANGE        INDENT "Channel Range"
-#define TR_LOWALARM            INDENT "Low Alarm"
-#define TR_CRITICALALARM       INDENT "Critical Alarm"
+#define TR_ANTENNAPROBLEM      CENTER "Fel p\200 TX-antennen"
+#define TR_MODELIDUSED         TR("ID finns redan","ModellID anv\201nds redan")
+#define TR_MODULE              INDENT "Modul"
+#define TR_CHANNELRANGE        INDENT "Kanalomr\200de"
+#define TR_LOWALARM            INDENT "L\200g-alarm"
+#define TR_CRITICALALARM       INDENT "Kritiskt alarm"
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " }
-#define TR_LIMITS_HEADERS      { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symmetrical " }
-#define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
+#define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Trimmar ", " Tona Upp ", " Tona Ned " }
+#define TR_LIMITS_HEADERS      { " Namn ", " Offset ", " Min ", " Max ", " Riktning ", " PPM-centrum ", " Symmetriskt " }
+#define TR_CSW_HEADERS         { " Funktion ", " V1 ", " V2 ", " AND Brytare ", " Tidsl\201ngd ", " F\202rdr\202j " }
 
 //Taranis About screen
-#define TR_ABOUTUS             "ABOUT US"
+#define TR_ABOUTUS             "Om Oss"
 
-#define TR_ABOUT_OPENTX_1      "OpenTX is open source, non-"
-#define TR_ABOUT_OPENTX_2      "commercial and comes with no"
-#define TR_ABOUT_OPENTX_3      "warranties. It was developed"
-#define TR_ABOUT_OPENTX_4      "for free. Support through"
-#define TR_ABOUT_OPENTX_5      "donations is welcome!"
+#define TR_ABOUT_OPENTX_1      "OpenTX \201r icke-kommersiell,"
+#define TR_ABOUT_OPENTX_2      "\202ppen programvara utan"
+#define TR_ABOUT_OPENTX_3      "garantier som uvecklas helt"
+#define TR_ABOUT_OPENTX_4      "ideellt. St\202d i form av"
+#define TR_ABOUT_OPENTX_5      "donationer v\201lkomnas!"
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "OpenTX main author"
-#define TR_ABOUT_BERTRAND_3    "Companion9x co-developer"
+#define TR_ABOUT_BERTRAND_2    "OpenTX chefsutvecklare"
+#define TR_ABOUT_BERTRAND_3    "Companion9x hj\201lputvecklare"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
-#define TR_ABOUT_MIKE_2        "Code and drivers guru"
-#define TR_ABOUT_MIKE_3        "Arguably, one of the best"
-#define TR_ABOUT_MIKE_4        "Inspirational"
+#define TR_ABOUT_MIKE_2        "Kod och drivrutins-guru"
+#define TR_ABOUT_MIKE_3        "Utan tvekan en av de b\201sta"
+#define TR_ABOUT_MIKE_4        "En Inspiration"
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Companion9x main developer"
+#define TR_ABOUT_ROMOLO_2      "Companion9x chefsutvecklare"
 #define TR_ABOUT_ROMOLO_3      ""
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
-#define TR_ABOUT_ANDRE_2       "Functionality, usability,"
-#define TR_ABOUT_ANDRE_3       "debugging, documentation"
+#define TR_ABOUT_ANDRE_2       "Funktionalitet, anv\201ndbarhet,"
+#define TR_ABOUT_ANDRE_3       "debugging, dokumentation"
 
 #define TR_ABOUT_ROB_1         "Rob Thomson"
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
-#define TR_ABOUT_MARTIN_2      "Graphics designer"
+#define TR_ABOUT_MARTIN_2      "Grafikdesigner"
 
 #define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "Hardware designer/producer"
+#define TR_ABOUT_HARDWARE_2    "H\200rdvarudesign/produktion"
 
-#define TR_ABOUT_PARENTS_1     "Parent projects"
+#define TR_ABOUT_PARENTS_1     "Ursprungsprojekt"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
 #define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
