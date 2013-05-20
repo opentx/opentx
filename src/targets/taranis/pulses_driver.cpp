@@ -443,7 +443,9 @@ static void init_pa7_ppm()
 #if defined(REV3)
   TIM8->CCER = TIM_CCER_CC1E ;
 #else
-  TIM8->CCER = TIM_CCER_CC1NE | TIM_CCER_CC1NP ;
+  TIM8->CCER = TIM_CCER_CC1NE;
+  if(!g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol)
+    TIM8->CCER |= TIM_CCER_CC1NP;
 #endif
   TIM8->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE ;                   // PWM mode 1
   TIM8->CCR1 = (g_model.moduleData[EXTERNAL_MODULE].ppmDelay*50+300)*2;
