@@ -3004,6 +3004,18 @@ void onExpoMixMenu(const char *result)
 }
 #endif
 
+#if LCD_W >= 212
+void displayHeaderChannelName(uint8_t ch)
+{
+  uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
+  if (len) {
+    lcd_putc(17*FW, 0, ' ');
+    lcd_putsnAtt(18*FW, 0, g_model.limitData[ch-1].name, len, ZCHAR);
+    lcd_putc(18*FW+len*FW, 0, ' ');
+  }
+}
+#endif
+
 void menuModelExpoMix(uint8_t expo, uint8_t event)
 {
   uint8_t sub = m_posVert;
@@ -3165,10 +3177,12 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
     uint8_t y = 1+(cur-s_pgOfs)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoaddress(i))->chn+1 == ch && ed->mode) : (i<MAX_MIXERS && (md=mixaddress(i))->srcRaw && md->destCh+1 == ch)) {
       if (s_pgOfs < cur && cur-s_pgOfs < LCD_LINES) {
-        if (expo)
+        if (expo) {
           putsMixerSource(0, y, ch, 0);
-        else
+        }
+        else {
           putsChn(0, y, ch, 0); // show CHx
+        }
       }
       uint8_t mixCnt = 0;
       do {
@@ -3216,12 +3230,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           else {
 #if LCD_W >= 212
             if (attr) {
-              uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
-              if (len) {
-                lcd_putc(17*FW, 0, ' ');
-                lcd_putsnAtt(18*FW, 0, g_model.limitData[ch-1].name, len, ZCHAR);
-                lcd_putc(18*FW+len*FW, 0, ' ');
-              }
+              displayHeaderChannelName(ch);
             }
 #endif
 
@@ -3287,10 +3296,17 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         }
       }
       if (s_pgOfs < cur && cur-s_pgOfs < LCD_LINES) {
-        if (expo)
+        if (expo) {
           putsMixerSource(0, y, ch, attr);
-        else
+        }
+        else {
           putsChn(0, y, ch, attr); // show CHx
+#if LCD_W >= 212
+          if (attr) {
+            displayHeaderChannelName(ch);
+          }
+#endif
+        }
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
           lcd_rect(expo ? EXPO_LINE_SELECT_POS : 22, y-1, expo ? (LCD_W-EXPO_LINE_SELECT_POS) : (LCD_W-22), 9, DOTTED);
         }
