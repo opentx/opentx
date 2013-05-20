@@ -36,6 +36,13 @@
 
 #include "../opentx.h"
 
+#define STATUS_BAR_Y     (7*FH+1)
+#if LCD_W >= 212
+  #define TELEM_2ND_COLUMN (11*FW)
+#else
+  #define TELEM_2ND_COLUMN (10*FW)
+#endif
+
 #if defined(FRSKY_HUB)
 uint8_t barsThresholds[THLD_MAX];
 #endif
@@ -57,12 +64,12 @@ void displayRssiLine()
   if (TELEMETRY_STREAMING()) {
     lcd_hline(0, 55, 212, 0); // separator
     uint8_t rssi = min((uint8_t)99, frskyData.rssi[0].value);
-    lcd_putsLeft(7*FH+1, STR_RX); lcd_outdezNAtt(4*FW, 7*FH+1, rssi, LEADING0, 2);
+    lcd_putsLeft(STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(25, 57, 78, 7);
     lcd_filled_rect(26, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
-    lcd_putsAtt(7*FW, 7*FH+1, STR_NODATA, BLINK);
+    lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
     lcd_status_line();
   }
 }
@@ -72,17 +79,17 @@ void displayRssiLine()
   if (TELEMETRY_STREAMING()) {
     lcd_hline(0, 55, 128, 0); // separator
     uint8_t rssi = min((uint8_t)99, frskyData.rssi[1].value);
-    lcd_putsLeft(7*FH+1, STR_TX); lcd_outdezNAtt(4*FW, 7*FH+1, rssi, LEADING0, 2);
+    lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(25, 57, 38, 7);
     lcd_filled_rect(26, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
     rssi = min((uint8_t)99, frskyData.rssi[0].value);
-    lcd_puts(105, 7*FH+1, STR_RX); lcd_outdezNAtt(105+4*FW-1, 7*FH+1, rssi, LEADING0, 2);
+    lcd_puts(105, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW-1, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
     lcd_filled_rect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
-    lcd_putsAtt(7*FW, 7*FH+1, STR_NODATA, BLINK);
+    lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
     lcd_status_line();
   }
 }
@@ -91,13 +98,12 @@ void displayRssiLine()
 #if defined(FRSKY_HUB)
 void displayGpsTime()
 {
-#define TIME_LINE (7*FH+1)
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
-  lcd_outdezNAtt(6*FW+5, TIME_LINE, frskyData.hub.hour, att, 2);
-  lcd_putcAtt(8*FW+2, TIME_LINE, ':', att);
-  lcd_outdezNAtt(9*FW+2, TIME_LINE, frskyData.hub.min, att, 2);
-  lcd_putcAtt(11*FW-1, TIME_LINE, ':', att);
-  lcd_outdezNAtt(12*FW-1, TIME_LINE, frskyData.hub.sec, att, 2);
+  lcd_outdezNAtt(CENTER_OFS+6*FW+5, STATUS_BAR_Y, frskyData.hub.hour, att, 2);
+  lcd_putcAtt(CENTER_OFS+8*FW+2, STATUS_BAR_Y, ':', att);
+  lcd_outdezNAtt(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
+  lcd_putcAtt(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
+  lcd_outdezNAtt(CENTER_OFS+12*FW-1, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
   lcd_status_line();
 }
 
@@ -105,7 +111,7 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 {
   if (frskyData.hub.gpsFix >= 0) {
     if (!direction) direction = '-';
-    lcd_outdezAtt(10*FW, y, bp / 100, LEFT); // ddd before '.'
+    lcd_outdezAtt(TELEM_2ND_COLUMN, y, bp / 100, LEFT); // ddd before '.'
     lcd_putc(lcdLastPos, y, '@');
     uint8_t mn = bp % 100;
     if (g_eeGeneral.gpsFormat == 0) {
@@ -128,7 +134,7 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
   }
   else {
     // no fix
-    lcd_puts(10*FW, y, STR_VCSWFUNC+1/*----*/);
+    lcd_puts(TELEM_2ND_COLUMN, y, STR_VCSWFUNC+1/*----*/);
   }
 }
 #endif
@@ -146,9 +152,15 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
   lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
 }
 
+#if LCD_W >= 212
+  #define BAR_WIDTH   160
+#else
+  #define BAR_WIDTH   100
+#endif
+
 uint8_t barCoord(int16_t value, int16_t min, int16_t max)
 {
-  return limit((uint8_t)0, (uint8_t)(((int32_t)99 * (value - min)) / (max - min)), (uint8_t)100);
+  return limit((uint8_t)0, (uint8_t)(((int32_t)(BAR_WIDTH-1) * (value - min)) / (max - min)), (uint8_t)BAR_WIDTH);
 }
 
 void menuTelemetryFrsky(uint8_t event)
@@ -201,7 +213,7 @@ void menuTelemetryFrsky(uint8_t event)
         if (source && barMax > barMin) {
           uint8_t y = barHeight+6+i*(barHeight+6);
           lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
-          lcd_rect(25, y, 101, barHeight+2);
+          lcd_rect(25, y, BAR_WIDTH+1, barHeight+2);
           getvalue_t value = getValue(MIXSRC_FIRST_TELEM+source-2);
           getvalue_t threshold = 0;
           uint8_t thresholdX = 0;
@@ -261,10 +273,10 @@ void menuTelemetryFrsky(uint8_t event)
             if (TELEMETRY_STREAMING()) {
 #if defined(FRSKY_HUB)
               if (field == TELEM_ACC) {
-                lcd_putsLeft(7*FH+1, STR_ACCEL);
-                lcd_outdezNAtt(4*FW, 7*FH+1, frskyData.hub.accelX, LEFT|PREC2);
-                lcd_outdezNAtt(10*FW, 7*FH+1, frskyData.hub.accelY, LEFT|PREC2);
-                lcd_outdezNAtt(16*FW, 7*FH+1, frskyData.hub.accelZ, LEFT|PREC2);
+                lcd_putsLeft(STATUS_BAR_Y, STR_ACCEL);
+                lcd_outdezNAtt(4*FW, STATUS_BAR_Y, frskyData.hub.accelX, LEFT|PREC2);
+                lcd_outdezNAtt(10*FW, STATUS_BAR_Y, frskyData.hub.accelY, LEFT|PREC2);
+                lcd_outdezNAtt(16*FW, STATUS_BAR_Y, frskyData.hub.accelZ, LEFT|PREC2);
                 break;
               }
               else if (field == TELEM_GPS_TIME) {
@@ -376,10 +388,14 @@ void menuTelemetryFrsky(uint8_t event)
     }
     // Rssi
     lcd_putsLeft(line, STR_MINRSSI);
-    lcd_puts(10*FW, line, STR_TX);
-    lcd_outdezNAtt(lcdLastPos, line, frskyData.rssi[1].min, LEFT|LEADING0, 2);
-    lcd_puts(16*FW, line, STR_RX);
-    lcd_outdezNAtt(lcdLastPos, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
+#if defined(PCBTARANIS)
+    lcd_outdezNAtt(TELEM_2ND_COLUMN, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
+#else
+    lcd_puts(TELEM_2ND_COLUMN, line, STR_TX);
+    lcd_outdezNAtt(TELEM_2ND_COLUMN+3*FW, line, frskyData.rssi[1].min, LEFT|LEADING0, 2);
+    lcd_puts(TELEM_2ND_COLUMN+6*FW, line, STR_RX);
+    lcd_outdezNAtt(TELEM_2ND_COLUMN+9*FW, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
+#endif
   }
 #endif    
 }
