@@ -81,7 +81,7 @@ void menuAboutView(uint8_t event)
   }
 
   lcd_bmp(0, 0, about_bmp);
-  lcd_putsAtt(64, 0, PSTR("ABOUT US"), DBLSIZE);
+  lcd_putsAtt(64, 0, STR_ABOUTUS, DBLSIZE);
   lcd_hline(62, 18, 120);
   lcd_hline(62, 19, 130, GREY_DEFAULT);
 
@@ -91,57 +91,61 @@ void menuAboutView(uint8_t event)
   switch (screenIndex) {
     case ABOUT_OPENTX:
     case ABOUT_END:
-      lcd_putsAtt(62, 24, PSTR("OpenTX was developed for free"), SMLSIZE);
-      lcd_putsAtt(62, 36, PSTR("Your donation will ensure"), SMLSIZE);
-      lcd_putsAtt(62, 44, PSTR("that it remains free and open"), SMLSIZE);
-      lcd_putsAtt(62, 56, PSTR("The amount is up to you!"), SMLSIZE);
-      screenDuration = 200;
+      lcd_putsAtt(62, 22, STR_ABOUT_OPENTX_1, SMLSIZE);
+      lcd_putsAtt(62, 30, STR_ABOUT_OPENTX_2, SMLSIZE);
+      lcd_putsAtt(62, 38, STR_ABOUT_OPENTX_3, SMLSIZE);
+      lcd_putsAtt(62, 46, STR_ABOUT_OPENTX_4, SMLSIZE);
+      lcd_putsAtt(62, 54, STR_ABOUT_OPENTX_5, SMLSIZE);
+      screenDuration = 300;
       break;
 
     case ABOUT_BERTRAND:
-      lcd_putsAtt(62, 24, PSTR("Bertrand Songis"), att);
-      lcd_putsAtt(68, 36, PSTR("OpenTX main author"), att|SMLSIZE);
-      lcd_putsAtt(68, 44, PSTR("Companion9x co-developer"), att|SMLSIZE);
+      lcd_putsAtt(62, 24, STR_ABOUT_BERTRAND_1, att);
+      lcd_putsAtt(68, 36, STR_ABOUT_BERTRAND_2, att|SMLSIZE);
+      lcd_putsAtt(68, 44, STR_ABOUT_BERTRAND_3, att|SMLSIZE);
       break;
 
     case ABOUT_MIKE:
-      lcd_putsAtt(62, 24, PSTR("Mike Blandford"), att);
-      lcd_putsAtt(68, 36, PSTR("Code and drivers guru"), att|SMLSIZE);
-      lcd_putsAtt(68, 44, PSTR("Arguably, one of the best"), att|SMLSIZE);
-      lcd_putsAtt(67, 52, PSTR("Inspirational"), att|SMLSIZE);
+      lcd_putsAtt(62, 24, STR_ABOUT_MIKE_1, att);
+      lcd_putsAtt(68, 36, STR_ABOUT_MIKE_2, att|SMLSIZE);
+      lcd_putsAtt(68, 44, STR_ABOUT_MIKE_3, att|SMLSIZE);
+      lcd_putsAtt(67, 52, STR_ABOUT_MIKE_4, att|SMLSIZE);
       break;
 
     case ABOUT_ROMOLO:
-      lcd_putsAtt(62, 24, PSTR("Romolo Manfredini"), att);
-      lcd_putsAtt(68, 36, PSTR("Companion9x main developer"), att|SMLSIZE);
+      lcd_putsAtt(62, 24, STR_ABOUT_ROMOLO_1, att);
+      lcd_putsAtt(68, 36, STR_ABOUT_ROMOLO_2, att|SMLSIZE);
+      lcd_putsAtt(68, 44, STR_ABOUT_ROMOLO_3, att|SMLSIZE);
       break;
 
     case ABOUT_ANDRE:
-      lcd_putsAtt(62, 24, PSTR("Andre Bernet"), att);
-      lcd_putsAtt(68, 36, PSTR("Features / usability"), att|SMLSIZE);
+      lcd_putsAtt(62, 24, STR_ABOUT_ANDRE_1, att);
+      lcd_putsAtt(68, 36, STR_ABOUT_ANDRE_2, att|SMLSIZE);
+      lcd_putsAtt(68, 44, STR_ABOUT_ANDRE_3, att|SMLSIZE);
       break;
 
     case ABOUT_ROB:
-      lcd_putsAtt(62, 24, PSTR("Rob Thomson"), att);
-      lcd_putsAtt(68, 36, PSTR("Openrcforums webmaster"), att|SMLSIZE);
+      lcd_putsAtt(62, 24, STR_ABOUT_ROB_1, att);
+      lcd_putsAtt(68, 36, STR_ABOUT_ROB_2, att|SMLSIZE);
       break;
 
     case ABOUT_MARTIN:
-      lcd_putsAtt(62, 24, PSTR("Martin Hotar"), att);
-      lcd_putsAtt(68, 36, PSTR("Graphics designer"), att|SMLSIZE);
+      lcd_putsAtt(62, 24, STR_ABOUT_MARTIN_1, att);
+      lcd_putsAtt(68, 36, STR_ABOUT_MARTIN_2, att|SMLSIZE);
       break;
 
     case ABOUT_HARDWARE:
-      lcd_putsAtt(62, 24, PSTR("FrSky"), att);
-      lcd_putsAtt(68, 36, PSTR("Hardware designer/producer"), att|SMLSIZE);
+      lcd_putsAtt(62, 24, STR_ABOUT_HARDWARE_1, att);
+      lcd_putsAtt(68, 36, STR_ABOUT_HARDWARE_2, att|SMLSIZE);
+      lcd_putsAtt(68, 44, STR_ABOUT_HARDWARE_3, att|SMLSIZE);
       screenDuration = 300;
       break;
 
     case ABOUT_PARENTS:
-      lcd_putsAtt(62, 24, PSTR("Parent projects"), att);
-      lcd_putsAtt(68, 36, PSTR("Ersky9x (Mike Blandford)"), att|SMLSIZE);
-      lcd_putsAtt(68, 44, PSTR("Er9x (Erez Raviv)"), att|SMLSIZE);
-      lcd_putsAtt(67, 52, PSTR("Th9x (Thomas Husterer)"), att|SMLSIZE);
+      lcd_putsAtt(62, 24, STR_ABOUT_PARENTS_1, att);
+      lcd_putsAtt(68, 36, STR_ABOUT_PARENTS_2, att|SMLSIZE);
+      lcd_putsAtt(68, 44, STR_ABOUT_PARENTS_3, att|SMLSIZE);
+      lcd_putsAtt(67, 52, STR_ABOUT_PARENTS_4, att|SMLSIZE);
       screenDuration = 300;
       break;
   }

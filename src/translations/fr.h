@@ -646,6 +646,47 @@
 #define TR_LIMITS_HEADERS      { " Nom ", " Subtrim ", " Min ", " Max ", " Direction ", " Neutre PPM ", " Mode subtrim " }
 #define TR_CSW_HEADERS         { " Fonction ", " V1 ", " V2 ", " ET suppl. ", " Dur\200e ", " D\200lai " }
 
+//Taranis About screen
+#define TR_ABOUTUS             "A PROPOS"
+
+#define TR_ABOUT_OPENTX_1      "OpenTX est libre, non-"
+#define TR_ABOUT_OPENTX_2      "commercial et n'offre aucune"
+#define TR_ABOUT_OPENTX_3      "garantie. Il a ete developpe"
+#define TR_ABOUT_OPENTX_4      "gratuitement. Vos donations"
+#define TR_ABOUT_OPENTX_5      "sont bienvenues!"
+
+#define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
+#define TR_ABOUT_BERTRAND_2    "Auteur principal d'openTx"
+#define TR_ABOUT_BERTRAND_3    "Codeveloppeur de Companion9x"
+
+#define TR_ABOUT_MIKE_1        "Mike Blandford"
+#define TR_ABOUT_MIKE_2        "Maitre du code et des"
+#define TR_ABOUT_MIKE_3        "drivers"
+#define TR_ABOUT_MIKE_4        ""
+       
+#define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
+#define TR_ABOUT_ROMOLO_2      "Developpeur principal de"
+#define TR_ABOUT_ROMOLO_3      "Companion9x"
+      
+#define TR_ABOUT_ANDRE_1       "Andr\200 Bernet"
+#define TR_ABOUT_ANDRE_2       "Fonctionnalites, usabilite,"
+#define TR_ABOUT_ANDRE_3       "debogage, documentation"
+
+#define TR_ABOUT_ROB_1         "Rob Thomson"
+#define TR_ABOUT_ROB_2         "Webmaster d'openrcforums"
+
+#define TR_ABOUT_MARTIN_1      "Martin Hotar"
+#define TR_ABOUT_MARTIN_2      "Design graphique"
+
+#define TR_ABOUT_HARDWARE_1    "FrSky"
+#define TR_ABOUT_HARDWARE_2    "Developpeur/fabricant"
+#define TR_ABOUT_HARDWARE_3    "du materiel"
+
+#define TR_ABOUT_PARENTS_1     "Projets parents"
+#define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
+#define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
+#define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
+
 #define TR_CHR_SHORT  's'
 #define TR_CHR_LONG   'l'
 #define TR_CHR_TOGGLE 't'

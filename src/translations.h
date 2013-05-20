@@ -631,6 +631,47 @@ extern const pm_char STR_CHANNELS_MONITOR[];
   extern const pm_char STR_CRITICALALARM[];
 #endif
 
+#if defined(PCBTARANIS)
+  extern const pm_char STR_ABOUTUS[];
+  extern const pm_char STR_ABOUT_OPENTX_1[];
+  extern const pm_char STR_ABOUT_OPENTX_2[];
+  extern const pm_char STR_ABOUT_OPENTX_3[];
+  extern const pm_char STR_ABOUT_OPENTX_4[];
+  extern const pm_char STR_ABOUT_OPENTX_5[];
+  
+  extern const pm_char STR_ABOUT_BERTRAND_1[];
+  extern const pm_char STR_ABOUT_BERTRAND_2[];
+  extern const pm_char STR_ABOUT_BERTRAND_3[];
+  
+  extern const pm_char STR_ABOUT_MIKE_1[];
+  extern const pm_char STR_ABOUT_MIKE_2[];
+  extern const pm_char STR_ABOUT_MIKE_3[];
+  extern const pm_char STR_ABOUT_MIKE_4[];
+  
+  extern const pm_char STR_ABOUT_ROMOLO_1[];
+  extern const pm_char STR_ABOUT_ROMOLO_2[];
+  extern const pm_char STR_ABOUT_ROMOLO_3[];
+  
+  extern const pm_char STR_ABOUT_ANDRE_1[];
+  extern const pm_char STR_ABOUT_ANDRE_2[];
+  extern const pm_char STR_ABOUT_ANDRE_3[];
+  
+  extern const pm_char STR_ABOUT_ROB_1[];
+  extern const pm_char STR_ABOUT_ROB_2[];
+  
+  extern const pm_char STR_ABOUT_MARTIN_1[];
+  extern const pm_char STR_ABOUT_MARTIN_2[];
+  
+  extern const pm_char STR_ABOUT_HARDWARE_1[];
+  extern const pm_char STR_ABOUT_HARDWARE_2[];
+  extern const pm_char STR_ABOUT_HARDWARE_3[];
+  
+  extern const pm_char STR_ABOUT_PARENTS_1[];
+  extern const pm_char STR_ABOUT_PARENTS_2[];
+  extern const pm_char STR_ABOUT_PARENTS_3[];
+  extern const pm_char STR_ABOUT_PARENTS_4[];
+#endif
+
 #define CHR_SHORT  TR_CHR_SHORT
 #define CHR_LONG   TR_CHR_LONG
 #define CHR_TOGGLE TR_CHR_TOGGLE
