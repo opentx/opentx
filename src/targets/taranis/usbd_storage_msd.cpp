@@ -140,7 +140,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
 {
   if (lun == 1)	{
     *block_size = 512;
-    *block_num  = 1024*64 + 3 ;
+    *block_num  = EESIZE + 3 ;
   }
   else {
     if (!SD_CARD_PRESENT())
