@@ -49,7 +49,8 @@ enum MAV_AUTOPILOT
 	MAV_AUTOPILOT_FP=11, /* FlexiPilot | */
 	MAV_AUTOPILOT_PX4=12, /* PX4 Autopilot - http://pixhawk.ethz.ch/px4/ | */
 	MAV_AUTOPILOT_SMACCMPILOT=13, /* SMACCMPilot - http://smaccmpilot.org | */
-	MAV_AUTOPILOT_ENUM_END=14, /*  | */
+	MAV_AUTOPILOT_AUTOQUAD=14, /* AutoQuad -- http://autoquad.org | */
+	MAV_AUTOPILOT_ENUM_END=15, /*  | */
 };
 #endif
 

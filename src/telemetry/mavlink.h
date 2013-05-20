@@ -1,5 +1,23 @@
 /*
- * Authors - Gerard Valade <gerard.valade@gmail.com>
+ * Authors (alphabetical order)
+ * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
+ * - Cameron Weeks <th9xer@gmail.com>
+ * - Erez Raviv
+ * - Gabriel Birkus
+ * - Gerard Valade <gerard.valade@gmail.com>
+ * - Jean-Pierre Parisy
+ * - Karl Szmutny
+ * - Michael Blandford
+ * - Michal Hlavinka
+ * - Pat Mackenzie
+ * - Philip Moss
+ * - Rienk de Jong
+ * - Rob Thomson
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Thomas Husterer
  *
  * Adapted from mavlink for ardupilot
  *
@@ -30,7 +48,7 @@ extern mavlink_system_t mavlink_system;
 
 extern void SERIAL_start_uart_send();
 extern void SERIAL_end_uart_send();
-extern void SERIAL_send_uart_bytes(uint8_t * buf, uint16_t len);
+extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
 
 #define MAVLINK_START_UART_SEND(chan,len) SERIAL_start_uart_send()
 #define MAVLINK_END_UART_SEND(chan,len) SERIAL_end_uart_send()
@@ -43,6 +61,24 @@ extern void SERIAL_send_uart_bytes(uint8_t * buf, uint16_t len);
 #define ERROR_NUM_MODES 99
 #define ERROR_MAV_ACTION_NB 99
 
+
+// Auto Pilot modes
+// ----------------
+#define AP_STABILIZE 0		// hold level position
+#define AP_ACRO 1			// rate control
+#define AP_ALT_HOLD 2		// AUTO control
+#define AP_AUTO 3			// AUTO control
+#define AP_GUIDED 4			// AUTO control
+#define AP_LOITER 5			// Hold a single location
+#define AP_RTL 6			// AUTO control
+#define AP_CIRCLE 7			// AUTO control
+#define AP_POSITION 8		// AUTO control
+#define AP_LAND 9			// AUTO control
+#define AP_OF_LOITER 10		// Hold a single location using optical flow
+							// sensor
+#define AP_TOY_A 11			// THOR Enum for Toy mode
+#define AP_TOY_M 12			// THOR Enum for Toy mode
+#define AP_NUM_MODES 13
 
 /*
  * Type definitions
@@ -103,11 +139,18 @@ typedef struct Telemetry_Data_ {
 	uint8_t status; ///< System status flag, see MAV_STATUS ENUM
 	uint16_t packet_drop;
 	uint8_t mode;
+	uint32_t custom_mode;
+	bool active;
 	uint8_t nav_mode;
 	uint8_t rcv_control_mode; ///< System mode, see MAV_MODE ENUM in mavlink/include/mavlink_types.h
 	uint16_t load; ///< Maximum usage in percent of the mainloop time, (0%: 0, 100%: 1000) should be always below 1000
 	uint8_t vbat; ///< Battery voltage, in millivolts (1 = 1 millivolt)
-	uint8_t vbat_low;
+	uint8_t ibat; ///< Battery voltage, in millivolts (1 = 1 millivolt)
+	uint8_t rem_bat; ///< Battery voltage, in millivolts (1 = 1 millivolt)
+	bool vbat_low;
+	
+	uint8_t rc_rssi;
+	uint8_t pc_rssi;
 	
 	uint8_t debug;
 

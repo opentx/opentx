@@ -82,20 +82,25 @@ void menuTelemetryMavlink(uint8_t event) {
 
 	switch (MAVLINK_menu) {
 	case MENU_INFO:
-	  menuTelemetryMavlinkInfos();
-	  break;
+		menuTelemetryMavlinkInfos();
+		break;
+	case MENU_MODE:
+		menuTelemetryMavlinkFlightMode();
+		break;
+	case MENU_BATT:
+		menuTelemetryMavlinkBattery();
+		break;
 	case MENU_GPS:
-	  menuTelemetryMavlinkGPS();
-	  break;
+		menuTelemetryMavlinkGPS();
+		break;
 #ifdef DUMP_RX_TX
 	case MENU_DUMP_TX:
 	case MENU_DUMP_RX:
-	  menuTelemetryMavlinkDump(event);
-	  break;
+		menuTelemetryMavlinkDump(event);
+		break;
 #endif
-
 	default:
-	  break;
+		break;
 	}
 
 }
@@ -164,7 +169,9 @@ void mav_title(const pm_char * s, uint8_t index)
   lcd_putsAtt(0, 0, PSTR("MAVLINK"), INVERS);
   lcd_puts(10 * FW, 0, s);
   displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
-  lcd_putc(8 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');
+  lcd_putc(7 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');
+  if (telemetry_data.active)
+  	  lcd_putcAtt(8 * FW, 0, 'A', BLINK);
 }
 
 /*!	\brief Global info menu
@@ -198,7 +205,8 @@ void menuTelemetryMavlinkInfos(void) {
 	if (telemetry_data.status) {
 
 		lcd_putsnAtt(x1, y, PSTR("MODE"), 4, 0);
-		if (telemetry_data.mode & MAV_MODE_FLAG_SAFETY_ARMED)
+		if (telemetry_data.active)
+		//if (telemetry_data.mode & MAV_MODE_FLAG_SAFETY_ARMED)
 			lcd_putsnAtt(x2, y, PSTR("A"), 1, 0);
 		lcd_outdezAtt(xnum, y, telemetry_data.mode, 0);
 
@@ -212,6 +220,124 @@ void menuTelemetryMavlinkInfos(void) {
 
 	}
 }
+
+/*!	\brief Flight mode menu
+ *	\details Clear display of current flight mode.
+ *	\todo Add functionality to change flight mode.
+ */
+void menuTelemetryMavlinkFlightMode(void) {
+	
+	mav_title(PSTR("MODE"), MAVLINK_menu);
+	
+	const char * mode_text_p;
+	switch(telemetry_data.custom_mode) {
+	case AP_STABILIZE:
+		mode_text_p = PSTR("Stabilize");
+		break;
+	case AP_ACRO:
+		mode_text_p = PSTR("Acro");
+		break;
+	case AP_ALT_HOLD:
+		mode_text_p = PSTR("Alt Hold");
+		break;
+	case AP_AUTO:
+		mode_text_p = PSTR("Auto");
+		break;
+	case AP_GUIDED:
+		mode_text_p = PSTR("Guided");
+		break;
+	case AP_LOITER:
+		mode_text_p = PSTR("Loiter");
+		break;
+	case AP_RTL:
+		mode_text_p = PSTR("RTL");
+		break;
+	case AP_CIRCLE:
+		mode_text_p = PSTR("Circle");
+		break;
+	case AP_POSITION:
+		mode_text_p = PSTR("Pos Hold");
+		break;
+	case AP_LAND:
+		mode_text_p = PSTR("Land");
+		break;
+	case AP_OF_LOITER:
+		mode_text_p = PSTR("OF Loiter");
+		break;
+	case AP_TOY_A:
+		mode_text_p = PSTR("Toy A");
+		break;
+	case AP_TOY_M:
+		mode_text_p = PSTR("Toy M");
+		break;
+	default:
+		mode_text_p = PSTR("INVALID");
+		break;
+	}
+	
+	uint8_t x, y;
+	x = 0;
+	y = FH;
+	
+    lcd_puts  (x, y, PSTR("Current Mode"));
+    y += FH;
+	lcd_putsAtt (FW, y, mode_text_p, DBLSIZE);
+    y += 2 * FH;
+	
+	char * ptr = mav_statustext;
+	for (uint8_t j = 0; j < LEN_STATUSTEXT; j++) {
+		if (*ptr == 0) {
+			lcd_putc(x, y, ' ');
+		} else {
+			lcd_putc(x, y, *ptr++);
+		}
+		x += FW;
+	}
+    y += FH;
+    x = 0;
+	
+    if (telemetry_data.active)
+    	lcd_putsAtt (FW, y, PSTR("Armed"), DBLSIZE);
+}
+
+/*!	\brief Batterystatus dislplay
+ *	\details Shows flight batery status.
+ */
+void menuTelemetryMavlinkBattery(void) {
+	
+	mav_title(PSTR("BAT RSSI"), MAVLINK_menu);
+	
+	uint8_t x, y, ynum;
+	x = 7 * FWNUM;
+//	x = xnum + 0 * FW;
+	ynum = 2 * FH;
+	y = 3 * FH;
+	
+    lcd_puts(0, 1*FH, PSTR("Flight Batery status")); 
+	
+	lcd_outdezAtt(x, ynum, telemetry_data.vbat, (DBLSIZE | PREC1 | UNSIGN));
+	lcd_puts(x, y, PSTR("V"));
+	x += 4 * (2 * FWNUM);
+	lcd_outdezAtt(x, ynum, telemetry_data.ibat, (DBLSIZE | PREC1 | UNSIGN));
+	lcd_puts(x, y, PSTR("A"));
+	x += 4 * (2 * FWNUM);
+	lcd_outdezAtt(x, ynum, telemetry_data.rem_bat, (DBLSIZE | UNSIGN));
+	lcd_puts(x, y, PSTR("%"));
+	y += FH;
+	ynum += 3 * FH;
+	
+	x = 0;	
+    lcd_puts  (x, y, PSTR("RC RSSI"));
+	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.rc_rssi, (DBLSIZE | UNSIGN));
+	lcd_puts(x + 7 * FWNUM, ynum + FH, PSTR("%"));
+	x += 8 * (2 * FWNUM);
+    lcd_puts(x, y, PSTR("PC RSSI"));
+	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.pc_rssi, (DBLSIZE | UNSIGN));
+	lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("%"));
+    
+}
+
+
 
 /*!	\brief GPS information menu
  *	\details Menu gives a lot of info from the gps like fix type, position,

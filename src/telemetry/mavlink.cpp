@@ -14,6 +14,7 @@
  * - Michal Hlavinka
  * - Pat Mackenzie
  * - Philip Moss
+ * - Rienk de Jong
  * - Rob Thomson
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
  * - Thomas Husterer
@@ -56,7 +57,7 @@ mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
 
 // Mavlink message decoded Status Text
 #define PARAM_NB_REPEAT 10
-#define LEN_STATUSTEXT 15
+#define LEN_STATUSTEXT 20
 static char mav_statustext[LEN_STATUSTEXT];
 static int8_t mav_heartbeat = 0;
 static int8_t mav_heartbeat_recv = 0;
@@ -144,6 +145,7 @@ void MAVLINK_Init(void) {
  *	characters are used. To get the full message you can use the commented
  *	funtion below.
  */
+ 
 static inline void REC_MAVLINK_MSG_ID_STATUSTEXT(const mavlink_message_t* msg) {
 	uint8_t temp = mavlink_msg_statustext_get_severity(msg);
 	_MAV_RETURN_char_array(msg, mav_statustext, LEN_STATUSTEXT,  1);
@@ -158,26 +160,46 @@ static inline void REC_MAVLINK_MSG_ID_STATUSTEXT(const mavlink_message_t* msg) {
  *	\todo Add battery remaining variable in telemetry_data struct for estimated
  *	remaining battery. Decoding funtion allready in place.
  */
+ 
 static inline void REC_MAVLINK_MSG_ID_SYS_STATUS(const mavlink_message_t* msg) {
 //	mavlink_sys_status_t sys_status;
 //	mavlink_msg_sys_status_decode(msg, &sys_status);
 
 	telemetry_data.vbat = mavlink_msg_sys_status_get_voltage_battery(msg) / 100; // Voltage * 10
-	int8_t temp = mavlink_msg_sys_status_get_battery_remaining(msg);
+	telemetry_data.ibat = mavlink_msg_sys_status_get_current_battery(msg) / 10;
+	telemetry_data.rem_bat = mavlink_msg_sys_status_get_battery_remaining(msg);
 
 #ifdef MAVLINK_PARAMS
 	telemetry_data.vbat_low = (getMavlinParamsValue(BATT_MONITOR) > 0)
 					&& (((float) telemetry_data.vbat / 10.0) < getMavlinParamsValue(LOW_VOLT)) && (telemetry_data.vbat > 50);
+#else
+	telemetry_data.vbat_low = (telemetry_data.rem_bat < 10);
 #endif
 }
 
+/*!	\brief Recive rc channels
+ *
+ */
+static inline void REC_MAVLINK_MSG_ID_RC_CHANNELS_RAW(const mavlink_message_t* msg) {
+	telemetry_data.rc_rssi =  (mavlink_msg_rc_channels_raw_get_rssi(msg) * 100) / 255;
+}
+
+/*!	\brief Arducopter specific radio message
+ *
+ */
+static inline void REC_MAVLINK_MSG_ID_RADIO(const mavlink_message_t* msg) {
+	telemetry_data.pc_rssi =  (mavlink_msg_radio_get_rssi(msg) * 100) / 255;
+//	telemetry_data.pc_rssi =  mavlink_msg_radio_get_rssi(msg);
+}
+
+
 /*!	\brief Hardbeat message
- *	\todo Fix hartbeat * on display title see \link telemetryWakeup telemetryWakeup \endlink
- *	and \link mav_title mav_title \endlink.
  */
 static inline void REC_MAVLINK_MSG_ID_HEARTBEAT(const mavlink_message_t* msg) {	
 	telemetry_data.mode  = mavlink_msg_heartbeat_get_base_mode(msg);	
+	telemetry_data.custom_mode  = mavlink_msg_heartbeat_get_custom_mode(msg);	
 	telemetry_data.status = mavlink_msg_heartbeat_get_system_status(msg);
+	telemetry_data.active = (telemetry_data.mode & MAV_MODE_FLAG_SAFETY_ARMED) ? true : false; 
 	mav_heartbeat = 3; // 450ms display '*'
 	mav_heartbeat_recv = 1;
 }
@@ -362,6 +384,11 @@ static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 		REC_MAVLINK_MSG_ID_SYS_STATUS(p_rxmsg);
 		watch_mav_req_start_data_stream = 20;
 		break;
+	case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
+		REC_MAVLINK_MSG_ID_RC_CHANNELS_RAW(p_rxmsg);
+		break;
+	case MAVLINK_MSG_ID_RADIO:
+		REC_MAVLINK_MSG_ID_RADIO(p_rxmsg);
 	case MAVLINK_MSG_ID_HIL_CONTROLS:
 		REC_MAVLINK_MSG_ID_HIL_CONTROLS(p_rxmsg);
 		break;

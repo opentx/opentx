@@ -113,7 +113,7 @@ void SERIAL_end_uart_send() {
 	serialTxState = TX_STATE_READY;
 }
 
-void SERIAL_send_uart_bytes(uint8_t * buf, uint16_t len) {
+void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len) {
 	while (len--) {
 		*ptrTxISR++ = *buf++;
 		serialTxBufferCount++;
