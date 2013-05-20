@@ -42,13 +42,14 @@
 uint8_t   s_write_err = 0;    // error reasons
 RlcFile   theFile;  //used for any file operation
 EeFs      eeFs;
-#if defined(PCBTARANIS)
+
+#if defined(CPUARM)
 blkid_t   freeBlocks = 0;
 #endif
 
+uint8_t  s_sync_write = false;
 
 #if !defined(CPUARM)
-uint8_t  s_sync_write = false;
 uint16_t eeprom_pointer;
 const char * eeprom_buffer_data;
 volatile int8_t eeprom_buffer_size = 0;
@@ -832,19 +833,22 @@ void RlcFile::nextRlcWriteStep()
    }
 }
 
-#if !defined(CPUARM)
 void RlcFile::flush()
 {
+#if !defined(CPUARM)
   while (eeprom_buffer_size > 0) wdt_reset();
+#endif
 
   ENABLE_SYNC_WRITE(true);
+
   while (m_write_len && !s_write_err)
     nextWriteStep();
+
   while (isWriting() && !s_write_err)
     nextRlcWriteStep();
+
   ENABLE_SYNC_WRITE(false);
 }
-#endif
 
 #if defined (EEPROM_PROGRESS_BAR)
 void RlcFile::DisplayProgressBar(uint8_t x)

@@ -186,11 +186,11 @@ void setupPulsesPXX(unsigned int port)
 
   /* PPM */
   static uint32_t pass[NUM_MODULES] = { MODULES_INIT(0) };
-  uint32_t sendUpperChannels = 0;
+  int sendUpperChannels = 0;
   if (pass[port]++ & 0x01) {
     sendUpperChannels = g_model.moduleData[port].channelsCount;
   }
-  for (uint32_t i=0; i<8; i++) {
+  for (int i=0; i<8; i++) {
     if (flag1 & PXX_SEND_FAILSAFE) {
       if (g_model.moduleData[port].failsafeMode == FAILSAFE_NOPULSES) {
         if (i < sendUpperChannels)

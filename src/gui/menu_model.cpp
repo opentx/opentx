@@ -1235,9 +1235,9 @@ void menuModelSetup(uint8_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
                 break;
               case 1:
-                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsCount, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
+                CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
                 if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.externalModule == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS))
-                  moduleData.ppmFrameLength = moduleData.channelsCount * 4;
+                  SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 break;
             }
           }
@@ -1383,7 +1383,8 @@ void menuModelSetup(uint8_t event)
             case 1:
 #if defined(PCBSKY9X)
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[0].channelsStart, 32-8-g_model.moduleData[0].channelsCount);
-              g_model.moduleData[0].ppmFrameLength = 4*(NUM_PORT1_CHANNELS()-8);
+              g_model.moduleData[0].ppmFrameLength = max((int8_t)0, g_model.moduleData[0].channelsCount) * 4;
+              SET_DEFAULT_PPM_FRAME_LENGTH(0);
 #else
               CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
               g_model.ppmFrameLength = g_model.ppmNCH * 8;
@@ -1393,7 +1394,7 @@ void menuModelSetup(uint8_t event)
             case 2:
               if (IS_PPM_PROTOCOL(protocol)) {
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].channelsCount, -4, min<int8_t>(8, 32-8-g_model.moduleData[0].channelsStart));
-                g_model.moduleData[0].ppmFrameLength = 4*(NUM_PORT1_CHANNELS()-8);
+                SET_DEFAULT_PPM_FRAME_LENGTH(0);
               }
               else
                 REPEAT_LAST_CURSOR_MOVE();
@@ -1415,11 +1416,11 @@ void menuModelSetup(uint8_t event)
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[1].channelsStart, 32-8-g_model.moduleData[1].channelsCount);
-              g_model.moduleData[1].ppmFrameLength = 4*(NUM_PORT2_CHANNELS()-8);
+              SET_DEFAULT_PPM_FRAME_LENGTH(1);
               break;
             case 1:
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[1].channelsCount, -4, min<int8_t>(8, 32-8-g_model.moduleData[1].channelsStart));
-              g_model.moduleData[1].ppmFrameLength = 4*(NUM_PORT2_CHANNELS()-8);
+              SET_DEFAULT_PPM_FRAME_LENGTH(1);
               break;
           }
         }

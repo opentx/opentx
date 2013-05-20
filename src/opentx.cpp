@@ -3602,16 +3602,18 @@ void perMain()
   if (Eeprom32_process_state != E32_IDLE)
     ee32_process();
   else if (TIME_TO_WRITE())
-    eeCheck();
+    eeCheck(false);
 #elif defined(CPUARM)
-  if (TIME_TO_WRITE())
-    eeCheck();
+  if (theFile.isWriting())
+    theFile.nextWriteStep();
+  else if (TIME_TO_WRITE())
+    eeCheck(false);
 #else
   if (!eeprom_buffer_size) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
     else if (TIME_TO_WRITE())
-      eeCheck();
+      eeCheck(false);
   }
 #endif
 

@@ -228,6 +228,8 @@ PACK(typedef struct t_ModuleData {
   uint8_t ppmPulsePol;
 }) ModuleData;
 
+#define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
+
 #if defined(PCBTARANIS)
 enum ModuleIndex {
   INTERNAL_MODULE,

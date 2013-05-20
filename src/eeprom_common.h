@@ -50,7 +50,7 @@ extern uint8_t   s_eeDirtyMsk;
 extern tmr10ms_t s_eeDirtyTime10ms;
 
 void eeDirty(uint8_t msk);
-void eeCheck(bool immediately=false);
+void eeCheck(bool immediately);
 void eeReadAll();
 bool eeModelExists(uint8_t id);
 void eeLoadModelName(uint8_t id, char *name);
