@@ -259,14 +259,7 @@ void onModelSelectMenu(const char *result)
   int8_t sub = m_posVert;
 
   if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
-    displayPopup(STR_LOADINGMODEL);
-    saveTimers();
-    eeCheck(true); // force writing of current model data before this is changed
-    if (g_eeGeneral.currModel != sub) {
-      g_eeGeneral.currModel = sub;
-      STORE_GENERALVARS;
-      eeLoadModel(sub);
-    }
+    selectModel(sub);
   }
   else if (result == STR_COPY_MODEL) {
     s_copyMode = COPY_MODE;
@@ -311,6 +304,16 @@ void onModelSelectMenu(const char *result)
 #endif
 }
 #endif
+
+void selectModel(uint8_t sub)
+{
+  displayPopup(STR_LOADINGMODEL);
+  saveTimers();
+  eeCheck(true); // force writing of current model data before this is changed
+  g_eeGeneral.currModel = sub;
+  STORE_GENERALVARS;
+  eeLoadModel(sub);
+}
 
 void menuModelSelect(uint8_t event)
 {
@@ -477,15 +480,7 @@ void menuModelSelect(uint8_t event)
               MENU_ADD_ITEM(STR_CREATE_MODEL);
               MENU_ADD_ITEM(STR_RESTORE_MODEL);
 #else
-              // TODO duplicated *3 code
-              displayPopup(STR_LOADINGMODEL);
-              saveTimers();
-              eeCheck(true); // force writing of current model data before this is changed
-              if (g_eeGeneral.currModel != sub) {
-                g_eeGeneral.currModel = sub;
-                STORE_GENERALVARS;
-                eeLoadModel(sub);
-              }
+              selectModel(sub);
 #endif
             }
           }
@@ -497,12 +492,7 @@ void menuModelSelect(uint8_t event)
           menuHandler = onModelSelectMenu;
 #else
           if (g_eeGeneral.currModel != sub) {
-            displayPopup(STR_LOADINGMODEL);
-            saveTimers();
-            eeCheck(true); // force writing of current model data before this is changed
-            g_eeGeneral.currModel = sub;
-            STORE_GENERALVARS;
-            eeLoadModel(sub);
+            selectModel(sub);
           }
 #endif
         }
@@ -4439,9 +4429,15 @@ enum menuModelTelemetryItems {
  #define RSSI_ROWS    (uint8_t)-1, 1, 1,
 #endif
 
+#if defined(FRSKY_BARS)
+ #define SCREEN_TYPE_ROWS 0
+#else
+ #define SCREEN_TYPE_ROWS (uint8_t)-1
+#endif
+
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(3) 0, 2, 2, 2, 2, 0, 2, 2, 2, IF_CPUARM(2) IF_CPUARM(0) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) 2 });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(3) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, IF_CPUARM(SCREEN_TYPE_ROWS) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) });
 
   uint8_t sub = m_posVert - 1;
 
@@ -4653,7 +4649,6 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_SCREEN_LABEL1:
       case ITEM_TELEMETRY_SCREEN_LABEL2:
-// TODO merge this code
 #if defined(CPUARM)
       case ITEM_TELEMETRY_SCREEN_LABEL3:
       {

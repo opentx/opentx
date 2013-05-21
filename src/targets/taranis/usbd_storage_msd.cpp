@@ -140,7 +140,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
 {
   if (lun == 1)	{
     *block_size = 512;
-    *block_num  = EESIZE + 3 ;
+    *block_num  = EESIZE/512 + 3 ;
   }
   else {
     if (!SD_CARD_PRESENT())
@@ -277,7 +277,7 @@ const char g_FATboot[BLOCKSIZE] =
     
     0x01, // Number of FATs
     0x10, 0x00, // Number of root directory entries
-    0x83, 0x00, // Total sectors = 131
+    (EESIZE/512)+3, 0x00, // Total sectors = 131
     0xf8, // Media descriptor
     0x01, 0x00, // Sectors per FAT table
     0x20, 0x00, // Sectors per track
@@ -670,13 +670,13 @@ int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
     if (test->version==EEFS_VERS && test->mySize==sizeof(eeFs) && test->bs==BS) {
       offset = sector;
     }
-    if (offset && sector >= offset) {
+    if (offset && sector >= offset && (sector-offset) < EESIZE/512) {
       eeWriteBlockCmp((uint8_t *)buffer, (sector-offset)*512, 512);
     }
     buffer += 512;
     sector++;
     count--;
-    if (sector-offset+1==EESIZE/512) {
+    if (sector-offset+1 >= EESIZE/512) {
       offset = 0;
     }
   }
