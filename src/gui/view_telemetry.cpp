@@ -220,7 +220,7 @@ void menuTelemetryFrsky(uint8_t event)
           lcd_rect(25, y, BAR_WIDTH+1, barHeight+2);
           getvalue_t value = getValue(MIXSRC_FIRST_TELEM+source-2);
 #if LCD_W >= 212
-          putsTelemetryChannel(28+BAR_WIDTH, y+barHeight-5, source-1, value, LEFT);
+          putsTelemetryChannel(27+BAR_WIDTH, y+barHeight-6, source-1, value, LEFT);
 #endif
           getvalue_t threshold = 0;
           uint8_t thresholdX = 0;
