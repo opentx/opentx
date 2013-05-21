@@ -184,7 +184,7 @@ void putsChnLetter(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags attr);
 
 void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, LcdFlags att);
 void putsVBat(xcoord_t x, uint8_t y, LcdFlags att);
-void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att);
+void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att=0);
 
 #if defined(CPUARM)
   #define putstime_t int32_t

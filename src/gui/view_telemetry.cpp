@@ -95,7 +95,7 @@ void displayRssiLine()
 }
 #endif
 
-#if defined(FRSKY_HUB)
+#if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS)
 void displayGpsTime()
 {
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
@@ -137,6 +137,9 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
     lcd_puts(TELEM_2ND_COLUMN, y, STR_VCSWFUNC+1/*----*/);
   }
 }
+#else
+#define displayGpsTime()
+#define displayGpsCoord(...)
 #endif
 
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
@@ -216,6 +219,9 @@ void menuTelemetryFrsky(uint8_t event)
           lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
           lcd_rect(25, y, BAR_WIDTH+1, barHeight+2);
           getvalue_t value = getValue(MIXSRC_FIRST_TELEM+source-2);
+#if LCD_W >= 212
+          putsTelemetryChannel(28+BAR_WIDTH, y+barHeight-5, source-1, value, LEFT);
+#endif
           getvalue_t threshold = 0;
           uint8_t thresholdX = 0;
           if (source <= TELEM_TM2)
@@ -244,8 +250,8 @@ void menuTelemetryFrsky(uint8_t event)
 
           lcd_filled_rect(26, y+1, width, barHeight, barShade);
 
-          for (uint8_t j=50; j<125; j+=25)
-            if (j>26+thresholdX || j>26+width) lcd_vline(j, y+1, barHeight);
+          for (uint8_t j=24; j<99; j+=25)
+            if (j>thresholdX || j>width) lcd_vline(j*BAR_WIDTH/100+26, y+1, barHeight);
 
           if (thresholdX) {
             lcd_vlineStip(26+thresholdX, y-2, barHeight+3, DOTTED);
@@ -282,10 +288,12 @@ void menuTelemetryFrsky(uint8_t event)
                 lcd_outdezNAtt(16*FW, STATUS_BAR_Y, frskyData.hub.accelZ, LEFT|PREC2);
                 break;
               }
+#if defined(GPS)
               else if (field == TELEM_GPS_TIME) {
                 displayGpsTime();
                 return;
               }
+#endif
 #endif
             }
             else {

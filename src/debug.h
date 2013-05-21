@@ -43,28 +43,29 @@
 
 #include <stdio.h>
 
-  #define TRACE_DEBUG(...) { printf("-D- " __VA_ARGS__); fflush(stdout); }
-  #define TRACE_DEBUG_WP(...) { printf(__VA_ARGS__); fflush(stdout); }
-  #define TRACE_INFO(...) { printf("-I- " __VA_ARGS__); fflush(stdout); }
-  #define TRACE_INFO_WP(...) { printf(__VA_ARGS__); fflush(stdout); }
-  #define TRACE_WARNING(...) { printf("-W- " __VA_ARGS__); fflush(stdout); }
-  #define TRACE_WARNING_WP(...) { printf(__VA_ARGS__); fflush(stdout); }
-  #define TRACE_ERROR(...) { printf("-E- " __VA_ARGS__); fflush(stdout); }
-  inline void dump(unsigned char *data, unsigned int size)
-  {
-    printf("DUMP %d bytes ...\n\r", size);
-    unsigned int i = 0, j=0;
-    while (i*32+j < size) {
-      printf("%.2X ", data[i*32+j]);
-      j++;
-      if (j==32) {
-        i++; j=0;
-        printf("\n\r");
-      }
+#define TRACE(...)            do { printf(__VA_ARGS__); printf("\n"); fflush(stdout); } while(0)
+#define TRACE_DEBUG(...)      do { printf("-D- " __VA_ARGS__); fflush(stdout); } while(0)
+#define TRACE_DEBUG_WP(...)   do { printf(__VA_ARGS__); fflush(stdout); } while(0)
+#define TRACE_INFO(...)       do { printf("-I- " __VA_ARGS__); fflush(stdout); } while(0)
+#define TRACE_INFO_WP(...)    do { printf(__VA_ARGS__); fflush(stdout); } while(0)
+#define TRACE_WARNING(...)    do { printf("-W- " __VA_ARGS__); fflush(stdout); } while(0)
+#define TRACE_WARNING_WP(...) do { printf(__VA_ARGS__); fflush(stdout); } while(0)
+#define TRACE_ERROR(...)      do { printf("-E- " __VA_ARGS__); fflush(stdout); } while(0)
+inline void dump(unsigned char *data, unsigned int size)
+{
+  printf("DUMP %d bytes ...\n\r", size);
+  unsigned int i = 0, j=0;
+  while (i*32+j < size) {
+    printf("%.2X ", data[i*32+j]);
+    j++;
+    if (j==32) {
+      i++; j=0;
+      printf("\n\r");
     }
-    printf("\n\r");
   }
-  #define DUMP(data, size) dump(data, size)
+  printf("\n\r");
+}
+#define DUMP(data, size) dump(data, size)
 
 #elif defined(DEBUG) && defined(CPUARM)
 
@@ -80,27 +81,29 @@ void dump(unsigned char *data, unsigned int size);
 }
 #endif
 
-#define TRACE_DEBUG(...) debugPuts("-D- " __VA_ARGS__)
-#define TRACE_DEBUG_WP(...) debugPuts(__VA_ARGS__)
-#define TRACE_INFO(...) debugPuts("-I- " __VA_ARGS__)
-#define TRACE_INFO_WP(...) debugPuts(__VA_ARGS__)
-#define TRACE_WARNING(...) debugPuts("-W- " __VA_ARGS__)
+#define TRACE(...)            do { debugPuts(__VA_ARGS__); debugPuts("\r\n"); } while(0)
+#define DUMP(data, size)      dump(data, size)
+#define TRACE_DEBUG(...)      debugPuts("-D- " __VA_ARGS__)
+#define TRACE_DEBUG_WP(...)   debugPuts(__VA_ARGS__)
+#define TRACE_INFO(...)       debugPuts("-I- " __VA_ARGS__)
+#define TRACE_INFO_WP(...)    debugPuts(__VA_ARGS__)
+#define TRACE_WARNING(...)    debugPuts("-W- " __VA_ARGS__)
 #define TRACE_WARNING_WP(...) debugPuts(__VA_ARGS__)
-#define TRACE_ERROR(...) debugPuts("-E- " __VA_ARGS__)
-#define DUMP(data, size) dump(data, size)
+#define TRACE_ERROR(...)      debugPuts("-E- " __VA_ARGS__)
 
 void debugTask(void* pdata);
 
 #else
 
-  #define TRACE_DEBUG(...) { }
-  #define TRACE_DEBUG_WP(...) { }
-  #define TRACE_INFO(...) { }
-  #define TRACE_INFO_WP(...) { }
-  #define TRACE_WARNING(...) { }
-  #define TRACE_WARNING_WP(...) { }
-  #define TRACE_ERROR(...) { }
-  #define DUMP(...) { }
+#define TRACE(...) { }
+#define DUMP(...) { }
+#define TRACE_DEBUG(...) { }
+#define TRACE_DEBUG_WP(...) { }
+#define TRACE_INFO(...) { }
+#define TRACE_INFO_WP(...) { }
+#define TRACE_WARNING(...) { }
+#define TRACE_WARNING_WP(...) { }
+#define TRACE_ERROR(...) { }
 
 #endif
 

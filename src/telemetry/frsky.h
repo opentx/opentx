@@ -72,7 +72,7 @@ class FrskyValueWithMinMax: public FrskyValueWithMin {
 #define VARIO_QUEUE_LENGTH          5
 
 #if defined(FRSKY_HUB)
-PACK(struct FrskyHubData {
+PACK(struct FrskySerialData {
   int16_t  baroAltitudeOffset;//       spare reused
   int16_t  gpsAltitude_bp;   // 0x01   before punct
   int16_t  temperature1;     // 0x02   -20 .. 250 deg. celcius
@@ -140,9 +140,9 @@ PACK(struct FrskyHubData {
 
   // TODO later uint16_t minVfas;
 });
-#define FRSKY_HUB_DATA FrskyHubData hub;
+#define FRSKY_HUB_DATA FrskySerialData hub;
 #elif defined(WS_HOW_HIGH)
-PACK(struct WSHowHighData {
+PACK(struct FrskySerialData {
   int16_t  baroAltitude_bp;     // 0..9,999 meters
   int16_t  baroAltitudeOffset;
   int16_t  minAltitude;
@@ -154,15 +154,15 @@ PACK(struct WSHowHighData {
   int16_t  varioSpeed;       // Vertical speed in cm/s
 #endif
 });
-#define FRSKY_HUB_DATA WSHowHighData hub;
+#define FRSKY_HUB_DATA FrskySerialData hub;
 #elif defined(VARIO)
-PACK(struct VarioData {
+PACK(struct FrskySerialData {
   int16_t  varioAltitudeQueue[VARIO_QUEUE_LENGTH]; //circular buffer
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
   int32_t  varioAltitude_cm;
   int16_t  varioSpeed;       // Vertical speed in cm/s
 });
-#define FRSKY_HUB_DATA VarioData hub;
+#define FRSKY_HUB_DATA FrskySerialData hub;
 #else
 #define FRSKY_HUB_DATA
 #endif

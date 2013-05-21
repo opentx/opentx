@@ -37,7 +37,8 @@ extern "C" {
 
 void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 
-#define STORAGE_LUN_NBR                  2 
+#define STORAGE_LUN_NBR    2
+#define BLOCKSIZE          512
 
 /* USB Mass storage Standard Inquiry Data */
 const unsigned char STORAGE_Inquirydata[] = {//36
@@ -139,14 +140,14 @@ int8_t STORAGE_Init (uint8_t lun)
 int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
   if (lun == 1)	{
-    *block_size = 512;
-    *block_num  = EESIZE/512 + 3 ;
+    *block_size = BLOCKSIZE;
+    *block_num  = EESIZE/BLOCKSIZE + 3 ;
   }
   else {
     if (!SD_CARD_PRESENT())
       return -1;
   
-    *block_size = 512;
+    *block_size = BLOCKSIZE;
 
     static DWORD sector_count = 0;
     if (sector_count == 0) {
@@ -259,9 +260,6 @@ int8_t STORAGE_GetMaxLun (void)
   return (STORAGE_LUN_NBR - 1);
 }
 
-// Test FAT12 etc.
-
-#define BLOCKSIZE 512
 
 //------------------------------------------------------------------------------
 /**
@@ -277,7 +275,7 @@ const char g_FATboot[BLOCKSIZE] =
     
     0x01, // Number of FATs
     0x10, 0x00, // Number of root directory entries
-    (EESIZE/512)+3, 0x00, // Total sectors = 131
+    (EESIZE/BLOCKSIZE)+3, 0x00, // Total sectors = 131
     0xf8, // Media descriptor
     0x01, 0x00, // Sectors per FAT table
     0x20, 0x00, // Sectors per track
@@ -633,7 +631,6 @@ const FATDirEntry_t g_DIRroot[16] =
     },
 };
 
-
 // count is number of 512 byte sectors
 int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
 {
@@ -650,9 +647,9 @@ int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
       memcpy( buffer, g_DIRroot, BLOCKSIZE ) ;
     }
     else {
-      eeprom_read_block (buffer, (sector-3)*512, 512);
+      eeprom_read_block (buffer, (sector-3)*BLOCKSIZE, BLOCKSIZE);
     }
-    buffer += 512 ;
+    buffer += BLOCKSIZE ;
     sector++ ;
     count-- ;
   }
@@ -665,18 +662,22 @@ int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
 {
   static int offset = 0;
 
+  TRACE("FAT12 Write(sector=%d, count=%d)", sector, count);
+
   while (count) {
     const EeFs * test = (const EeFs *)buffer;
-    if (test->version==EEFS_VERS && test->mySize==sizeof(eeFs) && test->bs==BS) {
+    if (offset == 0 && test->version==EEFS_VERS && test->mySize==sizeof(eeFs) && test->bs==BS) {
+      TRACE("EEPROM start found in sector %d", sector);
       offset = sector;
     }
-    if (offset && sector >= offset && (sector-offset) < EESIZE/512) {
-      eeWriteBlockCmp((uint8_t *)buffer, (sector-offset)*512, 512);
+    if (offset && sector >= offset && (sector-offset) < EESIZE/BLOCKSIZE) {
+      eeWriteBlockCmp((uint8_t *)buffer, (sector-offset)*BLOCKSIZE, BLOCKSIZE);
     }
-    buffer += 512;
+    buffer += BLOCKSIZE;
     sector++;
     count--;
-    if (sector-offset+1 >= EESIZE/512) {
+    if (sector-offset >= EESIZE/BLOCKSIZE) {
+      TRACE("EEPROM end written at sector %d", sector-1);
       offset = 0;
     }
   }

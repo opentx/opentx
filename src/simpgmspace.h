@@ -376,6 +376,7 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
 #define UART3_Configure(...)
 #define UART_Stop(...)
 #define UART3_Stop(...)
+#define USART_GetITStatus(...) 0
 
 #if defined(PCBTARANIS)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
