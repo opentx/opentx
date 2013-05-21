@@ -80,7 +80,7 @@ FXDEFMAP(Open9xSim) Open9xSimMap[]={
 FXIMPLEMENT(Open9xSim,FXMainWindow,Open9xSimMap,ARRAYNUMBER(Open9xSimMap))
 
 Open9xSim::Open9xSim(FXApp* a)
-:FXMainWindow(a,"Open9xSim",NULL,NULL,DECOR_ALL,20,90,0,0)
+:FXMainWindow(a,"OpenTXSimu",NULL,NULL,DECOR_ALL,20,90,0,0)
 {
   firstTime=true;
   for(int i=0; i<(LCD_W*LCD_H/8); i++) displayBuf[i]=0;//rand();
