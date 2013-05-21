@@ -43,7 +43,7 @@
   #define TELEM_2ND_COLUMN (10*FW)
 #endif
 
-#if defined(FRSKY_HUB) && defined(FRSKY_BARS)
+#if defined(FRSKY_HUB) && defined(GAUGES)
 uint8_t barsThresholds[THLD_MAX];
 #endif
 
@@ -202,7 +202,7 @@ void menuTelemetryFrsky(uint8_t event)
 
   if (s_frsky_view < MAX_FRSKY_SCREENS) {
     FrSkyScreenData & screen = g_model.frsky.screens[s_frsky_view];
-#if defined(FRSKY_BARS)
+#if defined(GAUGES)
     if (g_model.frsky.screensType & (1<<s_frsky_view)) {
       // Custom Screen with gauges
       uint8_t barHeight = 5;
@@ -365,7 +365,7 @@ void menuTelemetryFrsky(uint8_t event)
     if (frskyData.hub.cellsCount > 0) {
       uint8_t y = 1*FH;
       for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
-#if defined(FRSKY_BARS)
+#if defined(GAUGES)
         uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
 #else
         uint8_t attr = PREC2;
@@ -382,7 +382,7 @@ void menuTelemetryFrsky(uint8_t event)
 #if defined(FRSKY_HUB)
   else if (s_frsky_view == e_frsky_after_flight) {
     uint8_t line=1*FH+1;
-    if (IS_USR_PROTO_FRSKY_HUB()) {
+    if (IS_GPS_AVAILABLE()) {
       // Latitude
       lcd_putsLeft(line, STR_LATITUDE);
       displayGpsCoord(line, frskyData.hub.gpsLatitudeNS, frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap);

@@ -149,10 +149,15 @@ FRSKY_HUB = YES
 # Values = YES, NO
 WS_HOW_HIGH = YES
 
-# Bars in Telemetry screen
-FRSKY_BARS = YES
+# Gauges in Telemetry screen
+# Values = YES, NO
+GAUGES = YES
 
-# WS HowHigh 
+# GPS 
+# Values = YES, NO
+GPS = YES
+
+# Vario 
 # Values = YES, NO
 VARIO = YES
 
@@ -833,8 +838,12 @@ ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
     CPPDEFS += -DWS_HOW_HIGH
   endif
   
-  ifeq ($(FRSKY_BARS), YES)
-    CPPDEFS += -DFRSKY_BARS
+  ifeq ($(GAUGES), YES)
+    CPPDEFS += -DGAUGES
+  endif
+
+  ifeq ($(GPS), YES)
+    CPPDEFS += -DGPS
   endif
 
   ifeq ($(VARIO), YES)

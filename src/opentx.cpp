@@ -1048,7 +1048,7 @@ bool __getSwitch(int8_t swtch)
 
             y = convertCswTelemValue(cs);
 
-#if defined(FRSKY_HUB) && defined(FRSKY_BARS)
+#if defined(FRSKY_HUB) && defined(GAUGES)
             if (s == CS_VOFS) {
               uint8_t idx = cs->v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;
               if (idx < THLD_MAX) {

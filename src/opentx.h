@@ -110,6 +110,12 @@
 #define CASE_PWM_BACKLIGHT(x)
 #endif
 
+#if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS)
+#define IF_GPS(x) x,
+#else
+#define IF_GPS(x)
+#endif
+
 #if defined(VARIO)
 #define IF_VARIO(x) x,
 #else
@@ -1363,7 +1369,7 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
   #define STICK_TOLERANCE 64
 #endif
 
-#if defined(FRSKY_HUB) && defined(FRSKY_BARS)
+#if defined(FRSKY_HUB) && defined(GAUGES)
 enum BarThresholdIdx {
   THLD_ALT,
   THLD_RPM,
@@ -1435,6 +1441,12 @@ void varioWakeup();
 #else
   #define IS_USR_PROTO_FRSKY_HUB()   (g_model.frsky.usrProto == USR_PROTO_FRSKY)
   #define IS_USR_PROTO_WS_HOW_HIGH() (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
+#endif
+
+#if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS)
+  #define IS_GPS_AVAILABLE()         IS_USR_PROTO_FRSKY_HUB()
+#else
+  #define IS_GPS_AVAILABLE()         (0)
 #endif
 
 #if defined(PCBTARANIS)

@@ -97,7 +97,7 @@ static uint8_t s_copyMode = 0;
 static int8_t s_copySrcRow;
 static int8_t s_copyTgtOfs;
 
-inline uint8_t eeFindEmptyModel(uint8_t id, bool down)
+uint8_t eeFindEmptyModel(uint8_t id, bool down)
 {
   uint8_t i = id;
   for (;;) {
@@ -106,6 +106,16 @@ inline uint8_t eeFindEmptyModel(uint8_t id, bool down)
     if (i == id) return 0xff; // no free space in directory left
   }
   return i;
+}
+
+void selectModel(uint8_t sub)
+{
+  displayPopup(STR_LOADINGMODEL);
+  saveTimers();
+  eeCheck(true); // force writing of current model data before this is changed
+  g_eeGeneral.currModel = sub;
+  STORE_GENERALVARS;
+  eeLoadModel(sub);
 }
 
 #if defined(SDCARD)
@@ -304,16 +314,6 @@ void onModelSelectMenu(const char *result)
 #endif
 }
 #endif
-
-void selectModel(uint8_t sub)
-{
-  displayPopup(STR_LOADINGMODEL);
-  saveTimers();
-  eeCheck(true); // force writing of current model data before this is changed
-  g_eeGeneral.currModel = sub;
-  STORE_GENERALVARS;
-  eeLoadModel(sub);
-}
 
 void menuModelSelect(uint8_t event)
 {
@@ -4429,7 +4429,7 @@ enum menuModelTelemetryItems {
  #define RSSI_ROWS    (uint8_t)-1, 1, 1,
 #endif
 
-#if defined(FRSKY_BARS)
+#if defined(GAUGES)
  #define SCREEN_TYPE_ROWS 0
 #else
  #define SCREEN_TYPE_ROWS (uint8_t)-1
@@ -4654,7 +4654,7 @@ void menuModelTelemetry(uint8_t event)
       {
         uint8_t screenIndex = (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 0 : (k < ITEM_TELEMETRY_SCREEN_LABEL3 ? 1 : 2));
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex+1);
-#if defined(FRSKY_BARS)
+#if defined(GAUGES)
         bool screenType = IS_BARS_SCREEN(screenIndex);
         if (screenType != selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= (1 << screenIndex);
@@ -4665,7 +4665,7 @@ void menuModelTelemetry(uint8_t event)
       {
         uint8_t screenIndex = (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 1 : 2);
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex);
-#if defined(FRSKY_BARS)
+#if defined(GAUGES)
         bool screenType = g_model.frsky.screensType & screenIndex;
         if (screenType != selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= screenIndex;
@@ -4711,7 +4711,7 @@ void menuModelTelemetry(uint8_t event)
         putsStrIdx(0, y, PSTR(INDENT"Line"), lineIndex+1, m_posHorz<0 ? attr : 0);
 #endif
 
-#if defined(FRSKY_BARS)
+#if defined(GAUGES)
         if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           uint8_t barSource = bar.source;

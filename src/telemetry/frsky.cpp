@@ -227,6 +227,7 @@ void parseTelemHubByte(uint8_t byte)
           frskyData.hub.minAltitude = frskyData.hub.gpsAltitude_bp;
       }
 
+#if defined(GPS)
       if (!frskyData.hub.pilotLatitude && !frskyData.hub.pilotLongitude) {
         // First received GPS position => Pilot GPS position
         getGpsPilotPosition();
@@ -234,6 +235,7 @@ void parseTelemHubByte(uint8_t byte)
       else if (frskyData.hub.gpsDistNeeded || g_menuStack[g_menuStackPtr] == menuTelemetryFrsky) {
         getGpsDistance();
       }
+#endif
       break;
 
     case offsetof(FrskyHubData, gpsSpeed_bp):
@@ -842,6 +844,7 @@ void resetTelemetry()
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
 
+#if defined(GPS)
   frskyData.hub.gpsFix = 1;
   frskyData.hub.gpsLatitude_bp = 4401;
   frskyData.hub.gpsLatitude_ap = 7710;
@@ -855,6 +858,7 @@ void resetTelemetry()
   frskyData.hub.gpsLongitude_bp = 1006;
   frskyData.hub.gpsLongitude_ap = 9533;
   getGpsDistance();
+#endif
 
   frskyData.hub.cellsCount = 6;
 
