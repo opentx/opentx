@@ -493,12 +493,12 @@
 #define TR_EEPROMLOWMEM        "EEPROM pleine!"
 #define TR_ALERT               "\014ALERTE"
 #define TR_PRESSANYKEYTOSKIP   "Touche pour ignorer"
-#define TR_THROTTLENOTIDLE     CENTER"Gaz pas \202 z\200ro"
-#define TR_ALARMSDISABLED      CENTER"Alarmes D\200sactiv\200es"
-#define TR_PRESSANYKEY         TR("Touche pour continuer",CENTER"Touche pour continuer")
-#define TR_BADEEPROMDATA       CENTER"EEPROM corrompue"
-#define TR_EEPROMFORMATTING    CENTER"Formatage EEPROM"
-#define TR_EEPROMOVERFLOW      CENTER"D\200passement EEPROM"
+#define TR_THROTTLENOTIDLE     "Gaz pas \202 z\200ro"
+#define TR_ALARMSDISABLED      "Alarmes D\200sactiv\200es"
+#define TR_PRESSANYKEY         TR("Touche pour continuer","Touche pour continuer")
+#define TR_BADEEPROMDATA       "EEPROM corrompue"
+#define TR_EEPROMFORMATTING    "Formatage EEPROM"
+#define TR_EEPROMOVERFLOW      "D\200passement EEPROM"
 #define TR_MENURADIOSETUP      "CONFIG RADIO"
 #define TR_MENUDATEANDTIME     "DATE ET HEURE"
 #define TR_MENUTRAINER         "ECOLAGE"

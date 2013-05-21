@@ -396,6 +396,7 @@ void generalDefault()
 #if !defined(CPUM64)
   g_eeGeneral.backlightMode = e_backlight_mode_both;
   g_eeGeneral.lightAutoOff = 2;
+  g_eeGeneral.inactivityTimer = 10;
 #endif
 
   g_eeGeneral.chkSum = 0xFFFF;
