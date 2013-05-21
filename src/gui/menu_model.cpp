@@ -1796,7 +1796,7 @@ void menuModelPhaseOne(uint8_t event)
   putsFlightPhase(13*FW, 0, s_currIdx+1, (getFlightPhase()==s_currIdx ? BOLD : 0));
 
 #if defined(GVARS) && !defined(PCBSTD)
-  static const pm_uint8_t mstate_tab_phase1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
+  static const pm_uint8_t mstate_tab_phase1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
   if (!check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_phase1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0))) return;
@@ -1897,21 +1897,23 @@ void menuModelPhaseOne(uint8_t event)
       default:
       {
         uint8_t idx = i-ITEM_MODEL_PHASE_GV1;
+        uint8_t posHorz = m_posHorz;
+        if (attr && posHorz > 0 && s_currIdx==0) posHorz++;
 
         putsStrIdx(INDENT_WIDTH, y, STR_GV, idx+1);
 
-        editName(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, m_posHorz==0 ? attr : 0);
+        editName(4*FW, y, g_model.gvarsNames[idx], sizeof(gvar_name_t), event, posHorz==0 ? attr : 0);
 
         int16_t v = phase->gvars[idx];
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
           if (p >= s_currIdx) p++;
-          putsFlightPhase(11*FW, y, p+1, m_posHorz==1 ? attr : 0);
+          putsFlightPhase(11*FW, y, p+1, posHorz==1 ? attr : 0);
         }
         else {
-          lcd_putsAtt(11*FW, y, STR_OWN, m_posHorz==1 ? attr : 0);
+          lcd_putsAtt(11*FW, y, STR_OWN, posHorz==1 ? attr : 0);
         }
-        if (attr && s_currIdx>0 && m_posHorz==1 && (editMode>0 || p1valdiff)) {
+        if (attr && s_currIdx>0 && posHorz==1 && (editMode>0 || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;
           v = checkIncDec(event, v, GVAR_MAX, GVAR_MAX+MAX_PHASES-1, EE_MODEL);
           if (checkIncDec_Ret) {
@@ -1921,8 +1923,8 @@ void menuModelPhaseOne(uint8_t event)
         }
 
         uint8_t p = getGVarFlightPhase(s_currIdx, idx);
-        lcd_outdezAtt(21*FW, y, GVAR_VALUE(idx, p), m_posHorz==2 ? attr : 0);
-        if (attr && m_posHorz==2 && ((editMode>0) || p1valdiff))
+        lcd_outdezAtt(21*FW, y, GVAR_VALUE(idx, p), posHorz==2 ? attr : 0);
+        if (attr && posHorz==2 && ((editMode>0) || p1valdiff))
           GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -GVAR_MAX, GVAR_MAX, EE_MODEL);
 
         break;
