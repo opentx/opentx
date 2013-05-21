@@ -656,24 +656,24 @@
 #define TR_ABOUT_OPENTX_5      "donationer v\201lkomnas!"
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "OpenTX chefsutvecklare"
-#define TR_ABOUT_BERTRAND_3    "Companion9x hj\201lputvecklare"
+#define TR_ABOUT_BERTRAND_2    "Chefsutvecklare av OpenTX"
+#define TR_ABOUT_BERTRAND_3    "Hj\201lputvecklare av Companion9x"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
 #define TR_ABOUT_MIKE_2        "Kod och drivrutins-guru"
-#define TR_ABOUT_MIKE_3        "Utan tvekan en av de b\201sta"
-#define TR_ABOUT_MIKE_4        "En Inspiration"
+#define TR_ABOUT_MIKE_3        "Stor inspirationsk\201lla"
+#define TR_ABOUT_MIKE_4        ""
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Companion9x chefsutvecklare"
+#define TR_ABOUT_ROMOLO_2      "Chefsutvecklare av Companion9x"
 #define TR_ABOUT_ROMOLO_3      ""
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
-#define TR_ABOUT_ANDRE_2       "Funktionalitet, anv\201ndbarhet,"
-#define TR_ABOUT_ANDRE_3       "debugging, dokumentation"
+#define TR_ABOUT_ANDRE_2       "Funktionalitet, Anv\201ndbarhet,"
+#define TR_ABOUT_ANDRE_3       "Fels\202kning, Dokumentation"
 
 #define TR_ABOUT_ROB_1         "Rob Thomson"
-#define TR_ABOUT_ROB_2         "openrcforums webmaster"
+#define TR_ABOUT_ROB_2         "Webmaster f\202r openRCforums"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Grafikdesigner"
