@@ -43,7 +43,7 @@
   #define TELEM_2ND_COLUMN (10*FW)
 #endif
 
-#if defined(FRSKY_HUB)
+#if defined(FRSKY_HUB) && defined(FRSKY_BARS)
 uint8_t barsThresholds[THLD_MAX];
 #endif
 
@@ -202,6 +202,7 @@ void menuTelemetryFrsky(uint8_t event)
 
   if (s_frsky_view < MAX_FRSKY_SCREENS) {
     FrSkyScreenData & screen = g_model.frsky.screens[s_frsky_view];
+#if defined(FRSKY_BARS)
     if (g_model.frsky.screensType & (1<<s_frsky_view)) {
       // Custom Screen with gauges
       uint8_t barHeight = 5;
@@ -257,7 +258,9 @@ void menuTelemetryFrsky(uint8_t event)
       }
       displayRssiLine();
     }
-    else {
+    else
+#endif
+    {
       // Custom Screen with numbers
       uint8_t fields_count = 0;
       for (uint8_t i=0; i<4; i++) {
@@ -362,7 +365,11 @@ void menuTelemetryFrsky(uint8_t event)
     if (frskyData.hub.cellsCount > 0) {
       uint8_t y = 1*FH;
       for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
+#if defined(FRSKY_BARS)
         uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
+#else
+        uint8_t attr = PREC2;
+#endif
         lcd_outdezNAtt(LCD_W, y, frskyData.hub.cellVolts[k] * 2, attr, 4);
         y += 1*FH;
       }

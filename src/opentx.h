@@ -1363,7 +1363,7 @@ char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultN
   #define STICK_TOLERANCE 64
 #endif
 
-#if defined(FRSKY_HUB)
+#if defined(FRSKY_HUB) && defined(FRSKY_BARS)
 enum BarThresholdIdx {
   THLD_ALT,
   THLD_RPM,

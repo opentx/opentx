@@ -149,6 +149,9 @@ FRSKY_HUB = YES
 # Values = YES, NO
 WS_HOW_HIGH = YES
 
+# Bars in Telemetry screen
+FRSKY_BARS = YES
+
 # WS HowHigh 
 # Values = YES, NO
 VARIO = YES
@@ -821,15 +824,19 @@ ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
     CPPSRC += telemetry/frsky.cpp
   endif
   CPPSRC += gui/view_telemetry.cpp
-  # If FRSKY-Hub is enabled
+  
   ifeq ($(FRSKY_HUB), YES)
     CPPDEFS += -DFRSKY_HUB
   endif
-  # If WS HowHigh is enabled
+  
   ifeq ($(WS_HOW_HIGH), YES)
     CPPDEFS += -DWS_HOW_HIGH
   endif
-  # If Vario is enabled
+  
+  ifeq ($(FRSKY_BARS), YES)
+    CPPDEFS += -DFRSKY_BARS
+  endif
+
   ifeq ($(VARIO), YES)
     CPPDEFS += -DVARIO
   endif

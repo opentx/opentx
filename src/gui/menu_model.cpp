@@ -4653,23 +4653,28 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_SCREEN_LABEL1:
       case ITEM_TELEMETRY_SCREEN_LABEL2:
+// TODO merge this code
 #if defined(CPUARM)
       case ITEM_TELEMETRY_SCREEN_LABEL3:
       {
         uint8_t screenIndex = (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 0 : (k < ITEM_TELEMETRY_SCREEN_LABEL3 ? 1 : 2));
-        bool screenType = IS_BARS_SCREEN(screenIndex);
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex+1);
+#if defined(FRSKY_BARS)
+        bool screenType = IS_BARS_SCREEN(screenIndex);
         if (screenType != selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= (1 << screenIndex);
+#endif
         break;
       }
 #else
       {
         uint8_t screenIndex = (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 1 : 2);
-        bool screenType = g_model.frsky.screensType & screenIndex;
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex);
+#if defined(FRSKY_BARS)
+        bool screenType = g_model.frsky.screensType & screenIndex;
         if (screenType != selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= screenIndex;
+#endif
         break;
       }
 #endif
@@ -4711,6 +4716,7 @@ void menuModelTelemetry(uint8_t event)
         putsStrIdx(0, y, PSTR(INDENT"Line"), lineIndex+1, m_posHorz<0 ? attr : 0);
 #endif
 
+#if defined(FRSKY_BARS)
         if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           uint8_t barSource = bar.source;
@@ -4740,7 +4746,9 @@ void menuModelTelemetry(uint8_t event)
             }
           }
         }
-        else {
+        else
+#endif
+        {
           for (uint8_t c=0; c<NUM_LINE_ITEMS; c++) {
             uint8_t cellAttr = (m_posHorz==c ? attr : 0);
             uint8_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
