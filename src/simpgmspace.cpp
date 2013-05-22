@@ -71,18 +71,20 @@ Adc Adc0;
 #endif
 
 #if defined(PCBSKY9X)
-uint32_t eeprom_pointer;
-char* eeprom_buffer_data;
-volatile int32_t eeprom_buffer_size;
-bool eeprom_read_operation;
-#define EESIZE (128*4096)
+  uint32_t eeprom_pointer;
+  char* eeprom_buffer_data;
+  volatile int32_t eeprom_buffer_size;
+  bool eeprom_read_operation;
+  #define EESIZE_SIMU (128*4096)
 #else
-extern uint16_t eeprom_pointer;
-extern const char* eeprom_buffer_data;
+  extern uint16_t eeprom_pointer;
+  extern const char* eeprom_buffer_data;
 #endif
-#if not defined (EESIZE_SIMU)
+
+#if !defined(EESIZE_SIMU)
   #define EESIZE_SIMU EESIZE
 #endif
+
 uint8_t eeprom[EESIZE_SIMU];
 sem_t *eeprom_write_sem;
 

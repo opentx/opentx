@@ -41,11 +41,11 @@
 
 #if defined(PCBTARANIS)
   #define blkid_t    uint16_t
-  #if not defined (EESIZE)
+  #if !defined(EESIZE)
     #if defined(REV4a)
-      #define EESIZE   (64*1024)
+      #define EESIZE    (64*1024)
     #else
-      #define EESIZE   (32*1024)
+      #define EESIZE    (32*1024)
     #endif
   #else
     #define EESIZE_SIMU (64*1024)
