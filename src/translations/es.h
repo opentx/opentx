@@ -492,13 +492,13 @@
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM mem.baja"
 #define TR_ALERT               "\016ALERTA"
-#define TR_PRESSANYKEYTOSKIP   CENTER "Pulsar tecla omitir"
-#define TR_THROTTLENOTIDLE     CENTER "Aceler.Activado" 
-#define TR_ALARMSDISABLED      CENTER "Alarmas Desact."
-#define TR_PRESSANYKEY         TR("\010Pulsa una Tecla", CENTER "Pulsa una Tecla")
-#define TR_BADEEPROMDATA       CENTER "Datos EEprom mal"
-#define TR_EEPROMFORMATTING    CENTER "Formateando EEPROM"
-#define TR_EEPROMOVERFLOW      CENTER "Desborde EEPROM"
+#define TR_PRESSANYKEYTOSKIP   "Pulsar tecla omitir"
+#define TR_THROTTLENOTIDLE     "Aceler.Activado"
+#define TR_ALARMSDISABLED      "Alarmas Desact."
+#define TR_PRESSANYKEY         TR("\010Pulsa una Tecla", "Pulsa una Tecla")
+#define TR_BADEEPROMDATA       "Datos EEprom mal"
+#define TR_EEPROMFORMATTING    "Formateando EEPROM"
+#define TR_EEPROMOVERFLOW      "Desborde EEPROM"
 #define TR_MENURADIOSETUP      "CONFIGURACION"
 #define TR_MENUDATEANDTIME     "FECHA Y HORA"
 #define TR_MENUTRAINER         "APRENDIZ"
@@ -624,7 +624,7 @@
 #define TR_RESET_TELEMETRY     "Reset Telemetria"
 #define TR_STATISTICS          "Estadisticas"
 #define TR_ABOUT_US            "Nosotros"
-#define TR_AND_SWITCH          "AND Interrup."
+#define TR_AND_SWITCH          "AND Inter."
 #define TR_CF                  "CF"
 #define TR_SPEAKER             INDENT"Altavoz"
 #define TR_BUZZER              INDENT"Zumbador"
@@ -642,8 +642,8 @@
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { "Nombre ", "Interrup.", " Trims ", " Aparecer ", " Desparecer " }
-#define TR_LIMITS_HEADERS      { "Nombre ", "Compensacion", " Min ", " Max ", " Direccion ", "Centrado PPM", " Simetrica " }
+#define TR_PHASES_HEADERS      { " Nombre ", " Interrup.", " Trims ", " Aparecer ", " Desparecer " }
+#define TR_LIMITS_HEADERS      { " Nombre ", " Compensacion", " Min ", " Max ", " Direccion ", " Centrado PPM ", " Simetrica " }
 #define TR_CSW_HEADERS         { " Funcion ", " V1 ", " V2 ", " AND Interrup. ", " Duracion ", " Retardo" }
 
 //Taranis About screen
