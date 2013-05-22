@@ -71,8 +71,8 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japon\0 ""Europa\0")
 
-#define LEN_VTRIMINC           TR("\006","\013")
-#define TR_VTRIMINC            TR("Expo  ""ExFino""Fino  ""Medio ""Grueso","Exponencial""Extra Fino ""Fino       ""Medio      ""Grueso     ")
+#define LEN_VTRIMINC           TR("\006", "\013")
+#define TR_VTRIMINC            TR("Expo  ""ExFino""Fino  ""Medio ""Grueso", "Exponencial""Extra Fino ""Fino       ""Medio      ""Grueso     ")
 
 #define LEN_RETA123            "\001"
 
@@ -450,10 +450,10 @@
 #define TR_BLONBRIGHTNESS      INDENT"MAS Brillo"
 #define TR_BLOFFBRIGHTNESS     INDENT"MENOS Brillo"
 #define TR_SPLASHSCREEN        "Ptalla.inicio"
-#define TR_THROTTLEWARNING     TR("A-Aviso","Aviso Acelerador")
-#define TR_SWITCHWARNING       TR("I-Aviso","Aviso Intrptor"
-#define TR_TIMEZONE            TR("Zona Hora","GPS Zona Hora")
-#define TR_RXCHANNELORD        TR("Rx Orden canal","Orden habitual canales")
+#define TR_THROTTLEWARNING     TR("A-Aviso", "Aviso Acelerador")
+#define TR_SWITCHWARNING       TR("I-Aviso", "Aviso Intrptor")
+#define TR_TIMEZONE            TR("Zona Hora", "GPS Zona Hora")
+#define TR_RXCHANNELORD        TR("Rx Orden canal", "Orden habitual canales")
 #define TR_SLAVE               "Esclavo"
 #define TR_MODESRC             "Modo\006% Fuente"
 #define TR_MULTIPLIER          "Multiplicar"
@@ -503,12 +503,12 @@
 #define TR_MENUDATEANDTIME     "FECHA Y HORA"
 #define TR_MENUTRAINER         "APRENDIZ"
 #define TR_MENUVERSION         "VERSION"
-#define TR_MENUDIAG            TR("INTERUPTS","TEST INTERUP.")
-#define TR_MENUANA             TR("ANAS","ENTRADAS ANALOG")
+#define TR_MENUDIAG            TR("INTERUPTS", "TEST INTERUP.")
+#define TR_MENUANA             TR("ANAS", "ENTRADAS ANALOG")
 #define TR_MENUCALIBRATION     "CALIBRACION"
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
-#define TR_MENUMODELSEL        TR("MODELSEL","SELECCION MODELO")
-#define TR_MENUSETUP           TR("CONF.","CONF.MODELO")
+#define TR_MENUMODELSEL        TR("MODELSEL", "SELECCION MODELO")
+#define TR_MENUSETUP           TR("CONF.", "CONF.MODELO")
 #define TR_MENUFLIGHTPHASE     "MODO VUELO"
 #define TR_MENUFLIGHTPHASES    "MODOS VUELO"
 #define TR_MENUHELISETUP       "CONF. HELI"
@@ -558,7 +558,7 @@
 #define TR_THROTTLEWARN        "ACELERADOR"
 #define TR_ALARMSWARN          "ALARMAS"
 #define TR_SWITCHWARN          "INTERPTOR"
-#define TR_INVERT_THR          TR("Invertir Acel?","Invertir Acel.?")
+#define TR_INVERT_THR          TR("Invertir Acel?", "Invertir Acel.?")
 #define TR_SPEAKER_VOLUME      INDENT"Volumen"
 #define TR_LCD                 "LCD"
 #define TR_BRIGHTNESS          "Brillo"
@@ -635,7 +635,7 @@
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Aprendiz"
 #define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"
-#define TR_MODELIDUSED         TR("ID en uso","ID del modelo en uso")
+#define TR_MODELIDUSED         TR("ID en uso", "ID del modelo en uso")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
 #define TR_LOWALARM            INDENT "Alarma baja"
