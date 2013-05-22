@@ -82,7 +82,7 @@ void setupPulses(unsigned int port)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:
-        disable_dsm2();
+        disable_dsm2(port);
         break;
 #endif
       case PROTO_PPM:
