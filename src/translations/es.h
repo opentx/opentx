@@ -644,7 +644,7 @@
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nombre ", " Interrup.", " Trims ", " Aparecer ", " Desparecer " }
 #define TR_LIMITS_HEADERS      { " Nombre ", " Compensacion", " Min ", " Max ", " Direccion ", " Centrado PPM ", " Simetrica " }
-#define TR_CSW_HEADERS         { " Funcion ", " V1 ", " V2 ", " AND Interrup. ", " Duracion ", " Retardo" }
+#define TR_CSW_HEADERS         { " Funcion ", " V1 ", " V2 ", " AND Interrup. ", " Duracion ", " Retardo " }
 
 //Taranis About screen
 #define TR_ABOUTUS             "Nosotros"
