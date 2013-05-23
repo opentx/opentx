@@ -3528,11 +3528,13 @@ void doMixerCalculations()
 
 #if defined(PXX)
   static uint8_t count_pxx = 0;
-  if((pxxFlag[INTERNAL_MODULE] & PXX_SEND_RANGECHECK) || (pxxFlag[INTERNAL_MODULE] & PXX_SEND_RXNUM) || (pxxFlag[EXTERNAL_MODULE] & PXX_SEND_RANGECHECK) || (pxxFlag[EXTERNAL_MODULE] & PXX_SEND_RXNUM))
-    if (++count_pxx >= 250) {    
-      AUDIO_PLAY(AU_FRSKY_CHEEP);
-      count_pxx = 0;
-    }
+  for (uint8_t i = 0; i < NUM_MODULES; i++) {
+    if((pxxFlag[i] & PXX_SEND_RANGECHECK) || (pxxFlag[i] & PXX_SEND_RXNUM))
+      if (++count_pxx >= 250) {    
+        AUDIO_PLAY(AU_FRSKY_CHEEP);
+        count_pxx = 0;
+      }
+  }
 #endif
 
 #if defined(CPUARM)
