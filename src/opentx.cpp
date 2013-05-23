@@ -3518,7 +3518,21 @@ void doMixerCalculations()
   } //endif s_fade_fligh_phases
 
 #if defined(DSM2)
-  if (s_rangecheck_mode) AUDIO_PLAY(AU_FRSKY_CHEEP);
+  static uint8_t count_dsm_range = 0;
+  if (s_rangecheck_mode)
+    if (++count_dsm_range >= 200) {
+  	  AUDIO_PLAY(AU_FRSKY_CHEEP);
+    count_dsm_range = 0;
+  }
+#endif
+
+#if defined(PXX)
+  static uint8_t count_pxx = 0;
+  if((pxxFlag[INTERNAL_MODULE] & PXX_SEND_RANGECHECK) || (pxxFlag[INTERNAL_MODULE] & PXX_SEND_RXNUM) || (pxxFlag[EXTERNAL_MODULE] & PXX_SEND_RANGECHECK) || (pxxFlag[EXTERNAL_MODULE] & PXX_SEND_RXNUM))
+    if (++count_pxx >= 250) {    
+      AUDIO_PLAY(AU_FRSKY_CHEEP);
+      count_pxx = 0;
+    }
 #endif
 
 #if defined(CPUARM)
