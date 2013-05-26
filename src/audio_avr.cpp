@@ -248,10 +248,8 @@ void audioQueue::event(uint8_t e, uint8_t f)
         case AU_TIMER_20:
           play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(1)|PLAY_NOW);
           break;
-        // time 10 seconds left
-        case AU_TIMER_10:
-        // time <3 seconds left
-        case AU_TIMER_LT3:
+        // time <= 10 seconds left
+        case AU_TIMER_LT10:
           play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_NOW);
           break;
         case AU_FRSKY_BEEP1:

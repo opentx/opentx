@@ -185,7 +185,9 @@ void menuGeneralSetup(uint8_t event)
   struct gtm t;
   gettime(&t);
 
-  if ((m_posVert==ITEM_SETUP_DATE+1 || m_posVert==ITEM_SETUP_TIME+1) && s_editMode>0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
+  if ((m_posVert==ITEM_SETUP_DATE+1 || m_posVert==ITEM_SETUP_TIME+1) &&
+      (s_editMode>0) &&
+      (event==EVT_KEY_FIRST(KEY_ENTER) || event==EVT_KEY_FIRST(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event))) {
     // set the date and time into RTC chip
     rtcSetTime(&t);
   }

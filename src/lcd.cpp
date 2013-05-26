@@ -1042,6 +1042,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       break;
 
     case TELEM_POWER-1:
+    case TELEM_MAX_POWER-1:
       putsTelemetryValue(x, y, val, UNIT_WATTS, att);
       break;
 

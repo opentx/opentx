@@ -360,8 +360,8 @@ void menuTelemetryFrsky(uint8_t event)
 #endif
       }
 
-      putsTelemetryChannel(4, 5*FH+1, TELEM_POWER-1, frskyData.power, LEFT|DBLSIZE);
-      putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.currentConsumption, DBLSIZE);
+      putsTelemetryChannel(4, 5*FH+1, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
+      putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
     }
     else {
       displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);

@@ -684,20 +684,18 @@ void telemetryInterrupt10ms()
   }
 
 #if defined(CPUARM)
-  frskyData.power = (current * voltage) / 100;
+  frskyData.hub.power = (current * voltage) / 100;
 #else
-  frskyData.power = ((current>>1) * (voltage>>1)) / 25;
+  frskyData.hub.power = ((current>>1) * (voltage>>1)) / 25;
 #endif
 
-#if 0
-  if (frskyData.power > frskyData.maxPower)
-    frskyData.maxPower = frskyData.power;
-#endif
+  if (frskyData.hub.power > frskyData.hub.maxPower)
+    frskyData.hub.maxPower = frskyData.hub.power;
 
-  frskyData.currentPrescale += current;
-  if (frskyData.currentPrescale >= 3600) {
-    frskyData.currentConsumption += 1;
-    frskyData.currentPrescale -= 3600;
+  frskyData.hub.currentPrescale += current;
+  if (frskyData.hub.currentPrescale >= 3600) {
+    frskyData.hub.currentConsumption += 1;
+    frskyData.hub.currentPrescale -= 3600;
   }
 }
 

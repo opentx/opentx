@@ -758,7 +758,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
       if (p1valdiff || IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
           || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
-         if (c < 0) v = -v;
+         if (c <= 0) v = -v;
       }
 
       switch (event) {

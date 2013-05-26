@@ -232,7 +232,7 @@
   #define TR_RSSI_0            "Tx\0 "
   #define TR_RSSI_1            "Rx\0 "
 #endif
-#define TR_VTELEMCHNS          "---\0""Batt""Uhr1""Uhr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""H\203he""Umdr""Stof""T1\0 ""T2\0 ""Gesc""Dist""GH\203h""Zell""Zels""Vfas""Strm""Verb""Leis""BesX""BesY""BesZ""Rich""VGes""A1-\0""A2-\0""H\203h-""H\203h+""Umd+""T1+\0""T2+\0""Ges+""Dst+""Str+""Besc""Zeit"
+#define TR_VTELEMCHNS          "---\0""Batt""Uhr1""Uhr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""H\203he""Umdr""Stof""T1\0 ""T2\0 ""Gesc""Dist""GH\203h""Zell""Zels""Vfas""Strm""Verb""Leis""BesX""BesY""BesZ""Rich""VGes""A1-\0""A2-\0""H\203h-""H\203h+""Umd+""T1+\0""T2+\0""Ges+""Dst+""Str+""Pwr+""Besc""Zeit"
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")

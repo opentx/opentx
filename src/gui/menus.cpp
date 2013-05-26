@@ -298,9 +298,14 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
 #ifdef NAVIGATION_POT1
   // check pot 1 - if changed -> scroll values
+  static int16_t p1val;
   static int16_t p1valprev;
-  p1valdiff = (p1valprev-calibratedStick[6]) / SCROLL_POT1_TH;
-  if (p1valdiff) p1valprev = calibratedStick[6];
+  p1valdiff = (p1val-calibratedStick[6]) / SCROLL_POT1_TH;
+  if (p1valdiff) {
+    p1valdiff = (p1valprev-calibratedStick[6]) / 2;
+    p1val = calibratedStick[6];
+  }
+  p1valprev = calibratedStick[6];
 #endif
 
 #ifdef NAVIGATION_POT2

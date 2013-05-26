@@ -70,8 +70,6 @@ void beep(uint8_t val);
     #define AUDIO_TIMER_MINUTE(t)  playDuration(t)
     #define AUDIO_TIMER_30()       PUSH_SYSTEM_PROMPT(AU_TIMER_30)
     #define AUDIO_TIMER_20()       PUSH_SYSTEM_PROMPT(AU_TIMER_20)
-    #define AUDIO_TIMER_10()       PUSH_SYSTEM_PROMPT(AU_TIMER_10)
-    #define AUDIO_TIMER_LT3(x)     PUSH_SYSTEM_PROMPT(AU_TIMER_LT3)
   #else
     #define AUDIO_TADA()
     #define AUDIO_TX_BATTERY_LOW() beep(4)
@@ -80,8 +78,6 @@ void beep(uint8_t val);
     #define AUDIO_TIMER_MINUTE(t)  beep(2)
     #define AUDIO_TIMER_30()       { beepAgain=2; beep(2); }
     #define AUDIO_TIMER_20()       { beepAgain=1; beep(2); }
-    #define AUDIO_TIMER_10()       beep(2)
-    #define AUDIO_TIMER_LT3(x)     beep(2)
   #endif
 
   #define AUDIO_KEYPAD_UP()        beep(0)
@@ -92,6 +88,7 @@ void beep(uint8_t val);
   #define AUDIO_ERROR()            beep(4)
   #define AUDIO_MIX_WARNING(x)     beep(1)
   #define AUDIO_POT_STICK_MIDDLE() beep(2)
+  #define AUDIO_TIMER_LT10(x)      beep(2)
   #define AUDIO_VARIO_UP()         _beep(1)
   #define AUDIO_VARIO_DOWN()       _beep(1)
   #define AUDIO_TRIM(event, f)     { if (!IS_KEY_FIRST(event)) warble = true; beep(1); }

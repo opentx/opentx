@@ -933,8 +933,8 @@ getvalue_t getValue(uint8_t i)
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
-  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CONSUMPTION) return frskyData.currentConsumption;
-  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_POWER) return frskyData.power;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_CONSUMPTION) return frskyData.hub.currentConsumption;
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_POWER) return frskyData.hub.power;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_ACCx) return frskyData.hub.accelX;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_ACCy) return frskyData.hub.accelY;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return frskyData.hub.accelZ;
@@ -942,7 +942,7 @@ getvalue_t getValue(uint8_t i)
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_VSPD) return frskyData.hub.varioSpeed;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[0].min;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[1].min;
-  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT) return *(((int16_t*)(&frskyData.hub.minAltitude))+i+1-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_MAX_POWER) return *(((int16_t*)(&frskyData.hub.minAltitude))+i+1-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
 #endif
 #endif
   else return 0;
@@ -2902,7 +2902,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #if defined(PCBTARANIS)
         else {
           v = getValue(k);
-          if (k >= MIXSRC_SA-1 && k <= MIXSRC_LAST_CSW-1) {
+          if ((k == MIXSRC_SF-1) || (k >= MIXSRC_SH-1 && k <= MIXSRC_LAST_CSW-1)) {
             if (v < 0 && !md->swtch) sw = false;
           }
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
@@ -3412,10 +3412,9 @@ void doMixerCalculations()
           s_timerVal[i] = newTimerVal;
           if (s_timerState[i] == TMR_RUNNING) {
             if (g_model.timers[i].countdownBeep && g_model.timers[i].start) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
-              if (newTimerVal==30) AUDIO_TIMER_30(); //beep three times
-              if (newTimerVal==20) AUDIO_TIMER_20(); //beep two times
-              if (newTimerVal==10) AUDIO_TIMER_10();
-              if (newTimerVal<= 3) AUDIO_TIMER_LT3(newTimerVal);
+              if (newTimerVal==30) AUDIO_TIMER_30(); // beep three times
+              if (newTimerVal==20) AUDIO_TIMER_20(); // beep two times
+              if (newTimerVal<=10) AUDIO_TIMER_LT10(newTimerVal);
             }
 
             if (g_model.timers[i].minuteBeep && (newTimerVal % 60)==0) { // short beep every minute
@@ -3521,8 +3520,8 @@ void doMixerCalculations()
   static uint8_t count_dsm_range = 0;
   if (s_rangecheck_mode)
     if (++count_dsm_range >= 200) {
-  	  AUDIO_PLAY(AU_FRSKY_CHEEP);
-    count_dsm_range = 0;
+      AUDIO_PLAY(AU_FRSKY_CHEEP);
+      count_dsm_range = 0;
   }
 #endif
 

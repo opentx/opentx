@@ -79,7 +79,6 @@ const char * audioFilenames[] = {
   "mixwarn1",
   "mixwarn2",
   "mixwarn3",
-  "timerlt3",
   "timer10",
   "timer20",
   "timer30",
@@ -825,13 +824,9 @@ void audioEvent(uint8_t e, uint8_t f)
         case AU_MIX_WARNING_3:
           audioQueue.play(BEEP_DEFAULT_FREQ+112, 12, 8, PLAY_REPEAT(2));
           break;
-        // time <3 seconds left
-        case AU_TIMER_LT3:
+        // time <= 10 seconds left
+        case AU_TIMER_LT10:
           audioQueue.play(BEEP_DEFAULT_FREQ+10, 30, 6, PLAY_NOW);
-          break;
-        // time 10 seconds left
-        case AU_TIMER_10:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, PLAY_NOW);
           break;
         // time 20 seconds left
         case AU_TIMER_20:
