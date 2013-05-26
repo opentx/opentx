@@ -67,7 +67,7 @@ const unsigned char STORAGE_Inquirydata[] = {//36
   0x00,
   'F', 'r', 'S', 'k', 'y', ' ', ' ', ' ',  /* Manufacturer : 8 bytes */
   'T', 'a', 'r', 'a', 'n', 'i', 's', ' ',  /* Product      : 16 Bytes */
-  'R', 'a', 'd', 'i', 'o', 'E', 'P', 'M',
+  'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
   '1', '.', '0' ,'0',                      /* Version      : 4 Bytes */
 }; 
 

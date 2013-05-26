@@ -178,7 +178,7 @@
 #define TR_CFN_BG_MUSIC  "Musique\0     ""Pause Musique"
 
 #if defined(SDCARD)
-  #define TR_SDCLOGS     "Logs carte SD"
+  #define TR_SDCLOGS     "Logs SD\0     "
 #else
   #define TR_SDCLOGS     "[Logs SD]\0   "
 #endif
@@ -196,11 +196,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "R\200tro\200cl.\0   " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage\0     ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "R\200tro\200cl.\0   " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "R\200tro\200cl.\0   " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage\0     ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "R\200tro\200cl.\0   " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage \0    ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "R\200tro\200cl.\0   " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "S\200cur.\0      ""Ecolage\0     ""Trim instant." TR_SOUND TR_HAPTIC "Remise \202 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "R\200tro\200cl.\0   " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #endif
 
 #define LEN_VFSWRESET    "\006"
