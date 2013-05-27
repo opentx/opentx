@@ -2881,15 +2881,14 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
-      if (md->phases & (1 << s_perout_flight_phase)) continue;
-
-      //========== SWITCH ===============
-      bool sw = getSwitch(md->swtch, 1);
+      //========== PHASE && SWITCH =====
+      bool mixCondition = (md->phases != 0 || md->swtch);
+      bool mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch, 1);
 
       //========== VALUE ===============
       getvalue_t v = 0;
       if (mode != e_perout_mode_normal) {
-        if (!sw || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
+        if (!mixEnabled || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
           continue;
         }
         else {
@@ -2897,13 +2896,14 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         }
       }
       else {
-        if (k < NUM_STICKS)
+        if (k < NUM_STICKS) {
           v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
+        }
 #if defined(PCBTARANIS)
         else {
           v = getValue(k);
           if ((k == MIXSRC_SF-1) || (k >= MIXSRC_SH-1 && k <= MIXSRC_LAST_CSW-1)) {
-            if (v < 0 && !md->swtch) sw = false;
+            if (v < 0 && !mixCondition) mixEnabled = false;
           }
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
@@ -2916,7 +2916,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         else {
           v = getValue(k);
           if (k >= MIXSRC_THR-1 && k <= MIXSRC_LAST_CSW-1) {
-            if (v < 0 && !md->swtch) sw = false;
+            if (v < 0 && !mixCondition) mixEnabled = false;
           }
           else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
@@ -2932,7 +2932,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== DELAYS ===============
       uint8_t swTog;
-      if (sw) { // switch on?  (if no switch selected => on)
+      if (mixEnabled) { // switch on?  (if no switch selected => on)
         swTog = !swOn[i];
         if (mode == e_perout_mode_normal) {
           swOn[i] = true;
@@ -2942,7 +2942,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             }
             if (sDelay[i] > 0) { // perform delay
               sDelay[i] = max<int16_t>(0, (int16_t)sDelay[i] - tick10ms);
-              if (!md->swtch) {
+              if (!mixCondition) {
                 v = -1024;
               }
               else {
@@ -2966,10 +2966,10 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           }
           if (delay > 0) { // perform delay
             delay = max<int16_t>(0, (int16_t)delay - tick10ms);
-            if (!md->swtch) v = +1024;
+            if (!mixCondition) v = +1024;
             has_delay = true;
           }
-          else if (!md->swtch) {
+          else if (!mixCondition) {
             v = -1024;
           }
           sDelay[i] = delay;
@@ -2977,12 +2977,12 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         if (!has_delay) {
           if (md->speedDown) {
             if (md->mltpx == MLTPX_REP) continue;
-            if (md->swtch) {
+            if (mixCondition) {
               v = 0;
               apply_offset_and_curve = false;
             }
           }
-          else if (md->swtch) {
+          else if (mixCondition) {
             continue;
           }
         }
@@ -3012,7 +3012,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       
       // saves 12 bytes code if done here and not together with weight; unknown reason
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase);            
-      weight=calc100to256_16Bits(weight);      
+      weight = calc100to256_16Bits(weight);
       
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
@@ -3037,14 +3037,14 @@ void perOut(uint8_t mode, uint8_t tick10ms)
               if (md->speedUp>0) {
                 // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
                 int32_t newValue = tact+rate/((int16_t)(100/SLOW_STEP)*md->speedUp);
-                if (newValue<currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
+                if (newValue<currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }
             }
             else {  // if is <0 because ==0 is not possible
               if (md->speedDown>0) {
                 // see explanation in speedUp
                 int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
-                if (newValue>currentValue) currentValue=newValue; // Endposition; prevent toggling around the destination
+                if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }            
             } //endif diff>0
             act[i] = tact = currentValue;
@@ -4283,6 +4283,10 @@ void menusTask(void * pdata)
 
   lcd_clear();
   displayPopup(STR_SHUTDOWN);
+
+#if defined(FRSKY)
+  FRSKY_End();
+#endif
 
 #if defined(SDCARD)
   closeLogs();

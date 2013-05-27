@@ -38,6 +38,8 @@
 #include <gtest/gtest.h>
 #include "opentx.h"
 
+#define CHANNEL_MAX (1024*256)
+
 void doMixerCalculations();
 
 #define MODEL_RESET() memset(&g_model, 0, sizeof(g_model))
@@ -329,7 +331,7 @@ TEST(Mixer, R2029Comment)
   simuSetSwitch(0, 1);
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
-  EXPECT_EQ(chans[1], 1024*256);
+  EXPECT_EQ(chans[1], CHANNEL_MAX);
   simuSetSwitch(0, 0);
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
@@ -337,7 +339,7 @@ TEST(Mixer, R2029Comment)
   simuSetSwitch(0, 1);
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
-  EXPECT_EQ(chans[1], 1024*256);
+  EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
 
 TEST(Mixer, Cascaded3Channels)
@@ -355,9 +357,9 @@ TEST(Mixer, Cascaded3Channels)
   g_model.mixData[2].weight = 100;
   simuSetSwitch(0, 1);
   perOut(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 1024*256);
-  EXPECT_EQ(chans[1], 1024*256);
-  EXPECT_EQ(chans[2], 1024*256);
+  EXPECT_EQ(chans[0], CHANNEL_MAX);
+  EXPECT_EQ(chans[1], CHANNEL_MAX);
+  EXPECT_EQ(chans[2], CHANNEL_MAX);
 }
 
 TEST(Mixer, CascadedOrderedChannels)
@@ -372,8 +374,8 @@ TEST(Mixer, CascadedOrderedChannels)
   g_model.mixData[1].weight = 100;
   simuSetSwitch(0, 1);
   perOut(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 1024*256);
-  EXPECT_EQ(chans[1], 1024*256);
+  EXPECT_EQ(chans[0], CHANNEL_MAX);
+  EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
 
 TEST(Mixer, Cascaded5Channels)
@@ -398,18 +400,18 @@ TEST(Mixer, Cascaded5Channels)
   for (uint8_t i=0; i<10; i++) {
     simuSetSwitch(0, 1);
     doMixerCalculations();
-    EXPECT_EQ(chans[0], 1024*256);
-    EXPECT_EQ(chans[1], 1024*256);
-    EXPECT_EQ(chans[2], 1024*256);
-    EXPECT_EQ(chans[3], 1024*256);
-    EXPECT_EQ(chans[4], 1024*256);
+    EXPECT_EQ(chans[0], CHANNEL_MAX);
+    EXPECT_EQ(chans[1], CHANNEL_MAX);
+    EXPECT_EQ(chans[2], CHANNEL_MAX);
+    EXPECT_EQ(chans[3], CHANNEL_MAX);
+    EXPECT_EQ(chans[4], CHANNEL_MAX);
     simuSetSwitch(0, 0);
     doMixerCalculations();
-    EXPECT_EQ(chans[0], -1024*256);
-    EXPECT_EQ(chans[1], -1024*256);
-    EXPECT_EQ(chans[2], -1024*256);
-    EXPECT_EQ(chans[3], -1024*256);
-    EXPECT_EQ(chans[4], -1024*256);
+    EXPECT_EQ(chans[0], -CHANNEL_MAX);
+    EXPECT_EQ(chans[1], -CHANNEL_MAX);
+    EXPECT_EQ(chans[2], -CHANNEL_MAX);
+    EXPECT_EQ(chans[3], -CHANNEL_MAX);
+    EXPECT_EQ(chans[4], -CHANNEL_MAX);
   }
 }
 
@@ -459,8 +461,135 @@ TEST(Mixer, RecursiveAddChannel)
   g_model.mixData[2].srcRaw = MIXSRC_Rud;
   g_model.mixData[2].weight = 100;
   perOut(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 1024*256/2);
+  EXPECT_EQ(chans[0], CHANNEL_MAX/2);
   EXPECT_EQ(chans[1], 0);
+}
+
+TEST(Mixer, SlowOnSwitch)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].swtch = SWSRC_THR;
+  g_model.mixData[0].speedUp = 10;
+  g_model.mixData[0].speedDown = 10;
+
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+
+  simuSetSwitch(0, 1);
+  int32_t lastAct = 0;
+  for (int i=1; i<=250; i++) {
+    perOut(e_perout_mode_normal, 1);
+    lastAct = lastAct + (1<<19)/500; /* 100 on ARM */
+    EXPECT_EQ(chans[0], 256 * (lastAct >> 8));
+  }
+
+  simuSetSwitch(0, 0);
+  for (int i=1; i<=250; i++) {
+    perOut(e_perout_mode_normal, 1);
+    lastAct = lastAct - (1<<19)/500; /* 100 on ARM */
+    EXPECT_EQ(chans[0], 256 * (lastAct >> 8));
+  }
+}
+
+TEST(Mixer, SlowOnPhase)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.phaseData[1].swtch = SWSRC_THR;
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
+  g_model.mixData[0].speedUp = 10;
+  g_model.mixData[0].speedDown = 10;
+
+  s_perout_flight_phase = 0;
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+
+  int32_t lastAct = 0;
+  for (int i=1; i<=250; i++) {
+    perOut(e_perout_mode_normal, 1);
+    lastAct = lastAct+(1<<19)/500; /* 100 on ARM */
+    EXPECT_EQ(chans[0], 256 * (lastAct >> 8));
+  }
+
+  s_perout_flight_phase = 1;
+  for (int i=1; i<=250; i++) {
+    perOut(e_perout_mode_normal, 1);
+    lastAct = lastAct - (1<<19)/500; /* 100 on ARM */
+    EXPECT_EQ(chans[0], 256 * (lastAct >> 8));
+  }
+}
+
+TEST(Mixer, SlowOnSwitchAndPhase)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.phaseData[1].swtch = SWSRC_THR;
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].swtch = SWSRC_THR;
+  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
+  g_model.mixData[0].speedUp = 10;
+  g_model.mixData[0].speedDown = 10;
+
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+
+  simuSetSwitch(0, 1);
+  s_perout_flight_phase = 0;
+  int32_t lastAct = 0;
+  for (int i=1; i<=250; i++) {
+    perOut(e_perout_mode_normal, 1);
+    lastAct = lastAct+(1<<19)/500; /* 100 on ARM */
+    EXPECT_EQ(chans[0], 256 * (lastAct >> 8));
+  }
+
+  simuSetSwitch(0, 0);
+  s_perout_flight_phase = 1;
+  for (int i=1; i<=250; i++) {
+    perOut(e_perout_mode_normal, 1);
+    lastAct = lastAct - (1<<19)/500; /* 100 on ARM */
+    EXPECT_EQ(chans[0], 256 * (lastAct >> 8));
+  }
+}
+
+TEST(Mixer, SlowOnSwitchSource)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_THR;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].speedUp = 10;
+  g_model.mixData[0].speedDown = 10;
+
+  simuSetSwitch(0, 0);
+  int32_t lastAct = 0;
+  for (int i=1; i<=250; i++) {
+    perOut(e_perout_mode_normal, 1);
+    lastAct = lastAct - (1<<19)/500; /* 100 on ARM */
+    EXPECT_EQ(chans[0], 256 * (lastAct >> 8));
+  }
+
+  EXPECT_EQ(chans[0], -CHANNEL_MAX);
+
+  simuSetSwitch(0, 1);
+  for (int i=1; i<=500; i++) {
+    perOut(e_perout_mode_normal, 1);
+    lastAct = lastAct + (1<<19)/500; /* 100 on ARM */
+    EXPECT_EQ(chans[0], 256 * (lastAct >> 8));
+  }
 }
 
 TEST(Curves, LinearIntpol)

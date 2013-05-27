@@ -144,7 +144,7 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 {
-  return (50 + g_model.frsky.rssiAlarms[alarm].value);
+  return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
 }
 
 void displayVoltageScreenLine(uint8_t y, uint8_t index)
