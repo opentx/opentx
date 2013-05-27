@@ -56,7 +56,7 @@ static const pm_uint8_t beepTab[] PROGMEM = {
 void beep(uint8_t val)
 {
 #if defined(HAPTIC) && !defined(AUDIO)
-  haptic.event(val==0 ? AU_KEYPAD_UP : (val==4 ? AU_ERROR : AU_TIMER_10+beepAgain));
+  haptic.event(val==0 ? AU_KEYPAD_UP : (val==4 ? AU_ERROR : AU_TIMER_LT10+beepAgain));
 #endif
 
 #if !defined(AUDIO)
