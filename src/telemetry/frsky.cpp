@@ -804,13 +804,15 @@ void FRSKY_Init(void)
 
 void FrskyValueWithMin::set(uint8_t value)
 {
-  if (this->value == 0)
+  if (this->value == 0) {
     this->value = value;
-
-  sum += value;
-  if (link_counter == 0) {
-    this->value = sum / 8;
-    sum = 0;
+  }
+  else {
+    sum += value;
+    if (link_counter == 0) {
+      this->value = sum / 8;
+      sum = 0;
+    }
   }
 
   if (value && (!min || value < min))
