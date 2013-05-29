@@ -516,14 +516,6 @@ int16_t applyCurve(int16_t x, int8_t idx)
 #define applyCurve(x, idx) (x)
 #endif
 
-/* currently not needed
-// maybe used in future?
-uint16_t divu100(uint32_t A) {
-    return (((A * 0x47AF) >> 16) + A) >> 7;
-}
-*/
-
-
 // #define EXTENDED_EXPO
 // increases range of expo curve but costs about 82 bytes flash
 
@@ -569,31 +561,31 @@ uint16_t divu100(uint32_t A) {
 // output between 0 and 1024
 uint16_t expou(uint16_t x, uint16_t k)
 {
-#ifdef EXTENDED_EXPO  
+#if defined(EXTENDED_EXPO)
   bool extended;
   if (k>80) {
     extended=true;
   }
   else {
-    k+=(k>>2);  // use bigger values before extend, because the effect is anyway very very low
+    k += (k>>2);  // use bigger values before extend, because the effect is anyway very very low
     extended=false;
-  } // endif k > 50
+  }
 #endif  
 
-  k=calc100to256(k);    
+  k = calc100to256(k);
   
   uint32_t value = (uint32_t) x*x;
   value *= (uint32_t)k;
   value >>= 8;
   value *= (uint32_t)x;
 
-#ifdef EXTENDED_EXPO
+#if defined(EXTENDED_EXPO)
   if (extended) {  // for higher values do more multiplications to get a stronger expo curve
-    value>>=16;
-    value*=(uint32_t)x;
-    value>>=4;
-    value*=(uint32_t)x;
-  } //endif extend
+    value >>= 16;
+    value *= (uint32_t)x;
+    value >>= 4;
+    value *= (uint32_t)x;
+  }
 #endif
   
   value >>= 12;
@@ -618,61 +610,17 @@ int16_t expo(int16_t x, int16_t k)
   return neg? -y : y;
 }
 
-// isn't the following useless? wouldn't be called even if EXTENDED_EXPO is defined
-/*
-#ifdef EXTENDED_EXPO
-/// expo with y-offset
-class Expo
-{
-  uint16_t   c;
-  int16_t    d,drx;
-public:
-  void     init(uint8_t k, int8_t yo);
-  static int16_t  expou(uint16_t x,uint16_t c, int16_t d);
-  int16_t  expo(int16_t x);
-};
-void    Expo::init(uint8_t k, int8_t yo)
-{
-  c = (uint16_t) k  * 256 / 100;
-  d = (int16_t)  yo * 256 / 100;
-  drx = d * ((uint16_t)RESXu/256);
-}
-int16_t Expo::expou(uint16_t x,uint16_t c, int16_t d)
-{
-  uint16_t a = 256 - c - d;
-  if( (int16_t)a < 0 ) a = 0;
-  // a x^3 + c x + d
-  //                         9  18  27        11  20   18
-  uint32_t res =  ((uint32_t)x * x * x / 0x10000 * a / (RESXul*RESXul/0x10000) +
-                   (uint32_t)x                   * c
-  ) / 256;
-  return (int16_t)res;
-}
-int16_t  Expo::expo(int16_t x)
-{
-  if(c==256 && d==0) return x;
-  if(x>=0) return expou(x,c,d) + drx;
-  return -expou(-x,c,-d) + drx;
-}
-#endif
-*/
-
-#ifdef BOLD_FONT
-ACTIVE_EXPOS_TYPE activeExpos;
-#endif
-
-void applyExpos(int16_t *anas)
+void applyExpos(int16_t *anas, uint8_t mode)
 {
   int16_t anas2[NUM_INPUTS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 
   int8_t cur_chn = -1;
 
-#ifdef BOLD_FONT
-  activeExpos = 0;
-#endif
-
   for (uint8_t i=0; i<MAX_EXPOS; i++) {
+#if defined(BOLD_FONT)
+    if (mode==e_perout_mode_normal) swOn[i].activeExpo = false;
+#endif
     ExpoData &ed = g_model.expoData[i];
     if (ed.mode==0) break; // end of list
     if (ed.chn == cur_chn)
@@ -682,8 +630,8 @@ void applyExpos(int16_t *anas)
     if (getSwitch(ed.swtch, 1)) {
       int16_t v = anas2[ed.chn];
       if((v<0 && (ed.mode&1)) || (v>=0 && (ed.mode&2))) {
-#ifdef BOLD_FONT
-        activeExpos |= ((ACTIVE_EXPOS_TYPE)1 << i);
+#if defined(BOLD_FONT)
+        if (mode==e_perout_mode_normal) swOn[i].activeExpo = true;
 #endif
         cur_chn = ed.chn;
         int8_t curveParam = ed.curveParam;
@@ -2181,14 +2129,13 @@ int16_t  rawAnas [NUM_INPUTS] = {0};
 int16_t  anas [NUM_INPUTS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
-uint8_t inacPrescale;
+uint8_t  inacPrescale;
 uint16_t inacCounter = 0;
 uint16_t inacSum = 0;
 BeepANACenter bpanaCenter = 0;
 
-uint16_t sDelay[MAX_MIXERS] = {0};
-int24_t  act   [MAX_MIXERS] = {0};
-uint8_t  swOn  [MAX_MIXERS] = {0};
+int24_t act   [MAX_MIXERS] = {0};
+SwOn    swOn  [MAX_MIXERS]; // TODO better name later...
 
 uint8_t mixWarning;
 
@@ -2286,7 +2233,7 @@ BeepANACenter evalSticks(uint8_t mode)
     }
 
     if (ch < NUM_STICKS) { //only do this for sticks
-      if (mode == e_perout_mode_normal && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
+      if (mode <= e_perout_mode_inactive_phase && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -2312,7 +2259,7 @@ BeepANACenter evalSticks(uint8_t mode)
   }
 
   /* EXPOs */
-  applyExpos(anas);
+  applyExpos(anas, mode);
 
   /* TRIMs */
   evalTrims();
@@ -2873,6 +2820,10 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
     for (uint8_t i = 0; i < MAX_MIXERS; i++) {
 
+#if defined(BOLD_FONT)
+      if (mode==e_perout_mode_normal && pass==0) swOn[i].activeMix = 0;
+#endif
+
       MixData *md = mixaddress(i);
 
       if (md->srcRaw == 0) break;
@@ -2883,11 +2834,11 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== PHASE && SWITCH =====
       bool mixCondition = (md->phases != 0 || md->swtch);
-      bool mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch, 1);
+      int8_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch, 1);
 
       //========== VALUE ===============
       getvalue_t v = 0;
-      if (mode != e_perout_mode_normal) {
+      if (mode > e_perout_mode_inactive_phase) {
         if (!mixEnabled || k >= NUM_STICKS || (k == THR_STICK && g_model.thrTrim)) {
           continue;
         }
@@ -2899,11 +2850,10 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         if (k < NUM_STICKS) {
           v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
         }
-#if defined(PCBTARANIS)
         else {
           v = getValue(k);
-          if ((k == MIXSRC_SF-1) || (k >= MIXSRC_SH-1 && k <= MIXSRC_LAST_CSW-1)) {
-            if (v < 0 && !mixCondition) mixEnabled = false;
+          if (!mixCondition && k >= MIXSRC_FIRST_SWITCH-1 && k <= MIXSRC_LAST_CSW-1) {
+            mixEnabled = v >> 10;
           }
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
@@ -2912,85 +2862,47 @@ void perOut(uint8_t mode, uint8_t tick10ms)
               v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
           }
         }
-#else
-        else {
-          v = getValue(k);
-          if (k >= MIXSRC_THR-1 && k <= MIXSRC_LAST_CSW-1) {
-            if (v < 0 && !mixCondition) mixEnabled = false;
-          }
-          else if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
-            if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
-              passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
-          }
-        }
-#endif
       }
 
       bool apply_offset_and_curve = true;
 
       //========== DELAYS ===============
-      uint8_t swTog;
-      if (mixEnabled) { // switch on?  (if no switch selected => on)
-        swTog = !swOn[i];
-        if (mode == e_perout_mode_normal) {
-          swOn[i] = true;
-          if (md->delayUp) {
-            if (swTog) {
-              sDelay[i] = (sDelay[i] ? 0 : (md->delayUp * (100/DELAY_STEP)));
-            }
-            if (sDelay[i] > 0) { // perform delay
-              sDelay[i] = max<int16_t>(0, (int16_t)sDelay[i] - tick10ms);
-              if (!mixCondition) {
-                v = -1024;
-              }
-              else {
-                continue;
-              }
-            }
-          }
-
-          if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1); // Mix warning
-
-        }
+      int8_t _swOn = swOn[i].now;
+      int8_t _swPrev = swOn[i].prev;
+      bool swTog = (mixEnabled != _swOn);
+      // if (i==0) { printf("mixEnabled=%d swOn=%d swPrev=%d sDelay=%d mixCondition=%d\n", mixEnabled, _swOn, _swPrev, sDelay[i], mixCondition); fflush(stdout); }
+      if (swTog) {
+        if (!swOn[i].delay) _swPrev = _swOn;
+        swOn[i].delay = (mixEnabled > _swOn ? md->delayUp : md->delayDown) * (100/DELAY_STEP);
+        swOn[i].now = mixEnabled;
+        swOn[i].prev = _swPrev;
       }
-      else {
-        bool has_delay = false;
-        swTog = swOn[i];
-        swOn[i] = false;
-        if (md->delayDown) {
-          uint16_t delay = sDelay[i];
-          if (swTog) {
-            delay = (delay ? 0 : (md->delayDown * (100/DELAY_STEP)));
+      if (swOn[i].delay > 0) {
+        swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms);
+        if (!mixCondition)
+          v = _swPrev << 10; // TODO optim?
+        else if (mixEnabled)
+          continue;
+      }
+      else if (!mixEnabled) {
+        if (md->speedDown) {
+          if (md->mltpx == MLTPX_REP) continue;
+          if (mixCondition) {
+            v = 0;
+            apply_offset_and_curve = false;
           }
-          if (delay > 0) { // perform delay
-            delay = max<int16_t>(0, (int16_t)delay - tick10ms);
-            if (!mixCondition) v = +1024;
-            has_delay = true;
-          }
-          else if (!mixCondition) {
-            v = -1024;
-          }
-          sDelay[i] = delay;
         }
-        if (!has_delay) {
-          if (md->speedDown) {
-            if (md->mltpx == MLTPX_REP) continue;
-            if (mixCondition) {
-              v = 0;
-              apply_offset_and_curve = false;
-            }
-          }
-          else if (mixCondition) {
-            continue;
-          }
+        else if (mixCondition) {
+          continue;
         }
       }
 
-#ifdef BOLD_FONT
-      activeMixes |= ((ACTIVE_MIXES_TYPE)1 << i);
+      if (mode==e_perout_mode_normal && (!mixCondition || mixEnabled || swOn[i].delay)) {
+        if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1); // Mix warning
+#if defined(BOLD_FONT)
+        swOn[i].activeMix = true;
 #endif
+      }
 
       //========== OFFSET ===============
       if (apply_offset_and_curve) {
@@ -3017,7 +2929,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
-      if (mode == e_perout_mode_normal && (md->speedUp || md->speedDown)) { // there are delay values
+      if (mode <= e_perout_mode_inactive_phase && (md->speedUp || md->speedDown)) { // there are delay values
 #define DEL_MULT_SHIFT 8
         // we recale to a mult 256 higher value for calculation
         int32_t tact = act[i];
@@ -3081,9 +2993,11 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       switch (md->mltpx) {
         case MLTPX_REP:
           *ptr = dv;
-#ifdef BOLD_FONT
-          for (uint8_t m=i-1; m<MAX_MIXERS && mixaddress(m)->destCh==md->destCh; m--)
-            activeMixes &= ~((ACTIVE_MIXES_TYPE)1 << m);
+#if defined(BOLD_FONT)
+          if (mode==e_perout_mode_normal) {
+            for (uint8_t m=i-1; m<MAX_MIXERS && mixaddress(m)->destCh==md->destCh; m--)
+              swOn[m].activeMix = false;
+          }
 #endif
           break;
         case MLTPX_MUL:
@@ -3150,9 +3064,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
 #define TIME_TO_WRITE() (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
-#ifdef BOLD_FONT
-ACTIVE_MIXES_TYPE activeMixes;
-#endif
 int32_t sum_chans512[NUM_CHNOUT] = {0};
 
 #if defined(CPUARM)
@@ -3172,10 +3083,6 @@ void doMixerCalculations()
   //@@@ open.20.fsguruh: correct overflow handling costs a lot of code; happens only each 11 min;
   // therefore forget the exact calculation and use only 1 instead; good compromise
   lastTMR = tmr10ms;
-
-#if defined(BOLD_FONT)
-  activeMixes = 0;
-#endif
 
   getADC();
 
@@ -3236,7 +3143,7 @@ void doMixerCalculations()
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
         s_perout_flight_phase = p;
-        perOut(e_perout_mode_normal, tick10ms);
+        perOut(p==phase?e_perout_mode_normal:e_perout_mode_inactive_phase, tick10ms);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];

@@ -744,9 +744,10 @@ extern void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG);
 
 enum PerOutMode {
   e_perout_mode_normal = 0,
-  e_perout_mode_notrainer = 1,
-  e_perout_mode_notrims = 2,
-  e_perout_mode_nosticks = 4,
+  e_perout_mode_inactive_phase = 1,
+  e_perout_mode_notrainer = 2,
+  e_perout_mode_notrims = 4,
+  e_perout_mode_nosticks = 8,
   e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
 };
 
@@ -1088,7 +1089,7 @@ extern uint16_t           BandGap;
 extern int16_t expo(int16_t x, int16_t k);
 extern int16_t intpol(int16_t, uint8_t);
 extern int16_t applyCurve(int16_t, int8_t);
-extern void applyExpos(int16_t *anas);
+extern void applyExpos(int16_t *anas, uint8_t mode);
 extern int16_t applyLimits(uint8_t channel, int32_t value);
 
 extern uint16_t anaIn(uint8_t chan);
@@ -1123,26 +1124,29 @@ extern void instantTrim();
 extern void moveTrimsToOffsets();
 
 #if defined(CPUARM)
-  #define ACTIVE_EXPOS_TYPE  uint32_t
-  #define ACTIVE_MIXES_TYPE  uint64_t
   #define ACTIVE_PHASES_TYPE uint16_t
 #else
-  #define ACTIVE_EXPOS_TYPE  uint16_t
-  #define ACTIVE_MIXES_TYPE  uint32_t
   #define ACTIVE_PHASES_TYPE uint8_t
 #endif
 
+PACK(typedef struct t_SwOn {
+  uint16_t delay:10;
+  int16_t  now:2;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
+  int16_t  prev:2;
+  int16_t  activeMix:1;
+  int16_t  activeExpo:1;
+}) SwOn;
+extern SwOn   swOn  [MAX_MIXERS];
+
 #ifdef BOLD_FONT
-  extern ACTIVE_EXPOS_TYPE   activeExpos;
-  extern ACTIVE_MIXES_TYPE   activeMixes;
   inline bool isExpoActive(uint8_t expo)
   {
-    return activeExpos & ((ACTIVE_EXPOS_TYPE)1 << expo);
+    return swOn[expo].activeExpo;
   }
 
   inline bool isMixActive(uint8_t mix)
   {
-    return activeMixes & ((ACTIVE_MIXES_TYPE)1 << mix);
+    return swOn[mix].activeMix;
   }
 #else
   #define isExpoActive(x) false

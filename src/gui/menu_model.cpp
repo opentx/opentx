@@ -2091,7 +2091,7 @@ int16_t expoFn(int16_t x)
   ExpoData *ed = expoaddress(s_currIdx);
   int16_t anas[NUM_INPUTS] = {0};
   anas[ed->chn] = x;
-  applyExpos(anas);
+  applyExpos(anas, e_perout_mode_inactive_phase);
   return anas[ed->chn];
 }
 
