@@ -205,7 +205,7 @@ void setupPulsesPXX(unsigned int port)
     }
     else {
       if (i < sendUpperChannels)
-        chan = limit(2048, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (channelOutputs[8+g_model.moduleData[port].channelsStart+i] * 512 / 682) + 3072, 4095);
+        chan = limit(2049, PPM_CH_CENTER(8+g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (channelOutputs[8+g_model.moduleData[port].channelsStart+i] * 512 / 682) + 3072, 4094);
       else if (i < NUM_CHANNELS(port))
         chan = limit(1, PPM_CH_CENTER(g_model.moduleData[port].channelsStart+i) - PPM_CENTER + (channelOutputs[g_model.moduleData[port].channelsStart+i] * 512 / 682) + 1024, 2046);
       else
