@@ -527,7 +527,7 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 
   uint8_t buf[BS-sizeof(blkid_t)];
   uint8_t len;
-  while ((len=theFile2.read(buf, BS-sizeof(blkid_t))))
+  while ((len=theFile2.read(buf, sizeof(buf))))
   {
     write(buf, len);
     if (write_errno() != 0) {
