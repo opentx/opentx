@@ -992,7 +992,7 @@ bool __getSwitch(int8_t swtch)
               	
 #if defined (PCBTARANIS)
           if (cs->v1 == MIXSRC_FIRST_TELEM+TELEM_A2-1 && g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_X16)
-          	 return swtch > 0 ? false : true;
+            return swtch > 0 ? false : true;
 #endif
 
             y = convertCswTelemValue(cs);
