@@ -3466,6 +3466,7 @@ void menuModelLimits(uint8_t event)
     for (uint8_t j=0; j<ITEM_LIMITS_COUNT; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
+      if (active) STICK_SCROLL_DISABLE();
       switch(j)
       {
 #if defined(PCBTARANIS)
@@ -3728,7 +3729,7 @@ void menuModelCustomSwitchOne(uint8_t event)
 
   CustomSwData * cs = cswaddress(s_currIdx);
   uint8_t sw = SWSRC_SW1+s_currIdx;
-  putsSwitches(14*FW, 0, sw, (getSwitch(sw, 0) ? BOLD : 0));
+  putsSwitches(14*FW, 0, sw, (getSwitch(sw) ? BOLD : 0));
   SIMPLE_SUBMENU_NOTITLE(CSW_FIELD_COUNT);
 
   int8_t sub = m_posVert;
@@ -3864,7 +3865,7 @@ void menuModelCustomSwitches(uint8_t event)
     // CSW name
     uint8_t sw = SWSRC_SW1+k;
 
-    putsSwitches(0, y, sw, (sub==k ? INVERS : 0) | (getSwitch(sw, 0) ? BOLD : 0));
+    putsSwitches(0, y, sw, (sub==k ? INVERS : 0) | (getSwitch(sw) ? BOLD : 0));
 
     if (cs->func > 0) {
       // CSW func
@@ -3929,7 +3930,7 @@ void menuModelCustomSwitches(uint8_t event)
 
     // CSW name
     uint8_t sw = SWSRC_SW1+k;
-    putsSwitches(0, y, sw, (getSwitch(sw, 0) ? BOLD : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
+    putsSwitches(0, y, sw, (getSwitch(sw) ? BOLD : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
 
     // CSW func
     lcd_putsiAtt(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, m_posHorz==0 ? attr : 0);

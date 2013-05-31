@@ -107,12 +107,7 @@ void USBD_USR_DeviceResumed(void)
 */
 void USBD_USR_DeviceConnected (void)
 {
-  if (sdMounted()) {
-    audioQueue.stopSD();
-    closeLogs();
-    f_mount(0, 0); // unmount SD
-  }
-
+  sdDone();
   eeCheck(true);
   usbState = USB_CONNECTED;
 }

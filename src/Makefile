@@ -71,12 +71,13 @@ HELI = NO
 # Values = YES, NO
 TEMPLATES = YES
 
-# Enable navigation with Pots / Rotary encoders
+# Enable navigation with Pots / Sticks / Rotary encoders
 # Values = NO
 #          POT1 (only POT1 available for fields modification),
 #          POT2 (menus scroll),
 #          POT3 (cursor down/up),
 #          POTS (POT1, POT2, POT3),
+#          STICKS
 #          ROTENC (Rotary encoder)
 NAVIGATION = NO
 
@@ -709,6 +710,9 @@ ifeq ($(NAVIGATION), POT3)
 endif
 ifeq ($(NAVIGATION), POTS)
   CPPDEFS += -DNAVIGATION_POT1 -DNAVIGATION_POT2 -DNAVIGATION_POT3
+endif
+ifeq ($(NAVIGATION), STICKS)
+  CPPDEFS += -DNAVIGATION_STICKS
 endif
 ifeq ($(NAVIGATION), ROTENC)
   CPPDEFS += -DROTARY_ENCODER_NAVIGATION

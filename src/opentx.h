@@ -414,6 +414,15 @@ enum EnumKeys {
   void watchdogSetTimeout(uint32_t timeout);
 #endif
 
+#if defined(NAVIGATION_STICKS)
+  extern uint8_t StickScrollAllowed;
+  extern uint8_t StickScrollTimer;
+  #define STICK_SCROLL_TIMEOUT          9
+  #define STICK_SCROLL_DISABLE()        StickScrollAllowed = 0
+#else
+  #define STICK_SCROLL_DISABLE()
+#endif
+
 #include "eeprom_common.h"
 
 #if defined(PCBSKY9X)
@@ -688,9 +697,12 @@ void watchdogSetTimeout(uint32_t timeout);
 
 #define MAX_ALERT_TIME   60
 
-extern uint8_t inacPrescale;
-extern uint16_t inacCounter;
-extern uint16_t inacSum;
+struct t_inactivity
+{
+  uint16_t counter;
+  uint16_t sum;
+};
+extern struct t_inactivity inactivity;
 
 #if defined(PXX)
 extern uint8_t pxxFlag[NUM_MODULES];
@@ -752,7 +764,11 @@ enum PerOutMode {
 };
 
 // Fiddle to force compiler to use a pointer
-#define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
+#if defined(CPUARM) || defined(SIMU)
+  #define FORCE_INDIRECT(ptr)
+#else
+  #define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
+#endif
 
 extern uint8_t s_perout_flight_phase;
 
@@ -767,7 +783,7 @@ void perMain();
 NOINLINE void per10ms();
 
 getvalue_t getValue(uint8_t i);
-bool       getSwitch(int8_t swtch, bool nc);
+bool       getSwitch(int8_t swtch);
 
 extern swstate_t switches_states;
 int8_t  getMovedSwitch();
@@ -1137,6 +1153,7 @@ PACK(typedef struct t_SwOn {
   int16_t  activeExpo:1;
 }) SwOn;
 extern SwOn   swOn  [MAX_MIXERS];
+extern int24_t act   [MAX_MIXERS];
 
 #ifdef BOLD_FONT
   inline bool isExpoActive(uint8_t expo)

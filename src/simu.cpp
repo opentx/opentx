@@ -247,10 +247,12 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 #define SWITCH_KEY(key, swtch, states) \
     static bool state##key = 0; \
     static int8_t state_##swtch = 2; \
+    static int8_t inc_##swtch = 1; \
     if (getApp()->getKeyState(KEY_##key)) { \
       if (!state##key) { \
-        state_##swtch = (state_##swtch+1); \
-        if (state_##swtch == 2+states) state_##swtch = 2; \
+        state_##swtch = (state_##swtch+inc_##swtch); \
+        if (state_##swtch == 1+states) inc_##swtch = -1; \
+        else if (state_##swtch == 2) inc_##swtch = 1; \
         state##key = true; \
       } \
     } \

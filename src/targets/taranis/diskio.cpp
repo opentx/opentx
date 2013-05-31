@@ -959,12 +959,33 @@ void sdPoll10ms()
         }
 }
 
+// TODO everything here should not be in the driver layer ...
+
 FATFS g_FATFS_Obj;
+#if defined(DEBUG)
+FIL g_telemetryFile = {0};
+#endif
 
 void sdInit()
 {
-  if (f_mount(0, &g_FATFS_Obj) == FR_OK)
+  if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
     refreshSystemAudioFiles();
+#if defined(DEBUG)
+    f_open(&g_telemetryFile, LOGS_PATH "/sport.log", FA_CREATE_ALWAYS | FA_WRITE);
+#endif
+  }
+}
+
+void sdDone()
+{
+  if (sdMounted()) {
+    audioQueue.stopSD();
+    closeLogs();
+#if defined(DEBUG)
+    f_close(&g_telemetryFile);
+#endif
+    f_mount(0, 0); // unmount SD
+  }
 }
 
 uint32_t sdMounted()

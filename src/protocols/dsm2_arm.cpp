@@ -113,7 +113,7 @@ void setupPulsesDsm2(uint8_t chns)
   }
   if ((dsmDat[0] & BIND_BIT) && (!switchState(SW_TRN))) dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
 
-  // TODO find a way to do that, FUNC SWITCH: if ((!(dsmDat[0] & BIND_BIT)) && getSwitch(MAX_DRSWITCH-1, 0, 0)) dsmDat[0] |= RANGECHECK_BIT;   // range check function
+  // TODO find a way to do that, FUNC SWITCH: if ((!(dsmDat[0] & BIND_BIT)) && getSwitch(MAX_DRSWITCH-1)) dsmDat[0] |= RANGECHECK_BIT;   // range check function
   // else dsmDat[0] &= ~RANGECHECK_BIT;
   dsmDat[1]=g_eeGeneral.currModel+1;  //DSM2 Header second byte for model match
   for(uint8_t i=0; i<chns; i++)

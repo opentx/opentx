@@ -960,6 +960,8 @@ void menuGeneralDiagAna(uint8_t event)
 
   SIMPLE_MENU(STR_MENUANA, menuTabDiag, e_Ana, ANAS_ITEMS_COUNT);
 
+  STICK_SCROLL_DISABLE();
+
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
     uint8_t y = 1+FH+(i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
@@ -1134,6 +1136,7 @@ void menuCommonCalib(uint8_t event)
 
     case 2:
       // MOVE STICKS/POTS
+      STICK_SCROLL_DISABLE();
       lcd_putsAtt(0*FW, 2*FH, STR_MOVESTICKSPOTS, s_noScroll ? INVERS : 0);
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 

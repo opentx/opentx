@@ -39,10 +39,9 @@
 #if LCD_W >= 212
 #define BIGSIZE       MIDSIZE
 #define BOX_WIDTH     31
+#define BOX_CENTERY   (LCD_H-BOX_WIDTH/2-10)
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
-#define LBOX_CENTERY  (LCD_H-BOX_WIDTH/2-10)
 #define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
-#define RBOX_CENTERY  LBOX_CENTERY
 #define MODELNAME_X   (15)
 #define MODELNAME_Y   (11)
 #define VBATT_X       (MODELNAME_X+26)
@@ -69,10 +68,9 @@
 #else
 #define BIGSIZE       DBLSIZE
 #define BOX_WIDTH     23
+#define BOX_CENTERY   (LCD_H-9-BOX_WIDTH/2)
 #define LBOX_CENTERX  (LCD_W/4 + 10)
-#define LBOX_CENTERY  (LCD_H-9-BOX_WIDTH/2)
 #define RBOX_CENTERX  (3*LCD_W/4 - 10)
-#define RBOX_CENTERY  LBOX_CENTERY
 #define MODELNAME_X   (2*FW-2)
 #define MODELNAME_Y   (0)
 #define PHASE_X       (6*FW)
@@ -128,22 +126,24 @@ void drawPotsBars()
   }
 }
 
+void drawStick(uint8_t centrex, int16_t xval, int16_t yval)
+{
+  lcd_square(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
+  DO_CROSS(centrex, BOX_CENTERY, 3);
+  lcd_square(centrex + (xval/((2*RESX)/BOX_LIMIT)) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/BOX_LIMIT)) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
+}
+
 void doMainScreenGraphics()
 {
-  lcd_square(LBOX_CENTERX-BOX_WIDTH/2, LBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
-  lcd_square(RBOX_CENTERX-BOX_WIDTH/2, RBOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
-
-  DO_CROSS(LBOX_CENTERX, LBOX_CENTERY, 3)
-  DO_CROSS(RBOX_CENTERX, RBOX_CENTERY, 3)
-
   int16_t calibStickVert = calibratedStick[CONVERT_MODE(1+1)-1];
   if (g_model.throttleReversed && CONVERT_MODE(1+1)-1 == THR_STICK)
     calibStickVert = -calibStickVert;
-  lcd_square(LBOX_CENTERX+(calibratedStick[CONVERT_MODE(0+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, LBOX_CENTERY-(calibStickVert*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
+  drawStick(LBOX_CENTERX, calibratedStick[CONVERT_MODE(0+1)-1], calibStickVert);
+
   calibStickVert = calibratedStick[CONVERT_MODE(2+1)-1];
   if (g_model.throttleReversed && CONVERT_MODE(2+1)-1 == THR_STICK)
     calibStickVert = -calibStickVert;
-  lcd_square(RBOX_CENTERX+(calibratedStick[CONVERT_MODE(3+1)-1]*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, RBOX_CENTERY-(calibStickVert*BOX_LIMIT/(2*RESX))-MARKER_WIDTH/2, MARKER_WIDTH, ROUND);
+  drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3+1)-1], calibStickVert);
 
 #if !defined(PCBTARANIS)
   drawPotsBars();
@@ -451,6 +451,8 @@ void onMainViewMenu(const char *result)
 
 void menuMainView(uint8_t event)
 {
+  STICK_SCROLL_DISABLE();
+
 #if !defined(PCBTARANIS)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
@@ -678,7 +680,7 @@ void menuMainView(uint8_t event)
         uint8_t x = LCD_W/2+7*FW+col*FW;
         uint8_t y = LCD_H/2-7+line*8;
         lcd_putcAtt(x, y, sw>=9 ? 'A'+sw-9 : '1'+sw, SMLSIZE);
-        if (getSwitch(SWSRC_SW1+sw, 0))
+        if (getSwitch(SWSRC_SW1+sw))
           lcd_filled_rect(x-1, y-1, 6, 8);
         sw++;
       }
@@ -752,7 +754,7 @@ void menuMainView(uint8_t event)
           x = 17*FW-1;
           y -= 3*FH;
         }
-        putsSwitches(x, y, sw, getSwitch(i, 0) ? INVERS : 0);
+        putsSwitches(x, y, sw, getSwitch(i) ? INVERS : 0);
       }
     }
     else {
@@ -773,23 +775,23 @@ void menuMainView(uint8_t event)
       // Custom Switches
 #if defined(PCBSKY9X)
       for (uint8_t i=0; i<NUM_CSW; i++) {
-        int8_t len = getSwitch(SWSRC_SW1+i, 0) ? BAR_HEIGHT : 1;
+        int8_t len = getSwitch(SWSRC_SW1+i) ? BAR_HEIGHT : 1;
         uint8_t x = VSWITCH_X(i);
         lcd_vline(x-1, VSWITCH_Y-len, len);
         lcd_vline(x,   VSWITCH_Y-len, len);
       }
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
       for (uint8_t i=0; i<NUM_CSW; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
+        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif defined(PCBGRUVIN9X)
       for (uint8_t i=0; i<NUM_CSW; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
+        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif !defined(PCBSTD)
       for (uint8_t i=0; i<NUM_CSW; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
+        putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #else
       for (uint8_t i=0; i<NUM_CSW; i++)
-        putsSwitches(2*FW-2 + (i/3)*(5*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i, 0) ? INVERS : 0);
+        putsSwitches(2*FW-2 + (i/3)*(5*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #endif
     }
   }

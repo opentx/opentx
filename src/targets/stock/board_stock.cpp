@@ -122,17 +122,19 @@ inline void boardInit()
 
 #if defined(AUDIO) || defined(VOICE)
   SET_TIMER_AUDIO_CTRL();
+  #if !defined(CPUM2561)
+    TIMSK |= (1<<OCIE0) | (1<<TOIE0) | (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
+  #endif
 #elif defined(PWM_BACKLIGHT)
   /** Smartieparts LED Backlight is connected to PORTB/pin7, which can be used as pwm output of timer2 **/
-#if defined(SP22)
-  TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21)|(1<<COM20); // inv. pwm mode, clk/64
-#else
-  TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21); // pwm mode, clk/64
-#endif
-#endif
-
-#if !defined(CPUM2561)
-  TIMSK |= (1<<OCIE0) | (1<<TOIE0) | (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
+  #if defined(SP22)
+    TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21)|(1<<COM20); // inv. pwm mode, clk/64
+  #else
+    TCCR2  = (0b011 << CS20)|(1<<WGM20)|(1<<COM21); // pwm mode, clk/64
+  #endif
+  #if !defined(CPUM2561)
+    TIMSK |= (1<<OCIE0) | (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
+  #endif
 #endif
 }
 #endif
@@ -267,6 +269,12 @@ void readKeysAndTrims()
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   keys[enuk].input(ROTENC_DOWN(), (EnumKeys)enuk); // Rotary Enc. Switch
+#endif
+
+#if defined(NAVIGATION_STICKS)
+  if (~PINB & 0x7E) {
+    StickScrollTimer = STICK_SCROLL_TIMEOUT ;
+  }
 #endif
 }
 

@@ -627,7 +627,7 @@ void applyExpos(int16_t *anas, uint8_t mode)
       continue;
     if (ed.phases & (1<<s_perout_flight_phase))
       continue;
-    if (getSwitch(ed.swtch, 1)) {
+    if (getSwitch(ed.swtch)) {
       int16_t v = anas2[ed.chn];
       if((v<0 && (ed.mode&1)) || (v>=0 && (ed.mode&2))) {
 #if defined(BOLD_FONT)
@@ -897,10 +897,9 @@ getvalue_t getValue(uint8_t i)
 }
 
 #if defined(CPUARM)
-#define GETSWITCH_RECURSIVE_TYPE uint32_t
-volatile bool s_default_switch_value;
+  #define GETSWITCH_RECURSIVE_TYPE uint32_t
 #else
-#define GETSWITCH_RECURSIVE_TYPE uint16_t
+  #define GETSWITCH_RECURSIVE_TYPE uint16_t
 #endif
 
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
@@ -920,11 +919,7 @@ bool __getSwitch(int8_t swtch)
   bool result;
 
   if (swtch == 0)
-#if defined(CPUARM)
-    return s_default_switch_value;
-#else
-    return s_last_switch_used & ((GETSWITCH_RECURSIVE_TYPE)1<<15);
-#endif
+    return true;
 
   uint8_t cs_idx = abs(swtch);
 
@@ -1094,16 +1089,10 @@ bool __getSwitch(int8_t swtch)
   return swtch > 0 ? result : !result;
 }
 
-bool getSwitch(int8_t swtch, bool nc)
+bool getSwitch(int8_t swtch)
 {
-#if defined(CPUARM)
   s_last_switch_used = 0;
   s_last_switch_value = 0;
-  s_default_switch_value = nc;
-#else
-  s_last_switch_used = ((GETSWITCH_RECURSIVE_TYPE)nc<<15);
-  s_last_switch_value = 0;
-#endif
   return __getSwitch(swtch);
 }
 
@@ -1195,7 +1184,7 @@ uint8_t getFlightPhase()
 {
   for (uint8_t i=1; i<MAX_PHASES; i++) {
     PhaseData *phase = &g_model.phaseData[i];
-    if (phase->swtch && getSwitch(phase->swtch, 0)) {
+    if (phase->swtch && getSwitch(phase->swtch)) {
       return i;
     }
   }
@@ -1511,9 +1500,9 @@ void checkBacklight()
   if (tmr10ms != x) {
     tmr10ms = x;
     uint16_t tsum = stickMoveValue();
-    if (tsum != inacSum) {
-      inacSum = tsum;
-      inacCounter = 0;
+    if (tsum != inactivity.sum) {
+      inactivity.sum = tsum;
+      inactivity.counter = 0;
       if (g_eeGeneral.backlightMode & e_backlight_mode_sticks)
         backlightOn();
     }
@@ -2129,10 +2118,8 @@ int16_t  rawAnas [NUM_INPUTS] = {0};
 int16_t  anas [NUM_INPUTS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
-uint8_t  inacPrescale;
-uint16_t inacCounter = 0;
-uint16_t inacSum = 0;
 BeepANACenter bpanaCenter = 0;
+struct t_inactivity inactivity = {0};
 
 int24_t act   [MAX_MIXERS] = {0};
 SwOn    swOn  [MAX_MIXERS]; // TODO better name later...
@@ -2489,7 +2476,7 @@ void evalFunctions()
         swtch += MAX_SWITCH+1;
       }
 
-      bool active = getSwitch(swtch, 0);
+      bool active = getSwitch(swtch);
       if (active) newActiveSwitches |= switch_mask;
       if (momentary || short_long) {
 
@@ -2739,8 +2726,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   }
 
 #if defined(HELI)
-  if(g_model.swashR.value)
-  {
+  if (g_model.swashR.value) {
     uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
     uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
@@ -2755,20 +2741,18 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #define REZ_SWASH_X(x)  ((x) - (x)/8 - (x)/128 - (x)/512)   //  1024*sin(60) ~= 886
 #define REZ_SWASH_Y(x)  ((x))   //  1024 => 1024
 
-  if(g_model.swashR.type)
-  {
+  if (g_model.swashR.type) {
     getvalue_t vp = anas[ELE_STICK]+trims[ELE_STICK];
     getvalue_t vr = anas[AIL_STICK]+trims[AIL_STICK];
     getvalue_t vc = 0;
     if (g_model.swashR.collectiveSource)
       vc = getValue(g_model.swashR.collectiveSource-1);
 
-    if(g_model.swashR.invertELE) vp = -vp;
-    if(g_model.swashR.invertAIL) vr = -vr;
-    if(g_model.swashR.invertCOL) vc = -vc;
+    if (g_model.swashR.invertELE) vp = -vp;
+    if (g_model.swashR.invertAIL) vr = -vr;
+    if (g_model.swashR.invertCOL) vc = -vc;
 
-    switch (g_model.swashR.type)
-    {
+    switch (g_model.swashR.type) {
       case SWASH_TYPE_120:
         vp = REZ_SWASH_Y(vp);
         vr = REZ_SWASH_X(vr);
@@ -2834,7 +2818,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== PHASE && SWITCH =====
       bool mixCondition = (md->phases != 0 || md->swtch);
-      int8_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch, 1);
+      int8_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch);
 
       //========== VALUE ===============
       getvalue_t v = 0;
@@ -2848,7 +2832,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       }
       else {
         if (k < NUM_STICKS) {
-          v = md->noExpo ? rawAnas[k] : anas[k]; //Switch is on. MAX=FULL=512 or value.
+          v = md->noExpo ? rawAnas[k] : anas[k];
         }
         else {
           v = getValue(k);
@@ -2859,34 +2843,32 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
-              v = chans[k-MIXSRC_CH1+1] >> 8;  // remove factor 256 from old mix loop; was 100 before
+              v = chans[k-MIXSRC_CH1+1] >> 8;
           }
         }
       }
 
       bool apply_offset_and_curve = true;
 
-      //========== DELAYS ===============
+      // ========== DELAYS ===============
       int8_t _swOn = swOn[i].now;
       int8_t _swPrev = swOn[i].prev;
       bool swTog = (mixEnabled != _swOn);
-      // if (i==0) { printf("mixEnabled=%d swOn=%d swPrev=%d sDelay=%d mixCondition=%d\n", mixEnabled, _swOn, _swPrev, sDelay[i], mixCondition); fflush(stdout); }
-      if (swTog) {
+      if (mode==e_perout_mode_normal && swTog) {
         if (!swOn[i].delay) _swPrev = _swOn;
         swOn[i].delay = (mixEnabled > _swOn ? md->delayUp : md->delayDown) * (100/DELAY_STEP);
         swOn[i].now = mixEnabled;
         swOn[i].prev = _swPrev;
       }
-      if (swOn[i].delay > 0) {
+      if (mode==e_perout_mode_normal && swOn[i].delay > 0) {
         swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms);
         if (!mixCondition)
-          v = _swPrev << 10; // TODO optim?
+          v = _swPrev << 10;
         else if (mixEnabled)
           continue;
       }
       else if (!mixEnabled) {
         if (md->speedDown) {
-          if (md->mltpx == MLTPX_REP) continue;
           if (mixCondition) {
             v = 0;
             apply_offset_and_curve = false;
@@ -3039,7 +3021,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       else {
         if ((tmp.words_t.hi|0x007F)!=0x007F) tmp.words_t.hi=0x0079; // set to max nearly
       }
-      *ptr=tmp.dword;
+      *ptr = tmp.dword;
       // this implementation saves 18bytes flash
 
 /*      dv=*ptr>>8;
@@ -3143,7 +3125,7 @@ void doMixerCalculations()
     for (uint8_t p=0; p<MAX_PHASES; p++) {
       if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
         s_perout_flight_phase = p;
-        perOut(p==phase?e_perout_mode_normal:e_perout_mode_inactive_phase, tick10ms);
+        perOut(p==phase?e_perout_mode_normal:e_perout_mode_inactive_phase, p==phase?tick10ms:0);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
@@ -3260,7 +3242,7 @@ void doMixerCalculations()
 
       if (atm>=(TMR_VAROFS+MAX_SWITCH)){ // toggeled switch
         if(!(sw_toggled[i] | s_sum[i] | s_cnt[i] | lastSwPos[i])) { lastSwPos[i] = tm < 0; s_sum[i] = 1; }  // if initializing then init the lastSwPos
-        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+MAX_SWITCH, 0);
+        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+MAX_SWITCH);
         if (swPos && !lastSwPos[i]) sw_toggled[i] = !sw_toggled[i];  // if switch is flipped first time -> change counter state
         lastSwPos[i] = swPos;
       }
@@ -3298,7 +3280,7 @@ void doMixerCalculations()
         }
         else {
           if (atm<(TMR_VAROFS+MAX_SWITCH))
-            sw_toggled[i] = tm>0 ? getSwitch(tm-(TMR_VAROFS-1), 0) : !getSwitch(-tm, 0); // normal switch
+            sw_toggled[i] = tm>0 ? getSwitch(tm-(TMR_VAROFS-1)) : !getSwitch(-tm); // normal switch
           if (sw_toggled[i])
             newTimerVal++;
         }
@@ -3354,8 +3336,11 @@ void doMixerCalculations()
     s_time_tot += 100;
     s_timeCumTot += 1;
 
-    inacCounter++;
-    if ((((uint8_t)inacCounter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && inacCounter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
+    struct t_inactivity *ptrInactivity = &inactivity;
+    FORCE_INDIRECT(ptrInactivity) ;
+
+    ptrInactivity->counter++;
+    if ((((uint8_t)ptrInactivity->counter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && ptrInactivity->counter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
       AUDIO_INACTIVITY();
 
 #if defined(AUDIO)
@@ -3447,6 +3432,41 @@ void doMixerCalculations()
   return true;
 #endif
 }
+
+#if defined(NAVIGATION_STICKS)
+uint8_t StickScrollAllowed;
+uint8_t StickScrollTimer;
+static const pm_uint8_t rate[] PROGMEM = { 0, 0, 100, 40, 16, 7, 3, 1 } ;
+
+uint8_t calcStickScroll( uint8_t index )
+{
+        uint8_t direction ;
+        int8_t value ;
+
+        if ( ( g_eeGeneral.stickMode & 1 ) == 0 )
+        {
+                index ^= 3 ;
+        }
+
+        value = calibratedStick[index] / 128 ;
+        direction = value > 0 ? 0x80 : 0 ;
+        if ( value < 0 )
+        {
+                value = -value ;                        // (abs)
+        }
+        if ( value > 7 )
+        {
+                value = 7 ;
+        }
+        value = pgm_read_byte(rate+(uint8_t)value) ;
+        if ( value )
+        {
+                StickScrollTimer = STICK_SCROLL_TIMEOUT ;               // Seconds
+        }
+        return value | direction ;
+}
+#endif
+
 
 void perMain()
 {
@@ -3593,6 +3613,70 @@ void perMain()
     eeLoadModel(g_eeGeneral.currModel);
     usbState = USB_DISCONNECTED;
   }
+#endif
+
+#if defined(NAVIGATION_STICKS)
+  if (StickScrollAllowed) {
+    if ( StickScrollTimer ) {
+      static uint8_t repeater;
+      uint8_t direction;
+      uint8_t value;
+
+      if ( repeater < 128 )
+      {
+        repeater += 1;
+      }
+      value = calcStickScroll( 2 );
+      direction = value & 0x80;
+      value &= 0x7F;
+      if ( value )
+      {
+        if ( repeater > value )
+        {
+          repeater = 0;
+          if ( evt == 0 )
+          {
+            if ( direction )
+            {
+              evt = EVT_KEY_FIRST(KEY_UP);
+            }
+            else
+            {
+              evt = EVT_KEY_FIRST(KEY_DOWN);
+            }
+          }
+        }
+      }
+      else
+      {
+        value = calcStickScroll( 3 );
+        direction = value & 0x80;
+        value &= 0x7F;
+        if ( value )
+        {
+          if ( repeater > value )
+          {
+            repeater = 0;
+            if ( evt == 0 )
+            {
+              if ( direction )
+              {
+                evt = EVT_KEY_FIRST(KEY_RIGHT);
+              }
+              else
+              {
+                evt = EVT_KEY_FIRST(KEY_LEFT);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  else {
+    StickScrollTimer = 0;          // Seconds
+  }
+  StickScrollAllowed = 1 ;
 #endif
 
   lcd_clear();

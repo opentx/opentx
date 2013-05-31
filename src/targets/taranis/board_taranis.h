@@ -104,6 +104,7 @@ void delay_01us(uint16_t nb);
   #define SD_GET_BLOCKNR()        (0)
   #define SD_GET_SPEED()          (0)
   void sdInit();
+  void sdDone();
   void sdPoll10ms();
   #define sdMountPoll()
   uint32_t sdMounted();

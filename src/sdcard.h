@@ -40,27 +40,22 @@
 #include "FatFs/ff.h"
 
 #ifdef SIMU
-#define ROOT_PATH    "."
-#define MODELS_PATH  "."
-#define LOGS_PATH    "."
-#define SOUNDS_PATH  "./en"
-#define SOUNDS_PATH_LNG_OFS 2
-#define SYSTEM_SOUNDS_PATH SOUNDS_PATH "/SYSTEM"
-#define BITMAPS_PATH  "."
+  #define ROOT_PATH         "./"
 #else
-#define ROOT_PATH           "/"
-#define MODELS_PATH         "/MODELS"
-#define LOGS_PATH           "/LOGS"   // no trailing slash = important
-#define SOUNDS_PATH         "/SOUNDS/en" // no trailing slash = important
-#define SOUNDS_PATH_LNG_OFS 8
-#define SYSTEM_SOUNDS_PATH  SOUNDS_PATH "/SYSTEM" // no trailing slash = important
-#define BITMAPS_PATH        "/BMP"
+  #define ROOT_PATH         "/"
 #endif
 
-#define MODELS_EXT   ".bin"
-#define LOGS_EXT     ".csv"
-#define SOUNDS_EXT   ".wav"
-#define BITMAPS_EXT  ".bmp"
+#define MODELS_PATH         ROOT_PATH "MODELS"
+#define LOGS_PATH           ROOT_PATH "LOGS"   // no trailing slash = important
+#define SOUNDS_PATH         ROOT_PATH "SOUNDS/en" // no trailing slash = important
+#define SOUNDS_PATH_LNG_OFS (sizeof(SOUNDS_PATH)-3)
+#define SYSTEM_SOUNDS_PATH  SOUNDS_PATH "/SYSTEM" // no trailing slash = important
+#define BITMAPS_PATH        ROOT_PATH "/BMP"
+
+#define MODELS_EXT          ".bin"
+#define LOGS_EXT            ".csv"
+#define SOUNDS_EXT          ".wav"
+#define BITMAPS_EXT         ".bmp"
 
 extern FATFS g_FATFS_Obj;
 
