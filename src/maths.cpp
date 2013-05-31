@@ -44,7 +44,10 @@ uint16_t getChannelRatio(uint8_t channel)
 
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
 {
-  return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
+  if (TELEMETRY_STREAMING())
+    return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
+  else
+    return 0;
 }
 #endif
 
