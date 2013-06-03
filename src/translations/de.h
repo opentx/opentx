@@ -236,7 +236,7 @@
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
-  #define TR_VUNITSSYSTEM      TR("Metric""Imper.", "Metric\0 ""Imperial")
+  #define TR_VUNITSSYSTEM      TR("Metrik""Imper.", "Metrisch\0 ""Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -391,7 +391,7 @@
 #define TR_CHECKTRIMS          "\006Trims\012Pr\205fen"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           TR("Typ Taumelsch","Typ Taumelscheibe")
-#define TR_COLLECTIVE          TR("Kollektiv Pit","Kollektives Pitch")
+#define TR_COLLECTIVE          TR("Kollekt.Pitch","Kollekt. Pitch Kanal")
 #define TR_SWASHRING           TR("Zykl. Begrenz","Zyklische Begrenzung")
 #define TR_ELEDIRECTION        TR("Nick Richtung"," Nick Servo Richtung")
 #define TR_AILDIRECTION        TR("Roll Richtung"," Roll Servo Richtung") 
@@ -435,7 +435,7 @@
 #define TR_HAPTICSTRENGTH      INDENT"St\201rke"
 #define TR_CONTRAST            "Kontrast"
 #define TR_ALARMS_LABEL        "Alarm wenn"
-#define TR_BATTERY_RANGE       "Akku Spannung V"
+#define TR_BATTERY_RANGE       "Akku Spg-Balken Volt"
 #define TR_BATTERYWARNING      INDENT"Akku Spg kl."
 #define TR_INACTIVITYALARM     INDENT"Inaktivit\201t "
 #define TR_MEMORYWARNING       INDENT"Speicher voll"
@@ -586,7 +586,7 @@
 #define TR_REMOVED             " gel\203scht"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Formattieren"
-#define TR_NA                  "N/V"	//Kurz-Meldung: NV=Nicht Verfügbar
+#define TR_NA                  "N/V"	//NV=Nicht Verfügbar  Kurz-Meldung 
 #define TR_HARDWARE            "Hardware"
 #define TR_FORMATTING          "Formattierung..."
 #define TR_TEMP_CALIB          "Temp. Kalib."
@@ -605,49 +605,49 @@
 #define TR_DATE                "Datum:"
 #define TR_ROTARY_ENCODER      "Drehgeber"
 #define TR_CHANNELS_MONITOR    "Kanal Monitor"
-#define TR_INTERNALRF          "Internes HF Modul"
-#define TR_EXTERNALRF          "Externes HF Modul"
+#define TR_INTERNALRF          "----Internes HF Modul----------"
+#define TR_EXTERNALRF          "----Externes HF Modul----------"
 #define TR_FAILSAFE            "Failsafe Mode"
 #define TR_FAILSAFESET         "Failsafe Einst."
 #define TR_COUNTRYCODE         "L\201nder Code"
-#define TR_VOICELANG           "Voice Language"
-#define TR_UNITSSYSTEM         "Units"
-#define TR_EDIT                "Edit"
-#define TR_INSERT_BEFORE       "Insert Before"
-#define TR_INSERT_AFTER        "Insert After"
-#define TR_COPY                "Copy"
-#define TR_MOVE                "Move"
-#define TR_DELETE              "Delete"
-#define TR_RESET_FLIGHT        "Reset Flight"
+#define TR_VOICELANG           "Sprach-Ansagen"
+#define TR_UNITSSYSTEM         "Einheiten"
+#define TR_EDIT                "Zeile Editieren"
+#define TR_INSERT_BEFORE       "Neue Zeile davor"
+#define TR_INSERT_AFTER        "Neue Zeile danach"
+#define TR_COPY                "Zeile Kopieren"
+#define TR_MOVE                "Zeile Verschieben"
+#define TR_DELETE              "Zeile L\203schen"
+#define TR_RESET_FLIGHT        "Reset Flugdaten"
 #define TR_RESET_TIMER1        "Reset Timer1"
 #define TR_RESET_TIMER2        "Reset Timer2"
-#define TR_RESET_TELEMETRY     "Reset Telemetry"
-#define TR_STATISTICS          "Statistics"
-#define TR_ABOUT_US            "About Us"
-#define TR_AND_SWITCH          "AND Switch"
-#define TR_CF                  "CF"
-#define TR_SPEAKER             INDENT"Speaker"
-#define TR_BUZZER              INDENT"Buzzer"
+#define TR_RESET_TELEMETRY     "Reset Telemetrie"
+#define TR_STATISTICS          "Statistik und Gas"
+#define TR_ABOUT_US            "Programmierung"
+#define TR_AND_SWITCH          "UND Schalt" //UND mit weiterem Schaltern 
+#define TR_CF                  "SF" //Spezial Funktionen engl. CF
+#define TR_SPEAKER             INDENT"Lautspr"
+#define TR_BUZZER              INDENT"Summer"
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
 #define TR_RESET               "[Reset]"
 #define TR_SET                 "[Set]"
-#define TR_TRAINER             "Trainer"
-#define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
-#define TR_MODELIDUSED         TR("ID already used","Model ID already used")
-#define TR_MODULE              INDENT "Module"
-#define TR_CHANNELRANGE        INDENT "Channel Range"
+#define TR_TRAINER             "----Trainer Buchse Einst.------" //DSC Buchse Funktion
+#define TR_ANTENNAPROBLEM      CENTER "TX Antennen Problem!"
+#define TR_MODELIDUSED         TR("ID schon benutzt","Modell ID schon benutzt")
+#define TR_MODULE              INDENT "Modul-Typ"
+#define TR_CHANNELRANGE        INDENT "Ausgangs Kan\201le"
 #define TR_LOWALARM            INDENT "Low Alarm"
-#define TR_CRITICALALARM       INDENT "Critical Alarm"
+#define TR_CRITICALALARM       INDENT "Kritisch Alarm"
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " }
-#define TR_LIMITS_HEADERS      { " Name ", " Offset ", " Min ", " Max ", " Direction ", " PPM Center ", " Symmetrical " }
-#define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
+#define TR_PHASES_HEADERS      { " Name ", " Schalter ", " Trimmung ", " Fade In ", " Fade Out " }
+#define TR_LIMITS_HEADERS      { " Name ", " Offset ", " Min ", " Max ", " Richtung ", " PPM Mitte ", " Symmetrisch " }
+#define TR_CSW_HEADERS         { " Funktion ", " Var1 ", " Var2 ", " UND Schalter ", " Dauer ", " Delay " }
 
 //Taranis About screen
-#define TR_ABOUTUS             "ABOUT US"
+#define TR_ABOUTUS             "Programmierer"
 
 #define TR_ABOUT_OPENTX_1      "OpenTX is open source, non-"
 #define TR_ABOUT_OPENTX_2      "commercial and comes with no"
@@ -666,7 +666,7 @@
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2      "Companion9x main developer"
-#define TR_ABOUT_ROMOLO_3      ""
+#define TR_ABOUT_ROMOLO_3      "                          "
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
 #define TR_ABOUT_ANDRE_2       "Functionality, usability,"
@@ -687,7 +687,8 @@
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
 #define TR_ABOUT_HARDWARE_3    ""
 
-#define TR_CHR_SHORT  's'
-#define TR_CHR_LONG   'l'
-#define TR_CHR_TOGGLE 't'
-#define TR_CHR_HOUR   'h'
+#define TR_CHR_SHORT  's' //Taste short
+#define TR_CHR_LONG   'l' //Taste long
+#define TR_CHR_TOGGLE 't' //Taste als togglefunktion = Ein Aus Ein 
+#define TR_CHR_HOUR   'h' //Stunden
+
