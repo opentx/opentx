@@ -317,28 +317,30 @@ void displayTimers()
 {
   // Main timer
   if (g_model.timers[0].mode) {
-    putsTime(TIMERS_X, TIMER1_Y, s_timerVal[0], MIDSIZE|LEFT, MIDSIZE|LEFT);
+    TimerState & timerState = timersStates[0];
+    putsTime(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTmrMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, SWCONDENSED|SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
-    if (s_timerVal[0] < 0) lcd_hline(TIMERS_X-6, TIMER1_Y+2, 4);
+    if (timerState.val < 0) lcd_hline(TIMERS_X-6, TIMER1_Y+2, 4);
   }
 
   // Second timer
   if (g_model.timers[1].mode) {
-    putsTime(TIMERS_X, TIMER2_Y, s_timerVal[1], MIDSIZE|LEFT, MIDSIZE|LEFT);
+    TimerState & timerState = timersStates[1];
+    putsTime(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTmrMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, SWCONDENSED|SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
-    if (s_timerVal[1] < 0) lcd_hline(TIMERS_X-6, TIMER2_Y+2, 4);
+    if (timerState.val < 0) lcd_hline(TIMERS_X-6, TIMER2_Y+2, 4);
   }
 
   // Main timer beeping
-  if (s_timerState[0]==TMR_BEEPING) {
+  if (timersStates[0].state==TMR_BEEPING) {
     if (BLINK_ON_PHASE)
       lcd_filled_rect(TIMERS_X-17, TIMER1_Y, 70, 12);
   }
 
   // Second timer beeping
-  if (s_timerState[1]==TMR_BEEPING) {
+  if (timersStates[1].state==TMR_BEEPING) {
     if (BLINK_ON_PHASE)
       lcd_filled_rect(TIMERS_X-17, TIMER2_Y, 70, 12);
   }
@@ -348,9 +350,10 @@ void displayTimers()
 {
   // Main timer
   if (g_model.timers[0].mode) {
-    uint8_t att = DBLSIZE | (s_timerState[0]==TMR_BEEPING ? BLINK|INVERS : 0);
-    putsTime(12*FW+2+10*FWNUM-4, FH*2, s_timerVal[0], att, att);
-    putsTmrMode(s_timerVal[0] >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode, SWCONDENSED);
+    TimerState & timerState = timersStates[0];
+    uint8_t att = DBLSIZE | (timerState.state==TMR_BEEPING ? BLINK|INVERS : 0);
+    putsTime(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
+    putsTmrMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode, SWCONDENSED);
   }
 }
 #endif
@@ -564,7 +567,8 @@ void menuMainView(uint8_t event)
 
     case EVT_KEY_TELEMETRY:
 #if defined(FRSKY)
-      chainMenu(menuTelemetryFrsky);
+      if (!IS_FAI_ENABLED())
+        chainMenu(menuTelemetryFrsky);
 #elif defined(JETI)
       JETI_EnableRXD(); // enable JETI-Telemetry reception
       chainMenu(menuTelemetryJeti);
@@ -583,8 +587,8 @@ void menuMainView(uint8_t event)
       return;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      if (s_timerState[0]==TMR_BEEPING) {
-        s_timerState[0] = TMR_STOPPED;
+      if (timersStates[0].state==TMR_BEEPING) {
+        timersStates[0].state = TMR_STOPPED;
       }
       else if (s_global_warning) {
         s_global_warning = NULL;
@@ -796,8 +800,8 @@ void menuMainView(uint8_t event)
     }
   }
   else { // timer2
-    putsTime(33+FW+2+10*FWNUM-4, FH*5, s_timerVal[1], DBLSIZE, DBLSIZE);
-    putsTmrMode(s_timerVal[1] >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, SWCONDENSED);
+    putsTime(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
+    putsTmrMode(timersStates[1].val >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, SWCONDENSED);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 #endif // PCBTARANIS

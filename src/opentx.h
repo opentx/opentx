@@ -198,6 +198,17 @@
   typedef __int24 int24_t;
 #endif
 
+#if defined(FAI)
+  #define IS_FAI_ENABLED() true
+  #define IF_FAI_CHOICE(x)
+#elif defined(FAI_CHOICE)
+  #define IS_FAI_ENABLED() g_eeGeneral.fai
+  #define IF_FAI_CHOICE(x) x,
+#else
+  #define IS_FAI_ENABLED() false
+  #define IF_FAI_CHOICE(x)
+#endif
+
 #if defined(SIMU)
   #ifndef FORCEINLINE
     #define FORCEINLINE
@@ -386,7 +397,7 @@ enum EnumKeys {
 #define PPM_CENTER 1500
 
 #if defined(PPM_CENTER_ADJUSTABLE)
-  #define PPM_CH_CENTER(ch) (PPM_CENTER+limitaddress(ch)->ppmCenter)
+  #define PPM_CH_CENTER(ch) (PPM_CENTER+limitAddress(ch)->ppmCenter)
 #else
   #define PPM_CH_CENTER(ch) (PPM_CENTER)
 #endif
@@ -581,15 +592,16 @@ enum CswFunctions {
   CS_LESS,
   CS_DIFFEGREATER,
   CS_ADIFFEGREATER,
-  // TODO add CS_TIMER,
-  CS_MAXF = CS_ADIFFEGREATER
+  CS_TIMER,
+  CS_MAXF = CS_TIMER
 };
 
-#define CS_VOFS       0
-#define CS_VBOOL      1
-#define CS_VCOMP      2
-#define CS_VDIFF      3
-#define CS_STATE(x)   ((x)<CS_AND ? CS_VOFS : ((x)<CS_EQUAL ? CS_VBOOL : ((x)<CS_DIFFEGREATER ? CS_VCOMP : CS_VDIFF)))
+#define CS_VOFS         0
+#define CS_VBOOL        1
+#define CS_VCOMP        2
+#define CS_VDIFF        3
+#define CS_VTIMER       4
+uint8_t cswFamily(uint8_t func);
 
 #define NUM_CYC         3
 #define NUM_CAL_PPM     4
@@ -862,9 +874,19 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec
 extern uint16_t s_timeCum16ThrP; //gewichtete laufzeit in 1/16 sec
-extern uint8_t  s_timerState[2];
-extern int16_t  s_timerVal[2];
-extern uint8_t  s_timerVal_10ms[2];
+
+struct TimerState {
+  uint8_t  lastPos;
+  uint16_t cnt;
+  uint16_t sum;
+  uint8_t  toggled;
+  uint8_t  state;
+  int16_t  val;
+  uint8_t  val_10ms;
+};
+
+extern TimerState timersStates[MAX_TIMERS];
+
 extern int8_t safetyCh[NUM_CHNOUT];
 
 extern uint8_t trimsCheckTimer;
@@ -1119,19 +1141,19 @@ extern uint16_t lightOffCounter;
 extern uint8_t flashCounter;
 extern uint8_t mixWarning;
 
-extern PhaseData *phaseaddress(uint8_t idx);
-extern ExpoData *expoaddress(uint8_t idx);
-extern MixData *mixaddress(uint8_t idx);
-extern LimitData *limitaddress(uint8_t idx);
-extern int8_t *curveaddress(uint8_t idx);
-extern CustomSwData *cswaddress(uint8_t idx);
+extern PhaseData *phaseAddress(uint8_t idx);
+extern ExpoData *expoAddress(uint8_t idx);
+extern MixData *mixAddress(uint8_t idx);
+extern LimitData *limitAddress(uint8_t idx);
+extern int8_t *curveAddress(uint8_t idx);
+extern CustomSwData *cswAddress(uint8_t idx);
 
 struct CurveInfo {
   int8_t *crv;
   uint8_t points;
   bool custom;
 };
-extern CurveInfo curveinfo(uint8_t idx);
+extern CurveInfo curveInfo(uint8_t idx);
 
 extern void deleteExpoMix(uint8_t expo, uint8_t idx);
 

@@ -135,6 +135,10 @@ inline void boardInit()
   #if !defined(CPUM2561)
     TIMSK |= (1<<OCIE0) | (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
   #endif
+#else
+  #if !defined(CPUM2561)
+    TIMSK |= (1<<OCIE0) | (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
+  #endif
 #endif
 }
 #endif

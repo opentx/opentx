@@ -729,7 +729,8 @@ void telemetryWakeup()
 #endif
 
 #if defined(VARIO)
-  varioWakeup();
+  if (!IS_FAI_ENABLED())
+    varioWakeup();
 #endif
 }
 

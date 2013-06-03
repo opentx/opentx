@@ -88,7 +88,6 @@ void setupPulsesDsm2(uint8_t chns)
 {
   static uint8_t dsmDat[2+6*2]={0xFF,0x00,  0x00,0xAA,  0x05,0xFF,  0x09,0xFF,  0x0D,0xFF,  0x13,0x54,  0x14,0xAA};
   uint8_t counter ;
-  //    CSwData &cs = g_model.customSw[NUM_CSW-1];
 
   Serial_byte = 0 ;
   Serial_bit_count = 0 ;

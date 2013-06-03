@@ -37,6 +37,7 @@
 #include "opentx.h"
 
 #define delay_1us() _delay_us(1)
+#define delay_2us() _delay_us(2)
 void delay_1_5us(uint16_t ms)
 {
   for (uint16_t i=0; i<ms; i++) delay_1us();
@@ -92,13 +93,11 @@ inline void lcdInit()
 
   LCD_LOCK();
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES);  //LCD_RES
-  // TODO delay_2us ?
-  delay_1us();
-  delay_1us(); //    f520  call  0xf4ce  delay_1us() ; 0x0xf4ce
+  delay_2us();
   PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES); //  f524  sbi 0x15, 2 IOADR-PORTC_LCD_CTRL; 21           1
   delay_1_5us(1500);
   for (uint8_t i=0; i<12; i++) {
-    lcdSendCtl(pgm_read_byte(&lcdInitSequence[i]) ) ;
+    lcdSendCtl(pgm_read_byte(&lcdInitSequence[i])) ;
   }
   g_eeGeneral.contrast = 0x22;
   LCD_UNLOCK();

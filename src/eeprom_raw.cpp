@@ -390,7 +390,7 @@ void eeLoadModel(uint8_t id)
 
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
       if (g_model.timers[i].persistent) {
-        s_timerVal[i] = g_model.timers[i].value;
+        timersStates[i].val = g_model.timers[i].value;
       }
     }
 

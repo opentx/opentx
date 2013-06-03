@@ -282,16 +282,16 @@ PACK(typedef struct t_EEGeneral {
   TrainerData trainer;
   uint8_t   view;            // index of view in main screen
   int8_t    buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  uint8_t   spare1:1;
+  uint8_t   fai:1;
   int8_t    beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   alarmsFlash:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   disableAlarmWarning:1;
   uint8_t   stickMode:2;
   int8_t    timezone:5;
-  uint8_t   spare2:1;
+  uint8_t   spare1:1;
   uint8_t   inactivityTimer;
-  uint8_t   spare3:3;
+  uint8_t   spare2:3;
   SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   blOffBright:4;
@@ -604,6 +604,13 @@ enum ResetFunctionParam {
 #endif
   FUNC_RESET_PARAMS_COUNT,
   FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1
+};
+
+enum AdjustGvarFunctionParam {
+  FUNC_ADJUST_GVAR_CONSTANT,
+  FUNC_ADJUST_GVAR_SOURCE,
+  FUNC_ADJUST_GVAR_GVAR,
+  FUNC_ADJUST_GVAR_INC,
 };
 
 #if defined(CPUARM)

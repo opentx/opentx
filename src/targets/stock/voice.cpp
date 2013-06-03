@@ -80,7 +80,7 @@ void t_voice::voice_process(void)
     PORTB |= (1 << OUT_B_LIGHT); // Latch clock high
     if (VoiceQueueCount) {
       VoiceSerial = VoiceQueue[VoiceQueueOutIndex++];
-      VoiceQueueOutIndex &= (VOICE_Q_LENGTH - 1); // TODO flash saving
+      VoiceQueueOutIndex &= (VOICE_Q_LENGTH - 1);
       VoiceQueueCount -= 1;
       VoiceTimer = 17;
       if (VoiceSerial & 0x8000) { // Looking for sound volume 1F0-1F7

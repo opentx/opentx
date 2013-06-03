@@ -36,13 +36,11 @@
 
 #include "../opentx.h"
 
+#define PPM_STREAM_INIT  { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 #if defined(PCBTARANIS)
-// TODO internal module doesn't send PPM
-uint16_t ppmStream[NUM_MODULES+1][20]  = { { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                                           { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                                           { 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+  uint16_t ppmStream[NUM_MODULES+1][20]  = { PPM_STREAM_INIT, PPM_STREAM_INIT, PPM_STREAM_INIT };
 #else
-uint16_t ppmStream[NUM_MODULES][20]  = { MODULES_INIT({ 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 9000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }) };
+  uint16_t ppmStream[NUM_MODULES][20]  = { MODULES_INIT(PPM_STREAM_INIT) };
 #endif
 
 void setupPulsesPPM(unsigned int port)                   // Don't enable interrupts through here

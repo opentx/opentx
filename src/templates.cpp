@@ -62,14 +62,14 @@ MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
   MixData * mix;
 
   while (1) {
-    mix = mixaddress(i);
+    mix = mixAddress(i);
     if (mix->srcRaw && mix->destCh <= dch) {
       if (clear && mix->destCh == dch)
         deleteExpoMix(0, i);
       else {
         if (++i==MAX_MIXERS) {
           // TODO should return null pointer but needs to be tested then
-          mix = mixaddress(0);
+          mix = mixAddress(0);
           break;
         }
       }
@@ -108,7 +108,7 @@ void clearCurves()
 
 void setCurve(uint8_t c, const pm_int8_t ar[])
 {
-  int8_t * cv = curveaddress(c);
+  int8_t * cv = curveAddress(c);
   for (uint8_t i=0; i<5; i++) {
     cv[i] = pgm_read_byte(&ar[i]);
   }
@@ -116,7 +116,7 @@ void setCurve(uint8_t c, const pm_int8_t ar[])
 
 void setSwitch(uint8_t idx, uint8_t func, int8_t v1, int8_t v2)
 {
-  CustomSwData *cs = cswaddress(idx-1);
+  CustomSwData *cs = cswAddress(idx-1);
   cs->func = func;
   cs->v1   = v1;
   cs->v2   = v2;

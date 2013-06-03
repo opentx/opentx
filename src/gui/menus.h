@@ -204,39 +204,41 @@ void title(const pm_char * s);
 #define TITLE(str) title(str)
 
 #if defined(CPUARM)
-#define MENU(title, tab, menu, lines_count, ...) \
-const uint8_t mstate_tab[] = __VA_ARGS__; \
-if (!check(event,menu,tab,DIM(tab),mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; \
-TITLE(title)
+  #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 #else
-#define MENU(title, tab, menu, lines_count, ...) \
-static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
-if (!check(event,menu,tab,DIM(tab),mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; \
-TITLE(title)
+  #define MENU_TAB(...) static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__
 #endif
 
+#define MENU_CHECK(tab, menu, lines_count) \
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1)
+
+#define MENU(title, tab, menu, lines_count, ...) \
+  MENU_TAB(__VA_ARGS__); \
+  if (!MENU_CHECK(tab, menu, lines_count)) return; \
+  TITLE(title)
+
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-if (!check_simple(event,menu,tab,DIM(tab),(lines_count)-1)) return;
+  if (!check_simple(event,menu,tab,DIM(tab),(lines_count)-1)) return;
 
 #define SIMPLE_MENU(title, tab, menu, lines_count) \
-SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \
-TITLE(title)
+  SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \
+  TITLE(title)
 
 #define SUBMENU_NOTITLE(lines_count, ...) { \
-static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
-if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; }
+  static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
+  if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; }
 
 #define SUBMENU(title, lines_count, ...) \
-static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
-if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; \
-TITLE(title)
+  static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
+  if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; \
+  TITLE(title)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-if (!check_submenu_simple(event,(lines_count)-1)) return;
+  if (!check_submenu_simple(event,(lines_count)-1)) return;
 
 #define SIMPLE_SUBMENU(title, lines_count) \
-SIMPLE_SUBMENU_NOTITLE(lines_count); \
-TITLE(title)
+  SIMPLE_SUBMENU_NOTITLE(lines_count); \
+  TITLE(title)
 
 int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
 uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, LcdFlags attr, uint8_t event );
@@ -342,10 +344,13 @@ void menuChannelsView(uint8_t event);
 
 #if defined(PCBTARANIS)
   #define REPEAT_LAST_CURSOR_MOVE() { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else m_posHorz = 0; }
+  #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else m_posHorz = 0; }
+  #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
   #define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
+  #define MOVE_CURSOR_FROM_HERE()   REPEAT_LAST_CURSOR_MOVE()
 #endif
 
 #if defined(PCBTARANIS)

@@ -685,8 +685,8 @@ void lcdDrawTelemetryTopBar()
   uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
   putsVBat(14*FW,0,att);
   if (g_model.timers[0].mode) {
-    att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
-    putsTime(17*FW+5*FWNUM+1, 0, s_timerVal[0], att, att);
+    att = (timersStates[0].state==TMR_BEEPING ? BLINK : 0);
+    putsTime(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
   }
   lcd_invert_line(0);
 }
@@ -697,13 +697,13 @@ void lcdDrawTelemetryTopBar()
   uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
   putsVBat(16*FW+2,0,att);
   if (g_model.timers[0].mode) {
-    att = (s_timerState[0]==TMR_BEEPING ? BLINK : 0);
-    putsTime(22*FW+5*FWNUM+1, 0, s_timerVal[0], att, att);
+    att = (timersStates[0].state==TMR_BEEPING ? BLINK : 0);
+    putsTime(22*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
     lcd_putsiAtt(18*FW+2, 1, STR_VTELEMCHNS, TELEM_TM1, SMLSIZE);
   }
   if (g_model.timers[1].mode) {
-    att = (s_timerState[1]==TMR_BEEPING ? BLINK : 0);
-    putsTime(31*FW+5*FWNUM+1, 0, s_timerVal[1], att, att);
+    att = (timersStates[1].state==TMR_BEEPING ? BLINK : 0);
+    putsTime(31*FW+5*FWNUM+1, 0, timersStates[1].val, att, att);
     lcd_putsiAtt(27*FW+2, 1, STR_VTELEMCHNS, TELEM_TM2, SMLSIZE);
   }
   lcd_invert_line(0);
@@ -946,11 +946,11 @@ void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, Lc
 #if ROTARY_ENCODERS > 2
   int16_t v;
   if(idx < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-    v = phaseaddress(phase)->rotaryEncoders[idx];
+    v = phaseAddress(phase)->rotaryEncoders[idx];
   else
     v = g_model.rotaryEncodersExtra[phase][idx - (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
 #else
-  int16_t v = phaseaddress(phase)->rotaryEncoders[idx];
+  int16_t v = phaseAddress(phase)->rotaryEncoders[idx];
 #endif
 
   if (v > ROTARY_ENCODER_MAX) {

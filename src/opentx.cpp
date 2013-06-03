@@ -316,36 +316,36 @@ void per10ms()
   heartbeat |= HEART_TIMER_10MS;
 }
 
-PhaseData *phaseaddress(uint8_t idx)
+PhaseData *phaseAddress(uint8_t idx)
 {
   return &g_model.phaseData[idx];
 }
 
-ExpoData *expoaddress(uint8_t idx )
+ExpoData *expoAddress(uint8_t idx )
 {
   return &g_model.expoData[idx];
 }
 
-MixData *mixaddress(uint8_t idx)
+MixData *mixAddress(uint8_t idx)
 {
   return &g_model.mixData[idx];
 }
 
-LimitData *limitaddress(uint8_t idx)
+LimitData *limitAddress(uint8_t idx)
 {
   return &g_model.limitData[idx];
 }
 
-int8_t *curveaddress(uint8_t idx)
+int8_t *curveAddress(uint8_t idx)
 {
   return &g_model.points[idx==0 ? 0 : 5*idx+g_model.curves[idx-1]];
 }
 
-CurveInfo curveinfo(uint8_t idx)
+CurveInfo curveInfo(uint8_t idx)
 {
   CurveInfo result;
-  result.crv = curveaddress(idx);
-  int8_t *next = curveaddress(idx+1);
+  result.crv = curveAddress(idx);
+  int8_t *next = curveAddress(idx+1);
   uint8_t size = next - result.crv;
   if ((size & 1) == 0) {
     result.points = (size / 2) + 1;
@@ -358,9 +358,14 @@ CurveInfo curveinfo(uint8_t idx)
   return result;
 }
 
-CustomSwData *cswaddress(uint8_t idx)
+CustomSwData *cswAddress(uint8_t idx)
 {
   return &g_model.customSw[idx];
+}
+
+uint8_t cswFamily(uint8_t func)
+{
+  return (func<CS_AND ? CS_VOFS : (func<CS_EQUAL ? CS_VBOOL : (func<CS_DIFFEGREATER ? CS_VCOMP : (func<CS_TIMER ? CS_VDIFF : CS_VTIMER))));
 }
 
 #if defined(CPUM64)
@@ -414,7 +419,7 @@ uint16_t evalChkSum()
 inline void applyDefaultTemplate()
 {
   for (int i=0; i<NUM_STICKS; i++) {
-    MixData *md = mixaddress(i);
+    MixData *md = mixAddress(i);
     md->destCh = i;
     md->weight = 100;
     md->srcRaw = channel_order(i+1);
@@ -452,7 +457,7 @@ void modelDefault(uint8_t id)
 
 int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 {
-  CurveInfo crv = curveinfo(idx);
+  CurveInfo crv = curveInfo(idx);
   int16_t erg = 0;
 
   x+=RESXu;
@@ -754,7 +759,7 @@ int8_t calcRESXto100(int16_t x)
 // rescaled from -262144 to 262144
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
-  LimitData * lim = limitaddress(channel);
+  LimitData * lim = limitAddress(channel);
   int16_t ofs   = calc1000toRESX(lim->offset);   // multiply to 1.24 to get range (-1024..1024)
   int16_t lim_p = calc100toRESX(lim->max + 100);
   int16_t lim_n = calc100toRESX(lim->min - 100); //multiply by 10.24 to get same range (-1024..1024)
@@ -859,7 +864,7 @@ getvalue_t getValue(uint8_t i)
   else if (i<MIXSRC_LAST_GVAR) return GVAR_VALUE(i+1-MIXSRC_GVAR1, getGVarFlightPhase(s_perout_flight_phase, i+1-MIXSRC_GVAR1));
 #endif
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
-  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_TM2) return s_timerVal[i+1-MIXSRC_FIRST_TELEM+1-TELEM_TM1];
+  else if (i<MIXSRC_FIRST_TELEM-1+TELEM_TM2) return timersStates[i+1-MIXSRC_FIRST_TELEM+1-TELEM_TM1].val;
 #if defined(FRSKY)
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
   else if (i<MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
@@ -939,12 +944,12 @@ bool __getSwitch(int8_t swtch)
     else {
       s_last_switch_used |= mask;
 
-      CustomSwData * cs = cswaddress(cs_idx);
+      CustomSwData * cs = cswAddress(cs_idx);
       uint8_t s = cs->andsw;
       if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
         result = false;
       }
-      else if ((s=CS_STATE(cs->func)) == CS_VBOOL) {
+      else if ((s=cswFamily(cs->func)) == CS_VBOOL) {
         bool res1 = __getSwitch(cs->v1);
         bool res2 = __getSwitch(cs->v2);
         switch (cs->func) {
@@ -959,6 +964,9 @@ bool __getSwitch(int8_t swtch)
             result = (res1 ^ res2);
             break;
         }
+      }
+      else if (s == CS_VTIMER) {
+        result = int8_t(csLastValue[cs_idx]) >= 0;
       }
       else {
         getvalue_t x = getValue(cs->v1-1);
@@ -1194,7 +1202,7 @@ uint8_t getFlightPhase()
 
 int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
-  PhaseData *p = phaseaddress(phase);
+  PhaseData *p = phaseAddress(phase);
 #if defined(PCBSTD)
   return (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
 #else
@@ -1209,7 +1217,7 @@ int16_t getTrimValue(uint8_t phase, uint8_t idx)
 
 void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 {
-  PhaseData *p = phaseaddress(phase);
+  PhaseData *p = phaseAddress(phase);
 #if defined(PCBSTD)
   p->trim[idx] = (int8_t)(trim >> 2);
   p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
@@ -1241,11 +1249,11 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 #if ROTARY_ENCODERS > 2
     int16_t value;
     if(idx<(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-      value = phaseaddress(phase)->rotaryEncoders[idx];
+      value = phaseAddress(phase)->rotaryEncoders[idx];
     else
       value = g_model.rotaryEncodersExtra[phase][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
 #else
-    int16_t value = phaseaddress(phase)->rotaryEncoders[idx];
+    int16_t value = phaseAddress(phase)->rotaryEncoders[idx];
 #endif
     if (value <= ROTARY_ENCODER_MAX) return phase;
     uint8_t result = value-ROTARY_ENCODER_MAX-1;
@@ -1261,7 +1269,7 @@ int16_t getRotaryEncoder(uint8_t idx)
   if(idx >= (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
     return g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
 #endif
-  return phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
+  return phaseAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
 }
 
 void incRotaryEncoder(uint8_t idx, int8_t inc)
@@ -1270,11 +1278,11 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 #if ROTARY_ENCODERS > 2
   int16_t *value;
   if (idx < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-    value = &(phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
+    value = &(phaseAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
   else
     value = &(g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)]);
 #else
-  int16_t *value = &(phaseaddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
+  int16_t *value = &(phaseAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
 #endif
   *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
   eeDirty(EE_MODEL);
@@ -1441,7 +1449,7 @@ getvalue_t convertTelemValue(uint8_t channel, uint8_t value)
 getvalue_t convertCswTelemValue(CustomSwData * cs)
 {
   getvalue_t val;
-  if (CS_STATE(cs->func)==CS_VOFS)
+  if (cswFamily(cs->func)==CS_VOFS)
     val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
   else
     val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
@@ -2049,17 +2057,15 @@ uint8_t flashCounter = 0;
 uint16_t s_timeCumTot;
 uint16_t s_timeCumThr;    // THR in 1/16 sec
 uint16_t s_timeCum16ThrP; // THR% in 1/16 sec
-uint8_t  s_timerState[2];
-int16_t  s_timerVal[2];
-uint8_t  s_timerVal_10ms[2] = {0, 0};
 
 uint8_t  trimsCheckTimer = 0;
 
 void resetTimer(uint8_t idx)
 {
-  s_timerState[idx] = TMR_OFF; // is changed to RUNNING dep from mode
-  s_timerVal[idx] = g_model.timers[idx].start;
-  s_timerVal_10ms[idx] = 0 ;
+  TimerState & timerState = timersStates[idx];
+  timerState.state = TMR_OFF; // is changed to RUNNING dep from mode
+  timerState.val = g_model.timers[idx].start;
+  timerState.val_10ms = 0 ;
 }
 
 void resetAll()
@@ -2076,7 +2082,7 @@ void resetAll()
   resetTelemetry();
 #endif
   for (uint8_t i=0; i<NUM_CSW; i++)
-    csLastValue[i] = -32668;
+    csLastValue[i] = -32768;
 
 #if defined(THRTRACE)
   s_traceCnt = 0;
@@ -2084,10 +2090,7 @@ void resetAll()
 #endif
 }
 
-static uint8_t lastSwPos[2] = {0, 0};
-static uint16_t s_cnt[2] = {0, 0};
-static uint16_t s_sum[2] = {0, 0};
-static uint8_t sw_toggled[2] = {false, false};
+TimerState timersStates[MAX_TIMERS] = { { 0 }, { 0 } };
 
 #if defined(THRTRACE)
 uint8_t s_traceBuf[MAXTRACE];
@@ -2594,7 +2597,7 @@ void evalFunctions()
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-        else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+        else if (!IS_FAI_ENABLED() && (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_VALUE)) {
           tmr10ms_t tmr10ms = get_tmr10ms();
           uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
           if (!lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=500*repeatParam)) {
@@ -2609,7 +2612,7 @@ void evalFunctions()
             }
           }
         }
-        else if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC) {
+        else if (!IS_FAI_ENABLED() && (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC)) {
           if (!IS_PLAYING(i+1)) {
             playCustomFunctionFile(sd, i+1);
           }
@@ -2623,7 +2626,7 @@ void evalFunctions()
           }
         }
 #elif defined(VOICE)
-        else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_BOTH || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+        else if (!IS_FAI_ENABLED() && (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_BOTH || CFN_FUNC(sd) == FUNC_PLAY_VALUE)) {
           tmr10ms_t tmr10ms = get_tmr10ms();
           uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
           if (!lastFunctionTime[i] || (CFN_FUNC(sd)==FUNC_PLAY_BOTH && active!=(bool)(activeFnSwitches&switch_mask)) || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
@@ -2808,7 +2811,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       if (mode==e_perout_mode_normal && pass==0) swOn[i].activeMix = 0;
 #endif
 
-      MixData *md = mixaddress(i);
+      MixData *md = mixAddress(i);
 
       if (md->srcRaw == 0) break;
 
@@ -2977,7 +2980,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           *ptr = dv;
 #if defined(BOLD_FONT)
           if (mode==e_perout_mode_normal) {
-            for (uint8_t m=i-1; m<MAX_MIXERS && mixaddress(m)->destCh==md->destCh; m--)
+            for (uint8_t m=i-1; m<MAX_MIXERS && mixAddress(m)->destCh==md->destCh; m--)
               swOn[m].activeMix = false;
           }
 #endif
@@ -3178,17 +3181,17 @@ void doMixerCalculations()
     uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
     val = channelOutputs[ch];
     
-    int16_t gModelMax = calc100toRESX(g_model.limitData[ch].max)+1024;
-    int16_t gModelMin = calc100toRESX(g_model.limitData[ch].min)-1024;
+    int16_t gModelMax = calc100toRESX(limitAddress(ch)->max)+1024;
+    int16_t gModelMin = calc100toRESX(limitAddress(ch)->min)-1024;
     
-    if (g_model.limitData[ch].revert)
+    if (limitAddress(ch)->revert)
       val = -val + gModelMax;
     else
       val = val - gModelMin;
       
 #if defined(PPM_LIMITS_SYMETRICAL)
-    if (g_model.limitData[ch].symetrical)
-      val -= calc1000toRESX(g_model.limitData[ch].offset);
+    if (limitAddress(ch)->symetrical)
+      val -= calc1000toRESX(limitAddress(ch)->offset);
 #endif
     // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; (*16/16 already cause a overrun; unsigned calculation also not possible, because v may be negative)
     gModelMax -= gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
@@ -3196,10 +3199,10 @@ void doMixerCalculations()
     
     gModelMax >>= (10-2);
     if (gModelMax != 8)
-      val = (val << 3) / (gModelMax); // recaling only needed if Min, Max differs
+      val = (val << 3) / (gModelMax); // rescaling only needed if Min, Max differs
     
     // if (gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
-    // val = val * 10 / (10+(g_model.limitData[ch].max-g_model.limitData[ch].min)/20);
+    // val = val * 10 / (10+(limitAddress(ch)->max-limitAddress(ch)->min)/20);
     if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
   }
   else {
@@ -3223,12 +3226,13 @@ void doMixerCalculations()
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
     int8_t tm = g_model.timers[i].mode;
     uint16_t tv = g_model.timers[i].start;
+    TimerState * timerState = &timersStates[i];
 
     if (tm) {
-      if (s_timerState[i] == TMR_OFF) {
-        s_timerState[i] = TMR_RUNNING;
-        s_cnt[i] = 0;
-        s_sum[i] = 0;
+      if (timerState->state == TMR_OFF) {
+        timerState->state = TMR_RUNNING;
+        timerState->cnt = 0;
+        timerState->sum = 0;
       }
 
       uint8_t atm = (tm >= 0 ? tm : TMR_VAROFS-tm-1);
@@ -3236,20 +3240,20 @@ void doMixerCalculations()
       // value for time described in timer->mode
       // OFFABSTHsTH%THt
       if (atm == TMRMODE_THR_REL) {
-        s_cnt[i]++;
-        s_sum[i]+=val;
+        timerState->cnt++;
+        timerState->sum+=val;
       }
 
       if (atm>=(TMR_VAROFS+MAX_SWITCH)){ // toggeled switch
-        if(!(sw_toggled[i] | s_sum[i] | s_cnt[i] | lastSwPos[i])) { lastSwPos[i] = tm < 0; s_sum[i] = 1; }  // if initializing then init the lastSwPos
+        if(!(timerState->toggled | timerState->sum | timerState->cnt | timerState->lastPos)) { timerState->lastPos = tm < 0; timerState->sum = 1; }  // if initializing then init the lastPos
         uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+MAX_SWITCH);
-        if (swPos && !lastSwPos[i]) sw_toggled[i] = !sw_toggled[i];  // if switch is flipped first time -> change counter state
-        lastSwPos[i] = swPos;
+        if (swPos && !timerState->lastPos) timerState->toggled = !timerState->toggled;  // if switch is flipped first time -> change counter state
+        timerState->lastPos = swPos;
       }
 
-      if ( (s_timerVal_10ms[i] += tick10ms ) >= 100 ) {
-        s_timerVal_10ms[i] -= 100 ;
-        int16_t newTimerVal = s_timerVal[i];
+      if ((timerState->val_10ms += tick10ms) >= 100) {
+        timerState->val_10ms -= 100 ;
+        int16_t newTimerVal = timerState->val;
         if (tv) newTimerVal = tv - newTimerVal;
 
         if (atm==TMRMODE_ABS) {
@@ -3262,17 +3266,17 @@ void doMixerCalculations()
           // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
           // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
 #if defined(ACCURAT_THROTTLE_TIMER)
-          if ((s_sum[i]/s_cnt[i])>=128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
+          if ((timerState->sum/timerState->cnt)>=128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
             newTimerVal++;  // add second used of throttle
-            s_sum[i]-=128*s_cnt[i];
+            timerState->sum-=128*timerState->cnt;
           }
 #else
-          if ((s_sum[i]/s_cnt[i])>=32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
+          if ((timerState->sum/timerState->cnt)>=32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
             newTimerVal++;  // add second used of throttle
-            s_sum[i]-=32*s_cnt[i];
+            timerState->sum-=32*timerState->cnt;
           }
 #endif
-          s_cnt[i]=0;
+          timerState->cnt=0;
         }
         else if (atm==TMRMODE_THR_TRG) {
           if (val || newTimerVal > 0)
@@ -3280,26 +3284,26 @@ void doMixerCalculations()
         }
         else {
           if (atm<(TMR_VAROFS+MAX_SWITCH))
-            sw_toggled[i] = tm>0 ? getSwitch(tm-(TMR_VAROFS-1)) : !getSwitch(-tm); // normal switch
-          if (sw_toggled[i])
+            timerState->toggled = tm>0 ? getSwitch(tm-(TMR_VAROFS-1)) : !getSwitch(-tm); // normal switch
+          if (timerState->toggled)
             newTimerVal++;
         }
 
-        switch(s_timerState[i])
+        switch(timerState->state)
         {
           case TMR_RUNNING:
-            if (tv && newTimerVal>=(int16_t)tv) s_timerState[i]=TMR_BEEPING;
+            if (tv && newTimerVal>=(int16_t)tv) timerState->state = TMR_BEEPING;
             break;
           case TMR_BEEPING:
-            if (newTimerVal >= (int16_t)tv + MAX_ALERT_TIME) s_timerState[i]=TMR_STOPPED;
+            if (newTimerVal >= (int16_t)tv + MAX_ALERT_TIME) timerState->state = TMR_STOPPED;
             break;
         }
 
         if (tv) newTimerVal = tv - newTimerVal; //if counting backwards - display backwards
 
-        if (newTimerVal != s_timerVal[i]) { // beep only if seconds advance
-          s_timerVal[i] = newTimerVal;
-          if (s_timerState[i] == TMR_RUNNING) {
+        if (newTimerVal != timerState->val) { // beep only if seconds advance
+          timerState->val = newTimerVal;
+          if (timerState->state == TMR_RUNNING) {
             if (g_model.timers[i].countdownBeep && g_model.timers[i].start) { // beep when 30, 15, 10, 5,4,3,2,1 seconds remaining
               if (newTimerVal==30) AUDIO_TIMER_30(); // beep three times
               if (newTimerVal==20) AUDIO_TIMER_20(); // beep two times
@@ -3310,7 +3314,7 @@ void doMixerCalculations()
               AUDIO_TIMER_MINUTE(newTimerVal);
             }
           }
-          else if (s_timerState[0] == TMR_BEEPING) {
+          else if (timerState->state == TMR_BEEPING) {
             AUDIO_WARNING1();
           }
         }
@@ -3330,7 +3334,7 @@ void doMixerCalculations()
   s_cnt_1s++;
   s_sum_1s+=val;
   
-  // @@@ open.20.fsguruh: moved code here; at least val variable conflicts with caculations above, safer here?
+  // @@@ open.20.fsguruh: moved code here; at least val variable conflicts with calculations above, safer here?
   // even reduced code size about 8 bytes, why ever?
   if ((tmr10ms_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
     s_time_tot += 100;
@@ -3338,7 +3342,6 @@ void doMixerCalculations()
 
     struct t_inactivity *ptrInactivity = &inactivity;
     FORCE_INDIRECT(ptrInactivity) ;
-
     ptrInactivity->counter++;
     if ((((uint8_t)ptrInactivity->counter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && ptrInactivity->counter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
       AUDIO_INACTIVITY();
@@ -3381,6 +3384,30 @@ void doMixerCalculations()
 
     s_cnt_1s = 0;
     s_sum_1s = 0;
+
+    for (uint8_t i=0; i<NUM_CSW; i++) {
+      CustomSwData * cs = cswAddress(i);
+      int8_t *lastValue = (int8_t *)&csLastValue[i];
+      if (cs->func == CS_TIMER) {
+        if (*lastValue == 0) {
+          *lastValue = -cs->v1-1;
+        }
+        else if (*lastValue < 0) {
+          if (++(*lastValue) == 0)
+            *lastValue = cs->v2;
+        }
+        else { // if (*lastValue > 0)
+          *lastValue -= 1;
+        }
+        if (cs->andsw) {
+          int8_t x;
+          x = cs->andsw;
+          if (!getSwitch(x) == 0) {
+            *lastValue = -1;
+          }
+        }
+      }
+    }
   }
 
   if (s_fade_flight_phases) {
@@ -3440,33 +3467,24 @@ static const pm_uint8_t rate[] PROGMEM = { 0, 0, 100, 40, 16, 7, 3, 1 } ;
 
 uint8_t calcStickScroll( uint8_t index )
 {
-        uint8_t direction ;
-        int8_t value ;
+  uint8_t direction;
+  int8_t value;
 
-        if ( ( g_eeGeneral.stickMode & 1 ) == 0 )
-        {
-                index ^= 3 ;
-        }
+  if ( ( g_eeGeneral.stickMode & 1 ) == 0 )
+    index ^= 3;
 
-        value = calibratedStick[index] / 128 ;
-        direction = value > 0 ? 0x80 : 0 ;
-        if ( value < 0 )
-        {
-                value = -value ;                        // (abs)
-        }
-        if ( value > 7 )
-        {
-                value = 7 ;
-        }
-        value = pgm_read_byte(rate+(uint8_t)value) ;
-        if ( value )
-        {
-                StickScrollTimer = STICK_SCROLL_TIMEOUT ;               // Seconds
-        }
-        return value | direction ;
+  value = calibratedStick[index] / 128;
+  direction = value > 0 ? 0x80 : 0;
+  if (value < 0)
+    value = -value;                        // (abs)
+  if (value > 7)
+    value = 7;
+  value = pgm_read_byte(rate+(uint8_t)value);
+  if (value)
+    StickScrollTimer = STICK_SCROLL_TIMEOUT;               // Seconds
+  return value | direction;
 }
 #endif
-
 
 void perMain()
 {
@@ -4033,8 +4051,9 @@ void saveTimers()
 {
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
     if (g_model.timers[i].persistent) {
-      if (g_model.timers[i].value != (uint16_t)s_timerVal[i]) {
-        g_model.timers[i].value = s_timerVal[i];
+      TimerState *timerState = &timersStates[i];
+      if (g_model.timers[i].value != (uint16_t)timerState->val) {
+        g_model.timers[i].value = timerState->val;
         eeDirty(EE_MODEL);
       }
     }

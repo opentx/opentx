@@ -990,7 +990,7 @@ ISR(TIMER1_COMPB_vect) // PXX main interrupt
 ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
 {
 #if defined(DSM2_PPM) && defined(PXX)
-  if (IS_DSM2_PROTOCOL(g_model.protocol)) { // TODO not s_current_protocol?
+  if (IS_DSM2_PROTOCOL(s_current_protocol[0])) {
 #endif
 
 #if defined(DSM2_PPM)

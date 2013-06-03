@@ -63,6 +63,10 @@ PCBREV =
 # Values = STD, FRSKY, JETI, NMEA, ARDUPILOT, MAVLINK, TELEMETREZ
 EXT = STD
 
+# FAI mode
+# Values = YES, NO, CHOICE
+FAI = NO
+
 # Enable heli menu
 # Values = YES, NO
 HELI = NO
@@ -891,6 +895,13 @@ endif
 
 ifeq ($(PPM_UNIT), PERCENT_PREC0)
   CPPDEFS += -DPPM_UNIT_PERCENT_PREC0
+endif
+
+ifeq ($(FAI), YES)
+  CPPDEFS += -DFAI
+endif
+ifeq ($(FAI), CHOICE)
+  CPPDEFS += -DFAI_CHOICE
 endif
 
 ifeq ($(HELI), YES)
