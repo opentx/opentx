@@ -2893,18 +2893,19 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       if (apply_offset_and_curve) {
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase); // open.20.fsguruh
         if (offset) v += calc100toRESX_16Bits(offset);  // @@@ open.20.fsguruh      
-      }
+
 
       //========== TRIMS ===============
-      if (!(mode & e_perout_mode_notrims)) {
-        int8_t mix_trim = md->carryTrim;
-        if (mix_trim < TRIM_ON)
-          mix_trim = -mix_trim - 1;
-        else if (mix_trim == TRIM_ON && k < NUM_STICKS)
-          mix_trim = k;
-        else
-          mix_trim = -1;
-        if (mix_trim >= 0) v += trims[mix_trim];
+        if (!(mode & e_perout_mode_notrims)) {
+          int8_t mix_trim = md->carryTrim;
+          if (mix_trim < TRIM_ON)
+            mix_trim = -mix_trim - 1;
+          else if (mix_trim == TRIM_ON && k < NUM_STICKS)
+            mix_trim = k;
+          else
+            mix_trim = -1;
+          if (mix_trim >= 0) v += trims[mix_trim];
+        }
       }
       
       // saves 12 bytes code if done here and not together with weight; unknown reason

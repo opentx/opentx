@@ -583,7 +583,6 @@ TEST(Mixer, SlowAndDelayOnReplace3POSSource)
   g_model.mixData[0].srcRaw = MIXSRC_3POS;
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].delayUp = 10;
-  g_model.mixData[0].delayUp = 10;
   g_model.mixData[0].speedUp = 10;
   g_model.mixData[0].speedDown = 10;
 
@@ -599,6 +598,26 @@ TEST(Mixer, SlowAndDelayOnReplace3POSSource)
   simuSetSwitch(3, 1);
   CHECK_DELAY(0, 500);
   CHECK_SLOW_MOVEMENT(0, +1, 250);
+}
+
+TEST(Mixer, NoTrimOnInactiveMix)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_Thr;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].swtch = SWSRC_THR;
+  g_model.mixData[0].speedUp = 10;
+  g_model.mixData[0].speedDown = 10;
+  setTrimValue(0, 2, 256);
+
+  simuSetSwitch(0, 1);
+  CHECK_SLOW_MOVEMENT(0, 1, 100);
+
+  simuSetSwitch(0, 0);
+  CHECK_SLOW_MOVEMENT(0, -1, 100);
 }
 
 TEST(Curves, LinearIntpol)
