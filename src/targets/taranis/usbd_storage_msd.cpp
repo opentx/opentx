@@ -417,7 +417,7 @@ const FATDirEntry_t g_DIRroot[16] =
         0xA302,
         0x3D55,
         0x0002,
-        0x00010000
+        EESIZE
     },
     {
         { '\x00', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
