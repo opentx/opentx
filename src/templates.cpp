@@ -98,7 +98,7 @@ void md_SetWeight(MixData* md, int8_t weight)
 void clearMixes()
 {
   memset(g_model.mixData, 0, sizeof(g_model.mixData)); // clear all mixes
-  STORE_MODELVARS;
+  eeDirty(EE_MODEL);
 }
 
 void clearCurves()
@@ -245,5 +245,5 @@ void applyTemplate(uint8_t idx)
 
     }
 
-    STORE_MODELVARS;
+    eeDirty(EE_MODEL);
 }

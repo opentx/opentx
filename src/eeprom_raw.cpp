@@ -470,8 +470,8 @@ void eeReadAll()
     for (uint32_t i=0; i<MAX_MODELS; i++)
       eeDeleteModel(i);
 
-    STORE_GENERALVARS;
-    STORE_MODELVARS;
+    eeDirty(EE_GENERAL);
+    eeDirty(EE_MODEL);
   }
   else {
     eeLoadModelHeaders() ;

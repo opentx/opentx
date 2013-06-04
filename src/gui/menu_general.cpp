@@ -194,6 +194,13 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
+#if defined(FAI_CHOICE)
+  if (s_warning_result) {
+    g_eeGeneral.fai = true;
+    eeDirty(EE_GENERAL);
+  }
+#endif
+
   MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) 0, IF_AUDIO(0) IF_VOICE(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) IF_PCBSKY9X(0) IF_9X(0) LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
@@ -485,7 +492,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
         uint8_t b = 1-g_eeGeneral.splashMode;
-        g_eeGeneral.splashMode = 1 - onoffMenuItem( b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event ) ;
+        g_eeGeneral.splashMode = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event);
         break;
       }
 #endif
@@ -528,7 +535,13 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(FAI_CHOICE)
       case ITEM_SETUP_FAI:
-        g_eeGeneral.fai = onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, PSTR("FAI Mode"), attr, event ) ;
+        onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, PSTR("FAI Mode"), attr, event);
+        if (checkIncDec_Ret) {
+          if (g_eeGeneral.fai)
+            POPUP_WARNING(PSTR("FAI\001mode blocked!"));
+          else
+            POPUP_CONFIRMATION(PSTR("FAI mode?"));
+        }
         break;
 #endif
 
@@ -1158,7 +1171,7 @@ void menuCommonCalib(uint8_t event)
 
     case 3:
       g_eeGeneral.chkSum = evalChkSum();
-      STORE_GENERALVARS;
+      eeDirty(EE_GENERAL);
       reusableBuffer.calib.state = 4;
       break;
 
