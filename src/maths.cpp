@@ -109,6 +109,22 @@ void varioWakeup()
     int16_t verticalSpeed = frskyData.hub.varioSpeed;
     sei();
     
+#if defined(PCBSTD)
+    int16_t varioCenterMax = (int16_t)g_model.frsky.varioCenterMax * 10 + 50;
+    if (verticalSpeed >= varioCenterMax) {
+      verticalSpeed = verticalSpeed - varioCenterMax;
+      int16_t varioMax = (10+(int16_t)g_model.frsky.varioMax) * 100;
+      if (verticalSpeed > varioMax) verticalSpeed = varioMax;
+      verticalSpeed = (verticalSpeed * 10) / ((varioMax-varioCenterMax) / 100);
+
+      if ((int16_t)(s_varioTmr-tmr10ms) < 0) {
+        uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
+        uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 8;
+        s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
+        AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
+      }
+    }
+#else
     int16_t varioCenterMax = (int16_t)g_model.frsky.varioCenterMax * 10 + 50;
     if (verticalSpeed >= varioCenterMax) {
       verticalSpeed = verticalSpeed - varioCenterMax;
@@ -130,7 +146,6 @@ void varioWakeup()
     }
 
     if (verticalSpeed < 0 || (int16_t)(s_varioTmr-tmr10ms) < 0) {
-#if defined(CPUARM)
      uint8_t SoundVarioBeepTime;
      uint8_t SoundVarioBeepFreq;
       if (verticalSpeed > 0) {
@@ -142,13 +157,9 @@ void varioWakeup()
         SoundVarioBeepFreq = (verticalSpeed * 3 + 8000) >> 7;
       }
       s_varioTmr = tmr10ms + (SoundVarioBeepTime/2);
-#else
-      uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
-      uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 8;
-      s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
-#endif
       AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
     }
+#endif
 
 #else // defined(AUDIO)
 

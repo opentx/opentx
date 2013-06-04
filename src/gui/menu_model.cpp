@@ -4460,7 +4460,7 @@ enum menuModelTelemetryItems {
  #define SCREEN_TYPE_ROWS (uint8_t)-1
 #endif
 
-#if defined(TOTO)
+#if defined(PCBSTD)
   #define VARIO_RANGE_ROWS 1
 #else
   #define VARIO_RANGE_ROWS 3
@@ -4652,7 +4652,7 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_VARIO_RANGE:
         lcd_putsLeft(y, STR_LIMIT);
-#if defined(TOTO)
+#if defined(PCBSTD)
         lcd_outdezAtt(TELEM_COL2, y, 5+g_model.frsky.varioCenterMax, (m_posHorz==0 ? attr : 0)|PREC1|LEFT);
         lcd_outdezAtt(TELEM_COL2+8*FW, y, 10+g_model.frsky.varioMax, (m_posHorz==1 ? attr : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {

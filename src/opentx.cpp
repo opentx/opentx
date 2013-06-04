@@ -918,6 +918,7 @@ uint8_t  cswStates[NUM_CSW];
 #endif
 
 int16_t csLastValue[NUM_CSW];
+#define CS_LAST_VALUE_INIT -32768
 
 bool __getSwitch(int8_t swtch)
 {
@@ -947,6 +948,7 @@ bool __getSwitch(int8_t swtch)
       CustomSwData * cs = cswAddress(cs_idx);
       uint8_t s = cs->andsw;
       if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
+        csLastValue[cs_idx] = CS_LAST_VALUE_INIT;
         result = false;
       }
       else if ((s=cswFamily(cs->func)) == CS_VBOOL) {
@@ -1051,7 +1053,7 @@ bool __getSwitch(int8_t swtch)
               break;
             default:
             {
-              if (csLastValue[cs_idx] == -32668)
+              if (csLastValue[cs_idx] == CS_LAST_VALUE_INIT)
                 csLastValue[cs_idx] = x;
               int16_t diff = x - csLastValue[cs_idx];
               if (cs->func == CS_DIFFEGREATER)
@@ -2082,7 +2084,7 @@ void resetAll()
   resetTelemetry();
 #endif
   for (uint8_t i=0; i<NUM_CSW; i++)
-    csLastValue[i] = -32768;
+    csLastValue[i] = CS_LAST_VALUE_INIT;
 
 #if defined(THRTRACE)
   s_traceCnt = 0;
@@ -3399,13 +3401,6 @@ void doMixerCalculations()
         }
         else { // if (*lastValue > 0)
           *lastValue -= 1;
-        }
-        if (cs->andsw) {
-          int8_t x;
-          x = cs->andsw;
-          if (!getSwitch(x) == 0) {
-            *lastValue = -1;
-          }
         }
       }
     }
