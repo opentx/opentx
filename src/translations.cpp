@@ -499,7 +499,7 @@ const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
 #endif
 
 const pm_uchar font_5x7[] PROGMEM = {
-#include "bitmaps/font.lbm"
+#include "bitmaps/font_05x07.lbm"
 #if defined(TRANSLATIONS_DE)
 #include "translations/font_de_05x07.lbm"
 #elif defined(TRANSLATIONS_CZ)
@@ -518,7 +518,7 @@ const pm_uchar font_5x7[] PROGMEM = {
 };
 
 const pm_uchar font_10x14[] PROGMEM = {
-#include "bitmaps/font_dblsize.lbm"
+#include "bitmaps/font_10x14.lbm"
 #if defined(TRANSLATIONS_DE)
 #include "translations/font_de_10x14.lbm"
 #elif defined(TRANSLATIONS_CZ)

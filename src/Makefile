@@ -1030,7 +1030,7 @@ else
   build: stamp_header lbm allsrc.cpp elf remallsrc bin lss
 endif
 
-lbm: bitmaps/font.lbm bitmaps/sticks.lbm
+lbm: bitmaps/font_05x07.lbm bitmaps/sticks.lbm
   
 elf: $(TARGET).elf
 bin: $(TARGET).bin
@@ -1085,26 +1085,7 @@ taranis-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
 
-bitmaps/font_05x07.lbm: 
-bitmaps/font_03x05.xbm 
-bitmaps/font_04x06.xbm 
-bitmaps/font_05x07.xbm 
-bitmaps/font_08x10.xbm 
-bitmaps/font_10x14.xbm 
-bitmaps/font_04x06_extra.xbm 
-bitmaps/font_05x07_extra.xbm 
-bitmaps/font_10x14_extra.xbm 
-translations/font_se_05x07.xbm 
-translations/font_de_05x07.xbm 
-translations/font_it_05x07.xbm 
-translations/font_cz_05x07.xbm 
-translations/font_fr_05x07.xbm 
-translations/font_es_05x07.xbm 
-translations/font_se_10x14.xbm 
-translations/font_de_10x14.xbm 
-translations/font_it_10x14.xbm 
-translations/font_fr_10x14.xbm 
-translations/font_es_10x14.xbm
+bitmaps/font_05x07.lbm: bitmaps/font_03x05.xbm bitmaps/font_04x06.xbm bitmaps/font_05x07.xbm bitmaps/font_08x10.xbm bitmaps/font_10x14.xbm bitmaps/font_04x06_extra.xbm bitmaps/font_05x07_extra.xbm bitmaps/font_10x14_extra.xbm translations/font_se_05x07.xbm translations/font_de_05x07.xbm translations/font_it_05x07.xbm translations/font_cz_05x07.xbm translations/font_fr_05x07.xbm translations/font_es_05x07.xbm translations/font_se_10x14.xbm translations/font_de_10x14.xbm translations/font_it_10x14.xbm translations/font_fr_10x14.xbm translations/font_es_10x14.xbm
 	@echo
 	@echo "Convert fonts from xbm to lbm:"
 	$(IMG2LBM) bitmaps/font_03x05.xbm bitmaps/font_03x05.lbm 3x5
