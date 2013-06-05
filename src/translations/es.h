@@ -596,7 +596,7 @@
 #define TR_SD_TYPE             "Tipo:"
 #define TR_SD_SPEED            "Velocidad:"
 #define TR_SD_SECTORS          "Sectores:"
-#define TR_SD_SIZE             "Tamaño:"
+#define TR_SD_SIZE             "Tama\201o:"
 #define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_GLOBAL_VAR          "Global Variable"
@@ -676,10 +676,10 @@
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
-#define TR_ABOUT_MARTIN_2      "Diseño grafico"
+#define TR_ABOUT_MARTIN_2      "Dise\201o grafico"
 
 #define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "Productor diseño de hardware"
+#define TR_ABOUT_HARDWARE_2    "Productor dise\201o de hardware"
 
 #define TR_ABOUT_PARENTS_1     "Padres del proyecto"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
