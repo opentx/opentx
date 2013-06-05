@@ -500,59 +500,95 @@ const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
 
 const pm_uchar font_5x7[] PROGMEM = {
 #include "bitmaps/font.lbm"
-#if defined(TRANSLATIONS_SE)
-#include "translations/font_se.lbm"
-#elif defined(TRANSLATIONS_DE)
-#include "translations/font_de.lbm"
-#elif defined(TRANSLATIONS_IT)
-#include "translations/font_it.lbm"
+#if defined(TRANSLATIONS_DE)
+#include "translations/font_de_05x07.lbm"
 #elif defined(TRANSLATIONS_CZ)
-#include "translations/font_cz.lbm"
-#elif defined(TRANSLATIONS_FR)
-#include "translations/font_fr.lbm"
+#include "translations/font_cz_05x07.lbm"
 #elif defined(TRANSLATIONS_ES)
-#include "translations/font_es.lbm"
+#include "translations/font_es_05x07.lbm"
+#elif defined(TRANSLATIONS_FR)
+#include "translations/font_fr_05x07.lbm"
+#elif defined(TRANSLATIONS_IT)
+#include "translations/font_it_05x07.lbm"
+#elif defined(TRANSLATIONS_PT)
+#include "translations/font_pt_05x07.lbm"
+#elif defined(TRANSLATIONS_SE)
+#include "translations/font_se_05x07.lbm"
 #endif
 };
 
 const pm_uchar font_10x14[] PROGMEM = {
 #include "bitmaps/font_dblsize.lbm"
-#if defined(TRANSLATIONS_SE)
-#include "translations/font_dblsize_se.lbm"
-#elif defined(TRANSLATIONS_DE)
-#include "translations/font_dblsize_de.lbm"
-#elif defined(TRANSLATIONS_IT)
-#include "translations/font_dblsize_it.lbm"
-#elif defined(TRANSLATIONS_FR)
-#include "translations/font_dblsize_fr.lbm"
+#if defined(TRANSLATIONS_DE)
+#include "translations/font_de_10x14.lbm"
+#elif defined(TRANSLATIONS_CZ)
+#include "translations/font_cz_10x14.lbm"
 #elif defined(TRANSLATIONS_ES)
-#include "translations/font_dblsize_es.lbm"
+#include "translations/font_es_10x14.lbm"
+#elif defined(TRANSLATIONS_FR)
+#include "translations/font_fr_10x14.lbm"
+#elif defined(TRANSLATIONS_IT)
+#include "translations/font_it_10x14.lbm"
+#elif defined(TRANSLATIONS_PT)
+#include "translations/font_pt_10x14.lbm"
+#elif defined(TRANSLATIONS_SE)
+#include "translations/font_se_10x14.lbm"
 #endif
 };
 
 #if defined(CPUARM)
 const pm_uchar font_3x5[] PROGMEM = {
-#include "bitmaps/font_tiny.lbm"
+#include "bitmaps/font_03x05.lbm"
 };
 
 const pm_uchar font_4x6[] PROGMEM = {
-#include "bitmaps/font_small.lbm"
+#include "bitmaps/font_04x06.lbm"
+#if defined(TRANSLATIONS_DE)
+#include "translations/font_de_04x06.lbm"
+#elif defined(TRANSLATIONS_CZ)
+#include "translations/font_cz_04x06.lbm"
+#elif defined(TRANSLATIONS_ES)
+#include "translations/font_es_04x06.lbm"
+#elif defined(TRANSLATIONS_FR)
+#include "translations/font_fr_04x06.lbm"
+#elif defined(TRANSLATIONS_IT)
+#include "translations/font_it_04x06.lbm"
+#elif defined(TRANSLATIONS_PT)
+#include "translations/font_pt_04x06.lbm"
+#elif defined(TRANSLATIONS_SE)
+#include "translations/font_se_04x06.lbm"
+#endif
 };
 
 const pm_uchar font_8x10[] PROGMEM = {
-#include "bitmaps/font_midsize.lbm"
-};
-
-const pm_uchar font_5x7_extra[] PROGMEM = {
-#include "bitmaps/font_extra.lbm"
-};
-
-const pm_uchar font_10x14_extra[] PROGMEM = {
-#include "bitmaps/font_dblsize_extra.lbm"
+#include "bitmaps/font_08x10.lbm"
+#if defined(TRANSLATIONS_DE)
+#include "translations/font_de_08x10.lbm"
+#elif defined(TRANSLATIONS_CZ)
+#include "translations/font_cz_08x10.lbm"
+#elif defined(TRANSLATIONS_ES)
+#include "translations/font_es_08x10.lbm"
+#elif defined(TRANSLATIONS_FR)
+#include "translations/font_fr_08x10.lbm"
+#elif defined(TRANSLATIONS_IT)
+#include "translations/font_it_08x10.lbm"
+#elif defined(TRANSLATIONS_PT)
+#include "translations/font_pt_08x10.lbm"
+#elif defined(TRANSLATIONS_SE)
+#include "translations/font_se_08x10.lbm"
+#endif
 };
 
 const pm_uchar font_4x6_extra[] PROGMEM = {
-#include "bitmaps/font_small_extra.lbm"
+#include "bitmaps/font_04x06_extra.lbm"
+};
+
+const pm_uchar font_5x7_extra[] PROGMEM = {
+#include "bitmaps/font_05x07_extra.lbm"
+};
+
+const pm_uchar font_10x14_extra[] PROGMEM = {
+#include "bitmaps/font_10x14_extra.lbm"
 };
 
 #endif

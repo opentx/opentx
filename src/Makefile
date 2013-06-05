@@ -1089,25 +1089,42 @@ taranis-stamp:
 bitmaps/font.lbm: bitmaps/font.xbm bitmaps/font_extra.xbm bitmaps/font_tiny.xbm bitmaps/font_small.xbm bitmaps/font_midsize.xbm bitmaps/font_dblsize.xbm bitmaps/font_dblsize_extra.xbm bitmaps/font_small_extra.xbm translations/font_se.xbm translations/font_de.xbm translations/font_it.xbm translations/font_cz.xbm translations/font_fr.xbm translations/font_es.xbm translations/font_dblsize_se.xbm translations/font_dblsize_de.xbm translations/font_dblsize_it.xbm translations/font_dblsize_fr.xbm translations/font_dblsize_es.xbm
 	@echo
 	@echo "Convert fonts from xbm to lbm:"
-	$(IMG2LBM) bitmaps/font.xbm bitmaps/font.lbm 5x7
-	$(IMG2LBM) bitmaps/font_extra.xbm bitmaps/font_extra.lbm 5x7
-	$(IMG2LBM) bitmaps/font_tiny.xbm bitmaps/font_tiny.lbm 3x5
-	$(IMG2LBM) bitmaps/font_small.xbm bitmaps/font_small.lbm 4x6
-	$(IMG2LBM) bitmaps/font_midsize.xbm bitmaps/font_midsize.lbm 8x10
-	$(IMG2LBM) bitmaps/font_dblsize.xbm bitmaps/font_dblsize.lbm 10x14
-	$(IMG2LBM) bitmaps/font_dblsize_extra.xbm bitmaps/font_dblsize_extra.lbm 10x14
-	$(IMG2LBM) bitmaps/font_small_extra.xbm bitmaps/font_small_extra.lbm 4x6
-	$(IMG2LBM) translations/font_se.xbm translations/font_se.lbm 5x7
-	$(IMG2LBM) translations/font_de.xbm translations/font_de.lbm 5x7
-	$(IMG2LBM) translations/font_it.xbm translations/font_it.lbm 5x7
-	$(IMG2LBM) translations/font_cz.xbm translations/font_cz.lbm 5x7
-	$(IMG2LBM) translations/font_fr.xbm translations/font_fr.lbm 5x7
-	$(IMG2LBM) translations/font_es.xbm translations/font_es.lbm 5x7
-	$(IMG2LBM) translations/font_dblsize_se.xbm translations/font_dblsize_se.lbm 10x14
-	$(IMG2LBM) translations/font_dblsize_de.xbm translations/font_dblsize_de.lbm 10x14
-	$(IMG2LBM) translations/font_dblsize_it.xbm translations/font_dblsize_it.lbm 10x14
-	$(IMG2LBM) translations/font_dblsize_fr.xbm translations/font_dblsize_fr.lbm 10x14
-	$(IMG2LBM) translations/font_dblsize_es.xbm translations/font_dblsize_es.lbm 10x14
+	$(IMG2LBM) bitmaps/font_03x05.xbm bitmaps/font_03x05.lbm 3x5
+	$(IMG2LBM) bitmaps/font_04x06.xbm bitmaps/font_04x06.lbm 4x6
+	$(IMG2LBM) bitmaps/font_05x07.xbm bitmaps/font_05x07.lbm 5x7
+	$(IMG2LBM) bitmaps/font_08x10.xbm bitmaps/font_08x10.lbm 8x10
+	$(IMG2LBM) bitmaps/font_10x14.xbm bitmaps/font_10x14.lbm 10x14
+	$(IMG2LBM) bitmaps/font_04x06_extra.xbm bitmaps/font_04x06_extra.lbm 4x6
+	$(IMG2LBM) bitmaps/font_05x07_extra.xbm bitmaps/font_05x07_extra.lbm 5x7
+	$(IMG2LBM) bitmaps/font_10x14_extra.xbm bitmaps/font_10x14_extra.lbm 10x14
+	$(IMG2LBM) translations/font_cz_04x06.xbm translations/font_cz_04x06.lbm 4x6
+	$(IMG2LBM) translations/font_cz_05x07.xbm translations/font_cz_05x07.lbm 5x7
+	$(IMG2LBM) translations/font_cz_08x10.xbm translations/font_cz_08x10.lbm 8x10
+	$(IMG2LBM) translations/font_cz_10x14.xbm translations/font_cz_10x14.lbm 10x14
+	$(IMG2LBM) translations/font_de_04x06.xbm translations/font_de_04x06.lbm 4x6
+	$(IMG2LBM) translations/font_de_05x07.xbm translations/font_de_05x07.lbm 5x7
+	$(IMG2LBM) translations/font_de_08x10.xbm translations/font_de_08x10.lbm 8x10
+	$(IMG2LBM) translations/font_de_10x14.xbm translations/font_de_10x14.lbm 10x14
+	$(IMG2LBM) translations/font_es_04x06.xbm translations/font_es_04x06.lbm 4x6
+	$(IMG2LBM) translations/font_es_05x07.xbm translations/font_es_05x07.lbm 5x7
+	$(IMG2LBM) translations/font_es_08x10.xbm translations/font_es_08x10.lbm 8x10
+	$(IMG2LBM) translations/font_es_10x14.xbm translations/font_es_10x14.lbm 10x14
+	$(IMG2LBM) translations/font_fr_04x06.xbm translations/font_fr_04x06.lbm 4x6
+	$(IMG2LBM) translations/font_fr_05x07.xbm translations/font_fr_05x07.lbm 5x7
+	$(IMG2LBM) translations/font_fr_08x10.xbm translations/font_fr_08x10.lbm 8x10
+	$(IMG2LBM) translations/font_fr_10x14.xbm translations/font_fr_10x14.lbm 10x14
+	$(IMG2LBM) translations/font_it_04x06.xbm translations/font_it_04x06.lbm 4x6
+	$(IMG2LBM) translations/font_it_05x07.xbm translations/font_it_05x07.lbm 5x7
+	$(IMG2LBM) translations/font_it_08x10.xbm translations/font_it_08x10.lbm 8x10
+	$(IMG2LBM) translations/font_it_10x14.xbm translations/font_it_10x14.lbm 10x14
+	$(IMG2LBM) translations/font_pt_04x06.xbm translations/font_pt_04x06.lbm 4x6
+	$(IMG2LBM) translations/font_pt_05x07.xbm translations/font_pt_05x07.lbm 5x7
+	$(IMG2LBM) translations/font_pt_08x10.xbm translations/font_pt_08x10.lbm 8x10
+	$(IMG2LBM) translations/font_pt_10x14.xbm translations/font_pt_10x14.lbm 10x14
+	$(IMG2LBM) translations/font_se_04x06.xbm translations/font_se_04x06.lbm 4x6
+	$(IMG2LBM) translations/font_se_05x07.xbm translations/font_se_05x07.lbm 5x7
+	$(IMG2LBM) translations/font_se_08x10.xbm translations/font_se_08x10.lbm 8x10
+	$(IMG2LBM) translations/font_se_10x14.xbm translations/font_se_10x14.lbm 10x14
 
 bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_taranis.png bitmaps/logo_taranis.bmp bitmaps/icons.png bitmaps/asterisk.xbm bitmaps/about.png bitmaps/asterisk_4bits.png
 	@echo
