@@ -285,7 +285,7 @@
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS        "\005"
-#define TR_VKEYS         TR(" Men\202"" EXIT""  DN ""   UP""   SX""   DX", " Menu"" Exit""Enter"" Page"" Plus""Minus")
+#define TR_VKEYS         TR(" Men\201"" EXIT""  DN ""   UP""   SX""   DX", " Menu"" Exit""Enter"" Page"" Plus""Minus")
 
 #define LEN_VRENCODERS       "\003"
 #define TR_VRENCODERS        "REa""REb"
@@ -355,7 +355,7 @@
 #if defined(PCBTARANIS)
   #define TR_ENTER             "[ENTER]"
 #else
-  #define TR_ENTER             "[Men\202]"
+  #define TR_ENTER             "[Men\201]"
 #endif
 
 #define TR_POPUPS              TR_ENTER"\004[EXIT]"
@@ -414,10 +414,10 @@
 #define TR_MIXWARNING          "Avviso"
 #define TR_OFF                 "OFF"
 #define TR_MULTPX              "MultPx"
-#define TR_DELAYDOWN           "Post. Gi\202 "
-#define TR_DELAYUP             "Post. S\202"
-#define TR_SLOWDOWN            "Rall. Gi\202 "
-#define TR_SLOWUP              "Rall. S\202"
+#define TR_DELAYDOWN           "Post. Gi\201 "
+#define TR_DELAYUP             "Post. S\201"
+#define TR_SLOWDOWN            "Rall. Gi\201 "
+#define TR_SLOWUP              "Rall. S\201"
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "CV"
 #define TR_GV                  "GV"
@@ -531,7 +531,7 @@
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
 #define TR_RXNUM               "RxNum"
-#define TR_SYNCMENU            "Sinc.[Men\202]"
+#define TR_SYNCMENU            "Sinc.[Men\201]"
 #define TR_LIMIT               "Limiti"
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitud."
@@ -649,11 +649,11 @@
 //Taranis About screen
 #define TR_ABOUTUS             "Info su"
 
-#define TR_ABOUT_OPENTX_1      "OpenTX \201 open source, non"
+#define TR_ABOUT_OPENTX_1      "OpenTX e' open source, non"
 #define TR_ABOUT_OPENTX_2      "commerciale, fornito senza"
 #define TR_ABOUT_OPENTX_3      "garanzie. E' stato sviluppato"
 #define TR_ABOUT_OPENTX_4      "gratuitamente. Il supporto"
-#define TR_ABOUT_OPENTX_5      "mediante donazioni \201 gradito!"
+#define TR_ABOUT_OPENTX_5      "mediante donazioni e' gradito!"
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "Autore principale OpenTX"
