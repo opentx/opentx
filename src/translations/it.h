@@ -196,11 +196,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC      "Blocco\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Retroillum.\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Retroillum.\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC      "Blocco\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Retroillum.\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Retroillum.\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC      "Blocco\0      ""Trainer \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Reset\0       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Retroillum.\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Retroillum.\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #endif
 
 #define LEN_VFSWRESET      "\006"
@@ -285,7 +285,7 @@
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS        "\005"
-#define TR_VKEYS         TR(" Men\200"" EXIT""  DN ""   UP""   SX""   DX", " Menu"" Exit""Enter"" Page"" Plus""Minus")
+#define TR_VKEYS         TR(" Men\202"" EXIT""  DN ""   UP""   SX""   DX", " Menu"" Exit""Enter"" Page"" Plus""Minus")
 
 #define LEN_VRENCODERS       "\003"
 #define TR_VRENCODERS        "REa""REb"
@@ -341,8 +341,8 @@
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""THs""TH%""THt"
 
-#define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Master""Slave\0"
+#define LEN_VTRAINERMODES      "\007"
+#define TR_VTRAINERMODES       "Maestro""Allievo"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
@@ -355,7 +355,7 @@
 #if defined(PCBTARANIS)
   #define TR_ENTER             "[ENTER]"
 #else
-  #define TR_ENTER             "[Men\200]"
+  #define TR_ENTER             "[Men\202]"
 #endif
 
 #define TR_POPUPS              TR_ENTER"\004[EXIT]"
@@ -414,10 +414,10 @@
 #define TR_MIXWARNING          "Avviso"
 #define TR_OFF                 "OFF"
 #define TR_MULTPX              "MultPx"
-#define TR_DELAYDOWN           "Post. Gi\200 "
-#define TR_DELAYUP             "Post. S\200"
-#define TR_SLOWDOWN            "Rall. Gi\200 "
-#define TR_SLOWUP              "Rall. S\200"
+#define TR_DELAYDOWN           "Post. Gi\202 "
+#define TR_DELAYUP             "Post. S\202"
+#define TR_SLOWDOWN            "Rall. Gi\202 "
+#define TR_SLOWUP              "Rall. S\202"
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "CV"
 #define TR_GV                  "GV"
@@ -531,7 +531,7 @@
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
 #define TR_RXNUM               "RxNum"
-#define TR_SYNCMENU            "Sinc.[Men\200]"
+#define TR_SYNCMENU            "Sinc.[Men\202]"
 #define TR_LIMIT               "Limiti"
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitud."
@@ -558,17 +558,17 @@
 #define TR_THROTTLEWARN        "MOTORE"
 #define TR_ALARMSWARN          "ALLARMI"
 #define TR_SWITCHWARN          "SWITCH"
-#define TR_INVERT_THR          "Invert Thr?"
+#define TR_INVERT_THR          "Inverti Thr?"
 #define TR_SPEAKER_VOLUME      "Volume Audio"
 #define TR_LCD                 "LCD"
-#define TR_BRIGHTNESS          "Luminosita'"
+#define TR_BRIGHTNESS          "Luminosit\200"
 #define TR_CPU_TEMP            "Temp CPU \016>"
 #define TR_CPU_CURRENT         "Corrente\022>"
 #define TR_CPU_MAH             "Consumo"
 #define TR_COPROC              "CoProc."  
 #define TR_COPROC_TEMP         "Temp. MB \016>"
-#define TR_CAPAWARNING         INDENT "Capacita Low"
-#define TR_TEMPWARNING         INDENT "Temp High"
+#define TR_CAPAWARNING         INDENT "Capacit\200 Low"
+#define TR_TEMPWARNING         INDENT "Temp Alta"
 #define TR_FUNC                "Funz"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
@@ -611,7 +611,7 @@
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
 #define TR_COUNTRYCODE         TR("Codice Paese","Standard 2.4Ghz")
 #define TR_VOICELANG           "Lingua Voce"
-#define TR_UNITSSYSTEM         "Unita'"
+#define TR_UNITSSYSTEM         "Unit\200"
 #define TR_EDIT                "Modifica"
 #define TR_INSERT_BEFORE       "Inserisci prima"
 #define TR_INSERT_AFTER        "Inserisci dopo"
@@ -635,7 +635,7 @@
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "Trainer"
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
-#define TR_MODELIDUSED         TR("ID gia' usato","ID Modello gia' usato")
+#define TR_MODELIDUSED         TR("ID gi\200 usato","ID Modello gi\200 usato")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
 #define TR_LOWALARM            INDENT "Allarme Basso"
@@ -649,11 +649,11 @@
 //Taranis About screen
 #define TR_ABOUTUS             "Info su"
 
-#define TR_ABOUT_OPENTX_1      "OpenTX e' open source, non"
+#define TR_ABOUT_OPENTX_1      "OpenTX \201 open source, non"
 #define TR_ABOUT_OPENTX_2      "commerciale, fornito senza"
 #define TR_ABOUT_OPENTX_3      "garanzie. E' stato sviluppato"
 #define TR_ABOUT_OPENTX_4      "gratuitamente. Il supporto"
-#define TR_ABOUT_OPENTX_5      "mediante donazioni è gradito!"
+#define TR_ABOUT_OPENTX_5      "mediante donazioni \201 gradito!"
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "Autore principale OpenTX"
@@ -669,7 +669,7 @@
 #define TR_ABOUT_ROMOLO_3      ""
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
-#define TR_ABOUT_ANDRE_2       "Funzionalita', usabilita',"
+#define TR_ABOUT_ANDRE_2       "Funzionalit\200, usabilit\200,"
 #define TR_ABOUT_ANDRE_3       "debugging, documentazione"
 
 #define TR_ABOUT_ROB_1         "Rob Thomson"
