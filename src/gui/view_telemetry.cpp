@@ -150,9 +150,11 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 void displayVoltageScreenLine(uint8_t y, uint8_t index)
 {
   putsStrIdx(0, y, STR_A, index+1, 0);
-  putsTelemetryChannel(3*FW+6*FW+4, y-FH+1, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
-  lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
-  lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
+  if (TELEMETRY_STREAMING()) {
+    putsTelemetryChannel(3*FW+6*FW+4, y-FH+1, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
+    lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
+    lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
+  }
 }
 
 #if LCD_W >= 212

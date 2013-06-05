@@ -114,7 +114,7 @@ void selectModel(uint8_t sub)
   saveTimers();
   eeCheck(true); // force writing of current model data before this is changed
   g_eeGeneral.currModel = sub;
-  STORE_GENERALVARS;
+  eeDirty(EE_GENERAL);
   eeLoadModel(sub);
 }
 
@@ -453,7 +453,7 @@ void menuModelSelect(uint8_t event)
 
           if (s_copySrcRow != g_eeGeneral.currModel) {
             g_eeGeneral.currModel = s_copySrcRow;
-            STORE_GENERALVARS;
+            eeDirty(EE_GENERAL);
           }
 
           s_copyMode = 0;
@@ -807,7 +807,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
 
       if (c != v) {
         name[cur] = v;
-        STORE_MODELVARS;
+        eeDirty(EE_MODEL);
       }
       lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), INVERS);
     }
@@ -1120,7 +1120,7 @@ void menuModelSetup(uint8_t event)
             case EVT_KEY_BREAK(KEY_RIGHT):
 #endif
               g_model.switchWarningStates ^= 0x01;
-              STORE_MODELVARS;
+              eeDirty(EE_MODEL);
               break;
           }
         }
@@ -1159,7 +1159,7 @@ void menuModelSetup(uint8_t event)
           if((event==EVT_KEY_BREAK(KEY_ENTER)) || p1valdiff) {
             s_editMode = 0;
             g_model.beepANACenter ^= ((BeepANACenter)1<<m_posHorz);
-            STORE_MODELVARS;
+            eeDirty(EE_MODEL);
           }
         }
         break;
@@ -1624,7 +1624,7 @@ FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModes
     if (s_editMode && ((event==EVT_KEY_BREAK(KEY_ENTER) || p1valdiff))) {
       s_editMode = 0;
       value ^= (1<<posHorz);
-      STORE_MODELVARS;
+      eeDirty(EE_MODEL);
     }
   }
 
@@ -2504,7 +2504,7 @@ void deleteExpoMix(uint8_t expo, uint8_t idx)
     memclear(&g_model.mixData[MAX_MIXERS-1], sizeof(MixData));
   }
   resumeMixerCalculations();
-  STORE_MODELVARS;
+  eeDirty(EE_MODEL);
 }
 
 static int8_t s_currCh;
@@ -2528,7 +2528,7 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
     mix->weight = 100;
   }
   resumeMixerCalculations();
-  STORE_MODELVARS;
+  eeDirty(EE_MODEL);
 }
 
 void copyExpoMix(uint8_t expo, uint8_t idx)
@@ -2543,7 +2543,7 @@ void copyExpoMix(uint8_t expo, uint8_t idx)
     memmove(mix+1, mix, (MAX_MIXERS-(idx+1))*sizeof(MixData));
   }
   resumeMixerCalculations();
-  STORE_MODELVARS;
+  eeDirty(EE_MODEL);
 }
 
 void memswap(void *a, void *b, uint8_t size)
@@ -2948,23 +2948,21 @@ static uint8_t s_copySrcCh;
 #define STR_MAX(x) _STR_MAX(x)
 
 #if LCD_W >= 212
-#define EXPO_LINE_WEIGHT_POS 7*FW
-#define EXPO_LINE_EXPO_POS   12*FW
-#define EXPO_LINE_SWITCH_POS 13*FW+4
-#define EXPO_LINE_SIDE_POS   19*FW
-#define EXPO_LINE_SELECT_POS 18
-#elif defined(TRANSLATIONS_CZ)
-#define EXPO_LINE_WEIGHT_POS 7*FW-2
-#define EXPO_LINE_EXPO_POS   10*FW+2
-#define EXPO_LINE_SWITCH_POS 13*FW+5
-#define EXPO_LINE_SIDE_POS   17*FW
-#define EXPO_LINE_SELECT_POS 24
+  #define EXPO_LINE_WEIGHT_POS 7*FW
+  #define EXPO_LINE_EXPO_POS   12*FW
+  #define EXPO_LINE_SWITCH_POS 13*FW+4
+  #define EXPO_LINE_SIDE_POS   19*FW
+  #define EXPO_LINE_SELECT_POS 18
 #else
-#define EXPO_LINE_WEIGHT_POS 6*FW-2
-#define EXPO_LINE_EXPO_POS   9*FW+1
-#define EXPO_LINE_SWITCH_POS 13*FW+4
-#define EXPO_LINE_SIDE_POS   17*FW
-#define EXPO_LINE_SELECT_POS 18
+  #define EXPO_LINE_WEIGHT_POS 7*FW-1
+  #define EXPO_LINE_EXPO_POS   10*FW+5
+  #define EXPO_LINE_SWITCH_POS 11*FW+2
+  #if MAX_PHASES == 6
+    #define EXPO_LINE_SIDE_POS   14*FW+2
+  #else
+    #define EXPO_LINE_SIDE_POS   14*FW+5
+  #endif
+  #define EXPO_LINE_SELECT_POS 24
 #endif
 
 #if defined(NAVIGATION_MENUS)
@@ -3049,7 +3047,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
               swapExpoMix(expo, s_currIdx, s_copyTgtOfs > 0);
               s_copyTgtOfs += (s_copyTgtOfs < 0 ? +1 : -1);
             } while (s_copyTgtOfs != 0);
-            STORE_MODELVARS;
+            eeDirty(EE_MODEL);
           }
           m_posVert = s_copySrcRow;
           s_copyTgtOfs = 0;
@@ -3147,7 +3145,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         else {
           // only swap the mix with its neighbor
           if (!swapExpoMix(expo, s_currIdx, IS_ROTARY_UP(event) || key==KEY_MOVE_UP)) break;
-          STORE_MODELVARS;
+          eeDirty(EE_MODEL);
         }
 
         s_copyTgtOfs = next_ofs;
@@ -3201,22 +3199,14 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             else
               displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, -100, 100);
 
-#if defined(PCBTARANIS)
-            putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
-            if (ed->name[0]) lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
+            putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
+
             if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
-#else
+
 #if defined(CPUARM)
-            if (ed->name[0]) {
-              putsSwitches(11*FW, y, ed->swtch, 0);
-              lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
-            }
-            else
-#endif
-            {
-              putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0); // normal switches
-              if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);//'|' : (stkVal[i] ? '<' : '>'),0);*/
-            }
+            if (ed->name[0]) lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
+#else
+            editFlightModes(LCD_W-MAX_PHASES*FW-MENUS_SCROLLBAR_WIDTH, y, 0, ed->phases, 0);
 #endif
           }
           else {
@@ -3419,7 +3409,7 @@ void menuModelLimits(uint8_t event)
     LimitData *ld = limitAddress(sub);
     ld->revert = !ld->revert;
     s_warning_result = 0;
-    AUDIO_WARNING2();
+    eeDirty(EE_MODEL);
   }
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
@@ -3499,7 +3489,7 @@ void menuModelLimits(uint8_t event)
             ld->offset = (ld->revert) ? -zero : zero;
             resumeMixerCalculations();
             s_editMode = 0;
-            STORE_MODELVARS;
+            eeDirty(EE_MODEL);
           }
           break;
         case ITEM_LIMITS_MIN:
@@ -3920,7 +3910,7 @@ void menuModelCustomSwitches(uint8_t event)
 #else
   uint8_t incdecFlag;
   #define INCDEC_SET_FLAG(f) incdecFlag = (EE_MODEL|(f))
-  #define CHECK_INCDEC_CSPARAM(event, var, min, max) var=checkIncDec(event,var,min,max,incdecFlag)
+  #define CHECK_INCDEC_CSPARAM(event, var, min, max) var = checkIncDec(event, var, min, max, incdecFlag)
 #endif
 
   MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_CustomSwitches, NUM_CSW+1, {0, NAVIGATION_LINE_BY_LINE|CSW_FIELD_LAST/*repeated...*/});
@@ -3968,9 +3958,10 @@ void menuModelCustomSwitches(uint8_t event)
       INCDEC_SET_FLAG(INCDEC_SOURCE);
     }
     else if (cstate == CS_VTIMER) {
-      lcd_outdezAtt(CSW_2ND_COLUMN, y, cs->v1+1, LEFT|attr1);
-      lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2+1, LEFT|attr2);
-      v1_max = 99; v2_max = 99;
+      lcd_outdezAtt(CSW_2ND_COLUMN, y, cswTimerValue(cs->v1), LEFT|PREC1|attr1);
+      lcd_outdezAtt(CSW_3RD_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1|attr2);
+      v1_min = v2_min = -128;
+      v1_max = v2_max = 122;
       INCDEC_SET_FLAG(0);
     }
     else {
@@ -4032,12 +4023,13 @@ void menuModelCustomSwitches(uint8_t event)
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (horz) {
         case CSW_FIELD_FUNCTION:
+        {
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, CS_MAXF);
-          if (cstate != cswFamily(cs->func)) {
-            cs->v1 = 0;
-            cs->v2 = 0;
-          }
+          uint8_t new_cstate = cswFamily(cs->func);
+          if (cstate != new_cstate)
+            cs->v1 = cs->v2 = (new_cstate==CS_VTIMER ? -119/*1.0*/ : 0);
           break;
+        }
         case CSW_FIELD_V1:
           CHECK_INCDEC_CSPARAM(event, cs->v1, v1_min, v1_max);
           break;

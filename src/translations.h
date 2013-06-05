@@ -631,7 +631,7 @@ extern const pm_char STR_CHANNELS_MONITOR[];
   extern const pm_char STR_CRITICALALARM[];
 #endif
 
-#if defined(PCBTARANIS)
+#if !defined(CPUM64)
   extern const pm_char STR_ABOUTUS[];
   extern const pm_char STR_ABOUT_OPENTX_1[];
   extern const pm_char STR_ABOUT_OPENTX_2[];

@@ -992,6 +992,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       att &= ~NO_UNIT;
       putsTime(x, y, val, att, att);
       break;
+#if defined(FRSKY)
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
       channel -= TELEM_MIN_A1-TELEM_A1;
@@ -1021,6 +1022,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);
       break;
     }
+#endif
 
     case TELEM_CELL-1:
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC2);

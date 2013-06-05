@@ -368,6 +368,11 @@ uint8_t cswFamily(uint8_t func)
   return (func<CS_AND ? CS_VOFS : (func<CS_EQUAL ? CS_VBOOL : (func<CS_DIFFEGREATER ? CS_VCOMP : (func<CS_TIMER ? CS_VDIFF : CS_VTIMER))));
 }
 
+int16_t cswTimerValue(int8_t val)
+{
+  return (val < -109 ? 129+val : (val < 7 ? (113+val)*5 : (53+val)*10));
+}
+
 #if defined(CPUM64)
 void memclear(void *ptr, uint8_t size)
 {
@@ -425,7 +430,7 @@ inline void applyDefaultTemplate()
     md->srcRaw = channel_order(i+1);
   }
 
-  STORE_MODELVARS;
+  eeDirty(EE_MODEL);
 }
 #endif
 
@@ -919,7 +924,6 @@ uint8_t  cswStates[NUM_CSW];
 
 int16_t csLastValue[NUM_CSW];
 #define CS_LAST_VALUE_INIT -32768
-
 bool __getSwitch(int8_t swtch)
 {
   bool result;
@@ -968,7 +972,7 @@ bool __getSwitch(int8_t swtch)
         }
       }
       else if (s == CS_VTIMER) {
-        result = int8_t(csLastValue[cs_idx]) >= 0;
+        result = csLastValue[cs_idx] <= 0;
       }
       else {
         getvalue_t x = getValue(cs->v1-1);
@@ -1226,7 +1230,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
 #else
   p->trim[idx] = trim;
 #endif
-  STORE_MODELVARS;
+  eeDirty(EE_MODEL);
 }
 
 uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
@@ -1298,8 +1302,8 @@ uint8_t s_gvar_last = 0;
 #if defined(PCBSTD)
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
 {
-  if (GV_IS_GV_VALUE(x,min,max)) {
-    int8_t idx = GV_INDEX_CALCULATION(x,max);
+  if (GV_IS_GV_VALUE(x, min, max)) {
+    int8_t idx = GV_INDEX_CALCULATION(x, max);
     int8_t mul = 1;
 
     if (idx < 0) {
@@ -2303,12 +2307,14 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       idx -= (MIXSRC_FIRST_TELEM-1+TELEM_A1-1);
         // A1 and A2
       {
-        uint8_t att = 0;
-        int16_t converted_value = applyChannelRatio(idx, val) / 10;
-        if (g_model.frsky.channels[idx].type < UNIT_RAW) {
-          att = PREC1;
+        if (TELEMETRY_STREAMING()) {
+          uint8_t att = 0;
+          int16_t converted_value = applyChannelRatio(idx, val) / 10;
+          if (g_model.frsky.channels[idx].type < UNIT_RAW) {
+            att = PREC1;
+          }
+          PLAY_NUMBER(converted_value, 1+g_model.frsky.channels[idx].type, att);
         }
-        PLAY_NUMBER(converted_value, 1+g_model.frsky.channels[idx].type, att);
         break;
       }
 
@@ -3325,84 +3331,89 @@ void doMixerCalculations()
     }
   } //endfor timer loop (only two)
 
-  static tmr10ms_t s_time_tot;
-  static uint8_t s_cnt_1s;
-  static uint16_t s_sum_1s;
+  static tmr10ms_t s_cnt_100ms;
+  static uint8_t   s_cnt_1s;
+  static uint8_t s_cnt_samples_thr_1s;
+  static uint16_t s_sum_samples_thr_1s;
 #if defined(THRTRACE)
-  static tmr10ms_t s_time_trace;
-  static uint16_t s_cnt_10s;
-  static uint16_t s_sum_10s;
+  static uint8_t  s_cnt_10s;
+  static uint16_t s_cnt_samples_thr_10s;
+  static uint16_t s_sum_samples_thr_10s;
 #endif
 
-  s_cnt_1s++;
-  s_sum_1s+=val;
+  s_cnt_samples_thr_1s++;
+  s_sum_samples_thr_1s+=val;
   
-  // @@@ open.20.fsguruh: moved code here; at least val variable conflicts with calculations above, safer here?
-  // even reduced code size about 8 bytes, why ever?
-  if ((tmr10ms_t)(tmr10ms - s_time_tot) >= 100) { // 1sec
-    s_time_tot += 100;
-    s_timeCumTot += 1;
-
-    struct t_inactivity *ptrInactivity = &inactivity;
-    FORCE_INDIRECT(ptrInactivity) ;
-    ptrInactivity->counter++;
-    if ((((uint8_t)ptrInactivity->counter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && ptrInactivity->counter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
-      AUDIO_INACTIVITY();
-
-#if defined(AUDIO)
-    if (mixWarning & 1) if ((s_timeCumTot&0x03)==0) AUDIO_MIX_WARNING(1);
-    if (mixWarning & 2) if ((s_timeCumTot&0x03)==1) AUDIO_MIX_WARNING(2);
-    if (mixWarning & 4) if ((s_timeCumTot&0x03)==2) AUDIO_MIX_WARNING(3);
-#endif
-
-#if defined(ACCURAT_THROTTLE_TIMER)
-    val = s_sum_1s / s_cnt_1s;
-    s_timeCum16ThrP += (val>>3);  // s_timeCum16ThrP would overrun if we would store throttle value with higher accuracy; therefore stay with 16 steps
-    if (val) s_timeCumThr += 1;
-    s_sum_1s>>=2;  // correct better accuracy now, because trace graph can show this information; in case thrtrace is not active, the compile should remove this
-#else    
-    val = s_sum_1s / s_cnt_1s;
-    s_timeCum16ThrP += (val>>1);  
-    if (val) s_timeCumThr += 1;
-#endif    
-    
-#if defined(THRTRACE)
-    // throttle trace is done every 10 seconds; Tracebuffer is adjusted to screen size.
-    // in case buffer runs out, it wraps around
-    // resolution for y axis is only 32, therefore no higher value makes sense
-    s_cnt_10s += s_cnt_1s;
-    s_sum_10s += s_sum_1s;
-
-    if ((tmr10ms_t)(tmr10ms - s_time_trace) >= 1000) { // 10s
-      s_time_trace += 1000;
-      val = s_sum_10s / s_cnt_10s;
-      s_sum_10s = 0;
-      s_cnt_10s = 0;
-
-      s_traceBuf[s_traceWr++] = val;
-      if (s_traceWr >= MAXTRACE) s_traceWr = 0;
-      if (s_traceCnt >= 0) s_traceCnt++;
-    }
-#endif
-
-    s_cnt_1s = 0;
-    s_sum_1s = 0;
+  if ((tmr10ms_t)(tmr10ms - s_cnt_100ms) >= 10) { // 0.1sec
+    s_cnt_100ms += 10;
+    s_cnt_1s += 1;
 
     for (uint8_t i=0; i<NUM_CSW; i++) {
       CustomSwData * cs = cswAddress(i);
-      int8_t *lastValue = (int8_t *)&csLastValue[i];
       if (cs->func == CS_TIMER) {
-        if (*lastValue == 0) {
-          *lastValue = -cs->v1-1;
+        int16_t *lastValue = &csLastValue[i];
+        if (*lastValue == 0 || *lastValue == CS_LAST_VALUE_INIT) {
+          *lastValue = -cswTimerValue(cs->v1);
         }
         else if (*lastValue < 0) {
           if (++(*lastValue) == 0)
-            *lastValue = cs->v2;
+            *lastValue = cswTimerValue(cs->v2);
         }
         else { // if (*lastValue > 0)
           *lastValue -= 1;
         }
       }
+    }
+  
+    if (s_cnt_1s >= 10) { // 1sec
+      s_cnt_1s -= 10;
+      s_timeCumTot += 1;
+
+      struct t_inactivity *ptrInactivity = &inactivity;
+      FORCE_INDIRECT(ptrInactivity) ;
+      ptrInactivity->counter++;
+      if ((((uint8_t)ptrInactivity->counter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && ptrInactivity->counter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
+        AUDIO_INACTIVITY();
+
+#if defined(AUDIO)
+      if (mixWarning & 1) if ((s_timeCumTot&0x03)==0) AUDIO_MIX_WARNING(1);
+      if (mixWarning & 2) if ((s_timeCumTot&0x03)==1) AUDIO_MIX_WARNING(2);
+      if (mixWarning & 4) if ((s_timeCumTot&0x03)==2) AUDIO_MIX_WARNING(3);
+#endif
+
+#if defined(ACCURAT_THROTTLE_TIMER)
+      val = s_sum_samples_thr_1s / s_cnt_samples_thr_1s;
+      s_timeCum16ThrP += (val>>3);  // s_timeCum16ThrP would overrun if we would store throttle value with higher accuracy; therefore stay with 16 steps
+      if (val) s_timeCumThr += 1;
+      s_sum_samples_thr_1s>>=2;  // correct better accuracy now, because trace graph can show this information; in case thrtrace is not active, the compile should remove this
+#else    
+      val = s_sum_samples_thr_1s / s_cnt_samples_thr_1s;
+      s_timeCum16ThrP += (val>>1);
+      if (val) s_timeCumThr += 1;
+#endif    
+    
+#if defined(THRTRACE)
+      // throttle trace is done every 10 seconds; Tracebuffer is adjusted to screen size.
+      // in case buffer runs out, it wraps around
+      // resolution for y axis is only 32, therefore no higher value makes sense
+      s_cnt_10s += 1;
+      s_cnt_samples_thr_10s += s_cnt_samples_thr_1s;
+      s_sum_samples_thr_10s += s_sum_samples_thr_1s;
+
+      if (s_cnt_10s >= 10) { // 10s
+        s_cnt_1s -= 10;
+        val = s_sum_samples_thr_10s / s_cnt_samples_thr_10s;
+        s_sum_samples_thr_10s = 0;
+        s_cnt_samples_thr_10s = 0;
+
+        s_traceBuf[s_traceWr++] = val;
+        if (s_traceWr >= MAXTRACE) s_traceWr = 0;
+        if (s_traceCnt >= 0) s_traceCnt++;
+      }
+#endif
+
+      s_cnt_samples_thr_1s = 0;
+      s_sum_samples_thr_1s = 0;
     }
   }
 
@@ -3998,7 +4009,7 @@ void instantTrim()
     }
   }
 
-  STORE_MODELVARS;
+  eeDirty(EE_MODEL);
   AUDIO_WARNING2();
 }
 
@@ -4038,7 +4049,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 
   resumeMixerCalculations();
 
-  STORE_MODELVARS;
+  eeDirty(EE_MODEL);
   AUDIO_WARNING2();
 }
 

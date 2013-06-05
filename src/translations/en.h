@@ -646,26 +646,26 @@
 #define TR_LIMITS_HEADERS      { " Name ", " Subtrim ", " Min ", " Max ", " Direction ", " PPM Center ", " Subtrim mode " }
 #define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
 
-//Taranis About screen
-#define TR_ABOUTUS             "ABOUT US"
+// About screen
+#define TR_ABOUTUS             TR(" ABOUT US ", "ABOUT US")
 
-#define TR_ABOUT_OPENTX_1      "OpenTX is open source, non-"
-#define TR_ABOUT_OPENTX_2      "commercial and comes with no"
-#define TR_ABOUT_OPENTX_3      "warranties. It was developed"
-#define TR_ABOUT_OPENTX_4      "for free. Support through"
-#define TR_ABOUT_OPENTX_5      "donations is welcome!"
+#define TR_ABOUT_OPENTX_1      TR("OpenTX\001is\001open\001source,\001non", "OpenTX is open source, non-")
+#define TR_ABOUT_OPENTX_2      TR("commercial,\001wo\001warranties.", "commercial and comes with no")
+#define TR_ABOUT_OPENTX_3      TR("It\001was\001developed\001for\001free.", "warranties. It was developed")
+#define TR_ABOUT_OPENTX_4      TR("Support through donations", "for free. Support through")
+#define TR_ABOUT_OPENTX_5      TR("is welcome!", "donations is welcome!")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "OpenTX main author"
-#define TR_ABOUT_BERTRAND_3    "Companion9x co-developer"
+#define TR_ABOUT_BERTRAND_3    "Companion9x co-author"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
 #define TR_ABOUT_MIKE_2        "Code and drivers guru"
-#define TR_ABOUT_MIKE_3        "Arguably, one of the best"
+#define TR_ABOUT_MIKE_3        TR("Arguably,\001one\001of\001the\001best", "Arguably, one of the best")
 #define TR_ABOUT_MIKE_4        "Inspirational"
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Companion9x main developer"
+#define TR_ABOUT_ROMOLO_2      "Companion9x co-author"
 #define TR_ABOUT_ROMOLO_3      ""
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
@@ -678,12 +678,18 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Graphics designer"
 
-#define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "Hardware designer/producer"
-#define TR_ABOUT_HARDWARE_3    ""
+#if defined(PCBTARANIS)
+  #define TR_ABOUT_HARDWARE_1  "FrSky"
+  #define TR_ABOUT_HARDWARE_2  "Hardware designer/producer"
+  #define TR_ABOUT_HARDWARE_3  ""
+#else
+  #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
+  #define TR_ABOUT_HARDWARE_2  "Sky9x designer/producer"
+  #define TR_ABOUT_HARDWARE_3  ""
+#endif
 
 #define TR_ABOUT_PARENTS_1     "Parent projects"
-#define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
+#define TR_ABOUT_PARENTS_2     TR("Ersky9x (Mike Blandford)", "Ersky9x (Mike Blandford)")
 #define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
 

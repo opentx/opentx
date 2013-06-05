@@ -36,7 +36,7 @@
 
 #include "opentx.h"
 
-#if defined(FRSKY) || defined(CPUARM)
+#if defined(FRSKY)
 uint16_t getChannelRatio(uint8_t channel)
 {
   return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
@@ -44,10 +44,7 @@ uint16_t getChannelRatio(uint8_t channel)
 
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
 {
-  if (TELEMETRY_STREAMING())
-    return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
-  else
-    return 0;
+  return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
 }
 #endif
 

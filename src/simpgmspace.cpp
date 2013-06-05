@@ -308,7 +308,7 @@ void *main_thread(void *)
 
     while (main_thread_running) {
       perMain();
-      sleep(1/*ms*/);
+      sleep(10/*ms*/);
     }
 #ifdef SIMU_EXCEPTIONS
   }

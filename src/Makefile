@@ -333,7 +333,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = protocols/pulses_avr.cpp
-
+  
   ifeq ($(PCB), 9XR128)
     CPPDEFS += -DPCB9XR128
   else
@@ -537,7 +537,7 @@ ifeq ($(PCB), SKY9X)
   SRC += targets/sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp protocols/dsm2_arm.cpp
-  CPPSRC += audio_arm.cpp haptic.cpp
+  CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp
   CPPSRC += targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/coproc_driver.cpp targets/sky9x/rotenc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
@@ -620,7 +620,6 @@ ifeq ($(PCB), TARANIS)
   SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
   SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
   SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
-  # SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/src/usbd_hid_core.c
   EXTRABOARDSRC += targets/taranis/usbd_usr.cpp targets/taranis/usbd_storage_msd.cpp
   
   ifeq ($(SDCARD), YES)
@@ -1126,7 +1125,7 @@ bitmaps/font.lbm: bitmaps/font.xbm bitmaps/font_extra.xbm bitmaps/font_tiny.xbm 
 	$(IMG2LBM) translations/font_se_08x10.xbm translations/font_se_08x10.lbm 8x10
 	$(IMG2LBM) translations/font_se_10x14.xbm translations/font_se_10x14.lbm 10x14
 
-bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_taranis.png bitmaps/logo_taranis.bmp bitmaps/icons.png bitmaps/asterisk.xbm bitmaps/about.png bitmaps/asterisk_4bits.png
+bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_taranis.png bitmaps/logo_taranis.bmp bitmaps/icons.png bitmaps/asterisk.xbm bitmaps/about_9x.png bitmaps/about_taranis.png bitmaps/asterisk_4bits.png
 	@echo
 	@echo "Convert bitmaps from xbm to lbm:"
 	$(IMG2LBM) bitmaps/sticks_4x1.xbm bitmaps/sticks.lbm img 4
@@ -1135,7 +1134,8 @@ bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_
 	$(IMG2LBM) bitmaps/logo_taranis.bmp bitmaps/logo_taranis.lbm bmp
 	$(IMG2LBM) bitmaps/icons.png bitmaps/icons.lbm bmp
 	$(IMG2LBM) bitmaps/asterisk.xbm bitmaps/asterisk.lbm img
-	$(IMG2LBM) bitmaps/about.png bitmaps/about.lbm bmp
+	$(IMG2LBM) bitmaps/about_taranis.png bitmaps/about_taranis.lbm bmp
+	$(IMG2LBM) bitmaps/about_9x.png bitmaps/about_9x.lbm img
 	$(IMG2LBM) bitmaps/asterisk_4bits.png bitmaps/asterisk_4bits.lbm bmp
 	 
 # Eye candy.

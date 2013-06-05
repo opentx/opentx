@@ -662,40 +662,42 @@ void telemetryInterrupt10ms()
   frskyData.hub.cellsSum = voltage;
 #endif
 
-  uint8_t channel = g_model.frsky.voltsSource;
-  if (channel <= 1) {
-    voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
-  }
+  if (TELEMETRY_STREAMING()) {
+    uint8_t channel = g_model.frsky.voltsSource;
+    if (channel <= 1) {
+      voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
+    }
 #if defined(FRSKY_HUB)
-  else if (channel == 2) {
-    voltage = frskyData.hub.vfas;
-  }
+    else if (channel == 2) {
+      voltage = frskyData.hub.vfas;
+    }
 #endif
 
 #if defined(FRSKY_HUB)
-  uint16_t current = frskyData.hub.current; /* unit: 1/10 amps */
+    uint16_t current = frskyData.hub.current; /* unit: 1/10 amps */
 #else
-  uint16_t current = 0;
+    uint16_t current = 0;
 #endif
 
-  channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
-  if (channel <= 1) {
-    current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
-  }
+    channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
+    if (channel <= 1) {
+      current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
+    }
 
 #if defined(CPUARM)
-  frskyData.hub.power = (current * voltage) / 100;
+    frskyData.hub.power = (current * voltage) / 100;
 #else
-  frskyData.hub.power = ((current>>1) * (voltage>>1)) / 25;
+    frskyData.hub.power = ((current>>1) * (voltage>>1)) / 25;
 #endif
 
-  if (frskyData.hub.power > frskyData.hub.maxPower)
-    frskyData.hub.maxPower = frskyData.hub.power;
+    if (frskyData.hub.power > frskyData.hub.maxPower)
+      frskyData.hub.maxPower = frskyData.hub.power;
 
-  frskyData.hub.currentPrescale += current;
-  if (frskyData.hub.currentPrescale >= 3600) {
-    frskyData.hub.currentConsumption += 1;
-    frskyData.hub.currentPrescale -= 3600;
+    frskyData.hub.currentPrescale += current;
+    if (frskyData.hub.currentPrescale >= 3600) {
+      frskyData.hub.currentConsumption += 1;
+      frskyData.hub.currentPrescale -= 3600;
+    }
   }
 }
 

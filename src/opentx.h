@@ -602,6 +602,7 @@ enum CswFunctions {
 #define CS_VDIFF        3
 #define CS_VTIMER       4
 uint8_t cswFamily(uint8_t func);
+int16_t cswTimerValue(int8_t val);
 
 #define NUM_CYC         3
 #define NUM_CAL_PPM     4
@@ -891,6 +892,9 @@ extern int8_t safetyCh[NUM_CHNOUT];
 
 extern uint8_t trimsCheckTimer;
 
+extern int16_t csLastValue[NUM_CSW];
+#define CS_LAST_VALUE_INIT -32768
+
 #define TMR_OFF     0
 #define TMR_RUNNING 1
 #define TMR_BEEPING 2
@@ -946,9 +950,6 @@ void checkAll();
 #if !defined(SIMU)
   void getADC();
 #endif
-
-#define STORE_MODELVARS eeDirty(EE_MODEL)
-#define STORE_GENERALVARS eeDirty(EE_GENERAL)
 
 extern void backlightOn();
 
