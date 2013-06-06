@@ -444,7 +444,7 @@ void onMainViewMenu(const char *result)
   else if (result == STR_STATISTICS) {
     chainMenu(menuStatisticsView);
   }
-#if !defined(CPUM64)
+#if defined(CPUARM)
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);
   }
@@ -511,7 +511,7 @@ void menuMainView(uint8_t event)
       MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
       MENU_ADD_ITEM(STR_STATISTICS);
-#if !defined(CPUM64)
+#if defined(CPUARM)
       MENU_ADD_ITEM(STR_ABOUT_US);
 #endif
       menuHandler = onMainViewMenu;
