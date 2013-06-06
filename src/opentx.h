@@ -209,6 +209,8 @@
   #define IF_FAI_CHOICE(x)
 #endif
 
+#define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx > MIXSRC_FIRST_TELEM-1+TELEM_A2-1)
+
 #if defined(SIMU)
   #ifndef FORCEINLINE
     #define FORCEINLINE

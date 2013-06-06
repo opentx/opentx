@@ -1589,10 +1589,21 @@ uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, cons
 #if defined(FLIGHT_MODES)
 
 #if defined(CPUARM)
-#define FlightModesType uint16_t
+  #define FlightModesType uint16_t
 #else
-#define FlightModesType uint8_t
+  #define FlightModesType uint8_t
 #endif
+
+void displayFlightModes(uint8_t x, uint8_t y, FlightModesType value)
+{
+  uint8_t p = MAX_PHASES;
+  do {
+    --p;
+    if (!(value & (1<<p)))
+      lcd_putc(x, y, '0'+p);
+    x -= FWNUM;
+  } while (p!=0);
+}
 
 FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModesType value, uint8_t attr)
 {
@@ -2948,19 +2959,25 @@ static uint8_t s_copySrcCh;
 #define STR_MAX(x) _STR_MAX(x)
 
 #if LCD_W >= 212
-  #define EXPO_LINE_WEIGHT_POS 7*FW
-  #define EXPO_LINE_EXPO_POS   12*FW
-  #define EXPO_LINE_SWITCH_POS 13*FW+4
-  #define EXPO_LINE_SIDE_POS   19*FW
+  #define EXPO_LINE_WEIGHT_POS 7*FW-1
+  #define EXPO_LINE_EXPO_POS   11*FW
+  #define EXPO_LINE_SWITCH_POS 11*FW+5
+  #define EXPO_LINE_SIDE_POS   15*FW+2
   #define EXPO_LINE_SELECT_POS 18
-#else
+#elif defined(CPUARM)
   #define EXPO_LINE_WEIGHT_POS 7*FW-1
   #define EXPO_LINE_EXPO_POS   10*FW+5
   #define EXPO_LINE_SWITCH_POS 11*FW+2
+  #define EXPO_LINE_SIDE_POS   14*FW+2
+  #define EXPO_LINE_SELECT_POS 24
+#else
+  #define EXPO_LINE_WEIGHT_POS 7*FW-1
+  #define EXPO_LINE_EXPO_POS   11*FW
+  #define EXPO_LINE_SWITCH_POS 11*FW+4
   #if MAX_PHASES == 6
-    #define EXPO_LINE_SIDE_POS   14*FW+2
+    #define EXPO_LINE_SIDE_POS   15*FW
   #else
-    #define EXPO_LINE_SIDE_POS   14*FW+5
+    #define EXPO_LINE_SIDE_POS   15*FW+2
   #endif
   #define EXPO_LINE_SELECT_POS 24
 #endif
@@ -3203,10 +3220,13 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
 
-#if defined(CPUARM)
+#if defined(CPUARM) && LCD_W >= 212
+            displayFlightModes(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH-FW-3, y, ed->phases);
+            if (ed->name[0]) lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
+#elif defined(CPUARM)
             if (ed->name[0]) lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
 #else
-            editFlightModes(LCD_W-MAX_PHASES*FW-MENUS_SCROLLBAR_WIDTH, y, 0, ed->phases, 0);
+            displayFlightModes(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, ed->phases);
 #endif
           }
           else {

@@ -996,7 +996,7 @@ bool __getSwitch(int8_t swtch)
 #if defined(FRSKY)
           // Telemetry
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-            if (!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2)
+            if ((!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2) || IS_FAI_FORBIDDEN(cs->v1-1))
               return swtch > 0 ? false : true;
               	
 #if defined (PCBTARANIS)
@@ -2283,6 +2283,9 @@ tmr10ms_t lastFunctionTime[NUM_CFN] = { 0 };
 #if defined(VOICE)
 PLAY_FUNCTION(playValue, uint8_t idx)
 {
+  if (IS_FAI_FORBIDDEN(idx))
+    return;
+
   getvalue_t val = getValue(idx);
 
   switch (idx) {
@@ -2605,7 +2608,7 @@ void evalFunctions()
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-        else if (!IS_FAI_ENABLED() && (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_VALUE)) {
+        else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
           tmr10ms_t tmr10ms = get_tmr10ms();
           uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
           if (!lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=500*repeatParam)) {
@@ -2620,7 +2623,7 @@ void evalFunctions()
             }
           }
         }
-        else if (!IS_FAI_ENABLED() && (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC)) {
+        else if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC) {
           if (!IS_PLAYING(i+1)) {
             playCustomFunctionFile(sd, i+1);
           }
@@ -2634,7 +2637,7 @@ void evalFunctions()
           }
         }
 #elif defined(VOICE)
-        else if (!IS_FAI_ENABLED() && (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_BOTH || CFN_FUNC(sd) == FUNC_PLAY_VALUE)) {
+        else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_BOTH || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
           tmr10ms_t tmr10ms = get_tmr10ms();
           uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
           if (!lastFunctionTime[i] || (CFN_FUNC(sd)==FUNC_PLAY_BOTH && active!=(bool)(activeFnSwitches&switch_mask)) || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {

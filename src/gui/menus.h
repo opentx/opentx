@@ -46,20 +46,20 @@ inline void displayColumnHeader(const char **headers, uint8_t index)
 }
 
 #if LCD_W >= 212
-#if defined(TRANSLATIONS_FR)
-  #define MENU_COLUMNS         1
-  #define COLUMN_X             0
+  #if defined(TRANSLATIONS_FR)
+    #define MENU_COLUMNS         1
+    #define COLUMN_X             0
+  #else
+    #define MENU_COLUMNS         2
+  #endif
+  #define MENUS_SCROLLBAR_WIDTH  2
+  #define MENU_COLUMN2_X         (14 + LCD_W / 2)
+  #define lcd_putsColumnLeft(x, y, str) lcd_puts((x > (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)) ? MENU_COLUMN2_X : 0, y, str)
 #else
-  #define MENU_COLUMNS         2
-#endif
-#define MENUS_SCROLLBAR_WIDTH  2
-#define MENU_COLUMN2_X         (14 + LCD_W / 2)
-#define lcd_putsColumnLeft(x, y, str) lcd_puts((x > (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)) ? MENU_COLUMN2_X : 0, y, str)
-#else
-#define MENUS_SCROLLBAR_WIDTH  0
-#define MENU_COLUMNS           1
-#define COLUMN_X               0
-#define lcd_putsColumnLeft(x, y, str) lcd_putsLeft(y, str)
+  #define MENUS_SCROLLBAR_WIDTH  0
+  #define MENU_COLUMNS           1
+  #define COLUMN_X               0
+  #define lcd_putsColumnLeft(x, y, str) lcd_putsLeft(y, str)
 #endif
 
 // Menus related stuff ...
