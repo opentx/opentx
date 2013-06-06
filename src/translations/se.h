@@ -376,7 +376,7 @@
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("Gr\201nser++","Ut\202kade Gr\201nser")
 #define TR_ETRIMS              TR("Trimmar++","Ut\202kade Trimmar")
-#define TR_TRIMINC             TR("Trim\202kn.","Trim\202kning")
+#define TR_TRIMINC             TR("Trimning","Trim\202kning")
 #define TR_TTRACE              "F\202lj Gas"
 #define TR_TTRIM               TR("G-K\201lla","Gas-k\201lla")
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
@@ -441,8 +441,8 @@
 #define TR_MEMORYWARNING       INDENT"Lite Minne"
 #define TR_ALARMWARNING        INDENT"Ljud AV"
 #define TR_RENAVIG             "RotEnc Navig"
-#define TR_THROTTLEREVERSE     "Reverserad Gas"
-#define TR_MINUTEBEEP          INDENT"Varje Minut"
+#define TR_THROTTLEREVERSE     "Revers.Gas"
+#define TR_MINUTEBEEP          INDENT"Minutpip"
 #define TR_BEEPCOUNTDOWN       INDENT"R\201kna Ned"
 #define TR_PERSISTENT          TR("J\201mt p\200 ",INDENT"Alltid P\200")
 #define TR_BACKLIGHT_LABEL     "Belysning"
@@ -450,7 +450,7 @@
 #define TR_BLONBRIGHTNESS      INDENT"P\200 Ljusstyrka"
 #define TR_BLOFFBRIGHTNESS     INDENT"AV Ljusstyrka"
 #define TR_SPLASHSCREEN        "Bild vid start"
-#define TR_THROTTLEWARNING     TR("Gasvarn.","Gasvarning")
+#define TR_THROTTLEWARNING     "Gasvarning"
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanalordning RX"
