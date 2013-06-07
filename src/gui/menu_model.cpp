@@ -315,6 +315,12 @@ void onModelSelectMenu(const char *result)
 }
 #endif
 
+#if defined(PCBTARANIS)
+  #define MODELSEL_W 133
+#else
+  #define MODELSEL_W LCD_W
+#endif
+
 void menuModelSelect(uint8_t event)
 {
   if (s_warning_result) {
@@ -589,7 +595,7 @@ void menuModelSelect(uint8_t event)
       if (k == sub) {
         if (s_copyMode == COPY_MODE) {
           k = s_copySrcRow;
-          lcd_putc(LCD_W-FW, y, '+');
+          lcd_putc(MODELSEL_W-FW, y, '+');
         }
         else {
           k = sub + s_copyTgtOfs;
@@ -619,8 +625,8 @@ void menuModelSelect(uint8_t event)
     }
 
     if (s_copyMode && (vertpos_t)sub==i+s_pgOfs) {
-      lcd_filled_rect(9, y, LCD_W-1-9, 7);
-      lcd_rect(8, y-1, LCD_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
+      lcd_filled_rect(9, y, MODELSEL_W-1-9, 7);
+      lcd_rect(8, y-1, MODELSEL_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
   }
 

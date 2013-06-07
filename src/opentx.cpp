@@ -2101,7 +2101,7 @@ TimerState timersStates[MAX_TIMERS] = { { 0 }, { 0 } };
 #if defined(THRTRACE)
 uint8_t s_traceBuf[MAXTRACE];
 uint8_t s_traceWr;
-int8_t s_traceCnt;
+int s_traceCnt;
 #endif
 
 #if defined(HELI) || defined(FRSKY_HUB)
@@ -3334,9 +3334,9 @@ void doMixerCalculations()
     }
   } //endfor timer loop (only two)
 
-  static tmr10ms_t s_cnt_100ms;
-  static uint8_t   s_cnt_1s;
-  static uint8_t s_cnt_samples_thr_1s;
+  static uint8_t  s_cnt_100ms;
+  static uint8_t  s_cnt_1s;
+  static uint8_t  s_cnt_samples_thr_1s;
   static uint16_t s_sum_samples_thr_1s;
 #if defined(THRTRACE)
   static uint8_t  s_cnt_10s;
@@ -3347,8 +3347,8 @@ void doMixerCalculations()
   s_cnt_samples_thr_1s++;
   s_sum_samples_thr_1s+=val;
   
-  if ((tmr10ms_t)(tmr10ms - s_cnt_100ms) >= 10) { // 0.1sec
-    s_cnt_100ms += 10;
+  if ((s_cnt_100ms += tick10ms) >= 10) { // 0.1sec
+    s_cnt_100ms -= 10;
     s_cnt_1s += 1;
 
     for (uint8_t i=0; i<NUM_CSW; i++) {
@@ -3404,7 +3404,7 @@ void doMixerCalculations()
       s_sum_samples_thr_10s += s_sum_samples_thr_1s;
 
       if (s_cnt_10s >= 10) { // 10s
-        s_cnt_1s -= 10;
+        s_cnt_10s -= 10;
         val = s_sum_samples_thr_10s / s_cnt_samples_thr_10s;
         s_sum_samples_thr_10s = 0;
         s_cnt_samples_thr_10s = 0;
