@@ -914,7 +914,7 @@ extern uint16_t lastMixerDuration;
   #define MAXTRACE (LCD_W - 8)
   extern uint8_t s_traceBuf[MAXTRACE];
   extern uint8_t s_traceWr;
-  extern int8_t s_traceCnt;
+  extern int     s_traceCnt;
 #endif
 
 #if defined(PCBTARANIS)
