@@ -317,7 +317,7 @@ PACK(typedef struct t_EEGeneral {
 #if defined(PCBTARANIS)
 #define LEN_MODEL_NAME     12
 #define LEN_BITMAP_NAME    10
-#define LEN_EXPOMIX_NAME   10
+#define LEN_EXPOMIX_NAME   8
 #define LEN_FP_NAME        10
 #elif defined(PCBSKY9X)
 #define LEN_MODEL_NAME     10
@@ -328,7 +328,19 @@ PACK(typedef struct t_EEGeneral {
 #define LEN_FP_NAME        6
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
+PACK(typedef struct t_ExpoData {
+  uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
+  uint8_t  chn;
+  int8_t   swtch;
+  uint16_t phases;
+  int8_t   weight;
+  uint8_t  curveMode;
+  char     name[LEN_EXPOMIX_NAME];
+  uint8_t  spare[2];
+  int8_t   curveParam;
+}) ExpoData;
+#elif defined(CPUARM)
 PACK(typedef struct t_ExpoData {
   uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t  chn;
@@ -394,6 +406,30 @@ PACK(typedef struct t_LimitData {
 #define SLOW_STEP   10
 #define DELAY_MAX   (25*DELAY_STEP) /* 25 seconds */
 #define SLOW_MAX    (25*SLOW_STEP)  /* 25 seconds */
+#if defined(PCBTARANIS)
+PACK(typedef struct t_MixData {
+  uint8_t  destCh;
+  uint16_t phases;
+  uint8_t  curveMode:1;       // O=curve, 1=differential
+  uint8_t  noExpo:1;
+  int8_t   carryTrim:3;
+  uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  spare1:1;
+  int16_t  weight;
+  int8_t   swtch;
+  int8_t   curveParam;
+  uint8_t  mixWarn:4;         // mixer warning
+  uint8_t  srcVariant:4;
+  uint8_t  delayUp;
+  uint8_t  delayDown;
+  uint8_t  speedUp;
+  uint8_t  speedDown;
+  uint8_t  srcRaw;
+  int16_t  offset;
+  char     name[LEN_EXPOMIX_NAME];
+  uint8_t  spare2[2];
+}) MixData;
+#else
 PACK(typedef struct t_MixData {
   uint8_t  destCh;
   uint16_t phases;
@@ -415,7 +451,7 @@ PACK(typedef struct t_MixData {
   int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
 }) MixData;
-
+#endif
 #define MD_WEIGHT(md) (md->weight)
 #define MD_WEIGHT_TO_UNION(md, var) var.word = md->weight
 #define MD_UNION_TO_WEIGHT(var, md) md->weight = var.word

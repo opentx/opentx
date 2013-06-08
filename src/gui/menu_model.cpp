@@ -1606,8 +1606,13 @@ void displayFlightModes(uint8_t x, uint8_t y, FlightModesType value)
   do {
     --p;
     if (!(value & (1<<p)))
+#if defined(PCBTARANIS)
+      lcd_putcAtt(x, y+2, '0'+p, TINSIZE);
+      x -= FWNUM-1;
+#else
       lcd_putc(x, y, '0'+p);
-    x -= FWNUM;
+      x -= FWNUM;
+#endif
   } while (p!=0);
 }
 
@@ -2965,27 +2970,47 @@ static uint8_t s_copySrcCh;
 #define STR_MAX(x) _STR_MAX(x)
 
 #if LCD_W >= 212
-  #define EXPO_LINE_WEIGHT_POS 7*FW-1
-  #define EXPO_LINE_EXPO_POS   11*FW
-  #define EXPO_LINE_SWITCH_POS 11*FW+5
-  #define EXPO_LINE_SIDE_POS   15*FW+2
+  #define EXPO_LINE_WEIGHT_POS 7*FW+1
+  #define EXPO_LINE_EXPO_POS   11*FW+5
+  #define EXPO_LINE_SWITCH_POS 13*FW+3
+  #define EXPO_LINE_SIDE_POS   17*FW+4
   #define EXPO_LINE_SELECT_POS 18
+  #define EXPO_LINE_FM_POS     LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH-FW-1
+  #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
+  #define MIX_LINE_SRC_POS     4*FW
+  #define MIX_LINE_WEIGHT_POS  11*FW+5
+  #define MIX_LINE_CURVE_POS   12*FW+4
+  #define MIX_LINE_SWITCH_POS  16*FW+2
+  #define MIX_LINE_DELAY_POS   19*FW+5
 #elif defined(CPUARM)
   #define EXPO_LINE_WEIGHT_POS 7*FW-1
   #define EXPO_LINE_EXPO_POS   10*FW+5
   #define EXPO_LINE_SWITCH_POS 11*FW+2
   #define EXPO_LINE_SIDE_POS   14*FW+2
   #define EXPO_LINE_SELECT_POS 24
+  #define EXPO_LINE_FM_POS
+  #define EXPO_LINE_NAME_POS   LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH
+  #define MIX_LINE_SRC_POS     4*FW
+  #define MIX_LINE_WEIGHT_POS  11*FW+3
+  #define MIX_LINE_CURVE_POS   12*FW+2
+  #define MIX_LINE_SWITCH_POS  16*FW
+  #define MIX_LINE_DELAY_POS   19*FW+7
 #else
   #define EXPO_LINE_WEIGHT_POS 7*FW-1
   #define EXPO_LINE_EXPO_POS   11*FW
   #define EXPO_LINE_SWITCH_POS 11*FW+4
   #if MAX_PHASES == 6
-    #define EXPO_LINE_SIDE_POS   15*FW
+    #define EXPO_LINE_SIDE_POS 15*FW
   #else
-    #define EXPO_LINE_SIDE_POS   15*FW+2
+    #define EXPO_LINE_SIDE_POS 15*FW+2
   #endif
+  #define EXPO_LINE_FM_POS     LCD_W-FW-MENUS_SCROLLBAR_WIDTH
   #define EXPO_LINE_SELECT_POS 24
+  #define MIX_LINE_SRC_POS     4*FW
+  #define MIX_LINE_WEIGHT_POS  11*FW+3
+  #define MIX_LINE_CURVE_POS   12*FW+2
+  #define MIX_LINE_SWITCH_POS  16*FW
+  #define MIX_LINE_DELAY_POS   19*FW+7
 #endif
 
 #if defined(NAVIGATION_MENUS)
@@ -3227,12 +3252,12 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
 
 #if defined(CPUARM) && LCD_W >= 212
-            displayFlightModes(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH-FW-3, y, ed->phases);
-            if (ed->name[0]) lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
+            displayFlightModes(EXPO_LINE_FM_POS, y, ed->phases);
+            if (ed->name[0]) lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
 #elif defined(CPUARM)
-            if (ed->name[0]) lcd_putsnAtt(LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
+            if (ed->name[0]) lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
 #else
-            displayFlightModes(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, ed->phases);
+            displayFlightModes(EXPO_LINE_FM_POS, y, ed->phases);
 #endif
           }
           else {
@@ -3242,16 +3267,19 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             }
 #endif
 
-            if (mixCnt > 0)
-              lcd_putsiAtt(1*FW+0, y, STR_VMLTPX2, md->mltpx, 0);
+            if (mixCnt > 0) lcd_putsiAtt(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
-            putsMixerSource(4*FW+0, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
+            putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
 
-            gvarWeightItem(11*FW+3, y, md, attr, event);
+            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr, event);
+
+#if LCD_W >= 212
+            displayFlightModes(EXPO_LINE_FM_POS, y, md->phases);
+#endif
 
 #if defined(CPUARM)
             if (md->name[0]) {
-              lcd_putsnAtt(LCD_W-sizeof(md->name)*FW-MENUS_SCROLLBAR_WIDTH, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
+              lcd_putsnAtt(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
             }
 #if LCD_W < 212
             else
@@ -3260,20 +3288,19 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             {
               if (md->curveParam) {
                 if (md->curveMode == MODE_CURVE)
-                  putsCurve(12*FW+2, y, md->curveParam);
+                  putsCurve(MIX_LINE_CURVE_POS, y, md->curveParam);
                 else
-                  displayGVar(15*FW+2, y, md->curveParam, -100, 100);  // open.20.fsguruh
-                  // displayGVar(15*FW+2, y, md->curveParam, -125, 125); // only -100 to +100 is allowed now
-                  // could be increased now, but is it useful? differentiate with more the +-100% is a fault, correct?
+                  displayGVar(MIX_LINE_CURVE_POS+3*FW, y, md->curveParam, -100, 100);
               }
-              if (md->swtch) putsSwitches(16*FW, y, md->swtch);
+
+              if (md->swtch) putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
 
               char cs = ' ';
               if (md->speedDown || md->speedUp)
                 cs = 'S';
               if ((md->delayUp || md->delayDown))
                 cs = (cs =='S' ? '*' : 'D');
-              lcd_putc(19*FW+7, y, cs);
+              lcd_putc(MIX_LINE_DELAY_POS, y, cs);
             }
           }
           if (s_copyMode) {
