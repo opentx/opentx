@@ -2090,18 +2090,18 @@ void resetAll()
   for (uint8_t i=0; i<NUM_CSW; i++)
     csLastValue[i] = CS_LAST_VALUE_INIT;
 
-#if defined(THRTRACE)
-  s_traceCnt = 0;
-  s_traceWr = 0;
-#endif
+  RESET_THR_TRACE();
 }
 
 TimerState timersStates[MAX_TIMERS] = { { 0 }, { 0 } };
 
 #if defined(THRTRACE)
-uint8_t s_traceBuf[MAXTRACE];
-uint8_t s_traceWr;
-int s_traceCnt;
+uint8_t  s_traceBuf[MAXTRACE];
+uint8_t  s_traceWr;
+int      s_traceCnt;
+uint8_t  s_cnt_10s;
+uint16_t s_cnt_samples_thr_10s;
+uint16_t s_sum_samples_thr_10s;
 #endif
 
 #if defined(HELI) || defined(FRSKY_HUB)
@@ -3338,11 +3338,6 @@ void doMixerCalculations()
   static uint8_t  s_cnt_1s;
   static uint8_t  s_cnt_samples_thr_1s;
   static uint16_t s_sum_samples_thr_1s;
-#if defined(THRTRACE)
-  static uint8_t  s_cnt_10s;
-  static uint16_t s_cnt_samples_thr_10s;
-  static uint16_t s_sum_samples_thr_10s;
-#endif
 
   s_cnt_samples_thr_1s++;
   s_sum_samples_thr_1s+=val;
@@ -3399,11 +3394,10 @@ void doMixerCalculations()
       // throttle trace is done every 10 seconds; Tracebuffer is adjusted to screen size.
       // in case buffer runs out, it wraps around
       // resolution for y axis is only 32, therefore no higher value makes sense
-      s_cnt_10s += 1;
       s_cnt_samples_thr_10s += s_cnt_samples_thr_1s;
       s_sum_samples_thr_10s += s_sum_samples_thr_1s;
 
-      if (s_cnt_10s >= 10) { // 10s
+      if (++s_cnt_10s >= 10) { // 10s
         s_cnt_10s -= 10;
         val = s_sum_samples_thr_10s / s_cnt_samples_thr_10s;
         s_sum_samples_thr_10s = 0;

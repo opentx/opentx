@@ -912,9 +912,15 @@ extern uint16_t lastMixerDuration;
 
 #if defined(THRTRACE)
   #define MAXTRACE (LCD_W - 8)
-  extern uint8_t s_traceBuf[MAXTRACE];
-  extern uint8_t s_traceWr;
-  extern int     s_traceCnt;
+  extern uint8_t  s_traceBuf[MAXTRACE];
+  extern uint8_t  s_traceWr;
+  extern int      s_traceCnt;
+  extern uint8_t  s_cnt_10s;
+  extern uint16_t s_cnt_samples_thr_10s;
+  extern uint16_t s_sum_samples_thr_10s;
+  #define RESET_THR_TRACE() s_traceCnt = s_traceWr = s_cnt_10s = s_cnt_samples_thr_10s = s_sum_samples_thr_10s = s_timeCum16ThrP = s_timeCumThr = 0
+#else
+  #define RESET_THR_TRACE() s_timeCum16ThrP = s_timeCumThr = 0
 #endif
 
 #if defined(PCBTARANIS)
