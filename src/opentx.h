@@ -727,7 +727,8 @@ extern uint8_t pxxFlag[NUM_MODULES];
 #define PXX_SEND_FAILSAFE    (1 << 4)
 #define PXX_SEND_RANGECHECK  (1 << 5)
 
-#define ZCHAR_MAX (40 + LEN_SPECIAL_CHARS)
+#define LEN_STD_CHARS 40
+#define ZCHAR_MAX (LEN_STD_CHARS + LEN_SPECIAL_CHARS)
 
 extern char idx2char(int8_t idx);
 
