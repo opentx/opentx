@@ -2980,8 +2980,8 @@ static uint8_t s_copySrcCh;
   #define MIX_LINE_SRC_POS     4*FW
   #define MIX_LINE_WEIGHT_POS  11*FW+5
   #define MIX_LINE_CURVE_POS   12*FW+4
-  #define MIX_LINE_SWITCH_POS  16*FW+2
-  #define MIX_LINE_DELAY_POS   19*FW+5
+  #define MIX_LINE_SWITCH_POS  16*FW+1
+  #define MIX_LINE_DELAY_POS   19*FW+2
 #elif defined(CPUARM)
   #define EXPO_LINE_WEIGHT_POS 7*FW-1
   #define EXPO_LINE_EXPO_POS   10*FW+5
