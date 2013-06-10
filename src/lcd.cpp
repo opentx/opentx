@@ -106,9 +106,23 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
 
   if (flags & DBLSIZE) {
+    // To save space only some DBLSIZE chars are available 
+    // c has to be remapped. All non existing chars mapped to 0 (space)
+    unsigned char c_remapped;
+	  
+    if( c>='0' && c <='9')
+      c_remapped = c - '0' + 1;
+    else if( c>='A' && c <='Z')
+      c_remapped = c - 'A' + 11;
+    else if( c>='a' && c <='z')
+      c_remapped = c - 'a' + 37;
+    else
+      c_remapped = 0;
+
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
-    q = &font_10x14[((uint16_t)c-0x20)*20];
+    q = &font_10x14[((uint16_t)c_remapped)*20];
+//    q = &font_10x14[((uint16_t)c - 0x20)*20];
     for (int8_t i=11; i>=0; i--) {
       if (flags & CONDENSED && i<=1) break;
       uint8_t b1=0, b2=0;

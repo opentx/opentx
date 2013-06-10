@@ -1085,7 +1085,7 @@ taranis-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
 
-fonts/std/font_05x07.lbm: fonts/std/font_03x05.xbm fonts/std/font_04x06.xbm fonts/std/font_05x07.xbm fonts/std/font_08x10.xbm fonts/std/font_10x14.xbm fonts/std/font_04x06_extra.xbm fonts/std/font_05x07_extra.xbm fonts/std/font_10x14_extra.xbm fonts/std/font_se_05x07.xbm fonts/std/font_de_05x07.xbm fonts/std/font_it_05x07.xbm fonts/std/font_cz_05x07.xbm fonts/std/font_fr_05x07.xbm fonts/std/font_es_05x07.xbm fonts/std/font_se_10x14.xbm fonts/std/font_de_10x14.xbm fonts/std/font_it_10x14.xbm fonts/std/font_fr_10x14.xbm fonts/std/font_es_10x14.xbm 
+fonts/std/font_05x07.lbm: fonts/std/font_03x05.xbm fonts/std/font_04x06.xbm fonts/std/font_05x07.xbm fonts/std/font_08x10.xbm fonts/std/font_10x14.xbm fonts/std/font_10x14_compressed.xbm fonts/std/font_04x06_extra.xbm fonts/std/font_05x07_extra.xbm fonts/std/font_10x14_extra.xbm fonts/std/font_se_05x07.xbm fonts/std/font_de_05x07.xbm fonts/std/font_it_05x07.xbm fonts/std/font_cz_05x07.xbm fonts/std/font_fr_05x07.xbm fonts/std/font_es_05x07.xbm fonts/std/font_se_10x14.xbm fonts/std/font_de_10x14.xbm fonts/std/font_it_10x14.xbm fonts/std/font_fr_10x14.xbm fonts/std/font_es_10x14.xbm 
 	@echo
 	@echo "Convert fonts from xbm to lbm:"
 	$(IMG2LBM) fonts/std/font_03x05.xbm fonts/std/font_03x05.lbm 3x5
@@ -1093,6 +1093,7 @@ fonts/std/font_05x07.lbm: fonts/std/font_03x05.xbm fonts/std/font_04x06.xbm font
 	$(IMG2LBM) fonts/std/font_05x07.xbm fonts/std/font_05x07.lbm 5x7
 	$(IMG2LBM) fonts/std/font_08x10.xbm fonts/std/font_08x10.lbm 8x10
 	$(IMG2LBM) fonts/std/font_10x14.xbm fonts/std/font_10x14.lbm 10x14
+	$(IMG2LBM) fonts/std/font_10x14_compressed.xbm fonts/std/font_10x14_compressed.lbm 10x14
 	$(IMG2LBM) fonts/std/font_04x06_extra.xbm fonts/std/font_04x06_extra.lbm 4x6
 	$(IMG2LBM) fonts/std/font_05x07_extra.xbm fonts/std/font_05x07_extra.lbm 5x7
 	$(IMG2LBM) fonts/std/font_10x14_extra.xbm fonts/std/font_10x14_extra.lbm 10x14
