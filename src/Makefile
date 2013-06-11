@@ -1089,8 +1089,52 @@ taranis-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
 
+<<<<<<< .mine
+fonts/std/font_05x07.lbm: fonts/std/font_03x05.png fonts/std/font_04x06.png fonts/std/font_05x07.png fonts/std/font_08x10.png fonts/std/font_10x14.png fonts/std/font_10x14_compressed.png fonts/std/font_04x06_extra.png fonts/std/font_05x07_extra.png fonts/std/font_10x14_extra.png fonts/std/font_se_05x07.png fonts/std/font_de_05x07.png fonts/std/font_it_05x07.png fonts/std/font_cz_05x07.png fonts/std/font_fr_05x07.png fonts/std/font_es_05x07.png fonts/std/font_se_10x14.png fonts/std/font_de_10x14.png fonts/std/font_it_10x14.png fonts/std/font_fr_10x14.png fonts/std/font_es_10x14.png 
+=======
 fonts/std/font_05x07.lbm: fonts/std/font_03x05.xbm fonts/std/font_04x06.xbm fonts/std/font_05x07.xbm fonts/std/font_08x10.xbm fonts/std/font_10x14.xbm fonts/std/font_10x14_compressed.png fonts/std/font_04x06_extra.xbm fonts/std/font_05x07_extra.xbm fonts/std/font_10x14_extra.xbm fonts/std/font_se_05x07.xbm fonts/std/font_de_05x07.xbm fonts/std/font_it_05x07.xbm fonts/std/font_cz_05x07.xbm fonts/std/font_fr_05x07.xbm fonts/std/font_es_05x07.xbm fonts/std/font_se_10x14.xbm fonts/std/font_de_10x14.xbm fonts/std/font_it_10x14.xbm fonts/std/font_fr_10x14.xbm fonts/std/font_es_10x14.xbm 
+>>>>>>> .r2472
 	@echo
+<<<<<<< .mine
+	@echo "Convert fonts from png to lbm:"
+	$(IMG2LBM) fonts/std/font_03x05.png fonts/std/font_03x05.lbm 3x5
+	$(IMG2LBM) fonts/std/font_04x06.png fonts/std/font_04x06.lbm 4x6
+	$(IMG2LBM) fonts/std/font_05x07.png fonts/std/font_05x07.lbm 5x7
+	$(IMG2LBM) fonts/std/font_08x10.png fonts/std/font_08x10.lbm 8x10
+	$(IMG2LBM) fonts/std/font_10x14.png fonts/std/font_10x14.lbm 10x14
+	$(IMG2LBM) fonts/std/font_10x14_compressed.png fonts/std/font_10x14_compressed.lbm 10x14
+	$(IMG2LBM) fonts/std/font_04x06_extra.png fonts/std/font_04x06_extra.lbm 4x6
+	$(IMG2LBM) fonts/std/font_05x07_extra.png fonts/std/font_05x07_extra.lbm 5x7
+	$(IMG2LBM) fonts/std/font_10x14_extra.png fonts/std/font_10x14_extra.lbm 10x14
+	$(IMG2LBM) fonts/std/font_cz_04x06.png fonts/std/font_cz_04x06.lbm 4x6
+	$(IMG2LBM) fonts/std/font_cz_05x07.png fonts/std/font_cz_05x07.lbm 5x7
+	$(IMG2LBM) fonts/std/font_cz_08x10.png fonts/std/font_cz_08x10.lbm 8x10
+	$(IMG2LBM) fonts/std/font_cz_10x14.png fonts/std/font_cz_10x14.lbm 10x14
+	$(IMG2LBM) fonts/std/font_de_04x06.png fonts/std/font_de_04x06.lbm 4x6
+	$(IMG2LBM) fonts/std/font_de_05x07.png fonts/std/font_de_05x07.lbm 5x7
+	$(IMG2LBM) fonts/std/font_de_08x10.png fonts/std/font_de_08x10.lbm 8x10
+	$(IMG2LBM) fonts/std/font_de_10x14.png fonts/std/font_de_10x14.lbm 10x14
+	$(IMG2LBM) fonts/std/font_es_04x06.png fonts/std/font_es_04x06.lbm 4x6
+	$(IMG2LBM) fonts/std/font_es_05x07.png fonts/std/font_es_05x07.lbm 5x7
+	$(IMG2LBM) fonts/std/font_es_08x10.png fonts/std/font_es_08x10.lbm 8x10
+	$(IMG2LBM) fonts/std/font_es_10x14.png fonts/std/font_es_10x14.lbm 10x14
+	$(IMG2LBM) fonts/std/font_fr_04x06.png fonts/std/font_fr_04x06.lbm 4x6
+	$(IMG2LBM) fonts/std/font_fr_05x07.png fonts/std/font_fr_05x07.lbm 5x7
+	$(IMG2LBM) fonts/std/font_fr_08x10.png fonts/std/font_fr_08x10.lbm 8x10
+	$(IMG2LBM) fonts/std/font_fr_10x14.png fonts/std/font_fr_10x14.lbm 10x14
+	$(IMG2LBM) fonts/std/font_it_04x06.png fonts/std/font_it_04x06.lbm 4x6
+	$(IMG2LBM) fonts/std/font_it_05x07.png fonts/std/font_it_05x07.lbm 5x7
+	$(IMG2LBM) fonts/std/font_it_08x10.png fonts/std/font_it_08x10.lbm 8x10
+	$(IMG2LBM) fonts/std/font_it_10x14.png fonts/std/font_it_10x14.lbm 10x14
+	$(IMG2LBM) fonts/std/font_pt_04x06.png fonts/std/font_pt_04x06.lbm 4x6
+	$(IMG2LBM) fonts/std/font_pt_05x07.png fonts/std/font_pt_05x07.lbm 5x7
+	$(IMG2LBM) fonts/std/font_pt_08x10.png fonts/std/font_pt_08x10.lbm 8x10
+	$(IMG2LBM) fonts/std/font_pt_10x14.png fonts/std/font_pt_10x14.lbm 10x14
+	$(IMG2LBM) fonts/std/font_se_04x06.png fonts/std/font_se_04x06.lbm 4x6
+	$(IMG2LBM) fonts/std/font_se_05x07.png fonts/std/font_se_05x07.lbm 5x7
+	$(IMG2LBM) fonts/std/font_se_08x10.png fonts/std/font_se_08x10.lbm 8x10
+	$(IMG2LBM) fonts/std/font_se_10x14.png fonts/std/font_se_10x14.lbm 10x14
+=======
 	@echo "Convert fonts from xbm to lbm:"
 	$(IMG2LBM) fonts/std/font_03x05.xbm fonts/std/font_03x05.lbm 3x5
 	$(IMG2LBM) fonts/std/font_04x06.xbm fonts/std/font_04x06.lbm 4x6
@@ -1129,6 +1173,7 @@ fonts/std/font_05x07.lbm: fonts/std/font_03x05.xbm fonts/std/font_04x06.xbm font
 	$(IMG2LBM) fonts/std/font_se_05x07.xbm fonts/std/font_se_05x07.lbm 5x7
 	$(IMG2LBM) fonts/std/font_se_08x10.xbm fonts/std/font_se_08x10.lbm 8x10
 	$(IMG2LBM) fonts/std/font_se_10x14.xbm fonts/std/font_se_10x14.lbm 10x14
+>>>>>>> .r2472
 
 bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_taranis.png bitmaps/logo_taranis.bmp bitmaps/icons.png bitmaps/asterisk.xbm bitmaps/about_9x.png bitmaps/about_taranis.png bitmaps/asterisk_4bits.png
 	@echo
