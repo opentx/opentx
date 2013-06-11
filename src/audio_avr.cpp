@@ -167,7 +167,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
   haptic.event(e); //do this before audio to help sync timings
 #endif
 
-  if (e <= AU_ERROR || e >= AU_WARNING1) {
+  if (e <= AU_ERROR || (e >= AU_WARNING1 && e < AU_FRSKY_FIRST)) {
     if (g_eeGeneral.alarmsFlash) {
       flashCounter = FLASH_DURATION;
     }
@@ -177,104 +177,17 @@ void audioQueue::event(uint8_t e, uint8_t f)
     if (e < AU_FRSKY_FIRST || empty()) {
       // TODO when VOICE enable some cases here are not needed!
       switch (e) {
-        // inactivity timer alert
-        case AU_INACTIVITY:
-          play(70, 10, 2, PLAY_REPEAT(2)|PLAY_NOW);
-          break;
-        // low battery in tx
         case AU_TX_BATTERY_LOW:
           if (empty()) {
             play(60, 20, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(1));
             play(80, 20, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(-1));
           }
           break;
-        // error
-        case AU_ERROR:
-          play(BEEP_DEFAULT_FREQ, 40, 1, PLAY_NOW);
-          break;
-        // keypad up (seems to be used when going left/right through system menu options. 0-100 scales etc)
-        case AU_KEYPAD_UP:
-          play(BEEP_KEY_UP_FREQ, 10, 1, PLAY_NOW);
-          break;
-        // keypad down (seems to be used when going left/right through system menu options. 0-100 scales etc)
-        case AU_KEYPAD_DOWN:
-          play(BEEP_KEY_DOWN_FREQ, 10, 1, PLAY_NOW);
-          break;
-        // menu display (also used by a few generic beeps)
-        case AU_MENUS:
-          play(BEEP_DEFAULT_FREQ, 10, 2, PLAY_NOW);
-          break;
-        // trim move
         case AU_TRIM_MOVE:
           play(f, 6, 1, PLAY_NOW);
           break;
-        // trim center
         case AU_TRIM_MIDDLE:
           play(f, 10, 2, PLAY_NOW);
-          break;
-        // warning one
-        case AU_WARNING1:
-          play(BEEP_DEFAULT_FREQ, 10, 1, PLAY_NOW);
-          break;
-        // warning two
-        case AU_WARNING2:
-          play(BEEP_DEFAULT_FREQ, 20, 1, PLAY_NOW);
-          break;
-        // warning three
-        case AU_WARNING3:
-          play(BEEP_DEFAULT_FREQ, 30, 1, PLAY_NOW);
-          break;
-        // pot/stick center
-        case AU_POT_STICK_MIDDLE:
-          play(BEEP_DEFAULT_FREQ + 50, 10, 1, PLAY_NOW);
-          break;
-        // mix warning 1
-        case AU_MIX_WARNING_1:
-          play(BEEP_DEFAULT_FREQ + 50, 6, 0);
-          break;
-        // mix warning 2
-        case AU_MIX_WARNING_2:
-          play(BEEP_DEFAULT_FREQ + 52, 6, 3, PLAY_REPEAT(1));
-          break;
-        // mix warning 3
-        case AU_MIX_WARNING_3:
-          play(BEEP_DEFAULT_FREQ + 54, 6, 3, PLAY_REPEAT(2));
-          break;
-        // time 30 seconds left
-        case AU_TIMER_30:
-          play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(2)|PLAY_NOW);
-          break;
-        // time 20 seconds left
-        case AU_TIMER_20:
-          play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(1)|PLAY_NOW);
-          break;
-        // time <= 10 seconds left
-        case AU_TIMER_LT10:
-          play(BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_NOW);
-          break;
-        case AU_FRSKY_BEEP1:
-          play(BEEP_DEFAULT_FREQ, 10, 1);
-          pause(200);
-          break;
-        case AU_FRSKY_BEEP2:
-          play(BEEP_DEFAULT_FREQ, 20, 1);
-          pause(200);
-          break;
-        case AU_FRSKY_BEEP3:
-          play(BEEP_DEFAULT_FREQ, 30, 1);
-          pause(200);
-          break;
-        case AU_FRSKY_WARN1:
-          play(BEEP_DEFAULT_FREQ+20, 15, 5, PLAY_REPEAT(2));
-          pause(200);
-          break;
-        case AU_FRSKY_WARN2:
-          play(BEEP_DEFAULT_FREQ+30, 15, 5, PLAY_REPEAT(2));
-          pause(200);
-          break;
-        case AU_FRSKY_CHEEP:
-          play(BEEP_DEFAULT_FREQ+30, 10, 2, PLAY_REPEAT(2)|PLAY_INCREMENT(2));
-          pause(200);
           break;
         case AU_FRSKY_RING:
           play(BEEP_DEFAULT_FREQ+25, 5, 2, PLAY_REPEAT(10));
@@ -311,10 +224,6 @@ void audioQueue::event(uint8_t e, uint8_t f)
           play(80, 5, 10, PLAY_REPEAT(3));
           pause(200);
           break;
-        case AU_FRSKY_SIREN:
-          play(10, 20, 5, PLAY_REPEAT(2)|PLAY_INCREMENT(1));
-          pause(200);
-          break;
         case AU_FRSKY_ALARMC:
           play(50, 4, 10, PLAY_REPEAT(2));
           play(70, 8, 20, PLAY_REPEAT(1));
@@ -322,16 +231,45 @@ void audioQueue::event(uint8_t e, uint8_t f)
           play(70, 4, 20, PLAY_REPEAT(1));
           pause(200);
           break;
-        case AU_FRSKY_RATATA:
-          play(BEEP_DEFAULT_FREQ+50, 5, 10, PLAY_REPEAT(10));
-          pause(200);
-          break;
-        case AU_FRSKY_TICK:
-          play(BEEP_DEFAULT_FREQ+50, 5, 50, PLAY_REPEAT(2));
-          pause(200);
-          break;
         default:
+        {
+          const static pm_uint8_t singleSounds[] PROGMEM = {
+              70, 10, 2, PLAY_REPEAT(2)|PLAY_NOW,  // INACTIVITY
+              BEEP_DEFAULT_FREQ, 40, 1, PLAY_NOW,  // ERROR
+              BEEP_KEY_UP_FREQ, 10, 1, PLAY_NOW,   // KEYPAD_UP
+              BEEP_KEY_DOWN_FREQ, 10, 1, PLAY_NOW, // KEYPAD_DOWN
+              BEEP_DEFAULT_FREQ, 10, 2, PLAY_NOW,  // MENUS
+              0,0,0,0, // TRIM_MOVE
+              BEEP_DEFAULT_FREQ, 10, 1, PLAY_NOW,  // WARNING1
+              BEEP_DEFAULT_FREQ, 20, 1, PLAY_NOW,  // WARNING2
+              BEEP_DEFAULT_FREQ, 30, 1, PLAY_NOW,  // WARNING3
+              0,0,0,0, // TRIM_MIDDLE
+              BEEP_DEFAULT_FREQ + 50, 10, 1, PLAY_NOW,      // POT_STICK_MIDDLE
+              BEEP_DEFAULT_FREQ + 50, 6,  0, // MIX_WARNING_1
+              BEEP_DEFAULT_FREQ + 52, 6, 3, PLAY_REPEAT(1), // MIX_WARNING_2
+              BEEP_DEFAULT_FREQ + 54, 6, 3, PLAY_REPEAT(2), // MIX_WARNING_3
+              BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_NOW, // TIMER_LT10
+              BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(1)|PLAY_NOW, // TIMER_20
+              BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(2)|PLAY_NOW, // TIMER_30
+              BEEP_DEFAULT_FREQ, 10, 1, // FRSKY_BEEP1
+              BEEP_DEFAULT_FREQ, 20, 1, // FRSKY_BEEP2
+              BEEP_DEFAULT_FREQ, 30, 1, // FRSKY_BEEP3
+              BEEP_DEFAULT_FREQ+20, 15, 5, PLAY_REPEAT(2), // FRSKY_WARN1
+              BEEP_DEFAULT_FREQ+30, 15, 5, PLAY_REPEAT(2), // FRSKY_WARN2
+              BEEP_DEFAULT_FREQ+30, 10, 2, PLAY_REPEAT(2)|PLAY_INCREMENT(2), // FRSKY_CHEEP
+              BEEP_DEFAULT_FREQ+50, 5, 10, PLAY_REPEAT(10), // FRSKY_RATATA
+              BEEP_DEFAULT_FREQ+50, 5, 50, PLAY_REPEAT(2), // FRSKY_TICK
+              10, 20, 5, PLAY_REPEAT(2)|PLAY_INCREMENT(1), // FRSKY_SIREN
+          };
+
+          const pm_uint8_t *ptr = &singleSounds[(e-AU_INACTIVITY)<<2];
+          uint8_t tFreq = pgm_read_byte(ptr++);
+          uint8_t tLen = pgm_read_byte(ptr++);
+          uint8_t tPause = pgm_read_byte(ptr++);
+          uint8_t tFlags = pgm_read_byte(ptr);
+          play(tFreq, tLen, tPause, tFlags);
           break;
+        }
       }
     }
   }

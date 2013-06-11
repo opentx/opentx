@@ -625,6 +625,12 @@ enum Functions {
   FUNC_MAX
 };
 
+#if defined(VOICE)
+  #define HAS_REPEAT_PARAM() (CFN_FUNC(sd) == FUNC_PLAY_SOUND || (CFN_FUNC(sd) >= FUNC_PLAY_TRACK && CFN_FUNC(sd) <= FUNC_PLAY_VALUE))
+#else
+  #define HAS_REPEAT_PARAM() (CFN_FUNC(sd) == FUNC_PLAY_SOUND)
+#endif
+
 enum ResetFunctionParam {
   FUNC_RESET_TIMER1,
   FUNC_RESET_TIMER2,
@@ -1227,13 +1233,21 @@ enum RFProtocols {
   RF_PROTO_LAST = RF_PROTO_LR12
 };
 
+enum DSM2Protocols {
+  DSM2_PROTO_LP45,
+  DSM2_PROTO_DSM2,
+  DSM2_PROTO_DSMX,
+};
+
 enum ModuleTypes {
   MODULE_TYPE_NONE = 0,
   MODULE_TYPE_PPM,
   MODULE_TYPE_XJT,
   MODULE_TYPE_DJT,
+#if defined(DSM2)
   MODULE_TYPE_DSM2,
-  MODULE_TYPE_LAST = MODULE_TYPE_DJT
+#endif
+  MODULE_TYPE_COUNT
 };
 
 enum FailsafeModes {

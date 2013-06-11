@@ -366,6 +366,7 @@ enum EnumKeys {
   #define SWSRC_ID0     SWSRC_SA0
   #define SWSRC_ID1     SWSRC_SA1
   #define SWSRC_ID2     SWSRC_SA2
+  #define SW_DSM2_BIND  SW_SH2
 #else
   #define NUM_SWITCHES  7
   #define IS_3POS(sw)   ((sw) == 0)
@@ -373,6 +374,7 @@ enum EnumKeys {
   #define MAX_PSWITCH   (SW_TRN-SW_ID0+1)  // 9 physical switches
   #define NUM_POTS      3
   #define NUM_SW_SRCRAW 1
+  #define SW_DSM2_BIND  SW_TRN
 #endif
 
 #define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
@@ -492,10 +494,15 @@ enum EnumKeys {
 #endif
 
 #if defined(PCBTARANIS)
-  static const int8_t maxChannelsModules[] = { 0, 8, 8, 0, 0 };
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, 0, -2 };
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 };
   #define IS_MODULE_XJT(idx)        ((idx==0 || g_model.externalModule == MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
   #define IS_MODULE_PPM(idx)        (idx==2 || (idx==1 && g_model.externalModule == MODULE_TYPE_PPM))
+  #if defined(DSM2)
+    #define IS_MODULE_DSM2(idx)     (idx==1 && g_model.externalModule == MODULE_TYPE_DSM2)
+  #else
+    #define IS_MODULE_DSM2(idx)     false
+  #endif
   #define NUM_CHANNELS(idx)         (8+g_model.moduleData[idx].channelsCount)
   #define MAX_PORT1_CHANNELS()      (maxChannelsXJT[1+g_model.moduleData[0].rfProtocol])
   #define MAX_PORT2_CHANNELS()      ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
@@ -1257,17 +1264,18 @@ inline bool isFunctionActive(uint8_t func)
 
 /* make sure the defines below always go in numeric order */
 enum AUDIO_SOUNDS {
-    AU_INACTIVITY,
-    AU_TX_BATTERY_LOW,
-#if defined(PCBSKY9X)
-    AU_TX_MAH_HIGH,
-    AU_TX_TEMP_HIGH,
-#endif
+    AU_TADA,
 #if defined(VOICE)
     AU_THROTTLE_ALERT,
     AU_SWITCH_ALERT,
     AU_BAD_EEPROM,
     AU_EEPROM_FORMATTING,
+#endif
+    AU_TX_BATTERY_LOW,
+    AU_INACTIVITY,
+#if defined(PCBSKY9X)
+    AU_TX_MAH_HIGH,
+    AU_TX_TEMP_HIGH,
 #endif
     AU_ERROR,
     AU_KEYPAD_UP,
@@ -1281,7 +1289,6 @@ enum AUDIO_SOUNDS {
 #if defined(CPUARM)
     AU_TRIM_END,
 #endif
-    AU_TADA,
     AU_POT_STICK_MIDDLE,
     AU_MIX_WARNING_1,
     AU_MIX_WARNING_2,
@@ -1305,16 +1312,16 @@ enum AUDIO_SOUNDS {
     AU_FRSKY_WARN1,
     AU_FRSKY_WARN2,
     AU_FRSKY_CHEEP,
+    AU_FRSKY_RATATA,
+    AU_FRSKY_TICK,
+    AU_FRSKY_SIREN,
     AU_FRSKY_RING,
     AU_FRSKY_SCIFI,
     AU_FRSKY_ROBOT,
     AU_FRSKY_CHIRP,
     AU_FRSKY_TADA,
     AU_FRSKY_CRICKET,
-    AU_FRSKY_SIREN,
     AU_FRSKY_ALARMC,
-    AU_FRSKY_RATATA,
-    AU_FRSKY_TICK,
     AU_FRSKY_LAST,
 
     AU_NONE=0xff

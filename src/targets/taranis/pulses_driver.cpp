@@ -42,7 +42,8 @@ void setupPulsesPXX(unsigned int port);
 
 uint16_t *ppmStreamPtr[NUM_MODULES];
 extern uint16_t ppmStream[NUM_MODULES+1][20];
-extern uint16_t pxxStream[NUM_MODULES][400] ;
+extern uint16_t pxxStream[NUM_MODULES][400];
+extern uint8_t Bit_pulses[64];
 
 static void init_pa10_pxx( void ) ;
 static void disable_pa10_pxx( void ) ;
@@ -50,6 +51,10 @@ static void init_pa10_ppm( void ) ;
 static void disable_pa10_ppm( void ) ;
 static void init_pa7_pxx( void ) ;
 static void disable_pa7_pxx( void ) ;
+#if defined(DSM2)
+static void init_pa7_dsm2( void ) ;
+static void disable_pa7_dsm2( void ) ;
+#endif
 static void init_pa7_ppm( void ) ;
 static void disable_pa7_ppm( void ) ;
 static void init_pa10_none( void ) ;
@@ -73,10 +78,26 @@ void disable_pxx(uint32_t port)
     disable_pa7_pxx() ;
 }
 
+#if defined(DSM2)
+void init_dsm2(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    init_pa7_dsm2();
+  }
+}
+
+void disable_dsm2(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    disable_pa7_dsm2();
+  }
+}
+#endif
+
 void init_ppm(uint32_t port)
 {
   if (port == INTERNAL_MODULE)
-    init_pa10_ppm();
+    init_pa10_ppm(); // TODO needed?
   else
     init_pa7_ppm();
 }
@@ -84,7 +105,7 @@ void init_ppm(uint32_t port)
 void disable_ppm(uint32_t port)
 {
   if (port == INTERNAL_MODULE)
-    disable_pa10_ppm();
+    disable_pa10_ppm(); // TODO needed?
   else
     disable_pa7_ppm();
 }
@@ -418,6 +439,80 @@ static void disable_pa7_pxx()
   EXTERNAL_RF_OFF();
 }
 
+#if defined(DSM2)
+static void init_pa7_dsm2()
+{
+  EXTERNAL_RF_ON();
+
+  // Timer8
+  setupPulsesDSM2(EXTERNAL_MODULE);
+
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
+#if defined(REV3)
+  configure_pins( PIN_INTPPM_OUT, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25 | PIN_PUSHPULL ) ;
+#else
+  GPIO_InitTypeDef GPIO_InitStructure;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIO_EXTPPM, ENABLE);
+  GPIO_PinAFConfig(GPIO_EXTPPM, GPIO_PinSource_EXTPPM, GPIO_AF_TIM8);
+  GPIO_InitStructure.GPIO_Pin = PIN_EXTPPM_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIO_EXTPPM, &GPIO_InitStructure);
+#endif
+  RCC->APB2ENR |= RCC_APB2ENR_TIM8EN ;            // Enable clock
+  RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;            // Enable DMA2 clock
+
+  TIM8->CR1 &= ~TIM_CR1_CEN ;
+  TIM8->ARR = 44000 ;                     // 22mS
+  TIM8->CCR2 = 30000 ;            // Update time
+  TIM8->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
+#if defined(REV3)
+  TIM8->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P ;
+#else
+  TIM8->CCER = TIM_CCER_CC1NE ;
+#endif
+  TIM8->CR2 = TIM_CR2_OIS1 ;                      // O/P idle high
+  TIM8->BDTR = TIM_BDTR_MOE ;             // Enable outputs
+  TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0] ;
+  TIM8->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0 ;                     // Force O/P high
+  TIM8->EGR = 1 ;                                                         // Restart
+
+//      TIM8->SR &= ~TIM_SR_UIF ;                               // Clear flag
+//      TIM8->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
+  TIM8->DIER |= TIM_DIER_CC1DE ;          // Enable DMA on CC1 match
+  TIM8->DCR = 13 ;                                                                // DMA to CC1
+
+//      TIM8->CR1 = TIM_CR1_OPM ;                               // Just run once
+  // Enable the DMA channel here, DMA2 stream 2, channel 7
+  DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
+  DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
+  DMA2_Stream2->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
+                                                         | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
+  DMA2_Stream2->PAR = CONVERT_PTR(&TIM8->DMAR);
+  DMA2_Stream2->M0AR = CONVERT_PTR(&pxxStream[EXTERNAL_MODULE][1]);
+//      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+//      DMA2_Stream2->NDTR = 100 ;
+  DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
+
+  TIM8->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0 ;                     // Toggle CC1 o/p
+  TIM8->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
+  TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
+  TIM8->CR1 |= TIM_CR1_CEN ;
+  NVIC_EnableIRQ(TIM8_CC_IRQn) ;
+}
+
+static void disable_pa7_dsm2()
+{
+  DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
+  NVIC_DisableIRQ(TIM8_CC_IRQn) ;
+  TIM8->DIER &= ~TIM_DIER_CC2IE ;
+  TIM8->CR1 &= ~TIM_CR1_CEN ;
+  EXTERNAL_RF_OFF();
+}
+#endif
+
 // PPM output
 // Timer 1, channel 1 on PA8 for prototype
 // Pin is AF1 function for timer 1
@@ -484,9 +579,19 @@ extern "C" void TIM8_CC_IRQHandler()
     DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
     DMA2_Stream2->M0AR = CONVERT_PTR(&pxxStream[EXTERNAL_MODULE][1]);
     DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
-    TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0] ;
+    TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0];
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
+#if defined(DSM2)
+  else if (s_current_protocol[EXTERNAL_MODULE] >= PROTO_DSM2_LP45 && s_current_protocol[EXTERNAL_MODULE] <= PROTO_DSM2_DSMX) {
+    DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
+    DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
+    DMA2_Stream2->M0AR = CONVERT_PTR(&Bit_pulses[2]);
+    DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
+    TIM8->CCR1 = ((uint16_t *)Bit_pulses)[0];
+    TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
+  }
+#endif
   else if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PPM) {
     ppmStreamPtr[EXTERNAL_MODULE] = ppmStream[EXTERNAL_MODULE];
     TIM8->DIER |= TIM_DIER_UDE ;

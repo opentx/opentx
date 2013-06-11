@@ -200,17 +200,16 @@ if __name__ == "__main__":
                                "point four", "point five", "point six",
                                "point seven", "point eight", "point nine"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+160+i))
-        for s, f, a in [(u"trim center", "midtrim", 494),
+        for s, f, a in [(u"trim center", "midtrim", 495),
                         (u"maximum trim reached", "endtrim", NO_ALTERNATE),
-                        (u"transmitter battery low", "lowbatt", 481),
-                        (u"inactivity alarm", "inactiv", 480),
-                        (u"throttle warning", "thralert", 482),
-                        (u"switch warning", "swalert", 483),
-                        (u"Welcome to open nine ex!", "tada", 495),
-                        (u"tick. tock", "timerlt3", 500),
-                        (u"ten. seconds", "timer10", 501),
-                        (u"twenty. seconds", "timer20", 502),
-                        (u"thirty. seconds", "timer30", 503),
+                        (u"transmitter battery low", "lowbatt", 485),
+                        (u"inactivity alarm", "inactiv", 486),
+                        (u"throttle warning", "thralert", 481),
+                        (u"switch warning", "swalert", 482),
+                        (u"bad eeprom", "eebad", 483),
+                        (u"Welcome to open nine ex!", "tada", 480),
+                        (u"twenty. seconds", "timer20", 500),
+                        (u"thirty. seconds", "timer30", 501),
                        ]:
             systemSounds.extend(generate(s, f, a))
         for i, (s, f) in enumerate([
@@ -312,21 +311,18 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+103+i))
         for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+113+i))            
-        for s, f, a in [(u"radio inattiva controllare", "inactiv", 480),
-                        (u"batteria della radio scarica", "lowbatt", 481),
-                        (u"controllo motore non in posizione, verificare", "thralert", 482),
-                        (u"interruttori non in posizione, verificare", "swalert", 483),
+        for s, f, a in [(u"radio inattiva controllare", "inactiv", 486),
+                        (u"batteria della radio scarica", "lowbatt", 485),
+                        (u"controllo motore non in posizione, verificare", "thralert", 481),
+                        (u"interruttori non in posizione, verificare", "swalert", 482),
                         (u"eeprom corrotta", "eebad", NO_ALTERNATE),
                         (u"formattazone eeprom in corso", "eeformat", NO_ALTERNATE),
                         (u"errore", "error", NO_ALTERNATE),
-                        (u"trim centrato", "midtrim", 494),
-                        (u"tada", "tada", 495),
+                        (u"trim centrato", "midtrim", 495),
                         (u"potenziometro centrato", "midpot", 496),
                         (u"massimo trim raggiunto", "endtrim", NO_ALTERNATE),
-                        (u"3 secondi al termine", "timerlt3", 500),
-                        (u"dieci secondi", "timer10", 501),
-                        (u"venti secondi", "timer20", 502),
-                        (u"trenta secondi", "timer30", 503),
+                        (u"venti secondi", "timer20", 500),
+                        (u"trenta secondi", "timer30", 501),
                      ]:
             systemSounds.extend(generate(s, f, a))
         for i, s in enumerate(["timer", "timer",  "trasmissione", "ricezione", "A1", "A2", "altitudine", "motore",
@@ -382,21 +378,18 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+102+i))
         for i, s in enumerate(["Volt", "Ampere", "Meter pro sekunde", "", "kilometer pro stunde", "Meter", "Grad", "Prozent", "Milliampere", "Milliampere pro stunde", "Watt", "db", "Fuesse", "Knoten", "Uhr", "Minuten", "Secunden", "R P M", "g"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+110+i))            
-        for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 480),
-                        (u"Senderakku niedrig", "lowbatt", 481),
-                        (u"Gaskanal nicht Null, bitte pruefen", "thralert", 482),
-                        (u"Schalten fehlpositioniert, bitte pruefen", "swalert", 483),
+        for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 486),
+                        (u"Senderakku niedrig", "lowbatt", 485),
+                        (u"Gaskanal nicht Null, bitte pruefen", "thralert", 481),
+                        (u"Schalten fehlpositioniert, bitte pruefen", "swalert", 482),
                         (u"Das EEPROM ist fehlerhaft", "eebad", NO_ALTERNATE),
                         (u"Das EEPROM ist immer formatiert", "eeformat", NO_ALTERNATE),
                         (u"fehler", "error", NO_ALTERNATE),
-                        (u"Trim zentriert", "midtrim", 494),
-                        (u"tada", "tada", 495),
+                        (u"Trim zentriert", "midtrim", 495),
                         (u"Poti zentriert", "midpot", 496),
                         (u"Maximale trimmung erreicht", "endtrim", NO_ALTERNATE),
-                        (u"Noch drei sekunden", "timerlt3", 500),
-                        (u"10 sekunden", "timer10", 501),
-                        (u"20 sekunden", "timer20", 502),
-                        (u"30 sekunden", "timer30", 503),
+                        (u"20 sekunden", "timer20", 500),
+                        (u"30 sekunden", "timer30", 501),
                      ]:
             systemSounds.extend(generate(s, f, a))
         for i, s in enumerate(["Timer", "Timer",  "Sendung", "Empfang", "A1", "A2", "Hoehe", "Motor",
@@ -461,21 +454,18 @@ if __name__ == "__main__":
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+111+i))
         for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"quilômetros por hora", u"metros", u"graus", u"cento", u"miliamperes", u"miliamperes por hora", u"watt", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+122+i))            
-        for s, f, a in [(u"atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv", 480),
-                        (u"bateria do rádio fraca", "lowbatt", 481),
-                        (u"atenção,acelerador não está no mínimo", "thralert", 482),
-                        (u"atenção, certifique-se que os interruptores estão na posição certa", "swalert", 483),
+        for s, f, a in [(u"atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv", 486),
+                        (u"bateria do rádio fraca", "lowbatt", 485),
+                        (u"atenção,acelerador não está no mínimo", "thralert", 481),
+                        (u"atenção, certifique-se que os interruptores estão na posição certa", "swalert", 482),
                         (u"eeprom corrompida", "eebad", NO_ALTERNATE),
                         (u"formatação da eeprom em curso", "eeformat", NO_ALTERNATE),
                         (u"erro", "error", NO_ALTERNATE),
-                        (u"trim centrado", "midtrim", 494),
-                        (u"tada", "tada", 495),
+                        (u"trim centrado", "midtrim", 495),
                         (u"potenciómetro centrado", "midpot", 496),
                         (u"trim no máximo", "endtrim", NO_ALTERNATE),
-                        (u"3 segundos", "timerlt3", 500),
-                        (u"10 segundos", "timer10", 501),
-                        (u"20 segundos", "timer20", 502),
-                        (u"30 segundos", "timer30", 503),
+                        (u"20 segundos", "timer20", 500),
+                        (u"30 segundos", "timer30", 501),
                      ]:
             systemSounds.extend(generate(s, f, a))
         for i, s in enumerate([u"cronómetro", u"cronómetro", u"transmissão", u"recepção", u"A1", u"A2", u"altitude", u"motor",
@@ -555,17 +545,14 @@ if __name__ == "__main__":
         					   u"gé", u"gé", u"gé", u"gé"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+118+i))
             
-        for s, f, a in [(u"střed trimu", "midtrim", 494),
+        for s, f, a in [(u"střed trimu", "midtrim", 495),
                         (u"maximum trimu", "endtrim", NO_ALTERNATE),
-                        (u"baterie rádia je vybitá", "lowbatt", 481),
-                        (u"zapoměl jsi na mě!", "inactiv", 480),
-                        (u"plyn není na nule", "thralert", 482),
-                        (u"přepínače nejsou ve výchozí poloze", "swalert", 483),
-                        (u"tadá", "tada", 495),
-                        (u"ťik ťak", "timerlt3", 500),
-                        (u"deset sekund", "timer10", 501),
-                        (u"dvacet sekund", "timer20", 502),
-                        (u"třicet sekund", "timer30", 503),
+                        (u"baterie rádia je vybitá", "lowbatt", 485),
+                        (u"zapoměl jsi na mě!", "inactiv", 486),
+                        (u"plyn není na nule", "thralert", 481),
+                        (u"přepínače nejsou ve výchozí poloze", "swalert", 482),
+                        (u"dvacet sekund", "timer20", 500),
+                        (u"třicet sekund", "timer30", 501),
                        ]:
             systemSounds.extend(generate(s, f, a))
         for i, (s, f) in enumerate([

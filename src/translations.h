@@ -621,7 +621,6 @@ extern const pm_char STR_CHANNELS_MONITOR[];
 #if defined(PCBTARANIS)
   extern const pm_char STR_BYTES[];
   extern const pm_char STR_MODULE_BIND[];
-  extern const pm_char STR_MODULE_RANGE[];
   extern const pm_char STR_SET[];
   extern const pm_char STR_TRAINER[];
   extern const pm_char STR_ANTENNAPROBLEM[];
@@ -629,6 +628,10 @@ extern const pm_char STR_CHANNELS_MONITOR[];
   extern const pm_char STR_CHANNELRANGE[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];
+#endif
+
+#if defined(PCBTARANIS) || defined(DSM2)
+  extern const pm_char STR_MODULE_RANGE[];
 #endif
 
 #if !defined(CPUM64)

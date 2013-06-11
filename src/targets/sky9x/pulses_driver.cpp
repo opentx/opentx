@@ -192,7 +192,7 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           sscptr = SSC;
-          sscptr->SSC_TPR = (uint32_t) Bit_pulses;
+          sscptr->SSC_TPR = CONVERT_PTR(Bit_pulses);
           sscptr->SSC_TCR = Serial_byte_count;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }

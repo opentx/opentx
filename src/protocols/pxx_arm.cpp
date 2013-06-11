@@ -95,10 +95,14 @@ void putPcmPart(uint8_t value, unsigned int port)
   *pxxStreamPtr[port]++ = PxxValue[port] ;  // Output 0 for this time
 }
 
+#if defined(PCBTARANIS)
 void putPcmFlush(unsigned int port)
 {
   *pxxStreamPtr[port]++ = 18010 ;             // Past the 18000 of the ARR
 }
+#else
+#define putPcmFlush(...)
+#endif
 
 void putPcmBit(uint8_t bit, unsigned int port)
 {

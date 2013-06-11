@@ -921,14 +921,14 @@ void menuModelSetup(uint8_t event)
   #define IF_PORT_ON(idx, x)         (idx==0 ? IS_PORT1_ON(x) : (idx==1 ? IS_PORT2_ON(x) : IS_TRAINER_ON()))
   #define IF_PORT2_XJT(x)            (IS_MODULE_XJT(1) ? (uint8_t)x : HIDDEN_ROW)
   #define PORT1_CHANNELS_ROWS()      IF_PORT1_ON(1)
-  #define PORT2_CHANNELS_ROWS()      IF_PORT2_ON(g_model.externalModule == MODULE_TYPE_DJT ? (uint8_t)0 : (g_model.externalModule == MODULE_TYPE_DSM2 ? (uint8_t)0 : ((uint8_t)1)))
+  #define PORT2_CHANNELS_ROWS()      IF_PORT2_ON(g_model.externalModule == MODULE_TYPE_DJT ? (uint8_t)0 : (IS_MODULE_DSM2(1) ? (uint8_t)0 : ((uint8_t)1)))
   #define TRAINER_CHANNELS_ROWS()    IF_TRAINER_ON(1)
   #define PORT_CHANNELS_ROWS(x)      (x==0 ? PORT1_CHANNELS_ROWS() : (x==1 ? PORT2_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS()))
   #define FAILSAFE_ROWS(x)           ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
   #define MODEL_SETUP_MAX_LINES      (1+ITEM_MODEL_SETUP_MAX)
 
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), g_model.externalModule==MODULE_TYPE_XJT ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) ? (uint8_t)2 : HIDDEN_ROW), IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_PPM(1) || IS_MODULE_XJT(1)) ? (uint8_t)2 : (IS_MODULE_DSM2(1) ? (uint8_t)1 : HIDDEN_ROW), IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #elif defined(CPUM64)
   #define CURSOR_ON_CELL             (true)
   #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
@@ -945,7 +945,7 @@ void menuModelSetup(uint8_t event)
 
   if (!MENU_CHECK(menuTabModel, e_ModelSetup, MODEL_SETUP_MAX_LINES)) {
 #if defined(DSM2)
-    s_rangecheck_mode = 0;
+    s_rangecheck_mode = false;
 #endif
 #if defined(PCBTARANIS)
     pxxFlag[INTERNAL_MODULE] = 0;
@@ -1195,24 +1195,29 @@ void menuModelSetup(uint8_t event)
         lcd_putsLeft(y, STR_MODULE);
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""PPM\0""XJT\0""DJT\0""DSM2"), g_model.externalModule, m_posHorz==0 ? attr : 0);
         if (g_model.externalModule == MODULE_TYPE_XJT)
-          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("\004""OFF\0""X16\0""D8\0 ""LR12"), 1+g_model.moduleData[1].rfProtocol, m_posHorz==1 ? attr : 0);
+          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("\004""OFF\0""X16\0""D8\0 ""LR12"), 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
+        else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
+          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("\004""LP45""DSM2""DSMX"), g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
         if (attr && (editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
-              CHECK_INCDEC_MODELVAR(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_LAST);
+              CHECK_INCDEC_MODELVAR(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1);
               if (checkIncDec_Ret) {
-                g_model.moduleData[1].channelsStart = 0;
+                g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
                 if (g_model.externalModule == MODULE_TYPE_PPM)
-                  g_model.moduleData[1].channelsCount = 0;
+                  g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
                 else
-                  g_model.moduleData[1].channelsCount = MAX_PORT2_CHANNELS();
+                  g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_PORT2_CHANNELS();
               }
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[1].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
+              if (IS_MODULE_DSM2(EXTERNAL_MODULE))
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
+              else
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
               if (checkIncDec_Ret) {
-                g_model.moduleData[1].channelsStart = 0;
-                g_model.moduleData[1].channelsCount = MAX_PORT2_CHANNELS();
+                g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
+                g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_PORT2_CHANNELS();
               }
           }
         }
@@ -1277,7 +1282,7 @@ void menuModelSetup(uint8_t event)
         }
         else {
           lcd_putsLeft(y, STR_RXNUM);
-          if (IS_MODULE_XJT(moduleIdx)) {
+          if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
             lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (m_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && m_posHorz==0) {
               if (editMode>0 || p1valdiff) {
@@ -1288,10 +1293,9 @@ void menuModelSetup(uint8_t event)
               if (editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER))
                 checkModelIdUnique(g_eeGeneral.currModel);
             }
-
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MODULE_BIND, m_posHorz==1 ? attr : 0);
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_MODULE_RANGE, m_posHorz==2 ? attr : 0);
-            {
+            if (IS_MODULE_XJT(moduleIdx)) {
+              lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MODULE_BIND, m_posHorz==1 ? attr : 0);
+              lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_MODULE_RANGE, m_posHorz==2 ? attr : 0);
               uint8_t newFlag = 0;
               if (attr && m_posHorz>0 && s_editMode>0) {
                 if (m_posHorz == 1)
@@ -1302,6 +1306,14 @@ void menuModelSetup(uint8_t event)
               }
               pxxFlag[moduleIdx] = newFlag;
             }
+#if defined(DSM2)
+            else {
+              lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MODULE_RANGE, m_posHorz==1 ? attr : 0);
+              if (attr && m_posHorz>0 && s_editMode>0) {
+                s_rangecheck_mode = true;
+              }
+            }
+#endif
           }
         }
         break;
@@ -1504,7 +1516,7 @@ void menuModelSetup(uint8_t event)
           }
 
           lcd_putsLeft(y, STR_RXNUM);
-          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN-3*FW, y, g_model.header.modelId, (m_posHorz<=0 ? attr : 0) | LEADING0|LEFT, 2);
+          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (m_posHorz<=0 ? attr : 0) | LEADING0|LEFT, 2);
           if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff))) {
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, 99);
 #if defined(CPUARM)
@@ -1520,21 +1532,18 @@ void menuModelSetup(uint8_t event)
               checkModelIdUnique(g_eeGeneral.currModel);
 #endif
 
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN, y, STR_SYNCMENU, (m_posHorz!=0 ? attr : 0));
-            if (attr && m_posHorz==1) {
-              s_editMode = 0;
-              if (event==EVT_KEY_LONG(KEY_ENTER)) {
-                // send reset code
-                pxxFlag[0] = PXX_SEND_RXNUM;
-              }
+            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW, y, STR_SYNCMENU, m_posHorz!=0 ? attr : 0);
+            if (attr && m_posHorz>0 && editMode>0) {
+              // send reset code
+              pxxFlag[0] = PXX_SEND_RXNUM;
             }
           }
 #endif
 
 #if defined(DSM2)
           if (IS_DSM2_PROTOCOL(protocol)) {
-            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\013Range"TR_ENTER"Norm "TR_ENTER), s_rangecheck_mode, (m_posHorz==1 ? attr : 0));
-            s_rangecheck_mode = (attr && m_posHorz==1 && editMode>0); // [MENU] key toggles range check mode
+            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW, y, STR_MODULE_RANGE, m_posHorz!=0 ? attr : 0);
+            s_rangecheck_mode = (attr && m_posHorz>0 && editMode>0); // [MENU] key toggles range check mode
           }
 #endif
         }
@@ -4391,8 +4400,7 @@ void menuModelCustomFunctions(uint8_t event)
             menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN, y, CFN_ACTIVE(sd), attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_ACTIVE(sd), 1);
           }
-#if defined(VOICE)
-          else if (sd->swtch && CFN_FUNC(sd) >= FUNC_PLAY_TRACK && CFN_FUNC(sd) <= FUNC_PLAY_VALUE) {
+          else if (sd->swtch && HAS_REPEAT_PARAM()) {
 #if defined(CPUARM)
             if (CFN_PLAY_REPEAT(sd))
               lcd_outdezAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(sd)*5, attr);
@@ -4407,7 +4415,6 @@ void menuModelCustomFunctions(uint8_t event)
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_PLAY_REPEAT(sd), 6);
 #endif
           }
-#endif
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();
           }

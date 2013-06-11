@@ -80,11 +80,22 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
   put_serial_bit(1) ;           // Stop bit
 }
 
+#if defined(PCBTARANIS)
+// TODO should be in the driver
+void putDsm2Flush()
+{
+  *Pulses2MHzptr++ = 171 ;             // Past the 44000 of the ARR
+  *Pulses2MHzptr++ = 234 ;             // Past the 44000 of the ARR
+}
+#else
+#define putDsm2Flush(...)
+#endif
+
 // This is the data stream to send, prepare after 19.5 mS
 // Send after 22.5 mS
 
 //static uint8_t *Dsm2_pulsePtr = pulses2MHz.pbyte ;
-void setupPulsesDsm2(uint8_t chns)
+void setupPulsesDSM2(unsigned int port)
 {
   static uint8_t dsmDat[2+6*2]={0xFF,0x00,  0x00,0xAA,  0x05,0xFF,  0x09,0xFF,  0x0D,0xFF,  0x13,0x54,  0x14,0xAA};
   uint8_t counter ;
@@ -97,27 +108,28 @@ void setupPulsesDsm2(uint8_t chns)
   // If more channels needed make sure the pulses union/array is large enough
   if (dsmDat[0]&BAD_DATA)  //first time through, setup header
   {
-    switch(s_current_protocol[0])
+    switch(s_current_protocol[port])
     {
       case PROTO_DSM2_LP45:
-        dsmDat[0]= 0x80;
+        dsmDat[0] = 0x80;
         break;
       case PROTO_DSM2_DSM2:
-        dsmDat[0]=0x90;
+        dsmDat[0] = 0x90;
         break;
       default:
-        dsmDat[0]=0x98;  //dsmx, bind mode
+        dsmDat[0] = 0x98;  //dsmx, bind mode
         break;
     }
   }
-  if ((dsmDat[0] & BIND_BIT) && (!switchState(SW_TRN))) dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
-
-  // TODO find a way to do that, FUNC SWITCH: if ((!(dsmDat[0] & BIND_BIT)) && getSwitch(MAX_DRSWITCH-1)) dsmDat[0] |= RANGECHECK_BIT;   // range check function
-  // else dsmDat[0] &= ~RANGECHECK_BIT;
-  dsmDat[1]=g_eeGeneral.currModel+1;  //DSM2 Header second byte for model match
-  for(uint8_t i=0; i<chns; i++)
-  {
-    uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);
+  if ((dsmDat[0] & BIND_BIT) && (!switchState(SW_DSM2_BIND)))
+   dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
+  if ((!(dsmDat[0] & BIND_BIT)) && s_rangecheck_mode)
+   dsmDat[0] |= RANGECHECK_BIT;   // range check function
+  else
+   dsmDat[0] &= ~RANGECHECK_BIT;
+  dsmDat[1] = g_model.header.modelId;  //DSM2 Header second byte for model match
+  for(uint8_t i=0; i<6; i++) {
+    uint16_t pulse = limit(0, ((channelOutputs[g_model.moduleData[port].channelsStart+i]*13)>>5)+512,1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
     dsmDat[3+2*i] = pulse & 0xff;
   }
@@ -130,4 +142,6 @@ void setupPulsesDsm2(uint8_t chns)
   {
     put_serial_bit(1) ;           // 16 extra stop bits
   }
+
+  putDsm2Flush();
 }

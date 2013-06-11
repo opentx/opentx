@@ -45,13 +45,13 @@ void setupPulses(unsigned int port)
   heartbeat |= (HEART_TIMER_PULSES << port);
 
 #if defined(PCBTARANIS)
-  if (port) port = 1;			// Ensure is 0 or 1 only
   uint8_t required_protocol;
   
   if (port == INTERNAL_MODULE) {
     required_protocol = g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX;
   }
   else {
+    port = EXTERNAL_MODULE; // ensure it's external module only
     switch (g_model.externalModule) {
       case MODULE_TYPE_PPM:
         required_protocol = PROTO_PPM;
@@ -60,6 +60,11 @@ void setupPulses(unsigned int port)
       case MODULE_TYPE_DJT:
       	required_protocol = PROTO_PXX;
         break;
+#if defined(DSM2)
+      case MODULE_TYPE_DSM2:
+        required_protocol = PROTO_DSM2_LP45 + limit((int8_t)DSM2_PROTO_LP45, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (int8_t)DSM2_PROTO_DSMX);
+        break;
+#endif
       default:
         required_protocol = PROTO_NONE;
         break;
@@ -124,7 +129,7 @@ void setupPulses(unsigned int port)
     case PROTO_DSM2_LP45:
     case PROTO_DSM2_DSM2:
     case PROTO_DSM2_DSMX:
-      setupPulsesDsm2(6);
+      setupPulsesDSM2(port);
       break;
 #endif
     case PROTO_PPM:

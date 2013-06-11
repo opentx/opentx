@@ -638,6 +638,10 @@ ifeq ($(PCB), TARANIS)
   	SRC += targets/sky9x/syscalls.c
   endif
   
+  ifeq ($(DSM2), PPM)
+    CPPSRC += protocols/dsm2_arm.cpp
+  endif
+  
   ifeq ($(HUBSAN), YES)
     CPPDEFS += -DHUBSAN
     CPPSRC += protocols/hubsan.cpp

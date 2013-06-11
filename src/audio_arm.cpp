@@ -54,16 +54,17 @@ uint16_t Sine_values[] =
 
 #if defined(SDCARD)
 const char * audioFilenames[] = {
-  "inactiv",
-  "lowbatt",
-#if defined(PCBSKY9X)
-  "highmah",
-  "hightemp",
-#endif
+  "tada",
   "thralert",
   "swalert",
   "eebad",
   "eeformat",
+  "lowbatt",
+  "inactiv",
+#if defined(PCBSKY9X)
+  "highmah",
+  "hightemp",
+#endif
   "error",
   "keyup",
   "keydown",
@@ -74,7 +75,6 @@ const char * audioFilenames[] = {
   "warning3",
   "midtrim",
   "endtrim",
-  "tada",
   "midpot",
   "mixwarn1",
   "mixwarn2",
@@ -723,7 +723,7 @@ void audioEvent(uint8_t e, uint8_t f)
   haptic.event(e); //do this before audio to help sync timings
 #endif
 
-  if (e <= AU_ERROR || e >= AU_WARNING1) {
+  if (e <= AU_ERROR || (e >= AU_WARNING1 && e < AU_FRSKY_FIRST)) {
     if (g_eeGeneral.alarmsFlash) {
       flashCounter = FLASH_DURATION;
     }

@@ -379,7 +379,7 @@ normal:
  */
 
 // DSM2=SERIAL mode
-FORCEINLINE void setupPulsesDsm2()
+FORCEINLINE void setupPulsesDSM2()
 {
   uint16_t *ptr = (uint16_t *)pulses2MHz;
   switch (s_current_protocol[0])
@@ -395,7 +395,7 @@ FORCEINLINE void setupPulsesDsm2()
       break;
   }
   if (s_bind_allowed) s_bind_allowed--;
-  if (s_bind_allowed && switchState(SW_TRN)) 
+  if (s_bind_allowed && switchState(SW_DSM2_BIND))
   {
     s_bind_mode = true;
     *ptr |= BIND_BIT;
@@ -502,7 +502,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 }
 
 // DSM2=PPM mode
-void setupPulsesDsm2()
+void setupPulsesDSM2()
 {
   static uint8_t dsmDat[2+6*2] = {0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
   uint8_t counter;
@@ -891,7 +891,7 @@ void setupPulses()
 #if defined(DSM2_PPM)
       sei();
 #endif
-      setupPulsesDsm2(); // Different versions for DSM2=SERIAL vs. DSM2=PPM
+      setupPulsesDSM2(); // Different versions for DSM2=SERIAL vs. DSM2=PPM
 #if defined(PCBGRUVIN9X) && defined(DSM2_PPM)
       // Ensure each DSM2=PPM serial packet starts out with the correct bit polarity
       TCCR1A = (0 << WGM10) | (3<<COM1B1);  // Make Waveform Generator 'SET' OCR1B pin on next compare event and ...

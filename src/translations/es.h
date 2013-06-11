@@ -221,8 +221,8 @@
 
 #define TR_VFSWRESET           TR("Tmr1\0""Tmr2\0""All\0 " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, "Reloj 1  ""Reloj 2  ""Todo     " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
-#define LEN_FUNCSOUNDS         "\006"
-#define TR_FUNCSOUNDS          "Beep1 ""Beep2 ""Beep3 ""Aviso1""Aviso2""Cheep ""Ring  ""SciFi ""Robot ""Gorjeo""Tada  ""Crickt""Sirena""Alarma""Ratata""Tictac"
+#define LEN_FUNCSOUNDS         TR("\004", "\006")
+#define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Avs1""Avs2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Aviso1""Aviso2""Cheep ""Ratata""Tick  ""Sirena""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
 
 #define LEN_VTELEMCHNS         "\004"
 #if defined(PCBTARANIS)

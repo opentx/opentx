@@ -48,7 +48,7 @@ extern uint8_t s_pulses_paused;
 extern uint32_t failsafeCounter[NUM_MODULES];
 
 void setupPulses(unsigned int port);
-void setupPulsesDsm2(uint8_t chns);
+void setupPulsesDSM2(unsigned int port);
 void setupPulsesPXX(unsigned int port);
 void setupPulsesPPM(unsigned int port);
 

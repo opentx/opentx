@@ -2566,12 +2566,6 @@ void evalFunctions()
           active = false;
         }
 
-#if defined(SDCARD)
-        if (CFN_FUNC(sd) == FUNC_LOGS) {
-          logDelay = CFN_PARAM(sd);
-        }
-#endif
-
         if (CFN_FUNC(sd) == FUNC_RESET) {
           switch (CFN_PARAM(sd)) {
             case FUNC_RESET_TIMER1:
@@ -2597,24 +2591,29 @@ void evalFunctions()
           }
         }
 
-        if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
-          AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(sd));
+#if defined(SDCARD)
+        else if (CFN_FUNC(sd) == FUNC_LOGS) {
+          logDelay = CFN_PARAM(sd);
         }
+#endif
 
 #if defined(HAPTIC)
-        if (CFN_FUNC(sd) == FUNC_HAPTIC) {
+        else if (CFN_FUNC(sd) == FUNC_HAPTIC) {
           haptic.event(AU_FRSKY_LAST+CFN_PARAM(sd));
         }
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-        else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+        else if (CFN_FUNC(sd) == FUNC_PLAY_SOUND || CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
           tmr10ms_t tmr10ms = get_tmr10ms();
           uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
           if (!lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=500*repeatParam)) {
             if (!IS_PLAYING(i+1)) {
               lastFunctionTime[i] = tmr10ms;
-              if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+              if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
+                AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(sd));
+              }
+              else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
                 PLAY_VALUE(CFN_PARAM(sd), i+1);
               }
               else {
@@ -2637,13 +2636,16 @@ void evalFunctions()
           }
         }
 #elif defined(VOICE)
-        else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_BOTH || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+        else if (CFN_FUNC(sd) == FUNC_PLAY_SOUND || CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_BOTH || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
           tmr10ms_t tmr10ms = get_tmr10ms();
           uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
           if (!lastFunctionTime[i] || (CFN_FUNC(sd)==FUNC_PLAY_BOTH && active!=(bool)(activeFnSwitches&switch_mask)) || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
             lastFunctionTime[i] = tmr10ms;
             uint8_t param = CFN_PARAM(sd);
-            if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+            if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
+              AUDIO_PLAY(AU_FRSKY_FIRST+param);
+            }
+            else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
               PLAY_VALUE(param, i+1);
             }
             else {
@@ -2653,6 +2655,15 @@ void evalFunctions()
 #endif
               PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
             }
+          }
+        }
+#else
+        else if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
+          tmr10ms_t tmr10ms = get_tmr10ms();
+          uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
+          if (!lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
+            lastFunctionTime[i] = tmr10ms;
+            AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(sd));
           }
         }
 #endif
