@@ -175,7 +175,7 @@ char idx2char(int8_t idx)
   if (idx < 27) return 'A' + idx - 1;
   if (idx < 37) return '0' + idx - 27;
   if (idx <= 40) return pgm_read_byte(s_charTab+idx-37);
-  if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
+  // Needed if we want the special chars ... if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
   return ' ';
 }
 

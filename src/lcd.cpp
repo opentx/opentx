@@ -118,8 +118,14 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       c_remapped = c - 'a' + 37;
     else if (c==':')
       c_remapped = 63;
-    else if (c=='-')
+    else if (c=='_')
       c_remapped = 64;
+    else if (c==',')
+      c_remapped = 65;
+    else if (c=='-')
+      c_remapped = 66;
+    else if (c=='.')
+      c_remapped = 67;
     else
       c_remapped = 0;
 

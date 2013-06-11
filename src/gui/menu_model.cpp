@@ -1309,9 +1309,7 @@ void menuModelSetup(uint8_t event)
 #if defined(DSM2)
             else {
               lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MODULE_RANGE, m_posHorz==1 ? attr : 0);
-              if (attr && m_posHorz>0 && s_editMode>0) {
-                s_rangecheck_mode = true;
-              }
+              s_rangecheck_mode = (attr && m_posHorz>0 && editMode>0); // [MENU] key toggles range check mode
             }
 #endif
           }
