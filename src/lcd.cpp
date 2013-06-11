@@ -113,9 +113,9 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     if (c>=',' && c<=':')
       c_remapped = c - ',' + 1;
     else if (c>='A' && c<='Z')
-      c_remapped = c - 'A' + 15;
+      c_remapped = c - 'A' + 16;
     else if (c>='a' && c<='z')
-      c_remapped = c - 'a' + 41;
+      c_remapped = c - 'a' + 42;
     else if (c=='_')
       c_remapped = 4;
     else
