@@ -85,7 +85,7 @@ const pm_uchar * splash_lbm = splashdata+4;
   const pm_uchar asterisk_lbm[] PROGMEM = {
     #include "bitmaps/asterisk_4bits.lbm"
   };
-#elif !defined(CPUM64) || defined(EXTSTD)
+#else
   const pm_uchar asterisk_lbm[] PROGMEM = {
     #include "bitmaps/asterisk.lbm"
   };
@@ -1753,12 +1753,8 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   lcd_bmp(0, 0, asterisk_lbm);
   #define TITLE_LCD_OFFSET   60
   #define MESSAGE_LCD_OFFSET 60
-#elif !defined(CPUM64) || defined(EXTSTD)
-  lcd_img(2, 0, asterisk_lbm, 0, 0);
-  #define TITLE_LCD_OFFSET   6*FW
-  #define MESSAGE_LCD_OFFSET 0
 #else
-  lcd_putsAtt(0, 0, PSTR("(!)"), DBLSIZE);
+  lcd_img(2, 0, asterisk_lbm, 0, 0);
   #define TITLE_LCD_OFFSET   6*FW
   #define MESSAGE_LCD_OFFSET 0
 #endif
