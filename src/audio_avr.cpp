@@ -245,15 +245,15 @@ void audioQueue::event(uint8_t e, uint8_t f)
               BEEP_DEFAULT_FREQ, 30, 1, PLAY_NOW,  // WARNING3
               0,0,0,0, // TRIM_MIDDLE
               BEEP_DEFAULT_FREQ + 50, 10, 1, PLAY_NOW,      // POT_STICK_MIDDLE
-              BEEP_DEFAULT_FREQ + 50, 6,  0, // MIX_WARNING_1
+              BEEP_DEFAULT_FREQ + 50, 6, 0, 0,              // MIX_WARNING_1
               BEEP_DEFAULT_FREQ + 52, 6, 3, PLAY_REPEAT(1), // MIX_WARNING_2
               BEEP_DEFAULT_FREQ + 54, 6, 3, PLAY_REPEAT(2), // MIX_WARNING_3
               BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_NOW, // TIMER_LT10
               BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(1)|PLAY_NOW, // TIMER_20
               BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(2)|PLAY_NOW, // TIMER_30
-              BEEP_DEFAULT_FREQ, 10, 1, // FRSKY_BEEP1
-              BEEP_DEFAULT_FREQ, 20, 1, // FRSKY_BEEP2
-              BEEP_DEFAULT_FREQ, 30, 1, // FRSKY_BEEP3
+              BEEP_DEFAULT_FREQ, 10, 1, 0, // FRSKY_BEEP1
+              BEEP_DEFAULT_FREQ, 20, 1, 0, // FRSKY_BEEP2
+              BEEP_DEFAULT_FREQ, 30, 1, 0, // FRSKY_BEEP3
               BEEP_DEFAULT_FREQ+20, 15, 5, PLAY_REPEAT(2), // FRSKY_WARN1
               BEEP_DEFAULT_FREQ+30, 15, 5, PLAY_REPEAT(2), // FRSKY_WARN2
               BEEP_DEFAULT_FREQ+30, 10, 2, PLAY_REPEAT(2)|PLAY_INCREMENT(2), // FRSKY_CHEEP
