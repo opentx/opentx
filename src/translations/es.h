@@ -127,7 +127,7 @@
 #define TR_VCURVEFUNC          "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
 #define LEN_VMLTPX             "\010"
-#define TR_VMLTPX              "A\201adir   ""Multipl.""Cambiar\0"
+#define TR_VMLTPX              "Agregar ""Multipl.""Cambiar\0"
 
 #define LEN_VMLTPX2            "\002"
 #define TR_VMLTPX2             "+=""*="":="
@@ -676,10 +676,10 @@
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
-#define TR_ABOUT_MARTIN_2      "Dise\201o grafico"
+#define TR_ABOUT_MARTIN_2      "Disegno grafico"
 
 #define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "Productor dise\201o de hardware"
+#define TR_ABOUT_HARDWARE_2    "Productor disegno de hardware"
 
 #define TR_ABOUT_PARENTS_1     "Padres del proyecto"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
