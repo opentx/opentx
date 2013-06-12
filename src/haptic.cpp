@@ -120,7 +120,7 @@ void hapticQueue::event(uint8_t e)
       play(15, 3, (e-AU_TIMER_20+1)|PLAY_NOW);
     else if (e >= AU_FRSKY_LAST && empty()) {
       play(30, 10, 0);
-      play(10,50-10*(e-AU_FRSKY_LAST),(e-AU_FRSKY_LAST));
+      play(10, 50-10*(e-AU_FRSKY_LAST), (e-AU_FRSKY_LAST));
     }	
   }
 }

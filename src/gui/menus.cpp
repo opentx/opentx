@@ -41,12 +41,11 @@ int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t s_noScroll;
 
-void menu_lcd_onoff(uint8_t x,uint8_t y, uint8_t value, LcdFlags attr)
+void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr)
 {
 #if defined(GRAPHICS)
-  if (value) {
+  if (value)
     lcd_putc(x+1, y, '#');
-  }
   if (attr)
     lcd_filled_rect(x, y, 7, 7);
   else

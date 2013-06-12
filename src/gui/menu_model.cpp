@@ -4118,20 +4118,21 @@ void menuModelCustomSwitches(uint8_t event)
 #endif
 
 #if LCD_W >= 212
-#define MODEL_CUSTOM_FUNC_1ST_COLUMN  (5+4*FW)
-#define MODEL_CUSTOM_FUNC_2ND_COLUMN  (9*FW)
-#define MODEL_CUSTOM_FUNC_3RD_COLUMN  (21*FW)
-#define MODEL_CUSTOM_FUNC_4TH_COLUMN  (34*FW-3)
-#elif defined(GRAPHICS)
-#define MODEL_CUSTOM_FUNC_1ST_COLUMN  (3)
-#define MODEL_CUSTOM_FUNC_2ND_COLUMN  (5*FW-2)
-#define MODEL_CUSTOM_FUNC_3RD_COLUMN  (15*FW+2)
-#define MODEL_CUSTOM_FUNC_4TH_COLUMN  (20*FW)
+  #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (5+4*FW)
+  #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (9*FW)
+  #define MODEL_CUSTOM_FUNC_3RD_COLUMN          (21*FW)
+  #define MODEL_CUSTOM_FUNC_4TH_COLUMN          (34*FW-3)
+  #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    MODEL_CUSTOM_FUNC_4TH_COLUMN
 #else
-#define MODEL_CUSTOM_FUNC_1ST_COLUMN  (3)
-#define MODEL_CUSTOM_FUNC_2ND_COLUMN  (5*FW-2)
-#define MODEL_CUSTOM_FUNC_3RD_COLUMN  (15*FW+2)
-#define MODEL_CUSTOM_FUNC_4TH_COLUMN  (18*FW+2)
+  #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (3)
+  #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (5*FW-2)
+  #define MODEL_CUSTOM_FUNC_3RD_COLUMN          (15*FW+2)
+  #define MODEL_CUSTOM_FUNC_4TH_COLUMN          (20*FW)
+  #if defined(GRAPHICS)
+    #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF  MODEL_CUSTOM_FUNC_4TH_COLUMN
+  #else
+    #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF  (18*FW+2)
+  #endif
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
@@ -4395,7 +4396,7 @@ void menuModelCustomFunctions(uint8_t event)
               || CFN_FUNC(sd) == FUNC_VOLUME
 #endif
               )) {
-            menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN, y, CFN_ACTIVE(sd), attr);
+            menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(sd), attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_ACTIVE(sd), 1);
           }
           else if (sd->swtch && HAS_REPEAT_PARAM()) {
