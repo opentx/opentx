@@ -62,9 +62,6 @@ OS_TID debugTaskId;
 OS_STK debugStack[DEBUG_STACK_SIZE];
 #endif
 
-OS_TCID audioTimer;
-OS_FlagID audioFlag;
-
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
 
@@ -126,7 +123,7 @@ audioQueue  audio;
 #endif
 
 #if defined(DSM2)
-// TODO port to ARM Bryan's code
+// TODO move elsewhere
 bool s_bind_mode = false;
 bool s_rangecheck_mode = false;
 uint8_t s_bind_allowed = 255;
@@ -1882,8 +1879,8 @@ uint8_t checkTrim(uint8_t event)
     if (after < TRIM_MIN)
       after = TRIM_MIN;
 #if defined(CPUARM)
-    after >>= 1;
-    after += 120;
+    after <<= 3;
+    after += 120*16;
 #else
     after >>= 2;
     after += 60;
@@ -4342,7 +4339,6 @@ void menusTask(void * pdata)
   pwrOff(); // Only turn power off if necessary
 }
 
-extern void audioTimerHandle(void);
 extern void audioTask(void* pdata);
 
 #endif
@@ -4449,9 +4445,6 @@ int main(void)
 
   mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
   menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
-
-  audioFlag = CoCreateFlag(true, false);          // Auto-reset, start FALSE
-  audioTimer = CoCreateTmr(TMR_TYPE_ONE_SHOT, 1000/(1000/CFG_SYSTICK_FREQ), 1000/(1000/CFG_SYSTICK_FREQ), audioTimerHandle);
   audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
 
   audioMutex = CoCreateMutex();

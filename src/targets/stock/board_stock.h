@@ -78,8 +78,8 @@
   #define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
   #define TIMER_AUDIO_VECT         TIMER4_OVF_vect
   #define SET_TIMER_AUDIO_CTRL()   TCCR4B = (0b111 << CS20)
-  #define PAUSE_AUDIO_INTERRUPT()  TIMSK4 &= ~(1<<OCIE4A)
-  #define RESUME_AUDIO_INTERRUPT() TIMSK4 |= (1<<OCIE4A)
+  #define PAUSE_AUDIO_INTERRUPT()  TIMSK4 &= ~(1<<TOIE4)
+  #define RESUME_AUDIO_INTERRUPT() TIMSK4 |= (1<<TOIE4)
 #else
   #define TIMER_16KHZ_VECT         TIMER0_OVF_vect
   #define COUNTER_16KHZ            TCNT0

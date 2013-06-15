@@ -35,22 +35,7 @@
  */
 
 #include "opentx.h"
-
-// Must NOT be in flash, PDC needs a RAM source.
-// Amplitude reduced to 30% to allow for voice volume
-uint16_t Sine_values[] =
-{
-  2048,2085,2123,2160,2197,2233,2268,2303,2336,2369,
-  2400,2430,2458,2485,2510,2533,2554,2573,2590,2605,
-  2618,2629,2637,2643,2646,2648,2646,2643,2637,2629,
-  2618,2605,2590,2573,2554,2533,2510,2485,2458,2430,
-  2400,2369,2336,2303,2268,2233,2197,2160,2123,2085,
-  2048,2010,1972,1935,1898,1862,1826,1792,1758,1726,
-  1695,1665,1637,1610,1585,1562,1541,1522,1505,1490,
-  1477,1466,1458,1452,1448,1448,1448,1452,1458,1466,
-  1477,1490,1505,1522,1541,1562,1585,1610,1637,1665,
-  1695,1726,1758,1792,1826,1862,1898,1935,1972,2010
-};
+#include <math.h>
 
 #if defined(SDCARD)
 const char * audioFilenames[] = {
@@ -221,8 +206,8 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
 #define isAudioFileAvailable(i, f) false
 #endif
 
-uint16_t alawTable[256];
-uint16_t ulawTable[256];
+int16_t alawTable[256];
+int16_t ulawTable[256];
 
 #define         SIGN_BIT        (0x80)      /* Sign bit for a A-law byte. */
 #define         QUANT_MASK      (0xf)       /* Quantization field mask. */
@@ -265,8 +250,8 @@ static short ulaw2linear(unsigned char u_val)
 void codecsInit()
 {
   for (uint32_t i=0; i<256; i++) {
-    alawTable[i] = (0x8000 + alaw2linear(i)) >> 4;
-    ulawTable[i] = (0x8000 + ulaw2linear(i)) >> 4;
+    alawTable[i] = alaw2linear(i);
+    ulawTable[i] = ulaw2linear(i);
   }
 }
 
@@ -275,19 +260,13 @@ AudioQueue audioQueue;
 AudioQueue::AudioQueue()
 {
   memset(this, 0, sizeof(AudioQueue));
-  prioIdx = -1;
 }
 
 void AudioQueue::start()
 {
-  state = AUDIO_SLEEPING;
-  CoSetFlag(audioFlag);
+  state = 1;
 }
 
-void audioTimerHandle(void)
-{
-  CoSetFlag(audioFlag);
-}
 
 #define CODEC_ID_PCM_S16LE  1
 #define CODEC_ID_PCM_ALAW   6
@@ -297,8 +276,10 @@ void audioTimerHandle(void)
 void audioTask(void* pdata)
 {
   while (!audioQueue.started()) {
-    CoWaitForSingleFlag(audioFlag, 0);
+    CoTickDelay(1);
   }
+
+  setSampleRate(AUDIO_SAMPLE_RATE);
 
 #if defined(SDCARD)
   if (!unexpectedShutdown) {
@@ -309,262 +290,243 @@ void audioTask(void* pdata)
 #endif  
 
   while (1) {
-
-    CoWaitForSingleFlag(audioFlag, 0);
-
     audioQueue.wakeup();
-
+    CoTickDelay(2/*4ms*/);
   }
 }
 #endif
 
-#define WAV_BUFFER_SIZE 512
-uint16_t wavSamplesArray[3*WAV_BUFFER_SIZE];
-uint16_t * wavSamplesBuffer = &wavSamplesArray[0];
-uint16_t * nextAudioData = NULL;
-uint16_t nextAudioSize = 0;
+void AudioQueue::pushBuffer(AudioBuffer *buffer)
+{
+  buffer->state = AUDIO_BUFFER_FILLED;
+
+  if (dacQueue(buffer))
+    buffer->state = AUDIO_BUFFER_PLAYING;
+
+  bufferWIdx = nextBufferIdx(bufferWIdx);
+}
+
+void mix(uint16_t * result, int sample, unsigned int fade)
+{
+  *result = limit(0, *result + ((sample >> fade) >> 4), 4095);
+}
 
 #if defined(SDCARD) && !defined(SIMU)
 
 #define RIFF_CHUNK_SIZE 12
+uint8_t wavBuffer[AUDIO_BUFFER_SIZE*2];
 
-void AudioQueue::sdWakeup(AudioContext & context)
+int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, unsigned int weight)
 {
-  if (!nextAudioData) {
-    AudioFragment & fragment = context.fragment;
-    FRESULT result = FR_OK;
-    UINT read = 0;
-    if (fragment.file[1]) {
-      result = f_open(&context.wavFile, fragment.file, FA_OPEN_EXISTING | FA_READ);
-      fragment.file[1] = 0;
-      if (result == FR_OK) {
-        result = f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, RIFF_CHUNK_SIZE+8, &read);
-        if (result == FR_OK && read == RIFF_CHUNK_SIZE+8 && !memcmp(wavSamplesBuffer, "RIFF", 4) && !memcmp(wavSamplesBuffer+4/*short*/, "WAVEfmt ", 8)) {
-          uint32_t size = *((uint32_t *)(wavSamplesBuffer+8/*short*/));
-          result = (size < 256 ? f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, size+8, &read) : FR_DENIED);
-          if (result == FR_OK && read == size+8) {
-            context.pcmCodec = wavSamplesBuffer[0];
-            context.pcmFreq = wavSamplesBuffer[2];
-            uint32_t *wavSamplesPtr = (uint32_t *)(wavSamplesBuffer + size/2);
-            uint32_t size = wavSamplesPtr[1];
-            while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
-              result = (size < 256 ? f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, size+8, &read) : FR_DENIED);
-              if (read != size+8) result = FR_DENIED;
-              wavSamplesPtr = (uint32_t *)(wavSamplesBuffer + size/2);
-              size = wavSamplesPtr[1];
-            }
-            context.wavSize = size;
+  FRESULT result = FR_OK;
+  UINT read = 0;
+  AudioFragment & fragment = context.fragment;
+
+  if (fragment.file[1]) {
+    result = f_open(&context.state.wav.file, fragment.file, FA_OPEN_EXISTING | FA_READ);
+    fragment.file[1] = 0;
+    if (result == FR_OK) {
+      result = f_read(&context.state.wav.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
+      if (result == FR_OK && read == RIFF_CHUNK_SIZE+8 && !memcmp(wavBuffer, "RIFF", 4) && !memcmp(wavBuffer+8, "WAVEfmt ", 8)) {
+        uint32_t size = *((uint32_t *)(wavBuffer+16));
+        result = (size < 256 ? f_read(&context.state.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
+        if (result == FR_OK && read == size+8) {
+          context.state.wav.codec = ((uint16_t *)wavBuffer)[0];
+          context.state.wav.freq = ((uint16_t *)wavBuffer)[2];
+          uint32_t *wavSamplesPtr = (uint32_t *)(wavBuffer + size);
+          uint32_t size = wavSamplesPtr[1];
+          if (context.state.wav.freq != 0 && context.state.wav.freq * (AUDIO_SAMPLE_RATE / context.state.wav.freq) == AUDIO_SAMPLE_RATE) {
+            context.state.wav.resampleRatio = (AUDIO_SAMPLE_RATE / context.state.wav.freq);
+            context.state.wav.readSize = (context.state.wav.codec == CODEC_ID_PCM_S16LE ? 2*AUDIO_BUFFER_SIZE : AUDIO_BUFFER_SIZE) / context.state.wav.resampleRatio;
           }
           else {
             result = FR_DENIED;
           }
+          while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
+            result = (size < 256 ? f_read(&context.state.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
+            if (read != size+8) result = FR_DENIED;
+            wavSamplesPtr = (uint32_t *)(wavBuffer + size);
+            size = wavSamplesPtr[1];
+          }
+          context.state.wav.size = size;
         }
         else {
           result = FR_DENIED;
         }
       }
+      else {
+        result = FR_DENIED;
+      }
     }
+  }
 
-    read = 0;
-    uint16_t bufsize = (context.pcmCodec == CODEC_ID_PCM_S16LE ? WAV_BUFFER_SIZE * sizeof(uint16_t) : WAV_BUFFER_SIZE);
+  read = 0;
+  if (result == FR_OK) {
+    result = f_read(&context.state.wav.file, wavBuffer, context.state.wav.readSize, &read);
     if (result == FR_OK) {
-      result = f_read(&context.wavFile, (uint8_t *)wavSamplesBuffer, bufsize, &read);
-    }
-
-    if (result != FR_OK) {
-      dacStop();
-      memset(&fragment, 0, sizeof(fragment));
-      f_close(&context.wavFile);
-      if (context.pcmFreq) {
-        CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 1000) / context.pcmFreq, 0);
-        CoStartTmr(audioTimer);
-        CoClearFlag(audioFlag);
+      if (read > context.state.wav.size) {
+        read = context.state.wav.size;
       }
-      else {
-        CoSetFlag(audioFlag);
-      }
-      state = AUDIO_RESUMING;
-    }
-    else {
-      if (read > context.wavSize)
-        read = context.wavSize;
-      context.wavSize -= read;
+      context.state.wav.size -= read;
 
-      if (read != bufsize) {
-        memset(&fragment, 0, sizeof(fragment));
-        f_close(&context.wavFile);
+      if (read != context.state.wav.readSize) {
+        f_close(&context.state.wav.file);
+        fragment.clear();
       }
 
-      setFrequency(context.pcmFreq);
-
-      if (context.pcmCodec == CODEC_ID_PCM_S16LE) {
+      uint16_t * samples = buffer->data;
+      if (context.state.wav.codec == CODEC_ID_PCM_S16LE) {
         read /= 2;
-        uint32_t i = 0;
-        for (; i < read; i++)
-          wavSamplesBuffer[i] = ((uint16_t) 0x8000 + ((int16_t) (wavSamplesBuffer[i]))) >> 4;
-        for (; i < WAV_BUFFER_SIZE; i++)
-          wavSamplesBuffer[i] = 0x8000;
+        for (uint32_t i=0; i<read; i++) {
+          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
+            mix(samples++, ((int16_t *)wavBuffer)[i], weight);
+        }
       }
-      else if (context.pcmCodec == CODEC_ID_PCM_ALAW) {
-        int32_t i;
-        for (i = read - 1; i >= 0; i--)
-          wavSamplesBuffer[i] = alawTable[((uint8_t *) wavSamplesBuffer)[i]];
-        for (i = read; i < WAV_BUFFER_SIZE; i++)
-          wavSamplesBuffer[i] = 0x8000;
+      else if (context.state.wav.codec == CODEC_ID_PCM_ALAW) {
+        for (uint32_t i=0; i<read; i++)
+          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
+            mix(samples++, alawTable[wavBuffer[i]], weight);
       }
-      else if (context.pcmCodec == CODEC_ID_PCM_MULAW) {
-        int32_t i;
-        for (i = read - 1; i >= 0; i--)
-          wavSamplesBuffer[i] = ulawTable[((uint8_t *) wavSamplesBuffer)[i]];
-        for (i = read; i < WAV_BUFFER_SIZE; i++)
-          wavSamplesBuffer[i] = 0x8000;
+      else if (context.state.wav.codec == CODEC_ID_PCM_MULAW) {
+        for (uint32_t i=0; i<read; i++)
+          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
+            mix(samples++, ulawTable[wavBuffer[i]], weight);
       }
 
-      read /= 2;
-
-      if (read) {
-        state = AUDIO_PLAYING_WAV;
-        if (dacQueue(wavSamplesBuffer, read)) {
-          CoSetFlag(audioFlag);
-        }
-        else {
-          nextAudioSize = read;
-          nextAudioData = wavSamplesBuffer;
-#if defined(PCBSKY9X)
-          dacStart();
-#endif
-          CoSetTmrCnt(audioTimer, (WAV_BUFFER_SIZE * 500) / context.pcmFreq, 0);
-          CoStartTmr(audioTimer);
-        }
-        wavSamplesBuffer += WAV_BUFFER_SIZE;
-        if (wavSamplesBuffer >= wavSamplesArray + 3 * WAV_BUFFER_SIZE)
-          wavSamplesBuffer = wavSamplesArray;
-      }
-      else {
-        state = AUDIO_RESUMING;
-        CoSetFlag(audioFlag);
-      }
+      return samples - buffer->data;
     }
   }
-  else {
-    CoSetTmrCnt(audioTimer, 5/*10ms*/, 0);
-    CoStartTmr(audioTimer);
-  }
+
+  fragment.clear();
+  return -result;
+}
+#else
+int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, unsigned int weight)
+{
+  return 0;
 }
 #endif
+
+int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, unsigned int weight)
+{
+  AudioFragment & fragment = context.fragment;
+  unsigned int duration = 0;
+  int result = 0;
+
+  if (fragment.tone.duration > 0) {
+    result = AUDIO_BUFFER_SIZE;
+    if (fragment.tone.freq && context.state.tone.freq!=fragment.tone.freq && (!fragment.tone.freqIncr || abs(context.state.tone.freq-fragment.tone.freq) > 100)) {
+      int periods = DIM(context.state.tone.points) / ((AUDIO_SAMPLE_RATE / fragment.tone.freq) + 1);
+      context.state.tone.count = (periods * AUDIO_SAMPLE_RATE) / fragment.tone.freq;
+      if (context.state.tone.idx >= context.state.tone.count) context.state.tone.idx = 0;
+      double t = (M_PI * 2 * periods) / context.state.tone.count;
+      for (unsigned int i=0; i<context.state.tone.count; i++)
+        context.state.tone.points[i] = sin(t*i) * 16000;
+    }
+
+    if (fragment.tone.freqIncr)
+      fragment.tone.freq += AUDIO_BUFFER_DURATION * fragment.tone.freqIncr;
+    else
+      fragment.tone.freq = 0;
+
+    duration = min<unsigned int>(AUDIO_BUFFER_DURATION, fragment.tone.duration);
+    for (unsigned int i=0; i<duration*(AUDIO_BUFFER_SIZE/AUDIO_BUFFER_DURATION); i++) {
+      mix(&buffer->data[i], context.state.tone.points[context.state.tone.idx], weight);
+      context.state.tone.idx = context.state.tone.idx + 1;
+      if (context.state.tone.idx >= context.state.tone.count) context.state.tone.idx = 0;
+    }
+
+    fragment.tone.duration -= duration;
+    if (fragment.tone.duration > 0)
+      return AUDIO_BUFFER_SIZE;
+  }
+
+  if (fragment.tone.pause > 0) {
+    result = AUDIO_BUFFER_SIZE;
+    fragment.tone.pause -= min<unsigned int>(AUDIO_BUFFER_DURATION-duration, fragment.tone.pause);
+    if (fragment.tone.pause > 0)
+      return AUDIO_BUFFER_SIZE;
+  }
+
+  fragment.clear();
+  return result;
+}
+
+int AudioQueue::mixAudioContext(AudioContext &context, AudioBuffer *buffer, unsigned int weight)
+{
+  int result;
+  AudioFragment & fragment = context.fragment;
+
+  if (fragment.type == FRAGMENT_FILE) {
+    result = mixWav(context, buffer, weight);
+  }
+  else if (fragment.type == FRAGMENT_TONE) {
+    result = mixTone(context, buffer, weight);
+  }
+  else {
+    result = 0;
+  }
+
+  return result;
+}
 
 void AudioQueue::wakeup()
 {
-  AudioFragment & fragment = currentContext.fragment;
+  int result;
+  AudioBuffer *buffer = getEmptyBuffer();
+  if (buffer) {
+    unsigned int weight = 0;
+    int size = 0;
 
-  if (prioIdx >= 0) {
-    memset(&fragment, 0, sizeof(fragment));
-  }
-
-#if defined(SDCARD) && !defined(SIMU)
-  if (fragment.file[0]) {
-    sdWakeup(currentContext);
-  }
-  else
-#endif
-  if (fragment.duration > 0) {
-    if (state != AUDIO_PLAYING_TONE) {
-      state = AUDIO_PLAYING_TONE;
-      dacFill(Sine_values, 50/*100 samples*/);
+    // write silence in the buffer
+    for (uint32_t i=0; i<AUDIO_BUFFER_SIZE; i++) {
+      buffer->data[i] = 0x8000 >> 4; /* silence */
     }
 
-    setFrequency(fragment.freq * 6100 / 4);
+    // mix the foreground context
+    result = mixAudioContext(foregroundContext, buffer, weight);
+    if (result > 0) {
+      size = max(size, result);
+      weight += 1;
+    }
 
-    if (fragment.freqIncr) {
-      CoSetTmrCnt(audioTimer, 2, 0);
-      fragment.freq += fragment.freqIncr;
-      fragment.duration--;
+    // mix the normal context
+    result = mixAudioContext(currentContext, buffer, weight);
+    if (result > 0) {
+      size = max(size, result);
+      weight += 1;
     }
     else {
-      CoSetTmrCnt(audioTimer, fragment.duration*2, 0);
-      fragment.duration = 0;
+      CoEnterMutexSection(audioMutex);
+      if (ridx != widx) {
+        currentContext.clear();
+        currentContext.fragment = fragments[ridx];
+        if (!fragments[ridx].repeat--) {
+          ridx = (ridx + 1) % AUDIO_QUEUE_LENGTH;
+        }
+      }
+      CoLeaveMutexSection(audioMutex);
     }
-    dacStart();
-    CoClearFlag(audioFlag);
-    CoStartTmr(audioTimer);
-  }
-  else if (fragment.pause > 0) {
-    state = AUDIO_PLAYING_TONE;
-    CoSetTmrCnt(audioTimer, fragment.pause*2, 0);
-    fragment.pause = 0;
-    dacStop();
-    CoClearFlag(audioFlag);
-    CoStartTmr(audioTimer);
-  }
-#if defined(SDCARD) && !defined(SIMU)
-  else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.file[0]) {
+
+    // mix the background context
     if (!isFunctionActive(FUNC_BACKGND_MUSIC_PAUSE)) {
-      sdWakeup(backgroundContext);
-    }
-    else {
-      CoSetTmrCnt(audioTimer, 5/*10ms*/, 0);
-      CoStartTmr(audioTimer);
-    }
-  }
-#endif
-  else if (ridx == widx && prioIdx < 0 && backgroundContext.fragment.duration > 0) {
-    if (state != AUDIO_PLAYING_TONE) {
-      state = AUDIO_PLAYING_TONE;
-      dacFill(Sine_values, 50/*100 samples*/);
-    }
-    CoSetTmrCnt(audioTimer, backgroundContext.fragment.duration*2, 0);
-    backgroundContext.fragment.duration = 0;
-    setFrequency(backgroundContext.fragment.freq * 6100 / 4);
-    dacStart();
-    CoClearFlag(audioFlag);
-    CoStartTmr(audioTimer);
-  }
-  else {
-    CoEnterMutexSection(audioMutex);
-
-    if (ridx != widx) {
-      if (prioIdx >= 0) {
-        ridx = prioIdx;
-        prioIdx = -1;
-        dacStop();
-        CoClearFlag(audioFlag);
-        nextAudioData = NULL;
-        if (state == AUDIO_PLAYING_WAV) {
-          state = AUDIO_RESUMING;
-          CoSetTmrCnt(audioTimer, 1/*2ms*/ + (WAV_BUFFER_SIZE * 1000) / getFrequency(), 0);
-          CoStartTmr(audioTimer);
-        }
-        else if (state == AUDIO_PLAYING_TONE) {
-          state = AUDIO_RESUMING;
-          CoSetTmrCnt(audioTimer, 1/*2ms*/, 0);
-          CoStartTmr(audioTimer);
-        }
-        else {
-          CoSetFlag(audioFlag);
-        }
-      }
-      else {
-        CoSetFlag(audioFlag);
-      }
-
-      memcpy(&fragment, &fragments[ridx], sizeof(fragment));
-      if (!fragments[ridx].repeat--) {
-        ridx = (ridx + 1) % AUDIO_QUEUE_LENGTH;
+      result = mixAudioContext(backgroundContext, buffer, weight);
+      if (result > 0) {
+        size = max(size, result);
       }
     }
-    else {
-      memset(&fragment, 0, sizeof(fragment));
-      state = AUDIO_SLEEPING;
-      dacStop();
-    }
 
-    CoLeaveMutexSection(audioMutex);
+    // push the buffer if needed
+    if (size > 0) {
+      buffer->size = size;
+      pushBuffer(buffer);
+    }
   }
 }
 
-inline uint8_t getToneLength(uint8_t tLen)
+inline unsigned int getToneLength(uint16_t len)
 {
-  uint8_t result = tLen; // default
+  unsigned int result = len; // default
   if (g_eeGeneral.beepLength < 0) {
     result /= (1-g_eeGeneral.beepLength);
   }
@@ -574,9 +536,9 @@ inline uint8_t getToneLength(uint8_t tLen)
   return result;
 }
 
-void AudioQueue::pause(uint8_t tLen)
+void AudioQueue::pause(uint16_t len)
 {
-  play(0, 0, tLen); // a pause
+  play(0, 0, len);
 }	
 
 bool AudioQueue::isPlaying(uint8_t id)
@@ -594,44 +556,49 @@ bool AudioQueue::isPlaying(uint8_t id)
   return false;
 }
 
-#ifndef SIMU
-extern OS_MutexID audioMutex;
-#endif
-
-void AudioQueue::play(uint16_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlags, int8_t tFreqIncr)
+void AudioQueue::play(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags, int8_t freqIncr)
 {
   CoEnterMutexSection(audioMutex);
 
-  if (tFlags & PLAY_BACKGROUND) {
-    backgroundContext.fragment.freq = tFreq;
-    backgroundContext.fragment.duration = tLen;
-    backgroundContext.fragment.pause = tPause;
-    if (!busy()) {
-      state = AUDIO_RESUMING;
-      CoSetFlag(audioFlag);
-    }
+  if (freq && freq < BEEP_MIN_FREQ)
+    freq = BEEP_MIN_FREQ;
+
+  if (flags & PLAY_BACKGROUND) {
+    AudioFragment & fragment = backgroundContext.fragment;
+    backgroundContext.clear();
+    fragment.type = FRAGMENT_TONE;
+    fragment.tone.freq = freq;
+    fragment.tone.duration = len;
+    fragment.tone.pause = pause;
   }
   else {
-    if (tFreq > 0) { //we dont add pitch if zero as this is a pause only event
-      tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
-    }
-    tLen = getToneLength(tLen);
+    freq += g_eeGeneral.speakerPitch * 15;
+    len = getToneLength(len);
 
-    uint8_t next_widx = (widx + 1) % AUDIO_QUEUE_LENGTH;
-    if (next_widx != ridx) {
-      AudioFragment & fragment = fragments[widx];
-      memset(&fragment, 0, sizeof(fragment));
-      fragment.freq = tFreq;
-      fragment.duration = tLen;
-      fragment.pause = tPause;
-      fragment.repeat = tFlags & 0x0f;
-      fragment.freqIncr = tFreqIncr;
-      if (tFlags & PLAY_NOW)
-        prioIdx = widx;
-      widx = next_widx;
-      if (!busy()) {
-        state = AUDIO_RESUMING;
-        CoSetFlag(audioFlag);
+    if (flags & PLAY_NOW) {
+      AudioFragment & fragment = foregroundContext.fragment;
+      if (fragment.type == FRAGMENT_EMPTY) {
+        foregroundContext.clear();
+        fragment.type = FRAGMENT_TONE;
+        fragment.repeat = flags & 0x0f;
+        fragment.tone.freq = freq;
+        fragment.tone.duration = len;
+        fragment.tone.pause = pause;
+        fragment.tone.freqIncr = freqIncr;
+      }
+    }
+    else {
+      uint8_t next_widx = (widx + 1) % AUDIO_QUEUE_LENGTH;
+      if (next_widx != ridx) {
+        AudioFragment & fragment = fragments[widx];
+        fragment.clear();
+        fragment.type = FRAGMENT_TONE;
+        fragment.repeat = flags & 0x0f;
+        fragment.tone.freq = freq;
+        fragment.tone.duration = len;
+        fragment.tone.pause = pause;
+        fragment.tone.freqIncr = freqIncr;
+        widx = next_widx;
       }
     }
   }
@@ -653,29 +620,32 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   CoEnterMutexSection(audioMutex);
 
   if (flags & PLAY_BACKGROUND) {
-    memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));
-    strcpy(backgroundContext.fragment.file, filename);
-    backgroundContext.fragment.id = id;
-    if (!busy()) {
-      state = AUDIO_RESUMING;
-      CoSetFlag(audioFlag);
+    backgroundContext.clear();
+    AudioFragment & fragment = backgroundContext.fragment;
+    fragment.type = FRAGMENT_FILE;
+    strcpy(fragment.file, filename);
+    fragment.id = id;
+  }
+  else if (flags & PLAY_NOW) {
+    AudioFragment & fragment = foregroundContext.fragment;
+    if (fragment.type == FRAGMENT_EMPTY) {
+      foregroundContext.clear();
+      fragment.type = FRAGMENT_FILE;
+      strcpy(fragment.file, filename);
+      fragment.repeat = flags & 0x0f;
+      fragment.id = id;
     }
   }
   else {
     uint8_t next_widx = (widx + 1) % AUDIO_QUEUE_LENGTH;
     if (next_widx != ridx) {
       AudioFragment & fragment = fragments[widx];
-      memset(&fragment, 0, sizeof(fragment));
+      fragment.clear();
+      fragment.type = FRAGMENT_FILE;
       strcpy(fragment.file, filename);
       fragment.repeat = flags & 0x0f;
       fragment.id = id;
-      if (flags & PLAY_NOW)
-        prioIdx = widx;
       widx = next_widx;
-      if (!busy()) {
-        state = AUDIO_RESUMING;
-        CoSetFlag(audioFlag);
-      }
     }
   }
 
@@ -691,7 +661,8 @@ void AudioQueue::stopPlay(uint8_t id)
 
   // For the moment it's only needed to stop the background music
   if (backgroundContext.fragment.id == id) {
-    memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));
+    backgroundContext.fragment.type = FRAGMENT_EMPTY;
+    backgroundContext.fragment.id = 0;
   }
 }
 
@@ -708,12 +679,13 @@ void AudioQueue::reset()
 {
   CoEnterMutexSection(audioMutex);
   widx = ridx;                      // clean the queue
-  memset(&currentContext.fragment, 0, sizeof(AudioFragment));
-  memset(&backgroundContext.fragment, 0, sizeof(AudioFragment));
+  foregroundContext.clear();
+  currentContext.clear();
+  backgroundContext.clear();
   CoLeaveMutexSection(audioMutex);
 }
 
-void audioEvent(uint8_t e, uint8_t f)
+void audioEvent(uint8_t e, uint16_t f)
 {
 #if defined(SDCARD)
   char filename[AUDIO_FILENAME_MAXLEN+1];
@@ -740,29 +712,23 @@ void audioEvent(uint8_t e, uint8_t f)
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:
-          audioQueue.play(140, 20, 4, 2|PLAY_NOW);
+          audioQueue.play(2250, 80, 20, PLAY_REPEAT(2));
           break;
         // low battery in tx
         case AU_TX_BATTERY_LOW:
-          if (!audioQueue.busy()) {
-            audioQueue.play(120, 40, 6, 2, 1);
-            audioQueue.play(160, 40, 6, 2, -1);
-          }
+          audioQueue.play(1950, 160, 20, PLAY_REPEAT(2), 1);
+          audioQueue.play(2550, 160, 20, PLAY_REPEAT(2), -1);
           break;
 #if defined(PCBSKY9X)
         case AU_TX_MAH_HIGH:
-          if (!audioQueue.busy()) {
-            // TODO Rob something better here?
-            audioQueue.play(120, 40, 6, 2, 1);
-            audioQueue.play(160, 40, 6, 2, -1);
-          }
+          // TODO Rob something better here?
+          audioQueue.play(1950, 160, 20, PLAY_REPEAT(2), 1);
+          audioQueue.play(2550, 160, 20, PLAY_REPEAT(2), -1);
           break;
         case AU_TX_TEMP_HIGH:
-          if (!audioQueue.busy()) {
-            // TODO Rob something better here?
-            audioQueue.play(120, 40, 6, 2, 1);
-            audioQueue.play(160, 40, 6, 2, -1);
-          }
+          // TODO Rob something better here?
+          audioQueue.play(1950, 160, 20, PLAY_REPEAT(2), 1);
+          audioQueue.play(2550, 160, 20, PLAY_REPEAT(2), -1);
           break;
 #endif
 #if defined(VOICE)
@@ -770,173 +736,157 @@ void audioEvent(uint8_t e, uint8_t f)
         case AU_SWITCH_ALERT:
 #endif
         case AU_ERROR:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
           break;
         // keypad up (seems to be used when going left/right through system menu options. 0-100 scales etc)
         case AU_KEYPAD_UP:
-          audioQueue.play(BEEP_KEY_UP_FREQ, 20, 2, PLAY_NOW);
+          audioQueue.play(BEEP_KEY_UP_FREQ, 80, 20, PLAY_NOW);
           break;
         // keypad down (seems to be used when going left/right through system menu options. 0-100 scales etc)
         case AU_KEYPAD_DOWN:
-          audioQueue.play(BEEP_KEY_DOWN_FREQ, 20, 2, PLAY_NOW);
+          audioQueue.play(BEEP_KEY_DOWN_FREQ, 80, 20, PLAY_NOW);
           break;
         // menu display (also used by a few generic beeps)
         case AU_MENUS:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 20, 4, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
           break;
         // trim move
         case AU_TRIM_MOVE:
-          audioQueue.play(f, 12, 2, PLAY_NOW);
+          audioQueue.play(f, 40, 20, PLAY_NOW);
           break;
         // trim center
         case AU_TRIM_MIDDLE:
-          audioQueue.play(f, 20, 4, PLAY_NOW);
+          audioQueue.play(f, 80, 20, PLAY_NOW);
           break;
         // trim center
         case AU_TRIM_END:
-          audioQueue.play(f, 20, 4, PLAY_NOW);
+          audioQueue.play(f, 80, 20, PLAY_NOW);
           break;          
         // warning one
         case AU_WARNING1:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 20, 2, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
           break;
         // warning two
         case AU_WARNING2:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 40, 2, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 160, 20, PLAY_NOW);
           break;
         // warning three
         case AU_WARNING3:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
           break;
         // pot/stick center
         case AU_POT_STICK_MIDDLE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+100, 20, 2, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 80, 20, PLAY_NOW);
           break;
         // mix warning 1
         case AU_MIX_WARNING_1:
-          audioQueue.play(BEEP_DEFAULT_FREQ+96, 12, 0);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1440, 48, 32);
           break;
         // mix warning 2
         case AU_MIX_WARNING_2:
-          audioQueue.play(BEEP_DEFAULT_FREQ+104, 12, 8, PLAY_REPEAT(1));
+          audioQueue.play(BEEP_DEFAULT_FREQ+1560, 48, 32, PLAY_REPEAT(1));
           break;
         // mix warning 3
         case AU_MIX_WARNING_3:
-          audioQueue.play(BEEP_DEFAULT_FREQ+112, 12, 8, PLAY_REPEAT(2));
+          audioQueue.play(BEEP_DEFAULT_FREQ+1680, 48, 32, PLAY_REPEAT(2));
           break;
         // time <= 10 seconds left
         case AU_TIMER_LT10:
-          audioQueue.play(BEEP_DEFAULT_FREQ+10, 30, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_NOW);
           break;
         // time 20 seconds left
         case AU_TIMER_20:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 120, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         // time 30 seconds left
         case AU_TIMER_30:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 6, PLAY_REPEAT(2)|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 120, 20, PLAY_REPEAT(2)|PLAY_NOW);
           break;
 #if defined(PCBTARANIS)
         case AU_A1_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+40, 50, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_NOW);
           break;
         case AU_A1_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+40, 50, 6, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_A2_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+100, 50, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 200, 20, PLAY_NOW);
           break;
         case AU_A2_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+100, 50, 6, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_RSSI_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+120, 200, 6, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 800, 20, PLAY_NOW);
           break;
         case AU_RSSI_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+120, 200, 6, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1800, 800, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_SWR_RED:
-          // siren
-          audioQueue.play(20, 40, 10, 2, 1);
-          audioQueue.pause(200);
+          // TODO
+          audioQueue.play(450, 160, 40, PLAY_REPEAT(2), 1);
           break;
 #endif
         case AU_FRSKY_BEEP1:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 15, 2);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 60, 20);
           break;
         case AU_FRSKY_BEEP2:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 30, 2);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 120, 20);
           break;
         case AU_FRSKY_BEEP3:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 50, 2);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ, 200, 20);
           break;
         case AU_FRSKY_WARN1:
-          audioQueue.play(BEEP_DEFAULT_FREQ+40, 30, 10, 2);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ+600, 120, 40, PLAY_REPEAT(2));
           break;
         case AU_FRSKY_WARN2:
-          audioQueue.play(BEEP_DEFAULT_FREQ+60,30,10,2);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ+900, 120, 40, PLAY_REPEAT(2));
           break;
         case AU_FRSKY_CHEEP:
-          audioQueue.play(BEEP_DEFAULT_FREQ+60,20,4,2,2);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ+900, 80, 20, PLAY_REPEAT(2), 2);
           break;
         case AU_FRSKY_RING:
-          audioQueue.play(BEEP_DEFAULT_FREQ+50,10,4,10);
-          audioQueue.play(BEEP_DEFAULT_FREQ+50,10,20,1);
-          audioQueue.play(BEEP_DEFAULT_FREQ+50,10,4,10);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ+750, 40, 20, PLAY_REPEAT(10));
+          audioQueue.play(BEEP_DEFAULT_FREQ+750, 40, 80, PLAY_REPEAT(1));
+          audioQueue.play(BEEP_DEFAULT_FREQ+750, 40, 20, PLAY_REPEAT(10));
           break;
         case AU_FRSKY_SCIFI:
-          audioQueue.play(160,20,6,2,-1);
-          audioQueue.play(120,20,6,2,1);
-          audioQueue.play(140,20,2,0);
-          audioQueue.pause(200);
+          audioQueue.play(2550, 80, 20, PLAY_REPEAT(2), -1);
+          audioQueue.play(1950, 80, 20, PLAY_REPEAT(2), 1);
+          audioQueue.play(2250, 80, 20, 0);
           break;
         case AU_FRSKY_ROBOT:
-          audioQueue.play(140,10,2,1);
-          audioQueue.play(100,30,4,1);
-          audioQueue.play(160,30,4,1);
-          audioQueue.pause(200);
+          audioQueue.play(2250, 40,  20,  PLAY_REPEAT(1));
+          audioQueue.play(1650, 120, 20, PLAY_REPEAT(1));
+          audioQueue.play(2550, 120, 20, PLAY_REPEAT(1));
           break;
         case AU_FRSKY_CHIRP:
-          audioQueue.play(BEEP_DEFAULT_FREQ+80,10,2,2);
-          audioQueue.play(BEEP_DEFAULT_FREQ+108,10,2,3);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1200, 40, 20, PLAY_REPEAT(2));
+          audioQueue.play(BEEP_DEFAULT_FREQ+1620, 40, 20, PLAY_REPEAT(3));
           break;
         case AU_FRSKY_TADA:
-          audioQueue.play(100,20,10);
-          audioQueue.play(180,20,10);
-          audioQueue.play(220,16,8,2);
-          audioQueue.pause(200);
+          audioQueue.play(1650, 80, 40);
+          audioQueue.play(2850, 80, 40);
+          audioQueue.play(3450, 64, 36, PLAY_REPEAT(2));
           break;
         case AU_FRSKY_CRICKET:
-          audioQueue.play(160,10,20,3);
-          audioQueue.play(160,10,40,1);
-          audioQueue.play(160,10,20,3);
-          audioQueue.pause(200);
+          audioQueue.play(2550, 40, 80,  PLAY_REPEAT(3));
+          audioQueue.play(2550, 40, 160, PLAY_REPEAT(1));
+          audioQueue.play(2550, 40, 80,  PLAY_REPEAT(3));
           break;
         case AU_FRSKY_SIREN:
-          audioQueue.play(20,40,10,2,1);
-          audioQueue.pause(200);
+          audioQueue.play(450, 160, 40, PLAY_REPEAT(2), 2);
           break;
         case AU_FRSKY_ALARMC:
-          audioQueue.play(100,8,20,2);
-          audioQueue.play(140,16,40,1);
-          audioQueue.play(100,16,20,2);
-          audioQueue.play(140,8,40,1);
-          audioQueue.pause(200);
+          audioQueue.play(1650, 32, 68,  PLAY_REPEAT(2));
+          audioQueue.play(2250, 64, 156, PLAY_REPEAT(1));
+          audioQueue.play(1650, 64, 76,  PLAY_REPEAT(2));
+          audioQueue.play(2250, 32, 168, PLAY_REPEAT(1));
           break;
         case AU_FRSKY_RATATA:
-          audioQueue.play(BEEP_DEFAULT_FREQ+100,10,20,10);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 40, 80, PLAY_REPEAT(10));
           break;
         case AU_FRSKY_TICK:
-          audioQueue.play(BEEP_DEFAULT_FREQ+100,10,100,2);
-          audioQueue.pause(200);
+          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 40, 400, PLAY_REPEAT(2));
           break;
         default:
           break;

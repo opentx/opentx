@@ -40,11 +40,7 @@
 void audioInit( void ) ;
 void audioEnd( void ) ;
 
-void setFrequency( uint32_t frequency ) ;
-uint32_t getFrequency();
-
-extern uint16_t *nextAudioData;
-extern uint16_t nextAudioSize;
+void setSampleRate( uint32_t frequency ) ;
 
 inline void dacStart()
 {
@@ -60,32 +56,5 @@ inline void dacStop()
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
 void setVolume(uint8_t volume);
-
-inline void dacFill(uint16_t *data, uint16_t size)
-{
-  register Dacc *dacptr = DACC;
-  dacptr->DACC_TPR = CONVERT_PTR(data);
-  dacptr->DACC_TNPR = CONVERT_PTR(data);
-  dacptr->DACC_TCR = size;       // words
-  dacptr->DACC_TNCR = size;      // words
-}
-
-inline uint16_t dacQueue(uint16_t *data, uint16_t size)
-{
-  register Dacc *dacptr = DACC;
-  if (dacptr->DACC_ISR & DACC_ISR_TXBUFE) {
-    dacptr->DACC_TPR = CONVERT_PTR(data);
-    dacptr->DACC_TCR = size;
-    return size;
-  }
-  else if (dacptr->DACC_TNCR == 0) {
-    dacptr->DACC_TNPR = CONVERT_PTR(data);
-    dacptr->DACC_TNCR = size;
-    return size;
-  }
-  else {
-    return 0;
-  }
-}
 
 #endif

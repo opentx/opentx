@@ -131,10 +131,9 @@ void audioQueue::play(uint8_t tFreq, uint8_t tLen, uint8_t tPause, uint8_t tFlag
     int8_t tFreqIncr = (tFlags >> 6);
     if (tFreqIncr == 3) tFreqIncr = -1;
 
-    if (tFreq > 0) { //we dont add pitch if zero as this is a pause only event
-      tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
-    }
+    tFreq += g_eeGeneral.speakerPitch + BEEP_OFFSET; // add pitch compensator
     tLen = getToneLength(tLen);
+
     if ((tFlags & PLAY_NOW) || (!busy() && empty())) {
       toneFreq = tFreq;
       toneTimeLeft = tLen;
@@ -177,12 +176,14 @@ void audioQueue::event(uint8_t e, uint8_t f)
     if (e < AU_FRSKY_FIRST || empty()) {
       // TODO when VOICE enable some cases here are not needed!
       switch (e) {
+#if !defined(VOICE)
         case AU_TX_BATTERY_LOW:
           if (empty()) {
             play(60, 20, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(1));
             play(80, 20, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(-1));
           }
           break;
+#endif
         case AU_TRIM_MOVE:
           play(f, 6, 1, PLAY_NOW);
           break;
@@ -193,43 +194,36 @@ void audioQueue::event(uint8_t e, uint8_t f)
           play(BEEP_DEFAULT_FREQ+25, 5, 2, PLAY_REPEAT(10));
           play(BEEP_DEFAULT_FREQ+25, 5, 10, PLAY_REPEAT(1));
           play(BEEP_DEFAULT_FREQ+25, 5, 2, PLAY_REPEAT(10));
-          pause(200);
           break;
         case AU_FRSKY_SCIFI:
           play(80, 10, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(-1));
           play(60, 10, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(1));
           play(70, 10, 1);
-          pause(200);
           break;
         case AU_FRSKY_ROBOT:
           play(70, 5, 1, PLAY_REPEAT(1));
           play(50, 15, 2, PLAY_REPEAT(1));
           play(80, 15, 2, PLAY_REPEAT(1));
-          pause(200);
           break;
         case AU_FRSKY_CHIRP:
           play(BEEP_DEFAULT_FREQ+40, 5, 1, PLAY_REPEAT(2));
           play(BEEP_DEFAULT_FREQ+54, 5, 1, PLAY_REPEAT(3));
-          pause(200);
           break;
         case AU_FRSKY_TADA:
           play(50, 5, 5);
           play(90, 5, 5);
           play(110, 3, 4, PLAY_REPEAT(2));
-          pause(200);
           break;
         case AU_FRSKY_CRICKET:
           play(80, 5, 10, PLAY_REPEAT(3));
           play(80, 5, 20, PLAY_REPEAT(1));
           play(80, 5, 10, PLAY_REPEAT(3));
-          pause(200);
           break;
         case AU_FRSKY_ALARMC:
           play(50, 4, 10, PLAY_REPEAT(2));
           play(70, 8, 20, PLAY_REPEAT(1));
           play(50, 8, 10, PLAY_REPEAT(2));
           play(70, 4, 20, PLAY_REPEAT(1));
-          pause(200);
           break;
         default:
         {

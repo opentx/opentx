@@ -96,13 +96,13 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 };
 
 #if LCD_W >= 212
-#define RADIO_SETUP_2ND_COLUMN  (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)
-#define RADIO_SETUP_DATE_COLUMN RADIO_SETUP_2ND_COLUMN + 4*FWNUM
-#define RADIO_SETUP_TIME_COLUMN RADIO_SETUP_2ND_COLUMN + 2*FWNUM
+  #define RADIO_SETUP_2ND_COLUMN  (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)
+  #define RADIO_SETUP_DATE_COLUMN RADIO_SETUP_2ND_COLUMN + 4*FWNUM
+  #define RADIO_SETUP_TIME_COLUMN RADIO_SETUP_2ND_COLUMN + 2*FWNUM
 #else
-#define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
-#define RADIO_SETUP_TIME_COLUMN (FW*15+9)
-#define RADIO_SETUP_DATE_COLUMN (FW*15+5)
+  #define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
+  #define RADIO_SETUP_TIME_COLUMN (FW*15+9)
+  #define RADIO_SETUP_DATE_COLUMN (FW*15+5)
 #endif
 
 #if !defined(CPUM64)
@@ -656,7 +656,7 @@ void onSdManagerMenu(const char *result)
     f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
-    audioQueue.playFile(lfn, PLAY_NOW);
+    audioQueue.playFile(lfn, PLAY_BACKGROUND, 255);
   }
 #endif
 }

@@ -36,33 +36,22 @@
 
 #include "../../opentx.h"
 
-uint32_t currentFrequency = 0;
-
-uint32_t getFrequency()
+void setSampleRate(uint32_t frequency)
 {
-  return currentFrequency;
-}
+  register Tc *ptc ;
+  register uint32_t timer ;
 
-void setFrequency(uint32_t frequency)
-{
-  if (currentFrequency != frequency) {
-    currentFrequency = frequency;
+  timer = Master_frequency / (8 * frequency) ;		// MCK/8 and 100 000 Hz
+  if (timer > 65535)
+    timer = 65535 ;
+  if (timer < 2)
+    timer = 2 ;
 
-    register Tc *ptc ;
-    register uint32_t timer ;
-
-    timer = Master_frequency / (8 * frequency) ;		// MCK/8 and 100 000 Hz
-    if (timer > 65535)
-      timer = 65535 ;
-    if (timer < 2)
-      timer = 2 ;
-
-    ptc = TC0 ;		// Tc block 0 (TC0-2)
-    ptc->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;		// Stop clock
-    ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
-    ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
-    ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
-  }
+  ptc = TC0 ;		// Tc block 0 (TC0-2)
+  ptc->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;		// Stop clock
+  ptc->TC_CHANNEL[1].TC_RC = timer ;			// 100 000 Hz
+  ptc->TC_CHANNEL[1].TC_RA = timer >> 1 ;
+  ptc->TC_CHANNEL[1].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
 }
 
 // Start TIMER1 at 100000Hz, used for DACC trigger
@@ -108,29 +97,22 @@ void dacInit()
 
   dacptr->DACC_CDR = 2048 ;						// Half amplitude
 
-  // Data for PDC must NOT be in flash, PDC needs a RAM source.
-  dacFill(Sine_values, 50/*100 samples*/);
   dacptr->DACC_PTCR = DACC_PTCR_TXTEN ;
-
   NVIC_EnableIRQ(DACC_IRQn) ;
+}
+
+bool dacQueue(AudioBuffer *buffer)
+{
+  dacStart();
+  return false;
 }
 
 extern "C" void DAC_IRQHandler()
 {
-  // Data for PDC must NOT be in flash, PDC needs a RAM source.
-  if (audioQueue.state == AUDIO_PLAYING_WAV) {
-    if (nextAudioData) {
-      DACC->DACC_TNPR = CONVERT_PTR(nextAudioData);
-      DACC->DACC_TNCR = nextAudioSize;
-      nextAudioData = NULL;
-    }
-    else {
-      dacStop();
-    }
-  }
-  else if (audioQueue.state == AUDIO_PLAYING_TONE){
-    DACC->DACC_TNPR = CONVERT_PTR(Sine_values);
-    DACC->DACC_TNCR = 50 ;	// words, 100 16 bit values
+  AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+  if (nextBuffer) {
+    DACC->DACC_TNPR = CONVERT_PTR(nextBuffer->data);
+    DACC->DACC_TNCR = nextBuffer->size/2;
   }
   else {
     dacStop();

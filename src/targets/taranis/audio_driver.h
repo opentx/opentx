@@ -40,12 +40,9 @@
 extern void audioInit( void ) ;
 extern void audioEnd( void ) ;
 
-extern void setFrequency( uint32_t frequency ) ;
-extern uint32_t getFrequency();
+extern void setSampleRate(uint32_t frequency);
 
 extern bool dacIdle;
-extern uint16_t *nextAudioData;
-extern uint16_t nextAudioSize;
 
 inline void dacStart()
 {
@@ -58,31 +55,6 @@ inline void dacStart()
 inline void dacStop()
 {
   DMA1_Stream5->CR &= ~DMA_SxCR_CIRC ;
-}
-
-inline void dacFill(uint16_t *data, uint16_t size)
-{
-  DMA1_Stream5->CR &= ~DMA_SxCR_EN;                            // Disable DMA channel
-  DMA1_Stream5->M0AR = CONVERT_PTR(data);
-  DMA1_Stream5->NDTR = size*2;
-}
-
-inline uint16_t dacQueue(uint16_t *data, uint16_t size)
-{
-  if (dacIdle) {
-    dacIdle = false;
-    DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
-    DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
-    DMA1_Stream5->M0AR = CONVERT_PTR(data);
-    DMA1_Stream5->NDTR = size*2;
-    DMA1_Stream5->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE ;               // Enable DMA channel and interrupt
-    DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
-    DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
-    return size;
-  }
-  else {
-    return 0;
-  }
 }
 
 #define VOLUME_LEVEL_MAX  23
