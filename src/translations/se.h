@@ -36,7 +36,7 @@
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
-#define TR_OFFON               "AV ""P\203\0"
+#define TR_OFFON               "Av ""P\200\0"
 
 #define LEN_MMMINV             "\003"
 #define TR_MMMINV              "---""INV"
@@ -45,7 +45,7 @@
 #define TR_NCHANNELS           "\0014KN\0016KN\0018KN10KN12KN14KN16KN"
 
 #define LEN_VBEEPMODE          "\005"
-#define TR_VBEEPMODE           "Tyst ""Alarm""EjKnp""Alla "
+#define TR_VBEEPMODE           "Tyst\0""Alarm""EjKnp""Alla\0"
 
 #define LEN_VBEEPLEN           "\005"
 #define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
@@ -53,11 +53,11 @@
 #define LEN_VRENAVIG           "\003"
 #define TR_VRENAVIG            "No REaREb"
 
-#define LEN_VBLMODE            "\004"
-#define TR_VBLMODE             "AV  ""Knpp""Spak""B\200da""P\203\0"
+#define LEN_VBLMODE            "\005"
+#define TR_VBLMODE             "Av\0  ""Knapp""Spak\0""B\200da\0""P\200\0  "
 
-#define LEN_TRNMODE            "\003"
-#define TR_TRNMODE             " AV"" +="" :="
+#define LEN_TRNMODE            "\002"
+#define TR_TRNMODE             "Av""+="":="
 
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "KN1KN2KN3KN4"
@@ -72,7 +72,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_VTRIMINC           TR("\006","\014")
-#define TR_VTRIMINC            TR("Expo  ""xFin  ""Fin   ""Medium""Grov  ","Exponentiell""Extra Fin   ""Fin         ""Medium      ""Grov        ")
+#define TR_VTRIMINC            TR("Expo\0 ""xFin\0 ""Fin\0  ""Medium""Grov\0 ","Exponentiell""Extra Fin\0  ""Fin\0        ""Medium\0     ""Grov\0       ")
 
 #define LEN_RETA123            "\001"
 
@@ -133,7 +133,7 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\003"
-#define TR_VMIXTRIMS           "AV ""P\203\0""Rod""Hjd""Gas""Ske"
+#define TR_VMIXTRIMS           "Av\0""P\200\0""Rod""Hjd""Gas""Ske"
 
 #define LEN_VCSWFUNC           "\005"
 #define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 ""|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 ""a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x""TIM\0"
@@ -271,8 +271,8 @@
 #define LEN_VARIOSRC           "\005"
 #define TR_VARIOSRC            "Alti\0""Alti+""Vario""A1\0  ""A2\0"
 
-#define LEN_VSCREEN            "\004"
-#define TR_VSCREEN             "Nums""Bars"
+#define LEN_VSCREEN            "\007"
+#define TR_VSCREEN             "Siffror""Staplar"
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
@@ -339,7 +339,7 @@
 #define TR_VSRCRAW             "---\0""Rod\0""H\202j\0""Gas\0""Ske\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "MAX " TR_CYC_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
-#define TR_VTMRMODES           "AV ""ABS""GAs""GA%""GAt"
+#define TR_VTMRMODES           "Av\0""ABS""GAs""GA%""GAt"
 
 #define LEN_VTRAINERMODES      "\006"
 #define TR_VTRAINERMODES       "Master""Slav\0."
@@ -412,7 +412,7 @@
 #define TR_CURVE               "Kurva"
 #define TR_FLMODE              TR("Mod","Moder")
 #define TR_MIXWARNING          "Varning"
-#define TR_OFF                 "AV "
+#define TR_OFF                 "Av "
 #define TR_MULTPX              "Multpx"
 #define TR_DELAYDOWN           "Dr\202j Ned"
 #define TR_DELAYUP             "Dr\202j Upp"
@@ -427,7 +427,7 @@
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             "Anv\201ndardata"
 #define TR_BLADES              INDENT"Blad"
-#define TR_SCREEN              "Sk\201rm  "
+#define TR_SCREEN              "Sk\201rm"
 #define TR_SOUND_LABEL         "Ljud "
 #define TR_LENGTH              INDENT"Tid"
 #define TR_SPKRPITCH           INDENT"Ton"
@@ -439,7 +439,7 @@
 #define TR_BATTERYWARNING      INDENT"Batteri"
 #define TR_INACTIVITYALARM     INDENT"Inaktivitet"
 #define TR_MEMORYWARNING       INDENT"Lite Minne"
-#define TR_ALARMWARNING        INDENT"Ljud AV"
+#define TR_ALARMWARNING        INDENT"Ljud Av"
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLEREVERSE     "Revers.Gas"
 #define TR_MINUTEBEEP          INDENT"Minutpip"
@@ -448,14 +448,14 @@
 #define TR_BACKLIGHT_LABEL     "Belysning"
 #define TR_BLDELAY             INDENT"Av efter"
 #define TR_BLONBRIGHTNESS      INDENT"P\200 Ljusstyrka"
-#define TR_BLOFFBRIGHTNESS     INDENT"AV Ljusstyrka"
-#define TR_SPLASHSCREEN        "Bild vid start"
+#define TR_BLOFFBRIGHTNESS     INDENT"Av Ljusstyrka"
+#define TR_SPLASHSCREEN        "Startbild"
 #define TR_THROTTLEWARNING     "Gasvarning"
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
-#define TR_RXCHANNELORD        "Kanalordning RX"
+#define TR_RXCHANNELORD        "Kanaler i RX"
 #define TR_SLAVE               "Slav"
-#define TR_MODESRC             " l\201ge\006% k\201lla"
+#define TR_MODESRC             " L\201ge\004% K\201lla"
 #define TR_MULTIPLIER          "Styrka"
 #define TR_CAL                 "Kalib."
 #define TR_VTRIM               "Trim- +"
@@ -541,8 +541,8 @@
 #define TR_SHUTDOWN            "ST\204NGER AV"
 #define TR_BATT_CALIB          "Kalib. Batteri"
 #define TR_CURRENT_CALIB       "Kalib. Str\202m"
-#define TR_VOLTAGE             INDENT"Sp\201nning"
-#define TR_CURRENT             INDENT"Str\202m"
+#define TR_VOLTAGE             INDENT"Volt"
+#define TR_CURRENT             INDENT"Ampere"
 #define TR_SELECT_MODEL        "V\201lj Modell"
 #define TR_CREATE_MODEL        "Skapa Modell"
 #define TR_COPY_MODEL          "Kopiera Modell"
@@ -600,7 +600,7 @@
 #define TR_TYPE                "Typ "
 #define TR_GLOBAL_VARS         "Globala Variabler"
 #define TR_GLOBAL_VAR          "Global Variabel"
-#define TR_MENUGLOBALVARS      "GLOBALA VARIABLER"
+#define TR_MENUGLOBALVARS      "Globala Variabler"
 #define TR_OWN                 "Egen"
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
@@ -630,7 +630,7 @@
 #define TR_BUZZER              INDENT"Summer"
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
-#define TR_MODULE_RANGE        "[R\201ckvidd]"
+#define TR_MODULE_RANGE        "[Styrka]"
 #define TR_RESET               "[Reset]"
 #define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"
