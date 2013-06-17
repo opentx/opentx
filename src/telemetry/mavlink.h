@@ -198,6 +198,7 @@ extern inline uint8_t MAVLINK_Action2CtrlMode(uint8_t action) {
 	switch (action) {
 	
 	return action;
+	}
 }
 #endif
 void telemetryWakeup();
