@@ -177,9 +177,9 @@ class AudioQueue {
 
     void wakeup();
 
-    int mixAudioContext(AudioContext &context, AudioBuffer *buffer, unsigned int weight);
-    int mixTone(AudioContext &context, AudioBuffer *buffer, unsigned int weight);
-    int mixWav(AudioContext &context, AudioBuffer *buffer, unsigned int weight);
+    int mixAudioContext(AudioContext &context, AudioBuffer *buffer, int beepVolume, int wavVolume, unsigned int fade);
+    int mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
+    int mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
 
     volatile bool state;
     uint8_t ridx;
@@ -269,6 +269,9 @@ void audioStart();
 #define AUDIO_RSSI_RED()         audioEvent(AU_RSSI_RED)
 #define AUDIO_SWR_RED()          audioEvent(AU_SWR_RED)
 #endif
+
+#define AUDIO_TELEMETRY_LOST()   audioEvent(AU_TELEMETRY_LOST)
+#define AUDIO_TELEMETRY_BACK()   audioEvent(AU_TELEMETRY_BACK)
 
 #define AUDIO_HEARTBEAT()
 

@@ -406,6 +406,11 @@ void generalDefault()
   g_eeGeneral.inactivityTimer = 10;
 #endif
 
+#if defined(CPUARM)
+  g_eeGeneral.wavVolume = 2;
+  g_eeGeneral.backgroundVolume = 1;
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 

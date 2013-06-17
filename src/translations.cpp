@@ -343,6 +343,10 @@ const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
 const pm_char STR_UNITSSYSTEM[]   PROGMEM = TR_UNITSSYSTEM;
 const pm_char STR_VOICELANG[] PROGMEM = TR_VOICELANG;
 const pm_char STR_MODELIDUSED[] PROGMEM = TR_MODELIDUSED;
+const pm_char STR_BEEP_VOLUME[] PROGMEM = INDENT "Beep Volume";
+const pm_char STR_WAV_VOLUME[] PROGMEM = INDENT "Wav Volume";
+const pm_char STR_VARIO_VOLUME[] PROGMEM = INDENT "Vario Volume";
+const pm_char STR_BG_VOLUME[] PROGMEM = INDENT "Bg Volume";
 #endif
 
 #if defined(NAVIGATION_MENUS)

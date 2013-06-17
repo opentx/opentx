@@ -210,7 +210,11 @@ enum BeeperMode {
   uint8_t  rotarySteps; \
   uint8_t  countryCode; \
   uint8_t  imperial; \
-  char     ttsLanguage[2];
+  char     ttsLanguage[2]; \
+  int8_t   beepVolume; \
+  int8_t   wavVolume; \
+  int8_t   varioVolume; \
+  int8_t   backgroundVolume;
 #elif defined(PXX)
   #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else

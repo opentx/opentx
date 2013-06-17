@@ -37,6 +37,15 @@
 #include "opentx.h"
 #include <math.h>
 
+const unsigned int toneVolumes[] = {
+  4000,
+  8000,
+  16000,
+  24000,
+  32000
+};
+
+
 #if defined(SDCARD)
 const char * audioFilenames[] = {
   "tada",
@@ -76,11 +85,13 @@ const char * audioFilenames[] = {
   "rssi_red",
   "swr_red",
 #endif
+  "telemko",
+  "telemok"
 };
 
-uint32_t sdAvailableSystemAudioFiles = 0;
-uint8_t sdAvailablePhaseAudioFiles[MAX_PHASES] = { 0 };
-uint8_t sdAvailableMixerAudioFiles[MAX_MIXERS] = { 0 };
+uint64_t sdAvailableSystemAudioFiles = 0;
+uint8_t  sdAvailablePhaseAudioFiles[MAX_PHASES] = { 0 };
+uint8_t  sdAvailableMixerAudioFiles[MAX_MIXERS] = { 0 };
 
 void refreshSystemAudioFiles()
 {
@@ -97,13 +108,13 @@ void refreshSystemAudioFiles()
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_FRSKY_FIRST);
 
-  uint32_t availableAudioFiles = 0;
+  uint64_t availableAudioFiles = 0;
 
   for (uint32_t i=0; i<AU_FRSKY_FIRST; i++) {
     strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
     strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
     if (f_stat(filename, &info) == FR_OK)
-      availableAudioFiles |= ((uint32_t)1 << i);
+      availableAudioFiles |= ((uint64_t)1 << i);
   }
 
   sdAvailableSystemAudioFiles = availableAudioFiles;
@@ -163,7 +174,7 @@ bool isAudioFileAvailable(uint32_t i, char * filename)
 #endif
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
-    if (sdAvailableSystemAudioFiles & ((uint32_t)1 << event)) {
+    if (sdAvailableSystemAudioFiles & ((uint64_t)1 << event)) {
       strcpy(filename, SYSTEM_SOUNDS_PATH "/");
       strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
       strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
@@ -316,7 +327,7 @@ void mix(uint16_t * result, int sample, unsigned int fade)
 #define RIFF_CHUNK_SIZE 12
 uint8_t wavBuffer[AUDIO_BUFFER_SIZE*2];
 
-int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, unsigned int weight)
+int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
 {
   FRESULT result = FR_OK;
   UINT read = 0;
@@ -379,18 +390,18 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, unsigned int 
         read /= 2;
         for (uint32_t i=0; i<read; i++) {
           for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
-            mix(samples++, ((int16_t *)wavBuffer)[i], weight);
+            mix(samples++, ((int16_t *)wavBuffer)[i], fade+2-volume);
         }
       }
       else if (context.state.wav.codec == CODEC_ID_PCM_ALAW) {
         for (uint32_t i=0; i<read; i++)
           for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
-            mix(samples++, alawTable[wavBuffer[i]], weight);
+            mix(samples++, alawTable[wavBuffer[i]], fade+2-volume);
       }
       else if (context.state.wav.codec == CODEC_ID_PCM_MULAW) {
         for (uint32_t i=0; i<read; i++)
           for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
-            mix(samples++, ulawTable[wavBuffer[i]], weight);
+            mix(samples++, ulawTable[wavBuffer[i]], fade+2-volume);
       }
 
       return samples - buffer->data;
@@ -401,13 +412,13 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, unsigned int 
   return -result;
 }
 #else
-int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, unsigned int weight)
+int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
 {
   return 0;
 }
 #endif
 
-int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, unsigned int weight)
+int AudioQueue::mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
 {
   AudioFragment & fragment = context.fragment;
   unsigned int duration = 0;
@@ -421,7 +432,7 @@ int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, unsigned int
       if (context.state.tone.idx >= context.state.tone.count) context.state.tone.idx = 0;
       double t = (M_PI * 2 * periods) / context.state.tone.count;
       for (unsigned int i=0; i<context.state.tone.count; i++)
-        context.state.tone.points[i] = sin(t*i) * 16000;
+        context.state.tone.points[i] = sin(t*i) * (toneVolumes[2+volume]);
     }
 
     if (fragment.tone.freqIncr)
@@ -431,7 +442,7 @@ int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, unsigned int
 
     duration = min<unsigned int>(AUDIO_BUFFER_DURATION, fragment.tone.duration);
     for (unsigned int i=0; i<duration*(AUDIO_BUFFER_SIZE/AUDIO_BUFFER_DURATION); i++) {
-      mix(&buffer->data[i], context.state.tone.points[context.state.tone.idx], weight);
+      mix(&buffer->data[i], context.state.tone.points[context.state.tone.idx], fade);
       context.state.tone.idx = context.state.tone.idx + 1;
       if (context.state.tone.idx >= context.state.tone.count) context.state.tone.idx = 0;
     }
@@ -452,16 +463,16 @@ int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, unsigned int
   return result;
 }
 
-int AudioQueue::mixAudioContext(AudioContext &context, AudioBuffer *buffer, unsigned int weight)
+int AudioQueue::mixAudioContext(AudioContext &context, AudioBuffer *buffer, int beepVolume, int wavVolume, unsigned int fade)
 {
   int result;
   AudioFragment & fragment = context.fragment;
 
-  if (fragment.type == FRAGMENT_FILE) {
-    result = mixWav(context, buffer, weight);
+  if (fragment.type == FRAGMENT_TONE) {
+    result = mixBeep(context, buffer, beepVolume, fade);
   }
-  else if (fragment.type == FRAGMENT_TONE) {
-    result = mixTone(context, buffer, weight);
+  else if (fragment.type == FRAGMENT_FILE) {
+    result = mixWav(context, buffer, wavVolume, fade);
   }
   else {
     result = 0;
@@ -475,7 +486,7 @@ void AudioQueue::wakeup()
   int result;
   AudioBuffer *buffer = getEmptyBuffer();
   if (buffer) {
-    unsigned int weight = 0;
+    unsigned int fade = 0;
     int size = 0;
 
     // write silence in the buffer
@@ -484,17 +495,17 @@ void AudioQueue::wakeup()
     }
 
     // mix the foreground context
-    result = mixAudioContext(foregroundContext, buffer, weight);
+    result = mixAudioContext(foregroundContext, buffer, g_eeGeneral.beepVolume, g_eeGeneral.wavVolume, fade);
     if (result > 0) {
       size = max(size, result);
-      weight += 1;
+      fade += 1;
     }
 
     // mix the normal context
-    result = mixAudioContext(currentContext, buffer, weight);
+    result = mixAudioContext(currentContext, buffer, g_eeGeneral.beepVolume, g_eeGeneral.wavVolume, fade);
     if (result > 0) {
       size = max(size, result);
-      weight += 1;
+      fade += 1;
     }
     else {
       CoEnterMutexSection(audioMutex);
@@ -510,7 +521,7 @@ void AudioQueue::wakeup()
 
     // mix the background context
     if (!isFunctionActive(FUNC_BACKGND_MUSIC_PAUSE)) {
-      result = mixAudioContext(backgroundContext, buffer, weight);
+      result = mixAudioContext(backgroundContext, buffer, g_eeGeneral.varioVolume, g_eeGeneral.backgroundVolume, fade);
       if (result > 0) {
         size = max(size, result);
       }
@@ -530,7 +541,7 @@ inline unsigned int getToneLength(uint16_t len)
   if (g_eeGeneral.beepLength < 0) {
     result /= (1-g_eeGeneral.beepLength);
   }
-  if (g_eeGeneral.beepLength > 0) {
+  else if (g_eeGeneral.beepLength > 0) {
     result *= (1+g_eeGeneral.beepLength);
   }
   return result;
