@@ -2057,7 +2057,11 @@ void menuModelFlightModesAll(uint8_t event)
 
 #endif // defined(PCBTARANIS)
 
-#endif // defined(FLIGHT_MODES)
+#else // defined(FLIGHT_MODES)
+
+#define displayFlightModes(...)
+
+#endif
 
 #if defined(HELI)
 
