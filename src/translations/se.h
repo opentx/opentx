@@ -646,7 +646,7 @@
 #define TR_LIMITS_HEADERS      { " Namn ", " Offset ", " Min ", " Max ", " Riktning ", " PPM-centrum ", " Symmetriskt " }
 #define TR_CSW_HEADERS         { " Funktion ", " V1 ", " V2 ", " AND Brytare ", " Tidsl\201ngd ", " F\202rdr\202j " }
 
-//Taranis About screen
+// About screen
 #define TR_ABOUTUS             "Om Oss"
 
 #define TR_ABOUT_OPENTX_1      "OpenTX \201r icke-kommersiell,"
@@ -678,14 +678,20 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Grafikdesigner"
 
-#define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "H\200rdvarudesign/produktion"
+#if defined(PCBTARANIS)
+  #define TR_ABOUT_HARDWARE_1  "FrSky"
+  #define TR_ABOUT_HARDWARE_2  "H\200rdvarudesign/producent"
+  #define TR_ABOUT_HARDWARE_3  ""
+#else
+  #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
+  #define TR_ABOUT_HARDWARE_2  "Sky9x design/producent"
+  #define TR_ABOUT_HARDWARE_3  ""
+#endif
 
 #define TR_ABOUT_PARENTS_1     "Ursprungsprojekt"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
 #define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
-#define TR_ABOUT_HARDWARE_3    ""
 
 #define TR_CHR_SHORT  's'
 #define TR_CHR_LONG   'l'
