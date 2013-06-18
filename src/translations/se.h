@@ -166,7 +166,7 @@
   #else
     #define TR_PLAY_TRACK      "Spela\0    "
   #endif
-  #define TR_PLAY_BOTH         "Spela B\203da"
+  #define TR_PLAY_BOTH         "Spela B\200da"
   #define TR_PLAY_VALUE        "Spela Val "
 #else
   #define TR_PLAY_TRACK        "[Sp. Sp\200r]"
