@@ -635,7 +635,7 @@
 #define TR_SET                 "[D\200f.]"
 #define TR_TRAINER             "Ecolage"
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio d\200fectueuse!"
-#define TR_MODELIDUSED         TR("ID d\200j\202 affect\200","No de modèle d\200j\202 utilis\200")
+#define TR_MODELIDUSED         TR("ID d\200j\202 affect\200","No de mod\201le d\200j\202 utilis\200")
 #define TR_MODULE              INDENT "Type de module"
 #define TR_CHANNELRANGE        INDENT "Plage de canaux"
 #define TR_LOWALARM            INDENT "Alarme basse"
