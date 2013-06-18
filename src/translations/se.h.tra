@@ -378,7 +378,7 @@
 #define TR_ETRIMS              TR("Trimmar++","Utökade Trimmar")
 #define TR_TRIMINC             TR("Trimning","Trimökning")
 #define TR_TTRACE              "Följ Gas"
-#define TR_TTRIM               TR("G-Källa","Gas-källa")
+#define TR_TTRIM               "Gastrim"
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
 #define TR_PROTO               TR(INDENT"Proto",INDENT"Protokoll")
 #define TR_PPMFRAME            "PPM-paket"
