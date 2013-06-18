@@ -37,48 +37,48 @@
 #ifndef board_gruvin9x_h
 #define board_gruvin9x_h
 
-#define GPIO_BUTTON_MENU       pinl
-#define GPIO_BUTTON_EXIT       pinl
-#define GPIO_BUTTON_RIGHT      pinl
-#define GPIO_BUTTON_LEFT       pinl
-#define GPIO_BUTTON_UP         pinl
-#define GPIO_BUTTON_DOWN       pinl
-#define PIN_BUTTON_MENU        (1<<INP_L_KEY_MEN)
-#define PIN_BUTTON_EXIT        (1<<INP_L_KEY_EXT)
-#define PIN_BUTTON_UP          (1<<INP_L_KEY_UP)
-#define PIN_BUTTON_DOWN        (1<<INP_L_KEY_DWN)
-#define PIN_BUTTON_RIGHT       (1<<INP_L_KEY_RGT)
-#define PIN_BUTTON_LEFT        (1<<INP_L_KEY_LFT)
+#define GPIO_BUTTON_MENU         pinl
+#define GPIO_BUTTON_EXIT         pinl
+#define GPIO_BUTTON_RIGHT        pinl
+#define GPIO_BUTTON_LEFT         pinl
+#define GPIO_BUTTON_UP           pinl
+#define GPIO_BUTTON_DOWN         pinl
+#define PIN_BUTTON_MENU          (1<<INP_L_KEY_MEN)
+#define PIN_BUTTON_EXIT          (1<<INP_L_KEY_EXT)
+#define PIN_BUTTON_UP            (1<<INP_L_KEY_UP)
+#define PIN_BUTTON_DOWN          (1<<INP_L_KEY_DWN)
+#define PIN_BUTTON_RIGHT         (1<<INP_L_KEY_RGT)
+#define PIN_BUTTON_LEFT          (1<<INP_L_KEY_LFT)
 
-#define GPIO_TRIM_LH_L         pinj
-#define GPIO_TRIM_LV_DN        pinj
-#define GPIO_TRIM_RV_UP        pinj
-#define GPIO_TRIM_RH_L         pinj
-#define GPIO_TRIM_LH_R         pinj
-#define GPIO_TRIM_LV_UP        pinj
-#define GPIO_TRIM_RV_DN        pinj
-#define GPIO_TRIM_RH_R         pinj
-#define PIN_TRIM_LH_L          (1<<INP_J_TRM_LH_DWN)
-#define PIN_TRIM_LV_DN         (1<<INP_J_TRM_LV_DWN)
-#define PIN_TRIM_RV_UP         (1<<INP_J_TRM_RV_UP)
-#define PIN_TRIM_RH_L          (1<<INP_J_TRM_RH_DWN)
-#define PIN_TRIM_LH_R          (1<<INP_J_TRM_LH_UP)
-#define PIN_TRIM_LV_UP         (1<<INP_J_TRM_LV_UP)
-#define PIN_TRIM_RV_DN         (1<<INP_J_TRM_RV_DWN)
-#define PIN_TRIM_RH_R          (1<<INP_J_TRM_RH_UP)
+#define GPIO_TRIM_LH_L           pinj
+#define GPIO_TRIM_LV_DN          pinj
+#define GPIO_TRIM_RV_UP          pinj
+#define GPIO_TRIM_RH_L           pinj
+#define GPIO_TRIM_LH_R           pinj
+#define GPIO_TRIM_LV_UP          pinj
+#define GPIO_TRIM_RV_DN          pinj
+#define GPIO_TRIM_RH_R           pinj
+#define PIN_TRIM_LH_L            (1<<INP_J_TRM_LH_DWN)
+#define PIN_TRIM_LV_DN           (1<<INP_J_TRM_LV_DWN)
+#define PIN_TRIM_RV_UP           (1<<INP_J_TRM_RV_UP)
+#define PIN_TRIM_RH_L            (1<<INP_J_TRM_RH_DWN)
+#define PIN_TRIM_LH_R            (1<<INP_J_TRM_LH_UP)
+#define PIN_TRIM_LV_UP           (1<<INP_J_TRM_LV_UP)
+#define PIN_TRIM_RV_DN           (1<<INP_J_TRM_RV_DWN)
+#define PIN_TRIM_RH_R            (1<<INP_J_TRM_RH_UP)
 
-#define TIMER_16KHZ_VECT TIMER2_OVF_vect
-#define COUNTER_16KHZ TCNT2
-#define TIMER_10MS_VECT  TIMER2_COMPA_vect
-#define TIMER_10MS_COMPVAL OCR2A
-#define PAUSE_10MS_INTERRUPT() TIMSK2 &= ~(1<<OCIE2A)
-#define RESUME_10MS_INTERRUPT() TIMSK2 |= (1<<OCIE2A)
-#define PAUSE_PPMIN_INTERRUPT() TIMSK3 &= ~(1<<ICIE3)
+#define TIMER_16KHZ_VECT         TIMER2_OVF_vect
+#define COUNTER_16KHZ            TCNT2
+#define TIMER_10MS_VECT          TIMER2_COMPA_vect
+#define TIMER_10MS_COMPVAL       OCR2A
+#define PAUSE_10MS_INTERRUPT()   TIMSK2 &= ~(1<<OCIE2A)
+#define RESUME_10MS_INTERRUPT()  TIMSK2 |= (1<<OCIE2A)
+#define PAUSE_PPMIN_INTERRUPT()  TIMSK3 &= ~(1<<ICIE3)
 #define RESUME_PPMIN_INTERRUPT() TIMSK3 |= (1<<ICIE3)
 
-#define SLAVE_MODE() (PING & (1<<INP_G_RF_POW))
-#define JACK_PPM_OUT() PORTG |= (1<<OUT_G_SIM_CTL)
-#define JACK_PPM_IN() PORTG &= ~(1<<OUT_G_SIM_CTL)
+#define SLAVE_MODE()             (PING & (1<<INP_G_RF_POW))
+#define JACK_PPM_OUT()           PORTG |= (1<<OUT_G_SIM_CTL)
+#define JACK_PPM_IN()            PORTG &= ~(1<<OUT_G_SIM_CTL)
 
 // SD driver
 #if !defined(SIMU)
@@ -86,17 +86,17 @@ bool sdMounted();
 void sdMountPoll();
 void sdPoll10ms();
 
-#define SD_IS_HC()       (0)
-#define SD_GET_BLOCKNR() (0)
-#define SD_GET_SIZE_MB() (0)
-#define SD_GET_SPEED()   (0)
+#define SD_IS_HC()               (0)
+#define SD_GET_BLOCKNR()         (0)
+#define SD_GET_SIZE_MB()         (0)
+#define SD_GET_SPEED()           (0)
 #endif
 
-#define SPEAKER_ON   TCCR0A |=  (1 << COM0A0)
-#define SPEAKER_OFF  TCCR0A &= ~(1 << COM0A0)
-#define __BACKLIGHT_ON  PORTC |=  (1 << OUT_C_LIGHT)
-#define __BACKLIGHT_OFF PORTC &= ~(1 << OUT_C_LIGHT)
-#define IS_BACKLIGHT_ON() (PORTC & (1<<OUT_C_LIGHT))
+#define SPEAKER_ON               TCCR0A |=  (1 << COM0A0)
+#define SPEAKER_OFF              TCCR0A &= ~(1 << COM0A0)
+#define __BACKLIGHT_ON           PORTC |=  (1 << OUT_C_LIGHT)
+#define __BACKLIGHT_OFF          PORTC &= ~(1 << OUT_C_LIGHT)
+#define IS_BACKLIGHT_ON()        (PORTC & (1<<OUT_C_LIGHT))
 
 
 #  define INP_L_SPARE6    7

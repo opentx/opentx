@@ -620,12 +620,12 @@ void menuGeneralSdManagerInfo(uint8_t event)
 
 inline bool isFilenameGreater(bool isfile, const char * fn, const char * line)
 {
-  return (isfile && !line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcmp(fn, line) > 0);
+  return (isfile && !line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) > 0);
 }
 
 inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
 {
-  return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcmp(fn, line) < 0);
+  return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) < 0);
 }
 
 void onSdManagerMenu(const char *result)
@@ -713,7 +713,7 @@ void menuGeneralSdManager(uint8_t event)
 #endif
     {
       if (m_posVert > 0) {
-        uint8_t index = m_posVert-1-s_pgOfs;
+        vertpos_t index = m_posVert-1-s_pgOfs;
         if (!reusableBuffer.sdmanager.lines[index][SD_SCREEN_FILE_LENGTH+1]) {
           f_chdir(reusableBuffer.sdmanager.lines[index]);
           s_pgOfs = 0;
@@ -741,7 +741,7 @@ void menuGeneralSdManager(uint8_t event)
         /* TODO if (!strcmp(ext, MODELS_EXT)) {
           s_menu[s_menu_count++] = STR_LOAD_FILE;
         }
-        else */ if (!strcmp(ext, SOUNDS_EXT)) {
+        else */ if (!strcasecmp(ext, SOUNDS_EXT)) {
           MENU_ADD_ITEM(STR_PLAY_FILE);
         }
 #endif
@@ -845,6 +845,24 @@ void menuGeneralSdManager(uint8_t event)
       if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdLastPos, y, ']', attr); }
     }
   }
+
+#if defined(PCBTARANIS)
+  static vertpos_t sdBitmapIdx = 0xFFFF;
+  static uint8_t sdBitmap[MODEL_BITMAP_SIZE];
+  vertpos_t index = m_posVert-1-s_pgOfs;
+  if (m_posVert > 0) {
+    char * ext = reusableBuffer.sdmanager.lines[index];
+    ext += strlen(ext) - 4;
+    if (!strcasecmp(ext, BITMAPS_EXT)) {
+      if (sdBitmapIdx != m_posVert) {
+        sdBitmapIdx = m_posVert;
+        if (bmpLoad(sdBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT))
+          memcpy(sdBitmap, logo_taranis, MODEL_BITMAP_SIZE);
+      }
+      lcd_bmp(22*FW+2, 2*FH+FH/2, sdBitmap);
+    }
+  }
+#endif
 }
 #endif
 

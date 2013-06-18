@@ -203,19 +203,19 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 #endif
 
       uint8_t len = strlen(fn);
-      if (len < 5 || len > maxlen+4 || strcmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
+      if (len < 5 || len > maxlen+4 || strcasecmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
 
       s_menu_count++;
       fn[len-4] = '\0';
 
       if (s_menu_offset == 0) {
-        if (selection && strncmp(fn, selection, maxlen) < 0) {
+        if (selection && strncasecmp(fn, selection, maxlen) < 0) {
           s_last_menu_offset++;
         }
         else {
           for (uint8_t i=0; i<MENU_MAX_LINES; i++) {
             char *line = reusableBuffer.modelsel.menu_bss[i];
-            if (line[0] == '\0' || strcmp(fn, line) < 0) {
+            if (line[0] == '\0' || strcasecmp(fn, line) < 0) {
               if (i < MENU_MAX_LINES-1) memmove(reusableBuffer.modelsel.menu_bss[i+1], line, sizeof(reusableBuffer.modelsel.menu_bss[i]) * (MENU_MAX_LINES-1-i));
               memset(line, 0, MENU_LINE_LENGTH);
               strcpy(line, fn);
@@ -229,7 +229,7 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
       else if (s_last_menu_offset == 0xffff) {
         for (int i=MENU_MAX_LINES-1; i>=0; i--) {
           char *line = reusableBuffer.modelsel.menu_bss[i];
-          if (line[0] == '\0' || strcmp(fn, line) > 0) {
+          if (line[0] == '\0' || strcasecmp(fn, line) > 0) {
             if (i > 0) memmove(reusableBuffer.modelsel.menu_bss[0], reusableBuffer.modelsel.menu_bss[1], sizeof(reusableBuffer.modelsel.menu_bss[i]) * i);
             memset(line, 0, MENU_LINE_LENGTH);
             strcpy(line, fn);
@@ -240,13 +240,13 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
           s_menu[i] = reusableBuffer.modelsel.menu_bss[i];
       }
       else if (s_menu_offset > s_last_menu_offset) {
-        if (strcmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-2]) > 0 && strcmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-1]) < 0) {
+        if (strcasecmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-2]) > 0 && strcasecmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-1]) < 0) {
           memset(reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-1], 0, MENU_LINE_LENGTH);
           strcpy(reusableBuffer.modelsel.menu_bss[MENU_MAX_LINES-1], fn);
         }
       }
       else {
-        if (strcmp(fn, reusableBuffer.modelsel.menu_bss[1]) < 0 && strcmp(fn, reusableBuffer.modelsel.menu_bss[0]) > 0) {
+        if (strcasecmp(fn, reusableBuffer.modelsel.menu_bss[1]) < 0 && strcasecmp(fn, reusableBuffer.modelsel.menu_bss[0]) > 0) {
           memset(reusableBuffer.modelsel.menu_bss[0], 0, MENU_LINE_LENGTH);
           strcpy(reusableBuffer.modelsel.menu_bss[0], fn);
         }
