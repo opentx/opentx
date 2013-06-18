@@ -23,14 +23,14 @@
  *
  *
  *
- * !!!!! DO NOT EDIT se.h - EDIT se.h.se INSTEAD !!!!!!!
+ * !!!!! DO NOT EDIT se.h - EDIT se.h.tra INSTEAD !!!!!!!
  *
- * In order to make translations easier se.h.se is parsed and national
+ * In order to make translations easier se.h.tra is parsed and national
  * characters are replaced by bitmap codes. The result is se.h.
  * 
  * See translate.py in the util catalog for the list of character codes  
  *
- * !!!!! DO NOT EDIT se.h - EDIT se.h.se INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT se.h - EDIT se.h.tra INSTEAD !!!!!!!   
  */
 
    
