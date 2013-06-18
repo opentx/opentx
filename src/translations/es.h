@@ -23,14 +23,14 @@
  * GNU General Public License for more details.
  *
  *
- * !!!!! DO NOT EDIT es.h - EDIT es.h.es INSTEAD !!!!!!!
+ * !!!!! DO NOT EDIT es.h - EDIT es.h.tra INSTEAD !!!!!!!
  *
- * In order to make translations easier es.h.es is parsed and national
+ * In order to make translations easier es.h.tra is parsed and national
  * characters are replaced by bitmap codes. The result is es.h.
  * 
  * See translate.py in the util catalog for the list of character codes  
  *
- * !!!!! DO NOT EDIT es.h - EDIT es.h.es INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT es.h - EDIT es.h.tra INSTEAD !!!!!!!   
  */
 
  
@@ -450,7 +450,7 @@
 #define TR_BLONBRIGHTNESS      INDENT"MAS Brillo"
 #define TR_BLOFFBRIGHTNESS     INDENT"MENOS Brillo"
 #define TR_SPLASHSCREEN        "Ptalla.inicio"
-#define TR_THROTTLEWARNING     TR("Aviso_A", "Aviso Acelerador")
+#define TR_THROTTLEWARNING     TR("Aviso-A", "Aviso Acelerador")
 #define TR_SWITCHWARNING       TR("Aviso-I", "Aviso Intrptor")
 #define TR_TIMEZONE            TR("Zona Hora", "GPS Zona Hora")
 #define TR_RXCHANNELORD        TR("Rx Orden canal", "Orden habitual canales")
@@ -631,7 +631,7 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Enlace]"
 #define TR_MODULE_RANGE        "[Limites]"
-#define TR_RESET               "[Reseteo]"
+#define TR_RESET               "[Reset]"
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Aprendiz"
 #define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"

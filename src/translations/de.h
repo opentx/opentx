@@ -2,6 +2,7 @@
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
+ * - Helle <hrenz62961@aol.com>
  * - Kjell Kernen <kjell.kernen@gmail.com>
  * - Martin Hotar <mhotar@gmail.com>
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
@@ -22,15 +23,14 @@
  * GNU General Public License for more details.
  *
  *
+ * !!!!! DO NOT EDIT de.h - EDIT de.h.tra INSTEAD !!!!!!!
  *
- * !!!!! DO NOT EDIT de.h - EDIT de.h.de INSTEAD !!!!!!!
- *
- * In order to make translations easier de.h.de is parsed and national
+ * In order to make translations easier de.h.tra is parsed and national
  * characters are replaced by bitmap codes. The result is de.h.
  * 
  * See translate.py in the util catalog for the list of character codes  
  *
- * !!!!! DO NOT EDIT de.h - EDIT de.h.de INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT de.h - EDIT de.h.tra INSTEAD !!!!!!!   
  */
 
  
@@ -53,8 +53,8 @@
 #define LEN_VRENAVIG           "\003"
 #define TR_VRENAVIG            "AUSDGaDGb"
 
-#define LEN_VBLMODE            "\004"
-#define TR_VBLMODE             "AUS ""Tast""Stks""Both""EIN "
+#define LEN_VBLMODE            "\005"
+#define TR_VBLMODE             "AUS\0 ""Taste""Stks\0""Beide""EIN\0 " // Anpassung
 
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             "AUS"" +="" :="
@@ -206,7 +206,7 @@
 #define LEN_VFSWRESET          TR("\005", "\011")
 
 #if defined(FRSKY)
-  #define TR_FSW_RESET_TELEM   TR("Telem", "Telemetry")
+  #define TR_FSW_RESET_TELEM   TR("Telem", "Telemetrie ") //\200nderung
 #else
   #define TR_FSW_RESET_TELEM    
 #endif
@@ -271,14 +271,14 @@
 #define LEN_VARIOSRC           "\005"
 #define TR_VARIOSRC            "Alti\0""Alti+""Vario""A1\0  ""A2\0"
 
-#define LEN_VSCREEN  	       "\004"
-#define TR_VSCREEN   	       "Wert""Str."
+#define LEN_VSCREEN  	       "\006"
+#define TR_VSCREEN   	       "Werte\0 ""Balken" //Telemetrie Werte oder Balken
 
 #define LEN_GPSFORMAT          "\004"
-#define TR_GPSFORMAT           "HMS NMEA"
+#define TR_GPSFORMAT           "HMS\0""NMEA"  //Koordinatenanzeige
 
-#define LEN2_VTEMPLATES        13
-#define LEN_VTEMPLATES         "\017"
+#define LEN2_VTEMPLATES        15  // max String L\201nge f\205r Men\205 (original=13)
+#define LEN_VTEMPLATES         "\017"  // max String L\201nge 15+cr+lf
 #define TR_VTEMPLATES          "Misch. L\203sch.\0 ""Einfach. 4-CH\0 ""Fixe Gassperre\0""V-Stabilisator\0""Delta Mischer\0 ""eCCPM\0         ""Hubschrauber\0  ""Servo Tester\0  "
 
 #define LEN_VSWASHTYPE         "\004"
@@ -341,8 +341,8 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "AUS""ABS""GSs""GS%""GSt"
 
-#define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Master""Slave\0"
+#define LEN_VTRAINERMODES      "\007"                     // "\006"
+#define TR_VTRAINERMODES       "Lehrer\0""Sch\205ler\0"  // "Master""Slave\0"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
@@ -441,7 +441,7 @@
 #define TR_MEMORYWARNING       INDENT"Speicher voll"
 #define TR_ALARMWARNING        INDENT"Ton aus"
 #define TR_RENAVIG             "Drehgeb. Navig."
-#define TR_THROTTLEREVERSE     TR("Vollgas hinten?", "Vollgas hinten?")
+#define TR_THROTTLEREVERSE     TR("Gas invers", "Vollgas hinten?") //\200nderung wg TH9x, Taranis
 #define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Jede Minute")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_PERSISTENT          TR(INDENT"M-Zeit",INDENT"Modell Zeit")
@@ -558,7 +558,7 @@
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHALTER"
-#define TR_INVERT_THR          TR("Gas umkehren?","Vollgas hinten?")
+#define TR_INVERT_THR          TR("Gas umkehren?","Vollgas hinten?") //\200nderung wg Th9x
 #define TR_SPEAKER_VOLUME      INDENT"Lautst\201rke"
 #define TR_LCD                 "Bildschirm"
 #define TR_BRIGHTNESS          "Helligkeit"

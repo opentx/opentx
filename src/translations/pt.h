@@ -23,14 +23,14 @@
  *
  *
  *
- * !!!!! DO NOT EDIT pt.h - EDIT pt.h.pt INSTEAD !!!!!!!
+ * !!!!! DO NOT EDIT pt.h - EDIT pt.h.tra INSTEAD !!!!!!!
  *
- * In order to make translations easier pt.h.pt is parsed and national
+ * In order to make translations easier pt.h.tra is parsed and national
  * characters are replaced by bitmap codes. The result is pt.h.
  * 
  * See translate.py in the util catalog for the list of character codes  
  *
- * !!!!! DO NOT EDIT pt.h - EDIT pt.h.pt INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT pt.h - EDIT pt.h.tra INSTEAD !!!!!!!   
  */
 
 

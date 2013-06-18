@@ -24,13 +24,13 @@
  *
  *
  *
- * !!!!! DO NOT EDIT cz.h - EDIT cz.h.cz INSTEAD !!!!!!!
+ * !!!!! DO NOT EDIT cz.h - EDIT cz.h.tra INSTEAD !!!!!!!
  *
- * In order to make translations easier cz.h.cz is parsed and national
+ * In order to make translations easier cz.h.tra is parsed and national
  * characters are replaced by bitmap codes. The result is cz.h.
  * See translate.py in the util catalog for the list of character codes  
  *
- * !!!!! DO NOT EDIT cz.h - EDIT cz.h.cz INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT cz.h - EDIT cz.h.tra INSTEAD !!!!!!!   
  *
  */
 
