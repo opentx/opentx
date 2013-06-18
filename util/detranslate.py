@@ -81,7 +81,7 @@ translations = {'cz': [('\\200', 'á'),
                }
 
 # Take care of command line options
-parser = argparse.ArgumentParser(description='Encoder for open9x translations')
+parser = argparse.ArgumentParser(description='Decoder for open9x translations')
 parser.add_argument('input', action="store")
 parser.add_argument('output', action="store")
 parser.add_argument('language', action="store")
@@ -98,7 +98,7 @@ in_file.close()
 
 # Do the replacements
 for before, after in translations[args.language]:
-    text = text.replace(after, before)
+    text = text.replace(before, after)
       
 # Write the result to a temporary file
 out_file = open( args.output, 'w')
