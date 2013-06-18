@@ -21,18 +21,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ *
+ *
+ *
  * !!!!! DO NOT EDIT cz.h - EDIT cz.h.cz INSTEAD !!!!!!!
  *
  * In order to make translations easier cz.h.cz is parsed and national
  * characters are replaced by bitmap codes. The result is cz.h.
  * See translate.py in the util catalog for the list of character codes  
  *
- * A special note for Czech:
- *   It is not possible to translate all Czech characters using Python. 
- *   As a result, it is necessary to use c<, r<, R< etc in place of 
- *   letters with the v-shaped accent on top. Sorry about that.
+ * !!!!! DO NOT EDIT cz.h - EDIT cz.h.cz INSTEAD !!!!!!!   
  *
- * !!!!! DO NOT EDIT cz.h - EDIT cz.h.cz INSTEAD !!!!!!!   */
+ */
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"

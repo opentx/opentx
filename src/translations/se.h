@@ -1,20 +1,10 @@
 /*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
+ * - Bernet Andre <bernet.andre@gmail.com>
  * - Kjell Kernen <kjell.kernen@gmail.com>
- * *
- *
- *
- *
- *
- *
- * 
- *    << Blank area used to row align file with en.h  >>
- *
- *
- *
- *
- *
+ * - Martin Hotar <mhotar@gmail.com>
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -32,8 +22,18 @@
  * GNU General Public License for more details.
  *
  *
-*/ 
+ *
+ * !!!!! DO NOT EDIT se.h - EDIT se.h.se INSTEAD !!!!!!!
+ *
+ * In order to make translations easier se.h.se is parsed and national
+ * characters are replaced by bitmap codes. The result is se.h.
+ * 
+ * See translate.py in the util catalog for the list of character codes  
+ *
+ * !!!!! DO NOT EDIT se.h - EDIT se.h.se INSTEAD !!!!!!!   
+ */
 
+   
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "Av ""P\200\0"
@@ -315,9 +315,9 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " P\203"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " P\200"
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "GAS""SID""HJD""SKE""LAN""TRN" TR_CUSTOMSW " P\203"
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "GAS""SID""HJD""SKE""LAN""TRN" TR_CUSTOMSW " P\200"
 #endif
 
 #if defined(PCBSKY9X)
@@ -393,7 +393,7 @@
 #define TR_SWASHTYPE           "Swashtyp"
 #define TR_COLLECTIVE          "Kollektiv"
 #define TR_SWASHRING           "Swashring"
-#define TR_ELEDIRECTION        "H\205JD Riktning"
+#define TR_ELEDIRECTION        "H\202JD Riktning"
 #define TR_AILDIRECTION        "SKEV Riktning"
 #define TR_COLDIRECTION        "KOLL.Riktning"
 #define TR_MODE                INDENT"L\201ge"
@@ -538,7 +538,7 @@
 #define TR_LONGITUDE           "L\201ngdgrad"
 #define TR_GPSCOORD            TR("GPS-Koordinater", "GPS-koordinatsystem")
 #define TR_VARIO               TR("Vario", "Variometer")
-#define TR_SHUTDOWN            "ST\204NGER AV"
+#define TR_SHUTDOWN            "ST\201NGER AV"
 #define TR_BATT_CALIB          "Kalib. Batteri"
 #define TR_CURRENT_CALIB       "Kalib. Str\202m"
 #define TR_VOLTAGE             INDENT"Volt"
@@ -549,7 +549,7 @@
 #define TR_MOVE_MODEL          "Flytta Modell"
 #define TR_BACKUP_MODEL        "Modell-backup"
 #define TR_DELETE_MODEL        "Ta Bort Modell"
-#define TR_RESTORE_MODEL       "\203terst\201ll Modell"
+#define TR_RESTORE_MODEL       "\200terst\201ll Modell"
 #define TR_SDCARD_ERROR        "SDCARD-fel"
 #define TR_NO_SDCARD           "SDCARD saknas"
 #define TR_INCOMPATIBLE        "Inkompatibel"
@@ -604,7 +604,7 @@
 #define TR_OWN                 "Egen"
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
-#define TR_CHANNELS_MONITOR    "Kanal\205versikt"
+#define TR_CHANNELS_MONITOR    "Kanal\202versikt"
 #define TR_INTERNALRF          "Intern RF"
 #define TR_EXTERNALRF          "Extern RF"
 #define TR_FAILSAFE            "Failsafe-l\201ge"

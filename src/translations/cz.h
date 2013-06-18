@@ -1,7 +1,10 @@
 /*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
+ * - Bernet Andre <bernet.andre@gmail.com>
+ * - Kjell Kernen <kjell.kernen@gmail.com>
  * - Martin Hotar <mhotar@gmail.com>
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -18,21 +21,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ *
+ *
+ *
+ * !!!!! DO NOT EDIT cz.h - EDIT cz.h.cz INSTEAD !!!!!!!
+ *
+ * In order to make translations easier cz.h.cz is parsed and national
+ * characters are replaced by bitmap codes. The result is cz.h.
+ * See translate.py in the util catalog for the list of character codes  
+ *
+ * !!!!! DO NOT EDIT cz.h - EDIT cz.h.cz INSTEAD !!!!!!!   
+ *
  */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
@@ -624,7 +624,7 @@
 #define TR_RESET_TELEMETRY     "Vynulovat telemetrii"
 #define TR_STATISTICS          "Statistika"
 #define TR_ABOUT_US            "O n\200s"
-#define TR_AND_SWITCH          "AND Sp\204na201"
+#define TR_AND_SWITCH          "AND Sp\204na\201"
 #define TR_CF                  "FN"
 #define TR_SPEAKER             INDENT"Repro"
 #define TR_BUZZER              INDENT"P\204p\200k"
@@ -635,7 +635,7 @@
 #define TR_SET                 "[Volby]"
 #define TR_TRAINER             "Tren\202r"
 #define TR_ANTENNAPROBLEM      CENTER "Probl\202m s TX ant\202nou!"
-#define TR_MODELIDUSED         TR("ID ji\217 pou\217ito","ID modelu je ji\2017 pou\2017ito")
+#define TR_MODELIDUSED         TR("ID ji\217 pou\217ito","ID modelu je ji\217 pou\217ito")
 #define TR_MODULE              INDENT "Module"
 #define TR_CHANNELRANGE        INDENT "Rozsah kan\200l\211"
 #define TR_LOWALARM            INDENT "N\204zk\212 Alarm"
@@ -644,7 +644,7 @@
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Jm\202no ", " Sp\204na\201 ", " Trimy ", " P\206echod Zap ", " P\206echod Vyp " }
 #define TR_LIMITS_HEADERS      { " Jm\202no ", " Subtrim ", " Min ", " Max ", " Sm\203r ", " St\206ed PPM ", " Symetrick\202 " }
-#define TR_CSW_HEADERS         { " Funckce ", " Hodnota 1 ", " Hodnota 2 ", " AND Sp\204na\201 ", " Trv\200n\204 ", " Zpo\217d\204n\204 " }
+#define TR_CSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " AND Sp\204na\201 ", " Trv\200n\204 ", " Zpo\217d\203n\204 " }
 
 //Taranis About screen
 #define TR_ABOUTUS             "opentx"

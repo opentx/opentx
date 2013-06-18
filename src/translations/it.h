@@ -1,6 +1,9 @@
 /*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
+ * - Bernet Andre <bernet.andre@gmail.com>
+ * - Kjell Kernen <kjell.kernen@gmail.com>
+ * - Martin Hotar <mhotar@gmail.com>
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
  *
  * opentx is based on code named
@@ -18,21 +21,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ *
+ *
+ * !!!!! DO NOT EDIT it.h - EDIT it.h.it INSTEAD !!!!!!!
+ *
+ * In order to make translations easier it.h.it is parsed and national
+ * characters are replaced by bitmap codes. The result is it.h.
+ * 
+ * See translate.py in the util catalog for the list of character codes  
+ *
+ * !!!!! DO NOT EDIT it.h - EDIT it.h.it INSTEAD !!!!!!!   
  */
  
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"

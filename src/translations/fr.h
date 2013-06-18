@@ -1,21 +1,10 @@
 /*
  * Authors (alphabetical order)
- * - Andre Bernet <bernet.andre@gmail.com>
- * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
- * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
- * - Cameron Weeks <th9xer@gmail.com>
- * - Erez Raviv
- * - Gabriel Birkus
- * - Jean-Pierre Parisy
- * - Karl Szmutny
- * - Michael Blandford
- * - Michal Hlavinka
- * - Pat Mackenzie
- * - Philip Moss
- * - Rob Thomson
+ * - Bernet Andre <bernet.andre@gmail.com>
+ * - Kjell Kernen <kjell.kernen@gmail.com>
+ * - Martin Hotar <mhotar@gmail.com>
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
- * - Thomas Husterer
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -32,8 +21,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ *
+ *
+ * !!!!! DO NOT EDIT fr.h - EDIT fr.h.fr INSTEAD !!!!!!!
+ *
+ * In order to make translations easier fr.h.fr is parsed and national
+ * characters are replaced by bitmap codes. The result is fr.h.
+ * 
+ * See translate.py in the util catalog for the list of character codes  
+ *
+ * !!!!! DO NOT EDIT fr.h - EDIT fr.h.fr INSTEAD !!!!!!!   
  */
 
+   
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON        "\003"
 #define TR_OFFON         "OFF""ON\0"
@@ -248,6 +248,7 @@
   #else
     #define LENGTH_UNIT        "m\0 "
     #define SPEED_UNIT         "kmh"
+
   #endif
   #define LEN_VTELEMUNIT       "\003"
   #define TR_VTELEMUNIT        "v\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "

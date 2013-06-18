@@ -1,37 +1,37 @@
 /*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Padding for row alignment
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/
-
-
+ * Authors (alphabetical order)
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bernet Andre <bernet.andre@gmail.com>
+ * - Kjell Kernen <kjell.kernen@gmail.com>
+ * - Martin Hotar <mhotar@gmail.com>
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ *
+ * opentx is based on code named
+ * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
+ * er9x by Erez Raviv: http://code.google.com/p/er9x/,
+ * and the original (and ongoing) project by
+ * Thomas Husterer, th9x: http://code.google.com/p/th9x/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ *
+ *
+ * !!!!! DO NOT EDIT pt.h - EDIT pt.h.pt INSTEAD !!!!!!!
+ *
+ * In order to make translations easier pt.h.pt is parsed and national
+ * characters are replaced by bitmap codes. The result is pt.h.
+ * 
+ * See translate.py in the util catalog for the list of character codes  
+ *
+ * !!!!! DO NOT EDIT pt.h - EDIT pt.h.pt INSTEAD !!!!!!!   
+ */
 
 
 // NON ZERO TERMINATED STRINGS

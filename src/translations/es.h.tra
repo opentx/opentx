@@ -596,7 +596,7 @@
 #define TR_SD_TYPE             "Tipo:"
 #define TR_SD_SPEED            "Velocidad:"
 #define TR_SD_SECTORS          "Sectores:"
-#define TR_SD_SIZE             "Tama\201o:"
+#define TR_SD_SIZE             "Tamaño:"
 #define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_GLOBAL_VAR          "Global Variable"
