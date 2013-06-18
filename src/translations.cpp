@@ -526,6 +526,23 @@ const pm_uchar font_5x7[] PROGMEM = {
 
 const pm_uchar font_10x14[] PROGMEM = {
 #include "fonts/std/font_10x14_compressed.lbm"
+#if defined(CPUARM)
+  #if defined(TRANSLATIONS_DE)
+  #include "fonts/std/font_de_10x14.lbm"
+  #elif defined(TRANSLATIONS_CZ)
+  #include "fonts/std/font_cz_10x14.lbm"
+  #elif defined(TRANSLATIONS_ES)
+  #include "fonts/std/font_es_10x146.lbm"
+  #elif defined(TRANSLATIONS_FR)
+  #include "fonts/std/font_fr_10x146.lbm"
+  #elif defined(TRANSLATIONS_IT)
+  #include "fonts/std/font_it_10x14.lbm"
+  #elif defined(TRANSLATIONS_PT)
+  #include "fonts/std/font_pt_10x14.lbm"
+  #elif defined(TRANSLATIONS_SE)
+  #include "fonts/std/font_se_10x14.lbm"
+  #endif
+#endif
 };
 
 #if defined(CPUARM)
