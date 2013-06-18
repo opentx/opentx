@@ -80,8 +80,10 @@ translations = {'cz': [('\\200', 'á'),
 # Take care of command line options
 parser = argparse.ArgumentParser(description='Decoder/Encoder for open9x translations')
 parser.add_argument('input', action="store")
+parser.add_argument('output', action="store")
 parser.add_argument('language', action="store")
 args =  parser.parse_args()
+
 if args.language not in translations:
     parser.error(args.language  + ' is not a supported language. Try one of the supported ones: ' + str(translations.keys()))
     system.exit()
@@ -99,10 +101,7 @@ for before, after in translations[args.language]:
         text = text.replace(before, after)
       
 # Write the result to a temporary file
-if args.input.endswith("." + args.language):
-    out_file = open(args.input[:-3], 'w')
-else:
-    out_file = open(args.input + "." + args.language, 'w')
+out_file = open( args.output, 'w')
 out_file.write( text )
 out_file.close()
 
