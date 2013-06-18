@@ -246,6 +246,7 @@ GVARS = NO
 # Define programs and commands.
 SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
+TRANSLATE = -python ../util/translate.py
 SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 
 SRC =
@@ -1029,11 +1030,12 @@ all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
-  build: stamp_header lbm allsrc.cpp elf remallsrc hex eep lss sym
+  build: stamp_header tra lbm allsrc.cpp elf remallsrc hex eep lss sym
 else
-  build: stamp_header lbm allsrc.cpp elf remallsrc bin lss
+  build: stamp_header tra lbm allsrc.cpp elf remallsrc bin lss
 endif
 
+tra: translations/se.h
 lbm: fonts/std/font_05x07.lbm bitmaps/sticks.lbm
   
 elf: $(TARGET).elf
@@ -1089,6 +1091,24 @@ taranis-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
 
+translations/se.h: translations/cz.h.tra translations/de.h.tra translations/es.h.tra translations/fr.h.tra translations/it.h.tra translations/pt.h.tra translations/se.h.tra 
+	@echo
+	@echo "Create language specific header files"
+	@echo "Czech"
+	$(TRANSLATE) translations/cz.h.tra translations/cz.h cz
+	@echo "German"
+	$(TRANSLATE) translations/de.h.tra translations/de.h de
+	@echo "Spanish"
+	$(TRANSLATE) translations/es.h.tra translations/es.h es
+	@echo "French"
+	$(TRANSLATE) translations/fr.h.tra translations/fr.h fr
+	@echo "Italian"
+	$(TRANSLATE) translations/it.h.tra translations/it.h it
+	@echo "Portugese"
+	$(TRANSLATE) translations/pt.h.tra translations/pt.h pt
+	@echo "Swedish"
+	$(TRANSLATE) translations/se.h.tra translations/se.h se
+	
 fonts/std/font_05x07.lbm: fonts/std/font_03x05.png fonts/std/font_04x06.png fonts/std/font_05x07.png fonts/std/font_08x10.png fonts/std/font_10x14.png fonts/std/font_10x14_compressed.png fonts/std/font_04x06_extra.png fonts/std/font_05x07_extra.png fonts/std/font_10x14_extra.png fonts/std/font_se_05x07.png fonts/std/font_de_05x07.png fonts/std/font_it_05x07.png fonts/std/font_cz_05x07.png fonts/std/font_fr_05x07.png fonts/std/font_es_05x07.png fonts/std/font_se_10x14.png fonts/std/font_de_10x14.png fonts/std/font_it_10x14.png fonts/std/font_fr_10x14.png fonts/std/font_es_10x14.png 
 	@echo
 	@echo "Convert fonts from png to lbm:"
@@ -1184,7 +1204,7 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h lbm eeprom.bin
+simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h tra lbm eeprom.bin
 	g++ $(CPPFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread
 
 eeprom.bin:
