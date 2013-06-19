@@ -555,6 +555,7 @@ extern const pm_char STR_NO_SOUNDS_ON_SD[];
 extern const pm_char STR_NO_MODELS_ON_SD[];
 extern const pm_char STR_NO_BITMAPS_ON_SD[];
 extern const pm_char STR_PLAY_FILE[];
+extern const pm_char STR_ASSIGN_BITMAP[];
 extern const pm_char STR_DELETE_FILE[];
 extern const pm_char STR_COPY_FILE[];
 extern const pm_char STR_RENAME_FILE[];

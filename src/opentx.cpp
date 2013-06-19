@@ -2841,7 +2841,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== PHASE && SWITCH =====
       bool mixCondition = (md->phases != 0 || md->swtch);
-      int8_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch);
+      delayval_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch);
 
       //========== VALUE ===============
       getvalue_t v = 0;
@@ -2859,9 +2859,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         }
         else {
           v = getValue(k);
-          if (!mixCondition && k >= MIXSRC_FIRST_SWITCH-1 && k <= MIXSRC_LAST_CSW-1) {
-            mixEnabled = v >> 10;
-          }
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
             if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
@@ -2869,13 +2866,16 @@ void perOut(uint8_t mode, uint8_t tick10ms)
               v = chans[k-MIXSRC_CH1+1] >> 8;
           }
         }
+        if (!mixCondition) {
+          mixEnabled = v >> DELAY_POS_SHIFT;
+        }
       }
 
       bool apply_offset_and_curve = true;
 
       // ========== DELAYS ===============
-      int8_t _swOn = swOn[i].now;
-      int8_t _swPrev = swOn[i].prev;
+      delayval_t _swOn = swOn[i].now;
+      delayval_t _swPrev = swOn[i].prev;
       bool swTog = (mixEnabled != _swOn);
       if (mode==e_perout_mode_normal && swTog) {
         if (!swOn[i].delay) _swPrev = _swOn;
@@ -2886,7 +2886,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       if (mode==e_perout_mode_normal && swOn[i].delay > 0) {
         swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms);
         if (!mixCondition)
-          v = _swPrev << 10;
+          v = _swPrev << DELAY_POS_SHIFT;
         else if (mixEnabled)
           continue;
       }
@@ -2903,7 +2903,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       }
 
       if (mode==e_perout_mode_normal && (!mixCondition || mixEnabled || swOn[i].delay)) {
-        if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1); // Mix warning
+        if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1);
 #if defined(BOLD_FONT)
         swOn[i].activeMix = true;
 #endif
@@ -2911,9 +2911,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== OFFSET ===============
       if (apply_offset_and_curve) {
-        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase); // open.20.fsguruh
-        if (offset) v += calc100toRESX_16Bits(offset);  // @@@ open.20.fsguruh      
-
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase);
+        if (offset) v += calc100toRESX_16Bits(offset);
 
       //========== TRIMS ===============
         if (!(mode & e_perout_mode_notrims)) {

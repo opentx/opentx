@@ -2370,7 +2370,7 @@ void menuModelCurveOne(uint8_t event)
       lcd_filled_rect(point.x-FW, point.y-1, 3, 3, SOLID);
       if (s_editMode > 0) {
         if (selectionMode == 1)
-          CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X
+          CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2], i==crv.points-2 ? 99 : crv.crv[crv.points+i]);  // edit X
         else if (selectionMode == 2)
           CHECK_INCDEC_MODELVAR(event, crv.crv[i], -100, 100);
       }

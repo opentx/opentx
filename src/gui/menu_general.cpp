@@ -677,6 +677,23 @@ void onSdManagerMenu(const char *result)
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     audioQueue.playFile(lfn, PLAY_BACKGROUND, 255);
   }
+  else if (result == STR_ASSIGN_BITMAP) {
+    strcpy(lfn, reusableBuffer.sdmanager.lines[index]);
+    // TODO duplicated code for finding extension
+    uint8_t len = strlen(lfn) - 4;
+    memset(lfn+len, 0, sizeof(g_model.header.bitmap)-len);
+    // TODO duplicated code
+    memcpy(g_model.header.bitmap, lfn, sizeof(g_model.header.bitmap));
+#if defined(SIMU)
+    f_chdir("..");
+#endif
+    LOAD_MODEL_BITMAP();
+#if defined(SIMU)
+    f_chdir(BITMAPS_PATH);
+#endif
+    memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
+    eeDirty(EE_MODEL);
+  }
 #endif
 }
 
@@ -736,13 +753,17 @@ void menuGeneralSdManager(uint8_t event)
       else {
 #if defined(CPUARM)
         uint8_t index = m_posVert-1-s_pgOfs;
+        // TODO duplicated code for finding extension
         char * ext = reusableBuffer.sdmanager.lines[index];
         ext += strlen(ext) - 4;
-        /* TODO if (!strcmp(ext, MODELS_EXT)) {
+        /* TODO if (!strcasecmp(ext, MODELS_EXT)) {
           s_menu[s_menu_count++] = STR_LOAD_FILE;
         }
         else */ if (!strcasecmp(ext, SOUNDS_EXT)) {
           MENU_ADD_ITEM(STR_PLAY_FILE);
+        }
+        else if (!strcasecmp(ext, BITMAPS_EXT)) {
+          MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
         }
 #endif
         MENU_ADD_ITEM(STR_DELETE_FILE);

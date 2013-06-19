@@ -1179,11 +1179,20 @@ extern void instantTrim();
 extern void moveTrimsToOffsets();
 
 #if defined(CPUARM)
-  #define ACTIVE_PHASES_TYPE uint16_t
+#define ACTIVE_PHASES_TYPE uint16_t
+#define DELAY_POS_SHIFT    0
+#define delayval_t         int16_t
+PACK(typedef struct t_SwOn {
+  uint16_t delay;
+  int16_t  now;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
+  int16_t  prev;
+  uint8_t  activeMix;
+  uint8_t  activeExpo;
+}) SwOn;
 #else
-  #define ACTIVE_PHASES_TYPE uint8_t
-#endif
-
+#define ACTIVE_PHASES_TYPE uint8_t
+#define DELAY_POS_SHIFT    10
+#define delayval_t         int8_t
 PACK(typedef struct t_SwOn {
   uint16_t delay:10;
   int16_t  now:2;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
@@ -1191,6 +1200,8 @@ PACK(typedef struct t_SwOn {
   int16_t  activeMix:1;
   int16_t  activeExpo:1;
 }) SwOn;
+#endif
+
 extern SwOn   swOn  [MAX_MIXERS];
 extern int24_t act   [MAX_MIXERS];
 
