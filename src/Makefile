@@ -1091,23 +1091,23 @@ taranis-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
 
-translations/se.h: translations/cz.h.tra translations/de.h.tra translations/es.h.tra translations/fr.h.tra translations/it.h.tra translations/pt.h.tra translations/se.h.tra 
+translations/se.h: translations/cz.h.txt translations/de.h.txt translations/es.h.txt translations/fr.h.txt translations/it.h.txt translations/pt.h.txt translations/se.h.txt 
 	@echo
 	@echo "Create language specific header files"
 	@echo "Czech"
-	$(TRANSLATE) translations/cz.h.tra translations/cz.h cz
+	$(TRANSLATE) translations/cz.h.txt translations/cz.h cz
 	@echo "German"
-	$(TRANSLATE) translations/de.h.tra translations/de.h de
+	$(TRANSLATE) translations/de.h.txt translations/de.h de
 	@echo "Spanish"
-	$(TRANSLATE) translations/es.h.tra translations/es.h es
+	$(TRANSLATE) translations/es.h.txt translations/es.h es
 	@echo "French"
-	$(TRANSLATE) translations/fr.h.tra translations/fr.h fr
+	$(TRANSLATE) translations/fr.h.txt translations/fr.h fr
 	@echo "Italian"
-	$(TRANSLATE) translations/it.h.tra translations/it.h it
+	$(TRANSLATE) translations/it.h.txt translations/it.h it
 	@echo "Portugese"
-	$(TRANSLATE) translations/pt.h.tra translations/pt.h pt
+	$(TRANSLATE) translations/pt.h.txt translations/pt.h pt
 	@echo "Swedish"
-	$(TRANSLATE) translations/se.h.tra translations/se.h se
+	$(TRANSLATE) translations/se.h.txt translations/se.h se
 	
 fonts/std/font_05x07.lbm: fonts/std/font_03x05.png fonts/std/font_04x06.png fonts/std/font_05x07.png fonts/std/font_08x10.png fonts/std/font_10x14.png fonts/std/font_10x14_compressed.png fonts/std/font_04x06_extra.png fonts/std/font_05x07_extra.png fonts/std/font_10x14_extra.png fonts/std/font_se_05x07.png fonts/std/font_de_05x07.png fonts/std/font_it_05x07.png fonts/std/font_cz_05x07.png fonts/std/font_fr_05x07.png fonts/std/font_es_05x07.png fonts/std/font_se_10x14.png fonts/std/font_de_10x14.png fonts/std/font_it_10x14.png fonts/std/font_fr_10x14.png fonts/std/font_es_10x14.png 
 	@echo
