@@ -533,9 +533,9 @@ const pm_uchar font_10x14[] PROGMEM = {
   #elif defined(TRANSLATIONS_CZ)
   #include "fonts/std/font_cz_10x14.lbm"
   #elif defined(TRANSLATIONS_ES)
-  #include "fonts/std/font_es_10x146.lbm"
+  #include "fonts/std/font_es_10x14.lbm"
   #elif defined(TRANSLATIONS_FR)
-  #include "fonts/std/font_fr_10x146.lbm"
+  #include "fonts/std/font_fr_10x14.lbm"
   #elif defined(TRANSLATIONS_IT)
   #include "fonts/std/font_it_10x14.lbm"
   #elif defined(TRANSLATIONS_PT)
