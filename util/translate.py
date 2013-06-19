@@ -82,9 +82,10 @@ translations = {'cz': [('\\200', 'á'),
 
 # Take care of command line options
 parser = argparse.ArgumentParser(description='Encoder for open9x translations')
-parser.add_argument('input', action="store")
-parser.add_argument('output', action="store")
-parser.add_argument('language', action="store")
+parser.add_argument('input', action="store", help="Input file name")
+parser.add_argument('output', action="store", help="Output file name")
+parser.add_argument('language', action="store", help="Two letter language identifier")
+parser.add_argument("--reverse", help="Reversed char conversion (from number to char)", action="store_true")
 args =  parser.parse_args()
 
 if args.language not in translations:
@@ -98,8 +99,11 @@ in_file.close()
 
 # Do the replacements
 for before, after in translations[args.language]:
-    text = text.replace(after, before)
-      
+    if args.reverse:
+        text = text.replace(before, after)
+    else:
+        text = text.replace(after, before)
+		
 # Write the result to a temporary file
 out_file = open( args.output, 'w')
 out_file.write( text )
