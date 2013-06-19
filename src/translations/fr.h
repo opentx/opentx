@@ -23,14 +23,14 @@
  *
  *
  *
- * !!!!! DO NOT EDIT fr.h - EDIT fr.h.tra INSTEAD !!!!!!!
+ * !!!!! DO NOT EDIT fr.h - EDIT fr.h.txt INSTEAD !!!!!!!
  *
- * In order to make translations easier fr.h.tra is parsed and national
+ * In order to make translations easier fr.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is fr.h.
  * 
  * See translate.py in the util catalog for the list of character codes  
  *
- * !!!!! DO NOT EDIT fr.h - EDIT fr.h.tra INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT fr.h - EDIT fr.h.txt INSTEAD !!!!!!!   
  */
 
    

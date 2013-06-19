@@ -23,14 +23,14 @@
  * GNU General Public License for more details.
  *
  *
- * !!!!! DO NOT EDIT de.h - EDIT de.h.tra INSTEAD !!!!!!!
+ * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!
  *
- * In order to make translations easier de.h.tra is parsed and national
+ * In order to make translations easier de.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is de.h.
  * 
  * See translate.py in the util catalog for the list of character codes  
  *
- * !!!!! DO NOT EDIT de.h - EDIT de.h.tra INSTEAD !!!!!!!   
+ * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!   
  */
 
  
