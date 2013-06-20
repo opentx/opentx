@@ -236,7 +236,7 @@ void applyTemplate(uint8_t idx)
 
       // Servo Test
       case TMPL_SERVO_TEST:
-        md=setDest(15, MIXSRC_SW1, true); md->weight=110; md->mltpx=MLTPX_ADD; md->delayUp = 6; md->delayDown = 6; md->speedUp = 8; md->speedDown = 8;
+        md=setDest(NUM_CHNOUT-1, MIXSRC_SW1, true); md->weight=110; md->mltpx=MLTPX_ADD; md->delayUp = 6; md->delayDown = 6; md->speedUp = 8; md->speedDown = 8;
         setSwitch(1, CS_VNEG, MIXSRC_LAST_CH, 0);
         break;
 
