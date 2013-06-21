@@ -111,7 +111,7 @@ inline void boardInit()
    * SOMO set-up (V4 board only)
    */
   OCR4A = 0x1F4; //2ms
-  TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
+  TCCR4B = (1 << WGM42) | (0b010 << CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
   TIMSK4 |= (1<<OCIE4A); // Start the interrupt so the unit reset can occur
 #endif
 
