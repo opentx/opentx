@@ -57,9 +57,11 @@ uint8_t  dsm2SerialBitCount;
 #define BITLEN_DSM2    (8*2) //125000 Baud => 8uS per bit
 
 #if defined(PCBTARANIS)
+uint16_t dsm2Value;
 void _send_1(uint8_t v)
 {
-  *dsm2StreamPtr++ = v;
+  dsm2Value += v;
+  *dsm2StreamPtr++ = dsm2Value;
 }
 
 void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
@@ -68,11 +70,11 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
     uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
     for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
         bool nlev = b & 1; //lsb first
-        if (lev == nlev){
+        if (lev == nlev) {
           len += BITLEN_DSM2;
         }
         else {
-          _send_1(len -1);
+          _send_1(len-1);
           len  = BITLEN_DSM2;
           lev  = nlev;
         }
@@ -126,6 +128,8 @@ void setupPulsesDSM2(unsigned int port)
 #if defined(PCBSKY9X)
   dsm2SerialByte = 0 ;
   dsm2SerialBitCount = 0 ;
+#else
+  dsm2Value = 0;
 #endif
 
   dsm2StreamPtr = dsm2Stream;
