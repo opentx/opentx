@@ -309,7 +309,7 @@ if __name__ == "__main__":
         systemSounds.extend(generate("mille", PROMPT_SYSTEM_BASE+102))
         for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+103+i))
-        for i, s in enumerate(["volt", "amper", "meetri per secondo", "", "chilomeetri ora", "meetri", "gradi", "percento", "milliamper", "milliamper ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g"]):
+        for i, s in enumerate(["volt", "ampere", "metri per secondo", "", "chilometri/ora", "metri", "gradi", "percento", "milliampere", "milliampere/ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+113+i))            
         for s, f, a in [(u"radio inattiva controllare", "inactiv", 486),
                         (u"batteria della radio scarica", "lowbatt", 485),
@@ -323,12 +323,23 @@ if __name__ == "__main__":
                         (u"massimo trim raggiunto", "endtrim", NO_ALTERNATE),
                         (u"venti secondi", "timer20", 500),
                         (u"trenta secondi", "timer30", 501),
+                        (u"assorbimento elevato", "highmah", NO_ALTERNATE),
+                        (u"temperatura elevata", "hightemp", NO_ALTERNATE),
+                        (u"A1 in allarme", "a1_org", NO_ALTERNATE),
+                        (u"A1 critico", "a1_red", NO_ALTERNATE),
+                        (u"A2 in allarme", "a2_org", NO_ALTERNATE),
+                        (u"A2 critico", "a2_red", NO_ALTERNATE),
+                        (u"Segnale radio basso", "rssi_org", NO_ALTERNATE),
+                        (u"Segnale radio critico", "rssi_red", NO_ALTERNATE),
+                        (u"Problema all'antenna della radio", "swr_red", NO_ALTERNATE),
+                        (u"Telemetria assente", "telemko", NO_ALTERNATE),
+                        (u"Telemetria disponibile", "telemok", NO_ALTERNATE),
                      ]:
             systemSounds.extend(generate(s, f, a))
-        for i, s in enumerate(["timer", "timer",  "trasmissione", "ricezione", "A1", "A2", "altitudine", "motore",
-                               "carburante", "temperatura", "temperatura", "velocita'", "distanza", "altitudine", "cella lipo",
-                               "totale lipo", "tensione", "corrente", "consumo", "potenza", "accelerazione X", "accellerazione Y", "accelerazione Z",
-                               "direzione", "variometro","minimo","massimo"]):
+        for i, s in enumerate([u"timer", u"timer",  u"trasmissione", u"ricezione", u"A1", u"A2", u"altitudine", u"motore",
+                               u"carburante", u"temperatura", u"temperatura", u"velocità", "distanza", u"altitudine", u"cella lipo",
+                               u"totale lipo", u"tensione", u"corrente", u"consumo", u"potenza", u"accelerazione X", u"accellerazione Y", u"accelerazione Z",
+                               u"direzione", u"variometro",u"minimo",u"massimo"]):
             systemSounds.extend(generate(s, PROMPT_SYSTEM_BASE+132+i))
         for i, (s, f) in enumerate([
                      (u"carrello chiuso", "gearup"),
@@ -344,8 +355,6 @@ if __name__ == "__main__":
                      (u"batteria scarica", "lowbat"),
                      (u"crow on", "crowon"),
                      (u"crow off", "crowof"),
-                     (u"segnale radio basso!", "siglow"),
-                     (u"segnale radio critico", "sigcrt"),
                      (u"modo velocità", "spdmod"),
                      (u"modo termica", "thmmod"),
                      (u"modo volo normale", "nrmmod"),
@@ -390,6 +399,15 @@ if __name__ == "__main__":
                         (u"Maximale trimmung erreicht", "endtrim", NO_ALTERNATE),
                         (u"20 sekunden", "timer20", 500),
                         (u"30 sekunden", "timer30", 501),
+                        (u"Senderstrom ist zu hoch!", "highmah", NO_ALTERNATE),
+                        (u"Sendertemperatur ist zu hoch!", "hightemp", NO_ALTERNATE),
+                        (u"A1 schlecht!", "a1_org", NO_ALTERNATE),
+                        (u"A1 kritisch!", "a1_red", NO_ALTERNATE),
+                        (u"A2 schlecht!", "a2_org", NO_ALTERNATE),
+                        (u"A2 kritisch!", "a2_red", NO_ALTERNATE),
+                        (u"Funksignal schlecht!", "rssi_org", NO_ALTERNATE),
+                        (u"Funksignal kritisch!", "rssi_red", NO_ALTERNATE),
+                        (u"Problem mit der sender Antenna", "swr_red", NO_ALTERNATE),
                      ]:
             systemSounds.extend(generate(s, f, a))
         for i, s in enumerate(["Timer", "Timer",  "Sendung", "Empfang", "A1", "A2", "Hoehe", "Motor",
@@ -411,8 +429,6 @@ if __name__ == "__main__":
                      (u"Batterie schwach", "lowbat"),
                      (u"crow ein", "crowon"),
                      (u"crow aus", "crowof"),
-                     (u"Funksignal schlecht!", "siglow"),
-                     (u"Funksignal kritisch!", "sigcrt"),
                      (u"Schnell-Modus ist aktiviert", "spdmod"),
                      (u"Thermik-Modus ist aktiviert", "thmmod"),
                      (u"Normal-Modus ist aktiviert", "nrmmod"),
@@ -466,6 +482,15 @@ if __name__ == "__main__":
                         (u"trim no máximo", "endtrim", NO_ALTERNATE),
                         (u"20 segundos", "timer20", 500),
                         (u"30 segundos", "timer30", 501),
+                        (u"assorbimento elevato", "highmah", NO_ALTERNATE),
+                        (u"temperatura elevata", "hightemp", NO_ALTERNATE),
+                        (u"Alarme A1", "a1_org", NO_ALTERNATE),
+                        (u"A1 critica", "a1_red", NO_ALTERNATE),
+                        (u"Alarme A2", "a2_org", NO_ALTERNATE),
+                        (u"A2 critica", "a2_red", NO_ALTERNATE),
+                        (u"recepção de sinal muito baixa", "rssi_org", NO_ALTERNATE),
+                        (u"recepção de sinal crítica", "rssi_red", NO_ALTERNATE),
+                        (u"Problema com a antena do transmissor", "swr_red", NO_ALTERNATE),
                      ]:
             systemSounds.extend(generate(s, f, a))
         for i, s in enumerate([u"cronómetro", u"cronómetro", u"transmissão", u"recepção", u"A1", u"A2", u"altitude", u"motor",
@@ -487,8 +512,6 @@ if __name__ == "__main__":
                       (u"bateria fraca", "lowbat"),
                       (u"crou, activo", "crowon"),
                       (u"crou, desligado", "crowof"),
-                      (u"recepção de sinal muito baixa", "siglow"),
-                      (u"recepção de sinal crítica", "sigcrt"),
                       (u"modo de velocidade", "spdmod"),
                       (u"modo de térmica", "thmmod"),
                       (u"modo de voo normal", "nrmmod"),
