@@ -101,9 +101,8 @@ void varioWakeup()
   
   if (isFunctionActive(FUNC_VARIO)) {
 #if defined(AUDIO)
-    // conversion in cm/s
     cli();
-    int16_t verticalSpeed = frskyData.hub.varioSpeed;
+    int16_t verticalSpeed = calibratedStick[2]; // frskyData.hub.varioSpeed;
     sei();
     
 #if defined(PCBSTD)
@@ -147,8 +146,8 @@ void varioWakeup()
       uint16_t SoundVarioBeepTime;
       uint16_t SoundVarioBeepFreq;
       if (verticalSpeed > 0) {
-        SoundVarioBeepTime = 320 - (verticalSpeed / 5);
-        SoundVarioBeepFreq = (verticalSpeed * 4 + 8000) >> 3;
+        SoundVarioBeepTime = 320 - (verticalSpeed >> 2);
+        SoundVarioBeepFreq = 1000 + verticalSpeed;
       }
       else {
         SoundVarioBeepTime = 80;
