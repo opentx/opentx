@@ -583,6 +583,7 @@
 #define TR_DELETE_FILE         "Odstranit"
 #define TR_COPY_FILE           "Kopírovat"
 #define TR_RENAME_FILE         "Přejmenovat"
+#define TR_ASSIGN_BITMAP       "Assign Bitmap"
 #define TR_REMOVED             " odstraněn"
 #define TR_SD_INFO             "Informace"
 #define TR_SD_FORMAT           "Formát"

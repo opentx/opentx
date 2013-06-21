@@ -583,6 +583,7 @@
 #define TR_DELETE_FILE         "L\203schen"
 #define TR_COPY_FILE           "Kopieren"
 #define TR_RENAME_FILE         "Umbenennen"
+#define TR_ASSIGN_BITMAP       "Assign Bitmap"
 #define TR_REMOVED             " gel\203scht"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Formattieren"

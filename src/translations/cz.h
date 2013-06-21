@@ -583,6 +583,7 @@
 #define TR_DELETE_FILE         "Odstranit"
 #define TR_COPY_FILE           "Kop\204rovat"
 #define TR_RENAME_FILE         "P\206ejmenovat"
+#define TR_ASSIGN_BITMAP       "Assign Bitmap"
 #define TR_REMOVED             " odstran\203n"
 #define TR_SD_INFO             "Informace"
 #define TR_SD_FORMAT           "Form\200t"

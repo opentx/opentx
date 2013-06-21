@@ -583,6 +583,7 @@
 #define TR_DELETE_FILE         "Cancella"
 #define TR_COPY_FILE           "Copia"
 #define TR_RENAME_FILE         "Rinomomina"
+#define TR_ASSIGN_BITMAP       "Assign Bitmap"
 #define TR_REMOVED             " rimosso"
 #define TR_SD_INFO             "Informazioni"
 #define TR_SD_FORMAT           "Format"

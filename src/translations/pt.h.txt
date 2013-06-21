@@ -583,6 +583,7 @@
 #define TR_DELETE_FILE         "Apagar"
 #define TR_COPY_FILE           "Copiar"
 #define TR_RENAME_FILE         "Renomear"
+#define TR_ASSIGN_BITMAP       "Assign Bitmap"
 #define TR_REMOVED             "Remover"
 #define TR_SD_INFO             "Dados SD"
 #define TR_SD_FORMAT           "Formatar"

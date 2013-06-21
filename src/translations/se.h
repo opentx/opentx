@@ -583,6 +583,7 @@
 #define TR_DELETE_FILE         "Radera"
 #define TR_COPY_FILE           "Kopia"
 #define TR_RENAME_FILE         "Byt namn"
+#define TR_ASSIGN_BITMAP       "Assign Bitmap"
 #define TR_REMOVED             " raderad"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Format"
