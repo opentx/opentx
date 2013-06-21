@@ -37,8 +37,15 @@
 #include "../opentx.h"
 
 uint8_t pxxFlag[NUM_MODULES] = { MODULES_INIT(0) };
-uint16_t pxxStream[NUM_MODULES][400];                // Transitions
+
+#if defined(PCBTARANIS)
+uint16_t pxxStream[NUM_MODULES][400];
 uint16_t *pxxStreamPtr[NUM_MODULES];
+#else
+uint8_t  pxxStream[NUM_MODULES][64];
+uint8_t  *pxxStreamPtr[NUM_MODULES];
+#endif
+
 uint16_t PxxValue[NUM_MODULES];
 uint16_t PcmCrc[NUM_MODULES];
 uint8_t  PcmOnesCount[NUM_MODULES];
@@ -84,6 +91,8 @@ void crc(uint8_t data, unsigned int port)
   PcmCrc[port]=(PcmCrc[port]<<8)^(CRCTable[((PcmCrc[port]>>8)^data) & 0xFF]);
 }
 
+#if defined(PCBTARANIS)
+
 void putPcmPart(uint8_t value, unsigned int port)
 {
   PxxValue[port] += 18 ;                                        // Output 1 for this time
@@ -95,13 +104,44 @@ void putPcmPart(uint8_t value, unsigned int port)
   *pxxStreamPtr[port]++ = PxxValue[port] ;  // Output 0 for this time
 }
 
-#if defined(PCBTARANIS)
 void putPcmFlush(unsigned int port)
 {
   *pxxStreamPtr[port]++ = 18010 ;             // Past the 18000 of the ARR
 }
+
 #else
-#define putPcmFlush(...)
+
+uint8_t pcmSerialByte[NUM_MODULES];
+uint8_t pcmSerialBitCount[NUM_MODULES];
+void putPcmSerialBit(uint8_t bit, unsigned int port)
+{
+  pcmSerialByte[port] >>= 1;
+  if (bit & 1) {
+    pcmSerialByte[port] |= 0x80;
+  }
+  if (++pcmSerialBitCount[port] >= 8) {
+    *pxxStreamPtr[port]++ = pcmSerialByte[port];
+    pcmSerialBitCount[port] = 0;
+  }
+}
+
+// 8uS/bit 01 = 0, 001 = 1
+void putPcmPart(uint8_t value, unsigned int port)
+{
+  putPcmSerialBit(0, port);
+  if (value) {
+    putPcmSerialBit(0, port);
+  }
+  putPcmSerialBit(1, port);
+}
+
+void putPcmFlush(unsigned int port)
+{
+  while (pcmSerialBitCount[port] != 0) {
+    putPcmSerialBit(1, port);
+  }
+}
+
 #endif
 
 void putPcmBit(uint8_t bit, unsigned int port)

@@ -537,15 +537,15 @@ void setupPulsesDSM2()
     s_bind_mode = false;
 
   dsmDat[1] = g_model.header.modelId; // DSM2 Header second byte for model match
-  for (uint8_t i=0; i<DSM2_CHANS; i++)
-  {
-    uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);
+  for (uint8_t i=0; i<DSM2_CHANS; i++) {
+    uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512, 1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03); // encoded channel + upper 2 bits pulse width
     dsmDat[3+2*i] = pulse & 0xff; // low byte
   }
 
-  for (counter=0; counter<14; counter++)
+  for (counter=0; counter<14; counter++) {
     sendByteDsm2(dsmDat[counter]);
+  }
 
   pulses2MHzWPtr -= 1; //remove last stopbits and
 

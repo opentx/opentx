@@ -36,11 +36,15 @@
 
 #include "../opentx.h"
 
-uint8_t Bit_pulses[64] ;                          // Likely more than we need
-uint8_t *Pulses2MHzptr ;
-uint8_t Serial_byte ;
-uint8_t Serial_bit_count;
-uint8_t Serial_byte_count ;
+#if defined(PCBTARANIS)
+uint8_t dsm2Stream[400];                          // Likely more than we need
+#else
+uint8_t dsm2Stream[64];                          // Likely more than we need
+uint8_t dsm2SerialByte ;
+uint8_t dsm2SerialBitCount;
+#endif
+
+uint8_t *dsm2StreamPtr;
 
 // DSM2 control bits
 #define DSM2_CHANS     6
@@ -52,43 +56,64 @@ uint8_t Serial_byte_count ;
 
 #define BITLEN_DSM2    (8*2) //125000 Baud => 8uS per bit
 
-void put_serial_bit(uint8_t bit)
+#if defined(PCBTARANIS)
+void _send_1(uint8_t v)
 {
-  Serial_byte >>= 1 ;
-  if (bit & 1)
-  {
-    Serial_byte |= 0x80 ;
-  }
-  if (++Serial_bit_count >= 8)
-  {
-    *Pulses2MHzptr++ = Serial_byte ;
-    Serial_bit_count = 0 ;
-    Serial_byte_count += 1 ;
-  }
+  *dsm2StreamPtr++ = v;
 }
 
 void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 {
-  put_serial_bit(0) ;           // Start bit
-  for(uint8_t i=0; i<8; i++)    // 8 data Bits
-  {
-    put_serial_bit(b & 1) ;
-    b >>= 1 ;
-  }
-
-  put_serial_bit(1) ;           // Stop bit
-  put_serial_bit(1) ;           // Stop bit
+    bool    lev = 0;
+    uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
+    for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
+        bool nlev = b & 1; //lsb first
+        if (lev == nlev){
+          len += BITLEN_DSM2;
+        }
+        else {
+          _send_1(len -1);
+          len  = BITLEN_DSM2;
+          lev  = nlev;
+        }
+        b = (b>>1) | 0x80; //shift in stop bit
+    }
+    _send_1(len+BITLEN_DSM2-1); // 2 stop bits
 }
-
-#if defined(PCBTARANIS)
-// TODO should be in the driver
 void putDsm2Flush()
 {
-  *Pulses2MHzptr++ = 171 ;             // Past the 44000 of the ARR
-  *Pulses2MHzptr++ = 234 ;             // Past the 44000 of the ARR
+  *dsm2StreamPtr++ = 171;             // Past the 44000 of the ARR
+  *dsm2StreamPtr++ = 234;             // Past the 44000 of the ARR
 }
 #else
-#define putDsm2Flush(...)
+void putDsm2SerialBit(uint8_t bit)
+{
+  dsm2SerialByte >>= 1;
+  if (bit & 1) {
+    dsm2SerialByte |= 0x80;
+  }
+  if (++dsm2SerialBitCount >= 8) {
+    *dsm2StreamPtr++ = dsm2SerialByte;
+    dsm2SerialBitCount = 0;
+  }
+}
+void sendByteDsm2(uint8_t b)     // max 10changes 0 10 10 10 10 1
+{
+  putDsm2SerialBit(0);           // Start bit
+  for (uint8_t i=0; i<8; i++) {  // 8 data Bits
+    putDsm2SerialBit(b & 1);
+    b >>= 1;
+  }
+
+  putDsm2SerialBit(1);           // Stop bit
+  putDsm2SerialBit(1);           // Stop bit
+}
+void putDsm2Flush()
+{
+  for (int i=0; i<16; i++) {
+    putDsm2SerialBit(1);         // 16 extra stop bits
+  }
+}
 #endif
 
 // This is the data stream to send, prepare after 19.5 mS
@@ -97,16 +122,17 @@ void putDsm2Flush()
 //static uint8_t *Dsm2_pulsePtr = pulses2MHz.pbyte ;
 void setupPulsesDSM2(unsigned int port)
 {
-  static uint8_t dsmDat[2+6*2]={0xFF,0x00,  0x00,0xAA,  0x05,0xFF,  0x09,0xFF,  0x0D,0xFF,  0x13,0x54,  0x14,0xAA};
-  uint8_t counter ;
+  static uint8_t dsmDat[2+6*2]={0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
 
-  Serial_byte = 0 ;
-  Serial_bit_count = 0 ;
-  Serial_byte_count = 0 ;
-  Pulses2MHzptr = Bit_pulses ;
+#if defined(PCBSKY9X)
+  dsm2SerialByte = 0 ;
+  dsm2SerialBitCount = 0 ;
+#endif
+
+  dsm2StreamPtr = dsm2Stream;
 
   // If more channels needed make sure the pulses union/array is large enough
-  if (dsmDat[0]&BAD_DATA)  //first time through, setup header
+  if (dsmDat[0] & BAD_DATA)  //first time through, setup header
   {
     switch(s_current_protocol[port])
     {
@@ -122,25 +148,21 @@ void setupPulsesDSM2(unsigned int port)
     }
   }
   if ((dsmDat[0] & BIND_BIT) && (!switchState(SW_DSM2_BIND)))
-   dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
+    dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
   if ((!(dsmDat[0] & BIND_BIT)) && s_rangecheck_mode)
-   dsmDat[0] |= RANGECHECK_BIT;   // range check function
+    dsmDat[0] |= RANGECHECK_BIT;   // range check function
   else
-   dsmDat[0] &= ~RANGECHECK_BIT;
+    dsmDat[0] &= ~RANGECHECK_BIT;
   dsmDat[1] = g_model.header.modelId;  //DSM2 Header second byte for model match
-  for(uint8_t i=0; i<6; i++) {
-    uint16_t pulse = limit(0, ((channelOutputs[g_model.moduleData[port].channelsStart+i]*13)>>5)+512,1023);
+
+  for (int i=0; i<DSM2_CHANS; i++) {
+    uint16_t pulse = limit(0, ((channelOutputs[g_model.moduleData[port].channelsStart+i]*13)>>5)+512, 1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);
     dsmDat[3+2*i] = pulse & 0xff;
   }
 
-  for (counter = 0 ; counter < 14 ; counter += 1)
-  {
-    sendByteDsm2(dsmDat[counter]);
-  }
-  for (counter = 0 ; counter < 16 ; counter += 1)
-  {
-    put_serial_bit(1) ;           // 16 extra stop bits
+  for (int i=0; i<14; i++) {
+    sendByteDsm2(dsmDat[i]);
   }
 
   putDsm2Flush();
