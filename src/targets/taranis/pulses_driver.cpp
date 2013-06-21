@@ -475,7 +475,7 @@ static void init_pa7_dsm2()
 #endif
   TIM8->CR2 = TIM_CR2_OIS1 ;                      // O/P idle high
   TIM8->BDTR = TIM_BDTR_MOE ;             // Enable outputs
-  TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0] ;
+  TIM8->CCR1 = dsm2Stream[0] ;
   TIM8->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0 ;                     // Force O/P high
   TIM8->EGR = 1 ;                                                         // Restart
 
@@ -491,7 +491,7 @@ static void init_pa7_dsm2()
   DMA2_Stream2->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
                                                          | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
   DMA2_Stream2->PAR = CONVERT_PTR(&TIM8->DMAR);
-  DMA2_Stream2->M0AR = CONVERT_PTR(&pxxStream[EXTERNAL_MODULE][1]);
+  DMA2_Stream2->M0AR = CONVERT_PTR(&dsm2Stream[1]);
 //      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 //      DMA2_Stream2->NDTR = 100 ;
   DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
