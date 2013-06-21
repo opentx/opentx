@@ -574,6 +574,8 @@ if __name__ == "__main__":
                         (u"zapoměl jsi na mě!", "inactiv", 486),
                         (u"plyn není na nule", "thralert", 481),
                         (u"přepínače nejsou ve výchozí poloze", "swalert", 482),
+                        (u"neplatná eeprom", "eebad", 483),
+                        (u"Oupn najn iks", "tada", 480),
                         (u"dvacet sekund", "timer20", 500),
                         (u"třicet sekund", "timer30", 501),
                        ]:
@@ -597,15 +599,17 @@ if __name__ == "__main__":
                      (u"rychlý mód aktivován", "spdmod"),
                      (u"termický mód aktivován", "thmmod"),
                      (u"normální mód aktivován", "nrmmod"),
-                     (u"režim jedna", "fltmd1"),
-                     (u"režim dva", "fltmd2"),
-                     (u"režim tři", "fltmd3"),
-                     (u"režim čtyři", "fltmd4"),
-                     (u"režim pět", "fltmd5"),
-                     (u"režim šest", "fltmd6"),
-                     (u"režim sedum", "fltmd7"),
-                     (u"režim osm", "fltmd8"),
-                     (u"režim devět", "fltmd9"),
+                     (u"režim jedna", "fm-1"),
+                     (u"režim dva", "fm-2"),
+                     (u"režim tři", "fm-3"),
+                     (u"režim čtyři", "fm-4"),
+                     (u"režim pět", "fm-5"),
+                     (u"režim šest", "fm-6"),
+                     (u"režim sedum", "fm-7"),
+                     (u"režim osm", "fm-8"),
+                     (u"vario!, zapnuto", "vrion"),
+                     (u"vario!, vypnuto", "vrioff"),
+
                      ]):
             sounds.extend(generate(s, f, PROMPT_CUSTOM_BASE+i))
             

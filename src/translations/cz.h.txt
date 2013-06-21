@@ -63,7 +63,7 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_DATETIME           "\006"
-#define TR_DATETIME            "DATUM:""čAS:  "
+#define TR_DATETIME            "DATUM:""ČAS:  "
 
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
@@ -342,7 +342,7 @@
 #define TR_VTMRMODES           "VYP""ABS""THs""TH%""THt"
 
 #define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Učitel""žák\0  "
+#define TR_VTRAINERMODES       "Učitel""Žák\0  "
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů"
@@ -361,7 +361,7 @@
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\007"TR_ENTER" > DALšÍ"
+#define TR_MENUWHENDONE        CENTER "\007"TR_ENTER" > DALŠÍ"
 #define TR_FREE                TR("volné:", "volných")
 #define TR_DELETEMODEL         "SMAZAT MODEL"
 #define TR_COPYINGMODEL        "Kopíruji model.."
@@ -375,7 +375,7 @@
 #define TR_BITMAP                "Obrázek"
 #define TR_TIMER               "Stopky "
 #define TR_ELIMITS             TR("Limit+25%", "Kanál +/- 125%")
-#define TR_ETRIMS              TR("širšíTrim", "široký trim")
+#define TR_ETRIMS              TR("širšíTrim", "Široký trim")
 #define TR_TRIMINC             TR("KrokTrimu", "Krok trimu")
 #define TR_TTRACE              TR("StopaPlyn", "Stopař plynu")
 #define TR_TTRIM               TR("TrimPlynu", "TrimPlyn-volnoběh")
@@ -414,10 +414,10 @@
 #define TR_MIXWARNING          "Varování"
 #define TR_OFF                 "VYP"
 #define TR_MULTPX              TR("Mat.operace", "Operace")
-#define TR_DELAYDOWN           "Zpoždění Vyp"
-#define TR_DELAYUP             "Zpoždění Zap"
-#define TR_SLOWDOWN            TR("Zpomalení(-)", "Zpomal(-)")
-#define TR_SLOWUP              TR("Zpomalení(+)", "Zpomal(+)")
+#define TR_DELAYDOWN           TR("Zpoždění Vyp", "Zdržet(-)")
+#define TR_DELAYUP             TR("Zpoždění Zap", "Zdržet(\43)")
+#define TR_SLOWDOWN            TR("Zpomalení(-)", "Zpomal(\177)")
+#define TR_SLOWUP              TR("Zpomalení(+)", "Zpomal(\176)")
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "k"
 #define TR_GV                  "GP"
@@ -491,12 +491,12 @@
 #define TR_FP                  "LR"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Dochází EEPROM"
-#define TR_ALERT               "\006(!)POZOR"
+#define TR_ALERT               "\006   POZOR"
 #define TR_PRESSANYKEYTOSKIP   "Klávesa >>> přeskočit"
 #define TR_THROTTLENOTIDLE     TR("Páka plynu je pohnutá", "Páka plynu není na nule")
 #define TR_ALARMSDISABLED      "Alarmy jsou zakázány"
 #define TR_PRESSANYKEY         "\006Stiskni klávesu"
-#define TR_BADEEPROMDATA       "\006Chyba dat EEprom"
+#define TR_BADEEPROMDATA       "\006Chyba dat EEPROM"
 #define TR_EEPROMFORMATTING    "\004Formatování EEPROM"
 #define TR_EEPROMOVERFLOW      "Přetekla EEPROM"
 #define TR_MENURADIOSETUP      "NASTAVENÍ RÁDIA"
@@ -509,8 +509,8 @@
 #define TR_TRIMS2OFFSETS       "\004Trimy => Subtrimy"
 #define TR_MENUMODELSEL        "MODEL"
 #define TR_MENUSETUP           "NASTAVENÍ"
-#define TR_MENUFLIGHTPHASE     "LETOVÝ REžIM"
-#define TR_MENUFLIGHTPHASES    "LETOVÉ REžIMY"
+#define TR_MENUFLIGHTPHASE     "LETOVÝ REŽIM"
+#define TR_MENUFLIGHTPHASES    "LETOVÉ REŽIMY"
 #define TR_MENUHELISETUP       "HELI"
 
 
@@ -527,7 +527,7 @@
 #define TR_MENUCUSTOMSWITCHES  "VIRTUÁLNÍ SPÍNAčE"
 #define TR_MENUCUSTOMFUNC      "FUNKCE"
 #define TR_MENUTELEMETRY       "TELEMETRIE"
-#define TR_MENUTEMPLATES       "šABLONY"
+#define TR_MENUTEMPLATES       "ŠABLONY"
 #define TR_MENUSTAT            "STATISTIKA"
 #define TR_MENUDEBUG           "DIAG"
 #define TR_RXNUM               "Přijímač"
@@ -583,7 +583,7 @@
 #define TR_DELETE_FILE         "Odstranit"
 #define TR_COPY_FILE           "Kopírovat"
 #define TR_RENAME_FILE         "Přejmenovat"
-#define TR_ASSIGN_BITMAP       "Assign Bitmap"
+#define TR_ASSIGN_BITMAP       "Zvolit obrázek"
 #define TR_REMOVED             " odstraněn"
 #define TR_SD_INFO             "Informace"
 #define TR_SD_FORMAT           "Formát"
@@ -637,7 +637,7 @@
 #define TR_TRAINER             "Trenér"
 #define TR_ANTENNAPROBLEM      CENTER "Problém s TX anténou!"
 #define TR_MODELIDUSED         TR("ID již použito","ID modelu je již použito")
-#define TR_MODULE              INDENT "Module"
+#define TR_MODULE              INDENT "Modul"
 #define TR_CHANNELRANGE        INDENT "Rozsah kanálů"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
@@ -648,40 +648,46 @@
 #define TR_CSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " AND Spínač ", " Trvání ", " Zpoždění " }
 
 //Taranis About screen
-#define TR_ABOUTUS             "opentx"
+#define TR_ABOUTUS             TR("  O nás   ", "O nás")
 
-#define TR_ABOUT_OPENTX_1      "je open source, nekomercni"
-#define TR_ABOUT_OPENTX_2      "a je bez jakekoliv zaruky."
-#define TR_ABOUT_OPENTX_3      "Byl vytvoren ve volnem case."
-#define TR_ABOUT_OPENTX_4      "Podpora pomoci financniho"
-#define TR_ABOUT_OPENTX_5      "daru je vitana!"
+#define TR_ABOUT_OPENTX_1      "opentx je nekomerční,"
+#define TR_ABOUT_OPENTX_2      "bez jakékoliv záruky."
+#define TR_ABOUT_OPENTX_3      TR("Vytvořen ve volném čase.", "Byl vytvořen ve volném čase.")
+#define TR_ABOUT_OPENTX_4      "Podpora vývoje pomocí"
+#define TR_ABOUT_OPENTX_5      TR("finančního daru je vítána!", "finančního daru je vítána")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "Hlavni autor OpenTX"
-#define TR_ABOUT_BERTRAND_3    "Spolutvurce Companion9x"
+#define TR_ABOUT_BERTRAND_2    "Hlavní vývojář OpenTX"
+#define TR_ABOUT_BERTRAND_3    "Spoluautor Companion9x"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
-#define TR_ABOUT_MIKE_2        "Specialista na kod,"
-#define TR_ABOUT_MIKE_3        " a ovladace hardwaru."
+#define TR_ABOUT_MIKE_2        "Specialista na kód,"
+#define TR_ABOUT_MIKE_3        " a ovladače hardwaru."
 #define TR_ABOUT_MIKE_4        ""
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Hlavni vyvojar"
+#define TR_ABOUT_ROMOLO_2      "Hlavní vývojář"
 #define TR_ABOUT_ROMOLO_3      "Companion9x"
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
-#define TR_ABOUT_ANDRE_2       "Funkcnost, pouzitelnost,"
-#define TR_ABOUT_ANDRE_3       "ladeni a dokumentace"
+#define TR_ABOUT_ANDRE_2       "Funkčnost, použitelnost,"
+#define TR_ABOUT_ANDRE_3       "ladění a dokumentace"
 
 #define TR_ABOUT_ROB_1         "Rob Thomson"
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotař"
-#define TR_ABOUT_MARTIN_2      "Grafika / CZ preklad"
+#define TR_ABOUT_MARTIN_2      "Grafický design, Čeština"
 
-#define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "Vyvoj a vyroba Hardware"
-#define TR_ABOUT_HARDWARE_3    ""
+#if defined(PCBTARANIS)
+  #define TR_ABOUT_HARDWARE_1  "FrSky"
+  #define TR_ABOUT_HARDWARE_2  "Vývoj a výroba Hardware"
+  #define TR_ABOUT_HARDWARE_3  ""
+#else
+  #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
+  #define TR_ABOUT_HARDWARE_2  "Sky9x designer/výrobce"
+  #define TR_ABOUT_HARDWARE_3  ""
+#endif
 
 #define TR_ABOUT_PARENTS_1     "Mateřské projekty"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"

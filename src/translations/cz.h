@@ -414,10 +414,10 @@
 #define TR_MIXWARNING          "Varov\200n\204"
 #define TR_OFF                 "VYP"
 #define TR_MULTPX              TR("Mat.operace", "Operace")
-#define TR_DELAYDOWN           "Zpo\217d\203n\204 Vyp"
-#define TR_DELAYUP             "Zpo\217d\203n\204 Zap"
-#define TR_SLOWDOWN            TR("Zpomalen\204(-)", "Zpomal(-)")
-#define TR_SLOWUP              TR("Zpomalen\204(+)", "Zpomal(+)")
+#define TR_DELAYDOWN           TR("Zpo\217d\203n\204 Vyp", "Zdr\217et(-)")
+#define TR_DELAYUP             TR("Zpo\217d\203n\204 Zap", "Zdr\217et(\43)")
+#define TR_SLOWDOWN            TR("Zpomalen\204(-)", "Zpomal(\177)")
+#define TR_SLOWUP              TR("Zpomalen\204(+)", "Zpomal(\176)")
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "k"
 #define TR_GV                  "GP"
@@ -491,12 +491,12 @@
 #define TR_FP                  "LR"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Doch\200z\204 EEPROM"
-#define TR_ALERT               "\006(!)POZOR"
+#define TR_ALERT               "\006   POZOR"
 #define TR_PRESSANYKEYTOSKIP   "Kl\200vesa >>> p\206esko\201it"
 #define TR_THROTTLENOTIDLE     TR("P\200ka plynu je pohnut\200", "P\200ka plynu nen\204 na nule")
 #define TR_ALARMSDISABLED      "Alarmy jsou zak\200z\200ny"
 #define TR_PRESSANYKEY         "\006Stiskni kl\200vesu"
-#define TR_BADEEPROMDATA       "\006Chyba dat EEprom"
+#define TR_BADEEPROMDATA       "\006Chyba dat EEPROM"
 #define TR_EEPROMFORMATTING    "\004Formatov\200n\204 EEPROM"
 #define TR_EEPROMOVERFLOW      "P\206etekla EEPROM"
 #define TR_MENURADIOSETUP      "NASTAVEN\214 R\213DIA"
@@ -583,7 +583,7 @@
 #define TR_DELETE_FILE         "Odstranit"
 #define TR_COPY_FILE           "Kop\204rovat"
 #define TR_RENAME_FILE         "P\206ejmenovat"
-#define TR_ASSIGN_BITMAP       "Assign Bitmap"
+#define TR_ASSIGN_BITMAP       "Zvolit obr\200zek"
 #define TR_REMOVED             " odstran\203n"
 #define TR_SD_INFO             "Informace"
 #define TR_SD_FORMAT           "Form\200t"
@@ -637,7 +637,7 @@
 #define TR_TRAINER             "Tren\202r"
 #define TR_ANTENNAPROBLEM      CENTER "Probl\202m s TX ant\202nou!"
 #define TR_MODELIDUSED         TR("ID ji\217 pou\217ito","ID modelu je ji\217 pou\217ito")
-#define TR_MODULE              INDENT "Module"
+#define TR_MODULE              INDENT "Modul"
 #define TR_CHANNELRANGE        INDENT "Rozsah kan\200l\211"
 #define TR_LOWALARM            INDENT "N\204zk\212 Alarm"
 #define TR_CRITICALALARM       INDENT "Kritick\212 Alarm"
@@ -648,40 +648,46 @@
 #define TR_CSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " AND Sp\204na\201 ", " Trv\200n\204 ", " Zpo\217d\203n\204 " }
 
 //Taranis About screen
-#define TR_ABOUTUS             "opentx"
+#define TR_ABOUTUS             TR("  O n\200s   ", "O n\200s")
 
-#define TR_ABOUT_OPENTX_1      "je open source, nekomercni"
-#define TR_ABOUT_OPENTX_2      "a je bez jakekoliv zaruky."
-#define TR_ABOUT_OPENTX_3      "Byl vytvoren ve volnem case."
-#define TR_ABOUT_OPENTX_4      "Podpora pomoci financniho"
-#define TR_ABOUT_OPENTX_5      "daru je vitana!"
+#define TR_ABOUT_OPENTX_1      "opentx je nekomer\201n\204,"
+#define TR_ABOUT_OPENTX_2      "bez jak\202koliv z\200ruky."
+#define TR_ABOUT_OPENTX_3      TR("Vytvo\206en ve voln\202m \201ase.", "Byl vytvo\206en ve voln\202m \201ase.")
+#define TR_ABOUT_OPENTX_4      "Podpora v\212voje pomoc\204"
+#define TR_ABOUT_OPENTX_5      TR("finan\201n\204ho daru je v\204t\200na!", "finan\201n\204ho daru je v\204t\200na")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "Hlavni autor OpenTX"
-#define TR_ABOUT_BERTRAND_3    "Spolutvurce Companion9x"
+#define TR_ABOUT_BERTRAND_2    "Hlavn\204 v\212voj\200\206 OpenTX"
+#define TR_ABOUT_BERTRAND_3    "Spoluautor Companion9x"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
-#define TR_ABOUT_MIKE_2        "Specialista na kod,"
-#define TR_ABOUT_MIKE_3        " a ovladace hardwaru."
+#define TR_ABOUT_MIKE_2        "Specialista na k\205d,"
+#define TR_ABOUT_MIKE_3        " a ovlada\201e hardwaru."
 #define TR_ABOUT_MIKE_4        ""
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Hlavni vyvojar"
+#define TR_ABOUT_ROMOLO_2      "Hlavn\204 v\212voj\200\206"
 #define TR_ABOUT_ROMOLO_3      "Companion9x"
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
-#define TR_ABOUT_ANDRE_2       "Funkcnost, pouzitelnost,"
-#define TR_ABOUT_ANDRE_3       "ladeni a dokumentace"
+#define TR_ABOUT_ANDRE_2       "Funk\201nost, pou\217itelnost,"
+#define TR_ABOUT_ANDRE_3       "lad\203n\204 a dokumentace"
 
 #define TR_ABOUT_ROB_1         "Rob Thomson"
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hota\206"
-#define TR_ABOUT_MARTIN_2      "Grafika / CZ preklad"
+#define TR_ABOUT_MARTIN_2      "Grafick\212 design, \201e\207tina"
 
-#define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "Vyvoj a vyroba Hardware"
-#define TR_ABOUT_HARDWARE_3    ""
+#if defined(PCBTARANIS)
+  #define TR_ABOUT_HARDWARE_1  "FrSky"
+  #define TR_ABOUT_HARDWARE_2  "V\212voj a v\212roba Hardware"
+  #define TR_ABOUT_HARDWARE_3  ""
+#else
+  #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
+  #define TR_ABOUT_HARDWARE_2  "Sky9x designer/v\212robce"
+  #define TR_ABOUT_HARDWARE_3  ""
+#endif
 
 #define TR_ABOUT_PARENTS_1     "Mate\206sk\202 projekty"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
