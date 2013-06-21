@@ -43,7 +43,7 @@ void setupPulsesPXX(unsigned int port);
 uint16_t *ppmStreamPtr[NUM_MODULES];
 extern uint16_t ppmStream[NUM_MODULES+1][20];
 extern uint16_t pxxStream[NUM_MODULES][400];
-extern uint8_t Bit_pulses[64];
+extern uint16_t dsm2Stream[400];
 
 static void init_pa10_pxx( void ) ;
 static void disable_pa10_pxx( void ) ;
@@ -586,9 +586,9 @@ extern "C" void TIM8_CC_IRQHandler()
   else if (s_current_protocol[EXTERNAL_MODULE] >= PROTO_DSM2_LP45 && s_current_protocol[EXTERNAL_MODULE] <= PROTO_DSM2_DSMX) {
     DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
     DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
-    DMA2_Stream2->M0AR = CONVERT_PTR(&Bit_pulses[2]);
+    DMA2_Stream2->M0AR = CONVERT_PTR(&dsm2Stream[1]);
     DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
-    TIM8->CCR1 = ((uint16_t *)Bit_pulses)[0];
+    TIM8->CCR1 = dsm2Stream[0];
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 #endif

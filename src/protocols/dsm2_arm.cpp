@@ -37,14 +37,14 @@
 #include "../opentx.h"
 
 #if defined(PCBTARANIS)
-uint8_t dsm2Stream[400];                          // Likely more than we need
+uint16_t dsm2Stream[400];                          // Likely more than we need
+uint16_t *dsm2StreamPtr;
 #else
-uint8_t dsm2Stream[64];                          // Likely more than we need
-uint8_t dsm2SerialByte ;
-uint8_t dsm2SerialBitCount;
-#endif
-
+uint8_t  dsm2Stream[64];                          // Likely more than we need
 uint8_t *dsm2StreamPtr;
+uint8_t  dsm2SerialByte ;
+uint8_t  dsm2SerialBitCount;
+#endif
 
 // DSM2 control bits
 #define DSM2_CHANS     6
