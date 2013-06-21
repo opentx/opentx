@@ -123,6 +123,7 @@ inline void boardInit()
 #if defined(AUDIO) || defined(VOICE)
   SET_TIMER_AUDIO_CTRL();
   #if defined(CPUM2561)
+    OCR4A = 0xFF;
     RESUME_AUDIO_INTERRUPT();
   #else
     TIMSK |= (1<<OCIE0) | (1<<TOIE0) | (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
