@@ -82,8 +82,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 }
 void putDsm2Flush()
 {
-  *dsm2StreamPtr++ = 171;             // Past the 44000 of the ARR
-  *dsm2StreamPtr++ = 234;             // Past the 44000 of the ARR
+  *dsm2StreamPtr++ = 44010;             // Past the 44000 of the ARR
 }
 #else
 void putDsm2SerialBit(uint8_t bit)
