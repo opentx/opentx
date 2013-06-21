@@ -62,7 +62,7 @@ void setupPulses(unsigned int port)
         break;
 #if defined(DSM2)
       case MODULE_TYPE_DSM2:
-        required_protocol = PROTO_DSM2_LP45 + limit((int8_t)DSM2_PROTO_LP45, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (int8_t)DSM2_PROTO_DSMX);
+        required_protocol = limit<uint8_t>(DSM2_PROTO_LP45, PROTO_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_DSMX);
         break;
 #endif
       default:
