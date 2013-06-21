@@ -372,7 +372,7 @@
 #define TR_PHASENAME           "Modnamn   "
 #define TR_MIXNAME             "Mixnamn "
 #define TR_EXPONAME            "Exponamn "
-#define TR_BITMAP              "Modell-bild"
+#define TR_BITMAP              "Modellikon"
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("Gränser++","Utökade Gränser")
 #define TR_ETRIMS              TR("Trimmar++","Utökade Trimmar")
@@ -578,12 +578,12 @@
 #define TR_SDHC_CARD           "SD/HC-kort"
 #define TR_NO_SOUNDS_ON_SD     "Inga ljud i SD"
 #define TR_NO_MODELS_ON_SD     "Ingen modell i SD"
-#define TR_NO_BITMAPS_ON_SD    "Bilder saknas på SD"
+#define TR_NO_BITMAPS_ON_SD    "Ikoner saknas på SD"
 #define TR_PLAY_FILE           "Spela"
 #define TR_DELETE_FILE         "Radera"
 #define TR_COPY_FILE           "Kopia"
 #define TR_RENAME_FILE         "Byt namn"
-#define TR_ASSIGN_BITMAP       "Assign Bitmap"
+#define TR_ASSIGN_BITMAP       "Tilldela ikon"
 #define TR_REMOVED             " raderad"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Format"
