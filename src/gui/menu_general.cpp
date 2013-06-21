@@ -677,6 +677,8 @@ void onSdManagerMenu(const char *result)
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     audioQueue.playFile(lfn, PLAY_BACKGROUND, 255);
   }
+#endif
+#if defined(PCBTARANIS)
   else if (result == STR_ASSIGN_BITMAP) {
     strcpy(lfn, reusableBuffer.sdmanager.lines[index]);
     // TODO duplicated code for finding extension
@@ -762,9 +764,11 @@ void menuGeneralSdManager(uint8_t event)
         else */ if (!strcasecmp(ext, SOUNDS_EXT)) {
           MENU_ADD_ITEM(STR_PLAY_FILE);
         }
+#if defined(PCBTARANIS)
         else if (!strcasecmp(ext, BITMAPS_EXT)) {
           MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
         }
+#endif
 #endif
         MENU_ADD_ITEM(STR_DELETE_FILE);
         MENU_ADD_ITEM(STR_RENAME_FILE);
