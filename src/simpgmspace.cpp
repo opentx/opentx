@@ -505,6 +505,7 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
 
 FRESULT f_readdir (DIR * rep, FILINFO * fil)
 {
+  if (!rep->fs) return FR_NO_FILE;
   simu::dirent * ent = simu::readdir((simu::DIR *)rep->fs);
   if (!ent) return FR_NO_FILE;
 
