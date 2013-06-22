@@ -196,11 +196,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Retroillum.\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Trim Instant " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Retroillum.\0 " TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Retroillum.\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Trim Instant " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Retroillum.\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Instant Trim " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Retroillum.\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Trim Instant " TR_SOUND TR_HAPTIC "Azzera\0      " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Retroillum.\0 " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #endif
 
 #define LEN_VFSWRESET      "\006"
@@ -578,12 +578,12 @@
 #define TR_SDHC_CARD           "SD-HC Card"
 #define TR_NO_SOUNDS_ON_SD     "No Suoni su SD"
 #define TR_NO_MODELS_ON_SD     "No Model. su SD"
-#define TR_NO_BITMAPS_ON_SD    "No Bitmaps on SD"
+#define TR_NO_BITMAPS_ON_SD    "no Immag. su SD"
 #define TR_PLAY_FILE           "Suona"
 #define TR_DELETE_FILE         "Cancella"
 #define TR_COPY_FILE           "Copia"
 #define TR_RENAME_FILE         "Rinomomina"
-#define TR_ASSIGN_BITMAP       "Assign Bitmap"
+#define TR_ASSIGN_BITMAP       "Assegna Immagine"
 #define TR_REMOVED             " rimosso"
 #define TR_SD_INFO             "Informazioni"
 #define TR_SD_FORMAT           "Format"
