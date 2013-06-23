@@ -467,14 +467,14 @@ FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 
 FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
 {
-  fwrite(data, size, 1, (FILE*)fil->fs);
+  if (fil->fs) fwrite(data, size, 1, (FILE*)fil->fs);
   *written = size;
   return FR_OK;
 }
 
 FRESULT f_lseek (FIL* fil, DWORD offset)
 {
-  fseek((FILE*)fil->fs, offset, SEEK_SET);
+  if (fil->fs) fseek((FILE*)fil->fs, offset, SEEK_SET);
   return FR_OK;
 }
 
@@ -482,7 +482,7 @@ FRESULT f_close (FIL * fil)
 {
   if (fil->fs) {
     fclose((FILE*)fil->fs);
-    fil->fs=NULL;
+    fil->fs = NULL;
   }
   return FR_OK;
 }
@@ -542,7 +542,7 @@ FRESULT f_unlink (const TCHAR*)
 
 int f_putc (TCHAR c, FIL * fil)
 {
-  fwrite(&c, 1, 1, (FILE*)fil->fs);
+  if (fil->fs) fwrite(&c, 1, 1, (FILE*)fil->fs);
   return FR_OK;
 }
 
@@ -555,11 +555,11 @@ int f_puts (const TCHAR * str, FIL * fil)
   return n;
 }
 
-int f_printf (FIL *f, const TCHAR * format, ...)
+int f_printf (FIL *fil, const TCHAR * format, ...)
 {
   va_list arglist;
   va_start(arglist, format);
-  vfprintf((FILE*)f->fs, format, arglist);
+  if (fil->fs) vfprintf((FILE*)fil->fs, format, arglist);
   va_end(arglist);
   return 0;
 }
