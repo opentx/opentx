@@ -63,6 +63,20 @@ void setupPulses(unsigned int port)
 #if defined(DSM2)
       case MODULE_TYPE_DSM2:
         required_protocol = limit<uint8_t>(DSM2_PROTO_LP45, PROTO_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_DSMX);
+        // The module is set to OFF during one second before BIND start
+        {
+          static tmr10ms_t bindStartTime = 0;
+          if (dsm2Flag == DSM2_BIND_FLAG) {
+            if (bindStartTime == 0) bindStartTime = get_tmr10ms();
+            if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
+              required_protocol = PROTO_NONE;
+              break;
+            }
+          }
+          else {
+            bindStartTime = 0;
+          }
+        }
         break;
 #endif
       default:

@@ -42,8 +42,6 @@ uint16_t nextMixerEndTime = 0;
 #if defined(DSM2)
 // DSM2 control bits
 #define DSM2_CHANS     6
-#define BIND_BIT       0x80
-#define RANGECHECK_BIT 0x20
 #define FRANCE_BIT     0x10
 #define DSMX_BIT       0x08
 #define BAD_DATA       0x47
@@ -394,23 +392,17 @@ FORCEINLINE void setupPulsesDSM2()
       *ptr = 0x18;
       break;
   }
+
   if (s_bind_allowed) s_bind_allowed--;
   if (s_bind_allowed && switchState(SW_DSM2_BIND))
-  {
-    s_bind_mode = true;
-    *ptr |= BIND_BIT;
-  }
-  else if (s_rangecheck_mode)
-  {
-    *ptr |= RANGECHECK_BIT;
-  }
+    dsm2Flag = DSM2_BIND_FLAG;
   else
-    s_bind_mode = false;
-  ++ptr;
+    dsm2Flag &= ~DSM2_BIND_FLAG;
 
+  *ptr++ |= dsm2Flag;
   *ptr++ = g_model.header.modelId;
-  for (uint8_t i=0; i<DSM2_CHANS; i++) 
-  {
+
+  for (uint8_t i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512,1023);
     *ptr++ = (i<<2) | ((pulse>>8)&0x03); // encoded channel + upper 2 bits pulse width
     *ptr++ = pulse & 0xff; // low byte
@@ -487,7 +479,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
           // NOTE: This has now been tested as NOT required on the stock board, with the ATmega64A chip.
           _send_1(nlev ? len-5 : len+3);
 #else
-          _send_1(len -1);
+          _send_1(len-1);
 #endif
           len  = BITLEN_DSM2;
           lev  = nlev;
@@ -510,33 +502,27 @@ void setupPulsesDSM2()
   pulses2MHzWPtr = pulses2MHz;
 
   // If more channels needed make sure the pulses union/array is large enough
-  switch (s_current_protocol[0])
-  {
+  switch (s_current_protocol[0]) {
     case PROTO_DSM2_LP45:
       dsmDat[0] = 0x00;
       break;
     case PROTO_DSM2_DSM2:
       dsmDat[0] = 0x10;
       break;
-    default: // DSMX bind mode
+    default: // DSMX
       dsmDat[0] = 0x18;
       break;
   }
 
   if (s_bind_allowed) s_bind_allowed--;
-  if (s_bind_allowed && switchState(SW_TRN)) 
-  {
-    s_bind_mode = true;
-    dsmDat[0] |= BIND_BIT;
-  }
-  else if (s_rangecheck_mode)
-  {
-    dsmDat[0] |= RANGECHECK_BIT;
-  }
+  if (s_bind_allowed && switchState(SW_DSM2_BIND))
+    dsm2Flag = DSM2_BIND_FLAG;
   else
-    s_bind_mode = false;
+    dsm2Flag &= ~DSM2_BIND_FLAG;
 
+  dsmDat[0] |= dsm2Flag;
   dsmDat[1] = g_model.header.modelId; // DSM2 Header second byte for model match
+
   for (uint8_t i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, ((channelOutputs[i]*13)>>5)+512, 1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03); // encoded channel + upper 2 bits pulse width

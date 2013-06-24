@@ -37,8 +37,9 @@
 #include "../opentx.h"
 
 #if defined(PCBTARANIS)
-uint16_t dsm2Stream[400];                          // Likely more than we need
+uint16_t dsm2Stream[400];                         // Likely more than we need
 uint16_t *dsm2StreamPtr;
+uint16_t dsm2Value;
 #else
 uint8_t  dsm2Stream[64];                          // Likely more than we need
 uint8_t *dsm2StreamPtr;
@@ -47,17 +48,14 @@ uint8_t  dsm2SerialBitCount;
 #endif
 
 // DSM2 control bits
-#define DSM2_CHANS     6
-#define BIND_BIT       0x80
-#define RANGECHECK_BIT 0x20
-#define FRANCE_BIT     0x10
-#define DSMX_BIT       0x08
-#define BAD_DATA       0x47
+#define DSM2_CHANS           6
+#define FRANCE_BIT           0x10
+#define DSMX_BIT             0x08
+#define BAD_DATA             0x47
 
-#define BITLEN_DSM2    (8*2) //125000 Baud => 8uS per bit
+#define BITLEN_DSM2          (8*2) //125000 Baud => 8uS per bit
 
 #if defined(PCBTARANIS)
-uint16_t dsm2Value;
 void _send_1(uint8_t v)
 {
   dsm2Value += v;
@@ -74,16 +72,17 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
           len += BITLEN_DSM2;
         }
         else {
-          _send_1(len-1);
+          _send_1(nlev ? len-5 : len+3);
           len  = BITLEN_DSM2;
           lev  = nlev;
         }
         b = (b>>1) | 0x80; //shift in stop bit
     }
-    _send_1(len+BITLEN_DSM2-1); // 2 stop bits
+    _send_1(len+BITLEN_DSM2+3); // 2 stop bits
 }
 void putDsm2Flush()
 {
+  dsm2StreamPtr--; //remove last stopbits and
   *dsm2StreamPtr++ = 44010;             // Past the 44000 of the ARR
 }
 #else
@@ -134,29 +133,28 @@ void setupPulsesDSM2(unsigned int port)
 
   dsm2StreamPtr = dsm2Stream;
 
-  // If more channels needed make sure the pulses union/array is large enough
-  if (dsmDat[0] & BAD_DATA)  //first time through, setup header
-  {
-    switch(s_current_protocol[port])
-    {
-      case PROTO_DSM2_LP45:
-        dsmDat[0] = 0x80;
-        break;
-      case PROTO_DSM2_DSM2:
-        dsmDat[0] = 0x90;
-        break;
-      default:
-        dsmDat[0] = 0x98;  //dsmx, bind mode
-        break;
-    }
+  switch(s_current_protocol[port]) {
+    case PROTO_DSM2_LP45:
+      dsmDat[0] = 0x00;
+      break;
+    case PROTO_DSM2_DSM2:
+      dsmDat[0] = 0x10;
+      break;
+    default: // DSMX
+      dsmDat[0] = 0x18;
+      break;
   }
-  if ((dsmDat[0] & BIND_BIT) && (!switchState(SW_DSM2_BIND)))
-    dsmDat[0] &= ~BIND_BIT; // clear bind bit if trainer not pulled
-  if ((!(dsmDat[0] & BIND_BIT)) && s_rangecheck_mode)
-    dsmDat[0] |= RANGECHECK_BIT;   // range check function
+
+#if !defined(PCBTARANIS)
+  if (s_bind_allowed) s_bind_allowed--;
+  if (s_bind_allowed && switchState(SW_DSM2_BIND))
+    dsm2Flag = DSM2_BIND_FLAG;
   else
-    dsmDat[0] &= ~RANGECHECK_BIT;
-  dsmDat[1] = g_model.header.modelId;  //DSM2 Header second byte for model match
+    dsm2Flag &= ~DSM2_BIND_FLAG;
+#endif
+
+  dsmDat[0] |= dsm2Flag;
+  dsmDat[1] = g_model.header.modelId; // DSM2 Header second byte for model match
 
   for (int i=0; i<DSM2_CHANS; i++) {
     uint16_t pulse = limit(0, ((channelOutputs[g_model.moduleData[port].channelsStart+i]*13)>>5)+512, 1023);

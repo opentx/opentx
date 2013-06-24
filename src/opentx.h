@@ -463,10 +463,14 @@ enum EnumKeys {
   #define LOAD_MODEL_BITMAP()
 #endif
 
+// TODO elsewhere ...
 #if defined(DSM2)
-  extern bool s_bind_mode;
-  extern bool s_rangecheck_mode;
+  #define DSM2_BIND_FLAG       0x80
+  #define DSM2_RANGECHECK_FLAG 0x20
+  extern uint8_t dsm2Flag;
+#if !defined(PCBTARANIS)
   extern uint8_t s_bind_allowed;
+#endif
 #endif
 
 #if defined(CPUARM)

@@ -838,7 +838,7 @@ void menuMainView(uint8_t event)
 #endif
 
 #if defined(DSM2)
-  if (s_bind_mode) // Issue 98
+  if (dsm2Flag == DSM2_BIND_FLAG) // Issue 98
     lcd_putsAtt(15*FW, 0, PSTR("BIND"), 0);
 #endif
 }
