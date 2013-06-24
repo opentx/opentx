@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------/
-/  FatFs - FAT file system module configuration file  R0.09  (C)ChaN, 2011
+/  FatFs - FAT file system module configuration file  R0.09b (C)ChaN, 2013
 /----------------------------------------------------------------------------/
 /
 / CAUTION! Do not forget to make clean the project after any changes to
@@ -7,7 +7,7 @@
 /
 /----------------------------------------------------------------------------*/
 #ifndef _FFCONF
-#define _FFCONF 6502	/* Revision ID */
+#define _FFCONF 82786	/* Revision ID */
 
 #if defined(CPUARM) && !defined(SIMU)
 #ifdef __cplusplus
@@ -53,13 +53,16 @@ extern "C" {
 /* To enable f_mkfs function, set _USE_MKFS to 1 and set _FS_READONLY to 0 */
 
 
-#define	_USE_FORWARD	0	/* 0:Disable or 1:Enable */
-/* To enable f_forward function, set _USE_FORWARD to 1 and set _FS_TINY to 1. */
-
-
 #define	_USE_FASTSEEK	0	/* 0:Disable or 1:Enable */
 /* To enable fast seek feature, set _USE_FASTSEEK to 1. */
 
+
+#define _USE_LABEL	0	/* 0:Disable or 1:Enable */
+/* To enable volume label functions, set _USE_LAVEL to 1 */
+
+
+#define	_USE_FORWARD	0	/* 0:Disable or 1:Enable */
+/* To enable f_forward function, set _USE_FORWARD to 1 and set _FS_TINY to 1. */
 
 
 /*---------------------------------------------------------------------------/
@@ -99,11 +102,11 @@ extern "C" {
 */
 
 #if defined(CPUARM)
-#define	_USE_LFN	2		/* 0 to 3 */
-#define _MAX_LFN        255             /* Maximum LFN length to handle (12 to 255) */
+  #define _USE_LFN	2		/* 0 to 3 */
+  #define _MAX_LFN      255             /* Maximum LFN length to handle (12 to 255) */
 #else
-#define _USE_LFN        1               /* 0 to 3 */
-#define _MAX_LFN        32              /* Maximum LFN length to handle (12 to 255) */
+  #define _USE_LFN      1               /* 0 to 3 */
+  #define _MAX_LFN      32              /* Maximum LFN length to handle (12 to 255) */
 #endif
 
 /* The _USE_LFN option switches the LFN support.
@@ -124,7 +127,7 @@ extern "C" {
 /  enable LFN feature and set _LFN_UNICODE to 1. */
 
 
-#define _FS_RPATH		2	/* 0 to 2 */
+#define _FS_RPATH	2	/* 0 to 2 */
 /* The _FS_RPATH option configures relative path feature.
 /
 /   0: Disable relative path feature and remove related functions.
@@ -132,7 +135,6 @@ extern "C" {
 /   2: f_getcwd() is available in addition to 1.
 /
 /  Note that output of the f_readdir fnction is affected by this option. */
-
 
 
 /*---------------------------------------------------------------------------/
@@ -151,7 +153,7 @@ extern "C" {
 /  and GET_SECTOR_SIZE command must be implememted to the disk_ioctl function. */
 
 
-#define	_MULTI_PARTITION	0	/* 0:Single partition, 1/2:Enable multiple partition */
+#define	_MULTI_PARTITION	0	/* 0:Single partition, 1:Enable multiple partition */
 /* When set to 0, each volume is bound to the same physical drive number and
 / it can mount only first primaly partition. When it is set to 1, each volume
 / is tied to the partitions listed in VolToPart[]. */
@@ -185,10 +187,11 @@ extern "C" {
 /  windows.h, ucos_ii.h and semphr.h, must be included prior to ff.h. */
 
 #if defined(CPUARM)
-#define _FS_REENTRANT		1	   /* 0:Disable or 1:Enable */
+  #define _FS_REENTRANT		1	   /* 0:Disable or 1:Enable */
 #else
-#define _FS_REENTRANT		0	   /* 0:Disable or 1:Enable */
+  #define _FS_REENTRANT		0	   /* 0:Disable or 1:Enable */
 #endif
+
 #define _FS_TIMEOUT		1000	   /* Timeout period in unit of time ticks */
 #define	_SYNC_t			OS_MutexID /* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
 
@@ -199,10 +202,10 @@ extern "C" {
 /      ff_req_grant, ff_rel_grant, ff_del_syncobj and ff_cre_syncobj
 /      function must be added to the project. */
 
-#define	_FS_SHARE	0	/* 0:Disable or >=1:Enable */
 
-/* To enable file shareing feature, set _FS_SHARE to 1 or greater. The value
-   defines how many files can be opened simultaneously. */
+#define	_FS_LOCK	0	/* 0:Disable or >=1:Enable */
+/* To enable file lock control feature, set _FS_LOCK to 1 or greater.
+   The value defines how many files can be opened simultaneously. */
 
 
 #endif /* _FFCONFIG */

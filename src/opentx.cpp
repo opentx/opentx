@@ -3640,11 +3640,12 @@ void perMain()
 #endif
 
 #if defined(PCBTARANIS)
-  if (usbState == USB_DISCONNECTING) {
-    eeReadAll();
-    sdInit();
-    eeLoadModel(g_eeGeneral.currModel);
-    usbState = USB_DISCONNECTED;
+  static bool usbStarted = false;
+  if (!usbStarted && usbPlugged()) {
+    usbStarted = true;
+    sdDone();
+    eeCheck(true);
+    usbStart();
   }
 #endif
 

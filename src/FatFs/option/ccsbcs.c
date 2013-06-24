@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------*/
-/* Unicode - Local code bidirectional converter  (C)ChaN, 2009            */
+/* Unicode - Local code bidirectional converter  (C)ChaN, 2012            */
 /* (SBCS code pages)                                                      */
 /*------------------------------------------------------------------------*/
 /*  437   U.S. (OEM)
@@ -68,7 +68,7 @@ const WCHAR Tbl[] = {	/*  CP720(0x80-0xFF) to Unicode conversion table */
 	0x256A, 0x2518, 0x250C, 0x2588, 0x2584, 0x258C, 0x2590, 0x2580,
 	0x0636, 0x0637, 0x0638, 0x0639, 0x063A, 0x0641, 0x00B5, 0x0642,
 	0x0643, 0x0644, 0x0645, 0x0646, 0x0647, 0x0648, 0x0649, 0x064A,
-	0x2261, 0x064B, 0x064C, 0x064D, 0x064E, 0x064F, 0xO650, 0x2248,
+	0x2261, 0x064B, 0x064C, 0x064D, 0x064E, 0x064F, 0x0650, 0x2248,
 	0x00B0, 0x2219, 0x00B7, 0x221A, 0x207F, 0x00B2, 0x25A0, 0x00A0
 };
 
@@ -499,23 +499,23 @@ const WCHAR Tbl[] = {	/*  CP1258(0x80-0xFF) to Unicode conversion table */
 
 
 WCHAR ff_convert (	/* Converted character, Returns zero on error */
-	WCHAR	src,	/* Character code to be converted */
+	WCHAR	chr,	/* Character code to be converted */
 	UINT	dir		/* 0: Unicode to OEMCP, 1: OEMCP to Unicode */
 )
 {
 	WCHAR c;
 
 
-	if (src < 0x80) {	/* ASCII */
-		c = src;
+	if (chr < 0x80) {	/* ASCII */
+		c = chr;
 
 	} else {
 		if (dir) {		/* OEMCP to Unicode */
-			c = (src >= 0x100) ? 0 : Tbl[src - 0x80];
+			c = (chr >= 0x100) ? 0 : Tbl[chr - 0x80];
 
 		} else {		/* Unicode to OEMCP */
 			for (c = 0; c < 0x80; c++) {
-				if (src == Tbl[c]) break;
+				if (chr == Tbl[c]) break;
 			}
 			c = (c + 0x80) & 0xFF;
 		}

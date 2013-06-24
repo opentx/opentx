@@ -74,11 +74,6 @@ void configure_pins( uint32_t pins, uint16_t config );
 
 extern uint16_t sessionTimer;
 
-/* USB driver */
-uint8_t usbPlugged(void);
-#define BOOTLOADER_REQUEST() (0)
-#define usbBootloader()
-
 #define SLAVE_MODE()         (g_model.trainerMode == 1)
 #define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(GPIOTRNDET, PIN_TRNDET) == Bit_RESET)
 
@@ -168,16 +163,15 @@ void pwrOff();
 #define setBacklight(xx)
 #define __BACKLIGHT_ON        GPIO_SetBits(GPIOB, GPIO_Pin_BL)
 #define __BACKLIGHT_OFF       GPIO_ResetBits(GPIOB, GPIO_Pin_BL)
-#define IS_BACKLIGHT_ON()     GPIO_IsSet(GPIOB, GPIO_Pin_BL)
+#define IS_BACKLIGHT_ON()     GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_BL)
 
 // USB driver
+#define BOOTLOADER_REQUEST()  (0)
+#define usbBootloader()
 void usbInit(void);
-enum UsbState {
-  USB_DISCONNECTED,
-  USB_CONNECTED,
-  USB_DISCONNECTING,
-};
-extern UsbState usbState;
+void usbStart(void);
+bool usbPlugged(void);
+#define EEPROM_MASSSTORAGE()  usbPlugged()
 
 // EEPROM driver
 #if !defined(SIMU)
@@ -188,7 +182,7 @@ extern UsbState usbState;
 #define eepromInit()
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #endif
-#define EEPROM_MASSSTORAGE()  usbPlugged()
+
 
 extern uint8_t currentTrainerMode;
 

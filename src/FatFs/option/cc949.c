@@ -8551,7 +8551,7 @@ const WCHAR oem2uni[] = {
 
 
 WCHAR ff_convert (	/* Converted code, 0 means conversion error */
-	WCHAR	src,	/* Character code to be converted */
+	WCHAR	chr,	/* Character code to be converted */
 	UINT	dir		/* 0: Unicode to OEMCP, 1: OEMCP to Unicode */
 )
 {
@@ -8560,8 +8560,8 @@ WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 	int i, n, li, hi;
 
 
-	if (src < 0x80) {	/* ASCII */
-		c = src;
+	if (chr < 0x80) {	/* ASCII */
+		c = chr;
 	} else {
 		if (dir) {		/* OEMCP to unicode */
 			p = oem2uni;
@@ -8573,8 +8573,8 @@ WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 		li = 0;
 		for (n = 16; n; n--) {
 			i = li + (hi - li) / 2;
-			if (src == p[i * 2]) break;
-			if (src > p[i * 2])
+			if (chr == p[i * 2]) break;
+			if (chr > p[i * 2])
 				li = i;
 			else
 				hi = i;

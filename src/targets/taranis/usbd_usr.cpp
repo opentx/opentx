@@ -107,9 +107,7 @@ void USBD_USR_DeviceResumed(void)
 */
 void USBD_USR_DeviceConnected (void)
 {
-  sdDone();
-  //eeCheck(true);
-  usbState = USB_CONNECTED;
+
 }
 
 
@@ -121,7 +119,7 @@ void USBD_USR_DeviceConnected (void)
 */
 void USBD_USR_DeviceDisconnected (void)
 {
-  usbState = USB_DISCONNECTING;
+  NVIC_SystemReset();
 }
 
 

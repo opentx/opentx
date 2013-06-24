@@ -35,12 +35,13 @@
  */
 
 #include "../../opentx.h"
+
 extern "C" {
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
+#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_bsp.h"
 }
 
 volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
-UsbState usbState = USB_DISCONNECTED;
 
 #define PIN_MODE_MASK           0x0003
 #define PIN_INPUT               0x0000
@@ -104,9 +105,9 @@ void configure_pins( uint32_t pins, uint16_t config )
 }
 #endif
 
-uint8_t usbPlugged(void)
+bool usbPlugged(void)
 {
-  return usbState == USB_CONNECTED;
+  return GPIO_ReadInputDataBit(GPIOA, PIN_FS_VBUS);
 }
 
 #if !defined(SIMU)
@@ -120,6 +121,11 @@ void OTG_FS_IRQHandler(void)
 }
 
 void usbInit()
+{
+  USB_OTG_BSP_Init(&USB_OTG_dev);
+}
+
+void usbStart()
 {
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
 }
