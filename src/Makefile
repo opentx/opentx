@@ -1109,7 +1109,8 @@ translations/se.h: translations/cz.h.txt translations/de.h.txt translations/es.h
 	@echo "Swedish"
 	$(TRANSLATE) translations/se.h.txt translations/se.h se
 	
-fonts/std/font_05x07.lbm: fonts/std/font_03x05.png fonts/std/font_04x06.png fonts/std/font_05x07.png fonts/std/font_08x10.png fonts/std/font_10x14.png fonts/std/font_10x14_compressed.png fonts/std/font_04x06_extra.png fonts/std/font_05x07_extra.png fonts/std/font_10x14_extra.png fonts/std/font_se_05x07.png fonts/std/font_de_05x07.png fonts/std/font_it_05x07.png fonts/std/font_cz_05x07.png fonts/std/font_fr_05x07.png fonts/std/font_es_05x07.png fonts/std/font_se_10x14.png fonts/std/font_de_10x14.png fonts/std/font_it_10x14.png fonts/std/font_fr_10x14.png fonts/std/font_es_10x14.png 
+fonts/std/font_05x07.lbm: fonts/std/font_03x05.png fonts/std/font_04x06.png fonts/std/font_05x07.png fonts/std/font_08x10.png fonts/std/font_10x14.png fonts/std/font_10x14_compressed.png fonts/std/font_04x06_extra.png fonts/std/font_05x07_extra.png fonts/std/font_10x14_extra.png fonts/std/font_cz_04x06.png fonts/std/font_cz_05x07.png fonts/std/font_cz_08x10.png fonts/std/font_cz_10x14.png fonts/std/font_de_04x06.png fonts/std/font_de_05x07.png fonts/std/font_de_08x10.png fonts/std/font_de_10x14.png fonts/std/font_es_04x06.png fonts/std/font_es_05x07.png fonts/std/font_es_08x10.png fonts/std/font_es_10x14.png fonts/std/font_fr_04x06.png fonts/std/font_fr_05x07.png fonts/std/font_fr_08x10.png fonts/std/font_fr_10x14.png fonts/std/font_it_04x06.png fonts/std/font_it_05x07.png fonts/std/font_it_08x10.png fonts/std/font_it_10x14.png fonts/std/font_se_04x06.png fonts/std/font_se_05x07.png fonts/std/font_se_08x10.png fonts/std/font_se_10x14.png 
+
 	@echo
 	@echo "Convert fonts from png to lbm:"
 	$(IMG2LBM) fonts/std/font_03x05.png fonts/std/font_03x05.lbm 3x5
