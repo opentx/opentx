@@ -108,7 +108,7 @@ void USBD_USR_DeviceResumed(void)
 void USBD_USR_DeviceConnected (void)
 {
   sdDone();
-  eeCheck(true);
+  //eeCheck(true);
   usbState = USB_CONNECTED;
 }
 
