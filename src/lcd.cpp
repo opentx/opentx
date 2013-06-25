@@ -697,19 +697,7 @@ void lcd_invert_line(int8_t y)
   }
 }
 
-#if !defined(PCBTARANIS) // TODO test inversion
-void lcdDrawTelemetryTopBar()
-{
-  putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
-  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
-  putsVBat(14*FW,0,att);
-  if (g_model.timers[0].mode) {
-    att = (timersStates[0].state==TMR_BEEPING ? BLINK : 0);
-    putsTime(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
-  }
-  lcd_invert_line(0);
-}
-#else
+#if defined(PCBTARANIS)
 void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
@@ -724,6 +712,18 @@ void lcdDrawTelemetryTopBar()
     att = (timersStates[1].state==TMR_BEEPING ? BLINK : 0);
     putsTime(31*FW+5*FWNUM+1, 0, timersStates[1].val, att, att);
     lcd_putsiAtt(27*FW+2, 1, STR_VTELEMCHNS, TELEM_TM2, SMLSIZE);
+  }
+  lcd_invert_line(0);
+}
+#else
+void lcdDrawTelemetryTopBar()
+{
+  putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
+  uint8_t att = (g_vbat100mV < g_eeGeneral.vBatWarn ? BLINK : 0);
+  putsVBat(14*FW,0,att);
+  if (g_model.timers[0].mode) {
+    att = (timersStates[0].state==TMR_BEEPING ? BLINK : 0);
+    putsTime(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
   }
   lcd_invert_line(0);
 }

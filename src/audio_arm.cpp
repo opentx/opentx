@@ -37,6 +37,8 @@
 #include "opentx.h"
 #include <math.h>
 
+extern OS_MutexID audioMutex;
+
 const unsigned int toneVolumes[] = {
   4000,
   8000,
@@ -833,7 +835,6 @@ void audioEvent(uint8_t e, uint16_t f)
           audioQueue.play(BEEP_DEFAULT_FREQ+1800, 800, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_SWR_RED:
-          // TODO
           audioQueue.play(450, 160, 40, PLAY_REPEAT(2), 1);
           break;
 #endif

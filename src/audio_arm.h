@@ -309,7 +309,4 @@ extern void refreshSystemAudioFiles();
 extern void refreshModelAudioFiles();
 extern bool isAudioFileAvailable(uint32_t i, char * filename);
 
-// TODO not public, everything could be inside a function in audio_arm.cpp
-extern OS_MutexID audioMutex;
-
 #endif
