@@ -93,6 +93,7 @@ void delay_01us(uint16_t nb);
 // SD driver
 #if defined(SIMU)
   #define sdInit()
+  #define sdDone()
 #else
   #define SD_IS_HC()              (1)
   #define SD_GET_SIZE_MB()        (0)

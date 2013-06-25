@@ -1089,6 +1089,14 @@ void sdInit()
   Card_initialized = 1;
 }
 
+void sdDone()
+{
+  if (sdMounted()) {
+    audioQueue.stopSD();
+    f_mount(0, 0); // unmount SD
+  }
+}
+
 // Checks for card ready for read/write
 // returns 1 for YES, 0 for NO
 uint32_t sd_card_ready( void )

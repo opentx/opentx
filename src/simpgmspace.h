@@ -384,7 +384,6 @@ inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { 
 #define GPIO_ResetBits(GPIOx, pin) GPIOx->BSRRL &= ~pin
 #define GPIO_ReadInputDataBit(GPIOx, pin) (GPIOx->BSRRL & pin)
 #define RCC_AHB1PeriphClockCmd(...)
-#define GPIO_ReadInputDataBit(...) true
 #endif
 
 #define configure_pins(...)

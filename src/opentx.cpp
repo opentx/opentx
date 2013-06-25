@@ -1877,7 +1877,7 @@ uint8_t checkTrim(uint8_t event)
     setTrimValue(phase, idx, after);
 #endif
 
-#if defined (AUDIO)
+#if defined(AUDIO)
     // toneFreq higher/lower according to trim position
     // limit the frequency, range -125 to 125 = toneFreq: 19 to 101
     if (after > TRIM_MAX)
@@ -3501,6 +3501,63 @@ uint8_t calcStickScroll( uint8_t index )
 }
 #endif
 
+void opentxStart()
+{
+  doSplash();
+
+#if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
+  for (int i=0; i<500 && !Card_initialized; i++) {
+    CoTickDelay(1);  // 2ms
+  }
+#endif
+
+#if defined(CPUARM)
+  eeLoadModel(g_eeGeneral.currModel);
+#endif
+
+  checkAlarm();
+  checkAll();
+
+  if (g_eeGeneral.chkSum != evalChkSum()) {
+    chainMenu(menuFirstCalib);
+  }
+}
+
+#if defined(CPUARM) || defined(PCBGRUVIN9X)
+void opentxClose()
+{
+#if defined(FRSKY)
+  FRSKY_End();
+#endif
+
+#if defined(SDCARD)
+  closeLogs();
+  sdDone();
+#endif
+
+#if defined(HAPTIC)
+  hapticOff();
+#endif
+
+  saveTimers();
+
+#if defined(PCBSKY9X)
+  uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
+  if (g_eeGeneral.mAhUsed != mAhUsed)
+    g_eeGeneral.mAhUsed = mAhUsed;
+#endif
+
+#if defined(CPUARM) && !defined(REVA)
+  if (sessionTimer > 0)
+    g_eeGeneral.globalTimer += sessionTimer;
+#endif
+
+  g_eeGeneral.unexpectedShutdown = 0;
+  eeDirty(EE_GENERAL);
+  eeCheck(true);
+}
+#endif
+
 void perMain()
 {
 #if defined(SIMU)
@@ -3642,10 +3699,9 @@ void perMain()
 #if defined(PCBTARANIS)
   static bool usbStarted = false;
   if (!usbStarted && usbPlugged()) {
-    usbStarted = true;
-    sdDone();
-    eeCheck(true);
+    opentxClose();
     usbStart();
+    usbStarted = true;
   }
 #endif
 
@@ -4083,28 +4139,6 @@ void saveTimers()
   volatile rotenc_t g_rotenc[1] = {0};
 #endif
 
-void opentxStart()
-{
-  doSplash();
-
-#if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
-  for (int i=0; i<500 && !Card_initialized; i++) {
-    CoTickDelay(1);  // 2ms
-  }
-#endif
-
-#if defined(CPUARM)
-  eeLoadModel(g_eeGeneral.currModel);
-#endif
-
-  checkAlarm();
-  checkAll();
-
-  if (g_eeGeneral.chkSum != evalChkSum()) {
-    chainMenu(menuFirstCalib);
-  }
-}
-
 #ifndef SIMU
 
 #if defined(CPUARM)
@@ -4310,33 +4344,7 @@ void menusTask(void * pdata)
   lcd_clear();
   displayPopup(STR_SHUTDOWN);
 
-#if defined(FRSKY)
-  FRSKY_End();
-#endif
-
-#if defined(SDCARD)
-  closeLogs();
-#endif
-
-#if defined(HAPTIC)
-  hapticOff();
-#endif
-
-  saveTimers();
-
-#if defined(PCBSKY9X)
-  uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
-  if (g_eeGeneral.mAhUsed != mAhUsed)
-    g_eeGeneral.mAhUsed = mAhUsed;
-#endif
-
-  if (sessionTimer > 0)
-    g_eeGeneral.globalTimer += sessionTimer;
-
-  g_eeGeneral.unexpectedShutdown = 0;
-
-  eeDirty(EE_GENERAL);
-  eeCheck(true);
+  opentxClose();
 
   lcd_clear();
   lcdRefresh();
@@ -4481,15 +4489,9 @@ int main(void)
 
 #if defined(PCBGRUVIN9X)
   // Time to switch off
-  lcd_clear() ;
+  lcd_clear();
   displayPopup(STR_SHUTDOWN);
-  saveTimers();
-  g_eeGeneral.unexpectedShutdown=0;
-  eeDirty(EE_GENERAL);
-  eeCheck(true);
-#if defined(SDCARD)
-  closeLogs();
-#endif
+  opentxClose();
   lcd_clear() ;
   lcdRefresh() ;
   pwrOff(); // Only turn power off if necessary

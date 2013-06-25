@@ -104,7 +104,7 @@ class AudioContext {
 #endif
 
       struct {
-        uint16_t points[100];
+        int16_t points[100];
         uint8_t  count;
         uint8_t  idx;
         uint16_t freq;

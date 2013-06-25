@@ -39,14 +39,25 @@
 
 extern OS_MutexID audioMutex;
 
-const unsigned int toneVolumes[] = {
-  4000,
-  8000,
-  16000,
-  24000,
-  32000
+const int16_t sineValues[] =
+{
+  0, 64, 128, 191, 254, 316, 376, 435, 493, 548,
+  601, 652, 700, 746, 789, 828, 864, 897, 926, 952,
+  973, 991, 1005, 1015, 1021, 1024, 1021, 1015, 1005, 991,
+  973, 952, 926, 897, 864, 828, 789, 746, 700, 652,
+  601, 548, 493, 435, 376, 316, 254, 191, 128, 64,
+  0, -64, -128, -191, -254, -316, -376, -435, -493, -548,
+  -601, -652, -700, -746, -789, -828, -864, -897, -926, -952,
+  -973, -991, -1005, -1015, -1021, -1024, -1021, -1015, -1005, -991,
+  -973, -952, -926, -897, -864, -828, -789, -746, -700, -652,
+  -601, -548, -493, -435, -376, -316, -254, -191, -128, -64,
 };
 
+#if 1
+  const unsigned int toneVolumes[] = { 2, 4, 8, 12, 16 };
+#else
+  const unsigned int toneVolumes[] = { 4000, 8000, 16000, 24000, 32000 };
+#endif
 
 #if defined(SDCARD)
 const char * audioFilenames[] = {
@@ -423,7 +434,7 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
 int AudioQueue::mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
 {
   AudioFragment & fragment = context.fragment;
-  unsigned int duration = 0;
+  int duration = 0;
   int result = 0;
 
   if (fragment.tone.duration > 0) {
@@ -432,9 +443,14 @@ int AudioQueue::mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, 
       int periods = DIM(context.state.tone.points) / ((AUDIO_SAMPLE_RATE / fragment.tone.freq) + 1);
       context.state.tone.count = (periods * AUDIO_SAMPLE_RATE) / fragment.tone.freq;
       if (context.state.tone.idx >= context.state.tone.count) context.state.tone.idx = 0;
+#if 1
+      for (unsigned int i=0; i<context.state.tone.count; i++)
+        context.state.tone.points[i] = sineValues[((DIM(sineValues)*periods*i)/context.state.tone.count) % DIM(sineValues)] * (toneVolumes[2+volume]);
+#else
       double t = (M_PI * 2 * periods) / context.state.tone.count;
       for (unsigned int i=0; i<context.state.tone.count; i++)
         context.state.tone.points[i] = sin(t*i) * (toneVolumes[2+volume]);
+#endif
     }
 
     if (fragment.tone.freqIncr)
@@ -442,11 +458,23 @@ int AudioQueue::mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, 
     else
       fragment.tone.freq = 0;
 
-    duration = min<unsigned int>(AUDIO_BUFFER_DURATION, fragment.tone.duration);
-    for (unsigned int i=0; i<duration*(AUDIO_BUFFER_SIZE/AUDIO_BUFFER_DURATION); i++) {
+    duration = AUDIO_BUFFER_DURATION;
+    int points = AUDIO_BUFFER_SIZE;
+    bool end = false;
+
+    if (fragment.tone.duration <= AUDIO_BUFFER_DURATION) {
+      duration = fragment.tone.duration;
+      points = duration*(AUDIO_BUFFER_SIZE/AUDIO_BUFFER_DURATION);
+      end = true;
+    }
+
+    for (int i=0; i<points; i++) {
       mix(&buffer->data[i], context.state.tone.points[context.state.tone.idx], fade);
       context.state.tone.idx = context.state.tone.idx + 1;
-      if (context.state.tone.idx >= context.state.tone.count) context.state.tone.idx = 0;
+      if (context.state.tone.idx >= context.state.tone.count) {
+        context.state.tone.idx = 0;
+        if (end && i+DIM(context.state.tone.points) > points) break;
+      }
     }
 
     fragment.tone.duration -= duration;

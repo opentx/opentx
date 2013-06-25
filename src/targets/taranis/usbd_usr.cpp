@@ -119,12 +119,6 @@ void USBD_USR_DeviceConnected (void)
 */
 void USBD_USR_DeviceDisconnected (void)
 {
-  // TODO: Separate the shutdown operations in main() into a shutdown() function in opentx.cpp,
-  // and call that before the NVIC_SystemReset()?
-  g_eeGeneral.unexpectedShutdown = 0;
-  eeDirty(EE_GENERAL);
-  eeCheck(true);
-  
   NVIC_SystemReset();
 }
 

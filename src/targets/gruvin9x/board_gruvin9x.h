@@ -181,4 +181,7 @@ void pwrOff();
 
 #define EEPROM_MASSSTORAGE() (0)
 
+// Haptic driver
+#define hapticOff() // TODO hapticOn() cleaner ...
+
 #endif

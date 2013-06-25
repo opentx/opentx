@@ -980,7 +980,6 @@ void sdDone()
 {
   if (sdMounted()) {
     audioQueue.stopSD();
-    closeLogs();
 #if defined(DEBUG)
     f_close(&g_telemetryFile);
 #endif

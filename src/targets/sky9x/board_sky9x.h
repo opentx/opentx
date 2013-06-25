@@ -175,22 +175,26 @@ void disable_ssc();
 #define disable_dsm2(port) disable_ssc()
 
 // SD driver
-#if !defined(SIMU)
-#define sdPoll10ms()
-void sdMountPoll();
-extern "C" {
-void init_SDcard();
-void sdInit();
-uint32_t sd_card_ready();
-uint32_t sdMounted();
-}
+#if defined(SIMU)
+  #define sdInit()
+  #define sdDone()
+#else
+  #define sdPoll10ms()
+  void sdMountPoll();
+  extern "C" {
+    void init_SDcard();
+    void sdInit();
+    void sdDone();
+    uint32_t sd_card_ready();
+    uint32_t sdMounted();
+  }
 #endif
 
 // WDT driver
 #if !defined(SIMU)
-#define wdt_disable()
-#define wdt_enable(x) WDT->WDT_MR = 0x3FFF207F
-#define wdt_reset()   WDT->WDT_CR = 0xA5000001
+  #define wdt_disable()
+  #define wdt_enable(x) WDT->WDT_MR = 0x3FFF207F
+  #define wdt_reset()   WDT->WDT_CR = 0xA5000001
 #endif
 
 // Backlight driver
