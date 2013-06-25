@@ -1548,7 +1548,7 @@ void menuModelSetup(uint8_t event)
 #if defined(DSM2)
           if (IS_DSM2_PROTOCOL(protocol)) {
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW, y, STR_MODULE_RANGE, m_posHorz!=0 ? attr : 0);
-            dsm2Flag = (attr && m_posHorz>0 && editMode>0) ? DSM2_RANGE_CHECK_FLAG : 0; // [MENU] key toggles range check mode
+            dsm2Flag = (attr && m_posHorz>0 && editMode>0) ? DSM2_RANGECHECK_FLAG : 0; // [MENU] key toggles range check mode
           }
 #endif
         }
