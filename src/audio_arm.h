@@ -51,6 +51,7 @@
 #define BEEP_DEFAULT_FREQ     (2250)
 #define BEEP_KEY_UP_FREQ      (BEEP_DEFAULT_FREQ+150)
 #define BEEP_KEY_DOWN_FREQ    (BEEP_DEFAULT_FREQ-150)
+#define BEEP_POINTS_COUNT     100
 
 #define AUDIO_BUFFER_FREE     (0)
 #define AUDIO_BUFFER_FILLED   (1)
@@ -104,7 +105,7 @@ class AudioContext {
 #endif
 
       struct {
-        int16_t points[100];
+        int16_t points[BEEP_POINTS_COUNT];
         uint8_t  count;
         uint8_t  idx;
         uint16_t freq;

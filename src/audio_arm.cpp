@@ -440,7 +440,7 @@ int AudioQueue::mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, 
   if (fragment.tone.duration > 0) {
     result = AUDIO_BUFFER_SIZE;
     if (fragment.tone.freq && context.state.tone.freq!=fragment.tone.freq && (!fragment.tone.freqIncr || abs(context.state.tone.freq-fragment.tone.freq) > 100)) {
-      int periods = DIM(context.state.tone.points) / ((AUDIO_SAMPLE_RATE / fragment.tone.freq) + 1);
+      int periods = BEEP_POINTS_COUNT / ((AUDIO_SAMPLE_RATE / fragment.tone.freq) + 1);
       context.state.tone.count = (periods * AUDIO_SAMPLE_RATE) / fragment.tone.freq;
       if (context.state.tone.idx >= context.state.tone.count) context.state.tone.idx = 0;
 #if 1
@@ -473,7 +473,7 @@ int AudioQueue::mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, 
       context.state.tone.idx = context.state.tone.idx + 1;
       if (context.state.tone.idx >= context.state.tone.count) {
         context.state.tone.idx = 0;
-        if (end && i+DIM(context.state.tone.points) > points) break;
+        if (end && i+BEEP_POINTS_COUNT>points) break;
       }
     }
 
