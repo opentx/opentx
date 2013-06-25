@@ -4194,7 +4194,7 @@ inline void opentxInit(OPENTX_INIT_ARGS)
 {
 #if defined(PCBTARANIS)
   BACKLIGHT_ON();
-  CoTickDelay(10);  //20ms
+  CoTickDelay(50);  //100ms
   Splash();
 #endif
 
