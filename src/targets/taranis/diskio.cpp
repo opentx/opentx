@@ -971,7 +971,7 @@ void sdInit()
   if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
     refreshSystemAudioFiles();
 #if defined(DEBUG)
-    f_open(&g_telemetryFile, LOGS_PATH "/sport.log", FA_CREATE_ALWAYS | FA_WRITE);
+    f_open(&g_telemetryFile, LOGS_PATH "/sport.log", FA_OPEN_ALWAYS | FA_WRITE);
 #endif
   }
 }
