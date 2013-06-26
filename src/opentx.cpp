@@ -4227,8 +4227,10 @@ uint16_t stack_free()
 inline void opentxInit(OPENTX_INIT_ARGS)
 {
 #if defined(PCBTARANIS)
+  CoTickDelay(60);   //120ms
+  lcdInit();
   BACKLIGHT_ON();
-  CoTickDelay(50);  //100ms
+  CoTickDelay(20);  //20ms
   Splash();
 #endif
 
@@ -4376,8 +4378,10 @@ int main(void)
   wdt_disable();
 
   boardInit();
-
+  
+#if !defined(PCBTARANIS)
   lcdInit();
+#endif
 
   stack_paint();
 
