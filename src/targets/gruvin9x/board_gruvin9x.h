@@ -85,6 +85,7 @@
 bool sdMounted();
 void sdMountPoll();
 void sdPoll10ms();
+#define sdDone()
 
 #define SD_IS_HC()               (0)
 #define SD_GET_BLOCKNR()         (0)
@@ -179,7 +180,8 @@ uint8_t pwrCheck();
 void pwrOff();
 #define UNEXPECTED_SHUTDOWN() ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
 
-#define EEPROM_MASSSTORAGE() (0)
+// USB fake driver
+#define usbPlugged()    false
 
 // Haptic driver
 #define hapticOff() // TODO hapticOn() cleaner ...

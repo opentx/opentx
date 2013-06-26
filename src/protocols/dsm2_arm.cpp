@@ -72,17 +72,17 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
           len += BITLEN_DSM2;
         }
         else {
-          _send_1(nlev ? len-5 : len+3);
+          _send_1(len); // _send_1(nlev ? len-5 : len+3);
           len  = BITLEN_DSM2;
           lev  = nlev;
         }
         b = (b>>1) | 0x80; //shift in stop bit
     }
-    _send_1(len+BITLEN_DSM2+3); // 2 stop bits
+    _send_1(len+BITLEN_DSM2); // _send_1(len+BITLEN_DSM2+3); // 2 stop bits
 }
 void putDsm2Flush()
 {
-  dsm2StreamPtr--; //remove last stopbits and
+  // dsm2StreamPtr--; //remove last stopbits and
   *dsm2StreamPtr++ = 44010;             // Past the 44000 of the ARR
 }
 #else

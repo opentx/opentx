@@ -172,7 +172,6 @@ void pwrOff();
 void usbInit(void);
 void usbStart(void);
 bool usbPlugged(void);
-#define EEPROM_MASSSTORAGE()  usbPlugged()
 
 // EEPROM driver
 #if !defined(SIMU)

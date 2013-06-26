@@ -45,6 +45,7 @@ void sdPoll10ms();
 uint8_t pwrCheck();
 #define UNEXPECTED_SHUTDOWN() ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
 
-#define EEPROM_MASSSTORAGE() (0)
+// USB fake driver
+#define usbPlugged()    false
 
 #endif

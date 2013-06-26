@@ -3635,25 +3635,27 @@ void perMain()
   }
 #endif
 
-// TODO merge these 2 branches
+  if (!usbPlugged()) {
+    // TODO merge these 2 branches
 #if defined(PCBSKY9X)
-  if (Eeprom32_process_state != E32_IDLE)
-    ee32_process();
-  else if (TIME_TO_WRITE())
-    eeCheck(false);
+    if (Eeprom32_process_state != E32_IDLE)
+      ee32_process();
+    else if (TIME_TO_WRITE())
+      eeCheck(false);
 #elif defined(CPUARM)
-  if (theFile.isWriting())
-    theFile.nextWriteStep();
-  else if (TIME_TO_WRITE())
-    eeCheck(false);
-#else
-  if (!eeprom_buffer_size) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
     else if (TIME_TO_WRITE())
       eeCheck(false);
-  }
+#else
+    if (!eeprom_buffer_size) {
+      if (theFile.isWriting())
+        theFile.nextWriteStep();
+      else if (TIME_TO_WRITE())
+        eeCheck(false);
+    }
 #endif
+  }
 
 #if defined(SDCARD)
   sdMountPoll();
@@ -3773,7 +3775,7 @@ void perMain()
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
 
-  if (EEPROM_MASSSTORAGE()) {
+  if (usbPlugged()) {
     menuMainView(0);
   }
   else {
