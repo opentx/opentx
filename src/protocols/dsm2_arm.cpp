@@ -56,10 +56,20 @@ uint8_t  dsm2SerialBitCount;
 #define BITLEN_DSM2          (8*2) //125000 Baud => 8uS per bit
 
 #if defined(PCBTARANIS)
+uint8_t dsm2Index = 0;
 void _send_1(uint8_t v)
 {
   dsm2Value += v;
-  *dsm2StreamPtr++ = dsm2Value;
+
+  if (dsm2Index == 0) {
+    *(dsm2StreamPtr+1) = dsm2Value;
+    dsm2Index = 1;
+  }
+  else {
+    *dsm2StreamPtr = dsm2Value;
+    dsm2Index = 0;
+    dsm2StreamPtr += 2;
+  }
 }
 
 void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
@@ -129,6 +139,7 @@ void setupPulsesDSM2(unsigned int port)
   dsm2SerialBitCount = 0 ;
 #else
   dsm2Value = 0;
+  dsm2Index = 0;
 #endif
 
   dsm2StreamPtr = dsm2Stream;
