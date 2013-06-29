@@ -53,7 +53,7 @@ inline void displayColumnHeader(const char **headers, uint8_t index)
     #define MENU_COLUMNS         2
   #endif
   #define MENUS_SCROLLBAR_WIDTH  2
-  #define MENU_COLUMN2_X         (14 + LCD_W / 2)
+  #define MENU_COLUMN2_X         (8 + LCD_W / 2)
   #define lcd_putsColumnLeft(x, y, str) lcd_puts((x > (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)) ? MENU_COLUMN2_X : 0, y, str)
 #else
   #define MENUS_SCROLLBAR_WIDTH  0
