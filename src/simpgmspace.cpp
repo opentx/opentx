@@ -434,8 +434,13 @@ namespace simu {
 FATFS g_FATFS_Obj;
 #endif
 
-FRESULT f_stat (const TCHAR * path, FILINFO *)
+char simuSdDirectory[1024] = ".";
+
+FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
+  char path[1024];
+  sprintf(path, "%s%s", simuSdDirectory, name);
+
   struct stat tmp;
   // printf("f_stat(%s)\n", path); fflush(stdout);
   return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
@@ -448,39 +453,42 @@ FRESULT f_mount (BYTE, FATFS*)
 
 FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
+  char path[1024];
+  sprintf(path, "%s%s", simuSdDirectory, name);
+
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
-    if (stat(name, &tmp))
+    if (stat(path, &tmp))
       return FR_INVALID_NAME;
     fil->fsize = tmp.st_size;
   }
-  fil->fs = (FATFS*)fopen(name, (flag & FA_WRITE) ? "w+" : "r+");
+  fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "w+" : "r+");
   return FR_OK;
 }
 
 FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 {
-  fread(data, size, 1, (FILE*)fil->fs);
+  if (fil && fil->fs) fread(data, size, 1, (FILE*)fil->fs);
   *read = size;
   return FR_OK;
 }
 
 FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
 {
-  if (fil->fs) fwrite(data, size, 1, (FILE*)fil->fs);
+  if (fil && fil->fs) fwrite(data, size, 1, (FILE*)fil->fs);
   *written = size;
   return FR_OK;
 }
 
 FRESULT f_lseek (FIL* fil, DWORD offset)
 {
-  if (fil->fs) fseek((FILE*)fil->fs, offset, SEEK_SET);
+  if (fil && fil->fs) fseek((FILE*)fil->fs, offset, SEEK_SET);
   return FR_OK;
 }
 
 FRESULT f_close (FIL * fil)
 {
-  if (fil->fs) {
+  if (fil && fil->fs) {
     fclose((FILE*)fil->fs);
     fil->fs = NULL;
   }
@@ -489,17 +497,23 @@ FRESULT f_close (FIL * fil)
 
 FRESULT f_chdir (const TCHAR *name)
 {
+  char path[1024];
+  sprintf(path, "%s%s", simuSdDirectory, name);
+
 #if defined WIN32 || !defined __GNUC__
-  _chdir(name);
+  _chdir(path);
 #else
-  chdir(name);
+  chdir(path);
 #endif
   return FR_OK;
 }
 
 FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
-  rep->fs = (FATFS *)simu::opendir(name);
+  char path[1024];
+  sprintf(path, "%s%s", simuSdDirectory, name);
+
+  rep->fs = (FATFS *)simu::opendir(path);
   return FR_OK;
 }
 

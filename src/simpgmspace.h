@@ -388,6 +388,7 @@ inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { 
 
 #define configure_pins(...)
 
+extern char simuSdDirectory[1024];
 #define sdMountPoll()
 #define sdPoll10ms()
 #define sd_card_ready()  (true)
