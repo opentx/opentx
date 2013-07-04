@@ -1568,7 +1568,9 @@ void doSplash()
 
 #if defined(PCBSTD)
     lcdSetContrast();
-#elif !defined(PCBTARANIS)
+#elif defined(PCBTARANIS)
+    bool secondSplash = false;
+#else
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -1579,8 +1581,7 @@ void doSplash()
     uint16_t inacSum = stickMoveValue();
 
     tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
-    while (tgtime != get_tmr10ms())
-    {
+    while (tgtime != get_tmr10ms()) {
 #if defined(SIMU)
       SIMU_SLEEP(1);
 #elif defined(CPUARM)
@@ -1598,7 +1599,17 @@ void doSplash()
 
       if (pwrCheck()==e_power_off) return;
 
-#if !defined(PCBSTD) && !defined(PCBTARANIS)
+#if defined(PCBTARANIS)
+      if (!secondSplash && get_tmr10ms() >= tgtime-SPLASH_TIMEOUT/2) {
+        secondSplash = true;
+        static uint8_t sdSplash[2+4*(LCD_W*LCD_H/8)];
+        if (!bmpLoad(sdSplash, BITMAPS_PATH "/splash.bmp", LCD_W, LCD_H)) {
+          lcd_clear();
+          lcd_bmp(0, 0, sdSplash);
+          lcdRefresh();
+        }
+      }
+#elif !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
         if (contrast < g_eeGeneral.contrast) {
@@ -1613,6 +1624,7 @@ void doSplash()
   }
 }
 #else
+#define Splash()
 #define doSplash()
 #endif
 
@@ -2413,7 +2425,7 @@ uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
 
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 {
-  char filename[] = SOUNDS_PATH "/xxxxxx.wav";
+  char filename[sizeof(SOUNDS_PATH)+sizeof(sd->param.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
   strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
   strncpy(filename+sizeof(SOUNDS_PATH), sd->param.name, sizeof(sd->param.name));
   filename[sizeof(SOUNDS_PATH)+sizeof(sd->param.name)] = '\0';

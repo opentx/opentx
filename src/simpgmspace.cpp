@@ -542,7 +542,7 @@ FRESULT f_unlink (const TCHAR*)
 
 int f_putc (TCHAR c, FIL * fil)
 {
-  if (fil->fs) fwrite(&c, 1, 1, (FILE*)fil->fs);
+  if (fil && fil->fs) fwrite(&c, 1, 1, (FILE*)fil->fs);
   return FR_OK;
 }
 
@@ -559,7 +559,7 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 {
   va_list arglist;
   va_start(arglist, format);
-  if (fil->fs) vfprintf((FILE*)fil->fs, format, arglist);
+  if (fil && fil->fs) vfprintf((FILE*)fil->fs, format, arglist);
   va_end(arglist);
   return 0;
 }
