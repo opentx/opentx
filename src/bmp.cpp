@@ -41,10 +41,10 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t widt
   FIL bmpFile;
   UINT read;
   uint8_t palette[16];
-  uint8_t bmpBuf[64]; /* maximum with 64px */
+  uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
   uint8_t *buf = &bmpBuf[0];
 
-  assert(width <= 64);
+  assert(width <= LCD_W);
 
   FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {

@@ -1602,7 +1602,7 @@ void doSplash()
 #if defined(PCBTARANIS)
       if (!secondSplash && get_tmr10ms() >= tgtime-SPLASH_TIMEOUT/2) {
         secondSplash = true;
-        static uint8_t sdSplash[2+4*(LCD_W*LCD_H/8)];
+        uint8_t sdSplash[2+4*(LCD_W*LCD_H/8)];
         if (!bmpLoad(sdSplash, BITMAPS_PATH "/splash.bmp", LCD_W, LCD_H)) {
           lcd_clear();
           lcd_bmp(0, 0, sdSplash);
