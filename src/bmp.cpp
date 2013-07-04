@@ -179,10 +179,9 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t widt
       break;
 
     case 4:
-      n = w/8;
       for (int32_t i=h-1; i>=0; i--) {
-        result = f_read(&bmpFile, buf, w/2, &read);
-        if (result != FR_OK || read != w/2) {
+        result = f_read(&bmpFile, buf, ((w+7)/8)*4, &read);
+        if (result != FR_OK || read != ((w+7)/8)*4) {
           f_close(&bmpFile);
           return SDCARD_ERROR(result);
         }
