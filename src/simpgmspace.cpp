@@ -597,7 +597,7 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 
 FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
-  getcwd(path, sz_path);
+  strcpy(path, ".");
   return FR_OK;
 }
 
