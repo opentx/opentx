@@ -126,8 +126,8 @@
 #define LEN_VCURVEFUNC   "\003"
 #define TR_VCURVEFUNC    "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
-#define LEN_VMLTPX       "\010"
-#define TR_VMLTPX        "Aggiungi""Moltipl.""Riscrivi"
+#define LEN_VMLTPX       "\005"
+#define TR_VMLTPX        "Add. ""Molt.""Sost."
 
 #define LEN_VMLTPX2      "\002"
 #define TR_VMLTPX2       "+=""*="":="
@@ -344,8 +344,8 @@
 #define LEN_VTRAINERMODES      "\007"
 #define TR_VTRAINERMODES       "Maestro""Allievo"
 
-#define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
+#define LEN_VFAILSAFE          "\012"
+#define TR_VFAILSAFE           "Mantieni\0 ""Personali\0""No impulsi"
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -414,10 +414,10 @@
 #define TR_MIXWARNING          "Avviso"
 #define TR_OFF                 "OFF"
 #define TR_MULTPX              "MultPx"
-#define TR_DELAYDOWN           "Post. Giù "
-#define TR_DELAYUP             "Post. Sù"
-#define TR_SLOWDOWN            "Rall. Giù "
-#define TR_SLOWUP              "Rall. Sù"
+#define TR_DELAYDOWN           "Post.Giù "
+#define TR_DELAYUP             "Post.Sù"
+#define TR_SLOWDOWN            "Rall.Giù "
+#define TR_SLOWUP              "Rall.Sù"
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "CV"
 #define TR_GV                  "GV"
@@ -531,7 +531,7 @@
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
 #define TR_RXNUM               "RxNum"
-#define TR_SYNCMENU            "Sinc.[Menù]"
+#define TR_SYNCMENU            TR("Sinc.","Sinc.[Menù]")
 #define TR_LIMIT               "Limiti"
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitud."
@@ -606,10 +606,10 @@
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"
-#define TR_INTERNALRF          "Internal RF"
-#define TR_EXTERNALRF          "External RF"
-#define TR_FAILSAFE            "Failsafe mode"
-#define TR_FAILSAFESET         "FAILSAFE SETTINGS"
+#define TR_INTERNALRF          "Modulo Interno"
+#define TR_EXTERNALRF          "Modulo esterno"
+#define TR_FAILSAFE            "Modo failsafe"
+#define TR_FAILSAFESET         TR("FAILSAFE","IMPOSTAZIONI FAILSAFE")
 #define TR_COUNTRYCODE         TR("Codice Paese","Standard 2.4Ghz")
 #define TR_VOICELANG           "Lingua Voce"
 #define TR_UNITSSYSTEM         "Unità"
@@ -634,7 +634,7 @@
 #define TR_MODULE_RANGE        "[Range]"
 #define TR_RESET               "[Reset]"
 #define TR_SET                 "[Set]"
-#define TR_TRAINER             "Trainer"
+#define TR_TRAINER             TR("Trainer","Maestro/Allievo")
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
 #define TR_MODELIDUSED         TR("ID già usato","ID Modello già usato")
 #define TR_MODULE              INDENT "Modulo"
@@ -662,7 +662,7 @@
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
 #define TR_ABOUT_MIKE_2        "Guru codice e driver"
-#define TR_ABOUT_MIKE_3        "Probabilmente uno dei migliori"
+#define TR_ABOUT_MIKE_3        "esperto a basso livello"
 #define TR_ABOUT_MIKE_4        "Ispiratore"
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
@@ -679,14 +679,20 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Graphic Designer"
 
-#define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "Disegno/produzione Hardware"
+#if defined(PCBTARANIS)
+  #define TR_ABOUT_HARDWARE_1  "FrSky"
+  #define TR_ABOUT_HARDWARE_2  "Disegno/produzione Hardware"
+  #define TR_ABOUT_HARDWARE_3  "Contributi al Firmware"
+#else
+  #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
+  #define TR_ABOUT_HARDWARE_2  "Designer/Produttore SKY9X"
+  #define TR_ABOUT_HARDWARE_3  ""
+#endif
 
 #define TR_ABOUT_PARENTS_1     "Progetti correlati"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
 #define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
-#define TR_ABOUT_HARDWARE_3    ""
 
 #define TR_CHR_SHORT  's'
 #define TR_CHR_LONG   'l'
