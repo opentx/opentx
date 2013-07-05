@@ -650,11 +650,11 @@
 //Taranis About screen
 #define TR_ABOUTUS             TR("  O nás   ", "O nás")
 
-#define TR_ABOUT_OPENTX_1      "opentx je nekomerční,"
-#define TR_ABOUT_OPENTX_2      "bez jakékoliv záruky."
-#define TR_ABOUT_OPENTX_3      TR("Vytvořen ve volném čase.", "Byl vytvořen ve volném čase.")
-#define TR_ABOUT_OPENTX_4      "Podpora vývoje pomocí"
-#define TR_ABOUT_OPENTX_5      TR("finančního daru je vítána!", "finančního daru je vítána")
+#define TR_ABOUT_OPENTX_1      TR("opentx je nekomerční,", "Firmware tohoto rádia")
+#define TR_ABOUT_OPENTX_2      TR("bez jakékoliv záruky.", " je podporován firmou FrSky.")
+#define TR_ABOUT_OPENTX_3      TR("Vytvořen ve volném čase.", "OpenTX je open-source,")
+#define TR_ABOUT_OPENTX_4      TR("Podpora vývoje pomocí", " bez jakékoliv záruky.")
+#define TR_ABOUT_OPENTX_5      TR("finančního daru je vítána!", "Finanční dary jsou vítány!")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "Hlavní vývojář OpenTX"
@@ -682,7 +682,7 @@
 #if defined(PCBTARANIS)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
   #define TR_ABOUT_HARDWARE_2  "Vývoj a výroba Hardware"
-  #define TR_ABOUT_HARDWARE_3  ""
+  #define TR_ABOUT_HARDWARE_3  "Přispěvatel firmware"
 #else
   #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
   #define TR_ABOUT_HARDWARE_2  "Sky9x designer/výrobce"
