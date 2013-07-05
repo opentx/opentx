@@ -85,7 +85,9 @@ Adc Adc0;
   #define EESIZE_SIMU EESIZE
 #endif
 
+#if defined(SDCARD)
 char simuSdDirectory[1024] = "";
+#endif
 
 uint8_t eeprom[EESIZE_SIMU];
 sem_t *eeprom_write_sem;
