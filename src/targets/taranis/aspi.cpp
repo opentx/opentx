@@ -11,6 +11,7 @@
 */
 
 #include "../opentx.h"
+#include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
 
 /**
 **********send command to lcd**************
@@ -38,6 +39,7 @@ void AspiCmd(u8 Command_Byte)
     LCD_A0_LOW();
 
     LCD_CLK_HIGH();
+    __no_operation();
     LCD_NCS_LOW();  
  
     while (i--) {
@@ -51,6 +53,7 @@ void AspiCmd(u8 Command_Byte)
       Command_Byte <<= 1;
 
       LCD_CLK_HIGH();
+      __no_operation();
     }
 
     LCD_NCS_HIGH();  
@@ -88,12 +91,12 @@ void AspiData(u8 Para_data)
     LCD_A0_HIGH();
     LCD_NCS_LOW();
     while (i--) {
+    	LCD_CLK_LOW();
         if (Para_data&0x80)
           LCD_MOSI_HIGH();
         else
           LCD_MOSI_LOW();
         Para_data <<= 1;
-        LCD_CLK_LOW();
         __no_operation();
         LCD_CLK_HIGH();
         __no_operation();

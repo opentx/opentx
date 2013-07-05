@@ -232,7 +232,7 @@
 #define PIN_LCD_CLK                     GPIO_Pin_11 //PD.11
 #define PIN_LCD_NCS                     GPIO_Pin_14 //PD.14
 #define PIN_LCD_A0                      GPIO_Pin_13 //PD.13
-#define PIN_LCD_RST                     //GPIO_Pin_12  //pd12 test //RESET occurs when powered up,but should delay before initialize
+#define PIN_LCD_RST                     GPIO_Pin_12  //pd12 test //RESET occurs when powered up,but should delay before initialize
 
 // Audio - I2S3
 #define CODEC_I2S                       SPI3
