@@ -85,6 +85,8 @@ Adc Adc0;
   #define EESIZE_SIMU EESIZE
 #endif
 
+char simuSdDirectory[1024] = "";
+
 uint8_t eeprom[EESIZE_SIMU];
 sem_t *eeprom_write_sem;
 
@@ -323,6 +325,9 @@ void *main_thread(void *)
 pthread_t main_thread_pid;
 void StartMainThread(bool tests)
 {
+  if (strlen(simuSdDirectory) == 0)
+    getcwd(simuSdDirectory, 1024);
+
   main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
 }
@@ -434,12 +439,13 @@ namespace simu {
 FATFS g_FATFS_Obj;
 #endif
 
-char simuSdDirectory[1024] = ".";
-
 FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
   char path[1024];
-  sprintf(path, "%s%s", simuSdDirectory, name);
+  if (name[0] == '/')
+    sprintf(path, "%s%s", simuSdDirectory, name);
+  else
+    strcpy(path, name);
 
   struct stat tmp;
   // printf("f_stat(%s)\n", path); fflush(stdout);
@@ -454,7 +460,10 @@ FRESULT f_mount (BYTE, FATFS*)
 FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
   char path[1024];
-  sprintf(path, "%s%s", simuSdDirectory, name);
+  if (name[0] == '/')
+    sprintf(path, "%s%s", simuSdDirectory, name);
+  else
+    strcpy(path, name);
 
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
@@ -498,7 +507,10 @@ FRESULT f_close (FIL * fil)
 FRESULT f_chdir (const TCHAR *name)
 {
   char path[1024];
-  sprintf(path, "%s%s", simuSdDirectory, name);
+  if (name[0] == '/')
+    sprintf(path, "%s%s", simuSdDirectory, name);
+  else
+    strcpy(path, name);
 
 #if defined WIN32 || !defined __GNUC__
   _chdir(path);
@@ -511,7 +523,10 @@ FRESULT f_chdir (const TCHAR *name)
 FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
   char path[1024];
-  sprintf(path, "%s%s", simuSdDirectory, name);
+  if (name[0] == '/')
+    sprintf(path, "%s%s", simuSdDirectory, name);
+  else
+    strcpy(path, name);
 
   rep->fs = (FATFS *)simu::opendir(path);
   return FR_OK;
@@ -580,7 +595,7 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 
 FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
-  strcpy(path, ".");
+  getcwd(path, sz_path);
   return FR_OK;
 }
 

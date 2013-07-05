@@ -39,12 +39,7 @@
 
 #include "FatFs/ff.h"
 
-#ifdef SIMU
-  #define ROOT_PATH         "./"
-#else
-  #define ROOT_PATH         "/"
-#endif
-
+#define ROOT_PATH           "/"
 #define MODELS_PATH         ROOT_PATH "MODELS"
 #define LOGS_PATH           ROOT_PATH "LOGS"   // no trailing slash = important
 #define SOUNDS_PATH         ROOT_PATH "SOUNDS/en" // no trailing slash = important

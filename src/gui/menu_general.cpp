@@ -686,13 +686,7 @@ void onSdManagerMenu(const char *result)
     memset(lfn+len, 0, sizeof(g_model.header.bitmap)-len);
     // TODO duplicated code
     memcpy(g_model.header.bitmap, lfn, sizeof(g_model.header.bitmap));
-#if defined(SIMU)
-    f_chdir("..");
-#endif
     LOAD_MODEL_BITMAP();
-#if defined(SIMU)
-    f_chdir(BITMAPS_PATH);
-#endif
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
     eeDirty(EE_MODEL);
   }
@@ -979,7 +973,9 @@ void menuGeneralVersion(uint8_t event)
   lcd_putsLeft(2*FH, stamp1);
   lcd_putsLeft(3*FH, stamp2);
   lcd_putsLeft(4*FH, stamp3);
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBTARANIS)
+  lcd_putsLeft(5*FH, "VERS: opentx-x9d-v1.0.00");
+#elif defined(PCBSKY9X) && !defined(REVA)
   if (Coproc_valid == 1) {
      lcd_putsLeft(5*FH, PSTR("CoPr:"));
      lcd_outdez8(10*FW, 5*FH, Coproc_read);
