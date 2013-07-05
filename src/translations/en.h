@@ -624,7 +624,7 @@
 #define TR_RESET_TIMER2        "Reset Timer2"
 #define TR_RESET_TELEMETRY     "Reset Telemetry"
 #define TR_STATISTICS          "Statistics"
-#define TR_ABOUT_US            "About Us"
+#define TR_ABOUT_US            "About"
 #define TR_AND_SWITCH          "AND Switch"
 #define TR_CF                  "CF"
 #define TR_SPEAKER             INDENT"Speaker"
@@ -648,13 +648,13 @@
 #define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
 
 // About screen
-#define TR_ABOUTUS             TR(" ABOUT US ", "ABOUT US")
+#define TR_ABOUTUS             TR(" ABOUT ", "ABOUT")
 
-#define TR_ABOUT_OPENTX_1      TR("OpenTX\001is\001open\001source,\001non", "OpenTX is open source, non-")
-#define TR_ABOUT_OPENTX_2      TR("commercial,\001wo\001warranties.", "commercial and comes with no")
-#define TR_ABOUT_OPENTX_3      TR("It\001was\001developed\001for\001free.", "warranties. It was developed")
-#define TR_ABOUT_OPENTX_4      TR("Support through donations", "for free. Support through")
-#define TR_ABOUT_OPENTX_5      TR("is welcome!", "donations is welcome!")
+#define TR_ABOUT_OPENTX_1      TR("OpenTX\001is\001open\001source,\001non", "The firmware on this radio is")
+#define TR_ABOUT_OPENTX_2      TR("commercial,\001wo\001warranties.", "supported\001by\001FrSky.")
+#define TR_ABOUT_OPENTX_3      TR("It\001was\001developed\001for\001free.", "OpenTX is free, open-source")
+#define TR_ABOUT_OPENTX_4      TR("Support through donations", "and comes with no warranties.")
+#define TR_ABOUT_OPENTX_5      TR("is welcome!", "User donations are welcome!")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "OpenTX main author"
@@ -682,7 +682,7 @@
 #if defined(PCBTARANIS)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
   #define TR_ABOUT_HARDWARE_2  "Hardware designer/producer"
-  #define TR_ABOUT_HARDWARE_3  ""
+  #define TR_ABOUT_HARDWARE_3  "Firmware contributor"
 #else
   #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
   #define TR_ABOUT_HARDWARE_2  "Sky9x designer/producer"
