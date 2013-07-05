@@ -891,6 +891,12 @@ void menuGeneralSdManager(uint8_t event)
 }
 #endif
 
+#if LCD_W >= 212
+  #define TRAINER_CALIB_POS 12
+#else
+  #define TRAINER_CALIB_POS 8
+#endif
+
 void menuGeneralTrainer(uint8_t event)
 {
   uint8_t y;
@@ -947,7 +953,7 @@ void menuGeneralTrainer(uint8_t event)
     attr = (m_posVert==6) ? blink : 0;
     lcd_putsAtt(0*FW, 1+7*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
-      uint8_t x = (i*8+16)*FW/2;
+      uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
       lcd_outdezAtt(x, 1+7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
