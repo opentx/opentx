@@ -37,9 +37,12 @@
 #include "opentx.h"
 #include <errno.h>
 #include <fcntl.h>
-#include <direct.h>
 #include <stdarg.h>
 #include <sys/stat.h>
+
+#if defined WIN32 || !defined __GNUC__
+  #include <direct.h>
+#endif
 
 volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
