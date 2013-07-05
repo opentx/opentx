@@ -37,6 +37,7 @@
 #include "opentx.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <direct.h>
 #include <stdarg.h>
 #include <sys/stat.h>
 
@@ -324,6 +325,11 @@ void *main_thread(void *)
   return NULL;
 }
 
+#if defined WIN32 || !defined __GNUC__
+#define chdir  _chdir
+#define getcwd _getcwd
+#endif
+
 pthread_t main_thread_pid;
 void StartMainThread(bool tests)
 {
@@ -514,11 +520,8 @@ FRESULT f_chdir (const TCHAR *name)
   else
     strcpy(path, name);
 
-#if defined WIN32 || !defined __GNUC__
-  _chdir(path);
-#else
   chdir(path);
-#endif
+
   return FR_OK;
 }
 
