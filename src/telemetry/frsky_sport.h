@@ -185,8 +185,8 @@ void resetTelemetry();
 #define TELEMETRY_ALT_FORMAT      "%c%d.%02d,"
 #define TELEMETRY_CELLS           frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100
 #define TELEMETRY_CELLS_FORMAT    "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
-#define TELEMETRY_CURRENT         frskyData.hub.current / 100, frskyData.hub.current % 100
-#define TELEMETRY_CURRENT_FORMAT  "%d.%02d,"
+#define TELEMETRY_CURRENT         frskyData.hub.current / 10, frskyData.hub.current % 10
+#define TELEMETRY_CURRENT_FORMAT  "%d.%d,"
 #define TELEMETRY_VFAS            frskyData.hub.vfas / 10, frskyData.hub.vfas % 10
 #define TELEMETRY_VFAS_FORMAT     "%d.%d,"
 #define TELEMETRY_VSPEED          frskyData.hub.varioSpeed < 0 ? '-' : ' ', frskyData.hub.varioSpeed / 100, abs(frskyData.hub.varioSpeed % 100)
