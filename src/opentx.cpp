@@ -2904,7 +2904,13 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           continue;
       }
       else if (!mixEnabled) {
-        if (mixCondition) {
+        if (md->speedDown && md->mltpx!=MLTPX_REP) {
+          if (mixCondition) {
+            v = 0;
+            apply_offset_and_curve = false;
+          }
+        }
+        else if (mixCondition) {
           continue;
         }
       }
