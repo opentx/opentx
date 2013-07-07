@@ -2904,12 +2904,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           continue;
       }
       else if (!mixEnabled) {
-        if (md->speedDown) {
-          if (mixCondition) {
-            continue;
-          }
-        }
-        else if (mixCondition) {
+        if (mixCondition) {
           continue;
         }
       }
