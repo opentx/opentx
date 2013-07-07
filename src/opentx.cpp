@@ -2906,8 +2906,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       else if (!mixEnabled) {
         if (md->speedDown) {
           if (mixCondition) {
-            v = 0;
-            apply_offset_and_curve = false;
+            continue;
           }
         }
         else if (mixCondition) {
