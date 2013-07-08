@@ -973,9 +973,7 @@ void menuGeneralVersion(uint8_t event)
   lcd_putsLeft(2*FH, stamp1);
   lcd_putsLeft(3*FH, stamp2);
   lcd_putsLeft(4*FH, stamp3);
-#if defined(PCBTARANIS)
-  lcd_putsLeft(5*FH, "VERS: opentx-x9d-v1.0.00");
-#elif defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBSKY9X) && !defined(REVA)
   if (Coproc_valid == 1) {
      lcd_putsLeft(5*FH, PSTR("CoPr:"));
      lcd_outdez8(10*FW, 5*FH, Coproc_read);

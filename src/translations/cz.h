@@ -650,11 +650,11 @@
 //Taranis About screen
 #define TR_ABOUTUS             TR("  O n\200s   ", "O n\200s")
 
-#define TR_ABOUT_OPENTX_1      TR("opentx je nekomer\201n\204,", "Firmware tohoto r\200dia")
-#define TR_ABOUT_OPENTX_2      TR("bez jak\202koliv z\200ruky.", " je podporov\200n firmou FrSky.")
-#define TR_ABOUT_OPENTX_3      TR("Vytvo\206en ve voln\202m \201ase.", "OpenTX je open-source,")
-#define TR_ABOUT_OPENTX_4      TR("Podpora v\212voje pomoc\204", " bez jak\202koliv z\200ruky.")
-#define TR_ABOUT_OPENTX_5      TR("finan\201n\204ho daru je v\204t\200na!", "Finan\201n\204 dary jsou v\204t\200ny!")
+#define TR_ABOUT_OPENTX_1      "opentx je nekomer\201n\204,"
+#define TR_ABOUT_OPENTX_2      "bez jak\202koliv z\200ruky."
+#define TR_ABOUT_OPENTX_3      TR("Vytvo\206en ve voln\202m \201ase.", "Byl vytvo\206en ve voln\202m \201ase.")
+#define TR_ABOUT_OPENTX_4      "Podpora v\212voje pomoc\204"
+#define TR_ABOUT_OPENTX_5      TR("finan\201n\204ho daru je v\204t\200na!", "finan\201n\204ho daru je v\204t\200na")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "Hlavn\204 v\212voj\200\206 OpenTX"
