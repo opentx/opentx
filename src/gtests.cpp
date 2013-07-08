@@ -600,6 +600,36 @@ TEST(Mixer, SlowAndDelayOnReplace3POSSource)
   CHECK_SLOW_MOVEMENT(0, +1, 250);
 }
 
+TEST(Mixer, SlowOnSwitchReplace)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 50;
+  g_model.mixData[1].destCh = 0;
+  g_model.mixData[1].mltpx = MLTPX_REP;
+  g_model.mixData[1].srcRaw = MIXSRC_MAX;
+  g_model.mixData[1].weight = 100;
+  g_model.mixData[1].swtch = SWSRC_THR;
+  g_model.mixData[1].speedDown = 10;
+
+  simuSetSwitch(0, 0);
+  perOut(e_perout_mode_normal, 1);
+  EXPECT_EQ(chans[0], CHANNEL_MAX/2);
+
+  simuSetSwitch(0, 1);
+  perOut(e_perout_mode_normal, 1);
+  // slow is not applied, but it's better than the first mix not applied at all!
+  EXPECT_EQ(chans[0], CHANNEL_MAX);
+
+  simuSetSwitch(0, 0);
+  perOut(e_perout_mode_normal, 1);
+  // slow is not applied, but it's better than the first mix not applied at all!
+  EXPECT_EQ(chans[0], CHANNEL_MAX/2);
+}
+
 TEST(Mixer, NoTrimOnInactiveMix)
 {
   MODEL_RESET();
