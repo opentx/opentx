@@ -163,7 +163,7 @@ void setupPulsesPPM(uint8_t proto)
     //The pulse ISR is 2mhz that's why everything is multiplied by 2
     uint8_t p = (proto == PROTO_PPM16 ? 16 : 8) + (g_model.ppmNCH * 2); //Channels *2
     uint16_t q = (g_model.ppmDelay*50+300)*2; // Stoplen *2
-    uint32_t rest = 22500u*2 - q; // Minimum Framelen=22.5ms
+    int32_t rest = 22500u*2 - q;
 
     rest += (int32_t(g_model.ppmFrameLength))*1000;
     for (uint8_t i=(proto==PROTO_PPM16) ? p-8 : 0; i<p; i++) {
@@ -174,7 +174,8 @@ void setupPulsesPPM(uint8_t proto)
     }
 
     *ptr++ = q;  
-    rest = (rest > 65535) ? 65535 : rest;
+    if (rest > 65535) rest = 65535; /* prevents overflows */
+    if (rest < 9000)  rest = 9000;
     *ptr++ = rest;
 
     if (proto == PROTO_PPM) {
