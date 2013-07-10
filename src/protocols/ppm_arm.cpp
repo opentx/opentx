@@ -65,14 +65,15 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
 #endif
 
   uint16_t * ptr = ppmStream[port];
-  uint32_t rest = 22500u * 2; //Minimum Framelen=22.5 ms
+  int32_t rest = 22500u * 2;
   rest += (int32_t(g_model.moduleData[port].ppmFrameLength)) * 1000;
   for (uint32_t i=firstCh; i<lastCh; i++) {
     int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= v;
     *ptr++ = v; /* as Pat MacKenzie suggests */
   }
-  rest = (rest > 65535) ? 65535 : rest;
+  if (rest > 65535) rest = 65535; /* prevents overflows */
+  if (rest < 9000)  rest = 9000;  /* avoids that CCR2 is bigger than ARR which would cause reboot */
   *ptr = rest;
   *(ptr + 1) = 0;
 
