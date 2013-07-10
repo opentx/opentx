@@ -42,10 +42,6 @@
 #define FRSKY_RX_PACKET_SIZE 9
 #define FRSKY_TX_PACKET_SIZE 12
 
-// .50 seconds
-#define FRSKY_TIMEOUT10ms 50
-extern int8_t  frskyStreaming;
-
 #define TELEMETRY_INIT    0
 #define TELEMETRY_OK      1
 #define TELEMETRY_KO      2
