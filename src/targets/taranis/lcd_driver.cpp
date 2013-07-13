@@ -13,14 +13,15 @@
 
 #define	WriteData(x)	 AspiData(x)
 #define	WriteCommand(x)	 AspiCmd(x)
+#define CONTRAST_OFS 10
 
 static void LCD_Init()
 {	
-  AspiCmd(0x25);   //Temperature compensation curve definition: 0x25 = -0.05%/oC
   AspiCmd(0x2b);   //Panel loading set ,Internal VLCD.
+  AspiCmd(0x25);   //Temperature compensation curve definition: 0x25 = -0.05%/oC
   AspiCmd(0xEA);	//set bias=1/10 :Command table NO.27
   AspiCmd(0x81);	//Set Vop
-  AspiCmd(50);		//0--255
+  AspiCmd(g_eeGeneral.contrast+CONTRAST_OFS);		//0--255
   AspiCmd(0xA6);	//inverse display off
   AspiCmd(0xD1);	//SET RGB:Command table NO.21 .SET RGB or BGR.  D1=RGB
   AspiCmd(0xD5);	//set color mode 4K and 12bits  :Command table NO.22
@@ -47,11 +48,11 @@ static void LCD_Init()
 }
 static void LCD_Init1()
 {	
-  AspiCmd(0x25);   //Temperature compensation curve definition: 0x25 = -0.05%/oC
   AspiCmd(0x2b);   //Panel loading set ,Internal VLCD.
+  AspiCmd(0x25);   //Temperature compensation curve definition: 0x25 = -0.05%/oC
   AspiCmd(0xEA);	//set bias=1/10 :Command table NO.27
   AspiCmd(0x81);	//Set Vop
-  AspiCmd(50);		//0--255
+  AspiCmd(g_eeGeneral.contrast+CONTRAST_OFS);		//0--255
   AspiCmd(0xA6);	//inverse display off
   AspiCmd(0xD1);	//SET RGB:Command table NO.21 .SET RGB or BGR.  D1=RGB
   AspiCmd(0xD5);	//set color mode 4K and 12bits  :Command table NO.22
@@ -211,4 +212,7 @@ void lcdInit()
 
 void lcdSetRefVolt(uint8_t val)
 {
+  AspiCmd(0x81);	//Set Vop
+  AspiCmd(val+CONTRAST_OFS);		//0--255
 }
+

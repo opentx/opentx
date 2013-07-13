@@ -336,9 +336,10 @@ void *main_thread(void *)
 pthread_t main_thread_pid;
 void StartMainThread(bool tests)
 {
+#if defined(SDCARD)
   if (strlen(simuSdDirectory) == 0)
     getcwd(simuSdDirectory, 1024);
-
+#endif
   main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
 }
@@ -453,10 +454,12 @@ FATFS g_FATFS_Obj;
 FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
   char path[1024];
+#if defined(SDCARD)
   if (name[0] == '/')
     sprintf(path, "%s%s", simuSdDirectory, name);
   else
     strcpy(path, name);
+#endif
 
   struct stat tmp;
   // printf("f_stat(%s)\n", path); fflush(stdout);
