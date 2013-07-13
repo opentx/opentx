@@ -333,6 +333,16 @@ void *main_thread(void *)
 #define getcwd _getcwd
 #endif
 
+#if defined(LUA)
+extern void luaTask(void * pdata);
+void *lua_thread(void *)
+{
+  luaTask(NULL);
+  return NULL;
+}
+pthread_t lua_thread_pid;
+#endif
+
 pthread_t main_thread_pid;
 void StartMainThread(bool tests)
 {
@@ -340,14 +350,23 @@ void StartMainThread(bool tests)
   if (strlen(simuSdDirectory) == 0)
     getcwd(simuSdDirectory, 1024);
 #endif
+
   main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
+
+#if defined(LUA)
+  pthread_create(&lua_thread_pid, NULL, &lua_thread, NULL);
+#endif
 }
 
 void StopMainThread()
 {
   main_thread_running = 0;
   pthread_join(main_thread_pid, NULL);
+
+#if defined(LUA)
+  pthread_join(lua_thread_pid, NULL);
+#endif
 }
 
 pthread_t eeprom_thread_pid;
@@ -451,19 +470,21 @@ namespace simu {
 FATFS g_FATFS_Obj;
 #endif
 
+char *convertSimuPath(const char *path)
+{
+  static char result[1024];
+  if (path[0] == '/')
+    sprintf(result, "%s%s", simuSdDirectory, path);
+  else
+    strcpy(result, path);
+  return result;
+}
+
 FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
-  char path[1024];
-#if defined(SDCARD)
-  if (name[0] == '/')
-    sprintf(path, "%s%s", simuSdDirectory, name);
-  else
-    strcpy(path, name);
-#endif
-
   struct stat tmp;
   // printf("f_stat(%s)\n", path); fflush(stdout);
-  return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
+  return stat(convertSimuPath(name), &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 
 FRESULT f_mount (BYTE, FATFS*)
@@ -473,11 +494,9 @@ FRESULT f_mount (BYTE, FATFS*)
 
 FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
-  char path[1024];
-  if (name[0] == '/')
-    sprintf(path, "%s%s", simuSdDirectory, name);
-  else
-    strcpy(path, name);
+  char *path = convertSimuPath(name);
+
+  TRACE("f_open(%s)", path);
 
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
@@ -491,15 +510,13 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 
 FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 {
-  if (fil && fil->fs) fread(data, size, 1, (FILE*)fil->fs);
-  *read = size;
+  if (fil && fil->fs) *read = fread(data, 1, size, (FILE*)fil->fs);
   return FR_OK;
 }
 
 FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
 {
-  if (fil && fil->fs) fwrite(data, size, 1, (FILE*)fil->fs);
-  *written = size;
+  if (fil && fil->fs) *written = fwrite(data, 1, size, (FILE*)fil->fs);
   return FR_OK;
 }
 
@@ -520,26 +537,13 @@ FRESULT f_close (FIL * fil)
 
 FRESULT f_chdir (const TCHAR *name)
 {
-  char path[1024];
-  if (name[0] == '/')
-    sprintf(path, "%s%s", simuSdDirectory, name);
-  else
-    strcpy(path, name);
-
-  chdir(path);
-
+  chdir(convertSimuPath(name));
   return FR_OK;
 }
 
 FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
-  char path[1024];
-  if (name[0] == '/')
-    sprintf(path, "%s%s", simuSdDirectory, name);
-  else
-    strcpy(path, name);
-
-  rep->fs = (FATFS *)simu::opendir(path);
+  rep->fs = (FATFS *)simu::opendir(convertSimuPath(name));
   return FR_OK;
 }
 
