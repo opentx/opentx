@@ -4388,7 +4388,9 @@ int main(void)
   uint8_t mcusr = MCUCSR;
   MCUCSR = 0;
 #endif
-
+#if defined(PCBTARANIS)
+  g_eeGeneral.contrast=30;
+#endif  
   wdt_disable();
 
   boardInit();
