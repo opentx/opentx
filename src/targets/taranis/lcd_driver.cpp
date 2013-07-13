@@ -46,7 +46,7 @@ static void LCD_Init()
 
   
 }
-static void LCD_Init1()
+static void lcdRefreshInit()
 {	
   AspiCmd(0x2b);   //Panel loading set ,Internal VLCD.
   AspiCmd(0x25);   //Temperature compensation curve definition: 0x25 = -0.05%/oC
@@ -102,7 +102,7 @@ const uint8_t lcdPalette[4] = { 0, 0x03, 0x06, 0x0F };
 
 void lcdRefresh()
 {  
-  LCD_Init1();
+  lcdRefreshInit();
   
   for (uint32_t y=0; y<LCD_H; y++) {
     uint8_t *p = &displayBuf[(y>>3)*LCD_W];
