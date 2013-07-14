@@ -313,12 +313,11 @@ void menuTelemetryFrsky(uint8_t event)
             xcoord_t pos[] = {0, 65, 130};
 #endif
             putsTelemetryChannel(pos[j+1]-2, 1+FH+2*FH*i, field-1, value, att);
-#if LCD_W < 212              
+            
             if (field >= TELEM_TM1 && field <= TELEM_TM2 && i!=3) {
-              // there is not enough space on LCD for displaying "Tmr1" or "Tmr2", we write "T1" or "T2" instead
+              // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
               field = field-TELEM_TM1+TELEM_T1;
             }
-#endif
             lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
           }
         }

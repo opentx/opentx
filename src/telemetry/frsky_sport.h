@@ -177,7 +177,7 @@ void resetTelemetry();
 #define TELEMETRY_GPS_SPEED_AP    frskyData.hub.gpsSpeed_ap
 #define TELEMETRY_GPS_ALT_AP      frskyData.hub.gpsAltitude_ap
 #define TELEMETRY_GPS_ALT_BP      frskyData.hub.gpsAltitude_bp
-#define TELEMETRY_ALT             frskyData.hub.baroAltitude < 0 ? '-' : ' ', frskyData.hub.baroAltitude / 100, abs(frskyData.hub.baroAltitude % 100)
+#define TELEMETRY_ALT             frskyData.hub.baroAltitude < 0 ? '-' : ' ', abs(frskyData.hub.baroAltitude / 100), abs(frskyData.hub.baroAltitude % 100)
 #define TELEMETRY_ALT_FORMAT      "%c%d.%02d,"
 #define TELEMETRY_CELLS           frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100
 #define TELEMETRY_CELLS_FORMAT    "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
@@ -185,7 +185,7 @@ void resetTelemetry();
 #define TELEMETRY_CURRENT_FORMAT  "%d.%d,"
 #define TELEMETRY_VFAS            frskyData.hub.vfas / 10, frskyData.hub.vfas % 10
 #define TELEMETRY_VFAS_FORMAT     "%d.%d,"
-#define TELEMETRY_VSPEED          frskyData.hub.varioSpeed < 0 ? '-' : ' ', frskyData.hub.varioSpeed / 100, abs(frskyData.hub.varioSpeed % 100)
+#define TELEMETRY_VSPEED          frskyData.hub.varioSpeed < 0 ? '-' : ' ', abs(frskyData.hub.varioSpeed / 100), abs(frskyData.hub.varioSpeed % 100)
 #define TELEMETRY_VSPEED_FORMAT   "%c%d.%02d,"
 
 /* Would be great, but f_printf() doesn't take floats...
