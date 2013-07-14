@@ -38,7 +38,6 @@
 
 #define START_STOP         0x7e
 #define BYTESTUFF          0x7d
-#define STUFF_MASK         0x20
 
 // FrSky PRIM IDs (1 byte)
 #define DATA_FRAME         0x10
@@ -390,7 +389,7 @@ void processSportPacket(uint8_t *packet)
 enum FrSkyDataState {
   STATE_DATA_IDLE,
   STATE_DATA_IN_FRAME,
-  STATE_DATA_XOR,
+  STATE_DATA_STUFF,
 };
 
 void processSerialData(uint8_t data)
@@ -413,13 +412,17 @@ void processSerialData(uint8_t data)
   }
   else {
     switch (dataState) {
-      case STATE_DATA_XOR:
-        frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
+      case STATE_DATA_STUFF:
+        if (data == 0x5E)
+          frskyRxBuffer[numPktBytes++] = 0x7E;
+        else if (data == 0x5D)
+          frskyRxBuffer[numPktBytes++] = 0x7D;
+        dataState = STATE_DATA_IN_FRAME;
         break;
 
       case STATE_DATA_IN_FRAME:
         if (data == BYTESTUFF)
-          dataState = STATE_DATA_XOR; // XOR next byte
+          dataState = STATE_DATA_STUFF;
         else
           frskyRxBuffer[numPktBytes++] = data;
         break;
