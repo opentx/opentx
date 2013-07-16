@@ -1176,7 +1176,11 @@ void menuCommonCalib(uint8_t event)
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
+#if defined(PCBTARANIS)
+    if(i >= NUM_STICKS && i < NUM_STICKS+NUM_POTS-2) {
+#else
     if (i >= NUM_STICKS) {
+#endif
       reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
     }
   }
