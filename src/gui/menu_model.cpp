@@ -4227,8 +4227,6 @@ void menuModelCustomFunctions(uint8_t event)
             if (active) {
 #if defined(CPUARM)
               CHECK_INCDEC_MODELVAR_ZERO(event, CFN_FUNC(sd), FUNC_MAX-1);
-              if (checkIncDec_Ret)
-                CFN_RESET_PARAM(sd);
 #else
               if (CFN_FUNC(sd) < FUNC_TRAINER) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, sd->internal.func_safety.func, 16);
@@ -4239,6 +4237,7 @@ void menuModelCustomFunctions(uint8_t event)
                   sd->internal.func_safety.func = 15;
               }
 #endif
+              if (checkIncDec_Ret) CFN_RESET(sd);
             }
           }
           else if (attr) {

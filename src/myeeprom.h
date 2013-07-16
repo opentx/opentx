@@ -685,7 +685,7 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_PLAY_REPEAT(p) ((p)->active)
 #define CFN_GVAR_MODE(p)   ((p)->mode)
 #define CFN_PARAM(p)       ((p)->param.composite.val)
-#define CFN_RESET_PARAM(p) memset(&(p)->param, 0, sizeof((p)->param))
+#define CFN_RESET(p)       { p->active = 0; memset(&(p)->param, 0, sizeof((p)->param)); }
 #else
 PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch; // input
@@ -714,7 +714,7 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_PLAY_REPEAT(p) ((p)->internal.func_param.param)
 #define CFN_GVAR_MODE(p)   ((p)->internal.func_param_enable.param)
 #define CFN_PARAM(p)       ((p)->param)
-#define CFN_RESET_PARAM(p) CFN_PARAM(p) = 0
+#define CFN_RESET(p)       {(p)->internal.func_param_enable.active = 0; CFN_PARAM(p) = 0;}
 #endif
 
 enum TelemetryUnit {
