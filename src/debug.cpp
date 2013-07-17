@@ -36,7 +36,6 @@
 
 #include "../opentx.h"
 #include <stdarg.h>
-#include "fifo.h"
 
 #if !defined(SIMU)
 

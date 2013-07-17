@@ -407,6 +407,7 @@ enum EnumKeys {
 #endif
 
 #if defined(CPUARM)
+  #include "fifo.h"
   // This doesn't need protection on this processor
   #define tmr10ms_t uint32_t
   extern volatile tmr10ms_t g_tmr10ms;

@@ -35,7 +35,6 @@
  */
 
 #include "../opentx.h"
-#include "../fifo.h"
 
 void btSetBaudrate(uint32_t index)
 {

@@ -125,10 +125,10 @@ uint8_t link_counter = 0;
 FrskyData frskyData;
 
 #if defined(DEBUG) && !defined(SIMU)
-#include "../fifo.h"
 extern FIL g_telemetryFile;
-Fifo<512> debugTelemetryFifo;
 #endif
+
+Fifo<512> telemetryFifo;
 
 void setBaroAltitude(int32_t baroAltitude)
 {
@@ -266,6 +266,19 @@ void processHubPacket(uint8_t id, uint16_t value)
   }
 }
 
+bool checkSportPacket(uint8_t *packet)
+{
+   short t_short =0;
+   for (int i=0; i<FRSKY_RX_PACKET_SIZE-1; i++) {
+       t_short += *packet++; //0-1FF
+       t_short += t_short >> 8; //0-100
+       t_short &= 0x00ff;
+       t_short += t_short >> 8; //0-0FF
+       t_short &= 0x00ff;
+   }
+   return packet[FRSKY_RX_PACKET_SIZE-1] == (uint8_t)t_short;
+}
+
 #define SPORT_DATA_U8(packet)   (packet[4])
 #define SPORT_DATA_S32(packet)  (*((int32_t *)(packet+4)))
 #define SPORT_DATA_U32(packet)  (*((uint32_t *)(packet+4)))
@@ -276,6 +289,9 @@ void processSportPacket(uint8_t *packet)
   /* uint8_t  dataId = packet[0]; */
   uint8_t  prim   = packet[1];
   uint16_t appId  = *((uint16_t *)(packet+2));
+
+  if (!checkSportPacket(packet))
+    return;
 
   switch (prim)
   {
@@ -404,10 +420,6 @@ void processSerialData(uint8_t data)
   btPushByte(data);
 #endif
 
-#if defined(DEBUG) && !defined(SIMU)
-  debugTelemetryFifo.push(data);
-#endif
-
   if (data == START_STOP) {
     dataState = STATE_DATA_IN_FRAME;
     numPktBytes = 0;
@@ -489,7 +501,27 @@ inline bool alarmRaised(uint8_t channel, uint8_t idx)
 
 void telemetryWakeup()
 {
-#if defined(PCBSKY9X)
+#if defined(PCBTARANIS)
+  uint8_t data;
+#if defined(DEBUG) && !defined(SIMU)
+  static tmr10ms_t lastTime = 0;
+  tmr10ms_t newTime = get_tmr10ms();
+  struct gtm utm;
+  gettime(&utm);
+#endif
+  while (telemetryFifo.pop(data)) {
+    processSerialData(data);
+#if defined(DEBUG) && !defined(SIMU)
+    if (lastTime != newTime) {
+      f_printf(&g_telemetryFile, "\r\n%4d-%02d-%02d,%02d:%02d:%02d.%02d0: %02X", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100, data);
+      lastTime = newTime;
+    }
+    else {
+      f_printf(&g_telemetryFile, " %02X", data);
+    }
+#endif
+  }
+#elif defined(PCBSKY9X)
   rxPdcUsart(processSerialData);              // Receive serial data here
 #endif
 
@@ -505,24 +537,6 @@ void telemetryWakeup()
 #if defined(VARIO)
   if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED())
     varioWakeup();
-#endif
-
-#if defined(DEBUG) && !defined(SIMU)
-  static tmr10ms_t lastTime = 0;
-  tmr10ms_t newTime = get_tmr10ms();
-  uint8_t data;
-  struct gtm utm;
-  gettime(&utm);
-      
-  while (debugTelemetryFifo.pop(data)) {
-    if (lastTime != newTime) {
-      f_printf(&g_telemetryFile, "\r\n%4d-%02d-%02d,%02d:%02d:%02d.%02d0: %02X", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100, data);
-      lastTime = newTime;
-    }
-    else {
-      f_printf(&g_telemetryFile, " %02X", data);
-    }
-  }
 #endif
 
   static tmr10ms_t alarmsCheckTime = 0;

@@ -2834,11 +2834,11 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
   do {
 
-    // printf("[pass %d]\n", pass); fflush(stdout);
+    // TRACE("[pass %d]", pass);
 
     bitfield_channels_t passDirtyChannels = 0;
 
-    for (uint8_t i = 0; i < MAX_MIXERS; i++) {
+    for (uint8_t i=0; i<MAX_MIXERS; i++) {
 
 #if defined(BOLD_FONT)
       if (mode==e_perout_mode_normal && pass==0) swOn[i].activeMix = 0;
@@ -2851,6 +2851,11 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       uint8_t k = md->srcRaw - 1;
 
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
+
+      // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
+      if (i == 0 || md->destCh != (md-1)->destCh) {
+        chans[md->destCh] = 0;
+      }
 
       //========== PHASE && SWITCH =====
       bool mixCondition = (md->phases != 0 || md->swtch);
@@ -2873,7 +2878,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         else {
           v = getValue(k);
           if (k>=MIXSRC_CH1-1 && k<=MIXSRC_LAST_CH-1 && md->destCh != k-MIXSRC_CH1+1) {
-            if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+            if (dirtyChannels & ((bitfield_channels_t)1 << (k-MIXSRC_CH1+1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
             if (k-MIXSRC_CH1+1 < md->destCh || pass > 0)
               v = chans[k-MIXSRC_CH1+1] >> 8;
@@ -2886,7 +2891,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       bool apply_offset_and_curve = true;
 
-      // ========== DELAYS ===============
+      //========== DELAYS ===============
       delayval_t _swOn = swOn[i].now;
       delayval_t _swPrev = swOn[i].prev;
       bool swTog = (mixEnabled != _swOn);
@@ -2927,7 +2932,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase);
         if (offset) v += calc100toRESX_16Bits(offset);
 
-      //========== TRIMS ===============
+      //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
           int8_t mix_trim = md->carryTrim;
           if (mix_trim < TRIM_ON)
@@ -2976,13 +2981,13 @@ void perOut(uint8_t mode, uint8_t tick10ms)
                 int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
                 if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }            
-            } //endif diff>0
+            }
             act[i] = tact = currentValue;
             // open.20.fsguruh: this implementation would save about 50 bytes code
           } // endif tick10ms ; in case no time passed assign the old value, not the current value from source
           v = (tact >> DEL_MULT_SHIFT);
-        } //endif diff
-      } //endif speed
+        }
+      }
 
       //========== CURVES ===============
       if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
@@ -3004,10 +3009,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       int32_t *ptr = &chans[md->destCh]; // Save calculating address several times
       
-      if (i == 0 || md->destCh != (md - 1)->destCh)
-        *ptr = 0;
-      // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
-
       switch (md->mltpx) {
         case MLTPX_REP:
           *ptr = dv;

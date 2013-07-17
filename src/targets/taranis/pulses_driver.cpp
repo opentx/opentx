@@ -466,7 +466,7 @@ static void init_pa7_dsm2()
 
   TIM8->CR1 &= ~TIM_CR1_CEN ;
   TIM8->ARR = 44000 ;                     // 22mS
-  TIM8->CCR2 = 30000 ;            // Update time
+  TIM8->CCR2 = 40000 ;            // Update time
   TIM8->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
 #if defined(REV3)
   TIM8->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P ;
@@ -608,8 +608,7 @@ extern "C" void TIM8_UP_TIM13_IRQHandler()
   TIM8->SR &= ~TIM_SR_UIF ;                               // Clear flag
 
   TIM8->ARR = *ppmStreamPtr[EXTERNAL_MODULE]++ ;
-  if (*ppmStreamPtr[EXTERNAL_MODULE] == 0)
-  {
+  if (*ppmStreamPtr[EXTERNAL_MODULE] == 0) {
     TIM8->SR &= ~TIM_SR_CC2IF ;                     // Clear this flag
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }

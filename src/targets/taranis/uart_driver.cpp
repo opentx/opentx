@@ -72,7 +72,6 @@ void uartInit(uint32_t baudrate)
 }
 
 #if defined(DEBUG)
-#include "../../fifo.h"
 Fifo<512> debugTxFifo;
 void debugPutc(const char c)
 {

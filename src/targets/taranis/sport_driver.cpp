@@ -36,6 +36,8 @@
 
 #include "../opentx.h"
 
+extern Fifo<512> telemetryFifo;
+
 void sportInit(void)
 {
   USART_InitTypeDef USART_InitStructure;
@@ -85,16 +87,25 @@ void sportPutc(const char c)
   GPIO_ResetBits(GPIO_PIN_SPORT_ON, PIN_SPORT_ON);
 }
 
-void processSerialData(uint8_t data);
-
 #if !defined(SIMU)
+
+#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+
 extern "C" void USART2_IRQHandler()
 {
-  uint16_t data;
+  uint32_t status;
+  uint8_t data;
 
-  if (USART_GetFlagStatus(SPORT, USART_FLAG_RXNE) || USART_GetFlagStatus(SPORT, USART_FLAG_ORE)) {
-    data = USART_ReceiveData(SPORT);
-    processSerialData((uint8_t) data);
+  status = SPORT->SR;
+
+  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+    data = SPORT->DR;
+
+    if (!(status & USART_FLAG_ERRORS))
+      telemetryFifo.push(data);
+
+    status = SPORT->SR;
   }
-} 
+}
+
 #endif

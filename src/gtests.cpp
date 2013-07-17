@@ -466,6 +466,34 @@ TEST(Mixer, RecursiveAddChannel)
   EXPECT_EQ(chans[1], 0);
 }
 
+TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.phaseData[1].swtch = SWSRC_ID1;
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_CH2;
+  g_model.mixData[0].phases = 0b11110;
+  g_model.mixData[0].weight = 50;
+  g_model.mixData[1].destCh = 0;
+  g_model.mixData[1].mltpx = MLTPX_ADD;
+  g_model.mixData[1].srcRaw = MIXSRC_MAX;
+  g_model.mixData[1].phases = 0b11101;
+  g_model.mixData[1].weight = 50;
+  g_model.mixData[2].destCh = 1;
+  g_model.mixData[2].srcRaw = MIXSRC_MAX;
+  g_model.mixData[2].weight = 100;
+  simuSetSwitch(3, -1);
+  perMain();
+  EXPECT_EQ(chans[0], CHANNEL_MAX/2);
+  EXPECT_EQ(chans[1], CHANNEL_MAX);
+  simuSetSwitch(3, 0);
+  perMain();
+  EXPECT_EQ(chans[0], CHANNEL_MAX/2);
+  EXPECT_EQ(chans[1], CHANNEL_MAX);
+}
+
 #define CHECK_SLOW_MOVEMENT(channel, sign, duration) \
     do { \
     for (int i=1; i<=(duration); i++) { \
