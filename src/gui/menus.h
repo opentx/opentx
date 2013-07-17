@@ -154,7 +154,12 @@ extern int8_t s_editMode;       // global editmode
 #define TITLE_ROW      ((uint8_t)-1)
 #define HIDDEN_ROW     ((uint8_t)-2)
 
+#if defined(CPUARM)
+typedef bool (*IsValueAvailable)(int16_t);
+int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0, IsValueAvailable isValueAvailable=NULL);
+#else
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
+#endif
 
 #if defined(CPUM64)
 int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
@@ -173,19 +178,24 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecModelZero(event,var,max)
 
 #if defined(AUTOSWITCH)
-#define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
-#define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
-  var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH)
+  #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
+  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
+    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH)
 #else
-#define AUTOSWITCH_ENTER_LONG() (0)
-#define CHECK_INCDEC_MODELSWITCH CHECK_INCDEC_MODELVAR
+  #define AUTOSWITCH_ENTER_LONG() (0)
+  #define CHECK_INCDEC_MODELSWITCH CHECK_INCDEC_MODELVAR
 #endif
 
-#if defined(AUTOSOURCE)
-#define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
-  var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE)
+#if defined(CPUARM)
+  bool isSourceAvailable(int16_t source);
+  bool isSourceP1Available(int16_t source);
+  #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
+    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
+#elif defined(AUTOSOURCE)
+  #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
+    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS)
 #else
-#define CHECK_INCDEC_MODELSOURCE CHECK_INCDEC_MODELVAR
+  #define CHECK_INCDEC_MODELSOURCE CHECK_INCDEC_MODELVAR
 #endif
 
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \

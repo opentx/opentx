@@ -188,12 +188,12 @@ extern "C" {
 
 #if defined(CPUARM)
   #define _FS_REENTRANT		1	   /* 0:Disable or 1:Enable */
+  #define _SYNC_t               unsigned char /*OS_MutexID*/       /* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
 #else
   #define _FS_REENTRANT		0	   /* 0:Disable or 1:Enable */
 #endif
 
 #define _FS_TIMEOUT		1000	   /* Timeout period in unit of time ticks */
-#define	_SYNC_t			OS_MutexID /* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
 
 /* The _FS_REENTRANT option switches the reentrancy (thread safe) of the FatFs module.
 /

@@ -86,7 +86,12 @@ int8_t p2valdiff;
 #endif
 
 int8_t  checkIncDec_Ret;
+
+#if defined(CPUARM)
+int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags, IsValueAvailable isValueAvailable)
+#else
 int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
+#endif
 {
   int16_t newval = val;
   
@@ -126,7 +131,14 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #else
   if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
 #endif
+#if defined(CPUARM)
+    do {
+      newval++;
+    } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
+    if (newval > i_max) newval = val;
+#else
     newval++;
+#endif
     AUDIO_KEYPAD_UP();
   }
 #if defined(PCBTARANIS)
@@ -134,7 +146,14 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #else
   else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
 #endif
+#if defined(CPUARM)
+    do {
+      newval--;
+    } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
+    if (newval < i_min) newval = val;
+#else
     newval--;
+#endif
     AUDIO_KEYPAD_DOWN();
   }
 
@@ -1065,5 +1084,42 @@ void drawStatusLine()
     lcd_putsAtt(5, 8*FH+1-statusLineHeight, statusLineMsg, BSS);
     lcd_filled_rect(0, 8*FH-statusLineHeight, LCD_W, 8, SOLID);
   }
+}
+#endif
+
+#if defined(CPUARM)
+bool isSourceAvailable(int16_t source)
+{
+#if !defined(HELI)
+  if (source>=MIXSRC_CYC1 && source<=MIXSRC_CYC3)
+    return false;
+#endif
+
+  if (source>=MIXSRC_CH1 && source<=MIXSRC_LAST_CH) {
+    uint8_t destCh = source-MIXSRC_CH1;
+    for (uint8_t i = 0; i < MAX_MIXERS; i++) {
+      MixData *md = mixAddress(i);
+      if (md->srcRaw == 0) return false;
+      if (md->destCh==destCh) return true;
+    }
+    return false;
+  }
+
+  if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_CSW) {
+    CustomSwData * cs = cswAddress(source-MIXSRC_SW1);
+    return (cs->func != CS_OFF);
+  }
+
+#if !defined(GVARS)
+  if (source>=MIXSRC_GVAR1 && source<=MIXSRC_LAST_GVAR)
+    return false;
+#endif
+
+  return true;
+}
+
+bool isSourceP1Available(int16_t source)
+{
+  return isSourceAvailable(source+1);
 }
 #endif

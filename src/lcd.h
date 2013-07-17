@@ -86,6 +86,7 @@
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
 #define BSS             0x20
+#define STRCONDENSED    0x40 /* means that THRm will be displayed as THR */
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
@@ -104,9 +105,6 @@
   #define FILL_WHITE    0x10
 #endif
 
-/* switches flags */
-#define SWCONDENSED     0x20 /* means that THRm will be displayed as THR */
-
 /* telemetry flags */
 #define NO_UNIT         0x40
 
@@ -114,10 +112,12 @@
   #define MIDSIZE       0x0100
   #define SMLSIZE       0x0200
   #define TINSIZE       0x0400
+  #define STREXPANDED   0x0800
 #else
   #define MIDSIZE       DBLSIZE
   #define SMLSIZE       0x00
   #define TINSIZE       0x00
+  #define STREXPANDED   0x00
 #endif
 
 #if defined(PCBTARANIS)

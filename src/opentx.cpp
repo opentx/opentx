@@ -97,13 +97,18 @@ ModelData  g_model;
 uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 void loadModelBitmap(char *name, uint8_t *bitmap)
 {
-  char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
-  strncpy(lfn+sizeof(BITMAPS_PATH), name, LEN_BITMAP_NAME);
-  lfn[sizeof(BITMAPS_PATH)+LEN_BITMAP_NAME] = '\0';
-  strcat(lfn+sizeof(BITMAPS_PATH), BITMAPS_EXT);
-  if (bmpLoad(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
-    memcpy(bitmap, logo_taranis, MODEL_BITMAP_SIZE);
+  uint8_t len = zlen(name, LEN_BITMAP_NAME);
+  if (len > 0) {
+    char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
+    strncpy(lfn+sizeof(BITMAPS_PATH), name, len);
+    strcpy(lfn+sizeof(BITMAPS_PATH)+len, BITMAPS_EXT);
+    if (bmpLoad(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT) == 0) {
+      return;
+    }
   }
+
+  // In all error cases, we set the default logo
+  memcpy(bitmap, logo_taranis, MODEL_BITMAP_SIZE);
 }
 #endif
 
@@ -178,6 +183,15 @@ char idx2char(int8_t idx)
 }
 
 #if defined(CPUARM)
+bool zexist(const char *str, uint8_t size)
+{
+  for (int i=0; i<size; i++) {
+    if (str[i] != 0)
+      return true;
+  }
+  return false;
+}
+
 uint8_t zlen(const char *str, uint8_t size)
 {
   while (size > 0) {
@@ -831,8 +845,6 @@ int16_t cyc_anas[3] = {0};
 
 // TODO same naming convention than the putsMixerSource
 
-bool __getSwitch(int8_t swtch);
-
 getvalue_t getValue(uint8_t i)
 {
   /*srcRaw is shifted +1!*/
@@ -858,13 +870,13 @@ getvalue_t getValue(uint8_t i)
   else if (i<MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
   else if (i<MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
   else if (i<MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
-  else if (i<MIXSRC_LAST_CSW) return __getSwitch(SWSRC_SW1+i-MIXSRC_SH) ? 1024 : -1024;
+  else if (i<MIXSRC_LAST_CSW) return getSwitch(SWSRC_SW1+i-MIXSRC_SH) ? 1024 : -1024;
 #else
   else if (i<MIXSRC_3POS) return (switchState(SW_ID0) ? -1024 : (switchState(SW_ID1) ? 0 : 1024));
 #if defined(EXTRA_3POS)
   else if (i<MIXSRC_3POS2) return (switchState(SW_ID3) ? -1024 : (switchState(SW_ID4) ? 0 : 1024));
 #endif
-  else if (i<MIXSRC_LAST_CSW) return __getSwitch(SWSRC_THR+i+1-MIXSRC_THR) ? 1024 : -1024;
+  else if (i<MIXSRC_LAST_CSW) return getSwitch(SWSRC_THR+i+1-MIXSRC_THR) ? 1024 : -1024;
 #endif
   else if (i<MIXSRC_LAST_PPM) { int16_t x = g_ppmIns[i+1-MIXSRC_PPM1]; if (i<MIXSRC_PPM1+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i+1-MIXSRC_PPM1]; } return x*2; }
   else if (i<MIXSRC_LAST_CH) return ex_chans[i+1-MIXSRC_CH1];
@@ -909,14 +921,8 @@ getvalue_t getValue(uint8_t i)
   else return 0;
 }
 
-#if defined(CPUARM)
-  #define GETSWITCH_RECURSIVE_TYPE uint32_t
-#else
-  #define GETSWITCH_RECURSIVE_TYPE uint16_t
-#endif
-
-volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
-volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
+volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
+volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 /* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 
 #if defined(CPUARM)
@@ -927,7 +933,7 @@ uint8_t  cswStates[NUM_CSW];
 
 int16_t csLastValue[NUM_CSW];
 #define CS_LAST_VALUE_INIT -32768
-bool __getSwitch(int8_t swtch)
+bool getSwitch(int8_t swtch)
 {
   bool result;
 
@@ -954,13 +960,13 @@ bool __getSwitch(int8_t swtch)
 
       CustomSwData * cs = cswAddress(cs_idx);
       uint8_t s = cs->andsw;
-      if (cs->func == CS_OFF || (s && !__getSwitch(s))) {
+      if (cs->func == CS_OFF || (s && !getSwitch(s))) {
         csLastValue[cs_idx] = CS_LAST_VALUE_INIT;
         result = false;
       }
       else if ((s=cswFamily(cs->func)) == CS_VBOOL) {
-        bool res1 = __getSwitch(cs->v1);
-        bool res2 = __getSwitch(cs->v2);
+        bool res1 = getSwitch(cs->v1);
+        bool res2 = getSwitch(cs->v2);
         switch (cs->func) {
           case CS_AND:
             result = (res1 && res2);
@@ -1099,18 +1105,13 @@ bool __getSwitch(int8_t swtch)
 #endif
 
       if (result)
-        s_last_switch_value |= ((GETSWITCH_RECURSIVE_TYPE)1<<cs_idx);
+        s_last_switch_value |= mask;
+      else
+        s_last_switch_value &= ~mask;
     }
   }
 
   return swtch > 0 ? result : !result;
-}
-
-bool getSwitch(int8_t swtch)
-{
-  s_last_switch_used = 0;
-  s_last_switch_value = 0;
-  return __getSwitch(swtch);
 }
 
 swstate_t switches_states = 0;
@@ -1147,7 +1148,7 @@ int8_t getMovedSwitch()
       mask = (1<<(i-2));
       prev = (switches_states & mask);
     }
-    bool next = __getSwitch(i);
+    bool next = getSwitch(i);
     if (prev != next) {
       if (i!=MAX_PSWITCH || next==true)
         result = next ? i : -i;
@@ -1568,9 +1569,7 @@ void doSplash()
 
 #if defined(PCBSTD)
     lcdSetContrast();
-#elif defined(PCBTARANIS)
-    bool secondSplash = false;
-#else
+#elif !defined(PCBTARANIS)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -1599,17 +1598,7 @@ void doSplash()
 
       if (pwrCheck()==e_power_off) return;
 
-#if defined(PCBTARANIS)
-      if (!secondSplash && get_tmr10ms() >= tgtime-200) {
-        secondSplash = true;
-        static uint8_t sdSplash[2+4*(LCD_W*LCD_H/8)];
-        if (!bmpLoad(sdSplash, BITMAPS_PATH "/splash.bmp", LCD_W, LCD_H)) {
-          lcd_clear();
-          lcd_bmp(0, 0, sdSplash);
-          lcdRefresh();
-        }
-      }
-#elif !defined(PCBSTD)
+#if !defined(PCBTARANIS) && !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
         if (contrast < g_eeGeneral.contrast) {
@@ -3122,6 +3111,9 @@ void doMixerCalculations()
   static uint16_t delta = 0;
   static ACTIVE_PHASES_TYPE s_fade_flight_phases = 0;
   static uint8_t s_last_phase = 255; // TODO reinit everything here when the model changes, no???
+
+  s_last_switch_used = 0;
+
   uint8_t phase = getFlightPhase();
 
   if (s_last_phase != phase) {
@@ -3160,6 +3152,7 @@ void doMixerCalculations()
   if (s_fade_flight_phases) {
     memclear(sum_chans512, sizeof(sum_chans512));
     for (uint8_t p=0; p<MAX_PHASES; p++) {
+      s_last_switch_used = 0;
       if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
         s_perout_flight_phase = p;
         perOut(p==phase?e_perout_mode_normal:e_perout_mode_inactive_phase, p==phase?tick10ms:0);
@@ -3167,6 +3160,7 @@ void doMixerCalculations()
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
       }
+      s_last_switch_used = 0;
     }
     assert(weight);
     s_perout_flight_phase = phase;

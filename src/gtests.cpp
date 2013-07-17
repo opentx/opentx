@@ -49,7 +49,9 @@ void doMixerCalculations();
   memset(ex_chans, 0, sizeof(ex_chans)); \
   memset(act, 0, sizeof(act)); \
   memset(swOn, 0, sizeof(swOn)); \
-  int32_t lastAct = 0; lastAct = lastAct; /* to avoid a warning */
+  int32_t lastAct = 0; lastAct = lastAct; /* to avoid a warning */ \
+  s_last_switch_used = 0; \
+  s_last_switch_value = 0;
 
 uint16_t anaInValues[NUM_STICKS+NUM_POTS] = { 0 };
 uint16_t anaIn(uint8_t chan)
@@ -231,10 +233,8 @@ TEST(EEPROM, rm)
   EXPECT_EQ(sz, 0);
 }
 
-#if defined(FRSKY)
-
+#if defined(FRSKY) && !defined(FRSKY_SPORT)
 extern void processFrskyPacket(uint8_t *packet);
-
 TEST(FrSky, gpsNfuel)
 {
   g_model.frsky.usrProto = 1;
@@ -279,31 +279,69 @@ TEST(FrSky, dateNtime)
   EXPECT_EQ(frskyData.hub.min, 18);
   EXPECT_EQ(frskyData.hub.sec, 50);
 }
-
 #endif
 
+#if defined(FRSKY_SPORT)
+extern bool checkSportPacket(uint8_t *packet);
+TEST(FrSkySPORT, checkCrc)
+{
+  // uint8_t pkt[] = { 0x7E, 0x98, 0x10, 0x10, 0x00, 0x7D, 0x5E, 0x02, 0x00, 0x00, 0x5F };
+  uint8_t pkt[] = { 0x7E, 0x98, 0x10, 0x10, 0x00, 0x7E, 0x02, 0x00, 0x00, 0x5F };
+  EXPECT_EQ(checkSportPacket(pkt+1), true);
+}
+#endif
+
+#if !defined(PCBTARANIS)
 TEST(getSwitch, undefCSW)
 {
   MODEL_RESET();
   EXPECT_EQ(getSwitch(MAX_PSWITCH), false);
   EXPECT_EQ(getSwitch(-MAX_PSWITCH), true); // no good answer there!
 }
+#endif
 
 TEST(getSwitch, circularCSW)
 {
   MODEL_RESET();
-  g_model.customSw[0] = { MAX_SWITCH-NUM_CSW, MAX_SWITCH-NUM_CSW, CS_OR };
-  g_model.customSw[1] = { MAX_SWITCH-NUM_CSW, MAX_SWITCH-NUM_CSW, CS_AND };
-  EXPECT_EQ(getSwitch(MAX_SWITCH-NUM_CSW), false);
-  EXPECT_EQ(getSwitch(-(MAX_SWITCH-NUM_CSW)), true);
-  EXPECT_EQ(getSwitch(1+MAX_SWITCH-NUM_CSW), false);
-  EXPECT_EQ(getSwitch(-(1+MAX_SWITCH-NUM_CSW)), true);
+  MIXER_RESET();
+  g_model.customSw[0] = { SWSRC_SW1, SWSRC_SW1, CS_OR };
+  g_model.customSw[1] = { SWSRC_SW1, SWSRC_SW1, CS_AND };
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(-SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+  EXPECT_EQ(getSwitch(-SWSRC_SW2), true);
 }
 
 TEST(getSwitch, nullSW)
 {
   MODEL_RESET();
   EXPECT_EQ(getSwitch(0), true);
+}
+
+#if !defined(PCBTARANIS)
+TEST(getSwitch, recursiveSW)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+
+  g_model.customSw[0] = { SWSRC_RUD, -SWSRC_SW2, CS_OR };
+  g_model.customSw[1] = { SWSRC_ELE, -SWSRC_SW1, CS_OR };
+
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+
+  s_last_switch_used = 0;
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+
+  simuSetSwitch(1, 1);
+  s_last_switch_used = 0;
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+
+  s_last_switch_used = 0;
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 }
 
 TEST(FlightModes, nullFadeOut_posFadeIn)
@@ -415,6 +453,7 @@ TEST(Mixer, Cascaded5Channels)
     EXPECT_EQ(chans[4], -CHANNEL_MAX);
   }
 }
+#endif
 
 TEST(Mixer, InfiniteRecursiveChannels)
 {
@@ -512,6 +551,7 @@ TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
       } \
     } while (0)
 
+#if !defined(CPUARM)
 TEST(Mixer, SlowOnSwitch)
 {
   MODEL_RESET();
@@ -582,7 +622,9 @@ TEST(Mixer, SlowOnSwitchAndPhase)
   s_perout_flight_phase = 1;
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
+#endif
 
+#if !defined(PCBTARANIS)
 TEST(Mixer, SlowOnSwitchSource)
 {
   MODEL_RESET();
@@ -627,7 +669,9 @@ TEST(Mixer, SlowAndDelayOnReplace3POSSource)
   CHECK_DELAY(0, 500);
   CHECK_SLOW_MOVEMENT(0, +1, 250);
 }
+#endif
 
+#if !defined(CPUARM)
 TEST(Mixer, SlowOnSwitchReplace)
 {
   MODEL_RESET();
@@ -657,7 +701,9 @@ TEST(Mixer, SlowOnSwitchReplace)
   // slow is not applied, but it's better than the first mix not applied at all!
   EXPECT_EQ(chans[0], CHANNEL_MAX/2);
 }
+#endif
 
+#if !defined(PCBTARANIS)
 TEST(Mixer, NoTrimOnInactiveMix)
 {
   MODEL_RESET();
@@ -677,6 +723,7 @@ TEST(Mixer, NoTrimOnInactiveMix)
   simuSetSwitch(0, 0);
   CHECK_SLOW_MOVEMENT(0, -1, 100);
 }
+#endif
 
 TEST(Curves, LinearIntpol)
 {

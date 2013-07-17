@@ -808,11 +808,21 @@ void putsVBat(xcoord_t x, uint8_t y, LcdFlags att)
 void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags att)
 {
   lcd_putsAtt(x, y, str, att);
+
   if (att & SMLSIZE)
     lcd_outdezNAtt(lcdLastPos+1, y, idx, att|LEFT, 2);
   else
     lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
+
+#if defined(CPUARM)
+  uint8_t lastPos = lcdLastPos;
+#endif
+
   lcd_putsAtt(x, y, str, att);
+
+#if defined(CPUARM)
+  lcdLastPos = lastPos;
+#endif
 }
 
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
@@ -830,8 +840,15 @@ void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
 #endif
   else if (idx < MIXSRC_CH1)
     putsStrIdx(x, y, STR_PPM, idx-MIXSRC_PPM1+1, att);
-  else if (idx <= MIXSRC_LAST_CH)
+  else if (idx <= MIXSRC_LAST_CH) {
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
+#if defined(PCBTARANIS)
+    if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
+      lcd_putcAtt(lcdLastPos, y, ' ', att);
+      lcd_putsnAtt(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att);
+    }
+#endif
+  }
 #if defined(GVARS) || !defined(PCBSTD)
   else if (idx <= MIXSRC_LAST_GVAR)
     putsStrIdx(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
@@ -899,7 +916,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
   if (idx > SWSRC_ON) {
     idx -= SWSRC_ON;
     char suffix = CHR_TOGGLE;
-    if (idx != SWSRC_ON && (~att & SWCONDENSED)) lcd_putcAtt(x+3*FW, y, suffix, att);
+    if (idx != SWSRC_ON && (~att & STRCONDENSED)) lcd_putcAtt(x+3*FW, y, suffix, att);
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
@@ -930,8 +947,9 @@ void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 
 void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att)
 {
-  if (mode >= TMR_VAROFS+MAX_PSWITCH+NUM_CSW)
+  if (mode >= TMR_VAROFS+MAX_PSWITCH+NUM_CSW) {
     mode++;
+  }
 
   if (mode < 0) {
     mode = TMR_VAROFS - mode - 1;

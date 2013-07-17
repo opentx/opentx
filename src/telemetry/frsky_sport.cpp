@@ -268,15 +268,15 @@ void processHubPacket(uint8_t id, uint16_t value)
 
 bool checkSportPacket(uint8_t *packet)
 {
-   short t_short =0;
-   for (int i=0; i<FRSKY_RX_PACKET_SIZE-1; i++) {
-       t_short += *packet++; //0-1FF
-       t_short += t_short >> 8; //0-100
-       t_short &= 0x00ff;
-       t_short += t_short >> 8; //0-0FF
-       t_short &= 0x00ff;
-   }
-   return packet[FRSKY_RX_PACKET_SIZE-1] == (uint8_t)t_short;
+  short crc = 0;
+  for (int i=1; i<FRSKY_RX_PACKET_SIZE; i++) {
+    crc += packet[i]; //0-1FF
+    crc += crc >> 8; //0-100
+    crc &= 0x00ff;
+    crc += crc >> 8; //0-0FF
+    crc &= 0x00ff;
+  }
+  return (crc == 0x00ff);
 }
 
 #define SPORT_DATA_U8(packet)   (packet[4])
@@ -290,8 +290,8 @@ void processSportPacket(uint8_t *packet)
   uint8_t  prim   = packet[1];
   uint16_t appId  = *((uint16_t *)(packet+2));
 
-//  if (!checkSportPacket(packet))
-//    return;
+  if (!checkSportPacket(packet))
+    return;
 
   switch (prim)
   {

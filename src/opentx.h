@@ -219,11 +219,13 @@
     #define NOINLINE
   #endif
   #define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
+  char *convertSimuPath(const char *path);
 #else
   #define FORCEINLINE inline __attribute__ ((always_inline))
   #define NOINLINE __attribute__ ((noinline))
   #define SIMU_SLEEP(x)
   #define CONVERT_PTR(x) ((uint32_t)(x))
+  #define convertSimuPath(x) (x)
 #endif
 
 // RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
@@ -907,6 +909,14 @@ extern int8_t safetyCh[NUM_CHNOUT];
 
 extern uint8_t trimsCheckTimer;
 
+#if defined(CPUARM)
+  #define GETSWITCH_RECURSIVE_TYPE uint32_t
+#else
+  #define GETSWITCH_RECURSIVE_TYPE uint16_t
+#endif
+
+extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
+extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 extern int16_t csLastValue[NUM_CSW];
 #define CS_LAST_VALUE_INIT -32768
 
@@ -1434,11 +1444,13 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
 
 #if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
+bool zexist(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
 #define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
 #define strcat_mixername(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
 #define ZLEN(s) zlen(s, sizeof(s))
+#define ZEXIST(s) zexist(s, sizeof(s))
 #endif
 
 // Stick tolerance varies between transmitters, Higher is better
