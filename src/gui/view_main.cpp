@@ -53,10 +53,10 @@
 #define PHASE_X       BITMAP_X
 #define PHASE_Y       (3*FH)
 #define PHASE_FLAGS   (0)
-#define TIMERS_X      144
+#define TIMERS_X      145
 #define TIMER1_Y      20
 #define TIMER2_Y      45
-#define TIMERS_R      192
+#define TIMERS_R      193
 #define REBOOT_X      (LCD_W-FW)
 #define VSWITCH_X(i)  (((i>=NUM_CSW*3/4) ? BITMAP_X+28 : ((i>=NUM_CSW/2) ? BITMAP_X+25 : ((i>=NUM_CSW/4) ? 21 : 18))) + 3*i)
 #define VSWITCH_Y     (LCD_H-9)
@@ -321,7 +321,11 @@ void displayTimers()
     putsTime(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTmrMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, STRCONDENSED|SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
-    if (timerState.val < 0) lcd_hline(TIMERS_X-6, TIMER1_Y+2, 4);
+    if (timerState.val <= 0) {
+      if (BLINK_ON_PHASE) {
+        lcd_filled_rect(TIMERS_X-7, TIMER1_Y-7, 60, 19);
+      }
+    }
   }
 
   // Second timer
@@ -330,19 +334,11 @@ void displayTimers()
     putsTime(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTmrMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, STRCONDENSED|SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
-    if (timerState.val < 0) lcd_hline(TIMERS_X-6, TIMER2_Y+2, 4);
-  }
-
-  // Main timer beeping
-  if (timersStates[0].state==TMR_BEEPING) {
-    if (BLINK_ON_PHASE)
-      lcd_filled_rect(TIMERS_X-17, TIMER1_Y, 70, 12);
-  }
-
-  // Second timer beeping
-  if (timersStates[1].state==TMR_BEEPING) {
-    if (BLINK_ON_PHASE)
-      lcd_filled_rect(TIMERS_X-17, TIMER2_Y, 70, 12);
+    if (timerState.val <= 0) {
+      if (BLINK_ON_PHASE) {
+        lcd_filled_rect(TIMERS_X-7, TIMER2_Y-7, 60, 19);
+      }
+    }
   }
 }
 #else
