@@ -411,7 +411,11 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, STR_CONTRAST);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);
         if(attr) {
+#if defined(PCBTARANIS)
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 0, 45);
+#else
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
+#endif          
           lcdSetContrast();
         }
         break;
