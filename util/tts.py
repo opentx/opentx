@@ -40,7 +40,7 @@ def generate(str, idx, alternate=0):
     else:
         if isinstance(idx, int):
             result = "%04d.wav" % idx
-        elif board == 'sky9x':
+        elif board == 'sky9x' or board == 'taranis':
             result = idx + ".wav"
         else:
             if alternate >= NO_ALTERNATE:
@@ -84,7 +84,7 @@ def generate(str, idx, alternate=0):
             print "which speach engine?"
             return []
     
-        if board == 'sky9x':
+        if board == 'sky9x' or board == 'taranis':
             if 'sox' in sys.argv:
                 maxvolume = subprocess.Popen(["sox",result,"-n","stat","-v"],stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
                 if "not sound" in maxvolume:
@@ -124,6 +124,10 @@ if __name__ == "__main__":
         board = "sky9x"
         PROMPT_CUSTOM_BASE = 256
         PROMPT_SYSTEM_BASE = 0
+    elif "taranis" in sys.argv:  
+        board = "taranis"
+        PROMPT_CUSTOM_BASE = 256
+        PROMPT_SYSTEM_BASE = 0      
     elif "gruvin9x" in sys.argv:
         board = "gruvin9x"
         PROMPT_CUSTOM_BASE = 0
@@ -207,7 +211,7 @@ if __name__ == "__main__":
                         (u"throttle warning", "thralert", 481),
                         (u"switch warning", "swalert", 482),
                         (u"bad eeprom", "eebad", 483),
-                        (u"Welcome to open nine ex!", "tada", 480),
+                        (u"Welcome to open tea ex!", "tada", 480),
                         (u"twenty. seconds", "timer20", 500),
                         (u"thirty. seconds", "timer30", 501),
                        ]:
@@ -620,13 +624,13 @@ if __name__ == "__main__":
         csvFile = open(voice + ".csv", "w")
         for f, s in systemSounds:
             l = u""
-            if board == "sky9x":
+            if board == "sky9x" or board == "taranis":
                 l += u"SOUNDS/%s/SYSTEM;" % directory
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
         for f, s in sounds:
             l = u""
-            if board == "sky9x":
+            if board == "sky9x" or board == "taranis":
                 l += u"SOUNDS/%s;" % directory
             l += f + u";" + s + u"\n"
             csvFile.write(l.encode("latin-1"))
@@ -636,13 +640,13 @@ if __name__ == "__main__":
         zip_name = voice + ".zip"
         zip = zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED)
         for f, s in systemSounds:
-            if board == "sky9x":
+            if board == "sky9x" or board == "taranis":
                 zip.write(f, "SOUNDS/%s/SYSTEM/" % directory + f)
             else:
                 zip.write(f, f)
             os.remove(f)
         for f, s in sounds:
-            if board == "sky9x":
+            if board == "sky9x" or board == "taranis":
                 zip.write(f, "SOUNDS/%s/" % directory + f)
             else:
                 zip.write(f, f)
