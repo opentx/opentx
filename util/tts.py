@@ -92,11 +92,17 @@ def generate(str, idx, alternate=0):
                     subprocess.Popen(["sox", "--show-progress",result,temp],stdout=subprocess.PIPE).communicate()[0];          			
                 else:    	
                     subprocess.Popen(["sox", "--show-progress","-v",maxvolume,result,temp],stdout=subprocess.PIPE).communicate()[0];		
-                subprocess.Popen(["sox", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                    if board == 'sky9x':
+                	subprocess.Popen(["sox", "-twav", temp, "-b1600","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                    else:
+                    	subprocess.Popen(["sox", "-twav", temp, "-b32000","-c1","-e","a-law",result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
             else:
                 os.rename(result, temp) 
-                subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", defaultcodec, "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                if board == 'sky9x':
+                	subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", defaultcodec, "-ar", "16000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+                else:
+                	subprocess.Popen(["ffmpeg", "-y", "-i", temp, "-acodec", defaultcodec, "-ar", "32000", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
                 os.remove(temp)
         elif board == 'gruvin9x':
             subprocess.Popen(["AD4CONVERTER", "-E4", result], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
