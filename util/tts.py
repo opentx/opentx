@@ -15,7 +15,7 @@
 #  replace TTSFast.py with an empty file. This way the version-dependent pyd file isn't loaded.
 
 # in addition you will need some tools.  
-#  ffmpeg, sox, adconvertor.
+#  ffmpeg, sox, adconvertor ttscmd (2cnd speach centre)
 # have fun!
 # Sound pack maintainers (incomplete list)
 # French  : Bertrand Songis & André Bernet
@@ -45,7 +45,10 @@ def filename(idx, alternate=0):
     
 def generate(str, filename):
     print filename, str
-    
+
+    if not str:
+		str = " !"	#this is so blank wav files never exist!
+		
     if "speak" in sys.argv:
         if "sapi" in sys.argv:
             tts.Speak(str)
@@ -89,6 +92,9 @@ def generate(str, filename):
             o.writeframes(f[2*start:-2*end])
             o.close()                
             os.remove(ttsfilenameraw)           
+        elif "sapi2" in sys.argv: 
+            ttsfilename = "ttsfile.wav"		
+            subprocess.Popen(["ttscmd", "/ttw",str.encode("utf-8"),ttsfilename, "-v", voiceID, "-b", "32"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()     			
         elif "espeak" in sys.argv:
             ttsfilename = "ttsfile.wav"
             subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", "-w", ttsfilename, str.encode("utf-8")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
@@ -617,6 +623,23 @@ if __name__ == "__main__":
             else:
                 tts.SetVoiceByName("ScanSoftFiona_Full_22kHz")
                 voice = "english-english"
+        elif "sapi2" in sys.argv:
+            if "scottish" in sys.argv:
+            	voiceID = "17"
+            	voice = "english-english"				
+            elif "american" in sys.argv:	      
+            	voiceID = "19"   
+            	voice = "english-american" 				
+            elif "australian" in sys.argv:	
+            	voiceID = "20"  
+            	voice = "english-australian"  
+            elif "irish" in sys.argv:
+            	voiceID = "21"      
+            	voice = "english-irish" 				
+            else:
+            	voiceID = "17"		
+            	voice = "english-english"				
+				
         elif "espeak" in sys.argv:
             espeakVoice = "mb-us1"
             espeakspeed = "150"
