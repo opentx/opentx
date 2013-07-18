@@ -102,8 +102,6 @@ const uint8_t lcdPalette[4] = { 0, 0x03, 0x06, 0x0F };
 
 void lcdRefresh()
 {  
-  lcdRefreshInit();
-  
   for (uint32_t y=0; y<LCD_H; y++) {
     uint8_t *p = &displayBuf[(y>>3)*LCD_W];
     uint8_t mask = (1 << (y%8));
