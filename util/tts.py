@@ -622,7 +622,7 @@ if __name__ == "__main__":
             	voiceID = "17"
             	voice = "english-scottish"				
             elif "american" in sys.argv:	      
-            	voiceID = "19"   
+            	voiceID = "18"   
             	voice = "english-american" 				
             elif "australian" in sys.argv:	
             	voiceID = "20"  
@@ -630,6 +630,12 @@ if __name__ == "__main__":
             elif "irish" in sys.argv:
             	voiceID = "21"      
             	voice = "english-irish" 				
+            elif "french" in sys.argv:
+            	voiceID = "19"      
+            	voice = "english-irish" 
+            elif "german" in sys.argv:
+            	voiceID = "22"      
+            	voice = "english-german" 
             else:
             	voiceID = "17"		
             	voice = "english-english"				
