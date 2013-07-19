@@ -42,6 +42,12 @@ def filename(idx, alternate=0):
             return None
         result = "%04d%s" % (alternate, ext)
     return result
+
+def wavstrip(filename):
+    output = "_" + filename
+    subprocess.Popen(["sox", filename, output, "silence", "1", "0.1", "1%", "reverse", "silence", "1", "0.1", "1%", "reverse"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+    os.remove(filename)
+    os.rename(output, filename)
     
 def generate(str, filename):
     print filename, str
@@ -62,56 +68,33 @@ def generate(str, filename):
             exit()
     else:
         if "sapi" in sys.argv:
-            ttsfilenameraw = "ttsfileraw.wav"
             ttsfilename = "ttsfile.wav"
-            tts.SpeakToWave(ttsfilenameraw, str)
-            # we remove empty frames at start and end of the file                
-            i = wave.open(ttsfilenameraw, "r")
-            n = i.getnframes()
-            f = i.readframes(n)
-            i.close()
-            o = wave.open(ttsfilename, "w")
-            o.setnchannels(i.getnchannels())
-            o.setsampwidth(i.getsampwidth())
-            o.setframerate(i.getframerate())
-            start = 0
-            end = 0
-            for i in range(n/2):
-                sample = ord(f[2*i+1])
-                # print sample,
-                if sample != 0xFF and sample != 0x00:
-                    start = i
-                    break
-            for i in range(n/2):
-                sample = ord(f[-2*i-1])
-                # print sample,
-                if sample != 0xFF and sample != 0x00:
-                    end = i
-                    break
-            # print 2*start, 2*end,  
-            o.writeframes(f[2*start:-2*end])
-            o.close()                
-            os.remove(ttsfilenameraw)           
+            tts.SpeakToWave(ttsfilename, str)
         elif "sapi2" in sys.argv: 
             ttsfilename = "ttsfile.wav"		
-            subprocess.Popen(["ttscmd", "/ttw",str.encode("utf-8"),ttsfilename, "-v", voiceID, "-b", "32"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()     			
+            subprocess.Popen(["ttscmd", "/ttw", str.encode("utf-8"), ttsfilename, "-v", voiceID, "-b", "32"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()     			
         elif "espeak" in sys.argv:
             ttsfilename = "ttsfile.wav"
             subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", "-w", ttsfilename, str.encode("utf-8")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
         elif "google" in sys.argv:
-            ttsfilename = "ttsfile.mp3"
+            ttsmp3 = "ttsfile.mp3"
+            ttsfilename = "ttsfile.wav"
             conn = httplib.HTTPConnection("translate.google.com")
             params = urllib.urlencode({'ie': "UTF-8", 'tl': directory, 'q': str.encode("utf-8")})
             headers = {"User-Agent": "Mozilla"}
             conn.request("GET", u"/translate_tts?%s" % params, headers=headers)
             # conn.request("GET", "/translate_tts?ie=UTF-8&tl=%s&q=%s" % (directory, urllib.urlencode(str)), headers={"User-Agent": "Mozilla"})
             resp = conn.getresponse()
-            file(ttsfilename, "wb").write(resp.read())
+            file(ttsmp3, "wb").write(resp.read())
+            subprocess.Popen(["ffmpeg", "-y", "-i", ttsmp3, "-acodec", "pcm_s16le", ttsfilename], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
             conn.close()
+            
         else:
             print "which speach engine?"
             exit()                     
-    
+
+        wavstrip(ttsfilename)
+            
         if board in ('sky9x', 'taranis'):
             if 'sox' in sys.argv:
                 maxvolume = subprocess.Popen(["sox", ttsfilename, "-n", "stat", "-v"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[1]
