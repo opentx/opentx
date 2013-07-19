@@ -164,7 +164,18 @@ def ttsEn():
                     (u"Welcome to open tea ex!", "tada", 480),
                     (u"twenty. seconds", "timer20", 500),
                     (u"thirty. seconds", "timer30", 501),
-                   ]:
+                    (u"10. seconds", "timer10", NO_ALTERNATE),
+                    (u"time up!", "timerlt3", NO_ALTERNATE),
+                    (u"A1,low", "a1_org", NO_ALTERNATE),
+                    (u"A1,critical", "a1_red", NO_ALTERNATE),
+                    (u"A2,low", "a1_org", NO_ALTERNATE),
+                    (u"A2,critical", "a1_red", NO_ALTERNATE),
+                    (u"RF signal, low", "rssi_org", NO_ALTERNATE),
+                    (u"RF signal, critical", "rssi_red", NO_ALTERNATE),
+                    (u"radio antenna defective", "swr_red", NO_ALTERNATE),
+                    (u"telemetry lost", "telemko", NO_ALTERNATE),
+                    (u"telemetry recovered", "telemok", NO_ALTERNATE),
+					]:
         systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
                  (u"gear!, up!", "gearup"),
@@ -609,7 +620,7 @@ if __name__ == "__main__":
         elif "sapi2" in sys.argv:
             if "scottish" in sys.argv:
             	voiceID = "17"
-            	voice = "english-english"				
+            	voice = "english-scottish"				
             elif "american" in sys.argv:	      
             	voiceID = "19"   
             	voice = "english-american" 				
