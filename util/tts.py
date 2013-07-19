@@ -632,7 +632,7 @@ if __name__ == "__main__":
             	voice = "english-irish" 				
             elif "french" in sys.argv:
             	voiceID = "19"      
-            	voice = "english-irish" 
+            	voice = "english-french" 
             elif "german" in sys.argv:
             	voiceID = "22"      
             	voice = "english-german" 
