@@ -137,6 +137,12 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     if (IS_IMPERIAL_ENABLE()) {
       if (unit == UNIT_METERS) {
         unit = UNIT_FEET;
+#if defined(CPUARM)
+        if (att & PREC1) {
+          number /= 10;
+          att -= PREC1;
+        }
+#endif
       }
     }
     unit++;

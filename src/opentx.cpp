@@ -2355,7 +2355,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM-1+TELEM_ALT-1:
 #if defined(PCBTARANIS)
-      PLAY_NUMBER(val/100, 1+UNIT_METERS, 0);
+      PLAY_NUMBER(val/10, 1+UNIT_METERS, PREC1);
       break;
 #endif
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT-1:
