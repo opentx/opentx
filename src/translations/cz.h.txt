@@ -650,11 +650,11 @@
 //Taranis About screen
 #define TR_ABOUTUS             TR("  O nás   ", "O nás")
 
-#define TR_ABOUT_OPENTX_1      TR("opentx je nekomerční,", "Firmware tohoto rádia")
-#define TR_ABOUT_OPENTX_2      TR("bez jakékoliv záruky.", " je podporován firmou FrSky.")
-#define TR_ABOUT_OPENTX_3      TR("Vytvořen ve volném čase.", "OpenTX je open-source,")
-#define TR_ABOUT_OPENTX_4      TR("Podpora vývoje pomocí", " bez jakékoliv záruky.")
-#define TR_ABOUT_OPENTX_5      TR("finančního daru je vítána!", "Finanční dary jsou vítány!")
+#define TR_ABOUT_OPENTX_1      TR("OpenTX je nekomerční,", "OpenTX\001je\001open-source,")
+#define TR_ABOUT_OPENTX_2      TR("opensource bez záruky.", "nekomerční a bez\001záruky.")
+#define TR_ABOUT_OPENTX_3      TR("Vytvořen ve volném čase.", "Byl\001vytvořen\001nadšenými\001modeláři")
+#define TR_ABOUT_OPENTX_4      TR("Podpora vývoje pomocí", "Podpora\001vývoje\001pomocí")
+#define TR_ABOUT_OPENTX_5      TR("finančního daru je vítána!", "drobného\001daru\001je\001vítána!")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "Hlavní vývojář OpenTX"
