@@ -80,7 +80,7 @@ enum EnglishPrompts {
 
 I18N_PLAY_FUNCTION(en, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
-  if (abs(number) <= 1)
+  if (number == 1)
     PUSH_NUMBER_PROMPT(unitprompt);
   else
     PUSH_NUMBER_PROMPT(unitprompt+1);
