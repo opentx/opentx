@@ -159,7 +159,7 @@ void pwrOff();
 #define EXTERNAL_RF_OFF()     GPIO_ResetBits(GPIOPWR, PIN_EXT_RF_PWR)
 
 // Backlight driver
-#define setBacklight(xx)      TIM10->CCR1 = xx
+#define setBacklight(xx)      TIM10->CCR1 = 100-xx
 #define __BACKLIGHT_ON        TIM10->CCR1 = 100-g_eeGeneral.backlightBright
 #define __BACKLIGHT_OFF       TIM10->CCR1 = 0
 #define IS_BACKLIGHT_ON()     (TIM10->CCR1 != 0)
