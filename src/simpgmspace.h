@@ -117,12 +117,15 @@ extern GPIO_TypeDef gpioe;
 extern TIM_TypeDef tim1;
 extern TIM_TypeDef tim3;
 extern TIM_TypeDef tim8;
+extern TIM_TypeDef tim10;
 #undef TIM1
 #undef TIM3
 #undef TIM8
+#undef TIM10
 #define TIM1 (&tim1)
 #define TIM3 (&tim3)
 #define TIM8 (&tim8)
+#define TIM10 (&tim10)
 extern RCC_TypeDef rcc;
 #undef RCC
 #define RCC (&rcc)

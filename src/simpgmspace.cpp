@@ -61,6 +61,7 @@ GPIO_TypeDef gpioe;
 TIM_TypeDef tim1;
 TIM_TypeDef tim3;
 TIM_TypeDef tim8;
+TIM_TypeDef tim10;
 RCC_TypeDef rcc;
 DMA_Stream_TypeDef dma2_stream2;
 DMA_Stream_TypeDef dma2_stream6;
