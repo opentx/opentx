@@ -561,7 +561,7 @@
 #define TR_INVERT_THR          TR("Gas umkehren?","Vollgas hinten?") //\200nderung wg Th9x
 #define TR_SPEAKER_VOLUME      INDENT"Lautst\201rke"
 #define TR_LCD                 "Bildschirm"
-#define TR_BRIGHTNESS          "Helligkeit"
+#define TR_BRIGHTNESS          INDENT "Helligkeit"
 #define TR_CPU_TEMP            "CPU Temp.\016>"
 #define TR_CPU_CURRENT         "Strom\022>"
 #define TR_CPU_MAH             "Verbrauch"

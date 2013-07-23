@@ -559,9 +559,9 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "BRYTARE"
 #define TR_INVERT_THR          TR("Revers.Gas?","Reversera Gasen?")
-#define TR_SPEAKER_VOLUME      INDENT"Volym"
+#define TR_SPEAKER_VOLUME      INDENT "Volym"
 #define TR_LCD                 "LCD"
-#define TR_BRIGHTNESS          "Ljusstyrka"
+#define TR_BRIGHTNESS          INDENT "Ljusstyrka"
 #define TR_CPU_TEMP            "CPU temp.\016>"
 #define TR_CPU_CURRENT         "Str\202m\022>"
 #define TR_CPU_MAH             "F\202rbrukn."

@@ -46,6 +46,8 @@ static void LCD_Init()
 
   
 }
+
+#if 0 // to be removed later if nobody complains!
 static void lcdRefreshInit()
 {	
   AspiCmd(0x2b);   //Panel loading set ,Internal VLCD.
@@ -75,9 +77,8 @@ static void lcdRefreshInit()
   AspiCmd(0xF7);   //ending row address of RAM program window.
   AspiCmd(0x9F);
   AspiCmd(0xAF);
-
-  
 }
+#endif
 
 void Set_Address(u8 x, u8 y)
 {
@@ -127,17 +128,29 @@ void lcdRefresh()
   }
 }
 
-/* Init the Backlight GPIO */
+/**Init the Backlight GPIO */
 static void LCD_BL_Config()
 {
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBL, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin =GPIO_Pin_BL;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIOBL, &GPIO_InitStructure);
+
+  GPIO_PinAFConfig(GPIOBL, GPIO_PinSource_BL, GPIO_AF_TIM10);
+
+  RCC->APB2ENR |= RCC_APB2ENR_TIM10EN ;        // Enable clock
+  TIM10->ARR = 100 ;
+  TIM10->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 10000 - 1;
+  TIM10->CCMR1 = 0x60 ;    // PWM
+  TIM10->CCER = 1 ;
+
+  TIM10->CCR1 = 80;
+  TIM10->EGR = 0 ;
+  TIM10->CR1 = 1 ;
 }
 
 /** Init the anolog spi gpio

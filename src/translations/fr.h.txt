@@ -560,9 +560,9 @@
 #define TR_ALARMSWARN          "SON"
 #define TR_SWITCHWARN          "INTERS"
 #define TR_INVERT_THR          "Inverser Gaz?"
-#define TR_SPEAKER_VOLUME      INDENT"Volume"
+#define TR_SPEAKER_VOLUME      INDENT "Volume"
 #define TR_LCD                 "Afficheur"
-#define TR_BRIGHTNESS          "Luminosité"
+#define TR_BRIGHTNESS          INDENT "Luminosité"
 #define TR_CPU_TEMP            "Temp. CPU\016>"
 #define TR_CPU_CURRENT         "Courant\022>"
 #define TR_CPU_MAH             "Consomm."
@@ -570,7 +570,7 @@
 #define TR_COPROC_TEMP         "Temp. MB \016>"
 #define TR_CAPAWARNING         INDENT "Capacité Basse"
 #define TR_TEMPWARNING         INDENT "Surchauffe"
-#define TR_FUNC                TR("Fonc","Fonction")
+#define TR_FUNC                TR("Fonc", "Fonction")
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
 #define TR_DURATION            "Durée"

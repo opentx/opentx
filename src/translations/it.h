@@ -561,7 +561,7 @@
 #define TR_INVERT_THR          "Inverti Thr?"
 #define TR_SPEAKER_VOLUME      "Volume Audio"
 #define TR_LCD                 "LCD"
-#define TR_BRIGHTNESS          "Luminosit\200"
+#define TR_BRIGHTNESS          INDENT "Luminosit\200"
 #define TR_CPU_TEMP            "Temp CPU \016>"
 #define TR_CPU_CURRENT         "Corrente\022>"
 #define TR_CPU_MAH             "Consumo"
