@@ -567,7 +567,7 @@
 #define TR_CPU_MAH             "Consumo"
 #define TR_COPROC              "CoProc."  
 #define TR_COPROC_TEMP         "Temp. MB \016>"
-#define TR_CAPAWARNING         INDENT "Capacit\200 Low"
+#define TR_CAPAWARNING         INDENT "Capacit\200Low"
 #define TR_TEMPWARNING         INDENT "Temp Alta"
 #define TR_FUNC                "Funz"
 #define TR_V1                  "V1"

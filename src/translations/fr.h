@@ -570,7 +570,7 @@
 #define TR_COPROC_TEMP         "Temp. MB \016>"
 #define TR_CAPAWARNING         INDENT "Capacit\200 Basse"
 #define TR_TEMPWARNING         INDENT "Surchauffe"
-#define TR_FUNC                TR("Fonc","Fonction")
+#define TR_FUNC                TR("Fonc", "Fonction")
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
 #define TR_DURATION            "Dur\200e"

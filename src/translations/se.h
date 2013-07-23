@@ -558,7 +558,7 @@
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "BRYTARE"
-#define TR_INVERT_THR          TR("Revers.Gas?","Reversera Gasen?")
+#define TR_INVERT_THR          TR("Revers.Gas?", "Reversera Gasen?")
 #define TR_SPEAKER_VOLUME      INDENT "Volym"
 #define TR_LCD                 "LCD"
 #define TR_BRIGHTNESS          INDENT "Ljusstyrka"
@@ -568,7 +568,7 @@
 #define TR_COPROC              "CoProc."
 #define TR_COPROC_TEMP         "MB temp. \016>"
 #define TR_CAPAWARNING         INDENT "L\200g Kapacitet"
-#define TR_TEMPWARNING         TR(INDENT "H\202g Temp ",INDENT "H\202g Temperatur")
+#define TR_TEMPWARNING         TR(INDENT "H\202g Temp ", INDENT "H\202g Temperatur")
 #define TR_FUNC                "Funk"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
