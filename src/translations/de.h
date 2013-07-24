@@ -232,7 +232,7 @@
   #define TR_RSSI_0            "Tx\0 "
   #define TR_RSSI_1            "Rx\0 "
 #endif
-#define TR_VTELEMCHNS          "---\0""Batt""Uhr1""Uhr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""H\203he""Umdr""Stof""T1\0 ""T2\0 ""Gesc""Dist""GH\203h""Zell""Zels""Vfas""Strm""Verb""Leis""BesX""BesY""BesZ""Rich""VGes""A1-\0""A2-\0""H\203h-""H\203h+""Umd+""T1+\0""T2+\0""Ges+""Dst+""Str+""Pwr+""Besc""Zeit"
+#define TR_VTELEMCHNS          "---\0""Batt""Uhr1""Uhr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""H\203he""Umdr""Fuel""T1\0 ""T2\0 ""Gesc""Dist""GH\203h""Zell""Zels""Vfas""Strm""Verb""Leis""BesX""BesY""BesZ""Rich""VGes""A1-\0""A2-\0""H\203h-""H\203h+""Umd+""T1+\0""T2+\0""Ges+""Dst+""Str+""Pwr+""Besc""Zeit"
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
@@ -272,7 +272,7 @@
 #define TR_VARIOSRC            "Alti\0""Alti+""Vario""A1\0  ""A2\0"
 
 #define LEN_VSCREEN  	       "\006"
-#define TR_VSCREEN   	       "Werte\0 ""Balken" //Telemetrie Werte oder Balken
+#define TR_VSCREEN   	       "Werte\0""Balken" //Telemetrie Werte oder Balken
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS\0""NMEA"  //Koordinatenanzeige
@@ -307,7 +307,7 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_CUSTOMSW          "PS1""PS2""PS3""PS4""PS5""PS6""PS7""PS8""PS9""PSA""PSB""PSC""PSD""PSE""PSF""PSG""PSH""PSI""PSJ""PSK""PSL""PSM""PSN""PSO""PSP""PSQ""PSR""PSS""PST""PSU""PSV""PSW"
+#define TR_CUSTOMSW          "PS1""PS2""PS3""PS4""PS5""PS6""PS7""PS8""PS9""PSA""PSB""PSC""PSD""PSE""PSF""PSG""PSH""PSI""PSJ""PSK""PSL""PSM""PSN""PSO""PSP""PSQ""PSR""PSS""PST""PSU""PSV""PSW"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
   #define TR_CUSTOMSW          "PS1""PS2""PS3""PS4""PS5""PS6""PS7""PS8""PS9""PSA""PSB""PSC""PSD""PSE""PSF"
 #else
@@ -315,9 +315,9 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " ON"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "ONE"
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW " ON"
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "ONE"
 #endif
 
 #if defined(PCBSKY9X)
@@ -435,7 +435,7 @@
 #define TR_HAPTICSTRENGTH      INDENT"St\201rke"
 #define TR_CONTRAST            "Kontrast"
 #define TR_ALARMS_LABEL        "Alarm wenn"
-#define TR_BATTERY_RANGE       "Akku Spg-Balken Volt"
+#define TR_BATTERY_RANGE       TR("Akku Bereich","Akku Spg-Bereich") // Symbol Akku Ladezustand
 #define TR_BATTERYWARNING      INDENT"Akku Spg kl."
 #define TR_INACTIVITYALARM     INDENT"Inaktivit\201t "
 #define TR_MEMORYWARNING       INDENT"Speicher voll"
@@ -624,7 +624,7 @@
 #define TR_RESET_TIMER2        "Reset Timer2"
 #define TR_RESET_TELEMETRY     "Reset Telemetrie"
 #define TR_STATISTICS          "Statistik und Gas"
-#define TR_ABOUT_US            "Programmierung"
+#define TR_ABOUT_US            "Die Programmierer"
 #define TR_AND_SWITCH          "UND Schalt" //UND mit weiterem Schaltern 
 #define TR_CF                  "SF" //Spezial Funktionen engl. CF
 #define TR_SPEAKER             INDENT"Lautspr"
@@ -648,48 +648,53 @@
 #define TR_CSW_HEADERS         { " Funktion ", " Var1 ", " Var2 ", " UND Schalter ", " Dauer ", " Delay " }
 
 //Taranis About screen
-#define TR_ABOUTUS             "Programmierer"
+#define TR_ABOUTUS             "\204ber OpenTx"
 
-#define TR_ABOUT_OPENTX_1      "OpenTX is open source, non-"
-#define TR_ABOUT_OPENTX_2      "commercial and comes with no"
-#define TR_ABOUT_OPENTX_3      "warranties. It was developed"
-#define TR_ABOUT_OPENTX_4      "for free. Support through"
-#define TR_ABOUT_OPENTX_5      "donations is welcome!"
+#define TR_ABOUT_OPENTX_1      "OpenTX ist Open Source,"
+#define TR_ABOUT_OPENTX_2      "nicht kommerziell, ohne"
+#define TR_ABOUT_OPENTX_3      "Funktionsgarantie, frei"
+#define TR_ABOUT_OPENTX_4      "verf\205gbar. Unterst\205tzung"
+#define TR_ABOUT_OPENTX_5      "durch Spenden willkommen"
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "OpenTX main author"
-#define TR_ABOUT_BERTRAND_3    "Companion9x co-developer"
+#define TR_ABOUT_BERTRAND_2    "OpenTX Hauptauthor"
+#define TR_ABOUT_BERTRAND_3    "Companion9x Mitentwickler"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
-#define TR_ABOUT_MIKE_2        "Code and drivers guru"
-#define TR_ABOUT_MIKE_3        "Arguably, one of the best"
-#define TR_ABOUT_MIKE_4        "Inspirational"
+#define TR_ABOUT_MIKE_2        "Code und Treiber Guru"
+#define TR_ABOUT_MIKE_3        "wohl einer der Besten"
+#define TR_ABOUT_MIKE_4        "sehr inspirierend"
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Companion9x main developer"
-#define TR_ABOUT_ROMOLO_3      "                          "
+#define TR_ABOUT_ROMOLO_2      "Companion9x Hauptentwickler"
+#define TR_ABOUT_ROMOLO_3      ""
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
-#define TR_ABOUT_ANDRE_2       "Functionality, usability,"
-#define TR_ABOUT_ANDRE_3       "debugging, documentation"
+#define TR_ABOUT_ANDRE_2       "Funktionalit\201t, Tests,"
+#define TR_ABOUT_ANDRE_3       "Debugging, Dokumentation"
 
 #define TR_ABOUT_ROB_1         "Rob Thomson"
-#define TR_ABOUT_ROB_2         "openrcforums webmaster"
+#define TR_ABOUT_ROB_2         "Openrcforums Webmaster"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
-#define TR_ABOUT_MARTIN_2      "Graphics designer"
+#define TR_ABOUT_MARTIN_2      "Grafik Designer"
 
-#define TR_ABOUT_HARDWARE_1    "FrSky"
-#define TR_ABOUT_HARDWARE_2    "Hardware designer/producer"
+#if defined(PCBTARANIS)
+  #define TR_ABOUT_HARDWARE_1  "Firma FrSky "
+  #define TR_ABOUT_HARDWARE_2  "Hardware Design/Produktion"
+  #define TR_ABOUT_HARDWARE_3  "Firmware Vertrieb"
+#else
+  #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
+  #define TR_ABOUT_HARDWARE_2  "Sky9x Design/produktion"
+  #define TR_ABOUT_HARDWARE_3  ""
+#endif
 
-#define TR_ABOUT_PARENTS_1     "Parent projects"
+#define TR_ABOUT_PARENTS_1     "Vorg\201nger-Projekte"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"
 #define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
-#define TR_ABOUT_HARDWARE_3    ""
 
 #define TR_CHR_SHORT  's' //Taste short
 #define TR_CHR_LONG   'l' //Taste long
 #define TR_CHR_TOGGLE 't' //Taste als togglefunktion = Ein Aus Ein 
 #define TR_CHR_HOUR   'h' //Stunden
-
