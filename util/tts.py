@@ -224,12 +224,12 @@ def ttsFr():
     systemSounds = []
     sounds = []
     
-    #for i in range(100):
-     #   systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
-    #for i in range(10):
-     #   systemSounds.append((str(100*(i+1)), filename(PROMPT_SYSTEM_BASE+100+i)))
-    #for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante et une", "cinquante et une", "soixante et une", "soixante et onze", "quatre vingt une"]): 
-     #   systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))
+    for i in range(100):
+        systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
+    for i in range(10):
+        systemSounds.append((str(100*(i+1)), filename(PROMPT_SYSTEM_BASE+100+i)))
+    for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante et une", "cinquante et une", "soixante et une", "soixante et onze", "quatre vingt une"]): 
+        systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))
     for i, s in enumerate(["virgule", "et", "moins"]): 
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+119+i)))
     for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "km heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "knotts", "heure", "minute", "seconde", "tours par minute", "g"]):
