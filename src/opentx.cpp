@@ -2298,6 +2298,11 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 #if defined(FRSKY)
     case MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX-1:
+#if defined(PCBTARANIS)
+      // On Taranis RSSI_TX is used for SWR
+      PLAY_NUMBER(val, 0, 0);
+      break;
+#endif
     case MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX-1:
       PLAY_NUMBER(val, 1+UNIT_DBM, 0);
       break;
