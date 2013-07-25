@@ -3994,12 +3994,14 @@ void menuModelCustomSwitches(uint8_t event)
 enum ClipboardType {
   CLIPBOARD_TYPE_NONE,
   CLIPBOARD_TYPE_CUSTOM_SWITCH,
+  CLIPBOARD_TYPE_CUSTOM_FUNCTION,
 };
 
 struct Clipboard {
   ClipboardType type;
   union {
     CustomSwData csw;
+    CustomFnData cfn;
   } data;
 };
 
@@ -4212,7 +4214,7 @@ void menuModelCustomSwitches(uint8_t event)
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-void onCustomFunctionsMenu(const char *result)
+void onCustomFunctionsFileSelectionMenu(const char *result)
 {
   int8_t  sub = m_posVert - 1;
 
@@ -4232,6 +4234,26 @@ void onCustomFunctionsMenu(const char *result)
 }
 #endif
 
+#if defined(PCBTARANIS)
+void onCustomFunctionsMenu(const char *result)
+{
+  int8_t sub = m_posVert-1;
+  CustomFnData * cfn = &g_model.funcSw[sub];
+
+  if (result == STR_COPY) {
+    clipboard.type = CLIPBOARD_TYPE_CUSTOM_FUNCTION;
+    clipboard.data.cfn = *cfn;
+  }
+  else if (result == STR_PASTE) {
+    *cfn = clipboard.data.cfn;
+  }
+  else if (result == STR_DELETE) {
+    memset(cfn, 0, sizeof(CustomFnData));
+  }
+}
+
+#endif
+
 void menuModelCustomFunctions(uint8_t event)
 {
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|3/*repeated*/});
@@ -4239,6 +4261,17 @@ void menuModelCustomFunctions(uint8_t event)
   uint8_t y;
   uint8_t k = 0;
   int8_t  sub = m_posVert - 1;
+
+#if defined(PCBTARANIS)
+   if (sub >= 0 && event == EVT_KEY_LONG(KEY_ENTER)) {
+     killEvents(event);
+     MENU_ADD_ITEM(STR_COPY);
+     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
+       MENU_ADD_ITEM(STR_PASTE);
+     MENU_ADD_ITEM(STR_DELETE);
+     menuHandler = onCustomFunctionsMenu;
+   }
+#endif
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     y = 1 + (i+1)*FH;
@@ -4346,7 +4379,7 @@ void menuModelCustomFunctions(uint8_t event)
                 char directory[] = SOUNDS_PATH;
                 strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
                 if (listSdFiles(directory, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
-                  menuHandler = onCustomFunctionsMenu;
+                  menuHandler = onCustomFunctionsFileSelectionMenu;
                 }
                 else {
                   POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
