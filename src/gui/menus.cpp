@@ -135,7 +135,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     do {
       newval++;
     } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
-    if (newval > i_max) newval = val;
+    if (newval > i_max) {
+      newval = val;
+      killEvents(event);
+      AUDIO_WARNING2();
+    }
+    else
 #else
     newval++;
 #endif
@@ -150,7 +155,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     do {
       newval--;
     } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
-    if (newval < i_min) newval = val;
+    if (newval < i_min) {
+      newval = val;
+      killEvents(event);
+      AUDIO_WARNING2();
+    }
+    else
 #else
     newval--;
 #endif
