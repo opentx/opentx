@@ -492,6 +492,7 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_INSERT_AFTER[];
   extern const pm_char STR_COPY[];
   extern const pm_char STR_MOVE[];
+  extern const pm_char STR_PASTE[];
   extern const pm_char STR_DELETE[];
   extern const pm_char STR_RESET_FLIGHT[];
   extern const pm_char STR_RESET_TIMER1[];

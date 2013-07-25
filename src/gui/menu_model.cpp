@@ -3990,6 +3990,39 @@ void menuModelCustomSwitches(uint8_t event)
 
 #else
 
+#if defined(PCBTARANIS)
+enum ClipboardType {
+  CLIPBOARD_TYPE_NONE,
+  CLIPBOARD_TYPE_CUSTOM_SWITCH,
+};
+
+struct Clipboard {
+  ClipboardType type;
+  union {
+    CustomSwData csw;
+  } data;
+};
+
+Clipboard clipboard;
+
+void onCustomSwitchesMenu(const char *result)
+{
+  int8_t sub = m_posVert-1;
+  CustomSwData * cs = cswAddress(sub);
+
+  if (result == STR_COPY) {
+    clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
+    clipboard.data.csw = *cs;
+  }
+  else if (result == STR_PASTE) {
+    *cs = clipboard.data.csw;
+  }
+  else if (result == STR_DELETE) {
+    memset(cs, 0, sizeof(CustomSwData));
+  }
+}
+#endif
+
 void menuModelCustomSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS();
@@ -4005,6 +4038,17 @@ void menuModelCustomSwitches(uint8_t event)
   if (horz>=0) {
     displayColumnHeader(STR_CSW_HEADERS, horz);
   }
+#endif
+
+#if defined(PCBTARANIS)
+   if (sub >= 0 && event == EVT_KEY_LONG(KEY_ENTER)) {
+     killEvents(event);
+     MENU_ADD_ITEM(STR_COPY);
+     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
+       MENU_ADD_ITEM(STR_PASTE);
+     MENU_ADD_ITEM(STR_DELETE);
+     menuHandler = onCustomSwitchesMenu;
+   }
 #endif
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
