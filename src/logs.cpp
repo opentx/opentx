@@ -54,7 +54,7 @@ const pm_char * openLogs()
   // Determine and set log file filename
   FRESULT result;
   DIR folder;
-  char filename[32];
+  char filename[34]; // /LOGS/modelnamexxx-2013-01-01.log
 
   if (!sdMounted())
     return STR_NO_SDCARD;
@@ -95,7 +95,13 @@ const pm_char * openLogs()
     len = sizeof(LOGS_PATH) + PSIZE(TR_MODEL) + 2;
   }
 
-  strcpy_P(&filename[len], STR_LOGS_EXT);
+#if defined(RTCLOCK)
+  struct gtm utm;
+  gettime(&utm);
+  sprintf(&filename[len], "%4d-%02d-%02d", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday);
+#endif
+
+  strcpy_P(&filename[len+10], STR_LOGS_EXT);
 
   result = f_open(&g_oLogFile, filename, FA_OPEN_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
