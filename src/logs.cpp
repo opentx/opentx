@@ -96,12 +96,27 @@ const pm_char * openLogs()
   }
 
 #if defined(RTCLOCK)
+  filename[len] = '-';
   struct gtm utm;
   gettime(&utm);
-  sprintf(&filename[len], "%4d-%02d-%02d", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday);
+  div_t qr = div(utm.tm_year+1900, 10);
+  filename[len+4] = '0' + qr.rem;
+  qr = div(qr.quot, 10);
+  filename[len+3] = '0' + qr.rem;
+  qr = div(qr.quot, 10);
+  filename[len+2] = '0' + qr.rem;
+  filename[len+1] = '0' + qr.quot;
+  filename[len+5] = '-';
+  qr = div(utm.tm_mon+1, 10);
+  filename[len+7] = '0' + qr.rem;
+  filename[len+6] = '0' + qr.quot;
+  filename[len+8] = '-';
+  qr = div(utm.tm_mday, 10);
+  filename[len+10] = '0' + qr.rem;
+  filename[len+9] = '0' + qr.quot;
 #endif
 
-  strcpy_P(&filename[len+10], STR_LOGS_EXT);
+  strcpy_P(&filename[len+11], STR_LOGS_EXT);
 
   result = f_open(&g_oLogFile, filename, FA_OPEN_ALWAYS | FA_WRITE);
   if (result != FR_OK) {
