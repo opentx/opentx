@@ -4560,7 +4560,9 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_USR_VOLTAGE_SOURCE,
   ITEM_TELEMETRY_USR_CURRENT_SOURCE,
   IF_VARIO(ITEM_TELEMETRY_VARIO_LABEL)
-  IF_VARIO(ITEM_TELEMETRY_VARIO_SOURCE)
+#if defined(VARIO) && !defined(FRSKY_SPORT)
+  ITEM_TELEMETRY_VARIO_SOURCE,
+#endif
   IF_VARIO(ITEM_TELEMETRY_VARIO_RANGE)
   ITEM_TELEMETRY_SCREEN_LABEL1,
   ITEM_TELEMETRY_SCREEN_LINE1,
@@ -4588,6 +4590,12 @@ enum menuModelTelemetryItems {
   #define USRDATA_LINES (uint8_t)-1, 0, 0,
 #else
   #define USRDATA_LINES
+#endif
+
+#if defined(VARIO) && !defined(FRSKY_SPORT)
+  #define VARIO_SOURCE_ROWS 0,
+#else
+  #define VARIO_SOURCE_ROWS
 #endif
 
 #if defined(FRSKY)
@@ -4632,7 +4640,7 @@ enum menuModelTelemetryItems {
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) IF_VARIO(0) IF_VARIO(VARIO_RANGE_ROWS) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, IF_CPUARM(SCREEN_TYPE_ROWS) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_VARIO((uint8_t)-1) VARIO_SOURCE_ROWS IF_VARIO(VARIO_RANGE_ROWS) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, IF_CPUARM(SCREEN_TYPE_ROWS) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) });
 
   uint8_t sub = m_posVert - 1;
 
@@ -4808,11 +4816,13 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsLeft(y, STR_VARIO);
         break;
 
+#if !defined(FRSKY_SPORT)
       case ITEM_TELEMETRY_VARIO_SOURCE:
         lcd_putsLeft(y, STR_SOURCE);
         lcd_putsiAtt(TELEM_COL2, y, STR_VARIOSRC, g_model.frsky.varioSource, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioSource, VARIO_SOURCE_FIRST, VARIO_SOURCE_LAST);
         break;
+#endif
 
       case ITEM_TELEMETRY_VARIO_RANGE:
         lcd_putsLeft(y, STR_LIMIT);

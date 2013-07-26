@@ -937,7 +937,7 @@ void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 {
   if (idx < 0) {
     lcd_putcAtt(x-1*FW, y, '!', att);
-    idx = -idx + 6;
+    idx = -idx+CURVE_BASE-1;
   }
   if (idx < CURVE_BASE)
     lcd_putsiAtt(x, y, STR_VCURVEFUNC, idx, att);
