@@ -1030,9 +1030,9 @@ all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
-  build: stamp_header tra lbm allsrc.cpp elf remallsrc hex eep lss sym
+  build: stamp_header tra lbm allsrc.cpp elf remallsrc hex 
 else
-  build: stamp_header tra lbm allsrc.cpp elf remallsrc bin lss
+  build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
 
 tra: translations/se.h
