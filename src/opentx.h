@@ -1520,7 +1520,7 @@ void varioWakeup();
 
 #if defined(CPUARM)
   #define IS_IMPERIAL_ENABLE() (g_eeGeneral.imperial)
-#elif defined(IMPERIAL)
+#elif defined(IMPERIAL_UNITS)
   #define IS_IMPERIAL_ENABLE() (1)
 #else
   #define IS_IMPERIAL_ENABLE() (0)
