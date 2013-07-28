@@ -6,7 +6,7 @@
 <h2>2667 / 2013-07-25 (Taranis only)</h2>
 <ul>
 <li>Brightness adjustment added
-<li>Remove units to SWR
+<li>Remove units from SWR
 <li>Copy/Cut/Paste of custom functions
 <li>Copy/Cut/Paste of custom switches
 <li>Translations fixes

@@ -16,7 +16,6 @@
 <li>Telemetry logs renamed modelname-yyyy-mm-dd.csv
 </ul>
 
-
 <h2>2647 / 2013-07-21</h2>
 [all]
 <ul>
