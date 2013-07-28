@@ -1,4 +1,7 @@
 <SVN CURRENT>
+<ul>
+<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv                      
+</ul>
 
 <h2>2667 / 2013-07-25 (Taranis only)</h2>
 <ul>

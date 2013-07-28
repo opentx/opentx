@@ -1,4 +1,30 @@
-<h2>2491 / Jun 24 2013</h2>
+<SVN CURRENT>
+[stock]
+<ul>
+<li>Fix bug with imperial units
+</ul>
+
+[gruvin9x]
+<ul>
+<li>Fix bug with imperial units
+<li>Fix small bug with SOMO 14D 
+<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv
+</ul>
+
+[sky9x]
+<ul>
+<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv
+</ul>
+
+
+<h2>2647 / 2013-07-21</h2>
+[all]
+<ul>
+<li>Some bug fixes
+<li>Better fonts
+</ul>
+
+<h2>2491 / 2013-06-24</h2>
 [all]
 <ul>
 <li>PlaySound has now a repeat argument
@@ -19,7 +45,7 @@
 <li>Audio mixer: several sounds can now be played simulataneously, and beeps won't interrupt and clear voice alerts anymore. Note that sound files now need to have sampling rates of either 8, 16 or 32kHz and may need to be replaced. 
 </ul>
 
-<h2>2413 / May 22 2013</h2>
+<h2>2413 / 2013-05-22</h2>
 [all]
 <ul>
 <li>Calibration screen automatically appears following an EEPROM format
@@ -39,7 +65,7 @@
 <li>More settings for the 2nd PPM port
 </ul>
 
-<h2>2215 / Apr 05 2013</h2>
+<h2>2215 / 2013-04-05</h2>
 [all]
 <ul>
 <li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source 
