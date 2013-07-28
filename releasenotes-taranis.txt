@@ -1,16 +1,30 @@
-<h2>2604 / Jul 13 2013 (Taranis only)</h2>
-[FrSky Taranis]
+<SVN CURRENT>
+
+<h2>2667 / 2013-07-25 (Taranis only)</h2>
+<ul>
+<li>Brightness adjustment added
+<li>Remove units to SWR
+<li>Copy/Cut/Paste of custom functions
+<li>Copy/Cut/Paste of custom switches
+<li>Translations fixes
+</ul>
+
+<h2>2647 / 2013-07-21</h2>
+<ul>
+<li>Negative timer display fix.
+</ul>
+
+<h2>2604 / 2013-07-13 (Taranis only)</h2>
 <ul>
 <li>Contrast adjustment added 
 </ul>
 
-<h2>2590 / Jul 8 2013 (Taranis only)</h2>
-[FrSky Taranis]
+<h2>2590 / 2013-07-08 (Taranis only)</h2>
 <ul>
 <li>First official release version!
 </ul>
 
-<h2>2491 / Jun 24 2013</h2>
+<h2>2491 / 2013-06-24</h2>
 [all]
 <ul>
 <li>PlaySound has now a repeat argument
@@ -19,14 +33,14 @@
 <li>RSSI alarms default thresholds now 45 / 42 
 </ul>
 
-<h2>2413 / May 22 2013</h2>
+<h2>2413 / 2013-05-22</h2>
 [all]
 <ul>
 <li>Calibration screen automatically appears following an EEPROM format
 <li>Wraparound in popup menus 
 </ul>
 
-<h2>2215 / Apr 05 2013</h2>
+<h2>2215 / 2012-04-05</h2>
 [all]
 <ul>
 <li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source 
