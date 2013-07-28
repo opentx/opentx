@@ -807,7 +807,11 @@ enum TelemetrySource {
   TELEM_GPS_TIME,
   TELEM_CSW_MAX = TELEM_POWER,
   TELEM_NOUSR_MAX = TELEM_A2,
+#if defined(FRSKY)
   TELEM_DISPLAY_MAX = TELEM_MAX_POWER,
+#else
+  TELEM_DISPLAY_MAX = TELEM_TM2, // because used also in PlayValue
+#endif
   TELEM_STATUS_MAX = TELEM_GPS_TIME
 };
 
