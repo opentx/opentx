@@ -1,0 +1,34 @@
+<h2>2604 / Jul 13 2013 (Taranis only)</h2>
+[FrSky Taranis]
+<ul>
+<li>Contrast adjustment added 
+</ul>
+
+<h2>2590 / Jul 8 2013 (Taranis only)</h2>
+[FrSky Taranis]
+<ul>
+<li>First official release version!
+</ul>
+
+<h2>2491 / Jun 24 2013</h2>
+[all]
+<ul>
+<li>PlaySound has now a repeat argument
+<li>FAI mode added (disable telemetry other than A1/A2/RSSI for contests)
+<li>Delays now also apply to 3POS switch!
+<li>RSSI alarms default thresholds now 45 / 42 
+</ul>
+
+<h2>2413 / May 22 2013</h2>
+[all]
+<ul>
+<li>Calibration screen automatically appears following an EEPROM format
+<li>Wraparound in popup menus 
+</ul>
+
+<h2>2215 / Apr 05 2013</h2>
+[all]
+<ul>
+<li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source 
+</ul>
+
