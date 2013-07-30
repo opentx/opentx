@@ -108,7 +108,7 @@ PACK(struct FrskySerialData {
   int16_t  accelZ;           // 0x26   1/256th gram (-8g ~ +8g)
   uint8_t  gpsDistNeeded:1;  //        1bits out of 16bits spare reused
   int8_t   gpsFix:2;         //        2bits out of 16bits spare reused: -1=never fixed, 0=not fixed now, 1=fixed
-  uint8_t  spare1:1;          //
+  uint8_t  openXsensor:1;    //        1bits out of 16bits spare reused: we receive data from the openXsensor
   uint8_t  cellsCount:4;     //        4bits out of 16bits spare reused
   uint8_t  minCellVolts;     //        8bits out of 16bits spare reused
   uint16_t current;          // 0x28   Current
@@ -121,9 +121,9 @@ PACK(struct FrskySerialData {
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
   uint8_t  minCellIdx;
   int16_t  cellsSum;
-  uint16_t currentConsumption;
+  uint16_t currentConsumption; // 0x35 openXsensor only! Otherwise calculated by the Tx from current
   uint16_t currentPrescale;
-  uint16_t power;
+  uint16_t power;              // 0x37 openXsensor only! Otherwise calculated by the Tx from current and voltage
   int16_t  spare2;
 
   uint16_t vfas;             // 0x39  Added to FrSky protocol for home made sensors with a better precision
@@ -234,7 +234,13 @@ void resetTelemetry();
 #define TELEMETRY_VSPEED          frskyData.hub.varioSpeed < 0 ? '-' : ' ', frskyData.hub.varioSpeed / 100, frskyData.hub.varioSpeed % 100
 #define TELEMETRY_VSPEED_FORMAT   "%c%d.%02d,"
 
-#define TELEMETRY_STREAMING()  (frskyStreaming > 0)
+#define TELEMETRY_STREAMING()     (frskyStreaming > 0)
+
+#if defined(FRSKY_HUB)
+  #define TELEMETRY_OPENXSENSOR() (frskyData.hub.openXsensor)
+#else
+  #define TELEMETRY_OPENXSENSOR() (0)
+#endif
 
 #endif
 

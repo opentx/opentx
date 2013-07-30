@@ -165,6 +165,10 @@ void parseTelemHubByte(uint8_t byte)
   }
 #endif
   
+#if 0
+  uint16_t previousValue = *((uint16_t *)(((uint8_t*)&frskyData.hub) + structPos));
+#endif
+
   ((uint8_t*)&frskyData.hub)[structPos] = lowByte;
   ((uint8_t*)&frskyData.hub)[structPos+1] = byte;
 
@@ -191,6 +195,11 @@ void parseTelemHubByte(uint8_t byte)
         frskyData.hub.maxCurrent = frskyData.hub.current;
       break;
       
+    case offsetof(FrskySerialData, currentConsumption):
+      // we receive data from openXsensor. stops the calculation of consumption and power
+      frskyData.hub.openXsensor = 1;
+      break;
+
     case offsetof(FrskySerialData, volts_ap):
 #if defined(FAS_BSS)
       frskyData.hub.vfas = (frskyData.hub.volts_bp * 10 + frskyData.hub.volts_ap);
@@ -275,6 +284,31 @@ void parseTelemHubByte(uint8_t byte)
       *(int16_t*)(&((uint8_t*)&frskyData.hub)[structPos]) /= 10;
       break;
 
+#if 0
+    case offsetof(FrskySerialData, gpsAltitude_bp):
+    case offsetof(FrskySerialData, fuelLevel):
+    case offsetof(FrskySerialData, gpsLongitude_bp):
+    case offsetof(FrskySerialData, gpsLatitude_bp):
+    case offsetof(FrskySerialData, gpsCourse_bp):
+    case offsetof(FrskySerialData, day):
+    case offsetof(FrskySerialData, year):
+    case offsetof(FrskySerialData, sec):
+    case offsetof(FrskySerialData, gpsSpeed_ap):
+    case offsetof(FrskySerialData, gpsLongitude_ap):
+    case offsetof(FrskySerialData, gpsLatitude_ap):
+    case offsetof(FrskySerialData, gpsCourse_ap):
+    case offsetof(FrskySerialData, gpsLongitudeEW):
+    case offsetof(FrskySerialData, gpsLatitudeNS):
+    case offsetof(FrskySerialData, varioSpeed):
+    case offsetof(FrskySerialData, power): /* because sent by openXsensor */
+    case offsetof(FrskySerialData, vfas):
+    case offsetof(FrskySerialData, volts_bp):
+      break;
+
+    default:
+      *((uint16_t *)(((uint8_t*)&frskyData.hub) + structPos)) = previousValue;
+      break;
+#endif
   }
 }
 #endif
@@ -663,41 +697,43 @@ void telemetryInterrupt10ms()
 #endif
 
   if (TELEMETRY_STREAMING()) {
-    uint8_t channel = g_model.frsky.voltsSource;
-    if (channel <= 1) {
-      voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
-    }
+    if (!TELEMETRY_OPENXSENSOR()) {
+      uint8_t channel = g_model.frsky.voltsSource;
+      if (channel <= 1) {
+        voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
+      }
 #if defined(FRSKY_HUB)
-    else if (channel == 2) {
-      voltage = frskyData.hub.vfas;
-    }
+      else if (channel == 2) {
+        voltage = frskyData.hub.vfas;
+      }
 #endif
 
 #if defined(FRSKY_HUB)
-    uint16_t current = frskyData.hub.current; /* unit: 1/10 amps */
+      uint16_t current = frskyData.hub.current; /* unit: 1/10 amps */
 #else
-    uint16_t current = 0;
+      uint16_t current = 0;
 #endif
 
-    channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
-    if (channel <= 1) {
-      current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
-    }
+      channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
+      if (channel <= 1) {
+        current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
+      }
 
 #if defined(CPUARM)
-    frskyData.hub.power = (current * voltage) / 100;
+      frskyData.hub.power = (current * voltage) / 100;
 #else
-    frskyData.hub.power = ((current>>1) * (voltage>>1)) / 25;
+      frskyData.hub.power = ((current>>1) * (voltage>>1)) / 25;
 #endif
+
+      frskyData.hub.currentPrescale += current;
+      if (frskyData.hub.currentPrescale >= 3600) {
+        frskyData.hub.currentConsumption += 1;
+        frskyData.hub.currentPrescale -= 3600;
+      }
+    }
 
     if (frskyData.hub.power > frskyData.hub.maxPower)
       frskyData.hub.maxPower = frskyData.hub.power;
-
-    frskyData.hub.currentPrescale += current;
-    if (frskyData.hub.currentPrescale >= 3600) {
-      frskyData.hub.currentConsumption += 1;
-      frskyData.hub.currentPrescale -= 3600;
-    }
   }
 }
 
