@@ -17,12 +17,14 @@
 # in addition you will need some tools.  
 #  ffmpeg, sox, adconvertor ttscmd (2cnd speach centre)
 # have fun!
-# Sound pack maintainers (incomplete list)
-# French  : Bertrand Songis & André Bernet
-# English : Rob Thompson & Martin Hotar 
-# German  : Romolo Manfredini (Some corrections by Peer)
-# Italian : Romolo Manfredini
-# Czeck   : Martin Hotar
+# Sound pack maintainers (incomplete list) by language alphabetical order
+# Czeck      : Martin Hotar
+# French     : Bertrand Songis & André Bernet
+# English    : Rob Thompson & Martin Hotar 
+# German     : Romolo Manfredini (Some corrections by Peer)
+# Italian    : Romolo Manfredini
+# Portuguese : Romolo Manfredini
+# Spanish    : Romolo Manfredini (With the help of Jose Moreno)
 
 import os, sys, shutil, platform, subprocess, wave, zipfile, httplib, urllib
 
@@ -263,7 +265,7 @@ def ttsIt():
     for i in range(101):
         systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE+i)))
     systemSounds.append(("mila", filename(PROMPT_SYSTEM_BASE+101)))
-    systemSounds.append(filename("mille", PROMPT_SYSTEM_BASE+102))
+    systemSounds.append(("mille", filename(PROMPT_SYSTEM_BASE+102)))
     for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+103+i)))
     for i, s in enumerate(["volt", "ampere", "metri per secondo", "", "chilometri/ora", "metri", "gradi", "percento", "milliampere", "milliampere/ora", "watt", "db", "piedi", "nodi", "ore", "minuti", "secondi", "R P M", "g"]):
@@ -295,7 +297,7 @@ def ttsIt():
         systemSounds.append((s, filename(f, a)))
     for i, s in enumerate([u"timer", u"timer",  u"trasmissione", u"ricezione", u"A1", u"A2", u"altitudine", u"motore",
                            u"carburante", u"temperatura", u"temperatura", u"velocità", "distanza", u"altitudine", u"cella lipo",
-                           u"totale lipo", u"tensione", u"corrente", u"consumo", u"potenza", u"accelerazione X", u"accellerazione Y", u"accelerazione Z",
+                           u"totale lipo", u"tensione", u"corrente", u"consumo", u"potenza", u"accellerazione X", u"accellerazione Y", u"accellerazione Z",
                            u"direzione", u"variometro",u"minimo",u"massimo"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+132+i)))
     for i, (s, f) in enumerate([
@@ -303,7 +305,7 @@ def ttsIt():
                  (u"carrello aperto", "geardn"),
                  (u"flap rientrati", "flapup"),
                  (u"flap estesi", "flapdn"),
-                 (u"atterragggiio", "attero"),
+                 (u"atterraggiio", "attero"),
                  (u"modalità maestro attiva", "trnon"),
                  (u"modalità maestro disattiva", "trnoff"),
                  (u"motore spento", "engoff"),
@@ -426,14 +428,14 @@ def ttsEs():
     systemSounds.append(("ochocientos", filename(PROMPT_SYSTEM_BASE+108)))
     systemSounds.append(("nuevecientos", filename(PROMPT_SYSTEM_BASE+109)))
     systemSounds.append(("mil", filename(PROMPT_SYSTEM_BASE+110)))
-    for i, s in enumerate(["virgula", "un", "una", "y", "meno", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
+    for i, s in enumerate(["coma", "un", "una", "y", "meno", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+111+i)))
-    for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"kilómetro por hora", u"metros", u"grados", u"por ciento", u"miliamperes", u"miliamperes por hora", u"watt", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g"]):
+    for i, s in enumerate([u"Voltio", u"ampério", u"metros por segundo", u"", u"kilómetro por hora", u"metros", u"grados", u"por ciento", u"miliamperios", u"miliamperios por hora", u"vatio", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+122+i)))            
-    for s, f, a in [(u"alarma de inactividad", "inactiv", 486),
+    for s, f, a in [(u"me tienes abandonada", "inactiv", 486),
                     (u"batería del transmisor baja", "lowbatt", 485),
-                    (u"El acelerador no está en el mínimo, por favor, verifique", "thralert", 481),
-                    (u"Los interruptores no están en la posición correcta, por favor verifique", "swalert", 482),
+                    (u"El acelerador está activado, por favor, corrijalo", "thralert", 481),
+                    (u"Los interruptores no están en la posición correcta, por favor corrijalo", "swalert", 482),
                     (u"eeprom corrompida", "eebad", NO_ALTERNATE),
                     (u"Formateo de eeprom en curso", "eeformat", NO_ALTERNATE),
                     (u"error", "error", NO_ALTERNATE),
@@ -448,11 +450,11 @@ def ttsEs():
                     (u"A1 crítica", "a1_red", NO_ALTERNATE),
                     (u"Alarma A2", "a2_org", NO_ALTERNATE),
                     (u"A2 crítica", "a2_red", NO_ALTERNATE),
-                    (u"baja", "rssi_org", NO_ALTERNATE),
+                    (u"recepcion de señal baja", "rssi_org", NO_ALTERNATE),
                     (u"recepción de señal crítica", "rssi_red", NO_ALTERNATE),
                     (u"Problemas con la antena del transmisor", "swr_red", NO_ALTERNATE),
-                    (u"Ausencia de la telemetría", "telemko", NO_ALTERNATE),
-                    (u"Telemetría disponibles", "telemok", NO_ALTERNATE),
+                    (u"Sin telemetría", "telemko", NO_ALTERNATE),
+                    (u"Telemetría disponible", "telemok", NO_ALTERNATE),
                  ]:
         systemSounds.append((s, filename(f, a)))
     for i, s in enumerate([u"cronómetro", u"cronómetro", u"transmisión", u"recepción", u"A1", u"A2", u"altitud", u"motor",
@@ -461,13 +463,13 @@ def ttsEs():
                             u"dirección", u"variómetro", u"minimo", u"máximo"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+141+i)))
     for i, (s, f) in enumerate([
-                  (u"trem, em cima.", "gearup"),
-                  (u"trem, em baixo.", "geardn"),
-                  (u"flaps recolhidos", "flapup"),
-                  (u"flaps estendidos", "flapdn"),
+                  (u"tren arriba.", "gearup"),
+                  (u"tren abajo.", "geardn"),
+                  (u"flaps arriba", "flapup"),
+                  (u"flaps abajo", "flapdn"),
                   (u"aterrizaje", "attero"),
-                  (u"modo de formacion activado", "trnon"),
-                  (u"modo de formacion deshabilitado", "trnoff"),
+                  (u"modo de entrenamiento activado", "trnon"),
+                  (u"modo de entrenamiento deshabilitado", "trnoff"),
                   (u"motor apagado", "engoff"),
                   (u"muy alto", "tohigh"),
                   (u"muy bajo", "tolow"),
