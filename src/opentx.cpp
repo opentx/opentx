@@ -431,9 +431,10 @@ void generalDefault()
 
 uint16_t evalChkSum()
 {
-  uint16_t sum=0;
+  uint16_t sum = 0;
+  const int16_t *calibValues = &g_eeGeneral.calibMid[0];
   for (int i=0; i<NUM_STICKS+NUM_POTS+5; i++)
-    sum += g_eeGeneral.calibMid[i];
+    sum += calibValues[i];
   return sum;
 }
 
