@@ -4018,9 +4018,11 @@ void onCustomSwitchesMenu(const char *result)
   }
   else if (result == STR_PASTE) {
     *cs = clipboard.data.csw;
+    eeDirty(EE_MODEL);
   }
   else if (result == STR_DELETE) {
     memset(cs, 0, sizeof(CustomSwData));
+    eeDirty(EE_MODEL);
   }
 }
 #endif
@@ -4246,9 +4248,11 @@ void onCustomFunctionsMenu(const char *result)
   }
   else if (result == STR_PASTE) {
     *cfn = clipboard.data.cfn;
+    eeDirty(EE_MODEL);
   }
   else if (result == STR_DELETE) {
     memset(cfn, 0, sizeof(CustomFnData));
+    eeDirty(EE_MODEL);
   }
 }
 
