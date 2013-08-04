@@ -243,11 +243,22 @@ void displayTopBar()
     lcd_rect(BAR_RSSI_X+10, BAR_Y+1, 13, 7);
 
     /* Rx voltage */
+    lcdint_t voltage = 0;
+    uint8_t channel = 0;
     if (g_model.frsky.voltsSource <= 1) {
-      uint8_t value = frskyData.analog[g_model.frsky.voltsSource].value;
-      if (value > 0) {
-        putsTelemetryChannel(BAR_A1_X, BAR_Y+1, TELEM_A1+g_model.frsky.voltsSource-1, value, LEFT);
-      }
+      channel = TELEM_A1+g_model.frsky.voltsSource-1;
+      voltage = frskyData.analog[g_model.frsky.voltsSource].value;
+    }
+    else if (g_model.frsky.voltsSource == 2) {
+      channel = TELEM_VFAS-1;
+      voltage = frskyData.hub.vfas;
+    }
+    else if (g_model.frsky.voltsSource == 3) {
+      channel = TELEM_CELLS_SUM-1;
+      voltage = frskyData.hub.cellsSum;
+    }
+    if (voltage > 0) {
+      putsTelemetryChannel(BAR_A1_X, BAR_Y+1, channel, voltage, LEFT);
     }
   }
 
