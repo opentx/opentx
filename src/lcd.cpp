@@ -947,10 +947,6 @@ void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 
 void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att)
 {
-  if (mode >= TMR_VAROFS+MAX_PSWITCH+NUM_CSW) {
-    mode++;
-  }
-
   if (mode < 0) {
     mode = TMR_VAROFS - mode - 1;
     lcd_putcAtt(x-1*FW, y, '!', att);
@@ -958,6 +954,10 @@ void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att)
   else if (mode < TMR_VAROFS) {
     lcd_putsiAtt(x, y, STR_VTMRMODES, mode, att);
     return;
+  }
+
+  if (mode >= TMR_VAROFS+MAX_PSWITCH+NUM_CSW) {
+    mode++;
   }
 
   putsSwitches(x, y, mode-(TMR_VAROFS-1), att);
