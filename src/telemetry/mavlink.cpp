@@ -192,6 +192,15 @@ static inline void REC_MAVLINK_MSG_ID_RADIO(const mavlink_message_t* msg) {
 //	telemetry_data.pc_rssi =  mavlink_msg_radio_get_rssi(msg);
 }
 
+//! \brief Navigaion output message
+static inline void REC_MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT(const mavlink_message_t* msg) {
+	telemetry_data.bearing = mavlink_msg_nav_controller_output_get_target_bearing(msg);
+}
+
+//! \brief Hud navigation message
+static inline void REC_MAVLINK_MSG_ID_VFR_HUD(const mavlink_message_t* msg) {
+	telemetry_data.heading = mavlink_msg_vfr_hud_get_heading(msg);
+}
 
 /*!	\brief Hardbeat message
  */
@@ -389,6 +398,13 @@ static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 		break;
 	case MAVLINK_MSG_ID_RADIO:
 		REC_MAVLINK_MSG_ID_RADIO(p_rxmsg);
+		break;
+	case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT:
+		REC_MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT(p_rxmsg);
+		break;
+	case MAVLINK_MSG_ID_VFR_HUD:
+		REC_MAVLINK_MSG_ID_VFR_HUD(p_rxmsg);
+		break;	
 	case MAVLINK_MSG_ID_HIL_CONTROLS:
 		REC_MAVLINK_MSG_ID_HIL_CONTROLS(p_rxmsg);
 		break;

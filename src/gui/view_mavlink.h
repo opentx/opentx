@@ -56,6 +56,7 @@ void mav_title(const pm_char * s, uint8_t index);
 void menuTelemetryMavlinkInfos(void);
 void menuTelemetryMavlinkFlightMode(void);
 void menuTelemetryMavlinkBattery(void);
+void menuTelemetryMavlinkNavigation(void);
 void menuTelemetryMavlinkGPS(void);
 #ifdef DUMP_RX_TX
 void lcd_outhex2(uint8_t x, uint8_t y, uint8_t val);
@@ -70,6 +71,7 @@ enum mavlink_menu_ {
 	MENU_INFO = 0, //
 	MENU_MODE,
 	MENU_BATT,
+	MENU_NAV,
 	MENU_GPS, //
 #ifdef DUMP_RX_TX
 	MENU_DUMP_RX, //

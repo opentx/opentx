@@ -90,6 +90,9 @@ void menuTelemetryMavlink(uint8_t event) {
 	case MENU_BATT:
 		menuTelemetryMavlinkBattery();
 		break;
+	case MENU_NAV:
+		menuTelemetryMavlinkNavigation();
+		break;
 	case MENU_GPS:
 		menuTelemetryMavlinkGPS();
 		break;
@@ -335,6 +338,42 @@ void menuTelemetryMavlinkBattery(void) {
 	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.pc_rssi, (DBLSIZE | UNSIGN));
 	lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("%"));
     
+}
+
+/*!	\brief Navigation dislplay
+ *	\details Shows Navigation telemetry.
+ */
+void menuTelemetryMavlinkNavigation(void) {
+	
+	mav_title(PSTR("NAV"), MAVLINK_menu);
+	
+	uint8_t x, y, ynum;
+	x = 7 * FWNUM;
+//	x = xnum + 0 * FW;
+	ynum = 2 * FH;
+	y = FH;
+	
+    
+	x = 0;	
+    lcd_puts  (x, y, PSTR("Course"));
+	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.course, (DBLSIZE | UNSIGN));
+	lcd_puts(x + 7 * FWNUM, ynum, PSTR("o"));
+	x += 8 * (2 * FWNUM);
+    lcd_puts(x, y, PSTR("Heading"));
+	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.heading, (DBLSIZE | UNSIGN));
+	lcd_puts(x + 7 * FWNUM, ynum,  PSTR("o"));
+	y += 3 * FH;
+	ynum += 3 * FH;
+	
+	x = 0;	
+    lcd_puts  (x, y, PSTR("Bearing"));
+	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.bearing, (DBLSIZE | UNSIGN));
+	lcd_puts(x + 7 * FWNUM, ynum + FH, PSTR("o"));
+	x += 8 * (2 * FWNUM);
+/*    lcd_puts(x, y, PSTR("PC RSSI"));
+	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.pc_rssi, (DBLSIZE | UNSIGN));
+	lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("%"));
+ */  
 }
 
 

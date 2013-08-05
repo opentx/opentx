@@ -163,11 +163,11 @@ typedef struct Telemetry_Data_ {
 	uint8_t satellites_visible; ///< Number of satellites visible
 	Location_t loc_current;
 	float eph;
-	float course;
+	uint16_t course;
 	float v; // Ground speed
 	// Navigation
-	float heading;
-	float bearing;
+	uint16_t heading;
+	uint16_t bearing;
 
 #ifdef MAVLINK_PARAMS
 	// Params
