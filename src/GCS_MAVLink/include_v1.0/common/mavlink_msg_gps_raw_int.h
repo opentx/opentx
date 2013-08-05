@@ -8,10 +8,10 @@ typedef struct __mavlink_gps_raw_int_t
  int32_t lat; ///< Latitude (WGS84), in degrees * 1E7
  int32_t lon; ///< Longitude (WGS84), in degrees * 1E7
  int32_t alt; ///< Altitude (WGS84), in meters * 1000 (positive for up)
- uint16_t eph; ///< GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
- uint16_t epv; ///< GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
- uint16_t vel; ///< GPS ground speed (m/s * 100). If unknown, set to: 65535
- uint16_t cog; ///< Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ uint16_t eph; ///< GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ uint16_t epv; ///< GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ uint16_t vel; ///< GPS ground speed (m/s * 100). If unknown, set to: UINT16_MAX
+ uint16_t cog; ///< Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  uint8_t fix_type; ///< 0-1: no fix, 2: 2D fix, 3: 3D fix. Some applications will not use the value of this field unless it is at least two, so always correctly fill in the fix.
  uint8_t satellites_visible; ///< Number of satellites visible. If unknown, set to 255
 } mavlink_gps_raw_int_t;
@@ -52,10 +52,10 @@ typedef struct __mavlink_gps_raw_int_t
  * @param lat Latitude (WGS84), in degrees * 1E7
  * @param lon Longitude (WGS84), in degrees * 1E7
  * @param alt Altitude (WGS84), in meters * 1000 (positive for up)
- * @param eph GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
- * @param epv GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
- * @param vel GPS ground speed (m/s * 100). If unknown, set to: 65535
- * @param cog Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ * @param eph GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ * @param epv GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ * @param vel GPS ground speed (m/s * 100). If unknown, set to: UINT16_MAX
+ * @param cog Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  * @param satellites_visible Number of satellites visible. If unknown, set to 255
  * @return length of the message in bytes (excluding serial stream start sign)
  */
@@ -111,10 +111,10 @@ static inline uint16_t mavlink_msg_gps_raw_int_pack(uint8_t system_id, uint8_t c
  * @param lat Latitude (WGS84), in degrees * 1E7
  * @param lon Longitude (WGS84), in degrees * 1E7
  * @param alt Altitude (WGS84), in meters * 1000 (positive for up)
- * @param eph GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
- * @param epv GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
- * @param vel GPS ground speed (m/s * 100). If unknown, set to: 65535
- * @param cog Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ * @param eph GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ * @param epv GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ * @param vel GPS ground speed (m/s * 100). If unknown, set to: UINT16_MAX
+ * @param cog Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  * @param satellites_visible Number of satellites visible. If unknown, set to 255
  * @return length of the message in bytes (excluding serial stream start sign)
  */
@@ -182,10 +182,10 @@ static inline uint16_t mavlink_msg_gps_raw_int_encode(uint8_t system_id, uint8_t
  * @param lat Latitude (WGS84), in degrees * 1E7
  * @param lon Longitude (WGS84), in degrees * 1E7
  * @param alt Altitude (WGS84), in meters * 1000 (positive for up)
- * @param eph GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
- * @param epv GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
- * @param vel GPS ground speed (m/s * 100). If unknown, set to: 65535
- * @param cog Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ * @param eph GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ * @param epv GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ * @param vel GPS ground speed (m/s * 100). If unknown, set to: UINT16_MAX
+ * @param cog Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  * @param satellites_visible Number of satellites visible. If unknown, set to 255
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
@@ -289,7 +289,7 @@ static inline int32_t mavlink_msg_gps_raw_int_get_alt(const mavlink_message_t* m
 /**
  * @brief Get field eph from gps_raw_int message
  *
- * @return GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
+ * @return GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
  */
 static inline uint16_t mavlink_msg_gps_raw_int_get_eph(const mavlink_message_t* msg)
 {
@@ -299,7 +299,7 @@ static inline uint16_t mavlink_msg_gps_raw_int_get_eph(const mavlink_message_t* 
 /**
  * @brief Get field epv from gps_raw_int message
  *
- * @return GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: 65535
+ * @return GPS VDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
  */
 static inline uint16_t mavlink_msg_gps_raw_int_get_epv(const mavlink_message_t* msg)
 {
@@ -309,7 +309,7 @@ static inline uint16_t mavlink_msg_gps_raw_int_get_epv(const mavlink_message_t* 
 /**
  * @brief Get field vel from gps_raw_int message
  *
- * @return GPS ground speed (m/s * 100). If unknown, set to: 65535
+ * @return GPS ground speed (m/s * 100). If unknown, set to: UINT16_MAX
  */
 static inline uint16_t mavlink_msg_gps_raw_int_get_vel(const mavlink_message_t* msg)
 {
@@ -319,7 +319,7 @@ static inline uint16_t mavlink_msg_gps_raw_int_get_vel(const mavlink_message_t* 
 /**
  * @brief Get field cog from gps_raw_int message
  *
- * @return Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ * @return Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  */
 static inline uint16_t mavlink_msg_gps_raw_int_get_cog(const mavlink_message_t* msg)
 {

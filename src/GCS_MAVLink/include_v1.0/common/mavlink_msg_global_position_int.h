@@ -12,7 +12,7 @@ typedef struct __mavlink_global_position_int_t
  int16_t vx; ///< Ground X Speed (Latitude), expressed as m/s * 100
  int16_t vy; ///< Ground Y Speed (Longitude), expressed as m/s * 100
  int16_t vz; ///< Ground Z Speed (Altitude), expressed as m/s * 100
- uint16_t hdg; ///< Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ uint16_t hdg; ///< Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
 } mavlink_global_position_int_t;
 
 #define MAVLINK_MSG_ID_GLOBAL_POSITION_INT_LEN 28
@@ -53,7 +53,7 @@ typedef struct __mavlink_global_position_int_t
  * @param vx Ground X Speed (Latitude), expressed as m/s * 100
  * @param vy Ground Y Speed (Longitude), expressed as m/s * 100
  * @param vz Ground Z Speed (Altitude), expressed as m/s * 100
- * @param hdg Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ * @param hdg Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_global_position_int_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -109,7 +109,7 @@ static inline uint16_t mavlink_msg_global_position_int_pack(uint8_t system_id, u
  * @param vx Ground X Speed (Latitude), expressed as m/s * 100
  * @param vy Ground Y Speed (Longitude), expressed as m/s * 100
  * @param vz Ground Z Speed (Altitude), expressed as m/s * 100
- * @param hdg Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ * @param hdg Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_global_position_int_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -177,7 +177,7 @@ static inline uint16_t mavlink_msg_global_position_int_encode(uint8_t system_id,
  * @param vx Ground X Speed (Latitude), expressed as m/s * 100
  * @param vy Ground Y Speed (Longitude), expressed as m/s * 100
  * @param vz Ground Z Speed (Altitude), expressed as m/s * 100
- * @param hdg Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ * @param hdg Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -308,7 +308,7 @@ static inline int16_t mavlink_msg_global_position_int_get_vz(const mavlink_messa
 /**
  * @brief Get field hdg from global_position_int message
  *
- * @return Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
+ * @return Compass heading in degrees * 100, 0.0..359.99 degrees. If unknown, set to: UINT16_MAX
  */
 static inline uint16_t mavlink_msg_global_position_int_get_hdg(const mavlink_message_t* msg)
 {
