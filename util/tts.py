@@ -46,10 +46,12 @@ def filename(idx, alternate=0):
     return result
 
 def wavstrip(filename):
-    output = "_" + filename
-    subprocess.Popen(["sox", filename, output, "silence", "1", "0.1", "1%", "reverse", "silence", "1", "0.1", "1%", "reverse"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-    os.remove(filename)
-    os.rename(output, filename)
+    if not "sapi2" in sys.argv:
+		output = "_" + filename
+		subprocess.Popen(["sox", filename, output, "silence", "1", "0.1", "1%", "reverse", "silence", "1", "0.1", "1%", "reverse"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+		os.remove(filename)
+		os.rename(output, filename)
+	
     
 def generate(str, filename):
     print filename, str
@@ -74,7 +76,7 @@ def generate(str, filename):
             tts.SpeakToWave(ttsfilename, str)
         elif "sapi2" in sys.argv: 
             ttsfilename = "ttsfile.wav"		
-            subprocess.Popen(["ttscmd", "/ttw", str.encode("utf-8"), ttsfilename, "-v", voiceID, "-b", "32"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()     			
+            subprocess.Popen(["ttscmd", "/ttw", str.encode("utf-8"), ttsfilename, "-v", voiceID, "-b", "32","-s", "\"-3\"","-w","32","-f","47"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()     			
         elif "espeak" in sys.argv:
             ttsfilename = "ttsfile.wav"
             subprocess.Popen(["espeak", "-v", espeakVoice, "-s", espeakspeed, "-z", "-w", ttsfilename, str.encode("utf-8")], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
@@ -184,6 +186,8 @@ def ttsEn():
                  (u"gear!, down!", "geardn"),
                  (u"flaps!, up!", "flapup"),
                  (u"flaps!, down!", "flapdn"),
+                 (u"spoiler!, up!", "splrup"),
+                 (u"spoiler!, down!", "splrdn"),
                  (u"trainer!, on!", "trnon"),
                  (u"trainer!, off!", "trnoff"),
                  (u"engine!, off!", "engoff"),
@@ -215,7 +219,11 @@ def ttsEn():
                  (u"flight mode!, speed", "fm-spd"),
                  (u"flight mode!, fast", "fm-fst"), 
                  (u"flight mode!, normal", "fm-nrm"),
-                 (u"flight mode!, cruise", "fm-crs"),                 
+                 (u"flight mode!, cruise", "fm-crs"),
+                 (u"flight mode!, acro", "fm-acr"),                 
+                 (u"flight mode!, race", "fm-rce"),				 
+                 (u"flight mode!, launch", "fm-lch"),
+                 (u"flight mode!, ping", "fm-png"),				 
                  ]):
         sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
     return systemSounds, sounds
