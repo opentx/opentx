@@ -1690,6 +1690,10 @@ void checkSwitches()
 
   while (1) {
 
+#if defined(TELEMETRY_MOD_14051)
+    getADC();
+#endif
+
     getMovedSwitch();
 
     switches_states <<= 1;
@@ -1988,31 +1992,89 @@ void getADC()
   }
 }
 #else
-void getADC()
+
+/**
+ * Read ADC using 10 bits
+ */
+inline uint16_t read_adc10(uint8_t adc_input) 
 {
   uint16_t temp_ana;
-  for (uint8_t adc_input=0; adc_input<8; adc_input++) {
-/*
-    ADMUX = adc_input|ADC_VREF_TYPE;
-	// ADCSRA|=0x08; // enable ADC Interrupt Enable  should not be necessary? or is it
-	MCUCR|=0x28;  // enable Sleep (bit5) enable ADC Noise Reduction (bit3)
-	asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this
-    while (ADCSRA & 0x40); // Wait for the AD conversion to complete
-    temp_ana = ADC;
-    
-	asm volatile(" sleep        \n\t");  // if _SLEEP() is not defined use this  
-    while (ADCSRA & 0x40); // Wait for the AD conversion to complete
-    s_anaFilt[adc_input] = temp_ana + ADC;    
-   	MCUCR&=0x08;  // disable sleep  
-    */
+  ADMUX = adc_input|ADC_VREF_TYPE;
+#if defined(TELEMETRY_MOD_14051)
+  ADCSRA &= 0x87;
+#endif
+  ADCSRA |= 1 << ADSC; // Start the AD conversion
+  while (ADCSRA & (1 << ADSC)); // Wait for the AD conversion to complete
+  temp_ana = ADC;
+  ADCSRA |= 1 << ADSC; // Start the second AD conversion
+  while (ADCSRA & (1 << ADSC)); // Wait for the AD conversion to complete
+  temp_ana += ADC;
+  return temp_ana;
+}
+
+#if defined(TELEMETRY_MOD_14051)
+enum MuxInput {
+  MUX_BATT,
+  MUX_THR,
+  MUX_AIL,
+  MUX_MAX = MUX_AIL
+};
+
+uint8_t pf7_digital[2];
+/**
+ * Update ADC PF7 using 14051 multiplexer
+ * X0 : Battery voltage
+ * X1 : THR SW
+ * X2 : AIL SW
+ */
+void readMultiplexAna()
+{
+  static uint8_t muxNum = MUX_BATT;
+  uint16_t temp_ana;
+  uint8_t nextMuxNum = muxNum-1;
+
+  DDRC |= 0xC1;
+  temp_ana = read_adc10(7);
+
+  switch (muxNum) {
+    case MUX_BATT:
+      s_anaFilt[TX_VOLTAGE] = temp_ana;
+      nextMuxNum = MUX_MAX;
+      break;
+    case MUX_THR:
+    case MUX_AIL:
+      // Digital switch depend from input voltage
+      // take half voltage to determine digital state
+      pf7_digital[muxNum-1] = (temp_ana >= (s_anaFilt[TX_VOLTAGE] / 2)) ? 1 : 0;
+      break;
+  }
+
+  // set the mux number for the next ADC convert,
+  // stabilize voltage before ADC read.
+  muxNum = nextMuxNum;
+  PORTC &= ~((1 << PC7) | (1 << PC6) | (1 << PC0)); // Clear CTRL ABC
+  switch (muxNum) {
+    case 1:
+      PORTC |= (1 << PC6); // Mux CTRL A : SW_THR
+      break;
+    case 2:
+      PORTC |= (1 << PC7); // Mux CTRL B : SW_AIL
+      break;
+  }
+}
+#endif
+
+void getADC()
+{
+#if defined(TELEMETRY_MOD_14051)
+  readMultiplexAna();
+  #define ADC_READ_COUNT 7
+#else
+  #define ADC_READ_COUNT 8
+#endif
   
-    ADMUX = adc_input|ADC_VREF_TYPE;
-    ADCSRA|=0x40; // Start the AD conversion
-    while (ADCSRA & 0x40); // Wait for the AD conversion to complete
-    temp_ana = ADC;
-    ADCSRA|=0x40; // Start the second AD conversion
-    while (ADCSRA & 0x40); // Wait for the AD conversion to complete
-    s_anaFilt[adc_input] = temp_ana + ADC;
+  for (uint8_t adc_input=0; adc_input<ADC_READ_COUNT; adc_input++) {
+    s_anaFilt[adc_input] = read_adc10(adc_input);
   }
 }
 #endif

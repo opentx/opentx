@@ -618,6 +618,7 @@
 #define TR_INSERT_AFTER        "Inserisci dopo"
 #define TR_COPY                "Copia"
 #define TR_MOVE                "Muovi"
+#define TR_PASTE               "Paste"
 #define TR_DELETE              "Cancella"
 #define TR_RESET_FLIGHT        "Azzera volo"
 #define TR_RESET_TIMER1        "Azzera Timer1"

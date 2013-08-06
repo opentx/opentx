@@ -154,6 +154,18 @@ uint8_t keyDown()
   return ((~PINB) & 0x7E) | ROTENC_DOWN();
 }
 
+#if defined(TELEMETRY_MOD_14051)
+  extern uint8_t pf7_digital[2];
+  #define THR_STATE()   pf7_digital[0]
+  #define AIL_STATE()   pf7_digital[1]
+#elif defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
+  #define THR_STATE()   (PINC & (1<<INP_C_ThrCt))
+  #define AIL_STATE()   (PINC & (1<<INP_C_AileDR))
+#else
+  #define THR_STATE()   (PINE & (1<<INP_E_ThrCt))
+  #define AIL_STATE()   (PINE & (1<<INP_E_AileDR))
+#endif
+
 bool switchState(EnumKeys enuk)
 {
   uint8_t result = 0 ;
@@ -166,15 +178,9 @@ bool switchState(EnumKeys enuk)
       result = PINE & (1<<INP_E_ElevDR);
       break;
 
-#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
     case SW_AIL:
-      result = PINC & (1<<INP_C_AileDR); //shad974: rerouted inputs to free up UART0
+      result = AIL_STATE();
       break;
-#else
-    case SW_AIL:
-      result = PINE & (1<<INP_E_AileDR);
-      break;
-#endif
 
     case SW_RUD:
       result = PING & (1<<INP_G_RuddDR);
@@ -213,18 +219,9 @@ bool switchState(EnumKeys enuk)
       result = PINE & (1<<INP_E_Gear);
       break;
 
-    //case SW_THR  : return PINE & (1<<INP_E_ThrCt);
-
-#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
     case SW_THR:
-      result = PINC & (1<<INP_C_ThrCt); //shad974: rerouted inputs to free up UART0
+      result = THR_STATE();
       break;
-
-#else
-    case SW_THR:
-      result = PINE & (1<<INP_E_ThrCt);
-      break;
-#endif
 
     case SW_TRN:
       result = PINE & (1<<INP_E_Trainer);

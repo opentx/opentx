@@ -619,6 +619,7 @@
 #define TR_INSERT_AFTER        "Ins\200rer apr\201s"
 #define TR_COPY                "Copier"
 #define TR_MOVE                "D\200placer"
+#define TR_PASTE               "Coller"
 #define TR_DELETE              "Effacer"
 #define TR_RESET_FLIGHT        TR("R\200init. vol","R\200initialiser vol")
 #define TR_RESET_TIMER1        TR("R\200init. Timer1","R\200initialiser Timer1")

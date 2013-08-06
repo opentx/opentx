@@ -8,7 +8,15 @@ width, height = image.size().width(), image.size().height()
 
 f = open(sys.argv[2], "w")
 
-if sys.argv[3] == "largimg":
+if len(sys.argv) > 3:
+    what = sys.argv[3]
+else:
+    for s in ("03x05", "04x06", "05x07", "08x10", "10x14"):
+        if s in sys.argv[2]:
+            what = s
+            break
+
+if what == "largimg":
     rows = 1
     if len(sys.argv) > 4:
         rows = int(sys.argv[4])
@@ -21,7 +29,7 @@ if sys.argv[3] == "largimg":
                     value += 1 << z            
             f.write("0x%02x," % value)
         f.write("\n")
-elif sys.argv[3] == "img":
+elif what == "img":
     rows = 1
     if len(sys.argv) > 4:
         rows = int(sys.argv[4])
@@ -34,7 +42,7 @@ elif sys.argv[3] == "img":
                     value += 1 << z            
             f.write("0x%02x," % value)
         f.write("\n")
-elif sys.argv[3] == "bmp":
+elif what == "bmp":
     rows = 1
     colors = []
     if len(sys.argv) > 4:
@@ -52,7 +60,7 @@ elif sys.argv[3] == "bmp":
             for value in values:
                 f.write("0x%02x," % value)
         f.write("\n")
-elif sys.argv[3] == "3x5":
+elif what == "03x05":
     for y in range(0, height, 5):
         for x in range(width):
             value = 0
@@ -61,7 +69,7 @@ elif sys.argv[3] == "3x5":
                     value += 1 << z
             f.write("0x%02x," % value)
         f.write("\n")        
-elif sys.argv[3] == "4x6":
+elif what == "04x06":
     for y in range(0, height, 7):
         for x in range(width):
             value = 0
@@ -70,7 +78,7 @@ elif sys.argv[3] == "4x6":
                     value += 1 << z
             f.write("0x%02x," % value)
         f.write("\n")        
-elif sys.argv[3] == "5x7":
+elif what == "05x07":
     for y in range(0, height, 8):
         for x in range(width):
             value = 0
@@ -79,7 +87,7 @@ elif sys.argv[3] == "5x7":
                     value += 1 << z
             f.write("0x%02x," % value)
         f.write("\n")
-elif sys.argv[3] == "8x10":
+elif what == "08x10":
     for y in range(0, height, 12):
         for x in range(width):
             for l in range(0, 12, 8):
@@ -89,7 +97,7 @@ elif sys.argv[3] == "8x10":
                         value += 1 << z
                 f.write("0x%02x," % value)
         f.write("\n")
-elif sys.argv[3] == "10x14":
+elif what == "10x14":
     for y in range(0, height, 16):
         for x in range(width):
             for l in range(0, 16, 8):

@@ -932,12 +932,12 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
     }
 
     if (idx < 0) { 
-      value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx,delta);
+      value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
       idx = -idx;
       lcd_putcAtt(x-6, y, '-', attr);
     }
     else {
-      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx,delta);
+      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx, delta);
       idx++;
     }
     putsStrIdx(x, y, STR_GV, idx, attr);

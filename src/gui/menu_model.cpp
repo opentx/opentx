@@ -3711,7 +3711,7 @@ void menuModelGVars(uint8_t event)
     putsStrIdx(0, y, STR_GV, i+1, (sub==i && m_posHorz<0) ? INVERS : 0);
 
     for (uint8_t j=0; j<1+MAX_PHASES; j++) {
-      uint8_t attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       xcoord_t x = 12*FW + FWNUM + (j-1)*(2+3*FWNUM) - 1;
 
 #if MAX_GVARS == 6
@@ -3729,13 +3729,13 @@ void menuModelGVars(uint8_t event)
         default:
         {
           PhaseData *phase = &g_model.phaseData[j-1];
-          int16_t v = phase->gvars[i];
+          int16_t & v = phase->gvars[i];
           int16_t vmin, vmax;
           if (v > GVAR_MAX) {
             uint8_t p = v - GVAR_MAX - 1;
-            if (p >= s_currIdx) p++;
-            putsFlightPhase(x, y, p+1, attr);
-            vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_PHASES;
+            if (p >= j-1) p++;
+            putsFlightPhase(x-15, y, p+1, attr|SMLSIZE);
+            vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_PHASES-1;
           }
           else {
             if (abs(v) >= 100)
@@ -3744,8 +3744,15 @@ void menuModelGVars(uint8_t event)
               lcd_outdezAtt(x, y, v, attr);
             vmin = -GVAR_MAX; vmax = GVAR_MAX;
           }
-          if (attr && ((s_editMode>0) || p1valdiff)) {
-            phase->gvars[i] = checkIncDec(event, v, vmin, vmax, EE_MODEL);
+          if (attr) {
+            if (event == EVT_KEY_LONG(KEY_ENTER)) {
+              s_editMode = 2; // TODO constant for that ...
+              v = (v > GVAR_MAX ? 0 : GVAR_MAX+1);
+              eeDirty(EE_MODEL);
+            }
+            else if (s_editMode>0 || p1valdiff) {
+              v = checkIncDec(event, v, vmin, vmax, EE_MODEL);
+            }
           }
           break;
         }

@@ -618,6 +618,7 @@
 #define TR_INSERT_AFTER        "Vlo\217it za"
 #define TR_COPY                "Kop\204rovat"
 #define TR_MOVE                "P\206esunout"
+#define TR_PASTE               "Paste"
 #define TR_DELETE              "Odstranit"
 #define TR_RESET_FLIGHT        "Vynulovat let"
 #define TR_RESET_TIMER1        "Vynulovat Timer1"

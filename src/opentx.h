@@ -890,8 +890,8 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 #define GV_RANGELARGE_NEG  (-GV1_LARGE + (RESERVE_RANGE_FOR_GVARS+1))
 
 extern uint16_t s_timeCumTot;
-extern uint16_t s_timeCumThr;  //gewichtete laufzeit in 1/16 sec
-extern uint16_t s_timeCum16ThrP; //gewichtete laufzeit in 1/16 sec
+extern uint16_t s_timeCumThr;
+extern uint16_t s_timeCum16ThrP;
 
 struct TimerState {
   uint8_t  lastPos;

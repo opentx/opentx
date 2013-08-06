@@ -618,6 +618,7 @@
 #define TR_INSERT_AFTER        "Neue Zeile danach"
 #define TR_COPY                "Zeile Kopieren"
 #define TR_MOVE                "Zeile Verschieben"
+#define TR_PASTE               "Paste"
 #define TR_DELETE              "Zeile L\203schen"
 #define TR_RESET_FLIGHT        "Reset Flugdaten"
 #define TR_RESET_TIMER1        "Reset Timer1"
