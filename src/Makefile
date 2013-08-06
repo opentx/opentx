@@ -778,6 +778,7 @@ endif
 
 ifneq ($(FONT), STD)
   CPPDEFS += -DFONT_$(FONT)
+  EXTRAINCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
 endif
   
 ifeq ($(THR_TRACE), YES)
@@ -978,6 +979,7 @@ CPPFLAGS += $(CPPDEFS)
 CPPFLAGS += -Wall
 CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
+EXTRAINCDIRS += fonts/std
 CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 MATH_LIB = -lm
