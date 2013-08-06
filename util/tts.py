@@ -46,11 +46,10 @@ def filename(idx, alternate=0):
     return result
 
 def wavstrip(filename):
-    if not "sapi2" in sys.argv:
-		output = "_" + filename
-		subprocess.Popen(["sox", filename, output, "silence", "1", "0.1", "1%", "reverse", "silence", "1", "0.1", "1%", "reverse"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
-		os.remove(filename)
-		os.rename(output, filename)
+	output = "_" + filename
+	subprocess.Popen(["sox", filename, output, "silence", "1", "0.1", "0.1%", "reverse", "silence", "1", "0.1", "0.1%", "reverse"], stdout=subprocess.PIPE, stderr=subprocess.PIPE).wait()
+	os.remove(filename)
+	os.rename(output, filename)
 	
     
 def generate(str, filename):
