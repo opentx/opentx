@@ -34,7 +34,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 #define START_STOP         0x7e
 #define BYTESTUFF          0x7d
@@ -243,6 +243,7 @@ void processHubPacket(uint8_t id, uint16_t value)
         if (frskyData.hub.cellsCount < battnumber+1) {
           frskyData.hub.cellsCount = battnumber+1;
         }
+        // TODO precision could be 0.01V instead of 0.02V
         uint8_t cellVolts = (uint8_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8)))/10);
         frskyData.hub.cellVolts[battnumber] = cellVolts;
         if (!frskyData.hub.minCellVolts || cellVolts < frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
@@ -384,7 +385,7 @@ void processSportPacket(uint8_t *packet)
         if (frskyData.hub.cellVolts[battnumber+1] == 0)
           frskyData.hub.cellsCount--;
         
-        if((frskyData.hub.cellVolts[battnumber] < frskyData.hub.cellVolts[battnumber+1]) || (frskyData.hub.cellVolts[battnumber+1] == 0)) {
+        if ((frskyData.hub.cellVolts[battnumber] < frskyData.hub.cellVolts[battnumber+1]) || (frskyData.hub.cellVolts[battnumber+1] == 0)) {
           minCell = frskyData.hub.cellVolts[battnumber];
           minCellNum = battnumber;
         }
