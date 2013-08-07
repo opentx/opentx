@@ -1,4 +1,9 @@
 <SVN CURRENT>
+[stock]
+<ul>
+<li>Fix bug with Battery calibration
+<li>14051 can be used for THR and AIL connections (telemetry)
+</ul>
 
 <h2>2688 / 2013-07-28</h2>
 [stock]
