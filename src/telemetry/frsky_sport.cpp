@@ -307,6 +307,12 @@ void processSportPacket(uint8_t *packet)
       else if (appId == ADC1_ID || appId == ADC2_ID) {
         // A1/A2 of DxR receivers
         frskyData.analog[appId-ADC1_ID].set(SPORT_DATA_U8(packet));
+#if defined(VARIO)
+        uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
+        if (varioSource == appId-ADC1_ID) {
+          frskyData.hub.varioSpeed = applyChannelRatio(varioSource, frskyData.analog[varioSource].value);
+        }
+#endif
       }
       else if (appId == BATT_ID) {
         frskyData.analog[0].set(SPORT_DATA_U8(packet));
