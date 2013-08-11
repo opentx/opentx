@@ -446,7 +446,7 @@
 #define TR_MEMORYWARNING       INDENT"M\200moire pleine"
 #define TR_ALARMWARNING        TR(INDENT"Silence",INDENT"Sons d\200sactiv\200s")
 #define TR_RENAVIG             "Navig EncRot"
-#define TR_THROTTLEREVERSE     "Inversion gaz"
+#define TR_THROTTLEREVERSE     TR("Inv. gaz","Inversion gaz")
 #define TR_MINUTEBEEP          TR(INDENT"Bip min.",INDENT"Annonces minutes")
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Bip fin",INDENT"Compte \202 rebours")
 #define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistant")
