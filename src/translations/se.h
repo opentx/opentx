@@ -622,7 +622,7 @@
 #define TR_INSERT_AFTER        "Addera Efter"
 #define TR_COPY                "Kopiera"
 #define TR_MOVE                "Flytta"
-#define TR_PASTE               "Paste"
+#define TR_PASTE               "Infoga"
 #define TR_DELETE              "Radera"
 #define TR_RESET_FLIGHT        "Reset Flygning"
 #define TR_RESET_TIMER1        "Reset Timer1"
