@@ -269,7 +269,11 @@
 #define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
 
 #define LEN_VARIOSRC           "\005"
-#define TR_VARIOSRC            "Alti\0""Alti+""Vario""A1\0  ""A2\0"
+#if defined(FRSKY_SPORT)
+  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0"
+#else
+  #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
+#endif
 
 #define LEN_VSCREEN            "\010"
 #define TR_VSCREEN             "Hodnota ""Ukazatel"
@@ -618,7 +622,7 @@
 #define TR_INSERT_AFTER        "Vlo\217it za"
 #define TR_COPY                "Kop\204rovat"
 #define TR_MOVE                "P\206esunout"
-#define TR_PASTE               "Paste"
+#define TR_PASTE               "Vlo\217it"
 #define TR_DELETE              "Odstranit"
 #define TR_RESET_FLIGHT        "Vynulovat let"
 #define TR_RESET_TIMER1        "Vynulovat Timer1"
