@@ -97,6 +97,8 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 #define CTRL_REP_1CMD -3
 #define CTRL_REP_2CMD -6
 
+#define SETUP_PULSES_DURATION 1000/*500us*/
+
 // TIMER1_COMPA_vect used for PPM and DSM2=SERIAL
 uint8_t g_ppmPulsePolarity = 0;
 ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
@@ -106,12 +108,10 @@ ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
   // Call setupPulses only after REST pulse had been sent.
   // Must do this before toggle PORTB to keep timing accurate
   if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]) || *((uint16_t*)pulses2MHzRPtr) == 0) {
+    OCR1A = SETUP_PULSES_DURATION;
     setupPulses(); // does not sei() for setupPulsesPPM
     heartbeat |= HEART_TIMER_PULSES;
-    if (IS_PXX_PROTOCOL(s_current_protocol[0]) || IS_DSM2_PROTOCOL(s_current_protocol[0])) {
-      // !PPM protocols interrupts don't need COMPA
-      return;
-    }
+    return;
   }
 
 #if !defined(PCBGRUVIN9X)
@@ -176,13 +176,14 @@ void setupPulsesPPM(uint8_t proto)
     *ptr++ = q;  
     if (rest > 65535) rest = 65535; /* prevents overflows */
     if (rest < 9000)  rest = 9000;
-    *ptr++ = rest;
 
     if (proto == PROTO_PPM) {
+      *ptr++ = rest - SETUP_PULSES_DURATION;
       pulses2MHzRPtr = pulses2MHz;
     }
     else {
-      B3_comp_value = rest - 1000 ;               // 500uS before end of sync pulse
+      *ptr++ = rest;    
+      B3_comp_value = rest - SETUP_PULSES_DURATION;               // 500uS before end of sync pulse
     }
 
     *ptr = 0;
