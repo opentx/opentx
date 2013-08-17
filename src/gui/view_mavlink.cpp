@@ -164,6 +164,108 @@ void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mo
 	}
 }
 
+/*!	\brief Fightmode decode helper
+ *	\details Decodes the flight mode from Mavlink custom mode enum to a string.
+ *	This funtion can handle ArduPilot and ArduCoper code.
+ */
+
+const char * mav_mode_to_string(uint32_t custom_mode) //, const char * mode_text_p)
+{
+	const char * mode_text_p;
+	switch (telemetry_data.type_autopilot) {
+	case MAVLINK_ARDUCOPTER:
+		switch(custom_mode) {
+		case AC_STABILIZE:
+			mode_text_p = PSTR("Stabilize");
+			break;
+		case AC_ACRO:
+			mode_text_p = PSTR("Acro");
+			break;
+		case AC_ALT_HOLD:
+			mode_text_p = PSTR("Alt Hold");
+			break;
+		case AC_AUTO:
+			mode_text_p = PSTR("Auto");
+			break;
+		case AC_GUIDED:
+			mode_text_p = PSTR("Guided");
+			break;
+		case AC_LOITER:
+			mode_text_p = PSTR("Loiter");
+			break;
+		case AC_RTL:
+			mode_text_p = PSTR("RTL");
+			break;
+		case AC_CIRCLE:
+			mode_text_p = PSTR("Circle");
+			break;
+		case AC_POSITION:
+			mode_text_p = PSTR("Pos Hold");
+			break;
+		case AC_LAND:
+			mode_text_p = PSTR("Land");
+			break;
+		case AC_OF_LOITER:
+			mode_text_p = PSTR("OF Loiter");
+			break;
+		case AC_TOY_A:
+			mode_text_p = PSTR("Toy A");
+			break;
+		case AC_TOY_M:
+			mode_text_p = PSTR("Toy M");
+			break;
+		default:
+			mode_text_p = PSTR("INVALID");
+			break;
+		}
+		break;
+	case MAVLINK_ARDUPLANE:
+		switch(custom_mode) {
+		case AP_MANUAL:
+			mode_text_p = PSTR("Manual");
+			break;
+		case AP_CIRCLE:
+			mode_text_p = PSTR("Circle");
+			break;
+		case AP_STABILIZE:
+			mode_text_p = PSTR("Stabilize");
+			break;
+		case AP_TRAINING:
+			mode_text_p = PSTR("Training");
+			break;
+		case AP_FLY_BY_WIRE_A:
+			mode_text_p = PSTR("Fly by Wire A");
+			break;
+		case AP_FLY_BY_WIRE_B:
+			mode_text_p = PSTR("Fly by Wire A");
+			break;
+		case AP_AUTO:
+			mode_text_p = PSTR("Auto");
+			break;
+		case AP_RTL:
+			mode_text_p = PSTR("RTL");
+			break;
+		case AP_LOITER:
+			mode_text_p = PSTR("Loiter");
+			break;
+		case AP_GUIDED:
+			mode_text_p = PSTR("Guided");
+			break;
+		case AP_INITIALISING:
+			mode_text_p = PSTR("Initialising");
+			break;
+		default:
+			mode_text_p = PSTR("INVALID");
+			break;
+		}
+		break;
+	default:
+		mode_text_p = PSTR("INVALID MAV TYPE");
+		break;
+	}
+	return mode_text_p;
+}
+
 /*!	\brief Menu header
  *	\details Small helper function to print the standard header on the screen.
  */
@@ -232,51 +334,7 @@ void menuTelemetryMavlinkFlightMode(void) {
 	
 	mav_title(PSTR("MODE"), MAVLINK_menu);
 	
-	const char * mode_text_p;
-	switch(telemetry_data.custom_mode) {
-	case AP_STABILIZE:
-		mode_text_p = PSTR("Stabilize");
-		break;
-	case AP_ACRO:
-		mode_text_p = PSTR("Acro");
-		break;
-	case AP_ALT_HOLD:
-		mode_text_p = PSTR("Alt Hold");
-		break;
-	case AP_AUTO:
-		mode_text_p = PSTR("Auto");
-		break;
-	case AP_GUIDED:
-		mode_text_p = PSTR("Guided");
-		break;
-	case AP_LOITER:
-		mode_text_p = PSTR("Loiter");
-		break;
-	case AP_RTL:
-		mode_text_p = PSTR("RTL");
-		break;
-	case AP_CIRCLE:
-		mode_text_p = PSTR("Circle");
-		break;
-	case AP_POSITION:
-		mode_text_p = PSTR("Pos Hold");
-		break;
-	case AP_LAND:
-		mode_text_p = PSTR("Land");
-		break;
-	case AP_OF_LOITER:
-		mode_text_p = PSTR("OF Loiter");
-		break;
-	case AP_TOY_A:
-		mode_text_p = PSTR("Toy A");
-		break;
-	case AP_TOY_M:
-		mode_text_p = PSTR("Toy M");
-		break;
-	default:
-		mode_text_p = PSTR("INVALID");
-		break;
-	}
+	const char * mode_text_p =  mav_mode_to_string(telemetry_data.custom_mode);
 	
 	uint8_t x, y;
 	x = 0;

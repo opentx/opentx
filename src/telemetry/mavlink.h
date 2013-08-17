@@ -64,21 +64,40 @@ extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
 
 // Auto Pilot modes
 // ----------------
-#define AP_STABILIZE 0		// hold level position
-#define AP_ACRO 1			// rate control
-#define AP_ALT_HOLD 2		// AUTO control
-#define AP_AUTO 3			// AUTO control
-#define AP_GUIDED 4			// AUTO control
-#define AP_LOITER 5			// Hold a single location
-#define AP_RTL 6			// AUTO control
-#define AP_CIRCLE 7			// AUTO control
-#define AP_POSITION 8		// AUTO control
-#define AP_LAND 9			// AUTO control
-#define AP_OF_LOITER 10		// Hold a single location using optical flow
+#define AC_STABILIZE 0		// hold level position
+#define AC_ACRO 1			// rate control
+#define AC_ALT_HOLD 2		// AUTO control
+#define AC_AUTO 3			// AUTO control
+#define AC_GUIDED 4			// AUTO control
+#define AC_LOITER 5			// Hold a single location
+#define AC_RTL 6			// AUTO control
+#define AC_CIRCLE 7			// AUTO control
+#define AC_POSITION 8		// AUTO control
+#define AC_LAND 9			// AUTO control
+#define AC_OF_LOITER 10		// Hold a single location using optical flow
 							// sensor
-#define AP_TOY_A 11			// THOR Enum for Toy mode
-#define AP_TOY_M 12			// THOR Enum for Toy mode
-#define AP_NUM_MODES 13
+#define AC_TOY_A 11			// THOR Enum for Toy mode
+#define AC_TOY_M 12			// THOR Enum for Toy mode
+#define AC_NUM_MODES 13
+
+// Mavlink airframe types
+#define MAVLINK_ARDUCOPTER 0
+#define MAVLINK_ARDUPLANE 1
+#define MAVLINK_INVALID_TYPE 2
+
+
+#define AP_MANUAL        0
+#define AP_CIRCLE        1
+#define AP_STABILIZE     2
+#define AP_TRAINING      3
+#define AP_FLY_BY_WIRE_A 5
+#define AP_FLY_BY_WIRE_B 6
+#define AP_AUTO          10
+#define AP_RTL           11
+#define AP_LOITER        12
+#define AP_GUIDED        15
+#define AP_INITIALISING  16
+#define AC_NUM_MODES 17
 
 /*
  * Type definitions
@@ -137,6 +156,9 @@ typedef struct Location_ {
 typedef struct Telemetry_Data_ {
 	// INFOS
 	uint8_t status; ///< System status flag, see MAV_STATUS ENUM
+	uint8_t type;
+	uint8_t autopilot;
+	uint8_t type_autopilot;
 	uint16_t packet_drop;
 	uint8_t mode;
 	uint32_t custom_mode;

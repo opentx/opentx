@@ -119,6 +119,10 @@ void MAVLINK_reset(uint8_t warm_reset) {
 	memset(&telemetry_data, 0, sizeof(telemetry_data));
 	telemetry_data.rcv_control_mode = ERROR_NUM_MODES;
 	telemetry_data.req_mode = ERROR_NUM_MODES;
+	
+	telemetry_data.type = MAV_TYPE_ENUM_END;
+	telemetry_data.autopilot = MAV_AUTOPILOT_ENUM_END;
+	telemetry_data.type_autopilot = MAVLINK_INVALID_TYPE;
 
 	mav_heartbeat = 0;
 	mav_heartbeat_recv = 0;
@@ -202,12 +206,41 @@ static inline void REC_MAVLINK_MSG_ID_VFR_HUD(const mavlink_message_t* msg) {
 	telemetry_data.heading = mavlink_msg_vfr_hud_get_heading(msg);
 }
 
-/*!	\brief Hardbeat message
+/*!	\brief Heartbeat message
+ *	\details Heartbeat message is used for the following information:
+ *	type and autopilot is used to determain if the UAV is a ArduPlane or Arducopter
  */
 static inline void REC_MAVLINK_MSG_ID_HEARTBEAT(const mavlink_message_t* msg) {	
-	telemetry_data.mode  = mavlink_msg_heartbeat_get_base_mode(msg);	
+	telemetry_data.mode  = mavlink_msg_heartbeat_get_base_mode(msg);
 	telemetry_data.custom_mode  = mavlink_msg_heartbeat_get_custom_mode(msg);	
 	telemetry_data.status = mavlink_msg_heartbeat_get_system_status(msg);
+	uint8_t type = mavlink_msg_heartbeat_get_type(msg);
+	uint8_t autopilot = mavlink_msg_heartbeat_get_autopilot(msg);
+	if ((type != telemetry_data.type) || (autopilot != telemetry_data.autopilot))
+	{
+		telemetry_data.type = mavlink_msg_heartbeat_get_type(msg);
+		telemetry_data.autopilot = mavlink_msg_heartbeat_get_autopilot(msg);
+		if (autopilot == MAV_AUTOPILOT_ARDUPILOTMEGA)
+		{
+			if ((type == MAV_TYPE_QUADROTOR) ||
+				(type == MAV_TYPE_COAXIAL) ||
+				(type == MAV_TYPE_HELICOPTER) ||
+				(type == MAV_TYPE_HEXAROTOR) ||
+				(type == MAV_TYPE_OCTOROTOR) ||
+				(type == MAV_TYPE_TRICOPTER))
+				{
+					telemetry_data.type_autopilot = MAVLINK_ARDUCOPTER;
+				}
+			else if (type == MAV_TYPE_FIXED_WING)
+				{
+					telemetry_data.type_autopilot = MAVLINK_ARDUPLANE;
+				}
+			else
+				telemetry_data.type_autopilot = MAVLINK_INVALID_TYPE;
+		}
+		else
+			telemetry_data.type_autopilot = MAVLINK_INVALID_TYPE;
+	}
 	telemetry_data.active = (telemetry_data.mode & MAV_MODE_FLAG_SAFETY_ARMED) ? true : false; 
 	mav_heartbeat = 3; // 450ms display '*'
 	mav_heartbeat_recv = 1;
