@@ -257,10 +257,10 @@ enum ModuleIndex {
 #endif
 
 enum BacklightMode {
-  e_backlight_mode_off = 0,
-  e_backlight_mode_keys,
-  e_backlight_mode_sticks,
-  e_backlight_mode_both,
+  e_backlight_mode_off  = 0,
+  e_backlight_mode_keys = 1,
+  e_backlight_mode_sticks = 2,
+  e_backlight_mode_all = e_backlight_mode_keys+e_backlight_mode_sticks,
   e_backlight_mode_on
 };
 

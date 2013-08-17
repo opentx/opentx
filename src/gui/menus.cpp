@@ -317,6 +317,10 @@ void title(const pm_char * s)
 #define INC(val, min, max) if (val<max) {val++;} else {val=min;}
 #define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
 
+#if LCD_W >= 212
+uint8_t scrollbar_X = LCD_W-1;
+#endif
+
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
   vertpos_t l_posVert = m_posVert;
@@ -476,6 +480,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_ENTRY:
       l_posVert = POS_VERT_INIT;
       l_posHorz = POS_HORZ_INIT(l_posVert);
+      SET_SCROLLBAR_X(LCD_W-1);
 #if defined(ROTARY_ENCODER_NAVIGATION)
       if (menuTab) {
         s_editMode = EDIT_MODE_INIT;
@@ -491,6 +496,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_ENTRY_UP:
       s_editMode = 0;
       l_posHorz = POS_HORZ_INIT(l_posVert);
+      SET_SCROLLBAR_X(LCD_W-1);
       break;
 
     case EVT_ROTARY_BREAK:
@@ -502,6 +508,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #elif defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ENTRY_UP:
       s_editMode = 0;
+      SET_SCROLLBAR_X(LCD_W-1);
       break;
 
     case EVT_ROTARY_BREAK:
@@ -749,8 +756,8 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   }
 
 #if LCD_W >= 212
-  if (maxrow > LCD_LINES-1)
-    displayScrollbar(LCD_W-1, FH, LCD_H-FH, s_pgOfs, maxrow, LCD_LINES-1);
+  if (maxrow > LCD_LINES-1 && scrollbar_X)
+    displayScrollbar(scrollbar_X, FH, LCD_H-FH, s_pgOfs, maxrow, LCD_LINES-1);
 #endif
 
 #else

@@ -729,7 +729,7 @@ void watchdogSetTimeout(uint32_t timeout);
 struct t_inactivity
 {
   uint16_t counter;
-  uint16_t sum;
+  uint8_t  sum;
 };
 extern struct t_inactivity inactivity;
 

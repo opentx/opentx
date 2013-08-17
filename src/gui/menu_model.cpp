@@ -650,14 +650,16 @@ void menuModelFailsafe(uint8_t event)
   bool newLongNames = false;
   uint8_t ch;
 
-  SUBMENU_NOTITLE(32, {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0});
-
-  switch(event)
-  {
-    case EVT_KEY_BREAK(KEY_EXIT):
-      popMenu();
-      return;
+  if (event == EVT_KEY_BREAK(KEY_ENTER) && s_editMode) {
+    g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert];
+    eeDirty(EE_MODEL);
+    AUDIO_WARNING1();
+    SEND_FAILSAFE_NOW(g_moduleIdx);
   }
+
+  SIMPLE_SUBMENU_NOTITLE(32);
+
+  SET_SCROLLBAR_X(0);
 
   if (m_posVert >= 16)
     ch = 16;
@@ -687,17 +689,8 @@ void menuModelFailsafe(uint8_t event)
       else
         val = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
 
-      if (m_posVert == ch && event == EVT_KEY_LONG(KEY_ENTER)) {
-        g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line] = val;
-        eeDirty(EE_MODEL);
-        s_editMode = 0;
-        AUDIO_WARNING1();
-        SEND_FAILSAFE_NOW(g_moduleIdx);
-        killEvents(event);
-      }
-
       // Channel name if present, number if not
-      uint8_t lenLabel = zlen(g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name));
+      uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
       if (lenLabel > 4) {
         newLongNames = longNames = true;
       }
@@ -707,18 +700,23 @@ void menuModelFailsafe(uint8_t event)
       else
         putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 
-      uint8_t wbar = (longNames ? 48 : 58);
-
       // Value
-      LcdFlags flags = PREC1 | TINSIZE;
-
+      LcdFlags flags = TINSIZE;
       if (m_posVert == ch) {
         flags |= INVERS;
         if (s_editMode)
           flags |= BLINK;
       }
-
-      lcd_outdezNAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), flags);
+#if defined(PPM_UNIT_US)
+      uint8_t wbar = (longNames ? 54 : 64);
+      lcd_outdezAtt(x+LCD_W/2-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+      uint8_t wbar = (longNames ? 48 : 58);
+      lcd_outdezAtt(x+LCD_W/2-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
+#else
+      uint8_t wbar = (longNames ? 54 : 64);
+      lcd_outdezAtt(x+LCD_W/2-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
+#endif
 
       // Gauge
       lcd_rect(x+LCD_W/2-3-wbar-ofs, y, wbar+1, 6);
@@ -735,7 +733,6 @@ void menuModelFailsafe(uint8_t event)
   }
 
   longNames = newLongNames;
-
 }
 #endif
 

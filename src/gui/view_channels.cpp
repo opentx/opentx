@@ -76,7 +76,7 @@ void menuChannelsView(uint8_t event)
       uint8_t ofs = (col ? 0 : 1);
 
       // Channel name if present, number if not
-      uint8_t lenLabel = zlen(g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name));
+      uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
       if (lenLabel > 4) {
         newLongNames = longNames = true;
       }
@@ -86,10 +86,17 @@ void menuChannelsView(uint8_t event)
       else
         putsChn(x+1-ofs, y, ch+1, SMLSIZE);
 
-      uint8_t wbar = (longNames ? 48 : 58);
-
       // Value
-      lcd_outdezNAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1 | TINSIZE);
+#if defined(PPM_UNIT_US)
+      uint8_t wbar = (longNames ? 54 : 64);
+      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+      uint8_t wbar = (longNames ? 48 : 58);
+      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE);
+#else
+      uint8_t wbar = (longNames ? 54 : 64);
+      lcd_outdezAtt(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE); // G: Don't like the decimal part*
+#endif
 
       // Gauge
       lcd_rect(x+LCD_W/2-3-wbar-ofs, y, wbar+1, 6);

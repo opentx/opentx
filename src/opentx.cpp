@@ -416,7 +416,7 @@ void generalDefault()
 #endif
 
 #if !defined(CPUM64)
-  g_eeGeneral.backlightMode = e_backlight_mode_both;
+  g_eeGeneral.backlightMode = e_backlight_mode_all;
   g_eeGeneral.lightAutoOff = 2;
   g_eeGeneral.inactivityTimer = 10;
 #endif
@@ -1499,11 +1499,13 @@ FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 
 #define INAC_DEVISOR 512   // bypass splash screen with stick movement
 #define INAC_DEV_SHIFT 9   // shift right value for stick movement
-uint16_t stickMoveValue()
+uint8_t inputsMoveValue()
 {
-  uint16_t sum = 0;
+  uint8_t sum = 0;
   for (uint8_t i=0; i<NUM_STICKS; i++)
     sum += anaIn(i) >> INAC_DEV_SHIFT;
+  for (uint8_t i=0; i<NUM_SWITCHES; i++)
+    sum += getValue(MIXSRC_FIRST_SWITCH+i) >> 10;
   return sum;
 }
 
@@ -1518,7 +1520,7 @@ void checkBacklight()
   uint8_t x = g_blinkTmr10ms;
   if (tmr10ms != x) {
     tmr10ms = x;
-    uint16_t tsum = stickMoveValue();
+    uint8_t tsum = inputsMoveValue();
     if (tsum != inactivity.sum) {
       inactivity.sum = tsum;
       inactivity.counter = 0;
@@ -1578,7 +1580,7 @@ void doSplash()
 
     getADC(); // init ADC array
 
-    uint16_t inacSum = stickMoveValue();
+    uint8_t inacSum = inputsMoveValue();
 
     tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
     while (tgtime != get_tmr10ms()) {
@@ -1590,7 +1592,7 @@ void doSplash()
 
       getADC();
 
-      uint16_t tsum = stickMoveValue();
+      uint8_t tsum = inputsMoveValue();
 
 #if defined(FSPLASH) || defined(XSPLASH)
       if (!(g_eeGeneral.splashMode & 0x04))

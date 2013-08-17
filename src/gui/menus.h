@@ -45,6 +45,17 @@ inline void displayColumnHeader(const char **headers, uint8_t index)
   lcd_putsAtt(17*FW, 0, headers[index], 0);
 }
 
+#if !defined(CPUM64)
+  void displayScrollbar(xcoord_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_t count, uint8_t visible);
+#endif
+
+#if LCD_W >= 212
+  extern uint8_t scrollbar_X;
+  #define SET_SCROLLBAR_X(x) scrollbar_X = (x);
+#else
+  #define SET_SCROLLBAR_X(x)
+#endif
+
 #if LCD_W >= 212
   #if defined(TRANSLATIONS_FR)
     #define MENU_COLUMNS         1
