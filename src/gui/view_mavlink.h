@@ -46,6 +46,7 @@
 #include "opentx.h"
 #include "telemetry/mavlink.h"
 #include "gui/menus.h"
+#include "serial.h"
 
 #define APSIZE (BSS | DBLSIZE)
 
@@ -62,6 +63,7 @@ void menuTelemetryMavlinkGPS(void);
 void lcd_outhex2(uint8_t x, uint8_t y, uint8_t val);
 void menuTelemetryMavlinkDump(uint8_t event);
 #endif
+void menuTelemetryMavlinkSetup(uint8_t event);
 
 /*!	\brief Mavlink menu enumerator
  *	\details Used to create a readable case statement for the
@@ -80,6 +82,27 @@ enum mavlink_menu_ {
 	MAX_MAVLINK_MENU
 };
 
+//! \brief Pointer array to mavlink settings menus.
+const MenuFuncP_PROGMEM menuTabMav[] PROGMEM = {
+  menuTelemetryMavlinkSetup
+};
+
+//! \brief Title for mavlink setup menu.
+#define TR_MAVMENUSETUP "Mavlink Setup"
+const pm_char STR_MAVMENUSETUP[] PROGMEM = TR_MAVMENUSETUP;
+
+//! \brief Enum for mavlink settings menus sequence.
+enum EnumTabMav {
+  e_MavSetup
+};
+
+//! \brief Mavlink setup menu configuration items list.
+enum menuMavlinkSetupItems {
+  ITEM_MAVLINK_BAUD,
+  ITEM_MAVLINK_MAX
+};
+
+//! \brief Menu index varible, initialized on info menu.
 uint8_t MAVLINK_menu = MENU_INFO;
 
 #endif

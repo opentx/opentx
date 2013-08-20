@@ -190,6 +190,7 @@ typedef struct Telemetry_Data_ {
 	// Navigation
 	uint16_t heading;
 	uint16_t bearing;
+	float altitude;
 
 #ifdef MAVLINK_PARAMS
 	// Params

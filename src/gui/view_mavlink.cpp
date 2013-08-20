@@ -47,18 +47,25 @@
 
  
 /*!	\brief Top Mavlink Menu definition
- *	\details Registers button events and handles that info. Buttons select menus, these
- *	are launched from the MAVLINK_menu switch statement.
+ *	\details Registers button events and handles that info. Buttons select menus,
+ *	these are launched from the MAVLINK_menu switch statement. Setup menu is
+ *	lanuched by the menu button. On exit (with exit button) the mavlink
+ *	extension is reinitialized.
  */
 void menuTelemetryMavlink(uint8_t event) {
+	
+	static bool setup;
 
 	switch (event) // new event received, branch accordingly
 	{
 	case EVT_ENTRY:
 		MAVLINK_menu = MENU_INFO;
+		setup = false;
 		break;
 
 	case EVT_KEY_FIRST(KEY_UP):
+		if (setup)
+			break;
 		if (MAVLINK_menu > 0)
 		{
 			MAVLINK_menu--;
@@ -70,40 +77,54 @@ void menuTelemetryMavlink(uint8_t event) {
 			return;
 		}
 	case EVT_KEY_FIRST(KEY_DOWN):
+		if (setup)
+			break;
 		if (MAVLINK_menu < MAX_MAVLINK_MENU - 1)
 			MAVLINK_menu++;
 		break;
 	case EVT_KEY_FIRST(KEY_MENU):
+		setup = true;
+		return;
 	case EVT_KEY_FIRST(KEY_EXIT):
-		//MAVLINK_Quit();
+		if (setup)
+		{
+			setup = false;
+			MAVLINK_Init();
+			break;
+		}
 		chainMenu(menuMainView);
 		return;
 	}
 
-	switch (MAVLINK_menu) {
-	case MENU_INFO:
-		menuTelemetryMavlinkInfos();
-		break;
-	case MENU_MODE:
-		menuTelemetryMavlinkFlightMode();
-		break;
-	case MENU_BATT:
-		menuTelemetryMavlinkBattery();
-		break;
-	case MENU_NAV:
-		menuTelemetryMavlinkNavigation();
-		break;
-	case MENU_GPS:
-		menuTelemetryMavlinkGPS();
-		break;
-#ifdef DUMP_RX_TX
-	case MENU_DUMP_TX:
-	case MENU_DUMP_RX:
-		menuTelemetryMavlinkDump(event);
-		break;
-#endif
-	default:
-		break;
+	if (setup)
+		menuTelemetryMavlinkSetup(event);
+	else
+	{
+		switch (MAVLINK_menu) {
+		case MENU_INFO:
+			menuTelemetryMavlinkInfos();
+			break;
+		case MENU_MODE:
+			menuTelemetryMavlinkFlightMode();
+			break;
+		case MENU_BATT:
+			menuTelemetryMavlinkBattery();
+			break;
+		case MENU_NAV:
+			menuTelemetryMavlinkNavigation();
+			break;
+		case MENU_GPS:
+			menuTelemetryMavlinkGPS();
+			break;
+	#ifdef DUMP_RX_TX
+		case MENU_DUMP_TX:
+		case MENU_DUMP_RX:
+			menuTelemetryMavlinkDump(event);
+			break;
+	#endif
+		default:
+			break;
+		}
 	}
 
 }
@@ -125,12 +146,15 @@ void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mo
 	int16_t lnum = val;
 	uint8_t x1 = x;
 	val -= lnum;
+	uint8_t xinc = FWNUM;
+	if (mode & DBLSIZE)
+		xinc *= 2;
 
 	int8_t i = 0;
 	lnum = abs(lnum);
 	for (; i < 4; i++) {
 		c = (lnum % 10) + '0';
-		x1 -= FWNUM;
+		x1 -= xinc;
 		lcd_putcAtt(x1, y, c, mode);
 		lnum /= 10;
 		if (lnum == 0) {
@@ -147,17 +171,22 @@ void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mo
 	} else {
 		if (val < 0) {
 			val = -val;
-			x1 -= FWNUM;
+			x1 -= xinc;
 			lcd_putcAtt(x1, y, '-', mode);
 		}
 		if (precis)
-			lcd_putcAtt(x, y, '.', mode);
-
+		{
+			uint8_t y_temp = y;
+			if (mode & DBLSIZE)
+				y_temp += FH;
+			lcd_putcAtt(x, y_temp, '.', (mode & (~DBLSIZE)));
+			x -= (xinc / 2);
+		}
 		for (i = 0; i < precis; i++) {
 			val *= 10;
 			int a = val;
 			c = a + '0';
-			x += FWNUM;
+			x += xinc;
 			lcd_putcAtt(x, y, c, mode);
 			val -= a;
 		}
@@ -393,7 +422,7 @@ void menuTelemetryMavlinkBattery(void) {
 	lcd_puts(x + 7 * FWNUM, ynum + FH, PSTR("%"));
 	x += 8 * (2 * FWNUM);
     lcd_puts(x, y, PSTR("PC RSSI"));
-	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.pc_rssi, (DBLSIZE | UNSIGN));
+	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.pc_rssi, (DBLSIZE));
 	lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("%"));
     
 }
@@ -426,12 +455,12 @@ void menuTelemetryMavlinkNavigation(void) {
 	x = 0;	
     lcd_puts  (x, y, PSTR("Bearing"));
 	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.bearing, (DBLSIZE | UNSIGN));
-	lcd_puts(x + 7 * FWNUM, ynum + FH, PSTR("o"));
+	lcd_puts(x + 7 * FWNUM, ynum, PSTR("o"));
 	x += 8 * (2 * FWNUM);
-/*    lcd_puts(x, y, PSTR("PC RSSI"));
-	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.pc_rssi, (DBLSIZE | UNSIGN));
-	lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("%"));
- */  
+    lcd_puts(x, y, PSTR("Altitude"));
+	lcd_outdezFloat(x + 2 * FWNUM - 1, ynum, telemetry_data.altitude, 2, (DBLSIZE));
+	lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("m"));
+ 
 }
 
 
@@ -540,3 +569,37 @@ void menuTelemetryMavlinkDump(uint8_t event) {
 	}
 }
 #endif
+
+
+/*!	\brief Mavlink General setup menu.
+ *	\details Setup menu for generic mavlink settings.
+ *	- Baudrate select item.
+ *	MENU funtion is used to create the tab based menu.
+ */
+void menuTelemetryMavlinkSetup(uint8_t event) {
+	
+	MENU(STR_MAVMENUSETUP, menuTabMav, e_MavSetup, ITEM_MAVLINK_MAX+1, {0, 0, 1/*to force edit mode*/});
+	
+	uint8_t sub = m_posVert - 1;
+
+	for (uint8_t i=0; i<LCD_LINES-1; i++) {
+		uint8_t y = 1 + 1*FH + i*FH;
+		uint8_t k = i+s_pgOfs;
+		uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+		uint8_t attr = (sub == k ? blink : 0);
+		switch(k) {	
+		case ITEM_MAVLINK_BAUD:
+			g_eeGeneral.spare2 = selectMenuItem(RADIO_SETUP_2ND_COLUMN,  //Y
+				y, 					// Y
+				STR_MAVLINK_BAUD_LABEL, 			// pm_char *label
+				STR_MAVLINK_BAUDS, 		// pm_char *values
+//				PSTR("4800""9600""14400""19200""38400""57600""76800""115200"),
+				g_eeGeneral.spare2, 	// value
+				0, 	// min
+				7, 	// max
+				attr,  // attr
+				event);	// event
+			break;
+		}
+	}
+}

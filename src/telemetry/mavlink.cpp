@@ -61,12 +61,12 @@ mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
 static char mav_statustext[LEN_STATUSTEXT];
 static int8_t mav_heartbeat = 0;
 static int8_t mav_heartbeat_recv = 0;
-static int8_t watch_mav_req_id_action = 0;
-static int8_t watch_mav_req_start_data_stream = 15;
+// static int8_t watch_mav_req_id_action = 0;
+// static int8_t watch_mav_req_start_data_stream = 15;
 static uint8_t data_stream_start_stop = 0;
-int8_t watch_mav_req_params_list = 5;
+// int8_t watch_mav_req_params_list = 5;
 static uint8_t mav_req_params_nb_recv = 0;
-static int8_t watch_mav_req_params_set = 0;
+// static int8_t watch_mav_req_params_set = 0;
 
 
 // Telemetry data hold
@@ -126,10 +126,10 @@ void MAVLINK_reset(uint8_t warm_reset) {
 
 	mav_heartbeat = 0;
 	mav_heartbeat_recv = 0;
-	watch_mav_req_id_action = 0;
-	watch_mav_req_start_data_stream = 15;
-	watch_mav_req_params_list = 5;
-	watch_mav_req_params_set = 0;
+//	watch_mav_req_id_action = 0;
+//	watch_mav_req_start_data_stream = 15;
+//	watch_mav_req_params_list = 5;
+//	watch_mav_req_params_set = 0;
 	data_stream_start_stop = 0;
 }
 
@@ -204,6 +204,7 @@ static inline void REC_MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT(const mavlink_messag
 //! \brief Hud navigation message
 static inline void REC_MAVLINK_MSG_ID_VFR_HUD(const mavlink_message_t* msg) {
 	telemetry_data.heading = mavlink_msg_vfr_hud_get_heading(msg);
+	telemetry_data.altitude = mavlink_msg_vfr_hud_get_alt(msg);
 }
 
 /*!	\brief Heartbeat message
@@ -339,7 +340,7 @@ void setMavlinParamsValue(uint8_t idx, float val) {
 			p->value = val;
 			p->repeat = PARAM_NB_REPEAT;
 		}
-		watch_mav_req_params_set = 4; // 1;
+//		watch_mav_req_params_set = 4; // 1;
 	}
 }
 
@@ -424,7 +425,7 @@ static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 		break;
 	case MAVLINK_MSG_ID_SYS_STATUS:
 		REC_MAVLINK_MSG_ID_SYS_STATUS(p_rxmsg);
-		watch_mav_req_start_data_stream = 20;
+//		watch_mav_req_start_data_stream = 20;
 		break;
 	case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
 		REC_MAVLINK_MSG_ID_RC_CHANNELS_RAW(p_rxmsg);
@@ -645,9 +646,11 @@ static inline void MAVLINK_msg_set_mode_send(uint8_t mode) {
 }
 
 /*!	\brief Looks like som kind of task switcher on a timer
- *	\todo Figure out wher this was used for and intergrate in current implemnetation.
+ *	\todo Figure out where this was used for and intergrate in current
+ *	implemnetation. Funcion dissabled without any side affects.
  */
-void MAVLINK10mspoll(uint8_t count) {
+#if 0
+ void MAVLINK10mspoll(uint8_t count) {
 	switch (count) {
 	case 2: // MAVLINK_MSG_ID_ACTION
 		if (watch_mav_req_id_action > 0) {
@@ -717,10 +720,9 @@ void MAVLINK10mspoll(uint8_t count) {
 		return;
 	}
 }
-
+#endif
 /*!	\brief Telemetry monitoring, calls \link MAVLINK10mspoll.
- *	\todo add  #if defined(FRSKY) || defined(MAVLINK) to line 3487
- *	of opentx.cpp to add a call to telemetryWakeup from void perMain().
+ *	\todo Reimplemnt \link MAVLINK10mspoll
  *	
  */
 void telemetryWakeup() {
@@ -734,10 +736,11 @@ void telemetryWakeup() {
 			if (mav_heartbeat == -30) {
 				MAVLINK_reset(1);
 			}
-			SERIAL_startTX();
+//			SERIAL_startTX();
 		}
 	}
 	if (mav_heartbeat_recv && !IS_TX_BUSY) {
-		MAVLINK10mspoll(count);
+//		MAVLINK10mspoll(count);
 	}
 }
+

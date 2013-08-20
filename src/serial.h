@@ -24,6 +24,7 @@ typedef enum serial_tx_state_ {
 } serial_tx_state_t;
 extern serial_tx_state_t serialTxState;
 
+//! \brief Baudrate selection.
 enum SERIAL_BAUDS {
 	BAUD_4800 = 0,
 	BAUD_9600,
@@ -34,6 +35,13 @@ enum SERIAL_BAUDS {
 	BAUD_76800,
 	BAUD_115200
 };
+
+//! \brief Definition of baudrate settings item choices.
+#define LEN_MAVLINK_BAUDS  "\006"
+#define TR_MAVLINK_BAUDS  "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
+const pm_char STR_MAVLINK_BAUDS[] PROGMEM = LEN_MAVLINK_BAUDS TR_MAVLINK_BAUDS;
+#define TR_MAVLINK_BAUD_LABEL "Baudrate"
+const pm_char STR_MAVLINK_BAUD_LABEL[] PROGMEM = TR_MAVLINK_BAUD_LABEL;
 
 typedef void (*SerialFuncP)(uint8_t event);
 
