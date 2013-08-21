@@ -223,9 +223,9 @@ def ttsEn():
                  (u"flight mode!, race", "fm-rce"),				 
                  (u"flight mode!, launch", "fm-lch"),
                  (u"flight mode!, ping", "fm-png"),				 
-                 (u"flight mode!, thermal", "fm-th"),	
-                 (u"flight mode!, ping", "fm-thl"),	
-                 (u"flight mode!, ping", "fm-thr"),					 
+                 (u"flight mode!, thermal", "fm-thm"),	
+                 (u"flight mode!, thermal left", "fm-thml"),	
+                 (u"flight mode!, thermal right", "fm-thmr"),					 
                  ]):
         sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
     return systemSounds, sounds
