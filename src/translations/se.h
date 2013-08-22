@@ -704,7 +704,7 @@
 #define TR_CHR_TOGGLE 't'
 #define TR_CHR_HOUR   'h'
 
-#define TR_BEEP_VOLUME         "Beep Volume"
-#define TR_WAV_VOLUME          "Wav Volume"
-#define TR_VARIO_VOLUME        "Vario Volume"
-#define TR_BG_VOLUME           "Bg Volume"
+#define TR_BEEP_VOLUME         "Volym Pip"
+#define TR_WAV_VOLUME          "Volym Wav"
+#define TR_VARIO_VOLUME        "Volym Vario"
+#define TR_BG_VOLUME           "Volym Bg"
