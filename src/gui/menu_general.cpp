@@ -742,6 +742,15 @@ void menuGeneralSdManager(uint8_t event)
       // no break;
     }
 
+#if defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_MENU):
+      killEvents(event);
+//      MENU_ADD_ITEM(STR_SD_INFO);  TODO: Implement
+      MENU_ADD_ITEM(STR_SD_FORMAT);
+      menuHandler = onSdManagerMenu;
+      break;
+#endif
+
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
       if (m_posVert == 0) {
@@ -767,8 +776,8 @@ void menuGeneralSdManager(uint8_t event)
 #endif
 #endif
         MENU_ADD_ITEM(STR_DELETE_FILE);
-        MENU_ADD_ITEM(STR_RENAME_FILE);
-        MENU_ADD_ITEM(STR_COPY_FILE);
+//       MENU_ADD_ITEM(STR_RENAME_FILE);  TODO: Implement
+//       MENU_ADD_ITEM(STR_COPY_FILE);    TODO: Implement
       }
       menuHandler = onSdManagerMenu;
       break;

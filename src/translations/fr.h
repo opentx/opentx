@@ -53,8 +53,8 @@
 #define LEN_VRENAVIG     "\003"
 #define TR_VRENAVIG      "NonREaREb"
 
-#define LEN_VBLMODE      "\004"
-#define TR_VBLMODE       "OFF\0""Btns""Stks""Tout""ON\0"
+#define LEN_VBLMODE      TR("\004","\011")
+#define TR_VBLMODE       TR("OFF\0""Btns""Ctrl""Tous""ON\0","OFF\0     ""Touches\0 ""Controles""Tous\0    ""ON\0      ")
 
 #define LEN_TRNMODE      "\003"
 #define TR_TRNMODE       "OFF"" +="" :="

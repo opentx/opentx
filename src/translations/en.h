@@ -53,8 +53,8 @@
 #define LEN_VRENAVIG           "\003"
 #define TR_VRENAVIG            "No REaREb"
 
-#define LEN_VBLMODE            TR("\004", "\006")
-#define TR_VBLMODE             TR("OFF\0""Keys""Stks""Both""ON\0", "OFF\0  ""Keys\0 ""Inputs""Both\0 ""ON\0")
+#define LEN_VBLMODE            TR("\004", "\010")
+#define TR_VBLMODE             TR("OFF\0""Keys""Ctrl""Both""ON\0 ", "OFF\0    ""Keys\0   ""Controls""Both\0   ""ON\0     ")
 
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             "OFF"" +="" :="
@@ -465,7 +465,7 @@
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
 #define TR_MENUTOSTART         CENTER "\006" TR_ENTER " TO START"
-#define TR_SETMIDPOINT         CENTER "\003SET STICKS MIDPOINT"
+#define TR_SETMIDPOINT         TR(CENTER "\003SET STICKS MIDPOINT",CENTER "\003CENTER STICKS/SLIDERS")
 #define TR_MOVESTICKSPOTS      CENTER "\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
