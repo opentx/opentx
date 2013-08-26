@@ -332,7 +332,7 @@ void displayTimers()
     putsTime(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTmrMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, STRCONDENSED|SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
-    if (timerState.val <= 0) {
+    if (timerState.val < 0) {
       if (BLINK_ON_PHASE) {
         lcd_filled_rect(TIMERS_X-7, TIMER1_Y-7, 60, 19);
       }
@@ -345,7 +345,7 @@ void displayTimers()
     putsTime(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTmrMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, STRCONDENSED|SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
-    if (timerState.val <= 0) {
+    if (timerState.val < 0) {
       if (BLINK_ON_PHASE) {
         lcd_filled_rect(TIMERS_X-7, TIMER2_Y-7, 60, 19);
       }

@@ -57,7 +57,6 @@ void setupPulses(unsigned int port)
         required_protocol = PROTO_PPM;
         break;
       case MODULE_TYPE_XJT:
-      case MODULE_TYPE_DJT:
       	required_protocol = PROTO_PXX;
         break;
 #if defined(DSM2)

@@ -159,7 +159,7 @@ PACK(typedef struct t_TrainerMix {
   uint8_t srcChn:6; // 0-7 = ch1-8
   uint8_t mode:2;   // off,add-mode,subst-mode
   int8_t  studWeight;
-}) TrainerMix; //
+}) TrainerMix;
 
 PACK(typedef struct t_TrainerData {
   int16_t        calib[4];
@@ -1255,7 +1255,6 @@ enum ModuleTypes {
   MODULE_TYPE_NONE = 0,
   MODULE_TYPE_PPM,
   MODULE_TYPE_XJT,
-  MODULE_TYPE_DJT,
 #if defined(DSM2)
   MODULE_TYPE_DSM2,
 #endif

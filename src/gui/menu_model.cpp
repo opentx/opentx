@@ -920,15 +920,16 @@ void menuModelSetup(uint8_t event)
   #define IF_TRAINER_ON(x)           (g_model.trainerMode ? (uint8_t)(x) : HIDDEN_ROW)
   #define IF_PORT_ON(idx, x)         (idx==0 ? IS_PORT1_ON(x) : (idx==1 ? IS_PORT2_ON(x) : IS_TRAINER_ON()))
   #define IF_PORT2_XJT(x)            (IS_MODULE_XJT(1) ? (uint8_t)x : HIDDEN_ROW)
+  #define IS_D8_RX(x)                (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
   #define PORT1_CHANNELS_ROWS()      IF_PORT1_ON(1)
-  #define PORT2_CHANNELS_ROWS()      IF_PORT2_ON(g_model.externalModule == MODULE_TYPE_DJT ? (uint8_t)0 : (IS_MODULE_DSM2(1) ? (uint8_t)0 : ((uint8_t)1)))
+  #define PORT2_CHANNELS_ROWS()      IF_PORT2_ON(IS_MODULE_DSM2(1) ? (uint8_t)0 : (uint8_t)1)
   #define TRAINER_CHANNELS_ROWS()    IF_TRAINER_ON(1)
   #define PORT_CHANNELS_ROWS(x)      (x==0 ? PORT1_CHANNELS_ROWS() : (x==1 ? PORT2_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS()))
   #define FAILSAFE_ROWS(x)           ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
   #define MODEL_SETUP_MAX_LINES      (1+ITEM_MODEL_SETUP_MAX)
 
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_XJT(1) && IS_D8_RX(1)) ? (uint8_t)1 : (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #elif defined(CPUM64)
   #define CURSOR_ON_CELL             (true)
   #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
@@ -1193,7 +1194,7 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODULE);
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""PPM\0""XJT\0""DJT\0""DSM2"), g_model.externalModule, m_posHorz==0 ? attr : 0);
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""PPM\0""XJT\0""DSM2"), g_model.externalModule, m_posHorz==0 ? attr : 0);
         if (g_model.externalModule == MODULE_TYPE_XJT)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("\004""OFF\0""D16\0""D8\0 ""LR12"), 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
@@ -1280,10 +1281,19 @@ void menuModelSetup(uint8_t event)
           }
         }
         else {
-          lcd_putsLeft(y, STR_RXNUM);
+          horzpos_t l_posHorz = m_posHorz;
+          uint8_t xOffsetBind = 3*FW;
+          if (IS_MODULE_XJT(moduleIdx) && IS_D8_RX(moduleIdx)) {
+            xOffsetBind = 0;
+            lcd_putsLeft(y, INDENT "Receiver");
+            if (attr) l_posHorz += 1;
+          }
+          else {
+            lcd_putsLeft(y, STR_RXNUM);
+          }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
-            lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (m_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
-            if (attr && m_posHorz==0) {
+            if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            if (attr && l_posHorz==0) {
               if (editMode>0 || p1valdiff) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, 63);
                 if (checkIncDec_Ret)
@@ -1292,14 +1302,14 @@ void menuModelSetup(uint8_t event)
               if (editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER))
                 checkModelIdUnique(g_eeGeneral.currModel);
             }
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MODULE_BIND, m_posHorz==1 ? attr : 0);
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_MODULE_RANGE, m_posHorz==2 ? attr : 0);
+            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
+            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+7*FW+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             if (IS_MODULE_XJT(moduleIdx)) {
               uint8_t newFlag = 0;
-              if (attr && m_posHorz>0 && s_editMode>0) {
-                if (m_posHorz == 1)
+              if (attr && l_posHorz>0 && s_editMode>0) {
+                if (l_posHorz == 1)
                   newFlag = PXX_SEND_RXNUM;
-                else if (m_posHorz == 2) {
+                else if (l_posHorz == 2) {
                   newFlag = PXX_SEND_RANGECHECK;
                 }
               }
@@ -1308,10 +1318,10 @@ void menuModelSetup(uint8_t event)
 #if defined(DSM2)
             else {
               uint8_t newFlag = 0;
-              if (attr && m_posHorz>0 && s_editMode>0) {
-                if (m_posHorz == 1)
+              if (attr && l_posHorz>0 && s_editMode>0) {
+                if (l_posHorz == 1)
                   newFlag = DSM2_BIND_FLAG;
-                else if (m_posHorz == 2) {
+                else if (l_posHorz == 2) {
                   newFlag = DSM2_RANGECHECK_FLAG;
                 }
               }
@@ -3567,7 +3577,7 @@ void menuModelLimits(uint8_t event)
 #else
           lcd_outdezAtt(LIMITS_MIN_POS, y, (int8_t)(ld->min-100), attr);
 #endif
-          if (active) ld->min = 100 + checkIncDecModel(event, ld->min-100, -limit, 25);
+          if (active) ld->min = 100 + checkIncDecModel(event, ld->min-100, -limit, 0);
           break;
         case ITEM_LIMITS_MAX:
 #if defined(PPM_UNIT_US)
@@ -3575,7 +3585,7 @@ void menuModelLimits(uint8_t event)
 #else
           lcd_outdezAtt(LIMITS_MAX_POS, y, (int8_t)(ld->max+100), attr);
 #endif
-          if (active) ld->max = -100 + checkIncDecModel(event, ld->max+100, -25, limit);
+          if (active) ld->max = -100 + checkIncDecModelZero(event, ld->max+100, limit);
           break;
         case ITEM_LIMITS_DIRECTION:
         {
