@@ -159,7 +159,8 @@ void refreshModelAudioFiles()
 #endif
 
   char filename[AUDIO_FILENAME_MAXLEN+1] = SOUNDS_PATH "/";
-
+  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  
   if (sdMounted()) {
     char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
     *buf++ = '/';
