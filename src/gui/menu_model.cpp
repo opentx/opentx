@@ -324,8 +324,8 @@ void onModelSelectMenu(const char *result)
 void menuModelSelect(uint8_t event)
 {
   if (s_warning_result) {
-    eeDeleteModel(m_posVert); // delete file
     s_warning_result = 0;
+    eeDeleteModel(m_posVert); // delete file
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
   }
@@ -2248,6 +2248,7 @@ void displayPresetChoice(uint8_t event)
   lcd_putcAtt(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
 
   if (s_warning_result) {
+    s_warning_result = 0;
     CurveInfo crv = curveInfo(s_curveChan);
     for (uint8_t i=0; i<crv.points; i++)
       crv.crv[i] = (i-(crv.points/2)) * s_warning_input_value * 50 / (crv.points-1);
@@ -3485,9 +3486,9 @@ void menuModelLimits(uint8_t event)
 #endif
 
   if (s_warning_result) {
+    s_warning_result = 0;
     LimitData *ld = limitAddress(sub);
     ld->revert = !ld->revert;
-    s_warning_result = 0;
     eeDirty(EE_MODEL);
   }
 

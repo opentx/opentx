@@ -2,6 +2,12 @@
 <ul>
 <li>Rx voltage was not displayed on main screen if VFAS or CELLS chosen!
 <li>GVARS can now refer to the GVAR of another phase                    
+<li>Vario and Altitude bug fixes
+<li>INPUTS instead of STICKS for BL activation
+<li>PPM_UNIT=PREC0 / US taken into account in channels view
+<li>DJT removed and receiver number hidden from PXX settings when proto != X16
+<li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]
+<li>Curves presets bug fix
 </ul>
 
 <h2>2688 / 2013-07-28</h2>

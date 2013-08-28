@@ -139,6 +139,8 @@ PACK(struct FrskySerialData {
     int16_t  cellsSum;
     uint8_t  minCellIdx;
     uint16_t minCellVolts;
+
+    bool     varioHighPrecision;
 });
 
 struct FrskyData {

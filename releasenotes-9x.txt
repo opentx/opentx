@@ -3,6 +3,9 @@
 <ul>
 <li>Fix bug with Battery calibration
 <li>14051 can be used for THR and AIL connections (telemetry)
+<li>CH1 PPM output was truncated
+<li>INPUTS instead of STICKS for BL activation
+<li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]
 </ul>
 
 <h2>2688 / 2013-07-28</h2>

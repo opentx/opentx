@@ -206,7 +206,11 @@ void processHubPacket(uint8_t id, uint16_t value)
       break;
 
     case BARO_ALT_AP_ID:
-      setBaroAltitude((int32_t)100 * frskyData.hub.baroAltitude_bp + frskyData.hub.baroAltitude_ap);
+      if (frskyData.hub.baroAltitude_ap > 9)
+        frskyData.hub.varioHighPrecision = true;
+      if (!frskyData.hub.varioHighPrecision)
+        frskyData.hub.baroAltitude_ap *= 10;
+      setBaroAltitude((int32_t)100 * frskyData.hub.baroAltitude_bp + (frskyData.hub.baroAltitude_bp >= 0 ? frskyData.hub.baroAltitude_ap : -frskyData.hub.baroAltitude_ap));
       break;
 
     case GPS_ALT_AP_ID:
