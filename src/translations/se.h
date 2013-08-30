@@ -414,7 +414,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Kurva"
-#define TR_FLMODE              TR("Mod","L\201gen")
+#define TR_FLMODE              TR("L\201ge","L\201gen")
 #define TR_MIXWARNING          "Varning"
 #define TR_OFF                 "Av "
 #define TR_MULTPX              "Multpx"
