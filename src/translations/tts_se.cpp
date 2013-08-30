@@ -37,7 +37,7 @@
 
 #include "../opentx.h"
 
-enum EnglishPrompts {
+enum SwedishPrompts {
   SE_PROMPT_NUMBERS_BASE = 0,
   SE_PROMPT_ZERO = SE_PROMPT_NUMBERS_BASE+0,       //02-99
   SE_PROMPT_HUNDRED = SE_PROMPT_NUMBERS_BASE+100,  //100,200 .. 900
@@ -73,21 +73,7 @@ enum EnglishPrompts {
 
 #if defined(VOICE)
 
-#if defined(CPUARM)
-  #define SE_PUSH_UNIT_PROMPT(p, u) se_pushUnitPrompt((p), (u), id)
-#else
-  #define SE_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
-#endif
-
-I18N_PLAY_FUNCTION(en, pushUnitPrompt, int16_t number, uint8_t unitprompt)
-{
-  if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
-  else
-    PUSH_NUMBER_PROMPT(unitprompt+1);
-}
-
-I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
+I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
   if (number < 0) {
     PUSH_NUMBER_PROMPT(SE_PROMPT_MINUS);
@@ -124,9 +110,9 @@ I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       number = qr.quot;
     }
   }
-
-  int16_t tmp = number;
-
+  
+  int16_t tmpNumber = number;
+  
   if (number >= 1000) {
     PLAY_NUMBER(number / 1000, 0, 0);
     PUSH_NUMBER_PROMPT(SE_PROMPT_THOUSAND);
@@ -145,11 +131,14 @@ I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   
   if (unit) {
-    SE_PUSH_UNIT_PROMPT(tmp, (SE_PROMPT_UNITS_BASE+((unit-1)*2)));
+    if  (tmpNumber == 1 ) 
+      PUSH_NUMBER_PROMPT(SE_PROMPT_UNITS_BASE+((unit-1)*2));   // Singular prompts
+    else
+      PUSH_NUMBER_PROMPT(SE_PROMPT_UNITS_BASE+((unit-1)*2)+1); // Plural prompts
   }
 }
 
-I18N_PLAY_FUNCTION(en, playDuration, int16_t seconds)
+I18N_PLAY_FUNCTION(se, playDuration, int16_t seconds)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(SE_PROMPT_MINUS);
@@ -175,6 +164,6 @@ I18N_PLAY_FUNCTION(en, playDuration, int16_t seconds)
   }
 }
 
-LANGUAGE_PACK_DECLARE_DEFAULT(se, "Swedish");
+LANGUAGE_PACK_DECLARE(se, "Swedish");
 
 #endif

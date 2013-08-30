@@ -49,6 +49,7 @@ extern LanguagePack deLanguagePack;
 extern LanguagePack itLanguagePack;
 extern LanguagePack ptLanguagePack;
 extern LanguagePack skLanguagePack;
+extern LanguagePack seLanguagePack;
 
 LanguagePack * languagePacks[] = {
   // alphabetical order
@@ -60,6 +61,7 @@ LanguagePack * languagePacks[] = {
   &itLanguagePack,
   &ptLanguagePack,
   &skLanguagePack,
+  &seLanguagePack,
   NULL
 };
 #endif
