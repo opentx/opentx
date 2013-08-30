@@ -236,7 +236,7 @@
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
-  #define TR_VUNITSSYSTEM      TR("Metri.""Imper.", "Metriskt""Imperial")
+  #define TR_VUNITSSYSTEM      TR("Metri.""Imper.", "Metriska""Imperial")
   #define LEN_VTELEMUNIT_NORM  "\003"
   #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
@@ -414,7 +414,7 @@
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Kurva"
-#define TR_FLMODE              TR("Mod","Moder")
+#define TR_FLMODE              TR("Mod","L\201gen")
 #define TR_MIXWARNING          "Varning"
 #define TR_OFF                 "Av "
 #define TR_MULTPX              "Multpx"
@@ -492,12 +492,12 @@
 #define TR_PPM                 "PPM"
 #define TR_CH                  "KN"
 #define TR_MODEL               "Modell"
-#define TR_FP                  "FF"
+#define TR_FP                  "FL"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM low mem"
 #define TR_ALERT               "\016OBS"
 #define TR_PRESSANYKEYTOSKIP   "Tryck ned en knapp"
-#define TR_THROTTLENOTIDLE     "Gasen ej avst\201ngd!"
+#define TR_THROTTLENOTIDLE     "Gasen \201r p\200slagen!"
 #define TR_ALARMSDISABLED      "Alarmen Avst\201ngda!"
 #define TR_PRESSANYKEY         TR("Tryck ned en knapp", "Tryck ned en knapp")
 #define TR_BADEEPROMDATA       "EEprom Datafel "
@@ -513,15 +513,15 @@
 #define TR_TRIMS2OFFSETS       "\004[Spara Trimv\201rden]"
 #define TR_MENUMODELSEL        TR("Modell","V\201lj Modell")
 #define TR_MENUSETUP           TR("V\201rden","Modellinst\201llningar")
-#define TR_MENUFLIGHTPHASE     "Flygmod"
-#define TR_MENUFLIGHTPHASES    "Flygmoder"
+#define TR_MENUFLIGHTPHASE     "Flygl\201ge"
+#define TR_MENUFLIGHTPHASES    "Flygl\201gen"
 #define TR_MENUHELISETUP       "Helikopter"
 
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUDREXPO        "Spakar" 
   #define TR_MENULIMITS        "Outputs"
 #else
-  #define TR_MENUDREXPO        "DR/Expo"
+  #define TR_MENUDREXPO        TR("DR/Expo","DualRates/Expo")
   #define TR_MENULIMITS        "Gr\201nser"
 #endif
 
@@ -631,12 +631,12 @@
 #define TR_STATISTICS          "Statistik"
 #define TR_ABOUT_US            "Om Oss"
 #define TR_AND_SWITCH          "AND Brytare"
-#define TR_CF                  "CF"
+#define TR_CF                  "BF"
 #define TR_SPEAKER             INDENT"H\202gtalare"
 #define TR_BUZZER              INDENT"Summer"
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
-#define TR_MODULE_RANGE        "[Styrka]"
+#define TR_MODULE_RANGE        "[Testa]"
 #define TR_RESET               "[Nollst\201ll]"
 #define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"
