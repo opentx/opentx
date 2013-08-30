@@ -1006,7 +1006,7 @@ bool getSwitch(int8_t swtch)
 #if defined(FRSKY)
           // Telemetry
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-            if ((!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_TM2) || IS_FAI_FORBIDDEN(cs->v1-1))
+            if ((!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_FIRST_STREAMED_VALUE-1) || IS_FAI_FORBIDDEN(cs->v1-1))
               return swtch > 0 ? false : true;
               	
 #if defined (PCBTARANIS)
@@ -1401,7 +1401,7 @@ getvalue_t convertTelemValue(uint8_t channel, uint8_t value)
       break;
     case TELEM_ALT:
 #if defined(PCBTARANIS)
-      result = value * 80 - 5000;
+      result = value * 800 - 50000;
       break;
 #endif
     case TELEM_GPSALT:

@@ -812,7 +812,13 @@ enum TelemetrySource {
 #else
   TELEM_DISPLAY_MAX = TELEM_TM2, // because used also in PlayValue
 #endif
-  TELEM_STATUS_MAX = TELEM_GPS_TIME
+  TELEM_STATUS_MAX = TELEM_GPS_TIME,
+#if defined(FRSKY_SPORT)
+  TELEM_SWR = TELEM_RSSI_TX,
+  TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_RX,
+#else
+  TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
+#endif
 };
 
 enum VarioSource {
