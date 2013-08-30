@@ -1,4 +1,6 @@
 <SVN CURRENT>
+
+<h2>2746 / 2013-08-30</h2>
 [stock]
 <ul>
 <li>Fix bug with Battery calibration</li>
