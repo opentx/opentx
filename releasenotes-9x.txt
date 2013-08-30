@@ -1,101 +1,107 @@
 <SVN CURRENT>
 [stock]
 <ul>
-<li>Fix bug with Battery calibration
-<li>14051 can be used for THR and AIL connections (telemetry)
-<li>CH1 PPM output was truncated
-<li>INPUTS instead of STICKS for BL activation
-<li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]
+<li>Fix bug with Battery calibration</li>
+<li>14051 can be used for THR and AIL connections (telemetry)</li>
+<li>CH1 PPM output was truncated</li>
+<li>INPUTS instead of STICKS for BL activation</li>
+<li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]</li>
+<li>Curves presets bug fix</li>
+</ul>
+
+[sky9x]
+<ul>
+<li>Flight mode sound files now are read from: /SOUNDS/(lang)/modelname/fpname-ON.wav and /SOUNDS/(lang)/modelname/fpname-OFF.wav</li>
 </ul>
 
 <h2>2688 / 2013-07-28</h2>
 [stock]
 <ul>
-<li>Fix bug with imperial units
+<li>Fix bug with imperial units</li>
 </ul>
 
 [gruvin9x]
 <ul>
-<li>Fix bug with imperial units
-<li>Fix small bug with SOMO 14D 
-<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv
+<li>Fix bug with imperial units</li>
+<li>Fix small bug with SOMO 14D </li>
+<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv</li>
 </ul>
 
 [sky9x]
 <ul>
-<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv
+<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv</li>
 </ul>
 
 <h2>2647 / 2013-07-21</h2>
 [all]
 <ul>
-<li>Some bug fixes
-<li>Better fonts
+<li>Some bug fixes</li>
+<li>Better fonts</li>
 </ul>
 
 <h2>2491 / 2013-06-24</h2>
 [all]
 <ul>
-<li>PlaySound has now a repeat argument
-<li>FAI mode added (disable telemetry other than A1/A2/RSSI for contests)
-<li>Delays now also apply to 3POS switch!
-<li>RSSI alarms default thresholds now 45 / 42 
+<li>PlaySound has now a repeat argument</li>
+<li>FAI mode added (disable telemetry other than A1/A2/RSSI for contests)</li>
+<li>Delays now also apply to 3POS switch!</li>
+<li>RSSI alarms default thresholds now 45 / 42 </li>
 </ul>
 
 [stock]
 <ul>
-<li>Flash savings
-<li>Vario sink tones removed
-<li>Audio files renumbered (see here) 
+<li>Flash savings</li>
+<li>Vario sink tones removed</li>
+<li>Audio files renumbered (see here) </li>
 </ul>
 
 [sky9x]
 <ul>
-<li>Audio mixer: several sounds can now be played simulataneously, and beeps won't interrupt and clear voice alerts anymore. Note that sound files now need to have sampling rates of either 8, 16 or 32kHz and may need to be replaced. 
+<li>Audio mixer: several sounds can now be played simulataneously, and beeps won't interrupt and clear voice alerts anymore. Note that sound files now need to have sampling rates of either 8, 16 or 32kHz and may need to be replaced. </li>
 </ul>
 
 <h2>2413 / 2013-05-22</h2>
 [all]
 <ul>
-<li>Calibration screen automatically appears following an EEPROM format
-<li>Wraparound in popup menus 
+<li>Calibration screen automatically appears following an EEPROM format</li>
+<li>Wraparound in popup menus </li>
 </ul>
 
 [stock]
 <ul>
-<li>More options supported (novario / nogps / nogauges)
-<li>Flash savings
-<li>Mavlink huge rework by Rienk! 
+<li>More options supported (novario / nogps / nogauges)</li>
+<li>Flash savings</li>
+<li>Mavlink huge rework by Rienk! </li>
 </ul>
 
 [sky9x]
 <ul>
-<li>Audio language can now be selected in the general settings! Note that the sound files need to be moved to subfolders of the SOUNDS folder (SOUNDS/en for English, same with it, fr, de, pt, se, cz)
-<li>More settings for the 2nd PPM port
+<li>Audio language can now be selected in the general settings! Note that the sound files need to be moved to subfolders of the SOUNDS folder (SOUNDS/en for English, same with it, fr, de, pt, se, cz)</li>
+<li>More settings for the 2nd PPM port</li>
 </ul>
 
 <h2>2215 / 2013-04-05</h2>
 [all]
 <ul>
-<li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source 
+<li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source </li>
 </ul>
 
 [stock]
 <ul>
-<li>All prompts renumbered to have the "custom" prompts starting at 0 and to be able to use PlayTrack?(GVAR) with Adjust(GVAR) to play tracks sequences 
+<li>All prompts renumbered to have the "custom" prompts starting at 0 and to be able to use PlayTrack?(GVAR) with Adjust(GVAR) to play tracks sequences </li>
 </ul>
 
 [gruvin9x]
 <ul>
-<li>Possibility to have both BEEPER and SPEAKER enable in the same time 
+<li>Possibility to have both BEEPER and SPEAKER enable in the same time </li>
 </ul>
 
 [sky9x]
 <ul>
-<li>Fixed a bug with audio stopped until next reboot in BackgroundMusic with no track selected
-<li>Imperial is now an option selectable in the menus
-<li>Possibility to have both BEEPER and SPEAKER enable in the same time
-<li>New menu in Main Views / Telemetry Views
-<li>Vario sounds improved!
-<li>SD Folders renamed. "9XSOUNDS" becomes "SOUNDS", don't forget to updateyour cards! 
+<li>Fixed a bug with audio stopped until next reboot in BackgroundMusic with no track selected</li>
+<li>Imperial is now an option selectable in the menus</li>
+<li>Possibility to have both BEEPER and SPEAKER enable in the same time</li>
+<li>New menu in Main Views / Telemetry Views</li>
+<li>Vario sounds improved!</li>
+<li>SD Folders renamed. "9XSOUNDS" becomes "SOUNDS", don't forget to updateyour cards!</li>
 </ul>

@@ -1,63 +1,63 @@
 <SVN CURRENT>
 <ul>
-<li>Rx voltage was not displayed on main screen if VFAS or CELLS chosen!
-<li>GVARS can now refer to the GVAR of another phase                    
-<li>Vario and Altitude bug fixes
-<li>INPUTS instead of STICKS for BL activation
-<li>PPM_UNIT=PREC0 / US taken into account in channels view
-<li>DJT removed and receiver number hidden from PXX settings when proto != X16
-<li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]
-<li>Curves presets bug fix
+<li>Rx voltage was not displayed on main screen if VFAS or CELLS chosen!</li>
+<li>GVARS can now refer to the GVAR of another phase</li>
+<li>Vario and Altitude bug fixes</li>
+<li>INPUTS instead of STICKS for BL activation</li>
+<li>PPM_UNIT=PREC0 / US taken into account in channels view</li>
+<li>DJT removed and receiver number hidden from PXX settings when proto != X16</li>
+<li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]</li>
+<li>Curves presets bug fix</li>
+<li>Flight mode sound files now are read from: /SOUNDS/(lang)/modelname/fpname-ON.wav and /SOUNDS/(lang)/modelname/fpname-OFF.wav</li>
 </ul>
 
 <h2>2688 / 2013-07-28</h2>
 <ul>
-<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv                      
+<li>Telemetry logs renamed modelname-yyyy-mm-dd.csv</li>
 </ul>
 
 <h2>2667 / 2013-07-25 (Taranis only)</h2>
 <ul>
-<li>Brightness adjustment added
-<li>Remove units from SWR
-<li>Copy/Cut/Paste of custom functions
-<li>Copy/Cut/Paste of custom switches
-<li>Translations fixes
+<li>Brightness adjustment added</li>
+<li>Remove units from SWR</li>
+<li>Copy/Cut/Paste of custom functions</li>
+<li>Copy/Cut/Paste of custom switches</li>
+<li>Translations fixes</li>
 </ul>
 
 <h2>2647 / 2013-07-21</h2>
 <ul>
-<li>Negative timer display fix.
+<li>Negative timer display fix.</li>
 </ul>
 
 <h2>2604 / 2013-07-13 (Taranis only)</h2>
 <ul>
-<li>Contrast adjustment added 
+<li>Contrast adjustment added</li>
 </ul>
 
 <h2>2590 / 2013-07-08 (Taranis only)</h2>
 <ul>
-<li>First official release version!
+<li>First official release version!</li>
 </ul>
 
 <h2>2491 / 2013-06-24</h2>
 [all]
 <ul>
-<li>PlaySound has now a repeat argument
-<li>FAI mode added (disable telemetry other than A1/A2/RSSI for contests)
-<li>Delays now also apply to 3POS switch!
-<li>RSSI alarms default thresholds now 45 / 42 
+<li>PlaySound has now a repeat argument</li>
+<li>FAI mode added (disable telemetry other than A1/A2/RSSI for contests)</li>
+<li>Delays now also apply to 3POS switch!</li>
+<li>RSSI alarms default thresholds now 45 / 42</li>
 </ul>
 
 <h2>2413 / 2013-05-22</h2>
 [all]
 <ul>
-<li>Calibration screen automatically appears following an EEPROM format
-<li>Wraparound in popup menus 
+<li>Calibration screen automatically appears following an EEPROM format</li>
+<li>Wraparound in popup menus</li>
 </ul>
 
 <h2>2215 / 2012-04-05</h2>
 [all]
 <ul>
-<li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source 
+<li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source</li>
 </ul>
-
