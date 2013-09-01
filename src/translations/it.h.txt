@@ -319,9 +319,9 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "1*\0"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "One"
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "1*\0"
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "One"
 #endif
 
 #if defined(PCBSKY9X)
@@ -377,29 +377,29 @@
 #define TR_MIXNAME             "Nome mix"
 #define TR_EXPONAME            "Nome expo"
 #define TR_BITMAP              "Immagine"
-#define TR_TIMER               "Timer"
-#define TR_ELIMITS             "LimitiEx"
-#define TR_ETRIMS              "TrimEx"
-#define TR_TRIMINC             "Inc Trim"
-#define TR_TTRACE              "T-Trace"
-#define TR_TTRIM               "T-Trim"
-#define TR_BEEPCTR             "Beep Ctr"
-#define TR_PROTO               INDENT"Proto"
-#define TR_PPMFRAME            "PPM frame"
+#define TR_TIMER               TR("Timer","Timer ")
+#define TR_ELIMITS             TR("Limiti.E","Limiti Estesi")
+#define TR_ETRIMS              TR("Trim Ext","Trim Estesi")
+#define TR_TRIMINC             "Trim Step"
+#define TR_TTRACE              TR("T-Source","Throttle Source")
+#define TR_TTRIM               TR("T-Trim","Throttle Trim")
+#define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
+#define TR_PROTO               TR(INDENT "Proto", INDENT "Protocollo")
+#define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Switch"
-#define TR_TRIMS               "Trim"
+#define TR_TRIMS               "Trims"
 #define TR_FADEIN              "Diss.In"
 #define TR_FADEOUT             "Diss.Out"
 #define TR_DEFAULT             "(default)"
 #define TR_CHECKTRIMS          "\003Contr.\004Trim"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Tipo Ciclico"
-#define TR_COLLECTIVE          "Collettivo"
-#define TR_SWASHRING           "AnelloCiclico"
-#define TR_ELEDIRECTION        "Direzione ELE"
-#define TR_AILDIRECTION        "Direzione AIL"
-#define TR_COLDIRECTION        "Direzione COL"
+#define TR_COLLECTIVE          TR("Collettivo","Origine Collettivo")
+#define TR_SWASHRING           "Anello Ciclico"
+#define TR_ELEDIRECTION        TR("Direzione ELE","Direzione Long. cyc.")
+#define TR_AILDIRECTION        TR("Direzione AIL","Direzione Lateral cyc.")
+#define TR_COLDIRECTION        TR("Direzione PIT","Direzione Coll. Passo")
 #define TR_MODE                INDENT"Modo"
 #define TR_NOFREEEXPO          "Expo pieni!"
 #define TR_NOFREEMIXER         "Mixer pieni!"
@@ -426,7 +426,7 @@
 #define TR_CV                  "CV"
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\002ingresso"
-#define TR_RANGE               INDENT"Range"
+#define TR_RANGE               INDENT"Interv."
 #define TR_BAR                 "Barra"
 #define TR_ALARM               INDENT"Allarme"
 #define TR_USRDATA             "Dati"
@@ -439,23 +439,23 @@
 #define TR_HAPTICSTRENGTH      INDENT"Forza"
 #define TR_CONTRAST            "Contrasto"
 #define TR_ALARMS_LABEL        "Allarmi"
-#define TR_BATTERY_RANGE       TR("Battery Range","Intervallo batteria")
+#define TR_BATTERY_RANGE       TR("Interv. Batt","Intervallo batteria")
 #define TR_BATTERYWARNING      INDENT"Avviso batteria"
 #define TR_INACTIVITYALARM     INDENT"Inattivita'"
 #define TR_MEMORYWARNING       INDENT"Avviso memoria"
 #define TR_ALARMWARNING        INDENT"Spento"
 #define TR_RENAVIG             "Navig RotEnc "
-#define TR_THROTTLEREVERSE     TR("Thr inv.", "Thr Inverso")
+#define TR_THROTTLEREVERSE     TR("Thr inv.", "Throttle Inverso")
 #define TR_MINUTEBEEP          INDENT"Minuto"
-#define TR_BEEPCOUNTDOWN       INDENT"Conto rov"
-#define TR_PERSISTENT          INDENT"Persist."
-#define TR_BACKLIGHT_LABEL     "Retroillum."
+#define TR_BEEPCOUNTDOWN       TR(INDENT"Conto rov",INDENT"Conto rovescia")
+#define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistente")
+#define TR_BACKLIGHT_LABEL     TR("Retroillum.","Retroilluminazione")
 #define TR_BLDELAY             INDENT"Durata"
-#define TR_BLONBRIGHTNESS      INDENT"Lumin. ON"
-#define TR_BLOFFBRIGHTNESS     INDENT"Lumin. OFF"
+#define TR_BLONBRIGHTNESS      TR(INDENT"Lumin. ON",INDENT"Luminosità ON")
+#define TR_BLOFFBRIGHTNESS     TR(INDENT"Lumin. OFF",INDENT"Luminosità OFF")
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
-#define TR_THROTTLEWARNING     "All. Thr"
-#define TR_SWITCHWARNING       "Avv. Int."
+#define TR_THROTTLEWARNING     TR("All. Thr", "Allarme Throttle")
+#define TR_SWITCHWARNING       TR("Avv. Int.", "Avviso Interr.")
 #define TR_TIMEZONE            "Ora locale"
 #define TR_RXCHANNELORD        "Ordine ch RX"
 #define TR_SLAVE               "Allievo"
@@ -528,8 +528,8 @@
 #define TR_MENUCURVES          "CURVE"
 #define TR_MENUCURVE           "CURVA"
 #define TR_MENUCUSTOMSWITCH    "SWITCH PERSON."
-#define TR_MENUCUSTOMSWITCHES  "SWITCH PERSON."
-#define TR_MENUCUSTOMFUNC      "SWITCH FUNZIONE"
+#define TR_MENUCUSTOMSWITCHES  TR("SWITCH PERSON.","SWITCH PERSONALIZZATI")
+#define TR_MENUCUSTOMFUNC      TR("FUNZ. PERSON.","FUNZIONI PERSONALIZZATE")
 #define TR_MENUTELEMETRY       "TELEMETRIA"
 #define TR_MENUTEMPLATES       "ESEMPI GUIDA"
 #define TR_MENUSTAT            "STATS"
@@ -552,8 +552,8 @@
 #define TR_COPY_MODEL          "Copia Modello"
 #define TR_MOVE_MODEL          "Sposta Modello"
 #define TR_BACKUP_MODEL        "Salva Modello"
-#define TR_DELETE_MODEL        "Canc. Modello" // TODO merged into DELETEMODEL?
-#define TR_RESTORE_MODEL       "Ripr. Modello"
+#define TR_DELETE_MODEL        TR("Canc. Modello","Cancella Modello") // TODO merged into DELETEMODEL?
+#define TR_RESTORE_MODEL       TR("Ripr. Modello","Ripristina Modello")
 #define TR_SDCARD_ERROR        "Errore SD"
 #define TR_NO_SDCARD           "No SDCARD"
 #define TR_INCOMPATIBLE        "Incompatibile"
