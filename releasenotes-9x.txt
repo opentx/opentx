@@ -1,4 +1,8 @@
 <SVN CURRENT>
+[all]
+<ul>
+<li>Fixes in translations (FR, IT, PT)</li>
+</ul>
 
 <h2>2746 / 2013-08-30</h2>
 [stock]
