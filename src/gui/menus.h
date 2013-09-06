@@ -301,13 +301,13 @@ void displayWarning(uint8_t event);
 
 #if defined(CPUARM)
   #define DISPLAY_WARNING       (*popupFunc)
-  #define POPUP_WARNING(s)      do { s_warning = s; popupFunc = displayWarning; } while(0)
-  #define POPUP_CONFIRMATION(s) do { s_warning = s; s_warning_type = WARNING_TYPE_CONFIRM; popupFunc = displayWarning; } while(0)
-  #define POPUP_INPUT(s, func, start, min, max) do { s_warning = s; s_warning_type = WARNING_TYPE_INPUT; popupFunc = func; s_warning_input_value = start; s_warning_input_min = min; s_warning_input_max = max; } while(0)
+  #define POPUP_WARNING(s)      (s_warning = s, popupFunc = displayWarning)
+  #define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM, popupFunc = displayWarning)
+  #define POPUP_INPUT(s, func, start, min, max) (s_warning = s, s_warning_type = WARNING_TYPE_INPUT, popupFunc = func, s_warning_input_value = start, s_warning_input_min = min, s_warning_input_max = max)
 #else
   #define DISPLAY_WARNING       displayWarning
   #define POPUP_WARNING(s)      s_warning = s
-  #define POPUP_CONFIRMATION(s) do { s_warning = s; s_warning_type = WARNING_TYPE_CONFIRM; } while(0)
+  #define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM)
 #endif
 
 #if defined(SDCARD) || (defined(ROTARY_ENCODER_NAVIGATION) && !defined(CPUM64))

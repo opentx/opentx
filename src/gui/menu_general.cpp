@@ -202,6 +202,7 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(FAI_CHOICE)
   if (s_warning_result) {
+    s_warning_result = 0;
     g_eeGeneral.fai = true;
     eeDirty(EE_GENERAL);
   }
@@ -641,21 +642,7 @@ void onSdManagerMenu(const char *result)
     pushMenu(menuGeneralSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
-    displayPopup(STR_FORMATTING);
-    closeLogs();
-#if defined(PCBSKY9X)
-    Card_state = SD_ST_DATA;
-#endif
-#if defined(CPUARM)
-    audioQueue.stopSD();
-#endif
-    if (f_mkfs(0, 1, 0) == FR_OK) {
-      f_chdir("/");
-      reusableBuffer.sdmanager.offset = -1;
-    }
-    else {
-      POPUP_WARNING(STR_SDCARD_ERROR);
-    }
+    POPUP_CONFIRMATION(PSTR("Confirm Format?"));
   }
   else if (result == STR_DELETE_FILE) {
     f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
@@ -708,6 +695,27 @@ void menuGeneralSdManager(uint8_t event)
   fno.lfsize = sizeof(lfn);
 #else
   char lfn[SD_SCREEN_FILE_LENGTH];
+#endif
+
+#if defined(SDCARD)
+  if (s_warning_result) {
+    s_warning_result = 0;
+    displayPopup(STR_FORMATTING);
+    closeLogs();
+#if defined(PCBSKY9X)
+    Card_state = SD_ST_DATA;
+#endif
+#if defined(CPUARM)
+    audioQueue.stopSD();
+#endif
+    if (f_mkfs(0, 1, 0) == FR_OK) {
+      f_chdir("/");
+      reusableBuffer.sdmanager.offset = -1;
+    }
+    else {
+      POPUP_WARNING(STR_SDCARD_ERROR);
+    }
+  }
 #endif
 
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sdmanager.count);
