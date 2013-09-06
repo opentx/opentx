@@ -722,6 +722,15 @@ void menuGeneralSdManager(uint8_t event)
       break;
 
 #if defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_MENU):
+      killEvents(event);
+//      MENU_ADD_ITEM(STR_SD_INFO);  TODO: Implement
+      MENU_ADD_ITEM(STR_SD_FORMAT);
+      menuHandler = onSdManagerMenu;
+      break;
+#endif
+
+#if defined(PCBTARANIS)
     case EVT_KEY_BREAK(KEY_ENTER):
 #else
     CASE_EVT_ROTARY_BREAK
@@ -744,22 +753,16 @@ void menuGeneralSdManager(uint8_t event)
       // no break;
     }
 
-#if defined(PCBTARANIS)
-    case EVT_KEY_LONG(KEY_MENU):
-      killEvents(event);
-//      MENU_ADD_ITEM(STR_SD_INFO);  TODO: Implement
-      MENU_ADD_ITEM(STR_SD_FORMAT);
-      menuHandler = onSdManagerMenu;
-      break;
-#endif
-
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
+#if !defined(PCBTARANIS)
       if (m_posVert == 0) {
         MENU_ADD_ITEM(STR_SD_INFO);
         MENU_ADD_ITEM(STR_SD_FORMAT);
       }
-      else {
+      else
+#endif
+      {
 #if defined(CPUARM)
         uint8_t index = m_posVert-1-s_pgOfs;
         // TODO duplicated code for finding extension
