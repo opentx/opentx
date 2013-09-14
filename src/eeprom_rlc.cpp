@@ -35,7 +35,6 @@
  */
 
 #include "opentx.h"
-#include "stdio.h"
 #include "inttypes.h"
 #include "string.h"
 
@@ -702,6 +701,11 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   EFile::swap(theFile.m_fileId, FILE_TMP); // s_sync_write is set to false in swap();
 
   f_close(&g_oLogFile);
+
+#if defined(CPUARM)
+  eeLoadModelHeader(i_fileDst, &modelHeaders[i_fileDst]);
+#endif
+
   return NULL;
 }
 #endif
@@ -894,17 +898,6 @@ void eeLoadModelName(uint8_t id, char *name)
   }
 }
 
-#if defined(CPUARM)
-void eeLoadModelHeader(uint8_t id, ModelHeader *header)
-{
-  memclear(header, sizeof(ModelHeader));
-  if (id < MAX_MODELS) {
-    theFile.openRlc(FILE_MODEL(id));
-    theFile.readRlc((uint8_t*)header, sizeof(ModelHeader));
-  }
-}
-#endif
-
 bool eeModelExists(uint8_t id)
 {
     return EFile::exists(FILE_MODEL(id));
@@ -1045,10 +1038,19 @@ void eeCheck(bool immediately)
 }
 
 #if defined(CPUARM)
+void eeLoadModelHeader(uint8_t id, ModelHeader *header)
+{
+  memclear(header, sizeof(ModelHeader));
+  if (id < MAX_MODELS) {
+    theFile.openRlc(FILE_MODEL(id));
+    theFile.readRlc((uint8_t*)header, sizeof(ModelHeader));
+  }
+}
+
 bool eeCopyModel(uint8_t dst, uint8_t src)
 {
   if (theFile.copy(FILE_MODEL(dst), FILE_MODEL(src))) {
-    memcpy(modelHeaders[dst].name, modelHeaders[src].name, sizeof(g_model.header.name));
+    memcpy(&modelHeaders[dst], &modelHeaders[src], sizeof(ModelHeader));
     return true;
   }
   else {
@@ -1060,9 +1062,9 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
 {
   EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2));
 
-  char tmp[sizeof(g_model.header.name)];
-  memcpy(tmp, modelHeaders[id1].name, sizeof(g_model.header.name));
-  memcpy(modelHeaders[id1].name, modelHeaders[id2].name, sizeof(g_model.header.name));
-  memcpy(modelHeaders[id2].name, tmp, sizeof(g_model.header.name));
+  char tmp[sizeof(g_model.header)];
+  memcpy(tmp, &modelHeaders[id1], sizeof(ModelHeader));
+  memcpy(&modelHeaders[id1], &modelHeaders[id2], sizeof(ModelHeader));
+  memcpy(&modelHeaders[id2], tmp, sizeof(ModelHeader));
 }
 #endif
