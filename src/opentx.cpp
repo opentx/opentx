@@ -1034,7 +1034,7 @@ bool getSwitch(int8_t swtch)
           }
 #else
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-            y = (int16_t)3 * cs->v2; // it's a Timer
+            y = (int16_t)3 * (128+cs->v2); // it's a Timer
           }
           else if (cs->v1 >= MIXSRC_GVAR1) {
             y = cs->v2; // it's a GVAR
