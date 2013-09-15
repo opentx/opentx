@@ -18,7 +18,7 @@
 #  ffmpeg, sox, adconvertor ttscmd (2cnd speach centre)
 # have fun!
 # Sound pack maintainers (incomplete list) by language alphabetical order
-# Czeck      : Martin Hotar
+# Czech      : Martin Hotar
 # French     : Bertrand Songis & André Bernet
 # English    : Rob Thompson & Martin Hotar 
 # German     : Romolo Manfredini (Some corrections by Peer)
@@ -171,8 +171,8 @@ def ttsEn():
                     (u"time up!", "timerlt3", NO_ALTERNATE),
                     (u"A1,low", "a1_org", NO_ALTERNATE),
                     (u"A1,critical", "a1_red", NO_ALTERNATE),
-                    (u"A2,low", "a1_org", NO_ALTERNATE),
-                    (u"A2,critical", "a1_red", NO_ALTERNATE),
+                    (u"A2,low", "a2_org", NO_ALTERNATE),
+                    (u"A2,critical", "a2_red", NO_ALTERNATE),
                     (u"RF signal, low", "rssi_org", NO_ALTERNATE),
                     (u"RF signal, critical", "rssi_red", NO_ALTERNATE),
                     (u"radio antenna defective", "swr_red", NO_ALTERNATE),
@@ -609,7 +609,7 @@ def ttsCz():
                            u"otáčka za minutu", u"otáčky za minutu", u"otáček za minutu", u"otáčky za minutu",
                            u"gé", u"gé", u"gé", u"gé"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+118+i)))
-        
+
     for s, f, a in [(u"střed trimu", "midtrim", 495),
                     (u"maximum trimu", "endtrim", NO_ALTERNATE),
                     (u"baterie rádia je vybitá", "lowbatt", 485),
@@ -620,38 +620,42 @@ def ttsCz():
                     (u"Oupn najn iks", "tada", 480),
                     (u"dvacet sekund", "timer20", 500),
                     (u"třicet sekund", "timer30", 501),
+                    (u"deset sekund", "timer10", NO_ALTERNATE),
+                    (u"time up!", "timerlt3", NO_ALTERNATE),
+                    (u"A1,nízká", "a1_org", NO_ALTERNATE),
+                    (u"A1,kritická", "a1_red", NO_ALTERNATE),
+                    (u"A2,nízká", "a2_org", NO_ALTERNATE),
+                    (u"A2,kritická", "a2_red", NO_ALTERNATE),
+                    (u"nízký RF signál", "rssi_org", NO_ALTERNATE),
+                    (u"kritický RF signál", "rssi_red", NO_ALTERNATE),
+                    (u"problém s anténou rádia", "swr_red", NO_ALTERNATE),
+                    (u"telemetrie ztracena", "telemko", NO_ALTERNATE),
+                    (u"telemetrie je funkční", "telemok", NO_ALTERNATE),
                    ]:
         systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
-                 (u"podvozek je zasunut", "gearup"),
-                 (u"podvozek je vysunut", "geardn"),
-                 (u"klapky jsou zapnuty", "flapup"),
-                 (u"klapky jsou vypnuty", "flapdn"),
-                 (u"přistání", "attero"),
-                 (u"trenér je zapnutý", "trnon"),
-                 (u"trenér je vypnutý", "trnoff"),
-                 (u"motor je vypnutý", "engoff"),
-                 (u"jsi příliš vysoko", "tohigh"),
-                 (u"jsi příliš nízko", "tolow"),
-                 (u"vybitá baterie", "lowbat"),
-                 (u"krou zapnutý", "crowon"),
-                 (u"krou vypnutý", "crowof"),
-                 (u"nízký signál!", "siglow"),
-                 (u"kritický signál!", "sigcrt"),
-                 (u"rychlý mód aktivován", "spdmod"),
-                 (u"termický mód aktivován", "thmmod"),
-                 (u"normální mód aktivován", "nrmmod"),
-                 (u"režim jedna", "fm-1"),
-                 (u"režim dva", "fm-2"),
-                 (u"režim tři", "fm-3"),
-                 (u"režim čtyři", "fm-4"),
-                 (u"režim pět", "fm-5"),
-                 (u"režim šest", "fm-6"),
-                 (u"režim sedum", "fm-7"),
-                 (u"režim osm", "fm-8"),
-                 (u"vario!, zapnuto", "vrion"),
-                 (u"vario!, vypnuto", "vrioff"),
-
+                 (u"podvozek je zasunut", "podvozek0"),
+                 (u"podvozek je vysunut", "podvozek1"),
+                 (u"klapky jsou zapnuty", "klapky1"),
+                 (u"klapky jsou vypnuty", "klapky0"),
+                 (u"trenér je zapnut", "trener1"),
+                 (u"trenér je vypnutý", "trener0"),
+                 (u"motor je vypnut", "motor0"),
+                 (u"motor je aktivován", "motor1"),
+                 (u"jsi příliš vysoko", "vysoko"),
+                 (u"jsi příliš nízko", "nizko"),
+                 (u"baterie modelu je vybitá", "bytvybita"),
+                 (u"dochází palivo", "palivo"),
+                 (u"nízký signál!", "nsignal"),
+                 (u"kritický signál!", "ksignal"),
+                 (u"rychlý režim aktivován", "r_rychly"),
+                 (u"termický režim aktivován", "r_termik"),
+                 (u"normální režim aktivován", "r_norm"),
+                 (u"režim start aktivován", "r_start"),
+                 (u"režim přistání aktivován", "r_pristani"),
+                 (u"vario je zapnuto", "vario0"),
+                 (u"vario je vypnuto", "vario1"),
+                 (u"start povolen", "stpovolen"),
                  ]):
         sounds.append((s, filename(f, PROMPT_CUSTOM_BASE+i)))
     return systemSounds, sounds
@@ -811,14 +815,14 @@ if __name__ == "__main__":
                 if board in ("sky9x", "taranis"):
                     l += u"SOUNDS/%s/SYSTEM;" % directory
                 l += f + u";" + s + u"\n"
-                csvFile.write(l.encode("latin-1"))
+                csvFile.write(l.encode("utf-8"))
         for s, f in sounds:
             if s and f:
                 l = u""
                 if board in ("sky9x", "taranis"):
                     l += u"SOUNDS/%s;" % directory
                 l += f + u";" + s + u"\n"
-                csvFile.write(l.encode("latin-1"))
+                csvFile.write(l.encode("utf-8"))
         csvFile.close()
             
     if "zip" in sys.argv:
