@@ -1067,4 +1067,10 @@ void eeSwapModels(uint8_t id1, uint8_t id2)
   memcpy(&modelHeaders[id1], &modelHeaders[id2], sizeof(ModelHeader));
   memcpy(&modelHeaders[id2], tmp, sizeof(ModelHeader));
 }
+
+void eeDeleteModel(uint8_t idx)
+{
+  EFile::rm(FILE_MODEL(idx));
+  memset(&modelHeaders[idx], 0, sizeof(ModelHeader));
+}
 #endif

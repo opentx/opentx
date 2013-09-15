@@ -221,14 +221,14 @@ inline void eeFlush() { theFile.flush(); }
 #define DISPLAY_PROGRESS_BAR(x)
 #endif
 
-#define eeDeleteModel(x) EFile::rm(FILE_MODEL(x))
-
 #if defined(CPUARM)
 bool eeCopyModel(uint8_t dst, uint8_t src);
 void eeSwapModels(uint8_t id1, uint8_t id2);
+void eeDeleteModel(uint8_t idx);
 #else
 #define eeCopyModel(dst, src) theFile.copy(FILE_MODEL(dst), FILE_MODEL(src))
 #define eeSwapModels(id1, id2) EFile::swap(FILE_MODEL(id1), FILE_MODEL(id2))
+#define eeDeleteModel(idx) EFile::rm(FILE_MODEL(idx))
 #endif
 
 #if defined(SDCARD)
