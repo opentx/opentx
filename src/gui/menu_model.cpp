@@ -263,6 +263,16 @@ bool listSdFiles(const char *path, const char *extension, const uint8_t maxlen, 
 }
 #endif
 
+#if defined(PCBTARANIS)
+  static int8_t modelselBitmapIdx;
+  static uint8_t modelselBitmap[MODEL_BITMAP_SIZE];
+  #define MODELSEL_W 133
+  #define BMP_DIRTY()  modelselBitmapIdx = -1
+#else
+  #define MODELSEL_W LCD_W
+  #define BMP_DIRTY()
+#endif
+
 #if defined(NAVIGATION_MENUS)
 void onModelSelectMenu(const char *result)
 {
@@ -308,17 +318,12 @@ void onModelSelectMenu(const char *result)
   else {
     // The user choosed a file on SD to restore
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
+    BMP_DIRTY();
     if (!s_warning && g_eeGeneral.currModel == sub)
       eeLoadModel(sub);
   }
 #endif
 }
-#endif
-
-#if defined(PCBTARANIS)
-  #define MODELSEL_W 133
-#else
-  #define MODELSEL_W LCD_W
 #endif
 
 void menuModelSelect(uint8_t event)
@@ -328,6 +333,7 @@ void menuModelSelect(uint8_t event)
     eeDeleteModel(m_posVert); // delete file
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
+    BMP_DIRTY();
   }
 
   uint8_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
@@ -358,11 +364,6 @@ void menuModelSelect(uint8_t event)
   }
 #endif
 
-#if defined(PCBTARANIS)
-  static int8_t modelselBitmapIdx;
-  static uint8_t modelselBitmap[MODEL_BITMAP_SIZE];
-#endif
-
   int8_t sub = m_posVert;
 
   switch (event)
@@ -372,9 +373,7 @@ void menuModelSelect(uint8_t event)
         if (sub >= LCD_LINES-1) s_pgOfs = sub-LCD_LINES+2;
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
-#if defined(PCBTARANIS)
-        modelselBitmapIdx = -1;
-#endif
+        BMP_DIRTY();
         eeCheck(true);
         break;
       case EVT_KEY_LONG(KEY_EXIT):
@@ -442,7 +441,9 @@ void menuModelSelect(uint8_t event)
           uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
 
           if (s_copyMode == COPY_MODE) {
-            if (!eeCopyModel(cur, s_copySrcRow))
+            if (eeCopyModel(cur, s_copySrcRow))
+              BMP_DIRTY();
+            else
               cur = sub;
           }
 
@@ -451,6 +452,7 @@ void menuModelSelect(uint8_t event)
             uint8_t src = cur;
             cur = (s_copyTgtOfs > 0 ? cur+MAX_MODELS-1 : cur+1) % MAX_MODELS;
             eeSwapModels(src, cur);
+            BMP_DIRTY();
             if (src == s_copySrcRow)
               s_copySrcRow = cur;
             else if (cur == s_copySrcRow)
