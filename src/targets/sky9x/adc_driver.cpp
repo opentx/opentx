@@ -37,8 +37,12 @@
 #include "../opentx.h"
 
 volatile uint16_t Analog_values[NUMBER_ANALOG];
-const char ana_direction[NUMBER_ANALOG] = {'STICK_AIL_DIR', 'STICK_RUD_DIR', 0, 'STICK_ELE_DIR' ,0 , 'STICK_THR_DIR',0};
 
+#if defined(STICK_RUD_REV) || defined(STICK_AIL_REV) || defined(STICK_ELE_REV) || defined(STICK_THR_REV)
+const char ana_direction[NUMBER_ANALOG] = {'STICK_AIL_REV', 'STICK_RUD_REV', 0, 'STICK_ELE_REV' ,0 , 'STICK_THR_REV',0};
+#else
+const char ana_direction[NUMBER_ANALOG] = {0, 0, 0, 0 ,0 ,0 ,0};
+#endif
 
 
 // Settings for mode register ADC_MR
