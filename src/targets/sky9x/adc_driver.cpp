@@ -36,7 +36,10 @@
 
 #include "../opentx.h"
 
-uint16_t Analog_values[NUMBER_ANALOG];
+volatile uint16_t Analog_values[NUMBER_ANALOG];
+const char ana_direction[NUMBER_ANALOG] = {'STICK_AIL_DIR', 'STICK_RUD_DIR', 0, 'STICK_ELE_DIR' ,0 , 'STICK_THR_DIR',0};
+
+
 
 // Settings for mode register ADC_MR
 // USEQ off - silicon problem, doesn't work
@@ -111,4 +114,13 @@ void adcRead()
   if (get_tmr10ms() >= 100 && temperature > maxTemperature) {
     maxTemperature = temperature;
   }
+
+  // adc direction correct
+  uint32_t i ;
+  for (i=0; i<NUMBER_ANALOG; i++) {
+    if (ana_direction[i]) {
+      Analog_values[i] = 4096-Analog_values[i];
+    }
+  }  
+  
 }

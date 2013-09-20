@@ -174,6 +174,32 @@ void disable_ssc();
 #define init_dsm2(port) init_main_ppm(5000, 0); init_ssc()
 #define disable_dsm2(port) disable_ssc()
 
+// Stick Directions
+#if defined(STICK_AIL_REV)
+	#define STICK_AIL_DIR = 1;
+#else
+	#define STICK_AIL_DIR = 0;
+#endif
+
+#if defined(STICK_ELE_REV)
+	#define STICK_ELE_DIR = 1;
+#else
+	#define STICK_ELE_DIR = 0;
+#endif
+
+#if defined(STICK_RUD_REV)
+	#define STICK_RUD_DIR = 1;
+#else
+	#define STICK_RUD_DIR = 0;
+#endif
+
+#if defined(STICK_THR_REV)
+	#define STICK_THR_DIR = 1;
+#else
+	#define STICK_THR_DIR = 0;
+#endif
+
+
 // SD driver
 #if defined(SIMU)
   #define sdInit()
@@ -206,7 +232,7 @@ void disable_ssc();
 // ADC driver
 void adcInit();
 void adcRead(void);
-extern uint16_t Analog_values[];
+//extern uint16_t Analog_values[];
 
 // Buzzer driver
 void buzzerSound(uint8_t duration);
