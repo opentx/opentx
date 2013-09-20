@@ -2265,8 +2265,36 @@ BeepANACenter evalSticks(uint8_t mode)
       v = -v;
 #endif
 
+
+#if defined(STICK_THR_REV)   
+    v = -v;
+    if (g_model.throttleReversed && ch==THR_STICK)
+      v = +v;
+#else
+    //normal stick operation but reveresed in model config
     if (g_model.throttleReversed && ch==THR_STICK)
       v = -v;
+#endif
+      
+#if defined(STICK_AIL_REV)   
+    if (ch==AIL_STICK)
+      v = -v;
+#endif
+      
+#if defined(STICK_ELE_REV)   
+    if (ch==ELE_STICK)
+      v = -v;
+#endif
+
+#if defined(STICK_RUD_REV)   
+    if (ch==RUD_STICK)
+      v = -v;
+#endif
+
+  
+      
+ /* end rob hack */       
+      
 
 #if defined(EXTRA_3POS)
     if (i == POT1+EXTRA_3POS-1) {

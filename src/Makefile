@@ -89,6 +89,11 @@ NAVIGATION = NO
 # Values = YES, NO 
 AUTOSWITCH = NO
 
+# Swap Stick Inputs for AIL,ELE,RUD,THR
+# Used in some scenarios where stick/pot entries
+# cannot be changed by soldering the pots.
+
+
 # Sources automatic selection
 # Values = YES, NO 
 AUTOSOURCE = NO
@@ -739,6 +744,22 @@ endif
 
 ifeq ($(AUTOSOURCE), YES)
   CPPDEFS += -DAUTOSOURCE
+endif
+
+ifeq ($(STICK_AIL_REV), YES)
+  CPPDEFS += -DSTICK_AIL_REV
+endif
+
+ifeq ($(STICK_ELE_REV), YES)
+  CPPDEFS += -DSTICK_ELE_REV
+endif
+
+ifeq ($(STICK_RUD_REV), YES)
+  CPPDEFS += -DSTICK_RUD_REV
+endif
+
+ifeq ($(STICK_THR_REV), YES)
+  CPPDEFS += -DSTICK_THR_REV
 endif
 
 ifeq ($(DBLKEYS), YES)
