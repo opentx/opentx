@@ -746,21 +746,10 @@ ifeq ($(AUTOSOURCE), YES)
   CPPDEFS += -DAUTOSOURCE
 endif
 
-ifeq ($(STICK_AIL_REV), YES)
-  CPPDEFS += -DSTICK_AIL_REV
+ifeq ($(TARANIS_STICKS), YES)
+  CPPDEFS += -DTARANIS_STICKS
 endif
 
-ifeq ($(STICK_ELE_REV), YES)
-  CPPDEFS += -DSTICK_ELE_REV
-endif
-
-ifeq ($(STICK_RUD_REV), YES)
-  CPPDEFS += -DSTICK_RUD_REV
-endif
-
-ifeq ($(STICK_THR_REV), YES)
-  CPPDEFS += -DSTICK_THR_REV
-endif
 
 ifeq ($(DBLKEYS), YES)
   ifeq ($(PCB), $(filter $(PCB), 9XR 9XR128 9XR2561))

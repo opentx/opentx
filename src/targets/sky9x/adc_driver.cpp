@@ -38,10 +38,8 @@
 
 volatile uint16_t Analog_values[NUMBER_ANALOG];
 
-#if defined(STICK_RUD_REV) || defined(STICK_AIL_REV) || defined(STICK_ELE_REV) || defined(STICK_THR_REV)
-const char ana_direction[NUMBER_ANALOG] = {STICK_AIL_REV, STICK_RUD_REV, 0, STICK_ELE_REV ,0 , STICK_THR_REV,0, 0, 0};
-#else
-const char ana_direction[NUMBER_ANALOG] = {0, 0, 0, 0 ,0 ,0 ,0 , 0, 0};
+#if defined(TARANIS_STICKS)
+const char ana_direction[NUMBER_ANALOG] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
 #endif
 
 
@@ -120,11 +118,12 @@ void adcRead()
   }
 
   // adc direction correct
+  #if defined(TARANIS_STICKS)
   uint32_t i ;
   for (i=0; i<NUMBER_ANALOG; i++) {
     if (ana_direction[i]) {
       Analog_values[i] = 4096-Analog_values[i];
     }
   }  
-  
+  #endif
 }
