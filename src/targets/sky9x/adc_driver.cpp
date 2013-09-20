@@ -39,9 +39,9 @@
 volatile uint16_t Analog_values[NUMBER_ANALOG];
 
 #if defined(STICK_RUD_REV) || defined(STICK_AIL_REV) || defined(STICK_ELE_REV) || defined(STICK_THR_REV)
-const char ana_direction[NUMBER_ANALOG] = {'STICK_AIL_REV', 'STICK_RUD_REV', 0, 'STICK_ELE_REV' ,0 , 'STICK_THR_REV',0};
+const char ana_direction[NUMBER_ANALOG] = {STICK_AIL_REV, STICK_RUD_REV, 0, STICK_ELE_REV ,0 , STICK_THR_REV,0, 0, 0};
 #else
-const char ana_direction[NUMBER_ANALOG] = {0, 0, 0, 0 ,0 ,0 ,0};
+const char ana_direction[NUMBER_ANALOG] = {0, 0, 0, 0 ,0 ,0 ,0 , 0, 0};
 #endif
 
 
