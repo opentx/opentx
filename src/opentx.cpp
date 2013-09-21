@@ -2267,7 +2267,7 @@ BeepANACenter evalSticks(uint8_t mode)
 
     if (g_model.throttleReversed && ch==THR_STICK)
       v = -v;
-      
+
 
 #if defined(EXTRA_3POS)
     if (i == POT1+EXTRA_3POS-1) {
@@ -2314,6 +2314,15 @@ BeepANACenter evalSticks(uint8_t mode)
       if (d && (ch==ELE_STICK || ch==AIL_STICK))
         v = (int32_t(v)*calc100toRESX(g_model.swashR.value))/int32_t(d);
 #endif
+
+#if defined(CENTERSTICKS)
+	if(ch==THR_STICK || ch == ELE_STICK || ch == RUD_STICK || ch == AIL_STICK){
+		uint8_t stmp = (uint16_t)abs(v) / 16;
+		if(stmp <= 0.1 && stmp >= -0.1){
+			v = 0;	
+		}
+	}	
+#endif   
 
       rawAnas[ch] = v;
       anas[ch] = v; //set values for mixer
