@@ -1,5 +1,7 @@
 <SVN CURRENT>
 
+<h2>2768 / 2013-09-20</h2>
+
 <h2>2751 / 2013-09-01</h2>
 <ul>
 <li>Fixes in translations (FR, IT, PT)</li>
