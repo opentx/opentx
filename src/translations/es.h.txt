@@ -164,14 +164,14 @@
   #if defined(PCBSKY9X)
     #define TR_PLAY_TRACK      "Oir\0     "
   #else
-    #define TR_PLAY_TRACK      "Oir pista "
+    #define TR_PLAY_TRACK      "Oir pista\0"
   #endif
   #define TR_PLAY_BOTH         "Oir Ambos\0"
   #define TR_PLAY_VALUE        "Oir valor\0"
 #else
-  #define TR_PLAY_TRACK        "[Oir pista]"
-  #define TR_PLAY_BOTH         "[Oir Ambos]"
-  #define TR_PLAY_VALUE        "[Oir Valor]"
+  #define TR_PLAY_TRACK        "[OirPista]"
+  #define TR_PLAY_BOTH         "[OirAmbos]"
+  #define TR_PLAY_VALUE        "[OirValor]"
 #endif
 
 #define TR_CFN_VOLUME          "Volumen\0   "
