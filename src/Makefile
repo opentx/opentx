@@ -215,9 +215,6 @@ TTS = $(TRANSLATIONS)
 # Values = imperial, metric 
 UNITS = METRIC
 
-# CENTER STICK INPUTS
-CENTERSTICKS = YES
-
 # Default Tx Mode
 # Values = NO / 1 / 2 / 3 / 4
 DEFAULT_MODE = NO
@@ -751,10 +748,6 @@ endif
 
 ifeq ($(TARANIS_STICKS), YES)
   CPPDEFS += -DTARANIS_STICKS
-endif
-
-ifeq ($(CENTERSTICKS), YES)
-  CPPDEFS += -DCENTERSTICKS
 endif
 
 
