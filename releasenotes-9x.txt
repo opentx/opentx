@@ -1,6 +1,21 @@
 <SVN CURRENT>
 
 <h2>2768 / 2013-09-20</h2>
+[all]
+<ul>
+<li>Name badly displayed after SD Model Restore</li>
+</ul>
+
+[stock]
+<ul>
+<li>Custom switches not working when comparing a timer with a value (stock only without telemetry mod)</li>
+</ul>
+
+[sky9x/gruvin]
+<ul>
+<li>Fixes in logging function</li>
+<li>Confirmation Popup before SD Format</li>
+</ul>
 
 <h2>2751 / 2013-09-01</h2>
 [all]
@@ -9,14 +24,18 @@
 </ul>
 
 <h2>2746 / 2013-08-30</h2>
+[all]
+<ul>
+<li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]</li>
+<li>INPUTS instead of STICKS for BL activation</li>
+<li>Curves presets bug fix</li>
+</ul>
+
 [stock]
 <ul>
 <li>Fix bug with Battery calibration</li>
 <li>14051 can be used for THR and AIL connections (telemetry)</li>
 <li>CH1 PPM output was truncated</li>
-<li>INPUTS instead of STICKS for BL activation</li>
-<li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]</li>
-<li>Curves presets bug fix</li>
 </ul>
 
 [sky9x]

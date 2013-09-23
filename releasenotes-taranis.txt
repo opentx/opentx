@@ -1,6 +1,11 @@
 <SVN CURRENT>
 
 <h2>2768 / 2013-09-20</h2>
+<ul>
+<li>SD card format confirmation popup</li>
+<li>Name badly displayed after SD Model Restore</li>
+<li>Model image not reloaded after Copy/Move/Delete/Restore</li>
+</ul>
 
 <h2>2751 / 2013-09-01</h2>
 <ul>
@@ -14,7 +19,7 @@
 <li>Vario and Altitude bug fixes</li>
 <li>INPUTS instead of STICKS for BL activation</li>
 <li>PPM_UNIT=PREC0 / US taken into account in channels view</li>
-<li>DJT removed and receiver number hidden from PXX settings when proto != X16</li>
+<li>DJT removed and receiver number hidden from PXX settings when proto != D16</li>
 <li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]</li>
 <li>Curves presets bug fix</li>
 <li>Flight mode sound files now are read from: /SOUNDS/(lang)/modelname/fpname-ON.wav and /SOUNDS/(lang)/modelname/fpname-OFF.wav</li>
