@@ -1336,9 +1336,9 @@ uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
 {
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     if (phase == 0) return 0;
-    int16_t trim = GVAR_VALUE(idx, phase); // TODO phase at the end everywhere to be consistent!
-    if (trim <= GVAR_MAX) return phase;
-    uint8_t result = trim-GVAR_MAX-1;
+    int16_t val = GVAR_VALUE(idx, phase); // TODO phase at the end everywhere to be consistent!
+    if (val <= GVAR_MAX) return phase;
+    uint8_t result = val-GVAR_MAX-1;
     if (result >= phase) result++;
     phase = result;
   }

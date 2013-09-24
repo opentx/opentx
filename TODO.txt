@@ -1,5 +1,0 @@
-TODO list (no particular order)
-
-- DSM2 channel order (Cam)
-- Variometer (rate as cm/sec)
-- Trace telemetry data
