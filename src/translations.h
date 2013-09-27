@@ -581,6 +581,7 @@ extern const pm_char STR_OWN[];
 extern const pm_char STR_ROTARY_ENCODER[];
 extern const pm_char STR_DATE[];
 extern const pm_char STR_CHANNELS_MONITOR[];
+extern const pm_char STR_PATH_TOO_LONG[];
 
 #if defined(VOICE) && defined(CPUARM)
   struct LanguagePack {

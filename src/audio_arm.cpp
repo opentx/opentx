@@ -659,6 +659,11 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   if (!sdMounted())
     return;
 
+  if (strlen(filename) > AUDIO_FILENAME_MAXLEN) {
+    POPUP_WARNING(STR_PATH_TOO_LONG);
+    return;
+  }
+
   CoEnterMutexSection(audioMutex);
 
   if (flags & PLAY_BACKGROUND) {

@@ -555,13 +555,18 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   if (!ent) return FR_NO_FILE;
 
 #if defined(WIN32) || !defined(__GNUC__) || defined(__APPLE__)
-  if (ent->d_type == DT_DIR)
+  fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
 #else
-  if (ent->d_type == simu::DT_DIR)
+  if (ent->d_type == simu::DT_UNKNOWN) {
+    struct stat buf;
+    lstat(ent->d_name, &buf);
+    fil->fattrib = (S_ISDIR(buf.st_mode) ? AM_DIR : 0);
+  }
+  else {
+    fil->fattrib = (ent->d_type == simu::DT_DIR ? AM_DIR : 0);
+  }
 #endif
-    fil->fattrib = AM_DIR;
-  else
-    fil->fattrib = 0;
+
   memset(fil->fname, 0, 13);
   memset(fil->lfname, 0, SD_SCREEN_FILE_LENGTH);
   strncpy(fil->fname, ent->d_name, 13-1);
