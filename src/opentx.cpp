@@ -2155,6 +2155,8 @@ void resetAll()
   for (uint8_t i=0; i<NUM_CSW; i++)
     csLastValue[i] = CS_LAST_VALUE_INIT;
 
+  s_last_switch_value = 0;
+
   RESET_THR_TRACE();
 }
 
