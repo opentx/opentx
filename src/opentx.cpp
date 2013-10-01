@@ -1301,9 +1301,6 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 #endif
 
 #if defined(GVARS)
-uint8_t s_gvar_timer = 0;
-uint8_t s_gvar_last = 0;
-
 #if defined(PCBSTD)
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
 {
@@ -1327,8 +1324,6 @@ void setGVarValue(uint8_t idx, int8_t value)
   if (GVAR_VALUE(idx, -1) != value) {
     GVAR_VALUE(idx, -1) = value;
     eeDirty(EE_MODEL);
-    s_gvar_last = idx;
-    s_gvar_timer = GVAR_DISPLAY_TIME;
   }
 }
 #else
@@ -1368,8 +1363,6 @@ void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
   if (GVAR_VALUE(idx, phase) != value) {
     GVAR_VALUE(idx, phase) = value;
     eeDirty(EE_MODEL);
-    s_gvar_last = idx;
-    s_gvar_timer = GVAR_DISPLAY_TIME;
   }
 }
 #endif
@@ -1875,8 +1868,6 @@ uint8_t checkTrim(uint8_t event)
     if (TRIM_REUSED()) {
       GVAR_VALUE(trimGvar[idx], phase) = after;
       eeDirty(EE_MODEL);
-      s_gvar_last = trimGvar[idx];
-      s_gvar_timer = GVAR_DISPLAY_TIME;
     }
     else {
       setTrimValue(phase, idx, after);

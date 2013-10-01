@@ -600,11 +600,6 @@ void menuMainView(uint8_t event)
       else if (s_global_warning) {
         s_global_warning = NULL;
       }
-#if defined(GVARS)
-      else if (s_gvar_timer > 0) {
-        s_gvar_timer = 0;
-      }
-#endif
 #if !defined(PCBTARANIS)
       else if (view == VIEW_TIMER2) {
         resetTimer(1);
@@ -826,23 +821,6 @@ void menuMainView(uint8_t event)
     if (!s_warning) s_global_warning = NULL;
     s_warning = NULL;
   }
-
-#if defined(GVARS)
-  else if (s_gvar_timer > 0) {
-    s_gvar_timer--;
-    s_warning = STR_GLOBAL_VAR;
-    displayBox();
-#if defined(PCBSTD)
-    lcd_putsAtt(16+4*FW, 5*FH, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(16+4*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
-#else
-    lcd_putsnAtt(16, 5*FH, g_model.gvarsNames[s_gvar_last], sizeof(gvar_name_t), ZCHAR);
-    lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
-#endif
-    s_warning = NULL;
-  }
-#endif
 
 #if defined(DSM2)
   if (dsm2Flag == DSM2_BIND_FLAG) // Issue 98

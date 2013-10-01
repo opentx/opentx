@@ -858,10 +858,6 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
     #define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)      
   #endif
-
-  #define GVAR_DISPLAY_TIME     100 /*1 second*/;
-  extern uint8_t s_gvar_timer;
-  extern uint8_t s_gvar_last;
 #else
   #define GET_GVAR(x, ...) (x)
 #endif
