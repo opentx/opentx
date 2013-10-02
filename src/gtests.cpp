@@ -533,6 +533,12 @@ TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
   EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
 
+#define CHECK_NO_MOVEMENT(channel, value, duration) \
+    for (int i=1; i<=(duration); i++) { \
+      perOut(e_perout_mode_normal, 1); \
+      EXPECT_EQ(chans[(channel)], (value)); \
+    }
+
 #define CHECK_SLOW_MOVEMENT(channel, sign, duration) \
     do { \
     for (int i=1; i<=(duration); i++) { \
@@ -722,6 +728,32 @@ TEST(Mixer, NoTrimOnInactiveMix)
 
   simuSetSwitch(0, 0);
   CHECK_SLOW_MOVEMENT(0, -1, 100);
+}
+
+TEST(Mixer, SlowOnMultiply)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[1].destCh = 0;
+  g_model.mixData[1].mltpx = MLTPX_MUL;
+  g_model.mixData[1].srcRaw = MIXSRC_MAX;
+  g_model.mixData[1].weight = 100;
+  g_model.mixData[1].swtch = SWSRC_THR;
+  g_model.mixData[1].speedUp = 10;
+  g_model.mixData[1].speedDown = 10;
+
+  simuSetSwitch(0, 1);
+  CHECK_SLOW_MOVEMENT(0, 1, 250);
+
+  simuSetSwitch(0, 0);
+  CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
+
+  simuSetSwitch(0, 1);
+  CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
 }
 #endif
 

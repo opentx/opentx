@@ -2964,7 +2964,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       else if (!mixEnabled) {
         if (md->speedDown && md->mltpx!=MLTPX_REP) {
           if (mixCondition) {
-            v = 0;
+            v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
             apply_offset_and_curve = false;
           }
         }
@@ -3020,16 +3020,16 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
             // rate equals a full range for one second; if less time is passed rate is accordingly smaller
             // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
-            int32_t currentValue=((int32_t) v<<DEL_MULT_SHIFT);
-            if (diff>0) {
-              if (md->speedUp>0) {
+            int32_t currentValue = ((int32_t) v<<DEL_MULT_SHIFT);
+            if (diff > 0) {
+              if (md->speedUp > 0) {
                 // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
                 int32_t newValue = tact+rate/((int16_t)(100/SLOW_STEP)*md->speedUp);
                 if (newValue<currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }
             }
             else {  // if is <0 because ==0 is not possible
-              if (md->speedDown>0) {
+              if (md->speedDown > 0) {
                 // see explanation in speedUp
                 int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
                 if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination

@@ -178,6 +178,7 @@ void simuSetTrim(uint8_t trim, bool state)
   }
 }
 
+// TODO use a better numbering to allow google tests to work on Taranis
 void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // printf("swtch=%d state=%d\n", swtch, state); fflush(stdout);

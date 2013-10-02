@@ -1008,8 +1008,10 @@ PACK(typedef struct t_PhaseData {
 enum SwitchSources {
   SWSRC_NONE = 0,
 
+  SWSRC_FIRST_SWITCH,
+
 #if defined(PCBTARANIS)
-  SWSRC_SA0,
+  SWSRC_SA0 = SWSRC_FIRST_SWITCH,
   SWSRC_SA1,
   SWSRC_SA2,
   SWSRC_SB0,
@@ -1032,7 +1034,7 @@ enum SwitchSources {
   SWSRC_SH0,
   SWSRC_SH2,
 #else
-  SWSRC_ID0,
+  SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
   SWSRC_ID2,
 #if defined(EXTRA_3POS)
@@ -1040,7 +1042,6 @@ enum SwitchSources {
   SWSRC_ID4,
   SWSRC_ID5,
 #endif
-
   SWSRC_THR,
   SWSRC_RUD,
   SWSRC_ELE,
