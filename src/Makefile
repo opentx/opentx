@@ -615,6 +615,7 @@ ifeq ($(PCB), TARANIS)
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
+  SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c
@@ -1069,8 +1070,8 @@ stamp_header:
 	@echo
 	@echo "Generate Version-stamp:"
 	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" >> stamp-opentx.h
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx.h
+	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
+	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define SVN_STR  \"opentx-r$(SVNREV)\"" >> stamp-opentx.h
 	@cat stamp-opentx.h
 

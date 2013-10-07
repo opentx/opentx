@@ -39,6 +39,7 @@
 extern "C" {
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_bsp.h"
+#include "stm32f2xx_dbgmcu.h"
 }
 
 volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
@@ -198,6 +199,11 @@ void boardInit()
   eepromInit();
   sportInit();
   usbInit();
+
+#if defined(DEBUG)
+  DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
+#endif
+
 }
 #endif
 

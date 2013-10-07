@@ -167,7 +167,7 @@
     #define TR_PLAY_TRACK      "Play Track"
   #endif
   #define TR_PLAY_BOTH         "Play Both\0"
-  #define TR_PLAY_VALUE        "Play Val\0 "
+  #define TR_PLAY_VALUE        TR("Play Val\0 ", "Play Value")
 #else
   #define TR_PLAY_TRACK        "[Play Trk]"
   #define TR_PLAY_BOTH         "[Play Bth]"
