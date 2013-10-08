@@ -140,6 +140,12 @@
 #define IF_FRSKY(x)
 #endif
 
+#if defined(MAVLINK)
+#define IF_MAVLINK(x) x,
+#else
+#define IF_MAVLINK(x)
+#endif
+
 #if defined(PXX)
 #define IF_PXX(x) x,
 #else

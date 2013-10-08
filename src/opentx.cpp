@@ -476,6 +476,11 @@ void modelDefault(uint8_t id)
 #if defined(PCBTARANIS)
   g_model.frsky.channels[0].ratio = 132;
 #endif
+
+#ifdef MAVLINK
+	g_model.mavlink.rc_rssi_scale = 15;
+	g_model.mavlink.pc_rssi_en = 1;
+#endif
 }
 
 int16_t intpol(int16_t x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100

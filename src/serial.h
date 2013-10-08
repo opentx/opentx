@@ -32,17 +32,10 @@ enum SERIAL_BAUDS {
 	BAUD_19200,
 	BAUD_38400,
 	BAUD_57600,
-	BAUD_76800,
-	BAUD_115200
+	BAUD_76800
 };
 
 //! \brief Definition of baudrate settings item choices.
-#define LEN_MAVLINK_BAUDS  "\006"
-#define TR_MAVLINK_BAUDS  "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
-const pm_char STR_MAVLINK_BAUDS[] PROGMEM = LEN_MAVLINK_BAUDS TR_MAVLINK_BAUDS;
-#define TR_MAVLINK_BAUD_LABEL "Baudrate"
-const pm_char STR_MAVLINK_BAUD_LABEL[] PROGMEM = TR_MAVLINK_BAUD_LABEL;
-
 typedef void (*SerialFuncP)(uint8_t event);
 
 extern SerialFuncP RXHandler;

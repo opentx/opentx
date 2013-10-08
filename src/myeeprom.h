@@ -295,7 +295,7 @@ PACK(typedef struct t_EEGeneral {
   int8_t    timezone:5;
   uint8_t   spare1:1;
   uint8_t   inactivityTimer;
-  uint8_t   spare2:3;
+  uint8_t   mavbaud:3;
   SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   uint8_t   blOffBright:4;
@@ -916,19 +916,28 @@ PACK(typedef struct t_FrSkyData {
 #endif
 
 #ifdef MAVLINK
-#define ROTARY_TYPE_OFF     0
-#define ROTARY_TYPE_PPM     1
-#define ROTARY_TYPE_MAVLINK 2
-#define NUM_ROTARY_SW       8
-#define MAX_MODES_VAL       16
-PACK(typedef struct t_RotarySwChannelData {
-  uint8_t typeRotary:2;   // see defines ROTARY_TYPE
-  uint8_t numMode:6;      // num mode
-}) RotarySwChannelData;
-
+//! \brief Model struct for mavlink eeprom settings total 18 bytes available.
 PACK(typedef struct t_MavlinkData {
-  RotarySwChannelData rotarySw[NUM_ROTARY_SW];
-  int8_t   modesVal[MAX_MODES_VAL];
+  uint8_t rc_rssi_scale:4;
+  uint8_t pc_rssi_en:1;
+  uint8_t spare0:3;
+  uint8_t spare1;
+  uint8_t spare2;
+  uint8_t spare3;
+  uint8_t spare4;
+  uint8_t spare5;
+  uint8_t spare6;
+  uint8_t spare7;
+  uint8_t spare8;
+  uint8_t spare9;
+  uint8_t spare10;
+  uint8_t spare11;
+  uint8_t spare12;
+  uint8_t spare13;
+  uint8_t spare14;
+  uint8_t spare15;
+  uint8_t spare16;
+  uint8_t spare17;
 }) MavlinkData;
 #endif
 

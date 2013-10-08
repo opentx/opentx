@@ -35,6 +35,9 @@
  */
 
 #include "../opentx.h"
+#ifdef MAVLINK
+#include "gui/view_mavlink.h"
+#endif
 
 #define WCHART 32
 #define X0     (LCD_W-WCHART-2)
@@ -55,6 +58,7 @@ enum EnumTabModel {
   e_CustomSwitches,
   e_CustomFunctions,
   IF_FRSKY(e_Telemetry)
+  IF_MAVLINK(e_MavSetup)
   IF_TEMPLATES(e_Templates)
 };
 
@@ -88,6 +92,7 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
   menuModelCustomSwitches,
   menuModelCustomFunctions,
   IF_FRSKY(menuModelTelemetry)
+  IF_MAVLINK(menuTelemetryMavlinkSetup)
   IF_TEMPLATES(menuModelTemplates)
 };
 

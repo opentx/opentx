@@ -351,6 +351,15 @@
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
 
+#if defined(MAVLINK)
+  #define LEN_MAVLINK_BAUDS		"\006"
+  #define TR_MAVLINK_BAUDS		"4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
+  #define LEN_MAVLINK_AC_MODES	"\011"
+  #define TR_MAVLINK_AC_MODES	"Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
+  #define LEN_MAVLINK_AP_MODES	"\015"
+  #define TR_MAVLINK_AP_MODES	"Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
+#endif
+
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
 #define LEN_INDENT             1
@@ -646,6 +655,32 @@
 #define TR_CHANNELRANGE        INDENT "Channel Range"
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
+
+#if defined(MAVLINK)
+  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
+  #define TR_MAVLINK_PC_RSSI_EN_LABEL		"PC RSSI EN"
+  #define TR_MAVMENUSETUP_TITLE				"Mavlink Setup"
+  #define TR_MAVLINK_BAUD_LABEL				"Baudrate"
+  #define TR_MAVLINK_INFOS					"INFOS"
+  #define TR_MAVLINK_MODE					"MODE"
+  #define TR_MAVLINK_CUR_MODE				"Current Mode"
+  #define TR_MAVLINK_ARMED					"Armed"
+  #define TR_MAVLINK_BAT_MENU_TITLE			"BAT RSSI"
+  #define TR_MAVLINK_BATTERY_LABEL			"Flight Battery status"
+  #define TR_MAVLINK_RC_RSSI_LABEL			"RC RSSI"
+  #define TR_MAVLINK_PC_RSSI_LABEL			"PC RSSI"
+  #define TR_MAVLINK_NAV_MENU_TITLE			"NAV"
+  #define TR_MAVLINK_COURSE					"Course"
+  #define TR_MAVLINK_HEADING				"Heading"
+  #define TR_MAVLINK_BEARING				"Bearing"
+  #define TR_MAVLINK_ALTITUDE				"Altitude"
+  #define TR_MAVLINK_GPS					"GPS"
+  #define TR_MAVLINK_NO_FIX					"NO Fix"
+  #define TR_MAVLINK_SAT					"SAT"
+  #define TR_MAVLINK_HDOP					"HDOP"
+  #define TR_MAVLINK_LAT					"LAT"
+  #define TR_MAVLINK_LON					"LON"
+#endif
 
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " }

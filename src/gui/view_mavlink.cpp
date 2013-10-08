@@ -43,7 +43,7 @@
 
 #include "gui/view_mavlink.h"
 
- // Globals declaration
+// Globals declaration
 
  
 /*!	\brief Top Mavlink Menu definition
@@ -54,18 +54,13 @@
  */
 void menuTelemetryMavlink(uint8_t event) {
 	
-	static bool setup;
-
 	switch (event) // new event received, branch accordingly
 	{
 	case EVT_ENTRY:
 		MAVLINK_menu = MENU_INFO;
-		setup = false;
 		break;
 
 	case EVT_KEY_FIRST(KEY_UP):
-		if (setup)
-			break;
 		if (MAVLINK_menu > 0)
 		{
 			MAVLINK_menu--;
@@ -77,54 +72,40 @@ void menuTelemetryMavlink(uint8_t event) {
 			return;
 		}
 	case EVT_KEY_FIRST(KEY_DOWN):
-		if (setup)
-			break;
 		if (MAVLINK_menu < MAX_MAVLINK_MENU - 1)
 			MAVLINK_menu++;
 		break;
 	case EVT_KEY_FIRST(KEY_MENU):
-		setup = true;
 		return;
 	case EVT_KEY_FIRST(KEY_EXIT):
-		if (setup)
-		{
-			setup = false;
-			MAVLINK_Init();
-			break;
-		}
 		chainMenu(menuMainView);
 		return;
 	}
 
-	if (setup)
-		menuTelemetryMavlinkSetup(event);
-	else
-	{
-		switch (MAVLINK_menu) {
-		case MENU_INFO:
-			menuTelemetryMavlinkInfos();
-			break;
-		case MENU_MODE:
-			menuTelemetryMavlinkFlightMode();
-			break;
-		case MENU_BATT:
-			menuTelemetryMavlinkBattery();
-			break;
-		case MENU_NAV:
-			menuTelemetryMavlinkNavigation();
-			break;
-		case MENU_GPS:
-			menuTelemetryMavlinkGPS();
-			break;
-	#ifdef DUMP_RX_TX
-		case MENU_DUMP_TX:
-		case MENU_DUMP_RX:
-			menuTelemetryMavlinkDump(event);
-			break;
-	#endif
-		default:
-			break;
-		}
+	switch (MAVLINK_menu) {
+	case MENU_INFO:
+		menuTelemetryMavlinkInfos();
+		break;
+	case MENU_MODE:
+		menuTelemetryMavlinkFlightMode();
+		break;
+	case MENU_BATT:
+		menuTelemetryMavlinkBattery();
+		break;
+	case MENU_NAV:
+		menuTelemetryMavlinkNavigation();
+		break;
+	case MENU_GPS:
+		menuTelemetryMavlinkGPS();
+		break;
+#ifdef DUMP_RX_TX
+	case MENU_DUMP_TX:
+	case MENU_DUMP_RX:
+		menuTelemetryMavlinkDump(event);
+		break;
+#endif
+	default:
+		break;
 	}
 
 }
@@ -193,106 +174,28 @@ void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mo
 	}
 }
 
-/*!	\brief Fightmode decode helper
+/*!	\brief Fightmode string printer
  *	\details Decodes the flight mode from Mavlink custom mode enum to a string.
  *	This funtion can handle ArduPilot and ArduCoper code.
+ *	To support new autopilot pilots add a STR_MAVLINK_... to the translations,
+ *	and if requred a lut (see arduplane for examle) if there are unused modes
+ *	in the sequence.
  */
 
-const char * mav_mode_to_string(uint32_t custom_mode) //, const char * mode_text_p)
+void print_mav_mode(uint8_t x, uint8_t y, uint32_t custom_mode, uint8_t attr) //, const char * mode_text_p)
 {
-	const char * mode_text_p;
+	uint8_t mode = (uint8_t) custom_mode;
 	switch (telemetry_data.type_autopilot) {
 	case MAVLINK_ARDUCOPTER:
-		switch(custom_mode) {
-		case AC_STABILIZE:
-			mode_text_p = PSTR("Stabilize");
-			break;
-		case AC_ACRO:
-			mode_text_p = PSTR("Acro");
-			break;
-		case AC_ALT_HOLD:
-			mode_text_p = PSTR("Alt Hold");
-			break;
-		case AC_AUTO:
-			mode_text_p = PSTR("Auto");
-			break;
-		case AC_GUIDED:
-			mode_text_p = PSTR("Guided");
-			break;
-		case AC_LOITER:
-			mode_text_p = PSTR("Loiter");
-			break;
-		case AC_RTL:
-			mode_text_p = PSTR("RTL");
-			break;
-		case AC_CIRCLE:
-			mode_text_p = PSTR("Circle");
-			break;
-		case AC_POSITION:
-			mode_text_p = PSTR("Pos Hold");
-			break;
-		case AC_LAND:
-			mode_text_p = PSTR("Land");
-			break;
-		case AC_OF_LOITER:
-			mode_text_p = PSTR("OF Loiter");
-			break;
-		case AC_TOY_A:
-			mode_text_p = PSTR("Toy A");
-			break;
-		case AC_TOY_M:
-			mode_text_p = PSTR("Toy M");
-			break;
-		default:
-			mode_text_p = PSTR("INVALID");
-			break;
-		}
+		lcd_putsiAtt(x,y,STR_MAVLINK_AC_MODES,mode,attr);
 		break;
 	case MAVLINK_ARDUPLANE:
-		switch(custom_mode) {
-		case AP_MANUAL:
-			mode_text_p = PSTR("Manual");
-			break;
-		case AP_CIRCLE:
-			mode_text_p = PSTR("Circle");
-			break;
-		case AP_STABILIZE:
-			mode_text_p = PSTR("Stabilize");
-			break;
-		case AP_TRAINING:
-			mode_text_p = PSTR("Training");
-			break;
-		case AP_FLY_BY_WIRE_A:
-			mode_text_p = PSTR("Fly by Wire A");
-			break;
-		case AP_FLY_BY_WIRE_B:
-			mode_text_p = PSTR("Fly by Wire A");
-			break;
-		case AP_AUTO:
-			mode_text_p = PSTR("Auto");
-			break;
-		case AP_RTL:
-			mode_text_p = PSTR("RTL");
-			break;
-		case AP_LOITER:
-			mode_text_p = PSTR("Loiter");
-			break;
-		case AP_GUIDED:
-			mode_text_p = PSTR("Guided");
-			break;
-		case AP_INITIALISING:
-			mode_text_p = PSTR("Initialising");
-			break;
-		default:
-			mode_text_p = PSTR("INVALID");
-			break;
-		}
+		lcd_putsiAtt(x,y,STR_MAVLINK_AP_MODES,ap_modes_lut[custom_mode],attr);
 		break;
 	default:
-		mode_text_p = PSTR("INVALID MAV TYPE");
+		lcd_putsAtt (FW, y, PSTR("INV. MAV TYPE"), attr);
 		break;
 	}
-	return mode_text_p;
 }
 
 /*!	\brief Menu header
@@ -316,14 +219,14 @@ void mav_title(const pm_char * s, uint8_t index)
  */
 void menuTelemetryMavlinkInfos(void) {
 
-	mav_title(PSTR("INFOS"), MAVLINK_menu);
+	mav_title(STR_MAVLINK_INFOS, MAVLINK_menu);
 
 	uint8_t x1, x2, xnum, y;
 	x1 = FW;
 	x2 = 7 * FW;
 	xnum = x2 + 5 * FWNUM;
 	y = FH;
-
+/*
 	char * ptr = mav_statustext;
 	for (uint8_t j = 0; j < LEN_STATUSTEXT; j++) {
 		if (*ptr == 0) {
@@ -335,12 +238,11 @@ void menuTelemetryMavlinkInfos(void) {
 	}
 	x1 = FW;
 	y += FH;
-
+*/
 	if (telemetry_data.status) {
 
-		lcd_putsnAtt(x1, y, PSTR("MODE"), 4, 0);
+		lcd_putsnAtt(x1, y, STR_MAVLINK_MODE, 4, 0);
 		if (telemetry_data.active)
-		//if (telemetry_data.mode & MAV_MODE_FLAG_SAFETY_ARMED)
 			lcd_putsnAtt(x2, y, PSTR("A"), 1, 0);
 		lcd_outdezAtt(xnum, y, telemetry_data.mode, 0);
 
@@ -351,7 +253,23 @@ void menuTelemetryMavlinkInfos(void) {
 		y += FH;
 		lcd_puts(x1, y, PSTR("DROP"));
 		lcd_outdezAtt(xnum, y, telemetry_data.packet_drop, 0);
-
+/*		y += FH;
+		lcd_puts(x1, y, PSTR("FIX"));
+		lcd_outdezAtt(xnum, y, telemetry_data.packet_fixed, 0);
+		y += FH;
+		lcd_puts(x1, y, PSTR("MAV Comp"));
+		lcd_outdezAtt(xnum, y, telemetry_data.mav_compid, 0);
+		y += FH;
+		lcd_puts(x1, y, PSTR("MAV Sys"));
+		lcd_outdezAtt(xnum, y, telemetry_data.mav_sysid, 0);
+		y += FH;
+		lcd_puts(x1, y, PSTR("Rad Comp"));
+		lcd_outdezAtt(xnum, y, telemetry_data.radio_compid, 0);
+		y += FH;
+		lcd_puts(x1, y, PSTR("Rad Sys"));
+		lcd_outdezAtt(xnum, y, telemetry_data.radio_sysid, 0);
+*/
+		
 	}
 }
 
@@ -361,17 +279,15 @@ void menuTelemetryMavlinkInfos(void) {
  */
 void menuTelemetryMavlinkFlightMode(void) {
 	
-	mav_title(PSTR("MODE"), MAVLINK_menu);
-	
-	const char * mode_text_p =  mav_mode_to_string(telemetry_data.custom_mode);
-	
+	mav_title(STR_MAVLINK_MODE, MAVLINK_menu);
+		
 	uint8_t x, y;
 	x = 0;
 	y = FH;
 	
-    lcd_puts  (x, y, PSTR("Current Mode"));
+    lcd_puts  (x, y, STR_MAVLINK_CUR_MODE);
     y += FH;
-	lcd_putsAtt (FW, y, mode_text_p, DBLSIZE);
+    print_mav_mode(FW, y, telemetry_data.custom_mode, DBLSIZE);
     y += 2 * FH;
 	
 	char * ptr = mav_statustext;
@@ -387,15 +303,16 @@ void menuTelemetryMavlinkFlightMode(void) {
     x = 0;
 	
     if (telemetry_data.active)
-    	lcd_putsAtt (FW, y, PSTR("Armed"), DBLSIZE);
+    	lcd_putsAtt (FW, y, STR_MAVLINK_ARMED, DBLSIZE);
 }
 
 /*!	\brief Batterystatus dislplay
  *	\details Shows flight batery status.
+ *	Also RC and PC RSSI are in this menu. 
  */
 void menuTelemetryMavlinkBattery(void) {
 	
-	mav_title(PSTR("BAT RSSI"), MAVLINK_menu);
+	mav_title(STR_MAVLINK_BAT_MENU_TITLE, MAVLINK_menu);
 	
 	uint8_t x, y, ynum;
 	x = 7 * FWNUM;
@@ -403,7 +320,7 @@ void menuTelemetryMavlinkBattery(void) {
 	ynum = 2 * FH;
 	y = 3 * FH;
 	
-    lcd_puts(0, 1*FH, PSTR("Flight Batery status")); 
+    lcd_puts(0, 1*FH, STR_MAVLINK_BATTERY_LABEL); 
 	
 	lcd_outdezAtt(x, ynum, telemetry_data.vbat, (DBLSIZE | PREC1 | UNSIGN));
 	lcd_puts(x, y, PSTR("V"));
@@ -417,22 +334,28 @@ void menuTelemetryMavlinkBattery(void) {
 	ynum += 3 * FH;
 	
 	x = 0;	
-    lcd_puts  (x, y, PSTR("RC RSSI"));
+    lcd_puts  (x, y, STR_MAVLINK_RC_RSSI_LABEL);
 	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.rc_rssi, (DBLSIZE | UNSIGN));
 	lcd_puts(x + 7 * FWNUM, ynum + FH, PSTR("%"));
-	x += 8 * (2 * FWNUM);
-    lcd_puts(x, y, PSTR("PC RSSI"));
-	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.pc_rssi, (DBLSIZE));
-	lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("%"));
+	if (g_model.mavlink.pc_rssi_en)
+	{
+		x += 8 * (2 * FWNUM);
+		lcd_puts(x, y, STR_MAVLINK_PC_RSSI_LABEL);
+		lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.pc_rssi, (DBLSIZE));
+		lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("%"));
+	}
     
 }
 
 /*!	\brief Navigation dislplay
  *	\details Shows Navigation telemetry.
+ *	Altitude in this menu is the relative (to the home location) altitude. This
+ *	is the same altitude used by the waypoints.
+ *	\todo Add a similar menu to fly back to the home location.
  */
 void menuTelemetryMavlinkNavigation(void) {
 	
-	mav_title(PSTR("NAV"), MAVLINK_menu);
+	mav_title(STR_MAVLINK_NAV_MENU_TITLE, MAVLINK_menu);
 	
 	uint8_t x, y, ynum;
 	x = 7 * FWNUM;
@@ -442,23 +365,23 @@ void menuTelemetryMavlinkNavigation(void) {
 	
     
 	x = 0;	
-    lcd_puts  (x, y, PSTR("Course"));
+    lcd_puts  (x, y, STR_MAVLINK_COURSE);
 	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.course, (DBLSIZE | UNSIGN));
 	lcd_puts(x + 7 * FWNUM, ynum, PSTR("o"));
 	x += 8 * (2 * FWNUM);
-    lcd_puts(x, y, PSTR("Heading"));
+    lcd_puts(x, y, STR_MAVLINK_HEADING);
 	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.heading, (DBLSIZE | UNSIGN));
 	lcd_puts(x + 7 * FWNUM, ynum,  PSTR("o"));
 	y += 3 * FH;
 	ynum += 3 * FH;
 	
 	x = 0;	
-    lcd_puts  (x, y, PSTR("Bearing"));
+    lcd_puts  (x, y, STR_MAVLINK_BEARING);
 	lcd_outdezAtt(x + 7 * FWNUM, ynum, telemetry_data.bearing, (DBLSIZE | UNSIGN));
 	lcd_puts(x + 7 * FWNUM, ynum, PSTR("o"));
 	x += 8 * (2 * FWNUM);
-    lcd_puts(x, y, PSTR("Altitude"));
-	lcd_outdezFloat(x + 2 * FWNUM - 1, ynum, telemetry_data.altitude, 2, (DBLSIZE));
+    lcd_puts(x, y, STR_MAVLINK_ALTITUDE);
+	lcd_outdezFloat(x + 4 * FWNUM - 1, ynum, telemetry_data.loc_current.rel_alt, 1, (DBLSIZE));
 	lcd_puts(x + 7 * FWNUM, ynum + FH,  PSTR("m"));
  
 }
@@ -473,48 +396,48 @@ void menuTelemetryMavlinkNavigation(void) {
  *	I don't think will be used much when a user is concentrated on flying.
  */
 void menuTelemetryMavlinkGPS(void) {
-	mav_title(PSTR("GPS"), MAVLINK_menu);
+	mav_title(STR_MAVLINK_GPS, MAVLINK_menu);
 
-	uint8_t x1, x2, xnum, y;
+	uint8_t x1, x2, xnum, xnum2, y;
 	x1 = FW;
-	x2 = 5 * FW + FWNUM;
-	xnum = 5 * FW + 3 * FWNUM;
+	x2 = x1 + 12 * FW;
+	xnum = 7 * FW + 3 * FWNUM;
+	xnum2 = xnum + 11 * FWNUM;
 	y = FH;
 
-	lcd_putsnAtt(x1, y, PSTR("GPS"), 3, 0);
-	if (telemetry_data.fix_type <= 2) {
-		lcd_putsnAtt(x2, y, PSTR("__NOOK") + 2 * telemetry_data.fix_type, 2, 0);
+	lcd_putsnAtt(x1, y, STR_MAVLINK_GPS, 3, 0);
+	if (telemetry_data.fix_type < 2) {
+		lcd_putsnAtt(xnum, y, STR_MAVLINK_NO_FIX, 6, 0);
 	} else {
 		lcd_outdezNAtt(xnum, y, telemetry_data.fix_type, 0, 3);
 		lcd_puts(xnum, y, PSTR("D"));
 	}
-	lcd_puts(x2 + 5 * FW, y, PSTR("SAT"));
-	lcd_outdezNAtt(x2 + 8 * FW + 3 * FWNUM, y, telemetry_data.satellites_visible, 0, 2);
+	lcd_puts(x2, y, STR_MAVLINK_SAT);
+	lcd_outdezNAtt(xnum2, y, telemetry_data.satellites_visible, 0, 2);
 
 //	if (telemetry_data.fix_type > 0) {
 	y += FH;
-	lcd_puts(0, y, PSTR("HDOP"));
+	lcd_puts(x1, y, STR_MAVLINK_HDOP);
 	lcd_outdezFloat(xnum, y, telemetry_data.eph, 2);
 
 	y += FH;
-	lcd_puts(0, y, PSTR("COOR"));
+	lcd_puts(x1, y, STR_MAVLINK_LAT);
 	lcd_outdezFloat(xnum, y, telemetry_data.loc_current.lat, 2);
 
-	//	y += FH;
-	//	lcd_putsnAtt(x1, y, PSTR("LON"), 3, 0);
-	lcd_outdezFloat(xnum + 10 * FWNUM, y, telemetry_data.loc_current.lon, 2);
+	lcd_putsnAtt(x2, y, STR_MAVLINK_LON, 3, 0);
+	lcd_outdezFloat(xnum2, y, telemetry_data.loc_current.lon, 2);
 
 	y += FH;
-	lcd_putsnAtt(x1, y, PSTR("ALT"), 3, 0);
-	lcd_outdezAtt(xnum, y, telemetry_data.loc_current.alt, 2);
+	lcd_putsnAtt(x1, y, STR_MAVLINK_ALTITUDE, 3, 0);
+	lcd_outdezAtt(xnum, y, telemetry_data.loc_current.gps_alt, 0);
 
 	y += FH;
-	lcd_putsnAtt(x1, y, PSTR("COG"), 3, 0);
+	lcd_putsnAtt(x1, y, STR_MAVLINK_COURSE, 6, 0);
 	lcd_outdezFloat(xnum, y, telemetry_data.course, 2);
 
 	y += FH;
 	lcd_putsnAtt(x1, y, PSTR("V"), 1, 0);
-	lcd_outdezAtt(xnum, y, telemetry_data.v, 2);
+	lcd_outdezAtt(xnum, y, telemetry_data.v, 0);
 	//}
 }
 
@@ -573,12 +496,16 @@ void menuTelemetryMavlinkDump(uint8_t event) {
 
 /*!	\brief Mavlink General setup menu.
  *	\details Setup menu for generic mavlink settings.
- *	- Baudrate select item.
- *	MENU funtion is used to create the tab based menu.
+ *	Current menu items
+ *	- RC RSSI scale item. Used to adjust the scale of the RSSI indicator to match
+ *	the actual rssi value
+ *	- PC RSSI enable item. Can be used to dissable PC RSSI display if not used.
+ *	This funcion is called from the model setup menus, not directly by the
+ *	telemetry menus
  */
 void menuTelemetryMavlinkSetup(uint8_t event) {
 	
-	MENU(STR_MAVMENUSETUP, menuTabMav, e_MavSetup, ITEM_MAVLINK_MAX+1, {0, 0, 1/*to force edit mode*/});
+	MENU(STR_MAVMENUSETUP_TITLE, menuTabModel, e_MavSetup, ITEM_MAVLINK_MAX + 1, {0, 0, 1/*to force edit mode*/});
 	
 	uint8_t sub = m_posVert - 1;
 
@@ -588,17 +515,19 @@ void menuTelemetryMavlinkSetup(uint8_t event) {
 		uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 		uint8_t attr = (sub == k ? blink : 0);
 		switch(k) {	
-		case ITEM_MAVLINK_BAUD:
-			g_eeGeneral.spare2 = selectMenuItem(RADIO_SETUP_2ND_COLUMN,  //Y
-				y, 					// Y
-				STR_MAVLINK_BAUD_LABEL, 			// pm_char *label
-				STR_MAVLINK_BAUDS, 		// pm_char *values
-//				PSTR("4800""9600""14400""19200""38400""57600""76800""115200"),
-				g_eeGeneral.spare2, 	// value
-				0, 	// min
-				7, 	// max
-				attr,  // attr
-				event);	// event
+		case ITEM_MAVLINK_RC_RSSI_SCALE:
+			lcd_putsLeft(y, STR_MAVLINK_RC_RSSI_SCALE_LABEL);
+			lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, (25 + g_model.mavlink.rc_rssi_scale * 5), attr|LEFT);
+			lcd_putc(lcdLastPos, y, '%');
+			if (attr) CHECK_INCDEC_GENVAR(event, g_model.mavlink.rc_rssi_scale, 0, 15);
+			break;
+		case ITEM_MAVLINK_PC_RSSI_EN:
+			g_model.mavlink.pc_rssi_en = onoffMenuItem(g_model.mavlink.pc_rssi_en,
+				RADIO_SETUP_2ND_COLUMN,
+				y,
+				STR_MAVLINK_PC_RSSI_EN_LABEL,
+				attr,
+				event);
 			break;
 		}
 	}

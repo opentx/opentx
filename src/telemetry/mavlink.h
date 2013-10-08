@@ -31,6 +31,10 @@
  * more details.
  *
  */
+ 
+/*!	\file mavlink.h
+ *	Mavlink include file
+ */
 
 #ifndef _MAVLINK_H_
 #define _MAVLINK_H_
@@ -49,6 +53,10 @@ extern mavlink_system_t mavlink_system;
 extern void SERIAL_start_uart_send();
 extern void SERIAL_end_uart_send();
 extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
+
+# define MAV_SYSTEM_ID	1
+//mavlink_system.type = 2; //MAV_QUADROTOR;
+
 
 #define MAVLINK_START_UART_SEND(chan,len) SERIAL_start_uart_send()
 #define MAVLINK_END_UART_SEND(chan,len) SERIAL_end_uart_send()
@@ -97,7 +105,9 @@ extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
 #define AP_LOITER        12
 #define AP_GUIDED        15
 #define AP_INITIALISING  16
-#define AC_NUM_MODES 17
+#define AP_NUM_MODES 17
+
+static const uint8_t ap_modes_lut[18] PROGMEM = {0,1,2,3,12,4,5,12,12,12,6,7,8,9,12,12,10,11};
 
 /*
  * Type definitions
@@ -150,7 +160,8 @@ typedef struct MavlinkParam_ {
 typedef struct Location_ {
 	float lat; ///< Latitude in degrees
 	float lon; ///< Longitude in degrees
-	float alt; ///< Altitude in meters
+	float gps_alt; ///< Altitude in meters
+	float rel_alt;
 } Location_t;
 
 typedef struct Telemetry_Data_ {
@@ -160,6 +171,11 @@ typedef struct Telemetry_Data_ {
 	uint8_t autopilot;
 	uint8_t type_autopilot;
 	uint16_t packet_drop;
+	uint16_t packet_fixed;
+	uint8_t radio_sysid;
+	uint8_t radio_compid;
+	uint8_t mav_sysid;
+	uint8_t mav_compid;
 	uint8_t mode;
 	uint32_t custom_mode;
 	bool active;
@@ -190,7 +206,6 @@ typedef struct Telemetry_Data_ {
 	// Navigation
 	uint16_t heading;
 	uint16_t bearing;
-	float altitude;
 
 #ifdef MAVLINK_PARAMS
 	// Params

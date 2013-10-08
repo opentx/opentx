@@ -265,6 +265,7 @@ endif
 GVARS_VARIANT  = +1 
 FRSKY_VARIANT  = +2
 3POS_VARIANT   = +4
+MAVLINK_VARIANT   = +8
 M128_VARIANT   = +32768
 M2561_VARIANT  = +16384
 EEPROM_VARIANT = 0
@@ -840,6 +841,7 @@ endif
 ifeq ($(EXT), MAVLINK)
  CPPDEFS += -DMAVLINK
  CPPSRC += telemetry/mavlink.cpp gui/view_mavlink.cpp serial.cpp
+ EEPROM_VARIANT += ${MAVLINK_VARIANT}
 endif
 
 ifeq ($(EXT), TELEMETREZ)

@@ -87,19 +87,11 @@ const MenuFuncP_PROGMEM menuTabMav[] PROGMEM = {
   menuTelemetryMavlinkSetup
 };
 
-//! \brief Title for mavlink setup menu.
-#define TR_MAVMENUSETUP "Mavlink Setup"
-const pm_char STR_MAVMENUSETUP[] PROGMEM = TR_MAVMENUSETUP;
-
-//! \brief Enum for mavlink settings menus sequence.
-enum EnumTabMav {
-  e_MavSetup
-};
-
 //! \brief Mavlink setup menu configuration items list.
 enum menuMavlinkSetupItems {
-  ITEM_MAVLINK_BAUD,
-  ITEM_MAVLINK_MAX
+	ITEM_MAVLINK_RC_RSSI_SCALE,
+	ITEM_MAVLINK_PC_RSSI_EN,
+	ITEM_MAVLINK_MAX
 };
 
 //! \brief Menu index varible, initialized on info menu.
