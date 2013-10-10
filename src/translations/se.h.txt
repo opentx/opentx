@@ -682,6 +682,8 @@
   #define TR_MAVLINK_LON					"LON"
 #endif
 
+
+
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Trimmar ", " Tona Upp ", " Tona Ned " }
 #define TR_LIMITS_HEADERS      { " Namn ", " Offset ", " Min ", " Max ", " Riktning ", " PPM-centrum ", " Symmetriskt " }
