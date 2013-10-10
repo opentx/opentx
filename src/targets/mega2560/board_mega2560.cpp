@@ -1,74 +1,62 @@
-#include "../opentx.h"
+/*
+ * Authors (alphabetical order)
+ * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
+ * - Cameron Weeks <th9xer@gmail.com>
+ * - Erez Raviv
+ * - Gabriel Birkus
+ * - Jean-Pierre Parisy
+ * - Karl Szmutny
+ * - Michael Blandford
+ * - Michal Hlavinka
+ * - Pat Mackenzie
+ * - Philip Moss
+ * - Rob Thomson
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Thomas Husterer
+ *
+ * opentx is based on code named
+ * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
+ * er9x by Erez Raviv: http://code.google.com/p/er9x/,
+ * and the original (and ongoing) project by
+ * Thomas Husterer, th9x: http://code.google.com/p/th9x/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ */
 
-#define PIN_MODE_MASK           0x0003
-#define PIN_INPUT               0x0000
-#define PIN_OUTPUT              0x0001
-#define PIN_PERIPHERAL          0x0002
-#define PIN_ANALOG              0x0003
-#define PIN_PULL_MASK           0x000C
-#define PIN_PULLUP              0x0004
-#define PIN_NO_PULLUP           0x0000
-#define PIN_PULLDOWN            0x0008
-#define PIN_NO_PULLDOWN         0x0000
-#define PIN_PERI_MASK           0x00F0
-#define PIN_PUSHPULL            0x0000
-#define PIN_ODRAIN              0x8000
-#define PIN_PORT_MASK           0x0700
-#define PIN_SPEED_MASK          0x6000
-
-
-#if !defined(SIMU)
-void configure_pins( uint32_t pins, uint16_t config )
-{
-  uint32_t address ;
-  GPIO_TypeDef *pgpio ;
-  uint32_t thispin ;
-  uint32_t pos ;
-
-  address = ( config & PIN_PORT_MASK ) >> 8 ;
-  address *= (GPIOB_BASE-GPIOA_BASE) ;
-  address += GPIOA_BASE ;
-  pgpio = (GPIO_TypeDef* ) address ;
-
-  /* -------------------------Configure the port pins---------------- */
-  /*-- GPIO Mode Configuration --*/
-  for (thispin = 0x0001, pos = 0; thispin < 0x10000; thispin <<= 1, pos +=1 )
-  {
-    if ( pins & thispin)
-    {
-      pgpio->MODER  &= ~(GPIO_MODER_MODER0 << (pos * 2)) ;
-      pgpio->MODER |= (config & PIN_MODE_MASK) << (pos * 2) ;
-
-      if ( ( (config & PIN_MODE_MASK ) == PIN_OUTPUT) || ( (config & PIN_MODE_MASK) == PIN_PERIPHERAL) )
-      {
-        /* Speed mode configuration */
-        pgpio->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR0 << (pos * 2) ;
-        pgpio->OSPEEDR |= ((config & PIN_SPEED_MASK) >> 13 ) << (pos * 2) ;
-
-        /* Output mode configuration*/
-        pgpio->OTYPER  &= ~((GPIO_OTYPER_OT_0) << ((uint16_t)pos)) ;
-        if ( config & PIN_ODRAIN )
-        {
-          pgpio->OTYPER |= (GPIO_OTYPER_OT_0) << pos ;
-        }
-      }
-      /* Pull-up Pull down resistor configuration*/
-      pgpio->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << ((uint16_t)pos * 2));
-      pgpio->PUPDR |= ((config & PIN_PULL_MASK) >> 2) << (pos * 2) ;
-
-      pgpio->AFR[pos >> 3] &= ~(0x000F << (pos & 7)) ;
-      pgpio->AFR[pos >> 3] |= ((config & PIN_PERI_MASK) >> 4) << (pos & 7) ;
-    }
-  }
-}
-#endif
-
-
-
+#include "../../opentx.h"
 
 #ifndef SIMU
-inline void boardInit()
+inline void boardInit()            // Done 2013.10.09 : trims, keyboard, LCD, ID1+2 SW     warning PORTF-3 (1.2V ADC_ref)
 {
+  // Set up I/O port data directions and initial states
+  DDRA = 0b11111111;  PORTA = 0b00000000; // LCD data
+  DDRB = 0b11000111;  PORTB = 0b00111111; // 7:SPKR, 6:PPM_OUT, 5:TrainSW, 4:xxxxx, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
+  DDRC = 0b11111100;  PORTC = 0b00000011; // LCD[7,6,5,4,3], 2:BackLight, 1:ID2_Sw, 0:ID1_Sw
+  DDRD = 0b11000000;  PORTD = 0b11111100; // 7:VIB, 6:LED BL, 5:RENC2_PUSH, 4:RENC1_PUSH, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
+  DDRE = 0b00001010;  PORTE = 0b11110100; // 7:PPM_IN, 6: RENC1_B, 5:RENC1_A, 4:USB_DNEG, 3:BUZZER, 2:USB_DPOS, 1:TELEM_TX, 0:TELEM_RX(pull-up off)
+//DDRF = 0b00000000;  PORTF = 0b00000000; // 7-4:JTAG, 3:ADC_REF_1.2V input, 2-0:ADC_SPARE_2-0
+  DDRF = 0b00000000;  PORTF = 0b11111111; // 7-0:Trim switch inputs
+  
+  DDRG = 0b00010000;  PORTG = 0b00111111; // 7-6:N/A, 5:GearSW, 4: Sim_Ctrl[out], 3:xxxxx, 2:TCut_Sw, 1:RF_Power[in], 0: RudDr_Sw
+  DDRH = 0b10111000;  PORTH = 0b11010111; // [7:0 DSM/PPM TX-caddy control. 1=PPM, 0=DSM ]
+                                          // [6:SOMO14D-BUSY 5:SOMO14D-DATA 4:SOMO14D-CLK 3:SOMO14D-RESET]
+                                          // [2:VIB_OPTION -- setting to input for now]
+                                          // [1:TxD 0:RxD Spare serial port]
+//DDRJ = 0b00000000;  PORTJ = 0b11111111; // 7-0:Trim switch inputs
+  DDRK = 0b00000000;  PORTK = 0b00000000; // Analogic input (no pull-ups)
+  DDRL = 0b10000000;  PORTL = 0b11111111; // 7: Hold_PWR_On (1=On, default Off), 6:Jack_Presence_TTL, 5-0: Keyboard inputs
+
   ADMUX=ADC_VREF_TYPE;
   ADCSRA=0x85; // ADC enabled, pre-scaler division=32 (no interrupt, no auto-triggering)
   ADCSRB=(1<<MUX5);
@@ -89,24 +77,15 @@ inline void boardInit()
   TCCR0A  = (0b01<<WGM00);
 
   /***************************************************/
-  /* Rotary encoder interrupt set-up */
-
-  // All external interrupts initialise to disabled.
+  /* Rotary encoder interrupt set-up                 */
   EIMSK = 0; // disable ALL external interrupts.
-
   // encoder 1
   EICRB = (1<<ISC60) | (1<<ISC50); // 01 = interrupt on any edge
   EIFR = (3<<INTF5); // clear the int. flag in case it got set when changing modes
-
   // encoder 2
   EICRA = (1<<ISC30) | (1<<ISC20); // do the same for encoder 1
   EIFR = (3<<INTF2);
-
-#if ROTARY_ENCODERS > 2
-  EIMSK = (3<<INT5); // enable the ONE rot. enc. ext. int. pairs.
-#else
   EIMSK = (3<<INT5) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
-#endif
   /***************************************************/
 
 #if defined (VOICE)
@@ -114,66 +93,18 @@ inline void boardInit()
    * SOMO set-up (V4 board only)
    */
   OCR4A = 0x1F4; //2ms
-  TCCR4B = (1 << WGM42) | (3<<CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
+  TCCR4B = (1 << WGM42) | (0b011 << CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
   TIMSK4 |= (1<<OCIE4A); // Start the interrupt so the unit reset can occur
 #endif
 
-#if ROTARY_ENCODERS > 2
-  //configure uart1 here
-  DDRD &= ~(1 << 2);
-  PORTD &= ~(1 << 2);
-  #define EXTRA_ROTARY_ENCODERS_USART_BAUD 9600UL
-  UBRR1 = F_CPU/(16*EXTRA_ROTARY_ENCODERS_USART_BAUD)-1;
-  //9 bit mode
-  UCSR1C = (1<<USBS1)|(3<<UCSZ10);
-  UCSR1B = (1<<RXEN1)|(0<<TXEN1)|(1<<UCSZ12);
-  UCSR1B |= 1 << RXCIE1; //enable interrupt on rx
-#endif
 }
-
-#if ROTARY_ENCODERS > 2
-
-uint8_t vpotToChange = 0;
-uint8_t vpot_mod_state = 0;
-
-ISR(USART1_RX_vect)
-{
-  //receive data from extension board
-  //bit 9 = 1 mean encoder number, following byte with bit 9 = 0 is increment value
-  /* Get status and 9th bit, then data */
-  /* from buffer */
-  uint16_t resh = UCSR1B;
-  uint16_t resl = UDR1;
-  uint16_t res = 0;
-  
-  /* Filter the 9th bit, then return */
-  resh = (resh >> 1) & 0x01;
-  res = ((resh << 8) | resl);
-  if((res == 0x180) | (res == 0x1C0)){         //button REb filter
-    keys[BTN_REa].input((res & 0x1C0) == 0x1C0, BTN_REa);
-  } else if((res & 0x100) == 0x100){  //rotary filter
-    vpotToChange = res & 0xEF;
-    vpot_mod_state = 1;
-  }
-  else {
-    if(vpot_mod_state  & (vpotToChange < NUM_ROTARY_ENCODERS))
-    {
-      int8_t vpot_inc = res & 0xFF;
-      if(vpot_inc){
-        incRotaryEncoder(vpotToChange, vpot_inc);
-      }    
-      vpot_mod_state = 0;
-    }
-  }
-}
-#endif
 #endif // !SIMU
 
 uint8_t pwrCheck()
 {
 #if !defined(SIMU) && !defined(REV0)
   if ((PING & 0b00000010) && (~PINL & 0b01000000))
-    return e_power_off;
+  return e_power_off;
 #endif
   return e_power_on;
 }
@@ -204,31 +135,32 @@ bool switchState(EnumKeys enuk)
     return keys[enuk].state() ? 1 : 0;
 
   switch(enuk){
-    case SW_ELE:
-      result = PINC & (1<<INP_C_ElevDR);
-      break;
+    //case SW_ELE:
+    //  result = PINC & (1<<INP_C_ElevDR);
+    //  break;
 
-    case SW_AIL:
-      result = PINC & (1<<INP_C_AileDR);
-      break;
+    //case SW_AIL:
+    //  result = PINC & (1<<INP_C_AileDR);
+    //  break;
 
     case SW_RUD:
       result = PING & (1<<INP_G_RuddDR);
       break;
-      //     INP_G_ID1 INP_B_ID2
-      // id0    0        1
-      // id1    1        1
-      // id2    1        0
+
+    //     INP_G_ID1 INP_B_ID2
+    // id0    0        1
+    // id1    1        1
+    // id2    1        0
     case SW_ID0:
-      result = !(PING & (1<<INP_G_ID1));
+      result = !(PINC & (1<<INP_C_ID1));
       break;
 
     case SW_ID1:
-      result = (PING & (1<<INP_G_ID1))&& (PINB & (1<<INP_B_ID2));
+      result = (PINC & (1<<INP_C_ID1))&& (PINC & (1<<INP_C_ID2));
       break;
 
     case SW_ID2:
-      result = !(PINB & (1<<INP_B_ID2));
+      result = !(PINC & (1<<INP_C_ID2));
       break;
 
 #if 0
@@ -266,11 +198,22 @@ bool switchState(EnumKeys enuk)
 
 FORCEINLINE void readKeysAndTrims()
 {
+  /* Original keys were connected to PORTB as follows:
+  
+     Bit  Key
+      7   other use
+      6   LEFT
+      5   RIGHT
+      4   UP
+      3   DOWN
+      2   EXIT
+      1   MENU
+      0   other use
+  */
+
   uint8_t enuk = KEY_MENU;
 
-#if ROTARY_ENCODERS <= 2
   keys[BTN_REa].input(~PIND & 0x20, BTN_REa);
-#endif
   keys[BTN_REb].input(~PIND & 0x10, BTN_REb);
 
   uint8_t tin = ~PINL;
@@ -287,17 +230,17 @@ FORCEINLINE void readKeysAndTrims()
 
   // Trim switches ...
   static const pm_uchar crossTrim[] PROGMEM ={
-    1<<INP_J_TRM_LH_DWN,
-    1<<INP_J_TRM_LH_UP,
-    1<<INP_J_TRM_LV_DWN,
-    1<<INP_J_TRM_LV_UP,
-    1<<INP_J_TRM_RV_DWN,
-    1<<INP_J_TRM_RV_UP,
-    1<<INP_J_TRM_RH_DWN,
-    1<<INP_J_TRM_RH_UP
+    1<<INP_F_TRM_LH_DWN,
+    1<<INP_F_TRM_LH_UP,
+    1<<INP_F_TRM_LV_DWN,
+    1<<INP_F_TRM_LV_UP,
+    1<<INP_F_TRM_RV_DWN,
+    1<<INP_F_TRM_RV_UP,
+    1<<INP_F_TRM_RH_DWN,
+    1<<INP_F_TRM_RH_UP
   };
 
-  in = ~PINJ;
+  in = ~PINF;
 
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
@@ -306,7 +249,6 @@ FORCEINLINE void readKeysAndTrims()
   }
 }
 
-#if ROTARY_ENCODERS <= 2
 ISR(INT2_vect)
 {
   uint8_t input = (PIND & 0x0C);
@@ -318,7 +260,6 @@ ISR(INT3_vect)
   uint8_t input = (PIND & 0x0C);
   if (input == 0 || input == 0x0C) incRotaryEncoder(0, +1);
 }
-#endif
 
 ISR(INT5_vect)
 {

@@ -750,7 +750,7 @@ void setupPulses()
     TCCR1B = 0;                           // Stop counter
     TCNT1 = 0;
 
-#if defined(PCBGRUVIN9X) || defined(CPUM2561)
+#if defined(CPUM2560) || defined(CPUM2561)
     TIMSK1 &= ~0x2F;                      // All Timer1 interrupts off
     TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
     TIFR1 = 0x2F;
@@ -771,7 +771,7 @@ void setupPulses()
         OCR1C = 200;                          // 100 uS
         TCNT1 = 300;                          // Past the OCR1C value
         ICR1 = 44000;                         // Next frame starts in 22 mS
-#if defined(PCBGRUVIN9X) || defined(CPUM2561)
+#if defined(CPUM2560) || defined(CPUM2561)
         TIMSK1 |= 0x28;                       // Enable Timer1 COMPC and CAPT interrupts
         TCCR1A = (0 << WGM10);                // Set output waveform mode to normal, for now. Note that
                                               // WGM will be changed to toggle OCR1B pin on compare capture, 
@@ -790,7 +790,7 @@ void setupPulses()
         set_timer3_capture(); 
         OCR1B = 6000;                         // Next frame starts in 3 mS
         OCR1C = 4000;                         // Next frame setup in 2 mS
-#if defined(PCBGRUVIN9X) || defined(CPUM2561)
+#if defined(CPUM2560) || defined(CPUM2561)
         TIMSK1 |= (1<<OCIE1B);                // Enable COMPB
         TIMSK1 |= (1<<OCIE1C);                // Enable COMPC
         TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching
@@ -805,7 +805,7 @@ void setupPulses()
 
       case PROTO_PPM16:
         OCR1A = 40000;                        // Next frame starts in 20 mS
-#if defined(PCBGRUVIN9X) || defined(CPUM2561)
+#if defined(CPUM2560) || defined(CPUM2561)
         TIMSK1 |= (1<<OCIE1A);                // Enable COMPA
         TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching
 #else
@@ -820,7 +820,7 @@ void setupPulses()
         break;
 
       case PROTO_PPMSIM:
-#if defined(PCBGRUVIN9X) || defined(CPUM2561)
+#if defined(CPUM2560) || defined(CPUM2561)
         TCCR1A = 0;                           // Disconnect OC1B for bit-bang PPM switching
 #endif
         setupPulsesPPM(PROTO_PPMSIM);
@@ -846,7 +846,7 @@ void setupPulses()
                                               //       and
                                               //    PPM mode will dynamically adjust to the frame rate set in model SETUP menu, 
                                               //    from within setupPulsesPPM().
-#if defined(PCBGRUVIN9X) || defined(CPUM2561)
+#if defined(CPUM2560) || defined(CPUM2561)
         TIMSK1 |= (1<<OCIE1A);                // Enable COMPA
         TCCR1A = (3 << COM1B0);               // Connect OC1B for hardware PPM switching. G: Not needed
                                               // for DSM2=SERIAL. But OK.
@@ -1018,7 +1018,7 @@ ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
 void set_timer3_capture()
 {
 #ifndef SIMU
-#if defined (PCBGRUVIN9X) || defined(CPUM2561) // TODO TIMSK3 in #define!
+#if defined (CPUM2560) || defined(CPUM2561) // TODO TIMSK3 in #define!
     TIMSK3 &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
 #else
     ETIMSK &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
@@ -1047,7 +1047,7 @@ void set_timer3_ppm()
     TCCR3A = (0<<WGM10);
     TCCR3B = (1 << WGM12) | (2<<CS10); // CTC OCR1A, 16MHz / 8
 
-#if defined (PCBGRUVIN9X) || defined(CPUM2561)
+#if defined (CPUM2560) || defined(CPUM2561)
     TIMSK3 |= ( (1<<OCIE3A) | (1<<OCIE3B) );                    // enable immediately before mainloop
 #else
     ETIMSK |= ( (1<<OCIE3A) | (1<<OCIE3B) );                    // enable immediately before mainloop

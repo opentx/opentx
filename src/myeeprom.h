@@ -55,9 +55,7 @@
   #define EEPROM_VER       215
 #elif defined(PCBSKY9X)
   #define EEPROM_VER       215
-#elif defined(PCBGRUVIN9X)
-  #define EEPROM_VER       214
-#elif defined(CPUM2561)
+#elif defined(CPUM2560) || defined(CPUM2561)
   #define EEPROM_VER       214
 #elif defined(CPUM128)
   #define EEPROM_VER       215
@@ -77,15 +75,7 @@
   #define MAX_EXPOS  32
   #define NUM_CSW    32 // number of custom switches
   #define NUM_CFN    32 // number of functions assigned to switches
-#elif defined(PCBGRUVIN9X)
-  #define MAX_MODELS 30
-  #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
-  #define MAX_PHASES 6
-  #define MAX_MIXERS 32
-  #define MAX_EXPOS  16
-  #define NUM_CSW    15 // number of custom switches
-  #define NUM_CFN    24 // number of functions assigned to switches
-#elif defined(CPUM2561)
+#elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS 30
   #define NUM_CHNOUT 16 // number of real output channels CH1-CH16
   #define MAX_PHASES 6
@@ -356,7 +346,7 @@ PACK(typedef struct t_ExpoData {
   char     name[LEN_EXPOMIX_NAME];
   int8_t   curveParam;
 }) ExpoData;
-#elif defined(PCBGRUVIN9X) || defined(CPUM2561)
+#elif defined(CPUM2560) || defined(CPUM2561)
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t chn:2;
@@ -481,7 +471,7 @@ PACK( union u_int8int16_t {
 #define DELAY_MAX   15 /* 7.5 seconds */
 #define SLOW_MAX    15 /* 7.5 seconds */
 
-#if defined(PCBGRUVIN9X) || defined(CPUM2561)
+#if defined(CPUM2560) || defined(CPUM2561)
 PACK(typedef struct t_MixData {
   uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
   uint8_t curveMode:1;       // O=curve, 1=differential
@@ -972,7 +962,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define NUM_ROTARY_ENCODERS (2+NUM_ROTARY_ENCODERS_EXTRA)
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
 #define ROTARY_ENCODER_ARRAY_EXTRA int16_t rotaryEncodersExtra[MAX_PHASES][NUM_ROTARY_ENCODERS_EXTRA];
-#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS <= 2
+#elif defined(CPUM2560) && ROTARY_ENCODERS <= 2
 #define NUM_ROTARY_ENCODERS_EXTRA 0
 #define NUM_ROTARY_ENCODERS 2
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
@@ -1119,7 +1109,7 @@ enum MixSources {
 
 #if defined(PCBSKY9X)
   MIXSRC_REa,
-#elif defined(PCBGRUVIN9X)
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
   MIXSRC_REa,
   MIXSRC_REb,
   #if ROTARY_ENCODERS > 2
@@ -1208,7 +1198,7 @@ enum MixSources {
 #define TMRMODE_THR_REL  3
 #define TMRMODE_THR_TRG  4
 
-#if defined(PCBGRUVIN9X) || defined(CPUARM)
+#if defined(CPUARM) || defined(CPUM2560)
 PACK(typedef struct t_TimerData {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t  start:12;
@@ -1292,10 +1282,10 @@ enum FailsafeModes {
 #define TELEMETRY_DATA
 #endif
 
-#if defined(PCBGRUVIN9X) || defined(CPUARM)
-#define BeepANACenter uint16_t
+#if defined(CPUARM) || defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+  #define BeepANACenter uint16_t
 #else
-#define BeepANACenter uint8_t
+  #define BeepANACenter uint8_t
 #endif
 
 PACK(typedef struct t_ModelHeader {

@@ -94,7 +94,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VSWITCHES)
     ISTR(VSRCRAW)
     ISTR(VTMRMODES)
-#if defined(PCBGRUVIN9X) || defined(CPUARM)
+#if defined(CPUM2560) || defined(CPUARM)
     ISTR(DATETIME)
 #endif
 #if defined(CPUARM)
@@ -269,7 +269,7 @@ const pm_char STR_EEPROMOVERFLOW[] PROGMEM = TR_EEPROMOVERFLOW;
 const pm_char STR_TRIMS2OFFSETS[] PROGMEM = TR_TRIMS2OFFSETS;
 const pm_char STR_MENURADIOSETUP[] PROGMEM = TR_MENURADIOSETUP;
 
-#if defined(PCBGRUVIN9X) || defined(CPUARM)
+#if defined(CPUM2560) || defined(CPUARM)
 const pm_char STR_MENUDATEANDTIME[] PROGMEM = TR_MENUDATEANDTIME;
 #endif
 
@@ -332,7 +332,7 @@ const pm_char STR_LATITUDE[] PROGMEM = TR_LATITUDE;
 const pm_char STR_LONGITUDE[] PROGMEM = TR_LONGITUDE;
 #endif
 
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
+#if defined(CPUM2560) || defined(PCBGRUVIN9X)
 const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 #endif
 

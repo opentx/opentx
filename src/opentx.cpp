@@ -856,7 +856,7 @@ getvalue_t getValue(uint8_t i)
   /*srcRaw is shifted +1!*/
 
   if (i<NUM_STICKS+NUM_POTS) return calibratedStick[i];
-#if defined(PCBGRUVIN9X) || defined(PCBSKY9X)
+#if defined(PCBGRUVIN9X) || defined(PCBMEGA2560) || defined(PCBSKY9X)
   else if (i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS) return getRotaryEncoder(i-(NUM_STICKS+NUM_POTS));
 #endif
   else if (i<MIXSRC_MAX) return 1024;
@@ -1936,7 +1936,7 @@ static uint16_t s_anaFilt[NUMBER_ANALOG];
 
 #if defined(SIMU)
 uint16_t BandGap = 225;
-#elif defined(PCBGRUVIN9X)
+#elif defined(CPUM2560)
 // #define STARTADCONV (ADCSRA  = (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2) | (1<<ADSC) | (1 << ADIE))
 // G: Note that the above would have set the ADC prescaler to 128, equating to
 // 125KHz sample rate. We now sample at 500KHz, with oversampling and other
@@ -2080,7 +2080,7 @@ void getADC()
 #if !defined(CPUARM)
 void getADC_bandgap()
 {
-#if defined (PCBGRUVIN9X)
+#if defined(CPUM2560)
   static uint8_t s_bgCheck = 0;
   static uint16_t s_bgSum = 0;
   ADCSRA|=0x40; // request sample
@@ -3167,7 +3167,7 @@ void doMixerCalculations()
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
   if (Current_analogue > Current_max)
     Current_max = Current_analogue ;
-#elif defined(PCBGRUVIN9X) && !defined(SIMU)
+#elif defined(CPUM2560) && !defined(SIMU)
   // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
   ADCSRB &= ~(1<<MUX5);
   ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
@@ -3599,7 +3599,7 @@ void opentxStart()
   }
 }
 
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(CPUM2560)
 void opentxClose()
 {
 #if defined(FRSKY)
@@ -3893,7 +3893,7 @@ void perMain()
 #elif defined(PCBSKY9X)
     instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.vBatCalib)/128) * 4191;
     instant_vbat /= 55296;
-#elif defined(PCBGRUVIN9X)
+#elif defined(CPUM2560)
     instant_vbat = (instant_vbat*1112 + instant_vbat*g_eeGeneral.vBatCalib + (BandGap<<2)) / (BandGap<<3);
 #else
     instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.vBatCalib/8) / BandGap;
@@ -4052,35 +4052,6 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   cli(); // disable other interrupts for stack pops before this function's RETI
   RESUME_PPMIN_INTERRUPT();
 }
-
-/*
-// gruvin: Fuse declarations work if we use the .elf file for AVR Studio (v4)
-// instead of the Intel .hex files.  They should also work with AVRDUDE v5.10
-// (reading from the .hex file), since a bug relating to Intel HEX file record
-// interpretation was fixed. However, I leave these commented out, just in case
-// it causes trouble for others.
-#if defined (PCBGRUVIN9X)
-// See fuses_2561.txt
-  FUSES =
-  {
-    // BOD=4.3V, WDT OFF (enabled in code), Boot Flash 4096 bytes at 0x1F000,
-    // JTAG and OCD enabled, EESAVE enabled, BOOTRST/CKDIV8/CKOUT disabled,
-    // Full swing Xtal oscillator. Start-up 16K clks + 0ms. BOD enabled.
-    0xD7, // .low
-    0x11, // .high
-    0xFC  // .extended
-  };
-#else
-  FUSES =
-  {
-    // G: Changed 2011-07-04 to include EESAVE. Tested OK on stock 9X
-    0x1F, // LFUSE
-    0x11, // HFUSE
-    0xFF  // EFUSE
-  };
-#endif
-*/
-
 #endif
 
 /*
@@ -4193,7 +4164,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   AUDIO_WARNING2();
 }
 
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(CPUM2560)
 void saveTimers()
 {
   for (uint8_t i=0; i<MAX_TIMERS; i++) {
@@ -4291,7 +4262,7 @@ uint16_t stack_free()
 }
 #endif
 
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
   #define OPENTX_INIT_ARGS const uint8_t mcusr
 #elif defined(PCBSTD)
   #define OPENTX_INIT_ARGS const uint8_t mcusr
@@ -4353,7 +4324,7 @@ inline void opentxInit(OPENTX_INIT_ARGS)
     opentxStart();
   }
 
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(CPUM2560)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     eeDirty(EE_GENERAL);
@@ -4442,7 +4413,7 @@ int main(void)
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more wdt_reset()s in. But I don't like that approach
   // during boot up.)
-#if defined(PCBGRUVIN9X) || defined(CPUM2561)
+#if defined(CPUM2560) || defined(CPUM2561)
   uint8_t mcusr = MCUSR; // save the WDT (etc) flags
   MCUSR = 0; // must be zeroed before disabling the WDT
 #elif defined(PCBSTD)
@@ -4549,12 +4520,12 @@ int main(void)
 
   CoStartOS();
 #else
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
   uint8_t shutdown_state = 0;
 #endif
 
   while(1) {
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
     if ((shutdown_state=pwrCheck()) > e_power_trainer)
       break;
 #endif
@@ -4568,7 +4539,7 @@ int main(void)
   }
 #endif
 
-#if defined(PCBGRUVIN9X)
+#if defined(CPUM2560)
   // Time to switch off
   lcd_clear();
   displayPopup(STR_SHUTDOWN);

@@ -453,7 +453,7 @@ ifeq ($(PCB), GRUVIN9X)
   TRGT = avr-
   MCU = atmega2560
   OPT = 2
-  CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
+  CPPDEFS += -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
   SDCARD = NO
   BUZZER = NO
   THR_TRACE = YES
@@ -492,27 +492,22 @@ ifeq ($(PCB), MEGA2560)
   TRGT = avr-
   MCU = atmega2560
   OPT = 2
-  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBGRUVIN9X -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC
-  SDCARD = NO
+  CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBMEGA2560 -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DRTCLOCK
+  SDCARD = YES
   THR_TRACE = YES
-  EXTRAINCDIRS = targets/gruvin9x targets/stock FatFs FatFs/option
+  EXTRAINCDIRS = targets/mega2560 targets/stock FatFs FatFs/option
   BOARDSRC = targets/mega2560/board_mega2560.cpp
   EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = protocols/pulses_avr.cpp  
-  CPPSRC += audio_avr.cpp haptic.cpp
+  CPPSRC += audio_avr.cpp
 
   ifeq ($(SDCARD), YES)
+    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp 
     CPPDEFS += -DRTCLOCK
-    CPPSRC += rtc.cpp targets/gruvin9x/rtc_driver.cpp 
-    EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/gruvin9x/diskio.cpp
+    CPPSRC += rtc.cpp targets/mega2560/rtc_driver.cpp 
   endif
-    
-  ifeq ($(VOICE), YES)
-    CPPSRC += targets/gruvin9x/somo14d.cpp
-    CPPDEFS += -DVOICE
-  endif
-  
+
   # Enable extra rotary encoders (Gruvin9x board only)
   # Values = YES, NO
   ROTARY_ENCODERS = 2

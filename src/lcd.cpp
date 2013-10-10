@@ -129,7 +129,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
      * by ten bottom bytes (20 bytes per * char) */
     q = &font_10x14[((uint16_t)c_remapped)*20];
     for (int8_t i=11; i>=0; i--) {
-      if (flags & CONDENSED && i<=1) break;
+      if ((flags & CONDENSED) && i<=1) break;
       uint8_t b1=0, b2=0;
       if (i>1) {
         b1 = pgm_read_byte(q++); /*top byte*/

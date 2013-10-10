@@ -143,7 +143,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VSRCRAW            (OFS_VSWITCHES + sizeof(TR_VSWITCHES))
 #define OFS_VTMRMODES          (OFS_VSRCRAW + sizeof(TR_VSRCRAW))
 #define OFS_DATETIME           (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
-#if defined(PCBGRUVIN9X) || defined(CPUARM)
+#if defined(CPUM2560) || defined(CPUARM)
   #define OFS_VLCD             (OFS_DATETIME + sizeof(TR_DATETIME))
 #else
   #define OFS_VLCD             (OFS_DATETIME)
@@ -244,7 +244,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_VRENCODERS       (STR_OPEN9X + OFS_VRENCODERS)
 #endif
 
-#if defined(PCBGRUVIN9X) || defined(CPUARM)
+#if defined(CPUM2560) || defined(CPUARM)
 #define STR_DATETIME           (STR_OPEN9X + OFS_DATETIME)
 #endif
 
@@ -469,7 +469,7 @@ extern const pm_char STR_LATITUDE[];
 extern const pm_char STR_LONGITUDE[];
 #endif
 
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(CPUM2560)
 extern const pm_char STR_SHUTDOWN[];
 #endif
 

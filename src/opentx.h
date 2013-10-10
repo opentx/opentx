@@ -74,7 +74,7 @@
 #define IF_BATTGRAPH(x)
 #endif
 
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(CPUM2560)
 #define IF_PERSISTENT_TIMERS(x) x,
 #else
 #define IF_PERSISTENT_TIMERS(x)
@@ -247,6 +247,8 @@
   #include "targets/sky9x/board_sky9x.h"
 #elif defined(PCBGRUVIN9X)
   #include "targets/gruvin9x/board_gruvin9x.h"
+#elif defined(PCBMEGA2560)
+  #include "targets/mega2560/board_mega2560.h"
 #else
   #include "targets/stock/board_stock.h"
 #endif
@@ -843,7 +845,7 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
   void incRotaryEncoder(uint8_t idx, int8_t inc);
 #endif
 
-#if defined(PCBGRUVIN9X)
+#if defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
   #define ROTARY_ENCODER_GRANULARITY (1)
 #elif defined(CPUARM)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
@@ -1074,7 +1076,7 @@ inline void resumeMixerCalculations()
 #define resumeMixerCalculations()
 #endif
 
-#if defined(CPUARM) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(CPUM2560)
 void saveTimers();
 #else
 #define saveTimers()
