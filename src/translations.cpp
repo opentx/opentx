@@ -332,7 +332,7 @@ const pm_char STR_LATITUDE[] PROGMEM = TR_LATITUDE;
 const pm_char STR_LONGITUDE[] PROGMEM = TR_LONGITUDE;
 #endif
 
-#if defined(CPUM2560) || defined(PCBGRUVIN9X)
+#if defined(CPUARM) || defined(CPUM2560)
 const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 #endif
 
