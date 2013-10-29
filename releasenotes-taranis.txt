@@ -1,6 +1,17 @@
 <SVN CURRENT>
 
 <h2>2834 / 2013-10-29</h2>
+<ul>
+<li>Altitude played without decimal when &gt;= 10m
+<li>Check to avoid too long paths when playing SD files
+</ul>
+ 		
+[all]
+<ul>
+<li>Mixer bug when a MULTIPLY mix used with a slow
+<li>I GVAR popup removed
+<li>Sticky virtual switches are reset when ResetFlight function is called 
+</ul>
 
 <h2>2768 / 2013-09-20</h2>
 <ul>
