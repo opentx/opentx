@@ -905,29 +905,12 @@ PACK(typedef struct t_FrSkyData {
 }) FrSkyData;
 #endif
 
-#ifdef MAVLINK
-//! \brief Model struct for mavlink eeprom settings total 18 bytes available.
+#if defined(MAVLINK)
 PACK(typedef struct t_MavlinkData {
   uint8_t rc_rssi_scale:4;
   uint8_t pc_rssi_en:1;
-  uint8_t spare0:3;
-  uint8_t spare1;
-  uint8_t spare2;
-  uint8_t spare3;
-  uint8_t spare4;
-  uint8_t spare5;
-  uint8_t spare6;
-  uint8_t spare7;
-  uint8_t spare8;
-  uint8_t spare9;
-  uint8_t spare10;
-  uint8_t spare11;
-  uint8_t spare12;
-  uint8_t spare13;
-  uint8_t spare14;
-  uint8_t spare15;
-  uint8_t spare16;
-  uint8_t spare17;
+  uint8_t spare1:3;
+  uint8_t spare2[3];
 }) MavlinkData;
 #endif
 
