@@ -519,7 +519,7 @@ void menuTelemetryMavlinkSetup(uint8_t event) {
 			lcd_putsLeft(y, STR_MAVLINK_RC_RSSI_SCALE_LABEL);
 			lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, (25 + g_model.mavlink.rc_rssi_scale * 5), attr|LEFT);
 			lcd_putc(lcdLastPos, y, '%');
-			if (attr) CHECK_INCDEC_GENVAR(event, g_model.mavlink.rc_rssi_scale, 0, 15);
+			if (attr) CHECK_INCDEC_MODELVAR(event, g_model.mavlink.rc_rssi_scale, 0, 15);
 			break;
 		case ITEM_MAVLINK_PC_RSSI_EN:
 			g_model.mavlink.pc_rssi_en = onoffMenuItem(g_model.mavlink.pc_rssi_en,
