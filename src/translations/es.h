@@ -1,4 +1,4 @@
-ï»¿/*
+/*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -355,9 +355,9 @@
   #define LEN_MAVLINK_BAUDS		"\006"
   #define TR_MAVLINK_BAUDS		"4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
   #define LEN_MAVLINK_AC_MODES	"\011"
-  #define TR_MAVLINK_AC_MODES	"Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
+  #define TR_MAVLINK_AC_MODES	"Estabilizar""Acrobat. ""Alt Hold ""Auto     ""Guiado   ""Loiter   ""RTL      ""Circulo  ""Pos Hold ""Tierra   ""OF Loiter""Toy A    ""Toy M    ""INVALIDO "
   #define LEN_MAVLINK_AP_MODES	"\015"
-  #define TR_MAVLINK_AP_MODES	"Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
+  #define TR_MAVLINK_AP_MODES	"Manual       ""Circulo       ""Estabilizar   ""Entrenamiento""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guiado       ""Inicialisando""INVALID      "
 #endif
 
 // ZERO TERMINATED STRINGS
@@ -610,7 +610,7 @@
 #define TR_SD_TYPE             "Tipo:"
 #define TR_SD_SPEED            "Velocidad:"
 #define TR_SD_SECTORS          "Sectores:"
-#define TR_SD_SIZE             "Tama\201o:"
+#define TR_SD_SIZE             "Tamaño:"
 #define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_GLOBAL_VAR          "Global Variable"
@@ -649,7 +649,7 @@
 #define TR_RESET               "[Reset]"
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Aprendiz"
-#define TR_ANTENNAPROBLEM      CENTER "Â¡Problema antena TX!"
+#define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"
 #define TR_MODELIDUSED         TR("ID en uso", "ID modelo en uso")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
@@ -662,18 +662,18 @@
   #define TR_MAVMENUSETUP_TITLE				"Mavlink Setup"
   #define TR_MAVLINK_BAUD_LABEL				"Baudrate"
   #define TR_MAVLINK_INFOS					"INFOS"
-  #define TR_MAVLINK_MODE					"MODE"
-  #define TR_MAVLINK_CUR_MODE				"Current Mode"
-  #define TR_MAVLINK_ARMED					"Armed"
+  #define TR_MAVLINK_MODE					"MODO"
+  #define TR_MAVLINK_CUR_MODE				"Modo actual"
+  #define TR_MAVLINK_ARMED					"Armad0"
   #define TR_MAVLINK_BAT_MENU_TITLE			"BAT RSSI"
-  #define TR_MAVLINK_BATTERY_LABEL			"Flight Battery status"
+  #define TR_MAVLINK_BATTERY_LABEL			"Estado Bateria de vuelo"
   #define TR_MAVLINK_RC_RSSI_LABEL			"RC RSSI"
   #define TR_MAVLINK_PC_RSSI_LABEL			"PC RSSI"
   #define TR_MAVLINK_NAV_MENU_TITLE			"NAV"
-  #define TR_MAVLINK_COURSE					"Course"
-  #define TR_MAVLINK_HEADING				"Heading"
-  #define TR_MAVLINK_BEARING				"Bearing"
-  #define TR_MAVLINK_ALTITUDE				"Altitude"
+  #define TR_MAVLINK_COURSE					"Carrera"
+  #define TR_MAVLINK_HEADING				"Titulo"
+  #define TR_MAVLINK_BEARING				"Soporte"
+  #define TR_MAVLINK_ALTITUDE				"Altitud"
   #define TR_MAVLINK_GPS					"GPS"
   #define TR_MAVLINK_NO_FIX					"NO Fix"
   #define TR_MAVLINK_SAT					"SAT"
@@ -717,15 +717,15 @@
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
-#define TR_ABOUT_MARTIN_2      "Disegno grafico"
+#define TR_ABOUT_MARTIN_2      "Dise\201no grafico"
 
 #if defined(PCBTARANIS)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
-  #define TR_ABOUT_HARDWARE_2  "Productor disegno de hardware"
+  #define TR_ABOUT_HARDWARE_2  "Productor dise\201o de hardware"
   #define TR_ABOUT_HARDWARE_3  "Firmware contributor"
 #else
   #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
-  #define TR_ABOUT_HARDWARE_2  "Sky9x designer/producer"
+  #define TR_ABOUT_HARDWARE_2  "Sky9x dise\201ador/productor"
   #define TR_ABOUT_HARDWARE_3  ""
 #endif
 
@@ -739,7 +739,7 @@
 #define TR_CHR_TOGGLE 't'
 #define TR_CHR_HOUR   'h'
 
-#define TR_BEEP_VOLUME         "Beep Volume"
-#define TR_WAV_VOLUME          "Wav Volume"
-#define TR_VARIO_VOLUME        "Vario Volume"
-#define TR_BG_VOLUME           "Bg Volume"
+#define TR_BEEP_VOLUME         "Volumen Beep"
+#define TR_WAV_VOLUME          "Volumen Wav"
+#define TR_VARIO_VOLUME        "Volumen Vario"
+#define TR_BG_VOLUME           "Volumen Bg"
