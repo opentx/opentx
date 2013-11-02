@@ -121,7 +121,7 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       }
     }
 #if defined(CPUARM)
-    if (unit == UNIT_METERS && number >= 100 && (att & PREC1)) {
+    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_METERS && number >= 100))) {
       number /= 10;
       att -= PREC1;
     }
