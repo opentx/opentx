@@ -471,7 +471,7 @@ static void init_pa7_dsm2()
 #if defined(REV3)
   TIM8->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P ;
 #else
-  TIM8->CCER = TIM_CCER_CC1NE ;
+  TIM8->CCER = TIM_CCER_CC1NE  | TIM_CCER_CC1NP ;
 #endif
   TIM8->CR2 = TIM_CR2_OIS1 ;                      // O/P idle high
   TIM8->BDTR = TIM_BDTR_MOE ;             // Enable outputs

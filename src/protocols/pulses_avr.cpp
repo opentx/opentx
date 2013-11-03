@@ -52,7 +52,7 @@ uint8_t s_pulses_paused = 0;
 
 uint16_t B3_comp_value;
 
-#ifdef DSM2_SERIAL
+#if defined(DSM2_SERIAL)
 inline void DSM2_EnableTXD(void)
 {
   UCSR0B |= (1 << TXEN0); // enable TX

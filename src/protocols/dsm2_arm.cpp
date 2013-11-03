@@ -59,20 +59,18 @@ uint8_t  dsm2SerialBitCount;
 uint8_t dsm2Index = 0;
 void _send_1(uint8_t v)
 {
-  dsm2Value += v;
+  if (dsm2Index == 0)
+    v -= 2;
+  else
+    v += 2;
 
-  if (dsm2Index == 0) {
-    *(dsm2StreamPtr+1) = dsm2Value;
-    dsm2Index = 1;
-  }
-  else {
-    *dsm2StreamPtr = dsm2Value;
-    dsm2Index = 0;
-    dsm2StreamPtr += 2;
-  }
+  dsm2Value += v;
+  *dsm2StreamPtr++ = dsm2Value;
+
+  dsm2Index = (dsm2Index+1) % 2;
 }
 
-void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
+void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
 {
     bool    lev = 0;
     uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
@@ -92,7 +90,7 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 }
 void putDsm2Flush()
 {
-  // dsm2StreamPtr--; //remove last stopbits and
+  dsm2StreamPtr--; //remove last stopbits and
   *dsm2StreamPtr++ = 44010;             // Past the 44000 of the ARR
 }
 #else
@@ -139,10 +137,15 @@ void setupPulsesDSM2(unsigned int port)
   dsm2SerialBitCount = 0 ;
 #else
   dsm2Value = 0;
-  dsm2Index = 0;
+  dsm2Index = 1;
 #endif
 
   dsm2StreamPtr = dsm2Stream;
+
+#if defined(PCBTARANIS)
+  dsm2Value = 100;
+  *dsm2StreamPtr++ = dsm2Value;
+#endif
 
   switch(s_current_protocol[port]) {
     case PROTO_DSM2_LP45:
