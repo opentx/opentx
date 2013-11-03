@@ -604,7 +604,7 @@ ifeq ($(PCB), TARANIS)
   EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/aspi.cpp targets/taranis/i2c.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp # TODO later eeprom_conversions.cpp
-  PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp protocols/dsm2_arm.cpp
+  PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
   CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart_driver.cpp targets/taranis/sport_driver.cpp
   CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp
