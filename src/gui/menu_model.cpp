@@ -1807,7 +1807,7 @@ void menuModelFlightModesAll(uint8_t event)
 
         case ITEM_PHASES_TRIMS:
           if (k != 0) {
-            editPhaseTrims((10+LEN_FP_NAME)*FW+FW/2, y, i, event, attr);
+            editPhaseTrims((10+LEN_FP_NAME)*FW+FW/2, y, k, event, attr);
           }
           break;
 
