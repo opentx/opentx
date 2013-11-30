@@ -1329,12 +1329,14 @@ void menuModelSetup(uint8_t event)
             if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && l_posHorz==0) {
               if (editMode>0 || p1valdiff) {
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, 63);
-                if (checkIncDec_Ret)
+                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
+                if (checkIncDec_Ret) {
                   modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
+                }
               }
-              if (editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER))
+              if (editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
                 checkModelIdUnique(g_eeGeneral.currModel);
+              }
             }
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+7*FW+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
@@ -3685,11 +3687,18 @@ enum LimitsItems {
   #define LIMITS_NAME_POS           4*FW
   #define LIMITS_OFFSET_POS         14*FW+4
   #define LIMITS_MIN_POS            20*FW-3
-  #define LIMITS_DIRECTION_POS      20*FW-3
-  #define LIMITS_MAX_POS            24*FW+2
-  #define LIMITS_REVERT_POS         25*FW-1
-  #define LIMITS_CURVE_POS          27*FW-1
-  #define LIMITS_PPM_CENTER_POS     34*FW
+  #if defined(PPM_CENTER_ADJUSTABLE)
+    #define LIMITS_DIRECTION_POS    20*FW-3
+    #define LIMITS_MAX_POS          24*FW+2
+    #define LIMITS_REVERT_POS       25*FW-1
+    #define LIMITS_CURVE_POS        27*FW-1
+    #define LIMITS_PPM_CENTER_POS   34*FW
+  #else
+    #define LIMITS_DIRECTION_POS    21*FW
+    #define LIMITS_MAX_POS          26*FW
+    #define LIMITS_REVERT_POS       27*FW
+    #define LIMITS_CURVE_POS        32*FW
+  #endif
 #else
   #if defined(PPM_UNIT_US)
     #define LIMITS_MIN_POS          12*FW+1
@@ -3697,8 +3706,8 @@ enum LimitsItems {
     #define LIMITS_MIN_POS          12*FW
   #endif
   #define LIMITS_OFFSET_POS         8*FW
-  #ifdef PPM_LIMITS_SYMETRICAL
-    #ifdef PPM_CENTER_ADJUSTABLE
+  #if defined(PPM_LIMITS_SYMETRICAL)
+    #if defined(PPM_CENTER_ADJUSTABLE)
       #define LIMITS_MAX_POS        15*FW
       #define LIMITS_REVERT_POS     16*FW-3
       #define LIMITS_PPM_CENTER_POS 20*FW+1
@@ -3708,7 +3717,7 @@ enum LimitsItems {
       #define LIMITS_REVERT_POS     17*FW
     #endif
   #else
-    #ifdef PPM_CENTER_ADJUSTABLE
+    #if defined(PPM_CENTER_ADJUSTABLE)
       #define LIMITS_MAX_POS        16*FW
       #define LIMITS_REVERT_POS     17*FW-2
       #define LIMITS_PPM_CENTER_POS 21*FW+2
