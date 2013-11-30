@@ -5167,6 +5167,7 @@ enum menuModelTelemetryItems {
 #endif
   ITEM_TELEMETRY_USR_VOLTAGE_SOURCE,
   ITEM_TELEMETRY_USR_CURRENT_SOURCE,
+  ITEM_TELEMETRY_FAS_OFFSET,
 #if defined(CPUARM)
   ITEM_TELEMTETRY_PERSISTENT_MAH,
 #endif
@@ -5249,7 +5250,7 @@ enum menuModelTelemetryItems {
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_CPUARM(0) IF_VARIO(LABEL(Vario)) IF_VARIO(0) IF_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, IF_CPUARM(SCREEN_TYPE_ROWS) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, 0, IF_CPUARM(0) IF_VARIO(LABEL(Vario)) IF_VARIO(0) IF_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, IF_CPUARM(SCREEN_TYPE_ROWS) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) });
 
   uint8_t sub = m_posVert - 1;
 
@@ -5420,6 +5421,14 @@ void menuModelTelemetry(uint8_t event)
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.currentSource, 3);
         break;
 
+      case ITEM_TELEMETRY_FAS_OFFSET:
+      	lcd_putsLeft(y, STR_FAS_OFFSET);
+      	lcd_outdezAtt(TELEM_COL2, y, g_model.frsky.fasOffset, attr|LEFT|PREC1);
+        lcd_outdezAtt(TELEM_COL2+6*FW, y, frskyData.hub.current, LEFT|PREC1);
+        lcd_putc(TELEM_COL2+8*FW, y, 'A');
+      	if (attr) g_model.frsky.fasOffset = checkIncDec(event, g_model.frsky.fasOffset, -15, 15, EE_MODEL);
+        break;
+        
 #if defined(CPUARM)
       case ITEM_TELEMTETRY_PERSISTENT_MAH:
         g_model.frsky.mAhPersistent = onoffMenuItem(g_model.frsky.mAhPersistent, TELEM_COL2, y, STR_PERSISTENT_MAH, attr, event);

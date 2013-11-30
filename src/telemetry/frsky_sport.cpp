@@ -191,6 +191,10 @@ void processHubPacket(uint8_t id, uint16_t value)
       break;
 
     case CURRENT_ID:
+      if(((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+        frskyData.hub.current += g_model.frsky.fasOffset;
+      else
+        frskyData.hub.current = 0;
       if (frskyData.hub.current > frskyData.hub.maxCurrent)
         frskyData.hub.maxCurrent = frskyData.hub.current;
       break;
@@ -370,6 +374,10 @@ void processSportPacket(uint8_t *packet)
       }
       else if (appId >= CURR_FIRST_ID && appId <= CURR_LAST_ID) {
         frskyData.hub.current = SPORT_DATA_U32(packet);
+        if(((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+          frskyData.hub.current += g_model.frsky.fasOffset;
+        else
+          frskyData.hub.current = 0;
         if (frskyData.hub.current > frskyData.hub.maxCurrent)
           frskyData.hub.maxCurrent = frskyData.hub.current;
       }
