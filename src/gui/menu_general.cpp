@@ -47,6 +47,7 @@ extern LanguagePack esLanguagePack;
 extern LanguagePack frLanguagePack;
 extern LanguagePack deLanguagePack;
 extern LanguagePack itLanguagePack;
+extern LanguagePack plLanguagePack;
 extern LanguagePack ptLanguagePack;
 extern LanguagePack skLanguagePack;
 extern LanguagePack seLanguagePack;
@@ -59,6 +60,7 @@ LanguagePack * languagePacks[] = {
   &frLanguagePack,
   &deLanguagePack,
   &itLanguagePack,
+  &plLanguagePack,
   &ptLanguagePack,
   &skLanguagePack,
   &seLanguagePack,

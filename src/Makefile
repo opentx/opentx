@@ -204,7 +204,7 @@ TX_CADDY = NO
 IRPROTOS = NO
 
 # TRANSLATIONS
-# Values = cz, de, en, fr, it, se, es, pt
+# Values = cz, de, en, fr, it, se, es, pl, pt
 TRANSLATIONS = EN
 
 # TTS
@@ -688,7 +688,7 @@ TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
 ifeq ($(PCB), $(filter $(PCB), SKY9X TARANIS))
-  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp
+  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_pl.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp
 else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
@@ -1046,7 +1046,7 @@ else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
 
-tra: translations/se.h
+tra: translations/cz.h translations/de.h translations/es.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
   
 elf: $(TARGET).elf
@@ -1102,21 +1102,51 @@ taranis-stamp:
 	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
 
-translations/se.h: translations/cz.h.txt translations/de.h.txt translations/es.h.txt translations/fr.h.txt translations/it.h.txt translations/pt.h.txt translations/se.h.txt 
+translations/cz.h: translations/cz.h.txt
 	@echo
 	@echo "Create language specific header files"
 	@echo "Czech"
 	$(TRANSLATE) translations/cz.h.txt translations/cz.h cz
+
+translations/de.h: translations/de.h.txt  
+	@echo
+	@echo "Create language specific header files"
 	@echo "German"
 	$(TRANSLATE) translations/de.h.txt translations/de.h de
+
+translations/es.h: translations/es.h.txt 
+	@echo
+	@echo "Create language specific header files"
 	@echo "Spanish"
 	$(TRANSLATE) translations/es.h.txt translations/es.h es
+
+translations/fr.h: translations/fr.h.txt 
+	@echo
+	@echo "Create language specific header files"
 	@echo "French"
 	$(TRANSLATE) translations/fr.h.txt translations/fr.h fr
+
+translations/it.h: translations/it.h.txt 
+	@echo
+	@echo "Create language specific header files"
 	@echo "Italian"
 	$(TRANSLATE) translations/it.h.txt translations/it.h it
+
+translations/pl.h: translations/pl.h.txt 
+	@echo
+	@echo "Create language specific header files"
+	@echo "Polish"
+	$(TRANSLATE) translations/pl.h.txt translations/pl.h pl
+
+translations/pt.h: translations/pt.h.txt
+	@echo
+	@echo "Create language specific header files"
 	@echo "Portugese"
 	$(TRANSLATE) translations/pt.h.txt translations/pt.h pt
+
+translations/se.h: translations/se.h.txt 
+	@echo
+	@echo "Create language specific header files"
 	@echo "Swedish"
 	$(TRANSLATE) translations/se.h.txt translations/se.h se
 

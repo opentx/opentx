@@ -1,4 +1,4 @@
-ï»¿/*
+/*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -74,6 +74,9 @@
 #define LEN_VTRIMINC           TR("\006", "\013")
 #define TR_VTRIMINC            TR("Expo  ""ExFino""Fino  ""Medio ""Grueso", "Exponencial""Extra Fino ""Fino       ""Medio      ""Grueso     ")
 
+#define LEN_VBEEPCOUNTDOWN     "\006"
+#define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Voz\0"
+
 #define LEN_RETA123            "\001"
 
 #if defined(PCBGRUVIN9X)
@@ -127,7 +130,7 @@
 #define TR_VCURVEFUNC          "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
 #define LEN_VMLTPX             "\010"
-#define TR_VMLTPX              "Agregar ""Multipl.""Cambiar\0"
+#define TR_VMLTPX              "A\201adir ""Multipl.""Cambiar\0"
 
 #define LEN_VMLTPX2            "\002"
 #define TR_VMLTPX2             "+=""*="":="
@@ -380,7 +383,7 @@
 #define TR_COPYINGMODEL        "Copiando modelo.."
 #define TR_MOVINGMODEL         "Mover modelo..."
 #define TR_LOADINGMODEL        "Cargar modelo..."
-#define TR_NAME                "Nombre"
+#define TR_NAME                "Nom."
 #define TR_MODELNAME           "Nom.Modelo"
 #define TR_PHASENAME           "Nom.Fase "
 #define TR_MIXNAME             "Nom.Mezcla"
@@ -610,7 +613,7 @@
 #define TR_SD_TYPE             "Tipo:"
 #define TR_SD_SPEED            "Velocidad:"
 #define TR_SD_SECTORS          "Sectores:"
-#define TR_SD_SIZE             "Tama\201o:"
+#define TR_SD_SIZE             "Tamaño:"
 #define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_GLOBAL_VAR          "Global Variable"
@@ -633,6 +636,7 @@
 #define TR_MOVE                "Mover"
 #define TR_PASTE               "Pegar"
 #define TR_DELETE              "Borrar"
+#define TR_INSERT              "Insertar"
 #define TR_RESET_FLIGHT        "Reset Vuelo"
 #define TR_RESET_TIMER1        "Reset Reloj1"
 #define TR_RESET_TIMER2        "Reset Reloj2"
@@ -649,7 +653,7 @@
 #define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Aprendiz"
-#define TR_ANTENNAPROBLEM      CENTER "Â¡Problema antena TX!"
+#define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"
 #define TR_MODELIDUSED         TR("ID en uso", "ID modelo en uso")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
@@ -717,7 +721,7 @@
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
-#define TR_ABOUT_MARTIN_2      "Dise\201no grafico"
+#define TR_ABOUT_MARTIN_2      "Dise\201o grafico"
 
 #if defined(PCBTARANIS)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
