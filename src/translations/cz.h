@@ -54,7 +54,7 @@
 #define TR_VRENAVIG            "Ne REaREb"
 
 #define LEN_VBLMODE            TR("\005", "\007")
-#define TR_VBLMODE             TR("Vyp\0 ""Kl\200v.""P\200ky\0""Kl+P\200""Zap\0 ", "Vypnuto""Kl\200vesy""P\200ky\0  ""Kl+P\200ky""Zapnuto")
+#define TR_VBLMODE             TR("Vyp\0 ""Kl\200v.""P\200ky\0""V\207e\0 ""Zap\0 ", "Vypnuto""Kl\200vesy""P\200ky\0  ""V\207e\0   ""Zapnuto")
 
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             " X "" +="" :="
@@ -73,6 +73,9 @@
 
 #define LEN_VTRIMINC           "\007"
 #define TR_VTRIMINC            "Expo\0  ""ExJemn\212""Jemn\212\0 ""St\206edn\204""Hrub\212\0 "
+
+#define LEN_VBEEPCOUNTDOWN     "\006"
+#define TR_VBEEPCOUNTDOWN      "Tich\212\0Zvuk\0 Hlas\0 "
 
 #define LEN_RETA123            "\001"
 
@@ -319,9 +322,9 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW " * "
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "*1 "
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW " * "
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "*1 "
 #endif
 
 #if defined(PCBSKY9X)
@@ -456,7 +459,7 @@
 #define TR_RENAVIG             "Navig. RotEnc"
 #define TR_THROTTLEREVERSE     TR("ReversPlyn", "Revers plynu")
 #define TR_MINUTEBEEP          TR(INDENT"Minuta", INDENT"Oznamovat minuty")
-#define TR_BEEPCOUNTDOWN       TR(INDENT"Odpo\201et", INDENT"Hlasit\212 odpo\201et")
+#define TR_BEEPCOUNTDOWN       INDENT"Odpo\201et"
 #define TR_PERSISTENT          INDENT"Trval\202"
 #define TR_BACKLIGHT_LABEL     "Podsv\203tlen\204"
 #define TR_BLDELAY             INDENT"Zhasnout po"
@@ -530,7 +533,7 @@
 // Alignment
 
 
-#define TR_MENUDREXPO          "DR/EXPO"
+#define TR_MENUINPUTS          "DR/EXPO"
 #define TR_MENULIMITS          "LIMITY"
 
 
@@ -614,7 +617,7 @@
 #define TR_TYPE                TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Glob\200ln\204 prom\203nn\202"
 #define TR_GLOBAL_VAR          "Global Variable"
-#define TR_MENUGLOBALVARS      "GLOB\200LN\204 PROM\203NN\202"
+#define TR_MENUGLOBALVARS      "GLOB\213LN\214 PROM\203NN\220"
 #define TR_OWN                 " \043 "
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Encs"
@@ -633,6 +636,7 @@
 #define TR_MOVE                "P\206esunout"
 #define TR_PASTE               "Vlo\217it"
 #define TR_DELETE              "Odstranit"
+#define TR_INSERT              "P\206idat"
 #define TR_RESET_FLIGHT        "Vynulovat let"
 #define TR_RESET_TIMER1        "Vynulovat Timer1"
 #define TR_RESET_TIMER2        "Vynulovat Timer2"
@@ -646,7 +650,7 @@
 #define TR_BYTES               "[B]"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
-#define TR_RESET               "[Reset]"
+#define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Volby]"
 #define TR_TRAINER             "Tren\202r"
 #define TR_ANTENNAPROBLEM      CENTER "Probl\202m s TX ant\202nou!"
@@ -655,36 +659,38 @@
 #define TR_CHANNELRANGE        INDENT "Rozsah kan\200l\211"
 #define TR_LOWALARM            INDENT "N\204zk\212 Alarm"
 #define TR_CRITICALALARM       INDENT "Kritick\212 Alarm"
+#define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 
 #if defined(MAVLINK)
-  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
-  #define TR_MAVLINK_PC_RSSI_EN_LABEL		"PC RSSI EN"
-  #define TR_MAVMENUSETUP_TITLE				"Mavlink Setup"
-  #define TR_MAVLINK_BAUD_LABEL				"Baudrate"
-  #define TR_MAVLINK_INFOS					"INFOS"
-  #define TR_MAVLINK_MODE					"MODE"
-  #define TR_MAVLINK_CUR_MODE				"Current Mode"
-  #define TR_MAVLINK_ARMED					"Armed"
-  #define TR_MAVLINK_BAT_MENU_TITLE			"BAT RSSI"
-  #define TR_MAVLINK_BATTERY_LABEL			"Flight Battery status"
-  #define TR_MAVLINK_RC_RSSI_LABEL			"RC RSSI"
-  #define TR_MAVLINK_PC_RSSI_LABEL			"PC RSSI"
-  #define TR_MAVLINK_NAV_MENU_TITLE			"NAV"
-  #define TR_MAVLINK_COURSE					"Course"
-  #define TR_MAVLINK_HEADING				"Heading"
-  #define TR_MAVLINK_BEARING				"Bearing"
-  #define TR_MAVLINK_ALTITUDE				"Altitude"
-  #define TR_MAVLINK_GPS					"GPS"
-  #define TR_MAVLINK_NO_FIX					"NO Fix"
-  #define TR_MAVLINK_SAT					"SAT"
-  #define TR_MAVLINK_HDOP					"HDOP"
-  #define TR_MAVLINK_LAT					"LAT"
-  #define TR_MAVLINK_LON					"LON"
+  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"
+  #define TR_MAVLINK_PC_RSSI_EN_LABEL           "PC RSSI EN"
+  #define TR_MAVMENUSETUP_TITLE                 "Mavlink Setup"
+  #define TR_MAVLINK_BAUD_LABEL                 "Baudrate"
+  #define TR_MAVLINK_INFOS                      "INFOS"
+  #define TR_MAVLINK_MODE                       "MODE"
+  #define TR_MAVLINK_CUR_MODE                   "Current Mode"
+  #define TR_MAVLINK_ARMED                      "Armed"
+  #define TR_MAVLINK_BAT_MENU_TITLE             "BAT RSSI"
+  #define TR_MAVLINK_BATTERY_LABEL              "Flight Battery status"
+  #define TR_MAVLINK_RC_RSSI_LABEL              "RC RSSI"
+  #define TR_MAVLINK_PC_RSSI_LABEL              "PC RSSI"
+  #define TR_MAVLINK_NAV_MENU_TITLE             "NAV"
+  #define TR_MAVLINK_COURSE                     "Course"
+  #define TR_MAVLINK_HEADING                    "Heading"
+  #define TR_MAVLINK_BEARING                    "Bearing"
+  #define TR_MAVLINK_ALTITUDE                   "Altitude"
+  #define TR_MAVLINK_GPS                        "GPS"
+  #define TR_MAVLINK_NO_FIX                     "NO Fix"
+  #define TR_MAVLINK_SAT                        "SAT"
+  #define TR_MAVLINK_HDOP                       "HDOP"
+  #define TR_MAVLINK_LAT                        "LAT"
+  #define TR_MAVLINK_LON                        "LON"
 #endif
 
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Jm\202no ", " Sp\204na\201 ", " Trimy ", " P\206echod Zap ", " P\206echod Vyp " }
-#define TR_LIMITS_HEADERS      { " Jm\202no ", " Subtrim ", " Min ", " Max ", " Sm\203r ", " St\206ed PPM ", " Symetrick\202 " }
+#define TR_LIMITS_HEADERS      { " Jm\202no ", " Subtrim ", " Min ", " Max ", " Sm\203r ", " K\206ivka ", " St\206ed PPM ", " Symetrick\202 " }
 #define TR_CSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " AND Sp\204na\201 ", " Trv\200n\204 ", " Zpo\217d\203n\204 " }
 
 //Taranis About screen
@@ -739,7 +745,7 @@
 #define TR_CHR_TOGGLE 't'
 #define TR_CHR_HOUR   'h'
 
-#define TR_BEEP_VOLUME         "Beep Volume"
-#define TR_WAV_VOLUME          "Wav Volume"
-#define TR_VARIO_VOLUME        "Vario Volume"
-#define TR_BG_VOLUME           "Bg Volume"
+#define TR_BEEP_VOLUME         "P\204p\200n\204"
+#define TR_WAV_VOLUME          "Zvuky WAV"
+#define TR_VARIO_VOLUME        "Vario"
+#define TR_BG_VOLUME           "WAV na pozad\204"

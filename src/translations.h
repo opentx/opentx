@@ -55,6 +55,9 @@
 #elif defined(TRANSLATIONS_ES)
 #include "translations/es.h"
 #define LEN_SPECIAL_CHARS 0
+#elif defined(TRANSLATIONS_PL)
+#include "translations/pl.h"
+#define LEN_SPECIAL_CHARS 0
 #elif defined(TRANSLATIONS_PT)
 #include "translations/pt.h"
 #define LEN_SPECIAL_CHARS 0
@@ -150,13 +153,10 @@ extern const pm_char STR_OPEN9X[];
 #endif
 #if defined(CPUARM)
   #define OFS_VUNITSSYSTEM     (OFS_VLCD + sizeof(TR_VLCD))
+  #define OFS_VBEEPCOUNTDOWN   (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
+  #define OFS_COUNTRYCODES     (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
 #else
-  #define OFS_VUNITSSYSTEM     (OFS_VLCD)
-#endif
-#if defined(CPUARM)
-  #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
-#else
-  #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM)
+  #define OFS_COUNTRYCODES     (OFS_VLCD)
 #endif
 #if defined(PXX)
   #define OFS_VFAILSAFE        (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
@@ -251,6 +251,7 @@ extern const pm_char STR_OPEN9X[];
 #if defined(CPUARM)
   #define STR_VLCD             (STR_OPEN9X + OFS_VLCD)
   #define STR_VUNITSSYSTEM     (STR_OPEN9X + OFS_VUNITSSYSTEM)
+  #define STR_VBEEPCOUNTDOWN   (STR_OPEN9X + OFS_VBEEPCOUNTDOWN)
 #endif
 
 #if defined(PXX)
@@ -397,7 +398,6 @@ extern const pm_char STR_TMR1LATMAXUS[];
 extern const pm_char STR_TMR1LATMINUS[];
 extern const pm_char STR_TMR1JITTERUS[];
 extern const pm_char STR_TMIXMAXMS[];
-extern const pm_char STR_T10MSUS[];
 extern const pm_char STR_FREESTACKMINB[];
 extern const pm_char STR_MENUTORESET[];
 extern const pm_char STR_PPM[];
@@ -430,13 +430,15 @@ extern const pm_char STR_MENUSETUP[];
 extern const pm_char STR_MENUFLIGHTPHASE[];
 extern const pm_char STR_MENUFLIGHTPHASES[];
 extern const pm_char STR_MENUHELISETUP[];
-extern const pm_char STR_MENUDREXPO[];
+extern const pm_char STR_MENUINPUTS[];
 extern const pm_char STR_MENULIMITS[];
 extern const pm_char STR_MENUCURVES[];
 extern const pm_char STR_MENUCURVE[];
 extern const pm_char STR_MENUCUSTOMSWITCH[];
 extern const pm_char STR_MENUCUSTOMSWITCHES[];
 extern const pm_char STR_MENUCUSTOMFUNC[];
+extern const pm_char STR_MENUCUSTOMSCRIPTS[];
+extern const pm_char STR_MENUCUSTOMSCRIPT[];
 extern const pm_char STR_MENUTELEMETRY[];
 extern const pm_char STR_MENUTEMPLATES[];
 extern const pm_char STR_MENUSTAT[];
@@ -445,6 +447,7 @@ extern const pm_char STR_MENUGLOBALVARS[];
 extern const pm_char STR_INVERT_THR[];
 extern const pm_char STR_AND_SWITCH[];
 extern const pm_char STR_CF[];
+extern const pm_char STR_FAS_OFFSET[];
 
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RXNUM[];
@@ -490,6 +493,7 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_WAV_VOLUME[];
   extern const pm_char STR_VARIO_VOLUME[];
   extern const pm_char STR_BG_VOLUME[];
+  extern const pm_char STR_PERSISTENT_MAH[];
 #else
   #define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
 #endif
@@ -506,6 +510,7 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_COPY[];
   extern const pm_char STR_MOVE[];
   extern const pm_char STR_PASTE[];
+  extern const pm_char STR_INSERT[];
   extern const pm_char STR_DELETE[];
   extern const pm_char STR_RESET_FLIGHT[];
   extern const pm_char STR_RESET_TIMER1[];
@@ -515,7 +520,7 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_ABOUT_US[];
 #endif
 
-extern const pm_char STR_RESET[];
+extern const pm_char STR_RESET_BTN[];
 
 #if defined(SDCARD)
   extern const pm_char STR_BACKUP_MODEL[];
@@ -568,8 +573,10 @@ extern const pm_char STR_SDHC_CARD[];
 extern const pm_char STR_NO_SOUNDS_ON_SD[];
 extern const pm_char STR_NO_MODELS_ON_SD[];
 extern const pm_char STR_NO_BITMAPS_ON_SD[];
+extern const pm_char STR_NO_SCRIPTS_ON_SD[];
 extern const pm_char STR_PLAY_FILE[];
 extern const pm_char STR_ASSIGN_BITMAP[];
+extern const pm_char STR_EXECUTE_FILE[];
 extern const pm_char STR_DELETE_FILE[];
 extern const pm_char STR_COPY_FILE[];
 extern const pm_char STR_RENAME_FILE[];
@@ -595,6 +602,7 @@ extern const pm_char STR_ROTARY_ENCODER[];
 extern const pm_char STR_DATE[];
 extern const pm_char STR_CHANNELS_MONITOR[];
 extern const pm_char STR_PATH_TOO_LONG[];
+extern const pm_char STR_VIEW_TEXT[];
 
 #if defined(VOICE) && defined(CPUARM)
   struct LanguagePack {
@@ -648,6 +656,24 @@ extern const pm_char STR_PATH_TOO_LONG[];
   extern const pm_char STR_CHANNELRANGE[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];
+  extern const pm_char STR_ENABLE_POPUP[];
+  extern const pm_char STR_DISABLE_POPUP[];
+  extern const pm_char STR_CURVE_PRESET[];
+  extern const pm_char STR_PRESET[];
+  extern const pm_char STR_MIRROR[];
+  extern const pm_char STR_CLEAR[];
+  extern const pm_char STR_RESET[];
+  extern const pm_char STR_COPY_TRIMS_TO_OFFSET[];
+  extern const pm_char STR_TOP_BAR[];
+  extern const pm_char STR_ALTITUDE[];
+  extern const pm_char STR_SCALE[];
+  extern const pm_char STR_VIEW_CHANNELS[];
+  extern const pm_char STR_VIEW_NOTES[];
+#endif
+
+#if MENUS_LOCK == 1
+  extern const pm_char STR_UNLOCKED[];
+  extern const pm_char STR_MODS_FORBIDDEN[];
 #endif
 
 #if defined(PCBTARANIS) || defined(DSM2)

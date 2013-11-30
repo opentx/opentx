@@ -74,6 +74,9 @@
 #define LEN_VTRIMINC           TR("\006","\013")
 #define TR_VTRIMINC            TR("Expo  ""ExFein""Fein  ""Mittel""Grob  ","Exponential""Extra Fein   ""Fein       ""Mittel     ""Grob       ")
 
+#define LEN_VBEEPCOUNTDOWN     "\006"
+#define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Voice\0"
+
 #define LEN_RETA123            "\001"
 
 #if defined(PCBGRUVIN9X)
@@ -526,11 +529,14 @@
 #define TR_MENUFLIGHTPHASES    "FLUGPHASEN"
 #define TR_MENUHELISETUP       "HUBSCHRAUBER"
 
-#if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUDREXPO        "KN\204PPEL"
+#if defined(PCBTARANIS)
+  #define TR_MENUINPUTS        "EING\200NGE"
+  #define TR_MENULIMITS        "AUSG\200NGE"
+#elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...  #define TR_MENUDREXPO        "KN\204PPEL"
+  #define TR_MENUINPUTS        "EING\200NGE"
   #define TR_MENULIMITS        "AUSG\200NGE"
 #else
-  #define TR_MENUDREXPO        TR("DR/EXPO","DUALRATE/EXPO")
+  #define TR_MENUINPUTS        TR("DR/EXPO","DUALRATE/EXPO")
   #define TR_MENULIMITS        TR("GRENZEN","SERVO WEG")
 #endif
 
@@ -633,6 +639,7 @@
 #define TR_MOVE                "Zeile Verschieben"
 #define TR_PASTE               "Paste"
 #define TR_DELETE              "Zeile L\203schen"
+#define TR_INSERT              "Neue Zeile"
 #define TR_RESET_FLIGHT        "Reset Flugdaten"
 #define TR_RESET_TIMER1        "Reset Timer1"
 #define TR_RESET_TIMER2        "Reset Timer2"
@@ -646,7 +653,7 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
-#define TR_RESET               "[Reset]"
+#define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "----Trainer Buchse Einst.------" //DSC Buchse Funktion
 #define TR_ANTENNAPROBLEM      CENTER "TX Antennen Problem!"
@@ -655,6 +662,8 @@
 #define TR_CHANNELRANGE        INDENT "Ausgangs Kan\201le"
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Kritisch Alarm"
+#define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"

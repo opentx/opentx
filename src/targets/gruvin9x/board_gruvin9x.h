@@ -160,7 +160,8 @@ void sdPoll10ms();
 #endif
 
 // Keys driver
-#define KEYS_PRESSED() (~PINL) // used only for DBLKEYS code.
+#define TRIMS_PRESSED() (~PINJ)
+#define KEYS_PRESSED()  (~PINL) // used only for DBLKEYS code.
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT))) == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_LFT)))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN))) == ((1<<INP_L_KEY_UP)  + (1<<INP_L_KEY_DWN)))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))  == ((1<<INP_L_KEY_RGT) + (1<<INP_L_KEY_UP)))

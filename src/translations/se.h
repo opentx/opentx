@@ -74,6 +74,9 @@
 #define LEN_VTRIMINC           TR("\006","\014")
 #define TR_VTRIMINC            TR("Expo\0 ""xFin\0 ""Fin\0  ""Medium""Grov\0 ","Exponentiell""Extra Fin\0  ""Fin\0        ""Medium\0     ""Grov\0       ")
 
+#define LEN_VBEEPCOUNTDOWN     "\006"
+#define TR_VBEEPCOUNTDOWN      "Tyst\0 Pip\0  R\202st\0 "
+
 #define LEN_RETA123            "\001"
 
 #if defined(PCBGRUVIN9X)
@@ -526,11 +529,14 @@
 #define TR_MENUFLIGHTPHASES    "Flygl\201gen"
 #define TR_MENUHELISETUP       "Helikopter"
 
-#if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUDREXPO        "Spakar" 
-  #define TR_MENULIMITS        "Outputs"
+#if defined(PCBTARANIS)
+  #define TR_MENUINPUTS        "INPUTS"
+  #define TR_MENULIMITS        "Gr\201nser"
+#elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
+  #define TR_MENUINPUTS        "Spakar" 
+  #define TR_MENULIMITS        "Gr\201nser"
 #else
-  #define TR_MENUDREXPO        TR("DR/Expo","DualRates/Expo")
+  #define TR_MENUINPUTS        TR("DR/Expo","DualRates/Expo")
   #define TR_MENULIMITS        "Gr\201nser"
 #endif
 
@@ -633,6 +639,7 @@
 #define TR_MOVE                "Flytta"
 #define TR_PASTE               "Infoga"
 #define TR_DELETE              "Radera"
+#define TR_INSERT              "Addera"
 #define TR_RESET_FLIGHT        "Nollst\201ll Flygning"
 #define TR_RESET_TIMER1        "Nollst\201ll Timer1"
 #define TR_RESET_TIMER2        "Nollst\201ll Timer2"
@@ -646,7 +653,7 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Testa]"
-#define TR_RESET               "[Nollst\201ll]"
+#define TR_RESET_BTN           "[Nollst\201ll]"
 #define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"
 #define TR_ANTENNAPROBLEM      CENTER "Fel p\200 TX-antennen"
@@ -655,6 +662,8 @@
 #define TR_CHANNELRANGE        INDENT "Kanalomr\200de"
 #define TR_LOWALARM            INDENT "L\200g-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
+#define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"

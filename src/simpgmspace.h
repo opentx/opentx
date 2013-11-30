@@ -357,7 +357,7 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
 #define wdt_reset() sleep(1/*ms*/)
 #define boardInit()
 
-#define OS_MutexID int
+#define OS_MutexID pthread_mutex_t
 #define OS_FlagID int
 #define OS_TID int
 #define OS_TCID int
@@ -372,8 +372,8 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
 #define CoExitISR(...)
 #define CoStartTmr(...)
 #define CoWaitForSingleFlag(...) 0
-#define CoEnterMutexSection(...)
-#define CoLeaveMutexSection(...)
+#define CoEnterMutexSection(m) pthread_mutex_lock(&(m))
+#define CoLeaveMutexSection(m) pthread_mutex_unlock(&(m))
 #define CoTickDelay(...)
 #define CoCreateFlag(...) 0
 #define UART3_Configure(...)

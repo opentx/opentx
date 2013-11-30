@@ -155,7 +155,9 @@ void setSticksGain(uint8_t gains);
 
 // Keys driver
 extern uint32_t readKeys();
-#define KEYS_PRESSED() (~readKeys())
+extern uint32_t readTrims();
+#define TRIMS_PRESSED() (readTrims())
+#define KEYS_PRESSED()  (~readKeys())
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & (0x20 + 0x40)) == (0x20 + 0x40))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & (0x10 + 0x08)) == (0x10 + 0x08))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & (0x20 + 0x10)) == (0x20 + 0x10))

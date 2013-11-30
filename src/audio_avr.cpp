@@ -242,6 +242,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
               BEEP_DEFAULT_FREQ + 50, 6, 0, 0,              // MIX_WARNING_1
               BEEP_DEFAULT_FREQ + 52, 6, 3, PLAY_REPEAT(1), // MIX_WARNING_2
               BEEP_DEFAULT_FREQ + 54, 6, 3, PLAY_REPEAT(2), // MIX_WARNING_3
+              BEEP_DEFAULT_FREQ + 50, 30, 3, PLAY_NOW, // TIMER_00
               BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_NOW, // TIMER_LT10
               BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(1)|PLAY_NOW, // TIMER_20
               BEEP_DEFAULT_FREQ + 50, 15, 3, PLAY_REPEAT(2)|PLAY_NOW, // TIMER_30

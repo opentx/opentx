@@ -87,7 +87,7 @@ MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
   return mix;
 }
 
-void md_SetWeight(MixData* md, int8_t weight)
+void mixSetWeight(MixData* md, int8_t weight)
 {
   u_int8int16_t tmp;
   tmp.word=weight;
@@ -95,10 +95,35 @@ void md_SetWeight(MixData* md, int8_t weight)
   // MD_SETWEIGHT(md,weight);  doesn't matter here in code cost compiler optimizes this anyway
 }
 
+#if defined(PCBTARANIS)
+void clearInputs()
+{
+  memset(g_model.expoData, 0, sizeof(g_model.expoData)); // clear all expos
+}
+
+void defaultInputs()
+{
+  clearInputs();
+
+  for (int i=0; i<NUM_STICKS; i++) {
+    s_currCh = i+1;
+    insertExpoMix(1, i);
+    for (int c=0; c<4; c++) {
+      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*(expoAddress(i)->srcRaw-MIXSRC_Rud+1)+c]);
+    }
+  }
+  eeDirty(EE_MODEL);
+}
+#define TMPL_INPUT(x) (MIXSRC_FIRST_INPUT+channel_order(x)-1)
+#else
+#define clearInputs()
+#define defaultInputs()
+#define TMPL_INPUT(x) (MIXSRC_Rud+x-1)
+#endif
+
 void clearMixes()
 {
   memset(g_model.mixData, 0, sizeof(g_model.mixData)); // clear all mixes
-  eeDirty(EE_MODEL);
 }
 
 void clearCurves()
@@ -136,8 +161,10 @@ void applyTemplate(uint8_t idx)
     //ICC(vSTK) -> STK
 #define ICC(x) icc[(x)-1]
     uint8_t icc[4] = {0};
-    for (uint8_t i=0; i<4; i++) //generate inverse array
-      for(uint8_t j=0; j<4; j++) if(CC(i+1)==j+1) icc[j]=i;
+    for (uint8_t i=0; i<4; i++) { //generate inverse array
+      for(uint8_t j=0; j<4; j++)
+        if(CC(i+1)==j+1) icc[j]=i;
+    }
 
     switch (idx) {
       case TMPL_CLEAR_MIXES:
@@ -150,17 +177,15 @@ void applyTemplate(uint8_t idx)
     switch (idx) {
       // Simple 4-Ch
       case TMPL_SIMPLE_4CH:
-        setDest(ICC(STK_RUD), MIXSRC_Rud);
-        setDest(ICC(STK_ELE), MIXSRC_Ele);
-        setDest(ICC(STK_THR), MIXSRC_Thr);
-        setDest(ICC(STK_AIL), MIXSRC_Ail);
+        clearInputs();
+        applyDefaultTemplate();
         break;
 
       // Sticky-T-Cut
       case TMPL_STI_THR_CUT:
-        md=setDest(ICC(STK_THR), MIXSRC_MAX); md_SetWeight(md, -100);  md->swtch=SWSRC_SWC;  md->mltpx=MLTPX_REP;
+        md=setDest(ICC(STK_THR), MIXSRC_MAX); mixSetWeight(md, -100);  md->swtch=SWSRC_SWC;  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_CH14); // md->weight= 100; done by setDest anyway
-        md=setDest(13, MIXSRC_MAX); md_SetWeight(md, -100);  md->swtch=SWSRC_SWB;  md->mltpx=MLTPX_REP;
+        md=setDest(13, MIXSRC_MAX); mixSetWeight(md, -100);  md->swtch=SWSRC_SWB;  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_MAX); /* md->weight= 100;*/  md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
         setSwitch(11, CS_VNEG, STK_THR, -99);
         setSwitch(12, CS_VPOS, MIXSRC_CH14, 0);
@@ -168,29 +193,34 @@ void applyTemplate(uint8_t idx)
 
       // V-Tail
       case TMPL_V_TAIL:
-        setDest(ICC(STK_RUD), MIXSRC_Rud, true);
-        md=setDest(ICC(STK_RUD), MIXSRC_Ele); md_SetWeight(md, -100);
-        setDest(ICC(STK_ELE), MIXSRC_Rud, true);
-        setDest(ICC(STK_ELE), MIXSRC_Ele);
+        defaultInputs();
+        setDest(ICC(STK_RUD), TMPL_INPUT(STK_RUD), true);
+        md=setDest(ICC(STK_RUD), TMPL_INPUT(STK_ELE)); mixSetWeight(md, -100);
+        setDest(ICC(STK_ELE), TMPL_INPUT(STK_RUD), true);
+        setDest(ICC(STK_ELE), TMPL_INPUT(STK_ELE));
         break;
 
       // Elevon\\Delta
       case TMPL_ELEVON_DELTA:
+        defaultInputs();
+#if defined(PCBTARANIS)
+#warning "Templates below are not implemented (only V-TAIL has been done). Feel free to help!"
+#endif
         setDest(ICC(STK_ELE), MIXSRC_Ele, true);
         setDest(ICC(STK_ELE), MIXSRC_Ail);
         setDest(ICC(STK_AIL), MIXSRC_Ele, true);
-        md=setDest(ICC(STK_AIL), MIXSRC_Ail); md_SetWeight(md, -100);
+        md=setDest(ICC(STK_AIL), MIXSRC_Ail); mixSetWeight(md, -100);
         break;
 
       // eCCPM
       case TMPL_ECCPM:
         md=setDest(ICC(STK_ELE), MIXSRC_Ele, true); md->weight= 72;
         md=setDest(ICC(STK_ELE), MIXSRC_Thr);  md->weight= 55;
-        md=setDest(ICC(STK_AIL), MIXSRC_Ele, true);  md_SetWeight(md, -36);
+        md=setDest(ICC(STK_AIL), MIXSRC_Ele, true);  mixSetWeight(md, -36);
         md=setDest(ICC(STK_AIL), MIXSRC_Ail);  md->weight= 62;
         md=setDest(ICC(STK_AIL), MIXSRC_Thr);  md->weight= 55;
-        md=setDest(5, MIXSRC_Ele, true);       md_SetWeight(md, -36);
-        md=setDest(5, MIXSRC_Ail);             md_SetWeight(md, -62);
+        md=setDest(5, MIXSRC_Ele, true);       mixSetWeight(md, -36);
+        md=setDest(5, MIXSRC_Ail);             mixSetWeight(md, -62);
         md=setDest(5, MIXSRC_Thr);             md->weight= 55;
         break;
 
@@ -208,30 +238,38 @@ void applyTemplate(uint8_t idx)
         md=setDest(3, MIXSRC_Rud); // md->weight=100;
 
         // throttle
-        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(1); md->carryTrim=TRIM_OFF;
-        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(2); md->carryTrim=TRIM_OFF;
-        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(3); md->carryTrim=TRIM_OFF;
-        md=setDest(4, MIXSRC_MAX); md_SetWeight(md, -100); md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
+#if defined(PCBTARANIS)
+        // TODO
+#else
+        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID0; mixSetCurve(md, 0); md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID1; mixSetCurve(md, 1); md->carryTrim=TRIM_OFF;
+        md=setDest(4, MIXSRC_Thr); md->swtch=SWSRC_ID2; mixSetCurve(md, 2); md->carryTrim=TRIM_OFF;
+#endif
+        md=setDest(4, MIXSRC_MAX); mixSetWeight(md, -100); md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
 
         // gyro gain
         md=setDest(5, MIXSRC_MAX); md->weight= 30; md->swtch=-SWSRC_GEA;
-        md=setDest(5, MIXSRC_MAX); md_SetWeight(md, -30); md->swtch= SWSRC_GEA;
+        md=setDest(5, MIXSRC_MAX); mixSetWeight(md, -30); md->swtch= SWSRC_GEA;
    
         // collective
-        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID0; md->curveMode=MODE_CURVE; md->curveParam=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID1; md->curveMode=MODE_CURVE; md->curveParam=CV(5); md->carryTrim=TRIM_OFF;
-        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID2; md->curveMode=MODE_CURVE; md->curveParam=CV(6); md->carryTrim=TRIM_OFF;
+#if defined(PCBTARANIS)
+        // TODO
+#else
+        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID0; mixSetCurve(md, 3); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID1; mixSetCurve(md, 4); md->carryTrim=TRIM_OFF;
+        md=setDest(10, MIXSRC_Thr); /*md->weight= 100;*/ md->swtch=SWSRC_ID2; mixSetCurve(md, 5); md->carryTrim=TRIM_OFF;
+#endif
 
         g_model.swashR.collectiveSource = MIXSRC_CH11;
         g_model.swashR.type = SWASH_TYPE_120;
 
-        //Set up Curves
-        setCurve(CURVE5(1), heli_ar1);
-        setCurve(CURVE5(2), heli_ar2);
-        setCurve(CURVE5(3), heli_ar3);
-        setCurve(CURVE5(4), heli_ar4);
-        setCurve(CURVE5(5), heli_ar5);
-        setCurve(CURVE5(6), heli_ar5);
+        // curves
+        setCurve(0, heli_ar1);
+        setCurve(1, heli_ar2);
+        setCurve(2, heli_ar3);
+        setCurve(3, heli_ar4);
+        setCurve(4, heli_ar5);
+        setCurve(5, heli_ar5);
         break;
 
       // Servo Test

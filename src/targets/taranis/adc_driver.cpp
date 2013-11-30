@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 
 #define PIN_ANALOG  0x0003
 #define PIN_PORTA   0x0000

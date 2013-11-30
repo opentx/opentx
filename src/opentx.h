@@ -42,11 +42,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#if defined(PCBTARANIS)
-#define IF_9X(x)
-#else
-#define IF_9X(x) x,
-#endif
+// TODO change all IF_xxx by CASE_xxx when used with a comma!
 
 #if defined(PCBSKY9X)
 #define IF_PCBSKY9X(x) x,
@@ -55,17 +51,29 @@
 #endif
 
 #if defined(PCBTARANIS)
-#define IF_PCBTARANIS()    true
+#define IS_PCBTARANIS()    true
+#define IF_PCBTARANIS(x)   (x)
 #define CASE_PCBTARANIS(x) x,
+#define IF_9X(x)           (0)
+#define CASE_9X(x)
 #else
-#define IF_PCBTARANIS()    false
+#define IS_PCBTARANIS()    false
+#define IF_PCBTARANIS(x)   (0)
 #define CASE_PCBTARANIS(x)
+#define IF_9X(x)           (x)
+#define CASE_9X(x)         x,
 #endif
 
 #if defined(CPUARM)
 #define IF_CPUARM(x) x,
 #else
 #define IF_CPUARM(x)
+#endif
+
+#if defined(LUA)
+#define IF_LUA(x) x,
+#else
+#define IF_LUA(x)
 #endif
 
 #if defined(BATTGRAPH) || defined(PCBTARANIS)
@@ -474,6 +482,13 @@ enum EnumKeys {
   #define LOAD_MODEL_BITMAP()
 #endif
 
+#if defined(PCBTARANIS)
+  void loadCurves();
+  #define LOAD_MODEL_CURVES() loadCurves()
+#else
+  #define LOAD_MODEL_CURVES()
+#endif
+
 // TODO elsewhere ...
 #if defined(DSM2)
   #define DSM2_BIND_FLAG       0x80
@@ -549,13 +564,12 @@ extern const pm_uint8_t modn12x3[];
 extern uint8_t stickMode;
 
 //convert from mode 1 to mode stickMode
-//NOTICE!  =>  1..4 -> 1..4
-#define CONVERT_MODE(x)  (((x)<=4) ? pgm_read_byte(modn12x3 + 4*stickMode + (x)-1) : (x) )
-
+//NOTICE!  =>  0..3 -> 0..3
 #define RUD_STICK 0
 #define ELE_STICK 1
 #define THR_STICK 2
 #define AIL_STICK 3
+#define CONVERT_MODE(x)  (((x)<=AIL_STICK) ? pgm_read_byte(modn12x3 + 4*stickMode + (x)) : (x) )
 
 extern uint8_t channel_order(uint8_t x);
 
@@ -752,7 +766,12 @@ extern uint8_t pxxFlag[NUM_MODULES];
 #define LEN_STD_CHARS 40
 #define ZCHAR_MAX (LEN_STD_CHARS + LEN_SPECIAL_CHARS)
 
-extern char idx2char(int8_t idx);
+char idx2char(int8_t idx);
+#if defined(PCBTARANIS)
+int8_t char2idx(char c);
+void str2zchar(char *dest, const char *src, int size);
+void zchar2str(char *dest, const char *src, int size);
+#endif
 
 extern uint8_t s_evt;
 #define putEvent(evt) s_evt = evt
@@ -816,6 +835,12 @@ extern uint8_t s_perout_flight_phase;
   #define bitfield_channels_t uint16_t
 #endif
 
+#if defined(CPUARM) && !defined(SIMU)
+  extern unsigned char *heap;
+  extern int _end;
+  extern unsigned char *_estack;
+#endif
+
 void perOut(uint8_t mode, uint8_t tick10ms);
 void perMain();
 NOINLINE void per10ms();
@@ -825,8 +850,15 @@ bool       getSwitch(int8_t swtch);
 
 extern swstate_t switches_states;
 int8_t  getMovedSwitch();
-#if defined(AUTOSOURCE)
-int8_t getMovedSource();
+
+#if defined(PCBTARANIS)
+  #define GET_MOVED_SOURCE_PARAMS uint8_t min
+  int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS);
+  #define GET_MOVED_SOURCE(min, max) getMovedSource(min)
+#else
+  #define GET_MOVED_SOURCE_PARAMS
+  int8_t getMovedSource();
+  #define GET_MOVED_SOURCE(min, max) getMovedSource()
 #endif
 
 #if defined(FLIGHT_MODES)
@@ -865,6 +897,9 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
     void setGVarValue(uint8_t x, int16_t value, int8_t phase);  
     #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
     #define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)      
+    #define GVAR_DISPLAY_TIME     100 /*1 second*/;
+    extern uint8_t s_gvar_timer;
+    extern uint8_t s_gvar_last;
   #endif
 #else
   #define GET_GVAR(x, ...) (x)
@@ -872,17 +907,17 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 
 #if defined(CPUARM)
   #define GV1_SMALL  128
-  // define here range for ARM based controllers; could be nearly unlimited, but could cause problems in mixer calculation (overflows)
-  #define GV1_LARGE  512
+  #define GV1_LARGE  4096
+  #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? GV1_SMALL : GV1_LARGE )
+  #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
 #else
   #define GV1_SMALL  128
   #define GV1_LARGE  256
+  #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
+  #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV1_SMALL) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
 #endif
 
 #define GV_IS_GV_VALUE(x,min,max)    ( (x>max) || (x<min) )
-#define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
-#define GV_INDEX_CALCULATION(x,max)  ( (max<=GV1_SMALL) ? (uint8_t) x-GV1_SMALL  : \
-                                       (  (x&(GV1_LARGE*2-1))-GV1_LARGE ) )
 #define GV_INDEX_CALC_DELTA(x,delta) ((x&(delta*2-1)) - delta)
 
 #define GV_CALC_VALUE_IDX_POS(idx,delta) (-delta+idx)
@@ -924,10 +959,10 @@ extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 extern int16_t csLastValue[NUM_CSW];
 #define CS_LAST_VALUE_INIT -32768
 
-#define TMR_OFF     0
-#define TMR_RUNNING 1
-#define TMR_BEEPING 2
-#define TMR_STOPPED 3
+#define TMR_OFF      0
+#define TMR_RUNNING  1
+#define TMR_NEGATIVE 2
+#define TMR_STOPPED  3
 void resetTimer(uint8_t idx);
 void resetAll();
 
@@ -951,7 +986,7 @@ extern uint16_t lastMixerDuration;
 #endif
 
 #if defined(PCBTARANIS)
-  static inline uint16_t getTmr2MHz() { return 0; }
+  static inline uint16_t getTmr2MHz() { return TIM3->CNT; }
 #elif defined(PCBSKY9X)
   static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
@@ -972,6 +1007,16 @@ extern uint16_t lastMixerDuration;
 
 #if defined(SPLASH)
   void doSplash();
+#endif
+
+#if MENUS_LOCK == 1
+  extern bool readonly;
+  extern bool readonlyUnlocked();
+  #define READ_ONLY() readonly
+  #define READ_ONLY_UNLOCKED() readonlyUnlocked()
+#else
+  #define READ_ONLY() false
+  #define READ_ONLY_UNLOCKED() true
 #endif
 
 void checkLowEEPROM();
@@ -1090,39 +1135,38 @@ void checkModelIdUnique(uint8_t id);
 #endif
 
 #if defined(CPUARM)
-inline int16_t calc100to256_16Bits(register int16_t x)  // @@@2 open.20.fsguruh: return x*2.56
+
+inline int divRoundClosest(const int n, const int d)
 {
-  return ((int16_t) x * 256) / 100;
+  return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
 }
 
-inline int16_t calc100to256(register int8_t x)  // @@@2 open.20.fsguruh: return x*2.56
+#define calc100to256_16Bits(x) calc100to256(x)
+#define calc100toRESX_16Bits(x) calc100toRESX(x)
+
+inline int calc100to256(register int x)
 {
-  return ((int16_t) x * 256) / 100;
+  return divRoundClosest(x*256, 100);
 }
 
-inline int16_t calc100toRESX_16Bits(register int16_t x) // @@@ open.20.fsguruh
+inline int calc100toRESX(register int x)
 {
-  return x * 1024 / 100;
+  return divRoundClosest(x*RESX, 100);
 }
 
-inline int32_t calc100toRESX(register int8_t x)
+inline int calc1000toRESX(register int x)
 {
-  return x * 1024 / 100;
+  return divRoundClosest(x*RESX, 1000);
 }
 
-inline int16_t calc1000toRESX(register int32_t x)  // improve calc time by Pat MacKenzie
+inline int calcRESXto1000(register int x)
 {
-  return x * 1024 / 1000;
+  return divRoundClosest(x*1000, RESX);
 }
 
-inline int16_t calcRESXto1000(register int32_t x)
+inline int calcRESXto100(register int x)
 {
-  return x * 1000 / 1024;
-}
-
-inline int16_t calcRESXto100(register int32_t x)
-{
-  return x * 100 / 1024;
+  return divRoundClosest(x*100, RESX);
 }
 
 #else
@@ -1154,20 +1198,35 @@ extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of th
 extern int16_t            channelOutputs[NUM_CHNOUT];
 extern uint16_t           BandGap;
 
-#if defined(CPUARM)
-  #define NUM_INPUTS      (NUM_STICKS)
+#if defined(PCBTARANIS)
+  #define NUM_INPUTS      (MAX_INPUTS)
 #else
   #define NUM_INPUTS      (NUM_STICKS)
 #endif
 
-extern int16_t expo(int16_t x, int16_t k);
-extern int16_t intpol(int16_t, uint8_t);
-extern int16_t applyCurve(int16_t, int8_t);
-extern void applyExpos(int16_t *anas, uint8_t mode);
-extern int16_t applyLimits(uint8_t channel, int32_t value);
+int intpol(int x, uint8_t idx);
+int expo(int x, int k);
+int applyCurve(int x, int8_t idx);
 
-extern uint16_t anaIn(uint8_t chan);
-extern int16_t thrAnaIn(uint8_t chan);
+#if defined(PCBTARANIS)
+  int applyCustomCurve(int x, uint8_t idx);
+#else
+  #define applyCustomCurve(x, idx) intpol(x, idx)
+#endif
+
+#if defined(PCBTARANIS)
+  #define APPLY_EXPOS_EXTRA_PARAMS_INC , uint8_t ovwrIdx=0, int16_t ovwrValue=0
+  #define APPLY_EXPOS_EXTRA_PARAMS     , uint8_t ovwrIdx, int16_t ovwrValue
+#else
+  #define APPLY_EXPOS_EXTRA_PARAMS_INC
+  #define APPLY_EXPOS_EXTRA_PARAMS
+#endif
+
+void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS_INC);
+int16_t applyLimits(uint8_t channel, int32_t value);
+
+uint16_t anaIn(uint8_t chan);
+int16_t thrAnaIn(uint8_t chan);
 extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
 #define FLASH_DURATION 20 /*200ms*/
@@ -1177,25 +1236,32 @@ extern uint16_t lightOffCounter;
 extern uint8_t flashCounter;
 extern uint8_t mixWarning;
 
-extern PhaseData *phaseAddress(uint8_t idx);
-extern ExpoData *expoAddress(uint8_t idx);
-extern MixData *mixAddress(uint8_t idx);
-extern LimitData *limitAddress(uint8_t idx);
-extern int8_t *curveAddress(uint8_t idx);
-extern CustomSwData *cswAddress(uint8_t idx);
+PhaseData *phaseAddress(uint8_t idx);
+ExpoData *expoAddress(uint8_t idx);
+MixData *mixAddress(uint8_t idx);
+LimitData *limitAddress(uint8_t idx);
+int8_t *curveAddress(uint8_t idx);
+CustomSwData *cswAddress(uint8_t idx);
 
+#if !defined(PCBTARANIS)
 struct CurveInfo {
   int8_t *crv;
   uint8_t points;
   bool custom;
 };
 extern CurveInfo curveInfo(uint8_t idx);
+#endif
 
-extern void deleteExpoMix(uint8_t expo, uint8_t idx);
+extern int8_t s_currCh;
+uint8_t getExpoMixCount(uint8_t expo);
+void deleteExpoMix(uint8_t expo, uint8_t idx);
+void insertExpoMix(uint8_t expo, uint8_t idx);
+void applyDefaultTemplate();
 
-extern void incSubtrim(uint8_t idx, int16_t inc);
-extern void instantTrim();
-extern void moveTrimsToOffsets();
+void incSubtrim(uint8_t idx, int16_t inc);
+void instantTrim();
+void copyTrimsToOffset(uint8_t ch);
+void moveTrimsToOffsets();
 
 #if defined(CPUARM)
 #define ACTIVE_PHASES_TYPE uint16_t
@@ -1254,6 +1320,10 @@ extern MASK_CFN_TYPE  activeSwitches;
 extern MASK_CFN_TYPE  activeFnSwitches;
 extern MASK_FUNC_TYPE activeFunctions;
 extern tmr10ms_t lastFunctionTime[NUM_CFN];
+
+#if defined(CPUARM)
+extern bool evalFunctionsFirstTime;
+#endif
 
 inline bool isFunctionActive(uint8_t func)
 {
@@ -1319,10 +1389,30 @@ enum AUDIO_SOUNDS {
 #if defined(CPUARM)
     AU_TRIM_END,
 #endif
-    AU_POT_STICK_MIDDLE,
+#if defined(PCBTARANIS)
+    AU_STICK1_MIDDLE,
+    AU_STICK2_MIDDLE,
+    AU_STICK3_MIDDLE,
+    AU_STICK4_MIDDLE,
+    AU_POT1_MIDDLE,
+    AU_POT2_MIDDLE,
+    AU_SLIDER1_MIDDLE,
+    AU_SLIDER2_MIDDLE,
+#elif defined(CPUARM)
+    AU_STICK1_MIDDLE,
+    AU_STICK2_MIDDLE,
+    AU_STICK3_MIDDLE,
+    AU_STICK4_MIDDLE,
+    AU_POT1_MIDDLE,
+    AU_POT2_MIDDLE,
+    AU_POT3_MIDDLE,
+#else
+    AU_POT_MIDDLE,
+#endif
     AU_MIX_WARNING_1,
     AU_MIX_WARNING_2,
     AU_MIX_WARNING_3,
+    AU_TIMER_00,
     AU_TIMER_LT10,
     AU_TIMER_20,
     AU_TIMER_30,
@@ -1393,6 +1483,58 @@ enum AUDIO_SOUNDS {
 
 #if defined(RTCLOCK)
 #include "rtc.h"
+#endif
+
+#if defined(LUA)
+  struct ScriptInput {
+    const char *name;
+    uint8_t type;
+    int16_t min;
+    int16_t max;
+    int16_t def;
+  };
+  struct ScriptOutput {
+    const char *name;
+    int16_t value;
+  };
+  enum ScriptState {
+    SCRIPT_OK,
+    SCRIPT_NOFILE,
+    SCRIPT_SYNTAX_ERROR,
+    SCRIPT_KILLED,
+    SCRIPT_LEAK
+  };
+  struct ScriptInternalData {
+    uint8_t state;
+    int run;
+    uint8_t instructions;
+    uint8_t memory;
+    uint8_t inputsCount;
+    ScriptInput inputs[MAX_SCRIPT_INPUTS];
+    uint8_t outputsCount;
+    ScriptOutput outputs[MAX_SCRIPT_OUTPUTS];
+  };
+  #define LUASTATE_STANDALONE_SCRIPT_RUNNING 1
+  #define LUASTATE_RELOAD_MODEL_SCRIPTS      2
+  extern uint8_t luaState;
+  extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
+  extern ScriptInternalData standaloneScript;
+  void luaInit();
+  void luaTask(uint8_t evt);
+  void luaExec(const char *filename);
+  void luaLoadModelScript(uint8_t index);
+  void luaLoadModelScripts();
+  #define luaGetMemUsed(idx) scriptInternalData[idx].memory
+  #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
+  #define LUA_INIT()
+  #define LUA_RESET() luaInit()
+  #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= LUASTATE_RELOAD_MODEL_SCRIPTS
+  #define LUA_LOAD_MODEL_SCRIPT(idx) luaState |= LUASTATE_RELOAD_MODEL_SCRIPTS
+#else
+  #define LUA_INIT()
+  #define LUA_RESET()
+  #define LUA_LOAD_MODEL_SCRIPTS()
+  #define LUA_LOAD_MODEL_SCRIPT(idx)
 #endif
 
 #if defined(CPUARM)
@@ -1483,12 +1625,14 @@ extern uint8_t barsThresholds[THLD_MAX];
 #endif
 
 #if defined(FRSKY)
-  uint8_t maxTelemValue(uint8_t channel);
+  csw_telemetry_value_t minTelemValue(uint8_t channel);
+  csw_telemetry_value_t maxTelemValue(uint8_t channel);
 #else
+  #define minTelemValue(channel) 255
   #define maxTelemValue(channel) 255
 #endif
 
-getvalue_t convertTelemValue(uint8_t channel, uint8_t value);
+getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value);
 getvalue_t convertCswTelemValue(CustomSwData * cs);
 
 #if defined(FRSKY) || defined(CPUARM)
@@ -1512,6 +1656,11 @@ extern const pm_uint8_t bchunit_ar[];
 #define EARTH_RADIUSKM ((uint32_t)6371)
 #define EARTH_RADIUS ((uint32_t)111194)
 
+#if defined(PCBTARANIS)
+double gpsToDouble(bool neg, int16_t bp, int16_t ap);
+extern double pilotLatitude;
+extern double pilotLongitude;
+#endif
 void getGpsPilotPosition();
 void getGpsDistance();
 void varioWakeup();

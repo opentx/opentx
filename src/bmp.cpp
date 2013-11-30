@@ -36,7 +36,7 @@
 
 #include "opentx.h"
 
-const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t width, const uint8_t height)
+const pm_char * bmpLoad(bmp_ptr_t &bmp, const char *filename, const xcoord_t width, const uint8_t height)
 {
   FIL bmpFile;
   UINT read;
@@ -147,10 +147,16 @@ const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t widt
     }
   }
 
+  if (bmp == NULL) {
+    bmp = (uint8_t *)malloc(2+w*((h+7)/8)*4);
+  }
+
+  uint8_t *dest = bmp;
+
   *dest++ = w;
   *dest++ = h;
 
-  memset(dest, 0, w*(h/8)*4);
+  memset(dest, 0, w*((h+7)/8)*4);
 
   uint32_t n;
 

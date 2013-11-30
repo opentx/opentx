@@ -74,6 +74,9 @@
 #define LEN_VTRIMINC     "\006"
 #define TR_VTRIMINC      "Exp   ""ExFine""Fine  ""Medio ""Ampio "
 
+#define LEN_VBEEPCOUNTDOWN     "\006"
+#define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 "
+
 #define LEN_RETA123      "\001"
 
 #if defined(PCBGRUVIN9X)
@@ -527,10 +530,10 @@
 #define TR_MENUHELISETUP       "SETUP  ELI"
 
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUDREXPO          "STICK"
+  #define TR_MENUINPUTS          "STICK"
   #define TR_MENULIMITS          "USCITE"
 #else
-  #define TR_MENUDREXPO          "DR/ESPO"
+  #define TR_MENUINPUTS          "DR/ESPO"
   #define TR_MENULIMITS          "LIMITI"
 #endif
 
@@ -633,6 +636,7 @@
 #define TR_MOVE                "Muovi"
 #define TR_PASTE               "Paste"
 #define TR_DELETE              "Cancella"
+#define TR_INSERT              TR("Inser.","Inserisci")
 #define TR_RESET_FLIGHT        "Azzera volo"
 #define TR_RESET_TIMER1        "Azzera Timer1"
 #define TR_RESET_TIMER2        "Azzera Timer2"
@@ -646,7 +650,7 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
-#define TR_RESET               "[Reset]"
+#define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             TR("Trainer","Maestro/Allievo")
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
@@ -655,6 +659,8 @@
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
+#define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
@@ -684,7 +690,7 @@
 
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nome ", " Switch ", " Trims ", " Fade In ", " Fade Out " }
-#define TR_LIMITS_HEADERS      { " Nome ", " Offset ", " Min ", " Max ", " Direzione ", " Centro PPM ", " Simmetria " }
+#define TR_LIMITS_HEADERS      { " Nome ", " Offset ", " Min ", " Max ", " Direzione ", " Curve ", " Centro PPM ", " Simmetria " }
 #define TR_CSW_HEADERS         { " Funzione ", " V1 ", " V2 ", " AND Switch ", " Durata ", " Ritardo " }
 
 //Taranis About screen

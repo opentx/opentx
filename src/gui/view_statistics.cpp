@@ -46,7 +46,11 @@ void menuStatisticsView(uint8_t event)
     case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuStatisticsDebug);
       return;
-    case EVT_KEY_FIRST(KEY_DOWN):
+#endif
+#if defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_MENU):
+      g_eeGeneral.globalTimer = 0;
+    	break;
 #endif
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
@@ -63,6 +67,10 @@ void menuStatisticsView(uint8_t event)
 
   lcd_puts( 17*FW, FH*0, STR_TOT);
   putsTime(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
+  
+#if defined(PCBTARANIS)
+  putsTime(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
+#endif
 
 #if defined(THRTRACE)
   uint8_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
@@ -84,9 +92,9 @@ void menuStatisticsView(uint8_t event)
 }
 
 #if defined(CPUARM)
-#define MENU_DEBUG_COL_OFS (13*FW)
+  #define MENU_DEBUG_COL_OFS (11*FW-2)
 #else
-#define MENU_DEBUG_COL_OFS (14*FW)
+  #define MENU_DEBUG_COL_OFS (14*FW)
 #endif
 
 void menuStatisticsDebug(uint8_t event)
@@ -119,7 +127,6 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuStatisticsView);
       return;
-    case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       return;
@@ -167,18 +174,22 @@ void menuStatisticsDebug(uint8_t event)
     putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, Coproc_temp, UNIT_DEGREES, 0);
     putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_DEGREES, 0);
   }
+#elif defined(PCBTARANIS) && !defined(SIMU)
+  lcd_putsLeft(4*FH, "Free Mem");
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 4*FH, 0x20020000 - (unsigned int)heap, LEFT);
 #endif
 
 #if defined(CPUARM)
   lcd_putsLeft(5*FH, STR_TMIXMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (maxMixerDuration)/20, PREC2);
-
+  lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (maxMixerDuration)/20, PREC2|LEFT);
+  lcd_puts(lcdLastPos, 5*FH, "ms");
   lcd_putsLeft(6*FH, STR_FREESTACKMINB);
-  lcd_outdezAtt(13*FW, 6*FH, stack_free(0), UNSIGN);
-  lcd_putc(13*FW, 6*FH, '/');
-  lcd_outdezAtt(13*FW+FWNUM, 6*FH, stack_free(1), UNSIGN|LEFT);
-  lcd_putc(lcdLastPos, 6*FH, '/');
-  lcd_outdezAtt(lcdLastPos+FWNUM, 6*FH, stack_free(2), UNSIGN|LEFT);
+  lcd_putsAtt(MENU_DEBUG_COL_OFS-1, 6*FH+1, "[Main]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(0), UNSIGN|LEFT);
+  lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[Mix]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(1), UNSIGN|LEFT);
+  lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[Audio]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(2), UNSIGN|LEFT);
 #else
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
   lcd_outdez8(MENU_DEBUG_COL_OFS , 1*FH, g_tmr1Latency_max/2 );
