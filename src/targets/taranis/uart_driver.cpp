@@ -69,6 +69,7 @@ void uartInit(uint32_t baudrate)
   USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
 
   NVIC_EnableIRQ(USART3_IRQn);
+  NVIC_SetPriority(USART3_IRQn, 8);
 }
 
 #if defined(DEBUG)

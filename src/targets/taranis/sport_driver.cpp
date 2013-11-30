@@ -78,6 +78,7 @@ void sportInit(void)
   
   USART_ITConfig(SPORT, USART_IT_RXNE, ENABLE);
   NVIC_EnableIRQ(USART2_IRQn);
+  NVIC_SetPriority(USART2_IRQn, 6);
 }
 
 void sportPutc(const char c)
