@@ -2183,29 +2183,43 @@ void checkSwitches()
 #endif
 
     getMovedSwitch();
-
-    switches_states <<= 1;
-
-    if ((states & 0x01) || (states == switches_states)) {
-      return;
+  
+    uint8_t warn = false;
+#if defined(PCBTARANIS)
+    for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
+      if (!(g_model.nSwToWarn & (1<<i))) {
+        swstate_t mask = (0x03 << (i*2));
+        if(!((states & mask) == (switches_states & mask)))
+          warn = true;
+      }
     }
+#else
+    for (uint8_t i=0; i<MAX_PSWITCH-2; i++) 
+      if (!(g_model.nSwToWarn & (1<<(i-1)))) 
+        if((states & (1 << i)) != (switches_states & (1 << i)))
+          warn = true;
+#endif
+
+    if(!warn) return;
 
     // first - display warning
     if (last_bad_switches != switches_states) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
 #if defined(PCBTARANIS)
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
-        swstate_t mask = (0x03 << (1+i*2));
-        uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
-        char c = "\300-\301"[(states & mask) >> (1+i*2)];
-        lcd_putcAtt(60+i*(2*FW+FW/2), 5*FH, 'A'+i, attr);
-        lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 5*FH, c, attr);
+        if(!(g_model.nSwToWarn & (1<<i))) {
+          swstate_t mask = (0x03 << (i*2));
+          uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
+          char c = "\300-\301"[(states & mask) >> (i*2)];
+          lcd_putcAtt(60+i*(2*FW+FW/2), 5*FH, 'A'+i, attr);
+          lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 5*FH, c, attr);
+        }
       }
 #else
       uint8_t x = 2;
       for (uint8_t i=1; i<MAX_PSWITCH-1; i++) {
-        uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
-        putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>1)&0x3)), attr);
+        uint8_t attr = (states & (1 << (i-1))) == (switches_states & (1 << (i-1))) ? 0 : INVERS;
+        if(!(g_model.nSwToWarn & (1<<(i-2)))) putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>1)&0x3)), attr);
         if (i == 1 && attr) i++;
         if (i != 1) x += 3*FW+FW/2;
       }
