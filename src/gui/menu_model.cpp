@@ -1142,21 +1142,24 @@ void menuModelSetup(uint8_t event)
         char c;
         if (attr) {
           s_editMode = 0;
-          switch(event) {
-            CASE_EVT_ROTARY_BREAK
-            case EVT_KEY_BREAK(KEY_ENTER):
-              if (!READ_ONLY()) {
-                killEvents(event);
-                if (m_posHorz == NUM_SWITCHES-1) { 
+          if (!READ_ONLY()) {
+            switch(event) {
+              CASE_EVT_ROTARY_BREAK
+              case EVT_KEY_BREAK(KEY_ENTER):
+                  killEvents(event);
+                  if (m_posHorz < NUM_SWITCHES-1) {
+                    g_model.nSwToWarn ^= (1 << m_posHorz);
+                    eeDirty(EE_MODEL);
+                  }
+                break;
+              case EVT_KEY_LONG(KEY_ENTER):
+                if (m_posHorz == NUM_SWITCHES-1) {
                   getMovedSwitch();
                   g_model.switchWarningStates = switches_states;
+                  eeDirty(EE_MODEL);
                 }
-                else {
-                  g_model.nSwToWarn ^= (1 << m_posHorz);
-                }
-                eeDirty(EE_MODEL);
-              }
               break; 
+            }
           }
         }
         LcdFlags line = attr;
@@ -1188,7 +1191,7 @@ void menuModelSetup(uint8_t event)
               attr |= INVERS;
           }
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive || (attr & BLINK)) ? c : '-', attr);
-          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, "<]", m_posHorz == NUM_SWITCHES-1 ? line : 0);       
+          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, "<]", m_posHorz == NUM_SWITCHES-1 ? line | BLINK : 0);       
 #endif
         }
         break;
