@@ -869,6 +869,7 @@ enum menuModelSetupItems {
   ITEM_MODEL_THROTTLE_TRIM,
   ITEM_MODEL_THROTTLE_WARNING,
   ITEM_MODEL_SWITCHES_WARNING,
+  IF_CPUARM(ITEM_MODEL_POT_WARNING)
   ITEM_MODEL_BEEP_CENTER,
 #if defined(PCBTARANIS)
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
@@ -953,7 +954,7 @@ void menuModelSetup(uint8_t event)
   #define MODEL_SETUP_MAX_LINES      (1+ITEM_MODEL_SETUP_MAX)
 
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 7, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_XJT(1) && IS_D8_RX(1)) ? (uint8_t)1 : (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 7, NUM_POTS, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_XJT(1) && IS_D8_RX(1)) ? (uint8_t)1 : (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #elif defined(CPUM64)
   #define CURSOR_ON_CELL             (true)
   #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
@@ -965,7 +966,7 @@ void menuModelSetup(uint8_t event)
   #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
 
   uint8_t protocol = g_model.protocol;
-  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 6, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, IF_PCBSKY9X(1) IF_PCBSKY9X(2) });
+  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 6, IF_CPUARM(NUM_POTS) NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, IF_PCBSKY9X(1) IF_PCBSKY9X(2) });
 #endif
 
   if (!MENU_CHECK(menuTabModel, e_ModelSetup, MODEL_SETUP_MAX_LINES)) {
@@ -1158,7 +1159,7 @@ void menuModelSetup(uint8_t event)
               break; 
           }
         }
-        uint8_t line = attr;
+        LcdFlags line = attr;
         
         for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
           uint8_t swactive = !(g_model.nSwToWarn & 1 << i);
@@ -1192,7 +1193,37 @@ void menuModelSetup(uint8_t event)
         }
         break;
       }
-
+#if defined(CPUARM)
+      case ITEM_MODEL_POT_WARNING:
+      {
+        lcd_putsLeft(y, "Pot Warning");
+        uint8_t potMode = g_model.nPotsToWarn >> 6;
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""Off\0""Auto""Man\0"), potMode, attr);	
+        if (potMode)
+          for (uint8_t i=0; i<NUM_POTS ; i++) {
+            LcdFlags flags = ((m_posHorz==i+1) && attr) ? BLINK : 0;
+            flags |= (g_model.nPotsToWarn & (1 << i)) ? INVERS : 0;
+            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW+i*3*FW, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);   
+          }
+        
+        if (attr && (m_posHorz == 0)) {
+          CHECK_INCDEC_MODELVAR(event, potMode, 0, 2);
+          g_model.nPotsToWarn = (g_model.nPotsToWarn & 0x3F) | ((potMode << 6) & 0xC0);
+          eeDirty(EE_MODEL);
+        }
+        else if (attr) {
+          s_editMode = 0;
+          if (event == EVT_KEY_BREAK(KEY_ENTER))
+            g_model.nPotsToWarn ^= (1 << (m_posHorz-1));
+          else if ((potMode == 2) && (event == EVT_KEY_LONG(KEY_ENTER))) {
+            killEvents(event);
+            g_model.potPosition[m_posHorz-1] = calibratedStick[NUM_STICKS+m_posHorz] >> 3;
+            AUDIO_WARNING1();
+          }
+        }
+        break;
+      }
+#endif
       case ITEM_MODEL_BEEP_CENTER:
         lcd_putsLeft(y, STR_BEEPCTR);
         for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++)
