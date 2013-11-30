@@ -156,7 +156,7 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VBEEPCOUNTDOWN   (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
   #define OFS_COUNTRYCODES     (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
 #else
-  #define OFS_COUNTRYCODES     (OFS_VUNITSSYSTEM)
+  #define OFS_COUNTRYCODES     (OFS_VLCD)
 #endif
 #if defined(PXX)
   #define OFS_VFAILSAFE        (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
