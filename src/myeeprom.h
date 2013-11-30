@@ -708,6 +708,12 @@ enum Functions {
   FUNC_MAX
 };
 
+#if defined(GVARS)
+  #define IS_ADJUST_GV_FUNCTION(sd)  (CFN_FUNC(sd) >= FUNC_ADJUST_GV1 && CFN_FUNC(sd) <= FUNC_ADJUST_GVLAST)
+#else
+  #define IS_ADJUST_GV_FUNCTION(sd)  (0)
+#endif
+
 #if defined(VOICE)
   #define HAS_REPEAT_PARAM(sd) (CFN_FUNC(sd) == FUNC_PLAY_SOUND || (CFN_FUNC(sd) >= FUNC_PLAY_TRACK && CFN_FUNC(sd) <= FUNC_PLAY_VALUE))
 #else

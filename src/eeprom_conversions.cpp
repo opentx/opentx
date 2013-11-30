@@ -399,7 +399,7 @@ void ConvertModel_215_to_216(ModelData &model)
   for (uint8_t i=0; i<32; i++) {
     g_model.funcSw[i] = oldModel.funcSw[i];
     CustomFnData *sd = &g_model.funcSw[i];
-    if (CFN_FUNC(sd) == FUNC_PLAY_VALUE || CFN_FUNC(sd) == FUNC_VOLUME || (CFN_FUNC(sd) >= FUNC_ADJUST_GV1 && CFN_FUNC(sd) <= FUNC_ADJUST_GVLAST && CFN_GVAR_MODE(sd) == FUNC_ADJUST_GVAR_SOURCE)) {
+    if (CFN_FUNC(sd) == FUNC_PLAY_VALUE || CFN_FUNC(sd) == FUNC_VOLUME || (IS_ADJUST_GV_FUNCTION(sd) && CFN_GVAR_MODE(sd) == FUNC_ADJUST_GVAR_SOURCE)) {
 #if defined(PCBTARANIS)
       CFN_PARAM(sd) += 1 + MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
 #endif
