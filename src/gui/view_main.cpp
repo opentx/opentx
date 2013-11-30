@@ -524,12 +524,12 @@ void menuMainView(uint8_t event)
 #if defined(NAVIGATION_MENUS)
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
-      MENU_ADD_ITEM(STR_RESET_FLIGHT);
       MENU_ADD_ITEM(STR_RESET_TIMER1);
       MENU_ADD_ITEM(STR_RESET_TIMER2);
 #if defined(FRSKY)
       MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
+      MENU_ADD_ITEM(STR_RESET_FLIGHT);
       MENU_ADD_ITEM(STR_STATISTICS);
 #if defined(CPUARM)
       MENU_ADD_ITEM(STR_ABOUT_US);
