@@ -160,6 +160,7 @@ extern int8_t s_editMode;       // global editmode
 #define NO_INCDEC_MARKS 0x04
 #define INCDEC_SWITCH   0x08
 #define INCDEC_SOURCE   0x10
+#define DBLKEYS_1000    0x20
 
 // mawrow special values
 #define TITLE_ROW      ((uint8_t)-1)
@@ -276,12 +277,22 @@ select_menu_value_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, c
 uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, LcdFlags attr, uint8_t event );
 int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event);
 
-#if defined(GVARS)
-int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event); // @@@ open.20.fsguruh
-#define displayGVar(x, y, v, min, max) gvarMenuItem(x, y, v, min, max, 0, 0)
+#if defined(CPUARM) && defined(GVARS)
+  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) gvarMenuItem(x, y, v, min, max, lcdattr, editflags, event)
 #else
-int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
-#define displayGVar(x, y, v, min, max) lcd_outdez8(x, y, v)
+  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) gvarMenuItem(x, y, v, min, max, lcdattr, event)
+#endif
+
+#if defined(GVARS)
+  #if defined(CPUARM)
+    int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event); 
+  #else
+    int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event); // @@@ open.20.fsguruh
+  #endif
+  #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
+#else
+  int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
+  #define displayGVar(x, y, v, min, max) lcd_outdez8(x, y, v)
 #endif
 
 #define WARNING_TYPE_ASTERISK  0

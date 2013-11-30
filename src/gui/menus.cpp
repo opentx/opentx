@@ -120,14 +120,27 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     bool dblkey = true;
     if (DBLKEYS_PRESSED_RGT_LFT(in))
       newval = -val;
-    else if (DBLKEYS_PRESSED_RGT_UP(in))
+    else if (DBLKEYS_PRESSED_RGT_UP(in)) {
       newval = (i_max > 100 ? 100 : i_max);
-    else if (DBLKEYS_PRESSED_LFT_DWN(in))
+#if defined(CPUARM)
+      if(i_flags & DBLKEYS_1000) newval *= 10;
+#endif
+    }
+    else if (DBLKEYS_PRESSED_LFT_DWN(in)) {
       newval = (i_min < -100 ? -100 : i_min);
+#if defined(CPUARM)
+      if(i_flags & DBLKEYS_1000) newval *= 10;
+#endif
+    }
     else if (DBLKEYS_PRESSED_UP_DWN(in))
       newval = 0;
     else
       dblkey = false;
+
+#if defined(CPUARM)
+
+#endif
+
 
     if (dblkey) {
       killEvents(KEY_UP);
@@ -968,10 +981,14 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 }
 
 #if defined(GVARS)
+#if defined(CPUARM)
+int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event) 
+#else
 int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event) 
+#endif
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
-  bool invers = (attr & INVERS);
+  bool invers = (attr & INVERS);  
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
 #if defined(CPUARM)
@@ -1012,7 +1029,11 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
   }
   else {
     lcd_outdezAtt(x, y, value, attr);
+#if defined(CPUARM)
+    if (invers) value = checkIncDec(event, value, min, max, EE_MODEL | editflags);
+#else
     if (invers) value = checkIncDec(event, value, min, max, EE_MODEL);
+#endif
   }
   return value;
 }

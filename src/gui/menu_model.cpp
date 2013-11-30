@@ -2614,7 +2614,7 @@ void editCurveRef(uint8_t x, uint8_t y, CurveRef & curve, uint8_t event, uint8_t
   switch (curve.type) {
     case CURVE_REF_DIFF:
     case CURVE_REF_EXPO:
-      curve.value = gvarMenuItem(x+5*FW, y, curve.value, -100, 100, m_posHorz==1 ? LEFT|attr : LEFT, event);
+      curve.value = GVAR_MENU_ITEM(x+5*FW, y, curve.value, -100, 100, m_posHorz==1 ? LEFT|attr : LEFT, 0, event);
       break;
     case CURVE_REF_FUNC:
       lcd_putsiAtt(x+5*FW, y, STR_VCURVEFUNC, curve.value, m_posHorz==1 ? attr : 0);
@@ -2909,13 +2909,13 @@ void menuModelExpoOne(uint8_t event)
 
       case EXPO_FIELD_WEIGHT:
         lcd_putsLeft(y, STR_WEIGHT);
-        ed->weight = gvarMenuItem(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, IF_PCBTARANIS(LEFT)|attr, event);
+        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, IF_PCBTARANIS(LEFT)|attr, 0, event);
         break;
 
 #if defined(PCBTARANIS)
       case EXPO_FIELD_OFFSET:
         lcd_putsLeft(y, NO_INDENT(STR_OFFSET));
-        ed->offset = gvarMenuItem(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, event);
+        ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, 0, event);
         break;
 #endif
 
@@ -2924,7 +2924,7 @@ void menuModelExpoOne(uint8_t event)
         lcd_putsLeft(y, STR_EXPO);
         if (ed->curveMode==MODE_EXPO || ed->curveParam==0) {
           ed->curveMode = MODE_EXPO;
-          ed->curveParam = gvarMenuItem(EXPO_ONE_2ND_COLUMN, y, ed->curveParam, -100, 100, attr, event);
+          ed->curveParam = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->curveParam, -100, 100, attr, 0, event);
         }
         else {
           lcd_putsAtt(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_NA, attr);
@@ -3039,7 +3039,7 @@ void gvarWeightItem(xcoord_t x, uint8_t y, MixData *md, uint8_t attr, uint8_t ev
 {
   u_int8int16_t weight;
   MD_WEIGHT_TO_UNION(md, weight);
-  weight.word = gvarMenuItem(x, y, weight.word, -500, 500, attr, event);
+  weight.word = GVAR_MENU_ITEM(x, y, weight.word, -500, 500, attr, 0, event);
   MD_UNION_TO_WEIGHT(weight, md);
 }
 
@@ -3117,7 +3117,7 @@ void menuModelMixOne(uint8_t event)
         lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_OFFSET));
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
-        offset.word = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_NEG, GV_RANGELARGE, attr|LEFT, event);
+        offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_NEG, GV_RANGELARGE, attr|LEFT, 0, event);
         MD_UNION_TO_OFFSET(offset, md2);
         break;
       }
@@ -3175,7 +3175,7 @@ void menuModelMixOne(uint8_t event)
         }
         else {
           lcd_putsAtt(COLUMN_X+MIXES_2ND_COLUMN, y, PSTR("Diff"), m_posHorz==0 ? attr : 0);
-          md2->curveParam = gvarMenuItem(COLUMN_X+MIXES_2ND_COLUMN+5*FW, y, curveParam, -100, 100, LEFT|(m_posHorz==1 ? attr : 0), editMode>0 ? event : 0);
+          md2->curveParam = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN+5*FW, y, curveParam, -100, 100, LEFT|(m_posHorz==1 ? attr : 0), 0, editMode>0 ? event : 0);
           if (attr && editMode>0 && m_posHorz==0) {
             int8_t tmp = 0;
             CHECK_INCDEC_MODELVAR(event, tmp, -1, 1);
@@ -3513,7 +3513,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         if (s_pgOfs < cur && cur-s_pgOfs < 8) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
-            ed->weight = gvarMenuItem(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), event);
+            ed->weight = GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, event);
 
 #if defined(PCBTARANIS)
             putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
@@ -3863,7 +3863,7 @@ void menuModelLimits(uint8_t event)
 
         case ITEM_LIMITS_OFFSET:
 #if defined(PCBTARANIS)
-          ld->offset = gvarMenuItem(LIMITS_OFFSET_POS, y, MIN_MAX_DISPLAY(ld->offset), -1000, 1000, attr|PREC1, event);
+          ld->offset = GVAR_MENU_ITEM(LIMITS_OFFSET_POS, y, MIN_MAX_DISPLAY(ld->offset), -1000, 1000, attr|PREC1, 0, event);
 #else
   #if defined(PPM_UNIT_US)
           lcd_outdezAtt(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, attr|PREC1);
@@ -3882,7 +3882,7 @@ void menuModelLimits(uint8_t event)
 
         case ITEM_LIMITS_MIN:
 #if defined(CPUARM)
-          ld->min = LIMITS_MIN_MAX_OFFSET + gvarMenuItem(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), -MIN_MAX_LIMIT, 0, MIN_MAX_ATTR, event);
+          ld->min = LIMITS_MIN_MAX_OFFSET + GVAR_MENU_ITEM(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), -MIN_MAX_LIMIT, 0, MIN_MAX_ATTR, DBLKEYS_1000, event);
 #else
           lcd_outdezAtt(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
           if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDecModel(event, ld->min-LIMITS_MIN_MAX_OFFSET, -MIN_MAX_LIMIT, 0);
@@ -3891,7 +3891,7 @@ void menuModelLimits(uint8_t event)
 
         case ITEM_LIMITS_MAX:
 #if defined(CPUARM)
-          ld->max = -LIMITS_MIN_MAX_OFFSET + gvarMenuItem(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), 0, MIN_MAX_LIMIT, MIN_MAX_ATTR, event);
+          ld->max = -LIMITS_MIN_MAX_OFFSET + GVAR_MENU_ITEM(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), 0, MIN_MAX_LIMIT, MIN_MAX_ATTR, DBLKEYS_1000, event);
 #else
           lcd_outdezAtt(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
           if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDecModelZero(event, ld->max+LIMITS_MIN_MAX_OFFSET, +MIN_MAX_LIMIT);
