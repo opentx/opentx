@@ -986,6 +986,8 @@ PACK(typedef struct t_FrSkyData {
   int8_t  varioMin;
   int8_t  varioMax;
   FrSkyRSSIAlarm rssiAlarms[2];
+  uint16_t mAhPersistent:1;
+  uint16_t storedMah:15;
 }) FrSkyData;
 #else
 #define MAX_FRSKY_SCREENS 2

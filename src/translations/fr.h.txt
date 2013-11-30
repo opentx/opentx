@@ -659,6 +659,7 @@
 #define TR_CHANNELRANGE        INDENT "Plage de canaux"
 #define TR_LOWALARM            INDENT "Alarme basse"
 #define TR_CRITICALALARM       INDENT "Alarme critique"
+#define TR_PERSISTENT_MAH      INDENT "Store mAh"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"

@@ -964,6 +964,11 @@ void eeLoadModel(uint8_t id)
     }
 #endif
 
+#if defined(CPUARM)
+  if(g_model.frsky.mAhPersistent) 
+    frskyData.hub.currentConsumption = g_model.frsky.storedMah;
+#endif
+
     LOAD_MODEL_CURVES();
 
     resumeMixerCalculations();

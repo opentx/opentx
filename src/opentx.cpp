@@ -4138,6 +4138,17 @@ void opentxClose()
   hapticOff();
 #endif
 
+#if defined(CPUARM)
+  if((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
+    g_model.frsky.storedMah = frskyData.hub.currentConsumption;
+    eeDirty(EE_MODEL);
+  }
+  else if((!g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != 0)){
+    g_model.frsky.storedMah = 0;
+    eeDirty(EE_MODEL);
+  }
+#endif
+
   saveTimers();
 
 #if defined(PCBSKY9X)

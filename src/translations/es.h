@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -613,7 +613,7 @@
 #define TR_SD_TYPE             "Tipo:"
 #define TR_SD_SPEED            "Velocidad:"
 #define TR_SD_SECTORS          "Sectores:"
-#define TR_SD_SIZE             "Tamaño:"
+#define TR_SD_SIZE             "Tama\201o:"
 #define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_GLOBAL_VAR          "Global Variable"
@@ -653,12 +653,13 @@
 #define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Aprendiz"
-#define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"
+#define TR_ANTENNAPROBLEM      CENTER "Â¡Problema antena TX!"
 #define TR_MODELIDUSED         TR("ID en uso", "ID modelo en uso")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
+#define TR_PERSISTENT_MAH      INDENT "Store mAh"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"

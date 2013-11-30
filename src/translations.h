@@ -492,6 +492,7 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_WAV_VOLUME[];
   extern const pm_char STR_VARIO_VOLUME[];
   extern const pm_char STR_BG_VOLUME[];
+  extern const pm_char STR_PERSISTENT_MAH[];
 #else
   #define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
 #endif

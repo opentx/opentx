@@ -659,6 +659,7 @@
 #define TR_CHANNELRANGE        INDENT "Rozsah kan\200l\211"
 #define TR_LOWALARM            INDENT "N\204zk\212 Alarm"
 #define TR_CRITICALALARM       INDENT "Kritick\212 Alarm"
+#define TR_PERSISTENT_MAH      INDENT "Store mAh"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"

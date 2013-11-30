@@ -662,6 +662,7 @@
 #define TR_CHANNELRANGE        INDENT "Ausgangs Kan\201le"
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Kritisch Alarm"
+#define TR_PERSISTENT_MAH      INDENT "Store mAh"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
