@@ -1186,7 +1186,8 @@ void menuModelSetup(uint8_t event)
             if(swactive)
               attr |= INVERS;
           }
-          if(swactive || (attr & BLINK)) lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, c, attr);
+          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive || (attr & BLINK)) ? c : '-', attr);
+
 #endif
         }
         break;
