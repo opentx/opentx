@@ -188,7 +188,12 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_MODELVAR_ZERO(event, var, max) \
   var = checkIncDecModelZero(event,var,max)
 
-#if defined(AUTOSWITCH)
+#if defined(CPUARM)
+  bool isSwitchAvailable(int16_t swtch);
+  #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
+  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
+    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, isSwitchAvailable)
+#elif defined(AUTOSWITCH)
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH)
@@ -199,7 +204,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 
 #if defined(CPUARM)
   bool isSourceAvailable(int16_t source);
-  bool isSourceP1Available(int16_t source);
+  bool isInputSourceAvailable(int16_t source);
   #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
 #elif defined(AUTOSOURCE)
@@ -246,11 +251,11 @@ void title(const pm_char * s);
   TITLE(title)
 
 #define SUBMENU_NOTITLE(lines_count, ...) { \
-  static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
+  MENU_TAB(__VA_ARGS__); \
   if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; }
 
 #define SUBMENU(title, lines_count, ...) \
-  static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__; \
+  MENU_TAB(__VA_ARGS__); \
   if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; \
   TITLE(title)
 
@@ -261,7 +266,13 @@ void title(const pm_char * s);
   SIMPLE_SUBMENU_NOTITLE(lines_count); \
   TITLE(title)
 
-int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event);
+#if defined(CPUARM)
+  typedef int select_menu_value_t;
+#else
+  typedef int8_t select_menu_value_t;
+#endif
+
+select_menu_value_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event);
 uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, LcdFlags attr, uint8_t event );
 int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event);
 
@@ -287,6 +298,11 @@ extern const pm_char * s_global_warning;
 
 #define WARNING_LINE_X 16
 #define WARNING_LINE_Y 3*FH
+#if LCD_W >= 212
+  #define WARNING_LINE_LEN 30
+#else
+  #define WARNING_LINE_LEN 20
+#endif
 
 void displayBox();
 void displayPopup(const pm_char * pstr);
@@ -339,7 +355,10 @@ void displayWarning(uint8_t event);
   #define drawStatusLine()
 #endif
 
+#if defined(PCBTARANIS)
 void menuChannelsView(uint8_t event);
+void pushMenuTextView(const char *filename);
+#endif
 
 #define LABEL(...) (uint8_t)-1
 

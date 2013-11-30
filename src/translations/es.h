@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -527,10 +527,10 @@
 #define TR_MENUHELISETUP       "CONF. HELI"
 
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUDREXPO        "STICKS"
+  #define TR_MENUINPUTS        "STICKS"
   #define TR_MENULIMITS        "SERVOS"
 #else
-  #define TR_MENUDREXPO        "DR/EXPO"
+  #define TR_MENUINPUTS        "DR/EXPO"
   #define TR_MENULIMITS        "LIMITES"
 #endif
 
@@ -610,7 +610,7 @@
 #define TR_SD_TYPE             "Tipo:"
 #define TR_SD_SPEED            "Velocidad:"
 #define TR_SD_SECTORS          "Sectores:"
-#define TR_SD_SIZE             "Tamaño:"
+#define TR_SD_SIZE             "Tama\201o:"
 #define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Global Variables"
 #define TR_GLOBAL_VAR          "Global Variable"
@@ -646,10 +646,10 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Enlace]"
 #define TR_MODULE_RANGE        "[Limites]"
-#define TR_RESET               "[Reset]"
+#define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Aprendiz"
-#define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"
+#define TR_ANTENNAPROBLEM      CENTER "Â¡Problema antena TX!"
 #define TR_MODELIDUSED         TR("ID en uso", "ID modelo en uso")
 #define TR_MODULE              INDENT "Modulo"
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
@@ -684,7 +684,7 @@
 
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nombre ", " Interrup.", " Trims ", " Aparecer ", " Desparecer " }
-#define TR_LIMITS_HEADERS      { " Nombre ", " Compensacion", " Min ", " Max ", " Direccion ", " Centrado PPM ", " Simetrica " }
+#define TR_LIMITS_HEADERS      { " Nombre ", " Compensacion", " Min ", " Max ", " Direccion ", " Curve ", " Centrado PPM ", " Simetrica " }
 #define TR_CSW_HEADERS         { " Funcion ", " V1 ", " V2 ", " AND Interrup. ", " Duracion ", " Retardo " }
 
 //Taranis About screen

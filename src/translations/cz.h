@@ -530,7 +530,7 @@
 // Alignment
 
 
-#define TR_MENUDREXPO          "DR/EXPO"
+#define TR_MENUINPUTS          "DR/EXPO"
 #define TR_MENULIMITS          "LIMITY"
 
 
@@ -684,7 +684,7 @@
 
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Jm\202no ", " Sp\204na\201 ", " Trimy ", " P\206echod Zap ", " P\206echod Vyp " }
-#define TR_LIMITS_HEADERS      { " Jm\202no ", " Subtrim ", " Min ", " Max ", " Sm\203r ", " St\206ed PPM ", " Symetrick\202 " }
+#define TR_LIMITS_HEADERS      { " Jm\202no ", " Subtrim ", " Min ", " Max ", " Sm\203r ", " Curve ", " St\206ed PPM ", " Symetrick\202 " }
 #define TR_CSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " AND Sp\204na\201 ", " Trv\200n\204 ", " Zpo\217d\203n\204 " }
 
 //Taranis About screen

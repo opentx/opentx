@@ -100,6 +100,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #if defined(CPUARM)
     ISTR(VLCD)
     ISTR(VUNITSSYSTEM)
+    ISTR(VBEEPCOUNTDOWN)
 #endif
 #if defined(PXX)
     ISTR(COUNTRYCODES)
@@ -247,9 +248,6 @@ const pm_char STR_TMR1LATMAXUS[] PROGMEM = TR_TMR1LATMAXUS;
 const pm_char STR_TMR1LATMINUS[] PROGMEM = TR_TMR1LATMINUS;
 const pm_char STR_TMR1JITTERUS[] PROGMEM = TR_TMR1JITTERUS;
 const pm_char STR_TMIXMAXMS[] PROGMEM = TR_TMIXMAXMS;
-#ifdef DEBUG
-const pm_char STR_T10MSUS[] PROGMEM = TR_T10MSUS;
-#endif
 const pm_char STR_FREESTACKMINB[] PROGMEM = TR_FREESTACKMINB;
 const pm_char STR_MENUTORESET[] PROGMEM = TR_MENUTORESET;
 const pm_char STR_PPM[] PROGMEM = TR_PPM;
@@ -288,13 +286,18 @@ const pm_char STR_MENUFLIGHTPHASES[] PROGMEM = TR_MENUFLIGHTPHASES;
 const pm_char STR_MENUHELISETUP[] PROGMEM = TR_MENUHELISETUP;
 #endif
 
-const pm_char STR_MENUDREXPO[] PROGMEM = TR_MENUDREXPO;
+const pm_char STR_MENUINPUTS[] PROGMEM = TR_MENUINPUTS;
 const pm_char STR_MENULIMITS[] PROGMEM = TR_MENULIMITS;
 const pm_char STR_MENUCURVES[] PROGMEM = TR_MENUCURVES;
 const pm_char STR_MENUCURVE[] PROGMEM = TR_MENUCURVE;
 const pm_char STR_MENUCUSTOMSWITCH[] PROGMEM = TR_MENUCUSTOMSWITCH;
 const pm_char STR_MENUCUSTOMSWITCHES[] PROGMEM = TR_MENUCUSTOMSWITCHES;
 const pm_char STR_MENUCUSTOMFUNC[] PROGMEM = TR_MENUCUSTOMFUNC;
+
+#if defined(LUA)
+const pm_char STR_MENUCUSTOMSCRIPTS[] PROGMEM = "CUSTOM SCRIPTS";
+const pm_char STR_MENUCUSTOMSCRIPT[] PROGMEM = "CUSTOM SCRIPT";
+#endif
 
 #if defined(FRSKY)
 const pm_char STR_MENUTELEMETRY[] PROGMEM = TR_MENUTELEMETRY;
@@ -366,6 +369,7 @@ const pm_char STR_INSERT_AFTER[] PROGMEM = TR_INSERT_AFTER;
 const pm_char STR_COPY[] PROGMEM = TR_COPY;
 const pm_char STR_MOVE[] PROGMEM = TR_MOVE;
 const pm_char STR_PASTE[] PROGMEM = TR_PASTE;
+const pm_char STR_INSERT[] PROGMEM = TR_INSERT;
 const pm_char STR_DELETE[] PROGMEM = TR_DELETE;
 const pm_char STR_RESET_FLIGHT[] PROGMEM = TR_RESET_FLIGHT;
 const pm_char STR_RESET_TIMER1[] PROGMEM = TR_RESET_TIMER1;
@@ -375,7 +379,7 @@ const pm_char STR_STATISTICS[] PROGMEM = TR_STATISTICS;
 const pm_char STR_ABOUT_US[] PROGMEM = TR_ABOUT_US;
 #endif
 
-const pm_char STR_RESET[] PROGMEM = TR_RESET;
+const pm_char STR_RESET_BTN[] PROGMEM = TR_RESET_BTN;
 
 #if defined(SDCARD)
 const pm_char STR_BACKUP_MODEL[] PROGMEM = TR_BACKUP_MODEL;
@@ -415,8 +419,10 @@ const pm_char STR_SDHC_CARD[] PROGMEM = TR_SDHC_CARD;
 const pm_char STR_NO_SOUNDS_ON_SD[] PROGMEM = TR_NO_SOUNDS_ON_SD;
 const pm_char STR_NO_MODELS_ON_SD[] PROGMEM = TR_NO_MODELS_ON_SD;
 const pm_char STR_NO_BITMAPS_ON_SD[] PROGMEM = TR_NO_BITMAPS_ON_SD;
+const pm_char STR_NO_SCRIPTS_ON_SD[] PROGMEM = "No Scripts on SD"; // TODO TR_NO_BITMAPS_ON_SD;
 const pm_char STR_PLAY_FILE[] PROGMEM = TR_PLAY_FILE;
 const pm_char STR_ASSIGN_BITMAP[] PROGMEM = TR_ASSIGN_BITMAP;
+const pm_char STR_EXECUTE_FILE[] PROGMEM = "Execute";
 const pm_char STR_DELETE_FILE[] PROGMEM = TR_DELETE_FILE;
 const pm_char STR_COPY_FILE[] PROGMEM = TR_COPY_FILE;
 const pm_char STR_RENAME_FILE[] PROGMEM = TR_RENAME_FILE;
@@ -442,6 +448,7 @@ const pm_char STR_ROTARY_ENCODER[] PROGMEM = TR_ROTARY_ENCODER;
 const pm_char STR_DATE[] PROGMEM = TR_DATE;
 const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
 const pm_char STR_PATH_TOO_LONG[] PROGMEM = "Path too long";
+const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
 
 #if LCD_W >= 212
   const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
@@ -466,6 +473,24 @@ const pm_char STR_PATH_TOO_LONG[] PROGMEM = "Path too long";
   const pm_char STR_CHANNELRANGE[] PROGMEM = TR_CHANNELRANGE;
   const pm_char STR_LOWALARM[] PROGMEM = TR_LOWALARM;
   const pm_char STR_CRITICALALARM[] PROGMEM = TR_CRITICALALARM;
+  const pm_char STR_ENABLE_POPUP[] PROGMEM = "Enable Popup";
+  const pm_char STR_DISABLE_POPUP[] PROGMEM = "Disable Popup";
+  const pm_char STR_CURVE_PRESET[] PROGMEM = "Preset...";
+  const pm_char STR_PRESET[] PROGMEM = "Preset";
+  const pm_char STR_MIRROR[] PROGMEM = "Mirror";
+  const pm_char STR_CLEAR[] PROGMEM = "Clear";
+  const pm_char STR_RESET[] PROGMEM = "Reset";
+  const pm_char STR_COPY_TRIMS_TO_OFFSET[] = "Copy Trims To Offset";
+  const pm_char STR_TOP_BAR[] PROGMEM = "Top Bar";
+  const pm_char STR_ALTITUDE[] PROGMEM = INDENT "Altitude";
+  const pm_char STR_SCALE[] PROGMEM = "Scale";
+  const pm_char STR_VIEW_CHANNELS[] PROGMEM = "View Channels";
+  const pm_char STR_VIEW_NOTES[] PROGMEM = "View Notes";
+#endif
+
+#if MENUS_LOCK == 1
+  const pm_char STR_UNLOCKED[] PROGMEM = TR_UNLOCKED;
+  const pm_char STR_MODS_FORBIDDEN[] PROGMEM = TR_MODS_FORBIDDEN;
 #endif
 
 #if defined(PCBTARANIS) || defined(DSM2)
@@ -635,5 +660,4 @@ const pm_uchar font_10x14_extra[] PROGMEM = {
 };
 
 #endif
-
 

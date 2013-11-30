@@ -58,7 +58,6 @@ extern uint32_t Eeprom32_data_size ;
 extern void end_spi(); // TODO not public
 extern void ee32_process( void ) ;
 extern bool eeLoadGeneral( void ) ;
-extern bool eeConvert();
 extern void eeWaitFinished();
 
 extern void eeDeleteModel( uint8_t id ) ;

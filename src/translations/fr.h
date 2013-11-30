@@ -527,10 +527,10 @@
 #define TR_MENUHELISETUP       TR("CONF.HELI","CONFIGURATION HELICO")
 
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUDREXPO          "MANCHES"
+  #define TR_MENUINPUTS          "MANCHES"
   #define TR_MENULIMITS          "SORTIES"
 #else
-  #define TR_MENUDREXPO          "DR/EXPO"
+  #define TR_MENUINPUTS          "DR/EXPO"
   #define TR_MENULIMITS          "LIMITES"
 #endif
 
@@ -646,7 +646,7 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Port.]"
-#define TR_RESET               "[RAZ]"
+#define TR_RESET_BTN           "[RAZ]"
 #define TR_SET                 "[D\200f.]"
 #define TR_TRAINER             "Ecolage"
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio d\200fectueuse!"
@@ -684,7 +684,7 @@
 
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nom ", " Inter ", " Trims ", " Fondu ON ", " Fondu OFF " }
-#define TR_LIMITS_HEADERS      { " Nom ", " Subtrim ", " Min ", " Max ", " Direction ", " Neutre PPM ", " Mode subtrim " }
+#define TR_LIMITS_HEADERS      { " Nom ", " Subtrim ", " Min ", " Max ", " Direction ", " Curve ", " Neutre PPM ", " Mode subtrim " }
 #define TR_CSW_HEADERS         { " Fonction ", " V1 ", " V2 ", " ET suppl. ", " Dur\200e ", " D\200lai " }
 
 //Taranis About screen

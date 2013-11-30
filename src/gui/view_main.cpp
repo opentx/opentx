@@ -114,6 +114,7 @@
   #define ICON_TRAINEE  71, 11
   #define ICON_USB      81, 11
   #define ICON_REBOOT   91, 11
+  #define ICON_ALTITUDE 102, 9
 #endif
 
 void drawPotsBars()
@@ -135,15 +136,15 @@ void drawStick(uint8_t centrex, int16_t xval, int16_t yval)
 
 void doMainScreenGraphics()
 {
-  int16_t calibStickVert = calibratedStick[CONVERT_MODE(1+1)-1];
-  if (g_model.throttleReversed && CONVERT_MODE(1+1)-1 == THR_STICK)
+  int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
+  if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(LBOX_CENTERX, calibratedStick[CONVERT_MODE(0+1)-1], calibStickVert);
+  drawStick(LBOX_CENTERX, calibratedStick[CONVERT_MODE(0)], calibStickVert);
 
-  calibStickVert = calibratedStick[CONVERT_MODE(2+1)-1];
-  if (g_model.throttleReversed && CONVERT_MODE(2+1)-1 == THR_STICK)
+  calibStickVert = calibratedStick[CONVERT_MODE(2)];
+  if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3+1)-1], calibStickVert);
+  drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
 
 #if !defined(PCBTARANIS)
   drawPotsBars();
@@ -156,7 +157,7 @@ void displayTrims(uint8_t phase)
     static xcoord_t x[4] = {TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X};
     static uint8_t vert[4] = {0,1,1,0};
     uint8_t xm, ym;
-    xm = x[CONVERT_MODE(i+1)-1];
+    xm = x[CONVERT_MODE(i)];
 
     uint8_t att = ROUND;
     int16_t val = getTrimValue(phase, i);
@@ -210,9 +211,6 @@ void displaySliders()
 #define BAR_Y        1
 #define BAR_W        184
 #define BAR_H        9
-#define BAR_BATT_X   BAR_X+18
-#define BAR_RSSI_X   BAR_X+42
-#define BAR_A1_X     BAR_X+69
 #define BAR_NOTIFS_X BAR_X+133
 #define BAR_VOLUME_X BAR_X+147
 #define BAR_TIME_X   BAR_X+168
@@ -232,15 +230,19 @@ void displayTopBarGauge(xcoord_t x, int count, bool blinking=false)
 
 void displayTopBar()
 {
+  uint8_t batt_icon_x;
+  uint8_t altitude_icon_x;
+
   /* Tx voltage */
-  putsVBat(BAR_BATT_X, BAR_Y+1, 0);
-  lcd_rect(BAR_BATT_X+FW, BAR_Y+1, 13, 7);
-  lcd_vline(BAR_BATT_X+FW+13, BAR_Y+2, 5);
+  putsVBat(BAR_X+2, BAR_Y+1, LEFT);
+  batt_icon_x = lcdLastPos;
+  lcd_rect(batt_icon_x+FW, BAR_Y+1, 13, 7);
+  lcd_vline(batt_icon_x+FW+13, BAR_Y+2, 5);
 
   if (frskyData.rssi[0].value > 0) {
     /* RSSI */
-    LCD_ICON(BAR_RSSI_X, BAR_Y, ICON_RSSI);
-    lcd_rect(BAR_RSSI_X+10, BAR_Y+1, 13, 7);
+    LCD_ICON(batt_icon_x+3*FW+3, BAR_Y, ICON_RSSI);
+    lcd_rect(batt_icon_x+5*FW, BAR_Y+1, 13, 7);
 
     /* Rx voltage */
     lcdint_t voltage = 0;
@@ -258,7 +260,17 @@ void displayTopBar()
       voltage = frskyData.hub.cellsSum;
     }
     if (voltage > 0) {
-      putsTelemetryChannel(BAR_A1_X, BAR_Y+1, channel, voltage, LEFT);
+      putsTelemetryChannel(batt_icon_x+7*FW+2, BAR_Y+1, channel, voltage, LEFT);
+      altitude_icon_x = lcdLastPos+1;
+    }
+    else {
+      altitude_icon_x = batt_icon_x+7*FW+3;
+    }
+
+    /* Altitude */
+    if (g_model.frsky.altitudeDisplayed && frskyData.hub.baroAltitudeOffset) {
+      LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
+      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_ALT_BP, UNIT_METERS, LEFT);
     }
   }
 
@@ -288,9 +300,10 @@ void displayTopBar()
     x -= 12;
   }
 
+  /* SD ICON, not really needed
   if (sdMounted()) {
     LCD_NOTIF_ICON(x, ICON_SD);
-  }
+  } */
 
   /* Audio volume */
   if (requiredSpeakerVolume == 0)
@@ -314,11 +327,11 @@ void displayTopBar()
 
   /* The inside of the Batt gauge */
   int count = 10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin);
-  displayTopBarGauge(BAR_BATT_X+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
+  displayTopBarGauge(batt_icon_x+FW, count, g_vbat100mV <= g_eeGeneral.vBatWarn);
 
   /* The inside of the RSSI gauge */
   if (frskyData.rssi[0].value > 0) {
-    displayTopBarGauge(BAR_RSSI_X+10, frskyData.rssi[0].value / 10, frskyData.rssi[0].value < getRssiAlarmValue(0));
+    displayTopBarGauge(batt_icon_x+5*FW, frskyData.rssi[0].value / 10, frskyData.rssi[0].value < getRssiAlarmValue(0));
   }
 }
 #endif
@@ -358,7 +371,7 @@ void displayTimers()
   // Main timer
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
-    uint8_t att = DBLSIZE | (timerState.state==TMR_BEEPING ? BLINK|INVERS : 0);
+    uint8_t att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
     putsTime(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
     putsTmrMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode, STRCONDENSED);
   }
@@ -525,7 +538,7 @@ void menuMainView(uint8_t event)
       break;
 #endif
 
-#if !defined(READONLY)
+#if MENUS_LOCK != 2/*no menus*/
 #if !defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU):// go to last menu
       pushMenu(lastPopMenu());
@@ -594,12 +607,14 @@ void menuMainView(uint8_t event)
       return;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      if (timersStates[0].state==TMR_BEEPING) {
-        timersStates[0].state = TMR_STOPPED;
-      }
-      else if (s_global_warning) {
+      if (s_global_warning) {
         s_global_warning = NULL;
       }
+#if defined(GVARS) && !defined(PCBSTD)
+      else if (s_gvar_timer > 0) {
+        s_gvar_timer = 0;
+      }
+#endif
 #if !defined(PCBTARANIS)
       else if (view == VIEW_TIMER2) {
         resetTimer(1);
@@ -652,18 +667,18 @@ void menuMainView(uint8_t event)
     // TODO simplify this + reuse code in checkSwitches() + Menu MODELSETUP
     switch(i) {
       case 5:
-        sw = getValue(MIXSRC_SF-1) > 0 ? 3*i+2 : 3*i+1;
+        sw = getValue(MIXSRC_SF) > 0 ? 3*i+2 : 3*i+1;
         break;
       case 6:
-        val = getValue(MIXSRC_SG-1);
+        val = getValue(MIXSRC_SG);
         sw = ((val < 0) ? 3*i : ((val == 0) ? 3*i+1 : 3*i+2));
         break;     
       case 7:
-        sw = getValue(MIXSRC_SH-1) > 0 ? 3*i+1 : 3*i;
+        sw = getValue(MIXSRC_SH) > 0 ? 3*i+1 : 3*i;
         break;
       default:
       {
-        val = getValue(MIXSRC_SA+i-1);
+        val = getValue(MIXSRC_SA+i);
         sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
         break;
       }
@@ -821,6 +836,27 @@ void menuMainView(uint8_t event)
     if (!s_warning) s_global_warning = NULL;
     s_warning = NULL;
   }
+
+#if defined(GVARS) && !defined(PCBSTD)
+  else if (s_gvar_timer > 0) {
+    s_gvar_timer--;
+#if LCD_W >= 212
+    lcd_filled_rect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
+    lcd_rect(BITMAP_X, BITMAP_Y, 64, 32);
+    putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
+    lcd_putsnAtt(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
+    lcd_putsAtt(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
+    lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
+#else
+    s_warning = STR_GLOBAL_VAR;
+    displayBox();
+    lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
+    lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
+    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
+    s_warning = NULL;
+#endif
+  }
+#endif
 
 #if defined(DSM2)
   if (dsm2Flag == DSM2_BIND_FLAG) // Issue 98

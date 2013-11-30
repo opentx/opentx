@@ -246,6 +246,10 @@ GVARS = NO
 # Values = NO, POT1, POT2, POT3,
 3POS = NO
 
+# Menu Lock modes
+# Values = NO, READONLY, NOMENUS 
+MENUS_LOCK == NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -256,19 +260,21 @@ SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 
 SRC =
 CPPSRC =
+INCDIRS = . translations
+EXTRAINCDIRS = 
 
 # MCU name
 ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X TARANIS))
   $(error Sorry, the PCB $(PCB) is not supported yet in openTx)
 endif
 
-GVARS_VARIANT  = +1 
-FRSKY_VARIANT  = +2
-3POS_VARIANT   = +4
-MAVLINK_VARIANT   = +8
-M128_VARIANT   = +32768
-M2561_VARIANT  = +16384
-EEPROM_VARIANT = 0
+GVARS_VARIANT   = +1 
+FRSKY_VARIANT   = +2
+3POS_VARIANT    = +4
+MAVLINK_VARIANT = +8
+M128_VARIANT    = +32768
+M2561_VARIANT   = +16384
+EEPROM_VARIANT  = 0
 
 ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   # 9x/9xr radio
@@ -278,7 +284,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   OPT = s  
   SDCARD = NO
   THR_TRACE = NO
-  EXTRAINCDIRS = targets/stock
+  INCDIRS += targets/stock
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp
@@ -338,7 +344,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   THR_TRACE = NO
   EEPROM_VARIANT += ${M128_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  EXTRAINCDIRS = targets/stock
+  INCDIRS += targets/stock
   BOARDSRC = targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
@@ -397,7 +403,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   THR_TRACE = YES
   EEPROM_VARIANT += ${M2561_VARIANT}
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
-  EXTRAINCDIRS = targets/stock
+  INCDIRS += targets/stock
   BOARDSRC = targets/stock/board_stock.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
@@ -457,7 +463,7 @@ ifeq ($(PCB), GRUVIN9X)
   SDCARD = NO
   BUZZER = NO
   THR_TRACE = YES
-  EXTRAINCDIRS = targets/gruvin9x targets/stock FatFs FatFs/option
+  INCDIRS += targets/gruvin9x targets/stock FatFs FatFs/option
   BOARDSRC = targets/gruvin9x/board_gruvin9x.cpp
   EXTRABOARDSRC = targets/stock/lcd_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
@@ -495,7 +501,7 @@ ifeq ($(PCB), MEGA2560)
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBMEGA2560 -DCPUM2560 -DEEPROM_VARIANT=0 -DAUDIO -DRTCLOCK
   SDCARD = YES
   THR_TRACE = YES
-  EXTRAINCDIRS = targets/mega2560 targets/stock FatFs FatFs/option
+  INCDIRS += targets/mega2560 targets/stock FatFs FatFs/option
   BOARDSRC = targets/mega2560/board_mega2560.cpp
   EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
@@ -535,7 +541,7 @@ ifeq ($(PCB), SKY9X)
   BUZZER = NO
   THR_TRACE = YES
   CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM -DROTARY_ENCODERS=1
-  EXTRAINCDIRS = targets/sky9x CoOS/kernel CoOS/portable
+  INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
   BOARDSRC = targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
   SRC += targets/sky9x/core_cm3.c targets/sky9x/board_lowlevel.c targets/sky9x/crt.c targets/sky9x/vectors_sam3s.c
@@ -551,7 +557,7 @@ ifeq ($(PCB), SKY9X)
   
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DVOICE
-    EXTRAINCDIRS += FatFs FatFs/option
+    INCDIRS += FatFs FatFs/option
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/sky9x/diskio.cpp
   endif
   
@@ -596,18 +602,18 @@ ifeq ($(PCB), TARANIS)
   THR_TRACE = YES
   EXT = FRSKY
   CPPDEFS += -DPCBTARANIS -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
-  EXTRAINCDIRS = targets/taranis CoOS/kernel CoOS/portable
+  INCDIRS += targets/taranis CoOS/kernel CoOS/portable
   EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
   BOARDSRC = targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/aspi.cpp targets/taranis/i2c.c
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp # TODO later eeprom_conversions.cpp
+  EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
   CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart_driver.cpp targets/taranis/sport_driver.cpp
-  CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp
+  CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
@@ -631,11 +637,12 @@ ifeq ($(PCB), TARANIS)
   SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
   SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
   EXTRABOARDSRC += targets/taranis/usbd_usr.cpp targets/taranis/usbd_storage_msd.cpp
+  SRC += targets/sky9x/syscalls.c
   
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
     CPPDEFS += -DVOICE
-    EXTRAINCDIRS += FatFs FatFs/option
+    INCDIRS += FatFs FatFs/option
   endif
     
   ifeq ($(RTCLOCK), YES)
@@ -645,7 +652,6 @@ ifeq ($(PCB), TARANIS)
 
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
-  	SRC += targets/sky9x/syscalls.c
   endif
   
   ifeq ($(DSM2), PPM)
@@ -695,12 +701,6 @@ CPPSRC += opentx.cpp $(PULSESSRC) stamp.cpp gui/menus.cpp gui/menu_model.cpp gui
 #     AVR Studio 4.10 requires dwarf-2.
 #     AVR [Extended] COFF format requires stabs, plus an avr-objcopy run.
 DBGFMT = dwarf-2
-
-# List any extra directories to look for include files here.
-#     Each directory must be seperated by a space.
-#     Use forward slashes for directory separators.
-#     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS += . translations
 
 CPPDEFS += -DTRANSLATIONS_$(TRANSLATIONS)
 
@@ -780,8 +780,10 @@ endif
 
 ifneq ($(FONT), STD)
   CPPDEFS += -DFONT_$(FONT)
-  EXTRAINCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
+  INCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
 endif
+
+INCDIRS += fonts/std
   
 ifeq ($(THR_TRACE), YES)
   CPPDEFS += -DTHRTRACE
@@ -799,6 +801,14 @@ ifeq ($(GVARS), YES)
   CPPDEFS += -DGVARS
   EEPROM_VARIANT += ${GVARS_VARIANT}
 endif
+
+ifeq ($(MENUS_LOCK), READONLY)
+  CPPDEFS += -DMENUS_LOCK=1
+endif 
+
+ifeq ($(MENUS_LOCK), NOMENUS)
+  CPPDEFS += -DMENUS_LOCK=2
+endif 
 
 ifeq ($(CORRECT_NEGATIVE_VALUES), YES)
   CPPDEFS += -DCORRECT_NEGATIVE_SHIFTS
@@ -978,33 +988,17 @@ CPPFLAGS += $(CPPDEFS)
 CPPFLAGS += -Wall
 CPPFLAGS += -fno-exceptions
 CPPFLAGS += -Wno-strict-aliasing
-EXTRAINCDIRS += fonts/std
-CPPFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
+INCFLAGS = $(patsubst %,-I%,$(INCDIRS))
+EXTRAINCFLAGS = $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 MATH_LIB = -lm
-
-#---------------- External Memory Options ----------------
-
-# 64 KB of external RAM, starting after internal RAM (ATmega128!),
-# used for variables (.data/.bss) and heap (malloc()).
-#EXTMEMOPTS = -Wl,-Tdata=0x801100,--defsym=__heap_end=0x80ffff
-
-# 64 KB of external RAM, starting after internal RAM (ATmega128!),
-# only used for heap (malloc()).
-#EXTMEMOPTS = -Wl,--defsym=__heap_start=0x801100,--defsym=__heap_end=0x80ffff
-
-EXTMEMOPTS =
-
-
 
 #---------------- Linker Options ----------------
 #  -Wl,...:     tell GCC to pass this to linker.
 #    -Map:      create map file
 #    --cref:    add cross reference to  map file
 LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
-LDFLAGS += $(EXTMEMOPTS)
 LDFLAGS += $(MATH_LIB)
-#LDFLAGS += -T linker_script.x
 
 # Define Messages
 # English
@@ -1022,8 +1016,8 @@ MSG_CLEANING = Cleaning project:
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
 
-ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS)
-AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ -O$(OPT) $(CPPFLAGS) $(GENDEPFLAGS) -fwhole-program
+ARMCPPFLAGS = -c -mcpu=$(MCU) -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -DRUN_FROM_FLASH=1 -O$(OPT) $(CPPFLAGS) $(INCFLAGS) $(EXTRAINCFLAGS) $(GENDEPFLAGS)
+AVRCPPFLAGS = -mmcu=$(MCU) -I. -x c++ -O$(OPT) $(CPPFLAGS) $(INCFLAGS) $(EXTRAINCFLAGS) $(GENDEPFLAGS) -fwhole-program
 
 ifeq ($(ARCH), AVR)
   GCCVERSIONGTE462 := $(shell expr 4.6.2 \<= `$(CC) -dumpversion`)
@@ -1047,7 +1041,7 @@ all: begin gccversion sizebefore build sizeafter end
 
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
-  build: stamp_header tra lbm allsrc.cpp elf remallsrc hex 
+  build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
 else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
@@ -1176,7 +1170,6 @@ sizeafter:
 gccversion :
 	@$(CC) --version
 
-# gruvin: added extra include and lib paths to get simu working on my Mac
 FOXINC=-I/usr/local/include/fox-1.6 -I/usr/include/fox-1.6 \
        -I$(FOXPATH)/include \
        -I/opt/local/include/fox-1.6
@@ -1187,7 +1180,7 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h tra lbm eeprom.bin
-	g++ $(CPPFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread
+	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -1327,12 +1320,6 @@ GTEST_DIR = ../gtest-1.6.0
 # Where to find user code.
 USER_DIR = ./
 
-# Flags passed to the preprocessor.
-CPPFLAGS += -I$(GTEST_DIR)/include
-
-# Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra
-
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
@@ -1351,11 +1338,11 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 # conservative and not optimized.  This is fine as Google Test
 # compiles fast and for ordinary users its source rarely changes.
 gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -c \
             $(GTEST_DIR)/src/gtest-all.cc
 
 gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -c \
             $(GTEST_DIR)/src/gtest_main.cc
 
 gtest.a : gtest-all.o

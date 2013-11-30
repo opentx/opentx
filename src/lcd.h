@@ -57,15 +57,12 @@
   #define lcdint_t      int16_t
 #endif
 
-#if LCD_H > 64
-  #define LCD_LINES     9
-#else
-  #define LCD_LINES     8
-#endif
-
 #define FW              6
 #define FWNUM           5
 #define FH              8
+
+#define LCD_LINES     (LCD_H/FH)
+#define LCD_COLS      (LCD_W/FW)
 
 /* lcd common flags */
 #define BLINK           0x01
@@ -85,8 +82,8 @@
 /* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
-#define STRCONDENSED    0x10 /* means that THRm will be displayed as THR */
 #define BSS             0x20
+#define STRCONDENSED    0x40 /* means that THRm will be displayed as THR */
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
@@ -121,9 +118,9 @@
 #endif
 
 #if defined(PCBTARANIS)
-#define GREY(x)         ((x) * 0x1000)
-#define GREY_DEFAULT    GREY(11)
-#define GREY_MASK(x)    ((x) & 0xF000)
+  #define GREY(x)       ((x) * 0x1000)
+  #define GREY_DEFAULT  GREY(11)
+  #define GREY_MASK(x)  ((x) & 0xF000)
 #endif
 
 #if defined(CPUARM)
@@ -172,6 +169,9 @@ void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, LcdFlags att);
 void putsSwitches(xcoord_t x, uint8_t y, int8_t swtch, LcdFlags att=0);
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att=0);
 void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
+#if defined(PCBTARANIS)
+void putsCurveRef(xcoord_t x, uint8_t y, CurveRef &curve, LcdFlags att);
+#endif
 void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
 void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att);
 void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att);
@@ -206,6 +206,9 @@ void lcd_vline(xcoord_t x, int8_t y, int8_t h);
 #else
   void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att=0);
 #endif
+#if defined(CPUARM)
+  void lcd_line(int x1, int y1, int x2, int y2, LcdFlags att=0);
+#endif
 
 void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, LcdFlags att=0);
 void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, LcdFlags att=0);
@@ -238,11 +241,11 @@ void lcdSetRefVolt(unsigned char val);
 void lcdInit();
 void lcd_clear();
 void lcdSetContrast();
-
 void lcdRefresh();
 
 #if defined(PCBTARANIS)
-  const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t width, const uint8_t height);
+  typedef uint8_t * bmp_ptr_t;
+  const pm_char * bmpLoad(bmp_ptr_t &dest, const char *filename, const xcoord_t width, const uint8_t height);
 #endif
 
 #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
@@ -250,6 +253,13 @@ void lcdRefresh();
 #ifdef SIMU
   extern bool lcd_refresh;
   extern uint8_t lcd_buf[DISPLAY_BUF_SIZE];
+#endif
+
+#if defined(LUA)
+  extern bool lcd_locked;
+  #define LCD_LOCKED() lcd_locked
+#else
+  #define LCD_LOCKED() 0
 #endif
 
 #define LCD_BYTE_FILTER_PLAN(p, keep, add) *(p) = (*(p) & (keep)) | (add)

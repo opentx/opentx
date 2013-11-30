@@ -208,7 +208,8 @@ void backlightFade();
 #define INP_G_RuddDR   0
 
 // Keys driver
-#define KEYS_PRESSED() (~PINB)
+#define TRIMS_PRESSED() (~PIND)
+#define KEYS_PRESSED()  (~PINB)
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT))) == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_LFT)))
 #define DBLKEYS_PRESSED_UP_DWN(i)  ((in & ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN))) == ((1<<INP_B_KEY_UP)  + (1<<INP_B_KEY_DWN)))
 #define DBLKEYS_PRESSED_RGT_UP(i)  ((in & ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))  == ((1<<INP_B_KEY_RGT) + (1<<INP_B_KEY_UP)))

@@ -527,10 +527,10 @@
 #define TR_MENUHELISETUP       "SETUP  ELI"
 
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUDREXPO          "STICK"
+  #define TR_MENUINPUTS          "STICK"
   #define TR_MENULIMITS          "USCITE"
 #else
-  #define TR_MENUDREXPO          "DR/ESPO"
+  #define TR_MENUINPUTS          "DR/ESPO"
   #define TR_MENULIMITS          "LIMITI"
 #endif
 
@@ -646,7 +646,7 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
-#define TR_RESET               "[Reset]"
+#define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             TR("Trainer","Maestro/Allievo")
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
@@ -684,7 +684,7 @@
 
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nome ", " Switch ", " Trims ", " Fade In ", " Fade Out " }
-#define TR_LIMITS_HEADERS      { " Nome ", " Offset ", " Min ", " Max ", " Direzione ", " Centro PPM ", " Simmetria " }
+#define TR_LIMITS_HEADERS      { " Nome ", " Offset ", " Min ", " Max ", " Direzione ", " Curve ", " Centro PPM ", " Simmetria " }
 #define TR_CSW_HEADERS         { " Funzione ", " V1 ", " V2 ", " AND Switch ", " Durata ", " Ritardo " }
 
 //Taranis About screen

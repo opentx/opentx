@@ -646,7 +646,7 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
-#define TR_RESET               "[Reset]"
+#define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "----Trainer Buchse Einst.------" //DSC Buchse Funktion
 #define TR_ANTENNAPROBLEM      CENTER "TX Antennen Problem!"

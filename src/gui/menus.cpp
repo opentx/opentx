@@ -58,10 +58,10 @@ void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr)
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
-  lcd_outdezAtt(LCD_W,0,count,attr);
+  lcd_outdezAtt(LCD_W, 0, count, attr);
   xcoord_t x = 1+LCD_W-FW*(count>9 ? 3 : 2);
-  lcd_putcAtt(x,0,'/',attr);
-  lcd_outdezAtt(x,0,index+1,attr);
+  lcd_putcAtt(x, 0, '/', attr);
+  lcd_outdezAtt(x, 0, index+1, attr);
 }
 
 #if !defined(CPUM64)
@@ -84,6 +84,25 @@ int16_t p1valdiff;
 #if defined(NAVIGATION_POT2)
 int8_t p2valdiff;
 #endif
+
+uint8_t switchToMix(uint8_t source)
+{
+#if defined(PCBTARANIS)
+  if (source <= 5*3)
+    return MIXSRC_FIRST_SWITCH + (source-1) / 3;
+  else if (source <= 17)
+    return MIXSRC_SF;
+  else if (source <= 20)
+    return MIXSRC_SG;
+  else
+    return MIXSRC_SH;
+#else
+  if (source <= 3)
+    return MIXSRC_3POS;
+  else
+    return MIXSRC_FIRST_SWITCH - 3 + source;
+#endif
+}
 
 int8_t  checkIncDec_Ret;
 
@@ -167,7 +186,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     AUDIO_KEYPAD_DOWN();
   }
 
-  if (i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
+  if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
     s_editMode = 0;
     newval = !val;
   }
@@ -214,28 +233,16 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #if defined(AUTOSOURCE)
   if (i_flags & INCDEC_SOURCE) {
     if (s_editMode>0) {
-      int8_t source = getMovedSource();
+      int8_t source = GET_MOVED_SOURCE(i_min, i_max);
       if (source) {
-        newval = MIXSRC_Rud - 1 + source;
+        newval = source;
       }
 #if defined(AUTOSWITCH)
-      source = abs(getMovedSwitch());
-      if (source) {
-#if defined(PCBTARANIS)
-        if (source <= 5*3)
-          newval = MIXSRC_FIRST_SWITCH + (source-1) / 3;
-        else if (source <= 17)
-          newval = MIXSRC_SF;
-        else if (source <= 20)
-          newval = MIXSRC_SG;
-        else
-          newval = MIXSRC_SH;
-#else
-        if (source <= 3)
-          newval = MIXSRC_3POS;
-        else
-          newval = MIXSRC_FIRST_SWITCH - 3 + source;
-#endif
+      else {
+        uint8_t swtch = abs(getMovedSwitch());
+        if (swtch) {
+          newval = switchToMix(swtch);
+        }
       }
 #endif
     }
@@ -321,6 +328,35 @@ void title(const pm_char * s)
 uint8_t scrollbar_X = LCD_W-1;
 #endif
 
+#if defined(PCBTARANIS)
+bool modelHasNotes()
+{
+  FILINFO info;
+  TCHAR lfn[_MAX_LFN + 1];
+  info.lfname = lfn;
+  info.lfsize = sizeof(lfn);
+
+  char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
+  char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+  strcpy(buf, TEXT_EXT);
+
+  return (f_stat(filename, &info) == FR_OK);
+}
+
+void onLongMenuPress(const char *result)
+{
+  if (result == STR_VIEW_CHANNELS) {
+    pushMenu(menuChannelsView);
+  }
+  else if (result == STR_VIEW_NOTES) {
+    char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
+    char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+    strcpy(buf, TEXT_EXT);
+    pushMenuTextView(filename);
+  }
+}
+#endif
+
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
   vertpos_t l_posVert = m_posVert;
@@ -366,9 +402,16 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     switch(event) {
       case EVT_KEY_LONG(KEY_MENU):
         if (menuTab == menuTabModel) {
-          pushMenu(menuChannelsView);
           killEvents(event);
-          return false;
+          if (modelHasNotes()) {
+            MENU_ADD_SD_ITEM(STR_VIEW_CHANNELS);
+            MENU_ADD_ITEM(STR_VIEW_NOTES);
+            menuHandler = onLongMenuPress;
+          }
+          else {
+            pushMenu(menuChannelsView);
+            return false;
+          }
         }
         break;
 
@@ -501,7 +544,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
     case EVT_ROTARY_BREAK:
       if (s_editMode > 1) break;
-      if (m_posHorz < 0 && maxcol > 0) {
+      if (m_posHorz < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
         break;
       }
@@ -518,8 +561,11 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #if !defined(PCBTARANIS)
     case EVT_KEY_FIRST(KEY_ENTER):
 #endif
-      if (!menuTab || l_posVert>0)
-        s_editMode = (s_editMode<=0);
+      if (!menuTab || l_posVert>0) {
+        if (READ_ONLY_UNLOCKED()) {
+          s_editMode = (s_editMode<=0);
+        }
+      }
       break;
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -757,7 +803,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
 #if LCD_W >= 212
   if (maxrow > LCD_LINES-1 && scrollbar_X)
-    displayScrollbar(scrollbar_X, FH, LCD_H-FH, s_pgOfs, maxrow, LCD_LINES-1);
+    displayScrollbar(scrollbar_X, FH, LCD_H-FH, s_pgOfs, menuTab ? maxrow : maxrow+1, LCD_LINES-1);
 #endif
 
 #else
@@ -844,7 +890,11 @@ void displayBox()
 {
   lcd_filled_rect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcd_rect(10, 16, LCD_W-20, 40);
+#if defined(CPUARM)
+  lcd_putsn(WARNING_LINE_X, WARNING_LINE_Y, s_warning, WARNING_LINE_LEN);
+#else
   lcd_puts(WARNING_LINE_X, WARNING_LINE_Y, s_warning);
+#endif
   // could be a place for a s_warning_info
 }
 
@@ -891,7 +941,7 @@ void displayWarning(uint8_t event)
   }
 }
 
-int8_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, int8_t value, int8_t min, int8_t max, LcdFlags attr, uint8_t event)
+select_menu_value_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event)
 {
   lcd_putsColumnLeft(x, y, label);
   if (values) lcd_putsiAtt(x, y, values, value-min, attr);
@@ -924,7 +974,14 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
   bool invers = (attr & INVERS);
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
+#if defined(CPUARM)
+    if (attr & PREC1)
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase)*10 : delta);
+    else
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
+#else
     value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
+#endif
     eeDirty(EE_MODEL);
   }
   if (GV_IS_GV_VALUE(value, min, max)) {
@@ -933,6 +990,10 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
     else
       x -= 2*FW+FWNUM;
     
+#if defined(CPUARM)
+    attr &= ~PREC1;
+#endif
+
     int8_t idx = (int16_t) GV_INDEX_CALC_DELTA(value, delta);
     if (invers) {
       CHECK_INCDEC_MODELVAR(event, idx, -MAX_GVARS, MAX_GVARS-1);
@@ -1107,6 +1168,22 @@ void drawStatusLine()
 #if defined(CPUARM)
 bool isSourceAvailable(int16_t source)
 {
+#if defined(PCBTARANIS)
+  if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
+    return ZEXIST(g_model.inputNames[source-MIXSRC_FIRST_INPUT]);
+  }
+#endif
+
+#if defined(LUA_MODEL_SCRIPTS)
+  if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA) {
+    div_t qr = div(source-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
+    return (scriptInternalData[qr.quot].state==SCRIPT_OK && qr.rem<scriptInternalData[qr.quot].outputsCount);
+  }
+#elif defined(PCBTARANIS)
+  if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA)
+    return false;
+#endif
+
 #if !defined(HELI)
   if (source>=MIXSRC_CYC1 && source<=MIXSRC_CYC3)
     return false;
@@ -1135,8 +1212,41 @@ bool isSourceAvailable(int16_t source)
   return true;
 }
 
-bool isSourceP1Available(int16_t source)
+bool isInputSourceAvailable(int16_t source)
 {
-  return isSourceAvailable(source+1);
+  if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
+    return true;
+
+  if (source>=MIXSRC_TrimRud && source<MIXSRC_SW1)
+    return true;
+
+  if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
+    return true;
+
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
+    return true;
+
+  return false;
+}
+
+bool isSwitchAvailable(int16_t swtch)
+{
+  if (swtch < 0) {
+    if (swtch <= -SWSRC_ON)
+      return false;
+#if defined(PCBTARANIS)
+    else if (swtch == -SWSRC_SF0 || swtch == -SWSRC_SF2 || swtch == -SWSRC_SH0 || swtch == -SWSRC_SH2)
+      return false;
+#endif
+    else
+      swtch = -swtch;
+  }
+
+  if (swtch>=SWSRC_FIRST_CSW && swtch<=SWSRC_LAST_CSW) {
+    CustomSwData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
+    return (cs->func != CS_OFF);
+  }
+  
+  return true;
 }
 #endif

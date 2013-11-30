@@ -646,7 +646,7 @@ void resetTelemetry()
   frskyData.hub.gpsFix = -1;
 #endif
 
-#ifdef SIMU
+#if defined(SIMU)
   frskyData.analog[0].set(120);
   frskyData.analog[1].set(240);
   frskyData.rssi[0].value = 75;
@@ -669,12 +669,8 @@ void resetTelemetry()
 
   frskyData.hub.cellsCount = 6;
 
-#if 0 // defined(FRSKY_SPORT)
+  frskyData.hub.baroAltitudeOffset = 500 * 100;
   frskyData.hub.baroAltitude = 50 * 100;
-#else
-  frskyData.hub.baroAltitude_bp = 50;
-#endif
-
   frskyData.hub.gpsAltitude_bp = 50;
 
   frskyData.hub.minAltitude = 10;

@@ -646,7 +646,7 @@
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Testa]"
-#define TR_RESET               "[Nollst\201ll]"
+#define TR_RESET_BTN           "[Nollst\201ll]"
 #define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"
 #define TR_ANTENNAPROBLEM      CENTER "Fel p\200 TX-antennen"

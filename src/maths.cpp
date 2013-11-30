@@ -48,6 +48,18 @@ lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
 }
 #endif
 
+#if defined(PCBTARANIS)
+double gpsToDouble(bool neg, int16_t bp, int16_t ap)
+{
+  double result = ap;
+  result /= 10000;
+  result += (bp % 100);
+  result /= 60;
+  result += (bp / 100);
+  return neg?-result:result;
+}
+#endif
+
 #if defined(FRSKY_HUB)
 void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
 {
@@ -58,8 +70,17 @@ void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
   *longitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + frskyData.hub.gpsLongitude_ap) * 5) / 3;
 }
 
+#if defined(PCBTARANIS)
+double pilotLatitude;
+double pilotLongitude;
+#endif
+
 void getGpsPilotPosition()
 {
+#if defined(PCBTARANIS)
+  pilotLatitude = gpsToDouble(frskyData.hub.gpsLatitudeNS=='S', frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap);
+  pilotLongitude = gpsToDouble(frskyData.hub.gpsLongitudeEW=='W', frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap);
+#endif
   extractLatitudeLongitude(&frskyData.hub.pilotLatitude, &frskyData.hub.pilotLongitude);
   uint32_t lat = frskyData.hub.pilotLatitude / 10000;
   uint32_t angle2 = (lat*lat) / 10000;

@@ -491,7 +491,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_BRIGHTNESS:
         lcd_putsLeft(y, STR_BRIGHTNESS);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
-        if(attr) {
+        if (attr) {
           uint8_t b = 100 - g_eeGeneral.backlightBright;
           CHECK_INCDEC_GENVAR(event, b, 0, 100);
           g_eeGeneral.backlightBright = 100 - b;
@@ -599,7 +599,7 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_STICK_MODE:
         lcd_putcAtt(2*FW, y, '1'+g_eeGeneral.stickMode, attr);
-        for (uint8_t i=0; i<4; i++) putsMixerSource((6+4*i)*FW, y, pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
+        for (uint8_t i=0; i<4; i++) putsMixerSource((6+4*i)*FW, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
         }
@@ -651,7 +651,7 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
 
 void onSdManagerMenu(const char *result)
 {
-  char lfn[SD_SCREEN_FILE_LENGTH];
+  TCHAR lfn[_MAX_LFN + 1];
 
   uint8_t index = m_posVert-1-s_pgOfs;
   if (result == STR_SD_INFO) {
@@ -661,7 +661,7 @@ void onSdManagerMenu(const char *result)
     POPUP_CONFIRMATION(PSTR("Confirm Format?"));
   }
   else if (result == STR_DELETE_FILE) {
-    f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
+    f_getcwd(lfn, _MAX_LFN);
     strcat_P(lfn, PSTR("/"));
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     f_unlink(lfn);
@@ -673,13 +673,13 @@ void onSdManagerMenu(const char *result)
   }
 #if defined(CPUARM)
   /* TODO else if (result == STR_LOAD_FILE) {
-    f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
+    f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     POPUP_WARNING(eeLoadModelSD(lfn));
   } */
   else if (result == STR_PLAY_FILE) {
-    f_getcwd(lfn, SD_SCREEN_FILE_LENGTH);
+    f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     audioQueue.playFile(lfn, PLAY_BACKGROUND, 255);
@@ -697,21 +697,31 @@ void onSdManagerMenu(const char *result)
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
     eeDirty(EE_MODEL);
   }
+#if defined(LUA)
+  else if (result == STR_EXECUTE_FILE) {
+    f_getcwd(lfn, _MAX_LFN);
+    strcat(lfn, "/");
+    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    luaExec(lfn);
+  }
+  else if (result == STR_VIEW_TEXT) {
+    f_getcwd(lfn, _MAX_LFN);
+    strcat(lfn, "/");
+    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    pushMenuTextView(lfn);
+  }
+#endif
 #endif
 }
 
-void menuGeneralSdManager(uint8_t event)
+void menuGeneralSdManager(uint8_t _event)
 {
   FILINFO fno;
   DIR dir;
   char *fn;   /* This function is assuming non-Unicode cfg. */
-#if _USE_LFN
   TCHAR lfn[_MAX_LFN + 1];
   fno.lfname = lfn;
   fno.lfsize = sizeof(lfn);
-#else
-  char lfn[SD_SCREEN_FILE_LENGTH];
-#endif
 
 #if defined(SDCARD)
   if (s_warning_result) {
@@ -734,12 +744,13 @@ void menuGeneralSdManager(uint8_t event)
   }
 #endif
 
+  uint8_t event = ((READ_ONLY() && EVT_KEY_MASK(_event) == KEY_ENTER) ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabDiag, e_Sd, 1+reusableBuffer.sdmanager.count);
 
   if (s_editMode > 0)
     s_editMode = 0;
 
-  switch(event) {
+  switch(_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
       reusableBuffer.sdmanager.offset = 65535;
@@ -747,10 +758,12 @@ void menuGeneralSdManager(uint8_t event)
 
 #if defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU):
-      killEvents(event);
-//      MENU_ADD_ITEM(STR_SD_INFO);  TODO: Implement
-      MENU_ADD_ITEM(STR_SD_FORMAT);
-      menuHandler = onSdManagerMenu;
+      if (!READ_ONLY()) {
+        killEvents(_event);
+        // MENU_ADD_ITEM(STR_SD_INFO);  TODO: Implement
+        MENU_ADD_ITEM(STR_SD_FORMAT);
+        menuHandler = onSdManagerMenu;
+      }
       break;
 #endif
 
@@ -772,13 +785,13 @@ void menuGeneralSdManager(uint8_t event)
           break;
         }
       }
-      if (!IS_ROTARY_BREAK(event) || m_posVert==0)
+      if (!IS_ROTARY_BREAK(_event) || m_posVert==0)
         break;
       // no break;
     }
 
     case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(event);
+      killEvents(_event);
 #if !defined(PCBTARANIS)
       if (m_posVert == 0) {
         MENU_ADD_ITEM(STR_SD_INFO);
@@ -799,14 +812,24 @@ void menuGeneralSdManager(uint8_t event)
           MENU_ADD_ITEM(STR_PLAY_FILE);
         }
 #if defined(PCBTARANIS)
-        else if (!strcasecmp(ext, BITMAPS_EXT)) {
+        else if (!strcasecmp(ext, BITMAPS_EXT) && !READ_ONLY()) {
           MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
+        }
+        else if (!strcasecmp(ext, TEXT_EXT)) {
+          MENU_ADD_ITEM(STR_VIEW_TEXT);
+        }
+#endif
+#if defined(LUA)
+        else if (!strcasecmp(ext, SCRIPTS_EXT)) {
+          MENU_ADD_ITEM(STR_EXECUTE_FILE);
         }
 #endif
 #endif
-        MENU_ADD_ITEM(STR_DELETE_FILE);
-//       MENU_ADD_ITEM(STR_RENAME_FILE);  TODO: Implement
-//       MENU_ADD_ITEM(STR_COPY_FILE);    TODO: Implement
+        if (!READ_ONLY()) {
+          MENU_ADD_ITEM(STR_DELETE_FILE);
+          // MENU_ADD_ITEM(STR_RENAME_FILE);  TODO: Implement
+          // MENU_ADD_ITEM(STR_COPY_FILE);    TODO: Implement
+        }
       }
       menuHandler = onSdManagerMenu;
       break;
@@ -915,8 +938,10 @@ void menuGeneralSdManager(uint8_t event)
     if (!strcasecmp(ext, BITMAPS_EXT)) {
       if (sdBitmapIdx != m_posVert) {
         sdBitmapIdx = m_posVert;
-        if (bmpLoad(sdBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT))
+        uint8_t *dest = sdBitmap;
+        if (bmpLoad(dest, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
           memcpy(sdBitmap, logo_taranis, MODEL_BITMAP_SIZE);
+        }
       }
       lcd_bmp(22*FW+2, 2*FH+FH/2, sdBitmap);
     }
@@ -953,7 +978,7 @@ void menuGeneralTrainer(uint8_t event)
       uint8_t chan = channel_order(i);
       volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-      putsMixerSource(0, y, chan, (m_posVert==i && m_posHorz<0) ? INVERS : 0);
+      putsMixerSource(0, y, MIXSRC_Rud-1+chan, (m_posVert==i && m_posHorz<0) ? INVERS : 0);
 
       for (uint8_t j=0; j<3; j++) {
 
@@ -1088,7 +1113,7 @@ void menuGeneralDiagAna(uint8_t event)
     putsStrIdx(x, y, PSTR("A"), i+1);
     lcd_putc(x+2*FWNUM, y, ':');
     lcd_outhex4(x+3*FW-1, y, anaIn(i));
-    lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i+1)-1]*25/256);
+    lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
   }
 
 #if !defined(CPUARM)
@@ -1243,7 +1268,9 @@ void menuCommonCalib(uint8_t event)
   switch (reusableBuffer.calib.state) {
     case 0:
       // START CALIBRATION
-      lcd_putsLeft(3*FH, STR_MENUTOSTART);
+      if (!READ_ONLY()) {
+        lcd_putsLeft(3*FH, STR_MENUTOSTART);
+      }
       break;
 
     case 1:
@@ -1296,7 +1323,7 @@ void menuGeneralCalib(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUCALIBRATION, menuTabDiag, e_Calib, 1);
 
-  menuCommonCalib(event);
+  menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
 void menuFirstCalib(uint8_t event)
