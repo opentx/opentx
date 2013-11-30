@@ -46,7 +46,11 @@ void menuStatisticsView(uint8_t event)
     case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuStatisticsDebug);
       return;
-    case EVT_KEY_FIRST(KEY_DOWN):
+#endif
+#if defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_MENU):
+      g_eeGeneral.globalTimer = 0;
+    	break;
 #endif
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
@@ -63,6 +67,10 @@ void menuStatisticsView(uint8_t event)
 
   lcd_puts( 17*FW, FH*0, STR_TOT);
   putsTime(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
+  
+#if defined(PCBTARANIS)
+  putsTime(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
+#endif
 
 #if defined(THRTRACE)
   uint8_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
@@ -119,7 +127,6 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuStatisticsView);
       return;
-    case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       return;

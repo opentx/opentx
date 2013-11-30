@@ -4238,6 +4238,10 @@ void perMain()
   }
 #endif
 
+#if defined(PCBTARANIS)
+  sessionTimer = s_timeCumTot;
+#endif
+
 #if defined(CPUARM)
   if (currentSpeakerVolume != requiredSpeakerVolume) {
     currentSpeakerVolume = requiredSpeakerVolume;
