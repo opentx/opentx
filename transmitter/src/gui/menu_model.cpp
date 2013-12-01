@@ -669,7 +669,8 @@ void menuModelFailsafe(uint8_t event)
   bool newLongNames = false;
   uint8_t ch;
 
-  if (event == EVT_KEY_BREAK(KEY_ENTER) && s_editMode) {
+  if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
+  	s_noHi = NO_HI_LEN;
     g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert];
     eeDirty(EE_MODEL);
     AUDIO_WARNING1();
@@ -721,7 +722,7 @@ void menuModelFailsafe(uint8_t event)
 
       // Value
       LcdFlags flags = TINSIZE;
-      if (m_posVert == ch) {
+      if (m_posVert == ch && !s_noHi) {
         flags |= INVERS;
         if (s_editMode)
           flags |= BLINK;
@@ -1092,10 +1093,11 @@ void menuModelSetup(uint8_t event)
         g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, attr, event);
 #else
         g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, STR_ETRIMS, m_posHorz<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET_BTN, m_posHorz>0 ? attr : 0);
+        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_RESET_BTN, m_posHorz>0  && !s_noHi ? attr : 0);
         if (attr && m_posHorz>0) {
           s_editMode = 0;
           if (event==EVT_KEY_LONG(KEY_ENTER)) {
+            s_noHi = NO_HI_LEN;
             for (uint8_t i=0; i<MAX_PHASES; i++) {
               memclear(&g_model.phaseData[i], TRIMS_ARRAY_SIZE);
             }
