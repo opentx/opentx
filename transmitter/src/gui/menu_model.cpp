@@ -1157,6 +1157,7 @@ void menuModelSetup(uint8_t event)
                   s_noHi = NO_HI_LEN;
                   getMovedSwitch();
                   g_model.switchWarningStates = switches_states;
+                  AUDIO_WARNING1();
                   eeDirty(EE_MODEL);
                 }
               break; 
