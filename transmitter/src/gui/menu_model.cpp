@@ -1154,6 +1154,7 @@ void menuModelSetup(uint8_t event)
                 break;
               case EVT_KEY_LONG(KEY_ENTER):
                 if (m_posHorz == NUM_SWITCHES-1) {
+                  s_noHi = NO_HI_LEN;
                   getMovedSwitch();
                   g_model.switchWarningStates = switches_states;
                   eeDirty(EE_MODEL);
@@ -1170,7 +1171,7 @@ void menuModelSetup(uint8_t event)
           c = "\300-\301"[states & 0x03];
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*(2*FW), y, 'A'+i, line && (m_posHorz == i) ? INVERS : 0);
           if(swactive) lcd_putc(MODEL_SETUP_2ND_COLUMN+i*(2*FW)+FWNUM, y, c);
-          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+((NUM_SWITCHES-1)*2*FW+2), y, "<]", m_posHorz == NUM_SWITCHES-1 ? line : 0); 
+          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+((NUM_SWITCHES-1)*2*FW+2), y, "<]", (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0); 
           states >>= 2;
 #else
           attr = 0;
@@ -1191,7 +1192,7 @@ void menuModelSetup(uint8_t event)
               attr |= INVERS;
           }
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive || (attr & BLINK)) ? c : '-', attr);
-          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, "<]", m_posHorz == NUM_SWITCHES-1 ? line | BLINK : 0);       
+          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, "<]", (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0);       
 #endif
         }
         break;
