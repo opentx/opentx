@@ -2193,6 +2193,13 @@ void checkSwitches()
           warn = true;
       }
     }
+
+    perOut(e_perout_mode_inactive_phase, 0);
+    uint8_t potMode = g_model.nPotsToWarn >> 6;
+    if(potMode)
+      for (uint8_t i=0; i<NUM_POTS; i++) 
+        if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2))
+          warn = true;
 #else
     for (uint8_t i=0; i<MAX_PSWITCH-2; i++) 
       if (!(g_model.nSwToWarn & (1<<(i-1)))) 
@@ -2203,7 +2210,7 @@ void checkSwitches()
     if(!warn) return;
 
     // first - display warning
-    if (last_bad_switches != switches_states) {
+//    if (last_bad_switches != switches_states) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
 #if defined(PCBTARANIS)
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
@@ -2211,10 +2218,20 @@ void checkSwitches()
           swstate_t mask = (0x03 << (i*2));
           uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
           char c = "\300-\301"[(states & mask) >> (i*2)];
-          lcd_putcAtt(60+i*(2*FW+FW/2), 5*FH, 'A'+i, attr);
-          lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 5*FH, c, attr);
+          lcd_putcAtt(60+i*(2*FW+FW/2), 4*FH+3, 'A'+i, attr);
+          lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 4*FH+3, c, attr);
         }
       }
+      for (uint8_t i=0; i<NUM_POTS; i++) {
+        if (!(g_model.nPotsToWarn & (1 << i))) {
+          uint8_t flags = 0;
+          if (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2) {
+            lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? 127 : 126);
+            flags = INVERS;
+          }
+          lcd_putsiAtt(60+i*(5*FW), 6*FH-2, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+        }
+     }
 #else
       uint8_t x = 2;
       for (uint8_t i=1; i<MAX_PSWITCH-1; i++) {
@@ -2226,7 +2243,7 @@ void checkSwitches()
 #endif
       lcdRefresh();
       last_bad_switches = switches_states;
-    }
+ //   }
 
     if (pwrCheck()==e_power_off || keyDown()) return; // Usb on or power off
 
@@ -4159,6 +4176,15 @@ void opentxClose()
   }
   else if((!g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != 0)){
     g_model.frsky.storedMah = 0;
+    eeDirty(EE_MODEL);
+  }
+#endif
+
+#if defined(PCBTARANIS)
+  if((g_model.nPotsToWarn >> 6) == 1) {
+    for (uint8_t i=0; i<NUM_POTS ; i++)
+      if(!(g_model.nPotsToWarn & (1 << i)))
+        g_model.potPosition[i] = getValue(MIXSRC_FIRST_POT+i) >> 3;
     eeDirty(EE_MODEL);
   }
 #endif

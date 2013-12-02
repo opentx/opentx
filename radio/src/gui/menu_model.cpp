@@ -953,7 +953,7 @@ void menuModelSetup(uint8_t event)
   #define PORT_CHANNELS_ROWS(x)      (x==0 ? PORT1_CHANNELS_ROWS() : (x==1 ? PORT2_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS()))
   #define FAILSAFE_ROWS(x)           ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
   #define MODEL_SETUP_MAX_LINES      (1+ITEM_MODEL_SETUP_MAX)
-  #define POT_WARN_ITEMS()           (((g_model.nPotsToWarn >> 6) == 2) ? NUM_POTS+1 : ((g_model.nPotsToWarn >> 6) == 1) ? NUM_POTS : 0)
+  #define POT_WARN_ITEMS()           (g_model.nPotsToWarn ? NUM_POTS : 0)
 
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
   MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 7, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_XJT(1) && IS_D8_RX(1)) ? (uint8_t)1 : (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
@@ -1219,32 +1219,36 @@ void menuModelSetup(uint8_t event)
       {
         lcd_putsLeft(y, "Pot Warning");
         uint8_t potMode = g_model.nPotsToWarn >> 6;
+        if(attr) {
+          if (m_posHorz) s_editMode = 0;
+          if (!READ_ONLY() && m_posHorz) {
+            switch(event) {
+              case EVT_KEY_LONG(KEY_ENTER):
+                killEvents(event);
+                g_model.potPosition[m_posHorz-1] = getValue(MIXSRC_FIRST_POT+m_posHorz-1) >> 3;
+                AUDIO_WARNING1();
+                eeDirty(EE_MODEL);
+                break;
+              case EVT_KEY_BREAK(KEY_ENTER):
+                g_model.nPotsToWarn ^= (1 << (m_posHorz-1));
+                eeDirty(EE_MODEL);
+                break;
+             }
+           }
+         }
+
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""Off\0""Auto""Man\0"), potMode, attr & ((m_posHorz == 0) ? attr : !INVERS));
         if (potMode)
           for (uint8_t i=0; i<NUM_POTS ; i++) {
             LcdFlags flags = ((m_posHorz==i+1) && attr) ? BLINK : 0;
-            flags |= (g_model.nPotsToWarn & (1 << i)) ? INVERS : 0;
-            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+6*FW+i*2*FW, y, STR_VSRCRAW, NUM_STICKS+1+i, flags); 
-            if (potMode == 2) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(14*FW+2), y, "<]", (m_posHorz == NUM_POTS+1 && !s_noHi) ? attr : 0);  
+            flags |= (!(g_model.nPotsToWarn & (1 << i))) ? INVERS : 0;
+            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW+i*3*FW, y, STR_VSRCRAW, NUM_STICKS+1+i, flags); 
           }
-        
+       
         if (attr && (m_posHorz == 0)) {
           CHECK_INCDEC_MODELVAR(event, potMode, 0, 2);
           g_model.nPotsToWarn = (g_model.nPotsToWarn & 0x3F) | ((potMode << 6) & 0xC0);
           eeDirty(EE_MODEL);
-        }
-        else if (attr && (m_posHorz == NUM_POTS+1)) {
-          if ((potMode == 2) && (event == EVT_KEY_LONG(KEY_ENTER))) {
-            s_noHi = NO_HI_LEN;
-            killEvents(event);
-            g_model.potPosition[m_posHorz-1] = calibratedStick[NUM_STICKS+m_posHorz] >> 3;
-            AUDIO_WARNING1();
-          }
-        }
-        else if (attr) {
-          s_editMode = 0;
-          if (event == EVT_KEY_BREAK(KEY_ENTER))
-            g_model.nPotsToWarn ^= (1 << (m_posHorz-1));
         }
         break;
       }
