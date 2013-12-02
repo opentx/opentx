@@ -2175,6 +2175,9 @@ void checkSwitches()
 {
   swstate_t last_bad_switches = 0xff;
   swstate_t states = g_model.switchWarningStates;
+#if defined(PCBTARANIS)
+  uint8_t bad_pots = 0, last_bad_pots = 0xff;
+#endif
 
   while (1) {
 
@@ -2196,11 +2199,13 @@ void checkSwitches()
 
     perOut(e_perout_mode_inactive_phase, 0);
     uint8_t potMode = g_model.nPotsToWarn >> 6;
-    uint8_t bad_pots = 0, last_bad_pots = 0xff;
+    bad_pots = 0;
     if(potMode)
       for (uint8_t i=0; i<NUM_POTS; i++) 
-        if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2))
+        if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2)) {
           warn = true;
+          bad_pots  |= (1<<i);
+        }
 #else
     for (uint8_t i=0; i<MAX_PSWITCH-2; i++) 
       if (!(g_model.nSwToWarn & (1<<(i-1)))) 
@@ -2223,14 +2228,13 @@ void checkSwitches()
           lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 4*FH+3, c, attr);
         }
       }
-      bad_pots = 0;
+lcd_outdezAtt(195,4*FH+3,getValue(MIXSRC_FIRST_POT) >> 3,0);
       for (uint8_t i=0; i<NUM_POTS; i++) {
         if (!(g_model.nPotsToWarn & (1 << i))) {
           uint8_t flags = 0;
           if (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2) {
             lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? 127 : 126);
             flags = INVERS;
-            bad_pots |= (1<<i);
           }
           lcd_putsiAtt(60+i*(5*FW), 6*FH-2, STR_VSRCRAW, NUM_STICKS+1+i, flags);
         }

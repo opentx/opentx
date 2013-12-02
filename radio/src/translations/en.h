@@ -471,7 +471,7 @@
 #define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning","Throttle Warning")
-#define TR_SWITCHWARNING       TR("S-Warning","Control Warnings")
+#define TR_SWITCHWARNING       TR("S-Warning","Switch Warning")
 #define TR_TIMEZONE            TR("Time Zone","GPS Time zone")
 #define TR_RXCHANNELORD        TR("Rx Channel Ord","Default channel order")
 #define TR_SLAVE               "Slave"
@@ -580,7 +580,7 @@
 #define TR_EEPROMWARN          "EEPROM"
 #define TR_THROTTLEWARN        "THROTTLE"
 #define TR_ALARMSWARN          "ALARMS"
-#define TR_SWITCHWARN          "SWITCH"
+#define TR_SWITCHWARN          TR("SWITCH","CONTROL")
 #define TR_INVERT_THR          TR("Invert Thr?","Invert Throttle?")
 #define TR_SPEAKER_VOLUME      INDENT "Volume"
 #define TR_LCD                 "LCD"
