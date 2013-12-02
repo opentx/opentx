@@ -2196,6 +2196,7 @@ void checkSwitches()
 
     perOut(e_perout_mode_inactive_phase, 0);
     uint8_t potMode = g_model.nPotsToWarn >> 6;
+    uint8_t bad_pots = 0, last_bad_pots = 0xff;
     if(potMode)
       for (uint8_t i=0; i<NUM_POTS; i++) 
         if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2))
@@ -2210,9 +2211,9 @@ void checkSwitches()
     if(!warn) return;
 
     // first - display warning
-//    if (last_bad_switches != switches_states) {
-      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
 #if defined(PCBTARANIS)
+    if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
+      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
         if(!(g_model.nSwToWarn & (1<<i))) {
           swstate_t mask = (0x03 << (i*2));
@@ -2222,17 +2223,22 @@ void checkSwitches()
           lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 4*FH+3, c, attr);
         }
       }
+      bad_pots = 0;
       for (uint8_t i=0; i<NUM_POTS; i++) {
         if (!(g_model.nPotsToWarn & (1 << i))) {
           uint8_t flags = 0;
           if (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2) {
             lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? 127 : 126);
             flags = INVERS;
+            bad_pots |= (1<<i);
           }
           lcd_putsiAtt(60+i*(5*FW), 6*FH-2, STR_VSRCRAW, NUM_STICKS+1+i, flags);
         }
-     }
+      }
+      last_bad_pots = bad_pots;
 #else
+    if (last_bad_switches != switches_states) {
+      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
       uint8_t x = 2;
       for (uint8_t i=1; i<MAX_PSWITCH-1; i++) {
         uint8_t attr = (states & (1 << (i-1))) == (switches_states & (1 << (i-1))) ? 0 : INVERS;
@@ -2243,7 +2249,7 @@ void checkSwitches()
 #endif
       lcdRefresh();
       last_bad_switches = switches_states;
- //   }
+    }
 
     if (pwrCheck()==e_power_off || keyDown()) return; // Usb on or power off
 
