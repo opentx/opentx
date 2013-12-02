@@ -6,7 +6,7 @@
 ;Include Modern UI
 
   !include "MUI2.nsh"
-  !include "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\FileAssociation.nsh"
+  !include "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\FileAssociation.nsh"
 
 ;--------------------------------
 ;General
@@ -60,7 +60,7 @@
 ;--------------------------------
 ;Pages
 
-  !insertmacro MUI_PAGE_LICENSE "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\license.txt"
+  !insertmacro MUI_PAGE_LICENSE "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   
@@ -99,7 +99,7 @@ Section "companion9x" SecDummy
 
   SetOutPath "$INSTDIR"
   
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\license.txt"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
   File "Release\companion9x.exe"
   ${!defineifexist} PTHREAD_WINDIR "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
   !ifdef PTHREAD_WINDIR
@@ -116,11 +116,11 @@ Section "companion9x" SecDummy
   File "@QT_BINARY_DIR@\QtNetwork4.dll"
   File "@QT_BINARY_DIR@\Phonon4.dll"
   File "@QT_BINARY_DIR@\QtXml4.dll"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\avrdude.exe"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\avrdude.conf"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\libusb0.dll"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\dfu-util.exe"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\libusb-1.0.dll"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.exe"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.conf"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\libusb0.dll"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\dfu-util.exe"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\libusb-1.0.dll"
   
   CreateDirectory "$INSTDIR\lang"
   SetOutPath "$INSTDIR\lang"

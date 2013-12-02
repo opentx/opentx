@@ -26,9 +26,9 @@
 #include <iostream>
 
 #if __GNUC__
-#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+  #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 #else
-#include "../winbuild/winbuild.h"
+  #include "../targets/windows/winbuild.h"
 #endif
 
 #define EESIZE_STOCK          2048

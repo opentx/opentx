@@ -37,10 +37,6 @@
 #undef min
 #undef max
 
-#ifndef __GNUC__
-#include "../winbuild/winbuild.h"
-#endif
-
 #include <exception>
 
 namespace Ersky9x {

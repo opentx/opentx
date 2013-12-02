@@ -770,7 +770,7 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_CH_NUMBER(p)        (CFN_FUNC(p))
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
-#define CFN_PLAY_REPEAT_NOSTART 0b111111
+#define CFN_PLAY_REPEAT_NOSTART 0x3F
 #define CFN_GVAR_MODE(p)        ((p)->mode)
 #define CFN_PARAM(p)            ((p)->param.composite.val)
 #define CFN_RESET(p)            (p->active = 0, memset(&(p)->param, 0, sizeof((p)->param)))
@@ -1411,6 +1411,12 @@ PACK(typedef struct t_ModelHeader {
   MODELDATA_BITMAP
 }) ModelHeader;
 
+#if defined (CPUARM)
+  #define ARM_OR_AVR(x, y) x
+#else
+  #define ARM_OR_AVR(x, y) y
+#endif
+
 PACK(typedef struct t_ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
@@ -1419,11 +1425,7 @@ PACK(typedef struct t_ModelData {
   int8_t    ppmNCH:4; /* spare on ARM */
   uint8_t   trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-#if defined (CPUARM)
-  uint8_t   displayText:1; 
-#else
-  uint8_t   pulsePol:1; /* unused on ARM */
-#endif
+  uint8_t   ARM_OR_AVR(displayText, pulsePol):1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;

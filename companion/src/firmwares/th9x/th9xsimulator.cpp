@@ -28,10 +28,6 @@
 #define NUM_CSW   12
 #define SWSRC_SW1 10
 
-#ifndef __GNUC__
-#include "../winbuild/winbuild.h"
-#endif
-
 #include <exception>
 #include <algorithm>
 

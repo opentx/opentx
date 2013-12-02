@@ -204,7 +204,7 @@ void applyTemplate(uint8_t idx)
       case TMPL_ELEVON_DELTA:
         defaultInputs();
 #if defined(PCBTARANIS)
-#warning "Templates below are not implemented (only V-TAIL has been done). Feel free to help!"
+ #pragma message("Templates below are not implemented (only V-TAIL has been done). Feel free to help!")
 #endif
         setDest(ICC(STK_ELE), MIXSRC_Ele, true);
         setDest(ICC(STK_ELE), MIXSRC_Ail);

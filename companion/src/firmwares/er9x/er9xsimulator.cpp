@@ -27,10 +27,6 @@
 #define NUM_POTS  3
 #define SWSRC_SW1 DSW_SW1
 
-#ifndef __GNUC__
-#include "../winbuild/winbuild.h"
-#endif
-
 #include <exception>
 
 namespace Er9x {

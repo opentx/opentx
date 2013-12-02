@@ -18,12 +18,6 @@
 #ifndef file_h
 #define file_h
 
-#if __GNUC__
-#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
-#else
-#include "../winbuild/winbuild.h"
-#endif
-
 #include "eeprominterface.h"
 
 #define ERR_NONE 0

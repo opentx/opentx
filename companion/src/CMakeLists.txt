@@ -335,7 +335,7 @@ IF( WIN32 )
   ENDIF( )
 
   SET( SYSDIR "$ENV{windir}/system32" )  
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../winbuild/${NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion9x.nsi @ONLY)     
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion9x.nsi @ONLY)     
 
   FIND_PROGRAM(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
