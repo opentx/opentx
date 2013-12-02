@@ -1,0 +1,1268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>modelConfigDialog</class>
+ <widget class="QDialog" name="modelConfigDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>773</width>
+    <height>591</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Model Configuration Wizard</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="companion9x.qrc">
+    <normaloff>:/images/configure.png</normaloff>:/images/configure.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,1" columnstretch="0,0,1,1,1,1">
+   <item row="3" column="2">
+    <widget class="QLabel" name="engine_Label">
+     <property name="text">
+      <string>Engine</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="15">
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item row="2" column="0">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>400</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="wingImg">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="companion9x.qrc">:/images/mcw/aw0a0f.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="indent">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="tailImg">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="companion9x.qrc">:/images/mcw/atailv.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="indent">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1" rowspan="15">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="4">
+    <widget class="QLabel" name="model_Label">
+     <property name="font">
+      <font>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Model Type</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="planeButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>85</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Airplane</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="companion9x.qrc">
+       <normaloff>:/images/mcw/aicon.png</normaloff>:/images/mcw/aicon.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>50</width>
+       <height>29</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="heliButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>85</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Helicopter</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="companion9x.qrc">
+       <normaloff>:/images/mcw/hicon.png</normaloff>:/images/mcw/hicon.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>50</width>
+       <height>29</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <widget class="QPushButton" name="gliderButton">
+     <property name="minimumSize">
+      <size>
+       <width>85</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Glider</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="companion9x.qrc">
+       <normaloff>:/images/mcw/gicon.png</normaloff>:/images/mcw/gicon.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>50</width>
+       <height>29</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" colspan="4">
+    <widget class="QLabel" name="wingLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Wing</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLabel" name="ailType_Label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Aileron controls</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" colspan="3">
+    <widget class="QComboBox" name="ailType_CB">
+     <item>
+      <property name="text">
+       <string>No Ailerons</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 Servo (or Y)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2 Servos</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="2">
+    <widget class="QLabel" name="flapsType_Label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Flaps controls</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3" colspan="3">
+    <widget class="QComboBox" name="flapsType_CB">
+     <item>
+      <property name="text">
+       <string>No Flaps</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 Servo (or inverting Y)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2 Servos</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QLabel" name="spoilersLabel">
+     <property name="text">
+      <string>Spoilers</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="3" colspan="3">
+    <widget class="QComboBox" name="spoilersType_CB">
+     <item>
+      <property name="text">
+       <string>No Spoilers/Airbrakes</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 Servo (or Y or inverting Y)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2 Servos</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="8" column="2" colspan="4">
+    <widget class="QLabel" name="spLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Swash Plate</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2">
+    <widget class="QLabel" name="sp_Label">
+     <property name="text">
+      <string>Swash plate</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="3" colspan="3">
+    <widget class="QComboBox" name="swashType_CB">
+     <item>
+      <property name="text">
+       <string>90° / Fixed / Coax</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>120°</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>120X°</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>140°</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>FlyBarLess</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="10" column="2" colspan="4">
+    <widget class="QLabel" name="tailLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Tail</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="2">
+    <widget class="QLabel" name="tailType_Label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Tail controls</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="3" colspan="3">
+    <widget class="QComboBox" name="tailType_CB">
+     <item>
+      <property name="text">
+       <string>1 Servo Elevator / 1 Servo Rudder</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>V Tail</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2 Servos Elevator / 1 Servo Rudder</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="12" column="2">
+    <widget class="QLabel" name="gyroType_Label">
+     <property name="text">
+      <string>Gyroscope</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="3" colspan="3">
+    <widget class="QComboBox" name="gyro_CB">
+     <item>
+      <property name="text">
+       <string>NoGyro</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Switch control</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Pot control</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="13" column="2">
+    <widget class="QLabel" name="chassign_Label">
+     <property name="text">
+      <string>Channel style</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="3" colspan="3">
+    <widget class="QComboBox" name="chStyle_CB">
+     <item>
+      <property name="text">
+       <string>Open9x Style</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Futaba Style</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="14" column="2">
+    <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0">
+     <property name="spacing">
+      <number>3</number>
+     </property>
+     <item row="2" column="0">
+      <widget class="QLabel" name="CH_2">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>2</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="CH_3">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>3</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="CH_4">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>4</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="CH_5">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>5</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="CH_6">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>6</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="CH_7">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>7</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="CH_8">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>8</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="CH_9">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>9</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="CH_1">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>1</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="CH_10">
+       <property name="frameShape">
+        <enum>QFrame::Panel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="text">
+        <string>10</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="14" column="3" colspan="3">
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="8" column="0" colspan="4">
+      <spacer name="verticalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="asele2_label">
+       <property name="text">
+        <string>Ele2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="3">
+      <widget class="QCheckBox" name="as_CB">
+       <property name="text">
+        <string>Use advanced controls</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2">
+      <widget class="QLabel" name="asspo2_label">
+       <property name="text">
+        <string>Spoiler2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QLabel" name="asfla2_label">
+       <property name="text">
+        <string>Flap2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="asfla1_label">
+       <property name="text">
+        <string>Flap1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="asrud2_label">
+       <property name="text">
+        <string>Rud2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="asail2_CB">
+       <item>
+        <property name="text">
+         <string>AUTO</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH01</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH02</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH03</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH04</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH05</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH06</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH07</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH08</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH09</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH10</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="asail2_label">
+       <property name="text">
+        <string>Ail2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="asspo1_label">
+       <property name="text">
+        <string>Spoiler 1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0" colspan="4">
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>
+       </property>
+       <property name="centerButtons">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QComboBox" name="asele2_CB">
+       <item>
+        <property name="text">
+         <string>AUTO</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH01</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH02</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH03</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH04</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH05</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH06</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH07</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH08</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH09</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH10</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="asrud2_CB">
+       <item>
+        <property name="text">
+         <string>AUTO</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH01</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH02</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH03</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH04</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH05</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH06</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH07</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH08</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH09</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH10</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="asfla1_CB">
+       <item>
+        <property name="text">
+         <string>AUTO</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH01</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH02</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH03</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH04</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH05</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH06</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH07</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH08</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH09</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH10</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="QComboBox" name="asfla2_CB">
+       <item>
+        <property name="text">
+         <string>AUTO</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH01</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH02</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH03</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH04</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH05</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH06</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH07</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH08</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH09</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH10</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QComboBox" name="asspo1_CB">
+       <item>
+        <property name="text">
+         <string>AUTO</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH01</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH02</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH03</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH04</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH05</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH06</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH07</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH08</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH09</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH10</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="6" column="3">
+      <widget class="QComboBox" name="asspo2_CB">
+       <item>
+        <property name="text">
+         <string>AUTO</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH01</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH02</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH03</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH04</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH05</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH06</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH07</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH08</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH09</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CH10</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="5">
+    <widget class="QPushButton" name="deltaButton">
+     <property name="minimumSize">
+      <size>
+       <width>85</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Delta wing</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="companion9x.qrc">
+       <normaloff>:/images/mcw/dicon.png</normaloff>:/images/mcw/dicon.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>50</width>
+       <height>29</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3" colspan="3">
+    <widget class="QComboBox" name="engine_CB">
+     <item>
+      <property name="text">
+       <string>Not present</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Present</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QLabel" name="rudder_Label">
+     <property name="text">
+      <string>Rudder</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="3" colspan="3">
+    <widget class="QComboBox" name="rudder_CB">
+     <item>
+      <property name="text">
+       <string>Not present</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Single rudder</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Dual rudder (with 2 servos)</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="companion9x.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mdiChild</class>
+ <widget class="QWidget" name="mdiChild">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>468</width>
+    <height>414</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="ModelsListWidget" name="modelsList"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="SimulateTxButton">
+     <property name="text">
+      <string>Simulate Tx</string>
+     </property>
+     <property name="icon">
+      <iconset resource="companion9x.qrc">
+       <normaloff>:/images/simulate.png</normaloff>:/images/simulate.png</iconset>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ModelsListWidget</class>
+   <extends>QListWidget</extends>
+   <header location="global">modelslist.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="companion9x.qrc"/>
+ </resources>
+ <connections/>
+</ui>

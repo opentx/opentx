@@ -1,0 +1,143 @@
+<h2>Version 1.51</h2>
+<ul>
+<li>Wrong DFU-Util default path (MAC)</li>
+<li>new voices download server (ip address changed to new fiber connection)</li>
+<li>Fixed contributor list</li>
+</ul>
+
+<h2>Version 1.50</h2>
+<ul>
+<li>solved issue with taranis radio with some linux distributions</li>
+<li>blank eeprom created using a radio profile that holds calibration data, will contain calibration data from the profile</li>
+<li>new opentx compilation server (ip address changed to new fiber connection)</li>
+</ul>
+
+<h2>Version 1.49</h2>
+<ul>
+<li>Stack usage optimizations</li>
+<li>Playsound order is misaligned between companion9x and the TX</li>
+<li>Model image could not be reset.</li>
+</ul>
+
+<h2>Version 1.48</h2>
+<ul>
+<li>Interface fixes</li>
+<li>Hide include dr/expo when not applicable</li>
+<li>Fix extraction of grayscale images from taranis firmwares</li>
+<li>No TX and RX in Taranis telemetry fields</li>
+<li>Issue 255 fixed - "No GVAR selection possible for PLAY VALUE"</li>
+<li>Issue 254 fixed - "SE Language for building opentx"</li>
+<li>Issue 253 fixed - "OpenTX doesn't accept this protocol (DSM2 on Sky9x)"</li>
+<li>Prevent segfault while parsing wrong log files or files with broken lines</li>
+<li>Small bug in model printout</li>
+<li>Fixed wrong display of values in custom functions</li>
+<li>Image in preferences was saved only black & white</li>
+<li>Issue 247 fixed - "Labelled items on radio should not be translated."</li>
+<li>Added support of tstick (taranis like stick) compile option for sky9x opentx firmware</li>
+</ul>
+
+<h2>Version 1.47</h2>
+<ul>
+<li>Interface fixes (issues 232,233,238,241)</li>
+<li>Fix for print/compare models</li>
+<li>Function switch parameter on screen different than printout.</li>
+<li>Translations fixes</li>
+<li>Command line print mode</li>
+<li>Better mavlink support</li>
+<li>SE tts language added for taranis</li>
+<li>Alternate font option for opentx added</li>
+
+</ul>
+
+<h2>Version 1.46</h2>
+<ul>
+<li>Interface fixes (issues 224,225)</li>
+<li>Show persistent timers value in modeledit</li>
+<li>Consistent naming of Custom Switches in c9x</li>
+</ul>
+
+<h2>Version 1.45</h2>
+<ul>
+<li>Various fixes</li>
+</ul>
+
+<h2>Version 1.44</h2>
+<ul>
+<li>Fix regression on AND parameter in custom functions</li>
+<li>Add mavlink support for stock and m128 boards</li>
+</ul>
+
+<h2>Version 1.43</h2>
+<ul>
+<li>Copy Malfunctions in Custom Functions (Issue 205)</li>
+<li>Enable repeat parameter in functions for all boards</li>
+<li>Remove sink tones from vario for stock/m128 board</li>
+<li>Fix for wrongly named channels in mixerlist (Issue 210)</li>
+<li>Fix badly exported gvars in mixers</li>
+<li>Fix while editing custom switches</li>
+<li>Add access to the release notes of currently selected firmware</li>
+</ul>
+
+<h2>Version 1.42</h2>
+<ul>
+<li>Add Companion9X changelog</li>
+<li>Add Fw release notes browser</li>
+<li>Simplify burn menu for sky9x and Taranis.</li>
+<li>Fix in telemetry conversion (rssi alarm) for stock board</li>
+<li>Drop support of sky9x boards on MacOS due to missing SAM-BA tool.</li>
+</ul>
+
+<h2>Version 1.41</h2>
+<ul>
+<li>Fix unneeded rescaling of splash images</li>
+<li>Fix for telemetry screens for Taranis</li>
+</ul>
+
+<h2>Version 1.40</h2>
+<ul>
+<li>Log dialog - Split of logging sessions.</li>
+<li>Telemetry screen 1 as default (issue 206)</li>
+<li>Rename all channels in mixer tab accordingly to limits names</li>
+<li>Fix a segfault in phases tabs (Issue 203 regression introduced in release 2140)</li>
+</ul>
+
+<h2>Version 1.39</h2>
+<ul>
+<li>Custom functions cut&paste </li>
+<li>Custom switches cut&paste </li>
+<li>Color button text in curve editor for MACOSX</li>
+<li>Adjust name lengths for Taranis</li>
+</ul>
+
+<h2>Version 1.38</h2>
+<ul>
+<li>Core when model names were > 10 chars</li>
+</ul>
+
+<h2>Version 1.37</h2>
+<ul>
+<li>Fix OpenTX segfault in Taranis simulator</li>
+<li>Implement brightness control for Taranis</li>
+<li>Reduce modeledit windows size</li>
+<li>Taranis splash screen in grayscale</li>
+</ul>
+
+<h2>Version 1.36</h2>
+<ul>
+<li>Burning windows (with progress bar) now in foreground (Issue 197)</li>
+<li>Allow a selection of tracks for Background Music (Issue 199)</li>
+</ul>
+
+<h2>Version 1.35</h2>
+<ul>
+<li>Country names mismatch between Taranis and Companion 9X (Issue 198)</li>
+<li>TIM function in custom switches</li>
+<li>Fix timer switches.</li>
+<li>Taranis LCD adjustment in general settings.</li>
+<li>New tool in curve editor</li>
+<li>Minor fixes</li>
+<li>Expo move bug + invalid chars in channels, expo and mixer names</li>
+<li>Try to reduce modeledit window form MAC</li>
+<li>Wrong init of RF-Module data</li>
+<li>Read flash from TX didn't worked for Taranis</li>
+</ul>

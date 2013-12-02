@@ -1,0 +1,214 @@
+;NSIS Modern User Interface
+;Start Menu Folder Selection Example Script
+;Written by Joost Verburg
+
+;--------------------------------
+;Include Modern UI
+
+  !include "MUI2.nsh"
+  !include "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\FileAssociation.nsh"
+
+;--------------------------------
+;General
+
+  ;Name and file
+  Name "companion9x"
+  OutFile "companion9xInstall_v@C9X_VERSION@.exe"
+
+  ;Default installation folder
+  InstallDir "$PROGRAMFILES\companion9x"
+  
+  ;Get installation folder from registry if available
+  InstallDirRegKey HKCU "Software\companion9x" ""
+  
+  ;Compressor options
+  SetCompressor /FINAL /SOLID lzma
+  SetCompressorDictSize 64
+
+  ;Request application privileges for Windows Vista
+  RequestExecutionLevel admin
+
+;--------------------------------
+;Variables
+
+  Var StartMenuFolder
+
+;--------------------------------
+;Interface Settings
+
+  !define MUI_ABORTWARNING
+
+;--------------------------------
+;File Exists Macro
+
+; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
+!macro !defineifexist _VAR_NAME _FILE_NAME
+	!tempfile _TEMPFILE
+	!ifdef NSIS_WIN32_MAKENSIS
+		; Windows - cmd.exe
+		!system 'if exist "${_FILE_NAME}" echo !define ${_VAR_NAME} > "${_TEMPFILE}"'
+	!else
+		; Posix - sh
+		!system 'if [ -e "${_FILE_NAME}" ]; then echo "!define ${_VAR_NAME}" > "${_TEMPFILE}"; fi'
+	!endif
+	!include '${_TEMPFILE}'
+	!delfile '${_TEMPFILE}'
+	!undef _TEMPFILE
+!macroend
+!define !defineifexist "!insertmacro !defineifexist"
+
+;--------------------------------
+;Pages
+
+  !insertmacro MUI_PAGE_LICENSE "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\license.txt"
+  !insertmacro MUI_PAGE_COMPONENTS
+  !insertmacro MUI_PAGE_DIRECTORY
+  
+  ;Start Menu Folder Page Configuration
+  !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\companion9x" 
+  !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+  
+  !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
+  
+  !insertmacro MUI_PAGE_INSTFILES
+  
+  # These indented statements modify settings for MUI_PAGE_FINISH
+    !define MUI_FINISHPAGE_NOAUTOCLOSE
+    !define MUI_FINISHPAGE_RUN
+    !define MUI_FINISHPAGE_RUN_CHECKED
+    !define MUI_FINISHPAGE_RUN_TEXT "Launch companion9x"
+    !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
+  #  !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+  #  !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
+  !insertmacro MUI_PAGE_FINISH
+  
+  !insertmacro MUI_UNPAGE_CONFIRM
+  !insertmacro MUI_UNPAGE_INSTFILES
+
+;--------------------------------
+;Languages
+ 
+  !insertmacro MUI_LANGUAGE "English"
+  !insertmacro MUI_LANGUAGE "French"
+
+;--------------------------------
+;Installer Sections
+
+Section "companion9x" SecDummy
+
+  SetOutPath "$INSTDIR"
+  
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\license.txt"
+  File "Release\companion9x.exe"
+  ${!defineifexist} PTHREAD_WINDIR "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
+  !ifdef PTHREAD_WINDIR
+  File "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
+  !else
+  File "@SYSDIR@\system32\pthreadVC2.dll"
+  !endif
+  File "C:\Programs\xerces-vc\bin\xerces-c_3_1.dll"
+  File "C:\Programs\SDL\lib\SDL.dll"
+  File "@SYSDIR@\msvcp100.dll"
+  File "@SYSDIR@\msvcr100.dll"
+  File "@QT_BINARY_DIR@\QtCore4.dll"
+  File "@QT_BINARY_DIR@\QtGui4.dll"
+  File "@QT_BINARY_DIR@\QtNetwork4.dll"
+  File "@QT_BINARY_DIR@\Phonon4.dll"
+  File "@QT_BINARY_DIR@\QtXml4.dll"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\avrdude.exe"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\avrdude.conf"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\libusb0.dll"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\dfu-util.exe"
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\winbuild\libusb-1.0.dll"
+  
+  CreateDirectory "$INSTDIR\lang"
+  SetOutPath "$INSTDIR\lang"
+  File "*.qm"
+  
+  SetOutPath "$INSTDIR"
+  ;Store installation folder
+  WriteRegStr HKCU "Software\companion9x" "" $INSTDIR
+  
+  ;Associate with extentions ,bin and .hex
+  ${registerExtension} "$INSTDIR\companion9x.exe" ".bin" "BIN_File"
+  ${registerExtension} "$INSTDIR\companion9x.exe" ".hex" "HEX_File"
+  ${registerExtension} "$INSTDIR\companion9x.exe" ".companion9x" "EEPE_File"
+  ${registerExtension} "$INSTDIR\companion9x.exe" ".eepm" "EEPM_File"
+
+  
+  ;Create uninstaller
+  WriteUninstaller "$INSTDIR\Uninstall.exe"
+  
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+    
+  ;Create shortcuts
+  CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\companion9x.lnk" "$INSTDIR\companion9x.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+  
+  !insertmacro MUI_STARTMENU_WRITE_END
+
+SectionEnd
+
+;--------------------------------
+;Descriptions
+
+  ;Language strings
+  LangString DESC_SecDummy ${LANG_ENGLISH} "companion9x EEPROM editor."
+  LangString DESC_SecDummy ${LANG_FRENCH} "companion9x editeur d'EEPROM"
+
+  ;Assign language strings to sections
+  !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDummy} $(DESC_SecDummy)
+  !insertmacro MUI_FUNCTION_DESCRIPTION_END
+ 
+;--------------------------------
+;Uninstaller Section
+
+Section "Uninstall"
+
+  ;ADD YOUR OWN FILES HERE...  
+  
+  Delete "$INSTDIR\license.txt"
+  Delete "$INSTDIR\companion9x.exe"
+  Delete "$INSTDIR\pthreadVC2.dll"
+  Delete "$INSTDIR\xerces-c_3_1.dll"
+  Delete "$INSTDIR\SDL.dll"
+  Delete "$INSTDIR\msvcp100.dll"
+  Delete "$INSTDIR\msvcr100.dll"
+  Delete "$INSTDIR\QtCore4.dll"
+  Delete "$INSTDIR\QtGui4.dll"
+  Delete "$INSTDIR\QtXml4.dll"
+  Delete "$INSTDIR\QtNetwork4.dll"
+  Delete "$INSTDIR\Phonon4.dll"
+  Delete "$INSTDIR\avrdude.exe"
+  Delete "$INSTDIR\avrdude.conf"
+  Delete "$INSTDIR\libusb0.dll"
+  Delete "$INSTDIR\dfu-util.exe"
+  Delete "$INSTDIR\libusb-1.0.dll"
+  Delete "$INSTDIR\Uninstall.exe"
+  
+  Delete "$INSTDIR\lang\*.*"
+
+  RMDir "$INSTDIR\lang"
+  RMDir "$INSTDIR"
+  
+  ${unregisterExtension} ".bin" "BIN File"
+  ${unregisterExtension} ".hex" "HEX File"
+  ${unregisterExtension} ".eepm" "EEPE File"
+  ${unregisterExtension} ".companion9x" "EEPM File"
+  
+  !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
+    
+  Delete "$SMPROGRAMS\$StartMenuFolder\companion9x.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
+  RMDir "$SMPROGRAMS\$StartMenuFolder"
+  
+  DeleteRegKey /ifempty HKCU "Software\companion9x"
+
+SectionEnd
+
+Function LaunchLink
+  ExecShell "" "$INSTDIR\companion9x.exe"
+FunctionEnd
