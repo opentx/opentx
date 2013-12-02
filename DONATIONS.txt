@@ -1,11 +1,235 @@
-Bertrand Songis
-Romolo Manfredini
-Bryan Rentoul (aka Gruvin)
-Cameron Weeks
-Andrè Bernet (mac)
-Michael Byrne (logos and official splashes)
-Severino Anedda (splash screens)
-Grootwitbaas - 9xforums.com (mac)
-Adrian Amberg (splash screens)
-Wallaguest1 - 9xforums.com (splash screens)
-HC1969 - 9xforums.com (splash screens)
+Mario Sette
+Felice Baratto
+Alessandro Mari
+Gianpiero Spontina
+Ingo Kuzniak
+Hans-Åke Rahm
+Tamas Varga
+Thomas Gregg
+Didier Christien
+Alain Pinard
+Sergio Melas
+Paul Montenot
+Chris Guy
+Adrien Gravouille
+Thomas Black
+Marc Lucht
+Michel Baily
+Zdenek Trojanek
+Martin Hotar
+[Devo] Stefan Grundevik
+[Devo] Fabio Eboli
+Federico Zotti
+Albin Esbjörnsson
+Kilian Hüttenhofer
+Stephen Stough
+Adilson Oliveira
+Robert Saint Marie
+Tad Leake
+Andreas Weitl
+Chan Lofland
+Dirk Kasten
+Denisov Alexander
+Timo Varppee
+Ondrej Hatapka
+Valérie Billon
+R. Scott Page
+Johan Cronje
+Renato Aranghelovici
+Jeffrey Irvin
+Aloft Hobbies
+John Rodgers
+Kenneth Crump
+Damjan Adamic
+Martin Wilson
+Joe Street
+John Holdsworth
+Daniel Schwartz
+Dean Church
+Michael Halse
+David Mark
+Ted Moss
+Jim Wagner
+Nicola Porzi
+Michael Halse
+Chewytm
+Espen Solbu
+Mike Frizell
+Bruce Jones
+Kenneth Crump
+Stefano Airaghi
+Dan Eeckhout
+Alex Calderhead
+Leonard MacKey
+Heung Jin Choi
+Mike Retterer
+Keith Wood
+Viljo Liukku
+Eric Beier
+Burt Pickard-Richardson
+Helmut Renz
+Rick Harms
+Vincenzo Vavala
+Patricia Martin
+Harald Klein
+Carl Petersen
+Douglas Burkett
+Clifford Evans
+Teodor Yantchev
+Jarad Berkman
+Christian Schulz
+Gregory J Shepherd
+Michael Shellim
+Ming Wang
+R. Scott Page
+Bernard Lukaschek
+Nigel Chippindale
+Mike Perkins
+Ted Hammond 
+Kenneth Crump
+David Beanland
+Bernd Koehler
+Frédéric Duflos 
+Dave Fasken
+Heinrich Illig
+Michael Collins
+Michael Manning
+Craig Lorentz
+Jonathan Modellismo - http://jonathan.it
+Aviomotive - http://www.aviomotive.com
+André Lasseret
+Felipe Alexandre de Oliveira
+Brian Harris
+Philippe Herbots
+Rainer Nelte
+Franck Bernhard
+Erhard Werner
+Stig Jøran Moen
+Keith Hertzog
+Christophe Dauvergne
+Michel Baily
+Tauno Rautakorpi
+Sven Assmus
+Paul Dittman
+Mike Matheny
+Cheryl Wynne
+Emay Toha
+Don Nolder
+André Lasseret
+Filip Lowette
+Arnaldo Gabella
+Fiorenzo Agnelli
+Michele Villa
+Christophe Rodriguez
+Harald Klein
+Larisa Filocamo
+Alex Calderhead
+Hartmut Sahm
+Åke Brodin
+Aloft Hobbies - http://www.alofthobbies.com
+Ted Moss
+Filippos Tigarakis
+Chewytm
+Eric Burdis
+Nigel Chippindale
+Michael Deasy
+Stephen Stough
+Kenneth Lilja 
+Robert Jero
+Gary Bancroft
+Robert Cotsford
+Rafael Eric Suarez Nordlow
+Gordon Stahl
+NorthSide
+George Constandinides
+Robert Schonk Jr
+Kevin Berkefeld
+Peter Webster
+Mike Matheny
+Martin Sniedze
+Fernando Rimoldi
+Sidney Fisher
+Bruce Anderson
+John Rodgers
+Ed Pare
+Thomas Kilduff
+Robert Ferguson
+Bryan Green
+Kevin Berkefeld
+Julien Michel
+Krittikun Chiraphanda
+Douglas Law
+Alberto Scotti
+Oliver Kunkel
+D. Joseph Frazier
+Heiko Polig
+Andrew Fernie
+Marco Lange
+Nick McMillan
+Michel Baily (mensual)
+Patrick Mullen
+Scott Campbell
+Erich Roeder
+Wayne Davy
+Michael Fontenot
+Willie Swanepoel
+Satoru Sasaki
+Tyler Darby
+Nicholas Crego
+Keith Hertzog
+Johan Moelich
+Timo Esser
+Dean Church (mensual)
+Brian Paddock (mensual)
+Jean Pierre Parisy
+Norbert Martsch
+Jean-Marie Guitard
+Eric Beier
+Mike Perkins
+Tilman Baumann (mensual)
+Fred Larssen
+Ari Aalto
+Robert Sams 
+Kirk Robertson
+John Koontz
+Jeffery Golias
+Paul Robinson
+Kenneth Crump
+Dave Matison
+Mike Matheny
+Pino Agostino
+Graham Boucher (mensual)
+Nelson Noura
+Joel Allamy
+Philip David Martin
+Sean Stephen
+Bruce Mackay
+Blake Spilman
+Timothy Pelletier
+Glen Roe (ShowMaster)
+Jan Van Ooteghem
+David Ankers - Special thanks here to the OpenPilot project!
+Lawrence Christensen (mensual)
+Leo Duflou
+Bruce Wood
+Arnd Feige
+Tauno Rautakorpi
+Steve Coley
+Stefan Kiendl
+Gregory Nuspel
+Mitchell Brenner
+Ronnnie DePrez
+Ferenc Koller
+Robert Sessler
+Didier Lanot
+Rodney Hunt
+Steve Bernard
+Paul Nazaroff
+Gordon Ernenputsch
+Ksamak
+Marc Gittelman
+David Poole
+Ralph Sauer
+Karl-Heinz Gansel
+Michels Bernhard
+Thomas Demmelbauer
