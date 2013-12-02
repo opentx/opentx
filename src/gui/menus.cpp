@@ -1038,7 +1038,7 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #else
-int8_t gvarMenuItem(uint8_t x, uint8_t y, int8_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
+int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
 {
   lcd_outdezAtt(x, y, value, attr);
   if (attr&INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);
