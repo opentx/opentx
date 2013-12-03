@@ -2114,6 +2114,16 @@ void checkAll()
 
   checkTHR();
   checkSwitches();
+
+#if defined(PCBTARANIS)
+  if (modelHasNotes() && g_model.displayText) {
+    char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
+    char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+    strcpy(buf, TEXT_EXT);
+    pushMenuTextView(filename);
+  }
+#endif
+
   clearKeyEvents();
 }
 

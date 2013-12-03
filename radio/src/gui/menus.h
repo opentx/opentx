@@ -369,6 +369,7 @@ void displayWarning(uint8_t event);
 #if defined(PCBTARANIS)
 void menuChannelsView(uint8_t event);
 void pushMenuTextView(const char *filename);
+bool modelHasNotes();
 #endif
 
 #define LABEL(...) (uint8_t)-1

@@ -661,7 +661,7 @@
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
 #define TR_PERSISTENT_MAH      INDENT "Valor mAh"
-#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_CHECKLIST           "Display Checklist"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
