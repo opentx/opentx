@@ -487,6 +487,7 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_SCALE[] PROGMEM = "Scale";
   const pm_char STR_VIEW_CHANNELS[] PROGMEM = "View Channels";
   const pm_char STR_VIEW_NOTES[] PROGMEM = "View Notes";
+  const pm_char STR_POTWARNING[] PROGMEM = TR_POTWARNING;
 #endif
 
 #if MENUS_LOCK == 1

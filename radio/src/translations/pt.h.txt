@@ -468,6 +468,7 @@
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     "Avisa Acel"
 #define TR_SWITCHWARNING       "Avisa Chav"
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            "Time Zone"
 #define TR_RXCHANNELORD        "Ordem Canal RX"
 #define TR_SLAVE               "Escravo"

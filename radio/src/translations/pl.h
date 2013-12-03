@@ -469,6 +469,7 @@
 #define TR_SPLASHSCREEN        "Logo ekranu"
 #define TR_THROTTLEWARNING     "(\043)Gaz"
 #define TR_SWITCHWARNING       "(\043)Prze\203\200cznik"
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            "Strefa czasowa"
 #define TR_RXCHANNELORD        TR("Kolejno\206\201 kana\203\205w", "Bazowa kolejno\206\201 kana\203\205w")
 #define TR_SLAVE               "Podrz\202dny"

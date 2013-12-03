@@ -1217,7 +1217,7 @@ void menuModelSetup(uint8_t event)
 #if defined(PCBTARANIS)
       case ITEM_MODEL_POT_WARNING:
       {
-        lcd_putsLeft(y, "Pot Warning");
+        lcd_putsLeft(y, STR_POTWARNING);
         uint8_t potMode = g_model.nPotsToWarn >> 6;
         if(attr) {
           if (m_posHorz) s_editMode = 0;

@@ -468,6 +468,7 @@
 #define TR_SPLASHSCREEN        "Startbild"
 #define TR_THROTTLEWARNING     "Gas Alarm"
 #define TR_SWITCHWARNING       TR("Sch. Alarm","Schalter Alarm")
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
 #define TR_SLAVE               "Sch\205ler PPM1-8 als Ausgang"

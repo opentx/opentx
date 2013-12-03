@@ -668,6 +668,7 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_SCALE[];
   extern const pm_char STR_VIEW_CHANNELS[];
   extern const pm_char STR_VIEW_NOTES[];
+  extern const pm_char STR_POTWARNING[];
 #endif
 
 #if MENUS_LOCK == 1

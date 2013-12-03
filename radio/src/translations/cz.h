@@ -468,6 +468,7 @@
 #define TR_SPLASHSCREEN        "\210vodn\204Logo"
 #define TR_THROTTLEWARNING     "(\043)Plyn"
 #define TR_SWITCHWARNING       "(\043)Sp\204na\201e"
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            "\201asov\202 p\200smo"
 #define TR_RXCHANNELORD        TR("Po\206ad\204 kan\200l\211", "V\212choz\204 po\206ad\204 kan\200l\211")
 #define TR_SLAVE               "Pod\206\204zen\212"

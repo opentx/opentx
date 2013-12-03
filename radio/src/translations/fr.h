@@ -468,6 +468,7 @@
 #define TR_SPLASHSCREEN        "Logo d'accueil"
 #define TR_THROTTLEWARNING     "Alerte gaz"
 #define TR_SWITCHWARNING       TR("Alerte int","Alerte interrupt.")
+#define TR_POTWARNING          TR("Alerte pot","Alerte potentiom.")
 #define TR_TIMEZONE            "Fuseau horaire"
 #define TR_RXCHANNELORD        TR("Ordre voies RX","Ordre des voies pr\200f\200r\200")
 #define TR_SLAVE               "El\201ve"
@@ -573,7 +574,7 @@
 #define TR_EEPROMWARN          "EEPROM"
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "SON"
-#define TR_SWITCHWARN          "INTERS"
+#define TR_SWITCHWARN          TR("INTERS","CONTROLES")
 #define TR_INVERT_THR          "Inverser Gaz?"
 #define TR_SPEAKER_VOLUME      INDENT "Volume"
 #define TR_LCD                 "Afficheur"

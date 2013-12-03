@@ -468,6 +468,7 @@
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
 #define TR_THROTTLEWARNING     TR("All. Thr", "Allarme Throttle")
 #define TR_SWITCHWARNING       TR("Avv. Int.", "Avviso Interr.")
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            "Ora locale"
 #define TR_RXCHANNELORD        "Ordine ch RX"
 #define TR_SLAVE               "Allievo"

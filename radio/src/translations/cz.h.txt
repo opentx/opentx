@@ -468,6 +468,7 @@
 #define TR_SPLASHSCREEN        "úvodníLogo"
 #define TR_THROTTLEWARNING     "(\043)Plyn"
 #define TR_SWITCHWARNING       "(\043)Spínače"
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            "časové pásmo"
 #define TR_RXCHANNELORD        TR("Pořadí kanálů", "Výchozí pořadí kanálů")
 #define TR_SLAVE               "Podřízený"

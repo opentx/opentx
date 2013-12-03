@@ -468,6 +468,7 @@
 #define TR_SPLASHSCREEN        "Ptalla.inicio"
 #define TR_THROTTLEWARNING     TR("Aviso-A", "Aviso Acelerador")
 #define TR_SWITCHWARNING       TR("Aviso-I", "Aviso Intrptor")
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            TR("Zona Hora", "GPS Zona Hora")
 #define TR_RXCHANNELORD        TR("Rx Orden canal", "Orden habitual canales")
 #define TR_SLAVE               "Esclavo"

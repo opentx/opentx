@@ -468,6 +468,7 @@
 #define TR_SPLASHSCREEN        "Startbild"
 #define TR_THROTTLEWARNING     "Gasvarning"
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
 #define TR_SLAVE               "Slav"
