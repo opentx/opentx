@@ -447,7 +447,10 @@ extern const pm_char STR_MENUGLOBALVARS[];
 extern const pm_char STR_INVERT_THR[];
 extern const pm_char STR_AND_SWITCH[];
 extern const pm_char STR_CF[];
+
+#if defined(FAS_OFFSET) || !defined(CPUM64)
 extern const pm_char STR_FAS_OFFSET[];
+#endif
 
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RXNUM[];

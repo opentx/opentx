@@ -159,6 +159,10 @@ PPM_UNIT = PERCENT_PREC1
 # Values = YES, NO
 FRSKY_HUB = YES
 
+# FrSky FAS current sensor offset compensation
+# Values = YES, NO
+FAS_OFFSET = NO
+
 # WS HowHigh 
 # Values = YES, NO
 WS_HOW_HIGH = YES
@@ -331,6 +335,10 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   
   ifeq ($(SP22), YES)
    CPPDEFS += -DSP22
+  endif
+  
+  ifeq ($(FAS_OFFSET), YES)
+   CPPDEFS += -DFAS_OFFSET
   endif
 endif
 
