@@ -2181,7 +2181,7 @@ void checkSwitches()
 
   while (1) {
 
-#if defined(TELEMETRY_MOD_14051)
+#if defined(TELEMETRY_MOD_14051) || defined(PCBTARANIS)
     getADC();
 #endif
 
@@ -2196,16 +2196,16 @@ void checkSwitches()
           warn = true;
       }
     }
-
-    perOut(e_perout_mode_inactive_phase, 0);
     uint8_t potMode = g_model.nPotsToWarn >> 6;
-    bad_pots = 0;
-    if(potMode)
-      for (uint8_t i=0; i<NUM_POTS; i++) 
-        if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2)) {
-          warn = true;
-          bad_pots  |= (1<<i);
-        }
+    if(potMode) {
+      perOut(e_perout_mode_normal, 0);
+      bad_pots = 0;
+        for (uint8_t i=0; i<NUM_POTS; i++) 
+          if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2)) {
+            warn = true;
+            bad_pots  |= (1<<i);
+          }
+    }
 #else
     for (uint8_t i=0; i<MAX_PSWITCH-2; i++) 
       if (!(g_model.nSwToWarn & (1<<(i-1)))) 
@@ -2228,15 +2228,25 @@ void checkSwitches()
           lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 4*FH+3, c, attr);
         }
       }
-lcd_outdezAtt(195,4*FH+3,getValue(MIXSRC_FIRST_POT) >> 3,0);
-      for (uint8_t i=0; i<NUM_POTS; i++) {
-        if (!(g_model.nPotsToWarn & (1 << i))) {
-          uint8_t flags = 0;
-          if (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2) {
-            lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? 127 : 126);
-            flags = INVERS;
+      if(potMode) {
+        for (uint8_t i=0; i<NUM_POTS; i++) {
+          if (!(g_model.nPotsToWarn & (1 << i))) {
+            uint8_t flags = 0;
+            if (abs(g_model.potPosition[i] - (calibratedStick[NUM_STICKS+i] >> 3)) > 2) {
+            	switch (i) {
+                case 0:
+                case 1:
+                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? 126 : 127);
+                  break;
+            	  case 2:
+            	  case 3:
+                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? '\300' : '\301');
+                  break;
+              }
+              flags = INVERS;
+            }
+            lcd_putsiAtt(60+i*(5*FW), 6*FH-2, STR_VSRCRAW, NUM_STICKS+1+i, flags);
           }
-          lcd_putsiAtt(60+i*(5*FW), 6*FH-2, STR_VSRCRAW, NUM_STICKS+1+i, flags);
         }
       }
       last_bad_pots = bad_pots;
