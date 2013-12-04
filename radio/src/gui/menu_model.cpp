@@ -1234,9 +1234,11 @@ void menuModelSetup(uint8_t event)
             switch(event) {
               case EVT_KEY_LONG(KEY_ENTER):
                 killEvents(event);
-                g_model.potPosition[m_posHorz-1] = getValue(MIXSRC_FIRST_POT+m_posHorz-1) >> 3;
-                AUDIO_WARNING1();
-                eeDirty(EE_MODEL);
+                if(potMode == 1) {
+                  g_model.potPosition[m_posHorz-1] = getValue(MIXSRC_FIRST_POT+m_posHorz-1) >> 3;
+                  AUDIO_WARNING1();
+                  eeDirty(EE_MODEL);
+                }
                 break;
               case EVT_KEY_BREAK(KEY_ENTER):
                 g_model.nPotsToWarn ^= (1 << (m_posHorz-1));
@@ -1246,7 +1248,7 @@ void menuModelSetup(uint8_t event)
            }
          }
 
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""Off\0""Auto""Man\0"), potMode, attr & ((m_posHorz == 0) ? attr : !INVERS));
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""Off\0""Man""Auto\0"), potMode, attr & ((m_posHorz == 0) ? attr : !INVERS));
         if (potMode)
           for (uint8_t i=0; i<NUM_POTS ; i++) {
             LcdFlags flags = ((m_posHorz==i+1) && attr) ? BLINK : 0;

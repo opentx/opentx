@@ -4211,7 +4211,7 @@ void opentxClose()
 #endif
 
 #if defined(PCBTARANIS)
-  if((g_model.nPotsToWarn >> 6) == 1) {
+  if((g_model.nPotsToWarn >> 6) == 2) {
     for (uint8_t i=0; i<NUM_POTS ; i++)
       if(!(g_model.nPotsToWarn & (1 << i)))
         g_model.potPosition[i] = getValue(MIXSRC_FIRST_POT+i) >> 3;
