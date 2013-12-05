@@ -136,6 +136,11 @@ void audioInit()
   pioptr->PIO_PER = 0x02000000L ;               // Enable bit A25 (Stock buzzer)
   pioptr->PIO_OER = 0x02000000L ;               // Set bit A25 as output
 #endif
+
+#if defined(REVX)
+  configure_pins( PIO_PC26, PIN_ENABLE | PIN_LOW | PIN_OUTPUT | PIN_PORTC | PIN_NO_PULLUP ) ;
+  PIOC->PIO_CODR = PIO_PC26 ;
+#endif
 }
 
 void audioEnd()
@@ -159,19 +164,9 @@ void setVolume(uint8_t volume)
 {
   coprocVolumeRequired = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
   __disable_irq() ;
-  coprocCheck() ;
+  i2cCheck() ;
   __enable_irq() ;
 }
-
-#if 0
-void getVolume()
-{
-  coprocVolumeReadPending = 1 ;
-  __disable_irq() ;
-  coprocCheck() ;
-  __enable_irq() ;
-}
-#endif
 
 
 

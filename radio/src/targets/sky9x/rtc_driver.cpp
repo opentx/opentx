@@ -36,6 +36,203 @@
 
 #include "../opentx.h"
 
+#if defined(REVX)
+// TODO change this, not the right place
+#define TWI_NONE          0
+#define TWI_WRITE_VOL     2
+#define TWI_READ_COPROC   3
+#define TWI_WAIT_STOP     5
+#define TWI_WRITE_COPROC  6
+int8_t coprocVolumeRequired ;
+static uint8_t TwiOperation ;
+#define RTC_RX_BUXSIZE                  10
+#define RTC_SIZE                        7
+uint8_t Rtc_status[RTC_RX_BUXSIZE] ;
+uint8_t *Rtc_write_ptr ;
+uint32_t Rtc_write_count ;
+uint8_t RtcConfig[8] ;          // For initial config and writing to RTC
+// 0x80, 0, 0, 0x08, 0, 0, 0, 0x80
+
+// This is called from an interrupt routine, or
+// interrupts must be disabled while it is called
+// from elsewhere.
+void i2cCheck()
+{
+  if ( TWI0->TWI_IMR & TWI_IMR_TXCOMP ) {
+    return ;                // Busy
+  }
+
+  if ( coprocVolumeRequired >= 0 ) {                            // Set volume to this value
+    TWI0->TWI_MMR = 0x002F0000 ;            // Device 5E (>>1) and master is writing
+    TwiOperation = TWI_WRITE_VOL ;
+    TWI0->TWI_THR = coprocVolumeRequired ;               // Send data
+    Volume_required = -1 ;
+    TWI0->TWI_IER = TWI_IER_TXCOMP ;
+    TWI0->TWI_CR = TWI_CR_STOP ;            // Stop Tx
+  }
+  else if ( coprocReadDataPending ) {
+    Rtc_valid = 0 ;
+    coprocReadDataPending = 0 ;
+    TWI0->TWI_MMR = 0x006F1100 ;            // Device 6F and master is reading, 1 byte addr
+    TWI0->TWI_IADR = 0 ;
+    TwiOperation = TWI_READ_RTC ;
+#ifndef SIMU
+    TWI0->TWI_RPR = (uint32_t)&Rtc_status[0] ;
+#endif
+    TWI0->TWI_RCR = RTC_SIZE - 1 ;
+    if ( TWI0->TWI_SR & TWI_SR_RXRDY )
+    {
+            (void) TWI0->TWI_RHR ;
+    }
+
+    if ( ( TWI0->TWI_SR & TWI_SR_TXCOMP ) == 0 )
+    {
+            Debug_I2C_event += 1 ;
+    }
+
+    TWI0->TWI_PTCR = TWI_PTCR_RXTEN ;       // Start transfers
+    TWI0->TWI_CR = TWI_CR_START ;           // Start Rx
+    TWI0->TWI_IER = TWI_IER_RXBUFF | TWI_IER_TXCOMP ;
+  }
+  else if ( coprocWriteDataPending ) {
+    if ( coprocWriteDataPending & (2|4) ) {
+      TWI0->TWI_MMR = 0x006F0100 ;            // Device 6F and master is writing, 1 byte addr
+      TwiOperation = TWI_WRITE_MFP ;
+      if ( Rtc_write_pending & 2 ) {
+        TWI0->TWI_IADR = 7 ;
+        TWI0->TWI_THR = MFPsetting ;    // Send data
+        Rtc_write_pending &= ~2 ;
+      }
+      else {
+        TWI0->TWI_IADR = 8 ;
+        TWI0->TWI_THR = CALsetting ;    // Send data
+        coprocWriteDataPending &= ~4 ;
+      }
+      TWI0->TWI_IER = TWI_IER_TXCOMP ;
+      TWI0->TWI_CR = TWI_CR_STOP ;            // Stop Tx
+    }
+    else {
+      coprocWriteDataPending &= ~1 ;
+      TWI0->TWI_MMR = 0x006F0100 ;            // Device 6F and master is writing, 1 byte addr
+      TWI0->TWI_IADR = 0 ;
+      TwiOperation = TWI_WRITE_RTC ;
+#ifndef SIMU
+      TWI0->TWI_TPR = (uint32_t)Rtc_write_ptr+1 ;
+#endif
+      TWI0->TWI_TCR = Rtc_write_count-1 ;
+      TWI0->TWI_THR = *Rtc_write_ptr ;        // First byte
+      TWI0->TWI_PTCR = TWI_PTCR_TXTEN ;       // Start data transfer
+      TWI0->TWI_IER = TWI_IER_TXBUFE | TWI_IER_TXCOMP ;
+    }
+  }
+}
+
+void writeRTC(uint8_t *ptr)
+{
+  uint32_t year ;
+  RtcConfig[0] = 0x80 | toBCD( *ptr++ ) ;
+  RtcConfig[1] = toBCD( *ptr++ ) ;
+  RtcConfig[2] = toBCD( *ptr++ ) ;
+  RtcConfig[3] = 0x08 ;
+  RtcConfig[4] = toBCD( *ptr++ ) ;
+  RtcConfig[5] = toBCD( *ptr++ ) ;
+  year = *ptr++ ;
+  year |= *ptr << 8 ;
+  RtcConfig[6] = toBCD( year - 2000 ) ;
+  RtcConfig[7] = MFPsetting ;
+  Rtc_write_ptr = RtcConfig ;
+  Rtc_write_count = 8 ;
+  __disable_irq() ;
+  Rtc_write_pending |= 1 ;
+  i2cCheck() ;
+  __enable_irq() ;
+}
+
+void readRTC()
+{
+  Rtc_read_pending = 1 ;
+  __disable_irq() ;
+  i2cCheck() ;
+  __enable_irq() ;
+}
+
+// TODO should be inside an i2c_driver.cpp
+#ifndef SIMU
+extern "C" void TWI0_IRQHandler()
+{
+        uint32_t status ;
+        status = TWI0->TWI_SR ;         // Read only once, some bits cleared on read
+
+        if ( TwiOperation == TWI_READ_RTC )
+        {
+                if ( status & TWI_SR_RXBUFF )
+                {
+                        TWI0->TWI_IDR = TWI_IDR_RXBUFF ;
+                        TwiOperation = TWI_WAIT_RTCSTOP ;
+                        TWI0->TWI_CR = TWI_CR_STOP ;    // Stop Rx
+                        TWI0->TWI_RCR = 1 ;                                             // Last byte
+                        return ;
+                }
+                else
+                {
+                        // must be TXCOMP, prob. NAK in data
+                        if ( TWI0->TWI_RCR > 0 )
+                        {
+                                Rtc_valid = -1 ;
+                                TWI0->TWI_CR = TWI_CR_STOP ;    // Stop Rx
+                        }
+                }
+        }
+
+        if ( TwiOperation == TWI_WAIT_RTCSTOP )
+        {
+                Rtc_valid = 1 ;
+                // Set the date and time
+                t_time *p = &Time ;
+
+                p->second = fromBCD( Rtc_status[0] & 0x7F ) ;
+                p->minute = fromBCD( Rtc_status[1] & 0x7F ) ;
+                p->hour = fromBCD( Rtc_status[2] & 0x3F ) ;
+                p->date = fromBCD( Rtc_status[4] & 0x3F ) ;
+                p->month = fromBCD( Rtc_status[5] & 0x1F ) ;
+                p->year = fromBCD( Rtc_status[6] ) + 2000 ;
+
+                TWI0->TWI_PTCR = TWI_PTCR_RXTDIS ;      // Stop transfers
+                if ( status & TWI_SR_RXRDY )
+                {
+                        (void) TWI0->TWI_RHR ;                  // Discard any rubbish data
+                }
+        }
+
+        if ( status & TWI_SR_NACK )
+        {
+                Debug_I2C_event += 0x100 ;
+                TWI0->TWI_CR = TWI_CR_STOP ;            // Stop Tx
+        }
+
+        if ( status & TWI_SR_RXBUFF )
+        {
+                if ( TWI0->TWI_IMR & TWI_IMR_RXBUFF )
+                {
+                        Debug_I2C_event += 0x1000000 ;
+                }
+        }
+
+        TWI0->TWI_IDR = TWI_IDR_TXCOMP | TWI_IDR_TXBUFE | TWI_IDR_RXBUFF ;
+        TWI0->TWI_PTCR = TWI_PTCR_TXTDIS | TWI_PTCR_RXTDIS ;    // Stop transfers
+        if ( ( status & TWI_SR_TXCOMP ) == 0 )
+        {
+                TWI0->TWI_IER = TWI_IER_TXCOMP ;
+                TwiOperation = TWI_WAIT_COMP ;
+                return ;
+        }
+
+        TwiOperation = TWI_NONE ;
+        i2cCheck() ;
+}
+#endif
+#endif
+
 struct t_i2cTime
 {
   uint8_t setCode ;
@@ -55,7 +252,11 @@ void rtcSetTime(struct gtm * t)
   I2CTime.Time[4] = t->tm_mon+1 ;
   I2CTime.Time[5] = (uint8_t) (t->tm_year+1900);
   I2CTime.Time[6] = (t->tm_year+1900) >> 8;
+#if defined(REVX)
+  writeRTC( (uint8_t *) &I2CTime.Time[0], 8 ) ;
+#else
   coprocWriteData((uint8_t *) &I2CTime, 8);
+#endif
 }
 
 void rtcInit()

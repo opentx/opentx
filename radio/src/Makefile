@@ -50,7 +50,7 @@ DELAY = 5
 #----------- BUILD OPTIONS ---------------------------
 
 # PCB version
-# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, TARANIS
+# Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, 9XRPRO, TARANIS 
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
 PCB = 9X
 
@@ -264,7 +264,7 @@ INCDIRS = . translations
 EXTRAINCDIRS = 
 
 # MCU name
-ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X TARANIS))
+ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
   $(error Sorry, the PCB $(PCB) is not supported yet in openTx)
 endif
 
@@ -520,19 +520,25 @@ ifeq ($(PCB), MEGA2560)
   CPPDEFS += -DROTARY_ENCODERS=${ROTARY_ENCODERS}
 endif
 
-ifeq ($(PCB), SKY9X)
-  # 9x radio with a sky9x replacement board
+ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
+  # 9x/9XR radio with a sky9x replacement board
   ARCH = ARM
-  CPPDEFS = -Dat91sam3s4 
-  ifeq ($(PCBREV), REVA)
+  CPPDEFS = -Dat91sam3s4
+  ifeq ($(PCB), 9XRPRO)
+    CPPDEFS += -DREVX
+    LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
+  else ifeq ($(PCBREV), REVA)
     CPPDEFS += -DREVA
     LDSCRIPT = targets/sky9x/sam3s2c_flash.ld
+    CPPSRC += targets/sky9x/coproc_driver.cpp 
   else ifeq ($(PCBREV), REVB)
-    CPPDEFS += -DREVB
+    CPPDEFS += -DREVB -DCOPROCESSOR
     LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
+    CPPSRC += targets/sky9x/coproc_driver.cpp
   else
-    CPPDEFS += -DREVC
+    CPPDEFS += -DREVC -DCOPROCESSOR
     LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
+    CPPSRC += targets/sky9x/coproc_driver.cpp
   endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
@@ -553,7 +559,7 @@ ifeq ($(PCB), SKY9X)
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp protocols/dsm2_arm.cpp
   CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp
-  CPPSRC += targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/coproc_driver.cpp targets/sky9x/rotenc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
+  CPPSRC += targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/rotenc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DVOICE
@@ -687,8 +693,8 @@ FORMAT = ihex
 TARGET = opentx
 
 # List C++ source files here. (C dependencies are automatically generated.)
-ifeq ($(PCB), $(filter $(PCB), SKY9X TARANIS))
-  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_pl.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp
+ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
+  TTS_SRC = translations/tts_cz.cpp translations/tts_de.cpp translations/tts_en.cpp translations/tts_es.cpp translations/tts_fr.cpp translations/tts_it.cpp translations/tts_pt.cpp translations/tts_sk.cpp translations/tts_se.cpp
 else
   STD_TTS_SRC = translations/tts_$(shell sh -c "echo $(TTS) | tr '[:upper:]' '[:lower:]'").cpp
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")

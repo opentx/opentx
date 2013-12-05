@@ -216,13 +216,14 @@ void buzzerSound(uint8_t duration);
 void buzzerHeartbeat();
 #define BUZZER_HEARTBEAT buzzerHeartbeat
 
+// i2c driver
+void i2cCheck();
+
 // Coproc driver
 void coprocInit();
 void coprocWriteData(uint8_t *data, uint32_t size);
 void coprocReadData(bool onlytemp=false);
-void coprocCheck();
 extern int8_t coprocVolumeRequired;
-extern uint8_t coprocVolumeReadPending;
 extern uint8_t Coproc_read;
 extern int8_t Coproc_valid;
 extern int8_t Coproc_temp;

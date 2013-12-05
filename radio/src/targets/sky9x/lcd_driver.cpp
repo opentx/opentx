@@ -88,7 +88,6 @@ const uint8_t Lcd_lookup[] =
 void lcdSendCtl(uint8_t val)
 {
   register Pio *pioptr ;
-//      register uint32_t x ;
 
 #if defined(REVA)
   pioptr = PIOC ;
@@ -98,9 +97,13 @@ void lcdSendCtl(uint8_t val)
   pioptr->PIO_ODSR = Lcd_lookup[val] ;
 #else
   pioptr = PIOC ;
-  pioptr->PIO_CODR = LCD_CS1 ;            // Select LCD
+  #if !defined(REVX)
+    pioptr->PIO_CODR = LCD_CS1 ;            // Select LCD
+  #endif
   PIOA->PIO_CODR = LCD_A0 ;
-  pioptr->PIO_CODR = LCD_RnW ;            // Write
+  #if !defined(REVX)
+    pioptr->PIO_CODR = LCD_RnW ;            // Write
+  #endif
   pioptr->PIO_ODSR = val ;
 #endif
 
@@ -117,7 +120,10 @@ void lcdSendCtl(uint8_t val)
 #else
   PIOA->PIO_SODR = LCD_A0 ;                       // Data
 #endif
+
+#if !defined(REVX)
   pioptr->PIO_SODR = LCD_CS1 ;                    // Deselect LCD
+#endif
 }
 
 void lcdInit()
@@ -125,6 +131,10 @@ void lcdInit()
   register Pio *pioptr ;
   // /home/thus/txt/datasheets/lcd/KS0713.pdf
   // ~/txt/flieger/ST7565RV17.pdf  from http://www.glyn.de/content.asp?wdid=132&sid=
+
+  // read the inputs, and lock the LCD lines
+  lcdInputs = PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
+  lcdLock = 1 ;
 
 #if defined(REVA)
   pioptr = PIOC ;
@@ -136,10 +146,16 @@ void lcdInit()
 #else
   configure_pins( LCD_A0, PIN_ENABLE | PIN_LOW | PIN_OUTPUT | PIN_PORTA | PIN_NO_PULLUP ) ;
   pioptr = PIOC ;
-  pioptr->PIO_PER = 0x0C0030FFL ;         // Enable bits 27,26,13,12,7-0
-  pioptr->PIO_CODR = LCD_E | LCD_RnW ;
-  pioptr->PIO_SODR = LCD_RES | LCD_CS1 ;
-  pioptr->PIO_OER = 0x0C0030FFL ;         // Set bits 27,26,13,12,7-0 output
+  #if defined(REVX)
+    pioptr->PIO_PER = PIO_PC27 | PIO_PC12 | 0xFF ;
+    pioptr->PIO_CODR = LCD_E ;
+    pioptr->PIO_CODR = LCD_RnW | LCD_CS1 ;  // No longer needed, used elsewhere
+  #else
+    pioptr->PIO_PER = PIO_PC27 | PIO_PC26 | PIO_PC13 | PIO_PC12 | 0xFF ;
+    pioptr->PIO_CODR = LCD_E | LCD_RnW | LCD_CS1 ;
+  #endif
+  pioptr->PIO_SODR = LCD_RES ;
+  pioptr->PIO_OER = PIO_PC27 | PIO_PC26 | PIO_PC13 | PIO_PC12 | 0xFF ;          // Set bits 27,26,13,12,7-0 output
   pioptr->PIO_OWER = 0x000000FFL ;                // Allow write to ls 8 bits in ODSR
 #endif
 
@@ -178,6 +194,8 @@ void lcdInit()
   pioptr->PIO_PUER = 0x0000003AL ;                // Set bits 1, 3, 4, 5 with pullups
   pioptr->PIO_ODSR = 0 ;                                                  // Drive D0 low
 #endif
+
+  lcdLock = 0 ;
 }
 
 void lcdSetRefVolt(uint8_t val)
@@ -246,9 +264,13 @@ void lcdRefresh()
     lcdSendCtl(0x10); //column addr 0
     lcdSendCtl(y | 0xB0); //page addr y
 
-    pioptr->PIO_CODR = LCD_CS1; // Select LCD
+    #if !defined(REVX)
+      pioptr->PIO_CODR = LCD_CS1; // Select LCD
+    #endif
     PIOA->PIO_SODR = LCD_A0; // Data
-    pioptr->PIO_CODR = LCD_RnW; // Write
+    #if !defined(REVX)
+      pioptr->PIO_CODR = LCD_RnW; // Write
+    #endif
 
 #if defined(REVA)
     x = lookup[*p];
@@ -282,7 +304,9 @@ void lcdRefresh()
 //                      }
       pioptr->PIO_CODR = ebit; // End E pulse
     }
-    pioptr->PIO_SODR = LCD_CS1; // Deselect LCD
+    #if !defined(REVX)
+      pioptr->PIO_SODR = LCD_CS1; // Deselect LCD
+    #endif
   }
 
   pioptr->PIO_ODSR = 0xFF ;                                       // Drive lines high

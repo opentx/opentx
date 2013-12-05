@@ -37,7 +37,6 @@
 #include "../../opentx.h"
 
 int8_t coprocVolumeRequired ;
-uint8_t coprocVolumeReadPending ;
 uint8_t coprocReadDataPending ;
 uint8_t coprocWriteDataPending ;
 uint8_t CoProc_appgo_pending ;
@@ -51,7 +50,6 @@ static uint8_t *Twi_read_address ;
 static uint8_t TwiOperation ;
 
 #define TWI_NONE          0
-#define TWI_READ_VOL      1
 #define TWI_WRITE_VOL     2
 #define TWI_READ_COPROC   3
 #define TWI_COPROC_APPGO  4
@@ -72,15 +70,13 @@ uint32_t coprocWriteDataSize ;
 // This is called from an interrupt routine, or
 // interrupts must be disabled while it is called
 // from elsewhere.
-void coprocCheck()
+void i2cCheck()
 {
-  if ( TWI0->TWI_IMR & TWI_IMR_TXCOMP )
-  {
+  if ( TWI0->TWI_IMR & TWI_IMR_TXCOMP ) {
     return ;    // Busy
   }
 
-  if ( coprocVolumeRequired >= 0 )       // Set volume to this value
-  {
+  if ( coprocVolumeRequired >= 0 ) {      // Set volume to this value
     TWI0->TWI_MMR = 0x002F0000 ;    // Device 5E (>>1) and master is writing
     TwiOperation = TWI_WRITE_VOL ;
     TWI0->TWI_THR = coprocVolumeRequired ;   // Send data
@@ -88,8 +84,7 @@ void coprocCheck()
     TWI0->TWI_IER = TWI_IER_TXCOMP ;
     TWI0->TWI_CR = TWI_CR_STOP ;    // Stop Tx
   }
-  else if (coprocReadDataPending)
-  {
+  else if (coprocReadDataPending) {
     Coproc_valid = 0 ;
     coprocReadDataPending = 0 ;
     TWI0->TWI_MMR = 0x00351000 ;    // Device 35 and master is reading
@@ -98,25 +93,14 @@ void coprocCheck()
     TWI0->TWI_RPR = (uint32_t)&Co_proc_status[0] ;
 #endif
     TWI0->TWI_RCR = COPROC_RX_BUXSIZE - 1 ;
-    if ( TWI0->TWI_SR & TWI_SR_RXRDY )
-    {
+    if ( TWI0->TWI_SR & TWI_SR_RXRDY ) {
       (void) TWI0->TWI_RHR ;
     }
     TWI0->TWI_PTCR = TWI_PTCR_RXTEN ; // Start transfers
     TWI0->TWI_CR = TWI_CR_START ;   // Start Rx
     TWI0->TWI_IER = TWI_IER_RXBUFF | TWI_IER_TXCOMP ;
   }
-  else if (coprocVolumeReadPending)
-  {
-    coprocVolumeReadPending = 0 ;
-    TWI0->TWI_MMR = 0x002F1000 ;    // Device 5E (>>1) and master is reading
-    TwiOperation = TWI_READ_VOL ;
-    Twi_read_address = &Volume_read ;
-    TWI0->TWI_CR = TWI_CR_START | TWI_CR_STOP ;   // Start and stop Tx
-    TWI0->TWI_IER = TWI_IER_TXCOMP ;
-  }
-  else if ( CoProc_appgo_pending )
-  {
+  else if ( CoProc_appgo_pending ) {
     CoProc_appgo_pending = 0 ;
     TWI0->TWI_MMR = 0x00350000 ;    // Device 35 and master is writing
     TwiOperation = TWI_COPROC_APPGO ;
@@ -124,8 +108,7 @@ void coprocCheck()
     TWI0->TWI_IER = TWI_IER_TXCOMP ;
     TWI0->TWI_CR = TWI_CR_STOP ;    // Stop Tx
   }
-  else if ( coprocWriteDataPending )
-  {
+  else if ( coprocWriteDataPending ) {
     coprocWriteDataPending = 0 ;
     TWI0->TWI_MMR = 0x00350000 ;    // Device 35 and master is writing
     TwiOperation = TWI_WRITE_COPROC ;
@@ -144,7 +127,7 @@ void coprocReadData(bool onlytemp)
   get_onlytemp = onlytemp;
   coprocReadDataPending = 1 ;
   __disable_irq() ;
-  coprocCheck() ;
+  i2cCheck() ;
   __enable_irq() ;
 }
 
@@ -154,19 +137,9 @@ void coprocWriteData(uint8_t *data, uint32_t size)
   coprocWriteDataSize = size;
   coprocWriteDataPending = 1;
   __disable_irq();
-  coprocCheck();
+  i2cCheck();
   __enable_irq();
 }
-
-#if 0
-void appgo_coprocessor()
-{
-  CoProc_appgo_pending = 1 ;
-  __disable_irq() ;
-  coprocCheck() ;
-  __enable_irq() ;
-}
-#endif
 
 // Set up for volume control (TWI0)
 // Need PA3 and PA4 set to peripheral A
@@ -197,14 +170,6 @@ void coprocInit()
 #if !defined(SIMU)
 extern "C" void TWI0_IRQHandler()
 {
-  if ( TwiOperation == TWI_READ_VOL )
-  {
-    if ( TWI0->TWI_SR & TWI_SR_RXRDY )
-    {
-      *Twi_read_address = TWI0->TWI_RHR ;   // Read data
-    }
-  }
-
   if ( TwiOperation == TWI_READ_COPROC )
   {
     if ( TWI0->TWI_SR & TWI_SR_RXBUFF )
@@ -275,6 +240,6 @@ extern "C" void TWI0_IRQHandler()
   {
   }
   TwiOperation = TWI_NONE ;
-  coprocCheck() ;
+  i2cCheck() ;
 }
 #endif

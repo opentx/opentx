@@ -158,7 +158,7 @@ void menuStatisticsDebug(uint8_t event)
   putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(COPROCESSOR)
   lcd_putsLeft(4*FH, STR_COPROC_TEMP);
 
   if (Coproc_read==0) {

@@ -606,11 +606,13 @@ void boardInit()
   adcInit() ;
   init_pwm() ;
 
-  __enable_irq() ;
+  __enable_irq();
 
-  audioInit() ;
+  audioInit();
 
-  coprocInit() ;
+#if defined(COPROCESSOR)
+  coprocInit();
+#endif
 
   eepromInit();
 
