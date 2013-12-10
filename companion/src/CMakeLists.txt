@@ -320,7 +320,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
     INSTALL( FILES companion9x.desktop DESTINATION share/applications )
     INSTALL( FILES companion9x.png DESTINATION share/icons )
-    INSTALL( FILES ../linuxtools/45-taranis.rules DESTINATION /etc/udev/rules.d/ )
+    INSTALL( FILES ../targets/linux/45-taranis.rules DESTINATION /etc/udev/rules.d/ )
     # Linux specific code
     SET(OperatingSystem "Linux")
 ELSE (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
