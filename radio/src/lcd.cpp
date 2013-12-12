@@ -179,7 +179,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           continue;
         }
       }
-      else if (i<=8) {
+      if (i <= 8) {
         b1 = pgm_read_byte(q++); /*top byte*/
         b2 = pgm_read_byte(q++);
       }
@@ -219,7 +219,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           continue;
         }
       }
-      else if (i <= 5) pgm_read_byte(q++);
+      else if (i <= 5) b = pgm_read_byte(q++);
       if (b == 0x7f) continue;
       if (inv) b = ~b & 0x7f;
       if (p<DISPLAY_END) {
@@ -246,7 +246,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           continue;
         }
       }
-      else if (i <= 3) pgm_read_byte(q++);
+      else if (i <= 3) b= pgm_read_byte(q++);
       if (inv) b = ~b & 0x3f;
       if (p<DISPLAY_END) {
         LCD_BYTE_FILTER(p, ~(0x3f << ym8), b << ym8);
