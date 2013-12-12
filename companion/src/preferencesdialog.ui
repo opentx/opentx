@@ -787,7 +787,7 @@ Mode 4:
    <item row="16" column="0">
     <widget class="QLabel" name="label_17">
      <property name="text">
-      <string>eEprom backup folder</string>
+      <string>Models and Settings folder</string>
      </property>
     </widget>
    </item>

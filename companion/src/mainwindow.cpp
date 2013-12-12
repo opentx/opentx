@@ -103,9 +103,9 @@ downloadDialog_forWait(NULL)
     readSettings();
     FirmwareInfo *firmware = GetCurrentFirmware();
     if (ActiveProfile) {
-      setWindowTitle(tr("companion9x - EEPROM Editor - firmware %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
+      setWindowTitle(tr("companion9x - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
     } else {
-      setWindowTitle(tr("companion9x - EEPROM Editor - firmware %1").arg(firmware->name));
+      setWindowTitle(tr("companion9x - Models and Settings Editor - %1").arg(firmware->name));
     }
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
@@ -347,7 +347,7 @@ void MainWindow::reply1Accepted()
           int errnum=hline.mid(6).toInt();
           switch(errnum) {
             case 1:
-              errormsg=tr("Firmware does not longer fit in flash, due to selected firmware options");
+              errormsg=tr("Firmware does not longer fit in program memory, due to selected firmware options");
               break;
             case 2:
               errormsg=tr("Compilation server temporary failure, try later");
@@ -387,7 +387,7 @@ void MainWindow::reply1Accepted()
         int errnum=hline.mid(6).toInt();
         switch(errnum) {
           case 1:
-            errormsg=tr("Firmware does not fit in flash, due to selected firmware options");
+            errormsg=tr("Firmware does not fit in program memory, due to selected firmware options");
             break;
           case 2:
             errormsg=tr("Compilation server termporary failure, try later");
@@ -427,7 +427,7 @@ void MainWindow::reply1Accepted()
         }
         settings.setValue(downloadedFW, currentFWrev);
         if (autoflash) {
-          int ret = QMessageBox::question(this, "companion9x", tr("Do you want to flash the firmware now ?"), QMessageBox::Yes | QMessageBox::No);
+          int ret = QMessageBox::question(this, "companion9x", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::Yes) {
             burnToFlash(downloadedFWFilename);
           }
@@ -712,13 +712,13 @@ void MainWindow::loadProfile()
       settings.setValue("profileId", profnum);
       current_firmware_variant = GetFirmwareVariant(firmware_id);
       FirmwareInfo *firmware = GetCurrentFirmware();    
-      setWindowTitle(tr("companion9x - EEPROM Editor - firmware %1").arg(firmware->name));
+      setWindowTitle(tr("companion9x - Models and Settings Editor - %1").arg(firmware->name));
       // settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
         mdiChild->eepromInterfaceChanged();
       }
-      setWindowTitle(tr("companion9x - EEPROM Editor - firmware %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
+      setWindowTitle(tr("companion9x - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
     }
 }
 
@@ -729,7 +729,7 @@ void MainWindow::unloadProfile()
     QSettings settings("companion9x", "companion9x");
     settings.setValue("ActiveProfile",0);
     FirmwareInfo *firmware = GetCurrentFirmware();    
-    setWindowTitle(tr("companion9x - EEPROM Editor - firmware %1").arg(firmware->name));
+    setWindowTitle(tr("companion9x - Models and Settings Editor - %1").arg(firmware->name));
 }
 
 void MainWindow::preferences()
@@ -738,9 +738,9 @@ void MainWindow::preferences()
     pd->exec();
     FirmwareInfo *firmware = GetCurrentFirmware();    
     if (ActiveProfile) {
-      setWindowTitle(tr("companion9x - EEPROM Editor - firmware %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
+      setWindowTitle(tr("companion9x - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
     } else {
-      setWindowTitle(tr("companion9x - EEPROM Editor - firmware %1").arg(firmware->name));
+      setWindowTitle(tr("companion9x - Models and Settings Editor - %1").arg(firmware->name));
     }
 
     foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
@@ -1048,14 +1048,14 @@ void MainWindow::burnFrom()
       } else {
         QStringList str;
         str << path << tempFile;
-        avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read EEPROM From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+        avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
         ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
         res = ad->exec();
         sleep(1);
       }
     } else {    
       QStringList str = GetReceiveEEpromCommand(tempFile);
-      avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read EEPROM From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+      avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
       ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
       res = ad->exec();
     }
@@ -1076,10 +1076,10 @@ void MainWindow::burnExtenalToEEPROM()
     cd->exec();
     if (!fileName.isEmpty()) {
       settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
-      int ret = QMessageBox::question(this, "companion9x", tr("Write %1 to EEPROM memory?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
+      int ret = QMessageBox::question(this, "companion9x", tr("Load %1 to Models and Settings?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       if (!isValidEEPROM(fileName))
-        ret = QMessageBox::question(this, "companion9x", tr("The file %1\nhas not been recognized as a valid EEPROM\nBurn anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
+        ret = QMessageBox::question(this, "companion9x", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       bool backupEnable = settings.value("backupEnable", true).toBool();
       QString backupPath = settings.value("backupPath", "").toString();
@@ -1105,14 +1105,14 @@ void MainWindow::burnExtenalToEEPROM()
             } else {
               QStringList str;
               str << path << backupFile;
-              avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup EEPROM From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+              avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
               ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
               ad->exec();
               sleep(1);
             }
           } else {
             QStringList str = GetReceiveEEpromCommand(backupFile);
-            avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
+            avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
             ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
             ad->exec();
             sleep(1);
@@ -1122,22 +1122,22 @@ void MainWindow::burnExtenalToEEPROM()
         QString tempDir = QDir::tempPath();
         QString tempFlash = tempDir + "/flash.bin";
         QStringList str = GetReceiveFlashCommand(tempFlash);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Flash From Tx");
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
         ad->setWindowIcon(QIcon(":/images/read_flash.png"));
         ad->exec();
         sleep(1);
         QString restoreFile = tempDir + "/compat.bin";
         if (!convertEEPROM(fileName, restoreFile, tempFlash)) {
-         int ret = QMessageBox::question(this, "Error", tr("Cannot check eeprom compatibility! Continue anyway?") ,
+         int ret = QMessageBox::question(this, "Error", tr("Cannot check Models and Settings compatibility! Continue anyway?") ,
                                               QMessageBox::Yes | QMessageBox::No);
          if (ret==QMessageBox::No)
            return;
         } else {
           int rev = getEpromVersion(restoreFile);
           if ((rev / 100) != (oldrev / 100)) {
-            QMessageBox::warning(this, tr("Warning"), tr("Firmware in radio is of a different family of eeprom written, check file and preferences!"));
+            QMessageBox::warning(this, tr("Warning"), tr("The transmitter firmware belongs to another product family, check file and preferences!"));
           } else if (rev < oldrev) {
-            QMessageBox::warning(this, tr("Warning"), tr("Firmware in flash is outdated, please upgrade!"));
+            QMessageBox::warning(this, tr("Warning"), tr("The transmitter firmware is outdated, please upgrade!"));
           }
           fileName = restoreFile;
         }
@@ -1155,14 +1155,14 @@ void MainWindow::burnExtenalToEEPROM()
             } else {
               QStringList str;
               str << path << backupFile;
-              avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup EEPROM From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+              avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
               ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
               ad->exec();
               sleep(1);
             }
           } else {
             QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
-            avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
+            avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
             ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
             ad->exec();
             sleep(1);
@@ -1177,14 +1177,14 @@ void MainWindow::burnExtenalToEEPROM()
         } else {
           QStringList str;
           str << fileName << path;
-          avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write EEPROM To Tx")); //, AVR_DIALOG_KEEP_OPEN);
+          avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write Models and Settings To Tx")); //, AVR_DIALOG_KEEP_OPEN);
           ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
           ad->exec();
           sleep(1);
         }      
       } else {
         QStringList str = GetSendEEpromCommand(fileName);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write EEPROM To Tx", AVR_DIALOG_SHOW_DONE);
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write Models and Settings To Tx", AVR_DIALOG_SHOW_DONE);
         ad->setWindowIcon(QIcon(":/images/write_eeprom.png"));
         ad->exec();
       }
@@ -1354,34 +1354,34 @@ void MainWindow::burnToFlash(QString fileToFlash)
           backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
         }
         QStringList str = GetReceiveEEpromCommand(backupFile);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
         ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
         int res = ad->exec();
         if (QFileInfo(backupFile).exists() && res) {
           sleep(1);
           QStringList str = GetSendFlashCommand(fileName);
-          avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Flash To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
+          avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
           ad->setWindowIcon(QIcon(":/images/write_flash.png"));
           int res = ad->exec();
           if (res) {
             QString restoreFile = tempDir + "/restore.bin";
             if (!convertEEPROM(backupFile, restoreFile, fileName)) {
-              QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert EEProm for this firmware, original EEProm file will be used"));
+              QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert Models and Settings for use with this firmware, original data will be used"));
               restoreFile = backupFile;
             }
             sleep(1);
             QStringList str = GetSendEEpromCommand(restoreFile);
-            avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Restore EEPROM To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
+            avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Restore Models and Settings To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
             ad->setWindowIcon(QIcon(":/images/write_eeprom.png"));
             res=ad->exec();
             if (!res) {
-              QMessageBox::warning(this, tr("Restore failed"), tr("Cannot restore EEProm to TX, original EEProm file can be found at: %1").arg(backupFile));
+              QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to TX. The models and settings data file can be found at: %1").arg(backupFile));
             }
           } else {
-            QMessageBox::warning(this, tr("Flash failed"), tr("Cannot flash the TX, original EEProm file can be found at: %1").arg(backupFile));
+            QMessageBox::warning(this, tr("Firmware write failed"), tr("Could not write firmware to to transmitter. The models and settings data file can be found at: %1").arg(backupFile));
           }
         } else {
-          QMessageBox::warning(this, tr("Backup failed"), tr("Cannot backup existing EEProm from TX, Flash process aborted"));
+          QMessageBox::warning(this, tr("Backup failed"), tr("Cannot backup existing Models and Settings from TX. Firmware write process aborted"));
         }
       } else {
         bool backupEnable=settings.value("backupEnable", true).toBool();
@@ -1396,14 +1396,14 @@ void MainWindow::burnToFlash(QString fileToFlash)
           QDateTime datetime;
           QString backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
           QStringList str = GetReceiveEEpromCommand(backupFile);
-          avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
+          avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
           ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
           ad->exec();
           sleep(1);
         }
 
         QStringList str = GetSendFlashCommand(fileName);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Flash To Tx"), AVR_DIALOG_SHOW_DONE);
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Tx"), AVR_DIALOG_SHOW_DONE);
         ad->setWindowIcon(QIcon(":/images/write_flash.png"));
         ad->exec();
       }
@@ -1413,25 +1413,25 @@ void MainWindow::burnToFlash(QString fileToFlash)
 void MainWindow::burnExtenalFromEEPROM()
 {
     QSettings settings("companion9x", "companion9x");
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Read EEPROM memory to File"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       EEPROMInterface *eepromInterface = GetEepromInterface();
       if (IS_TARANIS(eepromInterface->getBoard())) {
         QString path=FindTaranisPath();
         if (path.isEmpty()) {
-          QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+          QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify that the eeprom disk is connected."));
           return;
         } else {
           QStringList str;            
           str << path << fileName;
-          avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read EEPROM From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+          avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
           ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
           ad->exec();
         }
       } else {
         settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveEEpromCommand(fileName);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read EEPROM From Tx"));
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx"));
         ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
         ad->exec();
       }
@@ -1441,7 +1441,7 @@ void MainWindow::burnExtenalFromEEPROM()
 void MainWindow::burnFromFlash()
 {
     QSettings settings("companion9x", "companion9x");
-    QString fileName = QFileDialog::getSaveFileName(this,tr("Read Flash to File"), settings.value("lastFlashDir").toString(),tr(FLASH_FILES_FILTER));
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), settings.value("lastFlashDir").toString(),tr(FLASH_FILES_FILTER));
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.exists()) {
@@ -1449,7 +1449,7 @@ void MainWindow::burnFromFlash()
         }
         settings.setValue("lastFlashDir",QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveFlashCommand(fileName);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Flash From Tx");
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
         ad->setWindowIcon(QIcon(":/images/read_flash.png"));
         ad->exec();
     }
@@ -1674,34 +1674,34 @@ void MainWindow::createActions()
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
 
-    burnToAct = new QAction(QIcon(":/images/write_eeprom.png"), tr("&Write EEPROM To Tx"), this);
+    burnToAct = new QAction(QIcon(":/images/write_eeprom.png"), tr("&Write Models and Settings To Tx"), this);
     burnToAct->setShortcut(tr("Ctrl+Alt+W"));
-    burnToAct->setStatusTip(tr("Write EEPROM to transmitter"));
+    burnToAct->setStatusTip(tr("Write Models and Settings to transmitter"));
     connect(burnToAct,SIGNAL(triggered()),this,SLOT(burnTo()));
 
-    burnFromAct = new QAction(QIcon(":/images/read_eeprom.png"), tr("&Read EEPROM From Tx"), this);
+    burnFromAct = new QAction(QIcon(":/images/read_eeprom.png"), tr("&Read Models and Settings From Tx"), this);
     burnFromAct->setShortcut(tr("Ctrl+Alt+R"));
-    burnFromAct->setStatusTip(tr("Read EEPROM from transmitter"));
+    burnFromAct->setStatusTip(tr("Read Models and Settings from transmitter"));
     connect(burnFromAct,SIGNAL(triggered()),this,SLOT(burnFrom()));
 
-    burnToFlashAct = new QAction(QIcon(":/images/write_flash.png"), tr("Write Flash memory"), this);
-    burnToFlashAct->setStatusTip(tr("Write flash memory to transmitter"));
+    burnToFlashAct = new QAction(QIcon(":/images/write_flash.png"), tr("Write Firmware"), this);
+    burnToFlashAct->setStatusTip(tr("Write firmware to transmitter"));
     connect(burnToFlashAct,SIGNAL(triggered()),this,SLOT(burnToFlash()));
 
-    burnExtenalToEEPROMAct = new QAction(QIcon(":/images/write_eeprom_file.png"), tr("Write EEPROM memory from file"), this);
-    burnExtenalToEEPROMAct->setStatusTip(tr("Write EEPROM memory from file to transmitter"));
+    burnExtenalToEEPROMAct = new QAction(QIcon(":/images/write_eeprom_file.png"), tr("Write Models and Settings from file to Tx"), this);
+    burnExtenalToEEPROMAct->setStatusTip(tr("Write Models and Settings from file to transmitter"));
     connect(burnExtenalToEEPROMAct,SIGNAL(triggered()),this,SLOT(burnExtenalToEEPROM()));
 
-    burnExtenalFromEEPROMAct = new QAction(QIcon(":/images/read_eeprom_file.png"), tr("Read EEPROM memory to file"), this);
-    burnExtenalFromEEPROMAct->setStatusTip(tr("Read EEPROM memory from transmitter to file"));
+    burnExtenalFromEEPROMAct = new QAction(QIcon(":/images/read_eeprom_file.png"), tr("Save transmitter Models and Settings to file"), this);
+    burnExtenalFromEEPROMAct->setStatusTip(tr("Save the Models and Settings from the transmitter to a file"));
     connect(burnExtenalFromEEPROMAct,SIGNAL(triggered()),this,SLOT(burnExtenalFromEEPROM()));
 
-    burnFromFlashAct = new QAction(QIcon(":/images/read_flash.png"), tr("Read Flash memory"), this);
-    burnFromFlashAct->setStatusTip(tr("Read flash memory to transmitter"));
+    burnFromFlashAct = new QAction(QIcon(":/images/read_flash.png"), tr("Read Firmware"), this);
+    burnFromFlashAct->setStatusTip(tr("Read firmware from transmitter"));
     connect(burnFromFlashAct,SIGNAL(triggered()),this,SLOT(burnFromFlash()));
 
-    burnConfigAct = new QAction(QIcon(":/images/configure.png"), tr("&Configure..."), this);
-    burnConfigAct->setStatusTip(tr("Configure burning software"));
+    burnConfigAct = new QAction(QIcon(":/images/configure.png"), tr("&Configure Communication..."), this);
+    burnConfigAct->setStatusTip(tr("Configure software for communication with the transmitter"));
     connect(burnConfigAct,SIGNAL(triggered()),this,SLOT(burnConfig()));
     EEPROMInterface *eepromInterface = GetEepromInterface();
     if (!IS_ARM(eepromInterface->getBoard())) {
@@ -1817,7 +1817,7 @@ void MainWindow::createMenus()
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
 
-    burnMenu = menuBar()->addMenu(tr("&Burn"));
+    burnMenu = menuBar()->addMenu(tr("&Read/Write"));
     burnMenu->addAction(burnToAct);
     burnMenu->addAction(burnFromAct);
     burnMenu->addSeparator();
@@ -1913,7 +1913,7 @@ void MainWindow::createToolBars()
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
 
-    burnToolBar = addToolBar(tr("Burn"));
+    burnToolBar = addToolBar(tr("Write"));
     burnToolBar->addAction(burnToAct);
     burnToolBar->addAction(burnFromAct);
     burnToolBar->addSeparator();
@@ -2100,13 +2100,13 @@ int MainWindow::getEpromVersion(QString fileName)
     uint8_t eeprom[EESIZE_RLC_MAX];
     int eeprom_size = HexInterface(inputStream).load(eeprom, EESIZE_RLC_MAX);
     if (!eeprom_size) {
-      QMessageBox::critical(this, tr("Error"), tr("Invalid EEPROM File %1").arg(fileName));
+      QMessageBox::critical(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(fileName));
       file.close();
       return -1;
     }
     file.close();
     if (!LoadEeprom(testData, eeprom, eeprom_size)) {
-      QMessageBox::critical(this, tr("Error"),tr("Invalid EEPROM File %1").arg(fileName));
+      QMessageBox::critical(this, tr("Error"),tr("Invalid Models and Settings File %1").arg(fileName));
       return -1;
     }
   }
@@ -2125,7 +2125,7 @@ int MainWindow::getEpromVersion(QString fileName)
       return -1;
     }
     if (!LoadEeprom(testData, eeprom, eeprom_size)) {
-      QMessageBox::critical(this, tr("Error"),tr("Invalid binary EEPROM File %1").arg(fileName));
+      QMessageBox::critical(this, tr("Error"),tr("Invalid binary Models and Settings File %1").arg(fileName));
       return -1;
     }
   }
