@@ -787,7 +787,7 @@ Mode 4:
    <item row="16" column="0">
     <widget class="QLabel" name="label_17">
      <property name="text">
-      <string>Models and Settings folder</string>
+      <string>Automatic Backup Folder</string>
      </property>
     </widget>
    </item>
