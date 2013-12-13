@@ -1267,17 +1267,7 @@ FAI-funktionen kan inte slås av i sändaren.
         <translation>Vill du starta installationsprogrammet?</translation>
     </message>
     <message>
-        <location line="+55"/>
-        <source>Firmware does not longer fit in program memory, due to selected firmware options</source>
-        <translation>Firmware får inte längre plats i minnet på grund av att alltför många funktioner aktiverats</translation>
-    </message>
-    <message>
-        <location line="+40"/>
-        <source>Firmware does not fit in program memory, due to selected firmware options</source>
-        <translation>Firmware får inte rum i minnet på grund av att för många funktioner aktiverats</translation>
-    </message>
-    <message>
-        <location line="+40"/>
+        <location line="+135"/>
         <source>Do you want to write the firmware to the transmitter now ?</source>
         <translation>Vill du skriva firmware till sändaren nu?</translation>
     </message>
@@ -1387,7 +1377,12 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Skall föregående varning visas igen vid uppstart ?</translation>
     </message>
     <message>
-        <location line="+180"/>
+        <location line="+177"/>
+        <source>Firmware does not longer fit in the Tx, due to selected firmware options</source>
+        <translation>Firmware får inte rum i minnet på grund av att för många funktioner aktiverats</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Compilation server temporary failure, try later</source>
         <translation>Tillfälligt fel i byggservern. Försök igen senare</translation>
     </message>
@@ -1398,7 +1393,12 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Byggservern kräver registrering. Var god kontrollera openTX webbsida</translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="-9"/>
+        <source>Firmware does not fit in the Tx, due to selected firmware options</source>
+        <translation>Firmware får inte rum i minnet på grund av att för många funktioner aktiverats</translation>
+    </message>
+    <message>
+        <location line="+97"/>
         <source>Firmware %1 does not seem to have ever been downloaded.
 Version %2 is available.
 Do you want to download it now ?</source>
@@ -1407,7 +1407,12 @@ Version %2 finns tillgänglig.
 Vill du ladda ned den nu ?</translation>
     </message>
     <message>
-        <location line="+882"/>
+        <location line="+592"/>
+        <source>Write Models and settings from %1 to the Tx?</source>
+        <translation>Skriv Modeller och Inställningar från %1 till sändaren?</translation>
+    </message>
+    <message>
+        <location line="+290"/>
         <source>Conversion failed</source>
         <translation>Konverteringen misslyckades</translation>
     </message>
@@ -1987,12 +1992,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Läs Modeller och Inställningar från sändaren</translation>
     </message>
     <message>
-        <location line="-355"/>
-        <source>Load %1 to Models and Settings?</source>
-        <translation>Läs från %1 till Modeller och inställningar?</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="-352"/>
         <source>The file %1
 has not been recognized as a valid Models and Settings file
 Write anyway ?</source>

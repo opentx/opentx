@@ -1317,11 +1317,6 @@ Siete sicuri ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="350"/>
-        <source>Firmware does not longer fit in program memory, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="362"/>
         <location filename="../mainwindow.cpp" line="402"/>
         <source>Unknown server failure, try later</source>
@@ -1407,11 +1402,6 @@ Volete scaricarla ora ?</translation>
         <location filename="../mainwindow.cpp" line="399"/>
         <source>Compilation server requires registration, please check opentx web site</source>
         <translation>Il server di compilazione richiede una registrazione, controllate il sito di opentx</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="390"/>
-        <source>Firmware does not fit in program memory, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="430"/>
@@ -1597,8 +1587,18 @@ Scriverlo ugualmente ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="350"/>
+        <source>Firmware does not longer fit in the Tx, due to selected firmware options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="390"/>
+        <source>Firmware does not fit in the Tx, due to selected firmware options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1079"/>
-        <source>Load %1 to Models and Settings?</source>
+        <source>Write Models and settings from %1 to the Tx?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

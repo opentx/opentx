@@ -1627,6 +1627,21 @@ Burn anyway ?</source>
         <translation>&amp;Simulation</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="350"/>
+        <source>Firmware does not longer fit in the Tx, due to selected firmware options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="390"/>
+        <source>Firmware does not fit in the Tx, due to selected firmware options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1079"/>
+        <source>Write Models and settings from %1 to the Tx?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1746"/>
         <source>Ne&amp;xt</source>
         <translation>Sui&amp;vante</translation>
@@ -2038,16 +2053,6 @@ Voulez vous la télécharger maintenant ?</translation>
         <translation>Une nouvelle version de companion9x est disponible (r%1)&lt;br&gt;Voulez-vous la télécharger ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="350"/>
-        <source>Firmware does not longer fit in program memory, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="390"/>
-        <source>Firmware does not fit in program memory, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="430"/>
         <source>Do you want to write the firmware to the transmitter now ?</source>
         <translation type="unfinished"></translation>
@@ -2067,11 +2072,6 @@ Voulez-vous la télécharger maintenant ?</translation>
         <location filename="../mainwindow.cpp" line="1427"/>
         <location filename="../mainwindow.cpp" line="1434"/>
         <source>Read Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1079"/>
-        <source>Load %1 to Models and Settings?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

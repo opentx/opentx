@@ -347,7 +347,7 @@ void MainWindow::reply1Accepted()
           int errnum=hline.mid(6).toInt();
           switch(errnum) {
             case 1:
-              errormsg=tr("Firmware does not longer fit in program memory, due to selected firmware options");
+              errormsg=tr("Firmware does not longer fit in the Tx, due to selected firmware options");
               break;
             case 2:
               errormsg=tr("Compilation server temporary failure, try later");
@@ -387,7 +387,7 @@ void MainWindow::reply1Accepted()
         int errnum=hline.mid(6).toInt();
         switch(errnum) {
           case 1:
-            errormsg=tr("Firmware does not fit in program memory, due to selected firmware options");
+            errormsg=tr("Firmware does not fit in the Tx, due to selected firmware options");
             break;
           case 2:
             errormsg=tr("Compilation server termporary failure, try later");
@@ -1076,7 +1076,7 @@ void MainWindow::burnExtenalToEEPROM()
     cd->exec();
     if (!fileName.isEmpty()) {
       settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
-      int ret = QMessageBox::question(this, "companion9x", tr("Load %1 to Models and Settings?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
+      int ret = QMessageBox::question(this, "companion9x", tr("Write Models and settings from %1 to the Tx?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       if (!isValidEEPROM(fileName))
         ret = QMessageBox::question(this, "companion9x", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);

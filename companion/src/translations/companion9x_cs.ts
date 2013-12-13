@@ -1600,16 +1600,6 @@ Chcete ji přesto naprogramovat?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="350"/>
-        <source>Firmware does not longer fit in program memory, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="390"/>
-        <source>Firmware does not fit in program memory, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="430"/>
         <source>Do you want to write the firmware to the transmitter now ?</source>
         <translation type="unfinished"></translation>
@@ -1623,8 +1613,18 @@ Chcete ji přesto naprogramovat?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="350"/>
+        <source>Firmware does not longer fit in the Tx, due to selected firmware options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="390"/>
+        <source>Firmware does not fit in the Tx, due to selected firmware options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1079"/>
-        <source>Load %1 to Models and Settings?</source>
+        <source>Write Models and settings from %1 to the Tx?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
