@@ -1300,22 +1300,6 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Filen sparades</translation>
     </message>
     <message>
-        <source>Read EEPROM From Tx</source>
-        <translation type="obsolete">Läs modelldata från sändaren</translation>
-    </message>
-    <message>
-        <source>Write %1 to EEPROM memory?</source>
-        <translation type="obsolete">Skriv %1 till modelldata-minnet?</translation>
-    </message>
-    <message>
-        <source>Read EEPROM memory to File</source>
-        <translation type="obsolete">Läs modelldata-minnet till en fil</translation>
-    </message>
-    <message>
-        <source>Read Flash to File</source>
-        <translation type="obsolete">Läs firmware från flashminne till fil</translation>
-    </message>
-    <message>
         <location line="+842"/>
         <source>Copyright</source>
         <translation>Copyright</translation>
@@ -1423,33 +1407,9 @@ Version %2 finns tillgänglig.
 Vill du ladda ned den nu ?</translation>
     </message>
     <message>
-        <source>The file %1
-has not been recognized as a valid EEPROM
-Burn anyway ?</source>
-        <translation type="obsolete">Filen %1
-verkar inte vara en  modelldatafil.
-Vill du starta bränningen trots detta ?</translation>
-    </message>
-    <message>
-        <source>Backup EEPROM From Tx</source>
-        <translation type="obsolete">Säkerhetskopiera modelldata från sändaren</translation>
-    </message>
-    <message>
-        <source>Write Flash To Tx</source>
-        <translation type="obsolete">Skriv flashminne till sändaren</translation>
-    </message>
-    <message>
         <location line="+882"/>
         <source>Conversion failed</source>
         <translation>Konverteringen misslyckades</translation>
-    </message>
-    <message>
-        <source>Cannot convert EEProm for this firmware, original EEProm file will be used</source>
-        <translation type="obsolete">Modelldata kan inte konverteras till formatet för denna firmware. Originaldata kommer att användas</translation>
-    </message>
-    <message>
-        <source>Restore EEPROM To Tx</source>
-        <translation type="obsolete">Återställ modelldata till sändaren</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1457,25 +1417,9 @@ Vill du starta bränningen trots detta ?</translation>
         <translation>Återställningen misslyckade</translation>
     </message>
     <message>
-        <source>Cannot restore EEProm to TX, original EEProm file can be found at: %1</source>
-        <translation type="obsolete">Modelldata kan inte återställas till sändaren. Originalet kan inte hittas i: %1</translation>
-    </message>
-    <message>
-        <source>Flash failed</source>
-        <translation type="obsolete">Överföringen misslyckades</translation>
-    </message>
-    <message>
-        <source>Cannot flash the TX, original EEProm file can be found at: %1</source>
-        <translation type="obsolete">Överföringen till sändaren misslyckades. Original-modelldata finns här: %1</translation>
-    </message>
-    <message>
         <location line="+6"/>
         <source>Backup failed</source>
         <translation>Säkerhetskopieringen misslyckades</translation>
-    </message>
-    <message>
-        <source>Cannot backup existing EEProm from TX, Flash process aborted</source>
-        <translation type="obsolete">Det gick inte att säkerhetskopiera modelldata från sändaren. Överföringen avbröts</translation>
     </message>
     <message>
         <location line="+109"/>
@@ -1558,70 +1502,14 @@ Vill du starta bränningen trots detta ?</translation>
         <translation>Klistra in klippbokens innehåll i det valda avsnittet</translation>
     </message>
     <message>
-        <source>&amp;Write EEPROM To Tx</source>
-        <translation type="obsolete">Skriv modelldata &amp;till sändaren</translation>
-    </message>
-    <message>
         <location line="+6"/>
         <source>Ctrl+Alt+W</source>
         <translation>Ctrl+Alt+W</translation>
     </message>
     <message>
-        <source>Write EEPROM to transmitter</source>
-        <translation type="obsolete">Skriv modelldata till sändaren</translation>
-    </message>
-    <message>
-        <source>&amp;Read EEPROM From Tx</source>
-        <translation type="obsolete">Läs  modelldata &amp;från sändaren</translation>
-    </message>
-    <message>
         <location line="+5"/>
         <source>Ctrl+Alt+R</source>
         <translation>Ctrl+Alt+R</translation>
-    </message>
-    <message>
-        <source>Read EEPROM from transmitter</source>
-        <translation type="obsolete">Läs modelldata från sändaren</translation>
-    </message>
-    <message>
-        <source>Write Flash memory</source>
-        <translation type="obsolete">Skriv flashminnet</translation>
-    </message>
-    <message>
-        <source>Write flash memory to transmitter</source>
-        <translation type="obsolete">Skriv flashminnet till sändaren</translation>
-    </message>
-    <message>
-        <source>Write EEPROM memory from file</source>
-        <translation type="obsolete">Skriv modelldata från fil</translation>
-    </message>
-    <message>
-        <source>Write EEPROM memory from file to transmitter</source>
-        <translation type="obsolete">Skriv modelldata från fil direkt till sändaren</translation>
-    </message>
-    <message>
-        <source>Read EEPROM memory to file</source>
-        <translation type="obsolete">Läs från modelldata-minnet till fil</translation>
-    </message>
-    <message>
-        <source>Read EEPROM memory from transmitter to file</source>
-        <translation type="obsolete">Läs modelldata från sändaren och skriv till fil</translation>
-    </message>
-    <message>
-        <source>Read Flash memory</source>
-        <translation type="obsolete">Läs flashminnet</translation>
-    </message>
-    <message>
-        <source>Read flash memory to transmitter</source>
-        <translation type="obsolete">Läs flash-minne från sändaren</translation>
-    </message>
-    <message>
-        <source>&amp;Configure...</source>
-        <translation type="obsolete">&amp;Inställningar...</translation>
-    </message>
-    <message>
-        <source>Configure burning software</source>
-        <translation type="obsolete">Ställ in brännarprogrammet</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1850,10 +1738,6 @@ Vill du starta bränningen trots detta ?</translation>
         <translation>&amp;Redigera</translation>
     </message>
     <message>
-        <source>&amp;Burn</source>
-        <translation type="obsolete">&amp;Bränn</translation>
-    </message>
-    <message>
         <location line="+23"/>
         <source>&amp;Window</source>
         <translation>&amp;Fönster</translation>
@@ -1874,10 +1758,6 @@ Vill du starta bränningen trots detta ?</translation>
         <translation>Redigera</translation>
     </message>
     <message>
-        <source>Burn</source>
-        <translation type="obsolete">Bränn</translation>
-    </message>
-    <message>
         <location line="+17"/>
         <source>Help</source>
         <translation>Hjälp</translation>
@@ -1896,10 +1776,6 @@ Vill du starta bränningen trots detta ?</translation>
         <location line="-1459"/>
         <source>Display previous warning again at startup ?</source>
         <translation>SKall föregående varning visas igen vid uppstart ?</translation>
-    </message>
-    <message>
-        <source>Do you want to flash the firmware now ?</source>
-        <translation type="obsolete">Vill du ladda firmware till sändaren nu?</translation>
     </message>
     <message>
         <location line="+167"/>
@@ -1926,10 +1802,6 @@ Vill du starta bränningen trots detta ?</translation>
 %2.</translation>
     </message>
     <message>
-        <source>companion9x - EEPROM Editor - firmware %1</source>
-        <translation type="obsolete">companion9x - Nuvarande Firmware: %1</translation>
-    </message>
-    <message>
         <location line="-621"/>
         <source>New release available</source>
         <translation>En ny version finns tillgänglig</translation>
@@ -1949,10 +1821,6 @@ Vill du starta bränningen trots detta ?</translation>
 %2.</source>
         <translation>Fel vid öppning av filen %1:
 %2.</translation>
-    </message>
-    <message>
-        <source>Firmware does not fit in flash, due to selected firmware options</source>
-        <translation type="obsolete">Alltför många optioner är vada för att open9x skall få plats i sändaren</translation>
     </message>
     <message>
         <location line="-1723"/>
@@ -1996,22 +1864,10 @@ Vill du starta bränningen trots detta ?</translation>
         <translation>Foldern för säkerhetskopior existerar inte</translation>
     </message>
     <message>
-        <source>Cannot check eeprom compatibility! Continue anyway?</source>
-        <translation type="obsolete">Det går inte att verifiera att modelldata är kompatibelt. Fortsätt i alla fall?</translation>
-    </message>
-    <message>
         <location line="-253"/>
         <location line="+2"/>
         <source>Warning</source>
         <translation>Varning</translation>
-    </message>
-    <message>
-        <source>Firmware in radio is of a different family of eeprom written, check file and preferences!</source>
-        <translation type="obsolete">sändarens firmware är av en annan typ än den aktuella. Kontrollera Arkiv och Inställningar!</translation>
-    </message>
-    <message>
-        <source>Firmware in flash is outdated, please upgrade!</source>
-        <translation type="obsolete">Firmware i flashminnet är föråldrat. Var god uppgradera!</translation>
     </message>
     <message>
         <location line="+648"/>
@@ -2035,23 +1891,11 @@ Vill du starta bränningen trots detta ?</translation>
         <translation>Kan inte hitta filen %1 !</translation>
     </message>
     <message>
-        <source>Invalid EEPROM File %1</source>
-        <translation type="obsolete">Ogiltig modelldatafil %1</translation>
-    </message>
-    <message>
         <location line="+58"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Fel vid inläsning från filen %1:
 %2.</translation>
-    </message>
-    <message>
-        <source>Invalid binary EEPROM File %1</source>
-        <translation type="obsolete">Ogiltig binär modelldatafil %1</translation>
-    </message>
-    <message>
-        <source>Firmware does not longer fit in flash, due to selected firmware options</source>
-        <translation type="obsolete">Programmet får inte rum i minnet, på grund av de valda funktionerna</translation>
     </message>
     <message>
         <location line="-522"/>
@@ -2079,10 +1923,6 @@ Vill du starta bränningen trots detta ?</translation>
         <translation>Öppna loggfil</translation>
     </message>
     <message>
-        <source>companion9x - EEPROM Editor - firmware %1 - profile %2</source>
-        <translation type="obsolete">companion9x - EEPROM Editor - firmware %1 - profil %2</translation>
-    </message>
-    <message>
         <location line="-572"/>
         <location line="+57"/>
         <location line="+50"/>
@@ -2098,10 +1938,6 @@ Vill du starta bränningen trots detta ?</translation>
         <location line="+22"/>
         <source>Impossible to identify the radio on your system, please verify the eeprom disk is connected.</source>
         <translation>Det går inte att identifiera sändaren. Verifiera att EEPOROM-skivan är ansluteten.</translation>
-    </message>
-    <message>
-        <source>Write EEPROM To Tx</source>
-        <translation type="obsolete">Skriv EEPROM till sändaren</translation>
     </message>
     <message>
         <location line="-687"/>
@@ -4013,10 +3849,6 @@ p, li { white-space: pre-wrap; }
         <translation>trim3</translation>
     </message>
     <message>
-        <source>Expos/DR</source>
-        <translation type="obsolete">Expos/DR</translation>
-    </message>
-    <message>
         <location line="+13664"/>
         <source>RSSI</source>
         <translation>RSSI</translation>
@@ -4649,10 +4481,6 @@ p, li { white-space: pre-wrap; }
         <location line="+63"/>
         <source>Custom Screen Type</source>
         <translation>Visa data som</translation>
-    </message>
-    <message>
-        <source>CFN%1</source>
-        <translation type="obsolete">CFN%1</translation>
     </message>
     <message>
         <location line="-23285"/>
@@ -7320,14 +7148,6 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
         <translation>Mixerinställningar för flygmoder exporteras inte</translation>
     </message>
     <message>
-        <source>Warning!
-splash image format stored in preferences has been changed!
-Check your settings again.</source>
-        <translation type="obsolete">Varning!
-Formatet för startskärmen som lagras i Inställningar har ändrats! 
-Kontrollera dina Inställningar.</translation>
-    </message>
-    <message>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="-201"/>
         <source>Possibility to enable FAI MODE at field</source>
         <translation>Möjlighet att slå på FAI-LÄGE före pflygning</translation>
@@ -7731,10 +7551,6 @@ m2560 för v4.1-kort</translation>
         <translation>Välj Startbild</translation>
     </message>
     <message>
-        <source>Load Firmware</source>
-        <translation type="obsolete">Ladda firmware</translation>
-    </message>
-    <message>
         <location line="+173"/>
         <source>Date &amp; Time</source>
         <translation>Dag &amp; Tid</translation>
@@ -7786,26 +7602,14 @@ m2560 för v4.1-kort</translation>
         <translation>Kontrollera att firmware-filen är kompatibel</translation>
     </message>
     <message>
-        <source>Backup and restore existing eeprom</source>
-        <translation type="obsolete">Säkerhetskopera och återställ existerande modelldata</translation>
-    </message>
-    <message>
         <location line="-209"/>
         <source>Cancel</source>
         <translation>Avbryt</translation>
     </message>
     <message>
-        <source>Burn to TX</source>
-        <translation type="obsolete">Bränn till Sändaren</translation>
-    </message>
-    <message>
         <location filename="../burndialog.cpp" line="-170"/>
         <source>Write firmware to TX</source>
         <translation>Skriv firmware till sändaren</translation>
-    </message>
-    <message>
-        <source>Write models to TX</source>
-        <translation type="obsolete">Skriv modell-data till sändaren</translation>
     </message>
     <message>
         <location line="+122"/>
@@ -7951,21 +7755,9 @@ m2560 för v4.1-kort</translation>
         <translation>Nuvarande Profil</translation>
     </message>
     <message>
-        <source>Load eEprom</source>
-        <translation type="obsolete">Ladda modelldata</translation>
-    </message>
-    <message>
-        <source>Write %1 to TX</source>
-        <translation type="obsolete">Skriv %1 till sändaren</translation>
-    </message>
-    <message>
         <location filename="../burndialog.cpp" line="+32"/>
         <source>Current profile</source>
         <translation>Nuvarande profil</translation>
-    </message>
-    <message>
-        <source>Choose file to write to EEPROM memory</source>
-        <translation type="obsolete">Välj fil att skriva till modelldata-minnet</translation>
     </message>
     <message>
         <location line="+192"/>
@@ -7989,14 +7781,6 @@ m2560 för v4.1-kort</translation>
 %2.</translation>
     </message>
     <message>
-        <source>Wrong radio calibration data in profile, eeprom not patched</source>
-        <translation type="obsolete">Modelldata kan inte modifieras pga fel i profilens kalibreringsdata</translation>
-    </message>
-    <message>
-        <source>Wrong radio setting data in profile, eeprom not patched</source>
-        <translation type="obsolete">Modelldata kan inte modifieras pga fel i profilens inställningsdata</translation>
-    </message>
-    <message>
         <location line="+261"/>
         <location line="+5"/>
         <source>Cannot write file %1:
@@ -8010,10 +7794,6 @@ m2560 för v4.1-kort</translation>
 %2.</source>
         <translation>Fel vid skrivning av filen  %1:
 %2.</translation>
-    </message>
-    <message>
-        <source>Invalid binary EEPROM File %1, Proceed anyway ?</source>
-        <translation type="obsolete">EEPROMfilen %1 verkar vara ogiltig. Vill du fortsätta ?</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="-78"/>
@@ -8517,10 +8297,6 @@ m2560 för v4.1-kort</translation>
         <location line="+6"/>
         <source>Repeat</source>
         <translation>Upprepa</translation>
-    </message>
-    <message>
-        <source>CFn</source>
-        <translation type="obsolete">CFn</translation>
     </message>
     <message>
         <location line="+68"/>
@@ -9999,10 +9775,6 @@ Mode 4:
         <translation>Profilplats</translation>
     </message>
     <message>
-        <source>eEprom backup folder</source>
-        <translation type="obsolete">Folder för modelldata</translation>
-    </message>
-    <message>
         <location line="+30"/>
         <source>auto backup before write</source>
         <translation>säkerhetskopiera innan skrivning</translation>
@@ -10011,10 +9783,6 @@ Mode 4:
         <location filename="../preferencesdialog.cpp" line="+85"/>
         <source>Select your library folder</source>
         <translation>Välj bibliotekskatalog</translation>
-    </message>
-    <message>
-        <source>Select your eeprom backup folder</source>
-        <translation type="obsolete">Välj katalog för säkerhetskopiering av modelldata</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="-359"/>
@@ -10518,10 +10286,6 @@ Får skilja från språket för mjukvaran</translation>
         <location line="+20"/>
         <source>System of units</source>
         <translation>Måttsystem</translation>
-    </message>
-    <message>
-        <source>FSW</source>
-        <translation type="obsolete">FSW</translation>
     </message>
     <message>
         <location line="-5"/>
