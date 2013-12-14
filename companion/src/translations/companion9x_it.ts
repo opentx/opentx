@@ -1306,7 +1306,7 @@ Siete sicuri ?</translation>
         <location filename="../mainwindow.cpp" line="721"/>
         <location filename="../mainwindow.cpp" line="741"/>
         <source>companion9x - Models and Settings Editor - %1 - profile %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Companion9x - EEPROM Editor - %1- profilo %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="108"/>
@@ -1314,7 +1314,11 @@ Siete sicuri ?</translation>
         <location filename="../mainwindow.cpp" line="732"/>
         <location filename="../mainwindow.cpp" line="743"/>
         <source>companion9x - Models and Settings Editor - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Companion9x - EEPROM Editor - %1</translation>
+    </message>
+    <message>
+        <source>Firmware does not longer fit in program memory, due to selected firmware options</source>
+        <translation type="obsolete">Il firmware selezionato è diventato troppo grande per la memoria della radio, a causa delle opzioni selezionate</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="362"/>
@@ -1404,9 +1408,13 @@ Volete scaricarla ora ?</translation>
         <translation>Il server di compilazione richiede una registrazione, controllate il sito di opentx</translation>
     </message>
     <message>
+        <source>Firmware does not fit in program memory, due to selected firmware options</source>
+        <translation type="obsolete">Il firmware richiesto è troppo grande per la memoria della radio a causa delle opzioni selezionate</translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="430"/>
         <source>Do you want to write the firmware to the transmitter now ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Volete scrivere il nuovo firmware sulla radio ora ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="488"/>
@@ -1584,29 +1592,35 @@ Scriverlo ugualmente ?</translation>
         <location filename="../mainwindow.cpp" line="1427"/>
         <location filename="../mainwindow.cpp" line="1434"/>
         <source>Read Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Leggi le impostazioni dalla radio</translation>
+    </message>
+    <message>
+        <source>Load %1 to Models and Settings?</source>
+        <translation type="obsolete">Scrivere %1 nella memoria della radio ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
         <source>Firmware does not longer fit in the Tx, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Il firmware selezionato è diventato troppo grande per la radio, a causa delle opzioni selezionate</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="390"/>
         <source>Firmware does not fit in the Tx, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Il firmware richiesto è troppo grande per la radio a causa delle opzioni selezionate</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1079"/>
         <source>Write Models and settings from %1 to the Tx?</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivere le impostazioni sulla radio da %1?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1082"/>
         <source>The file %1
 has not been recognized as a valid Models and Settings file
 Write anyway ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file %1
+non è stato riconosciuto come un file di impostazioni valido.
+Scriverlo ugualmente ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1108"/>
@@ -1616,78 +1630,78 @@ Write anyway ?</source>
         <location filename="../mainwindow.cpp" line="1357"/>
         <location filename="../mainwindow.cpp" line="1399"/>
         <source>Backup Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva impostazioni della radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1131"/>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Non posso controllare la compatibilità delle impostazioni! Continuare ugualmente ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1138"/>
         <source>The transmitter firmware belongs to another product family, check file and preferences!</source>
-        <translation type="unfinished"></translation>
+        <translation>Il firmware nella radio è di una famiglia differente\n rispetto a quello delle impostazioni che si stanno scrivendo.\n Controllare il documento e le preferenze!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1140"/>
         <source>The transmitter firmware is outdated, please upgrade!</source>
-        <translation type="unfinished"></translation>
+        <translation>Il firmware della radio è obsoleto, pianificate un aggiornamento!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1180"/>
         <source>Write Models and Settings To Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi le impostazioni nella radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1363"/>
         <location filename="../mainwindow.cpp" line="1406"/>
         <source>Write Firmware To Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi il fimware sulla radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1369"/>
         <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Non posso convertire le impostazioni per questo firmware, verranno usate le impostazioni originali</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1374"/>
         <source>Restore Models and Settings To Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Ripristina le impostazioni sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1378"/>
         <source>Could not restore Models and Settings to TX. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Non posso ripristinare le impostazioni sulla radio, il file originale può essere trovato in %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1381"/>
         <source>Firmware write failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrittura del firmware fallita</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1381"/>
         <source>Could not write firmware to to transmitter. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Non posso aggiornare il firmware, le impostazioni originali possono essere trovate nel file %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1384"/>
         <source>Cannot backup existing Models and Settings from TX. Firmware write process aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Non riesco a salvare le impostazioni della radio, l&apos;aggiornamento firmware viene annullato</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1416"/>
         <source>Save transmitter Models and Settings to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva le impostazioni dalla radio e scrivile in un documento</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1422"/>
         <source>Impossible to identify the radio on your system, please verify that the eeprom disk is connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile identificare la radio sul vostro sistema, verificate che il disco della eeprom sia connesso. </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1444"/>
         <source>Read Tx Firmware to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi il firmware in un documento</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1492"/>
@@ -1909,88 +1923,96 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1677"/>
         <source>&amp;Write Models and Settings To Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Scri&amp;vi le impostazioni nella radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1679"/>
         <source>Write Models and Settings to transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi le impostazioni nella radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1682"/>
         <source>&amp;Read Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Leggi le impostazioni dalla radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1684"/>
         <source>Read Models and Settings from transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Leggi le impostazioni dalla radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1687"/>
         <source>Write Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi il fimware</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1688"/>
         <source>Write firmware to transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi il firmware nella radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1691"/>
         <source>Write Models and Settings from file to Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi le impostazioni nella radio da un documento </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1692"/>
         <source>Write Models and Settings from file to transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi le impostazioni nella radio da un documento</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1695"/>
         <source>Save transmitter Models and Settings to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva le impostazioni dalla radio e scrivile in un documento</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1696"/>
         <source>Save the Models and Settings from the transmitter to a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Leggi le impostazioni dalla radio e scrivile in un file</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1699"/>
         <source>Read Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Leggi firmware</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1700"/>
         <source>Read firmware from transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Leggi il firmware dalla radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1704"/>
         <source>Configure software for reading from and writing to the transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Configura il software per la lettura/scrittura del microprocessore</translation>
+    </message>
+    <message>
+        <source>&amp;Configure Communication...</source>
+        <translation type="obsolete">&amp;Configure...</translation>
+    </message>
+    <message>
+        <source>Configure software for communication with the transmitter</source>
+        <translation type="obsolete">Configura il programmatore del microprocessore</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1820"/>
         <source>&amp;Read/Write</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Leggi/Scrivi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1916"/>
         <source>Write</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2103"/>
         <location filename="../mainwindow.cpp" line="2109"/>
         <source>Invalid Models and Settings File %1</source>
-        <translation type="unfinished"></translation>
+        <translation>File impostazioni non valido %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2128"/>
         <source>Invalid binary Models and Settings File %1</source>
-        <translation type="unfinished"></translation>
+        <translation>File binario delle impostazioni non valido %1</translation>
     </message>
     <message>
         <source>&amp;Write EEPROM To Tx</source>
@@ -2053,7 +2075,7 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure...</source>
-        <translation type="unfinished">&amp;Configura...</translation>
+        <translation>&amp;Configura...</translation>
     </message>
     <message>
         <source>Configure burning software</source>
@@ -5591,7 +5613,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../helpers.cpp" line="38"/>
         <source>Swedish</source>
-        <translation type="unfinished"></translation>
+        <translation>Svedese</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="66"/>
@@ -6298,7 +6320,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1123"/>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1125"/>
         <source>Support for MAVLINK devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Supporto per dispositivi MAVLINK</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1124"/>
@@ -7784,12 +7806,12 @@ m2560 per le schede v4.1</translation>
         <location filename="../burndialog.ui" line="261"/>
         <location filename="../burndialog.cpp" line="34"/>
         <source>Browse for file</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri file</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="289"/>
         <source>Backup and restore Models and Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva e ripristina le impostazioni della radio</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="446"/>
@@ -7825,7 +7847,7 @@ m2560 per le schede v4.1</translation>
         <location filename="../burndialog.ui" line="99"/>
         <location filename="../burndialog.cpp" line="199"/>
         <source>Write to TX</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi sulla radio</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="227"/>
@@ -7942,17 +7964,17 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.cpp" line="54"/>
         <source>Write Models and Settings to TX</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrittura impostazioni sulla radio</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="56"/>
         <source>Write Models and Settings in %1 to TX</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrittura impostazioni sulla radio da %1</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="154"/>
         <source>Choose file to load Models and Settings from</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il documento di impostazioni da scrivere</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="258"/>
@@ -7973,7 +7995,7 @@ m2560 per le schede v4.1</translation>
         <location filename="../burndialog.cpp" line="305"/>
         <location filename="../burndialog.cpp" line="328"/>
         <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
-        <translation type="unfinished"></translation>
+        <translation>File binario delle impostazioni non valido %1, Procedere ugualmente ?</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="324"/>
@@ -8006,12 +8028,12 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.cpp" line="517"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
-        <translation type="unfinished"></translation>
+        <translation>Dati errati nel profilo, la calibrazione della radio non è stata sostituita</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="571"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
-        <translation type="unfinished"></translation>
+        <translation>Dati errati nel profilo, i settaggi HW della radio non sono stati sostituiti</translation>
     </message>
     <message>
         <source>Wrong radio calibration data in profile, eeprom not patched</source>
@@ -9778,7 +9800,7 @@ Mode 4:
     <message>
         <location filename="../preferencesdialog.ui" line="790"/>
         <source>Automatic Backup Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella per backup</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="890"/>
@@ -10046,7 +10068,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../preferencesdialog.cpp" line="569"/>
         <source>Select your Models and Settings backup folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare la cartella per i backup</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.cpp" line="641"/>
@@ -10267,7 +10289,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../printdialog.cpp" line="857"/>
         <source>CF</source>
-        <translation type="unfinished">CF</translation>
+        <translation>CF</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="980"/>
