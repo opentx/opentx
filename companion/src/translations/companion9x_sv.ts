@@ -1517,7 +1517,17 @@ Vill du ladda ned den nu ?</translation>
         <translation>Ctrl+Alt+R</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+20"/>
+        <source>&amp;Configure...</source>
+        <translation>&amp;Kommunikationsinställningar...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Configure software for reading from and writing to the transmitter</source>
+        <translation>Inställningar för mjukvaran som kommunicerar med sändaren</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>&amp;List programmers</source>
         <translation>&amp;Programmerare</translation>
     </message>
@@ -1728,17 +1738,15 @@ Vill du ladda ned den nu ?</translation>
         <translation>Läs firmware från sändaren</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>&amp;Configure Communication...</source>
-        <translation>&amp;Kommunikationsinställningar...</translation>
+        <translation type="obsolete">&amp;Kommunikationsinställningar...</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Configure software for communication with the transmitter</source>
-        <translation>Inställningar för mjukvaran som kommunicerar med sändaren</translation>
+        <translation type="obsolete">Inställningar för mjukvaran som kommunicerar med sändaren</translation>
     </message>
     <message>
-        <location line="+111"/>
+        <location line="+115"/>
         <source>&amp;Edit</source>
         <translation>&amp;Redigera</translation>
     </message>

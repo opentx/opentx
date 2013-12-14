@@ -1735,6 +1735,11 @@ Do you want to download it now ?</source>
         <translation>Вставить выделение из буфера обмена</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1704"/>
+        <source>Configure software for reading from and writing to the transmitter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Write EEPROM To Tx</source>
         <translation type="obsolete">Записать EEPROM в TX</translation>
     </message>
@@ -1793,8 +1798,9 @@ Do you want to download it now ?</source>
         <translation type="obsolete">Считать прошивку из передатчика</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure...</source>
-        <translation type="obsolete">Настройка</translation>
+        <translation type="unfinished">Настройка</translation>
     </message>
     <message>
         <source>Configure burning software</source>
@@ -2153,16 +2159,6 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1700"/>
         <source>Read firmware from transmitter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1703"/>
-        <source>&amp;Configure Communication...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1704"/>
-        <source>Configure software for communication with the transmitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

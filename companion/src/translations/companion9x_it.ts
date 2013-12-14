@@ -1967,13 +1967,8 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1703"/>
-        <source>&amp;Configure Communication...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1704"/>
-        <source>Configure software for communication with the transmitter</source>
+        <source>Configure software for reading from and writing to the transmitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2056,8 +2051,9 @@ Write anyway ?</source>
         <translation type="obsolete">Leggi il firmware dalla radio</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure...</source>
-        <translation type="obsolete">&amp;Configura...</translation>
+        <translation type="unfinished">&amp;Configura...</translation>
     </message>
     <message>
         <source>Configure burning software</source>

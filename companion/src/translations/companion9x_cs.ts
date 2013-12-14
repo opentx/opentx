@@ -1993,13 +1993,8 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1703"/>
-        <source>&amp;Configure Communication...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1704"/>
-        <source>Configure software for communication with the transmitter</source>
+        <source>Configure software for reading from and writing to the transmitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2082,8 +2077,9 @@ Write anyway ?</source>
         <translation type="obsolete">Načíst paměť FLASH z rádia</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure...</source>
-        <translation type="obsolete">&amp;Konfigurace...</translation>
+        <translation type="unfinished">&amp;Konfigurace...</translation>
     </message>
     <message>
         <source>Configure burning software</source>

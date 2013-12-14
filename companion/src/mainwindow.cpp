@@ -1700,8 +1700,8 @@ void MainWindow::createActions()
     burnFromFlashAct->setStatusTip(tr("Read firmware from transmitter"));
     connect(burnFromFlashAct,SIGNAL(triggered()),this,SLOT(burnFromFlash()));
 
-    burnConfigAct = new QAction(QIcon(":/images/configure.png"), tr("&Configure Communication..."), this);
-    burnConfigAct->setStatusTip(tr("Configure software for communication with the transmitter"));
+    burnConfigAct = new QAction(QIcon(":/images/configure.png"), tr("&Configure..."), this);
+    burnConfigAct->setStatusTip(tr("Configure software for reading from and writing to the transmitter"));
     connect(burnConfigAct,SIGNAL(triggered()),this,SLOT(burnConfig()));
     EEPROMInterface *eepromInterface = GetEepromInterface();
     if (!IS_ARM(eepromInterface->getBoard())) {

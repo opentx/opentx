@@ -2073,13 +2073,8 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1703"/>
-        <source>&amp;Configure Communication...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1704"/>
-        <source>Configure software for communication with the transmitter</source>
+        <source>Configure software for reading from and writing to the transmitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2152,8 +2147,9 @@ Write anyway ?</source>
         <translation type="obsolete">Lese Flash Speicher und schreibe in den Sender</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure...</source>
-        <translation type="obsolete">&amp;Einstellungen...</translation>
+        <translation type="unfinished">&amp;Einstellungen...</translation>
     </message>
     <message>
         <source>Configure burning software</source>

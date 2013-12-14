@@ -1663,6 +1663,16 @@ Do you want to download it now ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1703"/>
+        <source>&amp;Configure...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1704"/>
+        <source>Configure software for reading from and writing to the transmitter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1708"/>
         <source>&amp;List programmers</source>
         <translation type="unfinished"></translation>
@@ -1978,16 +1988,6 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1700"/>
         <source>Read firmware from transmitter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1703"/>
-        <source>&amp;Configure Communication...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1704"/>
-        <source>Configure software for communication with the transmitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

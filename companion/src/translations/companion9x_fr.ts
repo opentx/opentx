@@ -1539,6 +1539,11 @@ Burn anyway ?</source>
         <translation>Comparer les modèles</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1704"/>
+        <source>Configure software for reading from and writing to the transmitter</source>
+        <translation>Configure le programme pour communiquer correctement avec la radio</translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1713"/>
         <source>Show fuses dialog</source>
         <translation>Afficher les réglages des fusibles</translation>
@@ -1713,8 +1718,9 @@ Burn anyway ?</source>
         <translation>Ouvrir un fichier existant</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure...</source>
-        <translation type="obsolete">&amp;Configurer AVRDUDE...</translation>
+        <translation>&amp;Configurer la communication...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1728"/>
@@ -1825,7 +1831,7 @@ Burn anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1718"/>
         <source>Simulate selected model.</source>
-        <translation type="unfinished">Simuler le modèle sélectionné</translation>
+        <translation>Simuler le modèle sélectionné</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1739"/>
@@ -2240,14 +2246,12 @@ Ecrire quand même?</translation>
         <translation>Lire le firmware de la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure Communication...</source>
-        <translation>&amp;Configurer la communication</translation>
+        <translation type="obsolete">&amp;Configurer la communication</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1704"/>
         <source>Configure software for communication with the transmitter</source>
-        <translation>Configure le programme pour communiquer correctement avec la radio</translation>
+        <translation type="obsolete">Configure le programme pour communiquer correctement avec la radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1787"/>

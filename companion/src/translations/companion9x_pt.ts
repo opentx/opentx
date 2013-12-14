@@ -1733,6 +1733,11 @@ Do you want to download it now ?</source>
         <translation>Colar o conteúdo na zona de transferência para a selecção corrente</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1704"/>
+        <source>Configure software for reading from and writing to the transmitter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="2103"/>
         <location filename="../mainwindow.cpp" line="2109"/>
         <source>Invalid Models and Settings File %1</source>
@@ -1786,8 +1791,9 @@ Do you want to download it now ?</source>
         <translation type="obsolete">Ler memória Flash do Rádio</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure...</source>
-        <translation type="obsolete">&amp;Configurar...</translation>
+        <translation type="unfinished">&amp;Configurar...</translation>
     </message>
     <message>
         <source>Configure burning software</source>
@@ -2149,16 +2155,6 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1700"/>
         <source>Read firmware from transmitter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1703"/>
-        <source>&amp;Configure Communication...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1704"/>
-        <source>Configure software for communication with the transmitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
