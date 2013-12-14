@@ -274,12 +274,12 @@ PACK(typedef struct t_ScriptData {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4];
+  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
   #define LIMITDATA_EXTRA   char name[LEN_CHANNEL_NAME]; int8_t curve;
   #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA   ModuleData moduleData[NUM_MODULES];
+  #define MODELDATA_EXTRA   ModuleData moduleData[NUM_MODULES]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
   #define LIMITDATA_EXTRA
   #define swstate_t         uint8_t
 #else
@@ -770,7 +770,7 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_CH_NUMBER(p)        (CFN_FUNC(p))
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
-#define CFN_PLAY_REPEAT_NOSTART 0b111111
+#define CFN_PLAY_REPEAT_NOSTART 0x3F
 #define CFN_GVAR_MODE(p)        ((p)->mode)
 #define CFN_PARAM(p)            ((p)->param.composite.val)
 #define CFN_RESET(p)            (p->active = 0, memset(&(p)->param, 0, sizeof((p)->param)))
@@ -1411,6 +1411,12 @@ PACK(typedef struct t_ModelHeader {
   MODELDATA_BITMAP
 }) ModelHeader;
 
+#if defined (CPUARM)
+  #define ARM_OR_AVR(x, y) x
+#else
+  #define ARM_OR_AVR(x, y) y
+#endif
+
 PACK(typedef struct t_ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
@@ -1419,7 +1425,7 @@ PACK(typedef struct t_ModelData {
   int8_t    ppmNCH:4; /* spare on ARM */
   uint8_t   trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  uint8_t   pulsePol:1; /* spare on ARM */
+  uint8_t   ARM_OR_AVR(displayText, pulsePol):1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
@@ -1441,6 +1447,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   thrTraceSrc;
   
   swstate_t switchWarningStates;
+  uint8_t   nSwToWarn;
 
   MODEL_GVARS_DATA
 

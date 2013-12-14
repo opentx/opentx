@@ -568,7 +568,7 @@ void telemetryWakeup()
     if (alarmsCheckStep == 0) {
       if (frskyData.rssi[1].value > 0x33) {
         AUDIO_SWR_RED();
-        s_global_warning = PSTR(CENTER "Antenna problem!");
+        s_global_warning = STR_ANTENNAPROBLEM;
         alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
       }
     }

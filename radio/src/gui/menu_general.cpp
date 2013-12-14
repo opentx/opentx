@@ -706,13 +706,13 @@ void onSdManagerMenu(const char *result)
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     luaExec(lfn);
   }
+#endif
   else if (result == STR_VIEW_TEXT) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     pushMenuTextView(lfn);
   }
-#endif
 #endif
 }
 

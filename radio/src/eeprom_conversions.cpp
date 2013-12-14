@@ -48,6 +48,12 @@ PACK(typedef struct {
   int8_t   curveParam;
 }) ExpoData_v215;
 
+#if defined(PCBTARANIS)
+  #define LIMITDATA_V215_EXTRA  char name[LEN_CHANNEL_NAME];
+#else
+  #define LIMITDATA_V215_EXTRA
+#endif
+
 PACK(typedef struct {
   int8_t  min;
   int8_t  max;
@@ -55,9 +61,7 @@ PACK(typedef struct {
   int16_t offset:14;
   uint16_t symetrical:1;
   uint16_t revert:1;
-#if defined(PCBTARANIS)
-  char name[LEN_CHANNEL_NAME];
-#endif
+  LIMITDATA_V215_EXTRA
 }) LimitData_v215;
 
 #if defined(PCBTARANIS)
@@ -462,7 +466,7 @@ bool eeConvert()
   theFile.openRlc(0);
   theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
 #else
-  #warning "TODO openRlc for sky9x"
+  #pragma message("TODO openRlc for sky9x")
 #endif
   if (g_eeGeneral.version == 215) ConvertGeneralSettings_215_to_216(g_eeGeneral);
   s_eeDirtyMsk = EE_GENERAL;
@@ -482,7 +486,7 @@ bool eeConvert()
       theFile.openRlc(FILE_MODEL(id));
       theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
 #else
-      #warning "TODO openRlc for sky9x"
+      #pragma message("TODO openRlc for sky9x")
 #endif
       int version = conversionVersionStart;
       if (version == 215) {
