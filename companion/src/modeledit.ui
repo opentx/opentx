@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1130</width>
-    <height>698</height>
+    <height>735</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -44,7 +44,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>10</number>
      </property>
      <widget class="QWidget" name="tabModelSetup">
       <attribute name="title">
@@ -242,11 +242,11 @@
            </item>
            <item row="13" column="1" colspan="9">
             <layout class="QGridLayout" name="StockSwitchStartup">
-             <property name="verticalSpacing">
-              <number>6</number>
-             </property>
              <property name="topMargin">
               <number>0</number>
+             </property>
+             <property name="verticalSpacing">
+              <number>6</number>
              </property>
              <item row="0" column="9" rowspan="2">
               <widget class="Line" name="swwarn_line4">
@@ -9058,8 +9058,8 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>998</width>
-            <height>481</height>
+            <width>1086</width>
+            <height>641</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -13921,8 +13921,8 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>969</width>
-            <height>467</height>
+            <width>1086</width>
+            <height>611</height>
            </rect>
           </property>
           <property name="sizePolicy">
@@ -19072,8 +19072,8 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>716</width>
-            <height>482</height>
+            <width>1086</width>
+            <height>641</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_74">
@@ -20515,8 +20515,8 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>163</width>
-            <height>354</height>
+            <width>1086</width>
+            <height>641</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="grid_tabSafetySwitches" rowstretch="0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" columnstretch="0,10,10">
@@ -20924,8 +20924,8 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>526</width>
-            <height>48</height>
+            <width>1086</width>
+            <height>641</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_75">
@@ -21377,6 +21377,29 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
                   </property>
                   <property name="text">
                    <string>Blades</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="fasOffset_label">
+                  <property name="text">
+                   <string>FAS Offset</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QDoubleSpinBox" name="fasOffset_DSB">
+                  <property name="decimals">
+                   <number>1</number>
+                  </property>
+                  <property name="minimum">
+                   <double>-1.500000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>1.500000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.100000000000000</double>
                   </property>
                  </widget>
                 </item>
