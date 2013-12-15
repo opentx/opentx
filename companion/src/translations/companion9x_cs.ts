@@ -925,42 +925,42 @@ který kanál patří ke kterému výstupu.</translation>
     <message>
         <location filename="../generaledit.ui" line="1763"/>
         <source>SC</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1825"/>
         <source>SE</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2120"/>
         <source>SA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2136"/>
         <source>SF</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2152"/>
         <source>SH</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2168"/>
         <source>SD</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2184"/>
         <source>SB</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2249"/>
         <source>SG</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2275"/>
@@ -1348,7 +1348,7 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="173"/>
         <source>Display previous message again at startup ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Chcete zobrazit předchozí zprávu i příště ?</translation>
     </message>
     <message>
         <source>Firmware does not longer fit in flash, due to selected firmware options</source>
@@ -1357,7 +1357,7 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="353"/>
         <source>Compilation server temporary failure, try later</source>
-        <translation type="unfinished"></translation>
+        <translation>Dočasná chyba kompilačního serveru, zkuste to prosím později znovu.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="356"/>
@@ -1369,7 +1369,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../mainwindow.cpp" line="359"/>
         <location filename="../mainwindow.cpp" line="399"/>
         <source>Compilation server requires registration, please check opentx web site</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompilační server vyžaduje registraci. Více najdete na webu opentx.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="362"/>
@@ -1589,7 +1589,7 @@ Chcete ji přesto naprogramovat?</translation>
         <location filename="../mainwindow.cpp" line="721"/>
         <location filename="../mainwindow.cpp" line="741"/>
         <source>companion9x - Models and Settings Editor - %1 - profile %2</source>
-        <translation type="unfinished"></translation>
+        <translation>companion9x - Editor nastavení rádia a modelů - %1 - profile %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="108"/>
@@ -1597,12 +1597,12 @@ Chcete ji přesto naprogramovat?</translation>
         <location filename="../mainwindow.cpp" line="732"/>
         <location filename="../mainwindow.cpp" line="743"/>
         <source>companion9x - Models and Settings Editor - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>companion9x - Editor nastavení rádia a modelů - %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="430"/>
         <source>Do you want to write the firmware to the transmitter now ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Chcete zapsat firmware do rádia nyní ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1051"/>
@@ -1610,29 +1610,31 @@ Chcete ji přesto naprogramovat?</translation>
         <location filename="../mainwindow.cpp" line="1427"/>
         <location filename="../mainwindow.cpp" line="1434"/>
         <source>Read Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst modely a nastavení z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
         <source>Firmware does not longer fit in the Tx, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware s těmito vybranými součástmi, se již nevejde do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="390"/>
         <source>Firmware does not fit in the Tx, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware s těmito vybranými součástmi, se již nevejde do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1079"/>
         <source>Write Models and settings from %1 to the Tx?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení z %1 do rádia?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1082"/>
         <source>The file %1
 has not been recognized as a valid Models and Settings file
 Write anyway ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypadá to že soubor %1
+neobsahuje platná data modelů a nastavení
+Chcete ho přesto zapsat ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1108"/>
@@ -1642,78 +1644,78 @@ Write anyway ?</source>
         <location filename="../mainwindow.cpp" line="1357"/>
         <location filename="../mainwindow.cpp" line="1399"/>
         <source>Backup Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Zálohovat modely a nastavení z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1131"/>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze ověřit kompatibilitu dat modelů a nastavení! Chcete přesto pokračovat?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1138"/>
         <source>The transmitter firmware belongs to another product family, check file and preferences!</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware patří do jiné produktové rodiny, zkontrolujte nastavení předvoleb!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1140"/>
         <source>The transmitter firmware is outdated, please upgrade!</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware rádia je zastaralý, aktualizujte ho prosím!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1180"/>
         <source>Write Models and Settings To Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1363"/>
         <location filename="../mainwindow.cpp" line="1406"/>
         <source>Write Firmware To Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1369"/>
         <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemohu konvertovat modely a nastavení pro použití s tímto firmwarem, budou použita původní data</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1374"/>
         <source>Restore Models and Settings To Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Obnovit modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1378"/>
         <source>Could not restore Models and Settings to TX. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze obnovit modely a nastavení do rádia. Soubor s modely a nastavením najdete v: %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1381"/>
         <source>Firmware write failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Zápis firmware selhal</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1381"/>
         <source>Could not write firmware to to transmitter. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze zapsat firmware do rádio. Data modelů a nastavení najdete v: %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1384"/>
         <source>Cannot backup existing Models and Settings from TX. Firmware write process aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemohu zálohovat stávající modely a nastavení z rádia. Zápis firmware byl přerušen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1416"/>
         <source>Save transmitter Models and Settings to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit modely a nastavení do souboru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1422"/>
         <source>Impossible to identify the radio on your system, please verify that the eeprom disk is connected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebylo možné identifikovat rádio ve vašem systému, zkontrolujte zda je eeprom disk připojen.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1444"/>
         <source>Read Tx Firmware to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst firmware z rádia a uložit do souboru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1492"/>
@@ -1935,88 +1937,88 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1677"/>
         <source>&amp;Write Models and Settings To Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1679"/>
         <source>Write Models and Settings to transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1682"/>
         <source>&amp;Read Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Načíst modely a nastavení z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1684"/>
         <source>Read Models and Settings from transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst modely a nastavení z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1687"/>
         <source>Write Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat firmware</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1688"/>
         <source>Write firmware to transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1691"/>
         <source>Write Models and Settings from file to Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení ze souboru do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1692"/>
         <source>Write Models and Settings from file to transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení ze souboru do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1695"/>
         <source>Save transmitter Models and Settings to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit modely a nastavení z rádia do souboru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1696"/>
         <source>Save the Models and Settings from the transmitter to a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit modely a nastavení z rádia do souboru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1699"/>
         <source>Read Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst firmware</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1700"/>
         <source>Read firmware from transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst firmware z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1704"/>
         <source>Configure software for reading from and writing to the transmitter</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení softwaru pro čtení a zápis do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1820"/>
         <source>&amp;Read/Write</source>
-        <translation type="unfinished"></translation>
+        <translation>Čtení/&amp;Zápis</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1916"/>
         <source>Write</source>
-        <translation type="unfinished"></translation>
+        <translation>Zápis</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2103"/>
         <location filename="../mainwindow.cpp" line="2109"/>
         <source>Invalid Models and Settings File %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný soubor modelů a nastavení %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2128"/>
         <source>Invalid binary Models and Settings File %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný binární soubor modelů a nastavení %1</translation>
     </message>
     <message>
         <source>&amp;Write EEPROM To Tx</source>
@@ -2079,7 +2081,7 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1703"/>
         <source>&amp;Configure...</source>
-        <translation type="unfinished">&amp;Konfigurace...</translation>
+        <translation>&amp;Konfigurace...</translation>
     </message>
     <message>
         <source>Configure burning software</source>
@@ -2608,7 +2610,7 @@ Pokud není uveden je mix aktivní pořád.</translation>
     <message>
         <location filename="../mixerdialog.ui" line="460"/>
         <source>Fix Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompenzovat Offset</translation>
     </message>
     <message>
         <location filename="../mixerdialog.ui" line="467"/>
@@ -4179,7 +4181,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit.ui" line="1292"/>
         <source>Master/Trainer Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port učitel/žák</translation>
     </message>
     <message>
         <location filename="../modeledit.ui" line="1359"/>
@@ -4682,25 +4684,25 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit.ui" line="21454"/>
         <source>Sink Max</source>
         <oldsource>Sunk Max</oldsource>
-        <translation type="unfinished">Klesání Max</translation>
+        <translation>Klesání Max</translation>
     </message>
     <message>
         <location filename="../modeledit.ui" line="21577"/>
         <source>Climb Max</source>
         <oldsource>Raise Max</oldsource>
-        <translation type="unfinished">Stoupání Max</translation>
+        <translation>Stoupání Max</translation>
     </message>
     <message>
         <location filename="../modeledit.ui" line="21593"/>
         <source>Sink Min</source>
         <oldsource>Sunk Min</oldsource>
-        <translation type="unfinished">Klesání Min</translation>
+        <translation>Klesání Min</translation>
     </message>
     <message>
         <location filename="../modeledit.ui" line="21609"/>
         <source>Climb Min</source>
         <oldsource>Raise Min</oldsource>
-        <translation type="unfinished">Stoupání Min</translation>
+        <translation>Stoupání Min</translation>
     </message>
     <message>
         <location filename="../modeledit.ui" line="22762"/>
@@ -4717,7 +4719,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit.ui" line="9021"/>
         <source>Sticks</source>
-        <translation type="unfinished">Páky</translation>
+        <translation>Páky</translation>
     </message>
     <message>
         <location filename="../modeledit.ui" line="9287"/>
@@ -5153,7 +5155,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit.cpp" line="2749"/>
         <source>CF%1</source>
-        <translation type="unfinished"></translation>
+        <translation>FN%1</translation>
     </message>
     <message>
         <location filename="../modeledit.cpp" line="3064"/>
@@ -6371,7 +6373,7 @@ a pochopitelně nebudou zobrazena žádná telem. data.)</translation>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1123"/>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1125"/>
         <source>Support for MAVLINK devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpora pro zařízení s MAVLINK</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1124"/>
@@ -6381,13 +6383,13 @@ a pochopitelně nebudou zobrazena žádná telem. data.)</translation>
     <message>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1126"/>
         <source>Possibility to enable FAI MODE at field</source>
-        <translation type="unfinished">Možnost povolit FAI MODE v menu rádia.
+        <translation>Možnost povolit FAI MODE v menu rádia.
 FAI je soutěžní mód (www.fai.org), zablokuje vario, zobrazení telemetrie a funkce hlasového hlášení.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1126"/>
         <source>FAI MODE always enabled</source>
-        <translation type="unfinished">FAI MODE vždy aktivní (nelze vypnout v menu rádia)
+        <translation>FAI MODE vždy aktivní (nelze vypnout v menu rádia)
 FAI je soutěžní mód (www.fai.org), zablokuje vario, zobrazení telemetrie a funkce hlasového hlášení.</translation>
     </message>
     <message>
@@ -6500,7 +6502,7 @@ Toto se hodí pokud je potřeba ušetřit místo v paměti FLASH pro jiné funkc
     <message>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1308"/>
         <source>Use FrSky Taranis sticks in a 9X/9XR</source>
-        <translation type="unfinished"></translation>
+        <translation>Použití pák z Taranis (hardware) v rádiu 9X/9XR</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/open9xinterface.cpp" line="1316"/>
@@ -7068,7 +7070,7 @@ Nastavení hodnoty se provádí přímo v seznamu proměnných, nebo pomocí Fun
     <message>
         <location filename="../helpers.cpp" line="38"/>
         <source>Swedish</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="66"/>
@@ -7776,7 +7778,11 @@ Zkontrolujte si nastavení loga v předvolbách.</translation>
 We are really sensible to that!
 
 The openTX/C9X Team.</source>
-        <translation type="unfinished"></translation>
+        <translation>Děkujeme všem za příspěvky, dobré nápady a přátelské emaily k chystenému modelu financování openTX/C9x.
+
+Vážíme si toho a nasloucháme!
+
+Tým OpenTX/C9X.</translation>
     </message>
 </context>
 <context>
@@ -8165,7 +8171,7 @@ m2560 pro V4 desky</translation>
         <location filename="../burndialog.ui" line="99"/>
         <location filename="../burndialog.cpp" line="199"/>
         <source>Write to TX</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat do rádia</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="123"/>
@@ -8243,12 +8249,12 @@ m2560 pro V4 desky</translation>
         <location filename="../burndialog.ui" line="261"/>
         <location filename="../burndialog.cpp" line="34"/>
         <source>Browse for file</source>
-        <translation type="unfinished"></translation>
+        <translation>Procházet ...</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="289"/>
         <source>Backup and restore Models and Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Zálohovat a obnovit data modelů a nastavení</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="383"/>
@@ -8369,24 +8375,24 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../burndialog.cpp" line="54"/>
         <source>Write Models and Settings to TX</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="56"/>
         <source>Write Models and Settings in %1 to TX</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení v %1 do rádia</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="154"/>
         <source>Choose file to load Models and Settings from</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyberte soubor s daty modelů a nastavení</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="295"/>
         <location filename="../burndialog.cpp" line="305"/>
         <location filename="../burndialog.cpp" line="328"/>
         <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný soubor s binárními daty modelů a nastavení %1, Přesto pokračovat ?</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="324"/>
@@ -8429,12 +8435,12 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../burndialog.cpp" line="517"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil neobsahuje platná kalibrační data, nastavení nebyla upravena</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="571"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil neobsahuje platná data nastavení rádia, nastavení nebyla upravena</translation>
     </message>
     <message>
         <source>Wrong radio calibration data in profile, eeprom not patched</source>
@@ -9108,7 +9114,7 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../comparedialog.cpp" line="1126"/>
         <source>CF</source>
-        <translation type="unfinished"></translation>
+        <translation>FN</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1456"/>
@@ -9252,8 +9258,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../customizesplashdialog.cpp" line="57"/>
         <source>Could not find bitmap to replace in file</source>
-        <translation type="unfinished">Nemohu nalézt pozici k nahrazení v souboru.
-Obsahuje podporu loga?</translation>
+        <translation>Nemohu nalézt pozici loga k nahrazení v souboru.
+Obsahuje firmware podporu loga?</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="71"/>
@@ -10505,7 +10511,7 @@ Mode 4:
     <message>
         <location filename="../preferencesdialog.ui" line="790"/>
         <source>Automatic Backup Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Složka pro automatické zálohy</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="977"/>
@@ -10515,7 +10521,7 @@ Mode 4:
     <message>
         <location filename="../preferencesdialog.ui" line="987"/>
         <source>Processor ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID procesoru</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="1040"/>
@@ -10579,7 +10585,7 @@ Mode 4:
     <message>
         <location filename="../preferencesdialog.cpp" line="569"/>
         <source>Select your Models and Settings backup folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte složku pro automatické zálohy modelů a nastavení</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.cpp" line="597"/>
@@ -11375,7 +11381,7 @@ nutno zastavět hlasový modul</translation>
     <message>
         <location filename="../printdialog.cpp" line="857"/>
         <source>CF</source>
-        <translation type="unfinished"></translation>
+        <translation>FN</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="972"/>
