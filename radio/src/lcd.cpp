@@ -358,6 +358,10 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
       lcd_putcAtt(x, y, c, mode);
         x += lcdLastFW;
     }
+    else if (c == 0x1F) {
+      x++;
+      x |= 0x0F;
+    }  
     else {
       x += (c*FW/2);
     }
