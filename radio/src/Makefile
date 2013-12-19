@@ -139,14 +139,9 @@ GRAPHICS = YES
 BOLD = YES
 BATTGRAPH = NO
 
-# FONT NAME
-# Values = STD, SQT5
-FONT = STD
-
-# PROPORTIONAL FONT
-# proportional or fixed-width
-# Values = YES, NO
-PWFONT = YES
+# FONT TYPE
+# Values = STD, STDV2, SQT5
+FONT = STDV2
 
 # PPM center adjustable
 # Values = YES, NO
@@ -783,18 +778,12 @@ ifneq ($(PCB), TARANIS)
   endif
 endif
 
-
-ifneq ($(FONT), STD)
-  CPPDEFS += -DFONT_$(FONT)  
-endif
-
-ifeq ($(PWFONT), YES)
-  INCDIRS += fonts/$(shell sh -c "echo $(FONT)_pw | tr '[:upper:]' '[:lower:]'")
-  INCDIRS += fonts/std_pw
-  CPPDEFS += -DPWFONT
+ifeq ($(FONT), STD)
+  INCDIRS += fonts/std
 else
-  INCDIRS += fonts/$(shell sh -c "echo $(FONT)_fw | tr '[:upper:]' '[:lower:]'")
-  INCDIRS += fonts/std_fw
+  INCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
+  INCDIRS += fonts/stdv2
+  CPPDEFS += -DPWFONT 
 endif
   
 ifeq ($(THR_TRACE), YES)

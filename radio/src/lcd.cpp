@@ -301,6 +301,9 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
             }
           }
 #endif
+#if !defined(CPUM64)
+          if (y && inv) *p |= BITMASK((y-1)%8);
+#endif
           if (i == 6) {
             lcdLastFW++;
             break;
@@ -310,6 +313,9 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 #endif
 
       if (p<DISPLAY_END) {
+#if !defined(CPUM64)
+        if (y && inv) *p |= BITMASK((y-1)%8);
+#endif
         LCD_BYTE_FILTER(p, ~(0xff << ym8), b << ym8);
         if (ym8) {
           uint8_t *r = p + LCD_W;
@@ -342,6 +348,7 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
 {
   while(len!=0) {
     unsigned char c;
+    bool setx = false;
     switch (mode & (BSS+ZCHAR)) {
       case BSS:
         c = *s;
@@ -353,14 +360,18 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
         c = pgm_read_byte(s);
         break;
     }
+
     if (!c || x>LCD_W-6) break;
     if (c >= 0x20) {
       lcd_putcAtt(x, y, c, mode);
         x += lcdLastFW;
     }
+    else if (setx) {
+      x = c;
+      setx = false;
+    }
     else if (c == 0x1F) {
-      x++;
-      x |= 0x0F;
+      setx = true;
     }  
     else {
       x += (c*FW/2);
