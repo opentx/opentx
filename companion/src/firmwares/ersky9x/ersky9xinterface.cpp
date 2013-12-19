@@ -306,7 +306,7 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 2;
     case Pots:
       return 3;
-    case GvarsNum:
+    case Gvars:
       return 7;
     case GvarsOfsNum:
       return 5;
@@ -350,7 +350,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 125;
     case MaxVolume:
       return 23;
-    case Gvars:
     case GvarsHaveSources:
     case GvarsAsSources:
     case GvarsAsWeight:

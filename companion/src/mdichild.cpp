@@ -44,7 +44,7 @@
 #include "xmlinterface.h"
 #include "hexinterface.h"
 #include "mainwindow.h"
-#include "modeledit.h"
+#include "modeledit/modeledit.h"
 #include "generaledit.h"
 #include "avroutputdialog.h"
 #include "burnconfigdialog.h"
@@ -192,9 +192,9 @@ void MdiChild::OpenEditWindow(bool wizard=false)
       }
     }
     ModelEdit *t = new ModelEdit(radioData, (row - 1), wizard, this);
-    if (isNew && !wizard) t->applyBaseTemplate();
+    // TODO if (isNew && !wizard) t->applyBaseTemplate();
     t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
-    connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
+    connect(t, SIGNAL(modified()), this, SLOT(setModified()));
     //t->exec();
     t->show();
   }

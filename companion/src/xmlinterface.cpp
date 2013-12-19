@@ -195,7 +195,7 @@ bool XmlInterface::save(RadioData &radioData)
     // the models
     models xml_models;
     models::model_sequence & model_sequence (xml_models.model());
-    for (int i=0; i<C9XMAX_MODELS; i++) {
+    for (int i=0; i<C9X_MAX_MODELS; i++) {
       ModelData & m = radioData.models[i];
       if (m.used) {
         model xm(m.name);

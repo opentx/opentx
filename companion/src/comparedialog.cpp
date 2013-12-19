@@ -21,7 +21,7 @@ public:
   }
   bool general_settings;
   uint8_t models_count;
-  uint8_t models[C9XMAX_MODELS];
+  uint8_t models[C9X_MAX_MODELS];
 };
 
 compareDialog::compareDialog(QWidget *parent, GeneralSettings *gg) :
@@ -342,7 +342,7 @@ void compareDialog::printPhases()
     gvars=1;
   }
   if (gvars==1) {
-    gvarnum=GetEepromInterface()->getCapability(GvarsNum);
+    gvarnum=GetEepromInterface()->getCapability(Gvars);
   }
   if ((gvars==1 && GetEepromInterface()->getCapability(GvarsFlightPhases)) || GetEepromInterface()->getCapability(RotaryEncoders)) {
     str.append("<br><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
@@ -564,7 +564,7 @@ void compareDialog::printGvars()
   int gvarnum=0;
   if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!GetEepromInterface()->getCapability(HasVariants) && GetEepromInterface()->getCapability(Gvars))) {
     gvars=1;
-    gvarnum=GetEepromInterface()->getCapability(GvarsNum);
+    gvarnum=GetEepromInterface()->getCapability(Gvars);
   }
 
   if (!GetEepromInterface()->getCapability(GvarsFlightPhases) && (gvars==1 && GetEepromInterface()->getCapability(Gvars))) {

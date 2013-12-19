@@ -157,7 +157,7 @@ QString printDialog::printPhases()
     if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!GetEepromInterface()->getCapability(HasVariants) && GetEepromInterface()->getCapability(Gvars))) {
       if (GetEepromInterface()->getCapability(GvarsFlightPhases)) {
         gvars=1;
-        gvarnum=GetEepromInterface()->getCapability(GvarsNum);
+        gvarnum=GetEepromInterface()->getCapability(Gvars);
       }
     }
 
@@ -787,7 +787,7 @@ void printDialog::printGvars()
   int gvarnum=0;
   if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!GetEepromInterface()->getCapability(HasVariants) && GetEepromInterface()->getCapability(Gvars))) {
     gvars=1;
-    gvarnum=GetEepromInterface()->getCapability(GvarsNum);
+    gvarnum=GetEepromInterface()->getCapability(Gvars);
   }
   if (!GetEepromInterface()->getCapability(GvarsFlightPhases) && (gvars==1 && GetEepromInterface()->getCapability(Gvars))) {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";

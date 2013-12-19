@@ -286,8 +286,6 @@ int Er9xInterface::getCapability(const Capability capability)
       return 12;
     case CustomAndSwitches:
         return 5;
-    case GvarsNum:
-        return 7;
     case GvarsOfsNum:
       return 5;
     case CSFunc:
@@ -332,7 +330,9 @@ int Er9xInterface::getCapability(const Capability capability)
     case DiffMixers:
     case HasNegCurves:
     case HasFixOffset:
+      return 1;
     case Gvars:
+      return 7;
     case GvarsHaveSources:
     case GvarsAsSources:
     case GvarsAsWeight:

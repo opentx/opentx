@@ -59,13 +59,14 @@ const uint8_t modn12x3[4][4]= {
   {4, 2, 3, 1},
   {4, 3, 2, 1} };
 
-#define C9XMAX_MODELS             60
+#define C9X_MAX_MODELS            60
 #define C9X_MAX_PHASES            9
 #define C9X_MAX_MIXERS            64
 #define C9X_MAX_EXPOS             32
 #define C9X_MAX_CURVES            16
-#define MAX_POINTS                17
-#define C9X_MAX_GVARS                 9
+#define C9X_MAX_POINTS            17
+#define C9X_MAX_GVARS             9
+#define C9X_MAX_ENCODERS          2
 #define NUM_SAFETY_CHNOUT         16
 #define C9X_NUM_CHNOUT            32 // number of real output channels
 #define C9X_NUM_CSW               32 // number of custom switches
@@ -106,6 +107,18 @@ const uint8_t chout_ar[] = { //First number is 0..23 -> template setup,  Second 
 2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
 3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
 4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1    }; // TODO delete it?
+
+// Beep center bits
+#define BC_BIT_RUD (0x01)
+#define BC_BIT_ELE (0x02)
+#define BC_BIT_THR (0x04)
+#define BC_BIT_AIL (0x08)
+#define BC_BIT_P1  (0x10)
+#define BC_BIT_P2  (0x20)
+#define BC_BIT_P3  (0x40)
+#define BC_BIT_P4  (0x80)
+#define BC_BIT_REA (0x80)
+#define BC_BIT_REB (0x100)
 
 // TODO remove this enum!
 enum EnumKeys {
@@ -477,7 +490,7 @@ class CurveData {
     CurveData() { clear(5); }
     bool custom;         // 0=end, 1=pos, 2=neg, 3=both
     uint8_t count;
-    CurvePoint points[MAX_POINTS];
+    CurvePoint points[C9X_MAX_POINTS];
     char  name[6+1];
     void clear(int count) { memset(this, 0, sizeof(CurveData)); this->count = count; }
 };
@@ -828,6 +841,9 @@ class ModelData {
 
     ModelData removeGlobalVars();
 
+    void clearMixes();
+    void clearInputs();
+
   protected:
     void removeGlobalVar(int & var);
 };
@@ -835,13 +851,14 @@ class ModelData {
 class RadioData {
   public:   
     GeneralSettings generalSettings;
-    ModelData models[C9XMAX_MODELS];    
+    ModelData models[C9X_MAX_MODELS];    
 };
 
+// TODO rename FlightPhase to FlightMode
 enum Capability {
  OwnerName,
  FlightPhases,
- FlightPhasesAreNamed,
+ FlightModesName,
  FlightPhasesHaveFades,
  SimulatorType,
  Mixes,
@@ -867,6 +884,7 @@ enum Capability {
  CustomSwitchesExt,
  RotaryEncoders,
  Outputs,
+ ChannelsName,
  ExtraChannels,
  ExtraInputs,
  ExtraTrims,
@@ -931,7 +949,7 @@ enum Capability {
  GvarsHaveSources,
  GvarsAsSources,
  GvarsAsWeight,
- GvarsNum,
+ GvarsName,
  GvarsOfsNum,
  NoTelemetryProtocol,
  TelemetryCSFields,

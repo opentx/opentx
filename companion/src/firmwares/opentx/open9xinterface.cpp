@@ -562,9 +562,13 @@ int Open9xInterface::getCapability(const Capability capability)
         return 6;
       else
         return 5;
-    case FlightPhasesAreNamed:
     case FlightPhasesHaveFades:
+      return 1;
     case Gvars:
+      return 5;
+    case FlightModesName:
+    case GvarsName:
+      return (IS_TARANIS(board) ? 10 : 6);
     case GvarsInCS:
     case GvarsAsWeight:
     case ExpoIsCurve:
@@ -692,8 +696,8 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
     case HasExpoNames:
       return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
-    case HasChNames:
-      return (IS_TARANIS(board) ? 1 : 0);
+    case ChannelsName:
+      return (IS_TARANIS(board) ? 6 : 0);
     case HasCvNames:
       return (IS_TARANIS(board) ? 1 : 0);
     case NoTimerDirs:
@@ -777,7 +781,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_ARM(board) ? 250 : 15);
     case CSFunc:
       return 18;
-    case GvarsNum:
     case GvarsOfsNum:  
       return 5;
     case HasSDLogs:

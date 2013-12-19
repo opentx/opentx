@@ -109,6 +109,8 @@ add_custom_command(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
 )
 
+add_subdirectory(modeledit)
+
 SET( companion9x_SRCS
      eeprominterface.cpp
      hexinterface.cpp
@@ -137,15 +139,11 @@ SET( companion9x_SRCS
      firmwares/ersky9x/ersky9xeeprom.cpp
      firmwares/ersky9x/ersky9xinterface.cpp
      ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
-     node.cpp
-     edge.cpp
      helpers.cpp
      mdichild.cpp
      generaledit.cpp
-     modeledit.cpp 
      modelslist.cpp
      mountlist.cpp 
-     mixerslist.cpp 
      avroutputdialog.cpp
      preferencesdialog.cpp
      burnconfigdialog.cpp
@@ -155,8 +153,6 @@ SET( companion9x_SRCS
      burndialog.cpp
      printdialog.cpp
      fusesdialog.cpp
-     expodialog.cpp
-     mixerdialog.cpp
      logsdialog.cpp
      downloaddialog.cpp
      simulatordialog.cpp
@@ -175,9 +171,7 @@ SET( companion9x_MOC_HDRS
      comparedialog.h
      printdialog.h
      fusesdialog.h
-     mixerdialog.h
      logsdialog.h
-     expodialog.h
      contributorsdialog.h
      customizesplashdialog.h
      splashlibrary.h
@@ -191,9 +185,7 @@ SET( companion9x_MOC_HDRS
      xmenuwidget.h
      xsimulatordialog.h
      generaledit.h
-     modeledit.h
      modelslist.h
-     mixerslist.h
      mdichild.h
      mainwindow.h
      myslider.h
@@ -206,16 +198,13 @@ SET( companion9x_UIS
      avroutputdialog.ui
      comparedialog.ui
      fusesdialog.ui
-     expodialog.ui
      logsdialog.ui
-     mixerdialog.ui
      preferencesdialog.ui
      simulatordialog.ui
      xsimulatordialog.ui
      burnconfigdialog.ui
      downloaddialog.ui
      generaledit.ui
-     modeledit.ui
      printdialog.ui
      contributorsdialog.ui
      customizesplashdialog.ui
@@ -314,7 +303,7 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion9x_SRCS} ${companion9x_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )

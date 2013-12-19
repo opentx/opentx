@@ -6,10 +6,10 @@
 
 #define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(CustomSwitches)-1)
 
-//convert from mode 1 to mode g_eeGeneral.stickMode
+//convert from mode 1 to mode generalSettings.stickMode
 //NOTICE!  =>  1..4 -> 1..4
-#define CONVERT_MODE(x) (((x)<=4) ? modn12x3[g_eeGeneral.stickMode][((x)-1)] : (x))
-#define CHANNEL_ORDER(x) (chout_ar[g_eeGeneral.templateSetup*4 + (x)-1])
+#define CONVERT_MODE(x) (((x)<=4) ? modn12x3[generalSettings.stickMode][((x)-1)] : (x))
+#define CHANNEL_ORDER(x) (chout_ar[generalSettings.templateSetup*4 + (x)-1])
 
 #define CURVE_BASE   7
 #define CH(x) (SRC_CH1+(x)-1-(SRC_SWC-SRC_3POS))

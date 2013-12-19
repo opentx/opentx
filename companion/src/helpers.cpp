@@ -560,12 +560,9 @@ void populateTrimUseCB(QComboBox *b, unsigned int phase)
 void populateGvarUseCB(QComboBox *b, unsigned int phase)
 {
   b->addItem(QObject::tr("Own value"));
-  unsigned int num_phases = GetEepromInterface()->getCapability(FlightPhases);
-  if (num_phases>0) {
-    for (unsigned int i = 0; i < num_phases; i++) {
-      if (i != phase) {
-        b->addItem(QObject::tr("Flight mode %1 value").arg(i));
-      }
+  for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+    if (i != (int)phase) {
+      b->addItem(QObject::tr("Flight mode %1 value").arg(i));
     }
   }
 }
@@ -983,7 +980,7 @@ void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
   }
 
   if (flags & POPULATE_GVARS) {
-    for (int i=0; i<GetEepromInterface()->getCapability(GvarsNum); i++) {
+    for (int i=0; i<GetEepromInterface()->getCapability(Gvars); i++) {
       item = RawSource(SOURCE_TYPE_GVAR, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);

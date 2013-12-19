@@ -534,6 +534,18 @@ ModelData::ModelData()
   clear();
 }
 
+void ModelData::clearInputs()
+{
+  for (int i=0; i<C9X_MAX_EXPOS; i++)
+    expoData[i].clear();
+}
+
+void ModelData::clearMixes()
+{
+  for (int i=0; i<C9X_MAX_MIXERS; i++)
+    mixData[i].clear();
+}
+
 void ModelData::clear()
 {
   memset(this, 0, sizeof(ModelData));
@@ -553,10 +565,8 @@ void ModelData::clear()
   }
   for (int i=0; i<C9X_MAX_PHASES; i++)
     phaseData[i].clear();
-  for (int i=0; i<C9X_MAX_EXPOS; i++)
-    expoData[i].clear();
-  for (int i=0; i<C9X_MAX_MIXERS; i++)
-    mixData[i].clear();
+  clearInputs();
+  clearMixes();
   for(int i=0; i<4; i++){
     mixData[i].destCh = i+1;
     mixData[i].srcRaw = RawSource(SOURCE_TYPE_STICK, i);
