@@ -198,6 +198,7 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #define DOTTED 0x55
 
 void lcd_plot(xcoord_t x, uint8_t y, LcdFlags att=0);
+void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att=0);
 void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att=0);
 void lcd_vline(xcoord_t x, int8_t y, int8_t h);

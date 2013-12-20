@@ -140,8 +140,8 @@ BOLD = YES
 BATTGRAPH = NO
 
 # FONT TYPE
-# Values = STD, STDV2, SQT5
-FONT = STDV2
+# Values = STD, SQT5
+FONT = STD
 
 # PPM center adjustable
 # Values = YES, NO
@@ -778,13 +778,10 @@ ifneq ($(PCB), TARANIS)
   endif
 endif
 
-ifeq ($(FONT), STD)
-  INCDIRS += fonts/std
-else
+ifneq ($(FONT), STD)
   INCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
-  INCDIRS += fonts/stdv2
-  CPPDEFS += -DPWFONT 
 endif
+INCDIRS += fonts/std
   
 ifeq ($(THR_TRACE), YES)
   CPPDEFS += -DTHRTRACE
