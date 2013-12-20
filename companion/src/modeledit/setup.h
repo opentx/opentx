@@ -2,6 +2,9 @@
 #define SETUP_H
 
 #include "modelpanel.h"
+#include <QVector>
+#include <QCheckBox>
+#include <QSlider>
 
 namespace Ui {
   class Setup;
@@ -14,6 +17,8 @@ class Setup : public ModelPanel
   public:
     Setup(QWidget *parent, ModelData & model);
     virtual ~Setup();
+
+    virtual void update();
 
   private slots:
     void on_protocolCB_currentIndexChanged(int index);
@@ -74,23 +79,16 @@ class Setup : public ModelPanel
     void on_timer2ModeBCB_currentIndexChanged(int index);
     void on_modelNameLE_editingFinished();
     void on_modelImage_CB_currentIndexChanged(int index);
-
-    void on_bcRUDChkB_toggled(bool checked);
-    void on_bcELEChkB_toggled(bool checked);
-    void on_bcTHRChkB_toggled(bool checked);
-    void on_bcAILChkB_toggled(bool checked);
-    void on_bcP1ChkB_toggled(bool checked);
-    void on_bcP2ChkB_toggled(bool checked);
-    void on_bcP3ChkB_toggled(bool checked);
-    void on_bcP4ChkB_toggled(bool checked);
-    void on_bcREaChkB_toggled(bool checked);
-    void on_bcREbChkB_toggled(bool checked);
-
-    void startupSwitchEdited();
+    void onBeepCenterToggled(bool checked);
+    void startupSwitchEdited(int value);
 
   private:
     Ui::Setup *ui;
+    QVector<QSlider *> startupSwitchesSliders;
+    QVector<QCheckBox *> centerBeepCheckboxes;
     void tabModelEditSetup();
+    void updateStartupSwitches();
+    void updateBeepCenter();
 };
 
 #endif // SETUP_H

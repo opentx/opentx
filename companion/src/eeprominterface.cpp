@@ -10,6 +10,9 @@
 
 QString EEPROMWarnings;
 
+const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
+const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH" };
+
 void setEEPROMString(char *dst, const char *src, int size)
 {
   memcpy(dst, src, size);
@@ -244,26 +247,27 @@ double RawSource::getStep(const ModelData & Model)
   }
 }
 
+QString AnalogString(int index)
+{
+  static const QString sticks[]  = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
+  static const QString pots9X[]  = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
+  static const QString potsX9D[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
+
+  if (index < 4)
+    return CHECK_IN_ARRAY(sticks, index);
+  else
+    return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(potsX9D, index-4) : CHECK_IN_ARRAY(pots9X, index-4));
+}
+
+QString RotaryEncoderString(int index)
+{
+  static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
+  return CHECK_IN_ARRAY(rotary, index);
+}
+
 QString RawSource::toString()
 {
-  static const QString sticks[]      = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
-
   static const QString trims[]       = { QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")};
-
-  static const QString pots9X[]      = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
-
-  static const QString potsX9D[]     = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
-
-  static const QString rotary[]      = { QObject::tr("REa"), QObject::tr("REb") };
-
-  static const QString switches9X[]  = { QObject::tr("3POS"),
-                            QObject::tr("THR"), QObject::tr("RUD"), QObject::tr("ELE"),
-                            QObject::tr("AIL"), QObject::tr("GEA"), QObject::tr("TRN"),
-                          };
-
-  static const QString switchesX9D[] = { QObject::tr("SA"), QObject::tr("SB"), QObject::tr("SC"), QObject::tr("SD"),
-                            QObject::tr("SE"), QObject::tr("SF"), QObject::tr("SG"), QObject::tr("SH"),
-                          };
 
   static const QString telemetry[]   = { QObject::tr("Batt"), QObject::tr("Timer1"), QObject::tr("Timer2"),
                             (IS_TARANIS(GetEepromInterface()->getBoard()) ? QObject::tr("SWR") :  QObject::tr("Tx")), (IS_TARANIS(GetEepromInterface()->getBoard()) ? QObject::tr("RSSI") :  QObject::tr("Rx")), QObject::tr("A1"), QObject::tr("A2"), QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"),
@@ -284,14 +288,11 @@ QString RawSource::toString()
   }
   switch(type) {
     case SOURCE_TYPE_STICK:
-      if (index < 4)
-        return CHECK_IN_ARRAY(sticks, index);
-      else
-        return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(potsX9D, index-4) : CHECK_IN_ARRAY(pots9X, index-4));
+      return AnalogString(index);
     case SOURCE_TYPE_TRIM:
       return CHECK_IN_ARRAY(trims, index);
     case SOURCE_TYPE_ROTARY_ENCODER:
-      return CHECK_IN_ARRAY(rotary, index);
+      return RotaryEncoderString(index);
     case SOURCE_TYPE_MAX:
       return QObject::tr("MAX");
     case SOURCE_TYPE_SWITCH:

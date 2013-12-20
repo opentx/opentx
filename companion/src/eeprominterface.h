@@ -50,8 +50,8 @@ enum BoardEnum {
   BOARD_TARANIS_REV4a
 };
 #define IS_STOCK(board)       (board==BOARD_STOCK || board==BOARD_M128)
-#define IS_ARM(board)       (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
-#define IS_TARANIS(board)       (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
+#define IS_ARM(board)         (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
+#define IS_TARANIS(board)     (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
@@ -198,9 +198,12 @@ enum HeliSwashTypes {
 #define NUM_CAL_PPM         4
 #define NUM_PPM             8
 #define NUM_CYC             3
-#define C9X_NUM_SWITCHES          10
-#define C9X_NUM_KEYS          6
+#define C9X_NUM_SWITCHES    10
+#define C9X_NUM_KEYS        6
 #define C9X_MAX_TIMERS      2
+
+extern const char * switches9X[];
+extern const char * switchesX9D[];
 
 enum TelemetrySource {
   TELEMETRY_SOURCE_TX_BATT,
@@ -267,7 +270,11 @@ enum RawSourceType {
   SOURCE_TYPE_TELEMETRY,
   MAX_SOURCE_TYPE
 };
+
 class ModelData;
+
+QString AnalogString(int index);
+QString RotaryEncoderString(int index);
 
 class RawSource {
   public:

@@ -1138,12 +1138,6 @@ int findmult(float value, float base)
   return mult;
 }
 
-bool checkbit(int value, int bit)
-{
-  return ((value & (1<<bit))==(1<<bit));
-}
-
-
 QString getFrSkyAlarmType(int alarm)
 {
   switch (alarm) {

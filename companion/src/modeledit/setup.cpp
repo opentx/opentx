@@ -18,10 +18,7 @@ Setup::~Setup()
 void Setup::tabModelEditSetup()
 {
     lock = true;
-    //name
-    QLabel * pmsl[] = {ui->swwarn_label, ui->swwarn0_label, ui->swwarn4_label, NULL};
-    QCheckBox * pmchkb[] = {ui->swwarn1_ChkB,ui->swwarn2_ChkB,ui->swwarn3_ChkB,ui->swwarn5_ChkB,ui->swwarn6_ChkB, NULL};
-    QSlider * tpmsld[] = {ui->chkSA, ui->chkSB, ui->chkSC, ui->chkSD, ui->chkSE, ui->chkSF, ui->chkSG, NULL};
+
     QSlider * fssld1[] = { ui->fsm1SL_1, ui->fsm1SL_2,ui->fsm1SL_3,ui->fsm1SL_4,ui->fsm1SL_5,ui->fsm1SL_6,ui->fsm1SL_7,ui->fsm1SL_8,
                                  ui->fsm1SL_9, ui->fsm1SL_10,ui->fsm1SL_11,ui->fsm1SL_12,ui->fsm1SL_13,ui->fsm1SL_14,ui->fsm1SL_15,ui->fsm1SL_16, NULL };
     QSlider * fssld2[] = { ui->fsm2SL_1, ui->fsm2SL_2,ui->fsm2SL_3,ui->fsm2SL_4,ui->fsm2SL_5,ui->fsm2SL_6,ui->fsm2SL_7,ui->fsm2SL_8,
@@ -133,74 +130,50 @@ void Setup::tabModelEditSetup()
           }
         }
       }
-
     }
 
-    if (!GetEepromInterface()->getCapability(pmSwitchMask)) {
-      for (int i=0; pmsl[i]; i++) {
-        pmsl[i]->hide();
-      }
-      for (int i=0; pmchkb[i]; i++) {
-        pmchkb[i]->hide();
-      }
-      ui->tswwarn0_CB->hide();
-      for (int i=0; tpmsld[i]; i++) {
-        tpmsld[i]->hide();
-      }
-      ui->swwarn0_line->hide();
-      ui->swwarn0_line->hide();
-      ui->swwarn0_CB->hide();
-      ui->swwarn4_CB->hide();
-      ui->swwarn_line0->hide();
-      ui->swwarn_line1->hide();
-      ui->swwarn_line2->hide();
-      ui->swwarn_line3->hide();
-      ui->swwarn_line4->hide();
-      ui->swwarn_line5->hide();
-      ui->tswwarn0_label->hide();
-      ui->tswwarn1_label->hide();
-      ui->tswwarn2_label->hide();
-      ui->tswwarn3_label->hide();
-      ui->tswwarn4_label->hide();
-      ui->tswwarn5_label->hide();
-      ui->tswwarn6_label->hide();
-      ui->tswwarn7_label->hide();
-    } else {
-      if (GetEepromInterface()->getCapability(Pots)==3) {
-        ui->swwarn0_CB->setCurrentIndex(model.switchWarningStates & 0x01);
-        ui->swwarn1_ChkB->setChecked(checkbit(model.switchWarningStates, 1));
-        ui->swwarn2_ChkB->setChecked(checkbit(model.switchWarningStates, 2));
-        ui->swwarn3_ChkB->setChecked(checkbit(model.switchWarningStates, 3));
-        ui->swwarn4_CB->setCurrentIndex((model.switchWarningStates & 0x30)>>4);
-        ui->swwarn5_ChkB->setChecked(checkbit(model.switchWarningStates, 6));
-        ui->swwarn6_ChkB->setChecked(checkbit(model.switchWarningStates, 7));
-        for (int i=0; pmchkb[i]; i++) {
-          connect(pmchkb[i], SIGNAL(stateChanged(int)),this,SLOT(startupSwitchEdited()));
-        }
-        connect(ui->swwarn0_CB,SIGNAL(currentIndexChanged(int)),this,SLOT(startupSwitchEdited()));
-        connect(ui->swwarn4_CB,SIGNAL(currentIndexChanged(int)),this,SLOT(startupSwitchEdited()));
-      } else {
-        ui->tswwarn0_CB->setCurrentIndex(model.switchWarningStates & 0x01);
-        uint16_t switchstate=(model.switchWarningStates>>1);
-        ui->chkSA->setValue(switchstate & 0x3);
-        switchstate >>= 2;
-        ui->chkSB->setValue(switchstate & 0x3);
-        switchstate >>= 2;
-        ui->chkSC->setValue(switchstate & 0x3);
-        switchstate >>= 2;
-        ui->chkSD->setValue(switchstate & 0x3);
-        switchstate >>= 2;
-        ui->chkSE->setValue(switchstate & 0x3);
-        switchstate >>= 2;
-        ui->chkSF->setValue((switchstate & 0x3)/2);
-        switchstate >>= 2;
-        ui->chkSG->setValue(switchstate & 0x3);
-        connect(ui->tswwarn0_CB,SIGNAL(currentIndexChanged(int)),this,SLOT(startupSwitchEdited()));
-        for (int i=0; tpmsld[i]; i++) {
-          connect(tpmsld[i], SIGNAL(valueChanged(int)),this,SLOT(startupSwitchEdited()));
-        }
-      }
+    // Beep Center checkboxes
+    int analogs = 4 + GetEepromInterface()->getCapability(Pots);
+    for (int i=0; i<analogs+GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+      QCheckBox * checkbox = new QCheckBox(this);
+      checkbox->setProperty("index", i);
+      checkbox->setText(i<analogs ? AnalogString(i) : RotaryEncoderString(i-analogs));
+      ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
+      connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
+      centerBeepCheckboxes << checkbox;
     }
+    ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, analogs+GetEepromInterface()->getCapability(RotaryEncoders));
+
+    // Startup switches warnings
+    ui->switchesStartupWarning_CB->setProperty("index", 0);
+    connect(ui->switchesStartupWarning_CB, SIGNAL(currentIndexChanged(int)), this, SLOT(startupSwitchEdited(int)));
+    for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
+      QLabel * label = new QLabel();
+      QSlider * slider = new QSlider();
+      slider->setProperty("index", i+1);
+      slider->setOrientation(Qt::Vertical);
+      slider->setMinimum(0);
+      slider->setSingleStep(1);
+      slider->setInvertedAppearance(true);
+      slider->setTickPosition(QSlider::TicksBothSides);
+      slider->setTickInterval(1);
+      slider->setMinimumSize(QSize(30, 50));
+      slider->setMaximumSize(QSize(50, 50));
+      if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+        label->setText(switchesX9D[i]);
+        slider->setMaximum(i==5 ? 1 : 2);
+      }
+      else {
+        label->setText(switches9X[i]);
+        slider->setMaximum(i==0 ? 2 : 1);
+      }
+      ui->switchesStartupLayout->addWidget(label, 0, i+1);
+      ui->switchesStartupLayout->addWidget(slider, 1, i+1);
+      connect(slider, SIGNAL(valueChanged(int)), this, SLOT(startupSwitchEdited(int)));
+      startupSwitchesSliders << slider;
+    }
+    ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
+
     int ppmmax=GetEepromInterface()->getCapability(PPMFrameLength);
     if (ppmmax>0) {
       ui->ppmFrameLengthDSB->setMaximum(ppmmax);
@@ -242,52 +215,6 @@ void Setup::tabModelEditSetup()
       ui->ttraceCB->hide();
     } else {
       populateTTraceCB(ui->ttraceCB,model.thrTraceSrc);
-    }
-    if (GetEepromInterface()->getCapability(RotaryEncoders)==0) {
-      ui->bcREaChkB->hide();
-      ui->bcREbChkB->hide();
-    }
-    if (GetEepromInterface()->getCapability(Pots)==3) {
-      ui->tswwarn0_CB->hide();
-      ui->tswwarn0_label->hide();
-      ui->tswwarn1_label->hide();
-      ui->tswwarn2_label->hide();
-      ui->tswwarn3_label->hide();
-      ui->tswwarn4_label->hide();
-      ui->tswwarn5_label->hide();
-      ui->tswwarn6_label->hide();
-      ui->tswwarn7_label->hide();
-      ui->chkSA->hide();
-      ui->chkSB->hide();
-      ui->chkSC->hide();
-      ui->chkSD->hide();
-      ui->chkSE->hide();
-      ui->chkSF->hide();
-      ui->chkSG->hide();
-      this->layout()->removeItem(ui->TaranisSwitchStartup);
-      ui->bcP4ChkB->hide();
-    } else {
-      ui->swwarn0_CB->hide();
-      ui->swwarn0_label->hide();
-      ui->swwarn0_line->hide();
-      ui->swwarn1_ChkB->hide();
-      ui->swwarn1_line->hide();
-      ui->swwarn2_ChkB->hide();
-      ui->swwarn3_ChkB->hide();
-      ui->swwarn4_CB->hide();
-      ui->swwarn4_label->hide();
-      ui->swwarn5_ChkB->hide();
-      ui->swwarn6_ChkB->hide();
-      ui->swwarn_line0->hide();
-      ui->swwarn_line1->hide();
-      ui->swwarn_line2->hide();
-      ui->swwarn_line3->hide();
-      ui->swwarn_line4->hide();
-      ui->swwarn_line5->hide();
-      this->layout()->removeItem(ui->StockSwitchStartup);
-      ui->bcP1ChkB->setText(tr("S1"));
-      ui->bcP2ChkB->setText(tr("S2"));
-      ui->bcP3ChkB->setText(tr("LS"));
     }
 
     if (!GetEepromInterface()->getCapability(PerModelThrottleWarning)) {
@@ -470,18 +397,6 @@ void Setup::tabModelEditSetup()
     ui->trimIncCB->setCurrentIndex(model.trimInc);
     ui->thrExpoChkB->setChecked(model.thrExpo);
     ui->thrTrimChkB->setChecked(model.thrTrim);
-
-    //center beep
-    ui->bcRUDChkB->setChecked(model.beepANACenter & BC_BIT_RUD);
-    ui->bcELEChkB->setChecked(model.beepANACenter & BC_BIT_ELE);
-    ui->bcTHRChkB->setChecked(model.beepANACenter & BC_BIT_THR);
-    ui->bcAILChkB->setChecked(model.beepANACenter & BC_BIT_AIL);
-    ui->bcP1ChkB->setChecked(model.beepANACenter & BC_BIT_P1);
-    ui->bcP2ChkB->setChecked(model.beepANACenter & BC_BIT_P2);
-    ui->bcP3ChkB->setChecked(model.beepANACenter & BC_BIT_P3);
-    ui->bcP4ChkB->setChecked(model.beepANACenter & BC_BIT_P4);
-    ui->bcREaChkB->setChecked(model.beepANACenter & BC_BIT_REA);
-    ui->bcREbChkB->setChecked(model.beepANACenter & BC_BIT_REB);
 
     // PPM settings fields
     ui->ppmDelaySB->setEnabled(model.moduleData[0].protocol == PPM);
@@ -996,8 +911,6 @@ void Setup::fssbEdited()
   emit modified();
 }
 
-
-
 void Setup::on_modelVoice_SB_editingFinished()
 {
   model.modelVoice=ui->modelVoice_SB->value()-260;
@@ -1316,66 +1229,86 @@ void Setup::on_modelImage_CB_currentIndexChanged(int index)
   }
 }
 
-void Setup::startupSwitchEdited()
+void Setup::update()
 {
-  if (GetEepromInterface()->getCapability(Pots)==3) {
-    uint8_t i= 0;
-    i|=(uint8_t)ui->swwarn0_CB->currentIndex();
-    if (i==1) {
-      ui->swwarn1_ChkB->setDisabled(true) ;
-      ui->swwarn2_ChkB->setDisabled(true) ;
-      ui->swwarn3_ChkB->setDisabled(true) ;
-      ui->swwarn4_CB->setDisabled(true) ;
-      ui->swwarn5_ChkB->setDisabled(true) ;
-      ui->swwarn6_ChkB->setDisabled(true) ;
+  updateBeepCenter();
+  updateStartupSwitches();
+}
+
+void Setup::updateBeepCenter()
+{
+  for (int i=0; i<centerBeepCheckboxes.size(); i++) {
+    centerBeepCheckboxes[i]->setChecked(model.beepANACenter & (0x01 << i));
+  }
+}
+
+void Setup::updateStartupSwitches()
+{
+  lock = true;
+
+  unsigned int switchStates = model.switchWarningStates;
+  bool enabled = !(switchStates & 0x01);
+  ui->switchesStartupWarning_CB->setCurrentIndex(switchStates & 0x01);
+  switchStates >>= 1;
+
+  for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
+    QSlider * slider = startupSwitchesSliders[i];
+    slider->setEnabled(enabled);
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      slider->setValue(i==5 ? (switchStates & 0x3)/2 : switchStates & 0x3);
+      switchStates >>= 2;
     }
     else {
-      ui->swwarn1_ChkB->setEnabled(true) ;
-      ui->swwarn2_ChkB->setEnabled(true) ;
-      ui->swwarn3_ChkB->setEnabled(true) ;
-      ui->swwarn4_CB->setEnabled(true) ;
-      ui->swwarn5_ChkB->setEnabled(true) ;
-      ui->swwarn6_ChkB->setEnabled(true) ;
-      i|=(ui->swwarn1_ChkB->isChecked() ? 1 : 0)<<1;
-      i|=(ui->swwarn2_ChkB->isChecked() ? 1 : 0)<<2;
-      i|=(ui->swwarn3_ChkB->isChecked() ? 1 : 0)<<3;
-      i|=((uint8_t)ui->swwarn4_CB->currentIndex() & 0x03)<<4;
-      i|=(ui->swwarn5_ChkB->isChecked() ? 1 : 0)<<6;
-      i|=(ui->swwarn6_ChkB->isChecked() ? 1 : 0)<<7;
+      slider->setValue(i==0 ? switchStates & 0x3 : switchStates & 0x1);
+      switchStates >>= (i==0 ? 2 : 1);
     }
-    model.switchWarningStates=i;
   }
-  else {
-    uint16_t i= 0;
-    i|=(uint16_t)ui->tswwarn0_CB->currentIndex();
-    if (i==1) {
-      ui->chkSA->setDisabled(true);
-      ui->chkSB->setDisabled(true);
-      ui->chkSC->setDisabled(true);
-      ui->chkSD->setDisabled(true);
-      ui->chkSE->setDisabled(true);
-      ui->chkSF->setDisabled(true);
-      ui->chkSG->setDisabled(true);
+
+  lock = false;
+}
+
+void Setup::startupSwitchEdited(int value)
+{
+  if (!lock) {
+    int shift = 0;
+    unsigned int mask;
+    int index = sender()->property("index").toInt();
+
+    if (index == 0) {
+      mask = 0x01;
+    }
+    else if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      if (index == 6)
+        mask = 0x02 << (index*2 - 1);
+      else {
+        shift = index*2 - 1;
+        mask = 0x03 << shift;
+      }
     }
     else {
-      ui->chkSA->setEnabled(true);
-      ui->chkSB->setEnabled(true);
-      ui->chkSC->setEnabled(true);
-      ui->chkSD->setEnabled(true);
-      ui->chkSE->setEnabled(true);
-      ui->chkSF->setEnabled(true);
-      ui->chkSG->setEnabled(true);
-      i|=(((uint16_t)ui->chkSA->value())<<1);
-      i|=(((uint16_t)ui->chkSB->value())<<3);
-      i|=(((uint16_t)ui->chkSC->value())<<5);
-      i|=(((uint16_t)ui->chkSD->value())<<7);
-      i|=(((uint16_t)ui->chkSE->value())<<9);
-      i|=(((uint16_t)ui->chkSF->value())<<12);
-      i|=(((uint16_t)ui->chkSG->value())<<13);
+      if (index == 1) {
+        shift = 1;
+        mask = 0x03 << shift;
+      }
+      else {
+        mask = 0x01 << (index+1);
+      }
     }
-    model.switchWarningStates=i;
+
+    model.switchWarningStates &= ~mask;
+
+    if (value) {
+      if (shift == 0) {
+        model.switchWarningStates |= mask;
+      }
+      else {
+        model.switchWarningStates |= (value << shift);
+      }
+    }
+
+    updateStartupSwitches();
+    emit modified();
   }
-  emit modified();
 }
 
 void Setup::on_thrTrimChkB_toggled(bool checked)
@@ -1390,103 +1323,15 @@ void Setup::on_thrExpoChkB_toggled(bool checked)
     emit modified();
 }
 
-void Setup::on_bcRUDChkB_toggled(bool checked)
+void Setup::onBeepCenterToggled(bool checked)
 {
-    if(checked) {
-      model.beepANACenter |= BC_BIT_RUD;
-    } else {
-      model.beepANACenter &= ~BC_BIT_RUD;
-    }
+  if (!lock) {
+    int index = sender()->property("index").toInt();
+    unsigned int mask = (0x01 << index);
+    if (checked)
+      model.beepANACenter |= mask;
+    else
+      model.beepANACenter &= ~mask;
     emit modified();
+  }
 }
-
-void Setup::on_bcELEChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_ELE;
-    } else {
-      model.beepANACenter &= ~BC_BIT_ELE;
-    }
-    emit modified();
-}
-
-void Setup::on_bcTHRChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_THR;
-    } else {
-      model.beepANACenter &= ~BC_BIT_THR;
-    }
-    emit modified();
-}
-
-void Setup::on_bcAILChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_AIL;
-    } else {
-      model.beepANACenter &= ~BC_BIT_AIL;
-    }
-    emit modified();
-}
-
-void Setup::on_bcP1ChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_P1;
-    } else {
-      model.beepANACenter &= ~BC_BIT_P1;
-    }
-    emit modified();
-}
-
-void Setup::on_bcP2ChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_P2;
-    } else {
-      model.beepANACenter &= ~BC_BIT_P2;
-    }
-    emit modified();
-}
-
-void Setup::on_bcP3ChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_P3;
-    } else {
-      model.beepANACenter &= ~BC_BIT_P3;
-    }
-    emit modified();
-}
-
-void Setup::on_bcP4ChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_P4;
-    } else {
-      model.beepANACenter &= ~BC_BIT_P4;
-    }
-    emit modified();
-}
-
-void Setup::on_bcREaChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_REA;
-    } else {
-      model.beepANACenter &= ~BC_BIT_REA;
-    }
-    emit modified();
-}
-
-void Setup::on_bcREbChkB_toggled(bool checked)
-{
-    if(checked) {
-      model.beepANACenter |= BC_BIT_REB;
-    } else {
-      model.beepANACenter &= ~BC_BIT_REB;
-    }
-    emit modified();
-}
-

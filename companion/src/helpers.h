@@ -77,7 +77,6 @@ QString getGVarString(int16_t val, bool sign=false);
 QString image2qstring(QImage image);
 QImage qstring2image(QString imagestr);
 int findmult(float value, float base);
-bool checkbit(int value, int bit);
 
 QString getTrimInc(ModelData * g_model);
 QString getTimerStr(TimerData & timer);
@@ -95,4 +94,5 @@ float getBarValue(int barId, int value, FrSkyData *fd);
 float c9xexpou(float point, float coeff);
 float ValToTim(int value);
 int TimToVal(float value);
+
 #endif // HELPERS_H
