@@ -384,10 +384,10 @@ QString RawSwitch::toString()
       break;
     case SWITCH_TYPE_REA:
       if (index==0) {
-        if (IS_SKY9X(eepromInterface->getBoard())) 
+        if (IS_SKY9X(GetEepromInterface()->getBoard())) 
           return QObject::tr("REAs");
       } else if (index==1) {
-        if (IS_SKY9X(eepromInterface->getBoard())) 
+        if (IS_SKY9X(GetEepromInterface()->getBoard())) 
           return QObject::tr("REAl");
       }
       break;

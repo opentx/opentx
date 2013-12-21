@@ -102,7 +102,11 @@ void burnConfigDialog::getSettings()
     avrProgrammer =  settings.value("programmer", QString("usbasp")).toString();
 
     avrMCU = settings.value("mcu", QString("m64")).toString();
-    armMCU = settings.value("arm_mcu", QString("at91sam3s4-9x")).toString();
+    if (GetEepromInterface()->getBoard()==BOARD_SKY9X) {
+      armMCU = settings.value("arm_mcu", QString("at91sam3s4-9x")).toString();
+    } else {
+      armMCU = settings.value("arm_mcu", QString("at91sam3s8-9xr")).toString();
+    }
 
     avrPort   = settings.value("avr_port", "").toString();
     sambaPort = settings.value("samba_port", "\\USBserial\\COM23").toString();

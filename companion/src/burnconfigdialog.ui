@@ -616,6 +616,11 @@ m2560 for v4.1 boards</string>
          <string notr="true">at91sam3s4-9x</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>at91sam3s8-9xr</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="6" column="0">

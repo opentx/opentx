@@ -966,7 +966,7 @@ QStringList MainWindow::GetReceiveFlashCommand(const QString &filename)
     } else if (eepromInterface->getBoard() == BOARD_SKY9X) {
       return GetSambaArguments(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x40000 0\n");
     } else if (eepromInterface->getBoard() == BOARD_9XRPRO) {
-      return GetSambaArguments(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x40000 0\n");
+      return GetSambaArguments(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x80000 0\n");
     } else {
       return GetAvrdudeArguments("flash:r:", filename);
     }
