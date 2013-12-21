@@ -127,7 +127,7 @@ bool MdiChild::hasSelection()
 void MdiChild::updateTitle()
 {
   QString title = userFriendlyCurrentFile() + "[*]"+" ("+GetEepromInterface()->getName()+QString(")");
-  if (GetEepromInterface()->getBoard() != BOARD_SKY9X)
+  if (!IS_SKY9X(GetEepromInterface()->getBoard()))
     title += QString(" - %1 ").arg(EEPromAvail) + tr("free bytes");
   setWindowTitle(title);
 }
@@ -345,7 +345,7 @@ bool MdiChild::saveAs(bool isNew)
 {
     QSettings settings("companion9x", "companion9x");
     QString fileName;
-    if (GetEepromInterface()->getBoard() == BOARD_SKY9X) {
+    if (IS_SKY9X(GetEepromInterface()->getBoard())) {
       curFile.replace(".eepe", ".bin");
       QFileInfo fi(curFile);
 #ifdef __APPLE__
@@ -381,7 +381,7 @@ bool MdiChild::saveFile(const QString &fileName, bool setCurrent)
 {
     QString myFile;
     myFile = fileName;
-    if (GetEepromInterface()->getBoard() == BOARD_SKY9X) {
+    if (IS_SKY9X(GetEepromInterface()->getBoard())) {
       myFile.replace(".eepe", ".bin");
     }
     QFile file(myFile);

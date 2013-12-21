@@ -384,10 +384,10 @@ QString RawSwitch::toString()
       break;
     case SWITCH_TYPE_REA:
       if (index==0) {
-        if (GetEepromInterface()->getBoard() == BOARD_SKY9X) 
+        if (IS_SKY9X(eepromInterface->getBoard())) 
           return QObject::tr("REAs");
       } else if (index==1) {
-        if (GetEepromInterface()->getBoard() == BOARD_SKY9X) 
+        if (IS_SKY9X(eepromInterface->getBoard())) 
           return QObject::tr("REAl");
       }
       break;
@@ -638,6 +638,7 @@ void RegisterEepromInterfaces()
   eepromInterfaces.push_back(new Open9xInterface(BOARD_M128));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_SKY9X));
+  eepromInterfaces.push_back(new Open9xInterface(BOARD_9XRPRO));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_TARANIS));
   if (rev4a)
     eepromInterfaces.push_back(new Open9xInterface(BOARD_TARANIS_REV4a));

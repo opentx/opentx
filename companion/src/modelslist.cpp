@@ -286,7 +286,7 @@ void ModelsListWidget::refreshList()
       QString item = QString().sprintf("%02d: ", i+1);
        
       if (!radioData->models[i].isempty()) {
-        if (eepromInterface && eepromInterface->getBoard() == BOARD_SKY9X) {
+        if (eepromInterface && IS_SKY9X(eepromInterface->getBoard())) {
           if (radioData->models[i].name[0]==0) {
             QString modelname="Model";
             modelname.append(QString().sprintf("%02d", i+1));
@@ -330,7 +330,7 @@ void ModelsListWidget::refreshList()
         this->item(radioData->generalSettings.currModel+1)->setFont(f);
     }
 
-    if (eepromInterface && eepromInterface->getBoard() != BOARD_SKY9X) {
+    if (eepromInterface && !IS_SKY9X(eepromInterface->getBoard())) {
       ((MdiChild*)parent())->setEEpromAvail((availableEEpromSize/16)*15);
     }
 }

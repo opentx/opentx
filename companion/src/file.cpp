@@ -37,7 +37,7 @@ void EFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board)
   this->eeprom_size = size;
   this->board = board;
 
-  if (board == BOARD_SKY9X) {
+  if (IS_SKY9X(board)) {
     memset(eeprom, 0xFF, size);
   }
   else if (IS_TARANIS(board)) {
@@ -101,7 +101,7 @@ bool EFile::EeFsOpen(uint8_t *eeprom, int size, BoardEnum board)
   this->eeprom_size = size;
   this->board = board;
 
-  if (board == BOARD_SKY9X) {
+  if (IS_SKY9X(board)) {
     return 1;
   }
   else if (IS_TARANIS(board)) {
@@ -254,7 +254,7 @@ unsigned int EFile::size(unsigned int id)
 
 unsigned int EFile::openRd(unsigned int i_fileId)
 {
-  if (board == BOARD_SKY9X) {
+  if (IS_SKY9X(board)) {
     m_fileId = get_current_block_number(i_fileId * 2, &m_size);
     m_pos = sizeof(t_eeprom_header);
     return 1;
@@ -298,7 +298,7 @@ unsigned int EFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
 {
   memset(buf, 0, i_len);
 
-  if (board == BOARD_SKY9X) {
+  if (IS_SKY9X(board)) {
     int len = std::min((int)i_len, (int)m_size + (int)sizeof(t_eeprom_header) - (int)m_pos);
     if (len > 0) {
       eeprom_read_block(buf, (m_fileId << 12) + m_pos, len);
@@ -461,7 +461,7 @@ unsigned int EFile::writeRlc1(unsigned int i_fileId, unsigned int typ, const uin
  */
 unsigned int EFile::writeRlc2(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
 {
-  if (board == BOARD_SKY9X) {
+  if (IS_SKY9X(board)) {
     openRd(i_fileId);
     eeprom_write_block(buf, (m_fileId << 12) + m_pos, i_len);
     t_eeprom_header header;

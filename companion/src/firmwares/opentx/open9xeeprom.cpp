@@ -14,7 +14,7 @@
 #define MAX_POTS(board)                      (IS_TARANIS(board) ? 4 : 3)
 #define MAX_SWITCHES(board)                  (IS_TARANIS(board) ? 8 : 7)
 #define MAX_SWITCHES_POSITION(board)         (IS_TARANIS(board) ? 22 : 9)
-#define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (board==BOARD_SKY9X ? 1 : 0))
+#define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_PHASES(board, version)           (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
 #define MAX_MIXERS(board, version)           (IS_ARM(board) ? 64 : 32)
 #define MAX_CHANNELS(board, version)         (IS_ARM(board) ? 32 : 16)
@@ -963,7 +963,7 @@ class CustomSwitchesAndSwitchesConversionTable: public ConversionTable {
           addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
         }
       }
-      else if (board == BOARD_SKY9X) {
+      else if (IS_SKY9X(board)) {
         for (int i=1; i<=8; i++) {
           int s = switchIndex(i, board, version);
           addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);

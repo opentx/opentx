@@ -847,7 +847,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
         if (item == value) b->setCurrentIndex(b->count()-1);
       }
     }
-    if (GetEepromInterface()->getBoard()==BOARD_SKY9X) {
+    if (IS_SKY9X(GetEepromInterface()->getBoard())) {
       item = RawSwitch(SWITCH_TYPE_REA,0);
       if (GetEepromInterface()->isAvailable(item, context)) {
         b->addItem(item.toString(), item.toValue());

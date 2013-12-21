@@ -36,7 +36,7 @@ burnConfigDialog::burnConfigDialog(QWidget *parent) :
       ui->samba_location->hide();
       ui->samba_port->hide();      
       ui->sb_browse->hide();
-    } else if (eepromInterface->getBoard()==BOARD_SKY9X) {
+    } else if (IS_SKY9X(eepromInterface->getBoard())) {
       setWindowTitle(tr("SAM-BA Configuration"));
       ui->avrArgs->hide();
       ui->avrdude_location->hide();
@@ -388,7 +388,7 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
     if (IS_TARANIS(eepromInterface->getBoard())) {
       ui->label_dfu2->show();
       ui->dfuArgs->show();
-    } else if (eepromInterface->getBoard()==BOARD_SKY9X) {
+    } else if (IS_SKY9X(eepromInterface->getBoard())) {
       ui->label_sb2->show();
       ui->arm_mcu->show();
     } else {
@@ -402,7 +402,7 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
     if (IS_TARANIS(eepromInterface->getBoard())) {
       ui->label_dfu2->hide();
       ui->dfuArgs->hide();
-    } else if (eepromInterface->getBoard()==BOARD_SKY9X) {
+    } else if (IS_SKY9X(eepromInterface->getBoard())) {
       ui->label_sb2->hide();
       ui->arm_mcu->hide();
     } else {

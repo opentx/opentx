@@ -109,6 +109,7 @@ class Open9xFirmware: public FirmwareInfo {
     
     virtual unsigned int getEepromVersion(unsigned int revision) {
       switch(this->eepromInterface->getBoard()) {
+        case BOARD_9XRPRO:
         case BOARD_SKY9X:
           if (revision == 0)
             return 212;
