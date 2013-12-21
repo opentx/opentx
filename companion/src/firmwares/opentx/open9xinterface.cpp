@@ -1323,7 +1323,7 @@ void RegisterOpen9xFirmwares()
   firmwares.push_back(open9x);
   
   /* SKY9X board */
-  open9x = new Open9xFirmware("opentx-9xrpro", QObject::tr("openTx for 9xr-pro board / 9X"), new Open9xInterface(BOARD_SKY9X), geturl(BOARD_SKY9X), getstamp(BOARD_SKY9X),getrnurl(BOARD_SKY9X), true);
+  open9x = new Open9xFirmware("opentx-9xrpro", QObject::tr("openTx for 9XR-PRO"), new Open9xInterface(BOARD_9XRPRO), geturl(BOARD_9XRPRO), getstamp(BOARD_9XRPRO),getrnurl(BOARD_9XRPRO), true);
   open9x->setVariantBase(FRSKY_VARIANT);
   open9x->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
