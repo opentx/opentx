@@ -1,92 +1,336 @@
 #include "setup.h"
 #include "ui_setup.h"
+#include "ui_setup_timer.h"
+#include "ui_setup_module.h"
 #include "helpers.h"
+
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
+  ModelPanel(parent, model),
+  timer(timer),
+  ui(new Ui::Timer)
+{
+  ui->setupUi(this);
+
+  // Mode
+  populateTimerSwitchCB(ui->mode, timer.mode);
+
+  if (!GetEepromInterface()->getCapability(PermTimers)) {
+    ui->persistent->hide();
+    ui->persistentValue->hide();
+  }
+
+  if (!GetEepromInterface()->getCapability(minuteBeep)) {
+    ui->minuteBeep->hide();
+  }
+
+  if (!GetEepromInterface()->getCapability(countdownBeep)) {
+    ui->countdownBeep->hide();
+  }
+}
+
+TimerPanel::~TimerPanel()
+{
+  delete ui;
+}
+
+void TimerPanel::update()
+{
+  int min = timer.val / 60;
+  int sec = timer.val % 60;
+  ui->value->setTime(QTime(0, min, sec));
+
+  if (GetEepromInterface()->getCapability(PermTimers)) {
+    int sign = 1;
+    int pvalue = timer.pvalue;
+    if (pvalue < 0) {
+      pvalue = -pvalue;
+      sign = -1;
+    }
+    int hours = pvalue / 3600;
+    pvalue -= hours * 3600;
+    int minutes = pvalue / 60;
+    int seconds = pvalue % 60;
+    ui->persistent->setChecked(timer.persistent);
+    ui->persistentValue->setText(QString(" %1(%2:%3:%4)").arg(sign<0 ? "-" :" ").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+  }
+
+  if (GetEepromInterface()->getCapability(minuteBeep)) {
+    ui->minuteBeep->setChecked(timer.minuteBeep);
+  }
+
+  if (GetEepromInterface()->getCapability(countdownBeep)) {
+    ui->countdownBeep->setChecked(timer.countdownBeep);
+  }
+}
+
+void TimerPanel::on_value_editingFinished()
+{
+  timer.val = ui->value->time().minute()*60 + ui->value->time().second();
+  emit modified();
+}
+
+void TimerPanel::on_mode_currentIndexChanged(int index)
+{
+  timer.mode = TimerMode(ui->mode->itemData(index).toInt());
+  emit modified();
+}
+
+void TimerPanel::on_persistent_toggled(bool checked)
+{
+  timer.persistent = checked;
+  emit modified();
+}
+
+void TimerPanel::on_minuteBeep_toggled(bool checked)
+{
+  timer.minuteBeep = checked;
+  emit modified();
+}
+
+void TimerPanel::on_countdownBeep_toggled(bool checked)
+{
+  timer.countdownBeep = checked;
+  emit modified();
+}
+
+/******************************************************************************/
+
+ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, int moduleIdx):
+  ModelPanel(parent, model),
+  module(module),
+  moduleIdx(moduleIdx),
+  ui(new Ui::Module)
+{
+  ui->setupUi(this);
+
+  QString label;
+  if (moduleIdx < 0) {
+    label = tr("Trainer Module");
+  }
+  else {
+    ui->label_trainerMode->hide();
+    ui->trainerMode->hide();
+    if (moduleIdx == 0)
+      label = tr("Internal Module");
+    else
+      label = tr("External Module");
+
+  }
+  ui->label_module->setText(label);
+
+  // The protocols available on this board
+  for (int i=0; i<PROTO_LAST; i++) {
+    if (GetEepromInterface()->isAvailable((Protocol)i, moduleIdx)) {
+      ui->protocol->addItem(getProtocolStr(i), (QVariant)i);
+    }
+  }
+
+  if (GetEepromInterface()->getCapability(HasFailsafe)) {
+    for (int i=0; i<16; i++) {
+      QSlider * slider = new QSlider(this);
+      slider->setMinimumSize(QSize(30, 50));
+      slider->setRange(-100, 100);
+      QSpinBox * spinbox = new QSpinBox(this);
+      spinbox->setMinimumSize(QSize(20, 0));
+      spinbox->setRange(-100, 100);
+      slider->setProperty("index", i);
+      spinbox->setProperty("index", i);
+      failsafeSliders << slider;
+      failsafeSpins << spinbox;
+      ui->failsafesLayout->addWidget(slider, 2*(i/8), i%8, Qt::AlignHCenter);
+      ui->failsafesLayout->addWidget(spinbox, 1+2*(i/8), i%8, Qt::AlignHCenter);
+      connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onFailsafeChannelChanged(int)));
+      connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onFailsafeChannelChanged(int)));
+    }
+  }
+}
+
+ModulePanel::~ModulePanel()
+{
+  delete ui;
+}
+
+#define MASK_CHANNELS_COUNT 1
+#define MASK_RX_NUMBER      2
+#define MASK_CHANNELS_RANGE 4
+#define MASK_PPM_FIELDS     8
+#define MASK_FAILSAFES      16
+
+void ModulePanel::update()
+{
+  unsigned int mask = 0;
+  Protocol protocol = (Protocol)module.protocol;
+
+  switch (protocol) {
+    case OFF:
+      break;
+    case PXX_XJT_X16:
+    case PXX_XJT_D8:
+    case PXX_XJT_LR12:
+    case PXX_DJT:
+      mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
+      if (protocol==PXX_XJT_X16) mask |= MASK_FAILSAFES;
+      break;
+    case LP45:
+    case DSM2:
+    case DSMX:
+      mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
+      module.channelsCount = 8;
+      break;
+    default:
+      mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
+      break;
+  }
+
+  ui->rxNumber->setEnabled(mask & MASK_RX_NUMBER);
+  ui->rxNumber->setValue(model.modelId);
+  ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
+  ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
+  ui->channelsStart->setValue(module.channelsStart+1);
+  ui->label_channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
+  ui->channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
+  ui->channelsCount->setEnabled(mask & MASK_CHANNELS_COUNT);
+  ui->channelsCount->setValue(module.channelsCount);
+  ui->channelsCount->setSingleStep(GetEepromInterface()->getCapability(HasPPMStart) ? 1 : 2);
+
+  // PPM settings fields
+  ui->label_ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
+  ui->ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
+  ui->ppmPolarity->setCurrentIndex(module.ppmPulsePol);
+  ui->label_ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
+  ui->ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
+  ui->ppmDelay->setValue(module.ppmDelay);
+  ui->label_ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
+  ui->ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
+  ui->ppmFrameLength->setMinimum(module.channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
+  ui->ppmFrameLength->setMaximum(GetEepromInterface()->getCapability(PPMFrameLength));
+  ui->ppmFrameLength->setValue(22.5+((double)module.ppmFrameLength)*0.5);
+
+  if (GetEepromInterface()->getCapability(HasFailsafe)) {
+    ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
+    ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
+    ui->failsafeMode->setCurrentIndex(module.failsafeMode);
+    ui->label_failsafeFrame->setVisible(mask & MASK_FAILSAFES);
+    ui->failsafesFrame->setVisible(mask & MASK_FAILSAFES);
+    ui->failsafesFrame->setEnabled(module.failsafeMode == 1);
+    for (int i=0; i<failsafeSliders.size(); i++) {
+      failsafeSliders[i]->setValue(module.failsafeChannels[i]);
+      failsafeSpins[i]->setValue(module.failsafeChannels[i]);
+    }
+  }
+}
+
+void ModulePanel::on_protocol_currentIndexChanged(int index)
+{
+  if (!lock) {
+    module.protocol = ui->protocol->itemData(index).toInt();
+    update();
+    emit modified();
+  }
+}
+
+void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
+{
+  module.ppmPulsePol = index;
+  emit modified();
+}
+
+void ModulePanel::on_channelsCount_editingFinished()
+{
+  if (!lock) {
+    module.channelsCount = ui->channelsCount->value();
+    update();
+    emit modified();
+  }
+}
+
+void ModulePanel::on_channelsStart_editingFinished()
+{
+  if (!lock) {
+    module.channelsStart = ui->channelsStart->value() - 1;
+    update();
+    emit modified();
+  }
+}
+
+void ModulePanel::on_ppmDelay_editingFinished()
+{
+  if (!lock) {
+    // TODO only accept valid values
+    module.ppmDelay = ui->ppmDelay->value();
+    emit modified();
+  }
+}
+
+void ModulePanel::on_rxNumber_editingFinished()
+{
+  model.modelId = ui->rxNumber->value();
+  emit modified();
+}
+
+void ModulePanel::on_ppmFrameLength_editingFinished()
+{
+  module.ppmFrameLength = (ui->ppmFrameLength->value()-22.5) / 0.5;
+  emit modified();
+}
+
+void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
+{
+  if (!lock) {
+    module.failsafeMode = value;
+    update();
+    emit modified();
+  }
+}
+
+void ModulePanel::onFailsafeChannelChanged(int value)
+{
+  if (!lock) {
+    lock = true;
+    int index = sender()->property("index").toInt();
+    module.failsafeChannels[index] = value;
+    failsafeSpins[index]->setValue(value);
+    failsafeSliders[index]->setValue(value);
+    emit modified();
+    lock = false;
+  }
+}
+
+/******************************************************************************/
 
 Setup::Setup(QWidget *parent, ModelData & model):
   ModelPanel(parent, model),
   ui(new Ui::Setup)
 {
+  memset(modules, 0, sizeof(modules));
+
   ui->setupUi(this);
-  tabModelEditSetup();
-}
 
-Setup::~Setup()
-{
-  delete ui;
-}
+  ui->name->setMaxLength(IS_TARANIS(GetEepromInterface()->getBoard()) ? 12 : 10);
 
-void Setup::tabModelEditSetup()
-{
-    lock = true;
+  for (int i=0; i<C9X_MAX_TIMERS; i++) {
+    timers[i] = new TimerPanel(this, model, model.timers[i]);
+    ui->gridLayout->addWidget(timers[i], 1+i, 1);
+    connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+  }
 
-    QSlider * fssld1[] = { ui->fsm1SL_1, ui->fsm1SL_2,ui->fsm1SL_3,ui->fsm1SL_4,ui->fsm1SL_5,ui->fsm1SL_6,ui->fsm1SL_7,ui->fsm1SL_8,
-                                 ui->fsm1SL_9, ui->fsm1SL_10,ui->fsm1SL_11,ui->fsm1SL_12,ui->fsm1SL_13,ui->fsm1SL_14,ui->fsm1SL_15,ui->fsm1SL_16, NULL };
-    QSlider * fssld2[] = { ui->fsm2SL_1, ui->fsm2SL_2,ui->fsm2SL_3,ui->fsm2SL_4,ui->fsm2SL_5,ui->fsm2SL_6,ui->fsm2SL_7,ui->fsm2SL_8,
-                                 ui->fsm2SL_9, ui->fsm2SL_10,ui->fsm2SL_11,ui->fsm2SL_12,ui->fsm2SL_13,ui->fsm2SL_14,ui->fsm2SL_15,ui->fsm2SL_16, NULL };
-    QSpinBox * fssb1[] = { ui->fsm1SB_1, ui->fsm1SB_2,ui->fsm1SB_3,ui->fsm1SB_4,ui->fsm1SB_5,ui->fsm1SB_6,ui->fsm1SB_7,ui->fsm1SB_8,
-                                 ui->fsm1SB_9, ui->fsm1SB_10,ui->fsm1SB_11,ui->fsm1SB_12,ui->fsm1SB_13,ui->fsm1SB_14,ui->fsm1SB_15,ui->fsm1SB_16, NULL };
-    QSpinBox * fssb2[] = { ui->fsm2SB_1, ui->fsm2SB_2,ui->fsm2SB_3,ui->fsm2SB_4,ui->fsm2SB_5,ui->fsm2SB_6,ui->fsm2SB_7,ui->fsm2SB_8,
-                                 ui->fsm2SB_9, ui->fsm2SB_10,ui->fsm2SB_11,ui->fsm2SB_12,ui->fsm2SB_13,ui->fsm2SB_14,ui->fsm2SB_15,ui->fsm2SB_16, NULL };
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      ui->modelNameLE->setMaxLength(12);
-    } else {
-      ui->modelNameLE->setMaxLength(10);
-    }
-    ui->modelNameLE->setText(model.name);
+  for (int i=0; i<GetEepromInterface()->getCapability(NumModules); i++) {
+    modules[i] = new ModulePanel(this, model, model.moduleData[i], i);
+    ui->modulesLayout->addWidget(modules[i]);
+    connect(modules[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+  }
 
-    if (GetEepromInterface()->getCapability(NumModules)<2) {
-      ui->rf2_GB->hide();
-    }
+  if (GetEepromInterface()->getCapability(ModelTrainerEnable)) {
+    modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], -1);
+    ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
+  }
 
-    if (!GetEepromInterface()->getCapability(HasFailsafe)) {
-      ui->FSGB_1->hide();
-      ui->FSGB_2->hide();
-      ui->ModelSetupTab->setTabEnabled(1,0);
-    } else {
-      if (GetEepromInterface()->getCapability(HasFailsafe)<32) {
-        ui->FSGB_2->hide();
-      }
-
-      for (int i=0; fssld1[i]; i++) {
-        fssld1[i]->setValue(model.moduleData[0].failsafeChannels[i]);
-        fssld2[i]->setValue(model.moduleData[1].failsafeChannels[i]);
-        fssb1[i]->setValue(model.moduleData[0].failsafeChannels[i]);
-        fssb2[i]->setValue(model.moduleData[1].failsafeChannels[i]);
-        connect(fssld1[i],SIGNAL(valueChanged(int)),this,SLOT(fssldValueChanged()));
-        connect(fssld2[i],SIGNAL(valueChanged(int)),this,SLOT(fssldValueChanged()));
-        connect(fssb1[i],SIGNAL(valueChanged(int)),this,SLOT(fssbValueChanged()));
-        connect(fssb2[i],SIGNAL(valueChanged(int)),this,SLOT(fssbValueChanged()));
-        connect(fssld1[i],SIGNAL(sliderReleased()),this,SLOT(fssldEdited()));
-        connect(fssld2[i],SIGNAL(sliderReleased()),this,SLOT(fssldEdited()));
-        connect(fssb1[i],SIGNAL(editingFinished()),this,SLOT(fssbEdited()));
-        connect(fssb2[i],SIGNAL(editingFinished()),this,SLOT(fssbEdited()));
-      }
-    }
-
-    //timer1 mode direction value
-    populateTimerSwitchCB(ui->timer1ModeCB,model.timers[0].mode,GetEepromInterface()->getCapability(TimerTriggerB));
-    int min = model.timers[0].val/60;
-    int sec = model.timers[0].val%60;
-    ui->timer1ValTE->setTime(QTime(0,min,sec));
-    ui->timer1DirCB->setCurrentIndex(model.timers[0].dir);
-    if (!GetEepromInterface()->getCapability(ModelVoice)) {
-      ui->modelVoice_SB->hide();
-      ui->modelVoice_label->hide();
-    } else {
-      ui->modelVoice_SB->setValue(model.modelVoice+260);
-    }
-    if (!GetEepromInterface()->getCapability(PerModelThrottleInvert)) {
-      ui->label_thrrev->hide();
-      ui->thrrevChkB->hide();
+    if (!GetEepromInterface()->getCapability(ModelImage)) {
+      ui->image->hide();
+      ui->modelImage_label->hide();
+      ui->imagePreview->hide();
     }
     else {
-      ui->thrrevChkB->setChecked(model.throttleReversed);
-    }
-    if (!GetEepromInterface()->getCapability(ModelImage)) {
-      ui->modelImage_CB->hide();
-      ui->modelImage_label->hide();
-      ui->modelImage_image->hide();
-    } else {
 
       QStringList items;
       items.append("");
@@ -110,11 +354,11 @@ void Setup::tabModelEditSetup()
         items.append(model.bitmap);
       }
       items.sort();
-      ui->modelImage_CB->clear();
+      ui->image->clear();
       foreach ( QString file, items ) {
-        ui->modelImage_CB->addItem(file);
+        ui->image->addItem(file);
         if (file==model.bitmap) {
-          ui->modelImage_CB->setCurrentIndex(ui->modelImage_CB->count()-1);
+          ui->image->setCurrentIndex(ui->image->count()-1);
           QString fileName=path;
           fileName.append(model.bitmap);
           fileName.append(".bmp");
@@ -126,7 +370,7 @@ void Setup::tabModelEditSetup()
             image.load(fileName);
           }
           if (!image.isNull()) {
-            ui->modelImage_image->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
+            ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
           }
         }
       }
@@ -145,8 +389,8 @@ void Setup::tabModelEditSetup()
     ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, analogs+GetEepromInterface()->getCapability(RotaryEncoders));
 
     // Startup switches warnings
-    ui->switchesStartupWarning_CB->setProperty("index", 0);
-    connect(ui->switchesStartupWarning_CB, SIGNAL(currentIndexChanged(int)), this, SLOT(startupSwitchEdited(int)));
+    ui->switchesStartupWarning->setProperty("index", 0);
+    connect(ui->switchesStartupWarning, SIGNAL(currentIndexChanged(int)), this, SLOT(startupSwitchEdited(int)));
     for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
       QLabel * label = new QLabel();
       QSlider * slider = new QSlider();
@@ -154,6 +398,7 @@ void Setup::tabModelEditSetup()
       slider->setOrientation(Qt::Vertical);
       slider->setMinimum(0);
       slider->setSingleStep(1);
+      slider->setPageStep(1);
       slider->setInvertedAppearance(true);
       slider->setTickPosition(QSlider::TicksBothSides);
       slider->setTickInterval(1);
@@ -174,1032 +419,61 @@ void Setup::tabModelEditSetup()
     }
     ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
 
-    int ppmmax=GetEepromInterface()->getCapability(PPMFrameLength);
-    if (ppmmax>0) {
-      ui->ppmFrameLengthDSB->setMaximum(ppmmax);
-    }
-    if (!GetEepromInterface()->getCapability(InstantTrimSW)) {
-      ui->instantTrim_label->hide();
-      ui->instantTrim_CB->setDisabled(true);
-      ui->instantTrim_CB->hide();
-    }
-    else {
-      int found=false;
-      for (int i=0; i< C9X_MAX_CUSTOM_FUNCTIONS; i++) {
-        if (model.funcSw[i].func==FuncInstantTrim) {
-          populateSwitchCB(ui->instantTrim_CB,model.funcSw[i].swtch,POPULATE_MSWITCHES & POPULATE_ONOFF);
-          found=true;
-          break;
-        }
-      }
-      if (found==false) {
-        populateSwitchCB(ui->instantTrim_CB,RawSwitch(),POPULATE_MSWITCHES & POPULATE_ONOFF);
-      }
-    }
-    if (GetEepromInterface()->getCapability(NoTimerDirs)) {
-      ui->timer1DirCB->hide();
-      ui->timer2DirCB->hide();
-    }
-    if (GetEepromInterface()->getCapability(NoThrExpo)) {
-      ui->label_thrExpo->hide();
-      ui->thrExpoChkB->hide();
-    }
-    if (!(GetEepromInterface()->getCapability(ExtendedTrims)>0)) {
-      ui->extendedTrimsChkB->hide();
-      ui->extendedTrims_label->hide();
-    } else {
-      ui->extendedTrimsChkB->setChecked(model.extendedTrims);
-    }
-    if (!GetEepromInterface()->getCapability(HasTTrace)) {
-      ui->label_ttrace->hide();
-      ui->ttraceCB->hide();
-    } else {
-      populateTTraceCB(ui->ttraceCB,model.thrTraceSrc);
-    }
-
-    if (!GetEepromInterface()->getCapability(PerModelThrottleWarning)) {
-      ui->thrwarnChkB->setDisabled(true);
-      ui->thrwarnChkB->hide();
-      ui->thrwarnLabel->hide();
-    }
-    else {
-      ui->thrwarnChkB->setChecked(model.disableThrottleWarning);
-    }
-    if (!GetEepromInterface()->getCapability(TimerTriggerB)) {
-      ui->timer1ModeBCB->hide();
-      ui->timer1ModeB_label->hide();
-      ui->timer2ModeBCB->hide();
-      ui->timer2ModeB_label->hide();
-    } else {
-      populateTimerSwitchBCB(ui->timer1ModeBCB,model.timers[0].modeB,GetEepromInterface()->getCapability(TimerTriggerB));
-      populateTimerSwitchBCB(ui->timer2ModeBCB,model.timers[1].modeB,GetEepromInterface()->getCapability(TimerTriggerB));
-    }
-
-    int index=0;
-    int selindex;
-    int selindex2;
-    ui->protocolCB->clear();
-    for (int i=0; i<PROTO_LAST; i++) {
-      if (GetEepromInterface()->isAvailable((Protocol)i)) {
-        ui->protocolCB->addItem(getProtocolStr(i), (QVariant)i);
-        if (model.moduleData[0].protocol == i) {
-          selindex = index;
-        }
-        index++;
-      }
-    }
-    if (GetEepromInterface()->getCapability(NumModules)>1) {
-      index=0;
-      ui->protocolCB_2->clear();
-      for (int i=0; i<PROTO_LAST; ++i) {
-        if (GetEepromInterface()->isAvailable((Protocol)i, 1)) {
-          ui->protocolCB_2->addItem(getProtocolStr(i), (QVariant)i);
-          if (model.moduleData[1].protocol == i) {
-            selindex2 = index;
-          }
-          index++;
-        }
-      }
-    }
-    if (GetEepromInterface()->getCapability(ModelTrainerEnable)) {
-      if (!(model.trainerMode||model.traineron)) {
-        ui->protocolCB_3->setCurrentIndex(0);
-        ui->label_PPM_3->hide();
-        ui->ppmDelaySB_3->hide();
-        ui->label_PPMCH_3->hide();
-        ui->label_pulsePol_3->hide();
-        ui->pulsePolCB_3->hide();
-        ui->numChannelsSB_3->hide();
-        ui->label_ppmFrameLength_3->hide();
-        ui->ppmFrameLengthDSB_3->hide();
-        ui->label_numChannelsStart_3->hide();
-        ui->numChannelsStart_3->hide();
-      } else {
-        ui->protocolCB_3->setCurrentIndex(1);
-        ui->label_PPM_3->show();
-        ui->ppmDelaySB_3->show();
-        ui->label_PPMCH_3->show();
-        ui->label_pulsePol_3->show();
-        ui->pulsePolCB_3->show();
-        ui->numChannelsSB_3->show();
-        ui->label_ppmFrameLength_3->show();
-        ui->ppmFrameLengthDSB_3->show();
-        ui->label_numChannelsStart_3->show();
-        ui->numChannelsStart_3->show();
-      }
-      on_protocolCB_3_currentIndexChanged(model.traineron||model.trainerMode);
-    } else {
-      ui->rf3_GB->hide();
-    }
-
-    ui->label_PPM->hide();
-    ui->ppmDelaySB->hide();
-    ui->label_PPMCH->hide();
-    ui->label_pulsePol->hide();
-    ui->pulsePolCB->hide();
-    ui->numChannelsSB->hide();
-    ui->label_ppmFrameLength->hide();
-    ui->ppmFrameLengthDSB->hide();
-    ui->label_DSM->hide();
-    ui->DSM_Type->hide();
-    ui->label_PXX->hide();
-    ui->pxxRxNum->hide();
-    ui->label_numChannelsStart->hide();
-    ui->numChannelsStart->hide();
-    ui->pxxRxNum->setEnabled(false);
-    ui->protocolCB->setCurrentIndex(selindex);
-    on_protocolCB_currentIndexChanged(selindex);
-    if (GetEepromInterface()->getCapability(NumModules)>1) {
-      ui->label_PPM_2->hide();
-      ui->ppmDelaySB_2->hide();
-      ui->label_PPMCH_2->hide();
-      ui->label_pulsePol_2->hide();
-      ui->pulsePolCB_2->hide();
-      ui->numChannelsSB_2->hide();
-      ui->label_ppmFrameLength_2->hide();
-      ui->ppmFrameLengthDSB_2->hide();
-      ui->label_DSM_2->hide();
-      ui->DSM_Type_2->hide();
-      ui->label_PXX_2->hide();
-      ui->pxxRxNum_2->hide();
-      ui->label_numChannelsStart_2->hide();
-      ui->numChannelsStart_2->hide();
-      ui->pxxRxNum_2->setEnabled(false);
-      ui->protocolCB_2->setCurrentIndex(selindex2);
-      on_protocolCB_2_currentIndexChanged(selindex2);
-    }
-
-    //timer2 mode direction value
-    if (GetEepromInterface()->getCapability(Timers)<2) {
-      ui->timer2DirCB->hide();
-      ui->timer2ValTE->hide();
-      ui->timer2DirCB->hide();
-      ui->timer2ModeCB->hide();
-      ui->timer2ModeBCB->hide();
-      ui->timer2ModeB_label->hide();
-      ui->label_timer2->hide();
-    } else {
-      populateTimerSwitchCB(ui->timer2ModeCB,model.timers[1].mode,GetEepromInterface()->getCapability(TimerTriggerB));
-      min = model.timers[1].val/60;
-      sec = model.timers[1].val%60;
-      ui->timer2ValTE->setTime(QTime(0,min,sec));
-      ui->timer2DirCB->setCurrentIndex(model.timers[1].dir);
-    }
-    if (!GetEepromInterface()->getCapability(PermTimers)) {
-      ui->timer1Perm->hide();
-      ui->timer2Perm->hide();
-      ui->timer1PermValue->hide();
-      ui->timer2PermValue->hide();
-    } else {
-      int sign=1;
-      int pvalue=model.timers[0].pvalue;
-      if (pvalue<0) {
-        pvalue=-pvalue;
-        sign=-1;
-      }
-      int hours=pvalue/3600;
-      pvalue-=hours*3600;
-      int minutes = pvalue/60;
-      int seconds = pvalue%60;
-      ui->timer1PermValue->setText(QString(" %1(%2:%3:%4)").arg(sign<0 ? "-" :" ").arg(hours,2,10,QLatin1Char('0')).arg(minutes,2,10,QLatin1Char('0')).arg(seconds,2,10,QLatin1Char('0')));
-      // QString QString::arg ( int a, int fieldWidth = 0, int base = 10, const QChar & fillChar = QLatin1Char( ' ' ) ) const
-      sign=1;
-      pvalue=model.timers[1].pvalue;
-      if (pvalue<0) {
-        pvalue=-pvalue;
-        sign=-1;
-      }
-      hours=pvalue/3600;
-      pvalue-=hours*3600;
-      minutes = pvalue/60;
-      seconds = pvalue%60;
-      ui->timer2PermValue->setText(QString(" %1(%2:%3:%4)").arg(sign<0 ? "-" :" ").arg(hours,2,10,QLatin1Char('0')).arg(minutes,2,10,QLatin1Char('0')).arg(seconds,2,10,QLatin1Char('0')));
-      ui->timer1Perm->setChecked(model.timers[0].persistent);
-      ui->timer2Perm->setChecked(model.timers[1].persistent);
-    }
-    if (!GetEepromInterface()->getCapability(minuteBeep)) {
-      ui->timer1Minute->hide();
-      ui->timer2Minute->hide();
-    } else {
-      ui->timer1Minute->setChecked(model.timers[0].minuteBeep);
-      ui->timer2Minute->setChecked(model.timers[1].minuteBeep);
-    }
-
-    if (!GetEepromInterface()->getCapability(countdownBeep)) {
-      ui->timer1CountDownBeep->hide();
-      ui->timer2CountDownBeep->hide();
-    } else {
-      ui->timer1CountDownBeep->setChecked(model.timers[0].countdownBeep);
-      ui->timer2CountDownBeep->setChecked(model.timers[1].countdownBeep);
-    }
-
-    //trim inc, thro trim, thro expo, instatrim
-    ui->trimIncCB->setCurrentIndex(model.trimInc);
-    ui->thrExpoChkB->setChecked(model.thrExpo);
-    ui->thrTrimChkB->setChecked(model.thrTrim);
-
-    // PPM settings fields
-    ui->ppmDelaySB->setEnabled(model.moduleData[0].protocol == PPM);
-    ui->pulsePolCB->setCurrentIndex(model.moduleData[0].ppmPulsePol);
-    ui->ppmDelaySB->setEnabled(model.moduleData[0].protocol == PPM);
-    ui->ppmDelaySB->setValue(model.moduleData[0].ppmDelay);
-    // TODO? ui->numChannelsSB->setEnabled(model.moduleData[0].protocol == PPM);
-
-    ui->extendedLimitsChkB->setChecked(model.extendedLimits);
-    ui->T2ThrTrgChkB->setChecked(model.t2throttle);
-    if (!GetEepromInterface()->getCapability(Timer2ThrTrig)) {
-      ui->T2ThrTrg->hide();
-      ui->T2ThrTrgChkB->hide();
-    }
-    ui->ppmFrameLengthDSB->setValue(22.5+((double)model.moduleData[0].ppmFrameLength)*0.5);
-    if (!GetEepromInterface()->getCapability(PPMExtCtrl)) {
-      ui->ppmFrameLengthDSB->hide();
-      ui->label_ppmFrameLength->hide();
-    }
-    switch (model.moduleData[0].protocol) {
-      case PXX_DJT:
-      case PXX_XJT_X16:
-      case PXX_XJT_D8:
-      case PXX_XJT_LR12:
-        ui->pxxRxNum->setMinimum(0);
-        ui->pxxRxNum->setValue((model.modelId));
-        break;
-      case DSM2:
-        if (!GetEepromInterface()->getCapability(DSM2Indexes)) {
-          ui->pxxRxNum->setValue(1);
-        }
-        else {
-          ui->pxxRxNum->setMinimum(0);
-          ui->pxxRxNum->setValue((model.modelId));
-        }
-        ui->numChannelsSB->setValue(8);
-        break;
-      default:
-        ui->label_DSM->hide();
-        ui->DSM_Type->hide();
-        ui->DSM_Type->setEnabled(false);
-        ui->label_PXX->hide();
-        ui->pxxRxNum->hide();
-        ui->pxxRxNum->setEnabled(false);
-        ui->numChannelsSB->setValue(model.moduleData[0].channelsCount);
-        break;
-    }
     lock = false;
 }
 
-void Setup::on_protocolCB_currentIndexChanged(int index)
+Setup::~Setup()
 {
-    Protocol protocol = (Protocol)ui->protocolCB->itemData(index).toInt();
-
-    if (!lock) {
-      model.moduleData[0].protocol = protocol;
-      emit modified();
-    }
-
-    if (protocol==PXX_XJT_D8 || protocol==OFF) {
-      ui->FSGB_1->hide();
-    } else {
-      ui->fsm1CB->setCurrentIndex(model.moduleData[0].failsafeMode);
-      on_fsm1CB_currentIndexChanged(model.moduleData[0].failsafeMode);
-      ui->FSGB_1->show();
-    }
-
-    ui->ppmDelaySB->setEnabled(!protocol);
-    ui->numChannelsSB->setEnabled(!protocol);
-
-    if (GetEepromInterface()->getCapability(HasPPMStart)) {
-      ui->numChannelsSB->setSingleStep(1);
-    } else {
-      ui->numChannelsSB->setSingleStep(2);
-    }
-
-    switch (protocol) {
-      case OFF:
-        ui->label_PPM->hide();
-        ui->ppmDelaySB->hide();
-        ui->label_PPMCH->hide();
-        ui->label_pulsePol->hide();
-        ui->pulsePolCB->hide();
-        ui->numChannelsSB->hide();
-        ui->label_ppmFrameLength->hide();
-        ui->ppmFrameLengthDSB->hide();
-        ui->label_DSM->hide();
-        ui->DSM_Type->hide();
-        ui->label_PXX->hide();
-        ui->pxxRxNum->hide();
-        ui->label_numChannelsStart->hide();
-        ui->numChannelsStart->hide();
-        break;
-      case PXX_XJT_X16:
-      case PXX_XJT_D8:
-      case PXX_XJT_LR12:
-      case PXX_DJT:
-        ui->label_PPM->hide();
-        ui->ppmDelaySB->hide();
-        ui->ppmDelaySB->setEnabled(false);
-        ui->label_PPMCH->show();
-        ui->label_pulsePol->hide();
-        ui->pulsePolCB->hide();
-        ui->numChannelsSB->show();
-        ui->numChannelsSB->setEnabled(true);
-        ui->label_ppmFrameLength->hide();
-        ui->ppmFrameLengthDSB->hide();
-        ui->ppmFrameLengthDSB->setEnabled(false);
-        ui->label_DSM->hide();
-        ui->DSM_Type->hide();
-        ui->DSM_Type->setEnabled(false);
-        ui->label_PXX->show();
-        ui->pxxRxNum->setMinimum(0);
-        ui->pxxRxNum->show();
-        ui->pxxRxNum->setEnabled(true);
-        ui->pxxRxNum->setValue((model.moduleData[0].channelsCount-8)/2+1);
-        ui->label_numChannelsStart->show();
-        ui->numChannelsStart->show();
-        ui->numChannelsStart->setValue(model.moduleData[0].channelsStart+1);
-        ui->numChannelsSB->setMinimum(model.moduleData[0].channelsStart+4);
-        ui->numChannelsSB->setValue(model.moduleData[0].channelsStart+model.moduleData[0].channelsCount);
-        break;
-      case LP45:
-      case DSM2:
-      case DSMX:
-        ui->label_pulsePol->hide();
-        ui->pulsePolCB->hide();
-        ui->label_PPM->hide();
-        ui->ppmDelaySB->hide();
-        ui->ppmDelaySB->setEnabled(false);
-        ui->label_PPMCH->hide();
-        ui->label_numChannelsStart->hide();
-        ui->numChannelsStart->hide();
-        ui->numChannelsSB->hide();
-        ui->numChannelsSB->setEnabled(false);
-        ui->label_ppmFrameLength->hide();
-        ui->ppmFrameLengthDSB->hide();
-        ui->ppmFrameLengthDSB->setEnabled(false);
-        if (!GetEepromInterface()->getCapability(DSM2Indexes)) {
-          ui->label_PXX->hide();
-          ui->pxxRxNum->hide();
-          ui->pxxRxNum->setEnabled(false);
-        }
-        else {
-          ui->pxxRxNum->setMinimum(0);
-          ui->pxxRxNum->setValue(model.modelId);
-          ui->label_PXX->show();
-          ui->pxxRxNum->show();
-          ui->pxxRxNum->setEnabled(true);
-        }
-        ui->DSM_Type->setEnabled(false);
-        ui->label_DSM->hide();
-        ui->DSM_Type->hide();
-        break;
-      default:
-        if (GetEepromInterface()->getCapability(HasPPMStart)) {
-          ui->label_numChannelsStart->show();
-          ui->numChannelsStart->show();
-        }
-        else {
-          ui->label_numChannelsStart->hide();
-          ui->numChannelsStart->hide();
-        }
-        ui->numChannelsStart->setValue(model.moduleData[0].channelsStart+1);
-        ui->numChannelsSB->setMinimum(model.moduleData[0].channelsStart+4);
-        ui->numChannelsSB->setValue(model.moduleData[0].channelsStart + model.moduleData[0].channelsCount);
-        ui->label_pulsePol->show();
-        ui->pulsePolCB->show();
-        ui->label_DSM->hide();
-        ui->DSM_Type->hide();
-        ui->DSM_Type->setEnabled(false);
-        ui->label_PXX->hide();
-        ui->pxxRxNum->hide();
-        ui->pxxRxNum->setEnabled(false);
-        ui->label_PPM->show();
-        ui->ppmDelaySB->show();
-        ui->ppmDelaySB->setEnabled(true);
-        ui->label_PPMCH->show();
-        ui->numChannelsSB->show();
-        ui->numChannelsSB->setEnabled(true);
-        ui->ppmFrameLengthDSB->setEnabled(true);
-        ui->ppmFrameLengthDSB->setMinimum(model.moduleData[0].channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
-        if (GetEepromInterface()->getCapability(PPMExtCtrl)) {
-          ui->ppmFrameLengthDSB->show();
-          ui->label_ppmFrameLength->show();
-        }
-
-        break;
-    }
+  delete ui;
 }
 
-void Setup::on_protocolCB_2_currentIndexChanged(int index)
-{
-    Protocol protocol = (Protocol)ui->protocolCB_2->itemData(index).toInt();
-
-    if (!lock) {
-      model.moduleData[1].protocol = protocol;
-      emit modified();
-    }
-
-    if (protocol==PXX_XJT_X16 || protocol==PXX_XJT_LR12) {
-      ui->FSGB_2->show();
-      ui->fsm2CB->setCurrentIndex(model.moduleData[1].failsafeMode);
-      on_fsm2CB_currentIndexChanged(model.moduleData[1].failsafeMode);
-    }
-    else {
-      ui->FSGB_2->hide();
-    }
-
-    ui->ppmDelaySB_2->setEnabled(!protocol);
-    ui->numChannelsSB_2->setEnabled(!protocol);
-
-    if (GetEepromInterface()->getCapability(HasPPMStart)) {
-      ui->numChannelsSB_2->setSingleStep(1);
-    } else {
-      ui->numChannelsSB_2->setSingleStep(2);
-    }
-
-    switch (protocol) {
-      case OFF:
-        ui->label_PPM_2->hide();
-        ui->ppmDelaySB_2->hide();
-        ui->label_PPMCH_2->hide();
-        ui->label_pulsePol_2->hide();
-        ui->pulsePolCB_2->hide();
-        ui->numChannelsSB_2->hide();
-        ui->label_ppmFrameLength_2->hide();
-        ui->ppmFrameLengthDSB_2->hide();
-        ui->label_DSM_2->hide();
-        ui->DSM_Type_2->hide();
-        ui->label_PXX_2->hide();
-        ui->pxxRxNum_2->hide();
-        ui->label_numChannelsStart_2->hide();
-        ui->numChannelsStart_2->hide();
-        break;
-      case PXX_XJT_X16:
-      case PXX_XJT_D8:
-      case PXX_XJT_LR12:
-      case PXX_DJT:
-        ui->label_PPM_2->hide();
-        ui->ppmDelaySB_2->hide();
-        ui->ppmDelaySB_2->setEnabled(false);
-        ui->label_PPMCH_2->show();
-        ui->label_pulsePol_2->hide();
-        ui->pulsePolCB_2->hide();
-        ui->numChannelsSB_2->show();
-        ui->numChannelsSB_2->setEnabled(true);
-        ui->label_ppmFrameLength_2->hide();
-        ui->ppmFrameLengthDSB_2->hide();
-        ui->ppmFrameLengthDSB_2->setEnabled(false);
-        ui->label_DSM_2->hide();
-        ui->DSM_Type_2->hide();
-        ui->DSM_Type_2->setEnabled(false);
-        ui->label_PXX_2->show();
-        ui->pxxRxNum_2->setMinimum(0);
-        ui->pxxRxNum_2->show();
-        ui->pxxRxNum_2->setEnabled(true);
-        ui->pxxRxNum_2->setValue(model.modelId);
-        ui->label_numChannelsStart_2->show();
-        ui->numChannelsStart_2->show();
-        ui->numChannelsStart_2->setValue(model.moduleData[1].channelsStart+1);
-        ui->numChannelsSB_2->setMinimum(model.moduleData[1].channelsStart+4);
-        ui->numChannelsSB_2->setValue(model.moduleData[1].channelsStart+model.moduleData[1].channelsCount);
-        break;
-      case LP45:
-      case DSM2:
-      case DSMX:
-        ui->label_pulsePol_2->hide();
-        ui->pulsePolCB_2->hide();
-        ui->label_PPM_2->hide();
-        ui->ppmDelaySB_2->hide();
-        ui->ppmDelaySB_2->setEnabled(false);
-        ui->label_PPMCH_2->hide();
-        ui->numChannelsSB_2->hide();
-        ui->numChannelsSB_2->setEnabled(false);
-        ui->label_ppmFrameLength_2->hide();
-        ui->ppmFrameLengthDSB_2->hide();
-        ui->ppmFrameLengthDSB_2->setEnabled(false);
-        if (!GetEepromInterface()->getCapability(DSM2Indexes)) {
-          ui->label_PXX_2->hide();
-          ui->pxxRxNum_2->hide();
-          ui->pxxRxNum_2->setEnabled(false);
-        } else {
-          ui->pxxRxNum_2->setMinimum(0);
-          ui->pxxRxNum_2->setValue(model.modelId);
-          ui->label_PXX_2->show();
-          ui->pxxRxNum_2->show();
-          ui->pxxRxNum_2->setEnabled(true);
-        }
-        ui->DSM_Type_2->setEnabled(false);
-        ui->label_DSM_2->hide();
-        ui->DSM_Type_2->hide();
-        break;
-      default:
-        if (GetEepromInterface()->getCapability(HasPPMStart)) {
-          ui->label_numChannelsStart_2->show();
-          ui->numChannelsStart_2->show();
-        } else {
-          ui->label_numChannelsStart_2->hide();
-          ui->numChannelsStart_2->hide();
-        }
-        ui->numChannelsStart_2->setValue(model.moduleData[1].channelsStart+1);
-        ui->numChannelsSB_2->setMinimum(model.moduleData[1].channelsStart+4);
-        ui->numChannelsSB_2->setValue(model.moduleData[1].channelsStart+model.moduleData[1].channelsCount);
-        ui->label_pulsePol_2->show();
-        ui->pulsePolCB_2->show();
-        ui->pulsePolCB_2->setCurrentIndex(model.moduleData[1].ppmPulsePol);
-        ui->label_DSM_2->hide();
-        ui->DSM_Type_2->hide();
-        ui->DSM_Type_2->setEnabled(false);
-        ui->label_PXX_2->hide();
-        ui->pxxRxNum_2->hide();
-        ui->pxxRxNum_2->setEnabled(false);
-        ui->label_PPM_2->show();
-        ui->ppmDelaySB_2->show();
-        ui->ppmDelaySB_2->setEnabled(true);
-        ui->ppmDelaySB_2->setValue(model.moduleData[1].ppmDelay);
-        ui->label_PPMCH_2->show();
-        ui->numChannelsSB_2->show();
-        ui->numChannelsSB_2->setEnabled(true);
-        ui->ppmFrameLengthDSB_2->setEnabled(true);
-        ui->ppmFrameLengthDSB_2->setMinimum(model.moduleData[1].channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
-        if (GetEepromInterface()->getCapability(PPMExtCtrl)) {
-          ui->ppmFrameLengthDSB_2->show();
-          ui->label_ppmFrameLength_2->show();
-          ui->ppmFrameLengthDSB_2->setValue(model.moduleData[1].ppmFrameLength/2.0+22.5);
-        }
-        break;
-    }
-}
-
-void Setup::on_protocolCB_3_currentIndexChanged(int index)
-{
-    Protocol protocol = (Protocol)ui->protocolCB_3->currentIndex();
-
-    if (!lock) {
-      model.moduleData[2].protocol = protocol;
-      model.trainerMode = ui->protocolCB_3->currentIndex();
-      emit modified();
-    }
-    
-    switch (index) {
-      case 0:
-        ui->label_PPM_3->hide();
-        ui->ppmDelaySB_3->hide();
-        ui->label_PPMCH_3->hide();
-        ui->label_pulsePol_3->hide();
-        ui->pulsePolCB_3->hide();
-        ui->numChannelsSB_3->hide();
-        ui->label_ppmFrameLength_3->hide();
-        ui->ppmFrameLengthDSB_3->hide();
-        ui->label_numChannelsStart_3->hide();
-        ui->numChannelsStart_3->hide();
-        break;
-      default:
-        ui->label_PPM_3->show();
-        ui->ppmDelaySB_3->show();
-        ui->label_PPMCH_3->show();
-        ui->label_pulsePol_3->show();
-        ui->pulsePolCB_3->show();
-        ui->numChannelsSB_3->show();
-        ui->label_ppmFrameLength_3->show();
-        ui->ppmFrameLengthDSB_3->show();
-        ui->label_numChannelsStart_3->show();
-        ui->numChannelsStart_3->show();
-        ui->numChannelsStart_3->setValue(model.moduleData[2].channelsStart+1);
-        ui->numChannelsSB_3->setMinimum(model.moduleData[2].channelsStart+4);
-        ui->numChannelsSB_3->setValue(model.moduleData[2].channelsStart+model.moduleData[2].channelsCount);
-        ui->pulsePolCB_3->setCurrentIndex(model.moduleData[2].ppmPulsePol);
-        ui->ppmDelaySB_3->setValue(model.moduleData[2].ppmDelay);
-        ui->ppmFrameLengthDSB_3->setMinimum(model.moduleData[2].channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
-        if (GetEepromInterface()->getCapability(PPMExtCtrl)) {
-          ui->ppmFrameLengthDSB_3->show();
-          ui->label_ppmFrameLength_3->show();
-          ui->ppmFrameLengthDSB_3->setValue(model.moduleData[2].ppmFrameLength/2.0+22.5);
-        }
-        break;
-    }
-}
-
-void Setup::on_T2ThrTrgChkB_toggled(bool checked)
-{
-  model.t2throttle = checked;
-  emit modified();
-}
-
-void Setup::on_extendedLimitsChkB_toggled(bool checked)
+void Setup::on_extendedLimits_toggled(bool checked)
 {
   model.extendedLimits = checked;
   emit modified();
 }
 
-void Setup::on_thrwarnChkB_toggled(bool checked)
+void Setup::on_throttleWarning_toggled(bool checked)
 {
   model.disableThrottleWarning = checked;
   emit modified();
 }
 
-void Setup::on_thrrevChkB_toggled(bool checked)
+void Setup::on_throttleReverse_toggled(bool checked)
 {
   model.throttleReversed = checked;
   emit modified();
 }
 
-void Setup::on_extendedTrimsChkB_toggled(bool checked)
+void Setup::on_extendedTrims_toggled(bool checked)
 {
   model.extendedTrims = checked;
   emit modified();
 }
 
-void Setup::on_fsm1CB_currentIndexChanged(int index)
+void Setup::on_trimIncrement_currentIndexChanged(int index)
 {
-  QSpinBox * fssb[] = { ui->fsm1SB_1, ui->fsm1SB_2,ui->fsm1SB_3,ui->fsm1SB_4,ui->fsm1SB_5,ui->fsm1SB_6,ui->fsm1SB_7,ui->fsm1SB_8,
-                               ui->fsm1SB_9, ui->fsm1SB_10,ui->fsm1SB_11,ui->fsm1SB_12,ui->fsm1SB_13,ui->fsm1SB_14,ui->fsm1SB_15,ui->fsm1SB_16, NULL };
-  QSlider * fssld[] = { ui->fsm1SL_1, ui->fsm1SL_2,ui->fsm1SL_3,ui->fsm1SL_4,ui->fsm1SL_5,ui->fsm1SL_6,ui->fsm1SL_7,ui->fsm1SL_8,
-                               ui->fsm1SL_9, ui->fsm1SL_10,ui->fsm1SL_11,ui->fsm1SL_12,ui->fsm1SL_13,ui->fsm1SL_14,ui->fsm1SL_15,ui->fsm1SL_16, NULL };
-  model.moduleData[0].failsafeMode=index;
-  for (int i=0; fssb[i]; i++) {
-   if (index==1) {
-      fssb[i]->setEnabled(true);
-      fssld[i]->setEnabled(true);
-    } else {
-      fssb[i]->setDisabled(true);
-      fssld[i]->setDisabled(true);
-    }
-  }
+  model.trimInc = index;
   emit modified();
 }
 
-void Setup::on_fsm2CB_currentIndexChanged(int index)
+void Setup::on_throttleSource_currentIndexChanged(int index)
 {
-  QSpinBox * fssb[] = { ui->fsm2SB_1, ui->fsm2SB_2,ui->fsm2SB_3,ui->fsm2SB_4,ui->fsm2SB_5,ui->fsm2SB_6,ui->fsm2SB_7,ui->fsm2SB_8,
-                               ui->fsm2SB_9, ui->fsm2SB_10,ui->fsm2SB_11,ui->fsm2SB_12,ui->fsm2SB_13,ui->fsm2SB_14,ui->fsm2SB_15,ui->fsm2SB_16, NULL };
-  QSlider * fssld[] = { ui->fsm2SL_1, ui->fsm2SL_2,ui->fsm2SL_3,ui->fsm2SL_4,ui->fsm2SL_5,ui->fsm2SL_6,ui->fsm2SL_7,ui->fsm2SL_8,
-                               ui->fsm2SL_9, ui->fsm2SL_10,ui->fsm2SL_11,ui->fsm2SL_12,ui->fsm2SL_13,ui->fsm2SL_14,ui->fsm2SL_15,ui->fsm2SL_16, NULL };
-  model.moduleData[1].failsafeMode=index;
-  for (int i=0; fssb[i]; i++) {
-   if (index==1) {
-      fssb[i]->setEnabled(true);
-      fssld[i]->setEnabled(true);
-    } else {
-      fssb[i]->setDisabled(true);
-      fssld[i]->setDisabled(true);
-    }
-  }
+  model.thrTraceSrc = index;
   emit modified();
 }
 
-void Setup::fssldValueChanged()
+void Setup::on_name_editingFinished()
+{
+  int length = ui->name->maxLength();
+  strncpy(model.name, ui->name->text().toAscii(), length);
+  emit modified();
+}
+
+void Setup::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
-    lock = true;
-    QSpinBox * fssb1[] = { ui->fsm1SB_1, ui->fsm1SB_2,ui->fsm1SB_3,ui->fsm1SB_4,ui->fsm1SB_5,ui->fsm1SB_6,ui->fsm1SB_7,ui->fsm1SB_8,
-                                 ui->fsm1SB_9, ui->fsm1SB_10,ui->fsm1SB_11,ui->fsm1SB_12,ui->fsm1SB_13,ui->fsm1SB_14,ui->fsm1SB_15,ui->fsm1SB_16, NULL };
-    QSpinBox * fssb2[] = { ui->fsm2SB_1, ui->fsm2SB_2,ui->fsm2SB_3,ui->fsm2SB_4,ui->fsm2SB_5,ui->fsm2SB_6,ui->fsm2SB_7,ui->fsm2SB_8,
-                                 ui->fsm2SB_9, ui->fsm2SB_10,ui->fsm2SB_11,ui->fsm2SB_12,ui->fsm2SB_13,ui->fsm2SB_14,ui->fsm2SB_15,ui->fsm2SB_16, NULL };
-    QSlider *sl = qobject_cast<QSlider*>(sender());
-    int fsId=sl->objectName().mid(sl->objectName().lastIndexOf("_")+1).toInt()-1;
-    int moduleid=sl->objectName().mid(3,1).toInt();
-    if (moduleid==1) {
-      fssb1[fsId]->setValue(sl->value());
-    } else {
-      fssb2[fsId]->setValue(sl->value());
-    }
-    lock = false;
-  }
-}
-
-void Setup::fssbValueChanged()
-{
-  if (!lock) {
-    lock = true;
-    QSlider * fssld1[] = { ui->fsm1SL_1, ui->fsm1SL_2,ui->fsm1SL_3,ui->fsm1SL_4,ui->fsm1SL_5,ui->fsm1SL_6,ui->fsm1SL_7,ui->fsm1SL_8,
-                                 ui->fsm1SL_9, ui->fsm1SL_10,ui->fsm1SL_11,ui->fsm1SL_12,ui->fsm1SL_13,ui->fsm1SL_14,ui->fsm1SL_15,ui->fsm1SL_16, NULL };
-    QSlider * fssld2[] = { ui->fsm2SL_1, ui->fsm2SL_2,ui->fsm2SL_3,ui->fsm2SL_4,ui->fsm2SL_5,ui->fsm2SL_6,ui->fsm2SL_7,ui->fsm2SL_8,
-                                 ui->fsm2SL_9, ui->fsm2SL_10,ui->fsm2SL_11,ui->fsm2SL_12,ui->fsm2SL_13,ui->fsm2SL_14,ui->fsm2SL_15,ui->fsm2SL_16, NULL };
-    QSpinBox *sb = qobject_cast<QSpinBox*>(sender());
-    int fsId=sb->objectName().mid(sb->objectName().lastIndexOf("_")+1).toInt()-1;
-    int moduleid=sb->objectName().mid(3,1).toInt();
-    if (moduleid==1) {
-      fssld1[fsId]->setValue(sb->value());
-    } else {
-      fssld2[fsId]->setValue(sb->value());
-    }
-    lock = false;
-  }
-}
-
-void Setup::fssldEdited()
-{
-  QSlider *sl = qobject_cast<QSlider*>(sender());
-  int fsId=sl->objectName().mid(sl->objectName().lastIndexOf("_")+1).toInt()-1;
-  int moduleid=sl->objectName().mid(3,1).toInt();
-  if (moduleid==1) {
-    model.moduleData[0].failsafeChannels[fsId]=sl->value();
-  } else {
-    model.moduleData[1].failsafeChannels[fsId]=sl->value();
-  }
-  emit modified();
-}
-
-void Setup::fssbEdited()
-{
-  QSpinBox *sb = qobject_cast<QSpinBox*>(sender());
-  int fsId=sb->objectName().mid(sb->objectName().lastIndexOf("_")+1).toInt()-1;
-  int moduleid=sb->objectName().mid(3,1).toInt();
-  if (moduleid==1) {
-    model.moduleData[0].failsafeChannels[fsId]=sb->value();
-  } else {
-    model.moduleData[1].failsafeChannels[fsId]=sb->value();
-  }
-  emit modified();
-}
-
-void Setup::on_modelVoice_SB_editingFinished()
-{
-  model.modelVoice=ui->modelVoice_SB->value()-260;
-  emit modified();
-}
-
-void Setup::on_timer1Perm_toggled(bool checked)
-{
-  model.timers[0].persistent=checked;
-  emit modified();
-}
-
-void Setup::on_timer2Perm_toggled(bool checked)
-{
-  model.timers[1].persistent=checked;
-  emit modified();
-}
-
-void Setup::on_timer1Minute_toggled(bool checked)
-{
-  model.timers[0].minuteBeep=checked;
-  emit modified();
-}
-
-void Setup::on_timer2Minute_toggled(bool checked)
-{
-  model.timers[1].minuteBeep=checked;
-  emit modified();
-}
-
-void Setup::on_timer1CountDownBeep_toggled(bool checked)
-{
-  model.timers[0].countdownBeep=checked;
-  emit modified();
-}
-
-void Setup::on_timer2CountDownBeep_toggled(bool checked)
-{
-  model.timers[1].countdownBeep=checked;
-  emit modified();
-}
-
-void Setup::on_timer1ModeCB_currentIndexChanged(int index)
-{
-    model.timers[0].mode = TimerMode(ui->timer1ModeCB->itemData(index).toInt());
-    emit modified();
-}
-
-void Setup::on_timer1DirCB_currentIndexChanged(int index)
-{
-    model.timers[0].dir = index;
-    emit modified();
-}
-
-void Setup::on_timer1ValTE_editingFinished()
-{
-    model.timers[0].val = ui->timer1ValTE->time().minute()*60 + ui->timer1ValTE->time().second();
-    emit modified();
-}
-
-void Setup::on_timer1ModeBCB_currentIndexChanged(int index)
-{
-    model.timers[0].modeB = ui->timer1ModeBCB->itemData(index).toInt();
-    emit modified();
-}
-
-void Setup::on_timer2ModeCB_currentIndexChanged(int index)
-{
-    model.timers[1].mode = TimerMode(ui->timer2ModeCB->itemData(index).toInt());
-    emit modified();
-}
-
-void Setup::on_timer2DirCB_currentIndexChanged(int index)
-{
-    model.timers[1].dir = index;
-    emit modified();
-}
-
-void Setup::on_timer2ValTE_editingFinished()
-{
-    model.timers[1].val = ui->timer2ValTE->time().minute()*60 + ui->timer2ValTE->time().second();
-    emit modified();
-}
-
-void Setup::on_timer2ModeBCB_currentIndexChanged(int index)
-{
-    model.timers[1].modeB = ui->timer2ModeBCB->itemData(index).toInt();
-    emit modified();
-}
-
-void Setup::on_trimIncCB_currentIndexChanged(int index)
-{
-    model.trimInc = index;
-    emit modified();
-}
-
-void Setup::on_ttraceCB_currentIndexChanged(int index)
-{
-    model.thrTraceSrc = index;
-    emit modified();
-}
-
-void Setup::on_pulsePolCB_currentIndexChanged(int index)
-{
-    model.moduleData[0].ppmPulsePol = index;
-    emit modified();
-}
-
-void Setup::on_pulsePolCB_2_currentIndexChanged(int index)
-{
-    model.moduleData[1].ppmPulsePol = index;
-    emit modified();
-}
-
-void Setup::on_pulsePolCB_3_currentIndexChanged(int index)
-{
-    model.moduleData[2].ppmPulsePol = index;
-    emit modified();
-}
-
-void Setup::on_numChannelsSB_editingFinished()
-{
-    // TODO only accept valid values
-    model.moduleData[0].channelsCount = 1+ui->numChannelsSB->value()-ui->numChannelsStart->value();
-    ui->ppmFrameLengthDSB->setMinimum(model.moduleData[0].channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
-    emit modified();
-}
-
-void Setup::on_numChannelsSB_2_editingFinished()
-{
-    // TODO only accept valid values
-    model.moduleData[1].channelsCount = 1+ui->numChannelsSB_2->value()-ui->numChannelsStart_2->value();
-    ui->ppmFrameLengthDSB_2->setMinimum(model.moduleData[1].channelsCount*(model.extendedLimits ? 2.250 :2.0)+3.5);
-    emit modified();
-}
-
-void Setup::on_numChannelsSB_3_editingFinished()
-{
-    // TODO only accept valid values
-    model.moduleData[2].channelsCount = 1+ui->numChannelsSB_3->value()-ui->numChannelsStart_3->value();
-    ui->ppmFrameLengthDSB_3->setMinimum(model.moduleData[2].channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
-    emit modified();
-}
-
-void Setup::on_numChannelsStart_editingFinished()
-{
-    // TODO only accept valid values
-    model.moduleData[0].channelsStart = ui->numChannelsStart->value()-1;
-    ui->numChannelsSB->setMinimum(model.moduleData[0].channelsStart+4);
-    ui->numChannelsSB->setValue(model.moduleData[0].channelsStart+model.moduleData[0].channelsCount);
-    emit modified();
-}
-
-void Setup::on_numChannelsStart_2_editingFinished()
-{
-    // TODO only accept valid values
-    model.moduleData[1].channelsStart = ui->numChannelsStart_2->value()-1;
-    ui->numChannelsSB_2->setMinimum(model.moduleData[1].channelsStart+4);
-    ui->numChannelsSB_2->setValue(model.moduleData[1].channelsStart+model.moduleData[1].channelsCount);
-    emit modified();
-}
-
-void Setup::on_numChannelsStart_3_editingFinished()
-{
-    // TODO only accept valid values
-    model.moduleData[2].channelsStart = ui->numChannelsStart_3->value()-1;
-    ui->numChannelsSB_3->setMinimum(model.moduleData[2].channelsStart+4);
-    ui->numChannelsSB_3->setValue(model.moduleData[2].channelsStart+model.moduleData[2].channelsCount);
-    emit modified();
-}
-
-void Setup::on_ppmDelaySB_editingFinished()
-{
-  if (!lock) {
-    // TODO only accept valid values
-    model.moduleData[0].ppmDelay = ui->ppmDelaySB->value();
-    emit modified();
-  }
-}
-
-void Setup::on_ppmDelaySB_2_editingFinished()
-{
-  if (!lock) {
-    // TODO only accept valid values
-    model.moduleData[1].ppmDelay = ui->ppmDelaySB_2->value();
-    emit modified();
-  }
-}
-
-void Setup::on_ppmDelaySB_3_editingFinished()
-{
-  if (!lock) {
-    // TODO only accept valid values
-    model.moduleData[2].ppmDelay = ui->ppmDelaySB_3->value();
-    emit modified();
-  }
-}
-
-void Setup::on_DSM_Type_currentIndexChanged(int index)
-{
-  if (!lock) {
-    // model.moduleData[0].channelsCount = (index*2)+8;
-    emit modified();
-  }
-}
-
-void Setup::on_DSM_Type_2_currentIndexChanged(int index)
-{
-  if (!lock) {
-    // model.moduleData[1].channelsCount = (index*2)+8;
-    emit modified();
-  }
-}
-
-void Setup::on_pxxRxNum_editingFinished()
-{
-  if (!lock) {
-    if (!GetEepromInterface()->getCapability(DSM2Indexes)) {
-      // model.moduleData[0].channelsCount = (ui->pxxRxNum->value()-1)*2+8;
-    }
-    else {
-      model.modelId = ui->pxxRxNum->value();
-    }
-    emit modified();
-  }
-}
-
-void Setup::on_pxxRxNum_2_editingFinished()
-{
-  if (!lock) {
-    /* if (!GetEepromInterface()->getCapability(DSM2Indexes)) {
-      model.moduleData[1].channelsCount = (ui->pxxRxNum_2->value()-1)*2+8;
-    } */
-    emit modified();
-  }
-}
-
-void Setup::on_ppmFrameLengthDSB_editingFinished()
-{
-  model.moduleData[0].ppmFrameLength = (ui->ppmFrameLengthDSB->value()-22.5)/0.5;
-  emit modified();
-}
-
-void Setup::on_ppmFrameLengthDSB_2_editingFinished()
-{
-  model.moduleData[1].ppmFrameLength = (ui->ppmFrameLengthDSB_2->value()-22.5)/0.5;
-  emit modified();
-}
-
-void Setup::on_ppmFrameLengthDSB_3_editingFinished()
-{
-  model.moduleData[2].ppmFrameLength = (ui->ppmFrameLengthDSB_3->value()-22.5)/0.5;
-  emit modified();
-}
-
-void Setup::on_instantTrim_CB_currentIndexChanged(int index)
-{
-  if (!lock) {
-    bool found=false;
-    for (int i=0; i< C9X_MAX_CUSTOM_FUNCTIONS; i++) {
-      if (model.funcSw[i].func==FuncInstantTrim) {
-        model.funcSw[i].swtch = RawSwitch(ui->instantTrim_CB->itemData(ui->instantTrim_CB->currentIndex()).toInt());
-        found=true;
-      }
-    }
-    if (found==false) {
-      for (int i=0; i< C9X_MAX_CUSTOM_FUNCTIONS; i++) {
-        if (model.funcSw[i].swtch==RawSwitch()) {
-          model.funcSw[i].swtch = RawSwitch(ui->instantTrim_CB->itemData(ui->instantTrim_CB->currentIndex()).toInt());
-          model.funcSw[i].func = FuncInstantTrim;
-          break;
-        }
-      }
-    }
-    emit modified();
-  }
-}
-
-void Setup::on_modelNameLE_editingFinished()
-{
-  int length=ui->modelNameLE->maxLength();
-  strncpy(model.name, ui->modelNameLE->text().toAscii(), length);
-  emit modified();
-}
-
-void Setup::on_modelImage_CB_currentIndexChanged(int index)
-{
-  if (!lock) {
-    strncpy(model.bitmap, ui->modelImage_CB->currentText().toAscii(), GetEepromInterface()->getCapability(VoicesMaxLength));
+    strncpy(model.bitmap, ui->image->currentText().toAscii(), GetEepromInterface()->getCapability(VoicesMaxLength));
     QSettings settings("companion9x", "companion9x");
     QString path=settings.value("sdPath", ".").toString();
     path.append("/BMP/");
@@ -1216,14 +490,14 @@ void Setup::on_modelImage_CB_currentIndexChanged(int index)
         image.load(fileName);
       }
       if (!image.isNull()) {
-        ui->modelImage_image->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
+        ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
       }
       else {
-        ui->modelImage_image->clear();
+        ui->imagePreview->clear();
       }
     }
     else {
-      ui->modelImage_image->clear();
+      ui->imagePreview->clear();
     }
     emit modified();
   }
@@ -1231,8 +505,27 @@ void Setup::on_modelImage_CB_currentIndexChanged(int index)
 
 void Setup::update()
 {
+  ui->name->setText(model.name);
+
+  ui->throttleReverse->setChecked(model.throttleReversed);
+  populateTTraceCB(ui->throttleSource, model.thrTraceSrc);
+  ui->throttleWarning->setChecked(model.disableThrottleWarning);
+
+  //trim inc, thro trim, thro expo, instatrim
+  ui->trimIncrement->setCurrentIndex(model.trimInc);
+  ui->throttleTrim->setChecked(model.thrTrim);
+  ui->extendedLimits->setChecked(model.extendedLimits);
+  ui->extendedTrims->setChecked(model.extendedTrims);
+
   updateBeepCenter();
   updateStartupSwitches();
+
+  for (int i=0; i<C9X_MAX_TIMERS; i++)
+    timers[i]->update();
+
+  for (int i=0; i<C9X_NUM_MODULES+1; i++)
+    if (modules[i])
+      modules[i]->update();
 }
 
 void Setup::updateBeepCenter()
@@ -1248,7 +541,7 @@ void Setup::updateStartupSwitches()
 
   unsigned int switchStates = model.switchWarningStates;
   bool enabled = !(switchStates & 0x01);
-  ui->switchesStartupWarning_CB->setCurrentIndex(switchStates & 0x01);
+  ui->switchesStartupWarning->setCurrentIndex(switchStates & 0x01);
   switchStates >>= 1;
 
   for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
@@ -1311,16 +604,10 @@ void Setup::startupSwitchEdited(int value)
   }
 }
 
-void Setup::on_thrTrimChkB_toggled(bool checked)
+void Setup::on_throttleTrim_toggled(bool checked)
 {
-    model.thrTrim = checked;
-    emit modified();
-}
-
-void Setup::on_thrExpoChkB_toggled(bool checked)
-{
-    model.thrExpo = checked;
-    emit modified();
+  model.thrTrim = checked;
+  emit modified();
 }
 
 void Setup::onBeepCenterToggled(bool checked)
@@ -1334,4 +621,9 @@ void Setup::onBeepCenterToggled(bool checked)
       model.beepANACenter &= ~mask;
     emit modified();
   }
+}
+
+void Setup::onChildModified()
+{
+  emit modified();
 }

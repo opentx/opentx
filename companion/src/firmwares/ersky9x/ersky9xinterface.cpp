@@ -338,8 +338,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 1;
     case OptrexDisplay:
       return 1;
-    case TimerTriggerB:
-      return 2;
     case HasAltitudeSel:
     case HasCurrentCalibration:
     case HasVolume:
@@ -353,8 +351,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
     case GvarsHaveSources:
     case GvarsAsSources:
     case GvarsAsWeight:
-      return 1;
-    case InstantTrimSW:
       return 1;
     case TelemetryMaxMultiplier:
       return 2;

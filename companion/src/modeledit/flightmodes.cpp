@@ -191,7 +191,7 @@ void FlightMode::update()
     trimsSlider[i]->setRange(-trimsMax, +trimsMax);
     trimsValue[i]->setRange(-trimsMax, +trimsMax);
     int chn = CONVERT_MODE(i+1)-1;
-    if (chn == 2/*TODO constant*/ && generalSettings.throttleReversed)
+    if (chn == 2/*TODO constant*/ && model.throttleReversed)
       trimsSlider[i]->setInvertedAppearance(true);
 
     trimUpdate(i);

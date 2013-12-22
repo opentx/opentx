@@ -38,6 +38,8 @@ set(modeledit_HDRS
 )
 
 set(modeledit_UIS
+  setup_timer.ui
+  setup_module.ui
   flightmode.ui
   telemetry_analog.ui
 )

@@ -304,8 +304,6 @@ int Er9xInterface::getCapability(const Capability capability)
       return TM_HASTELEMETRY|TM_HASWSHH;
     case TelemetryUnits:
       return 1;
-    case TimerTriggerB:
-      return 1;
     case TelemetryMaxMultiplier:
       return 2;
     case MaxVolume:
@@ -323,7 +321,6 @@ int Er9xInterface::getCapability(const Capability capability)
     case HasStickScroll:
     case HasAltitudeSel:
     case HasContrast:
-    case InstantTrimSW:
     case HasVolume:
     case HasBlInvert:
     case ModelVoice:

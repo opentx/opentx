@@ -91,8 +91,6 @@ void saveGeneralSettings(GeneralSettings & settings, global_settings & gs)
     gs.warnings(warns);
   gs.beeper(settings.beeperMode);
   sticks stks(settings.stickMode);
-  if (settings.throttleReversed)
-    stks.throttle_reverse(true);
   gs.sticks(stks);
   gs.inactivity_timer(settings.inactivityTimer);
   if (settings.minuteBeep || settings.preBeep || settings.flashBeep) {

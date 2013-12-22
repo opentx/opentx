@@ -424,7 +424,6 @@ class GeneralSettings {
     int    timezone;
     bool      optrexDisplay;
     unsigned int    inactivityTimer;
-    bool      throttleReversed;
     bool      minuteBeep;
     bool      preBeep;
     bool      flashBeep;
@@ -871,7 +870,6 @@ enum Capability {
  Mixes,
  MixesWithoutExpo,
  Timers,
- TimerTriggerB,
  TimeDivisions,
  minuteBeep,
  countdownBeep,
@@ -881,7 +879,6 @@ enum Capability {
  ModelVoice,
  MultiLangVoice,
  ModelImage,
- InstantTrimSW,
  Pots,
  Switches,
  SwitchesPositions,
@@ -925,7 +922,6 @@ enum Capability {
  TrainerSwitch,
  ModelTrainerEnable,
  Timer2ThrTrig,
- HasTTrace,
  HasExpoNames,
  HasMixerNames,
  HasChNames,
@@ -935,14 +931,11 @@ enum Capability {
  HasPPMStart,
  HasGeneralUnits,
  HasFAIMode,
- NoTimerDirs,
- NoThrExpo,
  OptrexDisplay,
  PPMExtCtrl,
  PPMFrameLength,
  MixFmTrim,
  gsSwitchMask,
- pmSwitchMask,
  BLonStickMove,
  DSM2Indexes,
  Telemetry,
@@ -986,8 +979,6 @@ enum Capability {
  HasBrightness,
  HasContrast,
  PerModelTimers,
- PerModelThrottleWarning,
- PerModelThrottleInvert,
  SlowScale,
  SlowRange,
  PermTimers,

@@ -45,8 +45,7 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase);
 void populateCurvesCB(QComboBox *b, int value);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 void populateExpoCurvesCB(QComboBox *b, int value);
-void populateTimerSwitchCB(QComboBox *b, int value, int extrafields=0);
-void populateTimerSwitchBCB(QComboBox *b, int value, int extrafields=0);
+void populateTimerSwitchCB(QComboBox *b, int value);
 QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);
 QString getProtocolStr(const int proto);
 

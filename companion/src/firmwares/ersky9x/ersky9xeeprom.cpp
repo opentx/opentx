@@ -164,7 +164,6 @@ t_Ersky9xGeneral::t_Ersky9xGeneral(GeneralSettings &c9x)
   disableAlarmWarning = c9x.disableAlarmWarning;
   stickMode = c9x.stickMode;
   inactivityTimer = c9x.inactivityTimer - 10;
-  throttleReversed = c9x.throttleReversed;
   minuteBeep = c9x.minuteBeep;
   preBeep = c9x.preBeep;
   flashBeep = c9x.flashBeep;
@@ -237,7 +236,6 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.disableAlarmWarning = disableAlarmWarning;
   result.stickMode = std::max((uint8_t)0, std::min(stickMode, (uint8_t)3));
   result.inactivityTimer = inactivityTimer + 10;
-  result.throttleReversed = throttleReversed;
   result.minuteBeep = minuteBeep;
   result.preBeep = preBeep;
   result.flashBeep = flashBeep;

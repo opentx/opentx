@@ -134,7 +134,6 @@ Gruvin9xGeneral_v103::operator GeneralSettings ()
   result.disableAlarmWarning = disableAlarmWarning;
   result.stickMode = stickMode;
   result.inactivityTimer = inactivityTimer;
-  result.throttleReversed = throttleReversed;
   result.minuteBeep = minuteBeep;
   result.preBeep = preBeep;
   result.flashBeep = flashBeep;
@@ -188,7 +187,6 @@ t_Gruvin9xGeneral_v104::t_Gruvin9xGeneral_v104(GeneralSettings &c9x)
   disableAlarmWarning = c9x.disableAlarmWarning;
   stickMode = c9x.stickMode;
   inactivityTimer = c9x.inactivityTimer;
-  throttleReversed = c9x.throttleReversed;
   minuteBeep = c9x.minuteBeep;
   preBeep = c9x.preBeep;
   flashBeep = c9x.flashBeep;
@@ -234,7 +232,6 @@ Gruvin9xGeneral_v104::operator GeneralSettings ()
   result.disableAlarmWarning = disableAlarmWarning;
   result.stickMode = stickMode;
   result.inactivityTimer = inactivityTimer;
-  result.throttleReversed = throttleReversed;
   result.minuteBeep = minuteBeep;
   result.preBeep = preBeep;
   result.flashBeep = flashBeep;

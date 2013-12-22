@@ -684,8 +684,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return 1;
     case FSSwitch:
       return 1;
-    case HasTTrace:
-      return 1;
     case CustomCurves:
       return 1;
     case MixesWithoutExpo:
@@ -700,10 +698,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? 6 : 0);
     case HasCvNames:
       return (IS_TARANIS(board) ? 1 : 0);
-    case NoTimerDirs:
-      return 1;
-    case NoThrExpo:
-      return 1;
     case Telemetry:
       return TM_HASTELEMETRY|TM_HASOFFSET|TM_HASWSHH;
     case TelemetryBars:
@@ -770,10 +764,6 @@ int Open9xInterface::getCapability(const Capability capability)
     case HasBrightness:
       return (IS_ARM(board) ? true : false);
     case PerModelTimers:
-    case PerModelThrottleWarning:
-    case PerModelThrottleInvert:
-      return 1;
-    case pmSwitchMask:
       return 1;
     case SlowScale:
       return (IS_ARM(board) ? 10 : 2);
@@ -817,12 +807,15 @@ int Open9xInterface::isAvailable(Protocol proto, int port)
           case PXX_XJT_D8:
           case PXX_XJT_LR12:
           case PXX_DJT:
+          case LP45:
+          case DSM2:
+          case DSMX:
             return 1;
           default:
             return 0;
         }
         break;
-      case 2:
+      case -1:
         switch (proto) {
           case PPM:
             return 1;

@@ -101,7 +101,6 @@ t_Th9xGeneral::t_Th9xGeneral(GeneralSettings &c9x)
   trainer = c9x.trainer;
   adcFilt = c9x.filterInput;
   // keySpeed
-  thr0pos = c9x.throttleReversed;
   disableThrottleWarning = c9x.disableThrottleWarning;
   disableSwitchWarning = (c9x.switchWarning != -1);
   disableMemoryWarning = c9x.disableMemoryWarning;
@@ -158,7 +157,6 @@ Th9xGeneral::operator GeneralSettings ()
   }
   result.stickMode = stickMode;
   result.inactivityTimer = inactivityMin;
-  result.throttleReversed = thr0pos;
   result.filterInput = adcFilt;
   return result;
 }

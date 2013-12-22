@@ -567,58 +567,17 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase)
   }
 }
 
-void populateTimerSwitchCB(QComboBox *b, int value, int extrafields)
+void populateTimerSwitchCB(QComboBox *b, int value)
 {
   b->clear();
-  uint8_t endvalue=128;
   uint8_t count=0;
-  if (extrafields==2)
-    endvalue=192;
-  for (int i=-128; i<endvalue; i++) {
+  for (int i=-128; i<128; i++) {
     QString timerMode = getTimerMode(i);
     if (!timerMode.isEmpty()) {
       b->addItem(getTimerMode(i), i);
       if (i==value)
         b->setCurrentIndex(b->count()-1);
-      if (extrafields==2 && (i<0 || (i>3 && i <TMRMODE_FIRST_CHPERC))) {
-        QModelIndex index = b->model()->index(count, 0);
-        // This is the effective 'disable' flag
-        QVariant v(0);
-        //the magic
-        b->model()->setData(index, v, Qt::UserRole - 1);
-      }
       count++;
-    }
-  }
-  b->setMaxVisibleItems(10);
-}
-
-void populateTimerSwitchBCB(QComboBox *b, int value, int extrafields)
-{
-  b->clear();
-  if (extrafields!=2) {
-    int startvalue=-128;
-    int endvalue=128;
-    if (extrafields==1) {
-      startvalue=-25;
-      endvalue=26;
-    }
-    for (int i=startvalue; i<endvalue; i++) {
-      QString timerMode = getTimerMode(i);
-      if (!timerMode.isEmpty()) {
-        b->addItem(getTimerMode(i), i);
-        if (i==value)
-          b->setCurrentIndex(b->count()-1);
-      }
-    }
-  } else {
-    for (int i=-33; i<66; i++) {
-      QString timerMode = getTimerModeB(i);
-      if (!timerMode.isEmpty()) {
-        b->addItem(timerMode, i);
-        if (i==value)
-          b->setCurrentIndex(b->count()-1);
-      }
     }
   }
   b->setMaxVisibleItems(10);
