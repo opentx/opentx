@@ -452,12 +452,10 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     fw += FWNUM;
   }
   else if (midsize) {
-    flags |= CONDENSED;
     fw += FWNUM-3;
   }
   else if (tinsize) {
     fw -= 1;
-    x += 1;
   }
   else {
     if (flags & LEFT) {
