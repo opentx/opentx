@@ -162,7 +162,7 @@ static const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 
 void setVolume(uint8_t volume)
 {
-  coprocVolumeRequired = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
+  volumeRequired = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
   __disable_irq() ;
   i2cCheck() ;
   __enable_irq() ;

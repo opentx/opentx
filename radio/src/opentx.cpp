@@ -4138,7 +4138,7 @@ void opentxClose()
   hapticOff();
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(FRSKY)
   if((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
     g_model.frsky.storedMah = frskyData.hub.currentConsumption;
     eeDirty(EE_MODEL);

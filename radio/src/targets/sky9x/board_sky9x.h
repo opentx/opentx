@@ -223,7 +223,7 @@ void i2cCheck();
 void coprocInit();
 void coprocWriteData(uint8_t *data, uint32_t size);
 void coprocReadData(bool onlytemp=false);
-extern int8_t coprocVolumeRequired;
+extern int8_t volumeRequired;
 extern uint8_t Coproc_read;
 extern int8_t Coproc_valid;
 extern int8_t Coproc_temp;

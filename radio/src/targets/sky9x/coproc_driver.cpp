@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-int8_t coprocVolumeRequired ;
+int8_t volumeRequired ;
 uint8_t coprocReadDataPending ;
 uint8_t coprocWriteDataPending ;
 uint8_t CoProc_appgo_pending ;
@@ -76,11 +76,11 @@ void i2cCheck()
     return ;    // Busy
   }
 
-  if ( coprocVolumeRequired >= 0 ) {      // Set volume to this value
+  if ( volumeRequired >= 0 ) {      // Set volume to this value
     TWI0->TWI_MMR = 0x002F0000 ;    // Device 5E (>>1) and master is writing
     TwiOperation = TWI_WRITE_VOL ;
-    TWI0->TWI_THR = coprocVolumeRequired ;   // Send data
-    coprocVolumeRequired = -1 ;
+    TWI0->TWI_THR = volumeRequired ;   // Send data
+    volumeRequired = -1 ;
     TWI0->TWI_IER = TWI_IER_TXCOMP ;
     TWI0->TWI_CR = TWI_CR_STOP ;    // Stop Tx
   }
