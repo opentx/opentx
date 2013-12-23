@@ -95,10 +95,8 @@ void dacInit()
 
 bool dacQueue(AudioBuffer *buffer)
 {
-  __disable_irq();
   if (dacIdle) {
     dacIdle = false;
-    __enable_irq();
     DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
     DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
     DMA1_Stream5->M0AR = CONVERT_PTR(buffer->data);
@@ -109,7 +107,6 @@ bool dacQueue(AudioBuffer *buffer)
     return true;
   }
   else {
-    __enable_irq();
     return false;
   }
 }
