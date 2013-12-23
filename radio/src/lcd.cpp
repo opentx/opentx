@@ -265,10 +265,19 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 
     uint8_t ym8 = (y & 0x07);
 #if defined(BOLD_FONT)
+#if !defined(CPUM64)
+    uint8_t skipcol = 7;
+    if ( c >= 'A') skipcol = 4;
+    if ( c == 'T') skipcol = 5;
+#endif
     uint8_t bb = 0;
     if (inv) bb = 0xff;
 #endif
+#if !defined(CPUM64)
+    for (int8_t i=0; i<=7; i++) {
+#else
     for (int8_t i=0; i<=6; i++) {
+#endif
       uint8_t b = 0;
       if ( !i ) {
         if ( !x || !inv || (flags & BOLD)) {
@@ -280,7 +289,9 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       else if (i <= 5) b = pgm_read_byte(q++);
       if (b == 0xff) continue;
       if (inv) b = ~b;
-
+#if !defined(CPUM64)
+      if (!(flags & BOLD) && (i == 7)) continue;
+#endif
       if ((flags & CONDENSED) && i==2) {
         /*condense the letter by skipping column 3 */
         continue;
@@ -295,6 +306,9 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           a = b | bb;
         bb = b;
         b = a;
+#if !defined(CPUM64)
+        if (i == skipcol) continue;
+#endif
       }
 #endif
 
