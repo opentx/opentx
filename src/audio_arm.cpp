@@ -325,8 +325,9 @@ void AudioQueue::pushBuffer(AudioBuffer *buffer)
 {
   buffer->state = AUDIO_BUFFER_FILLED;
 
-  if (dacQueue(buffer))
+  if (dacQueue(buffer)) {
     buffer->state = AUDIO_BUFFER_PLAYING;
+  }
 
   bufferWIdx = nextBufferIdx(bufferWIdx);
 }
