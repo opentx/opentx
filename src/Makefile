@@ -246,6 +246,12 @@ GVARS = NO
 # Values = NO, POT1, POT2, POT3,
 3POS = NO
 
+# Enable support for newlines in strings output to the LCD (allows multi-line popup box message)
+PUTS_NEWLINE_SUPPORT = NO
+
+# Enable support for requiring the SwH switch to be on before enabling the range test (PCBTARANIS only)
+SWH_RANGE_TEST = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -964,6 +970,14 @@ endif
 ifeq ($(3POS), POT3)
   CPPDEFS += -DEXTRA_3POS=3
   # EEPROM_VARIANT += ${3POS_VARIANT}
+endif
+
+ifeq ($(PUTS_NEWLINE_SUPPORT), YES)
+  CPPDEFS += -DPUTS_NEWLINE_SUPPORT
+endif
+
+ifeq ($(SWH_RANGE_TEST), YES)
+  CPPDEFS += -DSWH_RANGE_TEST
 endif
 
 #---------------- Compiler Options C++ ----------------

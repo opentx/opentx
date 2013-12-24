@@ -106,10 +106,10 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
 
   if (flags & DBLSIZE) {
-    // To save space only some DBLSIZE chars are available 
+    // To save space only some DBLSIZE chars are available
     // c has to be remapped. All non existing chars mapped to 0 (space)
     unsigned char c_remapped;
-	  
+
     if (c>=',' && c<=':')
       c_remapped = c - ',' + 1;
     else if (c>='A' && c<='Z')
@@ -118,10 +118,10 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       c_remapped = c - 'a' + 42;
     else if (c=='_')
       c_remapped = 4;
-#if defined(CPUARM)      
+#if defined(CPUARM)
     else if (c>= 128 )
       c_remapped = c - 60;
-#endif      
+#endif
     else
       c_remapped = 0;
 
@@ -138,15 +138,15 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       if (inv) {
         b1 = ~b1;
         b2 = ~b2;
-      }   
+      }
       if(&p[LCD_W+1] < DISPLAY_END) {
         ASSERT_IN_DISPLAY(p);
         ASSERT_IN_DISPLAY(p+LCD_W);
         LCD_BYTE_FILTER(p, 0, b1);
         LCD_BYTE_FILTER(p+LCD_W, 0, b2);
         p++;
-      }   
-    }   
+      }
+    }
   }
 #if defined(CPUARM)
   else if (flags & MIDSIZE) {
@@ -273,6 +273,10 @@ void lcd_putsiAtt(xcoord_t x, uint8_t y,const pm_char * s,uint8_t idx, LcdFlags 
 
 void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlags mode)
 {
+#if defined(PUTS_NEWLINE_SUPPORT)
+    xcoord_t orig_x = x;
+#endif
+
   while(len!=0) {
     unsigned char c;
     switch (mode & (BSS+ZCHAR)) {
@@ -286,24 +290,37 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
         c = pgm_read_byte(s);
         break;
     }
-    if (!c || x>LCD_W-6) break;
-    if (c >= 0x20) {
+#if defined(PUTS_NEWLINE_SUPPORT)
+    if ( c == '\n' )    // go to start of new line
+        {
+        x = orig_x;
+        y += FH;
+        if ( y + FH > LCD_H )   // no space for characters on the new line.
+            break;
+        // XXX check that we haven't written beyond extents of enclosing rectangle
+        }
+    else
+ #endif
+    {
+        if (!c || x>LCD_W-6) break;
+        if (c >= 0x20) {
 #if defined(CPUARM)
-      if ((mode & MIDSIZE) && ((c>='a'&&c<='z')||(c>='0'&&c<='9'))) {
-        lcd_putcAtt(x, y, c, mode);
-        x-=1;
-      }
-      else
+          if ((mode & MIDSIZE) && ((c>='a'&&c<='z')||(c>='0'&&c<='9'))) {
+            lcd_putcAtt(x, y, c, mode);
+            x-=1;
+          }
+          else
 #endif
-      lcd_putcAtt(x, y, c, mode);
-      x += FW;
-      if (c == '|') x -= 4;
-      if (mode&DBLSIZE) x += FW-1;
-      else if (mode&MIDSIZE) x += FW-3;
-      else if (mode&SMLSIZE) x -= 1;
-    }
-    else {
-      x += (c*FW/2);
+          lcd_putcAtt(x, y, c, mode);
+          x += FW;
+          if (c == '|') x -= 4;
+          if (mode&DBLSIZE) x += FW-1;
+          else if (mode&MIDSIZE) x += FW-3;
+          else if (mode&SMLSIZE) x -= 1;
+        }
+        else {
+          x += (c*FW/2);
+        }
     }
     s++;
     len--;

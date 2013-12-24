@@ -436,6 +436,9 @@
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\004canal"
 #define TR_RANGE               INDENT"Alcance"
+#if defined(PCBTARANIS) && defined(SWH_RANGE_TEST)
+#define TR_HOLD_TRAINER_KEY    NL("Hold the Trainer key ON to\nenable the range test","Hold Trainer key ON to enable")
+#endif
 #define TR_BAR                 "Bar"
 #define TR_ALARM               INDENT"Alarma"
 #define TR_USRDATA             "UsrData"

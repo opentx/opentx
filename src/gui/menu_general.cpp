@@ -174,6 +174,9 @@ enum menuGeneralSetupItems {
 #if defined(SPLASH) && !defined(FSPLASH)
   ITEM_SETUP_DISABLE_SPLASH,
 #endif
+#if defined(PCBTARANIS) && defined(SWH_RANGE_TEST)
+  ITEM_SETUP_ENABLE_SWH_FOR_RANGE_TEST,
+#endif
   IF_GPS(ITEM_SETUP_TIMEZONE)
   IF_GPS(ITEM_SETUP_GPSFORMAT)
   IF_PXX(ITEM_SETUP_COUNTRYCODE)
@@ -520,6 +523,11 @@ void menuGeneralSetup(uint8_t event)
         g_eeGeneral.splashMode = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event);
         break;
       }
+#endif
+#if defined (PCBTARANIS) && defined(SWH_RANGE_TEST)
+      case ITEM_SETUP_ENABLE_SWH_FOR_RANGE_TEST:
+        g_eeGeneral.rangeNeedsSwH = onoffMenuItem(g_eeGeneral.rangeNeedsSwH, RADIO_SETUP_2ND_COLUMN, y, "Range test needs SwH", attr, event ) ;
+        break;
 #endif
 
 #if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS)
