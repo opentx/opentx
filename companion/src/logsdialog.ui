@@ -20,7 +20,7 @@
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0,0,0">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0,0,0,0,0,0">
    <item row="0" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -45,43 +45,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="1" column="0" rowspan="4">
-    <widget class="QTableWidget" name="FieldsTW">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="autoScrollMargin">
-      <number>0</number>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="showGrid">
-      <bool>false</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>false</bool>
-     </property>
-     <property name="columnCount">
-      <number>0</number>
-     </property>
-     <attribute name="horizontalHeaderStretchLastSection">
-      <bool>true</bool>
-     </attribute>
-     <attribute name="verticalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
-    </widget>
    </item>
    <item row="1" column="1">
     <widget class="QFrame" name="frame_2">
@@ -195,7 +158,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="1">
+   <item row="4" column="1" rowspan="4">
     <widget class="QTableWidget" name="logTable">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -236,6 +199,78 @@
      <attribute name="verticalHeaderStretchLastSection">
       <bool>false</bool>
      </attribute>
+    </widget>
+   </item>
+   <item row="1" column="0" rowspan="6">
+    <widget class="QTableWidget" name="FieldsTW">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="autoScrollMargin">
+      <number>0</number>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showGrid">
+      <bool>false</bool>
+     </property>
+     <property name="sortingEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="columnCount">
+      <number>0</number>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QPushButton" name="mapsButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>120</width>
+       <height>57</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="companion9x.qrc">
+       <normaloff>:/images/maps.png</normaloff>:/images/maps.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>120</width>
+       <height>57</height>
+      </size>
+     </property>
     </widget>
    </item>
   </layout>

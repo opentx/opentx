@@ -1,6 +1,11 @@
 #include "logsdialog.h"
 #include "ui_logsdialog.h"
 #include "qcustomplot.h"
+#if defined WIN32 || !defined __GNUC__
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 logsDialog::logsDialog(QWidget *parent) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
@@ -33,6 +38,11 @@ logsDialog::logsDialog(QWidget *parent) :
   ui->customPlot->legend->setSelectedFont(legendFont);
   ui->customPlot->legend->setSelectable(QCPLegend::spItems); // legend box shall not be selectable, only legend items
   ui->customPlot->legend->setVisible(false);
+  QSettings settings("companion9x", "companion9x");
+  QString Path=settings.value("gePath", "").toString();
+  if (Path.isEmpty() || !QFile(Path).exists()) {
+    ui->mapsButton->hide();
+  }  
   
   // connect slot that ties some axis selections together (especially opposite axes):
   connect(ui->customPlot, SIGNAL(selectionChangedByUser()), this, SLOT(selectionChanged()));
@@ -165,6 +175,79 @@ void logsDialog::selectionChanged()
   }
 }
 
+void logsDialog::on_mapsButton_clicked() {
+  int n = csvlog.count(); // number of points in graph
+  if (n==0) return;
+  int latcol=0, longcol=0, altcol=0, coursecol=0, speedcol=0;
+  int itemSelected=0.;
+  bool rangeSelected=false;
+  QSettings settings("companion9x", "companion9x");
+  QString gePath=settings.value("gePath", "").toString();
+  if (gePath.isEmpty() || !QFile(gePath).exists()) {
+    return;
+  }  
+  for (int i=1; i<csvlog.at(0).count(); i++) {
+    //Long,Lat,Course,GPS Speed,GPS Alt
+    if (csvlog.at(0).at(i).contains("Long")) {
+      longcol=i;
+    }
+    if (csvlog.at(0).at(i).contains("Lat")) {
+      latcol=i;
+    }
+    if (csvlog.at(0).at(i).contains("GPS Alt")) {
+      altcol=i;
+    }
+    if (csvlog.at(0).at(i).contains("GPS Speed")) {
+      speedcol=i;
+    }
+    if (csvlog.at(0).at(i).contains("Course")) {
+      coursecol=i;
+    }
+  }
+  if (longcol==0 || latcol==0 || altcol==0) {
+    return;
+  }
+  for (int i=1; i<n; i++) {
+    if (ui->logTable->item(i-1,1)->isSelected()) {
+      rangeSelected=true;
+      itemSelected++;
+    }
+  }
+  if (itemSelected==0) {
+    itemSelected=n-1;
+  }
+  QString geFilename = QDir::tempPath() + "/flight.kml";
+  if (QFile::exists(geFilename)) {
+    unlink(geFilename.toAscii());
+  }
+  QFile geFile(geFilename);
+  if (!geFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QMessageBox::warning(this, tr("Error"),
+        tr("Cannot write file %1:\n%2.")
+        .arg(geFilename)
+        .arg(geFile.errorString()));
+    return;
+  }
+
+  QTextStream outputStream(&geFile);
+  outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
+  outputStream << "<Document>\n\t<name>flight.kml</name>\n\t<Placemark><name>My Flight</name>\n\t\t<LineString>\n";
+  outputStream << "\t\t\t<tessellate>1</tessellate>\n\t\t\t<gx:altitudeMode>relativeToGround</gx:altitudeMode>\n\t\t\t<coordinates>\n\t\t\t\t";
+  for (int i=1; i<n; i++) {
+    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
+      outputStream << csvlog.at(i).at(longcol) << "," << csvlog.at(i).at(latcol) << "," << csvlog.at(i).at(altcol) << " " ;
+    }
+  }
+  outputStream << "\n\t\t\t</coordinates>\n\t\t</LineString>\n\t</Placemark>\n</Document>\n</kml>\n";
+  geFile.close();
+  
+  QStringList parameters; 
+  parameters << geFilename;
+  QProcess *process = new QProcess(this);
+  process->startDetached(gePath, parameters);
+}
+
+
 void logsDialog::mousePress()
 {
   // if an axis is selected, only allow the direction of that axis to be dragged
@@ -293,8 +376,7 @@ void logsDialog::plotValue(int index, int plot, int numplots)
       }
     }
   }
-  for (int i=1; i<n; i++)
-  {
+  for (int i=1; i<n; i++) {
     if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
       double tmp;
       QString tstamp=csvlog.at(i).at(0)+QString(" ")+csvlog.at(i).at(1);
