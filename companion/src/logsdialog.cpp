@@ -232,19 +232,19 @@ void logsDialog::on_mapsButton_clicked() {
   QTextStream outputStream(&geFile);
   outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
   outputStream << "<Document>\n\t<name>flight.kml</name>\n\t<Placemark><name>My Flight</name>\n\t\t<LineString>\n";
-  outputStream << "\t\t\t<tessellate>1</tessellate>\n\t\t\t<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>\n\t\t\t<coordinates>\n";
+  outputStream << "\t\t\t<tessellate>1</tessellate>\n\t\t\t<gx:altitudeMode>relativeToGround</gx:altitudeMode>\n\t\t\t<coordinates>\n\t\t\t\t";
   for (int i=1; i<n; i++) {
     if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
-      outputStream << "\t\t\t\t" << csvlog.at(i).at(longcol) << "," << csvlog.at(i).at(latcol) << "," << csvlog.at(i).at(altcol) << "\n" ;
+      outputStream << csvlog.at(i).at(longcol) << "," << csvlog.at(i).at(latcol) << "," << csvlog.at(i).at(altcol) << " " ;
     }
   }
-  outputStream << "\t\t\t</coordinates>\n\t\t</LineString>\n\t</Placemark>\n</Document>\n</kml>\n";
+  outputStream << "\n\t\t\t</coordinates>\n\t\t</LineString>\n\t</Placemark>\n</Document>\n</kml>\n";
   geFile.close();
   
   QStringList parameters; 
   parameters << geFilename;
   QProcess *process = new QProcess(this);
-  process->start(gePath, parameters);
+  process->startDetached(gePath, parameters);
 }
 
 
