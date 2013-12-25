@@ -139,6 +139,7 @@
 
 extern uint8_t displayBuf[DISPLAY_BUF_SIZE];
 extern uint8_t lcdLastPos;
+extern uint8_t lcdNextPos;
 
 #if defined(PCBSTD) && defined(VOICE)
   extern volatile uint8_t LcdLock ;
@@ -227,14 +228,14 @@ void lcdDrawTelemetryTopBar();
     lcd_vline(xx-1,yy-ll,ll); \
     lcd_vline(xx  ,yy-ll,ll); \
     lcd_vline(xx+1,yy-ll,ll);
-
+/*
 #define LCD_2DOTS(x, y, att)     \
     lcd_putcAtt(x, y, ' ', att); \
     lcd_vline(x+4, y+3, 2);      \
     lcd_vline(x+5, y+3, 2);      \
     lcd_vline(x+4, y+8, 2);      \
     lcd_vline(x+5, y+8, 2);
-
+*/
 void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset=0, uint8_t width=0);
 #define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
