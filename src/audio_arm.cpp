@@ -353,13 +353,13 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
     if (result == FR_OK) {
       result = f_read(&context.state.wav.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
       if (result == FR_OK && read == RIFF_CHUNK_SIZE+8 && !memcmp(wavBuffer, "RIFF", 4) && !memcmp(wavBuffer+8, "WAVEfmt ", 8)) {
-        uint32_t size = *((uint32_t *)(wavBuffer+16));
+        uint32_t size = *((uint32_t *)(wavBuffer+16));  // XXX assumes processor endianness matches file endianness
         result = (size < 256 ? f_read(&context.state.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
         if (result == FR_OK && read == size+8) {
           context.state.wav.codec = ((uint16_t *)wavBuffer)[0];
           context.state.wav.freq = ((uint16_t *)wavBuffer)[2];
           uint32_t *wavSamplesPtr = (uint32_t *)(wavBuffer + size);
-          uint32_t size = wavSamplesPtr[1];
+          uint32_t size = wavSamplesPtr[1];  // XXX assumes processor endianness matches file endianness
           if (context.state.wav.freq != 0 && context.state.wav.freq * (AUDIO_SAMPLE_RATE / context.state.wav.freq) == AUDIO_SAMPLE_RATE) {
             context.state.wav.resampleRatio = (AUDIO_SAMPLE_RATE / context.state.wav.freq);
             context.state.wav.readSize = (context.state.wav.codec == CODEC_ID_PCM_S16LE ? 2*AUDIO_BUFFER_SIZE : AUDIO_BUFFER_SIZE) / context.state.wav.resampleRatio;
@@ -368,10 +368,43 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
             result = FR_DENIED;
           }
           while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
-            result = (size < 256 ? f_read(&context.state.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
-            if (read != size+8) result = FR_DENIED;
-            wavSamplesPtr = (uint32_t *)(wavBuffer + size);
-            size = wavSamplesPtr[1];
+            /* 
+                Chunks may be larger than our buffer size, so we read the chunk data
+                out in blocks until we reach the end of the chunk, then read the first 8 bytes
+                of the next chunk.
+            */
+            while (result == FR_OK && size > 0)
+                {
+                uint32_t bytes_to_read = size;
+
+                if( bytes_to_read > sizeof wavBuffer )
+                    bytes_to_read = sizeof wavBuffer;
+                f_read(&context.state.wav.file, wavBuffer, bytes_to_read, &read);
+                if ( result != FR_OK )
+                    break;
+                if ( read != bytes_to_read )
+                    {
+                    result = FR_DENIED;
+                    break;
+                    }
+                size -= bytes_to_read;
+                }
+            if ( result == FR_OK )
+                {
+                /* 
+                    Now read the first 8 bytes of the next chunk, which contain the chunk type and size to follow.
+                */
+                result = f_read(&context.state.wav.file, wavBuffer, 8, &read);
+                if ( result != FR_OK )
+                    break;
+                if ( read != 8 )
+                    {
+                    result = FR_DENIED;
+                    break;
+                    }
+                wavSamplesPtr = (uint32_t *)wavBuffer;  /* XXX can we be certain that wavBuffer is WORD aligned? */
+                size = wavSamplesPtr[1];  // XXX assumes processor endianness matches file endianness
+                }
           }
           context.state.wav.size = size;
         }
