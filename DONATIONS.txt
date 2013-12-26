@@ -256,3 +256,5 @@ Netanel Hobara
 Cameron Galipo
 Doug Schafer
 Pietro Rossin
+Earl Killingsworth
+Victor B Wright
