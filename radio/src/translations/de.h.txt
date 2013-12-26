@@ -75,7 +75,7 @@
 #define TR_VTRIMINC            TR("Expo  ""ExFein""Fein  ""Mittel""Grob  ","Exponential""Extra Fein   ""Fein       ""Mittel     ""Grob       ")
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Kein\0Pieps\0Stimme"
+#define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0Stimme"
 
 #define LEN_RETA123            "\001"
 
@@ -250,7 +250,7 @@
     #define SPEED_UNIT         "kts"
   #else
     #define LENGTH_UNIT        "m\0 "
-    #define SPEED_UNIT         "Kmh
+    #define SPEED_UNIT         "Kmh"
   #endif
   #define LEN_VTELEMUNIT       "\003"
   #define TR_VTELEMUNIT        "V\0 ""A\0 ""m/s""-\0 " SPEED_UNIT LENGTH_UNIT "@\0 ""%\0 ""mA\0""mAh""W\0 "
@@ -665,29 +665,29 @@
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 
 #if defined(MAVLINK)
-  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL		"Max RSSI"
-  #define TR_MAVLINK_PC_RSSI_EN_LABEL			"PC RSSI EN"
-  #define TR_MAVMENUSETUP_TITLE				"Mavlink Setup"
-  #define TR_MAVLINK_BAUD_LABEL				"Baudrate"
-  #define TR_MAVLINK_INFOS				"INFOS"
-  #define TR_MAVLINK_MODE				"MODE"
-  #define TR_MAVLINK_CUR_MODE				"Current Mode"
-  #define TR_MAVLINK_ARMED				"Armed"
-  #define TR_MAVLINK_BAT_MENU_TITLE			"BAT RSSI"
-  #define TR_MAVLINK_BATTERY_LABEL			"Flight Battery status"
-  #define TR_MAVLINK_RC_RSSI_LABEL			"RC RSSI"
-  #define TR_MAVLINK_PC_RSSI_LABEL			"PC RSSI"
-  #define TR_MAVLINK_NAV_MENU_TITLE			"NAV"
-  #define TR_MAVLINK_COURSE				"Course"
-  #define TR_MAVLINK_HEADING				"Heading"
-  #define TR_MAVLINK_BEARING				"Bearing"
-  #define TR_MAVLINK_ALTITUDE				"Altitude"
-  #define TR_MAVLINK_GPS				"GPS"
-  #define TR_MAVLINK_NO_FIX				"NO Fix"
-  #define TR_MAVLINK_SAT				"SAT"
-  #define TR_MAVLINK_HDOP				"HDOP"
-  #define TR_MAVLINK_LAT				"LAT"
-  #define TR_MAVLINK_LON				"LON"
+  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL   "Max RSSI"
+  #define TR_MAVLINK_PC_RSSI_EN_LABEL      "PC RSSI EN"
+  #define TR_MAVMENUSETUP_TITLE            "Mavlink Setup"
+  #define TR_MAVLINK_BAUD_LABEL            "Baudrate"
+  #define TR_MAVLINK_INFOS                 "INFOS"
+  #define TR_MAVLINK_MODE                  "MODE"
+  #define TR_MAVLINK_CUR_MODE              "Current Mode"
+  #define TR_MAVLINK_ARMED                 "Armed"
+  #define TR_MAVLINK_BAT_MENU_TITLE        "BAT RSSI"
+  #define TR_MAVLINK_BATTERY_LABEL         "Flight Battery status"
+  #define TR_MAVLINK_RC_RSSI_LABEL         "RC RSSI"
+  #define TR_MAVLINK_PC_RSSI_LABEL         "PC RSSI"
+  #define TR_MAVLINK_NAV_MENU_TITLE        "NAV"
+  #define TR_MAVLINK_COURSE                "Course"
+  #define TR_MAVLINK_HEADING               "Heading"
+  #define TR_MAVLINK_BEARING               "Bearing"
+  #define TR_MAVLINK_ALTITUDE              "Altitude"
+  #define TR_MAVLINK_GPS                   "GPS"
+  #define TR_MAVLINK_NO_FIX                "NO Fix"
+  #define TR_MAVLINK_SAT                   "SAT"
+  #define TR_MAVLINK_HDOP                  "HDOP"
+  #define TR_MAVLINK_LAT                   "LAT"
+  #define TR_MAVLINK_LON                   "LON"
 #endif
 
 // Taranis column headers
