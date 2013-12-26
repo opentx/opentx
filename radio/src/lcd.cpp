@@ -923,11 +923,11 @@ void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags
 {
   lcd_putsAtt(x, y, str, att);
 
-  if (att & SMLSIZE)
-    lcd_outdezNAtt(lcdLastPos+1, y, idx, att|LEFT, 2);
-  else
-    lcd_outdezNAtt(lcdLastPos, y, idx, att|LEFT, 2);
-
+//  if (att & SMLSIZE)
+//    lcd_outdezNAtt(lcdLastPos+1, y, idx, att|LEFT, 2);
+//  else
+  lcd_outdezNAtt(lcdNextPos, y, idx, att|LEFT, 2);
+/*
 #if defined(CPUARM)
   uint8_t lastPos = lcdLastPos;
 #endif
@@ -937,6 +937,7 @@ void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags
 #if defined(CPUARM)
   lcdLastPos = lastPos;
 #endif
+*/
 }
 
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
