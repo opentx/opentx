@@ -368,43 +368,19 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
             result = FR_DENIED;
           }
           while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
-            /* 
-                Chunks may be larger than our buffer size, so we read the chunk data
-                out in blocks until we reach the end of the chunk, then read the first 8 bytes
-                of the next chunk.
-            */
-            while (result == FR_OK && size > 0)
+            if ( (result=f_lseek(&context.state.wav.file, f_tell(&context.state.wav.file)+size)) == FR_OK )
+            {
+                if ( (result=f_read(&context.state.wav.file, wavBuffer, 8, &read)) == FR_OK )
                 {
-                uint32_t bytes_to_read = size;
-
-                if( bytes_to_read > sizeof wavBuffer )
-                    bytes_to_read = sizeof wavBuffer;
-                f_read(&context.state.wav.file, wavBuffer, bytes_to_read, &read);
-                if ( result != FR_OK )
-                    break;
-                if ( read != bytes_to_read )
+                    if ( read != 8 )
+                        result = FR_DENIED;
+                    else
                     {
-                    result = FR_DENIED;
-                    break;
+                        wavSamplesPtr = (uint32_t *)wavBuffer;  /* XXX can we be certain that wavBuffer is WORD aligned? */
+                        size = wavSamplesPtr[1];  // XXX assumes processor endianness matches file endianness
                     }
-                size -= bytes_to_read;
                 }
-            if ( result == FR_OK )
-                {
-                /* 
-                    Now read the first 8 bytes of the next chunk, which contain the chunk type and size to follow.
-                */
-                result = f_read(&context.state.wav.file, wavBuffer, 8, &read);
-                if ( result != FR_OK )
-                    break;
-                if ( read != 8 )
-                    {
-                    result = FR_DENIED;
-                    break;
-                    }
-                wavSamplesPtr = (uint32_t *)wavBuffer;  /* XXX can we be certain that wavBuffer is WORD aligned? */
-                size = wavSamplesPtr[1];  // XXX assumes processor endianness matches file endianness
-                }
+            }
           }
           context.state.wav.size = size;
         }
