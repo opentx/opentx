@@ -566,7 +566,7 @@ void preferencesDialog::on_snapshotClipboardCKB_clicked()
 void preferencesDialog::on_backupPathButton_clicked()
 {
   QSettings settings("companion9x", "companion9x");
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your eeprom backup folder"), settings.value("backupPath").toString());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), settings.value("backupPath").toString());
   if (!fileName.isEmpty()) {
     settings.setValue("backupPath", fileName);
     ui->backupPath->setText(fileName);
