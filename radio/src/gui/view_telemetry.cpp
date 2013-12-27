@@ -100,9 +100,9 @@ void displayGpsTime()
 {
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
   lcd_outdezNAtt(CENTER_OFS+6*FW+5, STATUS_BAR_Y, frskyData.hub.hour, att, 2);
-  lcd_putcAtt(CENTER_OFS+8*FW+2, STATUS_BAR_Y, ':', att);
+  lcd_putcAtt(CENTER_OFS+8*FW+4, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
-  lcd_putcAtt(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
+  lcd_putcAtt(CENTER_OFS+11*FW+1, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+12*FW-1, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
   lcd_status_line();
 }

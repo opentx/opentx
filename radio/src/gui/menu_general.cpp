@@ -258,7 +258,7 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_TIME:
         lcd_putsLeft(y, STR_TIME);
-        lcd_putc(RADIO_SETUP_TIME_COLUMN-1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-4, y, ':');
+        lcd_putc(RADIO_SETUP_TIME_COLUMN+1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-2, y, ':');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j ? attr : 0);
           switch (j) {

@@ -265,7 +265,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 
     uint8_t ym8 = (y & 0x07);
 #if defined(BOLD_FONT)
-#if !defined(CPUM64) || defined(EXTSTD)
+#if !defined(CPUM64) || defined(EXTSTD) || 1
     uint8_t skipcol = 7;
     if ( c >= 'A') skipcol = 4;
     if ( c == 'T') skipcol = 5;
@@ -273,7 +273,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     uint8_t bb = 0;
     if (inv) bb = 0xff;
 #endif
-#if !defined(CPUM64) || defined(EXTSTD)
+#if !defined(CPUM64) || defined(EXTSTD) || 1
     for (int8_t i=0; i<=7; i++) {
 #else
     for (int8_t i=0; i<=6; i++) {
@@ -289,7 +289,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       else if (i <= 5) b = pgm_read_byte(q++);
       if (b == 0xff) continue;
       if (inv) b = ~b;
-#if !defined(CPUM64) || defined(EXTSTD)
+#if !defined(CPUM64) || defined(EXTSTD) || 1
       if (!(flags & BOLD) && (i == 7)) continue;
 #endif
       if ((flags & CONDENSED) && i==2) {
@@ -306,7 +306,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           a = b | bb;
         bb = b;
         b = a;
-#if !defined(CPUM64) || defined(EXTSTD)
+#if !defined(CPUM64) || defined(EXTSTD) || 1
         if (i == skipcol) continue;
 #endif
       }
@@ -321,7 +321,11 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
             LCD_BYTE_FILTER(r, ~(0xff >> (8-ym8)), b >> (8-ym8));
         }
 #if !defined(CPUM64) || defined(EXTSTD)
+#if defined(TARANIS)
         if (y && inv) lcd_mask( p, BITMASK((y-1)%8),FORCE);
+#else
+        if (y && inv) *p |= BITMASK((y-1)%8);
+#endif
 #endif
       }
       p++;
@@ -344,7 +348,7 @@ void lcd_putsiAtt(xcoord_t x, uint8_t y,const pm_char * s,uint8_t idx, LcdFlags 
 
 void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlags mode)
 {
-  xcoord_t orig_x = x;
+//  xcoord_t orig_x = x;
 
   while(len!=0) {
     unsigned char c;
@@ -377,15 +381,15 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
     else if (c == 0x1F) {
       setx = true;
     }
-    else if (c == 0x1E) {
-      x = orig_x;
-      y += FH;
-      if (mode & DBLSIZE) y += FH;
-#if defined(CPUARM)
-      else if (mode & MIDSIZE) y += 4;
-      else if (mode & SMLSIZE) y--;   
-#endif      
-    }
+//    else if (c == 0x1E) {
+//      x = orig_x;
+//      y += FH;
+//      if (mode & DBLSIZE) y += FH;
+//#if defined(CPUARM)
+//      else if (mode & MIDSIZE) y += 4;
+//      else if (mode & SMLSIZE) y--;   
+//#endif      
+//    }
     else {
       x += (c*FW/2);
     }
@@ -922,22 +926,7 @@ void putsVBat(xcoord_t x, uint8_t y, LcdFlags att)
 void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags att)
 {
   lcd_putsAtt(x, y, str, att);
-
-//  if (att & SMLSIZE)
-//    lcd_outdezNAtt(lcdLastPos+1, y, idx, att|LEFT, 2);
-//  else
   lcd_outdezNAtt(lcdNextPos, y, idx, att|LEFT, 2);
-/*
-#if defined(CPUARM)
-  uint8_t lastPos = lcdLastPos;
-#endif
-
-  lcd_putsAtt(x, y, str, att);
-
-#if defined(CPUARM)
-  lcdLastPos = lastPos;
-#endif
-*/
 }
 
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
