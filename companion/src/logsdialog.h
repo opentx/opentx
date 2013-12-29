@@ -43,6 +43,7 @@ private:
   double GetScale(QString channel);
   QList<QColor> palette;
   bool plotLock;
+  QString logFilename;
 };
 
 #endif // LOGSDIALOG_H
