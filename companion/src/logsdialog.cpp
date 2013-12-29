@@ -1,11 +1,6 @@
 #include "logsdialog.h"
 #include "ui_logsdialog.h"
 #include "qcustomplot.h"
-#if defined WIN32 || !defined __GNUC__
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
 
 logsDialog::logsDialog(QWidget *parent) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
@@ -178,7 +173,7 @@ void logsDialog::selectionChanged()
 void logsDialog::on_mapsButton_clicked() {
   int n = csvlog.count(); // number of points in graph
   if (n==0) return;
-  int latcol=0, longcol=0, altcol=0, coursecol=0, speedcol=0;
+  int latcol=0, longcol=0, altcol=0, coursecol=0, speedcol=0, rssicol=0;
   int itemSelected=0.;
   bool rangeSelected=false;
   QSettings settings("companion9x", "companion9x");
@@ -203,6 +198,9 @@ void logsDialog::on_mapsButton_clicked() {
     if (csvlog.at(0).at(i).contains("Course")) {
       coursecol=i;
     }
+    if (csvlog.at(0).at(i).contains("RSSI")) {
+      rssicol=i;
+    }
   }
   if (longcol==0 || latcol==0 || altcol==0) {
     return;
@@ -216,9 +214,16 @@ void logsDialog::on_mapsButton_clicked() {
   if (itemSelected==0) {
     itemSelected=n-1;
   }
-  QString geFilename = QDir::tempPath() + "/flight.kml";
+  
+  QString geFilename = QDir::tempPath() + "/track0.png";
   if (QFile::exists(geFilename)) {
-    unlink(geFilename.toAscii());
+    QFile::remove(geFilename);
+  }
+  QFile::copy(":/images/track0.png", geFilename);
+
+  geFilename = QDir::tempPath() + "/flight.kml";
+  if (QFile::exists(geFilename)) {
+    QFile::remove(geFilename);
   }
   QFile geFile(geFilename);
   if (!geFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -228,17 +233,62 @@ void logsDialog::on_mapsButton_clicked() {
         .arg(geFile.errorString()));
     return;
   }
-
+  QString latitude,longitude;
+  double flatitude, flongitude,temp; 
   QTextStream outputStream(&geFile);
-  outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
-  outputStream << "<Document>\n\t<name>flight.kml</name>\n\t<Placemark><name>My Flight</name>\n\t\t<LineString>\n";
-  outputStream << "\t\t\t<tessellate>1</tessellate>\n\t\t\t<gx:altitudeMode>relativeToGround</gx:altitudeMode>\n\t\t\t<coordinates>\n\t\t\t\t";
+  outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n";
+  outputStream << "\t<Document>\n\t\t<name>My Flight</name>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << QDir::tempPath() << "/track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>1.2</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << QDir::tempPath() << "/track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<StyleMap id=\"multiTrack\">\n\t\t\t<Pair>\n\t\t\t\t<key>normal</key>\n\t\t\t\t<styleUrl>#multiTrack_n</styleUrl>\n\t\t\t</Pair>\n\t\t\t<Pair>\n\t\t\t\t<key>highlight</key>\n\t\t\t\t<styleUrl>#multiTrack_h</styleUrl>\n\t\t\t</Pair>\n\t\t</StyleMap>\n";
+  outputStream << "\t\t<Style id=\"lineStyle\">\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Schema id=\"schema\">\n";
+  outputStream << "\t\t\t<gx:SimpleArrayField name=\"GPSSpeed\" type=\"float\">\n\t\t\t\t<displayName>GPS Speed</displayName>\n\t\t\t</gx:SimpleArrayField>\n";
+  outputStream << "\t\t\t<gx:SimpleArrayField name=\"RSSI\" type=\"int\">\n\t\t\t\t<displayName>RSSI</displayName>\n\t\t\t</gx:SimpleArrayField>\n";
+  outputStream << "\t\t</Schema>\n";
+  outputStream << "\t\t<Folder>\n\t\t\t<name>Flight</name>\n\t\t\t<Placemark>\n\t\t\t\t<name>My Flight</name>\n\t\t\t\t<styleUrl>#multiTrack</styleUrl>\n\t\t\t\t<gx:Track>\n";
   for (int i=1; i<n; i++) {
     if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
-      outputStream << csvlog.at(i).at(longcol) << "," << csvlog.at(i).at(latcol) << "," << csvlog.at(i).at(altcol) << " " ;
+      QString tstamp=csvlog.at(i).at(0)+QString("T")+csvlog.at(i).at(1);
+      outputStream << "\t\t\t\t\t<when>"<< tstamp <<"</when>\n";
     }
   }
-  outputStream << "\n\t\t\t</coordinates>\n\t\t</LineString>\n\t</Placemark>\n</Document>\n</kml>\n";
+          
+  for (int i=1; i<n; i++) {
+    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
+      latitude=csvlog.at(i).at(latcol).trimmed();
+      longitude=csvlog.at(i).at(longcol).trimmed();
+      temp=int(latitude.left(latitude.length()-1).toDouble()/100);
+      flatitude=temp+(latitude.left(latitude.length()-1).toDouble()-temp*100)/60.0;
+      temp=int(longitude.left(longitude.length()-1).toDouble()/100);
+      flongitude=temp+(longitude.left(longitude.length()-1).toDouble()-temp*100)/60.0;
+      if (latitude.right(1)!="N") {
+        flatitude*=-1;
+      }
+      if (longitude.right(1)!="E") {
+        flongitude*=-1;
+      }
+      latitude.sprintf("%3.8f", flatitude);
+      longitude.sprintf("%3.8f", flongitude);
+      outputStream << "\t\t\t\t\t<gx:coord>" << longitude << " " << latitude << " " << csvlog.at(i).at(altcol) << "</gx:coord>\n" ;
+    }
+  }
+  outputStream << "\t\t\t\t\t<ExtendedData>\n\t\t\t\t\t\t<SchemaData schemaUrl=\"#schema\">\n";
+  outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\"GPSSpeed\">\n";
+  for (int i=1; i<n; i++) {
+    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
+      outputStream << "\t\t\t\t\t\t\t\t<gx:value>"<< csvlog.at(i).at(speedcol) <<"</gx:value>\n";
+    }
+  }
+  outputStream << "\t\t\t\t\t\t\t</gx:SimpleArrayData>\n";
+  outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\"RSSI\">\n";
+  for (int i=1; i<n; i++) {
+    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
+      outputStream << "\t\t\t\t\t\t\t\t<gx:value>"<< csvlog.at(i).at(rssicol) <<"</gx:value>\n";
+    }
+  }
+  outputStream << "\t\t\t\t\t\t\t</gx:SimpleArrayData>\n";
+  outputStream << "\t\t\t\t\t\t</SchemaData>\t\t\t\t\t</ExtendedData>\n\t\t\t\t</gx:Track>\n\t\t\t</Placemark>\n\t\t</Folder>\n\t</Document>\n</kml>";
   geFile.close();
   
   QStringList parameters; 
