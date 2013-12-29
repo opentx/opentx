@@ -178,12 +178,35 @@ void logsDialog::selectionChanged()
 void logsDialog::on_mapsButton_clicked() {
   int n = csvlog.count(); // number of points in graph
   if (n==0) return;
-  int latcol=0, longcol=0, altcol=0, coursecol=0, speedcol=0;
+  int latcol=0, longcol=0, altcol=0, speedcol=0;
   int itemSelected=0.;
   bool rangeSelected=false;
+  enum fieldtype {
+    T_F,
+    I_F,
+    F_F,
+    G_F
+  };
+  ui->FieldsTW->setDisabled(true);
+  ui->logTable->setDisabled(true);
+  QString fields[]={"SWR","RSSI","A1","A2","GPS Date"\
+        ,"GPS Time","Long","Lat","Course","GPS Speed","GPS Alt","Baro Alt"\
+        ,"Vertical Speed","Temp1","Temp2","RPM","Fuel","Cell volts","Cell 1"\
+        ,"Cell 2","Cell 3","Cell 4","Cell 5","Cell 6","Current","Consumption"\
+        ,"Vfas","AccelX","AccelY","AccelZ","Rud","Ele","Thr","Ail"\
+        ,"S1","S2","LS","RS","SA","SB","SC","SD","SE","SF","SG","SH"};
+  int fieldstype[]={I_F,I_F,F_F,F_F,T_F\
+        ,T_F,G_F,G_F,F_F,G_F,G_F,F_F\
+        ,F_F,F_F,F_F,I_F,I_F,F_F,F_F\
+        ,F_F,F_F,F_F,F_F,F_F,F_F,F_F\
+        ,F_F,F_F,F_F,F_F,I_F,I_F,I_F,I_F\
+        ,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F};
+    
   QSettings settings("companion9x", "companion9x");
   QString gePath=settings.value("gePath", "").toString();
   if (gePath.isEmpty() || !QFile(gePath).exists()) {
+    ui->FieldsTW->setDisabled(false);
+    ui->logTable->setDisabled(false);
     return;
   }  
   for (int i=1; i<csvlog.at(0).count(); i++) {
@@ -200,9 +223,6 @@ void logsDialog::on_mapsButton_clicked() {
     if (csvlog.at(0).at(i).contains("GPS Speed")) {
       speedcol=i;
     }
-    if (csvlog.at(0).at(i).contains("Course")) {
-      coursecol=i;
-    }
   }
   if (longcol==0 || latcol==0 || altcol==0) {
     return;
@@ -216,9 +236,16 @@ void logsDialog::on_mapsButton_clicked() {
   if (itemSelected==0) {
     itemSelected=n-1;
   }
-  QString geFilename = QDir::tempPath() + "/flight.kml";
+  
+  QString geFilename = QDir::tempPath() + "/track0.png";
   if (QFile::exists(geFilename)) {
-    unlink(geFilename.toAscii());
+    QFile::remove(geFilename);
+  }
+  QFile::copy(":/images/track0.png", geFilename);
+
+  geFilename = QDir::tempPath() + "/flight.kml";
+  if (QFile::exists(geFilename)) {
+    QFile::remove(geFilename);
   }
   QFile geFile(geFilename);
   if (!geFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -226,25 +253,103 @@ void logsDialog::on_mapsButton_clicked() {
         tr("Cannot write file %1:\n%2.")
         .arg(geFilename)
         .arg(geFile.errorString()));
+    ui->FieldsTW->setDisabled(false);
+    ui->logTable->setDisabled(false);
     return;
   }
-
+  QString latitude,longitude;
+  double flatitude, flongitude,temp; 
   QTextStream outputStream(&geFile);
-  outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
-  outputStream << "<Document>\n\t<name>flight.kml</name>\n\t<Placemark><name>My Flight</name>\n\t\t<LineString>\n";
-  outputStream << "\t\t\t<tessellate>1</tessellate>\n\t\t\t<gx:altitudeMode>relativeToGround</gx:altitudeMode>\n\t\t\t<coordinates>\n\t\t\t\t";
-  for (int i=1; i<n; i++) {
-    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
-      outputStream << csvlog.at(i).at(longcol) << "," << csvlog.at(i).at(latcol) << "," << csvlog.at(i).at(altcol) << " " ;
+  outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n";
+  outputStream << "\t<Document>\n\t\t<name>" << logFilename << "</name>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << QDir::tempPath() << "/track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>1.2</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << QDir::tempPath() << "/track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<StyleMap id=\"multiTrack\">\n\t\t\t<Pair>\n\t\t\t\t<key>normal</key>\n\t\t\t\t<styleUrl>#multiTrack_n</styleUrl>\n\t\t\t</Pair>\n\t\t\t<Pair>\n\t\t\t\t<key>highlight</key>\n\t\t\t\t<styleUrl>#multiTrack_h</styleUrl>\n\t\t\t</Pair>\n\t\t</StyleMap>\n";
+  outputStream << "\t\t<Style id=\"lineStyle\">\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Schema id=\"schema\">\n";
+  outputStream << "\t\t\t<gx:SimpleArrayField name=\"GPSSpeed\" type=\"float\">\n\t\t\t\t<displayName>GPS Speed</displayName>\n\t\t\t</gx:SimpleArrayField>\n";
+  for (int i=0; i<csvlog.at(0).count()-2; i++) {
+    if (ui->FieldsTW->item(0,i)->isSelected() && fieldstype[i]!=G_F ) {
+      outputStream << "\t\t\t<gx:SimpleArrayField name=\""<< fields[i].replace(" ","_") <<"\" ";
+      switch (fieldstype[i]) {
+        case T_F:
+          outputStream << "type=\"string\"";
+          break;
+        case I_F:
+          outputStream << "type=\"int\"";
+          break;
+        case F_F:
+          outputStream << "type=\"float\"";
+          break;
+        default:
+          break;
+      }
+      outputStream << ">\n\t\t\t\t<displayName>" << fields[i] << "</displayName>\n\t\t\t</gx:SimpleArrayField>\n";
     }
   }
-  outputStream << "\n\t\t\t</coordinates>\n\t\t</LineString>\n\t</Placemark>\n</Document>\n</kml>\n";
+  outputStream << "\t\t</Schema>\n";
+  
+  QString planeName;
+  if (logFilename.indexOf("-")>0) {
+    planeName=logFilename.left(logFilename.indexOf("-"));
+  } else {
+    planeName=logFilename;
+  }
+  outputStream << "\t\t<Folder>\n\t\t\t<name>Log Data</name>\n\t\t\t<Placemark>\n\t\t\t\t<name>" << planeName << "</name>\n\t\t\t\t<styleUrl>#multiTrack</styleUrl>\n\t\t\t\t<gx:Track>\n";
+  for (int i=1; i<n; i++) {
+    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
+      QString tstamp=csvlog.at(i).at(0)+QString("T")+csvlog.at(i).at(1);
+      outputStream << "\t\t\t\t\t<when>"<< tstamp <<"</when>\n";
+    }
+  }
+          
+  for (int i=1; i<n; i++) {
+    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
+      latitude=csvlog.at(i).at(latcol).trimmed();
+      longitude=csvlog.at(i).at(longcol).trimmed();
+      temp=int(latitude.left(latitude.length()-1).toDouble()/100);
+      flatitude=temp+(latitude.left(latitude.length()-1).toDouble()-temp*100)/60.0;
+      temp=int(longitude.left(longitude.length()-1).toDouble()/100);
+      flongitude=temp+(longitude.left(longitude.length()-1).toDouble()-temp*100)/60.0;
+      if (latitude.right(1)!="N") {
+        flatitude*=-1;
+      }
+      if (longitude.right(1)!="E") {
+        flongitude*=-1;
+      }
+      latitude.sprintf("%3.8f", flatitude);
+      longitude.sprintf("%3.8f", flongitude);
+      outputStream << "\t\t\t\t\t<gx:coord>" << longitude << " " << latitude << " " << csvlog.at(i).at(altcol) << "</gx:coord>\n" ;
+    }
+  }
+  outputStream << "\t\t\t\t\t<ExtendedData>\n\t\t\t\t\t\t<SchemaData schemaUrl=\"#schema\">\n";
+  outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\"GPSSpeed\">\n";
+  for (int i=1; i<n; i++) {
+    if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
+      outputStream << "\t\t\t\t\t\t\t\t<gx:value>"<< csvlog.at(i).at(speedcol) <<"</gx:value>\n";
+    }
+  }
+  outputStream << "\t\t\t\t\t\t\t</gx:SimpleArrayData>\n";
+  for (int i=0; i<csvlog.at(0).count()-2; i++) {
+    if (ui->FieldsTW->item(0,i)->isSelected() && fieldstype[i]!= G_F ) {
+      outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\""<< fields[i].replace(" ","_") <<"\">\n";
+      for (int j=1; j<n; j++) {
+        if ((ui->logTable->item(j-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
+          outputStream << "\t\t\t\t\t\t\t\t<gx:value>"<< csvlog.at(j).at(i+2) <<"</gx:value>\n";
+        }
+      }
+      outputStream << "\t\t\t\t\t\t\t</gx:SimpleArrayData>\n";
+    }
+  }
+  outputStream << "\t\t\t\t\t\t</SchemaData>\t\t\t\t\t</ExtendedData>\n\t\t\t\t</gx:Track>\n\t\t\t</Placemark>\n\t\t</Folder>\n\t</Document>\n</kml>";
   geFile.close();
   
   QStringList parameters; 
   parameters << geFilename;
   QProcess *process = new QProcess(this);
-  process->startDetached(gePath, parameters);
+  process->start(gePath, parameters);
+  ui->FieldsTW->setDisabled(false);
+  ui->logTable->setDisabled(false);
 }
 
 
@@ -528,6 +633,7 @@ bool logsDialog::cvsFileParse()
   } else {
     ui->sessions_CB->clear();
     csvlog.clear();
+    logFilename.clear();
     QTextStream inputStream(&file);
     QRegExp rx2("(?:\"([^\"]*)\";?)|(?:([^,]*),?)");
     QStringList list;
@@ -576,6 +682,7 @@ bool logsDialog::cvsFileParse()
       }
       lines++;
     }
+    logFilename=QFileInfo(file.fileName()).baseName();
   }
   
   file.close();
