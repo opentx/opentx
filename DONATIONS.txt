@@ -45,7 +45,7 @@ Martin Wilson
 Joe Street
 John Holdsworth
 Daniel Schwartz
-Dean Church
+Dean Church (monthly)
 Michael Halse
 David Mark
 Ted Moss
@@ -263,3 +263,4 @@ Terry McKinley
 Offer Shmuely
 Ian Lobley
 Keith Hertzog
+
