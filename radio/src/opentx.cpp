@@ -289,9 +289,23 @@ volatile tmr10ms_t g_tmr10ms;
 #if defined(CPUARM)
 volatile uint8_t rtc_count = 0;
 uint32_t watchdogTimeout = 0;
+
 void watchdogSetTimeout(uint32_t timeout)
 {
   watchdogTimeout = timeout;
+}
+
+void opentxBootloader()
+{
+  BACKLIGHT_ON();
+
+  lcd_clear();
+  lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
+  lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
+  lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
+  lcdRefresh() ;
+
+  usbBootloader();
 }
 #endif
 
@@ -5066,15 +5080,7 @@ int main(void)
     g_eeGeneral.backlightBright = 0;
     g_eeGeneral.contrast = 25;
 
-    BACKLIGHT_ON();
-
-    lcd_clear();
-    lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
-    lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
-    lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
-    lcdRefresh() ;
-
-    usbBootloader();
+    opentxBootloader();
   }
 
   CoInitOS();
