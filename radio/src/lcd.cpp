@@ -1097,7 +1097,7 @@ void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att)
     return;
   }
 
-  if (mode >= TMR_VAROFS+MAX_PSWITCH+NUM_CSW) {
+  if (mode >= TMR_VAROFS+NUM_PSWITCH+NUM_CSW) {
     mode++;
   }
 

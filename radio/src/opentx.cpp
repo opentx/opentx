@@ -1301,6 +1301,8 @@ uint8_t  cswStates[NUM_CSW];
 #if defined(PCBTARANIS)
 tmr10ms_t switchesMidposStart[6] = { 0 };
 uint32_t  switchesPos = 0;
+tmr10ms_t potsLastposStart[2];
+uint8_t   potsPos[2];
 #define DELAY_SWITCH_3POS    10/*100ms*/
 #define CHECK_2POS(sw)       newPos |= (switchState(sw ## 0) ? (1 << (sw ## 0 - SW_SA0)) : (1 << (sw ## 0 - SW_SA0 + 1)))
 #define CHECK_3POS(idx, sw)  if (switchState(sw ## 0)) { \
@@ -1321,8 +1323,7 @@ uint32_t  switchesPos = 0;
                                } \
                                newPos |= (switchesPos & (0x7 << (sw ## 0 - SW_SA0))); \
                              }
-#define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
-void get3POSSwitchesPosition()
+void getSwitchesPosition()
 {
   uint32_t newPos = 0;
   CHECK_3POS(0, SW_SA);
@@ -1334,9 +1335,26 @@ void get3POSSwitchesPosition()
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
   switchesPos = newPos;
+
+  for (int i=0; i<2; i++) {
+    int val = RESX + (int16_t)anaIn(POT1+i) + (RESX / 5);
+    uint8_t pos = limit<uint8_t>(0, val / (2*RESX/5), 5);
+    uint8_t previousPos = potsPos[i] >> 4;
+    if (pos != previousPos) {
+      potsLastposStart[i] = get_tmr10ms();
+      potsPos[i] = (pos << 4) | (potsPos[i] & 0x0f);
+    }
+    else if ((tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
+      potsLastposStart[i] = 0;
+      potsPos[i] = (pos << 4) | (pos);
+    }
+  }
 }
+#define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
+#define POT_POSITION(sw)     ((potsPos[(sw)/6] & 0x0f) == ((sw) % 6))
 #else
-#define get3POSSwitchesPosition()
+#define getSwitchesPosition()
+#define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
 #endif
 
 int16_t csLastValue[NUM_CSW];
@@ -1353,15 +1371,16 @@ bool getSwitch(int8_t swtch)
   if (cs_idx == SWSRC_ON) {
     result = true;
   }
-  else if (cs_idx <= MAX_PSWITCH) {
-#if defined(PCBTARANIS)
-    result = SWITCH_POSITION(cs_idx-SWSRC_SA0);
-#else
-    result = switchState((EnumKeys)(SW_BASE+cs_idx-1));
-#endif
+  else if (cs_idx <= SWSRC_LAST_SWITCH) {
+    result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
   }
+#if defined(PCBTARANIS)
+  else if (cs_idx >= SWSRC_P11 && cs_idx <= SWSRC_P26) {
+    result = POT_POSITION(cs_idx-SWSRC_P11);
+  }
+#endif
   else {
-    cs_idx -= MAX_PSWITCH+1;
+    cs_idx -= SWSRC_FIRST_CSW;
 
     GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
     if (s_last_switch_used & mask) {
@@ -1550,7 +1569,7 @@ int8_t getMovedSwitch()
     }
   }
 #else
-  for (uint8_t i=MAX_PSWITCH; i>0; i--) {
+  for (uint8_t i=NUM_PSWITCH; i>0; i--) {
     bool prev;
     swstate_t mask = 0;
     if (i <= 3) {
@@ -1562,7 +1581,7 @@ int8_t getMovedSwitch()
     }
     bool next = getSwitch(i);
     if (prev != next) {
-      if (i!=MAX_PSWITCH || next==true)
+      if (i!=NUM_PSWITCH || next==true)
         result = next ? i : -i;
       if (mask)
         switches_states ^= mask;
@@ -2203,7 +2222,7 @@ void checkSwitches()
       }
 #else
       uint8_t x = 2;
-      for (uint8_t i=1; i<MAX_PSWITCH-1; i++) {
+      for (uint8_t i=1; i<NUM_PSWITCH-1; i++) {
         uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
         putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>1)&0x3)), attr);
         if (i == 1 && attr) i++;
@@ -3053,13 +3072,13 @@ void evalFunctions()
 
 #endif
 
-      if (swtch > MAX_SWITCH+1) {
+      if (swtch > NUM_SWITCH+1) {
         momentary = 1;
-        swtch -= MAX_SWITCH+1;
+        swtch -= NUM_SWITCH+1;
       }
-      if (swtch < -MAX_SWITCH-1) {
+      if (swtch < -NUM_SWITCH-1) {
         momentary = 1;
-        swtch += MAX_SWITCH+1;
+        swtch += NUM_SWITCH+1;
       }
 
       bool active = getSwitch(swtch);
@@ -3684,7 +3703,7 @@ void doMixerCalculations()
   // therefore forget the exact calculation and use only 1 instead; good compromise
   lastTMR = tmr10ms;
 
-  get3POSSwitchesPosition();
+  getSwitchesPosition();
 
   getADC();
 
@@ -3871,9 +3890,9 @@ void doMixerCalculations()
         timerState->sum+=val;
       }
 
-      if (atm>=(TMR_VAROFS+MAX_SWITCH)){ // toggeled switch
+      if (atm>=(TMR_VAROFS+NUM_SWITCH)){ // toggeled switch
         if(!(timerState->toggled | timerState->sum | timerState->cnt | timerState->lastPos)) { timerState->lastPos = tm < 0; timerState->sum = 1; }  // if initializing then init the lastPos
-        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+MAX_SWITCH);
+        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+NUM_SWITCH-1) : tm+NUM_SWITCH);
         if (swPos && !timerState->lastPos) timerState->toggled = !timerState->toggled;  // if switch is flipped first time -> change counter state
         timerState->lastPos = swPos;
       }
@@ -3910,7 +3929,7 @@ void doMixerCalculations()
             newTimerVal++;
         }
         else {
-          if (atm<(TMR_VAROFS+MAX_SWITCH))
+          if (atm<(TMR_VAROFS+NUM_SWITCH))
             timerState->toggled = tm>0 ? getSwitch(tm-(TMR_VAROFS-1)) : !getSwitch(-tm); // normal switch
           if (timerState->toggled)
             newTimerVal++;

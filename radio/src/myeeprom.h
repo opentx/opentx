@@ -639,7 +639,7 @@ PACK( union u_int8int16_t {
 #if defined(CPUARM)
 #define MAX_CSW_DURATION 120 /*60s*/
 #define MAX_CSW_DELAY    120 /*60s*/
-#define MAX_CSW_ANDSW    MAX_SWITCH
+#define MAX_CSW_ANDSW    NUM_SWITCH
 typedef int16_t csw_telemetry_value_t;
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int16_t v1;
@@ -1140,6 +1140,8 @@ enum SwitchSources {
 #endif
 
   SWSRC_FIRST_CSW,
+  SWSRC_LAST_SWITCH = SWSRC_FIRST_CSW-1,
+
   SWSRC_SW1 = SWSRC_FIRST_CSW,
   SWSRC_SW2,
   SWSRC_SW3,
@@ -1154,10 +1156,17 @@ enum SwitchSources {
   SWSRC_SWC,
   SWSRC_LAST_CSW = SWSRC_SW1+NUM_CSW-1,
 
+#if defined(PCBTARANIS)
+  SWSRC_P11,
+  SWSRC_P16 = SWSRC_P11+5,
+  SWSRC_P21,
+  SWSRC_P26 = SWSRC_P21+5,
+#endif
+
   SWSRC_ON,
 
   SWSRC_FIRST_MOMENT_SWITCH,
-  SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_ON-1,
+  SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_LAST_CSW,
 
 #if !defined(PCBSTD)
   SWSRC_TRAINER_SHORT,

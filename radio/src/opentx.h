@@ -376,8 +376,8 @@ enum EnumKeys {
 #if defined(PCBTARANIS)
   #define NUM_SWITCHES  8
   #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
-  #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
   #define NUM_POTS      4
+  #define NUM_POTSSW    (2*6)
   #define NUM_SW_SRCRAW 8
   #define SWSRC_THR     SWSRC_SF2
   #define SWSRC_GEA     SWSRC_SG2
@@ -389,13 +389,13 @@ enum EnumKeys {
   #define NUM_SWITCHES  7
   #define IS_3POS(sw)   ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
-  #define MAX_PSWITCH   (SW_TRN-SW_ID0+1)  // 9 physical switches
   #define NUM_POTS      3
   #define NUM_SW_SRCRAW 1
   #define SW_DSM2_BIND  SW_TRN
 #endif
 
-#define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
+#define NUM_PSWITCH     (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
+#define NUM_SWITCH      (NUM_PSWITCH+NUM_CSW+NUM_POTSSW)
 
 #if defined(PCBTARANIS)
 #define KEY_RIGHT  KEY_PLUS
