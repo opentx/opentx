@@ -265,7 +265,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 
     uint8_t ym8 = (y & 0x07);
 #if defined(BOLD_FONT)
-#if !defined(CPUM64) || defined(EXTSTD) || 1
+#if !defined(CPUM64) || defined(EXTSTD)
     uint8_t skipcol = 7;
     if ( c >= 'A') skipcol = 4;
     if ( c == 'T') skipcol = 5;
@@ -273,7 +273,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     uint8_t bb = 0;
     if (inv) bb = 0xff;
 #endif
-#if !defined(CPUM64) || defined(EXTSTD) || 1
+#if !defined(CPUM64) || defined(EXTSTD)
     for (int8_t i=0; i<=7; i++) {
 #else
     for (int8_t i=0; i<=6; i++) {
@@ -289,7 +289,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       else if (i <= 5) b = pgm_read_byte(q++);
       if (b == 0xff) continue;
       if (inv) b = ~b;
-#if !defined(CPUM64) || defined(EXTSTD) || 1
+#if !defined(CPUM64) || defined(EXTSTD)
       if (!(flags & BOLD) && (i == 7)) continue;
 #endif
       if ((flags & CONDENSED) && i==2) {
@@ -306,7 +306,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           a = b | bb;
         bb = b;
         b = a;
-#if !defined(CPUM64) || defined(EXTSTD) || 1
+#if !defined(CPUM64) || defined(EXTSTD)
         if (i == skipcol) continue;
 #endif
       }
@@ -314,18 +314,24 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 
       if (p<DISPLAY_END) {
         ASSERT_IN_DISPLAY(p);
-        LCD_BYTE_FILTER(p, ~(0xff << ym8), b << ym8);
+        uint8_t mask = ~(0xff << ym8);
+        LCD_BYTE_FILTER(p, mask, b << ym8);
         if (ym8) {
           uint8_t *r = p + LCD_W;
           if (r<DISPLAY_END)
-            LCD_BYTE_FILTER(r, ~(0xff >> (8-ym8)), b >> (8-ym8));
+            LCD_BYTE_FILTER(r, ~mask, b >> (8-ym8));
         }
-#if !defined(CPUM64) || defined(EXTSTD)
-#if defined(TARANIS)
-        if (y && inv) lcd_mask( p, BITMASK((y-1)%8),FORCE);
+
+#if defined(PCBTARANIS)
+        if (inv) {
+          if (ym8) lcd_mask(p, 0x01 << (ym8-1), FORCE);
+          else if (y) {
+            ASSERT_IN_DISPLAY(p - LCD_W);
+            lcd_mask(p - LCD_W, 0x80, FORCE);
+          }  
+        }
 #else
-        if (y && inv) *p |= BITMASK((y-1)%8);
-#endif
+        if (inv && (ym8 == 1)) *p |= 0x01;
 #endif
       }
       p++;
@@ -348,11 +354,12 @@ void lcd_putsiAtt(xcoord_t x, uint8_t y,const pm_char * s,uint8_t idx, LcdFlags 
 
 void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlags mode)
 {
-//  xcoord_t orig_x = x;
-
+#if defined(CPUARM)
+  xcoord_t orig_x = x;
+#endif
+  bool setx = false;
   while(len!=0) {
     unsigned char c;
-    bool setx = false;
     switch (mode & (BSS+ZCHAR)) {
       case BSS:
         c = *s;
@@ -378,20 +385,21 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
       x = c;
       setx = false;
     }
-    else if (c == 0x1F) {
+    else if (c == 0x1F) {  //X-coord prefix
       setx = true;
     }
-//    else if (c == 0x1E) {
-//      x = orig_x;
-//      y += FH;
-//      if (mode & DBLSIZE) y += FH;
-//#if defined(CPUARM)
-//      else if (mode & MIDSIZE) y += 4;
-//      else if (mode & SMLSIZE) y--;   
-//#endif      
-//    }
+#if defined(CPUARM)
+    else if (c == 0x1E) {  //NEWLINE
+      x = orig_x;
+      y += FH;
+      if (mode & DBLSIZE) y += FH;
+      else if (mode & MIDSIZE) y += 4;
+      else if (mode & SMLSIZE) y--;
+      if (y >= LCD_H) break;
+    }
+#endif
     else {
-      x += (c*FW/2);
+      x += (c*FW/2); //EXTENDED SPACE
     }
     s++;
     len--;
