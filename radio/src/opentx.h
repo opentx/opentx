@@ -390,6 +390,7 @@ enum EnumKeys {
   #define IS_3POS(sw)   ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
   #define NUM_POTS      3
+  #define NUM_POTSSW    0
   #define NUM_SW_SRCRAW 1
   #define SW_DSM2_BIND  SW_TRN
 #endif
@@ -398,14 +399,14 @@ enum EnumKeys {
 #define NUM_SWITCH      (NUM_PSWITCH+NUM_CSW+NUM_POTSSW)
 
 #if defined(PCBTARANIS)
-#define KEY_RIGHT  KEY_PLUS
-#define KEY_LEFT   KEY_MINUS
-#define KEY_UP     KEY_PLUS
-#define KEY_DOWN   KEY_MINUS
+  #define KEY_RIGHT  KEY_PLUS
+  #define KEY_LEFT   KEY_MINUS
+  #define KEY_UP     KEY_PLUS
+  #define KEY_DOWN   KEY_MINUS
 #else
-#define KEY_ENTER  KEY_MENU
-#define KEY_PLUS   KEY_RIGHT
-#define KEY_MINUS  KEY_LEFT
+  #define KEY_ENTER  KEY_MENU
+  #define KEY_PLUS   KEY_RIGHT
+  #define KEY_MINUS  KEY_LEFT
 #endif
 
 #include "myeeprom.h"
