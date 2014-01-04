@@ -734,6 +734,7 @@ void FrskyValueWithMinMax::set(uint8_t value)
 void resetTelemetry()
 {
   memclear(&frskyData, sizeof(frskyData));
+  telemetryState = TELEMETRY_INIT;
 
 #if defined(FRSKY_HUB)
   frskyData.hub.gpsLatitude_bp = 2;
