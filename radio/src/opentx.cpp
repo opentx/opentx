@@ -566,6 +566,10 @@ void modelDefault(uint8_t id)
   g_model.frsky.channels[0].ratio = 132;
 #endif
 
+#if defined(CPUARM)
+  g_model.nSwToWarn = 0x7F;
+#endif
+
 #ifdef MAVLINK
 	g_model.mavlink.rc_rssi_scale = 15;
 	g_model.mavlink.pc_rssi_en = 1;
