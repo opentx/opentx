@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(companion9x);
     QApplication app(argc, argv);
-    app.setApplicationName("Companion9x");
+    app.setApplicationName("OpenTX Companion");
 #ifdef __APPLE__
     app.setStyle(new MyProxyStyle);
 #endif

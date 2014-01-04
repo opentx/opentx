@@ -1211,53 +1211,38 @@ FAI-funktionen kan inte slås av i sändaren.
     <name>MainWindow</name>
     <message>
         <location filename="../mainwindow.cpp" line="+147"/>
-        <location line="+488"/>
+        <location line="+489"/>
         <location line="+34"/>
         <location line="+1492"/>
         <source>File loaded</source>
         <translation>Filen har laddats</translation>
     </message>
     <message>
-        <location line="-1893"/>
+        <location line="-1894"/>
         <location line="+2"/>
         <location line="+40"/>
-        <location line="+260"/>
+        <location line="+261"/>
         <location line="+2"/>
         <source>Save As</source>
         <translation>Spara Som</translation>
     </message>
     <message>
-        <location line="-287"/>
-        <location line="+258"/>
+        <location line="-288"/>
+        <location line="+259"/>
         <source>No updates available at this time.</source>
         <translation>Inga updateringar finns tillgängliga.</translation>
     </message>
     <message>
-        <location line="-297"/>
+        <location line="-298"/>
         <location line="+43"/>
         <location line="+178"/>
-        <location line="+122"/>
+        <location line="+123"/>
         <location line="+4"/>
         <source>Unable to check for updates.</source>
         <translation>Det gick inte att söka efter uppdateringar.</translation>
     </message>
     <message>
-        <location line="-487"/>
-        <location line="+615"/>
-        <location line="+20"/>
-        <source>companion9x - Models and Settings Editor - %1 - profile %2</source>
-        <translation>companion9x - Editor för Modeller och Inställningar - %1 - profile %2</translation>
-    </message>
-    <message>
-        <location line="-633"/>
-        <location line="+607"/>
-        <location line="+17"/>
-        <location line="+11"/>
-        <source>companion9x - Models and Settings Editor - %1</source>
-        <translation>companion9x - Editor för Modeller och Inställningar - %1</translation>
-    </message>
-    <message>
-        <location line="-473"/>
+        <location line="-324"/>
         <source>Executable (*.exe)</source>
         <translation>Program (*.exe)</translation>
     </message>
@@ -1272,7 +1257,7 @@ FAI-funktionen kan inte slås av i sändaren.
         <translation>Vill du skriva firmware till sändaren nu?</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+87"/>
         <source>A new version of %1 firmware is available (current %2 - newer %3).
 Do you want to download it now ?</source>
         <translation>En ny version finns tillgänglig av %1 fimware (Din version %2 - Ny version %3).
@@ -1367,12 +1352,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>&amp;Sök efter uppdateringar...</translation>
     </message>
     <message>
-        <location line="-1365"/>
-        <source>A new version of companion9x is available (version %1)&lt;br&gt;Would you like to download it?</source>
-        <translation>An ny version av companion9x finns tillgänglig (version %1)&lt;br&gt;Vill du ladda ned den?</translation>
-    </message>
-    <message>
-        <location line="-87"/>
+        <location line="-1453"/>
         <source>Display previous message again at startup ?</source>
         <translation>Skall föregående varning visas igen vid uppstart ?</translation>
     </message>
@@ -1387,18 +1367,12 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Tillfälligt fel i byggservern. Försök igen senare</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+40"/>
-        <source>Compilation server requires registration, please check opentx web site</source>
-        <translation>Byggservern kräver registrering. Var god kontrollera openTX webbsida</translation>
-    </message>
-    <message>
-        <location line="-9"/>
+        <location line="+37"/>
         <source>Firmware does not fit in the Tx, due to selected firmware options</source>
         <translation>Firmware får inte rum i minnet på grund av att för många funktioner aktiverats</translation>
     </message>
     <message>
-        <location line="+97"/>
+        <location line="+98"/>
         <source>Firmware %1 does not seem to have ever been downloaded.
 Version %2 is available.
 Do you want to download it now ?</source>
@@ -1432,32 +1406,12 @@ Vill du ladda ned den nu ?</translation>
         <translation>Version %1 (revision %2), %3</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>The companion9x project was originally forked from eePe</source>
-        <translation>Ursprungligen grenades companion9x av från eePe</translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>If you&apos;ve found this program useful, please support by</source>
         <translation>Om du tycker att programet är användbart så kan du stödja utvecklingen genom att</translation>
     </message>
     <message>
-        <location line="+4"/>
-        <source>About companion9x</source>
-        <translation>Om companion9x</translation>
-    </message>
-    <message>
-        <location line="+127"/>
-        <source>Check for new version of companion9x/er9x</source>
-        <translation>Sök efter ny version av companion9x/er9x</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Show companion9x contributors list</source>
-        <translation>Visa vilka som bidragit till companion9x</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+151"/>
         <source>Customize your &amp;TX...</source>
         <translation>Sändari&amp;nställningar...</translation>
     </message>
@@ -1668,17 +1622,37 @@ Vill du ladda ned den nu ?</translation>
         <translation>Byt layout-riktning</translation>
     </message>
     <message>
-        <location line="-1542"/>
+        <location line="-1661"/>
+        <location line="+616"/>
+        <location line="+20"/>
+        <source>Companion - Models and Settings Editor - %1 - profile %2</source>
+        <translation>Companion - Editor för Modeller och Inställningar - %1 - profile %2</translation>
+    </message>
+    <message>
+        <location line="-634"/>
+        <location line="+608"/>
+        <location line="+17"/>
+        <location line="+11"/>
+        <source>Companion - Models and Settings Editor - %1</source>
+        <translation>Companion - Editor för Modeller och Inställningar - %1</translation>
+    </message>
+    <message>
+        <location line="-520"/>
         <source>Checking for updates</source>
         <translation>Letar efter uppdateringar</translation>
     </message>
     <message>
-        <location line="+322"/>
+        <location line="+323"/>
         <source>Ignore this version (r%1)?</source>
         <translation>Ladda inte ned versionen (r%1)?</translation>
     </message>
     <message>
-        <location line="+1131"/>
+        <location line="+1088"/>
+        <source>Show Companion changelog</source>
+        <translation>Visa en lista med förändringar av Companion</translation>
+    </message>
+    <message>
+        <location line="+43"/>
         <source>&amp;Write Models and Settings To Tx</source>
         <translation>&amp;Skriv Modeller och Inställningar till sändaren</translation>
     </message>
@@ -1738,14 +1712,6 @@ Vill du ladda ned den nu ?</translation>
         <translation>Läs firmware från sändaren</translation>
     </message>
     <message>
-        <source>&amp;Configure Communication...</source>
-        <translation type="obsolete">&amp;Kommunikationsinställningar...</translation>
-    </message>
-    <message>
-        <source>Configure software for communication with the transmitter</source>
-        <translation type="obsolete">Inställningar för mjukvaran som kommunicerar med sändaren</translation>
-    </message>
-    <message>
         <location line="+115"/>
         <source>&amp;Edit</source>
         <translation>&amp;Redigera</translation>
@@ -1786,7 +1752,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>&amp;Bidragsgivare...</translation>
     </message>
     <message>
-        <location line="-1459"/>
+        <location line="-1460"/>
         <source>Display previous warning again at startup ?</source>
         <translation>SKall föregående varning visas igen vid uppstart ?</translation>
     </message>
@@ -1795,7 +1761,7 @@ Vill du ladda ned den nu ?</translation>
         <location line="+29"/>
         <location line="+11"/>
         <location line="+29"/>
-        <location line="+495"/>
+        <location line="+496"/>
         <location line="+1165"/>
         <location line="+6"/>
         <location line="+8"/>
@@ -1815,19 +1781,14 @@ Vill du ladda ned den nu ?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-621"/>
+        <location line="-622"/>
         <source>New release available</source>
         <translation>En ny version finns tillgänglig</translation>
     </message>
     <message>
-        <location line="+0"/>
-        <source>A new release of companion is available please check the repository</source>
-        <translation>En ny version av companion finns tillgänglig. Kontrollera källkods-repository</translation>
-    </message>
-    <message>
         <location line="+57"/>
         <location line="+40"/>
-        <location line="+1694"/>
+        <location line="+1695"/>
         <location line="+8"/>
         <location line="+36"/>
         <source>Error opening file %1:
@@ -1836,7 +1797,7 @@ Vill du ladda ned den nu ?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-1723"/>
+        <location line="-1724"/>
         <source>Compilation server termporary failure, try later</source>
         <translation>Tillfälligt fel i byggservern. Försök igen senare</translation>
     </message>
@@ -1853,7 +1814,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Okänt server-fel. Försök igen senare</translation>
     </message>
     <message>
-        <location line="+1239"/>
+        <location line="+1240"/>
         <source>Compare...</source>
         <translation>Jämför...</translation>
     </message>
@@ -1959,7 +1920,23 @@ Vill du ladda ned den nu ?</translation>
         <translation>Ja</translation>
     </message>
     <message>
-        <location line="-28"/>
+        <location line="-258"/>
+        <source>A new version of Companion is available (version %1)&lt;br&gt;Would you like to download it?</source>
+        <translation>An ny version av Companion finns tillgänglig (version %1)&lt;br&gt;Vill du ladda ned den?</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>A new release of Companion is available please check the repository</source>
+        <translation>En ny version av Companion finns tillgänglig. Kontrollera källkods-repository</translation>
+    </message>
+    <message>
+        <location line="+78"/>
+        <location line="+40"/>
+        <source>Compilation server requires registration, please check OpenTX web site</source>
+        <translation>Byggservern kräver registrering. Var god kontrollera OpenTX webbsida</translation>
+    </message>
+    <message>
+        <location line="+91"/>
         <location line="+29"/>
         <source>No</source>
         <translation>Nej</translation>
@@ -2090,17 +2067,32 @@ Starta skrivningen i alla fall ?</translation>
         <translation>Läs Sändarens Firmware till Fil</translation>
     </message>
     <message>
-        <location line="+189"/>
+        <location line="+50"/>
+        <source>The Companion project was originally forked from eePe</source>
+        <translation>Ursprungligen grenades Companion av från eePe</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>About Companion</source>
+        <translation>Om Companion</translation>
+    </message>
+    <message>
+        <location line="+127"/>
+        <source>Check for new version of Companion</source>
+        <translation>Sök efter ny version av Companion</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Show Companion contributors list</source>
+        <translation>Visa vilka som bidragit till Companion</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>ChangeLog...</source>
         <translation>Förändringar...</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Show companion9x changelog</source>
-        <translation>Visa en lista med förändringar av companion9x</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Firmware ChangeLog...</source>
         <translation>Firmware-förändringar...</translation>
     </message>
@@ -2218,14 +2210,7 @@ Starta skrivningen i alla fall ?</translation>
         <translation>Ogiltig binär modelldatafil %1</translation>
     </message>
     <message>
-        <location line="-137"/>
-        <location line="+5"/>
-        <location line="+283"/>
-        <source>companion9x</source>
-        <translation>companion9x</translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+152"/>
         <source>%1 has been modified.
 Do you want to save your changes?</source>
         <translation>%1 har förändrats.
@@ -2242,7 +2227,14 @@ Vill du spara förändringarna?</translation>
         <translation>Säkerhetskopierin kan ej utföras</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-332"/>
+        <location line="+5"/>
+        <location line="+283"/>
+        <source>Companion</source>
+        <translation>Companion</translation>
+    </message>
+    <message>
+        <location line="+44"/>
         <source>The backup dir set in preferences does not exist</source>
         <translation>Katalog för säkerhetskopiering saknas i inställningarna</translation>
     </message>
@@ -7167,16 +7159,16 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
     </message>
     <message>
         <location filename="../warnings.h" line="+5"/>
-        <source>Thanks all for the donations, kind messages, nice ideas, constructive proposals etc. for the next openTX/C9x funding model.
+        <source>Thanks all for the donations, kind messages, nice ideas, constructive proposals etc. for the next OpenTX/Companion funding model.
 
-We are really sensible to that!
+We are really appreciative for that!
 
-The openTX/C9X Team.</source>
-        <translation>Tack för alla donationer, vänliga meddelanden, goda idéer och konstruktiva förslag för att bekosta fortsatt utveckling av openTX/companion9x
+The OpenTX/Companion Team.</source>
+        <translation>Tack för alla donationer, vänliga meddelanden, goda idéer och konstruktiva förslag för att bekosta fortsatt utveckling av OpenTX/Companion
 
-Vi uppkskattar ert stöd!
+Vi uppskattar ert stöd!
 
-Gruppen bakum  openTX/companion9X.</translation>
+Gruppen bakom OpenTX/Companion.</translation>
     </message>
 </context>
 <context>
@@ -7451,12 +7443,6 @@ OBS. Fyll enbart i detta fällt om du är säker på vad du gör. Ingen kontroll
         <translation>Välj sökväg</translation>
     </message>
     <message>
-        <location line="+71"/>
-        <location line="+69"/>
-        <source>companion9x</source>
-        <translation>companion9x</translation>
-    </message>
-    <message>
         <location filename="../burnconfigdialog.ui" line="+20"/>
         <location line="+30"/>
         <source>CPU of your TX</source>
@@ -7473,7 +7459,7 @@ m2560 for v4.1 boards</source>
 m2560 för v4.1-kort</translation>
     </message>
     <message>
-        <location filename="../burnconfigdialog.cpp" line="-68"/>
+        <location filename="../burnconfigdialog.cpp" line="+72"/>
         <source>&lt;b&gt;&lt;u&gt;WARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;This will reset the fuses of  %1 to the factory settings.&lt;br&gt;Writing fuses can mess up your radio.&lt;br&gt;Do this only if you are sure they are wrong!&lt;br&gt;Are you sure you want to continue?</source>
         <translation>&lt;b&gt;&lt;u&gt;VARNING!&lt;/u&gt;&lt;/b&gt;&lt;br&gt;Detta åerställer säkringarna för %1 till deras ursprungliga värden.&lt;br&gt;Att ändra dessa värden kan skapa allvarliga problem med din sändare.&lt;br&gt;Ändra säkringarna  bara om du är helt säker på att de har fel värde!&lt;br&gt;Är du säker på att du vill fortsätta?</translation>
     </message>
@@ -7550,6 +7536,12 @@ m2560 för v4.1-kort</translation>
         <source>AVRDUDE Configuration</source>
         <translation>Inställningar för AVRDUDE</translation>
     </message>
+    <message>
+        <location line="+272"/>
+        <location line="+69"/>
+        <source>Companion</source>
+        <translation>Companion</translation>
+    </message>
 </context>
 <context>
     <name>burnDialog</name>
@@ -7569,7 +7561,12 @@ m2560 för v4.1-kort</translation>
         <translation>Subversion</translation>
     </message>
     <message>
-        <location line="+233"/>
+        <location line="+63"/>
+        <source>Allows Companion to write to older version of the firmware</source>
+        <translation>Tillåter Companon att skriva till äldre firmware-versioner</translation>
+    </message>
+    <message>
+        <location line="+170"/>
         <source>Load Image</source>
         <translation>Ladda Bild</translation>
     </message>
@@ -7748,12 +7745,7 @@ m2560 för v4.1-kort</translation>
         <translation>Välj fil</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>Allows companion9x to write to older version of the firmware</source>
-        <translation>Tillåter companon9x att skriva till äldre firmware-versioner</translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+28"/>
         <source>Backup and restore Models and Settings</source>
         <translation>Säkerhetskopiera Modeller och Inställningar</translation>
     </message>
@@ -8375,14 +8367,19 @@ m2560 för v4.1-kort</translation>
     <message>
         <location line="+7"/>
         <source>Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) 
-of course. Also to Erez Raviv (er9x) and it&apos;s fantastic eePe, from which
-companion9x was forked out.</source>
-        <translation>All heder åt  Rafal Tomczak (RadioClone) och Thomas Husterer (th9x) naturligtvis.
-Dessutom till Erez Raviv (er9x) och dess fantastiska  eePe, från vilken
-companion9x grenades av.</translation>
+of course. Also to Erez Raviv (er9x) and the fantastic eePe program 
+which was the staring point for OpenTX Companion.</source>
+        <translation>All heder åt Rafal Tomczak (RadioClone) och Thomas Husterer (th9x) naturligtvis.
+Dessutom till Erez Raviv (er9x) och hans fantastiska  eePe, från vilken
+OpenTX Companion grenades av.</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+17"/>
+        <source>Companion Release Notes</source>
+        <translation>Companion Release Notes</translation>
+    </message>
+    <message>
+        <location line="-14"/>
         <source>Thank you all !!!</source>
         <translation>Tack till er alla !!!</translation>
     </message>
@@ -8392,12 +8389,7 @@ companion9x grenades av.</translation>
         <translation>Bidragande</translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>Companion9x Release Notes</source>
-        <translation>Companion9x Release Notes</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+16"/>
         <source>OpenTX Release Notes</source>
         <translation>OpenTX Release Notes</translation>
     </message>
@@ -8550,8 +8542,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+29"/>
-        <source>companion9x</source>
-        <translation>companion9x</translation>
+        <source>Companion</source>
+        <translation>Companion</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -8931,8 +8923,8 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
     <name>logsDialog</name>
     <message>
         <location filename="../logsdialog.ui" line="+14"/>
-        <source>Companion9x log viewer</source>
-        <translation>Companion9x loggläsare</translation>
+        <source>Companion Log Viewer</source>
+        <translation>Companion Logg-läsare</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -8945,7 +8937,7 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
         <translation>Öppna Loggfil</translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+51"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
@@ -8960,7 +8952,7 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../logsdialog.cpp" line="+22"/>
+        <location filename="../logsdialog.cpp" line="+27"/>
         <source>Telemetry logs</source>
         <translation>Telemetriloggar</translation>
     </message>
@@ -8970,7 +8962,19 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
         <translation>Tid</translation>
     </message>
     <message>
-        <location line="+372"/>
+        <location line="+224"/>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation>Filen %1 kunde inte skrivas:
+%2.</translation>
+    </message>
+    <message>
+        <location line="+329"/>
         <source>Select your log file</source>
         <translation>Välj loggfil</translation>
     </message>
@@ -8980,7 +8984,7 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
         <translation>Tillgängliga fält</translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+97"/>
         <source>The selected logfile contains %1 invalid lines out of  %2 total lines</source>
         <translation>Denn aktuella filen innehåller %1 felaktiga rader. Totalt innehåller filen %2 rader</translation>
     </message>
@@ -9443,22 +9447,22 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
         <translation>Inställningar</translation>
     </message>
     <message>
-        <location line="+480"/>
+        <location line="+624"/>
         <source>Language (requires restart)</source>
         <translation>Språk (kräver omstart)</translation>
     </message>
     <message>
-        <location line="-233"/>
+        <location line="-599"/>
         <source>Show Splash Screen</source>
         <translation>Visa bild vid start av sändare</translation>
     </message>
     <message>
-        <location line="+767"/>
+        <location line="+989"/>
         <source>Recent History Size</source>
         <translation>Loggstorlek</translation>
     </message>
     <message>
-        <location line="-157"/>
+        <location line="-126"/>
         <location line="+41"/>
         <source>Download</source>
         <translation>Nedladdning</translation>
@@ -9469,7 +9473,7 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
         <translation>Kanalordning</translation>
     </message>
     <message>
-        <location line="-151"/>
+        <location line="-415"/>
         <source>Channel order
 
 This is used by the templated to determine which channel goes to what number output.</source>
@@ -9478,7 +9482,7 @@ This is used by the templated to determine which channel goes to what number out
 Detta används av mallen för att koppla kanal till output-nummer.</translation>
     </message>
     <message>
-        <location line="+138"/>
+        <location line="+402"/>
         <source>Default Stick Mode</source>
         <translation>Spaktilldelning</translation>
     </message>
@@ -9554,7 +9558,17 @@ Mode 4:
         <translation>Firmware</translation>
     </message>
     <message>
-        <location line="-894"/>
+        <location line="+621"/>
+        <source>Find Executable</source>
+        <translation>Sök Program</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Google Earth Executable</source>
+        <translation>Sökväg till Google Earth</translation>
+    </message>
+    <message>
+        <location line="-1542"/>
         <source>Check for updates on startup</source>
         <translation>Sök efter uppdateringar vid start</translation>
     </message>
@@ -9565,30 +9579,30 @@ Mode 4:
         <translation>...</translation>
     </message>
     <message>
-        <location line="+558"/>
+        <location line="+576"/>
         <source>Splash library behaviour</source>
         <translation>Beteende för bildbibliotek</translation>
     </message>
     <message>
-        <location line="-398"/>
+        <location line="-285"/>
         <source>Personal splash library</source>
         <translation>Personligt bildbibliotek</translation>
     </message>
     <message>
-        <location line="+365"/>
+        <location line="+252"/>
         <source>Joystick</source>
         <translation>Joystick</translation>
     </message>
     <message>
-        <location line="-414"/>
-        <location line="+480"/>
+        <location line="-301"/>
+        <location line="+192"/>
+        <location line="+175"/>
         <location line="+135"/>
-        <location line="+67"/>
         <source>Open Folder</source>
         <translation>Öppna katalog</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+93"/>
         <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
@@ -9634,12 +9648,12 @@ Mode 4:
         <translation>Kryssruta</translation>
     </message>
     <message>
-        <location line="-1238"/>
+        <location line="-1094"/>
         <source>Check for updates</source>
         <translation>Sök efter uppdateringar</translation>
     </message>
     <message>
-        <location line="-188"/>
+        <location line="-319"/>
         <source>Blue</source>
         <oldsource>Blu</oldsource>
         <translation>Blå</translation>
@@ -9665,7 +9679,7 @@ Mode 4:
         <translation>Gul</translation>
     </message>
     <message>
-        <location line="+103"/>
+        <location line="+234"/>
         <source>Enable</source>
         <translation>Slå på</translation>
     </message>
@@ -9675,7 +9689,7 @@ Mode 4:
         <translation>Kalibrera</translation>
     </message>
     <message>
-        <location line="-80"/>
+        <location line="-211"/>
         <source>Open Image</source>
         <translation>Öppna bild</translation>
     </message>
@@ -9685,38 +9699,33 @@ Mode 4:
         <translation>Invertera bild</translation>
     </message>
     <message>
-        <location line="+212"/>
+        <location line="+343"/>
         <source>FwInfo</source>
         <translation>Firmware-info</translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.cpp" line="+227"/>
+        <location filename="../preferencesdialog.cpp" line="+233"/>
         <source>Last downloaded release: %1</source>
         <translation>Senast nedladdade release: %1</translation>
     </message>
     <message>
-        <location line="+9"/>
-        <source>The selected firmware has never been downloaded by companion9x.</source>
-        <translation>Firmware-filen har aldrig laddats ned av companion9x.</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>The selected firmware cannot be downloaded by companion9x.</source>
-        <translation>Firmware-filen kan inte laddas ned av companion9x.</translation>
-    </message>
-    <message>
-        <location line="+218"/>
-        <location line="+322"/>
+        <location line="+239"/>
+        <location line="+332"/>
         <source>No joysticks found</source>
         <translation>Ingen joystick hittades</translation>
     </message>
     <message>
-        <location line="-211"/>
+        <location line="-221"/>
         <source>Select your Models and Settings backup folder</source>
         <translation>Välj folder för automatisk säkerhetskopiering</translation>
     </message>
     <message>
-        <location line="+160"/>
+        <location line="+11"/>
+        <source>Select Google Earth executable</source>
+        <translation>Sökväg till Google Earth</translation>
+    </message>
+    <message>
+        <location line="+159"/>
         <source>Open Image to load</source>
         <translation>Öppna bild för laddning</translation>
     </message>
@@ -9726,24 +9735,34 @@ Mode 4:
         <translation>Bilder (%1)</translation>
     </message>
     <message>
-        <location line="-144"/>
-        <location line="+150"/>
+        <location line="-145"/>
+        <location line="+151"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-150"/>
-        <location line="+150"/>
+        <location line="-517"/>
+        <source>The selected firmware has never been downloaded by Companion.</source>
+        <translation>Firmware-filen har aldrig laddats ned av Companion.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>The selected firmware cannot be downloaded by Companion.</source>
+        <translation>Firmware-filen kan inte laddas ned av Companion.</translation>
+    </message>
+    <message>
+        <location line="+362"/>
+        <location line="+151"/>
         <source>Cannot load %1.</source>
         <translation>%1 kunde inte laddas.</translation>
     </message>
     <message>
-        <location line="-288"/>
+        <location line="-298"/>
         <source>Image stored in settings</source>
         <translation>Bilden lagras i inställningar</translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.ui" line="+401"/>
+        <location filename="../preferencesdialog.ui" line="+288"/>
         <source>Include companion splashes</source>
         <translation>Användarens bilder och companion-bilder</translation>
     </message>
@@ -9753,7 +9772,7 @@ Mode 4:
         <translation>Enbart användarens bilder</translation>
     </message>
     <message>
-        <location line="-473"/>
+        <location line="-360"/>
         <source>Custom TX splash screen</source>
         <translation>Egen uppstartsbild</translation>
     </message>
@@ -9763,12 +9782,12 @@ Mode 4:
         <translation>Fråga om skrivning efter Nedladdning</translation>
     </message>
     <message>
-        <location line="+475"/>
+        <location line="+362"/>
         <source>Language</source>
         <translation>Språk</translation>
     </message>
     <message>
-        <location line="-420"/>
+        <location line="-307"/>
         <source>Profile Name</source>
         <translation>Profilnamn</translation>
     </message>
@@ -9778,7 +9797,7 @@ Mode 4:
         <translation>Spara Profil</translation>
     </message>
     <message>
-        <location line="+322"/>
+        <location line="+209"/>
         <source>Profile slot</source>
         <translation>Profilplats</translation>
     </message>
@@ -9793,7 +9812,7 @@ Mode 4:
         <translation>Välj bibliotekskatalog</translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.ui" line="-359"/>
+        <location filename="../preferencesdialog.ui" line="-246"/>
         <source>Export Profile</source>
         <translation>Exportera Profil</translation>
     </message>
@@ -9803,7 +9822,7 @@ Mode 4:
         <translation>Importera Profil</translation>
     </message>
     <message>
-        <location line="+368"/>
+        <location line="+255"/>
         <source>Automatically add version number to the filename after download</source>
         <translation>Lägg automatiskt till ett versionsnummer till filnamnet</translation>
     </message>
@@ -9820,7 +9839,7 @@ May be different from firmware language</source>
 Får skilja från språket för mjukvaran</translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.cpp" line="+145"/>
+        <location filename="../preferencesdialog.cpp" line="+155"/>
         <source>Export profile As</source>
         <translation>Exportera profil som</translation>
     </message>
@@ -9835,12 +9854,12 @@ Får skilja från språket för mjukvaran</translation>
         <translation>Öppna profil för import</translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.ui" line="-832"/>
+        <location filename="../preferencesdialog.ui" line="-850"/>
         <source>Simu BackLight</source>
         <translation>Simulatorbelysning</translation>
     </message>
     <message>
-        <location line="+929"/>
+        <location line="+947"/>
         <source>Processor ID</source>
         <translation>Processortyp</translation>
     </message>
@@ -9850,22 +9869,22 @@ Får skilja från språket för mjukvaran</translation>
         <translation>Katalog för simulator-data</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="-348"/>
         <source>Use clipboard only</source>
         <translation>Använd bara clipboard</translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.cpp" line="-163"/>
+        <location filename="../preferencesdialog.cpp" line="-173"/>
         <source>Select your snapshot folder</source>
         <translation>Välj katalog för snapshots</translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+108"/>
         <source>Profile name is empty, profile slot %1 will be deleted.&lt;br&gt;Are you sure ?</source>
         <translation>Profilnamn saknas, profilplats %1 kommer att raderas.&lt;br&gt; Är du säker?</translation>
     </message>
     <message>
-        <location filename="../preferencesdialog.ui" line="-945"/>
+        <location filename="../preferencesdialog.ui" line="-586"/>
         <source>Check for selected Fw updates</source>
         <translation>Sök efter updatering av vald FW</translation>
     </message>
@@ -9880,7 +9899,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>Minns brytare i simulator</translation>
     </message>
     <message>
-        <location line="+813"/>
+        <location line="+831"/>
         <source>SD Structure path</source>
         <translation>Sökväg till SD-struktur</translation>
     </message>
@@ -10387,13 +10406,7 @@ Får skilja från språket för mjukvaran</translation>
 <context>
     <name>simulatorDialog</name>
     <message>
-        <location filename="../simulatordialog.ui" line="+26"/>
-        <source>Companion9x Simulator</source>
-        <oldsource>ER9x Simulator</oldsource>
-        <translation>Companion 9x Simulator</translation>
-    </message>
-    <message>
-        <location line="+818"/>
+        <location filename="../simulatordialog.ui" line="+844"/>
         <source>P1</source>
         <translation>P1</translation>
     </message>
@@ -10498,17 +10511,22 @@ Får skilja från språket för mjukvaran</translation>
         <translation>Höger dubbelklick nollställer</translation>
     </message>
     <message>
-        <location line="+278"/>
+        <location line="-742"/>
+        <source>Companion Simulator</source>
+        <translation>Companion Simulator</translation>
+    </message>
+    <message>
+        <location line="+1020"/>
         <source>9x Simulator</source>
         <translation>Simulator för 9x</translation>
     </message>
     <message>
-        <location line="+193"/>
+        <location line="+194"/>
         <source>Outputs</source>
         <translation>Utgångar</translation>
     </message>
     <message>
-        <location line="+1068"/>
+        <location line="+1070"/>
         <source>CH1</source>
         <translation>KN1</translation>
     </message>
@@ -10639,7 +10657,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>Simulerar </translation>
     </message>
     <message>
-        <location filename="../simulatordialog.ui" line="-2681"/>
+        <location filename="../simulatordialog.ui" line="-2684"/>
         <location line="+60"/>
         <location line="+57"/>
         <source>0 %</source>
@@ -10651,7 +10669,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation> - Fligmod: %1(%2)</translation>
     </message>
     <message>
-        <location filename="../simulatordialog.ui" line="+282"/>
+        <location filename="../simulatordialog.ui" line="+283"/>
         <source>CS1</source>
         <translation>LB1</translation>
     </message>
@@ -10741,7 +10759,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>LBI</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+32"/>
         <source>CSJ</source>
         <translation>LBJ</translation>
     </message>
@@ -10848,12 +10866,7 @@ Får skilja från språket för mjukvaran</translation>
 <context>
     <name>xsimulatorDialog</name>
     <message>
-        <location filename="../xsimulatordialog.ui" line="+26"/>
-        <source>Companion9x Simulator</source>
-        <translation>Companion 9x-Simulator</translation>
-    </message>
-    <message>
-        <location line="+1035"/>
+        <location filename="../xsimulatordialog.ui" line="+1061"/>
         <location line="+138"/>
         <source>SE</source>
         <translation>SE</translation>
@@ -10923,7 +10936,12 @@ Får skilja från språket för mjukvaran</translation>
         <translation>SG</translation>
     </message>
     <message>
-        <location line="-301"/>
+        <location line="-539"/>
+        <source>Companion Simulator</source>
+        <translation>Companion Simulator</translation>
+    </message>
+    <message>
+        <location line="+238"/>
         <location line="+291"/>
         <source>SD</source>
         <translation>SD</translation>
@@ -10951,7 +10969,7 @@ Får skilja från språket för mjukvaran</translation>
         <location line="+22"/>
         <location line="+158"/>
         <location line="+22"/>
-        <location line="+158"/>
+        <location line="+159"/>
         <location line="+22"/>
         <location line="+152"/>
         <location line="+22"/>
@@ -10965,7 +10983,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>-100.1</translation>
     </message>
     <message>
-        <location line="-1128"/>
+        <location line="-1129"/>
         <source>CH9</source>
         <translation>KN9</translation>
     </message>
@@ -10995,7 +11013,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>KN4</translation>
     </message>
     <message>
-        <location line="+167"/>
+        <location line="+168"/>
         <source>CH12</source>
         <translation>KN12</translation>
     </message>
@@ -11071,7 +11089,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>Simulerar </translation>
     </message>
     <message>
-        <location filename="../xsimulatordialog.ui" line="-1773"/>
+        <location filename="../xsimulatordialog.ui" line="-1774"/>
         <location line="+22"/>
         <location line="+3"/>
         <source>SF</source>
@@ -11112,7 +11130,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation> - Fligmod: %1(%2)</translation>
     </message>
     <message>
-        <location filename="../xsimulatordialog.ui" line="+1627"/>
+        <location filename="../xsimulatordialog.ui" line="+1628"/>
         <source>CSK</source>
         <translation>LBK</translation>
     </message>

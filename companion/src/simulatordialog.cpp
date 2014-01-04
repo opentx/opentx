@@ -227,7 +227,7 @@ void simulatorDialog::onTimerEvent()
 {
   static unsigned int lcd_counter = 0;
   if (!simulator->timer10ms()) {
-    QMessageBox::critical(this, "companion9x", QString(tr("Firmware %1 error: %2")).arg(txInterface->getName()).arg(simulator->getError()));
+    QMessageBox::critical(this, "Companion", QString(tr("Firmware %1 error: %2")).arg(txInterface->getName()).arg(simulator->getError()));
     timer->stop();
     return;
   }

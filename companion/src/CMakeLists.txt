@@ -391,7 +391,7 @@ ADD_CUSTOM_TARGET( translations
                    COMMAND lupdate-qt4 ${CMAKE_SOURCE_DIR} -ts ${companion9x_TS} )
 
 SET(CPACK_PACKAGE_NAME "COMPANION9X")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "EEPROM Editor for the openTx open source firmware")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
 find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
 if(DPKG_PROGRAM)

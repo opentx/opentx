@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Companion9x Simulator</string>
+   <string>Companion Simulator</string>
   </property>
   <property name="windowIcon">
    <iconset resource="companion9x.qrc">
@@ -2053,6 +2053,7 @@ border-radius: 4px;
              <width>16777215</width>
              <height>18</height>
             </size>
+
            </property>
            <property name="styleSheet">
             <string notr="true">QSlider::sub-page:horizontal:disabled {

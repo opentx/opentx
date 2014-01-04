@@ -292,7 +292,7 @@ bool burnDialog::checkeEprom(QString fileName)
     uint8_t eeprom[EESIZE_RLC_MAX];
     int eeprom_size = HexInterface(inputStream).load(eeprom, EESIZE_RLC_MAX);
     if (!eeprom_size) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }
@@ -302,7 +302,7 @@ bool burnDialog::checkeEprom(QString fileName)
     }
     file.close();
     if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }
@@ -325,7 +325,7 @@ bool burnDialog::checkeEprom(QString fileName)
         return false;
     }
     if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }

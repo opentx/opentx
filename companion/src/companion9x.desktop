@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
 Encoding=UTF-8
-Name=companion9x
-GenericName=COMPANION9X
-Comment=9x EeProm Editor
+Name=Companion
+GenericName=COMPANION
+Comment=The ultimate transmitter companion
 Icon=/usr/share/icons/companion9x.png
 Exec='companion9x'
 Terminal=false

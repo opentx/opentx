@@ -5389,7 +5389,7 @@ void ModelEdit::drawCurve()
 bool ModelEdit::gm_insertMix(int idx)
 {
     if (idx<0 || idx>=GetEepromInterface()->getCapability(Mixes) || g_model.mixData[GetEepromInterface()->getCapability(Mixes)-1].destCh > 0) {
-      QMessageBox::information(this, "companion9x", tr("Not enough available mixers!"));
+      QMessageBox::information(this, "Companion", tr("Not enough available mixers!"));
       return false;
     }
 
@@ -5444,7 +5444,7 @@ int ModelEdit::getMixerIndex(unsigned int dch)
 bool ModelEdit::gm_insertExpo(int idx)
 {
     if (idx<0 || idx>=C9X_MAX_EXPOS || g_model.expoData[C9X_MAX_EXPOS-1].mode > 0) {
-      QMessageBox::information(this, "companion9x", tr("Not enough available expos!"));
+      QMessageBox::information(this, "Companion", tr("Not enough available expos!"));
       return false;
     }
 
@@ -5584,7 +5584,7 @@ void ModelEdit::mixersDelete(bool ask)
     QMessageBox::StandardButton ret = QMessageBox::No;
 
     if(ask)
-      ret = QMessageBox::warning(this, "companion9x",
+      ret = QMessageBox::warning(this, "Companion",
                tr("Delete Selected Mixes?"),
                QMessageBox::Yes | QMessageBox::No);
 
@@ -5622,7 +5622,7 @@ void ModelEdit::exposDelete(bool ask)
     QMessageBox::StandardButton ret = QMessageBox::No;
 
     if(ask)
-      ret = QMessageBox::warning(this, "companion9x",
+      ret = QMessageBox::warning(this, "Companion",
                tr("Delete Selected Expos?"),
                QMessageBox::Yes | QMessageBox::No);
 
@@ -6183,7 +6183,7 @@ void ModelEdit::resetCurve()
     QPushButton *button = (QPushButton *)sender();
     int btn=button->objectName().mid(button->objectName().lastIndexOf("_")+1).toInt()-1;
     if (btn!=currentCurve) {
-      int res = QMessageBox::question(this, "companion9x",tr("Are you sure you want to delete curve %1 ?").arg(btn+1),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "Companion",tr("Are you sure you want to delete curve %1 ?").arg(btn+1),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return;
       }
@@ -7312,7 +7312,7 @@ void ModelEdit::on_curvetype_CB_currentIndexChanged(int index) {
     int fwpoints=GetEepromInterface()->getCapability(NumCurvePoints);
     if (fwpoints!=0) {
       if (fwpoints<totalpoints) {
-        QMessageBox::warning(this, "companion9x", tr("Not enough free points in eeprom to store the curve."));
+        QMessageBox::warning(this, "Companion", tr("Not enough free points in eeprom to store the curve."));
         int oldindex=0;
         if (currpoints==3) {
           oldindex=0;

@@ -1074,7 +1074,7 @@ void GeneralEdit::on_blinvert_cb_stateChanged(int )
 void GeneralEdit::on_faimode_CB_stateChanged(int )
 {
     if (ui->faimode_CB->isChecked()) {
-      int ret = QMessageBox::question(this, "companion9x", 
+      int ret = QMessageBox::question(this, "Companion", 
                      tr("If you enable FAI, you loose the vario, the play functions, the telemetry screen.\nThis function cannot be disabled by the radio.\nAre you sure ?") ,
                      QMessageBox::Yes | QMessageBox::No);
       if (ret==QMessageBox::Yes) {
@@ -1375,7 +1375,7 @@ void GeneralEdit::on_calstore_PB_clicked()
   } else {
     QString calib=settings.value("StickPotCalib","").toString();
     if (!(calib.isEmpty())) {
-      int ret = QMessageBox::question(this, "companion9x", 
+      int ret = QMessageBox::question(this, "Companion", 
                       tr("Do you want to store calibration in %1 profile<br>overwriting existing calibration?").arg(name) ,
                       QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::No) {
@@ -1408,7 +1408,7 @@ void GeneralEdit::on_calstore_PB_clicked()
     settings.setValue("countryCode",QString("%1%2%3").arg((uint8_t)g_eeGeneral.countryCode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.imperial, 2, 16, QChar('0')).arg(g_eeGeneral.ttsLanguage));
     settings.endGroup();
     settings.endGroup();
-    QMessageBox::information(this, "companion9x", tr("Calibration and HW parameters saved."));
+    QMessageBox::information(this, "Companion", tr("Calibration and HW parameters saved."));
   }
 }
 

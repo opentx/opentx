@@ -239,11 +239,11 @@ void preferencesDialog::firmwareChanged()
   }
   else {
     if (ui->fw_dnld->isEnabled()) {
-      ui->FwInfo->setText(tr("The selected firmware has never been downloaded by companion9x."));
+      ui->FwInfo->setText(tr("The selected firmware has never been downloaded by Companion."));
         ui->checkFWUpdates->hide();   
     }
     else {
-      ui->FwInfo->setText(tr("The selected firmware cannot be downloaded by companion9x."));
+      ui->FwInfo->setText(tr("The selected firmware cannot be downloaded by Companion."));
       ui->checkFWUpdates->hide();
     }
   }
@@ -660,7 +660,7 @@ void preferencesDialog::on_ProfSave_PB_clicked()
   QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
   QString name=ui->ProfName_LE->text();
   if (name.isEmpty()) {
-    int ret = QMessageBox::question(this, "companion9x", 
+    int ret = QMessageBox::question(this, "Companion", 
                 tr("Profile name is empty, profile slot %1 will be deleted.<br>Are you sure ?").arg(ui->ProfSlot_SB->value()) ,
                 QMessageBox::Yes | QMessageBox::No);
     if (ret==QMessageBox::Yes) {
@@ -719,7 +719,7 @@ void preferencesDialog::on_import_PB_clicked()
     QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
     QString name=ui->ProfName_LE->text();
     if (!name.isEmpty()) {
-      int ret = QMessageBox::question(this, "companion9x", 
+      int ret = QMessageBox::question(this, "Companion", 
                   tr("Profile slot is not empty, profile slot %1 will we overwritten.<br>Are you sure ?").arg(ui->ProfSlot_SB->value()) ,
                   QMessageBox::Yes | QMessageBox::No);
       if (ret==QMessageBox::No) {
