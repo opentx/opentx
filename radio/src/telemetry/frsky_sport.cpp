@@ -671,11 +671,11 @@ void telemetryWakeup()
         }
       }
       else if (alarmsCheckStep == 2) {
-        if (alarmRaised(1, 1) && g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_D8) {
+        if (alarmRaised(1, 1)) {
           AUDIO_A2_RED();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
         }
-        else if (alarmRaised(1, 0) && g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_D8) {
+        else if (alarmRaised(1, 0)) {
           AUDIO_A2_ORANGE();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
         }
