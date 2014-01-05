@@ -366,9 +366,9 @@ IF( APPLE )
                      COMMAND mkdir -p companion.app/Contents/Resources
 		     COMMAND mkdir -p companion.app/Contents/translations                     
 		     COMMAND rsync ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} companion.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} # Copy the icon files
-                     COMMAND rsync ${PROJECT_SOURCE_DIR}/../macbuild/lib* companion.app/Contents/Frameworks
-                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../macbuild/libcrypto.1.0.0.dylib companion.app/Contents/Frameworks
-                     COMMAND rsync -r --exclude=.svn  ${PROJECT_SOURCE_DIR}/../macbuild/qt_menu.nib companion.app/Contents/Resources/
+                     COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/lib* companion.app/Contents/Frameworks
+                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/libcrypto.1.0.0.dylib companion.app/Contents/Frameworks
+                     COMMAND rsync -r --exclude=.svn  ${PROJECT_SOURCE_DIR}/../targets/mac/qt_menu.nib companion.app/Contents/Resources/
                      COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
 		     COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
                      WORKING_DIRECTORY ${WORK_DIR}
