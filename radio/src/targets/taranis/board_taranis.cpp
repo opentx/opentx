@@ -155,6 +155,7 @@ void init5msTimer()
   TIM14->CR1 = 5 ;
   TIM14->DIER |= 1 ;
   NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn) ;
+  NVIC_SetPriority(TIM8_TRG_COM_TIM14_IRQn, 7);
 }
 
 void stop5msTimer( void )

@@ -337,10 +337,15 @@ void AudioQueue::pushBuffer(AudioBuffer *buffer)
 {
   buffer->state = AUDIO_BUFFER_FILLED;
 
-  if (dacQueue(buffer))
-    buffer->state = AUDIO_BUFFER_PLAYING;
+  __disable_irq();
 
   bufferWIdx = nextBufferIdx(bufferWIdx);
+
+  if (dacQueue(buffer)) {
+    buffer->state = AUDIO_BUFFER_PLAYING;
+  }
+
+  __enable_irq();
 }
 
 void mix(uint16_t * result, int sample, unsigned int fade)
