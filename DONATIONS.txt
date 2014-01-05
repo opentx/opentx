@@ -45,7 +45,7 @@ Martin Wilson
 Joe Street
 John Holdsworth
 Daniel Schwartz
-Dean Church
+Dean Church (monthly)
 Michael Halse
 David Mark
 Ted Moss
@@ -252,4 +252,22 @@ Sławomir Juszczak
 Stephen Henderson
 David Morgan
 Aloft Hobbies
-
+Netanel Hobara
+Cameron Galipo
+Doug Schafer
+Pietro Rossin
+Earl Killingsworth
+Victor B Wright
+Terry McKinley
+Марков Алексей
+Offer Shmuely
+Ian Lobley
+Keith Hertzog
+Stéphane Fortas
+Peter Mitrik
+Thomas Majewski
+ANF King
+Henrik Hammarström
+Kenneth Lilja (monthly)
+R Wells
+Uwe Jordt
