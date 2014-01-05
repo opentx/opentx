@@ -89,13 +89,13 @@ int main(int argc, char *argv[])
     QString locale = settings.value("locale",QLocale::system().name()).toString();
     bool showSplash = settings.value("show_splash", true).toBool();
 
-    QTranslator companion9xTranslator;
-    companion9xTranslator.load(":/companion9x_" + locale);
+    QTranslator companionTranslator;
+    companionTranslator.load(":/companion_" + locale);
     QTranslator qtTranslator;
     qtTranslator.load((QString)"qt_" + locale.left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
 //    qDebug() << locale;
 //    qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));    
-    app.installTranslator(&companion9xTranslator);
+    app.installTranslator(&companionTranslator);
     app.installTranslator(&qtTranslator);
 
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
