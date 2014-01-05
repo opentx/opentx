@@ -287,7 +287,10 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
         }
       }
       else if (i <= 5) b = pgm_read_byte(q++);
-      if (b == 0xff) continue;
+      if (b == 0xff) {
+        if (flags & FIXEDWIDTH) b = 0;
+        else continue;
+      }
       if (inv) b = ~b;
 #if !defined(CPUM64) || defined(EXTSTD)
       if (!(flags & BOLD) && (i == 7)) continue;
@@ -459,6 +462,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
 {
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
+  flags &= ~LEADING0;
   bool dblsize = flags & DBLSIZE;
 #if defined(CPUARM)
   bool midsize = flags & MIDSIZE;
@@ -489,6 +493,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     if (len <= mode)
       len = mode + 1;
   }
+
 
   if (dblsize) {
     fw += FWNUM;
@@ -933,7 +938,7 @@ void putsVBat(xcoord_t x, uint8_t y, LcdFlags att)
 
 void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags att)
 {
-  lcd_putsAtt(x, y, str, att);
+  lcd_putsAtt(x, y, str, att & ~LEADING0);
   lcd_outdezNAtt(lcdNextPos, y, idx, att|LEFT, 2);
 }
 

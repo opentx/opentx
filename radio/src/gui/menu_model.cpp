@@ -768,7 +768,12 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
   lcd_putsLeft(y, STR_NAME);
 #endif
 
-  lcd_putsnAtt(x, y, name, size, ZCHAR | ((active && s_editMode <= 0) ? INVERS : 0));
+  uint8_t mode = 0;
+  if (active) {
+    if (s_editMode <= 0) mode = INVERS+FIXEDWIDTH;
+    else mode = FIXEDWIDTH;
+  }
+  lcd_putsnAtt(x, y, name, size, ZCHAR | mode);
 
   if (active) {
     uint8_t cur = editNameCursorPos;
@@ -831,8 +836,9 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
         name[cur] = v;
         eeDirty(EE_MODEL);
       }
-      lcd_putsnAtt(x, y, name, editNameCursorPos, ZCHAR | ((active && s_editMode <= 0) ? INVERS : 0));
-      lcd_putcAtt(lcdLastPos, y, idx2char(v), INVERS);
+      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), INVERS+FIXEDWIDTH);
+//      lcd_putsnAtt(x, y, name, editNameCursorPos, ZCHAR);
+//      lcd_putcAtt(lcdLastPos, y, idx2char(v), INVERS);
     }
     else {
       cur = 0;
