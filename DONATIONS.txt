@@ -270,3 +270,4 @@ ANF King
 Henrik Hammarström
 Kenneth Lilja (monthly)
 R Wells
+Uwe Jordt
