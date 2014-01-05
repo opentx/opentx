@@ -112,9 +112,15 @@ downloadDialog_forWait(NULL)
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     setAcceptDrops(true);
     
-    // give time to the main windows to open before starting updates, delay 1s
-    QTimer::singleShot(1000, this, SLOT(doAutoUpdates()));
-    QTimer::singleShot(1000, this, SLOT(displayWarnings()));
+    // give time to the splash to disappear and main window to open before starting updates
+    int updateDelay = 1000;
+    QSettings settings("companion9x", "companion9x");
+    bool showSplash = settings.value("show_splash", true).toBool();
+    if (showSplash) 
+	updateDelay += (SPLASH_TIME*1000); 
+    QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
+    QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
+
     QStringList strl = QApplication::arguments();
     QString str;
     QString printfilename;
