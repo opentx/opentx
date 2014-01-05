@@ -3316,8 +3316,8 @@ void displayHeaderChannelName(uint8_t ch)
   uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
   if (len) {
     lcd_putc(17*FW, 0, ' ');
-    lcd_putsnAtt(18*FW, 0, g_model.limitData[ch-1].name, len, ZCHAR);
-    lcd_putc(18*FW+len*FW, 0, ' ');
+    lcd_putsnAtt(lcdNextPos, 0, g_model.limitData[ch-1].name, len, ZCHAR);
+    lcd_putc(lcdNextPos, 0, ' ');
   }
 }
 #endif
