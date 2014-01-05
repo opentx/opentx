@@ -138,11 +138,7 @@ const pm_char * openLogs()
 
 #if defined(FRSKY_HUB)
     if (IS_USR_PROTO_FRSKY_HUB())
-#if defined(CPUARM)
-      f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,Vertical Speed,Temp1,Temp2,RPM,Fuel,Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Cell 7,Cell 8,Cell 9,Cell 10,Cell 11,Cell 12,Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
-#else
-      f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,Vertical Speed,Temp1,Temp2,RPM,Fuel,Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
-#endif
+      f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,Vertical Speed,Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
 #endif
 
 #if defined(WS_HOW_HIGH)
