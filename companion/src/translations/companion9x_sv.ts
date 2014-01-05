@@ -322,7 +322,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+528"/>
         <source>Show Splash Screen on Startup</source>
-        <translation>Visa bild vid start av sändare</translation>
+        <translation>Visa Startbild</translation>
     </message>
     <message>
         <location line="+182"/>
@@ -9450,7 +9450,7 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
     <message>
         <location line="-233"/>
         <source>Show Splash Screen</source>
-        <translation>Visa bild vid start av sändare</translation>
+        <translation>Visa Startbild</translation>
     </message>
     <message>
         <location line="+767"/>
