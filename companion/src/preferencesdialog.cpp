@@ -506,10 +506,10 @@ void preferencesDialog::populateLocale()
   if (!strl.count()) return;
 
   QDir directory = QDir(":/");
-  QStringList files = directory.entryList(QStringList("companion9x_*.qm"), QDir::Files | QDir::NoSymLinks);
+  QStringList files = directory.entryList(QStringList("companion_*.qm"), QDir::Files | QDir::NoSymLinks);
 
   foreach(QString file, files) {
-    QLocale loc(file.mid(12, 2));
+    QLocale loc(file.mid(10, 2));
     ui->locale_QB->addItem(QLocale::languageToString(loc.language()), loc.name());
   }
 }
