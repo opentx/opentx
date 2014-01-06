@@ -1495,7 +1495,7 @@ void MainWindow::logFile()
 
 void MainWindow::about()
 {
-    QString aboutStr = "<center><img src=\":/images/companion9x-title.png\"></center><br>";
+    QString aboutStr = "<center><img src=\":/images/companion-title.png\"></center><br>";
     aboutStr.append("OpenTX Home Page: <a href='http://opentx.github.io'>http://open-tx.org</a><br><br>");
     aboutStr.append(tr("The Companion project was originally forked from eePe")+QString(" <a href='http://code.google.com/p/eepe'>http://code.google.com/p/eepe</a><br/><br/>"));
     aboutStr.append(tr("If you've found this program useful, please support by"));

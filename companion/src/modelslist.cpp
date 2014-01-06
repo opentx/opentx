@@ -445,7 +445,7 @@ void ModelsListWidget::doPaste(QByteArray *gmData, int index)
     i++;
     gData++;
     if(c=='G') { //General settings
-      ret = QMessageBox::question(this, "companion9x", tr("Do you want to overwrite TX general settings?"),
+      ret = QMessageBox::question(this, "Companion", tr("Do you want to overwrite TX general settings?"),
               QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::Yes) {
         radioData->generalSettings = *((GeneralSettings *)gData);
