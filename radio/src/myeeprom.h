@@ -221,7 +221,7 @@ enum BeeperMode {
 };
 
 #if defined(CPUARM)
-  #define EXTRA_GENERAL_FIELDS \
+  #define EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  backlightBright; \
   int8_t   currentCalib; \
   int8_t   temperatureWarn; \
@@ -240,6 +240,14 @@ enum BeeperMode {
   int8_t   wavVolume; \
   int8_t   varioVolume; \
   int8_t   backgroundVolume;
+#endif
+
+#if defined(PCBTARANIS)
+#define EXTRA_GENERAL_FIELDS \
+  EXTRA_GENERAL_FIELDS_ARM \
+  uint8_t  potsType;
+#elif defined(CPUARM)
+  #define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM
 #elif defined(PXX)
   #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else
@@ -303,13 +311,24 @@ enum BacklightMode {
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2
 #endif
 
+#if defined(PCBTARANIS)
+PACK(typedef struct {
+  int8_t count;
+  int8_t steps[5];
+}) StepsCalibData;
+#endif
+
+PACK(typedef struct {
+  int16_t mid;
+  int16_t spanNeg;
+  int16_t spanPos;
+}) CalibData;
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   version;
   uint16_t  variant;
-  int16_t   calibMid[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS];
+  CalibData calib[NUM_STICKS+NUM_POTS];
   uint16_t  chkSum;
   int8_t    currModel;
   uint8_t   contrast;

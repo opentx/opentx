@@ -1263,7 +1263,14 @@ bool isSwitchAvailable(int16_t swtch)
       swtch = -swtch;
   }
 
-  if (swtch>=SWSRC_FIRST_CSW && swtch<=SWSRC_LAST_CSW) {
+#if defined(PCBTARANIS)
+  if (swtch >= SWSRC_P11 && swtch <= SWSRC_P26) {
+    int index = (swtch - SWSRC_P11) / 6;
+    return (g_eeGeneral.potsType & (1<<index));
+  }
+#endif
+
+  if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
     CustomSwData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
     return (cs->func != CS_OFF);
   }

@@ -377,7 +377,7 @@ enum EnumKeys {
   #define NUM_SWITCHES  8
   #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
   #define NUM_POTS      4
-  #define NUM_POTSSW    (2*6)
+  #define NUM_XPOTS     2
   #define NUM_SW_SRCRAW 8
   #define SWSRC_THR     SWSRC_SF2
   #define SWSRC_GEA     SWSRC_SG2
@@ -390,12 +390,13 @@ enum EnumKeys {
   #define IS_3POS(sw)   ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
   #define NUM_POTS      3
-  #define NUM_POTSSW    0
+  #define NUM_XPOTS     0
   #define NUM_SW_SRCRAW 1
   #define SW_DSM2_BIND  SW_TRN
 #endif
 
 #define NUM_PSWITCH     (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
+#define NUM_POTSSW      (NUM_XPOTS*6)
 #define NUM_SWITCH      (NUM_PSWITCH+NUM_CSW+NUM_POTSSW)
 
 #if defined(PCBTARANIS)
@@ -1042,12 +1043,14 @@ enum Analogs {
 #if defined(PCBTARANIS)
   POT1,
   POT2,
+  POT_LAST = POT2,
   SLIDER1,
   SLIDER2,
 #else
   POT1,
   POT2,
   POT3,
+  POT_LAST = POT3,
 #endif
   TX_VOLTAGE,
 #if defined(PCBSKY9X) && !defined(REVA)
@@ -1565,6 +1568,8 @@ union ReusableBuffer
         int16_t loVals[NUM_STICKS+NUM_POTS];
         int16_t hiVals[NUM_STICKS+NUM_POTS];
         uint8_t state;
+        uint8_t xpotsPositionsCount[NUM_XPOTS];
+        int16_t xpotsPositions[NUM_XPOTS][6][2];
     } calib;
 
 #if defined(SDCARD)

@@ -503,7 +503,7 @@ void generalDefault()
 uint16_t evalChkSum()
 {
   uint16_t sum = 0;
-  const int16_t *calibValues = &g_eeGeneral.calibMid[0];
+  const int16_t *calibValues = (const int16_t *) &g_eeGeneral.calib[0];
   for (int i=0; i<NUM_STICKS+NUM_POTS+5; i++)
     sum += calibValues[i];
   return sum;
@@ -1301,8 +1301,8 @@ uint8_t  cswStates[NUM_CSW];
 #if defined(PCBTARANIS)
 tmr10ms_t switchesMidposStart[6] = { 0 };
 uint32_t  switchesPos = 0;
-tmr10ms_t potsLastposStart[2];
-uint8_t   potsPos[2];
+tmr10ms_t potsLastposStart[NUM_XPOTS];
+uint8_t   potsPos[NUM_XPOTS];
 #define DELAY_SWITCH_3POS    10/*100ms*/
 #define CHECK_2POS(sw)       newPos |= (switchState(sw ## 0) ? (1 << (sw ## 0 - SW_SA0)) : (1 << (sw ## 0 - SW_SA0 + 1)))
 #define CHECK_3POS(idx, sw)  if (switchState(sw ## 0)) { \
@@ -1336,17 +1336,28 @@ void getSwitchesPosition()
   CHECK_2POS(SW_SH);
   switchesPos = newPos;
 
-  for (int i=0; i<2; i++) {
-    int val = RESX + (int16_t)anaIn(POT1+i) + (RESX / 5);
-    uint8_t pos = limit<uint8_t>(0, val / (2*RESX/5), 5);
-    uint8_t previousPos = potsPos[i] >> 4;
-    if (pos != previousPos) {
-      potsLastposStart[i] = get_tmr10ms();
-      potsPos[i] = (pos << 4) | (potsPos[i] & 0x0f);
-    }
-    else if ((tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
-      potsLastposStart[i] = 0;
-      potsPos[i] = (pos << 4) | (pos);
+  for (int i=0; i<NUM_XPOTS; i++) {
+    if (g_eeGeneral.potsType & (1 << i)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
+      if (calib->count>0 && calib->count<6) {
+        uint8_t pos = calib->count;
+        int v = (int16_t)anaIn(POT1+i);
+        for (int j=0; j<calib->count; j++) {
+          if (v < calib->steps[j]) {
+            pos = j;
+            break;
+          }
+        }
+        uint8_t previousPos = potsPos[i] >> 4;
+        if (pos != previousPos) {
+          potsLastposStart[i] = get_tmr10ms();
+          potsPos[i] = (pos << 4) | (potsPos[i] & 0x0f);
+        }
+        else if ((tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
+          potsLastposStart[i] = 0;
+          potsPos[i] = (pos << 4) | (pos);
+        }
+      }
     }
   }
 }
@@ -2156,8 +2167,9 @@ void checkTHR()
   int16_t lowLim = THRCHK_DEADBAND - 1024 ;
 #else
   getADC();   // if thr is down - do not display warning at all
-  int16_t lowLim = g_eeGeneral.calibMid[thrchn];
-  lowLim = (g_model.throttleReversed ? - lowLim - g_eeGeneral.calibSpanPos[thrchn] : lowLim - g_eeGeneral.calibSpanNeg[thrchn]);
+  CalibData * calib = &g_eeGeneral.calib[thrchn];
+  int16_t lowLim = calib->mid;
+  lowLim = (g_model.throttleReversed ? - lowLim - calib->spanPos : lowLim - calib->spanNeg);
   lowLim += THRCHK_DEADBAND;
 #endif
   int16_t v = thrAnaIn(thrchn);
@@ -2495,7 +2507,23 @@ void getADC()
   }
 
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
-    s_anaFilt[x] = temp[x] >> 3;
+    uint16_t v = temp[x] >> 3;
+#if defined(PCBTARANIS)
+    StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
+    if (x >= POT1 && x <= POT_LAST && (g_eeGeneral.potsType & (1<<(x-POT1))) && calib->count>0 && calib->count<6) {
+      for (int i=0; i<=calib->count; i++) {
+        if (i == calib->count) {
+          s_anaFilt[x] = RESX;
+        }
+        else if (v < calib->steps[i]) {
+          s_anaFilt[x] = -RESX + i*2*RESX/calib->count;
+          break;
+        }
+      }
+    }
+    else
+#endif
+    s_anaFilt[x] = v;
   }
 }
 #else
@@ -2743,10 +2771,9 @@ void evalInputs(uint8_t mode)
 
 #ifndef SIMU
     if (i < NUM_STICKS+NUM_POTS) {
-      v -= g_eeGeneral.calibMid[i];
-      v  =  v * (int32_t)RESX /  (max((int16_t)100,(v>0 ?
-                                       g_eeGeneral.calibSpanPos[i] :
-                                       g_eeGeneral.calibSpanNeg[i])));
+      CalibData * calib = &g_eeGeneral.calib[i];
+      v -= calib->mid;
+      v = v * (int32_t)RESX / (max((int16_t)100, (v>0 ? calib->spanPos : calib->spanNeg)));
     }
 #endif
 
