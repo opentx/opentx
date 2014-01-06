@@ -113,10 +113,14 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     inv = true;
   }
 
+  unsigned char c_remapped;
+#if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
+  if (flags & (DBLSIZE+BOLD)) {
+#else
   if (flags & DBLSIZE) {
-    // To save space only some DBLSIZE chars are available 
+#endif
+    // To save space only some DBLSIZE and BOLD chars are available 
     // c has to be remapped. All non existing chars mapped to 0 (space)
-    unsigned char c_remapped;
 	  
     if (c>=',' && c<=':')
       c_remapped = c - ',' + 1;
@@ -126,12 +130,23 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       c_remapped = c - 'a' + 42;
     else if (c=='_')
       c_remapped = 4;
-#if defined(CPUARM)      
-    else if (c>= 128)
+#if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
+    else if (c==' ')
+      c_remapped = 0;
+    else if (flags & BOLD)
+      flags &= ~BOLD;
+#endif
+#if defined(CPUARM)
+    else if ((c>= 128) && (flags & DBLSIZE))
       c_remapped = c - 60;
-#endif      
+#endif
     else
       c_remapped = 0;
+
+#if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
+  }
+  if (flags & DBLSIZE) {
+#endif
 
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
@@ -264,23 +279,18 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   else {
 
     uint8_t ym8 = (y & 0x07);
-#if defined(BOLD_FONT)
-#if !defined(CPUM64) || defined(EXTSTD)
-    uint8_t skipcol = 7;
-    if ( c >= 'A') skipcol = 4;
-    if ( c == 'T') skipcol = 5;
-#endif
+#if defined(BOLD_FONT) && defined(CPUM64) && !defined(EXTSTD)
     uint8_t bb = 0;
     if (inv) bb = 0xff;
-#endif
-#if !defined(CPUM64) || defined(EXTSTD)
-    for (int8_t i=0; i<=7; i++) {
 #else
-    for (int8_t i=0; i<=6; i++) {
+    if (flags & BOLD) {
+    q = &font_5x7_B[(c_remapped)*5];
+    }
 #endif
+    for (int8_t i=0; i<=6; i++) {
       uint8_t b = 0;
       if ( !i ) {
-        if ( !x || !inv || (flags & BOLD)) {
+        if ( !x || !inv ) {
           lcdNextPos++;
           p++;
           continue;
@@ -292,15 +302,12 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
         else continue;
       }
       if (inv) b = ~b;
-#if !defined(CPUM64) || defined(EXTSTD)
-      if (!(flags & BOLD) && (i == 7)) continue;
-#endif
       if ((flags & CONDENSED) && i==2) {
         /*condense the letter by skipping column 3 */
         continue;
       }
 
-#if defined(BOLD_FONT)
+#if defined(BOLD_FONT) && defined(CPUM64) && !defined(EXTSTD)
       if (flags & BOLD) {
         uint8_t a;
         if (inv)
@@ -309,9 +316,6 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
           a = b | bb;
         bb = b;
         b = a;
-#if !defined(CPUM64) || defined(EXTSTD)
-        if (i == skipcol) continue;
-#endif
       }
 #endif
 
@@ -509,6 +513,10 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       if (mode > 0)
         x += 2;
     }
+#if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
+///////////////////////////////////////////////////////////////////
+    if (flags & BOLD) fw += 1;
+#endif
   }
 
   if (flags & LEFT) {
@@ -566,6 +574,10 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
 #endif
     val = qr.quot;
     x-=fw;
+#if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
+////////////////////////////////////////////////////////////
+    if (i==len && (flags & BOLD)) x += 1;
+#endif
   }
 
   if (xn) {
@@ -583,7 +595,6 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       lcd_hline(xn, y+2*FH-2, ln);
     }
   }
-  x--;
   if (neg) lcd_putcAtt(x, y, '-', flags);
 }
 

@@ -536,6 +536,9 @@ extern const pm_char STR_RESET_BTN[];
 
 extern const pm_uchar font_5x7[];
 extern const pm_uchar font_10x14[];
+#if !defined(CPUM64) || defined(EXTSTD)
+extern const pm_uchar font_5x7_B[];
+#endif
 
 #if defined(CPUARM)
 extern const pm_uchar font_3x5[];

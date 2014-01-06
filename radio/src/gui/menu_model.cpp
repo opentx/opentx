@@ -3559,9 +3559,9 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             if (mixCnt > 0) lcd_putsiAtt(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
-            putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
+            putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
-            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr, event);
+            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), event);
 
 #if LCD_W >= 212
             displayFlightModes(EXPO_LINE_FM_POS, y, md->phases);
