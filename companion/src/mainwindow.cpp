@@ -1496,12 +1496,13 @@ void MainWindow::logFile()
 void MainWindow::about()
 {
     QString aboutStr = "<center><img src=\":/images/companion9x-title.png\"></center><br>";
-    aboutStr.append(tr("Copyright") +" Bertrand Songis & Romolo Manfredini &copy; 2011- 2014<br>");
-    aboutStr.append(QString("<a href='http://code.google.com/p/companion9x/'>http://code.google.com/p/companion9x/</a><br>")+tr("Version %1 (revision %2), %3").arg(C9X_VERSION).arg(C9X_REVISION).arg(__DATE__)+QString("<br/><br/>"));
+    aboutStr.append("OpenTX Home Page: <a href='http://opentx.github.io'>http://open-tx.org</a><br><br>");
     aboutStr.append(tr("The Companion project was originally forked from eePe")+QString(" <a href='http://code.google.com/p/eepe'>http://code.google.com/p/eepe</a><br/><br/>"));
     aboutStr.append(tr("If you've found this program useful, please support by"));
     aboutStr.append(" <a href='" DONATE_STR "'>");
-    aboutStr.append(tr("donating") + "</a>");
+    aboutStr.append(tr("donating") + "</a><br><br>");
+    aboutStr.append(tr("Version %1 (revision %2), %3").arg(C9X_VERSION).arg(C9X_REVISION).arg(__DATE__)+QString("<br/><br/>"));
+    aboutStr.append(tr("Copyright") +" Bertrand Songis & Romolo Manfredini &copy; 2011- 2014<br>");
 
     QMessageBox::about(this, tr("About Companion"),aboutStr);
 }
