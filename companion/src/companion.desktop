@@ -2,10 +2,10 @@
 Type=Application
 Encoding=UTF-8
 Name=Companion
-GenericName=COMPANION
-Comment=The ultimate transmitter companion
-Icon=/usr/share/icons/companion9x.png
-Exec='companion9x'
+GenericName=Transmitter Companion App
+Comment=The Ultimate Transmitter Companion
+Icon=companion
+Exec='companion'
 Terminal=false
 StartupNotify=false
 Categories=Application
