@@ -1051,32 +1051,35 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
   else if (idx >= SWSRC_FIRST_ROTENC_SWITCH) {
     idx -= SWSRC_FIRST_ROTENC_SWITCH;
     char suffix = (idx & 1) ? CHR_LONG : CHR_SHORT;
-    lcd_putcAtt(x+3*FW, y, suffix, att);
-    return lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
+    lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
+    return lcd_putcAtt(lcdLastPos, y, suffix, att);
   }
 #endif
 
 #if !defined(PCBSTD)
   else if (idx >= SWSRC_TRAINER_SHORT) {
     idx -= SWSRC_TRAINER_SHORT;
-    lcd_putcAtt(x+3*FW, y, (idx & 1) ? CHR_LONG : CHR_SHORT, att);
+    char suffix = (idx & 1) ? CHR_LONG : CHR_SHORT;
 #if ROTARY_ENCODERS > 0
     if (idx >= 2) {
       idx -= 2;
-      return lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
+      lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
     }
     else
 #endif
     {
-      return lcd_putsiAtt(x, y, STR_VSWITCHES, SWSRC_TRAINER-1, att);
+      lcd_putsiAtt(x, y, STR_VSWITCHES, SWSRC_TRAINER-1, att);     
     }
+    return lcd_putcAtt(lcdLastPos, y, suffix, att);
   }
 #endif
 
   if (idx > SWSRC_ON) {
     idx -= SWSRC_ON;
-    char suffix = CHR_TOGGLE;
-    if (idx != SWSRC_ON && (~att & STRCONDENSED)) lcd_putcAtt(x+3*FW, y, suffix, att);
+    if (idx != SWSRC_ON && (~att & STRCONDENSED)) {
+      lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
+      return lcd_putcAtt(lcdLastPos, y, CHR_TOGGLE, att);
+    }
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
