@@ -34,6 +34,7 @@ private slots:
   // void graphClicked(QCPAbstractPlottable *plottable);
   void on_fileOpen_BT_clicked();
   void on_sessions_CB_currentIndexChanged(int index);
+  void on_mapsButton_clicked();
   
 private:
   QList<QStringList> csvlog;
@@ -42,6 +43,7 @@ private:
   double GetScale(QString channel);
   QList<QColor> palette;
   bool plotLock;
+  QString logFilename;
 };
 
 #endif // LOGSDIALOG_H

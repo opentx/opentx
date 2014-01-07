@@ -337,10 +337,15 @@ void AudioQueue::pushBuffer(AudioBuffer *buffer)
 {
   buffer->state = AUDIO_BUFFER_FILLED;
 
-  if (dacQueue(buffer))
-    buffer->state = AUDIO_BUFFER_PLAYING;
+  __disable_irq();
 
   bufferWIdx = nextBufferIdx(bufferWIdx);
+
+  if (dacQueue(buffer)) {
+    buffer->state = AUDIO_BUFFER_PLAYING;
+  }
+
+  __enable_irq();
 }
 
 void mix(uint16_t * result, int sample, unsigned int fade)
@@ -380,10 +385,13 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
             result = FR_DENIED;
           }
           while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
-            result = (size < 256 ? f_read(&context.state.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
-            if (read != size+8) result = FR_DENIED;
-            wavSamplesPtr = (uint32_t *)(wavBuffer + size);
-            size = wavSamplesPtr[1];
+            result = f_lseek(&context.state.wav.file, f_tell(&context.state.wav.file)+size);
+            if (result == FR_OK) {
+              result = f_read(&context.state.wav.file, wavBuffer, 8, &read);
+              if (read != 8) result = FR_DENIED;
+              wavSamplesPtr = (uint32_t *)wavBuffer;
+              size = wavSamplesPtr[1];
+            }
           }
           context.state.wav.size = size;
         }

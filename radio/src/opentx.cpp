@@ -1419,11 +1419,6 @@ bool getSwitch(int8_t swtch)
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
             if ((!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_FIRST_STREAMED_VALUE-1) || IS_FAI_FORBIDDEN(cs->v1-1))
               return swtch > 0 ? false : true;
-              	
-#if defined (PCBTARANIS)
-          if (cs->v1 == MIXSRC_FIRST_TELEM+TELEM_A2-1 && g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_X16)
-            return swtch > 0 ? false : true;
-#endif
 
             y = convertCswTelemValue(cs);
 
@@ -3829,7 +3824,11 @@ void doMixerCalculations()
     if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
   }
   else {
+#ifdef PCBTARANIS
     val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
+#else
+    val = RESX + rawAnas[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
+#endif
   }
 
 #if !defined(CPUM64)

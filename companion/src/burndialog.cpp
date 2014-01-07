@@ -31,7 +31,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
       ui->EEbackupCB->hide();
     }
   } else {
-    ui->FlashLoadButton->setText(tr("Load eEprom"));
+    ui->FlashLoadButton->setText(tr("Browse for file"));
     ui->profile_label->hide();
     ui->patchcalib_CB->hide();
     ui->patchhw_CB->hide();
@@ -51,9 +51,9 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->BurnFlashButton->setDisabled(true);
     ui->EEbackupCB->hide();
     if (DocName.isEmpty()) {
-        this->setWindowTitle(tr("Write models to TX"));
+        this->setWindowTitle(tr("Write Models and Settings to TX"));
     } else {
-        this->setWindowTitle(tr("Write %1 to TX").arg(DocName));
+        this->setWindowTitle(tr("Write Models and Settings in %1 to TX").arg(DocName));
     }
     QSettings settings("companion9x", "companion9x");
     int profileid=settings.value("profileId", 1).toInt();
@@ -151,7 +151,7 @@ void burnDialog::on_FlashLoadButton_clicked()
     fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastFlashDir").toString(), FLASH_FILES_FILTER);
     checkFw(fileName);
   } else {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to write to EEPROM memory"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (checkeEprom(fileName)) {
       if (burnraw==false) {
         ui->BurnFlashButton->setEnabled(true);
@@ -196,7 +196,7 @@ void burnDialog::checkFw(QString fileName)
     ui->SVNField->setText(flash.getSvn());
     ui->ModField->setText(flash.getBuild());
     ui->BurnFlashButton->setEnabled(true);
-    ui->BurnFlashButton->setText(tr("Burn to TX"));
+    ui->BurnFlashButton->setText(tr("Write to TX"));
     if (flash.hasSplash()) {
       ui->SplashFrame->show();
       ui->ImageLoadButton->setEnabled(true);
@@ -292,7 +292,7 @@ bool burnDialog::checkeEprom(QString fileName)
     uint8_t eeprom[EESIZE_RLC_MAX];
     int eeprom_size = HexInterface(inputStream).load(eeprom, EESIZE_RLC_MAX);
     if (!eeprom_size) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary EEPROM File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }
@@ -302,7 +302,7 @@ bool burnDialog::checkeEprom(QString fileName)
     }
     file.close();
     if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary EEPROM File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }
@@ -325,7 +325,7 @@ bool burnDialog::checkeEprom(QString fileName)
         return false;
     }
     if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary EEPROM File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }
@@ -514,7 +514,7 @@ void burnDialog::on_BurnFlashButton_clicked()
         radioData.generalSettings.PPM_Multiplier=PPM_Multiplier;
         patch=true;
       } else {
-        QMessageBox::critical(this, tr("Warning"), tr("Wrong radio calibration data in profile, eeprom not patched"));
+        QMessageBox::critical(this, tr("Warning"), tr("Wrong radio calibration data in profile, Settings not patched"));
       }
     }
     if (ui->patchhw_CB->isChecked()) {
@@ -568,7 +568,7 @@ void burnDialog::on_BurnFlashButton_clicked()
           radioData.generalSettings.speakerVolume=byte8u;
         patch=true;
       } else {
-        QMessageBox::critical(this, tr("Warning"), tr("Wrong radio setting data in profile, eeprom not patched"));
+        QMessageBox::critical(this, tr("Warning"), tr("Wrong radio setting data in profile, Settings not patched"));
       }
     
       QString fileName;

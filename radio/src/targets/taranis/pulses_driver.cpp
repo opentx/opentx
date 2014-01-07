@@ -160,6 +160,7 @@ static void init_pa10_none()
   TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   TIM1->CR1 |= TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM1_CC_IRQn) ;
+  NVIC_SetPriority(TIM1_CC_IRQn, 7);
 }
 
 static void disable_pa10_none()
@@ -202,6 +203,7 @@ static void init_pa7_none()
   TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   TIM8->CR1 |= TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM8_CC_IRQn) ;
+  NVIC_SetPriority(TIM8_CC_IRQn, 7);
 }
 
 static void disable_pa7_none()
@@ -267,7 +269,8 @@ static void init_pa10_pxx()
   TIM1->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
   TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   TIM1->CR1 |= TIM_CR1_CEN ;
-  NVIC_EnableIRQ(TIM1_CC_IRQn) ;
+  NVIC_EnableIRQ(TIM1_CC_IRQn);
+  NVIC_SetPriority(TIM1_CC_IRQn, 7);
 }
 
 static void disable_pa10_pxx()
@@ -316,7 +319,9 @@ static void init_pa10_ppm()
 
   TIM1->CR1 = TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM1_CC_IRQn) ;
+  NVIC_SetPriority(TIM1_CC_IRQn, 7);
   NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn) ;
+  NVIC_SetPriority(TIM1_UP_TIM10_IRQn, 7);
 }
 
 static void disable_pa10_ppm()
@@ -428,6 +433,7 @@ static void init_pa7_pxx()
   TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   TIM8->CR1 |= TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM8_CC_IRQn) ;
+  NVIC_SetPriority(TIM8_CC_IRQn, 7);
 }
 
 static void disable_pa7_pxx()
@@ -501,6 +507,7 @@ static void init_pa7_dsm2()
   TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   TIM8->CR1 |= TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM8_CC_IRQn) ;
+  NVIC_SetPriority(TIM8_CC_IRQn, 7);
 }
 
 static void disable_pa7_dsm2()
@@ -555,7 +562,9 @@ static void init_pa7_ppm()
 
   TIM8->CR1 = TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM8_CC_IRQn) ;
+  NVIC_SetPriority(TIM8_CC_IRQn, 7);
   NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn) ;
+  NVIC_SetPriority(TIM8_UP_TIM13_IRQn, 7);
 }
 
 static void disable_pa7_ppm()

@@ -116,14 +116,15 @@ int main(int argc, char *argv[])
     current_firmware_variant = GetFirmwareVariant(firmware_id);
     // qDebug() << current_firmware_variant;
 
+    MainWindow mainWin;
+	
     if (showSplash) {
       splash->show();
-      splash->showMessage(QObject::tr(""));
-      sleep(SPLASH_TIME);
+      QTimer::singleShot(1000*SPLASH_TIME, splash, SLOT(close()));
+      QTimer::singleShot(1000*SPLASH_TIME, &mainWin, SLOT(show()));
     }
-
-    MainWindow mainWin;
-    mainWin.show();
-    splash->finish(&mainWin);
+    else  {
+      mainWin.show();
+    }
     return app.exec();
 }
