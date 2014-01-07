@@ -2501,12 +2501,24 @@ void evalFunctions()
     safetyCh[i] = -128; // not defined
 
 #if defined(GVARS)
-  for (uint8_t i=0; i<4; i++)
+  for (uint8_t i=0; i<NUM_STICKS; i++)
     trimGvar[i] = -1;
 #endif
 
 #if !defined(PCBSTD)
   uint8_t mSwitchDurationIncremented = 0;
+    /*
+        CN - 24-Dec-13. We need to remember the current duration the trainer switch has been active for because
+        we use this value when testing for a short active duration on SWH (SWs).
+        This is done in the MOMENTARY_START_TEST() macro.
+        When processing each of the custom functions, the value stored in mSwitchDuration[0]
+        is set to 0 the first time the trainer switch is referenced and the switch is incative,
+        so subsequent custom functions referencing the SWHs and SWHl switches would fail to
+        operate if we referenced mSwitchDuration[0], which is what was done previously.
+        XXX why do we have a table of mSwitchDuration[] when only one value is referenced?
+        Will need to remember all current mSwitchDuration[] values if more than one value is referenced.
+    */
+    uint8_t trainer_switch_duration = mSwitchDuration[0];
 #endif
 
   for (uint8_t i=0; i<NUM_CFN; i++) {
@@ -2520,8 +2532,8 @@ void evalFunctions()
 #if !defined(PCBSTD)
 
   #define MOMENTARY_START_TEST() ( (momentary && !(activeSwitches & switch_mask) && active) || \
-                                   (short_long==1 && !active && mSwitchDuration[mswitch]>0 && mSwitchDuration[mswitch]<CFN_PRESSLONG_DURATION) || \
-                                   (short_long==2 && active && mSwitchDuration[mswitch]==CFN_PRESSLONG_DURATION) )
+                                   (short_long==1 && !active && trainer_switch_duration >0 && trainer_switch_duration <CFN_PRESSLONG_DURATION) || \
+                                   (short_long==2 && active && trainer_switch_duration==CFN_PRESSLONG_DURATION) )
 
       uint8_t short_long = 0;
       uint8_t mswitch = 0;
