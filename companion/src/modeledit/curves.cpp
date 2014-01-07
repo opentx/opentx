@@ -249,19 +249,19 @@ void Curves::updateCurve()
   scene->addLine(GFX_MARGIN, centerY, width+GFX_MARGIN, centerY);
 
   QPen pen;
-  pen.setWidth(2);
+  pen.setWidth(1);
   pen.setStyle(Qt::SolidLine);
 
   int numcurves = GetEepromInterface()->getCapability(NumCurves);
   for (int k=0; k<numcurves; k++) {
     pen.setColor(colors[k]);
-    if (currentCurve==k || visibleCurves[k]) {
+    if (currentCurve!=k && visibleCurves[k]) {
       int numpoints = model.curves[k].count;
       for (int i=0; i<numpoints-1; i++) {
         if (model.curves[k].type == CurveData::CURVE_TYPE_CUSTOM)
-          scene->addLine(centerX + (qreal)model.curves[k].points[i].x*width/200,centerY - (qreal)model.curves[k].points[i].y*height/200,centerX + (qreal)model.curves[k].points[i+1].x*width/200,centerY - (qreal)model.curves[k].points[i+1].y*height/200,pen);
+          scene->addLine(centerX + (qreal)model.curves[k].points[i].x*width/200,centerY - (qreal)model.curves[k].points[i].y*height/200,centerX + (qreal)model.curves[k].points[i+1].x*width/200,centerY - (qreal)model.curves[k].points[i+1].y*height/200, pen);
         else
-          scene->addLine(GFX_MARGIN + i*width/(numpoints-1),centerY - (qreal)model.curves[k].points[i].y*height/200,GFX_MARGIN + (i+1)*width/(numpoints-1),centerY - (qreal)model.curves[k].points[i+1].y*height/200,pen);
+          scene->addLine(GFX_MARGIN + i*width/(numpoints-1),centerY - (qreal)model.curves[k].points[i].y*height/200,GFX_MARGIN + (i+1)*width/(numpoints-1),centerY - (qreal)model.curves[k].points[i+1].y*height/200, pen);
       }
     }
   }
