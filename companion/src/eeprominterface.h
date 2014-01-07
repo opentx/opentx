@@ -44,12 +44,15 @@ template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma
 enum BoardEnum {
   BOARD_STOCK,
   BOARD_M128,
+  BOARD_MEGA2560,
   BOARD_GRUVIN9X,
   BOARD_SKY9X,
   BOARD_TARANIS,
   BOARD_TARANIS_REV4a
 };
+
 #define IS_STOCK(board)       (board==BOARD_STOCK || board==BOARD_M128)
+#define IS_2560(board)        (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
 #define IS_ARM(board)         (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
 #define IS_TARANIS(board)     (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
 
@@ -470,17 +473,44 @@ class GeneralSettings {
     unsigned int switchUnlockStates;
 };
 
+class CurveReference {
+  public:
+    enum CurveRefType {
+      CURVE_REF_DIFF,
+      CURVE_REF_EXPO,
+      CURVE_REF_FUNC,
+      CURVE_REF_CUSTOM
+    };
+
+    CurveReference() { clear(); }
+
+    CurveReference(CurveRefType type, int value):
+      type(type),
+      value(value)
+    {
+    }
+
+    void clear() { memset(this, 0, sizeof(CurveReference)); }
+
+    CurveRefType type;
+    int value;
+
+    QString toString();
+};
+
 class ExpoData {
   public:
     ExpoData() { clear(); }
+    RawSource srcRaw;
+    unsigned int scale;
     unsigned int mode;         // 0=end, 1=pos, 2=neg, 3=both
     unsigned int chn;
     RawSwitch swtch;
     unsigned int phases;        // -5=!FP4, 0=normal, 5=FP4
     int  weight;
-    int  expo;
-    unsigned int curveMode;
-    int  curveParam;
+    int offset;
+    CurveReference curve;
+    int carryTrim;
     char name[10+1];
     void clear() { memset(this, 0, sizeof(ExpoData)); }
 };
@@ -493,11 +523,19 @@ class CurvePoint {
 
 class CurveData {
   public:
+    enum CurveType {
+      CURVE_TYPE_STANDARD,
+      CURVE_TYPE_CUSTOM,
+      CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
+    };
+
     CurveData() { clear(5); }
-    bool custom;         // 0=end, 1=pos, 2=neg, 3=both
-    uint8_t count;
+
+    CurveType type;
+    bool smooth;
+    int  count;
     CurvePoint points[C9X_MAX_POINTS];
-    char  name[6+1];
+    char name[6+1];
     void clear(int count) { memset(this, 0, sizeof(CurveData)); this->count = count; }
 };
 
@@ -511,6 +549,7 @@ class LimitData {
     int   ppmCenter;
     bool  symetrical;
     char  name[6+1];
+    CurveReference curve;
     void clear() { memset(this, 0, sizeof(LimitData)); min = -100; max = +100; }
 };
 
@@ -520,7 +559,6 @@ enum MltpxValue {
   MLTPX_REP=2
 };
 
-
 class MixData {
   public:
     MixData() { clear(); }
@@ -528,9 +566,8 @@ class MixData {
     RawSource srcRaw;
     unsigned int srcVariant;
     int     weight;
-    int     differential;
     RawSwitch swtch;
-    int     curve;             //0=symmetrisch
+    CurveReference     curve;             //0=symmetrisch
     unsigned int delayUp;
     unsigned int delayDown;
     unsigned int speedUp;           // Servogeschwindigkeit aus Tabelle (10ms Cycle)
@@ -539,7 +576,6 @@ class MixData {
     bool noExpo;
     MltpxValue mltpx;          // multiplex method 0=+ 1=* 2=replace
     unsigned int mixWarn;           // mixer warning
-    unsigned int enableFmTrim;
     unsigned int phases;             // -5=!FP4, 0=normal, 5=FP4
     unsigned int lateOffset;
     int    sOffset;
@@ -621,7 +657,7 @@ class PhaseData {
     unsigned int fadeIn;
     unsigned int fadeOut;
     int rotaryEncoders[2];
-    int gvars[5];
+    int gvars[C9X_MAX_GVARS];
     void clear() { memset(this, 0, sizeof(PhaseData)); for (int i=0; i<NUM_STICKS; i++) trimRef[i] = -1; }
 };
 
@@ -824,7 +860,9 @@ class ModelData {
     int8_t   t2throttle;  // Start timer2 using throttle
     unsigned int   modelId;
     unsigned int switchWarningStates;
+    // TODO structure
     char     gvars_names[C9X_MAX_GVARS][6+1];
+    bool     gvars_popups[C9X_MAX_GVARS];
     uint8_t  gvsource[5];
     uint8_t  bt_telemetry;
     uint8_t  numVoice;
@@ -893,16 +931,7 @@ enum Capability {
  ExtraInputs,
  ExtraTrims,
  ExtendedTrims,
- HasNegCurves,
  HasInputFilter,
- HasExpoCurves,
- ExpoIsCurve,
- ExpoCurve5,
- ExpoCurve9,
- CustomCurves,
- NumCurves3,
- NumCurves5,
- NumCurves9,
  NumCurves,
  NumCurvePoints,
  OffsetWeight,
@@ -934,7 +963,6 @@ enum Capability {
  OptrexDisplay,
  PPMExtCtrl,
  PPMFrameLength,
- MixFmTrim,
  gsSwitchMask,
  BLonStickMove,
  DSM2Indexes,
@@ -971,7 +999,6 @@ enum Capability {
  HasSoundMixer,
  NumModules,
  FSSwitch,
- DiffMixers,
  PPMCenter,
  SYMLimits,
  HasCurrentCalibration,

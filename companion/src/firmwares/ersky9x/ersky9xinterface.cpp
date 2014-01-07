@@ -228,33 +228,10 @@ bool Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esi
 
 int Ersky9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
-  EEPROMWarnings.clear();
+  std::cout << "NO!\n";
+  // TODO an error
 
-  efile->EeFsCreate(eeprom, EESIZE_SKY9X, BOARD_SKY9X);
-
-  Ersky9xGeneral ersky9xGeneral(radioData.generalSettings);
-  int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&ersky9xGeneral, sizeof(Ersky9xGeneral));
-  if(sz != sizeof(Ersky9xGeneral)) {
-    return 0;
-  }
-
-  for (int i=0; i<getMaxModels(); i++) {
-    if (!radioData.models[i].isempty()) {
-      Ersky9xModelData_v11 ersky9xModel(radioData.models[i]);
-      applyStickModeToModel(ersky9xModel, radioData.generalSettings.stickMode+1);
-      sz = efile->writeRlc2(FILE_MODEL(i), FILE_TYP_MODEL, (uint8_t*)&ersky9xModel, sizeof(Ersky9xModelData_v11));
-      if(sz != sizeof(Ersky9xModelData_v11)) {
-        return 0;
-      }
-    }
-  }
-
-  if (!EEPROMWarnings.isEmpty())
-    QMessageBox::warning(NULL,
-        QObject::tr("Warning"),
-        QObject::tr("EEPROM saved with these warnings:") + "\n- " + EEPROMWarnings.remove(EEPROMWarnings.length()-1, 1).replace("\n", "\n- "));
-
-  return EESIZE_SKY9X;
+  return 0;
 }
 
 int Ersky9xInterface::getSize(ModelData &model)
@@ -272,12 +249,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
   switch (capability) {
     case Mixes:
       return ERSKY9X_MAX_MIXERS_V11;
-    case NumCurves5:
-      return ERSKY9X_MAX_CURVE5;
-    case NumCurves9:
-      return ERSKY9X_MAX_CURVE9;
-    case MixFmTrim:
-      return 1;      
     case PPMExtCtrl:
       return 1;
     case ModelTrainerEnable:

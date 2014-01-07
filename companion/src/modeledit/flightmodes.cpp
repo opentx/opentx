@@ -1,6 +1,6 @@
 #include "flightmodes.h"
 #include "ui_flightmode.h"
-#include "firmwares/opentx/open9xeeprom.h" // TODO shouldn't be there
+// #include "firmwares/opentx/opentxeeprom.h" // TODO shouldn't be there
 #include "helpers.h"
 #include <QComboBox>
 #include <QGridLayout>

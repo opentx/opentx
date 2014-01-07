@@ -126,16 +126,16 @@ SET( companion9x_SRCS
      ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
      firmwares/gruvin9x/gruvin9xeeprom.cpp
      firmwares/gruvin9x/gruvin9xinterface.cpp  
-     firmwares/opentx/open9xeeprom.cpp
+     firmwares/opentx/opentxeeprom.cpp
      firmwares/opentx/open9xStockeeprom.cpp
-     firmwares/opentx/open9xinterface.cpp
      firmwares/opentx/open9xGruvin9xeeprom.cpp
      firmwares/opentx/open9xSky9xeeprom.cpp
+     firmwares/opentx/opentxinterface.cpp
      firmwares/opentx/opentxTaranisSimulator.cpp
-     firmwares/opentx/open9xSky9xsimulator.cpp
-     firmwares/opentx/open9xGruvin9xsimulator.cpp
-     firmwares/opentx/open9xM128simulator.cpp
-     firmwares/opentx/open9xsimulator.cpp  
+     firmwares/opentx/opentxSky9xsimulator.cpp
+     firmwares/opentx/opentxGruvin9xsimulator.cpp
+     firmwares/opentx/opentxM128simulator.cpp
+     firmwares/opentx/opentxsimulator.cpp  
      firmwares/ersky9x/ersky9xeeprom.cpp
      firmwares/ersky9x/ersky9xinterface.cpp
      ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp

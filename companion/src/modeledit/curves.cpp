@@ -89,6 +89,7 @@ Curves::Curves(QWidget * parent, ModelData & model):
 
   for (int i=0; i<GetEepromInterface()->getCapability(NumCurves); i++) {
     visibleCurves[i] = false;
+
     // The reset curve button
     QPushButton * reset = new QPushButton(this);
     reset->setProperty("index", i);
@@ -116,8 +117,6 @@ Curves::Curves(QWidget * parent, ModelData & model):
     connect(plot, SIGNAL(toggled(bool)), this, SLOT(plotCurve(bool)));
     ui->curvesLayout->addWidget(plot, i, 2, 1, 1);
   }
-
-  visibleCurves[0] = true;
 
   for (int i=0; i<C9X_MAX_POINTS; i++) {
     spny[i] = new QSpinBox(this);
@@ -183,7 +182,7 @@ void Curves::update()
   for (int i=0; i<count; i++) {
     spny[i]->show();
     spny[i]->setValue(model.curves[currentCurve].points[i].y);
-    if (model.curves[currentCurve].custom) {
+    if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
       spnx[i]->show();
       if (i==0 || i==model.curves[currentCurve].count-1) {
         spnx[i]->setDisabled(true);
@@ -218,7 +217,7 @@ void Curves::setCurrentCurve(int index)
 
 void Curves::updateCurveType()
 {
-  int index = model.curves[currentCurve].custom;
+  int index = (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM ? 1 : 0);
   if (model.curves[currentCurve].count==5)
     index += 2;
   else if (model.curves[currentCurve].count==9)
@@ -256,10 +255,10 @@ void Curves::updateCurve()
   int numcurves = GetEepromInterface()->getCapability(NumCurves);
   for (int k=0; k<numcurves; k++) {
     pen.setColor(colors[k]);
-    if (currentCurve!=k && visibleCurves[k]) {
+    if (currentCurve==k || visibleCurves[k]) {
       int numpoints = model.curves[k].count;
       for (int i=0; i<numpoints-1; i++) {
-        if (model.curves[k].custom)
+        if (model.curves[k].type == CurveData::CURVE_TYPE_CUSTOM)
           scene->addLine(centerX + (qreal)model.curves[k].points[i].x*width/200,centerY - (qreal)model.curves[k].points[i].y*height/200,centerX + (qreal)model.curves[k].points[i+1].x*width/200,centerY - (qreal)model.curves[k].points[i+1].y*height/200,pen);
         else
           scene->addLine(GFX_MARGIN + i*width/(numpoints-1),centerY - (qreal)model.curves[k].points[i].y*height/200,GFX_MARGIN + (i+1)*width/(numpoints-1),centerY - (qreal)model.curves[k].points[i+1].y*height/200,pen);
@@ -273,7 +272,7 @@ void Curves::updateCurve()
     nodex = new Node();
     nodex->setProperty("index", i);
     nodex->setColor(colors[currentCurve]);
-    if (model.curves[currentCurve].custom) {
+    if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
       if (i>0 && i<numpoints-1) {
         nodex->setFixedX(false);
         nodex->setMinX(model.curves[currentCurve].points[i-1].x);
@@ -339,7 +338,7 @@ void Curves::onNodeUnfocus()
 void Curves::on_curvetype_CB_currentIndexChanged(int index)
 {
   static const int numpoint[] = {3,3,5,5,9,9,17,17};
-  static const bool custom[] = {false,true,false,true,false,true,false,true};
+  static const CurveData::CurveType types[] = {CurveData::CURVE_TYPE_STANDARD, CurveData::CURVE_TYPE_CUSTOM, CurveData::CURVE_TYPE_STANDARD, CurveData::CURVE_TYPE_CUSTOM, CurveData::CURVE_TYPE_STANDARD, CurveData::CURVE_TYPE_CUSTOM, CurveData::CURVE_TYPE_STANDARD, CurveData::CURVE_TYPE_CUSTOM};
 
   if (!lock) {
     lock = true;
@@ -352,13 +351,13 @@ void Curves::on_curvetype_CB_currentIndexChanged(int index)
     for (int i=0; i<numcurves; i++) {
       if (i!=currentCurve) {
         totalpoints += model.curves[i].count;
-        if (model.curves[i].custom) {
+        if (model.curves[i].type == CurveData::CURVE_TYPE_CUSTOM) {
           totalpoints += model.curves[i].count-2;
         }
       }
     }
     totalpoints += numpoint[index];
-    if (custom[index]) {
+    if (types[index] == CurveData::CURVE_TYPE_CUSTOM) {
       totalpoints += numpoint[index]-2;
     }
 
@@ -373,7 +372,7 @@ void Curves::on_curvetype_CB_currentIndexChanged(int index)
     }
 
     model.curves[currentCurve].count = numpoint[index];
-    model.curves[currentCurve].custom = custom[index];
+    model.curves[currentCurve].type = types[index];
 
     // TODO something better!
     for (int i=0; i<C9X_MAX_POINTS; i++) {
@@ -461,7 +460,7 @@ void ModelEdit::on_ca_apply_PB_clicked()
       a=(ui->ca_ymax_SB->value()-ui->ca_ymin_SB->value())/200.0;
       int numpoints=model.curves[currentCurve].count;
       for (int i=0; i<numpoints; i++) {
-        if (model.curves[currentCurve].custom) {
+        if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
           x=(model.curves[currentCurve].points[i].x+100);
         } else {
           x=(200.0/(numpoints-1))*i;
@@ -486,7 +485,7 @@ void ModelEdit::on_ca_apply_PB_clicked()
     } else if (index==1) {
       int numpoints=model.curves[currentCurve].count;
       for (int i=0; i<numpoints; i++) {
-        if (model.curves[currentCurve].custom) {
+        if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
           x=((model.curves[currentCurve].points[i].x)+100)/2.0;
         } else {
           x=(100.0/(numpoints-1))*i;
@@ -518,7 +517,7 @@ void ModelEdit::on_ca_apply_PB_clicked()
     } else if (index==2) {
       int numpoints=model.curves[currentCurve].count;
       for (int i=0; i<numpoints; i++) {
-        if (model.curves[currentCurve].custom) {
+        if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
           x=(model.curves[currentCurve].points[i].x);
         } else {
           x=-100.0+(200.0/(numpoints-1))*i;
@@ -560,7 +559,7 @@ void ModelEdit::on_ca_apply_PB_clicked()
     } else if (index==3) {
       int numpoints=model.curves[currentCurve].count;
       for (int i=0; i<numpoints; i++) {
-        if (model.curves[currentCurve].custom) {
+        if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
           x=(model.curves[currentCurve].points[i].x);
         } else {
           x=-100.0+(200.0/(numpoints-1))*i;
@@ -606,57 +605,13 @@ void ModelEdit::clearCurves(bool ask)
       if(res!=QMessageBox::Yes) return;
     }
     curvesLock=true;
-    if (!GetEepromInterface()->getCapability(CustomCurves)){
-      ui->curvetype_CB->setDisabled(true);
-      int count=0;
-      for (int j=0; j< GetEepromInterface()->getCapability(NumCurves3); j++) {
-          model.curves[count].count=3;
-          model.curves[count].custom=false;
-          memset(model.curves[j].name,0,sizeof(model.curves[j].name));
-          for (int i=0; i<17; i++) {
-            model.curves[count].points[i].x=0;
-            model.curves[count].points[i].y=0;
-          }
-          count++;
-      }
-      for (int j=0; j< GetEepromInterface()->getCapability(NumCurves5); j++) {
-          model.curves[count].count=5;
-          model.curves[count].custom=false;
-          memset(model.curves[j].name,0,sizeof(model.curves[j].name));
-          for (int i=0; i<17; i++) {
-            model.curves[count].points[i].x=0;
-            model.curves[count].points[i].y=0;
-          }
-          count++;
-      }
-      for (int j=0; j< GetEepromInterface()->getCapability(NumCurves9); j++) {
-          model.curves[count].count=9;
-          model.curves[count].custom=false;
-          memset(model.curves[j].name,0,sizeof(model.curves[j].name));
-          for (int i=0; i<17; i++) {
-            model.curves[count].points[i].x=0;
-            model.curves[count].points[i].y=0;
-          }
-          count++;
-      }
-      for (int j=count; j<16; j++) {
-          model.curves[j].count=5;
-          model.curves[j].custom=false;
-          memset(model.curves[j].name,0,sizeof(model.curves[j].name));
-          for (int i=0; i<17; i++) {
-            model.curves[j].points[i].x=0;
-            model.curves[j].points[i].y=0;
-          }
-      }
-    } else {
-      for (int j=0; j<16; j++) {
-          model.curves[j].count=5;
-          model.curves[j].custom=false;
-          memset(model.curves[j].name,0,sizeof(model.curves[j].name));
-          for (int i=0; i<17; i++) {
-            model.curves[j].points[i].x=0;
-            model.curves[j].points[i].y=0;
-          }
+    for (int j=0; j<16; j++) {
+      model.curves[j].count = 5;
+      model.curves[j].custom = false;
+      memset(model.curves[j].name, 0, sizeof(model.curves[j].name));
+      for (int i=0; i<17; i++) {
+        model.curves[j].points[i].x = 0;
+        model.curves[j].points[i].y = 0;
       }
     }
     for (int i=0; i<17; i++) {
@@ -667,11 +622,7 @@ void ModelEdit::clearCurves(bool ask)
     }
     currentCurve=0;
     curvesLock=false;
-    if (GetEepromInterface()->getCapability(NumCurves3)>0) {
-      ui->curvetype_CB->setCurrentIndex(0);
-    } else {
-      ui->curvetype_CB->setCurrentIndex(2);
-    }
+    ui->curvetype_CB->setCurrentIndex(2);
     ui->cname_LE->clear();
     updateSettings();
     drawCurve();

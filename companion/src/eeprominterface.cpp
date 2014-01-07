@@ -4,9 +4,10 @@
 #include "firmwares/er9x/er9xinterface.h"
 #include "firmwares/th9x/th9xinterface.h"
 #include "firmwares/gruvin9x/gruvin9xinterface.h"
-#include "firmwares/opentx/open9xinterface.h"
+#include "firmwares/opentx/opentxinterface.h"
 #include "firmwares/ersky9x/ersky9xinterface.h"
 #include "qsettings.h"
+#include "helpers.h"
 
 QString EEPROMWarnings;
 
@@ -408,6 +409,25 @@ QString RawSwitch::toString()
   return QObject::tr("----");
 }
 
+QString CurveReference::toString()
+{
+  if (value == 0) {
+    return "";
+  }
+  else {
+    switch(type) {
+      case CURVE_REF_DIFF:
+        return QObject::tr("Diff(%1%%)").arg(getGVarString(value));
+      case CURVE_REF_EXPO:
+        return QObject::tr("Expo(%1%%)").arg(getGVarString(value));
+      case CURVE_REF_FUNC:
+        return QObject::tr("Function(%1)").arg(QString("x>0" "x<0" "|x|" "f>0" "f<0" "|f|").mid(3*(value-1), 3));
+      default:
+        return QString(value > 0 ? QObject::tr("Curve(%1)") : QObject::tr("!Curve(%1)")).arg(abs(value));
+    }
+  }
+}
+
 GeneralSettings::GeneralSettings()
 {
   memset(this, 0, sizeof(GeneralSettings));
@@ -579,12 +599,8 @@ void ModelData::clear()
     expoData[i].clear();
   for (int i=0; i<C9X_NUM_CSW; i++)
     customSw[i].clear();
-  bool custom = GetEepromInterface()->getCapability(CustomCurves);
   for (int i=0; i<C9X_MAX_CURVES; i++) {
-    if (!custom && i>=8)
-      curves[i].clear(9);
-    else
-      curves[i].clear(5);
+    curves[i].clear(5);
   }
 
   swashRingData.clear();
@@ -628,13 +644,13 @@ ModelData ModelData::removeGlobalVars()
 
   for (int i=0; i<C9X_MAX_MIXERS; i++) {
     removeGlobalVar(mixData[i].weight);
-    removeGlobalVar(mixData[i].differential);
+    removeGlobalVar(mixData[i].curve.value);
     removeGlobalVar(mixData[i].sOffset);
   }
 
   for (int i=0; i<C9X_MAX_EXPOS; i++) {
     removeGlobalVar(expoData[i].weight);
-    removeGlobalVar(expoData[i].expo);
+    removeGlobalVar(expoData[i].curve.value);
   }
 
   return result;

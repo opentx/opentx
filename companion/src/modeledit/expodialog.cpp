@@ -28,19 +28,24 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
         ui->expoGV->setDisabled(true);
         ui->weightGV->setDisabled(true);
         ui->expoCurveGV->setDisabled(true);
+
+        /* TODO
         if (ed->expo>100) {
           ed->expo=0;
         }
+        */
         if (ed->weight>100 || ed->weight<-100) {
           ed->weight=100;
         }
+/* TODO
         if (ed->curveParam>100 || ed->curveParam<-100) {
           ed->curveParam=0;
         }
+        */
       }
-      populateGVCB(ui->expoCB,ed->expo);
-      populateGVCB(ui->weightCB,ed->weight);
-      populateGVCB(ui->expoCurveCB,ed->curveParam);
+      // TODO populateGVCB(ui->expoCB, ed->expo);
+      populateGVCB(ui->weightCB, ed->weight);
+      // TODO populateGVCB(ui->expoCurveCB, ed->curveParam);
 
       ui->weightSB->setMinimum(0);
       ui->weightSB->setMaximum(100);
@@ -54,14 +59,15 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
         ui->weightSB->show();
         ui->weightCB->hide();
       }
-
+/* TODO
       ui->expoSB->setMinimum(-100);
       ui->expoSB->setMaximum(100);
       if (ed->expo>100 || ed->expo<-100) {
         ui->expoGV->setChecked(true);
         ui->expoSB->hide();
         ui->expoCB->show();
-      } else {
+      }
+      else {
         ui->expoGV->setChecked(false);
         ui->expoSB->setValue(ed->expo);
         ui->expoSB->show();
@@ -74,49 +80,45 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
         ui->expoCurveGV->setChecked(true);
         ui->expoCurveSB->hide();
         ui->expoCurveCB->show();
-      } else {
+      }
+      else {
         ui->expoCurveGV->setChecked(false);
         ui->expoCurveSB->setValue(ed->curveParam);
         ui->expoCurveSB->show();
         ui->expoCurveCB->hide();
       }
-    } else {
-      ui->expoGV->hide();
+      */
+    }
+    else {
+// TODO      ui->expoGV->hide();
       ui->weightGV->hide();
-      ui->expoCurveGV->hide();
-      ui->expoSB->setMinimum(-100);
-      ui->expoSB->setMaximum(100);
-      ui->expoSB->setValue(ed->expo);
-      ui->expoCurveSB->setMinimum(-100);
-      ui->expoCurveSB->setMaximum(100);
-      ui->expoCurveSB->setValue(ed->curveParam);
+      // TODO      ui->expoCurveGV->hide();
+      // TODO      ui->expoSB->setMinimum(-100);
+      // TODO      ui->expoSB->setMaximum(100);
+      // TODO      ui->expoSB->setValue(ed->expo);
+      // TODO      ui->expoCurveSB->setMinimum(-100);
+      // TODO      ui->expoCurveSB->setMaximum(100);
+      // TODO      ui->expoCurveSB->setValue(ed->curveParam);
       ui->weightSB->setMinimum(0);
       ui->weightSB->setMaximum(100);
       ui->weightSB->setValue(ed->weight);
     }
+
     populateSwitchCB(ui->switchesCB,ed->swtch);
-    if (ed->curveMode==0) {
+    /* if (ed->curveMode==0) {
       populateExpoCurvesCB(ui->curvesCB,0); // TODO capacity for er9x
-    } else {
+    }
+    else {
       populateExpoCurvesCB(ui->curvesCB,ed->curveParam); // TODO capacity for er9x
     }
+     */
     ui->modeCB->setCurrentIndex(ed->mode-1);
-    if (!GetEepromInterface()->getCapability(HasExpoCurves)) {
-      ui->label_curves->hide();
-      ui->curvesCB->hide();
-      ed->curveMode=1;
-    }
-    if (!GetEepromInterface()->getCapability(ExpoIsCurve)) {
-      ui->expoCurveCB->hide();
-      ui->expoCurveSB->hide();
-      ui->expoCurveGV->hide();
-      ui->label_curves->setText(tr("Curve"));
-    } else {
-      ui->label_expo->hide();
-      ui->expoCB->hide();
-      ui->expoGV->hide();
-      ui->expoSB->hide();
-    }
+
+    ui->label_expo->hide();
+    // TODO ui->expoCB->hide();
+    // TODO ui->expoGV->hide();
+    // TODO ui->expoSB->hide();
+
     if (!GetEepromInterface()->getCapability(FlightPhases)) {
       ui->label_phases->hide();
       for (int i=0; i<9; i++) {
@@ -194,22 +196,12 @@ void ExpoDialog::widgetChanged()
         gvars=1;
       }
       if (gvars==1) {
-        if (!GetEepromInterface()->getCapability(ExpoIsCurve)) {
-          if (ui->expoGV->isChecked()) {
-            ui->expoCB->show();
-            ui->expoSB->hide();
-          } else {
-            ui->expoCB->hide();
-            ui->expoSB->show();
-          }
+        if (ui->expoCurveGV->isChecked()) {
+          ui->expoCurveCB->show();
+          ui->expoCurveSB->hide();
         } else {
-          if (ui->expoCurveGV->isChecked()) {
-            ui->expoCurveCB->show();
-            ui->expoCurveSB->hide();
-          } else {
-            ui->expoCurveCB->hide();
-            ui->expoCurveSB->show();
-          }
+          ui->expoCurveCB->hide();
+          ui->expoCurveSB->show();
         }
         if (ui->weightGV->isChecked()) {
           ui->weightCB->show();
@@ -229,45 +221,24 @@ void ExpoDialog::valuesChanged()
 {
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
     if (ui->curvesCB->currentIndex()==0)  {
-      if (GetEepromInterface()->getCapability(ExpoIsCurve)) {
-        ed->curveMode = 0;
-        ui->expoCurveGV->show();
-        if (ui->expoCurveGV->isChecked()) {
-          ui->expoCurveCB->show();
-          ui->expoCurveSB->hide();
-          ed->curveParam = ui->expoCurveCB->itemData(ui->expoCurveCB->currentIndex()).toInt();
-        } else {
-          ui->expoCurveCB->hide();
-          ui->expoCurveSB->show();
-          ed->curveParam = ui->expoCurveSB->value();
-        }
-        ed->expo = ed->curveParam;
-      } else {
-        ui->expoCurveCB->hide();
+      // TODO      ed->curveMode = 0;
+      ui->expoCurveGV->show();
+      if (ui->expoCurveGV->isChecked()) {
+        ui->expoCurveCB->show();
         ui->expoCurveSB->hide();
-        ui->expoCurveGV->hide();
-        ed->curveMode = 0;
-        if (ui->expoGV->isChecked()) {
-          ed->expo = ui->expoCB->itemData(ui->expoCB->currentIndex()).toInt();
-        } else {
-          ed->expo = ui->expoSB->value();
-        }
-        ed->curveParam = ed->expo;
+        // TODO ed->curveParam = ui->expoCurveCB->itemData(ui->expoCurveCB->currentIndex()).toInt();
       }
-    } else {
-      if (!GetEepromInterface()->getCapability(ExpoIsCurve)) {
-        ed->curveMode = 1;
-        ed->curveParam = ui->curvesCB->currentIndex();
-        if (ui->expoGV->isChecked()) {
-          ed->expo = ui->expoCB->itemData(ui->expoCB->currentIndex()).toInt();
-        } else {
-          ed->expo = ui->expoSB->value();
-        }
-      } else {
-        ed->curveMode = 1;
-        ed->curveParam = ui->curvesCB->currentIndex();
-        ed->expo = 0;
+      else {
+        ui->expoCurveCB->hide();
+        ui->expoCurveSB->show();
+        // TODO ed->curveParam = ui->expoCurveSB->value();
       }
+      // TODO ed->expo = ed->curveParam;
+    }
+    else {
+      // TODO ed->curveMode = 1;
+      // TODO ed->curveParam = ui->curvesCB->currentIndex();
+      // TODO ed->expo = 0;
       ui->expoCurveCB->hide();
       ui->expoCurveSB->hide();
       ui->expoCurveGV->hide();

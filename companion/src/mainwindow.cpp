@@ -59,7 +59,7 @@
 #include "burndialog.h"
 #include "hexinterface.h"
 #include "warnings.h"
-#include "firmwares/opentx/open9xinterface.h" // TODO get rid of this include
+#include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 #ifdef __APPLE__

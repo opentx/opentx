@@ -83,13 +83,12 @@ void InputsPanel::update()
     };
 
     str += tr("Weight") + getGVarString(md->weight).rightJustified(6, ' ');
-    if (!GetEepromInterface()->getCapability(ExpoIsCurve)) {
-      if (md->expo!=0)
-        str += " " + tr("Expo") + getGVarString(md->expo, true).rightJustified(7, ' ');
-    } else {
-      if (md->curveMode==0 && md->curveParam!=0)
-        str += " " + tr("Expo") + getGVarString(md->curveParam, true).rightJustified(7, ' ');
+
+    QString curveStr = md->curve.toString();
+    if (!curveStr.isEmpty()) {
+      str += " " + curveStr;
     }
+
     if (GetEepromInterface()->getCapability(FlightPhases)) {
       if(md->phases) {
         if (md->phases!=(unsigned int)(1<<GetEepromInterface()->getCapability(FlightPhases))-1) {
@@ -120,14 +119,14 @@ void InputsPanel::update()
             mask <<=1;
           }
           str += QString(")");
-        } else {
+        }
+        else {
           str += tr("DISABLED")+QString(" !!!");
         }
       }
     }
     if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch") + QString("(%1)").arg(md->swtch.toString());
-    if (md->curveMode)
-      if (md->curveParam) str += " " + tr("Curve") + QString("(%1)").arg(getCurveStr(md->curveParam));
+
     if (GetEepromInterface()->getCapability(HasExpoNames)) {
       QString ExpoName;
       ExpoName.append(md->name);

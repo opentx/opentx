@@ -42,7 +42,6 @@
 #define O9X_NUM_FSW            16 // number of functions assigned to switches
 #define O9X_MAX_CURVES         8
 #define O9X_NUM_POINTS         (112-O9X_MAX_CURVES)
-#define O9X_MAX_GVARS          5
 
 #define O9X_ARM_MAX_PHASES     9
 #define O9X_ARM_MAX_MIXERS     64
@@ -50,7 +49,6 @@
 #define O9X_ARM_NUM_CHNOUT     32 // number of real output channels CH1-CH16
 #define O9X_ARM_NUM_CSW        32 // number of custom switches
 #define O9X_ARM_NUM_FSW        32 // number of functions assigned to switches
-#define O9X_ARM_MAX_CURVES     16
 #define O9X_ARM_NUM_POINTS     512
 #define O9X_ARM_MAX_CSFUNCOLD  13
 #define O9X_ARM_MAX_CSFUNC     15

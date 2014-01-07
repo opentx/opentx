@@ -152,13 +152,14 @@ void MixesPanel::update()
     if(md->noExpo) {
       str += " " +tr("No DR/Expo");
     }
-    if (GetEepromInterface()->getCapability(MixFmTrim) && md->enableFmTrim==1) {
-      if (md->sOffset) str += " " + tr("FMTrim") + QString("(%1%)").arg(md->sOffset);
-    } else {
-      if (md->sOffset) str += " " + tr("Offset") + getGVarString(md->sOffset);
+
+    if (md->sOffset) str += " " + tr("Offset") + getGVarString(md->sOffset);
+
+    QString curveStr = md->curve.toString();
+    if (!curveStr.isEmpty()) {
+      str += " " + curveStr;
     }
-    if (md->differential) str += " " + tr("Diff") + getGVarString(md->differential);
-    if (md->curve) str += " " + tr("Curve") + QString("(%1)").arg(getCurveStr(md->curve));
+
     int scale=GetEepromInterface()->getCapability(SlowScale);
     if (scale==0)
       scale=1;
@@ -171,7 +172,7 @@ void MixesPanel::update()
       QString MixerName;
       MixerName.append(md->name);
       if (!MixerName.isEmpty()) {
-        str+=QString("(%1)").arg(MixerName);
+        str += QString("(%1)").arg(MixerName);
       }
     }
     qba.clear();
@@ -188,7 +189,8 @@ void MixesPanel::update()
 
     if (curDest > outputs) {
       str = tr("X%1  ").arg(curDest-outputs);
-    } else {
+    }
+    else {
       str = tr("CH%1%2").arg(curDest/10).arg(curDest%10);
       if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
         QString name=model.limitData[curDest-1].name;

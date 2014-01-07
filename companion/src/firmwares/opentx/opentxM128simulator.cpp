@@ -14,27 +14,24 @@
  *
  */
 
-#include "open9xsimulator.h"
-#include "open9xinterface.h"
-#include "open9xeeprom.h"
+#include "opentxM128simulator.h"
+#include "opentxinterface.h"
+#include "opentxeeprom.h"
 
-#define HELI
 #define SIMU
 #define SIMU_EXCEPTIONS
 #define PCBSTD
-#define CPUM64
-#define SPLASH
-#define FLIGHT_MODES
-#define PPM_UNIT_PERCENT_PREC1
+#define CPUM128
 #define HELI
 #define TEMPLATES
+#define SPLASH
+#define FLIGHT_MODES
 #define FRSKY
 #define FRSKY_HUB
 #define WS_HOW_HIGH
-#define PXX
-#define DSM2
-#define DSM2_PPM
 #define VARIO
+#define PPM_UNIT_PERCENT_PREC1
+#define AUDIO
 #define HAPTIC
 #define AUTOSWITCH
 #define GRAPHICS
@@ -45,12 +42,11 @@
 #define VOICE
 #define PPM_CENTER_ADJUSTABLE
 #define PPM_LIMITS_SYMETRICAL
-#define BUZZER
 #define GAUGES
 #define GPS
 #define FAI_CHOICE
 
-#define EEPROM_VARIANT SIMU_STOCK_VARIANTS
+#define EEPROM_VARIANT SIMU_M128_VARIANTS
 #define GAUGES
 
 #undef min
@@ -58,7 +54,7 @@
 
 #include <exception>
 
-namespace Open9x {
+namespace Open9xM128 {
 #include "radio/src/targets/stock/board_stock.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_rlc.cpp"
@@ -75,11 +71,11 @@ namespace Open9x {
 #include "radio/src/lcd.cpp"
 #include "radio/src/keys.cpp"
 #include "radio/src/simpgmspace.cpp"
-#include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/audio_avr.cpp"
 #include "radio/src/targets/stock/voice.cpp"
-#include "radio/src/buzzer.cpp"
+#include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/translations/tts_en.cpp"
 #include "radio/src/haptic.cpp"
 
@@ -88,7 +84,7 @@ int16_t g_anas[NUM_STICKS+BOARD_9X_NUM_POTS];
 uint16_t anaIn(uint8_t chan)
 {
   if (chan == 7)
-    return 1500;
+    return 150;
   else
     return g_anas[chan];
 }
@@ -105,69 +101,65 @@ uint8_t getStickMode()
 
 }
 
-using namespace Open9x;
+using namespace Open9xM128;
 
-Open9xSimulator::Open9xSimulator(Open9xInterface * open9xInterface):
-    open9xInterface(open9xInterface)
+Open9xM128Simulator::Open9xM128Simulator(Open9xInterface * open9xInterface):
+  open9xInterface(open9xInterface)
 {
-#define INIT_IMPORT
-#include "simulatorimport.h"
 }
 
-bool Open9xSimulator::timer10ms()
+bool Open9xM128Simulator::timer10ms()
 {
 #define TIMER10MS_IMPORT
 #include "simulatorimport.h"
 }
 
-uint8_t * Open9xSimulator::getLcd()
+uint8_t * Open9xM128Simulator::getLcd()
 {
 #define GETLCD_IMPORT
 #include "simulatorimport.h"
 }
 
-bool Open9xSimulator::lcdChanged(bool & lightEnable)
+bool Open9xM128Simulator::lcdChanged(bool & lightEnable)
 {
 #define LCDCHANGED_IMPORT
 #include "simulatorimport.h"
 }
 
-void Open9xSimulator::start(RadioData &radioData, bool tests)
+void Open9xM128Simulator::start(RadioData &radioData, bool tests)
 {
-  open9xInterface->save(&Open9x::eeprom[0], radioData, SIMU_STOCK_VARIANTS);
+  open9xInterface->save(&eeprom[0], radioData, SIMU_M128_VARIANTS);
   StartEepromThread(NULL);
   StartMainThread(tests);
 }
 
-void Open9xSimulator::stop()
+void Open9xM128Simulator::stop()
 {
   StopMainThread();
   StopEepromThread();
 }
 
-void Open9xSimulator::getValues(TxOutputs &outputs)
+void Open9xM128Simulator::getValues(TxOutputs &outputs)
 {
 #define GETVALUES_IMPORT
 #define g_chans512 channelOutputs
 #include "simulatorimport.h"
-  outputs.beep = g_beepCnt;
-  g_beepCnt = 0;
 }
 
-void Open9xSimulator::setValues(TxInputs &inputs)
+void Open9xM128Simulator::setValues(TxInputs &inputs)
 {
 #define SETVALUES_IMPORT
 #include "simulatorimport.h"
 }
 
-void Open9xSimulator::setTrim(unsigned int idx, int value)
+void Open9xM128Simulator::setTrim(unsigned int idx, int value)
 {
-  idx = Open9x::modn12x3[4*getStickMode() + idx] - 1;
+  idx = Open9xM128::modn12x3[4*getStickMode() + idx] - 1;
   uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
   setTrimValue(phase, idx, value);
 }
 
-void Open9xSimulator::getTrims(Trims & trims)
+void Open9xM128Simulator::getTrims(Trims & trims)
 {
   uint8_t phase = getFlightPhase();
   trims.extended = hasExtendedTrims();
@@ -176,19 +168,23 @@ void Open9xSimulator::getTrims(Trims & trims)
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9x::modn12x3[4*getStickMode() + i] - 1;
+    uint8_t idx = Open9xM128::modn12x3[4*getStickMode() + i] - 1;
     int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;
   }
 }
 
-unsigned int Open9xSimulator::getPhase()
+void Open9xM128Simulator::wheelEvent(uint8_t steps)
+{
+}
+
+unsigned int Open9xM128Simulator::getPhase()
 {
   return getFlightPhase();
 }
 
-const char * Open9xSimulator::getError()
+const char * Open9xM128Simulator::getError()
 {
 #define GETERROR_IMPORT
 #include "simulatorimport.h"

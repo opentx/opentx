@@ -15,7 +15,7 @@
  */
 
 #include "opentxTaranisSimulator.h"
-#include "open9xinterface.h"
+#include "opentxinterface.h"
 
 #define SIMU
 #define SIMU_EXCEPTIONS

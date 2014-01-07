@@ -480,68 +480,57 @@ void populatePhasesCB(QComboBox *b, int value)
   b->setCurrentIndex(value + GetEepromInterface()->getCapability(FlightPhases));
 }
 
-void populateCurvesCB(QComboBox *b, int value)
+void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags)
 {
-  b->clear();
-  int numcurves=GetEepromInterface()->getCapability(NumCurves);
-  if (numcurves==0) {
-    numcurves=16;
-  }
-  for (int i = -(numcurves)*GetEepromInterface()->getCapability(HasNegCurves); i < CURVE_BASE + numcurves; i++) {
-    if ((i==0) && GetEepromInterface()->getCapability(DiffMixers)) {
-      b->addItem(QObject::tr("Diff"));
-    } else {
-      b->addItem(getCurveStr(i));
+  curveTypeCB->clear();
+  curveTypeCB->addItem(QObject::tr("Diff"));
+  curveTypeCB->addItem(QObject::tr("Expo"));
+  curveTypeCB->addItem(QObject::tr("Func"));
+  curveTypeCB->addItem(QObject::tr("Curve"));
+  curveTypeCB->setCurrentIndex(curve.type);
+
+  if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
+    curveGVarCB->show();
+    if (curve.value>100 || curve.value<-100) {
+      curveGVarCB->setChecked(true);
+      populateGVCB(curveValueCB, curve.value);
+      curveValueCB->show();
+      curveValueSB->hide();
+    }
+    else {
+      curveGVarCB->setChecked(false);
+      curveValueSB->setMinimum(-100);
+      curveValueSB->setMaximum(100);
+      curveValueSB->setValue(curve.value);
+      curveValueSB->show();
+      curveValueCB->hide();
     }
   }
-  b->setCurrentIndex(value+numcurves*GetEepromInterface()->getCapability(HasNegCurves));
-  b->setMaxVisibleItems(10);
-}
-
-void populateExpoCurvesCB(QComboBox *b, int value)
-{
-  b->clear();
-  int numcurves=GetEepromInterface()->getCapability(NumCurves);
-  if (numcurves==0) {
-    numcurves=16;
-  }
-  if (GetEepromInterface()->getCapability(ExpoIsCurve)) {
-      b->addItem(QObject::tr("Expo"));
-  } else {
-      b->addItem(getCurveStr(0));
-  }
-  for (int i = 1; i < CURVE_BASE + numcurves; i++)    
-    b->addItem(getCurveStr(i));
-  b->setCurrentIndex(value);
-  b->setMaxVisibleItems(10);
-  /* TODO
-  if (GetEepromInterface()->getCapability(ExpoCurve5)) {
-    int curve5=GetEepromInterface()->getCapability(ExpoCurve5);
-    for (int i=CURVE_BASE+curve5; i < CURVE_BASE + MAX_CURVE5; i++) {
-      // Get the index of the value to disable
-      QModelIndex index = b->model()->index(i, 0);
-
-      // This is the effective 'disable' flag
-      QVariant v(0);
-
-      //the magic
-      b->model()->setData(index, v, Qt::UserRole - 1);
+  else {
+    curveGVarCB->hide();
+    curveValueSB->hide();
+    curveValueCB->show();
+    curveValueCB->setMaxVisibleItems(10);
+    switch (curve.type) {
+      case CurveReference::CURVE_REF_FUNC:
+        for (int i=0; i<=6/*TODO constant*/; i++) {
+          curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_FUNC, i).toString());
+        }
+        curveValueCB->setCurrentIndex(curve.value);
+        break;
+      case CurveReference::CURVE_REF_CUSTOM:
+      {
+        int numcurves = GetEepromInterface()->getCapability(NumCurves);
+        for (int i=-numcurves; i<numcurves; i++) {
+          curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
+        }
+        curveValueCB->setCurrentIndex(curve.value+numcurves);
+        break;
+      }
+      default:
+        break;
     }
   }
-  if (GetEepromInterface()->getCapability(ExpoCurve9)) {
-    int curve9=GetEepromInterface()->getCapability(ExpoCurve9);
-    for (int i=CURVE_BASE+MAX_CURVE5+curve9; i < CURVE_BASE + MAX_CURVE5+ MAX_CURVE9; i++) {
-      // Get the index of the value to disable
-      QModelIndex index = b->model()->index(i, 0);
-
-      // This is the effective 'disable' flag
-      QVariant v(0);
-
-      //the magic
-      b->model()->setData(index, v, Qt::UserRole - 1);
-    }
-  }
-  */
 }
 
 void populateTrimUseCB(QComboBox *b, unsigned int phase)
@@ -1015,12 +1004,6 @@ void populateCSWCB(QComboBox *b, int value)
 QString getSignedStr(int value)
 {
   return value > 0 ? QString("+%1").arg(value) : QString("%1").arg(value);
-}
-
-QString getCurveStr(int curve)
-{
-  QString crvStr = "!c16!c15!c14!c13!c12!c11!c10!c9 !c8 !c7 !c6 !c5 !c4 !c3 !c2 !c1 ----x>0 x<0 |x| f>0 f<0 |f| c1  c2  c3  c4  c5  c6  c7  c8  c9  c10 c11 c12 c13 c14 c15 c16 ";
-  return crvStr.mid((curve+C9X_MAX_CURVES) * 4, 4).remove(' ').replace("c", QObject::tr("Curve") + " ");
 }
 
 QString getGVarString(int16_t val, bool sign)

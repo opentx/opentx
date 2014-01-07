@@ -42,9 +42,9 @@ void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QS
 void populatePhasesCB(QComboBox *b, int value);
 void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
+void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags);
 void populateCurvesCB(QComboBox *b, int value);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
-void populateExpoCurvesCB(QComboBox *b, int value);
 void populateTimerSwitchCB(QComboBox *b, int value);
 QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);
 QString getProtocolStr(const int proto);
@@ -71,7 +71,6 @@ QString getCSWFunc(int val);
 QString getFuncName(unsigned int val);
 QString getRepeatString(unsigned int val);
 QString getSignedStr(int value);
-QString getCurveStr(int curve);
 QString getGVarString(int16_t val, bool sign=false);
 QString image2qstring(QImage image);
 QImage qstring2image(QString imagestr);

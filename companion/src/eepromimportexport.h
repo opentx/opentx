@@ -74,7 +74,10 @@ class DataField {
       QByteArray bytes = bitsToBytes(bits);
       int result = (offset+bits.count()) % 8;
       for (int i=0; i<level; i++) printf("  ");
-      printf("%s ", getName());
+      if (bits.count() % 8 == 0)
+        printf("%s (%dbytes) ", getName(), bytes.count());
+      else
+        printf("%s (%dbits) ", getName(), bits.count());
       for (int i=0; i<bytes.count(); i++) {
         unsigned char c = bytes[i];
         if ((i==0 && offset) || (i==bytes.count()-1 && result!=0))
@@ -422,7 +425,7 @@ class StructField: public DataField {
     virtual int Dump(int level=0, int offset=0)
     {
       for (int i=0; i<level; i++) printf("  ");
-      printf("%s\n", getName());
+      printf("%s (%d bytes)\n", getName(), size()/8);
       foreach(DataField *field, fields) {
         offset = field->Dump(level+1, offset);
       }
