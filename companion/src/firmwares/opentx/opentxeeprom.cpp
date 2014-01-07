@@ -910,6 +910,7 @@ class CurvesField: public TransformedField {
       internalField("Curves"),
       curves(curves),
       board(board),
+      version(version),
       maxCurves(MAX_CURVES(board, version)),
       maxPoints(IS_ARM(board) ? O9X_ARM_NUM_POINTS : O9X_NUM_POINTS)
     {
@@ -939,14 +940,17 @@ class CurvesField: public TransformedField {
 
       int * cur = &_points[0];
       int offset = 0;
+
       for (int i=0; i<maxCurves; i++) {
         CurveData *curve = &curves[i];
-        offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count) - 5;
-        if (offset > maxPoints - 5 * maxCurves) {
+        int size = (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
+        if (offset+size > maxPoints) {
           EEPROMWarnings += ::QObject::tr("openTx only accepts %1 points in all curves").arg(maxPoints) + "\n";
           break;
         }
-        _curves[i] = offset;
+        if (!IS_TARANIS(board) || version < 216) {
+          _curves[i] = offset - (5*i);
+        }
         for (int j=0; j<curve->count; j++) {
           *cur++ = curve->points[j].y;
         }
@@ -955,30 +959,37 @@ class CurvesField: public TransformedField {
             *cur++ = curve->points[j].x;
           }
         }
+        offset += size;
       }
     }
 
     virtual void afterImport()
     {
+      int * cur = &_points[0];
+
       for (int i=0; i<maxCurves; i++) {
         CurveData *curve = &curves[i];
-        int * cur = &_points[i==0 ? 0 : 5*i + _curves[i-1]];
-        int * next = &_points[5*(i+1) + _curves[i]];
-        int size = next - cur;
-        if (size % 2 == 0) {
-          curve->count = (size / 2) + 1;
-          curve->type = CurveData::CURVE_TYPE_CUSTOM;
+        if (!IS_TARANIS(board) || version < 216) {
+          int * next = &_points[5*(i+1) + _curves[i]];
+          int size = next - cur;
+          if (size % 2 == 0) {
+            curve->count = (size / 2) + 1;
+            curve->type = CurveData::CURVE_TYPE_CUSTOM;
+          }
+          else {
+            curve->count = size;
+            curve->type = CurveData::CURVE_TYPE_STANDARD;
+          }
         }
-        else {
-          curve->count = size;
-          curve->type = CurveData::CURVE_TYPE_STANDARD;
+
+        for (int j=0; j<curve->count; j++) {
+          curve->points[j].y = *cur++;
         }
-        for (int j=0; j<curve->count; j++)
-          curve->points[j].y = cur[j];
+
         if (curve->type == CurveData::CURVE_TYPE_CUSTOM) {
           curve->points[0].x = -100;
           for (int j=1; j<curve->count-1; j++)
-            curve->points[j].x = cur[curve->count+j-1];
+            curve->points[j].x = *cur++;
           curve->points[curve->count-1].x = +100;
         }
         else {
@@ -992,6 +1003,7 @@ class CurvesField: public TransformedField {
     StructField internalField;
     CurveData *curves;
     BoardEnum board;
+    unsigned int version;
     int maxCurves;
     int maxPoints;
     int _curves[C9X_MAX_CURVES];

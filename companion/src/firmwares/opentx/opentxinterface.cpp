@@ -870,6 +870,9 @@ bool Open9xInterface::checkVersion(unsigned int version)
     case 215:
       // M128 revert because too much RAM used!
       break;
+    case 216:
+      // A lot of things (first github release)
+      break;
     default:
       return false;
   }
