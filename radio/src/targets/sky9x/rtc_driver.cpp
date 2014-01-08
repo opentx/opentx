@@ -61,16 +61,15 @@ uint32_t Rtc_write_count ;
 uint8_t RtcConfig[8] ;          // For initial config and writing to RTC
 // 0x80, 0, 0, 0x08, 0, 0, 0, 0x80
 
-static uint32_t fromBCD( uint8_t bcd_value )
+uint32_t fromBCD(uint8_t bcd_value)
 {
-        return ( ( ( bcd_value & 0xF0 ) * 10 ) >> 4 ) + ( bcd_value & 0x0F ) ;
+  return (((bcd_value & 0xF0) * 10) >> 4) + (bcd_value & 0x0F);
 }
 
-static uint32_t toBCD( uint32_t value )
+uint32_t toBCD(uint32_t value)
 {
-        div_t qr ;
-        qr = div( value, 10 ) ;
-        return ( qr.quot << 4 ) + qr.rem ;
+  div_t qr = div(value, 10);
+  return (qr.quot << 4) + qr.rem;
 }
 
 // This is called from an interrupt routine, or
@@ -151,23 +150,23 @@ void i2cCheck()
 
 void writeRTC(uint8_t *ptr)
 {
-  uint32_t year ;
-  RtcConfig[0] = 0x80 | toBCD( *ptr++ ) ;
-  RtcConfig[1] = toBCD( *ptr++ ) ;
-  RtcConfig[2] = toBCD( *ptr++ ) ;
-  RtcConfig[3] = 0x08 ;
-  RtcConfig[4] = toBCD( *ptr++ ) ;
-  RtcConfig[5] = toBCD( *ptr++ ) ;
-  year = *ptr++ ;
-  year |= *ptr << 8 ;
-  RtcConfig[6] = toBCD( year - 2000 ) ;
-  RtcConfig[7] = MFPsetting ;
-  Rtc_write_ptr = RtcConfig ;
-  Rtc_write_count = 8 ;
-  __disable_irq() ;
-  Rtc_write_pending |= 1 ;
-  i2cCheck() ;
-  __enable_irq() ;
+  uint32_t year;
+  RtcConfig[0] = 0x80 | toBCD(*ptr++);
+  RtcConfig[1] = toBCD(*ptr++);
+  RtcConfig[2] = toBCD(*ptr++);
+  RtcConfig[3] = 0x08;
+  RtcConfig[4] = toBCD(*ptr++);
+  RtcConfig[5] = toBCD( *ptr++);
+  year = *ptr++;
+  year |= *ptr << 8;
+  RtcConfig[6] = toBCD(year - 2000);
+  RtcConfig[7] = MFPsetting;
+  Rtc_write_ptr = RtcConfig;
+  Rtc_write_count = 8;
+  __disable_irq();
+  Rtc_write_pending |= 1;
+  i2cCheck();
+  __enable_irq();
 }
 
 void readRTC()
@@ -275,5 +274,7 @@ void rtcSetTime(struct gtm * t)
 
 void rtcInit()
 {
-  // TODO ? coprocReadData();
+#if defined(REVX)
+  readRTC();
+#endif
 }
