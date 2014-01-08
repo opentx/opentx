@@ -526,7 +526,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   CPPDEFS = -Dat91sam3s4
   ifeq ($(PCB), 9XRPRO)
     CPPDEFS += -DREVX
-    LDSCRIPT = targets/sky9x/sam3s4c_flash.ld
+    LDSCRIPT = targets/sky9x/sam3s8c_flash.ld
   else ifeq ($(PCBREV), REVA)
     CPPDEFS += -DREVA
     LDSCRIPT = targets/sky9x/sam3s2c_flash.ld

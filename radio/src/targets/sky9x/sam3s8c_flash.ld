@@ -49,8 +49,8 @@
  */
 MEMORY
 {
-   FLASH (rx)  : ORIGIN = 0x00400000, LENGTH = 128K
-   RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 32K
+   FLASH (rx)  : ORIGIN = 0x00400000, LENGTH = 512K
+   RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 64K
 }
 
 
@@ -71,10 +71,16 @@ SECTIONS
     */
    .text :
    {
-      _stext = .;          /* Provide the name for the start of this section */
+	  FILL(0xFFFF)
       
       CREATE_OBJECT_SYMBOLS
-      KEEP(*(.vectors))
+
+      *(.bootrodata)
+      *(.bootrodata.*)
+      
+      . = ALIGN(32768);
+      _stext = .;
+	  KEEP(*(.vectors))
       
       *(.text)
       *(.text.*)
