@@ -141,32 +141,6 @@ void coprocWriteData(uint8_t *data, uint32_t size)
   __enable_irq();
 }
 
-// Set up for volume control (TWI0)
-// Need PA3 and PA4 set to peripheral A
-void coprocInit()
-{
-  register Pio *pioptr ;
-  register uint32_t timing ;
-
-  PMC->PMC_PCER0 |= 0x00080000L ;               // Enable peripheral clock to TWI0
-
-  /* Configure PIO */
-  pioptr = PIOA ;
-  pioptr->PIO_ABCDSR[0] &= ~0x00000018 ;        // Peripheral A
-  pioptr->PIO_ABCDSR[1] &= ~0x00000018 ;        // Peripheral A
-  pioptr->PIO_PDR = 0x00000018 ;                                        // Assign to peripheral
-
-  timing = Master_frequency * 5 / 1000000 ;             // 5uS high and low
-  timing += 15 - 4 ;
-  timing /= 16 ;
-  timing |= timing << 8 ;
-
-  TWI0->TWI_CWGR = 0x00040000 | timing ;                        // TWI clock set
-  TWI0->TWI_CR = TWI_CR_MSEN | TWI_CR_SVDIS ;           // Master mode enable
-  TWI0->TWI_MMR = 0x002F0000 ;          // Device 5E (>>1) and master is writing
-  NVIC_EnableIRQ(TWI0_IRQn) ;
-}
-
 #if !defined(SIMU)
 extern "C" void TWI0_IRQHandler()
 {
