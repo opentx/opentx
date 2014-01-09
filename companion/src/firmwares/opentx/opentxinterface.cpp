@@ -691,8 +691,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_ARM(board) ? 250 : 15);
     case CSFunc:
       return 18;
-    case GvarsOfsNum:  
-      return 5;
     case HasSDLogs:
       return ((board == BOARD_GRUVIN9X || IS_ARM(board)) ? true : false);
     case LCDWidth:

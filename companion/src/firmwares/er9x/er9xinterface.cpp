@@ -243,8 +243,6 @@ int Er9xInterface::getCapability(const Capability capability)
       return 12;
     case CustomAndSwitches:
         return 5;
-    case GvarsOfsNum:
-      return 5;
     case CSFunc:
       return 13;
     case Outputs:

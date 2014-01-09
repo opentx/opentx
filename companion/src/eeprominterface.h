@@ -977,7 +977,6 @@ enum Capability {
  GvarsAsSources,
  GvarsAsWeight,
  GvarsName,
- GvarsOfsNum,
  NoTelemetryProtocol,
  TelemetryCSFields,
  TelemetryColsCSFields,

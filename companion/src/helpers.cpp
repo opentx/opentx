@@ -814,7 +814,7 @@ void populateGVCB(QComboBox *b, int value)
   int selected=0;
   int nullitem;
   b->clear();
-  int pgvars=GetEepromInterface()->getCapability(GvarsOfsNum);
+  int pgvars = GetEepromInterface()->getCapability(Gvars);
   for (int i=-pgvars; i<=-1; i++) {
     int16_t gval = (int16_t)(-10000+i);
     b->addItem(QObject::tr("-GV%1").arg(-i), gval);
