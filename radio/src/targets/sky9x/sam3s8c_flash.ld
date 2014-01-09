@@ -71,16 +71,10 @@ SECTIONS
     */
    .text :
    {
-	  FILL(0xFFFF)
+	  _stext = .;          /* Provide the name for the start of this section */
       
       CREATE_OBJECT_SYMBOLS
-
-      *(.bootrodata)
-      *(.bootrodata.*)
-      
-      . = ALIGN(32768);
-      _stext = .;
-	  KEEP(*(.vectors))
+      KEEP(*(.vectors))
       
       *(.text)
       *(.text.*)
