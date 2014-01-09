@@ -281,8 +281,6 @@ int Er9xInterface::getCapability(const Capability capability)
     case HasVolume:
     case HasBlInvert:
     case ModelVoice:
-    case HasFixOffset:
-      return 1;
     case Gvars:
       return 7;
     case GvarsHaveSources:

@@ -577,7 +577,6 @@ class MixData {
     MltpxValue mltpx;          // multiplex method 0=+ 1=* 2=replace
     unsigned int mixWarn;           // mixer warning
     unsigned int phases;             // -5=!FP4, 0=normal, 5=FP4
-    unsigned int lateOffset;
     int    sOffset;
     char   name[10+1];
 
@@ -995,7 +994,6 @@ enum Capability {
  HasPPMSim,
  HasCrossTrims,
  HasStickScroll,
- HasFixOffset,
  HasSoundMixer,
  NumModules,
  FSSwitch,

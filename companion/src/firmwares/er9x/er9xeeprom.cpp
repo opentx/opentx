@@ -229,7 +229,7 @@ t_Er9xMixData::operator MixData ()
     c9x.curve.value = curve;
   }
 
-  c9x.lateOffset=lateOffset;
+  // c9x.lateOffset=lateOffset;
   c9x.delayUp = delayUp;
   c9x.delayDown = delayDown;
   c9x.speedUp = speedUp;

@@ -83,15 +83,10 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
 
     populateCurveReference(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve, 0);
 
-    ui->FixOffsetChkB->setChecked(md->lateOffset);
     ui->MixDR_CB->setChecked(md->noExpo==0);
     if (!GetEepromInterface()->getCapability(MixesWithoutExpo)) {
       ui->MixDR_CB->hide();
       ui->label_MixDR->hide();
-    }
-    if (!GetEepromInterface()->getCapability(HasFixOffset)) {
-      ui->FixOffsetChkB->hide();
-      ui->label_FixOffset->hide();
     }
     if (GetEepromInterface()->getCapability(ExtraTrims)) {
       ui->trimCB->addItem(tr("Rud"),1);
@@ -171,7 +166,6 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
     connect(ui->offsetGV,SIGNAL(stateChanged(int)),this,SLOT(widgetChanged()));
     connect(ui->trimCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->MixDR_CB,SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
-    connect(ui->FixOffsetChkB,SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
     connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->warningCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->mltpxCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
@@ -261,7 +255,6 @@ void MixerDialog::valuesChanged()
     }
     md->carryTrim = -(ui->trimCB->currentIndex()-1);
     md->noExpo = ui->MixDR_CB->checkState() ? 0 : 1;
-    md->lateOffset = ui->FixOffsetChkB->checkState() ? 1 : 0;
 
     // TODO md->curve     = ui->curvesCB->currentIndex()-(numcurves)*GetEepromInterface()->getCapability(HasNegCurves);
     // TODO if (ui->differentialGV->isChecked()) {
