@@ -1307,6 +1307,7 @@ clean_list :
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) stamp-opentx.h
+	$(REMOVE) fonts/*/*.lbm
 
 #### Install
 
