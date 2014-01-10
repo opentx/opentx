@@ -83,7 +83,7 @@
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
 #define BSS             0x20
-#define STRCONDENSED    0x40 /* means that THRm will be displayed as THR */
+#define STRCONDENSED    0x80 /* means that THRm will be displayed as THR */
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
