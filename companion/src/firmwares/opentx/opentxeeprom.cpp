@@ -821,7 +821,13 @@ class ExpoField: public TransformedField {
         internalField.Append(new UnsignedField<16>(expo.phases));
         internalField.Append(new SignedField<8>(_weight));
         internalField.Append(new BoolField<8>(_curveMode));
-        internalField.Append(new ZCharField<6>(expo.name));
+        if (HAS_LARGE_LCD(board)) {
+          internalField.Append(new ZCharField<8>(expo.name));
+          internalField.Append(new SpareBitsField<16>());
+        }
+        else {
+          internalField.Append(new ZCharField<6>(expo.name));
+        }
         internalField.Append(new SignedField<8>(_curveParam));
       }
       else if (IS_DBLRAM(board, version) && IS_RELEASE_23_MARCH_2013(board, version)) {
