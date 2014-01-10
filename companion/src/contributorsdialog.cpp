@@ -1,7 +1,6 @@
 #include "contributorsdialog.h"
 #include "ui_contributorsdialog.h"
 #include <QtGui>
-#define CLINESEP "=====================================================\n"
 
 contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnurl) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
@@ -10,22 +9,27 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
     ui->setupUi(this);
     switch (contest) {
       case 0: {
-        ui->textBrowser->insertPlainText(CLINESEP);
-        ui->textBrowser->insertPlainText(tr("People who have contributed to this project")+"\n");
-        ui->textBrowser->insertPlainText(CLINESEP);
-        QFile file(":/contributors");
+        ui->textBrowser->insertHtml(tr("<h3>People who have contributed to this project</h3>"));
+        ui->textBrowser->insertPlainText("\n");
+        QFile file(":/DONATIONS.txt");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-            ui->textBrowser->insertPlainText(file.readAll());
+             QString color = "black";
+             while (!file.atEnd()) {
+                 QByteArray line = file.readLine();
+                 ui->textBrowser->insertHtml(QString("<font color=\"") + color + QString("\">") + line + QString(",</font> &nbsp"));
+                 if (color == "black")
+                     color = "#505050";
+                 else
+                     color = "black";
+             }
         }
         ui->textBrowser->insertPlainText("\n");
-        ui->textBrowser->insertPlainText(CLINESEP);
-        ui->textBrowser->insertPlainText(tr("Coders")+"\n");
-        ui->textBrowser->insertPlainText(CLINESEP);
-        QFile file2(":/coders");
+        ui->textBrowser->insertHtml(tr("<h3>Coders</h3><p></p>"));
+        QFile file2(":/CREDITS.txt");
         if(file2.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
             ui->textBrowser->insertPlainText(file2.readAll());
         }
-        ui->textBrowser->insertPlainText("\n\n\n");
+        ui->textBrowser->insertPlainText("\n\n");
         ui->textBrowser->insertPlainText(tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out."));
         ui->textBrowser->insertPlainText("\n\n");
         ui->textBrowser->insertPlainText(tr("Thank you all !!!"));
