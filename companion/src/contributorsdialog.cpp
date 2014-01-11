@@ -9,26 +9,38 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
     ui->setupUi(this);
     switch (contest) {
       case 0: {
-        ui->textBrowser->insertHtml(tr("<h3>People who have contributed to this project</h3>"));
-        ui->textBrowser->insertPlainText("\n");
         QFile file(":/DONATIONS.txt");
+        QString htmlString = "<table>";
+        htmlString += "<tr><td colspan=\"6\"><h3>People who have contributed to this project</h3></td></tr><tr>";
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-             QString color = "black";
+             int i = 0;
              while (!file.atEnd()) {
-                 QByteArray line = file.readLine();
-                 ui->textBrowser->insertHtml(QString("<font color=\"") + color + QString("\">") + line + QString(",</font> &nbsp"));
-                 if (color == "black")
-                     color = "#505050";
-                 else
-                     color = "black";
-             }
+                   QByteArray line = file.readLine(); 
+                   htmlString += QString("<td>") + line + QString("</td>");
+                   i++;
+                   if (!(i%6)){
+                       htmlString += "</tr><tr>";
+                   }
+              }
+             htmlString += "</tr>";
         }
-        ui->textBrowser->insertPlainText("\n");
-        ui->textBrowser->insertHtml(tr("<h3>Coders</h3><p></p>"));
+
+        htmlString += "<tr></tr><tr><td colspan=\"6\"><h3>Coders</h3></td></tr><tr>";
         QFile file2(":/CREDITS.txt");
         if(file2.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-            ui->textBrowser->insertPlainText(file2.readAll());
+             int i = 0;
+             while (!file2.atEnd()) {
+                   QByteArray line = file2.readLine();
+                   htmlString += QString("<td>") + line + QString("</td>");
+                   i++;
+                   if (!(i%6)){
+                       htmlString += "</tr><tr>";
+                   }
+              }
         }
+        htmlString += "</tr></table>";
+        ui->textBrowser->insertHtml(htmlString);
+
         ui->textBrowser->insertPlainText("\n\n");
         ui->textBrowser->insertPlainText(tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out."));
         ui->textBrowser->insertPlainText("\n\n");
