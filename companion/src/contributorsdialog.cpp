@@ -10,54 +10,77 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
     switch (contest) {
       case 0: {
         QFile file(":/DONATIONS.txt");
-        QString htmlString = "<table>";
-        htmlString += "<tr><td colspan=\"5\"><h3>People who have contributed to this project</h3></td></tr><tr>";
+        QString str;
+        str.append("<html><head>");
+        str.append("<style type=\"text/css\">\n");
+        str.append(".mycss\n{\nfont-weight:normal;\ncolor:#000000;vertical-align: top;font-size:10px;text-align:left;font-family:arial, helvetica, sans-serif;\n}\n");
+        str.append(".mycssb\n{\nfont-weight:bold;\ncolor:#C00000;vertical-align: top;font-size:10px;text-align:left;font-family:arial, helvetica, sans-serif;\n}\n");
+        str.append(".myhead\n{\nfont-weight:bold;\ncolor:#000000;font-size:14px;text-align:left;font-family:arial, helvetica, sans-serif;\n}\n");
+        str.append("</style>\n</head><body class=\"mycss\"><table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
+        str.append("<tr><td class=\"myhead\">"+tr("People who have contributed to this project")+"</td></tr>");
+        str.append("</table>");
+        str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-             int i = 0;
-             while (!file.atEnd()) {
-                   QByteArray line = file.readLine(); 
-                   htmlString += QString("<td>") + line + QString("</td>");
-                   i++;
-                   if (!(i%5)){
-                       htmlString += "</tr><tr>";
-                   }
+          int columns=6;
+          float cwidth=100.0/columns;
+          while (!file.atEnd()) {
+            str.append("<tr>");
+            for (int i=0; i<columns; i++) {
+              str.append(QString("<td width=\"%1%\" ").arg(cwidth));
+              if (!file.atEnd()) {
+                QByteArray line = file.readLine();
+                if (line.contains("monthly") || line.contains("mensual")) {
+                  str.append("class=\"mycssb\">");
+                } else {
+                  str.append("class=\"mycss\">");
+                }
+                str.append(line.trimmed()+"</td>");
+              } else {
+                str.append("class=\"mycss\">&nbsp;</td>");
               }
-             htmlString += "</tr>";
+            }
+            str.append("</tr>");
+          }
         }
-
-        htmlString += "<tr></tr><tr><td colspan=\"5\"><h3>Coders</h3></td></tr><tr>";
+        str.append("</table>");
         QFile file2(":/CREDITS.txt");
+        str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
+        str.append("<tr><td class=\"myhead\">"+tr("Coders")+"</td></tr>");
+        str.append("</table>");
+        str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
         if(file2.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-             int i = 0;
-             while (!file2.atEnd()) {
-                   QByteArray line = file2.readLine();
-                   htmlString += QString("<td>") + line + QString("</td>");
-                   i++;
-                   if (!(i%5)){
-                       htmlString += "</tr><tr>";
-                   }
+          while (!file2.atEnd()) {
+            str.append("<tr>");
+            for (int i=0; i<3; i++) {
+              str.append("<td width=\"33.33%\" class=\"mycss\">");
+              if (!file2.atEnd()) {
+                QByteArray line = file2.readLine();
+                str.append(line.trimmed());
+              } else {
+                str.append("&nbsp;");
               }
+              str.append("</td>");
+            }
+            str.append("</tr>");
+          }
+          
+          str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out.")+"</td></tr>");
+          str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Thank you all !!!")+"</td></tr>");
+          str.append("</table>");
+          str.append("</body></html>");
         }
-        htmlString += "</tr></table>";
-        ui->textBrowser->insertHtml(htmlString);
-
-        ui->textBrowser->insertPlainText("\n\n");
-        ui->textBrowser->insertPlainText(tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out."));
-        ui->textBrowser->insertPlainText("\n\n");
-        ui->textBrowser->insertPlainText(tr("Thank you all !!!"));
-        ui->textBrowser->setReadOnly(true);
-        ui->textBrowser->verticalScrollBar()->setValue(0);
+        ui->webBrowser->setHtml(str,QUrl(""));
+        ui->webBrowser->scroll(0,0);
         this->setWindowTitle(tr("Contributors"));
         }
         break;
       
       case 1:{
-        QFile file(":/releasenotes.txt");
+        QFile file(":/releasenotes");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-          ui->textBrowser->insertHtml(file.readAll());
+          ui->webBrowser->setHtml(file.readAll(),QUrl(""));
         }
-        ui->textBrowser->setReadOnly(true);
-        ui->textBrowser->verticalScrollBar()->setValue(0);
+        ui->webBrowser->scroll(0,0);
         this->setWindowTitle(tr("Companion9x Release Notes"));
         }
         break;
@@ -80,7 +103,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
 
 void contributorsDialog::showEvent ( QShowEvent * )
 {
-    ui->textBrowser->verticalScrollBar()->setValue(0);
+    ui->webBrowser->scroll(0,0);
 }
 
 contributorsDialog::~contributorsDialog()
@@ -90,7 +113,7 @@ contributorsDialog::~contributorsDialog()
 
 void contributorsDialog::replyFinished(QNetworkReply * reply)
 {
-    ui->textBrowser->insertHtml(reply->readAll());
+    ui->webBrowser->setHtml(reply->readAll(),QUrl(""));
 }
 
 void contributorsDialog::forceClose() {
