@@ -1336,18 +1336,12 @@ void getSwitchesPosition()
   CHECK_2POS(SW_SH);
   switchesPos = newPos;
 
+#if defined(PCBTARANIS)
   for (int i=0; i<NUM_XPOTS; i++) {
     if (g_eeGeneral.potsType & (1 << i)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
-      if (calib->count>0 && calib->count<6) {
-        uint8_t pos = calib->count;
-        int v = (int16_t)anaIn(POT1+i);
-        for (int j=0; j<calib->count; j++) {
-          if (v < calib->steps[j]) {
-            pos = j;
-            break;
-          }
-        }
+      if (calib->count>0 && calib->count<POTS_POS_COUNT) {
+        uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
         uint8_t previousPos = potsPos[i] >> 4;
         if (pos != previousPos) {
           potsLastposStart[i] = get_tmr10ms();
@@ -1360,9 +1354,10 @@ void getSwitchesPosition()
       }
     }
   }
+#endif
 }
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
-#define POT_POSITION(sw)     ((potsPos[(sw)/6] & 0x0f) == ((sw) % 6))
+#define POT_POSITION(sw)     ((potsPos[(sw)/POTS_POS_COUNT] & 0x0f) == ((sw) % POTS_POS_COUNT))
 #else
 #define getSwitchesPosition()
 #define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
@@ -2502,6 +2497,15 @@ void getADC()
   for (uint32_t i=0; i<4; i++) {
     adcRead();
     for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
+#if defined(PCBTARANIS)
+      if (s_noScroll) {
+        if (x>=POT1 && x<=POT2 && temp[x]!=Analog_values[x]) {
+          i = 0;
+        }
+        temp[x] = Analog_values[x];
+      }
+      else
+#endif
       temp[x] += Analog_values[x];
     }
   }
@@ -2509,14 +2513,14 @@ void getADC()
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
     uint16_t v = temp[x] >> 3;
 #if defined(PCBTARANIS)
+    if (s_noScroll) v = temp[x] >> 1;
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
-    if (x >= POT1 && x <= POT_LAST && (g_eeGeneral.potsType & (1<<(x-POT1))) && calib->count>0 && calib->count<6) {
-      for (int i=0; i<=calib->count; i++) {
-        if (i == calib->count) {
-          s_anaFilt[x] = RESX;
-        }
-        else if (v < calib->steps[i]) {
-          s_anaFilt[x] = -RESX + i*2*RESX/calib->count;
+    if (IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
+      uint8_t vShifted = (v >> 4);
+      s_anaFilt[x] = 2*RESX;
+      for (int i=0; i<calib->count; i++) {
+        if (vShifted < calib->steps[i]) {
+          s_anaFilt[x] = i*2*RESX/calib->count;
           break;
         }
       }
@@ -2771,9 +2775,14 @@ void evalInputs(uint8_t mode)
 
 #ifndef SIMU
     if (i < NUM_STICKS+NUM_POTS) {
-      CalibData * calib = &g_eeGeneral.calib[i];
-      v -= calib->mid;
-      v = v * (int32_t)RESX / (max((int16_t)100, (v>0 ? calib->spanPos : calib->spanNeg)));
+      if (IS_MULTIPOS_POT(i)) {
+        v -= RESX;
+      }
+      else {
+        CalibData * calib = &g_eeGeneral.calib[i];
+        v -= calib->mid;
+        v = v * (int32_t)RESX / (max((int16_t)100, (v>0 ? calib->spanPos : calib->spanNeg)));
+      }
     }
 #endif
 
@@ -3730,9 +3739,9 @@ void doMixerCalculations()
   // therefore forget the exact calculation and use only 1 instead; good compromise
   lastTMR = tmr10ms;
 
-  getSwitchesPosition();
-
   getADC();
+
+  getSwitchesPosition();
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;

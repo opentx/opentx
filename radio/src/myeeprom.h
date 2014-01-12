@@ -312,9 +312,10 @@ enum BacklightMode {
 #endif
 
 #if defined(PCBTARANIS)
+#define POTS_POS_COUNT 6
 PACK(typedef struct {
-  int8_t count;
-  int8_t steps[5];
+  uint8_t count;
+  uint8_t steps[POTS_POS_COUNT-1];
 }) StepsCalibData;
 #endif
 

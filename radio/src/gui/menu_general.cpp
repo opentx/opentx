@@ -1250,13 +1250,13 @@ void menuCommonCalib(uint8_t event)
 #if defined(PCBTARANIS)
       uint8_t idx = i - POT1;
       int count = reusableBuffer.calib.xpotsPositionsCount[idx];
-      if (count <= 6) {
+      if (count <= POTS_POS_COUNT) {
         bool found = false;
         for (int j=0; j<count; j++) {
-          if (vt > reusableBuffer.calib.xpotsPositions[idx][j][0]-20 && vt < reusableBuffer.calib.xpotsPositions[idx][j][0]+20) {
+          if (vt > reusableBuffer.calib.xpotsPositions[idx][j][0]-10 && vt < reusableBuffer.calib.xpotsPositions[idx][j][0]+10) {
             reusableBuffer.calib.xpotsPositions[idx][j][0] = min(vt, reusableBuffer.calib.xpotsPositions[idx][j][0]);
             reusableBuffer.calib.xpotsPositions[idx][j][1] = max(vt, reusableBuffer.calib.xpotsPositions[idx][j][1]);
-            if (reusableBuffer.calib.xpotsPositions[idx][j][1] - reusableBuffer.calib.xpotsPositions[idx][j][0] > 50) {
+            if (reusableBuffer.calib.xpotsPositions[idx][j][1] - reusableBuffer.calib.xpotsPositions[idx][j][0] > 20) {
               reusableBuffer.calib.xpotsPositionsCount[idx] = 255;
             }
             found = true;
@@ -1301,6 +1301,10 @@ void menuCommonCalib(uint8_t event)
       lcd_putsAtt(0*FW, 2*FH, STR_SETMIDPOINT, s_noScroll ? INVERS : 0);
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
+#if defined(PCBTARANIS)
+      g_eeGeneral.potsType = 0;
+#endif
+
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
@@ -1320,20 +1324,6 @@ void menuCommonCalib(uint8_t event)
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
-#if defined(PCBTARANIS)
-        if (i>=POT1 && i<=POT_LAST && reusableBuffer.calib.xpotsPositionsCount[i-POT1] > 1) {
-          g_eeGeneral.potsType &= ~(1 << (i-POT1));
-          if (reusableBuffer.calib.xpotsPositionsCount[i-POT1] <= 6) {
-            StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
-            calib->count = reusableBuffer.calib.xpotsPositionsCount[i-POT1]-1;
-            for (int j=0; j<calib->count-1; j++) {
-              calib->steps[i] = (reusableBuffer.calib.xpotsPositions[i-POT1][j+1][0] + reusableBuffer.calib.xpotsPositions[i-POT1][j][1]) / 2;
-            }
-            g_eeGeneral.potsType |= (1 << (i-POT1));
-          }
-        }
-        else
-#endif
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
           g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
@@ -1345,6 +1335,28 @@ void menuCommonCalib(uint8_t event)
       break;
 
     case 3:
+#if defined(PCBTARANIS)
+      for (uint8_t i=POT1; i<=POT_LAST; i++) {
+        int idx = i - POT1;
+        int count = reusableBuffer.calib.xpotsPositionsCount[idx];
+        if (count > 1 && count <= POTS_POS_COUNT) {
+          for (int j=0; j<count; j++) {
+            for (int k=j+1; k<count; k++) {
+              if (reusableBuffer.calib.xpotsPositions[idx][k][0] < reusableBuffer.calib.xpotsPositions[idx][j][0]) {
+                swap(reusableBuffer.calib.xpotsPositions[idx][j][0], reusableBuffer.calib.xpotsPositions[idx][k][0]);
+                swap(reusableBuffer.calib.xpotsPositions[idx][j][1], reusableBuffer.calib.xpotsPositions[idx][k][1]);
+              }
+            }
+          }
+          g_eeGeneral.potsType |= (1 << idx);
+          StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
+          calib->count = count - 1;
+          for (int j=0; j<calib->count; j++) {
+            calib->steps[j] = (reusableBuffer.calib.xpotsPositions[idx][j+1][0] + reusableBuffer.calib.xpotsPositions[idx][j][1]) >> 5;
+          }
+        }
+      }
+#endif
       g_eeGeneral.chkSum = evalChkSum();
       eeDirty(EE_GENERAL);
       reusableBuffer.calib.state = 4;
@@ -1359,6 +1371,19 @@ void menuCommonCalib(uint8_t event)
 
 #if defined(PCBTARANIS)
   drawPotsBars();
+  for (int i=POT1; i<=POT_LAST; i++) {
+    uint8_t steps = 0;
+    if (reusableBuffer.calib.state == 2) {
+      steps = reusableBuffer.calib.xpotsPositionsCount[i-POT1];
+    }
+    else if (IS_MULTIPOS_POT(i)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
+      steps = calib->count + 1;
+    }
+    if (steps > 0 && steps <= POTS_POS_COUNT) {
+      lcd_outdezAtt(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
+    }
+  }
 #endif
 }
 

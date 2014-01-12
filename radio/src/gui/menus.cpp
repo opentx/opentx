@@ -1265,8 +1265,14 @@ bool isSwitchAvailable(int16_t swtch)
 
 #if defined(PCBTARANIS)
   if (swtch >= SWSRC_P11 && swtch <= SWSRC_P26) {
-    int index = (swtch - SWSRC_P11) / 6;
-    return (g_eeGeneral.potsType & (1<<index));
+    int index = (swtch - SWSRC_P11) / POTS_POS_COUNT;
+    if (g_eeGeneral.potsType & (1<<index)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+index];
+      return (calib->count >= ((swtch - SWSRC_P11) % POTS_POS_COUNT));
+    }
+    else {
+      return false;
+    }
   }
 #endif
 

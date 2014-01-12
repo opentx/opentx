@@ -412,6 +412,12 @@ enum EnumKeys {
 
 #include "myeeprom.h"
 
+#if defined(PCBTARANIS)
+  #define IS_MULTIPOS_POT(x)   ((x)>=POT1 && (x)<=POT_LAST && (g_eeGeneral.potsType & (1 << ((x)-POT1))))
+#else
+  #define IS_MULTIPOS_POT(x)   (false)
+#endif
+
 #if ROTARY_ENCODERS > 0
   #define IF_ROTARY_ENCODERS(x) x,
 #else
@@ -1098,6 +1104,7 @@ template<class t> FORCEINLINE t min(t a, t b) { return a<b?a:b; }
 template<class t> FORCEINLINE t max(t a, t b) { return a>b?a:b; }
 template<class t> FORCEINLINE t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
 template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
+template<class t> void swap(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 
 #if defined(HELI) || defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n);
