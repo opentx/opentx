@@ -45,6 +45,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
         str.append("</table>");
         QFile file2(":/CREDITS.txt");
         str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
+        str.append("<tr><td class=\"mycss\">&nbsp;</td></tr>");
         str.append("<tr><td class=\"myhead\">"+tr("Coders")+"</td></tr>");
         str.append("</table>");
         str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
@@ -63,12 +64,12 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
             }
             str.append("</tr>");
           }
-          
-          str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out.")+"</td></tr>");
-          str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Thank you all !!!")+"</td></tr>");
-          str.append("</table>");
-          str.append("</body></html>");
         }
+        str.append("<tr><td class=\"mycss\">&nbsp;</td></tr>");
+        str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out.")+"</td></tr>");
+        str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Thank you all !!!")+"</td></tr>");
+        str.append("</table>");
+        str.append("</body></html>");        
         ui->webBrowser->setHtml(str,QUrl(""));
         ui->webBrowser->scroll(0,0);
         this->setWindowTitle(tr("Contributors"));
