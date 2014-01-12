@@ -11,21 +11,21 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
       case 0: {
         QFile file(":/DONATIONS.txt");
         QString htmlString = "<table>";
-        htmlString += "<tr><td colspan=\"6\"><h3>People who have contributed to this project</h3></td></tr><tr>";
+        htmlString += "<tr><td colspan=\"5\"><h3>People who have contributed to this project</h3></td></tr><tr>";
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
              int i = 0;
              while (!file.atEnd()) {
                    QByteArray line = file.readLine(); 
                    htmlString += QString("<td>") + line + QString("</td>");
                    i++;
-                   if (!(i%6)){
+                   if (!(i%5)){
                        htmlString += "</tr><tr>";
                    }
               }
              htmlString += "</tr>";
         }
 
-        htmlString += "<tr></tr><tr><td colspan=\"6\"><h3>Coders</h3></td></tr><tr>";
+        htmlString += "<tr></tr><tr><td colspan=\"5\"><h3>Coders</h3></td></tr><tr>";
         QFile file2(":/CREDITS.txt");
         if(file2.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
              int i = 0;
@@ -33,7 +33,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
                    QByteArray line = file2.readLine();
                    htmlString += QString("<td>") + line + QString("</td>");
                    i++;
-                   if (!(i%6)){
+                   if (!(i%5)){
                        htmlString += "</tr><tr>";
                    }
               }
@@ -52,7 +52,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
         break;
       
       case 1:{
-        QFile file(":/releasenotes");
+        QFile file(":/releasenotes.txt");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
           ui->textBrowser->insertHtml(file.readAll());
         }
