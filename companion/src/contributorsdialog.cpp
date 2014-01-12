@@ -77,7 +77,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
         break;
       
       case 1:{
-        QFile file(":/releasenotes");
+        QFile file(":/releasenotes.txt");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
           ui->webBrowser->setHtml(file.readAll(),QUrl(""));
         }
