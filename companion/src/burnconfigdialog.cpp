@@ -325,7 +325,7 @@ void burnConfigDialog::restFuses(bool eeProtect)
 
     QMessageBox::StandardButton ret = QMessageBox::No;
 
-    ret = QMessageBox::warning(this, tr("companion9x"),
+    ret = QMessageBox::warning(this, tr("Companion"),
                                tr("<b><u>WARNING!</u></b><br>This will reset the fuses of  %1 to the factory settings.<br>Writing fuses can mess up your radio.<br>Do this only if you are sure they are wrong!<br>Are you sure you want to continue?").arg(avrMCU),
                                QMessageBox::Yes | QMessageBox::No);
     if (ret == QMessageBox::Yes)
@@ -394,7 +394,7 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
     } else {
       ui->label_av3->show();
       ui->avrdude_mcu->show();
-      QMessageBox::warning(this, tr("companion9x"),
+      QMessageBox::warning(this, tr("Companion"),
         tr("<b><u>WARNING!</u></b><br>Normally CPU type is automatically selected according to the chosen firmware.<br>If you change the CPU type the resulting eeprom could be inconsistent."),
         QMessageBox::Ok);
     }

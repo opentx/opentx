@@ -26,7 +26,8 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
             ui->textBrowser->insertPlainText(file2.readAll());
         }
         ui->textBrowser->insertPlainText("\n\n\n");
-        ui->textBrowser->insertPlainText(tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out."));
+        ui->textBrowser->insertPlainText(tr(
+"Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and the fantastic eePe program \nwhich was the staring point for OpenTX Companion."));
         ui->textBrowser->insertPlainText("\n\n");
         ui->textBrowser->insertPlainText(tr("Thank you all !!!"));
         ui->textBrowser->setReadOnly(true);
@@ -42,7 +43,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
         }
         ui->textBrowser->setReadOnly(true);
         ui->textBrowser->verticalScrollBar()->setValue(0);
-        this->setWindowTitle(tr("Companion9x Release Notes"));
+        this->setWindowTitle(tr("Companion Release Notes"));
         }
         break;
       case 2:{

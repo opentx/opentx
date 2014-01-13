@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Companion9x log viewer</string>
+   <string>Companion Log Viewer</string>
   </property>
   <property name="windowIcon">
    <iconset resource="companion9x.qrc">
