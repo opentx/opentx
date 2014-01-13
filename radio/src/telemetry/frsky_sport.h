@@ -175,7 +175,7 @@ void resetTelemetry();
 
 #define TELEMETRY_GPS_SPEED_BP    frskyData.hub.gpsSpeed_bp
 #define TELEMETRY_GPS_SPEED_AP    frskyData.hub.gpsSpeed_ap
-#define TELEMETRY_GPS_SPEED_LOG	frskyData.hub.gpsSpeed_bp<0?'-':' ',abs(frskyData.hub.gpsSpeed_bp/1000),abs(frskyData.hub.gpsSpeed_bp%1000)
+#define TELEMETRY_GPS_SPEED_LOG   frskyData.hub.gpsSpeed_bp<0?'-':' ',abs(frskyData.hub.gpsSpeed_bp/1000),abs(frskyData.hub.gpsSpeed_bp%1000)
 
 #define TELEMETRY_GPS_ALT_AP      (frskyData.hub.gpsAltitude_bp%100)
 #define TELEMETRY_GPS_ALT_BP      (frskyData.hub.gpsAltitude_bp/100)
@@ -186,13 +186,13 @@ void resetTelemetry();
 #define TELEMETRY_ALT             frskyData.hub.baroAltitude < 0 ? '-' : ' ', abs(frskyData.hub.baroAltitude / 100), abs(frskyData.hub.baroAltitude % 100)
 #define TELEMETRY_ALT_FORMAT      "%c%d.%02d,"
 #if defined(CPUARM)
-  #define TELEMETRY_CELLS           frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100, frskyData.hub.cellVolts[6]*2/100, frskyData.hub.cellVolts[6]*2%100, frskyData.hub.cellVolts[7]*2/100, frskyData.hub.cellVolts[7]*2%100, frskyData.hub.cellVolts[8]*2/100, frskyData.hub.cellVolts[8]*2%100, frskyData.hub.cellVolts[9]*2/100, frskyData.hub.cellVolts[9]*2%100, frskyData.hub.cellVolts[10]*2/100, frskyData.hub.cellVolts[10]*2%100, frskyData.hub.cellVolts[11]*2/100, frskyData.hub.cellVolts[11]*2%100
-  #define TELEMETRY_CELLS_FORMAT    "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
-  #define TELEMETRY_CELLS_LABEL     "Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Cell 7,Cell 8,Cell 9,Cell 10,Cell 11,Cell 12,"
+  #define TELEMETRY_CELLS         frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100, frskyData.hub.cellVolts[6]*2/100, frskyData.hub.cellVolts[6]*2%100, frskyData.hub.cellVolts[7]*2/100, frskyData.hub.cellVolts[7]*2%100, frskyData.hub.cellVolts[8]*2/100, frskyData.hub.cellVolts[8]*2%100, frskyData.hub.cellVolts[9]*2/100, frskyData.hub.cellVolts[9]*2%100, frskyData.hub.cellVolts[10]*2/100, frskyData.hub.cellVolts[10]*2%100, frskyData.hub.cellVolts[11]*2/100, frskyData.hub.cellVolts[11]*2%100
+  #define TELEMETRY_CELLS_FORMAT  "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
+  #define TELEMETRY_CELLS_LABEL   "Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Cell 7,Cell 8,Cell 9,Cell 10,Cell 11,Cell 12,"
 #else
-  #define TELEMETRY_CELLS           frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100
-  #define TELEMETRY_CELLS_FORMAT    "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
-  #define TELEMETRY_CELLS_LABEL     "Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,"
+  #define TELEMETRY_CELLS         frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100
+  #define TELEMETRY_CELLS_FORMAT  "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
+  #define TELEMETRY_CELLS_LABEL   "Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,"
 #endif
 #define TELEMETRY_CURRENT         frskyData.hub.current / 10, frskyData.hub.current % 10
 #define TELEMETRY_CURRENT_FORMAT  "%d.%d,"
