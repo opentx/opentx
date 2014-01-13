@@ -155,16 +155,8 @@ QString getFuncName(unsigned int val)
     return QObject::tr("Background Music");
   else if (val == FuncBackgroundMusicPause)
     return QObject::tr("Background Music Pause");
-  else if (val == FuncAdjustGV1)
-    return QObject::tr("Adjust GV1");
-  else if (val == FuncAdjustGV2)
-    return QObject::tr("Adjust GV2");
-  else if (val == FuncAdjustGV3)
-    return QObject::tr("Adjust GV3");
-  else if (val == FuncAdjustGV4)
-    return QObject::tr("Adjust GV4");
-  else if (val == FuncAdjustGV5)
-    return QObject::tr("Adjust GV5");
+  else if (val >= FuncAdjustGV1 && val <= FuncAdjustGVLast)
+    return QObject::tr("Adjust GV%1").arg(val-FuncAdjustGV1+1);
   else {
     return QString("???"); // Highlight unknown functions with output of question marks.(BTW should not happen that we do not know what a function is)
   }
@@ -424,7 +416,7 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
   else if (function==FuncPlayValue) {
     populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
   }
-  else if (function>=FuncAdjustGV1 && function<=FuncAdjustGV5 ) {
+  else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
         populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
@@ -440,7 +432,6 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
         break;
     }
   }
-
   else {
     b->hide();
   }
@@ -482,16 +473,18 @@ void populatePhasesCB(QComboBox *b, int value)
 
 void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags)
 {
-  curveTypeCB->clear();
-  curveTypeCB->addItem(QObject::tr("Diff"));
-  curveTypeCB->addItem(QObject::tr("Expo"));
-  curveTypeCB->addItem(QObject::tr("Func"));
-  curveTypeCB->addItem(QObject::tr("Curve"));
+  if (curveTypeCB->count() == 0) {
+    curveTypeCB->addItem(QObject::tr("Diff"));
+    curveTypeCB->addItem(QObject::tr("Expo"));
+    curveTypeCB->addItem(QObject::tr("Func"));
+    curveTypeCB->addItem(QObject::tr("Curve"));
+  }
+
   curveTypeCB->setCurrentIndex(curve.type);
 
   if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
     curveGVarCB->show();
-    if (curve.value>100 || curve.value<-100) {
+    if (curve.value > 100 || curve.value < -100) {
       curveGVarCB->setChecked(true);
       populateGVCB(curveValueCB, curve.value);
       curveValueCB->show();
@@ -531,6 +524,31 @@ void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QCom
         break;
     }
   }
+}
+
+void retrieveCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags)
+{
+  switch (curveTypeCB->currentIndex()) {
+    case 0:
+    case 1:
+    {
+      int value;
+      if (curveGVarCB->isChecked())
+        value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
+      else
+        value = curveValueSB->value();
+      qDebug() << value;
+      curve = CurveReference(curveTypeCB->currentIndex() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
+      break;
+    }
+    case 2:
+      curve = CurveReference(CurveReference::CURVE_REF_FUNC, curveValueCB->currentIndex());
+      break;
+    case 3:
+      curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->currentIndex() - GetEepromInterface()->getCapability(NumCurves));
+      break;
+  }
+  populateCurveReference(curveTypeCB, curveGVarCB, curveValueCB, curveValueSB, curve, flags);
 }
 
 void populateTrimUseCB(QComboBox *b, unsigned int phase)
@@ -1008,17 +1026,18 @@ QString getSignedStr(int value)
 
 QString getGVarString(int16_t val, bool sign)
 {
-  if (val >= -10000 && val <= 10000)
+  if (val >= -10000 && val <= 10000) {
     if (sign)
-      return QString("(%1%)").arg(getSignedStr(val));
+      return QString("%1%").arg(getSignedStr(val));
     else
-      return QString("(%1%)").arg(val);
-  else
-    if (val<0) {
-      return QObject::tr("(-GV%1)").arg(-val-10000);
-    } else {
-      return QObject::tr("(GV%1)").arg(val-10000);
-    }
+      return QString("%1%").arg(val);
+  }
+  else {
+    if (val<0)
+      return QObject::tr("-GV%1").arg(-val-10000);
+    else
+      return QObject::tr("GV%1").arg(val-10000);
+  }
 }
 
 QString image2qstring(QImage image)

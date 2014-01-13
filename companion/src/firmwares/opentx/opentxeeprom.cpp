@@ -363,13 +363,34 @@ class SourceField: public ConversionField< UnsignedField<N> > {
     unsigned int _source;
 };
 
-class CurveReferenceField: public StructField {
+class CurveReferenceField: public TransformedField {
   public:
-    CurveReferenceField(CurveReference & curve, BoardEnum board, unsigned int version)
+    CurveReferenceField(CurveReference & curve, BoardEnum board, unsigned int version):
+      TransformedField(internalField),
+      curve(curve),
+      _curve_type(0)
     {
-      Append(new UnsignedField<8>((unsigned int &)curve.type));
-      Append(new SignedField<8>(curve.value));
+      internalField.Append(new UnsignedField<8>(_curve_type));
+      internalField.Append(new SignedField<8>(curve.value));
     }
+
+    virtual void beforeExport()
+    {
+      if (curve.value != 0)
+        _curve_type = (unsigned int)curve.type;
+      else
+        _curve_type = 0;
+    }
+
+    virtual void afterImport()
+    {
+      curve.type = (CurveReference::CurveRefType)_curve_type;
+    }
+
+  protected:
+    StructField internalField;
+    CurveReference & curve;
+    unsigned int _curve_type;
 };
 
 class HeliField: public StructField {
@@ -804,13 +825,13 @@ class ExpoField: public TransformedField {
       if (IS_TARANIS(board) && version >= 216) {
         internalField.Append(new SourceField<8>(expo.srcRaw, board, version, 0));
         internalField.Append(new UnsignedField<16>(expo.scale));
-        internalField.Append(new UnsignedField<8>(expo.chn));
+        internalField.Append(new UnsignedField<8>(expo.chn, "Channel"));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
         internalField.Append(new UnsignedField<16>(expo.phases));
-        internalField.Append(new SignedField<8>(_weight));
+        internalField.Append(new SignedField<8>(_weight, "Weight"));
         internalField.Append(new SignedField<8>(expo.carryTrim));
         internalField.Append(new ZCharField<8>(expo.name));
-        internalField.Append(new SignedField<8>(expo.offset));
+        internalField.Append(new SignedField<8>(expo.offset, "Offset"));
         internalField.Append(new CurveReferenceField(expo.curve, board, version));
         internalField.Append(new SpareBitsField<8>());
       }
@@ -903,8 +924,8 @@ class LimitField: public StructField {
         Append(new ConversionField< SignedField<16> >(limit.max, -1000));
       }
       else {
-        Append(new ConversionField< SignedField<8> >(limit.min, +100));
-        Append(new ConversionField< SignedField<8> >(limit.max, -100));
+        Append(new ConversionField< SignedField<8> >(limit.min, +100, 10));
+        Append(new ConversionField< SignedField<8> >(limit.max, -100, 10));
       }
       Append(new SignedField<8>(limit.ppmCenter));
       Append(new SignedField<14>(limit.offset));
@@ -1352,7 +1373,7 @@ class CustomFunctionField: public TransformedField {
         else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
           memcpy(_arm_param, fn.paramarm, sizeof(_arm_param));
         }
-        else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGV5) {
+        else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
           unsigned int value;
           if (version >= 214) {
             _mode = fn.adjustMode;
@@ -1382,7 +1403,7 @@ class CustomFunctionField: public TransformedField {
         /* the default behavior */
         _param = fn.param;
         _union_param = (fn.enabled ? 1 : 0);
-        if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGV5) {
+        if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
           if (version >= 213) {
             _union_param += (fn.adjustMode << 1);
             if (fn.adjustMode == 1)
@@ -1435,7 +1456,7 @@ class CustomFunctionField: public TransformedField {
         else if (fn.func == FuncVolume) {
           sourcesConversionTable->importValue(value, (int &)fn.param);
         }
-        else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGV5) {
+        else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
           if (version >= 214) {
             fn.adjustMode = _mode;
             if (fn.adjustMode == 1)
@@ -1464,7 +1485,7 @@ class CustomFunctionField: public TransformedField {
         if (version >= 213) {
           fn.enabled = (_union_param & 0x01);
         }
-        if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGV5) {
+        if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
           if (version >= 213) {
             fn.adjustMode = ((_union_param >> 1) & 0x03);
             if (fn.adjustMode == 1)
@@ -1725,7 +1746,7 @@ class FrskyField: public StructField {
         Append(new SignedField<4>(frsky.varioMax));
         for (int i=0; i<2; i++) {
           Append(new ConversionField< UnsignedField<2> >(frsky.rssiAlarms[i].level, &rssiConversionTable[i], "RSSI level"));
-          Append(new ConversionField< SignedField<6> >(frsky.rssiAlarms[i].value, -45+i*3, 0, 100, "RSSI value"));
+          Append(new ConversionField< SignedField<6> >(frsky.rssiAlarms[i].value, -45+i*3, 0, 0, 100, "RSSI value"));
         }
         for (int i=0; i<2; i++) {
           Append(new FrskyScreenField(frsky.screens[i], board, version));
@@ -1949,6 +1970,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
 void Open9xModelDataNew::beforeExport()
 {
   // qDebug() << QString("before export model") << modelData.name;
+
   for (int module=0; module<3; module++) {
     if (modelData.moduleData[module].protocol >= PXX_XJT_X16 && modelData.moduleData[module].protocol <= PXX_XJT_LR12)
       subprotocols[module] = modelData.moduleData[module].protocol - PXX_XJT_X16;
@@ -1959,7 +1981,7 @@ void Open9xModelDataNew::beforeExport()
 
 void Open9xModelDataNew::afterImport()
 {
-  // qDebug() << QString("after import model") << modelData.name;
+  // qDebug() << QString("after import model") << modelData.name ;
 
   for (int module=0; module<3; module++) {
     if (modelData.moduleData[module].protocol == PXX_XJT_X16) {
@@ -2050,9 +2072,9 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   internalField.Append(new UnsignedField<8>(generalData.speakerPitch));
 
   if (IS_ARM(board))
-    internalField.Append(new ConversionField< SignedField<8> >(generalData.speakerVolume, -12, 0, 23, "Volume"));
+    internalField.Append(new ConversionField< SignedField<8> >(generalData.speakerVolume, -12, 0, 0, 23, "Volume"));
   else
-    internalField.Append(new ConversionField< SignedField<8> >(generalData.speakerVolume, -7, 0, 7, "Volume"));
+    internalField.Append(new ConversionField< SignedField<8> >(generalData.speakerVolume, -7, 0, 0, 7, "Volume"));
 
   if (version >= 214 || (!IS_ARM(board) && version >= 213)) {
     internalField.Append(new SignedField<8>(generalData.vBatMin));

@@ -550,6 +550,7 @@ class ConversionField: public TransformedField {
       _field(0),
       table(table),
       shift(0),
+      scale(1),
       min(INT_MIN),
       max(INT_MAX),
       exportFunc(NULL),
@@ -565,6 +566,7 @@ class ConversionField: public TransformedField {
       _field(0),
       table(table),
       shift(0),
+      scale(0),
       min(INT_MIN),
       max(INT_MAX),
       exportFunc(NULL),
@@ -580,6 +582,7 @@ class ConversionField: public TransformedField {
       _field(0),
       table(NULL),
       shift(0),
+      scale(0),
       min(INT_MIN),
       max(INT_MAX),
       exportFunc(exportFunc),
@@ -588,13 +591,14 @@ class ConversionField: public TransformedField {
     {
     }
 
-    ConversionField(int & field, int shift, int min=INT_MIN, int max=INT_MAX, const char *name = "Signed shifted"):
+    ConversionField(int & field, int shift, int scale=0, int min=INT_MIN, int max=INT_MAX, const char *name = "Signed shifted"):
       TransformedField(internalField),
       internalField(_field, name),
       field(field),
       _field(0),
       table(NULL),
       shift(shift),
+      scale(scale),
       min(min),
       max(max),
       exportFunc(NULL),
@@ -603,13 +607,14 @@ class ConversionField: public TransformedField {
     {
     }
 
-    ConversionField(unsigned int & field, int shift):
+    ConversionField(unsigned int & field, int shift, int scale=0):
       TransformedField(internalField),
       internalField((unsigned int &)_field),
       field((int &)field),
       _field(0),
       table(NULL),
       shift(shift),
+      scale(scale),
       min(INT_MIN),
       max(INT_MAX),
       exportFunc(NULL),
@@ -620,19 +625,25 @@ class ConversionField: public TransformedField {
 
     virtual void beforeExport()
     {
+      int val = field;
+
+      if (scale) {
+        val /= scale;
+      }
+
       if (table) {
-        if (table->exportValue(field, _field))
+        if (table->exportValue(val, _field))
           return;
         if (!error.isEmpty())
           EEPROMWarnings += error + "\n";
       }
       else if (shift) {
-        if (field < min) _field = min + shift;
-        else if (field > max) _field = max + shift;
-        else _field = field + shift;
+        if (val < min) _field = min + shift;
+        else if (val > max) _field = max + shift;
+        else _field = val + shift;
       }
       else {
-        _field = exportFunc(field);
+        _field = exportFunc(val);
       }
     }
 
@@ -648,6 +659,10 @@ class ConversionField: public TransformedField {
       else {
         field = importFunc(_field);
       }
+
+      if (scale) {
+        field *= scale;
+      }
     }
 
   protected:
@@ -656,6 +671,7 @@ class ConversionField: public TransformedField {
     int _field;
     ConversionTable * table;
     int shift;
+    int scale;
     int min;
     int max;
     int (*exportFunc)(int);

@@ -43,6 +43,7 @@ void populatePhasesCB(QComboBox *b, int value);
 void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
 void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags);
+void retrieveCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags);
 void populateCurvesCB(QComboBox *b, int value);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 void populateTimerSwitchCB(QComboBox *b, int value);

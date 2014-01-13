@@ -65,8 +65,8 @@ const uint8_t modn12x3[4][4]= {
 #define C9X_MAX_MODELS            60
 #define C9X_MAX_PHASES            9
 #define C9X_MAX_MIXERS            64
-#define C9X_MAX_EXPOS             32
-#define C9X_MAX_CURVES            16
+#define C9X_MAX_EXPOS             64
+#define C9X_MAX_CURVES            32
 #define C9X_MAX_POINTS            17
 #define C9X_MAX_GVARS             9
 #define C9X_MAX_ENCODERS          2
@@ -628,10 +628,7 @@ enum AssignFunc {
   FuncBackgroundMusic,
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
-  FuncAdjustGV2,
-  FuncAdjustGV3,
-  FuncAdjustGV4,
-  FuncAdjustGV5,
+  FuncAdjustGVLast = FuncAdjustGV1+C9X_MAX_GVARS-1,
   FuncCount
 };
 
@@ -977,7 +974,6 @@ enum Capability {
  GvarsFlightPhases,
  GvarsHaveSources,
  GvarsAsSources,
- GvarsAsWeight,
  GvarsName,
  NoTelemetryProtocol,
  TelemetryCSFields,

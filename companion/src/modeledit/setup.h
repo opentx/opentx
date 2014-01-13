@@ -46,6 +46,7 @@ class ModulePanel : public ModelPanel
     virtual void update();
 
   private slots:
+    void on_trainerMode_currentIndexChanged(int index);
     void on_protocol_currentIndexChanged(int index);
     void on_ppmDelay_editingFinished();
     void on_channelsCount_editingFinished();

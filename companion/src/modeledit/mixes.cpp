@@ -104,8 +104,9 @@ void MixesPanel::update()
       default:  str += "  "; break;
     };
 
-    str += " " + getGVarString(md->weight, true).rightJustified(6, ' ');
     str += md->srcRaw.toString();
+    str += " " + tr("Weight(%1)").arg(getGVarString(md->weight, true));
+
     unsigned int fpCount = GetEepromInterface()->getCapability(FlightPhases);
     if (GetEepromInterface()->getCapability(FlightPhases)) {
       if(md->phases) {
@@ -149,16 +150,10 @@ void MixesPanel::update()
     } else if (md->carryTrim<0) {
       str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
     }
-    if(md->noExpo) {
-      str += " " +tr("No DR/Expo");
-    }
 
-    if (md->sOffset) str += " " + tr("Offset") + getGVarString(md->sOffset);
-
-    QString curveStr = md->curve.toString();
-    if (!curveStr.isEmpty()) {
-      str += " " + curveStr;
-    }
+    if (md->noExpo)      str += " " + tr("No DR/Expo");
+    if (md->sOffset)     str += " " + tr("Offset(%1)").arg(getGVarString(md->sOffset));
+    if (md->curve.value) str += " " + md->curve.toString();
 
     int scale=GetEepromInterface()->getCapability(SlowScale);
     if (scale==0)

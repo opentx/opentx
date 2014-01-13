@@ -417,9 +417,9 @@ QString CurveReference::toString()
   else {
     switch(type) {
       case CURVE_REF_DIFF:
-        return QObject::tr("Diff(%1%%)").arg(getGVarString(value));
+        return QObject::tr("Diff(%1)").arg(getGVarString(value));
       case CURVE_REF_EXPO:
-        return QObject::tr("Expo(%1%%)").arg(getGVarString(value));
+        return QObject::tr("Expo(%1)").arg(getGVarString(value));
       case CURVE_REF_FUNC:
         return QObject::tr("Function(%1)").arg(QString("x>0" "x<0" "|x|" "f>0" "f<0" "|f|").mid(3*(value-1), 3));
       default:

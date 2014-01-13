@@ -420,7 +420,6 @@ int Open9xInterface::getSize(ModelData &model)
   efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
 
   Open9xModelDataNew open9xModel(model, board, 255, GetCurrentFirmwareVariant());
-  // open9xModel.Dump();
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -502,7 +501,6 @@ int Open9xInterface::getCapability(const Capability capability)
     case GvarsName:
       return (IS_TARANIS(board) ? 10 : 6);
     case GvarsInCS:
-    case GvarsAsWeight:
     case HasFAIMode:
       return 1;
     case GvarsAreNamed:

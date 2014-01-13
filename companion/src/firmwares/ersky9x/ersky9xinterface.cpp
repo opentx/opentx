@@ -319,7 +319,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 23;
     case GvarsHaveSources:
     case GvarsAsSources:
-    case GvarsAsWeight:
       return 1;
     case TelemetryMaxMultiplier:
       return 2;

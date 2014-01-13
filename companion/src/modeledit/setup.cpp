@@ -101,11 +101,14 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   moduleIdx(moduleIdx),
   ui(new Ui::Module)
 {
+  lock = true;
+
   ui->setupUi(this);
 
   QString label;
   if (moduleIdx < 0) {
     label = tr("Trainer Module");
+    ui->trainerMode->setCurrentIndex(model.trainerMode);
   }
   else {
     ui->label_trainerMode->hide();
@@ -122,6 +125,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   for (int i=0; i<PROTO_LAST; i++) {
     if (GetEepromInterface()->isAvailable((Protocol)i, moduleIdx)) {
       ui->protocol->addItem(getProtocolStr(i), (QVariant)i);
+      if (i == module.protocol) ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
   }
 
@@ -143,6 +147,8 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
       connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onFailsafeChannelChanged(int)));
     }
   }
+
+  lock = false;
 }
 
 ModulePanel::~ModulePanel()
@@ -150,38 +156,46 @@ ModulePanel::~ModulePanel()
   delete ui;
 }
 
-#define MASK_CHANNELS_COUNT 1
-#define MASK_RX_NUMBER      2
-#define MASK_CHANNELS_RANGE 4
-#define MASK_PPM_FIELDS     8
-#define MASK_FAILSAFES      16
+#define MASK_PROTOCOL       1
+#define MASK_CHANNELS_COUNT 2
+#define MASK_RX_NUMBER      4
+#define MASK_CHANNELS_RANGE 8
+#define MASK_PPM_FIELDS     16
+#define MASK_FAILSAFES      32
 
 void ModulePanel::update()
 {
   unsigned int mask = 0;
   Protocol protocol = (Protocol)module.protocol;
 
-  switch (protocol) {
-    case OFF:
-      break;
-    case PXX_XJT_X16:
-    case PXX_XJT_D8:
-    case PXX_XJT_LR12:
-    case PXX_DJT:
-      mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
-      if (protocol==PXX_XJT_X16) mask |= MASK_FAILSAFES;
-      break;
-    case LP45:
-    case DSM2:
-    case DSMX:
-      mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
-      module.channelsCount = 8;
-      break;
-    default:
-      mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
-      break;
+  if (moduleIdx >= 0 || model.trainerMode != 0) {
+    mask |= MASK_PROTOCOL;
+    switch (protocol) {
+      case OFF:
+        break;
+      case PXX_XJT_X16:
+      case PXX_XJT_D8:
+      case PXX_XJT_LR12:
+      case PXX_DJT:
+        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
+        if (protocol==PXX_XJT_X16) mask |= MASK_FAILSAFES;
+        break;
+      case LP45:
+      case DSM2:
+      case DSMX:
+        mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
+        module.channelsCount = 8;
+        break;
+      default:
+        mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
+        break;
+    }
   }
 
+  ui->label_protocol->setVisible(mask & MASK_PROTOCOL);
+  ui->protocol->setVisible(mask & MASK_PROTOCOL);
+  ui->label_rxNumber->setVisible(mask & MASK_PROTOCOL);
+  ui->rxNumber->setVisible(mask & MASK_PROTOCOL);
   ui->rxNumber->setEnabled(mask & MASK_RX_NUMBER);
   ui->rxNumber->setValue(model.modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
@@ -217,6 +231,15 @@ void ModulePanel::update()
       failsafeSliders[i]->setValue(module.failsafeChannels[i]);
       failsafeSpins[i]->setValue(module.failsafeChannels[i]);
     }
+  }
+}
+
+void ModulePanel::on_trainerMode_currentIndexChanged(int index)
+{
+  if (!lock) {
+    model.trainerMode = index;
+    update();
+    emit modified();
   }
 }
 
@@ -302,6 +325,8 @@ Setup::Setup(QWidget *parent, ModelData & model):
   ModelPanel(parent, model),
   ui(new Ui::Setup)
 {
+  lock = true;
+
   memset(modules, 0, sizeof(modules));
 
   ui->setupUi(this);
@@ -325,101 +350,99 @@ Setup::Setup(QWidget *parent, ModelData & model):
     ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
   }
 
-    if (!GetEepromInterface()->getCapability(ModelImage)) {
-      ui->image->hide();
-      ui->modelImage_label->hide();
-      ui->imagePreview->hide();
+  if (GetEepromInterface()->getCapability(ModelImage)) {
+    QStringList items;
+    items.append("");
+    QSettings settings("companion9x", "companion9x");
+    QString path = settings.value("sdPath", ".").toString();
+    path.append("/BMP/");
+    QDir qd(path);
+    int vml = GetEepromInterface()->getCapability(VoicesMaxLength)+4;
+    if (qd.exists()) {
+      QStringList filters;
+      filters << "*.bmp" << "*.bmp";
+      foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
+        QFileInfo fi(file);
+        QString temp = fi.completeBaseName();
+        if (!items.contains(temp) && temp.length() <= vml) {
+          items.append(temp);
+        }
+      }
+    }
+    if (!items.contains(model.bitmap)) {
+      items.append(model.bitmap);
+    }
+    items.sort();
+    foreach ( QString file, items ) {
+      ui->image->addItem(file);
+      if (file == model.bitmap) {
+        ui->image->setCurrentIndex(ui->image->count()-1);
+        QString fileName = path;
+        fileName.append(model.bitmap);
+        fileName.append(".bmp");
+        QImage image(fileName);
+        if (image.isNull()) {
+          fileName = path;
+          fileName.append(model.bitmap);
+          fileName.append(".BMP");
+          image.load(fileName);
+        }
+        if (!image.isNull()) {
+          ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
+        }
+      }
+    }
+  }
+  else {
+    ui->image->hide();
+    ui->modelImage_label->hide();
+    ui->imagePreview->hide();
+  }
+
+  // Beep Center checkboxes
+  int analogs = 4 + GetEepromInterface()->getCapability(Pots);
+  for (int i=0; i<analogs+GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+    QCheckBox * checkbox = new QCheckBox(this);
+    checkbox->setProperty("index", i);
+    checkbox->setText(i<analogs ? AnalogString(i) : RotaryEncoderString(i-analogs));
+    ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
+    connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
+    centerBeepCheckboxes << checkbox;
+  }
+  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, analogs+GetEepromInterface()->getCapability(RotaryEncoders));
+
+  // Startup switches warnings
+  ui->switchesStartupWarning->setProperty("index", 0);
+  connect(ui->switchesStartupWarning, SIGNAL(currentIndexChanged(int)), this, SLOT(startupSwitchEdited(int)));
+  for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
+    QLabel * label = new QLabel();
+    QSlider * slider = new QSlider();
+    slider->setProperty("index", i+1);
+    slider->setOrientation(Qt::Vertical);
+    slider->setMinimum(0);
+    slider->setSingleStep(1);
+    slider->setPageStep(1);
+    slider->setInvertedAppearance(true);
+    slider->setTickPosition(QSlider::TicksBothSides);
+    slider->setTickInterval(1);
+    slider->setMinimumSize(QSize(30, 50));
+    slider->setMaximumSize(QSize(50, 50));
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      label->setText(switchesX9D[i]);
+      slider->setMaximum(i==5 ? 1 : 2);
     }
     else {
-
-      QStringList items;
-      items.append("");
-      QSettings settings("companion9x", "companion9x");
-      QString path=settings.value("sdPath", ".").toString();
-      path.append("/BMP/");
-      QDir qd(path);
-      int vml= GetEepromInterface()->getCapability(VoicesMaxLength)+4;
-      if (qd.exists()) {
-        QStringList filters;
-        filters << "*.bmp" << "*.bmp";
-        foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
-          QFileInfo fi(file);
-          QString temp=fi.completeBaseName();
-          if (!items.contains(temp) && temp.length()<=vml) {
-            items.append(temp);
-          }
-        }
-      }
-      if (!items.contains(model.bitmap)) {
-        items.append(model.bitmap);
-      }
-      items.sort();
-      ui->image->clear();
-      foreach ( QString file, items ) {
-        ui->image->addItem(file);
-        if (file==model.bitmap) {
-          ui->image->setCurrentIndex(ui->image->count()-1);
-          QString fileName=path;
-          fileName.append(model.bitmap);
-          fileName.append(".bmp");
-          QImage image(fileName);
-          if (image.isNull()) {
-            fileName=path;
-            fileName.append(model.bitmap);
-            fileName.append(".BMP");
-            image.load(fileName);
-          }
-          if (!image.isNull()) {
-            ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
-          }
-        }
-      }
+      label->setText(switches9X[i]);
+      slider->setMaximum(i==0 ? 2 : 1);
     }
+    ui->switchesStartupLayout->addWidget(label, 0, i+1);
+    ui->switchesStartupLayout->addWidget(slider, 1, i+1);
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(startupSwitchEdited(int)));
+    startupSwitchesSliders << slider;
+  }
+  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
 
-    // Beep Center checkboxes
-    int analogs = 4 + GetEepromInterface()->getCapability(Pots);
-    for (int i=0; i<analogs+GetEepromInterface()->getCapability(RotaryEncoders); i++) {
-      QCheckBox * checkbox = new QCheckBox(this);
-      checkbox->setProperty("index", i);
-      checkbox->setText(i<analogs ? AnalogString(i) : RotaryEncoderString(i-analogs));
-      ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
-      connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
-      centerBeepCheckboxes << checkbox;
-    }
-    ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, analogs+GetEepromInterface()->getCapability(RotaryEncoders));
-
-    // Startup switches warnings
-    ui->switchesStartupWarning->setProperty("index", 0);
-    connect(ui->switchesStartupWarning, SIGNAL(currentIndexChanged(int)), this, SLOT(startupSwitchEdited(int)));
-    for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
-      QLabel * label = new QLabel();
-      QSlider * slider = new QSlider();
-      slider->setProperty("index", i+1);
-      slider->setOrientation(Qt::Vertical);
-      slider->setMinimum(0);
-      slider->setSingleStep(1);
-      slider->setPageStep(1);
-      slider->setInvertedAppearance(true);
-      slider->setTickPosition(QSlider::TicksBothSides);
-      slider->setTickInterval(1);
-      slider->setMinimumSize(QSize(30, 50));
-      slider->setMaximumSize(QSize(50, 50));
-      if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-        label->setText(switchesX9D[i]);
-        slider->setMaximum(i==5 ? 1 : 2);
-      }
-      else {
-        label->setText(switches9X[i]);
-        slider->setMaximum(i==0 ? 2 : 1);
-      }
-      ui->switchesStartupLayout->addWidget(label, 0, i+1);
-      ui->switchesStartupLayout->addWidget(slider, 1, i+1);
-      connect(slider, SIGNAL(valueChanged(int)), this, SLOT(startupSwitchEdited(int)));
-      startupSwitchesSliders << slider;
-    }
-    ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
-
-    lock = false;
+  lock = false;
 }
 
 Setup::~Setup()

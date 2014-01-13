@@ -281,7 +281,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       if (modified) model.funcSw[i].param = fswtchParam[i]->value()*10.0;
       fswtchParam[i]->setValue(model.funcSw[i].param/10.0);
       widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
-    } else if (index>=FuncAdjustGV1 && index<=FuncAdjustGV5) {
+    }
+    else if (index>=FuncAdjustGV1 && index<=FuncAdjustGVLast) {
       if (modified) model.funcSw[i].adjustMode = fswtchGVmode[i]->currentIndex();
       widgetsMask |= CUSTOM_FUNCTION_GV_MODE + CUSTOM_FUNCTION_ENABLE;
       if (model.funcSw[i].adjustMode==0) {

@@ -178,7 +178,7 @@ PACK(typedef struct {
 
   swstate_t switchWarningStates;
 
-  char      gvar_names[5][LEN_GVAR_NAME];
+  char gvar_names[5][LEN_GVAR_NAME];
 
   FrSkyData_v215 frsky;
 

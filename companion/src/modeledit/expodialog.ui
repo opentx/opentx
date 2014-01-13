@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>370</width>
-    <height>289</height>
+    <height>291</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,7 +26,7 @@
    <string/>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset>
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -308,14 +308,14 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
    <item row="5" column="0">
     <widget class="QLabel" name="label_curves">
      <property name="text">
-      <string>Curve/Exponential</string>
+      <string>Curve</string>
      </property>
     </widget>
    </item>
    <item row="5" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0,1">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1,0">
      <item>
-      <widget class="QComboBox" name="curvesCB">
+      <widget class="QComboBox" name="curveTypeCB">
        <property name="toolTip">
         <string/>
        </property>
@@ -325,21 +325,21 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="expoCurveGV">
+      <widget class="QCheckBox" name="curveGVarCB">
        <property name="text">
         <string>GV</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="expoCurveSB"/>
-     </item>
-     <item>
-      <widget class="QComboBox" name="expoCurveCB">
+      <widget class="QComboBox" name="curveValueCB">
        <property name="whatsThis">
         <string/>
        </property>
       </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="curveValueSB"/>
      </item>
     </layout>
    </item>

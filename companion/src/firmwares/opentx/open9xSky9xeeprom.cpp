@@ -630,7 +630,7 @@ t_Open9xArmFuncSwData_v211::operator FuncSwData ()
     }
     else {
       c9x.param = value;
-      if ((c9x.func == FuncPlayValue || c9x.func == FuncVolume || (c9x.func >= FuncAdjustGV1 && c9x.func <= FuncAdjustGV5)) && value > 7) {
+      if ((c9x.func == FuncPlayValue || c9x.func == FuncVolume || (c9x.func >= FuncAdjustGV1 && c9x.func <= FuncAdjustGVLast)) && value > 7) {
         c9x.param++;
       } 
     }

@@ -6,7 +6,8 @@
 MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
     QDialog(parent),
     ui(new Ui::MixerDialog),
-    md(mixdata)
+    md(mixdata),
+    lock(false)
 {
     ui->setupUi(this);
     QRegExp rx(CHAR_FOR_NAMES_REGEX);
@@ -22,63 +23,51 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
 
     ui->sourceCB->removeItem(0);
     int limit=GetEepromInterface()->getCapability(OffsetWeight);
-    if (GetEepromInterface()->getCapability(GvarsAsWeight)) {
-      int gvars=0;
-      if (GetEepromInterface()->getCapability(HasVariants)) {
-        if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
-          gvars=1;
-        }
-      } else {
+    int gvars=0;
+    if (GetEepromInterface()->getCapability(HasVariants)) {
+      if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
         gvars=1;
       }
-      if (gvars==0) {
-        ui->offsetGV->setDisabled(true);
-        ui->weightGV->setDisabled(true);
-        if (md->weight>limit || md->weight<-limit) {
-          md->weight=100;
-        }
-        if (md->sOffset>limit || md->sOffset<-limit) {
-          md->sOffset=0;
-        }
-      }
-      populateGVCB(ui->offsetCB,md->sOffset);
-      populateGVCB(ui->weightCB,md->weight);
-      ui->weightSB->setMinimum(-limit);
-      ui->weightSB->setMaximum(limit);
+    } else {
+      gvars=1;
+    }
+    if (gvars==0) {
+      ui->offsetGV->setDisabled(true);
+      ui->weightGV->setDisabled(true);
       if (md->weight>limit || md->weight<-limit) {
-        ui->weightGV->setChecked(true);
-        ui->weightSB->hide();
-        ui->weightCB->show();
-      } else {
-        ui->weightGV->setChecked(false);
-        ui->weightSB->setValue(md->weight);
-        ui->weightSB->show();
-        ui->weightCB->hide();
+        md->weight=100;
       }
-
-      ui->offsetSB->setMinimum(-limit);
-      ui->offsetSB->setMaximum(limit);
       if (md->sOffset>limit || md->sOffset<-limit) {
-        ui->offsetGV->setChecked(true);
-        ui->offsetSB->hide();
-        ui->offsetCB->show();
-      }
-      else {
-        ui->offsetGV->setChecked(false);
-        ui->offsetSB->setValue(md->sOffset);
-        ui->offsetSB->show();
-        ui->offsetCB->hide();
+        md->sOffset=0;
       }
     }
-    else {
-      ui->offsetGV->hide();
-      ui->weightGV->hide();
-      ui->offsetSB->setMinimum(-limit);
-      ui->offsetSB->setMaximum(limit);
-      ui->offsetSB->setValue(md->sOffset);
-      ui->weightSB->setMinimum(-limit);
-      ui->weightSB->setMaximum(limit);
+    populateGVCB(ui->offsetCB,md->sOffset);
+    populateGVCB(ui->weightCB,md->weight);
+    ui->weightSB->setMinimum(-limit);
+    ui->weightSB->setMaximum(limit);
+    if (md->weight>limit || md->weight<-limit) {
+      ui->weightGV->setChecked(true);
+      ui->weightSB->hide();
+      ui->weightCB->show();
+    } else {
+      ui->weightGV->setChecked(false);
       ui->weightSB->setValue(md->weight);
+      ui->weightSB->show();
+      ui->weightCB->hide();
+    }
+
+    ui->offsetSB->setMinimum(-limit);
+    ui->offsetSB->setMaximum(limit);
+    if (md->sOffset>limit || md->sOffset<-limit) {
+      ui->offsetGV->setChecked(true);
+      ui->offsetSB->hide();
+      ui->offsetCB->show();
+    }
+    else {
+      ui->offsetGV->setChecked(false);
+      ui->offsetSB->setValue(md->sOffset);
+      ui->offsetSB->show();
+      ui->offsetCB->hide();
     }
 
     populateCurveReference(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve, 0);
@@ -197,38 +186,43 @@ void MixerDialog::changeEvent(QEvent *e)
 
 void MixerDialog::widgetChanged()
 {
-    if (GetEepromInterface()->getCapability(GvarsAsWeight)) {
-      int gvars=0;
-      if (GetEepromInterface()->getCapability(HasVariants)) {
-        if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
-          gvars=1;
-        }
-      } else {
-        gvars=1;
-      }
-      if (gvars==1) {
-        if (ui->weightGV->isChecked()) {
-          ui->weightCB->show();
-          ui->weightSB->hide();
-        } else {
-          ui->weightCB->hide();
-          ui->weightSB->show();
-        }
-        if (ui->offsetGV->isChecked()) {
-          ui->offsetCB->show();
-          ui->offsetSB->hide();
-        } else {
-          ui->offsetCB->hide();
-          ui->offsetSB->show();
-        }
-      }
-      valuesChanged();
-      QTimer::singleShot(0, this, SLOT(shrink()));      
+  int gvars = 0;
+  if (GetEepromInterface()->getCapability(HasVariants)) {
+    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
+      gvars = 1;
     }
+  }
+  else {
+    gvars = 1;
+  }
+
+  if (gvars == 1) {
+    if (ui->weightGV->isChecked()) {
+      ui->weightCB->show();
+      ui->weightSB->hide();
+    }
+    else {
+      ui->weightCB->hide();
+      ui->weightSB->show();
+    }
+    if (ui->offsetGV->isChecked()) {
+      ui->offsetCB->show();
+      ui->offsetSB->hide();
+    }
+    else {
+      ui->offsetCB->hide();
+      ui->offsetSB->show();
+    }
+  }
+
+  valuesChanged();
+  QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
 void MixerDialog::valuesChanged()
 {
+  if (!lock) {
+    lock = true;
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
     md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
     if ((ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt()-65536)<4) {
@@ -256,13 +250,7 @@ void MixerDialog::valuesChanged()
     md->carryTrim = -(ui->trimCB->currentIndex()-1);
     md->noExpo = ui->MixDR_CB->checkState() ? 0 : 1;
 
-    // TODO md->curve     = ui->curvesCB->currentIndex()-(numcurves)*GetEepromInterface()->getCapability(HasNegCurves);
-    // TODO if (ui->differentialGV->isChecked()) {
-    // TODO   md->differential = ui->differentialCB->itemData(ui->differentialCB->currentIndex()).toInt();
-    // TODO } else {
-    // TODO   md->differential = ui->differentialSB->value();
-    // TODO }
-    // populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueCB, CurveReference & curve, unsigned int flags)
+    retrieveCurveReference(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve, 0);
 
     md->swtch     = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
     md->mixWarn   = ui->warningCB->currentIndex();
@@ -286,6 +274,9 @@ void MixerDialog::valuesChanged()
       md->phases<<=1;
     }
     md->phases>>=1;
+
+    lock = false;
+  }
 }
 
 void MixerDialog::shrink() {

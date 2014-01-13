@@ -82,7 +82,7 @@ void InputsPanel::update()
       default:  str += "   "; break;
     };
 
-    str += tr("Weight") + getGVarString(md->weight).rightJustified(6, ' ');
+    str += tr("Weight(%1)").arg(getGVarString(md->weight));
 
     QString curveStr = md->curve.toString();
     if (!curveStr.isEmpty()) {
