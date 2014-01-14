@@ -98,7 +98,7 @@ bool hasExtendedTrims()
 
 uint8_t getStickMode()
 {
-  return g_eeGeneral.stickMode;
+  return limit<uint8_t>(0, g_eeGeneral.stickMode, 3);
 }
 
 }
@@ -160,7 +160,7 @@ void Open9xGruvin9xSimulator::setValues(TxInputs &inputs)
 
 void Open9xGruvin9xSimulator::setTrim(unsigned int idx, int value)
 {
-  idx = Open9xGruvin9x::modn12x3[4*getStickMode() + idx] - 1;
+  idx = Open9xGruvin9x::modn12x3[4*getStickMode() + idx];
   uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
   setTrimValue(phase, idx, value);
 }
@@ -174,7 +174,7 @@ void Open9xGruvin9xSimulator::getTrims(Trims & trims)
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9xGruvin9x::modn12x3[4*getStickMode() + i] - 1;
+    uint8_t idx = Open9xGruvin9x::modn12x3[4*getStickMode() + i];
     int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;
