@@ -144,13 +144,16 @@ void MdiChild::on_SimulateTxButton_clicked()
 {
   if (GetEepromInterface()->getSimulator()) {
     if (GetEepromInterface()->getCapability(SimulatorType)==1) {
-      xsimulatorDialog sd(this);
-      sd.loadParams(radioData);
-      sd.exec();
-    } else {
-      simulatorDialog sd(this);
-      sd.loadParams(radioData);
-      sd.exec();
+      xsimulatorDialog * sd = new xsimulatorDialog(this);
+      sd->loadParams(radioData);
+      sd->exec();
+      delete sd;
+    }
+    else {
+      simulatorDialog * sd = new simulatorDialog(this);
+      sd->loadParams(radioData);
+      sd->exec();
+      delete sd;
     }
   }
   else {
