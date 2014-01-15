@@ -14,26 +14,27 @@
  *
  */
 
-#include "open9xGruvin9xsimulator.h"
-#include "open9xinterface.h"
-#include "open9xeeprom.h"
+#include "opentxsimulator.h"
+#include "opentxinterface.h"
+#include "opentxeeprom.h"
 
+#define HELI
 #define SIMU
 #define SIMU_EXCEPTIONS
-#define PCBGRUVIN9X
-#define CPUM2560
-#define ROTARY_ENCODERS 2
-#define HELI
-#define TEMPLATES
+#define PCBSTD
+#define CPUM64
 #define SPLASH
 #define FLIGHT_MODES
+#define PPM_UNIT_PERCENT_PREC1
+#define HELI
+#define TEMPLATES
 #define FRSKY
 #define FRSKY_HUB
 #define WS_HOW_HIGH
+#define PXX
+#define DSM2
+#define DSM2_PPM
 #define VARIO
-#define PPM_UNIT_PERCENT_PREC1
-#define BUZZER
-#define AUDIO
 #define HAPTIC
 #define AUTOSWITCH
 #define GRAPHICS
@@ -44,19 +45,21 @@
 #define VOICE
 #define PPM_CENTER_ADJUSTABLE
 #define PPM_LIMITS_SYMETRICAL
+#define BUZZER
 #define GAUGES
 #define GPS
 #define FAI_CHOICE
 
-#define EEPROM_VARIANT 3
+#define EEPROM_VARIANT SIMU_STOCK_VARIANTS
+#define GAUGES
 
 #undef min
 #undef max
 
 #include <exception>
 
-namespace Open9xGruvin9x {
-#include "radio/src/targets/gruvin9x/board_gruvin9x.cpp"
+namespace Open9x {
+#include "radio/src/targets/stock/board_stock.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_rlc.cpp"
 #include "radio/src/opentx.cpp"
@@ -72,12 +75,11 @@ namespace Open9xGruvin9x {
 #include "radio/src/lcd.cpp"
 #include "radio/src/keys.cpp"
 #include "radio/src/simpgmspace.cpp"
+#include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
-#include "radio/src/audio_avr.cpp"
+#include "radio/src/targets/stock/voice.cpp"
 #include "radio/src/buzzer.cpp"
-#include "radio/src/targets/gruvin9x/somo14d.cpp"
-#include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/translations/tts_en.cpp"
 #include "radio/src/haptic.cpp"
 
@@ -86,7 +88,7 @@ int16_t g_anas[NUM_STICKS+BOARD_9X_NUM_POTS];
 uint16_t anaIn(uint8_t chan)
 {
   if (chan == 7)
-    return 150;
+    return 1500;
   else
     return g_anas[chan];
 }
@@ -98,52 +100,52 @@ bool hasExtendedTrims()
 
 uint8_t getStickMode()
 {
-  return g_eeGeneral.stickMode;
+  return limit<uint8_t>(0, g_eeGeneral.stickMode, 3);
 }
 
 }
 
-using namespace Open9xGruvin9x;
+using namespace Open9x;
 
-Open9xGruvin9xSimulator::Open9xGruvin9xSimulator(Open9xInterface * open9xInterface):
-  open9xInterface(open9xInterface)
+Open9xSimulator::Open9xSimulator(Open9xInterface * open9xInterface):
+    open9xInterface(open9xInterface)
 {
+#define INIT_IMPORT
+#include "simulatorimport.h"
 }
 
-bool Open9xGruvin9xSimulator::timer10ms()
+bool Open9xSimulator::timer10ms()
 {
 #define TIMER10MS_IMPORT
 #include "simulatorimport.h"
 }
 
-uint8_t * Open9xGruvin9xSimulator::getLcd()
+uint8_t * Open9xSimulator::getLcd()
 {
 #define GETLCD_IMPORT
 #include "simulatorimport.h"
 }
 
-bool Open9xGruvin9xSimulator::lcdChanged(bool & lightEnable)
+bool Open9xSimulator::lcdChanged(bool & lightEnable)
 {
 #define LCDCHANGED_IMPORT
 #include "simulatorimport.h"
 }
 
-void Open9xGruvin9xSimulator::start(RadioData &radioData, bool tests)
+void Open9xSimulator::start(RadioData &radioData, bool tests)
 {
-  g_rotenc[0] = 0;
-  g_rotenc[1] = 0;
-  open9xInterface->save(&eeprom[0], radioData, SIMU_GRUVIN9X_VARIANTS);
+  open9xInterface->save(&Open9x::eeprom[0], radioData, SIMU_STOCK_VARIANTS);
   StartEepromThread(NULL);
   StartMainThread(tests);
 }
 
-void Open9xGruvin9xSimulator::stop()
+void Open9xSimulator::stop()
 {
   StopMainThread();
   StopEepromThread();
 }
 
-void Open9xGruvin9xSimulator::getValues(TxOutputs &outputs)
+void Open9xSimulator::getValues(TxOutputs &outputs)
 {
 #define GETVALUES_IMPORT
 #define g_chans512 channelOutputs
@@ -152,20 +154,20 @@ void Open9xGruvin9xSimulator::getValues(TxOutputs &outputs)
   g_beepCnt = 0;
 }
 
-void Open9xGruvin9xSimulator::setValues(TxInputs &inputs)
+void Open9xSimulator::setValues(TxInputs &inputs)
 {
 #define SETVALUES_IMPORT
 #include "simulatorimport.h"
 }
 
-void Open9xGruvin9xSimulator::setTrim(unsigned int idx, int value)
+void Open9xSimulator::setTrim(unsigned int idx, int value)
 {
-  idx = Open9xGruvin9x::modn12x3[4*getStickMode() + idx] - 1;
+  idx = Open9x::modn12x3[4*getStickMode() + idx];
   uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
   setTrimValue(phase, idx, value);
 }
 
-void Open9xGruvin9xSimulator::getTrims(Trims & trims)
+void Open9xSimulator::getTrims(Trims & trims)
 {
   uint8_t phase = getFlightPhase();
   trims.extended = hasExtendedTrims();
@@ -174,24 +176,19 @@ void Open9xGruvin9xSimulator::getTrims(Trims & trims)
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9xGruvin9x::modn12x3[4*getStickMode() + i] - 1;
+    uint8_t idx = Open9x::modn12x3[4*getStickMode() + i];
     int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;
   }
 }
 
-void Open9xGruvin9xSimulator::wheelEvent(uint8_t steps)
-{
-  g_rotenc[0] += steps;
-}
-
-unsigned int Open9xGruvin9xSimulator::getPhase()
+unsigned int Open9xSimulator::getPhase()
 {
   return getFlightPhase();
 }
 
-const char * Open9xGruvin9xSimulator::getError()
+const char * Open9xSimulator::getError()
 {
 #define GETERROR_IMPORT
 #include "simulatorimport.h"

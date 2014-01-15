@@ -9,7 +9,7 @@ modelConfigDialog::modelConfigDialog(RadioData &radioData, uint64_t * result, QW
     ui(new Ui::modelConfigDialog),
     radioData(radioData),
     result(result),
-    g_eeGeneral(radioData.generalSettings)
+    generalSettings(radioData.generalSettings)
 {
     ui->setupUi(this);
     rxLock=false;

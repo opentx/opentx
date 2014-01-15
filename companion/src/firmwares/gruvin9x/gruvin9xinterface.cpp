@@ -200,62 +200,20 @@ bool Gruvin9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int es
 
 int Gruvin9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
-  EEPROMWarnings.clear();
+  std::cout << "NO!\n";
+  // TODO an error
 
-  int size = getEEpromSize();
-
-  efile->EeFsCreate(eeprom, size, BOARD_STOCK);
-
-  Gruvin9xGeneral gruvin9xGeneral(radioData.generalSettings);
-  int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&gruvin9xGeneral, sizeof(Gruvin9xGeneral));
-  if(sz != sizeof(Gruvin9xGeneral)) {
-    return 0;
-  }
-
-  for (int i=0; i<getMaxModels(); i++) {
-    if (!radioData.models[i].isempty()) {
-      ModelData model = radioData.models[i];
-      if (1/*version < */) {
-        applyStickModeToModel(model, radioData.generalSettings.stickMode+1);
-      }
-      Gruvin9xModelData gruvin9xModel(model);
-      sz = efile->writeRlc2(FILE_MODEL(i), FILE_TYP_MODEL, (uint8_t*)&gruvin9xModel, sizeof(Gruvin9xModelData));
-      if(sz != sizeof(Gruvin9xModelData)) {
-        return 0;
-      }
-    }
-  }
-
-  return size;
+  return 0;
 }
 
 int Gruvin9xInterface::getSize(ModelData &model)
 {
-  if (model.isempty())
-    return 0;
-
-  uint8_t tmp[EESIZE_GRUVIN9X];
-  efile->EeFsCreate(tmp, EESIZE_GRUVIN9X, BOARD_STOCK);
-
-  Gruvin9xModelData gruvin9xModel(model);
-  int sz = efile->writeRlc2(0, FILE_TYP_MODEL, (uint8_t*)&gruvin9xModel, sizeof(Gruvin9xModelData));
-  if(sz != sizeof(Gruvin9xModelData)) {
-     return -1;
-  }
-  return efile->size(0);
+  return 0;
 }
 
 int Gruvin9xInterface::getSize(GeneralSettings &settings)
 {
-  uint8_t tmp[EESIZE_GRUVIN9X];
-  efile->EeFsCreate(tmp, EESIZE_GRUVIN9X, BOARD_STOCK);
-
-  Gruvin9xGeneral gruvin9xGeneral(settings);
-  int sz = efile->writeRlc1(0, FILE_TYP_GENERAL, (uint8_t*)&gruvin9xGeneral, sizeof(gruvin9xGeneral));
-  if(sz != sizeof(gruvin9xGeneral)) {
-    return -1;
-  }
-  return efile->size(0);
+  return 0;
 }
 
 int Gruvin9xInterface::getCapability(const Capability capability)
@@ -263,10 +221,6 @@ int Gruvin9xInterface::getCapability(const Capability capability)
   switch (capability) {
     case OwnerName:
       return 0;
-    case NumCurves5:
-      return G9X_MAX_CURVE5;
-    case NumCurves9:
-      return G9X_MAX_CURVE9;
     case Mixes:
       return G9X_MAX_MIXERS;
     case FlightPhases:
@@ -297,7 +251,6 @@ int Gruvin9xInterface::getCapability(const Capability capability)
       return true;
     case OffsetWeight:
       return 125;
-    case HasExpoCurves:
     case HasContrast:
       return true;           
     case Telemetry:

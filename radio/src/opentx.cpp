@@ -73,7 +73,7 @@ OS_TID btTaskId;
 OS_STK btStack[BT_STACK_SIZE];
 #endif
 
-#if defined(CPUARM) && defined(DEBUG)
+#if defined(DEBUG)
 OS_TID debugTaskId;
 OS_STK debugStack[DEBUG_STACK_SIZE];
 #endif

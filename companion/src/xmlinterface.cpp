@@ -91,8 +91,6 @@ void saveGeneralSettings(GeneralSettings & settings, global_settings & gs)
     gs.warnings(warns);
   gs.beeper(settings.beeperMode);
   sticks stks(settings.stickMode);
-  if (settings.throttleReversed)
-    stks.throttle_reverse(true);
   gs.sticks(stks);
   gs.inactivity_timer(settings.inactivityTimer);
   if (settings.minuteBeep || settings.preBeep || settings.flashBeep) {
@@ -195,7 +193,7 @@ bool XmlInterface::save(RadioData &radioData)
     // the models
     models xml_models;
     models::model_sequence & model_sequence (xml_models.model());
-    for (int i=0; i<C9XMAX_MODELS; i++) {
+    for (int i=0; i<C9X_MAX_MODELS; i++) {
       ModelData & m = radioData.models[i];
       if (m.used) {
         model xm(m.name);

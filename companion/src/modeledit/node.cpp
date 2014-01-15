@@ -46,32 +46,28 @@
 
 #include "edge.h"
 #include "node.h"
-#include "modeledit.h"
 
-Node::Node(QSpinBox *sb,QSpinBox *sbx)
+Node::Node():
+  minX(-100),
+  maxX(+100)
 {
-    setFlag(ItemIsMovable);
-    setFlag(ItemSendsGeometryChanges);
-    setCacheMode(DeviceCoordinateCache);
-    setZValue(-1);
-    nodecolor = QColor(Qt::yellow);
-    qsb = sb;
-    qsbx = sbx;
-    bPressed  = false;
-    centerX   = true;
-    centerY   = true;
-    fixedX    = false;
-    fixedY    = false;
-    ballSize = DEFAULT_BALL_SIZE;
-    minX=-100;
-    maxX=100;
-
+  setFlag(ItemIsMovable);
+  setFlag(ItemSendsGeometryChanges);
+  setCacheMode(DeviceCoordinateCache);
+  setZValue(-1);
+  nodecolor = QColor(Qt::yellow);
+  bPressed  = false;
+  centerX   = true;
+  centerY   = true;
+  fixedX    = false;
+  fixedY    = false;
+  ballSize = DEFAULT_BALL_SIZE;
 }
 
 void Node::addEdge(Edge *edge)
 {
-    edgeList << edge;
-    edge->adjust();
+  edgeList << edge;
+  edge->adjust();
 }
 
 void Node::stepToCenter(qreal step)
@@ -105,7 +101,7 @@ void Node::stepToCenter(qreal step)
 
 }
 
-void Node::setColor(QColor color)
+void Node::setColor(const QColor & color)
 {
     nodecolor=color;
 }
@@ -190,26 +186,23 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
              if(fixedY) newPos.setY(y());//make sure x doesn't change
              newPos.setX(qMin(rect.right(), qMax(newPos.x(), rect.left())));// bound X
              newPos.setY(qMin(rect.bottom(), qMax(newPos.y(), rect.top())));// bound Y
-             if (qsb) {
-               ModelEdit* modeledit = qobject_cast<ModelEdit*>(qsb->parent()->parent()->parent()->parent()->parent()->parent()->parent());
-               modeledit->redrawCurve = false;
-               qsb->setValue(100+(rect.top()-y())*200/rect.height());
-               if (qsbx && !getFixedX()) {
-                 int newX = -100 + ( (newPos.x()-rect.left()) * 200) / rect.width();
-                 if (newX < minX) newX = minX;
-                 if (newX > maxX) newX = maxX;
-                 newPos.setX(((newX+100)*rect.width()/200+rect.left()));
-                 qsbx->setValue(newX);
-               }
-               modeledit->redrawCurve = true;
+
+             int newX = -100 + ( (newPos.x()-rect.left()) * 200) / rect.width();
+             int newY = 100+(rect.top()-y())*200/rect.height();
+             if (newX < minX) newX = minX;
+             if (newX > maxX) newX = maxX;
+
+             if (!getFixedX()) {           
+               newPos.setX(((newX+100)*rect.width()/200+rect.left()));
              }
+             
+             emit moved(newX, newY);
              return newPos;
          }
         break;
     case ItemPositionHasChanged:
-
         foreach (Edge *edge, edgeList)
-            edge->adjust();
+          edge->adjust();
         break;
     default:
         break;
@@ -222,25 +215,19 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     update();
     bPressed = true;
-    if(qsb) qsb->setFocus();
     QGraphicsItem::mousePressEvent(event);
+    emit focus();
 }
 
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     update();
     bPressed = false;
-    if(scene()) {
-      if(qsb) {
-        qsb->clearFocus();
-        ModelEdit* modeledit = qobject_cast<ModelEdit*>(qsb->parent()->parent()->parent()->parent()->parent()->parent()->parent());
-        QGraphicsItem::mouseReleaseEvent(event);
-        modeledit->drawCurve();
-      } else {
-        QGraphicsItem::mouseReleaseEvent(event);
-      }
-      //need to tell SB that it needs to write the value
-    } else {
+    if (scene()) {
+      QGraphicsItem::mouseReleaseEvent(event);
+      emit unfocus();
+    }
+    else {
       QGraphicsItem::mouseReleaseEvent(event);
     }
 }

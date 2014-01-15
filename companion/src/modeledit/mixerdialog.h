@@ -26,6 +26,7 @@ private slots:
 private:
     Ui::MixerDialog *ui;
     MixData *md;
+    bool lock;
 };
 
 #endif // MIXERDIALOG_H
