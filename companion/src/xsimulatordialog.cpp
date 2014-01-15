@@ -194,12 +194,13 @@ void xsimulatorDialog::onButtonPressed(int value)
 void xsimulatorDialog::onTimerEvent()
 {
   static unsigned int lcd_counter = 0;
+
   if (!simulator->timer10ms()) {
-    QMessageBox::critical(this, "companion9x", QString(tr("Firmware %1 error: %2")).arg(txInterface->getName()).arg(simulator->getError()));
+    QMessageBox::critical(this, "companion", tr("Firmware %1 error: %2").arg(txInterface->getName()).arg(simulator->getError()));
     timer->stop();
     return;
   }
-
+  
   getValues();
 
   if (g_modelIdx >= 0) {

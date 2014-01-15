@@ -58,7 +58,7 @@ avrOutputDialog::avrOutputDialog(QWidget *parent, QString prog, QStringList arg,
       QFile exec;
       winTitle=wTitle;
       if (!(exec.exists(prog))) {
-        QMessageBox::critical(this, "companion9x", getProgrammer() + " " + tr("executable not found"));
+        QMessageBox::critical(this, "Companion", getProgrammer() + " " + tr("executable not found"));
         closeOpt = AVR_DIALOG_FORCE_CLOSE;
         QTimer::singleShot(0, this, SLOT(forceClose()));
       } else {
@@ -315,10 +315,10 @@ void avrOutputDialog::errorWizard()
       }
     }
     if (fwexist==false) {
-      QMessageBox::warning(this, "companion9x - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
+      QMessageBox::warning(this, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
     } else {
       FirmwareInfo *firmware = GetCurrentFirmware();
-      QMessageBox::warning(this, "companion9x - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->name));
+      QMessageBox::warning(this, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->name));
     }
   }
 }
@@ -416,24 +416,24 @@ void avrOutputDialog::doFinished(int code=0)
         if (hasErrors || code) {
           if (!cmdLine.isEmpty()) {
             if (getProgrammer()!="AVRDUDE") {
-               QMessageBox::critical(this, "companion9x", getProgrammer() + " " + tr("did not finish correctly"));
+               QMessageBox::critical(this, "Companion", getProgrammer() + " " + tr("did not finish correctly"));
             } else {
-              int res = QMessageBox::question(this, "companion9x",getProgrammer() + " " + tr("did not finish correctly!\nDo you want some help ?"),QMessageBox::Yes | QMessageBox::No);
+              int res = QMessageBox::question(this, "Companion",getProgrammer() + " " + tr("did not finish correctly!\nDo you want some help ?"),QMessageBox::Yes | QMessageBox::No);
               if (res != QMessageBox::No) {
                 errorWizard();
               }
             }
           } else {
-            QMessageBox::critical(this, "companion9x",  tr("Copy did not finish correctly"));
+            QMessageBox::critical(this, "Companion",  tr("Copy did not finish correctly"));
           }
             // reject();
         } else {
           if (!cmdLine.isEmpty()) {
             ui->progressBar->setValue(100);
-            QMessageBox::information(this, "companion9x", getProgrammer() + " " + tr("finished correctly"));
+            QMessageBox::information(this, "Companion", getProgrammer() + " " + tr("finished correctly"));
             accept();
           } else {
-            QMessageBox::information(this, "companion9x", tr("Copy finished correctly"));
+            QMessageBox::information(this, "Companion", tr("Copy finished correctly"));
             accept();            
           }
         }

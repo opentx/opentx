@@ -687,7 +687,7 @@ bool logsDialog::cvsFileParse()
   
   file.close();
   if (errors>1) {
-    QMessageBox::warning(this, "companion9x", tr("The selected logfile contains %1 invalid lines out of  %2 total lines").arg(errors).arg(lines));
+    QMessageBox::warning(this, "Companion", tr("The selected logfile contains %1 invalid lines out of  %2 total lines").arg(errors).arg(lines));
   }
   plotLock=true;
   int n=csvlog.count();

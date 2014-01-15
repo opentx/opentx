@@ -345,6 +345,11 @@ void StartMainThread(bool tests)
     getcwd(simuSdDirectory, 1024);
 #endif
 
+#if defined(CPUARM)
+  pthread_mutex_init(&mixerMutex, NULL);
+  pthread_mutex_init(&audioMutex, NULL);
+#endif
+
   main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
 }

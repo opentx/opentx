@@ -44,7 +44,7 @@
 #include "xmlinterface.h"
 #include "hexinterface.h"
 #include "mainwindow.h"
-#include "modeledit.h"
+#include "modeledit/modeledit.h"
 #include "generaledit.h"
 #include "avroutputdialog.h"
 #include "burnconfigdialog.h"
@@ -144,13 +144,16 @@ void MdiChild::on_SimulateTxButton_clicked()
 {
   if (GetEepromInterface()->getSimulator()) {
     if (GetEepromInterface()->getCapability(SimulatorType)==1) {
-      xsimulatorDialog sd(this);
-      sd.loadParams(radioData);
-      sd.exec();
-    } else {
-      simulatorDialog sd(this);
-      sd.loadParams(radioData);
-      sd.exec();
+      xsimulatorDialog * sd = new xsimulatorDialog(this);
+      sd->loadParams(radioData);
+      sd->exec();
+      delete sd;
+    }
+    else {
+      simulatorDialog * sd = new simulatorDialog(this);
+      sd->loadParams(radioData);
+      sd->exec();
+      delete sd;
     }
   }
   else {
@@ -179,12 +182,12 @@ void MdiChild::OpenEditWindow(bool wizard=false)
       QSettings settings("companion9x", "companion9x");
       bool wizardEnable=settings.value("wizardEnable", true).toBool();
       if (wizardEnable) {
-        ret = QMessageBox::question(this, tr("companion9x"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
+        ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
           wizard=true;
         } else {
           qSleep(500);
-          ret = QMessageBox::question(this, tr("companion9x"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
+          ret = QMessageBox::question(this, tr("Companion"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::No) {
             settings.setValue("wizardEnable", false);
           }
@@ -192,9 +195,9 @@ void MdiChild::OpenEditWindow(bool wizard=false)
       }
     }
     ModelEdit *t = new ModelEdit(radioData, (row - 1), wizard, this);
-    if (isNew && !wizard) t->applyBaseTemplate();
+    // TODO if (isNew && !wizard) t->applyBaseTemplate();
     t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
-    connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
+    connect(t, SIGNAL(modified()), this, SLOT(setModified()));
     //t->exec();
     t->show();
   }
@@ -467,7 +470,7 @@ bool MdiChild::maybeSave()
 {
   if (fileChanged) {
     QMessageBox::StandardButton ret;
-    ret = QMessageBox::warning(this, tr("companion9x"),
+    ret = QMessageBox::warning(this, tr("Companion"),
         tr("%1 has been modified.\n"
            "Do you want to save your changes?").arg(userFriendlyCurrentFile()),
         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);

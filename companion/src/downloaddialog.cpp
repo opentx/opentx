@@ -21,7 +21,7 @@ downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt) :
 
     file = new QFile(tgt);
     if (!file->open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(this, "companion9x",
+        QMessageBox::critical(this, "Companion",
                               tr("Unable to save the file %1: %2.")
                               .arg(tgt).arg(file->errorString()));
         QTimer::singleShot(0, this, SLOT(fileError()));
@@ -51,7 +51,7 @@ void downloadDialog::httpFinished()
     if (reply->error())
     {
         file->remove();
-        QMessageBox::information(this, tr("companion9x"),
+        QMessageBox::information(this, tr("Companion"),
                                  tr("Download failed: %1.")
                                  .arg(reply->errorString()));
         ok = false;

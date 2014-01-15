@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Curves</class>
+ <widget class="QWidget" name="Curves">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>638</width>
+    <height>587</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout_80" columnstretch="0,0,0,0,0">
+     <item row="0" column="0" rowspan="3">
+      <layout class="QGridLayout" name="curvesLayout"/>
+     </item>
+     <item row="0" column="1" rowspan="3">
+      <layout class="QGridLayout" name="gridLayout_8" rowstretch="0,0,0" columnstretch="1,1">
+       <item row="1" column="0">
+        <widget class="QLabel" name="curvetype_label">
+         <property name="text">
+          <string>Curve type</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="curvetype_CB">
+         <item>
+          <property name="text">
+           <string>3 points</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>3 points custom</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>5 points</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>5 points custom</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9 points</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9 points custom</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>17 points</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>17 points custom</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="cname_label">
+         <property name="text">
+          <string>Curve name</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="cname_LE">
+         <property name="maxLength">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QGraphicsView" name="curvePreview">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>400</width>
+           <height>400</height>
+          </size>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="2" rowspan="3" colspan="2">
+      <layout class="QGridLayout" name="pointsLayout">
+       <property name="horizontalSpacing">
+        <number>0</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>2</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+      </layout>
+     </item>
+     <item row="4" column="0" colspan="5">
+      <spacer name="verticalSpacer_6">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::MinimumExpanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="4" rowspan="3">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

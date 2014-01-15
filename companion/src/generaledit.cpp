@@ -170,21 +170,9 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->crosstrimChkB->hide();
       ui->crosstrimLB->hide();
     }
-   if (!GetEepromInterface()->getCapability(HasPPMSim)) {
+    if (!GetEepromInterface()->getCapability(HasPPMSim)) {
       ui->PPMSimLB->hide();
       ui->PPMSimChkB->hide();
-    }
-     
-    if (GetEepromInterface()->getCapability(PerModelThrottleWarning)) {
-      ui->thrwarnChkB->setDisabled(true);
-      ui->thrwarnChkB->hide();
-      ui->thrwarnLabel->hide();
-    }
-    if (GetEepromInterface()->getCapability(pmSwitchMask)) {
-      ui->swwarn_label->hide();
-      ui->swtchWarnCB->hide();
-      ui->swtchWarnChkB->hide();
-      layout()->removeItem(ui->swwarn_layout);
     }
     if (!GetEepromInterface()->getCapability( HasPxxCountry)) {
       ui->countrycode_label->hide();
@@ -322,11 +310,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->swID0ChkB->hide();
       ui->swID1ChkB->hide();
       ui->swID2ChkB->hide();
-      ui->swtchWarnChkB->hide();
       this->layout()->removeItem(ui->switchMaskLayout);
     } else {
-      ui->swtchWarnCB->setDisabled(true);
-      ui->swtchWarnCB->hide();
       setSwitchDefPos();
     }
     if (!GetEepromInterface()->getCapability(TelemetryAlarm)) {
@@ -339,12 +324,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->re_CB->hide();
     } else {
       populateRotEncCB(ui->re_CB, g_eeGeneral.reNavigation, renumber);
-    }
-    if (GetEepromInterface()->getCapability(PerModelThrottleInvert)) {
-      ui->label_thrrev->hide();
-      ui->thrrevChkB->hide();
-    } else {
-      ui->thrrevChkB->setChecked(g_eeGeneral.throttleReversed);
     }
     ui->telalarmsChkB->setChecked(g_eeGeneral.enableTelemetryAlarm);
     ui->PotScrollEnableChkB->setChecked(!g_eeGeneral.disablePotScroll);
@@ -359,9 +338,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     ui->StickScrollChkB->setChecked(g_eeGeneral.stickScroll);
     ui->PPMSimChkB->setChecked(g_eeGeneral.enablePpmsim);
     ui->inputfilterCB->setCurrentIndex(g_eeGeneral.filterInput);
-    ui->thrwarnChkB->setChecked(!g_eeGeneral.disableThrottleWarning);   //Default is zero=checked
-    ui->swtchWarnChkB->setChecked(g_eeGeneral.switchWarning == -1);
-    ui->swtchWarnCB->setCurrentIndex(g_eeGeneral.switchWarning == -1 ? 2 : g_eeGeneral.switchWarning);
     ui->memwarnChkB->setChecked(!g_eeGeneral.disableMemoryWarning);   //Default is zero=checked
     ui->alarmwarnChkB->setChecked(!g_eeGeneral.disableAlarmWarning);//Default is zero=checked
     ui->enableTelemetryAlarmChkB->setChecked(g_eeGeneral.enableTelemetryAlarm);
@@ -622,33 +598,9 @@ void GeneralEdit::on_inactimerSB_editingFinished()
     updateSettings();
 }
 
-void GeneralEdit::on_thrrevChkB_stateChanged(int )
-{
-    g_eeGeneral.throttleReversed = ui->thrrevChkB->isChecked() ? 1 : 0;
-    updateSettings();
-}
-
 void GeneralEdit::on_inputfilterCB_currentIndexChanged(int index)
 {
     g_eeGeneral.filterInput = index;
-    updateSettings();
-}
-
-void GeneralEdit::on_thrwarnChkB_stateChanged(int )
-{
-    g_eeGeneral.disableThrottleWarning = ui->thrwarnChkB->isChecked() ? 0 : 1;
-    updateSettings();
-}
-
-void GeneralEdit::on_swtchWarnCB_currentIndexChanged(int index)
-{
-    g_eeGeneral.switchWarning = (index == 2 ? -1 : index);
-    updateSettings();
-}
-
-void GeneralEdit::on_swtchWarnChkB_stateChanged(int )
-{
-    g_eeGeneral.switchWarning = ui->swtchWarnChkB->isChecked() ? -1 : 0;
     updateSettings();
 }
 
@@ -1074,7 +1026,7 @@ void GeneralEdit::on_blinvert_cb_stateChanged(int )
 void GeneralEdit::on_faimode_CB_stateChanged(int )
 {
     if (ui->faimode_CB->isChecked()) {
-      int ret = QMessageBox::question(this, "companion9x", 
+      int ret = QMessageBox::question(this, "Companion", 
                      tr("If you enable FAI, you loose the vario, the play functions, the telemetry screen.\nThis function cannot be disabled by the radio.\nAre you sure ?") ,
                      QMessageBox::Yes | QMessageBox::No);
       if (ret==QMessageBox::Yes) {
@@ -1375,7 +1327,7 @@ void GeneralEdit::on_calstore_PB_clicked()
   } else {
     QString calib=settings.value("StickPotCalib","").toString();
     if (!(calib.isEmpty())) {
-      int ret = QMessageBox::question(this, "companion9x", 
+      int ret = QMessageBox::question(this, "Companion", 
                       tr("Do you want to store calibration in %1 profile<br>overwriting existing calibration?").arg(name) ,
                       QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::No) {
@@ -1408,7 +1360,7 @@ void GeneralEdit::on_calstore_PB_clicked()
     settings.setValue("countryCode",QString("%1%2%3").arg((uint8_t)g_eeGeneral.countryCode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.imperial, 2, 16, QChar('0')).arg(g_eeGeneral.ttsLanguage));
     settings.endGroup();
     settings.endGroup();
-    QMessageBox::information(this, "companion9x", tr("Calibration and HW parameters saved."));
+    QMessageBox::information(this, "Companion", tr("Calibration and HW parameters saved."));
   }
 }
 
