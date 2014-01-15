@@ -70,7 +70,7 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
       ui->offsetCB->hide();
     }
 
-    populateCurveReference(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve, 0);
+    CurveGroup * curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve);
 
     ui->MixDR_CB->setChecked(md->noExpo==0);
     if (!GetEepromInterface()->getCapability(MixesWithoutExpo)) {
@@ -143,12 +143,6 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
     connect(ui->sourceCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->weightCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->offsetCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-
-    connect(ui->curveTypeCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->curveGVarCB,SIGNAL(stateChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->curveValueCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->curveValueSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-
     connect(ui->weightSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
     connect(ui->offsetSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
     connect(ui->weightGV,SIGNAL(stateChanged(int)),this,SLOT(widgetChanged())); // TODO why the same slot?
@@ -249,9 +243,6 @@ void MixerDialog::valuesChanged()
     }
     md->carryTrim = -(ui->trimCB->currentIndex()-1);
     md->noExpo = ui->MixDR_CB->checkState() ? 0 : 1;
-
-    retrieveCurveReference(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve, 0);
-
     md->swtch     = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
     md->mixWarn   = ui->warningCB->currentIndex();
     md->mltpx     = (MltpxValue)ui->mltpxCB->currentIndex();

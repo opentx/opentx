@@ -412,7 +412,7 @@ QString RawSwitch::toString()
 QString CurveReference::toString()
 {
   if (value == 0) {
-    return "";
+    return "----";
   }
   else {
     switch(type) {

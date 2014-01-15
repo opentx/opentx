@@ -191,6 +191,7 @@ SET( companion9x_MOC_HDRS
      myslider.h
      modelconfigdialog.h
      qcustomplot.h
+     helpers.h
 )
      
 SET( companion9x_UIS

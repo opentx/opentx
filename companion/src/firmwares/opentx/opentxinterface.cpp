@@ -694,7 +694,13 @@ int Open9xInterface::getCapability(const Capability capability)
     case LCDWidth:
       return (IS_TARANIS(board) ? 212 : 128) ;
     case GetThrSwitch:
-      return (IS_TARANIS(board) ?DSW_SF1 : DSW_THR) ;
+      return (IS_TARANIS(board) ? DSW_SF1 : DSW_THR) ;
+    case VirtualInputs:
+    case LuaInputs:
+    case LimitsPer1000:
+    case EnhancedCurves:
+    case TelemetryInternalAlarms:
+      return IS_TARANIS(board);
     default:
       return 0;
   }

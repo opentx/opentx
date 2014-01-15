@@ -44,14 +44,14 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Weight</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,1,0">
      <item>
       <widget class="QCheckBox" name="weightGV">
@@ -85,14 +85,14 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="label_expo">
      <property name="text">
       <string>Expo</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,1,0">
      <item>
       <widget class="QCheckBox" name="expoGV">
@@ -126,14 +126,14 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_phases">
      <property name="text">
       <string>Flight modes</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="6" column="1">
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0">
       <widget class="QLabel" name="lb_FP0">
@@ -290,14 +290,14 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Switch</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="7" column="1">
     <widget class="QComboBox" name="switchesCB">
      <property name="whatsThis">
       <string>Switch used by the expo.
@@ -305,14 +305,14 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_curves">
      <property name="text">
       <string>Curve</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="8" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1,0">
      <item>
       <widget class="QComboBox" name="curveTypeCB">
@@ -343,15 +343,15 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      </item>
     </layout>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_9">
+   <item row="9" column="0">
+    <widget class="QLabel" name="sideLabel">
      <property name="text">
       <string>Stick Side</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <widget class="QComboBox" name="modeCB">
+   <item row="9" column="1">
+    <widget class="QComboBox" name="sideCB">
      <item>
       <property name="text">
        <string>NEG</string>
@@ -369,7 +369,7 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      </item>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="minimumSize">
       <size>
@@ -388,7 +388,7 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="10" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -400,6 +400,71 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="sourceCB">
+     <property name="whatsThis">
+      <string>The source for the mixer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="trimCB">
+     <item>
+      <property name="text">
+       <string>No</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yes</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="sourceLabel">
+     <property name="text">
+      <string>Source</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="trimLabel">
+     <property name="text">
+      <string>Include Trim</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="scaleLabel">
+     <property name="text">
+      <string>Scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDoubleSpinBox" name="scaleSB">
+     <property name="whatsThis">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Delay ans Slow&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; text-decoration: underline;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These values control the speed and delay of the output of the mix.  &lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Delay is not zero the actuation of the mix will be delayed by the specified amount of seconds.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If Slow is not zero then the speed of the mix will be set by the value specified -&amp;gt; the value states the number of seconds it takes to transit from -100 to 100.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>1</number>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

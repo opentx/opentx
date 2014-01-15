@@ -51,9 +51,11 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
     }
 
     populateSwitchCB(ui->switchesCB,ed->swtch);
-    populateCurveReference(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, 0);
 
-    ui->modeCB->setCurrentIndex(ed->mode-1);
+    // TODO keep this group, same in MixerDialog
+    CurveGroup * curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve);
+
+    ui->sideCB->setCurrentIndex(ed->mode-1);
 
     ui->label_expo->hide();
 
@@ -75,6 +77,19 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
         lb_fp[i]->hide();
         cb_fp[i]->hide();
       }      
+    }
+
+    if (GetEepromInterface()->getCapability(VirtualInputs)) {
+      ui->sideLabel->hide();
+      ui->sideCB->hide();
+    }
+    else {
+      ui->sourceLabel->hide();
+      ui->sourceCB->hide();
+      ui->scaleLabel->hide();
+      ui->scaleSB->hide();
+      ui->trimLabel->hide();
+      ui->trimCB->hide();
     }
 
     int expolength=GetEepromInterface()->getCapability(HasExpoNames);
@@ -101,7 +116,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
     connect(ui->weightCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->weightSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
     connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->modeCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
+    connect(ui->sideCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->expoGV,SIGNAL(stateChanged(int)),this,SLOT(widgetChanged()));
     connect(ui->weightGV,SIGNAL(stateChanged(int)),this,SLOT(widgetChanged()));
     for (int i=0; i<9; i++) {
@@ -164,15 +179,13 @@ void ExpoDialog::valuesChanged()
 {
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
 
-    retrieveCurveReference(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, 0);
-
     if (ui->weightGV->isChecked()) {
       ed->weight = ui->weightCB->itemData(ui->weightCB->currentIndex()).toInt();
     } else {
       ed->weight = ui->weightSB->value();
     }
     ed->swtch  = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
-    ed->mode   = ui->modeCB->currentIndex() + 1;
+    ed->mode   = ui->sideCB->currentIndex() + 1;
     int i=0;
     for (i=0; i<ui->expoName->text().toAscii().length(); i++) {
       ed->name[i]=ui->expoName->text().toAscii().at(i);

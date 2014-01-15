@@ -29,6 +29,29 @@ void populateTTraceCB(QComboBox *b, int value);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 void populateBacklightCB(QComboBox *b, const uint8_t value);
 
+class CurveGroup : public QObject {
+
+  Q_OBJECT
+
+  public:
+    CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags=0);
+    void update();
+
+  protected slots:
+    void gvarCBChanged(int);
+    void valuesChanged();
+
+  protected:
+    QComboBox *curveTypeCB;
+    QCheckBox *curveGVarCB;
+    QComboBox *curveValueCB;
+    QSpinBox *curveValueSB;
+    CurveReference & curve;
+    unsigned int flags;
+    bool lock;
+    int lastType;
+};
+
 #define POPULATE_ONOFF        0x01
 #define POPULATE_MSWITCHES    0x02
 #define POPULATE_AND_SWITCHES 0x04
@@ -42,9 +65,6 @@ void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QS
 void populatePhasesCB(QComboBox *b, int value);
 void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
-void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags);
-void retrieveCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags);
-void populateCurvesCB(QComboBox *b, int value);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 void populateTimerSwitchCB(QComboBox *b, int value);
 QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);

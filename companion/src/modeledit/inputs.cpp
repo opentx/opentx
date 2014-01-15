@@ -76,18 +76,17 @@ void InputsPanel::update()
       str = "   ";
     }
 
-    switch (md->mode) {
-      case (1): str += " <-"; break;
-      case (2): str += " ->"; break;
-      default:  str += "   "; break;
-    };
-
-    str += tr("Weight(%1)").arg(getGVarString(md->weight));
-
-    QString curveStr = md->curve.toString();
-    if (!curveStr.isEmpty()) {
-      str += " " + curveStr;
+    if (!GetEepromInterface()->getCapability(VirtualInputs)) {
+      switch (md->mode) {
+        case (1): str += " <-"; break;
+        case (2): str += " ->"; break;
+        default:  str += "   "; break;
+      };
     }
+
+    str += " " + tr("Weight(%1)").arg(getGVarString(md->weight));
+
+    if (md->curve.value) str += " " + md->curve.toString();
 
     if (GetEepromInterface()->getCapability(FlightPhases)) {
       if(md->phases) {

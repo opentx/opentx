@@ -471,14 +471,35 @@ void populatePhasesCB(QComboBox *b, int value)
   b->setCurrentIndex(value + GetEepromInterface()->getCapability(FlightPhases));
 }
 
-void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags)
+CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags):
+  QObject(),
+  curveTypeCB(curveTypeCB),
+  curveGVarCB(curveGVarCB),
+  curveValueCB(curveValueCB),
+  curveValueSB(curveValueSB),
+  curve(curve),
+  flags(flags),
+  lock(false),
+  lastType(-1)
 {
-  if (curveTypeCB->count() == 0) {
-    curveTypeCB->addItem(QObject::tr("Diff"));
-    curveTypeCB->addItem(QObject::tr("Expo"));
-    curveTypeCB->addItem(QObject::tr("Func"));
-    curveTypeCB->addItem(QObject::tr("Curve"));
-  }
+  curveTypeCB->addItem(tr("Diff"));
+  curveTypeCB->addItem(tr("Expo"));
+  curveTypeCB->addItem(tr("Func"));
+  curveTypeCB->addItem(tr("Curve"));
+
+  curveValueCB->setMaxVisibleItems(10);
+
+  connect(curveTypeCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(curveGVarCB, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
+  connect(curveValueCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(curveValueSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+
+  update();
+}
+
+void CurveGroup::update()
+{
+  lock = true;
 
   curveTypeCB->setCurrentIndex(curve.type);
 
@@ -486,7 +507,10 @@ void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QCom
     curveGVarCB->show();
     if (curve.value > 100 || curve.value < -100) {
       curveGVarCB->setChecked(true);
-      populateGVCB(curveValueCB, curve.value);
+      if (lastType != CurveReference::CURVE_REF_DIFF && lastType != CurveReference::CURVE_REF_EXPO) {
+        lastType = curve.type;
+        populateGVCB(curveValueCB, curve.value);
+      }
       curveValueCB->show();
       curveValueSB->hide();
     }
@@ -503,19 +527,26 @@ void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QCom
     curveGVarCB->hide();
     curveValueSB->hide();
     curveValueCB->show();
-    curveValueCB->setMaxVisibleItems(10);
     switch (curve.type) {
       case CurveReference::CURVE_REF_FUNC:
-        for (int i=0; i<=6/*TODO constant*/; i++) {
-          curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_FUNC, i).toString());
+        if (lastType != curve.type) {
+          lastType = curve.type;
+          curveValueCB->clear();
+          for (int i=0; i<=6/*TODO constant*/; i++) {
+            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_FUNC, i).toString());
+          }
         }
         curveValueCB->setCurrentIndex(curve.value);
         break;
       case CurveReference::CURVE_REF_CUSTOM:
       {
         int numcurves = GetEepromInterface()->getCapability(NumCurves);
-        for (int i=-numcurves; i<numcurves; i++) {
-          curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
+        if (lastType != curve.type) {
+          lastType = curve.type;
+          curveValueCB->clear();
+          for (int i=-numcurves; i<numcurves; i++) {
+            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
+          }
         }
         curveValueCB->setCurrentIndex(curve.value+numcurves);
         break;
@@ -524,31 +555,49 @@ void populateCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QCom
         break;
     }
   }
+
+  lock = false;
 }
 
-void retrieveCurveReference(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags)
+void CurveGroup::gvarCBChanged(int state)
 {
-  switch (curveTypeCB->currentIndex()) {
-    case 0:
-    case 1:
-    {
-      int value;
-      if (curveGVarCB->isChecked())
-        value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
-      else
-        value = curveValueSB->value();
-      qDebug() << value;
-      curve = CurveReference(curveTypeCB->currentIndex() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
-      break;
+  if (!lock) {
+    if (state) {
+      curve.value = 10000; // TODO constant in EEpromInterface ...
     }
-    case 2:
-      curve = CurveReference(CurveReference::CURVE_REF_FUNC, curveValueCB->currentIndex());
-      break;
-    case 3:
-      curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->currentIndex() - GetEepromInterface()->getCapability(NumCurves));
-      break;
+    else {
+      curve.value = 0; // TODO could be better
+    }
+
+    update();
   }
-  populateCurveReference(curveTypeCB, curveGVarCB, curveValueCB, curveValueSB, curve, flags);
+}
+
+void CurveGroup::valuesChanged()
+{
+  if (!lock) {
+    switch (curveTypeCB->currentIndex()) {
+      case 0:
+      case 1:
+      {
+        int value;
+        if (curveGVarCB->isChecked())
+          value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
+        else
+          value = curveValueSB->value();
+        curve = CurveReference(curveTypeCB->currentIndex() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
+        break;
+      }
+      case 2:
+        curve = CurveReference(CurveReference::CURVE_REF_FUNC, curveValueCB->currentIndex());
+        break;
+      case 3:
+        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->currentIndex() - GetEepromInterface()->getCapability(NumCurves));
+        break;
+    }
+
+    update();
+  }
 }
 
 void populateTrimUseCB(QComboBox *b, unsigned int phase)
@@ -831,7 +880,9 @@ void populateGVCB(QComboBox *b, int value)
 {
   int selected=0;
   int nullitem;
+
   b->clear();
+
   int pgvars = GetEepromInterface()->getCapability(Gvars);
   for (int i=-pgvars; i<=-1; i++) {
     int16_t gval = (int16_t)(-10000+i);
@@ -841,12 +892,15 @@ void populateGVCB(QComboBox *b, int value)
       selected=1;
     }
   }
+
   b->addItem("---", 0);
+
   nullitem=b->count()-1;
   if (value == 0) {
     b->setCurrentIndex(b->count()-1);
     selected=1;
   }
+
   for (int i=1; i<=pgvars; i++) {
     int16_t gval = (int16_t)(10000+i);
     b->addItem(QObject::tr("GV%1").arg(i), gval);
@@ -855,6 +909,7 @@ void populateGVCB(QComboBox *b, int value)
       selected=1;
     }
   }
+
   if (selected==0)
     b->setCurrentIndex(nullitem);
 }

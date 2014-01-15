@@ -1008,6 +1008,11 @@ enum Capability {
  CSFunc,
  LCDWidth,
  GetThrSwitch,
+ VirtualInputs,
+ LuaInputs,
+ LimitsPer1000,
+ EnhancedCurves,
+ TelemetryInternalAlarms
 };
 
 enum UseContext {
