@@ -77,7 +77,7 @@ class MyProxyStyle : public QProxyStyle
 int main(int argc, char *argv[])
 {
     // Start by borrowing any left over settings from companion9x
-    QSettings c9x_settings("companion", "companion");
+    QSettings c9x_settings("companion9x", "companion9x");
     QSettings com_settings("companion", "companion");
     if (!com_settings.contains("pos"))  {
       QStringList keys = c9x_settings.allKeys();
