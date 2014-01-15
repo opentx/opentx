@@ -76,7 +76,7 @@ class MyProxyStyle : public QProxyStyle
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(companion9x);
+    Q_INIT_RESOURCE(companion);
     QApplication app(argc, argv);
     app.setApplicationName("OpenTX Companion");
 #ifdef __APPLE__

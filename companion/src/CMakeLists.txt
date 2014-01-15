@@ -234,7 +234,7 @@ IF ( SDL_FOUND )
 ENDIF( ) 
 
 SET( companion_RCS
-     companion9x.qrc
+     companion.qrc
      ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
 )
 

@@ -23,7 +23,7 @@
       <string>Simulate Tx</string>
      </property>
      <property name="icon">
-      <iconset resource="companion9x.qrc">
+      <iconset resource="companion.qrc">
        <normaloff>:/images/simulate.png</normaloff>:/images/simulate.png</iconset>
      </property>
     </widget>
@@ -38,7 +38,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>
