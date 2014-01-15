@@ -77,7 +77,7 @@ class MyProxyStyle : public QProxyStyle
 int main(int argc, char *argv[])
 {
     // Start by borrowing any left over settings from companion9x
-    QSettings c9x_settings("companion9x", "companion9x");
+    QSettings c9x_settings("companion", "companion");
     QSettings com_settings("companion", "companion");
     if (!com_settings.contains("pos"))  {
       QStringList keys = c9x_settings.allKeys();
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     QString dir;
     if(argc) dir = QFileInfo(argv[0]).canonicalPath() + "/lang";
 
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString locale = settings.value("locale",QLocale::system().name()).toString();
     bool showSplash = settings.value("show_splash", true).toBool();
 

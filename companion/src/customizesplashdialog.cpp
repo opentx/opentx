@@ -22,7 +22,7 @@ customizeSplashDialog::~customizeSplashDialog() {
 void customizeSplashDialog::on_FlashLoadButton_clicked()
 {
   QString fileName;
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   ui->ImageLoadButton->setDisabled(true);
   ui->libraryButton->setDisabled(true);
   ui->SaveFlashButton->setDisabled(true);
@@ -66,7 +66,7 @@ void customizeSplashDialog::on_ImageLoadButton_clicked() {
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
 
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   QString fileName = QFileDialog::getOpenFileName(this,
           tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
 
@@ -143,7 +143,7 @@ void customizeSplashDialog::on_libraryButton_clicked() {
 void customizeSplashDialog::on_SaveFlashButton_clicked()
 {
   QString fileName;
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   ui->HowToLabel->clear();
   fileName = QFileDialog::getSaveFileName(this, tr("Write to file"), settings.value("lastFlashDir").toString(), FLASH_FILES_FILTER, 0, QFileDialog::DontConfirmOverwrite);
   if (fileName.isEmpty()) {
@@ -176,7 +176,7 @@ void customizeSplashDialog::on_InvertColorButton_clicked()
 void customizeSplashDialog::on_SaveImageButton_clicked()
 {
   QString fileName;
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
 
   fileName = QFileDialog::getSaveFileName(this, tr("Write to file"), settings.value("lastImagesDir").toString(), tr("PNG images (*.png);;"), 0, QFileDialog::DontConfirmOverwrite);
   if (!fileName.isEmpty()) {
